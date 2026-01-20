@@ -25,7 +25,7 @@
             <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a></div>
             <div class="timeline-body"><p>FURB157 suggests replacing expressions like <code>Decimal(&quot;123&quot;)</code> with <code>Decimal(123)</code>. This PR extends the rule to cover cases where the input string to <code>Decimal</code> can be easily transformed into an integer literal.</p>
 <p>For example:</p>
-<pre><code class="language-python">Decimal(&quot;1__000&quot;)   # fix: `Decimal(1000)`
+<pre><code>Decimal(&quot;1__000&quot;)   # fix: `Decimal(1000)`
 </code></pre>
 <p>Note: we do not implement the full decimal parsing logic from CPython on the grounds that certain acceptable string inputs to the <code>Decimal</code> constructor may be presumed purposeful on the part of the developer. For example, as in the linked issue, <code>Decimal(&quot;١٢٣&quot;)</code> is valid and equal to <code>Decimal(123)</code>, but we do not suggest a replacement in this case.</p>
 <p>Closes #13807</p>
@@ -33,30 +33,30 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-11-04 23:40</div>
-            <div class="timeline-body"><p>Happy to hear any suggestions around the strange mix of mutability and shadowing in the implementation. I was attempting to avoid allocating a String if we didn't have to, and to not change too much from the implementation that already existed...</p>
+            <div class="timeline-body"><p>Happy to hear any suggestions around the strange mix of mutability and shadowing in the implementation. I was attempting to avoid allocating a String if we didn&#x27;t have to, and to not change too much from the implementation that already existed...</p>
 <p>Also happy to delete some comments if they are contributing more to clutter than understanding.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-04 23:51</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/refurb/rules/verbose_decimal_constructor.rs</code>:86 on 2024-11-05 06:55</div>
-            <div class="timeline-body"><p>Nit: I don't think <code>memchr</code> gives us much here, considering that most literals are very short. We also don't have to use <code>replace</code> and allcoate a <code>Cow::Owned</code>. Instead, I would use <code>Cow::from(trimmed.trim_start_matches('_'))</code> for better readability (with the added benefit that it doesn't allocate)</p>
+            <div class="timeline-body"><p>Nit: I don&#x27;t think <code>memchr</code> gives us much here, considering that most literals are very short. We also don&#x27;t have to use <code>replace</code> and allcoate a <code>Cow::Owned</code>. Instead, I would use <code>Cow::from(trimmed.trim_start_matches(&#x27;_&#x27;))</code> for better readability (with the added benefit that it doesn&#x27;t allocate)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/refurb/rules/verbose_decimal_constructor.rs</code>:119 on 2024-11-05 07:05</div>
             <div class="timeline-body"><p><code>replace</code> is technically <code>O(n)</code>. Not that it matters much here but I think I would find it slightly more readable if we explicitly tested for the <code>+</code> sign and the expected position.</p>
-<pre><code>if rest[index + 1] == b'+' {
+<pre><code>if rest[index + 1] == b&#x27;+&#x27; {
     rest.into_owned().remove(index + 1)
 }
 </code></pre>
@@ -88,11 +88,11 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ruff_linter/src/rules/refurb/rules/verbose_decimal_constructor.rs</code>:118 on 2024-11-05 07:41</div>
-            <div class="timeline-body"><p>I don't think the positive sign in the exponent is a syntax error?</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; 2e+3
+            <div class="timeline-body"><p>I don&#x27;t think the positive sign in the exponent is a syntax error?</p>
+<pre><code>&gt;&gt;&gt; 2e+3
 2000.0
 &gt;&gt;&gt; Decimal(2e+3)
-Decimal('2000')
+Decimal(&#x27;2000&#x27;)
 </code></pre>
 </div>
         </div>
@@ -111,7 +111,7 @@ Decimal('2000')
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/refurb/rules/verbose_decimal_constructor.rs</code>:129 on 2024-11-05 07:55</div>
-            <div class="timeline-body"><p>Good catch. I don't think replacing all of them is correct because <code>_</code> are not permitted in the exponent part.</p>
+            <div class="timeline-body"><p>Good catch. I don&#x27;t think replacing all of them is correct because <code>_</code> are not permitted in the exponent part.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -120,7 +120,7 @@ Decimal('2000')
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/UnknownPlatypus">@UnknownPlatypus</a> on <code>crates/ruff_linter/src/rules/refurb/snapshots/ruff_linter__rules__refurb__tests__FURB157_FURB157.py.snap</code>:177 on 2024-11-05 07:59</div>
-            <div class="timeline-body"><p>Maybe it would be nice to preserve the thousand separator in that case and suggest <code>1_000</code> instead of <code>1000</code>. (If it's not too annoying to do)</p>
+            <div class="timeline-body"><p>Maybe it would be nice to preserve the thousand separator in that case and suggest <code>1_000</code> instead of <code>1000</code>. (If it&#x27;s not too annoying to do)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -130,13 +130,13 @@ Decimal('2000')
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ruff_linter/src/rules/refurb/rules/verbose_decimal_constructor.rs</code>:110 on 2024-11-05 08:06</div>
             <div class="timeline-body"><p>Yes, you can have negative exponents. But this lint should not suggest replacing <code>Decimal(&quot;1e-1&quot;)</code> with <code>Decimal(1e-1)</code>. They are not the same! <code>Decimal</code> offers a way to represent decimal numbers in an exact way, something that floating point representations do not support.</p>
-<pre><code class="language-py">&gt;&gt;&gt;&gt; Decimal(&quot;1e-1&quot;) == Decimal(1e-1)  # 1e-1 = 0.1 can not be represented exactly as a float
+<pre><code>&gt;&gt;&gt;&gt; Decimal(&quot;1e-1&quot;) == Decimal(1e-1)  # 1e-1 = 0.1 can not be represented exactly as a float
 False
 &gt;&gt;&gt;&gt; Decimal(&quot;5e-1&quot;) == Decimal(5e-1)  # Okay, 5e-1 = 1/2 can be represented exactly
 True
 </code></pre>
 <p>I think we need to be similarly careful with large numbers, even if they are integers:</p>
-<pre><code class="language-py">&gt;&gt;&gt;&gt; Decimal(&quot;1e22&quot;) == Decimal(1e22)
+<pre><code>&gt;&gt;&gt;&gt; Decimal(&quot;1e22&quot;) == Decimal(1e22)
 True
 &gt;&gt;&gt;&gt; Decimal(&quot;1e23&quot;) == Decimal(1e23)
 False
@@ -151,7 +151,7 @@ False
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ruff_linter/src/rules/refurb/rules/verbose_decimal_constructor.rs</code>:129 on 2024-11-05 08:11</div>
             <div class="timeline-body"><p>I think they are:</p>
 <p>https://github.com/python/cpython/blob/ac556a2ad1213b8bb81372fe6fb762f5fcb076de/Lib/_pydecimal.py#L463</p>
-<pre><code class="language-py">&gt;&gt;&gt; Decimal(&quot;2e1_0&quot;) == Decimal(2e1_0)
+<pre><code>&gt;&gt;&gt; Decimal(&quot;2e1_0&quot;) == Decimal(2e1_0)
 True
 </code></pre>
 </div>
@@ -162,7 +162,7 @@ True
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/refurb/rules/verbose_decimal_constructor.rs</code>:129 on 2024-11-05 08:23</div>
-            <div class="timeline-body"><p>Understanding your own code is always the hardest. So what's not allowed is <code>Decimal(2._1)</code></p>
+            <div class="timeline-body"><p>Understanding your own code is always the hardest. So what&#x27;s not allowed is <code>Decimal(2._1)</code></p>
 <p>https://github.com/astral-sh/ruff/blob/4323512a6569eb1a820f91141f5798ba015628e6/crates/ruff_python_parser/src/lexer.rs#L1072-L1078</p>
 </div>
         </div>
@@ -173,13 +173,13 @@ True
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ruff_linter/src/rules/refurb/rules/verbose_decimal_constructor.rs</code>:129 on 2024-11-05 08:30</div>
             <div class="timeline-body"><p>Yes. Leading/trailing underscores are also not supported in &quot;plain&quot; Python syntax: <code>_10</code>. But they are supported in <code>Decimal</code>s syntax.</p>
-<p>But I don't think there is a problem in this PR? All underscores are replaced. So if someone really has <code>Decimal(&quot;_1_0_0__&quot;)</code> in their codebase, we would suggest replacing that with <code>Decimal(100)</code>, which is fine.</p>
+<p>But I don&#x27;t think there is a problem in this PR? All underscores are replaced. So if someone really has <code>Decimal(&quot;_1_0_0__&quot;)</code> in their codebase, we would suggest replacing that with <code>Decimal(100)</code>, which is fine.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/refurb/rules/verbose_decimal_constructor.rs</code>:86 on 2024-11-05 11:44</div>
-            <div class="timeline-body"><p>I'm fine not using memchr, but I do think we need to use <code>replace</code> because underscores may appear anywhere in the string. For example- <code>Decimal(&quot;1_____00&quot;)</code> is valid.</p>
-<p>Edit: whoops, didn't see that was already addressed below</p>
+            <div class="timeline-body"><p>I&#x27;m fine not using memchr, but I do think we need to use <code>replace</code> because underscores may appear anywhere in the string. For example- <code>Decimal(&quot;1_____00&quot;)</code> is valid.</p>
+<p>Edit: whoops, didn&#x27;t see that was already addressed below</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -192,7 +192,7 @@ True
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/refurb/rules/verbose_decimal_constructor.rs</code>:110 on 2024-11-05 11:46</div>
-            <div class="timeline-body"><p>Just as @sharkdp points out, the omission of negative exponents was intentional. I didn't think about large exponents though, good point!</p>
+            <div class="timeline-body"><p>Just as @sharkdp points out, the omission of negative exponents was intentional. I didn&#x27;t think about large exponents though, good point!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -201,7 +201,7 @@ True
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/refurb/rules/verbose_decimal_constructor.rs</code>:119 on 2024-11-05 12:07</div>
-            <div class="timeline-body"><p>I like <code>remove_matches</code> but isn't it nightly only? https://doc.rust-lang.org/std/string/struct.String.html#method.remove_matches</p>
+            <div class="timeline-body"><p>I like <code>remove_matches</code> but isn&#x27;t it nightly only? https://doc.rust-lang.org/std/string/struct.String.html#method.remove_matches</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -210,7 +210,7 @@ True
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/refurb/rules/verbose_decimal_constructor.rs</code>:118 on 2024-11-05 12:18</div>
-            <div class="timeline-body"><p>You're absolutely right! Dunno why I thought it was...</p>
+            <div class="timeline-body"><p>You&#x27;re absolutely right! Dunno why I thought it was...</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -228,9 +228,9 @@ True
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/refurb/rules/verbose_decimal_constructor.rs</code>:110 on 2024-11-05 14:01</div>
-            <div class="timeline-body"><p>It's hard to figure out when this conversion is actually safe - parsing scientific notation is weird, and I can't seem to find a reference for the range where the representation is faithful. I think issues start to occur when numbers are larger than <code>1e16</code> but I'm having trouble finding a justification for that in code/documentation...</p>
+            <div class="timeline-body"><p>It&#x27;s hard to figure out when this conversion is actually safe - parsing scientific notation is weird, and I can&#x27;t seem to find a reference for the range where the representation is faithful. I think issues start to occur when numbers are larger than <code>1e16</code> but I&#x27;m having trouble finding a justification for that in code/documentation...</p>
 <p>The smallest example I found so far was:</p>
-<pre><code class="language-bash">&gt;&gt;&gt; Decimal(1801439850948199e1) == Decimal('1801439850948199e1')
+<pre><code>&gt;&gt;&gt; Decimal(1801439850948199e1) == Decimal(&#x27;1801439850948199e1&#x27;)
 False
 </code></pre>
 </div>
@@ -242,7 +242,7 @@ False
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dscorbett">@dscorbett</a> on <code>crates/ruff_linter/src/rules/refurb/rules/verbose_decimal_constructor.rs</code>:110 on 2024-11-05 14:20</div>
             <div class="timeline-body"><p>FURB157 should not rewrite strings to float literals. Literals with exponents are float literals, so they should not be passed to the <code>Decimal</code> constructor, or they will trigger <a href="https://docs.astral.sh/ruff/rules/decimal-from-float-literal/"><code>decimal-from-float-literal</code> (RUF032)</a>.</p>
-<pre><code class="language-console">$ cat ruf032.py                                                   
+<pre><code>$ cat ruf032.py                                                   
 from decimal import Decimal
 Decimal(1e16)
 
@@ -295,25 +295,25 @@ No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/refurb/snapshots/ruff_linter__rules__refurb__tests__FURB157_FURB157.py.snap</code>:177 on 2024-11-05 19:13</div>
-            <div class="timeline-body"><p>That's a good suggestion, and I think it would be a nice followup! I think one would want to trim leading/trailing underscores, and then replace every internal, contiguous sequence of underscores with a single underscore. At that point it may be worth a little refactoring to just walk through the string once and abort early as appropriate...</p>
+            <div class="timeline-body"><p>That&#x27;s a good suggestion, and I think it would be a nice followup! I think one would want to trim leading/trailing underscores, and then replace every internal, contiguous sequence of underscores with a single underscore. At that point it may be worth a little refactoring to just walk through the string once and abort early as appropriate...</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @dylwil3 on 2024-11-05 19:33</div>
+            <div class="event">Merged by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-11-05 19:33</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dylwil3 on 2024-11-05 19:33</div>
+            <div class="event">Closed by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-11-05 19:33</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-11-05 19:33</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2024-11-08 10:45</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-11-08 10:45</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:07:28 UTC
+        Synced at 2026-01-20 19:08:06 UTC
     </footer>
 </body>
 </html>

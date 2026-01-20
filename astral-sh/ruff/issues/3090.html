@@ -24,12 +24,12 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ashb">@ashb</a></div>
             <div class="timeline-body"><p>This is a slightly odd one to track down, but ruff has stopped enforcing any rules in my <code>src/</code> folder!</p>
-<p>I've got a private repo (which makes it hard to share, at least publicly).</p>
-<p>The ruff rules have been constant for the life of the repo (it's about 6 weeks old), so I tried using <code>git bisect</code></p>
-<p>I've managed to track down the commit that breaks things, using this <code>git bisect run</code> script:</p>
-<pre><code>bash -c '(cat src/myproject/app.py; echo -e &quot;\n\nf\&quot;a\&quot;&quot; ) | ruff check --no-fix --stdin-filename src/myproject/app.py  - --diff 2&gt;&amp;1 | grep --fixed &quot;+\&quot;a\&quot;&quot;'
+<p>I&#x27;ve got a private repo (which makes it hard to share, at least publicly).</p>
+<p>The ruff rules have been constant for the life of the repo (it&#x27;s about 6 weeks old), so I tried using <code>git bisect</code></p>
+<p>I&#x27;ve managed to track down the commit that breaks things, using this <code>git bisect run</code> script:</p>
+<pre><code>bash -c &#x27;(cat src/myproject/app.py; echo -e &quot;\n\nf\&quot;a\&quot;&quot; ) | ruff check --no-fix --stdin-filename src/myproject/app.py  - --diff 2&gt;&amp;1 | grep --fixed &quot;+\&quot;a\&quot;&quot;&#x27;
 </code></pre>
-<p>And looking at the changed files in the breaking commit, it doesn't &quot;add up&quot;:</p>
+<p>And looking at the changed files in the breaking commit, it doesn&#x27;t &quot;add up&quot;:</p>
 <pre><code> src/myproject/__main__.py                                                  | 18 +++++++++++++++---
  src/myproject/api/routers/health.py                                        | 11 -----------
  src/myproject/apiserver/router.py                                          |  8 ++++++++
@@ -47,29 +47,29 @@
  src/myproject/component/__init__.py                                        |  1 -
  src/myproject/settings.py                                                  | 14 ++++++++++++++
 </code></pre>
-<p>I'd be happy to share access to the repo for the commits in question if it helps debug. (For future me, the breaking commit is b06f117fc and b06f117fc^ is good)</p>
+<p>I&#x27;d be happy to share access to the repo for the commits in question if it helps debug. (For future me, the breaking commit is b06f117fc and b06f117fc^ is good)</p>
 <p>Through-out this time errors are still flaged up in <code>tests/</code></p>
-<details>
-<summary>Ruff config in pyproject.toml</summary>
+
+Ruff config in pyproject.toml
 ```
 [tool.ruff]
 line-length = 110
 extend-select = [
-    "W",    # pycodestyle warnings
-    "I",    # isort
-    "C90",  # Complexity
-    "C",    # flake8-comprehensions
-    "ISC",  # flake8-implicit-str-concat
-    "T10",  # flake8-debugger
-    "A",    # flake8-builtins
-    "UP",   # pyupgrade
-    "RUF",  # un-needed noqa stanzas
+    &quot;W&quot;,    # pycodestyle warnings
+    &quot;I&quot;,    # isort
+    &quot;C90&quot;,  # Complexity
+    &quot;C&quot;,    # flake8-comprehensions
+    &quot;ISC&quot;,  # flake8-implicit-str-concat
+    &quot;T10&quot;,  # flake8-debugger
+    &quot;A&quot;,    # flake8-builtins
+    &quot;UP&quot;,   # pyupgrade
+    &quot;RUF&quot;,  # un-needed noqa stanzas
 ]
-extend-ignore = ["A002"]
+extend-ignore = [&quot;A002&quot;]
 extend-exclude = [
-    "__pycache__",
+    &quot;__pycache__&quot;,
 ]
-target-version = "py311"
+target-version = &quot;py311&quot;
 fix = true
 
 <p>[tool.ruff.isort]
@@ -82,15 +82,15 @@ max-complexity = 6</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-02-21 18:19</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-21 18:19</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-02-21 18:19</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-21 18:19</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-21 18:22</div>
-            <div class="timeline-body"><p>I'm not immediately sure what's going on. The first thing I'd wonder is if some of the files are being unintentionally excluded by the default exclusions list:</p>
-<pre><code class="language-rust">pub static EXCLUDE: Lazy&lt;Vec&lt;FilePattern&gt;&gt; = Lazy::new(|| {
+            <div class="timeline-body"><p>I&#x27;m not immediately sure what&#x27;s going on. The first thing I&#x27;d wonder is if some of the files are being unintentionally excluded by the default exclusions list:</p>
+<pre><code>pub static EXCLUDE: Lazy&lt;Vec&lt;FilePattern&gt;&gt; = Lazy::new(|| {
     vec![
         FilePattern::Builtin(&quot;.bzr&quot;),
         FilePattern::Builtin(&quot;.direnv&quot;),
@@ -115,7 +115,7 @@ max-complexity = 6</p>
     ]
 });
 </code></pre>
-<p>E.g., that might happen if you moved files into a <code>build</code> subdirectory. But based on the layout above, I'm not seeing anything that would trigger that behavior.</p>
+<p>E.g., that might happen if you moved files into a <code>build</code> subdirectory. But based on the layout above, I&#x27;m not seeing anything that would trigger that behavior.</p>
 <p>The other possibility is that the automatic <code>gitignore</code> behavior somehow thinks those files should be ignored.</p>
 <p>Are you able to share the output of running with <code>--verbose</code>?</p>
 </div>
@@ -164,12 +164,12 @@ index 8370d1b..400aa8b 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-21 18:42</div>
-            <div class="timeline-body"><p>It would help a lot, if you're open to it. Do you want to send a zip by email (charlie.r.marsh@gmail.com)? What works best?</p>
+            <div class="timeline-body"><p>It would help a lot, if you&#x27;re open to it. Do you want to send a zip by email (charlie.r.marsh@gmail.com)? What works best?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ashb">@ashb</a> on 2023-02-21 18:59</div>
-            <div class="timeline-body"><p>You've got mail!</p>
+            <div class="timeline-body"><p>You&#x27;ve got mail!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -184,16 +184,16 @@ index 8370d1b..400aa8b 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-21 19:13</div>
-            <div class="timeline-body"><p>Is the issue not that <code>app.py</code> now contains a <code>match</code> statement? Which is suppressed with <code># noqa: E999</code>. (But the presence of the <code>match</code> means we can't check the AST.)</p>
-<p>If you remove the <code>noqa</code>, you get a warning, like: <code>error: Failed to parse src/laminar/app.py: invalid syntax. Got unexpected token 'settings' at line 16 column 11</code>.</p>
-<p>If you add an error that's not based on the AST (like a long line), you get: <code>src/laminar/app.py:26:89: E501 Line too long (91 &gt; 88 characters)</code>.</p>
-<p>If so, this should all be moot anyway since <code>match</code> support just merged. But maybe I'm misdiagnosing here.</p>
+            <div class="timeline-body"><p>Is the issue not that <code>app.py</code> now contains a <code>match</code> statement? Which is suppressed with <code># noqa: E999</code>. (But the presence of the <code>match</code> means we can&#x27;t check the AST.)</p>
+<p>If you remove the <code>noqa</code>, you get a warning, like: <code>error: Failed to parse src/laminar/app.py: invalid syntax. Got unexpected token &#x27;settings&#x27; at line 16 column 11</code>.</p>
+<p>If you add an error that&#x27;s not based on the AST (like a long line), you get: <code>src/laminar/app.py:26:89: E501 Line too long (91 &gt; 88 characters)</code>.</p>
+<p>If so, this should all be moot anyway since <code>match</code> support just merged. But maybe I&#x27;m misdiagnosing here.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ashb">@ashb</a> on 2023-02-21 19:22</div>
             <div class="timeline-body"><p>Ooooh shiny. Testing out a main build now.</p>
-<p>I guess it makes sense that with the syntax errors it can't parse the AST to enforce more of the rules.</p>
+<p>I guess it makes sense that with the syntax errors it can&#x27;t parse the AST to enforce more of the rules.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -202,12 +202,12 @@ index 8370d1b..400aa8b 100644
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ashb on 2023-02-21 19:32</div>
+            <div class="event">Closed by <a href="https://github.com/ashb">@ashb</a> on 2023-02-21 19:32</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:46:37 UTC
+        Synced at 2026-01-20 18:48:33 UTC
     </footer>
 </body>
 </html>

@@ -67,15 +67,15 @@ Exiting
 <code>RUSTFLAGS=&quot;-Z sanitizer=memory&quot; cargo test --target x86_64-unknown-linux-gnu</code> segfaults:</p>
 <pre><code>    Finished dev [unoptimized + debuginfo] target(s) in 0.11s
      Running target/x86_64-unknown-linux-gnu/debug/deps/clap-c8fb3e31fbf02681
-error: process didn't exit successfully: `/home/matthias/vcs/github/clap-rs/target/x86_64-unknown-linux-gnu/debug/deps/clap-c8fb3e31fbf02681` (signal: 11, SIGSEGV: invalid memory reference)
+error: process didn&#x27;t exit successfully: `/home/matthias/vcs/github/clap-rs/target/x86_64-unknown-linux-gnu/debug/deps/clap-c8fb3e31fbf02681` (signal: 11, SIGSEGV: invalid memory reference)
 </code></pre>
-<p>I tried poking around with rust-lldb but I'm not sure if this helps:</p>
-<pre><code>Process 13031 launched: '/home/matthias/vcs/github/clap-rs/target/x86_64-unknown-linux-gnu/debug/deps/clap-c8fb3e31fbf02681' (x86_64)
+<p>I tried poking around with rust-lldb but I&#x27;m not sure if this helps:</p>
+<pre><code>Process 13031 launched: &#x27;/home/matthias/vcs/github/clap-rs/target/x86_64-unknown-linux-gnu/debug/deps/clap-c8fb3e31fbf02681&#x27; (x86_64)
 Process 13031 stopped
-* thread #1, name = 'clap-c8fb3e31fb', stop reason = signal SIGSEGV: invalid address (fault address: 0x2fffffffdc30)
+* thread #1, name = &#x27;clap-c8fb3e31fb&#x27;, stop reason = signal SIGSEGV: invalid address (fault address: 0x2fffffffdc30)
     frame #0: 0x00005555556069c7 clap-c8fb3e31fbf02681`std::rt::lang_start::h1f7daf9f50143af5(main=&amp;0x55555560d470, argc=1, argv=&amp;0x7fffffffdd28) at rt.rs:74
 (lldb) bt
-* thread #1, name = 'clap-c8fb3e31fb', stop reason = signal SIGSEGV: invalid address (fault address: 0x2fffffffdc30)
+* thread #1, name = &#x27;clap-c8fb3e31fb&#x27;, stop reason = signal SIGSEGV: invalid address (fault address: 0x2fffffffdc30)
   * frame #0: 0x00005555556069c7 clap-c8fb3e31fbf02681`std::rt::lang_start::h1f7daf9f50143af5(main=&amp;0x55555560d470, argc=1, argv=&amp;0x7fffffffdd28) at rt.rs:74
     frame #1: 0x000055555560da5d clap-c8fb3e31fbf02681`main + 77
     frame #2: 0x00007ffff71fd06b libc.so.6`__libc_start_main + 235
@@ -120,25 +120,25 @@ error: linking with `cc` failed: exit code: 1
           &gt;&gt;&gt; referenced by result.rs:745 (/checkout/src/libcore/result.rs:745)
 </code></pre>
 <p>Any ideas what is happening here?</p>
-<h3>Rust Version</h3>
+Rust Version
 <p>rustc 1.29.0-nightly (4f3c7a472 2018-07-17)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-07-18 14:00</div>
-            <div class="timeline-body"><p>Please try switching to the system allocator to rule out the possibility that jemalloc (the default Rust allocation at time of writing) is causing false positives. e.g., https://github.com/rust-lang/regex/issues/460#issuecomment-376620297</p>
+            <div class="timeline-body"><p>Please try switching to the system allocator to rule out the possibility that jemalloc (the default Rust allocation at time of writing) is causing false positives. e.g., <a href="https://github.com/rust-lang/regex/issues/460">rust-lang/regex#460</a>#issuecomment-376620297</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/matthiaskrgr">@matthiaskrgr</a> on 2018-07-18 14:34</div>
             <div class="timeline-body"><p>Thanks Andrew!</p>
 <p>I tried this now:</p>
-<pre><code class="language-diff">diff --git a/src/lib.rs b/src/lib.rs
+<pre><code>diff --git a/src/lib.rs b/src/lib.rs
 index a5be32e6..7cc0c7d2 100644
 --- a/src/lib.rs
 +++ b/src/lib.rs
 @@ -523,7 +523,6 @@
- // Lints we'd like to deny but are currently failing for upstream crates
+ // Lints we&#x27;d like to deny but are currently failing for upstream crates
  //      unused_qualifications       (bitflags, clippy)
  //      trivial_numeric_casts       (bitflags)
 -#![cfg_attr(not(any(feature = &quot;lints&quot;, feature = &quot;nightly&quot;)), forbid(unstable_features))]
@@ -162,14 +162,14 @@ Address sanitizer still got linking errors.</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-07-18 14:37</div>
-            <div class="timeline-body"><p>@matthiaskrgr That doesn't look like a sufficient diff to me. Please see https://github.com/rust-lang/regex/issues/460#issuecomment-376620297 again. e.g., I don't actually see any use of <code>#[global_allocator]</code>. I also don't know what the semantics of setting a global allocator in a library are. Please create a <code>main</code> program that sets it.</p>
+            <div class="timeline-body"><p>@matthiaskrgr That doesn&#x27;t look like a sufficient diff to me. Please see <a href="https://github.com/rust-lang/regex/issues/460">rust-lang/regex#460</a>#issuecomment-376620297 again. e.g., I don&#x27;t actually see any use of <code>#[global_allocator]</code>. I also don&#x27;t know what the semantics of setting a global allocator in a library are. Please create a <code>main</code> program that sets it.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-07-21 01:49</div>
-            <div class="timeline-body"><p>Interesting, thanks for the details and I'm curious what's causing this (and if it's jemalloc like @BurntSushi  suggested).</p>
-<p>I've done a little digging so far, and I'm not entirely sure what's going on. A simple program such as this will trigger the memory sanitizer</p>
-<pre><code class="language-rust">#![feature(global_allocator, allocator_api)]
+            <div class="timeline-body"><p>Interesting, thanks for the details and I&#x27;m curious what&#x27;s causing this (and if it&#x27;s jemalloc like @BurntSushi  suggested).</p>
+<p>I&#x27;ve done a little digging so far, and I&#x27;m not entirely sure what&#x27;s going on. A simple program such as this will trigger the memory sanitizer</p>
+<pre><code>#![feature(global_allocator, allocator_api)]
 
 extern crate clap;
 use clap::App;
@@ -183,7 +183,7 @@ fn main() {
     App::new(&quot;foo&quot;);
 }
 </code></pre>
-<p>The error I'm getting is:</p>
+<p>The error I&#x27;m getting is:</p>
 <pre><code>Running `target/x86_64-unknown-linux-gnu/debug/fake`
 ==10579==WARNING: MemorySanitizer: use-of-uninitialized-value
     #0 0x5557d9f6c9a0  (/home/kevin/Projects/fake/target/x86_64-unknown-linux-gnu/debug/fake+0x8f9a0)
@@ -205,12 +205,12 @@ fn main() {
 SUMMARY: MemorySanitizer: use-of-uninitialized-value (/home/kevin/Projects/fake/target/x86_64-unknown-linux-gnu/debug/fake+0x8f9a0) 
 Exiting
 </code></pre>
-<p>This is strange because clap insn't doing anything at this point other than initializing structs. This even happens on the v3-master branch where it's doing even less initialization.</p>
-<p>I can't say I know enough to dig much deeper though :worried:</p>
+<p>This is strange because clap insn&#x27;t doing anything at this point other than initializing structs. This even happens on the v3-master branch where it&#x27;s doing even less initialization.</p>
+<p>I can&#x27;t say I know enough to dig much deeper though :worried:</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">help wanted</span> added by @kbknapp on 2018-07-21 01:50</div>
+            <div class="event">Label <span class="label">help wanted</span> added by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-07-21 01:50</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-07-02 02:46</div>
@@ -219,14 +219,14 @@ Exiting
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-07-10 12:52</div>
-            <div class="timeline-body"><p>I don't, I use Mac. But the VM provided by Kevin should be linux IIRC.</p>
+            <div class="timeline-body"><p>I don&#x27;t, I use Mac. But the VM provided by Kevin should be linux IIRC.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-09-18 18:14</div>
             <div class="timeline-body"><p>OK, finally found some time to get back to it.</p>
 <p>The patient:</p>
-<pre><code class="language-rust">// We don't need to account for jemalloc these days
+<pre><code>// We don&#x27;t need to account for jemalloc these days
 
 use clap::App;
 
@@ -236,7 +236,7 @@ fn main() {
 </code></pre>
 <p>I set WSL (Windows subsystem for linux) and went strait for the big gun - valgrind.</p>
 <pre><code>==802== Memcheck, a memory error detector
-==802== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==802== Copyright (C) 2002-2017, and GNU GPL&#x27;d, by Julian Seward et al.
 ==802== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
 ==802== Command: ./target/debug/probe
 ==802==
@@ -256,7 +256,7 @@ fn main() {
 <pre><code>error: failed to run custom build command for `bitflags v1.2.1`
 
 Caused by:
-  process didn't exit successfully: `/mnt/d/workspace/probe/target/debug/build/bitflags-4a5ac15c6e640b31/build-script-build` (exit code: 77)
+  process didn&#x27;t exit successfully: `/mnt/d/workspace/probe/target/debug/build/bitflags-4a5ac15c6e640b31/build-script-build` (exit code: 77)
   --- stderr
   Uninitialized bytes in __interceptor_memchr at offset 0 inside [0x701000000000, 4)
   ==902==WARNING: MemorySanitizer: use-of-uninitialized-value
@@ -272,11 +272,11 @@ Caused by:
 warning: build failed, waiting for other jobs to finish...
 error: build failed
 </code></pre>
-<p>So the <code>bitflags</code>' build script is misbehaving, but how? <a href="https://github.com/bitflags/bitflags/blob/1.2.1/build.rs">They don't use unsafe or anything outside of std</a>. Fine, let's fork it and remove the script:</p>
+<p>So the <code>bitflags</code>&#x27; build script is misbehaving, but how? <a href="https://github.com/bitflags/bitflags/blob/1.2.1/build.rs">They don&#x27;t use unsafe or anything outside of std</a>. Fine, let&#x27;s fork it and remove the script:</p>
 <pre><code>error: failed to run custom build command for `hashbrown v0.8.2`
 
 Caused by:
-  process didn't exit successfully: `/mnt/d/workspace/probe/target/debug/build/hashbrown-7707856e3fe17cb4/build-script-build` (exit code: 77)
+  process didn&#x27;t exit successfully: `/mnt/d/workspace/probe/target/debug/build/hashbrown-7707856e3fe17cb4/build-script-build` (exit code: 77)
   --- stderr
   Uninitialized bytes in __interceptor_memchr at offset 0 inside [0x701000000000, 4)
   ==1178==WARNING: MemorySanitizer: use-of-uninitialized-value
@@ -292,14 +292,14 @@ Caused by:
 warning: build failed, waiting for other jobs to finish...
 error: build failed
 </code></pre>
-<p>So it fails with every build script, doesn't it. Screw it, I'm going with the hypotheses of &quot;MemorySanitizer is broken&quot; and report it to... <a href="https://github.com/rust-lang/rust/issues/54365#issuecomment-683334262">Oh</a></p>
+<p>So it fails with every build script, doesn&#x27;t it. Screw it, I&#x27;m going with the hypotheses of &quot;MemorySanitizer is broken&quot; and report it to... <a href="https://github.com/rust-lang/rust/issues/54365#issuecomment-683334262">Oh</a></p>
 <blockquote>
 <p>As mentioned earlier, MemorySanitizer requires all code to be instrumented. The documentation describes how to instrument the Rust standard library using cargo build-std functionality.
 ...
 MemorySanitizer requires all program code to be instrumented. C/C++ dependencies need to be recompiled using Clang with -fsanitize=memory option. Failing to achieve that will result in false positive reports.</p>
 </blockquote>
 <p>(Remember kids: always search for already existing issues and scrim through the old comments!)</p>
-<p>I'm not going to do all that. It will be boring and very likely useless. Let's go with <code>sanitizer=address</code> instead.</p>
+<p>I&#x27;m not going to do all that. It will be boring and very likely useless. Let&#x27;s go with <code>sanitizer=address</code> instead.</p>
 <pre><code>$ RUSTFLAGS=&quot;-Z sanitizer=address&quot; cargo +nightly run
    Compiling autocfg v1.0.1
    Compiling unicode-width v0.1.8
@@ -315,9 +315,9 @@ MemorySanitizer requires all program code to be instrumented. C/C++ dependencies
      Running `target/debug/probe`
 </code></pre>
 <p>So far, so good.</p>
-<p>Well, it was obvious that the patient couldn't have a serious pathology, but what about something more complex?</p>
+<p>Well, it was obvious that the patient couldn&#x27;t have a serious pathology, but what about something more complex?</p>
 <p>I checked all examples we have with valgrind. Full log is <a href="https://gist.github.com/CreepySkeleton/a79d5fdfdf492f1e1efd32b1ccd9f709">here</a>. We see there are a number of leaks in there. But is that because they are actual leaks or because clap exits via the <code>exit</code> syscall?</p>
-<p>Oops, my time is up. I'll check next time.</p>
+<p>Oops, my time is up. I&#x27;ll check next time.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -332,7 +332,7 @@ MemorySanitizer requires all program code to be instrumented. C/C++ dependencies
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/lnicola">@lnicola</a> on 2020-10-25 19:58</div>
-            <div class="timeline-body"><p>&quot;Still reachable&quot; means that the memory is still reachable (allocated) at the end of the program. It could be a leak, but it's normal if you call <code>exit</code> and the advise is to clean up and exit early instead of trying to free every bit of memory you've allocated (which might even hit the swap).</p>
+            <div class="timeline-body"><p>&quot;Still reachable&quot; means that the memory is still reachable (allocated) at the end of the program. It could be a leak, but it&#x27;s normal if you call <code>exit</code> and the advise is to clean up and exit early instead of trying to free every bit of memory you&#x27;ve allocated (which might even hit the swap).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -342,12 +342,12 @@ MemorySanitizer requires all program code to be instrumented. C/C++ dependencies
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @pksunkara on 2020-10-25 20:00</div>
+            <div class="event">Closed by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-10-25 20:00</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:47:11 UTC
+        Synced at 2026-01-20 19:57:13 UTC
     </footer>
 </body>
 </html>

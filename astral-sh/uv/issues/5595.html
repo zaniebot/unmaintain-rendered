@@ -23,41 +23,32 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/RichardDRJ">@RichardDRJ</a></div>
-            <div class="timeline-body"><!--
-Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+            <div class="timeline-body">
 
-If you're filing a bug report, please consider including the following information:
-
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
-* The current uv platform.
-* The current uv version (`uv --version`).
--->
-
-<p>Hi, I'm trying to use <code>uv</code> with a private <code>simpleindex</code> server which will conditionally route requests for different packages to different upstream indices.</p>
+<p>Hi, I&#x27;m trying to use <code>uv</code> with a private <code>simpleindex</code> server which will conditionally route requests for different packages to different upstream indices.</p>
 <p>One of the upstream indices requires auth, which is defined in a <code>~/.netrc</code> file; when I try to connect directly to that index, <code>uv pip install</code> correctly picks up the defined credentials. However, when I try to connect to <code>simpleindex</code>, the server returns an HTTP 302, and then UV fails to pick up the defined credentials for the redirected host.</p>
 <p>Standard <code>pip</code> does correctly include credentials in requests triggered by a 302.</p>
 <p><strong>UV Platform</strong>: Ubuntu 20.04.6 LTS
 <strong>UV Version</strong>: 0.2.31</p>
-<h3>Expected flow</h3>
+Expected flow
 <ol>
 <li>UV makes a request to {{URL 1}}</li>
 <li>{{URL 1}} returns a 302 redirecting to {{URL 2}}</li>
 <li>UV makes a request to {{URL 2}} <em>with basic auth from <code>~/.netrc</code></em></li>
 </ol>
-<h3>Actual flow</h3>
+Actual flow
 <ol>
 <li>UV makes a request to {{URL 1}}</li>
 <li>{{URL 1}} returns a 302 redirecting to {{URL 2}}</li>
 <li>UV makes a request to {{URL 2}} <em>with no auth</em> (checked with mitmproxy that the auth header is not present)</li>
 </ol>
-<hr />
-<p>The command I'm running is:</p>
-<pre><code class="language-sh">env RUST_LOG=trace UV_INDEX_URL=&quot;http://127.0.0.1:8085/&quot; uv pip install --dry-run '{{ package in private index}}' --no-cache -vvv
+<hr>
+<p>The command I&#x27;m running is:</p>
+<pre><code>env RUST_LOG=trace UV_INDEX_URL=&quot;http://127.0.0.1:8085/&quot; uv pip install --dry-run &#x27;{{ package in private index}}&#x27; --no-cache -vvv
 </code></pre>
 <p>(where <code>http://127.0.0.1:8085/</code> is the <code>simpleindex</code> URL)</p>
-<details>
-<summary>Full trace output</summary>
+
+Full trace output
 
 <pre><code>    0.000030s DEBUG uv uv 0.2.31
  uv_requirements::specification::from_source source={{PACKAGE SPECIFIER}}
@@ -103,7 +94,7 @@ If you're filing a bug report, please consider including the following informati
           0.070240s   0ms TRACE hyper_util::client::legacy::pool checkout dropped for (&quot;http&quot;, 127.0.0.1:8085)
           0.098371s  28ms TRACE hyper_util::client::legacy::pool put; add idle connection for (&quot;http&quot;, 127.0.0.1:8085)
           0.098415s  28ms DEBUG hyper_util::client::legacy::pool pooling idle connection for (&quot;http&quot;, 127.0.0.1:8085)
-          0.098449s  28ms DEBUG reqwest::async_impl::client redirecting 'http://127.0.0.1:8085/{{PACKAGE NAME}}/' to 'https://{{PASSWORD PROTECTED UPSTREAM}}/{{PACKAGE NAME}}'
+          0.098449s  28ms DEBUG reqwest::async_impl::client redirecting &#x27;http://127.0.0.1:8085/{{PACKAGE NAME}}/&#x27; to &#x27;https://{{PASSWORD PROTECTED UPSTREAM}}/{{PACKAGE NAME}}&#x27;
           0.098479s  28ms TRACE hyper_util::client::legacy::pool checkout waiting for idle connection: (&quot;https&quot;, {{PASSWORD PROTECTED UPSTREAM}})
           0.098491s  28ms DEBUG reqwest::connect starting new connection: https://{{PASSWORD PROTECTED UPSTREAM}}/
           0.098514s  28ms TRACE hyper_util::client::legacy::connect::http Http::connect; scheme=Some(&quot;https&quot;), host=Some(&quot;{{PASSWORD PROTECTED UPSTREAM}}&quot;), port=None
@@ -128,17 +119,17 @@ If you're filing a bug report, please consider including the following informati
   ╰─▶ Because {{PACKAGE NAME}} was not found in the package registry and you require
       {{PACKAGE SPECIFIER}}, we can conclude that the requirements are unsatisfiable.
 </code></pre>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-30 12:18</div>
-            <div class="timeline-body"><p>I think @zanieb will know what's going on here when they're back.</p>
+            <div class="timeline-body"><p>I think @zanieb will know what&#x27;s going on here when they&#x27;re back.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">network</span> added by @charliermarsh on 2024-07-30 12:18</div>
+            <div class="event">Label <span class="label">network</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-30 12:18</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-30 17:00</div>
@@ -149,14 +140,14 @@ If you're filing a bug report, please consider including the following informati
 <li>uv makes a request to {{URL 1}} with found credentials</li>
 <li>{{URL 1}} is not redirected anymore</li>
 </ol>
-<p>If this is possible, we can't always use the response URL for credential lookups. I guess we'd need to try both?</p>
+<p>If this is possible, we can&#x27;t always use the response URL for credential lookups. I guess we&#x27;d need to try both?</p>
 <p>Just to clarify, the current behavior is:</p>
 <ol>
 <li>uv makes an unauthenticated request to {{URL 1}}</li>
 <li>{{URL 1}} returns a 302 redirecting to {{URL 2}}</li>
 <li>The request fails, uv looks for credentials for {{URL 1}} and does not find them</li>
 </ol>
-<p>Currently, we don't follow redirects during request retries i.e. we request the first URL again.</p>
+<p>Currently, we don&#x27;t follow redirects during request retries i.e. we request the first URL again.</p>
 <p>Should the expected behavior be:</p>
 <ol>
 <li>uv makes an unauthenticated request to {{URL 1}}</li>
@@ -178,7 +169,7 @@ If you're filing a bug report, please consider including the following informati
 <li>uv makes an unauthenticated request to {{URL 1}}</li>
 <li>{{URL 1}} returns a 302 redirecting to {{URL 2}}</li>
 <li>The request fails</li>
-<li>uv looks for credentials for {{URL 1}} and doesn't find them</li>
+<li>uv looks for credentials for {{URL 1}} and doesn&#x27;t find them</li>
 <li>uv looks for credentials for {{URL 2}} and finds them</li>
 <li>uv makes an authenticated request to {{URL 2}}</li>
 </ol>
@@ -193,10 +184,10 @@ If you're filing a bug report, please consider including the following informati
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @zanieb by @zanieb on 2024-07-30 17:00</div>
+            <div class="event">Assigned to <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-30 17:00</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-design</span> added by @zanieb on 2024-07-30 17:00</div>
+            <div class="event">Label <span class="label">needs-design</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-30 17:00</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/RichardDRJ">@RichardDRJ</a> on 2024-07-31 09:18</div>
@@ -204,7 +195,7 @@ If you're filing a bug report, please consider including the following informati
 <blockquote>
 <p>Can a 302 occur conditionally on the presence of authentication?</p>
 </blockquote>
-<p>This is a good question - it's not applicable to my specific usecase, but I think it's a possibility. For example, maybe an unauthenticated request to a given repository for a package redirects to public pypi, so if you're authenticated you see pre-release versions? Seems very niche though.</p>
+<p>This is a good question - it&#x27;s not applicable to my specific usecase, but I think it&#x27;s a possibility. For example, maybe an unauthenticated request to a given repository for a package redirects to public pypi, so if you&#x27;re authenticated you see pre-release versions? Seems very niche though.</p>
 <p>In my view, the expected behaviour should be a variant of this:</p>
 <blockquote>
 <ol>
@@ -215,7 +206,7 @@ If you're filing a bug report, please consider including the following informati
 <li>uv makes an authenticated request to {{URL 2}}</li>
 </ol>
 </blockquote>
-<p>... where in step (2), any auth details are added to the redirected request <em>before</em> {{URL 2}} is called the first time - in other words, steps (4) and (5) are done before any request is made to {{URL 2}}, and so (3) doesn't happen in the happy path. So that behaviour becomes:</p>
+<p>... where in step (2), any auth details are added to the redirected request <em>before</em> {{URL 2}} is called the first time - in other words, steps (4) and (5) are done before any request is made to {{URL 2}}, and so (3) doesn&#x27;t happen in the happy path. So that behaviour becomes:</p>
 <ol>
 <li>uv makes an unauthenticated request to {{URL 1}}</li>
 <li>{{URL 1}} returns a 302 pointing to {{URL 2}} &lt;--- At this point, no request is made to {{URL 2}}</li>
@@ -223,8 +214,8 @@ If you're filing a bug report, please consider including the following informati
 <li>uv makes an authenticated request to {{URL 2}}</li>
 </ol>
 <p>This appears to be what Pip does (using requests under the hood) - within <a href="https://github.com/pypa/pip/blob/8c7df92eca1d927bb441a6b15e92966ee553aca9/src/pip/_vendor/requests/sessions.py#L159">SessionRedirectMixin.resolve_redirects()</a>, it calls <a href="https://github.com/pypa/pip/blob/8c7df92eca1d927bb441a6b15e92966ee553aca9/src/pip/_vendor/requests/sessions.py#L246">rebuildAuth()</a>, which strips any auth from the request on redirect to a new host, and then checks in <code>.netrc</code> to see if auth is configured for the new host.</p>
-<p>In the error case, if the request to {{URL 2}} fails, I think it's then still fine to retry the request to {{URL 1}} (and follow the same redirect logic if it's valid). I could see there being scope for handling a 401 or 403 in a request chain slightly differently (i.e. looking for credentials again), but with the above where we look for credentials before making the {{URL 2}} request in the first place, I'd expect that to be less of a concern.</p>
-<hr />
+<p>In the error case, if the request to {{URL 2}} fails, I think it&#x27;s then still fine to retry the request to {{URL 1}} (and follow the same redirect logic if it&#x27;s valid). I could see there being scope for handling a 401 or 403 in a request chain slightly differently (i.e. looking for credentials again), but with the above where we look for credentials before making the {{URL 2}} request in the first place, I&#x27;d expect that to be less of a concern.</p>
+<hr>
 <p>As far as I can tell a more granular version of the current flow is:</p>
 <ol>
 <li>uv tells reqwest to make a request to {{URL 1}}</li>
@@ -233,23 +224,23 @@ If you're filing a bug report, please consider including the following informati
 <li>{{URL 1}} returns a 302 pointing to {{URL 2}}</li>
 <li>reqwest makes a request to {{URL 2}}</li>
 </ol>
-<p>(Worth caveating this by saying I've not got much Rust experience, so my digging is based on what I could find briefly yesterday and I may well be missing something)</p>
-<p>Crucially, between points (4) and (5), reqwest-middleware doesn't call the auth middleware again to add auth to the request to {{URL 2}} - I'm wondering whether this is something it can be convinced to do (although couldn't see anything obvious in either reqwest or reqwest-middleware to allow this).</p>
+<p>(Worth caveating this by saying I&#x27;ve not got much Rust experience, so my digging is based on what I could find briefly yesterday and I may well be missing something)</p>
+<p>Crucially, between points (4) and (5), reqwest-middleware doesn&#x27;t call the auth middleware again to add auth to the request to {{URL 2}} - I&#x27;m wondering whether this is something it can be convinced to do (although couldn&#x27;t see anything obvious in either reqwest or reqwest-middleware to allow this).</p>
 <p>Failing that, I wonder whether the 302-handling logic can be hoisted up into uv itself by adding <code>.policy(redirect::Policy::none())</code> to the client builder. In this case, the 302 would, as far as I can tell (<a href="https://docs.rs/reqwest/latest/src/reqwest/redirect.rs.html#137">link1</a>, <a href="https://docs.rs/reqwest/latest/reqwest/redirect/struct.Attempt.html#method.stop">link2</a>), be returned as the <code>Ok</code> result, allowing uv to handle it directly.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @jtfmumm by @jtfmumm on 2025-04-15 07:58</div>
+            <div class="event">Assigned to <a href="https://github.com/jtfmumm">@jtfmumm</a> by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-04-15 07:58</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Unassigned @zanieb by @jtfmumm on 2025-04-15 07:58</div>
+            <div class="event">Unassigned <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-04-15 07:58</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @jtfmumm on 2025-04-18 12:56</div>
+            <div class="event">Closed by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-04-18 12:56</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-01 18:27</div>
-            <div class="timeline-body"><p>We've reverted the fix here, and will now track this in https://github.com/astral-sh/uv/issues/13255</p>
+            <div class="timeline-body"><p>We&#x27;ve reverted the fix here, and will now track this in <a href="https://github.com/astral-sh/uv/issues/13255">astral-sh/uv#13255</a></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -263,7 +254,7 @@ If you're filing a bug report, please consider including the following informati
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:25:50 UTC
+        Synced at 2026-01-20 19:32:21 UTC
     </footer>
 </body>
 </html>

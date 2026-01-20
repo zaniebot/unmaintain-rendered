@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AndreuCodina">@AndreuCodina</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<p><code>ty</code> can't detect a parameter declared in the docstring. In the next code, <code>model</code> isn't detected as a valid parameter:</p>
-<pre><code class="language-python"># python: &quot;&gt;=3.12&quot;
+            <div class="timeline-body">Summary
+<p><code>ty</code> can&#x27;t detect a parameter declared in the docstring. In the next code, <code>model</code> isn&#x27;t detected as a valid parameter:</p>
+<pre><code># python: &quot;&gt;=3.12&quot;
 # &quot;ty==0.0.1a20&quot;
 # &quot;pydantic==2.11.7&quot;
 # &quot;langchain-openai==0.3.32&quot;
@@ -45,50 +45,50 @@ def main() -&gt; None:
 if __name__ == &quot;__main__&quot;:
     main()
 </code></pre>
-<h3>Version</h3>
+Version
 <p><em>No response</em></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-09 17:41</div>
-            <div class="timeline-body"><p>The issue here is not related to docstrings. The problem is that we don't yet support custom dataclass-transform field-specifier class/functions (and specifically their <code>alias</code> parameter). The langchain model has a field <code>model_name: str = Field(..., alias=&quot;model&quot;)</code> and a field <code>openai_api_key: Optional[SecretStr] = Field(..., alias=&quot;api_key&quot;)</code>, and we should understand that therefore <code>model</code> and <code>api_key</code> are valid constructor arguments.</p>
-<p>Closing this as a duplicate of https://github.com/astral-sh/ty/issues/1068</p>
+            <div class="timeline-body"><p>The issue here is not related to docstrings. The problem is that we don&#x27;t yet support custom dataclass-transform field-specifier class/functions (and specifically their <code>alias</code> parameter). The langchain model has a field <code>model_name: str = Field(..., alias=&quot;model&quot;)</code> and a field <code>openai_api_key: Optional[SecretStr] = Field(..., alias=&quot;api_key&quot;)</code>, and we should understand that therefore <code>model</code> and <code>api_key</code> are valid constructor arguments.</p>
+<p>Closing this as a duplicate of <a href="https://github.com/astral-sh/ty/issues/1068">astral-sh/ty#1068</a></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2025-09-09 17:41</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2025-09-09 17:41</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @sharkdp on 2025-12-03 10:27</div>
+            <div class="event">Reopened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-03 10:27</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-03 10:41</div>
-            <div class="timeline-body"><p>I looked into this again today. https://github.com/astral-sh/ruff/pull/20961 added support for <code>alias</code>, but we still error on the original example here.</p>
+            <div class="timeline-body"><p>I looked into this again today. <a href="https://github.com/astral-sh/ruff/pull/20961">astral-sh/ruff#20961</a> added support for <code>alias</code>, but we still error on the original example here.</p>
 <p>The problem seems to be that the <code>Field</code> call in</p>
-<pre><code class="language-py">class BaseChatOpenAI(BaseChatModel):
+<pre><code>class BaseChatOpenAI(BaseChatModel):
     # […]
     model_name: str = Field(default=&quot;gpt-3.5-turbo&quot;, alias=&quot;model&quot;)
 </code></pre>
-<p>is resolved to <code>Unknown</code>, whereas it should <a href="https://github.com/pydantic/pydantic/blob/bc15b36967e75bfc3aa88b5fb7982076c2133dba/pydantic/fields.py#L1008-L1049">pick this overload of <code>Field</code></a>. I noticed that everything works as expected if I remove <a href="https://github.com/pydantic/pydantic/blob/bc15b36967e75bfc3aa88b5fb7982076c2133dba/pydantic/fields.py#L1133-L1171">this fallback overload</a> which doesn't even accept a <code>default</code> argument. It does, however, <em>seem</em> to accept extra keyword arguments. It has a <code>**extra: Unpack[_EmptyKwargs]</code> parameter where <code>_EmptyKwargs</code> is an empty <code>TypedDict</code>.</p>
-<p>So it looks to me like this is blocked on <code>Unpack</code> support? (#156 mentions it, but I'm not sure if that is only supposed to track <code>Unpack</code> for <code>TypeVarTuple</code>?)</p>
+<p>is resolved to <code>Unknown</code>, whereas it should <a href="https://github.com/pydantic/pydantic/blob/bc15b36967e75bfc3aa88b5fb7982076c2133dba/pydantic/fields.py#L1008-L1049">pick this overload of <code>Field</code></a>. I noticed that everything works as expected if I remove <a href="https://github.com/pydantic/pydantic/blob/bc15b36967e75bfc3aa88b5fb7982076c2133dba/pydantic/fields.py#L1133-L1171">this fallback overload</a> which doesn&#x27;t even accept a <code>default</code> argument. It does, however, <em>seem</em> to accept extra keyword arguments. It has a <code>**extra: Unpack[_EmptyKwargs]</code> parameter where <code>_EmptyKwargs</code> is an empty <code>TypedDict</code>.</p>
+<p>So it looks to me like this is blocked on <code>Unpack</code> support? (#156 mentions it, but I&#x27;m not sure if that is only supposed to track <code>Unpack</code> for <code>TypeVarTuple</code>?)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2025-12-03 10:41</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-03 10:41</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">overloads</span> added by @sharkdp on 2025-12-03 10:41</div>
+            <div class="event">Label <span class="label">overloads</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-03 10:41</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Stable" by @sharkdp on 2025-12-03 10:41</div>
+            <div class="event">Added to milestone &quot;Stable&quot; by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-03 10:41</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Detect parameter type in docstring" to "Correctly handle overloads of `pydantic.Field`" by @carljm on 2025-12-03 19:47</div>
+            <div class="event">Renamed from &quot;Detect parameter type in docstring&quot; to &quot;Correctly handle overloads of `pydantic.Field`&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-12-03 19:47</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:36 UTC
+        Synced at 2026-01-20 19:25:29 UTC
     </footer>
 </body>
 </html>

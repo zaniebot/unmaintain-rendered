@@ -41,21 +41,21 @@
 </ul>
 <p>.</p>
 <ul>
-<li><p>What happens in Rye is that it doesn't matter what virtualenv is active and so on, <code>foo</code> is executed in its project context with its own virtualenv. <code>bar</code> is executed the same way, with its own virtualenv.</p>
+<li><p>What happens in Rye is that it doesn&#x27;t matter what virtualenv is active and so on, <code>foo</code> is executed in its project context with its own virtualenv. <code>bar</code> is executed the same way, with its own virtualenv.</p>
 </li>
 <li><p>What happens in Uv is that <code>bar</code> is executed in a python environment that &quot;layers&quot; on top of <code>foo</code>. So what the python program in bar sees is that it can use a mix of packages from both foo and bar.</p>
 </li>
 </ul>
-<p>There's a different case for <code>uv run --with</code>, then we have:</p>
+<p>There&#x27;s a different case for <code>uv run --with</code>, then we have:</p>
 <ul>
 <li>base project environment .venv<ul>
-<li>uv run --with's ephemeral environment</li>
+<li>uv run --with&#x27;s ephemeral environment</li>
 </ul>
 </li>
 </ul>
 <p>In this case the two environments also layer each other. I thought that was kind of cool, in this case. But not in the original case.</p>
 <p>I think this strict project focus and separation is an important selling point of rye. It makes more robust applications possible.</p>
-<p>I don't know why this happens, but one difference I can notice when comparing rye run python and uv run python in the same project, is that only uv sets PYTHONPATH.</p>
+<p>I don&#x27;t know why this happens, but one difference I can notice when comparing rye run python and uv run python in the same project, is that only uv sets PYTHONPATH.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -63,7 +63,7 @@
             <div class="timeline-body"><blockquote>
 <p>What happens in Uv is that bar is executed in a python environment that &quot;layers&quot; on top of foo. So what the python program in bar sees is that it can use a mix of packages from both foo and bar.</p>
 </blockquote>
-<p>Hmm, I don't think it's intentional that <code>uv run bar</code> (is that being run from within <code>bar</code>?) is layered on top of <code>foo</code>. We should only be layering when <code>--with</code> is provided. Can you add an MRE?</p>
+<p>Hmm, I don&#x27;t think it&#x27;s intentional that <code>uv run bar</code> (is that being run from within <code>bar</code>?) is layered on top of <code>foo</code>. We should only be layering when <code>--with</code> is provided. Can you add an MRE?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -74,8 +74,8 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-07-25 19:45</div>
-            <div class="timeline-body"><p>I would consider dropping setting PYTHONPATH entirely in uv run - (if this should be fixed! Don't know that..)</p>
-<p>Nesting can possibly be done right using a <a href="https://docs.python.org/3/library/site.html">path file</a> when using ephemeral environments? I don't have experience with that, but it sounds right - I don't know what's been attempted already(!)</p>
+            <div class="timeline-body"><p>I would consider dropping setting PYTHONPATH entirely in uv run - (if this should be fixed! Don&#x27;t know that..)</p>
+<p>Nesting can possibly be done right using a <a href="https://docs.python.org/3/library/site.html">path file</a> when using ephemeral environments? I don&#x27;t have experience with that, but it sounds right - I don&#x27;t know what&#x27;s been attempted already(!)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -91,14 +91,14 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-07-25 21:06</div>
             <div class="timeline-body"><p>PYTHONPATH seems to be the factor that causes this.</p>
-<p>PYTHONPATH shouldn't need to be set for using a virtual environment in the normal way. I can see why the environment layering (base project + ephemeral) would reach for using it, however, but maybe that can be avoided too. (I'm sure someone somewhere in history has lost a lot of time to virtual environment chaining and I haven't and don't know what works well..)</p>
+<p>PYTHONPATH shouldn&#x27;t need to be set for using a virtual environment in the normal way. I can see why the environment layering (base project + ephemeral) would reach for using it, however, but maybe that can be avoided too. (I&#x27;m sure someone somewhere in history has lost a lot of time to virtual environment chaining and I haven&#x27;t and don&#x27;t know what works well..)</p>
 <p>One can compare uv vs rye sys.path outcomes and notice that PYTHONPATH usage also moves the venv site-packages to be earlier than stdlib for uv, while it is not for rye. Does this mean that execution of a program - if it depends on shadowing one way or the other - could be subtly different for uv run thescript and .venv/bin/thescript?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-25 21:10</div>
             <div class="timeline-body"><p>Yeah, but we can fix the proximate issue by not &quot;propagating&quot; <code>PYTHONPATH</code> through nested calls:</p>
-<pre><code class="language-diff">diff --git a/crates/uv/src/commands/project/run.rs b/crates/uv/src/commands/project/run.rs
+<pre><code>diff --git a/crates/uv/src/commands/project/run.rs b/crates/uv/src/commands/project/run.rs
 index 34348a8f0..97f8153d1 100644
 --- a/crates/uv/src/commands/project/run.rs
 +++ b/crates/uv/src/commands/project/run.rs
@@ -134,15 +134,15 @@ index 34348a8f0..97f8153d1 100644
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-07-25 21:47</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-25 21:47</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-25 21:47</div>
-            <div class="timeline-body"><p>I talked to @carljm and he walked me through how we might do it with <code>sitecustomize.py</code>, so I'll give that a shot.</p>
+            <div class="timeline-body"><p>I talked to @carljm and he walked me through how we might do it with <code>sitecustomize.py</code>, so I&#x27;ll give that a shot.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-07-25 21:47</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-25 21:47</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-07-25 23:30</div>
@@ -150,15 +150,15 @@ index 34348a8f0..97f8153d1 100644
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-07-25 23:32</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-25 23:32</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-07-25 23:32</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-25 23:32</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:25:46 UTC
+        Synced at 2026-01-20 19:32:16 UTC
     </footer>
 </body>
 </html>

@@ -30,12 +30,12 @@
 <li>Python 3.12.4</li>
 </ul>
 <p><strong>UV Version:</strong>  <code>uv 0.4.25 (97eb6ab4a 2024-10-21)</code></p>
-<p>This isn't <em>exactly</em> a UV bug, but to handle UNC paths the <code>activate.ps1</code> script needs to change how it resolves the path.</p>
-<h2>The Issue</h2>
+<p>This isn&#x27;t <em>exactly</em> a UV bug, but to handle UNC paths the <code>activate.ps1</code> script needs to change how it resolves the path.</p>
+The Issue
 <p>Currently the script is using <code>Resolve-Path</code> which returns a <code>PathInfo</code> object, and passing that to <code>Split-Path</code>, causing it to be cast to a string. For whatever reason the cast contains the <code> Microsoft.PowerShell.Core\FileSystem::</code> provider information when resolving a UNC path, and Split-Path chokes on it.</p>
-<h3>Test script</h3>
+Test script
 <p>This is just to show the behavior without running the full activate script.</p>
-<pre><code class="language-test.ps1">$script:THIS_PATH = $myinvocation.mycommand.path
+<pre><code>$script:THIS_PATH = $myinvocation.mycommand.path
 $script:BASE_DIR = Split-Path (Resolve-Path &quot;$THIS_PATH/..&quot;).ProviderPath -Parent
 
 $script:ALT_BASE_DIR_1 = Split-Path (Resolve-Path &quot;$THIS_PATH/..&quot;).ProviderPath -Parent
@@ -50,7 +50,7 @@ Write-Host &quot;Alternate  Alternate Base Directory: $ALT_BASE_DIR_2&quot;
 
 </code></pre>
 <p>Running the script with sanitized paths:</p>
-<pre><code class="language-run-test.ps1"># Run Local to machine
+<pre><code># Run Local to machine
 PS &gt; D:\python\test\.venv\Scripts\test.ps1
 Base Directory: D:\python\test\.venv
 Alternate Base Directory: D:\python\test\.venv
@@ -63,25 +63,25 @@ Alternate Base Directory: \\storage.my.company.net\network_share\test-venv\.venv
 Alternate Alternate Base Directory: \\storage.my.company.net\network_share\test-venv\.venv
 
 </code></pre>
-<h2>Fixes</h2>
-<h3>Option 1:</h3>
+Fixes
+Option 1:
 <p>Just specify you want the <code>.ProviderPath</code> like this:</p>
-<pre><code class="language-option-1.ps1">$script:THIS_PATH = $myinvocation.mycommand.path
+<pre><code>$script:THIS_PATH = $myinvocation.mycommand.path
 $script:ALT_BASE_DIR_1 = Split-Path (Resolve-Path &quot;$THIS_PATH/..&quot;).ProviderPath -Parent
 </code></pre>
-<h3>Option 2:</h3>
+Option 2:
 <blockquote>
 <p>My personal pick</p>
 </blockquote>
-<p>Get the <code>[FileInfo]</code> object for the script file, and use it's properties like so:</p>
-<pre><code class="language-option-2.ps1">$script:CURRENT_FILE = Get-Item $myinvocation.mycommand.path
+<p>Get the <code>[FileInfo]</code> object for the script file, and use it&#x27;s properties like so:</p>
+<pre><code>$script:CURRENT_FILE = Get-Item $myinvocation.mycommand.path
 $script:ALT_BASE_DIR_2 = $CURRENT_FILE.Directory.Parent.FullName
 
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "uv venv: Activate.ps1 script can set an invalid base directory when using UNC paths." to "uv venv: Activate.ps1 script sets an invalid base directory when using UNC paths." by @NucaChance on 2024-11-12 14:51</div>
+            <div class="event">Renamed from &quot;uv venv: Activate.ps1 script can set an invalid base directory when using UNC paths.&quot; to &quot;uv venv: Activate.ps1 script sets an invalid base directory when using UNC paths.&quot; by <a href="https://github.com/NucaChance">@NucaChance</a> on 2024-11-12 14:51</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/NucaChance">@NucaChance</a> on 2025-10-02 15:24</div>
@@ -89,12 +89,12 @@ $script:ALT_BASE_DIR_2 = $CURRENT_FILE.Directory.Parent.FullName
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @NucaChance on 2025-10-02 15:24</div>
+            <div class="event">Closed by <a href="https://github.com/NucaChance">@NucaChance</a> on 2025-10-02 15:24</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:27:51 UTC
+        Synced at 2026-01-20 19:34:56 UTC
     </footer>
 </body>
 </html>

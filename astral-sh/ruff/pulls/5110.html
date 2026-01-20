@@ -23,21 +23,21 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>At present, when we store a binding, we include a <code>TextRange</code> alongside it. The <code>TextRange</code> <em>sometimes</em> matches the exact range of the identifier to which the <code>Binding</code> is linked, but... not always.</p>
 <p>For example, given:</p>
-<pre><code class="language-python">x = 1
+<pre><code>x = 1
 </code></pre>
 <p>The binding we create <em>will</em> use the range of <code>x</code>, because the left-hand side is an <code>Expr::Name</code>, which has a valid range on it.</p>
 <p>However, given:</p>
-<pre><code class="language-python">try:
+<pre><code>try:
   pass
 except ValueError as e:
   pass
 </code></pre>
-<p>When we create a binding for <code>e</code>, we don't have a <code>TextRange</code>... The AST doesn't give us one. So we end up extracting it via lexing.</p>
+<p>When we create a binding for <code>e</code>, we don&#x27;t have a <code>TextRange</code>... The AST doesn&#x27;t give us one. So we end up extracting it via lexing.</p>
 <p>This PR extends that pattern to the rest of the binding kinds, to ensure that whenever we create a binding, we always use the range of the bound name. This leads to better diagnostics in cases like pattern matching, whereby the diagnostic for &quot;unused variable <code>x</code>&quot; here used to include <code>*x</code>, instead of just <code>x</code>:</p>
-<pre><code class="language-python">def f(provided: int) -&gt; int:
+<pre><code>def f(provided: int) -&gt; int:
     match provided:
         case [_, *x]:
             pass
@@ -45,9 +45,9 @@ except ValueError as e:
 <p>This is <em>also</em> required for symbol renames, since we track writes as bindings -- so we need to know the ranges of the bound symbols.</p>
 <p>By storing these bindings precisely, we can also remove the <code>binding.trimmed_range</code> abstraction -- since bindings already use the &quot;trimmed range&quot;.</p>
 <p>To implement this behavior, I took some of our existing utilities (like the code we had for <code>except ValueError as e</code> above), migrated them from a full lexer to a zero-allocation lexer that <em>only</em> identifies &quot;identifiers&quot;, and moved the behavior into a trait, so we can now do <code>stmt.identifier(locator)</code> to get the range for the identifier.</p>
-<p>Honestly, we might end up discarding much of this if we decide to put ranges on all identifiers (https://github.com/astral-sh/RustPython-Parser/pull/8). But even if we do, this will <em>still</em> be a good change, because the lexer introduced here is useful beyond names (e.g., we use it find the <code>except</code> keyword in an exception handler, to find the <code>else</code> after a <code>for</code> loop, and so on). So, I'm fine committing this even if we end up changing our minds about the right approach.</p>
+<p>Honestly, we might end up discarding much of this if we decide to put ranges on all identifiers (<a href="https://github.com/astral-sh/RustPython-Parser/pull/8">astral-sh/RustPython-Parser#8</a>). But even if we do, this will <em>still</em> be a good change, because the lexer introduced here is useful beyond names (e.g., we use it find the <code>except</code> keyword in an exception handler, to find the <code>else</code> after a <code>for</code> loop, and so on). So, I&#x27;m fine committing this even if we end up changing our minds about the right approach.</p>
 <p>Closes #5090.</p>
-<h2>Benchmarks</h2>
+Benchmarks
 <p>No significant change, with one statistically significant improvement (-2.1654% on <code>linter/all-rules/large/dataset.py</code>):</p>
 <pre><code>linter/default-rules/numpy/globals.py
                         time:   [73.922 µs 73.955 µs 73.986 µs]
@@ -141,13 +141,13 @@ Found 2 outliers among 100 measurements (2.00%)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-06-15 04:31</div>
-            <div class="timeline-body"><h2>PR Check Results</h2>
-<h3>Ecosystem</h3>
+            <div class="timeline-body">PR Check Results
+Ecosystem
 <p>ℹ️ ecosystem check <strong>detected changes</strong>. (+12, -12, 0 error(s))</p>
-<details><summary>airflow (+11, -11)</summary>
+airflow (+11, -11)
 <p>
 
-<pre><code class="language-diff">- airflow/callbacks/pipe_callback_sink.py:20:40: TCH003 [*] Move standard library import `multiprocessing.connection.Connection` into a type-checking block
+<pre><code>- airflow/callbacks/pipe_callback_sink.py:20:40: TCH003 [*] Move standard library import `multiprocessing.connection.Connection` into a type-checking block
 + airflow/callbacks/pipe_callback_sink.py:20:54: TCH003 [*] Move standard library import `multiprocessing.connection.Connection` into a type-checking block
 - airflow/dag_processing/manager.py:36:40: TCH003 [*] Move standard library import `multiprocessing.connection.Connection` into a type-checking block
 + airflow/dag_processing/manager.py:36:54: TCH003 [*] Move standard library import `multiprocessing.connection.Connection` into a type-checking block
@@ -171,15 +171,15 @@ Found 2 outliers among 100 measurements (2.00%)
 + airflow/serialization/serialized_objects.py:74:49: TCH004 [*] Move import `kubernetes.client.models` out of type-checking block. Import is used for more than type hinting.
 </code></pre>
 </p>
-</details>
-<details><summary>bokeh (+1, -1)</summary>
+
+bokeh (+1, -1)
 <p>
 
-<pre><code class="language-diff">+ src/bokeh/plotting/_figure.py:25:17: TCH002 [*] Move third-party import `numpy` into a type-checking block
+<pre><code>+ src/bokeh/plotting/_figure.py:25:17: TCH002 [*] Move third-party import `numpy` into a type-checking block
 - src/bokeh/plotting/_figure.py:25:8: TCH002 [*] Move third-party import `numpy` into a type-checking block
 </code></pre>
 </p>
-</details>
+
 Rules changed: 4
 
 <p>| Rule | Changes | Additions | Removals |
@@ -188,8 +188,8 @@ Rules changed: 4
 | TCH003 | 6 | 3 | 3 |
 | TCH001 | 2 | 1 | 1 |
 | TCH004 | 2 | 1 | 1 |</p>
-<h3>Benchmark</h3>
-<h4>Linux</h4>
+Benchmark
+Linux
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 formatter/large/dataset.py                 1.01      6.3±0.04ms     6.4 MB/sec    1.00      6.3±0.03ms     6.5 MB/sec
@@ -205,7 +205,7 @@ linter/default-rules/numpy/ctypeslib.py    1.01   1431.3±3.52µs    11.6 MB/sec
 linter/default-rules/numpy/globals.py      1.02    160.6±0.26µs    18.4 MB/sec    1.00    158.0±0.81µs    18.7 MB/sec
 linter/default-rules/pydantic/types.py     1.00      3.0±0.02ms     8.5 MB/sec    1.00      3.0±0.02ms     8.5 MB/sec
 </code></pre>
-<h4>Windows</h4>
+Windows
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 formatter/large/dataset.py                 1.00      7.8±0.06ms     5.2 MB/sec    1.10      8.5±0.02ms     4.8 MB/sec
@@ -221,15 +221,15 @@ linter/default-rules/numpy/ctypeslib.py    1.00   1716.7±6.48µs     9.7 MB/sec
 linter/default-rules/numpy/globals.py      1.00    185.2±1.16µs    15.9 MB/sec    1.01    186.5±0.86µs    15.8 MB/sec
 linter/default-rules/pydantic/types.py     1.00      3.7±0.01ms     6.8 MB/sec    1.00      3.8±0.01ms     6.8 MB/sec
 </code></pre>
-<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-06-15 04:39</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-15 04:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @konstin by @charliermarsh on 2023-06-15 04:39</div>
+            <div class="event">Review requested from <a href="https://github.com/konstin">@konstin</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-15 04:39</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-15 04:39</div>
@@ -237,36 +237,36 @@ linter/default-rules/pydantic/types.py     1.00      3.7±0.01ms     6.8 MB/sec 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/identifier.rs</code>:17 on 2023-06-15 04:39</div>
-            <div class="timeline-body"><p>This file got collapsed, but it's really the one that needs to be reviewed. Most of the rest is just API migration.</p>
+            <div class="timeline-body"><p>This file got collapsed, but it&#x27;s really the one that needs to be reviewed. Most of the rest is just API migration.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_ast/src/helpers.rs</code>:1377 on 2023-06-15 09:09</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">                        // e.g. `list()`
+            <div class="timeline-body"><pre><code>                        // e.g. `list()`
                         if args.is_empty() &amp;&amp; keywords.is_empty() {
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_ast/src/helpers.rs</code>:1380 on 2023-06-15 09:11</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">                        // Truthiness depends on the inner iterable, e.g. `list({})` (falsey) or `list([1, 2, 3])` (truthy)
+            <div class="timeline-body"><pre><code>                        // Truthiness depends on the inner iterable, e.g. `list({})` (falsey) or `list([1, 2, 3])` (truthy)
                         } else if args.len() == 1 &amp;&amp; keywords.is_empty() {
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_ast/src/identifier.rs</code>:192 on 2023-06-15 09:23</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">                // From https://docs.python.org/3/reference/compound_stmts.html#grammar-token-python-grammar-mapping_pattern
+            <div class="timeline-body"><pre><code>                // From https://docs.python.org/3/reference/compound_stmts.html#grammar-token-python-grammar-mapping_pattern
                 // &gt; At most one double star pattern may be in a mapping pattern.
                 // &gt; The double star pattern must be the last subpattern in the mapping pattern.
                 if let Some(pattern) = patterns.last() {
 </code></pre>
-<p>You might want to change the exact comment, but i expect many readers won't be familiar with what exactly the  <code>PatternMatchMapping</code> node entails</p>
+<p>You might want to change the exact comment, but i expect many readers won&#x27;t be familiar with what exactly the  <code>PatternMatchMapping</code> node entails</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_ast/src/identifier.rs</code>:244 on 2023-06-15 09:24</div>
-            <div class="timeline-body"><p>What if it's just <code>expect ValueError</code> without a name?</p>
+            <div class="timeline-body"><p>What if it&#x27;s just <code>expect ValueError</code> without a name?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -312,7 +312,7 @@ linter/default-rules/pydantic/types.py     1.00      3.7±0.01ms     6.8 MB/sec 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/identifier.rs</code>:426 on 2023-06-15 16:48</div>
-            <div class="timeline-body"><p>This is consistent with how Micha designed it in the <code>trivia.rs</code> (from which this is derived), so I'm just gonna leave it for now.</p>
+            <div class="timeline-body"><p>This is consistent with how Micha designed it in the <code>trivia.rs</code> (from which this is derived), so I&#x27;m just gonna leave it for now.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -321,14 +321,14 @@ linter/default-rules/pydantic/types.py     1.00      3.7±0.01ms     6.8 MB/sec 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_ast/src/identifier.rs</code>:382 on 2023-06-15 17:15</div>
-            <div class="timeline-body"><p>yep that's what i meant but didn't have the right term</p>
+            <div class="timeline-body"><p>yep that&#x27;s what i meant but didn&#x27;t have the right term</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2023-06-15 18:43</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-15 18:43</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-06-15 18:43</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-15 18:43</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2023-06-15 18:43</div>
@@ -336,7 +336,7 @@ linter/default-rules/pydantic/types.py     1.00      3.7±0.01ms     6.8 MB/sec 
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:58:05 UTC
+        Synced at 2026-01-20 18:54:31 UTC
     </footer>
 </body>
 </html>

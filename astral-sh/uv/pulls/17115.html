@@ -23,11 +23,11 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/EliteTK">@EliteTK</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Partially address #16859 by falling back to simply creating the lock file and then attempting to apply permissions in cases where the temporary lockfile cannot be renamed without overwriting (persist_noclobber) due to lack of underlying support from the filesystem.</p>
-<p>I've also improved the error handling, but I think the <code>as_io_error</code> thing isn't a good idea[^1]. Something for another PR though.</p>
+<p>I&#x27;ve also improved the error handling, but I think the <code>as_io_error</code> thing isn&#x27;t a good idea[^1]. Something for another PR though.</p>
 <p>Assuming the error handling PR came first, the error from the issue would look like:</p>
-<pre><code class="language-bash">$ uv init --bare --cache-dir build/uv/cache -v
+<pre><code>$ uv init --bare --cache-dir build/uv/cache -v
 DEBUG uv 0.9.17+29 (9f1640aa7 2025-12-12)
 error: Could not acquire lock
   Caused by: Could not open or create lock file at `build/uv/cache/.lock`
@@ -35,9 +35,9 @@ error: Could not acquire lock
   Caused by: Operation not supported (os error 45)
 </code></pre>
 <p>I think this is more helpful.</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>Manually on MacOS with an ExFAT partition.</p>
-<pre><code class="language-bash">$ hdiutil create -size 1g -fs ExFAT -volname EXFATDISK exfat.dmg
+<pre><code>$ hdiutil create -size 1g -fs ExFAT -volname EXFATDISK exfat.dmg
 $ hdiutil attach exfat.dmg
 $ cd /Volumes/EXFATDISK
 $ uv init --bare --cache-dir build/uv/cache -v 
@@ -46,14 +46,14 @@ $ uv init --bare --cache-dir build/uv/cache -v
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @konstin by @EliteTK on 2025-12-12 23:04</div>
+            <div class="event">Review requested from <a href="https://github.com/konstin">@konstin</a> by <a href="https://github.com/EliteTK">@EliteTK</a> on 2025-12-12 23:04</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @EliteTK on 2025-12-12 23:04</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/EliteTK">@EliteTK</a> on 2025-12-12 23:04</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-cache/src/lib.rs</code>:50 on 2025-12-14 21:26</div>
-            <div class="timeline-body"><p>nit: We usually have one top level error enum per module or crate. It's a developer convenience that allows the functions and methods in the module or crate to all return the same error type, where it's easier to add new variants to a single type.</p>
+            <div class="timeline-body"><p>nit: We usually have one top level error enum per module or crate. It&#x27;s a developer convenience that allows the functions and methods in the module or crate to all return the same error type, where it&#x27;s easier to add new variants to a single type.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -86,7 +86,7 @@ $ uv init --bare --cache-dir build/uv/cache -v
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv-cache/src/lib.rs</code>:50 on 2025-12-15 09:35</div>
-            <div class="timeline-body"><p>I'm not sure I agree with the justification, but I will adjust to fit the style for the time being.</p>
+            <div class="timeline-body"><p>I&#x27;m not sure I agree with the justification, but I will adjust to fit the style for the time being.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -96,16 +96,16 @@ $ uv init --bare --cache-dir build/uv/cache -v
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv-fs/src/locked_file.rs</code>:286 on 2025-12-15 10:05</div>
             <div class="timeline-body"><p>I will add the comment, I was on the fence but you persuaded me :)</p>
-<p>Regarding upstream, the problem is complicated and this topic seems to have been discussed at length already: https://github.com/rust-lang/rust/pull/78880</p>
+<p>Regarding upstream, the problem is complicated and this topic seems to have been discussed at length already: <a href="https://github.com/rust-lang/rust/pull/78880">rust-lang/rust#78880</a></p>
 <p>The fundamental issues are:</p>
 <ul>
 <li><p>The underlying OS APIs are wildly inconsistent in how they use error values. For example, on Linux:</p>
 <ul>
-<li><code>setxattr</code><a href="%5Bsetxattr(2)%5D(https://man7.org/linux/man-pages/man2/setxattr.2.html)">^setxattr</a> uses <code>ENOTSUP</code> for &quot;The namespace prefix of name is not valid&quot;, a role traditionally taken by <code>EINVAL</code>, and also uses it for &quot;Extended attributes are not supported by the filesystem, or are disabled&quot;, which is a more conventional mapping.</li>
-<li>Meanwhile <code>renameat2</code><a href="%5Brenameat2(2)%5D(https://man7.org/linux/man-pages/man2/rename.2.html)">^renameat2</a> on Linux uses <code>EINVAL</code> for &quot;An invalid flag was specified in flags&quot; and for &quot;The filesystem does not support one of the flags in flags.&quot;</li>
+<li><code>setxattr</code><a>^setxattr</a> uses <code>ENOTSUP</code> for &quot;The namespace prefix of name is not valid&quot;, a role traditionally taken by <code>EINVAL</code>, and also uses it for &quot;Extended attributes are not supported by the filesystem, or are disabled&quot;, which is a more conventional mapping.</li>
+<li>Meanwhile <code>renameat2</code><a>^renameat2</a> on Linux uses <code>EINVAL</code> for &quot;An invalid flag was specified in flags&quot; and for &quot;The filesystem does not support one of the flags in flags.&quot;</li>
 </ul>
 </li>
-<li><p>Different operating systems assign different error values to different conditions. As you can see here <code>renameatx_np</code><a href="%5Brenameatx_np(2)%5D(https://www.unix.com/man_page/mojave/2/renamex_np/)">^renameatx_np</a> on MacOS uses <code>ENOTSUP</code> for &quot;flags has a value that is not supported by the file system.&quot;</p>
+<li><p>Different operating systems assign different error values to different conditions. As you can see here <code>renameatx_np</code><a>^renameatx_np</a> on MacOS uses <code>ENOTSUP</code> for &quot;flags has a value that is not supported by the file system.&quot;</p>
 </li>
 <li><p>Lastly, <code>ErrorKind::Unsupported</code> could be mapped to by multiple different errno values:</p>
 <ul>
@@ -116,12 +116,12 @@ $ uv init --bare --cache-dir build/uv/cache -v
 <li><code>ESOCKTNOSUPPORT</code> Socket type not supported.</li>
 <li><code>EAFNOSUPPORT</code> Address family not supported.</li>
 </ul>
-<p>But it's not clear if it would still be meaningful if you mapped all of these to one kind.</p>
+<p>But it&#x27;s not clear if it would still be meaningful if you mapped all of these to one kind.</p>
 </li>
-<li><p>There is a fundamental ambiguity here between <code>EINVAL</code> - you just passed something nonseniscal, and the concept of &quot;unsupported&quot;. For example, the APIs are unified, despite there being fundamental differences e.g. between stream and datagram sockets, so you can attempt to perform operations that don't make sense with the current socket type, these get marked as <code>EOPNOTSUPP</code> even though it could be argued they should be <code>EINVAL</code>.</p>
+<li><p>There is a fundamental ambiguity here between <code>EINVAL</code> - you just passed something nonseniscal, and the concept of &quot;unsupported&quot;. For example, the APIs are unified, despite there being fundamental differences e.g. between stream and datagram sockets, so you can attempt to perform operations that don&#x27;t make sense with the current socket type, these get marked as <code>EOPNOTSUPP</code> even though it could be argued they should be <code>EINVAL</code>.</p>
 </li>
 </ul>
-<p>So I am not certain there is anything meaningful we can add for upstream, the situation isn't great and there aren't many good solutions which don't involve going further upstream, and breaking userspace APIs is taboo. I think we are kind of stuck here.</p>
+<p>So I am not certain there is anything meaningful we can add for upstream, the situation isn&#x27;t great and there aren&#x27;t many good solutions which don&#x27;t involve going further upstream, and breaking userspace APIs is taboo. I think we are kind of stuck here.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -130,7 +130,7 @@ $ uv init --bare --cache-dir build/uv/cache -v
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv-fs/src/locked_file.rs</code>:245 on 2025-12-15 11:00</div>
-            <div class="timeline-body"><p>Ah, we can't easily. <code>NamedTempFile::as_file()</code> returns a <code>&amp;File</code> and the only way to make an fs_err::File is using <code>fs_err::File::from_parts(file: File, path: P)</code>. I will just pass the path as a parameter and print it.</p>
+            <div class="timeline-body"><p>Ah, we can&#x27;t easily. <code>NamedTempFile::as_file()</code> returns a <code>&amp;File</code> and the only way to make an fs_err::File is using <code>fs_err::File::from_parts(file: File, path: P)</code>. I will just pass the path as a parameter and print it.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -157,14 +157,14 @@ $ uv init --bare --cache-dir build/uv/cache -v
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-cache/src/lib.rs</code>:50 on 2025-12-15 12:07</div>
-            <div class="timeline-body"><p>This isn't a rule or anything fwiw, it's more a pattern that seems common, and there's definitely exceptions.</p>
+            <div class="timeline-body"><p>This isn&#x27;t a rule or anything fwiw, it&#x27;s more a pattern that seems common, and there&#x27;s definitely exceptions.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @EliteTK on 2025-12-15 14:05</div>
+            <div class="event">Merged by <a href="https://github.com/EliteTK">@EliteTK</a> on 2025-12-15 14:05</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @EliteTK on 2025-12-15 14:05</div>
+            <div class="event">Closed by <a href="https://github.com/EliteTK">@EliteTK</a> on 2025-12-15 14:05</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-12-15 14:05</div>
@@ -172,7 +172,7 @@ $ uv init --bare --cache-dir build/uv/cache -v
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:45:35 UTC
+        Synced at 2026-01-20 19:54:56 UTC
     </footer>
 </body>
 </html>

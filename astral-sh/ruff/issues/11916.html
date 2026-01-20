@@ -23,27 +23,27 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a></div>
-            <div class="timeline-body"><p>Currently, the parser drops all unterminated strings or more precisely the lexer doesn't emit the string token for unterminated strings. This is for both normal and formatted string literals.</p>
-<p>This can be solved by always emitting the string / f-string tokens even if it's unterminated. We would need to introduce an <code>Unterminated</code> token flag which will signal the parser about the same.</p>
+            <div class="timeline-body"><p>Currently, the parser drops all unterminated strings or more precisely the lexer doesn&#x27;t emit the string token for unterminated strings. This is for both normal and formatted string literals.</p>
+<p>This can be solved by always emitting the string / f-string tokens even if it&#x27;s unterminated. We would need to introduce an <code>Unterminated</code> token flag which will signal the parser about the same.</p>
 <p>For example:</p>
-<pre><code class="language-py">&quot;hello world
+<pre><code>&quot;hello world
 
 def foo():
     pass
 </code></pre>
-<p>Even though the parser recovers from the above unterminated string, the AST doesn't include the string itself. Here, the new tokens would be:</p>
+<p>Even though the parser recovers from the above unterminated string, the AST doesn&#x27;t include the string itself. Here, the new tokens would be:</p>
 <pre><code>TokenKind::String (with TokenFlags::Unterminated)
 TokenKind::Newline
 TokenKind::NonLogicalNewline
 TokenKind::Def
 ...
 </code></pre>
-<p>This will help the parser create the correct AST. We'd also need to move the error handling from the lexer to the parser.</p>
-<p>Note that this will only work for single-quoted strings as triple-quoted strings will just consume the remaining source code completely if there's no closing quote.</p>
-<h3>F-strings</h3>
-<p>There's more to f-strings than a normal string literal because it can contain an expression element. This means that there could be unterminated f-string or the closing curly brace could be missing or an error in the expression itself.</p>
+<p>This will help the parser create the correct AST. We&#x27;d also need to move the error handling from the lexer to the parser.</p>
+<p>Note that this will only work for single-quoted strings as triple-quoted strings will just consume the remaining source code completely if there&#x27;s no closing quote.</p>
+F-strings
+<p>There&#x27;s more to f-strings than a normal string literal because it can contain an expression element. This means that there could be unterminated f-string or the closing curly brace could be missing or an error in the expression itself.</p>
 <p>For example:</p>
-<pre><code class="language-py">f&quot;hello {foo
+<pre><code>f&quot;hello {foo
 # or, f&quot;hello {foo}
 # or, f&quot;hello {foo} world
 # or, f&quot;hello
@@ -51,21 +51,21 @@ TokenKind::Def
 def bar():
     pass
 </code></pre>
-<p>Here, there's a <code>NonLogicalNewline</code> token after the &quot;foo&quot; variable because of an unclosed <code>{</code>. This would require a modified re-lexing logic to (1) recover from an unclosed <code>{</code> and (2) recover from an unterminated f-string.</p>
+<p>Here, there&#x27;s a <code>NonLogicalNewline</code> token after the &quot;foo&quot; variable because of an unclosed <code>{</code>. This would require a modified re-lexing logic to (1) recover from an unclosed <code>{</code> and (2) recover from an unterminated f-string.</p>
 <p>This also requires moving the error handling from the lexer to the parser.</p>
-<p>But, here's another problem: the parser doesn't use existing list parsing logic for parsing comma-separated expressions aka tuple expression which means it doesn't benefit from any error recovery logic. Thus, if there's an error in the f-string expression itself, there's a high change it'll not recovery correctly.</p>
-<pre><code class="language-py">f'hello {foo bar
+<p>But, here&#x27;s another problem: the parser doesn&#x27;t use existing list parsing logic for parsing comma-separated expressions aka tuple expression which means it doesn&#x27;t benefit from any error recovery logic. Thus, if there&#x27;s an error in the f-string expression itself, there&#x27;s a high change it&#x27;ll not recovery correctly.</p>
+<pre><code>f&#x27;hello {foo bar
 
 def func():
     pass
 </code></pre>
 <p>For the above code snippet, should &quot;foo bar&quot; be parsed as a tuple expression with a missing comma (?) because currently the &quot;bar&quot; would be parsed as a name node in the global scope.</p>
-<h3><code>Unknown</code> token</h3>
-<p>If we were to move the error handling for strings to the parser, it would mean that there won't be any <code>Unknown</code> token. This means that the change cannot be made without support for https://github.com/astral-sh/ruff/issues/11915. The main reason is that these rules rely on the fact that there'll be an <code>Unknown</code> token in the token stream where there's a lexial error. Maybe there's a way around that but I'm not exactly sure now.</p>
+<code>Unknown</code> token
+<p>If we were to move the error handling for strings to the parser, it would mean that there won&#x27;t be any <code>Unknown</code> token. This means that the change cannot be made without support for <a href="https://github.com/astral-sh/ruff/issues/11915">astral-sh/ruff#11915</a>. The main reason is that these rules rely on the fact that there&#x27;ll be an <code>Unknown</code> token in the token stream where there&#x27;s a lexial error. Maybe there&#x27;s a way around that but I&#x27;m not exactly sure now.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">parser</span> added by @dhruvmanila on 2024-06-18 04:50</div>
+            <div class="event">Label <span class="label">parser</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-18 04:50</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-19 04:36</div>
@@ -74,16 +74,16 @@ def func():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-21 06:57</div>
-            <div class="timeline-body"><p>I think we can close this now that https://github.com/astral-sh/ruff/pull/20848 landed</p>
+            <div class="timeline-body"><p>I think we can close this now that <a href="https://github.com/astral-sh/ruff/pull/20848">astral-sh/ruff#20848</a> landed</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2025-10-21 06:57</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-21 06:57</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:50:29 UTC
+        Synced at 2026-01-20 18:48:54 UTC
     </footer>
 </body>
 </html>

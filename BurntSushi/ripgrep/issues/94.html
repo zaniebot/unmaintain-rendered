@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>windows doesn't detect stdin automatically</h1>
+    <h1>windows doesn&#x27;t detect stdin automatically</h1>
 
     <div class="meta">
         <span class="state-icon state-closed"></span>
@@ -24,29 +24,29 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a></div>
             <div class="timeline-body"><p>Namely, running <code>rg pat &lt; file</code> will recursively search the current directory instead of <code>file</code>. A workaround is to do <code>rg pat - &lt; file</code>, which will search file.</p>
-<p>This is a consequence of fixing #19. Maybe there is a better way to detect whether stdin is a pipe automatically, but I don't know it. <a href="https://github.com/BurntSushi/ripgrep/issues/19#issuecomment-249453628">@vadz in particular points out that it is quite hairy</a>:</p>
+<p>This is a consequence of fixing #19. Maybe there is a better way to detect whether stdin is a pipe automatically, but I don&#x27;t know it. <a href="https://github.com/BurntSushi/ripgrep/issues/19#issuecomment-249453628">@vadz in particular points out that it is quite hairy</a>:</p>
 <blockquote>
-<p>Oh, sorry, I should have thought about this, this is actually a pretty well-known issue -- but without any good solution, unfortunately. The problem is that Windows doesn't have any concept of PTY, so when a program is running in any kind of terminal emulator, and not the standard console window, its stdin is always connected to a pipe, as far as Windows is concerned. Cygwin applications can distinguish between &quot;real&quot; pipes and normal input from the terminal, but I don't know of any way to do this without linking to cygwin1.dll.</p>
+<p>Oh, sorry, I should have thought about this, this is actually a pretty well-known issue -- but without any good solution, unfortunately. The problem is that Windows doesn&#x27;t have any concept of PTY, so when a program is running in any kind of terminal emulator, and not the standard console window, its stdin is always connected to a pipe, as far as Windows is concerned. Cygwin applications can distinguish between &quot;real&quot; pipes and normal input from the terminal, but I don&#x27;t know of any way to do this without linking to cygwin1.dll.</p>
 </blockquote>
 <p>I think you should still be able to detect whether stdin is a TTY when running inside the native console and you should be able to check for this (running inside console, I mean). But everything console-related in Windows is pretty hairy, just look at <a href="https://github.com/wxWidgets/wxWidgets/blob/v3.1.0/src/msw/app.cpp#L288">our own code</a> for detecting whether we can write to a console...</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2016-09-26 00:02</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-26 00:02</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2016-09-26 00:02</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-26 00:02</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mungre">@mungre</a> on 2016-09-29 16:22</div>
-            <div class="timeline-body"><p>For what it's worth, you can detect this particular case.  If you run <code>type file | rg pat</code> then the standard input handle in rg will be a pipe handle, but if you do <code>rg pat &lt; file</code> then the standard input handle will be a file handle.  You can distinguish them using the result of</p>
+            <div class="timeline-body"><p>For what it&#x27;s worth, you can detect this particular case.  If you run <code>type file | rg pat</code> then the standard input handle in rg will be a pipe handle, but if you do <code>rg pat &lt; file</code> then the standard input handle will be a file handle.  You can distinguish them using the result of</p>
 <p><code>GetFileType(GetStdHandle(STD_INPUT_HANDLE))</code></p>
-<p>One caveat: this is true of cmd.exe.  I don't know that other shells implement this the same way.</p>
+<p>One caveat: this is true of cmd.exe.  I don&#x27;t know that other shells implement this the same way.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/silverwind">@silverwind</a> on 2016-10-07 07:02</div>
-            <div class="timeline-body"><p>Also noticed that <code>cat something | rg</code> does not work as expected on Windows and still searches recursively. I'm on Cygwin and installed through <code>cargo</code>, if that matters. <code>ag</code> does not show this issue, so maybe some of their checks could be reimplemented.</p>
+            <div class="timeline-body"><p>Also noticed that <code>cat something | rg</code> does not work as expected on Windows and still searches recursively. I&#x27;m on Cygwin and installed through <code>cargo</code>, if that matters. <code>ag</code> does not show this issue, so maybe some of their checks could be reimplemented.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -56,16 +56,16 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/silverwind">@silverwind</a> on 2016-10-07 17:27</div>
-            <div class="timeline-body"><p>Nope, no such issue with <code>ag</code>. I compiled <code>ag</code> from source under the Cygwin. I think many of the Cygwin issues that were reported are because of the fact that people are installing native Windows binaries, which in most cases is very bad. These binaries expect Windows interfaces and behaviour. Much better to build on the system's native toolchain.</p>
+            <div class="timeline-body"><p>Nope, no such issue with <code>ag</code>. I compiled <code>ag</code> from source under the Cygwin. I think many of the Cygwin issues that were reported are because of the fact that people are installing native Windows binaries, which in most cases is very bad. These binaries expect Windows interfaces and behaviour. Much better to build on the system&#x27;s native toolchain.</p>
 <p>I assume by installing through <code>cargo</code> , everything is built from source, right?</p>
-<p>Oh, and I did some more testing with rg. I've also tested with https://github.com/rprichard/winpty which is basically a wrapper to <code>cmd</code> which helps native Windows binaries to run smoothly in a Cygwin terminal. My results:</p>
+<p>Oh, and I did some more testing with rg. I&#x27;ve also tested with https://github.com/rprichard/winpty which is basically a wrapper to <code>cmd</code> which helps native Windows binaries to run smoothly in a Cygwin terminal. My results:</p>
 <ul>
 <li><code>echo x | rg x</code>  has the issue that it searches recursively</li>
-<li><code>winpty cmd /c 'echo x | rg x'</code> also has the issue</li>
+<li><code>winpty cmd /c &#x27;echo x | rg x&#x27;</code> also has the issue</li>
 <li><code>echo x | rg x</code> in a native <code>cmd</code> has the issue</li>
 <li><code>winpty cmd</code> and entering <code>echo x | rg x</code> has the issue</li>
 </ul>
-<p>edit: updated, my bad. It doesn't work in any of the attempts.</p>
+<p>edit: updated, my bad. It doesn&#x27;t work in any of the attempts.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -73,14 +73,14 @@
             <div class="timeline-body"><p>Oh, and because it likely matters, Rust nightly was installed in the <code>GNU</code> version:</p>
 <pre><code>rustc 1.14.0-nightly (ad19c32a5 2016-10-06)
 </code></pre>
-<p>So far, I don't see any other issues. Everything work except this stdin issue.</p>
+<p>So far, I don&#x27;t see any other issues. Everything work except this stdin issue.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-07 19:02</div>
-            <div class="timeline-body"><p>I don't have time at the moment to dig into this, but I'm skeptical that there's any big difference between compiling <code>ripgrep</code> from source on Windows and distributing a binary for Windows. If using a Windows binary is bad, could you please explain why in detail?</p>
-<p>If you install with <code>cargo</code>, then yes, it's compiled from source.</p>
-<p>Please also consider that I don't know much about Windows. I'm making it up as I go.</p>
+            <div class="timeline-body"><p>I don&#x27;t have time at the moment to dig into this, but I&#x27;m skeptical that there&#x27;s any big difference between compiling <code>ripgrep</code> from source on Windows and distributing a binary for Windows. If using a Windows binary is bad, could you please explain why in detail?</p>
+<p>If you install with <code>cargo</code>, then yes, it&#x27;s compiled from source.</p>
+<p>Please also consider that I don&#x27;t know much about Windows. I&#x27;m making it up as I go.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -88,15 +88,15 @@
             <div class="timeline-body"><blockquote>
 <p>If using a Windows binary is bad, could you please explain why in detail?</p>
 </blockquote>
-<p>Take my answer with a grain of salts as I'm not really involved in low-level  development, but as a long-time Cygwin user, this is my understanding:</p>
+<p>Take my answer with a grain of salts as I&#x27;m not really involved in low-level  development, but as a long-time Cygwin user, this is my understanding:</p>
 <p>Natively build binaries (especially ones build under MSVS) target native Windows APIs, which are pretty much second-class citizens inside the Cygwin environment and prone to have a few bugs, especially when it comes to fundamental platform differences like TTY emulation.</p>
-<p>On the other hand the POSIX APIs are much better supported and it's a goal of the project enough of POSIX so that projects written for Linux can be built without any changes.</p>
+<p>On the other hand the POSIX APIs are much better supported and it&#x27;s a goal of the project enough of POSIX so that projects written for Linux can be built without any changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/elahn">@elahn</a> on 2016-10-22 09:19</div>
             <div class="timeline-body"><p>On Windows 10 native terminal, this works perfectly:</p>
-<pre><code class="language-rust">/// Returns true if there is a tty on stdin.
+<pre><code>/// Returns true if there is a tty on stdin.
 #[cfg(windows)]
 pub fn on_stdin() -&gt; bool {
     use kernel32::{GetConsoleMode, GetStdHandle};
@@ -108,45 +108,45 @@ pub fn on_stdin() -&gt; bool {
     }
 }
 </code></pre>
-<p>From what I gather, this was removed due to #19. If the Cygwin environment can't be detected and skip this, I think Cygwin users should use a different build with the current behaviour. I prefer the native terminal and pipe is important enough for me to maintain a fork until this is resolved.</p>
+<p>From what I gather, this was removed due to #19. If the Cygwin environment can&#x27;t be detected and skip this, I think Cygwin users should use a different build with the current behaviour. I prefer the native terminal and pipe is important enough for me to maintain a fork until this is resolved.</p>
 <p>Btw, ripgrep is awesome!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-19 22:58</div>
-            <div class="timeline-body"><p>Allow me to summarize where I'm at with this incredibly annoying issue:</p>
+            <div class="timeline-body"><p>Allow me to summarize where I&#x27;m at with this incredibly annoying issue:</p>
 <ul>
-<li>In #19, ripgrep would hang when running simple queries like <code>rg foo</code> in mintty. This is because there's (apparently) no good way to detect whether stdin in a tty or not inside of MSYS2 based terminal emulators like mintty.</li>
-<li>Since #19 represents, IMO, the <strong>worst failure mode possible</strong>, it was critical that we fix it. I therefore changed ripgrep to believe it <em>always</em> had a tty on stdin. This means that <code>rg foo</code> will do the right thing, but that piping, e.g., <code>cat bar | rg foo</code> no longer works because ripgrep doesn't detect the pipe on stdin. Instead, it searches the current directory recursively and ignores stdin completely. This is a <em>terrible</em> failure mode, but not quite the <em>worst possible</em> failure mode. Thus, we have this issue.</li>
+<li>In #19, ripgrep would hang when running simple queries like <code>rg foo</code> in mintty. This is because there&#x27;s (apparently) no good way to detect whether stdin in a tty or not inside of MSYS2 based terminal emulators like mintty.</li>
+<li>Since #19 represents, IMO, the <strong>worst failure mode possible</strong>, it was critical that we fix it. I therefore changed ripgrep to believe it <em>always</em> had a tty on stdin. This means that <code>rg foo</code> will do the right thing, but that piping, e.g., <code>cat bar | rg foo</code> no longer works because ripgrep doesn&#x27;t detect the pipe on stdin. Instead, it searches the current directory recursively and ignores stdin completely. This is a <em>terrible</em> failure mode, but not quite the <em>worst possible</em> failure mode. Thus, we have this issue.</li>
 <li>Applications distributed with cygwin, like grep, appear to get this right. That is, <code>echo foo | grep foo</code> does the right thing in both mintty and in <code>cmd.exe</code>. So clearly, fixing this bug properly is possible, but the implementation escapes me.</li>
-<li><code>git</code> faced a similar issue and uses a <a href="http://git.661346.n2.nabble.com/PATCH-mingw-make-isatty-recognize-MSYS2-s-pseudo-terminals-dev-pty-td7654456.html">spectacular hack</a> to work around it. I don't understand it.</li>
-<li><code>mintty</code> has at least two issues on this topic: <a href="https://github.com/mintty/mintty/issues/56">mintty/53</a> and <a href="https://github.com/mintty/mintty/issues/482">mintty/482</a>. I'm not sure that there's anything actionable there.</li>
-<li>Solutions like &quot;cygwin users just need to compile from source&quot; are <em>insufficient</em>, not only because I haven't actually observed that to work (I'm compiling ripgrep from source on Windows when testing all of this), but it's also terrible UX.</li>
+<li><code>git</code> faced a similar issue and uses a <a href="http://git.661346.n2.nabble.com/PATCH-mingw-make-isatty-recognize-MSYS2-s-pseudo-terminals-dev-pty-td7654456.html">spectacular hack</a> to work around it. I don&#x27;t understand it.</li>
+<li><code>mintty</code> has at least two issues on this topic: <a href="https://github.com/mintty/mintty/issues/56">mintty/53</a> and <a href="https://github.com/mintty/mintty/issues/482">mintty/482</a>. I&#x27;m not sure that there&#x27;s anything actionable there.</li>
+<li>Solutions like &quot;cygwin users just need to compile from source&quot; are <em>insufficient</em>, not only because I haven&#x27;t actually observed that to work (I&#x27;m compiling ripgrep from source on Windows when testing all of this), but it&#x27;s also terrible UX.</li>
 </ul>
 <p>What are the next steps?</p>
 <ul>
 <li>The status quo is terrible because native Windows users suffer , but reverting the fix to #19 is <em>even worse</em>.</li>
-<li>The key problem is that if <code>GetConsoleMode(stdin)</code> returns false, then we <em>can't trust it</em> because it <em>always returns false</em> in mintty. However, if <code>GetConsoleMode(stdout)</code> or <code>GetConsoleMode(stderr)</code> return true, then we <em>could</em> trust a <code>GetConsoleMode(stdin)</code> call that returned false because we know we're in a console.</li>
+<li>The key problem is that if <code>GetConsoleMode(stdin)</code> returns false, then we <em>can&#x27;t trust it</em> because it <em>always returns false</em> in mintty. However, if <code>GetConsoleMode(stdout)</code> or <code>GetConsoleMode(stderr)</code> return true, then we <em>could</em> trust a <code>GetConsoleMode(stdin)</code> call that returned false because we know we&#x27;re in a console.</li>
 </ul>
 <p>That leads to the following logic:</p>
-<pre><code class="language-rust">    let on_stdin = unsafe {
+<pre><code>    let on_stdin = unsafe {
         let mut out = 0;
         GetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), &amp;mut out) != 0
     };
     if on_stdin {
-        // good enough, on_stdin is only true if there's a console
+        // good enough, on_stdin is only true if there&#x27;s a console
         true
     } else if on_stdout() || on_stderr() {
         // on_stdin could be a false negative, but if stdout/stderr is a
         // console, then we can trust the negative result.
         false
     } else {
-        // We don't know whether we have a console or not, so always pretend
+        // We don&#x27;t know whether we have a console or not, so always pretend
         // that we have a tty on stdin.
         true
     }
 </code></pre>
-<p>I've tried this out and it does now at least let ripgrep operate sanely on <em>native Windows</em>. It doesn't fix the mintty problem and it can still spaz out on you. For example, running this produces unexpected results:</p>
+<p>I&#x27;ve tried this out and it does now at least let ripgrep operate sanely on <em>native Windows</em>. It doesn&#x27;t fix the mintty problem and it can still spaz out on you. For example, running this produces unexpected results:</p>
 <pre><code>echo foo | rg foo &gt; log 2&gt;&amp;1
 </code></pre>
 <p>In this case, <code>GetConsoleMode(stdin)</code>, <code>GetConsoleMode(stdout)</code> and <code>GetConsoleMode(stderr)</code> all return false, and we therefore cannot distinguish between a false negative and a true negative.</p>
@@ -154,45 +154,45 @@ pub fn on_stdin() -&gt; bool {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/vadz">@vadz</a> on 2016-11-20 01:47</div>
-            <div class="timeline-body"><p>Sorry if I'm missing something here, but what's wrong with stealing the Git hack? It looks like it allows us to do exactly what we want, i.e. discover whether we're really using the console or not when <code>GetConsoleMode()</code> returns false, by checking the pipe name associated with stdin. Isn't this exactly what we want?</p>
+            <div class="timeline-body"><p>Sorry if I&#x27;m missing something here, but what&#x27;s wrong with stealing the Git hack? It looks like it allows us to do exactly what we want, i.e. discover whether we&#x27;re really using the console or not when <code>GetConsoleMode()</code> returns false, by checking the pipe name associated with stdin. Isn&#x27;t this exactly what we want?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-20 01:53</div>
-            <div class="timeline-body"><p>@vadz I don't really understand it and I need to understand it before figuring out how to write it in Rust.</p>
+            <div class="timeline-body"><p>@vadz I don&#x27;t really understand it and I need to understand it before figuring out how to write it in Rust.</p>
 <p>(I am somewhat at the end of my rope on this issue too. For now, at least.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-20 02:02</div>
-            <div class="timeline-body"><p>@vadz By &quot;understand it&quot; I think I'm just not familiar with these header files (like I said before, I'm making it up as I go when it comes to Windows):</p>
+            <div class="timeline-body"><p>@vadz By &quot;understand it&quot; I think I&#x27;m just not familiar with these header files (like I said before, I&#x27;m making it up as I go when it comes to Windows):</p>
 <pre><code>#include &lt;winternl.h&gt; 
 #include &lt;ntstatus.h&gt; 
 </code></pre>
-<p>Presumably these header files provide things like <code>NtQueryObject</code> and <code>GetFileType</code>. I'm not quite sure anyone has written bindings to those in Rust. I could start down that path and figure it out, but like I said, I'm kind of sick of working on this bug.</p>
+<p>Presumably these header files provide things like <code>NtQueryObject</code> and <code>GetFileType</code>. I&#x27;m not quite sure anyone has written bindings to those in Rust. I could start down that path and figure it out, but like I said, I&#x27;m kind of sick of working on this bug.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/vadz">@vadz</a> on 2016-11-20 02:04</div>
             <div class="timeline-body"><p>Conceptually it seems simple to me: we just check if we have a pipe and if the name of the pipe fits the pattern used by MSYS for the pipes it uses for terminal emulation.</p>
-<p>I think the confusing part could be all this <code>_pioinfo</code> stuff, but we wouldn't need this, the original patch probably was done like this to minimize changes to the existing code, but we don't have such constraints. So all we need to do is to call <code>NtQueryObject()</code> (which is almost like any other Win32 API, except it's a wrapper for a kernel function and not a Win32 call) and match the name returned by it again <code>&quot;msys-XXXX-ptyN-XX&quot;</code>.</p>
-<p>BTW, notice that if we don't need to support XP (do we?), then we could use Win32 <a href="https://msdn.microsoft.com/en-us/library/aa364953.aspx">GetFileInformationByHandleEx()</a> function instead. But OTOH <code>NtQueryObject()</code>, despite being officially internal is surely not going anywhere any time this millennium as there is so much code using it...</p>
-<p>P.S. Just got the page update with your latest reply. Unfortunately here it's my lack of Rust knowledge that works against me. I hoped that these function could be used in the same way as <code>GetConsoleMode()</code>, for example. What's the difference between them from your point of view?</p>
+<p>I think the confusing part could be all this <code>_pioinfo</code> stuff, but we wouldn&#x27;t need this, the original patch probably was done like this to minimize changes to the existing code, but we don&#x27;t have such constraints. So all we need to do is to call <code>NtQueryObject()</code> (which is almost like any other Win32 API, except it&#x27;s a wrapper for a kernel function and not a Win32 call) and match the name returned by it again <code>&quot;msys-XXXX-ptyN-XX&quot;</code>.</p>
+<p>BTW, notice that if we don&#x27;t need to support XP (do we?), then we could use Win32 <a href="https://msdn.microsoft.com/en-us/library/aa364953.aspx">GetFileInformationByHandleEx()</a> function instead. But OTOH <code>NtQueryObject()</code>, despite being officially internal is surely not going anywhere any time this millennium as there is so much code using it...</p>
+<p>P.S. Just got the page update with your latest reply. Unfortunately here it&#x27;s my lack of Rust knowledge that works against me. I hoped that these function could be used in the same way as <code>GetConsoleMode()</code>, for example. What&#x27;s the difference between them from your point of view?</p>
 <p>P.P.S. I do understand being sick of it very well though.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-20 02:15</div>
-            <div class="timeline-body"><p>@vadz With respect to <code>GetConsoleMode</code> vs <code>NtQueryObject</code>... I can <a href="https://docs.rs/kernel32-sys/0.2.2/x86_64-pc-windows-msvc/kernel32/?search=GetConsoleMode"><code>GetConsoleMode</code> in our <code>kernel32-sys</code> crate</a> but I can't find <a href="https://docs.rs/kernel32-sys/0.2.2/x86_64-pc-windows-msvc/kernel32/?search=NtQueryObject"><code>NtQueryObject</code> in the same crate</a>. I have <em>no idea</em> what kind of interaction is at play here.</p>
+            <div class="timeline-body"><p>@vadz With respect to <code>GetConsoleMode</code> vs <code>NtQueryObject</code>... I can <a href="https://docs.rs/kernel32-sys/0.2.2/x86_64-pc-windows-msvc/kernel32/?search=GetConsoleMode"><code>GetConsoleMode</code> in our <code>kernel32-sys</code> crate</a> but I can&#x27;t find <a href="https://docs.rs/kernel32-sys/0.2.2/x86_64-pc-windows-msvc/kernel32/?search=NtQueryObject"><code>NtQueryObject</code> in the same crate</a>. I have <em>no idea</em> what kind of interaction is at play here.</p>
 <blockquote>
-<p>BTW, notice that if we don't need to support XP (do we?), then we could use Win32 GetFileInformationByHandleEx() function instead.</p>
+<p>BTW, notice that if we don&#x27;t need to support XP (do we?), then we could use Win32 GetFileInformationByHandleEx() function instead.</p>
 </blockquote>
-<p>Ah! We definitely don't need to support XP, and <a href="https://docs.rs/kernel32-sys/0.2.2/x86_64-pc-windows-msvc/kernel32/?search=GetFileInformationByHandleEx"><code>GetFileInformationByHandleEx</code> is in the <code>kernel32-sys</code> crate</a>. Yay!</p>
+<p>Ah! We definitely don&#x27;t need to support XP, and <a href="https://docs.rs/kernel32-sys/0.2.2/x86_64-pc-windows-msvc/kernel32/?search=GetFileInformationByHandleEx"><code>GetFileInformationByHandleEx</code> is in the <code>kernel32-sys</code> crate</a>. Yay!</p>
 <p>So I think what I need to do is just use <code>GetFileInformationByHandleEx</code> on the <code>stdin</code> descriptor and ask for <code>FILE_NAME_INFO</code>, and then do the same name comparison check?</p>
 <blockquote>
-<p>I think the confusing part could be all this _pioinfo stuff, but we wouldn't need this, the original patch probably was done like this to minimize changes to the existing code, but we don't have such constraints. So all we need to do is to call NtQueryObject() (which is almost like any other Win32 API, except it's a wrapper for a kernel function and not a Win32 call) and match the name returned by it again &quot;msys-XXXX-ptyN-XX&quot;.</p>
+<p>I think the confusing part could be all this _pioinfo stuff, but we wouldn&#x27;t need this, the original patch probably was done like this to minimize changes to the existing code, but we don&#x27;t have such constraints. So all we need to do is to call NtQueryObject() (which is almost like any other Win32 API, except it&#x27;s a wrapper for a kernel function and not a Win32 call) and match the name returned by it again &quot;msys-XXXX-ptyN-XX&quot;.</p>
 </blockquote>
-<p>This really helps actually. I didn't really grok much of that, so thank you for explaining that to me!</p>
+<p>This really helps actually. I didn&#x27;t really grok much of that, so thank you for explaining that to me!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -200,7 +200,7 @@ pub fn on_stdin() -&gt; bool {
             <div class="timeline-body"><blockquote>
 <p>So I think what I need to do is just use GetFileInformationByHandleEx on the stdin descriptor and ask for FILE_NAME_INFO, and then do the same name comparison check?</p>
 </blockquote>
-<p>Yes, I think so (but I didn't test it). AFAICS the only tricky thing risks to be interpreting the data returned by this function, as Rust code will somehow need to transmute the untyped byte buffer <code>lpFileInformation</code> to <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa364388.aspx">FILE_NAME_INFO struct</a>. But if you know the right incantation to do it, I think you're very close to solving this bug.</p>
+<p>Yes, I think so (but I didn&#x27;t test it). AFAICS the only tricky thing risks to be interpreting the data returned by this function, as Rust code will somehow need to transmute the untyped byte buffer <code>lpFileInformation</code> to <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa364388.aspx">FILE_NAME_INFO struct</a>. But if you know the right incantation to do it, I think you&#x27;re very close to solving this bug.</p>
 <p>Good luck!</p>
 </div>
         </div>
@@ -217,7 +217,7 @@ pub fn on_stdin() -&gt; bool {
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-20 06:25</div>
             <div class="timeline-body"><p>This is the golden ticket for posterity:</p>
-<pre><code class="language-rust">/// Returns true if there is an MSYS tty on the given handle.
+<pre><code>/// Returns true if there is an MSYS tty on the given handle.
 #[cfg(windows)]
 fn msys_tty_on_handle(handle: HANDLE) -&gt; bool {
     use std::ffi::OsString;
@@ -262,12 +262,12 @@ fn msys_tty_on_handle(handle: HANDLE) -&gt; bool {
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2016-11-20 20:01</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-20 20:01</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:41:43 UTC
+        Synced at 2026-01-20 18:48:01 UTC
     </footer>
 </body>
 </html>

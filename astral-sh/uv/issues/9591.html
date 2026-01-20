@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1><code>--prefix</code> doesn't honor in-prefix Python</h1>
+    <h1><code>--prefix</code> doesn&#x27;t honor in-prefix Python</h1>
 
     <div class="meta">
         <span class="state-icon state-closed"></span>
@@ -25,13 +25,13 @@
             <div class="timeline-header"><a href="https://github.com/purajit">@purajit</a></div>
             <div class="timeline-body"><p>Currently, when <code>--prefix</code> is provided, <code>uv pip install</code> does not respect the in-prefix Python while installing binaries.</p>
 <p>In my opinion, in-prefix Python should be respected for two reasons: it feels more per expectations, and
-currently, <code>uv</code> requires activating the virtual environment in such cases, which feels antithetical to uv's approach.</p>
-<p>I'm down to PR this, but wanted to see what kind of approach would be preferable. Would it be for init to
+currently, <code>uv</code> requires activating the virtual environment in such cases, which feels antithetical to uv&#x27;s approach.</p>
+<p>I&#x27;m down to PR this, but wanted to see what kind of approach would be preferable. Would it be for init to
 explicitly set <code>python</code> (unless provided) based on the <code>prefix</code>?</p>
 <p>Version: Currently on <code>0.5.5</code>; I swear that when I was using <code>0.5.4</code> it worked in the standard case but not
 when <code>VIRTUAL_ENV</code> was set to another path (in which case it still had the same behavior as below); but now
 when I try 0.5.4, it errors out for not being able to find a virtual environment.</p>
-<pre><code class="language-sh">## default venv
+<pre><code>## default venv
 # uv venv
 # uv pip install mypy
 # head -1 ./.venv/bin/mypy
@@ -93,7 +93,7 @@ $ ./.venv2/bin/mypy -V
 Traceback (most recent call last):
   File &quot;/Users/purajit.malalur/code/random/uvvenv-prefix-test/./.venv2/bin/mypy&quot;, line 5, in &lt;module&gt;
     from mypy.__main__ import console_entry
-ModuleNotFoundError: No module named 'mypy'
+ModuleNotFoundError: No module named &#x27;mypy&#x27;
 
 $ rm -rf .venv*
 
@@ -111,18 +111,18 @@ $ ./.venv3/bin/mypy -V
 
 mypy 1.13.0 (compiled: yes)
 </code></pre>
-<p>Potentially related to https://github.com/astral-sh/uv/commit/0cd9c542adb155f7d7f8ca5cb2063cc0c0ca2381; I can investigate more if this doesn't immediately ring any bells.</p>
+<p>Potentially related to https://github.com/astral-sh/uv/commit/0cd9c542adb155f7d7f8ca5cb2063cc0c0ca2381; I can investigate more if this doesn&#x27;t immediately ring any bells.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-03 01:48</div>
-            <div class="timeline-body"><p>I also suspected #9373. Maybe related to https://github.com/astral-sh/uv/pull/9371, but I sort of doubt it? Does it reproduce on 0.5.3?</p>
-<p>It seems reasonable to find and use the Python in the prefix by default. We should probably ignore it when <code>--system</code> is provided? I'm curious for @charliermarsh's thoughts before someone begins work on it though.</p>
+            <div class="timeline-body"><p>I also suspected #9373. Maybe related to <a href="https://github.com/astral-sh/uv/pull/9371">astral-sh/uv#9371</a>, but I sort of doubt it? Does it reproduce on 0.5.3?</p>
+<p>It seems reasonable to find and use the Python in the prefix by default. We should probably ignore it when <code>--system</code> is provided? I&#x27;m curious for @charliermarsh&#x27;s thoughts before someone begins work on it though.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-03 01:51</div>
-            <div class="timeline-body"><p>I doubt we ever &quot;discovered&quot; this. I'm unsure on whether we should...</p>
+            <div class="timeline-body"><p>I doubt we ever &quot;discovered&quot; this. I&#x27;m unsure on whether we should...</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -132,27 +132,27 @@ mypy 1.13.0 (compiled: yes)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/purajit">@purajit</a> on 2024-12-03 19:11</div>
-            <div class="timeline-body"><p>Woah you all got to this way faster than I thought! Shouldn't have expected anything less. Love the work
-you all do; I've been using <code>uv</code> almost since the beginning and started moving our entire company over to it
-starting 0.3.0. It's been so smooth that I get excited every time I find an issue (though nearly always, it's
+            <div class="timeline-body"><p>Woah you all got to this way faster than I thought! Shouldn&#x27;t have expected anything less. Love the work
+you all do; I&#x27;ve been using <code>uv</code> almost since the beginning and started moving our entire company over to it
+starting 0.3.0. It&#x27;s been so smooth that I get excited every time I find an issue (though nearly always, it&#x27;s
 already been caught and fixed and just updating <code>uv</code> solves it)</p>
 <blockquote>
 <p>more details about your use-case would be helpful</p>
 </blockquote>
-<p>Sure! And I totally understand there's multiple ways to go about this, but basically we have two bioinformatics
+<p>Sure! And I totally understand there&#x27;s multiple ways to go about this, but basically we have two bioinformatics
 tools that need to be installed into their own isolated environment. I considered using <code>uv tool run</code>,
 but for various reasons decided not to (changing how the tool is evoked is a stupidly involved change,
-and also I currently don't install <code>uv</code> onto any of our production images - we have it only during our build).</p>
+and also I currently don&#x27;t install <code>uv</code> onto any of our production images - we have it only during our build).</p>
 <p>The main application is installed into <code>.venv</code>, so I thought about installing the tools into <code>.venv-${tool_name}</code>.
 I could absolutely also install it into <code>${tool_name}/.venv</code>, and then the default <code>uv pip install</code> behavior would
-work, but just thought I'd raise this since it still seems like unexpected behavior/inconsistency. I chose
+work, but just thought I&#x27;d raise this since it still seems like unexpected behavior/inconsistency. I chose
 <code>mypy</code> in my example just for demonstration with a popular tool.</p>
 <blockquote>
 <p>Does it reproduce on 0.5.3?</p>
 </blockquote>
-<p>Same error I mentioned about 0.5.4 - I tried a range of versions. It doesn't fail if I first activate
-the venv. I'm running the <code>uv</code> binaries straight from release (on Apple Silicon):</p>
-<pre><code class="language-sh">DEBUG uv 0.5.3 (56d362208 2024-11-19)
+<p>Same error I mentioned about 0.5.4 - I tried a range of versions. It doesn&#x27;t fail if I first activate
+the venv. I&#x27;m running the <code>uv</code> binaries straight from release (on Apple Silicon):</p>
+<pre><code>DEBUG uv 0.5.3 (56d362208 2024-11-19)
 DEBUG Searching for default Python interpreter in virtual environments
 DEBUG Found `cpython-3.13.0-macos-aarch64-none` at `/opt/homebrew/bin/python` (search path)
 DEBUG Ignoring Python interpreter at `/opt/homebrew/opt/python@3.13/bin/python3.13`: system interpreter not explicitly requested
@@ -168,7 +168,7 @@ DEBUG Found `cpython-3.9.6-macos-aarch64-none` at `/usr/bin/python3` (search pat
 DEBUG Ignoring Python interpreter at `/Library/Developer/CommandLineTools/usr/bin/python3`: system interpreter not explicitly requested
 error: No virtual environment found; run `uv venv` to create an environment, or pass `--system` to install into a non-virtual environment
 </code></pre>
-<p>For comparison, this is 5.5's output:</p>
+<p>For comparison, this is 5.5&#x27;s output:</p>
 <pre><code>DEBUG uv 0.5.5 (Homebrew 2024-11-27)
 DEBUG Searching for default Python interpreter in virtual environments, managed installations, or search path
 DEBUG Searching for managed installations at `/Users/purajit.malalur/.local/share/uv/python`
@@ -189,36 +189,36 @@ DEBUG Acquired lock for `.venv2`
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/purajit">@purajit</a> on 2024-12-03 21:32</div>
-            <div class="timeline-body"><p>I hadn't! It's a bit different than a standard tool install so it didn't occur to me; we have a lockfile
+            <div class="timeline-body"><p>I hadn&#x27;t! It&#x27;s a bit different than a standard tool install so it didn&#x27;t occur to me; we have a lockfile
 for these tools since bioinformatics is rather sensitive as an ecosystem (for one of them, we need to
 also explicitly install an older <code>setuptools</code> 🙄), so I tested with</p>
-<pre><code class="language-sh">UV_TOOL_DIR=&lt;&gt; uv tool install &lt;tool&gt; --with-requirements &lt;lockfile&gt; &amp;&amp; \
+<pre><code>UV_TOOL_DIR=&lt;&gt; uv tool install &lt;tool&gt; --with-requirements &lt;lockfile&gt; &amp;&amp; \
 </code></pre>
-<p>which worked as expected, and I'll switch over to this.</p>
+<p>which worked as expected, and I&#x27;ll switch over to this.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-03 21:43</div>
             <div class="timeline-body"><p>Sounds good! With the latest version, you can also provide your lockfile as <code>--constraints</code>.</p>
-<p>We're also interested in allowing locks (<code>uv.lock</code>) to be created / used with tool installs.</p>
-<p>Could you share any more about the specifics of the tools (I have a bioinformatics background) you're installing and the lockfiles? I'd be curious to hear how it's different than a standard tool install.</p>
+<p>We&#x27;re also interested in allowing locks (<code>uv.lock</code>) to be created / used with tool installs.</p>
+<p>Could you share any more about the specifics of the tools (I have a bioinformatics background) you&#x27;re installing and the lockfiles? I&#x27;d be curious to hear how it&#x27;s different than a standard tool install.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/purajit">@purajit</a> on 2024-12-03 22:13</div>
             <div class="timeline-body"><p>Hah - I just got the notification for 0.5.6 and saw the <code>--constraints</code> option :P</p>
-<p>I wouldn't say it's too &quot;different&quot;, more that I'm so far more used to using <code>uv tool</code> kind of like an
+<p>I wouldn&#x27;t say it&#x27;s too &quot;different&quot;, more that I&#x27;m so far more used to using <code>uv tool</code> kind of like an
 on-the-fly option rather than a way to create a deployable artifact - this is just my perception; I think
-once https://github.com/astral-sh/uv/issues/3560 completes, I'd find it more &quot;native&quot; and obvious for this purpose (specifically, &quot;Tools in a project&quot;).</p>
-<p>The one slight oddity is Aldy, which requires an installation of <code>setuptools</code>, so the lockfile isn't
-just a constraint (I know I can also use <code>uv tool install 'aldy@ git+...' --with setuptools</code>, but I
-generally try to avoid having configuration defined as CLI options, and I'd also like to keep it
-reproducible with an explicit lockfile, even though in this case it's minor)</p>
+once <a href="https://github.com/astral-sh/uv/issues/3560">astral-sh/uv#3560</a> completes, I&#x27;d find it more &quot;native&quot; and obvious for this purpose (specifically, &quot;Tools in a project&quot;).</p>
+<p>The one slight oddity is Aldy, which requires an installation of <code>setuptools</code>, so the lockfile isn&#x27;t
+just a constraint (I know I can also use <code>uv tool install &#x27;aldy@ git+...&#x27; --with setuptools</code>, but I
+generally try to avoid having configuration defined as CLI options, and I&#x27;d also like to keep it
+reproducible with an explicit lockfile, even though in this case it&#x27;s minor)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-03 22:17</div>
-            <div class="timeline-body"><p>That makes sense. The long-term plan is to allow declarative tool installs, i.e., you'd define them in a TOML file and could install from there. I believe Pixi has a similar feature: https://prefix.dev/blog/pixi_global</p>
+            <div class="timeline-body"><p>That makes sense. The long-term plan is to allow declarative tool installs, i.e., you&#x27;d define them in a TOML file and could install from there. I believe Pixi has a similar feature: https://prefix.dev/blog/pixi_global</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -227,38 +227,38 @@ reproducible with an explicit lockfile, even though in this case it's minor)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2024-12-03 22:17</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-03 22:17</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/purajit">@purajit</a> on 2024-12-03 22:19</div>
-            <div class="timeline-body"><p>@zanieb I didn't fully understand the previous statement, but why is this intentional? Doesn't this mean that installing an executable that imports packages is essentially unsupported with <code>--prefix</code>? I could see potentially worse side-effects too - where the package being imported by an executable within a venv isn't the package installed within that venv.</p>
+            <div class="timeline-body"><p>@zanieb I didn&#x27;t fully understand the previous statement, but why is this intentional? Doesn&#x27;t this mean that installing an executable that imports packages is essentially unsupported with <code>--prefix</code>? I could see potentially worse side-effects too - where the package being imported by an executable within a venv isn&#x27;t the package installed within that venv.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-03 22:37</div>
-            <div class="timeline-body"><p>Yeah so returning to https://github.com/astral-sh/uv/issues/9591#issuecomment-2513373596 I don't think <code>--prefix</code> is intended to mutate an existing environment and I don't think we should attempt to discover the Python interpreter that exists there. It's sort of a low-level escape hatch and I think it's reasonable to pass <code>--python &lt;path&gt;</code> if you want to opt-in to discovering an existing interpreter.</p>
-<p>I closed this because we identified that it wasn't a regression and you had alternative workflows that make more sense. Happy to discuss still though.</p>
+            <div class="timeline-body"><p>Yeah so returning to <a href="https://github.com/astral-sh/uv/issues/9591">astral-sh/uv#9591</a>#issuecomment-2513373596 I don&#x27;t think <code>--prefix</code> is intended to mutate an existing environment and I don&#x27;t think we should attempt to discover the Python interpreter that exists there. It&#x27;s sort of a low-level escape hatch and I think it&#x27;s reasonable to pass <code>--python &lt;path&gt;</code> if you want to opt-in to discovering an existing interpreter.</p>
+<p>I closed this because we identified that it wasn&#x27;t a regression and you had alternative workflows that make more sense. Happy to discuss still though.</p>
 <blockquote>
-<p>Doesn't this mean that installing an executable that imports packages is essentially unsupported with --prefix?</p>
+<p>Doesn&#x27;t this mean that installing an executable that imports packages is essentially unsupported with --prefix?</p>
 </blockquote>
-<p>Can you expand on this? I don't quite follow.</p>
+<p>Can you expand on this? I don&#x27;t quite follow.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/purajit">@purajit</a> on 2024-12-03 23:49</div>
-            <div class="timeline-body"><p>Yeah, the alternative works for me and I find it way more idiomatic, so I'm not emotionally/personally
+            <div class="timeline-body"><p>Yeah, the alternative works for me and I find it way more idiomatic, so I&#x27;m not emotionally/personally
 invested in this particular issue anymore, beyond just mentioning my expectations.</p>
 <blockquote>
-<p>Can you expand on this? I don't quite follow.</p>
+<p>Can you expand on this? I don&#x27;t quite follow.</p>
 </blockquote>
-<p>As in, with the <code>mypy</code> example above, if you're not passing in <code>--python</code> during installation, you can't
+<p>As in, with the <code>mypy</code> example above, if you&#x27;re not passing in <code>--python</code> during installation, you can&#x27;t
 actually use the installed mypy.</p>
 <p>&lt;took a pause and did some reading; leaving the above so you know what I meant&gt;</p>
 <p>Ah, I think I had my interpretation wrong and now the discussions make sense to me - I guess the
 intended behavior is to install into a bare directory with the overall directory structure, with
-the promises ending there. Reading https://github.com/astral-sh/uv/issues/3076 and then the PRs above cleared that up for me.
+the promises ending there. Reading <a href="https://github.com/astral-sh/uv/issues/3076">astral-sh/uv#3076</a> and then the PRs above cleared that up for me.
 After that, it does become clear that this is absolutely not what I want to use for my case.</p>
-<p>This is the help entry for <code>--prefix</code> which confused me; I guess it's referring to just the structure, rather
+<p>This is the help entry for <code>--prefix</code> which confused me; I guess it&#x27;s referring to just the structure, rather
 than the behavior of a virtualenv:</p>
 <blockquote>
 <p>Install packages into <code>lib</code>, <code>bin</code>, and other top-level folders under the specified directory, as if a virtual environment were present at that location</p>
@@ -269,18 +269,18 @@ than the behavior of a virtualenv:</p>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-04 00:05</div>
             <div class="timeline-body"><blockquote>
-<p>so I'm not emotionally/personally invested in this particular issue anymore, beyond just mentioning my expectations.</p>
+<p>so I&#x27;m not emotionally/personally invested in this particular issue anymore, beyond just mentioning my expectations.</p>
 </blockquote>
 <p>👍</p>
 <blockquote>
-<p>As in, with the mypy example above, if you're not passing in --python during installation, you can't
+<p>As in, with the mypy example above, if you&#x27;re not passing in --python during installation, you can&#x27;t
 actually use the installed mypy.</p>
 </blockquote>
-<p>Yeah, I guess I'm not sure if that's within the scope of the intent of <code>--prefix</code>. I've never needed it professionally myself so I can't really speak to that with confidence, I'm just leaning on the context we've established from previous requests.</p>
+<p>Yeah, I guess I&#x27;m not sure if that&#x27;s within the scope of the intent of <code>--prefix</code>. I&#x27;ve never needed it professionally myself so I can&#x27;t really speak to that with confidence, I&#x27;m just leaning on the context we&#x27;ve established from previous requests.</p>
 <blockquote>
 <p>This is the help entry for --prefix which confused me; ...</p>
 </blockquote>
-<p>I think that's there to explain how the layout differs from <code>--target</code></p>
+<p>I think that&#x27;s there to explain how the layout differs from <code>--target</code></p>
 <pre><code>❯ uv pip install --target example anyio
 Using Python 3.12.7 environment at bar
 Resolved 3 packages in 115ms
@@ -313,8 +313,8 @@ example
             <div class="timeline-body"><blockquote>
 <p>not give you pause? :) Perhaps we should expand that warning?</p>
 </blockquote>
-<p>I'm gonna be completely honest - when I checked the reference I didn't notice the second paragraph. Completely
-by bad. That's a crystal-clear entry that explains exactly what I needed. I'm so sorry.</p>
+<p>I&#x27;m gonna be completely honest - when I checked the reference I didn&#x27;t notice the second paragraph. Completely
+by bad. That&#x27;s a crystal-clear entry that explains exactly what I needed. I&#x27;m so sorry.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -325,7 +325,7 @@ by bad. That's a crystal-clear entry that explains exactly what I needed. I'm so
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:28:40 UTC
+        Synced at 2026-01-20 19:35:54 UTC
     </footer>
 </body>
 </html>

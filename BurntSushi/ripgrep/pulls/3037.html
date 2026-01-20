@@ -23,34 +23,34 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/janvhs">@janvhs</a></div>
-            <div class="timeline-body"><p>Hi, for a while now I'm a bit skeptical of the steep dependency graphs that a lot of Rust tools have. As a counter measure I decided to &quot;validate&quot; the ones I installed on my system and use regularly. ripgrep is the first one in this series.</p>
-<p>This PR would add <a href="https://github.com/mozilla/cargo-vet">cargo-vet</a>, the tool that Mozilla develops and Google, Mozilla and several other projects use to ensure the code they deploy is not containing any malicious code by third parties. It's a proactive tool used for code auditing dependencies incrementally. You can import audits from people or organisations you trust, which leads to a smaller &quot;trust-graph&quot;. I am in the process of introducing this tool at my work at SUSE and it seems to become slowly more popular in the Rust community.</p>
-<p>This PR adds a few audits and trusts the Windows crates as well as some crates by David Tolnay. I left <code>jemallocator</code> and <code>crossbeam-deque</code> without any decision, because I am unfamiliar with both crates and their authors and did not have the capacity to audit them. Especially, <code>jemalloc-sys</code> has a footprint of 127106 lines and I didn't want to deal with it before getting feedback to this PR. Information of each decision is in the corresponding commit</p>
-<p>If you would be interested into improving the auditability further, <a href="https://github.com/rust-secure-code/cargo-auditable">cargo-auditable</a> seems very nice for embedding a dependency list into the built binary without effecting reproducibility. Embedding this info allows various tools like <a href="https://github.com/owasp-dep-scan/blint">OWASP's blint</a>, <a href="https://github.com/rust-secure-code/cargo-auditable">cargo-auditable</a>, <a href="https://github.com/google/osv-scanner">Google's osv-scanner</a>, <a href="https://github.com/anchore/syft">Anchore's syft</a> and <a href="https://github.com/aquasecurity/trivy">Aqua Security's trivy</a> to pick it up from the binary and create SBOMs for a project, whole system or use them in different ways like vulnerability scanning via <a href="https://github.com/anchore/grype">grype</a>. In fact, Go already does this by default and it is a great value add. I actually use part of this info automatically for updating my manually installed Go binaries to the newest version.</p>
+            <div class="timeline-body"><p>Hi, for a while now I&#x27;m a bit skeptical of the steep dependency graphs that a lot of Rust tools have. As a counter measure I decided to &quot;validate&quot; the ones I installed on my system and use regularly. ripgrep is the first one in this series.</p>
+<p>This PR would add <a href="https://github.com/mozilla/cargo-vet">cargo-vet</a>, the tool that Mozilla develops and Google, Mozilla and several other projects use to ensure the code they deploy is not containing any malicious code by third parties. It&#x27;s a proactive tool used for code auditing dependencies incrementally. You can import audits from people or organisations you trust, which leads to a smaller &quot;trust-graph&quot;. I am in the process of introducing this tool at my work at SUSE and it seems to become slowly more popular in the Rust community.</p>
+<p>This PR adds a few audits and trusts the Windows crates as well as some crates by David Tolnay. I left <code>jemallocator</code> and <code>crossbeam-deque</code> without any decision, because I am unfamiliar with both crates and their authors and did not have the capacity to audit them. Especially, <code>jemalloc-sys</code> has a footprint of 127106 lines and I didn&#x27;t want to deal with it before getting feedback to this PR. Information of each decision is in the corresponding commit</p>
+<p>If you would be interested into improving the auditability further, <a href="https://github.com/rust-secure-code/cargo-auditable">cargo-auditable</a> seems very nice for embedding a dependency list into the built binary without effecting reproducibility. Embedding this info allows various tools like <a href="https://github.com/owasp-dep-scan/blint">OWASP&#x27;s blint</a>, <a href="https://github.com/rust-secure-code/cargo-auditable">cargo-auditable</a>, <a href="https://github.com/google/osv-scanner">Google&#x27;s osv-scanner</a>, <a href="https://github.com/anchore/syft">Anchore&#x27;s syft</a> and <a href="https://github.com/aquasecurity/trivy">Aqua Security&#x27;s trivy</a> to pick it up from the binary and create SBOMs for a project, whole system or use them in different ways like vulnerability scanning via <a href="https://github.com/anchore/grype">grype</a>. In fact, Go already does this by default and it is a great value add. I actually use part of this info automatically for updating my manually installed Go binaries to the newest version.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-04-27 13:26</div>
-            <div class="timeline-body"><p>So my initial reaction here was to reject this because I don't think it's worth this level of auditing for ripgrep. In particular, I stopped using <code>cargo crev</code> (many moons ago) for similar reasons: I liked the idea in principle, but in practice, it was <em>way</em> too much ceremony to bother with it. And it just wasn't buying me much. What would end up happening is that I would just avoid updating dependencies at all. Eventually this got to be untenable and so I ripped it out. On top of that, I am already quite selective about the dependencies I use. If ripgrep is the first project you applied <code>cargo vet</code> to, you might find that its dependency tree is quite a bit smaller than many other tools. And especially so if you consider that a huge chunk of them were authored by myself.</p>
+            <div class="timeline-body"><p>So my initial reaction here was to reject this because I don&#x27;t think it&#x27;s worth this level of auditing for ripgrep. In particular, I stopped using <code>cargo crev</code> (many moons ago) for similar reasons: I liked the idea in principle, but in practice, it was <em>way</em> too much ceremony to bother with it. And it just wasn&#x27;t buying me much. What would end up happening is that I would just avoid updating dependencies at all. Eventually this got to be untenable and so I ripped it out. On top of that, I am already quite selective about the dependencies I use. If ripgrep is the first project you applied <code>cargo vet</code> to, you might find that its dependency tree is quite a bit smaller than many other tools. And especially so if you consider that a huge chunk of them were authored by myself.</p>
 <p>With that said, I am potentially open to something here. But:</p>
 <ul>
 <li>I need to understand how it impact the <a href="https://github.com/BurntSushi/ripgrep/blob/master/RELEASE-CHECKLIST.md">release checklist</a>.</li>
 <li>Probably anything by dtolnay should be trusted, e.g., <code>anyhow</code></li>
 </ul>
-<p>My main concern here is that, if I want/need to update a dependency to a version without an audit, then in practice, that review burden is going to fall to me. And I have <em>very little</em> bandwidth to do that. So I am worried that this just isn't going to be sustainable.</p>
-<p>Moreover, ripgrep doesn't have frequent releases. So its blast radius if a malicious dependency gets into its tree is likely quite limited. So I'm skeptical that this ceremony is really worth it at all.</p>
+<p>My main concern here is that, if I want/need to update a dependency to a version without an audit, then in practice, that review burden is going to fall to me. And I have <em>very little</em> bandwidth to do that. So I am worried that this just isn&#x27;t going to be sustainable.</p>
+<p>Moreover, ripgrep doesn&#x27;t have frequent releases. So its blast radius if a malicious dependency gets into its tree is likely quite limited. So I&#x27;m skeptical that this ceremony is really worth it at all.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/janvhs">@janvhs</a> on 2025-04-30 15:43</div>
-            <div class="timeline-body"><p>After reading your feedback, I agree it's not worth the effort it introduces. You're right the dependency graph of ripgrep is pleasantly small and I reviewed less than 10 crates. I'll keep the fork for a few releases and update it once a while to see how much there actually it to review between the changes.</p>
-<p>I can 100% understand the hesitation here and think it's valid.
-Originally I only started this for my own peace of mind, because now I'm not asking myself &quot;should I really install this program&quot; anymore and can just enjoy using ripgrep</p>
+            <div class="timeline-body"><p>After reading your feedback, I agree it&#x27;s not worth the effort it introduces. You&#x27;re right the dependency graph of ripgrep is pleasantly small and I reviewed less than 10 crates. I&#x27;ll keep the fork for a few releases and update it once a while to see how much there actually it to review between the changes.</p>
+<p>I can 100% understand the hesitation here and think it&#x27;s valid.
+Originally I only started this for my own peace of mind, because now I&#x27;m not asking myself &quot;should I really install this program&quot; anymore and can just enjoy using ripgrep</p>
 <p>Thank you for considering and writing ripgrep ^^</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @janvhs on 2025-04-30 15:43</div>
+            <div class="event">Closed by <a href="https://github.com/janvhs">@janvhs</a> on 2025-04-30 15:43</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-04-30 15:51</div>
@@ -60,7 +60,7 @@ Originally I only started this for my own peace of mind, because now I'm not ask
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:44:20 UTC
+        Synced at 2026-01-20 18:48:20 UTC
     </footer>
 </body>
 </html>

@@ -24,7 +24,7 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a></div>
             <div class="timeline-body"><p>This is subtle, and the root cause became more apparent with #19604, since we now have many more cases of superclasses and subclasses using different typevars. The issue is easiest to see in the following:</p>
-<pre><code class="language-py">class C[T]:
+<pre><code>class C[T]:
     def __init__(self, t: T) -&gt; None: ...
 
 class D[U](C[T]):
@@ -35,41 +35,41 @@ reveal_type(D(1))  # should be: D[int]
 </code></pre>
 <p>When instantiating a generic class, the <code>__init__</code> method inherits the generic context of that class. This lets our call binding machinery infer a specialization for that context.</p>
 <p>Prior to this PR, the instantiation of <code>C</code> worked just fine. Its <code>__init__</code> method would inherit the <code>[T]</code> generic context, and we would infer <code>{T = int}</code> as the specialization based on the argument parameters.</p>
-<p>It didn't work for <code>D</code>. The issue is that the <code>__init__</code> method was inheriting the generic context of the class where <code>__init__</code> was defined (here, <code>C</code> and <code>[T]</code>). At the call site, we would then infer <code>{T = int}</code> as the specialization — but that wouldn't help us specialize <code>D[U]</code>, since <code>D</code> does not have <code>T</code> in its generic context!</p>
+<p>It didn&#x27;t work for <code>D</code>. The issue is that the <code>__init__</code> method was inheriting the generic context of the class where <code>__init__</code> was defined (here, <code>C</code> and <code>[T]</code>). At the call site, we would then infer <code>{T = int}</code> as the specialization — but that wouldn&#x27;t help us specialize <code>D[U]</code>, since <code>D</code> does not have <code>T</code> in its generic context!</p>
 <p>Instead, the <code>__init__</code> method should inherit the generic context of the class that we are performing the lookup on (here, <code>D</code> and <code>[U]</code>). That lets us correctly infer <code>{U = int}</code> as the specialization, which we can successfully apply to <code>D[U]</code>.</p>
-<p>(Note that <code>__init__</code> refers to <code>C</code>'s typevars in its signature, but that's okay; our member lookup logic already applies the <code>T = U</code> specialization when returning a member of <code>C</code> while performing a lookup on <code>D</code>, transforming its signature from <code>(Self, T) -&gt; None</code> to <code>(Self, U) -&gt; None</code>.)</p>
-<p>Closes https://github.com/astral-sh/ty/issues/588</p>
+<p>(Note that <code>__init__</code> refers to <code>C</code>&#x27;s typevars in its signature, but that&#x27;s okay; our member lookup logic already applies the <code>T = U</code> specialization when returning a member of <code>C</code> while performing a lookup on <code>D</code>, transforming its signature from <code>(Self, T) -&gt; None</code> to <code>(Self, U) -&gt; None</code>.)</p>
+<p>Closes <a href="https://github.com/astral-sh/ty/issues/588">astral-sh/ty#588</a></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @dcreager on 2025-08-01 16:49</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/dcreager">@dcreager</a> on 2025-08-01 16:49</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-08-01 16:49</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/dcreager">@dcreager</a> on 2025-08-01 16:49</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @dcreager on 2025-08-01 16:49</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/dcreager">@dcreager</a> on 2025-08-01 16:49</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @dcreager on 2025-08-01 16:49</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/dcreager">@dcreager</a> on 2025-08-01 16:49</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-01 16:51</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2>Diagnostic diff on typing conformance tests</h2>
+Diagnostic diff on typing conformance tests
 <p>No changes detected when running ty on typing conformance tests ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-01 16:53</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">pyp (https://github.com/hauntsaninja/pyp)
+Changes were detected when running on open source projects
+
+<pre><code>pyp (https://github.com/hauntsaninja/pyp)
 - tests/test_pyp.py:45:37: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_T_io@redirect_stdout`, found `StringIO`
 - Found 7 diagnostics
 + Found 6 diagnostics
@@ -81,10 +81,10 @@ psycopg (https://github.com/psycopg/psycopg)
 
 werkzeug (https://github.com/pallets/werkzeug)
 - src/werkzeug/sansio/request.py:305:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `((str, /) -&gt; _TAccessorValue@header_property) | None`, found `def parse_date(value: str | None) -&gt; datetime | None`
-- src/werkzeug/sansio/request.py:318:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `((str, /) -&gt; _TAccessorValue@header_property) | None`, found `&lt;class 'int'&gt;`
+- src/werkzeug/sansio/request.py:318:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `((str, /) -&gt; _TAccessorValue@header_property) | None`, found `&lt;class &#x27;int&#x27;&gt;`
 - src/werkzeug/sansio/request.py:503:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `((str, /) -&gt; _TAccessorValue@header_property) | None`, found `def parse_set_header(value: str | None, on_update: ((HeaderSet, /) -&gt; None) | None = None) -&gt; HeaderSet`
 - src/werkzeug/sansio/response.py:336:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `((str, /) -&gt; _TAccessorValue@header_property) | None`, found `def parse_age(value: str | None = None) -&gt; timedelta | None`
-- src/werkzeug/sansio/response.py:355:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `((str, /) -&gt; _TAccessorValue@header_property) | None`, found `&lt;class 'int'&gt;`
+- src/werkzeug/sansio/response.py:355:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `((str, /) -&gt; _TAccessorValue@header_property) | None`, found `&lt;class &#x27;int&#x27;&gt;`
 - src/werkzeug/sansio/response.py:391:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `((str, /) -&gt; _TAccessorValue@header_property) | None`, found `def parse_date(value: str | None) -&gt; datetime | None`
 - src/werkzeug/sansio/response.py:392:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `((_TAccessorValue@header_property, /) -&gt; str) | None`, found `def http_date(timestamp: date | int | float | struct_time | None = None) -&gt; str`
 - src/werkzeug/sansio/response.py:404:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `((str, /) -&gt; _TAccessorValue@header_property) | None`, found `def parse_date(value: str | None) -&gt; datetime | None`
@@ -97,10 +97,10 @@ werkzeug (https://github.com/pallets/werkzeug)
 - src/werkzeug/sansio/response.py:723:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `((_TAccessorValue@header_property, /) -&gt; str) | None`, found `def dump_header(iterable: Iterable[Any]) -&gt; str`
 - src/werkzeug/sansio/response.py:734:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `((str, /) -&gt; _TAccessorValue@header_property) | None`, found `def parse_set_header(value: str | None, on_update: ((HeaderSet, /) -&gt; None) | None = None) -&gt; HeaderSet`
 - src/werkzeug/sansio/response.py:735:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `((_TAccessorValue@header_property, /) -&gt; str) | None`, found `def dump_header(iterable: Iterable[Any]) -&gt; str`
-- src/werkzeug/sansio/response.py:741:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `((str, /) -&gt; _TAccessorValue@header_property) | None`, found `&lt;class 'int'&gt;`
+- src/werkzeug/sansio/response.py:741:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `((str, /) -&gt; _TAccessorValue@header_property) | None`, found `&lt;class &#x27;int&#x27;&gt;`
 - tests/test_utils.py:153:53: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_TAccessorValue@environ_property | None`, found `Literal[&quot;spam&quot;]`
-- tests/test_utils.py:155:51: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `((str, /) -&gt; _TAccessorValue@environ_property) | None`, found `&lt;class 'int'&gt;`
-- tests/test_utils.py:156:65: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `((str, /) -&gt; _TAccessorValue@environ_property) | None`, found `&lt;class 'int'&gt;`
+- tests/test_utils.py:155:51: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `((str, /) -&gt; _TAccessorValue@environ_property) | None`, found `&lt;class &#x27;int&#x27;&gt;`
+- tests/test_utils.py:156:65: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `((str, /) -&gt; _TAccessorValue@environ_property) | None`, found `&lt;class &#x27;int&#x27;&gt;`
 - tests/test_utils.py:158:27: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `((str, /) -&gt; _TAccessorValue@environ_property) | None`, found `def parse_date(value: str | None) -&gt; datetime | None`
 - tests/test_utils.py:158:39: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `((_TAccessorValue@environ_property, /) -&gt; str) | None`, found `def http_date(timestamp: date | int | float | struct_time | None = None) -&gt; str`
 - Found 390 diagnostics
@@ -237,7 +237,7 @@ prefect (https://github.com/PrefectHQ/prefect)
 
 zulip (https://github.com/zulip/zulip)
 + zerver/actions/message_send.py:1836:5: error[invalid-assignment] Invalid assignment to data descriptor attribute `type` on type `Message` with custom `__set__` method
-- zerver/lib/timeout.py:69:34: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_T@py_object`, found `&lt;class 'TimeoutExpiredError'&gt;`
+- zerver/lib/timeout.py:69:34: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_T@py_object`, found `&lt;class &#x27;TimeoutExpiredError&#x27;&gt;`
 - zerver/management/commands/send_test_email.py:48:30: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_T_io@redirect_stderr`, found `StringIO`
 - zerver/migrations/0001_squashed_0569.py:919:71: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `type[NOT_PROVIDED] | Expression | _ST@SmallIntegerField`, found `Literal[1]`
 - zerver/migrations/0001_squashed_0569.py:1068:25: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `type[NOT_PROVIDED] | Expression | _ST@PositiveSmallIntegerField`, found `Literal[1]`
@@ -287,7 +287,7 @@ manticore (https://github.com/trailofbits/manticore)
 + Found 1095 diagnostics
 
 </code></pre>
-</details>
+
 No memory usage changes detected ✅
 
 </div>
@@ -297,7 +297,7 @@ No memory usage changes detected ✅
             <div class="timeline-body"><p>Nice! I think you also need to pass the generic context into the <code>__new__</code> method we synthesize for tuple types here:</p>
 <p>https://github.com/astral-sh/ruff/blob/06cd249a9be67b8cadc60a1557c2faaf56d7bac7/crates/ty_python_semantic/src/types/class.rs#L783-L827</p>
 <p>Example failing test case on your branch:</p>
-<pre><code class="language-py">class Foo[T, U](tuple[T, U]): ...  # false positive error: Argument is incorrect: Expected `tuple[T@Foo, U@Foo]`, found `tuple[Literal[1], Literal[2]]` (invalid-argument-type)
+<pre><code>class Foo[T, U](tuple[T, U]): ...  # false positive error: Argument is incorrect: Expected `tuple[T@Foo, U@Foo]`, found `tuple[Literal[1], Literal[2]]` (invalid-argument-type)
 reveal_type(Foo((1, 2)))  # revealed: Foo[Unknown, Unknown]
 </code></pre>
 </div>
@@ -317,8 +317,8 @@ reveal_type(Foo((1, 2)))  # revealed: Foo[Unknown, Unknown]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/legacy/classes.md</code>:380 on 2025-08-01 18:31</div>
-            <div class="timeline-body"><p>I sort of wish that this was <code>C[Literal[1], Literal[2]]</code> -- I don't think there's a strong reason to upcast the <code>Literal</code> types to <code>int</code> types here, since <code>tuple</code> is covariant. We'd obviously infer <code>tuple[Literal[1], Literal[2]]</code> rather than <code>tuple[int, int]</code> for <code>(1, 2)</code>, for similar reasons: the covariance of <code>tuple</code> means that <code>tuple[Literal[1], Literal[2]]</code> is assignable to <code>tuple[int, int]</code>, so there's no way that inferring the more precise type can produce false positives.</p>
-<p>But that's not for this PR! It's obviously a pre-existing issue.</p>
+            <div class="timeline-body"><p>I sort of wish that this was <code>C[Literal[1], Literal[2]]</code> -- I don&#x27;t think there&#x27;s a strong reason to upcast the <code>Literal</code> types to <code>int</code> types here, since <code>tuple</code> is covariant. We&#x27;d obviously infer <code>tuple[Literal[1], Literal[2]]</code> rather than <code>tuple[int, int]</code> for <code>(1, 2)</code>, for similar reasons: the covariance of <code>tuple</code> means that <code>tuple[Literal[1], Literal[2]]</code> is assignable to <code>tuple[int, int]</code>, so there&#x27;s no way that inferring the more precise type can produce false positives.</p>
+<p>But that&#x27;s not for this PR! It&#x27;s obviously a pre-existing issue.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -335,10 +335,10 @@ reveal_type(Foo((1, 2)))  # revealed: Foo[Unknown, Unknown]
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @dcreager on 2025-08-01 19:29</div>
+            <div class="event">Merged by <a href="https://github.com/dcreager">@dcreager</a> on 2025-08-01 19:29</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dcreager on 2025-08-01 19:29</div>
+            <div class="event">Closed by <a href="https://github.com/dcreager">@dcreager</a> on 2025-08-01 19:29</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-08-01 19:29</div>
@@ -346,7 +346,7 @@ reveal_type(Foo((1, 2)))  # revealed: Foo[Unknown, Unknown]
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:14:44 UTC
+        Synced at 2026-01-20 19:17:16 UTC
     </footer>
 </body>
 </html>

@@ -23,21 +23,21 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/oryon-dominik">@oryon-dominik</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>When using an array of sources with platform-specific markers in
 <code>[tool.uv.sources]</code>, uv attempts to resolve and validate paths even when the
 marker indicates the source should not be used on the current platform. This
 causes failures when a path source is only valid on one platform.</p>
-<h2>Current Behavior</h2>
+Current Behavior
 <p>With the following configuration:</p>
-<pre><code class="language-toml">[tool.uv.sources]
+<pre><code>[tool.uv.sources]
 mypackage = [
-  { git = &quot;https://github.com/user/mypackage&quot;, branch = &quot;mybranch&quot;, marker = &quot;sys_platform != 'win32'&quot;},
-  { path = &quot;../../mypackage&quot;, editable = true, marker = &quot;sys_platform == 'win32'&quot;},
+  { git = &quot;https://github.com/user/mypackage&quot;, branch = &quot;mybranch&quot;, marker = &quot;sys_platform != &#x27;win32&#x27;&quot;},
+  { path = &quot;../../mypackage&quot;, editable = true, marker = &quot;sys_platform == &#x27;win32&#x27;&quot;},
 ]
 </code></pre>
-<p>On Linux (where <code>sys_platform != 'win32'</code> should match and use the Git source):</p>
-<pre><code class="language-bash">$ python -c &quot;import sys; print(sys.platform)&quot;
+<p>On Linux (where <code>sys_platform != &#x27;win32&#x27;</code> should match and use the Git source):</p>
+<pre><code>$ python -c &quot;import sys; print(sys.platform)&quot;
 linux
 
 $ uv sync --verbose
@@ -50,57 +50,57 @@ error: Distribution not found at: file:///apps/project/mypackage
 <p>Despite the marker indicating the path source should not be used on Linux, uv
 still attempts to resolve and validate the local path, causing the sync to
 fail.</p>
-<h2>Expected Behavior</h2>
-<p>When <code>sys_platform == 'win32'</code> is false (on Linux), uv should:</p>
+Expected Behavior
+<p>When <code>sys_platform == &#x27;win32&#x27;</code> is false (on Linux), uv should:</p>
 <ol>
 <li>Skip the path source entirely</li>
-<li>Only use the Git source that matches <code>sys_platform != 'win32'</code></li>
+<li>Only use the Git source that matches <code>sys_platform != &#x27;win32&#x27;</code></li>
 <li>Never attempt to resolve or validate the <code>../../mypackage</code> path</li>
 </ol>
 <p>The verbose output shows uv correctly attempts the GitHub path first, but then
 falls back to checking the local path even though the marker should prevent
 this.</p>
-<h2>Workarounds Attempted</h2>
+Workarounds Attempted
 <ol>
 <li>✅ <strong>Switching marker order</strong> - Git source first in array (still fails)</li>
 <li>✅ <strong>Different marker syntax</strong> - Tried <code>platform_system</code> instead of <code>sys_platform</code> (still fails)</li>
 <li>⚠️  <strong>Cloning repo at path location</strong> - Works but defeats the purpose of markers</li>
 </ol>
-<h2>Environment</h2>
+Environment
 <ul>
 <li><strong>uv version</strong>: 0.8.24</li>
 <li><strong>Platform</strong>: Linux (server), Windows 11 (development)</li>
 <li><strong>Python</strong>: 3.13.7</li>
 </ul>
-<h2>Related Issues</h2>
+Related Issues
 <ul>
 <li>#10777 - <code>[tool.uv.sources] uv is trying to normalize the path, even when the system platform differs from the marker</code> - Similar issue with path normalization, supposedly fixed but still occurring</li>
-<li>#14289 - <code>Cannot specify multiple uv.sources which depend on platform markers</code> - Enhancement request that led to array syntax implementation (which we're using correctly)</li>
+<li>#14289 - <code>Cannot specify multiple uv.sources which depend on platform markers</code> - Enhancement request that led to array syntax implementation (which we&#x27;re using correctly)</li>
 </ul>
-<h3>Platform</h3>
+Platform
 <p>Linux (server), Windows 11 (development)</p>
-<h3>Version</h3>
+Version
 <p>0.8.24</p>
-<h3>Python version</h3>
+Python version
 <p>3.13.7</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @oryon-dominik on 2025-10-07 16:30</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/oryon-dominik">@oryon-dominik</a> on 2025-10-07 16:30</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-11-01 20:59</div>
-            <div class="timeline-body"><p>In order to create a <code>uv.lock</code> file, uv needs to be able to access all of the declared dependencies to extract their metadata -- even those that won't ultimately be installed. So it's correct for uv to look for the <code>../../mypackage</code> package even on non-Windows machines, as the lockfile is intended to be used across <em>all</em> platforms.</p>
-<p>If you create a <code>uv.lock</code> and check it in, you can (e.g.) install on macOS without the local <code>mypackage</code> using <code>uv sync --frozen</code>. In other words, if the lockfile already exists, uv can use it and doesn't require access to dependencies it won't install; but to <em>create</em> the lockfile, we need access to all of them.</p>
+            <div class="timeline-body"><p>In order to create a <code>uv.lock</code> file, uv needs to be able to access all of the declared dependencies to extract their metadata -- even those that won&#x27;t ultimately be installed. So it&#x27;s correct for uv to look for the <code>../../mypackage</code> package even on non-Windows machines, as the lockfile is intended to be used across <em>all</em> platforms.</p>
+<p>If you create a <code>uv.lock</code> and check it in, you can (e.g.) install on macOS without the local <code>mypackage</code> using <code>uv sync --frozen</code>. In other words, if the lockfile already exists, uv can use it and doesn&#x27;t require access to dependencies it won&#x27;t install; but to <em>create</em> the lockfile, we need access to all of them.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2025-11-01 20:59</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-11-01 20:59</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:33:05 UTC
+        Synced at 2026-01-20 19:40:34 UTC
     </footer>
 </body>
 </html>

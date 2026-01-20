@@ -23,20 +23,20 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/pedroprates">@pedroprates</a></div>
-            <div class="timeline-body"><h3>Problem Description</h3>
-<p>Currently, when using the --env-file flag in the uv package, system environment variables take precedence over those defined in the .env file. This behavior can lead to inconsistencies and potential reproducibility issues, especially when the system's environment differs across users or systems, despite having identical .env configurations.</p>
-<h2>Proposed Solution</h2>
+            <div class="timeline-body">Problem Description
+<p>Currently, when using the --env-file flag in the uv package, system environment variables take precedence over those defined in the .env file. This behavior can lead to inconsistencies and potential reproducibility issues, especially when the system&#x27;s environment differs across users or systems, despite having identical .env configurations.</p>
+Proposed Solution
 <p>Introduce a new flag (e.g., --env-file-precedence or --force-env-file) to control which source of environment variables takes precedence in case of conflicts. The following options could be considered:</p>
 <ul>
 <li><strong>Default (current behavior)</strong>: System environment variables override .env file values.</li>
 <li><strong>New option</strong>: .env file variables take precedence, ensuring uniformity across different environments.</li>
 </ul>
-<h2>Benefits</h2>
+Benefits
 <ul>
 <li><strong>Reproducibility</strong>: This change would enhance reproducibility, as the environment would depend solely on the .env file when configured accordingly.</li>
 <li><strong>Flexibility</strong>: Users can choose the behavior that suits their needs, whether prioritizing system configurations or ensuring .env file consistency.</li>
 </ul>
-<h2>Additional Context</h2>
+Additional Context
 <p>This feature would align with best practices seen in tools like <a href="https://pypi.org/project/python-dotenv/">python-dotenv</a>, which prioritize .env files if <code>override</code> flag is set to <code>True</code>.</p>
 </div>
         </div>
@@ -47,49 +47,49 @@
 <ol>
 <li>Setup: I have a <code>~/.zshrc</code> file with a <code>PYTHONPATH</code> variable set as follows:</li>
 </ol>
-<pre><code class="language-nvim">export PYTHONPATH=&quot;/my/path&quot;
+<pre><code>export PYTHONPATH=&quot;/my/path&quot;
 </code></pre>
-<ol start="2">
+<ol>
 <li>Project <code>.env</code> file: My project defines a different <code>PYTHONPATH</code> in a <code>.env</code> file:</li>
 </ol>
-<pre><code class="language-plain">PYTHONPATH=&quot;~/my/specific/path&quot;
+<pre><code>PYTHONPATH=&quot;~/my/specific/path&quot;
 </code></pre>
-<ol start="3">
+<ol>
 <li>Python script: A simple script <code>example.py</code> prints the <code>PYTHONPATH</code> value:</li>
 </ol>
-<pre><code class="language-python">import os
+<pre><code>import os
 
 print(&quot;PYTHONPATH is:&quot;, os.getenv(&quot;PYTHONPATH&quot;))
 </code></pre>
-<ol start="4">
+<ol>
 <li>Command to run:</li>
 </ol>
-<pre><code class="language-shell">$ uv run --env-file .env python example.py
+<pre><code>$ uv run --env-file .env python example.py
 </code></pre>
 <p><strong>Current Output</strong>: Despite the <code>.env</code> file specifying <code>~/my/specific/path</code>, the script prints:</p>
-<pre><code class="language-shell">PYTHONPATH is: /my/path
+<pre><code>PYTHONPATH is: /my/path
 </code></pre>
 <p>This is because the system environment variable takes precedence over the <code>.env</code> file. While this may be expected for some, it can lead to unintended behavior when developers assume <code>.env</code> files are definitive for a project.</p>
-<p><strong>Proposed Solution in Action</strong>: With a flag like <code>--force-env-file</code>, I could enforce the <code>.env</code> file's value to take precedence, ensuring the output would instead be:</p>
-<pre><code class="language-shell">PYTHONPATH is: ~/my/specific/path
+<p><strong>Proposed Solution in Action</strong>: With a flag like <code>--force-env-file</code>, I could enforce the <code>.env</code> file&#x27;s value to take precedence, ensuring the output would instead be:</p>
+<pre><code>PYTHONPATH is: ~/my/specific/path
 </code></pre>
 <p>What does everyone else think? Would the proposed flag be a good middle ground to cater to different use cases?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">configuration</span> added by @zanieb on 2025-01-07 19:55</div>
+            <div class="event">Label <span class="label">configuration</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-07 19:55</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> added by @zanieb on 2025-01-07 19:55</div>
+            <div class="event">Label <span class="label">needs-decision</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-07 19:55</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-07 19:57</div>
-            <div class="timeline-body"><p>Loosely, we're hesitant to add more configuration flags without strong demand since we have so many flags. If there's continual demand for this, we can add it.</p>
+            <div class="timeline-body"><p>Loosely, we&#x27;re hesitant to add more configuration flags without strong demand since we have so many flags. If there&#x27;s continual demand for this, we can add it.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/padraic-padraic">@padraic-padraic</a> on 2025-01-24 09:20</div>
-            <div class="timeline-body"><p>I'm looking to roll out uv for project management myself, and this behaviour (defaulting to <code>dotenvy::from_path</code>) caused some unexpected headaches. I appreciate dotenv isn't a standard, but in general the (my?) expectation is that if an env varaible is defined multiple times, the last declaration wins. Other tools in our toolchain (just, make, docker-compose) all behave this way, making uv the odd one out.</p>
+            <div class="timeline-body"><p>I&#x27;m looking to roll out uv for project management myself, and this behaviour (defaulting to <code>dotenvy::from_path</code>) caused some unexpected headaches. I appreciate dotenv isn&#x27;t a standard, but in general the (my?) expectation is that if an env varaible is defined multiple times, the last declaration wins. Other tools in our toolchain (just, make, docker-compose) all behave this way, making uv the odd one out.</p>
 <p>(Though, now looking at this, I do see that the node <code>dotenv</code> package defauls to a similar behaviour...)</p>
 <p>This is exactly how it works when multiple <code>--env-file</code> arguments are passed, but if you instead have a single <code>.env</code> file made by catting together several env files &quot;upstream&quot; then uv will only ever use the first variable declaration, and this feels a bit counterituitive!</p>
 <p>EDIT: On second thought, these seem to be two different behaviours: Do we override existing env variables vs how do we set the env correctly when parsing a file that has a new variable defined multiple times, and this question seems to be one for the <code>dotenvy</code> maintainers who, it looks like, will remedy this behaviour in an upcoming release)</p>
@@ -98,7 +98,7 @@ print(&quot;PYTHONPATH is:&quot;, os.getenv(&quot;PYTHONPATH&quot;))
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/baggiponte">@baggiponte</a> on 2025-04-16 14:41</div>
             <div class="timeline-body"><blockquote>
-<p>Loosely, we're hesitant to add more configuration flags without strong demand since we have so many flags. If there's continual demand for this, we can add it.</p>
+<p>Loosely, we&#x27;re hesitant to add more configuration flags without strong demand since we have so many flags. If there&#x27;s continual demand for this, we can add it.</p>
 </blockquote>
 <p>Makes sense not to want to add a flag. How about a simple configuration section in the <code>pyproject.toml</code> table? I found myself explaining this a couple of time already to colleagues switching to uv - this also includes the fact to explicitly call <code>--env-file=.env</code> or setting <code>UV_ENV_FILE</code> whenever they run a command with <code>uv</code>. marimo has a <a href="https://docs.marimo.io/guides/configuration/runtime_configuration/?h=.env#env-files">similar feature</a>.</p>
 <p>In my case, it would help me avoid explaining some uv details that most of my colleagues took as a &quot;given&quot; or &quot;internals&quot; they would not like to have to know about when migrating.</p>
@@ -106,14 +106,14 @@ print(&quot;PYTHONPATH is:&quot;, os.getenv(&quot;PYTHONPATH&quot;))
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/j4mie">@j4mie</a> on 2025-04-23 13:55</div>
-            <div class="timeline-body"><p>Just adding a +1 to this. I've just spent half an hour trying to figure out why <code>uv run</code> wasn't reading the correct <code>GITHUB_TOKEN</code> (for a project that interacts with the GitHub API) from <code>.env</code>. It turns out that I have a globally-set (in <code>.bashrc</code>) value for <code>GITHUB_TOKEN</code>, which is an entirely separate token that I use for a different command-line tool.</p>
-<p>My hunch is that values in <code>.env</code> should <em>always</em> override values that are already in the environment. The <code>.env</code> is a project-local space, and every other tool I've used previously that reads <code>.env</code> behaves &quot;correctly&quot; here. I'm aware this is a backwards-incompatible change but I think the current behaviour is confusing and actually might be risky in some circumstances.</p>
+            <div class="timeline-body"><p>Just adding a +1 to this. I&#x27;ve just spent half an hour trying to figure out why <code>uv run</code> wasn&#x27;t reading the correct <code>GITHUB_TOKEN</code> (for a project that interacts with the GitHub API) from <code>.env</code>. It turns out that I have a globally-set (in <code>.bashrc</code>) value for <code>GITHUB_TOKEN</code>, which is an entirely separate token that I use for a different command-line tool.</p>
+<p>My hunch is that values in <code>.env</code> should <em>always</em> override values that are already in the environment. The <code>.env</code> is a project-local space, and every other tool I&#x27;ve used previously that reads <code>.env</code> behaves &quot;correctly&quot; here. I&#x27;m aware this is a backwards-incompatible change but I think the current behaviour is confusing and actually might be risky in some circumstances.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jerny-stoiclane">@jerny-stoiclane</a> on 2025-04-29 17:53</div>
             <div class="timeline-body"><blockquote>
-<p>Loosely, we're hesitant to add more configuration flags without strong demand since we have so many flags. If there's continual demand for this, we can add it.</p>
+<p>Loosely, we&#x27;re hesitant to add more configuration flags without strong demand since we have so many flags. If there&#x27;s continual demand for this, we can add it.</p>
 </blockquote>
 <p>+1: This seems like its enough of a footgun that not having the option to set it as a cli-flag, env var, or config option is something worth adding.  The strong demand is there and its seems reasonable that if you are supporting a .env-file flag having the ability to configure <code>override</code> should also be there.</p>
 <p>Appreciate the work on UV</p>
@@ -121,13 +121,13 @@ print(&quot;PYTHONPATH is:&quot;, os.getenv(&quot;PYTHONPATH&quot;))
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/honi-at-simspace">@honi-at-simspace</a> on 2025-10-21 18:33</div>
-            <div class="timeline-body"><p>As long as the current behavior is enforced where existing env variables can't be redefined in a .env file, is there any recommended way for us to pass new environment variables to a <code>uv run</code> command that are already defined in the outer environment?</p>
+            <div class="timeline-body"><p>As long as the current behavior is enforced where existing env variables can&#x27;t be redefined in a .env file, is there any recommended way for us to pass new environment variables to a <code>uv run</code> command that are already defined in the outer environment?</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:28:35 UTC
+        Synced at 2026-01-20 19:35:48 UTC
     </footer>
 </body>
 </html>

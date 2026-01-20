@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/pcavalar">@pcavalar</a></div>
-            <div class="timeline-body"><pre><code class="language-python"># test-pt017.py
+            <div class="timeline-body"><pre><code># test-pt017.py
 def test_foo():
     x = 0
     try:
@@ -35,9 +35,9 @@ def test_foo():
 <p>Ruff flags the <code>assert x == 0, e</code> line as <a href="https://docs.astral.sh/ruff/rules/pytest-assert-in-except/"><code>PT017(pytest-assert-in-except)</code></a> even though the exception is not part of the predicate.
 Flake8 only flags the <code>assert e.args</code> line.</p>
 <p>This looks like a false-positive in ruff rather than a bug in flake8?</p>
-<hr />
+<hr>
 <p>Ruff:</p>
-<pre><code class="language-console">$ ruff --version
+<pre><code>$ ruff --version
 ruff 0.4.8
 $ ruff check --isolated --select=PT017 --output-format=full test-pt017.py
 test-pt017.py:6:9: PT017 Found assertion on exception `e` in `except` block, use `pytest.raises()` instead
@@ -60,7 +60,7 @@ test-pt017.py:7:9: PT017 Found assertion on exception `e` in `except` block, use
 Found 2 errors.
 </code></pre>
 <p>Flake8:</p>
-<pre><code class="language-console">$ flake8 --version
+<pre><code>$ flake8 --version
 7.0.0 (flake8-pytest-style: 2.0.0, flake8-pytest: 1.4, mccabe: 0.7.0, pycodestyle: 2.11.1, pyflakes: 3.2.0) CPython 3.11.8 on Darwin
 $ flake8 --isolated --select=PT017 --show-source test-pt017.py
 test-pt017.py:7:9: PT017 found assertion on exception e in except block, use pytest.raises() instead
@@ -70,10 +70,10 @@ test-pt017.py:7:9: PT017 found assertion on exception e in except block, use pyt
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-06-14 13:20</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-14 13:20</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-06-14 13:20</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-14 13:20</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-14 13:31</div>
@@ -83,38 +83,38 @@ test-pt017.py:7:9: PT017 found assertion on exception e in except block, use pyt
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-06-14 14:00</div>
             <div class="timeline-body"><p>Hmm, I think the snippet here could be written more idiomatically and more correctly as:</p>
-<pre><code class="language-py">def test_foo():
+<pre><code>def test_foo():
     x = 0
     with pytest.raises(ZeroDivisionError) as exc_info:
         1 / x
     assert x == 0, exc_info.value
     assert exc_info.args
 </code></pre>
-<p>I'm not sure I fully understand why we should only emit one error for this snippet rather than two. Both of the assertions here are assertions inside <code>except</code> blocks, which is what the rule is trying to catch.</p>
+<p>I&#x27;m not sure I fully understand why we should only emit one error for this snippet rather than two. Both of the assertions here are assertions inside <code>except</code> blocks, which is what the rule is trying to catch.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-14 14:09</div>
-            <div class="timeline-body"><p>To me the difference is that only the <code>test</code> expression is the assertion. That's what we assert by. The message is, just a message.</p>
+            <div class="timeline-body"><p>To me the difference is that only the <code>test</code> expression is the assertion. That&#x27;s what we assert by. The message is, just a message.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-06-14 14:40</div>
-            <div class="timeline-body"><p>But I think you still have the footgun where if no exception is actually raised in the <code>try</code> block, the test will pass silently (and probably unintentionally). <code>pytest.raises()</code> is designed to solve that, as in the vast majority of cases that's not what you want.</p>
+            <div class="timeline-body"><p>But I think you still have the footgun where if no exception is actually raised in the <code>try</code> block, the test will pass silently (and probably unintentionally). <code>pytest.raises()</code> is designed to solve that, as in the vast majority of cases that&#x27;s not what you want.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-14 14:42</div>
-            <div class="timeline-body"><p>I'm confused by the rule documentation vs the message. In the documentation, we say we're catching all assertions in except blocks but in the message we say we're catching an assertion <em>on</em> the exception. The latter also matches the rule name. I think I need more context on why we only flag assertions that include the exception before I can say who I agree with :)</p>
+            <div class="timeline-body"><p>I&#x27;m confused by the rule documentation vs the message. In the documentation, we say we&#x27;re catching all assertions in except blocks but in the message we say we&#x27;re catching an assertion <em>on</em> the exception. The latter also matches the rule name. I think I need more context on why we only flag assertions that include the exception before I can say who I agree with :)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-14 15:20</div>
             <div class="timeline-body"><blockquote>
-<p>I'm confused by the rule documentation vs the message. In the documentation, we say we're catching all assertions in except blocks but in the message we say we're catching an assertion on the exception. The latter also matches the rule name. I think I need more context on why we only flag assertions that include the exception before I can say who I agree with :)</p>
+<p>I&#x27;m confused by the rule documentation vs the message. In the documentation, we say we&#x27;re catching all assertions in except blocks but in the message we say we&#x27;re catching an assertion on the exception. The latter also matches the rule name. I think I need more context on why we only flag assertions that include the exception before I can say who I agree with :)</p>
 </blockquote>
-<p>Yeah, I considered just updating the message but the problem is that the lint rule only catches <code>assert</code>s on the specific exception. If there's no no name referencing the exception by name (It's a bit wild because it doesn't correctly handle scopes. It just searches for any <code>Name</code> that has the same identifier 🙄 ), then the violation isn't triggered</p>
-<p>That's where I think the rule title and documentation says one thing, but the implementation actually does something entirely else. In the context of the implementation, I would not expect the rule to raise a violation.</p>
+<p>Yeah, I considered just updating the message but the problem is that the lint rule only catches <code>assert</code>s on the specific exception. If there&#x27;s no no name referencing the exception by name (It&#x27;s a bit wild because it doesn&#x27;t correctly handle scopes. It just searches for any <code>Name</code> that has the same identifier 🙄 ), then the violation isn&#x27;t triggered</p>
+<p>That&#x27;s where I think the rule title and documentation says one thing, but the implementation actually does something entirely else. In the context of the implementation, I would not expect the rule to raise a violation.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -125,22 +125,22 @@ test-pt017.py:7:9: PT017 found assertion on exception e in except block, use pyt
 </blockquote>
 <p>That feels like it applies equally well to the two assertions in the example snippet.</p>
 <blockquote>
-<p>That's where I think the rule title and documentation says one thing, but the implementation actually does something entirely else. In the context of the implementation, I would not expect the rule to raise a violation.</p>
+<p>That&#x27;s where I think the rule title and documentation says one thing, but the implementation actually does something entirely else. In the context of the implementation, I would not expect the rule to raise a violation.</p>
 </blockquote>
-<p>I see, but I'm not really sure why a user would want the current behaviour. I don't feel like assertions on exceptions themselves in <code>except</code> blocks are any different to other kinds of exceptions in <code>except</code> blocks. They're both subject to the same footgun.</p>
-<p>In my opinion, the better fix would be to revise the rule so that it highlights more <code>try</code>/<code>except</code> statements where there are assertions in the <code>except</code> block but no assertions in the <code>try</code> block, as that's what I'd expect from this rule's documentation, and it would make much more sense to me.</p>
+<p>I see, but I&#x27;m not really sure why a user would want the current behaviour. I don&#x27;t feel like assertions on exceptions themselves in <code>except</code> blocks are any different to other kinds of exceptions in <code>except</code> blocks. They&#x27;re both subject to the same footgun.</p>
+<p>In my opinion, the better fix would be to revise the rule so that it highlights more <code>try</code>/<code>except</code> statements where there are assertions in the <code>except</code> block but no assertions in the <code>try</code> block, as that&#x27;s what I&#x27;d expect from this rule&#x27;s documentation, and it would make much more sense to me.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-14 15:41</div>
             <div class="timeline-body"><blockquote>
-<p>I see, but I'm not really sure why you'd want the current behaviour. I don't feel like assertions on exceptions themselves in except blocks are any different to other kinds of exceptions in except blocks. They're both subject to the same footgun.</p>
+<p>I see, but I&#x27;m not really sure why you&#x27;d want the current behaviour. I don&#x27;t feel like assertions on exceptions themselves in except blocks are any different to other kinds of exceptions in except blocks. They&#x27;re both subject to the same footgun.</p>
 </blockquote>
-<p>I'm not speaking in favor of the current implementation. I just tried to explain that the documentation and implementation aren't matching. Or at least, I would understand a different behavior from the rule documentation than is implemented today.</p>
+<p>I&#x27;m not speaking in favor of the current implementation. I just tried to explain that the documentation and implementation aren&#x27;t matching. Or at least, I would understand a different behavior from the rule documentation than is implemented today.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> removed by @MichaReiser on 2024-06-14 15:41</div>
+            <div class="event">Label <span class="label">bug</span> removed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-14 15:41</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-15 01:08</div>
@@ -149,8 +149,8 @@ test-pt017.py:7:9: PT017 found assertion on exception e in except block, use pyt
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2024-06-15 02:41</div>
-            <div class="timeline-body"><p>I agree. The documentation doesn't match the implementation. I would expect the following code to violate PT017, but it doesn't.</p>
-<pre><code class="language-python">def test_abc():
+            <div class="timeline-body"><p>I agree. The documentation doesn&#x27;t match the implementation. I would expect the following code to violate PT017, but it doesn&#x27;t.</p>
+<pre><code>def test_abc():
     try:
         foo()
     except Exception:
@@ -161,7 +161,7 @@ test-pt017.py:7:9: PT017 found assertion on exception e in except block, use pyt
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:50:27 UTC
+        Synced at 2026-01-20 18:48:54 UTC
     </footer>
 </body>
 </html>

@@ -23,11 +23,11 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/DetachHead">@DetachHead</a></div>
-            <div class="timeline-body"><pre><code class="language-py">asdf = 1
+            <div class="timeline-body"><pre><code>asdf = 1
 &quot;value is {asdf}&quot; # the user probably meant to make this an f string
 </code></pre>
-<p>to avoid false positives, it should only complain when the expression inside the <code>{}</code> refers to an existing variable. that way, most usages of the <code>format</code> function won't trigger false positives:</p>
-<pre><code class="language-py">x = &quot;{foo}&quot; # no error because `foo` variable does not exist
+<p>to avoid false positives, it should only complain when the expression inside the <code>{}</code> refers to an existing variable. that way, most usages of the <code>format</code> function won&#x27;t trigger false positives:</p>
+<pre><code>x = &quot;{foo}&quot; # no error because `foo` variable does not exist
 x.format(foo=&quot;bar&quot;)
 </code></pre>
 </div>
@@ -38,14 +38,14 @@ x.format(foo=&quot;bar&quot;)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-10-30 23:37</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-30 23:37</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-10-30 23:37</div>
+            <div class="event">Label <span class="label">needs-decision</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-30 23:37</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-30 23:37</div>
-            <div class="timeline-body"><p>I'm worried about false positives on this one.</p>
+            <div class="timeline-body"><p>I&#x27;m worried about false positives on this one.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -61,7 +61,7 @@ x.format(foo=&quot;bar&quot;)
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-10-31 01:35</div>
             <div class="timeline-body"><blockquote>
-<p>I'm worried about false positives on this one.</p>
+<p>I&#x27;m worried about false positives on this one.</p>
 </blockquote>
 <p>Can you give an example where there would be false positives? Maybe we could only highlight when the node within <code>{...}</code> is an identifier and skip everything else.</p>
 </div>
@@ -69,20 +69,20 @@ x.format(foo=&quot;bar&quot;)
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-31 01:40</div>
             <div class="timeline-body"><p>My common use false positive</p>
-<pre><code class="language-python">x = &quot;{foo}&quot;
+<pre><code>x = &quot;{foo}&quot;
 x.format(foo=&quot;bar&quot;)
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2023-10-31 02:52</div>
-            <div class="timeline-body"><p>@zanieb in that case it shouldn't trigger a false positive if the rule works how i suggested in https://github.com/astral-sh/ruff/issues/8151#issuecomment-1786278064, because there's no variable in scope called <code>foo</code>.</p>
-<p>imo the <code>format</code> method should only be used instead of f-strings in cases where the variables being formatted are not in scope. i've updated the OP to clarify this</p>
+            <div class="timeline-body"><p>@zanieb in that case it shouldn&#x27;t trigger a false positive if the rule works how i suggested in <a href="https://github.com/astral-sh/ruff/issues/8151">astral-sh/ruff#8151</a>#issuecomment-1786278064, because there&#x27;s no variable in scope called <code>foo</code>.</p>
+<p>imo the <code>format</code> method should only be used instead of f-strings in cases where the variables being formatted are not in scope. i&#x27;ve updated the OP to clarify this</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-31 03:04</div>
-            <div class="timeline-body"><p>I agree requiring the variables to be in scope is a reasonable heuristic for avoiding false positives. I'm not sure I can come up with a common one that meets that requirement.</p>
+            <div class="timeline-body"><p>I agree requiring the variables to be in scope is a reasonable heuristic for avoiding false positives. I&#x27;m not sure I can come up with a common one that meets that requirement.</p>
 <p>I found https://github.com/PrefectHQ/prefect/blob/f654a1b23eb5662afb5b8bfd08c9c86668e817ee/tests/agent/test_agent_queue_selection.py#L36 but that probably ought to be an f-string anyway. We can probably hint something else when <code>format</code> is being called instead of using a f-string.</p>
 </div>
         </div>
@@ -92,20 +92,20 @@ x.format(foo=&quot;bar&quot;)
 <p>I think then we could support this as:</p>
 <ol>
 <li>Skip if this string contains <code>{</code> / <code>}</code></li>
-<li>Skip if it's part of <code>.format</code> call or <code>%</code> operator</li>
+<li>Skip if it&#x27;s part of <code>.format</code> call or <code>%</code> operator</li>
 <li>Parse the string with the <code>f</code> prefix</li>
 <li>Visit each <code>ExprFormattedValue</code> node. If there are none, return</li>
 <li>Create a diagnostic message only if <em>all</em> of the expression inside the formatted node is
 a. An identifier
-b. It's defined in the scope</li>
+b. It&#x27;s defined in the scope</li>
 </ol>
 <p>What do you think? @zanieb</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/peterjc">@peterjc</a> on 2023-11-01 15:40</div>
-            <div class="timeline-body"><p>I'd welcome this. Cross reference https://github.com/peterjc/flake8-sfs/issues/5</p>
-<p>See also the opposite request, f-strings without any variables in them - briefly implemented as flake8-pie's PIE782 code but withdrawn due to false positives. Cross reference https://github.com/peterjc/flake8-sfs/issues/3 and https://github.com/sbdchd/flake8-pie/issues/24</p>
+            <div class="timeline-body"><p>I&#x27;d welcome this. Cross reference <a href="https://github.com/peterjc/flake8-sfs/issues/5">peterjc/flake8-sfs#5</a></p>
+<p>See also the opposite request, f-strings without any variables in them - briefly implemented as flake8-pie&#x27;s PIE782 code but withdrawn due to false positives. Cross reference <a href="https://github.com/peterjc/flake8-sfs/issues/3">peterjc/flake8-sfs#3</a> and <a href="https://github.com/sbdchd/flake8-pie/issues/24">sbdchd/flake8-pie#24</a></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -123,35 +123,35 @@ b. It's defined in the scope</li>
 <ul>
 <li>At least one name is used in the expression and all names used inside the expression are bound</li>
 <li>The string literal is not immediately <code>.format()</code>-ed</li>
-<li>It's not standalone expression (i.e. doesn't look like a docstring)</li>
-<li>It's not in a call that passes kwargs corresponding to all names (to avoid false positives with interpolation functions that work like <code>.format</code>)</li>
+<li>It&#x27;s not standalone expression (i.e. doesn&#x27;t look like a docstring)</li>
+<li>It&#x27;s not in a call that passes kwargs corresponding to all names (to avoid false positives with interpolation functions that work like <code>.format</code>)</li>
 </ul>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> removed by @charliermarsh on 2023-12-31 12:42</div>
+            <div class="event">Label <span class="label">needs-decision</span> removed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-31 12:42</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">accepted</span> added by @charliermarsh on 2023-12-31 12:42</div>
+            <div class="event">Label <span class="label">accepted</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-31 12:42</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-31 12:42</div>
-            <div class="timeline-body"><p>I'm supportive of adding this with the above heuristics.</p>
+            <div class="timeline-body"><p>I&#x27;m supportive of adding this with the above heuristics.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2024-01-24 21:07</div>
+            <div class="event">Label <span class="label">help wanted</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-01-24 21:07</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @snowsignal by @snowsignal on 2024-01-29 16:44</div>
+            <div class="event">Assigned to <a href="https://github.com/snowsignal">@snowsignal</a> by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-01-29 16:44</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @snowsignal on 2024-02-03 00:21</div>
+            <div class="event">Closed by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-02-03 00:21</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:48:42 UTC
+        Synced at 2026-01-20 18:48:44 UTC
     </footer>
 </body>
 </html>

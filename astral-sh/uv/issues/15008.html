@@ -23,11 +23,11 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/bradenkinard-sh">@bradenkinard-sh</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<p>I'm working on building an AWS Lambda that uses Pytorch. I've set up my project similar to the documentation for Pytorch here: https://docs.astral.sh/uv/guides/integration/pytorch/</p>
+            <div class="timeline-body">Summary
+<p>I&#x27;m working on building an AWS Lambda that uses Pytorch. I&#x27;ve set up my project similar to the documentation for Pytorch here: https://docs.astral.sh/uv/guides/integration/pytorch/</p>
 <p>I am finding that if I use <code>uv pip compile</code> to generate a <code>requirements.txt</code> in my dockerfile, it builds without issue. However, if I try to use <code>uv export</code> to generate a <code>requirements.txt</code>, and attempt to install from that, I get errors because it claims it cannot find the specified version of pytorch for a non-Darwin machine.</p>
 <p>This version works:</p>
-<pre><code class="language-uv-pip-compile.Dockerfile">...
+<pre><code>...
 # Install dependencies
 RUN --mount=from=uv,source=/uv,target=/bin/uv \
     --mount=type=cache,target=/root/.cache/uv \
@@ -37,7 +37,7 @@ RUN --mount=from=uv,source=/uv,target=/bin/uv \
     uv pip install -r requirements.txt --target &quot;${LAMBDA_TASK_ROOT}&quot;
 </code></pre>
 <p>This version fails:</p>
-<pre><code class="language-uv-export.Dockerfile">...
+<pre><code>...
 # Install dependencies
 RUN --mount=from=uv,source=/uv,target=/bin/uv \
     --mount=type=cache,target=/root/.cache/uv \
@@ -46,38 +46,38 @@ RUN --mount=from=uv,source=/uv,target=/bin/uv \
     uv export --frozen --no-dev --no-editable -o requirements.txt --index-url https://download.pytorch.org/whl/cpu &amp;&amp; \
     uv pip install -r requirements.txt --target &quot;${LAMBDA_TASK_ROOT}&quot;
 </code></pre>
-<p>I can't tell if this is user error on my part in terms of the arguments I'm passing to <code>uv export</code> or if this is a genuine bug.</p>
-<p>I've created a minimal reproducible <a href="https://github.com/bradenkinard-sh/uv-pytorch-example">example here</a>.</p>
-<h3>Platform</h3>
+<p>I can&#x27;t tell if this is user error on my part in terms of the arguments I&#x27;m passing to <code>uv export</code> or if this is a genuine bug.</p>
+<p>I&#x27;ve created a minimal reproducible <a href="https://github.com/bradenkinard-sh/uv-pytorch-example">example here</a>.</p>
+Platform
 <p>macOS 15.5 Darwin 24.5.0 arm64</p>
-<h3>Version</h3>
+Version
 <p>uv 0.7.13 (Homebrew 2025-06-12)</p>
-<h3>Python version</h3>
+Python version
 <p>Python 3.13.0</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @bradenkinard-sh on 2025-07-31 21:15</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/bradenkinard-sh">@bradenkinard-sh</a> on 2025-07-31 21:15</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-31 21:34</div>
-            <div class="timeline-body"><p>We don't emit index URLs in <code>uv export</code>, I imagine that's the problem? e.g., https://github.com/astral-sh/uv/issues/10008</p>
+            <div class="timeline-body"><p>We don&#x27;t emit index URLs in <code>uv export</code>, I imagine that&#x27;s the problem? e.g., <a href="https://github.com/astral-sh/uv/issues/10008">astral-sh/uv#10008</a></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-08-01 12:46</div>
+            <div class="event">Label <span class="label">bug</span> removed by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-01 12:46</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-08-01 12:46</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-01 12:46</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/vancromy">@vancromy</a> on 2025-08-01 13:35</div>
-            <div class="timeline-body"><p>Correct @zanieb. I'm in the same boat. I have to manually edit the generated file. #10008 has been dormant since April. What is stopping the issue from being addressed? Is it development resource or a higher level discussion about whether it should be supported?</p>
+            <div class="timeline-body"><p>Correct @zanieb. I&#x27;m in the same boat. I have to manually edit the generated file. #10008 has been dormant since April. What is stopping the issue from being addressed? Is it development resource or a higher level discussion about whether it should be supported?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-01 13:50</div>
-            <div class="timeline-body"><p>We cannot express the index URL semantics provided by the <code>pyproject.toml</code> (e.g., explicit indexes) in a <code>requirements.txt</code> file, so we don't want to include them in the export. I think the long-term solution is probably going to be to export to a <code>pylock.toml</code> instead.</p>
+            <div class="timeline-body"><p>We cannot express the index URL semantics provided by the <code>pyproject.toml</code> (e.g., explicit indexes) in a <code>requirements.txt</code> file, so we don&#x27;t want to include them in the export. I think the long-term solution is probably going to be to export to a <code>pylock.toml</code> instead.</p>
 <p>Can you just provide the <code>--index-url</code> to the <code>pip install</code> invocation?</p>
 </div>
         </div>
@@ -87,12 +87,12 @@ RUN --mount=from=uv,source=/uv,target=/bin/uv \
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @bradenkinard-sh on 2025-08-01 14:32</div>
+            <div class="event">Closed by <a href="https://github.com/bradenkinard-sh">@bradenkinard-sh</a> on 2025-08-01 14:32</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:32:26 UTC
+        Synced at 2026-01-20 19:39:48 UTC
     </footer>
 </body>
 </html>

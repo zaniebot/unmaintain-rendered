@@ -23,11 +23,11 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/aktau">@aktau</a></div>
-            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+            <div class="timeline-body">Please tick this box to confirm you have reviewed the above.
 <ul>
 <li>[X] I have a different issue.</li>
 </ul>
-<h3>What version of ripgrep are you using?</h3>
+What version of ripgrep are you using?
 <pre><code>$ rg --version
 ripgrep 14.1.0
 
@@ -37,26 +37,26 @@ simd(runtime):+SSE2,+SSSE3,+AVX2
 
 PCRE2 10.42 is available (JIT is available)
 </code></pre>
-<h3>How did you install ripgrep?</h3>
+How did you install ripgrep?
 <p>I ran</p>
 <pre><code>sudo apt install ripgrep
 </code></pre>
-<h3>What operating system are you using ripgrep on?</h3>
+What operating system are you using ripgrep on?
 <p>Debian Testing</p>
-<h3>Describe your bug.</h3>
+Describe your bug.
 <p>When run inside of GNU parallel, ripgrep produces nothing. Running the same command outside of parallel (copying the output of its <code>-v</code> does work).</p>
-<p>Passing the <code>--tty</code> flag to GNU parallel avoids the issue. I'm reasonably certain this used to work</p>
-<h3>What are the steps to reproduce the behavior?</h3>
+<p>Passing the <code>--tty</code> flag to GNU parallel avoids the issue. I&#x27;m reasonably certain this used to work</p>
+What are the steps to reproduce the behavior?
 <pre><code>$ echo foojitzu &gt; bar
 $ rg foojitzu | cat -
 bar:foojitzu
-$ parallel -v 'rg foojitzu ; echo done {}' ::: bar
+$ parallel -v &#x27;rg foojitzu ; echo done {}&#x27; ::: bar
 rg foojitzu ; echo done bar
 done bar
 </code></pre>
-<h3>What is the actual behavior?</h3>
+What is the actual behavior?
 <p>See above, output is included.</p>
-<p>I expected the same output in parallel as without parallel. AFAIK this used to work. I'm unsure when it broke. The problem appears to be stdin detection. Turning it off with the <code>./</code> trick (appending to the end) makes things work. An strace of a bad run with <code>-j 1</code>:</p>
+<p>I expected the same output in parallel as without parallel. AFAIK this used to work. I&#x27;m unsure when it broke. The problem appears to be stdin detection. Turning it off with the <code>./</code> trick (appending to the end) makes things work. An strace of a bad run with <code>-j 1</code>:</p>
 <pre><code>1279757 execve(&quot;/usr/bin/rg&quot;, [&quot;rg&quot;, &quot;-j&quot;, &quot;1&quot;, &quot;.&quot;], 0x7ffeb50c6bd0 /* 68 vars */) = 0
 1279757 brk(NULL)                       = 0x5616e7628000
 1279757 mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f1f55a1b000
@@ -183,8 +183,8 @@ done bar
 1477678 getcwd(&quot;/home/aktau/tmp&quot;, 1024) = 50
 1477678 statx(AT_FDCWD, &quot;/.git&quot;, AT_STATX_SYNC_AS_STAT, STATX_ALL, 0x7ffe1f319270) = -1 ENOENT (No such file or directory)
 </code></pre>
-<h3>What is the expected behavior?</h3>
-<p>I expected ripgrep to just ignore stdin, continue functioning, and print to stdout. As far as I can recall, this used to work (ripgrep inside parallel without any changes). It's possible that parallel changed its implementation, perhaps it used to have a dummy stdin connected. Still, I believe it should work. The workaround of adding <code>./</code> as the last argument does work, but the silence of the error makes it difficult to track down what's the problem. Ideally it should work automatically.</p>
+What is the expected behavior?
+<p>I expected ripgrep to just ignore stdin, continue functioning, and print to stdout. As far as I can recall, this used to work (ripgrep inside parallel without any changes). It&#x27;s possible that parallel changed its implementation, perhaps it used to have a dummy stdin connected. Still, I believe it should work. The workaround of adding <code>./</code> as the last argument does work, but the silence of the error makes it difficult to track down what&#x27;s the problem. Ideally it should work automatically.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -192,43 +192,43 @@ done bar
             <div class="timeline-body"><p>This is the logic that detects whether stdin is readable or not:</p>
 <p>https://github.com/BurntSushi/ripgrep/blob/b6ef99ee554346a0870245c92112aad3838c8edd/crates/cli/src/lib.rs#L152-L201</p>
 <p>This was the most recent change to the stdin detection as far as I know: <a href="https://github.com/BurntSushi/ripgrep/commit/020c5453a5880257c87949030550d24c596f5c8d">020c5453a5880257c87949030550d24c596f5c8d</a></p>
-<p>Dealing with stdin is fundamentally a heuristic. And many programs do process control in a way that leaves stdin looking like there's something to read on it. This happened with neovim in https://github.com/BurntSushi/ripgrep/issues/1892 and culminated in a change to neovim itself in https://github.com/neovim/neovim/pull/14812.</p>
+<p>Dealing with stdin is fundamentally a heuristic. And many programs do process control in a way that leaves stdin looking like there&#x27;s something to read on it. This happened with neovim in <a href="https://github.com/BurntSushi/ripgrep/issues/1892">BurntSushi/ripgrep#1892</a> and culminated in a change to neovim itself in <a href="https://github.com/neovim/neovim/pull/14812">neovim/neovim#14812</a>.</p>
 <blockquote>
 <p>Ideally it should work automatically.</p>
 </blockquote>
-<p>It just can't. This is the downside of making <code>rg foo</code> work. You are not the first to report an issue like this.</p>
+<p>It just can&#x27;t. This is the downside of making <code>rg foo</code> work. You are not the first to report an issue like this.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2024-05-13 11:51</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-13 11:51</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2024-05-13 11:51</div>
+            <div class="event">Label <span class="label">wontfix</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-13 11:51</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2024-05-13 12:05</div>
-            <div class="timeline-body"><p>I don't understand where that <code>1:foojitzu</code> line comes from (I mean, there's nothing that goes through stdin). I don't get it when trying to reproduce, the only output I get is <code>bar:foojitzu</code> when running <code>rg foojitzu | cat -</code>.</p>
+            <div class="timeline-body"><p>I don&#x27;t understand where that <code>1:foojitzu</code> line comes from (I mean, there&#x27;s nothing that goes through stdin). I don&#x27;t get it when trying to reproduce, the only output I get is <code>bar:foojitzu</code> when running <code>rg foojitzu | cat -</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/aktau">@aktau</a> on 2024-05-13 12:48</div>
             <div class="timeline-body"><blockquote>
-<p>I don't understand where that 1:foojitzu line comes from (I mean, there's nothing that goes through stdin). I don't get it when trying to reproduce, the only output I get is bar:foojitzu when running rg foojitzu | cat -.</p>
+<p>I don&#x27;t understand where that 1:foojitzu line comes from (I mean, there&#x27;s nothing that goes through stdin). I don&#x27;t get it when trying to reproduce, the only output I get is bar:foojitzu when running rg foojitzu | cat -.</p>
 </blockquote>
-<p>Yes, that must've been a copy/paste error on my part. I had originally invoked without <code>| cat -</code>, but decided to do so as it would make the output more similar (if it had appeared).</p>
+<p>Yes, that must&#x27;ve been a copy/paste error on my part. I had originally invoked without <code>| cat -</code>, but decided to do so as it would make the output more similar (if it had appeared).</p>
 <blockquote>
-<p>And many programs do process control in a way that leaves stdin looking like there's something to read on it.</p>
+<p>And many programs do process control in a way that leaves stdin looking like there&#x27;s something to read on it.</p>
 </blockquote>
-<p>But in this case, I suspect that parallel doesn't connect a stdin at all. In this case, why not stop reading from stdin?</p>
+<p>But in this case, I suspect that parallel doesn&#x27;t connect a stdin at all. In this case, why not stop reading from stdin?</p>
 <blockquote>
 <p>This is the logic that detects whether stdin is readable or not:</p>
 </blockquote>
-<p>At the very least, I don't believe it should exit with -1 without stating what's wrong to the user. It took me too long to find that the workaround is to pass <code>./</code> as an extra argument. It appears the exit comes quickly after the following two lines (extract from strace):</p>
+<p>At the very least, I don&#x27;t believe it should exit with -1 without stating what&#x27;s wrong to the user. It took me too long to find that the workaround is to pass <code>./</code> as an extra argument. It appears the exit comes quickly after the following two lines (extract from strace):</p>
 <pre><code>1279757 read(0, &quot;&quot;, 8192)               = 0
 1279757 read(0, &quot;&quot;, 65536)              = 0
 </code></pre>
-<p>I'm not sure why it tries to do this (twice?) and then exit(1) afterwards. I can't get <code>strace -k</code> to work in order to find the source of the exit(1) syscall (I tried installing the debian dbgsym package, to no avail).</p>
-<p>Would it not be possible to just fall back to &quot;don't read from stdin&quot; if one cannot read from stdin?</p>
+<p>I&#x27;m not sure why it tries to do this (twice?) and then exit(1) afterwards. I can&#x27;t get <code>strace -k</code> to work in order to find the source of the exit(1) syscall (I tried installing the debian dbgsym package, to no avail).</p>
+<p>Would it not be possible to just fall back to &quot;don&#x27;t read from stdin&quot; if one cannot read from stdin?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -246,7 +246,7 @@ rg: DEBUG|grep_regex::config|crates/regex/src/config.rs:175: assembling HIR from
 rg: DEBUG|globset|crates/globset/src/lib.rs:453: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
 bar:foojitzu
 
-$ parallel -v 'rg --debug foojitzu ; echo done {}' ::: bar
+$ parallel -v &#x27;rg --debug foojitzu ; echo done {}&#x27; ::: bar
 rg --debug foojitzu ; echo done bar
 done bar
 rg: DEBUG|rg::flags::config|crates/core/flags/config.rs:41: /home/andrew/.ripgreprc: arguments loaded from config file: [&quot;--max-columns-preview&quot;, &quot;--colors=match:bg:0xff,0x7f,0x00&quot;, &quot;--colors=match:fg:0xff,0xff,0xff&quot;, &quot;--colors=line:none&quot;, &quot;--colors=line:fg:magenta&quot;, &quot;--colors=path:fg:green&quot;, &quot;--type-add=got:*_test.go&quot;]
@@ -267,91 +267,91 @@ rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1121: heuristic chose to
 </code></pre>
 <p>Specifically, notice that <code>is_fifo=true</code>. <code>parallel</code> is specifically advertising <code>stdin</code> as a readable file descriptor.</p>
 <blockquote>
-<p>I suspect that parallel doesn't connect a stdin at all.</p>
+<p>I suspect that parallel doesn&#x27;t connect a stdin at all.</p>
 </blockquote>
 <p>The above logging demonstrates otherwise unfortunately.</p>
 <blockquote>
-<p>At the very least, I don't believe it should exit with -1 without stating what's wrong to the user.</p>
+<p>At the very least, I don&#x27;t believe it should exit with -1 without stating what&#x27;s wrong to the user.</p>
 </blockquote>
 <p>ripgrep cannot tell the difference between &quot;ripgrep searched something the user did not intend and thus should produce an error&quot; and &quot;ripgrep searched something the user intended and could not find a match.&quot;</p>
 <blockquote>
-<p>I'm not sure why it tries to do this (twice?) and then exit(1) afterwards.</p>
+<p>I&#x27;m not sure why it tries to do this (twice?) and then exit(1) afterwards.</p>
 </blockquote>
-<p>Because <code>parallel</code> advertises <code>stdin</code> as a fifo. So ripgrep tries to search it. Apparently there is nothing there to read, so it is indistinguishable from piping an empty file on to stdin. ripgrep doesn't find what you asked for, and thus returns with no match (and a corresponding error exit code as a result).</p>
-<p>There is no &quot;crashing&quot; here. I'm not sure why you reported it that way...</p>
-<p>Let's <em>please</em> flip the script here. Instead of saying &quot;the current behavior is not ideal&quot; (which I would absolutely agree with), please instead suggest concrete changes. And please do so after reading the linked neovim issue.</p>
+<p>Because <code>parallel</code> advertises <code>stdin</code> as a fifo. So ripgrep tries to search it. Apparently there is nothing there to read, so it is indistinguishable from piping an empty file on to stdin. ripgrep doesn&#x27;t find what you asked for, and thus returns with no match (and a corresponding error exit code as a result).</p>
+<p>There is no &quot;crashing&quot; here. I&#x27;m not sure why you reported it that way...</p>
+<p>Let&#x27;s <em>please</em> flip the script here. Instead of saying &quot;the current behavior is not ideal&quot; (which I would absolutely agree with), please instead suggest concrete changes. And please do so after reading the linked neovim issue.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/aktau">@aktau</a> on 2024-05-14 06:12</div>
             <div class="timeline-body"><p>First of, thanks for engaging on this. I appreciate it. I apologize if I came off as curt, it was not my intention.</p>
 <p>Replying:</p>
-<p>On Neovim. I read the Neovim issue, and see that they added a stdin closing option on the job API for that. I think I experienced a similar issue on another CLI that had to do with Neovim. The issue in that case was that the application did not expect to be passed a socket pair (libuv which Neovim uses creates subprocess connecting pipes with <a href="https://man7.org/linux/man-pages/man2/socketpair.2.html">socketpair(2)</a>, not <a href="https://man7.org/linux/man-pages/man2/pipe.2.html">pipe(2)</a>). AFAIK using socket pairs for stdio is the default on some OSes (the BSDs? I can't recall). Back then I investigated whether we couldn't just switch to pipe(2) which would have made the application I was dealing with work. I forgot why, but eventually I decided this had a low chance of success, libuv switched to socketpair(2) for a reason, and if I recall correctly the commit message isn't very clear about it, so chesterons fence applies.</p>
+<p>On Neovim. I read the Neovim issue, and see that they added a stdin closing option on the job API for that. I think I experienced a similar issue on another CLI that had to do with Neovim. The issue in that case was that the application did not expect to be passed a socket pair (libuv which Neovim uses creates subprocess connecting pipes with <a href="https://man7.org/linux/man-pages/man2/socketpair.2.html">socketpair(2)</a>, not <a href="https://man7.org/linux/man-pages/man2/pipe.2.html">pipe(2)</a>). AFAIK using socket pairs for stdio is the default on some OSes (the BSDs? I can&#x27;t recall). Back then I investigated whether we couldn&#x27;t just switch to pipe(2) which would have made the application I was dealing with work. I forgot why, but eventually I decided this had a low chance of success, libuv switched to socketpair(2) for a reason, and if I recall correctly the commit message isn&#x27;t very clear about it, so chesterons fence applies.</p>
 <p>Anyway, back to the issue: perhaps we should ask: what is the use of passing an empty file? Can ripgrep ever do anything useful if it gets passed an empty file? If the answer is no, perhaps it could be considered to just act as if stdin is not connected if reading from it succeeds but produces 0 bytes.</p>
-<p>I also changed the issue title to s/crash/exit/, as it's clear now that this behaviour is intentional.</p>
+<p>I also changed the issue title to s/crash/exit/, as it&#x27;s clear now that this behaviour is intentional.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "ripgrep 14.1.0 crashes silently when stdin is not connected (GNU parallel without --tty)" to "ripgrep 14.1.0 exit silently when stdin is not connected (GNU parallel without --tty)" by @aktau on 2024-05-14 06:13</div>
+            <div class="event">Renamed from &quot;ripgrep 14.1.0 crashes silently when stdin is not connected (GNU parallel without --tty)&quot; to &quot;ripgrep 14.1.0 exit silently when stdin is not connected (GNU parallel without --tty)&quot; by <a href="https://github.com/aktau">@aktau</a> on 2024-05-14 06:13</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-14 11:51</div>
             <div class="timeline-body"><blockquote>
 <p>Anyway, back to the issue: perhaps we should ask: what is the use of passing an empty file? Can ripgrep ever do anything useful if it gets passed an empty file? If the answer is no, perhaps it could be considered to just act as if stdin is not connected if reading from it succeeds but produces 0 bytes.</p>
 </blockquote>
-<p>There is no way that will ever happen. Passing an empty file isn't necessarily something someone does intentionally. An empty file is still a valid haystack to search. Doing <code>rg foo &lt; empty-file</code> and having ripgrep ignore <code>&lt; empty-file</code> to search the current working directory is completely unexpected behavior. If I were to allow that change, I'd be the first curse it. It would also have unexpected behavior in shell pipelines when there is no input being piped in. For example, maybe <code>rg foo log.2024-05-14 | rg bar</code> works because <code>foo</code> is in <code>log.2024-05-14</code>, but maybe <code>foo</code> isn't in <code>log.2024-05-15</code>. So instead of <code>rg foo log.2024-05-15 | rg bar</code> producing no output like you'd expect, <code>rg bar</code> would just search the current working directory instead. That's <em>bonkers</em>.</p>
-<p>I appreciate that you're trying to make a concrete suggestion here, but I'm pretty sure there is nothing to be done here because the user's intent cannot be discerned. It is a failing of the Unix CLI conventions (of which, stdin detection is part of it). You have two choices. First is to make the calling program stop advertising stdin as a readable file descriptor. Second is to disable ripgrep's heuristic stdin detection by passing <code>./</code>.</p>
-<p>The only real way to avoid something like this is to build a program that doesn't change its behavior based on what stdin is. But then common usage scenarios get more verbose. ripgrep does the intuitive thing correctly 99% of the time in exchange for doing the unintuitive thing with a bad failure mode in certain cases. And usually that's because of the parent process doing something they probably shouldn't be doing... Like advertising a readable stdin.</p>
+<p>There is no way that will ever happen. Passing an empty file isn&#x27;t necessarily something someone does intentionally. An empty file is still a valid haystack to search. Doing <code>rg foo &lt; empty-file</code> and having ripgrep ignore <code>&lt; empty-file</code> to search the current working directory is completely unexpected behavior. If I were to allow that change, I&#x27;d be the first curse it. It would also have unexpected behavior in shell pipelines when there is no input being piped in. For example, maybe <code>rg foo log.2024-05-14 | rg bar</code> works because <code>foo</code> is in <code>log.2024-05-14</code>, but maybe <code>foo</code> isn&#x27;t in <code>log.2024-05-15</code>. So instead of <code>rg foo log.2024-05-15 | rg bar</code> producing no output like you&#x27;d expect, <code>rg bar</code> would just search the current working directory instead. That&#x27;s <em>bonkers</em>.</p>
+<p>I appreciate that you&#x27;re trying to make a concrete suggestion here, but I&#x27;m pretty sure there is nothing to be done here because the user&#x27;s intent cannot be discerned. It is a failing of the Unix CLI conventions (of which, stdin detection is part of it). You have two choices. First is to make the calling program stop advertising stdin as a readable file descriptor. Second is to disable ripgrep&#x27;s heuristic stdin detection by passing <code>./</code>.</p>
+<p>The only real way to avoid something like this is to build a program that doesn&#x27;t change its behavior based on what stdin is. But then common usage scenarios get more verbose. ripgrep does the intuitive thing correctly 99% of the time in exchange for doing the unintuitive thing with a bad failure mode in certain cases. And usually that&#x27;s because of the parent process doing something they probably shouldn&#x27;t be doing... Like advertising a readable stdin.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/aktau">@aktau</a> on 2024-05-14 15:24</div>
-            <div class="timeline-body"><p>You're right, I hadn't thought of that use case, mainly because I tend to use normal grep for this. I reach for ripgrep when I need to sensibly search &quot;everything&quot;.</p>
-<p>It doesn't make sense to break existing users of this, even if it were somehow decided that ignoring empty files were reasonable.</p>
+            <div class="timeline-body"><p>You&#x27;re right, I hadn&#x27;t thought of that use case, mainly because I tend to use normal grep for this. I reach for ripgrep when I need to sensibly search &quot;everything&quot;.</p>
+<p>It doesn&#x27;t make sense to break existing users of this, even if it were somehow decided that ignoring empty files were reasonable.</p>
 <blockquote>
-<p>And usually that's because of the parent process doing something they probably shouldn't be doing... Like advertising a readable stdin.</p>
+<p>And usually that&#x27;s because of the parent process doing something they probably shouldn&#x27;t be doing... Like advertising a readable stdin.</p>
 </blockquote>
-<p>Hopefully I can get around to writing this up for the GNU parallel author. But something tells me that changing its behaviour to supplying a closed stdin would trigger other types of unpalatable failures in other programs. Can't please everyone.</p>
+<p>Hopefully I can get around to writing this up for the GNU parallel author. But something tells me that changing its behaviour to supplying a closed stdin would trigger other types of unpalatable failures in other programs. Can&#x27;t please everyone.</p>
 <p>Thanks for your thoughts.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-14 15:43</div>
             <div class="timeline-body"><blockquote>
-<p>You're right, I hadn't thought of that use case, mainly because I tend to use normal grep for this. I reach for ripgrep when I need to sensibly search &quot;everything&quot;.</p>
+<p>You&#x27;re right, I hadn&#x27;t thought of that use case, mainly because I tend to use normal grep for this. I reach for ripgrep when I need to sensibly search &quot;everything&quot;.</p>
 </blockquote>
 <p>Yeah, I very specifically designed ripgrep to be able to drop-in for grep in most cases. Obviously it has some different behaviors and flags, but in most cases, you should be able to replace <code>grep</code> with <code>rg</code>---including in a shell pipeline---without issue. This was a very intentional act on my part that stood in contrast to a tool like <code>ag</code> which does have weird quirks and failings when you try to use it like it grep.</p>
 <blockquote>
 <p>But something tells me that changing its behaviour to supplying a closed stdin would trigger other types of unpalatable failures in other programs.</p>
 </blockquote>
-<p>I think this is likely, yes, although I don't know what it is. If you do go through with this and get a concrete answer to this, I'd be most appreciative if you could share it here. Because it would complete the &quot;nothing can be done&quot; picture here. neovim, for example, I believe added an <em>option</em> to not pass a readable stdin, but I don't believe it changed its default behavior. So there is likely something here. Whether it's just another form of legacy or something more &quot;legitimate&quot; though, I dunno.</p>
+<p>I think this is likely, yes, although I don&#x27;t know what it is. If you do go through with this and get a concrete answer to this, I&#x27;d be most appreciative if you could share it here. Because it would complete the &quot;nothing can be done&quot; picture here. neovim, for example, I believe added an <em>option</em> to not pass a readable stdin, but I don&#x27;t believe it changed its default behavior. So there is likely something here. Whether it&#x27;s just another form of legacy or something more &quot;legitimate&quot; though, I dunno.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/treatmesubj">@treatmesubj</a> on 2024-12-23 20:27</div>
             <div class="timeline-body"><p>EDIT: wrong
-<em>for Google/posterity - I think based on what the smart people said above, because you must use <code>parallel --tty</code> to spawn terminals with ripgrep, it's likely faster to to use regular old <code>grep</code> with <code>parallel</code> than use ripgrep with <code>parallel</code></em></p>
+<em>for Google/posterity - I think based on what the smart people said above, because you must use <code>parallel --tty</code> to spawn terminals with ripgrep, it&#x27;s likely faster to to use regular old <code>grep</code> with <code>parallel</code> than use ripgrep with <code>parallel</code></em></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-12-23 21:08</div>
-            <div class="timeline-body"><p>What? No. Just tell ripgrep what to search and it will behave like grep. The only reason any of this is an issue is because ripgrep tries to guess the user's intent <em>when a file or directory are not specified</em>. But you can remove ripgrep's guess work by treating it like grep and <em>providing an explicit file or directory to search</em>. For example, <code>rg foo ./</code> or <code>rg foo -</code>.</p>
+            <div class="timeline-body"><p>What? No. Just tell ripgrep what to search and it will behave like grep. The only reason any of this is an issue is because ripgrep tries to guess the user&#x27;s intent <em>when a file or directory are not specified</em>. But you can remove ripgrep&#x27;s guess work by treating it like grep and <em>providing an explicit file or directory to search</em>. For example, <code>rg foo ./</code> or <code>rg foo -</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/treatmesubj">@treatmesubj</a> on 2024-12-24 00:08</div>
             <div class="timeline-body"><p>whoops, sorry, I was confused. I was sillily using <code>rg --glob {relative-file}</code> which must still need a tty to guess cwd?
 Doing something like this instead as you say, worked just fine. Thank you</p>
-<pre><code class="language-bash">f=$(cat files.txt); parallel rg -io {1} $f :::: strings.txt
+<pre><code>f=$(cat files.txt); parallel rg -io {1} $f :::: strings.txt
 </code></pre>
-<hr />
+<hr>
 <p>In a codebase, I wanted to find which files queried a database table, and whether or not they mentioned any fields from a list of fields to be deprecated from the table.
 I found these 2 approaches worked for my needs</p>
-<pre><code class="language-bash">time ( parallel rg -io {2} {1} :::: &lt;(rg -il 'SCHEMA\.TABLE\w+' .) dep-fields.txt )
-time ( f=$(rg -il 'SCHEMA\.TABLE\w+' .); parallel rg -io {1} $f :::: dep-fields.txt )
+<pre><code>time ( parallel rg -io {2} {1} :::: &lt;(rg -il &#x27;SCHEMA\.TABLE\w+&#x27; .) dep-fields.txt )
+time ( f=$(rg -il &#x27;SCHEMA\.TABLE\w+&#x27; .); parallel rg -io {1} $f :::: dep-fields.txt )
 
-time ( parallel grep -iHno {2} {1} :::: &lt;(grep -irl -E 'SCHEMA\.TABLE\w+' .) dep-fields.txt )
-time ( f=$(grep -irl -E 'SCHEMA\.TABLE\w+' .); parallel grep -iHno {1} $f :::: dep-fields.txt )
+time ( parallel grep -iHno {2} {1} :::: &lt;(grep -irl -E &#x27;SCHEMA\.TABLE\w+&#x27; .) dep-fields.txt )
+time ( f=$(grep -irl -E &#x27;SCHEMA\.TABLE\w+&#x27; .); parallel grep -iHno {1} $f :::: dep-fields.txt )
 
 </code></pre>
 </div>
@@ -364,7 +364,7 @@ time ( f=$(grep -irl -E 'SCHEMA\.TABLE\w+' .); parallel grep -iHno {1} $f :::: d
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:43:49 UTC
+        Synced at 2026-01-20 18:48:13 UTC
     </footer>
 </body>
 </html>

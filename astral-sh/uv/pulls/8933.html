@@ -23,30 +23,24 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/shaneikennedy">@shaneikennedy</a></div>
-            <div class="timeline-body"><!--
-Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+            <div class="timeline-body">
 
-- Does this pull request include a summary of the change? (See below.)
-- Does this pull request include a descriptive title?
-- Does this pull request include references to any relevant issues?
--->
-
-<h2>Summary</h2>
-<p>This PR builds off of https://github.com/astral-sh/uv/pull/6738 to fix #6724 (sorry for the new PR @charliermarsh I didn't want to push to your branch, not even sure if I could). The reason the original PR doesn't fix the issue described in #6724 is because the fastapi is ran in the project context (as I assume a lot of use cases are). This PR adds an extra commit to handle the signals in the project/run.rs file</p>
+Summary
+<p>This PR builds off of <a href="https://github.com/astral-sh/uv/pull/6738">astral-sh/uv#6738</a> to fix #6724 (sorry for the new PR @charliermarsh I didn&#x27;t want to push to your branch, not even sure if I could). The reason the original PR doesn&#x27;t fix the issue described in #6724 is because the fastapi is ran in the project context (as I assume a lot of use cases are). This PR adds an extra commit to handle the signals in the project/run.rs file</p>
 <p>~It also addresses the comment <a href="https://github.com/astral-sh/uv/pull/6738/files#r1734757548">here</a> to not use the tokio ctrl-c method since we are now handling SIGINT ourselves~ update, tokio handles SIGINT in a platform agnostic way, intercepting this ouselves makes the logic more complicated with windows, decided to leave the tokio ctrl-c handler</p>
-<p>~<a href="https://github.com/astral-sh/uv/pull/6738/files#r1743510140">This comment</a> remains unaddressed, however, the Child process does not have any other methods besides kill() so I don't see how we can &quot;preserve&quot; the interrupt call :/  I tried looking around but no luck.~ updated, this PR is reduced to only handling SIGTERM propagation on unix machines, and the sigterm call to the child is preserved by making use of the nix package, instead of relying on tokio which only allowed for <code>kill()</code> on a child process</p>
-<h2>Test Plan</h2>
+<p>~<a href="https://github.com/astral-sh/uv/pull/6738/files#r1743510140">This comment</a> remains unaddressed, however, the Child process does not have any other methods besides kill() so I don&#x27;t see how we can &quot;preserve&quot; the interrupt call :/  I tried looking around but no luck.~ updated, this PR is reduced to only handling SIGTERM propagation on unix machines, and the sigterm call to the child is preserved by making use of the nix package, instead of relying on tokio which only allowed for <code>kill()</code> on a child process</p>
+Test Plan
 <p>I tested this by building the docker container locally with these changes and tagging it &quot;myuv&quot;, and then using that as the base image in uv-docker-example, (and ofc following the rest of the repro issues in #6724. In my tests I see that ctrl-c in the docker-compose up command exits the process almost immediately 👍</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/shaneikennedy">@shaneikennedy</a> on 2024-11-08 11:49</div>
-            <div class="timeline-body"><p>Also yeah, windows does not have SIGTERM, need some guidance here as I've never built for windows 😬</p>
+            <div class="timeline-body"><p>Also yeah, windows does not have SIGTERM, need some guidance here as I&#x27;ve never built for windows 😬</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-11-08 12:06</div>
-            <div class="timeline-body"><p>Here's one issue, provided as a test case.</p>
+            <div class="timeline-body"><p>Here&#x27;s one issue, provided as a test case.</p>
 <p>Run a regular python (no uv involved) and press ctrl-C twice (just to show that the prompt sticks around):</p>
 <pre><code>python
 Python 3.10.12 (main, Sep 11 2024, 15:47:36) [GCC 11.4.0] on linux
@@ -74,17 +68,17 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
 &gt;&gt;&gt;
 (Process exited with error) 
 </code></pre>
-<p>(Edit: Direct run of the binary, not cargo run, to avoid cargo being involved in the test case. Didn't change the result.)</p>
+<p>(Edit: Direct run of the binary, not cargo run, to avoid cargo being involved in the test case. Didn&#x27;t change the result.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/shaneikennedy">@shaneikennedy</a> on 2024-11-08 12:17</div>
-            <div class="timeline-body"><p>@bluss good catch, I think as @cr-klarna points out in the original PR a simple fix isn't likely since .kill() is not what we want here, we want to propagate the signals down and this solution which built off of @charliermarsh 's original basically overrides the signal</p>
+            <div class="timeline-body"><p>@bluss good catch, I think as @cr-klarna points out in the original PR a simple fix isn&#x27;t likely since .kill() is not what we want here, we want to propagate the signals down and this solution which built off of @charliermarsh &#x27;s original basically overrides the signal</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/bluss">@bluss</a> on <code>crates/uv/src/commands/project/run.rs</code>:1016 on 2024-11-08 12:30</div>
-            <div class="timeline-body"><p><code>uv run</code> should preferably preserve the exit code from the child, not assume this was an error exit. (I'm sorry for more comments if they are superfluous, but it's better to get the issues out in the sun.)</p>
+            <div class="timeline-body"><p><code>uv run</code> should preferably preserve the exit code from the child, not assume this was an error exit. (I&#x27;m sorry for more comments if they are superfluous, but it&#x27;s better to get the issues out in the sun.)</p>
 <p>Example application for this use case: mkdocs serve exits gracefully/with success after Ctrl-C.</p>
 </div>
         </div>
@@ -99,16 +93,16 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/shaneikennedy">@shaneikennedy</a> on 2024-11-08 13:50</div>
-            <div class="timeline-body"><p>Going to be honest I don't know windows, I might ask to punt the windows sigterm implementation so that people on unix systems can get unblocked here and let someone who actually knows windows to help out 😂</p>
+            <div class="timeline-body"><p>Going to be honest I don&#x27;t know windows, I might ask to punt the windows sigterm implementation so that people on unix systems can get unblocked here and let someone who actually knows windows to help out 😂</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/cr-klarna">@cr-klarna</a> on 2024-11-08 15:20</div>
-            <div class="timeline-body"><p>Tested with a simple case of registering handlers and passing signals with <code>kill</code>. Confirmed that for SIGTERM the behavior seems expected and I tested with @shaneikennedy some cases we had. One thing stands out still that it seems that tokio really wants to have an interactive context before passing the SIGINT signals. This is a problem but I am not convinced it is uv's to solve, this seems more due to a bug/design decision in tokio.</p>
+            <div class="timeline-body"><p>Tested with a simple case of registering handlers and passing signals with <code>kill</code>. Confirmed that for SIGTERM the behavior seems expected and I tested with @shaneikennedy some cases we had. One thing stands out still that it seems that tokio really wants to have an interactive context before passing the SIGINT signals. This is a problem but I am not convinced it is uv&#x27;s to solve, this seems more due to a bug/design decision in tokio.</p>
 <p>@bluss I also tested the mkdocs serve and it exited gracefully after ^C was sent from the interactive context as indicated by the chance to print out the graceful shutdown message. Obvs good to check yourself ofc</p>
-<pre><code class="language-INFO">INFO    -  Cleaning site directory
+<pre><code>INFO    -  Cleaning site directory
 INFO    -  Documentation built in 1.97 seconds
-INFO    -  [16:18:35] Watching paths for changes: 'docs', 'mkdocs.public.yml'
+INFO    -  [16:18:35] Watching paths for changes: &#x27;docs&#x27;, &#x27;mkdocs.public.yml&#x27;
 INFO    -  [16:18:35] Serving on http://127.0.0.1:8000/uv/
 ^CINFO    -  Shutting down...```
 </code></pre>
@@ -120,7 +114,7 @@ INFO    -  [16:18:35] Serving on http://127.0.0.1:8000/uv/
 <p>@bluss I also tested the mkdocs serve and it exited gracefully after ^C was sent from the interactive context as indicated by the chance to print out the graceful shutdown message. Obvs good to check yourself ofc</p>
 </blockquote>
 <p>@cr-klarna My understanding is that <code>echo $?</code> is supposed to return <code>0</code> for mkdocs, when pressing Ctrl+C, which will not happen when run through uv, as it returns with <code>ExitStatus::Failure</code> hardcoded.
-(although I have NOT tested that - I'm just basing my opinion on what has been written above)</p>
+(although I have NOT tested that - I&#x27;m just basing my opinion on what has been written above)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -129,10 +123,10 @@ INFO    -  [16:18:35] Serving on http://127.0.0.1:8000/uv/
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-11-09 13:46</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-09 13:46</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-11-09 13:46</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-09 13:46</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/run.rs</code>:1021 on 2024-11-09 17:14</div>
@@ -153,7 +147,7 @@ INFO    -  [16:18:35] Serving on http://127.0.0.1:8000/uv/
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/shaneikennedy">@shaneikennedy</a> on <code>crates/uv/src/commands/project/run.rs</code>:1021 on 2024-11-09 17:23</div>
-            <div class="timeline-body"><p>Not a rust expert would appreciate your guidance here, from what I see inside of <code>wait()</code> it's not expensive to call it twice and it makes the logic in the select! block easier to read. If I do something like let status = select! {...} each brand needs to return the same type, but <code>terminate_process</code> doesn't actually return anything, so I'd need to fake a return which also seems unnecessary. wdyt?</p>
+            <div class="timeline-body"><p>Not a rust expert would appreciate your guidance here, from what I see inside of <code>wait()</code> it&#x27;s not expensive to call it twice and it makes the logic in the select! block easier to read. If I do something like let status = select! {...} each brand needs to return the same type, but <code>terminate_process</code> doesn&#x27;t actually return anything, so I&#x27;d need to fake a return which also seems unnecessary. wdyt?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -166,7 +160,7 @@ INFO    -  [16:18:35] Serving on http://127.0.0.1:8000/uv/
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @zanieb by @zanieb on 2024-11-09 17:26</div>
+            <div class="event">Review requested from <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-09 17:26</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-09 17:27</div>
@@ -179,7 +173,7 @@ INFO    -  [16:18:35] Serving on http://127.0.0.1:8000/uv/
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/run.rs</code>:1021 on 2024-11-09 17:28</div>
-            <div class="timeline-body"><p>I went with returning the result directly on unix and only calling <code>let status = handle.wait().await?;</code> on other platforms, since it didn't seem too difficult and makes the control flow a bit clearer IMO.</p>
+            <div class="timeline-body"><p>I went with returning the result directly on unix and only calling <code>let status = handle.wait().await?;</code> on other platforms, since it didn&#x27;t seem too difficult and makes the control flow a bit clearer IMO.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -187,8 +181,8 @@ INFO    -  [16:18:35] Serving on http://127.0.0.1:8000/uv/
             <div class="timeline-body"><blockquote>
 <p>I made some minor changes. @shaneikennedy -- do you want to re-test before I merge?</p>
 </blockquote>
-<p>Since testing this initially I have somehow completely borked my local docker setup https://github.com/astral-sh/uv/issues/8974</p>
-<p>I can't test this atm unfortunately, the changes don't look drastically different to me though</p>
+<p>Since testing this initially I have somehow completely borked my local docker setup <a href="https://github.com/astral-sh/uv/issues/8974">astral-sh/uv#8974</a></p>
+<p>I can&#x27;t test this atm unfortunately, the changes don&#x27;t look drastically different to me though</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -212,24 +206,24 @@ INFO    -  [16:18:35] Serving on http://127.0.0.1:8000/uv/
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/shaneikennedy">@shaneikennedy</a> on 2024-11-11 19:54</div>
-            <div class="timeline-body"><p>@zanieb lmk if there's anything else I can do here, happy to push any fixes/changes asap if need be 👀 🙏</p>
+            <div class="timeline-body"><p>@zanieb lmk if there&#x27;s anything else I can do here, happy to push any fixes/changes asap if need be 👀 🙏</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-11-12 02:48</div>
-            <div class="timeline-body"><p>Thanks! This seems like a reasonable incremental improvement. We'll need to follow up with more changes, like forwarding other signals and handling things properly on Windows.</p>
+            <div class="timeline-body"><p>Thanks! This seems like a reasonable incremental improvement. We&#x27;ll need to follow up with more changes, like forwarding other signals and handling things properly on Windows.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @zanieb on 2024-11-12 02:48</div>
+            <div class="event">Merged by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-12 02:48</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2024-11-12 02:48</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-12 02:48</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:40:31 UTC
+        Synced at 2026-01-20 19:49:14 UTC
     </footer>
 </body>
 </html>

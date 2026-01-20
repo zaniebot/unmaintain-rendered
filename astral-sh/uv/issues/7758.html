@@ -25,9 +25,9 @@
             <div class="timeline-header"><a href="https://github.com/adiberk">@adiberk</a></div>
             <div class="timeline-body"><p>My company does a two part build process in the docker image
 We first install dependencies and then we build the image using a non root user</p>
-<p>When using poetry we just copy the .venv folder to the new workdir in the image creation step and everything works fine.  However when I do this with UV and run the app, I was getting issues <code>bash: line 1: /app/.venv/bin/uvicorn: cannot execute: required file not found</code> even though they are 100% there.  After reviewing further I see it might be a symlink issue pointing to a path in first build that doesn't exist in second build.  I tried setting link-mode to copy, but I assume the core issue here is I lack an understanding of what is really going on here.
+<p>When using poetry we just copy the .venv folder to the new workdir in the image creation step and everything works fine.  However when I do this with UV and run the app, I was getting issues <code>bash: line 1: /app/.venv/bin/uvicorn: cannot execute: required file not found</code> even though they are 100% there.  After reviewing further I see it might be a symlink issue pointing to a path in first build that doesn&#x27;t exist in second build.  I tried setting link-mode to copy, but I assume the core issue here is I lack an understanding of what is really going on here.
 Any advice would be greatly appreciated!
-(WE do 2 part built for slight speed improvements, but isn't 100% necessary - seeing if we can just do it all in one go)</p>
+(WE do 2 part built for slight speed improvements, but isn&#x27;t 100% necessary - seeing if we can just do it all in one go)</p>
 <p>Here is a slimmed down version of what we are doing (using UV)</p>
 <pre><code>FROM python:3.11.4-bookworm AS build
 ARG ENV
@@ -69,7 +69,7 @@ USER lev
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-29 15:18</div>
-            <div class="timeline-body"><p>The problem is that we're fetching Python to a directory owned by root, e.g.</p>
+            <div class="timeline-body"><p>The problem is that we&#x27;re fetching Python to a directory owned by root, e.g.</p>
 <pre><code>❯ docker run --rm -it test /bin/bash
 appuser@9d94d7d7fa15:/app$ ls .venv
 CACHEDIR.TAG  bin  lib  lib64  pyvenv.cfg
@@ -79,10 +79,10 @@ lrwxrwxrwx 1 appuser appuser   76 Sep 29 15:14 python -&gt; /root/.local/share/u
 lrwxrwxrwx 1 appuser appuser    6 Sep 29 15:14 python3 -&gt; python
 lrwxrwxrwx 1 appuser appuser    6 Sep 29 15:14 python3.12 -&gt; python
 appuser@830bcd8a2084:/app$ ls  /root/.local/share/uv/python/
-ls: cannot access '/root/.local/share/uv/python/': Permission denied
+ls: cannot access &#x27;/root/.local/share/uv/python/&#x27;: Permission denied
 </code></pre>
 <p>I think you need something like this</p>
-<pre><code class="language-dockerfile">FROM python:3.11.4-bookworm AS build
+<pre><code>FROM python:3.11.4-bookworm AS build
 ARG ENV
 
 COPY --from=ghcr.io/astral-sh/uv:0.4.17 /uv /bin/uv
@@ -124,7 +124,7 @@ USER appuser
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-09-29 15:18</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-29 15:18</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/adiberk">@adiberk</a> on 2024-09-30 14:55</div>
@@ -136,7 +136,7 @@ make: *** [build] Error 17</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-30 14:59</div>
-            <div class="timeline-body"><p>Ah sorry.. that assumes you're using a managed Python version (which my project did because the one on the system was not sufficient). You might need to copy over the Python from your build image <code>python:3.11.4-bookworm</code>, wherever that is.</p>
+            <div class="timeline-body"><p>Ah sorry.. that assumes you&#x27;re using a managed Python version (which my project did because the one on the system was not sufficient). You might need to copy over the Python from your build image <code>python:3.11.4-bookworm</code>, wherever that is.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -173,17 +173,17 @@ Why should I have to transfer over the python if in the second stage build I am 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-30 15:07</div>
-            <div class="timeline-body"><p>Uhh you could try changing it, it's a little dubious but as long as it's the same architecture and Python version it should be fine.</p>
+            <div class="timeline-body"><p>Uhh you could try changing it, it&#x27;s a little dubious but as long as it&#x27;s the same architecture and Python version it should be fine.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MalteMagnussen">@MalteMagnussen</a> on 2024-10-16 14:37</div>
             <div class="timeline-body"><p>@zanieb</p>
 <p>Requesting a good guide for a multi-stage non-root secure dockerfile using <code>uv</code>!</p>
-<p>I am trying to make a multi-stage build using uv, and it is very difficult. I've spent 6 hours so far.</p>
+<p>I am trying to make a multi-stage build using uv, and it is very difficult. I&#x27;ve spent 6 hours so far.</p>
 <p>I am also getting that <code>exec /app/.venv/bin/uvicorn: no such file or directory</code> error.</p>
-<p>I've tried a LOT of different things from the <code>uv</code> docs, but nothing seems to work. Here is my latest version, but it has been going through many variants.</p>
-<pre><code class="language-Dockerfile"># https://fastapi.tiangolo.com/deployment/docker/
+<p>I&#x27;ve tried a LOT of different things from the <code>uv</code> docs, but nothing seems to work. Here is my latest version, but it has been going through many variants.</p>
+<pre><code># https://fastapi.tiangolo.com/deployment/docker/
 
 # https://pipenv.pypa.io/en/stable/docker.html
 
@@ -217,8 +217,8 @@ EXPOSE 8080
 ENTRYPOINT [ &quot;&quot; ]
 CMD [&quot;/app/.venv/bin/uvicorn&quot;, &quot;run&quot;, &quot;search.asset_search_api:app&quot;, &quot;--proxy-headers&quot;, &quot;--port&quot;, &quot;8080&quot;]
 </code></pre>
-<p>I honestly think I'm just gonna go back to my previous Dockerfile, and just render a <code>requirements.txt</code> using <code>uv pip compile pyproject.toml -o requirements.txt</code></p>
-<pre><code class="language-Dockerfile">FROM ghcr.io/astral-sh/uv:python3.12-bookworm as render-requirements
+<p>I honestly think I&#x27;m just gonna go back to my previous Dockerfile, and just render a <code>requirements.txt</code> using <code>uv pip compile pyproject.toml -o requirements.txt</code></p>
+<pre><code>FROM ghcr.io/astral-sh/uv:python3.12-bookworm as render-requirements
 
 WORKDIR /app
 COPY uv.lock uv.lock
@@ -230,7 +230,7 @@ FROM cgr.dev/chainguard/python:latest-dev AS dev
 
 WORKDIR /app
 RUN python -m venv venv
-ENV PATH='/app/venv/bin:$PATH'
+ENV PATH=&#x27;/app/venv/bin:$PATH&#x27;
 COPY --from=render-requirements /app/requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
@@ -240,7 +240,7 @@ FROM cgr.dev/chainguard/python:latest AS runtime
 WORKDIR /app
 COPY ./search/ ./search/
 COPY --from=dev /app/venv /app/venv
-ENV PATH='/app/venv/bin:$PATH'
+ENV PATH=&#x27;/app/venv/bin:$PATH&#x27;
 
 EXPOSE 8080
 
@@ -251,7 +251,7 @@ CMD [&quot;fastapi&quot;, &quot;run&quot;, &quot;./search/asset_search_api.py&qu
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-18 04:04</div>
-            <div class="timeline-body"><p>@MalteMagnussen I don't see where your Python installation is coming from in those examples. How are you propagating it from one image to the next?</p>
+            <div class="timeline-body"><p>@MalteMagnussen I don&#x27;t see where your Python installation is coming from in those examples. How are you propagating it from one image to the next?</p>
 <p>i.e. as mentioned at</p>
 <ul>
 <li>https://github.com/astral-sh/uv-docker-example/blob/a14ebc89e3a5e5b33131284968d8969ae054ed0d/multistage.Dockerfile#L18-L21</li>
@@ -263,21 +263,21 @@ CMD [&quot;fastapi&quot;, &quot;run&quot;, &quot;./search/asset_search_api.py&qu
             <div class="timeline-header">Comment by <a href="https://github.com/MalteMagnussen">@MalteMagnussen</a> on 2024-10-18 11:45</div>
             <div class="timeline-body"><p>@zanieb - Thanks for taking the time to have a look :)</p>
 <p>I assume the python is coming from the chainguard image in the final stage.</p>
-<p>What do you mean by &quot;propagating&quot; the python installation between images? Why would that be needed? Isn't it only the virtual env that is moved?</p>
-<p>I'm not an expert in this at all, and just trying to fulfill the org requirements of non-root images with low amount of CVE's.</p>
+<p>What do you mean by &quot;propagating&quot; the python installation between images? Why would that be needed? Isn&#x27;t it only the virtual env that is moved?</p>
+<p>I&#x27;m not an expert in this at all, and just trying to fulfill the org requirements of non-root images with low amount of CVE&#x27;s.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-18 12:19</div>
             <div class="timeline-body"><blockquote>
-<p>What do you mean by &quot;propagating&quot; the python installation between images? Why would that be needed? Isn't it only the virtual env that is moved?</p>
+<p>What do you mean by &quot;propagating&quot; the python installation between images? Why would that be needed? Isn&#x27;t it only the virtual env that is moved?</p>
 </blockquote>
-<p>The virtual environment contains a reference to the Python install — it's not truly standalone or reloctable (there are some other issues tracking that). So when you copy it to another image, it probably references a non-existent Python interpreter. There's an example of copying the installation between images in the linked pull request.</p>
+<p>The virtual environment contains a reference to the Python install — it&#x27;s not truly standalone or reloctable (there are some other issues tracking that). So when you copy it to another image, it probably references a non-existent Python interpreter. There&#x27;s an example of copying the installation between images in the linked pull request.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-18 12:24</div>
-            <div class="timeline-body"><p>There is a <code>uv venv --relocatable</code> flag that makes the paths relocatable, though not sure if it will fix the issue above, I haven't read it closely.</p>
+            <div class="timeline-body"><p>There is a <code>uv venv --relocatable</code> flag that makes the paths relocatable, though not sure if it will fix the issue above, I haven&#x27;t read it closely.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -289,15 +289,15 @@ CMD [&quot;fastapi&quot;, &quot;run&quot;, &quot;./search/asset_search_api.py&qu
             <div class="timeline-header">Comment by <a href="https://github.com/MalteMagnussen">@MalteMagnussen</a> on 2025-02-25 14:29</div>
             <div class="timeline-body"><p>@zanieb Thanks for your example at</p>
 <p>https://github.com/astral-sh/uv-docker-example/blob/main/standalone.Dockerfile</p>
-<p>I don't understand what this does though: https://github.com/astral-sh/uv-docker-example/blob/main/standalone.Dockerfile#L17-L20</p>
+<p>I don&#x27;t understand what this does though: https://github.com/astral-sh/uv-docker-example/blob/main/standalone.Dockerfile#L17-L20</p>
 <p>I made my own version: (<code>search</code> contains the code)</p>
-<pre><code class="language-Dockerfile"># https://fastapi.tiangolo.com/deployment/docker/
+<pre><code># https://fastapi.tiangolo.com/deployment/docker/
 # https://docs.astral.sh/uv/guides/integration/docker/#getting-started
 # https://edu.chainguard.dev/chainguard/migration/migrating-python/
 # https://edu.chainguard.dev/chainguard/chainguard-images/getting-started/python/
 # https://edu.chainguard.dev/open-source/wolfi/wolfi-with-dockerfiles/
 # https://github.com/chainguard-dev/cg-images-python-migration/blob/main/flask-app/Dockerfile
-# https://github.com/astral-sh/uv/issues/7758#issuecomment-2422345895
+# <a href="https://github.com/astral-sh/uv/issues/7758">astral-sh/uv#7758</a>#issuecomment-2422345895
 
 ARG PYTHON_VERSION=3.13
 
@@ -337,12 +337,12 @@ CMD [&quot;fastapi&quot;, &quot;run&quot;, &quot;/app/search/asset_search_api.py
 LABEL org.opencontainers.image.source=&quot;https://gitlab.redacted/systems/asset-search&quot;
 </code></pre>
 <p>And it seems to work! Builds super fast.</p>
-<p>It is a 0 vuln image (according to trivy) and it runs fine in our k8s cluster, which doesn't allow root! Very nice 🎉</p>
+<p>It is a 0 vuln image (according to trivy) and it runs fine in our k8s cluster, which doesn&#x27;t allow root! Very nice 🎉</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-25 14:31</div>
-            <div class="timeline-body"><p>The benefit of the linked Dockerfile versus what you have above is that the linked Dockerfile is much more cacheable. Your Dockerfille will require a re-sync of all of your dependencies every time you modify your project. The linked Dockerfile is able to cache all of the project dependencies in the single layer that you linked; they'd only be invalidated when you add a dependency, as opposed to when you edit application code.</p>
+            <div class="timeline-body"><p>The benefit of the linked Dockerfile versus what you have above is that the linked Dockerfile is much more cacheable. Your Dockerfille will require a re-sync of all of your dependencies every time you modify your project. The linked Dockerfile is able to cache all of the project dependencies in the single layer that you linked; they&#x27;d only be invalidated when you add a dependency, as opposed to when you edit application code.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -352,9 +352,9 @@ LABEL org.opencontainers.image.source=&quot;https://gitlab.redacted/systems/asse
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/cpressland">@cpressland</a> on 2025-02-26 23:53</div>
-            <div class="timeline-body"><p>We're using Azure Linux with <code>uv</code> for our builds and have run into this, I spent a little time working on it this evening and came up with the following.</p>
+            <div class="timeline-body"><p>We&#x27;re using Azure Linux with <code>uv</code> for our builds and have run into this, I spent a little time working on it this evening and came up with the following.</p>
 <p>Original Dockerfile:</p>
-<pre><code class="language-Dockerfile">FROM mcr.microsoft.com/azurelinux/base/core:3.0 AS build
+<pre><code>FROM mcr.microsoft.com/azurelinux/base/core:3.0 AS build
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
 ENV UV_LINK_MODE=copy \
@@ -385,8 +385,8 @@ ENV PATH=/app/bin:$PATH
 ENTRYPOINT [ &quot;my-app&quot; ]
 </code></pre>
 <p>The above works well if the intent is to run the resulting application as root, however, the <code>/root</code> directory has permissions of <code>drwxr-x---</code> (750), and as <code>uv</code> installs <code>python-build-standalone</code> into <code>/root/.local/share/uv</code> this is inaccessible to the symlink setup in the <code>/app/bin</code> directory (<code>python -&gt; /root/.local/share/uv/python/cpython-3.13.2-linux-x86_64-gnu/bin/python3.13</code>).</p>
-<p>As I'm not aware of a mechanism to override this to install somewhere else, such as <code>/usr/local/bin</code> or <code>/opt</code>, I've made the following modifications:</p>
-<pre><code class="language-Dockerfile">FROM mcr.microsoft.com/azurelinux/base/core:3.0 AS build
+<p>As I&#x27;m not aware of a mechanism to override this to install somewhere else, such as <code>/usr/local/bin</code> or <code>/opt</code>, I&#x27;ve made the following modifications:</p>
+<pre><code>FROM mcr.microsoft.com/azurelinux/base/core:3.0 AS build
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
 ENV UV_LINK_MODE=copy \
@@ -433,14 +433,14 @@ ENTRYPOINT [ &quot;my-app&quot; ]
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/cpressland">@cpressland</a> on 2025-02-27 10:26</div>
             <div class="timeline-body"><p>Turns out I was massively overcomplicating this, the only actual changes are an environment variable and a path for the <code>COPY</code> command.</p>
-<pre><code class="language-Dockerfile">FROM mcr.microsoft.com/azurelinux/base/core:3.0 AS build
+<pre><code>FROM mcr.microsoft.com/azurelinux/base/core:3.0 AS build
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
 ENV UV_LINK_MODE=copy \
     UV_COMPILE_BYTECODE=1 \
     UV_PYTHON=python3.13 \
     UV_PROJECT_ENVIRONMENT=/app \
-    # The actual magic, don't install inside /root/.local
+    # The actual magic, don&#x27;t install inside /root/.local
     UV_PYTHON_INSTALL_DIR=/usr/share/uv/python
 
 COPY pyproject.toml /_lock/
@@ -460,11 +460,11 @@ RUN --mount=type=cache,target=/root/.cache \
     /src
 
 FROM mcr.microsoft.com/azurelinux/base/core:3.0
-# I'm setting nonroot early, but this could also be inside a pod security context or similar.
+# I&#x27;m setting nonroot early, but this could also be inside a pod security context or similar.
 USER nonroot
 # Pull from `/usr/share/uv` instead of `/root/.local/share/uv`
 COPY --from=build /usr/share/uv /usr/share/uv
-# I'm chowning /app, but this is optional, if your app doesn't need to write here, don't bother.
+# I&#x27;m chowning /app, but this is optional, if your app doesn&#x27;t need to write here, don&#x27;t bother.
 COPY --from=build --chown=nonroot:nonroot /app /app
 ENV PATH=/app/bin:$PATH
 ENTRYPOINT [ &quot;my-app&quot; ]
@@ -473,7 +473,7 @@ ENTRYPOINT [ &quot;my-app&quot; ]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mou">@mou</a> on 2025-06-23 13:04</div>
-            <div class="timeline-body"><p>It's not just a question, as the label suggests. The documentation provides a very comprehensive guide on Docker integration. However, it completely avoids the unprivileged aspect of Docker images. I cannot say anything about worldwide adoption, but around me, I definitely see a trend of moving away from running applications as root inside Docker. For uv to stay relevant, the gap in documentation should be addressed.</p>
+            <div class="timeline-body"><p>It&#x27;s not just a question, as the label suggests. The documentation provides a very comprehensive guide on Docker integration. However, it completely avoids the unprivileged aspect of Docker images. I cannot say anything about worldwide adoption, but around me, I definitely see a trend of moving away from running applications as root inside Docker. For uv to stay relevant, the gap in documentation should be addressed.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -499,10 +499,10 @@ Since I had a .venv directory on my host machine, when I did</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> removed by @zanieb on 2025-09-04 23:10</div>
+            <div class="event">Label <span class="label">question</span> removed by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-04 23:10</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">documentation</span> added by @zanieb on 2025-09-04 23:10</div>
+            <div class="event">Label <span class="label">documentation</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-04 23:10</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tdjaballah">@tdjaballah</a> on 2025-09-06 23:26</div>
@@ -516,7 +516,7 @@ Here are the key differences in my setup:</p>
 <li>Some runtime system dependencies (like libstdc++, libgcc) are installed to support packages like NumPy.</li>
 </ul>
 <p>Here’s the final Dockerfile I use:</p>
-<pre><code class="language-dockerfile"># ---- Base image (wolfi) ----
+<pre><code># ---- Base image (wolfi) ----
 FROM cgr.dev/chainguard/wolfi-base AS base
 
 # Runtime dependencies (NumPy for instance needs C++ libs)
@@ -580,7 +580,7 @@ CMD [&quot;python&quot;, &quot;-m&quot;, &quot;app.main&quot;]
 </ul>
 <p>you can add start if you find if handy :)
 https://github.com/grillazz/fastapi-sqlalchemy-asyncpg/blob/main/Dockerfile</p>
-<pre><code class="language-Dockerfile">FROM python:3.14.0-slim-trixie AS base
+<pre><code>FROM python:3.14.0-slim-trixie AS base
 
 RUN apt-get update -qy \
     &amp;&amp; apt-get install -qyy \
@@ -625,16 +625,16 @@ COPY pyproject.toml /panettone/pyproject.toml
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-16 13:37</div>
-            <div class="timeline-body"><p>As of https://github.com/astral-sh/uv-docker-example/pull/65 we include noroot users in our examples</p>
+            <div class="timeline-body"><p>As of <a href="https://github.com/astral-sh/uv-docker-example/pull/65">astral-sh/uv-docker-example#65</a> we include noroot users in our examples</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2025-12-16 13:37</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-16 13:37</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:27:23 UTC
+        Synced at 2026-01-20 19:34:21 UTC
     </footer>
 </body>
 </html>

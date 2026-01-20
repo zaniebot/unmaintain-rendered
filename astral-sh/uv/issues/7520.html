@@ -48,20 +48,20 @@ packaging.requirements.InvalidRequirement: Expected extra name after comma
     transformers[sentencepiece,
                                ^
 </code></pre>
-<p>Technically you might say it's a bug in pypa/packaging but since <code>uv</code> intends to be 100% drop-in compatible with pip-tools I imagine you might want to fix it here.</p>
+<p>Technically you might say it&#x27;s a bug in pypa/packaging but since <code>uv</code> intends to be 100% drop-in compatible with pip-tools I imagine you might want to fix it here.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-18 23:39</div>
             <div class="timeline-body"><p>The <a href="https://packaging.python.org/en/latest/specifications/dependency-specifiers/#complete-grammar">official grammar</a> says that whitespace is allowed — this is a bug in the parser and should be reported upstream.</p>
-<p>I'm not sure if we should change our representation here, but whatever we display should be consistent throughout uv.</p>
+<p>I&#x27;m not sure if we should change our representation here, but whatever we display should be consistent throughout uv.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">compatibility</span> added by @zanieb on 2024-09-18 23:39</div>
+            <div class="event">Label <span class="label">compatibility</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-18 23:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> added by @zanieb on 2024-09-18 23:39</div>
+            <div class="event">Label <span class="label">needs-decision</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-18 23:39</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-19 02:19</div>
@@ -71,8 +71,8 @@ packaging.requirements.InvalidRequirement: Expected extra name after comma
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-19 04:20</div>
             <div class="timeline-body"><p>It looks like the latest version of <code>packaging</code> is fine, these both pass</p>
-<pre><code>❯ uv run --with packaging --isolated --no-project -- python -c 'from packaging.requirements import Requirement; Requirement(&quot;pkg[foo,bar]&quot;)'
-❯ uv run --with packaging --isolated --no-project -- python -c 'from packaging.requirements import Requirement; Requirement(&quot;pkg[foo, bar]&quot;)'
+<pre><code>❯ uv run --with packaging --isolated --no-project -- python -c &#x27;from packaging.requirements import Requirement; Requirement(&quot;pkg[foo,bar]&quot;)&#x27;
+❯ uv run --with packaging --isolated --no-project -- python -c &#x27;from packaging.requirements import Requirement; Requirement(&quot;pkg[foo, bar]&quot;)&#x27;
 </code></pre>
 <p>Are you using a really old version or something?</p>
 </div>
@@ -80,14 +80,14 @@ packaging.requirements.InvalidRequirement: Expected extra name after comma
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/alexeagle">@alexeagle</a> on 2024-09-19 13:43</div>
             <div class="timeline-body"><p>This is using packaging version 23.1.</p>
-<p>It's not trivial to repro since https://github.com/bazelbuild/rules_python/blob/0.32.2/tools/wheelmaker.py#L555 is on the callstack here. And packaging is fetched as a wheel here: https://github.com/bazelbuild/rules_python/blob/0.32.2/python/pip_install/repositories.bzl#L54</p>
-<p>I agree that it's likely the bug is somewhere else, and I'll dig some more. Though regardless of where it is, any variability in the output runs into Hyrum's law, and is observable somewhere...</p>
+<p>It&#x27;s not trivial to repro since https://github.com/bazelbuild/rules_python/blob/0.32.2/tools/wheelmaker.py#L555 is on the callstack here. And packaging is fetched as a wheel here: https://github.com/bazelbuild/rules_python/blob/0.32.2/python/pip_install/repositories.bzl#L54</p>
+<p>I agree that it&#x27;s likely the bug is somewhere else, and I&#x27;ll dig some more. Though regardless of where it is, any variability in the output runs into Hyrum&#x27;s law, and is observable somewhere...</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-19 14:05</div>
             <div class="timeline-body"><p>Hm interesting</p>
-<pre><code>❯ uv run --with packaging==23.1 --isolated --no-project -- python -c 'from packaging.requirements import Requirement; print(Requirement(&quot;pkg[foo, bar]&quot;))'
+<pre><code>❯ uv run --with packaging==23.1 --isolated --no-project -- python -c &#x27;from packaging.requirements import Requirement; print(Requirement(&quot;pkg[foo, bar]&quot;))&#x27;
 
 pkg[bar,foo]
 </code></pre>
@@ -95,7 +95,7 @@ pkg[bar,foo]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/alexeagle">@alexeagle</a> on 2024-09-19 14:28</div>
-            <div class="timeline-body"><p>Wow, the actual bug was in a patch my client applied on top of Bazel's rules_python - so only they could observe it...</p>
+            <div class="timeline-body"><p>Wow, the actual bug was in a patch my client applied on top of Bazel&#x27;s rules_python - so only they could observe it...</p>
 <pre><code>diff --git a/python/pip_install/pip_repository_requirements.bzl.tmpl b/python/pip_install/pip_repository_requirements.bzl.tmpl
 index 8e17720..fdeaae8 100644
 --- a/python/pip_install/pip_repository_requirements.bzl.tmpl
@@ -113,24 +113,24 @@ index 8e17720..fdeaae8 100644
  _config = %%CONFIG%%
  _annotations = %%ANNOTATIONS%%
 </code></pre>
-<p>I've fixed that to be less brittle, so I'm no longer affected by this bug. Up to you if you'd like to produce more pip-compile-compatible output in case someone else also has a broken parser.</p>
+<p>I&#x27;ve fixed that to be less brittle, so I&#x27;m no longer affected by this bug. Up to you if you&#x27;d like to produce more pip-compile-compatible output in case someone else also has a broken parser.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-25 17:41</div>
-            <div class="timeline-body"><p>In that case, I'm gonna leave it as-is for now. If we see another report, let's revisit. Thanks @alexeagle!</p>
+            <div class="timeline-body"><p>In that case, I&#x27;m gonna leave it as-is for now. If we see another report, let&#x27;s revisit. Thanks @alexeagle!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-09-25 17:41</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-25 17:41</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-09-25 17:41</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-25 17:41</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:27:13 UTC
+        Synced at 2026-01-20 19:34:09 UTC
     </footer>
 </body>
 </html>

@@ -25,7 +25,7 @@
             <div class="timeline-header"><a href="https://github.com/leafgarland">@leafgarland</a></div>
             <div class="timeline-body"><p>I have some <code>.gitignore</code> entries like this <code>/*/Dependencies/</code> that are not working with ripgrep on Windows systems, ripgrep will list files in those directories.</p>
 <p>Here is a test that will fail on Windows. Note, this will also fail on non-Windows systems but that is just because of the back slashes in the expected output (really nice test DSL by the way!).</p>
-<pre><code class="language-rust">sherlock!(windows_paths_gitignore, &quot;Sherlock&quot;, &quot;.&quot;, |wd: WorkDir, mut cmd: Command| {
+<pre><code>sherlock!(windows_paths_gitignore, &quot;Sherlock&quot;, &quot;.&quot;, |wd: WorkDir, mut cmd: Command| {
     // Set up a directory hierarchy like this:
     //
     // .gitignore
@@ -35,8 +35,8 @@
     //
     // Where `.gitignore` contains `foo/sherlock`.
     //
-    // ripgrep should ignore 'foo/sherlock' giving us results only from 'foo/watson'
-    // but on Windows ripgrep will include both 'foo/sherlock' and 'foo/watson' in 
+    // ripgrep should ignore &#x27;foo/sherlock&#x27; giving us results only from &#x27;foo/watson&#x27;
+    // but on Windows ripgrep will include both &#x27;foo/sherlock&#x27; and &#x27;foo/watson&#x27; in 
     // the search results.
     wd.remove(&quot;sherlock&quot;);
     wd.create(&quot;.gitignore&quot;, &quot;foo/sherlock\n&quot;);
@@ -55,23 +55,23 @@ foo\\watson:be, to a very large extent, the result of luck. Sherlock Holmes
 <p>test output:</p>
 <pre><code>---- windows_paths_gitignore stdout ----
 
-thread 'windows_paths_gitignore' panicked at 'assertion failed: `(left ==
+thread &#x27;windows_paths_gitignore&#x27; panicked at &#x27;assertion failed: `(left ==
 right)` (left: `&quot;foo\\sherlock:For the Doctor Watsons of this world, as opposed
 to the Sherlock\nfoo\\sherlock:be, to a very large extent, the result of luck.
 Sherlock Holmes\nfoo\\watson:For the Doctor Watsons of this world, as opposed
 to the Sherlock\nfoo\\watson:be, to a very large extent, the result of luck.
 Sherlock Holmes\n&quot;`, right: `&quot;foo\\watson:For the Doctor Watsons of this world,
 as opposed to the Sherlock\nfoo\\watson:be, to a very large extent, the result
-of luck. Sherlock Holmes\n&quot;`)', tests/tests.rs:541
+of luck. Sherlock Holmes\n&quot;`)&#x27;, tests/tests.rs:541
 </code></pre>
-<p>I guess this is because there is no path separator normalization in the matching code so <code>foo\\sherlock</code> does not match <code>foo/sherlock</code>. Not sure what the best plan to fix it is. I did some searching around rust libs to see if there is anything that will normalize path separators but I have not found anything yet. Personally I'd be happy if command line tools like ripgrep always dealt with forward slash paths (most Windows APIs and Powershell work fine with forward slash paths) but I fully understand the need to support cmd.exe and the like.</p>
+<p>I guess this is because there is no path separator normalization in the matching code so <code>foo\\sherlock</code> does not match <code>foo/sherlock</code>. Not sure what the best plan to fix it is. I did some searching around rust libs to see if there is anything that will normalize path separators but I have not found anything yet. Personally I&#x27;d be happy if command line tools like ripgrep always dealt with forward slash paths (most Windows APIs and Powershell work fine with forward slash paths) but I fully understand the need to support cmd.exe and the like.</p>
 <p>Normalizing the paths and then converting to system appropriate paths on output seems like the sensible choice but looking at <code>gitignore.rs</code>, it would probably not be too horrid to make it handle both separators - not sure how well that would scale once you start on other <em>ignore</em> formats like Mercurial.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-28 13:04</div>
-            <div class="timeline-body"><p>I think the problem here is that I tried too hard to support both <code>/</code> and <code>\\</code> in the underlying glob implementation. (Yes, <code>ripgrep</code> ships with its own custom implementation of globs, mostly for performance reasons.) I suspect you're right that a simpler solution is to simply normalize <code>\\</code> to <code>/</code> before matching on Windows only. This will in fact incur a performance hit, though.</p>
-<p>Rust's <code>std::path</code> library does provide a platform independent abstraction for things like this, but that doesn't help one bit when you need to run globs over paths.</p>
+            <div class="timeline-body"><p>I think the problem here is that I tried too hard to support both <code>/</code> and <code>\\</code> in the underlying glob implementation. (Yes, <code>ripgrep</code> ships with its own custom implementation of globs, mostly for performance reasons.) I suspect you&#x27;re right that a simpler solution is to simply normalize <code>\\</code> to <code>/</code> before matching on Windows only. This will in fact incur a performance hit, though.</p>
+<p>Rust&#x27;s <code>std::path</code> library does provide a platform independent abstraction for things like this, but that doesn&#x27;t help one bit when you need to run globs over paths.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -80,7 +80,7 @@ of luck. Sherlock Holmes\n&quot;`)', tests/tests.rs:541
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2016-09-28 20:06</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-28 20:06</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-10 23:28</div>
@@ -88,12 +88,12 @@ of luck. Sherlock Holmes\n&quot;`)', tests/tests.rs:541
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2016-10-10 23:28</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-10 23:28</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:41:45 UTC
+        Synced at 2026-01-20 18:48:01 UTC
     </footer>
 </body>
 </html>

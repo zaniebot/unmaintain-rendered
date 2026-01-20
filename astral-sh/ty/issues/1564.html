@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/edgarrmondragon">@edgarrmondragon</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>The following is accepted by mypy and was also working in previous versions of ty:</p>
-<pre><code class="language-python">from typing import Any, Generic, TypeAlias, TypeVar, Union
+<pre><code>from typing import Any, Generic, TypeAlias, TypeVar, Union
 
 _JsonValue: TypeAlias = str | int | float | bool | list | dict | None
 
@@ -48,11 +48,11 @@ class ArrayType(JSONTypeHelper[list], Generic[W]):
 
 
 array = ArrayType(StringType)
-# Argument to bound method `__init__` is incorrect: Expected `ArrayType[W@ArrayType]`, found `ArrayType[&lt;class 'StringType'&gt;]` (invalid-argument-type) [Ln 23, Col 9]
+# Argument to bound method `__init__` is incorrect: Expected `ArrayType[W@ArrayType]`, found `ArrayType[&lt;class &#x27;StringType&#x27;&gt;]` (invalid-argument-type) [Ln 23, Col 9]
 </code></pre>
 <p>https://play.ty.dev/bddec81e-101a-4c8b-818b-5012af6dec2e</p>
 <p>Curiously, using PEP 695 seems to make ty happy, though unfortunately I need to support Python 3.10+:</p>
-<pre><code class="language-python">from typing import Any, TypeAlias, Union
+<pre><code>from typing import Any, TypeAlias, Union
 
 _JsonValue: TypeAlias = str | int | float | bool | list | dict | None
 
@@ -72,28 +72,28 @@ class ArrayType[W: JSONTypeHelper](JSONTypeHelper[list]):
 array = ArrayType(StringType)
 </code></pre>
 <p>https://play.ty.dev/5369dde9-a05c-4788-86c2-8d7291f6d85f</p>
-<h3>Version</h3>
+Version
 <p>ty 0.0.1-alpha.26 (b225fd8b4 2025-11-10)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-14 20:40</div>
-            <div class="timeline-body"><p>Thanks for the report! This is a pre-existing limitation of our generic solver (we don't understand <code>type[W]</code> where <code>W</code> is a type variable), which we hope to fix shortly. It's revealed in a recent ty release in this example because we recently improved our understanding of type aliases (such as <code>_JsonValue</code>).</p>
-<p>I'm not entirely sure why the behavior is different when you switch to PEP 695; I suspect it has something to do with how we synthesize the type of <code>self</code> in each case? That part needs more exploration to understand.</p>
+            <div class="timeline-body"><p>Thanks for the report! This is a pre-existing limitation of our generic solver (we don&#x27;t understand <code>type[W]</code> where <code>W</code> is a type variable), which we hope to fix shortly. It&#x27;s revealed in a recent ty release in this example because we recently improved our understanding of type aliases (such as <code>_JsonValue</code>).</p>
+<p>I&#x27;m not entirely sure why the behavior is different when you switch to PEP 695; I suspect it has something to do with how we synthesize the type of <code>self</code> in each case? That part needs more exploration to understand.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Beta" by @carljm on 2025-11-14 20:41</div>
+            <div class="event">Added to milestone &quot;Beta&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-11-14 20:41</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Removed from milestone "Beta" by @carljm on 2025-11-14 20:42</div>
+            <div class="event">Removed from milestone &quot;Beta&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-11-14 20:42</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Stable" by @carljm on 2025-11-14 20:42</div>
+            <div class="event">Added to milestone &quot;Stable&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-11-14 20:42</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on 2025-11-14 21:07</div>
-            <div class="timeline-body"><p>Interesting, come to think of it I've also run into https://github.com/astral-sh/ty/issues/783 and I see how both of these have the same underlying cause.</p>
+            <div class="timeline-body"><p>Interesting, come to think of it I&#x27;ve also run into <a href="https://github.com/astral-sh/ty/issues/783">astral-sh/ty#783</a> and I see how both of these have the same underlying cause.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -101,11 +101,11 @@ array = ArrayType(StringType)
             <div class="timeline-body"><p>+1</p>
 <p>Where <code>Bet().update_or_create() -&gt; Bet</code> and <code>Event().update_or_create() -&gt; Event</code></p>
 <p>This works just fine:</p>
-<pre><code class="language-py">    def process_item(self, item: Bet | Event, spider: Spider) -&gt; Bet | Event:
+<pre><code>    def process_item(self, item: Bet | Event, spider: Spider) -&gt; Bet | Event:
         return item.update_or_create(self.session)
 </code></pre>
 <p>But the following gives me these issues:</p>
-<pre><code class="language-py">    def process_item[T: Bet | Event](self, item: T, spider: Spider) -&gt; T:
+<pre><code>    def process_item[T: Bet | Event](self, item: T, spider: Spider) -&gt; T:
         return item.update_or_create(self.session)
 </code></pre>
 <pre><code>Argument to bound method `update_or_create` is incorrect: Expected `Bet`, found `T@process_item`ty[invalid-argument-type](https://ty.dev/rules#invalid-argument-type)
@@ -115,14 +115,14 @@ Argument to bound method `update_or_create` is incorrect: Expected `Event`, foun
 Return type does not match returned value: expected `T@process_item`, found `Bet | Event`ty[invalid-return-type](https://ty.dev/rules#invalid-return-type)
 pipelines.py(25, 72): Expected `T@process_item` because of return type
 </code></pre>
-<hr />
+<hr>
 <p>ty 0.0.1-alpha.26
 Python 3.14.0</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dmytro-GL">@dmytro-GL</a> on 2025-11-18 18:21</div>
-            <div class="timeline-body"><p>Here is another one (though I'm not 100% sure this is the exact same issue):</p>
+            <div class="timeline-body"><p>Here is another one (though I&#x27;m not 100% sure this is the exact same issue):</p>
 <pre><code>from typing import Callable, Protocol, ParamSpec
 
 P = ParamSpec(&quot;P&quot;)
@@ -165,7 +165,7 @@ error[invalid-argument-type]: Argument to function `test3` is incorrect
 30 | test1(Foo)
 31 | test2(Foo)
 32 | test3(Foo)
-   |       ^^^ Expected `FooFactory1`, found `&lt;class 'Foo'&gt;`
+   |       ^^^ Expected `FooFactory1`, found `&lt;class &#x27;Foo&#x27;&gt;`
 33 | test4(Foo)
    |
 info: Function defined here
@@ -185,7 +185,7 @@ error[invalid-argument-type]: Argument to function `test4` is incorrect
 31 | test2(Foo)
 32 | test3(Foo)
 33 | test4(Foo)
-   |       ^^^ Expected `FooFactory2`, found `&lt;class 'Foo'&gt;`
+   |       ^^^ Expected `FooFactory2`, found `&lt;class &#x27;Foo&#x27;&gt;`
    |
 info: Function defined here
   --&gt; test.min.py:27:5
@@ -208,7 +208,7 @@ error[invalid-argument-type]: Argument to function `test1` is incorrect
 28 |     func(lambda: print(&quot;4&quot;))()
 29 |
 30 | test1(Foo)
-   |       ^^^ Expected `FooFactory1[Unknown]`, found `&lt;class 'Foo'&gt;`
+   |       ^^^ Expected `FooFactory1[Unknown]`, found `&lt;class &#x27;Foo&#x27;&gt;`
 31 | test2(Foo)
 32 | test3(Foo)
    |
@@ -229,7 +229,7 @@ error[invalid-argument-type]: Argument to function `test3` is incorrect
 30 | test1(Foo)
 31 | test2(Foo)
 32 | test3(Foo)
-   |       ^^^ Expected `FooFactory1[Unknown]`, found `&lt;class 'Foo'&gt;`
+   |       ^^^ Expected `FooFactory1[Unknown]`, found `&lt;class &#x27;Foo&#x27;&gt;`
 33 | test4(Foo)
    |
 info: Function defined here
@@ -245,13 +245,13 @@ info: rule `invalid-argument-type` is enabled by default
 
 Found 2 diagnostics
 </code></pre>
-<p>pyright doesn't like the first case, but for a different reason (?)</p>
+<p>pyright doesn&#x27;t like the first case, but for a different reason (?)</p>
 <pre><code>$ uvx --with-requirements requirements.txt pyright@1.1.407 test.min.py
 /tmp/t/test.min.py
   /tmp/t/test.min.py:19:5 - error: Arguments for ParamSpec &quot;P@test1&quot; are missing (reportCallIssue)
 1 error, 0 warnings, 0 informations
 </code></pre>
-<p>The example above is an attempt to investigate the <code>invalid-argument-type</code> issue reported by ty@0.0.1a26 in the following code (ty@0.0.1a25 and pyright@1.1.407 don't report any issues):</p>
+<p>The example above is an attempt to investigate the <code>invalid-argument-type</code> issue reported by ty@0.0.1a26 in the following code (ty@0.0.1a25 and pyright@1.1.407 don&#x27;t report any issues):</p>
 <pre><code># /// script
 # dependencies = [
 #   &quot;uvicorn   == 0.38.0&quot;,
@@ -282,7 +282,7 @@ if __name__ == &quot;__main__&quot;:
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">type aliases</span> added by @AlexWaygood on 2025-12-19 12:14</div>
+            <div class="event">Label <span class="label">type aliases</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-19 12:14</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on 2025-12-24 17:47</div>
@@ -297,12 +297,12 @@ if __name__ == &quot;__main__&quot;:
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2025-12-27 19:28</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2025-12-27 19:28</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:59 UTC
+        Synced at 2026-01-20 19:25:59 UTC
     </footer>
 </body>
 </html>

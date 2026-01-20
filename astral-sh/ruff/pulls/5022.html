@@ -23,24 +23,24 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Thomasdezeeuw">@Thomasdezeeuw</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Previously the rule for SIM117 explicitly ignored <code>async with</code> statements as it would incorrectly suggestion to merge <code>async with</code> and regular <code>with</code> statements as reported in issue #1902.</p>
 <p>This partially reverts the fix for that (commit     396be5edeac0c5724de87e93c5a885dacf201f05) by enabling the rules for <code>async with</code> statements again, but with a check ensuring that the statements are both of the same kind, i.e. both <code>async with</code> or both (just) <code>with</code> statements.</p>
 <p>Closes #3025</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>Updated and existing test and added a new test case from #3025.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/rules/flake8_simplify/rules/ast_with.rs</code>:63 on 2023-06-12 10:38</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">/// Returns a boolean indicating whether it's an async with statement, the items and
+            <div class="timeline-body"><pre><code>/// Returns a boolean indicating whether it&#x27;s an async with statement, the items and
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/rules/flake8_simplify/rules/ast_with.rs</code>:65 on 2023-06-12 10:45</div>
             <div class="timeline-body"><p>How would this deal with</p>
-<pre><code class="language-python">with a as a2:
+<pre><code>with a as a2:
     async with b as b2:
         with c as c2:
             async with d as d2:
@@ -51,7 +51,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/rules/flake8_simplify/rules/ast_with.rs</code>:101 on 2023-06-12 11:09</div>
             <div class="timeline-body"><p>Took me way too long to figure this out:</p>
-<pre><code class="language-suggestion">            // Make sure with fix from top to bottom for nested with statements, e.g. for
+<pre><code>            // Make sure with fix from top to bottom for nested with statements, e.g. for
             // ```python
             // with A():
             //     with B():
@@ -72,12 +72,12 @@
             // ```
             return;
 </code></pre>
-<p>I'd place it outside the if let but github only allows me to place comments here</p>
+<p>I&#x27;d place it outside the if let but github only allows me to place comments here</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/rules/flake8_simplify/rules/ast_with.rs</code>:71 on 2023-06-12 11:11</div>
-            <div class="timeline-body"><p>What's the purpose of the recursion if we only fix one level in each ruff fix iteration?</p>
+            <div class="timeline-body"><p>What&#x27;s the purpose of the recursion if we only fix one level in each ruff fix iteration?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -89,25 +89,25 @@
             <div class="timeline-body"><p>Currently it makes no suggestion.</p>
 <p>We could probably suggest the following:</p>
 <blockquote>
-<pre><code class="language-python">with a as a2, c as c2:
+<pre><code>with a as a2, c as c2:
     async with b as b2, d as d2:
         f(a2, b2, c2, d2)
 </code></pre>
 </blockquote>
-<p>However, I'm not sure if that always produces equivalent code. If I read the docs correctly (https://docs.python.org/3/whatsnew/2.6.html#pep-343-the-with-statement) the syntax is <code>with expression</code>, where <code>expression</code> could fail in some way.</p>
+<p>However, I&#x27;m not sure if that always produces equivalent code. If I read the docs correctly (https://docs.python.org/3/whatsnew/2.6.html#pep-343-the-with-statement) the syntax is <code>with expression</code>, where <code>expression</code> could fail in some way.</p>
 <p>Consider</p>
 <blockquote>
-<pre><code class="language-python">with open('/etc/file1', 'r') as f1:
-    async with open('/etc/file2', 'r') as f2:
-        with open('/etc/file3', 'r') as f3:
-            async with open('/etc/file3', 'r') as f4:
+<pre><code>with open(&#x27;/etc/file1&#x27;, &#x27;r&#x27;) as f1:
+    async with open(&#x27;/etc/file2&#x27;, &#x27;r&#x27;) as f2:
+        with open(&#x27;/etc/file3&#x27;, &#x27;r&#x27;) as f3:
+            async with open(&#x27;/etc/file3&#x27;, &#x27;r&#x27;) as f4:
                 f(f1, f2, f3, f4)
 </code></pre>
 </blockquote>
-<p>I don't think we can rewrite that to</p>
+<p>I don&#x27;t think we can rewrite that to</p>
 <blockquote>
-<pre><code class="language-python">with open('/etc/file1', 'r') as f1, open('/etc/file3', 'r') as f3:
-    async with open('/etc/file2', 'r') as f2, open('/etc/file3', 'r') as f4:
+<pre><code>with open(&#x27;/etc/file1&#x27;, &#x27;r&#x27;) as f1, open(&#x27;/etc/file3&#x27;, &#x27;r&#x27;) as f3:
+    async with open(&#x27;/etc/file2&#x27;, &#x27;r&#x27;) as f2, open(&#x27;/etc/file3&#x27;, &#x27;r&#x27;) as f4:
         f(f1, f2, f3, f4)
 </code></pre>
 </blockquote>
@@ -116,7 +116,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/Thomasdezeeuw">@Thomasdezeeuw</a> on <code>crates/ruff/src/rules/flake8_simplify/rules/ast_with.rs</code>:71 on 2023-06-12 11:34</div>
-            <div class="timeline-body"><p>I'm not exactly sure, I didn't want to change the existing code too much possibly breaking something in the process.</p>
+            <div class="timeline-body"><p>I&#x27;m not exactly sure, I didn&#x27;t want to change the existing code too much possibly breaking something in the process.</p>
 <p>It does slightly improve the suggestion span (<code>-</code> is old code, <code>+</code> is without the recursive call):</p>
 <pre><code>---- rules::flake8_simplify::tests::rules::rule_multiplewithstatements_path_new_sim117_py_expects stdout ----
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Snapshot Summary ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -156,7 +156,7 @@ Source: crates/ruff/src/rules/flake8_simplify/mod.rs:52
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/rules/flake8_simplify/rules/ast_with.rs</code>:65 on 2023-06-12 11:51</div>
             <div class="timeline-body"><p>sorry, bad example. If i use</p>
-<pre><code class="language-python">async with b as b2:
+<pre><code>async with b as b2:
     with c as c2:
         async with d as d2:
             f(b2, c2, d2)
@@ -197,15 +197,15 @@ Source: crates/ruff/src/rules/flake8_simplify/mod.rs:52
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_simplify/rules/ast_with.rs</code>:65 on 2023-06-12 12:46</div>
-            <div class="timeline-body"><p>Yeah if they're out-of-order (with, then async, then with, etc.), we shouldn't re-order the context managers IMO -- only consecutive sync or async managers.</p>
+            <div class="timeline-body"><p>Yeah if they&#x27;re out-of-order (with, then async, then with, etc.), we shouldn&#x27;t re-order the context managers IMO -- only consecutive sync or async managers.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_simplify/rules/ast_with.rs</code>:71 on 2023-06-12 12:46</div>
             <div class="timeline-body"><blockquote>
-<p>What's the purpose of the recursion if we only fix one level in each ruff fix iteration?</p>
+<p>What&#x27;s the purpose of the recursion if we only fix one level in each ruff fix iteration?</p>
 </blockquote>
-<p>Is this true? I was under the impression that we did collapse multiple levels (haven't looked back at the code).</p>
+<p>Is this true? I was under the impression that we did collapse multiple levels (haven&#x27;t looked back at the code).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -218,7 +218,7 @@ Source: crates/ruff/src/rules/flake8_simplify/mod.rs:52
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/Thomasdezeeuw">@Thomasdezeeuw</a> on <code>crates/ruff/src/rules/flake8_simplify/rules/ast_with.rs</code>:71 on 2023-06-12 13:56</div>
-            <div class="timeline-body"><p>After following some red hearings I think I can say that we don't completely collapse multiple levels. This is the output of the current code (before this pr):</p>
+            <div class="timeline-body"><p>After following some red hearings I think I can say that we don&#x27;t completely collapse multiple levels. This is the output of the current code (before this pr):</p>
 <pre><code>SIM117.py:2:1: SIM117 [*] Use a single `with` statement with multiple contexts instead of nested `with` statements
   |
 1 |   # SIM117
@@ -241,7 +241,7 @@ Source: crates/ruff/src/rules/flake8_simplify/mod.rs:52
   4 |+        print(&quot;hello&quot;)
 </code></pre>
 <p>Note that the error indicator (first part) includes all three <code>with</code> statements, but the suggested fix only includes the first two <code>with</code> statement. Which is not ideal because when applied Ruff will complain the next run to also collapse <code>with C()</code>.</p>
-<p>I could work on the fix suggestion to rewrite it to <code>with A(), B(), C()</code>, but that will have a larger scope than issue https://github.com/astral-sh/ruff/issues/3025 is aiming to fix, so perhaps we should do it in another pr.</p>
+<p>I could work on the fix suggestion to rewrite it to <code>with A(), B(), C()</code>, but that will have a larger scope than issue <a href="https://github.com/astral-sh/ruff/issues/3025">astral-sh/ruff#3025</a> is aiming to fix, so perhaps we should do it in another pr.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -250,7 +250,7 @@ Source: crates/ruff/src/rules/flake8_simplify/mod.rs:52
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/Thomasdezeeuw">@Thomasdezeeuw</a> on <code>crates/ruff/src/rules/flake8_simplify/rules/ast_with.rs</code>:65 on 2023-06-12 14:00</div>
-            <div class="timeline-body"><p>I've resolved this in the last commit (169c0fffaacf4386bde36416d389187c744fc521), but that changed the range of text the error points to, see the change in the snapshot and https://github.com/astral-sh/ruff/pull/5022#discussion_r1226710316.</p>
+            <div class="timeline-body"><p>I&#x27;ve resolved this in the last commit (169c0fffaacf4386bde36416d389187c744fc521), but that changed the range of text the error points to, see the change in the snapshot and <a href="https://github.com/astral-sh/ruff/pull/5022">astral-sh/ruff#5022</a>#discussion_r1226710316.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -259,8 +259,8 @@ Source: crates/ruff/src/rules/flake8_simplify/mod.rs:52
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_simplify/rules/ast_with.rs</code>:71 on 2023-06-12 14:11</div>
-            <div class="timeline-body"><p>Ahh ok, so we flag them all, but only fix one level... This is not <em>terrible</em> because Ruff runs iteratively until there are no more fixable errors, so from the user's perspective, it will appear as if these were fixed in one pass. But it does mean that the suggested fix is confusing as depicted above.</p>
-<p>Let's fix it if possible, but in a separate PR.</p>
+            <div class="timeline-body"><p>Ahh ok, so we flag them all, but only fix one level... This is not <em>terrible</em> because Ruff runs iteratively until there are no more fixable errors, so from the user&#x27;s perspective, it will appear as if these were fixed in one pass. But it does mean that the suggested fix is confusing as depicted above.</p>
+<p>Let&#x27;s fix it if possible, but in a separate PR.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -273,9 +273,9 @@ Source: crates/ruff/src/rules/flake8_simplify/mod.rs:52
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-06-12 14:26</div>
-            <div class="timeline-body"><h2>PR Check Results</h2>
-<h3>Benchmark</h3>
-<h4>Linux</h4>
+            <div class="timeline-body">PR Check Results
+Benchmark
+Linux
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 formatter/large/dataset.py                 1.17      8.1±0.05ms     5.1 MB/sec    1.00      6.9±0.05ms     5.9 MB/sec
@@ -291,7 +291,7 @@ linter/default-rules/numpy/ctypeslib.py    1.00   1552.0±3.10µs    10.7 MB/sec
 linter/default-rules/numpy/globals.py      1.00    166.2±1.19µs    17.7 MB/sec    1.00    166.4±0.30µs    17.7 MB/sec
 linter/default-rules/pydantic/types.py     1.00      3.3±0.01ms     7.6 MB/sec    1.00      3.3±0.01ms     7.6 MB/sec
 </code></pre>
-<h4>Windows</h4>
+Windows
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 formatter/large/dataset.py                 1.00      9.7±0.21ms     4.2 MB/sec    1.00      9.7±0.23ms     4.2 MB/sec
@@ -307,15 +307,15 @@ linter/default-rules/numpy/ctypeslib.py    1.00      2.2±0.06ms     7.7 MB/sec 
 linter/default-rules/numpy/globals.py      1.01   244.6±11.44µs    12.1 MB/sec    1.00    241.7±8.17µs    12.2 MB/sec
 linter/default-rules/pydantic/types.py     1.00      4.6±0.13ms     5.5 MB/sec    1.00      4.6±0.12ms     5.5 MB/sec
 </code></pre>
-<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @Thomasdezeeuw on 2023-06-12 14:33</div>
+            <div class="event">Merged by <a href="https://github.com/Thomasdezeeuw">@Thomasdezeeuw</a> on 2023-06-12 14:33</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @Thomasdezeeuw on 2023-06-12 14:33</div>
+            <div class="event">Closed by <a href="https://github.com/Thomasdezeeuw">@Thomasdezeeuw</a> on 2023-06-12 14:33</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2023-06-12 14:33</div>
@@ -323,7 +323,7 @@ linter/default-rules/pydantic/types.py     1.00      4.6±0.13ms     5.5 MB/sec 
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:58:00 UTC
+        Synced at 2026-01-20 18:54:25 UTC
     </footer>
 </body>
 </html>

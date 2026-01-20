@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Add support for managing inline snapshots of Red Knot diagnostics to mdtests.</p>
-<h2>Background</h2>
-<p>In astral-sh/ruff#15945, we added support for diagnostic snapshotting to <a href="https://github.com/astral-sh/ruff/blob/main/crates/red_knot_test/README.md">Red Knot's Markdown test framework</a>. Basically, the snapshotting support lets you write something like this:</p>
+Background
+<p>In astral-sh/ruff#15945, we added support for diagnostic snapshotting to <a href="https://github.com/astral-sh/ruff/blob/main/crates/red_knot_test/README.md">Red Knot&#x27;s Markdown test framework</a>. Basically, the snapshotting support lets you write something like this:</p>
 <pre><code>## Unresolvable module import
 
 &lt;!-- snapshot-diagnostics --&gt;
@@ -39,18 +39,18 @@ import zqzqzqzqzqzqzq  # error: [unresolved-import] &quot;Cannot resolve import 
 <pre><code>$ cargo insta test -p red_knot_python_semantic -- mdtest__
 </code></pre>
 <p>the test runner will produce a snapshot of any diagnostics emitted by Red Knot on the Python code. This snapshot is then managed as an <em>external</em> file by <a href="https://docs.rs/insta"><code>insta</code></a>.</p>
-<p>This works decently well, and it's better than <em>not</em> having something like this, but it kinda inhibits the locality that is otherwise a huge benefit to mdtests. Instead of the diagnostic output being right there in the Markdown file, it's actually in a different snapshot file.</p>
+<p>This works decently well, and it&#x27;s better than <em>not</em> having something like this, but it kinda inhibits the locality that is otherwise a huge benefit to mdtests. Instead of the diagnostic output being right there in the Markdown file, it&#x27;s actually in a different snapshot file.</p>
 <p>Now, <code>insta</code> does support inline snapshots. For example, in <em>Rust code</em>, you can do this:</p>
-<pre><code class="language-rust">insta::assert_snapshot!(
+<pre><code>insta::assert_snapshot!(
     some_op_that_returns_a_string(),
     @&quot;&quot;,
 );
 </code></pre>
 <p>And when you run <code>cargo insta test</code>, it will automatically manage the string on the right side of the assertion, <em>in your source file</em>, just like it does for external snapshots.</p>
 <p>However, we want inline snapshots inside of Markdown files, which, AFAIK, <code>insta</code> does not support.</p>
-<h2>Proposed design</h2>
-<h3><code>mdtest</code> interaction</h3>
-<p>I don't think <a href="https://github.com/astral-sh/ruff/blob/main/crates/red_knot_test/README.md#asserting-on-full-diagnostic-output">this design</a> (originally @carljm AIUI) has explicit consensus from everyone on the Red Knot team (although I'm not aware of any specific objections to it), so it might require some iteration.</p>
+Proposed design
+<code>mdtest</code> interaction
+<p>I don&#x27;t think <a href="https://github.com/astral-sh/ruff/blob/main/crates/red_knot_test/README.md#asserting-on-full-diagnostic-output">this design</a> (originally @carljm AIUI) has explicit consensus from everyone on the Red Knot team (although I&#x27;m not aware of any specific objections to it), so it might require some iteration.</p>
 <p>The idea here is that each mdtest would support an optional <code>output</code> code fence block (at most 1). And when present, the contents of that <code>output</code> block would be treated as an inline diagnostic snapshot. So the above example might look like this:</p>
 <pre><code>## Unresolvable module import
 
@@ -68,35 +68,35 @@ error: lint:unresolved-import
 ```
 </code></pre>
 <p>In contrast to the mdtest README, I propose starting with just one <code>output</code> code fence block that captures the full diagnostic output of <em>all</em> preceding <em>and</em> following Python files. This is how the existing external snapshotting mechanism works. We can consider adding more granular testing in the future, but I think starting with something that just always captures the full diagnostic output is simplest and most useful for now.</p>
-<h2>Snapshot management</h2>
+Snapshot management
 <p>I think this is probably the hardest part of this task and has the least thought put into it. So this section is pretty vague. But a critical part of snapshot testing is the tooling that surrounds the management of the snapshots. <code>cargo insta</code> is a decent model to follow. Everyone here at Astral uses it, and AFAIK, folks generally like it.</p>
-<p>Inline snapshots do have a bit of a conceptually simpler model than external snapshots. For example, you don't need to worry about &quot;unreferenced&quot; snapshots (snapshot files that exist but which aren't connected to any actual test). But I believe these are the minimal operations that need to be supported:</p>
+<p>Inline snapshots do have a bit of a conceptually simpler model than external snapshots. For example, you don&#x27;t need to worry about &quot;unreferenced&quot; snapshots (snapshot files that exist but which aren&#x27;t connected to any actual test). But I believe these are the minimal operations that need to be supported:</p>
 <ul>
 <li>An actual assertion needs to be made to check whether the expected output matches the generated output. Bonus points for making an assertion failure look nice with a pleasant diff.</li>
 <li>When an assertion fails, the snapshot tooling provides a convenient way to update the <em>expected output</em> inside the mdtest file with the output that was generated.</li>
 </ul>
-<p>With that said, having to use two different snapshot test tools is undeniably annoying. So I think the gold standard implementation here would be to find a way to make this use case work with <code>cargo insta</code> itself. Possibly by working with upstream. (cc @mitsuhiko) I wouldn't be surprised if this wasn't feasible though. My guess is that <code>cargo insta</code>'s inline snapshot mechanism is probably tightly coupled with Rust source code (which makes sense).</p>
-<p>If we can't make integration with <code>cargo insta</code> work, then here is what I propose as a starting point:</p>
+<p>With that said, having to use two different snapshot test tools is undeniably annoying. So I think the gold standard implementation here would be to find a way to make this use case work with <code>cargo insta</code> itself. Possibly by working with upstream. (cc @mitsuhiko) I wouldn&#x27;t be surprised if this wasn&#x27;t feasible though. My guess is that <code>cargo insta</code>&#x27;s inline snapshot mechanism is probably tightly coupled with Rust source code (which makes sense).</p>
+<p>If we can&#x27;t make integration with <code>cargo insta</code> work, then here is what I propose as a starting point:</p>
 <ul>
 <li>Assertions use the <a href="https://docs.rs/similar/"><code>similar</code></a> crate (or something like it) to produce nice output when a snapshot test fails.</li>
 <li>An environment variable (e.g., <code>MDTEST_SNAPSHOT_UPDATE</code>) specifies how to deal with snapshot test failures. It has two values: <code>no</code> and <code>always</code>. The default is <code>no</code>, which results in a test failure when the expected and generated outputs do not match. When set to <code>always</code>, the snapshot in the file is rewritten with whatever the generated output is and the test always passes.</li>
 </ul>
-<p>Notably absent from this proposal is any sort of review mechanism. I think this is a <em>nice to have</em>. Instead, since these are inline snapshots only, we can treat the output of <code>cargo insta test -p red_knot_python_semantic -- mdtest_</code> as our review mechanism. And if we only want to accept a single snapshot, we can do something like, <code>MDTEST_SNAPSHOT_UPDATE=always cargo insta test -p red_knot_python_semantic -- mdtest__diagnostics_invalid_argument_type</code>. This workflow is <em>not</em> as nice as <code>cargo insta</code> because it doesn't de-couple test execution from snapshot updating. And it also doesn't permit updating individual <code>output</code> blocks, since I believe all mdtests in a single file get grouped together into a single Rust <code>#[test]</code> execution. So... there are definitely some shortcomings, but I think this might be a good state for an MVP that we can iterate on.</p>
+<p>Notably absent from this proposal is any sort of review mechanism. I think this is a <em>nice to have</em>. Instead, since these are inline snapshots only, we can treat the output of <code>cargo insta test -p red_knot_python_semantic -- mdtest_</code> as our review mechanism. And if we only want to accept a single snapshot, we can do something like, <code>MDTEST_SNAPSHOT_UPDATE=always cargo insta test -p red_knot_python_semantic -- mdtest__diagnostics_invalid_argument_type</code>. This workflow is <em>not</em> as nice as <code>cargo insta</code> because it doesn&#x27;t de-couple test execution from snapshot updating. And it also doesn&#x27;t permit updating individual <code>output</code> blocks, since I believe all mdtests in a single file get grouped together into a single Rust <code>#[test]</code> execution. So... there are definitely some shortcomings, but I think this might be a good state for an MVP that we can iterate on.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">diagnostics</span> added by @BurntSushi on 2025-02-19 14:57</div>
+            <div class="event">Label <span class="label">diagnostics</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-02-19 14:57</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">help wanted</span> added by @BurntSushi on 2025-02-19 14:57</div>
+            <div class="event">Label <span class="label">help wanted</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-02-19 14:57</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">testing</span> added by @BurntSushi on 2025-02-19 14:57</div>
+            <div class="event">Label <span class="label">testing</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-02-19 14:57</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-02-24 18:31</div>
             <div class="timeline-body"><p>My main concern about inline snapshots is that because the snapshots are so big, I feel they can really interrupt the readability of tests. I look forward to having them but I still hope we use them judiciously. I personally find it very hard to review full diagnostic snapshots without my eyes glazing over, which makes me concerned that issues will slip through.</p>
-<p>I would love to have an automatically-updating snapshot feature that can update &quot;inline&quot; error messages in <code># error:</code> comments too, so that the desire for auto-update doesn't lead us to assert on full-rendered-output more often than necessary.</p>
+<p>I would love to have an automatically-updating snapshot feature that can update &quot;inline&quot; error messages in <code># error:</code> comments too, so that the desire for auto-update doesn&#x27;t lead us to assert on full-rendered-output more often than necessary.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -109,16 +109,16 @@ error: lint:unresolved-import
             <div class="timeline-body"><blockquote>
 <p>diagnostic snapshots are only allowed in the <code>resources/mdtest/diagnostics</code> directory</p>
 </blockquote>
-<p>Based on the snapshotting usage I've seen so far, I expect we would find this rule too restrictive. Implementing correct semantics and asserting that the diagnostic output is useful and correctly describes the semantics are just closely related, and it often feels desirable to put them in the same test file.</p>
-<p>What I think would help most here is what I mentioned, having auto-update support for inline <code>error: [code] &quot;message&quot;</code> assertions, not only for full diagnostic output assertions, so that we can choose the right tool for each test without manual update pain being a factor in the choice. But I realize this may add a lot of implementation difficulty, since it's even less likely we could ever use <code>insta</code> for this.</p>
+<p>Based on the snapshotting usage I&#x27;ve seen so far, I expect we would find this rule too restrictive. Implementing correct semantics and asserting that the diagnostic output is useful and correctly describes the semantics are just closely related, and it often feels desirable to put them in the same test file.</p>
+<p>What I think would help most here is what I mentioned, having auto-update support for inline <code>error: [code] &quot;message&quot;</code> assertions, not only for full diagnostic output assertions, so that we can choose the right tool for each test without manual update pain being a factor in the choice. But I realize this may add a lot of implementation difficulty, since it&#x27;s even less likely we could ever use <code>insta</code> for this.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-24 19:15</div>
             <div class="timeline-body"><blockquote>
-<p>What I think would help most here is what I mentioned, having auto-update support for inline error: [code] &quot;message&quot; assertions, not only for full diagnostic output assertions, so that we can choose the right tool for each test without manual update pain being a factor in the choice. But I realize this may add a lot of implementation difficulty, since it's even less likely we could ever use insta for this.</p>
+<p>What I think would help most here is what I mentioned, having auto-update support for inline error: [code] &quot;message&quot; assertions, not only for full diagnostic output assertions, so that we can choose the right tool for each test without manual update pain being a factor in the choice. But I realize this may add a lot of implementation difficulty, since it&#x27;s even less likely we could ever use insta for this.</p>
 </blockquote>
-<p>I also think that this solves a slightly different problem than what's outlined in this issue summary.</p>
+<p>I also think that this solves a slightly different problem than what&#x27;s outlined in this issue summary.</p>
 <ul>
 <li>inline snapshots: Reduces the distance from snapshots to the expected diagnostic message (this issue)</li>
 <li>auto update inline-assertion messages: Reduce the appeal to use snapshotted diagnostics only to get automated message updates.</li>
@@ -136,21 +136,21 @@ error: lint:unresolved-import
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[red-knot] add support for inline diagnostic snapshotting for `mdtest`" to "add support for inline diagnostic snapshotting for `mdtest`" by @MichaReiser on 2025-05-07 15:26</div>
+            <div class="event">Renamed from &quot;[red-knot] add support for inline diagnostic snapshotting for `mdtest`&quot; to &quot;add support for inline diagnostic snapshotting for `mdtest`&quot; by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-07 15:26</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> added by @AlexWaygood on 2025-05-11 07:51</div>
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-11 07:51</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Z post-stable" by @carljm on 2025-11-13 16:01</div>
+            <div class="event">Added to milestone &quot;Z post-stable&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-11-13 16:01</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Removed from milestone "Z post-stable" by @carljm on 2025-11-18 16:10</div>
+            <div class="event">Removed from milestone &quot;Z post-stable&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-11-18 16:10</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:19:42 UTC
+        Synced at 2026-01-20 19:24:16 UTC
     </footer>
 </body>
 </html>

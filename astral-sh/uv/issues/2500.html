@@ -24,7 +24,7 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/danielhollas">@danielhollas</a></div>
             <div class="timeline-body"><p>Executing <code>uv pip list --system</code> does not list any packages. Similarly for <code>freeze</code> and <code>show</code> subcommands (I did not test any others).</p>
-<pre><code class="language-console">$ uv pip list --system -vv
+<pre><code>$ uv pip list --system -vv
  uv_interpreter::find_python::find_default_python 
       0.000148s   0ms DEBUG uv_interpreter::find_python Starting interpreter discovery for default Python
       0.000319s   0ms DEBUG uv_interpreter::interpreter Cached interpreter info for Python 3.12.2, skipping probing: /usr/bin/python3
@@ -35,11 +35,11 @@ uv version: 0.1.21, installed via pipx</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">compatibility</span> added by @charliermarsh on 2024-03-17 21:26</div>
+            <div class="event">Label <span class="label">compatibility</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-17 21:26</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-17 21:28</div>
-            <div class="timeline-body"><p>Can you just confirm for me what packages should appear, and where they're located?</p>
+            <div class="timeline-body"><p>Can you just confirm for me what packages should appear, and where they&#x27;re located?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -54,7 +54,7 @@ Author-email: distutils-sig@python.org
 License: MIT
 Location: /usr/lib/python3.12/site-packages
 </code></pre>
-<pre><code class="language-console">$ pip list
+<pre><code>$ pip list
 ❯ pip list 
 Package            Version
 ------------------ ---------
@@ -149,7 +149,7 @@ userpath           1.9.1
 virtualenv         20.25.0
 </code></pre>
 <p>(Note that pip list also list user packages in <code>~/.local</code>), which one can filter out</p>
-<pre><code class="language-console">$ pip list --user
+<pre><code>$ pip list --user
 Package        Version
 -------------- ---------
 blurb          1.1.0
@@ -202,7 +202,7 @@ error: failed to read directory `/usr/local/lib/python3.12/site-packages`
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-19 20:42</div>
             <div class="timeline-body"><p>If you actually install something with <code>uv</code>, it is listed when you run <code>uv pip list</code>?</p>
-<p>My guess is that <code>/usr/local/lib/python3.12/site-packages</code> <em>is</em> the correct location in which to install packages, and that's where we look. But we don't look at all the entries in <code>sys.path</code>, which may include <code>/usr/lib/python3.12/site-packages</code>.</p>
+<p>My guess is that <code>/usr/local/lib/python3.12/site-packages</code> <em>is</em> the correct location in which to install packages, and that&#x27;s where we look. But we don&#x27;t look at all the entries in <code>sys.path</code>, which may include <code>/usr/lib/python3.12/site-packages</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -213,7 +213,7 @@ error: failed to read directory `/usr/local/lib/python3.12/site-packages`
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/danielhollas">@danielhollas</a> on 2024-03-19 20:56</div>
             <div class="timeline-body"><p>Indeed, installing something into system packages will install it to <code>/usr/local/lib</code></p>
-<pre><code class="language-console">$ sudo uv pip install tuna --system
+<pre><code>$ sudo uv pip install tuna --system
 Resolved 1 package in 261ms
 Downloaded 1 package in 99ms
 Installed 1 package in 3ms
@@ -230,9 +230,9 @@ Version: 0.5.11
 Location: /usr/local/lib/python3.12/site-packages
 Requires:
 </code></pre>
-<p>Here's how the site directories are configured in my Python (Fedora 39)</p>
-<pre><code class="language-python">$ python -c &quot;import site;print(site.getsitepackages())&quot;
-['/usr/local/lib64/python3.12/site-packages', '/usr/local/lib/python3.12/site-packages', '/usr/lib64/python3.12/site-packages', '/usr/lib/python3.12/site-packages']
+<p>Here&#x27;s how the site directories are configured in my Python (Fedora 39)</p>
+<pre><code>$ python -c &quot;import site;print(site.getsitepackages())&quot;
+[&#x27;/usr/local/lib64/python3.12/site-packages&#x27;, &#x27;/usr/local/lib/python3.12/site-packages&#x27;, &#x27;/usr/lib64/python3.12/site-packages&#x27;, &#x27;/usr/lib/python3.12/site-packages&#x27;]
 </code></pre>
 <blockquote>
 <p>(To summarize, I think the fix here is to iterate over sys.paths (probably) instead of just looking at purelib and platlib.)</p>
@@ -241,11 +241,11 @@ Requires:
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-03-19 20:57</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-19 20:57</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/danielhollas">@danielhollas</a> on 2024-03-19 21:07</div>
-            <div class="timeline-body"><p>I've just checked that installing a package that already exist in <code>/usr/lib</code> will install it to <code>/usr/local/lib/</code> but keeps the original there, so it's possible for a single package to be in multiple places and have multiple versions. So while iterating uv needs to take into account the precedence rules correctly (I guess whatever is first in the <code>getsitepackages</code> list gets to win?</p>
+            <div class="timeline-body"><p>I&#x27;ve just checked that installing a package that already exist in <code>/usr/lib</code> will install it to <code>/usr/local/lib/</code> but keeps the original there, so it&#x27;s possible for a single package to be in multiple places and have multiple versions. So while iterating uv needs to take into account the precedence rules correctly (I guess whatever is first in the <code>getsitepackages</code> list gets to win?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -261,11 +261,11 @@ Requires:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-19 21:59</div>
-            <div class="timeline-body"><p>I don't really agree with that decision, but good to know, thank you!</p>
+            <div class="timeline-body"><p>I don&#x27;t really agree with that decision, but good to know, thank you!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "uv pip list / freeze / show --system do not show system packages" to "uv pip list / freeze / show --system do not show system packages on Fedora" by @danielhollas on 2024-03-20 02:57</div>
+            <div class="event">Renamed from &quot;uv pip list / freeze / show --system do not show system packages&quot; to &quot;uv pip list / freeze / show --system do not show system packages on Fedora&quot; by <a href="https://github.com/danielhollas">@danielhollas</a> on 2024-03-20 02:57</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ChannyClaus">@ChannyClaus</a> on 2024-03-23 17:38</div>
@@ -294,12 +294,12 @@ Requires:
             <div class="timeline-body"><blockquote>
 <p>We may need to return all of sys.path from get_interpreter_info to make this work as expected?</p>
 </blockquote>
-<p>oh dang, that's a very helpful pointer (i should've looked where these interpreter-specific values were coming from :.)), yah that would do it, let me try that out.</p>
+<p>oh dang, that&#x27;s a very helpful pointer (i should&#x27;ve looked where these interpreter-specific values were coming from :.)), yah that would do it, let me try that out.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ChannyClaus">@ChannyClaus</a> on 2024-04-01 03:07</div>
-            <div class="timeline-body"><p>after spending a little too much effort and time i've noticed that this may have already been fixed by some other change...? (<code>requests</code>, which is installed by <code>pip</code> for system python seems to get picked up by <code>uv</code> via <code>--system</code> flag)</p>
+            <div class="timeline-body"><p>after spending a little too much effort and time i&#x27;ve noticed that this may have already been fixed by some other change...? (<code>requests</code>, which is installed by <code>pip</code> for system python seems to get picked up by <code>uv</code> via <code>--system</code> flag)</p>
 <pre><code>$ docker run -v $(pwd)/test.sh:/test.sh --entrypoint=bash  fedora:39 test.sh 
 Package  Version  Location                                  Installer
 -------- -------- ----------------------------------------- ---------
@@ -342,8 +342,8 @@ pip3 install requests &amp;&gt; /dev/null
 uv pip list --system
 
 </code></pre>
-<p>@danielhollas can you take a look to see if i'm delirious or this has indeed been fixed 🦀</p>
-<p>the change i've been working on which uses <code>sys.path</code> (thanks again charlie for that pointer!) does pick up a bit more but may be somewhat unnecessary since all packages installed by pip seem to already be picked up without it (below is the snippet <em>with</em> the <code>sys.path</code> change, where <code>uv</code> picks up <code>dnf</code> and <code>libdnf</code>, which are not picked up with the latest version of <code>uv</code>).</p>
+<p>@danielhollas can you take a look to see if i&#x27;m delirious or this has indeed been fixed 🦀</p>
+<p>the change i&#x27;ve been working on which uses <code>sys.path</code> (thanks again charlie for that pointer!) does pick up a bit more but may be somewhat unnecessary since all packages installed by pip seem to already be picked up without it (below is the snippet <em>with</em> the <code>sys.path</code> change, where <code>uv</code> picks up <code>dnf</code> and <code>libdnf</code>, which are not picked up with the latest version of <code>uv</code>).</p>
 <pre><code>bash-5.2# ./uv pip list --system --verbose
 DEBUG Starting interpreter discovery for default Python
 DEBUG Cached interpreter info for Python 3.12.1, skipping probing: /usr/bin/python3
@@ -369,7 +369,7 @@ uv       0.1.26   /usr/local/lib64/python3.12/site-packages pip
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/danielhollas">@danielhollas</a> on 2024-04-01 10:48</div>
-            <div class="timeline-body"><p>@ChannyClaus thanks for the ping. I've tested with <code>uv</code> 0.1.26 and it doesn't seem to be fixed.
+            <div class="timeline-body"><p>@ChannyClaus thanks for the ping. I&#x27;ve tested with <code>uv</code> 0.1.26 and it doesn&#x27;t seem to be fixed.
 I am using uv installed with pipx, I wonder if that makes a difference?</p>
 </div>
         </div>
@@ -428,23 +428,23 @@ uv pip list --system
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/danielhollas">@danielhollas</a> on 2024-04-02 13:52</div>
-            <div class="timeline-body"><p>Hmm, strange. I am running directly on Fedora 39, I am wondering if there are some differences between Fedora 39 Docker image and normal install. Also in your case you're running under root, not sure if that makes a difference. I'll try to dig around a bit more.</p>
+            <div class="timeline-body"><p>Hmm, strange. I am running directly on Fedora 39, I am wondering if there are some differences between Fedora 39 Docker image and normal install. Also in your case you&#x27;re running under root, not sure if that makes a difference. I&#x27;ll try to dig around a bit more.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/danielhollas">@danielhollas</a> on 2024-04-22 21:23</div>
-            <div class="timeline-body"><p>I failed to make progress here due to lack of any useful logging from <code>uv</code> on this problem. My plan was to dive into the code and add some logging myself, but I could not get passed the cargo build due to some missing dependencies (apparently, building one of the openssl crates requires perl, which is not installed in Fedora by default. I could install it if it didn't bring with it a gazilion of other dependencies :sob: ).</p>
+            <div class="timeline-body"><p>I failed to make progress here due to lack of any useful logging from <code>uv</code> on this problem. My plan was to dive into the code and add some logging myself, but I could not get passed the cargo build due to some missing dependencies (apparently, building one of the openssl crates requires perl, which is not installed in Fedora by default. I could install it if it didn&#x27;t bring with it a gazilion of other dependencies :sob: ).</p>
 <p>tl;dr It would be helpful to me if somebody could add logging to print which paths uv is looking at when running <code>uv pip list / show/ freeze</code>. This would be very useful for other commands as well, see also related #2155</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ChannyClaus">@ChannyClaus</a> on 2024-04-22 21:39</div>
             <div class="timeline-body"><blockquote>
-<p>I failed to make progress here due to lack of any useful logging from <code>uv</code> on this problem. My plan was to dive into the code and add some logging myself, but I could not get passed the cargo build due to some missing dependencies (apparently, building one of the openssl crates requires perl, which is not installed in Fedora by default. I could install it if it didn't bring with it a gazilion of other dependencies 😭 ).</p>
+<p>I failed to make progress here due to lack of any useful logging from <code>uv</code> on this problem. My plan was to dive into the code and add some logging myself, but I could not get passed the cargo build due to some missing dependencies (apparently, building one of the openssl crates requires perl, which is not installed in Fedora by default. I could install it if it didn&#x27;t bring with it a gazilion of other dependencies 😭 ).</p>
 <p>tl;dr It would be helpful to me if somebody could add logging to print which paths uv is looking at when running <code>uv pip list / show/ freeze</code>. This would be very useful for other commands as well, see also related #2155</p>
 </blockquote>
-<p>maybe the snippet from description in https://github.com/astral-sh/uv/pull/2636#issue-2204011586 would help? (more specifically <code>RUN yum install pip python cmake perl rust cargo -y</code>)</p>
-<p>seems like the issue linked may not be completely green-lit but if/once it's green-lit i could maybe take on it?</p>
+<p>maybe the snippet from description in <a href="https://github.com/astral-sh/uv/pull/2636">astral-sh/uv#2636</a>#issue-2204011586 would help? (more specifically <code>RUN yum install pip python cmake perl rust cargo -y</code>)</p>
+<p>seems like the issue linked may not be completely green-lit but if/once it&#x27;s green-lit i could maybe take on it?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -455,18 +455,18 @@ uv pip list --system
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "uv pip list / freeze / show --system do not show system packages on Fedora" to "uv pip list / freeze / show --system do not show all system packages on Fedora" by @danielhollas on 2024-05-10 02:17</div>
+            <div class="event">Renamed from &quot;uv pip list / freeze / show --system do not show system packages on Fedora&quot; to &quot;uv pip list / freeze / show --system do not show all system packages on Fedora&quot; by <a href="https://github.com/danielhollas">@danielhollas</a> on 2024-05-10 02:17</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/danielhollas">@danielhollas</a> on 2024-05-10 02:32</div>
             <div class="timeline-body"><blockquote>
-<p>@danielhollas can you take a look to see if i'm delirious or this has indeed been fixed 🦀</p>
+<p>@danielhollas can you take a look to see if i&#x27;m delirious or this has indeed been fixed 🦀</p>
 </blockquote>
 <p>@ChannyClaus to clarify, this has always worked. :-) In other words, this issue is about uv ignoring Fedora system packages that come with the Fedora installation, which are in a different directory from system packages installed by the user. (I am assuming they are doing this to prevent users from messing up the system python install).</p>
 <blockquote>
-<p>the change i've been working on which uses sys.path (thanks again charlie for that pointer!) does pick up a bit more but may be somewhat unnecessary since all packages installed by pip seem to already be picked up without it (below is the snippet with the sys.path change, where uv picks up dnf and libdnf, which are not picked up with the latest version of uv).</p>
+<p>the change i&#x27;ve been working on which uses sys.path (thanks again charlie for that pointer!) does pick up a bit more but may be somewhat unnecessary since all packages installed by pip seem to already be picked up without it (below is the snippet with the sys.path change, where uv picks up dnf and libdnf, which are not picked up with the latest version of uv).</p>
 </blockquote>
-<p>I'd still argue that uv should list all the packages that are available to the Python interpreter.</p>
+<p>I&#x27;d still argue that uv should list all the packages that are available to the Python interpreter.</p>
 <p>I noticed the following help text for the <code>uv venv --system-site-packages</code></p>
 <pre><code> --system-site-package
    Give the virtual environment access to the system site packages directory.
@@ -478,39 +478,39 @@ uv pip list --system
    with access to the system site packages directory at runtime, 
    but it will not affect the behavior of `uv` commands.
 </code></pre>
-<p>This is very much the same issue as here, but from the text it is not clear whether this was a conscious design decision or just stating the current limitation. If the former I'd argue to reconsider. As an example, in HPC context, admins may provide a base Python environment with basic scientific packages (numpy et al) compiled specifically for the machine to get the best performance. In this case, it would be quite wrong for uv to ignore these packages and reinstall them inside the venv.</p>
+<p>This is very much the same issue as here, but from the text it is not clear whether this was a conscious design decision or just stating the current limitation. If the former I&#x27;d argue to reconsider. As an example, in HPC context, admins may provide a base Python environment with basic scientific packages (numpy et al) compiled specifically for the machine to get the best performance. In this case, it would be quite wrong for uv to ignore these packages and reinstall them inside the venv.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @konstin on 2024-05-10 06:41</div>
+            <div class="event">Closed by <a href="https://github.com/konstin">@konstin</a> on 2024-05-10 06:41</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @konstin on 2024-05-10 07:05</div>
+            <div class="event">Reopened by <a href="https://github.com/konstin">@konstin</a> on 2024-05-10 07:05</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ncoghlan">@ncoghlan</a> on 2024-06-25 17:12</div>
             <div class="timeline-body"><p>I just ran into a variant of this problem when working with layered environments that use <code>sitecustomize.py</code> to incorporate additional shared folders: when <code>uv</code> is installing into the upper environments, it fails to detect the packages that are already installed in the lower layers. (My use case is along the same lines as the HPC use case above: shared layers with big dependencies preinstalled, then smaller application environments built on top of that)</p>
 <p>I initially thought it was working correctly because <code>uv pip install</code> is so much faster than <code>pip install</code>, but the problem became clear when archiving the upper layers slowed down dramatically (unexpectedly including additional copies of <code>torch</code> and <code>nvidia-cuda</code> in an archive is... not great).</p>
-<p>Between <code>*.pth</code> files and <code>sitecustomize.py</code>, the only reliable way to find out what packages a Python environment can currently see installed is to ask it for its <code>sys.path</code> value and scan every entry in order, it simply isn't correct to assume that the only directories that matter are the ones where installation tools are told to put <em>new</em> components.</p>
+<p>Between <code>*.pth</code> files and <code>sitecustomize.py</code>, the only reliable way to find out what packages a Python environment can currently see installed is to ask it for its <code>sys.path</code> value and scan every entry in order, it simply isn&#x27;t correct to assume that the only directories that matter are the ones where installation tools are told to put <em>new</em> components.</p>
 <p>Running <code>python -m site</code> is a useful way of dumping the relevant <code>sys.path</code> info when investigating problems along these lines (although <code>python -c &quot;import sys; print(sys.path)&quot;</code> is better for programmatic use, as was done in #3500).</p>
 <p>Using <code>sitecustomize.py</code> files to reproduce the problem should be much easier to manage in test cases than relying specifically on Linux distro Python builds that add extra directories to <code>sys.path</code>.</p>
-<p>I don't advise trying to use <code>*.pth</code> files (even in test cases), since they have problems dealing with non-ASCII paths in Python versions prior to 3.13.</p>
+<p>I don&#x27;t advise trying to use <code>*.pth</code> files (even in test cases), since they have problems dealing with non-ASCII paths in Python versions prior to 3.13.</p>
 <p>Edit: for anyone curious, the specific environment layering project referred to here is https://pypi.org/project/venvstacks/</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2024-08-16 16:54</div>
-            <div class="timeline-body"><p>I just commented on #4466 as well, but @danielhollas and @ncoghlan's use cases resonate with me as well -- layered (and in my case, redistributable) virtual environments containing heavyweight packages such as torch and tensorflow.</p>
+            <div class="timeline-body"><p>I just commented on #4466 as well, but @danielhollas and @ncoghlan&#x27;s use cases resonate with me as well -- layered (and in my case, redistributable) virtual environments containing heavyweight packages such as torch and tensorflow.</p>
 <p>Considering that #3500 is merged, is it fair to assume that a solution to this would come at essentially zero performance cost, since <code>sys.path</code> is already being evaluated as part of <code>get_interpreter_info</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ChannyClaus">@ChannyClaus</a> on 2024-08-16 19:52</div>
             <div class="timeline-body"><blockquote>
-<p>I just commented on #4466 as well, but @danielhollas and @ncoghlan's use cases resonate with me as well -- layered (and in my case, redistributable) virtual environments containing heavyweight packages such as torch and tensorflow.</p>
+<p>I just commented on #4466 as well, but @danielhollas and @ncoghlan&#x27;s use cases resonate with me as well -- layered (and in my case, redistributable) virtual environments containing heavyweight packages such as torch and tensorflow.</p>
 <p>Considering that #3500 is merged, is it fair to assume that a solution to this would come at essentially zero performance cost, since <code>sys.path</code> is already being evaluated as part of <code>get_interpreter_info</code>?</p>
 </blockquote>
-<p>i think you're right about the performance bit, but the tricky part (at least based on the last time i gave this a try) is to make this change without breaking the existing tests... it's possible some of the breaking tests need to be changed but it's quite risky to make changes to tests especially when it's not obviously correct to do so; additionally, this particular issue seemed to be less pressing / critical compared to some other reported issues.</p>
+<p>i think you&#x27;re right about the performance bit, but the tricky part (at least based on the last time i gave this a try) is to make this change without breaking the existing tests... it&#x27;s possible some of the breaking tests need to be changed but it&#x27;s quite risky to make changes to tests especially when it&#x27;s not obviously correct to do so; additionally, this particular issue seemed to be less pressing / critical compared to some other reported issues.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -524,12 +524,12 @@ uv pip list --system
             <div class="timeline-body"><blockquote>
 <p>assuming that the contents of the interpreter-wide site-packages is globally consistent is probably unrealistic...</p>
 </blockquote>
-<p>Yeah we can't do this.. we'd need to have a fake system interpreter available in the test context. We'd probably only have a small subset of test cases include handling packages in the &quot;system&quot; interpreter — the rest would be fully isolated. This is more likely to cause problems in the test suite when run by downstream packagers rather than here where we have full control over the CI environment.</p>
+<p>Yeah we can&#x27;t do this.. we&#x27;d need to have a fake system interpreter available in the test context. We&#x27;d probably only have a small subset of test cases include handling packages in the &quot;system&quot; interpreter — the rest would be fully isolated. This is more likely to cause problems in the test suite when run by downstream packagers rather than here where we have full control over the CI environment.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ncoghlan">@ncoghlan</a> on 2024-08-27 10:18</div>
-            <div class="timeline-body"><p>For the test suite, I'd recommend testing the <code>sitecustomize.py</code> case rather than the <code>system-site-packages</code> case:</p>
+            <div class="timeline-body"><p>For the test suite, I&#x27;d recommend testing the <code>sitecustomize.py</code> case rather than the <code>system-site-packages</code> case:</p>
 <ol>
 <li>Create a pair of regular (isolated) virtual environments (called &quot;A&quot; and &quot;B&quot; below)</li>
 <li>In environment B, inject a <code>sitecustomize.py</code> file into <code>site-packages</code> that uses <code>site.addsitedir</code> to integrate the <code>site-packages</code> folder from environment A into environment B</li>
@@ -537,9 +537,9 @@ uv pip list --system
 </ol>
 <ul>
 <li><code>list</code>/<code>show</code>/<code>freeze</code> can see the packages in both environments</li>
-<li>if an installation request or dependency is already satisfied in environment A, it doesn't get installed into B</li>
+<li>if an installation request or dependency is already satisfied in environment A, it doesn&#x27;t get installed into B</li>
 <li>if a package is upgraded in environment B, it is installed into B <em>without</em> attempting to uninstall it from A</li>
-<li>attempting to remove a package that is only present in A via environment B fails (&lt;-- I haven't actually checked how <code>pip uninstall</code> handles this case, but refusing to uninstall seems preferable no matter what <code>pip</code> does)</li>
+<li>attempting to remove a package that is only present in A via environment B fails (&lt;-- I haven&#x27;t actually checked how <code>pip uninstall</code> handles this case, but refusing to uninstall seems preferable no matter what <code>pip</code> does)</li>
 </ul>
 <p>If that works as described, a venv with system-site-packages enabled should also work (without the hassle of trying to make tests that enable system-site-packages portable across different Python installations).</p>
 </div>
@@ -554,10 +554,10 @@ Python 3.10.12 (main, Jul 29 2024, 16:56:48) [GCC 11.4.0] on linux
 Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
 &gt;&gt;&gt; import sys
 &gt;&gt;&gt; sys.path
-['', '/usr/lib/python310.zip', '/usr/lib/python3.10', '/usr/lib/python3.10/lib-dynload', '/app/.venv/lib/python3.10/site-packages', '/usr/local/lib/python3.10/dist-packages', '/usr/lib/python3/dist-packages', '/usr/lib/python3.10/dist-packages']
+[&#x27;&#x27;, &#x27;/usr/lib/python310.zip&#x27;, &#x27;/usr/lib/python3.10&#x27;, &#x27;/usr/lib/python3.10/lib-dynload&#x27;, &#x27;/app/.venv/lib/python3.10/site-packages&#x27;, &#x27;/usr/local/lib/python3.10/dist-packages&#x27;, &#x27;/usr/lib/python3/dist-packages&#x27;, &#x27;/usr/lib/python3.10/dist-packages&#x27;]
 &gt;&gt;&gt; import sysconfig
 &gt;&gt;&gt; sysconfig.get_paths()
-{'stdlib': '/usr/lib/python3.10', 'platstdlib': '/app/.venv/lib/python3.10', 'purelib': '/app/.venv/lib/python3.10/site-packages', 'platlib': '/app/.venv/lib/python3.10/site-packages', 'include': '/usr/include/python3.10', 'platinclude': '/usr/include/python3.10', 'scripts': '/app/.venv/bin', 'data': '/app/.venv'}
+{&#x27;stdlib&#x27;: &#x27;/usr/lib/python3.10&#x27;, &#x27;platstdlib&#x27;: &#x27;/app/.venv/lib/python3.10&#x27;, &#x27;purelib&#x27;: &#x27;/app/.venv/lib/python3.10/site-packages&#x27;, &#x27;platlib&#x27;: &#x27;/app/.venv/lib/python3.10/site-packages&#x27;, &#x27;include&#x27;: &#x27;/usr/include/python3.10&#x27;, &#x27;platinclude&#x27;: &#x27;/usr/include/python3.10&#x27;, &#x27;scripts&#x27;: &#x27;/app/.venv/bin&#x27;, &#x27;data&#x27;: &#x27;/app/.venv&#x27;}
 &gt;&gt;&gt; 
 
 /app $ uv pip list
@@ -576,7 +576,7 @@ pip       24.2
             <div class="timeline-body"><blockquote>
 <p>(at least based on the last time i gave this a try)</p>
 </blockquote>
-<p>@ChannyClaus do you happen to have a draft PR/commit ref handy for this? If you have the logic side of the change ready to go, I'd be more than happy to give the test suite a whirl :-)</p>
+<p>@ChannyClaus do you happen to have a draft PR/commit ref handy for this? If you have the logic side of the change ready to go, I&#x27;d be more than happy to give the test suite a whirl :-)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -585,9 +585,9 @@ pip       24.2
 <blockquote>
 <p>(at least based on the last time i gave this a try)</p>
 </blockquote>
-<p>@ChannyClaus do you happen to have a draft PR/commit ref handy for this? If you have the logic side of the change ready to go, I'd be more than happy to give the test suite a whirl :-)</p>
+<p>@ChannyClaus do you happen to have a draft PR/commit ref handy for this? If you have the logic side of the change ready to go, I&#x27;d be more than happy to give the test suite a whirl :-)</p>
 </blockquote>
-<p>things may have changed significantly since this was months ago but the main change necessary was https://github.com/astral-sh/uv/pull/2636/files#diff-f29dcb297374a7babe6be50ec410d36c52cb44c6e9ec5183b4b7d0b96229bd94R94-R109 i believe 🌵</p>
+<p>things may have changed significantly since this was months ago but the main change necessary was <a href="https://github.com/astral-sh/uv/pull/2636">astral-sh/uv#2636</a>/files#diff-f29dcb297374a7babe6be50ec410d36c52cb44c6e9ec5183b4b7d0b96229bd94R94-R109 i believe 🌵</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -596,13 +596,13 @@ pip       24.2
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "uv pip list / freeze / show --system do not show all system packages on Fedora" to "`uv pip` does not read all system packages (e.g., in `uv pip list --system` or virtual environments with `system-site-packages`)" by @zanieb on 2025-02-10 17:52</div>
+            <div class="event">Renamed from &quot;uv pip list / freeze / show --system do not show all system packages on Fedora&quot; to &quot;`uv pip` does not read all system packages (e.g., in `uv pip list --system` or virtual environments with `system-site-packages`)&quot; by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-10 17:52</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ncoghlan">@ncoghlan</a> on 2025-08-15 14:15</div>
-            <div class="timeline-body"><p>@konstin Given the difficulties with solving this issue in a systemic way that you're happy with, might it be feasible to instead provide an opt-in command line flag (something like <code>--skip-installed</code>) specifically for <code>uv pip install</code>?</p>
-<p>At least for <code>venvstacks</code>, the environments are write-only (manipulating them post installation isn't supported), so a solution that <em>only</em> considers the external paths at installation time, and solely for the purpose of building a list of packages that don't need to be installed (but have an implied version pin to their already installed version) would be entirely sufficient for my use case.</p>
-<p>So given <code>uv pip install --skip-installed -r requirements.txt</code> the full path would be used to get the list of version pins for already installed components, failing the installation if something needed a newer or older version. <code>uninstall</code> and <code>sync</code> wouldn't need to support the new flag at all.</p>
+            <div class="timeline-body"><p>@konstin Given the difficulties with solving this issue in a systemic way that you&#x27;re happy with, might it be feasible to instead provide an opt-in command line flag (something like <code>--skip-installed</code>) specifically for <code>uv pip install</code>?</p>
+<p>At least for <code>venvstacks</code>, the environments are write-only (manipulating them post installation isn&#x27;t supported), so a solution that <em>only</em> considers the external paths at installation time, and solely for the purpose of building a list of packages that don&#x27;t need to be installed (but have an implied version pin to their already installed version) would be entirely sufficient for my use case.</p>
+<p>So given <code>uv pip install --skip-installed -r requirements.txt</code> the full path would be used to get the list of version pins for already installed components, failing the installation if something needed a newer or older version. <code>uninstall</code> and <code>sync</code> wouldn&#x27;t need to support the new flag at all.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -617,12 +617,12 @@ pip       24.2
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-08-19 12:00</div>
-            <div class="timeline-body"><p>Fwiw, I like the idea of implementing a more limited support that considers system packages or layered packages as read-only first, limited to specific paths instead of full <code>sys.path</code>, failing if they don't match the requirements in the user environments. It should be possible to start with this and add full support later if we figure it out.</p>
+            <div class="timeline-body"><p>Fwiw, I like the idea of implementing a more limited support that considers system packages or layered packages as read-only first, limited to specific paths instead of full <code>sys.path</code>, failing if they don&#x27;t match the requirements in the user environments. It should be possible to start with this and add full support later if we figure it out.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2025-08-19 12:12</div>
-            <div class="timeline-body"><p>The allure of full <code>sys.path</code> evaluation is that you won't have to duplicate the very many <a href="https://docs.python.org/3/library/sys_path_init.html">gory implementation details</a> of the calculation + order of precedence. If you were to <em>only</em> support <code>system-site-packages</code> it is probably easy to hack it as a one-off, but as soon as you add support for:</p>
+            <div class="timeline-body"><p>The allure of full <code>sys.path</code> evaluation is that you won&#x27;t have to duplicate the very many <a href="https://docs.python.org/3/library/sys_path_init.html">gory implementation details</a> of the calculation + order of precedence. If you were to <em>only</em> support <code>system-site-packages</code> it is probably easy to hack it as a one-off, but as soon as you add support for:</p>
 <ul>
 <li><code>.pth</code> files</li>
 <li><code>sitecustomize.py</code></li>
@@ -637,8 +637,8 @@ pip       24.2
 </blockquote>
 <p>I was just about to write a comment saying exactly this, thanks! Looking at the open PRs that tried to implement this (thanks so much to @pradyunsg for kicking things off in #9849 and you for pushing further in #11670), one could avoid some of the complexity by:</p>
 <ul>
-<li>focus on support for <code>uv pip</code> commands. <code>uv sync</code> et al don't seem to be a good fit for the kind of workflows mentioned here anyway --- when you have a lockfile with exact versions, you'd end up reinstalling most packages anyway, right?</li>
-<li>focus on read-only operations (<code>uv pip list</code> et al) or 'additive' operations (<code>uv pip install</code>) that can layer things on top, i.e. don't try to support 'uninstall'  (as you already said)</li>
+<li>focus on support for <code>uv pip</code> commands. <code>uv sync</code> et al don&#x27;t seem to be a good fit for the kind of workflows mentioned here anyway --- when you have a lockfile with exact versions, you&#x27;d end up reinstalling most packages anyway, right?</li>
+<li>focus on read-only operations (<code>uv pip list</code> et al) or &#x27;additive&#x27; operations (<code>uv pip install</code>) that can layer things on top, i.e. don&#x27;t try to support &#x27;uninstall&#x27;  (as you already said)</li>
 </ul>
 <p>I noticed that small part of #11670 has been merged already in #15121, yay! :-)</p>
 </div>
@@ -646,42 +646,42 @@ pip       24.2
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-08-19 13:06</div>
             <div class="timeline-body"><blockquote>
-<p>The allure of full <code>sys.path</code> evaluation is that you won't have to duplicate the very many <a href="https://docs.python.org/3/library/sys_path_init.html">gory implementation details</a> of the calculation + order of precedence. If you were to <em>only</em> support <code>system-site-packages</code> it is probably easy to hack it as a one-off, but as soon as you add support for:</p>
+<p>The allure of full <code>sys.path</code> evaluation is that you won&#x27;t have to duplicate the very many <a href="https://docs.python.org/3/library/sys_path_init.html">gory implementation details</a> of the calculation + order of precedence. If you were to <em>only</em> support <code>system-site-packages</code> it is probably easy to hack it as a one-off, but as soon as you add support for:</p>
 <pre><code>* `.pth` files
 
 * `sitecustomize.py`</code></pre>
 <p>it can get messy very quickly as you will have to accurately anticipate what the interpreter thinks in all of the edge cases.</p>
 </blockquote>
-<p>The interactions between installing packages into <code>sys.path</code> and those packages installing <code>.pth</code> files and that change <code>sys.path</code> is one of the aspects that made https://github.com/astral-sh/uv/pull/11670 so tricky.</p>
+<p>The interactions between installing packages into <code>sys.path</code> and those packages installing <code>.pth</code> files and that change <code>sys.path</code> is one of the aspects that made <a href="https://github.com/astral-sh/uv/pull/11670">astral-sh/uv#11670</a> so tricky.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ncoghlan">@ncoghlan</a> on 2025-08-19 18:42</div>
             <div class="timeline-body"><p>More context on the <code>venvstacks</code> use case:</p>
 <ul>
-<li><code>venvstacks</code> runs <code>uv pip compile</code> and <code>pip install</code> internally as environment build tools. It's the latter I'd like to replace with <code>uv pip install</code> so I'm only dealing with one package cache and one package index config</li>
+<li><code>venvstacks</code> runs <code>uv pip compile</code> and <code>pip install</code> internally as environment build tools. It&#x27;s the latter I&#x27;d like to replace with <code>uv pip install</code> so I&#x27;m only dealing with one package cache and one package index config</li>
 <li><code>venvstacks</code> has the full sys path defined (as it is responsible for setting up <code>sitecustomize.py</code> appropriately)</li>
 <li><code>venvstacks</code> already uses the full requirements for the lower layers as constraints when locking, so it could definitely supply those when installing as well (potentially with adjustments to the file contents)</li>
 </ul>
-<p>It hadn't occurred to me to try turning the constraints files into override files at installation time, so I'll definitely explore that option. If it works, inferring the relevant overrides could be a viable implementation strategy for a <code>uv</code> provided <code>--skip-installed</code> option.</p>
+<p>It hadn&#x27;t occurred to me to try turning the constraints files into override files at installation time, so I&#x27;ll definitely explore that option. If it works, inferring the relevant overrides could be a viable implementation strategy for a <code>uv</code> provided <code>--skip-installed</code> option.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/pradyunsg">@pradyunsg</a> on 2025-08-19 23:05</div>
             <div class="timeline-body"><p>Being limited to specific explicitly-provided paths would be fine for my use case as well.</p>
-<p>My <a href="https://cfp.packaging-con.org/2023/talk/939VED/">motivating case</a> ends up being the desire to add a particular path to the package to the installed distributions search path for uv. We're basically providing a &quot;system&quot; site-packages with some built-internally packages that are installed there (which won't be available on the package index) -- we currently inform pip of these packages by adding a <code>.pth</code> file pointing to that directory (which we add conditionally, based on whether a user needs those built-internally packages).</p>
+<p>My <a href="https://cfp.packaging-con.org/2023/talk/939VED/">motivating case</a> ends up being the desire to add a particular path to the package to the installed distributions search path for uv. We&#x27;re basically providing a &quot;system&quot; site-packages with some built-internally packages that are installed there (which won&#x27;t be available on the package index) -- we currently inform pip of these packages by adding a <code>.pth</code> file pointing to that directory (which we add conditionally, based on whether a user needs those built-internally packages).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-08-20 21:19</div>
             <div class="timeline-body"><p>Can you say more about how you add that <code>.pth</code> file?</p>
-<p><code>.pth</code> files are tricky because they can be created by package installation, and <code>sys.path</code> is tricky because we don't know where the entries are from and they can be changed by the flag Python gets invoked with (including the flag we pass when launching our interpreter probing script). Maybe we need to recursively read <code>.pth</code> files in uv ourselves and compute the system site packages location instead of looking at <code>sys.path</code> at all?</p>
+<p><code>.pth</code> files are tricky because they can be created by package installation, and <code>sys.path</code> is tricky because we don&#x27;t know where the entries are from and they can be changed by the flag Python gets invoked with (including the flag we pass when launching our interpreter probing script). Maybe we need to recursively read <code>.pth</code> files in uv ourselves and compute the system site packages location instead of looking at <code>sys.path</code> at all?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ncoghlan">@ncoghlan</a> on 2025-08-21 12:28</div>
-            <div class="timeline-body"><p>One advantage of an opt-in flag would be that it provides a way for the caller to say &quot;If I'm playing games with <code>sys.path</code> that are too complicated for <code>uv</code> to follow, that's on me, so go ahead and trust the preinstall snapshot of what's already installed anywhere on <code>sys.path</code>&quot;</p>
-<p>Another way to go would be to have <code>--skip-installed</code> take the path-or-paths where the already installed packages should be ignored (that seems like a recipe for weird inconsistencies between the configured <code>sys.path</code> and the <code>--skip-installed</code> parameter value though, so I don't like that idea as much).</p>
+            <div class="timeline-body"><p>One advantage of an opt-in flag would be that it provides a way for the caller to say &quot;If I&#x27;m playing games with <code>sys.path</code> that are too complicated for <code>uv</code> to follow, that&#x27;s on me, so go ahead and trust the preinstall snapshot of what&#x27;s already installed anywhere on <code>sys.path</code>&quot;</p>
+<p>Another way to go would be to have <code>--skip-installed</code> take the path-or-paths where the already installed packages should be ignored (that seems like a recipe for weird inconsistencies between the configured <code>sys.path</code> and the <code>--skip-installed</code> parameter value though, so I don&#x27;t like that idea as much).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -690,9 +690,9 @@ pip       24.2
 <p>That suggests the following potential shape for an opt-in approach in <code>uv</code>:</p>
 <ul>
 <li><code>uv pip freeze --all-installed</code> to list all installed packages, not just those in the target installation folder</li>
-<li><code>uv pip install --skip-installed</code> to treat already installed packages as overrides that don't need to be modified</li>
+<li><code>uv pip install --skip-installed</code> to treat already installed packages as overrides that don&#x27;t need to be modified</li>
 </ul>
-<p>(although given that <code>uv pip freeze</code> is intrinsically a read-only operation, maybe it doesn't need the opt-in flag to report all installed packages?)</p>
+<p>(although given that <code>uv pip freeze</code> is intrinsically a read-only operation, maybe it doesn&#x27;t need the opt-in flag to report all installed packages?)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -700,9 +700,9 @@ pip       24.2
             <div class="timeline-body"><blockquote>
 <p>Can you say more about how you add that <code>.pth</code> file?</p>
 </blockquote>
-<p>It's added to the virtualenv's site-packages directory, after the creation of the virtualenv but before performing the installation.</p>
+<p>It&#x27;s added to the virtualenv&#x27;s site-packages directory, after the creation of the virtualenv but before performing the installation.</p>
 <p>The logic is something like:</p>
-<pre><code class="language-py">create_venv(location)
+<pre><code>create_venv(location)
 if extra_path_to_include is not None:
     add_pth_to_site_packages(location, extra_path_to_include)
 install_packages(requirements)
@@ -729,23 +729,23 @@ Package Version
 ------- -------
 pip     25.1.1
 </code></pre>
-<p>I will keep using <code>pip</code> for now, but I'd love to move to <code>uv</code> if possible.</p>
+<p>I will keep using <code>pip</code> for now, but I&#x27;d love to move to <code>uv</code> if possible.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ncoghlan">@ncoghlan</a> on 2025-10-09 17:28</div>
-            <div class="timeline-body"><p>@konstin I unfortunately just learned that the very helpful <code>--overrides</code> workaround you suggested above <em>doesn't</em> work when using <code>pylock.toml</code> as the lock export format (that's also when I picked up that the error message for that case wasn't previously correct: https://github.com/astral-sh/uv/pull/16211).</p>
+            <div class="timeline-body"><p>@konstin I unfortunately just learned that the very helpful <code>--overrides</code> workaround you suggested above <em>doesn&#x27;t</em> work when using <code>pylock.toml</code> as the lock export format (that&#x27;s also when I picked up that the error message for that case wasn&#x27;t previously correct: <a href="https://github.com/astral-sh/uv/pull/16211">astral-sh/uv#16211</a>).</p>
 <p>I was able to switch to a different workaround for my specific use case, though (adding  a <code>sys_platform == &quot;from_lower_layer&quot;</code> clause to the marker fields for the affected packages when emitting the lock files in the first place).</p>
 <p>Edit: update to reflect changes since I first posted the comment.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "`uv pip` does not read all system packages (e.g., in `uv pip list --system` or virtual environments with `system-site-packages`)" to "`uv pip list` does not read all system packages in `sys.path` and ignores `system-site-packages`" by @konstin on 2025-10-15 13:00</div>
+            <div class="event">Renamed from &quot;`uv pip` does not read all system packages (e.g., in `uv pip list --system` or virtual environments with `system-site-packages`)&quot; to &quot;`uv pip list` does not read all system packages in `sys.path` and ignores `system-site-packages`&quot; by <a href="https://github.com/konstin">@konstin</a> on 2025-10-15 13:00</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:24:24 UTC
+        Synced at 2026-01-20 19:30:30 UTC
     </footer>
 </body>
 </html>

@@ -24,7 +24,7 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/tamireinhorn">@tamireinhorn</a></div>
             <div class="timeline-body"><p>I wrote a function like:</p>
-<pre><code class="language-py">def fetch_user_countries_count(
+<pre><code>def fetch_user_countries_count(
     source: str, source_ids: list[int]
 ) -&gt; sa.Sequence[sa.RowMapping[str, Any]]:
     user_locations = user_author_locations_cte(source=source, source_ids=source_ids)
@@ -33,31 +33,31 @@
         return sess.execute(stmt).mappings().all()
 </code></pre>
 <p>And yet, when I call it anywhere else, I get:</p>
-<pre><code class="language-py">def fetch_user_countries_count(
+<pre><code>def fetch_user_countries_count(
     source: str,
     source_ids: list[int]
 ) -&gt; @Todo
 </code></pre>
-<p>I don't understand what else I should be doing. I tried changing the inner types but to no avail. I saw nothing mentioning said Todo type in the docs as well.</p>
+<p>I don&#x27;t understand what else I should be doing. I tried changing the inner types but to no avail. I saw nothing mentioning said Todo type in the docs as well.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-11 14:16</div>
             <div class="timeline-body"><p>Hey, thanks for the report, and sorry for the confusing UX :-)</p>
-<p>The <code>@Todo</code> type doesn't mean that you've done anything wrong -- it means that there's some missing logic in ty itself and we don't know how to infer a good type here. To know exactly what the <code>Todo</code> is about here, we'll need a way to reproduce this -- how is the variable <code>sa</code> defined in your code? Is that a third-party module?</p>
+<p>The <code>@Todo</code> type doesn&#x27;t mean that you&#x27;ve done anything wrong -- it means that there&#x27;s some missing logic in ty itself and we don&#x27;t know how to infer a good type here. To know exactly what the <code>Todo</code> is about here, we&#x27;ll need a way to reproduce this -- how is the variable <code>sa</code> defined in your code? Is that a third-party module?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @AlexWaygood on 2026-01-11 14:16</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-11 14:16</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-info</span> added by @AlexWaygood on 2026-01-11 17:44</div>
+            <div class="event">Label <span class="label">needs-info</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-11 17:44</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tamireinhorn">@tamireinhorn</a> on 2026-01-11 18:21</div>
             <div class="timeline-body"><blockquote>
 <p>Hey, thanks for the report, and sorry for the confusing UX :-)</p>
-<p>The <code>@Todo</code> type doesn't mean that you've done anything wrong -- it means that there's some missing logic in ty itself and we don't know how to infer a good type here. To know exactly what the <code>Todo</code> is about here, we'll need a way to reproduce this -- how is the variable <code>sa</code> defined in your code? Is that a third-party module?</p>
+<p>The <code>@Todo</code> type doesn&#x27;t mean that you&#x27;ve done anything wrong -- it means that there&#x27;s some missing logic in ty itself and we don&#x27;t know how to infer a good type here. To know exactly what the <code>Todo</code> is about here, we&#x27;ll need a way to reproduce this -- how is the variable <code>sa</code> defined in your code? Is that a third-party module?</p>
 </blockquote>
 <p>yeah, SA is defined as <code>import sqlalchemy as sa</code>.</p>
 </div>
@@ -65,7 +65,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2026-01-12 05:47</div>
             <div class="timeline-body"><p>In debug build, it gives me the <code>@Todo(specialized non-generic class)</code> type:</p>
-<pre><code class="language-py">import typing as t
+<pre><code>import typing as t
 
 import sqlalchemy as sa
 
@@ -78,35 +78,35 @@ def _(x: sa.Sequence[sa.RowMapping[str, t.Any]]):
 mypy: &quot;RowMapping&quot; expects no type arguments, but 2 given  [type-arg]
 Pyright: Expected no type arguments for class &quot;RowMapping&quot; [reportInvalidTypeArguments]
 </code></pre>
-<p>ty doesn't raise this error and this suggests that these classes is non-generic, so I think we just need to raise a diagnostic and infer <code>Unknown</code> for these cases. In the code, it's marked as TODO:</p>
+<p>ty doesn&#x27;t raise this error and this suggests that these classes is non-generic, so I think we just need to raise a diagnostic and infer <code>Unknown</code> for these cases. In the code, it&#x27;s marked as TODO:</p>
 <p>https://github.com/astral-sh/ruff/blob/09ff3e705639e4773f185994744390fdeb518e8e/crates/ty_python_semantic/src/types/infer/builder/type_expression.rs#L730-L732</p>
 <p>https://github.com/astral-sh/ruff/blob/09ff3e705639e4773f185994744390fdeb518e8e/crates/ty_python_semantic/src/types/infer/builder/type_expression.rs#L1066-L1068</p>
-<p>I don't see any open issues for this so we can use this.</p>
+<p>I don&#x27;t see any open issues for this so we can use this.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "@Todo type" to "Emit diagnostic when specializing a non-generic class" by @dhruvmanila on 2026-01-12 05:47</div>
+            <div class="event">Renamed from &quot;@Todo type&quot; to &quot;Emit diagnostic when specializing a non-generic class&quot; by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2026-01-12 05:47</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> removed by @dhruvmanila on 2026-01-12 05:47</div>
+            <div class="event">Label <span class="label">question</span> removed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2026-01-12 05:47</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-info</span> removed by @dhruvmanila on 2026-01-12 05:47</div>
+            <div class="event">Label <span class="label">needs-info</span> removed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2026-01-12 05:47</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">generics</span> added by @dhruvmanila on 2026-01-12 05:48</div>
+            <div class="event">Label <span class="label">generics</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2026-01-12 05:48</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">diagnostics</span> added by @dhruvmanila on 2026-01-12 05:48</div>
+            <div class="event">Label <span class="label">diagnostics</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2026-01-12 05:48</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Stable" by @dhruvmanila on 2026-01-12 05:48</div>
+            <div class="event">Added to milestone &quot;Stable&quot; by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2026-01-12 05:48</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tamireinhorn">@tamireinhorn</a> on 2026-01-12 06:56</div>
             <div class="timeline-body"><blockquote>
 <p>In debug build, it gives me the <code>@Todo(specialized non-generic class)</code> type:</p>
-<pre><code class="language-py">import typing as t
+<pre><code>import typing as t
 
 import sqlalchemy as sa
 
@@ -119,10 +119,10 @@ def _(x: sa.Sequence[sa.RowMapping[str, t.Any]]):
 mypy: &quot;RowMapping&quot; expects no type arguments, but 2 given  [type-arg]
 Pyright: Expected no type arguments for class &quot;RowMapping&quot; [reportInvalidTypeArguments]
 </code></pre>
-<p>ty doesn't raise this error and this suggests that these classes is non-generic, so I think we just need to raise a diagnostic and infer <code>Unknown</code> for these cases. In the code, it's marked as TODO:</p>
+<p>ty doesn&#x27;t raise this error and this suggests that these classes is non-generic, so I think we just need to raise a diagnostic and infer <code>Unknown</code> for these cases. In the code, it&#x27;s marked as TODO:</p>
 <p>https://github.com/astral-sh/ruff/blob/09ff3e705639e4773f185994744390fdeb518e8e/crates/ty_python_semantic/src/types/infer/builder/type_expression.rs#L730-L732</p>
 <p>https://github.com/astral-sh/ruff/blob/09ff3e705639e4773f185994744390fdeb518e8e/crates/ty_python_semantic/src/types/infer/builder/type_expression.rs#L1066-L1068</p>
-<p>I don't see any open issues for this so we can use this.</p>
+<p>I don&#x27;t see any open issues for this so we can use this.</p>
 </blockquote>
 <p>I forgot to mention, but on later testing, I removed the wrong type arguments for RowMapping, and ty still spat out the same type. I put them in just to check what happened and did not remove them from the example posted here. Can edit if preferred.</p>
 </div>
@@ -132,13 +132,13 @@ Pyright: Expected no type arguments for class &quot;RowMapping&quot; [reportInva
             <div class="timeline-body"><blockquote>
 <p>I forgot to mention, but on later testing, I removed the wrong type arguments for RowMapping, and ty still spat out the same type. I put them in just to check what happened and did not remove them from the example posted here. Can edit if preferred.</p>
 </blockquote>
-<p>Yeah, I suspect that's because <code>sa.Sequence</code> itself is a non-generic class (as highlighted by mypy)?</p>
+<p>Yeah, I suspect that&#x27;s because <code>sa.Sequence</code> itself is a non-generic class (as highlighted by mypy)?</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:21:45 UTC
+        Synced at 2026-01-20 19:27:04 UTC
     </footer>
 </body>
 </html>

@@ -24,7 +24,7 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sk1p">@sk1p</a></div>
             <div class="timeline-body"><p>Consider the following scenario:</p>
-<pre><code class="language-shell">$ python --version
+<pre><code>$ python --version
 Python 3.11.9
 $ uv --version
 uv 0.2.37
@@ -48,7 +48,7 @@ setuptools==72.2.0
 </code></pre>
 <p>For some reason, <code>numba==0.51.2</code> is selected, even though <code>numba==0.60.0</code> exists (probably because <code>numba==0.60.0</code> requires <code>numpy &lt;2.1</code>?). The selected version of <code>llvmlite</code> does not install on modern (<code>&gt;3.8</code>) Python versions.</p>
 <p>By constraining <code>numba</code> to a current version, a more recent compatible version is selected:</p>
-<pre><code class="language-shell">$ cat oof2.in 
+<pre><code>$ cat oof2.in 
 numpy
 numba &gt;= 0.60
 $ uv pip compile oof2.in 
@@ -65,15 +65,15 @@ numpy==2.0.1
     #   numba
 </code></pre>
 <p>Installation works:</p>
-<pre><code class="language-shell">$ uv pip install numba numpy
+<pre><code>$ uv pip install numba numpy
 Resolved 3 packages in 13ms
 Installed 2 packages in 23ms
  + numba==0.60.0
  + numpy==2.0.1
 </code></pre>
 <p>Note that this is a reduction of a failure of <code>uv pip install</code> in <code>tox-uv</code>, which I could not reproduce as easily - <code>uv pip install numba numpy</code> selects the current <code>numba</code> version. See for example <a href="https://github.com/LiberTEM/LiberTEM-live/actions/runs/10452674970/job/28941720374">this CI log</a> for details. It could also be that this issue is just me holding things wrong, or a bug in <code>numba</code> or <code>numpy</code>?</p>
-<details>
-<summary>Verbose output: `uv pip compile oof.in -v`</summary>
+
+Verbose output: `uv pip compile oof.in -v`
 
 <pre><code>DEBUG uv 0.2.37
 DEBUG Starting Python discovery for any Python
@@ -232,25 +232,16 @@ numpy==2.1.0
 setuptools==72.2.0
     # via numba
 </code></pre>
-</details>
 
-<!--
-Thank you for taking the time to report an issue! We're glad to have you involved with uv.
 
-If you're filing a bug report, please consider including the following information:
 
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
-* The current uv platform.
-* The current uv version (`uv --version`).
--->
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sk1p">@sk1p</a> on 2024-08-19 15:22</div>
             <div class="timeline-body"><p>Oh, I just noticed that I can make <code>uv pip install</code> fail by specifying the packages in inverted order:</p>
-<pre><code class="language-shell">$ uv pip install numpy numba 
+<pre><code>$ uv pip install numpy numba 
 Resolved 4 packages in 18ms
 Building llvmlite==0.34.0
 Building numba==0.51.2
@@ -258,7 +249,7 @@ Building numba==0.51.2
 [...]
 </code></pre>
 <p>Also, this means re-ordering the <code>.in</code> file to mention <code>numba</code> first changes the <code>uv pip compile</code> behavior:</p>
-<pre><code class="language-shell">$ cat oof3.in 
+<pre><code>$ cat oof3.in 
 numba
 numpy
 $ uv pip compile oof3.in 
@@ -283,19 +274,19 @@ numpy==2.0.1
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-19 15:32</div>
-            <div class="timeline-body"><p>See also https://github.com/astral-sh/uv/issues/5474#issuecomment-2252856834</p>
+            <div class="timeline-body"><p>See also <a href="https://github.com/astral-sh/uv/issues/5474">astral-sh/uv#5474</a>#issuecomment-2252856834</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-19 16:01</div>
             <div class="timeline-body"><p>I think your question regarding the effect of ordering is answered there.</p>
-<p>I'm not sure about why <code>uv pip compile</code> would resolve to different versions than <code>uv pip install</code> — your virtual environment is definitely using the same Python version?</p>
+<p>I&#x27;m not sure about why <code>uv pip compile</code> would resolve to different versions than <code>uv pip install</code> — your virtual environment is definitely using the same Python version?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sk1p">@sk1p</a> on 2024-08-19 16:04</div>
             <div class="timeline-body"><blockquote>
-<p>I'm not sure about why <code>uv pip compile</code> would resolve to different versions than <code>uv pip install</code> — your virtual environment is definitely using the same Python version?</p>
+<p>I&#x27;m not sure about why <code>uv pip compile</code> would resolve to different versions than <code>uv pip install</code> — your virtual environment is definitely using the same Python version?</p>
 </blockquote>
 <p>Yeah, same venv, same Python version etc.</p>
 <p>I think that was because the order in the <code>.in</code> file was different from the order on the command line (which was surprising for me btw.)</p>
@@ -307,10 +298,10 @@ numpy==2.0.1
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">duplicate</span> added by @zanieb on 2024-08-19 16:07</div>
+            <div class="event">Label <span class="label">duplicate</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-19 16:07</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-08-19 16:07</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-19 16:07</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sk1p">@sk1p</a> on 2024-08-19 16:10</div>
@@ -326,47 +317,47 @@ numpy==2.0.1
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-19 16:13</div>
-            <div class="timeline-body"><p>Yeah — I'll do that. Thanks!</p>
+            <div class="timeline-body"><p>Yeah — I&#x27;ll do that. Thanks!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @zanieb by @zanieb on 2024-08-19 16:13</div>
+            <div class="event">Assigned to <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-19 16:13</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2024-08-19 16:53</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-19 16:53</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2024-08-19 16:53</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-19 16:53</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-08-20 14:04</div>
-            <div class="timeline-body"><p>This isn't correct... The order of requirements does affect the priority for pip, it's just pip has more heuristics on resolving than uv, so there are some cases like this one where the heuristics pip has means the output doesn't change on input orders.</p>
+            <div class="timeline-body"><p>This isn&#x27;t correct... The order of requirements does affect the priority for pip, it&#x27;s just pip has more heuristics on resolving than uv, so there are some cases like this one where the heuristics pip has means the output doesn&#x27;t change on input orders.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/esc">@esc</a> on 2024-08-26 14:49</div>
-            <div class="timeline-body"><p>re, this was discussed here too: https://github.com/numba/numba/issues/9708#issuecomment-2296824946</p>
+            <div class="timeline-body"><p>re, this was discussed here too: <a href="https://github.com/numba/numba/issues/9708">numba/numba#9708</a>#issuecomment-2296824946</p>
 <p>Also, @notatallshaw there seems to be some disagreement about <code>pip</code>s behaviour here. Do you have any referenced to support your claim?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-08-26 15:40</div>
-            <div class="timeline-body"><p>You can look at the bottom of this page for a (only slightly outdated) look at pip's resolution priority order: https://pip.pypa.io/en/stable/topics/more-dependency-resolution/#the-resolver-algorithm</p>
+            <div class="timeline-body"><p>You can look at the bottom of this page for a (only slightly outdated) look at pip&#x27;s resolution priority order: https://pip.pypa.io/en/stable/topics/more-dependency-resolution/#the-resolver-algorithm</p>
 <p>Although, I should update those docs, they are mostly correct, but I plan to land some big changes to pip over the next couple of release, I will remember to update them as I do.</p>
-<p>Also I'm writing a PR to improve uv's pip compatibility docs on this https://github.com/astral-sh/uv/pull/6619, I'm going to significantly reword it though based on Charlie's feedback once I get a chance to look.</p>
-<p>I'll take a look at your issue this evening and see if I can help provide any clarity.</p>
+<p>Also I&#x27;m writing a PR to improve uv&#x27;s pip compatibility docs on this <a href="https://github.com/astral-sh/uv/pull/6619">astral-sh/uv#6619</a>, I&#x27;m going to significantly reword it though based on Charlie&#x27;s feedback once I get a chance to look.</p>
+<p>I&#x27;ll take a look at your issue this evening and see if I can help provide any clarity.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-08-27 00:12</div>
-            <div class="timeline-body"><p>@esc I've taken a look at the issue, and I beleive that pip is doing the right thing there because it is prioritizing depth.</p>
-<p>uv has an open issue for adding this https://github.com/astral-sh/uv/issues/3149</p>
+            <div class="timeline-body"><p>@esc I&#x27;ve taken a look at the issue, and I beleive that pip is doing the right thing there because it is prioritizing depth.</p>
+<p>uv has an open issue for adding this <a href="https://github.com/astral-sh/uv/issues/3149">astral-sh/uv#3149</a></p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:26:12 UTC
+        Synced at 2026-01-20 19:32:49 UTC
     </footer>
 </body>
 </html>

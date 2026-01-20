@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/pimdh">@pimdh</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>With the <code>pyproject.toml</code> file</p>
-<pre><code class="language-toml">[project]
+<pre><code>[project]
 name = &quot;example&quot;
 version = &quot;0.1.0&quot;
 requires-python = &quot;&gt;=3.12&quot;
@@ -39,14 +39,14 @@ dependencies = [
 url = &quot;https://download.pytorch.org/whl/cu124&quot;
 </code></pre>
 <p>The command <code>uv lock</code> results in a <code>uv.lock</code> which contains one package with artifacts and one package without any artifact</p>
-<pre><code class="language-toml">[[package]]
+<pre><code>[[package]]
 name = &quot;nvidia-cublas-cu12&quot;
 version = &quot;12.4.5.8&quot;
 source = { registry = &quot;https://download.pytorch.org/whl/cu124&quot; }
 resolution-markers = [
-    &quot;platform_machine == 'aarch64'&quot;,
-    &quot;platform_machine == 'x86_64' and sys_platform != 'darwin'&quot;,
-    &quot;platform_machine != 'aarch64' and platform_machine != 'x86_64'&quot;,
+    &quot;platform_machine == &#x27;aarch64&#x27;&quot;,
+    &quot;platform_machine == &#x27;x86_64&#x27; and sys_platform != &#x27;darwin&#x27;&quot;,
+    &quot;platform_machine != &#x27;aarch64&#x27; and platform_machine != &#x27;x86_64&#x27;&quot;,
 ]
 wheels = [
     { url = &quot;https://download.pytorch.org/whl/cu124/nvidia_cublas_cu12-12.4.5.8-py3-none-manylinux2014_aarch64.whl&quot;, hash = &quot;sha256:0f8aa1706812e00b9f19dfe0cdb3999b092ccb8ca168c0db5b8ea712456fd9b3&quot; },
@@ -59,32 +59,32 @@ name = &quot;nvidia-cublas-cu12&quot;
 version = &quot;12.9.1.4&quot;
 source = { registry = &quot;https://download.pytorch.org/whl/cu124&quot; }
 resolution-markers = [
-    &quot;platform_machine == 'x86_64' and sys_platform == 'darwin'&quot;,
+    &quot;platform_machine == &#x27;x86_64&#x27; and sys_platform == &#x27;darwin&#x27;&quot;,
 ]
 </code></pre>
 <p>On that index, for the latter no corresponding package seems to exist.</p>
 <p>The expected behaviour would be to only resolve for markers for which artifacts exist.</p>
-<p>This issue also arises in <code>pylock.toml</code> files generated with <code>uv export</code> (using #14783), which subsequently raises errors in PEX, with which I'm trying to consume said lock files.</p>
-<h3>Platform</h3>
+<p>This issue also arises in <code>pylock.toml</code> files generated with <code>uv export</code> (using #14783), which subsequently raises errors in PEX, with which I&#x27;m trying to consume said lock files.</p>
+Platform
 <p>Linux 6.8.0-1027-gke x86_64 GNU/Linux</p>
-<h3>Version</h3>
+Version
 <p>uv 0.8.13 (9b8d6989d 2025-08-25)</p>
-<h3>Python version</h3>
+Python version
 <p><em>No response</em></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @pimdh on 2025-08-25 22:39</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/pimdh">@pimdh</a> on 2025-08-25 22:39</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-25 23:56</div>
-            <div class="timeline-body"><p>I think that might be a sign that this isn't installable on macOS. The resolver should probably error entirely?</p>
+            <div class="timeline-body"><p>I think that might be a sign that this isn&#x27;t installable on macOS. The resolver should probably error entirely?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/pimdh">@pimdh</a> on 2025-08-26 00:08</div>
-            <div class="timeline-body"><p>Wouldn't it be better to exclude the macOS marked package? If I only install torch, with</p>
-<pre><code class="language-toml">[project]
+            <div class="timeline-body"><p>Wouldn&#x27;t it be better to exclude the macOS marked package? If I only install torch, with</p>
+<pre><code>[project]
 name = &quot;example&quot;
 version = &quot;0.1.0&quot;
 requires-python = &quot;&gt;=3.12&quot;
@@ -98,7 +98,7 @@ dependencies = [
 url = &quot;https://download.pytorch.org/whl/cu124&quot;
 </code></pre>
 <p>I only get the linux version of <code>cublas</code>:</p>
-<pre><code class="language-toml">[[package]]
+<pre><code>[[package]]
 name = &quot;nvidia-cublas-cu12&quot;
 version = &quot;12.4.5.8&quot;
 source = { registry = &quot;https://download.pytorch.org/whl/cu124&quot; }
@@ -106,16 +106,16 @@ wheels = [
     { url = &quot;https://download.pytorch.org/whl/cu124/nvidia_cublas_cu12-12.4.5.8-py3-none-manylinux2014_x86_64.whl&quot;, hash = &quot;sha256:2fc8da60df463fdefa81e323eef2e36489e1c94335b5358bcb38360adf75ac9b&quot; },
 ]
 </code></pre>
-<p>this seems like the desired behaviour. This can not be resolved for macOS, so it's not included in any package.
+<p>this seems like the desired behaviour. This can not be resolved for macOS, so it&#x27;s not included in any package.
 The same happens when I install <code>cuml-cu12</code> or both <code>torch</code> and <code>cuml-cu12</code>.</p>
-<p>So why does it resolve with differently happen when I include <code>ray[data]</code>? That itself doesn't depend on <code>nvidia-cublas-cu12</code> at all, not even transitively.</p>
+<p>So why does it resolve with differently happen when I include <code>ray[data]</code>? That itself doesn&#x27;t depend on <code>nvidia-cublas-cu12</code> at all, not even transitively.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/pimdh">@pimdh</a> on 2025-08-26 00:15</div>
             <div class="timeline-body"><p>For context, this appears to be happening due the following <a href="https://github.com/ray-project/ray/blob/releases/2.47.1/python/requirements.txt">requirements</a> of <code>ray</code>:</p>
 <pre><code># pyarrow 18 causes macos build failures.
-# See https://github.com/ray-project/ray/pull/48300
+# See <a href="https://github.com/ray-project/ray/pull/48300">ray-project/ray#48300</a>
 pyarrow &gt;= 9.0.0
 pyarrow &lt;18; sys_platform == &quot;darwin&quot; and platform_machine == &quot;x86_64&quot;
 </code></pre>
@@ -123,10 +123,10 @@ pyarrow &lt;18; sys_platform == &quot;darwin&quot; and platform_machine == &quot
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-08-26 09:42</div>
-            <div class="timeline-body"><p>By looking at the lockfile, it's clearly nonsense to produce an entry that can never be installed, but by the logic of the universal resolver, this is supported: Packages without source distributions only support a subset of platforms, so we can only produce a resolution for that limited set of platforms. Instead, we error on installation, saying that the platform isn't supported.</p>
+            <div class="timeline-body"><p>By looking at the lockfile, it&#x27;s clearly nonsense to produce an entry that can never be installed, but by the logic of the universal resolver, this is supported: Packages without source distributions only support a subset of platforms, so we can only produce a resolution for that limited set of platforms. Instead, we error on installation, saying that the platform isn&#x27;t supported.</p>
 <p>For packages where different versions support different platforms, where you want to exclude a platform altogether or you want a version that supports a specific platform, you can define <code>tool.uv-environment</code> (https://docs.astral.sh/uv/concepts/resolution/#limited-resolution-environments) or <code>tool.uv-required-environment</code> (https://docs.astral.sh/uv/concepts/resolution/#required-environments). For your case this would be the following, which makes the empty entry go away.</p>
-<pre><code class="language-toml">[tool.uv]
-environments = [&quot;sys_platform == 'linux'&quot;]
+<pre><code>[tool.uv]
+environments = [&quot;sys_platform == &#x27;linux&#x27;&quot;]
 </code></pre>
 </div>
         </div>
@@ -138,21 +138,21 @@ environments = [&quot;sys_platform == 'linux'&quot;]
 Type: array of tables</p>
 <p>Required?: no; mutually-exclusive with <a href="https://packaging.python.org/en/latest/specifications/pylock-toml/#pylock-packages-vcs">[packages.vcs]</a>, <a href="https://packaging.python.org/en/latest/specifications/pylock-toml/#pylock-packages-directory">[packages.directory]</a>, and <a href="https://packaging.python.org/en/latest/specifications/pylock-toml/#pylock-packages-archive">[packages.archive]</a></p>
 </blockquote>
-<p>I'll see if this can be accommodated when consuming the lockfiles.</p>
+<p>I&#x27;ll see if this can be accommodated when consuming the lockfiles.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @pimdh on 2025-08-27 07:42</div>
+            <div class="event">Closed by <a href="https://github.com/pimdh">@pimdh</a> on 2025-08-27 07:42</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jsirois">@jsirois</a> on 2025-08-27 20:47</div>
-            <div class="timeline-body"><p>I've fixed Pex to deal with packages with no artifacts, but I think this is definitely a spec weakness. As an internal detail in <code>uv.lock</code> it makes total sense - uv code can deal with its own format as it sees fit. As an external detail in <code>pylock.toml</code> it seems sub-optimal if only because the spec is sub-optimal and, IIUC you can spell uninstallable for the current platform either by doing what uv does now - emit the package with no artifacts, or by simply not emitting that package at all in the lock. IOW the spec is under-specified here for, from what I can tell, is no good reason. It seems like just a confusion inducing unnecessary degree of freedom. All installers must handle both forms of absence.</p>
+            <div class="timeline-body"><p>I&#x27;ve fixed Pex to deal with packages with no artifacts, but I think this is definitely a spec weakness. As an internal detail in <code>uv.lock</code> it makes total sense - uv code can deal with its own format as it sees fit. As an external detail in <code>pylock.toml</code> it seems sub-optimal if only because the spec is sub-optimal and, IIUC you can spell uninstallable for the current platform either by doing what uv does now - emit the package with no artifacts, or by simply not emitting that package at all in the lock. IOW the spec is under-specified here for, from what I can tell, is no good reason. It seems like just a confusion inducing unnecessary degree of freedom. All installers must handle both forms of absence.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:32:43 UTC
+        Synced at 2026-01-20 19:40:09 UTC
     </footer>
 </body>
 </html>

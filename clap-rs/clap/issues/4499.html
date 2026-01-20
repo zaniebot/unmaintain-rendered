@@ -23,17 +23,17 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/zohnannor">@zohnannor</a></div>
-            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+            <div class="timeline-body">Please complete the following tasks
 <ul>
 <li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
 <li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
 </ul>
-<h3>Rust Version</h3>
+Rust Version
 <p>rustc 1.65.0 (897e37553 2022-11-02)</p>
-<h3>Clap Version</h3>
+Clap Version
 <p>4.0.26</p>
-<h3>Minimal reproducible code</h3>
-<pre><code class="language-rust">/// Slightly modified pacman example: https://github.com/clap-rs/clap/blob/f5dcfc5bd92ff5bd52c1d74f202d2565e0f3102f/examples/pacman.rs
+Minimal reproducible code
+<pre><code>/// Slightly modified pacman example: https://github.com/clap-rs/clap/blob/f5dcfc5bd92ff5bd52c1d74f202d2565e0f3102f/examples/pacman.rs
 
 use clap::{Arg, ArgAction, Command};
 
@@ -41,11 +41,11 @@ fn main() {
     let matches = Command::new(&quot;pacman&quot;)
         .subcommand(
             Command::new(&quot;query&quot;)
-                .short_flag('Q')
+                .short_flag(&#x27;Q&#x27;)
                 .long_flag(&quot;query&quot;)
                 .arg(
                     Arg::new(&quot;search&quot;)
-                        .short('s')
+                        .short(&#x27;s&#x27;)
                         .long(&quot;search&quot;)
                         .conflicts_with(&quot;info&quot;)
                         .action(ArgAction::Set)
@@ -54,7 +54,7 @@ fn main() {
                 .arg(
                     Arg::new(&quot;info&quot;)
                         .long(&quot;info&quot;)
-                        .short('i')
+                        .short(&#x27;i&#x27;)
                         .conflicts_with(&quot;search&quot;)
                         .action(ArgAction::Set)
                         .num_args(1..),
@@ -62,11 +62,11 @@ fn main() {
         )
         .subcommand(
             Command::new(&quot;sync&quot;)
-                .short_flag('S')
+                .short_flag(&#x27;S&#x27;)
                 .long_flag(&quot;sync&quot;)
                 .arg(
                     Arg::new(&quot;search&quot;)
-                        .short('s')
+                        .short(&#x27;s&#x27;)
                         .long(&quot;search&quot;)
                         .conflicts_with(&quot;info&quot;)
                         .action(ArgAction::Set)
@@ -76,7 +76,7 @@ fn main() {
                     Arg::new(&quot;info&quot;)
                         .long(&quot;info&quot;)
                         .conflicts_with(&quot;search&quot;)
-                        .short('i')
+                        .short(&#x27;i&#x27;)
                         .action(ArgAction::SetTrue),
                 ),
         )
@@ -85,34 +85,34 @@ fn main() {
     dbg!(matches.subcommand());
 }
 </code></pre>
-<h3>Steps to reproduce the bug with the above code</h3>
+Steps to reproduce the bug with the above code
 <p><code>cargo r --example pacman -- -Ssi</code></p>
-<h3>Actual Behaviour</h3>
+Actual Behaviour
 <p>The above command arguments (<code>-Ssi</code>) are interpreted as <code>-S -s i</code>, the <code>s</code> flag takes <code>i</code> as an argument.</p>
-<h3>Expected Behaviour</h3>
+Expected Behaviour
 <p>This behavior did confuse me honestly. I expected same output as from <code>-Sis test</code>:</p>
-<pre><code>error: The argument '--info' cannot be used with '--search &lt;search&gt;...'
+<pre><code>error: The argument &#x27;--info&#x27; cannot be used with &#x27;--search &lt;search&gt;...&#x27;
 
 Usage: pacman {sync|--sync|-S} --info
 
-For more information try '--help'
+For more information try &#x27;--help&#x27;
 </code></pre>
-<p>(To be fair, I also expected <code>-Sis</code> to fail, but it errors with <code>error: The argument '--search &lt;search&gt;...' requires a value but none was supplied</code>, I think it should <em>first</em> check for conflicts and then try to parse flag's params.)</p>
-<h3>Additional Context</h3>
+<p>(To be fair, I also expected <code>-Sis</code> to fail, but it errors with <code>error: The argument &#x27;--search &lt;search&gt;...&#x27; requires a value but none was supplied</code>, I think it should <em>first</em> check for conflicts and then try to parse flag&#x27;s params.)</p>
+Additional Context
 <p>Command with these args | Works? | Should? | Notes
 :- | :-: | :-: | :-
 <code>-Si</code> | Yes | Yes :white_check_mark:|
-<code>-Ss</code> | No | No :white_check_mark:| Errors with <code>The argument '--search &lt;search&gt;...' requires a value but none was supplied</code>
-<code>-Sis</code> | No | No :white_check_mark: | Errors with <code>The argument '--search &lt;search&gt;...' requires a value but none was supplied</code>
+<code>-Ss</code> | No | No :white_check_mark:| Errors with <code>The argument &#x27;--search &lt;search&gt;...&#x27; requires a value but none was supplied</code>
+<code>-Sis</code> | No | No :white_check_mark: | Errors with <code>The argument &#x27;--search &lt;search&gt;...&#x27; requires a value but none was supplied</code>
 <code>-Ssi</code> | Yes | No :x:| What this issue is about
-<code>-Sis test</code> | No | No :white_check_mark:| Errors with <code>The argument '--info' cannot be used with '--search &lt;search&gt;...'</code>
-<code>-Ssi test</code> | No | No :grey_question: | But, here it errors with <code>Found argument 'test' which wasn't expected, or isn't valid in this context</code>, but <em>really</em> it should say <code>The argument '--info' cannot be used with '--search &lt;search&gt;...'</code>
+<code>-Sis test</code> | No | No :white_check_mark:| Errors with <code>The argument &#x27;--info&#x27; cannot be used with &#x27;--search &lt;search&gt;...&#x27;</code>
+<code>-Ssi test</code> | No | No :grey_question: | But, here it errors with <code>Found argument &#x27;test&#x27; which wasn&#x27;t expected, or isn&#x27;t valid in this context</code>, but <em>really</em> it should say <code>The argument &#x27;--info&#x27; cannot be used with &#x27;--search &lt;search&gt;...&#x27;</code>
 <code>-S -i</code> | Yes | Yes :white_check_mark:|
-<code>-S -s</code> | No | No :white_check_mark:| Errors with <code>The argument '--search &lt;search&gt;...' requires a value but none was supplied</code>
-<code>-S -i -s</code> | No | No :white_check_mark: | Errors with <code>The argument '--search &lt;search&gt;...' requires a value but none was supplied</code>
-<code>-S -s -i</code> | No | No ~:white_check_mark:~ :grey_question: | Errors with <code>The argument '--search &lt;search&gt;...' requires a value but none was supplied</code>, ~which should happen with <code>-Ssi</code> too~, it should error with <code>The argument '--info' cannot be used with '--search &lt;search&gt;...'</code></p>
+<code>-S -s</code> | No | No :white_check_mark:| Errors with <code>The argument &#x27;--search &lt;search&gt;...&#x27; requires a value but none was supplied</code>
+<code>-S -i -s</code> | No | No :white_check_mark: | Errors with <code>The argument &#x27;--search &lt;search&gt;...&#x27; requires a value but none was supplied</code>
+<code>-S -s -i</code> | No | No ~:white_check_mark:~ :grey_question: | Errors with <code>The argument &#x27;--search &lt;search&gt;...&#x27; requires a value but none was supplied</code>, ~which should happen with <code>-Ssi</code> too~, it should error with <code>The argument &#x27;--info&#x27; cannot be used with &#x27;--search &lt;search&gt;...&#x27;</code></p>
 <p>I apologize for possibly incorrect terminology in the issue title.</p>
-<h3>Debug Output</h3>
+Debug Output
 <pre><code>cargo r --features debug --example pacman -- -Ssi test
    Compiling adler v1.0.2
    Compiling gimli v0.26.2
@@ -136,10 +136,10 @@ For more information try '--help'
 [clap::builder::debug_asserts] 	Arg::_debug_asserts:help
 [clap::builder::debug_asserts] 	Command::_verify_positionals
 [        clap::parser::parser] 	Parser::get_matches_with
-[        clap::parser::parser] 	Parser::get_matches_with: Begin parsing 'RawOsStr(&quot;-Ssi&quot;)' ([45, 83, 115, 105])
+[        clap::parser::parser] 	Parser::get_matches_with: Begin parsing &#x27;RawOsStr(&quot;-Ssi&quot;)&#x27; ([45, 83, 115, 105])
 [        clap::parser::parser] 	Parser::possible_subcommand: arg=Ok(&quot;-Ssi&quot;)
 [        clap::parser::parser] 	Parser::get_matches_with: sc=None
-[        clap::parser::parser] 	Parser::parse_short_arg: short_arg=ShortFlags { inner: RawOsStr(&quot;Ssi&quot;), utf8_prefix: CharIndices { front_offset: 0, iter: Chars(['S', 's', 'i']) }, invalid_suffix: None }
+[        clap::parser::parser] 	Parser::parse_short_arg: short_arg=ShortFlags { inner: RawOsStr(&quot;Ssi&quot;), utf8_prefix: CharIndices { front_offset: 0, iter: Chars([&#x27;S&#x27;, &#x27;s&#x27;, &#x27;i&#x27;]) }, invalid_suffix: None }
 [        clap::parser::parser] 	Parser::parse_short_arg:iter:S
 [        clap::parser::parser] 	Parser::parse_short_arg:iter:S: subcommand=sync
 [        clap::parser::parser] 	Parser::parse_short_arg: cur_idx:=1
@@ -164,13 +164,13 @@ For more information try '--help'
 [clap::builder::debug_asserts] 	Command::_verify_positionals
 [        clap::parser::parser] 	Parser::parse_subcommand: About to parse sc=sync
 [        clap::parser::parser] 	Parser::get_matches_with
-[        clap::parser::parser] 	Parser::get_matches_with: Begin parsing 'RawOsStr(&quot;-Ssi&quot;)' ([45, 83, 115, 105])
+[        clap::parser::parser] 	Parser::get_matches_with: Begin parsing &#x27;RawOsStr(&quot;-Ssi&quot;)&#x27; ([45, 83, 115, 105])
 [        clap::parser::parser] 	Parser::possible_subcommand: arg=Ok(&quot;-Ssi&quot;)
 [        clap::parser::parser] 	Parser::get_matches_with: sc=None
-[        clap::parser::parser] 	Parser::parse_short_arg: short_arg=ShortFlags { inner: RawOsStr(&quot;Ssi&quot;), utf8_prefix: CharIndices { front_offset: 0, iter: Chars(['S', 's', 'i']) }, invalid_suffix: None }
+[        clap::parser::parser] 	Parser::parse_short_arg: short_arg=ShortFlags { inner: RawOsStr(&quot;Ssi&quot;), utf8_prefix: CharIndices { front_offset: 0, iter: Chars([&#x27;S&#x27;, &#x27;s&#x27;, &#x27;i&#x27;]) }, invalid_suffix: None }
 [        clap::parser::parser] 	Parser::parse_short_arg:iter:s
 [        clap::parser::parser] 	Parser::parse_short_arg:iter:s: Found valid opt or flag
-[        clap::parser::parser] 	Parser::parse_short_arg:iter:s: val=RawOsStr(&quot;i&quot;) (bytes), val=[105] (ascii), short_arg=ShortFlags { inner: RawOsStr(&quot;Ssi&quot;), utf8_prefix: CharIndices { front_offset: 2, iter: Chars(['i']) }, invalid_suffix: None }
+[        clap::parser::parser] 	Parser::parse_short_arg:iter:s: val=RawOsStr(&quot;i&quot;) (bytes), val=[105] (ascii), short_arg=ShortFlags { inner: RawOsStr(&quot;Ssi&quot;), utf8_prefix: CharIndices { front_offset: 2, iter: Chars([&#x27;i&#x27;]) }, invalid_suffix: None }
 [        clap::parser::parser] 	Parser::parse_opt_value; arg=search, val=Some(RawOsStr(&quot;i&quot;)), has_eq=false
 [        clap::parser::parser] 	Parser::parse_opt_value; arg.settings=ArgFlags(NO_OP)
 [        clap::parser::parser] 	Parser::parse_opt_value; Checking for val...
@@ -185,7 +185,7 @@ For more information try '--help'
 [   clap::parser::arg_matcher] 	ArgMatcher::needs_more_vals: expected=1..=18446744073709551615, actual=0
 [        clap::parser::parser] 	Parser::react not enough values passed in, leaving it to the validator to complain
 [        clap::parser::parser] 	Parser::get_matches_with: After parse_short_arg ValuesDone
-[        clap::parser::parser] 	Parser::get_matches_with: Begin parsing 'RawOsStr(&quot;test&quot;)' ([116, 101, 115, 116])
+[        clap::parser::parser] 	Parser::get_matches_with: Begin parsing &#x27;RawOsStr(&quot;test&quot;)&#x27; ([116, 101, 115, 116])
 [        clap::parser::parser] 	Parser::possible_subcommand: arg=Ok(&quot;test&quot;)
 [        clap::parser::parser] 	Parser::get_matches_with: sc=None
 [        clap::parser::parser] 	Parser::get_matches_with: Positional counter...1
@@ -205,16 +205,16 @@ For more information try '--help'
 [      clap::builder::command] 	Auto
 [      clap::builder::command] 	Command::color: Color setting...
 [      clap::builder::command] 	Auto
-error: Found argument 'test' which wasn't expected, or isn't valid in this context
+error: Found argument &#x27;test&#x27; which wasn&#x27;t expected, or isn&#x27;t valid in this context
 
 Usage: pacman {sync|--sync|-S} [OPTIONS]
 
-For more information try '--help'
+For more information try &#x27;--help&#x27;
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">C-bug</span> added by @zohnannor on 2022-11-21 20:44</div>
+            <div class="event">Label <span class="label">C-bug</span> added by <a href="https://github.com/zohnannor">@zohnannor</a> on 2022-11-21 20:44</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-11-22 00:29</div>
@@ -226,63 +226,63 @@ For more information try '--help'
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zohnannor">@zohnannor</a> on 2022-11-22 16:53</div>
-            <div class="timeline-body"><p>Yes, it is working as it is written in the code, as expected. What I'm saying is (I guess, https://github.com/clap-rs/clap/labels/C-bug label is incorrect here, sorry), shouldn't there be <strong>at least</strong> an option to forbid attached values for arguments? Also, regarding <code>-S -s -i</code>, shouldn't it check for conflicts first? <code>pacman</code> itself works like that:</p>
+            <div class="timeline-body"><p>Yes, it is working as it is written in the code, as expected. What I&#x27;m saying is (I guess, https://github.com/clap-rs/clap/labels/C-bug label is incorrect here, sorry), shouldn&#x27;t there be <strong>at least</strong> an option to forbid attached values for arguments? Also, regarding <code>-S -s -i</code>, shouldn&#x27;t it check for conflicts first? <code>pacman</code> itself works like that:</p>
 <pre><code>$ sudo pacman -Sis
-error: invalid option: '--info' and '--search' may not be used together
+error: invalid option: &#x27;--info&#x27; and &#x27;--search&#x27; may not be used together
 $ sudo pacman -Ssi
-error: invalid option: '--info' and '--search' may not be used together
+error: invalid option: &#x27;--info&#x27; and &#x27;--search&#x27; may not be used together
 $ sudo pacman -S -s -i
-error: invalid option: '--info' and '--search' may not be used together
+error: invalid option: &#x27;--info&#x27; and &#x27;--search&#x27; may not be used together
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-11-22 18:07</div>
             <div class="timeline-body"><blockquote>
-<p>shouldn't there be at least an option to forbid attached values for arguments?</p>
+<p>shouldn&#x27;t there be at least an option to forbid attached values for arguments?</p>
 </blockquote>
 <p>Unsure, will have to give it some thought.  It seems like some more flexibility around implicitly attached, explicitly attached, and detached values could help with some cases.  See also #3030</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">C-bug</span> removed by @epage on 2022-11-22 18:08</div>
+            <div class="event">Label <span class="label">C-bug</span> removed by <a href="https://github.com/epage">@epage</a> on 2022-11-22 18:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">C-enhancement</span> added by @epage on 2022-11-22 18:08</div>
+            <div class="event">Label <span class="label">C-enhancement</span> added by <a href="https://github.com/epage">@epage</a> on 2022-11-22 18:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">A-parsing</span> added by @epage on 2022-11-22 18:08</div>
+            <div class="event">Label <span class="label">A-parsing</span> added by <a href="https://github.com/epage">@epage</a> on 2022-11-22 18:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">S-waiting-on-design</span> added by @epage on 2022-11-22 18:08</div>
+            <div class="event">Label <span class="label">S-waiting-on-design</span> added by <a href="https://github.com/epage">@epage</a> on 2022-11-22 18:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Flag takes next flag as value (pacman example)" to "Allow short options to not accept implicitly attached values (`-sfoo`)" by @epage on 2022-11-22 18:08</div>
+            <div class="event">Renamed from &quot;Flag takes next flag as value (pacman example)&quot; to &quot;Allow short options to not accept implicitly attached values (`-sfoo`)&quot; by <a href="https://github.com/epage">@epage</a> on 2022-11-22 18:08</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-02-13 14:27</div>
             <div class="timeline-body"><p>btw by disallowing attached values, you might not get</p>
-<pre><code>error: The argument '--info' cannot be used with '--search &lt;search&gt;...'
+<pre><code>error: The argument &#x27;--info&#x27; cannot be used with &#x27;--search &lt;search&gt;...&#x27;
 
 Usage: pacman {sync|--sync|-S} --info
 
-For more information try '--help'
+For more information try &#x27;--help&#x27;
 </code></pre>
 <p>but instead an error about <code>--search</code> missing a value</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/4702.html">clap-rs/clap#4702</a> on 2023-02-13 16:03</div>
+            <div class="event">Referenced in <a>clap-rs/clap#4702</a> on 2023-02-13 16:03</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zohnannor">@zohnannor</a> on 2023-02-14 22:44</div>
-            <div class="timeline-body"><p>Yes, and I've also mentioned that in the table for entry <code>-S -s -i</code>, it is counter-intuitive and possibly even deserves its own issue. I presume it depends on the order in which <code>clap</code> parses arguments and it would be a breaking change to modify it.</p>
+            <div class="timeline-body"><p>Yes, and I&#x27;ve also mentioned that in the table for entry <code>-S -s -i</code>, it is counter-intuitive and possibly even deserves its own issue. I presume it depends on the order in which <code>clap</code> parses arguments and it would be a breaking change to modify it.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:48:55 UTC
+        Synced at 2026-01-20 19:59:30 UTC
     </footer>
 </body>
 </html>

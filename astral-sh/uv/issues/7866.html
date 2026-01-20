@@ -23,8 +23,8 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/my1e5">@my1e5</a></div>
-            <div class="timeline-body"><p>I'm sorry I don't have a full MRE of this at the moment, but I wanted to report it anyway for the record.</p>
-<p>I'm adding a dependency from a Git URL which uses dynamic versioning - so the version number is determined at build time using the Git tags. It uses the <a href="https://pypi.org/project/versioningit/"><code>versioningit</code></a> plugin for Hatch.</p>
+            <div class="timeline-body"><p>I&#x27;m sorry I don&#x27;t have a full MRE of this at the moment, but I wanted to report it anyway for the record.</p>
+<p>I&#x27;m adding a dependency from a Git URL which uses dynamic versioning - so the version number is determined at build time using the Git tags. It uses the <a href="https://pypi.org/project/versioningit/"><code>versioningit</code></a> plugin for Hatch.</p>
 <p>Consider I have a tag on my remote called <code>v0.3.1</code> which is associated with commit hash <code>5cf4ddf</code>. On my Windows PC, this is working fine:</p>
 <pre><code>$ uv add git+ssh://git@mygitserver/myproject --tag v0.3.1
  Updated ssh://git@mygitserver/myproject (5cf4ddf)
@@ -36,7 +36,7 @@ Installed 13 packages in 1.87s
  + myproject==0.3.1 (from git+ssh://git@mygitserver/myproject@5cf4ddf3a85c705daa92ab96c7db96a64d77cbb9)
 .
 </code></pre>
-<p>But then I encountered this on my macOS machine (I don't know if the OS is relevant)</p>
+<p>But then I encountered this on my macOS machine (I don&#x27;t know if the OS is relevant)</p>
 <pre><code>$ uv add git+ssh://git@mygitserver/myproject --tag v0.3.1
  Updated ssh://git@mygitserver/myproject (5cf4ddf)
  Updated ssh://git@mygitserver/myproject (5cf4ddf)
@@ -74,14 +74,14 @@ $ uv add git+ssh://git@mygitserver/myproject --tag v0.3.1 --reinstall
  + myproject==0.3.1 (from git+ssh://git@mygitserver/myproject@5cf4ddf3a85c705daa92ab96c7db96a64d77cbb9)
 .
 </code></pre>
-<p>I haven't tried to recreate this - it's a little tricky to do so - but I wanted to report it regardless in case this gave any hints at a possible bug. My impression is uv was in some way not properly updating or refreshing the git tags? So it took cleaning the entire cache to get the git history to properly update?</p>
-<p>Also sorry I'm not able to go back and generate verbose logs.</p>
+<p>I haven&#x27;t tried to recreate this - it&#x27;s a little tricky to do so - but I wanted to report it regardless in case this gave any hints at a possible bug. My impression is uv was in some way not properly updating or refreshing the git tags? So it took cleaning the entire cache to get the git history to properly update?</p>
+<p>Also sorry I&#x27;m not able to go back and generate verbose logs.</p>
 <p>uv version <code>0.4.17</code></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/my1e5">@my1e5</a> on 2024-10-03 10:12</div>
-            <div class="timeline-body"><p>I've managed to reproduce it.</p>
+            <div class="timeline-body"><p>I&#x27;ve managed to reproduce it.</p>
 <p>Start by adding a dependency from a Git URL which uses dynamic versioning. For example, here I am adding whatever the latest commit is from the <code>main</code> branch (which is currently untagged):</p>
 <pre><code>$ uv add git+ssh://git@mygitserver/myproject
  Updated ssh://git@mygitserver/myproject (5cf4ddf)
@@ -93,19 +93,19 @@ Installed 13 packages in 1.87s
  + myproject==0.3.0.post6+g5cf4ddf (from git+ssh://git@mygitserver/myproject@5cf4ddf3a85c705daa92ab96c7db96a64d77cbb9)
 .
 </code></pre>
-<p>So uv has correctly fetched commit <code>5cf4ddf</code> and the dynamic versioning has correctly labelled the build as <code>0.3.0.post6+g5cf4ddf</code>. This means 'six commits post <code>v0.3.0</code>' (which is the latest tag in the git history) - there is currently no <code>v0.3.1</code> tag present in the remote. All good so far.</p>
+<p>So uv has correctly fetched commit <code>5cf4ddf</code> and the dynamic versioning has correctly labelled the build as <code>0.3.0.post6+g5cf4ddf</code>. This means &#x27;six commits post <code>v0.3.0</code>&#x27; (which is the latest tag in the git history) - there is currently no <code>v0.3.1</code> tag present in the remote. All good so far.</p>
 <p>Next, create a new release tag on the remote called <code>v0.3.1</code> which is associated with commit <code>5cf4ddf</code>.</p>
-<p>Now, it seems that despite trying to use <code>--reinstall</code> you cannot get uv to build <code>myproject</code> using this new version tag. It's like uv remembers that it has a cached version of <code>myproject @ 5cf4ddf</code> stored and so will forever build it as <code>0.3.0.post6+g5cf4ddf</code> which is the version name it first created for it.</p>
+<p>Now, it seems that despite trying to use <code>--reinstall</code> you cannot get uv to build <code>myproject</code> using this new version tag. It&#x27;s like uv remembers that it has a cached version of <code>myproject @ 5cf4ddf</code> stored and so will forever build it as <code>0.3.0.post6+g5cf4ddf</code> which is the version name it first created for it.</p>
 <pre><code>$ uv add -v git+ssh://git@mygitserver/myproject --tag v0.3.1 --reinstall
 </code></pre>
-<details>
-<summary>Expand verbose logs</summary>
+
+Expand verbose logs
 <pre>
 DEBUG uv 0.4.18
 DEBUG Found project root: `/Users/.........../test-project`
 DEBUG No workspace root found, using project root
 DEBUG Reading requests from `/Users/.........../test-project/.python-version`
-DEBUG The virtual environment's Python version satisfies `Python 3.12`
+DEBUG The virtual environment&#x27;s Python version satisfies `Python 3.12`
 DEBUG Using request timeout of 30s
 DEBUG Fetching source distribution from Git: ssh://git@mygitserver/myproject
 DEBUG Acquired lock for `ssh://mygitserver/myproject`
@@ -113,14 +113,14 @@ DEBUG Updating Git source `ssh://git@mygitserver/myproject`
 DEBUG Performing a Git fetch for: ssh://git@mygitserver/myproject
 DEBUG Released lock at `/Users/me/.cache/uv/git-v0/locks/9f1202babc7ca148`
 DEBUG Acquired lock for `/Users/me/.cache/uv/sdists-v4/git/0f5be1768a6ffc48/114ab0c03a727caf`
-DEBUG No static `pyproject.toml` available for: git+ssh://git@mygitserver/myproject (PyprojectToml(DynamicField("version")))
+DEBUG No static `pyproject.toml` available for: git+ssh://git@mygitserver/myproject (PyprojectToml(DynamicField(&quot;version&quot;)))
 DEBUG No static `PKG-INFO` available for: git+ssh://git@mygitserver/myproject (MissingPkgInfo)
 DEBUG No static `egg-info` available for: git+ssh://git@mygitserver/myproject (MissingEggInfo)
 DEBUG Preparing metadata for: git+ssh://git@mygitserver/myproject
 DEBUG Ignoring empty directory
 DEBUG Resolving build requirements
 DEBUG Solving with installed Python version: 3.12.4
-DEBUG Solving with target Python version: >=3.12.4
+DEBUG Solving with target Python version: &gt;=3.12.4
 DEBUG Adding direct dependency: hatchling*
 DEBUG Adding direct dependency: versioningit*
 DEBUG No cache entry for: https://pypi.org/simple/hatchling/
@@ -129,9 +129,9 @@ DEBUG Searching for a compatible version of hatchling (*)
 DEBUG Selecting: hatchling==1.25.0 [compatible] (hatchling-1.25.0-py3-none-any.whl)
 DEBUG No cache entry for: https://files.pythonhosted.org/packages/0c/8b/90e80904fdc24ce33f6fc6f35ebd2232fe731a8528a22008458cf197bc4d/hatchling-1.25.0-py3-none-any.whl.metadata
 DEBUG No cache entry for: https://files.pythonhosted.org/packages/7f/56/50784a34941e6a77cb068289c851d35c8b9af6a4d266fdb85d4d4828fe21/versioningit-3.1.2-py3-none-any.whl.metadata
-DEBUG Adding transitive dependency for hatchling==1.25.0: packaging>=23.2
-DEBUG Adding transitive dependency for hatchling==1.25.0: pathspec>=0.10.1
-DEBUG Adding transitive dependency for hatchling==1.25.0: pluggy>=1.0.0
+DEBUG Adding transitive dependency for hatchling==1.25.0: packaging&gt;=23.2
+DEBUG Adding transitive dependency for hatchling==1.25.0: pathspec&gt;=0.10.1
+DEBUG Adding transitive dependency for hatchling==1.25.0: pluggy&gt;=1.0.0
 DEBUG Adding transitive dependency for hatchling==1.25.0: trove-classifiers*
 DEBUG Searching for a compatible version of versioningit (*)
 DEBUG Selecting: versioningit==3.1.2 [compatible] (versioningit-3.1.2-py3-none-any.whl)
@@ -139,16 +139,16 @@ DEBUG No cache entry for: https://pypi.org/simple/pathspec/
 DEBUG No cache entry for: https://pypi.org/simple/pluggy/
 DEBUG No cache entry for: https://pypi.org/simple/packaging/
 DEBUG No cache entry for: https://pypi.org/simple/trove-classifiers/
-DEBUG Adding transitive dependency for versioningit==3.1.2: packaging>=17.1
+DEBUG Adding transitive dependency for versioningit==3.1.2: packaging&gt;=17.1
 DEBUG No cache entry for: https://files.pythonhosted.org/packages/cc/20/ff623b09d963f88bfde16306a54e12ee5ea43e9b597108672ff3a408aad6/pathspec-0.12.1-py3-none-any.whl.metadata
 DEBUG No cache entry for: https://files.pythonhosted.org/packages/88/5f/e351af9a41f866ac3f1fac4ca0613908d9a41741cfcf2228f4ad853b697d/pluggy-1.5.0-py3-none-any.whl.metadata
-DEBUG Searching for a compatible version of packaging (>=23.2)
+DEBUG Searching for a compatible version of packaging (&gt;=23.2)
 DEBUG Selecting: packaging==24.1 [compatible] (packaging-24.1-py3-none-any.whl)
 DEBUG No cache entry for: https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl.metadata
 DEBUG No cache entry for: https://files.pythonhosted.org/packages/b6/7a/e0edec9c8905e851d52076bbc41890603e2ba97cf64966bc1498f2244fd2/trove_classifiers-2024.9.12-py3-none-any.whl.metadata
-DEBUG Searching for a compatible version of pathspec (>=0.10.1)
+DEBUG Searching for a compatible version of pathspec (&gt;=0.10.1)
 DEBUG Selecting: pathspec==0.12.1 [compatible] (pathspec-0.12.1-py3-none-any.whl)
-DEBUG Searching for a compatible version of pluggy (>=1.0.0)
+DEBUG Searching for a compatible version of pluggy (&gt;=1.0.0)
 DEBUG Selecting: pluggy==1.5.0 [compatible] (pluggy-1.5.0-py3-none-any.whl)
 DEBUG Searching for a compatible version of trove-classifiers (*)
 DEBUG Selecting: trove-classifiers==2024.9.12 [compatible] (trove_classifiers-2024.9.12-py3-none-any.whl)
@@ -205,7 +205,7 @@ DEBUG Uninstalled myproject (47 files, 13 directories)
 .
 .
 </pre>
-</details>
+
 
 <pre><code>Uninstalled 12 packages in 189ms
 Installed 12 packages in 25ms
@@ -215,7 +215,7 @@ Installed 12 packages in 25ms
 .
 .
 </code></pre>
-<p>The only way I've found to fix this is to run <code>uv cache clean</code>.</p>
+<p>The only way I&#x27;ve found to fix this is to run <code>uv cache clean</code>.</p>
 <pre><code>$ uv -v cache clean
 DEBUG uv 0.4.18
 Clearing cache at: /Users/me/.cache/uv
@@ -223,14 +223,14 @@ Removed 309 files (2.3MiB)
 </code></pre>
 <pre><code>$ uv add -v git+ssh://git@mygitserver/myproject --tag v0.3.1 --reinstall
 </code></pre>
-<details>
-<summary>Expand verbose logs</summary>
+
+Expand verbose logs
 <pre>
 DEBUG uv 0.4.18
 DEBUG Found project root: `/Users/........./test-project`
 DEBUG No workspace root found, using project root
 DEBUG Reading requests from `/Users/........./test-project/.python-version`
-DEBUG The virtual environment's Python version satisfies `Python 3.12`
+DEBUG The virtual environment&#x27;s Python version satisfies `Python 3.12`
 DEBUG Using request timeout of 30s
 DEBUG Fetching source distribution from Git: ssh://git@mygitserver/myproject
 DEBUG Acquired lock for `ssh://mygitserver/myproject`
@@ -239,14 +239,14 @@ DEBUG Performing a Git fetch for: ssh://git@mygitserver/myproject
 DEBUG reset /Users/me/.cache/uv/git-v0/checkouts/9f1202babc7ca148/114ab0c to 5cf4ddf3a85c705daa92ab96c7db96a64d77cbb9
 DEBUG Released lock at `/Users/me/.cache/uv/git-v0/locks/9f1202babc7ca148`
 DEBUG Acquired lock for `/Users/me/.cache/uv/sdists-v4/git/0f5be1768a6ffc48/114ab0c03a727caf`
-DEBUG No static `pyproject.toml` available for: git+ssh://git@mygitserver/myproject (PyprojectToml(DynamicField("version")))
+DEBUG No static `pyproject.toml` available for: git+ssh://git@mygitserver/myproject (PyprojectToml(DynamicField(&quot;version&quot;)))
 DEBUG No static `PKG-INFO` available for: git+ssh://git@mygitserver/myproject (MissingPkgInfo)
 DEBUG No static `egg-info` available for: git+ssh://git@mygitserver/myproject (MissingEggInfo)
 DEBUG Preparing metadata for: git+ssh://git@mygitserver/myproject
 DEBUG Ignoring empty directory
 DEBUG Resolving build requirements
 DEBUG Solving with installed Python version: 3.12.4
-DEBUG Solving with target Python version: >=3.12.4
+DEBUG Solving with target Python version: &gt;=3.12.4
 DEBUG Adding direct dependency: hatchling*
 DEBUG Adding direct dependency: versioningit*
 DEBUG No cache entry for: https://pypi.org/simple/hatchling/
@@ -255,25 +255,25 @@ DEBUG No cache entry for: https://files.pythonhosted.org/packages/7f/56/50784a34
 DEBUG Searching for a compatible version of hatchling (*)
 DEBUG Selecting: hatchling==1.25.0 [compatible] (hatchling-1.25.0-py3-none-any.whl)
 DEBUG No cache entry for: https://files.pythonhosted.org/packages/0c/8b/90e80904fdc24ce33f6fc6f35ebd2232fe731a8528a22008458cf197bc4d/hatchling-1.25.0-py3-none-any.whl.metadata
-DEBUG Adding transitive dependency for hatchling==1.25.0: packaging>=23.2
-DEBUG Adding transitive dependency for hatchling==1.25.0: pathspec>=0.10.1
-DEBUG Adding transitive dependency for hatchling==1.25.0: pluggy>=1.0.0
+DEBUG Adding transitive dependency for hatchling==1.25.0: packaging&gt;=23.2
+DEBUG Adding transitive dependency for hatchling==1.25.0: pathspec&gt;=0.10.1
+DEBUG Adding transitive dependency for hatchling==1.25.0: pluggy&gt;=1.0.0
 DEBUG Adding transitive dependency for hatchling==1.25.0: trove-classifiers*
 DEBUG Searching for a compatible version of versioningit (*)
 DEBUG Selecting: versioningit==3.1.2 [compatible] (versioningit-3.1.2-py3-none-any.whl)
-DEBUG Adding transitive dependency for versioningit==3.1.2: packaging>=17.1
+DEBUG Adding transitive dependency for versioningit==3.1.2: packaging&gt;=17.1
 DEBUG No cache entry for: https://pypi.org/simple/packaging/
 DEBUG No cache entry for: https://pypi.org/simple/pathspec/
 DEBUG No cache entry for: https://pypi.org/simple/pluggy/
 DEBUG No cache entry for: https://pypi.org/simple/trove-classifiers/
-DEBUG Searching for a compatible version of packaging (>=23.2)
+DEBUG Searching for a compatible version of packaging (&gt;=23.2)
 DEBUG Selecting: packaging==24.1 [compatible] (packaging-24.1-py3-none-any.whl)
 DEBUG No cache entry for: https://files.pythonhosted.org/packages/cc/20/ff623b09d963f88bfde16306a54e12ee5ea43e9b597108672ff3a408aad6/pathspec-0.12.1-py3-none-any.whl.metadata
 DEBUG No cache entry for: https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl.metadata
 DEBUG No cache entry for: https://files.pythonhosted.org/packages/88/5f/e351af9a41f866ac3f1fac4ca0613908d9a41741cfcf2228f4ad853b697d/pluggy-1.5.0-py3-none-any.whl.metadata
-DEBUG Searching for a compatible version of pathspec (>=0.10.1)
+DEBUG Searching for a compatible version of pathspec (&gt;=0.10.1)
 DEBUG Selecting: pathspec==0.12.1 [compatible] (pathspec-0.12.1-py3-none-any.whl)
-DEBUG Searching for a compatible version of pluggy (>=1.0.0)
+DEBUG Searching for a compatible version of pluggy (&gt;=1.0.0)
 DEBUG Selecting: pluggy==1.5.0 [compatible] (pluggy-1.5.0-py3-none-any.whl)
 DEBUG No cache entry for: https://files.pythonhosted.org/packages/b6/7a/e0edec9c8905e851d52076bbc41890603e2ba97cf64966bc1498f2244fd2/trove_classifiers-2024.9.12-py3-none-any.whl.metadata
 DEBUG Searching for a compatible version of trove-classifiers (*)
@@ -325,23 +325,23 @@ DEBUG Building: myproject @ git+ssh://git@mygitserver/myproject@5cf4ddf3a85c705d
 DEBUG Ignoring empty directory
 DEBUG Resolving build requirements
 DEBUG Solving with installed Python version: 3.12.4
-DEBUG Solving with target Python version: >=3.12.4
+DEBUG Solving with target Python version: &gt;=3.12.4
 DEBUG Adding direct dependency: hatchling*
 DEBUG Adding direct dependency: versioningit*
 DEBUG Searching for a compatible version of hatchling (*)
 DEBUG Selecting: hatchling==1.25.0 [compatible] (hatchling-1.25.0-py3-none-any.whl)
-DEBUG Adding transitive dependency for hatchling==1.25.0: packaging>=23.2
-DEBUG Adding transitive dependency for hatchling==1.25.0: pathspec>=0.10.1
-DEBUG Adding transitive dependency for hatchling==1.25.0: pluggy>=1.0.0
+DEBUG Adding transitive dependency for hatchling==1.25.0: packaging&gt;=23.2
+DEBUG Adding transitive dependency for hatchling==1.25.0: pathspec&gt;=0.10.1
+DEBUG Adding transitive dependency for hatchling==1.25.0: pluggy&gt;=1.0.0
 DEBUG Adding transitive dependency for hatchling==1.25.0: trove-classifiers*
 DEBUG Searching for a compatible version of versioningit (*)
 DEBUG Selecting: versioningit==3.1.2 [compatible] (versioningit-3.1.2-py3-none-any.whl)
-DEBUG Adding transitive dependency for versioningit==3.1.2: packaging>=17.1
-DEBUG Searching for a compatible version of packaging (>=23.2)
+DEBUG Adding transitive dependency for versioningit==3.1.2: packaging&gt;=17.1
+DEBUG Searching for a compatible version of packaging (&gt;=23.2)
 DEBUG Selecting: packaging==24.1 [compatible] (packaging-24.1-py3-none-any.whl)
-DEBUG Searching for a compatible version of pathspec (>=0.10.1)
+DEBUG Searching for a compatible version of pathspec (&gt;=0.10.1)
 DEBUG Selecting: pathspec==0.12.1 [compatible] (pathspec-0.12.1-py3-none-any.whl)
-DEBUG Searching for a compatible version of pluggy (>=1.0.0)
+DEBUG Searching for a compatible version of pluggy (&gt;=1.0.0)
 DEBUG Selecting: pluggy==1.5.0 [compatible] (pluggy-1.5.0-py3-none-any.whl)
 DEBUG Searching for a compatible version of trove-classifiers (*)
 DEBUG Selecting: trove-classifiers==2024.9.12 [compatible] (trove_classifiers-2024.9.12-py3-none-any.whl)
@@ -358,7 +358,7 @@ DEBUG Downloading and building requirements for build: hatchling==1.25.0, packag
 DEBUG Installing build requirements: hatchling==1.25.0, packaging==24.1, versioningit==3.1.2, pathspec==0.12.1, pluggy==1.5.0, trove-classifiers==2024.9.12
 DEBUG Creating PEP 517 build environment
 DEBUG Calling `hatchling.build.get_requires_for_build_wheel()`
-DEBUG Calling `hatchling.build.build_wheel("/Users/me/.cache/uv/sdists-v4/git/d98613b14b70cff7/114ab0c03a727caf/.tmpnqHogz", {}, None)`
+DEBUG Calling `hatchling.build.build_wheel(&quot;/Users/me/.cache/uv/sdists-v4/git/d98613b14b70cff7/114ab0c03a727caf/.tmpnqHogz&quot;, {}, None)`
 DEBUG Finished building: myproject @ git+ssh://git@mygitserver/myproject@5cf4ddf3a85c705daa92ab96c7db96a64d77cbb9
 DEBUG Released lock at `/Users/me/.cache/uv/sdists-v4/git/d98613b14b70cff7/114ab0c03a727caf/.lock`
 Prepared 12 packages in 2.04s
@@ -368,7 +368,7 @@ DEBUG Uninstalled myproject (47 files, 13 directories)
 .
 .
 </pre>
-</details>
+
 
 <pre><code>Uninstalled 12 packages in 231ms
 Installed 12 packages in 24ms
@@ -388,12 +388,12 @@ Installed 12 packages in 24ms
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-10-03 13:18</div>
+            <div class="event">Label <span class="label">needs-mre</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-03 13:18</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/my1e5">@my1e5</a> on 2024-10-03 14:14</div>
             <div class="timeline-body"><p>To reproduce this you need to <code>uv add</code> the repository first and then go and create a new release. I can outline the most simple way to reproduce it.</p>
-<h3>1. Create a Python library with dynamic versioning (and push to Github)</h3>
+1. Create a Python library with dynamic versioning (and push to Github)
 <pre><code>$ uv init --lib test-versioning
 </code></pre>
 <p>Modify the <code>pyproject.toml</code> to use a dynamic version and the <code>versioningit</code> plugin for Hatch.</p>
@@ -432,7 +432,7 @@ $ git branch -M main
 $ git remote add origin https://github.com/&lt;username&gt;/test-versioning.git
 $ git push -u origin main
 </code></pre>
-<h3>2. Create a new Python project and add this Git repo as a dependency</h3>
+2. Create a new Python project and add this Git repo as a dependency
 <pre><code>$ uv init test-project
 $ cd test-project/
 $ uv add git+https://github.com/&lt;username&gt;/test-versioning
@@ -446,9 +446,9 @@ Prepared 1 package in 1.26s
 Installed 1 package in 10ms
  + test-versioning==0.0.0 (from git+https://github.com/&lt;username&gt;/test-versioning@76e5c0cca634a2a1b8624eb5ae00af3660e94245)
 </code></pre>
-<p>As you can see, it's correctly built as version <code>0.0.0</code></p>
-<h3>3. Create a release on GitHub</h3>
-<p>For example, create a new tag called <code>v0.1.0</code> with 'Target: main'.</p>
+<p>As you can see, it&#x27;s correctly built as version <code>0.0.0</code></p>
+3. Create a release on GitHub
+<p>For example, create a new tag called <code>v0.1.0</code> with &#x27;Target: main&#x27;.</p>
 <p>Back in <code>test-project</code>, when we use this tag, it finds it alright but still calls the build <code>0.0.0</code></p>
 <pre><code>$ uv add git+https://github.com/&lt;username&gt;/test-versioning --tag=v0.1.0 --reinstall
  Updated https://github.com/&lt;username&gt;/test-versioning (76e5c0c)
@@ -459,7 +459,7 @@ Uninstalled 1 package in 2ms
 Installed 1 package in 13ms
  ~ test-versioning==0.0.0 (from git+https://github.com/&lt;username&gt;/test-versioning@76e5c0cca634a2a1b8624eb5ae00af3660e94245)
 </code></pre>
-<h3>4. Clearing the cache for the specific package doesn't work.</h3>
+4. Clearing the cache for the specific package doesn&#x27;t work.
 <pre><code>$ uv cache clean test-versioning
 Removed 13 files for test-versioning (1.9KiB)
 
@@ -472,7 +472,7 @@ Uninstalled 1 package in 1ms
 Installed 1 package in 10ms
  ~ test-versioning==0.0.0 (from git+https://github.com/&lt;username&gt;/test-versioning@76e5c0cca634a2a1b8624eb5ae00af3660e94245)
 </code></pre>
-<h3>5. But clearing the entire cache does work</h3>
+5. But clearing the entire cache does work
 <pre><code>$ uv cache clean
 Clearing cache at: C:\Users\User\AppData\Local\uv\cache
 Removed 9772 files (569.0MiB)
@@ -488,7 +488,7 @@ Installed 1 package in 11ms
 + test-versioning==0.1.0 (from git+https://github.com/&lt;username&gt;/test-versioning@76e5c0cca634a2a1b8624eb5ae00af3660e94245)
 </code></pre>
 <p>Only when you run <code>uv cache clean</code> does it reinstall as version <code>0.1.0</code>.</p>
-<p>I've tested this MRE myself at https://github.com/my1e5/test-versioning - but to reproduce it yourself you need to be able to add the Git repo before the release tag is created. So you will need to make your own repo. Hope this is helpful.</p>
+<p>I&#x27;ve tested this MRE myself at https://github.com/my1e5/test-versioning - but to reproduce it yourself you need to be able to add the Git repo before the release tag is created. So you will need to make your own repo. Hope this is helpful.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -625,36 +625,36 @@ Installed 1 package in 11ms
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-10-16 13:56</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-16 13:56</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-10-16 15:13</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-16 15:13</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-10-16 15:13</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-16 15:13</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/my1e5">@my1e5</a> on 2024-10-17 22:06</div>
-            <div class="timeline-body"><p>@charliermarsh - PR #8259 did fix issue #7997, but I've just tested the above MRE with uv 0.4.23 - and this bug still remains.</p>
-<p>The point is when you add a dynamic version library from git to another project, then no matter what you try uv will always remember the git commit hash is associated with the first version number it built. So it can never get new tag updates. Even if you <code>uv sync --reinstall</code> or you try add it again but use <code>--reinstall</code> it won't retrieve any new tag updates.</p>
+            <div class="timeline-body"><p>@charliermarsh - PR #8259 did fix issue #7997, but I&#x27;ve just tested the above MRE with uv 0.4.23 - and this bug still remains.</p>
+<p>The point is when you add a dynamic version library from git to another project, then no matter what you try uv will always remember the git commit hash is associated with the first version number it built. So it can never get new tag updates. Even if you <code>uv sync --reinstall</code> or you try add it again but use <code>--reinstall</code> it won&#x27;t retrieve any new tag updates.</p>
 <p>The only way to fix it is to clear your entire cache with <code>uv cache clean</code></p>
-<p>Adding <code>cache-keys = [{ git = { commit = true, tags = true } }]</code> in the project has no effect in this case. Because it's not the Git tags of the current project we want. We want to get updates for the dependencies.</p>
+<p>Adding <code>cache-keys = [{ git = { commit = true, tags = true } }]</code> in the project has no effect in this case. Because it&#x27;s not the Git tags of the current project we want. We want to get updates for the dependencies.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @charliermarsh on 2024-10-17 22:09</div>
+            <div class="event">Reopened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-17 22:09</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-17 22:58</div>
-            <div class="timeline-body"><p>Ah thanks -- I re-opened! Though I'll admit that I'm tempted to mark this as &quot;won't fix&quot;... I just find it challenging that a Git commit SHA would not be indicative of a reproducible build, and that the build instead relies on what is effectively ambient global state.</p>
-<p>I guess <code>--reinstall</code> or <code>--refresh</code> should arguably re-pull the list of refs... maybe? I don't think it should work without some explicit opt-in like a flag though, at the very least.</p>
+            <div class="timeline-body"><p>Ah thanks -- I re-opened! Though I&#x27;ll admit that I&#x27;m tempted to mark this as &quot;won&#x27;t fix&quot;... I just find it challenging that a Git commit SHA would not be indicative of a reproducible build, and that the build instead relies on what is effectively ambient global state.</p>
+<p>I guess <code>--reinstall</code> or <code>--refresh</code> should arguably re-pull the list of refs... maybe? I don&#x27;t think it should work without some explicit opt-in like a flag though, at the very least.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-mre</span> removed by @charliermarsh on 2024-10-17 22:58</div>
+            <div class="event">Label <span class="label">needs-mre</span> removed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-17 22:58</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">wish</span> added by @charliermarsh on 2024-10-17 22:58</div>
+            <div class="event">Label <span class="label">wish</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-17 22:58</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/my1e5">@my1e5</a> on 2024-10-17 23:44</div>
@@ -673,13 +673,13 @@ Installed 1 package in 11ms
 <pre><code>$ uv cache clean dynamic-version-lib
 Removed 11 files for dynamic-version-lib (2.1KiB)
 </code></pre>
-<p>it doesn't result in the metadata getting refreshed when I add it to project again. Only <code>uv cache clean</code> works.</p>
+<p>it doesn&#x27;t result in the metadata getting refreshed when I add it to project again. Only <code>uv cache clean</code> works.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:27:27 UTC
+        Synced at 2026-01-20 19:34:26 UTC
     </footer>
 </body>
 </html>

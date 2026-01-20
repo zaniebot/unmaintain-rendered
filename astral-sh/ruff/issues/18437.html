@@ -23,11 +23,11 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/keita00">@keita00</a></div>
-            <div class="timeline-body"><p>Ruff's formatter currently adds a trailing comma after a closing parenthesis ) of a nested function call — even when the result is not part of an argument list, which silently converts the return value into a tuple.</p>
+            <div class="timeline-body"><p>Ruff&#x27;s formatter currently adds a trailing comma after a closing parenthesis ) of a nested function call — even when the result is not part of an argument list, which silently converts the return value into a tuple.</p>
 <p>This behavior can change the semantics of the code without warning and differs from how black handles similar cases.</p>
-<hr />
+<hr>
 <p>❌ Example of broken behavior:</p>
-<pre><code class="language-py">result = os.path.exists(
+<pre><code>result = os.path.exists(
     os.path.join(
         tmp_repo_path,
         &quot;models&quot;,
@@ -38,7 +38,7 @@
 )
 </code></pre>
 <p>This turns os.path.join(...) into a tuple, and os.path.exists(...) receives a tuple instead of a string — which breaks the logic.</p>
-<hr />
+<hr>
 <p>✅ Expected (and safe) formatting:</p>
 <pre><code>result = os.path.exists(
     os.path.join(
@@ -51,32 +51,32 @@
 )
 </code></pre>
 <p>Trailing commas inside containers are fine, but not after closing a function call when the result is not part of an argument list.</p>
-<hr />
+<hr>
 <p>🔍 Affected cases:</p>
 <p>Ruff will apply this formatting even when:</p>
 <p>The return value is assigned to a variable</p>
 <p>The expression is used directly as a single argument to another call</p>
 <p>The code is not inside a container</p>
-<hr />
+<hr>
 <p>💥 Why this is critical:</p>
 <p>Adds semantic-breaking trailing commas silently</p>
-<p>Converts values to single-element tuples ((<value>,))</p>
+<p>Converts values to single-element tuples ((,))</p>
 <p>Breaks common patterns like:</p>
-<pre><code class="language-py">
+<pre><code>
 result = json.load(
     open(
         os.path.join(...),
     ),  # ← breaks: open receives a tuple
 )
 </code></pre>
-<hr />
+<hr>
 <p>💻 Environment:</p>
 <p>Ruff version: 0.11.12</p>
 <p>Installed via: pre-commit with ruff-pre-commit hook</p>
 <p>Config: # ruff: format = off/on tested but does not block the formatter</p>
 <p>Formatter used: ruff format via pre-commit</p>
 <p>Python version: 3.10.14</p>
-<hr />
+<hr>
 <p>🧪 Suggested resolution:</p>
 <p>Suppress trailing comma after closing ) or ] if the value is not in a container or call argument list</p>
 <p>Follow Black’s behavior (which avoids this case)</p>
@@ -84,13 +84,13 @@ result = json.load(
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-info</span> added by @MichaReiser on 2025-06-03 08:17</div>
+            <div class="event">Label <span class="label">needs-info</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-03 08:17</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-03 08:19</div>
             <div class="timeline-body"><p>Do you have an example where the trailing comma changes the runtime semantics?</p>
-<p>A trailing comma in a call expression doesn't convert the expression to a tuple. In fact, it has no runtime semantics. You can see this with:</p>
-<pre><code class="language-py">def my_call(a): print(a)
+<p>A trailing comma in a call expression doesn&#x27;t convert the expression to a tuple. In fact, it has no runtime semantics. You can see this with:</p>
+<pre><code>def my_call(a): print(a)
 
 my_call(1)
 my_call(1,)
@@ -103,7 +103,7 @@ my_call(1,)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/keita00">@keita00</a> on 2025-06-03 08:28</div>
-            <div class="timeline-body"><pre><code class="language-result">    os.path.join(
+            <div class="timeline-body"><pre><code>    os.path.join(
         tmp_repo_path,
         &quot;models&quot;,
         self.model_name,
@@ -112,7 +112,7 @@ my_call(1,)
     )  # ← line : should **NOT** have a comma
 )
 </code></pre>
-<p>That's the problem. Ruff tries to insert comma there.
+<p>That&#x27;s the problem. Ruff tries to insert comma there.
 That breaks the logic — os.path.exists() expects a str, not a tuple.</p>
 <p>I will upload full log from execution with diff to give more info in few minutes</p>
 </div>
@@ -120,7 +120,7 @@ That breaks the logic — os.path.exists() expects a str, not a tuple.</p>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-03 08:39</div>
             <div class="timeline-body"><p>I ran your example through the python parser (using <code>python -m ast &lt; file.py</code>) where the left is the example with a trailing comma and the right without. Both produce the exact same parsed AST (which is what python then uses to interpret your code). (<a href="https://www.diffchecker.com/YSYL5iuS/">diff</a>)</p>
-<p>I think you're issue is with something else. Can you share your exact code?</p>
+<p>I think you&#x27;re issue is with something else. Can you share your exact code?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -185,12 +185,12 @@ That breaks the logic — os.path.exists() expects a str, not a tuple.</p>
 </code></pre>
 <p>Test results after suggested change.</p>
 <pre><code>=========================== short test summary info ============================
-FAILED tests/monitoring/test_unit_monitoring.py::TestMonitoring::test_get_prediction_results[True] - AttributeError: 'tuple' object has no attribute 'schema'
-FAILED tests/monitoring/test_unit_monitoring.py::TestMonitoring::test_get_prediction_results[False] - AttributeError: 'tuple' object has no attribute 'schema'
-FAILED tests/monitoring/test_unit_monitoring.py::TestMonitoring::test_join_prediction_with_truth - AttributeError: 'tuple' object has no attribute 'join'
-FAILED tests/monitoring/test_unit_monitoring.py::TestMonitoring::test_add_if_not_exist_itv_otv_metrics[input_data0-input_schema0-output_data0] - AttributeError: 'tuple' object has no attribute 'filter'
-FAILED tests/monitoring/test_unit_monitoring.py::TestMonitoring::test_add_if_not_exist_itv_otv_metrics[input_data1-input_schema1-output_data1] - AttributeError: 'tuple' object has no attribute 'filter'
-FAILED tests/monitoring/test_unit_monitoring.py::TestMonitoring::test_add_if_not_exist_itv_otv_metrics[input_data2-input_schema2-output_data2] - AttributeError: 'tuple' object has no attribute 'filter'
+FAILED tests/monitoring/test_unit_monitoring.py::TestMonitoring::test_get_prediction_results[True] - AttributeError: &#x27;tuple&#x27; object has no attribute &#x27;schema&#x27;
+FAILED tests/monitoring/test_unit_monitoring.py::TestMonitoring::test_get_prediction_results[False] - AttributeError: &#x27;tuple&#x27; object has no attribute &#x27;schema&#x27;
+FAILED tests/monitoring/test_unit_monitoring.py::TestMonitoring::test_join_prediction_with_truth - AttributeError: &#x27;tuple&#x27; object has no attribute &#x27;join&#x27;
+FAILED tests/monitoring/test_unit_monitoring.py::TestMonitoring::test_add_if_not_exist_itv_otv_metrics[input_data0-input_schema0-output_data0] - AttributeError: &#x27;tuple&#x27; object has no attribute &#x27;filter&#x27;
+FAILED tests/monitoring/test_unit_monitoring.py::TestMonitoring::test_add_if_not_exist_itv_otv_metrics[input_data1-input_schema1-output_data1] - AttributeError: &#x27;tuple&#x27; object has no attribute &#x27;filter&#x27;
+FAILED tests/monitoring/test_unit_monitoring.py::TestMonitoring::test_add_if_not_exist_itv_otv_metrics[input_data2-input_schema2-output_data2] - AttributeError: &#x27;tuple&#x27; object has no attribute &#x27;filter&#x27;
 ====== 6 failed, 154 passed, 20 skipped, 10 warnings in 62.41s (0:01:02) =======
 </code></pre>
 <p>Code attached</p>
@@ -200,7 +200,7 @@ FAILED tests/monitoring/test_unit_monitoring.py::TestMonitoring::test_add_if_not
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-03 09:14</div>
             <div class="timeline-body"><p>Interesting. Are you sure there are no other changes?</p>
-<p>I'm asking because I did the same as before. I took your example and ran both the version with and without trailing comma through the python parser and they prodcue the same AST.</p>
+<p>I&#x27;m asking because I did the same as before. I took your example and ran both the version with and without trailing comma through the python parser and they prodcue the same AST.</p>
 <p>https://www.diffchecker.com/eVPznTGs/</p>
 <p>The only other thing I could think of is if pytest does source text parsing</p>
 </div>
@@ -212,9 +212,9 @@ FAILED tests/monitoring/test_unit_monitoring.py::TestMonitoring::test_add_if_not
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/keita00">@keita00</a> on 2025-06-03 09:20</div>
-            <div class="timeline-body"><p>That's all for this file.
+            <div class="timeline-body"><p>That&#x27;s all for this file.
 Happened not only in tests, but in apllication as well. Usually changing tuple to tuple of tuples, or list/dist to tuple.
-I've also tried to disable formatting (fmt: off/on, fmt: skip, ruff: format = off/on). None worked and it still tried to add comma in some places.
+I&#x27;ve also tried to disable formatting (fmt: off/on, fmt: skip, ruff: format = off/on). None worked and it still tried to add comma in some places.
 While I agree with most of suggested fixes, this actually affected type, which is not ideal.</p>
 </div>
         </div>
@@ -222,7 +222,7 @@ While I agree with most of suggested fixes, this actually affected type, which i
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-03 09:31</div>
             <div class="timeline-body"><p>@keita00, could you tell us:</p>
 <ul>
-<li>Exactly what command you're using to run your tests?</li>
+<li>Exactly what command you&#x27;re using to run your tests?</li>
 <li>What version of pytest you have installed?</li>
 <li>If you have any pytest plugins installed and, if so, what versions of those plugins you have installed?</li>
 </ul>
@@ -233,14 +233,14 @@ While I agree with most of suggested fixes, this actually affected type, which i
             <div class="timeline-body"><p>Of course:
 pytest-8.2.2 pytest-metadata-3.1.1 pytest_html-4.1.1 pytest_mock-3.14.0
 Tests are run with this command:</p>
-<pre><code>+ : 'Run tests with coverage'
+<pre><code>+ : &#x27;Run tests with coverage&#x27;
 + .venv/bin/python -m coverage run --source=src -m pytest -o log_cli=true --log-level=INFO --show-capture=log -W ignore:DeprecationWarning -vv
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-04 08:26</div>
-            <div class="timeline-body"><p>I created an upstream issue in pytest to figure out the next steps https://github.com/pytest-dev/pytest/issues/13489</p>
+            <div class="timeline-body"><p>I created an upstream issue in pytest to figure out the next steps <a href="https://github.com/pytest-dev/pytest/issues/13489">pytest-dev/pytest#13489</a></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -250,18 +250,18 @@ Tests are run with this command:</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-04 11:21</div>
-            <div class="timeline-body"><p>@keita00 could you try to narrow down the problem into a smaller reproducible that doesn't depend on any of your code. Ideally, a single test that can be run without any third party dependencies and demonstrate that pytest once passes a tuple after ruff added the trailing comma</p>
+            <div class="timeline-body"><p>@keita00 could you try to narrow down the problem into a smaller reproducible that doesn&#x27;t depend on any of your code. Ideally, a single test that can be run without any third party dependencies and demonstrate that pytest once passes a tuple after ruff added the trailing comma</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-info</span> removed by @MichaReiser on 2025-06-04 11:21</div>
+            <div class="event">Label <span class="label">needs-info</span> removed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-04 11:21</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-mre</span> added by @MichaReiser on 2025-06-04 11:21</div>
+            <div class="event">Label <span class="label">needs-mre</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-04 11:21</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/keita00">@keita00</a> on 2025-06-04 13:02</div>
-            <div class="timeline-body"><p>I'll try to do it tomorrow.</p>
+            <div class="timeline-body"><p>I&#x27;ll try to do it tomorrow.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -283,18 +283,18 @@ from pyspark import SparkConf</p>
 -            ]
 +            ],
 </code></pre>
-<p>Using # ruff: format off/on didn't affect outcome and comma was still being added. This changes return value.</p>
+<p>Using # ruff: format off/on didn&#x27;t affect outcome and comma was still being added. This changes return value.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-05 11:48</div>
-            <div class="timeline-body"><p>Can you share a few more lines. It's hard to tell what's happening given only the few lines</p>
+            <div class="timeline-body"><p>Can you share a few more lines. It&#x27;s hard to tell what&#x27;s happening given only the few lines</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-05 12:01</div>
-            <div class="timeline-body"><p>@keita00, you can use Python's <code>ast</code> module in the standard library to see that the AST that Python produces is exactly the same for the two calls -- the list is not turned into a tuple because of the trailing comma being added:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; import ast
+            <div class="timeline-body"><p>@keita00, you can use Python&#x27;s <code>ast</code> module in the standard library to see that the AST that Python produces is exactly the same for the two calls -- the list is not turned into a tuple because of the trailing comma being added:</p>
+<pre><code>&gt;&gt;&gt; import ast
 &gt;&gt;&gt; x = ast.parse(&quot;&quot;&quot;\
 ... config = SparkConf().setAll(
 ...             [
@@ -318,35 +318,35 @@ Module(
   body=[
     Assign(
       targets=[
-        Name(id='config', ctx=Store())],
+        Name(id=&#x27;config&#x27;, ctx=Store())],
       value=Call(
         func=Attribute(
           value=Call(
-            func=Name(id='SparkConf', ctx=Load())),
-          attr='setAll',
+            func=Name(id=&#x27;SparkConf&#x27;, ctx=Load())),
+          attr=&#x27;setAll&#x27;,
           ctx=Load()),
         args=[
           List(
             elts=[
               Tuple(
                 elts=[
-                  Constant(value='spark.sql.execution.arrow.enabled'),
+                  Constant(value=&#x27;spark.sql.execution.arrow.enabled&#x27;),
                   Constant(value=False)],
                 ctx=Load()),
               Tuple(
                 elts=[
-                  Constant(value='spark.sql.repl.eagerEval.enabled'),
+                  Constant(value=&#x27;spark.sql.repl.eagerEval.enabled&#x27;),
                   Constant(value=True)],
                 ctx=Load()),
               Tuple(
                 elts=[
-                  Constant(value='spark.dynamicAllocation.enabled'),
+                  Constant(value=&#x27;spark.dynamicAllocation.enabled&#x27;),
                   Constant(value=True)],
                 ctx=Load())],
             ctx=Load())]))])
 </code></pre>
 <p>The same applies for your original snippet in this issue:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; a = ast.parse(&quot;&quot;&quot;\
+<pre><code>&gt;&gt;&gt; a = ast.parse(&quot;&quot;&quot;\
 ... result = os.path.exists(
 ...     os.path.join(
 ...         tmp_repo_path,
@@ -373,40 +373,40 @@ Module(
   body=[
     Assign(
       targets=[
-        Name(id='result', ctx=Store())],
+        Name(id=&#x27;result&#x27;, ctx=Store())],
       value=Call(
         func=Attribute(
           value=Attribute(
-            value=Name(id='os', ctx=Load()),
-            attr='path',
+            value=Name(id=&#x27;os&#x27;, ctx=Load()),
+            attr=&#x27;path&#x27;,
             ctx=Load()),
-          attr='exists',
+          attr=&#x27;exists&#x27;,
           ctx=Load()),
         args=[
           Call(
             func=Attribute(
               value=Attribute(
-                value=Name(id='os', ctx=Load()),
-                attr='path',
+                value=Name(id=&#x27;os&#x27;, ctx=Load()),
+                attr=&#x27;path&#x27;,
                 ctx=Load()),
-              attr='join',
+              attr=&#x27;join&#x27;,
               ctx=Load()),
             args=[
-              Name(id='tmp_repo_path', ctx=Load()),
-              Constant(value='models'),
+              Name(id=&#x27;tmp_repo_path&#x27;, ctx=Load()),
+              Constant(value=&#x27;models&#x27;),
               Attribute(
-                value=Name(id='self', ctx=Load()),
-                attr='model_name',
+                value=Name(id=&#x27;self&#x27;, ctx=Load()),
+                attr=&#x27;model_name&#x27;,
                 ctx=Load()),
               Attribute(
-                value=Name(id='self', ctx=Load()),
-                attr='model_version',
+                value=Name(id=&#x27;self&#x27;, ctx=Load()),
+                attr=&#x27;model_version&#x27;,
                 ctx=Load()),
-              Constant(value='model.tar.gz')])]))])
+              Constant(value=&#x27;model.tar.gz&#x27;)])]))])
 </code></pre>
-<p>Unless some other tool or library is somehow (inaccurately) rewriting your source code or AST before your code is executed, I don't see how the change Ruff is making here could alter the semantics of your code, unfortunately :-(</p>
+<p>Unless some other tool or library is somehow (inaccurately) rewriting your source code or AST before your code is executed, I don&#x27;t see how the change Ruff is making here could alter the semantics of your code, unfortunately :-(</p>
 <p>At runtime, both of these appear to work fine on my machine:</p>
-<pre><code class="language-pycon"> % uv run --no-project --with=pyspark python
+<pre><code> % uv run --no-project --with=pyspark python
 ⠋ pyspark==4.0.0                                                                                                                                                                                                        Built pyspark==4.0.0
 Installed 2 packages in 11ms
 Python 3.13.2 (main, Mar 17 2025, 21:26:38) [Clang 20.1.0 ] on darwin
@@ -428,7 +428,7 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
 ...         )
 &gt;&gt;&gt;
 </code></pre>
-<p>You'll need to give us a <em>complete</em> snippet that shows either different AST being produced or different behaviour at runtime.</p>
+<p>You&#x27;ll need to give us a <em>complete</em> snippet that shows either different AST being produced or different behaviour at runtime.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -459,7 +459,7 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">formatter</span> added by @AlexWaygood on 2025-06-05 12:12</div>
+            <div class="event">Label <span class="label">formatter</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-05 12:12</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/RonnyPfannschmidt">@RonnyPfannschmidt</a> on 2025-06-05 12:13</div>
@@ -469,7 +469,7 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/keita00">@keita00</a> on 2025-06-05 12:29</div>
-            <div class="timeline-body"><p>I've found out what the issue was. It's not ruff, but one of the tests was changing function attributes.
+            <div class="timeline-body"><p>I&#x27;ve found out what the issue was. It&#x27;s not ruff, but one of the tests was changing function attributes.
 Issue was on my side. Thank you for help and advice.</p>
 </div>
         </div>
@@ -479,12 +479,12 @@ Issue was on my side. Thank you for help and advice.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-06-05 12:31</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-05 12:31</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:52:48 UTC
+        Synced at 2026-01-20 18:50:01 UTC
     </footer>
 </body>
 </html>

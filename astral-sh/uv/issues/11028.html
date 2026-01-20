@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>Can't compile Meson extensions against managed Python due to pkg-config</h1>
+    <h1>Can&#x27;t compile Meson extensions against managed Python due to pkg-config</h1>
 
     <div class="meta">
         <span class="state-icon state-closed"></span>
@@ -23,13 +23,13 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/lgarrison">@lgarrison</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<p>When compiling a Python extension using Meson's <code>py_installation.extension_module()</code>, Meson looks for the Python development headers using pkg-config. Because the prefix in python-build-standalone's <code>pc</code> file is <code>/install</code>, the build fails.</p>
-<p>The sysconfig paths in PBS are fine, but for better or worse Meson tries pkg-config before sysconfig. There doesn't seem to be a universal way (e.g. one that works for subprojects) to use sysconfig before pkg-config in Meson, but even if there was, it seems like it would be preferable to fix the <code>pc</code> file.</p>
-<p>Is that possible? Could uv fix the <code>pc</code> file after extraction? I guess this wouldn't help non-uv PBS users, however.</p>
-<p>I realize this is <a href="https://gregoryszorc.com/docs/python-build-standalone/main/quirks.html#references-to-build-time-paths">documented</a>, so apologies for raising a known issue! But it took a little sleuthing to figure out how Meson was even picking up this <code>/install</code> path, so I thought I'd at least share that here.</p>
-<p>For completeness, here's the <code>.pc</code> file:</p>
-<details><summary>python-3.13.pc</summary>
+            <div class="timeline-body">Summary
+<p>When compiling a Python extension using Meson&#x27;s <code>py_installation.extension_module()</code>, Meson looks for the Python development headers using pkg-config. Because the prefix in python-build-standalone&#x27;s <code>pc</code> file is <code>/install</code>, the build fails.</p>
+<p>The sysconfig paths in PBS are fine, but for better or worse Meson tries pkg-config before sysconfig. There doesn&#x27;t seem to be a universal way (e.g. one that works for subprojects) to use sysconfig before pkg-config in Meson, but even if there was, it seems like it would be preferable to fix the <code>pc</code> file.</p>
+<p>Is that possible? Could uv fix the <code>pc</code> file after extraction? I guess this wouldn&#x27;t help non-uv PBS users, however.</p>
+<p>I realize this is <a href="https://gregoryszorc.com/docs/python-build-standalone/main/quirks.html#references-to-build-time-paths">documented</a>, so apologies for raising a known issue! But it took a little sleuthing to figure out how Meson was even picking up this <code>/install</code> path, so I thought I&#x27;d at least share that here.</p>
+<p>For completeness, here&#x27;s the <code>.pc</code> file:</p>
+python-3.13.pc
 <p>
 
 <pre><code>❯ cat /mnt/home/lgarrison/.local/share/uv/python/cpython-3.13.1-linux-x86_64-gnu/lib/pkgconfig/python-3.13.pc
@@ -48,15 +48,15 @@ Libs: -L${libdir}
 Cflags: -I${includedir}/python3.13
 </code></pre>
 </p>
-</details> 
+ 
 
-<p>Here's where Meson tries pkg-config before sysconfig: https://github.com/mesonbuild/meson/blob/0b9baf573bf2b1619d7822f67965a35391172625/mesonbuild/dependencies/python.py#L391</p>
-<p>Here's the output of Meson's <code>python_info.py</code> script that uses sysconfig for discovery (looks fine):</p>
-<details>
-<summary>python_info.py output</summary>
+<p>Here&#x27;s where Meson tries pkg-config before sysconfig: https://github.com/mesonbuild/meson/blob/0b9baf573bf2b1619d7822f67965a35391172625/mesonbuild/dependencies/python.py#L391</p>
+<p>Here&#x27;s the output of Meson&#x27;s <code>python_info.py</code> script that uses sysconfig for discovery (looks fine):</p>
+
+python_info.py output
 
 <pre><code>❯ python mesonbuild/scripts/python_info.py | jq | grep /install
-    &quot;CONFIG_ARGS&quot;: &quot;'--build=x86_64-unknown-linux-gnu' '--host=x86_64-unknown-linux-gnu' '--prefix=/install' '--with-openssl=/tools/deps' '--with-system-expat' '--with-system-libmpdec' '--without-ensurepip' '--with-readline=editline' '--enable-shared' '--with-mimalloc' '--enable-optimizations' '--with-lto' '--with-build-python=/tools/host/bin/python3.13' '--with-dbmliborder=bdb' 'build_alias=x86_64-unknown-linux-gnu' 'host_alias=x86_64-unknown-linux-gnu' 'CC=clang' 'CFLAGS= -fPIC ' 'LDFLAGS= -Wl,--exclude-libs,ALL -LModules/_hacl' 'CPPFLAGS= -fPIC '&quot;,
+    &quot;CONFIG_ARGS&quot;: &quot;&#x27;--build=x86_64-unknown-linux-gnu&#x27; &#x27;--host=x86_64-unknown-linux-gnu&#x27; &#x27;--prefix=/install&#x27; &#x27;--with-openssl=/tools/deps&#x27; &#x27;--with-system-expat&#x27; &#x27;--with-system-libmpdec&#x27; &#x27;--without-ensurepip&#x27; &#x27;--with-readline=editline&#x27; &#x27;--enable-shared&#x27; &#x27;--with-mimalloc&#x27; &#x27;--enable-optimizations&#x27; &#x27;--with-lto&#x27; &#x27;--with-build-python=/tools/host/bin/python3.13&#x27; &#x27;--with-dbmliborder=bdb&#x27; &#x27;build_alias=x86_64-unknown-linux-gnu&#x27; &#x27;host_alias=x86_64-unknown-linux-gnu&#x27; &#x27;CC=clang&#x27; &#x27;CFLAGS= -fPIC &#x27; &#x27;LDFLAGS= -Wl,--exclude-libs,ALL -LModules/_hacl&#x27; &#x27;CPPFLAGS= -fPIC &#x27;&quot;,
     &quot;INSTALL&quot;: &quot;/usr/bin/install -c&quot;,
     &quot;INSTALL_DATA&quot;: &quot;/usr/bin/install -c -m 644&quot;,
     &quot;INSTALL_PROGRAM&quot;: &quot;/usr/bin/install -c&quot;,
@@ -65,11 +65,11 @@ Cflags: -I${includedir}/python3.13
     &quot;WASM_ASSETS_DIR&quot;: &quot;./install&quot;,
     &quot;WASM_STDLIB&quot;: &quot;./install/lib/python3.13/os.py&quot;,
 </code></pre>
-</details>
 
-<p>And here's a typical compiler command that Meson emits, with <code>-I/install/...</code>:</p>
-<details>
-<summary>Compiler command</summary>
+
+<p>And here&#x27;s a typical compiler command that Meson emits, with <code>-I/install/...</code>:</p>
+
+Compiler command
 
 <pre><code>ccache cc -I_pycorrfunc.cpython-313-x86_64-linux-gnu.so.p -I. -I../.. -I../../include -I../../lib/theory/DD -I../../lib/common
 -I../../subprojects/nanobind-2.2.0/include -I../../subprojects/robin-map-1.3.0/include -I/install/include/python3.13 -fvisibility=hidden
@@ -81,38 +81,38 @@ _pycorrfunc.cpython-313-x86_64-linux-gnu.so.p/lib_theory_DD_countpairs.c.o -c ..
  #include &lt;Python.h&gt;
           ^~~~~~~~~~
 </code></pre>
-</details>
 
-<p>There's a constellation of sort-of similar uv issues around sysconfig variables (e.g. those linked from https://github.com/astral-sh/uv/issues/8429), but I think in this case the issue is specifically with the pkg-config file. I couldn't find an existing issue about that.</p>
-<h2>Steps to reproduce</h2>
-<p>Here is a reproducer on a small project. I'm happy to work on making it more minimal if that would be helpful.</p>
+
+<p>There&#x27;s a constellation of sort-of similar uv issues around sysconfig variables (e.g. those linked from <a href="https://github.com/astral-sh/uv/issues/8429">astral-sh/uv#8429</a>), but I think in this case the issue is specifically with the pkg-config file. I couldn&#x27;t find an existing issue about that.</p>
+Steps to reproduce
+<p>Here is a reproducer on a small project. I&#x27;m happy to work on making it more minimal if that would be helpful.</p>
 <pre><code>❯ git clone https://github.com/lgarrison/pycorrfunc.git
 ❯ cd pycorrfunc
 ❯ git checkout c869af8feb936960ef3673aa0974eb332c47fc8a
 ❯ uv sync --python-preference=only-managed
 </code></pre>
-<h3>Platform</h3>
+Platform
 <p>Rocky 8 Linux</p>
-<h3>Version</h3>
+Version
 <p>0.5.24</p>
-<h3>Python version</h3>
+Python version
 <p>Python 3.13</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @lgarrison on 2025-01-28 17:48</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/lgarrison">@lgarrison</a> on 2025-01-28 17:48</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-28 17:59</div>
-            <div class="timeline-body"><p>cc @eli-schwartz since you've been active on meson-related issues; do you have context on the motivation for this behavior?</p>
-<p>I'm fine with patching the pkg-config files on install, as we do for the macOS dylib (#10629). Are you interested in contributing a fix?</p>
+            <div class="timeline-body"><p>cc @eli-schwartz since you&#x27;ve been active on meson-related issues; do you have context on the motivation for this behavior?</p>
+<p>I&#x27;m fine with patching the pkg-config files on install, as we do for the macOS dylib (#10629). Are you interested in contributing a fix?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @zanieb by @zanieb on 2025-01-28 17:59</div>
+            <div class="event">Assigned to <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-28 17:59</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">great writeup</span> added by @zanieb on 2025-01-28 17:59</div>
+            <div class="event">Label <span class="label">great writeup</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-28 17:59</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/lgarrison">@lgarrison</a> on 2025-01-28 18:09</div>
@@ -131,12 +131,12 @@ _pycorrfunc.cpython-313-x86_64-linux-gnu.so.p/lib_theory_DD_countpairs.c.o -c ..
 </li>
 </ul>
 <p>Doing this accurately is a bit of a hodgepodge. The base code for implementing this is at https://github.com/mesonbuild/meson/blob/master/mesonbuild/dependencies/python.py</p>
-<p>Notice there are two methods: pkg-config, and sysconfig. The sysconfig method uses <code>find_libpy()</code> and <code>find_libpy_windows()</code> which you will note doesn't actually use sysconfig directly, but does various searches by manually constructing details from sysconfig <code>base</code>, <code>DEBUG_EXT</code>, <code>ABIFLAGS</code>, <code>py_version_nodot</code>, <code>py_version_short</code>, <code>implementation_lower</code>, <code>ABI3DLLLIBRARY</code>, <code>INCLUDEPY</code>, <code>include</code>, <code>platinclude</code>, <code>ABI3DLLLIBRARY</code>, <code>ABI3LDLIBRARY</code>, <code>LDLIBRARY</code>, <code>LIBDIR</code>, etc, as well as hardcoding certain known assumptions about the shape of the install layout for PyPy.</p>
+<p>Notice there are two methods: pkg-config, and sysconfig. The sysconfig method uses <code>find_libpy()</code> and <code>find_libpy_windows()</code> which you will note doesn&#x27;t actually use sysconfig directly, but does various searches by manually constructing details from sysconfig <code>base</code>, <code>DEBUG_EXT</code>, <code>ABIFLAGS</code>, <code>py_version_nodot</code>, <code>py_version_short</code>, <code>implementation_lower</code>, <code>ABI3DLLLIBRARY</code>, <code>INCLUDEPY</code>, <code>include</code>, <code>platinclude</code>, <code>ABI3DLLLIBRARY</code>, <code>ABI3LDLIBRARY</code>, <code>LDLIBRARY</code>, <code>LIBDIR</code>, etc, as well as hardcoding certain known assumptions about the shape of the install layout for PyPy.</p>
 <p>This will hopefully get a lot better when https://peps.python.org/pep-0739/ is approved and deployed, which guarantees that any platform can describe via JSON what pkg-config already consistently describes (but requires pkg-config to be installed, which is not necessarily the case on Windows).</p>
 <blockquote>
-<p>Here's the output of Meson's <code>python_info.py</code> script that uses sysconfig for discovery (looks fine):</p>
+<p>Here&#x27;s the output of Meson&#x27;s <code>python_info.py</code> script that uses sysconfig for discovery (looks fine):</p>
 </blockquote>
-<p>python_info.py is used for discovery of various things pkg-config doesn't describe, like &quot;whether you are in a venv&quot; or &quot;what are the standard paths for site-packages etc&quot;, &quot;am I PyPY or CPython&quot;, &quot;am I free-threaded&quot;, &quot;what is the limited API suffix&quot;, etc. We also save the exhaustive details of <em>every</em> sysconfig variable, just in case we need it later on (and indeed it's needed for the guesswork in <code>dependencies/python.py</code>).</p>
+<p>python_info.py is used for discovery of various things pkg-config doesn&#x27;t describe, like &quot;whether you are in a venv&quot; or &quot;what are the standard paths for site-packages etc&quot;, &quot;am I PyPY or CPython&quot;, &quot;am I free-threaded&quot;, &quot;what is the limited API suffix&quot;, etc. We also save the exhaustive details of <em>every</em> sysconfig variable, just in case we need it later on (and indeed it&#x27;s needed for the guesswork in <code>dependencies/python.py</code>).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -146,15 +146,15 @@ _pycorrfunc.cpython-313-x86_64-linux-gnu.so.p/lib_theory_DD_countpairs.c.o -c ..
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/eli-schwartz">@eli-schwartz</a> on 2025-01-28 18:57</div>
-            <div class="timeline-body"><p>Currently it assumes the flags are trusted and passes them to the compiler -- it's the compiler that decides they aren't trusted. There are some nuances around for example <code>-I/usr/include/python3.13</code> where that path doesn't exist on your machine, but the compiler will locate it via a sysroot in <code>/usr/aarch64-pc-linux-gnu/usr/include/python3.13</code> so it's not immediately obvious when to second-guess the results.</p>
+            <div class="timeline-body"><p>Currently it assumes the flags are trusted and passes them to the compiler -- it&#x27;s the compiler that decides they aren&#x27;t trusted. There are some nuances around for example <code>-I/usr/include/python3.13</code> where that path doesn&#x27;t exist on your machine, but the compiler will locate it via a sysroot in <code>/usr/aarch64-pc-linux-gnu/usr/include/python3.13</code> so it&#x27;s not immediately obvious when to second-guess the results.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/eli-schwartz">@eli-schwartz</a> on 2025-01-28 19:19</div>
             <div class="timeline-body"><blockquote>
-<p>cc <a href="https://github.com/eli-schwartz">@eli-schwartz</a> since you've been active on meson-related issues</p>
+<p>cc <a href="https://github.com/eli-schwartz">@eli-schwartz</a> since you&#x27;ve been active on meson-related issues</p>
 </blockquote>
-<p>Aside: thanks for pinging me on this. :heart: I'm interested in helping people with meson issues and this overlaps with my interest in the python ecosystem / building code, so I'm absolutely comfortable with being pinged any time you have a question for me or simply think I'd be interested. But I only irregularly remember to check issue trackers, so it's best to summon me explicitly to ensure I notice.</p>
+<p>Aside: thanks for pinging me on this. :heart: I&#x27;m interested in helping people with meson issues and this overlaps with my interest in the python ecosystem / building code, so I&#x27;m absolutely comfortable with being pinged any time you have a question for me or simply think I&#x27;d be interested. But I only irregularly remember to check issue trackers, so it&#x27;s best to summon me explicitly to ensure I notice.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -168,27 +168,27 @@ libdir=${exec_prefix}/lib
 includedir=${prefix}/include
 </code></pre>
 </blockquote>
-<p>This appears to be what Meson's own <code>pkgconfig.relocatable</code> option does for .pc files it produces. (See also a little discussion in openssl/openssl#13080 which points out some issue with sysroots which might not be relevant to us.)</p>
+<p>This appears to be what Meson&#x27;s own <code>pkgconfig.relocatable</code> option does for .pc files it produces. (See also a little discussion in openssl/openssl#13080 which points out some issue with sysroots which might not be relevant to us.)</p>
 <p>If so then we can just make this change in python-build-standalone and avoid having to patch on install.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-28 23:32</div>
-            <div class="timeline-body"><p>Oh cool, that definitely seems like a better solution if it's viable.</p>
+            <div class="timeline-body"><p>Oh cool, that definitely seems like a better solution if it&#x27;s viable.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/eli-schwartz">@eli-schwartz</a> on 2025-01-28 23:35</div>
-            <div class="timeline-body"><p>relocatable pkg-config files are a <em><strong>really bad</strong></em> tradeoff for a project that expects to be installed to a non-relocatable place, i.e. /usr and simply have done with. You never ever use the functionality, so any cost is too much. Furthermore, it results in paths such as <code>-I/usr/lib64/pkgconfig/../../include</code> which aren't great since that's a compiler default search path and normally, without <code>--keep-system-cflags</code>, those get stripped.</p>
+            <div class="timeline-body"><p>relocatable pkg-config files are a <em><strong>really bad</strong></em> tradeoff for a project that expects to be installed to a non-relocatable place, i.e. /usr and simply have done with. You never ever use the functionality, so any cost is too much. Furthermore, it results in paths such as <code>-I/usr/lib64/pkgconfig/../../include</code> which aren&#x27;t great since that&#x27;s a compiler default search path and normally, without <code>--keep-system-cflags</code>, those get stripped.</p>
 <p>So of course, openssl cannot simply use them and have done with, which was what that ticket was about.</p>
 <p>For python-build-standalone, the same tradeoffs can be made that meson makes when you explicitly enable relocation. You know, on a per project or per binary distribution basis, that it is <em>very</em> likely to be relocated, thus by default the flags are simply broken, but relocatable pkgconfig files transition it from being &quot;broken all the time&quot; to &quot;working most of the time&quot;. That makes it very much worthwhile.</p>
-<p>Additionally, uv may not be concerned about people installing python using uv in order to cross compile with a sysroot. Probably, most people using sysroots have careful setups which include building cpython from source. Also, pkgconf is pretty popular these days and people generally don't use the original pkg-config (it isn't 2020 anymore!)</p>
+<p>Additionally, uv may not be concerned about people installing python using uv in order to cross compile with a sysroot. Probably, most people using sysroots have careful setups which include building cpython from source. Also, pkgconf is pretty popular these days and people generally don&#x27;t use the original pkg-config (it isn&#x27;t 2020 anymore!)</p>
 <p>So all in all I think you should use relocatable pkg-config files, yes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/geofft">@geofft</a> on 2025-01-29 01:04</div>
-            <div class="timeline-body"><p>Wait, I just saw we already patch the pkg-config files after extracting in #10189, which should be in the version of uv you're using - why isn't that helping here? <code>~/.local/share/uv/python/cpython-3.13.1-linux-x86_64-gnu/lib/pkgconfig/python3.pc</code> does seem to be patched on my system now that I look at it.</p>
+            <div class="timeline-body"><p>Wait, I just saw we already patch the pkg-config files after extracting in #10189, which should be in the version of uv you&#x27;re using - why isn&#x27;t that helping here? <code>~/.local/share/uv/python/cpython-3.13.1-linux-x86_64-gnu/lib/pkgconfig/python3.pc</code> does seem to be patched on my system now that I look at it.</p>
 <p>(I was looking at a plain python-build-standalone tarball.)</p>
 <p>Does doing a <code>uv python uninstall 3.13 &amp;&amp; uv python install 3.13</code> help?</p>
 </div>
@@ -206,7 +206,7 @@ includedir=${prefix}/include
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-01-29 03:09</div>
-            <div class="timeline-body"><p>If there's still interest in patching, https://github.com/bluss/sysconfigpatcher does already patch .pc files correctly from my past usage experience and it can serve as inspiration (or for testing).</p>
+            <div class="timeline-body"><p>If there&#x27;s still interest in patching, https://github.com/bluss/sysconfigpatcher does already patch .pc files correctly from my past usage experience and it can serve as inspiration (or for testing).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -216,12 +216,12 @@ includedir=${prefix}/include
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/geofft">@geofft</a> on 2025-01-29 03:29</div>
-            <div class="timeline-body"><p>@samypr100 https://github.com/astral-sh/uv/blob/0.5.25/crates/uv-python/src/sysconfig/mod.rs does actually reference that project in the comments at the top, so I think that's approximately what we're currently doing. Thanks for the pointer, though, in the sense that it would be nice to make sure that, eventually, neither sysconfigpatcher nor the uv port is necessary :)</p>
+            <div class="timeline-body"><p>@samypr100 https://github.com/astral-sh/uv/blob/0.5.25/crates/uv-python/src/sysconfig/mod.rs does actually reference that project in the comments at the top, so I think that&#x27;s approximately what we&#x27;re currently doing. Thanks for the pointer, though, in the sense that it would be nice to make sure that, eventually, neither sysconfigpatcher nor the uv port is necessary :)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-01-29 04:09</div>
-            <div class="timeline-body"><p>My bad @charliermarsh, I completely missed .pc file patching was implemented a bit later after the initial round of patching PR's😆</p>
+            <div class="timeline-body"><p>My bad @charliermarsh, I completely missed .pc file patching was implemented a bit later after the initial round of patching PR&#x27;s😆</p>
 <p>(I thought it was still a TODO thing)</p>
 </div>
         </div>
@@ -231,12 +231,12 @@ includedir=${prefix}/include
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2025-04-01 16:54</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-01 16:54</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:29:35 UTC
+        Synced at 2026-01-20 19:36:56 UTC
     </footer>
 </body>
 </html>

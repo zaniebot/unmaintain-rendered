@@ -23,13 +23,13 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This PR refactors the <code>Options</code> representation.</p>
-<h3>Current Reprsentation</h3>
+Current Reprsentation
 <p>Our <code>ConfigureOptions</code> macro currently generates the following code (truncated):</p>
-<pre><code class="language-rust">impl Flake8BanditOptions {
+<pre><code>impl Flake8BanditOptions {
     pub const fn metadata() -&gt; crate::options_base::OptionGroup {
-        const OPTIONS: [(&amp;'static str, crate::options_base::OptionEntry); 3usize] = [
+        const OPTIONS: [(&amp;&#x27;static str, crate::options_base::OptionEntry); 3usize] = [
 			(&quot;hardcoded-tmp-directory&quot;, crate::options_base::OptionEntry::Field(crate::options_base::OptionField { doc: &amp;&quot;A list of directories to consider temporary.&quot;, default: &amp;&quot;[\&quot;/tmp\&quot;, \&quot;/var/tmp\&quot;, \&quot;/dev/shm\&quot;]&quot;, value_type: &amp;&quot;list[str]&quot;, example: &amp;&quot;hardcoded-tmp-directory = [\&quot;/foo/bar\&quot;]&quot; })), 
 			(&quot;hardcoded-tmp-directory-extend&quot;, crate::options_base::OptionEntry::Field(crate::options_base::OptionField { doc: &amp;&quot;A list of directories to consider temporary, in addition to those\nspecified by `hardcoded-tmp-directory`.&quot;, default: &amp;&quot;[]&quot;, value_type: &amp;&quot;list[str]&quot;, example: &amp;&quot;extend-hardcoded-tmp-directory = [\&quot;/foo/bar\&quot;]&quot; })), 
 			(&quot;check-typed-exception&quot;, crate::options_base::OptionEntry::Field(crate::options_base::OptionField { doc: &amp;&quot;Whether to disallow `try`-`except`-`pass` (`S110`) for specific\nexception types. By default, `try`-`except`-`pass` is only\ndisallowed for `Exception` and `BaseException`.&quot;, default: &amp;&quot;false&quot;, value_type: &amp;&quot;bool&quot;, example: &amp;&quot;check-typed-exception = true&quot; }))
@@ -39,17 +39,17 @@
 }
 </code></pre>
 <p>You can see how it generates a static array and <code>metadata</code> returns an <code>OptionGroup(&amp;slice)</code>  referring to the slice of the static array.</p>
-<p>Options can be nested (option-groups). The macro calls into the nested type's <code>metadata</code> function to get the <code>OptionGroup</code> and adds a <code>OptionEntry::Group()</code> to its static array</p>
-<pre><code class="language-rust">const OPTIONS: [(&amp;'static str, crate::options_base::OptionEntry); 3usize] = [
+<p>Options can be nested (option-groups). The macro calls into the nested type&#x27;s <code>metadata</code> function to get the <code>OptionGroup</code> and adds a <code>OptionEntry::Group()</code> to its static array</p>
+<pre><code>const OPTIONS: [(&amp;&#x27;static str, crate::options_base::OptionEntry); 3usize] = [
 			(&quot;hardcoded-tmp-directory&quot;, crate::options_base::OptionEntry::Field(crate::options_base::OptionField { doc: &amp;&quot;A list of directories to consider temporary.&quot;, default: &amp;&quot;[\&quot;/tmp\&quot;, \&quot;/var/tmp\&quot;, \&quot;/dev/shm\&quot;]&quot;, value_type: &amp;&quot;list[str]&quot;, example: &amp;&quot;hardcoded-tmp-directory = [\&quot;/foo/bar\&quot;]&quot; })), 
 			...
 			(&quot;example-group&quot;, crate::options_base::OptionEntry::Group(ExampleGroup::metadata()))
 		];
 </code></pre>
 <p>This works well enough and the API is simple. However, it requires that the macro statically determines all options to be able to set the length of the array.</p>
-<h3>New Requirements</h3>
-<p>I'm about to introduce a new <code>lint</code> section to the configuration without removing the top-level options until the new configuration is stabilized. The simplest but very verbose approach is duplicating the <code>lint</code> options: Once at the top level and once under the <code>lint</code> section. But that's rather verbose. Ideally, I want to use serde's <code>flatten</code> feature and write:</p>
-<pre><code class="language-rust">struct Options {
+New Requirements
+<p>I&#x27;m about to introduce a new <code>lint</code> section to the configuration without removing the top-level options until the new configuration is stabilized. The simplest but very verbose approach is duplicating the <code>lint</code> options: Once at the top level and once under the <code>lint</code> section. But that&#x27;s rather verbose. Ideally, I want to use serde&#x27;s <code>flatten</code> feature and write:</p>
+<pre><code>struct Options {
 	...
 
     // Lint options
@@ -62,11 +62,11 @@
     pub lint_legacy: LintOptions,
 }
 </code></pre>
-<p>While serde and schemars support this nicely, our options macro does not, and adding it is impossible with the current representation. The problem is that macros operate on a tokens stream only. They can't resolve types (at least to my knowledge). But that's what's necessary for <code>Options</code> to statically determine the length of its <code>OPTIONS</code> array: It needs to expand the <code>LintOptions</code> options into <code>Options</code>.</p>
-<h3>New Representation</h3>
-<p>The new representation is inspired by serde and <code>tracing_subscribs</code>'s <code>Visit</code> trait.</p>
+<p>While serde and schemars support this nicely, our options macro does not, and adding it is impossible with the current representation. The problem is that macros operate on a tokens stream only. They can&#x27;t resolve types (at least to my knowledge). But that&#x27;s what&#x27;s necessary for <code>Options</code> to statically determine the length of its <code>OPTIONS</code> array: It needs to expand the <code>LintOptions</code> options into <code>Options</code>.</p>
+New Representation
+<p>The new representation is inspired by serde and <code>tracing_subscribs</code>&#x27;s <code>Visit</code> trait.</p>
 <p>The basic idea is to implement the metadata abstraction as a visitor pass (to avoid allocations).</p>
-<pre><code class="language-rust">/// Returns metadata for its options.
+<pre><code>/// Returns metadata for its options.
 pub trait OptionsMetadata {
     /// Visits the options metadata of this object by calling `visit` for each option.
     fn record(visit: &amp;mut dyn Visit);
@@ -74,7 +74,7 @@ pub trait OptionsMetadata {
     /// Returns the extracted metadata.
     fn metadata() -&gt; OptionSet
     where
-        Self: Sized + 'static,
+        Self: Sized + &#x27;static,
     {
         OptionSet::of::&lt;Self&gt;()
     }
@@ -113,9 +113,9 @@ impl OptionsMetadata for Nested {
 <li><code>OptionsMetadata::record</code> calls <code>record_field</code> or <code>record_set</code> for each option</li>
 </ul>
 <p>where <code>Visit</code> is defined as</p>
-<pre><code class="language-rust">/// Visits [`OptionsMetadata`].
+<pre><code>/// Visits [`OptionsMetadata`].
 ///
-/// An instance of [`Visit`] represents the logic for inspecting an object's options metadata.
+/// An instance of [`Visit`] represents the logic for inspecting an object&#x27;s options metadata.
 pub trait Visit {
     /// Visits an [`OptionField`] value named `name`.
     fn record_field(&amp;mut self, name: &amp;str, field: OptionField);
@@ -126,12 +126,12 @@ pub trait Visit {
 </code></pre>
 <p>This new representation has a few advantages:</p>
 <ul>
-<li>The <code>OptionsMetadata</code> trait can be implemented manually for cases where the derive macro isn't flexible enough</li>
+<li>The <code>OptionsMetadata</code> trait can be implemented manually for cases where the derive macro isn&#x27;t flexible enough</li>
 <li>The <code>OptionsMetadata</code> provides all relevant abstractions so that the macro is optional. It means you can now understand the system without understanding the macro.</li>
 <li>Implementing <code>flatten</code> becomes a simple <code>Nested::record(visit)</code> call (instead of calling <code>visit.record_set(name, Nested::metadata())</code>. Meaning we traverse into the sub-set without telling the visitor that it now enters a new set.</li>
 </ul>
-<p>The main downside of the new API is that writing visitors is awkward. This is evident by the longer implementations for <code>has</code>, <code>get</code>, and <code>Display</code>. I think that's a fair tradeoff, considering that these methods are implemented once and that a similar API is provided to consumers.</p>
-<h2>Test Plan</h2>
+<p>The main downside of the new API is that writing visitors is awkward. This is evident by the longer implementations for <code>has</code>, <code>get</code>, and <code>Display</code>. I think that&#x27;s a fair tradeoff, considering that these methods are implemented once and that a similar API is provided to consumers.</p>
+Test Plan
 <ul>
 <li>Verified that <code>cargo dev generate-options</code> produces the exact same output</li>
 <li>Verfieid that the <code>config</code> command continues working</li>
@@ -143,11 +143,11 @@ pub trait Visit {
             <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
 <ul>
 <li>main<ul>
-<li><strong>PR #7566</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7566" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
-<li><strong>PR #7591</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7591" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>  👈<ul>
-<li><strong>PR #7593</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7593" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
-<li><strong>PR #7549</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7549" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
-<li><strong>PR #7599</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7599" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #7566</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7566"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite"></a><ul>
+<li><strong>PR #7591</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7591"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite"></a>  👈<ul>
+<li><strong>PR #7593</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7593"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite"></a><ul>
+<li><strong>PR #7549</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7549"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite"></a><ul>
+<li><strong>PR #7599</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7599"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite"></a></li>
 </ul>
 </li>
 </ul>
@@ -164,10 +164,10 @@ pub trait Visit {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2023-09-22 08:01</div>
-            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/refactor-options">CodSpeed Performance Report</a></h2>
-<h3>Merging #7591 will <strong>not alter performance</strong></h3>
-<p><sub>Comparing <code>refactor-options</code> (f63df7d) with <code>main</code> (9d16e46)</sub></p>
-<h3>Summary</h3>
+            <div class="timeline-body"><a href="https://codspeed.io/astral-sh/ruff/branches/refactor-options">CodSpeed Performance Report</a>
+Merging #7591 will <strong>not alter performance</strong>
+<p>Comparing <code>refactor-options</code> (f63df7d) with <code>main</code> (9d16e46)</p>
+Summary
 <p><code>✅ 25</code> untouched benchmarks</p>
 </div>
         </div>
@@ -177,7 +177,7 @@ pub trait Visit {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_dev/src/generate_options.rs</code>:25 on 2023-09-22 08:13</div>
-            <div class="timeline-body"><p>I don't know how I feel about sorting options. It disallows grouping options that are semantically related (all resolver settings)</p>
+            <div class="timeline-body"><p>I don&#x27;t know how I feel about sorting options. It disallows grouping options that are semantically related (all resolver settings)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -190,16 +190,16 @@ pub trait Visit {
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @MichaReiser on 2023-09-22 08:19</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-22 08:19</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @konstin by @MichaReiser on 2023-09-22 08:19</div>
+            <div class="event">Review requested from <a href="https://github.com/konstin">@konstin</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-22 08:19</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2023-09-22 08:19</div>
+            <div class="event">Review requested from <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-22 08:19</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2023-09-22 08:19</div>
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-22 08:19</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-09-22 08:27</div>
@@ -212,8 +212,8 @@ pub trait Visit {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-09-22 08:34</div>
-            <div class="timeline-body"><h2>PR Check Results</h2>
-<h3>Ecosystem</h3>
+            <div class="timeline-body">PR Check Results
+Ecosystem
 <p>✅ ecosystem check detected no changes.</p>
 </div>
         </div>
@@ -241,7 +241,7 @@ pub trait Visit {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_dev/src/generate_options.rs</code>:17 on 2023-09-22 16:02</div>
-            <div class="timeline-body"><p>(I typically do two <code>writeln</code> for this but don't feel strongly.)</p>
+            <div class="timeline-body"><p>(I typically do two <code>writeln</code> for this but don&#x27;t feel strongly.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -249,10 +249,10 @@ pub trait Visit {
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @MichaReiser on 2023-09-22 16:19</div>
+            <div class="event">Merged by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-22 16:19</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2023-09-22 16:19</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-22 16:19</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2023-09-22 16:20</div>
@@ -260,7 +260,7 @@ pub trait Visit {
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:00:29 UTC
+        Synced at 2026-01-20 18:57:40 UTC
     </footer>
 </body>
 </html>

@@ -32,7 +32,7 @@
 <p>... unless there is a positional argument</p>
 <pre><code>$ COMPLETE=fish jj -- jj abandon @ --ignore-</code></pre>
 <p>The positional arguments are defined in the &quot;abandon&quot; subcommand as:</p>
-<pre><code class="language-rust">#[derive(clap::Args, Clone, Debug)]
+<pre><code>#[derive(clap::Args, Clone, Debug)]
 pub(crate) struct AbandonArgs {
     /// The revision(s) to abandon (default: @)
     #[arg(
@@ -52,9 +52,9 @@ completions like &quot;--ignore-immutable&quot;.</p>
 multi-values of positional argument with <code>num_arg(N)</code>, 2024-07-26).
 Presumably, the main intention of that commit was to allow options
 with multiple, but finitely many arguments.</p>
-<p>For the case where arbitrarily many arguments are allowed, let's get rid of
+<p>For the case where arbitrarily many arguments are allowed, let&#x27;s get rid of
 this restriction, to fix the false negative.</p>
-<p>Ref: https://github.com/fish-shell/fish-shell/pull/11046#discussion_r1921501251</p>
+<p>Ref: <a href="https://github.com/fish-shell/fish-shell/pull/11046">fish-shell/fish-shell#11046</a>#discussion_r1921501251</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -66,15 +66,15 @@ this restriction, to fix the false negative.</p>
             <div class="timeline-body"><p>cc @shannmu @epage</p>
 <p>FWIW the interpretation of <em>positional</em> that have <code>num_args&gt;1</code> seems a
 bit weird. I have never seen a CLI that uses them <em>and</em> disallows
-interspersing it with options. But I guess I don't super care.</p>
+interspersing it with options. But I guess I don&#x27;t super care.</p>
 <p>I mainly care about getting this bug fixed - let me know what I can do.</p>
-<p>I'm pushing a more narrow fix that figures out whether our
+<p>I&#x27;m pushing a more narrow fix that figures out whether our
 multi-arg-positional is allowed to be non-contiguous (i.e. interspersed
 with options).  The derived <code>Vec</code> above is one example.</p>
 <p>Maybe the criteria can check max_value==infinity but the behavior
 of max_value=infinity is super odd: it kinda supports non-contiguous
 positionals but also not. Given</p>
-<pre><code class="language-rust">fn main() {
+<pre><code>fn main() {
     use clap;
     clap::Command::new(&quot;dynamic&quot;)
         .arg(
@@ -86,7 +86,7 @@ positionals but also not. Given</p>
         .arg(
             clap::Arg::new(&quot;--format&quot;)
                 .long(&quot;format&quot;)
-                .short('F')
+                .short(&#x27;F&#x27;)
                 .value_parser([&quot;json&quot;, &quot;yaml&quot;, &quot;toml&quot;]),
         )
         .get_matches();
@@ -96,10 +96,10 @@ positionals but also not. Given</p>
 But each run of arguments needs to have at least two:</p>
 <pre><code>$ my-app pos_a pos_a --format=json pos_a pos_a
 $ my-app pos_a --format json pos_a pos_a
-error: 2 values required by '[positional] [positional]...'; only 1 was provided</code></pre>
+error: 2 values required by &#x27;[positional] [positional]...&#x27;; only 1 was provided</code></pre>
 <p>And if I replace <code>2..</code> with <code>2</code>, the first one weirdly no longer works:</p>
 <pre><code>$ my-app pos_a pos_a --format=json pos_a pos_a
-error: the argument '[positional] [positional]' cannot be used multiple times</code></pre>
+error: the argument &#x27;[positional] [positional]&#x27; cannot be used multiple times</code></pre>
 </div>
         </div>
         <div class="timeline-entry">
@@ -109,7 +109,7 @@ error: the argument '[positional] [positional]' cannot be used multiple times</c
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/epage">@epage</a> on <code>clap_complete/src/engine/complete.rs</code>:636 on 2025-03-17 16:01</div>
             <div class="timeline-body"><p>Adding new <code>Arg</code> settings are not something done lightly and if a proposal is to have that, an issue should be made first that makes a clear case for the problem being solved, why it is needed, and what the full semantics should be.</p>
-<p>And in fact, it shouldn't be needed here.  <code>.action(Set).num_args(..)</code> is contiguous and <code>action(Append).num_args(..)</code> is non-contiguous.</p>
+<p>And in fact, it shouldn&#x27;t be needed here.  <code>.action(Set).num_args(..)</code> is contiguous and <code>action(Append).num_args(..)</code> is non-contiguous.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -121,8 +121,8 @@ error: the argument '[positional] [positional]' cannot be used multiple times</c
             <div class="timeline-body"><blockquote>
 <p>if a proposal is to have that, an issue should be made first that makes a clear case for the problem being solved</p>
 </blockquote>
-<p>I'm not trying to add a new feature, I only want to fix the regression.
-I don't expect an issue would have helped me achieve my goal.</p>
+<p>I&#x27;m not trying to add a new feature, I only want to fix the regression.
+I don&#x27;t expect an issue would have helped me achieve my goal.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -132,15 +132,15 @@ I don't expect an issue would have helped me achieve my goal.</p>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/epage">@epage</a> on <code>clap_complete/src/engine/complete.rs</code>:636 on 2025-03-17 17:59</div>
             <div class="timeline-body"><blockquote>
-<p>I'm not trying to add a new feature,</p>
+<p>I&#x27;m not trying to add a new feature,</p>
 </blockquote>
 <p>Like it or not, <code>Arg::non_contiguous</code> is a new feature.</p>
 <blockquote>
-<p>I don't expect an issue would have helped me achieve my goal.</p>
+<p>I don&#x27;t expect an issue would have helped me achieve my goal.</p>
 </blockquote>
-<p>Our general expectation is that Issues should be made and accepted before moving on to PRs.  Frequently, we've seen</p>
+<p>Our general expectation is that Issues should be made and accepted before moving on to PRs.  Frequently, we&#x27;ve seen</p>
 <ul>
-<li>People waste time by going with solutions that don't align with the project</li>
+<li>People waste time by going with solutions that don&#x27;t align with the project</li>
 <li>Issues lost track of because a PR gets abandoned which contained the only report</li>
 <li>Information fragmented as a contributor switches between PRs or they abandon an effort and someone else picks it up</li>
 </ul>
@@ -162,7 +162,7 @@ I don't expect an issue would have helped me achieve my goal.</p>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/epage">@epage</a> on <code>clap_complete/tests/testsuite/engine.rs</code>:698 on 2025-03-17 18:10</div>
             <div class="timeline-body"><p>The values were chosen to make it obvious which positional argument they are associated with.  If you are reusing this test, we should probably change things to make that clearer, like adding a refactor commit before this one that changes the values to <code>pos_&lt;num&gt;_&lt;letter&gt;</code> so <code>positional</code> has <code>[&quot;pos_1_a&quot;]</code>, <code>positional-2</code> has <code>[&quot;pos_2_a&quot;, &quot;pos_2_b&quot;]</code>.</p>
-<p>Then in this commit, you'd have <code>[&quot;pos_3_a&quot;, &quot;pos_3_b&quot;]</code>.</p>
+<p>Then in this commit, you&#x27;d have <code>[&quot;pos_3_a&quot;, &quot;pos_3_b&quot;]</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -202,7 +202,7 @@ I don't expect an issue would have helped me achieve my goal.</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/epage">@epage</a> on <code>clap_complete/tests/testsuite/engine.rs</code>:793 on 2025-03-17 18:14</div>
-            <div class="timeline-body"><p>(in doing this, we'd make <code>positional-2</code> unbounded)</p>
+            <div class="timeline-body"><p>(in doing this, we&#x27;d make <code>positional-2</code> unbounded)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -212,7 +212,7 @@ I don't expect an issue would have helped me achieve my goal.</p>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/krobelus">@krobelus</a> on <code>clap_complete/src/engine/complete.rs</code>:636 on 2025-03-17 20:12</div>
             <div class="timeline-body"><p>Are you seriously suggesting I should have created an issue?
-I have lots of points on this but I guess I'll try not to waste everyone's time.</p>
+I have lots of points on this but I guess I&#x27;ll try not to waste everyone&#x27;s time.</p>
 <p>Another general expectation is &quot;you broke it, you fix it&quot;</p>
 </div>
         </div>
@@ -223,7 +223,7 @@ I have lots of points on this but I guess I'll try not to waste everyone's time.
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/krobelus">@krobelus</a> on <code>clap_complete/tests/testsuite/engine.rs</code>:694 on 2025-03-17 20:12</div>
             <div class="timeline-body"><p>no idea</p>
-<pre><code>thread 'engine::suggest_multi_positional' panicked at clap_builder/src/builder/debug_asserts.rs:570:9:
+<pre><code>thread &#x27;engine::suggest_multi_positional&#x27; panicked at clap_builder/src/builder/debug_asserts.rs:570:9:
 Positional argument `[positional-3] [positional-3]...` *must* have `required(true)` or `last(true)` set because a prior positional argument (`&lt;positional-2&gt; &lt;positional-2&gt; &lt;positional-2&gt;`) has `num_args(1..)`
 </code></pre>
 </div>
@@ -234,7 +234,7 @@ Positional argument `[positional-3] [positional-3]...` *must* have `required(tru
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/krobelus">@krobelus</a> on <code>clap_complete/tests/testsuite/engine.rs</code>:694 on 2025-03-17 20:15</div>
-            <div class="timeline-body"><p>I guess if I create a second test I am not forced to find out what's going on. The error message is contradictory for sure</p>
+            <div class="timeline-body"><p>I guess if I create a second test I am not forced to find out what&#x27;s going on. The error message is contradictory for sure</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -264,11 +264,11 @@ Positional argument `[positional-3] [positional-3]...` *must* have `required(tru
             <div class="timeline-body"><blockquote>
 <p>Are you seriously suggesting I should have created an issue?</p>
 </blockquote>
-<p>Yes.  Consider that your first solution wasn't going to be accepted and your second solution was found to have holes in it.  This is the kind of thing we can talk through before putting in time.  Or I might have jumped in and just fixed it.</p>
+<p>Yes.  Consider that your first solution wasn&#x27;t going to be accepted and your second solution was found to have holes in it.  This is the kind of thing we can talk through before putting in time.  Or I might have jumped in and just fixed it.</p>
 <blockquote>
 <p>Another general expectation is &quot;you broke it, you fix it&quot;</p>
 </blockquote>
-<p>Sometimes that works, but sometimes contributors aren't still around to take care of that.  This is open source where people give what they can and putting pressure on contributors like that can burn them out fairly quickly.</p>
+<p>Sometimes that works, but sometimes contributors aren&#x27;t still around to take care of that.  This is open source where people give what they can and putting pressure on contributors like that can burn them out fairly quickly.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -302,7 +302,7 @@ Positional argument `[positional-3] [positional-3]...` *must* have `required(tru
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/krobelus">@krobelus</a> on <code>clap_complete/tests/testsuite/engine.rs</code>:831 on 2025-03-17 22:56</div>
-            <div class="timeline-body"><p>LMK if you can do it in reasonable time (like a week) else I'll try to</p>
+            <div class="timeline-body"><p>LMK if you can do it in reasonable time (like a week) else I&#x27;ll try to</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -312,7 +312,7 @@ Positional argument `[positional-3] [positional-3]...` *must* have `required(tru
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/krobelus">@krobelus</a> on <code>clap_complete/tests/testsuite/engine.rs</code>:831 on 2025-03-19 07:48</div>
             <div class="timeline-body"><p>any response?
-I'm not sure what are the conventions of this project</p>
+I&#x27;m not sure what are the conventions of this project</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -321,7 +321,7 @@ I'm not sure what are the conventions of this project</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/epage">@epage</a> on <code>clap_complete/tests/testsuite/engine.rs</code>:831 on 2025-03-19 12:43</div>
-            <div class="timeline-body"><p>I'll possibly get to it.</p>
+            <div class="timeline-body"><p>I&#x27;ll possibly get to it.</p>
 <p>Thanks for opening the issue</p>
 </div>
         </div>
@@ -334,12 +334,12 @@ I'm not sure what are the conventions of this project</p>
             <div class="timeline-body"><blockquote>
 <p>Just copying the code over could end up making things messy, so a separate refactor of some kind should probably done first</p>
 </blockquote>
-<p>Are you saying that code clones are bad? Okay. I'm very sorry that you think you have to say that</p>
+<p>Are you saying that code clones are bad? Okay. I&#x27;m very sorry that you think you have to say that</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/epage">@epage</a> on <code>clap_complete/tests/testsuite/engine.rs</code>:685 on 2025-03-19 16:56</div>
-            <div class="timeline-body"><p>Please either revert this commit or switch to what I suggested in https://github.com/clap-rs/clap/pull/5949#discussion_r1999363225</p>
+            <div class="timeline-body"><p>Please either revert this commit or switch to what I suggested in <a href="https://github.com/clap-rs/clap/pull/5949">clap-rs/clap#5949</a>#discussion_r1999363225</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -361,7 +361,7 @@ I'm not sure what are the conventions of this project</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/epage">@epage</a> on <code>clap_complete/src/engine/complete.rs</code>:168 on 2025-03-19 17:55</div>
-            <div class="timeline-body"><p>This works by happenstance for the current test cases but isn't the actual condition we should be checking for.  If <code>num_args(3..=10)</code>, then after <code>3</code> values, we should also report options.</p>
+            <div class="timeline-body"><p>This works by happenstance for the current test cases but isn&#x27;t the actual condition we should be checking for.  If <code>num_args(3..=10)</code>, then after <code>3</code> values, we should also report options.</p>
 <p>We need to check if we have exceeded the minimum number of arguments for the positional.</p>
 </div>
         </div>
@@ -371,7 +371,7 @@ I'm not sure what are the conventions of this project</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/epage">@epage</a> on <code>clap_complete/src/engine/complete.rs</code>:168 on 2025-03-19 17:56</div>
-            <div class="timeline-body"><p>Actually, the current test cases demonstrate this bug.  <code>&quot;pos_1 [TAB]&quot;</code> hasn't met the minimum of <code>2</code> yet, and so should only report positionals.</p>
+            <div class="timeline-body"><p>Actually, the current test cases demonstrate this bug.  <code>&quot;pos_1 [TAB]&quot;</code> hasn&#x27;t met the minimum of <code>2</code> yet, and so should only report positionals.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -395,7 +395,7 @@ I'm not sure what are the conventions of this project</p>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:49:45 UTC
+        Synced at 2026-01-20 20:00:47 UTC
     </footer>
 </body>
 </html>

@@ -26,25 +26,25 @@
             <div class="timeline-body"><p>My context is that I have a main package and some related packages. Everything is installed in editable mode for development.</p>
 <p>When using standard <code>pip</code> with setuptools installed, this creates an egg-link file inside site-packages which is looked up just fine by type checkers including Pyright (which powers the vscode Python/Pylance extension).</p>
 <p>However, when using <code>uv pip install -e</code>, the package is installed in PEP-660 mode with a <code>__editable__.&lt;pkgname+version&gt;.pth</code> and <code>__editable___&lt;pkgname+version&gt;_finder.py</code>, ie using a dynamic import hook.</p>
-<p>Of course static analyzers generally do not understand those, and don't even try to extract the information from the &quot;dynamic&quot; code even though it would be trivial to do (by simply parsing the <code>MAPPING</code> dict from the <code>..._finder.py</code>).</p>
-<p>While this is not directly uv's fault, and I generally agree with not outputting legacy stuff, this is causing a problem when IDEs can no longer properly resolve imports. And at least the pyright/pylance developers don't seem to be willing to add any workarounds on their side, so they'd rather wait for the Python ecosystem to agree on something that does not require dynamic import lookups. But that probably needs someone to be willing to write a PEP and get it accepted which all takes some time.</p>
+<p>Of course static analyzers generally do not understand those, and don&#x27;t even try to extract the information from the &quot;dynamic&quot; code even though it would be trivial to do (by simply parsing the <code>MAPPING</code> dict from the <code>..._finder.py</code>).</p>
+<p>While this is not directly uv&#x27;s fault, and I generally agree with not outputting legacy stuff, this is causing a problem when IDEs can no longer properly resolve imports. And at least the pyright/pylance developers don&#x27;t seem to be willing to add any workarounds on their side, so they&#x27;d rather wait for the Python ecosystem to agree on something that does not require dynamic import lookups. But that probably needs someone to be willing to write a PEP and get it accepted which all takes some time.</p>
 <p>Some related issues/comments:</p>
 <ul>
 <li>https://github.com/microsoft/pylance-release/issues/3473#issuecomment-2133566168</li>
 <li>https://github.com/microsoft/pyright/issues/3880#issuecomment-2134083781</li>
 <li>https://github.com/microsoft/pylance-release/issues/5894#issuecomment-2133544837</li>
 </ul>
-<p>Is there any chance <code>uv</code> can do something about this, such as providing an option to generate an egg-link instead of a PEP660-style <code>__editable__*.pth</code>, even though it's slightly more legacy?</p>
+<p>Is there any chance <code>uv</code> can do something about this, such as providing an option to generate an egg-link instead of a PEP660-style <code>__editable__*.pth</code>, even though it&#x27;s slightly more legacy?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/h-mayorquin">@h-mayorquin</a> on 2024-07-19 02:16</div>
             <div class="timeline-body"><p>To be honest I am bit confused. Pip passess the implementation responsability of editable installs to the backend:</p>
 <p>https://pip.pypa.io/en/stable/topics/local-project-installs/#editable-installs</p>
-<p>Doesn't uv does the same?</p>
+<p>Doesn&#x27;t uv does the same?</p>
 <p>For packages built with setuptools there are a coupe of <a href="https://setuptools.pypa.io/en/latest/userguide/development_mode.html">configuration options </a> used at installation time. That said,  I am not sure if the latest version of setuptools <a href="https://setuptools.pypa.io/en/latest/history.html#id298">works the way that OP proposes here</a> anymore.</p>
 <p>For reference, when building with hatch works with the default that allows static analysis tools to work by default:
-https://github.com/pypa/hatch/issues/1629#issuecomment-2237849607
+<a href="https://github.com/pypa/hatch/issues/1629">pypa/hatch#1629</a>#issuecomment-2237849607
 I am not sure what uv pip install -e would do if the build backend was hatchling.</p>
 <p>Any chance a mantainer could chime in, clarify the state of affairs and say whether this is:</p>
 <ul>
@@ -55,7 +55,7 @@ I am not sure what uv pip install -e would do if the build backend was hatchling
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-19 02:33</div>
-            <div class="timeline-body"><p>I agree this issue is not clear. I'm not the expert on this area, but a <code>hatch</code> build backend doesn't use a dynamic <code>.pth</code></p>
+            <div class="timeline-body"><p>I agree this issue is not clear. I&#x27;m not the expert on this area, but a <code>hatch</code> build backend doesn&#x27;t use a dynamic <code>.pth</code></p>
 <pre><code>❯ uv venv
 Using Python 3.12.3 interpreter at: /opt/homebrew/opt/python@3.12/bin/python3.12
 Creating virtualenv at: .venv
@@ -72,24 +72,24 @@ build-backend = &quot;hatchling.build&quot;
 <blockquote>
 <p>Setuptools offers no guarantee of which technique will be used to perform an editable installation. This will vary from project to project and may change depending on the specific version of setuptools being used.</p>
 </blockquote>
-<p>It seems possible that you're getting different versions of setuptools depending on if you're using uv or pip? Having you tried using <code>--config-settings</code> to configure this?</p>
+<p>It seems possible that you&#x27;re getting different versions of setuptools depending on if you&#x27;re using uv or pip? Having you tried using <code>--config-settings</code> to configure this?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-07-19 02:34</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-19 02:34</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-07-19 08:33</div>
-            <div class="timeline-body"><p>This is a known problem with setuptools: https://github.com/pypa/setuptools/issues/3518, it also affects e.g. mypy: https://github.com/python/mypy/issues/13392. It's unfortunately not something we can do anything about, i recommend using one of the workarounds in the linked issues or switching to a different backend such as hatchling or flit.</p>
+            <div class="timeline-body"><p>This is a known problem with setuptools: <a href="https://github.com/pypa/setuptools/issues/3518">pypa/setuptools#3518</a>, it also affects e.g. mypy: <a href="https://github.com/python/mypy/issues/13392">python/mypy#13392</a>. It&#x27;s unfortunately not something we can do anything about, i recommend using one of the workarounds in the linked issues or switching to a different backend such as hatchling or flit.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @konstin on 2024-07-19 08:33</div>
+            <div class="event">Closed by <a href="https://github.com/konstin">@konstin</a> on 2024-07-19 08:33</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ThiefMaster">@ThiefMaster</a> on 2024-07-19 08:53</div>
             <div class="timeline-body"><blockquote>
-<p>It's unfortunately not something we can do anything about</p>
+<p>It&#x27;s unfortunately not something we can do anything about</p>
 </blockquote>
 <p>Why not offer a way to do an editable install using the classic static resolution (egg-link) instead of the dynamic one? A while ago I noticed that <code>pip</code> does this when setuptools <em>is</em> installed, while it uses the dynamic resolve when setuptools is <em>not</em> installed.</p>
 <p>I never really looked into alternative build backends, but I assume this also means changing all the related configs (setup.cfg etc.) in the project, which is a mess if you have many projects and you either end up with one using something different than all the others, or having to update all of them for consistency...</p>
@@ -97,12 +97,12 @@ build-backend = &quot;hatchling.build&quot;
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-07-19 08:59</div>
-            <div class="timeline-body"><p>The old egg mechanism was never standardized and is basically pip-setuptools special casing; in uv, we support PEP 660, the standard editable installs that work across build backends. Pip has also deprecated its current behavior and will remove it in the 25.0 release (https://github.com/pypa/pip/issues/11457).</p>
+            <div class="timeline-body"><p>The old egg mechanism was never standardized and is basically pip-setuptools special casing; in uv, we support PEP 660, the standard editable installs that work across build backends. Pip has also deprecated its current behavior and will remove it in the 25.0 release (<a href="https://github.com/pypa/pip/issues/11457">pypa/pip#11457</a>).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/samimia-swks">@samimia-swks</a> on 2024-11-22 23:46</div>
-            <div class="timeline-body"><p>For poeple stumbling on this thread, adding this to pyproject.toml makes pylance happy. https://github.com/pypa/setuptools/issues/3518 suggests the removal of 'compat' has been pushed back, so this will work for now...</p>
+            <div class="timeline-body"><p>For poeple stumbling on this thread, adding this to pyproject.toml makes pylance happy. <a href="https://github.com/pypa/setuptools/issues/3518">pypa/setuptools#3518</a> suggests the removal of &#x27;compat&#x27; has been pushed back, so this will work for now...</p>
 <pre><code>[tool.uv]
     config-settings = { editable_mode = &quot;compat&quot; }
 </code></pre>
@@ -124,7 +124,7 @@ config_settings = { editable_mode = &quot;compat&quot; }
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ssbarnea">@ssbarnea</a> on 2025-01-14 15:25</div>
             <div class="timeline-body"><p>As of today uv <strong>requires</strong> dash separator for key name:</p>
-<pre><code class="language-toml">[tool.uv]
+<pre><code>[tool.uv]
 config-settings = { editable_mode = &quot;compat&quot; }
 </code></pre>
 </div>
@@ -141,7 +141,7 @@ config-settings = { editable_mode = &quot;compat&quot; }</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-13 19:33</div>
-            <div class="timeline-body"><p><code>uv init</code> doesn't use setuptools by default. Regardless, this is a setuptools problem. It's not for us to decide their default behavior.</p>
+            <div class="timeline-body"><p><code>uv init</code> doesn&#x27;t use setuptools by default. Regardless, this is a setuptools problem. It&#x27;s not for us to decide their default behavior.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -153,17 +153,17 @@ config-settings = { editable_mode = &quot;compat&quot; }</p>
 
       [stdout]
 
-      ('\x1b[31m',)meson-python: error: Unknown option &quot;editable_mode&quot;. Did you mean &quot;editable-verbose&quot;?
+      (&#x27;\x1b[31m&#x27;,)meson-python: error: Unknown option &quot;editable_mode&quot;. Did you mean &quot;editable-verbose&quot;?
 
       hint: This usually indicates a problem with the package or the build environment.
 </code></pre>
-<p>EDIT: I think it's linked to this issue: https://github.com/astral-sh/uv/issues/10940</p>
+<p>EDIT: I think it&#x27;s linked to this issue: <a href="https://github.com/astral-sh/uv/issues/10940">astral-sh/uv#10940</a></p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:25:03 UTC
+        Synced at 2026-01-20 19:31:18 UTC
     </footer>
 </body>
 </html>

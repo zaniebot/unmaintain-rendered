@@ -23,16 +23,16 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/oconnor663">@oconnor663</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<p>Here's a minimal repro. <code>pyproject.toml</code> at the root of the workspace:</p>
-<pre><code class="language-toml">[tool.uv.workspace]
+            <div class="timeline-body">Summary
+<p>Here&#x27;s a minimal repro. <code>pyproject.toml</code> at the root of the workspace:</p>
+<pre><code>[tool.uv.workspace]
 members = [&quot;foo&quot;]
 
 [[tool.uv.sources.numpy]]
 path = &quot;/var/tmp/numpy-2.2.0-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl&quot;
 </code></pre>
 <p>And <code>foo/pyproject.toml</code>:</p>
-<pre><code class="language-toml">[project]
+<pre><code>[project]
 name = &quot;foo&quot;
 version = &quot;0.1.0&quot;
 requires-python = &quot;&gt;=3.13&quot;
@@ -40,9 +40,9 @@ dependencies = [&quot;numpy&quot;]
 
 [[tool.uv.sources.numpy]]
 path = &quot;/var/tmp/numpy-2.2.0-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl&quot;
-marker = &quot;sys_platform == 'foobarbaz'&quot;
+marker = &quot;sys_platform == &#x27;foobarbaz&#x27;&quot;
 </code></pre>
-<p>So what we have is both a workspace-level and a project-level source for <code>numpy</code>. However, the project-level source is disabled by a <code>marker</code> that will never be true. Here's what I see when I <code>uv sync</code>:</p>
+<p>So what we have is both a workspace-level and a project-level source for <code>numpy</code>. However, the project-level source is disabled by a <code>marker</code> that will never be true. Here&#x27;s what I see when I <code>uv sync</code>:</p>
 <pre><code>$ rm -r .venv &amp;&amp; uv sync
 Using CPython 3.13.2
 Creating virtual environment at: .venv
@@ -58,40 +58,40 @@ Resolved 2 packages in 0.65ms
 Installed 1 package in 11ms
  + numpy==2.2.0 (from file:///var/tmp/numpy-2.2.0-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl)
 </code></pre>
-<p>In this case the workspace-level source is used. The bug(?) is that it should've been used in both cases. I think the cause is structure of the following <code>if</code> statement:</p>
+<p>In this case the workspace-level source is used. The bug(?) is that it should&#x27;ve been used in both cases. I think the cause is structure of the following <code>if</code> statement:</p>
 <p>https://github.com/astral-sh/uv/blob/cf67d9c633c1545ae5f46a1020182f4cef62ae76/crates/uv-distribution/src/metadata/lowering.rs#L49-L55</p>
-<p>In that code, if there's a project-level source with a matching name, then any workspace-level source is ignored. But this happens before markers are checked.</p>
-<h3>Platform</h3>
+<p>In that code, if there&#x27;s a project-level source with a matching name, then any workspace-level source is ignored. But this happens before markers are checked.</p>
+Platform
 <p>linux</p>
-<h3>Version</h3>
+Version
 <p>uv 0.7.13 (62ed17b23 2025-06-12)</p>
-<h3>Python version</h3>
+Python version
 <p><em>No response</em></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @oconnor663 on 2025-06-16 23:58</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-06-16 23:58</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-06-17 14:41</div>
-            <div class="timeline-body"><p>@charliermarsh's judgment is that this behavior is plausibly correct, since there's no good use case for mixing sources like this. My first response was that since we allow <em>multiple</em> sources for the same dependency, that didn't seem much different from mixing workspace and project sources. However, now that I've played with this a bit, I've realized that when there are multiple sources we require them to be <em>disjoint</em>, e.g.</p>
+            <div class="timeline-body"><p>@charliermarsh&#x27;s judgment is that this behavior is plausibly correct, since there&#x27;s no good use case for mixing sources like this. My first response was that since we allow <em>multiple</em> sources for the same dependency, that didn&#x27;t seem much different from mixing workspace and project sources. However, now that I&#x27;ve played with this a bit, I&#x27;ve realized that when there are multiple sources we require them to be <em>disjoint</em>, e.g.</p>
 <pre><code>error: Failed to parse: `foo/pyproject.toml`
   Caused by: TOML parse error at line 9, column 1
   |
 9 | [[tool.uv.sources.numpy]]
   | ^^^^^^^^^^^^^^^^^^^^^^^^^
-Source markers must be disjoint, but the following markers overlap: `sys_platform == 'foobarbaz'` and `sys_platform == 'foobarbaz'`.
+Source markers must be disjoint, but the following markers overlap: `sys_platform == &#x27;foobarbaz&#x27;` and `sys_platform == &#x27;foobarbaz&#x27;`.
 </code></pre>
 <p>Requiring project level sources to be disjoint from workspace level sources seems silly, so I agree that we should probably just document the current behavior.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @oconnor663 on 2025-06-18 22:31</div>
+            <div class="event">Closed by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-06-18 22:31</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:31:49 UTC
+        Synced at 2026-01-20 19:39:05 UTC
     </footer>
 </body>
 </html>

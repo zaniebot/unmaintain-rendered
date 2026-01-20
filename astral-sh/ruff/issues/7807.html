@@ -24,15 +24,15 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/tasercake">@tasercake</a></div>
             <div class="timeline-body"><p>Hi there!</p>
-<p>I'm interested in adding a rule to identify blocking calls in async contexts. Being new to ruff, I'm hoping to get a sense of how big of a task this would be.</p>
+<p>I&#x27;m interested in adding a rule to identify blocking calls in async contexts. Being new to ruff, I&#x27;m hoping to get a sense of how big of a task this would be.</p>
 <p>Would it be feasible to have ruff identify <em>indirect</em> calls to blocking functions like <code>open()</code> or <code>requests.get()</code>?</p>
-<p>Here's some examples of the cases I'd like to catch:</p>
-<pre><code class="language-python">import asyncio
+<p>Here&#x27;s some examples of the cases I&#x27;d like to catch:</p>
+<pre><code>import asyncio
 import requests
 
 async def foo():
     loop = asyncio.get_running_loop()
-    return await loop.run_in_executor(None, requests.get, &quot;https://example.com&quot;)  # OK (but AFAIK this isn't explicitly checked by ruff now)
+    return await loop.run_in_executor(None, requests.get, &quot;https://example.com&quot;)  # OK (but AFAIK this isn&#x27;t explicitly checked by ruff now)
 
 async def bar():
     return requests.get(&quot;https://example.com&quot;)  # Error! (this is already caught by ASYNC100)
@@ -50,7 +50,7 @@ async def main():
     qux()  # OK
 </code></pre>
 <p>The current output looks like this:</p>
-<pre><code class="language-shellsession">$ ruff check . --select ASYNC
+<pre><code>$ ruff check . --select ASYNC
 main.py:9:12: ASYNC100 Async functions should not call blocking HTTP methods
 Found 1 error.
 </code></pre>
@@ -60,47 +60,47 @@ Found 1 error.
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-04 14:42</div>
             <div class="timeline-body"><p>Hey, thanks for the clear issue. We <em>could</em> support this, but it would have some limitations...</p>
 <ol>
-<li>It wouldn't work across files. We don't support cross-file analysis right now, so e.g., if <code>baz</code> were defined in another file and imported into the above, we'd fail to catch it. We plan to support cross-file analysis in the future but it's not on the immediate roadmap (so timeline is TBD).</li>
-<li>It wouldn't work for instance methods, like <code>x = Class(); x.baz()</code>. We could <em>probably</em> support that simple case assuming the class were defined in the same file, but it would still miss other kinds of accesses.</li>
+<li>It wouldn&#x27;t work across files. We don&#x27;t support cross-file analysis right now, so e.g., if <code>baz</code> were defined in another file and imported into the above, we&#x27;d fail to catch it. We plan to support cross-file analysis in the future but it&#x27;s not on the immediate roadmap (so timeline is TBD).</li>
+<li>It wouldn&#x27;t work for instance methods, like <code>x = Class(); x.baz()</code>. We could <em>probably</em> support that simple case assuming the class were defined in the same file, but it would still miss other kinds of accesses.</li>
 </ol>
-<p>Given the limitations, I'm torn on whether it's worth supporting right now. What do you think?</p>
+<p>Given the limitations, I&#x27;m torn on whether it&#x27;s worth supporting right now. What do you think?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-10-04 14:42</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-04 14:42</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tasercake">@tasercake</a> on 2023-10-05 02:00</div>
             <div class="timeline-body"><p>Hey Charlie, thanks for the info!</p>
-<p>I didn't realise ruff doesn't support cross-file analysis at the moment. My own use case involves a large codebase where most blocking functions are in different files, so I don't think this rule would add much value.</p>
-<p>If and when cross-file analysis gets a concrete timeline I'd love to revisit this, but for now I'll explore other solutions 🙂</p>
+<p>I didn&#x27;t realise ruff doesn&#x27;t support cross-file analysis at the moment. My own use case involves a large codebase where most blocking functions are in different files, so I don&#x27;t think this rule would add much value.</p>
+<p>If and when cross-file analysis gets a concrete timeline I&#x27;d love to revisit this, but for now I&#x27;ll explore other solutions 🙂</p>
 <p>Please feel free to close this issue</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2023-10-05 15:10</div>
+            <div class="event">Label <span class="label">question</span> removed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-05 15:10</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">multifile-analysis</span> added by @charliermarsh on 2023-10-05 15:10</div>
+            <div class="event">Label <span class="label">multifile-analysis</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-05 15:10</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-05 15:10</div>
-            <div class="timeline-body"><p>Sounds good -- we do plan to support this eventually since it's an unfortunate limitation, but we have a few other priorities ahead of it, since we're able to get pretty far with single-file analysis as is. I've tagged this with a label to revisit when we support multi-file analysis.</p>
+            <div class="timeline-body"><p>Sounds good -- we do plan to support this eventually since it&#x27;s an unfortunate limitation, but we have a few other priorities ahead of it, since we&#x27;re able to get pretty far with single-file analysis as is. I&#x27;ve tagged this with a label to revisit when we support multi-file analysis.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-10-05 15:10</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-05 15:10</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">type-inference</span> added by @MichaReiser on 2024-10-24 14:34</div>
+            <div class="event">Label <span class="label">type-inference</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-24 14:34</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">multifile-analysis</span> removed by @MichaReiser on 2024-10-24 14:34</div>
+            <div class="event">Label <span class="label">multifile-analysis</span> removed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-24 14:34</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:48:33 UTC
+        Synced at 2026-01-20 18:48:43 UTC
     </footer>
 </body>
 </html>

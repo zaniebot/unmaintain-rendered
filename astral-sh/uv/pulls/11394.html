@@ -23,11 +23,11 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a></div>
-            <div class="timeline-body"><p>When running <code>uv pip install .</code> in a directory with a pyproject.toml that does not configure a build, we will invoke setuptools and get a wheel we can't parse (https://github.com/astral-sh/uv/issues/11344). This PR adds warnings around these setups.</p>
+            <div class="timeline-body"><p>When running <code>uv pip install .</code> in a directory with a pyproject.toml that does not configure a build, we will invoke setuptools and get a wheel we can&#x27;t parse (<a href="https://github.com/astral-sh/uv/issues/11344">astral-sh/uv#11344</a>). This PR adds warnings around these setups.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">error messages</span> added by @konstin on 2025-02-10 18:55</div>
+            <div class="event">Label <span class="label">error messages</span> added by <a href="https://github.com/konstin">@konstin</a> on 2025-02-10 18:55</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-build-frontend/src/lib.rs</code>:530 on 2025-02-10 21:32</div>
@@ -53,7 +53,7 @@
             <div class="timeline-body"><blockquote>
 <p>What happens if a future version of setuptools respects a new dependency source, other than those enumerated here?</p>
 </blockquote>
-<p>If a user was to not declare <code>[build-system]</code> but add that new hypothetical non-PEP 621 metadata source, we would show a false positive error. I've opted for an error here matching the existing <code>Error::InvalidSourceDist</code> that errors if there are neither pyproject.toml nor setup.py, given that i consider it unlikely there will be a pre-PEP 517, post PEP 621 combination in the future, and given that a missing <code>[build-system]</code> is legacy behavior.</p>
+<p>If a user was to not declare <code>[build-system]</code> but add that new hypothetical non-PEP 621 metadata source, we would show a false positive error. I&#x27;ve opted for an error here matching the existing <code>Error::InvalidSourceDist</code> that errors if there are neither pyproject.toml nor setup.py, given that i consider it unlikely there will be a pre-PEP 517, post PEP 621 combination in the future, and given that a missing <code>[build-system]</code> is legacy behavior.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -78,12 +78,12 @@ Installing collected packages: UNKNOWN
 Successfully installed UNKNOWN-0.0.0
 </code></pre>
 <p>Similarly, <code>uvx --from build pyproject-build</code> succeeds (as well as a subsequent <code>pip install</code> from the wheel).</p>
-<p>Does that mean we'd be breaking compatibility with <code>pip</code> here? I can't tell from the summary if this changes <code>uv pip install</code> behavior or just <code>uv build</code>.</p>
+<p>Does that mean we&#x27;d be breaking compatibility with <code>pip</code> here? I can&#x27;t tell from the summary if this changes <code>uv pip install</code> behavior or just <code>uv build</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-11 10:13</div>
-            <div class="timeline-body"><p>Our current released behavior is that we don't support these cases, because we consider <code>UNKNOWN</code> to be unset, which results in the <code>Metadata field Name not found</code>. Apparently we do this already since f51432382ae3fce110afd8d7c2f88684078cbeb6, which we copied from python-pkginfo-rs, which doesn't document why it has this behavior.</p>
+            <div class="timeline-body"><p>Our current released behavior is that we don&#x27;t support these cases, because we consider <code>UNKNOWN</code> to be unset, which results in the <code>Metadata field Name not found</code>. Apparently we do this already since f51432382ae3fce110afd8d7c2f88684078cbeb6, which we copied from python-pkginfo-rs, which doesn&#x27;t document why it has this behavior.</p>
 <pre><code>$ mkdir a
 $ cd a
 $ touch pyproject.toml
@@ -96,7 +96,7 @@ Using Python 3.13.0 environment at: /home/konsti/projects/uv/debug/foo/.venv
 error: Failed to parse metadata from built wheel
   Caused by: Metadata field Name not found
 </code></pre>
-<p>I've tried to only touch the paths that were already failing and give them more actionable error message and catch the &quot;<code>uv pip install .</code> in a workspace root case&quot;.</p>
+<p>I&#x27;ve tried to only touch the paths that were already failing and give them more actionable error message and catch the &quot;<code>uv pip install .</code> in a workspace root case&quot;.</p>
 <p>I know example of how to configure setuptools using setup.py, setup.cfg and pyproject.toml. It is not clear to me what uses cases setuptools intends to support outside of that, or what the correct way of handling <code>UNKNOWN</code> is.</p>
 </div>
         </div>
@@ -106,11 +106,11 @@ error: Failed to parse metadata from built wheel
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-build-frontend/src/lib.rs</code>:542 on 2025-02-13 17:41</div>
-            <div class="timeline-body"><p>So my concern here is... what if, in the future, setuptools supports something like <code>setup.toml</code>? Then existing versions of uv will fail here, overly-aggressively. That's partly why I was advocating that we do this &quot;after-the-fact&quot; (i.e., hint when we create an <code>UNKNOWN</code> wheel). How hard is that?</p>
+            <div class="timeline-body"><p>So my concern here is... what if, in the future, setuptools supports something like <code>setup.toml</code>? Then existing versions of uv will fail here, overly-aggressively. That&#x27;s partly why I was advocating that we do this &quot;after-the-fact&quot; (i.e., hint when we create an <code>UNKNOWN</code> wheel). How hard is that?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Errors for builds in non-build and workspace root pyproject.toml" to "Warn for builds in non-build and workspace root pyproject.toml" by @konstin on 2025-02-17 14:14</div>
+            <div class="event">Renamed from &quot;Errors for builds in non-build and workspace root pyproject.toml&quot; to &quot;Warn for builds in non-build and workspace root pyproject.toml&quot; by <a href="https://github.com/konstin">@konstin</a> on 2025-02-17 14:14</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-17 14:27</div>
@@ -118,17 +118,17 @@ error: Failed to parse metadata from built wheel
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-02-17 15:27</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-17 15:27</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2025-02-17 15:48</div>
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2025-02-17 15:57</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-17 15:57</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2025-02-17 15:57</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-17 15:57</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-02-17 15:57</div>
@@ -136,7 +136,7 @@ error: Failed to parse metadata from built wheel
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:41:57 UTC
+        Synced at 2026-01-20 19:50:49 UTC
     </footer>
 </body>
 </html>

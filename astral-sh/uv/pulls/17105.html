@@ -28,18 +28,18 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @konstin on 2025-12-15 14:00</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/konstin">@konstin</a> on 2025-12-15 14:00</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @EliteTK by @konstin on 2025-12-15 17:45</div>
+            <div class="event">Review requested from <a href="https://github.com/EliteTK">@EliteTK</a> by <a href="https://github.com/konstin">@konstin</a> on 2025-12-15 17:45</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> added by @konstin on 2025-12-16 09:54</div>
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/konstin">@konstin</a> on 2025-12-16 09:54</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv-client/src/base_client.rs</code>:1142 on 2025-12-16 10:35</div>
-            <div class="timeline-body"><p>nitpick: The type itself isn't deciding.</p>
-<pre><code class="language-suggestion">/// Per-request retry state and policy.
+            <div class="timeline-body"><p>nitpick: The type itself isn&#x27;t deciding.</p>
+<pre><code>/// Per-request retry state and policy.
 </code></pre>
 </div>
         </div>
@@ -58,7 +58,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv-client/src/base_client.rs</code>:1176 on 2025-12-16 14:04</div>
             <div class="timeline-body"><p>I still think this comment is confusing as the point at which we are &quot;considering&quot; the upstream retries is when we add them. I would just drop it.</p>
-<pre><code class="language-suggestion"></code></pre>
+<pre><code></code></pre>
 </div>
         </div>
         <div class="timeline-entry">
@@ -71,7 +71,7 @@
             <div class="timeline-body"><p>I spent a bit more time on this because I wanted to understand the code better.</p>
 <p>I think the approach of hiding the timing/debug stuff may be confusing. I think maybe this would be better served as a <code>get_retry_delay&lt;E, P&gt;(err: E, policy: &amp;P, time, retries) -&gt; Result&lt;Duration, (E, u32)&gt;</code> function or something, with the time tracking, waiting, and <code>debug!</code> being explicitly outside.</p>
 <p>To demonstrate the above idea, and to understand if it would help, I tried having a function like:</p>
-<pre><code class="language-rust">pub async fn retry_with_policy&lt;P, T, E, F&gt;(
+<pre><code>pub async fn retry_with_policy&lt;P, T, E, F&gt;(
     retry_policy: &amp;P,
     url: &amp;Url,
     mut make_request: F,
@@ -102,7 +102,7 @@ where
 }
 </code></pre>
 <p>Which you would use like (in <code>CachedClient::get_cacheable_with_retry</code>):</p>
-<pre><code class="language-rust">retry_with_policy(&amp;self.uncached().retry_policy(), &amp;req.url(), async || {
+<pre><code>retry_with_policy(&amp;self.uncached().retry_policy(), &amp;req.url(), async || {
     let fresh_req = req.try_clone().expect(&quot;HTTP request must be cloneable&quot;);
     self.get_cacheable(fresh_req, cache_entry, cache_control, &amp;response_callback)
         .await
@@ -110,7 +110,7 @@ where
 .await
 .map_err(|(err, retries)| err.with_retries(retries))
 </code></pre>
-<p>But I couldn't come up with a good approach which would work for <code>uv_publish::upload</code>. It does work for all the other cases though.</p>
+<p>But I couldn&#x27;t come up with a good approach which would work for <code>uv_publish::upload</code>. It does work for all the other cases though.</p>
 <p>I guess one option would then be to just use the function in the plases where it works and use <code>get_retry_delay</code> maybe with some helper for waiting and <code>debug!</code>.</p>
 <p>This would reduce the boilerplate even further, railroad users (developers) towards the happy path more, and avoid the possibility of starting the timer too early.</p>
 <p>Just an idea though, may not be appropriate for this PR in particular.</p>
@@ -121,7 +121,7 @@ where
             <div class="timeline-body"><blockquote>
 <p>I think the approach of hiding the timing/debug stuff may be confusing. I think maybe this would be better served as a <code>get_retry_delay&lt;E, P&gt;(err: E, policy: &amp;P, time, retries) -&gt; Result&lt;Duration, (E, u32)&gt;</code> function or something, with the time tracking, waiting, and <code>debug!</code> being explicitly outside.</p>
 </blockquote>
-<p>The motivation for this change is that the implementations for this diverged slightly between the different code locations so I wanted to move them into a single location, otherwise I'd kept the logging and the waiting in the <code>loop</code> where it was before</p>
+<p>The motivation for this change is that the implementations for this diverged slightly between the different code locations so I wanted to move them into a single location, otherwise I&#x27;d kept the logging and the waiting in the <code>loop</code> where it was before</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -144,8 +144,8 @@ where
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-client/src/base_client.rs</code>:1192 on 2025-12-16 16:27</div>
-            <div class="timeline-body"><p>I've renamed the function, the motivation is that I want to avoid the implementation from diverging. A secondary motivation that we have this boilerplate for each streaming request, and I'd like to keep that concise; Ideally it would be a part of the client, that doesn't work with e.g. our streaming hashing and unpacking:</p>
-<pre><code class="language-rust">loop {
+            <div class="timeline-body"><p>I&#x27;ve renamed the function, the motivation is that I want to avoid the implementation from diverging. A secondary motivation that we have this boilerplate for each streaming request, and I&#x27;d like to keep that concise; Ideally it would be a part of the client, that doesn&#x27;t work with e.g. our streaming hashing and unpacking:</p>
+<pre><code>loop {
     let result = fetch(...).await;
     match result {
         Ok(download_result) =&gt; return Ok(download_result),
@@ -180,8 +180,8 @@ where
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv-client/src/base_client.rs</code>:1192 on 2025-12-16 16:35</div>
-            <div class="timeline-body"><p>Yeah I understand the motivation, the previous situation wasn't great, but that's why I suggested this potential boilerplate (which would work for most of the cases here):</p>
-<pre><code class="language-rust">return retry_with_policy(retry_policy, url, async || fetch(...).await)
+            <div class="timeline-body"><p>Yeah I understand the motivation, the previous situation wasn&#x27;t great, but that&#x27;s why I suggested this potential boilerplate (which would work for most of the cases here):</p>
+<pre><code>return retry_with_policy(retry_policy, url, async || fetch(...).await)
     .await
     .map_err(|(err, retries)| {
         if retries &gt; 0 {
@@ -207,14 +207,14 @@ where
             <div class="timeline-header"><a href="https://github.com/EliteTK">@EliteTK</a> approved on 2025-12-18 10:08</div>
             <div class="timeline-body"><p>I prefer this split up &quot;should_retry&quot; and &quot;sleep_backoff&quot; approach more than the previous combined function.</p>
 <p>The names much better represent what the functions are doing.</p>
-<p>There are a few things I would do differently but at this point they're just stylistic nitpicks/different opinions.</p>
+<p>There are a few things I would do differently but at this point they&#x27;re just stylistic nitpicks/different opinions.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @konstin on 2025-12-18 12:44</div>
+            <div class="event">Merged by <a href="https://github.com/konstin">@konstin</a> on 2025-12-18 12:44</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @konstin on 2025-12-18 12:44</div>
+            <div class="event">Closed by <a href="https://github.com/konstin">@konstin</a> on 2025-12-18 12:44</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-12-18 12:44</div>
@@ -222,7 +222,7 @@ where
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:45:35 UTC
+        Synced at 2026-01-20 19:54:56 UTC
     </footer>
 </body>
 </html>

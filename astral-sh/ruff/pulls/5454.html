@@ -24,9 +24,9 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/wookie184">@wookie184</a></div>
             <div class="timeline-body"><p>Closes #3936</p>
-<h2>Summary</h2>
-<p>Building on https://github.com/astral-sh/ruff/pull/4420, adds the remaining PEP-585 names.</p>
-<h2>Test Plan</h2>
+Summary
+<p>Building on <a href="https://github.com/astral-sh/ruff/pull/4420">astral-sh/ruff#4420</a>, adds the remaining PEP-585 names.</p>
+Test Plan
 <p>Added snapshot tests for a few cases.</p>
 </div>
         </div>
@@ -38,7 +38,7 @@
             <div class="timeline-header">Review comment by <a href="https://github.com/wookie184">@wookie184</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:605 on 2023-06-30 13:17</div>
             <div class="timeline-body"><p>To add some context for this change:</p>
 <p>With this code (<code>test.py</code>)</p>
-<pre><code class="language-python">import typing
+<pre><code>import typing
 from collections.abc import Sequence
 
 def f(x: typing.Sequence) -&gt; None:
@@ -69,16 +69,16 @@ Found 1 error.
 <p>Hmm, I believe these are already covered by the deprecated import rule that we have in pyupgrade. There’s clearly some overlap in responsibilities between the two.</p>
 </blockquote>
 <p>Currently, <code>UP035</code> detects imports of many deprecated names, while <code>UP006</code> detects usage of just PEP 585 deprecated names. So e.g.</p>
-<pre><code class="language-python">from typing import List  # Flagged by UP035
+<pre><code>from typing import List  # Flagged by UP035
 x: List  # Flagged by UP006
 
 import typing
 x: typing.List  # Flagged by UP006
 </code></pre>
 <p>It definitely seems like something that could be merged into one rule, or we could have two (one for pep 585 and one for other deprecated names) which share their implementation.</p>
-<hr />
+<hr>
 <p>Also made me realise an issue with this PR currently:</p>
-<pre><code class="language-python">import typing
+<pre><code>import typing
 from typing import Sequence
 
 x: Sequence
@@ -98,17 +98,17 @@ Found 3 errors.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-01 02:44</div>
-            <div class="timeline-body"><p>I think this originally arose from pyupgrade, which has two separate &quot;rules&quot; for deprecated imports vs. PEP 585 rewrites (for builtins only). Most deprecated imports can be fixed by only modifying the import site, since they typically involve members that were moved from one module to another. Meanwhile, the PEP 585 built-in rewrites don't require changing imports at all, since they only change to <code>list</code>, <code>set</code>, etc., which are available as builtins. Later, when we added support for multi-location fixes, we added <code>defaultdict</code> and <code>deque</code> to the PEP 585 rule; and we added <code>typing.List</code> and friends to the deprecated import rule, even though it was already covered in a sense by the PEP 585 rule. Anyway, just explaining why this happened, not how we should deal with it.</p>
-<p>The current setup honestly seems okay to me (the PEP 585 rule deals with members that need to be renamed; the deprecated imports rule only fixes <em>imports</em>), but I'd probably also be okay with removing the PEP 585 imports from &quot;deprecated imports&quot; and moving them into this rule. Though it might be sort of complicated to pull off given how different the implementations are, and some of the quirks around how they'd need to be gated (e.g., you can rewrite <code>List</code> to <code>list</code> if <code>from __future__ import annotations</code> is present, but you can't rewrite to a <code>collections.abc</code> import), at which point, I may question the value.</p>
+            <div class="timeline-body"><p>I think this originally arose from pyupgrade, which has two separate &quot;rules&quot; for deprecated imports vs. PEP 585 rewrites (for builtins only). Most deprecated imports can be fixed by only modifying the import site, since they typically involve members that were moved from one module to another. Meanwhile, the PEP 585 built-in rewrites don&#x27;t require changing imports at all, since they only change to <code>list</code>, <code>set</code>, etc., which are available as builtins. Later, when we added support for multi-location fixes, we added <code>defaultdict</code> and <code>deque</code> to the PEP 585 rule; and we added <code>typing.List</code> and friends to the deprecated import rule, even though it was already covered in a sense by the PEP 585 rule. Anyway, just explaining why this happened, not how we should deal with it.</p>
+<p>The current setup honestly seems okay to me (the PEP 585 rule deals with members that need to be renamed; the deprecated imports rule only fixes <em>imports</em>), but I&#x27;d probably also be okay with removing the PEP 585 imports from &quot;deprecated imports&quot; and moving them into this rule. Though it might be sort of complicated to pull off given how different the implementations are, and some of the quirks around how they&#x27;d need to be gated (e.g., you can rewrite <code>List</code> to <code>list</code> if <code>from __future__ import annotations</code> is present, but you can&#x27;t rewrite to a <code>collections.abc</code> import), at which point, I may question the value.</p>
 <blockquote>
 <p>although weirdly when I actually run --fix it runs 2 fixes (including UP006) and does actually fix the code properly... I guess ruff reruns fixes until the output is stable?</p>
 </blockquote>
-<p>Yeah, that's right -- we iteratively fix up to a certain number of iterations.</p>
+<p>Yeah, that&#x27;s right -- we iteratively fix up to a certain number of iterations.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/wookie184">@wookie184</a> on 2023-07-07 18:50</div>
-            <div class="timeline-body"><p>Thanks for explaining, I agree that it seems quite complicated to combine the rules, and removing the duplication of names would probably also require a decent amount of work. Maybe something that could be done at some point but I'm not sure it's necessary for this PR.</p>
+            <div class="timeline-body"><p>Thanks for explaining, I agree that it seems quite complicated to combine the rules, and removing the duplication of names would probably also require a decent amount of work. Maybe something that could be done at some point but I&#x27;m not sure it&#x27;s necessary for this PR.</p>
 <p>I fixed the issue with the name conflict when both types of import are already there (the autofix for this case still works, it just needs the <code>UP035</code> autofix first).</p>
 <p>Does this look alright?</p>
 </div>
@@ -119,7 +119,7 @@ Found 3 errors.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/wookie184">@wookie184</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:605 on 2023-08-06 10:02</div>
-            <div class="timeline-body"><p>This seems to now have been fixed by this PR already: https://github.com/astral-sh/ruff/pull/6102</p>
+            <div class="timeline-body"><p>This seems to now have been fixed by this PR already: <a href="https://github.com/astral-sh/ruff/pull/6102">astral-sh/ruff#6102</a></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -139,7 +139,7 @@ Found 3 errors.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-21 23:10</div>
-            <div class="timeline-body"><p>As an example: if someone does <code>import pipes; pipes.quote</code>, we probably want to rewrite that to <code>import shlex; shlex.quote</code>. But that's unrelated to PEP 585.</p>
+            <div class="timeline-body"><p>As an example: if someone does <code>import pipes; pipes.quote</code>, we probably want to rewrite that to <code>import shlex; shlex.quote</code>. But that&#x27;s unrelated to PEP 585.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -147,8 +147,8 @@ Found 3 errors.
             <div class="timeline-body"><blockquote>
 <p>I feel like this could be better suited to inclusion in UP035 -- since the deprecated imports flagged in there should be a superset of the PEP 585 changes.</p>
 </blockquote>
-<p>I can't think of a case that you'd want to have a rule to detect/fix</p>
-<pre><code class="language-python">from typing import List
+<p>I can&#x27;t think of a case that you&#x27;d want to have a rule to detect/fix</p>
+<pre><code>from typing import List
 x: List
 </code></pre>
 <p>but not</p>
@@ -157,247 +157,247 @@ x: typing.List
 </code></pre>
 <p>I would expect them to be treated as equivalent by a rule attempting to update to PEP 585 annotations.</p>
 <blockquote>
-<p>As an example: if someone does import pipes; pipes.quote, we probably want to rewrite that to import shlex; shlex.quote. But that's unrelated to PEP 585.</p>
+<p>As an example: if someone does import pipes; pipes.quote, we probably want to rewrite that to import shlex; shlex.quote. But that&#x27;s unrelated to PEP 585.</p>
 </blockquote>
-<p>I think that just suggests that would make sense to implement for <code>UP006</code> (ideally sharing implementation with <code>UP035</code>). IMO, the difference between <code>UP006</code> and <code>UP035</code> should just be what names are affected, not in what cases the names are changed, since that's not a helpful distinction for the user.</p>
+<p>I think that just suggests that would make sense to implement for <code>UP006</code> (ideally sharing implementation with <code>UP035</code>). IMO, the difference between <code>UP006</code> and <code>UP035</code> should just be what names are affected, not in what cases the names are changed, since that&#x27;s not a helpful distinction for the user.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @charliermarsh by @charliermarsh on 2023-12-01 01:56</div>
+            <div class="event">Review requested from <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-01 01:56</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-12-01 01:56</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-01 01:56</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-12-01 02:08</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+4 -0 violations, +0 -0 fixes in 1 projects; 54 projects unchanged)</p>
-<details><summary><a href="https://github.com/pdm-project/pdm">pdm-project/pdm</a> (+4 -0 violations, +0 -0 fixes)</summary>
+<a href="https://github.com/pdm-project/pdm">pdm-project/pdm</a> (+4 -0 violations, +0 -0 fixes)
 <p>
 
 <pre>
-+ <a href='https://github.com/pdm-project/pdm/blob/e29740f4022cb0bc29140a05f6f2cfb900b8b581/src/pdm/cli/commands/cache.py#L37'>src/pdm/cli/commands/cache.py:37:47:</a> FA100 Add `from __future__ import annotations` to simplify `typing.Iterable`
-+ <a href='https://github.com/pdm-project/pdm/blob/e29740f4022cb0bc29140a05f6f2cfb900b8b581/src/pdm/cli/commands/cache.py#L97'>src/pdm/cli/commands/cache.py:97:20:</a> FA100 Add `from __future__ import annotations` to simplify `typing.Iterable`
-+ <a href='https://github.com/pdm-project/pdm/blob/e29740f4022cb0bc29140a05f6f2cfb900b8b581/src/pdm/cli/commands/config.py#L102'>src/pdm/cli/commands/config.py:102:36:</a> FA100 Add `from __future__ import annotations` to simplify `typing.Mapping`
-+ <a href='https://github.com/pdm-project/pdm/blob/e29740f4022cb0bc29140a05f6f2cfb900b8b581/src/pdm/cli/commands/config.py#L102'>src/pdm/cli/commands/config.py:102:67:</a> FA100 Add `from __future__ import annotations` to simplify `typing.Mapping`
++ <a href="https://github.com/pdm-project/pdm/blob/e29740f4022cb0bc29140a05f6f2cfb900b8b581/src/pdm/cli/commands/cache.py#L37">src/pdm/cli/commands/cache.py:37:47:</a> FA100 Add `from __future__ import annotations` to simplify `typing.Iterable`
++ <a href="https://github.com/pdm-project/pdm/blob/e29740f4022cb0bc29140a05f6f2cfb900b8b581/src/pdm/cli/commands/cache.py#L97">src/pdm/cli/commands/cache.py:97:20:</a> FA100 Add `from __future__ import annotations` to simplify `typing.Iterable`
++ <a href="https://github.com/pdm-project/pdm/blob/e29740f4022cb0bc29140a05f6f2cfb900b8b581/src/pdm/cli/commands/config.py#L102">src/pdm/cli/commands/config.py:102:36:</a> FA100 Add `from __future__ import annotations` to simplify `typing.Mapping`
++ <a href="https://github.com/pdm-project/pdm/blob/e29740f4022cb0bc29140a05f6f2cfb900b8b581/src/pdm/cli/commands/config.py#L102">src/pdm/cli/commands/config.py:102:67:</a> FA100 Add `from __future__ import annotations` to simplify `typing.Mapping`
 </pre>
 
 </p>
-</details>
-<details><summary>Changes by rule (1 rules affected)</summary>
+
+Changes by rule (1 rules affected)
 <p>
 
 <p>| code | total | + violation | - violation | + fix | - fix |
 | ---- | ------- | --------- | -------- | ----- | ---- |
 | FA100 | 4 | 4 | 0 | 0 | 0 |</p>
 </p>
-</details>
 
-<h3>Linter (preview)</h3>
+
+Linter (preview)
 <p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+2433 -0 violations, +0 -0 fixes in 22 projects; 33 projects unchanged)</p>
-<details><summary><a href="https://github.com/aiven/aiven-client">aiven/aiven-client</a> (+409 -0 violations, +0 -0 fixes)</summary>
+<a href="https://github.com/aiven/aiven-client">aiven/aiven-client</a> (+409 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/aiven/aiven-client/blob/e73ee16e9c9934a04cc19d476434b7db96f7e09a/aiven/client/argx.py#L104'>aiven/client/argx.py:104:38:</a> UP006 Use `collections.abc.Iterable` instead of `Iterable` for type annotation
-+ <a href='https://github.com/aiven/aiven-client/blob/e73ee16e9c9934a04cc19d476434b7db96f7e09a/aiven/client/argx.py#L155'>aiven/client/argx.py:155:54:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/aiven/aiven-client/blob/e73ee16e9c9934a04cc19d476434b7db96f7e09a/aiven/client/argx.py#L171'>aiven/client/argx.py:171:45:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/aiven/aiven-client/blob/e73ee16e9c9934a04cc19d476434b7db96f7e09a/aiven/client/argx.py#L174'>aiven/client/argx.py:174:49:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/aiven/aiven-client/blob/e73ee16e9c9934a04cc19d476434b7db96f7e09a/aiven/client/argx.py#L241'>aiven/client/argx.py:241:29:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/aiven/aiven-client/blob/e73ee16e9c9934a04cc19d476434b7db96f7e09a/aiven/client/argx.py#L278'>aiven/client/argx.py:278:34:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/aiven/aiven-client/blob/e73ee16e9c9934a04cc19d476434b7db96f7e09a/aiven/client/argx.py#L278'>aiven/client/argx.py:278:44:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/aiven/aiven-client/blob/e73ee16e9c9934a04cc19d476434b7db96f7e09a/aiven/client/argx.py#L290'>aiven/client/argx.py:290:32:</a> UP006 Use `collections.abc.Sequence` instead of `Sequence` for type annotation
-+ <a href='https://github.com/aiven/aiven-client/blob/e73ee16e9c9934a04cc19d476434b7db96f7e09a/aiven/client/argx.py#L300'>aiven/client/argx.py:300:29:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/aiven/aiven-client/blob/e73ee16e9c9934a04cc19d476434b7db96f7e09a/aiven/client/argx.py#L303'>aiven/client/argx.py:303:34:</a> UP006 Use `collections.abc.Sequence` instead of `Sequence` for type annotation
++ <a href="https://github.com/aiven/aiven-client/blob/e73ee16e9c9934a04cc19d476434b7db96f7e09a/aiven/client/argx.py#L104">aiven/client/argx.py:104:38:</a> UP006 Use `collections.abc.Iterable` instead of `Iterable` for type annotation
++ <a href="https://github.com/aiven/aiven-client/blob/e73ee16e9c9934a04cc19d476434b7db96f7e09a/aiven/client/argx.py#L155">aiven/client/argx.py:155:54:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/aiven/aiven-client/blob/e73ee16e9c9934a04cc19d476434b7db96f7e09a/aiven/client/argx.py#L171">aiven/client/argx.py:171:45:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/aiven/aiven-client/blob/e73ee16e9c9934a04cc19d476434b7db96f7e09a/aiven/client/argx.py#L174">aiven/client/argx.py:174:49:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/aiven/aiven-client/blob/e73ee16e9c9934a04cc19d476434b7db96f7e09a/aiven/client/argx.py#L241">aiven/client/argx.py:241:29:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/aiven/aiven-client/blob/e73ee16e9c9934a04cc19d476434b7db96f7e09a/aiven/client/argx.py#L278">aiven/client/argx.py:278:34:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/aiven/aiven-client/blob/e73ee16e9c9934a04cc19d476434b7db96f7e09a/aiven/client/argx.py#L278">aiven/client/argx.py:278:44:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/aiven/aiven-client/blob/e73ee16e9c9934a04cc19d476434b7db96f7e09a/aiven/client/argx.py#L290">aiven/client/argx.py:290:32:</a> UP006 Use `collections.abc.Sequence` instead of `Sequence` for type annotation
++ <a href="https://github.com/aiven/aiven-client/blob/e73ee16e9c9934a04cc19d476434b7db96f7e09a/aiven/client/argx.py#L300">aiven/client/argx.py:300:29:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/aiven/aiven-client/blob/e73ee16e9c9934a04cc19d476434b7db96f7e09a/aiven/client/argx.py#L303">aiven/client/argx.py:303:34:</a> UP006 Use `collections.abc.Sequence` instead of `Sequence` for type annotation
 ... 399 additional changes omitted for project
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+481 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/apache/airflow">apache/airflow</a> (+481 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/apache/airflow/blob/e9412bf69e5f25a815b660e6f06fa1aeec6b062a/airflow/api/auth/backend/deny_all.py#L34'>airflow/api/auth/backend/deny_all.py:34:24:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/apache/airflow/blob/e9412bf69e5f25a815b660e6f06fa1aeec6b062a/airflow/api_connexion/parameters.py#L87'>airflow/api_connexion/parameters.py:87:24:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/apache/airflow/blob/e9412bf69e5f25a815b660e6f06fa1aeec6b062a/airflow/api_connexion/parameters.py#L90'>airflow/api_connexion/parameters.py:90:52:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/apache/airflow/blob/e9412bf69e5f25a815b660e6f06fa1aeec6b062a/airflow/api_connexion/parameters.py#L90'>airflow/api_connexion/parameters.py:90:78:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/apache/airflow/blob/e9412bf69e5f25a815b660e6f06fa1aeec6b062a/airflow/api_connexion/security.py#L114'>airflow/api_connexion/security.py:114:6:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/apache/airflow/blob/e9412bf69e5f25a815b660e6f06fa1aeec6b062a/airflow/api_connexion/security.py#L161'>airflow/api_connexion/security.py:161:54:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/apache/airflow/blob/e9412bf69e5f25a815b660e6f06fa1aeec6b062a/airflow/api_connexion/security.py#L180'>airflow/api_connexion/security.py:180:53:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/apache/airflow/blob/e9412bf69e5f25a815b660e6f06fa1aeec6b062a/airflow/api_connexion/security.py#L199'>airflow/api_connexion/security.py:199:57:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/apache/airflow/blob/e9412bf69e5f25a815b660e6f06fa1aeec6b062a/airflow/api_connexion/security.py#L218'>airflow/api_connexion/security.py:218:54:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/apache/airflow/blob/e9412bf69e5f25a815b660e6f06fa1aeec6b062a/airflow/api_connexion/security.py#L237'>airflow/api_connexion/security.py:237:6:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/apache/airflow/blob/e9412bf69e5f25a815b660e6f06fa1aeec6b062a/airflow/api/auth/backend/deny_all.py#L34">airflow/api/auth/backend/deny_all.py:34:24:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/apache/airflow/blob/e9412bf69e5f25a815b660e6f06fa1aeec6b062a/airflow/api_connexion/parameters.py#L87">airflow/api_connexion/parameters.py:87:24:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/apache/airflow/blob/e9412bf69e5f25a815b660e6f06fa1aeec6b062a/airflow/api_connexion/parameters.py#L90">airflow/api_connexion/parameters.py:90:52:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/apache/airflow/blob/e9412bf69e5f25a815b660e6f06fa1aeec6b062a/airflow/api_connexion/parameters.py#L90">airflow/api_connexion/parameters.py:90:78:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/apache/airflow/blob/e9412bf69e5f25a815b660e6f06fa1aeec6b062a/airflow/api_connexion/security.py#L114">airflow/api_connexion/security.py:114:6:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/apache/airflow/blob/e9412bf69e5f25a815b660e6f06fa1aeec6b062a/airflow/api_connexion/security.py#L161">airflow/api_connexion/security.py:161:54:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/apache/airflow/blob/e9412bf69e5f25a815b660e6f06fa1aeec6b062a/airflow/api_connexion/security.py#L180">airflow/api_connexion/security.py:180:53:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/apache/airflow/blob/e9412bf69e5f25a815b660e6f06fa1aeec6b062a/airflow/api_connexion/security.py#L199">airflow/api_connexion/security.py:199:57:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/apache/airflow/blob/e9412bf69e5f25a815b660e6f06fa1aeec6b062a/airflow/api_connexion/security.py#L218">airflow/api_connexion/security.py:218:54:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/apache/airflow/blob/e9412bf69e5f25a815b660e6f06fa1aeec6b062a/airflow/api_connexion/security.py#L237">airflow/api_connexion/security.py:237:6:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
 ... 471 additional changes omitted for project
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+167 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/apache/superset">apache/superset</a> (+167 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/apache/superset/blob/640dac1eff50229b5b945791d1e99488c707be91/scripts/check-env.py#L37'>scripts/check-env.py:37:40:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/apache/superset/blob/640dac1eff50229b5b945791d1e99488c707be91/superset/advanced_data_type/types.py#L58'>superset/advanced_data_type/types.py:58:21:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/apache/superset/blob/640dac1eff50229b5b945791d1e99488c707be91/superset/advanced_data_type/types.py#L59'>superset/advanced_data_type/types.py:59:23:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/apache/superset/blob/640dac1eff50229b5b945791d1e99488c707be91/superset/cli/test_db.py#L81'>superset/cli/test_db.py:81:12:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/apache/superset/blob/640dac1eff50229b5b945791d1e99488c707be91/superset/cli/test_db.py#L88'>superset/cli/test_db.py:88:38:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/apache/superset/blob/640dac1eff50229b5b945791d1e99488c707be91/superset/commands/chart/export.py#L80'>superset/commands/chart/export.py:80:30:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/apache/superset/blob/640dac1eff50229b5b945791d1e99488c707be91/superset/commands/dashboard/export.py#L168'>superset/commands/dashboard/export.py:168:30:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/apache/superset/blob/640dac1eff50229b5b945791d1e99488c707be91/superset/commands/database/export.py#L108'>superset/commands/database/export.py:108:30:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/apache/superset/blob/640dac1eff50229b5b945791d1e99488c707be91/superset/commands/dataset/export.py#L87'>superset/commands/dataset/export.py:87:30:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/apache/superset/blob/640dac1eff50229b5b945791d1e99488c707be91/superset/commands/dataset/importers/v0.py#L129'>superset/commands/dataset/importers/v0.py:129:22:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/apache/superset/blob/640dac1eff50229b5b945791d1e99488c707be91/scripts/check-env.py#L37">scripts/check-env.py:37:40:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/apache/superset/blob/640dac1eff50229b5b945791d1e99488c707be91/superset/advanced_data_type/types.py#L58">superset/advanced_data_type/types.py:58:21:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/apache/superset/blob/640dac1eff50229b5b945791d1e99488c707be91/superset/advanced_data_type/types.py#L59">superset/advanced_data_type/types.py:59:23:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/apache/superset/blob/640dac1eff50229b5b945791d1e99488c707be91/superset/cli/test_db.py#L81">superset/cli/test_db.py:81:12:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/apache/superset/blob/640dac1eff50229b5b945791d1e99488c707be91/superset/cli/test_db.py#L88">superset/cli/test_db.py:88:38:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/apache/superset/blob/640dac1eff50229b5b945791d1e99488c707be91/superset/commands/chart/export.py#L80">superset/commands/chart/export.py:80:30:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/apache/superset/blob/640dac1eff50229b5b945791d1e99488c707be91/superset/commands/dashboard/export.py#L168">superset/commands/dashboard/export.py:168:30:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/apache/superset/blob/640dac1eff50229b5b945791d1e99488c707be91/superset/commands/database/export.py#L108">superset/commands/database/export.py:108:30:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/apache/superset/blob/640dac1eff50229b5b945791d1e99488c707be91/superset/commands/dataset/export.py#L87">superset/commands/dataset/export.py:87:30:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/apache/superset/blob/640dac1eff50229b5b945791d1e99488c707be91/superset/commands/dataset/importers/v0.py#L129">superset/commands/dataset/importers/v0.py:129:22:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
 ... 157 additional changes omitted for project
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+250 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+250 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/action.py#L27'>release/action.py:27:31:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/action.py#L27'>release/action.py:27:52:</a> UP006 Use `collections.abc.Sequence` instead of `Sequence` for type annotation
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/action.py#L35'>release/action.py:35:47:</a> UP006 Use `collections.abc.Sequence` instead of `Sequence` for type annotation
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/build.py#L144'>release/build.py:144:22:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/credentials.py#L37'>release/credentials.py:37:22:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/credentials.py#L40'>release/credentials.py:40:38:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/pipeline.py#L24'>release/pipeline.py:24:12:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/pipeline.py#L34'>release/pipeline.py:34:31:</a> UP006 Use `collections.abc.Sequence` instead of `Sequence` for type annotation
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/ui.py#L103'>release/ui.py:103:33:</a> UP006 Use `collections.abc.Sequence` instead of `Sequence` for type annotation
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/ui.py#L24'>release/ui.py:24:17:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/action.py#L27">release/action.py:27:31:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/action.py#L27">release/action.py:27:52:</a> UP006 Use `collections.abc.Sequence` instead of `Sequence` for type annotation
++ <a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/action.py#L35">release/action.py:35:47:</a> UP006 Use `collections.abc.Sequence` instead of `Sequence` for type annotation
++ <a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/build.py#L144">release/build.py:144:22:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/credentials.py#L37">release/credentials.py:37:22:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/credentials.py#L40">release/credentials.py:40:38:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/pipeline.py#L24">release/pipeline.py:24:12:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/pipeline.py#L34">release/pipeline.py:34:31:</a> UP006 Use `collections.abc.Sequence` instead of `Sequence` for type annotation
++ <a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/ui.py#L103">release/ui.py:103:33:</a> UP006 Use `collections.abc.Sequence` instead of `Sequence` for type annotation
++ <a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/ui.py#L24">release/ui.py:24:17:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
 ... 240 additional changes omitted for project
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+3 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+3 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/ibis-project/ibis/blob/33d6784e64b42e0dc47e15282979925a9bc60333/ibis/common/tests/test_patterns.py#L1122'>ibis/common/tests/test_patterns.py:1122:13:</a> UP006 [*] Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/ibis-project/ibis/blob/33d6784e64b42e0dc47e15282979925a9bc60333/ibis/common/tests/test_patterns.py#L1125'>ibis/common/tests/test_patterns.py:1125:10:</a> UP006 [*] Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/ibis-project/ibis/blob/33d6784e64b42e0dc47e15282979925a9bc60333/ibis/common/tests/test_patterns.py#L731'>ibis/common/tests/test_patterns.py:731:31:</a> UP006 [*] Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/ibis-project/ibis/blob/33d6784e64b42e0dc47e15282979925a9bc60333/ibis/common/tests/test_patterns.py#L1122">ibis/common/tests/test_patterns.py:1122:13:</a> UP006 [*] Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/ibis-project/ibis/blob/33d6784e64b42e0dc47e15282979925a9bc60333/ibis/common/tests/test_patterns.py#L1125">ibis/common/tests/test_patterns.py:1125:10:</a> UP006 [*] Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/ibis-project/ibis/blob/33d6784e64b42e0dc47e15282979925a9bc60333/ibis/common/tests/test_patterns.py#L731">ibis/common/tests/test_patterns.py:731:31:</a> UP006 [*] Use `collections.abc.Callable` instead of `Callable` for type annotation
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/langchain-ai/langchain">langchain-ai/langchain</a> (+299 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/langchain-ai/langchain">langchain-ai/langchain</a> (+299 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/langchain-ai/langchain/blob/edbe7d5f5e0dcc771c1f53a49bb784a3960ce448/libs/core/langchain_core/_api/beta_decorator.py#L128'>libs/core/langchain_core/_api/beta_decorator.py:128:35:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/langchain-ai/langchain/blob/edbe7d5f5e0dcc771c1f53a49bb784a3960ce448/libs/core/langchain_core/_api/beta_decorator.py#L186'>libs/core/langchain_core/_api/beta_decorator.py:186:35:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/langchain-ai/langchain/blob/edbe7d5f5e0dcc771c1f53a49bb784a3960ce448/libs/core/langchain_core/_api/beta_decorator.py#L201'>libs/core/langchain_core/_api/beta_decorator.py:201:35:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/langchain-ai/langchain/blob/edbe7d5f5e0dcc771c1f53a49bb784a3960ce448/libs/core/langchain_core/_api/beta_decorator.py#L30'>libs/core/langchain_core/_api/beta_decorator.py:30:30:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/langchain-ai/langchain/blob/edbe7d5f5e0dcc771c1f53a49bb784a3960ce448/libs/core/langchain_core/_api/beta_decorator.py#L39'>libs/core/langchain_core/_api/beta_decorator.py:39:6:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/langchain-ai/langchain/blob/edbe7d5f5e0dcc771c1f53a49bb784a3960ce448/libs/core/langchain_core/_api/deprecation.py#L202'>libs/core/langchain_core/_api/deprecation.py:202:35:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/langchain-ai/langchain/blob/edbe7d5f5e0dcc771c1f53a49bb784a3960ce448/libs/core/langchain_core/_api/deprecation.py#L232'>libs/core/langchain_core/_api/deprecation.py:232:35:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/langchain-ai/langchain/blob/edbe7d5f5e0dcc771c1f53a49bb784a3960ce448/libs/core/langchain_core/_api/deprecation.py#L252'>libs/core/langchain_core/_api/deprecation.py:252:35:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/langchain-ai/langchain/blob/edbe7d5f5e0dcc771c1f53a49bb784a3960ce448/libs/core/langchain_core/_api/deprecation.py#L268'>libs/core/langchain_core/_api/deprecation.py:268:47:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/langchain-ai/langchain/blob/edbe7d5f5e0dcc771c1f53a49bb784a3960ce448/libs/core/langchain_core/_api/deprecation.py#L300'>libs/core/langchain_core/_api/deprecation.py:300:35:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/langchain-ai/langchain/blob/edbe7d5f5e0dcc771c1f53a49bb784a3960ce448/libs/core/langchain_core/_api/beta_decorator.py#L128">libs/core/langchain_core/_api/beta_decorator.py:128:35:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/langchain-ai/langchain/blob/edbe7d5f5e0dcc771c1f53a49bb784a3960ce448/libs/core/langchain_core/_api/beta_decorator.py#L186">libs/core/langchain_core/_api/beta_decorator.py:186:35:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/langchain-ai/langchain/blob/edbe7d5f5e0dcc771c1f53a49bb784a3960ce448/libs/core/langchain_core/_api/beta_decorator.py#L201">libs/core/langchain_core/_api/beta_decorator.py:201:35:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/langchain-ai/langchain/blob/edbe7d5f5e0dcc771c1f53a49bb784a3960ce448/libs/core/langchain_core/_api/beta_decorator.py#L30">libs/core/langchain_core/_api/beta_decorator.py:30:30:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/langchain-ai/langchain/blob/edbe7d5f5e0dcc771c1f53a49bb784a3960ce448/libs/core/langchain_core/_api/beta_decorator.py#L39">libs/core/langchain_core/_api/beta_decorator.py:39:6:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/langchain-ai/langchain/blob/edbe7d5f5e0dcc771c1f53a49bb784a3960ce448/libs/core/langchain_core/_api/deprecation.py#L202">libs/core/langchain_core/_api/deprecation.py:202:35:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/langchain-ai/langchain/blob/edbe7d5f5e0dcc771c1f53a49bb784a3960ce448/libs/core/langchain_core/_api/deprecation.py#L232">libs/core/langchain_core/_api/deprecation.py:232:35:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/langchain-ai/langchain/blob/edbe7d5f5e0dcc771c1f53a49bb784a3960ce448/libs/core/langchain_core/_api/deprecation.py#L252">libs/core/langchain_core/_api/deprecation.py:252:35:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/langchain-ai/langchain/blob/edbe7d5f5e0dcc771c1f53a49bb784a3960ce448/libs/core/langchain_core/_api/deprecation.py#L268">libs/core/langchain_core/_api/deprecation.py:268:47:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/langchain-ai/langchain/blob/edbe7d5f5e0dcc771c1f53a49bb784a3960ce448/libs/core/langchain_core/_api/deprecation.py#L300">libs/core/langchain_core/_api/deprecation.py:300:35:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
 ... 289 additional changes omitted for project
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/lnbits/lnbits">lnbits/lnbits</a> (+47 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/lnbits/lnbits">lnbits/lnbits</a> (+47 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/lnbits/app.py#L342'>lnbits/app.py:342:46:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/lnbits/app.py#L352'>lnbits/app.py:352:47:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/lnbits/core/models.py#L332'>lnbits/core/models.py:332:30:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/lnbits/core/models.py#L333'>lnbits/core/models.py:333:31:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/lnbits/core/views/auth_api.py#L340'>lnbits/core/views/auth_api.py:340:49:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/lnbits/lnurl.py#L24'>lnbits/lnurl.py:24:36:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/lnbits/tasks.py#L143'>lnbits/tasks.py:143:11:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/lnbits/tasks.py#L143'>lnbits/tasks.py:143:31:</a> UP006 Use `collections.abc.Coroutine` instead of `Coroutine` for type annotation
-+ <a href='https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/lnbits/tasks.py#L144'>lnbits/tasks.py:144:19:</a> UP006 Use `collections.abc.Coroutine` instead of `Coroutine` for type annotation
-+ <a href='https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/lnbits/tasks.py#L144'>lnbits/tasks.py:144:6:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/lnbits/app.py#L342">lnbits/app.py:342:46:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/lnbits/app.py#L352">lnbits/app.py:352:47:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/lnbits/core/models.py#L332">lnbits/core/models.py:332:30:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/lnbits/core/models.py#L333">lnbits/core/models.py:333:31:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/lnbits/core/views/auth_api.py#L340">lnbits/core/views/auth_api.py:340:49:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/lnbits/lnurl.py#L24">lnbits/lnurl.py:24:36:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/lnbits/tasks.py#L143">lnbits/tasks.py:143:11:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/lnbits/tasks.py#L143">lnbits/tasks.py:143:31:</a> UP006 Use `collections.abc.Coroutine` instead of `Coroutine` for type annotation
++ <a href="https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/lnbits/tasks.py#L144">lnbits/tasks.py:144:19:</a> UP006 Use `collections.abc.Coroutine` instead of `Coroutine` for type annotation
++ <a href="https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/lnbits/tasks.py#L144">lnbits/tasks.py:144:6:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
 ... 37 additional changes omitted for project
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/milvus-io/pymilvus">milvus-io/pymilvus</a> (+1 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/milvus-io/pymilvus">milvus-io/pymilvus</a> (+1 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/milvus-io/pymilvus/blob/4a6680c97968e9d6173f9525a19ce4ff4273b1ce/_version_helper.py#L32'>_version_helper.py:32:17:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/milvus-io/pymilvus/blob/4a6680c97968e9d6173f9525a19ce4ff4273b1ce/_version_helper.py#L32">_version_helper.py:32:17:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/mlflow/mlflow">mlflow/mlflow</a> (+101 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/mlflow/mlflow">mlflow/mlflow</a> (+101 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/mlflow/mlflow/blob/4244b05d5a6f99af59ed709efe7c34e79dec0155/dev/clint/src/clint/linter.py#L110'>dev/clint/src/clint/linter.py:110:42:</a> UP006 Use `collections.abc.Iterator` instead of `Iterator` for type annotation
-+ <a href='https://github.com/mlflow/mlflow/blob/4244b05d5a6f99af59ed709efe7c34e79dec0155/dev/set_matrix.py#L317'>dev/set_matrix.py:317:56:</a> UP006 Use `collections.abc.Iterator` instead of `Iterator` for type annotation
-+ <a href='https://github.com/mlflow/mlflow/blob/4244b05d5a6f99af59ed709efe7c34e79dec0155/mlflow/bedrock/_autolog.py#L46'>mlflow/bedrock/_autolog.py:46:35:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/mlflow/mlflow/blob/4244b05d5a6f99af59ed709efe7c34e79dec0155/mlflow/bedrock/_autolog.py#L46'>mlflow/bedrock/_autolog.py:46:58:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/mlflow/mlflow/blob/4244b05d5a6f99af59ed709efe7c34e79dec0155/mlflow/data/dataset_registry.py#L122'>mlflow/data/dataset_registry.py:122:48:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/mlflow/mlflow/blob/4244b05d5a6f99af59ed709efe7c34e79dec0155/mlflow/data/dataset_registry.py#L18'>mlflow/data/dataset_registry.py:18:31:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/mlflow/mlflow/blob/4244b05d5a6f99af59ed709efe7c34e79dec0155/mlflow/data/dataset_registry.py#L63'>mlflow/data/dataset_registry.py:63:47:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/mlflow/mlflow/blob/4244b05d5a6f99af59ed709efe7c34e79dec0155/mlflow/data/dataset_registry.py#L93'>mlflow/data/dataset_registry.py:93:42:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
-+ <a href='https://github.com/mlflow/mlflow/blob/4244b05d5a6f99af59ed709efe7c34e79dec0155/mlflow/data/huggingface_dataset.py#L180'>mlflow/data/huggingface_dataset.py:180:37:</a> UP006 Use `collections.abc.Sequence` instead of `Sequence` for type annotation
-+ <a href='https://github.com/mlflow/mlflow/blob/4244b05d5a6f99af59ed709efe7c34e79dec0155/mlflow/data/huggingface_dataset.py#L180'>mlflow/data/huggingface_dataset.py:180:52:</a> UP006 Use `collections.abc.Mapping` instead of `Mapping` for type annotation
++ <a href="https://github.com/mlflow/mlflow/blob/4244b05d5a6f99af59ed709efe7c34e79dec0155/dev/clint/src/clint/linter.py#L110">dev/clint/src/clint/linter.py:110:42:</a> UP006 Use `collections.abc.Iterator` instead of `Iterator` for type annotation
++ <a href="https://github.com/mlflow/mlflow/blob/4244b05d5a6f99af59ed709efe7c34e79dec0155/dev/set_matrix.py#L317">dev/set_matrix.py:317:56:</a> UP006 Use `collections.abc.Iterator` instead of `Iterator` for type annotation
++ <a href="https://github.com/mlflow/mlflow/blob/4244b05d5a6f99af59ed709efe7c34e79dec0155/mlflow/bedrock/_autolog.py#L46">mlflow/bedrock/_autolog.py:46:35:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/mlflow/mlflow/blob/4244b05d5a6f99af59ed709efe7c34e79dec0155/mlflow/bedrock/_autolog.py#L46">mlflow/bedrock/_autolog.py:46:58:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/mlflow/mlflow/blob/4244b05d5a6f99af59ed709efe7c34e79dec0155/mlflow/data/dataset_registry.py#L122">mlflow/data/dataset_registry.py:122:48:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/mlflow/mlflow/blob/4244b05d5a6f99af59ed709efe7c34e79dec0155/mlflow/data/dataset_registry.py#L18">mlflow/data/dataset_registry.py:18:31:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/mlflow/mlflow/blob/4244b05d5a6f99af59ed709efe7c34e79dec0155/mlflow/data/dataset_registry.py#L63">mlflow/data/dataset_registry.py:63:47:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/mlflow/mlflow/blob/4244b05d5a6f99af59ed709efe7c34e79dec0155/mlflow/data/dataset_registry.py#L93">mlflow/data/dataset_registry.py:93:42:</a> UP006 Use `collections.abc.Callable` instead of `Callable` for type annotation
++ <a href="https://github.com/mlflow/mlflow/blob/4244b05d5a6f99af59ed709efe7c34e79dec0155/mlflow/data/huggingface_dataset.py#L180">mlflow/data/huggingface_dataset.py:180:37:</a> UP006 Use `collections.abc.Sequence` instead of `Sequence` for type annotation
++ <a href="https://github.com/mlflow/mlflow/blob/4244b05d5a6f99af59ed709efe7c34e79dec0155/mlflow/data/huggingface_dataset.py#L180">mlflow/data/huggingface_dataset.py:180:52:</a> UP006 Use `collections.abc.Mapping` instead of `Mapping` for type annotation
 ... 91 additional changes omitted for project
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/pypa/build">pypa/build</a> (+6 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/pypa/build">pypa/build</a> (+6 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/pypa/build/blob/88ae8330150f253dd70170368c311d6374315632/src/build/_builder.py#L120'>src/build/_builder.py:120:14:</a> UP006 Use `collections.abc.Sequence` instead of `Sequence` for type annotation
-+ <a href='https://github.com/pypa/build/blob/88ae8330150f253dd70170368c311d6374315632/src/build/_builder.py#L120'>src/build/_builder.py:120:68:</a> UP006 Use `collections.abc.Mapping` instead of `Mapping` for type annotation
-+ <a href='https://github.com/pypa/build/blob/88ae8330150f253dd70170368c311d6374315632/src/build/_builder.py#L39'>src/build/_builder.py:39:28:</a> UP006 Use `collections.abc.Mapping` instead of `Mapping` for type annotation
-+ <a href='https://github.com/pypa/build/blob/88ae8330150f253dd70170368c311d6374315632/src/build/_builder.py#L60'>src/build/_builder.py:60:44:</a> UP006 Use `collections.abc.Mapping` instead of `Mapping` for type annotation
-+ <a href='https://github.com/pypa/build/blob/88ae8330150f253dd70170368c311d6374315632/src/build/_builder.py#L74'>src/build/_builder.py:74:47:</a> UP006 Use `collections.abc.Mapping` instead of `Mapping` for type annotation
-+ <a href='https://github.com/pypa/build/blob/88ae8330150f253dd70170368c311d6374315632/src/build/_builder.py#L74'>src/build/_builder.py:74:69:</a> UP006 Use `collections.abc.Mapping` instead of `Mapping` for type annotation
++ <a href="https://github.com/pypa/build/blob/88ae8330150f253dd70170368c311d6374315632/src/build/_builder.py#L120">src/build/_builder.py:120:14:</a> UP006 Use `collections.abc.Sequence` instead of `Sequence` for type annotation
++ <a href="https://github.com/pypa/build/blob/88ae8330150f253dd70170368c311d6374315632/src/build/_builder.py#L120">src/build/_builder.py:120:68:</a> UP006 Use `collections.abc.Mapping` instead of `Mapping` for type annotation
++ <a href="https://github.com/pypa/build/blob/88ae8330150f253dd70170368c311d6374315632/src/build/_builder.py#L39">src/build/_builder.py:39:28:</a> UP006 Use `collections.abc.Mapping` instead of `Mapping` for type annotation
++ <a href="https://github.com/pypa/build/blob/88ae8330150f253dd70170368c311d6374315632/src/build/_builder.py#L60">src/build/_builder.py:60:44:</a> UP006 Use `collections.abc.Mapping` instead of `Mapping` for type annotation
++ <a href="https://github.com/pypa/build/blob/88ae8330150f253dd70170368c311d6374315632/src/build/_builder.py#L74">src/build/_builder.py:74:47:</a> UP006 Use `collections.abc.Mapping` instead of `Mapping` for type annotation
++ <a href="https://github.com/pypa/build/blob/88ae8330150f253dd70170368c311d6374315632/src/build/_builder.py#L74">src/build/_builder.py:74:69:</a> UP006 Use `collections.abc.Mapping` instead of `Mapping` for type annotation
 </pre>
 
 </p>
-</details>
+
 
 <p><em>... Truncated remaining completed project reports due to GitHub comment length restrictions</em></p>
-<details><summary>Changes by rule (2 rules affected)</summary>
+Changes by rule (2 rules affected)
 <p>
 
 <p>| code | total | + violation | - violation | + fix | - fix |
@@ -405,7 +405,7 @@ x: typing.List
 | UP006 | 2429 | 2429 | 0 | 0 | 0 |
 | FA100 | 4 | 4 | 0 | 0 | 0 |</p>
 </p>
-</details>
+
 
 </div>
         </div>
@@ -415,15 +415,15 @@ x: typing.List
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @zanieb on 2024-03-12 17:07</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-12 17:07</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @AlexWaygood on 2024-03-12 18:45</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-12 18:45</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-18 22:42</div>
-            <div class="timeline-body"><p>Ok, I think it actually does make sense to add these here -- but they probably need to go under preview. You're right that it's silly that the first case triggers, but the second does not:</p>
-<pre><code class="language-python">from typing import AbstractSet
+            <div class="timeline-body"><p>Ok, I think it actually does make sense to add these here -- but they probably need to go under preview. You&#x27;re right that it&#x27;s silly that the first case triggers, but the second does not:</p>
+<pre><code>from typing import AbstractSet
 
 def f(x: AbstractSet[str]) -&gt; None:
     pass
@@ -442,14 +442,14 @@ def f(x: typing.AbstractSet[str]) -&gt; None:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2024-08-01 21:42</div>
-            <div class="timeline-body"><p>As of Charlie's comment</p>
+            <div class="timeline-body"><p>As of Charlie&#x27;s comment</p>
 <blockquote>
 <p>If you want to rebase and gate the new variants behind preview, I am happy to merge the change.</p>
 </blockquote>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @dylwil3 on 2024-12-23 22:53</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-12-23 22:53</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-12-24 05:21</div>
@@ -458,7 +458,7 @@ def f(x: typing.AbstractSet[str]) -&gt; None:
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_stdlib/src/typing.rs</code>:327 on 2024-12-24 05:21</div>
             <div class="timeline-body"><p>nit: we can split this into two matches to short-circuit when the call path is not from <code>typing</code> / <code>typing_extensions</code> module like:</p>
-<pre><code class="language-rs">let [&quot;typing&quot; | &quot;typing_extensions&quot;, member @ ..] = call_path else {
+<pre><code>let [&quot;typing&quot; | &quot;typing_extensions&quot;, member @ ..] = call_path else {
     return None;
 };
 
@@ -478,7 +478,7 @@ match member {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/wookie184">@wookie184</a> on <code>crates/ruff_python_stdlib/src/typing.rs</code>:327 on 2024-12-28 19:52</div>
-            <div class="timeline-body"><p>That's roughly what I did originally <a href="https://github.com/astral-sh/ruff/pull/5454/commits/a818d91fcc6718ec8d4d6c6f5c8c9be136100669#diff-c4f7c61e24d0aea6b6ead5c0c47c17c3a6a126e63ed1bbf3c51b3cc31dee06cdR326-R328"><code>a818d91</code> (#5454)</a></p>
+            <div class="timeline-body"><p>That&#x27;s roughly what I did originally <a href="https://github.com/astral-sh/ruff/pull/5454/commits/a818d91fcc6718ec8d4d6c6f5c8c9be136100669#diff-c4f7c61e24d0aea6b6ead5c0c47c17c3a6a126e63ed1bbf3c51b3cc31dee06cdR326-R328"><code>a818d91</code> (#5454)</a></p>
 <p>Not sure if the change back was intentional, or just something lost in the course of the PR...</p>
 </div>
         </div>
@@ -491,10 +491,10 @@ match member {
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @MichaReiser on 2024-12-30 11:21</div>
+            <div class="event">Merged by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-30 11:21</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2024-12-30 11:21</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-30 11:21</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/wookie184">@wookie184</a> on 2024-12-30 11:24</div>
@@ -507,19 +507,19 @@ match member {
 <ul>
 <li><p>https://github.com/astral-sh/ruff/issues/15246</p>
 <p>Even if the detection+fix ability is better now that these are implemented in <code>UP006</code>, something needs to be done about the fact that the newly added warnings are all duplicates of warnings and fixes that already exist in <code>UP035</code>.</p>
-<p>If this implementation becomes a little more polished, it probably should completely replace the implementation that's currently in <code>UP035</code>, there's really no reason to still keep that inferior implementation other than its battle-tested status. Although maybe for historic consistency, even if the <em>implementation</em> is unified towards <code>UP006</code>, the set of items that it triggers for should remain split between <code>UP006</code> (covering only builtins such as <code>list</code>) and <code>UP035</code> (covering others) like it's always been.</p>
+<p>If this implementation becomes a little more polished, it probably should completely replace the implementation that&#x27;s currently in <code>UP035</code>, there&#x27;s really no reason to still keep that inferior implementation other than its battle-tested status. Although maybe for historic consistency, even if the <em>implementation</em> is unified towards <code>UP006</code>, the set of items that it triggers for should remain split between <code>UP006</code> (covering only builtins such as <code>list</code>) and <code>UP035</code> (covering others) like it&#x27;s always been.</p>
 </li>
 <li><p>https://github.com/astral-sh/ruff/issues/15245</p>
 <p>The fixer has bugs where it sometimes fails to kick in, and in corner cases kicks in with strange results.</p>
 </li>
 </ul>
-<p>For now I'd like to see this pull request reverted and relanded later after a more detailed discussion, because it has ongoing bugs and possibly introduces undesirable/unexpected changes to what the rules are supposed to cover.</p>
+<p>For now I&#x27;d like to see this pull request reverted and relanded later after a more detailed discussion, because it has ongoing bugs and possibly introduces undesirable/unexpected changes to what the rules are supposed to cover.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:58:28 UTC
+        Synced at 2026-01-20 18:54:57 UTC
     </footer>
 </body>
 </html>

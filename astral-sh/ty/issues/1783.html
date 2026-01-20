@@ -23,13 +23,13 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/aidandj">@aidandj</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>When the <code>if</code> and <code>isinstance</code> checks are broken out there is no error, but when combined:</p>
 <pre><code>Return type does not match returned value: expected `B@get_t2 | None`, found `(Base &amp; ~AlwaysTruthy) | None | B@get_t2` (invalid-return-type) [Ln 24, Col 16]
 </code></pre>
 <p>I searched through some of the existing type narrowing issues, but nothing stood out.</p>
 <p>https://play.ty.dev/5cddf17c-a358-48e0-937e-6ca92c87ea66</p>
-<pre><code class="language-py">from typing import TypeVar, Type, NoReturn, Optional, Dict
+<pre><code>from typing import TypeVar, Type, NoReturn, Optional, Dict
 
 class Base: ...
 
@@ -59,7 +59,7 @@ t = Thing()
 c = t.get_t(&quot;c&quot;, Child)
 c2 = t.get_t2(&quot;c&quot;, Child)
 </code></pre>
-<h3>Version</h3>
+Version
 <p><em>No response</em></p>
 </div>
         </div>
@@ -67,19 +67,19 @@ c2 = t.get_t2(&quot;c&quot;, Child)
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-05 19:14</div>
             <div class="timeline-body"><p>Thanks for the report!</p>
 <p>I think this is a case where ty is actually (perhaps pedantically?) correct, but it would be ideal if the diagnostic could be more clear about why.</p>
-<p>Nothing in your example rules out the possibility that instances of some subclass of <code>Base</code> could evaluate to <code>False</code> in a boolean context. If <code>wf</code> in <code>get_t2</code> were such an instance, it would fail <code>if wf</code>, short circuit, and reach the <code>return wf</code>, and would in fact be type-unsafe (because it would be an instance of <code>Base</code> that hasn't been verified to be an instance of <code>t</code>).</p>
+<p>Nothing in your example rules out the possibility that instances of some subclass of <code>Base</code> could evaluate to <code>False</code> in a boolean context. If <code>wf</code> in <code>get_t2</code> were such an instance, it would fail <code>if wf</code>, short circuit, and reach the <code>return wf</code>, and would in fact be type-unsafe (because it would be an instance of <code>Base</code> that hasn&#x27;t been verified to be an instance of <code>t</code>).</p>
 <p>If you look at the error message, it says &quot;expected <code>B@get_t2 | None</code>, found <code>(Base &amp; ~AlwaysTruthy) | None | B@get_t2</code>&quot;. The problematic extra component of the returned union is <code>Base &amp; ~AlwaysTruthy</code>. This type corresponds precisely to the above scenario: an instance of <code>Base</code> (or a subclass) which does not evaluate to truthy in boolean context.</p>
 <p>There are two easy fixes for this in your code: you can <a href="https://play.ty.dev/7437c523-c268-4ef8-acfb-834f0ad3c16f">use <code>if wf is not None</code> instead of just <code>if wf</code></a>, or you can <a href="https://play.ty.dev/5c160892-0a93-4662-9b5b-ec0aaa492772">inform ty that instances of <code>Base</code> are always truthy</a>. Either option eliminates the error.</p>
 <p>The version of the code in <code>get_t</code> also eliminates the error, because that restructuring causes the &quot;falsy instance of Base&quot; scenario to instead fall through to a <code>return None</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2025-12-05 19:14</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2025-12-05 19:14</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-05 19:20</div>
-            <div class="timeline-body"><p>It is true that instances of <code>Base</code> itself will always be truthy, if it doesn't define <code>__bool__</code>. But there's no such guarantee for subclasses of <code>Base</code>. That means there's a third option here (which also eliminates the ty error): define <code>Base</code> as final. (Of course that doesn't work if you actually subclass it, as you do in this example.)</p>
-<p>So ultimately this is another case where ty is pedantic about what is possible for subclasses to do. But in this particular case, mypy and pyrefly both also issue this error; only pyright does not. So I don't think we are being too pedantic here.</p>
+            <div class="timeline-body"><p>It is true that instances of <code>Base</code> itself will always be truthy, if it doesn&#x27;t define <code>__bool__</code>. But there&#x27;s no such guarantee for subclasses of <code>Base</code>. That means there&#x27;s a third option here (which also eliminates the ty error): define <code>Base</code> as final. (Of course that doesn&#x27;t work if you actually subclass it, as you do in this example.)</p>
+<p>So ultimately this is another case where ty is pedantic about what is possible for subclasses to do. But in this particular case, mypy and pyrefly both also issue this error; only pyright does not. So I don&#x27;t think we are being too pedantic here.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -90,7 +90,7 @@ c2 = t.get_t2(&quot;c&quot;, Child)
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:21:12 UTC
+        Synced at 2026-01-20 19:26:18 UTC
     </footer>
 </body>
 </html>

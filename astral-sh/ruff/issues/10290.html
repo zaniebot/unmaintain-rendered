@@ -23,22 +23,13 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/jagerber48">@jagerber48</a></div>
-            <div class="timeline-body"><!--
-Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
-
-If you're filing a bug report, please consider including the following information:
-
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
-* The current Ruff settings (any relevant sections from your `pyproject.toml`).
-* The current Ruff version (`ruff --version`).
--->
+            <div class="timeline-body">
 
 <p>PEP 585 allows usages like <code>list[int]</code> to be used in type annotations and type aliases. In python 3.7 and 3.8 this syntax can be used in type annotations if paired with <code>from __future__ import annotations</code>. However, as far as I can tell, it is not possible to use this syntax in <strong>type aliases</strong> for these versions of python.</p>
 <pre><code>MyType = list[int]
 </code></pre>
 <p>gives</p>
-<pre><code>TypeError: 'type' object is not subscriptable
+<pre><code>TypeError: &#x27;type&#x27; object is not subscriptable
 </code></pre>
 <p>on Python 3.8 for me.</p>
 <p>Instead I find myself needing to do</p>
@@ -48,22 +39,22 @@ MyType = List[int]
 </code></pre>
 <p>I am trying to extend support for a library that was previously <code>&gt;= 3.9</code> to <code>&gt;= 3.8</code>.
 I expected ruff to give me linting warnings about the above patterns when I set <code>requires-python = &quot;&gt;= 3.8&quot;</code> in <code>pyproject.toml</code> but instead I get no such warnings.</p>
-<p>I tried using the <code>keep-runtime-typing</code> option but that didn't cause errors to be raised. I also tried ignoring <code>UP006</code> and <code>UP007</code>, I didn't expect that to work (since I would only expect that to cause ruff not to ASK me to switch from <code>List</code>  to <code>list</code>, but not force a <code>list -&gt; List</code> back conversion.</p>
+<p>I tried using the <code>keep-runtime-typing</code> option but that didn&#x27;t cause errors to be raised. I also tried ignoring <code>UP006</code> and <code>UP007</code>, I didn&#x27;t expect that to work (since I would only expect that to cause ruff not to ASK me to switch from <code>List</code>  to <code>list</code>, but not force a <code>list -&gt; List</code> back conversion.</p>
 <p>Is there something I am missing?</p>
 <p>I am using ruff version 0.3.1</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-08 05:57</div>
-            <div class="timeline-body"><p>I don't think we currently flag those. We could, but AFAIK they're not covered by any rule right now. We only cover the inverse, e.g., you have a <code>List[int]</code> that could be a <code>list[int]</code>. It seems reasonable to support though.</p>
+            <div class="timeline-body"><p>I don&#x27;t think we currently flag those. We could, but AFAIK they&#x27;re not covered by any rule right now. We only cover the inverse, e.g., you have a <code>List[int]</code> that could be a <code>list[int]</code>. It seems reasonable to support though.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2024-03-08 05:57</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-08 05:57</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-08 08:51</div>
-            <div class="timeline-body"><p>That makes sense to me. To me the question is how we want to scope this rule. Should it be a dedicated rule for possible typing errors because of version incompatibility or is it a generic rule that catches any possible incompatibilities based on your python version. I'm bringing this up because there are two similar problems:</p>
+            <div class="timeline-body"><p>That makes sense to me. To me the question is how we want to scope this rule. Should it be a dedicated rule for possible typing errors because of version incompatibility or is it a generic rule that catches any possible incompatibilities based on your python version. I&#x27;m bringing this up because there are two similar problems:</p>
 <ul>
 <li>Ruff should warn about invalid syntax that raises a runtime <code>SyntaxError</code></li>
 <li>Ruff should warn about syntax that is incompatible with your target Python version</li>
@@ -87,19 +78,19 @@ I expected ruff to give me linting warnings about the above patterns when I set 
             <div class="timeline-body"><blockquote>
 <p>But maybe version checks are already in place at least for the upgrade direction.</p>
 </blockquote>
-<p>Yeah, that's correct -- the <code>UP</code> direction has version checks, we'd never change <code>List[int]</code> to <code>list[int]</code> on unsupported versions.</p>
+<p>Yeah, that&#x27;s correct -- the <code>UP</code> direction has version checks, we&#x27;d never change <code>List[int]</code> to <code>list[int]</code> on unsupported versions.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ods">@ods</a> on 2024-03-12 19:20</div>
             <div class="timeline-body"><blockquote>
-<p>Yeah, that's correct -- the UP direction has version checks, we'd never change List[int] to list[int] on unsupported versions.</p>
+<p>Yeah, that&#x27;s correct -- the UP direction has version checks, we&#x27;d never change List[int] to list[int] on unsupported versions.</p>
 </blockquote>
 <p>But it does change to incorrect variant, here is an example:</p>
-<pre><code class="language-shell">❯ ruff --version 
+<pre><code>❯ ruff --version 
 ruff 0.3.2
 
-❯ ruff check --config &quot;target-version='py38'&quot; --select UP - &lt;&lt;EOF
+❯ ruff check --config &quot;target-version=&#x27;py38&#x27;&quot; --select UP - &lt;&lt;EOF
 from __future__ import annotations
 from typing import List, Optional
 a: List[int]
@@ -110,25 +101,25 @@ EOF
 Found 2 errors.
 No fixes available (2 hidden fixes can be enabled with the `--unsafe-fixes` option).
 </code></pre>
-<p>Both suggested changes <code>list[int]</code> and <code>int | None</code> are invalid in Python 3.8. The error can easily pass unnoticed due to postponed evaluation though. Static checkers like mypy also don't complain, but runtime checkers like beartype do.</p>
+<p>Both suggested changes <code>list[int]</code> and <code>int | None</code> are invalid in Python 3.8. The error can easily pass unnoticed due to postponed evaluation though. Static checkers like mypy also don&#x27;t complain, but runtime checkers like beartype do.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-12 19:23</div>
-            <div class="timeline-body"><p>@ods  You're using <code>from __future__ import annotations</code> there and I believe this issue is specifically about type aliases which you're not using? We have a specific <a href="https://docs.astral.sh/ruff/settings/#lint_pyupgrade_keep-runtime-typing"><code>keep-runtime-typing</code></a> option for this use-case.</p>
+            <div class="timeline-body"><p>@ods  You&#x27;re using <code>from __future__ import annotations</code> there and I believe this issue is specifically about type aliases which you&#x27;re not using? We have a specific <a href="https://docs.astral.sh/ruff/settings/#lint_pyupgrade_keep-runtime-typing"><code>keep-runtime-typing</code></a> option for this use-case.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ods">@ods</a> on 2024-03-12 19:28</div>
-            <div class="timeline-body"><p>@zanieb Thanks, didn't know about this option!</p>
+            <div class="timeline-body"><p>@zanieb Thanks, didn&#x27;t know about this option!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/FichteFoll">@FichteFoll</a> on 2024-08-19 09:57</div>
             <div class="timeline-body"><p>Edit: Not actually an issue</p>
-<hr />
+<hr>
 <p>Similarly, setting <code>target-version = &quot;py38&quot;</code> does not consider that even inside .pyi files it is not possible to use the union syntax or the stdlib types as generics when defining a <code>TypeAlias</code>, which is required afaik when targetting Python 3.8. For example:</p>
-<pre><code class="language-py">from typing import Dict, List, TypeAlias, Union
+<pre><code>from typing import Dict, List, TypeAlias, Union
 
 JSON: TypeAlias = Union[str, int, float, List[JSON], Dict[str, JSON]]  # raises UP006 and UP007 (and does not complain about undefined usage of &quot;JSON&quot;)
 JSON2: TypeAlias = &quot;str | int | float | list[JSON2] | dict[str, JSON2]&quot;  # raises PYI020
@@ -139,7 +130,7 @@ JSON2: TypeAlias = &quot;str | int | float | list[JSON2] | dict[str, JSON2]&quot
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-19 10:10</div>
-            <div class="timeline-body"><p>@FichteFoll this, as far as I understand, is intentional. See https://github.com/astral-sh/ruff/issues/12256</p>
+            <div class="timeline-body"><p>@FichteFoll this, as far as I understand, is intentional. See <a href="https://github.com/astral-sh/ruff/issues/12256">astral-sh/ruff#12256</a></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -149,25 +140,25 @@ JSON2: TypeAlias = &quot;str | int | float | list[JSON2] | dict[str, JSON2]&quot
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/asglover">@asglover</a> on 2025-05-30 01:30</div>
-            <div class="timeline-body"><p>Just to clarify,  Is there no &quot;DOWN&quot; set of rules that I can use to lint a program to make sure that it won't commit syntax errors on the minimum allowable target-version? That's what I assumed the &quot;target-version&quot; setting did until a close reading. So it only guarantees not to suggest breaking upgrades?</p>
+            <div class="timeline-body"><p>Just to clarify,  Is there no &quot;DOWN&quot; set of rules that I can use to lint a program to make sure that it won&#x27;t commit syntax errors on the minimum allowable target-version? That&#x27;s what I assumed the &quot;target-version&quot; setting did until a close reading. So it only guarantees not to suggest breaking upgrades?</p>
 <p>Is there are issue tracking &quot;DOWN&quot; rules I could +1 on?</p>
 <p>Could a clarifying sentence be added to the documentation for &quot;target-version&quot;?</p>
-<p>I'd be happy to make the PR for the documentation change if you're okay with adding clarification.</p>
-<p>I can also move this to a fresh issue if that's preferable</p>
+<p>I&#x27;d be happy to make the PR for the documentation change if you&#x27;re okay with adding clarification.</p>
+<p>I can also move this to a fresh issue if that&#x27;s preferable</p>
 <p>Thanks for making ruff!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-30 01:40</div>
-            <div class="timeline-body"><p>There is https://github.com/astral-sh/ruff/issues/2501 for a possible pydowngrade/DOWN rule set.</p>
-<p>I'm not sure I'm following exactly on the <code>target-version</code> docs, so that might be good for a separate issue!</p>
+            <div class="timeline-body"><p>There is <a href="https://github.com/astral-sh/ruff/issues/2501">astral-sh/ruff#2501</a> for a possible pydowngrade/DOWN rule set.</p>
+<p>I&#x27;m not sure I&#x27;m following exactly on the <code>target-version</code> docs, so that might be good for a separate issue!</p>
 <p>Thanks for the kind words!</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:49:48 UTC
+        Synced at 2026-01-20 18:48:51 UTC
     </footer>
 </body>
 </html>

@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/crispyricepc">@crispyricepc</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>If a <code>match</code> statement is used with an enum type or some other type with a finite number of possible values, Ruff (or Ty, not sure which works better here) should warn about unused cases.</p>
-<h2>Invalid code</h2>
-<pre><code class="language-py">from enum import Enum
+Invalid code
+<pre><code>from enum import Enum
 
 enum Animal(Enum):
     CAT = 0
@@ -38,8 +38,8 @@ match animal: # warning should appear here
     case CAT:
         print(&quot;is a cat&quot;)
 </code></pre>
-<h2>Valid code</h2>
-<pre><code class="language-py">from enum import Enum
+Valid code
+<pre><code>from enum import Enum
 
 enum Animal(Enum):
     CAT = 0
@@ -59,18 +59,18 @@ match animal:
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-20 13:10</div>
             <div class="timeline-body"><p>This makes sense, but is something that is difficult for Ruff because it will require multifile analysis in most instances (and a good understanding of what values <code>animal</code> can expand to).</p>
-<p>That's why I'll move this issue to ty. It's a sub issue of https://github.com/astral-sh/ty/issues/887</p>
+<p>That&#x27;s why I&#x27;ll move this issue to ty. It&#x27;s a sub issue of <a href="https://github.com/astral-sh/ty/issues/887">astral-sh/ty#887</a></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">lint</span> added by @MichaReiser on 2025-08-20 13:10</div>
+            <div class="event">Label <span class="label">lint</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-20 13:10</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-20 13:16</div>
             <div class="timeline-body"><p>It potentially makes sense to add this as a separate opt-in rule, but in general, there is nothing wrong with a non-exhaustive match statement in Python.</p>
 <p>If you want a fine-granular opt-in to exhaustiveness checking, you can already do this today with ty, by using <a href="https://typing.python.org/en/latest/guides/unreachable.html#assert-never-and-exhaustiveness-checking"><code>assert_never</code></a>:</p>
 <p>https://play.ty.dev/8644b344-867a-487c-ba13-ca595f310549</p>
-<pre><code class="language-py">from enum import Enum
+<pre><code>from enum import Enum
 from typing import assert_never
 
 class Animal(Enum):
@@ -86,7 +86,7 @@ def _(animal: Animal):
             assert_never(animal)
 </code></pre>
 <p>In many cases, the <code>assert_never</code> branch is not even needed for exhaustiveness checking. For example, if you had a function like the following, <a href="https://play.ty.dev/7909996d-bbff-47f1-a271-62737256bf6b">you would already get an error</a> when a new enum variant is added, because we would then infer that the function can implicitly return <code>None</code>:</p>
-<pre><code class="language-py">def get_animal_name(animal: Animal) -&gt; str:
+<pre><code>def get_animal_name(animal: Animal) -&gt; str:
     match animal:
         case Animal.CAT:
             return &quot;cat&quot;
@@ -95,7 +95,7 @@ def _(animal: Animal):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-20 13:20</div>
-            <div class="timeline-body"><p>Mypy implements this as <a href="https://mypy.readthedocs.io/en/stable/error_code_list2.html#check-that-match-statements-match-exhaustively-exhaustive-match">an opt-in error code</a>. I believe pyright's version (<code>reportMatchNotExhaustive</code>) is opt-out. I agree with @sharkdp that to me it seems too opinionated for it to be opt-out: it's more of a lint rule informed by type information than a typing error <em>per se</em>. Failing to do an exhaustive match will often lead to typing errors, but we'll already catch those and tell you about them, as @sharkdp says.</p>
+            <div class="timeline-body"><p>Mypy implements this as <a href="https://mypy.readthedocs.io/en/stable/error_code_list2.html#check-that-match-statements-match-exhaustively-exhaustive-match">an opt-in error code</a>. I believe pyright&#x27;s version (<code>reportMatchNotExhaustive</code>) is opt-out. I agree with @sharkdp that to me it seems too opinionated for it to be opt-out: it&#x27;s more of a lint rule informed by type information than a typing error <em>per se</em>. Failing to do an exhaustive match will often lead to typing errors, but we&#x27;ll already catch those and tell you about them, as @sharkdp says.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -107,7 +107,7 @@ def _(animal: Animal):
 <li><code>test_method_2</code>: ty correctly understand that everything is okay. Interestingly, mypy does not.</li>
 <li><code>test_method_3</code>: ty throws an error (maybe also linked to #159 ?). This time, mypy correctly throws no error.</li>
 </ul>
-<pre><code class="language-py">from __future__ import annotations
+<pre><code>from __future__ import annotations
 
 from enum import Enum
 from typing import Self, reveal_type
@@ -195,7 +195,7 @@ Found 1 error in 1 file (checked 1 source file)
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-09 07:09</div>
             <div class="timeline-body"><p>Yeah, no worries. Actually, maybe <code>test_method3</code> is more interesting than I thought?</p>
-<pre><code class="language-py">class TestEnum(Enum):
+<pre><code>class TestEnum(Enum):
     LOW = 1
     MEDIUM = 2
     HIGH = 3
@@ -229,7 +229,7 @@ HIGH = 3</p>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:31 UTC
+        Synced at 2026-01-20 19:25:21 UTC
     </footer>
 </body>
 </html>

@@ -23,19 +23,19 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/alexmv">@alexmv</a></div>
-            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+            <div class="timeline-body">What version of ripgrep are you using?
 <pre><code>mycon ~ $ rg --version
 ripgrep 11.0.2 (rev 3de31f7527)
 -SIMD -AVX (compiled)
 -SIMD -AVX (runtime)
 </code></pre>
-<h4>How did you install ripgrep?</h4>
+How did you install ripgrep?
 <p>apt package from Releases.</p>
-<h4>What operating system are you using ripgrep on?</h4>
+What operating system are you using ripgrep on?
 <pre><code>mycon ~ $ lsb_release -d
 Description:	Ubuntu 16.04.5 LTS
 </code></pre>
-<h4>Describe your question, feature request, or bug.</h4>
+Describe your question, feature request, or bug.
 <p>Searching in a large number of files for the only file that can match is may be slower than it needs to be.  As an example, my inciting use case is looking for the location of a mail message in a reasonably-sized (9G, 400k files) Maildir, given the <code>Message-Id</code>.  In this case, only one file will possibly match; while <code>-m 1</code> limits to one result per file, no flag exists to abort after the first overall result.  Unfortunately, adding <code>| head -n1</code> does not help because no further output is seen from <code>rg</code> to send it the SIGPIPE to abort:</p>
 <pre><code>mycon ~/Mail $ time rg -m 1 -l --hidden redacted-message-id
 .Trash/cur/some-redacted-path
@@ -70,57 +70,57 @@ sys	0m0.562s
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-08-14 10:33</div>
-            <div class="timeline-body"><p>Folks have proposed this feature (or something like it) in the past, and I've historically been against it. In particular, the order in which files are searched is not only not specified, but it is technically non-deterministic. It is non-deterministic even when ripgrep is single threaded, although in practice, file systems generally return a consistent ordering across multiple calls. The only way to cause ripgrep's output to be deterministic is to use <code>--sort path</code>, but this disables parallelism and incurs the overhead of sorting directory entries as they are traversed.</p>
-<p>Because of the non-determinism, the fundamental problem with &quot;only show me the top N results&quot; is that the top N results can <em>change</em> from run to run. It's quite misleading and can, I imagine, result in non-obvious bugs where folks might assume that the top N results don't change.</p>
-<p>Now, your case is a little different since you know there is exactly one match. So the search can stop as soon as it's found and the output will always be the same from run to run. However, still, the fact that there is a noticeable performance improvement by limiting oneself to a single match is pretty much nothing but luck. ripgrep does not guarantee the order in which it searches files, so it could very well be that your match isn't found until ripgrep searches the very last file. You could make a compelling probabilistic argument here by saying that the odds of the last file (or even near the last file) being searched containing the match are fairly rare.</p>
+            <div class="timeline-body"><p>Folks have proposed this feature (or something like it) in the past, and I&#x27;ve historically been against it. In particular, the order in which files are searched is not only not specified, but it is technically non-deterministic. It is non-deterministic even when ripgrep is single threaded, although in practice, file systems generally return a consistent ordering across multiple calls. The only way to cause ripgrep&#x27;s output to be deterministic is to use <code>--sort path</code>, but this disables parallelism and incurs the overhead of sorting directory entries as they are traversed.</p>
+<p>Because of the non-determinism, the fundamental problem with &quot;only show me the top N results&quot; is that the top N results can <em>change</em> from run to run. It&#x27;s quite misleading and can, I imagine, result in non-obvious bugs where folks might assume that the top N results don&#x27;t change.</p>
+<p>Now, your case is a little different since you know there is exactly one match. So the search can stop as soon as it&#x27;s found and the output will always be the same from run to run. However, still, the fact that there is a noticeable performance improvement by limiting oneself to a single match is pretty much nothing but luck. ripgrep does not guarantee the order in which it searches files, so it could very well be that your match isn&#x27;t found until ripgrep searches the very last file. You could make a compelling probabilistic argument here by saying that the odds of the last file (or even near the last file) being searched containing the match are fairly rare.</p>
 <p>So basically, in summary, my reservations are the following:</p>
 <ul>
 <li>Adding a flag like this might give folks the false impression that the top N results are invariant given the same inputs, but they are not.</li>
 <li>The performance improvements you desire are effectively down to chance, since it depends on <em>when</em> ripgrep searches the file.</li>
-<li>I'm hesitant about allocating <code>-1</code> for this, since short flags are in short supply. Perhaps <code>--max-hits</code> would be more appropriate here.</li>
+<li>I&#x27;m hesitant about allocating <code>-1</code> for this, since short flags are in short supply. Perhaps <code>--max-hits</code> would be more appropriate here.</li>
 </ul>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2019-08-14 10:33</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-08-14 10:33</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/alexmv">@alexmv</a> on 2019-08-14 17:25</div>
             <div class="timeline-body"><blockquote>
 <p>Adding a flag like this might give folks the false impression that the top N results are invariant given the same inputs, but they are not.</p>
 </blockquote>
-<p>Yeah -- I added and then removed a comment to the effect of &quot;this result may, of course, be non-deterministic&quot; but I removed it because it seemed obvious, based on the fact that I'd observed that the result ordering was already non-deterministic.</p>
+<p>Yeah -- I added and then removed a comment to the effect of &quot;this result may, of course, be non-deterministic&quot; but I removed it because it seemed obvious, based on the fact that I&#x27;d observed that the result ordering was already non-deterministic.</p>
 <p>Anyone who is <em>currently</em> post-processing the results should be aware that the ordering is not invariant; this is currently lightly documented under <code>--sort</code> but maybe bears a little more prominence.</p>
 <p>Phrasing as &quot;stop after only only one result; this result may not be consistent unless used with <code>--sort</code>&quot; seems like it adequately documents this.</p>
 <blockquote>
 <p>The performance improvements you desire are effectively down to chance, since it depends on <em>when</em> ripgrep searches the file.</p>
 </blockquote>
-<p>Sure.  The expectation is, of course, 50% faster -- though in many cases might be better than that, if it's run multiple times and gets the advantage of finding a result while still looking in data loaded from disk caches.</p>
+<p>Sure.  The expectation is, of course, 50% faster -- though in many cases might be better than that, if it&#x27;s run multiple times and gets the advantage of finding a result while still looking in data loaded from disk caches.</p>
 <blockquote>
-<p>I'm hesitant about allocating <code>-1</code> for this, since short flags are in short supply. Perhaps <code>--max-hits</code> would be more appropriate here.</p>
+<p>I&#x27;m hesitant about allocating <code>-1</code> for this, since short flags are in short supply. Perhaps <code>--max-hits</code> would be more appropriate here.</p>
 </blockquote>
-<p>I suggested <code>-1</code> because of the prior art, but I'm in no way wedded to it.  I guess I was assuming that &quot;exit after one result&quot; was slightly easier to imply the non-determinism on than the more general &quot;exit after /N/ results&quot; -- but the greater generality potentially outweighs the increased clarity, yes.</p>
-<p><code>--max-hits</code> doesn't seem to contrast well with <code>--max-count</code>, in that it's not clear from their names which is per-file, and which is overall.  <code>--total-count</code> ?  <code>--i-accept-non-determinism-top-n</code> ?</p>
+<p>I suggested <code>-1</code> because of the prior art, but I&#x27;m in no way wedded to it.  I guess I was assuming that &quot;exit after one result&quot; was slightly easier to imply the non-determinism on than the more general &quot;exit after /N/ results&quot; -- but the greater generality potentially outweighs the increased clarity, yes.</p>
+<p><code>--max-hits</code> doesn&#x27;t seem to contrast well with <code>--max-count</code>, in that it&#x27;s not clear from their names which is per-file, and which is overall.  <code>--total-count</code> ?  <code>--i-accept-non-determinism-top-n</code> ?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-08-14 17:41</div>
             <div class="timeline-body"><p>Yeah, point taken about the flag name. I did want to still try and keep it short though. <code>--total-count</code> is serviceable. Anything shorter?</p>
-<p>I <em>think</em> you might have sold me on this. I'll keep noodling. I <em>think</em> this should be straight-forward to implement. Mostly plumbing. There might be some complexity in handling this correctly in the parallel searcher. I'd guess you'd want to <a href="https://github.com/BurntSushi/ripgrep/blob/ef0e7af56a9b1afce7be46db87b3ff3709187ee2/src/main.rs#L169">return <code>WalkState::Quit</code></a> here, but you have to be a little careful not to race with other threads.</p>
+<p>I <em>think</em> you might have sold me on this. I&#x27;ll keep noodling. I <em>think</em> this should be straight-forward to implement. Mostly plumbing. There might be some complexity in handling this correctly in the parallel searcher. I&#x27;d guess you&#x27;d want to <a href="https://github.com/BurntSushi/ripgrep/blob/ef0e7af56a9b1afce7be46db87b3ff3709187ee2/src/main.rs#L169">return <code>WalkState::Quit</code></a> here, but you have to be a little careful not to race with other threads.</p>
 <p>Also, <code>--total-count</code> (or whatever we pick) also need to <em>imply</em> <code>--max-count</code> with the same value too.</p>
-<p>And now I've realized a complication. If you request <code>--total-count 5</code>, and you search two files, one with <code>4</code> matches and another with <code>3</code> matches, then it's pretty tricky to print <em>just</em> <code>5</code> of those matches. We might need to settle for &quot;<code>--total-count</code> <em>approximately</em> limits the total number of matches to <code>N</code>.&quot;</p>
+<p>And now I&#x27;ve realized a complication. If you request <code>--total-count 5</code>, and you search two files, one with <code>4</code> matches and another with <code>3</code> matches, then it&#x27;s pretty tricky to print <em>just</em> <code>5</code> of those matches. We might need to settle for &quot;<code>--total-count</code> <em>approximately</em> limits the total number of matches to <code>N</code>.&quot;</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/alexmv">@alexmv</a> on 2019-08-14 17:51</div>
-            <div class="timeline-body"><p>I can't come up with anything shorter off the top of my head, especially without renaming <code>--max-count</code>, which isn't possible.</p>
-<p>Mmm.  Does the printer know how many records it has output, in the stats object?  Can the searcher return approximately the right number of results, and instead enforce a stricter limitation during output, which is probably not parallel?  I've only briefly kicked around in the code, so take with an appropriate grain of salt.</p>
+            <div class="timeline-body"><p>I can&#x27;t come up with anything shorter off the top of my head, especially without renaming <code>--max-count</code>, which isn&#x27;t possible.</p>
+<p>Mmm.  Does the printer know how many records it has output, in the stats object?  Can the searcher return approximately the right number of results, and instead enforce a stricter limitation during output, which is probably not parallel?  I&#x27;ve only briefly kicked around in the code, so take with an appropriate grain of salt.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-08-14 19:39</div>
-            <div class="timeline-body"><p>The printer will tell you the number of matches, yes. The problem is that the printer writes its output as-is and there's no easy way to cut that off after it has been written. You could re-configure the printer to only print <code>k</code> matches (where <code>k = N - already-printed</code>), but there's still a race.</p>
-<p>The only thing that isn't parallel is dumping the output of the printer to <code>stdout</code>. By the time you get there, the output has already been prepared in an in-memory buffer.</p>
+            <div class="timeline-body"><p>The printer will tell you the number of matches, yes. The problem is that the printer writes its output as-is and there&#x27;s no easy way to cut that off after it has been written. You could re-configure the printer to only print <code>k</code> matches (where <code>k = N - already-printed</code>), but there&#x27;s still a race.</p>
+<p>The only thing that isn&#x27;t parallel is dumping the output of the printer to <code>stdout</code>. By the time you get there, the output has already been prepared in an in-memory buffer.</p>
 <p>(Getting this fully correct for single threaded search is possible though.)</p>
 </div>
         </div>
@@ -137,18 +137,18 @@ sys	0m0.562s
             <div class="timeline-header">Comment by <a href="https://github.com/genivia-inc">@genivia-inc</a> on 2020-01-20 20:19</div>
             <div class="timeline-body"><blockquote>
 <blockquote>
-<p>I'm hesitant about allocating <code>-1</code> for this, since short flags are in short supply. Perhaps <code>--max-hits</code> would be more appropriate here.</p>
+<p>I&#x27;m hesitant about allocating <code>-1</code> for this, since short flags are in short supply. Perhaps <code>--max-hits</code> would be more appropriate here.</p>
 </blockquote>
-<p>I suggested <code>-1</code> because of the prior art, but I'm in no way wedded to it. I guess I was assuming that &quot;exit after one result&quot; was slightly easier to imply the non-determinism on than the more general &quot;exit after /N/ results&quot; -- but the greater generality potentially outweighs the increased clarity, yes.</p>
+<p>I suggested <code>-1</code> because of the prior art, but I&#x27;m in no way wedded to it. I guess I was assuming that &quot;exit after one result&quot; was slightly easier to imply the non-determinism on than the more general &quot;exit after /N/ results&quot; -- but the greater generality potentially outweighs the increased clarity, yes.</p>
 </blockquote>
 <p>My 2c from &quot;lessons learned&quot;: as you know there are two commonly-referenced &quot;standards&quot; with respect to command-line options:</p>
 <ol>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap12.html">POSIX</a> permits numeric (one digit) command-line options</li>
 <li><a href="https://www.gnu.org/software/libc/manual/html_node/Getopt-Long-Options.html">GNU getopt</a> also considers numeric options as valid and other characters as a GNU extension, although legacy usage is restricted to letters only.</li>
 </ol>
-<p>On the other hand, consider this: concatenated options may cause ambiguity, as for example <code>-a1</code> could mean <code>-a</code> with the value 1 or the two options <code>-a -1</code> combined. Or worse, <code>-a10</code> which could be <code>-a</code> with the value 10 or the three options <code>-a -1 -0</code> combined. That's why numeric short options are uncommon and perhaps should be avoided in practice and were never used by legacy unix utilities.</p>
+<p>On the other hand, consider this: concatenated options may cause ambiguity, as for example <code>-a1</code> could mean <code>-a</code> with the value 1 or the two options <code>-a -1</code> combined. Or worse, <code>-a10</code> which could be <code>-a</code> with the value 10 or the three options <code>-a -1 -0</code> combined. That&#x27;s why numeric short options are uncommon and perhaps should be avoided in practice and were never used by legacy unix utilities.</p>
 <blockquote>
-<p><code>--max-hits</code> doesn't seem to contrast well with <code>--max-count</code>, in that it's not clear from their names which is per-file, and which is overall. <code>--total-count</code> ? <code>--i-accept-non-determinism-top-n</code> ?</p>
+<p><code>--max-hits</code> doesn&#x27;t seem to contrast well with <code>--max-count</code>, in that it&#x27;s not clear from their names which is per-file, and which is overall. <code>--total-count</code> ? <code>--i-accept-non-determinism-top-n</code> ?</p>
 </blockquote>
 <p>What about <code>--max-files=1</code> combined with <code>-m1</code> to produce only one hit for the first file found?</p>
 <pre><code>-m NUM, --max-count=NUM
@@ -168,12 +168,12 @@ sys	0m0.562s
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/xaocon">@xaocon</a> on 2024-02-22 21:29</div>
-            <div class="timeline-body"><p>Maybe the arg could be <code>--first</code> which wouldn't take an argument instead? It's less flexible but maybe gets the point across better?   It would be great to have some kind of option to short circuit the search when you need a single piece of info.</p>
+            <div class="timeline-body"><p>Maybe the arg could be <code>--first</code> which wouldn&#x27;t take an argument instead? It&#x27;s less flexible but maybe gets the point across better?   It would be great to have some kind of option to short circuit the search when you need a single piece of info.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/wshanks">@wshanks</a> on 2024-03-13 15:46</div>
-            <div class="timeline-body"><p>Here is a slightly different use case from the original suggestion of knowing ahead of time that there is exactly one match: I would like to search a series of directories to classify them based on whether or not a certain pattern occurs within them. I don't need deep analysis of where and how that pattern is used (maybe there is a different tool I should be using). <code>--first</code> would be a good fit for the name for this use case.</p>
+            <div class="timeline-body"><p>Here is a slightly different use case from the original suggestion of knowing ahead of time that there is exactly one match: I would like to search a series of directories to classify them based on whether or not a certain pattern occurs within them. I don&#x27;t need deep analysis of where and how that pattern is used (maybe there is a different tool I should be using). <code>--first</code> would be a good fit for the name for this use case.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -190,7 +190,7 @@ Update: Ah sorry, this is targets a single result in multiple files. I was looki
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:42:59 UTC
+        Synced at 2026-01-20 18:48:09 UTC
     </footer>
 </body>
 </html>

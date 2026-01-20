@@ -24,7 +24,7 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a></div>
             <div class="timeline-body"><p>We need to understand the descriptor protocol in order to infer proper types for attribute accesses like in this simple example:</p>
-<pre><code class="language-py">from typing import Literal
+<pre><code>from typing import Literal
 
 class Ten:
     def __get__(self, instance: object, owner: type | None = None) -&gt; Literal[10]:
@@ -57,14 +57,14 @@ C.ten = 11
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Implement the descriptor protocol" to "[red-knot] Descriptor protocol" by @sharkdp on 2025-02-05 13:01</div>
+            <div class="event">Renamed from &quot;Implement the descriptor protocol&quot; to &quot;[red-knot] Descriptor protocol&quot; by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-02-05 13:01</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2025-02-05 13:02</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-02-05 13:02</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-02-05 16:45</div>
-            <div class="timeline-body"><p>An important case to consider here that isn't shown in the example in summary is where the <code>value</code> argument to <code>__set__</code> does not have the same type as the return type of <code>__get__</code>, meaning we need to use a different type for type-checking assignments to the attribute than we use for inferring the type of an attribute access.</p>
+            <div class="timeline-body"><p>An important case to consider here that isn&#x27;t shown in the example in summary is where the <code>value</code> argument to <code>__set__</code> does not have the same type as the return type of <code>__get__</code>, meaning we need to use a different type for type-checking assignments to the attribute than we use for inferring the type of an attribute access.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -79,12 +79,12 @@ C.ten = 11
             <div class="timeline-header">Comment by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-02-09 20:45</div>
             <div class="timeline-body"><p>@carljm @sharkdp sorry, for delay</p>
 <p>Here is my thinking, proposed plan &amp; rough design.</p>
-<p>Guiding principles I've used:</p>
+<p>Guiding principles I&#x27;ve used:</p>
 <ul>
 <li>Design-wise: Avoid special-casing if possible</li>
 <li>Plan such that each steps adds one new aspect of the protocol support, while addressing the next most popular usage scenario</li>
 </ul>
-<h3>Design</h3>
+Design
 <ul>
 <li>Descriptors should be modeled as <code>Type::Instance</code>, no special <code>Type</code> variant or anything fancy.<ul>
 <li>This rule should apply to everything. Including the most common <code>@property</code>, <code>@classmethod</code>, <code>@staticmethod</code>; attrbiutes of slotted classes and functions (methods)</li>
@@ -100,9 +100,9 @@ C.ten = 11
 <li>If class has slots, all bindings should become data-descriptors - instances of another new <code>KnownClass</code> variant</li>
 </ul>
 <p>Obviously there are going to be a lot of minute details in actual implementation, but overall it feels like descriptors do not introduce any special needs really.</p>
-<h3>Plan</h3>
+Plan
 <p>The plan, is to start with known classes and avoid bothering with full inference of descriptor dunder method signatures. Implement the non-data descriptors first, using the most popular builtins. Then expand to set only data descriptor and build-up support for known descriptor classes. Then tackle everything else.</p>
-<p>Assuming red_knot is targeting &quot;an average&quot; python user, I'd suggest implementing in the following order based on frequency of use:</p>
+<p>Assuming red_knot is targeting &quot;an average&quot; python user, I&#x27;d suggest implementing in the following order based on frequency of use:</p>
 <ol>
 <li>Patterns common in non-library-like user code. So code devs write for a <code>FastApi</code> controller, not <code>FastApi</code> internals<ol>
 <li>readonly <code>property</code> aka non-data descriptor<ol>
@@ -150,7 +150,7 @@ C.ten = 11
 </blockquote>
 <p>Thank you!</p>
 <blockquote>
-<p>Guiding principles I've used:</p>
+<p>Guiding principles I&#x27;ve used:</p>
 <pre><code>* Design-wise: Avoid special-casing if possible
 
 * Plan such that each steps adds one new aspect of the protocol support, while addressing the next most popular usage scenario</code></pre>
@@ -163,7 +163,7 @@ C.ten = 11
 <blockquote>
 <p><code>@property</code>, <code>@classmethod</code>, <code>@staticmethod</code> should produce an instance of <code>KnownClass</code> variant(s)</p>
 </blockquote>
-<p>Maybe? Probably? But I wouldn't focus too much on use cases for now and rather get the basics straight. I think we could even defer proper decorator support until after we implemented the descriptor protocol. We might this for issues like https://github.com/astral-sh/ty/issues/207, but I'm not sure why it would be required here. Yes, those are examples of descriptors, but I don't see why we need to recognize them as such by introducing <code>KnownClass</code> variants. We want to recognize descriptors by detecting <code>__get__</code>/<code>__set__</code>/<code>__delete__</code>.</p>
+<p>Maybe? Probably? But I wouldn&#x27;t focus too much on use cases for now and rather get the basics straight. I think we could even defer proper decorator support until after we implemented the descriptor protocol. We might this for issues like <a href="https://github.com/astral-sh/ty/issues/207">astral-sh/ty#207</a>, but I&#x27;m not sure why it would be required here. Yes, those are examples of descriptors, but I don&#x27;t see why we need to recognize them as such by introducing <code>KnownClass</code> variants. We want to recognize descriptors by detecting <code>__get__</code>/<code>__set__</code>/<code>__delete__</code>.</p>
 <blockquote>
 <p>Introduce <code>KnownMethod</code> enum, starting with descriptor dunders that will provide</p>
 </blockquote>
@@ -185,11 +185,11 @@ C.ten = 11
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-02-12 00:48</div>
-            <div class="timeline-body"><p>@sharkdp sounds like you'd prefer going the other way around - first support custom descriptors by checking special methods, then handle common cases, like <code>@property</code>.</p>
+            <div class="timeline-body"><p>@sharkdp sounds like you&#x27;d prefer going the other way around - first support custom descriptors by checking special methods, then handle common cases, like <code>@property</code>.</p>
 <p>Overall this means changing:</p>
 <p>https://github.com/astral-sh/ruff/blob/6e34f74c164a646f07f3fe9bed9492c3557a95d7/crates/red_knot_python_semantic/src/types/infer.rs#L3472</p>
 <p>and methods that it calls (<code>infer_attribute_load</code>, <code>Type::member</code>, <code>Class::instance_member</code> and indirectly <code>Class:own_instance_member</code> ).</p>
-<p>The main &quot;obstacle&quot; I see right now is that <code>Type::member</code> is used in a lot of places, but doesn't have a context parameter. But in this case we'll need to distinguish Load/Store/Del. I'd prefer trying rather than hypothetically designing the right way to address it. The simplest approach would be to implement a separate context-aware <code>member</code> call that will defer to the old <code>member</code> for everything except <code>Class</code>, <code>SubclassOf</code>, <code>Instance</code> and <code>KnownInstance</code>.</p>
+<p>The main &quot;obstacle&quot; I see right now is that <code>Type::member</code> is used in a lot of places, but doesn&#x27;t have a context parameter. But in this case we&#x27;ll need to distinguish Load/Store/Del. I&#x27;d prefer trying rather than hypothetically designing the right way to address it. The simplest approach would be to implement a separate context-aware <code>member</code> call that will defer to the old <code>member</code> for everything except <code>Class</code>, <code>SubclassOf</code>, <code>Instance</code> and <code>KnownInstance</code>.</p>
 <p>Funny enough, but implementing <code>Store</code> is actually the easiest and minimal option, since it calls into <code>Class::instance_member</code> directly and can pass the context with minimal code changes.</p>
 <p>However, maybe a reasonable scope for one PR could be:</p>
 <ol>
@@ -202,8 +202,8 @@ C.ten = 11
 </ul>
 <p>here:</p>
 <p>https://github.com/astral-sh/ruff/blob/6e34f74c164a646f07f3fe9bed9492c3557a95d7/crates/red_knot_python_semantic/src/types.rs#L4300-L4311</p>
-<ol start="4">
-<li>Probably extract <code>Class::own_instance_member</code> implementation into a salsa query for performance (I'd create a new one rather than using <code>symbol</code> and extending it's logic for this case)</li>
+<ol>
+<li>Probably extract <code>Class::own_instance_member</code> implementation into a salsa query for performance (I&#x27;d create a new one rather than using <code>symbol</code> and extending it&#x27;s logic for this case)</li>
 </ol>
 <p>Does this better match your thinking?</p>
 </div>
@@ -211,20 +211,20 @@ C.ten = 11
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-02-12 11:29</div>
             <div class="timeline-body"><blockquote>
-<p>@sharkdp sounds like you'd prefer going the other way around - first support custom descriptors by checking special methods, then handle common cases, like <code>@property</code>.</p>
+<p>@sharkdp sounds like you&#x27;d prefer going the other way around - first support custom descriptors by checking special methods, then handle common cases, like <code>@property</code>.</p>
 </blockquote>
-<p>Yes. I do have an old branch where I did a preliminary investigation in this direction. I picked it up today to see how far this would take us (mainly to see what to suggest here), and it looks promising. I hope you don't mind if I make an initial proposal here for the first step (also given that astral-sh/ruff#16111 might need one or two iterations before we can merge it)? I'm sure there are enough follow-up tasks, as you outlined in your <a href="https://github.com/astral-sh/ruff/issues/15966#issuecomment-2646580873">plan above</a>, if you want to contribute something.</p>
+<p>Yes. I do have an old branch where I did a preliminary investigation in this direction. I picked it up today to see how far this would take us (mainly to see what to suggest here), and it looks promising. I hope you don&#x27;t mind if I make an initial proposal here for the first step (also given that astral-sh/ruff#16111 might need one or two iterations before we can merge it)? I&#x27;m sure there are enough follow-up tasks, as you outlined in your <a href="https://github.com/astral-sh/ruff/issues/15966#issuecomment-2646580873">plan above</a>, if you want to contribute something.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-02-12 15:02</div>
-            <div class="timeline-body"><p>just to re-iterate discord discussion - I'm obviously totally ok with you moving forward with this, and really appreciate that you asked!</p>
+            <div class="timeline-body"><p>just to re-iterate discord discussion - I&#x27;m obviously totally ok with you moving forward with this, and really appreciate that you asked!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jdahlin">@jdahlin</a> on 2025-02-19 08:47</div>
             <div class="timeline-body"><p>One popular descriptor type used by at least ORMs (django, sqlalchemy) is to return different values when accessing the attribute from the class vs from the instance:</p>
-<pre><code class="language-python">@dataclasses.dataclass
+<pre><code>@dataclasses.dataclass
 class Column:
     database_column: str
 
@@ -245,7 +245,7 @@ u = UserModel()
 u.first_name = &quot;Alice&quot;
 print(u.first_name)  # Alice
 </code></pre>
-<p>mypy solves this by using plugins (sqlalchemy-stubs/Django-stubs), I don't know how upright handles that.</p>
+<p>mypy solves this by using plugins (sqlalchemy-stubs/Django-stubs), I don&#x27;t know how upright handles that.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -254,7 +254,7 @@ print(u.first_name)  # Alice
 <p>return different values when accessing the attribute from the class vs from the instance</p>
 </blockquote>
 <p>We plan to support this, if the <code>__get__</code> function is annotated using appropriate <code>@overload</code>s that dispatch on the <code>instance</code> argument. See also <a href="https://github.com/astral-sh/ruff/blob/main/crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md#descriptors-distinguishing-between-class-and-instance-access">this test case</a>.</p>
-<pre><code class="language-pyi">@overload
+<pre><code>@overload
 def __get__(self, instance: None, owner: type, /) -&gt; CalledOnClassObject: ...
 @overload
 def __get__(self, instance: object, owner: type | None = None, /) -&gt; CalledOnInstance: ...
@@ -267,15 +267,15 @@ def __get__(self, instance: object, owner: type | None = None, /) -&gt; CalledOn
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @sharkdp on 2025-03-07 21:03</div>
+            <div class="event">Closed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-03-07 21:03</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @sharkdp on 2025-03-07 21:03</div>
+            <div class="event">Closed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-03-07 21:03</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:52:09 UTC
+        Synced at 2026-01-20 18:49:27 UTC
     </footer>
 </body>
 </html>

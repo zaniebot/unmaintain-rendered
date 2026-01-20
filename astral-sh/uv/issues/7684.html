@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>python.org's -intel64 suffix confuses uv pip</h1>
+    <h1>python.org&#x27;s -intel64 suffix confuses uv pip</h1>
 
     <div class="meta">
         <span class="state-icon state-open"></span>
@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/hynek">@hynek</a></div>
-            <div class="timeline-body"><p>So this might sound a bit special, but I suspect there's more then the one of me.</p>
+            <div class="timeline-body"><p>So this might sound a bit special, but I suspect there&#x27;s more then the one of me.</p>
 <p>Context is that I have an ARM-based Mac and I need to develop certain packages and applications under Intel emulation.</p>
 <p>This is fairly easy with the official python.org builds that offer a <code>python3.12-intel64</code> which is always Intel, so creating a virtualenv solves all my problems.</p>
 <p>Therefore, when using project mode, I use the following in Direnv:</p>
@@ -31,19 +31,19 @@
 
 uv sync
 </code></pre>
-<p>Problems arise with <code>uv pip</code>. For one, if I'm in one of those projects and run <code>uv pip list</code>, I get what I suspect is the global output:</p>
+<p>Problems arise with <code>uv pip</code>. For one, if I&#x27;m in one of those projects and run <code>uv pip list</code>, I get what I suspect is the global output:</p>
 <pre><code>❯ uv pip list
 Package Version
 ------- -------
 pip     24.2
 </code></pre>
 <p>Of course, <code>env UV_PYTHON=python3.12 uv pip list</code> or <code>env UV_PYTHON=.venv uv pip list</code> work</p>
-<p>Trying to install something (because, for example I want some debugger that isn't part of the project) fails rather opaquely:</p>
+<p>Trying to install something (because, for example I want some debugger that isn&#x27;t part of the project) fails rather opaquely:</p>
 <pre><code>❯ uv pip install ipdb
 error: No virtual environment found for executable name `python3.12-intel64`; run `uv venv` to create an environment, or pass `--system` to install into a non-virtual environment
 </code></pre>
 <p>Since <code>python3.12-intel64</code> is an official Python thing – would it be thinkable to add special support to uv for it?</p>
-<hr />
+<hr>
 <pre><code>❯ uv --version
 uv 0.4.16 (e81ed8ec5 2024-09-24)
 </code></pre>
@@ -51,14 +51,14 @@ uv 0.4.16 (e81ed8ec5 2024-09-24)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-25 14:09</div>
-            <div class="timeline-body"><p>The <code>uv pip install ipdb</code> failure is that you didn't include <code>--system</code> to opt-in to mutating a non-virtual environment. We can improve the error message there.</p>
+            <div class="timeline-body"><p>The <code>uv pip install ipdb</code> failure is that you didn&#x27;t include <code>--system</code> to opt-in to mutating a non-virtual environment. We can improve the error message there.</p>
 <p>Similarly, <code>uv pip list</code> will read from a system environment if asked to and I presume <code>$PY</code> expands to the full path to the system interpreter?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/hynek">@hynek</a> on 2024-09-25 14:22</div>
             <div class="timeline-body"><blockquote>
-<p>The <code>uv pip install ipdb</code> failure is that you didn't include <code>--system</code> to opt-in to mutating a non-virtual environment. We can improve the error message there.</p>
+<p>The <code>uv pip install ipdb</code> failure is that you didn&#x27;t include <code>--system</code> to opt-in to mutating a non-virtual environment. We can improve the error message there.</p>
 </blockquote>
 <p>yeah but I also didn’t want to. That part is 100% correct. I wanted it to look at .venv but uv pip decided that it doesn’t match Python3.12-intel64 which it totally does. My working theory for this whole ticket is that it gets confused by the suffix.</p>
 <blockquote>
@@ -69,7 +69,7 @@ uv 0.4.16 (e81ed8ec5 2024-09-24)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-25 14:25</div>
-            <div class="timeline-body"><p>Are you activating your virtual environment? When you provide a Python executable name i.e. <code>python3.12-intel64</code> we <em>only</em> look for it on the <code>PATH</code>. We could consider that a request for a general Python interpreter instead and do full discovery, but we don't have any infrastructure for filtering interpreters by their architecture right now. Are there other variants than <code>intel64</code>?</p>
+            <div class="timeline-body"><p>Are you activating your virtual environment? When you provide a Python executable name i.e. <code>python3.12-intel64</code> we <em>only</em> look for it on the <code>PATH</code>. We could consider that a request for a general Python interpreter instead and do full discovery, but we don&#x27;t have any infrastructure for filtering interpreters by their architecture right now. Are there other variants than <code>intel64</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -82,29 +82,29 @@ uv 0.4.16 (e81ed8ec5 2024-09-24)
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-25 14:59</div>
             <div class="timeline-body"><p>I think you want to avoid setting <code>UV_PYTHON</code> and pass it per-command instead. Then, when in your virtual environments, <code>uv pip</code> will work as expected.</p>
-<p>Regardless, we should add first-class support for this in discovery. I just don't know when we'll get to it.</p>
-<p>Related https://github.com/python/cpython/issues/88175</p>
+<p>Regardless, we should add first-class support for this in discovery. I just don&#x27;t know when we&#x27;ll get to it.</p>
+<p>Related <a href="https://github.com/python/cpython/issues/88175">python/cpython#88175</a></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-09-25 14:59</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-25 14:59</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">uv python</span> added by @zanieb on 2024-09-25 14:59</div>
+            <div class="event">Label <span class="label">uv python</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-25 14:59</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/hynek">@hynek</a> on 2024-09-25 16:01</div>
             <div class="timeline-body"><blockquote>
 <p>I think you want to avoid setting <code>UV_PYTHON</code> and pass it per-command instead. Then, when in your virtual environments, <code>uv pip</code> will work as expected.</p>
 </blockquote>
-<p>Fair enough. I'd prefer to keep doing it because it works flawlessly with <code>uv sync</code> / <code>uv lock</code> and I don't have to pass it in two places (.envrc for Direnv <code>uv sync</code> and Justfile for recreating the venv).</p>
-<p>But I can wait and live with workarounds for now – thanks! :)  I also wanted to make sure that it doesn't break for sync/lock at some point. ;)</p>
+<p>Fair enough. I&#x27;d prefer to keep doing it because it works flawlessly with <code>uv sync</code> / <code>uv lock</code> and I don&#x27;t have to pass it in two places (.envrc for Direnv <code>uv sync</code> and Justfile for recreating the venv).</p>
+<p>But I can wait and live with workarounds for now – thanks! :)  I also wanted to make sure that it doesn&#x27;t break for sync/lock at some point. ;)</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:27:20 UTC
+        Synced at 2026-01-20 19:34:18 UTC
     </footer>
 </body>
 </html>

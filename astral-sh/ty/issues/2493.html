@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/henriquegemignani">@henriquegemignani</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>Playground: https://play.ty.dev/6143bcb7-6aa9-405d-ba62-33a4ea7e764d</p>
 <p>Code:</p>
-<pre><code class="language-python">from collections.abc import Sequence
+<pre><code>from collections.abc import Sequence
 
 type JsonType_RO = int | Sequence[str]
 
@@ -43,16 +43,16 @@ def encode_b(value: JsonType_RO) -&gt; None:
 <pre><code>Object of type `(int &amp; Sequence[object]) | Sequence[str]` is not assignable to `Sequence[str]` (invalid-assignment) [Ln 8, Col 41]
 Object of type `JsonType_RO` is not assignable to `Sequence[str]` (invalid-assignment) [Ln 12, Col 41]
 </code></pre>
-<p>The main case is <code>encode_a</code>. I'd expect <code>value</code> to be narrowed to <code>Sequence[str]</code>, but that's not the case. As far as I could find, that should be valid typing. I tried to find some related issue, but no luck with search.</p>
-<p><code>encode_b</code> is just an attempt to investigate further, but it's interesting how that causes ty to not narrow at all.</p>
-<h3>Version</h3>
+<p>The main case is <code>encode_a</code>. I&#x27;d expect <code>value</code> to be narrowed to <code>Sequence[str]</code>, but that&#x27;s not the case. As far as I could find, that should be valid typing. I tried to find some related issue, but no luck with search.</p>
+<p><code>encode_b</code> is just an attempt to investigate further, but it&#x27;s interesting how that causes ty to not narrow at all.</p>
+Version
 <p>ty 0.0.11 (830cb9cc6 2026-01-09)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-14 14:33</div>
-            <div class="timeline-body"><p>Thanks! This is basically the same as #1578. ty is warning you here that it's entirely possible for an object to be an instance of both <code>int</code> and <code>Sequence</code> simultaneously: they're not disjoint types:</p>
-<pre><code class="language-py">&gt;&gt;&gt; from typing import Sequence
+            <div class="timeline-body"><p>Thanks! This is basically the same as #1578. ty is warning you here that it&#x27;s entirely possible for an object to be an instance of both <code>int</code> and <code>Sequence</code> simultaneously: they&#x27;re not disjoint types:</p>
+<pre><code>&gt;&gt;&gt; from typing import Sequence
 &gt;&gt;&gt; class Foo(int, Sequence): ...
 ... 
 &gt;&gt;&gt;
@@ -61,11 +61,11 @@ Object of type `JsonType_RO` is not assignable to `Sequence[str]` (invalid-assig
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2026-01-14 14:33</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-14 14:33</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/henriquegemignani">@henriquegemignani</a> on 2026-01-14 15:13</div>
-            <div class="timeline-body"><p>Is there a way to annotate that such subclass of <code>int</code> is not allowed? In the actual use in my code base it does already <code>if isinstance(value, int)</code>, but the actual type is <code>int | Mapping[str, JsonType_RO] | Sequence[JsonType_RO]</code> and adding a <code>not isinstance(value, Mapping)</code> doesn't work.</p>
+            <div class="timeline-body"><p>Is there a way to annotate that such subclass of <code>int</code> is not allowed? In the actual use in my code base it does already <code>if isinstance(value, int)</code>, but the actual type is <code>int | Mapping[str, JsonType_RO] | Sequence[JsonType_RO]</code> and adding a <code>not isinstance(value, Mapping)</code> doesn&#x27;t work.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -73,9 +73,9 @@ Object of type `JsonType_RO` is not assignable to `Sequence[str]` (invalid-assig
             <div class="timeline-body"><blockquote>
 <p>Is there a way to annotate that such subclass of <code>int</code> is not allowed?</p>
 </blockquote>
-<p>No, Python's type system doesn't currently support a way to annotate &quot;exact types&quot;, and we don't have any extensions to the type system for that currently in ty. Such types would unfortunately not be very useful unless you used them <em>everywhere</em>, but in most cases it isn't desirable to distinguish between &quot;any instance of <code>T</code>&quot;, and &quot;any object that is an instance of <em>exactly</em> <code>T</code>&quot;. So I think the use cases for types like this would actually turn out to be pretty limited, unfortunately.</p>
-<p>If you're willing to use the <code>ty_extensions</code> module, you could do something like this:</p>
-<pre><code class="language-py">from ty_extensions import Intersection, Not
+<p>No, Python&#x27;s type system doesn&#x27;t currently support a way to annotate &quot;exact types&quot;, and we don&#x27;t have any extensions to the type system for that currently in ty. Such types would unfortunately not be very useful unless you used them <em>everywhere</em>, but in most cases it isn&#x27;t desirable to distinguish between &quot;any instance of <code>T</code>&quot;, and &quot;any object that is an instance of <em>exactly</em> <code>T</code>&quot;. So I think the use cases for types like this would actually turn out to be pretty limited, unfortunately.</p>
+<p>If you&#x27;re willing to use the <code>ty_extensions</code> module, you could do something like this:</p>
+<pre><code>from ty_extensions import Intersection, Not
 from collections.abc import Sequence
 
 type JsonType_RO = Intersection[int, Not[Sequence[object]]] | Sequence[str]
@@ -85,27 +85,27 @@ def encode_a(value: JsonType_RO) -&gt; None:
     if isinstance(value, Sequence):
         sequence_value: Sequence[str] = value
 </code></pre>
-<p>But note that the ty_extensions module doesn't actually exist at runtime right now; you need to import it in an <code>if TYPE_CHECKING</code> block if you want to use it in a <code>.py</code> file.</p>
-<p>I'm curious to know more about this, though:</p>
+<p>But note that the ty_extensions module doesn&#x27;t actually exist at runtime right now; you need to import it in an <code>if TYPE_CHECKING</code> block if you want to use it in a <code>.py</code> file.</p>
+<p>I&#x27;m curious to know more about this, though:</p>
 <blockquote>
-<p>adding a <code>not isinstance(value, Mapping)</code> doesn't work.</p>
+<p>adding a <code>not isinstance(value, Mapping)</code> doesn&#x27;t work.</p>
 </blockquote>
-<p>Why doesn't that work in this case for you? Can you give another minimal example? :-)</p>
+<p>Why doesn&#x27;t that work in this case for you? Can you give another minimal example? :-)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/henriquegemignani">@henriquegemignani</a> on 2026-01-14 16:00</div>
             <div class="timeline-body"><blockquote>
-<p>Why doesn't that work in this case for you? Can you give another minimal example? :-)</p>
+<p>Why doesn&#x27;t that work in this case for you? Can you give another minimal example? :-)</p>
 </blockquote>
-<p>Funnily enough in my actual code-base doing this worked, but I'm not sure why it doesn't in the minimal example. https://play.ty.dev/a28ea65f-d286-4653-9f32-ea2c5398488c</p>
+<p>Funnily enough in my actual code-base doing this worked, but I&#x27;m not sure why it doesn&#x27;t in the minimal example. https://play.ty.dev/a28ea65f-d286-4653-9f32-ea2c5398488c</p>
 <p>Edit: because I forgot an <code>else</code>...</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-14 16:12</div>
             <div class="timeline-body"><p>I think the working version can even be simplified a bit more:</p>
-<pre><code class="language-py">from collections.abc import Sequence, Mapping
+<pre><code>from collections.abc import Sequence, Mapping
 
 type JsonObject_RO = Mapping[str, &quot;JsonType_RO&quot;]
 type JsonType_RO = int | JsonObject_RO | Sequence[&quot;JsonType_RO&quot;]
@@ -130,7 +130,7 @@ def encode_json_value(value: JsonType_RO) -&gt; None:
     </div>
 
     <footer>
-        Synced at 2026-01-14 16:42:20 UTC
+        Synced at 2026-01-20 19:27:07 UTC
     </footer>
 </body>
 </html>

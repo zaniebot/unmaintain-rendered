@@ -38,12 +38,12 @@
 </ul>
 <p>This workaround needs to be specified for every single consumer of <code>lib</code>, it would be nice if this could be specified once in <code>lib</code> and all consumers do not have to have knowledge of this hack.</p>
 <p>Otherwise, is there a better way to handle this issue locally?</p>
-<h2>Reproduction</h2>
+Reproduction
 <p>Repro repository: https://github.com/jfun/uv_libmagic_repro/tree/main</p>
 <pre><code>cd packages/app
 uv run --verbose hello.py
 </code></pre>
-<h3>Output</h3>
+Output
 <pre><code>DEBUG uv 0.5.2 (195f4b634 2024-11-14)
 DEBUG Found project root: `C:\BV\dev\zz\packages\app`
 DEBUG No workspace root found, using project root
@@ -289,34 +289,25 @@ Traceback (most recent call last):
   File &quot;C:\BV\dev\zz\packages\app\.venv\lib\site-packages\magic\__init__.py&quot;, line 209, in &lt;module&gt;
     libmagic = loader.load_lib()
   File &quot;C:\BV\dev\zz\packages\app\.venv\lib\site-packages\magic\loader.py&quot;, line 49, in load_lib
-    raise ImportError('failed to find libmagic.  Check your installation')
+    raise ImportError(&#x27;failed to find libmagic.  Check your installation&#x27;)
 ImportError: failed to find libmagic.  Check your installation
 DEBUG Command exited with code: 1
 </code></pre>
-<!--
-Thank you for taking the time to report an issue! We're glad to have you involved with uv.
 
-If you're filing a bug report, please consider including the following information:
-
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
-* The current uv platform.
-* The current uv version (`uv --version`).
--->
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ReinforcedKnowledge">@ReinforcedKnowledge</a> on 2024-11-22 02:19</div>
-            <div class="timeline-body"><p>I'd like to help you but there is no distribution for <code>python-magic-bin</code> on macos.</p>
-<pre><code>error: Distribution `python-magic-bin==0.4.14 @ registry+https://pypi.org/simple` can't be installed because it doesn't have a source distribution or wheel for the current platform
+            <div class="timeline-body"><p>I&#x27;d like to help you but there is no distribution for <code>python-magic-bin</code> on macos.</p>
+<pre><code>error: Distribution `python-magic-bin==0.4.14 @ registry+https://pypi.org/simple` can&#x27;t be installed because it doesn&#x27;t have a source distribution or wheel for the current platform
 </code></pre>
-<p>But I was wondering, who are the consumers of your <code>lib</code>? I think the only way they can install your package is by building it from source using <code>uv</code> (to understand the reinstall part, or use another tool but apply the reinstall part manually). But I can't seem to even install the dependencies so I think that will be hard.</p>
-<p>Unfortunately the reinstall don't go into the wheel, so you can't distribute that. And it'd amount to the same anyways since I don't think you'll be able to build a wheel for platforms where <code>python-magic-bin</code> isn't present.</p>
-<p>Locally, my understanding of the issue you're encountering is:</p>
-<p><code>uv run --verbose hello.py</code> will install <code>lib</code> in your virtual environment. Since it's an editable dependency, what will happen is, <code>uv</code> will run the <code>hatchling</code> backend in <code>lib</code> to build an &quot;editable&quot; wheel (see <a href="https://peps.python.org/pep-0660/">PEP 660</a>), this wheel is exactly like a regular wheel, just with some extra stuff that will make the install of the wheel in your virtual environment effectively editable. Now as we said, the wheel doesn't contain the information from the reinstall. So when it comes to installing <code>lib</code>, even as editable, its dependencies will be installed as recorded in <code>METADATA</code> in <code>.dist-info</code> of the wheel, which will be <code>&quot;python-magic-bin&gt;=0.4.14&quot;</code> then <code>&quot;supervisely&gt;=6.73.233&quot;</code>. And that's all, no reinstall. Then there will be a reference to <code>lib</code> because it's an editable install (instead of having the code itself in your venv).</p>
+<p>But I was wondering, who are the consumers of your <code>lib</code>? I think the only way they can install your package is by building it from source using <code>uv</code> (to understand the reinstall part, or use another tool but apply the reinstall part manually). But I can&#x27;t seem to even install the dependencies so I think that will be hard.</p>
+<p>Unfortunately the reinstall don&#x27;t go into the wheel, so you can&#x27;t distribute that. And it&#x27;d amount to the same anyways since I don&#x27;t think you&#x27;ll be able to build a wheel for platforms where <code>python-magic-bin</code> isn&#x27;t present.</p>
+<p>Locally, my understanding of the issue you&#x27;re encountering is:</p>
+<p><code>uv run --verbose hello.py</code> will install <code>lib</code> in your virtual environment. Since it&#x27;s an editable dependency, what will happen is, <code>uv</code> will run the <code>hatchling</code> backend in <code>lib</code> to build an &quot;editable&quot; wheel (see <a href="https://peps.python.org/pep-0660/">PEP 660</a>), this wheel is exactly like a regular wheel, just with some extra stuff that will make the install of the wheel in your virtual environment effectively editable. Now as we said, the wheel doesn&#x27;t contain the information from the reinstall. So when it comes to installing <code>lib</code>, even as editable, its dependencies will be installed as recorded in <code>METADATA</code> in <code>.dist-info</code> of the wheel, which will be <code>&quot;python-magic-bin&gt;=0.4.14&quot;</code> then <code>&quot;supervisely&gt;=6.73.233&quot;</code>. And that&#x27;s all, no reinstall. Then there will be a reference to <code>lib</code> because it&#x27;s an editable install (instead of having the code itself in your venv).</p>
 <p>My guess is confirmed by the correct installation of your <code>app</code> dependencies, <code>uv</code> tries to run <code>hello.py</code> at &quot;DEBUG Running <code>python hello.py</code>&quot; but then you have that issue with the <code>magic</code> module right.</p>
-<p>I think you should add a reinstall in your <code>app</code>'s <code>pyproject.toml</code>.</p>
+<p>I think you should add a reinstall in your <code>app</code>&#x27;s <code>pyproject.toml</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -325,14 +316,14 @@ If you're filing a bug report, please consider including the following informati
 <blockquote>
 <p>But I was wondering, who are the consumers of your lib?</p>
 </blockquote>
-<p>Basically I have a monorepo with multiple non-workspace packages (i.e <code>uv init --no-workspace ...etc</code>) that consume <code>lib</code>. There's no intention of distributing any of this, all code is staying inhouse.</p>
+<p>Basically I have a monorepo with multiple non-workspace packages (i.e <code>uv init --no-workspace ...etc</code>) that consume <code>lib</code>. There&#x27;s no intention of distributing any of this, all code is staying inhouse.</p>
 <blockquote>
-<p>Locally, my understanding of the issue you're encountering is:
-uv run --verbose hello.py will install lib in your virtual environment. Since it's an editable dependency, what will happen is, uv will run the hatchling backend in lib to build an &quot;editable&quot; wheel (see <a href="https://peps.python.org/pep-0660/">PEP 660</a>), this wheel is exactly like a regular wheel, just with some extra stuff that will make the install of the wheel in your virtual environment effectively editable. Now as we said, the wheel doesn't contain the information from the reinstall. So when it comes to installing lib, even as editable, its dependencies will be installed as recorded in METADATA in .dist-info of the wheel, which will be &quot;python-magic-bin&gt;=0.4.14&quot; then &quot;supervisely&gt;=6.73.233&quot;. And that's all, no reinstall. Then there will be a reference to lib because it's an editable install (instead of having the code itself in your venv).</p>
+<p>Locally, my understanding of the issue you&#x27;re encountering is:
+uv run --verbose hello.py will install lib in your virtual environment. Since it&#x27;s an editable dependency, what will happen is, uv will run the hatchling backend in lib to build an &quot;editable&quot; wheel (see <a href="https://peps.python.org/pep-0660/">PEP 660</a>), this wheel is exactly like a regular wheel, just with some extra stuff that will make the install of the wheel in your virtual environment effectively editable. Now as we said, the wheel doesn&#x27;t contain the information from the reinstall. So when it comes to installing lib, even as editable, its dependencies will be installed as recorded in METADATA in .dist-info of the wheel, which will be &quot;python-magic-bin&gt;=0.4.14&quot; then &quot;supervisely&gt;=6.73.233&quot;. And that&#x27;s all, no reinstall. Then there will be a reference to lib because it&#x27;s an editable install (instead of having the code itself in your venv).</p>
 </blockquote>
 <p>That makes sense, thank you for the write up.</p>
 <blockquote>
-<p>I think you should add a reinstall in your app's pyproject.toml.</p>
+<p>I think you should add a reinstall in your app&#x27;s pyproject.toml.</p>
 </blockquote>
 <p>I have a script that adds the <code>reinstall-package</code> to all non-workspace packages.</p>
 <p>I was just wondering if there was a better solution to this situation, the script just feels like a giant hack.</p>
@@ -341,7 +332,7 @@ uv run --verbose hello.py will install lib in your virtual environment. Since it
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:28:24 UTC
+        Synced at 2026-01-20 19:35:35 UTC
     </footer>
 </body>
 </html>

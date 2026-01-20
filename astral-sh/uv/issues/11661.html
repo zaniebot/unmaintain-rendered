@@ -23,49 +23,49 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/mario-at-intercom">@mario-at-intercom</a></div>
-            <div class="timeline-body"><h3>Question</h3>
-<p>Hey, i'm looking into migrating one of my projects from pip-tools to uv project.</p>
-<p>I can't find a guidance on doing that. I'd like my versions in requirements.txt staying the same (and I have two different files for two different platforms) when i move to the uv's lockfile.</p>
-<h3>Platform</h3>
+            <div class="timeline-body">Question
+<p>Hey, i&#x27;m looking into migrating one of my projects from pip-tools to uv project.</p>
+<p>I can&#x27;t find a guidance on doing that. I&#x27;d like my versions in requirements.txt staying the same (and I have two different files for two different platforms) when i move to the uv&#x27;s lockfile.</p>
+Platform
 <p>macOS, Windows</p>
-<h3>Version</h3>
+Version
 <p>uv 0.6.2</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @mario-at-intercom on 2025-02-20 11:13</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/mario-at-intercom">@mario-at-intercom</a> on 2025-02-20 11:13</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-20 11:22</div>
-            <div class="timeline-body"><p>Can you describe what you tried and what didn't work for your case?</p>
+            <div class="timeline-body"><p>Can you describe what you tried and what didn&#x27;t work for your case?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-20 14:13</div>
-            <div class="timeline-body"><p>I don't think there's an easy way to use multiple <code>requirements.txt</code> files for different platforms to constrain the versions of a new uv lockfile.</p>
+            <div class="timeline-body"><p>I don&#x27;t think there&#x27;s an easy way to use multiple <code>requirements.txt</code> files for different platforms to constrain the versions of a new uv lockfile.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mario-at-intercom">@mario-at-intercom</a> on 2025-02-20 15:55</div>
-            <div class="timeline-body"><p>@konstin I haven't tried any approach yet because I have no ideas to try.</p>
+            <div class="timeline-body"><p>@konstin I haven&#x27;t tried any approach yet because I have no ideas to try.</p>
 <p>My mental model:</p>
 <ul>
 <li>I have to create a brand new project with uv</li>
 <li>Have to move all dependencies from requirements.in (no versions defined) to pyproject.toml</li>
 <li>Have to make sure that uv.lock keeps versions from requirements.txt (will this happen automatically?). This is the piece I have no ideas about even to try.</li>
 </ul>
-<p>@zanieb I have two requirements.txt because I need to install a different tensorflow-text package based on the platform. Platform selector (probably not the right term?!) wasn't supported back then so I had to resort to</p>
+<p>@zanieb I have two requirements.txt because I need to install a different tensorflow-text package based on the platform. Platform selector (probably not the right term?!) wasn&#x27;t supported back then so I had to resort to</p>
 <ul>
 <li>requirements-common.in</li>
 <li>requirements.in</li>
 <li>requirements-macos.in</li>
 </ul>
-<p>That compile to requirements.txt and requirements-macos.txt. If I can use platform==darwin and platform!=darwin in uv project definition and that get properly translated to single uv lockfile, I don't need multiple requirements files.</p>
+<p>That compile to requirements.txt and requirements-macos.txt. If I can use platform==darwin and platform!=darwin in uv project definition and that get properly translated to single uv lockfile, I don&#x27;t need multiple requirements files.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-20 16:27</div>
-            <div class="timeline-body"><p>You'd need to copy your <code>requirements.txt</code> contents into <code>tool.uv.constraint-dependencies</code> (https://docs.astral.sh/uv/reference/settings/#constraint-dependencies), presumably you'd also want to add the platform markers relevant for the requirements file.</p>
+            <div class="timeline-body"><p>You&#x27;d need to copy your <code>requirements.txt</code> contents into <code>tool.uv.constraint-dependencies</code> (https://docs.astral.sh/uv/reference/settings/#constraint-dependencies), presumably you&#x27;d also want to add the platform markers relevant for the requirements file.</p>
 <p>Then, you can <code>uv add -r requirements.in</code> and the lockfile should respect the pinned versions from your compiled requirements files.</p>
 <blockquote>
 <p>If I can use platform==darwin and platform!=darwin in uv project definition and that get properly translated to single uv lockfile,</p>
@@ -84,28 +84,28 @@
 
 * Have to make sure that uv.lock keeps versions from requirements.txt (will this happen automatically?). This is the piece I have no ideas about even to try.</code></pre>
 </blockquote>
-<p>The first two steps are correct, the third one is tricky. There's no 1:1 translation from locked requirement.txt to uv.lock due to the slightly different models (mainly that pip is platform specific and uv's lockfile is universal), but there's some tricks that can help you get close.</p>
+<p>The first two steps are correct, the third one is tricky. There&#x27;s no 1:1 translation from locked requirement.txt to uv.lock due to the slightly different models (mainly that pip is platform specific and uv&#x27;s lockfile is universal), but there&#x27;s some tricks that can help you get close.</p>
 <p>One option is using constraints. Constraints use the same syntax as requirements and are passed explicitly, for the uv project interface in <code>tool.uv</code>:</p>
-<pre><code class="language-toml">[tool.uv]
+<pre><code>[tool.uv]
 constraint-dependencies = [&quot;...&quot;, &quot;...&quot;]
 </code></pre>
-<p>You could add <code>; sys_platform == &quot;darwin&quot;</code> to each entry in the one requirements file and <code>; sys_platform != &quot;darwin&quot;</code> to the other, then insert them as constraints here. This is the most accurate approach but it my fail with a conflict due to uv's resolver being different from pip's, requiring some manual editing until it works. Once you have your <code>uv.lock</code>, you can remove the constraints, uv updates <code>uv.lock</code> only when required or requested.</p>
+<p>You could add <code>; sys_platform == &quot;darwin&quot;</code> to each entry in the one requirements file and <code>; sys_platform != &quot;darwin&quot;</code> to the other, then insert them as constraints here. This is the most accurate approach but it my fail with a conflict due to uv&#x27;s resolver being different from pip&#x27;s, requiring some manual editing until it works. Once you have your <code>uv.lock</code>, you can remove the constraints, uv updates <code>uv.lock</code> only when required or requested.</p>
 <p>Another is doing the first with <code>--exclude-newer</code> and the timestamp of the pip freezing, if that is available, then remove the <code>exclude-newer</code> line from the resulting <code>uv.lock</code>. This trick only works with pypi and simulates a resolution at that time, which may be sufficient to get the right lockfile.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mario-at-intercom">@mario-at-intercom</a> on 2025-02-21 08:40</div>
-            <div class="timeline-body"><p>Thanks @zanieb and @konstin. I think I understand what I need to do to migrate us. I don't know when exactly we'll do that but I needed to understand the complexity we might hit. Thanks for that.</p>
-<p>It's probably safe to close the issue now since the path to migration is outlined.</p>
+            <div class="timeline-body"><p>Thanks @zanieb and @konstin. I think I understand what I need to do to migrate us. I don&#x27;t know when exactly we&#x27;ll do that but I needed to understand the complexity we might hit. Thanks for that.</p>
+<p>It&#x27;s probably safe to close the issue now since the path to migration is outlined.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @konstin on 2025-02-24 08:29</div>
+            <div class="event">Closed by <a href="https://github.com/konstin">@konstin</a> on 2025-02-24 08:29</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:30:02 UTC
+        Synced at 2026-01-20 19:37:25 UTC
     </footer>
 </body>
 </html>

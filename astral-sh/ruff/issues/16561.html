@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/harupy">@harupy</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<p>X-post from https://github.com/guilatrova/tryceratops/issues/76. In the following code, should <a href="https://docs.astral.sh/ruff/rules/useless-try-except/"><code>useless-try-except</code></a> flag the last except handler be flagged as a violation? It currently doesn't.</p>
-<pre><code class="language-python">try:
+            <div class="timeline-body">Summary
+<p>X-post from <a href="https://github.com/guilatrova/tryceratops/issues/76">guilatrova/tryceratops#76</a>. In the following code, should <a href="https://docs.astral.sh/ruff/rules/useless-try-except/"><code>useless-try-except</code></a> flag the last except handler be flagged as a violation? It currently doesn&#x27;t.</p>
+<pre><code>try:
     foo()
 except ValueError:  # not useless
     print(&quot;Do not throw&quot;)  
@@ -34,23 +34,23 @@ except TypeError:   # is this useless? (**trailing** immediate-raise handler)
 </code></pre>
 <p><code>useless-try-except</code> requires all except handlers to be useless.</p>
 <p>https://github.com/astral-sh/ruff/blob/036102186392f1263774bfd42d78acc65c0641b8/crates/ruff_linter/src/rules/tryceratops/rules/useless_try_except.rs#L69-L70</p>
-<h3>Playground reproduction</h3>
+Playground reproduction
 <p>https://play.ruff.rs/44084483-f2df-424a-87ca-dc5d6884aebe</p>
-<h3>Version</h3>
+Version
 <p>v0.9.10</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-03-08 05:22</div>
             <div class="timeline-body"><p>The second handler is, in fact, not useless:</p>
-<pre><code class="language-python">class CustomError(ValueError, TypeError): ...
+<pre><code>class CustomError(ValueError, TypeError): ...
 
 try:
     raise CustomError
 except ValueError:
-    print('ValueError')               # This is reached
+    print(&#x27;ValueError&#x27;)               # This is reached
 except TypeError:
-    print('TypeError &amp; ~ValueError')  # This is not
+    print(&#x27;TypeError &amp; ~ValueError&#x27;)  # This is not
 </code></pre>
 </div>
         </div>
@@ -64,28 +64,28 @@ except TypeError:
             <div class="timeline-body"><blockquote>
 <p>by the second handler, you mean <code>except TypeError:</code>?</p>
 </blockquote>
-<p>Yes, that's the one. It only catches <code>TypeError</code>s that are not <code>ValueError</code>s, and so is not useless.</p>
+<p>Yes, that&#x27;s the one. It only catches <code>TypeError</code>s that are not <code>ValueError</code>s, and so is not useless.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2025-03-08 07:11</div>
             <div class="timeline-body"><p>I see, so</p>
-<pre><code class="language-python">class CustomError(ValueError, TypeError): ...
+<pre><code>class CustomError(ValueError, TypeError): ...
 
 try:
     raise CustomError
 except ValueError:
-    print('ValueError')
+    print(&#x27;ValueError&#x27;)
 except TypeError:
     raise
 </code></pre>
-<p>isn't equivalent to:</p>
-<pre><code class="language-python">class CustomError(ValueError, TypeError): ...
+<p>isn&#x27;t equivalent to:</p>
+<pre><code>class CustomError(ValueError, TypeError): ...
 
 try:
     raise CustomError
 except ValueError:
-    print('ValueError')
+    print(&#x27;ValueError&#x27;)
 </code></pre>
 </div>
         </div>
@@ -105,12 +105,12 @@ except ValueError:
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-03-08 18:07</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-08 18:07</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-08 18:10</div>
-            <div class="timeline-body"><p>It seems this is intentional, see https://github.com/astral-sh/ruff/pull/4461#discussion_r1195753624</p>
-<pre><code class="language-py">Class BothError(ValueError, TypeError): ...
+            <div class="timeline-body"><p>It seems this is intentional, see <a href="https://github.com/astral-sh/ruff/pull/4461">astral-sh/ruff#4461</a>#discussion_r1195753624</p>
+<pre><code>Class BothError(ValueError, TypeError): ...
 try:
     raise BothError
 except TypeError:   # this is not useless because it suppress the error in `ValueError`
@@ -118,13 +118,13 @@ except TypeError:   # this is not useless because it suppress the error in `Valu
 except ValueError:  # not useless
     print(&quot;Do not throw&quot;)  
 </code></pre>
-<p>I think there's an argument whether <em>unnecessary raise</em> that are the last handlers should be disallowed. Is this what you are suggesting in this issue?</p>
+<p>I think there&#x27;s an argument whether <em>unnecessary raise</em> that are the last handlers should be disallowed. Is this what you are suggesting in this issue?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2025-03-08 23:10</div>
-            <div class="timeline-body"><p>@MichaReiser Yes, that's what I'm suggesting in this issue. Here's another example:</p>
-<pre><code class="language-python">try:
+            <div class="timeline-body"><p>@MichaReiser Yes, that&#x27;s what I&#x27;m suggesting in this issue. Here&#x27;s another example:</p>
+<pre><code>try:
     ...
 except Exception:
     pass # swallow the error
@@ -139,7 +139,7 @@ except ValueError:
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:52:19 UTC
+        Synced at 2026-01-20 18:49:38 UTC
     </footer>
 </body>
 </html>

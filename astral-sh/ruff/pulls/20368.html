@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>We currently have reasonably good assignability and subtyping checks between nominal types and protocol types if the protocol has a method member or an attribute member. For example, these assertions all pass:</p>
-<pre><code class="language-py">from ty_extensions import static_assert, is_subtype_of
+<pre><code>from ty_extensions import static_assert, is_subtype_of
 from typing import Iterable, Iterator, Callable
 
 class IsIterable:
@@ -44,10 +44,10 @@ static_assert(not is_subtype_of(AlsoNotIterable, Iterator[int]))
 </code></pre>
 <p>However, we do not currently have a good implementation of subtyping and assignability <em>between</em> protocol types: we currently think that <code>Iterator[str]</code> is a subtype of <code>Iterator[int]</code>, and vice versa, for example, because both protocols have <code>__iter__</code> and <code>__next__</code> method members, and we do not currently compare the types of these members when doing subtyping/assignability checks <em>between</em> protocols (we only check for the presence of those members).</p>
 <p>This PR fixes that.</p>
-<p>Fixes https://github.com/astral-sh/ty/issues/306
-Fixes https://github.com/astral-sh/ty/issues/733
-Fixes https://github.com/astral-sh/ty/issues/1089</p>
-<h2>Implementation details</h2>
+<p>Fixes <a href="https://github.com/astral-sh/ty/issues/306">astral-sh/ty#306</a>
+Fixes <a href="https://github.com/astral-sh/ty/issues/733">astral-sh/ty#733</a>
+Fixes <a href="https://github.com/astral-sh/ty/issues/1089">astral-sh/ty#1089</a></p>
+Implementation details
 <p>The change that I <em>wanted</em> to make in this PR is the change to <code>protocol_class.rs</code>. Unfortunately, I quickly ran into stack overflows after making that change, however, due to large cycles that were spread across <code>is_subtype_of</code> and <code>is_disjoint_from</code>. Looking at backtraces, the root of the problem was clear: <code>has_relation_to</code> for intersections calls <code>is_disjoint_from</code>:</p>
 <p>https://github.com/astral-sh/ruff/blob/3771f1567c778776777679674b8cffdc90aa51aa/crates/ty_python_semantic/src/types.rs#L1653-L1665</p>
 <p>...and <code>is_disjoint_from</code> for intersections calls <code>has_relation_to</code>...</p>
@@ -55,28 +55,28 @@ Fixes https://github.com/astral-sh/ty/issues/1089</p>
 <p>...meaning that existing mdtests ended up running into an infinite loop when checking whether intersections of protocols were subtypes of other types. This infinite loop could not be caught by our existing cycle-detector infrastructure, because a fresh cycle detector would be created in the call to <code>has_relation_to</code> call from <code>is_disjoint_from_impl</code>, and this cycle detector would not be passed into the <code>is_disjoint_from</code> call inside <code>has_relation_to</code>.</p>
 <p>I therefore had to make a much more invasive change here than I wanted to, in order to fix these stack overflows. Rather than accepting only one cycle detector as an input parameter, <code>has_relation_to_impl</code> must now accept two cycle detectors: one <code>HasRelationToVisitor</code> and one <code>IsDisjointFromVisitor</code>. This allows <code>has_relation_to</code> to call <code>is_disjoint_from_impl</code> rather than <code>is_disjoint_from</code>, meaning that the same cycle detector can be passed between <code>has_relation_to</code> calls and <code>is_disjoint_from</code> calls. The cycle can therefore be detected and stopped in its tracks before a stack overflow occurs.</p>
 <p>Similar changes also needed to be made to <code>is_disjoint_from_impl</code>: it now accepts a <code>HasRelationToVisitor</code> as well as an <code>IsDisjointFromVisitor</code>.</p>
-<h2>Performance</h2>
-<p>There are some regressions of up to 5% or so on some benchmarks. I think this is just because we're doing more work now, but I'm happy to hear suggestions if anybody has any ideas for how to optimise this.</p>
-<h2>Conformances suite impact</h2>
-<p>See https://github.com/astral-sh/ruff/pull/20368#issuecomment-3286597297</p>
-<h2>Ecosystem impact</h2>
-<p>See https://github.com/astral-sh/ruff/pull/20368#issuecomment-3368395654</p>
-<h2>Test Plan</h2>
+Performance
+<p>There are some regressions of up to 5% or so on some benchmarks. I think this is just because we&#x27;re doing more work now, but I&#x27;m happy to hear suggestions if anybody has any ideas for how to optimise this.</p>
+Conformances suite impact
+<p>See <a href="https://github.com/astral-sh/ruff/pull/20368">astral-sh/ruff#20368</a>#issuecomment-3286597297</p>
+Ecosystem impact
+<p>See <a href="https://github.com/astral-sh/ruff/pull/20368">astral-sh/ruff#20368</a>#issuecomment-3368395654</p>
+Test Plan
 <p>Mdtests updated</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-09-12 19:30</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-12 19:30</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-12 19:32</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
-<details>
-<summary>Changes were detected when running ty on typing conformance tests</summary>
+Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a>
 
-<pre><code class="language-diff">--- old-output.txt	2025-10-08 18:35:15.522415266 +0000
+Changes were detected when running ty on typing conformance tests
+
+<pre><code>--- old-output.txt	2025-10-08 18:35:15.522415266 +0000
 +++ new-output.txt	2025-10-08 18:35:18.851436775 +0000
 @@ -104,6 +104,7 @@
  callables_annotation.py:57:18: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `list[int]`?
@@ -132,8 +132,8 @@ Fixes https://github.com/astral-sh/ty/issues/1089</p>
  narrowing_typeis.py:76:9: error[type-assertion-failure] Argument does not have asserted type `int`
 @@ -713,6 +744,7 @@
  overloads_evaluation.py:291:33: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `T@example6`
- protocols_class_objects.py:58:1: error[invalid-assignment] Object of type `&lt;class 'ConcreteA'&gt;` is not assignable to `ProtoA1`
- protocols_class_objects.py:59:1: error[invalid-assignment] Object of type `&lt;class 'ConcreteA'&gt;` is not assignable to `ProtoA2`
+ protocols_class_objects.py:58:1: error[invalid-assignment] Object of type `&lt;class &#x27;ConcreteA&#x27;&gt;` is not assignable to `ProtoA1`
+ protocols_class_objects.py:59:1: error[invalid-assignment] Object of type `&lt;class &#x27;ConcreteA&#x27;&gt;` is not assignable to `ProtoA2`
 +protocols_definition.py:30:11: error[invalid-argument-type] Argument to function `close_all` is incorrect: Expected `Iterable[SupportsClose]`, found `list[Unknown | int]`
  protocols_definition.py:114:1: error[invalid-assignment] Object of type `Concrete2_Bad1` is not assignable to `Template2`
  protocols_definition.py:115:1: error[invalid-assignment] Object of type `Concrete2_Bad2` is not assignable to `Template2`
@@ -161,35 +161,35 @@ Fixes https://github.com/astral-sh/ty/issues/1089</p>
  qualifiers_annotated.py:36:42: error[invalid-syntax] named expression cannot be used within a type annotation
  qualifiers_annotated.py:40:28: error[invalid-syntax] await expression cannot be used within a type annotation
 @@ -858,5 +898,5 @@
- typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
+ typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key &#x27;name&#x27; in TypedDict `Movie` constructor
  typeddicts_usage.py:28:18: error[invalid-key] Invalid key access on TypedDict `Movie`: Unknown key &quot;title&quot;
  typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions. Did you mean to use a concrete TypedDict or `collections.abc.Mapping[str, object]` instead?
 -Found 859 diagnostics
 +Found 899 diagnostics
  WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
 </code></pre>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-09-12 19:36</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-12 19:36</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-12 19:37</div>
             <div class="timeline-body"><blockquote>
-<pre><code class="language-diff">+callables_annotation.py:157:5: error[invalid-assignment] Object of type `Proto7` is not assignable to `Proto6`
+<pre><code>+callables_annotation.py:157:5: error[invalid-assignment] Object of type `Proto7` is not assignable to `Proto6`
 </code></pre>
 </blockquote>
-<p>According to the conformance test, we're not meant to emit an error on this one (<a href="https://github.com/python/typing/blob/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance/tests/callables_annotation.py#L157">here</a>). All other new diagnostics on the conformance suite look correct.</p>
-<p>Edit: this is a pre-existing bug in <code>Callable</code> assignability. I opened a separate issue for this (https://github.com/astral-sh/ty/issues/1257)</p>
+<p>According to the conformance test, we&#x27;re not meant to emit an error on this one (<a href="https://github.com/python/typing/blob/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance/tests/callables_annotation.py#L157">here</a>). All other new diagnostics on the conformance suite look correct.</p>
+<p>Edit: this is a pre-existing bug in <code>Callable</code> assignability. I opened a separate issue for this (<a href="https://github.com/astral-sh/ty/issues/1257">astral-sh/ty#1257</a>)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-12 19:40</div>
-            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+            <div class="timeline-body">
 
-<h2><code>ecosystem-analyzer</code> results</h2>
+<code>ecosystem-analyzer</code> results
 <p>| Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
 | <code>invalid-argument-type</code> | 141 | 27 | 60 |
@@ -212,14 +212,14 @@ Fixes https://github.com/astral-sh/ty/issues/1089</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-15 16:06</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">attrs (https://github.com/python-attrs/attrs)
-+ tests/test_validators.py:1339:27: error[invalid-argument-type] Argument to function `not_` is incorrect: Expected `type[Exception] | Iterable[type[Exception]]`, found `tuple[&lt;class 'str'&gt;, &lt;class 'int'&gt;]`
+Changes were detected when running on open source projects
+
+<pre><code>attrs (https://github.com/python-attrs/attrs)
++ tests/test_validators.py:1339:27: error[invalid-argument-type] Argument to function `not_` is incorrect: Expected `type[Exception] | Iterable[type[Exception]]`, found `tuple[&lt;class &#x27;str&#x27;&gt;, &lt;class &#x27;int&#x27;&gt;]`
 - Found 556 diagnostics
 + Found 557 diagnostics
 
@@ -370,18 +370,18 @@ dulwich (https://github.com/dulwich/dulwich)
 + Found 186 diagnostics
 
 starlette (https://github.com/encode/starlette)
-- tests/test_formparsers.py:297:9: error[invalid-argument-type] Argument to bound method `post` is incorrect: Expected `Mapping[str, Iterable[str]] | None`, found `Literal[b'--a7f7ac8d4e2e437c877bb7b8d7cc549c\r\nContent-Disposition: form-data; name=&quot;field0&quot;\r\n\r\nvalue0\r\n--a7f7ac8d4e2e437c877bb7b8d7cc549c\r\nContent-Disposition: form-data; name=&quot;file&quot;; filename=&quot;file.txt&quot;\r\nContent-Type: text/plain\r\n\r\n&lt;file content&gt;\r\n--a7f7ac8d4e2e437c877bb7b8d7cc549c\r\nContent-Disposition: form-data; name=&quot;field1&quot;\r\n\r\nvalue1\r\n--a7f7ac8d4e2e437c877bb7b8d7cc549c--\r\n']`
-+ tests/test_formparsers.py:297:9: error[invalid-argument-type] Argument to bound method `post` is incorrect: Expected `Mapping[str, Iterable[str] | bytes] | None`, found `Literal[b'--a7f7ac8d4e2e437c877bb7b8d7cc549c\r\nContent-Disposition: form-data; name=&quot;field0&quot;\r\n\r\nvalue0\r\n--a7f7ac8d4e2e437c877bb7b8d7cc549c\r\nContent-Disposition: form-data; name=&quot;file&quot;; filename=&quot;file.txt&quot;\r\nContent-Type: text/plain\r\n\r\n&lt;file content&gt;\r\n--a7f7ac8d4e2e437c877bb7b8d7cc549c\r\nContent-Disposition: form-data; name=&quot;field1&quot;\r\n\r\nvalue1\r\n--a7f7ac8d4e2e437c877bb7b8d7cc549c--\r\n']`
-- tests/test_formparsers.py:372:9: error[invalid-argument-type] Argument to bound method `post` is incorrect: Expected `Mapping[str, Iterable[str]] | None`, found `Literal[b'--a7f7ac8d4e2e437c877bb7b8d7cc549c\r\nContent-Disposition: form-data; name=&quot;file&quot;; filename=&quot;\xe6\x96\x87\xe6\x9b\xb8.txt&quot;\r\nContent-Type: text/plain\r\n\r\n&lt;file content&gt;\r\n--a7f7ac8d4e2e437c877bb7b8d7cc549c--\r\n']`
-+ tests/test_formparsers.py:372:9: error[invalid-argument-type] Argument to bound method `post` is incorrect: Expected `Mapping[str, Iterable[str] | bytes] | None`, found `Literal[b'--a7f7ac8d4e2e437c877bb7b8d7cc549c\r\nContent-Disposition: form-data; name=&quot;file&quot;; filename=&quot;\xe6\x96\x87\xe6\x9b\xb8.txt&quot;\r\nContent-Type: text/plain\r\n\r\n&lt;file content&gt;\r\n--a7f7ac8d4e2e437c877bb7b8d7cc549c--\r\n']`
-- tests/test_formparsers.py:396:9: error[invalid-argument-type] Argument to bound method `post` is incorrect: Expected `Mapping[str, Iterable[str]] | None`, found `Literal[b'--a7f7ac8d4e2e437c877bb7b8d7cc549c\r\nContent-Disposition: form-data; name=&quot;file&quot;; filename=&quot;\xe7\x94\xbb\xe5\x83\x8f.jpg&quot;\r\nContent-Type: image/jpeg\r\n\r\n&lt;file content&gt;\r\n--a7f7ac8d4e2e437c877bb7b8d7cc549c--\r\n']`
-+ tests/test_formparsers.py:396:9: error[invalid-argument-type] Argument to bound method `post` is incorrect: Expected `Mapping[str, Iterable[str] | bytes] | None`, found `Literal[b'--a7f7ac8d4e2e437c877bb7b8d7cc549c\r\nContent-Disposition: form-data; name=&quot;file&quot;; filename=&quot;\xe7\x94\xbb\xe5\x83\x8f.jpg&quot;\r\nContent-Type: image/jpeg\r\n\r\n&lt;file content&gt;\r\n--a7f7ac8d4e2e437c877bb7b8d7cc549c--\r\n']`
-- tests/test_formparsers.py:420:9: error[invalid-argument-type] Argument to bound method `post` is incorrect: Expected `Mapping[str, Iterable[str]] | None`, found `Literal[b'--20b303e711c4ab8c443184ac833ab00f\r\nContent-Disposition: form-data; name=&quot;value&quot;\r\n\r\nTransf\xc3\xa9rer\r\n--20b303e711c4ab8c443184ac833ab00f--\r\n']`
-+ tests/test_formparsers.py:420:9: error[invalid-argument-type] Argument to bound method `post` is incorrect: Expected `Mapping[str, Iterable[str] | bytes] | None`, found `Literal[b'--20b303e711c4ab8c443184ac833ab00f\r\nContent-Disposition: form-data; name=&quot;value&quot;\r\n\r\nTransf\xc3\xa9rer\r\n--20b303e711c4ab8c443184ac833ab00f--\r\n']`
-- tests/test_formparsers.py:494:13: error[invalid-argument-type] Argument to bound method `post` is incorrect: Expected `Mapping[str, Iterable[str]] | None`, found `Literal[b'Content-Disposition: form-data; name=&quot;file&quot;; filename=&quot;\xe6\x96\x87\xe6\x9b\xb8.txt&quot;\r\nContent-Type: text/plain\r\n\r\n&lt;file content&gt;\r\n']`
-+ tests/test_formparsers.py:494:13: error[invalid-argument-type] Argument to bound method `post` is incorrect: Expected `Mapping[str, Iterable[str] | bytes] | None`, found `Literal[b'Content-Disposition: form-data; name=&quot;file&quot;; filename=&quot;\xe6\x96\x87\xe6\x9b\xb8.txt&quot;\r\nContent-Type: text/plain\r\n\r\n&lt;file content&gt;\r\n']`
-- tests/test_formparsers.py:522:13: error[invalid-argument-type] Argument to bound method `post` is incorrect: Expected `Mapping[str, Iterable[str]] | None`, found `Literal[b'--a7f7ac8d4e2e437c877bb7b8d7cc549c\r\nContent-Disposition: form-data; =&quot;field0&quot;\r\n\r\nvalue0\r\n']`
-+ tests/test_formparsers.py:522:13: error[invalid-argument-type] Argument to bound method `post` is incorrect: Expected `Mapping[str, Iterable[str] | bytes] | None`, found `Literal[b'--a7f7ac8d4e2e437c877bb7b8d7cc549c\r\nContent-Disposition: form-data; =&quot;field0&quot;\r\n\r\nvalue0\r\n']`
+- tests/test_formparsers.py:297:9: error[invalid-argument-type] Argument to bound method `post` is incorrect: Expected `Mapping[str, Iterable[str]] | None`, found `Literal[b&#x27;--a7f7ac8d4e2e437c877bb7b8d7cc549c\r\nContent-Disposition: form-data; name=&quot;field0&quot;\r\n\r\nvalue0\r\n--a7f7ac8d4e2e437c877bb7b8d7cc549c\r\nContent-Disposition: form-data; name=&quot;file&quot;; filename=&quot;file.txt&quot;\r\nContent-Type: text/plain\r\n\r\n&lt;file content&gt;\r\n--a7f7ac8d4e2e437c877bb7b8d7cc549c\r\nContent-Disposition: form-data; name=&quot;field1&quot;\r\n\r\nvalue1\r\n--a7f7ac8d4e2e437c877bb7b8d7cc549c--\r\n&#x27;]`
++ tests/test_formparsers.py:297:9: error[invalid-argument-type] Argument to bound method `post` is incorrect: Expected `Mapping[str, Iterable[str] | bytes] | None`, found `Literal[b&#x27;--a7f7ac8d4e2e437c877bb7b8d7cc549c\r\nContent-Disposition: form-data; name=&quot;field0&quot;\r\n\r\nvalue0\r\n--a7f7ac8d4e2e437c877bb7b8d7cc549c\r\nContent-Disposition: form-data; name=&quot;file&quot;; filename=&quot;file.txt&quot;\r\nContent-Type: text/plain\r\n\r\n&lt;file content&gt;\r\n--a7f7ac8d4e2e437c877bb7b8d7cc549c\r\nContent-Disposition: form-data; name=&quot;field1&quot;\r\n\r\nvalue1\r\n--a7f7ac8d4e2e437c877bb7b8d7cc549c--\r\n&#x27;]`
+- tests/test_formparsers.py:372:9: error[invalid-argument-type] Argument to bound method `post` is incorrect: Expected `Mapping[str, Iterable[str]] | None`, found `Literal[b&#x27;--a7f7ac8d4e2e437c877bb7b8d7cc549c\r\nContent-Disposition: form-data; name=&quot;file&quot;; filename=&quot;\xe6\x96\x87\xe6\x9b\xb8.txt&quot;\r\nContent-Type: text/plain\r\n\r\n&lt;file content&gt;\r\n--a7f7ac8d4e2e437c877bb7b8d7cc549c--\r\n&#x27;]`
++ tests/test_formparsers.py:372:9: error[invalid-argument-type] Argument to bound method `post` is incorrect: Expected `Mapping[str, Iterable[str] | bytes] | None`, found `Literal[b&#x27;--a7f7ac8d4e2e437c877bb7b8d7cc549c\r\nContent-Disposition: form-data; name=&quot;file&quot;; filename=&quot;\xe6\x96\x87\xe6\x9b\xb8.txt&quot;\r\nContent-Type: text/plain\r\n\r\n&lt;file content&gt;\r\n--a7f7ac8d4e2e437c877bb7b8d7cc549c--\r\n&#x27;]`
+- tests/test_formparsers.py:396:9: error[invalid-argument-type] Argument to bound method `post` is incorrect: Expected `Mapping[str, Iterable[str]] | None`, found `Literal[b&#x27;--a7f7ac8d4e2e437c877bb7b8d7cc549c\r\nContent-Disposition: form-data; name=&quot;file&quot;; filename=&quot;\xe7\x94\xbb\xe5\x83\x8f.jpg&quot;\r\nContent-Type: image/jpeg\r\n\r\n&lt;file content&gt;\r\n--a7f7ac8d4e2e437c877bb7b8d7cc549c--\r\n&#x27;]`
++ tests/test_formparsers.py:396:9: error[invalid-argument-type] Argument to bound method `post` is incorrect: Expected `Mapping[str, Iterable[str] | bytes] | None`, found `Literal[b&#x27;--a7f7ac8d4e2e437c877bb7b8d7cc549c\r\nContent-Disposition: form-data; name=&quot;file&quot;; filename=&quot;\xe7\x94\xbb\xe5\x83\x8f.jpg&quot;\r\nContent-Type: image/jpeg\r\n\r\n&lt;file content&gt;\r\n--a7f7ac8d4e2e437c877bb7b8d7cc549c--\r\n&#x27;]`
+- tests/test_formparsers.py:420:9: error[invalid-argument-type] Argument to bound method `post` is incorrect: Expected `Mapping[str, Iterable[str]] | None`, found `Literal[b&#x27;--20b303e711c4ab8c443184ac833ab00f\r\nContent-Disposition: form-data; name=&quot;value&quot;\r\n\r\nTransf\xc3\xa9rer\r\n--20b303e711c4ab8c443184ac833ab00f--\r\n&#x27;]`
++ tests/test_formparsers.py:420:9: error[invalid-argument-type] Argument to bound method `post` is incorrect: Expected `Mapping[str, Iterable[str] | bytes] | None`, found `Literal[b&#x27;--20b303e711c4ab8c443184ac833ab00f\r\nContent-Disposition: form-data; name=&quot;value&quot;\r\n\r\nTransf\xc3\xa9rer\r\n--20b303e711c4ab8c443184ac833ab00f--\r\n&#x27;]`
+- tests/test_formparsers.py:494:13: error[invalid-argument-type] Argument to bound method `post` is incorrect: Expected `Mapping[str, Iterable[str]] | None`, found `Literal[b&#x27;Content-Disposition: form-data; name=&quot;file&quot;; filename=&quot;\xe6\x96\x87\xe6\x9b\xb8.txt&quot;\r\nContent-Type: text/plain\r\n\r\n&lt;file content&gt;\r\n&#x27;]`
++ tests/test_formparsers.py:494:13: error[invalid-argument-type] Argument to bound method `post` is incorrect: Expected `Mapping[str, Iterable[str] | bytes] | None`, found `Literal[b&#x27;Content-Disposition: form-data; name=&quot;file&quot;; filename=&quot;\xe6\x96\x87\xe6\x9b\xb8.txt&quot;\r\nContent-Type: text/plain\r\n\r\n&lt;file content&gt;\r\n&#x27;]`
+- tests/test_formparsers.py:522:13: error[invalid-argument-type] Argument to bound method `post` is incorrect: Expected `Mapping[str, Iterable[str]] | None`, found `Literal[b&#x27;--a7f7ac8d4e2e437c877bb7b8d7cc549c\r\nContent-Disposition: form-data; =&quot;field0&quot;\r\n\r\nvalue0\r\n&#x27;]`
++ tests/test_formparsers.py:522:13: error[invalid-argument-type] Argument to bound method `post` is incorrect: Expected `Mapping[str, Iterable[str] | bytes] | None`, found `Literal[b&#x27;--a7f7ac8d4e2e437c877bb7b8d7cc549c\r\nContent-Disposition: form-data; =&quot;field0&quot;\r\n\r\nvalue0\r\n&#x27;]`
 + tests/test_formparsers.py:554:25: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 + tests/test_formparsers.py:581:25: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 + tests/test_formparsers.py:610:25: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
@@ -739,18 +739,18 @@ prefect (https://github.com/PrefectHQ/prefect)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-09-15 16:20</div>
-            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+            <div class="timeline-body">
 
-<h2><a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Fsubtyping-between-protocols">CodSpeed Performance Report</a></h2>
-<h3>Merging #20368 will <strong>degrade performances by 4.64%</strong></h3>
-<p><sub>Comparing <code>alex/subtyping-between-protocols</code> (6249f6c) with <code>main</code> (b9c84ad)</sub></p>
-<h3>Summary</h3>
-<p><code>❌ 1</code> regression<br />
+<a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Fsubtyping-between-protocols">CodSpeed Performance Report</a>
+Merging #20368 will <strong>degrade performances by 4.64%</strong>
+<p>Comparing <code>alex/subtyping-between-protocols</code> (6249f6c) with <code>main</code> (b9c84ad)</p>
+Summary
+<p><code>❌ 1</code> regression<br>
 <code>✅ 50</code> untouched</p>
 <blockquote>
 <p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Fsubtyping-between-protocols">acknowledge them on CodSpeed</a>.</em></p>
 </blockquote>
-<h3>Benchmarks breakdown</h3>
+Benchmarks breakdown
 <p>|     | Mode | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
 | --- | ---- | --------- | ------ | ------ | ------ |
 | ❌ | Instrumentation | <a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Fsubtyping-between-protocols?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Aproject%3A%3Adatetype%3A%3Aproject%3A%3ADateType&amp;runnerMode=Instrumentation"><code>DateType</code></a> | 182.1 ms | 191 ms | -4.64% |</p>
@@ -758,51 +758,51 @@ prefect (https://github.com/PrefectHQ/prefect)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-15 16:25</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @AlexWaygood on 2025-09-25 14:13</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-25 14:13</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-09-25 14:13</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-25 14:13</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @AlexWaygood on 2025-09-26 16:06</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-26 16:06</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-09-26 16:06</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-26 16:06</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @AlexWaygood on 2025-09-26 17:31</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-26 17:31</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-09-26 17:31</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-26 17:31</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @AlexWaygood on 2025-09-29 11:36</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-29 11:36</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-09-29 11:36</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-29 11:36</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @AlexWaygood on 2025-10-03 22:19</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-03 22:19</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-10-03 22:19</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-03 22:19</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-04 16:28</div>
-            <div class="timeline-body"><h1>Ecosystem analysis</h1>
-<p>I was expecting this PR to reduce diagnostics across the ecosystem overall, but it seems like on net it leads to more diagnostics, which is unfortunate. I <em>have</em> spent a while now trying to reduce the number of underlying issues here, and the diagnostic diff <em>is</em> much better than it was when I first opened the PR (we've gone from +297,-128 a few weeks ago, to +280,-157 now). PRs such as https://github.com/astral-sh/ruff/pull/20602, https://github.com/astral-sh/ruff/pull/20629, https://github.com/astral-sh/ruff/pull/20603, https://github.com/astral-sh/ruff/pull/20591 and github.com/astral-sh/ruff/pull/20593 have all helped reduce the impact of this PR by fixing underlying issues. It's possible I could carry on with this a little bit, but I think the remaining diagnostics are mostly acceptable and/or hard to fix.</p>
+            <div class="timeline-body">Ecosystem analysis
+<p>I was expecting this PR to reduce diagnostics across the ecosystem overall, but it seems like on net it leads to more diagnostics, which is unfortunate. I <em>have</em> spent a while now trying to reduce the number of underlying issues here, and the diagnostic diff <em>is</em> much better than it was when I first opened the PR (we&#x27;ve gone from +297,-128 a few weeks ago, to +280,-157 now). PRs such as <a href="https://github.com/astral-sh/ruff/pull/20602">astral-sh/ruff#20602</a>, <a href="https://github.com/astral-sh/ruff/pull/20629">astral-sh/ruff#20629</a>, <a href="https://github.com/astral-sh/ruff/pull/20603">astral-sh/ruff#20603</a>, <a href="https://github.com/astral-sh/ruff/pull/20591">astral-sh/ruff#20591</a> and github.com/astral-sh/ruff/pull/20593 have all helped reduce the impact of this PR by fixing underlying issues. It&#x27;s possible I could carry on with this a little bit, but I think the remaining diagnostics are mostly acceptable and/or hard to fix.</p>
 <p>Many new diagnostics on this PR are due to narrowing behaviour that is technically correct, but which I worry may appear quite pedantic to users. For example, an adapted repro from <code>aiohttp</code> is:</p>
-<pre><code class="language-py">from typing import Iterable
+<pre><code>from typing import Iterable
 import socket
 
 def f(x: Iterable[socket.socket] | socket.socket):
@@ -816,23 +816,23 @@ def f(x: Iterable[socket.socket] | socket.socket):
 
 def needs_a_socket(s: socket.socket): ...
 </code></pre>
-<p>This is, of course, strictly correct: typeshed (correctly) does not mark <code>socket.socket</code> as <code>@final</code>, since it can be subclassed at runtime. It's entirely possible that a user <em>could</em> create a subclass of <code>socket.socket</code> that was iterable, so inferring <code>object</code> for <code>s</code> here is entirely correct. Unfortunately it also differs from the behaviour of all currently existing type checkers, and I'm not totally sure how we can tailor our diagnostics so that it's clear to users why we're unexpectedly inferring <code>object</code> in many places. Still, this is consistent behaviour with how we do narrowing elsewhere, so it's not really a <em>bug</em> in this PR.</p>
-<p>There are lots of diagnostics like this going away, due to https://github.com/astral-sh/ty/issues/733 being fixed by this PR:</p>
+<p>This is, of course, strictly correct: typeshed (correctly) does not mark <code>socket.socket</code> as <code>@final</code>, since it can be subclassed at runtime. It&#x27;s entirely possible that a user <em>could</em> create a subclass of <code>socket.socket</code> that was iterable, so inferring <code>object</code> for <code>s</code> here is entirely correct. Unfortunately it also differs from the behaviour of all currently existing type checkers, and I&#x27;m not totally sure how we can tailor our diagnostics so that it&#x27;s clear to users why we&#x27;re unexpectedly inferring <code>object</code> in many places. Still, this is consistent behaviour with how we do narrowing elsewhere, so it&#x27;s not really a <em>bug</em> in this PR.</p>
+<p>There are lots of diagnostics like this going away, due to <a href="https://github.com/astral-sh/ty/issues/733">astral-sh/ty#733</a> being fixed by this PR:</p>
 <pre><code>[error] invalid-return-type - Return type does not match returned value: expected `str`, found `Literal[b&quot;&quot;]`
 </code></pre>
-<p>And there's also lots of churning regarding diagnostics for <code>str.join</code>, due to https://github.com/astral-sh/ty/issues/306 being fixed by this PR.</p>
-<p>Not an exhaustive analysis, but here's a spot check of some of the other diagnostics in the ecosystem that stood out to me while I skimmed through:</p>
-<h2>bokeh</h2>
+<p>And there&#x27;s also lots of churning regarding diagnostics for <code>str.join</code>, due to <a href="https://github.com/astral-sh/ty/issues/306">astral-sh/ty#306</a> being fixed by this PR.</p>
+<p>Not an exhaustive analysis, but here&#x27;s a spot check of some of the other diagnostics in the ecosystem that stood out to me while I skimmed through:</p>
+bokeh
 <p>One of the bokeh hits is:</p>
 <pre><code>[error] invalid-return-type - [:510:16](https://github.com/bokeh/bokeh/blob/17c46de8f0df63051a08e1c756587702e249ea7f/src/bokeh/model/model.py#L510) - Return type does not match returned value: expected `Iterable[bokeh.model.model.Model]`, found `Iterable[bokeh.model.model.Model]`
 </code></pre>
 <p>Debug-printing the types gives:</p>
-<details>
+
 
 <pre><code>error[invalid-return-type]: Return type does not match returned value
    --&gt; src/bokeh/model/model.py:510:16
     |
-508 |         '''
+508 |         &#x27;&#x27;&#x27;
 509 |         from ..core.query import find
 510 |         return find(self.references(), selector)
     |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `ProtocolInstance(
@@ -1181,17 +1181,17 @@ def needs_a_socket(s: socket.socket): ...
     },
 )`
 </code></pre>
-</details>
 
-<p>Here's the diff between the two types: https://www.diffchecker.com/ZxRy9rMI/. It appears that one of the <code>Model</code> types comes from <code>bokeh/src/bokeh/model/model.pyi</code>, and the other <code>Model</code> type comes from <code>bokeh/src/bokeh/model/model.py</code> (notice the difference in file extension).</p>
+
+<p>Here&#x27;s the diff between the two types: https://www.diffchecker.com/ZxRy9rMI/. It appears that one of the <code>Model</code> types comes from <code>bokeh/src/bokeh/model/model.pyi</code>, and the other <code>Model</code> type comes from <code>bokeh/src/bokeh/model/model.py</code> (notice the difference in file extension).</p>
 <p>I suppose that this is only an issue because the diagnostic is being emitted while checking <code>model/model.py</code> itself.</p>
-<p>This is quite strange but seems unrelated to this PR, and it was a pre-existing problem. I've opened https://github.com/astral-sh/ty/issues/1306.</p>
-<h2>homeassistant</h2>
-<p>There's lots of new diagnostics like this:</p>
+<p>This is quite strange but seems unrelated to this PR, and it was a pre-existing problem. I&#x27;ve opened <a href="https://github.com/astral-sh/ty/issues/1306">astral-sh/ty#1306</a>.</p>
+homeassistant
+<p>There&#x27;s lots of new diagnostics like this:</p>
 <pre><code>[error] invalid-argument-type - :58:9 - Argument to bound method `__init__` is incorrect: Expected `(() -&gt; Awaitable[dict[str, Any]]) | None`, found `def async_update() -&gt; CoroutineType[Any, Any, IssData]`
 </code></pre>
-<p>This relates to https://github.com/astral-sh/ty/issues/500 (so I suppose it will be solved by https://github.com/astral-sh/ty/issues/623). A <a href="https://play.ty.dev/9b4dee70-b60e-4fc0-8eb4-bd3439de9120">repro of this false positive</a> that occurs on <code>main</code> and doesn't involve protocols is:</p>
-<pre><code class="language-py">from typing import Any, Callable
+<p>This relates to <a href="https://github.com/astral-sh/ty/issues/500">astral-sh/ty#500</a> (so I suppose it will be solved by <a href="https://github.com/astral-sh/ty/issues/623">astral-sh/ty#623</a>). A <a href="https://play.ty.dev/9b4dee70-b60e-4fc0-8eb4-bd3439de9120">repro of this false positive</a> that occurs on <code>main</code> and doesn&#x27;t involve protocols is:</p>
+<pre><code>from typing import Any, Callable
 
 class Foo[T = dict[str, Any]]:
     def __init__(self, data: Callable[..., T]): ...
@@ -1203,13 +1203,13 @@ def returns_bool() -&gt; bool:
 # revealed: `Foo[dict[str, Any]]`
 reveal_type(Foo(returns_bool))
 </code></pre>
-<h2>ibis</h2>
+ibis
 <pre><code>ibis/common/egraph.py
 [error] unresolved-attribute - :732:44 - Type `list[Rewrite]` has no attribute `matcher`
 [error] unresolved-attribute - :733:25 - Type `list[Rewrite]` has no attribute `applier`
 </code></pre>
 <p>These are because on <code>main</code> we infer this:</p>
-<pre><code class="language-py">from typing import Iterable
+<pre><code>from typing import Iterable
 
 def f[T](x: T | Iterable[T]) -&gt; T:
     raise NotImplementedError
@@ -1217,7 +1217,7 @@ def f[T](x: T | Iterable[T]) -&gt; T:
 reveal_type(f([&quot;foo&quot;]))  # revealed: Unknown
 </code></pre>
 <p>whereas with this PR, we infer this:</p>
-<pre><code class="language-py">from typing import Iterable
+<pre><code>from typing import Iterable
 
 def f[T](x: T | Iterable[T]) -&gt; T:
     raise NotImplementedError
@@ -1225,17 +1225,17 @@ def f[T](x: T | Iterable[T]) -&gt; T:
 reveal_type(f([&quot;foo&quot;]))  # revealed: list[Unknown | str]
 </code></pre>
 <p>when what is desired is of course:</p>
-<pre><code class="language-py">from typing import Iterable
+<pre><code>from typing import Iterable
 
 def f[T](x: T | Iterable[T]) -&gt; T:
     raise NotImplementedError
 
 reveal_type(f([&quot;foo&quot;]))  # revealed: `str`
 </code></pre>
-<p>So this should also hopefully be solved by https://github.com/astral-sh/ty/issues/623.</p>
-<h2>isort</h2>
-<p>Here's a minimal repro of what's going on here:</p>
-<pre><code class="language-py">from typing import Iterable, Self
+<p>So this should also hopefully be solved by <a href="https://github.com/astral-sh/ty/issues/623">astral-sh/ty#623</a>.</p>
+isort
+<p>Here&#x27;s a minimal repro of what&#x27;s going on here:</p>
+<pre><code>from typing import Iterable, Self
 
 class chain[T]:
     def __new__(cls, *iterables: Iterable[T]) -&gt; Self:
@@ -1254,47 +1254,47 @@ reveal_type(chain(yield_ints(), yield_ints()))
 # error: [invalid-argument-type] &quot;Argument to function `__new__` is incorrect: Expected `Iterable[None]`, found `Iterable[int]`&quot;
 reveal_type(chain(yield_ints(), (None,)))
 </code></pre>
-<p>On <code>main</code>, the final line reveals <code>chain[None]</code> and the error on the final line is not emitted. It's possible that this might be related to https://github.com/astral-sh/ty/issues/1308 ? Not sure.</p>
-<h3>meson</h3>
+<p>On <code>main</code>, the final line reveals <code>chain[None]</code> and the error on the final line is not emitted. It&#x27;s possible that this might be related to <a href="https://github.com/astral-sh/ty/issues/1308">astral-sh/ty#1308</a> ? Not sure.</p>
+meson
 <pre><code>unittests/allplatformstests.py
 [error] index-out-of-bounds - :3861:26 - Index 2 is out of bounds for tuple `tuple[str, (json_node) -&gt; Unknown]` with length 2
 [error] index-out-of-bounds - :3861:26 - Index 2 is out of bounds for tuple `tuple[str, (kwargs) -&gt; Unknown]` with length 2
 [error] index-out-of-bounds - :3861:26 - Index 2 is out of bounds for tuple `tuple[str, (node_list) -&gt; Unknown]` with length 2
 </code></pre>
-<p>These are all https://github.com/astral-sh/ty/issues/1248: it's an unannotated heterogeneous dictionary.</p>
+<p>These are all <a href="https://github.com/astral-sh/ty/issues/1248">astral-sh/ty#1248</a>: it&#x27;s an unannotated heterogeneous dictionary.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @AlexWaygood on 2025-10-08 12:59</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-08 12:59</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-10-08 12:59</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-08 12:59</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @AlexWaygood on 2025-10-08 13:42</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-08 13:42</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-10-08 13:42</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-08 13:42</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-10-08 13:42</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-08 13:42</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-10-08 13:42</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-08 13:42</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">great writeup</span> added by @MichaReiser on 2025-10-08 13:45</div>
+            <div class="event">Label <span class="label">great writeup</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-08 13:45</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @AlexWaygood on 2025-10-08 17:31</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-08 17:31</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-10-08 17:31</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-08 17:31</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:550 on 2025-10-08 17:38</div>
             <div class="timeline-body"><p>Disjointness is also a relation. If we added TypeRelation::Disjoint and used <code>has_relation_to_impl</code> for implementing <code>is_disjoint_from</code>, we could reduce this back to a single <code>HasRelationToVisitor</code> and eliminate <code>IsDisjointVisitor</code> entirely.</p>
-<p>In an ideal world I might say we should prefer to do that refactor as a prior PR, and then make this a much smaller PR on top of it. But I won't argue if you prefer to land this PR as-is and consider that as a possible follow-up. Maybe it's not even worth it; there's just a <em>big</em> increase in LoC in this PR from all the <code>has_relation_to_impl</code> calls that now have to explode onto seven lines.</p>
+<p>In an ideal world I might say we should prefer to do that refactor as a prior PR, and then make this a much smaller PR on top of it. But I won&#x27;t argue if you prefer to land this PR as-is and consider that as a possible follow-up. Maybe it&#x27;s not even worth it; there&#x27;s just a <em>big</em> increase in LoC in this PR from all the <code>has_relation_to_impl</code> calls that now have to explode onto seven lines.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1316,18 +1316,18 @@ reveal_type(chain(yield_ints(), (None,)))
             <div class="timeline-body"><blockquote>
 <p>Disjointness is also a relation.</p>
 </blockquote>
-<p>That's true, but in terms of the implementation it's very different from the others (at least currently). I think what you'd be looking at would be greatly expanding the size of the <code>Type::has_relation_to_impl</code> function, which is already very complicated, hard to refactor, and hard to understand.</p>
+<p>That&#x27;s true, but in terms of the implementation it&#x27;s very different from the others (at least currently). I think what you&#x27;d be looking at would be greatly expanding the size of the <code>Type::has_relation_to_impl</code> function, which is already very complicated, hard to refactor, and hard to understand.</p>
 <blockquote>
-<p>there's just a <em>big</em> increase in LoC in this PR from all the <code>has_relation_to_impl</code> calls that now have to explode onto seven lines.</p>
+<p>there&#x27;s just a <em>big</em> increase in LoC in this PR from all the <code>has_relation_to_impl</code> calls that now have to explode onto seven lines.</p>
 </blockquote>
-<p>That's true, but I feel less bad about it given what Doug has in store for us in https://github.com/astral-sh/ruff/pull/20677 ;)</p>
+<p>That&#x27;s true, but I feel less bad about it given what Doug has in store for us in <a href="https://github.com/astral-sh/ruff/pull/20677">astral-sh/ruff#20677</a> ;)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @AlexWaygood on 2025-10-08 18:37</div>
+            <div class="event">Merged by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-08 18:37</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-10-08 18:37</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-08 18:37</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-10-08 18:37</div>
@@ -1335,7 +1335,7 @@ reveal_type(chain(yield_ints(), (None,)))
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:15:42 UTC
+        Synced at 2026-01-20 19:18:35 UTC
     </footer>
 </body>
 </html>

@@ -23,18 +23,18 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>Implements https://github.com/astral-sh/ruff/issues/9457 for f-strings, regular strings, and byte literals. The implementation doesn't handle raw strings or triple quoted strings, similar to black's string-processing preview style.</p>
+            <div class="timeline-body">Summary
+<p>Implements <a href="https://github.com/astral-sh/ruff/issues/9457">astral-sh/ruff#9457</a> for f-strings, regular strings, and byte literals. The implementation doesn&#x27;t handle raw strings or triple quoted strings, similar to black&#x27;s string-processing preview style.</p>
 <p>Here an example from the ecosystem check. The formatter now joins the implicit concatenated f-string into a single string literal.</p>
-<pre><code class="language-diff">             raise TypeError(
--                &quot;Expected str or callable for parameter 'probe', &quot;
--                f&quot;not '{method.__class__.__name__}'&quot;
-+                f&quot;Expected str or callable for parameter 'probe', not '{method.__class__.__name__}'&quot;
+<pre><code>             raise TypeError(
+-                &quot;Expected str or callable for parameter &#x27;probe&#x27;, &quot;
+-                f&quot;not &#x27;{method.__class__.__name__}&#x27;&quot;
++                f&quot;Expected str or callable for parameter &#x27;probe&#x27;, not &#x27;{method.__class__.__name__}&#x27;&quot;
              )
 </code></pre>
 <p>What makes this change &quot;complicated&quot; is that Ruff has already many special casing for strings:</p>
 <ul>
-<li>Comments at the end of an assignment where the value is a string gets inlined:<pre><code class="language-python">aaaaaaaaaaaaa = (
+<li>Comments at the end of an assignment where the value is a string gets inlined:<pre><code>aaaaaaaaaaaaa = (
      &quot;long string literal&quot;  # comment
 )
 
@@ -47,11 +47,11 @@ aaaaaaaaaaaaa = (
 <li>Docstring formatting trims leading and trailing whitespace</li>
 </ul>
 <p>In addition, there are many other string-related preview styles, and this implementation must be compatible with the current stable formatting and any other combination of preview styles. Specifically, the implementation must support the stable and preview f-string formatting.</p>
-<h2><code>assert</code> formatting</h2>
-<p>This new style requires a few smaller changes in how expressions containing strings are formatted to mitigate instabilities. However, there's one large change that I'm undecided if we should move forward with it.</p>
+<code>assert</code> formatting
+<p>This new style requires a few smaller changes in how expressions containing strings are formatted to mitigate instabilities. However, there&#x27;s one large change that I&#x27;m undecided if we should move forward with it.</p>
 <p>The existing assertion formatting is prone to unstable formatting when the right is an implicit concatenated string that can be joined. The easiest fix was to change the formatting to use <code>Parenthesize::IfBreaksParenthesized</code> which we use in other places where we format multiple expressions with the <code>maybe_parenthesize</code> layout. However, it has the effect that assertions now break from right to left: We always parenthesize the right before we start splitting the left. This impacts formatting of almost all <code>assert</code> statements that are longer than the configured line length and the right is a string because we used to split the assertion and we now parenthesize the message instead.</p>
 <p>Here two examples from the ecosystem checks:</p>
-<pre><code class="language-diff">     with conn.read_ctx() as cursor:  # make sure it wrote in the DB but not the last one
+<pre><code>     with conn.read_ctx() as cursor:  # make sure it wrote in the DB but not the last one
 -        assert cursor.execute(&quot;SELECT b from a&quot;).fetchall() == [
 -            (1,),
 -            (2,),
@@ -62,7 +62,7 @@ aaaaaaaaaaaaa = (
 +            &quot;other greenlet should write to the DB&quot;
 +        )  # noqa: E501
 </code></pre>
-<pre><code class="language-diff">                         new_id = f&quot;{id}{suffix}{id_suffixes[id]}&quot;
+<pre><code>                         new_id = f&quot;{id}{suffix}{id_suffixes[id]}&quot;
                      resolved_ids[index] = new_id
                      id_suffixes[id] += 1
 -        assert len(resolved_ids) == len(
@@ -78,10 +78,10 @@ aaaaaaaaaaaaa = (
 <p>You can see how the formatter now keeps the assertion flat (left) and parenthesizes the message. I do find that this overall improves the readability and is also in line with what we do in assignments: We parenthesize the value to avoid splitting the target.</p>
 <p>I have three concerns with the style change:</p>
 <p><strong>1. Black compatibility/Upgrade diff</strong></p>
-<p>IMO, this is the most important one. Our assert formatting has never been compatible with black and this has come up in the past (https://github.com/astral-sh/ruff/issues/13386, https://github.com/astral-sh/ruff/issues/8331, https://github.com/astral-sh/ruff/issues/8388), but there's no clear consensus from users on which style they prefer. This PR would deviate our implementation further from Black's style and it will lead to larger diffs when migrating from Black but it also leads to large diffs when upgrading to the new style.</p>
+<p>IMO, this is the most important one. Our assert formatting has never been compatible with black and this has come up in the past (<a href="https://github.com/astral-sh/ruff/issues/13386">astral-sh/ruff#13386</a>, <a href="https://github.com/astral-sh/ruff/issues/8331">astral-sh/ruff#8331</a>, <a href="https://github.com/astral-sh/ruff/issues/8388">astral-sh/ruff#8388</a>), but there&#x27;s no clear consensus from users on which style they prefer. This PR would deviate our implementation further from Black&#x27;s style and it will lead to larger diffs when migrating from Black but it also leads to large diffs when upgrading to the new style.</p>
 <p><strong>2. More parentheses</strong></p>
 <p>Black overall tries to reduce the parentheses. For example, Black prefers</p>
-<pre><code class="language-python">if aaaaaaaaaaaaaa + bbbbbbbbbbbbbbb / len([
+<pre><code>if aaaaaaaaaaaaaa + bbbbbbbbbbbbbbb / len([
     122222,
     33333333333333,
     44444444444444,
@@ -90,7 +90,7 @@ aaaaaaaaaaaaa = (
     ...
 </code></pre>
 <p>over</p>
-<pre><code class="language-python">if (
+<pre><code>if (
     aaaaaaaaaaaaaa
     + bbbbbbbbbbbbbbb
     / len([122222, 33333333333333, 44444444444444, 55444])
@@ -98,7 +98,7 @@ aaaaaaaaaaaaa = (
     ...
 </code></pre>
 <p>when the left-most or right-most expression has its own parentheses (and some more rules). Black also applies this to assert formatting (<code>-: Black, +: Ruff</code>).</p>
-<pre><code class="language-diff">
+<pre><code>
 -            assert isinstance(
 -                document, dict
 -            ), &quot;document should be of type `dict[str,Any]`. But found: `{}`&quot;.format(
@@ -109,7 +109,7 @@ aaaaaaaaaaaaa = (
 +                )
              )
 </code></pre>
-<pre><code class="language-diff">-        assert isinstance(
+<pre><code>-        assert isinstance(
 -            input, dict
 -        ), &quot;The input to RunnablePassthrough.assign() must be a dict.&quot;
 +        assert isinstance(input, dict), (
@@ -120,8 +120,8 @@ aaaaaaaaaaaaa = (
 <p>You can see how Black uses the parentheses of the call expression over introducing new parentheses to break the right.</p>
 <p>IMO, this makes assert statements harder to read because it is unclear where the assertion ends and the message start. However, it helps to reduce the overall number of parentheses</p>
 <p><strong>3. assertions that end in parentheses</strong></p>
-<p>There's one cases where the new formatting is arguably worse:</p>
-<pre><code class="language-python"># Black
+<p>There&#x27;s one cases where the new formatting is arguably worse:</p>
+<pre><code># Black
 
 assert graph.artifacts == [
     GraphArtifact(
@@ -154,87 +154,87 @@ assert graph.artifacts == [
     &quot;Expected artifacts associated with the flow run but not with a task to be included at the roof of the graph.&quot;
 )
 </code></pre>
-<p>In this example, parenthesizing the message is <em>useless</em> because it doesn't help to get more space for the message. The indent requires as much space as the <code>], (</code>.</p>
+<p>In this example, parenthesizing the message is <em>useless</em> because it doesn&#x27;t help to get more space for the message. The indent requires as much space as the <code>], (</code>.</p>
 <p>The reason I went with this change (and am seeking feedback now) is that:</p>
 <ul>
-<li>It's an extremely easy fix for the instability</li>
-<li>We use break right over left in other places. Therefore, it's arguably more consistent for Ruff</li>
+<li>It&#x27;s an extremely easy fix for the instability</li>
+<li>We use break right over left in other places. Therefore, it&#x27;s arguably more consistent for Ruff</li>
 <li>I do find that it improves formatting in many cases</li>
 </ul>
-<p>I do think it would be possible to implement something closer to today's style by using <code>best_fit</code> similar to the assignment formatting. And it might not even be that much work (a day or two). So I'm up to tackle this if we conclude that we want to keep closer to Black's style, reduce the upgrade diff, or are concerned about the &quot;bad&quot; cases.</p>
-<h2>TODOs</h2>
+<p>I do think it would be possible to implement something closer to today&#x27;s style by using <code>best_fit</code> similar to the assignment formatting. And it might not even be that much work (a day or two). So I&#x27;m up to tackle this if we conclude that we want to keep closer to Black&#x27;s style, reduce the upgrade diff, or are concerned about the &quot;bad&quot; cases.</p>
+TODOs
 <ul>
 <li>[x] Review for instabilities when an implicit concatenated string is the right side of an assignment where the target or the annotation is splittable.</li>
 <li>[x] Review for instabilities with the hug expressions style</li>
 <li>[x] Review implicit concatenated string formatting in <code>maybe_parenthesize_expression</code> changes similar to assert stmt (e.g. <code>YieldExpr</code>)</li>
 <li>[x] Support the f-string formatting preview style (Big)</li>
 <li>[x] Test with <code>QuoteStyle</code> preserve</li>
-<li>[x] In doc-string positions<pre><code class="language-python"> def in_docstring_position():
-     &quot;diffent '&quot; 'quote &quot;are fine&quot;                '
+<li>[x] In doc-string positions<pre><code> def in_docstring_position():
+     &quot;diffent &#x27;&quot; &#x27;quote &quot;are fine&quot;                &#x27;
 </code></pre>
 </li>
-<li>[x] Handle strings in <code>ExprStmt</code> positions (there's no group)</li>
+<li>[x] Handle strings in <code>ExprStmt</code> positions (there&#x27;s no group)</li>
 <li>[x] Review changes to larger repositories and the ecosystem results</li>
 <li>[x] ~~(stretch) Remove parentheses when collapsing f-strings https://play.ruff.rs/1355c0b0-f452-445a-8ffc-6285e1b0885e~~</li>
 <li>[x] Tests for <code>can_omit_optional_parentheses</code> changes.</li>
 </ul>
-<h2>Review</h2>
+Review
 <ul>
 <li>I would appreciate feedback on the assertion style changes.</li>
 <li>Look out if there are more string edge cases that need handling</li>
 </ul>
-<p>@AlexWaygood I don't expect you to review the code changes but I highly value your input on the assertion formatting changes.</p>
-<h2>Test Plan</h2>
+<p>@AlexWaygood I don&#x27;t expect you to review the code changes but I highly value your input on the assertion formatting changes.</p>
+Test Plan
 <p>I added plenty of new integration tests and I reviewed the ecosystem changes and did test the formatting on some larger projects.</p>
 <p>Non-truncated ecosystem changes: https://gist.github.com/MichaReiser/c82d6132e577d9e7ee9ae85543904099</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2024-10-07 14:47</div>
+            <div class="event">Label <span class="label">formatter</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-07 14:47</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2024-10-07 14:47</div>
+            <div class="event">Label <span class="label">preview</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-07 14:47</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-10-07 14:58</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>ℹ️ ecosystem check <strong>detected format changes</strong>. (+2228 -2609 lines in 575 files in 38 projects; 16 projects unchanged)</p>
-<details><summary><a href="https://github.com/DisnakeDev/disnake">DisnakeDev/disnake</a> (+1 -2 lines across 1 file)</summary>
+<a href="https://github.com/DisnakeDev/disnake">DisnakeDev/disnake</a> (+1 -2 lines across 1 file)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/player.py#L550'>disnake/player.py~L550</a></p>
-<pre><code class="language-diff">             fallback = cls._probe_codec_fallback
+<p><a href="https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/player.py#L550">disnake/player.py~L550</a></p>
+<pre><code>             fallback = cls._probe_codec_fallback
          else:
              raise TypeError(
--                &quot;Expected str or callable for parameter 'probe', &quot;
--                f&quot;not '{method.__class__.__name__}'&quot;
-+                f&quot;Expected str or callable for parameter 'probe', not '{method.__class__.__name__}'&quot;
+-                &quot;Expected str or callable for parameter &#x27;probe&#x27;, &quot;
+-                f&quot;not &#x27;{method.__class__.__name__}&#x27;&quot;
++                f&quot;Expected str or callable for parameter &#x27;probe&#x27;, not &#x27;{method.__class__.__name__}&#x27;&quot;
              )
  
          codec = bitrate = None
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/RasaHQ/rasa">RasaHQ/rasa</a> (+59 -73 lines across 32 files)</summary>
+
+<a href="https://github.com/RasaHQ/rasa">RasaHQ/rasa</a> (+59 -73 lines across 32 files)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/cli/utils.py#L278'>rasa/cli/utils.py~L278</a></p>
-<pre><code class="language-diff">     # Check if a valid setting for `max_history` was given
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/cli/utils.py#L278">rasa/cli/utils.py~L278</a></p>
+<pre><code>     # Check if a valid setting for `max_history` was given
      if isinstance(max_history, int) and max_history &lt; 1:
          raise argparse.ArgumentTypeError(
 -            f&quot;The value of `--max-history {max_history}` &quot; f&quot;is not a positive integer.&quot;
@@ -243,48 +243,48 @@ assert graph.artifacts == [
  
      return validator.verify_story_structure(
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/cli/x.py#L165'>rasa/cli/x.py~L165</a></p>
-<pre><code class="language-diff">         attempts -= 1
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/cli/x.py#L165">rasa/cli/x.py~L165</a></p>
+<pre><code>         attempts -= 1
  
      rasa.shared.utils.cli.print_error_and_exit(
--        &quot;Could not fetch runtime config from server at '{}'. &quot; &quot;Exiting.&quot;.format(
-+        &quot;Could not fetch runtime config from server at '{}'. Exiting.&quot;.format(
+-        &quot;Could not fetch runtime config from server at &#x27;{}&#x27;. &quot; &quot;Exiting.&quot;.format(
++        &quot;Could not fetch runtime config from server at &#x27;{}&#x27;. Exiting.&quot;.format(
              config_endpoint
          )
      )
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/actions/action.py#L322'>rasa/core/actions/action.py~L322</a></p>
-<pre><code class="language-diff">         if message is None:
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/actions/action.py#L322">rasa/core/actions/action.py~L322</a></p>
+<pre><code>         if message is None:
              if not self.silent_fail:
                  logger.error(
--                    &quot;Couldn't create message for response '{}'.&quot; &quot;&quot;.format(
-+                    &quot;Couldn't create message for response '{}'.&quot;.format(
+-                    &quot;Couldn&#x27;t create message for response &#x27;{}&#x27;.&quot; &quot;&quot;.format(
++                    &quot;Couldn&#x27;t create message for response &#x27;{}&#x27;.&quot;.format(
                          self.utter_action
                      )
                  )
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/actions/action.py#L470'>rasa/core/actions/action.py~L470</a></p>
-<pre><code class="language-diff">         else:
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/actions/action.py#L470">rasa/core/actions/action.py~L470</a></p>
+<pre><code>         else:
              if not self.silent_fail:
                  logger.error(
--                    &quot;Couldn't create message for response action '{}'.&quot; &quot;&quot;.format(
-+                    &quot;Couldn't create message for response action '{}'.&quot;.format(
+-                    &quot;Couldn&#x27;t create message for response action &#x27;{}&#x27;.&quot; &quot;&quot;.format(
++                    &quot;Couldn&#x27;t create message for response action &#x27;{}&#x27;.&quot;.format(
                          self.action_name
                      )
                  )
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/channels/console.py#L194'>rasa/core/channels/console.py~L194</a></p>
-<pre><code class="language-diff">     exit_text = INTENT_MESSAGE_PREFIX + &quot;stop&quot;
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/channels/console.py#L194">rasa/core/channels/console.py~L194</a></p>
+<pre><code>     exit_text = INTENT_MESSAGE_PREFIX + &quot;stop&quot;
  
      rasa.shared.utils.cli.print_success(
--        &quot;Bot loaded. Type a message and press enter &quot; &quot;(use '{}' to exit): &quot;.format(
-+        &quot;Bot loaded. Type a message and press enter (use '{}' to exit): &quot;.format(
+-        &quot;Bot loaded. Type a message and press enter &quot; &quot;(use &#x27;{}&#x27; to exit): &quot;.format(
++        &quot;Bot loaded. Type a message and press enter (use &#x27;{}&#x27; to exit): &quot;.format(
              exit_text
          )
      )
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/channels/telegram.py#L97'>rasa/core/channels/telegram.py~L97</a></p>
-<pre><code class="language-diff">                     reply_markup.add(KeyboardButton(button[&quot;title&quot;]))
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/channels/telegram.py#L97">rasa/core/channels/telegram.py~L97</a></p>
+<pre><code>                     reply_markup.add(KeyboardButton(button[&quot;title&quot;]))
          else:
              logger.error(
 -                &quot;Trying to send text with buttons for unknown &quot; &quot;button type {}&quot;.format(
@@ -293,8 +293,8 @@ assert graph.artifacts == [
                  )
              )
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/nlg/callback.py#L81'>rasa/core/nlg/callback.py~L81</a></p>
-<pre><code class="language-diff">         body = nlg_request_format(utter_action, tracker, output_channel, **kwargs)
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/nlg/callback.py#L81">rasa/core/nlg/callback.py~L81</a></p>
+<pre><code>         body = nlg_request_format(utter_action, tracker, output_channel, **kwargs)
  
          logger.debug(
 -            &quot;Requesting NLG for {} from {}.&quot; &quot;The request body is {}.&quot; &quot;&quot;.format(
@@ -303,8 +303,8 @@ assert graph.artifacts == [
              )
          )
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/policies/policy.py#L250'>rasa/core/policies/policy.py~L250</a></p>
-<pre><code class="language-diff">         max_training_samples = kwargs.get(&quot;max_training_samples&quot;)
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/policies/policy.py#L250">rasa/core/policies/policy.py~L250</a></p>
+<pre><code>         max_training_samples = kwargs.get(&quot;max_training_samples&quot;)
          if max_training_samples is not None:
              logger.debug(
 -                &quot;Limit training data to {} training samples.&quot; &quot;&quot;.format(
@@ -313,8 +313,8 @@ assert graph.artifacts == [
                  )
              )
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/policies/ted_policy.py#L835'>rasa/core/policies/ted_policy.py~L835</a></p>
-<pre><code class="language-diff">             # take the last prediction in the sequence
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/policies/ted_policy.py#L835">rasa/core/policies/ted_policy.py~L835</a></p>
+<pre><code>             # take the last prediction in the sequence
              similarities = outputs[&quot;similarities&quot;][:, -1, :]
          else:
 -            raise TypeError(
@@ -325,8 +325,8 @@ assert graph.artifacts == [
              confidences = outputs[&quot;scores&quot;][:, -1, :]
          else:
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/policies/unexpected_intent_policy.py#L612'>rasa/core/policies/unexpected_intent_policy.py~L612</a></p>
-<pre><code class="language-diff">         if isinstance(output[&quot;similarities&quot;], np.ndarray):
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/policies/unexpected_intent_policy.py#L612">rasa/core/policies/unexpected_intent_policy.py~L612</a></p>
+<pre><code>         if isinstance(output[&quot;similarities&quot;], np.ndarray):
              sequence_similarities = output[&quot;similarities&quot;][:, -1, :]
          else:
 -            raise TypeError(
@@ -337,8 +337,8 @@ assert graph.artifacts == [
          # Check for unlikely intent
          last_user_uttered_event = tracker.get_last_event_for(UserUttered)
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/test.py#L772'>rasa/core/test.py~L772</a></p>
-<pre><code class="language-diff">         ):
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/test.py#L772">rasa/core/test.py~L772</a></p>
+<pre><code>         ):
              story_dump = YAMLStoryWriter().dumps(partial_tracker.as_story().story_steps)
              error_msg = (
 -                f&quot;Model predicted a wrong action. Failed Story: &quot; f&quot;\n\n{story_dump}&quot;
@@ -347,8 +347,8 @@ assert graph.artifacts == [
              raise WrongPredictionException(error_msg)
      elif prev_action_unlikely_intent:
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/train.py#L34'>rasa/core/train.py~L34</a></p>
-<pre><code class="language-diff">             for policy_config in policy_configs:
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/train.py#L34">rasa/core/train.py~L34</a></p>
+<pre><code>             for policy_config in policy_configs:
                  config_name = os.path.splitext(os.path.basename(policy_config))[0]
                  logging.info(
 -                    &quot;Starting to train {} round {}/{}&quot; &quot; with {}% exclusion&quot; &quot;&quot;.format(
@@ -357,8 +357,8 @@ assert graph.artifacts == [
                      )
                  )
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/training/interactive.py#L723'>rasa/core/training/interactive.py~L723</a></p>
-<pre><code class="language-diff">     # export training data and quit
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/training/interactive.py#L723">rasa/core/training/interactive.py~L723</a></p>
+<pre><code>     # export training data and quit
      questions = questionary.form(
          export_stories=questionary.text(
 -            message=&quot;Export stories to (if file exists, this &quot;
@@ -368,13 +368,13 @@ assert graph.artifacts == [
              validate=io_utils.file_type_validator(
                  rasa.shared.data.YAML_FILE_EXTENSIONS,
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/training/interactive.py#L738'>rasa/core/training/interactive.py~L738</a></p>
-<pre><code class="language-diff">             default=PATHS[&quot;nlu&quot;],
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/training/interactive.py#L738">rasa/core/training/interactive.py~L738</a></p>
+<pre><code>             default=PATHS[&quot;nlu&quot;],
              validate=io_utils.file_type_validator(
                  list(rasa.shared.data.TRAINING_DATA_EXTENSIONS),
 -                &quot;Please provide a valid export path for the NLU data, &quot;
--                &quot;e.g. 'nlu.yml'.&quot;,
-+                &quot;Please provide a valid export path for the NLU data, e.g. 'nlu.yml'.&quot;,
+-                &quot;e.g. &#x27;nlu.yml&#x27;.&quot;,
++                &quot;Please provide a valid export path for the NLU data, e.g. &#x27;nlu.yml&#x27;.&quot;,
              ),
          ),
          export_domain=questionary.text(
@@ -385,8 +385,8 @@ assert graph.artifacts == [
              validate=io_utils.file_type_validator(
                  rasa.shared.data.YAML_FILE_EXTENSIONS,
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/utils.py#L41'>rasa/core/utils.py~L41</a></p>
-<pre><code class="language-diff">     &quot;&quot;&quot;
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/utils.py#L41">rasa/core/utils.py~L41</a></p>
+<pre><code>     &quot;&quot;&quot;
      if use_syslog:
          formatter = logging.Formatter(
 -            &quot;%(asctime)s [%(levelname)-5.5s] [%(process)d]&quot; &quot; %(message)s&quot;
@@ -395,18 +395,18 @@ assert graph.artifacts == [
          socktype = SOCK_STREAM if syslog_protocol == TCP_PROTOCOL else SOCK_DGRAM
          syslog_handler = logging.handlers.SysLogHandler(
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/utils.py#L73'>rasa/core/utils.py~L73</a></p>
-<pre><code class="language-diff">     &quot;&quot;&quot;
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/utils.py#L73">rasa/core/utils.py~L73</a></p>
+<pre><code>     &quot;&quot;&quot;
      if hot_idx &gt;= length:
          raise ValueError(
--            &quot;Can't create one hot. Index '{}' is out &quot; &quot;of range (length '{}')&quot;.format(
-+            &quot;Can't create one hot. Index '{}' is out of range (length '{}')&quot;.format(
+-            &quot;Can&#x27;t create one hot. Index &#x27;{}&#x27; is out &quot; &quot;of range (length &#x27;{}&#x27;)&quot;.format(
++            &quot;Can&#x27;t create one hot. Index &#x27;{}&#x27; is out of range (length &#x27;{}&#x27;)&quot;.format(
                  hot_idx, length
              )
          )
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/nlu/featurizers/sparse_featurizer/count_vectors_featurizer.py#L166'>rasa/nlu/featurizers/sparse_featurizer/count_vectors_featurizer.py~L166</a></p>
-<pre><code class="language-diff">                 )
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/nlu/featurizers/sparse_featurizer/count_vectors_featurizer.py#L166">rasa/nlu/featurizers/sparse_featurizer/count_vectors_featurizer.py~L166</a></p>
+<pre><code>                 )
              if self.stop_words is not None:
                  logger.warning(
 -                    &quot;Analyzer is set to character, &quot;
@@ -416,34 +416,34 @@ assert graph.artifacts == [
              if self.max_ngram == 1:
                  logger.warning(
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/server.py#L289'>rasa/server.py~L289</a></p>
-<pre><code class="language-diff">         raise ErrorResponse(
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/server.py#L289">rasa/server.py~L289</a></p>
+<pre><code>         raise ErrorResponse(
              HTTPStatus.BAD_REQUEST,
              &quot;BadRequest&quot;,
--            &quot;Invalid parameter value for 'include_events'. &quot;
+-            &quot;Invalid parameter value for &#x27;include_events&#x27;. &quot;
 -            &quot;Should be one of {}&quot;.format(enum_values),
-+            &quot;Invalid parameter value for 'include_events'. Should be one of {}&quot;.format(
++            &quot;Invalid parameter value for &#x27;include_events&#x27;. Should be one of {}&quot;.format(
 +                enum_values
 +            ),
              {&quot;parameter&quot;: &quot;include_events&quot;, &quot;in&quot;: &quot;query&quot;},
          )
  
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/shared/core/domain.py#L198'>rasa/shared/core/domain.py~L198</a></p>
-<pre><code class="language-diff">             domain = cls.from_directory(path)
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/shared/core/domain.py#L198">rasa/shared/core/domain.py~L198</a></p>
+<pre><code>             domain = cls.from_directory(path)
          else:
              raise InvalidDomain(
--                &quot;Failed to load domain specification from '{}'. &quot;
+-                &quot;Failed to load domain specification from &#x27;{}&#x27;. &quot;
 -                &quot;File not found!&quot;.format(os.path.abspath(path))
-+                &quot;Failed to load domain specification from '{}'. File not found!&quot;.format(
++                &quot;Failed to load domain specification from &#x27;{}&#x27;. File not found!&quot;.format(
 +                    os.path.abspath(path)
 +                )
              )
  
          return domain
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/shared/core/events.py#L1961'>rasa/shared/core/events.py~L1961</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/shared/core/events.py#L1961">rasa/shared/core/events.py~L1961</a></p>
+<pre><code> 
      def __str__(self) -&gt; Text:
          &quot;&quot;&quot;Returns text representation of event.&quot;&quot;&quot;
 -        return (
@@ -456,8 +456,8 @@ assert graph.artifacts == [
  
      def __hash__(self) -&gt; int:
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/shared/core/generator.py#L401'>rasa/shared/core/generator.py~L401</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/shared/core/generator.py#L401">rasa/shared/core/generator.py~L401</a></p>
+<pre><code> 
              if num_active_trackers:
                  logger.debug(
 -                    &quot;Starting {} ... (with {} trackers)&quot; &quot;&quot;.format(
@@ -466,8 +466,8 @@ assert graph.artifacts == [
                      )
                  )
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/shared/core/generator.py#L517'>rasa/shared/core/generator.py~L517</a></p>
-<pre><code class="language-diff">                     phase = 0
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/shared/core/generator.py#L517">rasa/shared/core/generator.py~L517</a></p>
+<pre><code>                     phase = 0
                  else:
                      logger.debug(
 -                        &quot;Found {} unused checkpoints &quot; &quot;in current phase.&quot; &quot;&quot;.format(
@@ -482,8 +482,8 @@ assert graph.artifacts == [
                          )
                      )
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/shared/core/generator.py#L553'>rasa/shared/core/generator.py~L553</a></p>
-<pre><code class="language-diff">                 augmented_trackers, self.config.max_number_of_augmented_trackers
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/shared/core/generator.py#L553">rasa/shared/core/generator.py~L553</a></p>
+<pre><code>                 augmented_trackers, self.config.max_number_of_augmented_trackers
              )
              logger.debug(
 -                &quot;Subsampled to {} augmented training trackers.&quot; &quot;&quot;.format(
@@ -492,8 +492,8 @@ assert graph.artifacts == [
                  )
              )
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/shared/core/trackers.py#L634'>rasa/shared/core/trackers.py~L634</a></p>
-<pre><code class="language-diff">         &quot;&quot;&quot;
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/shared/core/trackers.py#L634">rasa/shared/core/trackers.py~L634</a></p>
+<pre><code>         &quot;&quot;&quot;
          if not isinstance(dialogue, Dialogue):
              raise ValueError(
 -                f&quot;story {dialogue} is not of type Dialogue. &quot;
@@ -503,18 +503,18 @@ assert graph.artifacts == [
  
          self._reset()
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/shared/core/training_data/story_reader/story_reader.py#L83'>rasa/shared/core/training_data/story_reader/story_reader.py~L83</a></p>
-<pre><code class="language-diff">         )
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/shared/core/training_data/story_reader/story_reader.py#L83">rasa/shared/core/training_data/story_reader/story_reader.py~L83</a></p>
+<pre><code>         )
          if parsed_events is None:
              raise StoryParseError(
--                &quot;Unknown event '{}'. It is Neither an event &quot; &quot;nor an action).&quot;.format(
-+                &quot;Unknown event '{}'. It is Neither an event nor an action).&quot;.format(
+-                &quot;Unknown event &#x27;{}&#x27;. It is Neither an event &quot; &quot;nor an action).&quot;.format(
++                &quot;Unknown event &#x27;{}&#x27;. It is Neither an event nor an action).&quot;.format(
                      event_name
                  )
              )
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/shared/core/training_data/story_reader/yaml_story_reader.py#L334'>rasa/shared/core/training_data/story_reader/yaml_story_reader.py~L334</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/shared/core/training_data/story_reader/yaml_story_reader.py#L334">rasa/shared/core/training_data/story_reader/yaml_story_reader.py~L334</a></p>
+<pre><code> 
          if not self.domain:
              logger.debug(
 -                &quot;Skipped validating if intent is in domain as domain &quot; &quot;is `None`.&quot;
@@ -523,8 +523,8 @@ assert graph.artifacts == [
              return
  
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/shared/nlu/training_data/formats/dialogflow.py#L34'>rasa/shared/nlu/training_data/formats/dialogflow.py~L34</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/shared/nlu/training_data/formats/dialogflow.py#L34">rasa/shared/nlu/training_data/formats/dialogflow.py~L34</a></p>
+<pre><code> 
          if fformat not in {DIALOGFLOW_INTENT, DIALOGFLOW_ENTITIES}:
              raise ValueError(
 -                &quot;fformat must be either {}, or {}&quot; &quot;&quot;.format(
@@ -533,18 +533,18 @@ assert graph.artifacts == [
                  )
              )
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/shared/utils/io.py#L127'>rasa/shared/utils/io.py~L127</a></p>
-<pre><code class="language-diff">             return f.read()
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/shared/utils/io.py#L127">rasa/shared/utils/io.py~L127</a></p>
+<pre><code>             return f.read()
      except FileNotFoundError:
          raise FileNotFoundException(
--            f&quot;Failed to read file, &quot; f&quot;'{os.path.abspath(filename)}' does not exist.&quot;
-+            f&quot;Failed to read file, '{os.path.abspath(filename)}' does not exist.&quot;
+-            f&quot;Failed to read file, &quot; f&quot;&#x27;{os.path.abspath(filename)}&#x27; does not exist.&quot;
++            f&quot;Failed to read file, &#x27;{os.path.abspath(filename)}&#x27; does not exist.&quot;
          )
      except UnicodeDecodeError:
          raise FileIOException(
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/shared/utils/io.py#L157'>rasa/shared/utils/io.py~L157</a></p>
-<pre><code class="language-diff">     &quot;&quot;&quot;
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/shared/utils/io.py#L157">rasa/shared/utils/io.py~L157</a></p>
+<pre><code>     &quot;&quot;&quot;
      if not isinstance(path, str):
          raise ValueError(
 -            f&quot;`resource_name` must be a string type. &quot; f&quot;Got `{type(path)}` instead&quot;
@@ -553,18 +553,18 @@ assert graph.artifacts == [
  
      if os.path.isfile(path):
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/shared/utils/io.py#L443'>rasa/shared/utils/io.py~L443</a></p>
-<pre><code class="language-diff">             )
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/shared/utils/io.py#L443">rasa/shared/utils/io.py~L443</a></p>
+<pre><code>             )
      except FileNotFoundError:
          raise FileNotFoundException(
--            f&quot;Failed to read file, &quot; f&quot;'{os.path.abspath(file_path)}' does not exist.&quot;
-+            f&quot;Failed to read file, '{os.path.abspath(file_path)}' does not exist.&quot;
+-            f&quot;Failed to read file, &quot; f&quot;&#x27;{os.path.abspath(file_path)}&#x27; does not exist.&quot;
++            f&quot;Failed to read file, &#x27;{os.path.abspath(file_path)}&#x27; does not exist.&quot;
          )
  
  
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/utils/common.py#L308'>rasa/utils/common.py~L308</a></p>
-<pre><code class="language-diff">         access_logger.addHandler(file_handler)
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/utils/common.py#L308">rasa/utils/common.py~L308</a></p>
+<pre><code>         access_logger.addHandler(file_handler)
      if use_syslog:
          formatter = logging.Formatter(
 -            &quot;%(asctime)s [%(levelname)-5.5s] [%(process)d]&quot; &quot; %(message)s&quot;
@@ -573,8 +573,8 @@ assert graph.artifacts == [
          socktype = SOCK_STREAM if syslog_protocol == TCP_PROTOCOL else SOCK_DGRAM
          syslog_handler = logging.handlers.SysLogHandler(
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/utils/endpoints.py#L33'>rasa/utils/endpoints.py~L33</a></p>
-<pre><code class="language-diff">         return EndpointConfig.from_dict(content[endpoint_type])
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/utils/endpoints.py#L33">rasa/utils/endpoints.py~L33</a></p>
+<pre><code>         return EndpointConfig.from_dict(content[endpoint_type])
      except FileNotFoundError:
          logger.error(
 -            &quot;Failed to read endpoint configuration &quot; &quot;from {}. No such file.&quot;.format(
@@ -583,8 +583,8 @@ assert graph.artifacts == [
              )
          )
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/tests/engine/recipes/test_default_recipe.py#L98'>tests/engine/recipes/test_default_recipe.py~L98</a></p>
-<pre><code class="language-diff">         (
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/tests/engine/recipes/test_default_recipe.py#L98">tests/engine/recipes/test_default_recipe.py~L98</a></p>
+<pre><code>         (
              &quot;data/test_config/config_pretrained_embeddings_mitie.yml&quot;,
              &quot;data/graph_schemas/config_pretrained_embeddings_mitie_train_schema.yml&quot;,
 -            &quot;data/graph_schemas/&quot;
@@ -594,18 +594,18 @@ assert graph.artifacts == [
              False,
          ),
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/tests/graph_components/validators/test_default_recipe_validator.py#L758'>tests/graph_components/validators/test_default_recipe_validator.py~L758</a></p>
-<pre><code class="language-diff">     if should_warn:
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/tests/graph_components/validators/test_default_recipe_validator.py#L758">tests/graph_components/validators/test_default_recipe_validator.py~L758</a></p>
+<pre><code>     if should_warn:
          with pytest.warns(
              UserWarning,
--            match=(f&quot;'{RulePolicy.__name__}' is not &quot; &quot;included in the model's &quot;),
-+            match=(f&quot;'{RulePolicy.__name__}' is not included in the model's &quot;),
+-            match=(f&quot;&#x27;{RulePolicy.__name__}&#x27; is not &quot; &quot;included in the model&#x27;s &quot;),
++            match=(f&quot;&#x27;{RulePolicy.__name__}&#x27; is not included in the model&#x27;s &quot;),
          ) as records:
              validator.validate(importer)
      else:
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/tests/graph_components/validators/test_default_recipe_validator.py#L859'>tests/graph_components/validators/test_default_recipe_validator.py~L859</a></p>
-<pre><code class="language-diff">     num_duplicates: bool,
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/tests/graph_components/validators/test_default_recipe_validator.py#L859">tests/graph_components/validators/test_default_recipe_validator.py~L859</a></p>
+<pre><code>     num_duplicates: bool,
      priority: int,
  ):
 -    assert (
@@ -618,8 +618,8 @@ assert graph.artifacts == [
      # start with a schema where node i has priority i
      nodes = {
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/tests/graph_components/validators/test_default_recipe_validator.py#L968'>tests/graph_components/validators/test_default_recipe_validator.py~L968</a></p>
-<pre><code class="language-diff">     with pytest.warns(
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/tests/graph_components/validators/test_default_recipe_validator.py#L968">tests/graph_components/validators/test_default_recipe_validator.py~L968</a></p>
+<pre><code>     with pytest.warns(
          UserWarning,
          match=(
 -            &quot;Found rule-based training data but no policy &quot;
@@ -629,8 +629,8 @@ assert graph.artifacts == [
      ):
          validator.validate(importer)
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/tests/nlu/featurizers/test_count_vectors_featurizer.py#L773'>tests/nlu/featurizers/test_count_vectors_featurizer.py~L773</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/tests/nlu/featurizers/test_count_vectors_featurizer.py#L773">tests/nlu/featurizers/test_count_vectors_featurizer.py~L773</a></p>
+<pre><code> 
  
  @pytest.mark.parametrize(
 -    &quot;initial_train_text, additional_train_text, &quot; &quot;use_shared_vocab&quot;,
@@ -639,8 +639,8 @@ assert graph.artifacts == [
  )
  def test_use_shared_vocab_exception(
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/tests/nlu/featurizers/test_regex_featurizer.py#L44'>tests/nlu/featurizers/test_regex_featurizer.py~L44</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/tests/nlu/featurizers/test_regex_featurizer.py#L44">tests/nlu/featurizers/test_regex_featurizer.py~L44</a></p>
+<pre><code> 
  
  @pytest.mark.parametrize(
 -    &quot;sentence, expected_sequence_features, expected_sentence_features,&quot;
@@ -650,8 +650,8 @@ assert graph.artifacts == [
          (
              &quot;hey how are you today&quot;,
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/tests/nlu/featurizers/test_regex_featurizer.py#L219'>tests/nlu/featurizers/test_regex_featurizer.py~L219</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/tests/nlu/featurizers/test_regex_featurizer.py#L219">tests/nlu/featurizers/test_regex_featurizer.py~L219</a></p>
+<pre><code> 
  
  @pytest.mark.parametrize(
 -    &quot;sentence, expected_sequence_features, expected_sentence_features, &quot;
@@ -661,8 +661,8 @@ assert graph.artifacts == [
          (
              &quot;lemonade and mapo tofu&quot;,
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/tests/nlu/featurizers/test_regex_featurizer.py#L383'>tests/nlu/featurizers/test_regex_featurizer.py~L383</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/tests/nlu/featurizers/test_regex_featurizer.py#L383">tests/nlu/featurizers/test_regex_featurizer.py~L383</a></p>
+<pre><code> 
  
  @pytest.mark.parametrize(
 -    &quot;sentence, expected_sequence_features, expected_sentence_features,&quot;
@@ -672,25 +672,25 @@ assert graph.artifacts == [
          (&quot;Hey How are you today&quot;, [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], True),
          (&quot;Hey How are you today&quot;, [0.0, 1.0, 0.0], [0.0, 1.0, 0.0], False),
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/tests/nlu/featurizers/test_spacy_featurizer.py#L131'>tests/nlu/featurizers/test_spacy_featurizer.py~L131</a></p>
-<pre><code class="language-diff">         vecs = ftr._features_for_doc(doc)
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/tests/nlu/featurizers/test_spacy_featurizer.py#L131">tests/nlu/featurizers/test_spacy_featurizer.py~L131</a></p>
+<pre><code>         vecs = ftr._features_for_doc(doc)
          vecs_capitalized = ftr._features_for_doc(doc_capitalized)
  
 -        assert np.allclose(
 -            vecs, vecs_capitalized, atol=1e-5
--        ), &quot;Vectors are unequal for texts '{}' and '{}'&quot;.format(
+-        ), &quot;Vectors are unequal for texts &#x27;{}&#x27; and &#x27;{}&#x27;&quot;.format(
 -            e.get(TEXT), e.get(TEXT).capitalize()
 +        assert np.allclose(vecs, vecs_capitalized, atol=1e-5), (
-+            &quot;Vectors are unequal for texts '{}' and '{}'&quot;.format(
++            &quot;Vectors are unequal for texts &#x27;{}&#x27; and &#x27;{}&#x27;&quot;.format(
 +                e.get(TEXT), e.get(TEXT).capitalize()
 +            )
          )
  
  
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/tests/nlu/test_train.py#L151'>tests/nlu/test_train.py~L151</a></p>
-<pre><code class="language-diff">             #   publicly available anymore
-             #   (see https://github.com/RasaHQ/rasa/issues/6806)
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/tests/nlu/test_train.py#L151">tests/nlu/test_train.py~L151</a></p>
+<pre><code>             #   publicly available anymore
+             #   (see <a href="https://github.com/RasaHQ/rasa/issues/6806">RasaHQ/rasa#6806</a>)
              continue
 -        assert (
 -            cls.__name__ in all_components
@@ -702,31 +702,31 @@ assert graph.artifacts == [
  
  @pytest.mark.timeout(600, func_only=True)
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/tests/shared/core/training_data/test_graph.py#L10'>tests/shared/core/training_data/test_graph.py~L10</a></p>
-<pre><code class="language-diff">     for n in sorted_nodes:
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/tests/shared/core/training_data/test_graph.py#L10">tests/shared/core/training_data/test_graph.py~L10</a></p>
+<pre><code>     for n in sorted_nodes:
          deps = incoming_edges.get(n, [])
          # checks that all incoming edges are from nodes we have already visited
 -        assert all([
 -            d in visited or (d, n) in removed_edges for d in deps
--        ]), &quot;Found an incoming edge from a node that wasn't visited yet!&quot;
+-        ]), &quot;Found an incoming edge from a node that wasn&#x27;t visited yet!&quot;
 +        assert all([d in visited or (d, n) in removed_edges for d in deps]), (
-+            &quot;Found an incoming edge from a node that wasn't visited yet!&quot;
++            &quot;Found an incoming edge from a node that wasn&#x27;t visited yet!&quot;
 +        )
          visited.add(n)
  
  
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/Snowflake-Labs/snowcli">Snowflake-Labs/snowcli</a> (+17 -16 lines across 5 files)</summary>
+
+<a href="https://github.com/Snowflake-Labs/snowcli">Snowflake-Labs/snowcli</a> (+17 -16 lines across 5 files)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/Snowflake-Labs/snowcli/blob/b87c8e89815c9892eec46bee6d4ea6fc2c723fa2/src/snowflake/cli/_plugins/nativeapp/artifacts.py#L248'>src/snowflake/cli/_plugins/nativeapp/artifacts.py~L248</a></p>
-<pre><code class="language-diff">     def __init__(self, *, project_root: Path, deploy_root: Path):
-         # If a relative path ends up here, it's a bug in the app and can lead to other
+<p><a href="https://github.com/Snowflake-Labs/snowcli/blob/b87c8e89815c9892eec46bee6d4ea6fc2c723fa2/src/snowflake/cli/_plugins/nativeapp/artifacts.py#L248">src/snowflake/cli/_plugins/nativeapp/artifacts.py~L248</a></p>
+<pre><code>     def __init__(self, *, project_root: Path, deploy_root: Path):
+         # If a relative path ends up here, it&#x27;s a bug in the app and can lead to other
          # subtle bugs as paths would be resolved relative to the current working directory.
 -        assert (
 -            project_root.is_absolute()
@@ -744,18 +744,18 @@ assert graph.artifacts == [
          self._project_root: Path = resolve_without_follow(project_root)
          self._deploy_root: Path = resolve_without_follow(deploy_root)
 </code></pre>
-<p><a href='https://github.com/Snowflake-Labs/snowcli/blob/b87c8e89815c9892eec46bee6d4ea6fc2c723fa2/tests/api/utils/test_templating_functions.py#L309'>tests/api/utils/test_templating_functions.py~L309</a></p>
-<pre><code class="language-diff">     &quot;input_value, expected_output&quot;,
+<p><a href="https://github.com/Snowflake-Labs/snowcli/blob/b87c8e89815c9892eec46bee6d4ea6fc2c723fa2/tests/api/utils/test_templating_functions.py#L309">tests/api/utils/test_templating_functions.py~L309</a></p>
+<pre><code>     &quot;input_value, expected_output&quot;,
      [
          (&quot;test_value&quot;, &quot;test_value&quot;),
--        (&quot; T'EST_Va l.u-e&quot; &quot;&quot;, &quot;TEST_Value&quot;),
-+        (&quot; T'EST_Va l.u-e&quot;, &quot;TEST_Value&quot;),
+-        (&quot; T&#x27;EST_Va l.u-e&quot; &quot;&quot;, &quot;TEST_Value&quot;),
++        (&quot; T&#x27;EST_Va l.u-e&quot;, &quot;TEST_Value&quot;),
          (&quot;&quot;, &quot;_&quot;),
-         ('&quot;&quot;', &quot;_&quot;),
+         (&#x27;&quot;&quot;&#x27;, &quot;_&quot;),
          (&quot;_val.ue&quot;, &quot;_value&quot;),
 </code></pre>
-<p><a href='https://github.com/Snowflake-Labs/snowcli/blob/b87c8e89815c9892eec46bee6d4ea6fc2c723fa2/tests_e2e/test_installation.py#L66'>tests_e2e/test_installation.py~L66</a></p>
-<pre><code class="language-diff">     assert &quot;Initialized the new project in&quot; in output
+<p><a href="https://github.com/Snowflake-Labs/snowcli/blob/b87c8e89815c9892eec46bee6d4ea6fc2c723fa2/tests_e2e/test_installation.py#L66">tests_e2e/test_installation.py~L66</a></p>
+<pre><code>     assert &quot;Initialized the new project in&quot; in output
      for file in files_to_check:
          expected_generated_file = project_path / file
 -        assert expected_generated_file.exists(), f&quot;[{expected_generated_file}] does not exist. It should be generated from templates directory.&quot;
@@ -766,36 +766,36 @@ assert graph.artifacts == [
  
  @pytest.mark.e2e
 </code></pre>
-<p><a href='https://github.com/Snowflake-Labs/snowcli/blob/b87c8e89815c9892eec46bee6d4ea6fc2c723fa2/tests_integration/spcs/testing_utils/spcs_services_utils.py#L223'>tests_integration/spcs/testing_utils/spcs_services_utils.py~L223</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/Snowflake-Labs/snowcli/blob/b87c8e89815c9892eec46bee6d4ea6fc2c723fa2/tests_integration/spcs/testing_utils/spcs_services_utils.py#L223">tests_integration/spcs/testing_utils/spcs_services_utils.py~L223</a></p>
+<pre><code> 
          describe_result = self._execute_describe(service_name)
          assert describe_result.exit_code == 0, describe_result.output
 -        assert (
 -            new_container_name not in describe_result.json[0][&quot;spec&quot;]
--        ), f&quot;Container name '{new_container_name}' found in output of DESCRIBE SERVICE before spec has been updated. This is unexpected.&quot;
+-        ), f&quot;Container name &#x27;{new_container_name}&#x27; found in output of DESCRIBE SERVICE before spec has been updated. This is unexpected.&quot;
 +        assert new_container_name not in describe_result.json[0][&quot;spec&quot;], (
-+            f&quot;Container name '{new_container_name}' found in output of DESCRIBE SERVICE before spec has been updated. This is unexpected.&quot;
++            f&quot;Container name &#x27;{new_container_name}&#x27; found in output of DESCRIBE SERVICE before spec has been updated. This is unexpected.&quot;
 +        )
  
          spec_path = f&quot;{self._setup.test_root_path}/spcs/spec/spec_upgrade.yml&quot;
          upgrade_result = self._setup.runner.invoke_with_connection_json([
 </code></pre>
-<p><a href='https://github.com/Snowflake-Labs/snowcli/blob/b87c8e89815c9892eec46bee6d4ea6fc2c723fa2/tests_integration/spcs/testing_utils/spcs_services_utils.py#L244'>tests_integration/spcs/testing_utils/spcs_services_utils.py~L244</a></p>
-<pre><code class="language-diff">         describe_result = self._execute_describe(service_name)
+<p><a href="https://github.com/Snowflake-Labs/snowcli/blob/b87c8e89815c9892eec46bee6d4ea6fc2c723fa2/tests_integration/spcs/testing_utils/spcs_services_utils.py#L244">tests_integration/spcs/testing_utils/spcs_services_utils.py~L244</a></p>
+<pre><code>         describe_result = self._execute_describe(service_name)
          assert describe_result.exit_code == 0, describe_result.output
          # do not assert direct equality because the spec field in output of DESCRIBE SERVICE has some extra info
 -        assert (
 -            new_container_name in describe_result.json[0][&quot;spec&quot;]
--        ), f&quot;Container name '{new_container_name}' from spec_upgrade.yml not found in output of DESCRIBE SERVICE.&quot;
+-        ), f&quot;Container name &#x27;{new_container_name}&#x27; from spec_upgrade.yml not found in output of DESCRIBE SERVICE.&quot;
 +        assert new_container_name in describe_result.json[0][&quot;spec&quot;], (
-+            f&quot;Container name '{new_container_name}' from spec_upgrade.yml not found in output of DESCRIBE SERVICE.&quot;
++            f&quot;Container name &#x27;{new_container_name}&#x27; from spec_upgrade.yml not found in output of DESCRIBE SERVICE.&quot;
 +        )
  
      def list_endpoints_should_show_endpoint(self, service_name: str):
          result = self._setup.runner.invoke_with_connection_json([
 </code></pre>
-<p><a href='https://github.com/Snowflake-Labs/snowcli/blob/b87c8e89815c9892eec46bee6d4ea6fc2c723fa2/tests_integration/test_snowpark.py#L622'>tests_integration/test_snowpark.py~L622</a></p>
-<pre><code class="language-diff">                 &quot;type&quot;: &quot;function&quot;,
+<p><a href="https://github.com/Snowflake-Labs/snowcli/blob/b87c8e89815c9892eec46bee6d4ea6fc2c723fa2/tests_integration/test_snowpark.py#L622">tests_integration/test_snowpark.py~L622</a></p>
+<pre><code>                 &quot;type&quot;: &quot;function&quot;,
              },
              {
 -                &quot;object&quot;: f&quot;{database}.{different_schema}.schema_function(name &quot;
@@ -806,15 +806,15 @@ assert graph.artifacts == [
              },
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/aiven/aiven-client">aiven/aiven-client</a> (+2 -2 lines across 1 file)</summary>
+
+<a href="https://github.com/aiven/aiven-client">aiven/aiven-client</a> (+2 -2 lines across 1 file)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/aiven/aiven-client/blob/9bc64ad5dc630690df9e000fa56250367b049bd0/aiven/client/cli.py#L868'>aiven/client/cli.py~L868</a></p>
-<pre><code class="language-diff">                         types = spec[&quot;type&quot;]
+<p><a href="https://github.com/aiven/aiven-client/blob/9bc64ad5dc630690df9e000fa56250367b049bd0/aiven/client/cli.py#L868">aiven/client/cli.py~L868</a></p>
+<pre><code>                         types = spec[&quot;type&quot;]
                          if isinstance(types, str) and types == &quot;null&quot;:
                              print(
 -                                &quot;  {title}{description}\n&quot; &quot;     =&gt; --remove-option {name}&quot;.format(
@@ -823,8 +823,8 @@ assert graph.artifacts == [
                                      title=spec[&quot;title&quot;],
                                      description=description,
 </code></pre>
-<p><a href='https://github.com/aiven/aiven-client/blob/9bc64ad5dc630690df9e000fa56250367b049bd0/aiven/client/cli.py#L879'>aiven/client/cli.py~L879</a></p>
-<pre><code class="language-diff">                                 types = [types]
+<p><a href="https://github.com/aiven/aiven-client/blob/9bc64ad5dc630690df9e000fa56250367b049bd0/aiven/client/cli.py#L879">aiven/client/cli.py~L879</a></p>
+<pre><code>                                 types = [types]
                              type_str = &quot; or &quot;.join(t for t in types if t != &quot;null&quot;)
                              print(
 -                                &quot;  {title}{description}\n&quot; &quot;     =&gt; -c {name}=&lt;{type}&gt;  {default}&quot;.format(
@@ -834,15 +834,15 @@ assert graph.artifacts == [
                                      default=default_desc,
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/PlasmaPy/PlasmaPy">PlasmaPy/PlasmaPy</a> (+49 -62 lines across 8 files)</summary>
+
+<a href="https://github.com/PlasmaPy/PlasmaPy">PlasmaPy/PlasmaPy</a> (+49 -62 lines across 8 files)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/PlasmaPy/PlasmaPy/blob/42d7a0b1484ddb1b2edfc1fdf94234223b821147/src/plasmapy/diagnostics/charged_particle_radiography/synthetic_radiography.py#L1052'>src/plasmapy/diagnostics/charged_particle_radiography/synthetic_radiography.py~L1052</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/PlasmaPy/PlasmaPy/blob/42d7a0b1484ddb1b2edfc1fdf94234223b821147/src/plasmapy/diagnostics/charged_particle_radiography/synthetic_radiography.py#L1052">src/plasmapy/diagnostics/charged_particle_radiography/synthetic_radiography.py~L1052</a></p>
+<pre><code> 
          if not self._has_run:
              raise RuntimeError(
 -                &quot;The simulation must be run before a results &quot;
@@ -852,52 +852,52 @@ assert graph.artifacts == [
  
          # Determine locations of points in the detector plane using unit
 </code></pre>
-<p><a href='https://github.com/PlasmaPy/PlasmaPy/blob/42d7a0b1484ddb1b2edfc1fdf94234223b821147/src/plasmapy/particles/_parsing.py#L328'>src/plasmapy/particles/_parsing.py~L328</a></p>
-<pre><code class="language-diff">             element = element_info
+<p><a href="https://github.com/PlasmaPy/PlasmaPy/blob/42d7a0b1484ddb1b2edfc1fdf94234223b821147/src/plasmapy/particles/_parsing.py#L328">src/plasmapy/particles/_parsing.py~L328</a></p>
+<pre><code>             element = element_info
          else:
              raise InvalidParticleError(
--                f&quot;The string '{element_info}' does not correspond to &quot;
+-                f&quot;The string &#x27;{element_info}&#x27; does not correspond to &quot;
 -                f&quot;a valid element.&quot;
-+                f&quot;The string '{element_info}' does not correspond to a valid element.&quot;
++                f&quot;The string &#x27;{element_info}&#x27; does not correspond to a valid element.&quot;
              )
          return element
  
 </code></pre>
-<p><a href='https://github.com/PlasmaPy/PlasmaPy/blob/42d7a0b1484ddb1b2edfc1fdf94234223b821147/src/plasmapy/particles/_parsing.py#L352'>src/plasmapy/particles/_parsing.py~L352</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/PlasmaPy/PlasmaPy/blob/42d7a0b1484ddb1b2edfc1fdf94234223b821147/src/plasmapy/particles/_parsing.py#L352">src/plasmapy/particles/_parsing.py~L352</a></p>
+<pre><code> 
              if isotope not in _isotopes.data_about_isotopes:
                  raise InvalidParticleError(
--                    f&quot;The string '{isotope}' does not correspond to &quot;
+-                    f&quot;The string &#x27;{isotope}&#x27; does not correspond to &quot;
 -                    f&quot;a valid isotope.&quot;
-+                    f&quot;The string '{isotope}' does not correspond to a valid isotope.&quot;
++                    f&quot;The string &#x27;{isotope}&#x27; does not correspond to a valid isotope.&quot;
                  )
  
          else:
 </code></pre>
-<p><a href='https://github.com/PlasmaPy/PlasmaPy/blob/42d7a0b1484ddb1b2edfc1fdf94234223b821147/src/plasmapy/particles/_parsing.py#L434'>src/plasmapy/particles/_parsing.py~L434</a></p>
-<pre><code class="language-diff">             )
+<p><a href="https://github.com/PlasmaPy/PlasmaPy/blob/42d7a0b1484ddb1b2edfc1fdf94234223b821147/src/plasmapy/particles/_parsing.py#L434">src/plasmapy/particles/_parsing.py~L434</a></p>
+<pre><code>             )
          else:
              warnings.warn(
 -                &quot;Redundant charge information for particle &quot;
--                f&quot;'{argument}' with Z = {Z}.&quot;,
-+                f&quot;Redundant charge information for particle '{argument}' with Z = {Z}.&quot;,
+-                f&quot;&#x27;{argument}&#x27; with Z = {Z}.&quot;,
++                f&quot;Redundant charge information for particle &#x27;{argument}&#x27; with Z = {Z}.&quot;,
                  ParticleWarning,
              )
  
 </code></pre>
-<p><a href='https://github.com/PlasmaPy/PlasmaPy/blob/42d7a0b1484ddb1b2edfc1fdf94234223b821147/src/plasmapy/particles/_parsing.py#L535'>src/plasmapy/particles/_parsing.py~L535</a></p>
-<pre><code class="language-diff">             )
+<p><a href="https://github.com/PlasmaPy/PlasmaPy/blob/42d7a0b1484ddb1b2edfc1fdf94234223b821147/src/plasmapy/particles/_parsing.py#L535">src/plasmapy/particles/_parsing.py~L535</a></p>
+<pre><code>             )
          else:
              warnings.warn(
 -                &quot;Redundant charge information for particle &quot;
--                f&quot;'{argument}' with Z = {Z}.&quot;,
-+                f&quot;Redundant charge information for particle '{argument}' with Z = {Z}.&quot;,
+-                f&quot;&#x27;{argument}&#x27; with Z = {Z}.&quot;,
++                f&quot;Redundant charge information for particle &#x27;{argument}&#x27; with Z = {Z}.&quot;,
                  ParticleWarning,
              )
  
 </code></pre>
-<p><a href='https://github.com/PlasmaPy/PlasmaPy/blob/42d7a0b1484ddb1b2edfc1fdf94234223b821147/src/plasmapy/particles/atomic.py#L586'>src/plasmapy/particles/atomic.py~L586</a></p>
-<pre><code class="language-diff">             isotopes_list = known_isotopes_for_element(element)
+<p><a href="https://github.com/PlasmaPy/PlasmaPy/blob/42d7a0b1484ddb1b2edfc1fdf94234223b821147/src/plasmapy/particles/atomic.py#L586">src/plasmapy/particles/atomic.py~L586</a></p>
+<pre><code>             isotopes_list = known_isotopes_for_element(element)
          except InvalidElementError as ex:
              raise InvalidElementError(
 -                &quot;known_isotopes is unable to get &quot;
@@ -907,8 +907,8 @@ assert graph.artifacts == [
          except InvalidParticleError as ex:
              raise InvalidParticleError(&quot;Invalid particle in known_isotopes.&quot;) from ex
 </code></pre>
-<p><a href='https://github.com/PlasmaPy/PlasmaPy/blob/42d7a0b1484ddb1b2edfc1fdf94234223b821147/src/plasmapy/particles/ionization_state.py#L98'>src/plasmapy/particles/ionization_state.py~L98</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/PlasmaPy/PlasmaPy/blob/42d7a0b1484ddb1b2edfc1fdf94234223b821147/src/plasmapy/particles/ionization_state.py#L98">src/plasmapy/particles/ionization_state.py~L98</a></p>
+<pre><code> 
      def __repr__(self) -&gt; str:
          return (
 -            f&quot;IonicLevel({self.ionic_symbol!r}, &quot;
@@ -918,8 +918,8 @@ assert graph.artifacts == [
  
      @property
 </code></pre>
-<p><a href='https://github.com/PlasmaPy/PlasmaPy/blob/42d7a0b1484ddb1b2edfc1fdf94234223b821147/src/plasmapy/particles/ionization_state.py#L477'>src/plasmapy/particles/ionization_state.py~L477</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/PlasmaPy/PlasmaPy/blob/42d7a0b1484ddb1b2edfc1fdf94234223b821147/src/plasmapy/particles/ionization_state.py#L477">src/plasmapy/particles/ionization_state.py~L477</a></p>
+<pre><code> 
              if len(fractions) != self.atomic_number + 1:
                  raise ParticleError(
 -                    &quot;The length of ionic_fractions must be &quot;
@@ -929,8 +929,8 @@ assert graph.artifacts == [
  
              if isinstance(fractions, u.Quantity):
 </code></pre>
-<p><a href='https://github.com/PlasmaPy/PlasmaPy/blob/42d7a0b1484ddb1b2edfc1fdf94234223b821147/src/plasmapy/particles/ionization_state_collection.py#L321'>src/plasmapy/particles/ionization_state_collection.py~L321</a></p>
-<pre><code class="language-diff">         all_nans = np.all(np.isnan(new_fractions))
+<p><a href="https://github.com/PlasmaPy/PlasmaPy/blob/42d7a0b1484ddb1b2edfc1fdf94234223b821147/src/plasmapy/particles/ionization_state_collection.py#L321">src/plasmapy/particles/ionization_state_collection.py~L321</a></p>
+<pre><code>         all_nans = np.all(np.isnan(new_fractions))
          if not all_nans and (new_fractions.min() &lt; 0 or new_fractions.max() &gt; 1):
              raise ValueError(
 -                f&quot;{errmsg} because the new ionic fractions are not &quot;
@@ -940,8 +940,8 @@ assert graph.artifacts == [
  
          normalized = np.isclose(np.sum(new_fractions), 1, rtol=self.tol)
 </code></pre>
-<p><a href='https://github.com/PlasmaPy/PlasmaPy/blob/42d7a0b1484ddb1b2edfc1fdf94234223b821147/tests/diagnostics/test_thomson.py#L191'>tests/diagnostics/test_thomson.py~L191</a></p>
-<pre><code class="language-diff">     alpha, wavelength, Skw = single_species_collective_spectrum
+<p><a href="https://github.com/PlasmaPy/PlasmaPy/blob/42d7a0b1484ddb1b2edfc1fdf94234223b821147/tests/diagnostics/test_thomson.py#L191">tests/diagnostics/test_thomson.py~L191</a></p>
+<pre><code>     alpha, wavelength, Skw = single_species_collective_spectrum
  
      # Check that alpha is correct
 -    assert np.isclose(
@@ -964,8 +964,8 @@ assert graph.artifacts == [
  
      assert np.isclose(e_width, 17.7899, 1e-3), (
 </code></pre>
-<p><a href='https://github.com/PlasmaPy/PlasmaPy/blob/42d7a0b1484ddb1b2edfc1fdf94234223b821147/tests/diagnostics/test_thomson.py#L421'>tests/diagnostics/test_thomson.py~L421</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/PlasmaPy/PlasmaPy/blob/42d7a0b1484ddb1b2edfc1fdf94234223b821147/tests/diagnostics/test_thomson.py#L421">tests/diagnostics/test_thomson.py~L421</a></p>
+<pre><code> 
      # Check width
      assert np.isclose(width, 0.17, 1e-2), (
 -        f&quot;Multiple ion species case spectrum width is {width} instead of &quot;
@@ -982,8 +982,8 @@ assert graph.artifacts == [
  
      # Check max peak location
 </code></pre>
-<p><a href='https://github.com/PlasmaPy/PlasmaPy/blob/42d7a0b1484ddb1b2edfc1fdf94234223b821147/tests/diagnostics/test_thomson.py#L492'>tests/diagnostics/test_thomson.py~L492</a></p>
-<pre><code class="language-diff">     alpha, wavelength, Skw = single_species_non_collective_spectrum
+<p><a href="https://github.com/PlasmaPy/PlasmaPy/blob/42d7a0b1484ddb1b2edfc1fdf94234223b821147/tests/diagnostics/test_thomson.py#L492">tests/diagnostics/test_thomson.py~L492</a></p>
+<pre><code>     alpha, wavelength, Skw = single_species_non_collective_spectrum
  
      # Check that alpha is correct
 -    assert np.isclose(
@@ -996,8 +996,8 @@ assert graph.artifacts == [
      e_width = width_at_value(wavelength.value, Skw.value, 0.2e-13)
  
 </code></pre>
-<p><a href='https://github.com/PlasmaPy/PlasmaPy/blob/42d7a0b1484ddb1b2edfc1fdf94234223b821147/tests/formulary/collisions/test_collisions_frequencies.py#L781'>tests/formulary/collisions/test_collisions_frequencies.py~L781</a></p>
-<pre><code class="language-diff">             self.True_electrons, methodVal.si.value, rtol=1e-1, atol=0.0
+<p><a href="https://github.com/PlasmaPy/PlasmaPy/blob/42d7a0b1484ddb1b2edfc1fdf94234223b821147/tests/formulary/collisions/test_collisions_frequencies.py#L781">tests/formulary/collisions/test_collisions_frequencies.py~L781</a></p>
+<pre><code>             self.True_electrons, methodVal.si.value, rtol=1e-1, atol=0.0
          )
          errStr = (
 -            f&quot;Collision frequency should be {self.True_electrons} and &quot;
@@ -1007,8 +1007,8 @@ assert graph.artifacts == [
          assert testTrue, errStr
  
 </code></pre>
-<p><a href='https://github.com/PlasmaPy/PlasmaPy/blob/42d7a0b1484ddb1b2edfc1fdf94234223b821147/tests/formulary/collisions/test_collisions_frequencies.py#L803'>tests/formulary/collisions/test_collisions_frequencies.py~L803</a></p>
-<pre><code class="language-diff">             self.True_protons, methodVal.si.value, rtol=1e-1, atol=0.0
+<p><a href="https://github.com/PlasmaPy/PlasmaPy/blob/42d7a0b1484ddb1b2edfc1fdf94234223b821147/tests/formulary/collisions/test_collisions_frequencies.py#L803">tests/formulary/collisions/test_collisions_frequencies.py~L803</a></p>
+<pre><code>             self.True_protons, methodVal.si.value, rtol=1e-1, atol=0.0
          )
          errStr = (
 -            f&quot;Collision frequency should be {self.True_protons} and &quot;
@@ -1018,8 +1018,8 @@ assert graph.artifacts == [
          assert testTrue, errStr
  
 </code></pre>
-<p><a href='https://github.com/PlasmaPy/PlasmaPy/blob/42d7a0b1484ddb1b2edfc1fdf94234223b821147/tests/particles/test_ionization_collection.py#L34'>tests/particles/test_ionization_collection.py~L34</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/PlasmaPy/PlasmaPy/blob/42d7a0b1484ddb1b2edfc1fdf94234223b821147/tests/particles/test_ionization_collection.py#L34">tests/particles/test_ionization_collection.py~L34</a></p>
+<pre><code> 
      for element, abundance_from_abundances in abundances.items():
          abundance_from_log_abundances = 10 ** log_abundances[element]
 -        assert np.isclose(
@@ -1032,10 +1032,10 @@ assert graph.artifacts == [
  
  def has_attribute(attribute, tests_dict):
 </code></pre>
-<p><a href='https://github.com/PlasmaPy/PlasmaPy/blob/42d7a0b1484ddb1b2edfc1fdf94234223b821147/tests/particles/test_ionization_collection.py#L142'>tests/particles/test_ionization_collection.py~L142</a></p>
-<pre><code class="language-diff">         assert (
+<p><a href="https://github.com/PlasmaPy/PlasmaPy/blob/42d7a0b1484ddb1b2edfc1fdf94234223b821147/tests/particles/test_ionization_collection.py#L142">tests/particles/test_ionization_collection.py~L142</a></p>
+<pre><code>         assert (
              a == a  # noqa: PLR0124
-         ), &quot;IonizationStateCollection doesn't equal itself.&quot;
+         ), &quot;IonizationStateCollection doesn&#x27;t equal itself.&quot;
 -        assert (
 -            a == b
 -        ), &quot;IonizationStateCollection instance does not equal identical instance.&quot;
@@ -1046,8 +1046,8 @@ assert graph.artifacts == [
      @pytest.mark.parametrize(
          &quot;test_name&quot;,
 </code></pre>
-<p><a href='https://github.com/PlasmaPy/PlasmaPy/blob/42d7a0b1484ddb1b2edfc1fdf94234223b821147/tests/particles/test_ionization_collection.py#L464'>tests/particles/test_ionization_collection.py~L464</a></p>
-<pre><code class="language-diff">         )
+<p><a href="https://github.com/PlasmaPy/PlasmaPy/blob/42d7a0b1484ddb1b2edfc1fdf94234223b821147/tests/particles/test_ionization_collection.py#L464">tests/particles/test_ionization_collection.py~L464</a></p>
+<pre><code>         )
  
      def test_kappa_defaults_to_inf(self) -&gt; None:
 -        assert np.isinf(
@@ -1060,8 +1060,8 @@ assert graph.artifacts == [
      @pytest.mark.parametrize(
          &quot;uninitialized_attribute&quot;, [&quot;number_densities&quot;, &quot;ionic_fractions&quot;]
 </code></pre>
-<p><a href='https://github.com/PlasmaPy/PlasmaPy/blob/42d7a0b1484ddb1b2edfc1fdf94234223b821147/tests/particles/test_ionization_collection.py#L474'>tests/particles/test_ionization_collection.py~L474</a></p>
-<pre><code class="language-diff">     def test_attribute_defaults_to_dict_of_nans(self, uninitialized_attribute) -&gt; None:
+<p><a href="https://github.com/PlasmaPy/PlasmaPy/blob/42d7a0b1484ddb1b2edfc1fdf94234223b821147/tests/particles/test_ionization_collection.py#L474">tests/particles/test_ionization_collection.py~L474</a></p>
+<pre><code>     def test_attribute_defaults_to_dict_of_nans(self, uninitialized_attribute) -&gt; None:
          command = f&quot;self.instance.{uninitialized_attribute}&quot;
          default_value = eval(command)  # noqa: S307
 -        assert (
@@ -1087,8 +1087,8 @@ assert graph.artifacts == [
      @pytest.mark.parametrize(
          &quot;uninitialized_attribute&quot;, [&quot;abundances&quot;, &quot;log_abundances&quot;]
 </code></pre>
-<p><a href='https://github.com/PlasmaPy/PlasmaPy/blob/42d7a0b1484ddb1b2edfc1fdf94234223b821147/tests/particles/test_ionization_collection.py#L539'>tests/particles/test_ionization_collection.py~L539</a></p>
-<pre><code class="language-diff">         self.new_fractions = [0.3, 0.7]
+<p><a href="https://github.com/PlasmaPy/PlasmaPy/blob/42d7a0b1484ddb1b2edfc1fdf94234223b821147/tests/particles/test_ionization_collection.py#L539">tests/particles/test_ionization_collection.py~L539</a></p>
+<pre><code>         self.new_fractions = [0.3, 0.7]
          self.instance[&quot;H&quot;] = self.new_fractions
          resulting_fractions = self.instance.ionic_fractions[&quot;H&quot;]
 -        assert np.allclose(
@@ -1101,8 +1101,8 @@ assert graph.artifacts == [
              &quot;He is missing in ionic_fractions after __setitem__ was &quot;
              &quot;used to set H ionic fractions.&quot;
 </code></pre>
-<p><a href='https://github.com/PlasmaPy/PlasmaPy/blob/42d7a0b1484ddb1b2edfc1fdf94234223b821147/tests/particles/test_ionization_collection.py#L687'>tests/particles/test_ionization_collection.py~L687</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/PlasmaPy/PlasmaPy/blob/42d7a0b1484ddb1b2edfc1fdf94234223b821147/tests/particles/test_ionization_collection.py#L687">tests/particles/test_ionization_collection.py~L687</a></p>
+<pre><code> 
          assert u.quantity.allclose(
              self.instance.ionic_fractions[element], valid_ionic_fractions
 -        ), &quot;Item assignment of valid number densities did not yield correct ionic fractions.&quot;
@@ -1120,19 +1120,19 @@ assert graph.artifacts == [
      def test_resetting_invalid_densities(self) -&gt; None:
          &quot;&quot;&quot;
 </code></pre>
-<p><a href='https://github.com/PlasmaPy/PlasmaPy/blob/42d7a0b1484ddb1b2edfc1fdf94234223b821147/tests/particles/test_ionization_collection.py#L782'>tests/particles/test_ionization_collection.py~L782</a></p>
-<pre><code class="language-diff">         number_densities = self.instances[test_key].number_densities
+<p><a href="https://github.com/PlasmaPy/PlasmaPy/blob/42d7a0b1484ddb1b2edfc1fdf94234223b821147/tests/particles/test_ionization_collection.py#L782">tests/particles/test_ionization_collection.py~L782</a></p>
+<pre><code>         number_densities = self.instances[test_key].number_densities
          for base_particle in self.instances[test_key].base_particles:
              assert not np.any(np.isnan(number_densities[base_particle])), (
 -                f&quot;Test {test_key} should have number densities &quot;
--                f&quot;defined, but doesn't.&quot;
-+                f&quot;Test {test_key} should have number densities defined, but doesn't.&quot;
+-                f&quot;defined, but doesn&#x27;t.&quot;
++                f&quot;Test {test_key} should have number densities defined, but doesn&#x27;t.&quot;
              )
  
      @pytest.mark.parametrize(&quot;test_key&quot;, [&quot;no_ndens3&quot;, &quot;no_ndens4&quot;, &quot;no_ndens5&quot;])
 </code></pre>
-<p><a href='https://github.com/PlasmaPy/PlasmaPy/blob/42d7a0b1484ddb1b2edfc1fdf94234223b821147/tests/particles/test_ionization_collection.py#L791'>tests/particles/test_ionization_collection.py~L791</a></p>
-<pre><code class="language-diff">         number_densities = self.instances[test_key].number_densities
+<p><a href="https://github.com/PlasmaPy/PlasmaPy/blob/42d7a0b1484ddb1b2edfc1fdf94234223b821147/tests/particles/test_ionization_collection.py#L791">tests/particles/test_ionization_collection.py~L791</a></p>
+<pre><code>         number_densities = self.instances[test_key].number_densities
          for base_particle in self.instances[test_key].base_particles:
              assert np.all(np.isnan(number_densities[base_particle])), (
 -                f&quot;Test {test_key} should not have number densities &quot;
@@ -1143,15 +1143,15 @@ assert graph.artifacts == [
      @pytest.mark.parametrize(
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+146 -209 lines across 48 files)</summary>
+
+<a href="https://github.com/apache/airflow">apache/airflow</a> (+146 -209 lines across 48 files)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/airflow/jobs/scheduler_job_runner.py#L506'>airflow/jobs/scheduler_job_runner.py~L506</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/airflow/jobs/scheduler_job_runner.py#L506">airflow/jobs/scheduler_job_runner.py~L506</a></p>
+<pre><code> 
                          if current_task_concurrency &gt;= task_concurrency_limit:
                              self.log.info(
 -                                &quot;Not executing %s since the task concurrency for&quot;
@@ -1161,8 +1161,8 @@ assert graph.artifacts == [
                              )
                              starved_tasks.add((task_instance.dag_id, task_instance.task_id))
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/airflow/www/views.py#L4657'>airflow/www/views.py~L4657</a></p>
-<pre><code class="language-diff">             if skipped:
+<p><a href="https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/airflow/www/views.py#L4657">airflow/www/views.py~L4657</a></p>
+<pre><code>             if skipped:
                  skipped_repr = &quot;, &quot;.join(repr(k) for k in sorted(skipped))
                  flash(
 -                    f&quot;The variables with these keys: {skipped_repr} were skipped &quot;
@@ -1172,8 +1172,8 @@ assert graph.artifacts == [
                  )
              self.update_redirect()
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/dev/breeze/src/airflow_breeze/commands/setup_commands.py#L77'>dev/breeze/src/airflow_breeze/commands/setup_commands.py~L77</a></p>
-<pre><code class="language-diff"> )
+<p><a href="https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/dev/breeze/src/airflow_breeze/commands/setup_commands.py#L77">dev/breeze/src/airflow_breeze/commands/setup_commands.py~L77</a></p>
+<pre><code> )
  @setup.command(
      name=&quot;self-upgrade&quot;,
 -    help=&quot;Self upgrade Breeze. By default it re-installs Breeze &quot;
@@ -1183,8 +1183,8 @@ assert graph.artifacts == [
      else &quot;Self upgrade Breeze.&quot;,
  )
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/dev/breeze/src/airflow_breeze/commands/setup_commands.py#L174'>dev/breeze/src/airflow_breeze/commands/setup_commands.py~L174</a></p>
-<pre><code class="language-diff">     get_console().print(f&quot;[info]Used Airflow sources : {get_used_airflow_sources()}[/]\n&quot;)
+<p><a href="https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/dev/breeze/src/airflow_breeze/commands/setup_commands.py#L174">dev/breeze/src/airflow_breeze/commands/setup_commands.py~L174</a></p>
+<pre><code>     get_console().print(f&quot;[info]Used Airflow sources : {get_used_airflow_sources()}[/]\n&quot;)
      if get_verbose():
          get_console().print(
 -            f&quot;[info]Installation sources config hash : &quot;
@@ -1194,8 +1194,8 @@ assert graph.artifacts == [
          get_console().print(
              f&quot;[info]Used sources config hash         : {get_used_sources_setup_metadata_hash()}[/]&quot;
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/dev/breeze/src/airflow_breeze/utils/docker_command_utils.py#L180'>dev/breeze/src/airflow_breeze/utils/docker_command_utils.py~L180</a></p>
-<pre><code class="language-diff">     )
+<p><a href="https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/dev/breeze/src/airflow_breeze/utils/docker_command_utils.py#L180">dev/breeze/src/airflow_breeze/utils/docker_command_utils.py~L180</a></p>
+<pre><code>     )
      if response.returncode != 0:
          get_console().print(
 -            &quot;[error]Docker is not running.[/]\n&quot;
@@ -1205,30 +1205,30 @@ assert graph.artifacts == [
          sys.exit(1)
  
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/dev/breeze/tests/test_selective_checks.py#L90'>dev/breeze/tests/test_selective_checks.py~L90</a></p>
-<pre><code class="language-diff">                     assert received_value == expected_value, f&quot;Correct value for {expected_key!r}&quot;
+<p><a href="https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/dev/breeze/tests/test_selective_checks.py#L90">dev/breeze/tests/test_selective_checks.py~L90</a></p>
+<pre><code>                     assert received_value == expected_value, f&quot;Correct value for {expected_key!r}&quot;
                  else:
                      print(
--                        f&quot;\n[red]ERROR: The key '{expected_key}' missing but &quot;
+-                        f&quot;\n[red]ERROR: The key &#x27;{expected_key}&#x27; missing but &quot;
 -                        f&quot;it is expected. Expected value:&quot;
-+                        f&quot;\n[red]ERROR: The key '{expected_key}' missing but it is expected. Expected value:&quot;
++                        f&quot;\n[red]ERROR: The key &#x27;{expected_key}&#x27; missing but it is expected. Expected value:&quot;
                      )
                      print_in_color(expected_value)
                      print_in_color(&quot;\nOutput received:&quot;)
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/dev/breeze/tests/test_selective_checks.py#L494'>dev/breeze/tests/test_selective_checks.py~L494</a></p>
-<pre><code class="language-diff">                     &quot;providers/tests/http/file.py&quot;,
+<p><a href="https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/dev/breeze/tests/test_selective_checks.py#L494">dev/breeze/tests/test_selective_checks.py~L494</a></p>
+<pre><code>                     &quot;providers/tests/http/file.py&quot;,
                  ),
                  {
 -                    &quot;affected-providers-list-as-string&quot;: &quot;amazon apache.livy &quot;
 -                    &quot;dbt.cloud dingding discord http&quot;,
 +                    &quot;affected-providers-list-as-string&quot;: &quot;amazon apache.livy dbt.cloud dingding discord http&quot;,
-                     &quot;all-python-versions&quot;: &quot;['3.9']&quot;,
+                     &quot;all-python-versions&quot;: &quot;[&#x27;3.9&#x27;]&quot;,
                      &quot;all-python-versions-list-as-string&quot;: &quot;3.9&quot;,
-                     &quot;python-versions&quot;: &quot;['3.9']&quot;,
+                     &quot;python-versions&quot;: &quot;[&#x27;3.9&#x27;]&quot;,
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/docker_tests/test_prod_image.py#L99'>docker_tests/test_prod_image.py~L99</a></p>
-<pre><code class="language-diff">         packages_installed = set(d[&quot;package_name&quot;] for d in providers)
+<p><a href="https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/docker_tests/test_prod_image.py#L99">docker_tests/test_prod_image.py~L99</a></p>
+<pre><code>         packages_installed = set(d[&quot;package_name&quot;] for d in providers)
          assert len(packages_installed) != 0
  
 -        assert (
@@ -1241,19 +1241,19 @@ assert graph.artifacts == [
      def test_pip_dependencies_conflict(self, default_docker_image):
          try:
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/performance/src/performance_dags/performance_dag/performance_dag_utils.py#L597'>performance/src/performance_dags/performance_dag/performance_dag_utils.py~L597</a></p>
-<pre><code class="language-diff">     if env_name in MANDATORY_performance_DAG_VARIABLES:
+<p><a href="https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/performance/src/performance_dags/performance_dag/performance_dag_utils.py#L597">performance/src/performance_dags/performance_dag/performance_dag_utils.py~L597</a></p>
+<pre><code>     if env_name in MANDATORY_performance_DAG_VARIABLES:
          if env_name not in performance_dag_conf:
              raise ValueError(
--                f&quot;Mandatory environment variable '{env_name}' &quot;
+-                f&quot;Mandatory environment variable &#x27;{env_name}&#x27; &quot;
 -                f&quot;is missing from performance dag configuration.&quot;
-+                f&quot;Mandatory environment variable '{env_name}' is missing from performance dag configuration.&quot;
++                f&quot;Mandatory environment variable &#x27;{env_name}&#x27; is missing from performance dag configuration.&quot;
              )
          return performance_dag_conf[env_name]
  
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/providers/src/airflow/providers/amazon/aws/hooks/batch_client.py#L417'>providers/src/airflow/providers/amazon/aws/hooks/batch_client.py~L417</a></p>
-<pre><code class="language-diff">                 )
+<p><a href="https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/providers/src/airflow/providers/amazon/aws/hooks/batch_client.py#L417">providers/src/airflow/providers/amazon/aws/hooks/batch_client.py~L417</a></p>
+<pre><code>                 )
          else:
              raise AirflowException(
 -                f&quot;AWS Batch job ({job_id}) description error: exceeded status_retries &quot;
@@ -1263,19 +1263,19 @@ assert graph.artifacts == [
  
      @staticmethod
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/providers/src/airflow/providers/amazon/aws/operators/sagemaker.py#L172'>providers/src/airflow/providers/amazon/aws/operators/sagemaker.py~L172</a></p>
-<pre><code class="language-diff">         &quot;&quot;&quot;Raise exception if resource type is not 'model' or 'job'.&quot;&quot;&quot;
+<p><a href="https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/providers/src/airflow/providers/amazon/aws/operators/sagemaker.py#L172">providers/src/airflow/providers/amazon/aws/operators/sagemaker.py~L172</a></p>
+<pre><code>         &quot;&quot;&quot;Raise exception if resource type is not &#x27;model&#x27; or &#x27;job&#x27;.&quot;&quot;&quot;
          if resource_type not in (&quot;model&quot;, &quot;job&quot;):
              raise AirflowException(
--                &quot;Argument resource_type accepts only 'model' and 'job'. &quot;
--                f&quot;Provided value: '{resource_type}'.&quot;
-+                f&quot;Argument resource_type accepts only 'model' and 'job'. Provided value: '{resource_type}'.&quot;
+-                &quot;Argument resource_type accepts only &#x27;model&#x27; and &#x27;job&#x27;. &quot;
+-                f&quot;Provided value: &#x27;{resource_type}&#x27;.&quot;
++                f&quot;Argument resource_type accepts only &#x27;model&#x27; and &#x27;job&#x27;. Provided value: &#x27;{resource_type}&#x27;.&quot;
              )
  
      def _check_if_job_exists(self, job_name: str, describe_func: Callable[[str], Any]) -&gt; bool:
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/providers/src/airflow/providers/amazon/aws/operators/sagemaker.py#L553'>providers/src/airflow/providers/amazon/aws/operators/sagemaker.py~L553</a></p>
-<pre><code class="language-diff">                 self.operation = &quot;update&quot;
+<p><a href="https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/providers/src/airflow/providers/amazon/aws/operators/sagemaker.py#L553">providers/src/airflow/providers/amazon/aws/operators/sagemaker.py~L553</a></p>
+<pre><code>                 self.operation = &quot;update&quot;
                  sagemaker_operation = self.hook.update_endpoint
                  self.log.warning(
 -                    &quot;cannot create already existing endpoint %s, &quot;
@@ -1285,8 +1285,8 @@ assert graph.artifacts == [
                  )
                  if &quot;Tags&quot; in endpoint_info:
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/providers/src/airflow/providers/celery/executors/default_celery.py#L123'>providers/src/airflow/providers/celery/executors/default_celery.py~L123</a></p>
-<pre><code class="language-diff">         DEFAULT_CELERY_CONFIG[&quot;broker_use_ssl&quot;] = broker_use_ssl
+<p><a href="https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/providers/src/airflow/providers/celery/executors/default_celery.py#L123">providers/src/airflow/providers/celery/executors/default_celery.py~L123</a></p>
+<pre><code>         DEFAULT_CELERY_CONFIG[&quot;broker_use_ssl&quot;] = broker_use_ssl
  except AirflowConfigException:
      raise AirflowException(
 -        &quot;AirflowConfigException: SSL_ACTIVE is True, &quot;
@@ -1297,8 +1297,8 @@ assert graph.artifacts == [
  except Exception as e:
      raise AirflowException(
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/providers/src/airflow/providers/common/sql/operators/sql.py#L995'>providers/src/airflow/providers/common/sql/operators/sql.py~L995</a></p>
-<pre><code class="language-diff">                     test_results[metric] = self.ignore_zero
+<p><a href="https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/providers/src/airflow/providers/common/sql/operators/sql.py#L995">providers/src/airflow/providers/common/sql/operators/sql.py~L995</a></p>
+<pre><code>                     test_results[metric] = self.ignore_zero
  
              self.log.info(
 -                (
@@ -1312,19 +1312,19 @@ assert graph.artifacts == [
                  cur,
                  metric,
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/providers/src/airflow/providers/docker/decorators/docker.py#L141'>providers/src/airflow/providers/docker/decorators/docker.py~L141</a></p>
-<pre><code class="language-diff">         serializer = serializer or &quot;pickle&quot;
+<p><a href="https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/providers/src/airflow/providers/docker/decorators/docker.py#L141">providers/src/airflow/providers/docker/decorators/docker.py~L141</a></p>
+<pre><code>         serializer = serializer or &quot;pickle&quot;
          if serializer not in _SERIALIZERS:
              msg = (
 -                f&quot;Unsupported serializer {serializer!r}. &quot;
--                f&quot;Expected one of {', '.join(map(repr, _SERIALIZERS))}&quot;
-+                f&quot;Unsupported serializer {serializer!r}. Expected one of {', '.join(map(repr, _SERIALIZERS))}&quot;
+-                f&quot;Expected one of {&#x27;, &#x27;.join(map(repr, _SERIALIZERS))}&quot;
++                f&quot;Unsupported serializer {serializer!r}. Expected one of {&#x27;, &#x27;.join(map(repr, _SERIALIZERS))}&quot;
              )
              raise AirflowException(msg)
  
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/providers/src/airflow/providers/google/cloud/hooks/bigquery.py#L3722'>providers/src/airflow/providers/google/cloud/hooks/bigquery.py~L3722</a></p>
-<pre><code class="language-diff">                 test_results[metric] = float(ratios[metric]) &lt; threshold
+<p><a href="https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/providers/src/airflow/providers/google/cloud/hooks/bigquery.py#L3722">providers/src/airflow/providers/google/cloud/hooks/bigquery.py~L3722</a></p>
+<pre><code>                 test_results[metric] = float(ratios[metric]) &lt; threshold
  
              self.log.info(
 -                (
@@ -1338,8 +1338,8 @@ assert graph.artifacts == [
                  cur,
                  metric,
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/providers/tests/airbyte/triggers/test_airbyte.py#L210'>providers/tests/airbyte/triggers/test_airbyte.py~L210</a></p>
-<pre><code class="language-diff">         actual = await generator.asend(None)
+<p><a href="https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/providers/tests/airbyte/triggers/test_airbyte.py#L210">providers/tests/airbyte/triggers/test_airbyte.py~L210</a></p>
+<pre><code>         actual = await generator.asend(None)
          expected = TriggerEvent({
              &quot;status&quot;: &quot;error&quot;,
 -            &quot;message&quot;: f&quot;Job run {self.JOB_ID} has not reached a terminal status &quot;
@@ -1349,8 +1349,8 @@ assert graph.artifacts == [
          })
          assert expected == actual
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/providers/tests/amazon/aws/secrets/test_systems_manager.py#L180'>providers/tests/amazon/aws/secrets/test_systems_manager.py~L180</a></p>
-<pre><code class="language-diff">         mock_ssm_client.assert_called_once_with(service_name=&quot;ssm&quot;, use_ssl=False)
+<p><a href="https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/providers/tests/amazon/aws/secrets/test_systems_manager.py#L180">providers/tests/amazon/aws/secrets/test_systems_manager.py~L180</a></p>
+<pre><code>         mock_ssm_client.assert_called_once_with(service_name=&quot;ssm&quot;, use_ssl=False)
  
      @mock.patch(
 -        &quot;airflow.providers.amazon.aws.secrets.systems_manager.&quot;
@@ -1360,8 +1360,8 @@ assert graph.artifacts == [
      def test_connection_prefix_none_value(self, mock_get_secret):
          &quot;&quot;&quot;
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/providers/tests/amazon/aws/secrets/test_systems_manager.py#L197'>providers/tests/amazon/aws/secrets/test_systems_manager.py~L197</a></p>
-<pre><code class="language-diff">         mock_get_secret.assert_not_called()
+<p><a href="https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/providers/tests/amazon/aws/secrets/test_systems_manager.py#L197">providers/tests/amazon/aws/secrets/test_systems_manager.py~L197</a></p>
+<pre><code>         mock_get_secret.assert_not_called()
  
      @mock.patch(
 -        &quot;airflow.providers.amazon.aws.secrets.systems_manager.&quot;
@@ -1371,8 +1371,8 @@ assert graph.artifacts == [
      def test_variable_prefix_none_value(self, mock_get_secret):
          &quot;&quot;&quot;
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/providers/tests/amazon/aws/secrets/test_systems_manager.py#L214'>providers/tests/amazon/aws/secrets/test_systems_manager.py~L214</a></p>
-<pre><code class="language-diff">         mock_get_secret.assert_not_called()
+<p><a href="https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/providers/tests/amazon/aws/secrets/test_systems_manager.py#L214">providers/tests/amazon/aws/secrets/test_systems_manager.py~L214</a></p>
+<pre><code>         mock_get_secret.assert_not_called()
  
      @mock.patch(
 -        &quot;airflow.providers.amazon.aws.secrets.systems_manager.&quot;
@@ -1382,40 +1382,40 @@ assert graph.artifacts == [
      def test_config_prefix_none_value(self, mock_get_secret):
          &quot;&quot;&quot;
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/providers/tests/apache/hive/transfers/test_s3_to_hive.py#L170'>providers/tests/apache/hive/transfers/test_s3_to_hive.py~L170</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/providers/tests/apache/hive/transfers/test_s3_to_hive.py#L170">providers/tests/apache/hive/transfers/test_s3_to_hive.py~L170</a></p>
+<pre><code> 
      def test__match_headers(self):
          self.kwargs[&quot;field_dict&quot;] = {&quot;Sno&quot;: &quot;BIGINT&quot;, &quot;Some,Text&quot;: &quot;STRING&quot;}
 -        assert S3ToHiveOperator(**self.kwargs)._match_headers([
 -            &quot;Sno&quot;,
 -            &quot;Some,Text&quot;,
--        ]), &quot;Header row doesn't match expected value&quot;
+-        ]), &quot;Header row doesn&#x27;t match expected value&quot;
 +        assert S3ToHiveOperator(**self.kwargs)._match_headers([&quot;Sno&quot;, &quot;Some,Text&quot;]), (
-+            &quot;Header row doesn't match expected value&quot;
++            &quot;Header row doesn&#x27;t match expected value&quot;
 +        )
          # Testing with different column order
 -        assert not S3ToHiveOperator(**self.kwargs)._match_headers([
 -            &quot;Some,Text&quot;,
 -            &quot;Sno&quot;,
--        ]), &quot;Header row doesn't match expected value&quot;
+-        ]), &quot;Header row doesn&#x27;t match expected value&quot;
 +        assert not S3ToHiveOperator(**self.kwargs)._match_headers([&quot;Some,Text&quot;, &quot;Sno&quot;]), (
-+            &quot;Header row doesn't match expected value&quot;
++            &quot;Header row doesn&#x27;t match expected value&quot;
 +        )
          # Testing with extra column in header
 -        assert not S3ToHiveOperator(**self.kwargs)._match_headers([
 -            &quot;Sno&quot;,
 -            &quot;Some,Text&quot;,
 -            &quot;ExtraColumn&quot;,
--        ]), &quot;Header row doesn't match expected value&quot;
+-        ]), &quot;Header row doesn&#x27;t match expected value&quot;
 +        assert not S3ToHiveOperator(**self.kwargs)._match_headers([&quot;Sno&quot;, &quot;Some,Text&quot;, &quot;ExtraColumn&quot;]), (
-+            &quot;Header row doesn't match expected value&quot;
++            &quot;Header row doesn&#x27;t match expected value&quot;
 +        )
  
      def test__delete_top_row_and_compress(self):
          s32hive = S3ToHiveOperator(**self.kwargs)
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/providers/tests/databricks/operators/test_databricks.py#L1983'>providers/tests/databricks/operators/test_databricks.py~L1983</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/providers/tests/databricks/operators/test_databricks.py#L1983">providers/tests/databricks/operators/test_databricks.py~L1983</a></p>
+<pre><code> 
          with pytest.raises(TaskDeferred) as exec_info:
              operator.monitor_databricks_job()
 -        assert isinstance(
@@ -1428,8 +1428,8 @@ assert graph.artifacts == [
  
      @mock.patch(&quot;airflow.providers.databricks.operators.databricks.DatabricksHook&quot;)
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/providers/tests/dbt/cloud/triggers/test_dbt.py#L213'>providers/tests/dbt/cloud/triggers/test_dbt.py~L213</a></p>
-<pre><code class="language-diff">         actual = await generator.asend(None)
+<p><a href="https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/providers/tests/dbt/cloud/triggers/test_dbt.py#L213">providers/tests/dbt/cloud/triggers/test_dbt.py~L213</a></p>
+<pre><code>         actual = await generator.asend(None)
          expected = TriggerEvent({
              &quot;status&quot;: &quot;error&quot;,
 -            &quot;message&quot;: f&quot;Job run {self.RUN_ID} has not reached a terminal status &quot;
@@ -1439,8 +1439,8 @@ assert graph.artifacts == [
          })
          assert expected == actual
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/providers/tests/docker/operators/test_docker.py#L468'>providers/tests/docker/operators/test_docker.py~L468</a></p>
-<pre><code class="language-diff">         operator = DockerOperator(
+<p><a href="https://github.com/apache/airflow/blob/4d54cda4114125bb671b0bfccddc73b646855a2d/providers/tests/docker/operators/test_docker.py#L468">providers/tests/docker/operators/test_docker.py~L468</a></p>
+<pre><code>         operator = DockerOperator(
              private_environment={&quot;PRIVATE&quot;: &quot;MESSAGE&quot;}, image=TEST_IMAGE, task_id=&quot;unittest&quot;
          )
 -        assert operator._private_environment == {
@@ -1453,18 +1453,18 @@ assert graph.artifacts == [
      @mock.patch(&quot;airflow.providers.docker.operators.docker.StringIO&quot;)
      def test_environment_overrides_env_file(self, stringio_mock):
 </code></pre>
-<p>&lt;a href='https://github.com/apache/airflow/blob/4d54cda4...<em>[Comment body truncated]</em></p>
+<p>&lt;a href=&#x27;https://github.com/apache/airflow/blob/4d54cda4...<em>[Comment body truncated]</em></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-16 09:05</div>
-            <div class="timeline-body"><p>I like what I'm seeing in the diff. I don't like seeing another instability, ugh</p>
+            <div class="timeline-body"><p>I like what I&#x27;m seeing in the diff. I don&#x27;t like seeing another instability, ugh</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-16 13:37</div>
             <div class="timeline-body"><p>This one seems unfortunate</p>
-<pre><code class="language-diff">         # Written on 06.06.2022 and can be removed after a couple of months if everything goes well
+<pre><code>         # Written on 06.06.2022 and can be removed after a couple of months if everything goes well
          assert (
              ZERO &lt;= used_amount &lt;= self._acquisitions_heap[0].acquisition_event.remaining_amount
 -        ), f&quot;Used amount must be in the interval [0, {self._acquisitions_heap[0].acquisition_event.remaining_amount}] but it was {used_amount} for {asset}&quot;  # noqa: E501
@@ -1511,25 +1511,25 @@ assert graph.artifacts == [
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2024-10-23 12:01</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-23 12:01</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dhruvmanila by @MichaReiser on 2024-10-23 12:01</div>
+            <div class="event">Review requested from <a href="https://github.com/dhruvmanila">@dhruvmanila</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-23 12:01</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2024-10-23 12:01</div>
+            <div class="event">Review requested from <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-23 12:01</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @MichaReiser on 2024-10-23 12:11</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-23 12:11</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-23 14:01</div>
             <div class="timeline-body"><blockquote>
-<p>@AlexWaygood I don't expect you to review the code changes but I highly value your input on the assertion formatting changes.</p>
+<p>@AlexWaygood I don&#x27;t expect you to review the code changes but I highly value your input on the assertion formatting changes.</p>
 </blockquote>
 <p>Overall I find these changes <em>especially</em> are a significant improvement to readability.</p>
-<p>I tried running this branch on some repos I have clones for locally, and a <em>lot</em> of the changes were related to this, but I found all of them to be improvements. I think there will undoubtedly be some specific patterns where formatting is likely to regress (such as <code>3. assertions that end in parentheses</code> in your PR description), but I'm quite strongly in favour of this change overall. I also think the formatting for that specific case would be quite easy for a user to fix manually by splitting the string over multiple lines (but I <em>don't</em> think that's something that Ruff should try to do for the user):</p>
-<pre><code class="language-py">assert graph.artifacts == [
+<p>I tried running this branch on some repos I have clones for locally, and a <em>lot</em> of the changes were related to this, but I found all of them to be improvements. I think there will undoubtedly be some specific patterns where formatting is likely to regress (such as <code>3. assertions that end in parentheses</code> in your PR description), but I&#x27;m quite strongly in favour of this change overall. I also think the formatting for that specific case would be quite easy for a user to fix manually by splitting the string over multiple lines (but I <em>don&#x27;t</em> think that&#x27;s something that Ruff should try to do for the user):</p>
+<pre><code>assert graph.artifacts == [
     GraphArtifact(
         id=expected_top_level_artifact.id,
         created=expected_top_level_artifact.created,
@@ -1560,7 +1560,7 @@ assert graph.artifacts == [
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-24 02:07</div>
             <div class="timeline-body"><p>I think the <code>assert</code> formatting is probably an improvement, though I hear your concerns. This one stuck out to me a bit:</p>
-<pre><code class="language-diff">
+<pre><code>
 -            assert isinstance(
 -                document, dict
 -            ), &quot;document should be of type `dict[str,Any]`. But found: `{}`&quot;.format(
@@ -1571,18 +1571,18 @@ assert graph.artifacts == [
 +                )
              )
 </code></pre>
-<p>But it's actually <em>not</em> an increase in total lines, and the condition and message are actually more-clearly separated than before.</p>
+<p>But it&#x27;s actually <em>not</em> an increase in total lines, and the condition and message are actually more-clearly separated than before.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/src/statement/stmt_assign.rs</code>:367 on 2024-10-24 08:22</div>
-            <div class="timeline-body"><p>Can you help me understand why shouldn't we concatenate these two strings?</p>
+            <div class="timeline-body"><p>Can you help me understand why shouldn&#x27;t we concatenate these two strings?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2024-10-24 08:53</div>
             <div class="timeline-body"><p>This is really thorough! Thanks for taking the time to add comments throughout the code and especially in tests. It was really easy for me to look at the formatted output directly in test because the comment described the original source code and what to expect.</p>
-<p>Regarding the assert formatting, I too think that it's improves readability as it's easier to split the condition and the message mentally.</p>
+<p>Regarding the assert formatting, I too think that it&#x27;s improves readability as it&#x27;s easier to split the condition and the message mentally.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1591,7 +1591,7 @@ assert graph.artifacts == [
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/statement/stmt_assign.rs</code>:367 on 2024-10-24 09:10</div>
-            <div class="timeline-body"><p>The important bit here is the magic trailing comma at the end of the list-expression. It always makes the list expand over multiple line. That means, it's guaranteed that the f-string can never fit on a single line. That's why we don't want to apply the implicit concatenated layout.</p>
+            <div class="timeline-body"><p>The important bit here is the magic trailing comma at the end of the list-expression. It always makes the list expand over multiple line. That means, it&#x27;s guaranteed that the f-string can never fit on a single line. That&#x27;s why we don&#x27;t want to apply the implicit concatenated layout.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1614,14 +1614,14 @@ assert graph.artifacts == [
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-24 09:52</div>
-            <div class="timeline-body"><p>Okay. Let's merge this as is and revisit the assert formatting decision depending on the preview style feedback</p>
+            <div class="timeline-body"><p>Okay. Let&#x27;s merge this as is and revisit the assert formatting decision depending on the preview style feedback</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @MichaReiser on 2024-10-24 09:52</div>
+            <div class="event">Merged by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-24 09:52</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2024-10-24 09:52</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-24 09:52</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-10-24 09:52</div>
@@ -1629,7 +1629,7 @@ assert graph.artifacts == [
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:06:54 UTC
+        Synced at 2026-01-20 19:07:19 UTC
     </footer>
 </body>
 </html>

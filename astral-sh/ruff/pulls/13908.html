@@ -23,8 +23,8 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>We don't support PEP-604 annotations yet, but we <em>should</em>, so this should be <code>Type::Todo</code>, not <code>Type::Unknown</code>.</p>
+            <div class="timeline-body">Summary
+<p>We don&#x27;t support PEP-604 annotations yet, but we <em>should</em>, so this should be <code>Type::Todo</code>, not <code>Type::Unknown</code>.</p>
 <p>Making this change on its own results in several new spurious errors in the <code>tomllib</code> benchmark:</p>
 <pre><code>    &quot;/src/tomllib/_parser.py:108:17: Conflicting declared types for `second_char`: Unknown, @Todo&quot;,
     &quot;/src/tomllib/_parser.py:267:9: Conflicting declared types for `char`: Unknown, @Todo&quot;,
@@ -33,9 +33,9 @@
     &quot;/src/tomllib/_parser.py:395:9: Conflicting declared types for `char`: Unknown, @Todo&quot;,
     &quot;/src/tomllib/_parser.py:590:9: Conflicting declared types for `char`: Unknown, @Todo&quot;,
 </code></pre>
-<p>But it doesn't seem correct to me to emit these errors (since <code>Todo</code> is only ever inferred in situations where we acknowledge our inference is currently lacking), so I've added some logic to filter out <code>Todo</code> from the <code>conflicting</code> vector in <code>red_knot_python_semantic::types::declarations_ty</code>.</p>
+<p>But it doesn&#x27;t seem correct to me to emit these errors (since <code>Todo</code> is only ever inferred in situations where we acknowledge our inference is currently lacking), so I&#x27;ve added some logic to filter out <code>Todo</code> from the <code>conflicting</code> vector in <code>red_knot_python_semantic::types::declarations_ty</code>.</p>
 <p>This unblocks #13904: without this change, that PR leads to many false-positive or counter-intuitive errors, since the attributes on <code>types.ModuleType</code> use PEP-604 unions in their type annotations.</p>
-<h2>Test Plan</h2>
+Test Plan
 <ul>
 <li><code>cargo test -p red_knot_python_semantic</code></li>
 <li><code>cargo bench -p ruff_benchmark -- red_knot</code></li>
@@ -43,22 +43,22 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-10-24 12:38</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-24 12:38</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @AlexWaygood on 2024-10-24 12:38</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-24 12:38</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-10-24 12:38</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-24 12:38</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-10-24 12:51</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
@@ -78,7 +78,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:224 on 2024-10-25 07:30</div>
-            <div class="timeline-body"><p>Hmm, from just reading this comment, it isn't clear to me why we are only filtering <code>Todo</code> types? Why aren't we filtering out <code>Unknown</code> types? I thought the two are equivalent except that they indicate a different source</p>
+            <div class="timeline-body"><p>Hmm, from just reading this comment, it isn&#x27;t clear to me why we are only filtering <code>Todo</code> types? Why aren&#x27;t we filtering out <code>Unknown</code> types? I thought the two are equivalent except that they indicate a different source</p>
 <p>Would it be possible to remove the <code>retain</code> call and instead avoid adding the types to <code>conflicting</code> on line 214</p>
 </div>
         </div>
@@ -88,7 +88,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:224 on 2024-10-25 17:21</div>
-            <div class="timeline-body"><p>That's a fair point. I think we should never infer a variable that has a declaration as being of type <code>Unknown</code> unless they had an invalid type annotation of some kind, in which case we should have already emitted a diagnostic. So probably we should also filter out <code>Unknown</code> types here, to avoid cascading errors from one mistake.</p>
+            <div class="timeline-body"><p>That&#x27;s a fair point. I think we should never infer a variable that has a declaration as being of type <code>Unknown</code> unless they had an invalid type annotation of some kind, in which case we should have already emitted a diagnostic. So probably we should also filter out <code>Unknown</code> types here, to avoid cascading errors from one mistake.</p>
 <blockquote>
 <p>Would it be possible to remove the <code>retain</code> call and instead avoid adding the types to <code>conflicting</code> on line 214</p>
 </blockquote>
@@ -97,13 +97,13 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:224 on 2024-10-25 17:41</div>
-            <div class="timeline-body"><p>Ah, no. We do need to keep <code>Unknown</code> in <code>conflicting</code>, or we won't complain about this case:</p>
-<pre><code class="language-py">if flag:
+            <div class="timeline-body"><p>Ah, no. We do need to keep <code>Unknown</code> in <code>conflicting</code>, or we won&#x27;t complain about this case:</p>
+<pre><code>if flag:
     x: int
 x = 1  # error: [conflicting-declarations] &quot;Conflicting declared types for `x`: Unknown, int&quot;
 </code></pre>
 <p>Currently every undeclared symbol in our model is marked as being &quot;implicitly declared as <code>Unknown</code>&quot;; this is how we detect that a symbol is only annotated in one branch.</p>
-<p>I also don't think it's <em>so</em> awful if a user gets two errors rather than one when they've got an invalid annotation in their code</p>
+<p>I also don&#x27;t think it&#x27;s <em>so</em> awful if a user gets two errors rather than one when they&#x27;ve got an invalid annotation in their code</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -111,10 +111,10 @@ x = 1  # error: [conflicting-declarations] &quot;Conflicting declared types for 
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @AlexWaygood on 2024-10-25 18:21</div>
+            <div class="event">Merged by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-25 18:21</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2024-10-25 18:21</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-25 18:21</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-10-25 18:21</div>
@@ -131,7 +131,7 @@ x = 1  # error: [conflicting-declarations] &quot;Conflicting declared types for 
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:07:12 UTC
+        Synced at 2026-01-20 19:07:45 UTC
     </footer>
 </body>
 </html>

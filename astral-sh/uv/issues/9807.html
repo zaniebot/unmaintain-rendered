@@ -23,11 +23,11 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/matejaputic">@matejaputic</a></div>
-            <div class="timeline-body"><p>Since there's no discussion section in this repo, I thought I'd post this here. Just wanted to share this solution for keeping an encrypted dotenv file with uv that I've found useful.</p>
-<h2>Context</h2>
-<p>Dotenv files often contain secrets, but despite good intentions, they often end up checked into a repo, which is never good. I initially searched for a solution that would allow me to run <code>uv</code> with a pre-run hook that decrypts secrets and enters them into the environment, but that doesn't exist, so here's my solution in the mean time.</p>
-<p>SOPS is an awesome solution for keeping encrypted files, and is even compatible with teams if users share their public keys. When your dotenv file is encrypted with SOPS, you can check it into a repo and you and your teammates will be the only ones who'll be able to read it. I won't go into too much detail on SOPS here, but I'm assuming for this setup that you have SOPS installed and have a keypair set up already. In my case I'm using <code>age</code> as the key provider. See the <a href="https://github.com/getsops/sops">SOPS repo</a> for docs.</p>
-<h2>Step 1: Add a SOPS configuration</h2>
+            <div class="timeline-body"><p>Since there&#x27;s no discussion section in this repo, I thought I&#x27;d post this here. Just wanted to share this solution for keeping an encrypted dotenv file with uv that I&#x27;ve found useful.</p>
+Context
+<p>Dotenv files often contain secrets, but despite good intentions, they often end up checked into a repo, which is never good. I initially searched for a solution that would allow me to run <code>uv</code> with a pre-run hook that decrypts secrets and enters them into the environment, but that doesn&#x27;t exist, so here&#x27;s my solution in the mean time.</p>
+<p>SOPS is an awesome solution for keeping encrypted files, and is even compatible with teams if users share their public keys. When your dotenv file is encrypted with SOPS, you can check it into a repo and you and your teammates will be the only ones who&#x27;ll be able to read it. I won&#x27;t go into too much detail on SOPS here, but I&#x27;m assuming for this setup that you have SOPS installed and have a keypair set up already. In my case I&#x27;m using <code>age</code> as the key provider. See the <a href="https://github.com/getsops/sops">SOPS repo</a> for docs.</p>
+Step 1: Add a SOPS configuration
 <p>Add a file called <code>.sops.yaml</code> to your project:</p>
 <pre><code>creation_rules:
   - path_regex: \.env$
@@ -35,15 +35,15 @@
     age: &lt;agekey&gt;
 </code></pre>
 <p>This file configures SOPS to keep a file called <code>.env</code> encrypted with the key <code>&lt;agekey&gt;</code>, and that its format is of type <code>dotenv</code>.</p>
-<h2>Step 2: Add a dotenv file</h2>
-<p>Running the <code>sops</code> command on a file decrypts the file (or creates it if it doesn't exist) and opens it in an editor. When you save and exit, SOPS encrypts and writes the file.</p>
-<p>Run <code>sops --input-type ENV .env</code>, then populate it with some variables. I'm using some fake credentials from the SOPS documentation here.</p>
+Step 2: Add a dotenv file
+<p>Running the <code>sops</code> command on a file decrypts the file (or creates it if it doesn&#x27;t exist) and opens it in an editor. When you save and exit, SOPS encrypts and writes the file.</p>
+<p>Run <code>sops --input-type ENV .env</code>, then populate it with some variables. I&#x27;m using some fake credentials from the SOPS documentation here.</p>
 <pre><code>AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
 AWS_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
 </code></pre>
 <p>Then save and exit the editor. <code>cat</code> the file to see the encrypted contents.</p>
-<h2>Step 3: Add a SOPS wrapper</h2>
-<p>Next add a Python script that will act as a SOPS wrapper for <code>uv run</code>. We'll use a nifty little library called <a href="https://github.com/nikaro/sopsy"><code>sopsy</code></a> that is a Python wrapper for SOPS.</p>
+Step 3: Add a SOPS wrapper
+<p>Next add a Python script that will act as a SOPS wrapper for <code>uv run</code>. We&#x27;ll use a nifty little library called <a href="https://github.com/nikaro/sopsy"><code>sopsy</code></a> that is a Python wrapper for SOPS.</p>
 <p>I saved the following file to <code>scripts/sops_wrapper.py</code>:</p>
 <pre><code>import argparse
 import os
@@ -90,10 +90,10 @@ def main():
             env_vars = dict(tmp_vars)
             os.environ.update(env_vars)
         else:
-            print(f'Error: dotenv file &quot;{dotenv_path}&quot; not found.', file=sys.stderr)
+            print(f&#x27;Error: dotenv file &quot;{dotenv_path}&quot; not found.&#x27;, file=sys.stderr)
             sys.exit(1)
     except Exception as e:
-        print(f'Error decrypting dotenv file &quot;{dotenv_path}&quot;: {e}', file=sys.stderr)
+        print(f&#x27;Error decrypting dotenv file &quot;{dotenv_path}&quot;: {e}&#x27;, file=sys.stderr)
         sys.exit(1)
 
     # Extract the command and its arguments
@@ -103,7 +103,7 @@ def main():
     try:
         os.execvp(command[0], command)
     except FileNotFoundError:
-        print(f&quot;Error: Command '{args.command[0]}' not found.&quot;, file=sys.stderr)
+        print(f&quot;Error: Command &#x27;{args.command[0]}&#x27; not found.&quot;, file=sys.stderr)
         sys.exit(127)
     except Exception as e:
         print(f&quot;Error executing command {e}&quot;, file=sys.stderr)
@@ -121,15 +121,15 @@ if __name__ == &quot;__main__&quot;:
 <li>Enters the variables from the file into the environment</li>
 <li>Executes the command in that environment</li>
 </ul>
-<p>Also, you'll want to <code>uv add sopsy</code> to your project.</p>
-<h2>Step 4: Add the wrapper to uv</h2>
+<p>Also, you&#x27;ll want to <code>uv add sopsy</code> to your project.</p>
+Step 4: Add the wrapper to uv
 <p>Finally, add a script called <code>sops</code> to <code>uv</code> to enable the SOPS wrapper.</p>
 <p>Add the following to your <code>pyproject.toml</code>:</p>
 <pre><code>[project.scripts]
 sops = &quot;scripts.sops_wrapper:main&quot;
 </code></pre>
-<h2>Step 5: Verify that it works</h2>
-<p>As an example, let's say you have a FastAPI project that expects the credentials we entered earlier into <code>.env</code> as environment variables.</p>
+Step 5: Verify that it works
+<p>As an example, let&#x27;s say you have a FastAPI project that expects the credentials we entered earlier into <code>.env</code> as environment variables.</p>
 <p>If per usual, you run:</p>
 <p><code>uv run fastapi dev</code>, it will complain:</p>
 <pre><code>AWS_ACCESS_KEY_ID
@@ -144,14 +144,14 @@ AWS_SECRET_KEY
  ...
 </code></pre>
 <p>All without keeping any loose secrets in your project directory. Neato!</p>
-<h2>Step 6: Maintaining the dotenv file</h2>
+Step 6: Maintaining the dotenv file
 <p>Editing the existing dotenv file is easy. Simply run <code>sops .env</code> in your project directory, and it will bring up an editor. When you save and exit, SOPS will encrypt the file, and you can run <code>uv run sops &lt;your command&gt;</code> again to pull in the new variables.</p>
-<p>That's all!</p>
+<p>That&#x27;s all!</p>
 <p>Comments/revisions/critiques welcome.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">show-and-tell</span> added by @zanieb on 2025-01-07 19:10</div>
+            <div class="event">Label <span class="label">show-and-tell</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-07 19:10</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-16 19:11</div>
@@ -159,12 +159,12 @@ AWS_SECRET_KEY
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2025-02-16 19:11</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-16 19:11</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:28:50 UTC
+        Synced at 2026-01-20 19:36:07 UTC
     </footer>
 </body>
 </html>

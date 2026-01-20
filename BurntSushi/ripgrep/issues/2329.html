@@ -23,33 +23,33 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Munksgaard">@Munksgaard</a></div>
-            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
-<pre><code class="language-console">$ rg --version
+            <div class="timeline-body">What version of ripgrep are you using?
+<pre><code>$ rg --version
 ripgrep 13.0.0
 -SIMD -AVX (compiled)
 +SIMD +AVX (runtime)
 </code></pre>
-<h4>How did you install ripgrep?</h4>
+How did you install ripgrep?
 <p>I installed ripgrep through NixOS/nixpkgs</p>
-<h4>What operating system are you using ripgrep on?</h4>
-<pre><code class="language-console">$ uname -a
+What operating system are you using ripgrep on?
+<pre><code>$ uname -a
 Linux church 5.15.63 #1-NixOS SMP Thu Aug 25 09:40:49 UTC 2022 x86_64 GNU/Linux
 </code></pre>
-<h4>Describe your bug.</h4>
+Describe your bug.
 <p>Negated patterns are not implemented correctly</p>
-<h4>What are the steps to reproduce the behavior?</h4>
+What are the steps to reproduce the behavior?
 <p>In <a href="https://github.com/diku-dk/futhark/">our project</a> we have a <a href="https://github.com/diku-dk/futhark/blob/master/.gitignore"><code>.gitignore</code></a> file at the root of the repository. The first few lines serve to ignore all the <em>files</em> in the root. The purpose is to enable using the root as a scratch space for programs, debug-output etc. However, crucially, the <code>.gitignore</code> rules do not prevent git from recognizing when some of the files that actually are checked in are changed.</p>
 <p>It seems as if ripgrep does not follow this behavior. Consider the following example:</p>
-<pre><code class="language-console">$ mkdir rgtest
+<pre><code>$ mkdir rgtest
 $ cd rgtest/
 $ git init
 Initialized empty Git repository in /home/munksgaard/rgtest/.git/
 $ echo &quot;KAWABUNGA&quot; &gt; README.md
 $ git add README.md
-$ echo '# Ignore non-directories in root, so you can use it as scratch space.
+$ echo &#x27;# Ignore non-directories in root, so you can use it as scratch space.
 /*
 !/*/
-' &gt; .gitignore
+&#x27; &gt; .gitignore
 $ rg KAWABUNGA
 $ git status
 On branch master
@@ -76,38 +76,38 @@ $ rg Yowza
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Munksgaard">@Munksgaard</a> on 2022-10-10 13:59</div>
-            <div class="timeline-body"><p>While similar to #1654, I <em>think</em> this issue is different, because we've not ignored the parent directory of the files in the root (how could we), just all of the files (and directories) therein.</p>
+            <div class="timeline-body"><p>While similar to #1654, I <em>think</em> this issue is different, because we&#x27;ve not ignored the parent directory of the files in the root (how could we), just all of the files (and directories) therein.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-10-10 14:22</div>
-            <div class="timeline-body"><p>This is correct and it has nothing to do with the implementation of negated patterns. You should try running ripgrep with <code>--debug</code> (it's why it's recommended in the issue template). You'll see this line:</p>
+            <div class="timeline-body"><p>This is correct and it has nothing to do with the implementation of negated patterns. You should try running ripgrep with <code>--debug</code> (it&#x27;s why it&#x27;s recommended in the issue template). You&#x27;ll see this line:</p>
 <pre><code>DEBUG|ignore::walk|crates/ignore/src/walk.rs:1741: ignoring ./README.md: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/*&quot;, actual: &quot;*&quot;, is_whitelist: false, is_only_dir: false })))
 </code></pre>
 <p><code>README.md</code> matches <code>/*</code> and does not match <code>/*/</code>, so it is ignored and this is correct.</p>
-<p>The issue here is not that negated patterns aren't working as you expect, but that ripgrep respects <em>only</em> your gitignore and not what is actually staged or committed in your git repo. In other words, your gitignore file is <em>out of sync</em> with what is tracked by git. This isn't necessarily a problem with git because once a file is tracked, it is effectively unignored. But ripgrep doesn't (and will never) know it is tracked because all it looks at is the gitignore files.</p>
+<p>The issue here is not that negated patterns aren&#x27;t working as you expect, but that ripgrep respects <em>only</em> your gitignore and not what is actually staged or committed in your git repo. In other words, your gitignore file is <em>out of sync</em> with what is tracked by git. This isn&#x27;t necessarily a problem with git because once a file is tracked, it is effectively unignored. But ripgrep doesn&#x27;t (and will never) know it is tracked because all it looks at is the gitignore files.</p>
 <p>I suggest explicitly whitelisting files you track in your <code>.gitignore</code>.</p>
-<p>Also, as an additional note, your rules here are pretty broad. Namely, <code>!/*/</code> will whitelist hidden directories such as <code>.git</code>, and thus cause ripgrep to search them. You'll want to add <code>/.git</code> below <code>!/*/</code> to ignore it again.</p>
+<p>Also, as an additional note, your rules here are pretty broad. Namely, <code>!/*/</code> will whitelist hidden directories such as <code>.git</code>, and thus cause ripgrep to search them. You&#x27;ll want to add <code>/.git</code> below <code>!/*/</code> to ignore it again.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2022-10-10 14:22</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-10-10 14:22</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2022-10-10 14:23</div>
+            <div class="event">Label <span class="label">wontfix</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-10-10 14:23</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Munksgaard">@Munksgaard</a> on 2022-10-10 14:24</div>
-            <div class="timeline-body"><p>@BurntSushi Thank you for the quick and thorough reply. You're right, we should probably just change our <code>.gitignore</code>....</p>
+            <div class="timeline-body"><p>@BurntSushi Thank you for the quick and thorough reply. You&#x27;re right, we should probably just change our <code>.gitignore</code>....</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Negated patterns bug" to "ripgrep ignores files matching gitignore patterns even if they are staged or committed" by @BurntSushi on 2022-10-10 14:26</div>
+            <div class="event">Renamed from &quot;Negated patterns bug&quot; to &quot;ripgrep ignores files matching gitignore patterns even if they are staged or committed&quot; by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-10-10 14:26</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:43:34 UTC
+        Synced at 2026-01-20 18:48:12 UTC
     </footer>
 </body>
 </html>

@@ -26,46 +26,46 @@
             <div class="timeline-body"><p>This fixes #15317.  Our <code>catch_unwind</code> wrapper installs a panic hook that captures (the rendered contents of) the panic info when a panic occurs.  Since the intent is that the caller will render the panic info in some custom way, the hook silences the default stderr panic output.</p>
 <p>However, the panic hook is a global resource, so if any one thread was in the middle of a <code>catch_unwind</code> call, we would silence the default panic output for <em>all</em> threads.</p>
 <p>The solution is to also keep a thread local that indicates whether the current thread is in the middle of our <code>catch_unwind</code>, and to fall back on the default panic hook if not.</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>Artificially added an mdtest parse error, ran tests via <code>cargo test -p red_knot_python_semantic</code> to run a large number of tests in parallel.  Before this patch, the panic message was swallowed as reported in #15317.  After, the panic message was shown.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @dcreager on 2025-01-07 15:12</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/dcreager">@dcreager</a> on 2025-01-07 15:12</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @dcreager on 2025-01-07 15:12</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/dcreager">@dcreager</a> on 2025-01-07 15:12</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-01-07 15:12</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/dcreager">@dcreager</a> on 2025-01-07 15:12</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @dcreager on 2025-01-07 15:12</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/dcreager">@dcreager</a> on 2025-01-07 15:12</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">testing</span> added by @AlexWaygood on 2025-01-07 15:14</div>
+            <div class="event">Label <span class="label">testing</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-07 15:14</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-01-07 15:14</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-07 15:14</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-07 15:18</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-07 15:19</div>
-            <div class="timeline-body"><p>Thanks for jumping on this so quickly!! I think @MichaReiser or @sharkdp will almost certainly be a better reviewer here, though -- this feels like it's out of my comfort zone 😆</p>
+            <div class="timeline-body"><p>Thanks for jumping on this so quickly!! I think @MichaReiser or @sharkdp will almost certainly be a better reviewer here, though -- this feels like it&#x27;s out of my comfort zone 😆</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-01-07 15:19</div>
+            <div class="event">Review request for <a href="https://github.com/AlexWaygood">@AlexWaygood</a> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-07 15:19</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-07 16:00</div>
@@ -73,7 +73,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/panic.rs</code>:28 on 2025-01-07 16:00</div>
-            <div class="timeline-body"><p>Using a <code>OnceLock</code> assumes that the global panic hook never changes. I guess that's sort of fine because it's true in all use cases we have today, but it might be surprising that <code>catch_unwind</code> only works until some magic point in time (when the panic hook gets replaced)</p>
+            <div class="timeline-body"><p>Using a <code>OnceLock</code> assumes that the global panic hook never changes. I guess that&#x27;s sort of fine because it&#x27;s true in all use cases we have today, but it might be surprising that <code>catch_unwind</code> only works until some magic point in time (when the panic hook gets replaced)</p>
 <p>I also find it somewhat unfortunate that the panic hook will linger along after all threads completed. Could we have an atomic counter that counts how many threads are inside a <code>catch_unwind</code> and restore the panic handler once it reaches <code>0</code>?</p>
 </div>
         </div>
@@ -84,14 +84,14 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_db/src/panic.rs</code>:28 on 2025-01-07 16:37</div>
             <div class="timeline-body"><p>Another option — which I actually implemented first but then discarded because it changed the calling API more drastically — would be to make a wrapper type (<code>PanicHandler</code>) and move <code>catch_unwind</code> to be an instance method of that type.  Its <code>new</code> method would install the custom hook, and its <code>Drop</code> implementation would restore the previous hook.</p>
-<p>That would still not protect you against someone else installing a different panic hook while you're in the middle of using <code>PanicHandler</code>.  But the lifetime of that handler would clearly delineate where you are expecting the custom behavior to happen.</p>
-<p>Unfortunately that also doesn't seem to play nice with our test harness, since the most obvious place to create (and drop) the <code>PanicHandler</code> is in <code>red_knot_test::run</code>.  But that wouldn't install the hook once globally for all test cases — it would install/uninstall the hook on a per-test basis, just like before.  Ideally we'd create a single <code>PanicHandler</code> for the entire <code>cargo test</code> invocation — but I'm not aware of a way to do that, nor of how to then pass that handler into the individual test case functions.</p>
+<p>That would still not protect you against someone else installing a different panic hook while you&#x27;re in the middle of using <code>PanicHandler</code>.  But the lifetime of that handler would clearly delineate where you are expecting the custom behavior to happen.</p>
+<p>Unfortunately that also doesn&#x27;t seem to play nice with our test harness, since the most obvious place to create (and drop) the <code>PanicHandler</code> is in <code>red_knot_test::run</code>.  But that wouldn&#x27;t install the hook once globally for all test cases — it would install/uninstall the hook on a per-test basis, just like before.  Ideally we&#x27;d create a single <code>PanicHandler</code> for the entire <code>cargo test</code> invocation — but I&#x27;m not aware of a way to do that, nor of how to then pass that handler into the individual test case functions.</p>
 <blockquote>
 <p>I also find it somewhat unfortunate that the panic hook will linger along after all threads completed. Could we have an atomic counter that counts how many threads are inside a <code>catch_unwind</code> and restore the panic handler once it reaches <code>0</code>?</p>
 </blockquote>
-<p>I think there would be a race condition here, where we would uninstall the hook whenever there are 0 threads <em>currently</em> in the middle of a <code>catch_unwind</code>, but there might be a test thread that's still running and just hasn't gotten to its <code>catch_unwind</code> call yet.  So we would have to check and reinstall the hook if needed.  (Or blindly always install it?)</p>
-<p>In the end it seemed better to lean into the assumption that the custom hook is installed once for the duration of the process.  And the <code>OnceLock</code> part is to make sure that (a) the custom hook is not installed unless you need it, and (b) the caller doesn't have to worry about explicit or concurrent initialization.</p>
-<p>I could document all of this more clearly — e.g. with a warning that it's not correct to use this <code>catch_unwind</code> with anything that tries to install a competing panic hook.</p>
+<p>I think there would be a race condition here, where we would uninstall the hook whenever there are 0 threads <em>currently</em> in the middle of a <code>catch_unwind</code>, but there might be a test thread that&#x27;s still running and just hasn&#x27;t gotten to its <code>catch_unwind</code> call yet.  So we would have to check and reinstall the hook if needed.  (Or blindly always install it?)</p>
+<p>In the end it seemed better to lean into the assumption that the custom hook is installed once for the duration of the process.  And the <code>OnceLock</code> part is to make sure that (a) the custom hook is not installed unless you need it, and (b) the caller doesn&#x27;t have to worry about explicit or concurrent initialization.</p>
+<p>I could document all of this more clearly — e.g. with a warning that it&#x27;s not correct to use this <code>catch_unwind</code> with anything that tries to install a competing panic hook.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -105,16 +105,16 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_db/src/panic.rs</code>:28 on 2025-01-08 16:12</div>
             <div class="timeline-body"><blockquote>
-<p>I could document all of this more clearly — e.g. with a warning that it's not correct to use this <code>catch_unwind</code> with anything that tries to install a competing panic hook.</p>
+<p>I could document all of this more clearly — e.g. with a warning that it&#x27;s not correct to use this <code>catch_unwind</code> with anything that tries to install a competing panic hook.</p>
 </blockquote>
-<p>I added documentation that we don't work if you try to install a competing panic hook, and also added some detection of if that happens.</p>
+<p>I added documentation that we don&#x27;t work if you try to install a competing panic hook, and also added some detection of if that happens.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @dcreager on 2025-01-08 16:34</div>
+            <div class="event">Merged by <a href="https://github.com/dcreager">@dcreager</a> on 2025-01-08 16:34</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dcreager on 2025-01-08 16:34</div>
+            <div class="event">Closed by <a href="https://github.com/dcreager">@dcreager</a> on 2025-01-08 16:34</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-01-08 16:34</div>
@@ -122,7 +122,7 @@
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:08:56 UTC
+        Synced at 2026-01-20 19:10:04 UTC
     </footer>
 </body>
 </html>

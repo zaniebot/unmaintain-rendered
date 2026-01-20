@@ -24,10 +24,10 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a></div>
             <div class="timeline-body"><p>Jupyter notebook content (1 empty code cell):</p>
-<pre><code class="language-python">
+<pre><code>
 </code></pre>
 <p>Command:</p>
-<pre><code class="language-console">$ cargo run --all-features --bin ruff -- check --select=ALL /path/to/notebook.ipynb
+<pre><code>$ cargo run --all-features --bin ruff -- check --select=ALL /path/to/notebook.ipynb
 </code></pre>
 <p>Output:</p>
 <pre><code>    Finished dev [unoptimized + debuginfo] target(s) in 0.37s
@@ -40,20 +40,20 @@ error: `ruff` crashed. This indicates a bug in `ruff`. If you could open an issu
 
 https://github.com/charliermarsh/ruff/issues/new?title=%5BPanic%5D
 
-quoting the executed command, along with the relevant file contents and `pyproject.toml` settings, we'd be very appreciative!
+quoting the executed command, along with the relevant file contents and `pyproject.toml` settings, we&#x27;d be very appreciative!
 
-thread 'main' panicked at 'index out of bounds: the len is 1 but the index is 1', crates/ruff/src/message/text.rs:73:32
+thread &#x27;main&#x27; panicked at &#x27;index out of bounds: the len is 1 but the index is 1&#x27;, crates/ruff/src/message/text.rs:73:32
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 /Users/dhruv/playground/python/ruff_test.ipynb:%                                                                                                                                                
 </code></pre>
-<hr />
+<hr>
 <ul>
 <li>Ruff version: https://github.com/charliermarsh/ruff/commit/fc63c6f2e260760963c5fdea2d9d4e0cf38ec58a</li>
 </ul>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2023-05-21 06:32</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-05-21 06:32</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sladyn98">@sladyn98</a> on 2023-05-22 09:05</div>
@@ -75,31 +75,31 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 </code></pre>
 <p>after would be an empty slice when the notebook contains only a single empty cell, thus <code>after.universal_newlines().skip(1) </code> is trying to skip to an element that does not exist, hence the &quot;index out of bounds&quot; panic.</p>
 </blockquote>
-<p>Where did you find the <code>after.universal_newlines().skip(1)</code> call. Skip should not traverse passed the end. It skips a line if there's one, but does nothing if the iterator has already reached the end of the line.</p>
+<p>Where did you find the <code>after.universal_newlines().skip(1)</code> call. Skip should not traverse passed the end. It skips a line if there&#x27;s one, but does nothing if the iterator has already reached the end of the line.</p>
 <p>My assumption is that the <code>jupyter_index.row_to_cell[start_location.row.get()]</code> is out of bounds because <code>jupyter_index.row_to_cell</code> is empty?</p>
 <p>https://github.com/charliermarsh/ruff/blob/c6e5fed6587c95839a814ee8dfa845b465351229/crates/ruff/src/message/text.rs#L72-L78</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-05-22 15:52</div>
-            <div class="timeline-body"><p><code>jupyter_index.row_to_cell</code> is empty indeed but contains the default <code>[0]</code> which is just a placeholder as the index starts at 1. Now, there's a message to be displayed on the first line but the source is empty (not even a newline). This means there's no entry for the first line in the index which is creating this panic.</p>
+            <div class="timeline-body"><p><code>jupyter_index.row_to_cell</code> is empty indeed but contains the default <code>[0]</code> which is just a placeholder as the index starts at 1. Now, there&#x27;s a message to be displayed on the first line but the source is empty (not even a newline). This means there&#x27;s no entry for the first line in the index which is creating this panic.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-05-22 16:09</div>
             <div class="timeline-body"><blockquote>
-<p><code>jupyter_index.row_to_cell</code> is empty indeed but contains the default <code>[0]</code> which is just a placeholder as the index starts at 1. Now, there's a message to be displayed on the first line but the source is empty (not even a newline). This means there's no entry for the first line in the index which is creating this panic.</p>
+<p><code>jupyter_index.row_to_cell</code> is empty indeed but contains the default <code>[0]</code> which is just a placeholder as the index starts at 1. Now, there&#x27;s a message to be displayed on the first line but the source is empty (not even a newline). This means there&#x27;s no entry for the first line in the index which is creating this panic.</p>
 </blockquote>
 <p>Hmm, the <code>LineIndex</code> should never be empty. It always adds at least one entry for the start position <code>0</code>.</p>
 <p>https://github.com/charliermarsh/ruff/blob/9131a8e7f158329c362363fadcb97629f893a8a4/crates/ruff_python_ast/src/source_code/line_index.rs#L30</p>
-<p>What's the easiest way for me to reproduce this bug?</p>
+<p>What&#x27;s the easiest way for me to reproduce this bug?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-05-23 00:25</div>
-            <div class="timeline-body"><p>Oh by index I meant the Jupyter Index is empty, as in it only contains the placeholder (<code>jupyter_index.row_to_cell = vec![0]</code>). Now, <code>start_location.row.get()</code> returns 1 as it's one-indexed which results in a panic.</p>
-<p>But, here's a notebook which will help in reproducing the bug (https://gist.github.com/dhruvmanila/2291dbeea59bc506186060617ef0ec4f) using the following command:</p>
-<pre><code class="language-console">cargo run --all-features --bin ruff -- check --no-cache --isolated --select=D100 /path/to/notebook.ipynb
+            <div class="timeline-body"><p>Oh by index I meant the Jupyter Index is empty, as in it only contains the placeholder (<code>jupyter_index.row_to_cell = vec![0]</code>). Now, <code>start_location.row.get()</code> returns 1 as it&#x27;s one-indexed which results in a panic.</p>
+<p>But, here&#x27;s a notebook which will help in reproducing the bug (https://gist.github.com/dhruvmanila/2291dbeea59bc506186060617ef0ec4f) using the following command:</p>
+<pre><code>cargo run --all-features --bin ruff -- check --no-cache --isolated --select=D100 /path/to/notebook.ipynb
 </code></pre>
 </div>
         </div>
@@ -109,12 +109,12 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dhruvmanila on 2023-06-12 14:14</div>
+            <div class="event">Closed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-06-12 14:14</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:47:15 UTC
+        Synced at 2026-01-20 18:48:36 UTC
     </footer>
 </body>
 </html>

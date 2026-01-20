@@ -24,7 +24,7 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/kdeldycke">@kdeldycke</a></div>
             <div class="timeline-body"><p>Tl;Dr: On Windows <code>nuitka</code> is <a href="https://github.com/kdeldycke/nuitka-issue-3173/actions/runs/11594405232/job/32280568400#step:5:15">reported as an available CLI</a> in a <code>uv</code> venv:</p>
-<pre><code class="language-shell-session">$ uv run
+<pre><code>$ uv run
 Provide a command or script to invoke with `uv run &lt;command&gt;` or `uv run &lt;script&gt;.py`.
 
 The following commands are available in the environment:
@@ -38,51 +38,51 @@ The following commands are available in the environment:
 See `uv run --help` for more information.
 </code></pre>
 <p>But its <a href="https://github.com/kdeldycke/nuitka-issue-3173/actions/runs/11594405232/job/32280568400#step:7:11">invocation fails</a>:</p>
-<pre><code class="language-shell-session">$ uv --no-progress run --frozen -- nuitka --version
+<pre><code>$ uv --no-progress run --frozen -- nuitka --version
 error: Failed to spawn: `nuitka`
   Caused by: program not found
 </code></pre>
-<h3>Context</h3>
+Context
 <p>This <a href="https://github.com/kdeldycke/nuitka-issue-3173/actions/runs/11594405232/job/32280568400#step:7:1">happened in a GitHub action runner on <code>windows-2022</code></a>. But the exact same sequence and invocation <a href="https://github.com/kdeldycke/nuitka-issue-3173/actions/runs/11594405232/job/32280567537#step:7:1">works perfectly on <code>macos-15</code></a>, <a href="https://github.com/kdeldycke/nuitka-issue-3173/actions/runs/11594405232/job/32280567966#step:7:1"><code>macos-13</code></a> or <a href="https://github.com/kdeldycke/nuitka-issue-3173/actions/runs/11594405232/job/32280567142#step:7:1"><code>ubuntu-24.04</code></a>.</p>
-<h3>Fix</h3>
+Fix
 <p>To fix the issue, I have to <a href="https://github.com/kdeldycke/nuitka-issue-3173/actions/runs/11594405232/job/32280568400#step:6:1">use an indirect call to the Python interpreter on <code>windows-2022</code></a>:</p>
-<pre><code class="language-shell-session">$ uv --no-progress run --frozen -- python -m nuitka --version
+<pre><code>$ uv --no-progress run --frozen -- python -m nuitka --version
 </code></pre>
-<h3>Reproduction</h3>
+Reproduction
 <p>To reproduce the issue, on Windows:</p>
-<pre><code class="language-shell-session">$ python -m pip install uv
+<pre><code>$ python -m pip install uv
 $ uv venv
 $ uv pip install nuitka
 $ uv run -- nuitka --version
 </code></pre>
-<p>This issue has been reported and being discussed in Nuitka project at: https://github.com/Nuitka/Nuitka/issues/3173</p>
+<p>This issue has been reported and being discussed in Nuitka project at: <a href="https://github.com/Nuitka/Nuitka/issues/3173">Nuitka/Nuitka#3173</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kayhayen">@kayhayen</a> on 2024-11-03 11:33</div>
             <div class="timeline-body"><p>Just to provide you with what you are lacking there. Nuitka is providing its own scripts for Windows, these are cmd files, passed as <code>scripts</code> to <code>setup()</code> and not use entry points. The point being, that Nuitka wants a clean Python interpreter, so those scripts effectively only do <code>python -m nuitka</code> for the user.</p>
-<p>It seems, as an incompatibility to normal pip/setuptools, you don't copy them. They need no treatment at all, just plain copy.</p>
+<p>It seems, as an incompatibility to normal pip/setuptools, you don&#x27;t copy them. They need no treatment at all, just plain copy.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-11-03 13:04</div>
-            <div class="timeline-body"><p>The output of 'The following commands are available in the environment' is based on listing the scripts path in the virtual environment, so something is definitely installed there as <code>nuitka</code> expects (listing explicitly and verbose output might be good for the bug report), but it might be a matter of the extension and that uv run doesn't dispatch that executable or script correctly.</p>
+            <div class="timeline-body"><p>The output of &#x27;The following commands are available in the environment&#x27; is based on listing the scripts path in the virtual environment, so something is definitely installed there as <code>nuitka</code> expects (listing explicitly and verbose output might be good for the bug report), but it might be a matter of the extension and that uv run doesn&#x27;t dispatch that executable or script correctly.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-03 13:11</div>
-            <div class="timeline-body"><p>@zanieb -- Didn't we have some change that looks at the <code>.exe</code> here?</p>
+            <div class="timeline-body"><p>@zanieb -- Didn&#x27;t we have some change that looks at the <code>.exe</code> here?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-03 14:27</div>
-            <div class="timeline-body"><p>Are you thinking of https://github.com/astral-sh/uv/pull/6683? I don't think that would help here.</p>
+            <div class="timeline-body"><p>Are you thinking of <a href="https://github.com/astral-sh/uv/pull/6683">astral-sh/uv#6683</a>? I don&#x27;t think that would help here.</p>
 <p>How are we suppose to execute <code>.cmd</code> files?</p>
 <p>For reference, the script looks like this: https://github.com/Nuitka/Nuitka/blob/ff030b7ad508a1773c2d2563b55fee4b5e3eac9a/misc/nuitka.cmd</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-11-03 14:27</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-03 14:27</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-11-03 17:45</div>
@@ -95,18 +95,18 @@ $ uv run -- nuitka --version
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kayhayen">@kayhayen</a> on 2024-11-11 13:22</div>
-            <div class="timeline-body"><p>Yes, I am sure that's the recommendation, however, with Nuitka supporting a wide range of Python versions, some of which predate these things being any good, I really don't want to deal with making the move like that. Do you consider to become compatible by placing the said scripts unchanged to where they belong, even though packagers should (generally) not do it?</p>
-<p>And if that's not the case, is there a way for me to detect installation by uv pip so I can inform the users, that they should use standard pip instead, and alternatively how to invoke it, or maybe install a nuitka console script on Windows, that does only that?</p>
+            <div class="timeline-body"><p>Yes, I am sure that&#x27;s the recommendation, however, with Nuitka supporting a wide range of Python versions, some of which predate these things being any good, I really don&#x27;t want to deal with making the move like that. Do you consider to become compatible by placing the said scripts unchanged to where they belong, even though packagers should (generally) not do it?</p>
+<p>And if that&#x27;s not the case, is there a way for me to detect installation by uv pip so I can inform the users, that they should use standard pip instead, and alternatively how to invoke it, or maybe install a nuitka console script on Windows, that does only that?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2024-11-14 16:21</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-14 16:21</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kdeldycke">@kdeldycke</a> on 2024-11-15 07:01</div>
             <div class="timeline-body"><p>I just updated my <a href="https://github.com/kdeldycke/nuitka-issue-3173/blob/1f256a4647b8f9ef24900a5eded054ffa195484b/.github/workflows/release.yaml">test case with <code>uv == 0.5.2</code></a>.</p>
 <p><code>uv</code> reports the following commands on Windows:</p>
-<pre><code class="language-pwsh-session">&gt; uv run
+<pre><code>&gt; uv run
 Provide a command or script to invoke with `uv run &lt;command&gt;` or `uv run &lt;script&gt;.py`.
 
 The following commands are available in the environment:
@@ -120,12 +120,12 @@ The following commands are available in the environment:
 See `uv run --help` for more information.
 </code></pre>
 <p>So off course <a href="https://github.com/kdeldycke/nuitka-issue-3173/actions/runs/11851665143/job/33028525355#step:7:1">calling <code>nuitka</code> as-is works on all platforms but Windows</a>:</p>
-<pre><code class="language-pwsh-session">&gt; uv --no-progress run --frozen -- nuitka --version
+<pre><code>&gt; uv --no-progress run --frozen -- nuitka --version
 error: Failed to spawn: `nuitka`
   Caused by: program not found
 </code></pre>
 <p>Instead, <a href="https://github.com/kdeldycke/nuitka-issue-3173/actions/runs/11851714981/job/33028647265#step:8:1">calling <code>nuitka.cmd</code> on Windows works</a>:</p>
-<pre><code class="language-pwsh-session">&gt; uv --no-progress run --frozen -- nuitka.cmd --version
+<pre><code>&gt; uv --no-progress run --frozen -- nuitka.cmd --version
 2.4.11
 Commercial: None
 Python: 3.12.7 (tags/v3.12.7:0b05ead, Oct  1 2024, 03:06:41) [MSC v.1941 64 bit (AMD64)]
@@ -155,25 +155,25 @@ Version C compiler: C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\
 nuitka
 </code></pre>
 <p>Infact the same would also work in nu-shell on windows</p>
-<p>It is however different from the behaviour of Rust's std lib Spawn</p>
+<p>It is however different from the behaviour of Rust&#x27;s std lib Spawn</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-15 14:41</div>
             <div class="timeline-body"><p>Oh, I see. Hm. Thanks for that additional context.</p>
-<p>We can track in https://github.com/astral-sh/uv/issues/9151</p>
+<p>We can track in <a href="https://github.com/astral-sh/uv/issues/9151">astral-sh/uv#9151</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kdeldycke">@kdeldycke</a> on 2025-03-10 11:08</div>
             <div class="timeline-body"><p>Just for reference, the issue has been fixed in uv 0.6.5.</p>
-<p>Refs: https://github.com/Nuitka/Nuitka/issues/3173#issuecomment-2710215547</p>
+<p>Refs: <a href="https://github.com/Nuitka/Nuitka/issues/3173">Nuitka/Nuitka#3173</a>#issuecomment-2710215547</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:28:06 UTC
+        Synced at 2026-01-20 19:35:12 UTC
     </footer>
 </body>
 </html>

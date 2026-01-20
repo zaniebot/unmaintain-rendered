@@ -24,33 +24,27 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/gregersn">@gregersn</a></div>
             <div class="timeline-body"><p>Using code location when creating hash for Gitlab fingerprints makes the codequality reports in Gitlab very unstable. Any change of position would trigger both a &quot;fixed&quot; message, and a &quot;new problem detected&quot; message in Gitlab, making it very noisy.</p>
-<!--
-Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
 
-- Does this pull request include a summary of the change? (See below.)
-- Does this pull request include a descriptive title?
-- Does this pull request include references to any relevant issues?
--->
 
-<h2>Summary</h2>
+Summary
 <p><a href="https://github.com/astral-sh/ruff/commit/f5589b9e95b2c7d0fa01e5c486f9d5376f619c5f">Do not use code location for Gitlab fingerprints.</a></p>
 <p>Using code location when creating hash for Gitlab fingerprints
 makes the codequality reports in Gitlab very unstable.
 Any change of position would trigger both a &quot;fixed&quot; message, and
 a &quot;new problem detected&quot; message in Gitlab, making it very noisy.</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>By running <code>RUFF_UPDATE_SCHEMA=1 cargo test</code></p>
 <p>Also, ran <code>cargo run -p ruff_cli -- /path/to/pyfile --no-cache --format gitlab</code> before and after moving adding new lines, and observed that fingerprints in report did not change.</p>
 <p>Close #7159</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "WIP: Do not use code location for Gitlab fingerprints." to "Do not use code location for Gitlab fingerprints." by @gregersn on 2023-09-06 16:42</div>
+            <div class="event">Renamed from &quot;WIP: Do not use code location for Gitlab fingerprints.&quot; to &quot;Do not use code location for Gitlab fingerprints.&quot; by <a href="https://github.com/gregersn">@gregersn</a> on 2023-09-06 16:42</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-09-06 16:47</div>
-            <div class="timeline-body"><h2>PR Check Results</h2>
-<h3>Ecosystem</h3>
+            <div class="timeline-body">PR Check Results
+Ecosystem
 <p>✅ ecosystem check detected no changes.</p>
 </div>
         </div>
@@ -61,13 +55,13 @@ a &quot;new problem detected&quot; message in Gitlab, making it very noisy.</p>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff/src/message/gitlab.rs</code>:91 on 2023-09-06 16:52</div>
             <div class="timeline-body"><p>A comment about the purpose of this may be useful.</p>
-<p>Doesn't this make the fingerprint change based on previous fingerprints? Won't this dependency change a downstream fingerprint if a conflicting upstream diagnostic is fixed?</p>
+<p>Doesn&#x27;t this make the fingerprint change based on previous fingerprints? Won&#x27;t this dependency change a downstream fingerprint if a conflicting upstream diagnostic is fixed?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/message/gitlab.rs</code>:60 on 2023-09-07 06:19</div>
             <div class="timeline-body"><p>We can already initialize the hash set with the right capacity to avoid multiple resizes (and, copying over all elements multiple time).</p>
-<pre><code class="language-suggestion">        let mut fingerprints = HashSet::&lt;String&gt;::with_capacity(self.messages.len());
+<pre><code>        let mut fingerprints = HashSet::&lt;String&gt;::with_capacity(self.messages.len());
 </code></pre>
 </div>
         </div>
@@ -78,15 +72,15 @@ a &quot;new problem detected&quot; message in Gitlab, making it very noisy.</p>
 <li>The set can store the u64 values directly without having to &quot;clone&quot; the heap-allocated strings (less memory requirement and fewer heap allocations)</li>
 <li>Hashing a string requires more CPU cycles than hashing a u64</li>
 </ul>
-<pre><code class="language-suggestion">fn fingerprint(message: &amp;Message, salt: u64) -&gt; u64 {
+<pre><code>fn fingerprint(message: &amp;Message, salt: u64) -&gt; u64 {
 </code></pre>
 <p>The serialization of the u64 to a hex encoded string can be moved to line 97 to only do it for the final fingerprint.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/message/gitlab.rs</code>:123 on 2023-09-07 06:37</div>
-            <div class="timeline-body"><p>This is unrelated to your change but I noticed it now when reviewing this PR. It would probably be better to hash <code>kind.name</code> rather than the rule because the Rule's hash implementation changes every time a new rule is inserted into the <code>Rule</code> enum above which happens frequently. What do you think @zanieb ?</p>
-<pre><code class="language-suggestion">    kind.name.hash(&amp;mut hasher);    
+            <div class="timeline-body"><p>This is unrelated to your change but I noticed it now when reviewing this PR. It would probably be better to hash <code>kind.name</code> rather than the rule because the Rule&#x27;s hash implementation changes every time a new rule is inserted into the <code>Rule</code> enum above which happens frequently. What do you think @zanieb ?</p>
+<pre><code>    kind.name.hash(&amp;mut hasher);    
 </code></pre>
 </div>
         </div>
@@ -100,14 +94,14 @@ a &quot;new problem detected&quot; message in Gitlab, making it very noisy.</p>
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2023-09-07 06:40</div>
             <div class="timeline-body"><p>Thank you so much for your contribution. I hope you had some fun writing your first Rust code.</p>
 <p>I ask you to change <code>fingerprint</code> to return a <code>u64</code> and delay the string serialization until we initialize the <code>&quot;fingerprint&quot;</code> field for improved performance and lower memory usage.</p>
-<p>We're then good to mere and pack this into the next release!</p>
+<p>We&#x27;re then good to mere and pack this into the next release!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">breaking</span> added by @MichaReiser on 2023-09-07 06:41</div>
+            <div class="event">Label <span class="label">breaking</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-07 06:41</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">linter</span> added by @MichaReiser on 2023-09-07 06:41</div>
+            <div class="event">Label <span class="label">linter</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-07 06:41</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/gregersn">@gregersn</a> reviewed on 2023-09-07 07:04</div>
@@ -133,19 +127,19 @@ a &quot;new problem detected&quot; message in Gitlab, making it very noisy.</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/message/gitlab.rs</code>:91 on 2023-09-07 08:24</div>
-            <div class="timeline-body"><p>The main &quot;issue&quot; I see with the heuristic is that GitLab will mark the wrong diagnostic as fixed if there's a hash collision, but I haven't developed a better heuristic.</p>
-<p>Let's say we have two unused variable diagnostics in a file:</p>
-<pre><code class="language-python">x = 1
+            <div class="timeline-body"><p>The main &quot;issue&quot; I see with the heuristic is that GitLab will mark the wrong diagnostic as fixed if there&#x27;s a hash collision, but I haven&#x27;t developed a better heuristic.</p>
+<p>Let&#x27;s say we have two unused variable diagnostics in a file:</p>
+<pre><code>x = 1
 y = 2
 </code></pre>
-<p>There's a hash collision for <code>x</code> and <code>y</code>, so <code>y</code> performs a second hashing round</p>
+<p>There&#x27;s a hash collision for <code>x</code> and <code>y</code>, so <code>y</code> performs a second hashing round</p>
 <p>and we now fix the first violation</p>
-<pre><code class="language-python">x = 1
+<pre><code>x = 1
 y = 2
 print(x)
 </code></pre>
-<p>There's no longer a hash collision for <code>y</code>, meaning that the diagnostic for <code>y</code> now gets the hash (fingerprint) of the violation that used to be for <code>x</code>.</p>
-<p>We could consider including more information when a hash collision occurs but not sure what information that would be that doesn't suffer from the original issue and distinguishes multiple diagnostics sufficiently.</p>
+<p>There&#x27;s no longer a hash collision for <code>y</code>, meaning that the diagnostic for <code>y</code> now gets the hash (fingerprint) of the violation that used to be for <code>x</code>.</p>
+<p>We could consider including more information when a hash collision occurs but not sure what information that would be that doesn&#x27;t suffer from the original issue and distinguishes multiple diagnostics sufficiently.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -153,15 +147,15 @@ print(x)
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @MichaReiser on 2023-09-08 06:25</div>
+            <div class="event">Merged by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-08 06:25</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2023-09-08 06:25</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-08 06:25</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:00:05 UTC
+        Synced at 2026-01-20 18:57:00 UTC
     </footer>
 </body>
 </html>

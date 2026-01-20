@@ -23,19 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ZeeD">@ZeeD</a></div>
-            <div class="timeline-body"><!--
-Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
-
-If you're filing a bug report, please consider including the following information:
-
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
-* The current Ruff settings (any relevant sections from your `pyproject.toml`).
-* The current Ruff version (`ruff --version`).
--->
+            <div class="timeline-body">
 
 <p>minimal example:</p>
-<pre><code class="language-python">from __future__ import annotations
+<pre><code>from __future__ import annotations
 from typing import Any, Self
 class Meta(type):
     def __new__(cls,
@@ -56,7 +47,7 @@ class Meta(type):
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-10-30 13:24</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-30 13:24</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-30 23:42</div>
@@ -68,41 +59,41 @@ class Meta(type):
             <div class="timeline-body"><blockquote>
 <p>Interesting, flake8-pyi reports the same thing here. (\cc @AlexWaygood, you may be interested in this.)</p>
 </blockquote>
-<p>Yup. Personally I think it's somewhat unfortunate that <a href="https://peps.python.org/pep-0673/">PEP 673</a> mandates this behaviour for metaclasses — but it does, and it's pretty unlikely that that's going to change any time soon. So mypy is definitely correct here; this is indeed a false positive from flake8-pyi.</p>
+<p>Yup. Personally I think it&#x27;s somewhat unfortunate that <a href="https://peps.python.org/pep-0673/">PEP 673</a> mandates this behaviour for metaclasses — but it does, and it&#x27;s pretty unlikely that that&#x27;s going to change any time soon. So mypy is definitely correct here; this is indeed a false positive from flake8-pyi.</p>
 <p>The somewhat-hacky workaround we use in typeshed that keeps both flake8-pyi and mypy happy here is to just use a normal TypeVar that happens to be called Self(!): https://github.com/python/typeshed/blob/f7aa7b709a826ed34f52b1de3f7095f90f349a9c/stdlib/abc.pyi#L14-L19</p>
-<p>Possibly flake8-pyi could add some heuristics here to try to detect if a class is a metaclass, and avoid emitting this error if so. I'm not sure if it would be worth it for us, though, since:</p>
+<p>Possibly flake8-pyi could add some heuristics here to try to detect if a class is a metaclass, and avoid emitting this error if so. I&#x27;m not sure if it would be worth it for us, though, since:</p>
 <ol>
 <li>Metaclasses in general are pretty rare anyway, especially in stubs</li>
 <li>I think it might significantly complicate our implementation of the check</li>
-<li>Since we're a linter, not a type checker, it's pretty hard for us to reliably detect whether a class is a metaclass or not :(</li>
+<li>Since we&#x27;re a linter, not a type checker, it&#x27;s pretty hard for us to reliably detect whether a class is a metaclass or not :(</li>
 </ol>
-<p>Ruff isn't necessarily bound by the same constraints, though, so if you can see a way of avoiding this false positive, then I'd say go ahead!</p>
+<p>Ruff isn&#x27;t necessarily bound by the same constraints, though, so if you can see a way of avoiding this false positive, then I&#x27;d say go ahead!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-10-31 01:50</div>
             <div class="timeline-body"><p>Thanks @AlexWaygood for taking the time to look at the issue!</p>
 <blockquote>
-<p>Ruff isn't necessarily bound by the same constraints, though, so if you can see a way of avoiding this false positive, then I'd say go ahead!</p>
+<p>Ruff isn&#x27;t necessarily bound by the same constraints, though, so if you can see a way of avoiding this false positive, then I&#x27;d say go ahead!</p>
 </blockquote>
 <p>I think one solution would be to update the semantic model to include a new <code>META_CLASS</code> flag to be set when we encounter a metaclass and use that while checking for the rule violation. But, @charliermarsh will know more about this.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2023-10-31 10:58</div>
-            <div class="timeline-body"><p>Here's my best attempt at fixing this for flake8-pyi: https://github.com/PyCQA/flake8-pyi/pull/436. The check's already pretty complicated, so it didn't end up significantly complicating the implementation after all :)</p>
-<p>But it would be great if ruff could fix this without the hacky heuristics that I'm using there ;)</p>
+            <div class="timeline-body"><p>Here&#x27;s my best attempt at fixing this for flake8-pyi: <a href="https://github.com/PyCQA/flake8-pyi/pull/436">PyCQA/flake8-pyi#436</a>. The check&#x27;s already pretty complicated, so it didn&#x27;t end up significantly complicating the implementation after all :)</p>
+<p>But it would be great if ruff could fix this without the hacky heuristics that I&#x27;m using there ;)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2023-10-31 15:08</div>
-            <div class="timeline-body"><p>Does Ruff run this check in <code>.py</code> files? <code>flake8-pyi</code> is designed only for pyi files, and I'm not sure this kind of check should be applied to <code>.py</code> files, where the type checker can see the body and therefore can provide more feedback.</p>
+            <div class="timeline-body"><p>Does Ruff run this check in <code>.py</code> files? <code>flake8-pyi</code> is designed only for pyi files, and I&#x27;m not sure this kind of check should be applied to <code>.py</code> files, where the type checker can see the body and therefore can provide more feedback.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2023-10-31 15:51</div>
-            <div class="timeline-body"><p>I actually think this rule could still be useful for <code>.py</code> files. If you have a class like this, a type checker won't necessarily emit an error on any of the <code>-&gt; Foo</code> return annotations, since none of them are, strictly speaking, <em>incorrect</em>. But the annotations could also perhaps be <em>better</em>, and fixing them as soon as the class is written could save the author of the code some refactoring later on:</p>
-<pre><code class="language-py">from collections.abc import Iterator
+            <div class="timeline-body"><p>I actually think this rule could still be useful for <code>.py</code> files. If you have a class like this, a type checker won&#x27;t necessarily emit an error on any of the <code>-&gt; Foo</code> return annotations, since none of them are, strictly speaking, <em>incorrect</em>. But the annotations could also perhaps be <em>better</em>, and fixing them as soon as the class is written could save the author of the code some refactoring later on:</p>
+<pre><code>from collections.abc import Iterator
 
 class Foo(Iterator[int]):
     def __new__(cls) -&gt; Foo:
@@ -121,13 +112,13 @@ class Foo(Iterator[int]):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-31 15:54</div>
-            <div class="timeline-body"><p>(We do run this over <code>.py</code> files. We don't run <em>all</em> <code>flake8-pyi</code> rules over <code>.py</code> files, but we do run a subset, and this one is included.)</p>
+            <div class="timeline-body"><p>(We do run this over <code>.py</code> files. We don&#x27;t run <em>all</em> <code>flake8-pyi</code> rules over <code>.py</code> files, but we do run a subset, and this one is included.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2023-11-09 18:44</div>
             <div class="timeline-body"><blockquote>
-<p>Here's my best attempt at fixing this for flake8-pyi: <a href="https://github.com/PyCQA/flake8-pyi/pull/436">PyCQA/flake8-pyi#436</a>.</p>
+<p>Here&#x27;s my best attempt at fixing this for flake8-pyi: <a href="https://github.com/PyCQA/flake8-pyi/pull/436">PyCQA/flake8-pyi#436</a>.</p>
 </blockquote>
 <p>This is included in the <a href="https://github.com/PyCQA/flake8-pyi/releases/tag/23.11.0">latest flake8-pyi release</a> FYI! Thanks for the ping @charliermarsh :D</p>
 </div>
@@ -138,15 +129,15 @@ class Foo(Iterator[int]):
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-11-12 21:50</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-12 21:50</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-11-13 00:47</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-13 00:47</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:48:49 UTC
+        Synced at 2026-01-20 18:48:44 UTC
     </footer>
 </body>
 </html>

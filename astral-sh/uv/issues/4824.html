@@ -24,29 +24,29 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/kdeldycke">@kdeldycke</a></div>
             <div class="timeline-body"><p>Using the latest <code>uv</code>:</p>
-<pre><code class="language-shell-session">$ uv --version
+<pre><code>$ uv --version
 uv 0.2.21 (ebfe6d8fc 2024-07-03)
 </code></pre>
-<h2>Use-case</h2>
+Use-case
 <p>I have a <a href="https://github.com/kdeldycke/click-extra/blob/3d0e27a29d5808ffc19852374853069b04c73711/.github/workflows/tests.yaml#L157-L185">test workflow</a> for my <a href="https://github.com/kdeldycke/click-extra"><code>click-extra</code></a> project which boils down to:</p>
-<pre><code class="language-shell-session">$ python -m pip install uv
+<pre><code>$ python -m pip install uv
 $ uv venv --system
 $ uv pip install --all-extras --requirement pyproject.toml .
 $ uv run pytest
 </code></pre>
-<p>Everything's good as it is.</p>
+<p>Everything&#x27;s good as it is.</p>
 <p>But now I want to override some of the default dependencies specified in <code>pyproject.toml</code>. My use-case is to test unreleased upstream dependencies, so I can anticipate upcoming breaking changes.</p>
 <p>What <a href="https://github.com/kdeldycke/click-extra/blob/56aa6d7e7a56fa2d2eb03adbf51af00ab0187403/.github/workflows/tests.yaml#L172-L180">I used to do with Poetry</a> was to locally add these new dependencies as-is:</p>
-<pre><code class="language-shell-session">$ poetry add git+https://github.com/pallets/click.git#main
+<pre><code>$ poetry add git+https://github.com/pallets/click.git#main
 </code></pre>
 <p>Migrating to <code>uv</code>, my new workflow looks like this:</p>
-<pre><code class="language-shell-session">$ uv venv --system
+<pre><code>$ uv venv --system
 $ uv pip install --all-extras --requirement pyproject.toml .
 $ uv pip install &quot;git+https://github.com/pallets/click.git#main&quot;
 $ uv run pytest
 </code></pre>
-<p>But this doesn't work as I expected. As soon as I call <code>uv run pytest</code>, the locally installed Click is discarded, and replaced by the canonical requirement from <code>pyproject.toml</code>:</p>
-<pre><code class="language-shell-session">$ cat pyproject.toml
+<p>But this doesn&#x27;t work as I expected. As soon as I call <code>uv run pytest</code>, the locally installed Click is discarded, and replaced by the canonical requirement from <code>pyproject.toml</code>:</p>
+<pre><code>$ cat pyproject.toml
 [project]
 name = &quot;click-extra&quot;
 version = &quot;4.8.4&quot;
@@ -55,7 +55,7 @@ dependencies = [
 (...)
 </code></pre>
 <p>See how I installed the <code>click==8.2.0.dev0</code> version I am looking for:</p>
-<pre><code class="language-shell-session">$ uv pip install --all-extras --requirement pyproject.toml .
+<pre><code>$ uv pip install --all-extras --requirement pyproject.toml .
 Resolved 72 packages in 2.20s
 Audited 72 packages in 0.63ms
 
@@ -73,7 +73,7 @@ Installed 1 package in 2ms
  + click==8.2.0.dev0 (from git+https://github.com/pallets/click.git@14f735cf59618941cf2930e633eb77651b1dc7cb)
 </code></pre>
 <p>And then have <code>uv run pytest</code> re-installing back <code>click==8.1.7</code>:</p>
-<pre><code class="language-shell-session">$ uv run pytest
+<pre><code>$ uv run pytest
 warning: `uv run` is experimental and may change without warning.
 Resolved 77 packages in 890ms
    Built click-extra @ file:///Users/kde/click-extra
@@ -88,14 +88,14 @@ Installed 2 packages in 2ms
 platform darwin -- Python 3.12.4, pytest-8.2.2, pluggy-1.5.0
 (...)
 </code></pre>
-<h2><code>--override</code> workaround</h2>
+<code>--override</code> workaround
 <p>Digging into <code>uv</code> help, I stumble upon the <code>--override</code> option, which seems to be the way to do what I want.</p>
 <p>So I now have:</p>
-<pre><code class="language-shell-session">$ cat ./overrides.txt
+<pre><code>$ cat ./overrides.txt
 click @ git+https://github.com/pallets/click.git#main
 </code></pre>
 <p>And using it ends up with the right dependencies:</p>
-<pre><code class="language-shell-session">$ uv pip install --all-extras --requirement pyproject.toml --override ./overrides.txt .
+<pre><code>$ uv pip install --all-extras --requirement pyproject.toml --override ./overrides.txt .
 
  Updated https://github.com/pallets/click.git (14f735c)
 Resolved 72 packages in 4.15s
@@ -114,7 +114,7 @@ click-extra v4.8.4
 │   └── click v8.2.0.dev0
 </code></pre>
 <p>Which seems to do the trick. But again, <code>uv run</code> is reverting my override:</p>
-<pre><code class="language-shell-session">$ uv run pytest
+<pre><code>$ uv run pytest
 warning: `uv run` is experimental and may change without warning.
 Resolved 77 packages in 1.00s
    Built click-extra @ file:///Users/kde/click-extra
@@ -129,31 +129,31 @@ Installed 2 packages in 2ms
 platform darwin -- Python 3.12.4, pytest-8.2.2, pluggy-1.5.0
 (...)
 </code></pre>
-<h2><code>--override</code> not supported by <code>uv run</code></h2>
+<code>--override</code> not supported by <code>uv run</code>
 <p>So maybe I need to use <code>--override</code> on <code>uv run</code>. But it is not supported:</p>
-<pre><code class="language-shell-session">$ uv run --override ./overrides.txt pytest
-error: unexpected argument '--override' found
+<pre><code>$ uv run --override ./overrides.txt pytest
+error: unexpected argument &#x27;--override&#x27; found
 
-  tip: a similar argument exists: '--preview'
+  tip: a similar argument exists: &#x27;--preview&#x27;
 
 Usage: uv run [OPTIONS] &lt;COMMAND&gt;
 
-For more information, try '--help'.
+For more information, try &#x27;--help&#x27;.
 </code></pre>
-<pre><code class="language-shell-session">$ uv --override ./overrides.txt run pytest
-error: unexpected argument '--override' found
+<pre><code>$ uv --override ./overrides.txt run pytest
+error: unexpected argument &#x27;--override&#x27; found
 
-  tip: a similar argument exists: '--preview'
+  tip: a similar argument exists: &#x27;--preview&#x27;
 
 Usage: uv &lt;--quiet|--verbose...|--no-color|--color &lt;COLOR_CHOICE&gt;|--native-tls|--no-native-tls|--offline|--no-offline|--toolchain-preference &lt;TOOLCHAIN_PREFERENCE&gt;|--toolchain-fetch &lt;TOOLCHAIN_FETCH&gt;|--preview|--no-preview|--isolated|--show-settings&gt; &lt;COMMAND&gt;
 
-For more information, try '--help'.
+For more information, try &#x27;--help&#x27;.
 </code></pre>
 <p>Should we requalify this ticket into a feature request to have <code>--override</code> supported by the <code>run</code> subcommand?</p>
-<h2>New <code>--no-upgrade</code> option for <code>uv run</code>?</h2>
+New <code>--no-upgrade</code> option for <code>uv run</code>?
 <p>Another alternative is maybe to have a <code>--no-upgrade</code> option on <code>uv run</code> to tell it to not make any changes to the currently installed dependencies.</p>
 <p>That might be the opposite of the existing <code>-U/--upgrade</code> parameter:</p>
-<pre><code class="language-shell-session">  -U, --upgrade
+<pre><code>  -U, --upgrade
           Allow package upgrades, ignoring pinned versions in any existing output file
 </code></pre>
 </div>
@@ -164,10 +164,10 @@ For more information, try '--help'.
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2024-07-05 08:20</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/konstin">@konstin</a> on 2024-07-05 08:20</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">preview</span> added by @konstin on 2024-07-05 08:20</div>
+            <div class="event">Label <span class="label">preview</span> added by <a href="https://github.com/konstin">@konstin</a> on 2024-07-05 08:20</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kdeldycke">@kdeldycke</a> on 2024-07-05 10:22</div>
@@ -178,7 +178,7 @@ For more information, try '--help'.
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">great writeup</span> added by @zanieb on 2024-07-05 15:44</div>
+            <div class="event">Label <span class="label">great writeup</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-05 15:44</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-05 20:30</div>
@@ -187,7 +187,7 @@ For more information, try '--help'.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-07-06 21:16</div>
-            <div class="timeline-body"><p>I'd say <code>--override</code> is a multiple use argument that takes a PEP 508 requirement each time, since the file case is covered by <code>tool.uv.override-dependencies</code>; at least i'm not aware of any cases of shared override files.</p>
+            <div class="timeline-body"><p>I&#x27;d say <code>--override</code> is a multiple use argument that takes a PEP 508 requirement each time, since the file case is covered by <code>tool.uv.override-dependencies</code>; at least i&#x27;m not aware of any cases of shared override files.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -195,33 +195,33 @@ For more information, try '--help'.
             <div class="timeline-body"><blockquote>
 <p>What would the target of <code>--override</code> be? A dependency? A file?</p>
 </blockquote>
-<p>Nothing of substance to say but I'll be happy either way! :)</p>
+<p>Nothing of substance to say but I&#x27;ll be happy either way! :)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @zanieb by @charliermarsh on 2024-07-17 02:33</div>
+            <div class="event">Assigned to <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-17 02:33</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-07-23 16:51</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-23 16:51</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-07-23 16:51</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-23 16:51</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @zanieb on 2024-07-23 16:52</div>
+            <div class="event">Reopened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-23 16:52</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-23 16:53</div>
-            <div class="timeline-body"><p>I don't think we need this for the release. <code>--with</code> functions roughly as an override in <code>uv run</code>. We should support this eventually though.</p>
+            <div class="timeline-body"><p>I don&#x27;t think we need this for the release. <code>--with</code> functions roughly as an override in <code>uv run</code>. We should support this eventually though.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kdeldycke">@kdeldycke</a> on 2024-07-24 08:25</div>
             <div class="timeline-body"><p>I can confirm that <code>--with</code> does the trick with latest <code>uv</code>:</p>
-<pre><code class="language-shell-session">$ uv --version
+<pre><code>$ uv --version
 uv 0.2.28 (3a8535370 2024-07-23)
 </code></pre>
-<pre><code class="language-shell-session">$ uv run --with &quot;git+https://github.com/pallets/click.git@main&quot; pytest
+<pre><code>$ uv run --with &quot;git+https://github.com/pallets/click.git@main&quot; pytest
 warning: `uv run` is experimental and may change without warning
 Resolved 76 packages in 7ms
 Audited 19 packages in 0.08ms
@@ -235,13 +235,13 @@ Installed 1 package in 1ms
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">preview</span> removed by @zanieb on 2024-08-20 18:22</div>
+            <div class="event">Label <span class="label">preview</span> removed by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-20 18:22</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Unassigned @zanieb by @zanieb on 2024-10-04 21:27</div>
+            <div class="event">Unassigned <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-04 21:27</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2024-10-04 21:28</div>
+            <div class="event">Label <span class="label">help wanted</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-04 21:28</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/systemsoverload">@systemsoverload</a> on 2025-04-10 19:02</div>
@@ -251,7 +251,7 @@ Installed 1 package in 1ms
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:25:30 UTC
+        Synced at 2026-01-20 19:31:52 UTC
     </footer>
 </body>
 </html>

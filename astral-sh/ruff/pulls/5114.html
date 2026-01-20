@@ -23,24 +23,24 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Maintain consistency while deserializing Jupyter notebook to JSON. The following
 changes were made:</p>
 <ol>
-<li>Use string array to store the source value as that's the default (https://github.com/jupyter/nbformat/blob/57817204230a8f7173b8bec380e571b5d410de0d/nbformat/v4/nbjson.py#L56-L57)</li>
+<li>Use string array to store the source value as that&#x27;s the default (https://github.com/jupyter/nbformat/blob/57817204230a8f7173b8bec380e571b5d410de0d/nbformat/v4/nbjson.py#L56-L57)</li>
 <li>Remove unused structs and enums</li>
-<li>Reorder the keys in alphabetical order as that's the default. (https://github.com/jupyter/nbformat/blob/57817204230a8f7173b8bec380e571b5d410de0d/nbformat/v4/nbjson.py#L51)</li>
+<li>Reorder the keys in alphabetical order as that&#x27;s the default. (https://github.com/jupyter/nbformat/blob/57817204230a8f7173b8bec380e571b5d410de0d/nbformat/v4/nbjson.py#L51)</li>
 </ol>
-<h3>Side effect</h3>
+Side effect
 <p>Removing the <code>preserve_order</code> feature means that the order of keys in JSON output (<code>--format json</code>) will be in alphabetical order. This is because the value is represented using <code>serde_json::Value</code> which internally is a <code>BTreeMap</code>, thus sorting it as per the string key. For posterity if this turns out to be not ideal, then we could define a struct representing the JSON object and the order of struct fields will determine the order in the JSON string.</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>Add a test case to assert the raw JSON string.</p>
-<hr />
+<hr>
 <p><em><strong>Edit: Both have been fixed, keeping here for posterity</strong></em></p>
-<h3>Still a few inconsistencies...</h3>
-<h4>1</h4>
+Still a few inconsistencies...
+1
 <p><code>execution_count</code> is a required field <em>only</em> in code cell while for others
-it's not required. We use a single <code>Cell</code> struct and a <code>cell_type</code> field
+it&#x27;s not required. We use a single <code>Cell</code> struct and a <code>cell_type</code> field
 instead of having structs for each cell type (<code>CodeCell</code>, <code>MarkdownCell</code>).
 This means that the field <code>execution_count</code> will always be added to the JSON
 string.</p>
@@ -49,7 +49,7 @@ string.</p>
 <li>We could either use a custom deserializer and check for the <code>cell_type</code>.</li>
 <li>Split the <code>Code</code> struct into 3 distinct types using enum:</li>
 </ul>
-<pre><code class="language-rust">enum CellType {
+<pre><code>enum CellType {
     RawCell(RawCell),
     MarkdownCell(MarkdownCell),
     CodeCell(CodeCell)
@@ -67,23 +67,23 @@ struct CodeCell {
     ...
 }
 </code></pre>
-<h4>2</h4>
+2
 <p>For some fields, the <code>additionalProperties</code> is <code>true</code> which means there could be
-unknown properties added which we've to keep while deserializing. We do this
+unknown properties added which we&#x27;ve to keep while deserializing. We do this
 using:</p>
-<pre><code class="language-rust">pub struct RawNotebookMetadata {
+<pre><code>pub struct RawNotebookMetadata {
     // ... other fields
 
     #[serde(flatten)]
     pub other: BTreeMap&lt;String, Value&gt;
 }
 </code></pre>
-<p>But, now the order won't be alphabetical. Wherever the <code>other</code> field is present,
+<p>But, now the order won&#x27;t be alphabetical. Wherever the <code>other</code> field is present,
 all of the keys in it will be flattened at that position.</p>
 <p>In the following example, the <code>nbconvert_exporter</code> and <code>version</code> keys are extra.
 Now, as the <code>other</code> field in our struct is at the end, both the extra keys have
 been moved to the end.</p>
-<pre><code class="language-diff">    &quot;language_info&quot;: {
+<pre><code>    &quot;language_info&quot;: {
      &quot;codemirror_mode&quot;: {
       &quot;name&quot;: &quot;ipython&quot;,
       &quot;version&quot;: 3
@@ -104,7 +104,7 @@ been moved to the end.</p>
             <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
 <ul>
 <li>main<ul>
-<li><strong>PR #5114</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/5114" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a>  👈</li>
+<li><strong>PR #5114</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/5114"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite"></a>  👈</li>
 </ul>
 </li>
 </ul>
@@ -114,26 +114,26 @@ been moved to the end.</p>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-06-15 07:36</div>
             <div class="timeline-body"><p>Actually, we should resolve (1) as otherwise the validation fails:</p>
-<pre><code>NotebookValidationError: Additional properties are not allowed ('execution_count' was unexpected)
+<pre><code>NotebookValidationError: Additional properties are not allowed (&#x27;execution_count&#x27; was unexpected)
 
-Failed validating 'additionalProperties' in markdown_cell:
+Failed validating &#x27;additionalProperties&#x27; in markdown_cell:
 
-On instance['cells'][0]:
-{'cell_type': 'markdown',
- 'execution_count': None,
- 'id': 'f3c286e9-fa52-4440-816f-4449232f199a',
- 'metadata': {},
- 'source': '# Ruff Test'}
+On instance[&#x27;cells&#x27;][0]:
+{&#x27;cell_type&#x27;: &#x27;markdown&#x27;,
+ &#x27;execution_count&#x27;: None,
+ &#x27;id&#x27;: &#x27;f3c286e9-fa52-4440-816f-4449232f199a&#x27;,
+ &#x27;metadata&#x27;: {},
+ &#x27;source&#x27;: &#x27;# Ruff Test&#x27;}
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-06-15 07:42</div>
-            <div class="timeline-body"><h2>PR Check Results</h2>
-<h3>Ecosystem</h3>
+            <div class="timeline-body">PR Check Results
+Ecosystem
 <p>✅ ecosystem check detected no changes.</p>
-<h3>Benchmark</h3>
-<h4>Linux</h4>
+Benchmark
+Linux
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 formatter/large/dataset.py                 1.00      7.5±0.02ms     5.4 MB/sec    1.01      7.6±0.02ms     5.4 MB/sec
@@ -149,7 +149,7 @@ linter/default-rules/numpy/ctypeslib.py    1.00   1719.8±7.63µs     9.7 MB/sec
 linter/default-rules/numpy/globals.py      1.00    189.8±0.37µs    15.5 MB/sec    1.01    191.3±0.95µs    15.4 MB/sec
 linter/default-rules/pydantic/types.py     1.00      3.6±0.01ms     7.1 MB/sec    1.00      3.6±0.01ms     7.0 MB/sec
 </code></pre>
-<h4>Windows</h4>
+Windows
 <pre><code>group                                      main                                    pr
 -----                                      ----                                    --
 formatter/large/dataset.py                 1.00      7.8±0.31ms     5.2 MB/sec     1.08      8.4±0.40ms     4.8 MB/sec
@@ -165,23 +165,23 @@ linter/default-rules/numpy/ctypeslib.py    1.00  1767.2±81.47µs     9.4 MB/sec
 linter/default-rules/numpy/globals.py      1.00   198.9±11.73µs    14.8 MB/sec     1.00   198.2±12.87µs    14.9 MB/sec
 linter/default-rules/pydantic/types.py     1.00      3.7±0.15ms     6.8 MB/sec     1.01      3.7±0.19ms     6.8 MB/sec
 </code></pre>
-<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff/src/jupyter/schema.rs</code>:60 on 2023-06-15 07:42</div>
             <div class="timeline-body"><p>If we remove this, then we would get the following validation error:</p>
-<pre><code>NotebookValidationError: 'execution_count' is a required property
+<pre><code>NotebookValidationError: &#x27;execution_count&#x27; is a required property
 
-Failed validating 'required' in code_cell:
+Failed validating &#x27;required&#x27; in code_cell:
 
-On instance['cells'][3]:
-{'cell_type': 'code',
- 'id': '6bced3f8-e0a4-450c-ae7c-f60ad5671ee9',
- 'metadata': {},
- 'outputs': ['...0 outputs...'],
- 'source': 'with contextlib.suppress(ValueError):\n    print()\n'}
+On instance[&#x27;cells&#x27;][3]:
+{&#x27;cell_type&#x27;: &#x27;code&#x27;,
+ &#x27;id&#x27;: &#x27;6bced3f8-e0a4-450c-ae7c-f60ad5671ee9&#x27;,
+ &#x27;metadata&#x27;: {},
+ &#x27;outputs&#x27;: [&#x27;...0 outputs...&#x27;],
+ &#x27;source&#x27;: &#x27;with contextlib.suppress(ValueError):\n    print()\n&#x27;}
 </code></pre>
 </div>
         </div>
@@ -192,7 +192,7 @@ On instance['cells'][3]:
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-06-15 07:58</div>
             <div class="timeline-body"><p>Re 1: My intution goes towards using an enum and <code>#[serde(flatten)]</code>, but both should do. Maybe you can put only the cell type and <code>execution_count</code> on each variant and tell serde to decide by cell type from a container attribute.</p>
-<p>Re 2: That's a tricky problem! Maybe https://stackoverflow.com/a/67792465/3549270 would work?</p>
+<p>Re 2: That&#x27;s a tricky problem! Maybe https://stackoverflow.com/a/67792465/3549270 would work?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -200,13 +200,13 @@ On instance['cells'][3]:
             <div class="timeline-body"><p>I tried the following:</p>
 <ul>
 <li>Download the jupyter notebook from https://github.com/sokrypton/ColabFold/blob/affc6e0e89ee723795ab009f51f2600d843dafb0/AlphaFold2.ipynb as AlphaFold2.ipynb</li>
-<li>Open it with <code>jupyter notebook</code>, save as AlphaFold2-jupyter.ipynb. This reformats the entire file because apparently jupyter has different formatting settings than google colab where the notebook was created on (so that's a case we also don't have to handle)</li>
+<li>Open it with <code>jupyter notebook</code>, save as AlphaFold2-jupyter.ipynb. This reformats the entire file because apparently jupyter has different formatting settings than google colab where the notebook was created on (so that&#x27;s a case we also don&#x27;t have to handle)</li>
 <li><code>cp AlphaFold2-jupyter.ipynb AlphaFold2-jupyter-fixed.ipynb</code></li>
 <li><code>cargo run --bin ruff --features jupyter_notebook -- check --select F841 --no-cache --fix AlphaFold2-jupyter-fixed.ipynb</code></li>
 <li><code>diff AlphaFold2-jupyter.ipynb AlphaFold2-jupyter-fixed.ipynb</code>, which are https://gist.github.com/konstin/98e41d667a42c978bdfcb4dcea2373d6 and https://gist.github.com/konstin/a3c4950eae3634ee9417d671beb9212b
 4a5</li>
 </ul>
-<pre><code class="language-diff">&gt;    &quot;execution_count&quot;: null,
+<pre><code>&gt;    &quot;execution_count&quot;: null,
 14a16
 &gt;    &quot;execution_count&quot;: null,
 112c114,115
@@ -246,25 +246,25 @@ On instance['cells'][3]:
 &gt;    &quot;name&quot;: &quot;AlphaFold2.ipynb&quot;,
 &gt;    &quot;provenance&quot;: []
 </code></pre>
-<p>This means the edition works correctly (nice!), we add an extra <code>&quot;&quot;</code> at the end of list where jupyter doesn't, the <code>execution_count</code> field you mentioned and <code>metadata</code> fields get reordered.</p>
+<p>This means the edition works correctly (nice!), we add an extra <code>&quot;&quot;</code> at the end of list where jupyter doesn&#x27;t, the <code>execution_count</code> field you mentioned and <code>metadata</code> fields get reordered.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-06-15 11:34</div>
             <div class="timeline-body"><blockquote>
-<p>Re 2: That's a tricky problem! Maybe <a href="https://stackoverflow.com/a/67792465/3549270">stackoverflow.com/a/67792465/3549270</a> would work?</p>
+<p>Re 2: That&#x27;s a tricky problem! Maybe <a href="https://stackoverflow.com/a/67792465/3549270">stackoverflow.com/a/67792465/3549270</a> would work?</p>
 </blockquote>
-<p>I tried this, it didn't work. It just keeps the same order as defined in the struct which is the default behavior.</p>
+<p>I tried this, it didn&#x27;t work. It just keeps the same order as defined in the struct which is the default behavior.</p>
 <blockquote>
-<p>we add an extra &quot;&quot; at the end of list where jupyter doesn't,</p>
+<p>we add an extra &quot;&quot; at the end of list where jupyter doesn&#x27;t,</p>
 </blockquote>
 <p>Nice! Let me take a look at this.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-06-15 12:46</div>
-            <div class="timeline-body"><p>@konstin Do you mean something like this? (I'm not sure how to use <code>#[serde(flatten)]</code> here)</p>
-<pre><code class="language-rust">#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
+            <div class="timeline-body"><p>@konstin Do you mean something like this? (I&#x27;m not sure how to use <code>#[serde(flatten)]</code> here)</p>
+<pre><code>#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
 #[serde(tag = &quot;cell_type&quot;)]
 pub enum Cell {
     #[serde(rename = &quot;code&quot;)]
@@ -307,12 +307,12 @@ pub struct CodeCell {
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @konstin by @charliermarsh on 2023-06-15 18:48</div>
+            <div class="event">Review requested from <a href="https://github.com/konstin">@konstin</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-15 18:48</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-06-15 20:55</div>
-            <div class="timeline-body"><p>Like this (untested, but i've used flatten in other projects)</p>
-<pre><code class="language-rust">use serde::{Serialize, Deserialize};
+            <div class="timeline-body"><p>Like this (untested, but i&#x27;ve used flatten in other projects)</p>
+<pre><code>use serde::{Serialize, Deserialize};
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
 #[serde(tag = &quot;cell_type&quot;)]
@@ -348,7 +348,7 @@ pub struct CellInner {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-06-15 21:02</div>
-            <div class="timeline-body"><p>Could you add a notebook saved from the web interface of <code>jupyter notebook</code> and the same notebook after running it through <code>ruff --fix</code>, and then a test that checks that the string output of <code>ruff --fix</code> matches the saved fixed notebook? This way we can both see how the differences look in the repo and have a way to ensure that we don't accidentally change the json output. I'd compare the raw text and not the parsed json because that is what people will see in their git diffs.</p>
+            <div class="timeline-body"><p>Could you add a notebook saved from the web interface of <code>jupyter notebook</code> and the same notebook after running it through <code>ruff --fix</code>, and then a test that checks that the string output of <code>ruff --fix</code> matches the saved fixed notebook? This way we can both see how the differences look in the repo and have a way to ensure that we don&#x27;t accidentally change the json output. I&#x27;d compare the raw text and not the parsed json because that is what people will see in their git diffs.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -356,7 +356,7 @@ pub struct CellInner {
             <div class="timeline-body"><p>I would argue to go with my implementation because:</p>
 <ul>
 <li><p>Using flatten will give us the same problem as mentioned in (2). The order of the fields will probably not be alphabetical.</p>
-<pre><code class="language-jsonc">{
+<pre><code>{
   &quot;cell_type&quot;: &quot;code&quot;,  // coming from the tag
   // inner
   &quot;id&quot;: &quot;5e3ef98e-224c-450a-80e6-be442ad50907&quot;,
@@ -384,8 +384,8 @@ pub struct CellInner {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-06-17 12:03</div>
-            <div class="timeline-body"><p>Oh, I found the reason why the sorting wasn't working earlier. We've declared <code>serde_json</code> with <code>preserve_order</code> feature which will preserve the insertion order and that's why the sorting was not done alphabetically.</p>
-<p>@konstin It seems like the feature was added during the initial PR to support Jupyter notebook (https://github.com/astral-sh/ruff/pull/3440/files#diff-2e9d962a08321605940b5a657135052fbcef87b5e360662bb527c96d9a615542). Any reason why this was added and can we remove it?</p>
+            <div class="timeline-body"><p>Oh, I found the reason why the sorting wasn&#x27;t working earlier. We&#x27;ve declared <code>serde_json</code> with <code>preserve_order</code> feature which will preserve the insertion order and that&#x27;s why the sorting was not done alphabetically.</p>
+<p>@konstin It seems like the feature was added during the initial PR to support Jupyter notebook (<a href="https://github.com/astral-sh/ruff/pull/3440">astral-sh/ruff#3440</a>/files#diff-2e9d962a08321605940b5a657135052fbcef87b5e360662bb527c96d9a615542). Any reason why this was added and can we remove it?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -393,31 +393,31 @@ pub struct CellInner {
             <div class="timeline-body"><blockquote>
 <p>Using flatten will give us the same problem as mentioned in (2). The order of the fields will probably not be alphabetical.</p>
 </blockquote>
-<p>That's a pity, yours is clearly the better solution then</p>
+<p>That&#x27;s a pity, yours is clearly the better solution then</p>
 <blockquote>
-<p>It seems like the feature was added during the initial PR to support Jupyter notebook (https://github.com/astral-sh/ruff/pull/3440/files#diff-2e9d962a08321605940b5a657135052fbcef87b5e360662bb527c96d9a615542). Any reason why this was added and can we remove it?</p>
+<p>It seems like the feature was added during the initial PR to support Jupyter notebook (<a href="https://github.com/astral-sh/ruff/pull/3440">astral-sh/ruff#3440</a>/files#diff-2e9d962a08321605940b5a657135052fbcef87b5e360662bb527c96d9a615542). Any reason why this was added and can we remove it?</p>
 </blockquote>
 <p>none beyond &quot;feels useful&quot;, feel free to remove it</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-06-19 08:10</div>
-            <div class="timeline-body"><h2>Update</h2>
+            <div class="timeline-body">Update
 <ul>
 <li>Update <code>Cell</code> schema to use tags to have independent structure for each cell type. This is to accommodate fields specific to the cell type.</li>
 <li>Sort the notebook fields in alphabetical order manually to allow any field order in the struct definition.</li>
 <li>Add a test case to assert JSON consistency (raw JSON, not parsed)</li>
 <li>Update output snapshots as the <code>preserve_order</code> feature got removed from <code>serde_json</code> dependency. The fields just got reordered.</li>
 </ul>
-<h3>That trailing newline...</h3>
-<p>Well, the JSON string might contain a trailing newline which is handled by black: https://github.com/psf/black/blob/01b8d3d4095ebdb91d0d39012a517931625c63cb/src/black/<strong>init</strong>.py#L1024. Currently, we don't write the JSON string with a trailing newline. This needs to be handled.</p>
+That trailing newline...
+<p>Well, the JSON string might contain a trailing newline which is handled by black: https://github.com/psf/black/blob/01b8d3d4095ebdb91d0d39012a517931625c63cb/src/black/<strong>init</strong>.py#L1024. Currently, we don&#x27;t write the JSON string with a trailing newline. This needs to be handled.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @konstin removed by @dhruvmanila on 2023-06-19 08:11</div>
+            <div class="event">Review request for <a href="https://github.com/konstin">@konstin</a> removed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-06-19 08:11</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @konstin by @dhruvmanila on 2023-06-19 08:11</div>
+            <div class="event">Review requested from <a href="https://github.com/konstin">@konstin</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-06-19 08:11</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-06-19 08:16</div>
@@ -435,7 +435,7 @@ pub struct CellInner {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/jupyter/schema.rs</code>:80 on 2023-06-19 11:37</div>
-            <div class="timeline-body"><p>Could you add a comment why we need this indirection, i.e. why <code>sort_alphabetically</code> gives a sorted result where default serialization doesn't?</p>
+            <div class="timeline-body"><p>Could you add a comment why we need this indirection, i.e. why <code>sort_alphabetically</code> gives a sorted result where default serialization doesn&#x27;t?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -444,10 +444,10 @@ pub struct CellInner {
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @dhruvmanila on 2023-06-19 18:17</div>
+            <div class="event">Merged by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-06-19 18:17</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dhruvmanila on 2023-06-19 18:17</div>
+            <div class="event">Closed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-06-19 18:17</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2023-06-19 18:17</div>
@@ -455,7 +455,7 @@ pub struct CellInner {
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:58:06 UTC
+        Synced at 2026-01-20 18:54:31 UTC
     </footer>
 </body>
 </html>

@@ -23,25 +23,16 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/smsegal">@smsegal</a></div>
-            <div class="timeline-body"><!--
-Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
-
-If you're filing a bug report, please consider including the following information:
-
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
-* The current Ruff settings (any relevant sections from your `pyproject.toml`).
-* The current Ruff version (`ruff --version`).
--->
+            <div class="timeline-body">
 
 <p>We need to set our <code>target-version</code> to <code>py37</code> in our codebase. When enabling the <code>UP</code> ruleset, <code>ruff</code> will use <code>pyupgrade</code> rules that are invalid for python 3.7.</p>
 <p>An example:</p>
-<pre><code class="language-toml"># pyproject.toml snippet
+<pre><code># pyproject.toml snippet
 [tool.ruff]
 target-version = &quot;py37&quot;
 select = [&quot;UP&quot;]
 </code></pre>
-<pre><code class="language-python3">from typing import Tuple
+<pre><code>from typing import Tuple
 
 # ruff reports &quot;UP006: Use tuple instead of Tuple&quot;
 def foo(x: int, y: int) -&gt; Tuple[int, int]: 
@@ -51,22 +42,22 @@ def foo(x: int, y: int) -&gt; Tuple[int, int]:
 <p>Details:</p>
 <p>Using <code>ruff 0.0.272</code> on MacOS, but reproduces on linux hosts as well.</p>
 <p>Command to reproduce using the above python snippet:</p>
-<pre><code class="language-bash">ruff check --isolated --select &quot;UP&quot; --target-version &quot;py37&quot; foo.py
+<pre><code>ruff check --isolated --select &quot;UP&quot; --target-version &quot;py37&quot; foo.py
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-12 19:08</div>
-            <div class="timeline-body"><p>Hmm, I ran that exact command (<code>ruff check --isolated --select &quot;UP&quot; --target-version &quot;py37&quot; foo.py -n</code>), on that exact snippet, and didn't get any <code>UP006</code> error.</p>
+            <div class="timeline-body"><p>Hmm, I ran that exact command (<code>ruff check --isolated --select &quot;UP&quot; --target-version &quot;py37&quot; foo.py -n</code>), on that exact snippet, and didn&#x27;t get any <code>UP006</code> error.</p>
 <p>Do you perhaps have <code>from __future__ import annotations</code> in that file? Or is it a <code>.pyi</code> file?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-06-12 19:08</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-12 19:08</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/smsegal">@smsegal</a> on 2023-06-12 19:10</div>
-            <div class="timeline-body"><p>Ah, good catch! I didn't notice, but we do indeed have <code>__future__</code> annotations in that file.
+            <div class="timeline-body"><p>Ah, good catch! I didn&#x27;t notice, but we do indeed have <code>__future__</code> annotations in that file.
 Curious, why do the <code>__future__</code> annotations cause this?</p>
 </div>
         </div>
@@ -77,8 +68,8 @@ Curious, why do the <code>__future__</code> annotations cause this?</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-12 19:16</div>
-            <div class="timeline-body"><p><code>__future__</code> annotations effectively cause your type annotations to be treated as strings at runtime. So when Python runs your file, it doesn't try to parse / interpret the <code>tuple[int, int]</code> annotation at all -- it just stores it as a string. Static analysis tools can then grab that expression, parse it, and do whatever analysis they need. Because these static analysis tools don't need to be tied to your Python version, it's possible to use language features within annotations (like <code>tuple[int, int]</code>) that aren't yet supported by your minimum Python <em>runtime</em> version.</p>
-<p>So, this <em>is</em> expected (and it's safe, as long as you're using <code>__future__</code> annotations). I'd suggest turning off the rule entirely if you still don't want that transform, even when <code>__future__</code> annotations are present :)</p>
+            <div class="timeline-body"><p><code>__future__</code> annotations effectively cause your type annotations to be treated as strings at runtime. So when Python runs your file, it doesn&#x27;t try to parse / interpret the <code>tuple[int, int]</code> annotation at all -- it just stores it as a string. Static analysis tools can then grab that expression, parse it, and do whatever analysis they need. Because these static analysis tools don&#x27;t need to be tied to your Python version, it&#x27;s possible to use language features within annotations (like <code>tuple[int, int]</code>) that aren&#x27;t yet supported by your minimum Python <em>runtime</em> version.</p>
+<p>So, this <em>is</em> expected (and it&#x27;s safe, as long as you&#x27;re using <code>__future__</code> annotations). I&#x27;d suggest turning off the rule entirely if you still don&#x27;t want that transform, even when <code>__future__</code> annotations are present :)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -87,19 +78,19 @@ Curious, why do the <code>__future__</code> annotations cause this?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-06-12 19:20</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-12 19:20</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/smsegal">@smsegal</a> on 2023-06-12 19:28</div>
-            <div class="timeline-body"><p>Thanks for the info! That makes total sense. Are you aware of any downsides of importing <code>__future__.annotations</code>? Reading more about it, I see the PEP introducing it was delayed twice &quot;to avoid breaking downstream code&quot; but reading the announcements of the delays doesn't give any concrete details about what kind of breakages I should be worried about.</p>
+            <div class="timeline-body"><p>Thanks for the info! That makes total sense. Are you aware of any downsides of importing <code>__future__.annotations</code>? Reading more about it, I see the PEP introducing it was delayed twice &quot;to avoid breaking downstream code&quot; but reading the announcements of the delays doesn&#x27;t give any concrete details about what kind of breakages I should be worried about.</p>
 <p>(Also, really appreciate the fast turnaround time on issues in this repo. Excited to see what else comes from astral!)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-12 19:49</div>
             <div class="timeline-body"><p>Totally!</p>
-<p>The main downside, AFAIK, is that it can cause problems for libraries that <em>rely</em> on accessing type annotations at runtime, like Pydantic and FastAPI. I think those libraries do support <code>__future__</code> annotations now, but there are still some quirks. For example, this will give you a runtime error if you're on &lt; Python 3.9 (the <code>int | None</code> syntax introduced in Python 3.9):</p>
-<pre><code class="language-py">from __future__ import annotations
+<p>The main downside, AFAIK, is that it can cause problems for libraries that <em>rely</em> on accessing type annotations at runtime, like Pydantic and FastAPI. I think those libraries do support <code>__future__</code> annotations now, but there are still some quirks. For example, this will give you a runtime error if you&#x27;re on &lt; Python 3.9 (the <code>int | None</code> syntax introduced in Python 3.9):</p>
+<pre><code>from __future__ import annotations
 
 from pydantic import BaseModel
 
@@ -108,14 +99,14 @@ class Model(BaseModel):
 
 print(Model(a=1))
 </code></pre>
-<p><code>a: int | None</code> is fine from Python's perspective in general , since you have <code>from __future__ import annotations</code>; but Pydantic has to resolve the type annotation to something useful to make it enforceable at runtime, and when it tries, you get a <code>TypeError</code>.</p>
+<p><code>a: int | None</code> is fine from Python&#x27;s perspective in general , since you have <code>from __future__ import annotations</code>; but Pydantic has to resolve the type annotation to something useful to make it enforceable at runtime, and when it tries, you get a <code>TypeError</code>.</p>
 <p>So, in short, if you use <code>__future__</code> annotations with those libraries, some annotations that Python can <em>parse</em> without issue may explode at runtime.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:47:27 UTC
+        Synced at 2026-01-20 18:48:37 UTC
     </footer>
 </body>
 </html>

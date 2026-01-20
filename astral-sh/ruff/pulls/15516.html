@@ -23,18 +23,18 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Fixes astral-sh/ruff#15380</p>
-<p>Currently, we don't understand that <code>str | int</code> and <code>int | str</code> are equivalent types; nor do we understand that <code>P &amp; T ≡ T &amp; P</code>. This PR fixes that, by ensuring that we never construct a <code>str | int</code> union -- <code>str | int</code> is simplified to <code>int | str</code> during constructions via a sorting algorithm introduced by this PR. (For instance types from the same module, specifically, the algorithm puts the instance types in alphabetical order.) This ensures that the trivial case of <code>int | str ≡ str | int</code> can be handled, well, trivially, with our existing logic in <code>Type::is_equivalent_to()</code>. An added benefit of this approach should be reduced memory usage, since we'll only ever store <code>int | str</code> in the Salsa <code>db</code>, never <code>str | int</code>.</p>
+<p>Currently, we don&#x27;t understand that <code>str | int</code> and <code>int | str</code> are equivalent types; nor do we understand that <code>P &amp; T ≡ T &amp; P</code>. This PR fixes that, by ensuring that we never construct a <code>str | int</code> union -- <code>str | int</code> is simplified to <code>int | str</code> during constructions via a sorting algorithm introduced by this PR. (For instance types from the same module, specifically, the algorithm puts the instance types in alphabetical order.) This ensures that the trivial case of <code>int | str ≡ str | int</code> can be handled, well, trivially, with our existing logic in <code>Type::is_equivalent_to()</code>. An added benefit of this approach should be reduced memory usage, since we&#x27;ll only ever store <code>int | str</code> in the Salsa <code>db</code>, never <code>str | int</code>.</p>
 <p>Fixing astral-sh/ruff#15380 means that we can now promote the <code>subtype_of_is_antisymmetric</code> property test from flaky to stable 🎉</p>
-<h2>Why not just implement <code>Ord</code> on <code>Type</code>?</h2>
+Why not just implement <code>Ord</code> on <code>Type</code>?
 <p>It would be fairly easy to slap <code>#[derive(PartialOrd, Ord)]</code> on <code>Type</code>. However, this would order types according to their Salsa ID. While this would mean that types would always be consistently ordered in any single run of red-knot, the order in which they would appear might vary between different runs of red-knot. Unless we implemented an entirely different order for display purposes, this would make it difficult to write mdtests, and would also be quite confusing for users.</p>
-<p>Moreover, it doesn't really &quot;make sense&quot; for <code>Type</code> to implement <code>Ord</code> in terms of the semantics. There are many different ways in which you could plausibly sort a list of types; the algorithm implemented in this PR is only one (somewhat arbitrary, at times) possible ordering.</p>
-<h2>Costs of this approach</h2>
-<p>This approach does have several costs! Firstly, it makes the construction of unions and intersections more expensive. I think this tradeoff is worth it considering the reduced memory usage, and considering that <code>Type::is_equivalent_to()</code> does not need to be <code>O(n^2)</code> for unions and intersections with this change (at least for now). It's also possible that we could mitigate the performance penalty by maintaining the union/intersection elements in sorted order at all times while the union/intersection is being constructed. I haven't looked too hard at this yet, partly because I wanted to keep the diff clean and easy to understand. I also wasn't sure how high a performance cost this might be -- I'm interested to see what codspeed says here!</p>
-<p>Another cost to this approach is that it might be confusing for users to see unions displayed in a different order to the order the user gave them in annotations. I don't see this as a significant cost, however, as we already perform many simplifications and rearrangements of unions and intersections.</p>
-<p>Lastly, this doesn't solve all problems with <code>Type::is_equivalent_to()</code> that we'll ever encounter. When we implement protocols, for example, we'll need to understand <code>P</code> and <code>Q</code> in the following example as being equivalent types, and we'll need to understand <code>P | None</code> as being equivalent to <code>Q | None</code>, etc.</p>
-<pre><code class="language-python">from typing import Protocol
+<p>Moreover, it doesn&#x27;t really &quot;make sense&quot; for <code>Type</code> to implement <code>Ord</code> in terms of the semantics. There are many different ways in which you could plausibly sort a list of types; the algorithm implemented in this PR is only one (somewhat arbitrary, at times) possible ordering.</p>
+Costs of this approach
+<p>This approach does have several costs! Firstly, it makes the construction of unions and intersections more expensive. I think this tradeoff is worth it considering the reduced memory usage, and considering that <code>Type::is_equivalent_to()</code> does not need to be <code>O(n^2)</code> for unions and intersections with this change (at least for now). It&#x27;s also possible that we could mitigate the performance penalty by maintaining the union/intersection elements in sorted order at all times while the union/intersection is being constructed. I haven&#x27;t looked too hard at this yet, partly because I wanted to keep the diff clean and easy to understand. I also wasn&#x27;t sure how high a performance cost this might be -- I&#x27;m interested to see what codspeed says here!</p>
+<p>Another cost to this approach is that it might be confusing for users to see unions displayed in a different order to the order the user gave them in annotations. I don&#x27;t see this as a significant cost, however, as we already perform many simplifications and rearrangements of unions and intersections.</p>
+<p>Lastly, this doesn&#x27;t solve all problems with <code>Type::is_equivalent_to()</code> that we&#x27;ll ever encounter. When we implement protocols, for example, we&#x27;ll need to understand <code>P</code> and <code>Q</code> in the following example as being equivalent types, and we&#x27;ll need to understand <code>P | None</code> as being equivalent to <code>Q | None</code>, etc.</p>
+<pre><code>from typing import Protocol
 
 class P(Protocol):
     x: int
@@ -43,9 +43,9 @@ class Q(Protocol):
     x: int
 </code></pre>
 <p>But I think even when we get to these more advanced and trickier problems, having union and intersection elements guaranteed to always be in a predictable order should make answering the question of equivalence easier to do with a complexity less than <code>O(n^2)</code>.</p>
-<h2>Implementation details</h2>
+Implementation details
 <p>The algorithm for sorting union/intersection elements is placed in a new submodule, <code>crates/red_knot_python_semantic/src/types/type_ordering.rs</code>. Other than this algorithm, the only significant changes made are to add a few <code>.sort_by()</code> calls to <code>UnionBuilder::build()</code> and <code>InnerIntersectionBuilder::build()</code>.</p>
-<h2>Test Plan</h2>
+Test Plan
 <ul>
 <li>Many existing mdtests updated</li>
 <li>New mdtests added</li>
@@ -55,40 +55,40 @@ class Q(Protocol):
 <li>https://github.com/astral-sh/ruff/issues/15508</li>
 </ul>
 </li>
-<li>Ran <code>QUICKCHECK_TESTS=1000000 cargo test --release -p red_knot_python_semantic -- --ignored types::property_tests::stable</code> to verify that the stable property tests all pass. I also ran <code>QUICKCHECK_TESTS=1000000 cargo test --release -p red_knot_python_semantic -- --ignored types::property_tests::flaky</code> and examined the failures for the two added flaky property tests to check whether they looked related to the sorting algorithm; I couldn't find any that were.</li>
+<li>Ran <code>QUICKCHECK_TESTS=1000000 cargo test --release -p red_knot_python_semantic -- --ignored types::property_tests::stable</code> to verify that the stable property tests all pass. I also ran <code>QUICKCHECK_TESTS=1000000 cargo test --release -p red_knot_python_semantic -- --ignored types::property_tests::flaky</code> and examined the failures for the two added flaky property tests to check whether they looked related to the sorting algorithm; I couldn&#x27;t find any that were.</li>
 </ul>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-01-15 22:21</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-15 22:21</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-15 22:29</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-15 22:41</div>
-            <div class="timeline-body"><p><a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Funion-equivalence">1% regression on codspeed</a>. I'll wait for review comments before trying to optimise this</p>
+            <div class="timeline-body"><p><a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Funion-equivalence">1% regression on codspeed</a>. I&#x27;ll wait for review comments before trying to optimise this</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @AlexWaygood on 2025-01-15 22:42</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-15 22:42</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-01-15 22:42</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-15 22:42</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2025-01-15 22:42</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-15 22:42</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-01-15 22:42</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-15 22:42</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-16 06:43</div>
@@ -96,7 +96,7 @@ class Q(Protocol):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/string.md</code>:108 on 2025-01-16 06:43</div>
-            <div class="timeline-body"><p>I still think there's value in preserving the source order. E.g I would find this confusing as a user. The same in the example above. It's not the end of the world, but it is irritating.</p>
+            <div class="timeline-body"><p>I still think there&#x27;s value in preserving the source order. E.g I would find this confusing as a user. The same in the example above. It&#x27;s not the end of the world, but it is irritating.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -106,7 +106,7 @@ class Q(Protocol):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/type_ordering.rs</code>:296 on 2025-01-16 06:47</div>
-            <div class="timeline-body"><p>Nit: I'd name those method <code>sequence_ordering</code> because they don't actually sort, they only return an ordering.</p>
+            <div class="timeline-body"><p>Nit: I&#x27;d name those method <code>sequence_ordering</code> because they don&#x27;t actually sort, they only return an ordering.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -120,28 +120,28 @@ class Q(Protocol):
 <blockquote>
 <p>this would make it difficult to write mdtests,</p>
 </blockquote>
-<p>I don't think this is true. The order is predictable for as long as no multi-threading is involved.</p>
+<p>I don&#x27;t think this is true. The order is predictable for as long as no multi-threading is involved.</p>
 <blockquote>
-<p>astly, this doesn't solve all problems with Type::is_equivalent_to() that we'll ever encounter.</p>
+<p>astly, this doesn&#x27;t solve all problems with Type::is_equivalent_to() that we&#x27;ll ever encounter.</p>
 </blockquote>
-<p>I'd like to understand this more. What makes <code>Protocols</code> different from what we have today? How would sorting the types help?</p>
-<p>I do remain concerned about reordering types, especially if that ordering is non-obvious and, therefore, appears to be arbitrary for users. I often write my TypeScript types with a specific order in mind, e.g. group semantically relevant types first and I'd find it rather annoying if the extension removes that ordering when hovering over the type.</p>
+<p>I&#x27;d like to understand this more. What makes <code>Protocols</code> different from what we have today? How would sorting the types help?</p>
+<p>I do remain concerned about reordering types, especially if that ordering is non-obvious and, therefore, appears to be arbitrary for users. I often write my TypeScript types with a specific order in mind, e.g. group semantically relevant types first and I&#x27;d find it rather annoying if the extension removes that ordering when hovering over the type.</p>
 <p>I think this is different from making other simplifications because it sort of teaches me how I could have written my type instead, although I have slight reservations there as well.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/string.md</code>:108 on 2025-01-16 10:02</div>
-            <div class="timeline-body"><p>I agree. I wouldn't want something like <code>int | str | None</code> to be reordered to <code>int | None | str</code> in the output of the type checker (just an example with case-ignoring alphabetical order, not sure if that's the actual order we would choose here).</p>
+            <div class="timeline-body"><p>I agree. I wouldn&#x27;t want something like <code>int | str | None</code> to be reordered to <code>int | None | str</code> in the output of the type checker (just an example with case-ignoring alphabetical order, not sure if that&#x27;s the actual order we would choose here).</p>
 <p>The idea in <a href="https://github.com/astral-sh/ruff/issues/15380#issuecomment-2581108350">this comment</a> was that we could potentially keep a second list inside <code>Union</code> and <code>Intersection</code> structs that would keep track of this order — if sensible to do so. As in: we could always opt-out if we need to perform complex operations on unions/intersections, but we would try to preserve it on a best-effort basis.</p>
-<p>I'm imagining something like this: When a user specifies the type <code>int | str | None</code> in an annotation, we would create an internal union type that conceptually looks like this:</p>
-<pre><code class="language-rs">Union {
+<p>I&#x27;m imagining something like this: When a user specifies the type <code>int | str | None</code> in an annotation, we would create an internal union type that conceptually looks like this:</p>
+<pre><code>Union {
   elements: [int, None, str],
   user_order: Some([0, 2, 1])
 }
 </code></pre>
 <p>The idea would be that we could usually ignore this <code>user_order</code> field, but then try to reconstruct the original order in the rare case that we need to display a type to the user.</p>
 <p>It might be fine as a first solution to switch to <code>user_order: None</code> as soon as we perform any sort of operation on the union type. But I think we could even try to do better by creating new <code>user_order</code>s in a limited set of operations. For example, when joining two unions <code>(A | B) | (C | D)</code>, which would both have <code>user_order: Some([0, 1])</code>, we could probably join these by adding <code>max(lhs.user_order) + 1</code> to all elements on the right hand side:</p>
-<pre><code class="language-rs">Union {
+<pre><code>Union {
   elements: [A, B, C, D],
   user_order: Some([0, 1, 2, 3])
 </code></pre>
@@ -166,11 +166,11 @@ class Q(Protocol):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/type_ordering.rs</code>:301 on 2025-01-16 11:06</div>
-            <div class="timeline-body"><p><code>Iterator::is_sorted_by</code> was stabilised in 1.82, and our MSRV is currently 1.80. But I think that would not be the correct method anyway, since <code>Iterator::is_sorted_by()</code> returns a <code>bool</code>, and we want a method here that returns an <code>Ordering</code>. The method we want is <a href="https://doc.rust-lang.org/std/iter/trait.Iterator.html#method.cmp_by"><code>Iterator::cmp_by</code></a>, I think, but it's not yet stabilised. If we had that method, we could just do this:</p>
-<pre><code class="language-diff">--- a/crates/red_knot_python_semantic/src/types/type_ordering.rs
+            <div class="timeline-body"><p><code>Iterator::is_sorted_by</code> was stabilised in 1.82, and our MSRV is currently 1.80. But I think that would not be the correct method anyway, since <code>Iterator::is_sorted_by()</code> returns a <code>bool</code>, and we want a method here that returns an <code>Ordering</code>. The method we want is <a href="https://doc.rust-lang.org/std/iter/trait.Iterator.html#method.cmp_by"><code>Iterator::cmp_by</code></a>, I think, but it&#x27;s not yet stabilised. If we had that method, we could just do this:</p>
+<pre><code>--- a/crates/red_knot_python_semantic/src/types/type_ordering.rs
 +++ b/crates/red_knot_python_semantic/src/types/type_ordering.rs
-@@ -289,8 +289,5 @@ fn order_sequences&lt;'db&gt;(
-     right: impl IntoIterator&lt;Item = &amp;'db Type&lt;'db&gt;&gt;,
+@@ -289,8 +289,5 @@ fn order_sequences&lt;&#x27;db&gt;(
+     right: impl IntoIterator&lt;Item = &amp;&#x27;db Type&lt;&#x27;db&gt;&gt;,
  ) -&gt; Ordering {
      left.into_iter()
 -        .zip(right)
@@ -188,10 +188,10 @@ class Q(Protocol):
 <blockquote>
 <p>this would make it difficult to write mdtests,</p>
 </blockquote>
-<p>I don't think this is true. The order is predictable for as long as no multi-threading is involved.</p>
+<p>I don&#x27;t think this is true. The order is predictable for as long as no multi-threading is involved.</p>
 </blockquote>
-<p>Oh, interesting; I didn't think that through. And we don't use multi-threading in red-knot as invoked by <code>red_knot_test</code>?</p>
-<p>I still think it's useful generally for the display of types to be stable between red-knot runs. Among plausible benefits to this, I can think of:</p>
+<p>Oh, interesting; I didn&#x27;t think that through. And we don&#x27;t use multi-threading in red-knot as invoked by <code>red_knot_test</code>?</p>
+<p>I still think it&#x27;s useful generally for the display of types to be stable between red-knot runs. Among plausible benefits to this, I can think of:</p>
 <ul>
 <li>Less user confusion</li>
 <li>Should help with persistent caching?</li>
@@ -199,13 +199,13 @@ class Q(Protocol):
 </ul>
 <blockquote>
 <blockquote>
-<p>Lastly, this doesn't solve all problems with Type::is_equivalent_to() that we'll ever encounter.</p>
+<p>Lastly, this doesn&#x27;t solve all problems with Type::is_equivalent_to() that we&#x27;ll ever encounter.</p>
 </blockquote>
-<p>I'd like to understand this more. What makes <code>Protocols</code> different from what we have today? How would sorting the types help?</p>
+<p>I&#x27;d like to understand this more. What makes <code>Protocols</code> different from what we have today? How would sorting the types help?</p>
 </blockquote>
-<p>Well, it didn't help that I forgot to actually write up the example in my initial PR description 🙃 I've edited it in now.</p>
+<p>Well, it didn&#x27;t help that I forgot to actually write up the example in my initial PR description 🙃 I&#x27;ve edited it in now.</p>
 <p>The difference with <code>Protocol</code>s is that they use <a href="https://docs.python.org/3/library/typing.html#nominal-vs-structural-subtyping">structural subtyping rather than nominal subtyping</a>. I.e. in the following example, <code>Unrelated</code> is not a subtype of <code>Nominal</code>, because it does not explicitly inherit from <code>Nominal</code>, and the type <code>Nominal</code> represents &quot;all possible instances of the <code>Nominal</code> class at runtime&quot;. <code>Unrelated</code> <em>is</em> a subtype of <code>Structural</code>, however, because one class does not have to explicitly inherit from a structural type in order for there to be a subtyping relationship between the corresponding types. The type <code>Structural</code> represents &quot;all possible objects that have a mutable instance attribute <code>x</code> with a type that is assignable to <code>int</code>&quot;.</p>
-<pre><code class="language-py">from typing import Protocol
+<pre><code>from typing import Protocol
 
 class Nominal:
     x: int
@@ -216,8 +216,8 @@ class Structural(Protocol):
 class Unrelated:
     x: int
 </code></pre>
-<p>Going back to the example I've edited into my PR description: the types <code>P</code> and <code>Q</code> are equivalent, because they both represent &quot;all possible objects that have a mutable instance attribute <code>x</code> with a type that is assignable to <code>int</code>&quot;. But we can't &quot;simplify&quot; one type into the other type, which has been our approach for many of these equivalence issues, because otherwise you'd get things like this, which would be a truly terrible user experience -- especially if <code>Q</code> is defined in user code but <code>P</code> comes from a third-party library:</p>
-<pre><code class="language-py">def _(obj: Q):
+<p>Going back to the example I&#x27;ve edited into my PR description: the types <code>P</code> and <code>Q</code> are equivalent, because they both represent &quot;all possible objects that have a mutable instance attribute <code>x</code> with a type that is assignable to <code>int</code>&quot;. But we can&#x27;t &quot;simplify&quot; one type into the other type, which has been our approach for many of these equivalence issues, because otherwise you&#x27;d get things like this, which would be a truly terrible user experience -- especially if <code>Q</code> is defined in user code but <code>P</code> comes from a third-party library:</p>
+<pre><code>def _(obj: Q):
     reveal_type(obj)  # revealed: P
 </code></pre>
 <p>So when we get to protocols (and <code>TypedDict</code>s, which are similar), it will absolutely be necessary to implement some more complex equivalence logic that is more complex and costly than just &quot;eagerly simplify one type into its equivalent type at type construction time, and then check for equivalence using a simple equality comparison&quot;. Nonetheless, the reason why I say that this PR might help make even equivalence between protocol types easier to implement is because with this approach we <em>only</em> need to do the complicated equivalence check between two protcol types or between two typeddict types -- and with this PR, we know exactly &quot;where&quot; in the list of union elements protocol types and typedict types will lie, relative to all other types that might be included in the union.</p>
@@ -237,15 +237,15 @@ class Unrelated:
 <p>The idea in <a href="https://github.com/astral-sh/ruff/issues/15380#issuecomment-2581108350">this comment</a> was that we could potentially keep a second list inside <code>Union</code> and <code>Intersection</code> structs that would keep track of this order — if sensible to do so. As in: we could always opt-out if we need to perform complex operations on unions/intersections, but we would try to preserve it on a best-effort basis.</p>
 </blockquote>
 <p>One issue I see with this approach -- that also exists in our current approach on <code>main</code> -- is that it means that our incremental type-checking is very sensitive to the exact source order of union elements. E.g. if somebody made this change in their source code</p>
-<pre><code class="language-diff">- x: None | int
+<pre><code>- x: None | int
 + x: int | None
 </code></pre>
 <p>then that might trigger a lot of otherwise-unnecessary recomputation. The type before the change would not compare equal with the type after the change, even though it represents the exact same set of union elements, because the type inferred for <code>x</code> would contain a record of the source-order of elements. It will also result in higher memory usage for us.</p>
-<p>One idea I've had in the past is that types could have an <code>Option&lt;(File, TextRange)&gt;</code> field -- <code>Type::display</code> could just go back to the original source code and get the exact original representation of the type. This would be elegant in some ways because it also solves tricky problems such as this:</p>
-<pre><code class="language-py">type T = int | str | memoryview | Literal[&quot;foo&quot;, &quot;bar&quot;, &quot;baz&quot;, &quot;spam&quot;]
+<p>One idea I&#x27;ve had in the past is that types could have an <code>Option&lt;(File, TextRange)&gt;</code> field -- <code>Type::display</code> could just go back to the original source code and get the exact original representation of the type. This would be elegant in some ways because it also solves tricky problems such as this:</p>
+<pre><code>type T = int | str | memoryview | Literal[&quot;foo&quot;, &quot;bar&quot;, &quot;baz&quot;, &quot;spam&quot;]
 
 def f(x: T):
-    reveal_type(x)  # ideally we'd say &quot;Revealed type is `T`&quot;
+    reveal_type(x)  # ideally we&#x27;d say &quot;Revealed type is `T`&quot;
                     # rather than saying &quot;Revealed type is `int | str | memoryview | Literal[&quot;foo&quot;, &quot;bar&quot;, &quot;baz&quot;, &quot;spam&quot;]`&quot;
 </code></pre>
 <p>But carrying a <code>TextRange</code> attribute around would make our incremental type-checking even <em>more</em> sensitive to trivia such as the exact amount of whitespace prior to the type definition, etc.</p>
@@ -259,8 +259,8 @@ def f(x: T):
 </blockquote>
 <p>I know what you mean, but our existing simplifications already frequently perturb the order of unions and intersections because of our use of <code>swap_remove</code> and swap_remove_index<code>in</code>UnionBuilder<code>and</code>InnerIntersectionBuilder`</p>
 </blockquote>
-<p>I think Micha was trying to say that reorderings are fine <em>if</em> any simplifications are performed. But the default case will be that users write union-type annotations that can <em>not</em> be simplified, and maybe we should try a bit harder to make the UX in this case better. It's great that we can simplify <code>Literal[False] | str | Literal[True]</code> to <code>bool | str</code>, or <code>int | object | str</code> to <code>object</code>. But nobody will write that in reasonable user code (and if they do, they will probably be okay with being presented with the simplified version of their type).</p>
-<p>(don't get me wrong, I am very much excited about this PR :+1:)</p>
+<p>I think Micha was trying to say that reorderings are fine <em>if</em> any simplifications are performed. But the default case will be that users write union-type annotations that can <em>not</em> be simplified, and maybe we should try a bit harder to make the UX in this case better. It&#x27;s great that we can simplify <code>Literal[False] | str | Literal[True]</code> to <code>bool | str</code>, or <code>int | object | str</code> to <code>object</code>. But nobody will write that in reasonable user code (and if they do, they will probably be okay with being presented with the simplified version of their type).</p>
+<p>(don&#x27;t get me wrong, I am very much excited about this PR :+1:)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -268,16 +268,16 @@ def f(x: T):
             <div class="timeline-body"><blockquote>
 <p>But nobody will write that in reasonable user code</p>
 </blockquote>
-<p>I don't know about that. I've seen a lot of <code>object | None</code> and <code>int | bool</code> annotations in my time. And those aren't always a &quot;mistake&quot; -- <code>int | bool</code> is often done quite deliberately, even though folks know it will be simplified by the type checker, because people don't think of <code>bool</code> as being an <code>int</code> subtype even though they know that it is at runtime.</p>
+<p>I don&#x27;t know about that. I&#x27;ve seen a lot of <code>object | None</code> and <code>int | bool</code> annotations in my time. And those aren&#x27;t always a &quot;mistake&quot; -- <code>int | bool</code> is often done quite deliberately, even though folks know it will be simplified by the type checker, because people don&#x27;t think of <code>bool</code> as being an <code>int</code> subtype even though they know that it is at runtime.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-16 11:54</div>
             <div class="timeline-body"><blockquote>
-<p>(don't get me wrong, I am very much excited about this PR 👍)</p>
+<p>(don&#x27;t get me wrong, I am very much excited about this PR 👍)</p>
 </blockquote>
-<p>Thank you! And don't get me wrong -- I'm not wedded to the approach here! There are some really tricky tradeoffs to think through.</p>
-<p>Even if we don't go with this approach, I don't consider this PR to be time wasted, because of the number of bugs I discoverered along the way:</p>
+<p>Thank you! And don&#x27;t get me wrong -- I&#x27;m not wedded to the approach here! There are some really tricky tradeoffs to think through.</p>
+<p>Even if we don&#x27;t go with this approach, I don&#x27;t consider this PR to be time wasted, because of the number of bugs I discoverered along the way:</p>
 <ul>
 <li>https://github.com/astral-sh/ty/issues/215</li>
 <li>https://github.com/astral-sh/ty/issues/216</li>
@@ -297,11 +297,11 @@ def f(x: T):
             <div class="timeline-body"><blockquote>
 <p>then that might trigger a lot of otherwise-unnecessary recomputation. The type before the change would not compare equal with the type after the change, even though it represents the exact same set of union elements, because the type inferred for x would contain a record of the source-order of elements.</p>
 </blockquote>
-<p>I'm not too concerned about this. We need to do well at dealing with this because it's no different from when the user makes an actual meaning full change.</p>
+<p>I&#x27;m not too concerned about this. We need to do well at dealing with this because it&#x27;s no different from when the user makes an actual meaning full change.</p>
 <blockquote>
 <p>But carrying a TextRange attribute around would make our incremental type-checking even more sensitive to trivia such as the exact amount of whitespace prior to the type definition, etc.</p>
 </blockquote>
-<p>I consider this a problem because it means any change will invalidate any public type in that module, unless we hide it behind a salsa interned but that has other costs. It also has the downside that types with a range are displayed differently from types without a range (e.g. it doesn't join <code>Literal</code> values etc).</p>
+<p>I consider this a problem because it means any change will invalidate any public type in that module, unless we hide it behind a salsa interned but that has other costs. It also has the downside that types with a range are displayed differently from types without a range (e.g. it doesn&#x27;t join <code>Literal</code> values etc).</p>
 <p>Have we looked into how other type checkers (TypeScript, flow, Pyright, mypy) handle and represent union types?</p>
 </div>
         </div>
@@ -321,7 +321,7 @@ def f(x: T):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/type_ordering.rs</code>:301 on 2025-01-16 11:58</div>
-            <div class="timeline-body"><p>Ah i see. I think there's still a possible bug in case <code>left</code> and <code>right</code> have a different length. In which case this method returns <code>Equal</code> (because <code>zip</code> truncates) when it shouldn't</p>
+            <div class="timeline-body"><p>Ah i see. I think there&#x27;s still a possible bug in case <code>left</code> and <code>right</code> have a different length. In which case this method returns <code>Equal</code> (because <code>zip</code> truncates) when it shouldn&#x27;t</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -344,21 +344,21 @@ def f(x: T):
 <blockquote>
 <p>then that might trigger a lot of otherwise-unnecessary recomputation. The type before the change would not compare equal with the type after the change, even though it represents the exact same set of union elements, because the type inferred for x would contain a record of the source-order of elements.</p>
 </blockquote>
-<p>I'm not too concerned about this. We need to do well at dealing with this because it's no different from when the user makes an actual meaning full change.</p>
+<p>I&#x27;m not too concerned about this. We need to do well at dealing with this because it&#x27;s no different from when the user makes an actual meaning full change.</p>
 <blockquote>
 <p>But carrying a TextRange attribute around would make our incremental type-checking even more sensitive to trivia such as the exact amount of whitespace prior to the type definition, etc.</p>
 </blockquote>
-<p>I consider this a problem because it means any change will invalidate any public type in that module, unless we hide it behind a salsa interned but that has other costs. It also has the downside that types with a range are displayed differently from types without a range (e.g. it doesn't join <code>Literal</code> values etc).</p>
+<p>I consider this a problem because it means any change will invalidate any public type in that module, unless we hide it behind a salsa interned but that has other costs. It also has the downside that types with a range are displayed differently from types without a range (e.g. it doesn&#x27;t join <code>Literal</code> values etc).</p>
 </blockquote>
 <p>Fair enough. It sounds like maintaining a separate boxed array recording the source order would be the way to go here, then, like @sharkdp suggests.</p>
 <blockquote>
-<p>It also has the downside that types with a range are displayed differently from types without a range (e.g. it doesn't join <code>Literal</code> values etc).</p>
+<p>It also has the downside that types with a range are displayed differently from types without a range (e.g. it doesn&#x27;t join <code>Literal</code> values etc).</p>
 </blockquote>
 <p>Hmm, but I thought that this was what you were arguing we wanted -- I thought you were arguing that we <em>should</em> display the type as the user presented it, without any simplifications, if the type comes directly from a user annotation.</p>
 <blockquote>
 <p>Have we looked into how other type checkers (TypeScript, flow, Pyright, mypy) handle and represent union types?</p>
 </blockquote>
-<p>Mypy does not eagerly simplify unions at all; it only lazily simplifies them. This means that it has to do a lot of recomputation that for us is unnecessary. Pyright does some simplification (it deduplicates elements) but not nearly as much as we do (it doesn't remove a subtype from a union if the supertype is present). Even when it removes duplicate elements, it maintains order among the other elements (which we don't do because we use <code>swap_remove()</code>): https://pyright-play.net/?code=GYJw9gtgBALgngBwJYDsDmUkQWEMogCmAboQIYA2A%2BvAoQFCMAmhwUwAFAB4BcmK%2BAD5QAzjBBRhqIVABGYMBUlQIhCLjjEkhAO7LgFMGRnTlFJGIDaYkAF1lTJAGMY18QBp%2BMe8JgBXBApCSw4ASltQnnooGIIScmpaQm5QoA.</p>
+<p>Mypy does not eagerly simplify unions at all; it only lazily simplifies them. This means that it has to do a lot of recomputation that for us is unnecessary. Pyright does some simplification (it deduplicates elements) but not nearly as much as we do (it doesn&#x27;t remove a subtype from a union if the supertype is present). Even when it removes duplicate elements, it maintains order among the other elements (which we don&#x27;t do because we use <code>swap_remove()</code>): https://pyright-play.net/?code=GYJw9gtgBALgngBwJYDsDmUkQWEMogCmAboQIYA2A%2BvAoQFCMAmhwUwAFAB4BcmK%2BAD5QAzjBBRhqIVABGYMBUlQIhCLjjEkhAO7LgFMGRnTlFJGIDaYkAF1lTJAGMY18QBp%2BMe8JgBXBApCSw4ASltQnnooGIIScmpaQm5QoA.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -368,12 +368,12 @@ def f(x: T):
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/type_ordering.rs</code>:301 on 2025-01-16 12:09</div>
             <div class="timeline-body"><p>I think there is no bug in this PR right now because all current uses of <code>order_sequences</code> do something like</p>
-<pre><code class="language-rs">left
+<pre><code>left
     .len()
     .cmp(&amp;right.len())
     .then_with(|| order_sequences(db, left, right))
 </code></pre>
-<p>However, I agree with you that this length-comparison logic should be part of the logic in this function; this would make the function more robust against possible future bugs. I'll change this 👍</p>
+<p>However, I agree with you that this length-comparison logic should be part of the logic in this function; this would make the function more robust against possible future bugs. I&#x27;ll change this 👍</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -387,7 +387,7 @@ def f(x: T):
 <p><a href="https://github.com/microsoft/TypeScript/blob/4a18b5cf8d41975c86cde25a0b2229f81e3b08d2/src/compiler/checker.ts#L22445-L22458">microsoft/TypeScript@<code>4a18b5c</code>/src/compiler/checker.ts#L22445-L22458</a></p>
 </blockquote>
 <p>How did you obtain that link?? When I click on it, GitHub just shows me this 😆</p>
-<p><img src="https://github.com/user-attachments/assets/dc2af2d7-57d2-4fb7-8ba6-21eb147d660c" alt="image" /></p>
+<p><img src="https://github.com/user-attachments/assets/dc2af2d7-57d2-4fb7-8ba6-21eb147d660c" alt="image"></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -401,7 +401,7 @@ def f(x: T):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/type_ordering.rs</code>:301 on 2025-01-16 12:28</div>
-            <div class="timeline-body"><p>That refactor made the code quite a bit more elegant as well :-) Though it comes at the cost of slightly less short-circuiting for comparing intersections. https://github.com/astral-sh/ruff/pull/15516/commits/c37f8d57606f61bfc3f5d2f05d0a3b4451c13211</p>
+            <div class="timeline-body"><p>That refactor made the code quite a bit more elegant as well :-) Though it comes at the cost of slightly less short-circuiting for comparing intersections. <a href="https://github.com/astral-sh/ruff/pull/15516">astral-sh/ruff#15516</a>/commits/c37f8d57606f61bfc3f5d2f05d0a3b4451c13211</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -414,28 +414,28 @@ def f(x: T):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/string.md</code>:108 on 2025-01-16 15:26</div>
-            <div class="timeline-body"><p>Yeah, I think we probably should continue to make an effort to not reorder user-authored types that we haven't simplified (and that it's ok to reorder in simplifying.)</p>
-<p>As far as <em>how</em> we do this, I spent some time thinking about whether there could be solution overlap with the more general case of showing users a nice short type alias name instead of the complex type it aliases, which I think we will also want to do, as in Alex's example above. The proposal of carrying around a <code>TextRange</code> doesn't work, as discussed, because it is too sensitive to unrelated source-code changes. I'm not really coming up with any good unified solution here, though; I don't think we want every union/intersection type carrying around a string, for example. So it may be best to go with separate solutions here; a <code>user_order</code> field for unions and intersections, and something else (maybe something like a lookup table mapping types to their known aliases in a file?) for the type alias case.</p>
+            <div class="timeline-body"><p>Yeah, I think we probably should continue to make an effort to not reorder user-authored types that we haven&#x27;t simplified (and that it&#x27;s ok to reorder in simplifying.)</p>
+<p>As far as <em>how</em> we do this, I spent some time thinking about whether there could be solution overlap with the more general case of showing users a nice short type alias name instead of the complex type it aliases, which I think we will also want to do, as in Alex&#x27;s example above. The proposal of carrying around a <code>TextRange</code> doesn&#x27;t work, as discussed, because it is too sensitive to unrelated source-code changes. I&#x27;m not really coming up with any good unified solution here, though; I don&#x27;t think we want every union/intersection type carrying around a string, for example. So it may be best to go with separate solutions here; a <code>user_order</code> field for unions and intersections, and something else (maybe something like a lookup table mapping types to their known aliases in a file?) for the type alias case.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-01-16 15:33</div>
             <div class="timeline-body"><p>Thanks for this!</p>
-<p>I do think it's likely that even with more complex equivalence cases, this can make equivalence a lot cheaper to implement, as long as our equivalent-types reliably end up sorted near each other.</p>
-<p>(As a side note, I'm not sure it will ever be necessary, or even an improvement in practice, that we consider two different Protocol types such as <code>P</code> and <code>Q</code> to be equivalent, although technically they are. We will need to consider either one assignable to the other, but for example I don't know that we should simplify the union <code>P | Q</code> to either <code>P</code> or <code>Q</code>.)</p>
+<p>I do think it&#x27;s likely that even with more complex equivalence cases, this can make equivalence a lot cheaper to implement, as long as our equivalent-types reliably end up sorted near each other.</p>
+<p>(As a side note, I&#x27;m not sure it will ever be necessary, or even an improvement in practice, that we consider two different Protocol types such as <code>P</code> and <code>Q</code> to be equivalent, although technically they are. We will need to consider either one assignable to the other, but for example I don&#x27;t know that we should simplify the union <code>P | Q</code> to either <code>P</code> or <code>Q</code>.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-01-16 15:37</div>
-            <div class="timeline-body"><p>I guess in terms of next steps, if we are in agreement on the above discussion of user order preservation, the question would be whether we land this as-is and introduce user-order preservation as a follow-up, or add user-order preservation to this PR. I think probably the latter is better, as otherwise it'll be a lot more churn and re-churn to the mdtest output?</p>
+            <div class="timeline-body"><p>I guess in terms of next steps, if we are in agreement on the above discussion of user order preservation, the question would be whether we land this as-is and introduce user-order preservation as a follow-up, or add user-order preservation to this PR. I think probably the latter is better, as otherwise it&#x27;ll be a lot more churn and re-churn to the mdtest output?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-16 17:42</div>
             <div class="timeline-body"><blockquote>
-<p>(As a side note, I'm not sure it will ever be necessary, or even an improvement in practice, that we consider two different Protocol types such as <code>P</code> and <code>Q</code> to be equivalent, although technically they are. We will need to consider either one assignable to the other, but for example I don't know that we should simplify the union <code>P | Q</code> to either <code>P</code> or <code>Q</code>.)</p>
+<p>(As a side note, I&#x27;m not sure it will ever be necessary, or even an improvement in practice, that we consider two different Protocol types such as <code>P</code> and <code>Q</code> to be equivalent, although technically they are. We will need to consider either one assignable to the other, but for example I don&#x27;t know that we should simplify the union <code>P | Q</code> to either <code>P</code> or <code>Q</code>.)</p>
 </blockquote>
-<p>Right, though that would mean we'd have to abandon this property test if we decided not to recognise the equivalence there -- we'd have two types which would be mutual subtypes but would not be equivalent: https://github.com/astral-sh/ruff/blob/e2da33a45c7a4c76166bc0c11bd9c3f451f47caf/crates/red_knot_python_semantic/src/types/property_tests.rs#L360-L365</p>
+<p>Right, though that would mean we&#x27;d have to abandon this property test if we decided not to recognise the equivalence there -- we&#x27;d have two types which would be mutual subtypes but would not be equivalent: https://github.com/astral-sh/ruff/blob/e2da33a45c7a4c76166bc0c11bd9c3f451f47caf/crates/red_knot_python_semantic/src/types/property_tests.rs#L360-L365</p>
 <p>(This PR promotes that property test to stable)</p>
 </div>
         </div>
@@ -446,7 +446,7 @@ def f(x: T):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-01-16 19:28</div>
-            <div class="timeline-body"><p>@AlexWaygood and I discussed today in 1:1 that deterministically sorting union/intersection elements and also tracking a <code>user_order</code> (which already loses us the property that <code>str | int</code> and <code>int | str</code> result in the same interned Salsa <code>UnionType</code>) is semantically indistinguishable from keeping the user-provided order just as we do today, and lazily producing the deterministic sorting of elements only when we actually need to compare two unions or intersections for equivalence (and possibly Salsa-memoizing that sorting, if that's a win in practice). The choice between the two approaches is a matter of performance, not correctness. I have half a suspicion that lazy sorting may turn out better, given that it means we won't have to do it for all unions. And I think it's probably simpler to implement as well. So I'd be inclined to try that first.</p>
+            <div class="timeline-body"><p>@AlexWaygood and I discussed today in 1:1 that deterministically sorting union/intersection elements and also tracking a <code>user_order</code> (which already loses us the property that <code>str | int</code> and <code>int | str</code> result in the same interned Salsa <code>UnionType</code>) is semantically indistinguishable from keeping the user-provided order just as we do today, and lazily producing the deterministic sorting of elements only when we actually need to compare two unions or intersections for equivalence (and possibly Salsa-memoizing that sorting, if that&#x27;s a win in practice). The choice between the two approaches is a matter of performance, not correctness. I have half a suspicion that lazy sorting may turn out better, given that it means we won&#x27;t have to do it for all unions. And I think it&#x27;s probably simpler to implement as well. So I&#x27;d be inclined to try that first.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -454,25 +454,25 @@ def f(x: T):
             <div class="timeline-body"><blockquote>
 <p>and lazily producing the deterministic sorting of elements only when we actually need to compare two unions or intersections for equivalence</p>
 </blockquote>
-<p>Just one additional thought: The other scenario where the always-ordered canonical representation (proposed in this PR) would help would be during <em>construction</em> of unions and intersections, i.e. in the <code>{Union,Intersection}Builder</code>s. The construction of unions and intersections — the way it's currently implemented — is also $\mathcal{O}(n^2)$, because we have simplification procedures for every insertion that are themselves $\mathcal{O}(n)$. Constructing these aggregate types in ordered fashion could potentially make those simplification steps more efficient. For example: a search whether a particular <em>other</em> type is already part of a union/intersection could be reduced to $\mathcal{O}(\text{log}(n))$, making the whole construction potentially $\mathcal{O}(n\ \text{log}(n))$. I really don't know how much of a problem large unions/intersections are, so this might be misguided.</p>
+<p>Just one additional thought: The other scenario where the always-ordered canonical representation (proposed in this PR) would help would be during <em>construction</em> of unions and intersections, i.e. in the <code>{Union,Intersection}Builder</code>s. The construction of unions and intersections — the way it&#x27;s currently implemented — is also $\mathcal{O}(n^2)$, because we have simplification procedures for every insertion that are themselves $\mathcal{O}(n)$. Constructing these aggregate types in ordered fashion could potentially make those simplification steps more efficient. For example: a search whether a particular <em>other</em> type is already part of a union/intersection could be reduced to $\mathcal{O}(\text{log}(n))$, making the whole construction potentially $\mathcal{O}(n\ \text{log}(n))$. I really don&#x27;t know how much of a problem large unions/intersections are, so this might be misguided.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-16 19:50</div>
             <div class="timeline-body"><blockquote>
-<p>I really don't know how much of a problem large unions/intersections are, so this might be misguided.</p>
+<p>I really don&#x27;t know how much of a problem large unions/intersections are, so this might be misguided.</p>
 </blockquote>
-<p>Often quite a large problem! See https://github.com/astral-sh/ty/issues/240 for a summary of some of the many problems mypy and pyright have had with large unions of the years</p>
+<p>Often quite a large problem! See <a href="https://github.com/astral-sh/ty/issues/240">astral-sh/ty#240</a> for a summary of some of the many problems mypy and pyright have had with large unions of the years</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-01-16 19:52</div>
-            <div class="timeline-body"><p>No, that's a good point. I suspect that we should probably aim for &quot;simplest implementation that gets the semantics right and isn't obviously inefficient&quot; initially, and tackle deeper optimization as its own project, once we are faced with real-world projects with large-union problems (or at least some projects we can use as benchmarks that make heavier use of unions than tomllib.)</p>
+            <div class="timeline-body"><p>No, that&#x27;s a good point. I suspect that we should probably aim for &quot;simplest implementation that gets the semantics right and isn&#x27;t obviously inefficient&quot; initially, and tackle deeper optimization as its own project, once we are faced with real-world projects with large-union problems (or at least some projects we can use as benchmarks that make heavier use of unions than tomllib.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-16 20:18</div>
-            <div class="timeline-body"><p>We could also do the sorting lazily and cache the result in a separate field that's not part of eq using internal mutability</p>
+            <div class="timeline-body"><p>We could also do the sorting lazily and cache the result in a separate field that&#x27;s not part of eq using internal mutability</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -490,7 +490,7 @@ def f(x: T):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/type_ordering.rs</code>:59 on 2025-01-17 11:36</div>
-            <div class="timeline-body"><p>now that the ordering is no longer user-facing, I'm not sure that Salsa db lookups like this in the ordering algorithm make sense anymore. I think it's still useful to make sure that all the <code>StringLiteral</code> elements are next to each other in the elements list, but I don't think it matters anymore whether <code>Literal[&quot;bar&quot;]</code> comes before <code>Literal[&quot;foo&quot;]</code>. So maybe I should just sort by the Salsa IDs here, which would be cheaper?</p>
+            <div class="timeline-body"><p>now that the ordering is no longer user-facing, I&#x27;m not sure that Salsa db lookups like this in the ordering algorithm make sense anymore. I think it&#x27;s still useful to make sure that all the <code>StringLiteral</code> elements are next to each other in the elements list, but I don&#x27;t think it matters anymore whether <code>Literal[&quot;bar&quot;]</code> comes before <code>Literal[&quot;foo&quot;]</code>. So maybe I should just sort by the Salsa IDs here, which would be cheaper?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -508,14 +508,14 @@ def f(x: T):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/type_ordering.rs</code>:59 on 2025-01-17 12:02</div>
-            <div class="timeline-body"><p>I implemented this in https://github.com/astral-sh/ruff/pull/15516/commits/64351be6cb95214c4f0ee7d52f28f0b32f92bc1a</p>
+            <div class="timeline-body"><p>I implemented this in <a href="https://github.com/astral-sh/ruff/pull/15516">astral-sh/ruff#15516</a>/commits/64351be6cb95214c4f0ee7d52f28f0b32f92bc1a</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4215 on 2025-01-17 12:14</div>
             <div class="timeline-body"><p>Did you measure the performance impact of caching the sorted unions?</p>
-<p>I'm asking because it's unclear to me if caching it always is worth it. E.g. sorting a union with only a few elements is super cheap. So maybe it's only worth calling into the cached variant after a certain threshold?</p>
-<p>It might also be worth to test first if the union elements aren't sorted already</p>
+<p>I&#x27;m asking because it&#x27;s unclear to me if caching it always is worth it. E.g. sorting a union with only a few elements is super cheap. So maybe it&#x27;s only worth calling into the cached variant after a certain threshold?</p>
+<p>It might also be worth to test first if the union elements aren&#x27;t sorted already</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -524,19 +524,19 @@ def f(x: T):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/type_ordering.rs</code>:1 on 2025-01-17 12:14</div>
-            <div class="timeline-body"><p>This now <em>is</em> basically equivalent to what we'd get if we just slapped <code>#[derive(PartialOrd, Ord)]</code> on <code>Type</code>, <code>KnownInstanceType</code>, <code>SubclassOfType</code>, <code>ClassLiteralType</code>, etc. So maybe we should just do that at this point -- it would certainly be less code. But it still doesn't make <em>sense</em> semantically (to me) for them to implement <code>Ord</code>. There are many different ways you could plausibly order types; this is only one possible (arbitrary) ordering</p>
+            <div class="timeline-body"><p>This now <em>is</em> basically equivalent to what we&#x27;d get if we just slapped <code>#[derive(PartialOrd, Ord)]</code> on <code>Type</code>, <code>KnownInstanceType</code>, <code>SubclassOfType</code>, <code>ClassLiteralType</code>, etc. So maybe we should just do that at this point -- it would certainly be less code. But it still doesn&#x27;t make <em>sense</em> semantically (to me) for them to implement <code>Ord</code>. There are many different ways you could plausibly order types; this is only one possible (arbitrary) ordering</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/type_ordering.rs</code>:29 on 2025-01-17 12:15</div>
-            <div class="timeline-body"><p>Same as I'd not call this <code>sort_</code> I'd also not call this <code>order</code> because it doesn't reorder elements. I'd instead just call it <code>xy_ordering</code></p>
-<pre><code class="language-suggestion">pub(super) fn union_elements_ordering&lt;'db&gt;(left: &amp;Type&lt;'db&gt;, right: &amp;Type&lt;'db&gt;) -&gt; Ordering {
+            <div class="timeline-body"><p>Same as I&#x27;d not call this <code>sort_</code> I&#x27;d also not call this <code>order</code> because it doesn&#x27;t reorder elements. I&#x27;d instead just call it <code>xy_ordering</code></p>
+<pre><code>pub(super) fn union_elements_ordering&lt;&#x27;db&gt;(left: &amp;Type&lt;&#x27;db&gt;, right: &amp;Type&lt;&#x27;db&gt;) -&gt; Ordering {
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/type_ordering.rs</code>:100 on 2025-01-17 12:24</div>
-            <div class="timeline-body"><p>I think implementing <code>PartialOrd</code> for <code>KnownInstance</code> should be fine. I agree that <code>Type</code> itself should not implement <code>Ord</code>. It would drastically reduce the code needed here (and I'd probably to the same for other types, e.g. `ClassBase)</p>
+            <div class="timeline-body"><p>I think implementing <code>PartialOrd</code> for <code>KnownInstance</code> should be fine. I agree that <code>Type</code> itself should not implement <code>Ord</code>. It would drastically reduce the code needed here (and I&#x27;d probably to the same for other types, e.g. `ClassBase)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -563,7 +563,7 @@ def f(x: T):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4215 on 2025-01-17 12:29</div>
-            <div class="timeline-body"><p>I pushed a commit shortly before your review to see what happens to the benchmarks if we don't cache them. Though I'm still worried about what will happen if we encounter very large unions, which do occur regularly in popular Python libraries such as pydantic (see https://github.com/astral-sh/ruff/issues/13549), even if they don't happen much in <code>tomllib</code>.</p>
+            <div class="timeline-body"><p>I pushed a commit shortly before your review to see what happens to the benchmarks if we don&#x27;t cache them. Though I&#x27;m still worried about what will happen if we encounter very large unions, which do occur regularly in popular Python libraries such as pydantic (see <a href="https://github.com/astral-sh/ruff/issues/13549">astral-sh/ruff#13549</a>), even if they don&#x27;t happen much in <code>tomllib</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -584,11 +584,11 @@ def f(x: T):
             <div class="timeline-body"><blockquote>
 <p>I think implementing <code>PartialOrd</code> for <code>KnownInstance</code> should be fine.</p>
 </blockquote>
-<p>Hmm, why do you think it's okay for <code>KnownInstanceType</code> but not for <code>Type</code>? The two enums seem pretty similar to me in terms of whether it makes sense for them to implement <code>Ord</code></p>
+<p>Hmm, why do you think it&#x27;s okay for <code>KnownInstanceType</code> but not for <code>Type</code>? The two enums seem pretty similar to me in terms of whether it makes sense for them to implement <code>Ord</code></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">great writeup</span> added by @sharkdp on 2025-01-17 12:38</div>
+            <div class="event">Label <span class="label">great writeup</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-01-17 12:38</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-17 12:40</div>
@@ -606,13 +606,13 @@ def f(x: T):
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4215 on 2025-01-17 12:42</div>
             <div class="timeline-body"><blockquote>
-<p>It might also be worth to test first if the union elements aren't sorted already</p>
+<p>It might also be worth to test first if the union elements aren&#x27;t sorted already</p>
 </blockquote>
 <p>it <a href="https://doc.rust-lang.org/std/vec/struct.Vec.html#method.is_sorted_by">would be easier</a> if we upgraded our MSRV to 1.82 :P</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[red-knot] Ensure union elements and intersection elements always appear in sorted order" to "[red-knot] Ensure differently ordered unions and intersections are considered equivalent" by @AlexWaygood on 2025-01-17 12:45</div>
+            <div class="event">Renamed from &quot;[red-knot] Ensure union elements and intersection elements always appear in sorted order&quot; to &quot;[red-knot] Ensure differently ordered unions and intersections are considered equivalent&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-17 12:45</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-17 12:49</div>
@@ -620,7 +620,7 @@ def f(x: T):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/type_ordering.rs</code>:100 on 2025-01-17 12:49</div>
-            <div class="timeline-body"><p>I kinda feel inclined to either add it to <code>Type</code> and all its wrapped enums/structs or none of them. Writing it all out like this is a lot of boilerplate code, but it's not <em>too</em> hard to review it for correctness (it's all quite simple). But maybe it <em>would</em> be better to just write a macro here...</p>
+            <div class="timeline-body"><p>I kinda feel inclined to either add it to <code>Type</code> and all its wrapped enums/structs or none of them. Writing it all out like this is a lot of boilerplate code, but it&#x27;s not <em>too</em> hard to review it for correctness (it&#x27;s all quite simple). But maybe it <em>would</em> be better to just write a macro here...</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -630,7 +630,7 @@ def f(x: T):
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_equivalent_to.md</code>:45 on 2025-01-17 12:50</div>
             <div class="timeline-body"><p>Should we maybe write this using <code>P</code> and <code>Q</code>? And potentially do it for unions with three elements as well?</p>
-<pre><code class="language-suggestion">static_assert(is_equivalent_to(P | Q, Q | P))
+<pre><code>static_assert(is_equivalent_to(P | Q, Q | P))
 
 static_assert(is_equivalent_to(P | Q | R, P | R | Q))
 static_assert(is_equivalent_to(P | Q | R, R | P | Q))
@@ -648,14 +648,14 @@ static_assert(is_equivalent_to(P | Q | R, Q | R | P))
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_equivalent_to.md</code>:67 on 2025-01-17 12:53</div>
             <div class="timeline-body"><p>If I recall correctly, one of the original concerns with the ordering approach was that we would not recognize if two equivalent-but-not-<code>Eq</code> types like <code>type</code> and <code>type[object]</code> would be part of the union.</p>
 <p>Can we add a test for this? Like</p>
-<pre><code class="language-py">static_assert(is_equivalent_to(type[object] | P | type, type | P | type[object]))
+<pre><code>static_assert(is_equivalent_to(type[object] | P | type, type | P | type[object]))
 </code></pre>
 <p>Or do we already simplify unions with <code>type</code> and <code>type[object]</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4215 on 2025-01-17 12:53</div>
-            <div class="timeline-body"><p>It shouldn't be too hard to implement ;)</p>
+            <div class="timeline-body"><p>It shouldn&#x27;t be too hard to implement ;)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -668,10 +668,10 @@ static_assert(is_equivalent_to(P | Q | R, Q | R | P))
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_equivalent_to.md</code>:67 on 2025-01-17 12:58</div>
-            <div class="timeline-body"><p>No wait, that's not the right test. More like:</p>
-<pre><code class="language-py">static_assert(is_equivalent_to(type[object] | P, P | type))
+            <div class="timeline-body"><p>No wait, that&#x27;s not the right test. More like:</p>
+<pre><code>static_assert(is_equivalent_to(type[object] | P, P | type))
 </code></pre>
-<p>If we don't recognize that yet, that's also okay. Might still be worth adding the test.</p>
+<p>If we don&#x27;t recognize that yet, that&#x27;s also okay. Might still be worth adding the test.</p>
 <p>I imagined that we would design the ordering in such a way that those equivalence classes (w.r.t. <code>is_equivalent_to</code>) would be grouped together. Which would then make it easier to implement the <code>Union(…)</code> branch in <code>is_equivalent_to</code>.</p>
 </div>
         </div>
@@ -681,9 +681,9 @@ static_assert(is_equivalent_to(P | Q | R, Q | R | P))
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_equivalent_to.md</code>:67 on 2025-01-17 13:20</div>
-            <div class="timeline-body"><p>Yeah. So far we've managed to get by here by ensuring that equivalent types are recognised as such by ensuring that only one of the two can ever appear in our internal model. So <code>type[object]</code> is eagerly simplified to <code>type</code> (meaning no special logic is necessary to implement the equivalence between the two), <code>bool &amp; AlwaysTruthy</code> is eagerly simplified to <code>Literal[True]</code>, etc.. There are some known places where we don't currently do this, but where I'm hopeful that we can, e.g. https://github.com/astral-sh/ruff/issues/15528 and https://github.com/astral-sh/ruff/issues/15513</p>
+            <div class="timeline-body"><p>Yeah. So far we&#x27;ve managed to get by here by ensuring that equivalent types are recognised as such by ensuring that only one of the two can ever appear in our internal model. So <code>type[object]</code> is eagerly simplified to <code>type</code> (meaning no special logic is necessary to implement the equivalence between the two), <code>bool &amp; AlwaysTruthy</code> is eagerly simplified to <code>Literal[True]</code>, etc.. There are some known places where we don&#x27;t currently do this, but where I&#x27;m hopeful that we can, e.g. <a href="https://github.com/astral-sh/ruff/issues/15528">astral-sh/ruff#15528</a> and <a href="https://github.com/astral-sh/ruff/issues/15513">astral-sh/ruff#15513</a></p>
 <p>But there <em>will</em> be types we encounter in the future where we <em>cannot</em> do the eager simplification from one type to the other: <code>Protocol</code>s, <code>TypedDict</code>s, type aliases, there may be others.</p>
-<p>So this is a good reason to keep the manual ordering rather than deriving <code>#[PartialOrd, Ord]</code> (links to the conversation I was having with @MichaReiser at https://github.com/astral-sh/ruff/pull/15516#discussion_r1920118053), because we can see and control exactly how the types are ordered. But it makes it hard to test right now, because we haven't got that far yet in our implementation of the type system!</p>
+<p>So this is a good reason to keep the manual ordering rather than deriving <code>#[PartialOrd, Ord]</code> (links to the conversation I was having with @MichaReiser at <a href="https://github.com/astral-sh/ruff/pull/15516">astral-sh/ruff#15516</a>#discussion_r1920118053), because we can see and control exactly how the types are ordered. But it makes it hard to test right now, because we haven&#x27;t got that far yet in our implementation of the type system!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -692,7 +692,7 @@ static_assert(is_equivalent_to(P | Q | R, Q | R | P))
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/type_ordering.rs</code>:1 on 2025-01-17 13:23</div>
-            <div class="timeline-body"><p>I'd probably wo with what you have now and you can create a (help wanted?) issue that adds a <code>ArbitraryOrd</code> (or similar) trait with a derive macro. Seems like a fun exercise for someone interested in Rust.</p>
+            <div class="timeline-body"><p>I&#x27;d probably wo with what you have now and you can create a (help wanted?) issue that adds a <code>ArbitraryOrd</code> (or similar) trait with a derive macro. Seems like a fun exercise for someone interested in Rust.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -701,7 +701,7 @@ static_assert(is_equivalent_to(P | Q | R, Q | R | P))
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4215 on 2025-01-17 14:23</div>
-            <div class="timeline-body"><p>done in https://github.com/astral-sh/ruff/pull/15516/commits/1e4769339fb2e54eff016ab304f2361aaaa69528 :-)</p>
+            <div class="timeline-body"><p>done in <a href="https://github.com/astral-sh/ruff/pull/15516">astral-sh/ruff#15516</a>/commits/1e4769339fb2e54eff016ab304f2361aaaa69528 :-)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -710,7 +710,7 @@ static_assert(is_equivalent_to(P | Q | R, Q | R | P))
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_equivalent_to.md</code>:67 on 2025-01-17 14:29</div>
-            <div class="timeline-body"><p>I don't think one necessarily precludes the other. We can automatically derive ordering for some types but manually implement ord where necessary (or our custom ordering trait)</p>
+            <div class="timeline-body"><p>I don&#x27;t think one necessarily precludes the other. We can automatically derive ordering for some types but manually implement ord where necessary (or our custom ordering trait)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -726,7 +726,7 @@ static_assert(is_equivalent_to(P | Q | R, Q | R | P))
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-01-17 22:49</div>
-            <div class="timeline-body"><p>This looks good to me! I'm really not too concerned about custom trait vs macro vs explicit match; these are surface code organization issues that are easy to change later if we decide we don't like what we have.</p>
+            <div class="timeline-body"><p>This looks good to me! I&#x27;m really not too concerned about custom trait vs macro vs explicit match; these are surface code organization issues that are easy to change later if we decide we don&#x27;t like what we have.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -735,7 +735,7 @@ static_assert(is_equivalent_to(P | Q | R, Q | R | P))
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4215 on 2025-01-17 23:03</div>
-            <div class="timeline-body"><p>The version where we first check to see whether it is already sorted before attempting to sort it does (I think) seem to be doing <em>slightly</em> worse on the benchmarks? But it's all within the noise range; I might be looking for signal here in something that's actually random variation.</p>
+            <div class="timeline-body"><p>The version where we first check to see whether it is already sorted before attempting to sort it does (I think) seem to be doing <em>slightly</em> worse on the benchmarks? But it&#x27;s all within the noise range; I might be looking for signal here in something that&#x27;s actually random variation.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -757,9 +757,9 @@ static_assert(is_equivalent_to(P | Q | R, Q | R | P))
             <div class="timeline-body"><blockquote>
 <p>and now #15513 causes this property test to be flaky</p>
 </blockquote>
-<p>e.g. it's given me this as a failing example, which looks pretty clearly #15513-related</p>
+<p>e.g. it&#x27;s given me this as a failing example, which looks pretty clearly #15513-related</p>
 <pre><code>---- types::property_tests::flaky::intersection_equivalence_not_order_dependent stdout ----
-thread 'types::property_tests::flaky::intersection_equivalence_not_order_dependent' panicked at /Users/alexw/.cargo/registry/src/index.crates.io-6f17d22bba15001f/quickcheck-1.0.3/src/tester.rs:165:28:
+thread &#x27;types::property_tests::flaky::intersection_equivalence_not_order_dependent&#x27; panicked at /Users/alexw/.cargo/registry/src/index.crates.io-6f17d22bba15001f/quickcheck-1.0.3/src/tester.rs:165:28:
 [quickcheck] TEST FAILED. Arguments: (KnownClassInstance(Bool), AlwaysFalsy, Intersection { pos: [], neg: [BooleanLiteral(false)] })
 </code></pre>
 </div>
@@ -777,12 +777,12 @@ thread 'types::property_tests::flaky::intersection_equivalence_not_order_depende
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-01-18 14:04</div>
-            <div class="timeline-body"><p>I'd revert the <code>is_sorted</code> check and go with the most simplistic version and it probably is slower (see my inline comment). I still think it might be nice to have a macro that generates the implementations for a custom trait. Maybe something we can create an issue for?</p>
+            <div class="timeline-body"><p>I&#x27;d revert the <code>is_sorted</code> check and go with the most simplistic version and it probably is slower (see my inline comment). I still think it might be nice to have a macro that generates the implementations for a custom trait. Maybe something we can create an issue for?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1171 on 2025-01-18 19:00</div>
-            <div class="timeline-body"><p>Can we move the <code>len</code> checks before the <code>to_sorted_union</code> (same for intersections).  Or did you intentionally decide against this optimization because of the case mentioned in the TODO (although I'm not sure if we need to sort to detect that case?)</p>
+            <div class="timeline-body"><p>Can we move the <code>len</code> checks before the <code>to_sorted_union</code> (same for intersections).  Or did you intentionally decide against this optimization because of the case mentioned in the TODO (although I&#x27;m not sure if we need to sort to detect that case?)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -795,10 +795,10 @@ thread 'types::property_tests::flaky::intersection_equivalence_not_order_depende
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @AlexWaygood on 2025-01-19 16:10</div>
+            <div class="event">Merged by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-19 16:10</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-01-19 16:10</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-19 16:10</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-01-19 16:10</div>
@@ -806,7 +806,7 @@ thread 'types::property_tests::flaky::intersection_equivalence_not_order_depende
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:09:11 UTC
+        Synced at 2026-01-20 19:10:26 UTC
     </footer>
 </body>
 </html>

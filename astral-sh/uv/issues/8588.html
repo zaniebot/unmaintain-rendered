@@ -24,12 +24,12 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dwt">@dwt</a></div>
             <div class="timeline-body"><p>Hi there,</p>
-<p>I'm having trouble with a slightly cursed setup. Since we have some binary closed source dependencies (ibm_db... cause... IBM is too small to support ARM? Who knew!).</p>
+<p>I&#x27;m having trouble with a slightly cursed setup. Since we have some binary closed source dependencies (ibm_db... cause... IBM is too small to support ARM? Who knew!).</p>
 <p>This means that we have to use an x86 python, even though we work on ARM Notebooks.</p>
 <p>The current workaround is to do everything in docker - which works, but sucks.</p>
-<p>Trying to get this to work outside of docker, I've tried replicating the setup with nix, which does work reasonably well, but fails in one crucial aspect: If <code>uv</code> tries to compile a python package, it always builds for ARM, instead of for the python it's actually working for. Even if it is installed itself in the x86 version.</p>
+<p>Trying to get this to work outside of docker, I&#x27;ve tried replicating the setup with nix, which does work reasonably well, but fails in one crucial aspect: If <code>uv</code> tries to compile a python package, it always builds for ARM, instead of for the python it&#x27;s actually working for. Even if it is installed itself in the x86 version.</p>
 <p>I have provided this example:</p>
-<pre><code class="language-nix">{
+<pre><code>{
     description = &quot;Reproduction of a build failure of pymssql which compiles arm64 even though it compiles for x86 python&quot;;
 
     inputs.nixpkgs.url = &quot;github:NixOS/nixpkgs/nixos-unstable&quot;;
@@ -64,14 +64,14 @@
                     # even with `nix develop --ignore-environment`
                 ];
 
-                shellHook = ''
+                shellHook = &#x27;&#x27;
                     # export DYLD_FALLBACK_LIBRARY_PATH=&quot;${rosettaPkgs.lib.makeLibraryPath [ rosettaPkgs.gcc14.cc] }:$DYLD_FALLBACK_LIBRARY_PATH&quot;
                     rm -rf venv
                     uv venv --python ${rosettaPkgs.python312Full}/bin/python3  venv
                     source venv/bin/activate
                     uv pip install pymssql
                     python -c &quot;import pymssql&quot;
-                '';
+                &#x27;&#x27;;
             };
         }
     );
@@ -80,7 +80,7 @@
 <p>This will most likely just work on anything other than an apple silicon machine, so take care.</p>
 <p>To execute create a directory, putt this as the <code>flake.nix</code> inside and then execute <code>nix develop --ignore-environment</code> (<code>--ignore-environment</code> because I suspected that something bleeds in from my base system, but hat does not seem to be the case).</p>
 <p>This generates the following output for me:</p>
-<pre><code class="language-shell">~/C/Projekte/nix/uv-repro  4m46s
+<pre><code>~/C/Projekte/nix/uv-repro  4m46s
 ❯ nix develop --ignore-environment
 Using CPython 3.12.6 interpreter at: /nix/store/ibgkv0sx9b09j0p1wlv26hb5wspcyvn8-python3-3.12.6/bin/python3
 Creating virtual environment at: venv
@@ -95,15 +95,15 @@ Traceback (most recent call last):
   File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
   File &quot;/Users/dwt/Code/Projekte/nix/uv-repro/venv/lib/python3.12/site-packages/pymssql/__init__.py&quot;, line 3, in &lt;module&gt;
     from ._pymssql import *
-ImportError: dlopen(/Users/dwt/Code/Projekte/nix/uv-repro/venv/lib/python3.12/site-packages/pymssql/_pymssql.cpython-312-darwin.so, 0x0002): tried: '/Users/dwt/Code/Projekte/nix/uv-repro/venv/lib/python3.12/site-packages/pymssql/_pymssql.cpython-312-darwin.so' (mach-o file, but is an incompatible architecture (have 'arm64', need 'x86_64')), '/System/Volumes/Preboot/Cryptexes/OS/Users/dwt/Code/Projekte/nix/uv-repro/venv/lib/python3.12/site-packages/pymssql/_pymssql.cpython-312-darwin.so' (no such file), '/Users/dwt/Code/Projekte/nix/uv-repro/venv/lib/python3.12/site-packages/pymssql/_pymssql.cpython-312-darwin.so' (mach-o file, but is an incompatible architecture (have 'arm64', need 'x86_64'))
+ImportError: dlopen(/Users/dwt/Code/Projekte/nix/uv-repro/venv/lib/python3.12/site-packages/pymssql/_pymssql.cpython-312-darwin.so, 0x0002): tried: &#x27;/Users/dwt/Code/Projekte/nix/uv-repro/venv/lib/python3.12/site-packages/pymssql/_pymssql.cpython-312-darwin.so&#x27; (mach-o file, but is an incompatible architecture (have &#x27;arm64&#x27;, need &#x27;x86_64&#x27;)), &#x27;/System/Volumes/Preboot/Cryptexes/OS/Users/dwt/Code/Projekte/nix/uv-repro/venv/lib/python3.12/site-packages/pymssql/_pymssql.cpython-312-darwin.so&#x27; (no such file), &#x27;/Users/dwt/Code/Projekte/nix/uv-repro/venv/lib/python3.12/site-packages/pymssql/_pymssql.cpython-312-darwin.so&#x27; (mach-o file, but is an incompatible architecture (have &#x27;arm64&#x27;, need &#x27;x86_64&#x27;))
 </code></pre>
-<p>Some observations: When I checkout the source for pymmsql and call <code>uv pip install --editable .</code> on that, that works and builds for the right architecture. Only 'pip install pymmsql' which pulls the package from pypi seems to be affected.</p>
+<p>Some observations: When I checkout the source for pymmsql and call <code>uv pip install --editable .</code> on that, that works and builds for the right architecture. Only &#x27;pip install pymmsql&#x27; which pulls the package from pypi seems to be affected.</p>
 <p>Does this output make sense for you? Can I provide any additional information?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-26 16:13</div>
-            <div class="timeline-body"><p>Thanks for the thorough report. I am pretty sure we pull all the platform markers from the target Python interpreter. It's possible the build system <code>pymssql</code> uses detects the wrong architecture in a way you haven't isolated?</p>
+            <div class="timeline-body"><p>Thanks for the thorough report. I am pretty sure we pull all the platform markers from the target Python interpreter. It&#x27;s possible the build system <code>pymssql</code> uses detects the wrong architecture in a way you haven&#x27;t isolated?</p>
 <p>@konstin do you have any ideas?</p>
 <blockquote>
 <p>This will most likely just work on anything other than an apple silicon machine, so take care.</p>
@@ -120,31 +120,31 @@ ImportError: dlopen(/Users/dwt/Code/Projekte/nix/uv-repro/venv/lib/python3.12/si
 <p>Like, I can only reproduce this on an Apple silicon machine?</p>
 </blockquote>
 <p>That ist my guess, because (I think) that the bug manifests, because I use Rosetta to use an x86 python on ARM.</p>
-<p>Part of what is bugging me, is that this also happens if I use nix isolation mode, which should ensure, that the Mac compiler is not even in the path anymore. But also that the compile works correctly if I invoke 'uv pip install -e .' On the checked out source of pymssql, but fails when uv installs and compiles from pypi?</p>
+<p>Part of what is bugging me, is that this also happens if I use nix isolation mode, which should ensure, that the Mac compiler is not even in the path anymore. But also that the compile works correctly if I invoke &#x27;uv pip install -e .&#x27; On the checked out source of pymssql, but fails when uv installs and compiles from pypi?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-27 13:54</div>
             <div class="timeline-body"><blockquote>
-<p>But also that the compile works correctly if I invoke 'uv pip install -e .' On the checked out source of pymssql, but fails when uv installs and compiles from pypi?</p>
+<p>But also that the compile works correctly if I invoke &#x27;uv pip install -e .&#x27; On the checked out source of pymssql, but fails when uv installs and compiles from pypi?</p>
 </blockquote>
-<p>That's pretty weird. Sorry I don't have any more ideas here. Hopefully someone else from my team will have some insight.</p>
+<p>That&#x27;s pretty weird. Sorry I don&#x27;t have any more ideas here. Hopefully someone else from my team will have some insight.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-10-28 08:56</div>
-            <div class="timeline-body"><p>I'm surprised pymssql is built at all, it has wheels for linux x86_64, linux aarch64 and macOS universal2 (aka a single file with both x86_64 and arm64 code), see https://pypi.org/project/pymssql/#files. Can you share the output of <code>&lt;path to python&gt; -m pip debug --verbose</code>? It shows you the tags which should match the tags of a pymssql wheel. Otherwise uv reads what python tells it, can you check and potentially share <code>&lt;path to python&gt; -m sysconfig</code>?</p>
+            <div class="timeline-body"><p>I&#x27;m surprised pymssql is built at all, it has wheels for linux x86_64, linux aarch64 and macOS universal2 (aka a single file with both x86_64 and arm64 code), see https://pypi.org/project/pymssql/#files. Can you share the output of <code>&lt;path to python&gt; -m pip debug --verbose</code>? It shows you the tags which should match the tags of a pymssql wheel. Otherwise uv reads what python tells it, can you check and potentially share <code>&lt;path to python&gt; -m sysconfig</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dwt">@dwt</a> on 2024-10-31 09:04</div>
             <div class="timeline-body"><p>Of course, this is what I see:</p>
-<details>
 
-<summary> shell output</summary>
 
-<pre><code class="language-shell">❯ nix develop --impure --ignore-environment
-warning: Git tree '/Users/dwt/Code/Projekte/mkk/api' is dirty
+ shell output
+
+<pre><code>❯ nix develop --impure --ignore-environment
+warning: Git tree &#x27;/Users/dwt/Code/Projekte/mkk/api&#x27; is dirty
 Start app with
 CI_COMMIT_SHA= FLASK_DEBUG=1 gunicorn --reload --conf src/gunicorn_conf.py --bind 127.0.0.1:5001 main:app
 (nix:nix-shell-env) (venv) Sokrates:api dwt$ which python
@@ -162,7 +162,7 @@ locale.getpreferredencoding: utf-8
 sys.platform: darwin
 sys.implementation:
   name: cpython
-'cert' config value: Not specified
+&#x27;cert&#x27; config value: Not specified
 REQUESTS_CA_BUNDLE: None
 CURL_CA_BUNDLE: None
 pip._vendor.certifi.where(): /Users/dwt/Code/Projekte/mkk/api/venv/lib/python3.12/site-packages/pip/_vendor/certifi/cacert.pem
@@ -3119,18 +3119,18 @@ Compatible tags: 2931
   py31-none-any
   py30-none-any
 </code></pre>
-</detail>
+
 
 <p>This is what python thinks it is running on, not sure if it is relevant.</p>
 <pre><code>&gt;&gt;&gt; import platform
 &gt;&gt;&gt; platform.architecture()
-('64bit', '')
+(&#x27;64bit&#x27;, &#x27;&#x27;)
 &gt;&gt;&gt; platform.machine()     
-'x86_64'
+&#x27;x86_64&#x27;
 &gt;&gt;&gt; platform.platform()
-'macOS-10.16-x86_64-i386-64bit'
+&#x27;macOS-10.16-x86_64-i386-64bit&#x27;
 &gt;&gt;&gt; platform.processor()
-'i386'
+&#x27;i386&#x27;
 </code></pre>
 </div>
         </div>
@@ -3156,8 +3156,8 @@ Successfully installed pymssql-2.3.1
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dwt">@dwt</a> on 2024-10-31 09:13</div>
-            <div class="timeline-body"><details>
-<summary>And this is what it looks like with uv</summary>
+            <div class="timeline-body">
+And this is what it looks like with uv
 
 <pre><code>(nix:nix-shell-env) (venv) Sokrates:api dwt$ uv pip install --verbose  --force-reinstall pymssql       
 DEBUG uv 0.4.29 (85f9a0d0e 2024-10-30)
@@ -3334,13 +3334,13 @@ DEBUG Found fresh response for: https://files.pythonhosted.org/packages/cf/db/ce
 DEBUG Installing build requirements: cython==3.0.11, setuptools==75.3.0, wheel==0.44.0, setuptools-scm==8.1.0, packaging==24.1, tomli==2.0.2
 DEBUG Creating PEP 517 build environment
 DEBUG Calling `setuptools.build_meta:__legacy__.get_requires_for_build_wheel()`
-DEBUG prefix='/usr/local'
+DEBUG prefix=&#x27;/usr/local&#x27;
 DEBUG PREFIX=/nix/store/m32rsgpxqpnc674ayk60iarj68s5q9lp-bash-5.2p32/bin/sh: line 1: brew: command not found
 DEBUG setup.py: platform.system() =&gt; Darwin
-DEBUG setup.py: platform.architecture() =&gt; ('64bit', '')
-DEBUG setup.py: platform.libc_ver() =&gt; ('', '')
-DEBUG setup.py: include_dirs =&gt; ['/usr/local/include', '/nix/store/m32rsgpxqpnc674ayk60iarj68s5q9lp-bash-5.2p32/bin/sh: line 1: brew: command not found/include']
-DEBUG setup.py: library_dirs =&gt; ['/usr/local/lib', '/nix/store/m32rsgpxqpnc674ayk60iarj68s5q9lp-bash-5.2p32/bin/sh: line 1: brew: command not found/lib']
+DEBUG setup.py: platform.architecture() =&gt; (&#x27;64bit&#x27;, &#x27;&#x27;)
+DEBUG setup.py: platform.libc_ver() =&gt; (&#x27;&#x27;, &#x27;&#x27;)
+DEBUG setup.py: include_dirs =&gt; [&#x27;/usr/local/include&#x27;, &#x27;/nix/store/m32rsgpxqpnc674ayk60iarj68s5q9lp-bash-5.2p32/bin/sh: line 1: brew: command not found/include&#x27;]
+DEBUG setup.py: library_dirs =&gt; [&#x27;/usr/local/lib&#x27;, &#x27;/nix/store/m32rsgpxqpnc674ayk60iarj68s5q9lp-bash-5.2p32/bin/sh: line 1: brew: command not found/lib&#x27;]
 DEBUG Installing extra requirements for build backend
 DEBUG Solving with installed Python version: 3.12.6
 DEBUG Solving with target Python version: &gt;=3.12.6
@@ -3384,15 +3384,15 @@ DEBUG Requirement already installed: tomli==2.0.2
 DEBUG Requirement already installed: wheel==0.44.0
 DEBUG No build requirements to install for build
 DEBUG Calling `setuptools.build_meta:__legacy__.build_wheel(&quot;/Users/dwt/Library/Caches/uv/sdists-v5/pypi/pymssql/2.3.1/TlfTVzO3d4ZkTnTz-03tS/.tmp29ewJh&quot;, {}, None)`
-DEBUG /Users/dwt/Library/Caches/uv/builds-v0/.tmpUNF4ds/lib/python3.12/site-packages/setuptools/_distutils/dist.py:261: UserWarning: Unknown distribution option: 'tests_require'
+DEBUG /Users/dwt/Library/Caches/uv/builds-v0/.tmpUNF4ds/lib/python3.12/site-packages/setuptools/_distutils/dist.py:261: UserWarning: Unknown distribution option: &#x27;tests_require&#x27;
 DEBUG   warnings.warn(msg)
-DEBUG prefix='/usr/local'
+DEBUG prefix=&#x27;/usr/local&#x27;
 DEBUG PREFIX=/nix/store/m32rsgpxqpnc674ayk60iarj68s5q9lp-bash-5.2p32/bin/sh: line 1: brew: command not found
 DEBUG setup.py: platform.system() =&gt; Darwin
-DEBUG setup.py: platform.architecture() =&gt; ('64bit', '')
-DEBUG setup.py: platform.libc_ver() =&gt; ('', '')
-DEBUG setup.py: include_dirs =&gt; ['/usr/local/include', '/nix/store/m32rsgpxqpnc674ayk60iarj68s5q9lp-bash-5.2p32/bin/sh: line 1: brew: command not found/include']
-DEBUG setup.py: library_dirs =&gt; ['/usr/local/lib', '/nix/store/m32rsgpxqpnc674ayk60iarj68s5q9lp-bash-5.2p32/bin/sh: line 1: brew: command not found/lib']
+DEBUG setup.py: platform.architecture() =&gt; (&#x27;64bit&#x27;, &#x27;&#x27;)
+DEBUG setup.py: platform.libc_ver() =&gt; (&#x27;&#x27;, &#x27;&#x27;)
+DEBUG setup.py: include_dirs =&gt; [&#x27;/usr/local/include&#x27;, &#x27;/nix/store/m32rsgpxqpnc674ayk60iarj68s5q9lp-bash-5.2p32/bin/sh: line 1: brew: command not found/include&#x27;]
+DEBUG setup.py: library_dirs =&gt; [&#x27;/usr/local/lib&#x27;, &#x27;/nix/store/m32rsgpxqpnc674ayk60iarj68s5q9lp-bash-5.2p32/bin/sh: line 1: brew: command not found/lib&#x27;]
 DEBUG running bdist_wheel
 DEBUG running build
 DEBUG running build_py
@@ -3421,11 +3421,11 @@ DEBUG running egg_info
 DEBUG writing src/pymssql.egg-info/PKG-INFO
 DEBUG writing dependency_links to src/pymssql.egg-info/dependency_links.txt
 DEBUG writing top-level names to src/pymssql.egg-info/top_level.txt
-DEBUG ERROR setuptools_scm._file_finders.git listing git files failed - pretending there aren't any
-DEBUG reading manifest file 'src/pymssql.egg-info/SOURCES.txt'
-DEBUG reading manifest template 'MANIFEST.in'
-DEBUG adding license file 'LICENSE'
-DEBUG writing manifest file 'src/pymssql.egg-info/SOURCES.txt'
+DEBUG ERROR setuptools_scm._file_finders.git listing git files failed - pretending there aren&#x27;t any
+DEBUG reading manifest file &#x27;src/pymssql.egg-info/SOURCES.txt&#x27;
+DEBUG reading manifest template &#x27;MANIFEST.in&#x27;
+DEBUG adding license file &#x27;LICENSE&#x27;
+DEBUG writing manifest file &#x27;src/pymssql.egg-info/SOURCES.txt&#x27;
 DEBUG Copying src/pymssql.egg-info to build/bdist.macosx-10.12-x86_64/wheel/./pymssql-2.3.1-py3.12.egg-info
 DEBUG running install_scripts
 DEBUG [WARNING] This wheel needs a higher macOS version than is set in MACOSX_DEPLOYMENT_TARGET variable.  To silence this warning, set MACOSX_DEPLOYMENT_TARGET to at least 11_0 or recreate these files with lower MACOSX_DEPLOYMENT_TARGET:  
@@ -3433,20 +3433,20 @@ DEBUG build/bdist.macosx-10.12-x86_64/wheel/pymssql/_mssql.cpython-312-darwin.so
 DEBUG build/bdist.macosx-10.12-x86_64/wheel/pymssql/_pymssql.cpython-312-darwin.so[WARNING] This wheel needs a higher macOS version than is set in MACOSX_DEPLOYMENT_TARGET variable.  To silence this warning, set MACOSX_DEPLOYMENT_TARGET to at least 11_0 or recreate these files with lower MACOSX_DEPLOYMENT_TARGET:  
 DEBUG build/bdist.macosx-10.12-x86_64/wheel/pymssql/_mssql.cpython-312-darwin.so
 DEBUG creating build/bdist.macosx-10.12-x86_64/wheel/pymssql-2.3.1.dist-info/WHEEL
-DEBUG creating '/Users/dwt/Library/Caches/uv/sdists-v5/pypi/pymssql/2.3.1/TlfTVzO3d4ZkTnTz-03tS/.tmp29ewJh/.tmp-7mpbdkmy/pymssql-2.3.1-cp312-cp312-macosx_11_0_x86_64.whl' and adding 'build/bdist.macosx-10.12-x86_64/wheel' to it
-DEBUG adding 'pymssql/__init__.py'
-DEBUG adding 'pymssql/__init__.pyi'
-DEBUG adding 'pymssql/_mssql.cpython-312-darwin.so'
-DEBUG adding 'pymssql/_mssql.pyi'
-DEBUG adding 'pymssql/_pymssql.cpython-312-darwin.so'
-DEBUG adding 'pymssql/_pymssql.pyi'
-DEBUG adding 'pymssql/exceptions.py'
-DEBUG adding 'pymssql/exceptions.pyi'
-DEBUG adding 'pymssql-2.3.1.dist-info/LICENSE'
-DEBUG adding 'pymssql-2.3.1.dist-info/METADATA'
-DEBUG adding 'pymssql-2.3.1.dist-info/WHEEL'
-DEBUG adding 'pymssql-2.3.1.dist-info/top_level.txt'
-DEBUG adding 'pymssql-2.3.1.dist-info/RECORD'
+DEBUG creating &#x27;/Users/dwt/Library/Caches/uv/sdists-v5/pypi/pymssql/2.3.1/TlfTVzO3d4ZkTnTz-03tS/.tmp29ewJh/.tmp-7mpbdkmy/pymssql-2.3.1-cp312-cp312-macosx_11_0_x86_64.whl&#x27; and adding &#x27;build/bdist.macosx-10.12-x86_64/wheel&#x27; to it
+DEBUG adding &#x27;pymssql/__init__.py&#x27;
+DEBUG adding &#x27;pymssql/__init__.pyi&#x27;
+DEBUG adding &#x27;pymssql/_mssql.cpython-312-darwin.so&#x27;
+DEBUG adding &#x27;pymssql/_mssql.pyi&#x27;
+DEBUG adding &#x27;pymssql/_pymssql.cpython-312-darwin.so&#x27;
+DEBUG adding &#x27;pymssql/_pymssql.pyi&#x27;
+DEBUG adding &#x27;pymssql/exceptions.py&#x27;
+DEBUG adding &#x27;pymssql/exceptions.pyi&#x27;
+DEBUG adding &#x27;pymssql-2.3.1.dist-info/LICENSE&#x27;
+DEBUG adding &#x27;pymssql-2.3.1.dist-info/METADATA&#x27;
+DEBUG adding &#x27;pymssql-2.3.1.dist-info/WHEEL&#x27;
+DEBUG adding &#x27;pymssql-2.3.1.dist-info/top_level.txt&#x27;
+DEBUG adding &#x27;pymssql-2.3.1.dist-info/RECORD&#x27;
 DEBUG removing build/bdist.macosx-10.12-x86_64/wheel
 DEBUG build/bdist.macosx-10.12-x86_64/wheel/pymssql/_pymssql.cpython-312-darwin.so
 DEBUG Finished building: pymssql==2.3.1
@@ -3458,19 +3458,19 @@ Installed 1 package in 1ms
  ~ pymssql==2.3.1
 DEBUG Released lock at `/Users/dwt/Code/Projekte/mkk/api/venv/.lock`
 </code></pre>
-</details>
 
-<p>Looks a bit like that uv doesn't realize it is on MacOS X and could use the universal wheel?</p>
+
+<p>Looks a bit like that uv doesn&#x27;t realize it is on MacOS X and could use the universal wheel?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dwt">@dwt</a> on 2024-11-17 14:36</div>
             <div class="timeline-body"><p>I have tried investigating this a bit further, and came up with this nix expression to show the problem more fully.</p>
-<details>
-<summary>flake.nix and additional files to reproduce this</summary>
+
+flake.nix and additional files to reproduce this
 
 <p>flake.nix</p>
-<pre><code class="language-nix">{
+<pre><code>{
 
     description = &quot;Flake based nix environment to try out isolation and still allow to get binary python dependencies (wheels) to run&quot;;
 
@@ -3507,7 +3507,7 @@ DEBUG Released lock at `/Users/dwt/Code/Projekte/mkk/api/venv/.lock`
                     # even with `nix develop --ignore-environment`
                 ];
 
-                shellHook = ''
+                shellHook = &#x27;&#x27;
                     export DYLD_FALLBACK_LIBRARY_PATH=&quot;${rosettaPkgs.lib.makeLibraryPath [ rosettaPkgs.gcc14.cc] }:$DYLD_FALLBACK_LIBRARY_PATH&quot;
 
                     if test ! -d pymssql; then
@@ -3559,7 +3559,7 @@ DEBUG Released lock at `/Users/dwt/Code/Projekte/mkk/api/venv/.lock`
                     test
 
                     rm -rf venv
-                '';
+                &#x27;&#x27;;
 
             };
         }
@@ -3570,11 +3570,11 @@ DEBUG Released lock at `/Users/dwt/Code/Projekte/mkk/api/venv/.lock`
 <pre><code>ibm_db_sa
 pymssql
 </code></pre>
-</details>
+
 
 <p>Activate the flake and run all the tests by executing: <code>nix develop --impure --ignore-environment</code> in a directory with those files.</p>
 <p>This way ensures that no environment variables from the operating system stay around to disturb the build process.</p>
-<p>What this shows to me is that: <code>uv pip install --editable ./pymssql</code> actually compiles the code correctly for x86, even though the system has an ARM chip, while <code>uv pip install -r reqs.txt</code> a) compiles for ARM even though it (nor python) should see any arm compiler, and b) doesn't use the readily compiled packages from pypi.</p>
+<p>What this shows to me is that: <code>uv pip install --editable ./pymssql</code> actually compiles the code correctly for x86, even though the system has an ARM chip, while <code>uv pip install -r reqs.txt</code> a) compiles for ARM even though it (nor python) should see any arm compiler, and b) doesn&#x27;t use the readily compiled packages from pypi.</p>
 <p>This means I seem to see multiple bugs:</p>
 <ol>
 <li>uv does not use the pre-compiled version from pypi. I would be happy to provide further debugging information to track this down, as this would be a welcome speed boost</li>
@@ -3584,7 +3584,7 @@ pymssql
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-11-19 13:48</div>
-            <div class="timeline-body"><p>There is a <code>pymssql-2.3.1-cp312-cp312-macosx_13_0_universal2.whl</code> on https://pypi.org/project/pymssql/#files, i'm surprised uv doesn't pick it up. Can you run with <code>RUST_LOG=uv_resolver=trace</code> and copy the line that looks like:</p>
+            <div class="timeline-body"><p>There is a <code>pymssql-2.3.1-cp312-cp312-macosx_13_0_universal2.whl</code> on https://pypi.org/project/pymssql/#files, i&#x27;m surprised uv doesn&#x27;t pick it up. Can you run with <code>RUST_LOG=uv_resolver=trace</code> and copy the line that looks like:</p>
 <pre><code>TRACE Resolution: ResolverEnvironment { kind: Specific { marker_env: ResolverMarkerEnvironment(MarkerEnvironment { inner: MarkerEnvironmentInner { implementation_name: &quot;cpython&quot;, implementation_version: StringVersion { string: &quot;3.13.0&quot;, version: &quot;3.13.0&quot; }, os_name: &quot;posix&quot;, platform_machine: &quot;x86_64&quot;, platform_python_implementation: &quot;CPython&quot;, platform_release: &quot;6.8.0-48-generic&quot;, platform_system: &quot;Linux&quot;, platform_version: &quot;#48-Ubuntu SMP PREEMPT_DYNAMIC Fri Sep 27 14:04:52 UTC 2024&quot;, python_full_version: StringVersion { string: &quot;3.13.0&quot;, version: &quot;3.13.0&quot; }, python_version: StringVersion { string: &quot;3.13&quot;, version: &quot;3.13&quot; }, sys_platform: &quot;linux&quot; } }) } }
 </code></pre>
 </div>
@@ -3592,10 +3592,10 @@ pymssql
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dwt">@dwt</a> on 2024-11-21 07:21</div>
             <div class="timeline-body"><p>I See multiple outputs that seem to fit this, but as far as I can tell they are all identical.</p>
-<pre><code class="language-log">TRACE Resolution: ResolverEnvironment { kind: Specific { marker_env: ResolverMarkerEnvironment(MarkerEnvironment { inner: MarkerEnvironmentInner { implementation_name: &quot;cpython&quot;, implementation_version: StringVersion { string: &quot;3.12.7&quot;, version: &quot;3.12.7&quot; }, os_name: &quot;posix&quot;, platform_machine: &quot;x86_64&quot;, platform_python_implementation: &quot;CPython&quot;, platform_release: &quot;24.1.0&quot;, platform_system: &quot;Darwin&quot;, platform_version: &quot;Darwin Kernel Version 24.1.0: Thu Oct 10 21:05:23 PDT 2024; root:xnu-11215.41.3~2/RELEASE_ARM64_T6031&quot;, python_full_version: StringVersion { string: &quot;3.12.7&quot;, version: &quot;3.12.7&quot; }, python_version: StringVersion { string: &quot;3.12&quot;, version: &quot;3.12&quot; }, sys_platform: &quot;darwin&quot; } }) } }
+<pre><code>TRACE Resolution: ResolverEnvironment { kind: Specific { marker_env: ResolverMarkerEnvironment(MarkerEnvironment { inner: MarkerEnvironmentInner { implementation_name: &quot;cpython&quot;, implementation_version: StringVersion { string: &quot;3.12.7&quot;, version: &quot;3.12.7&quot; }, os_name: &quot;posix&quot;, platform_machine: &quot;x86_64&quot;, platform_python_implementation: &quot;CPython&quot;, platform_release: &quot;24.1.0&quot;, platform_system: &quot;Darwin&quot;, platform_version: &quot;Darwin Kernel Version 24.1.0: Thu Oct 10 21:05:23 PDT 2024; root:xnu-11215.41.3~2/RELEASE_ARM64_T6031&quot;, python_full_version: StringVersion { string: &quot;3.12.7&quot;, version: &quot;3.12.7&quot; }, python_version: StringVersion { string: &quot;3.12&quot;, version: &quot;3.12&quot; }, sys_platform: &quot;darwin&quot; } }) } }
 </code></pre>
-<details>
-<summary>Full Build log</summary>
+
+Full Build log
 
 <pre><code>❯ ./enter-flake
 /nix/store/ak0sh27jipas724h0c7raxvdfmw824k8-python3-3.12.7/bin/python3
@@ -3629,8 +3629,8 @@ Successfully installed greenlet-3.1.1 ibm-db-3.2.3 ibm_db_sa-0.4.1 pymssql-2.3.2
 python is /Users/dwt/Code/Projekte/nix/devenv-reproduction/venv/bin/python
 ++ python --version
 Python 3.12.7
-++ python -c 'import ibm_db'
-++ python -c 'import pymssql'
+++ python -c &#x27;import ibm_db&#x27;
+++ python -c &#x27;import pymssql&#x27;
 testing x86 compile
 Obtaining file:///Users/dwt/Code/Projekte/nix/devenv-reproduction/pymssql
   Installing build dependencies ... done
@@ -3655,8 +3655,8 @@ Successfully installed pymssql-2.3.2.dev3
 python is /Users/dwt/Code/Projekte/nix/devenv-reproduction/venv/bin/python
 ++ python --version
 Python 3.12.7
-++ python -c 'import ibm_db'
-++ python -c 'import pymssql'
+++ python -c &#x27;import ibm_db&#x27;
+++ python -c &#x27;import pymssql&#x27;
 
 testing uv
 uv 0.4.30
@@ -3698,9 +3698,9 @@ DEBUG Searching for a compatible version of sqlalchemy (&gt;=0.7.3)
 TRACE Selecting candidate for sqlalchemy with range &gt;=0.7.3 with 307 remote versions
 TRACE found candidate for package PackageName(&quot;sqlalchemy&quot;) with range Ranges { segments: [(Included(&quot;0.7.3&quot;), Unbounded)] } after 1 steps: &quot;2.0.36&quot; version
 DEBUG Selecting: sqlalchemy==2.0.36 [compatible] (SQLAlchemy-2.0.36-cp312-cp312-macosx_10_13_x86_64.whl)
-⠹ sqlalchemy==2.0.36                                                                                                            TRACE skipping importlib-metadata ; python_full_version &lt; '3.8' because of Requires-Python: &gt;=3.12.7
+⠹ sqlalchemy==2.0.36                                                                                                            TRACE skipping importlib-metadata ; python_full_version &lt; &#x27;3.8&#x27; because of Requires-Python: &gt;=3.12.7
 DEBUG Adding transitive dependency for sqlalchemy==2.0.36: typing-extensions&gt;=4.6.0
-DEBUG Adding transitive dependency for sqlalchemy==2.0.36: greenlet{(python_full_version &lt; '3.13' and platform_machine == 'AMD64') or (python_full_version &lt; '3.13' and platform_machine == 'WIN32') or (python_full_version &lt; '3.13' and platform_machine == 'aarch64') or (python_full_version &lt; '3.13' and platform_machine == 'amd64') or (python_full_version &lt; '3.13' and platform_machine == 'ppc64le') or (python_full_version &lt; '3.13' and platform_machine == 'win32') or (python_full_version &lt; '3.13' and platform_machine == 'x86_64')}&lt;0.4.17 | &gt;0.4.17
+DEBUG Adding transitive dependency for sqlalchemy==2.0.36: greenlet{(python_full_version &lt; &#x27;3.13&#x27; and platform_machine == &#x27;AMD64&#x27;) or (python_full_version &lt; &#x27;3.13&#x27; and platform_machine == &#x27;WIN32&#x27;) or (python_full_version &lt; &#x27;3.13&#x27; and platform_machine == &#x27;aarch64&#x27;) or (python_full_version &lt; &#x27;3.13&#x27; and platform_machine == &#x27;amd64&#x27;) or (python_full_version &lt; &#x27;3.13&#x27; and platform_machine == &#x27;ppc64le&#x27;) or (python_full_version &lt; &#x27;3.13&#x27; and platform_machine == &#x27;win32&#x27;) or (python_full_version &lt; &#x27;3.13&#x27; and platform_machine == &#x27;x86_64&#x27;)}&lt;0.4.17 | &gt;0.4.17
 DEBUG Searching for a compatible version of ibm-db (&gt;=2.0.0)
 TRACE Selecting candidate for ibm-db with range &gt;=2.0.0 with 48 remote versions
 TRACE found candidate for package PackageName(&quot;ibm-db&quot;) with range Ranges { segments: [(Included(&quot;2.0.0&quot;), Unbounded)] } after 1 steps: &quot;3.2.3&quot; version
@@ -3714,15 +3714,15 @@ TRACE found candidate for package PackageName(&quot;typing-extensions&quot;) wit
 TRACE found candidate for package PackageName(&quot;typing-extensions&quot;) with range Ranges { segments: [(Included(&quot;4.6.0&quot;), Unbounded)] } after 1 steps: &quot;4.12.2&quot; version
 DEBUG Selecting: typing-extensions==4.12.2 [compatible] (typing_extensions-4.12.2-py3-none-any.whl)
 ⠹ typing-extensions==4.12.2                                                                                                     TRACE Received built distribution metadata for: typing-extensions==4.12.2
-DEBUG Searching for a compatible version of greenlet{(python_full_version &lt; '3.13' and platform_machine == 'AMD64') or (python_full_version &lt; '3.13' and platform_machine == 'WIN32') or (python_full_version &lt; '3.13' and platform_machine == 'aarch64') or (python_full_version &lt; '3.13' and platform_machine == 'amd64') or (python_full_version &lt; '3.13' and platform_machine == 'ppc64le') or (python_full_version &lt; '3.13' and platform_machine == 'win32') or (python_full_version &lt; '3.13' and platform_machine == 'x86_64')} (&lt;0.4.17 | &gt;0.4.17)
+DEBUG Searching for a compatible version of greenlet{(python_full_version &lt; &#x27;3.13&#x27; and platform_machine == &#x27;AMD64&#x27;) or (python_full_version &lt; &#x27;3.13&#x27; and platform_machine == &#x27;WIN32&#x27;) or (python_full_version &lt; &#x27;3.13&#x27; and platform_machine == &#x27;aarch64&#x27;) or (python_full_version &lt; &#x27;3.13&#x27; and platform_machine == &#x27;amd64&#x27;) or (python_full_version &lt; &#x27;3.13&#x27; and platform_machine == &#x27;ppc64le&#x27;) or (python_full_version &lt; &#x27;3.13&#x27; and platform_machine == &#x27;win32&#x27;) or (python_full_version &lt; &#x27;3.13&#x27; and platform_machine == &#x27;x86_64&#x27;)} (&lt;0.4.17 | &gt;0.4.17)
 TRACE Selecting candidate for greenlet with range &lt;0.4.17 | &gt;0.4.17 with 52 remote versions
 TRACE found candidate for package PackageName(&quot;greenlet&quot;) with range Ranges { segments: [(Unbounded, Excluded(&quot;0.4.17&quot;)), (Excluded(&quot;0.4.17&quot;), Unbounded)] } after 1 steps: &quot;3.1.1&quot; version
 DEBUG Selecting: greenlet==3.1.1 [compatible] (greenlet-3.1.1-cp312-cp312-macosx_11_0_universal2.whl)
 DEBUG Adding transitive dependency for greenlet==3.1.1: greenlet==3.1.1
-DEBUG Adding transitive dependency for greenlet==3.1.1: greenlet{(python_full_version &lt; '3.13' and platform_machine == 'AMD64') or (python_full_version &lt; '3.13' and platform_machine == 'WIN32') or (python_full_version &lt; '3.13' and platform_machine == 'aarch64') or (python_full_version &lt; '3.13' and platform_machine == 'amd64') or (python_full_version &lt; '3.13' and platform_machine == 'ppc64le') or (python_full_version &lt; '3.13' and platform_machine == 'win32') or (python_full_version &lt; '3.13' and platform_machine == 'x86_64')}==3.1.1
+DEBUG Adding transitive dependency for greenlet==3.1.1: greenlet{(python_full_version &lt; &#x27;3.13&#x27; and platform_machine == &#x27;AMD64&#x27;) or (python_full_version &lt; &#x27;3.13&#x27; and platform_machine == &#x27;WIN32&#x27;) or (python_full_version &lt; &#x27;3.13&#x27; and platform_machine == &#x27;aarch64&#x27;) or (python_full_version &lt; &#x27;3.13&#x27; and platform_machine == &#x27;amd64&#x27;) or (python_full_version &lt; &#x27;3.13&#x27; and platform_machine == &#x27;ppc64le&#x27;) or (python_full_version &lt; &#x27;3.13&#x27; and platform_machine == &#x27;win32&#x27;) or (python_full_version &lt; &#x27;3.13&#x27; and platform_machine == &#x27;x86_64&#x27;)}==3.1.1
 TRACE Selecting candidate for greenlet with range ==3.1.1 with 52 remote versions
 TRACE found candidate for package PackageName(&quot;greenlet&quot;) with range Ranges { segments: [(Included(&quot;3.1.1&quot;), Included(&quot;3.1.1&quot;))] } after 1 steps: &quot;3.1.1&quot; version
-DEBUG Searching for a compatible version of greenlet{(python_full_version &lt; '3.13' and platform_machine == 'AMD64') or (python_full_version &lt; '3.13' and platform_machine == 'WIN32') or (python_full_version &lt; '3.13' and platform_machine == 'aarch64') or (python_full_version &lt; '3.13' and platform_machine == 'amd64') or (python_full_version &lt; '3.13' and platform_machine == 'ppc64le') or (python_full_version &lt; '3.13' and platform_machine == 'win32') or (python_full_version &lt; '3.13' and platform_machine == 'x86_64')} (==3.1.1)
+DEBUG Searching for a compatible version of greenlet{(python_full_version &lt; &#x27;3.13&#x27; and platform_machine == &#x27;AMD64&#x27;) or (python_full_version &lt; &#x27;3.13&#x27; and platform_machine == &#x27;WIN32&#x27;) or (python_full_version &lt; &#x27;3.13&#x27; and platform_machine == &#x27;aarch64&#x27;) or (python_full_version &lt; &#x27;3.13&#x27; and platform_machine == &#x27;amd64&#x27;) or (python_full_version &lt; &#x27;3.13&#x27; and platform_machine == &#x27;ppc64le&#x27;) or (python_full_version &lt; &#x27;3.13&#x27; and platform_machine == &#x27;win32&#x27;) or (python_full_version &lt; &#x27;3.13&#x27; and platform_machine == &#x27;x86_64&#x27;)} (==3.1.1)
 TRACE Selecting candidate for greenlet with range ==3.1.1 with 52 remote versions
 TRACE found candidate for package PackageName(&quot;greenlet&quot;) with range Ranges { segments: [(Included(&quot;3.1.1&quot;), Included(&quot;3.1.1&quot;))] } after 1 steps: &quot;3.1.1&quot; version
 DEBUG Selecting: greenlet==3.1.1 [compatible] (greenlet-3.1.1-cp312-cp312-macosx_11_0_universal2.whl)
@@ -3743,7 +3743,7 @@ TRACE Resolution edge:     2.0.36 -&gt; 4.12.2
 TRACE Resolution edge: ROOT -&gt; ibm-db-sa
 TRACE Resolution edge:     0a0.dev0 -&gt; 0.4.1
 TRACE Resolution edge: sqlalchemy -&gt; greenlet
-TRACE Resolution edge:     2.0.36 -&gt; 3.1.1 ; (python_full_version &lt; '3.13' and platform_machine == 'AMD64') or (python_full_version &lt; '3.13' and platform_machine == 'WIN32') or (python_full_version &lt; '3.13' and platform_machine == 'aarch64') or (python_full_version &lt; '3.13' and platform_machine == 'amd64') or (python_full_version &lt; '3.13' and platform_machine == 'ppc64le') or (python_full_version &lt; '3.13' and platform_machine == 'win32') or (python_full_version &lt; '3.13' and platform_machine == 'x86_64')
+TRACE Resolution edge:     2.0.36 -&gt; 3.1.1 ; (python_full_version &lt; &#x27;3.13&#x27; and platform_machine == &#x27;AMD64&#x27;) or (python_full_version &lt; &#x27;3.13&#x27; and platform_machine == &#x27;WIN32&#x27;) or (python_full_version &lt; &#x27;3.13&#x27; and platform_machine == &#x27;aarch64&#x27;) or (python_full_version &lt; &#x27;3.13&#x27; and platform_machine == &#x27;amd64&#x27;) or (python_full_version &lt; &#x27;3.13&#x27; and platform_machine == &#x27;ppc64le&#x27;) or (python_full_version &lt; &#x27;3.13&#x27; and platform_machine == &#x27;win32&#x27;) or (python_full_version &lt; &#x27;3.13&#x27; and platform_machine == &#x27;x86_64&#x27;)
 TRACE Resolution edge: ROOT -&gt; pymssql
 TRACE Resolution edge:     0a0.dev0 -&gt; 2.3.2
 Resolved 6 packages in 407ms
@@ -3759,8 +3759,8 @@ Installed 6 packages in 18ms
 python is /Users/dwt/Code/Projekte/nix/devenv-reproduction/venv/bin/python
 ++ python --version
 Python 3.12.7
-++ python -c 'import ibm_db'
-++ python -c 'import pymssql'
+++ python -c &#x27;import ibm_db&#x27;
+++ python -c &#x27;import pymssql&#x27;
 testing uv x86 compile
 Using Python 3.12.7 environment at /Users/dwt/Code/Projekte/nix/devenv-reproduction/venv
 ⠙ Resolving dependencies...                                                                                                     DEBUG Solving with installed Python version: 3.12.7
@@ -3795,16 +3795,16 @@ TRACE Selecting candidate for setuptools with range &gt;=54.0 with 585 remote ve
 TRACE found candidate for package PackageName(&quot;setuptools&quot;) with range Ranges { segments: [(Included(&quot;54.0&quot;), Unbounded)] } after 1 steps: &quot;75.6.0&quot; version
 DEBUG Selecting: setuptools==75.6.0 [compatible] (setuptools-75.6.0-py3-none-any.whl)
 TRACE Received built distribution metadata for: setuptools==75.6.0
-TRACE skipping importlib-metadata&gt;=6 ; python_full_version &lt; '3.10' and extra == 'core' because of Requires-Python: &gt;=3.12.7
-TRACE skipping tomli&gt;=2.0.1 ; python_full_version &lt; '3.11' and extra == 'core' because of Requires-Python: &gt;=3.12.7
-TRACE skipping importlib-metadata&gt;=7.0.2 ; python_full_version &lt; '3.10' and extra == 'type' because of Requires-Python: &gt;=3.12.7
+TRACE skipping importlib-metadata&gt;=6 ; python_full_version &lt; &#x27;3.10&#x27; and extra == &#x27;core&#x27; because of Requires-Python: &gt;=3.12.7
+TRACE skipping tomli&gt;=2.0.1 ; python_full_version &lt; &#x27;3.11&#x27; and extra == &#x27;core&#x27; because of Requires-Python: &gt;=3.12.7
+TRACE skipping importlib-metadata&gt;=7.0.2 ; python_full_version &lt; &#x27;3.10&#x27; and extra == &#x27;type&#x27; because of Requires-Python: &gt;=3.12.7
 DEBUG Searching for a compatible version of setuptools-scm (&gt;=5.0)
 TRACE Selecting candidate for setuptools-scm with range &gt;=5.0 with 84 remote versions
 TRACE found candidate for package PackageName(&quot;setuptools-scm&quot;) with range Ranges { segments: [(Included(&quot;5.0&quot;), Unbounded)] } after 1 steps: &quot;8.1.0&quot; version
 DEBUG Selecting: setuptools-scm==8.1.0 [compatible] (setuptools_scm-8.1.0-py3-none-any.whl)
-TRACE skipping typing-extensions ; python_full_version &lt; '3.10' because of Requires-Python: &gt;=3.12.7
-TRACE skipping tomli&gt;=1 ; python_full_version &lt; '3.11' because of Requires-Python: &gt;=3.12.7
-TRACE skipping typing-extensions ; python_full_version &lt; '3.11' and extra == 'test' because of Requires-Python: &gt;=3.12.7
+TRACE skipping typing-extensions ; python_full_version &lt; &#x27;3.10&#x27; because of Requires-Python: &gt;=3.12.7
+TRACE skipping tomli&gt;=1 ; python_full_version &lt; &#x27;3.11&#x27; because of Requires-Python: &gt;=3.12.7
+TRACE skipping typing-extensions ; python_full_version &lt; &#x27;3.11&#x27; and extra == &#x27;test&#x27; because of Requires-Python: &gt;=3.12.7
 DEBUG Adding transitive dependency for setuptools-scm==8.1.0: packaging&gt;=20
 DEBUG Adding transitive dependency for setuptools-scm==8.1.0: setuptools*
 DEBUG Searching for a compatible version of setuptools-scm[toml] (&gt;=5.0)
@@ -3817,9 +3817,9 @@ DEBUG Searching for a compatible version of setuptools-scm[toml] (==8.1.0)
 TRACE Selecting candidate for setuptools-scm with range ==8.1.0 with 84 remote versions
 TRACE found candidate for package PackageName(&quot;setuptools-scm&quot;) with range Ranges { segments: [(Included(&quot;8.1.0&quot;), Included(&quot;8.1.0&quot;))] } after 1 steps: &quot;8.1.0&quot; version
 DEBUG Selecting: setuptools-scm==8.1.0 [compatible] (setuptools_scm-8.1.0-py3-none-any.whl)
-TRACE skipping typing-extensions ; python_full_version &lt; '3.10' because of Requires-Python: &gt;=3.12.7
-TRACE skipping tomli&gt;=1 ; python_full_version &lt; '3.11' because of Requires-Python: &gt;=3.12.7
-TRACE skipping typing-extensions ; python_full_version &lt; '3.11' and extra == 'test' because of Requires-Python: &gt;=3.12.7
+TRACE skipping typing-extensions ; python_full_version &lt; &#x27;3.10&#x27; because of Requires-Python: &gt;=3.12.7
+TRACE skipping tomli&gt;=1 ; python_full_version &lt; &#x27;3.11&#x27; because of Requires-Python: &gt;=3.12.7
+TRACE skipping typing-extensions ; python_full_version &lt; &#x27;3.11&#x27; and extra == &#x27;test&#x27; because of Requires-Python: &gt;=3.12.7
 DEBUG Searching for a compatible version of wheel (&gt;=0.36.2)
 TRACE Selecting candidate for wheel with range &gt;=0.36.2 with 77 remote versions
 TRACE found candidate for package PackageName(&quot;wheel&quot;) with range Ranges { segments: [(Included(&quot;0.36.2&quot;), Unbounded)] } after 1 steps: &quot;0.45.0&quot; version
@@ -3874,16 +3874,16 @@ DEBUG Searching for a compatible version of setuptools (&gt;=54.0)
 TRACE Selecting candidate for setuptools with range &gt;=54.0 with 585 remote versions
 TRACE found candidate for package PackageName(&quot;setuptools&quot;) with range Ranges { segments: [(Included(&quot;54.0&quot;), Unbounded)] } after 1 steps: &quot;75.6.0&quot; version
 DEBUG Selecting: setuptools==75.6.0 [compatible] (setuptools-75.6.0-py3-none-any.whl)
-TRACE skipping importlib-metadata&gt;=6 ; python_full_version &lt; '3.10' and extra == 'core' because of Requires-Python: &gt;=3.12.7
-TRACE skipping tomli&gt;=2.0.1 ; python_full_version &lt; '3.11' and extra == 'core' because of Requires-Python: &gt;=3.12.7
-TRACE skipping importlib-metadata&gt;=7.0.2 ; python_full_version &lt; '3.10' and extra == 'type' because of Requires-Python: &gt;=3.12.7
+TRACE skipping importlib-metadata&gt;=6 ; python_full_version &lt; &#x27;3.10&#x27; and extra == &#x27;core&#x27; because of Requires-Python: &gt;=3.12.7
+TRACE skipping tomli&gt;=2.0.1 ; python_full_version &lt; &#x27;3.11&#x27; and extra == &#x27;core&#x27; because of Requires-Python: &gt;=3.12.7
+TRACE skipping importlib-metadata&gt;=7.0.2 ; python_full_version &lt; &#x27;3.10&#x27; and extra == &#x27;type&#x27; because of Requires-Python: &gt;=3.12.7
 DEBUG Searching for a compatible version of setuptools-scm (&gt;=5.0, &lt;9.0)
 TRACE Selecting candidate for setuptools-scm with range &gt;=5.0, &lt;9.0 with 84 remote versions
 TRACE found candidate for package PackageName(&quot;setuptools-scm&quot;) with range Ranges { segments: [(Included(&quot;5.0&quot;), Excluded(&quot;9.0&quot;))] } after 1 steps: &quot;8.1.0&quot; version
 DEBUG Selecting: setuptools-scm==8.1.0 [compatible] (setuptools_scm-8.1.0-py3-none-any.whl)
-TRACE skipping typing-extensions ; python_full_version &lt; '3.10' because of Requires-Python: &gt;=3.12.7
-TRACE skipping tomli&gt;=1 ; python_full_version &lt; '3.11' because of Requires-Python: &gt;=3.12.7
-TRACE skipping typing-extensions ; python_full_version &lt; '3.11' and extra == 'test' because of Requires-Python: &gt;=3.12.7
+TRACE skipping typing-extensions ; python_full_version &lt; &#x27;3.10&#x27; because of Requires-Python: &gt;=3.12.7
+TRACE skipping tomli&gt;=1 ; python_full_version &lt; &#x27;3.11&#x27; because of Requires-Python: &gt;=3.12.7
+TRACE skipping typing-extensions ; python_full_version &lt; &#x27;3.11&#x27; and extra == &#x27;test&#x27; because of Requires-Python: &gt;=3.12.7
 DEBUG Adding transitive dependency for setuptools-scm==8.1.0: packaging&gt;=20
 DEBUG Adding transitive dependency for setuptools-scm==8.1.0: setuptools*
 DEBUG Searching for a compatible version of setuptools-scm[toml] (&gt;=5.0, &lt;9.0)
@@ -3896,9 +3896,9 @@ DEBUG Searching for a compatible version of setuptools-scm[toml] (==8.1.0)
 TRACE Selecting candidate for setuptools-scm with range ==8.1.0 with 84 remote versions
 TRACE found candidate for package PackageName(&quot;setuptools-scm&quot;) with range Ranges { segments: [(Included(&quot;8.1.0&quot;), Included(&quot;8.1.0&quot;))] } after 1 steps: &quot;8.1.0&quot; version
 DEBUG Selecting: setuptools-scm==8.1.0 [compatible] (setuptools_scm-8.1.0-py3-none-any.whl)
-TRACE skipping typing-extensions ; python_full_version &lt; '3.10' because of Requires-Python: &gt;=3.12.7
-TRACE skipping tomli&gt;=1 ; python_full_version &lt; '3.11' because of Requires-Python: &gt;=3.12.7
-TRACE skipping typing-extensions ; python_full_version &lt; '3.11' and extra == 'test' because of Requires-Python: &gt;=3.12.7
+TRACE skipping typing-extensions ; python_full_version &lt; &#x27;3.10&#x27; because of Requires-Python: &gt;=3.12.7
+TRACE skipping tomli&gt;=1 ; python_full_version &lt; &#x27;3.11&#x27; because of Requires-Python: &gt;=3.12.7
+TRACE skipping typing-extensions ; python_full_version &lt; &#x27;3.11&#x27; and extra == &#x27;test&#x27; because of Requires-Python: &gt;=3.12.7
 DEBUG Searching for a compatible version of wheel (&gt;=0.36.2)
 TRACE Selecting candidate for wheel with range &gt;=0.36.2 with 77 remote versions
 TRACE found candidate for package PackageName(&quot;wheel&quot;) with range Ranges { segments: [(Included(&quot;0.36.2&quot;), Unbounded)] } after 1 steps: &quot;0.45.0&quot; version
@@ -3979,16 +3979,16 @@ TRACE Selecting candidate for setuptools-scm with range &gt;=5.0 with 84 remote 
 TRACE found candidate for package PackageName(&quot;setuptools-scm&quot;) with range Ranges { segments: [(Included(&quot;5.0&quot;), Unbounded)] } after 1 steps: &quot;8.1.0&quot; version
 TRACE Selecting candidate for setuptools with range &gt;=54.0 with 585 remote versions
 TRACE found candidate for package PackageName(&quot;setuptools&quot;) with range Ranges { segments: [(Included(&quot;54.0&quot;), Unbounded)] } after 1 steps: &quot;75.6.0&quot; version
-TRACE skipping importlib-metadata&gt;=6 ; python_full_version &lt; '3.10' and extra == 'core' because of Requires-Python: &gt;=3.12.7
-TRACE skipping tomli&gt;=2.0.1 ; python_full_version &lt; '3.11' and extra == 'core' because of Requires-Python: &gt;=3.12.7
-TRACE skipping importlib-metadata&gt;=7.0.2 ; python_full_version &lt; '3.10' and extra == 'type' because of Requires-Python: &gt;=3.12.7
+TRACE skipping importlib-metadata&gt;=6 ; python_full_version &lt; &#x27;3.10&#x27; and extra == &#x27;core&#x27; because of Requires-Python: &gt;=3.12.7
+TRACE skipping tomli&gt;=2.0.1 ; python_full_version &lt; &#x27;3.11&#x27; and extra == &#x27;core&#x27; because of Requires-Python: &gt;=3.12.7
+TRACE skipping importlib-metadata&gt;=7.0.2 ; python_full_version &lt; &#x27;3.10&#x27; and extra == &#x27;type&#x27; because of Requires-Python: &gt;=3.12.7
 DEBUG Searching for a compatible version of setuptools-scm (&gt;=5.0)
 TRACE Selecting candidate for setuptools-scm with range &gt;=5.0 with 84 remote versions
 TRACE found candidate for package PackageName(&quot;setuptools-scm&quot;) with range Ranges { segments: [(Included(&quot;5.0&quot;), Unbounded)] } after 1 steps: &quot;8.1.0&quot; version
 DEBUG Selecting: setuptools-scm==8.1.0 [compatible] (setuptools_scm-8.1.0-py3-none-any.whl)
-TRACE skipping typing-extensions ; python_full_version &lt; '3.10' because of Requires-Python: &gt;=3.12.7
-TRACE skipping tomli&gt;=1 ; python_full_version &lt; '3.11' because of Requires-Python: &gt;=3.12.7
-TRACE skipping typing-extensions ; python_full_version &lt; '3.11' and extra == 'test' because of Requires-Python: &gt;=3.12.7
+TRACE skipping typing-extensions ; python_full_version &lt; &#x27;3.10&#x27; because of Requires-Python: &gt;=3.12.7
+TRACE skipping tomli&gt;=1 ; python_full_version &lt; &#x27;3.11&#x27; because of Requires-Python: &gt;=3.12.7
+TRACE skipping typing-extensions ; python_full_version &lt; &#x27;3.11&#x27; and extra == &#x27;test&#x27; because of Requires-Python: &gt;=3.12.7
 DEBUG Adding transitive dependency for setuptools-scm==8.1.0: packaging&gt;=20
 DEBUG Adding transitive dependency for setuptools-scm==8.1.0: setuptools*
 DEBUG Searching for a compatible version of setuptools-scm[toml] (&gt;=5.0)
@@ -4003,9 +4003,9 @@ DEBUG Searching for a compatible version of setuptools-scm[toml] (==8.1.0)
 TRACE Selecting candidate for setuptools-scm with range ==8.1.0 with 84 remote versions
 TRACE found candidate for package PackageName(&quot;setuptools-scm&quot;) with range Ranges { segments: [(Included(&quot;8.1.0&quot;), Included(&quot;8.1.0&quot;))] } after 1 steps: &quot;8.1.0&quot; version
 DEBUG Selecting: setuptools-scm==8.1.0 [compatible] (setuptools_scm-8.1.0-py3-none-any.whl)
-TRACE skipping typing-extensions ; python_full_version &lt; '3.10' because of Requires-Python: &gt;=3.12.7
-TRACE skipping tomli&gt;=1 ; python_full_version &lt; '3.11' because of Requires-Python: &gt;=3.12.7
-TRACE skipping typing-extensions ; python_full_version &lt; '3.11' and extra == 'test' because of Requires-Python: &gt;=3.12.7
+TRACE skipping typing-extensions ; python_full_version &lt; &#x27;3.10&#x27; because of Requires-Python: &gt;=3.12.7
+TRACE skipping tomli&gt;=1 ; python_full_version &lt; &#x27;3.11&#x27; because of Requires-Python: &gt;=3.12.7
+TRACE skipping typing-extensions ; python_full_version &lt; &#x27;3.11&#x27; and extra == &#x27;test&#x27; because of Requires-Python: &gt;=3.12.7
 DEBUG Searching for a compatible version of wheel (&gt;=0.36.2)
 TRACE Selecting candidate for wheel with range &gt;=0.36.2 with 77 remote versions
 TRACE found candidate for package PackageName(&quot;wheel&quot;) with range Ranges { segments: [(Included(&quot;0.36.2&quot;), Unbounded)] } after 1 steps: &quot;0.45.0&quot; version
@@ -4066,16 +4066,16 @@ TRACE Selecting candidate for wheel with range &gt;=0.36.2 with 77 remote versio
 TRACE found candidate for package PackageName(&quot;wheel&quot;) with range Ranges { segments: [(Included(&quot;0.36.2&quot;), Unbounded)] } after 1 steps: &quot;0.45.0&quot; version
 TRACE Selecting candidate for setuptools with range &gt;=54.0 with 585 remote versions
 TRACE found candidate for package PackageName(&quot;setuptools&quot;) with range Ranges { segments: [(Included(&quot;54.0&quot;), Unbounded)] } after 1 steps: &quot;75.6.0&quot; version
-TRACE skipping importlib-metadata&gt;=6 ; python_full_version &lt; '3.10' and extra == 'core' because of Requires-Python: &gt;=3.12.7
-TRACE skipping tomli&gt;=2.0.1 ; python_full_version &lt; '3.11' and extra == 'core' because of Requires-Python: &gt;=3.12.7
-TRACE skipping importlib-metadata&gt;=7.0.2 ; python_full_version &lt; '3.10' and extra == 'type' because of Requires-Python: &gt;=3.12.7
+TRACE skipping importlib-metadata&gt;=6 ; python_full_version &lt; &#x27;3.10&#x27; and extra == &#x27;core&#x27; because of Requires-Python: &gt;=3.12.7
+TRACE skipping tomli&gt;=2.0.1 ; python_full_version &lt; &#x27;3.11&#x27; and extra == &#x27;core&#x27; because of Requires-Python: &gt;=3.12.7
+TRACE skipping importlib-metadata&gt;=7.0.2 ; python_full_version &lt; &#x27;3.10&#x27; and extra == &#x27;type&#x27; because of Requires-Python: &gt;=3.12.7
 DEBUG Searching for a compatible version of setuptools-scm (&gt;=5.0, &lt;9.0)
 TRACE Selecting candidate for setuptools-scm with range &gt;=5.0, &lt;9.0 with 84 remote versions
 TRACE found candidate for package PackageName(&quot;setuptools-scm&quot;) with range Ranges { segments: [(Included(&quot;5.0&quot;), Excluded(&quot;9.0&quot;))] } after 1 steps: &quot;8.1.0&quot; version
 DEBUG Selecting: setuptools-scm==8.1.0 [compatible] (setuptools_scm-8.1.0-py3-none-any.whl)
-TRACE skipping typing-extensions ; python_full_version &lt; '3.10' because of Requires-Python: &gt;=3.12.7
-TRACE skipping tomli&gt;=1 ; python_full_version &lt; '3.11' because of Requires-Python: &gt;=3.12.7
-TRACE skipping typing-extensions ; python_full_version &lt; '3.11' and extra == 'test' because of Requires-Python: &gt;=3.12.7
+TRACE skipping typing-extensions ; python_full_version &lt; &#x27;3.10&#x27; because of Requires-Python: &gt;=3.12.7
+TRACE skipping tomli&gt;=1 ; python_full_version &lt; &#x27;3.11&#x27; because of Requires-Python: &gt;=3.12.7
+TRACE skipping typing-extensions ; python_full_version &lt; &#x27;3.11&#x27; and extra == &#x27;test&#x27; because of Requires-Python: &gt;=3.12.7
 DEBUG Adding transitive dependency for setuptools-scm==8.1.0: packaging&gt;=20
 DEBUG Adding transitive dependency for setuptools-scm==8.1.0: setuptools*
 DEBUG Searching for a compatible version of setuptools-scm[toml] (&gt;=5.0, &lt;9.0)
@@ -4090,9 +4090,9 @@ DEBUG Searching for a compatible version of setuptools-scm[toml] (==8.1.0)
 TRACE Selecting candidate for setuptools-scm with range ==8.1.0 with 84 remote versions
 TRACE found candidate for package PackageName(&quot;setuptools-scm&quot;) with range Ranges { segments: [(Included(&quot;8.1.0&quot;), Included(&quot;8.1.0&quot;))] } after 1 steps: &quot;8.1.0&quot; version
 DEBUG Selecting: setuptools-scm==8.1.0 [compatible] (setuptools_scm-8.1.0-py3-none-any.whl)
-TRACE skipping typing-extensions ; python_full_version &lt; '3.10' because of Requires-Python: &gt;=3.12.7
-TRACE skipping tomli&gt;=1 ; python_full_version &lt; '3.11' because of Requires-Python: &gt;=3.12.7
-TRACE skipping typing-extensions ; python_full_version &lt; '3.11' and extra == 'test' because of Requires-Python: &gt;=3.12.7
+TRACE skipping typing-extensions ; python_full_version &lt; &#x27;3.10&#x27; because of Requires-Python: &gt;=3.12.7
+TRACE skipping tomli&gt;=1 ; python_full_version &lt; &#x27;3.11&#x27; because of Requires-Python: &gt;=3.12.7
+TRACE skipping typing-extensions ; python_full_version &lt; &#x27;3.11&#x27; and extra == &#x27;test&#x27; because of Requires-Python: &gt;=3.12.7
 DEBUG Searching for a compatible version of wheel (&gt;=0.36.2)
 TRACE Selecting candidate for wheel with range &gt;=0.36.2 with 77 remote versions
 TRACE found candidate for package PackageName(&quot;wheel&quot;) with range Ranges { segments: [(Included(&quot;0.36.2&quot;), Unbounded)] } after 1 steps: &quot;0.45.0&quot; version
@@ -4137,23 +4137,23 @@ Installed 1 package in 1ms
 python is /Users/dwt/Code/Projekte/nix/devenv-reproduction/venv/bin/python
 ++ python --version
 Python 3.12.7
-++ python -c 'import ibm_db'
-++ python -c 'import pymssql'
+++ python -c &#x27;import ibm_db&#x27;
+++ python -c &#x27;import pymssql&#x27;
 </code></pre>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dwt">@dwt</a> on 2024-11-23 16:11</div>
-            <div class="timeline-body"><p>I'm not quite sure what happened, but I cannot reproduce the bug anymore with uv --version 0.4.25.</p>
-<p>I'm quite sure this is the same uv version that showed the bug initially. Especially since this is all happening in a flake locked nix environment this doubly perplexes me.</p>
+            <div class="timeline-body"><p>I&#x27;m not quite sure what happened, but I cannot reproduce the bug anymore with uv --version 0.4.25.</p>
+<p>I&#x27;m quite sure this is the same uv version that showed the bug initially. Especially since this is all happening in a flake locked nix environment this doubly perplexes me.</p>
 <p>Any Idea what could have triggered this?</p>
-<p>I'll reopen when I am able to reproduce again.</p>
+<p>I&#x27;ll reopen when I am able to reproduce again.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dwt on 2024-11-23 16:11</div>
+            <div class="event">Closed by <a href="https://github.com/dwt">@dwt</a> on 2024-11-23 16:11</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dwt">@dwt</a> on 2024-11-23 16:28</div>
@@ -4166,7 +4166,7 @@ Python 3.12.7
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @dwt on 2024-11-23 18:55</div>
+            <div class="event">Reopened by <a href="https://github.com/dwt">@dwt</a> on 2024-11-23 18:55</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dwt">@dwt</a> on 2024-11-23 18:55</div>
@@ -4181,7 +4181,7 @@ Python 3.12.7
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-11-26 21:10</div>
-            <div class="timeline-body"><p>uv shouldn't be involved in the compiler selection at all, we're just implementing PEP 517. You can check this by testing against e.g. <code>python -m build</code>, the reference implementation. If you find that this is still related to uv, feel free to open a separate issue.</p>
+            <div class="timeline-body"><p>uv shouldn&#x27;t be involved in the compiler selection at all, we&#x27;re just implementing PEP 517. You can check this by testing against e.g. <code>python -m build</code>, the reference implementation. If you find that this is still related to uv, feel free to open a separate issue.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -4192,7 +4192,7 @@ Python 3.12.7
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @konstin on 2024-11-27 09:28</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/konstin">@konstin</a> on 2024-11-27 09:28</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-11-27 09:28</div>
@@ -4207,7 +4207,7 @@ Python 3.12.7
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:27:58 UTC
+        Synced at 2026-01-20 19:35:05 UTC
     </footer>
 </body>
 </html>

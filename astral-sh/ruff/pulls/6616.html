@@ -23,20 +23,20 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a></div>
-            <div class="timeline-body"><p>Closes https://github.com/astral-sh/ruff/issues/6442</p>
+            <div class="timeline-body"><p>Closes <a href="https://github.com/astral-sh/ruff/issues/6442">astral-sh/ruff#6442</a></p>
 <p>Python string formatting like <code>&quot;hello {place}&quot;.format(place=&quot;world&quot;)</code> supports format specifications for replaced content such as <code>&quot;hello {place:&gt;10}&quot;.format(place=&quot;world&quot;)</code> which will align the text to the right in a container filled up to ten characters.</p>
-<p>Ruff parses formatted strings into <code>FormatPart</code>s each of which is either a <code>Field</code> (content in <code>{...}</code>) or a <code>Literal</code> (the normal content). Fields are parsed into name and format specifier sections (we'll ignore conversion specifiers for now).</p>
-<p>There are a myriad of specifiers that can be used in a <code>FormatSpec</code>. Unfortunately for linters, the specifier values can be dynamically set. For example, <code>&quot;hello {place:{align}{width}}&quot;.format(place=&quot;world&quot;, align=&quot;&gt;&quot;, width=10)</code> and <code>&quot;hello {place:{fmt}}&quot;.format(place=&quot;world&quot;, fmt=&quot;&gt;10&quot;)</code> will yield the same string as before but variables can be used to determine the formatting. In this case, when parsing the format specifier we can't know what <em>kind</em> of specifier is being used as their meaning is determined by both position and value.</p>
-<p>Ruff does not support nested replacements and our current data model does not support the concept. Here the data model is updated to support this concept, although linting of specifications with replacements will be inherently limited. We could split format specifications into two types, one without any replacements that we can perform lints with and one with replacements that we cannot inspect. However, it seems excessive to drop all parsing of format specifiers due to the presence of a replacement. Instead, I've opted to parse replacements eagerly and ignore their possible effect on other format specifiers. This will allow us to retain a simple interface for <code>FormatSpec</code> and most syntax checks. We may need to add some handling to relax errors if a replacement was seen previously.</p>
-<p>It's worth noting that the nested replacement <em>can</em> also include a format specification although it may fail at runtime if you produce an invalid outer format specification. For example, <code>&quot;hello {place:{fmt:&lt;2}}&quot;.format(place=&quot;world&quot;, fmt=&quot;&gt;10&quot;)</code> is valid so we need to represent each nested replacement as a full <code>FormatPart</code>.</p>
-<h2>Test plan</h2>
+<p>Ruff parses formatted strings into <code>FormatPart</code>s each of which is either a <code>Field</code> (content in <code>{...}</code>) or a <code>Literal</code> (the normal content). Fields are parsed into name and format specifier sections (we&#x27;ll ignore conversion specifiers for now).</p>
+<p>There are a myriad of specifiers that can be used in a <code>FormatSpec</code>. Unfortunately for linters, the specifier values can be dynamically set. For example, <code>&quot;hello {place:{align}{width}}&quot;.format(place=&quot;world&quot;, align=&quot;&gt;&quot;, width=10)</code> and <code>&quot;hello {place:{fmt}}&quot;.format(place=&quot;world&quot;, fmt=&quot;&gt;10&quot;)</code> will yield the same string as before but variables can be used to determine the formatting. In this case, when parsing the format specifier we can&#x27;t know what <em>kind</em> of specifier is being used as their meaning is determined by both position and value.</p>
+<p>Ruff does not support nested replacements and our current data model does not support the concept. Here the data model is updated to support this concept, although linting of specifications with replacements will be inherently limited. We could split format specifications into two types, one without any replacements that we can perform lints with and one with replacements that we cannot inspect. However, it seems excessive to drop all parsing of format specifiers due to the presence of a replacement. Instead, I&#x27;ve opted to parse replacements eagerly and ignore their possible effect on other format specifiers. This will allow us to retain a simple interface for <code>FormatSpec</code> and most syntax checks. We may need to add some handling to relax errors if a replacement was seen previously.</p>
+<p>It&#x27;s worth noting that the nested replacement <em>can</em> also include a format specification although it may fail at runtime if you produce an invalid outer format specification. For example, <code>&quot;hello {place:{fmt:&lt;2}}&quot;.format(place=&quot;world&quot;, fmt=&quot;&gt;10&quot;)</code> is valid so we need to represent each nested replacement as a full <code>FormatPart</code>.</p>
+Test plan
 <p>Adding unit tests for <code>FormatSpec</code> parsing and snapshots for PLE1300</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_literal/src/format.rs</code>:300 on 2023-08-16 14:20</div>
             <div class="timeline-body"><p>Nit: I think we can simplify this by moving it outside of the loop and do:</p>
-<pre><code class="language-rust">let Some(text) = text.strip_prefix('{') else {
+<pre><code>let Some(text) = text.strip_prefix(&#x27;{&#x27;) else {
 	return Ok((None, ext));
 }
 </code></pre>
@@ -50,8 +50,8 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_literal/src/format.rs</code>:209 on 2023-08-16 14:23</div>
             <div class="timeline-body"><p>My understanding is that different components of the spec can use nested parts. For example, this seems to be valid:</p>
-<pre><code class="language-python">&gt;&gt;&gt; &quot;{0}{1:*^{width}}&quot;.format(&quot;a&quot;, &quot;1&quot;, width=15)
-'a*******1*******'
+<pre><code>&gt;&gt;&gt; &quot;{0}{1:*^{width}}&quot;.format(&quot;a&quot;, &quot;1&quot;, width=15)
+&#x27;a*******1*******&#x27;
 </code></pre>
 <p>Is the approach here limited to nested <code>format_type</code>?</p>
 </div>
@@ -62,7 +62,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-16 14:24</div>
-            <div class="timeline-body"><p>Could you extend the PR summary with what parsing logic you changed? It is difficult to me to review this PR because I'm unfamiliar with format specifications and <code>format.rs</code></p>
+            <div class="timeline-body"><p>Could you extend the PR summary with what parsing logic you changed? It is difficult to me to review this PR because I&#x27;m unfamiliar with format specifications and <code>format.rs</code></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -71,9 +71,9 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_literal/src/format.rs</code>:209 on 2023-08-16 14:26</div>
-            <div class="timeline-body"><p>I don't know which of the components are allowed to be nested. It might be <em>any</em> of them? E.g., this works too:</p>
-<pre><code class="language-python">&gt;&gt;&gt; &quot;{0}{1:*{width}15}&quot;.format(&quot;a&quot;, &quot;1&quot;, width=&quot;^&quot;)
-'a*******1*******'
+            <div class="timeline-body"><p>I don&#x27;t know which of the components are allowed to be nested. It might be <em>any</em> of them? E.g., this works too:</p>
+<pre><code>&gt;&gt;&gt; &quot;{0}{1:*{width}15}&quot;.format(&quot;a&quot;, &quot;1&quot;, width=&quot;^&quot;)
+&#x27;a*******1*******&#x27;
 </code></pre>
 </div>
         </div>
@@ -84,24 +84,24 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_literal/src/format.rs</code>:209 on 2023-08-16 14:27</div>
             <div class="timeline-body"><p>Ah, so does this:</p>
-<pre><code class="language-python">&gt;&gt;&gt; &quot;{0}{1:{width}15}&quot;.format(&quot;a&quot;, &quot;1&quot;, width=&quot;*^&quot;)
-'a*******1*******'
+<pre><code>&gt;&gt;&gt; &quot;{0}{1:{width}15}&quot;.format(&quot;a&quot;, &quot;1&quot;, width=&quot;*^&quot;)
+&#x27;a*******1*******&#x27;
 </code></pre>
-<p>So it may not even be possible to capture this with this data model, since we can't map from part to nested expression.</p>
+<p>So it may not even be possible to capture this with this data model, since we can&#x27;t map from part to nested expression.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-16 14:28</div>
-            <div class="timeline-body"><p>Ya'll are too fast! I'm still working on this — I should have opened it as a draft but was in the process of writing up the body.</p>
-<p>I added support for a replacement at the end of the specification (before the format type) but as Charlie has noted I've realized that we actually need to support <em>any</em> of the items in specification being a replacement. I'll need to consider a bit further the best way to accomplish this.</p>
+            <div class="timeline-body"><p>Ya&#x27;ll are too fast! I&#x27;m still working on this — I should have opened it as a draft but was in the process of writing up the body.</p>
+<p>I added support for a replacement at the end of the specification (before the format type) but as Charlie has noted I&#x27;ve realized that we actually need to support <em>any</em> of the items in specification being a replacement. I&#x27;ll need to consider a bit further the best way to accomplish this.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Converted to draft by @zanieb on 2023-08-16 14:28</div>
+            <div class="event">Converted to draft by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-16 14:28</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-16 14:30</div>
-            <div class="timeline-body"><p>We might need to just detect that the spec has nested parts, and return some other representation that isn't really analyzable by downstream rules (since we can't know how the spec will be resolved).</p>
+            <div class="timeline-body"><p>We might need to just detect that the spec has nested parts, and return some other representation that isn&#x27;t really analyzable by downstream rules (since we can&#x27;t know how the spec will be resolved).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -142,7 +142,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-16 16:45</div>
-            <div class="timeline-body"><p>My decision to just extend <code>FormatSpec</code> may not work since all of these <code>FormatSpec.format_...</code> methods will drop replacements. I'm unsure of the best approach.</p>
+            <div class="timeline-body"><p>My decision to just extend <code>FormatSpec</code> may not work since all of these <code>FormatSpec.format_...</code> methods will drop replacements. I&#x27;m unsure of the best approach.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -153,33 +153,33 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-16 16:56</div>
             <div class="timeline-body"><p>Sure! The following test will pass</p>
-<pre><code class="language-rust">        assert_eq!(
+<pre><code>        assert_eq!(
             FormatSpec::parse(&quot;{x}d&quot;)
                 .unwrap()
                 .format_int(&amp;BigInt::from_bytes_be(Sign::Plus, b&quot;\x10&quot;)),
             Ok(&quot;16&quot;.to_owned())
         );
 </code></pre>
-<p>but <code>{x}</code> could change the formatting and should not necessarily be ignored. Since all the <code>format_...</code> methods return results we could just return an error if replacements are present. I'm not sure where these methods are really used though.</p>
+<p>but <code>{x}</code> could change the formatting and should not necessarily be ignored. Since all the <code>format_...</code> methods return results we could just return an error if replacements are present. I&#x27;m not sure where these methods are really used though.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-16 16:59</div>
-            <div class="timeline-body"><p>With https://github.com/astral-sh/ruff/pull/6616/commits/e5d6ec35b568941471e93a0079a15f3511eb6c2c I've updated PLE1300 to lint nested replacements as well.</p>
+            <div class="timeline-body"><p>With <a href="https://github.com/astral-sh/ruff/pull/6616">astral-sh/ruff#6616</a>/commits/e5d6ec35b568941471e93a0079a15f3511eb6c2c I&#x27;ve updated PLE1300 to lint nested replacements as well.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-16 17:01</div>
-            <div class="timeline-body"><p>Ahhh I see, you're referring to the methods that actually <em>use</em> this to format things. Can we... remove those? I suspect they came from RustPython which needs to support these at runtime. Otherwise, I'd suggest returning an error in those cases.</p>
+            <div class="timeline-body"><p>Ahhh I see, you&#x27;re referring to the methods that actually <em>use</em> this to format things. Can we... remove those? I suspect they came from RustPython which needs to support these at runtime. Otherwise, I&#x27;d suggest returning an error in those cases.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-16 17:08</div>
-            <div class="timeline-body"><h2>PR Check Results</h2>
-<h3>Ecosystem</h3>
+            <div class="timeline-body">PR Check Results
+Ecosystem
 <p>✅ ecosystem check detected no changes.</p>
-<h3>Benchmark</h3>
-<h4>Linux</h4>
+Benchmark
+Linux
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 formatter/large/dataset.py                 1.01      3.6±0.04ms    11.3 MB/sec    1.00      3.6±0.03ms    11.4 MB/sec
@@ -195,7 +195,7 @@ linter/default-rules/numpy/ctypeslib.py    1.01  1227.4±44.65µs    13.6 MB/sec
 linter/default-rules/numpy/globals.py      1.00    141.0±2.59µs    20.9 MB/sec    1.04    145.9±6.01µs    20.2 MB/sec
 linter/default-rules/pydantic/types.py     1.00      2.5±0.01ms    10.3 MB/sec    1.00      2.5±0.02ms    10.2 MB/sec
 </code></pre>
-<h4>Windows</h4>
+Windows
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 formatter/large/dataset.py                 1.00      4.2±0.10ms     9.7 MB/sec    1.00      4.2±0.08ms     9.7 MB/sec
@@ -211,16 +211,16 @@ linter/default-rules/numpy/ctypeslib.py    1.00  1489.7±19.61µs    11.2 MB/sec
 linter/default-rules/numpy/globals.py      1.00    176.5±4.46µs    16.7 MB/sec    1.02    180.4±3.75µs    16.4 MB/sec
 linter/default-rules/pydantic/types.py     1.00      3.2±0.06ms     8.1 MB/sec    1.01      3.2±0.04ms     8.0 MB/sec
 </code></pre>
-<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @zanieb on 2023-08-16 17:24</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-16 17:24</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-16 17:24</div>
-            <div class="timeline-body"><p>Great that works for me https://github.com/astral-sh/ruff/pull/6624</p>
+            <div class="timeline-body"><p>Great that works for me <a href="https://github.com/astral-sh/ruff/pull/6624">astral-sh/ruff#6624</a></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -234,7 +234,7 @@ linter/default-rules/pydantic/types.py     1.00      3.2±0.06ms     8.1 MB/sec 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff/src/rules/pylint/snapshots/ruff__rules__pylint__tests__PLE1300_bad_string_format_character.py.snap</code>:59 on 2023-08-16 17:31</div>
-            <div class="timeline-body"><p>I'd really like better range information here. Would that be hard for me to add to <code>FormatSpec</code>?</p>
+            <div class="timeline-body"><p>I&#x27;d really like better range information here. Would that be hard for me to add to <code>FormatSpec</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -247,7 +247,7 @@ linter/default-rules/pydantic/types.py     1.00      3.2±0.06ms     8.1 MB/sec 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pylint/snapshots/ruff__rules__pylint__tests__PLE1300_bad_string_format_character.py.snap</code>:59 on 2023-08-16 17:58</div>
-            <div class="timeline-body"><p>It might be challenging because the thing we get on the left-hand side is the parsed representation which doesn't always match the literal representation. For example, the string on the left could be an implicit concatenation, or it could contain escaped characters, etc...</p>
+            <div class="timeline-body"><p>It might be challenging because the thing we get on the left-hand side is the parsed representation which doesn&#x27;t always match the literal representation. For example, the string on the left could be an implicit concatenation, or it could contain escaped characters, etc...</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -262,23 +262,23 @@ linter/default-rules/pydantic/types.py     1.00      3.2±0.06ms     8.1 MB/sec 
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_literal/src/format.rs</code>:319 on 2023-08-16 18:02</div>
             <div class="timeline-body"><p>You can avoid <code>RefCell</code> like:</p>
-<pre><code class="language-rust">diff --git a/crates/ruff_python_literal/src/format.rs b/crates/ruff_python_literal/src/format.rs
+<pre><code>diff --git a/crates/ruff_python_literal/src/format.rs b/crates/ruff_python_literal/src/format.rs
 index ed56457ef..6df394895 100644
 --- a/crates/ruff_python_literal/src/format.rs
 +++ b/crates/ruff_python_literal/src/format.rs
 @@ -316,10 +316,9 @@ fn parse_precision(text: &amp;str) -&gt; Result&lt;(Option&lt;usize&gt;, &amp;str), FormatSpecError&gt;
  
  /// Parses a format part within a format spec
- fn parse_nested_format_part&lt;'a&gt;(
--    parts: &amp;'a RefCell&lt;Vec&lt;FormatPart&gt;&gt;,
+ fn parse_nested_format_part&lt;&#x27;a&gt;(
+-    parts: &amp;&#x27;a RefCell&lt;Vec&lt;FormatPart&gt;&gt;,
 +    parts: &amp;mut Vec&lt;FormatPart&gt;,
-     text: &amp;'a str,
- ) -&gt; Result&lt;&amp;'a str, FormatSpecError&gt; {
+     text: &amp;&#x27;a str,
+ ) -&gt; Result&lt;&amp;&#x27;a str, FormatSpecError&gt; {
 -    let mut parts = parts.borrow_mut();
      let mut end_bracket_pos = None;
      let mut left = String::new();
  
-@@ -356,25 +355,25 @@ fn parse_nested_format_part&lt;'a&gt;(
+@@ -356,25 +355,25 @@ fn parse_nested_format_part&lt;&#x27;a&gt;(
  
  impl FormatSpec {
      pub fn parse(text: &amp;str) -&gt; Result&lt;Self, FormatSpecError&gt; {
@@ -335,7 +335,7 @@ index ed56457ef..6df394895 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_literal/src/format.rs</code>:319 on 2023-08-16 18:02</div>
-            <div class="timeline-body"><p>I believe the key is to avoid marking the vector as having the same lifetime as the return type. I.e., you want to <em>avoid</em> <code>parts: &amp;'a mut Vec&lt;FormatPart&gt;</code>.</p>
+            <div class="timeline-body"><p>I believe the key is to avoid marking the vector as having the same lifetime as the return type. I.e., you want to <em>avoid</em> <code>parts: &amp;&#x27;a mut Vec&lt;FormatPart&gt;</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -353,12 +353,12 @@ index ed56457ef..6df394895 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_literal/src/format.rs</code>:892 on 2023-08-16 18:05</div>
-            <div class="timeline-body"><p>Not for this PR, but I feel like these are good candidates for <code>insta::assert_debug_snapshot</code>, so that we don't have to write out and maintain the expectations manually.</p>
+            <div class="timeline-body"><p>Not for this PR, but I feel like these are good candidates for <code>insta::assert_debug_snapshot</code>, so that we don&#x27;t have to write out and maintain the expectations manually.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_literal/src/format.rs</code>:324 on 2023-08-16 18:06</div>
-            <div class="timeline-body"><p>Nit: move these below the <code>if text.is_empty()</code>, to make clear that they're only used in the <code>else</code> case?</p>
+            <div class="timeline-body"><p>Nit: move these below the <code>if text.is_empty()</code>, to make clear that they&#x27;re only used in the <code>else</code> case?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -371,7 +371,7 @@ index ed56457ef..6df394895 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_literal/src/format.rs</code>:355 on 2023-08-16 18:06</div>
-            <div class="timeline-body"><p>A bit tedious but I don't know that I have much better.</p>
+            <div class="timeline-body"><p>A bit tedious but I don&#x27;t know that I have much better.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -384,7 +384,7 @@ index ed56457ef..6df394895 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_literal/src/format.rs</code>:319 on 2023-08-16 18:07</div>
-            <div class="timeline-body"><p>(We don't actually <em>need</em> multiple and dynamic mutability rules here so it's better to avoid <code>RefCell</code>.)</p>
+            <div class="timeline-body"><p>(We don&#x27;t actually <em>need</em> multiple and dynamic mutability rules here so it&#x27;s better to avoid <code>RefCell</code>.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -402,7 +402,7 @@ index ed56457ef..6df394895 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_python_literal/src/format.rs</code>:892 on 2023-08-16 18:12</div>
-            <div class="timeline-body"><p>Makes sense, I tried to match the existing pattern but I agree that's more maintainable.</p>
+            <div class="timeline-body"><p>Makes sense, I tried to match the existing pattern but I agree that&#x27;s more maintainable.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -411,7 +411,7 @@ index ed56457ef..6df394895 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_python_literal/src/format.rs</code>:349 on 2023-08-16 19:27</div>
-            <div class="timeline-body"><p>I guess? Is <code>split_at(idx + 1)</code> clearer? I added a couple test cases and can't make it fail.</p>
+            <div class="timeline-body"><p>I guess? Is <code>split_at(idx + 1)</code> clearer? I added a couple test cases and can&#x27;t make it fail.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -429,10 +429,10 @@ index ed56457ef..6df394895 100644
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @zanieb on 2023-08-17 14:07</div>
+            <div class="event">Merged by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-17 14:07</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2023-08-17 14:07</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-17 14:07</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2023-08-17 14:07</div>
@@ -440,7 +440,7 @@ index ed56457ef..6df394895 100644
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:59:34 UTC
+        Synced at 2026-01-20 18:56:23 UTC
     </footer>
 </body>
 </html>

@@ -23,17 +23,17 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/jarkonik">@jarkonik</a></div>
-            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+            <div class="timeline-body">Please complete the following tasks
 <ul>
 <li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
 <li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
 </ul>
-<h3>Rust Version</h3>
+Rust Version
 <p>rustc 1.62.1 (e092d0b6b 2022-07-16)</p>
-<h3>Clap Version</h3>
+Clap Version
 <p>master</p>
-<h3>Minimal reproducible code</h3>
-<pre><code class="language-rust">use clap::{error::ErrorKind, Arg, ArgAction, Command};
+Minimal reproducible code
+<pre><code>use clap::{error::ErrorKind, Arg, ArgAction, Command};
 
 fn main() {
     let result = Command::new(&quot;flag_conflict&quot;)
@@ -53,26 +53,26 @@ fn main() {
     assert_eq!(result.err().unwrap().kind(), ErrorKind::ArgumentConflict);
 }
 </code></pre>
-<h3>Steps to reproduce the bug with the above code</h3>
+Steps to reproduce the bug with the above code
 <p>cargo run</p>
-<h3>Actual Behaviour</h3>
+Actual Behaviour
 <p>When using <code>.action(ArgAction::Help)</code> or <code>.action(ArgAction::Version)</code> and setting <code>.exclusive(true)</code> on one of them and when input contains both flags the returned error is <code>DisplayError</code> or <code>DisplayVersion</code>.</p>
-<h3>Expected Behaviour</h3>
+Expected Behaviour
 <p>When using <code>.action(ArgAction::Help)</code> or <code>.action(ArgAction::Version)</code> and setting <code>.exclusive(true)</code> on one of them and when input contains both flags it seems intuitive for the error to be <code>ArgumentConflict</code></p>
-<h3>Additional Context</h3>
-<p>Would enable implementing <code>false</code> and <code>true</code> coreutils commands (https://github.com/uutils/coreutils/pull/3784) using <code>ArgAction::Version</code> and <code>ArgAction::Help</code></p>
-<h3>Debug Output</h3>
+Additional Context
+<p>Would enable implementing <code>false</code> and <code>true</code> coreutils commands (<a href="https://github.com/uutils/coreutils/pull/3784">uutils/coreutils#3784</a>) using <code>ArgAction::Version</code> and <code>ArgAction::Help</code></p>
+Debug Output
 <p><em>No response</em></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">C-bug</span> added by @jarkonik on 2022-08-09 16:03</div>
+            <div class="event">Label <span class="label">C-bug</span> added by <a href="https://github.com/jarkonik">@jarkonik</a> on 2022-08-09 16:03</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "`.action(ArgAction::Help)` and `ArgAction::Version` bypass " to "`.action(ArgAction::Help)` and `ArgAction::Version` bypass `exclusive(true)`" by @jarkonik on 2022-08-09 16:03</div>
+            <div class="event">Renamed from &quot;`.action(ArgAction::Help)` and `ArgAction::Version` bypass &quot; to &quot;`.action(ArgAction::Help)` and `ArgAction::Version` bypass `exclusive(true)`&quot; by <a href="https://github.com/jarkonik">@jarkonik</a> on 2022-08-09 16:03</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../pulls/4047.html">clap-rs/clap#4047</a> on 2022-08-09 16:05</div>
+            <div class="event">Referenced in <a>clap-rs/clap#4047</a> on 2022-08-09 16:05</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-08-09 16:14</div>
@@ -85,13 +85,13 @@ fn main() {
             <div class="timeline-body"><blockquote>
 <p>Could you expand on why those flags need to be exclusive?</p>
 </blockquote>
-<p>It's a weird behaviour of the GNU true and false utils. So a command like this</p>
+<p>It&#x27;s a weird behaviour of the GNU true and false utils. So a command like this</p>
 <pre><code>true --version
 </code></pre>
 <p>would show the version, but</p>
 <pre><code>true --version anotherarg
 </code></pre>
-<p>wouldn't. I believe the rationale is to maintain as much compatibility as possible with versions of the <code>true</code> and <code>false</code> commands that ignore all their arguments (like FreeBSD and built-ins of Bash).</p>
+<p>wouldn&#x27;t. I believe the rationale is to maintain as much compatibility as possible with versions of the <code>true</code> and <code>false</code> commands that ignore all their arguments (like FreeBSD and built-ins of Bash).</p>
 <p>We can work around this, but it was surprising to see the option being ignored when the <code>ArgAction</code> changed.</p>
 </div>
         </div>
@@ -100,22 +100,22 @@ fn main() {
             <div class="timeline-body"><blockquote>
 <p>We can work around this, but it was surprising to see the option being ignored when the ArgAction changed.</p>
 </blockquote>
-<p>ArgActions are specified in the documentation  for how to react when evaluating an argument, as in they are immediately processed.  An important aspect of this is that we want to make actions pluggable and would like toe avoid special casing as that is something the user can't replicate.</p>
+<p>ArgActions are specified in the documentation  for how to react when evaluating an argument, as in they are immediately processed.  An important aspect of this is that we want to make actions pluggable and would like toe avoid special casing as that is something the user can&#x27;t replicate.</p>
 <blockquote>
-<p>It's a weird behaviour of the GNU true and false utils.</p>
+<p>It&#x27;s a weird behaviour of the GNU true and false utils.</p>
 </blockquote>
 <p><code>exclusive(true)</code> will cause an error which is the opposite of what you want here.  To implement the GNU behavior, you would need to check if any other arg exists and ignore version/help if it does.</p>
-<p>Considering the defined behavior of ArgAction, what seems like a relatively small use case (not even the described use case can rely on what is being requested, still small if it did), and the fact that its possible to workaround it, I'm going to go ahead and close this as part of our effort to limit the scope of clap to help keep binary sizes and compile times down</p>
+<p>Considering the defined behavior of ArgAction, what seems like a relatively small use case (not even the described use case can rely on what is being requested, still small if it did), and the fact that its possible to workaround it, I&#x27;m going to go ahead and close this as part of our effort to limit the scope of clap to help keep binary sizes and compile times down</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @epage on 2022-08-15 13:45</div>
+            <div class="event">Closed by <a href="https://github.com/epage">@epage</a> on 2022-08-15 13:45</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">A-parsing</span> added by @epage on 2022-08-15 13:46</div>
+            <div class="event">Label <span class="label">A-parsing</span> added by <a href="https://github.com/epage">@epage</a> on 2022-08-15 13:46</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">S-wont-fix</span> added by @epage on 2022-08-15 13:46</div>
+            <div class="event">Label <span class="label">S-wont-fix</span> added by <a href="https://github.com/epage">@epage</a> on 2022-08-15 13:46</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tertsdiepraam">@tertsdiepraam</a> on 2022-08-15 16:25</div>
@@ -126,7 +126,7 @@ fn main() {
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:48:42 UTC
+        Synced at 2026-01-20 19:59:12 UTC
     </footer>
 </body>
 </html>

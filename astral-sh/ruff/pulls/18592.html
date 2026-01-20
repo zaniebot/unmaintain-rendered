@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Fixes #18590 by adding parentheses around lambdas and if expressions in <code>for</code> loop iterators for FURB122 and FURB142. I also updated the docs on the helper function to reflect the part actually being parenthesized and the new checks.</p>
-<p>The <code>lambda</code> case actually causes a <code>TypeError</code> at runtime, but I think it's still worth handling to avoid causing a syntax error.</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; s = set()
+<p>The <code>lambda</code> case actually causes a <code>TypeError</code> at runtime, but I think it&#x27;s still worth handling to avoid causing a syntax error.</p>
+<pre><code>&gt;&gt;&gt; s = set()
 ... for x in (1,) if True else (2,):
 ...     s.add(-x)
 ... for x in lambda: 0:
@@ -36,36 +36,36 @@ Traceback (most recent call last):
   File &quot;&lt;python-input-0&gt;&quot;, line 4, in &lt;module&gt;
     for x in lambda: 0:
              ^^^^^^^^^
-TypeError: 'function' object is not iterable
+TypeError: &#x27;function&#x27; object is not iterable
 </code></pre>
-<h2>Test Plan</h2>
+Test Plan
 <p>New test cases based on the bug report</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-06-09 13:52</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-09 13:52</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-06-09 13:52</div>
+            <div class="event">Label <span class="label">fixes</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-09 13:52</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @ntBre on 2025-06-09 13:57</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-09 13:57</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-09 13:58</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-06-09 14:13</div>
-            <div class="timeline-body"><p>I think we only want to parenthesize if the fix would write out a comprehension and if it's not already parenthesized, right? So maybe we need to do something like this:</p>
-<pre><code class="language-diff">diff --git c/crates/ruff_linter/src/rules/refurb/rules/for_loop_set_mutations.rs w/crates/ruff_linter/src/rules/refurb/rules/for_loop_set_mutations.rs
+            <div class="timeline-body"><p>I think we only want to parenthesize if the fix would write out a comprehension and if it&#x27;s not already parenthesized, right? So maybe we need to do something like this:</p>
+<pre><code>diff --git c/crates/ruff_linter/src/rules/refurb/rules/for_loop_set_mutations.rs w/crates/ruff_linter/src/rules/refurb/rules/for_loop_set_mutations.rs
 index 08ccf08d7..84dd5e9a7 100644
 --- c/crates/ruff_linter/src/rules/refurb/rules/for_loop_set_mutations.rs
 +++ w/crates/ruff_linter/src/rules/refurb/rules/for_loop_set_mutations.rs
@@ -135,14 +135,14 @@ index 8f431ffcc..fa6b4a4d2 100644
 --- c/crates/ruff_linter/src/rules/refurb/rules/helpers.rs
 +++ w/crates/ruff_linter/src/rules/refurb/rules/helpers.rs
 @@ -21,6 +21,7 @@ use crate::checkers::ast::Checker;
- pub(super) fn parenthesize_loop_iter_if_necessary&lt;'a&gt;(
-     for_stmt: &amp;'a ast::StmtFor,
-     checker: &amp;'a Checker,
+ pub(super) fn parenthesize_loop_iter_if_necessary&lt;&#x27;a&gt;(
+     for_stmt: &amp;&#x27;a ast::StmtFor,
+     checker: &amp;&#x27;a Checker,
 +    iter_location: IterLocation,
- ) -&gt; Cow&lt;'a, str&gt; {
+ ) -&gt; Cow&lt;&#x27;a, str&gt; {
      let locator = checker.locator();
      let iter = for_stmt.iter.as_ref();
-@@ -42,7 +43,25 @@ pub(super) fn parenthesize_loop_iter_if_necessary&lt;'a&gt;(
+@@ -42,7 +43,25 @@ pub(super) fn parenthesize_loop_iter_if_necessary&lt;&#x27;a&gt;(
          ast::Expr::Tuple(tuple) if !tuple.parenthesized =&gt; {
              Cow::Owned(format!(&quot;({iter_in_source})&quot;))
          }
@@ -186,9 +186,9 @@ index 8f431ffcc..fa6b4a4d2 100644
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-09 14:27</div>
             <div class="timeline-body"><p>I think we will have already bailed out if the range is already parenthesized:</p>
 <p>https://github.com/astral-sh/ruff/blob/931577219f894630ef7ce963b7cab3b0ff7a5a65/crates/ruff_linter/src/rules/refurb/rules/helpers.rs#L28-L37</p>
-<p>but you're probably right about the callable part. I'll work on a test case for that.</p>
-<p>I did also notice the two <code>helpers</code> modules. Which way would you merge them? Looks like we have a pretty even mix of <code>rules/LINTER/helpers.rs</code> and <code>rules/LINTER/rules/helpers.rs</code> :smile: I'd probably lean toward <code>LINTER/helpers.rs</code></p>
-<pre><code class="language-shell">&gt; fd helpers.rs
+<p>but you&#x27;re probably right about the callable part. I&#x27;ll work on a test case for that.</p>
+<p>I did also notice the two <code>helpers</code> modules. Which way would you merge them? Looks like we have a pretty even mix of <code>rules/LINTER/helpers.rs</code> and <code>rules/LINTER/rules/helpers.rs</code> :smile: I&#x27;d probably lean toward <code>LINTER/helpers.rs</code></p>
+<pre><code>&gt; fd helpers.rs
 crates/ruff_linter/src/cst/helpers.rs
 crates/ruff_linter/src/rules/airflow/helpers.rs
 crates/ruff_linter/src/rules/flake8_2020/helpers.rs
@@ -231,7 +231,7 @@ crates/ruff_python_parser/src/parser/helpers.rs
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-06-09 17:41</div>
             <div class="timeline-body"><blockquote>
-<p>I did also notice the two helpers modules. Which way would you merge them? Looks like we have a pretty even mix of rules/LINTER/helpers.rs and rules/LINTER/rules/helpers.rs 😄 I'd probably lean toward LINTER/helpers.rs</p>
+<p>I did also notice the two helpers modules. Which way would you merge them? Looks like we have a pretty even mix of rules/LINTER/helpers.rs and rules/LINTER/rules/helpers.rs 😄 I&#x27;d probably lean toward LINTER/helpers.rs</p>
 </blockquote>
 <p>yikes! yeah I agree - but maybe should be a separate PR</p>
 </div>
@@ -241,10 +241,10 @@ crates/ruff_python_parser/src/parser/helpers.rs
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @ntBre on 2025-06-09 20:07</div>
+            <div class="event">Merged by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-09 20:07</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ntBre on 2025-06-09 20:07</div>
+            <div class="event">Closed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-09 20:07</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-06-09 20:07</div>
@@ -252,7 +252,7 @@ crates/ruff_python_parser/src/parser/helpers.rs
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:13:18 UTC
+        Synced at 2026-01-20 19:15:25 UTC
     </footer>
 </body>
 </html>

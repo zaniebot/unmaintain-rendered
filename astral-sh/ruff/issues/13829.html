@@ -23,8 +23,8 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/henryiii">@henryiii</a></div>
-            <div class="timeline-body"><p>If you run with <code>preview</code> set, then the FURB118 check makes an unsafe replacement, you can see me rolling back the change https://github.com/wntrblm/nox/pull/870/commits/a91dbe2356a42bf8d2f03021ccd3b19a903484c8 to make the tests pass, the difference in behavior can be shown with this MWE:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; class A:
+            <div class="timeline-body"><p>If you run with <code>preview</code> set, then the FURB118 check makes an unsafe replacement, you can see me rolling back the change <a href="https://github.com/wntrblm/nox/pull/870">wntrblm/nox#870</a>/commits/a91dbe2356a42bf8d2f03021ccd3b19a903484c8 to make the tests pass, the difference in behavior can be shown with this MWE:</p>
+<pre><code>&gt;&gt;&gt; class A:
 ...     pass
 ...  
 &gt;&gt;&gt; A.__eq__ = lambda a, b: a == b
@@ -54,13 +54,13 @@ TypeError: eq expected 2 arguments, got 1
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">preview</span> added by @AlexWaygood on 2024-10-20 13:32</div>
+            <div class="event">Label <span class="label">preview</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-20 13:32</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-20 13:55</div>
-            <div class="timeline-body"><p>Thanks for opening the issue. FURB118 has been <a href="https://github.com/astral-sh/ruff/issues?q=is%3Aissue+furb118">something of a problematic rule</a> for us in terms of the number of issues we've had regarding it :/</p>
-<p>Here's a slightly smaller repro for the issue here, that makes it slightly clearer how the suggested change can break working code:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; import operator
+            <div class="timeline-body"><p>Thanks for opening the issue. FURB118 has been <a href="https://github.com/astral-sh/ruff/issues?q=is%3Aissue+furb118">something of a problematic rule</a> for us in terms of the number of issues we&#x27;ve had regarding it :/</p>
+<p>Here&#x27;s a slightly smaller repro for the issue here, that makes it slightly clearer how the suggested change can break working code:</p>
+<pre><code>&gt;&gt;&gt; import operator
 &gt;&gt;&gt; class Spam:
 ...     foo = lambda self, other: self == other
 ... 
@@ -74,23 +74,23 @@ Traceback (most recent call last):
   File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
 TypeError: eq expected 2 arguments, got 1
 </code></pre>
-<p>It seems like the <code>operator</code> functions are always unsuitable for use as method definitions (whether monkeypatched or otherwise), because they don't have <code>__get__</code> methods in the same way that user-defined functions do. When you access the <code>foo</code> method on an instance of <code>Spam</code> in my REPL example, you don't actually get the <code>foo</code> function; behind the scenes, <code>foo.__get__</code> is called and you get back a <code>MethodType</code> instance; this is why you don't need to pass in <code>self</code> explicitly in most method calls. But when you access the <code>foo</code> method on an instance of <code>Eggs</code>, you get back the original <code>operator.eq</code> function instead of a <code>MethodType</code> instance, because <code>operator.eq</code> has no <code>__get__</code> method to call.</p>
+<p>It seems like the <code>operator</code> functions are always unsuitable for use as method definitions (whether monkeypatched or otherwise), because they don&#x27;t have <code>__get__</code> methods in the same way that user-defined functions do. When you access the <code>foo</code> method on an instance of <code>Spam</code> in my REPL example, you don&#x27;t actually get the <code>foo</code> function; behind the scenes, <code>foo.__get__</code> is called and you get back a <code>MethodType</code> instance; this is why you don&#x27;t need to pass in <code>self</code> explicitly in most method calls. But when you access the <code>foo</code> method on an instance of <code>Eggs</code>, you get back the original <code>operator.eq</code> function instead of a <code>MethodType</code> instance, because <code>operator.eq</code> has no <code>__get__</code> method to call.</p>
 <p>The next question is what we can do about this. I think there are a few things we can do:</p>
 <ul>
-<li>Document more clearly that this rule's autofix is always unsafe. It <em>is</em> always categorised as an unsafe fix (you have to opt into it with <code>--unsafe-fixes</code>), but our <a href="https://docs.astral.sh/ruff/rules/reimplemented-operator/#fix-safety">docs</a> currently emphasise that it's &quot;usually safe&quot;. While I think it <em>is</em> true that the fix is <em>usually</em> safe, we don't actually explicitly state anywhere in our docs currently that it's always categorised as an unsafe fix; we probably should.</li>
+<li>Document more clearly that this rule&#x27;s autofix is always unsafe. It <em>is</em> always categorised as an unsafe fix (you have to opt into it with <code>--unsafe-fixes</code>), but our <a href="https://docs.astral.sh/ruff/rules/reimplemented-operator/#fix-safety">docs</a> currently emphasise that it&#x27;s &quot;usually safe&quot;. While I think it <em>is</em> true that the fix is <em>usually</em> safe, we don&#x27;t actually explicitly state anywhere in our docs currently that it&#x27;s always categorised as an unsafe fix; we probably should.</li>
 <li>We should list the missing <code>__get__</code> method on the <code>operator</code> functions as another reason <em>why</em> the fix is unsafe in our docs</li>
 <li>We should avoid emitting the diagnostic at all for direct assignments in class bodies, like in my REPL example above</li>
 </ul>
-<p>What I think we <em>can't</em> do, unfortunately, is avoid emitting the diagnostic in dynamic cases where you're monkey-patching a method onto a class, like the original situation you ran into in your <code>nox</code> PR. Possibly we <em>might</em> be able to do that with more type inference, but for now I think it's well beyond our capabilities to reliably detect whether the thing you're monkeypatching the function onto is a class object or not.</p>
+<p>What I think we <em>can&#x27;t</em> do, unfortunately, is avoid emitting the diagnostic in dynamic cases where you&#x27;re monkey-patching a method onto a class, like the original situation you ran into in your <code>nox</code> PR. Possibly we <em>might</em> be able to do that with more type inference, but for now I think it&#x27;s well beyond our capabilities to reliably detect whether the thing you&#x27;re monkeypatching the function onto is a class object or not.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2024-10-20 13:55</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-20 13:55</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-10-21 14:29</div>
             <div class="timeline-body"><p>I was under the impression it was a &quot;safe&quot; fix, but I reran it and it does only show up as an unsafe fix. (Aside: it would be nice if unsafe fixes were also indicated in the default printout, like <code>[**]</code> or something).</p>
-<p>All three improvements sound good. Probably no rush as it's not out of preview yet.</p>
+<p>All three improvements sound good. Probably no rush as it&#x27;s not out of preview yet.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -98,19 +98,19 @@ TypeError: eq expected 2 arguments, got 1
             <div class="timeline-body"><blockquote>
 <p>(Aside: it would be nice if unsafe fixes were also indicated in the default printout, like <code>[**]</code> or something).</p>
 </blockquote>
-<p>This might possibly be addressed by https://github.com/astral-sh/ruff/issues/7352, which is definitely something we want to do at some point!</p>
+<p>This might possibly be addressed by <a href="https://github.com/astral-sh/ruff/issues/7352">astral-sh/ruff#7352</a>, which is definitely something we want to do at some point!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2024-11-21 17:29</div>
+            <div class="event">Assigned to <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-21 17:29</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2024-11-28 12:58</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-28 12:58</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:51:19 UTC
+        Synced at 2026-01-20 18:48:59 UTC
     </footer>
 </body>
 </html>

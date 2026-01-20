@@ -24,7 +24,7 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dscorbett">@dscorbett</a></div>
             <div class="timeline-body"><p>The fix for ISC001 changes behavior when the first string ends with a one- or two-digit octal escape sequence and the second begins with an octal digit.</p>
-<pre><code class="language-console">$ ruff --version
+<pre><code>$ ruff --version
 ruff 0.6.0
 $ cat isc001.py
 print(&quot;\12&quot;&quot;0&quot;)
@@ -42,27 +42,27 @@ P
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-17 15:01</div>
             <div class="timeline-body"><p>The reason for this seems to be that CPython seems to process the octal escape <em>before</em> it concatenates the two strings when it parses the source to create the AST:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; import ast
-&gt;&gt;&gt; print(ast.dump(ast.parse(r'&quot;\12&quot; &quot;0&quot;')))
-Module(body=[Expr(value=Constant(value='\n0'))], type_ignores=[])
-&gt;&gt;&gt; print(ast.dump(ast.parse(r'&quot;\120&quot;')))
-Module(body=[Expr(value=Constant(value='P'))], type_ignores=[])
+<pre><code>&gt;&gt;&gt; import ast
+&gt;&gt;&gt; print(ast.dump(ast.parse(r&#x27;&quot;\12&quot; &quot;0&quot;&#x27;)))
+Module(body=[Expr(value=Constant(value=&#x27;\n0&#x27;))], type_ignores=[])
+&gt;&gt;&gt; print(ast.dump(ast.parse(r&#x27;&quot;\120&quot;&#x27;)))
+Module(body=[Expr(value=Constant(value=&#x27;P&#x27;))], type_ignores=[])
 </code></pre>
-<p>Our AST <a href="https://play.ruff.rs/e13f740a-be5f-443c-8ac4-d48c8142f47c">also understands this</a>, but it seems like the fix for this rule doesn't.</p>
+<p>Our AST <a href="https://play.ruff.rs/e13f740a-be5f-443c-8ac4-d48c8142f47c">also understands this</a>, but it seems like the fix for this rule doesn&#x27;t.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2024-08-17 15:02</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-17 15:02</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">fixes</span> added by @AlexWaygood on 2024-08-17 15:02</div>
+            <div class="event">Label <span class="label">fixes</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-17 15:02</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">help wanted</span> added by @AlexWaygood on 2024-08-17 15:02</div>
+            <div class="event">Label <span class="label">help wanted</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-17 15:02</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-08-20 15:11</div>
-            <div class="timeline-body"><p>Related https://github.com/astral-sh/ruff/issues/12753</p>
+            <div class="timeline-body"><p>Related <a href="https://github.com/astral-sh/ruff/issues/12753">astral-sh/ruff#12753</a></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -77,13 +77,13 @@ Module(body=[Expr(value=Constant(value='P'))], type_ignores=[])
 <pre><code>&quot;\n0&quot;
 </code></pre>
 <p>for example.</p>
-<p>If we instead want to preserve the escape sequence and suggest the fix <code>&quot;\0120&quot;</code>, then we may have to re-implement 'half' of the parsing logic inside this rule (which is fine).</p>
+<p>If we instead want to preserve the escape sequence and suggest the fix <code>&quot;\0120&quot;</code>, then we may have to re-implement &#x27;half&#x27; of the parsing logic inside this rule (which is fine).</p>
 <p>Is there a preference?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-22 13:30</div>
-            <div class="timeline-body"><p>I'm slightly leaning towards omitting the fix if there's an octal escape (or other escapes). Or is detecting the octal escape equally hard to emitting the right fix?</p>
+            <div class="timeline-body"><p>I&#x27;m slightly leaning towards omitting the fix if there&#x27;s an octal escape (or other escapes). Or is detecting the octal escape equally hard to emitting the right fix?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -99,20 +99,20 @@ Module(body=[Expr(value=Constant(value='P'))], type_ignores=[])
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-08-23 04:45</div>
-            <div class="timeline-body"><p>At least for https://github.com/astral-sh/ruff/issues/12753, I think we should avoid omitting the fix if there's an escape sequence.</p>
-<p>I remember talking with @MichaReiser about adding a token flag for strings which suggests that this string / f-string token contains an escape sequence. This flag would be set by the lexer as it's already looking at each character. But, I think it might be a bit difficult because the lexer would directly skip to the ending quote character using <code>memchr</code></p>
+            <div class="timeline-body"><p>At least for <a href="https://github.com/astral-sh/ruff/issues/12753">astral-sh/ruff#12753</a>, I think we should avoid omitting the fix if there&#x27;s an escape sequence.</p>
+<p>I remember talking with @MichaReiser about adding a token flag for strings which suggests that this string / f-string token contains an escape sequence. This flag would be set by the lexer as it&#x27;s already looking at each character. But, I think it might be a bit difficult because the lexer would directly skip to the ending quote character using <code>memchr</code></p>
 <p>https://github.com/astral-sh/ruff/blob/028cb68cd1131089b620a31ed25a0ab5e1c400b6/crates/ruff_python_parser/src/lexer.rs#L945-L946</p>
 <p>Another option would be to set the flag only on the AST node which should be easier to do because of the <code>StringParser</code>:</p>
 <p>https://github.com/astral-sh/ruff/blob/028cb68cd1131089b620a31ed25a0ab5e1c400b6/crates/ruff_python_ast/src/nodes.rs#L1832-L1834</p>
 <p>But, I would prefer if the flag could be added to the <code>TokenFlags</code> instead.</p>
 <p>Another solution might be to move the rule to use the AST where we can access the concatenated value which would make it easier to detect the escape sequence. Once we detect the escape sequence, we can avoid emitting a fix for that string expression.</p>
 <p>https://github.com/astral-sh/ruff/blob/028cb68cd1131089b620a31ed25a0ab5e1c400b6/crates/ruff_python_ast/src/nodes.rs#L1766-L1769</p>
-<p>Curious to hear @MichaReiser's opinion.</p>
+<p>Curious to hear @MichaReiser&#x27;s opinion.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-24 12:38</div>
-            <div class="timeline-body"><p>I'm leaning towards a local fix in ISC001. It seems simple enough to look at the individual literal elements and search backward. Flagging whether the string contains any escape seems overly aggressive and would remove the fix even when the escape isn't at the end of the string. Migrating to AST rules seems fine to me, but only if we are okay with the fix replacing other escapes (which I think it should not).</p>
+            <div class="timeline-body"><p>I&#x27;m leaning towards a local fix in ISC001. It seems simple enough to look at the individual literal elements and search backward. Flagging whether the string contains any escape seems overly aggressive and would remove the fix even when the escape isn&#x27;t at the end of the string. Migrating to AST rules seems fine to me, but only if we are okay with the fix replacing other escapes (which I think it should not).</p>
 <p>We only need to be careful about that <code>\\01</code> is not an octal escape but <code>\\\01</code> is.</p>
 </div>
         </div>
@@ -123,16 +123,16 @@ Module(body=[Expr(value=Constant(value='P'))], type_ignores=[])
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-08-26 05:08</div>
-            <div class="timeline-body"><p>Sounds good, I'll give it a shot!</p>
+            <div class="timeline-body"><p>Sounds good, I&#x27;ll give it a shot!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2024-08-27 17:53</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-27 17:53</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:50:53 UTC
+        Synced at 2026-01-20 18:48:56 UTC
     </footer>
 </body>
 </html>

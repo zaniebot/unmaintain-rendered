@@ -37,14 +37,14 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/checkers/ast.rs</code>:4372 on 2023-03-01 23:17</div>
-            <div class="timeline-body"><p>Could we instead colocate this with the logic that ensures we treat these as runtime annotations when futures aren't enabled? I.e., here:</p>
-<pre><code class="language-rust">StmtKind::AnnAssign {
+            <div class="timeline-body"><p>Could we instead colocate this with the logic that ensures we treat these as runtime annotations when futures aren&#x27;t enabled? I.e., here:</p>
+<pre><code>StmtKind::AnnAssign {
     target,
     annotation,
     value,
     ..
 } =&gt; {
-    // If we're in a class or module scope, then the annotation needs to be
+    // If we&#x27;re in a class or module scope, then the annotation needs to be
     // available at runtime.
     // See: https://docs.python.org/3/reference/simple_stmts.html#annotated-assignment-statements
     if !self.annotations_future_enabled
@@ -63,13 +63,13 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/checkers/ast.rs</code>:4389 on 2023-03-01 23:19</div>
-            <div class="timeline-body"><p>Instead of checking based on strings here, it'd be preferable to instead use <code>self.resolve_call_path</code>, which will give you back a <code>CallPath</code> object, and automatically handles aliased imports etc. The <code>should_ignore_definition</code> method in <code>crates/ruff/src/rules/pydocstyle/helpers.rs</code> is one example of what that might look like.</p>
+            <div class="timeline-body"><p>Instead of checking based on strings here, it&#x27;d be preferable to instead use <code>self.resolve_call_path</code>, which will give you back a <code>CallPath</code> object, and automatically handles aliased imports etc. The <code>should_ignore_definition</code> method in <code>crates/ruff/src/rules/pydocstyle/helpers.rs</code> is one example of what that might look like.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sasanjac">@sasanjac</a> on 2023-03-02 17:51</div>
             <div class="timeline-body"><p>Maybe I need to understand the default behavior first:</p>
-<pre><code class="language-python">import datetime
+<pre><code>import datetime
 
 import pydantic
 
@@ -77,7 +77,7 @@ class Meta(pedantic.BaseModel):
     date: datetime.date
 </code></pre>
 <p>does not report any violations.</p>
-<pre><code class="language-python">from __future__ import annotations
+<pre><code>from __future__ import annotations
 
 import datetime
 
@@ -86,20 +86,20 @@ import pydantic
 class Meta(pedantic.BaseModel):
     date: datetime.date
 </code></pre>
-<p>reports <code>TCH003</code>. To my understanding, the annotations are already treated as runtime annotations when futures aren't enabled, so we only have to treat runtime evaluated annotations as runtime annotations when futures <em>are</em> enabled. Am I missing something here?</p>
+<p>reports <code>TCH003</code>. To my understanding, the annotations are already treated as runtime annotations when futures aren&#x27;t enabled, so we only have to treat runtime evaluated annotations as runtime annotations when futures <em>are</em> enabled. Am I missing something here?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-02 17:58</div>
-            <div class="timeline-body"><p>Your understanding is correct! And it mirrors Python's own behavior. Type annotations in class definitions <em>are</em> evaluated at runtime if you <em>don't</em> use <code>__future__</code> annotations.</p>
-<p>As an example, this code throws a runtime error (note that I've omitted the <code>datetime.date</code> import)</p>
-<pre><code class="language-py">import pydantic
+            <div class="timeline-body"><p>Your understanding is correct! And it mirrors Python&#x27;s own behavior. Type annotations in class definitions <em>are</em> evaluated at runtime if you <em>don&#x27;t</em> use <code>__future__</code> annotations.</p>
+<p>As an example, this code throws a runtime error (note that I&#x27;ve omitted the <code>datetime.date</code> import)</p>
+<pre><code>import pydantic
 
 class Meta(pydantic.BaseModel):
     date: datetime.date
 </code></pre>
 <p>However, this code does not:</p>
-<pre><code class="language-py">from __future__ import annotations
+<pre><code>from __future__ import annotations
 
 import pydantic
 
@@ -119,11 +119,11 @@ class Meta(pydantic.BaseModel):
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @charliermarsh by @sasanjac on 2023-03-03 10:32</div>
+            <div class="event">Review requested from <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/sasanjac">@sasanjac</a> on 2023-03-03 10:32</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-05 23:25</div>
-            <div class="timeline-body"><p>For reasons I can't quite figure out, I'm unable to push to the branch 😬</p>
+            <div class="timeline-body"><p>For reasons I can&#x27;t quite figure out, I&#x27;m unable to push to the branch 😬</p>
 <pre><code>ERROR: Permission to sasanjac-lab/ruff.git denied to charliermarsh.
 fatal: Could not read from remote repository.
 
@@ -139,10 +139,10 @@ and the repository exists.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-05 23:35</div>
-            <div class="timeline-body"><p>The changes are: removing the <code>pydantic.BaseModel</code> default (I'd like to avoid library-specific defaults but curious to hear your reaction), changing the <code>helpers</code> to take <code>Context</code> instead of <code>Checker</code> (a new pattern to decouple some stuff internally), and tweaking the docs a bit. I think that's it.</p>
-<p>As a nit: should it be <code>runtime-evaluated-base-classes</code>? Since it'd typically be stylized as &quot;base classes&quot;?</p>
+            <div class="timeline-body"><p>The changes are: removing the <code>pydantic.BaseModel</code> default (I&#x27;d like to avoid library-specific defaults but curious to hear your reaction), changing the <code>helpers</code> to take <code>Context</code> instead of <code>Checker</code> (a new pattern to decouple some stuff internally), and tweaking the docs a bit. I think that&#x27;s it.</p>
+<p>As a nit: should it be <code>runtime-evaluated-base-classes</code>? Since it&#x27;d typically be stylized as &quot;base classes&quot;?</p>
 <p>Separately: should the decorators apply to <em>functions</em> too? (<code>flake8-type-checking</code> seems to support FastAPI by omitting annotated functions, so wondering if we should support that too.)</p>
-<p>And then as a higher-level question: how does this compare to the choices that <code>flake8-type-checking</code> made? We should probably document the differences in this PR -- the advantages and the disadvantages. Will this be useful in Pydantic contexts? Or too limited? Do we need to do something like <code>flake8-type-checking</code>'s option to enforce for <em>all</em> classes?</p>
+<p>And then as a higher-level question: how does this compare to the choices that <code>flake8-type-checking</code> made? We should probably document the differences in this PR -- the advantages and the disadvantages. Will this be useful in Pydantic contexts? Or too limited? Do we need to do something like <code>flake8-type-checking</code>&#x27;s option to enforce for <em>all</em> classes?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -152,9 +152,9 @@ and the repository exists.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-05 23:39</div>
-            <div class="timeline-body"><p>That's what I thought, but I see this.</p>
-<p><img src="https://user-images.githubusercontent.com/1309177/222992598-38620f8f-79aa-403e-b357-8a12b76710e8.png" alt="Screen Shot 2023-03-05 at 6 38 23 PM" /></p>
-<p>I'll open a PR to the PR.</p>
+            <div class="timeline-body"><p>That&#x27;s what I thought, but I see this.</p>
+<p><img src="https://user-images.githubusercontent.com/1309177/222992598-38620f8f-79aa-403e-b357-8a12b76710e8.png" alt="Screen Shot 2023-03-05 at 6 38 23 PM"></p>
+<p>I&#x27;ll open a PR to the PR.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -170,7 +170,7 @@ and the repository exists.
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sasanjac">@sasanjac</a> on 2023-03-06 07:58</div>
             <div class="timeline-body"><blockquote>
-<p>For reasons I can't quite figure out, I'm unable to push to the branch 😬</p>
+<p>For reasons I can&#x27;t quite figure out, I&#x27;m unable to push to the branch 😬</p>
 <pre><code>
 ERROR: Permission to sasanjac-lab/ruff.git denied to charliermarsh.
 
@@ -184,58 +184,58 @@ and the repository exists.
 
 </code></pre>
 </blockquote>
-<p>Strange, I didn't know you had to explicitly allow this.</p>
+<p>Strange, I didn&#x27;t know you had to explicitly allow this.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sasanjac">@sasanjac</a> on 2023-03-06 08:10</div>
             <div class="timeline-body"><blockquote>
-<p>The changes are: removing the <code>pydantic.BaseModel</code> default (I'd like to avoid library-specific defaults but curious to hear your reaction), changing the <code>helpers</code> to take <code>Context</code> instead of <code>Checker</code> (a new pattern to decouple some stuff internally), and tweaking the docs a bit. I think that's it.</p>
+<p>The changes are: removing the <code>pydantic.BaseModel</code> default (I&#x27;d like to avoid library-specific defaults but curious to hear your reaction), changing the <code>helpers</code> to take <code>Context</code> instead of <code>Checker</code> (a new pattern to decouple some stuff internally), and tweaking the docs a bit. I think that&#x27;s it.</p>
 </blockquote>
 <p>Yeah, that sounds reasonable.</p>
 <blockquote>
-<p>As a nit: should it be <code>runtime-evaluated-base-classes</code>? Since it'd typically be stylized as &quot;base classes&quot;?</p>
+<p>As a nit: should it be <code>runtime-evaluated-base-classes</code>? Since it&#x27;d typically be stylized as &quot;base classes&quot;?</p>
 </blockquote>
 <p>True.</p>
 <blockquote>
 <p>Separately: should the decorators apply to <em>functions</em> too? (<code>flake8-type-checking</code> seems to support FastAPI by omitting annotated functions, so wondering if we should support that too.)</p>
 </blockquote>
-<p>Interesting, I haven't used FastAPI yet but this feature sounds very reasonable and I could look into that.</p>
+<p>Interesting, I haven&#x27;t used FastAPI yet but this feature sounds very reasonable and I could look into that.</p>
 <blockquote>
-<p>And then as a higher-level question: how does this compare to the choices that <code>flake8-type-checking</code> made? We should probably document the differences in this PR -- the advantages and the disadvantages. Will this be useful in Pydantic contexts? Or too limited? Do we need to do something like <code>flake8-type-checking</code>'s option to enforce for <em>all</em> classes?</p>
+<p>And then as a higher-level question: how does this compare to the choices that <code>flake8-type-checking</code> made? We should probably document the differences in this PR -- the advantages and the disadvantages. Will this be useful in Pydantic contexts? Or too limited? Do we need to do something like <code>flake8-type-checking</code>&#x27;s option to enforce for <em>all</em> classes?</p>
 </blockquote>
 <p>Yeah, maybe we should document it but I think the new approach is more precise than a blank ignore of imports when a class inherits from another. Also, @sondrelg is very active, even here and open to discussions. I thought we could maybe backport the same behavior to <code>flake8-type-checking</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sondrelg">@sondrelg</a> on 2023-03-06 08:45</div>
-            <div class="timeline-body"><p>The decisions made in flake8-type-checking were originally made because I was using FastAPI and pydantic myself at the time, and I wanted to use the plugin in those projects. I didn't know about any other prominent libraries that evaluated type hints at runtime at the time (but there are several, including <code>attrs</code> with <a href="https://pypi.org/project/cattrs/">cattrs</a>). I wouldn't have added library specific options again I don't think.</p>
+            <div class="timeline-body"><p>The decisions made in flake8-type-checking were originally made because I was using FastAPI and pydantic myself at the time, and I wanted to use the plugin in those projects. I didn&#x27;t know about any other prominent libraries that evaluated type hints at runtime at the time (but there are several, including <code>attrs</code> with <a href="https://pypi.org/project/cattrs/">cattrs</a>). I wouldn&#x27;t have added library specific options again I don&#x27;t think.</p>
 <p>In retrospect I also think supporting FastAPI is a little bit of a waste of time. This is a subjective evaluation of course, but the concept of <a href="https://fastapi.tiangolo.com/tutorial/dependencies/">dependencies</a> makes it unreasonably hard to support properly. FastAPI can include arbitrary functions in a type signature like this (from the docs):</p>
-<pre><code class="language-python">@app.get(&quot;/items/&quot;)
+<pre><code>@app.get(&quot;/items/&quot;)
 async def read_items(commons: dict = Depends(common_parameters)):
     return commons
 </code></pre>
 <p>And the type hints of the function <code>common_parameters</code> here are evaluated at runtime. That means you need to keep track of project-wide state and figure out how to follow nested imports in several files etc., as the dependency functions could live in a separate file, and may even be imported via another file, and so on.  All type hints in FastAPI endpoints are also evaluated.</p>
-<p>Basically I think if you're doing a FastAPI project, there are too many places where type hints are evaluated to consider a plugin like flake8-type-checking to be particularly useful. At least it would need to become a much larger, more complex project.</p>
-<p>Is it really true that all class annotations are evaluated on Python 3.10+? I have several projects without <code>__future__</code> imports where I've never run into issues with this - but I think those may all use pydantic 😅</p>
+<p>Basically I think if you&#x27;re doing a FastAPI project, there are too many places where type hints are evaluated to consider a plugin like flake8-type-checking to be particularly useful. At least it would need to become a much larger, more complex project.</p>
+<p>Is it really true that all class annotations are evaluated on Python 3.10+? I have several projects without <code>__future__</code> imports where I&#x27;ve never run into issues with this - but I think those may all use pydantic 😅</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sasanjac">@sasanjac</a> on 2023-03-06 10:54</div>
             <div class="timeline-body"><blockquote>
-<pre><code class="language-python">@app.get(&quot;/items/&quot;)
+<pre><code>@app.get(&quot;/items/&quot;)
 async def read_items(commons: dict = Depends(common_parameters)):
     return commons
 </code></pre>
 <p>And the type hints of the function <code>common_parameters</code> here are evaluated at runtime. That means you need to keep track of project-wide state and figure out how to follow nested imports in several files etc., as the dependency functions could live in a separate file, and may even be imported via another file, and so on. All type hints in FastAPI endpoints are also evaluated.</p>
 </blockquote>
-<p>I'm haven't really used <code>FastAPI</code> but couldn't you just specify <code>app.get</code> as a <code>runtime-evaluated-decorator</code> and be done?</p>
+<p>I&#x27;m haven&#x27;t really used <code>FastAPI</code> but couldn&#x27;t you just specify <code>app.get</code> as a <code>runtime-evaluated-decorator</code> and be done?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sasanjac">@sasanjac</a> on 2023-03-06 11:09</div>
             <div class="timeline-body"><blockquote>
-<p>The decisions made in flake8-type-checking were originally made because I was using FastAPI and pydantic myself at the time, and I wanted to use the plugin in those projects. I didn't know about any other prominent libraries that evaluated type hints at runtime at the time (but there are several, including <code>attrs</code> with <a href="https://pypi.org/project/cattrs/">cattrs</a>). I wouldn't have added library specific options again I don't think.</p>
+<p>The decisions made in flake8-type-checking were originally made because I was using FastAPI and pydantic myself at the time, and I wanted to use the plugin in those projects. I didn&#x27;t know about any other prominent libraries that evaluated type hints at runtime at the time (but there are several, including <code>attrs</code> with <a href="https://pypi.org/project/cattrs/">cattrs</a>). I wouldn&#x27;t have added library specific options again I don&#x27;t think.</p>
 </blockquote>
 <p>Yeah, here it is up to you to decide if you want to deprecate config options, but I think the way of specifying base classes and decorators that lead to the corresponding type annotations not reported is a) a more generic way, no need to have library specific options and b) more precise because only the affected classes/functions are exempt from the rule. However, the user has to actively put the respective classes/decorators in the config.</p>
 </div>
@@ -244,23 +244,23 @@ async def read_items(commons: dict = Depends(common_parameters)):
             <div class="timeline-header">Comment by <a href="https://github.com/sondrelg">@sondrelg</a> on 2023-03-06 13:47</div>
             <div class="timeline-body"><blockquote>
 <blockquote>
-<pre><code class="language-python">@app.get(&quot;/items/&quot;)
+<pre><code>@app.get(&quot;/items/&quot;)
 async def read_items(commons: dict = Depends(common_parameters)):
     return commons
 </code></pre>
 <p>And the type hints of the function <code>common_parameters</code> here are evaluated at runtime. That means you need to keep track of project-wide state and figure out how to follow nested imports in several files etc., as the dependency functions could live in a separate file, and may even be imported via another file, and so on. All type hints in FastAPI endpoints are also evaluated.</p>
 </blockquote>
-<p>I'm haven't really used <code>FastAPI</code> but couldn't you just specify <code>app.get</code> as a <code>runtime-evaluated-decorator</code> and be done?</p>
+<p>I&#x27;m haven&#x27;t really used <code>FastAPI</code> but couldn&#x27;t you just specify <code>app.get</code> as a <code>runtime-evaluated-decorator</code> and be done?</p>
 </blockquote>
-<p>You could, if you were only using that decorator pattern. Unfortunately it's very common to use <code>APIRouter</code>s to create aggregation of subpaths, like this:</p>
-<pre><code class="language-python"># users.py
+<p>You could, if you were only using that decorator pattern. Unfortunately it&#x27;s very common to use <code>APIRouter</code>s to create aggregation of subpaths, like this:</p>
+<pre><code># users.py
 
-user_router = APIRouter(base='/users')
+user_router = APIRouter(base=&#x27;/users&#x27;)
 
 @user_router.get()
 def list_users(): ...
 
-@user_router.get('/{id}')
+@user_router.get(&#x27;/{id}&#x27;)
 def retrieve_user(id: UUID): ...
 
 # and so on
@@ -272,32 +272,32 @@ def retrieve_user(id: UUID): ...
             <div class="timeline-header">Comment by <a href="https://github.com/sondrelg">@sondrelg</a> on 2023-03-06 13:50</div>
             <div class="timeline-body"><blockquote>
 <blockquote>
-<p>The decisions made in flake8-type-checking were originally made because I was using FastAPI and pydantic myself at the time, and I wanted to use the plugin in those projects. I didn't know about any other prominent libraries that evaluated type hints at runtime at the time (but there are several, including <code>attrs</code> with <a href="https://pypi.org/project/cattrs/">cattrs</a>). I wouldn't have added library specific options again I don't think.</p>
+<p>The decisions made in flake8-type-checking were originally made because I was using FastAPI and pydantic myself at the time, and I wanted to use the plugin in those projects. I didn&#x27;t know about any other prominent libraries that evaluated type hints at runtime at the time (but there are several, including <code>attrs</code> with <a href="https://pypi.org/project/cattrs/">cattrs</a>). I wouldn&#x27;t have added library specific options again I don&#x27;t think.</p>
 </blockquote>
 <p>Yeah, here it is up to you to decide if you want to deprecate config options, but I think the way of specifying base classes and decorators that lead to the corresponding type annotations not reported is a) a more generic way, no need to have library specific options and b) more precise because only the affected classes/functions are exempt from the rule. However, the user has to actively put the respective classes/decorators in the config.</p>
 </blockquote>
-<p>Decorators for classes might make it possible to whitelist attrs classes from type checking in a reliable way, but if the intention for this feature was to add FastAPI support by whitelisting functions decorated with certain patterns you should probably also have another feature for adding dependencies. I don't think this is a great idea though, because:</p>
+<p>Decorators for classes might make it possible to whitelist attrs classes from type checking in a reliable way, but if the intention for this feature was to add FastAPI support by whitelisting functions decorated with certain patterns you should probably also have another feature for adding dependencies. I don&#x27;t think this is a great idea though, because:</p>
 <ul>
-<li>It's hard to do correctly</li>
+<li>It&#x27;s hard to do correctly</li>
 <li>you end up checking very few elements, so the benefit of the plugin is low</li>
-<li>the consequence of messing up is high (potentially runtime errors in prod, if your test coverage isn't good enough)</li>
+<li>the consequence of messing up is high (potentially runtime errors in prod, if your test coverage isn&#x27;t good enough)</li>
 </ul>
 <p>This is why I personally think you should focus on adding the features you need to support Pydantic usage for now, and think about remaining patterns later if it comes up 👍</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-07 04:34</div>
-            <div class="timeline-body"><p>Ok cool -- thank you for all the discussion here too, very clarifying for me! I'm happy with what's happening here, let's rock. Thanks for diving into Rust :)</p>
+            <div class="timeline-body"><p>Ok cool -- thank you for all the discussion here too, very clarifying for me! I&#x27;m happy with what&#x27;s happening here, let&#x27;s rock. Thanks for diving into Rust :)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2023-03-07 04:34</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-07 04:34</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-03-07 04:34</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-07 04:34</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2023-03-07 04:34</div>
+            <div class="event">Label <span class="label">configuration</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-07 04:34</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2023-03-07 07:53</div>
@@ -306,7 +306,7 @@ def retrieve_user(id: UUID): ...
             <div class="timeline-header">Comment by <a href="https://github.com/Cielquan">@Cielquan</a> on 2023-03-12 17:39</div>
             <div class="timeline-body"><p>Does this implementation also work on subclasses?</p>
 <p>E.g. I have an application with different configs and one base config</p>
-<pre><code class="language-py">import pydantic
+<pre><code>import pydantic
 import utils
 
 class BaseConfig(pydantic.BaseModel):
@@ -325,7 +325,7 @@ class DevConfig(BaseConfig):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-12 17:42</div>
-            <div class="timeline-body"><p>No, it wouldn't work for subclasses in the same file like that. It could work if you exported <code>BaseConfig</code> from another file, then included <code>my_file.BaseConfig</code> in the list of runtime-evaluated base classes.</p>
+            <div class="timeline-body"><p>No, it wouldn&#x27;t work for subclasses in the same file like that. It could work if you exported <code>BaseConfig</code> from another file, then included <code>my_file.BaseConfig</code> in the list of runtime-evaluated base classes.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -335,13 +335,13 @@ class DevConfig(BaseConfig):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-12 17:56</div>
-            <div class="timeline-body"><p>Yeah we can't do that level of type inference yet. We track <em>imports</em>, but we can't track arbitrary base class resolution yet.</p>
+            <div class="timeline-body"><p>Yeah we can&#x27;t do that level of type inference yet. We track <em>imports</em>, but we can&#x27;t track arbitrary base class resolution yet.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:56:29 UTC
+        Synced at 2026-01-20 18:52:35 UTC
     </footer>
 </body>
 </html>

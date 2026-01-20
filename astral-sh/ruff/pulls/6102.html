@@ -23,23 +23,23 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>Historically, we've stored &quot;qualified names&quot; on our <code>BindingKind::Import</code>, <code>BindingKind::SubmoduleImport</code>, and <code>BindingKind::ImportFrom</code> structs. In Ruff, a &quot;qualified name&quot; is a dot-separated path to a symbol. For example, given <code>import foo.bar</code>, the &quot;qualified name&quot; would be <code>&quot;foo.bar&quot;</code>; and given <code>from foo.bar import baz</code>, the &quot;qualified name&quot; would be <code>foo.bar.baz</code>.</p>
-<p>This PR modifies the <code>BindingKind</code> structs to instead store <em>call paths</em> rather than qualified names. So in the examples above, we'd store <code>[&quot;foo&quot;, &quot;bar&quot;]</code> and <code>[&quot;foo&quot;, &quot;bar&quot;, &quot;baz&quot;]</code>. It turns out that this more efficient given our data access patterns. Namely, we frequently need to convert the qualified name to a call path (whenever we call <code>resolve_call_path</code>), and it turns out that we do this operation enough that those conversations show up on benchmarks.</p>
+            <div class="timeline-body">Summary
+<p>Historically, we&#x27;ve stored &quot;qualified names&quot; on our <code>BindingKind::Import</code>, <code>BindingKind::SubmoduleImport</code>, and <code>BindingKind::ImportFrom</code> structs. In Ruff, a &quot;qualified name&quot; is a dot-separated path to a symbol. For example, given <code>import foo.bar</code>, the &quot;qualified name&quot; would be <code>&quot;foo.bar&quot;</code>; and given <code>from foo.bar import baz</code>, the &quot;qualified name&quot; would be <code>foo.bar.baz</code>.</p>
+<p>This PR modifies the <code>BindingKind</code> structs to instead store <em>call paths</em> rather than qualified names. So in the examples above, we&#x27;d store <code>[&quot;foo&quot;, &quot;bar&quot;]</code> and <code>[&quot;foo&quot;, &quot;bar&quot;, &quot;baz&quot;]</code>. It turns out that this more efficient given our data access patterns. Namely, we frequently need to convert the qualified name to a call path (whenever we call <code>resolve_call_path</code>), and it turns out that we do this operation enough that those conversations show up on benchmarks.</p>
 <p>There are a few other advantages to using call paths, rather than qualified names:</p>
 <ol>
 <li>The size of <code>BindingKind</code> is reduced from 32 to 24 bytes, since we no longer need to store a <code>String</code> (only a boxed slice).</li>
-<li>All three import types are more consistent, since they now all store a boxed slice, rather than some storing an <code>&amp;str</code> and some storing a <code>String</code> (for <code>BindingKind::ImportFrom</code>, we needed to allocate a <code>String</code> to create the qualified name, but the call path is a slice of static elements that don't require that allocation).</li>
-<li>A lot of code gets simpler, in part because we now do call path resolution &quot;earlier&quot;. Most notably, for relative imports (<code>from .foo import bar</code>), we store the <em>resolved</em> call path rather than the relative call path, so the semantic model doesn't have to deal with that resolution. (See that <code>resolve_call_path</code> is simpler, fewer branches, etc.)</li>
+<li>All three import types are more consistent, since they now all store a boxed slice, rather than some storing an <code>&amp;str</code> and some storing a <code>String</code> (for <code>BindingKind::ImportFrom</code>, we needed to allocate a <code>String</code> to create the qualified name, but the call path is a slice of static elements that don&#x27;t require that allocation).</li>
+<li>A lot of code gets simpler, in part because we now do call path resolution &quot;earlier&quot;. Most notably, for relative imports (<code>from .foo import bar</code>), we store the <em>resolved</em> call path rather than the relative call path, so the semantic model doesn&#x27;t have to deal with that resolution. (See that <code>resolve_call_path</code> is simpler, fewer branches, etc.)</li>
 </ol>
 <p>In my testing, this change improves the all-rules benchmark by another 4-5% on top of the improvements mentioned in #6047.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Converted to draft by @charliermarsh on 2023-07-26 19:19</div>
+            <div class="event">Converted to draft by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-26 19:19</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @charliermarsh on 2023-07-28 02:09</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-28 02:09</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-07-28 02:09</div>
@@ -47,7 +47,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pyflakes/snapshots/ruff__rules__pyflakes__tests__F401_F401_6.py.snap</code>:23 on 2023-07-28 02:09</div>
-            <div class="timeline-body"><p>I don't know if this is good or bad. We now show the fully resolved module path, rather than the relative path.</p>
+            <div class="timeline-body"><p>I don&#x27;t know if this is good or bad. We now show the fully resolved module path, rather than the relative path.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -56,16 +56,16 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:403 on 2023-07-28 02:11</div>
-            <div class="timeline-body"><p>I'm not thrilled about this. Basically, if you have <code>from ...foo import bar</code>, and the triple dots means you've extended past the module root that we detected for the file, then we can't resolve the import. In the past, we dealt with this in <code>resolve_call_path</code> (we'd just return <code>None</code> for such imports), but now we need a way to track these in the semantic model, to know that they're unused. So we need <em>some</em> call path for these. The fallback here is that we create a call path like <code>[&quot;.&quot;, &quot;.&quot;, &quot;.&quot;, &quot;foo&quot;, &quot;bar&quot;]</code> in such cases.</p>
+            <div class="timeline-body"><p>I&#x27;m not thrilled about this. Basically, if you have <code>from ...foo import bar</code>, and the triple dots means you&#x27;ve extended past the module root that we detected for the file, then we can&#x27;t resolve the import. In the past, we dealt with this in <code>resolve_call_path</code> (we&#x27;d just return <code>None</code> for such imports), but now we need a way to track these in the semantic model, to know that they&#x27;re unused. So we need <em>some</em> call path for these. The fallback here is that we create a call path like <code>[&quot;.&quot;, &quot;.&quot;, &quot;.&quot;, &quot;foo&quot;, &quot;bar&quot;]</code> in such cases.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-07-28 02:41</div>
-            <div class="timeline-body"><h2>PR Check Results</h2>
-<h3>Ecosystem</h3>
+            <div class="timeline-body">PR Check Results
+Ecosystem
 <p>✅ ecosystem check detected no changes.</p>
-<h3>Benchmark</h3>
-<h4>Linux</h4>
+Benchmark
+Linux
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 formatter/large/dataset.py                 1.06      9.4±0.40ms     4.3 MB/sec    1.00      8.9±0.41ms     4.6 MB/sec
@@ -81,7 +81,7 @@ linter/default-rules/numpy/ctypeslib.py    1.01  1272.6±34.24µs    13.1 MB/sec
 linter/default-rules/numpy/globals.py      1.01    156.6±7.10µs    18.8 MB/sec    1.00    155.1±8.30µs    19.0 MB/sec
 linter/default-rules/pydantic/types.py     1.05      2.7±0.11ms     9.4 MB/sec    1.00      2.6±0.12ms     9.8 MB/sec
 </code></pre>
-<h4>Windows</h4>
+Windows
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 formatter/large/dataset.py                 1.00      8.0±0.04ms     5.1 MB/sec    1.01      8.1±0.05ms     5.0 MB/sec
@@ -97,7 +97,7 @@ linter/default-rules/numpy/ctypeslib.py    1.00   1071.1±6.65µs    15.5 MB/sec
 linter/default-rules/numpy/globals.py      1.01    112.7±1.16µs    26.2 MB/sec    1.00    111.8±1.18µs    26.4 MB/sec
 linter/default-rules/pydantic/types.py     1.00      2.3±0.01ms    10.9 MB/sec    1.00      2.3±0.02ms    10.9 MB/sec
 </code></pre>
-<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
 
 </div>
         </div>
@@ -108,16 +108,16 @@ linter/default-rules/pydantic/types.py     1.00      2.3±0.01ms    10.9 MB/sec 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-07-28 06:11</div>
-            <div class="timeline-body"><p>I haven't fully reviewed this yet, mainly because I can't say that I understand what a <code>CallPath</code>. What I find interesting is that the documentation uses an entirely different terminology:</p>
+            <div class="timeline-body"><p>I haven&#x27;t fully reviewed this yet, mainly because I can&#x27;t say that I understand what a <code>CallPath</code>. What I find interesting is that the documentation uses an entirely different terminology:</p>
 <pre><code>/// A representation of a qualified name, like `typing.List`.
 </code></pre>
 <p>Does call path represent any qualified name? If so, should we rename <code>CallPath</code> to <code>FullQualifiedName or </code>QualifiedName` (I would still love it if it is a new type wrapper rather than a type alias)?</p>
-<p>I'm bringing this up because I would find it strange to store a <code>CallPath</code> in an <code>Import</code>... because a <code>CallPath</code> gives me the impression to be call specific. However, I think storing <code>FullQualifiedName</code>s on an import sounds like a good idea.</p>
+<p>I&#x27;m bringing this up because I would find it strange to store a <code>CallPath</code> in an <code>Import</code>... because a <code>CallPath</code> gives me the impression to be call specific. However, I think storing <code>FullQualifiedName</code>s on an import sounds like a good idea.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-28 12:55</div>
-            <div class="timeline-body"><p>Yes, sorry, we are storing the fully qualified name on the import, represented as a slice of dot-separated components. The &quot;thing we are storing&quot; hasn't changed meaningfully, apart from that we now store the resolved paths for relative imports. Instead, it's the representation that has changed (instead of a single string, it's now a slice of components).</p>
+            <div class="timeline-body"><p>Yes, sorry, we are storing the fully qualified name on the import, represented as a slice of dot-separated components. The &quot;thing we are storing&quot; hasn&#x27;t changed meaningfully, apart from that we now store the resolved paths for relative imports. Instead, it&#x27;s the representation that has changed (instead of a single string, it&#x27;s now a slice of components).</p>
 <p>I can look into a more thorough refactor that introduces some structs for clarity, but I think it should probably be separate. What would you find clearest for now? Renaming the <em>attribute</em> back to <code>qualified_name</code> or <code>qualified_path</code>?</p>
 </div>
         </div>
@@ -127,12 +127,12 @@ linter/default-rules/pydantic/types.py     1.00      2.3±0.01ms    10.9 MB/sec 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pyflakes/snapshots/ruff__rules__pyflakes__tests__F401_F401_6.py.snap</code>:23 on 2023-07-28 13:10</div>
-            <div class="timeline-body"><p>I don't actually have a great way to solve this. I may have to revert to storing relative paths for relative imports, and doing the relative path resolution in <code>resolve_call_path</code> as before. Or, when we create the name for the diagnostic, I could format the name based on the statement. The crux of the issue is that we don't store whether the import was relative on the binding right now, and adding that information will increase the size of the struct.</p>
+            <div class="timeline-body"><p>I don&#x27;t actually have a great way to solve this. I may have to revert to storing relative paths for relative imports, and doing the relative path resolution in <code>resolve_call_path</code> as before. Or, when we create the name for the diagnostic, I could format the name based on the statement. The crux of the issue is that we don&#x27;t store whether the import was relative on the binding right now, and adding that information will increase the size of the struct.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-07-28 13:34</div>
-            <div class="timeline-body"><p>@charliermarsh I agree a return to <code>qualified_name</code> makes sense — <code>qualified_path</code> makes it a bit clearer that we're storing the name as components but I'm not sure if it's worth the possible confusion with file paths.</p>
+            <div class="timeline-body"><p>@charliermarsh I agree a return to <code>qualified_name</code> makes sense — <code>qualified_path</code> makes it a bit clearer that we&#x27;re storing the name as components but I&#x27;m not sure if it&#x27;s worth the possible confusion with file paths.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -159,7 +159,7 @@ linter/default-rules/pydantic/types.py     1.00      2.3±0.01ms    10.9 MB/sec 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-28 18:55</div>
-            <div class="timeline-body"><p>I'm not sure that I want to tackle the nomenclature changes in this PR -- I'd rather do a dedicated pass over them separately. Is there any change you'd want to see that would make <em>this</em> PR more palatable to merge?</p>
+            <div class="timeline-body"><p>I&#x27;m not sure that I want to tackle the nomenclature changes in this PR -- I&#x27;d rather do a dedicated pass over them separately. Is there any change you&#x27;d want to see that would make <em>this</em> PR more palatable to merge?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -172,11 +172,11 @@ linter/default-rules/pydantic/types.py     1.00      2.3±0.01ms    10.9 MB/sec 
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @zanieb by @zanieb on 2023-07-31 05:14</div>
+            <div class="event">Review requested from <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/zanieb">@zanieb</a> on 2023-07-31 05:14</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-01 05:56</div>
-            <div class="timeline-body"><p>I'm not very opinionated on this. I always prefer to store more specific types than strings.</p>
+            <div class="timeline-body"><p>I&#x27;m not very opinionated on this. I always prefer to store more specific types than strings.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -184,10 +184,10 @@ linter/default-rules/pydantic/types.py     1.00      2.3±0.01ms    10.9 MB/sec 
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2023-08-05 15:21</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-05 15:21</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-08-05 15:21</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-05 15:21</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2023-08-05 15:21</div>
@@ -195,7 +195,7 @@ linter/default-rules/pydantic/types.py     1.00      2.3±0.01ms    10.9 MB/sec 
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:59:05 UTC
+        Synced at 2026-01-20 18:55:43 UTC
     </footer>
 </body>
 </html>

@@ -27,11 +27,11 @@
 <p>One area that I have some questions around is using <code>uv</code> for monorepos of multiple python packages, services, etc. I see that <a href="https://docs.astral.sh/uv/concepts/workspaces/">workspaces</a> seem to offer a general purpose framework for structuring monorepos, and their package relationships.</p>
 <p>This all looks like good stuff, but there are a few open questions I have. While it seems like this provides some structure for a monorepo, there are a few features that might be desirable for monorepo tooling. One example that is top of mind is tooling to help identify what code has changed and being able to only run tests affected by this code. At scale the duration of extensive test pipelines in CI can become a very real problem for developer productivity, and unfortunately is a concern that is part and parcel to packaging solutions for large projects.</p>
 <p>Identifying code changes and only running affected tests is a significant feature for build systems such as <code>bazel</code> and <code>pants</code>, as well as tooling like <code>pytest-testmon</code>. I think the way that <code>uv</code> presents structure to managing related projects is great, so my question is would some feature along these lines be something we see <code>uv</code> managing in the future? And if not, are there any early thoughts on how it could integrate with other tooling or build systems to enable this?</p>
-<p>It'd be great if we can establish some opinionated guidance here that would work in the general case.</p>
+<p>It&#x27;d be great if we can establish some opinionated guidance here that would work in the general case.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">wish</span> added by @zanieb on 2024-08-21 18:48</div>
+            <div class="event">Label <span class="label">wish</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-21 18:48</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-21 18:49</div>
@@ -65,7 +65,7 @@
             <div class="timeline-header">Comment by <a href="https://github.com/brendan-morin">@brendan-morin</a> on 2024-10-19 19:51</div>
             <div class="timeline-body"><p>Another observation: when using uv workspaces in a monorepo, with the current behavior there is a singular lock file at the top of the repo. The idea here makes sense, since it means one set of resolved dependencies. But this presents a few issues in practice.</p>
 <p>In the event we have one or more application services, generally we would want these services to be deployed with only the dependencies they need to function. Since a monorepo can accrue a substantial superset of these dependencies across all libraries/services, it becomes difficult to build and deploy services individually with only the dependencies they need.</p>
-<p>A related issue is that the lock file remains one or more levels above the service's pyproject.toml (and the rest of its project code). Because docker can't bring in dependencies from parent directories, any docker build commands run at the level of the service won't successfully locate the uv.lock file. This can be worked around by running the command from a level up or using context along with e.g. docker compose, which is mostly fine, but it does break the idea of monorepo components being essentially fully isolatable to their own subdirectories.</p>
+<p>A related issue is that the lock file remains one or more levels above the service&#x27;s pyproject.toml (and the rest of its project code). Because docker can&#x27;t bring in dependencies from parent directories, any docker build commands run at the level of the service won&#x27;t successfully locate the uv.lock file. This can be worked around by running the command from a level up or using context along with e.g. docker compose, which is mostly fine, but it does break the idea of monorepo components being essentially fully isolatable to their own subdirectories.</p>
 <p>One solution to both of these would be to include subset uv.lock files at the level of workspace components in addition to the top level uv.lock.</p>
 </div>
         </div>
@@ -79,13 +79,13 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/brendan-morin">@brendan-morin</a> on 2024-10-21 17:18</div>
-            <div class="timeline-body"><p>@NixBiks Maybe I could have clarified better, but I believe we're talking about the same thing here. The goal is what you are talking about, and the context is how well-suited uv's workspaces are to that end. This deploy-only-the-dependencies-each-service-needs pattern isn't well supported in the current workspace implementation, since uv only resolves a single superset lock file at the virtual root rather than individual lock files at the service level, even if the services specify only their minimum dependencies in their own pyproject.toml files.</p>
-<p>That said, it's not difficult to work around this, as you can just exclude your services (and libraries) that you want distinct lock files from each workspace (and do a little scripting to manage locking and syncing these for many projects). But then one would wonder why use the workspace feature at all. I do think there's promise in workspaces FWIW, and looking forward to seeing them evolve to better support monorepo workflows.</p>
+            <div class="timeline-body"><p>@NixBiks Maybe I could have clarified better, but I believe we&#x27;re talking about the same thing here. The goal is what you are talking about, and the context is how well-suited uv&#x27;s workspaces are to that end. This deploy-only-the-dependencies-each-service-needs pattern isn&#x27;t well supported in the current workspace implementation, since uv only resolves a single superset lock file at the virtual root rather than individual lock files at the service level, even if the services specify only their minimum dependencies in their own pyproject.toml files.</p>
+<p>That said, it&#x27;s not difficult to work around this, as you can just exclude your services (and libraries) that you want distinct lock files from each workspace (and do a little scripting to manage locking and syncing these for many projects). But then one would wonder why use the workspace feature at all. I do think there&#x27;s promise in workspaces FWIW, and looking forward to seeing them evolve to better support monorepo workflows.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/NixBiks">@NixBiks</a> on 2024-10-21 17:48</div>
-            <div class="timeline-body"><p>@BrendanJM isn't it just <code>uv sync --package my-service</code> you are looking for?</p>
+            <div class="timeline-body"><p>@BrendanJM isn&#x27;t it just <code>uv sync --package my-service</code> you are looking for?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -96,15 +96,15 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-21 19:08</div>
-            <div class="timeline-body"><p>I don't quite follow why you need a separate lockfile for just a single member? The point of using a workspace is that it ensures that you're using consistent versions across all of the members.</p>
+            <div class="timeline-body"><p>I don&#x27;t quite follow why you need a separate lockfile for just a single member? The point of using a workspace is that it ensures that you&#x27;re using consistent versions across all of the members.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/brendan-morin">@brendan-morin</a> on 2024-10-21 19:27</div>
-            <div class="timeline-body"><p>While the primary purpose of lock files is to resolve a consistent set of versions across the members, it's pretty standard practice to use lock/requirement files for cache management in docker.</p>
-<p>Let's say I have a larger monorepo with 100+ packages and services. We're using uv's workspaces functionality so that we have consistent versions across all members, all resolved to a single lockfile - which is great! But not all members require all dependencies. So while <code>uv sync --package my-service</code> could be useful to just populate the service dependencies, my docker
+            <div class="timeline-body"><p>While the primary purpose of lock files is to resolve a consistent set of versions across the members, it&#x27;s pretty standard practice to use lock/requirement files for cache management in docker.</p>
+<p>Let&#x27;s say I have a larger monorepo with 100+ packages and services. We&#x27;re using uv&#x27;s workspaces functionality so that we have consistent versions across all members, all resolved to a single lockfile - which is great! But not all members require all dependencies. So while <code>uv sync --package my-service</code> could be useful to just populate the service dependencies, my docker
 build pipeline needs to know when the dependencies have changed to build this layer and subsequent ones.</p>
-<p>In a sufficiently large monorepo, there could be fairly constant stream of  updates to the top level lockfile (unrelated to <code>my-service</code> or it's dependencies), which would make it difficult to meaningfully use this in the docker file to force cache invalidation in the service's docker build, since it would basically be firing false positives with every unrelated update.</p>
+<p>In a sufficiently large monorepo, there could be fairly constant stream of  updates to the top level lockfile (unrelated to <code>my-service</code> or it&#x27;s dependencies), which would make it difficult to meaningfully use this in the docker file to force cache invalidation in the service&#x27;s docker build, since it would basically be firing false positives with every unrelated update.</p>
 <p>This is only mild inconvenience at smaller scales, but at a larger scale, constant false-positives to invalidation in the docker pipeline can become significant. While using a cache mount can definitely help docker benefit from a more persistent uv cache, downstream layers would still be affected and can be expensive to rebuild.</p>
 <p>Edit to add: If having subset <code>uv.lock</code> files in each workspace member feels confusing or prone to misuse (and I mean subset as in a strict subset downstream of the root lock file, not an independent lock), an alternate option could be a mechanism for generating e.g. a <code>lock.hash</code> file that was simply a hash of only the dependencies for that specific member.</p>
 </div>
@@ -116,7 +116,7 @@ build pipeline needs to know when the dependencies have changed to build this la
 uv export --frozen --directory $SUBDIR/ -o requirements.txt
 
 # Drop references to local packages
-sed -i '/-e \.\/subdir\//d' requirements.txt
+sed -i &#x27;/-e \.\/subdir\//d&#x27; requirements.txt
 </code></pre>
 <pre><code># In the Dockerfile, this creates a stable cache layer
 RUN uv pip sync requirements.txt --no-cache --compile-bytecode
@@ -129,31 +129,31 @@ RUN uv pip install --no-deps package_a/ package_b/
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/rokos-angus">@rokos-angus</a> on 2024-10-22 10:15</div>
             <div class="timeline-body"><p>@BrendanJM This is a fantastic writeup that cuts to the heart of why using UV in monorepo CI is currently painful.</p>
-<p>One point I would add: it's particularly painful that adding new items to the workspace changes uv.lock, even if they don't require any new dependencies.
+<p>One point I would add: it&#x27;s particularly painful that adding new items to the workspace changes uv.lock, even if they don&#x27;t require any new dependencies.
 We have quite a large monorepo with most of the code is using a small number of standard 3rd party dependencies.</p>
-<p>Adding new items to the workspace is common, but adding third party dependencies is actually fairly rare at this point. If the former didn't update uv.lock then it would make our CI much simpler and users could easily add new services and libraries to the workspace leveraging a subset of the existing workspace dependencies</p>
+<p>Adding new items to the workspace is common, but adding third party dependencies is actually fairly rare at this point. If the former didn&#x27;t update uv.lock then it would make our CI much simpler and users could easily add new services and libraries to the workspace leveraging a subset of the existing workspace dependencies</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-22 11:01</div>
             <div class="timeline-body"><p>I sort of think a <code>uv export --package child --frozen --no-emit-workspace</code> workflow may be most appropriate for your Docker use-case. You could also pipe that into a hash utility.</p>
-<p>Thanks for all the additional details. We'll think on this.</p>
+<p>Thanks for all the additional details. We&#x27;ll think on this.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-design</span> added by @zanieb on 2024-10-22 11:01</div>
+            <div class="event">Label <span class="label">needs-design</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-22 11:01</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sarimak">@sarimak</a> on 2024-11-04 08:21</div>
             <div class="timeline-body"><p>I also have a monorepo containing many services which are deployed as Docker containers, each with own image and each installing only those Python packages which are really needed. I use the older <code>uv pip</code> API and thanks to the awesome support for <code>-c constraints.txt</code> I can have unified, mutually compatible package versions monorepo-wide and thanks to the awesome support for <code>-r &lt;relative path&gt;/requirements.in</code> inside a <code>requirements.in</code> file, I can declare direct (not transitive) dependencies among components the monorepo -- all this without any Python packaging (building a package) at all.</p>
-<p>I won't ever publish anything to any package index but I still need some means for declaring a dependency on a library inside the monorepo. I use direct imports (no <code>src</code> layout, no need for artificial editable packages, no need for dealing with editable mode for development vs. non-editable mode for production, no need for giving hints to IDEs where the packages are located and other drawbacks that may make sense for published libraries but just add complexity and opportunities to break for Dockerized services).</p>
+<p>I won&#x27;t ever publish anything to any package index but I still need some means for declaring a dependency on a library inside the monorepo. I use direct imports (no <code>src</code> layout, no need for artificial editable packages, no need for dealing with editable mode for development vs. non-editable mode for production, no need for giving hints to IDEs where the packages are located and other drawbacks that may make sense for published libraries but just add complexity and opportunities to break for Dockerized services).</p>
 <p>All services are designed to use <code>CWD</code> set to the monorepo root and use the same entry point, script/CI action for building a Docker image or other tooling for per-service operations.</p>
 <p>There is only one, top-level <code>pyproject.toml</code> which serves as unified configuration of the tools (pytest, ruff, basedpyright).
 There is zero per-service/library boilerplate I have to write -- adding a library/service is adding a single folder with <code>__init__.py</code> and <code>requirements.in</code> (with direct 1st and 3rd-party dependencies).</p>
 <p>Thanks to the awesome hash generation/checking support for <code>requirements.txt</code> I have all the goodness of reproducible installations.</p>
 <p>Docker images contain the source code of all libraries (things like wrappers for HTTP client, web server, queue consumer, database connection/transaction management and other domain-agnostic concerns -- so there is a high chance that most of them are installed anyway) -- but install their dependencies only if given library is really used by given service. That works file even when the monorepo contains both simple CRUD/data shoveling services with tiny dependencies and machine learning beasts installing gigabytes of Python packages like Pandas and PyTorch.</p>
-<p>When dependencies of a service change (or a service is added), it is obvious from Git diff what files have changed (<code>svc/&lt;service name&gt;/requirements.in</code> and corresponding <code>requirements/&lt;service name&gt;.txt</code>) and what Docker images need to be rebuilt (GitHub Actions with matrix constructed by a custom, monorepo-aware script). When building a Docker image, the Dockerfile knows the service name (<code>ARG</code>), so it can copy its <code>requirements.txt</code> and its source code without guessing. Yes, the Python package installation cannot be cached (due to the <code>ARG</code>) but using <code>uv</code> with CI cache is so fast that it doesn't matter for most of the services.</p>
-<p>Perhaps some bits could be useful for inclusion also to the newer <code>uv</code>'s API?</p>
+<p>When dependencies of a service change (or a service is added), it is obvious from Git diff what files have changed (<code>svc/&lt;service name&gt;/requirements.in</code> and corresponding <code>requirements/&lt;service name&gt;.txt</code>) and what Docker images need to be rebuilt (GitHub Actions with matrix constructed by a custom, monorepo-aware script). When building a Docker image, the Dockerfile knows the service name (<code>ARG</code>), so it can copy its <code>requirements.txt</code> and its source code without guessing. Yes, the Python package installation cannot be cached (due to the <code>ARG</code>) but using <code>uv</code> with CI cache is so fast that it doesn&#x27;t matter for most of the services.</p>
+<p>Perhaps some bits could be useful for inclusion also to the newer <code>uv</code>&#x27;s API?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -175,16 +175,16 @@ There is zero per-service/library boilerplate I have to write -- adding a librar
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sarimak">@sarimak</a> on 2025-04-08 14:24</div>
-            <div class="timeline-body"><p>Ad @brendan-morin 's original question about <code>run only tests affected by changed code</code>:</p>
+            <div class="timeline-body"><p>Ad @brendan-morin &#x27;s original question about <code>run only tests affected by changed code</code>:</p>
 <p>If you have a way how to distinguish 1st-party packages from 3rd-party ones (by a common prefix, e.g. <code>mycompany</code>),
 it is possible to do that manually.</p>
-<p>Just combine affected folders obrtained via <code>git diff --name-only</code> since <code>merge-base</code> with what 1st-party packages depend on given 1st-party package using <code>uv tree --invert --package mycompany-mypackage 2&gt;/dev/null | sed -n '/mycompany/ s/.*── \([^ ]*\) v.*/\1/p' | sort -u</code>.</p>
-<p>It would be better to have a (not yet existing) <code>--json</code> flag for <code>uv tree</code> (https://github.com/astral-sh/uv/issues/12541) but it's doable.</p>
+<p>Just combine affected folders obrtained via <code>git diff --name-only</code> since <code>merge-base</code> with what 1st-party packages depend on given 1st-party package using <code>uv tree --invert --package mycompany-mypackage 2&gt;/dev/null | sed -n &#x27;/mycompany/ s/.*── \([^ ]*\) v.*/\1/p&#x27; | sort -u</code>.</p>
+<p>It would be better to have a (not yet existing) <code>--json</code> flag for <code>uv tree</code> (<a href="https://github.com/astral-sh/uv/issues/12541">astral-sh/uv#12541</a>) but it&#x27;s doable.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Spenhouet">@Spenhouet</a> on 2025-06-17 13:36</div>
-            <div class="timeline-body"><p>@daaniam interested in your opinion on my planned approach I describe here: https://github.com/astral-sh/uv/issues/10960#issuecomment-2980405673 (to not go into off-topic here, would be cool if you can share some insights in the other issue, as that one is about best practices).</p>
+            <div class="timeline-body"><p>@daaniam interested in your opinion on my planned approach I describe here: <a href="https://github.com/astral-sh/uv/issues/10960">astral-sh/uv#10960</a>#issuecomment-2980405673 (to not go into off-topic here, would be cool if you can share some insights in the other issue, as that one is about best practices).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -195,7 +195,7 @@ it is possible to do that manually.</p>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Spenhouet">@Spenhouet</a> on 2025-06-18 08:29</div>
             <div class="timeline-body"><p>For our CI/CD I wrote a script to detect the affected workspace packages.</p>
-<pre><code class="language-bash">#!/bin/bash
+<pre><code>#!/bin/bash
 # Identify affected workspace packages based on git changes and dependency analysis
 #
 # This script determines which packages in a UV workspace are directly or indirectly affected by changes
@@ -280,24 +280,24 @@ while [[ $# -gt 0 ]]; do
 done
 
 # Function to extract package names from uv tree output
-# This helper function parses the output of 'uv tree' commands and extracts
+# This helper function parses the output of &#x27;uv tree&#x27; commands and extracts
 # just the package names, removing version numbers and other metadata
 extract_package_names() {
-    grep -o '[[:alnum:]-]\+ v[0-9][^[:space:]]*' | cut -d' ' -f1
+    grep -o &#x27;[[:alnum:]-]\+ v[0-9][^[:space:]]*&#x27; | cut -d&#x27; &#x27; -f1
 }
 
 # Function to get workspace packages and their paths from uv.lock
 # Parses the uv.lock file to extract packages that are part of this workspace
-# (those with 'editable' or 'virtual' sources) and returns them in format &quot;name:path&quot;
+# (those with &#x27;editable&#x27; or &#x27;virtual&#x27; sources) and returns them in format &quot;name:path&quot;
 get_workspace_packages() {
-    perl -0777 -ne '
+    perl -0777 -ne &#x27;
       while (/^\[\[package\]\](.*?)(?=^\[\[package\]\]|\z)/msgm) {
         my $block = $1;
         my ($name) = $block =~ /name\s*=\s*&quot;([^&quot;]+)&quot;/;
         my ($type, $path) = $block =~ /source\s*=\s*\{\s*(editable|virtual)\s*=\s*&quot;([^&quot;]+)&quot;\s*\}/;
         print &quot;$name:$path\n&quot; if $name &amp;&amp; $type &amp;&amp; $path;
       }
-    ' uv.lock
+    &#x27; uv.lock
 }
 
 vlog &quot;Checking changes between git reference $SOURCE_REF and $TARGET_REF...&quot;
@@ -325,9 +325,9 @@ CHANGED_PACKAGES=$(echo &quot;$WORKSPACE_PACKAGES&quot; | while IFS=: read -r pk
 done | sort -u)
 [ -z &quot;$CHANGED_PACKAGES&quot; ] &amp;&amp; vlog &quot;No changed packages found.&quot; &amp;&amp; exit 0
 
-vlog &quot;Filtering packages with pattern '$FILTER'...&quot;
+vlog &quot;Filtering packages with pattern &#x27;$FILTER&#x27;...&quot;
 FILTERED_PACKAGES=$(echo &quot;$WORKSPACE_PACKAGES&quot; | grep -E &quot;$FILTER&quot; | cut -d: -f1)
-[ -z &quot;$FILTERED_PACKAGES&quot; ] &amp;&amp; vlog &quot;No workspace packages matched '$FILTER'.&quot; &amp;&amp; exit 0 # Exit early if no workspace packages matched the filter
+[ -z &quot;$FILTERED_PACKAGES&quot; ] &amp;&amp; vlog &quot;No workspace packages matched &#x27;$FILTER&#x27;.&quot; &amp;&amp; exit 0 # Exit early if no workspace packages matched the filter
 vlog &quot;$FILTERED_PACKAGES&quot;
 
 vlog &quot;Checking for packages affected by change of any package in the dependency tree...&quot;
@@ -354,7 +354,7 @@ done
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:26:20 UTC
+        Synced at 2026-01-20 19:33:00 UTC
     </footer>
 </body>
 </html>

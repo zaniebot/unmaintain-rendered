@@ -23,22 +23,22 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a></div>
-            <div class="timeline-body"><p>This is a follow up to https://github.com/astral-sh/uv/pull/2582#issuecomment-2016248743 per @zanieb's suggestion.</p>
+            <div class="timeline-body"><p>This is a follow up to <a href="https://github.com/astral-sh/uv/pull/2582">astral-sh/uv#2582</a>#issuecomment-2016248743 per @zanieb&#x27;s suggestion.</p>
 <p>In a nutshell, I think it would be great to see an additional resolution strategy that supports semver-like filtering. This can potentially be introduced by a new flag (e.g. <code>--target</code> or <code>--resolution-target</code>) where possible values are <code>major</code>, <code>minor</code>, <code>patch</code>. This could be something that commands could benefit from in the future such as <code>uv pip list --outdated</code> as suggested by #2150 or equivalent.</p>
-<h4>Rationale</h4>
-<p>I often find myself wondering what are the &quot;patch&quot;, &quot;minor&quot;, or &quot;major&quot; updates available for packages that follow semver-like conventions. In many cases, I might want to update to the latest minor even if there's a major available. In the same vein, I also find myself often wanting to know this answer to direct dependencies over transitive, so direct resolution support plays a major role in such situations. <code>pip</code> doesn't quite support this, but I do think this is something <code>uv pip</code> is in a unique position support. In addition, I think this will benefit <code>uv</code> in the future if its aiming to support poetry-like dependency resolution since the underlying semantics are likely to be similar when that time comes.</p>
-<h3>Scenarios</h3>
-<p>I've tried to compile some scenarios below to help, but the list is not comprehensive.</p>
-<p>Let's consider we have installed this <code>requirements.txt</code> from a <code>requirements.in</code> that only had <code>django&gt;=4</code> at a given point in time (some dependency versions below are hypothetical to help with the scenarios).</p>
+Rationale
+<p>I often find myself wondering what are the &quot;patch&quot;, &quot;minor&quot;, or &quot;major&quot; updates available for packages that follow semver-like conventions. In many cases, I might want to update to the latest minor even if there&#x27;s a major available. In the same vein, I also find myself often wanting to know this answer to direct dependencies over transitive, so direct resolution support plays a major role in such situations. <code>pip</code> doesn&#x27;t quite support this, but I do think this is something <code>uv pip</code> is in a unique position support. In addition, I think this will benefit <code>uv</code> in the future if its aiming to support poetry-like dependency resolution since the underlying semantics are likely to be similar when that time comes.</p>
+Scenarios
+<p>I&#x27;ve tried to compile some scenarios below to help, but the list is not comprehensive.</p>
+<p>Let&#x27;s consider we have installed this <code>requirements.txt</code> from a <code>requirements.in</code> that only had <code>django&gt;=4</code> at a given point in time (some dependency versions below are hypothetical to help with the scenarios).</p>
 <pre><code>asgiref==3.7.2
 django==4.2.10
 sqlparse==0.4.3
 tzdata==2023.1
 </code></pre>
 <p>Below are some examples for each scenario <code>major</code>, <code>minor</code>, <code>patch</code>. These imply a hypothetical <code>uv pip list --outdated</code> as a prefix, but it can apply to other commands. These also assumes you have a direct <code>django&gt;=4</code> constraint and already installed the dependencies defined above.</p>
-<h4>Major Target (implies poetry *)</h4>
-<details>
-  <summary>Click to expand</summary>
+Major Target (implies poetry *)
+
+  Click to expand
 
 <p>With <code>--target=major --resolution=highest</code>. This is the same as the current <code>--resolution=highest</code>. It is assumed <code>--resolution=highest</code> is the default when resolution is not specified.</p>
 <pre><code>asgiref:  3.7.2  → 3.8.1   # upgrade
@@ -64,11 +64,11 @@ django:   4.2.10 → 4.0     # downgrade
 sqlparse: 0.4.3  → 0.4.3   # same; no django constraint on this version
 tzdata:   2023.1 → 2023.1  # same; no django constraint on this version
 </code></pre>
-</details>
 
-<h4>Minor Target (implies poetry ^)</h4>
-<details>
-  <summary>Click to expand</summary>
+
+Minor Target (implies poetry ^)
+
+  Click to expand
 
 <p>With <code>--target=minor --resolution=highest</code></p>
 <pre><code>asgiref:  3.7.2  → 3.8.1   # upgrade minor only
@@ -94,11 +94,11 @@ django:   4.2.10 → 4.0     # downgrade minor only
 sqlparse: 0.4.3  → 0.4.3   # same; no django constraint
 tzdata:   2023.1 → 2023.1  # same; no django constraint
 </code></pre>
-</details>
 
-<h4>Patch Target (implies poetry ~)</h4>
-<details>
-  <summary>Click to expand</summary>
+
+Patch Target (implies poetry ~)
+
+  Click to expand
 
 <p>With <code>--target=patch --resolution=highest</code></p>
 <pre><code>asgiref:  3.7.2  → 3.7.2   # same
@@ -124,22 +124,22 @@ django:   4.2.10 → 4.2     # downgrade patch only
 sqlparse: 0.4.3  → 0.4.3   # same
 tzdata:   2023.1 → 2023.1  # same
 </code></pre>
-</details>
 
-<hr />
+
+<hr>
 <p>Given above scenarios, <code>--target</code> probably makes most sense when have a baseline to compare against. For example, already installed dependencies. As such on scenarios where there is absolutely nothing to compare against, target should likely fallback to the default behavior of the <code>--resolution</code> mode semantics instead. Poetry can achieve this due to <code>*</code>, <code>^</code>, <code>~</code> syntax in the <code>pyproject.toml</code> dependency list, and can compare these against the installed versions and/or the lock file.
-In addition, dependency constraints should likely always take priority over output filtering with <code>--target</code>. For example, if I didn't have the <code>django&gt;=4</code> direct constraint, we would've gotten <code>django==1.1.3</code> on <code>--target=major --resolution=lowest</code>.</p>
-<h3>Other tooling</h3>
+In addition, dependency constraints should likely always take priority over output filtering with <code>--target</code>. For example, if I didn&#x27;t have the <code>django&gt;=4</code> direct constraint, we would&#x27;ve gotten <code>django==1.1.3</code> on <code>--target=major --resolution=lowest</code>.</p>
+Other tooling
 <ul>
 <li>poetry: Built-in support by using their <a href="https://python-poetry.org/docs/dependency-specification/">dependency-specification</a> via poetry update.</li>
-<li>pip: You'd use something like <a href="https://github.com/zehengl/pip-check-updates">pip-check-updates</a> to approximate this behavior, but no built-in support exists.</li>
-<li>npm: Built-in support. npm update will often try stay within your dependency constraints (unless you have overrides). If you want a friendly table output, typically you'd use <a href="https://www.npmjs.com/package/npm-check-updates">npm-check-updates</a>.</li>
+<li>pip: You&#x27;d use something like <a href="https://github.com/zehengl/pip-check-updates">pip-check-updates</a> to approximate this behavior, but no built-in support exists.</li>
+<li>npm: Built-in support. npm update will often try stay within your dependency constraints (unless you have overrides). If you want a friendly table output, typically you&#x27;d use <a href="https://www.npmjs.com/package/npm-check-updates">npm-check-updates</a>.</li>
 <li>composer: Supports <code>--major-only</code>, <code>--minor-only</code>, <code>--patch-only</code> built-in for outdated checks and semver version constraints (<code>*</code>, <code>^</code>, <code>~</code>) for updates.</li>
 </ul>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-04-01 14:36</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-01 14:36</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/matterhorn103">@matterhorn103</a> on 2024-11-14 16:32</div>
@@ -150,7 +150,7 @@ In addition, dependency constraints should likely always take priority over outp
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:24:33 UTC
+        Synced at 2026-01-20 19:30:41 UTC
     </footer>
 </body>
 </html>

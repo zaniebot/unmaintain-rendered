@@ -23,59 +23,59 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><p>(Apologies for the slightly negative tone in this issue -- I'm a big fan of ruff, and think it's a great tool!)</p>
-<hr />
+            <div class="timeline-body"><p>(Apologies for the slightly negative tone in this issue -- I&#x27;m a big fan of ruff, and think it&#x27;s a great tool!)</p>
+<hr>
 <p>If I have a file <code>foo.py</code>, like so:</p>
-<pre><code class="language-py">isinstance('foo', (int, bytes, dict, set, list, memoryview, str))
+<pre><code>isinstance(&#x27;foo&#x27;, (int, bytes, dict, set, list, memoryview, str))
 </code></pre>
 <p>Running <code>ruff foo.py --select=UP --fix --target-version=&quot;py310&quot;</code> on this file will make the following change:</p>
-<pre><code class="language-diff">-isinstance('foo', (int, bytes, dict, set, list, memoryview, str))
-+isinstance('foo', int | bytes | dict | set | list | memoryview | str)
+<pre><code>-isinstance(&#x27;foo&#x27;, (int, bytes, dict, set, list, memoryview, str))
++isinstance(&#x27;foo&#x27;, int | bytes | dict | set | list | memoryview | str)
 </code></pre>
-<p>The new code is more verbose. I wouldn't mind that <em>so</em> much, however... if it wasn't also much slower!</p>
-<pre><code>&gt;python -m timeit &quot;isinstance('foo', (int, bytes, list, set, dict, str))&quot;
+<p>The new code is more verbose. I wouldn&#x27;t mind that <em>so</em> much, however... if it wasn&#x27;t also much slower!</p>
+<pre><code>&gt;python -m timeit &quot;isinstance(&#x27;foo&#x27;, (int, bytes, list, set, dict, str))&quot;
 Running PGUpdate|x64 interpreter...
 2000000 loops, best of 5: 160 nsec per loop
 
-&gt;python -m timeit &quot;isinstance('foo', int|bytes|list|set|dict|str)&quot;
+&gt;python -m timeit &quot;isinstance(&#x27;foo&#x27;, int|bytes|list|set|dict|str)&quot;
 Running PGUpdate|x64 interpreter...
 500000 loops, best of 5: 500 nsec per loop
 </code></pre>
 <p>(These timings are using a ~reasonably fresh PGO-optimised non-debug build of the CPython <code>main</code> branch on Windows.)</p>
-<p>The rule can of course be switched off in a config file for <code>ruff</code>. But I'm not sure what <em>advantages</em> this rewrite actually has. The issue that proposed this rule (#2923) doesn't really give any motivations for wanting these <code>isinstance()</code> checks to be rewritten other than &quot;it would be great&quot;. I also feel like the comment in https://github.com/astral-sh/ruff/issues/2923#issuecomment-1431683063 is overly dismissive of the performance concerns when the writer says that &quot;<code>isinstance()</code> checks... are very unlikely to dominate any real-world workloads&quot;. It can absolutely cause real-world issues if an <code>isinstance()</code> check is unexpectedly slow: see https://github.com/python/cpython/issues/74690#issuecomment-1093749702 as an example.</p>
-<p>My preferred outcome would honestly be if ruff removed this rule. I feel like it's encouraging an anti-pattern, and it means that I can't have <code>select = [&quot;UP&quot;]</code> in my ruff config without also adding <code>ignore = [&quot;UP038&quot;]</code>. If it <em>has</em> to stay, though, I feel like the performance considerations should be loudly called out in the docs -- there's currently no mention of the potential issues here.</p>
-<p>Note that this rule doesn't exist in pyupgrade itself, only in ruff: it was specifically rejected for pyupgrade, in part because of the performance issues: https://github.com/asottile/pyupgrade/pull/736.</p>
+<p>The rule can of course be switched off in a config file for <code>ruff</code>. But I&#x27;m not sure what <em>advantages</em> this rewrite actually has. The issue that proposed this rule (#2923) doesn&#x27;t really give any motivations for wanting these <code>isinstance()</code> checks to be rewritten other than &quot;it would be great&quot;. I also feel like the comment in <a href="https://github.com/astral-sh/ruff/issues/2923">astral-sh/ruff#2923</a>#issuecomment-1431683063 is overly dismissive of the performance concerns when the writer says that &quot;<code>isinstance()</code> checks... are very unlikely to dominate any real-world workloads&quot;. It can absolutely cause real-world issues if an <code>isinstance()</code> check is unexpectedly slow: see <a href="https://github.com/python/cpython/issues/74690">python/cpython#74690</a>#issuecomment-1093749702 as an example.</p>
+<p>My preferred outcome would honestly be if ruff removed this rule. I feel like it&#x27;s encouraging an anti-pattern, and it means that I can&#x27;t have <code>select = [&quot;UP&quot;]</code> in my ruff config without also adding <code>ignore = [&quot;UP038&quot;]</code>. If it <em>has</em> to stay, though, I feel like the performance considerations should be loudly called out in the docs -- there&#x27;s currently no mention of the potential issues here.</p>
+<p>Note that this rule doesn&#x27;t exist in pyupgrade itself, only in ruff: it was specifically rejected for pyupgrade, in part because of the performance issues: <a href="https://github.com/asottile/pyupgrade/pull/736">asottile/pyupgrade#736</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> added by @konstin on 2023-10-09 14:40</div>
+            <div class="event">Label <span class="label">needs-decision</span> added by <a href="https://github.com/konstin">@konstin</a> on 2023-10-09 14:40</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-10-09 14:43</div>
-            <div class="timeline-body"><p>Isn't that more like a cpython bug? The pipe version is more consistent with type annotations users will be already familiar with, e.g. for <code>x</code> in <code>f(x: int | str)</code> holds true that <code>isinstance(x, int | str)</code>, but from my perspective there's no reason why a <code>UnionType</code> instance should be slower than a <code>tuple[type]</code>. (Even though we have to design the rules according to what cpython currently does)</p>
+            <div class="timeline-body"><p>Isn&#x27;t that more like a cpython bug? The pipe version is more consistent with type annotations users will be already familiar with, e.g. for <code>x</code> in <code>f(x: int | str)</code> holds true that <code>isinstance(x, int | str)</code>, but from my perspective there&#x27;s no reason why a <code>UnionType</code> instance should be slower than a <code>tuple[type]</code>. (Even though we have to design the rules according to what cpython currently does)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2023-10-09 15:06</div>
-            <div class="timeline-body"><p>(Possibly relevant context: I'm a CPython core dev and a <code>typing</code>-module maintainer, though I basically stick to the pure-Python parts of the CPython repo :)</p>
+            <div class="timeline-body"><p>(Possibly relevant context: I&#x27;m a CPython core dev and a <code>typing</code>-module maintainer, though I basically stick to the pure-Python parts of the CPython repo :)</p>
 <blockquote>
-<p>Isn't that more like a cpython bug?</p>
+<p>Isn&#x27;t that more like a cpython bug?</p>
 </blockquote>
-<p>Maybe! But we already had a go at optimising <code>isinstance()</code> checks against <code>types.UnionType</code> instances: https://github.com/python/cpython/issues/91603. If you have any other ideas for how we could speed them up, feel free to file an issue ;)</p>
-<p>I also think ruff's doing a disservice to its users if its rules are based on an imagined version of CPython that has no bugs. Whether or not it's a CPython bug is relevant to whether an issue should be filed with CPython to improve the performance here. But the CPython performance improvement, if it's doable, won't arrive until Python 3.13. Should ruff really be recommending the slower idiom to its users in the meantime, on the basis of &quot;Well, this is CPython's problem, this code should really be faster&quot;?</p>
+<p>Maybe! But we already had a go at optimising <code>isinstance()</code> checks against <code>types.UnionType</code> instances: <a href="https://github.com/python/cpython/issues/91603">python/cpython#91603</a>. If you have any other ideas for how we could speed them up, feel free to file an issue ;)</p>
+<p>I also think ruff&#x27;s doing a disservice to its users if its rules are based on an imagined version of CPython that has no bugs. Whether or not it&#x27;s a CPython bug is relevant to whether an issue should be filed with CPython to improve the performance here. But the CPython performance improvement, if it&#x27;s doable, won&#x27;t arrive until Python 3.13. Should ruff really be recommending the slower idiom to its users in the meantime, on the basis of &quot;Well, this is CPython&#x27;s problem, this code should really be faster&quot;?</p>
 <blockquote>
 <p>The pipe version is more consistent with type annotations users will be already familiar with, e.g. for <code>x</code> in <code>f(x: int | str)</code> holds true that <code>isinstance(x, int | str)</code></p>
 </blockquote>
 <p>Absolutely, and I believe this is why PEP 604 specified that <code>isinstance()</code> and <code>issubclass()</code> should accept instances of <code>types.UnionType</code>: so that you could cleanly write code like this, which I have no quarrel with:</p>
-<pre><code class="language-py">CustomTypeAlias = str | int
+<pre><code>CustomTypeAlias = str | int
 
 def foo(x: CustomTypeAlias | bytes) -&gt; None:
     if isinstance(x, CustomTypeAlias):
-        print('foo')
+        print(&#x27;foo&#x27;)
     else:
-        print('bar')
+        print(&#x27;bar&#x27;)
 </code></pre>
-<p>Just because you <em>can</em> do it to make your code more DRY in cases like this, though, doesn't mean that you should change <em>existing</em> code to make it slower just so that it makes use of an idiom that was added in a more recent Python release.</p>
+<p>Just because you <em>can</em> do it to make your code more DRY in cases like this, though, doesn&#x27;t mean that you should change <em>existing</em> code to make it slower just so that it makes use of an idiom that was added in a more recent Python release.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -95,7 +95,7 @@ def foo(x: CustomTypeAlias | bytes) -&gt; None:
 </blockquote>
 <p>Is kind of the point of the upgrade rules</p>
 </blockquote>
-<p>Well, the original pyupgrade tool definitely upgrades code to use more modern syntax, and to use features introduced in more recent Python versions. But I feel like that's a means to an end than the actual <em>goal</em>, per se. This is just my subjective impression, but I always considered the goal of pyupgrade to be to transform code to make it cleaner and more elegant -- and <em>the way it does that</em> is by upgrading the code to make use of more modern idioms. In my opinion, I don't think this rule really encourages code that's significantly cleaner or more elegant.</p>
+<p>Well, the original pyupgrade tool definitely upgrades code to use more modern syntax, and to use features introduced in more recent Python versions. But I feel like that&#x27;s a means to an end than the actual <em>goal</em>, per se. This is just my subjective impression, but I always considered the goal of pyupgrade to be to transform code to make it cleaner and more elegant -- and <em>the way it does that</em> is by upgrading the code to make use of more modern idioms. In my opinion, I don&#x27;t think this rule really encourages code that&#x27;s significantly cleaner or more elegant.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -106,7 +106,7 @@ def foo(x: CustomTypeAlias | bytes) -&gt; None:
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-09 18:36</div>
             <div class="timeline-body"><p>Super interesting, thanks for sharing @AlexWaygood.</p>
-<p>I <em>suspect</em> that if I knew this at the time, I <em>probably</em> wouldn't have added UP038 -- though it's hard to say. While the code change has merit (with respect to improved compatibility with annotation syntax elsewhere), it has to be weighed holistically, and (CPython) performance is part of that equation.</p>
+<p>I <em>suspect</em> that if I knew this at the time, I <em>probably</em> wouldn&#x27;t have added UP038 -- though it&#x27;s hard to say. While the code change has merit (with respect to improved compatibility with annotation syntax elsewhere), it has to be weighed holistically, and (CPython) performance is part of that equation.</p>
 <p>Removing it entirely feels off at this point, but I agree with trying to categorize it out of any default ruleset once we recategorize.</p>
 </div>
         </div>
@@ -118,19 +118,19 @@ I can think of this one and https://docs.astral.sh/ruff/rules/suppressible-excep
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-15 01:26</div>
-            <div class="timeline-body"><p>I don't think performance fits into our concept of fix safety. I think not raising the violation makes a lot more sense than gating the fix for the violation.</p>
+            <div class="timeline-body"><p>I don&#x27;t think performance fits into our concept of fix safety. I think not raising the violation makes a lot more sense than gating the fix for the violation.</p>
 <p>Note you can <a href="https://docs.astral.sh/ruff/settings/#lint_extend-unsafe-fixes">manually downgrade fixes to unsafe</a> in your configuration.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-02-08 20:11</div>
             <div class="timeline-body"><blockquote>
-<p>I don't think performance fits into our concept of fix safety. I think not raising the violation makes a lot more sense than gating the fix for the violation.</p>
+<p>I don&#x27;t think performance fits into our concept of fix safety. I think not raising the violation makes a lot more sense than gating the fix for the violation.</p>
 </blockquote>
-<p>Coming back to this. Could it be marked as <code>preview</code> so it's not selected by default when selecting the <code>UP</code> group ? And not selected by default even in preview mode with <a href="https://docs.astral.sh/ruff/settings/#lint_explicit-preview-rules">explicit-preview-rules</a> ?</p>
+<p>Coming back to this. Could it be marked as <code>preview</code> so it&#x27;s not selected by default when selecting the <code>UP</code> group ? And not selected by default even in preview mode with <a href="https://docs.astral.sh/ruff/settings/#lint_explicit-preview-rules">explicit-preview-rules</a> ?</p>
 <p>I doubt most users who have this rule enabled know that it writes code that is objectively worse (but might subjectively look better to some, in which case one can explicitly enable it)</p>
-<hr />
-<p>Alternatively, I'm not against having a conflicting, opposite rule (in <code>RUF</code>?, <code>UP</code>?, <code>PERF</code>?) that disallows the union syntax in <code>isinstance</code> checks. So that anyone who enables both <code>RUF</code> (if a separate group) and <code>UP</code> will be warned and they can make their own choice. Also increasing visibility on this. Similar to some <code>DOC</code> rules.</p>
+<hr>
+<p>Alternatively, I&#x27;m not against having a conflicting, opposite rule (in <code>RUF</code>?, <code>UP</code>?, <code>PERF</code>?) that disallows the union syntax in <code>isinstance</code> checks. So that anyone who enables both <code>RUF</code> (if a separate group) and <code>UP</code> will be warned and they can make their own choice. Also increasing visibility on this. Similar to some <code>DOC</code> rules.</p>
 <p>The same idea is applicable <a href="https://docs.astral.sh/ruff/rules/suppressible-exception/#suppressible-exception-sim105">suppressible-exception (SIM105)</a>.</p>
 </div>
         </div>
@@ -145,41 +145,41 @@ I can think of this one and https://docs.astral.sh/ruff/rules/suppressible-excep
 <p><a href="https://github.com/AlexWaygood">@AlexWaygood</a> do you still feel the same about this rule? You now have the power to suggest the rule for deprecation 😉</p>
 </blockquote>
 <p>I do indeed haha. My opinion is still that the changes recommended by this rule only make your code worse, and have no real benefits. I still switch it off on all my Python projects.</p>
-<p>I feel like it was a mistake in the first place for the PEP-604 implementation to make it possible to use <code>UnionType</code> instances in <code>isinstance()</code> and <code>issubclass()</code> calls: it blurs the (already fuzzy, in Python) distinction between types and runtime values. Subsequent changes to the typing system have deliberately gone in the other direction in order to clarify this distinction: for example, it's not possible to use PEP-695 type aliases in <code>isinstance()</code> or <code>issubclass()</code> calls, and that's a feature rather than a bug.</p>
-<p>I'd love to deprecate this rule if we have consensus around that change.</p>
+<p>I feel like it was a mistake in the first place for the PEP-604 implementation to make it possible to use <code>UnionType</code> instances in <code>isinstance()</code> and <code>issubclass()</code> calls: it blurs the (already fuzzy, in Python) distinction between types and runtime values. Subsequent changes to the typing system have deliberately gone in the other direction in order to clarify this distinction: for example, it&#x27;s not possible to use PEP-695 type aliases in <code>isinstance()</code> or <code>issubclass()</code> calls, and that&#x27;s a feature rather than a bug.</p>
+<p>I&#x27;d love to deprecate this rule if we have consensus around that change.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "v0.10" by @MichaReiser on 2025-02-08 23:32</div>
+            <div class="event">Added to milestone &quot;v0.10&quot; by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-08 23:32</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-02-09 00:53</div>
-            <div class="timeline-body"><p>I've already turned it off on all my Python projects, and with this recent thread activity I was about to make a PR to turn it off for pip, but given pip won't be Python 3.10+ for at least a year hopefully this rule is long gone by then.</p>
-<p>IMO the winning arguement is that type hints should not be confused with real time type checks. And the Python community has not moved towards making them look or work the same (e.g. there's been no widespread adoption frameworks that enforce type hints at run time). The performance argument is interesting, and it certainly seems like <code>str | int</code> could never be as fast as <code>(str, int)</code>, but that should perhaps be it's own performance rule(?) for those who consider the nanoseconds important.</p>
+            <div class="timeline-body"><p>I&#x27;ve already turned it off on all my Python projects, and with this recent thread activity I was about to make a PR to turn it off for pip, but given pip won&#x27;t be Python 3.10+ for at least a year hopefully this rule is long gone by then.</p>
+<p>IMO the winning arguement is that type hints should not be confused with real time type checks. And the Python community has not moved towards making them look or work the same (e.g. there&#x27;s been no widespread adoption frameworks that enforce type hints at run time). The performance argument is interesting, and it certainly seems like <code>str | int</code> could never be as fast as <code>(str, int)</code>, but that should perhaps be it&#x27;s own performance rule(?) for those who consider the nanoseconds important.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-12 15:43</div>
             <div class="timeline-body"><p>The plan is to deprecate this rule in 0.10 and remove it in 0.11 or 0.12</p>
-<p>See https://github.com/astral-sh/ruff/pull/16681</p>
+<p>See <a href="https://github.com/astral-sh/ruff/pull/16681">astral-sh/ruff#16681</a></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Removed from milestone "v0.10" by @MichaReiser on 2025-03-12 15:43</div>
+            <div class="event">Removed from milestone &quot;v0.10&quot; by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-12 15:43</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "v0.11" by @MichaReiser on 2025-03-12 15:43</div>
+            <div class="event">Added to milestone &quot;v0.11&quot; by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-12 15:43</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2025-03-13 14:37</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-13 14:37</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> removed by @AlexWaygood on 2025-03-13 23:20</div>
+            <div class="event">Label <span class="label">needs-decision</span> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-03-13 23:20</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:48:35 UTC
+        Synced at 2026-01-20 18:48:43 UTC
     </footer>
 </body>
 </html>

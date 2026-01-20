@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<p>While reviewing https://github.com/astral-sh/ruff/pull/17454 just after reviewing https://github.com/astral-sh/ruff/pull/18075, I realized that the <a href="https://docs.astral.sh/ruff/rules/split-static-string/#split-static-string-sim905">split-static-string (SIM905)</a> fix breaks when <code>**kwargs</code> are passed to <code>split</code>:</p>
-<pre><code class="language-shell">&gt; cat &lt;&lt;EOF | ruff check --select SIM905 --diff -
+            <div class="timeline-body">Summary
+<p>While reviewing <a href="https://github.com/astral-sh/ruff/pull/17454">astral-sh/ruff#17454</a> just after reviewing <a href="https://github.com/astral-sh/ruff/pull/18075">astral-sh/ruff#18075</a>, I realized that the <a href="https://docs.astral.sh/ruff/rules/split-static-string/#split-static-string-sim905">split-static-string (SIM905)</a> fix breaks when <code>**kwargs</code> are passed to <code>split</code>:</p>
+<pre><code>&gt; cat &lt;&lt;EOF | ruff check --select SIM905 --diff -
 d = {&quot;sep&quot;: &quot;,&quot;}
 
 &quot;a,b,c,d&quot;.split(**{&quot;sep&quot;: &quot;,&quot;})
@@ -41,13 +41,13 @@ EOF
 
 Would fix 2 errors.
 </code></pre>
-<p>The same code in Python produces <code>['a', 'b', 'c', 'd']</code> instead of <code>['a,b,c,d']</code>.</p>
-<p>I think the root cause here is that <code>find_argument_value</code> doesn't (or possibly can't) resolve the starred argument, so this might affect any rule that uses it.</p>
+<p>The same code in Python produces <code>[&#x27;a&#x27;, &#x27;b&#x27;, &#x27;c&#x27;, &#x27;d&#x27;]</code> instead of <code>[&#x27;a,b,c,d&#x27;]</code>.</p>
+<p>I think the root cause here is that <code>find_argument_value</code> doesn&#x27;t (or possibly can&#x27;t) resolve the starred argument, so this might affect any rule that uses it.</p>
 <p>Shoutout to @vjurczenia whose careful dict handling in #17454 brought this to my attention.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-05-14 17:48</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-14 17:48</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2025-05-14 20:56</div>
@@ -56,40 +56,40 @@ Would fix 2 errors.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-14 21:03</div>
-            <div class="timeline-body"><p>@LaBatata101 Thanks! However, I'm not sure this is really specific to SIM905 (despite what I put in the title!). I kind of want to see what others think about possibly tackling this at the level of <code>find_argument_value</code> before jumping into an implementation.</p>
+            <div class="timeline-body"><p>@LaBatata101 Thanks! However, I&#x27;m not sure this is really specific to SIM905 (despite what I put in the title!). I kind of want to see what others think about possibly tackling this at the level of <code>find_argument_value</code> before jumping into an implementation.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-design</span> added by @ntBre on 2025-05-14 21:03</div>
+            <div class="event">Label <span class="label">needs-design</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-14 21:03</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2025-05-14 21:39</div>
-            <div class="timeline-body"><p>For the case, <code>&quot;a,b,c,d&quot;.split(**d)</code>, there isn't much to do I think, we can resolve the type to <code>dict</code> but we can't know what is the dictionary value. But for the case, <code>&quot;a,b,c,d&quot;.split(**{&quot;sep&quot;: &quot;,&quot;})</code>, where we have a <code>dict</code> literal, I think <code>find_argument_value</code> could lookup the name in the dictionary keys and return the value of that key.</p>
+            <div class="timeline-body"><p>For the case, <code>&quot;a,b,c,d&quot;.split(**d)</code>, there isn&#x27;t much to do I think, we can resolve the type to <code>dict</code> but we can&#x27;t know what is the dictionary value. But for the case, <code>&quot;a,b,c,d&quot;.split(**{&quot;sep&quot;: &quot;,&quot;})</code>, where we have a <code>dict</code> literal, I think <code>find_argument_value</code> could lookup the name in the dictionary keys and return the value of that key.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-15 13:53</div>
-            <div class="timeline-body"><p>Yeah that's a good point. I guess I'm  wondering if we need to return a <code>Result&lt;Option&lt;&amp;Expr&gt;&gt;</code> instead of just an <code>Option</code>,  or something like that. Some way to indicate a situation where we don't know if an argument is present, so it's not really safe to proceed.</p>
+            <div class="timeline-body"><p>Yeah that&#x27;s a good point. I guess I&#x27;m  wondering if we need to return a <code>Result&lt;Option&lt;&amp;Expr&gt;&gt;</code> instead of just an <code>Option</code>,  or something like that. Some way to indicate a situation where we don&#x27;t know if an argument is present, so it&#x27;s not really safe to proceed.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2025-05-15 19:36</div>
             <div class="timeline-body"><blockquote>
-<p>Some way to indicate a situation where we don't know if an argument is present, so it's not really safe to proceed.</p>
+<p>Some way to indicate a situation where we don&#x27;t know if an argument is present, so it&#x27;s not really safe to proceed.</p>
 </blockquote>
-<p>Isn't that the purpose of <code>Option</code>?</p>
-<p>It would make sense to wrap in a <code>Result</code> if the operation could fail, but that's not the case here, right?</p>
+<p>Isn&#x27;t that the purpose of <code>Option</code>?</p>
+<p>It would make sense to wrap in a <code>Result</code> if the operation could fail, but that&#x27;s not the case here, right?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-15 19:40</div>
-            <div class="timeline-body"><p>Well we already have one <code>Option</code> here with <code>Some</code> for &quot;we know the argument is present&quot; and <code>None</code> for &quot;we know the argument is <em>not</em> present.&quot; The <code>Result::Err</code> case would be for cases where we aren't sure. But yes, it probably makes more sense just to have a separate three-variant enum than mix in a <code>Result</code>.</p>
+            <div class="timeline-body"><p>Well we already have one <code>Option</code> here with <code>Some</code> for &quot;we know the argument is present&quot; and <code>None</code> for &quot;we know the argument is <em>not</em> present.&quot; The <code>Result::Err</code> case would be for cases where we aren&#x27;t sure. But yes, it probably makes more sense just to have a separate three-variant enum than mix in a <code>Result</code>.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:52:43 UTC
+        Synced at 2026-01-20 18:49:56 UTC
     </footer>
 </body>
 </html>

@@ -23,24 +23,24 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>Currently we represent the <code>level</code> of an <code>ImportFrom</code> (the leading dots) as an <code>Option&lt;u32&gt;</code>, but the parser always parses a non-relative import (<code>from foo import bar</code>) as having <code>level: Some(0)</code>. But various other representations of imports throughout the codebase also use <code>Option&lt;u32&gt;</code>, and inconsistently sometimes use <code>Some(0)</code> and sometimes use <code>None</code> to represent the same situation: an absolute import. And then there's tons of code checking for absolute vs relative import that jumps through various hoops to handle <code>None</code> and <code>Some(0)</code> the same way. And of course it's easy to get this wrong -- in particular, it would be easy to check for <code>None</code> and miss the <code>Some(0)</code> case.</p>
-<p>There is no useful distinction between what <code>None</code> and <code>Some(0)</code> represent here; they are exactly the same import. It's just two different inconsistent representations for the same thing.</p>
+            <div class="timeline-body">Summary
+<p>Currently we represent the <code>level</code> of an <code>ImportFrom</code> (the leading dots) as an <code>Option&lt;u32&gt;</code>, but the parser always parses a non-relative import (<code>from foo import bar</code>) as having <code>level: Some(0)</code>. But various other representations of imports throughout the codebase also use <code>Option&lt;u32&gt;</code>, and inconsistently sometimes use <code>Some(0)</code> and sometimes use <code>None</code> to represent the same situation: an absolute import. And then there&#x27;s tons of code checking for absolute vs relative import that jumps through various hoops to handle <code>None</code> and <code>Some(0)</code> the same way. And of course it&#x27;s easy to get this wrong -- in particular, it would be easy to check for <code>None</code> and miss the <code>Some(0)</code> case.</p>
+<p>There is no useful distinction between what <code>None</code> and <code>Some(0)</code> represent here; they are exactly the same import. It&#x27;s just two different inconsistent representations for the same thing.</p>
 <p>This PR changes our representation of <code>level</code> everywhere to be just <code>u32</code>, so an absolute import always has level <code>0</code>, and simplifying a bunch of code that checks <code>level</code>. This is also consistent with CPython AST, which uses <code>level=0</code>, not <code>level=None</code>.</p>
-<p>It would be possible to go the other way and try to eliminate the use of <code>Some(0)</code> and always use <code>None</code>, but it will be harder to stay consistent with that, since <code>Some(0)</code> will always be possible. And since it's possible, every usage site should technically still check for it.</p>
+<p>It would be possible to go the other way and try to eliminate the use of <code>Some(0)</code> and always use <code>None</code>, but it will be harder to stay consistent with that, since <code>Some(0)</code> will always be possible. And since it&#x27;s possible, every usage site should technically still check for it.</p>
 <p><code>Option&lt;u32&gt;</code> is twice as big as <code>u32</code>, so this change saves a bit of memory, too. And some CPU instructions, from all the usage sites doing various forms of double checks for <code>None</code> and <code>0</code>.</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>Compiles and test suite passes. Updated some <code>insta</code> tests.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> added by @carljm on 2024-04-27 02:09</div>
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/carljm">@carljm</a> on 2024-04-27 02:09</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @carljm on 2024-04-27 02:09</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/carljm">@carljm</a> on 2024-04-27 02:09</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dhruvmanila by @carljm on 2024-04-27 02:09</div>
+            <div class="event">Review requested from <a href="https://github.com/dhruvmanila">@dhruvmanila</a> by <a href="https://github.com/carljm">@carljm</a> on 2024-04-27 02:09</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-04-27 02:11</div>
@@ -48,7 +48,7 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">great writeup</span> added by @zanieb on 2024-04-27 02:14</div>
+            <div class="event">Label <span class="label">great writeup</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-27 02:14</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-27 02:14</div>
@@ -62,7 +62,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-27 02:22</div>
-            <div class="timeline-body"><p>By the way, have you seen <a href="https://doc.rust-lang.org/std/num/type.NonZeroU32.html"><code>NonZeroU32</code></a>? I think that would've been another option here, since <code>Option&lt;NonZeroU32&gt;</code> is the same size as <code>u32</code>. But I think what you have here is simpler.</p>
+            <div class="timeline-body"><p>By the way, have you seen <a href="https://doc.rust-lang.org/std/num/type.NonZeroU32.html"><code>NonZeroU32</code></a>? I think that would&#x27;ve been another option here, since <code>Option&lt;NonZeroU32&gt;</code> is the same size as <code>u32</code>. But I think what you have here is simpler.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -78,41 +78,41 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-04-27 02:32</div>
-            <div class="timeline-body"><p>Nah I think I'll just merge this. <code>u32</code> is nice and simple, everything is slightly less verbose this way, and <code>0</code> is already special enough. I don't see any really convincing advantage for <code>Option&lt;NonZeroU32&gt;</code>. But that's something I'll definitely keep in mind in the future.</p>
+            <div class="timeline-body"><p>Nah I think I&#x27;ll just merge this. <code>u32</code> is nice and simple, everything is slightly less verbose this way, and <code>0</code> is already special enough. I don&#x27;t see any really convincing advantage for <code>Option&lt;NonZeroU32&gt;</code>. But that&#x27;s something I&#x27;ll definitely keep in mind in the future.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-27 02:37</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-27 02:37</div>
-            <div class="timeline-body"><p>Agreed, this looks good to me. But <code>NonZeroU32</code> is useful sometimes and thought you'd find it interesting :)</p>
+            <div class="timeline-body"><p>Agreed, this looks good to me. But <code>NonZeroU32</code> is useful sometimes and thought you&#x27;d find it interesting :)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @carljm on 2024-04-27 02:38</div>
+            <div class="event">Merged by <a href="https://github.com/carljm">@carljm</a> on 2024-04-27 02:38</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2024-04-27 02:38</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2024-04-27 02:38</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-04-27 02:38</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-27 06:19</div>
-            <div class="timeline-body"><p>I definitely prefer this over Option<NonZeroUsize>. The thing that bothered me most is that the AST allows for both level and module to be None which should never happen in practice. The new design doesn't prevent this from happening, but at least it's no longer required to handle the case explicitly (you can test if module is set and otherwise take the default case)</p>
+            <div class="timeline-body"><p>I definitely prefer this over Option. The thing that bothered me most is that the AST allows for both level and module to be None which should never happen in practice. The new design doesn&#x27;t prevent this from happening, but at least it&#x27;s no longer required to handle the case explicitly (you can test if module is set and otherwise take the default case)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -134,7 +134,7 @@
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:04:02 UTC
+        Synced at 2026-01-20 19:03:44 UTC
     </footer>
 </body>
 </html>

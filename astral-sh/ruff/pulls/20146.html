@@ -23,29 +23,29 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>In <code>is_disjoint_from_impl</code>, we should unpack type aliases before we check <code>TypedDict</code>. This change probably doesn't have any visible effect until we have a more discriminating implementation of disjointness for <code>TypedDict</code>, but making the change now can avoid some confusion/bugs in future.</p>
-<p>In <code>type_ordering.rs</code>, we should order <code>TypedDict</code> near more similar types, and leave Union/Intersection together at the end of the list. This is not necessary for correctness, but it's more consistent and it could have saved me some confusion trying to figure out why I was only getting an unreachable panic when my code example included a <code>TypedDict</code> type.</p>
-<h2>Test Plan</h2>
+            <div class="timeline-body">Summary
+<p>In <code>is_disjoint_from_impl</code>, we should unpack type aliases before we check <code>TypedDict</code>. This change probably doesn&#x27;t have any visible effect until we have a more discriminating implementation of disjointness for <code>TypedDict</code>, but making the change now can avoid some confusion/bugs in future.</p>
+<p>In <code>type_ordering.rs</code>, we should order <code>TypedDict</code> near more similar types, and leave Union/Intersection together at the end of the list. This is not necessary for correctness, but it&#x27;s more consistent and it could have saved me some confusion trying to figure out why I was only getting an unreachable panic when my code example included a <code>TypedDict</code> type.</p>
+Test Plan
 <p>None besides existing tests.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @carljm on 2025-08-29 02:03</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/carljm">@carljm</a> on 2025-08-29 02:03</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-29 02:05</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a>
 <p>No changes detected when running ty on typing conformance tests ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-29 02:08</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
+<code>mypy_primer</code> results
 <p>No ecosystem changes detected ✅
 No memory usage changes detected ✅</p>
 </div>
@@ -68,37 +68,37 @@ No memory usage changes detected ✅</p>
             <div class="timeline-body"><blockquote>
 <p>In <code>to_meta_type</code> -- all inhabitants of a <code>TypedDict</code> type must be <code>dict</code> instances at runtime (not instances of a subclass of <code>dict</code>). So the meta type of a <code>TypedDict</code> type should be the class <code>dict</code>.</p>
 </blockquote>
-<p>I explained <a href="https://github.com/astral-sh/ruff/pull/19733#discussion_r2252598425">here</a> why I think it's necessary to include information about the actual <code>TypedDict</code> type in its meta type. Also note that we do already infer <code>&lt;class 'dict[str, object]'&gt;</code> for <code>type(some_typed_dict)</code> (see this <a href="https://github.com/astral-sh/ruff/blob/04dc223710e9dfeb265603b9dcc04c08fd7a3601/crates/ty_python_semantic/resources/mdtest/typed_dict.md?plain=1#L470-L483">MD test</a>).</p>
-<p>With the changes in https://github.com/astral-sh/ruff/pull/19758, <code>type(obj)</code> is not necessarily equivalent with calling <code>Type::to_meta_type</code> on the type of <code>obj</code>. See also <a href="https://github.com/astral-sh/ruff/blob/04dc223710e9dfeb265603b9dcc04c08fd7a3601/crates/ty_python_semantic/src/types.rs#L5869-L5870">this doc comment</a>.</p>
+<p>I explained <a href="https://github.com/astral-sh/ruff/pull/19733#discussion_r2252598425">here</a> why I think it&#x27;s necessary to include information about the actual <code>TypedDict</code> type in its meta type. Also note that we do already infer <code>&lt;class &#x27;dict[str, object]&#x27;&gt;</code> for <code>type(some_typed_dict)</code> (see this <a href="https://github.com/astral-sh/ruff/blob/04dc223710e9dfeb265603b9dcc04c08fd7a3601/crates/ty_python_semantic/resources/mdtest/typed_dict.md?plain=1#L470-L483">MD test</a>).</p>
+<p>With the changes in <a href="https://github.com/astral-sh/ruff/pull/19758">astral-sh/ruff#19758</a>, <code>type(obj)</code> is not necessarily equivalent with calling <code>Type::to_meta_type</code> on the type of <code>obj</code>. See also <a href="https://github.com/astral-sh/ruff/blob/04dc223710e9dfeb265603b9dcc04c08fd7a3601/crates/ty_python_semantic/src/types.rs#L5869-L5870">this doc comment</a>.</p>
 <p>(oops, Alex beat me to it)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-29 16:10</div>
-            <div class="timeline-body"><p>Makes sense, thanks for the clarification and sorry for the noise! I've updated the PR to exclude the meta-type change, and instead add a comment to avoid someone making the same mistake as me in future.</p>
+            <div class="timeline-body"><p>Makes sense, thanks for the clarification and sorry for the noise! I&#x27;ve updated the PR to exclude the meta-type change, and instead add a comment to avoid someone making the same mistake as me in future.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @carljm on 2025-08-29 16:43</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/carljm">@carljm</a> on 2025-08-29 16:43</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @carljm on 2025-08-29 16:43</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/carljm">@carljm</a> on 2025-08-29 16:43</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @carljm on 2025-08-29 16:43</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/carljm">@carljm</a> on 2025-08-29 16:43</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @carljm on 2025-08-29 16:43</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/carljm">@carljm</a> on 2025-08-29 16:43</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-08-29 16:45</div>
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @carljm on 2025-08-29 16:46</div>
+            <div class="event">Merged by <a href="https://github.com/carljm">@carljm</a> on 2025-08-29 16:46</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2025-08-29 16:46</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2025-08-29 16:46</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-08-29 16:46</div>
@@ -106,7 +106,7 @@ No memory usage changes detected ✅</p>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:15:24 UTC
+        Synced at 2026-01-20 19:18:09 UTC
     </footer>
 </body>
 </html>

@@ -23,36 +23,25 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Avasam">@Avasam</a></div>
-            <div class="timeline-body"><!--
-Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+            <div class="timeline-body">
 
-If you're filing a bug report, please consider including the following information:
-
-* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
-  e.g. "RUF001", "unused variable", "Jupyter notebook"
-
-
-
-
--->
-
-<p>Thanks @InSyncWithFoo for adding an autofix in https://github.com/astral-sh/ruff/pull/14217 .</p>
+<p>Thanks @InSyncWithFoo for adding an autofix in <a href="https://github.com/astral-sh/ruff/pull/14217">astral-sh/ruff#14217</a> .</p>
 <ul>
 <li>A minimal code snippet that reproduces the bug.</li>
 </ul>
 <p>I did notice an issue that I think should be possible to handle. This case:</p>
-<pre><code class="language-py">class Container(tuple):
+<pre><code>class Container(tuple):
     def __new__(cls: Type[Container], *args, **kwargs) -&gt; Container: ...
 </code></pre>
 <p>gets autofixed to</p>
-<pre><code class="language-py">class Container(tuple):
+<pre><code>class Container(tuple):
     def __new__(cls: Type[Container], *args, **kwargs) -&gt; Self: ...
 </code></pre>
 <p>Which causes type error:</p>
 <pre><code>error: &quot;Self&quot; cannot be used in a function with a `self` or `cls` parameter that has a type annotation other than &quot;Self&quot; (reportGeneralTypeIssues)
 </code></pre>
 <p>I think it should be:</p>
-<pre><code class="language-py">class Container(tuple):
+<pre><code>class Container(tuple):
     def __new__(cls, *args, **kwargs) -&gt; Self: ...
 </code></pre>
 <ul>
@@ -71,15 +60,15 @@ If you're filing a bug report, please consider including the following informati
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-11-18 03:39</div>
-            <div class="timeline-body"><p>Admittedly, the fix is unsafe here (and, indeed, it was marked as such), but I'm not sure if this falls within the scope of <code>PYI034</code>. I would say it is closer to <a href="https://docs.astral.sh/ruff/rules/custom-type-var-return-type/"><code>PYI019</code></a>.</p>
+            <div class="timeline-body"><p>Admittedly, the fix is unsafe here (and, indeed, it was marked as such), but I&#x27;m not sure if this falls within the scope of <code>PYI034</code>. I would say it is closer to <a href="https://docs.astral.sh/ruff/rules/custom-type-var-return-type/"><code>PYI019</code></a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2024-11-18 04:00</div>
-            <div class="timeline-body"><p>I don't think this falls under PYI019, there are no typevar used here.</p>
-<p>Ruff probably doesn't need to try and fix code like <code>def __new__(cls: Type[Container], *args, **kwargs) -&gt; Self: ...</code> when it's encountered in the wild, as it's invalid to begin with. So I'm not asking for a rule to fix it here, <em>but</em> it shouldn't produce it either if possible.</p>
-<p>The autofix is indeed unsafe, as there are cases where you wouldn't want to use <code>Self</code>. But assuming this is not one of those cases, it's correct to attempt an autofix here, the current implementation just doesn't yet handle it.</p>
-<hr />
+            <div class="timeline-body"><p>I don&#x27;t think this falls under PYI019, there are no typevar used here.</p>
+<p>Ruff probably doesn&#x27;t need to try and fix code like <code>def __new__(cls: Type[Container], *args, **kwargs) -&gt; Self: ...</code> when it&#x27;s encountered in the wild, as it&#x27;s invalid to begin with. So I&#x27;m not asking for a rule to fix it here, <em>but</em> it shouldn&#x27;t produce it either if possible.</p>
+<p>The autofix is indeed unsafe, as there are cases where you wouldn&#x27;t want to use <code>Self</code>. But assuming this is not one of those cases, it&#x27;s correct to attempt an autofix here, the current implementation just doesn&#x27;t yet handle it.</p>
+<hr>
 <p>However (and if) this case ends up being handled, both known reasons for this fix to be unsafe could be documented.</p>
 <ol>
 <li>Intentionally returning a specific class from <code>__new__</code></li>
@@ -90,19 +79,19 @@ If you're filing a bug report, please consider including the following informati
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2024-11-18 04:06</div>
             <div class="timeline-body"><p>Maybe Ruff <em>should</em> have a rule to disallow (and remove) non-typevar annotations on <code>self</code>/<code>cls</code>? 🤔
-That'd solve the issue and this issue could be closed with only documenting the fix safety.</p>
+That&#x27;d solve the issue and this issue could be closed with only documenting the fix safety.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-18 07:06</div>
-            <div class="timeline-body"><p>@InSyncWithFoo If I recall, then https://github.com/astral-sh/ruff/pull/14238 handles type annotations in <code>self</code>/<code>cls</code> positions correctly. Any concerns with detecting type annotation for <code>self</code>/<code>cls</code> that can't be replaced with <code>Self</code> and bailing out of the fix?</p>
+            <div class="timeline-body"><p>@InSyncWithFoo If I recall, then <a href="https://github.com/astral-sh/ruff/pull/14238">astral-sh/ruff#14238</a> handles type annotations in <code>self</code>/<code>cls</code> positions correctly. Any concerns with detecting type annotation for <code>self</code>/<code>cls</code> that can&#x27;t be replaced with <code>Self</code> and bailing out of the fix?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-11-18 07:06</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-18 07:06</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">fixes</span> added by @MichaReiser on 2024-11-18 07:06</div>
+            <div class="event">Label <span class="label">fixes</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-18 07:06</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-11-18 08:28</div>
@@ -112,7 +101,7 @@ That'd solve the issue and this issue could be closed with only documenting the 
 <li><code>Container</code> is <em>not</em> generic.</li>
 </ul>
 <p>Consider this contrived example:</p>
-<pre><code class="language-python"># Before
+<pre><code># Before
 class Container[T]:
     def __init__(self, v: T, /) -&gt; None: ...
     def map(self: Container, mapper: Callable, /) -&gt; Container: ...
@@ -124,22 +113,22 @@ class Container[T]:
     def map(self, mapper: Callable, /) -&gt; Self: ...
 #                          `Container[T]` ^^^^
 </code></pre>
-<pre><code class="language-python">c = Container(0)  # Container[int]
+<pre><code>c = Container(0)  # Container[int]
 
 # Before
-reveal_type(c.map(lambda _: ''))  # Container[Any]
+reveal_type(c.map(lambda _: &#x27;&#x27;))  # Container[Any]
 # After
-reveal_type(c.map(lambda _: ''))  # Container[int]
+reveal_type(c.map(lambda _: &#x27;&#x27;))  # Container[int]
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2024-12-09 14:59</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-12-09 14:59</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:51:33 UTC
+        Synced at 2026-01-20 18:49:00 UTC
     </footer>
 </body>
 </html>

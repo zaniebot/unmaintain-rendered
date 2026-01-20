@@ -23,17 +23,17 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/The-Red-Dragons">@The-Red-Dragons</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<h2>Summary</h2>
+            <div class="timeline-body">Summary
+Summary
 <p>ty reports <code>division-by-zero</code> errors even when the division is guarded by a conditional check like <code>if x &gt; 0</code>.</p>
-<h2>Environment</h2>
+Environment
 <ul>
 <li>ty version: 0.0.4</li>
 <li>Python version: 3.14</li>
 <li>OS: Ubuntu 24.04</li>
 </ul>
-<h2>Reproduction</h2>
-<pre><code class="language-python">class Example:
+Reproduction
+<pre><code>class Example:
     def __init__(self) -&gt; None:
         self.total_requests = 0
         self.rate_limited_requests = 0
@@ -47,48 +47,48 @@
             ),
         }
 </code></pre>
-<h2>Expected Behavior</h2>
+Expected Behavior
 <p>No error - the division is only executed when <code>self.total_requests &gt; 0</code>, making division by zero impossible.</p>
-<h2>Actual Behavior</h2>
+Actual Behavior
 <pre><code>error[division-by-zero]: Cannot divide object of type `Literal[0]` by zero
 </code></pre>
-<p>ty correctly infers that <code>self.total_requests</code> is initialized to <code>0</code>, but doesn't recognize that the <code>if self.total_requests &gt; 0</code> guard narrows the type to exclude zero before the division occurs.</p>
-<h2>Workaround</h2>
+<p>ty correctly infers that <code>self.total_requests</code> is initialized to <code>0</code>, but doesn&#x27;t recognize that the <code>if self.total_requests &gt; 0</code> guard narrows the type to exclude zero before the division occurs.</p>
+Workaround
 <p>Currently using <code>division-by-zero = &quot;warn&quot;</code> in <code>pyproject.toml</code> to suppress these false positives.</p>
-<h2>Related</h2>
+Related
 <p>This is similar to how type checkers handle None checks - after <code>if x is not None</code>, the type is narrowed. The same narrowing logic should apply to numeric comparisons before division.</p>
-<h3>Version</h3>
+Version
 <p>0.0.4</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-19 11:24</div>
-            <div class="timeline-body"><p>Hey -- yeah, our <code>division-by-zero</code> check has quite a few false positives like this. This is why it's currently disabled by default.</p>
-<p>I'll leave this open, as it's <em>possible</em> we might add support for narrowing <code>Literal[0]</code> out of a union by using <code>&gt;</code>, <code>&gt;=</code>, <code>&lt;</code> or <code>&lt;=</code> checks. I don't think it's a priority for us, though, as it would add some complexity to our model and I think this specific check might be the only rule that would benefit from this narrowing currently.</p>
-<p>We should maybe also add a note to the documentation for this rule that it's known to have false positives, and that this is why it's disabled by default.</p>
+            <div class="timeline-body"><p>Hey -- yeah, our <code>division-by-zero</code> check has quite a few false positives like this. This is why it&#x27;s currently disabled by default.</p>
+<p>I&#x27;ll leave this open, as it&#x27;s <em>possible</em> we might add support for narrowing <code>Literal[0]</code> out of a union by using <code>&gt;</code>, <code>&gt;=</code>, <code>&lt;</code> or <code>&lt;=</code> checks. I don&#x27;t think it&#x27;s a priority for us, though, as it would add some complexity to our model and I think this specific check might be the only rule that would benefit from this narrowing currently.</p>
+<p>We should maybe also add a note to the documentation for this rule that it&#x27;s known to have false positives, and that this is why it&#x27;s disabled by default.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">wish</span> added by @AlexWaygood on 2025-12-19 11:24</div>
+            <div class="event">Label <span class="label">wish</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-19 11:24</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">narrowing</span> added by @AlexWaygood on 2025-12-19 11:24</div>
+            <div class="event">Label <span class="label">narrowing</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-19 11:24</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "False positive: `division-by-zero` doesn't understand conditional guards" to "Support narrowing `Literal[0]` out of unions using `<`, `<=`, `>` and `>=` checks" by @AlexWaygood on 2025-12-19 11:25</div>
+            <div class="event">Renamed from &quot;False positive: `division-by-zero` doesn&#x27;t understand conditional guards&quot; to &quot;Support narrowing `Literal[0]` out of unions using `&lt;`, `&lt;=`, `&gt;` and `&gt;=` checks&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-19 11:25</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-19 12:03</div>
             <div class="timeline-body"><blockquote>
-<p>We should maybe also add a note to the documentation for this rule that it's known to have false positives, and that this is why it's disabled by default.</p>
+<p>We should maybe also add a note to the documentation for this rule that it&#x27;s known to have false positives, and that this is why it&#x27;s disabled by default.</p>
 </blockquote>
-<p>I opened https://github.com/astral-sh/ty/issues/2112 to track this specifically</p>
+<p>I opened <a href="https://github.com/astral-sh/ty/issues/2112">astral-sh/ty#2112</a> to track this specifically</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:21:28 UTC
+        Synced at 2026-01-20 19:26:38 UTC
     </footer>
 </body>
 </html>

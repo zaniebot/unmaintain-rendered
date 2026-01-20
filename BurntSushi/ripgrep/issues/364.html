@@ -25,18 +25,18 @@
             <div class="timeline-header"><a href="https://github.com/davidziman">@davidziman</a></div>
             <div class="timeline-body"><p>Seems long file names may not work in the Windows x64 build of ripgrep 0.4.0.</p>
 <p>In cmd on windows 10 (Version 1607 OS Build 14393.693) do the following:</p>
-<pre><code class="language-batch">cd c:\
+<pre><code>cd c:\
 mkdir ar
 cd ar
 echo &quot;foobar&quot; &gt; abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrs
 </code></pre>
 <p>Execute rg:</p>
-<pre><code class="language-batch">rg &quot;foobar&quot;
+<pre><code>rg &quot;foobar&quot;
 </code></pre>
 <p>Result:
 <code>./abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrs: The system cannot find the path specified. (os error 3)</code></p>
 <p>Try again:</p>
-<pre><code class="language-batch">rg &quot;foobar&quot; \\?\%cd%
+<pre><code>rg &quot;foobar&quot; \\?\%cd%
 </code></pre>
 <p>Result:
 <code>\\?\c:\ar\abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrs 1:&quot;foobar&quot;</code></p>
@@ -51,16 +51,16 @@ echo &quot;foobar&quot; &gt; abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxy
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/JFLarvoire">@JFLarvoire</a> on 2017-02-15 10:15</div>
             <div class="timeline-body"><p>I have a solution:
-I've published on https://github.com/JFLarvoire/SysToolsLib/tree/master/C/MsvcLibX a Microsoft C library extension, with support for long file names &gt;&gt; 260 characters, UTF-8 file names, symbolic links, etc.
+I&#x27;ve published on https://github.com/JFLarvoire/SysToolsLib/tree/master/C/MsvcLibX a Microsoft C library extension, with support for long file names &gt;&gt; 260 characters, UTF-8 file names, symbolic links, etc.
 By building ripgrep with MsvcLibX, you should automatically inherit all these capabilities.
-Note that MsvcLibX currently has support for many file and directory access functions, but not all. I've never tried it with programs using memory map functions like mmap(). Anyway, it should be relatively easy to add any missing function.</p>
+Note that MsvcLibX currently has support for many file and directory access functions, but not all. I&#x27;ve never tried it with programs using memory map functions like mmap(). Anyway, it should be relatively easy to add any missing function.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-15 12:01</div>
             <div class="timeline-body"><p>@JFLarvoire Thanks for the pointer!</p>
-<p>Allow me to be clearer: I am <strong>not</strong> a Windows programmer. I know almost nothing about it or its ecosystem. Anything that complicates the build process is something I'm unlikely to want to add. I would rather not add additional C libraries (for Windows or Linux).</p>
-<p>If standard Windows tooling doesn't support long file paths, then I'm not sure what to do. Someone will need to explain the actual problem in depth. If it's fixable in Rust, then we should do that. Pointing to a giant C library doesn't really help me understand. Sorry. :-( Maybe you could point specifically to where long file paths are handled?</p>
+<p>Allow me to be clearer: I am <strong>not</strong> a Windows programmer. I know almost nothing about it or its ecosystem. Anything that complicates the build process is something I&#x27;m unlikely to want to add. I would rather not add additional C libraries (for Windows or Linux).</p>
+<p>If standard Windows tooling doesn&#x27;t support long file paths, then I&#x27;m not sure what to do. Someone will need to explain the actual problem in depth. If it&#x27;s fixable in Rust, then we should do that. Pointing to a giant C library doesn&#x27;t really help me understand. Sorry. :-( Maybe you could point specifically to where long file paths are handled?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -69,39 +69,39 @@ Note that MsvcLibX currently has support for many file and directory access func
 The WIN32 API was created for Windows 95. In Windows 95, the FAT32 file system was limited to 260 characters paths. When they introduced the NTFS file system in NT, even though this file system had no such limitation anymore,  for backwards compatibility reasons, they kept that 260-character limitation in the WIN32 APIs. (Educated guess: Some old version of Word broke due to fixed size buffers overflowing when longer pathnames were encountered?)
 Still, to allow long-path-aware programs to use pathname longer than that, they documented that these programs should prefix pathnames with the special string &quot;\\?\&quot;.</p>
 <p>This is a real problem: I have many systems at work with deep directory trees, with paths longer than 260 characters. Most publicly available WIN32 ports of Unix tools (like find or ag) break on these systems. (And as an aside, they usually also break on pathnames containing Unicode characters &gt; \u00FF; And misbehave if there are symbolic links.)</p>
-<p>My MsvcLibX library redefines open(), fopen(), exec(), etc, and prepends that special &quot;\\?\&quot; string to all pathnames it receives, before passing it on the Windows' CreateFile(). It also defines Standard C library directory access routines missing in MS libc.
+<p>My MsvcLibX library redefines open(), fopen(), exec(), etc, and prepends that special &quot;\\?\&quot; string to all pathnames it receives, before passing it on the Windows&#x27; CreateFile(). It also defines Standard C library directory access routines missing in MS libc.
 I use it for all my system management tools, and this ensures they work reliably on all our systems at work. Including the ones with deep directory trees. Including the ones localized in Russian or Chinese. Including the new ones with symbolic links. Including the old XP systems that do NOT support the symbolic link APIs. Etc.</p>
-<p>Give me a few days: I'll try to build ripgrep with MsvcLibX, and I'll report about the difficulties and benefits.</p>
+<p>Give me a few days: I&#x27;ll try to build ripgrep with MsvcLibX, and I&#x27;ll report about the difficulties and benefits.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-15 13:37</div>
-            <div class="timeline-body"><p>@JFLarvoire Thanks for the explanation! It sounds like the key problem will be that ripgrep uses Rust's standard library for file system stuff, so you can't &quot;just&quot; hook up fopen/exec/etc. I do believe that ripgrep should be able to handle symbolic links and Unicode characters in paths on Windows.</p>
+            <div class="timeline-body"><p>@JFLarvoire Thanks for the explanation! It sounds like the key problem will be that ripgrep uses Rust&#x27;s standard library for file system stuff, so you can&#x27;t &quot;just&quot; hook up fopen/exec/etc. I do believe that ripgrep should be able to handle symbolic links and Unicode characters in paths on Windows.</p>
 <blockquote>
 <p>and prepends that special <code>\\?\</code> string to all pathnames it receives</p>
 </blockquote>
-<p>Interesting. I wonder if this is something Rust's standard library should be doing. @retep998 thoughts?</p>
+<p>Interesting. I wonder if this is something Rust&#x27;s standard library should be doing. @retep998 thoughts?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/retep998">@retep998</a> on 2017-02-15 13:57</div>
-            <div class="timeline-body"><p>MsvcLibX won't fix anything automatically for Rust because Rust doesn't use libc for IO so redefining libc functions is worthless. What would fix things is detecting non-verbatim paths that are over <code>MAX_PATH</code> and automatically converting them into verbatim paths, which would necessitate calling <code>GetFullPathNameW</code> because paths have to be normalized first (naively prepending <code>\\?\</code> would break on relative paths or paths with <code>..</code> or <code>.</code> in them). There's already an open issue for that https://github.com/rust-lang/rust/issues/32689</p>
+            <div class="timeline-body"><p>MsvcLibX won&#x27;t fix anything automatically for Rust because Rust doesn&#x27;t use libc for IO so redefining libc functions is worthless. What would fix things is detecting non-verbatim paths that are over <code>MAX_PATH</code> and automatically converting them into verbatim paths, which would necessitate calling <code>GetFullPathNameW</code> because paths have to be normalized first (naively prepending <code>\\?\</code> would break on relative paths or paths with <code>..</code> or <code>.</code> in them). There&#x27;s already an open issue for that <a href="https://github.com/rust-lang/rust/issues/32689">rust-lang/rust#32689</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/JFLarvoire">@JFLarvoire</a> on 2017-02-15 14:32</div>
-            <div class="timeline-body"><p>Well good luck fixing that in Rust's library. This will be really useful. I'm looking forward to getting a ripgrep version for Windows with the fix.
-Note that Rust is not alone: I've just started to work with Python, and despite its widespread use, guess what, the Windows version fails to open files in deep paths too!</p>
+            <div class="timeline-body"><p>Well good luck fixing that in Rust&#x27;s library. This will be really useful. I&#x27;m looking forward to getting a ripgrep version for Windows with the fix.
+Note that Rust is not alone: I&#x27;ve just started to work with Python, and despite its widespread use, guess what, the Windows version fails to open files in deep paths too!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-15 15:11</div>
-            <div class="timeline-body"><p>FWIW, I probably won't be fixing this myself any time soon. If there were a simple way to patch ripgrep for some cases, then I'd be willing to accept a PR for that, even if it doesn't correctly handle every case. But I can't think of anything simple off the top of my head.</p>
+            <div class="timeline-body"><p>FWIW, I probably won&#x27;t be fixing this myself any time soon. If there were a simple way to patch ripgrep for some cases, then I&#x27;d be willing to accept a PR for that, even if it doesn&#x27;t correctly handle every case. But I can&#x27;t think of anything simple off the top of my head.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/retep998">@retep998</a> on 2017-02-15 21:42</div>
-            <div class="timeline-body"><p>Fortunately since Windows 10 version 1607 you can now enable long path support for all paths, not just verbatim paths, as long as you're calling certain W functions. All you need to do is either set a flag in your manifest to enable it for the application or edit your registry to enable it globally. I believe std calls all the right functions, but it may be worth verifying what various crates use.</p>
+            <div class="timeline-body"><p>Fortunately since Windows 10 version 1607 you can now enable long path support for all paths, not just verbatim paths, as long as you&#x27;re calling certain W functions. All you need to do is either set a flag in your manifest to enable it for the application or edit your registry to enable it globally. I believe std calls all the right functions, but it may be worth verifying what various crates use.</p>
 <p>The allowed functions:</p>
 <ul>
 <li>CopyFile2</li>
@@ -153,13 +153,13 @@ Note that Rust is not alone: I've just started to work with Python, and despite 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">help wanted</span> added by @BurntSushi on 2017-02-18 17:39</div>
+            <div class="event">Label <span class="label">help wanted</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-18 17:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2017-02-18 17:39</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-18 17:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">icebox</span> added by @BurntSushi on 2017-03-12 21:09</div>
+            <div class="event">Label <span class="label">icebox</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-12 21:09</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-01 12:06</div>
@@ -168,9 +168,9 @@ Note that Rust is not alone: I've just started to work with Python, and despite 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/andyleejordan">@andyleejordan</a> on 2018-02-01 16:55</div>
-            <div class="timeline-body"><p>@retep998 I do not believe the app manifest is capable of enabling opt-in long path support. I interpreted the docs the same way, but try as I might, it didn't work. It seems it can only be used to <em>disable</em> long path support per-app on a system that has opted in via the registry (or group policy).</p>
+            <div class="timeline-body"><p>@retep998 I do not believe the app manifest is capable of enabling opt-in long path support. I interpreted the docs the same way, but try as I might, it didn&#x27;t work. It seems it can only be used to <em>disable</em> long path support per-app on a system that has opted in via the registry (or group policy).</p>
 <p>The approach Mesos and CMake took was to prepend <code>\\?\</code> to absolute paths longer than 248 characters (the &quot;minimal&quot; max path due to the <code>CreateDirectory</code>API). If there is a better way, I am all ears.</p>
-<p>It's probably only marginally useful as it's C++ not Rust (so like, this is what the Rust standard libraries should probably implement), but the implementation is <a href="https://github.com/apache/mesos/blob/master/3rdparty/stout/include/stout/internal/windows/longpath.hpp">here</a>.</p>
+<p>It&#x27;s probably only marginally useful as it&#x27;s C++ not Rust (so like, this is what the Rust standard libraries should probably implement), but the implementation is <a href="https://github.com/apache/mesos/blob/master/3rdparty/stout/include/stout/internal/windows/longpath.hpp">here</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -180,35 +180,35 @@ Note that Rust is not alone: I've just started to work with Python, and despite 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/andyleejordan">@andyleejordan</a> on 2018-02-01 17:46</div>
-            <div class="timeline-body"><p>The dumb way: we use absolute paths &quot;everywhere.&quot; I know, it's not a great answer, and it's not entirely true either. But when it breaks, we fix it to use an absolute path, since you can't use <code>\\?\</code> on relative paths. Honestly, I'm not sure there's a great solution to problems arising from the use of relative paths inside a directory which is already exceeding the path limit.</p>
+            <div class="timeline-body"><p>The dumb way: we use absolute paths &quot;everywhere.&quot; I know, it&#x27;s not a great answer, and it&#x27;s not entirely true either. But when it breaks, we fix it to use an absolute path, since you can&#x27;t use <code>\\?\</code> on relative paths. Honestly, I&#x27;m not sure there&#x27;s a great solution to problems arising from the use of relative paths inside a directory which is already exceeding the path limit.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-01 18:13</div>
-            <div class="timeline-body"><p>@andschwa Ah OK, great. And yeah no worries, honestly, I'm just trying to make sure I understand the problem and what people are doing to fix it. :-) That would definitely be a tough fix to make though. I was hoping for that application manifest trick to bail me out!</p>
+            <div class="timeline-body"><p>@andschwa Ah OK, great. And yeah no worries, honestly, I&#x27;m just trying to make sure I understand the problem and what people are doing to fix it. :-) That would definitely be a tough fix to make though. I was hoping for that application manifest trick to bail me out!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/andyleejordan">@andyleejordan</a> on 2018-02-01 18:50</div>
-            <div class="timeline-body"><p>I hoped for the same thing. It's possible I screwed up; but I had disabling (<code>false</code>) working, and swapping it to <code>true</code> did <em>nothing</em> to enable it. The docs sure imply it ought to work though, maybe @retep998 knows the secret to doing it via the manifest 😉</p>
+            <div class="timeline-body"><p>I hoped for the same thing. It&#x27;s possible I screwed up; but I had disabling (<code>false</code>) working, and swapping it to <code>true</code> did <em>nothing</em> to enable it. The docs sure imply it ought to work though, maybe @retep998 knows the secret to doing it via the manifest 😉</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tedfordgif">@tedfordgif</a> on 2018-03-16 00:05</div>
             <div class="timeline-body"><p>@andschwa this may not be that helpful, but at least on Windows 10 it looks like you need both the (registry or GP) and the manifest setting. See &quot;second gate&quot; language in <a href="https://blogs.msdn.microsoft.com/jeremykuhne/2016/07/30/net-4-6-2-and-long-paths-on-windows-10/">this blog post</a>, which is contra <a href="https://msdn.microsoft.com/en-us/library/aa365247(VS.85">the documentation</a>.aspx#maxpath). But, there is more real-world confirmation in a forum if you read far enough to <a href="https://social.msdn.microsoft.com/Forums/en-US/fc85630e-5684-4df6-ad2f-5a128de3deef/260-character-explorer-path-length-limit?forum=windowsgeneraldevelopmentissues#821ddf37-c2bc-431e-ad8b-9bcfeaf8951b">this comment</a>.</p>
-<p>@BurntSushi I haven't invested enough time to know if ripgrep builds for Windows even have the requisite manifest metadata, but it seems theoretically possible that it would be possible for Windows 10 users to enable long path support if ripgrep can include the manifest setting.</p>
+<p>@BurntSushi I haven&#x27;t invested enough time to know if ripgrep builds for Windows even have the requisite manifest metadata, but it seems theoretically possible that it would be possible for Windows 10 users to enable long path support if ripgrep can include the manifest setting.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-03-16 01:09</div>
-            <div class="timeline-body"><p>@tedfordgif Unfortunately I'm not much help here. The Windows build is basically the bare minimum that I know how to do, and I'm pretty sure I just copied it from someone else. I know so little that I don't even know how to guide anyone to solve this problem. Whoever does it is going to need to get their hands dirty. :-)</p>
+            <div class="timeline-body"><p>@tedfordgif Unfortunately I&#x27;m not much help here. The Windows build is basically the bare minimum that I know how to do, and I&#x27;m pretty sure I just copied it from someone else. I know so little that I don&#x27;t even know how to guide anyone to solve this problem. Whoever does it is going to need to get their hands dirty. :-)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tedfordgif">@tedfordgif</a> on 2018-03-26 07:16</div>
             <div class="timeline-body"><p>@BurntSushi, it looks like this probably belongs in rustc: <a href="https://github.com/rust-lang/rust/blob/d3518058e2d47ec04aa8b9756b5d4398bce19faf/src/librustc_trans/back/linker.rs#L412">librustc_trans/back/linker.rs</a>. You need to pass <a href="https://docs.microsoft.com/en-us/cpp/build/reference/manifest-create-side-by-side-assembly-manifest">/MANIFEST</a> and <a href="https://msdn.microsoft.com/en-us/library/dn195770.aspx">/MANIFESTINPUT:manifest.xml</a> to link.exe.</p>
 <p>The manifest.xml file should look something like this:</p>
-<pre><code>&lt;?xml version='1.0' encoding='utf-8' standalone='yes'?&gt;
+<pre><code>&lt;?xml version=&#x27;1.0&#x27; encoding=&#x27;utf-8&#x27; standalone=&#x27;yes&#x27;?&gt;
 &lt;assembly
     xmlns=&quot;urn:schemas-microsoft-com:asm.v1&quot;
     manifestVersion=&quot;1.0&quot;
@@ -224,7 +224,7 @@ Note that Rust is not alone: I've just started to work with Python, and despite 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-03-26 10:52</div>
-            <div class="timeline-body"><p>@tedfordgif Is there any simple way to hack that manifest in, even if it's just to test, without modifying rustc's internal linker?</p>
+            <div class="timeline-body"><p>@tedfordgif Is there any simple way to hack that manifest in, even if it&#x27;s just to test, without modifying rustc&#x27;s internal linker?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -247,17 +247,17 @@ PS&gt; target\debug\rg -ic reallylongpathtest
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\test.txt:1
 PS&gt;
 </code></pre>
-<p>There's probably a better way to set the rustflags in Cargo.toml, but I didn't discover the recipe just yet. Maybe this will help: https://users.rust-lang.org/t/solved-rust-project-how-build-like-gcc-mwindow/5168/8</p>
+<p>There&#x27;s probably a better way to set the rustflags in Cargo.toml, but I didn&#x27;t discover the recipe just yet. Maybe this will help: https://users.rust-lang.org/t/solved-rust-project-how-build-like-gcc-mwindow/5168/8</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-04-03 10:47</div>
-            <div class="timeline-body"><p>@tedfordgif Oh wow, that's awesome!! It seems like I should be able to include a manifest in the release binaries at least. Needing to edit a registry key is still unfortunate, but perhaps good enough for a workaround for now for those that need it.</p>
+            <div class="timeline-body"><p>@tedfordgif Oh wow, that&#x27;s awesome!! It seems like I should be able to include a manifest in the release binaries at least. Needing to edit a registry key is still unfortunate, but perhaps good enough for a workaround for now for those that need it.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tedfordgif">@tedfordgif</a> on 2018-04-03 12:59</div>
-            <div class="timeline-body"><p>@BurntSushi It isn't a workaround, it is the Right Way, at least for now, 'cuz Windows.</p>
+            <div class="timeline-body"><p>@BurntSushi It isn&#x27;t a workaround, it is the Right Way, at least for now, &#x27;cuz Windows.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -267,27 +267,27 @@ PS&gt;
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/andyleejordan">@andyleejordan</a> on 2018-04-03 16:56</div>
-            <div class="timeline-body"><p>@tedfordgif You don't actually even need the manifest to enable long path support if you've enabled it in the registry. Enabling it in the registry enables it &quot;globally,&quot; and the manifest is really only useful to opt-out (and disable it for an application running on a computer where it's been enabled).</p>
-<p>I'd be very happy to be disproved about this, but as I said earlier, it did not appear possible when I tried to enable long path support through the manifest on a per-app basis (that is, without enabling it in the registry or through GPO).</p>
+            <div class="timeline-body"><p>@tedfordgif You don&#x27;t actually even need the manifest to enable long path support if you&#x27;ve enabled it in the registry. Enabling it in the registry enables it &quot;globally,&quot; and the manifest is really only useful to opt-out (and disable it for an application running on a computer where it&#x27;s been enabled).</p>
+<p>I&#x27;d be very happy to be disproved about this, but as I said earlier, it did not appear possible when I tried to enable long path support through the manifest on a per-app basis (that is, without enabling it in the registry or through GPO).</p>
 <p>But hey, the next version of the &quot;unversioned&quot; Windows 10 is coming out in a couple weeks, maybe things will improve!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tedfordgif">@tedfordgif</a> on 2018-04-11 03:04</div>
             <div class="timeline-body"><p>@andschwa, see my previous PS session that makes it pretty clear the manifest is a requirement. Also see the links to blog posts that clarify that you need <em>both</em> the registry and the manifest. Happy to make you very happy!</p>
-<p>Given that the official documentation seems to be saying you only need one of the two, I wouldn't be surprised if they actually make that the case in a Windows 10 update, but it is certainly not the case now.</p>
+<p>Given that the official documentation seems to be saying you only need one of the two, I wouldn&#x27;t be surprised if they actually make that the case in a Windows 10 update, but it is certainly not the case now.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tedfordgif">@tedfordgif</a> on 2018-04-11 03:16</div>
-            <div class="timeline-body"><p>@BurntSushi I agree it is a workaround, didn't really mean to quibble. Another important consideration is that only some of the API supports the long path names, at least according to the <a href="https://msdn.microsoft.com/en-us/library/aa365247(VS.85">documentation</a>.aspx#maxpath), which as we've seen is not always right.</p>
+            <div class="timeline-body"><p>@BurntSushi I agree it is a workaround, didn&#x27;t really mean to quibble. Another important consideration is that only some of the API supports the long path names, at least according to the <a href="https://msdn.microsoft.com/en-us/library/aa365247(VS.85">documentation</a>.aspx#maxpath), which as we&#x27;ve seen is not always right.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/andyleejordan">@andyleejordan</a> on 2018-08-20 22:29</div>
-            <div class="timeline-body"><p>@tedfordgif I had to do further testing of this, and indeed, it is wishy-washy. Some APIs (like <code>SetCurrentDirectory</code>) require <em>both</em> the manifest and the registry change, and don't support opt-in via <code>\\?\</code>, other APIs are happy with just the opt-in prefix, other APIs are happy without the prefix and just the registry key enabled. It's all a mess. One API that is never happy is <code>CreateProcess</code>.</p>
-<p>Fun thing to break: use <code>SetCurrentDirectory</code> to set your process's cwd to a long path, and then try to spawn a new process with <code>CreateProcess</code>, it'll fail with invalid parameter 😭 AFAICT there is no way around this. It's broken broken.</p>
-<p>Sorry, this isn't totally ripgrep related, but it sure was interesting.</p>
+            <div class="timeline-body"><p>@tedfordgif I had to do further testing of this, and indeed, it is wishy-washy. Some APIs (like <code>SetCurrentDirectory</code>) require <em>both</em> the manifest and the registry change, and don&#x27;t support opt-in via <code>\\?\</code>, other APIs are happy with just the opt-in prefix, other APIs are happy without the prefix and just the registry key enabled. It&#x27;s all a mess. One API that is never happy is <code>CreateProcess</code>.</p>
+<p>Fun thing to break: use <code>SetCurrentDirectory</code> to set your process&#x27;s cwd to a long path, and then try to spawn a new process with <code>CreateProcess</code>, it&#x27;ll fail with invalid parameter 😭 AFAICT there is no way around this. It&#x27;s broken broken.</p>
+<p>Sorry, this isn&#x27;t totally ripgrep related, but it sure was interesting.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -330,7 +330,7 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 PS&gt;
 </code></pre>
 <p>I did not modify ripgrep in any way, this is the normal <code>cargo install ripgrep</code> installation. I also disabled the registry key for long path support I normally have enabled before testing.
-It seems to work with long paths by default without any manifest file needed. This could be because starting with rust 1.58 the file system functions automatically convert paths to the verbatim format without the need to canonicalize manually: https://github.com/rust-lang/rust/pull/89174</p>
+It seems to work with long paths by default without any manifest file needed. This could be because starting with rust 1.58 the file system functions automatically convert paths to the verbatim format without the need to canonicalize manually: <a href="https://github.com/rust-lang/rust/pull/89174">rust-lang/rust#89174</a></p>
 <p>Someone else should probably test it also on their machine, maybe I messed something up.</p>
 </div>
         </div>
@@ -349,28 +349,28 @@ It seems to work with long paths by default without any manifest file needed. Th
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2023-07-08 17:28</div>
+            <div class="event">Label <span class="label">rollup</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-07-08 17:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2023-07-08 22:53</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-07-08 22:53</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/nod5">@nod5</a> on 2023-09-28 10:11</div>
-            <div class="timeline-body"><p>I'm still experiencing this issue with the latest Windows prebuilt release <code>ripgrep-13.0.0-x86_64-pc-windows-msvc.zip </code> . If a fix by now exists please release a build that includes it.</p>
+            <div class="timeline-body"><p>I&#x27;m still experiencing this issue with the latest Windows prebuilt release <code>ripgrep-13.0.0-x86_64-pc-windows-msvc.zip </code> . If a fix by now exists please release a build that includes it.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-09-28 11:25</div>
-            <div class="timeline-body"><p>@nod5 This fix is not in a release yet. You should be able to compare the dates to arrive at that conclusion. I'll put a new release it when it's convenient for me to do so. See: https://github.com/BurntSushi/ripgrep/blob/master/FAQ.md#release</p>
+            <div class="timeline-body"><p>@nod5 This fix is not in a release yet. You should be able to compare the dates to arrive at that conclusion. I&#x27;ll put a new release it when it&#x27;s convenient for me to do so. See: https://github.com/BurntSushi/ripgrep/blob/master/FAQ.md#release</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Locked by @ghost on 2023-09-28 11:26</div>
+            <div class="event">Locked by <a href="https://github.com/ghost">@ghost</a> on 2023-09-28 11:26</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:42:04 UTC
+        Synced at 2026-01-20 18:48:03 UTC
     </footer>
 </body>
 </html>

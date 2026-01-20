@@ -31,7 +31,7 @@
 <li>A minimal code snippet that reproduces the bug.
 Ruff seems to auto-fix</li>
 </ul>
-<pre><code class="language-py">def foo(a: str) -&gt; str:
+<pre><code>def foo(a: str) -&gt; str:
     &quot;&quot;&quot;Foo bar.
 
     Args:
@@ -45,7 +45,7 @@ Ruff seems to auto-fix</li>
     return a
 </code></pre>
 <p>to</p>
-<pre><code class="language-py">def foo(a: str) -&gt; str:
+<pre><code>def foo(a: str) -&gt; str:
     &quot;&quot;&quot;Foo bar.
 
     Args:
@@ -59,7 +59,7 @@ Ruff seems to auto-fix</li>
     return a
 </code></pre>
 <p>, but it changes (in my eyes erroneously?):</p>
-<pre><code class="language-py">def foo(a: str) -&gt; str:
+<pre><code>def foo(a: str) -&gt; str:
     &quot;&quot;&quot;Foo bar.
 
     Examples:
@@ -70,7 +70,7 @@ Ruff seems to auto-fix</li>
     return a
 </code></pre>
 <p>to</p>
-<pre><code class="language-py">def foo(a: str) -&gt; str:
+<pre><code>def foo(a: str) -&gt; str:
     &quot;&quot;&quot;Foo bar.
 
     Examples
@@ -88,7 +88,7 @@ Any ruff command with autofix</p>
 <li><p>The current Ruff settings (any relevant sections from your <code>pyproject.toml</code>).</p>
 </li>
 </ul>
-<pre><code class="language-toml">[tool.ruff]
+<pre><code>[tool.ruff]
 line-length = 120
 target-version = &quot;py38&quot;
 
@@ -121,26 +121,26 @@ select = [
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-28 15:43</div>
-            <div class="timeline-body"><p>Ahhh, it took me a little bit of time to reproduce this, because it seems that while it's D416 <em>adding</em> the colon to your first snippet, it's D406 that's <em>removing</em> them from your second snippet! So <code>cargo run -- check --select=D416 --no-cache --isolated --fix --diff foo.py</code> is e.g. not sufficient to reproduce this.</p>
-<p>Anyway, I've now reproduced it!</p>
+            <div class="timeline-body"><p>Ahhh, it took me a little bit of time to reproduce this, because it seems that while it&#x27;s D416 <em>adding</em> the colon to your first snippet, it&#x27;s D406 that&#x27;s <em>removing</em> them from your second snippet! So <code>cargo run -- check --select=D416 --no-cache --isolated --fix --diff foo.py</code> is e.g. not sufficient to reproduce this.</p>
+<p>Anyway, I&#x27;ve now reproduced it!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">docstring</span> added by @AlexWaygood on 2024-08-28 15:43</div>
+            <div class="event">Label <span class="label">docstring</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-28 15:43</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "D416 removes colons where it should actually add them" to "D406 removes colons where D416 adds them" by @AlexWaygood on 2024-08-28 15:59</div>
+            <div class="event">Renamed from &quot;D416 removes colons where it should actually add them&quot; to &quot;D406 removes colons where D416 adds them&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-28 15:59</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-28 16:39</div>
-            <div class="timeline-body"><p>So I think the reason for this is that Ruff is inferring the incorrect <a href="https://docs.astral.sh/ruff/settings/#lint_pydocstyle_convention">docstring convention</a>. Not sure yet whether it's inferring <code>pep257</code> or <code>numpy</code> -- but if you run e.g. <code>ruff check baz.py --no-cache --select=D406 --fix --diff --config 'lint.pydocstyle.convention = &quot;google&quot;'</code> (where <code>baz.py</code> has your second snippet in it), you'll find that no errors are emitted. Whereas if you run either <code>ruff check baz.py --no-cache --select=D406 --fix --diff --config 'lint.pydocstyle.convention = &quot;pep257&quot;'</code> or <code>ruff check baz.py --no-cache --select=D406 --fix --diff --config 'lint.pydocstyle.convention = &quot;numpy&quot;'</code>, the error you're reporting is emitted. As a quick fix (that will avoid this whole category of errors), you can explicitly set the <code>lint.pydocstyle.convention</code> setting in your <code>pyproject.toml</code> file to <code>&quot;google&quot;</code>.</p>
-<p>I'll keep this open for now though, since I believe we infer the docstring convention in some of our other rules... if so, we should maybe try to do that here as well. (Or maybe we already do? If so, we should do it better, since it's pretty obvious to me that you're using <code>google</code> conventions!)</p>
+            <div class="timeline-body"><p>So I think the reason for this is that Ruff is inferring the incorrect <a href="https://docs.astral.sh/ruff/settings/#lint_pydocstyle_convention">docstring convention</a>. Not sure yet whether it&#x27;s inferring <code>pep257</code> or <code>numpy</code> -- but if you run e.g. <code>ruff check baz.py --no-cache --select=D406 --fix --diff --config &#x27;lint.pydocstyle.convention = &quot;google&quot;&#x27;</code> (where <code>baz.py</code> has your second snippet in it), you&#x27;ll find that no errors are emitted. Whereas if you run either <code>ruff check baz.py --no-cache --select=D406 --fix --diff --config &#x27;lint.pydocstyle.convention = &quot;pep257&quot;&#x27;</code> or <code>ruff check baz.py --no-cache --select=D406 --fix --diff --config &#x27;lint.pydocstyle.convention = &quot;numpy&quot;&#x27;</code>, the error you&#x27;re reporting is emitted. As a quick fix (that will avoid this whole category of errors), you can explicitly set the <code>lint.pydocstyle.convention</code> setting in your <code>pyproject.toml</code> file to <code>&quot;google&quot;</code>.</p>
+<p>I&#x27;ll keep this open for now though, since I believe we infer the docstring convention in some of our other rules... if so, we should maybe try to do that here as well. (Or maybe we already do? If so, we should do it better, since it&#x27;s pretty obvious to me that you&#x27;re using <code>google</code> conventions!)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-28 16:48</div>
-            <div class="timeline-body"><p>Okay, inserting these debug prints confirms that because you haven't explicitly selected a docstring convention in your <code>pyproject.toml</code> file, we try to infer the convention -- and then for some reason we infer the convention as <code>numpy</code>, when it clearly should be <code>google</code>.</p>
-<pre><code class="language-diff">--- a/crates/ruff_linter/src/docstrings/styles.rs
+            <div class="timeline-body"><p>Okay, inserting these debug prints confirms that because you haven&#x27;t explicitly selected a docstring convention in your <code>pyproject.toml</code> file, we try to infer the convention -- and then for some reason we infer the convention as <code>numpy</code>, when it clearly should be <code>google</code>.</p>
+<pre><code>--- a/crates/ruff_linter/src/docstrings/styles.rs
 +++ b/crates/ruff_linter/src/docstrings/styles.rs
 @@ -2,7 +2,7 @@ use crate::docstrings::google::GOOGLE_SECTIONS;
  use crate::docstrings::numpy::NUMPY_SECTIONS;
@@ -172,7 +172,7 @@ index 95e0c46af..9fdb344b1 100644
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2024-08-28 16:48</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-28 16:48</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/maxschulz-COL">@maxschulz-COL</a> on 2024-08-28 16:51</div>
@@ -182,19 +182,19 @@ index 95e0c46af..9fdb344b1 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-28 16:52</div>
-            <div class="timeline-body"><p>Exactly! I'm working on a fix now.</p>
+            <div class="timeline-body"><p>Exactly! I&#x27;m working on a fix now.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2024-08-28 16:52</div>
+            <div class="event">Assigned to <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-28 16:52</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2024-08-29 15:33</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-29 15:33</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:50:59 UTC
+        Synced at 2026-01-20 18:48:57 UTC
     </footer>
 </body>
 </html>

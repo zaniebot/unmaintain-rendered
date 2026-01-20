@@ -23,24 +23,24 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Avoid attaching diagnostics to the wrong file. See related issue for details.</p>
 <p>Closes #14334</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>New regression test.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2024-11-14 12:43</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-11-14 12:43</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @sharkdp on 2024-11-14 12:43</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-11-14 12:43</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @sharkdp on 2024-11-14 12:43</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-11-14 12:43</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2024-11-14 12:43</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-11-14 12:43</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:337 on 2024-11-14 12:44</div>
@@ -67,9 +67,9 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/regression/14334_diagnostics_in_wrong_file.md</code>:1 on 2024-11-14 12:56</div>
             <div class="timeline-body"><p>I can also make this test pass just by applying this diff to <code>main</code>, without any of the other changes you make in this PR:</p>
-<pre><code class="language-diff">--- a/crates/red_knot_python_semantic/src/types/infer.rs
+<pre><code>--- a/crates/red_knot_python_semantic/src/types/infer.rs
 +++ b/crates/red_knot_python_semantic/src/types/infer.rs
-@@ -471,7 +471,8 @@ impl&lt;'db&gt; TypeInferenceBuilder&lt;'db&gt; {
+@@ -471,7 +471,8 @@ impl&lt;&#x27;db&gt; TypeInferenceBuilder&lt;&#x27;db&gt; {
              .declarations
              .values()
              .filter_map(|ty| ty.into_class_literal())
@@ -77,17 +77,17 @@
 +            .map(|class_ty| class_ty.class)
 +            .filter(|class| class.file(self.db) == self.file);
 </code></pre>
-<p>...and I think that might be a better fix. For most of the diagnostics we emit, I think we can be confident that the diagnostic applies to the file we're currently in, because we emit the diagnostic while visiting a specific AST node from that file. The diagnostics emitted from <code>check_class_definitions()</code> are unusual, in that they're emitted after the AST of the whole module has been visited. (That's necessary because of the fact that inference of class bases is sometimes deferred.)</p>
+<p>...and I think that might be a better fix. For most of the diagnostics we emit, I think we can be confident that the diagnostic applies to the file we&#x27;re currently in, because we emit the diagnostic while visiting a specific AST node from that file. The diagnostics emitted from <code>check_class_definitions()</code> are unusual, in that they&#x27;re emitted after the AST of the whole module has been visited. (That&#x27;s necessary because of the fact that inference of class bases is sometimes deferred.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-14 12:58</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
@@ -97,17 +97,17 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/regression/14334_diagnostics_in_wrong_file.md</code>:1 on 2024-11-14 12:59</div>
-            <div class="timeline-body"><p>I'm in favor of a more local fix, considering that class inheritance is the odd one.</p>
+            <div class="timeline-body"><p>I&#x27;m in favor of a more local fix, considering that class inheritance is the odd one.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-14 13:00</div>
-            <div class="timeline-body"><p>Great catch!! I think your idea in https://github.com/astral-sh/ruff/issues/14334#issue-2658241214 of adding some assertions (or making this kind of thing impossible to happen in the first place) would be a great improvement. It didn't even occur to me that this iterator would also iterate over class definitions that originated from other files as well here, though now it seems obvious.</p>
+            <div class="timeline-body"><p>Great catch!! I think your idea in <a href="https://github.com/astral-sh/ruff/issues/14334">astral-sh/ruff#14334</a>#issue-2658241214 of adding some assertions (or making this kind of thing impossible to happen in the first place) would be a great improvement. It didn&#x27;t even occur to me that this iterator would also iterate over class definitions that originated from other files as well here, though now it seems obvious.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:480 on 2024-11-14 13:00</div>
-            <div class="timeline-body"><p>All diagnostics here should be guaranteed to be from the same file because <code>class.node</code> is from the current scope. If it's not, then we should not access the node in the first place. Accessing nodes across module boundaries in type-inference is bad because it results in larger invalidation.</p>
+            <div class="timeline-body"><p>All diagnostics here should be guaranteed to be from the same file because <code>class.node</code> is from the current scope. If it&#x27;s not, then we should not access the node in the first place. Accessing nodes across module boundaries in type-inference is bad because it results in larger invalidation.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -145,9 +145,9 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/regression/14334_diagnostics_in_wrong_file.md</code>:1 on 2024-11-14 13:14</div>
             <div class="timeline-body"><blockquote>
-<p>I'm in favor of a more local fix, considering that class inheritance is the odd one.</p>
+<p>I&#x27;m in favor of a more local fix, considering that class inheritance is the odd one.</p>
 </blockquote>
-<p>I'm not sure if you're agreeing with me or disagreeing with me 😄 Do you mean &quot;more local than David's current PR&quot; or &quot;more local than my alternative fix&quot;?</p>
+<p>I&#x27;m not sure if you&#x27;re agreeing with me or disagreeing with me 😄 Do you mean &quot;more local than David&#x27;s current PR&quot; or &quot;more local than my alternative fix&quot;?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -165,12 +165,12 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:480 on 2024-11-14 13:29</div>
-            <div class="timeline-body"><p>I'm still not sure we should be looking at any classes that originate from other modules in this <code>class_definitions</code> iterator (https://github.com/astral-sh/ruff/pull/14337#discussion_r1842177196)</p>
+            <div class="timeline-body"><p>I&#x27;m still not sure we should be looking at any classes that originate from other modules in this <code>class_definitions</code> iterator (<a href="https://github.com/astral-sh/ruff/pull/14337">astral-sh/ruff#14337</a>#discussion_r1842177196)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:480 on 2024-11-14 13:32</div>
-            <div class="timeline-body"><p>No, I think we need that check here. I added an additional test to check for this. If we don't check this here, we will get an additional diagnostic at the line of the import (with a wrong <code>range</code>).</p>
+            <div class="timeline-body"><p>No, I think we need that check here. I added an additional test to check for this. If we don&#x27;t check this here, we will get an additional diagnostic at the line of the import (with a wrong <code>range</code>).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -186,7 +186,7 @@
             <div class="timeline-body"><blockquote>
 <p>considering that class inheritance is the odd one</p>
 </blockquote>
-<p>No. It's not because of class inheritance. It also appears for the other error kinds. My regression test was maybe a bit misleading (that derived class is not even needed, the mistake happens at the import statement). I modified it the test now and added a new one.</p>
+<p>No. It&#x27;s not because of class inheritance. It also appears for the other error kinds. My regression test was maybe a bit misleading (that derived class is not even needed, the mistake happens at the import statement). I modified it the test now and added a new one.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -236,7 +236,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:480 on 2024-11-14 13:52</div>
-            <div class="timeline-body"><p>Sorry for keeping commenting. A related improvement would be that the iterator also returns the <code>node</code> so that we can replace the <code>class.node</code> calls (they're not expensive but getting them directly from the definition makes it more explicit that they are guaranteed to be from the same scope)</p>
+            <div class="timeline-body"><p>Sorry for keeping commenting. A related improvement would be that the iterator also returns the <code>node</code> so that we can replace the <code>class.node</code> calls (they&#x27;re not expensive but getting them directly from the definition makes it more explicit that they are guaranteed to be from the same scope)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -267,7 +267,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:481 on 2024-11-14 14:07</div>
             <div class="timeline-body"><p>Sorry, what I meant is this</p>
-<pre><code class="language-suggestion">            .iter()
+<pre><code>            .iter()
             .filter_map(|(definition, ty)| {
                 // Filter out class literals that result from imports
                 if let DefinitionKind::Class(class) = definition.kind(self.db) {
@@ -292,7 +292,7 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-11-14 14:09</div>
             <div class="timeline-body"><p>Thanks, nice find!</p>
-<p>It would be nice if we could add an assertion to the diagnostic builder that enforces this but it isn't clear to me how, at least if it should work for arbitrary nodes</p>
+<p>It would be nice if we could add an assertion to the diagnostic builder that enforces this but it isn&#x27;t clear to me how, at least if it should work for arbitrary nodes</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -323,10 +323,10 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @sharkdp on 2024-11-14 14:39</div>
+            <div class="event">Merged by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-11-14 14:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @sharkdp on 2024-11-14 14:39</div>
+            <div class="event">Closed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-11-14 14:39</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-11-14 14:39</div>
@@ -334,7 +334,7 @@
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:07:43 UTC
+        Synced at 2026-01-20 19:08:28 UTC
     </footer>
 </body>
 </html>

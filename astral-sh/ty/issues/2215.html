@@ -23,16 +23,16 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ooopus">@ooopus</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<h2>Summary</h2>
+            <div class="timeline-body">Summary
+Summary
 <p>When using the common guard pattern:</p>
-<pre><code class="language-py">if hasattr(obj, &quot;attr&quot;) and obj.attr:
+<pre><code>if hasattr(obj, &quot;attr&quot;) and obj.attr:
     ...
 </code></pre>
 <p>ty incorrectly infers <code>obj.attr</code> as <code>~AlwaysFalsy</code>, producing a false-positive</p>
 <p><code>error[unresolved-attribute]</code> when accessing attributes on <code>obj.attr</code>.</p>
-<p>This code runs correctly at runtime; the issue appears to be in ty's flow-sensitive narrowing.</p>
-<h2>Environment</h2>
+<p>This code runs correctly at runtime; the issue appears to be in ty&#x27;s flow-sensitive narrowing.</p>
+Environment
 <ul>
 <li><p>OS: Windows 11</p>
 </li>
@@ -41,12 +41,12 @@
 <li><p>ty: 0.0.7 (cf82a04b5 2025-12-24)</p>
 </li>
 </ul>
-<h2>Command</h2>
-<pre><code class="language-sh">ty check test_ty_always_falsy.py
+Command
+<pre><code>ty check test_ty_always_falsy.py
 </code></pre>
 <p>(No special <code>pyproject.toml</code> settings; default config.)</p>
-<h2>Reproduction</h2>
-<pre><code class="language-py">from __future__ import annotations
+Reproduction
+<pre><code>from __future__ import annotations
 
 class Editor:
     def __init__(self) -&gt; None:
@@ -75,17 +75,17 @@ def test(webview: WebView | EditorWebView) -&gt; list[str] | None:
 
     return None
 </code></pre>
-<h2>Expected Behavior</h2>
+Expected Behavior
 <p>Inside:</p>
-<pre><code class="language-py">if hasattr(webview, &quot;editor&quot;) and webview.editor:
+<pre><code>if hasattr(webview, &quot;editor&quot;) and webview.editor:
 </code></pre>
 <p><code>webview.editor</code> should be narrowed to a truthy <code>Editor</code> type, so</p>
 <p><code>webview.editor.note</code> should be valid.</p>
-<h2>Actual Behavior</h2>
+Actual Behavior
 <p>ty reports a false positive similar to:</p>
 <pre><code>error[unresolved-attribute]: Object of type `~AlwaysFalsy` has no attribute `note`
 </code></pre>
-<h2>Workarounds</h2>
+Workarounds
 <p>Both of the following avoid the false positive:</p>
 <ul>
 <li><p><code>isinstance()</code>-based narrowing</p>
@@ -93,17 +93,17 @@ def test(webview: WebView | EditorWebView) -&gt; list[str] | None:
 <li><p><code>getattr(webview, &quot;editor&quot;, None)</code> + truthiness check</p>
 </li>
 </ul>
-<h3>Version</h3>
+Version
 <p>ty 0.0.7 (cf82a04b5 2025-12-24)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">narrowing</span> added by @mtshiba on 2025-12-25 03:39</div>
+            <div class="event">Label <span class="label">narrowing</span> added by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-12-25 03:39</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-12-25 03:55</div>
-            <div class="timeline-body"><p>In fact, I think this is the intended behavior, because <code>WebView</code> can be inherited and may have an attribute <code>editor</code>, so even if we can see that the parameter <code>webview</code> has an attribute <code>editor</code>, it doesn't say much about its type.</p>
-<pre><code class="language-python">from __future__ import annotations
+            <div class="timeline-body"><p>In fact, I think this is the intended behavior, because <code>WebView</code> can be inherited and may have an attribute <code>editor</code>, so even if we can see that the parameter <code>webview</code> has an attribute <code>editor</code>, it doesn&#x27;t say much about its type.</p>
+<pre><code>from __future__ import annotations
 
 class Editor:
     def __init__(self) -&gt; None:
@@ -134,7 +134,7 @@ def test(webview: WebView | EditorWebView) -&gt; list[str] | None:
 test(WebViewSub())
 </code></pre>
 <p>If you want to avoid this, you can use <code>typing.final</code>, and ty will behave exactly as you intended.</p>
-<pre><code class="language-python">from __future__ import annotations
+<pre><code>from __future__ import annotations
 from typing import final
 
 class Editor:
@@ -170,25 +170,25 @@ def test(webview: WebView | EditorWebView) -&gt; list[str] | None:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-12-25 04:03</div>
-            <div class="timeline-body"><p>However, it's certainly not clear why narrowing failed, and diagnostic messages could be improved - for example, if the user accesses a non-existent attribute using an expression that appears inside <code>cond</code> of <code>if cond: ...</code>, it could explain the fact that narrowing failed (or is incomplete) and why.</p>
+            <div class="timeline-body"><p>However, it&#x27;s certainly not clear why narrowing failed, and diagnostic messages could be improved - for example, if the user accesses a non-existent attribute using an expression that appears inside <code>cond</code> of <code>if cond: ...</code>, it could explain the fact that narrowing failed (or is incomplete) and why.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ooopus on 2025-12-25 04:32</div>
+            <div class="event">Closed by <a href="https://github.com/ooopus">@ooopus</a> on 2025-12-25 04:32</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-26 17:47</div>
-            <div class="timeline-body"><p>I had mentioned the idea in https://github.com/astral-sh/ty/issues/1578#issuecomment-3542936632 that we could improve diagnostics for some similar cases. I will reopen this issue to track this idea. Thanks for the report!</p>
+            <div class="timeline-body"><p>I had mentioned the idea in <a href="https://github.com/astral-sh/ty/issues/1578">astral-sh/ty#1578</a>#issuecomment-3542936632 that we could improve diagnostics for some similar cases. I will reopen this issue to track this idea. Thanks for the report!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @carljm on 2025-12-26 17:47</div>
+            <div class="event">Reopened by <a href="https://github.com/carljm">@carljm</a> on 2025-12-26 17:47</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">diagnostics</span> added by @carljm on 2025-12-26 17:48</div>
+            <div class="event">Label <span class="label">diagnostics</span> added by <a href="https://github.com/carljm">@carljm</a> on 2025-12-26 17:48</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "hasattr() + truthiness guard incorrectly infers ~AlwaysFalsy for attribute access" to "Improve diagnostics in cases where we infer `object` due to possibility of subclassing" by @carljm on 2025-12-26 17:48</div>
+            <div class="event">Renamed from &quot;hasattr() + truthiness guard incorrectly infers ~AlwaysFalsy for attribute access&quot; to &quot;Improve diagnostics in cases where we infer `object` due to possibility of subclassing&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-12-26 17:48</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-26 18:02</div>
@@ -196,12 +196,12 @@ def test(webview: WebView | EditorWebView) -&gt; list[str] | None:
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2025-12-26 18:02</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2025-12-26 18:02</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:21:34 UTC
+        Synced at 2026-01-20 19:26:46 UTC
     </footer>
 </body>
 </html>

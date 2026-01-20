@@ -31,15 +31,15 @@ string-or-bytes-too-long PYI053</p>
 <li><p>A minimal code snippet that reproduces the bug.</p>
 </li>
 </ul>
-<pre><code class="language-py">def foo(bar: typing.Literal[&quot;a&quot;, &quot;bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb&quot;]):...
+<pre><code>def foo(bar: typing.Literal[&quot;a&quot;, &quot;bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb&quot;]):...
 </code></pre>
 <p>becomes</p>
-<pre><code class="language-py">import typing
+<pre><code>import typing
 
 def foo(bar: typing.Literal[&quot;a&quot;, ...]):...
 </code></pre>
-<p>Not only is this an invalid type form (https://github.com/microsoft/pyright/blob/main/docs/configuration.md#reportInvalidTypeForm) but even if autofixed to <code>Literal[&quot;a&quot;]</code> that would fundamentally change the parameter's type.</p>
-<p>I assume this is an oversight as it's meant to replace long default values ~~and is not flagged by flake8-pyi~~ .</p>
+<p>Not only is this an invalid type form (https://github.com/microsoft/pyright/blob/main/docs/configuration.md#reportInvalidTypeForm) but even if autofixed to <code>Literal[&quot;a&quot;]</code> that would fundamentally change the parameter&#x27;s type.</p>
+<p>I assume this is an oversight as it&#x27;s meant to replace long default values ~~and is not flagged by flake8-pyi~~ .</p>
 <ul>
 <li><p>The command you invoked (e.g., <code>ruff /path/to/file.py --fix</code>), ideally including the <code>--isolated</code> flag.
 ruff check --isolated --select=PYI053</p>
@@ -54,10 +54,10 @@ ruff 0.6.1</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "`string-or-bytes-too-long (PYI053)` flags and removes long strings in `Literal`, changing parameter type and producing invalid type" to "`string-or-bytes-too-long (PYI053)` flags and removes long strings in `Literal`, producing invalid type" by @Avasam on 2024-08-19 17:40</div>
+            <div class="event">Renamed from &quot;`string-or-bytes-too-long (PYI053)` flags and removes long strings in `Literal`, changing parameter type and producing invalid type&quot; to &quot;`string-or-bytes-too-long (PYI053)` flags and removes long strings in `Literal`, producing invalid type&quot; by <a href="https://github.com/Avasam">@Avasam</a> on 2024-08-19 17:40</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2024-08-19 17:46</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-19 17:46</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-20 09:45</div>
@@ -65,43 +65,43 @@ ruff 0.6.1</p>
 <p>is not flagged by flake8-pyi</p>
 </blockquote>
 <p>I can actually repro this bug with flake8-pyi as well on this snippet in a <code>.pyi</code> file:</p>
-<pre><code class="language-py">from typing import Literal
+<pre><code>from typing import Literal
 
 x: Literal[&quot;fooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooO&quot;]
 </code></pre>
-<p>We disable the flake8-pyi rule at typeshed for our generated stubs; maybe that's what was hiding the bug? https://github.com/python/typeshed/blob/a7ff1be4394cef089dd62090a2e2ad10cc77cfe6/.flake8#L16</p>
+<p>We disable the flake8-pyi rule at typeshed for our generated stubs; maybe that&#x27;s what was hiding the bug? https://github.com/python/typeshed/blob/a7ff1be4394cef089dd62090a2e2ad10cc77cfe6/.flake8#L16</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2024-08-20 09:53</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-20 09:53</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @AlexWaygood on 2024-08-20 10:00</div>
+            <div class="event">Reopened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-20 10:00</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-20 10:04</div>
-            <div class="timeline-body"><p>I merged #13002, but then immediately afterwards realised that it doesn't deal properly with type aliases. We still get two false positives on this snippet, even after #13002:</p>
-<pre><code class="language-py">from typing import TypeAlias, Literal, Annotated
+            <div class="timeline-body"><p>I merged #13002, but then immediately afterwards realised that it doesn&#x27;t deal properly with type aliases. We still get two false positives on this snippet, even after #13002:</p>
+<pre><code>from typing import TypeAlias, Literal, Annotated
 
 x: TypeAlias = Literal[&quot;fooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooO&quot;]
 y: TypeAlias = Annotated[int, &quot;metadataaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&quot;]
 </code></pre>
-<p>@dylwil3, don't suppose you'd be interested in a followup PR, would you? :-) The alternative approach I suggested in https://github.com/astral-sh/ruff/pull/13002#discussion_r1723034693 might work better here after all:</p>
+<p>@dylwil3, don&#x27;t suppose you&#x27;d be interested in a followup PR, would you? :-) The alternative approach I suggested in <a href="https://github.com/astral-sh/ruff/pull/13002">astral-sh/ruff#13002</a>#discussion_r1723034693 might work better here after all:</p>
 <ul>
-<li>we'd want to add tracking in the semantic model for when we're entering <code>Annotated</code> slices, the same as we do when we're entering <code>Literal</code> slices</li>
-<li>we'd want to skip PYI053 when we're inside any <code>Annotated</code> or <code>Literal</code> slice, not just when we're inside annotations.</li>
+<li>we&#x27;d want to add tracking in the semantic model for when we&#x27;re entering <code>Annotated</code> slices, the same as we do when we&#x27;re entering <code>Literal</code> slices</li>
+<li>we&#x27;d want to skip PYI053 when we&#x27;re inside any <code>Annotated</code> or <code>Literal</code> slice, not just when we&#x27;re inside annotations.</li>
 </ul>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-08-20 10:53</div>
-            <div class="timeline-body"><p>Sounds good I'll give it a try!</p>
+            <div class="timeline-body"><p>Sounds good I&#x27;ll give it a try!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-08-20 11:10</div>
             <div class="timeline-body"><p>@AlexWaygood  Can you not do</p>
-<pre><code class="language-python">def f(x: int) --&gt; &quot;AnnotationsForClassesWithVeryLongNamesInQuotesAsReturnTypes&quot;
+<pre><code>def f(x: int) --&gt; &quot;AnnotationsForClassesWithVeryLongNamesInQuotesAsReturnTypes&quot;
 </code></pre>
 <p>?</p>
 </div>
@@ -110,33 +110,33 @@ y: TypeAlias = Annotated[int, &quot;metadataaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-20 11:15</div>
             <div class="timeline-body"><blockquote>
 <p>@AlexWaygood Can you not do</p>
-<pre><code class="language-python">def f(x: int) --&gt; &quot;AnnotationsForClassesWithVeryLongNamesInQuotesAsReturnTypes&quot;
+<pre><code>def f(x: int) --&gt; &quot;AnnotationsForClassesWithVeryLongNamesInQuotesAsReturnTypes&quot;
 </code></pre>
 <p>?</p>
 </blockquote>
-<p>Well, there's no reason to ever use quoted annotations in stubs, since forward references can be used even with <code>__future__</code> annotations enabled. We have another rule (<code>PYI020</code>) specifically for flagging <em>any</em> quoted annotation in a stub... but I suppose if you <em>are</em> going to use quoted annotations in stubs for some reason, and have <code>PYI020</code> switched off for some reason, then maybe it makes sense for this rule to ignore veryyyyyyyyyyyyyyyyyyyy long quoted annotations.</p>
-<p>In case it's not obvious, I changed my mind about this while writing this response out 😆 So it's definitely worth adding a comment about this to the code for the rule!</p>
+<p>Well, there&#x27;s no reason to ever use quoted annotations in stubs, since forward references can be used even with <code>__future__</code> annotations enabled. We have another rule (<code>PYI020</code>) specifically for flagging <em>any</em> quoted annotation in a stub... but I suppose if you <em>are</em> going to use quoted annotations in stubs for some reason, and have <code>PYI020</code> switched off for some reason, then maybe it makes sense for this rule to ignore veryyyyyyyyyyyyyyyyyyyy long quoted annotations.</p>
+<p>In case it&#x27;s not obvious, I changed my mind about this while writing this response out 😆 So it&#x27;s definitely worth adding a comment about this to the code for the rule!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-08-20 13:16</div>
-            <div class="timeline-body"><p>Hmm... for some reason <code>in_typing_literal</code> has no effect - it doesn't trip for either the argument annotation or typevar. Maybe I've done something wrong. I'll try to investigate later today.</p>
+            <div class="timeline-body"><p>Hmm... for some reason <code>in_typing_literal</code> has no effect - it doesn&#x27;t trip for either the argument annotation or typevar. Maybe I&#x27;ve done something wrong. I&#x27;ll try to investigate later today.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-20 13:20</div>
             <div class="timeline-body"><blockquote>
-<p>Hmm... for some reason <code>in_typing_literal</code> has no effect - it doesn't trip for either the argument annotation or typevar. Maybe I've done something wrong. I'll try to investigate later today.</p>
+<p>Hmm... for some reason <code>in_typing_literal</code> has no effect - it doesn&#x27;t trip for either the argument annotation or typevar. Maybe I&#x27;ve done something wrong. I&#x27;ll try to investigate later today.</p>
 </blockquote>
-<p>That <em>is</em> odd. I can't immediately see why that would be... don't worry too much about fixing it if you can't figure it out; feel free to ping me if you're stuck!</p>
+<p>That <em>is</em> odd. I can&#x27;t immediately see why that would be... don&#x27;t worry too much about fixing it if you can&#x27;t figure it out; feel free to ping me if you&#x27;re stuck!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2024-08-20 14:47</div>
             <div class="timeline-body"><blockquote>
-<p>We disable the flake8-pyi rule at typeshed for our generated stubs; maybe that's what was hiding the bug?</p>
+<p>We disable the flake8-pyi rule at typeshed for our generated stubs; maybe that&#x27;s what was hiding the bug?</p>
 </blockquote>
-<p>Yep, you're right ! That's exactly what happened.</p>
+<p>Yep, you&#x27;re right ! That&#x27;s exactly what happened.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -144,23 +144,23 @@ y: TypeAlias = Annotated[int, &quot;metadataaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
             <div class="timeline-body"><p>Sorry for the delay - I was derailed by my baby learning to crawl all of a sudden 🚀 🚀 🚀</p>
 <blockquote>
 <blockquote>
-<p>Hmm... for some reason <code>in_typing_literal</code> has no effect - it doesn't trip for either the argument annotation or typevar. Maybe I've done something wrong. I'll try to investigate later today.</p>
+<p>Hmm... for some reason <code>in_typing_literal</code> has no effect - it doesn&#x27;t trip for either the argument annotation or typevar. Maybe I&#x27;ve done something wrong. I&#x27;ll try to investigate later today.</p>
 </blockquote>
-<p>That <em>is</em> odd. I can't immediately see why that would be... don't worry too much about fixing it if you can't figure it out; feel free to ping me if you're stuck!</p>
+<p>That <em>is</em> odd. I can&#x27;t immediately see why that would be... don&#x27;t worry too much about fixing it if you can&#x27;t figure it out; feel free to ping me if you&#x27;re stuck!</p>
 </blockquote>
 <p>Mystery solved - I had an invalid .pyi file since I did not actually import <code>Literal</code> or <code>Annotated</code> 🤦</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @dylwil3 by @dylwil3 on 2024-12-05 21:27</div>
+            <div class="event">Assigned to <a href="https://github.com/dylwil3">@dylwil3</a> by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-12-05 21:27</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dylwil3 on 2024-12-06 00:48</div>
+            <div class="event">Closed by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-12-06 00:48</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:50:55 UTC
+        Synced at 2026-01-20 18:48:57 UTC
     </footer>
 </body>
 </html>

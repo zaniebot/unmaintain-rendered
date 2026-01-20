@@ -23,21 +23,12 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/SnoopJ">@SnoopJ</a></div>
-            <div class="timeline-body"><!--
-Thank you for taking the time to report an issue! We're glad to have you involved with uv.
-
-If you're filing a bug report, please consider including the following information:
-
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
-* The current uv platform.
-* The current uv version (`uv --version`).
--->
+            <div class="timeline-body">
 
 <p><code>uv</code> version: (0.1.4 @ fef1956)
 Platform: Ubuntu 20.04
 Python version: 3.9.16 provided by <code>pyenv</code></p>
-<h2>Reproduction</h2>
+Reproduction
 <pre><code>$ python3 -m uv venv test_venv
   x Neither `python` nor `python3` are in `PATH`. Is Python installed?
 $ type -a python3  # uv is factually incorrect, there are *multiple* entries on PATH
@@ -61,11 +52,11 @@ Creating virtualenv at: test_venv
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-18 07:59</div>
-            <div class="timeline-body"><p>Hm interesting we <em>do</em> have support for pyenv shims, but it doesn't seem to be working in this case. Can you share verbose logs for <code>$ python3 -m uv venv test_venv</code>? It'd also be useful to see the output of <code>which python3</code> and <code>which python</code>.</p>
+            <div class="timeline-body"><p>Hm interesting we <em>do</em> have support for pyenv shims, but it doesn&#x27;t seem to be working in this case. Can you share verbose logs for <code>$ python3 -m uv venv test_venv</code>? It&#x27;d also be useful to see the output of <code>which python3</code> and <code>which python</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-02-18 07:59</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-18 07:59</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/SnoopJ">@SnoopJ</a> on 2024-02-18 15:45</div>
@@ -78,12 +69,12 @@ $ which python3
 $ which python
 /home/snoopjedi/.pyenv/shims/python
 </code></pre>
-<p>For the sake completeness, here's my <code>PATH</code>:</p>
+<p>For the sake completeness, here&#x27;s my <code>PATH</code>:</p>
 <pre><code>$ echo $PATH
 /home/snoopjedi/.local/bin:/home/snoopjedi/.cargo/bin:/home/snoopjedi/.pyenv/shims:/home/snoopjedi/.pyenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 </code></pre>
-<p>It seems to me that in this case, there really shouldn't be any &quot;search&quot; at all, I would have expected <code>uv</code> to use exactly the invoking Python, although <a href="https://github.com/astral-sh/uv/blob/c04f597fae7a04be6124d91a9b77f211941f3cd6/crates/uv-interpreter/src/python_query.rs#L141-L152">the relevant code</a> doesn't seem to offer much affordance for passing that information to the new process. If I add the following to <code>uv/__main__.py</code>, it does work as expected.</p>
-<pre><code class="language-diff"> if __name__ == &quot;__main__&quot;:
+<p>It seems to me that in this case, there really shouldn&#x27;t be any &quot;search&quot; at all, I would have expected <code>uv</code> to use exactly the invoking Python, although <a href="https://github.com/astral-sh/uv/blob/c04f597fae7a04be6124d91a9b77f211941f3cd6/crates/uv-interpreter/src/python_query.rs#L141-L152">the relevant code</a> doesn&#x27;t seem to offer much affordance for passing that information to the new process. If I add the following to <code>uv/__main__.py</code>, it does work as expected.</p>
+<pre><code> if __name__ == &quot;__main__&quot;:
      uv = os.fsdecode(find_uv_bin())
 
      env = {}
@@ -99,31 +90,31 @@ close(10)                               = 0
 close(12)                               = 0
 read(11, &quot;Usage: ld.so [OPTION]... EXECUTA&quot;, 32) = 32
 read(11, &quot;BLE-FILE [ARGS-FOR-PROGRAM...]\nY&quot;, 32) = 32
-read(11, &quot;ou have invoked `ld.so', the helper program for shared library e&quot;, 64) = 64
-read(11, &quot;xecutables.\nThis program usually lives in the file `/lib/ld.so', and special directives\nin executable files using ELF shared lib&quot;, 128) = 128
-read(11, &quot;raries tell the system's program\nloader to load the helper program from this file.  This helper program loads\nthe shared libraries needed by the program executable, prepares the program\nto run, and runs it.  You may invoke this helper program directly from&quot;, 256) = 256
+read(11, &quot;ou have invoked `ld.so&#x27;, the helper program for shared library e&quot;, 64) = 64
+read(11, &quot;xecutables.\nThis program usually lives in the file `/lib/ld.so&#x27;, and special directives\nin executable files using ELF shared lib&quot;, 128) = 128
+read(11, &quot;raries tell the system&#x27;s program\nloader to load the helper program from this file.  This helper program loads\nthe shared libraries needed by the program executable, prepares the program\nto run, and runs it.  You may invoke this helper program directly from&quot;, 256) = 256
 read(11, &quot; the\ncommand line to load and run an ELF executable file; this is like executing\nthat file itself, but always uses this helper program from the file you\nspecified, instead of the helper program file specified in the executable\nfile you run.  This is mostly of use for maintainers to test new versions\nof this helper program; chances are you did not intend to run this program.\n\n  --list                list all dependencies and how they are resolved\n  --verify              verify that given object really is a d&quot;, 512) = 512
 read(11, &quot;ynamically linked\n\t\t\tobject we can handle\n  --inhibit-cache       Do not use /etc/ld.so.cache\n  --library-path PATH   use given PATH instead of content of the environment\n\t\t\tvariable LD_LIBRARY_PATH\n  --inhibit-rpath LIST  ignore RUNPATH and RPATH information in object names\n\t\t\tin LIST\n  --audit LIST          use objects named in LIST as auditors\n  --preload LIST        preload objects named in LIST\n&quot;, 1024) = 403
 read(11, &quot;&quot;, 621)                       = 0
 close(11)                               = 0
 wait4(802175, [{WIFEXITED(s) &amp;&amp; WEXITSTATUS(s) == 127}], 0, NULL) = 802175
 </code></pre>
-<p>If I understand the mechanism of this bug correctly as being about <code>PATH</code>, then I think this issue isn't specific to <code>pyenv</code> at all, but would fail all <code>python3 -m uv</code> usage.</p>
+<p>If I understand the mechanism of this bug correctly as being about <code>PATH</code>, then I think this issue isn&#x27;t specific to <code>pyenv</code> at all, but would fail all <code>python3 -m uv</code> usage.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/SnoopJ">@SnoopJ</a> on 2024-02-18 15:54</div>
-            <div class="timeline-body"><p>I should add: I don't think passing <code>PATH</code> through is the &quot;right&quot; solution here, it just happens to work in my test-case. I can see it getting the wrong Python when the user did <code>/path/to/lower/priority/python3 -m uv venv test_venv</code> but gets a venv created for a <code>python3</code> that is located higher in the <code>PATH</code> listing.</p>
+            <div class="timeline-body"><p>I should add: I don&#x27;t think passing <code>PATH</code> through is the &quot;right&quot; solution here, it just happens to work in my test-case. I can see it getting the wrong Python when the user did <code>/path/to/lower/priority/python3 -m uv venv test_venv</code> but gets a venv created for a <code>python3</code> that is located higher in the <code>PATH</code> listing.</p>
 <p>To me, the &quot;right&quot; fix would be to use the Python that invoked <code>uv</code>, which probably means adding a mechanism for passing that information across the subprocess boundary and avoiding the search altogether since that resolution has already occurred before we entered Rust.</p>
 <p>That said, it does seem like <code>PATH</code> would be important to preserve, particularly for things like <code>python3 -m uv pip install</code> which may themselves invoke subprocesses that are dependent on it. Naively I would actually expect the <em>entire</em> environment to come along for the ride, because who knows what environment variables will be important to the end result (e.g. what if the user has to twiddle <code>CFLAGS</code> or <code>LD_LIBRARY_PATH</code> or [obscure library-specific flag] for their install command to succeed)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">virtualenv</span> added by @zanieb on 2024-02-18 20:37</div>
+            <div class="event">Label <span class="label">virtualenv</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-18 20:37</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-18 21:12</div>
-            <div class="timeline-body"><p>Thanks! https://github.com/astral-sh/uv/pull/1667 should resolve that <code>PATH</code> issue.</p>
+            <div class="timeline-body"><p>Thanks! <a href="https://github.com/astral-sh/uv/pull/1667">astral-sh/uv#1667</a> should resolve that <code>PATH</code> issue.</p>
 <blockquote>
 <p>To me, the &quot;right&quot; fix would be to use the Python that invoked uv, which probably means adding a mechanism for passing that information across the subprocess boundary and avoiding the search altogether since that resolution has already occurred before we entered Rust.</p>
 </blockquote>
@@ -137,15 +128,15 @@ wait4(802175, [{WIFEXITED(s) &amp;&amp; WEXITSTATUS(s) == 127}], 0, NULL) = 8021
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "`python3 -m uv venv` does not work with Python provided by `pyenv`" to "`python3 -m uv venv` fails because of empty subprocess environment" by @SnoopJ on 2024-02-19 04:39</div>
+            <div class="event">Renamed from &quot;`python3 -m uv venv` does not work with Python provided by `pyenv`&quot; to &quot;`python3 -m uv venv` fails because of empty subprocess environment&quot; by <a href="https://github.com/SnoopJ">@SnoopJ</a> on 2024-02-19 04:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-02-22 03:12</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-22 03:12</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:23:43 UTC
+        Synced at 2026-01-20 19:29:40 UTC
     </footer>
 </body>
 </html>

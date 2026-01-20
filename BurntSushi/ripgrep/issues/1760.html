@@ -23,25 +23,25 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/awalgarg">@awalgarg</a></div>
-            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+            <div class="timeline-body">What version of ripgrep are you using?
 <pre><code>$ rg --version
 ripgrep 12.1.1
 -SIMD -AVX (compiled)
 +SIMD +AVX (runtime)
 </code></pre>
-<h4>How did you install ripgrep?</h4>
+How did you install ripgrep?
 <pre><code># pacman -S ripgrep
 </code></pre>
-<h4>What operating system are you using ripgrep on?</h4>
+What operating system are you using ripgrep on?
 <pre><code>$ uname -mr
 5.9.9-arch1-1 x86_64
 </code></pre>
-<h4>Describe your bug.</h4>
+Describe your bug.
 <p>When searching a file for a pattern of the following form, ripgrep is significantly slower compared to grep, unless <code>--no-unicode</code> is used.</p>
 <pre><code>\bfoo\b \bbar\b
 </code></pre>
 <p>Removing any of the <code>\b</code>s above or removing the space in the middle removes this problem. The issue can also be reproduced after replacing the space with other whitespace patterns such as <code>\t</code> and <code>\r</code>.</p>
-<h4>What are the steps to reproduce the behavior?</h4>
+What are the steps to reproduce the behavior?
 <pre><code>$ git clone git@github.com:git/git.git
 [...]
 $ cd git
@@ -51,7 +51,7 @@ $ ls -alh foo
 -rw-r--r-- 1 user user 36M Dec 11 03:06 foo
 $ file foo
 foo: UTF-8 Unicode text
-$ time grep -ic '\bfoo\b \bbar\b' foo
+$ time grep -ic &#x27;\bfoo\b \bbar\b&#x27; foo
 114
 
 ________________________________________________________
@@ -59,7 +59,7 @@ Executed in   79.27 millis    fish           external
    usr time   66.16 millis  1167.00 micros   65.00 millis
    sys time   13.09 millis  106.00 micros   12.98 millis
 
-$ time rg -ic '\bfoo\b \bbar\b' foo
+$ time rg -ic &#x27;\bfoo\b \bbar\b&#x27; foo
 114
 
 ________________________________________________________
@@ -72,16 +72,16 @@ Executed in    1.60 secs   fish           external
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2020-12-11 13:03</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-12-11 13:03</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-12-11 13:12</div>
             <div class="timeline-body"><p>Thanks for the detailed and easy to reproduce report! The cause of this is two-fold (repeating what I said in our email exchange):</p>
 <ol>
 <li>ripgrep enables Unicode by default and a Unicode-aware <code>\b</code> (word boundary) has a slower implementation path.</li>
-<li>ripgrep's <code>--debug</code> output shows that <em>no</em> literals are extracted from this regex, even though this looks like a pretty simple case with obvious inner literals. It looks like this occurs because the <a href="https://github.com/BurntSushi/ripgrep/blob/a6d05475fb353c756e88f605fd5366a67943e591/crates/regex/src/literal.rs#L261">inner literal detector gives up completely when it sees a word boundary</a>.</li>
+<li>ripgrep&#x27;s <code>--debug</code> output shows that <em>no</em> literals are extracted from this regex, even though this looks like a pretty simple case with obvious inner literals. It looks like this occurs because the <a href="https://github.com/BurntSushi/ripgrep/blob/a6d05475fb353c756e88f605fd5366a67943e591/crates/regex/src/literal.rs#L261">inner literal detector gives up completely when it sees a word boundary</a>.</li>
 </ol>
-<p>(1) is hard to fix, although, if you're fine with an ASCII word boundary, then using <code>--no-unicode</code> (or <code>(?-u)\bfoo\b \bbar\b</code> as the regex) will work around the performance problem since ASCII word boundaries are implemented more efficiently.</p>
+<p>(1) is hard to fix, although, if you&#x27;re fine with an ASCII word boundary, then using <code>--no-unicode</code> (or <code>(?-u)\bfoo\b \bbar\b</code> as the regex) will work around the performance problem since ASCII word boundaries are implemented more efficiently.</p>
 <p>(2) should be simpler to fix, although the inner literal detector is pretty hairy at the moment. Perhaps supporting simple cases like this would be easy.</p>
 <p>In general though, sadly, regexes with Unicode-aware <code>\b</code> will be slower to execute. The literal optimization is just something helps in a lot of cases.</p>
 </div>
@@ -89,23 +89,23 @@ Executed in    1.60 secs   fish           external
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-10-09 23:57</div>
             <div class="timeline-body"><p>This will be fixed in the ripgrep 14 release:</p>
-<pre><code>$ hyperfine &quot;rg-13.0.0 -ic '\bfoo\b \bbar\b' git-3a06386e.txt&quot; &quot;rg -ic '\bfoo\b \bbar\b' git-3a06386e.txt&quot;
-Benchmark 1: rg-13.0.0 -ic '\bfoo\b \bbar\b' git-3a06386e.txt
+<pre><code>$ hyperfine &quot;rg-13.0.0 -ic &#x27;\bfoo\b \bbar\b&#x27; git-3a06386e.txt&quot; &quot;rg -ic &#x27;\bfoo\b \bbar\b&#x27; git-3a06386e.txt&quot;
+Benchmark 1: rg-13.0.0 -ic &#x27;\bfoo\b \bbar\b&#x27; git-3a06386e.txt
   Time (mean ± σ):      1.034 s ±  0.011 s    [User: 1.030 s, System: 0.004 s]
   Range (min … max):    1.021 s …  1.053 s    10 runs
 
-Benchmark 2: rg -ic '\bfoo\b \bbar\b' git-3a06386e.txt
+Benchmark 2: rg -ic &#x27;\bfoo\b \bbar\b&#x27; git-3a06386e.txt
   Time (mean ± σ):       6.3 ms ±   0.3 ms    [User: 4.6 ms, System: 1.6 ms]
   Range (min … max):     5.6 ms …   7.3 ms    343 runs
 
 Summary
-  'rg -ic '\bfoo\b \bbar\b' git-3a06386e.txt' ran
-  164.95 ± 7.70 times faster than 'rg-13.0.0 -ic '\bfoo\b \bbar\b' git-3a06386e.txt'
+  &#x27;rg -ic &#x27;\bfoo\b \bbar\b&#x27; git-3a06386e.txt&#x27; ran
+  164.95 ± 7.70 times faster than &#x27;rg-13.0.0 -ic &#x27;\bfoo\b \bbar\b&#x27; git-3a06386e.txt&#x27;
 </code></pre>
 <p>This was not fixed by making \b itself faster, but rather, by improving
-inner literal extraction. In particular, if the regex doesn't have any
+inner literal extraction. In particular, if the regex doesn&#x27;t have any
 literals extracted, then search time can still be quite slow:</p>
-<pre><code>$ time rg-13.0.0 -ic '\b[a-z]{3}\b\s\b[a-z]{3}\b' git-3a06386e.txt
+<pre><code>$ time rg-13.0.0 -ic &#x27;\b[a-z]{3}\b\s\b[a-z]{3}\b&#x27; git-3a06386e.txt
 57538
 
 real    0.427
@@ -113,7 +113,7 @@ user    0.423
 sys     0.003
 maxmem  46 MB
 faults  0
-$ time rg -ic '\b[a-z]{3}\b\s\b[a-z]{3}\b' git-3a06386e.txt
+$ time rg -ic &#x27;\b[a-z]{3}\b\s\b[a-z]{3}\b&#x27; git-3a06386e.txt
 57538
 
 real    0.337
@@ -122,9 +122,9 @@ sys     0.003
 maxmem  46 MB
 faults  0
 </code></pre>
-<p>But then again, so is grep, because grep doesn't benefit from any
+<p>But then again, so is grep, because grep doesn&#x27;t benefit from any
 literal optimizations either:</p>
-<pre><code>$ time grep -E -ic '\b[a-z]{3}\b\s\b[a-z]{3}\b' git-3a06386e.txt
+<pre><code>$ time grep -E -ic &#x27;\b[a-z]{3}\b\s\b[a-z]{3}\b&#x27; git-3a06386e.txt
 62396
 
 real    1.316
@@ -135,7 +135,7 @@ faults  7
 </code></pre>
 <p>(The count mismatch is quite interesting!)</p>
 <p>And if you disable Unicode, then everyone gets faster:</p>
-<pre><code>$ time LC_ALL=C grep -E -ic '\b[a-z]{3}\b\s\b[a-z]{3}\b' git-3a06386e.txt
+<pre><code>$ time LC_ALL=C grep -E -ic &#x27;\b[a-z]{3}\b\s\b[a-z]{3}\b&#x27; git-3a06386e.txt
 58798
 
 real    0.093
@@ -144,7 +144,7 @@ sys     0.003
 maxmem  13 MB
 faults  0
 
-$ time rg-13.0.0 --no-unicode -ic '\b[a-z]{3}\b\s\b[a-z]{3}\b' git-3a06386e.txt
+$ time rg-13.0.0 --no-unicode -ic &#x27;\b[a-z]{3}\b\s\b[a-z]{3}\b&#x27; git-3a06386e.txt
 58798
 
 real    0.054
@@ -153,7 +153,7 @@ sys     0.000
 maxmem  46 MB
 faults  0
 
-$ time rg --no-unicode -ic '\b[a-z]{3}\b\s\b[a-z]{3}\b' git-3a06386e.txt
+$ time rg --no-unicode -ic &#x27;\b[a-z]{3}\b\s\b[a-z]{3}\b&#x27; git-3a06386e.txt
 58798
 
 real    0.055
@@ -165,15 +165,15 @@ faults  0
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2023-10-10 00:07</div>
+            <div class="event">Label <span class="label">rollup</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-10-10 00:07</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2023-10-10 00:29</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-10-10 00:29</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:43:17 UTC
+        Synced at 2026-01-20 18:48:10 UTC
     </footer>
 </body>
 </html>

@@ -31,8 +31,8 @@
 <pre><code>cmd = f&quot;&quot;&quot;
 GRANT ALL PRIVILEGES ON SCHEMA api TO {kwollect_user};
     req += &quot;\\n&quot; \
-  params      JSONB             DEFAULT '{{}}'
-    CASE WHEN metrics.device_id ~ '^[a-z+-\d+$' THEN '1' ELSE '2' END AS idx1,
+  params      JSONB             DEFAULT &#x27;{{}}&#x27;
+    CASE WHEN metrics.device_id ~ &#x27;^[a-z+-\d+$&#x27; THEN &#x27;1&#x27; ELSE &#x27;2&#x27; END AS idx1,
 &quot;&quot;&quot;
 </code></pre>
 <p>error</p>
@@ -42,14 +42,14 @@ error: Panicked while linting /opt/tmp_folder/11322743460824035852.py: This indi
 
     https://github.com/astral-sh/ruff/issues/new?title=%5BLinter%20panic%5D
 
-...with the relevant file contents, the `pyproject.toml` settings, and the following stack trace, we'd be very appreciative!
+...with the relevant file contents, the `pyproject.toml` settings, and the following stack trace, we&#x27;d be very appreciative!
 
 panicked at /home/runner/work/Automated-Fuzzer/Automated-Fuzzer/ruff/crates/ruff_source_file/src/locator.rs:463:23:
-byte index 173 is not a char boundary; it is inside '\u{9f}' (bytes 172..174) of `cmd = f&quot;&quot;&quot;
+byte index 173 is not a char boundary; it is inside &#x27;\u{9f}&#x27; (bytes 172..174) of `cmd = f&quot;&quot;&quot;
 GRANT ALL PRIVILEGES ON SCHEMA api TO {kwollect_user};
     req += &quot;\\n&quot; \
-  params      JSONB             DEFAULT '{{}}'
-    CASE WHEN metrics.device_id ~ '^[a-z\+\\-\d+$' THEN '1' ELSE '2' END AS idx1,
+  params      JSONB             DEFAULT &#x27;{{}}&#x27;
+    CASE WHEN metrics.device_id ~ &#x27;^[a-z\+\\-\d+$&#x27; THEN &#x27;1&#x27; ELSE &#x27;2&#x27; END AS idx1,
 &quot;&quot;&quot;`
 Backtrace:    0: ruff::panic::catch_unwind::{{closure}}
              at ./ruff/crates/ruff/src/panic.rs:31:25
@@ -166,35 +166,35 @@ Backtrace:    0: ruff::panic::catch_unwind::{{closure}}
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-03-17 21:33</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-17 21:33</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">fuzzer</span> added by @charliermarsh on 2024-03-17 21:33</div>
+            <div class="event">Label <span class="label">fuzzer</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-17 21:33</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">help wanted</span> added by @charliermarsh on 2024-03-18 01:27</div>
+            <div class="event">Label <span class="label">help wanted</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-18 01:27</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/hikaru-kajita">@hikaru-kajita</a> on 2024-03-18 14:23</div>
             <div class="timeline-body"><p>Probably this is due to <code>{{}}</code> being normalized to <code>{}</code> in <code>lex_fstring_middle_or_end</code> which is inside <code>crates/ruff_python_parser/src/lexer.rs</code>, which causes the <code>range</code> defined in <code>crates/ruff_linter/src/rules/pycodestyle/rules/invalid_escape_sequence.rs:175</code> to deviate from the actual range in the content.
 This seems to put a wrong diagnostic.</p>
-<p>I'm now thinking of adding new token which matches only <code>{{</code> inside f-string, but will there be better options?</p>
+<p>I&#x27;m now thinking of adding new token which matches only <code>{{</code> inside f-string, but will there be better options?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-18 16:00</div>
-            <div class="timeline-body"><p>@dhruvmanila any chance this is fixed in the new parser. I'm asking because you made some changes to string lexing/parsing</p>
+            <div class="timeline-body"><p>@dhruvmanila any chance this is fixed in the new parser. I&#x27;m asking because you made some changes to string lexing/parsing</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-03-19 09:20</div>
-            <div class="timeline-body"><p>No, this isn't fixed in the new parser. Although I might know why the problem is occurring. I'll need to look at the <code>W605</code> rule and string parsing.</p>
+            <div class="timeline-body"><p>No, this isn&#x27;t fixed in the new parser. Although I might know why the problem is occurring. I&#x27;ll need to look at the <code>W605</code> rule and string parsing.</p>
 <p>A minimal way to reproduce this is using the following code:</p>
-<pre><code class="language-python"># The curly brace escape is important
+<pre><code># The curly brace escape is important
 f&quot;{{}}+-\d&quot;
 </code></pre>
 <p>And running it using:</p>
-<pre><code class="language-console">$ cargo run -- check --select W605 --no-cache --preview --output-format full --isolated ~/playground/ruff/src/play.py
+<pre><code>$ cargo run -- check --select W605 --no-cache --preview --output-format full --isolated ~/playground/ruff/src/play.py
 /Users/dhruv/playground/ruff/src/play.py:1:7: W605 [*] Invalid escape sequence: `\d`
   |
 1 | f&quot;{{}}+-\d&quot;
@@ -206,8 +206,8 @@ Found 1 error.
 [*] 1 fixable with the `--fix` option.
 </code></pre>
 <p>As you can see, the highlighted range is incorrect.</p>
-<p>This creates other errors like for example if there's a newline in the string, which is a valid escape sequence, the fix can't be to prefix the f-string with <code>r</code> but instead to escape the invalid sequence. This leads to an invalid fix:</p>
-<pre><code class="language-console">$ cargo run -- check --select W605 --fix --diff --no-cache --preview --output-format full --isolated ~/playground/ruff/src/play.py
+<p>This creates other errors like for example if there&#x27;s a newline in the string, which is a valid escape sequence, the fix can&#x27;t be to prefix the f-string with <code>r</code> but instead to escape the invalid sequence. This leads to an invalid fix:</p>
+<pre><code>$ cargo run -- check --select W605 --fix --diff --no-cache --preview --output-format full --isolated ~/playground/ruff/src/play.py
 --- /Users/dhruv/playground/ruff/src/play.py
 +++ /Users/dhruv/playground/ruff/src/play.py
 @@ -1 +1 @@
@@ -217,7 +217,7 @@ Found 1 error.
 Would fix 5 errors.
 </code></pre>
 <p>And, when you include the weird character in the mix, you get the panic:</p>
-<pre><code class="language-python">f&quot;\n{{}}�+-\d+&quot;
+<pre><code>f&quot;\n{{}}�+-\d+&quot;
 </code></pre>
 <p>And, we can even reproduce it in a way that the fix never converges.</p>
 </div>
@@ -228,15 +228,15 @@ Would fix 5 errors.
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @dhruvmanila by @dhruvmanila on 2024-03-19 09:22</div>
+            <div class="event">Assigned to <a href="https://github.com/dhruvmanila">@dhruvmanila</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-03-19 09:22</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dhruvmanila on 2024-03-19 18:46</div>
+            <div class="event">Closed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-03-19 18:46</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:49:52 UTC
+        Synced at 2026-01-20 18:48:51 UTC
     </footer>
 </body>
 </html>

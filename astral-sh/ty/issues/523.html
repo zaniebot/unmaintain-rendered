@@ -23,26 +23,26 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/kkpattern">@kkpattern</a></div>
-            <div class="timeline-body"><h2>Reproduce step</h2>
+            <div class="timeline-body">Reproduce step
 <ol>
 <li>create a file named  <code>main.py</code> with the following content:</li>
 </ol>
-<pre><code class="language-python">def add(a: int, b: int) -&gt; int:
+<pre><code>def add(a: int, b: int) -&gt; int:
     return a + b
 
 add(1, &quot;2&quot;)
 </code></pre>
-<ol start="2">
+<ol>
 <li>Execute the following commands:</li>
 </ol>
-<pre><code class="language-bash">git clone https://github.com/python/typeshed.git
+<pre><code>git clone https://github.com/python/typeshed.git
 cd typeshed
 git checkout ea39b363e02f47debdf583dd88b477e0b0bd546d
 cd ..
 ty check --typeshed typeshed main.py
 </code></pre>
 <p>Output:</p>
-<pre><code class="language-bash">error[panic]: Panicked at /root/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/4818b15/src/function/fetch.rs:143:25 when checking `/home/.../ty-playground/main.py`: `dependency graph cycle when querying try_call_dunder_get_(Id(6802)), set cycle_fn/cycle_initial to fixpoint iterate.
+<pre><code>error[panic]: Panicked at /root/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/4818b15/src/function/fetch.rs:143:25 when checking `/home/.../ty-playground/main.py`: `dependency graph cycle when querying try_call_dunder_get_(Id(6802)), set cycle_fn/cycle_initial to fixpoint iterate.
 Query stack:
 [
     check_types(Id(c00)),
@@ -88,7 +88,7 @@ Query stack:
     try_mro_(Id(5805)),
 ]`
 info: This indicates a bug in ty.
-info: If you could open an issue at https://github.com/astral-sh/ty/issues/new?title=%5Bpanic%5D, we'd be very appreciative!
+info: If you could open an issue at https://github.com/astral-sh/ty/issues/new?title=%5Bpanic%5D, we&#x27;d be very appreciative!
 info: Platform: linux x86_64
 info: Args: [&quot;ty&quot;, &quot;check&quot;, &quot;--typeshed&quot;, &quot;typeshed&quot;, &quot;main.py&quot;]
 info: run with `RUST_BACKTRACE=1` environment variable to show the full backtrace information
@@ -169,7 +169,7 @@ Found 1 diagnostic
 WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
 </code></pre>
 <p>Without the <code>--typeshed</code> ty can work correctly:</p>
-<pre><code class="language-bash">error[invalid-argument-type]: Argument to function `add` is incorrect
+<pre><code>error[invalid-argument-type]: Argument to function `add` is incorrect
  --&gt; main.py:4:8
   |
 2 |     return a + b
@@ -188,25 +188,25 @@ info: rule `invalid-argument-type` is enabled by default
 
 Found 1 diagnostic
 </code></pre>
-<h2>Version</h2>
+Version
 <p>ty 0.0.1-alpha.7</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">fatal</span> added by @AlexWaygood on 2025-05-27 11:15</div>
+            <div class="event">Label <span class="label">fatal</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-27 11:15</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-05-27 11:15</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-27 11:15</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-27 11:41</div>
             <div class="timeline-body"><p>Thank you for reporting this.</p>
-<p>This seems to be somehow related to the fact that the custom <code>typeshed</code> is in the same directory as the file you're checking. If I move it to a different location, I can not reproduce this anymore.</p>
+<p>This seems to be somehow related to the fact that the custom <code>typeshed</code> is in the same directory as the file you&#x27;re checking. If I move it to a different location, I can not reproduce this anymore.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-27 11:48</div>
-            <div class="timeline-body"><p>We always add <code>.</code> as a first-party search path (emulating the behaviour of Python at runtime). My guess is that we're getting pretty confused here by the standard-library search path being a subdirectory of a first-party search path.</p>
+            <div class="timeline-body"><p>We always add <code>.</code> as a first-party search path (emulating the behaviour of Python at runtime). My guess is that we&#x27;re getting pretty confused here by the standard-library search path being a subdirectory of a first-party search path.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -216,25 +216,25 @@ Found 1 diagnostic
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-27 12:02</div>
-            <div class="timeline-body"><p>yeah, that doesn't surprise me. <code>typeshed</code> is a valid module name, and so is <code>test.typeshed</code>, so the file <code>typeshed/stdlib/builtins.pyi</code> could plausibly be misinterpreted as being a file that should be resolved relative to a <code>typeshed.stdlib</code> namespace package in the first-party search path. But <code>test.custom-typeshed</code> is not a valid module name, so it's not possible for ty to misinterpret the search path <code>test/custom-typeshed/stdlib/builtins.pyi</code> should be resolved relative to. It <em>has</em> to fallback to the standard-library search path.</p>
+            <div class="timeline-body"><p>yeah, that doesn&#x27;t surprise me. <code>typeshed</code> is a valid module name, and so is <code>test.typeshed</code>, so the file <code>typeshed/stdlib/builtins.pyi</code> could plausibly be misinterpreted as being a file that should be resolved relative to a <code>typeshed.stdlib</code> namespace package in the first-party search path. But <code>test.custom-typeshed</code> is not a valid module name, so it&#x27;s not possible for ty to misinterpret the search path <code>test/custom-typeshed/stdlib/builtins.pyi</code> should be resolved relative to. It <em>has</em> to fallback to the standard-library search path.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">imports</span> added by @AlexWaygood on 2025-05-27 12:08</div>
+            <div class="event">Label <span class="label">imports</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-27 12:08</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-27 12:21</div>
-            <div class="timeline-body"><p>I confirmed that this patch stops us panicking, meaning that the issue is indeed that we're getting confused about which search path standard-library stub files should be resolved relative to:</p>
-<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/src/module_resolver/resolver.rs b/crates/ty_python_semantic/src/module_resolver/resolver.rs
+            <div class="timeline-body"><p>I confirmed that this patch stops us panicking, meaning that the issue is indeed that we&#x27;re getting confused about which search path standard-library stub files should be resolved relative to:</p>
+<pre><code>diff --git a/crates/ty_python_semantic/src/module_resolver/resolver.rs b/crates/ty_python_semantic/src/module_resolver/resolver.rs
 index 49bf534e77..e3743cec8f 100644
 --- a/crates/ty_python_semantic/src/module_resolver/resolver.rs
 +++ b/crates/ty_python_semantic/src/module_resolver/resolver.rs
-@@ -84,6 +84,15 @@ enum SystemOrVendoredPathRef&lt;'a&gt; {
-     Vendored(&amp;'a VendoredPath),
+@@ -84,6 +84,15 @@ enum SystemOrVendoredPathRef&lt;&#x27;a&gt; {
+     Vendored(&amp;&#x27;a VendoredPath),
  }
  
-+impl&lt;'a&gt; SystemOrVendoredPathRef&lt;'a&gt; {
-+    fn into_system_path(self) -&gt; Option&lt;&amp;'a SystemPath&gt; {
++impl&lt;&#x27;a&gt; SystemOrVendoredPathRef&lt;&#x27;a&gt; {
++    fn into_system_path(self) -&gt; Option&lt;&amp;&#x27;a SystemPath&gt; {
 +        match self {
 +            SystemOrVendoredPathRef::System(path) =&gt; Some(path),
 +            SystemOrVendoredPathRef::Vendored(_) =&gt; None,
@@ -242,8 +242,8 @@ index 49bf534e77..e3743cec8f 100644
 +    }
 +}
 +
- impl std::fmt::Display for SystemOrVendoredPathRef&lt;'_&gt; {
-     fn fmt(&amp;self, f: &amp;mut std::fmt::Formatter&lt;'_&gt;) -&gt; std::fmt::Result {
+ impl std::fmt::Display for SystemOrVendoredPathRef&lt;&#x27;_&gt; {
+     fn fmt(&amp;self, f: &amp;mut std::fmt::Formatter&lt;&#x27;_&gt;) -&gt; std::fmt::Result {
          match self {
 @@ -107,6 +116,13 @@ pub(crate) fn file_to_module(db: &amp;dyn Db, file: File) -&gt; Option&lt;Module&gt; {
      };
@@ -269,35 +269,35 @@ index 49bf534e77..e3743cec8f 100644
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[panic] ty panic with `--typeshed`" to "Panic if `--typeshed` is set to a subdirectory of a first-party search path" by @AlexWaygood on 2025-05-27 13:29</div>
+            <div class="event">Renamed from &quot;[panic] ty panic with `--typeshed`&quot; to &quot;Panic if `--typeshed` is set to a subdirectory of a first-party search path&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-27 13:29</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">configuration</span> added by @AlexWaygood on 2025-05-27 13:29</div>
+            <div class="event">Label <span class="label">configuration</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-27 13:29</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-30 22:07</div>
             <div class="timeline-body"><p>@ntBre and I hacked on this a bit this afternoon in our pairing session. We realized that rejecting any configuration where two search paths overlap would be too naive here:</p>
 <ul>
-<li>Emulating Python's semantics, ty always adds a search path for the current working directory.</li>
-<li>Most users put their first-party code in an <code>src/</code> directory, which we'll also add as a search path</li>
+<li>Emulating Python&#x27;s semantics, ty always adds a search path for the current working directory.</li>
+<li>Most users put their first-party code in an <code>src/</code> directory, which we&#x27;ll also add as a search path</li>
 <li>The CWD search path and the <code>src</code> overlap: a <code>package</code> module located at <code>src/package.py</code> could theoretically have the module name <code>package</code> or <code>src.package</code>, depending on which search path you resolve it relative to.</li>
 </ul>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-31 18:15</div>
-            <div class="timeline-body"><p>Here's the analogous issue mypy had a while back: https://github.com/python/mypy/issues/4881. And here's what they did to fix it: https://github.com/python/mypy/pull/8644</p>
+            <div class="timeline-body"><p>Here&#x27;s the analogous issue mypy had a while back: <a href="https://github.com/python/mypy/issues/4881">python/mypy#4881</a>. And here&#x27;s what they did to fix it: <a href="https://github.com/python/mypy/pull/8644">python/mypy#8644</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-06 16:03</div>
-            <div class="timeline-body"><p>@carljm pointed out in my 1:1 with him just now that it's also common for editable installs to overlap with first-party search paths</p>
+            <div class="timeline-body"><p>@carljm pointed out in my 1:1 with him just now that it&#x27;s also common for editable installs to overlap with first-party search paths</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:00 UTC
+        Synced at 2026-01-20 19:24:40 UTC
     </footer>
 </body>
 </html>

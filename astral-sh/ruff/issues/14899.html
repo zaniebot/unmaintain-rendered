@@ -23,12 +23,12 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a></div>
-            <div class="timeline-body"><p>The <code>is_assignable_to</code>-is-reflexive property test, which makes sure that we can assign any type to itself, is currently failing with counter-examples like <code>Any &amp; T</code>, where <code>T</code> is an arbitrary type (that doesn't let the intersection collapse).</p>
-<p>The reason for this is that we can't rely on <em>equivalence</em> for assignability of gradual types anymore ever since https://github.com/astral-sh/ruff/pull/14758. We do have some special casing for gradual types like <code>Any</code> and <code>Unknown</code>, as well as for unions and tuples of these, but we do lack handling of intersections.</p>
+            <div class="timeline-body"><p>The <code>is_assignable_to</code>-is-reflexive property test, which makes sure that we can assign any type to itself, is currently failing with counter-examples like <code>Any &amp; T</code>, where <code>T</code> is an arbitrary type (that doesn&#x27;t let the intersection collapse).</p>
+<p>The reason for this is that we can&#x27;t rely on <em>equivalence</em> for assignability of gradual types anymore ever since <a href="https://github.com/astral-sh/ruff/pull/14758">astral-sh/ruff#14758</a>. We do have some special casing for gradual types like <code>Any</code> and <code>Unknown</code>, as well as for unions and tuples of these, but we do lack handling of intersections.</p>
 <p>This is not completely trivial. We can patch this with some superficial handling like</p>
-<pre><code class="language-diff">--- a/crates/red_knot_python_semantic/src/types.rs
+<pre><code>--- a/crates/red_knot_python_semantic/src/types.rs
 +++ b/crates/red_knot_python_semantic/src/types.rs
-@@ -748,6 +748,14 @@ impl&lt;'db&gt; Type&lt;'db&gt; {
+@@ -748,6 +748,14 @@ impl&lt;&#x27;db&gt; Type&lt;&#x27;db&gt; {
                  .elements(db)
                  .iter()
                  .any(|&amp;elem_ty| ty.is_assignable_to(db, elem_ty)),
@@ -49,10 +49,10 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2024-12-10 20:01</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-12-10 20:01</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">help wanted</span> added by @carljm on 2024-12-14 02:17</div>
+            <div class="event">Label <span class="label">help wanted</span> added by <a href="https://github.com/carljm">@carljm</a> on 2024-12-14 02:17</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-12-14 02:19</div>
@@ -64,19 +64,19 @@
             <div class="timeline-body"><blockquote>
 <p>which also works for things like T &amp; ~Any, because we always add Any/Unknown as positive contributions to intersections.</p>
 </blockquote>
-<p>Regarding this, is <code>Ty</code> meant to mirror exactly the sort of structures that we'd end up with using <code>Type&lt;'db&gt;</code>? Like we would never have <code>T &amp; ~Any</code> with <code>Type</code>, and we wouldn't have an intersection of unions (since we normalize to unions of intersections).</p>
+<p>Regarding this, is <code>Ty</code> meant to mirror exactly the sort of structures that we&#x27;d end up with using <code>Type&lt;&#x27;db&gt;</code>? Like we would never have <code>T &amp; ~Any</code> with <code>Type</code>, and we wouldn&#x27;t have an intersection of unions (since we normalize to unions of intersections).</p>
 <p>I think the arbitrary generator currently in the property tests will gladly generate non-normalized intersections in particular, which might be generating false positives in these tests.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/rtpg">@rtpg</a> on 2025-01-06 11:26</div>
-            <div class="timeline-body"><p>After poking at this a bit more, I now feel like the main problem with the existing <code>Ty</code> generation is mainly that a test failure shows the <code>Ty</code> intead of a representation of the actual <code>Type</code> used. So you don't see the shape of the actual type tested, just the pre-transformed <code>Ty</code> smart constructor.</p>
+            <div class="timeline-body"><p>After poking at this a bit more, I now feel like the main problem with the existing <code>Ty</code> generation is mainly that a test failure shows the <code>Ty</code> intead of a representation of the actual <code>Type</code> used. So you don&#x27;t see the shape of the actual type tested, just the pre-transformed <code>Ty</code> smart constructor.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-06 11:28</div>
             <div class="timeline-body"><blockquote>
-<p>After poking at this a bit more, I now feel like the main problem with the existing <code>Ty</code> generation is mainly that a test failure shows the <code>Ty</code> intead of a representation of the actual <code>Type</code> used. So you don't see the shape of the actual type tested, just the pre-transformed <code>Ty</code> smart constructor.</p>
+<p>After poking at this a bit more, I now feel like the main problem with the existing <code>Ty</code> generation is mainly that a test failure shows the <code>Ty</code> intead of a representation of the actual <code>Type</code> used. So you don&#x27;t see the shape of the actual type tested, just the pre-transformed <code>Ty</code> smart constructor.</p>
 </blockquote>
 <p>Yeah, agreed that this would be a big usability improvement!</p>
 </div>
@@ -90,8 +90,8 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-01-08 19:17</div>
             <div class="timeline-body"><p>This issue is actually a bit more general than the title/description make it sound like.</p>
-<p>We currently don't have any logic for handling intersection types in the <code>is_assignable_to</code> relation. We <em>do</em> have special handling in <code>is_equivalent_to</code> and <code>is_subtype_of</code>, so for fully-static types, we're probably good(?). But for gradual types, it looks like we need some special handling. For example, we currently don't allow <code>Unknown &amp; int</code> to be assigned to <code>int</code>, so something like this fails:</p>
-<pre><code class="language-py">def f(x) -&gt; None:
+<p>We currently don&#x27;t have any logic for handling intersection types in the <code>is_assignable_to</code> relation. We <em>do</em> have special handling in <code>is_equivalent_to</code> and <code>is_subtype_of</code>, so for fully-static types, we&#x27;re probably good(?). But for gradual types, it looks like we need some special handling. For example, we currently don&#x27;t allow <code>Unknown &amp; int</code> to be assigned to <code>int</code>, so something like this fails:</p>
+<pre><code>def f(x) -&gt; None:
     if isinstance(x, int):
         reveal_type(x)  # Unknown &amp; int
         y: int = x  # currently fails with invalid-assignment
@@ -100,7 +100,7 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[red-knot] `is_assignable_to` is not reflexive" to "[red-knot] (Gradual) intersection types are not handled in assignability" by @sharkdp on 2025-01-08 19:17</div>
+            <div class="event">Renamed from &quot;[red-knot] `is_assignable_to` is not reflexive&quot; to &quot;[red-knot] (Gradual) intersection types are not handled in assignability&quot; by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-01-08 19:17</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-01-08 19:26</div>
@@ -108,18 +108,18 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Red Knot Q1 2025" by @carljm on 2025-01-09 17:53</div>
+            <div class="event">Added to milestone &quot;Red Knot Q1 2025&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-01-09 17:53</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2025-03-11 14:58</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2025-03-11 14:58</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2025-03-11 14:58</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2025-03-11 14:58</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:51:47 UTC
+        Synced at 2026-01-20 18:49:08 UTC
     </footer>
 </body>
 </html>

@@ -23,17 +23,17 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/nemowang2003">@nemowang2003</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<h1>Description</h1>
+            <div class="timeline-body">Summary
+Description
 <p>I have found a minimal reproduction where a <code>try-except</code> block placed <strong>before</strong> an import causes type inference ambiguity inside a function scope.</p>
 <p>The issue specifically occurs when the imported object shares the same name as the module it is imported from (shadowing).</p>
-<h1>Minimal Reproducible Example</h1>
-<h3>File Structure:</h3>
-<pre><code class="language-text">repro/src/
+Minimal Reproducible Example
+File Structure:
+<pre><code>repro/src/
 ├── __init__.py
 └── demo.py
 </code></pre>
-<pre><code class="language-python"># __init__.py
+<pre><code># __init__.py
 
 try:
     pass
@@ -48,37 +48,37 @@ typing.reveal_type(demo)  # Literal[42]
 
 
 def main() -&gt; None:
-    typing.reveal_type(demo)  # &lt;module 'repro.demo'&gt; | Literal[42]
+    typing.reveal_type(demo)  # &lt;module &#x27;repro.demo&#x27;&gt; | Literal[42]
 
 # demo.py
 
 demo = 42
 </code></pre>
-<h1>Investigation Notes</h1>
+Investigation Notes
 <p>Order is critial. If the <code>try-except</code> block is moved <strong>after</strong> the import, the issue disappears.</p>
-<h3>Version</h3>
+Version
 <p>ty 0.0.11 (Homebrew 2026-01-09)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/nemowang2003">@nemowang2003</a> on 2026-01-11 02:30</div>
-            <div class="timeline-body"><p>Using <code>from .demo import demo as var</code> and <code>typing.reveal_type(var)</code> in <code>main</code> would also fix this. So I think it's somehow related to shadowing.</p>
+            <div class="timeline-body"><p>Using <code>from .demo import demo as var</code> and <code>typing.reveal_type(var)</code> in <code>main</code> would also fix this. So I think it&#x27;s somehow related to shadowing.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-13 03:36</div>
-            <div class="timeline-body"><p>I'm pretty sure it's also related to the fact that this code is in an <code>__init__.py</code>. Having a variable named <code>demo</code> and a submodule named <code>demo</code> in <code>__init__.py</code> is pretty error-prone.</p>
+            <div class="timeline-body"><p>I&#x27;m pretty sure it&#x27;s also related to the fact that this code is in an <code>__init__.py</code>. Having a variable named <code>demo</code> and a submodule named <code>demo</code> in <code>__init__.py</code> is pretty error-prone.</p>
 <p>The relevance of the empty try/except is mysterious to me, though.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Pre-stable 1" by @carljm on 2026-01-13 03:36</div>
+            <div class="event">Added to milestone &quot;Pre-stable 1&quot; by <a href="https://github.com/carljm">@carljm</a> on 2026-01-13 03:36</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Removed from milestone "Pre-stable 1" by @carljm on 2026-01-13 03:36</div>
+            <div class="event">Removed from milestone &quot;Pre-stable 1&quot; by <a href="https://github.com/carljm">@carljm</a> on 2026-01-13 03:36</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Stable" by @carljm on 2026-01-13 03:36</div>
+            <div class="event">Added to milestone &quot;Stable&quot; by <a href="https://github.com/carljm">@carljm</a> on 2026-01-13 03:36</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/nemowang2003">@nemowang2003</a> on 2026-01-13 04:11</div>
@@ -87,11 +87,11 @@ demo = 42
 </blockquote>
 <p>To clarify regarding the empty try-except: the fact that it is empty is incidental. The issue persists even with a populated/functional try-except block.</p>
 <p>For example, this standard import check also triggers the error:</p>
-<pre><code class="language-python">try:
+<pre><code>try:
     import click
 except ImportError:
     import sys
-    print('click is not installed')
+    print(&#x27;click is not installed&#x27;)
     sys.exit(1)
 
 from .demo import demo
@@ -103,20 +103,20 @@ from .demo import demo
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-13 08:25</div>
             <div class="timeline-body"><blockquote>
-<p>I'm pretty sure it's also related to the fact that this code is in an <code>__init__.py</code>. Having a variable named <code>demo</code> and a submodule named <code>demo</code> in <code>__init__.py</code> is pretty error-prone.</p>
+<p>I&#x27;m pretty sure it&#x27;s also related to the fact that this code is in an <code>__init__.py</code>. Having a variable named <code>demo</code> and a submodule named <code>demo</code> in <code>__init__.py</code> is pretty error-prone.</p>
 </blockquote>
 <p>X-ref #1676</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-14 01:35</div>
-            <div class="timeline-body"><p>Wow, this one's a doozy. Nice find and report!</p>
+            <div class="timeline-body"><p>Wow, this one&#x27;s a doozy. Nice find and report!</p>
 <p>The root cause here involves several factors:</p>
 <ol>
 <li>The try/except causes us to set AMBIGUOUS reachability for the remainder of the scope. This in itself is a bug: although some code within the try/except may be ambiguously reachable, the code after the try/except is definitely reachable.</li>
 <li>The line <code>from .demo import demo</code> causes us to insert two definitions of <code>demo</code> -- first one is a submodule-import (the <code>demo</code> submodule has now been implicitly imported and attached as an attribute on this package), and the second one is the actual import of the <code>demo</code> attribute from the <code>demo</code> submodule. The former definition is a binding only, the latter we currently consider both a binding and a declaration (though there are other bug reports suggesting we should reconsider this anyway, see #1836).</li>
 <li>When accessing a name from a nested scope, if there is a definitely-bound declaration, we privilege that and ignore bindings. So without the try/except, when we are considering everything definitely-reachable, we just use the &quot;declaration&quot; of the imported <code>demo</code> name, and ignore the &quot;binding&quot; of the submodule attribute.</li>
-<li>Otherwise, we look at all possibly-reachable declarations and bindings and union them together. This is intended to model the fact that we don't know where in the outer scope's control flow our nested scope could be called from. Effectively in this case we are modeling that <code>main()</code> might be called in between the attachment of the <code>demo</code> submodule attribute and the binding of the imported <code>demo</code> name. In this case that's a silly thing to model, since those two definitions are coming from the same statement.</li>
+<li>Otherwise, we look at all possibly-reachable declarations and bindings and union them together. This is intended to model the fact that we don&#x27;t know where in the outer scope&#x27;s control flow our nested scope could be called from. Effectively in this case we are modeling that <code>main()</code> might be called in between the attachment of the <code>demo</code> submodule attribute and the binding of the imported <code>demo</code> name. In this case that&#x27;s a silly thing to model, since those two definitions are coming from the same statement.</li>
 </ol>
 <p>So if we do #1836, then the &quot;bug&quot; would always show up here, instead of being dependent on the <code>try/except</code>.
 If we fix (1) above (reachability of code after a try/except), then the bug would not be triggered by a <code>try/except</code>, but could still show up if we did something else to cause us to consider the import ambiguously reachable.
@@ -124,12 +124,12 @@ Either way, I think we should fix (4) by just skipping the submodule-attachment 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2026-01-15 05:19</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2026-01-15 05:19</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-15 05:41:46 UTC
+        Synced at 2026-01-20 19:27:04 UTC
     </footer>
 </body>
 </html>

@@ -24,10 +24,10 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MusicalNinjaDad">@MusicalNinjaDad</a></div>
             <div class="timeline-body"><p>Handle non-unix filesystems in a way which satisfies not only WSL (#3110, #5445, fixes #10084) but also non-WSL (#12941) cases.</p>
-<h2>tl;dr</h2>
+tl;dr
 <p>Seems to be a touch faster than current implementation on <em>normal</em> systems; simple to document &amp; use; also supports cases like #12941 / external FAT-drives / ...</p>
 <p><strong>The key changes are in: <a href="https://github.com/MusicalNinjaDad/forks-ruff/blob/wsl_shebang/crates/ruff_linter/src/rules/flake8_executable/helpers.rs"><code>crates/ruff_linter/src/rules/flake8_executable/helpers.rs</code></a></strong></p>
-<pre><code class="language-rust">// Some file systems do not support executable bits. Instead, everything is executable.
+<pre><code>// Some file systems do not support executable bits. Instead, everything is executable.
 // See #3110, #5445, #10084, #12941
 //
 // Benchmarking shows better performance vs previous approach of checking `is_wsl()` 
@@ -39,7 +39,7 @@ static EXECUTABLE_BY_DEFAULT: OnceLock&lt;bool&gt; = OnceLock::new();
 pub(super) fn executable_by_default(settings: &amp;LinterSettings) -&gt; bool {
     *EXECUTABLE_BY_DEFAULT.get_or_init(|| {
         is_executable(&amp;settings.project_root.join(&quot;pyproject.toml&quot;)).unwrap_or(true)
-            // if pyproject.toml is executable or doesn't exist, run a slower check too:
+            // if pyproject.toml is executable or doesn&#x27;t exist, run a slower check too:
             &amp;&amp; NamedTempFile::new_in(&amp;settings.project_root)
                 .map_err(std::convert::Into::into)
                 .and_then(|tmpfile| is_executable(tmpfile.path()))
@@ -47,29 +47,29 @@ pub(super) fn executable_by_default(settings: &amp;LinterSettings) -&gt; bool {
     })
 }
 </code></pre>
-<h2>Open Questions</h2>
+Open Questions
 <ul>
-<li>[ ] Stick with this approach? (I'd suggest: yes)<ul>
+<li>[ ] Stick with this approach? (I&#x27;d suggest: yes)<ul>
 <li>Do you have any info on how often users will have no pyproject.toml available?</li>
 </ul>
 </li>
-<li>[ ] Keep test workflow? (I'd suggest: yes, given the very targetted trigger, as long as pinning the SHAs won't lead to dependabot running it too often)</li>
-<li>[ ] Keep benches? (I'd suggest: keeping them disabled - is there a better way than just commenting out the section in <code>Cargo.toml</code>, it doesn't seem worth a cfg option?)</li>
+<li>[ ] Keep test workflow? (I&#x27;d suggest: yes, given the very targetted trigger, as long as pinning the SHAs won&#x27;t lead to dependabot running it too often)</li>
+<li>[ ] Keep benches? (I&#x27;d suggest: keeping them disabled - is there a better way than just commenting out the section in <code>Cargo.toml</code>, it doesn&#x27;t seem worth a cfg option?)</li>
 </ul>
-<h2>Approach &amp; Alternatives considered</h2>
-<h3>Recommended Approach: Check filemode of <code>pyproject.toml</code>, fallback to a <code>NamedTempFile</code></h3>
+Approach &amp; Alternatives considered
+Recommended Approach: Check filemode of <code>pyproject.toml</code>, fallback to a <code>NamedTempFile</code>
 <ul>
 <li>Using a <code>OnceLock</code> to ensure we only run this check once</li>
-<li>If <code>project_root/pyproject.toml</code> exists: check the filemode. If it's not executable - then files aren't executable by default</li>
-<li>If it is, or doesn't exist: create a <code>NamedTempFile</code> in <code>project_root</code> and check the filemode</li>
+<li>If <code>project_root/pyproject.toml</code> exists: check the filemode. If it&#x27;s not executable - then files aren&#x27;t executable by default</li>
+<li>If it is, or doesn&#x27;t exist: create a <code>NamedTempFile</code> in <code>project_root</code> and check the filemode</li>
 </ul>
-<h4>Pros</h4>
+Pros
 <ul>
 <li>Single approach for all cases</li>
 <li>Guaranteed to catch all cases</li>
 <li>Faster than current implementation (if pyproject.toml exists)</li>
 </ul>
-<h4>Cons</h4>
+Cons
 <ul>
 <li>(Probably) has a very small performance cost (consistently at the edge of what I could measure) for EXE002 in the specific case when<ul>
 <li>no pyproject.toml is available in the project_root, or this has been accidentally set to executable (assuming this is a rare case?)</li>
@@ -79,51 +79,51 @@ pub(super) fn executable_by_default(settings: &amp;LinterSettings) -&gt; bool {
 </ul>
 </li>
 </ul>
-<h3>Alternative 1: Manual Override</h3>
+Alternative 1: Manual Override
 <p>See <a href="https://github.com/MusicalNinjaDad/forks-ruff/blob/617cf6d39abe9b1954c2f291bb23aeacb22d8c9e/crates/ruff_linter/src/rules/flake8_executable/mod.rs">617cf6d39abe9b1954c2f291bb23aeacb22d8c9e</a></p>
 <ul>
 <li>Provide a environment-variable override</li>
 <li>Otherwise only test default filemode on WSL</li>
 </ul>
-<h4>Pros</h4>
+Pros
 <ul>
 <li>No risk of checking a tempfile unless using WSL</li>
 <li>Allows for cases like #12941</li>
 <li>Follows precedent of <code>RUFF_CACHE_DIR</code></li>
 </ul>
-<h4>Cons</h4>
+Cons
 <ul>
 <li>Requires users to find the relevant documentation and set a specific variable</li>
 <li>Either invoves testing an env-var during the check (feels wrong);</li>
 <li>or threading the value through clap (such as RUFF_CACHE_DIR) which forces the inclusion of a <a href="https://docs.astral.sh/ruff/settings/#cache-dir">project-level config setting</a> and spreads the change over a much wider footprint in the codebase</li>
 <li>Very difficult to document well</li>
 </ul>
-<h3>Alternative 2: Check filesystem type</h3>
-<p>I've not tried this one, but could envision:</p>
+Alternative 2: Check filesystem type
+<p>I&#x27;ve not tried this one, but could envision:</p>
 <ul>
 <li>Use <code>std::os::linux::fs::MetadataExt</code> to identify the actual location of <code>project_root</code></li>
 <li>Use <code>sysinfo[linux-netdevs]::Disks</code> to identify the corresponding filesystem</li>
 <li>Check against a list of known-incompatible filesystem types</li>
 </ul>
-<h4>Pros</h4>
+Pros
 <ul>
 <li>No risk of checking a tempfile</li>
 <li>Allows for cases like #12941</li>
 </ul>
-<h4>Cons</h4>
+Cons
 <ul>
 <li>Requires us to identify and maintain a list of incompatible filesystems (9s, FAT, xFAT, NTFS, CIFS, ...?) and will still miss some edge cases (mounting a share from a windows server via NFS)</li>
 <li>Will require special-case handling for symlinks</li>
 </ul>
-<h2>Performance</h2>
-<p>I've added specific benchmarks for these lints, as they are disabled in the normal benches. Benching them is consistently inconsistent (!) - always giving fluctations of +/-2.x% on one or two of the four benches (different ones each time), when repeating on the same codebase.</p>
+Performance
+<p>I&#x27;ve added specific benchmarks for these lints, as they are disabled in the normal benches. Benching them is consistently inconsistent (!) - always giving fluctations of +/-2.x% on one or two of the four benches (different ones each time), when repeating on the same codebase.</p>
 <p>However, this change does <em>consistently</em> show:</p>
 <ul>
 <li>an <em>improvement</em> of &gt;3% on one or two of the benches (except NotExecutableNoShebang)</li>
-<li>fluctations on <code>NotExecutableNoShebang</code> <em>within the ranges</em> I've identified on repeated runs of the same bench on main (&lt; +/-3%)</li>
+<li>fluctations on <code>NotExecutableNoShebang</code> <em>within the ranges</em> I&#x27;ve identified on repeated runs of the same bench on main (&lt; +/-3%)</li>
 </ul>
 <p><strong>comparing <code>931c66ad19dcaab4ef5feb3c26378f1d9946c31b</code> to <code>main</code>:</strong></p>
-<pre><code class="language-text">cargo bench -p ruff_benchmark --bench flake8_executable -- --baseline=main
+<pre><code>cargo bench -p ruff_benchmark --bench flake8_executable -- --baseline=main
    Compiling ruff_linter v0.11.5 (/workspaces/ruff/crates/ruff_linter)
    Compiling ruff_benchmark v0.0.0 (/workspaces/ruff/crates/ruff_benchmark)
     Finished `bench` profile [optimized] target(s) in 38.30s
@@ -169,8 +169,8 @@ Found 98 outliers among 1000 measurements (9.80%)
   45 (4.50%) high mild
   53 (5.30%) high severe
 </code></pre>
-<h2>Testing</h2>
-<p>To test this while working on it I've added the following test infrastructure:</p>
+Testing
+<p>To test this while working on it I&#x27;ve added the following test infrastructure:</p>
 <ul>
 <li>Specific test cases for EXE001 &amp; EXE002 on non-unix filesystems</li>
 <li>A <code>cfg</code> option <code>test-environment</code> set via <code>RUFF_TEST_ENVIRONMENT</code>, to avoid including any system identification logic in the tests themselves</li>
@@ -204,25 +204,25 @@ Found 98 outliers among 1000 measurements (9.80%)
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @MusicalNinjaDad on 2025-04-25 11:56</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/MusicalNinjaDad">@MusicalNinjaDad</a> on 2025-04-25 11:56</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-12 07:40</div>
             <div class="timeline-body"><p>Thank you. Your test setup is very impressive.</p>
-<p>There's a lot happening right now. I'm not sure when I'll get the time to review this PR.</p>
+<p>There&#x27;s a lot happening right now. I&#x27;m not sure when I&#x27;ll get the time to review this PR.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MusicalNinjaDad">@MusicalNinjaDad</a> on 2025-05-12 11:41</div>
             <div class="timeline-body"><p>Thanks - I fully understand and that quick note was really valuable.</p>
-<p>I'd also personally much rather have red-knot available than this included in ruff ;)</p>
-<p>I'll probably hang back on taking up other topics until I do get feedback on this (unless I get bored or randomly motivated) - so I can include any feedback on style etc from the start.</p>
+<p>I&#x27;d also personally much rather have red-knot available than this included in ruff ;)</p>
+<p>I&#x27;ll probably hang back on taking up other topics until I do get feedback on this (unless I get bored or randomly motivated) - so I can include any feedback on style etc from the start.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MusicalNinjaDad">@MusicalNinjaDad</a> on 2026-01-11 09:35</div>
             <div class="timeline-body"><p>Is there something I could do to make this approach easier to maintain? I understand if you are reluctant to take over the additional test infrastructure. (@ntBre, @MichaReiser, @amyreese)</p>
-<p>The logic change itself is simple and shouldn't add maintenance burden, particularly with CI-based tests in place. I <em>could</em> remove the testing and just provide the logic, although personally I dislike the idea ;)</p>
+<p>The logic change itself is simple and shouldn&#x27;t add maintenance burden, particularly with CI-based tests in place. I <em>could</em> remove the testing and just provide the logic, although personally I dislike the idea ;)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -236,25 +236,25 @@ Found 98 outliers among 1000 measurements (9.80%)
 <li>the modified build script</li>
 <li>the platform-dependent <code>test_matrix</code> changes</li>
 </ul>
-<p>These all raise the bar of how closely I feel I need to review the changes compared to modifying the rule's Rust code or normal test fixtures.</p>
-<p>Beyond that, I'm just not that familiar with Windows and don't have a Windows machine (easily) available for testing. The core change does look straightforward, but it's also a bit surprising to create a temporary file and check its permissions (assuming I'm understanding correctly) instead of calling <code>is_wsl</code> from a third-party crate.</p>
-<p>Hopefully that gives some context. That's why the PR looks complicated to review to me in its current form and why I haven't found a chance to prioritize it yet.</p>
+<p>These all raise the bar of how closely I feel I need to review the changes compared to modifying the rule&#x27;s Rust code or normal test fixtures.</p>
+<p>Beyond that, I&#x27;m just not that familiar with Windows and don&#x27;t have a Windows machine (easily) available for testing. The core change does look straightforward, but it&#x27;s also a bit surprising to create a temporary file and check its permissions (assuming I&#x27;m understanding correctly) instead of calling <code>is_wsl</code> from a third-party crate.</p>
+<p>Hopefully that gives some context. That&#x27;s why the PR looks complicated to review to me in its current form and why I haven&#x27;t found a chance to prioritize it yet.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MusicalNinjaDad">@MusicalNinjaDad</a> on 2026-01-14 08:17</div>
             <div class="timeline-body"><p>Fully understand, and I sort of expected that answer ;)</p>
-<p>I'll restructure to make it easier to review.</p>
+<p>I&#x27;ll restructure to make it easier to review.</p>
 <blockquote>
-<p>The core change does look straightforward, but it's also a bit surprising to create a temporary file and check its permissions (assuming I'm understanding correctly) instead of calling is_wsl from a third-party crate.</p>
+<p>The core change does look straightforward, but it&#x27;s also a bit surprising to create a temporary file and check its permissions (assuming I&#x27;m understanding correctly) instead of calling is_wsl from a third-party crate.</p>
 </blockquote>
-<p>Correct - that's what the logic change does. Reason: <code>is_wsl()</code> returns <code>true</code> for all WSL users, the majority of whom use a normal ext4 filesystem, and therefore do not need the lints disabled. For all these users disabling the lints leads to nasty surprises if they assume that they are active (#10084). Doing it this way covers both types of WSL user, as well as linux users who are storing code on USB sticks etc. (#12941)</p>
+<p>Correct - that&#x27;s what the logic change does. Reason: <code>is_wsl()</code> returns <code>true</code> for all WSL users, the majority of whom use a normal ext4 filesystem, and therefore do not need the lints disabled. For all these users disabling the lints leads to nasty surprises if they assume that they are active (#10084). Doing it this way covers both types of WSL user, as well as linux users who are storing code on USB sticks etc. (#12941)</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-14 08:38:49 UTC
+        Synced at 2026-01-20 19:13:37 UTC
     </footer>
 </body>
 </html>

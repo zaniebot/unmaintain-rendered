@@ -25,44 +25,44 @@
             <div class="timeline-header"><a href="https://github.com/BatmanAoD">@BatmanAoD</a></div>
             <div class="timeline-body"><p>On Windows, I noticed two surprising things about carriage returns (<code>\r</code>):</p>
 <ul>
-<li>They aren't treated as word-boundaries (i.e. they won't cause the <code>\b</code> anchor to match). This means that <code>rg -w foo</code> fails to find <code>foo</code> at the end of a line in a file with Windows line-endings.</li>
-<li>They aren't included in the end-of-line anchor <code>$</code>, which makes using the anchor more difficult.</li>
+<li>They aren&#x27;t treated as word-boundaries (i.e. they won&#x27;t cause the <code>\b</code> anchor to match). This means that <code>rg -w foo</code> fails to find <code>foo</code> at the end of a line in a file with Windows line-endings.</li>
+<li>They aren&#x27;t included in the end-of-line anchor <code>$</code>, which makes using the anchor more difficult.</li>
 </ul>
-<p>I realize that this <em>could</em> be by design, since RipGrep may be using some standard definition of <code>\b</code> that explicitly does not include <code>\r</code>. That seems unintuitive, though, and I don't think I've seen that behavior in other regex engines running on Windows (e.g. in Python on Windows).</p>
+<p>I realize that this <em>could</em> be by design, since RipGrep may be using some standard definition of <code>\b</code> that explicitly does not include <code>\r</code>. That seems unintuitive, though, and I don&#x27;t think I&#x27;ve seen that behavior in other regex engines running on Windows (e.g. in Python on Windows).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-21 17:24</div>
             <div class="timeline-body"><blockquote>
-<p>They aren't treated as word-boundaries (i.e. they won't cause the \b anchor to match). This means that rg -w foo fails to find foo at the end of a line in a file with Windows line-endings.</p>
+<p>They aren&#x27;t treated as word-boundaries (i.e. they won&#x27;t cause the \b anchor to match). This means that rg -w foo fails to find foo at the end of a line in a file with Windows line-endings.</p>
 </blockquote>
-<p>This doesn't seem right. Could you please provide a minimal reproducible example? e.g., This works fine for me:</p>
-<pre><code>$ echo -e 'foo\n' | rg -w foo
+<p>This doesn&#x27;t seem right. Could you please provide a minimal reproducible example? e.g., This works fine for me:</p>
+<pre><code>$ echo -e &#x27;foo\n&#x27; | rg -w foo
 1:foo
-$ echo -e 'foo\r\n' | rg -w foo
+$ echo -e &#x27;foo\r\n&#x27; | rg -w foo
 1:foo
 </code></pre>
 <blockquote>
-<p>They aren't included in the end-of-line anchor <code>$</code>, which makes using the anchor more difficult.</p>
+<p>They aren&#x27;t included in the end-of-line anchor <code>$</code>, which makes using the anchor more difficult.</p>
 </blockquote>
 <p>I think GNU grep handles this by stripping <code>\r</code> characters and dealing with the fallout. This seems hard, or at best, very annoying.</p>
-<p>The semantics of the regex engine aren't going to change, sorry.</p>
+<p>The semantics of the regex engine aren&#x27;t going to change, sorry.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2017-03-21 17:24</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-21 17:24</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BatmanAoD">@BatmanAoD</a> on 2017-03-21 18:32</div>
-            <div class="timeline-body"><p>Hm, you're right, I'm having trouble reproducing the <code>\b</code> issue with test files; I'll have to see if I can find out why I'm having issues with the file I was searching when I discovered the issue.</p>
-<p>Regarding <code>$</code>, though, isn't the anchor essentially useless on Windows if <code>\r</code> causes a mismatch? <code>echo -e &quot;foo\r\n&quot; | &lt;greptool&gt; 'foo$'</code> seems to me like it should <em>always</em> match, regardless of the system. (I've checked that on Debian, GNU grep and ack both handle this case appropriately.)</p>
-<p>Why not just let the anchor match when a character other than <code>\r</code> is followed by <code>\n</code> <em>or</em> <code>\r\n</code>? (I think you're right that this approach is not the one taken by grep, so I realize that there may be a good reason not to take this approach.)</p>
-<p>I'm guessing that this behavior is due to the current behavior of rust-lang/regex ? If so, I can open an issue there, which seems like a more appropriate place (even though you're the primary author/contributor on that project as well).</p>
+            <div class="timeline-body"><p>Hm, you&#x27;re right, I&#x27;m having trouble reproducing the <code>\b</code> issue with test files; I&#x27;ll have to see if I can find out why I&#x27;m having issues with the file I was searching when I discovered the issue.</p>
+<p>Regarding <code>$</code>, though, isn&#x27;t the anchor essentially useless on Windows if <code>\r</code> causes a mismatch? <code>echo -e &quot;foo\r\n&quot; | &lt;greptool&gt; &#x27;foo$&#x27;</code> seems to me like it should <em>always</em> match, regardless of the system. (I&#x27;ve checked that on Debian, GNU grep and ack both handle this case appropriately.)</p>
+<p>Why not just let the anchor match when a character other than <code>\r</code> is followed by <code>\n</code> <em>or</em> <code>\r\n</code>? (I think you&#x27;re right that this approach is not the one taken by grep, so I realize that there may be a good reason not to take this approach.)</p>
+<p>I&#x27;m guessing that this behavior is due to the current behavior of rust-lang/regex ? If so, I can open an issue there, which seems like a more appropriate place (even though you&#x27;re the primary author/contributor on that project as well).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-21 18:39</div>
-            <div class="timeline-body"><p>The issue already exists: https://github.com/rust-lang/regex/issues/244</p>
+            <div class="timeline-body"><p>The issue already exists: <a href="https://github.com/rust-lang/regex/issues/244">rust-lang/regex#244</a></p>
 <blockquote>
 <p>Why not just let the anchor match when a character other than \r is followed by \n or \r\n?</p>
 </blockquote>
@@ -71,8 +71,8 @@ $ echo -e 'foo\r\n' | rg -w foo
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-21 20:44</div>
-            <div class="timeline-body"><p>Just to be clear, I think the state of affairs is, indeed, unfortunate. It's just hard to fix. I can't say that it will <em>never</em> get fixed, but I wouldn't expect something any time soon.</p>
-<p>In the mean time, there are not-ideal workarounds. e.g., <code>echo -e 'foo\r\n' | rg 'foo\r?$'</code> works if you're in a bind.</p>
+            <div class="timeline-body"><p>Just to be clear, I think the state of affairs is, indeed, unfortunate. It&#x27;s just hard to fix. I can&#x27;t say that it will <em>never</em> get fixed, but I wouldn&#x27;t expect something any time soon.</p>
+<p>In the mean time, there are not-ideal workarounds. e.g., <code>echo -e &#x27;foo\r\n&#x27; | rg &#x27;foo\r?$&#x27;</code> works if you&#x27;re in a bind.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -82,7 +82,7 @@ $ echo -e 'foo\r\n' | rg -w foo
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-21 21:12</div>
-            <div class="timeline-body"><p>ripgrep doesn't have a config file. I'd rather folks work around it for now. I'm not strongly against your heuristic, but we'd need to be careful that it doesn't introduce any additional weirdness.</p>
+            <div class="timeline-body"><p>ripgrep doesn&#x27;t have a config file. I&#x27;d rather folks work around it for now. I&#x27;m not strongly against your heuristic, but we&#x27;d need to be careful that it doesn&#x27;t introduce any additional weirdness.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -92,7 +92,7 @@ $ echo -e 'foo\r\n' | rg -w foo
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BatmanAoD">@BatmanAoD</a> on 2017-03-23 08:06</div>
-            <div class="timeline-body"><p>Ah, I've figured out my issue with word-boundaries--for some reason I was expecting <code>\b</code> to zero-length match between <code>(</code> and <code>\r</code>. I found that <code>rg -w '&lt;pattern&gt;\('</code> wasn't finding anything whereas I <em>did</em> find what I was looking for without the <code>-w</code> flag. But of course left-paren isn't a word character.</p>
+            <div class="timeline-body"><p>Ah, I&#x27;ve figured out my issue with word-boundaries--for some reason I was expecting <code>\b</code> to zero-length match between <code>(</code> and <code>\r</code>. I found that <code>rg -w &#x27;&lt;pattern&gt;\(&#x27;</code> wasn&#x27;t finding anything whereas I <em>did</em> find what I was looking for without the <code>-w</code> flag. But of course left-paren isn&#x27;t a word character.</p>
 <p>/shame</p>
 </div>
         </div>
@@ -103,22 +103,22 @@ $ echo -e 'foo\r\n' | rg -w foo
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BatmanAoD">@BatmanAoD</a> on 2017-03-31 06:12</div>
-            <div class="timeline-body"><p>I'm looking into modifying the regex crate to handle <code>\r</code> and <code>\r\n</code> as newlines, but I've discovered that in the current implementation, <code>^$</code> actually matches the newline at the end of a file, probably because the end-of-line flag is set whenever the iterator reaches the end of the file, regardless of the actual final bytes in the file--and of course <code>\n</code> causes the beginning-of-line flag to be set. (At least, I <em>think</em> that's why it's happening--I haven't actually done anything to verify that this explanation is correct.)</p>
-<p>Would you consider this a bug in <code>regex</code>? If so, I believe it can probably be fixed by tweaking the end-of-file flag-setting logic. (An off-the-cuff suggestion: perhaps the start-of-line flag needs to be prohibited at end-of-file, regardless of what the last byte is. I'm not sure what the value is in having <code>^</code> match when there's nothing left to read in the file.)</p>
+            <div class="timeline-body"><p>I&#x27;m looking into modifying the regex crate to handle <code>\r</code> and <code>\r\n</code> as newlines, but I&#x27;ve discovered that in the current implementation, <code>^$</code> actually matches the newline at the end of a file, probably because the end-of-line flag is set whenever the iterator reaches the end of the file, regardless of the actual final bytes in the file--and of course <code>\n</code> causes the beginning-of-line flag to be set. (At least, I <em>think</em> that&#x27;s why it&#x27;s happening--I haven&#x27;t actually done anything to verify that this explanation is correct.)</p>
+<p>Would you consider this a bug in <code>regex</code>? If so, I believe it can probably be fixed by tweaking the end-of-file flag-setting logic. (An off-the-cuff suggestion: perhaps the start-of-line flag needs to be prohibited at end-of-file, regardless of what the last byte is. I&#x27;m not sure what the value is in having <code>^</code> match when there&#x27;s nothing left to read in the file.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BatmanAoD">@BatmanAoD</a> on 2017-03-31 06:57</div>
-            <div class="timeline-body"><p>Somewhat related: I'm not sure I understand exactly what the &quot;reverse&quot; matching logic is for or how it works. Is it just what's described in rust-lang/regex#190? Does the engine construct a DFA designed (guaranteed?) to find the same matches when applied backwards that the &quot;normal&quot; DFA would find when applied forwards?</p>
-<p>If so, then with regard to this particular issue, it might actually make my proposed fix infeasible (or at least more complicated than I'd like), unless I'm misunderstanding something. When running the DFA forward, <code>$</code> should anchor immediately before the current character-index if the character is <code>\n</code> and the previous character <em>isn't</em> <code>\r</code>, but in reverse, <code>$</code> should anchor after <code>\n</code> unless the <em>next</em> character to be observed (i.e. the one right before <code>\n</code> in the input file) isn't <code>\r</code>. Based on the precedent set by the word-boundary logic, the way to handle this multi-character anchor dependency is via a special flag in <code>StateFlags</code>. But the actual logic to assign the flags for the typical case is in <code>exec_byte</code>, which (as far as I can tell) is intentionally designed not to have any special behavior for the reverse match. Moreover, there's not really any way that I can see to look <em>ahead</em> in the search, which I think would be necessary in the reverse case.</p>
-<p>Tangentially: I haven't taken even a cursory look at the code to answer this for myself, but how is ripgrep processing input before feeding it to the regex crate? I've previously assumed that the reason <code>ack</code> can't support multi-line matching is because it reads a single line at a time and applies the search pattern to each line individually, and ripgrep has the same restriction--but if ripgrep were doing the line-splitting, I'd have expected you to suggest modifying <em>that</em> logic somehow to resolve the <code>$</code> issue (or possibly to explain why that wouldn't work--though maybe that's what you meant when you mentioned that unilaterally stripping <code>\r</code> from input seems &quot;hard, or at best, very annoying&quot;).</p>
+            <div class="timeline-body"><p>Somewhat related: I&#x27;m not sure I understand exactly what the &quot;reverse&quot; matching logic is for or how it works. Is it just what&#x27;s described in rust-lang/regex#190? Does the engine construct a DFA designed (guaranteed?) to find the same matches when applied backwards that the &quot;normal&quot; DFA would find when applied forwards?</p>
+<p>If so, then with regard to this particular issue, it might actually make my proposed fix infeasible (or at least more complicated than I&#x27;d like), unless I&#x27;m misunderstanding something. When running the DFA forward, <code>$</code> should anchor immediately before the current character-index if the character is <code>\n</code> and the previous character <em>isn&#x27;t</em> <code>\r</code>, but in reverse, <code>$</code> should anchor after <code>\n</code> unless the <em>next</em> character to be observed (i.e. the one right before <code>\n</code> in the input file) isn&#x27;t <code>\r</code>. Based on the precedent set by the word-boundary logic, the way to handle this multi-character anchor dependency is via a special flag in <code>StateFlags</code>. But the actual logic to assign the flags for the typical case is in <code>exec_byte</code>, which (as far as I can tell) is intentionally designed not to have any special behavior for the reverse match. Moreover, there&#x27;s not really any way that I can see to look <em>ahead</em> in the search, which I think would be necessary in the reverse case.</p>
+<p>Tangentially: I haven&#x27;t taken even a cursory look at the code to answer this for myself, but how is ripgrep processing input before feeding it to the regex crate? I&#x27;ve previously assumed that the reason <code>ack</code> can&#x27;t support multi-line matching is because it reads a single line at a time and applies the search pattern to each line individually, and ripgrep has the same restriction--but if ripgrep were doing the line-splitting, I&#x27;d have expected you to suggest modifying <em>that</em> logic somehow to resolve the <code>$</code> issue (or possibly to explain why that wouldn&#x27;t work--though maybe that&#x27;s what you meant when you mentioned that unilaterally stripping <code>\r</code> from input seems &quot;hard, or at best, very annoying&quot;).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-31 09:26</div>
-            <div class="timeline-body"><p>It sounds like you are understanding why this is hard to fix in the regex engine. I'd prefer if we discussed the regex engine on the regex repo.</p>
+            <div class="timeline-body"><p>It sounds like you are understanding why this is hard to fix in the regex engine. I&#x27;d prefer if we discussed the regex engine on the regex repo.</p>
 <blockquote>
-<p>Tangentially: I haven't taken even a cursory look at the code to answer this for myself, but how is ripgrep processing input before feeding it to the regex crate?</p>
+<p>Tangentially: I haven&#x27;t taken even a cursory look at the code to answer this for myself, but how is ripgrep processing input before feeding it to the regex crate?</p>
 </blockquote>
 <p>http://blog.burntsushi.net/ripgrep/#mechanics</p>
 </div>
@@ -126,7 +126,7 @@ $ echo -e 'foo\r\n' | rg -w foo
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-04-08 00:21</div>
             <div class="timeline-body"><blockquote>
-<p>I did test that this doesn't match Perl's behavior. And for a grep tool like ripgrep, it is simply wrong, because finding empty lines is sometimes useful, and a false positive at the end of every file is not helpful. That doesn't mean that the behavior of this crate needs to change, since ripgrep could simply work around the issue, but you did direct me this way when I mentioned it on the ripgrep issue tracker... 😕 Either way, I am strongly of the opinion that ripgrep's behavior should match grep's for this case.</p>
+<p>I did test that this doesn&#x27;t match Perl&#x27;s behavior. And for a grep tool like ripgrep, it is simply wrong, because finding empty lines is sometimes useful, and a false positive at the end of every file is not helpful. That doesn&#x27;t mean that the behavior of this crate needs to change, since ripgrep could simply work around the issue, but you did direct me this way when I mentioned it on the ripgrep issue tracker... 😕 Either way, I am strongly of the opinion that ripgrep&#x27;s behavior should match grep&#x27;s for this case.</p>
 </blockquote>
 <p>Please motivate this with use cases and examples. Reasoning about this in the abstract will probably never convince me that anything needs to be changed. (This also seems orthogonal to <code>\r\n</code> handling, so it should probably get a new issue, please.)</p>
 </div>
@@ -137,11 +137,11 @@ $ echo -e 'foo\r\n' | rg -w foo
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">icebox</span> added by @BurntSushi on 2017-05-08 22:10</div>
+            <div class="event">Label <span class="label">icebox</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-05-08 22:10</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-06-25 20:27</div>
-            <div class="timeline-body"><p>@BatmanAoD I think I see how this might be fixed for most use cases, at least in ripgrep. It won't hit everything, but:</p>
+            <div class="timeline-body"><p>@BatmanAoD I think I see how this might be fixed for most use cases, at least in ripgrep. It won&#x27;t hit everything, but:</p>
 <ol>
 <li>Take your idea of replacing <code>$</code> with <code>(?:\r?$)</code> (except done at the HIR level). Semantically, this should never turn something that was a match into a non-match, but could turn non-matches into a match (which is, of course, the intended effect).</li>
 <li>When matches are reported, if the match ends with a <code>\r</code>, then trim it.</li>
@@ -151,13 +151,13 @@ $ echo -e 'foo\r\n' | rg -w foo
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BatmanAoD">@BatmanAoD</a> on 2018-06-25 23:30</div>
-            <div class="timeline-body"><p>Note, of course, that in order to be entirely correct, <code>\r</code> should only be trimmed if it was matched due to <code>$</code> rather than with <code>.</code>, a literal <code>\r</code>, or something else along those lines. I'm not sure how difficult that part is, or whether it really matters.</p>
+            <div class="timeline-body"><p>Note, of course, that in order to be entirely correct, <code>\r</code> should only be trimmed if it was matched due to <code>$</code> rather than with <code>.</code>, a literal <code>\r</code>, or something else along those lines. I&#x27;m not sure how difficult that part is, or whether it really matters.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-06-25 23:52</div>
-            <div class="timeline-body"><p>@BatmanAoD In line oriented mode, a <code>.</code> can never match a <code>\n</code>, and this is enforced. Similarly, you cannot search for a literal <code>\n</code> either (try <code>rg '\n'</code>), so we should probably do the same for <code>\r</code> which seems fine to me. (This will be an opt-in in a new crate I'm building as part of libripgrep.)</p>
-<p>Getting this right in multiline mode (again, will be a new thing part of libripgrep, it's already implemented) is trickier since matching <code>\n</code> (or <code>\r</code>) is explicitly allowed. But I think we'll either need to choose to sacrifice correctness or raise an error if this special CRLF handling and multi line mode are enabled at the same time.</p>
+            <div class="timeline-body"><p>@BatmanAoD In line oriented mode, a <code>.</code> can never match a <code>\n</code>, and this is enforced. Similarly, you cannot search for a literal <code>\n</code> either (try <code>rg &#x27;\n&#x27;</code>), so we should probably do the same for <code>\r</code> which seems fine to me. (This will be an opt-in in a new crate I&#x27;m building as part of libripgrep.)</p>
+<p>Getting this right in multiline mode (again, will be a new thing part of libripgrep, it&#x27;s already implemented) is trickier since matching <code>\n</code> (or <code>\r</code>) is explicitly allowed. But I think we&#x27;ll either need to choose to sacrifice correctness or raise an error if this special CRLF handling and multi line mode are enabled at the same time.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -167,7 +167,7 @@ $ echo -e 'foo\r\n' | rg -w foo
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-06-28 22:28</div>
-            <div class="timeline-body"><p>@BatmanAoD That's probably not a good idea. As far as my open source work goes, I basically don't like collaborating when code is in a nascent state. There is just waaaaay too much context in my brain. It would take days to unload, and everything could switch at a moment's notice as I'm developing. I think this blog packages my thoughts in a neat little bow: http://habitatchronicles.com/2004/04/you-cant-tell-people-anything/</p>
+            <div class="timeline-body"><p>@BatmanAoD That&#x27;s probably not a good idea. As far as my open source work goes, I basically don&#x27;t like collaborating when code is in a nascent state. There is just waaaaay too much context in my brain. It would take days to unload, and everything could switch at a moment&#x27;s notice as I&#x27;m developing. I think this blog packages my thoughts in a neat little bow: http://habitatchronicles.com/2004/04/you-cant-tell-people-anything/</p>
 <p>With that said, I do occasionally push my progress to the ag/libripgrep branch: https://github.com/BurntSushi/ripgrep/tree/ag/libripgrep --- Beware though, I sometimes force push!</p>
 </div>
         </div>
@@ -182,22 +182,22 @@ $ echo -e 'foo\r\n' | rg -w foo
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2018-08-16 00:15</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-16 00:15</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">libripgrep</span> added by @BurntSushi on 2018-08-16 00:15</div>
+            <div class="event">Label <span class="label">libripgrep</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-16 00:15</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">icebox</span> removed by @BurntSushi on 2018-08-16 00:15</div>
+            <div class="event">Label <span class="label">icebox</span> removed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-16 00:15</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> removed by @BurntSushi on 2018-08-16 00:15</div>
+            <div class="event">Label <span class="label">question</span> removed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-16 00:15</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "libripgrep" by @BurntSushi on 2018-08-16 00:15</div>
+            <div class="event">Added to milestone &quot;libripgrep&quot; by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-16 00:15</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2018-08-20 11:10</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-20 11:10</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sergeevabc">@sergeevabc</a> on 2020-02-27 11:34</div>
@@ -216,48 +216,48 @@ Arrowsmith  1931              &lt;--- extra space in between
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-02-27 12:30</div>
             <div class="timeline-body"><p>I cannot reproduce on Linux:</p>
-<pre><code>$ printf &quot;1931. Arrowsmith&quot; | rg '(\d+)..(.*)' -r '$2 $1'
+<pre><code>$ printf &quot;1931. Arrowsmith&quot; | rg &#x27;(\d+)..(.*)&#x27; -r &#x27;$2 $1&#x27;
 Arrowsmith 1931
 
-$ echo 1931. Arrowsmith | rg '(\d+)..(.*)' -r '$2 $1'
+$ echo 1931. Arrowsmith | rg &#x27;(\d+)..(.*)&#x27; -r &#x27;$2 $1&#x27;
 Arrowsmith 1931
 
-$ echo 1931. Arrowsmith | rg '(\d+)..(.*)' -r '$2 $1' --crlf
+$ echo 1931. Arrowsmith | rg &#x27;(\d+)..(.*)&#x27; -r &#x27;$2 $1&#x27; --crlf
 Arrowsmith 1931
 </code></pre>
-<p>OK, so I'm assuming that <code>echo</code> on Windows probably emits a <code>\r\n</code> as a new line, so let's try that:</p>
-<pre><code>$ printf &quot;1931. Arrowsmith\r\n&quot; | rg '(\d+)..(.*)' -r '$2 $1'
+<p>OK, so I&#x27;m assuming that <code>echo</code> on Windows probably emits a <code>\r\n</code> as a new line, so let&#x27;s try that:</p>
+<pre><code>$ printf &quot;1931. Arrowsmith\r\n&quot; | rg &#x27;(\d+)..(.*)&#x27; -r &#x27;$2 $1&#x27;
  1931smith
 </code></pre>
-<p>It's quite likely here that <code>(.*)</code> is matching the <code>\r</code> so the replacement actually winds up being <code>Arrowsmith\r 1931</code>. We can confirm this by looking at the hex output:</p>
-<pre><code>$ printf &quot;1931. Arrowsmith\r\n&quot; | rg '(\d+)..(.*)' -r '$2 $1' | xxd
+<p>It&#x27;s quite likely here that <code>(.*)</code> is matching the <code>\r</code> so the replacement actually winds up being <code>Arrowsmith\r 1931</code>. We can confirm this by looking at the hex output:</p>
+<pre><code>$ printf &quot;1931. Arrowsmith\r\n&quot; | rg &#x27;(\d+)..(.*)&#x27; -r &#x27;$2 $1&#x27; | xxd
 00000000: 4172 726f 7773 6d69 7468 0d20 3139 3331  Arrowsmith. 1931
 00000010: 0a
 </code></pre>
 <p>You can see the <code>0d</code> in there, which corresponds to <code>\r</code>. The strange output is actually what one expects:</p>
-<pre><code>$ echo 'Arrowsmith\r 1931'
+<pre><code>$ echo &#x27;Arrowsmith\r 1931&#x27;
  1931smith
 </code></pre>
 <p>Because <code>\r</code> will move the cursor position back to the beginning of the line. Subsequent printing then overwrites characters that were already printed. e.g.,</p>
-<pre><code>$ echo 'Arrowsmith\r 1931X'
+<pre><code>$ echo &#x27;Arrowsmith\r 1931X&#x27;
  1931Xmith
 
-$ echo 'Arrowsmith\r 1931XX'
+$ echo &#x27;Arrowsmith\r 1931XX&#x27;
  1931XXith
 
-$ echo 'Arrowsmith\r 1931XXX'
+$ echo &#x27;Arrowsmith\r 1931XXX&#x27;
  1931XXXth
 </code></pre>
 <p>Adding the <code>--crlf</code> flag seemingly gets this right:</p>
-<pre><code>$ printf &quot;1931. Arrowsmith\r\n&quot; | rg '(\d+)..(.*)' -r '$2 $1' --crlf
+<pre><code>$ printf &quot;1931. Arrowsmith\r\n&quot; | rg &#x27;(\d+)..(.*)&#x27; -r &#x27;$2 $1&#x27; --crlf
 Arrowsmith 1931
 </code></pre>
 <p>Confirming with <code>xxd</code> that there is a single space:</p>
-<pre><code>$ printf &quot;1931. Arrowsmith\r\n&quot; | rg '(\d+)..(.*)' -r '$2 $1' --crlf | xxd
+<pre><code>$ printf &quot;1931. Arrowsmith\r\n&quot; | rg &#x27;(\d+)..(.*)&#x27; -r &#x27;$2 $1&#x27; --crlf | xxd
 00000000: 4172 726f 7773 6d69 7468 2031 3933 310d  Arrowsmith 1931.
 00000010: 0a
 </code></pre>
-<p>Notice that there is only one <code>0x20</code> byte there. So I can't reproduce your issue, at least on Linux, and in theory, the above should be equivalent to what you're doing.</p>
+<p>Notice that there is only one <code>0x20</code> byte there. So I can&#x27;t reproduce your issue, at least on Linux, and in theory, the above should be equivalent to what you&#x27;re doing.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -277,13 +277,13 @@ Arrowsmith 1931
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-02-27 13:07</div>
-            <div class="timeline-body"><p>Also not sure why you're reporting bugs on closed tickets. This makes it impossible to track. I created #1500 for you. Please just do that next time.</p>
+            <div class="timeline-body"><p>Also not sure why you&#x27;re reporting bugs on closed tickets. This makes it impossible to track. I created #1500 for you. Please just do that next time.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:42:07 UTC
+        Synced at 2026-01-20 18:48:03 UTC
     </footer>
 </body>
 </html>

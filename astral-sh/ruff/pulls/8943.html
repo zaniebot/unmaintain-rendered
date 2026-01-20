@@ -23,34 +23,34 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>This PR implements Black's <code>prefer_splitting_right_hand_side_of_assignments</code> preview style.</p>
+            <div class="timeline-body">Summary
+<p>This PR implements Black&#x27;s <code>prefer_splitting_right_hand_side_of_assignments</code> preview style.</p>
 <p>The gist of the new style is to prefer breaking the value before breaking the target or type annotation of an assignment:</p>
-<pre><code class="language-python">aaaa[&quot;long_index&quot;] = some_type
+<pre><code>aaaa[&quot;long_index&quot;] = some_type
 </code></pre>
 <p>Before</p>
-<pre><code class="language-python">aaaa[
+<pre><code>aaaa[
 	&quot;long_index&quot;
 ] = some_type
 </code></pre>
 <p>New</p>
-<pre><code class="language-python">aaaa[&quot;long_index&quot;] = (
+<pre><code>aaaa[&quot;long_index&quot;] = (
 	some_type
 )
 </code></pre>
-<p>Closes https://github.com/astral-sh/ruff/issues/6975</p>
-<h3>Details</h3>
+<p>Closes <a href="https://github.com/astral-sh/ruff/issues/6975">astral-sh/ruff#6975</a></p>
+Details
 <p>It turned out that there are some more rules involved than just splitting the value before the targets.I For example:</p>
 <ul>
 <li>The first target never gets parenthesized, even if it is the only target</li>
 <li>If the target right before the value (or type annotations, or type parameters) split, avoid parenthesizing the value because it leads to unnecessary parentheses</li>
-<li>For call expression: Prefer breaking after the call expressions opening parentheses and only parenthesize the entire call expression if that's insufficient.</li>
+<li>For call expression: Prefer breaking after the call expressions opening parentheses and only parenthesize the entire call expression if that&#x27;s insufficient.</li>
 </ul>
 <p>I added extensive documentation to <code>FormatStatementLastExpression</code></p>
 <p>https://github.com/astral-sh/ruff/blob/7a3c504ec8bbff62e839c078b3ef65b2b5539bcb/crates/ruff_python_formatter/src/statement/stmt_assign.rs#L140-L270</p>
-<h3>Differences to Black</h3>
-<p>Black doesn't seem to implement this behavior for type alias statements. We do this to ensure all assignment-like statements are formatted the same.</p>
-<h2>Performance</h2>
+Differences to Black
+<p>Black doesn&#x27;t seem to implement this behavior for type alias statements. We do this to ensure all assignment-like statements are formatted the same.</p>
+Performance
 <p>The new right-to-left layout is more expensive than our existing layout because it requires using <code>BestFitting</code> (allocates, needs to try multiple different variants). The good news is that this layout is only necessary when the assignment has:</p>
 <ul>
 <li>The target or type annotation can split (e.g. subscription)</li>
@@ -59,7 +59,7 @@
 </ul>
 <p>This is rare in comparison to most assignments that are of the form <code>a = b</code> or <code>a: b = c</code>.</p>
 <p>I checked Codspeed and our micro benchmarks only regress by 1-2%</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>I added new tests, reviewed the Black related preview style tests (that we now match except for comment handling).</p>
 <p>The poetry compatibility improves from 0.96208 to 0.96224.</p>
 </div>
@@ -69,13 +69,13 @@
             <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
 <ul>
 <li>main<ul>
-<li><strong>PR #8920</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8920?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
-<li><strong>PR #8943</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8943?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>  👈<ul>
-<li><strong>PR #9102</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/9102?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #8920</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8920?utm_source=stack-comment-icon"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite"></a><ul>
+<li><strong>PR #8943</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8943?utm_source=stack-comment-icon"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite"></a>  👈<ul>
+<li><strong>PR #9102</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/9102?utm_source=stack-comment-icon"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite"></a></li>
 </ul>
 </li>
-<li><strong>PR #8941</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8941?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
-<li><strong>PR #8940</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8940?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #8941</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8941?utm_source=stack-comment-icon"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite"></a><ul>
+<li><strong>PR #8940</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8940?utm_source=stack-comment-icon"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite"></a></li>
 </ul>
 </li>
 </ul>
@@ -87,78 +87,78 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2023-12-01 07:24</div>
+            <div class="event">Label <span class="label">formatter</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-12-01 07:24</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2023-12-01 07:24</div>
+            <div class="event">Label <span class="label">preview</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-12-01 07:24</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-12-01 07:53</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Formatter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>ℹ️ ecosystem check <strong>detected format changes</strong>. (+753 -797 lines in 101 files in 41 projects)</p>
-<details><summary><a href="https://github.com/PostHog/HouseWatch">PostHog/HouseWatch</a> (+10 -10 lines across 1 file)</summary>
+<a href="https://github.com/PostHog/HouseWatch">PostHog/HouseWatch</a> (+10 -10 lines across 1 file)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/PostHog/HouseWatch/blob/3feb3b2e778b5c41526d829f22a9001755fd776e/housewatch/clickhouse/backups.py#L36'>housewatch/clickhouse/backups.py~L36</a></p>
-<pre><code class="language-diff">     for shard, node in nodes:
+<p><a href="https://github.com/PostHog/HouseWatch/blob/3feb3b2e778b5c41526d829f22a9001755fd776e/housewatch/clickhouse/backups.py#L36">housewatch/clickhouse/backups.py~L36</a></p>
+<pre><code>     for shard, node in nodes:
          params[&quot;shard&quot;] = shard
          if base_backup:
 -            query_settings[
 -                &quot;base_backup&quot;
--            ] = f&quot;S3('{base_backup}/{shard}', '{aws_key}', '{aws_secret}')&quot;
+-            ] = f&quot;S3(&#x27;{base_backup}/{shard}&#x27;, &#x27;{aws_key}&#x27;, &#x27;{aws_secret}&#x27;)&quot;
 +            query_settings[&quot;base_backup&quot;] = (
-+                f&quot;S3('{base_backup}/{shard}', '{aws_key}', '{aws_secret}')&quot;
++                f&quot;S3(&#x27;{base_backup}/{shard}&#x27;, &#x27;{aws_key}&#x27;, &#x27;{aws_secret}&#x27;)&quot;
 +            )
          final_query = query % (params or {}) if substitute_params else query
          client = Client(
              host=node[&quot;host_address&quot;],
 </code></pre>
-<p><a href='https://github.com/PostHog/HouseWatch/blob/3feb3b2e778b5c41526d829f22a9001755fd776e/housewatch/clickhouse/backups.py#L123'>housewatch/clickhouse/backups.py~L123</a></p>
-<pre><code class="language-diff">     TO S3('https://%(bucket)s.s3.amazonaws.com/%(path)s', '%(aws_key)s', '%(aws_secret)s')
+<p><a href="https://github.com/PostHog/HouseWatch/blob/3feb3b2e778b5c41526d829f22a9001755fd776e/housewatch/clickhouse/backups.py#L123">housewatch/clickhouse/backups.py~L123</a></p>
+<pre><code>     TO S3(&#x27;https://%(bucket)s.s3.amazonaws.com/%(path)s&#x27;, &#x27;%(aws_key)s&#x27;, &#x27;%(aws_secret)s&#x27;)
      ASYNC&quot;&quot;&quot;
      if base_backup:
 -        query_settings[
 -            &quot;base_backup&quot;
--        ] = f&quot;S3('{base_backup}', '{aws_key}', '{aws_secret}')&quot;
+-        ] = f&quot;S3(&#x27;{base_backup}&#x27;, &#x27;{aws_key}&#x27;, &#x27;{aws_secret}&#x27;)&quot;
 +        query_settings[&quot;base_backup&quot;] = (
-+            f&quot;S3('{base_backup}', '{aws_key}', '{aws_secret}')&quot;
++            f&quot;S3(&#x27;{base_backup}&#x27;, &#x27;{aws_key}&#x27;, &#x27;{aws_secret}&#x27;)&quot;
 +        )
      return run_query(
          QUERY,
          {
 </code></pre>
-<p><a href='https://github.com/PostHog/HouseWatch/blob/3feb3b2e778b5c41526d829f22a9001755fd776e/housewatch/clickhouse/backups.py#L178'>housewatch/clickhouse/backups.py~L178</a></p>
-<pre><code class="language-diff">                 TO S3('https://%(bucket)s.s3.amazonaws.com/%(path)s', '%(aws_key)s', '%(aws_secret)s')
+<p><a href="https://github.com/PostHog/HouseWatch/blob/3feb3b2e778b5c41526d829f22a9001755fd776e/housewatch/clickhouse/backups.py#L178">housewatch/clickhouse/backups.py~L178</a></p>
+<pre><code>                 TO S3(&#x27;https://%(bucket)s.s3.amazonaws.com/%(path)s&#x27;, &#x27;%(aws_key)s&#x27;, &#x27;%(aws_secret)s&#x27;)
                  ASYNC&quot;&quot;&quot;
      if base_backup:
 -        query_settings[
 -            &quot;base_backup&quot;
--        ] = f&quot;S3('{base_backup}', '{aws_key}', '{aws_secret}')&quot;
+-        ] = f&quot;S3(&#x27;{base_backup}&#x27;, &#x27;{aws_key}&#x27;, &#x27;{aws_secret}&#x27;)&quot;
 +        query_settings[&quot;base_backup&quot;] = (
-+            f&quot;S3('{base_backup}', '{aws_key}', '{aws_secret}')&quot;
++            f&quot;S3(&#x27;{base_backup}&#x27;, &#x27;{aws_key}&#x27;, &#x27;{aws_secret}&#x27;)&quot;
 +        )
      return run_query(
          QUERY,
          {
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/RasaHQ/rasa">RasaHQ/rasa</a> (+107 -107 lines across 14 files)</summary>
+
+<a href="https://github.com/RasaHQ/rasa">RasaHQ/rasa</a> (+107 -107 lines across 14 files)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/cli/utils.py#L132'>rasa/cli/utils.py~L132</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/cli/utils.py#L132">rasa/cli/utils.py~L132</a></p>
+<pre><code> 
          # add random value for assistant id, overwrite config file
          time_format = &quot;%Y%m%d-%H%M%S&quot;
 -        config_data[
@@ -171,8 +171,8 @@
          rasa.shared.utils.io.write_yaml(
              data=config_data, target=config_file, should_preserve_key_order=True
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/core/policies/rule_policy.py#L774'>rasa/core/policies/rule_policy.py~L774</a></p>
-<pre><code class="language-diff">         trackers_as_actions = rule_trackers_as_actions + story_trackers_as_actions
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/core/policies/rule_policy.py#L774">rasa/core/policies/rule_policy.py~L774</a></p>
+<pre><code>         trackers_as_actions = rule_trackers_as_actions + story_trackers_as_actions
  
          # negative rules are not anti-rules, they are auxiliary to actual rules
 -        self.lookup[
@@ -187,8 +187,8 @@
  
      def train(
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/core/policies/ted_policy.py#L1264'>rasa/core/policies/ted_policy.py~L1264</a></p>
-<pre><code class="language-diff">             )
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/core/policies/ted_policy.py#L1264">rasa/core/policies/ted_policy.py~L1264</a></p>
+<pre><code>             )
              self._prepare_encoding_layers(name)
  
 -        self._tf_layers[
@@ -221,8 +221,8 @@
  
          self._prepare_label_classification_layers(DIALOGUE)
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/core/policies/ted_policy.py#L1307'>rasa/core/policies/ted_policy.py~L1307</a></p>
-<pre><code class="language-diff">         # Attributes with sequence-level features also have sentence-level features,
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/core/policies/ted_policy.py#L1307">rasa/core/policies/ted_policy.py~L1307</a></p>
+<pre><code>         # Attributes with sequence-level features also have sentence-level features,
          # all these need to be combined and further processed.
          if attribute_name in SEQUENCE_FEATURES_TO_ENCODE:
 -            self._tf_layers[
@@ -257,8 +257,8 @@
  
      def _prepare_encoding_layers(self, name: Text) -&gt; None:
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/engine/graph.py#L107'>rasa/engine/graph.py~L107</a></p>
-<pre><code class="language-diff">         nodes = {}
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/engine/graph.py#L107">rasa/engine/graph.py~L107</a></p>
+<pre><code>         nodes = {}
          for node_name, serialized_node in serialized_graph_schema[&quot;nodes&quot;].items():
              try:
 -                serialized_node[
@@ -273,8 +273,8 @@
  
                  resource = serialized_node[&quot;resource&quot;]
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/engine/recipes/default_recipe.py#L150'>rasa/engine/recipes/default_recipe.py~L150</a></p>
-<pre><code class="language-diff">             else:
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/engine/recipes/default_recipe.py#L150">rasa/engine/recipes/default_recipe.py~L150</a></p>
+<pre><code>             else:
                  unique_types = set(component_types)
  
 -            cls._registered_components[
@@ -289,8 +289,8 @@
              return registered_class
  
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/graph_components/validators/default_recipe_validator.py#L294'>rasa/graph_components/validators/default_recipe_validator.py~L294</a></p>
-<pre><code class="language-diff">         Both of these look for the same entities based on the same training data
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/graph_components/validators/default_recipe_validator.py#L294">rasa/graph_components/validators/default_recipe_validator.py~L294</a></p>
+<pre><code>         Both of these look for the same entities based on the same training data
          leading to ambiguity in the results.
          &quot;&quot;&quot;
 -        extractors_in_configuration: Set[
@@ -303,8 +303,8 @@
              rasa.shared.utils.io.raise_warning(
                  f&quot;You have defined multiple entity extractors that do the same job &quot;
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/nlu/classifiers/diet_classifier.py#L1446'>rasa/nlu/classifiers/diet_classifier.py~L1446</a></p>
-<pre><code class="language-diff">         # everything using a transformer and optionally also do masked language
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/nlu/classifiers/diet_classifier.py#L1446">rasa/nlu/classifiers/diet_classifier.py~L1446</a></p>
+<pre><code>         # everything using a transformer and optionally also do masked language
          # modeling.
          self.text_name = TEXT
 -        self._tf_layers[
@@ -319,8 +319,8 @@
          if self.config[MASKED_LM]:
              self._prepare_mask_lm_loss(self.text_name)
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/nlu/classifiers/diet_classifier.py#L1468'>rasa/nlu/classifiers/diet_classifier.py~L1468</a></p>
-<pre><code class="language-diff">                 DENSE_INPUT_DROPOUT: False,
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/nlu/classifiers/diet_classifier.py#L1468">rasa/nlu/classifiers/diet_classifier.py~L1468</a></p>
+<pre><code>                 DENSE_INPUT_DROPOUT: False,
              })
  
 -            self._tf_layers[
@@ -335,8 +335,8 @@
  
              self._prepare_ffnn_layer(
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/nlu/featurizers/sparse_featurizer/lexical_syntactic_featurizer.py#L336'>rasa/nlu/featurizers/sparse_featurizer/lexical_syntactic_featurizer.py~L336</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/nlu/featurizers/sparse_featurizer/lexical_syntactic_featurizer.py#L336">rasa/nlu/featurizers/sparse_featurizer/lexical_syntactic_featurizer.py~L336</a></p>
+<pre><code> 
                  token = tokens[absolute_position]
                  for feature_name in self._feature_config[window_position]:
 -                    token_features[
@@ -357,8 +357,8 @@
  
              sentence_features.append(token_features)
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/nlu/selectors/response_selector.py#L430'>rasa/nlu/selectors/response_selector.py~L430</a></p>
-<pre><code class="language-diff">         self, message: Message, prediction_dict: Dict[Text, Any], selector_key: Text
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/nlu/selectors/response_selector.py#L430">rasa/nlu/selectors/response_selector.py~L430</a></p>
+<pre><code>         self, message: Message, prediction_dict: Dict[Text, Any], selector_key: Text
      ) -&gt; None:
          message_selector_properties = message.get(RESPONSE_SELECTOR_PROPERTY_NAME, {})
 -        message_selector_properties[
@@ -371,8 +371,8 @@
          message.set(
              RESPONSE_SELECTOR_PROPERTY_NAME,
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/nlu/selectors/response_selector.py#L793'>rasa/nlu/selectors/response_selector.py~L793</a></p>
-<pre><code class="language-diff">             (self.text_name, self.config),
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/nlu/selectors/response_selector.py#L793">rasa/nlu/selectors/response_selector.py~L793</a></p>
+<pre><code>             (self.text_name, self.config),
              (self.label_name, label_config),
          ]:
 -            self._tf_layers[
@@ -387,8 +387,8 @@
  
          if self.config[MASKED_LM]:
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/shared/core/domain.py#L1496'>rasa/shared/core/domain.py~L1496</a></p>
-<pre><code class="language-diff">                 if not response_text or &quot;\n&quot; not in response_text:
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/shared/core/domain.py#L1496">rasa/shared/core/domain.py~L1496</a></p>
+<pre><code>                 if not response_text or &quot;\n&quot; not in response_text:
                      continue
                  # Has new lines, use `LiteralScalarString`
 -                final_responses[utter_action][i][
@@ -401,8 +401,8 @@
          return final_responses
  
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/shared/nlu/training_data/formats/rasa_yaml.py#L529'>rasa/shared/nlu/training_data/formats/rasa_yaml.py~L529</a></p>
-<pre><code class="language-diff">             )
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/shared/nlu/training_data/formats/rasa_yaml.py#L529">rasa/shared/nlu/training_data/formats/rasa_yaml.py~L529</a></p>
+<pre><code>             )
  
              if examples_have_metadata or example_texts_have_escape_chars:
 -                intent[
@@ -415,8 +415,8 @@
                  intent[key_examples] = RasaYAMLWriter._render_training_examples_as_text(
                      converted
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/utils/tensorflow/model_data.py#L735'>rasa/utils/tensorflow/model_data.py~L735</a></p>
-<pre><code class="language-diff">         # if a label was skipped in current batch
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/utils/tensorflow/model_data.py#L735">rasa/utils/tensorflow/model_data.py~L735</a></p>
+<pre><code>         # if a label was skipped in current batch
          skipped = [False] * num_label_ids
  
 -        new_data: DefaultDict[
@@ -429,8 +429,8 @@
          while min(num_data_cycles) == 0:
              if shuffle:
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/utils/tensorflow/model_data.py#L888'>rasa/utils/tensorflow/model_data.py~L888</a></p>
-<pre><code class="language-diff">         Returns:
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/utils/tensorflow/model_data.py#L888">rasa/utils/tensorflow/model_data.py~L888</a></p>
+<pre><code>         Returns:
              The test and train RasaModelData
          &quot;&quot;&quot;
 -        data_train: DefaultDict[
@@ -443,8 +443,8 @@
              lambda: defaultdict(list)
          )
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/utils/tensorflow/models.py#L324'>rasa/utils/tensorflow/models.py~L324</a></p>
-<pre><code class="language-diff">                 # We only need input, since output is always None and not
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/utils/tensorflow/models.py#L324">rasa/utils/tensorflow/models.py~L324</a></p>
+<pre><code>                 # We only need input, since output is always None and not
                  # consumed by our TF graphs.
                  batch_in = next(data_iterator)[0]
 -                batch_out: Dict[
@@ -457,8 +457,8 @@
                      batch_out = {
                          key: output
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/utils/tensorflow/rasa_layers.py#L442'>rasa/utils/tensorflow/rasa_layers.py~L442</a></p>
-<pre><code class="language-diff">         for feature_type, present in self._feature_types_present.items():
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/utils/tensorflow/rasa_layers.py#L442">rasa/utils/tensorflow/rasa_layers.py~L442</a></p>
+<pre><code>         for feature_type, present in self._feature_types_present.items():
              if not present:
                  continue
 -            self._tf_layers[
@@ -479,8 +479,8 @@
  
      def _prepare_sequence_sentence_concat(
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/utils/tensorflow/rasa_layers.py#L851'>rasa/utils/tensorflow/rasa_layers.py~L851</a></p>
-<pre><code class="language-diff">                 not signature.is_sparse for signature in attribute_signature[SEQUENCE]
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/utils/tensorflow/rasa_layers.py#L851">rasa/utils/tensorflow/rasa_layers.py~L851</a></p>
+<pre><code>                 not signature.is_sparse for signature in attribute_signature[SEQUENCE]
              ])
              if not expect_dense_seq_features:
 -                self._tf_layers[
@@ -502,15 +502,15 @@
      def _calculate_output_units(
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/Snowflake-Labs/snowcli">Snowflake-Labs/snowcli</a> (+4 -4 lines across 1 file)</summary>
+
+<a href="https://github.com/Snowflake-Labs/snowcli">Snowflake-Labs/snowcli</a> (+4 -4 lines across 1 file)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/Snowflake-Labs/snowcli/blob/058819dc4da790b9f4becad507df8cac68f70ffe/src/snowcli/app/commands_registration/command_plugins_loader.py#L78'>src/snowcli/app/commands_registration/command_plugins_loader.py~L78</a></p>
-<pre><code class="language-diff">             )
+<p><a href="https://github.com/Snowflake-Labs/snowcli/blob/058819dc4da790b9f4becad507df8cac68f70ffe/src/snowcli/app/commands_registration/command_plugins_loader.py#L78">src/snowcli/app/commands_registration/command_plugins_loader.py~L78</a></p>
+<pre><code>             )
              return None
          self._loaded_plugins[plugin_name] = loaded_plugin
 -        self._loaded_command_paths[
@@ -524,15 +524,15 @@
      def _load_plugin_spec(
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+27 -27 lines across 3 files)</summary>
+
+<a href="https://github.com/apache/airflow">apache/airflow</a> (+27 -27 lines across 3 files)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/apache/airflow/blob/357355ac09b4741d621a5408d859b697a07b3ceb/tests/jobs/test_backfill_job.py#L875'>tests/jobs/test_backfill_job.py~L875</a></p>
-<pre><code class="language-diff">         dag_maker.create_dagrun(state=None)
+<p><a href="https://github.com/apache/airflow/blob/357355ac09b4741d621a5408d859b697a07b3ceb/tests/jobs/test_backfill_job.py#L875">tests/jobs/test_backfill_job.py~L875</a></p>
+<pre><code>         dag_maker.create_dagrun(state=None)
  
          executor = MockExecutor(parallelism=16)
 -        executor.mock_task_results[
@@ -551,8 +551,8 @@
          job_runner = BackfillJobRunner(
              job=job,
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/357355ac09b4741d621a5408d859b697a07b3ceb/tests/jobs/test_backfill_job.py#L903'>tests/jobs/test_backfill_job.py~L903</a></p>
-<pre><code class="language-diff">         dr = dag_maker.create_dagrun(state=None)
+<p><a href="https://github.com/apache/airflow/blob/357355ac09b4741d621a5408d859b697a07b3ceb/tests/jobs/test_backfill_job.py#L903">tests/jobs/test_backfill_job.py~L903</a></p>
+<pre><code>         dr = dag_maker.create_dagrun(state=None)
  
          executor = MockExecutor(parallelism=16)
 -        executor.mock_task_results[
@@ -565,8 +565,8 @@
          job = Job(executor=executor)
          job_runner = BackfillJobRunner(
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/357355ac09b4741d621a5408d859b697a07b3ceb/tests/providers/amazon/aws/executors/ecs/test_ecs_executor.py#L856'>tests/providers/amazon/aws/executors/ecs/test_ecs_executor.py~L856</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/apache/airflow/blob/357355ac09b4741d621a5408d859b697a07b3ceb/tests/providers/amazon/aws/executors/ecs/test_ecs_executor.py#L856">tests/providers/amazon/aws/executors/ecs/test_ecs_executor.py~L856</a></p>
+<pre><code> 
          os.environ[f&quot;AIRFLOW__{CONFIG_GROUP_NAME}__{AllEcsConfigKeys.REGION_NAME}&quot;.upper()] = &quot;us-west-1&quot;
          os.environ[f&quot;AIRFLOW__{CONFIG_GROUP_NAME}__{AllEcsConfigKeys.CLUSTER}&quot;.upper()] = &quot;some-cluster&quot;
 -        os.environ[
@@ -585,8 +585,8 @@
          os.environ[f&quot;AIRFLOW__{CONFIG_GROUP_NAME}__{AllEcsConfigKeys.PLATFORM_VERSION}&quot;.upper()] = &quot;LATEST&quot;
          os.environ[f&quot;AIRFLOW__{CONFIG_GROUP_NAME}__{AllEcsConfigKeys.ASSIGN_PUBLIC_IP}&quot;.upper()] = &quot;False&quot;
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/357355ac09b4741d621a5408d859b697a07b3ceb/tests/providers/amazon/aws/executors/ecs/test_ecs_executor.py#L872'>tests/providers/amazon/aws/executors/ecs/test_ecs_executor.py~L872</a></p>
-<pre><code class="language-diff">         assert raised.match(&quot;At least one subnet is required to run a task.&quot;)
+<p><a href="https://github.com/apache/airflow/blob/357355ac09b4741d621a5408d859b697a07b3ceb/tests/providers/amazon/aws/executors/ecs/test_ecs_executor.py#L872">tests/providers/amazon/aws/executors/ecs/test_ecs_executor.py~L872</a></p>
+<pre><code>         assert raised.match(&quot;At least one subnet is required to run a task.&quot;)
  
      def test_config_defaults_are_applied(self, assign_subnets):
 -        os.environ[
@@ -599,8 +599,8 @@
  
          task_kwargs = _recursive_flatten_dict(ecs_executor_config.build_task_kwargs())
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/357355ac09b4741d621a5408d859b697a07b3ceb/tests/providers/amazon/aws/executors/ecs/test_ecs_executor.py#L1078'>tests/providers/amazon/aws/executors/ecs/test_ecs_executor.py~L1078</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/apache/airflow/blob/357355ac09b4741d621a5408d859b697a07b3ceb/tests/providers/amazon/aws/executors/ecs/test_ecs_executor.py#L1078">tests/providers/amazon/aws/executors/ecs/test_ecs_executor.py~L1078</a></p>
+<pre><code> 
          executor.ecs = ecs_mock
  
 -        os.environ[
@@ -613,27 +613,27 @@
          executor.start()
  
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/357355ac09b4741d621a5408d859b697a07b3ceb/tests/system/providers/papermill/conftest.py#L49'>tests/system/providers/papermill/conftest.py~L49</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/apache/airflow/blob/357355ac09b4741d621a5408d859b697a07b3ceb/tests/system/providers/papermill/conftest.py#L49">tests/system/providers/papermill/conftest.py~L49</a></p>
+<pre><code> 
  @pytest.fixture(scope=&quot;session&quot;, autouse=True)
  def airflow_conn(remote_kernel):
 -    os.environ[
 -        &quot;AIRFLOW_CONN_JUPYTER_KERNEL_DEFAULT&quot;
--    ] = '{&quot;host&quot;: &quot;localhost&quot;, &quot;extra&quot;: {&quot;shell_port&quot;: 60316} }'
+-    ] = &#x27;{&quot;host&quot;: &quot;localhost&quot;, &quot;extra&quot;: {&quot;shell_port&quot;: 60316} }&#x27;
 +    os.environ[&quot;AIRFLOW_CONN_JUPYTER_KERNEL_DEFAULT&quot;] = (
-+        '{&quot;host&quot;: &quot;localhost&quot;, &quot;extra&quot;: {&quot;shell_port&quot;: 60316} }'
++        &#x27;{&quot;host&quot;: &quot;localhost&quot;, &quot;extra&quot;: {&quot;shell_port&quot;: 60316} }&#x27;
 +    )
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/aws/aws-sam-cli">aws/aws-sam-cli</a> (+24 -24 lines across 6 files)</summary>
+
+<a href="https://github.com/aws/aws-sam-cli">aws/aws-sam-cli</a> (+24 -24 lines across 6 files)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/aws/aws-sam-cli/blob/aa132f863a6580ed2e279fabfc44f7fc6af7f2f1/samcli/commands/_utils/options.py#L748'>samcli/commands/_utils/options.py~L748</a></p>
-<pre><code class="language-diff">     def hook_name_processer_wrapper(f):
+<p><a href="https://github.com/aws/aws-sam-cli/blob/aa132f863a6580ed2e279fabfc44f7fc6af7f2f1/samcli/commands/_utils/options.py#L748">samcli/commands/_utils/options.py~L748</a></p>
+<pre><code>     def hook_name_processer_wrapper(f):
          configuration_setup_params = ()
          configuration_setup_attrs = {}
 -        configuration_setup_attrs[
@@ -646,8 +646,8 @@
          configuration_setup_attrs[&quot;expose_value&quot;] = False
          configuration_setup_attrs[&quot;hidden&quot;] = True
 </code></pre>
-<p><a href='https://github.com/aws/aws-sam-cli/blob/aa132f863a6580ed2e279fabfc44f7fc6af7f2f1/samcli/hook_packages/terraform/hooks/prepare/resource_linking.py#L158'>samcli/hook_packages/terraform/hooks/prepare/resource_linking.py~L158</a></p>
-<pre><code class="language-diff">     cfn_resource_update_call_back_function: Callable[[Dict, List[ReferenceType]], None]
+<p><a href="https://github.com/aws/aws-sam-cli/blob/aa132f863a6580ed2e279fabfc44f7fc6af7f2f1/samcli/hook_packages/terraform/hooks/prepare/resource_linking.py#L158">samcli/hook_packages/terraform/hooks/prepare/resource_linking.py~L158</a></p>
+<pre><code>     cfn_resource_update_call_back_function: Callable[[Dict, List[ReferenceType]], None]
      linking_exceptions: ResourcePairExceptions
      # function to extract the terraform destination value from the linking field value
 -    tf_destination_value_extractor_from_link_field_value_function: Callable[
@@ -660,22 +660,22 @@
  
  class ResourceLinker:
 </code></pre>
-<p><a href='https://github.com/aws/aws-sam-cli/blob/aa132f863a6580ed2e279fabfc44f7fc6af7f2f1/samcli/lib/list/endpoints/endpoints_producer.py#L469'>samcli/lib/list/endpoints/endpoints_producer.py~L469</a></p>
-<pre><code class="language-diff">             resource.get(RESOURCE_TYPE, &quot;&quot;) == AWS_APIGATEWAY_DOMAIN_NAME
+<p><a href="https://github.com/aws/aws-sam-cli/blob/aa132f863a6580ed2e279fabfc44f7fc6af7f2f1/samcli/lib/list/endpoints/endpoints_producer.py#L469">samcli/lib/list/endpoints/endpoints_producer.py~L469</a></p>
+<pre><code>             resource.get(RESOURCE_TYPE, &quot;&quot;) == AWS_APIGATEWAY_DOMAIN_NAME
              or resource.get(RESOURCE_TYPE, &quot;&quot;) == AWS_APIGATEWAY_V2_DOMAIN_NAME
          ):
 -            response_domain_dict[
 -                resource.get(LOGICAL_RESOURCE_ID, &quot;&quot;)
--            ] = f'https://{resource.get(PHYSICAL_RESOURCE_ID, &quot;&quot;)}'
+-            ] = f&#x27;https://{resource.get(PHYSICAL_RESOURCE_ID, &quot;&quot;)}&#x27;
 +            response_domain_dict[resource.get(LOGICAL_RESOURCE_ID, &quot;&quot;)] = (
-+                f'https://{resource.get(PHYSICAL_RESOURCE_ID, &quot;&quot;)}'
++                f&#x27;https://{resource.get(PHYSICAL_RESOURCE_ID, &quot;&quot;)}&#x27;
 +            )
      return response_domain_dict
  
  
 </code></pre>
-<p><a href='https://github.com/aws/aws-sam-cli/blob/aa132f863a6580ed2e279fabfc44f7fc6af7f2f1/tests/integration/buildcmd/test_build_terraform_applications.py#L80'>tests/integration/buildcmd/test_build_terraform_applications.py~L80</a></p>
-<pre><code class="language-diff">             command_list_parameters[&quot;use_container&quot;] = True
+<p><a href="https://github.com/aws/aws-sam-cli/blob/aa132f863a6580ed2e279fabfc44f7fc6af7f2f1/tests/integration/buildcmd/test_build_terraform_applications.py#L80">tests/integration/buildcmd/test_build_terraform_applications.py~L80</a></p>
+<pre><code>             command_list_parameters[&quot;use_container&quot;] = True
              command_list_parameters[&quot;build_image&quot;] = self.docker_tag
              if self.override:
 -                command_list_parameters[
@@ -688,8 +688,8 @@
          environment_variables = os.environ.copy()
          if self.override:
 </code></pre>
-<p><a href='https://github.com/aws/aws-sam-cli/blob/aa132f863a6580ed2e279fabfc44f7fc6af7f2f1/tests/unit/commands/_utils/test_template.py#L286'>tests/unit/commands/_utils/test_template.py~L286</a></p>
-<pre><code class="language-diff">                 self.expected_result,
+<p><a href="https://github.com/aws/aws-sam-cli/blob/aa132f863a6580ed2e279fabfc44f7fc6af7f2f1/tests/unit/commands/_utils/test_template.py#L286">tests/unit/commands/_utils/test_template.py~L286</a></p>
+<pre><code>                 self.expected_result,
              )
  
 -            expected_template_dict[&quot;Resources&quot;][&quot;MyResourceWithRelativePath&quot;][&quot;Metadata&quot;][
@@ -702,8 +702,8 @@
              result = _update_relative_paths(template_dict, self.src, self.dest)
  
 </code></pre>
-<p><a href='https://github.com/aws/aws-sam-cli/blob/aa132f863a6580ed2e279fabfc44f7fc6af7f2f1/tests/unit/commands/deploy/test_auth_utils.py#L56'>tests/unit/commands/deploy/test_auth_utils.py~L56</a></p>
-<pre><code class="language-diff">         ]
+<p><a href="https://github.com/aws/aws-sam-cli/blob/aa132f863a6580ed2e279fabfc44f7fc6af7f2f1/tests/unit/commands/deploy/test_auth_utils.py#L56">tests/unit/commands/deploy/test_auth_utils.py~L56</a></p>
+<pre><code>         ]
          # setup authorizer and auth explicitly on the event properties.
          event_properties[&quot;Auth&quot;] = {&quot;ApiKeyRequired&quot;: True, &quot;Authorizer&quot;: None}
 -        self.template_dict[&quot;Resources&quot;][&quot;HelloWorldFunction&quot;][&quot;Properties&quot;][&quot;Events&quot;][&quot;HelloWorld&quot;][
@@ -717,15 +717,15 @@
  
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/commaai/openpilot">commaai/openpilot</a> (+7 -7 lines across 1 file)</summary>
+
+<a href="https://github.com/commaai/openpilot">commaai/openpilot</a> (+7 -7 lines across 1 file)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/commaai/openpilot/blob/d2583d64f0ce997bdc7413f091f794ac3d704d4b/tools/replay/lib/ui_helpers.py#L246'>tools/replay/lib/ui_helpers.py~L246</a></p>
-<pre><code class="language-diff"> def get_blank_lid_overlay(UP):
+<p><a href="https://github.com/commaai/openpilot/blob/d2583d64f0ce997bdc7413f091f794ac3d704d4b/tools/replay/lib/ui_helpers.py#L246">tools/replay/lib/ui_helpers.py~L246</a></p>
+<pre><code> def get_blank_lid_overlay(UP):
      lid_overlay = np.zeros((UP.lidar_x, UP.lidar_y), &quot;uint8&quot;)
      # Draw the car.
 -    lid_overlay[
@@ -745,15 +745,15 @@
      return lid_overlay
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/demisto/content">demisto/content</a> (+65 -79 lines across 8 files)</summary>
+
+<a href="https://github.com/demisto/content">demisto/content</a> (+65 -79 lines across 8 files)
 <p>
 <pre>ruff format --preview --exclude Packs/ThreatQ/Integrations/ThreatQ/ThreatQ.py</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/demisto/content/blob/7f7b4e934814b8fcc8e17e8ff13201d5fdd9846a/Packs/Base/Scripts/DBotMLFetchData/DBotMLFetchData.py#L1098'>Packs/Base/Scripts/DBotMLFetchData/DBotMLFetchData.py~L1098</a></p>
-<pre><code class="language-diff">         durations = []
+<p><a href="https://github.com/demisto/content/blob/7f7b4e934814b8fcc8e17e8ff13201d5fdd9846a/Packs/Base/Scripts/DBotMLFetchData/DBotMLFetchData.py#L1098">Packs/Base/Scripts/DBotMLFetchData/DBotMLFetchData.py~L1098</a></p>
+<pre><code>         durations = []
      else:
          load_external_resources()
 -        (
@@ -771,8 +771,8 @@
      return {
          &quot;X&quot;: X,
 </code></pre>
-<p><a href='https://github.com/demisto/content/blob/7f7b4e934814b8fcc8e17e8ff13201d5fdd9846a/Packs/ExportIndicators/Integrations/ExportIndicators/ExportIndicators.py#L806'>Packs/ExportIndicators/Integrations/ExportIndicators/ExportIndicators.py~L806</a></p>
-<pre><code class="language-diff">             ],
+<p><a href="https://github.com/demisto/content/blob/7f7b4e934814b8fcc8e17e8ff13201d5fdd9846a/Packs/ExportIndicators/Integrations/ExportIndicators/ExportIndicators.py#L806">Packs/ExportIndicators/Integrations/ExportIndicators/ExportIndicators.py~L806</a></p>
+<pre><code>             ],
          )
          resp.cache_control.max_age = max_age
 -        resp.cache_control[
@@ -785,8 +785,8 @@
  
      except Exception:
 </code></pre>
-<p><a href='https://github.com/demisto/content/blob/7f7b4e934814b8fcc8e17e8ff13201d5fdd9846a/Packs/GoogleChronicleBackstory/Integrations/GoogleChronicleBackstory/GoogleChronicleBackstory.py#L2291'>Packs/GoogleChronicleBackstory/Integrations/GoogleChronicleBackstory/GoogleChronicleBackstory.py~L2291</a></p>
-<pre><code class="language-diff">         return [], curatedrule_detection_to_process, curatedrule_detection_to_pull, pending_curatedrule_id, simple_backoff_rules
+<p><a href="https://github.com/demisto/content/blob/7f7b4e934814b8fcc8e17e8ff13201d5fdd9846a/Packs/GoogleChronicleBackstory/Integrations/GoogleChronicleBackstory/GoogleChronicleBackstory.py#L2291">Packs/GoogleChronicleBackstory/Integrations/GoogleChronicleBackstory/GoogleChronicleBackstory.py~L2291</a></p>
+<pre><code>         return [], curatedrule_detection_to_process, curatedrule_detection_to_pull, pending_curatedrule_id, simple_backoff_rules
  
      # get curated rule detections using API call.
 -    (
@@ -822,8 +822,8 @@
  
      if len(curatedrule_detection_to_process) &gt; max_fetch:
 </code></pre>
-<p><a href='https://github.com/demisto/content/blob/7f7b4e934814b8fcc8e17e8ff13201d5fdd9846a/Packs/GoogleChronicleBackstory/Integrations/GoogleChronicleBackstory/GoogleChronicleBackstory_test.py#L3063'>Packs/GoogleChronicleBackstory/Integrations/GoogleChronicleBackstory/GoogleChronicleBackstory_test.py~L3063</a></p>
-<pre><code class="language-diff">     detection_to_pull = {&quot;rule_id&quot;: &quot;rule_1&quot;, &quot;next_page_token&quot;: &quot;next_page_token&quot;}
+<p><a href="https://github.com/demisto/content/blob/7f7b4e934814b8fcc8e17e8ff13201d5fdd9846a/Packs/GoogleChronicleBackstory/Integrations/GoogleChronicleBackstory/GoogleChronicleBackstory_test.py#L3063">Packs/GoogleChronicleBackstory/Integrations/GoogleChronicleBackstory/GoogleChronicleBackstory_test.py~L3063</a></p>
+<pre><code>     detection_to_pull = {&quot;rule_id&quot;: &quot;rule_1&quot;, &quot;next_page_token&quot;: &quot;next_page_token&quot;}
      simple_backoff_rules = {}
      for _ in range(93):
 -        (
@@ -859,8 +859,8 @@
  
      assert client.http_client.request.call_count == 93
 </code></pre>
-<p><a href='https://github.com/demisto/content/blob/7f7b4e934814b8fcc8e17e8ff13201d5fdd9846a/Packs/GoogleChronicleBackstory/Integrations/GoogleChronicleBackstory/GoogleChronicleBackstory_test.py#L3115'>Packs/GoogleChronicleBackstory/Integrations/GoogleChronicleBackstory/GoogleChronicleBackstory_test.py~L3115</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/demisto/content/blob/7f7b4e934814b8fcc8e17e8ff13201d5fdd9846a/Packs/GoogleChronicleBackstory/Integrations/GoogleChronicleBackstory/GoogleChronicleBackstory_test.py#L3115">Packs/GoogleChronicleBackstory/Integrations/GoogleChronicleBackstory/GoogleChronicleBackstory_test.py~L3115</a></p>
+<pre><code> 
      simple_backoff_rules = {}
      for _ in range(5):
 -        (
@@ -896,22 +896,22 @@
  
  
 </code></pre>
-<p><a href='https://github.com/demisto/content/blob/7f7b4e934814b8fcc8e17e8ff13201d5fdd9846a/Packs/HealthCheck/Scripts/HealthCheckSystemDiagnostics/HealthCheckSystemDiagnostics.py#L78'>Packs/HealthCheck/Scripts/HealthCheckSystemDiagnostics/HealthCheckSystemDiagnostics.py~L78</a></p>
-<pre><code class="language-diff">         elif dataSource == &quot;bigTasks&quot;:
+<p><a href="https://github.com/demisto/content/blob/7f7b4e934814b8fcc8e17e8ff13201d5fdd9846a/Packs/HealthCheck/Scripts/HealthCheckSystemDiagnostics/HealthCheckSystemDiagnostics.py#L78">Packs/HealthCheck/Scripts/HealthCheckSystemDiagnostics/HealthCheckSystemDiagnostics.py~L78</a></p>
+<pre><code>         elif dataSource == &quot;bigTasks&quot;:
              taskId = re.match(r&quot;(?P&lt;incidentid&gt;\d+)##(?P&lt;taskid&gt;[\d+])##(?P&lt;pbiteration&gt;-\d+|\d+)&quot;, entry[&quot;taskId&quot;])
              if taskId is not None:
 -                newEntry[
 -                    &quot;details&quot;
--                ] = f&quot;Playbook:{entry['playbookName']},\n TaskName:{entry['taskName']},\n TaskID:{taskId['taskid']}&quot;
+-                ] = f&quot;Playbook:{entry[&#x27;playbookName&#x27;]},\n TaskName:{entry[&#x27;taskName&#x27;]},\n TaskID:{taskId[&#x27;taskid&#x27;]}&quot;
 +                newEntry[&quot;details&quot;] = (
-+                    f&quot;Playbook:{entry['playbookName']},\n TaskName:{entry['taskName']},\n TaskID:{taskId['taskid']}&quot;
++                    f&quot;Playbook:{entry[&#x27;playbookName&#x27;]},\n TaskName:{entry[&#x27;taskName&#x27;]},\n TaskID:{taskId[&#x27;taskid&#x27;]}&quot;
 +                )
                  newEntry[&quot;size&quot;] = FormatSize(entry[&quot;taskSize&quot;])
                  newEntry[&quot;incidentid&quot;] = entry[&quot;investigationId&quot;]
                  newFormat.append(newEntry)
 </code></pre>
-<p><a href='https://github.com/demisto/content/blob/7f7b4e934814b8fcc8e17e8ff13201d5fdd9846a/Packs/PAN-OS/Integrations/Panorama/Panorama.py#L10744'>Packs/PAN-OS/Integrations/Panorama/Panorama.py~L10744</a></p>
-<pre><code class="language-diff">         &quot;&quot;&quot;
+<p><a href="https://github.com/demisto/content/blob/7f7b4e934814b8fcc8e17e8ff13201d5fdd9846a/Packs/PAN-OS/Integrations/Panorama/Panorama.py#L10744">Packs/PAN-OS/Integrations/Panorama/Panorama.py~L10744</a></p>
+<pre><code>         &quot;&quot;&quot;
          result = []
          if style == &quot;device group&quot;:
 -            commit_groups: Union[
@@ -924,8 +924,8 @@
          elif style == &quot;template stack&quot;:
              commit_groups = PanoramaCommand.get_template_stacks(topology, resolve_host_id(device))
 </code></pre>
-<p><a href='https://github.com/demisto/content/blob/7f7b4e934814b8fcc8e17e8ff13201d5fdd9846a/Packs/TOPdesk/Integrations/TOPdesk/TOPdesk.py#L586'>Packs/TOPdesk/Integrations/TOPdesk/TOPdesk.py~L586</a></p>
-<pre><code class="language-diff">                     elif isinstance(sub_value, dict):
+<p><a href="https://github.com/demisto/content/blob/7f7b4e934814b8fcc8e17e8ff13201d5fdd9846a/Packs/TOPdesk/Integrations/TOPdesk/TOPdesk.py#L586">Packs/TOPdesk/Integrations/TOPdesk/TOPdesk.py~L586</a></p>
+<pre><code>                     elif isinstance(sub_value, dict):
                          capitalized_output[capitalize(field)][capitalize(sub_field)] = {}
                          for sub_sub_field, sub_sub_value in sub_value.items():
 -                            capitalized_output[capitalize(field)][capitalize(sub_field)][
@@ -938,9 +938,9 @@
  
      return capitalized_outputs
 </code></pre>
-<p><a href='https://github.com/demisto/content/blob/7f7b4e934814b8fcc8e17e8ff13201d5fdd9846a/Tests/Marketplace/upload_packs.py#L1158'>Tests/Marketplace/upload_packs.py~L1158</a></p>
-<pre><code class="language-diff">         f'{GCPConfig.versions_metadata_contents[&quot;version_map&quot;][override_corepacks_server_version][&quot;file_version&quot;]} to'
-         f'{override_corepacks_file_version}'
+<p><a href="https://github.com/demisto/content/blob/7f7b4e934814b8fcc8e17e8ff13201d5fdd9846a/Tests/Marketplace/upload_packs.py#L1158">Tests/Marketplace/upload_packs.py~L1158</a></p>
+<pre><code>         f&#x27;{GCPConfig.versions_metadata_contents[&quot;version_map&quot;][override_corepacks_server_version][&quot;file_version&quot;]} to&#x27;
+         f&#x27;{override_corepacks_file_version}&#x27;
      )
 -    GCPConfig.versions_metadata_contents[&quot;version_map&quot;][override_corepacks_server_version][
 -        &quot;file_version&quot;
@@ -953,15 +953,15 @@
  def upload_server_versions_metadata(artifacts_dir: str):
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/fronzbot/blinkpy">fronzbot/blinkpy</a> (+2 -2 lines across 1 file)</summary>
+
+<a href="https://github.com/fronzbot/blinkpy">fronzbot/blinkpy</a> (+2 -2 lines across 1 file)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/fronzbot/blinkpy/blob/a8841612641f17527c5b3f43bbf034b6fe7ba743/tests/test_sync_module.py#L32'>tests/test_sync_module.py~L32</a></p>
-<pre><code class="language-diff">         self.blink: Blink = Blink(motion_interval=0, session=mock.AsyncMock())
+<p><a href="https://github.com/fronzbot/blinkpy/blob/a8841612641f17527c5b3f43bbf034b6fe7ba743/tests/test_sync_module.py#L32">tests/test_sync_module.py~L32</a></p>
+<pre><code>         self.blink: Blink = Blink(motion_interval=0, session=mock.AsyncMock())
          self.blink.last_refresh = 0
          self.blink.urls = BlinkURLHandler(&quot;test&quot;)
 -        self.blink.sync[&quot;test&quot;]: (BlinkSyncModule) = BlinkSyncModule(
@@ -971,15 +971,15 @@
          self.blink.sync[&quot;test&quot;].network_info = {&quot;network&quot;: {&quot;armed&quot;: True}}
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/latchbio/latch">latchbio/latch</a> (+4 -5 lines across 1 file)</summary>
+
+<a href="https://github.com/latchbio/latch">latchbio/latch</a> (+4 -5 lines across 1 file)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/latchbio/latch/blob/719418af509ec2ff8000d12e54f7fc2a0f3f7878/latch_cli/centromere/ctx.py#L283'>latch_cli/centromere/ctx.py~L283</a></p>
-<pre><code class="language-diff">                 self.public_key = generate_temporary_ssh_credentials(self.ssh_key_path)
+<p><a href="https://github.com/latchbio/latch/blob/719418af509ec2ff8000d12e54f7fc2a0f3f7878/latch_cli/centromere/ctx.py#L283">latch_cli/centromere/ctx.py~L283</a></p>
+<pre><code>                 self.public_key = generate_temporary_ssh_credentials(self.ssh_key_path)
  
                  if use_new_centromere:
 -                    (
@@ -994,15 +994,15 @@
  
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/mlflow/mlflow">mlflow/mlflow</a> (+39 -39 lines across 4 files)</summary>
+
+<a href="https://github.com/mlflow/mlflow">mlflow/mlflow</a> (+39 -39 lines across 4 files)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/mlflow/mlflow/blob/f0b4a3e965fd570440ba3e36fa796c1cce86cc8c/mlflow/langchain/api_request_parallel_processor.py#L172'>mlflow/langchain/api_request_parallel_processor.py~L172</a></p>
-<pre><code class="language-diff">             status_tracker.complete_task(success=True)
+<p><a href="https://github.com/mlflow/mlflow/blob/f0b4a3e965fd570440ba3e36fa796c1cce86cc8c/mlflow/langchain/api_request_parallel_processor.py#L172">mlflow/langchain/api_request_parallel_processor.py~L172</a></p>
+<pre><code>             status_tracker.complete_task(success=True)
              self.results.append((self.index, response))
          except Exception as e:
 -            self.errors[
@@ -1015,8 +1015,8 @@
              status_tracker.complete_task(success=False)
  
 </code></pre>
-<p><a href='https://github.com/mlflow/mlflow/blob/f0b4a3e965fd570440ba3e36fa796c1cce86cc8c/mlflow/pyspark/ml/__init__.py#L950'>mlflow/pyspark/ml/<strong>init</strong>.py~L950</a></p>
-<pre><code class="language-diff">             )
+<p><a href="https://github.com/mlflow/mlflow/blob/f0b4a3e965fd570440ba3e36fa796c1cce86cc8c/mlflow/pyspark/ml/__init__.py#L950">mlflow/pyspark/ml/<strong>init</strong>.py~L950</a></p>
+<pre><code>             )
              artifact_dict[param_search_estimator_name] = {}
  
 -            artifact_dict[param_search_estimator_name][
@@ -1045,8 +1045,8 @@
  
          if artifact_dict:
 </code></pre>
-<p><a href='https://github.com/mlflow/mlflow/blob/f0b4a3e965fd570440ba3e36fa796c1cce86cc8c/mlflow/server/auth/__init__.py#L569'>mlflow/server/auth/<strong>init</strong>.py~L569</a></p>
-<pre><code class="language-diff">         len(response_message.registered_models) &lt; request_message.max_results
+<p><a href="https://github.com/mlflow/mlflow/blob/f0b4a3e965fd570440ba3e36fa796c1cce86cc8c/mlflow/server/auth/__init__.py#L569">mlflow/server/auth/<strong>init</strong>.py~L569</a></p>
+<pre><code>         len(response_message.registered_models) &lt; request_message.max_results
          and response_message.next_page_token != &quot;&quot;
      ):
 -        refetched: PagedList[
@@ -1067,8 +1067,8 @@
          refetched = refetched[
              : request_message.max_results - len(response_message.registered_models)
 </code></pre>
-<p><a href='https://github.com/mlflow/mlflow/blob/f0b4a3e965fd570440ba3e36fa796c1cce86cc8c/mlflow/store/tracking/sqlalchemy_store.py#L145'>mlflow/store/tracking/sqlalchemy_store.py~L145</a></p>
-<pre><code class="language-diff">                 # inefficiency from multiple threads waiting for the lock to check for engine
+<p><a href="https://github.com/mlflow/mlflow/blob/f0b4a3e965fd570440ba3e36fa796c1cce86cc8c/mlflow/store/tracking/sqlalchemy_store.py#L145">mlflow/store/tracking/sqlalchemy_store.py~L145</a></p>
+<pre><code>                 # inefficiency from multiple threads waiting for the lock to check for engine
                  # existence if it has already been created.
                  if db_uri not in SqlAlchemyStore._db_uri_sql_alchemy_engine_map:
 -                    SqlAlchemyStore._db_uri_sql_alchemy_engine_map[
@@ -1079,10 +1079,10 @@
 +                    )
          self.engine = SqlAlchemyStore._db_uri_sql_alchemy_engine_map[db_uri]
          # On a completely fresh MLflow installation against an empty database (verify database
-         # emptiness by checking that 'experiments' etc aren't in the list of table names), run all
+         # emptiness by checking that &#x27;experiments&#x27; etc aren&#x27;t in the list of table names), run all
 </code></pre>
-<p><a href='https://github.com/mlflow/mlflow/blob/f0b4a3e965fd570440ba3e36fa796c1cce86cc8c/mlflow/store/tracking/sqlalchemy_store.py#L1412'>mlflow/store/tracking/sqlalchemy_store.py~L1412</a></p>
-<pre><code class="language-diff">             )
+<p><a href="https://github.com/mlflow/mlflow/blob/f0b4a3e965fd570440ba3e36fa796c1cce86cc8c/mlflow/store/tracking/sqlalchemy_store.py#L1412">mlflow/store/tracking/sqlalchemy_store.py~L1412</a></p>
+<pre><code>             )
              dataset_uuids = {}
              for existing_dataset in existing_datasets:
 -                dataset_uuids[
@@ -1095,8 +1095,8 @@
              # collect all objects to write to DB in a single list
              objs_to_write = []
 </code></pre>
-<p><a href='https://github.com/mlflow/mlflow/blob/f0b4a3e965fd570440ba3e36fa796c1cce86cc8c/mlflow/store/tracking/sqlalchemy_store.py#L1423'>mlflow/store/tracking/sqlalchemy_store.py~L1423</a></p>
-<pre><code class="language-diff">             for dataset_input in dataset_inputs:
+<p><a href="https://github.com/mlflow/mlflow/blob/f0b4a3e965fd570440ba3e36fa796c1cce86cc8c/mlflow/store/tracking/sqlalchemy_store.py#L1423">mlflow/store/tracking/sqlalchemy_store.py~L1423</a></p>
+<pre><code>             for dataset_input in dataset_inputs:
                  if (dataset_input.dataset.name, dataset_input.dataset.digest) not in dataset_uuids:
                      new_dataset_uuid = uuid.uuid4().hex
 -                    dataset_uuids[
@@ -1109,8 +1109,8 @@
                          SqlDataset(
                              dataset_uuid=new_dataset_uuid,
 </code></pre>
-<p><a href='https://github.com/mlflow/mlflow/blob/f0b4a3e965fd570440ba3e36fa796c1cce86cc8c/mlflow/store/tracking/sqlalchemy_store.py#L1451'>mlflow/store/tracking/sqlalchemy_store.py~L1451</a></p>
-<pre><code class="language-diff">             )
+<p><a href="https://github.com/mlflow/mlflow/blob/f0b4a3e965fd570440ba3e36fa796c1cce86cc8c/mlflow/store/tracking/sqlalchemy_store.py#L1451">mlflow/store/tracking/sqlalchemy_store.py~L1451</a></p>
+<pre><code>             )
              input_uuids = {}
              for existing_input in existing_inputs:
 -                input_uuids[
@@ -1123,8 +1123,8 @@
              # add input edges to objs_to_write
              for dataset_input in dataset_inputs:
 </code></pre>
-<p><a href='https://github.com/mlflow/mlflow/blob/f0b4a3e965fd570440ba3e36fa796c1cce86cc8c/mlflow/store/tracking/sqlalchemy_store.py#L1462'>mlflow/store/tracking/sqlalchemy_store.py~L1462</a></p>
-<pre><code class="language-diff">                 ]
+<p><a href="https://github.com/mlflow/mlflow/blob/f0b4a3e965fd570440ba3e36fa796c1cce86cc8c/mlflow/store/tracking/sqlalchemy_store.py#L1462">mlflow/store/tracking/sqlalchemy_store.py~L1462</a></p>
+<pre><code>                 ]
                  if (dataset_uuid, run_id) not in input_uuids:
                      new_input_uuid = uuid.uuid4().hex
 -                    input_uuids[
@@ -1138,35 +1138,35 @@
                              input_uuid=new_input_uuid,
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+31 -31 lines across 4 files)</summary>
+
+<a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+31 -31 lines across 4 files)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/pandas-dev/pandas/blob/14cf864c6e97269f6adc0e1146747aa9fd7234f1/pandas/core/ops/docstrings.py#L420'>pandas/core/ops/docstrings.py~L420</a></p>
-<pre><code class="language-diff">     if reverse_op is not None:
+<p><a href="https://github.com/pandas-dev/pandas/blob/14cf864c6e97269f6adc0e1146747aa9fd7234f1/pandas/core/ops/docstrings.py#L420">pandas/core/ops/docstrings.py~L420</a></p>
+<pre><code>     if reverse_op is not None:
          _op_descriptions[reverse_op] = _op_descriptions[key].copy()
          _op_descriptions[reverse_op][&quot;reverse&quot;] = key
 -        _op_descriptions[key][
 -            &quot;see_also_desc&quot;
--        ] = f&quot;Reverse of the {_op_descriptions[key]['desc']} operator, {_py_num_ref}&quot;
+-        ] = f&quot;Reverse of the {_op_descriptions[key][&#x27;desc&#x27;]} operator, {_py_num_ref}&quot;
 -        _op_descriptions[reverse_op][
 -            &quot;see_also_desc&quot;
--        ] = f&quot;Element-wise {_op_descriptions[key]['desc']}, {_py_num_ref}&quot;
+-        ] = f&quot;Element-wise {_op_descriptions[key][&#x27;desc&#x27;]}, {_py_num_ref}&quot;
 +        _op_descriptions[key][&quot;see_also_desc&quot;] = (
-+            f&quot;Reverse of the {_op_descriptions[key]['desc']} operator, {_py_num_ref}&quot;
++            f&quot;Reverse of the {_op_descriptions[key][&#x27;desc&#x27;]} operator, {_py_num_ref}&quot;
 +        )
 +        _op_descriptions[reverse_op][&quot;see_also_desc&quot;] = (
-+            f&quot;Element-wise {_op_descriptions[key]['desc']}, {_py_num_ref}&quot;
++            f&quot;Element-wise {_op_descriptions[key][&#x27;desc&#x27;]}, {_py_num_ref}&quot;
 +        )
  
  _flex_doc_SERIES = &quot;&quot;&quot;
  Return {desc} of series and other, element-wise (binary operator `{op_name}`).
 </code></pre>
-<p><a href='https://github.com/pandas-dev/pandas/blob/14cf864c6e97269f6adc0e1146747aa9fd7234f1/pandas/core/reshape/melt.py#L122'>pandas/core/reshape/melt.py~L122</a></p>
-<pre><code class="language-diff">     if frame.shape[1] &gt; 0 and not any(
+<p><a href="https://github.com/pandas-dev/pandas/blob/14cf864c6e97269f6adc0e1146747aa9fd7234f1/pandas/core/reshape/melt.py#L122">pandas/core/reshape/melt.py~L122</a></p>
+<pre><code>     if frame.shape[1] &gt; 0 and not any(
          not isinstance(dt, np.dtype) and dt._supports_2d for dt in frame.dtypes
      ):
 -        mdata[value_name] = concat([
@@ -1179,8 +1179,8 @@
          mdata[value_name] = frame._values.ravel(&quot;F&quot;)
      for i, col in enumerate(var_name):
 </code></pre>
-<p><a href='https://github.com/pandas-dev/pandas/blob/14cf864c6e97269f6adc0e1146747aa9fd7234f1/pandas/io/formats/style_render.py#L314'>pandas/io/formats/style_render.py~L314</a></p>
-<pre><code class="language-diff">             max_cols,
+<p><a href="https://github.com/pandas-dev/pandas/blob/14cf864c6e97269f6adc0e1146747aa9fd7234f1/pandas/io/formats/style_render.py#L314">pandas/io/formats/style_render.py~L314</a></p>
+<pre><code>             max_cols,
          )
  
 -        self.cellstyle_map_columns: DefaultDict[
@@ -1193,8 +1193,8 @@
          d.update({&quot;head&quot;: head})
  
 </code></pre>
-<p><a href='https://github.com/pandas-dev/pandas/blob/14cf864c6e97269f6adc0e1146747aa9fd7234f1/pandas/io/formats/style_render.py#L329'>pandas/io/formats/style_render.py~L329</a></p>
-<pre><code class="language-diff">         self.cellstyle_map: DefaultDict[tuple[CSSPair, ...], list[str]] = defaultdict(
+<p><a href="https://github.com/pandas-dev/pandas/blob/14cf864c6e97269f6adc0e1146747aa9fd7234f1/pandas/io/formats/style_render.py#L329">pandas/io/formats/style_render.py~L329</a></p>
+<pre><code>         self.cellstyle_map: DefaultDict[tuple[CSSPair, ...], list[str]] = defaultdict(
              list
          )
 -        self.cellstyle_map_index: DefaultDict[
@@ -1207,59 +1207,59 @@
          d.update({&quot;body&quot;: body})
  
 </code></pre>
-<p><a href='https://github.com/pandas-dev/pandas/blob/14cf864c6e97269f6adc0e1146747aa9fd7234f1/pandas/io/formats/style_render.py#L776'>pandas/io/formats/style_render.py~L776</a></p>
-<pre><code class="language-diff">             )
+<p><a href="https://github.com/pandas-dev/pandas/blob/14cf864c6e97269f6adc0e1146747aa9fd7234f1/pandas/io/formats/style_render.py#L776">pandas/io/formats/style_render.py~L776</a></p>
+<pre><code>             )
  
              if self.cell_ids:
 -                header_element[
 -                    &quot;id&quot;
--                ] = f&quot;{self.css['level']}{c}_{self.css['row']}{r}&quot;  # id is given
+-                ] = f&quot;{self.css[&#x27;level&#x27;]}{c}_{self.css[&#x27;row&#x27;]}{r}&quot;  # id is given
 +                header_element[&quot;id&quot;] = (
-+                    f&quot;{self.css['level']}{c}_{self.css['row']}{r}&quot;  # id is given
++                    f&quot;{self.css[&#x27;level&#x27;]}{c}_{self.css[&#x27;row&#x27;]}{r}&quot;  # id is given
 +                )
              if (
                  header_element_visible
                  and (r, c) in self.ctx_index
 </code></pre>
-<p><a href='https://github.com/pandas-dev/pandas/blob/14cf864c6e97269f6adc0e1146747aa9fd7234f1/pandas/tests/io/excel/test_writers.py#L1226'>pandas/tests/io/excel/test_writers.py~L1226</a></p>
-<pre><code class="language-diff">         }
+<p><a href="https://github.com/pandas-dev/pandas/blob/14cf864c6e97269f6adc0e1146747aa9fd7234f1/pandas/tests/io/excel/test_writers.py#L1226">pandas/tests/io/excel/test_writers.py~L1226</a></p>
+<pre><code>         }
  
          if PY310:
 -            msgs[
 -                &quot;openpyxl&quot;
--            ] = &quot;Workbook.__init__() got an unexpected keyword argument 'foo'&quot;
+-            ] = &quot;Workbook.__init__() got an unexpected keyword argument &#x27;foo&#x27;&quot;
 -            msgs[
 -                &quot;xlsxwriter&quot;
--            ] = &quot;Workbook.__init__() got an unexpected keyword argument 'foo'&quot;
+-            ] = &quot;Workbook.__init__() got an unexpected keyword argument &#x27;foo&#x27;&quot;
 +            msgs[&quot;openpyxl&quot;] = (
-+                &quot;Workbook.__init__() got an unexpected keyword argument 'foo'&quot;
++                &quot;Workbook.__init__() got an unexpected keyword argument &#x27;foo&#x27;&quot;
 +            )
 +            msgs[&quot;xlsxwriter&quot;] = (
-+                &quot;Workbook.__init__() got an unexpected keyword argument 'foo'&quot;
++                &quot;Workbook.__init__() got an unexpected keyword argument &#x27;foo&#x27;&quot;
 +            )
  
          # Handle change in error message for openpyxl (write and append mode)
          if engine == &quot;openpyxl&quot; and not os.path.exists(path):
 -            msgs[
 -                &quot;openpyxl&quot;
--            ] = r&quot;load_workbook() got an unexpected keyword argument 'foo'&quot;
+-            ] = r&quot;load_workbook() got an unexpected keyword argument &#x27;foo&#x27;&quot;
 +            msgs[&quot;openpyxl&quot;] = (
-+                r&quot;load_workbook() got an unexpected keyword argument 'foo'&quot;
++                r&quot;load_workbook() got an unexpected keyword argument &#x27;foo&#x27;&quot;
 +            )
  
          with pytest.raises(TypeError, match=re.escape(msgs[engine])):
              df.to_excel(
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/prefecthq/prefect">prefecthq/prefect</a> (+138 -138 lines across 21 files)</summary>
+
+<a href="https://github.com/prefecthq/prefect">prefecthq/prefect</a> (+138 -138 lines across 21 files)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/prefecthq/prefect/blob/8f8098a543627e53f8a5228a6f972c24ea710322/src/prefect/_internal/pydantic/annotations/pendulum.py#L13'>src/prefect/_internal/pydantic/annotations/pendulum.py~L13</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/prefecthq/prefect/blob/8f8098a543627e53f8a5228a6f972c24ea710322/src/prefect/_internal/pydantic/annotations/pendulum.py#L13">src/prefect/_internal/pydantic/annotations/pendulum.py~L13</a></p>
+<pre><code> 
  
  class _PendulumDateTimeAnnotation:
 -    _pendulum_type: t.Type[
@@ -1272,8 +1272,8 @@
      _pendulum_types_to_schemas = {
          pendulum.DateTime: core_schema.datetime_schema(),
 </code></pre>
-<p><a href='https://github.com/prefecthq/prefect/blob/8f8098a543627e53f8a5228a6f972c24ea710322/src/prefect/_vendor/fastapi/routing.py#L408'>src/prefect/_vendor/fastapi/routing.py~L408</a></p>
-<pre><code class="language-diff">             methods = [&quot;GET&quot;]
+<p><a href="https://github.com/prefecthq/prefect/blob/8f8098a543627e53f8a5228a6f972c24ea710322/src/prefect/_vendor/fastapi/routing.py#L408">src/prefect/_vendor/fastapi/routing.py~L408</a></p>
+<pre><code>             methods = [&quot;GET&quot;]
          self.methods: Set[str] = {method.upper() for method in methods}
          if isinstance(generate_unique_id_function, DefaultPlaceholder):
 -            current_generate_unique_id: Callable[
@@ -1286,8 +1286,8 @@
              current_generate_unique_id = generate_unique_id_function
          self.unique_id = self.operation_id or current_generate_unique_id(self)
 </code></pre>
-<p><a href='https://github.com/prefecthq/prefect/blob/8f8098a543627e53f8a5228a6f972c24ea710322/src/prefect/_vendor/fastapi/routing.py#L433'>src/prefect/_vendor/fastapi/routing.py~L433</a></p>
-<pre><code class="language-diff">             # would pass the validation and be returned as is.
+<p><a href="https://github.com/prefecthq/prefect/blob/8f8098a543627e53f8a5228a6f972c24ea710322/src/prefect/_vendor/fastapi/routing.py#L433">src/prefect/_vendor/fastapi/routing.py~L433</a></p>
+<pre><code>             # would pass the validation and be returned as is.
              # By being a new field, no inheritance will be passed as is. A new model
              # will be always created.
 -            self.secure_cloned_response_field: Optional[
@@ -1300,8 +1300,8 @@
              self.response_field = None  # type: ignore
              self.secure_cloned_response_field = None
 </code></pre>
-<p><a href='https://github.com/prefecthq/prefect/blob/8f8098a543627e53f8a5228a6f972c24ea710322/src/prefect/_vendor/fastapi/utils.py#L39'>src/prefect/_vendor/fastapi/utils.py~L39</a></p>
-<pre><code class="language-diff">     from .routing import APIRoute
+<p><a href="https://github.com/prefecthq/prefect/blob/8f8098a543627e53f8a5228a6f972c24ea710322/src/prefect/_vendor/fastapi/utils.py#L39">src/prefect/_vendor/fastapi/utils.py~L39</a></p>
+<pre><code>     from .routing import APIRoute
  
  # Cache for `create_cloned_field`
 -_CLONED_TYPES_CACHE: MutableMapping[
@@ -1314,8 +1314,8 @@
  
  def is_body_allowed_for_status_code(status_code: Union[int, str, None]) -&gt; bool:
 </code></pre>
-<p><a href='https://github.com/prefecthq/prefect/blob/8f8098a543627e53f8a5228a6f972c24ea710322/src/prefect/blocks/core.py#L257'>src/prefect/blocks/core.py~L257</a></p>
-<pre><code class="language-diff">                                     type_._to_block_schema_reference_dict(),
+<p><a href="https://github.com/prefecthq/prefect/blob/8f8098a543627e53f8a5228a6f972c24ea710322/src/prefect/blocks/core.py#L257">src/prefect/blocks/core.py~L257</a></p>
+<pre><code>                                     type_._to_block_schema_reference_dict(),
                                  ]
                              else:
 -                                refs[
@@ -1328,8 +1328,8 @@
      def __init__(self, *args, **kwargs):
          super().__init__(*args, **kwargs)
 </code></pre>
-<p><a href='https://github.com/prefecthq/prefect/blob/8f8098a543627e53f8a5228a6f972c24ea710322/src/prefect/blocks/notifications.py#L24'>src/prefect/blocks/notifications.py~L24</a></p>
-<pre><code class="language-diff">     An abstract class for sending notifications using Apprise.
+<p><a href="https://github.com/prefecthq/prefect/blob/8f8098a543627e53f8a5228a6f972c24ea710322/src/prefect/blocks/notifications.py#L24">src/prefect/blocks/notifications.py~L24</a></p>
+<pre><code>     An abstract class for sending notifications using Apprise.
      &quot;&quot;&quot;
  
 -    notify_type: Literal[
@@ -1352,8 +1352,8 @@
  
      def __init__(self, *args, **kwargs):
 </code></pre>
-<p><a href='https://github.com/prefecthq/prefect/blob/8f8098a543627e53f8a5228a6f972c24ea710322/src/prefect/cli/_prompts.py#L482'>src/prefect/cli/_prompts.py~L482</a></p>
-<pre><code class="language-diff">                 import prefect_docker
+<p><a href="https://github.com/prefecthq/prefect/blob/8f8098a543627e53f8a5228a6f972c24ea710322/src/prefect/cli/_prompts.py#L482">src/prefect/cli/_prompts.py~L482</a></p>
+<pre><code>                 import prefect_docker
  
              credentials_block = prefect_docker.DockerRegistryCredentials
 -            push_step[
@@ -1370,12 +1370,12 @@
 +            push_step[&quot;credentials&quot;] = (
 +                &quot;{{ prefect.docker-registry.docker_registry_creds_name }}&quot;
 +            )
-         docker_registry_creds_name = f&quot;deployment-{slugify(deployment_config['name'])}-{slugify(deployment_config['work_pool']['name'])}-registry-creds&quot;
+         docker_registry_creds_name = f&quot;deployment-{slugify(deployment_config[&#x27;name&#x27;])}-{slugify(deployment_config[&#x27;work_pool&#x27;][&#x27;name&#x27;])}-registry-creds&quot;
          create_new_block = False
          try:
 </code></pre>
-<p><a href='https://github.com/prefecthq/prefect/blob/8f8098a543627e53f8a5228a6f972c24ea710322/src/prefect/context.py#L137'>src/prefect/context.py~L137</a></p>
-<pre><code class="language-diff">     )
+<p><a href="https://github.com/prefecthq/prefect/blob/8f8098a543627e53f8a5228a6f972c24ea710322/src/prefect/context.py#L137">src/prefect/context.py~L137</a></p>
+<pre><code>     )
  
      # Failures will be a tuple of (exception, instance, args, kwargs)
 -    _instance_init_failures: Dict[
@@ -1388,8 +1388,8 @@
      block_code_execution: bool = False
      capture_failures: bool = False
 </code></pre>
-<p><a href='https://github.com/prefecthq/prefect/blob/8f8098a543627e53f8a5228a6f972c24ea710322/src/prefect/deployments/deployments.py#L440'>src/prefect/deployments/deployments.py~L440</a></p>
-<pre><code class="language-diff">             )
+<p><a href="https://github.com/prefecthq/prefect/blob/8f8098a543627e53f8a5228a6f972c24ea710322/src/prefect/deployments/deployments.py#L440">src/prefect/deployments/deployments.py~L440</a></p>
+<pre><code>             )
          )
          if all_fields[&quot;storage&quot;]:
 -            all_fields[&quot;storage&quot;][
@@ -1409,8 +1409,8 @@
  
      # top level metadata
 </code></pre>
-<p><a href='https://github.com/prefecthq/prefect/blob/8f8098a543627e53f8a5228a6f972c24ea710322/src/prefect/filesystems.py#L694'>src/prefect/filesystems.py~L694</a></p>
-<pre><code class="language-diff">     def filesystem(self) -&gt; RemoteFileSystem:
+<p><a href="https://github.com/prefecthq/prefect/blob/8f8098a543627e53f8a5228a6f972c24ea710322/src/prefect/filesystems.py#L694">src/prefect/filesystems.py~L694</a></p>
+<pre><code>     def filesystem(self) -&gt; RemoteFileSystem:
          settings = {}
          if self.azure_storage_connection_string:
 -            settings[
@@ -1430,8 +1430,8 @@
              settings[&quot;account_key&quot;] = self.azure_storage_account_key.get_secret_value()
          if self.azure_storage_tenant_id:
 </code></pre>
-<p><a href='https://github.com/prefecthq/prefect/blob/8f8098a543627e53f8a5228a6f972c24ea710322/src/prefect/filesystems.py#L708'>src/prefect/filesystems.py~L708</a></p>
-<pre><code class="language-diff">         if self.azure_storage_client_id:
+<p><a href="https://github.com/prefecthq/prefect/blob/8f8098a543627e53f8a5228a6f972c24ea710322/src/prefect/filesystems.py#L708">src/prefect/filesystems.py~L708</a></p>
+<pre><code>         if self.azure_storage_client_id:
              settings[&quot;client_id&quot;] = self.azure_storage_client_id.get_secret_value()
          if self.azure_storage_client_secret:
 -            settings[
@@ -1447,7 +1447,7 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "WIP: `prefer_splitting_right_hand_side_of_assignments` preview style" to "`prefer_splitting_right_hand_side_of_assignments` preview style" by @MichaReiser on 2023-12-11 08:52</div>
+            <div class="event">Renamed from &quot;WIP: `prefer_splitting_right_hand_side_of_assignments` preview style&quot; to &quot;`prefer_splitting_right_hand_side_of_assignments` preview style&quot; by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-12-11 08:52</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-12-11 09:40</div>
@@ -1455,13 +1455,13 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @MichaReiser on 2023-12-11 09:40</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-12-11 09:40</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @konstin by @MichaReiser on 2023-12-11 09:40</div>
+            <div class="event">Review requested from <a href="https://github.com/konstin">@konstin</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-12-11 09:40</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2023-12-11 09:40</div>
+            <div class="event">Review requested from <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-12-11 09:40</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/src/preview.rs</code>:21 on 2023-12-11 11:52</div>
@@ -1479,14 +1479,14 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/preview.rs</code>:21 on 2023-12-12 02:44</div>
-            <div class="timeline-body"><p>I don't have an opinion. We could use <code>f.context().is_enabled(PreviewStyle::LongName)</code>, which may be easier to document and add. For me, any approach that allows identifying the call sites easily works for me.</p>
+            <div class="timeline-body"><p>I don&#x27;t have an opinion. We could use <code>f.context().is_enabled(PreviewStyle::LongName)</code>, which may be easier to document and add. For me, any approach that allows identifying the call sites easily works for me.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @MichaReiser on 2023-12-13 03:43</div>
+            <div class="event">Merged by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-12-13 03:43</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2023-12-13 03:43</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-12-13 03:43</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2023-12-13 03:43</div>
@@ -1494,7 +1494,7 @@
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:01:40 UTC
+        Synced at 2026-01-20 18:59:44 UTC
     </footer>
 </body>
 </html>

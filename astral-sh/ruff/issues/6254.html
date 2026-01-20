@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/tylerlaprade">@tylerlaprade</a></div>
-            <div class="timeline-body"><pre><code class="language-python">x = None
+            <div class="timeline-body"><pre><code>x = None
 try:
     x = func_that_might_throw()
 except AttributeError:
@@ -35,14 +35,14 @@ return x
 with contextlib.suppress(AttributeError):
     return func_that_might_throw()
 </code></pre>
-<p>If this is the first time we've seen <code>x</code>, can we clean up the null assignment?</p>
+<p>If this is the first time we&#x27;ve seen <code>x</code>, can we clean up the null assignment?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">autofix</span> added by @zanieb on 2023-08-01 17:49</div>
+            <div class="event">Label <span class="label">autofix</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-01 17:49</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">accepted</span> added by @zanieb on 2023-08-01 17:49</div>
+            <div class="event">Label <span class="label">accepted</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-01 17:49</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-01 17:50</div>
@@ -53,7 +53,7 @@ with contextlib.suppress(AttributeError):
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-01 17:53</div>
             <div class="timeline-body"><p>I believe this works as expected, assuming you enable the right set of rules: <code>ruff check foo.py --select SIM --select RET --select F -n --fix</code>.</p>
 <p>We like to treat each fix as independent. Here, the <code>SIM105</code> rule gives you:</p>
-<pre><code class="language-python">import contextlib
+<pre><code>import contextlib
 def f():
     x = None
     with contextlib.suppress(AttributeError):
@@ -62,55 +62,55 @@ def f():
     return x
 </code></pre>
 <p>Then the <code>RET</code> rule simplifies to:</p>
-<pre><code class="language-python">import contextlib
+<pre><code>import contextlib
 def f():
     x = None
     with contextlib.suppress(AttributeError):
         return func_that_might_throw()
 </code></pre>
 <p>Then the <code>F</code> rule identifies the unused variable:</p>
-<pre><code class="language-python">import contextlib
+<pre><code>import contextlib
 def f():
     with contextlib.suppress(AttributeError):
         return func_that_might_throw()
 </code></pre>
-<p>(This all happens in one <code>ruff</code> invocation, I'm just breaking it down for clarity.)</p>
+<p>(This all happens in one <code>ruff</code> invocation, I&#x27;m just breaking it down for clarity.)</p>
 <p>Perhaps you have <code>F841</code> disabled?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tylerlaprade">@tylerlaprade</a> on 2023-08-01 18:29</div>
             <div class="timeline-body"><p>Ahh, @charliermarsh is correct.</p>
-<pre><code class="language-toml">unfixable = [&quot;B007&quot;, &quot;ERA001&quot;, &quot;F841&quot;, &quot;RUF100&quot;]
+<pre><code>unfixable = [&quot;B007&quot;, &quot;ERA001&quot;, &quot;F841&quot;, &quot;RUF100&quot;]
 </code></pre>
-<p>We disabled autofix on <code>F841</code> because variables are often temporarily unused while rearranging a file. We don't want an errant <code>⌘ + S</code> to accidentally delete useful code. In this case, though, there's no danger since it's only unused as a result of the other (safe) autofixes.</p>
+<p>We disabled autofix on <code>F841</code> because variables are often temporarily unused while rearranging a file. We don&#x27;t want an errant <code>⌘ + S</code> to accidentally delete useful code. In this case, though, there&#x27;s no danger since it&#x27;s only unused as a result of the other (safe) autofixes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-01 18:58</div>
-            <div class="timeline-body"><p>@tylerlaprade I agree that seems like a fair use-case. We probably don't want to resolve this <em>just</em> for this specific rule though, instead we should work on a general solution that checks for unused variables <em>introduced</em> by an autofix.</p>
+            <div class="timeline-body"><p>@tylerlaprade I agree that seems like a fair use-case. We probably don&#x27;t want to resolve this <em>just</em> for this specific rule though, instead we should work on a general solution that checks for unused variables <em>introduced</em> by an autofix.</p>
 <p>Would you mind if I retitle this issue?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tylerlaprade">@tylerlaprade</a> on 2023-08-01 19:05</div>
-            <div class="timeline-body"><p>Yes, please do! I'm glad this could potentially turn out to be more generally applicable than just a single rule.</p>
+            <div class="timeline-body"><p>Yes, please do! I&#x27;m glad this could potentially turn out to be more generally applicable than just a single rule.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "`SIM105` should clean up unused variable after refactor" to "Clean up unused variables after fixes" by @zanieb on 2023-08-01 19:09</div>
+            <div class="event">Renamed from &quot;`SIM105` should clean up unused variable after refactor&quot; to &quot;Clean up unused variables after fixes&quot; by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-01 19:09</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-01 19:10</div>
-            <div class="timeline-body"><p>In the meantime, for this use-case, I'd recommend leaving <code>F841</code> enabled in your configuration and only disabling it in the flags passed when used by the IDE. Would that help?</p>
+            <div class="timeline-body"><p>In the meantime, for this use-case, I&#x27;d recommend leaving <code>F841</code> enabled in your configuration and only disabling it in the flags passed when used by the IDE. Would that help?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">accepted</span> removed by @zanieb on 2023-08-01 19:26</div>
+            <div class="event">Label <span class="label">accepted</span> removed by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-01 19:26</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tylerlaprade">@tylerlaprade</a> on 2023-08-01 20:55</div>
-            <div class="timeline-body"><p>Yes, that's a good suggestion, thank you Zanie!</p>
+            <div class="timeline-body"><p>Yes, that&#x27;s a good suggestion, thank you Zanie!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -126,7 +126,7 @@ def f():
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:47:51 UTC
+        Synced at 2026-01-20 18:48:40 UTC
     </footer>
 </body>
 </html>

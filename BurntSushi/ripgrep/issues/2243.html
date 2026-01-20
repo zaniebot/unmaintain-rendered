@@ -23,29 +23,29 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/qx220">@qx220</a></div>
-            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+            <div class="timeline-body">What version of ripgrep are you using?
 <pre><code>ripgrep 11.0.2
 -SIMD -AVX (compiled)
 +SIMD +AVX (runtime)
 </code></pre>
-<h4>How did you install ripgrep?</h4>
+How did you install ripgrep?
 <pre><code>apt-get
 </code></pre>
-<h4>What operating system are you using ripgrep on?</h4>
+What operating system are you using ripgrep on?
 <pre><code>5.15.0-33-generic #34~20.04.1-Ubuntu SMP Thu May 19 15:51:16 UTC 2022 x86_64 x86_64 x86_64 GNU/Linux
 </code></pre>
-<h4>Describe your bug.</h4>
+Describe your bug.
 <p>When using the vim plugin LeaderF, which uses rg as its search engine, I realized that the sorting order seems to be &quot;randomly&quot; incorrect.</p>
 <p>After a bit of tweaking, I produced a minimal script reproducing the issue.</p>
-<h4>What are the steps to reproduce the behavior?</h4>
+What are the steps to reproduce the behavior?
 <p>Under a clean temporary folder:</p>
-<pre><code class="language-bash">echo string &gt; modified_first; sleep 1; mkdir -p dir; echo string &gt; dir/modified_second; find -type f | xargs stat
+<pre><code>echo string &gt; modified_first; sleep 1; mkdir -p dir; echo string &gt; dir/modified_second; find -type f | xargs stat
 </code></pre>
 <p>At this point, rg returns the correct order when executing:</p>
-<pre><code class="language-bash">rg --sort modified string
+<pre><code>rg --sort modified string
 </code></pre>
 <p><strong>However, if we modify the two files now, the order becomes incorrect</strong>:</p>
-<pre><code class="language-bash">echo string &gt; modified_first; sleep 1; mkdir -p dir; echo string &gt; dir/modified_second; find -type f | xargs stat # as the output shows, &quot;./modified_first&quot; is modified before &quot;./dir/modified_second&quot;
+<pre><code>echo string &gt; modified_first; sleep 1; mkdir -p dir; echo string &gt; dir/modified_second; find -type f | xargs stat # as the output shows, &quot;./modified_first&quot; is modified before &quot;./dir/modified_second&quot;
 </code></pre>
 <p>Now if we run <code>rg --sort modified string</code>, we find the following output:</p>
 <pre><code>dir/modified_second
@@ -61,8 +61,8 @@ modified_first
 dir/modified_second
 1:string
 </code></pre>
-<p>I'm attaching the full transcript with output below:</p>
-<pre><code class="language-bash">l14:~/tmp/ripgrep$ echo string &gt; modified_first; sleep 1; mkdir -p dir; echo string &gt; dir/modified_second; find -type f | xargs stat
+<p>I&#x27;m attaching the full transcript with output below:</p>
+<pre><code>l14:~/tmp/ripgrep$ echo string &gt; modified_first; sleep 1; mkdir -p dir; echo string &gt; dir/modified_second; find -type f | xargs stat
   File: ./modified_first
   Size: 7         	Blocks: 8          IO Block: 4096   regular file
 Device: fd00h/64768d	Inode: 9699609     Links: 1
@@ -110,43 +110,43 @@ modified_first
 1:string
 l14:~/tmp/ripgrep$ 
 </code></pre>
-<h2>Potential explanation</h2>
-<p>I don't quite understand why this issue pops up, but I realized that <strong>this error does not exist if <code>modified_second</code> is not under <code>dir</code> directory</strong>.</p>
-<p>So I did a <code>touch dir</code>, which seems to give the correct order. My speculation is that, <strong><code>--sort modified</code> somehow takes into consideration the modtime of a file's parent directory instead of the file itself</strong></p>
+Potential explanation
+<p>I don&#x27;t quite understand why this issue pops up, but I realized that <strong>this error does not exist if <code>modified_second</code> is not under <code>dir</code> directory</strong>.</p>
+<p>So I did a <code>touch dir</code>, which seems to give the correct order. My speculation is that, <strong><code>--sort modified</code> somehow takes into consideration the modtime of a file&#x27;s parent directory instead of the file itself</strong></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-06-24 12:14</div>
             <div class="timeline-body"><p>Nice bug report, thank you.</p>
-<p>Sadly, yeah, this is a bug and it's rooted in how I implemented sorting. Namely, sorting is not fully correct. The sorting happens during directory traversal. So when you read the first set of directory entries (before recursing), those entries get sorted. Then recursion happens in the first directory seen, and those directory entries are themselves sorted.</p>
+<p>Sadly, yeah, this is a bug and it&#x27;s rooted in how I implemented sorting. Namely, sorting is not fully correct. The sorting happens during directory traversal. So when you read the first set of directory entries (before recursing), those entries get sorted. Then recursion happens in the first directory seen, and those directory entries are themselves sorted.</p>
 <p>In other words, the sorting implementation relies on the property that sorting the parent directory preserves the sorting order of its children. That works with <code>--sort path</code>, but probably not for anything else. For other things, probably sorting needs to happen globally. Which is pretty bad. It means ripgrep needs to collect everything into memory first and then sort the results. The idea with the current strategy is that it avoids needing to read everything into memory. But it seems quite foolish in retrospect.</p>
-<p>So... definitely a bug, but sadly, probably not one that I'll have time to fix soon personally. If someone else wants to submit a patch though, that would be fine. However, I'd encourage discussing the implementation path with me first. It will likely require collecting all file paths first, sorting those, and then running the search. Sounds easy, but will likely require a fair bit of refactoring unfortunately.</p>
+<p>So... definitely a bug, but sadly, probably not one that I&#x27;ll have time to fix soon personally. If someone else wants to submit a patch though, that would be fine. However, I&#x27;d encourage discussing the implementation path with me first. It will likely require collecting all file paths first, sorting those, and then running the search. Sounds easy, but will likely require a fair bit of refactoring unfortunately.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2022-06-24 12:14</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-06-24 12:14</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">help wanted</span> added by @BurntSushi on 2022-06-24 12:14</div>
+            <div class="event">Label <span class="label">help wanted</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-06-24 12:14</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-11-29 19:09</div>
             <div class="timeline-body"><p>Originally authored by @nguyenvukhang and posted in #2365:</p>
-<p>As outlined in https://github.com/BurntSushi/ripgrep/issues/2243, results are incorrectly sorted by file stats (modified/created/accessed time).</p>
+<p>As outlined in <a href="https://github.com/BurntSushi/ripgrep/issues/2243">BurntSushi/ripgrep#2243</a>, results are incorrectly sorted by file stats (modified/created/accessed time).</p>
 <p>One approach is to make the recursive directory traversal smarter. For example, when sorting by latest modified, the parent directory will be assigned the latest modified time of all its children, rather than the direct result of calling <code>stat</code> on it.</p>
 <p>Another approach will be to sort the results after all search results have been matched and collected. This will likely collecting all results into memory, tagging each result with a key based on the sorting criteria, and sorting the results by this key.</p>
-<hr />
+<hr>
 <p>(I moved the comment here to keep things in one place.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/PoignardAzur">@PoignardAzur</a> on 2023-02-20 18:06</div>
             <div class="timeline-body"><p>@BurntSushi Is this still something you want help with?</p>
-<p>I'm looking to make a contribution to an unfamiliar project so I can test Pernosco, and this issue looks like a good match.</p>
+<p>I&#x27;m looking to make a contribution to an unfamiliar project so I can test Pernosco, and this issue looks like a good match.</p>
 <blockquote>
-<p>However, I'd encourage discussing the implementation path with me first. It will likely require collecting all file paths first, sorting those, and then running the search.</p>
+<p>However, I&#x27;d encourage discussing the implementation path with me first. It will likely require collecting all file paths first, sorting those, and then running the search.</p>
 </blockquote>
-<p>Sounds a bit memory-intensive, but that probably can't be helped in the general case.</p>
+<p>Sounds a bit memory-intensive, but that probably can&#x27;t be helped in the general case.</p>
 <blockquote>
 <p>Sounds easy, but will likely require a fair bit of refactoring unfortunately.</p>
 </blockquote>
@@ -159,14 +159,14 @@ l14:~/tmp/ripgrep$
             <div class="timeline-body"><blockquote>
 <p>One approach is to make the recursive directory traversal smarter. For example, when sorting by latest modified, the parent directory will be assigned the latest modified time of all its children, rather than the direct result of calling stat on it.</p>
 </blockquote>
-<p>This is invalid. Either, the directory is walked by first yielding the directory inodes. Then, we don't know their contents, and therefore not the mtime. The other way, where the contents are searched first, also doesn't help us, since the results are printed before we have the results for sorting order. And on top of that, <code>ripgrep</code> relies on the directories-first approach for filtering.</p>
-<p>One approach is to walk the directory and get all the mtimes, then walk it with correct sorting. This won't solve our problem either, since we want to sort files in different directories WITH EACH OTHER, and so collecting them in a big list is the only way :(</p>
+<p>This is invalid. Either, the directory is walked by first yielding the directory inodes. Then, we don&#x27;t know their contents, and therefore not the mtime. The other way, where the contents are searched first, also doesn&#x27;t help us, since the results are printed before we have the results for sorting order. And on top of that, <code>ripgrep</code> relies on the directories-first approach for filtering.</p>
+<p>One approach is to walk the directory and get all the mtimes, then walk it with correct sorting. This won&#x27;t solve our problem either, since we want to sort files in different directories WITH EACH OTHER, and so collecting them in a big list is the only way :(</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Icelk">@Icelk</a> on 2023-07-05 21:36</div>
             <div class="timeline-body"><p>The diff to get something hacky working (for single-threaded files only, so specity <code>--sort modified</code>). It collects all files. The sort method is hardcoded.</p>
-<pre><code class="language-diff">diff --git a/crates/core/main.rs b/crates/core/main.rs
+<pre><code>diff --git a/crates/core/main.rs b/crates/core/main.rs
 index 2584ea9..38032d2 100644
 --- a/crates/core/main.rs
 +++ b/crates/core/main.rs
@@ -223,11 +223,11 @@ index 06511c5..8fd505c 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Icelk">@Icelk</a> on 2023-07-05 21:44</div>
-            <div class="timeline-body"><p>I observe only a ~20% performance hit (with a ~2s runtime, no colours, piped to /dev/null) as compared to the current sort algo. That seems worth it, since now it actually gives correct results. If you'd like, I can look into making a PR &amp; implementing this for the parallel case.</p>
+            <div class="timeline-body"><p>I observe only a ~20% performance hit (with a ~2s runtime, no colours, piped to /dev/null) as compared to the current sort algo. That seems worth it, since now it actually gives correct results. If you&#x27;d like, I can look into making a PR &amp; implementing this for the parallel case.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2023-07-09 14:14</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-07-09 14:14</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Icelk">@Icelk</a> on 2023-07-09 19:17</div>
@@ -237,7 +237,7 @@ index 06511c5..8fd505c 100644
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:43:33 UTC
+        Synced at 2026-01-20 18:48:12 UTC
     </footer>
 </body>
 </html>

@@ -36,10 +36,10 @@
 <pre><code>$ mkdir input output
 $ printf &quot;no\na search b&quot; &gt; input/1
 $ printf &quot;not&quot; &gt; input/2
-$ rg -exec 'bash -c &quot;cat &gt; ./output/$(basename $1)&quot;' 'search' ./input
+$ rg -exec &#x27;bash -c &quot;cat &gt; ./output/$(basename $1)&quot;&#x27; &#x27;search&#x27; ./input
 </code></pre>
 <p>Will create a file <code>output/1</code> containing the line <code>a search b</code>.</p>
-<p>Now I tried automating this as a shell script, but it's not trivial as filenames may contain newlines, and the ouput of ripgrep could contain arbitrary binary data.</p>
+<p>Now I tried automating this as a shell script, but it&#x27;s not trivial as filenames may contain newlines, and the ouput of ripgrep could contain arbitrary binary data.</p>
 <p>I came up with two bash scripts that mostly work, <code>rg-exec1</code>. Which assumes the matching lines have no null bytes.</p>
 <pre><code>#!/bin/bash
 if [ $# -lt 1 ]; then 
@@ -53,15 +53,15 @@ shift # rest of arguments will be passed to ripgrep
 
 # Every even iteration of this loop will have $data be a matching filename 
 # every odd iteration will have the corresponding output of rg
-{ rg --with-filename --null &quot;$@&quot;; printf '\0'; } | while IFS= read -r -d $'\0' data; do
-	if [ -z ${filename+x} ]; then # we haven't seen the filename yet
+{ rg --with-filename --null &quot;$@&quot;; printf &#x27;\0&#x27;; } | while IFS= read -r -d $&#x27;\0&#x27; data; do
+	if [ -z ${filename+x} ]; then # we haven&#x27;t seen the filename yet
 		filename=&quot;$data&quot;
 	else 
 		# data should be the ripgrep output, so send it to cmd
 		cmd &quot;$filename&quot; &lt;&lt;&lt; &quot;$data&quot;
 		unset filename; fi; done # so next iteration we will execute the &quot;then&quot; branch
 </code></pre>
-<p>And an alternative version,<code>rg-exec2</code>, that doesn't have that limitation but instead calls <code>rg</code> multiple times, but it only works for searching a single command-line provided folder:</p>
+<p>And an alternative version,<code>rg-exec2</code>, that doesn&#x27;t have that limitation but instead calls <code>rg</code> multiple times, but it only works for searching a single command-line provided folder:</p>
 <pre><code>#!/bin/bash
 if [ $# -lt 3 ]; then 
    echo &quot;Usage: rg-exec2 &lt;bash cmd&gt; &lt;pattern&gt; &lt;folder&gt; &lt;ripgrep options&gt;...&quot;
@@ -72,51 +72,51 @@ pattern=$2
 folder=$3
 shift 3 # rest of arguments should be options (and NOT other folders/files to search)
 
-rg --files-with-matches --null &quot;$@&quot; -- &quot;$pattern&quot; &quot;$folder&quot; | while IFS= read -r -d $'\0' filename; do
-	# Don't pass $folder to second call instead pass the individual filename
+rg --files-with-matches --null &quot;$@&quot; -- &quot;$pattern&quot; &quot;$folder&quot; | while IFS= read -r -d $&#x27;\0&#x27; filename; do
+	# Don&#x27;t pass $folder to second call instead pass the individual filename
 	rg &quot;$@&quot; -- &quot;$pattern&quot; &quot;$filename&quot; | cmd &quot;$filename&quot;; done
 </code></pre>
 <p>I guess I could use the <code>--json</code> option and write a program to pass the output, but that seems like a lot more work for me than a shell script.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Add an option to call a command with both the matching *filenames* *and* the matching text" to "Add an option to call a command with both the matching *filenames and the matching text" by @IsaacOscar on 2025-07-04 10:28</div>
+            <div class="event">Renamed from &quot;Add an option to call a command with both the matching *filenames* *and* the matching text&quot; to &quot;Add an option to call a command with both the matching *filenames and the matching text&quot; by <a href="https://github.com/IsaacOscar">@IsaacOscar</a> on 2025-07-04 10:28</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-07-04 13:15</div>
             <div class="timeline-body"><p>I think this is too niche of a concern to warrant the complexity required to implement this feature. I suggest using <code>--json</code> or processing the output of ripgrep in a non-crippled language that can handle NUL bytes.</p>
-<p>ripgrep isn't meant to have arbitrarily flexible output formats. This is why the <code>--json</code> flag exists. It lets tools downstream read the results from ripgrep in a structured way and completely own how it's displayed. There's a lot of middle ground between that and ripgrep's standard output format, but I do not want ripgrep to cover it. Instead, the folks walking bespoke output formats should do the work necessary.</p>
-<p>You may also consider that your shell script doesn't need to work on all possible inputs. For example, I don't have any file names with newline terminators on my system, so I'm happy to for my personal shell scripts to assume this. A tool like ripgrep can't make that assumption, but my own personal shell scripts absolutely can.</p>
+<p>ripgrep isn&#x27;t meant to have arbitrarily flexible output formats. This is why the <code>--json</code> flag exists. It lets tools downstream read the results from ripgrep in a structured way and completely own how it&#x27;s displayed. There&#x27;s a lot of middle ground between that and ripgrep&#x27;s standard output format, but I do not want ripgrep to cover it. Instead, the folks walking bespoke output formats should do the work necessary.</p>
+<p>You may also consider that your shell script doesn&#x27;t need to work on all possible inputs. For example, I don&#x27;t have any file names with newline terminators on my system, so I&#x27;m happy to for my personal shell scripts to assume this. A tool like ripgrep can&#x27;t make that assumption, but my own personal shell scripts absolutely can.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2025-07-04 13:15</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-07-04 13:15</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2025-07-04 13:15</div>
+            <div class="event">Label <span class="label">wontfix</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-07-04 13:15</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/IsaacOscar">@IsaacOscar</a> on 2025-07-05 09:31</div>
-            <div class="timeline-body"><p>Yes I should stop worrying about weird edge cases that I don't actually encounter.</p>
+            <div class="timeline-body"><p>Yes I should stop worrying about weird edge cases that I don&#x27;t actually encounter.</p>
 <p>Unfortunately though, my rg-exec1 shell script is horribly slow (e.g. on a 10MB file it takes 2.5seconds just to do a <code>cat &gt; $1.out</code>, but piping the result of rg to cat manually only takes 0.2seconds).
 So it seems I should try and use the JSON api. Do you know of any code using the API I could use as an example?
-(Actual I only really wanted this feature so I could do <code>rg-exec 'sponge' -r replace search</code> just like a `sed -i 's/search/replace/g', so if you know of a program that already does that, that would be great!)</p>
+(Actual I only really wanted this feature so I could do <code>rg-exec &#x27;sponge&#x27; -r replace search</code> just like a `sed -i &#x27;s/search/replace/g&#x27;, so if you know of a program that already does that, that would be great!)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-07-05 12:02</div>
             <div class="timeline-body"><p>2.5s sounds wild. And 0.2s for 10MB just using ripgrep is also wild. ripgrep can search the entire Linux kernel source tree in less than 0.1s on my machine.</p>
 <blockquote>
-<p>(Actual I only really wanted this feature so I could do <code>rg-exec 'sponge' -r replace search</code> just like a `sed -i 's/search/replace/g', so if you know of a program that already does that, that would be great!)</p>
+<p>(Actual I only really wanted this feature so I could do <code>rg-exec &#x27;sponge&#x27; -r replace search</code> just like a `sed -i &#x27;s/search/replace/g&#x27;, so if you know of a program that already does that, that would be great!)</p>
 </blockquote>
-<p>You should have lead with this! It's best to focus on the actual problem you want to solve. <a href="https://github.com/BurntSushi/ripgrep/blob/master/FAQ.md#search-and-replace">There's an entire FAQ entry about it.</a> There is also <a href="https://github.com/chmln/sd">sd</a>.</p>
+<p>You should have lead with this! It&#x27;s best to focus on the actual problem you want to solve. <a href="https://github.com/BurntSushi/ripgrep/blob/master/FAQ.md#search-and-replace">There&#x27;s an entire FAQ entry about it.</a> There is also <a href="https://github.com/chmln/sd">sd</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/IsaacOscar">@IsaacOscar</a> on 2025-07-07 21:35</div>
             <div class="timeline-body"><p>Sorry, I was running ripgrep in WSL2 and my file was on my Windows drive, moving the file to the virtual Linux file system makes it run in 13ms.</p>
-<p>Yes I read that you don't want to add support for inplace replace, but supporting it via a wrapper script over ripgrep isn't easy, hence my suggestion for this feature.</p>
-<p>I tried sd and fastmod, but they dont support PCRE2, so I'll just try modifying the source code of ripgrep itself...</p>
+<p>Yes I read that you don&#x27;t want to add support for inplace replace, but supporting it via a wrapper script over ripgrep isn&#x27;t easy, hence my suggestion for this feature.</p>
+<p>I tried sd and fastmod, but they dont support PCRE2, so I&#x27;ll just try modifying the source code of ripgrep itself...</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -127,7 +127,7 @@ So it seems I should try and use the JSON api. Do you know of any code using the
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:43:56 UTC
+        Synced at 2026-01-20 18:48:14 UTC
     </footer>
 </body>
 </html>

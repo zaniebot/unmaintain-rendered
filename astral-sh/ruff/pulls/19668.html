@@ -23,38 +23,38 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This PR extends the <code>isinstance()</code> truthiness inference (added in #19503) so that it works better for instances of generic types. Specifically, we now infer <code>Literal[True]</code> here, whereas on <code>main</code> we infer <code>bool</code>:</p>
-<pre><code class="language-py">def f(x: list[int]):
+<pre><code>def f(x: list[int]):
     reveal_type(isinstance(x, list))
 </code></pre>
 <p>The motivation for improving our logic here is that the logic on <code>main</code> breaks for tuples if we remove the <code>Type::Tuple</code> variant and treat them simply as instances of a (very special) generic class. I.e., we have tests asserting that we infer <code>isinstance((1, 2), tuple)</code> as <code>Literal[True]</code>; those break on the branch for #19669 without this change.</p>
-<p>I've split this out into a separate PR from #19669 as it seems like a useful change on its own merits, however. We can see from the ecosystem report that it gets rid of two false positives from <code>bokeh</code>: we now correctly infer two branches of code as unreachable, and therefore do not emit any <code>invalid-return-type</code> diagnostics on those branches anymore. (See https://github.com/bokeh/bokeh/blob/adef0157284696ce86961b2089c75fddda53c15c/src/bokeh/core/property/container.py#L130-L140.)</p>
-<p>I can't quite figure out what's going on in the sympy ecosystem hit (https://github.com/sympy/sympy/blob/3c817ed8ab551d71e36907ce869afe5e4ca789ff/sympy/polys/polyclasses.py#L308-L317) -- it seems like we used to infer the type of <code>g</code> as <code>DMP[Es] &amp; DMP[Unknown]</code> at the point of the <code>return</code> statement, whereas we now infer the type of <code>g</code> as <code>DMP[Es]</code>. I don't quite understand why we now get to that answer; but still, our new inference seems better here -- intersecting with <code>DMP[Unknown]</code> as a result of the <code>isinstance()</code> check in that function is incorrect (https://github.com/astral-sh/ty/issues/456).</p>
-<h2>Test Plan</h2>
-<p>I added mdtests for the direct functionality being added, and for the false positives that this PR removes from <code>bokeh</code>. I also extended the reachability tests added in #19503 to include some examples of generic types. Most of these tests currently fail, so there are many TODO comments added -- they require https://github.com/astral-sh/ty/issues/456 for them to be fixed. If this is merged, I'll add a comment to that issue saying that we now have some failing tests on <code>main</code> that should naturally be fixed if and when that issue is fixed.</p>
+<p>I&#x27;ve split this out into a separate PR from #19669 as it seems like a useful change on its own merits, however. We can see from the ecosystem report that it gets rid of two false positives from <code>bokeh</code>: we now correctly infer two branches of code as unreachable, and therefore do not emit any <code>invalid-return-type</code> diagnostics on those branches anymore. (See https://github.com/bokeh/bokeh/blob/adef0157284696ce86961b2089c75fddda53c15c/src/bokeh/core/property/container.py#L130-L140.)</p>
+<p>I can&#x27;t quite figure out what&#x27;s going on in the sympy ecosystem hit (https://github.com/sympy/sympy/blob/3c817ed8ab551d71e36907ce869afe5e4ca789ff/sympy/polys/polyclasses.py#L308-L317) -- it seems like we used to infer the type of <code>g</code> as <code>DMP[Es] &amp; DMP[Unknown]</code> at the point of the <code>return</code> statement, whereas we now infer the type of <code>g</code> as <code>DMP[Es]</code>. I don&#x27;t quite understand why we now get to that answer; but still, our new inference seems better here -- intersecting with <code>DMP[Unknown]</code> as a result of the <code>isinstance()</code> check in that function is incorrect (<a href="https://github.com/astral-sh/ty/issues/456">astral-sh/ty#456</a>).</p>
+Test Plan
+<p>I added mdtests for the direct functionality being added, and for the false positives that this PR removes from <code>bokeh</code>. I also extended the reachability tests added in #19503 to include some examples of generic types. Most of these tests currently fail, so there are many TODO comments added -- they require <a href="https://github.com/astral-sh/ty/issues/456">astral-sh/ty#456</a> for them to be fixed. If this is merged, I&#x27;ll add a comment to that issue saying that we now have some failing tests on <code>main</code> that should naturally be fixed if and when that issue is fixed.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-31 18:49</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2>Diagnostic diff on typing conformance tests</h2>
+Diagnostic diff on typing conformance tests
 <p>No changes detected when running ty on typing conformance tests ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-07-31 18:51</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-31 18:51</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-31 18:51</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">bokeh (https://github.com/bokeh/bokeh)
+Changes were detected when running on open source projects
+
+<pre><code>bokeh (https://github.com/bokeh/bokeh)
 - src/bokeh/core/property/container.py:140:20: error[invalid-return-type] Return type does not match returned value: expected `PropertyValueList[T]`, found `list[T] &amp; ~list[Unknown]`
 - src/bokeh/core/property/container.py:165:20: error[invalid-return-type] Return type does not match returned value: expected `PropertyValueSet[T]`, found `set[T] &amp; ~set[Unknown]`
 - Found 836 diagnostics
@@ -66,25 +66,25 @@ sympy (https://github.com/sympy/sympy)
 + Found 12937 diagnostics
 
 </code></pre>
-</details>
+
 No memory usage changes detected ✅
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[ty] Improve `isinstance()` reachability analysis for generic types" to "[ty] Improve `isinstance()` truthiness analysis for generic types" by @AlexWaygood on 2025-08-01 13:25</div>
+            <div class="event">Renamed from &quot;[ty] Improve `isinstance()` reachability analysis for generic types&quot; to &quot;[ty] Improve `isinstance()` truthiness analysis for generic types&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-01 13:25</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @AlexWaygood on 2025-08-01 13:25</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-01 13:25</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-08-01 13:25</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-01 13:25</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-08-01 13:25</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-01 13:25</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-08-01 13:25</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-01 13:25</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-08-01 13:39</div>
@@ -92,10 +92,10 @@ No memory usage changes detected ✅
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @AlexWaygood on 2025-08-01 13:44</div>
+            <div class="event">Merged by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-01 13:44</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-08-01 13:44</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-01 13:44</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-08-01 13:44</div>
@@ -103,7 +103,7 @@ No memory usage changes detected ✅
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:14:42 UTC
+        Synced at 2026-01-20 19:17:13 UTC
     </footer>
 </body>
 </html>

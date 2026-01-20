@@ -24,7 +24,7 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/bbatha">@bbatha</a></div>
             <div class="timeline-body"><p>I have this matches:</p>
-<pre><code class="language-Rust">fn main() {
+<pre><code>fn main() {
     let list_conflicts = vec![&quot;inline&quot;, &quot;command&quot;, &quot;host&quot;, &quot;host-set&quot;, &quot;nossh-ping&quot;];
     let matches = App::new(&quot;disburse&quot;)
                         .version(&amp;crate_version!()[..])
@@ -38,7 +38,7 @@
                             .empty_values(false)
                         )
                         .arg(Arg::with_name(&quot;inline&quot;)
-                            .help(&quot;Prefix each host's output with its hostname&quot;)
+                            .help(&quot;Prefix each host&#x27;s output with its hostname&quot;)
                             .long(&quot;inline&quot;)
                             .short(&quot;i&quot;)
                         )
@@ -87,40 +87,40 @@
 }
 </code></pre>
 <p>With the attempted run of:
-&quot;disburse --config hosts.json --inline --host host1 --host host2 -n 2 'sleep 10'&quot;</p>
+&quot;disburse --config hosts.json --inline --host host1 --host host2 -n 2 &#x27;sleep 10&#x27;&quot;</p>
 <p>matches.value_of(&quot;command&quot;) is populated however with:</p>
-<p>&quot;disburse --config hosts.json --inline --host host1 --host host2 'sleep 10'&quot;</p>
+<p>&quot;disburse --config hosts.json --inline --host host1 --host host2 &#x27;sleep 10&#x27;&quot;</p>
 <p>matches.value_of(&quot;command&quot;) is not populated.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-07-16 21:53</div>
-            <div class="timeline-body"><p>This is because there isn't a way to determine when the multiple values stops and the next argument starts, unless you state a max or fixed number of values. <code>Arg::multiple(true)</code> by default says, &quot;this argument can appear multiple times, OR have multiple values.&quot; So this is also a valid way to run your program:</p>
-<pre><code>$ disburse --config hosts.json --inline --host host1 host2 -- 'sleep 10'
+            <div class="timeline-body"><p>This is because there isn&#x27;t a way to determine when the multiple values stops and the next argument starts, unless you state a max or fixed number of values. <code>Arg::multiple(true)</code> by default says, &quot;this argument can appear multiple times, OR have multiple values.&quot; So this is also a valid way to run your program:</p>
+<pre><code>$ disburse --config hosts.json --inline --host host1 host2 -- &#x27;sleep 10&#x27;
 </code></pre>
 <p>There are a few ways to tackle your problem depending on your particular situation. If the argument that accepts multiple values has a fixed or maximum number of values you can specify that by setting <code>Arg::number_of_values()</code> or <code>Arg::max_values()</code> in conjunction with <code>Arg::multiple(true)</code>. But that value must be <code>&gt; 1</code>, which may or may not help you. But if for example you knew there always had to be exactly two hosts, and only two, you could set <code>Arg::number_of_values(2)</code> and your above invocation line would work fine.</p>
 <p>The other more general option is to use <code>--</code> and place all positional arguments after that.</p>
-<pre><code>$ disburse --config hosts.json --inline --host host1 --host host2 -- 'sleep 10'
+<pre><code>$ disburse --config hosts.json --inline --host host1 --host host2 -- &#x27;sleep 10&#x27;
 
 OR
 
-$ disburse --config hosts.json --inline --host host1 host2 -- 'sleep 10'
+$ disburse --config hosts.json --inline --host host1 host2 -- &#x27;sleep 10&#x27;
 </code></pre>
 <p>Because <code>--</code> is somewhat of a unix standard and means, &quot;everything that follows is a positional&quot;</p>
 <p>Hopefully this helps, if not please let me know :) And thanks for taking the time to file the issue! :+1:</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2015-07-17 00:19</div>
+            <div class="event">Label <span class="label">T: RFC / question</span> added by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-07-17 00:19</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">C: args</span> added by @kbknapp on 2015-07-17 00:19</div>
+            <div class="event">Label <span class="label">C: args</span> added by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-07-17 00:19</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-07-17 00:28</div>
-            <div class="timeline-body"><p>I also just noticed you are using <code>concat!()</code> but you can escape newlines to visually align help strings, or recently added in <code>clap</code> v1.1.0 you can use <code>{n}</code> inside help strings to insert newlines into help strings and ensure they're all still visually aligned when the user does a <code>--help</code></p>
+            <div class="timeline-body"><p>I also just noticed you are using <code>concat!()</code> but you can escape newlines to visually align help strings, or recently added in <code>clap</code> v1.1.0 you can use <code>{n}</code> inside help strings to insert newlines into help strings and ensure they&#x27;re all still visually aligned when the user does a <code>--help</code></p>
 <p>Example:</p>
-<pre><code class="language-rust">// Arg with long help string which needs
+<pre><code>// Arg with long help string which needs
 // a new line printed to the user
 Arg::with_name(&quot;long_help&quot;)
     .short(&quot;l&quot;)
@@ -152,8 +152,8 @@ FLAGS:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/bbatha">@bbatha</a> on 2015-07-17 00:45</div>
-            <div class="timeline-body"><p>That's an excellent tip with the strings, thanks!</p>
-<p>As for the argument problem. What I'd really like is to force it to be multiple option flags with a fixed number of inputs with something like required_inputs(1) to each one so this is legal:
+            <div class="timeline-body"><p>That&#x27;s an excellent tip with the strings, thanks!</p>
+<p>As for the argument problem. What I&#x27;d really like is to force it to be multiple option flags with a fixed number of inputs with something like required_inputs(1) to each one so this is legal:
 --host foo --host bar
 And this is illegal:
 --host foo bar</p>
@@ -163,37 +163,37 @@ And this is illegal:
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-07-17 01:05</div>
             <div class="timeline-body"><p>@bbatha</p>
-<p>Actually I think you're right, and that just pointed out a logic bug in <code>clap</code>! So <code>Arg::number_of_values()</code> is supposed to allow a qty of <code>&gt;0</code>, <strong>not</strong> <code>&gt;1</code>. Once I fix this bug, add <code>Arg::number_of_values(1)</code> but keep <code>Arg::multiple()</code> for your <code>host</code> argument. This should have the exact effect you're looking for:</p>
+<p>Actually I think you&#x27;re right, and that just pointed out a logic bug in <code>clap</code>! So <code>Arg::number_of_values()</code> is supposed to allow a qty of <code>&gt;0</code>, <strong>not</strong> <code>&gt;1</code>. Once I fix this bug, add <code>Arg::number_of_values(1)</code> but keep <code>Arg::multiple()</code> for your <code>host</code> argument. This should have the exact effect you&#x27;re looking for:</p>
 <p><code>--host host1 --host host2</code> is <strong>legal</strong>
 <code>--host host1 host2</code> is <strong>illegal</strong></p>
-<p>I'll post back here once it's fixed.</p>
+<p>I&#x27;ll post back here once it&#x27;s fixed.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">T: bug</span> added by @kbknapp on 2015-07-17 01:05</div>
+            <div class="event">Label <span class="label">T: bug</span> added by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-07-17 01:05</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">D: easy</span> added by @kbknapp on 2015-07-17 01:05</div>
+            <div class="event">Label <span class="label">D: easy</span> added by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-07-17 01:05</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">P3: want to have</span> added by @kbknapp on 2015-07-17 01:05</div>
+            <div class="event">Label <span class="label">P3: want to have</span> added by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-07-17 01:05</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">T: RFC / question</span> removed by @kbknapp on 2015-07-17 01:05</div>
+            <div class="event">Label <span class="label">T: RFC / question</span> removed by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-07-17 01:05</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @kbknapp by @kbknapp on 2015-07-17 01:05</div>
+            <div class="event">Assigned to <a href="https://github.com/kbknapp">@kbknapp</a> by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-07-17 01:05</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../pulls/162.html">clap-rs/clap#162</a> on 2015-07-17 01:35</div>
+            <div class="event">Referenced in <a>clap-rs/clap#162</a> on 2015-07-17 01:35</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-07-17 01:36</div>
-            <div class="timeline-body"><p>Once Travis passes #162 I'll merge into master and upload v1.1.2 to Crates.io</p>
+            <div class="timeline-body"><p>Once Travis passes #162 I&#x27;ll merge into master and upload v1.1.2 to Crates.io</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @kbknapp on 2015-07-17 01:38</div>
+            <div class="event">Closed by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-07-17 01:38</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-07-17 01:43</div>
@@ -203,7 +203,7 @@ And this is illegal:
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:46:22 UTC
+        Synced at 2026-01-20 19:56:08 UTC
     </footer>
 </body>
 </html>

@@ -23,52 +23,52 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p><em>This is preview only feature and is available using the <code>--preview</code> command-line flag.</em></p>
-<p>With the implementation of <a href="https://peps.python.org/pep-0701/">PEP 701</a> in Python 3.12, f-strings can now be broken into multiple lines, can contain comments, and can re-use the same quote character. Currently, no other Python formatter formats the f-strings so there's some discussion which needs to happen in defining the style used for f-string formatting. Relevant discussion: https://github.com/astral-sh/ruff/discussions/9785</p>
+<p>With the implementation of <a href="https://peps.python.org/pep-0701/">PEP 701</a> in Python 3.12, f-strings can now be broken into multiple lines, can contain comments, and can re-use the same quote character. Currently, no other Python formatter formats the f-strings so there&#x27;s some discussion which needs to happen in defining the style used for f-string formatting. Relevant discussion: https://github.com/astral-sh/ruff/discussions/9785</p>
 <p>The goal for this PR is to add minimal support for f-string formatting. This would be to format expression within the replacement field without introducing any major style changes.</p>
-<h3>Newlines</h3>
+Newlines
 <p>The heuristics for adding newline is similar to that of <a href="https://prettier.io/docs/en/next/rationale.html#template-literals">Prettier</a> where the formatter would only split an expression in the replacement field across multiple lines if there was already a line break within the replacement field.</p>
 <p>In other words, the formatter would not add any newlines unless they were already present i.e., they were added by the user. This makes breaking any expression inside an f-string optional and in control of the user. For example,</p>
-<pre><code class="language-python"># We wouldn't break this
+<pre><code># We wouldn&#x27;t break this
 aaaaaaaaaaa = f&quot;asaaaaaaaaaaaaaaaa { aaaaaaaaaaaa + bbbbbbbbbbbb + ccccccccccccccc } cccccccccc&quot;
 
-# But, we would break the following as there's already a newline
+# But, we would break the following as there&#x27;s already a newline
 aaaaaaaaaaa = f&quot;asaaaaaaaaaaaaaaaa {
 	aaaaaaaaaaaa + bbbbbbbbbbbb + ccccccccccccccc } cccccccccc&quot;
 </code></pre>
 <p>If there are comments in any of the replacement field of the f-string, then it will always be a multi-line f-string in which case the formatter would prefer to break expressions i.e., introduce newlines. For example,</p>
-<pre><code class="language-python">x = f&quot;{ # comment
+<pre><code>x = f&quot;{ # comment
     a }&quot;
 </code></pre>
-<h3>Quotes</h3>
+Quotes
 <p>The logic for formatting quotes remains unchanged. The existing logic is used to determine the necessary quote char and is used accordingly.</p>
-<p>Now, if the expression inside an f-string is itself a string like, then we need to make sure to preserve the existing quote and not change it to the preferred quote unless it's 3.12. For example,</p>
-<pre><code class="language-python">f&quot;outer {'inner'} outer&quot;
+<p>Now, if the expression inside an f-string is itself a string like, then we need to make sure to preserve the existing quote and not change it to the preferred quote unless it&#x27;s 3.12. For example,</p>
+<pre><code>f&quot;outer {&#x27;inner&#x27;} outer&quot;
 
 # For pre 3.12, preserve the single quote
-f&quot;outer {'inner'} outer&quot;
+f&quot;outer {&#x27;inner&#x27;} outer&quot;
 
 # While for 3.12 and later, the quotes can be changed
 f&quot;outer {&quot;inner&quot;} outer&quot;
 </code></pre>
 <p>But, for triple-quoted strings, we can re-use the same quote char unless the inner string is itself a triple-quoted string.</p>
-<pre><code class="language-python">f&quot;&quot;&quot;outer {&quot;inner&quot;} outer&quot;&quot;&quot;  # valid
-f&quot;&quot;&quot;outer {'''inner'''} outer&quot;&quot;&quot;  # preserve the single quote char for the inner string
+<pre><code>f&quot;&quot;&quot;outer {&quot;inner&quot;} outer&quot;&quot;&quot;  # valid
+f&quot;&quot;&quot;outer {&#x27;&#x27;&#x27;inner&#x27;&#x27;&#x27;} outer&quot;&quot;&quot;  # preserve the single quote char for the inner string
 </code></pre>
-<h3>Debug expressions</h3>
-<p>If debug expressions are present in the replacement field of a f-string, then the whitespace needs to be preserved as they will be rendered as it is (for example, <code>f&quot;{  x  = }&quot;</code>. If there are any nested f-strings, then the whitespace in them needs to be preserved as well which means that we'll stop formatting the f-string as soon as we encounter a debug expression.</p>
-<pre><code class="language-python">f&quot;outer {   x =  !s  :.3f}&quot;
+Debug expressions
+<p>If debug expressions are present in the replacement field of a f-string, then the whitespace needs to be preserved as they will be rendered as it is (for example, <code>f&quot;{  x  = }&quot;</code>. If there are any nested f-strings, then the whitespace in them needs to be preserved as well which means that we&#x27;ll stop formatting the f-string as soon as we encounter a debug expression.</p>
+<pre><code>f&quot;outer {   x =  !s  :.3f}&quot;
 #                  ^^
 #                  We can remove these whitespaces
 </code></pre>
-<p>Now, the whitespace doesn't need to be preserved around conversion spec and format specifiers, so we'll format them as usual but we won't be formatting any nested f-string within the format specifier.</p>
-<h3>Miscellaneous</h3>
+<p>Now, the whitespace doesn&#x27;t need to be preserved around conversion spec and format specifiers, so we&#x27;ll format them as usual but we won&#x27;t be formatting any nested f-string within the format specifier.</p>
+Miscellaneous
 <ul>
-<li>The <a href="https://github.com/astral-sh/ruff/issues/8279"><code>hug_parens_with_braces_and_square_brackets</code></a> preview style isn't implemented w.r.t. the f-string curly braces.</li>
+<li>The <a href="https://github.com/astral-sh/ruff/issues/8279"><code>hug_parens_with_braces_and_square_brackets</code></a> preview style isn&#x27;t implemented w.r.t. the f-string curly braces.</li>
 <li>The <a href="https://github.com/astral-sh/ruff/discussions/9785#discussioncomment-8470590">indentation</a> is always relative to the f-string containing statement</li>
 </ul>
-<h2>Test Plan</h2>
+Test Plan
 <ul>
 <li>Add new test cases</li>
 <li>Review existing snapshot changes</li>
@@ -77,28 +77,28 @@ f&quot;&quot;&quot;outer {'''inner'''} outer&quot;&quot;&quot;  # preserve the s
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">formatter</span> added by @dhruvmanila on 2024-02-12 14:27</div>
+            <div class="event">Label <span class="label">formatter</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-02-12 14:27</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">preview</span> added by @dhruvmanila on 2024-02-12 14:27</div>
+            <div class="event">Label <span class="label">preview</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-02-12 14:27</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "WIP: F-string formatting" to "Preview minimal f-string formatting" by @dhruvmanila on 2024-02-12 14:32</div>
+            <div class="event">Renamed from &quot;WIP: F-string formatting&quot; to &quot;Preview minimal f-string formatting&quot; by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-02-12 14:32</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dhruvmanila on 2024-02-13 07:40</div>
+            <div class="event">Closed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-02-13 07:40</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @dhruvmanila on 2024-02-13 07:40</div>
+            <div class="event">Reopened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-02-13 07:40</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-02-13 08:03</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Formatter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Formatter (stable)
 <p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
-<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (error)</summary>
+<a href="https://github.com/zulip/zulip">zulip/zulip</a> (error)
 <p>
 
 <pre><code>Failed to clone zulip/zulip: error: RPC failed; curl 56 GnuTLS recv error (-54): Error in the pull function.
@@ -108,18 +108,18 @@ fatal: early EOF
 fatal: fetch-pack: invalid index-pack output
 </code></pre>
 </p>
-</details>
 
-<h3>Formatter (preview)</h3>
+
+Formatter (preview)
 <p>ℹ️ ecosystem check <strong>detected format changes</strong>. (+483 -453 lines in 203 files in 22 projects; 21 projects unchanged)</p>
-<details><summary><a href="https://github.com/RasaHQ/rasa">RasaHQ/rasa</a> (+3 -3 lines across 2 files)</summary>
+<a href="https://github.com/RasaHQ/rasa">RasaHQ/rasa</a> (+3 -3 lines across 2 files)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/core/train.py#L43'>rasa/core/train.py~L43</a></p>
-<pre><code class="language-diff">                     domain,
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/core/train.py#L43">rasa/core/train.py~L43</a></p>
+<pre><code>                     domain,
                      policy_config,
                      stories=story_file,
 -                    output=str(Path(output_path, f&quot;run_{r +1}&quot;)),
@@ -128,8 +128,8 @@ fatal: fetch-pack: invalid index-pack output
                      additional_arguments={
                          **additional_arguments,
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/graph_components/validators/test_default_recipe_validator.py#L861'>tests/graph_components/validators/test_default_recipe_validator.py~L861</a></p>
-<pre><code class="language-diff"> ):
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/graph_components/validators/test_default_recipe_validator.py#L861">tests/graph_components/validators/test_default_recipe_validator.py~L861</a></p>
+<pre><code> ):
      assert (
          len(policy_types) &gt;= priority + num_duplicates
 -    ), f&quot;This tests needs at least {priority+num_duplicates} many types.&quot;
@@ -138,8 +138,8 @@ fatal: fetch-pack: invalid index-pack output
      # start with a schema where node i has priority i
      nodes = {
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/graph_components/validators/test_default_recipe_validator.py#L871'>tests/graph_components/validators/test_default_recipe_validator.py~L871</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/graph_components/validators/test_default_recipe_validator.py#L871">tests/graph_components/validators/test_default_recipe_validator.py~L871</a></p>
+<pre><code> 
      # give nodes p+1, .., p+num_duplicates-1 priority &quot;priority&quot;
      for idx in range(num_duplicates):
 -        nodes[f&quot;{priority+idx+1}&quot;].config[&quot;priority&quot;] = priority
@@ -149,35 +149,35 @@ fatal: fetch-pack: invalid index-pack output
      monkeypatch.setattr(
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+20 -20 lines across 10 files)</summary>
+
+<a href="https://github.com/apache/airflow">apache/airflow</a> (+20 -20 lines across 10 files)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/apache/airflow/blob/a3e939f22f0e895d7b0897b4eba13908822f267d/airflow/dag_processing/processor.py#L546'>airflow/dag_processing/processor.py~L546</a></p>
-<pre><code class="language-diff">             &lt;pre&gt;&lt;code&gt;{task_list}\n&lt;code&gt;&lt;/pre&gt;
+<p><a href="https://github.com/apache/airflow/blob/a3e939f22f0e895d7b0897b4eba13908822f267d/airflow/dag_processing/processor.py#L546">airflow/dag_processing/processor.py~L546</a></p>
+<pre><code>             &lt;pre&gt;&lt;code&gt;{task_list}\n&lt;code&gt;&lt;/pre&gt;
              Blocking tasks:
              &lt;pre&gt;&lt;code&gt;{blocking_task_list}&lt;code&gt;&lt;/pre&gt;
--            Airflow Webserver URL: {conf.get(section='webserver', key='base_url')}
+-            Airflow Webserver URL: {conf.get(section=&#x27;webserver&#x27;, key=&#x27;base_url&#x27;)}
 +            Airflow Webserver URL: {conf.get(section=&quot;webserver&quot;, key=&quot;base_url&quot;)}
              &quot;&quot;&quot;
  
              tasks_missed_sla = []
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/a3e939f22f0e895d7b0897b4eba13908822f267d/airflow/providers/google/cloud/hooks/dataproc_metastore.py#L685'>airflow/providers/google/cloud/hooks/dataproc_metastore.py~L685</a></p>
-<pre><code class="language-diff">                     TBLS.TBL_NAME = '{table}'&quot;&quot;&quot;
+<p><a href="https://github.com/apache/airflow/blob/a3e939f22f0e895d7b0897b4eba13908822f267d/airflow/providers/google/cloud/hooks/dataproc_metastore.py#L685">airflow/providers/google/cloud/hooks/dataproc_metastore.py~L685</a></p>
+<pre><code>                     TBLS.TBL_NAME = &#x27;{table}&#x27;&quot;&quot;&quot;
          if _partitions:
              query += f&quot;&quot;&quot;
--                    AND PARTITIONS.PART_NAME IN ({', '.join(f&quot;'{p}'&quot; for p in _partitions)})&quot;&quot;&quot;
-+                    AND PARTITIONS.PART_NAME IN ({&quot;, &quot;.join(f&quot;'{p}'&quot; for p in _partitions)})&quot;&quot;&quot;
+-                    AND PARTITIONS.PART_NAME IN ({&#x27;, &#x27;.join(f&quot;&#x27;{p}&#x27;&quot; for p in _partitions)})&quot;&quot;&quot;
++                    AND PARTITIONS.PART_NAME IN ({&quot;, &quot;.join(f&quot;&#x27;{p}&#x27;&quot; for p in _partitions)})&quot;&quot;&quot;
          query += &quot;;&quot;
  
          client = self.get_dataproc_metastore_client_v1beta()
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/a3e939f22f0e895d7b0897b4eba13908822f267d/airflow/providers/google/cloud/triggers/cloud_storage_transfer_service.py#L48'>airflow/providers/google/cloud/triggers/cloud_storage_transfer_service.py~L48</a></p>
-<pre><code class="language-diff">     def serialize(self) -&gt; tuple[str, dict[str, Any]]:
+<p><a href="https://github.com/apache/airflow/blob/a3e939f22f0e895d7b0897b4eba13908822f267d/airflow/providers/google/cloud/triggers/cloud_storage_transfer_service.py#L48">airflow/providers/google/cloud/triggers/cloud_storage_transfer_service.py~L48</a></p>
+<pre><code>     def serialize(self) -&gt; tuple[str, dict[str, Any]]:
          &quot;&quot;&quot;Serialize StorageTransferJobsTrigger arguments and classpath.&quot;&quot;&quot;
          return (
 -            f&quot;{self.__class__.__module__ }.{self.__class__.__qualname__}&quot;,
@@ -186,30 +186,30 @@ fatal: fetch-pack: invalid index-pack output
                  &quot;project_id&quot;: self.project_id,
                  &quot;job_names&quot;: self.job_names,
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/a3e939f22f0e895d7b0897b4eba13908822f267d/dev/breeze/src/airflow_breeze/utils/packages.py#L338'>dev/breeze/src/airflow_breeze/utils/packages.py~L338</a></p>
-<pre><code class="language-diff">     processed_package_filters.extend(get_long_package_names(short_packages))
+<p><a href="https://github.com/apache/airflow/blob/a3e939f22f0e895d7b0897b4eba13908822f267d/dev/breeze/src/airflow_breeze/utils/packages.py#L338">dev/breeze/src/airflow_breeze/utils/packages.py~L338</a></p>
+<pre><code>     processed_package_filters.extend(get_long_package_names(short_packages))
  
      removed_packages: list[str] = [
--        f&quot;apache-airflow-providers-{provider.replace('.','-')}&quot; for provider in get_removed_provider_ids()
-+        f&quot;apache-airflow-providers-{provider.replace('.', '-')}&quot; for provider in get_removed_provider_ids()
+-        f&quot;apache-airflow-providers-{provider.replace(&#x27;.&#x27;,&#x27;-&#x27;)}&quot; for provider in get_removed_provider_ids()
++        f&quot;apache-airflow-providers-{provider.replace(&#x27;.&#x27;, &#x27;-&#x27;)}&quot; for provider in get_removed_provider_ids()
      ]
      all_packages_including_removed: list[str] = available_doc_packages + removed_packages
      invalid_filters = [
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/a3e939f22f0e895d7b0897b4eba13908822f267d/dev/breeze/src/airflow_breeze/utils/packages.py#L524'>dev/breeze/src/airflow_breeze/utils/packages.py~L524</a></p>
-<pre><code class="language-diff">     prefix = &quot;apache-airflow-providers-&quot;
+<p><a href="https://github.com/apache/airflow/blob/a3e939f22f0e895d7b0897b4eba13908822f267d/dev/breeze/src/airflow_breeze/utils/packages.py#L524">dev/breeze/src/airflow_breeze/utils/packages.py~L524</a></p>
+<pre><code>     prefix = &quot;apache-airflow-providers-&quot;
      base_url = &quot;https://airflow.apache.org/docs/&quot;
      for dependency in cross_package_dependencies:
--        pip_package_name = f&quot;{prefix}{dependency.replace('.','-')}&quot;
--        url_suffix = f&quot;{dependency.replace('.','-')}&quot;
-+        pip_package_name = f&quot;{prefix}{dependency.replace('.', '-')}&quot;
-+        url_suffix = f&quot;{dependency.replace('.', '-')}&quot;
+-        pip_package_name = f&quot;{prefix}{dependency.replace(&#x27;.&#x27;,&#x27;-&#x27;)}&quot;
+-        url_suffix = f&quot;{dependency.replace(&#x27;.&#x27;,&#x27;-&#x27;)}&quot;
++        pip_package_name = f&quot;{prefix}{dependency.replace(&#x27;.&#x27;, &#x27;-&#x27;)}&quot;
++        url_suffix = f&quot;{dependency.replace(&#x27;.&#x27;, &#x27;-&#x27;)}&quot;
          if markdown:
              url = f&quot;[{pip_package_name}]({base_url}{url_suffix})&quot;
          else:
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/a3e939f22f0e895d7b0897b4eba13908822f267d/dev/prepare_bulk_issues.py#L228'>dev/prepare_bulk_issues.py~L228</a></p>
-<pre><code class="language-diff">             except GithubException as e:
+<p><a href="https://github.com/apache/airflow/blob/a3e939f22f0e895d7b0897b4eba13908822f267d/dev/prepare_bulk_issues.py#L228">dev/prepare_bulk_issues.py~L228</a></p>
+<pre><code>             except GithubException as e:
                  console.print(f&quot;[red]Error!: {e}[/]&quot;)
                  console.print(
 -                    f&quot;[yellow]Restart with `--start-from {processed_issues+start_from}` to continue.[/]&quot;
@@ -218,24 +218,24 @@ fatal: fetch-pack: invalid index-pack output
          console.print(f&quot;Created {processed_issues} issue(s).&quot;)
  
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/a3e939f22f0e895d7b0897b4eba13908822f267d/docker_tests/test_prod_image.py#L37'>docker_tests/test_prod_image.py~L37</a></p>
-<pre><code class="language-diff"> PROD_IMAGE_PROVIDERS_FILE_PATH = SOURCE_ROOT / &quot;prod_image_installed_providers.txt&quot;
+<p><a href="https://github.com/apache/airflow/blob/a3e939f22f0e895d7b0897b4eba13908822f267d/docker_tests/test_prod_image.py#L37">docker_tests/test_prod_image.py~L37</a></p>
+<pre><code> PROD_IMAGE_PROVIDERS_FILE_PATH = SOURCE_ROOT / &quot;prod_image_installed_providers.txt&quot;
  AIRFLOW_ROOT_PATH = Path(__file__).parents[2].resolve()
  SLIM_IMAGE_PROVIDERS = [
--    f&quot;apache-airflow-providers-{provider_id.replace('.','-')}&quot;
-+    f&quot;apache-airflow-providers-{provider_id.replace('.', '-')}&quot;
+-    f&quot;apache-airflow-providers-{provider_id.replace(&#x27;.&#x27;,&#x27;-&#x27;)}&quot;
++    f&quot;apache-airflow-providers-{provider_id.replace(&#x27;.&#x27;, &#x27;-&#x27;)}&quot;
      for provider_id in AIRFLOW_PRE_INSTALLED_PROVIDERS_FILE_PATH.read_text().splitlines()
      if not provider_id.startswith(&quot;#&quot;)
  ]
  REGULAR_IMAGE_PROVIDERS = [
--    f&quot;apache-airflow-providers-{provider_id.replace('.','-')}&quot;
-+    f&quot;apache-airflow-providers-{provider_id.replace('.', '-')}&quot;
+-    f&quot;apache-airflow-providers-{provider_id.replace(&#x27;.&#x27;,&#x27;-&#x27;)}&quot;
++    f&quot;apache-airflow-providers-{provider_id.replace(&#x27;.&#x27;, &#x27;-&#x27;)}&quot;
      for provider_id in PROD_IMAGE_PROVIDERS_FILE_PATH.read_text().splitlines()
      if not provider_id.startswith(&quot;#&quot;)
  ]
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/a3e939f22f0e895d7b0897b4eba13908822f267d/tests/jobs/test_scheduler_job.py#L4210'>tests/jobs/test_scheduler_job.py~L4210</a></p>
-<pre><code class="language-diff">         with dag_maker(&quot;test_dagrun_states_are_correct_2&quot;, start_date=date) as dag:
+<p><a href="https://github.com/apache/airflow/blob/a3e939f22f0e895d7b0897b4eba13908822f267d/tests/jobs/test_scheduler_job.py#L4210">tests/jobs/test_scheduler_job.py~L4210</a></p>
+<pre><code>         with dag_maker(&quot;test_dagrun_states_are_correct_2&quot;, start_date=date) as dag:
              EmptyOperator(task_id=&quot;dummy_task&quot;)
          for i in range(16):
 -            dr = dag_maker.create_dagrun(run_id=f&quot;dr2_run_{i+1}&quot;, state=State.RUNNING, execution_date=date)
@@ -250,8 +250,8 @@ fatal: fetch-pack: invalid index-pack output
  
          # third dag and dagruns
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/a3e939f22f0e895d7b0897b4eba13908822f267d/tests/jobs/test_scheduler_job.py#L4223'>tests/jobs/test_scheduler_job.py~L4223</a></p>
-<pre><code class="language-diff">         with dag_maker(&quot;test_dagrun_states_are_correct_3&quot;, start_date=date) as dag:
+<p><a href="https://github.com/apache/airflow/blob/a3e939f22f0e895d7b0897b4eba13908822f267d/tests/jobs/test_scheduler_job.py#L4223">tests/jobs/test_scheduler_job.py~L4223</a></p>
+<pre><code>         with dag_maker(&quot;test_dagrun_states_are_correct_3&quot;, start_date=date) as dag:
              EmptyOperator(task_id=&quot;dummy_task&quot;)
          for i in range(16):
 -            dr = dag_maker.create_dagrun(run_id=f&quot;dr3_run_{i+1}&quot;, state=State.RUNNING, execution_date=date)
@@ -266,8 +266,8 @@ fatal: fetch-pack: invalid index-pack output
  
          scheduler_job = Job()
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/a3e939f22f0e895d7b0897b4eba13908822f267d/tests/providers/amazon/aws/log/test_cloudwatch_task_handler.py#L117'>tests/providers/amazon/aws/log/test_cloudwatch_task_handler.py~L117</a></p>
-<pre><code class="language-diff">             {&quot;timestamp&quot;: current_time, &quot;message&quot;: &quot;Third&quot;},
+<p><a href="https://github.com/apache/airflow/blob/a3e939f22f0e895d7b0897b4eba13908822f267d/tests/providers/amazon/aws/log/test_cloudwatch_task_handler.py#L117">tests/providers/amazon/aws/log/test_cloudwatch_task_handler.py~L117</a></p>
+<pre><code>             {&quot;timestamp&quot;: current_time, &quot;message&quot;: &quot;Third&quot;},
          ]
          assert [handler._event_to_str(event) for event in events] == ([
 -            f&quot;[{get_time_str(current_time-2000)}] First&quot;,
@@ -278,8 +278,8 @@ fatal: fetch-pack: invalid index-pack output
          ])
  
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/a3e939f22f0e895d7b0897b4eba13908822f267d/tests/providers/amazon/aws/log/test_cloudwatch_task_handler.py#L141'>tests/providers/amazon/aws/log/test_cloudwatch_task_handler.py~L141</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/apache/airflow/blob/a3e939f22f0e895d7b0897b4eba13908822f267d/tests/providers/amazon/aws/log/test_cloudwatch_task_handler.py#L141">tests/providers/amazon/aws/log/test_cloudwatch_task_handler.py~L141</a></p>
+<pre><code> 
          msg_template = &quot;*** Reading remote log from Cloudwatch log_group: {} log_stream: {}.\n{}\n&quot;
          events = &quot;\n&quot;.join([
 -            f&quot;[{get_time_str(current_time-2000)}] First&quot;,
@@ -290,18 +290,18 @@ fatal: fetch-pack: invalid index-pack output
          ])
          assert self.cloudwatch_task_handler.read(self.ti) == (
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/a3e939f22f0e895d7b0897b4eba13908822f267d/tests/system/providers/amazon/aws/example_sagemaker.py#L138'>tests/system/providers/amazon/aws/example_sagemaker.py~L138</a></p>
-<pre><code class="language-diff">         dockerfile.write(
+<p><a href="https://github.com/apache/airflow/blob/a3e939f22f0e895d7b0897b4eba13908822f267d/tests/system/providers/amazon/aws/example_sagemaker.py#L138">tests/system/providers/amazon/aws/example_sagemaker.py~L138</a></p>
+<pre><code>         dockerfile.write(
              f&quot;&quot;&quot;
              FROM public.ecr.aws/amazonlinux/amazonlinux
--            COPY {preprocessing_script.name.split('/')[2]} /preprocessing.py
+-            COPY {preprocessing_script.name.split(&#x27;/&#x27;)[2]} /preprocessing.py
 +            COPY {preprocessing_script.name.split(&quot;/&quot;)[2]} /preprocessing.py
              ADD credentials /credentials
              ENV AWS_SHARED_CREDENTIALS_FILE=/credentials
              RUN yum install python3 pip -y
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/a3e939f22f0e895d7b0897b4eba13908822f267d/tests/system/providers/amazon/aws/example_sagemaker.py#L182'>tests/system/providers/amazon/aws/example_sagemaker.py~L182</a></p>
-<pre><code class="language-diff">     &quot;&quot;&quot;generates a very simple csv dataset with headers&quot;&quot;&quot;
+<p><a href="https://github.com/apache/airflow/blob/a3e939f22f0e895d7b0897b4eba13908822f267d/tests/system/providers/amazon/aws/example_sagemaker.py#L182">tests/system/providers/amazon/aws/example_sagemaker.py~L182</a></p>
+<pre><code>     &quot;&quot;&quot;generates a very simple csv dataset with headers&quot;&quot;&quot;
      content = &quot;class,x,y\n&quot;  # headers
      for i in range(SAMPLE_SIZE):
 -        content += f&quot;{i%100},{i},{SAMPLE_SIZE-i}\n&quot;
@@ -310,8 +310,8 @@ fatal: fetch-pack: invalid index-pack output
  
  
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/a3e939f22f0e895d7b0897b4eba13908822f267d/tests/utils/log/test_secrets_masker.py#L211'>tests/utils/log/test_secrets_masker.py~L211</a></p>
-<pre><code class="language-diff">             The above exception was the direct cause of the following exception:
+<p><a href="https://github.com/apache/airflow/blob/a3e939f22f0e895d7b0897b4eba13908822f267d/tests/utils/log/test_secrets_masker.py#L211">tests/utils/log/test_secrets_masker.py~L211</a></p>
+<pre><code>             The above exception was the direct cause of the following exception:
  
              Traceback (most recent call last):
 -              File &quot;.../test_secrets_masker.py&quot;, line {line+4}, in test_masking_in_explicit_context_exceptions
@@ -321,15 +321,15 @@ fatal: fetch-pack: invalid index-pack output
              &quot;&quot;&quot;
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/aws/aws-sam-cli">aws/aws-sam-cli</a> (+31 -31 lines across 20 files)</summary>
+
+<a href="https://github.com/aws/aws-sam-cli">aws/aws-sam-cli</a> (+31 -31 lines across 20 files)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/samcli/commands/init/interactive_init_flow.py#L484'>samcli/commands/init/interactive_init_flow.py~L484</a></p>
-<pre><code class="language-diff">     click.echo(f&quot;\n{question}&quot;)
+<p><a href="https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/samcli/commands/init/interactive_init_flow.py#L484">samcli/commands/init/interactive_init_flow.py~L484</a></p>
+<pre><code>     click.echo(f&quot;\n{question}&quot;)
  
      for index, option in enumerate(options_list):
 -        click.echo(f&quot;\t{index+1} - {option}&quot;)
@@ -338,88 +338,88 @@ fatal: fetch-pack: invalid index-pack output
      choice = click.prompt(msg, type=click.Choice(click_choices), show_choices=False)
      return options_list[int(choice) - 1]
 </code></pre>
-<p><a href='https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/samcli/commands/init/interactive_init_flow.py#L497'>samcli/commands/init/interactive_init_flow.py~L497</a></p>
-<pre><code class="language-diff">         click.echo(&quot;\nSelect your starter template&quot;)
+<p><a href="https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/samcli/commands/init/interactive_init_flow.py#L497">samcli/commands/init/interactive_init_flow.py~L497</a></p>
+<pre><code>         click.echo(&quot;\nSelect your starter template&quot;)
          click_template_choices = []
          for index, template in enumerate(templates):
--            click.echo(f&quot;\t{index+1} - {template['displayName']}&quot;)
-+            click.echo(f&quot;\t{index + 1} - {template['displayName']}&quot;)
+-            click.echo(f&quot;\t{index+1} - {template[&#x27;displayName&#x27;]}&quot;)
++            click.echo(f&quot;\t{index + 1} - {template[&#x27;displayName&#x27;]}&quot;)
              click_template_choices.append(str(index + 1))
          template_choice = click.prompt(&quot;Template&quot;, type=click.Choice(click_template_choices), show_choices=False)
          chosen_template = templates[int(template_choice) - 1]
 </code></pre>
-<p><a href='https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/samcli/commands/local/invoke/core/command.py#L58'>samcli/commands/local/invoke/core/command.py~L58</a></p>
-<pre><code class="language-diff">                     ),
+<p><a href="https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/samcli/commands/local/invoke/core/command.py#L58">samcli/commands/local/invoke/core/command.py~L58</a></p>
+<pre><code>                     ),
                      RowDefinition(
                          name=style(
--                            f&quot;$ echo {json.dumps({'message':'hello!'})} | &quot;
-+                            f&quot;$ echo {json.dumps({'message': 'hello!'})} | &quot;
+-                            f&quot;$ echo {json.dumps({&#x27;message&#x27;:&#x27;hello!&#x27;})} | &quot;
++                            f&quot;$ echo {json.dumps({&#x27;message&#x27;: &#x27;hello!&#x27;})} | &quot;
                              f&quot;{ctx.command_path} HelloWorldFunction -e -&quot;
                          ),
                          extra_row_modifiers=[ShowcaseRowModifier()],
 </code></pre>
-<p><a href='https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/samcli/commands/remote/invoke/core/command.py#L38'>samcli/commands/remote/invoke/core/command.py~L38</a></p>
-<pre><code class="language-diff">                         RowDefinition(
+<p><a href="https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/samcli/commands/remote/invoke/core/command.py#L38">samcli/commands/remote/invoke/core/command.py~L38</a></p>
+<pre><code>                         RowDefinition(
                              name=style(
                                  f&quot;${ctx.command_path} --stack-name hello-world -e&quot;
--                                f&quot; '{json.dumps({'message':'hello!'})}'&quot;
-+                                f&quot; '{json.dumps({'message': 'hello!'})}'&quot;
+-                                f&quot; &#x27;{json.dumps({&#x27;message&#x27;:&#x27;hello!&#x27;})}&#x27;&quot;
++                                f&quot; &#x27;{json.dumps({&#x27;message&#x27;: &#x27;hello!&#x27;})}&#x27;&quot;
                              ),
                              extra_row_modifiers=[ShowcaseRowModifier()],
                          ),
 </code></pre>
-<p><a href='https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/samcli/commands/remote/invoke/core/command.py#L59'>samcli/commands/remote/invoke/core/command.py~L59</a></p>
-<pre><code class="language-diff">                     formatter.write_rd([
+<p><a href="https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/samcli/commands/remote/invoke/core/command.py#L59">samcli/commands/remote/invoke/core/command.py~L59</a></p>
+<pre><code>                     formatter.write_rd([
                          RowDefinition(
                              name=style(
--                                f&quot;$ echo '{json.dumps({'message':'hello!'})}' | &quot;
-+                                f&quot;$ echo '{json.dumps({'message': 'hello!'})}' | &quot;
+-                                f&quot;$ echo &#x27;{json.dumps({&#x27;message&#x27;:&#x27;hello!&#x27;})}&#x27; | &quot;
++                                f&quot;$ echo &#x27;{json.dumps({&#x27;message&#x27;: &#x27;hello!&#x27;})}&#x27; | &quot;
                                  f&quot;{ctx.command_path} HelloWorldFunction --event-file -&quot;
                              ),
                              extra_row_modifiers=[ShowcaseRowModifier()],
 </code></pre>
-<p><a href='https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/samcli/commands/remote/invoke/core/command.py#L111'>samcli/commands/remote/invoke/core/command.py~L111</a></p>
-<pre><code class="language-diff">                         RowDefinition(
+<p><a href="https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/samcli/commands/remote/invoke/core/command.py#L111">samcli/commands/remote/invoke/core/command.py~L111</a></p>
+<pre><code>                         RowDefinition(
                              name=style(
                                  f&quot;${ctx.command_path} --stack-name mock-stack StockTradingStateMachine&quot;
--                                f&quot; -e '{json.dumps({'message':'hello!'})}'&quot;
-+                                f&quot; -e '{json.dumps({'message': 'hello!'})}'&quot;
+-                                f&quot; -e &#x27;{json.dumps({&#x27;message&#x27;:&#x27;hello!&#x27;})}&#x27;&quot;
++                                f&quot; -e &#x27;{json.dumps({&#x27;message&#x27;: &#x27;hello!&#x27;})}&#x27;&quot;
                              ),
                              extra_row_modifiers=[ShowcaseRowModifier()],
                          ),
 </code></pre>
-<p><a href='https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/samcli/commands/remote/invoke/core/command.py#L149'>samcli/commands/remote/invoke/core/command.py~L149</a></p>
-<pre><code class="language-diff">                     formatter.write_rd([
+<p><a href="https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/samcli/commands/remote/invoke/core/command.py#L149">samcli/commands/remote/invoke/core/command.py~L149</a></p>
+<pre><code>                     formatter.write_rd([
                          RowDefinition(
                              name=style(
--                                f&quot;$ echo '{json.dumps({'message':'hello!'})}' | &quot;
-+                                f&quot;$ echo '{json.dumps({'message': 'hello!'})}' | &quot;
+-                                f&quot;$ echo &#x27;{json.dumps({&#x27;message&#x27;:&#x27;hello!&#x27;})}&#x27; | &quot;
++                                f&quot;$ echo &#x27;{json.dumps({&#x27;message&#x27;: &#x27;hello!&#x27;})}&#x27; | &quot;
                                  f&quot;${ctx.command_path} --stack-name mock-stack StockTradingStateMachine&quot;
                                  f&quot; --parameter traceHeader=&lt;&gt;&quot;
                              ),
 </code></pre>
-<p><a href='https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/samcli/commands/remote/invoke/core/command.py#L231'>samcli/commands/remote/invoke/core/command.py~L231</a></p>
-<pre><code class="language-diff">                         RowDefinition(
+<p><a href="https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/samcli/commands/remote/invoke/core/command.py#L231">samcli/commands/remote/invoke/core/command.py~L231</a></p>
+<pre><code>                         RowDefinition(
                              name=style(
                                  f&quot;${ctx.command_path} --stack-name mock-stack MyKinesisStream -e&quot;
--                                f&quot; '{json.dumps({'message':'hello!'})}'&quot;
-+                                f&quot; '{json.dumps({'message': 'hello!'})}'&quot;
+-                                f&quot; &#x27;{json.dumps({&#x27;message&#x27;:&#x27;hello!&#x27;})}&#x27;&quot;
++                                f&quot; &#x27;{json.dumps({&#x27;message&#x27;: &#x27;hello!&#x27;})}&#x27;&quot;
                              ),
                              extra_row_modifiers=[ShowcaseRowModifier()],
                          ),
 </code></pre>
-<p><a href='https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/samcli/commands/remote/test_event/put/core/command.py#L60'>samcli/commands/remote/test_event/put/core/command.py~L60</a></p>
-<pre><code class="language-diff">                     ),
+<p><a href="https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/samcli/commands/remote/test_event/put/core/command.py#L60">samcli/commands/remote/test_event/put/core/command.py~L60</a></p>
+<pre><code>                     ),
                      RowDefinition(
                          name=style(
--                            f&quot;$ echo '{json.dumps({'message':'hello!'})}' | &quot;
-+                            f&quot;$ echo '{json.dumps({'message': 'hello!'})}' | &quot;
+-                            f&quot;$ echo &#x27;{json.dumps({&#x27;message&#x27;:&#x27;hello!&#x27;})}&#x27; | &quot;
++                            f&quot;$ echo &#x27;{json.dumps({&#x27;message&#x27;: &#x27;hello!&#x27;})}&#x27; | &quot;
                              f&quot;{ctx.command_path} --stack-name hello-world HelloWorldFunction --name MyEvent &quot;
                              f&quot;--file -&quot;
                          ),
 </code></pre>
-<p><a href='https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/tests/integration/buildcmd/test_build_cmd.py#L2139'>tests/integration/buildcmd/test_build_cmd.py~L2139</a></p>
-<pre><code class="language-diff">             &quot;Function2Handler&quot;: &quot;main.second_function_handler&quot;,
+<p><a href="https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/tests/integration/buildcmd/test_build_cmd.py#L2139">tests/integration/buildcmd/test_build_cmd.py~L2139</a></p>
+<pre><code>             &quot;Function2Handler&quot;: &quot;main.second_function_handler&quot;,
              &quot;FunctionRuntime&quot;: &quot;3.7&quot;,
              &quot;DockerFile&quot;: &quot;Dockerfile&quot;,
 -            &quot;Tag&quot;: f&quot;{random.randint(1,100)}&quot;,
@@ -428,8 +428,8 @@ fatal: fetch-pack: invalid index-pack output
          cmdlist = self.get_command_list(parameter_overrides=overrides)
  
 </code></pre>
-<p><a href='https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/tests/integration/buildcmd/test_build_cmd.py#L2826'>tests/integration/buildcmd/test_build_cmd.py~L2826</a></p>
-<pre><code class="language-diff">         overrides = {
+<p><a href="https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/tests/integration/buildcmd/test_build_cmd.py#L2826">tests/integration/buildcmd/test_build_cmd.py~L2826</a></p>
+<pre><code>         overrides = {
              &quot;Runtime&quot;: &quot;3.7&quot;,
              &quot;DockerFile&quot;: &quot;Dockerfile&quot;,
 -            &quot;Tag&quot;: f&quot;{random.randint(1,100)}&quot;,
@@ -438,8 +438,8 @@ fatal: fetch-pack: invalid index-pack output
          }
          cmdlist = self.get_command_list(
 </code></pre>
-<p><a href='https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/tests/integration/local/start_lambda/test_start_lambda.py#L450'>tests/integration/local/start_lambda/test_start_lambda.py~L450</a></p>
-<pre><code class="language-diff"> class TestImagePackageType(StartLambdaIntegBaseClass):
+<p><a href="https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/tests/integration/local/start_lambda/test_start_lambda.py#L450">tests/integration/local/start_lambda/test_start_lambda.py~L450</a></p>
+<pre><code> class TestImagePackageType(StartLambdaIntegBaseClass):
      template_path = &quot;/testdata/start_api/image_package_type/template.yaml&quot;
      build_before_invoke = True
 -    tag = f&quot;python-{random.randint(1000,2000)}&quot;
@@ -448,8 +448,8 @@ fatal: fetch-pack: invalid index-pack output
      parameter_overrides = {&quot;ImageUri&quot;: f&quot;helloworldfunction:{tag}&quot;}
  
 </code></pre>
-<p><a href='https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/tests/integration/local/start_lambda/test_start_lambda.py#L480'>tests/integration/local/start_lambda/test_start_lambda.py~L480</a></p>
-<pre><code class="language-diff">     template_path = &quot;/testdata/start_api/image_package_type/template.yaml&quot;
+<p><a href="https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/tests/integration/local/start_lambda/test_start_lambda.py#L480">tests/integration/local/start_lambda/test_start_lambda.py~L480</a></p>
+<pre><code>     template_path = &quot;/testdata/start_api/image_package_type/template.yaml&quot;
      container_mode = ContainersInitializationMode.EAGER.value
      build_before_invoke = True
 -    tag = f&quot;python-{random.randint(1000,2000)}&quot;
@@ -458,8 +458,8 @@ fatal: fetch-pack: invalid index-pack output
      parameter_overrides = {&quot;ImageUri&quot;: f&quot;helloworldfunction:{tag}&quot;}
  
 </code></pre>
-<p><a href='https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/tests/integration/local/start_lambda/test_start_lambda.py#L510'>tests/integration/local/start_lambda/test_start_lambda.py~L510</a></p>
-<pre><code class="language-diff">     template_path = &quot;/testdata/start_api/image_package_type/template.yaml&quot;
+<p><a href="https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/tests/integration/local/start_lambda/test_start_lambda.py#L510">tests/integration/local/start_lambda/test_start_lambda.py~L510</a></p>
+<pre><code>     template_path = &quot;/testdata/start_api/image_package_type/template.yaml&quot;
      container_mode = ContainersInitializationMode.LAZY.value
      build_before_invoke = True
 -    tag = f&quot;python-{random.randint(1000,2000)}&quot;
@@ -468,8 +468,8 @@ fatal: fetch-pack: invalid index-pack output
      parameter_overrides = {&quot;ImageUri&quot;: f&quot;helloworldfunction:{tag}&quot;}
  
 </code></pre>
-<p><a href='https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/tests/integration/testdata/sync/code/after/function/app.py#L10'>tests/integration/testdata/sync/code/after/function/app.py~L10</a></p>
-<pre><code class="language-diff">     return {
+<p><a href="https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/tests/integration/testdata/sync/code/after/function/app.py#L10">tests/integration/testdata/sync/code/after/function/app.py~L10</a></p>
+<pre><code>     return {
          &quot;statusCode&quot;: 200,
          &quot;body&quot;: json.dumps({
 -            &quot;message&quot;: f&quot;{layer_method()+2}&quot;,
@@ -478,8 +478,8 @@ fatal: fetch-pack: invalid index-pack output
              &quot;extra_message&quot;: np.array([1, 2, 3, 4, 5, 6]).tolist(),  # checking external library call will succeed
          }),
 </code></pre>
-<p><a href='https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/tests/integration/testdata/sync/code/before/function/app.py#L10'>tests/integration/testdata/sync/code/before/function/app.py~L10</a></p>
-<pre><code class="language-diff">     return {
+<p><a href="https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/tests/integration/testdata/sync/code/before/function/app.py#L10">tests/integration/testdata/sync/code/before/function/app.py~L10</a></p>
+<pre><code>     return {
          &quot;statusCode&quot;: 200,
          &quot;body&quot;: json.dumps({
 -            &quot;message&quot;: f&quot;{layer_method()+1}&quot;,
@@ -488,8 +488,8 @@ fatal: fetch-pack: invalid index-pack output
              &quot;extra_message&quot;: np.array([1, 2, 3, 4, 5, 6]).tolist(),  # checking external library call will succeed
          }),
 </code></pre>
-<p><a href='https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/tests/integration/testdata/sync/infra/after/Python/function/app.py#L10'>tests/integration/testdata/sync/infra/after/Python/function/app.py~L10</a></p>
-<pre><code class="language-diff">     return {
+<p><a href="https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/tests/integration/testdata/sync/infra/after/Python/function/app.py#L10">tests/integration/testdata/sync/infra/after/Python/function/app.py~L10</a></p>
+<pre><code>     return {
          &quot;statusCode&quot;: 200,
          &quot;body&quot;: json.dumps({
 -            &quot;message&quot;: f&quot;{layer_method()+2}&quot;,
@@ -498,8 +498,8 @@ fatal: fetch-pack: invalid index-pack output
          }),
      }
 </code></pre>
-<p><a href='https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/tests/integration/testdata/sync/infra/before/Python/function/app.py#L10'>tests/integration/testdata/sync/infra/before/Python/function/app.py~L10</a></p>
-<pre><code class="language-diff">     return {
+<p><a href="https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/tests/integration/testdata/sync/infra/before/Python/function/app.py#L10">tests/integration/testdata/sync/infra/before/Python/function/app.py~L10</a></p>
+<pre><code>     return {
          &quot;statusCode&quot;: 200,
          &quot;body&quot;: json.dumps({
 -            &quot;message&quot;: f&quot;{layer_method()+1}&quot;,
@@ -508,8 +508,8 @@ fatal: fetch-pack: invalid index-pack output
          }),
      }
 </code></pre>
-<p><a href='https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/tests/integration/testdata/sync/infra/cdk/after/asset.6598609927b272b36fdf01072092f9851ddcd1b41ba294f736ce77091f5cc456/main.py#L10'>tests/integration/testdata/sync/infra/cdk/after/asset.6598609927b272b36fdf01072092f9851ddcd1b41ba294f736ce77091f5cc456/main.py~L10</a></p>
-<pre><code class="language-diff">     return {
+<p><a href="https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/tests/integration/testdata/sync/infra/cdk/after/asset.6598609927b272b36fdf01072092f9851ddcd1b41ba294f736ce77091f5cc456/main.py#L10">tests/integration/testdata/sync/infra/cdk/after/asset.6598609927b272b36fdf01072092f9851ddcd1b41ba294f736ce77091f5cc456/main.py~L10</a></p>
+<pre><code>     return {
          &quot;statusCode&quot;: 200,
          &quot;body&quot;: json.dumps({
 -            &quot;message&quot;: f&quot;{layer_method()+2}&quot;,
@@ -518,8 +518,8 @@ fatal: fetch-pack: invalid index-pack output
          }),
      }
 </code></pre>
-<p><a href='https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/tests/integration/testdata/sync/infra/cdk/after/asset.b998895901bf33127f2c9dce715854f8b35aa73fb7eb5245ba9721580bbe5837/main.py#L10'>tests/integration/testdata/sync/infra/cdk/after/asset.b998895901bf33127f2c9dce715854f8b35aa73fb7eb5245ba9721580bbe5837/main.py~L10</a></p>
-<pre><code class="language-diff">     return {
+<p><a href="https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/tests/integration/testdata/sync/infra/cdk/after/asset.b998895901bf33127f2c9dce715854f8b35aa73fb7eb5245ba9721580bbe5837/main.py#L10">tests/integration/testdata/sync/infra/cdk/after/asset.b998895901bf33127f2c9dce715854f8b35aa73fb7eb5245ba9721580bbe5837/main.py~L10</a></p>
+<pre><code>     return {
          &quot;statusCode&quot;: 200,
          &quot;body&quot;: json.dumps({
 -            &quot;message&quot;: f&quot;{layer_method()+2}&quot;,
@@ -528,8 +528,8 @@ fatal: fetch-pack: invalid index-pack output
          }),
      }
 </code></pre>
-<p><a href='https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/tests/integration/testdata/sync/infra/cdk/before/asset.6598609927b272b36fdf01072092f9851ddcd1b41ba294f736ce77091f5cc456/main.py#L10'>tests/integration/testdata/sync/infra/cdk/before/asset.6598609927b272b36fdf01072092f9851ddcd1b41ba294f736ce77091f5cc456/main.py~L10</a></p>
-<pre><code class="language-diff">     return {
+<p><a href="https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/tests/integration/testdata/sync/infra/cdk/before/asset.6598609927b272b36fdf01072092f9851ddcd1b41ba294f736ce77091f5cc456/main.py#L10">tests/integration/testdata/sync/infra/cdk/before/asset.6598609927b272b36fdf01072092f9851ddcd1b41ba294f736ce77091f5cc456/main.py~L10</a></p>
+<pre><code>     return {
          &quot;statusCode&quot;: 200,
          &quot;body&quot;: json.dumps({
 -            &quot;message&quot;: f&quot;{layer_method()+1}&quot;,
@@ -538,8 +538,8 @@ fatal: fetch-pack: invalid index-pack output
          }),
      }
 </code></pre>
-<p><a href='https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/tests/integration/testdata/sync/infra/cdk/before/asset.b998895901bf33127f2c9dce715854f8b35aa73fb7eb5245ba9721580bbe5837/main.py#L10'>tests/integration/testdata/sync/infra/cdk/before/asset.b998895901bf33127f2c9dce715854f8b35aa73fb7eb5245ba9721580bbe5837/main.py~L10</a></p>
-<pre><code class="language-diff">     return {
+<p><a href="https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/tests/integration/testdata/sync/infra/cdk/before/asset.b998895901bf33127f2c9dce715854f8b35aa73fb7eb5245ba9721580bbe5837/main.py#L10">tests/integration/testdata/sync/infra/cdk/before/asset.b998895901bf33127f2c9dce715854f8b35aa73fb7eb5245ba9721580bbe5837/main.py~L10</a></p>
+<pre><code>     return {
          &quot;statusCode&quot;: 200,
          &quot;body&quot;: json.dumps({
 -            &quot;message&quot;: f&quot;{layer_method()+1}&quot;,
@@ -548,40 +548,40 @@ fatal: fetch-pack: invalid index-pack output
          }),
      }
 </code></pre>
-<p><a href='https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/tests/integration/testdata/sync/nested/after/child_stack/child_functions/child_function.py#L7'>tests/integration/testdata/sync/nested/after/child_stack/child_functions/child_function.py~L7</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/tests/integration/testdata/sync/nested/after/child_stack/child_functions/child_function.py#L7">tests/integration/testdata/sync/nested/after/child_stack/child_functions/child_function.py~L7</a></p>
+<pre><code> 
      return {
          &quot;statusCode&quot;: 200,
 -        &quot;body&quot;: json.dumps({&quot;message&quot;: f&quot;{layer_method()+6}&quot;}),
 +        &quot;body&quot;: json.dumps({&quot;message&quot;: f&quot;{layer_method() + 6}&quot;}),
      }
 </code></pre>
-<p><a href='https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/tests/integration/testdata/sync/nested/after/root_function/root_function.py#L17'>tests/integration/testdata/sync/nested/after/root_function/root_function.py~L17</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/tests/integration/testdata/sync/nested/after/root_function/root_function.py#L17">tests/integration/testdata/sync/nested/after/root_function/root_function.py~L17</a></p>
+<pre><code> 
      return {
          &quot;statusCode&quot;: 200,
 -        &quot;body&quot;: json.dumps({&quot;message&quot;: f&quot;{layer_method()+6}&quot;, &quot;location&quot;: ip.text.replace(&quot;\n&quot;, &quot;&quot;)}),
 +        &quot;body&quot;: json.dumps({&quot;message&quot;: f&quot;{layer_method() + 6}&quot;, &quot;location&quot;: ip.text.replace(&quot;\n&quot;, &quot;&quot;)}),
      }
 </code></pre>
-<p><a href='https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/tests/integration/testdata/sync/nested/before/child_stack/child_functions/child_function.py#L7'>tests/integration/testdata/sync/nested/before/child_stack/child_functions/child_function.py~L7</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/tests/integration/testdata/sync/nested/before/child_stack/child_functions/child_function.py#L7">tests/integration/testdata/sync/nested/before/child_stack/child_functions/child_function.py~L7</a></p>
+<pre><code> 
      return {
          &quot;statusCode&quot;: 200,
 -        &quot;body&quot;: json.dumps({&quot;message&quot;: f&quot;{layer_method()+5}&quot;}),
 +        &quot;body&quot;: json.dumps({&quot;message&quot;: f&quot;{layer_method() + 5}&quot;}),
      }
 </code></pre>
-<p><a href='https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/tests/integration/testdata/sync/nested/before/root_function/root_function.py#L17'>tests/integration/testdata/sync/nested/before/root_function/root_function.py~L17</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/tests/integration/testdata/sync/nested/before/root_function/root_function.py#L17">tests/integration/testdata/sync/nested/before/root_function/root_function.py~L17</a></p>
+<pre><code> 
      return {
          &quot;statusCode&quot;: 200,
 -        &quot;body&quot;: json.dumps({&quot;message&quot;: f&quot;{layer_method()+6}&quot;, &quot;location&quot;: ip.text.replace(&quot;\n&quot;, &quot;&quot;)}),
 +        &quot;body&quot;: json.dumps({&quot;message&quot;: f&quot;{layer_method() + 6}&quot;, &quot;location&quot;: ip.text.replace(&quot;\n&quot;, &quot;&quot;)}),
      }
 </code></pre>
-<p><a href='https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/tests/integration/testdata/sync/nested_intrinsics/before/child_stack/child_function/function/function.py#L19'>tests/integration/testdata/sync/nested_intrinsics/before/child_stack/child_function/function/function.py~L19</a></p>
-<pre><code class="language-diff">     return {
+<p><a href="https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/tests/integration/testdata/sync/nested_intrinsics/before/child_stack/child_function/function/function.py#L19">tests/integration/testdata/sync/nested_intrinsics/before/child_stack/child_function/function/function.py~L19</a></p>
+<pre><code>     return {
          &quot;statusCode&quot;: 200,
          &quot;body&quot;: json.dumps({
 -            &quot;message&quot;: f&quot;{layer_method()+1}&quot;,
@@ -590,41 +590,41 @@ fatal: fetch-pack: invalid index-pack output
              # &quot;extra_message&quot;: np.array([1, 2, 3, 4, 5, 6]).tolist() # checking external library call will succeed
          }),
 </code></pre>
-<p><a href='https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/tests/unit/lib/build_module/test_build_graph.py#L311'>tests/unit/lib/build_module/test_build_graph.py~L311</a></p>
-<pre><code class="language-diff">     handler = &quot;{HANDLER}&quot;
+<p><a href="https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/tests/unit/lib/build_module/test_build_graph.py#L311">tests/unit/lib/build_module/test_build_graph.py~L311</a></p>
+<pre><code>     handler = &quot;{HANDLER}&quot;
      functions = [&quot;HelloWorldPython&quot;, &quot;HelloWorld2Python&quot;]
      [function_build_definitions.{UUID}.metadata]
--    Test = &quot;{METADATA['Test']}&quot;
--    Test2 = &quot;{METADATA['Test2']}&quot;
+-    Test = &quot;{METADATA[&#x27;Test&#x27;]}&quot;
+-    Test2 = &quot;{METADATA[&#x27;Test2&#x27;]}&quot;
 +    Test = &quot;{METADATA[&quot;Test&quot;]}&quot;
 +    Test2 = &quot;{METADATA[&quot;Test2&quot;]}&quot;
      [function_build_definitions.{UUID}.env_vars]
--    env_vars = &quot;{ENV_VARS['env_vars']}&quot;
+-    env_vars = &quot;{ENV_VARS[&#x27;env_vars&#x27;]}&quot;
 +    env_vars = &quot;{ENV_VARS[&quot;env_vars&quot;]}&quot;
  
      [layer_build_definitions]
      [layer_build_definitions.{LAYER_UUID}]
 </code></pre>
-<p><a href='https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/tests/unit/lib/build_module/test_build_graph.py#L327'>tests/unit/lib/build_module/test_build_graph.py~L327</a></p>
-<pre><code class="language-diff">     manifest_hash = &quot;{MANIFEST_HASH}&quot;
+<p><a href="https://github.com/aws/aws-sam-cli/blob/2d748b9d48dfc8ca204b4a100891681965059915/tests/unit/lib/build_module/test_build_graph.py#L327">tests/unit/lib/build_module/test_build_graph.py~L327</a></p>
+<pre><code>     manifest_hash = &quot;{MANIFEST_HASH}&quot;
      layer = &quot;SumLayer&quot;
      [layer_build_definitions.{LAYER_UUID}.env_vars]
--    env_vars = &quot;{ENV_VARS['env_vars']}&quot;
+-    env_vars = &quot;{ENV_VARS[&#x27;env_vars&#x27;]}&quot;
 +    env_vars = &quot;{ENV_VARS[&quot;env_vars&quot;]}&quot;
      &quot;&quot;&quot;
  
      def test_should_instantiate_first_time(self):
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/bloomberg/pytest-memray">bloomberg/pytest-memray</a> (+2 -2 lines across 1 file)</summary>
+
+<a href="https://github.com/bloomberg/pytest-memray">bloomberg/pytest-memray</a> (+2 -2 lines across 1 file)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/bloomberg/pytest-memray/blob/1549d621b34d7cd726b8b4ee4dc212e1c9a0af3a/src/pytest_memray/marks.py#L159'>src/pytest_memray/marks.py~L159</a></p>
-<pre><code class="language-diff">         stacks_left = num_stacks
+<p><a href="https://github.com/bloomberg/pytest-memray/blob/1549d621b34d7cd726b8b4ee4dc212e1c9a0af3a/src/pytest_memray/marks.py#L159">src/pytest_memray/marks.py~L159</a></p>
+<pre><code>         stacks_left = num_stacks
          for function, file, line in stack_trace:
              if stacks_left &lt;= 0:
 -                text_lines.append(f&quot;{padding*2}...&quot;)
@@ -637,15 +637,15 @@ fatal: fetch-pack: invalid index-pack output
      return &quot;\n&quot;.join(text_lines)
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+27 -27 lines across 14 files)</summary>
+
+<a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+27 -27 lines across 14 files)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/basic/annotations/legend_two_dimensions.py#L16'>examples/basic/annotations/legend_two_dimensions.py~L16</a></p>
-<pre><code class="language-diff"> sinx = np.sin(x)
+<p><a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/basic/annotations/legend_two_dimensions.py#L16">examples/basic/annotations/legend_two_dimensions.py~L16</a></p>
+<pre><code> sinx = np.sin(x)
  
  p1 = figure(title=&quot;Default legend layout&quot;, width=500, height=300)
 -[p1.line(x, (1 + i / 20) * sinx, legend_label=f&quot;{1+i/20:.2f}*sin(x)&quot;) for i in range(7)]
@@ -663,8 +663,8 @@ fatal: fetch-pack: invalid index-pack output
  
  show(column(p1, p2, p3))
 </code></pre>
-<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/server/app/fourier_animated.py#L62'>examples/server/app/fourier_animated.py~L62</a></p>
-<pre><code class="language-diff"> terms_plot.circle(0, 0, radius=A, color=palette, line_width=2, line_dash=dashing, fill_color=None)
+<p><a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/server/app/fourier_animated.py#L62">examples/server/app/fourier_animated.py~L62</a></p>
+<pre><code> terms_plot.circle(0, 0, radius=A, color=palette, line_width=2, line_dash=dashing, fill_color=None)
  
  for i in range(4):
 -    legend_label = f&quot;4sin({i*2+1}x)/{i*2+1}pi&quot; if i else &quot;4sin(x)/pi&quot;
@@ -673,8 +673,8 @@ fatal: fetch-pack: invalid index-pack output
  
  terms_plot.circle(&quot;xterm-dot&quot;, &quot;yterm-dot&quot;, size=5, color=&quot;color&quot;, source=items_source)
 </code></pre>
-<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/styling/mathtext/latex_schrodinger.py#L51'>examples/styling/mathtext/latex_schrodinger.py~L51</a></p>
-<pre><code class="language-diff">     p.line(q, y, color=&quot;red&quot;, line_width=2)
+<p><a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/styling/mathtext/latex_schrodinger.py#L51">examples/styling/mathtext/latex_schrodinger.py~L51</a></p>
+<pre><code>     p.line(q, y, color=&quot;red&quot;, line_width=2)
  
      p.add_layout(Label(x=-5.8, y=E_v, y_offset=-21, text=rf&quot;$$v = {v}$$&quot;))
 -    p.add_layout(Label(x=3.9, y=E_v, y_offset=-25, text=rf&quot;$$E_{v} = ({2*v+1}/2) \hbar\omega$$&quot;))
@@ -683,8 +683,8 @@ fatal: fetch-pack: invalid index-pack output
  V = q**2 / 2
  p.line(q, V, line_color=&quot;black&quot;, line_width=2, line_dash=&quot;dashed&quot;)
 </code></pre>
-<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/topics/hierarchical/crosstab.py#L37'>examples/topics/hierarchical/crosstab.py~L37</a></p>
-<pre><code class="language-diff">     p.hbar(y=value(y), left=left, right=right, source=source, height=0.9, color=factor_cmap(&quot;Region&quot;, &quot;MediumContrast4&quot;, regions))
+<p><a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/topics/hierarchical/crosstab.py#L37">examples/topics/hierarchical/crosstab.py~L37</a></p>
+<pre><code>     p.hbar(y=value(y), left=left, right=right, source=source, height=0.9, color=factor_cmap(&quot;Region&quot;, &quot;MediumContrast4&quot;, regions))
  
      pcts = source.data[y]
 -    source.data[f&quot;{y} text&quot;] = [f&quot;{r}\n{x*100:0.1f}%&quot; for r, x in zip(regions, pcts)]
@@ -693,8 +693,8 @@ fatal: fetch-pack: invalid index-pack output
      p.text(y=value(y), x=left, text=f&quot;{y} text&quot;, source=source, x_offset=10, text_color=&quot;color&quot;, text_baseline=&quot;middle&quot;, text_font_size=&quot;15px&quot;)
  
 </code></pre>
-<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/topics/hierarchical/crosstab.py#L45'>examples/topics/hierarchical/crosstab.py~L45</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/topics/hierarchical/crosstab.py#L45">examples/topics/hierarchical/crosstab.py~L45</a></p>
+<pre><code> 
  p.hbar(right=0, left=-totals, y=totals.index, height=0.9, color=&quot;#dadada&quot;)
  
 -text = [f&quot;{name} ({totals.loc[name]*100:0.1f}%)&quot; for name in cats]
@@ -703,8 +703,8 @@ fatal: fetch-pack: invalid index-pack output
  
  show(p)
 </code></pre>
-<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/topics/stats/pyramid.py#L34'>examples/topics/stats/pyramid.py~L34</a></p>
-<pre><code class="language-diff"> for i, (count, age) in enumerate(zip(f_hist, edges[1:])):
+<p><a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/topics/stats/pyramid.py#L34">examples/topics/stats/pyramid.py~L34</a></p>
+<pre><code> for i, (count, age) in enumerate(zip(f_hist, edges[1:])):
      if i % 2 == 1:
          continue
 -    p.text(x=count, y=edges[1:][i], text=[f&quot;{age-bin_width}-{age}yrs&quot;], x_offset=5, y_offset=7, text_font_size=&quot;12px&quot;, text_color=DarkText[5])
@@ -713,18 +713,18 @@ fatal: fetch-pack: invalid index-pack output
  # customise x-axis and y-axis
  p.xaxis.ticker = (-80, -60, -40, -20, 0, 20, 40, 60, 80)
 </code></pre>
-<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/setup.py#L83'>setup.py~L83</a></p>
-<pre><code class="language-diff">             stamp, txt = m.groups()
+<p><a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/setup.py#L83">setup.py~L83</a></p>
+<pre><code>             stamp, txt = m.groups()
              msg.append(f&quot;   {dim(green(stamp))} {dim(txt)}&quot;)
      print(BUILD_SUCCESS_MSG.format(msg=&quot;\n&quot;.join(msg)))
--    print(f&quot;\n Build time: {bright(yellow(f'{t1-t0:0.1f} seconds'))}\n&quot;)
-+    print(f&quot;\n Build time: {bright(yellow(f'{t1 - t0:0.1f} seconds'))}\n&quot;)
+-    print(f&quot;\n Build time: {bright(yellow(f&#x27;{t1-t0:0.1f} seconds&#x27;))}\n&quot;)
++    print(f&quot;\n Build time: {bright(yellow(f&#x27;{t1 - t0:0.1f} seconds&#x27;))}\n&quot;)
  
      print(&quot;Build artifact sizes:&quot;)
      try:
 </code></pre>
-<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/colors/color.py#L334'>src/bokeh/colors/color.py~L334</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/colors/color.py#L334">src/bokeh/colors/color.py~L334</a></p>
+<pre><code> 
          &quot;&quot;&quot;
          if self.a &lt; 1.0:
 -            return f&quot;#{self.r:02x}{self.g:02x}{self.b:02x}{int(round(self.a*255)):02x}&quot;
@@ -733,8 +733,8 @@ fatal: fetch-pack: invalid index-pack output
              return f&quot;#{self.r:02x}{self.g:02x}{self.b:02x}&quot;
  
 </code></pre>
-<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/colors/color.py#L458'>src/bokeh/colors/color.py~L458</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/colors/color.py#L458">src/bokeh/colors/color.py~L458</a></p>
+<pre><code> 
          &quot;&quot;&quot;
          if self.a == 1.0:
 -            return f&quot;hsl({self.h}, {self.s*100}%, {self.l*100}%)&quot;
@@ -746,8 +746,8 @@ fatal: fetch-pack: invalid index-pack output
      def to_hsl(self) -&gt; HSL:
          &quot;&quot;&quot;Return a HSL copy for this HSL color.
 </code></pre>
-<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/either.py#L98'>src/bokeh/core/property/either.py~L98</a></p>
-<pre><code class="language-diff">         if any(param.is_valid(value) for param in self.type_params):
+<p><a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/either.py#L98">src/bokeh/core/property/either.py~L98</a></p>
+<pre><code>         if any(param.is_valid(value) for param in self.type_params):
              return
  
 -        msg = &quot;&quot; if not detail else f&quot;expected an element of either {nice_join([ str(param) for param in self.type_params ])}, got {value!r}&quot;
@@ -756,33 +756,33 @@ fatal: fetch-pack: invalid index-pack output
  
      def wrap(self, value):
 </code></pre>
-<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property_mixins.py#L233'>src/bokeh/core/property_mixins.py~L233</a></p>
-<pre><code class="language-diff"> _hatch_pattern_help = f&quot;&quot;&quot;
+<p><a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property_mixins.py#L233">src/bokeh/core/property_mixins.py~L233</a></p>
+<pre><code> _hatch_pattern_help = f&quot;&quot;&quot;
  Built-in patterns are can either be specified as long names:
  
--{', '. join(HatchPattern)}
+-{&#x27;, &#x27;. join(HatchPattern)}
 +{&quot;, &quot;.join(HatchPattern)}
  
  or as one-letter abbreviations:
  
--{', '. join(repr(x) for x in HatchPatternAbbreviation)}
+-{&#x27;, &#x27;. join(repr(x) for x in HatchPatternAbbreviation)}
 +{&quot;, &quot;.join(repr(x) for x in HatchPatternAbbreviation)}
  &quot;&quot;&quot;
  
  _hatch_weight_help = &quot;&quot;&quot;
 </code></pre>
-<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/sphinxext/bokeh_model.py#L119'>src/bokeh/sphinxext/bokeh_model.py~L119</a></p>
-<pre><code class="language-diff">         name_prefix, model_name, arglist, retann = m.groups()
+<p><a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/sphinxext/bokeh_model.py#L119">src/bokeh/sphinxext/bokeh_model.py~L119</a></p>
+<pre><code>         name_prefix, model_name, arglist, retann = m.groups()
  
          if getenv(&quot;BOKEH_SPHINX_QUICK&quot;) == &quot;1&quot;:
--            return self.parse(f&quot;{model_name}\n{'-'*len(model_name)}\n&quot;, &quot;&lt;bokeh-model&gt;&quot;)
-+            return self.parse(f&quot;{model_name}\n{'-' * len(model_name)}\n&quot;, &quot;&lt;bokeh-model&gt;&quot;)
+-            return self.parse(f&quot;{model_name}\n{&#x27;-&#x27;*len(model_name)}\n&quot;, &quot;&lt;bokeh-model&gt;&quot;)
++            return self.parse(f&quot;{model_name}\n{&#x27;-&#x27; * len(model_name)}\n&quot;, &quot;&lt;bokeh-model&gt;&quot;)
  
          module_name = self.options[&quot;module&quot;]
  
 </code></pre>
-<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/util/sampledata.py#L212'>src/bokeh/util/sampledata.py~L212</a></p>
-<pre><code class="language-diff">             file.write(data)
+<p><a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/util/sampledata.py#L212">src/bokeh/util/sampledata.py~L212</a></p>
+<pre><code>             file.write(data)
  
              if progress:
 -                status = f&quot;\r{fetch_size:&lt; 10d} [{fetch_size*100.0/file_size:6.2f}%%]&quot;
@@ -791,8 +791,8 @@ fatal: fetch-pack: invalid index-pack output
                  stdout.flush()
  
 </code></pre>
-<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/integration/widgets/test_select.py#L143'>tests/integration/widgets/test_select.py~L143</a></p>
-<pre><code class="language-diff">             opts = grp.find_elements(By.TAG_NAME, &quot;option&quot;)
+<p><a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/integration/widgets/test_select.py#L143">tests/integration/widgets/test_select.py~L143</a></p>
+<pre><code>             opts = grp.find_elements(By.TAG_NAME, &quot;option&quot;)
              assert len(opts) == i
              for j, opt in enumerate(opts, 1):
 -                assert opt.text == f&quot;Option {i*10 + j}&quot;
@@ -803,8 +803,8 @@ fatal: fetch-pack: invalid index-pack output
          assert page.has_no_console_errors()
  
 </code></pre>
-<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/integration/widgets/test_select.py#L167'>tests/integration/widgets/test_select.py~L167</a></p>
-<pre><code class="language-diff">             opts = grp.find_elements(By.TAG_NAME, &quot;option&quot;)
+<p><a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/integration/widgets/test_select.py#L167">tests/integration/widgets/test_select.py~L167</a></p>
+<pre><code>             opts = grp.find_elements(By.TAG_NAME, &quot;option&quot;)
              assert len(opts) == i
              for j, opt in enumerate(opts, 1):
 -                assert opt.text == f&quot;Option {i*10 + j}&quot;
@@ -815,8 +815,8 @@ fatal: fetch-pack: invalid index-pack output
          assert page.has_no_console_errors()
  
 </code></pre>
-<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/integration/widgets/test_select.py#L189'>tests/integration/widgets/test_select.py~L189</a></p>
-<pre><code class="language-diff">             opts = grp.find_elements(By.TAG_NAME, &quot;option&quot;)
+<p><a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/integration/widgets/test_select.py#L189">tests/integration/widgets/test_select.py~L189</a></p>
+<pre><code>             opts = grp.find_elements(By.TAG_NAME, &quot;option&quot;)
              assert len(opts) == i
              for j, opt in enumerate(opts, 1):
 -                assert opt.text == f&quot;Option {i*10 + j}&quot;
@@ -827,8 +827,8 @@ fatal: fetch-pack: invalid index-pack output
          assert page.has_no_console_errors()
  
 </code></pre>
-<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/integration/widgets/test_select.py#L213'>tests/integration/widgets/test_select.py~L213</a></p>
-<pre><code class="language-diff">             opts = grp.find_elements(By.TAG_NAME, &quot;option&quot;)
+<p><a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/integration/widgets/test_select.py#L213">tests/integration/widgets/test_select.py~L213</a></p>
+<pre><code>             opts = grp.find_elements(By.TAG_NAME, &quot;option&quot;)
              assert len(opts) == i
              for j, opt in enumerate(opts, 1):
 -                assert opt.text == f&quot;Option {i*10 + j}&quot;
@@ -839,8 +839,8 @@ fatal: fetch-pack: invalid index-pack output
          assert page.has_no_console_errors()
  
 </code></pre>
-<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/test_examples.py#L230'>tests/test_examples.py~L230</a></p>
-<pre><code class="language-diff">     result = run_in_chrome(url)
+<p><a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/test_examples.py#L230">tests/test_examples.py~L230</a></p>
+<pre><code>     result = run_in_chrome(url)
      end = time.time()
  
 -    info(f&quot;Example rendered in {(end-start):.3f} seconds&quot;)
@@ -849,8 +849,8 @@ fatal: fetch-pack: invalid index-pack output
      success = result[&quot;success&quot;]
      timeout = result[&quot;timeout&quot;]
 </code></pre>
-<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/core/property/test_bases.py#L113'>tests/unit/bokeh/core/property/test_bases.py~L113</a></p>
-<pre><code class="language-diff">         def raise_(ex):
+<p><a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/core/property/test_bases.py#L113">tests/unit/bokeh/core/property/test_bases.py~L113</a></p>
+<pre><code>         def raise_(ex):
              raise ex
  
 -        p.asserts(False, lambda obj, name, value: raise_(ValueError(f&quot;bad {hp==obj} {name} {value}&quot;)))
@@ -860,15 +860,15 @@ fatal: fetch-pack: invalid index-pack output
              p.prepare_value(hp, &quot;foo&quot;, 10)
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/commaai/openpilot">commaai/openpilot</a> (+9 -9 lines across 8 files)</summary>
+
+<a href="https://github.com/commaai/openpilot">commaai/openpilot</a> (+9 -9 lines across 8 files)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/commaai/openpilot/blob/5a441ec0c4bf39a5e066e307ee6c9a8b55f8d8b5/selfdrive/car/vin.py#L67'>selfdrive/car/vin.py~L67</a></p>
-<pre><code class="language-diff">                 except Exception:
+<p><a href="https://github.com/commaai/openpilot/blob/5a441ec0c4bf39a5e066e307ee6c9a8b55f8d8b5/selfdrive/car/vin.py#L67">selfdrive/car/vin.py~L67</a></p>
+<pre><code>                 except Exception:
                      cloudlog.exception(&quot;VIN query exception&quot;)
  
 -        cloudlog.error(f&quot;vin query retry ({i+1}) ...&quot;)
@@ -877,8 +877,8 @@ fatal: fetch-pack: invalid index-pack output
      return -1, -1, VIN_UNKNOWN
  
 </code></pre>
-<p><a href='https://github.com/commaai/openpilot/blob/5a441ec0c4bf39a5e066e307ee6c9a8b55f8d8b5/selfdrive/controls/lib/events.py#L382'>selfdrive/controls/lib/events.py~L382</a></p>
-<pre><code class="language-diff"> def joystick_alert(CP: car.CarParams, CS: car.CarState, sm: messaging.SubMaster, metric: bool, soft_disable_time: int) -&gt; Alert:
+<p><a href="https://github.com/commaai/openpilot/blob/5a441ec0c4bf39a5e066e307ee6c9a8b55f8d8b5/selfdrive/controls/lib/events.py#L382">selfdrive/controls/lib/events.py~L382</a></p>
+<pre><code> def joystick_alert(CP: car.CarParams, CS: car.CarState, sm: messaging.SubMaster, metric: bool, soft_disable_time: int) -&gt; Alert:
      axes = sm[&quot;testJoystick&quot;].axes
      gb, steer = list(axes)[:2] if len(axes) else (0.0, 0.0)
 -    vals = f&quot;Gas: {round(gb * 100.)}%, Steer: {round(steer * 100.)}%&quot;
@@ -887,8 +887,8 @@ fatal: fetch-pack: invalid index-pack output
  
  
 </code></pre>
-<p><a href='https://github.com/commaai/openpilot/blob/5a441ec0c4bf39a5e066e307ee6c9a8b55f8d8b5/selfdrive/debug/count_events.py#L65'>selfdrive/debug/count_events.py~L65</a></p>
-<pre><code class="language-diff">     for k, v in cnt_cameras.items():
+<p><a href="https://github.com/commaai/openpilot/blob/5a441ec0c4bf39a5e066e307ee6c9a8b55f8d8b5/selfdrive/debug/count_events.py#L65">selfdrive/debug/count_events.py~L65</a></p>
+<pre><code>     for k, v in cnt_cameras.items():
          s = SERVICE_LIST[k]
          expected_frames = int(s.frequency * duration / cast(float, s.decimation))
 -        print(&quot;  &quot;, k.ljust(20), f&quot;{v}, {v/expected_frames:.1%} of expected&quot;)
@@ -897,16 +897,16 @@ fatal: fetch-pack: invalid index-pack output
      print(&quot;\n&quot;)
      print(&quot;Alerts&quot;)
 </code></pre>
-<p><a href='https://github.com/commaai/openpilot/blob/5a441ec0c4bf39a5e066e307ee6c9a8b55f8d8b5/selfdrive/modeld/tests/timing/benchmark.py#L35'>selfdrive/modeld/tests/timing/benchmark.py~L35</a></p>
-<pre><code class="language-diff">     print(&quot;\n\n&quot;)
+<p><a href="https://github.com/commaai/openpilot/blob/5a441ec0c4bf39a5e066e307ee6c9a8b55f8d8b5/selfdrive/modeld/tests/timing/benchmark.py#L35">selfdrive/modeld/tests/timing/benchmark.py~L35</a></p>
+<pre><code>     print(&quot;\n\n&quot;)
      print(f&quot;ran modeld {N} times for {TIME}s each&quot;)
      for _, t in enumerate(execution_times):
 -        print(f&quot;\tavg: {sum(t)/len(t):0.2f}ms, min: {min(t):0.2f}ms, max: {max(t):0.2f}ms&quot;)
 +        print(f&quot;\tavg: {sum(t) / len(t):0.2f}ms, min: {min(t):0.2f}ms, max: {max(t):0.2f}ms&quot;)
      print(&quot;\n\n&quot;)
 </code></pre>
-<p><a href='https://github.com/commaai/openpilot/blob/5a441ec0c4bf39a5e066e307ee6c9a8b55f8d8b5/selfdrive/navd/navd.py#L144'>selfdrive/navd/navd.py~L144</a></p>
-<pre><code class="language-diff">             waypoint_coords = json.loads(waypoints)
+<p><a href="https://github.com/commaai/openpilot/blob/5a441ec0c4bf39a5e066e307ee6c9a8b55f8d8b5/selfdrive/navd/navd.py#L144">selfdrive/navd/navd.py~L144</a></p>
+<pre><code>             waypoint_coords = json.loads(waypoints)
  
          coords = [(self.last_position.longitude, self.last_position.latitude), *waypoint_coords, (destination.longitude, destination.latitude)]
 -        params[&quot;waypoints&quot;] = f&quot;0;{len(coords)-1}&quot;
@@ -915,20 +915,20 @@ fatal: fetch-pack: invalid index-pack output
              params[&quot;bearings&quot;] = f&quot;{(self.last_bearing + 360) % 360:.0f},90&quot; + (&quot;;&quot; * (len(coords) - 1))
  
 </code></pre>
-<p><a href='https://github.com/commaai/openpilot/blob/5a441ec0c4bf39a5e066e307ee6c9a8b55f8d8b5/selfdrive/test/test_onroad.py#L394'>selfdrive/test/test_onroad.py~L394</a></p>
-<pre><code class="language-diff">                 result += f&quot;{s} - failed RSD timing check\n&quot;
+<p><a href="https://github.com/commaai/openpilot/blob/5a441ec0c4bf39a5e066e307ee6c9a8b55f8d8b5/selfdrive/test/test_onroad.py#L394">selfdrive/test/test_onroad.py~L394</a></p>
+<pre><code>                 result += f&quot;{s} - failed RSD timing check\n&quot;
                  passed = False
  
 -            result += f&quot;{s.ljust(40)}: {np.array([np.mean(ts), np.max(ts), np.min(ts)])*1e3}\n&quot;
--            result += f&quot;{''.ljust(40)}  {np.max(np.absolute([np.max(ts)/dt, np.min(ts)/dt]))} {np.std(ts)/dt}\n&quot;
+-            result += f&quot;{&#x27;&#x27;.ljust(40)}  {np.max(np.absolute([np.max(ts)/dt, np.min(ts)/dt]))} {np.std(ts)/dt}\n&quot;
 +            result += f&quot;{s.ljust(40)}: {np.array([np.mean(ts), np.max(ts), np.min(ts)]) * 1e3}\n&quot;
-+            result += f&quot;{''.ljust(40)}  {np.max(np.absolute([np.max(ts) / dt, np.min(ts) / dt]))} {np.std(ts) / dt}\n&quot;
++            result += f&quot;{&#x27;&#x27;.ljust(40)}  {np.max(np.absolute([np.max(ts) / dt, np.min(ts) / dt]))} {np.std(ts) / dt}\n&quot;
          result += &quot;=&quot; * 67
          print(result)
          self.assertTrue(passed)
 </code></pre>
-<p><a href='https://github.com/commaai/openpilot/blob/5a441ec0c4bf39a5e066e307ee6c9a8b55f8d8b5/system/loggerd/tests/test_encoder.py#L141'>system/loggerd/tests/test_encoder.py~L141</a></p>
-<pre><code class="language-diff">             for i in trange(num_segments):
+<p><a href="https://github.com/commaai/openpilot/blob/5a441ec0c4bf39a5e066e307ee6c9a8b55f8d8b5/system/loggerd/tests/test_encoder.py#L141">system/loggerd/tests/test_encoder.py~L141</a></p>
+<pre><code>             for i in trange(num_segments):
                  # poll for next segment
                  with Timeout(int(SEGMENT_LENGTH * 10), error_msg=f&quot;timed out waiting for segment {i}&quot;):
 -                    while Path(f&quot;{route_prefix_path}--{i+1}&quot;) not in Path(Paths.log_root()).iterdir():
@@ -937,62 +937,62 @@ fatal: fetch-pack: invalid index-pack output
                  check_seg(i)
          finally:
 </code></pre>
-<p><a href='https://github.com/commaai/openpilot/blob/5a441ec0c4bf39a5e066e307ee6c9a8b55f8d8b5/tools/tuning/measure_steering_accuracy.py#L110'>tools/tuning/measure_steering_accuracy.py~L110</a></p>
-<pre><code class="language-diff">             for group in self.display_groups:
+<p><a href="https://github.com/commaai/openpilot/blob/5a441ec0c4bf39a5e066e307ee6c9a8b55f8d8b5/tools/tuning/measure_steering_accuracy.py#L110">tools/tuning/measure_steering_accuracy.py~L110</a></p>
+<pre><code>             for group in self.display_groups:
                  if len(self.speed_group_stats[group]) &gt; 0:
                      print(f&quot;speed group: {group:10s} {self.all_groups[group][1]:&gt;96s}&quot;)
--                    print(f&quot;  {'-'*118}&quot;)
-+                    print(f&quot;  {'-' * 118}&quot;)
+-                    print(f&quot;  {&#x27;-&#x27;*118}&quot;)
++                    print(f&quot;  {&#x27;-&#x27; * 118}&quot;)
                      for k in sorted(self.speed_group_stats[group].keys()):
                          v = self.speed_group_stats[group][k]
                          print(
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/demisto/content">demisto/content</a> (+218 -193 lines across 62 files)</summary>
+
+<a href="https://github.com/demisto/content">demisto/content</a> (+218 -193 lines across 62 files)
 <p>
 <pre>ruff format --preview --exclude Packs/ThreatQ/Integrations/ThreatQ/ThreatQ.py</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/demisto/content/blob/638687e520d706b20ca851ab4cfc90ad2554c20f/Packs/AccentureCTI_Feed/Integrations/ACTIIndicatorFeed/ACTIIndicatorFeed.py#L69'>Packs/AccentureCTI_Feed/Integrations/ACTIIndicatorFeed/ACTIIndicatorFeed.py~L69</a></p>
-<pre><code class="language-diff">         except ConnectionError as exception:  # pragma: no cover
+<p><a href="https://github.com/demisto/content/blob/638687e520d706b20ca851ab4cfc90ad2554c20f/Packs/AccentureCTI_Feed/Integrations/ACTIIndicatorFeed/ACTIIndicatorFeed.py#L69">Packs/AccentureCTI_Feed/Integrations/ACTIIndicatorFeed/ACTIIndicatorFeed.py~L69</a></p>
+<pre><code>         except ConnectionError as exception:  # pragma: no cover
              # Get originating Exception in Exception chain
              error_class = str(exception.__class__)  # pragma: no cover
--            err_type = f&quot;&quot;&quot;&lt;{error_class[error_class.find(&quot;'&quot;) + 1: error_class.rfind(&quot;'&quot;)]}&gt;&quot;&quot;&quot;  # pragma: no cover
-+            err_type = f&quot;&quot;&quot;&lt;{error_class[error_class.find(&quot;'&quot;) + 1 : error_class.rfind(&quot;'&quot;)]}&gt;&quot;&quot;&quot;  # pragma: no cover
+-            err_type = f&quot;&quot;&quot;&lt;{error_class[error_class.find(&quot;&#x27;&quot;) + 1: error_class.rfind(&quot;&#x27;&quot;)]}&gt;&quot;&quot;&quot;  # pragma: no cover
++            err_type = f&quot;&quot;&quot;&lt;{error_class[error_class.find(&quot;&#x27;&quot;) + 1 : error_class.rfind(&quot;&#x27;&quot;)]}&gt;&quot;&quot;&quot;  # pragma: no cover
              err_msg = (
                  &quot;Verify that the server URL parameter&quot;
                  &quot; is correct and that you have access to the server from your host.&quot;
 </code></pre>
-<p><a href='https://github.com/demisto/content/blob/638687e520d706b20ca851ab4cfc90ad2554c20f/Packs/Anomali_ThreatStream/Integrations/AnomaliThreatStreamv3/AnomaliThreatStreamv3.py#L1782'>Packs/Anomali_ThreatStream/Integrations/AnomaliThreatStreamv3/AnomaliThreatStreamv3.py~L1782</a></p>
-<pre><code class="language-diff">     readable_output: str = &quot;&quot;
+<p><a href="https://github.com/demisto/content/blob/638687e520d706b20ca851ab4cfc90ad2554c20f/Packs/Anomali_ThreatStream/Integrations/AnomaliThreatStreamv3/AnomaliThreatStreamv3.py#L1782">Packs/Anomali_ThreatStream/Integrations/AnomaliThreatStreamv3/AnomaliThreatStreamv3.py~L1782</a></p>
+<pre><code>     readable_output: str = &quot;&quot;
      if associated_entity_ids_results == num_associated_entity_ids:
          readable_output = (
--            f'The {associated_entity_type} entities with ids {&quot;, &quot;.join(map(str, res.get(&quot;ids&quot;,[])))} '
-+            f'The {associated_entity_type} entities with ids {&quot;, &quot;.join(map(str, res.get(&quot;ids&quot;, [])))} '
-             f'were associated successfully to entity id: {entity_id}.'
+-            f&#x27;The {associated_entity_type} entities with ids {&quot;, &quot;.join(map(str, res.get(&quot;ids&quot;,[])))} &#x27;
++            f&#x27;The {associated_entity_type} entities with ids {&quot;, &quot;.join(map(str, res.get(&quot;ids&quot;, [])))} &#x27;
+             f&#x27;were associated successfully to entity id: {entity_id}.&#x27;
          )
      elif associated_entity_ids_results &gt; 0:
          readable_output = (
--            f'Part of the {associated_entity_type} entities with ids {&quot;, &quot;.join(map(str, res.get(&quot;ids&quot;,[])))} '
-+            f'Part of the {associated_entity_type} entities with ids {&quot;, &quot;.join(map(str, res.get(&quot;ids&quot;, [])))} '
-             f'were associated successfully to entity id: {entity_id}.'
+-            f&#x27;Part of the {associated_entity_type} entities with ids {&quot;, &quot;.join(map(str, res.get(&quot;ids&quot;,[])))} &#x27;
++            f&#x27;Part of the {associated_entity_type} entities with ids {&quot;, &quot;.join(map(str, res.get(&quot;ids&quot;, [])))} &#x27;
+             f&#x27;were associated successfully to entity id: {entity_id}.&#x27;
          )
      else:
 </code></pre>
-<p><a href='https://github.com/demisto/content/blob/638687e520d706b20ca851ab4cfc90ad2554c20f/Packs/Anomali_ThreatStream/Scripts/ThreatstreamBuildIocImportJson/ThreatstreamBuildIocImportJson.py#L60'>Packs/Anomali_ThreatStream/Scripts/ThreatstreamBuildIocImportJson/ThreatstreamBuildIocImportJson.py~L60</a></p>
-<pre><code class="language-diff">         if not re.match(domainRegex, domain):
+<p><a href="https://github.com/demisto/content/blob/638687e520d706b20ca851ab4cfc90ad2554c20f/Packs/Anomali_ThreatStream/Scripts/ThreatstreamBuildIocImportJson/ThreatstreamBuildIocImportJson.py#L60">Packs/Anomali_ThreatStream/Scripts/ThreatstreamBuildIocImportJson/ThreatstreamBuildIocImportJson.py~L60</a></p>
+<pre><code>         if not re.match(domainRegex, domain):
              invalid_indicators.append(domain)
      if len(invalid_indicators) &gt; 0:
--        raise DemistoException(f'Invalid indicators values: {&quot;, &quot;.join(map(str,invalid_indicators))}')
-+        raise DemistoException(f'Invalid indicators values: {&quot;, &quot;.join(map(str, invalid_indicators))}')
+-        raise DemistoException(f&#x27;Invalid indicators values: {&quot;, &quot;.join(map(str,invalid_indicators))}&#x27;)
++        raise DemistoException(f&#x27;Invalid indicators values: {&quot;, &quot;.join(map(str, invalid_indicators))}&#x27;)
  
  
  def get_indicators_from_user(args: dict, indicators_types: dict) -&gt; list:
 </code></pre>
-<p><a href='https://github.com/demisto/content/blob/638687e520d706b20ca851ab4cfc90ad2554c20f/Packs/ApiModules/Scripts/NGINXApiModule/NGINXApiModule.py#L192'>Packs/ApiModules/Scripts/NGINXApiModule/NGINXApiModule.py~L192</a></p>
-<pre><code class="language-diff">             start = 1
+<p><a href="https://github.com/demisto/content/blob/638687e520d706b20ca851ab4cfc90ad2554c20f/Packs/ApiModules/Scripts/NGINXApiModule/NGINXApiModule.py#L192">Packs/ApiModules/Scripts/NGINXApiModule/NGINXApiModule.py~L192</a></p>
+<pre><code>             start = 1
              for lines in batch(f.readlines(), 100):
                  end = start + len(lines)
 -                demisto.info(f&quot;nginx access log ({start}-{end-1}): &quot; + &quot;&quot;.join(lines))
@@ -1001,8 +1001,8 @@ fatal: fetch-pack: invalid index-pack output
          Path(old_access).unlink()
      if log_error:
 </code></pre>
-<p><a href='https://github.com/demisto/content/blob/638687e520d706b20ca851ab4cfc90ad2554c20f/Packs/ApiModules/Scripts/NGINXApiModule/NGINXApiModule.py#L200'>Packs/ApiModules/Scripts/NGINXApiModule/NGINXApiModule.py~L200</a></p>
-<pre><code class="language-diff">             start = 1
+<p><a href="https://github.com/demisto/content/blob/638687e520d706b20ca851ab4cfc90ad2554c20f/Packs/ApiModules/Scripts/NGINXApiModule/NGINXApiModule.py#L200">Packs/ApiModules/Scripts/NGINXApiModule/NGINXApiModule.py~L200</a></p>
+<pre><code>             start = 1
              for lines in batch(f.readlines(), 100):
                  end = start + len(lines)
 -                demisto.error(f&quot;nginx error log ({start}-{end-1}): &quot; + &quot;&quot;.join(lines))
@@ -1011,48 +1011,48 @@ fatal: fetch-pack: invalid index-pack output
          Path(old_error).unlink()
  
 </code></pre>
-<p><a href='https://github.com/demisto/content/blob/638687e520d706b20ca851ab4cfc90ad2554c20f/Packs/ArcusTeam/Integrations/ArcusTeam/ArcusTeam.py#L71'>Packs/ArcusTeam/Integrations/ArcusTeam/ArcusTeam.py~L71</a></p>
-<pre><code class="language-diff">     markdown += f&quot;**Series**: {device.get('series')}{nl}&quot;
-     markdown += f&quot;**Categories**: {','.join(device.get('categories'))}{nl}&quot;
-     markdown += f&quot;**DeviceID**: {device.get('device_key')}{nl}&quot;
--    markdown += f&quot;**Match Score**: {round(device.get('score')*100,2)}%{nl}&quot;
-+    markdown += f&quot;**Match Score**: {round(device.get('score') * 100, 2)}%{nl}&quot;
+<p><a href="https://github.com/demisto/content/blob/638687e520d706b20ca851ab4cfc90ad2554c20f/Packs/ArcusTeam/Integrations/ArcusTeam/ArcusTeam.py#L71">Packs/ArcusTeam/Integrations/ArcusTeam/ArcusTeam.py~L71</a></p>
+<pre><code>     markdown += f&quot;**Series**: {device.get(&#x27;series&#x27;)}{nl}&quot;
+     markdown += f&quot;**Categories**: {&#x27;,&#x27;.join(device.get(&#x27;categories&#x27;))}{nl}&quot;
+     markdown += f&quot;**DeviceID**: {device.get(&#x27;device_key&#x27;)}{nl}&quot;
+-    markdown += f&quot;**Match Score**: {round(device.get(&#x27;score&#x27;)*100,2)}%{nl}&quot;
++    markdown += f&quot;**Match Score**: {round(device.get(&#x27;score&#x27;) * 100, 2)}%{nl}&quot;
      firmwares = device.get(&quot;firmware&quot;)
      markdown += tableToMarkdown(&quot;Firmwares&quot;, firmwares, headers=[&quot;firmwareid&quot;, &quot;version&quot;, &quot;name&quot;])
      return markdown
 </code></pre>
-<p><a href='https://github.com/demisto/content/blob/638687e520d706b20ca851ab4cfc90ad2554c20f/Packs/BmcITSM/Integrations/BmcITSM/BmcITSM.py#L3038'>Packs/BmcITSM/Integrations/BmcITSM/BmcITSM.py~L3038</a></p>
-<pre><code class="language-diff">     &quot;&quot;&quot;
+<p><a href="https://github.com/demisto/content/blob/638687e520d706b20ca851ab4cfc90ad2554c20f/Packs/BmcITSM/Integrations/BmcITSM/BmcITSM.py#L3038">Packs/BmcITSM/Integrations/BmcITSM/BmcITSM.py~L3038</a></p>
+<pre><code>     &quot;&quot;&quot;
  
      stmt = oper_between_filters.join(
--        f&quot;'{filter_key}' {oper_in_filter} \&quot;{wrap_filter_value(filter_val,oper_in_filter)}\&quot;&quot;
-+        f&quot;'{filter_key}' {oper_in_filter} \&quot;{wrap_filter_value(filter_val, oper_in_filter)}\&quot;&quot;
+-        f&quot;&#x27;{filter_key}&#x27; {oper_in_filter} \&quot;{wrap_filter_value(filter_val,oper_in_filter)}\&quot;&quot;
++        f&quot;&#x27;{filter_key}&#x27; {oper_in_filter} \&quot;{wrap_filter_value(filter_val, oper_in_filter)}\&quot;&quot;
          for filter_key, filter_val in (filter_mapper).items()
      )
      return stmt
 </code></pre>
-<p><a href='https://github.com/demisto/content/blob/638687e520d706b20ca851ab4cfc90ad2554c20f/Packs/BreachRx/Integrations/BreachRx/BreachRx.py#L158'>Packs/BreachRx/Integrations/BreachRx/BreachRx.py~L158</a></p>
-<pre><code class="language-diff">         description = f&quot;&quot;&quot;An Incident copied from the Palo Alto Networks XSOAR platform.
+<p><a href="https://github.com/demisto/content/blob/638687e520d706b20ca851ab4cfc90ad2554c20f/Packs/BreachRx/Integrations/BreachRx/BreachRx.py#L158">Packs/BreachRx/Integrations/BreachRx/BreachRx.py~L158</a></p>
+<pre><code>         description = f&quot;&quot;&quot;An Incident copied from the Palo Alto Networks XSOAR platform.
              &lt;br&gt;
              &lt;br&gt;
--            XSOAR Incident Name: {demisto.incident().get('name')}&quot;&quot;&quot;
+-            XSOAR Incident Name: {demisto.incident().get(&#x27;name&#x27;)}&quot;&quot;&quot;
 +            XSOAR Incident Name: {demisto.incident().get(&quot;name&quot;)}&quot;&quot;&quot;
  
      response = client.create_incident(incident_name, description)
  
 </code></pre>
-<p><a href='https://github.com/demisto/content/blob/638687e520d706b20ca851ab4cfc90ad2554c20f/Packs/Campaign/Scripts/GetCampaignIndicatorsByIncidentId/GetCampaignIndicatorsByIncidentId.py#L26'>Packs/Campaign/Scripts/GetCampaignIndicatorsByIncidentId/GetCampaignIndicatorsByIncidentId.py~L26</a></p>
-<pre><code class="language-diff">     Returns:
+<p><a href="https://github.com/demisto/content/blob/638687e520d706b20ca851ab4cfc90ad2554c20f/Packs/Campaign/Scripts/GetCampaignIndicatorsByIncidentId/GetCampaignIndicatorsByIncidentId.py#L26">Packs/Campaign/Scripts/GetCampaignIndicatorsByIncidentId/GetCampaignIndicatorsByIncidentId.py~L26</a></p>
+<pre><code>     Returns:
          List of the campaign indicators.
      &quot;&quot;&quot;
--    indicators_query = f&quot;&quot;&quot;investigationIDs:({' '.join(f'&quot;{id_}&quot;' for id_ in incident_ids)})&quot;&quot;&quot;
-+    indicators_query = f&quot;&quot;&quot;investigationIDs:({&quot; &quot;.join(f'&quot;{id_}&quot;' for id_ in incident_ids)})&quot;&quot;&quot;
+-    indicators_query = f&quot;&quot;&quot;investigationIDs:({&#x27; &#x27;.join(f&#x27;&quot;{id_}&quot;&#x27; for id_ in incident_ids)})&quot;&quot;&quot;
++    indicators_query = f&quot;&quot;&quot;investigationIDs:({&quot; &quot;.join(f&#x27;&quot;{id_}&quot;&#x27; for id_ in incident_ids)})&quot;&quot;&quot;
      fields = [&quot;id&quot;, &quot;indicator_type&quot;, &quot;investigationIDs&quot;, &quot;investigationsCount&quot;, &quot;score&quot;, &quot;value&quot;]
      search_indicators = IndicatorsSearcher(query=indicators_query, limit=150, size=500, filter_fields=&quot;,&quot;.join(fields))
      indicators: list[dict] = []
 </code></pre>
-<p><a href='https://github.com/demisto/content/blob/638687e520d706b20ca851ab4cfc90ad2554c20f/Packs/CommonScripts/Scripts/BMCTool/BMCTool.py#L1170'>Packs/CommonScripts/Scripts/BMCTool/BMCTool.py~L1170</a></p>
-<pre><code class="language-diff">                             self.pal = True
+<p><a href="https://github.com/demisto/content/blob/638687e520d706b20ca851ab4cfc90ad2554c20f/Packs/CommonScripts/Scripts/BMCTool/BMCTool.py#L1170">Packs/CommonScripts/Scripts/BMCTool/BMCTool.py~L1170</a></p>
+<pre><code>                             self.pal = True
                              t_bmp = self.PALETTE + self.bdat[len(t_hdr) : len(t_hdr) + cf * t_width * t_height]
                          else:
 -                            self.b_log(&quot;error&quot;, False, f&quot;Unexpected bpp {8*cf} found during processing; aborting.&quot;)
@@ -1061,25 +1061,25 @@ fatal: fetch-pack: invalid index-pack output
              if len(t_bmp) &gt; 0:
                  self.bmps.append(t_bmp)
 </code></pre>
-<p><a href='https://github.com/demisto/content/blob/638687e520d706b20ca851ab4cfc90ad2554c20f/Packs/CommonScripts/Scripts/GetIndicatorDBotScoreFromCache/GetIndicatorDBotScoreFromCache.py#L7'>Packs/CommonScripts/Scripts/GetIndicatorDBotScoreFromCache/GetIndicatorDBotScoreFromCache.py~L7</a></p>
-<pre><code class="language-diff">     values: list[str] = argToList(demisto.args().get(&quot;value&quot;, None))
+<p><a href="https://github.com/demisto/content/blob/638687e520d706b20ca851ab4cfc90ad2554c20f/Packs/CommonScripts/Scripts/GetIndicatorDBotScoreFromCache/GetIndicatorDBotScoreFromCache.py#L7">Packs/CommonScripts/Scripts/GetIndicatorDBotScoreFromCache/GetIndicatorDBotScoreFromCache.py~L7</a></p>
+<pre><code>     values: list[str] = argToList(demisto.args().get(&quot;value&quot;, None))
      unique_values: set[str] = {v.lower() for v in values}  # search query is case insensitive
  
--    query = f&quot;&quot;&quot;value:({' '.join([f'&quot;{value}&quot;' for value in unique_values])})&quot;&quot;&quot;
-+    query = f&quot;&quot;&quot;value:({&quot; &quot;.join([f'&quot;{value}&quot;' for value in unique_values])})&quot;&quot;&quot;
+-    query = f&quot;&quot;&quot;value:({&#x27; &#x27;.join([f&#x27;&quot;{value}&quot;&#x27; for value in unique_values])})&quot;&quot;&quot;
++    query = f&quot;&quot;&quot;value:({&quot; &quot;.join([f&#x27;&quot;{value}&quot;&#x27; for value in unique_values])})&quot;&quot;&quot;
      demisto.debug(f&quot;{query=}&quot;)
  
      res = demisto.searchIndicators(
 </code></pre>
-<p><a href='https://github.com/demisto/content/blob/638687e520d706b20ca851ab4cfc90ad2554c20f/Packs/CommonScripts/Scripts/ParseEmailFilesV2/ParseEmailFilesV2.py#L30'>Packs/CommonScripts/Scripts/ParseEmailFilesV2/ParseEmailFilesV2.py~L30</a></p>
-<pre><code class="language-diff">     if parent_email_file:
+<p><a href="https://github.com/demisto/content/blob/638687e520d706b20ca851ab4cfc90ad2554c20f/Packs/CommonScripts/Scripts/ParseEmailFilesV2/ParseEmailFilesV2.py#L30">Packs/CommonScripts/Scripts/ParseEmailFilesV2/ParseEmailFilesV2.py~L30</a></p>
+<pre><code>     if parent_email_file:
          md += f&quot;### Containing email: {parent_email_file}\n&quot;
  
--    md += f&quot;&quot;&quot;* From:\t{email_data.get('From') or &quot;&quot;}\n&quot;&quot;&quot;
--    md += f&quot;&quot;&quot;* To:\t{email_data.get('To') or &quot;&quot;}\n&quot;&quot;&quot;
--    md += f&quot;&quot;&quot;* CC:\t{email_data.get('CC') or &quot;&quot;}\n&quot;&quot;&quot;
--    md += f&quot;&quot;&quot;* BCC:\t{email_data.get('BCC') or &quot;&quot;}\n&quot;&quot;&quot;
--    md += f&quot;&quot;&quot;* Subject:\t{email_data.get('Subject') or &quot;&quot;}\n&quot;&quot;&quot;
+-    md += f&quot;&quot;&quot;* From:\t{email_data.get(&#x27;From&#x27;) or &quot;&quot;}\n&quot;&quot;&quot;
+-    md += f&quot;&quot;&quot;* To:\t{email_data.get(&#x27;To&#x27;) or &quot;&quot;}\n&quot;&quot;&quot;
+-    md += f&quot;&quot;&quot;* CC:\t{email_data.get(&#x27;CC&#x27;) or &quot;&quot;}\n&quot;&quot;&quot;
+-    md += f&quot;&quot;&quot;* BCC:\t{email_data.get(&#x27;BCC&#x27;) or &quot;&quot;}\n&quot;&quot;&quot;
+-    md += f&quot;&quot;&quot;* Subject:\t{email_data.get(&#x27;Subject&#x27;) or &quot;&quot;}\n&quot;&quot;&quot;
 +    md += f&quot;&quot;&quot;* From:\t{email_data.get(&quot;From&quot;) or &quot;&quot;}\n&quot;&quot;&quot;
 +    md += f&quot;&quot;&quot;* To:\t{email_data.get(&quot;To&quot;) or &quot;&quot;}\n&quot;&quot;&quot;
 +    md += f&quot;&quot;&quot;* CC:\t{email_data.get(&quot;CC&quot;) or &quot;&quot;}\n&quot;&quot;&quot;
@@ -1087,108 +1087,108 @@ fatal: fetch-pack: invalid index-pack output
 +    md += f&quot;&quot;&quot;* Subject:\t{email_data.get(&quot;Subject&quot;) or &quot;&quot;}\n&quot;&quot;&quot;
      if email_data.get(&quot;Text&quot;):
          text = email_data[&quot;Text&quot;].replace(&quot;&lt;&quot;, &quot;[&quot;).replace(&quot;&gt;&quot;, &quot;]&quot;)
-         md += f'* Body/Text:\t{text or &quot;&quot;}\n'
+         md += f&#x27;* Body/Text:\t{text or &quot;&quot;}\n&#x27;
      if email_data.get(&quot;HTML&quot;):
--        md += f&quot;&quot;&quot;* Body/HTML:\t{email_data['HTML'] or &quot;&quot;}\n&quot;&quot;&quot;
+-        md += f&quot;&quot;&quot;* Body/HTML:\t{email_data[&#x27;HTML&#x27;] or &quot;&quot;}\n&quot;&quot;&quot;
 +        md += f&quot;&quot;&quot;* Body/HTML:\t{email_data[&quot;HTML&quot;] or &quot;&quot;}\n&quot;&quot;&quot;
  
--    md += f&quot;&quot;&quot;* Attachments:\t{email_data.get('Attachments') or &quot;&quot;}\n&quot;&quot;&quot;
+-    md += f&quot;&quot;&quot;* Attachments:\t{email_data.get(&#x27;Attachments&#x27;) or &quot;&quot;}\n&quot;&quot;&quot;
 +    md += f&quot;&quot;&quot;* Attachments:\t{email_data.get(&quot;Attachments&quot;) or &quot;&quot;}\n&quot;&quot;&quot;
      md += &quot;\n\n&quot; + tableToMarkdown(&quot;HeadersMap&quot;, email_data.get(&quot;HeadersMap&quot;))
      return md
  
 </code></pre>
-<p><a href='https://github.com/demisto/content/blob/638687e520d706b20ca851ab4cfc90ad2554c20f/Packs/CommunityCommonScripts/Scripts/RetrievePlaybooksAndIntegrations/RetrievePlaybooksAndIntegrations.py#L66'>Packs/CommunityCommonScripts/Scripts/RetrievePlaybooksAndIntegrations/RetrievePlaybooksAndIntegrations.py~L66</a></p>
-<pre><code class="language-diff"> def retrieve_playbooks_and_integrations(args: Dict[str, Any]) -&gt; CommandResults:
+<p><a href="https://github.com/demisto/content/blob/638687e520d706b20ca851ab4cfc90ad2554c20f/Packs/CommunityCommonScripts/Scripts/RetrievePlaybooksAndIntegrations/RetrievePlaybooksAndIntegrations.py#L66">Packs/CommunityCommonScripts/Scripts/RetrievePlaybooksAndIntegrations/RetrievePlaybooksAndIntegrations.py~L66</a></p>
+<pre><code> def retrieve_playbooks_and_integrations(args: Dict[str, Any]) -&gt; CommandResults:
      playbooks: List[str] = []
      integrations: List[str] = []
--    query = f'''name:&quot;{args['playbook_name']}&quot;'''
-+    query = f'''name:&quot;{args[&quot;playbook_name&quot;]}&quot;'''
+-    query = f&#x27;&#x27;&#x27;name:&quot;{args[&#x27;playbook_name&#x27;]}&quot;&#x27;&#x27;&#x27;
++    query = f&#x27;&#x27;&#x27;name:&quot;{args[&quot;playbook_name&quot;]}&quot;&#x27;&#x27;&#x27;
      body = {&quot;query&quot;: query}
      playbooks_json = perform_rest_call(&quot;post&quot;, &quot;playbook/search&quot;, body)
      for playbook_json in playbooks_json[&quot;playbooks&quot;]:
 </code></pre>
-<p><a href='https://github.com/demisto/content/blob/638687e520d706b20ca851ab4cfc90ad2554c20f/Packs/CommunityCommonScripts/Scripts/RetrievePlaybooksAndIntegrations/RetrievePlaybooksAndIntegrations.py#L84'>Packs/CommunityCommonScripts/Scripts/RetrievePlaybooksAndIntegrations/RetrievePlaybooksAndIntegrations.py~L84</a></p>
-<pre><code class="language-diff">     outputs = {&quot;Playbooks&quot;: playbooks, &quot;Integrations&quot;: integrations}
+<p><a href="https://github.com/demisto/content/blob/638687e520d706b20ca851ab4cfc90ad2554c20f/Packs/CommunityCommonScripts/Scripts/RetrievePlaybooksAndIntegrations/RetrievePlaybooksAndIntegrations.py#L84">Packs/CommunityCommonScripts/Scripts/RetrievePlaybooksAndIntegrations/RetrievePlaybooksAndIntegrations.py~L84</a></p>
+<pre><code>     outputs = {&quot;Playbooks&quot;: playbooks, &quot;Integrations&quot;: integrations}
  
      return CommandResults(
--        readable_output=f'''Retrieved Playbooks and Integrations for Playbook &quot;{playbook_json['name']}&quot;''',
-+        readable_output=f'''Retrieved Playbooks and Integrations for Playbook &quot;{playbook_json[&quot;name&quot;]}&quot;''',
+-        readable_output=f&#x27;&#x27;&#x27;Retrieved Playbooks and Integrations for Playbook &quot;{playbook_json[&#x27;name&#x27;]}&quot;&#x27;&#x27;&#x27;,
++        readable_output=f&#x27;&#x27;&#x27;Retrieved Playbooks and Integrations for Playbook &quot;{playbook_json[&quot;name&quot;]}&quot;&#x27;&#x27;&#x27;,
          outputs_prefix=&quot;RetrievePlaybooksAndIntegrations&quot;,
          outputs_key_field=&quot;&quot;,
          outputs=outputs,
 </code></pre>
-<p><a href='https://github.com/demisto/content/blob/638687e520d706b20ca851ab4cfc90ad2554c20f/Packs/CommvaultSecurityIQ/Integrations/CommvaultSecurityIQ/CommvaultSecurityIQ.py#L881'>Packs/CommvaultSecurityIQ/Integrations/CommvaultSecurityIQ/CommvaultSecurityIQ.py~L881</a></p>
-<pre><code class="language-diff">             self.validate_session_or_generate_token(self.current_api_token)
+<p><a href="https://github.com/demisto/content/blob/638687e520d706b20ca851ab4cfc90ad2554c20f/Packs/CommvaultSecurityIQ/Integrations/CommvaultSecurityIQ/CommvaultSecurityIQ.py#L881">Packs/CommvaultSecurityIQ/Integrations/CommvaultSecurityIQ/CommvaultSecurityIQ.py~L881</a></p>
+<pre><code>             self.validate_session_or_generate_token(self.current_api_token)
              response = self.http_request(&quot;GET&quot;, f&quot;/V4/SAML/{identity_server_name}&quot;)
              if &quot;error&quot; in response:
--                demisto.debug(f&quot;Error [{response.get('error',{}).get('errorString','')}]&quot;)
-+                demisto.debug(f&quot;Error [{response.get('error', {}).get('errorString', '')}]&quot;)
+-                demisto.debug(f&quot;Error [{response.get(&#x27;error&#x27;,{}).get(&#x27;errorString&#x27;,&#x27;&#x27;)}]&quot;)
++                demisto.debug(f&quot;Error [{response.get(&#x27;error&#x27;, {}).get(&#x27;errorString&#x27;, &#x27;&#x27;)}]&quot;)
                  return False
              if response.get(&quot;enabled&quot;):
                  demisto.debug(f&quot;SAML is enabled for identity server [{identity_server_name}]. Going to disable it&quot;)
 </code></pre>
-<p><a href='https://github.com/demisto/content/blob/638687e520d706b20ca851ab4cfc90ad2554c20f/Packs/ContentTesting/Scripts/UnitTestCoverage/UnitTestCoverage.py#L34'>Packs/ContentTesting/Scripts/UnitTestCoverage/UnitTestCoverage.py~L34</a></p>
-<pre><code class="language-diff">         markdown += &quot;|No Tasks Found||||\n&quot;
+<p><a href="https://github.com/demisto/content/blob/638687e520d706b20ca851ab4cfc90ad2554c20f/Packs/ContentTesting/Scripts/UnitTestCoverage/UnitTestCoverage.py#L34">Packs/ContentTesting/Scripts/UnitTestCoverage/UnitTestCoverage.py~L34</a></p>
+<pre><code>         markdown += &quot;|No Tasks Found||||\n&quot;
          return markdown
      for _key, val in tasks.items():
--        markdown += f&quot;|{val['name']}|{val['count']}|{val['completed']}|{val['completed']/val['count']*100}%|\n&quot;
-+        markdown += f&quot;|{val['name']}|{val['count']}|{val['completed']}|{val['completed'] / val['count'] * 100}%|\n&quot;
+-        markdown += f&quot;|{val[&#x27;name&#x27;]}|{val[&#x27;count&#x27;]}|{val[&#x27;completed&#x27;]}|{val[&#x27;completed&#x27;]/val[&#x27;count&#x27;]*100}%|\n&quot;
++        markdown += f&quot;|{val[&#x27;name&#x27;]}|{val[&#x27;count&#x27;]}|{val[&#x27;completed&#x27;]}|{val[&#x27;completed&#x27;] / val[&#x27;count&#x27;] * 100}%|\n&quot;
  
      return markdown
  
 </code></pre>
-<p><a href='https://github.com/demisto/content/blob/638687e520d706b20ca851ab4cfc90ad2554c20f/Packs/CovalenceForSecurityProviders/Integrations/CovalenceForSecurityProviders/CovalenceForSecurityProviders.py#L168'>Packs/CovalenceForSecurityProviders/Integrations/CovalenceForSecurityProviders/CovalenceForSecurityProviders.py~L168</a></p>
-<pre><code class="language-diff">                 created_time_str = created_time.strftime(DATE_FORMAT)
+<p><a href="https://github.com/demisto/content/blob/638687e520d706b20ca851ab4cfc90ad2554c20f/Packs/CovalenceForSecurityProviders/Integrations/CovalenceForSecurityProviders/CovalenceForSecurityProviders.py#L168">Packs/CovalenceForSecurityProviders/Integrations/CovalenceForSecurityProviders/CovalenceForSecurityProviders.py~L168</a></p>
+<pre><code>                 created_time_str = created_time.strftime(DATE_FORMAT)
  
                  if BROKER:
--                    incident_name = f&quot;&quot;&quot;[{target_org}] [{a.get('type', 'No alert type')}] {a.get('analystTitle', 'No title')}&quot;&quot;&quot;
+-                    incident_name = f&quot;&quot;&quot;[{target_org}] [{a.get(&#x27;type&#x27;, &#x27;No alert type&#x27;)}] {a.get(&#x27;analystTitle&#x27;, &#x27;No title&#x27;)}&quot;&quot;&quot;
 +                    incident_name = f&quot;&quot;&quot;[{target_org}] [{a.get(&quot;type&quot;, &quot;No alert type&quot;)}] {a.get(&quot;analystTitle&quot;, &quot;No title&quot;)}&quot;&quot;&quot;
                  else:
--                    incident_name = f&quot;&quot;&quot;[{a.get('type', 'No alert type')}] {a.get('analystTitle', 'No title')}&quot;&quot;&quot;
+-                    incident_name = f&quot;&quot;&quot;[{a.get(&#x27;type&#x27;, &#x27;No alert type&#x27;)}] {a.get(&#x27;analystTitle&#x27;, &#x27;No title&#x27;)}&quot;&quot;&quot;
 +                    incident_name = f&quot;&quot;&quot;[{a.get(&quot;type&quot;, &quot;No alert type&quot;)}] {a.get(&quot;analystTitle&quot;, &quot;No title&quot;)}&quot;&quot;&quot;
                  incident: Dict[str, Any] = {&quot;name&quot;: incident_name, &quot;occured&quot;: created_time_str, &quot;rawJSON&quot;: json.dumps(a)}
                  if a.get(&quot;severity&quot;, None):
                      #  XSOAR mapping
 </code></pre>
-<p><a href='https://github.com/demisto/content/blob/638687e520d706b20ca851ab4cfc90ad2554c20f/Packs/CovalenceManagedSecurity/Integrations/CovalenceManagedSecurity/CovalenceManagedSecurity.py#L236'>Packs/CovalenceManagedSecurity/Integrations/CovalenceManagedSecurity/CovalenceManagedSecurity.py~L236</a></p>
-<pre><code class="language-diff">                 if a.get(&quot;steps&quot;, None) and len(a[&quot;steps&quot;]) &gt; 0:
+<p><a href="https://github.com/demisto/content/blob/638687e520d706b20ca851ab4cfc90ad2554c20f/Packs/CovalenceManagedSecurity/Integrations/CovalenceManagedSecurity/CovalenceManagedSecurity.py#L236">Packs/CovalenceManagedSecurity/Integrations/CovalenceManagedSecurity/CovalenceManagedSecurity.py~L236</a></p>
+<pre><code>                 if a.get(&quot;steps&quot;, None) and len(a[&quot;steps&quot;]) &gt; 0:
                      incident[&quot;details&quot;] += &quot;\n\nMitigation Steps\n&quot;
                      for step in a[&quot;steps&quot;]:
--                        incident[&quot;details&quot;] += f&quot;&quot;&quot;- {step['label']}\n&quot;&quot;&quot;
+-                        incident[&quot;details&quot;] += f&quot;&quot;&quot;- {step[&#x27;label&#x27;]}\n&quot;&quot;&quot;
 +                        incident[&quot;details&quot;] += f&quot;&quot;&quot;- {step[&quot;label&quot;]}\n&quot;&quot;&quot;
                  if org_id:
                      active_response_profile = p.get_active_response_profile(org_id)
                      if active_response_profile:
 </code></pre>
-<p><a href='https://github.com/demisto/content/blob/638687e520d706b20ca851ab4cfc90ad2554c20f/Packs/CrowdStrikeFalcon/Integrations/CrowdStrikeFalcon/CrowdStrikeFalcon.py#L6073'>Packs/CrowdStrikeFalcon/Integrations/CrowdStrikeFalcon/CrowdStrikeFalcon.py~L6073</a></p>
-<pre><code class="language-diff"> def ODS_create_scan_request(args: dict, is_scheduled: bool) -&gt; dict:
+<p><a href="https://github.com/demisto/content/blob/638687e520d706b20ca851ab4cfc90ad2554c20f/Packs/CrowdStrikeFalcon/Integrations/CrowdStrikeFalcon/CrowdStrikeFalcon.py#L6073">Packs/CrowdStrikeFalcon/Integrations/CrowdStrikeFalcon/CrowdStrikeFalcon.py~L6073</a></p>
+<pre><code> def ODS_create_scan_request(args: dict, is_scheduled: bool) -&gt; dict:
      body = make_create_scan_request_body(args, is_scheduled)
      remove_nulls_from_dictionary(body)
--    return http_request(&quot;POST&quot;, f'/ods/entities/{&quot;scheduled-&quot;*is_scheduled}scans/v1', json=body)
-+    return http_request(&quot;POST&quot;, f'/ods/entities/{&quot;scheduled-&quot; * is_scheduled}scans/v1', json=body)
+-    return http_request(&quot;POST&quot;, f&#x27;/ods/entities/{&quot;scheduled-&quot;*is_scheduled}scans/v1&#x27;, json=body)
++    return http_request(&quot;POST&quot;, f&#x27;/ods/entities/{&quot;scheduled-&quot; * is_scheduled}scans/v1&#x27;, json=body)
  
  
  def ODS_verify_create_scan_command(args: dict) -&gt; None:
 </code></pre>
-<p><a href='https://github.com/demisto/content/blob/638687e520d706b20ca851ab4cfc90ad2554c20f/Packs/Cryptosim/Integrations/Cryptosim/Cryptosim.py#L132'>Packs/Cryptosim/Integrations/Cryptosim/Cryptosim.py~L132</a></p>
-<pre><code class="language-diff">             message = &quot;ok&quot;
+<p><a href="https://github.com/demisto/content/blob/638687e520d706b20ca851ab4cfc90ad2554c20f/Packs/Cryptosim/Integrations/Cryptosim/Cryptosim.py#L132">Packs/Cryptosim/Integrations/Cryptosim/Cryptosim.py~L132</a></p>
+<pre><code>             message = &quot;ok&quot;
          else:
              raise Exception(f&quot;&quot;&quot;StatusCode:
--                            {client.correlations().get('StatusCode')},
--                            Error: {client.correlations().get('ErrorMessage')}
+-                            {client.correlations().get(&#x27;StatusCode&#x27;)},
+-                            Error: {client.correlations().get(&#x27;ErrorMessage&#x27;)}
 +                            {client.correlations().get(&quot;StatusCode&quot;)},
 +                            Error: {client.correlations().get(&quot;ErrorMessage&quot;)}
                              &quot;&quot;&quot;)
      except DemistoException as e:
          if &quot;401&quot; in str(e):
 </code></pre>
-<p><a href='https://github.com/demisto/content/blob/638687e520d706b20ca851ab4cfc90ad2554c20f/Packs/Cybereason/Integrations/Cybereason/Cybereason.py#L875'>Packs/Cybereason/Integrations/Cybereason/Cybereason.py~L875</a></p>
-<pre><code class="language-diff">         response = get_remediation_action(client, malop_guid, machine_name, target_id, remediation_action)
+<p><a href="https://github.com/demisto/content/blob/638687e520d706b20ca851ab4cfc90ad2554c20f/Packs/Cybereason/Integrations/Cybereason/Cybereason.py#L875">Packs/Cybereason/Integrations/Cybereason/Cybereason.py~L875</a></p>
+<pre><code>         response = get_remediation_action(client, malop_guid, machine_name, target_id, remediation_action)
          action_status = get_remediation_action_status(client, user_name, malop_guid, response, comment)
          if dict_safe_get(action_status, [&quot;Remediation status&quot;]) == &quot;SUCCESS&quot;:
 -            success_response = f&quot;&quot;&quot;Kill process remediation action status is: {dict_safe_get(
--                action_status, ['Remediation status'])} \n Remediation ID: {dict_safe_get(action_status, ['Remediation ID'])}&quot;&quot;&quot;
+-                action_status, [&#x27;Remediation status&#x27;])} \n Remediation ID: {dict_safe_get(action_status, [&#x27;Remediation ID&#x27;])}&quot;&quot;&quot;
 +            success_response = f&quot;&quot;&quot;Kill process remediation action status is: {
 +                dict_safe_get(action_status, [&quot;Remediation status&quot;])
 +            } \n Remediation ID: {dict_safe_get(action_status, [&quot;Remediation ID&quot;])}&quot;&quot;&quot;
@@ -1199,10 +1199,10 @@ fatal: fetch-pack: invalid index-pack output
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-02-13 19:11</div>
-            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/dhruv/fstring-formatting">CodSpeed Performance Report</a></h2>
-<h3>Merging #9642 will <strong>not alter performance</strong></h3>
-<p><sub>Comparing <code>dhruv/fstring-formatting</code> (7eed676) with <code>main</code> (fe79798)</sub></p>
-<h3>Summary</h3>
+            <div class="timeline-body"><a href="https://codspeed.io/astral-sh/ruff/branches/dhruv/fstring-formatting">CodSpeed Performance Report</a>
+Merging #9642 will <strong>not alter performance</strong>
+<p>Comparing <code>dhruv/fstring-formatting</code> (7eed676) with <code>main</code> (fe79798)</p>
+Summary
 <p><code>✅ 30</code> untouched benchmarks</p>
 </div>
         </div>
@@ -1213,10 +1213,10 @@ fatal: fetch-pack: invalid index-pack output
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/other/f_string_element.rs</code>:188 on 2024-02-13 20:07</div>
-            <div class="timeline-body"><p>I think we have to reuse the outer context here or you lose information (are we in a prenthesized context? what's the indent level and potentially other new state that will be added).</p>
+            <div class="timeline-body"><p>I think we have to reuse the outer context here or you lose information (are we in a prenthesized context? what&#x27;s the indent level and potentially other new state that will be added).</p>
 <p>The alternative is to clone the existing context and only change <code>in_f_string</code>.</p>
 <p>You can reuse the context by building the <code>VecBuffer</code> manually</p>
-<pre><code class="language-python">let formatted = {
+<pre><code>let formatted = {
 	let mut buffer = VecBuffer::new(f.state_mut());
 	write!(buffer, [expression.format()])?;
 	buffer.into_vec()
@@ -1237,12 +1237,12 @@ let expression_str = Printer::new(f.context().source_code(), print_options).prin
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/context.rs</code>:17 on 2024-02-13 20:17</div>
-            <div class="timeline-body"><p>Nit: I would rename the enum to <code>FStringContext</code> or similar and have a variant <code>Inside</code> or <code>Outside</code> because the enum doesn't represent arbitrary expression contexts.</p>
+            <div class="timeline-body"><p>Nit: I would rename the enum to <code>FStringContext</code> or similar and have a variant <code>Inside</code> or <code>Outside</code> because the enum doesn&#x27;t represent arbitrary expression contexts.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/preview.rs</code>:86 on 2024-02-13 20:18</div>
-            <div class="timeline-body"><p>Nit: I would prefer if we call this <code>fstring_formatting</code>. Not everyone knows all pep's by heart ;)</p>
+            <div class="timeline-body"><p>Nit: I would prefer if we call this <code>fstring_formatting</code>. Not everyone knows all pep&#x27;s by heart ;)</p>
 <p>Does this gate the entire f string formatting or only the multiline fstring formatting?</p>
 </div>
         </div>
@@ -1261,7 +1261,7 @@ let expression_str = Printer::new(f.context().source_code(), print_options).prin
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/context.rs</code>:21 on 2024-02-13 20:23</div>
-            <div class="timeline-body"><p>What's the size of <code>PyFormatContext</code>. I wonder if the added field pushes it over the limit so that llvm/rust opts out of some optimisations. Or try re-running the benchmarks to see if the performance still regresses.</p>
+            <div class="timeline-body"><p>What&#x27;s the size of <code>PyFormatContext</code>. I wonder if the added field pushes it over the limit so that llvm/rust opts out of some optimisations. Or try re-running the benchmarks to see if the performance still regresses.</p>
 <p>What I find interesting is that the regressing benchmark contains exactly one f-string.</p>
 </div>
         </div>
@@ -1278,7 +1278,7 @@ let expression_str = Printer::new(f.context().source_code(), print_options).prin
             <div class="timeline-body"><blockquote>
 <p>Does this gate the entire f string formatting or only the multiline fstring formatting?</p>
 </blockquote>
-<p>The entire f-string formatting. If not enabled, it'll fallback to the previous behavior of normalizing the f-string.</p>
+<p>The entire f-string formatting. If not enabled, it&#x27;ll fallback to the previous behavior of normalizing the f-string.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1297,8 +1297,8 @@ let expression_str = Printer::new(f.context().source_code(), print_options).prin
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/src/other/f_string_element.rs</code>:188 on 2024-02-14 05:43</div>
-            <div class="timeline-body"><p>We need to have different options (max line width, no magic trailing comma) which is why I choose to create a new context but I see your point. I'm using the following:</p>
-<pre><code class="language-rs">                    let context = f.context().clone().in_f_string(self.context.quotes());
+            <div class="timeline-body"><p>We need to have different options (max line width, no magic trailing comma) which is why I choose to create a new context but I see your point. I&#x27;m using the following:</p>
+<pre><code>                    let context = f.context().clone().in_f_string(self.context.quotes());
                     let formatted = crate::format!(context, [expression.format()])?;
                     let printer_options = f
                         .options()
@@ -1321,7 +1321,7 @@ let expression_str = Printer::new(f.context().source_code(), print_options).prin
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/src/other/f_string_element.rs</code>:188 on 2024-02-14 12:46</div>
-            <div class="timeline-body"><p>This doesn't work because the options need to be updated for the current context as well.</p>
+            <div class="timeline-body"><p>This doesn&#x27;t work because the options need to be updated for the current context as well.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1339,18 +1339,18 @@ let expression_str = Printer::new(f.context().source_code(), print_options).prin
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/src/other/f_string_element.rs</code>:171 on 2024-02-14 13:53</div>
-            <div class="timeline-body"><p>I'm using the preorder visitor which should be more robust.</p>
+            <div class="timeline-body"><p>I&#x27;m using the preorder visitor which should be more robust.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-02-14 20:02</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-02-14 20:02</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @dhruvmanila on 2024-02-14 20:28</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-02-14 20:28</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-15 10:02</div>
-            <div class="timeline-body"><p>I've some understand questions first:</p>
+            <div class="timeline-body"><p>I&#x27;ve some understand questions first:</p>
 <blockquote>
 <p>The heuristics for adding newline is similar to that of <a href="https://prettier.io/docs/en/next/rationale.html#template-literals">Prettier</a> where the formatter would only split an expression in the replacement field across multiple lines if there was already a line break within the replacement field.</p>
 </blockquote>
@@ -1360,14 +1360,14 @@ let expression_str = Printer::new(f.context().source_code(), print_options).prin
 </blockquote>
 <p>Does this also apply to Python 3.12 or does Python 3.12 allow to reuse the same triple quotes?</p>
 <blockquote>
-<p>If debug expressions are present in the replacement field of a f-string, then the whitespace needs to be preserved as they will be rendered as it is (for example, f&quot;{  x  = }&quot;. If there are any nested f-strings, then the whitespace in them needs to be preserved as well which means that we'll stop formatting the f-string as soon as we encounter a debug expression.</p>
+<p>If debug expressions are present in the replacement field of a f-string, then the whitespace needs to be preserved as they will be rendered as it is (for example, f&quot;{  x  = }&quot;. If there are any nested f-strings, then the whitespace in them needs to be preserved as well which means that we&#x27;ll stop formatting the f-string as soon as we encounter a debug expression.</p>
 </blockquote>
 <p>Does that mean we do not format any f-string that contains any debug expression or is it that we only disable formatting for replacements that contain debug expressions?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/resources/test/fixtures/ruff/expression/fstring.py</code>:72 on 2024-02-15 10:12</div>
-            <div class="timeline-body"><p>Nit: It can be helpful to number comments (or assignments as well). It makes it easier to identify which comment is causing issues (if it's just comment, than it's one of the 20 or so comments in this file)</p>
+            <div class="timeline-body"><p>Nit: It can be helpful to number comments (or assignments as well). It makes it easier to identify which comment is causing issues (if it&#x27;s just comment, than it&#x27;s one of the 20 or so comments in this file)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1407,13 +1407,13 @@ let expression_str = Printer::new(f.context().source_code(), print_options).prin
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/string/normalize.rs</code>:121 on 2024-02-15 10:22</div>
-            <div class="timeline-body"><p>Is the reason that we don't need to gate this with the preview style that the existing f-string formatting never called into normalize for nested f-strings?</p>
+            <div class="timeline-body"><p>Is the reason that we don&#x27;t need to gate this with the preview style that the existing f-string formatting never called into normalize for nested f-strings?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/other/f_string.rs</code>:42 on 2024-02-15 10:27</div>
-            <div class="timeline-body"><p>We can avoid cloning the comments (it's not expensive but it still requires an atomic increment and decrement) by moving the use after the <code>fmt</code> call</p>
-<pre><code class="language-suggestion">        let string = StringPart::from_source(self.value.range(), &amp;locator);
+            <div class="timeline-body"><p>We can avoid cloning the comments (it&#x27;s not expensive but it still requires an atomic increment and decrement) by moving the use after the <code>fmt</code> call</p>
+<pre><code>        let string = StringPart::from_source(self.value.range(), &amp;locator);
 
         let normalizer = StringNormalizer::from_context(f.context())
             .with_quoting(self.quoting)
@@ -1430,28 +1430,28 @@ let expression_str = Printer::new(f.context().source_code(), print_options).prin
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/other/f_string.rs</code>:51 on 2024-02-15 10:28</div>
-            <div class="timeline-body"><p>To me as a reader it isn't clear what this TODO is about.</p>
+            <div class="timeline-body"><p>To me as a reader it isn&#x27;t clear what this TODO is about.</p>
 <ul>
 <li>Is this something that needs to be addressed before releasing?</li>
 <li>What could be simplified and how?</li>
 </ul>
-<p>What I understand is that this isn't something that needs addressing and is more an observation. I would remove the <code>TODO</code> and expand on what could be simplified with Python 3.12 and ideally, with a reason why we aren't doing it today.</p>
+<p>What I understand is that this isn&#x27;t something that needs addressing and is more an observation. I would remove the <code>TODO</code> and expand on what could be simplified with Python 3.12 and ideally, with a reason why we aren&#x27;t doing it today.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/other/f_string.rs</code>:57 on 2024-02-15 10:29</div>
-            <div class="timeline-body"><p>Nit: Could you link to Prettier's documentation. It might come handy if someone wants to explain our heuristic and have some references.</p>
+            <div class="timeline-body"><p>Nit: Could you link to Prettier&#x27;s documentation. It might come handy if someone wants to explain our heuristic and have some references.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/other/f_string.rs</code>:68 on 2024-02-15 10:31</div>
-            <div class="timeline-body"><p>Nit: I've duplicated the <code>memchr</code> call to find newlines a bunch and it seems you're doing the same :laughing: Should we extract this into a helper function: <code>contains_newline(ranged: impl Ranged, source: &amp;str) -&gt; bool </code>?</p>
+            <div class="timeline-body"><p>Nit: I&#x27;ve duplicated the <code>memchr</code> call to find newlines a bunch and it seems you&#x27;re doing the same :laughing: Should we extract this into a helper function: <code>contains_newline(ranged: impl Ranged, source: &amp;str) -&gt; bool </code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/other/f_string.rs</code>:86 on 2024-02-15 10:32</div>
-            <div class="timeline-body"><p>The <code>format_with</code> here isn't necessary because you aren't nesting it in another format element or passing it to <code>write</code></p>
-<pre><code class="language-suggestion">        f.join()
+            <div class="timeline-body"><p>The <code>format_with</code> here isn&#x27;t necessary because you aren&#x27;t nesting it in another format element or passing it to <code>write</code></p>
+<pre><code>        f.join()
             .entries(
                 self.value
                     .elements
@@ -1465,10 +1465,10 @@ let expression_str = Printer::new(f.context().source_code(), print_options).prin
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/other/f_string.rs</code>:122 on 2024-02-15 10:36</div>
-            <div class="timeline-body"><p>Nit: Maybe rename now that we're no longer using the <code>RemoveSoftlineBreakBuffer</code> to a more semantical name. An approach that we used in various places in the formatter is to call this <code>layout</code> and use a custom enum for it that allows documenting the layout:</p>
-<pre><code class="language-rust">#[derive(Copy, Clone, Debug)]
+            <div class="timeline-body"><p>Nit: Maybe rename now that we&#x27;re no longer using the <code>RemoveSoftlineBreakBuffer</code> to a more semantical name. An approach that we used in various places in the formatter is to call this <code>layout</code> and use a custom enum for it that allows documenting the layout:</p>
+<pre><code>#[derive(Copy, Clone, Debug)]
 pub(crate) FStringLayout {
-    /// Don't break replacement expressions to keep the string flat.
+    /// Don&#x27;t break replacement expressions to keep the string flat.
     Flat,
     /// Allow breaking replacemnet expressions across multiple lines.
     Multiline
@@ -1484,38 +1484,38 @@ impl FStringLayout {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/other/f_string_element.rs</code>:231 on 2024-02-15 10:38</div>
-            <div class="timeline-body"><p>I'm surprised that we still need the <code>RemoveSoftLinesBuffer</code>. I would have expected that we either use the Printer approach or use <code>RemoveSoftLInesBuffer</code> but not both.Can you explain what it is used for?</p>
-<p>I'm also confused how this even works:</p>
+            <div class="timeline-body"><p>I&#x27;m surprised that we still need the <code>RemoveSoftLinesBuffer</code>. I would have expected that we either use the Printer approach or use <code>RemoveSoftLInesBuffer</code> but not both.Can you explain what it is used for?</p>
+<p>I&#x27;m also confused how this even works:</p>
 <ul>
 <li><code>RemoveSoftLinesBuffer::new</code> takes a <code>&amp;mut Buffer</code> as input -&gt; borrowing f mutably</li>
 <li>You write to <code>f</code> (which takes a <code>&amp;mut Buffer</code>) in the code below...</li>
 </ul>
-<p>Why isn't this a borrow checker error?</p>
+<p>Why isn&#x27;t this a borrow checker error?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/other/f_string_element.rs</code>:235 on 2024-02-15 10:41</div>
-            <div class="timeline-body"><p>I'm surprised by the use of <code>soft_block_indent</code> in combination with <code>RemoveSoftLinesBuffer</code>. The soft line buffer will remove the <code>soft_line_break</code> inserted by <code>soft_block_indent</code> and the printer won't add an indent except if it sees a line break (which it doesn't because we made sure to remove all of them). Can you explain why <code>soft_block_indent</code> is necessary?</p>
+            <div class="timeline-body"><p>I&#x27;m surprised by the use of <code>soft_block_indent</code> in combination with <code>RemoveSoftLinesBuffer</code>. The soft line buffer will remove the <code>soft_line_break</code> inserted by <code>soft_block_indent</code> and the printer won&#x27;t add an indent except if it sees a line break (which it doesn&#x27;t because we made sure to remove all of them). Can you explain why <code>soft_block_indent</code> is necessary?</p>
 <p>That should also allow us to remove the <code>group</code> (good for perf)</p>
-<pre><code class="language-suggestion">                        write!(buffer, [item])
+<pre><code>                        write!(buffer, [item])
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/other/f_string_element.rs</code>:99 on 2024-02-15 10:44</div>
-            <div class="timeline-body"><p>Nit: We can avoid cloning <code>comments</code> by moving the declaration into the if/else branch where we test if there's a debug expression and avoid cloning it if there's no debug expression.</p>
+            <div class="timeline-body"><p>Nit: We can avoid cloning <code>comments</code> by moving the declaration into the if/else branch where we test if there&#x27;s a debug expression and avoid cloning it if there&#x27;s no debug expression.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/other/f_string_element.rs</code>:104 on 2024-02-15 10:46</div>
             <div class="timeline-body"><p>The term suppressed has a very specific meaning in the formatter. It means that the user disabled formatting by using a suppression comment.
-That's why I recommend you using a different term.</p>
+That&#x27;s why I recommend you using a different term.</p>
 <p><em>If the element has a debug text, preserve the same formatting as in the source (<code>verbatim</code>)</em></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/other/f_string_element.rs</code>:116 on 2024-02-15 10:48</div>
-            <div class="timeline-body"><p>We should probably not use <code>suppressed_node</code>. The builder is intended to be used for statements that are suppressed and it makes some assumptions about it (it's also marked as <code>cold</code> which doesn't apply for you).</p>
+            <div class="timeline-body"><p>We should probably not use <code>suppressed_node</code>. The builder is intended to be used for statements that are suppressed and it makes some assumptions about it (it&#x27;s also marked as <code>cold</code> which doesn&#x27;t apply for you).</p>
 <p>I think what you want is to use <code>verbatim_text(verbatim_range)</code> which gives you the <em>format as in source</em> behavior.</p>
 </div>
         </div>
@@ -1526,13 +1526,13 @@ That's why I recommend you using a different term.</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/other/f_string_element.rs</code>:144 on 2024-02-15 10:52</div>
-            <div class="timeline-body"><p>Nit: Rename to <code>bracket_spacing</code>. It's not really a line break or space because it can also be <code>None</code> in which case it's no space.</p>
+            <div class="timeline-body"><p>Nit: Rename to <code>bracket_spacing</code>. It&#x27;s not really a line break or space because it can also be <code>None</code> in which case it&#x27;s no space.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/other/f_string_element.rs</code>:184 on 2024-02-15 10:58</div>
-            <div class="timeline-body"><p>Nit: I'm actually less concerned about trailing commas here. Handling them in the builder is an <em>easy enough</em> change that only needs to be done in a single place.</p>
-<p>My main concern with using <code>RemoveSoftlineBreaks</code> is that we need to handle this case in all expressions and keeping track of it is error prone. That's why I would use a different heuristic here: Only allow expressions that we are <em>certain</em> not to insert any new tokens and that don't use any soft line breaks:</p>
+            <div class="timeline-body"><p>Nit: I&#x27;m actually less concerned about trailing commas here. Handling them in the builder is an <em>easy enough</em> change that only needs to be done in a single place.</p>
+<p>My main concern with using <code>RemoveSoftlineBreaks</code> is that we need to handle this case in all expressions and keeping track of it is error prone. That&#x27;s why I would use a different heuristic here: Only allow expressions that we are <em>certain</em> not to insert any new tokens and that don&#x27;t use any soft line breaks:</p>
 <ul>
 <li>Names: <code>a</code></li>
 <li>Attribute chains: <code>a.b</code></li>
@@ -1545,7 +1545,7 @@ That's why I recommend you using a different term.</p>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/other/f_string_element.rs</code>:225 on 2024-02-15 11:02</div>
             <div class="timeline-body"><p>Nit: I would probably not use <code>write</code> here to avoid the need for <code>format_with</code></p>
-<pre><code class="language-suggestion">                    token(&quot;:&quot;).fmt(f)?;
+<pre><code>                    token(&quot;:&quot;).fmt(f)?;
                     f.join()
                         .entries(format_spec.elements.iter().map(|element| {
                             FormatFStringElement::new(element, self.context)
@@ -1565,7 +1565,7 @@ That's why I recommend you using a different term.</p>
 <blockquote>
 <p>Does this also apply to Python 3.12 or does Python 3.12 allow to reuse the same triple quotes?</p>
 </blockquote>
-<p>Python 3.12 allows re-use of same quotes irrespective of whether it's single or triple quoted. The logic basically ORs with checking if the target-version is 3.12 or not.</p>
+<p>Python 3.12 allows re-use of same quotes irrespective of whether it&#x27;s single or triple quoted. The logic basically ORs with checking if the target-version is 3.12 or not.</p>
 <blockquote>
 <p>Does that mean we do not format any f-string that contains any debug expression or is it that we only disable formatting for replacements that contain debug expressions?</p>
 </blockquote>
@@ -1574,8 +1574,8 @@ That's why I recommend you using a different term.</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/other/f_string_element.rs</code>:249 on 2024-02-15 12:00</div>
-            <div class="timeline-body"><p>Same here. I don't think we need the indent or group if it should be all flat</p>
-<pre><code class="language-suggestion">                            [
+            <div class="timeline-body"><p>Same here. I don&#x27;t think we need the indent or group if it should be all flat</p>
+<pre><code>                            [
                                 dangling_open_parenthesis_comments(
                                     dangling_open_parentheses_comments
                                 ),
@@ -1588,7 +1588,7 @@ That's why I recommend you using a different term.</p>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/other/f_string_element.rs</code>:266 on 2024-02-15 12:11</div>
             <div class="timeline-body"><p>I think we can reduce the code duplication here by making use of <code>Option</code> as you did above with the spacing.</p>
-<pre><code class="language-suggestion">            let open_parenthesis_comments = (!dangling_item_comments.is_empty()).then_some(
+<pre><code>            let open_parenthesis_comments = (!dangling_item_comments.is_empty()).then_some(
                 dangling_open_parenthesis_comments(dangling_open_parentheses_comments),
             );
 
@@ -1614,8 +1614,8 @@ That's why I recommend you using a different term.</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/other/f_string_element.rs</code>:156 on 2024-02-15 12:19</div>
-            <div class="timeline-body"><p>I think it's best if we don't rely on the behavior of <code>RemoveSoftlinesBuffer</code> here and explicilty encode whether it should be a line break or a space</p>
-<pre><code class="language-suggestion">                        Some(format_with(|f| {
+            <div class="timeline-body"><p>I think it&#x27;s best if we don&#x27;t rely on the behavior of <code>RemoveSoftlinesBuffer</code> here and explicilty encode whether it should be a line break or a space</p>
+<pre><code>                        Some(format_with(|f| {
                             if self.context.should_remove_soft_line_breaks() {
                                 space().fmt(f)
                             } else {
@@ -1631,7 +1631,7 @@ That's why I recommend you using a different term.</p>
 <p>We can follow up with the indent handling in a separate PR if we decide to change it.</p>
 <p>I have a few comments about the implementations; most are small Nits.</p>
 <p>My main concerns are about combining the <code>RemoveSoftlinesBuffer</code> with the <code>Printer</code> approach and how trailing comments are now associated as dangling comments.</p>
-<p>I suggest that we either use the <code>RemoveSoftlinesBuffer</code> or the <code>Printer</code> approach but that we avoid using both to keep things &quot;simple&quot;.  If you prefer to keep <code>RemoveSoftlinesBuffer</code>, then I would prefer changing the magic trailing comma handling by checking some state in the context over using the <code>Printer</code>. It avoids the performance penalty and doesn't require a visitor to determine if it is necessary to use it or not.</p>
+<p>I suggest that we either use the <code>RemoveSoftlinesBuffer</code> or the <code>Printer</code> approach but that we avoid using both to keep things &quot;simple&quot;.  If you prefer to keep <code>RemoveSoftlinesBuffer</code>, then I would prefer changing the magic trailing comma handling by checking some state in the context over using the <code>Printer</code>. It avoids the performance penalty and doesn&#x27;t require a visitor to determine if it is necessary to use it or not.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1640,7 +1640,7 @@ That's why I recommend you using a different term.</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/resources/test/fixtures/ruff/expression/fstring.py</code>:72 on 2024-02-16 09:38</div>
-            <div class="timeline-body"><p>Good point. I'll also change the other comments while I'm at it.</p>
+            <div class="timeline-body"><p>Good point. I&#x27;ll also change the other comments while I&#x27;m at it.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1650,7 +1650,7 @@ That's why I recommend you using a different term.</p>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:299 on 2024-02-16 09:45</div>
             <div class="timeline-body"><p>The problem is that the comment will get attached to the last f-string element which could be either <code>FStringLiteralElement</code> in the given example or <code>FStringExpressionElement</code> like in the following example:</p>
-<pre><code class="language-python">f&quot;{
+<pre><code>f&quot;{
    foo
    :&gt;{x}
     # comment 27
@@ -1665,8 +1665,8 @@ That's why I recommend you using a different term.</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:299 on 2024-02-16 09:52</div>
-            <div class="timeline-body"><p>Ideally comments always get associated with the outer-most node, which <code>FStringFormatSpec</code> wouldn't be.</p>
-<p>Maybe change the implementation to always associate it with the outermost element (I'm once more confused by the name and don't know what AST nodes they are :confused: )</p>
+            <div class="timeline-body"><p>Ideally comments always get associated with the outer-most node, which <code>FStringFormatSpec</code> wouldn&#x27;t be.</p>
+<p>Maybe change the implementation to always associate it with the outermost element (I&#x27;m once more confused by the name and don&#x27;t know what AST nodes they are :confused: )</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1688,7 +1688,7 @@ That's why I recommend you using a different term.</p>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:299 on 2024-02-16 10:23</div>
             <div class="timeline-body"><p>For future reference the reason I was thinking to attach it to the format spec is because the format spec is optional which means the comment only occurs if format spec is present.</p>
-<p>But I still think attaching it as a trailing comment to the expression element makes more sense. I'm going forward with that.</p>
+<p>But I still think attaching it as a trailing comment to the expression element makes more sense. I&#x27;m going forward with that.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1697,7 +1697,7 @@ That's why I recommend you using a different term.</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/src/string/normalize.rs</code>:121 on 2024-02-16 11:05</div>
-            <div class="timeline-body"><p>Yes, that's correct. The entire f-string will be normalized in one go if preview isn't enabled.</p>
+            <div class="timeline-body"><p>Yes, that&#x27;s correct. The entire f-string will be normalized in one go if preview isn&#x27;t enabled.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1706,7 +1706,7 @@ That's why I recommend you using a different term.</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/src/other/f_string.rs</code>:68 on 2024-02-16 11:07</div>
-            <div class="timeline-body"><p>Yeah, makes sense. I'll do that in a follow-up PR because I believe there are other places, not relevant to this PR, which needs updating as well.</p>
+            <div class="timeline-body"><p>Yeah, makes sense. I&#x27;ll do that in a follow-up PR because I believe there are other places, not relevant to this PR, which needs updating as well.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1724,15 +1724,15 @@ That's why I recommend you using a different term.</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/src/other/f_string_element.rs</code>:235 on 2024-02-16 11:40</div>
-            <div class="timeline-body"><p>Oh yes, I started with that but somewhere along the middle I added them for no reason. I'm not sure why though.</p>
+            <div class="timeline-body"><p>Oh yes, I started with that but somewhere along the middle I added them for no reason. I&#x27;m not sure why though.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-02-16 12:41</div>
-            <div class="timeline-body"><p>Thanks for the detailed review @MichaReiser, really appreciate all the suggestions you've provided.</p>
-<p>Regarding the magic trailing comma, I've removed the <code>Printer</code> usage and updated the builder to avoid adding the trailing comma if the f-string layout is flat. We already have that information in the context so it was an easy change.</p>
+            <div class="timeline-body"><p>Thanks for the detailed review @MichaReiser, really appreciate all the suggestions you&#x27;ve provided.</p>
+<p>Regarding the magic trailing comma, I&#x27;ve removed the <code>Printer</code> usage and updated the builder to avoid adding the trailing comma if the f-string layout is flat. We already have that information in the context so it was an easy change.</p>
 <p>https://github.com/astral-sh/ruff/blob/5c056a1dee786ee6554c5ac09db2c681ab4ae545/crates/ruff_python_formatter/src/builders.rs#L207-L215</p>
-<p>I'll look at the final ecosystem changes and then merge this PR.</p>
+<p>I&#x27;ll look at the final ecosystem changes and then merge this PR.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1744,7 +1744,7 @@ That's why I recommend you using a different term.</p>
             <div class="timeline-body"><blockquote>
 <p>Handling them in the builder is an easy enough change that only needs to be done in a single place.</p>
 </blockquote>
-<p>I've gone with this approach. Thanks for the suggestion!</p>
+<p>I&#x27;ve gone with this approach. Thanks for the suggestion!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1753,7 +1753,7 @@ That's why I recommend you using a different term.</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/src/other/f_string_element.rs</code>:231 on 2024-02-16 12:42</div>
-            <div class="timeline-body"><p>This isn't relevant anymore but rust-analyzer was giving me an error and the compiler wasn't. I didn't look into it in detail then.</p>
+            <div class="timeline-body"><p>This isn&#x27;t relevant anymore but rust-analyzer was giving me an error and the compiler wasn&#x27;t. I didn&#x27;t look into it in detail then.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1805,18 +1805,18 @@ That's why I recommend you using a different term.</p>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-02-16 13:57</div>
             <div class="timeline-body"><p><em>For posterity...</em></p>
-<p>Currently, to avoid breaking the expression, what we do is after the expression formatting is over, we'd remove the line breaks. This creates a problem w.r.t. the magic trailing comma. For example,</p>
-<pre><code class="language-python">f&quot;aaaaaaa {['aaaaaaaaaaaaaaa', 'bbbbbbbbbbbbb', 'ccccccccccccccccc', 'ddddddddddddddd', 'eeeeeeeeeeeeee']} aaaaaaa&quot;
+<p>Currently, to avoid breaking the expression, what we do is after the expression formatting is over, we&#x27;d remove the line breaks. This creates a problem w.r.t. the magic trailing comma. For example,</p>
+<pre><code>f&quot;aaaaaaa {[&#x27;aaaaaaaaaaaaaaa&#x27;, &#x27;bbbbbbbbbbbbb&#x27;, &#x27;ccccccccccccccccc&#x27;, &#x27;ddddddddddddddd&#x27;, &#x27;eeeeeeeeeeeeee&#x27;]} aaaaaaa&quot;
 </code></pre>
-<p>The formatter will break the list but as there were no line breaks in the original source code, we'd collapse it back. The trailing comma will still remain:</p>
-<pre><code class="language-python">f&quot;aaaaaaa {['aaaaaaaaaaaaaaa', 'bbbbbbbbbbbbb', 'ccccccccccccccccc', 'ddddddddddddddd', 'eeeeeeeeeeeeee',]} aaaaaaa&quot;
+<p>The formatter will break the list but as there were no line breaks in the original source code, we&#x27;d collapse it back. The trailing comma will still remain:</p>
+<pre><code>f&quot;aaaaaaa {[&#x27;aaaaaaaaaaaaaaa&#x27;, &#x27;bbbbbbbbbbbbb&#x27;, &#x27;ccccccccccccccccc&#x27;, &#x27;ddddddddddddddd&#x27;, &#x27;eeeeeeeeeeeeee&#x27;,]} aaaaaaa&quot;
 </code></pre>
 <p>The current approach to solving this problem is to update the builder to not add the trailing comma in this specific context:</p>
 <p>https://github.com/astral-sh/ruff/blob/5c056a1dee786ee6554c5ac09db2c681ab4ae545/crates/ruff_python_formatter/src/builders.rs#L207-L215</p>
 <p><strong>An alternative approach</strong>, which is what this comment documents, is to use the <code>Printer</code> in the f-string formatting itself and avoid updating the builder. That would also remove the use of <code>RemoveSoftlineBreak</code> buffer. This <a href="https://github.com/astral-sh/ruff/pull/9642/commits/5c056a1dee786ee6554c5ac09db2c681ab4ae545">commit</a> has a version of it which has been removed. There are few more changes which would need to be made along with that:</p>
 <ol>
 <li>Update the <code>LineWidth</code> to use <code>u32</code> as <code>u16</code> is reasonably large but a line can go beyond that.</li>
-<li>Remove <code>RemoveSoftlineBreak</code> buffer usage as the printer won't add the line breaks in the first place.</li>
+<li>Remove <code>RemoveSoftlineBreak</code> buffer usage as the printer won&#x27;t add the line breaks in the first place.</li>
 </ol>
 <p>This also has an advantage that the logic is local to the f-string formatting.</p>
 </div>
@@ -1827,14 +1827,14 @@ That's why I recommend you using a different term.</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/src/other/f_string.rs</code>:51 on 2024-02-16 14:16</div>
-            <div class="timeline-body"><p>What I was thinking was that we could probably reduce the scope of the function to only use the f-string literal elements and not the expression elements in 3.12. The reason being that same quotes can be re-used in 3.12. But, I think the current logic is correct, I'll remove the comment. It might be more involved to check if the scope can be reduced.</p>
+            <div class="timeline-body"><p>What I was thinking was that we could probably reduce the scope of the function to only use the f-string literal elements and not the expression elements in 3.12. The reason being that same quotes can be re-used in 3.12. But, I think the current logic is correct, I&#x27;ll remove the comment. It might be more involved to check if the scope can be reduced.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @dhruvmanila on 2024-02-16 14:58</div>
+            <div class="event">Merged by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-02-16 14:58</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dhruvmanila on 2024-02-16 14:58</div>
+            <div class="event">Closed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-02-16 14:58</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-02-16 14:58</div>
@@ -1842,7 +1842,7 @@ That's why I recommend you using a different term.</p>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:02:26 UTC
+        Synced at 2026-01-20 19:01:01 UTC
     </footer>
 </body>
 </html>

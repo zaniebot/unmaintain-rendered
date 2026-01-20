@@ -23,31 +23,31 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Adamkadaban">@Adamkadaban</a></div>
-            <div class="timeline-body"><p>Related to https://github.com/astral-sh/ty/issues/1053 (PySide6 submodules)
-Related to https://github.com/astral-sh/ty/issues/1361 (aiohttp.web)
-Related to https://github.com/astral-sh/ty/issues/133 (implicit submodule imports)</p>
-<h2>Summary</h2>
+            <div class="timeline-body"><p>Related to <a href="https://github.com/astral-sh/ty/issues/1053">astral-sh/ty#1053</a> (PySide6 submodules)
+Related to <a href="https://github.com/astral-sh/ty/issues/1361">astral-sh/ty#1361</a> (aiohttp.web)
+Related to <a href="https://github.com/astral-sh/ty/issues/133">astral-sh/ty#133</a> (implicit submodule imports)</p>
+Summary
 <p>This PR extends the work from <a href="https://github.com/astral-sh/ruff/pull/21260">PR #21260</a> by adding:</p>
 <ol>
 <li><strong>Improved submodule resolution</strong>: Uses <code>all_submodules</code> fallback to discover real submodules on disk before falling back to <code>__getattr__</code>, ensuring packages like <code>anyio</code>, <code>aiohttp</code>, and <code>PySide6</code> resolve correctly</li>
 <li><strong>Python version gate</strong> for module <code>__getattr__</code> (PEP 562 requires Python 3.7+)</li>
 <li><strong>Additional test coverage</strong> for the submodule precedence behavior</li>
 </ol>
-<p>Fixes an issue where the type checker would incorrectly use a module's <code>__getattr__</code> return type instead of recognizing real submodules that exist on disk.</p>
+<p>Fixes an issue where the type checker would incorrectly use a module&#x27;s <code>__getattr__</code> return type instead of recognizing real submodules that exist on disk.</p>
 <p><strong>Example</strong></p>
 <p>Before this change, accessing <code>anyio.to_thread</code> would return the type from <code>anyio.__getattr__()</code> even though <code>anyio/to_thread.py</code> exists as a real submodule:</p>
-<pre><code class="language-python">import anyio
+<pre><code>import anyio
 
 # Before: returned type from __getattr__ (incorrect)
-# After: correctly resolves to &lt;module 'anyio.to_thread'&gt;
+# After: correctly resolves to &lt;module &#x27;anyio.to_thread&#x27;&gt;
 reveal_type(anyio.to_thread.current_default_thread_limiter())  # revealed: int
 </code></pre>
 <p>There are two key decisions to consider before merging this PR:</p>
-<h3>Python 3.7+ Version Gate</h3>
+Python 3.7+ Version Gate
 <p>Module-level <code>__getattr__</code> was introduced in PEP 562 (Python 3.7). ty now correctly ignores <code>__getattr__</code> when targeting Python &lt; 3.7, while still allowing stub files to use it on older versions. This <a href="https://github.com/microsoft/pyright/blob/1576956c32c8b75f3202203f3cdedd21c8d3f9f7/packages/pyright-internal/src/analyzer/typeEvaluator.ts#L5997C15-L6019C22">aligns with the pyright implementation</a> and <a href="https://github.com/python/mypy/blob/c5c12fad9e69525fa5b12058b328d284c5feecc4/mypy/checker.py#L2066C1-L2068C43">not with the mypy implementation</a>.</p>
-<h3>Submodule vs <code>__getattr__</code> precedence</h3>
+Submodule vs <code>__getattr__</code> precedence
 <p>MyPy, Pyright, and this PR all prioritize real submodules over <code>__getattr__</code> return types, even though <strong>at runtime</strong> the precedence is reversed (module attributes win over submodules). This is a deliberate departure from runtime semantics based on the assumption that well-behaved <code>__getattr__</code> implementations will raise <code>AttributeError</code> for names that are also real submodules. This decision attempts to follow <a href="https://github.com/astral-sh/ruff/pull/21260">PR #21260</a>, which showed ecosystem improvements: ~364 false positives removed vs ~114 new diagnostics added. Major packages like <code>anyio</code>, <code>sklearn</code>, and <code>scipy</code> benefit from this behavior.</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>All changes are covered by mdtests in <code>crates/ty_python_semantic/resources/mdtest/import/module_getattr.md</code>:</p>
 <ol>
 <li><strong>Updated existing test</strong>: Modified &quot;Precedence: submodules vs <code>__getattr__</code>&quot; to expect submodules to win (updated to match <a href="https://github.com/astral-sh/ruff/pull/21260">PR #21260</a>)</li>
@@ -60,37 +60,37 @@ reveal_type(anyio.to_thread.current_default_thread_limiter())  # revealed: int
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @Adamkadaban on 2025-12-31 06:59</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/Adamkadaban">@Adamkadaban</a> on 2025-12-31 06:59</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @Adamkadaban on 2025-12-31 06:59</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/Adamkadaban">@Adamkadaban</a> on 2025-12-31 06:59</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @Adamkadaban on 2025-12-31 06:59</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/Adamkadaban">@Adamkadaban</a> on 2025-12-31 06:59</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @Adamkadaban on 2025-12-31 06:59</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/Adamkadaban">@Adamkadaban</a> on 2025-12-31 06:59</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-12-31 07:30</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-31 07:30</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-31 07:32</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a>
 <p>No changes detected when running ty on typing conformance tests ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-31 07:33</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">beartype (https://github.com/beartype/beartype)
+Changes were detected when running on open source projects
+
+<pre><code>beartype (https://github.com/beartype/beartype)
 - beartype/door/_cls/doormeta.py:82:10: error[unresolved-attribute] Object of type `object` has no attribute `TypeHint`
 - beartype/door/_cls/doormeta.py:163:19: error[unresolved-attribute] Object of type `object` has no attribute `TypeHint`
 + beartype/door/_cls/doormeta.py:163:45: error[invalid-assignment] Object of type `object` is not assignable to `TypeHint[Unknown]`
@@ -321,19 +321,19 @@ prefect (https://github.com/PrefectHQ/prefect)
 
 ... (truncated 505 lines) ...
 </code></pre>
-</details>
+
 
 <p>No memory usage changes detected ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @MichaReiser on 2025-12-31 07:33</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-31 07:33</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-31 07:40</div>
-            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+            <div class="timeline-body">
 
-<h2><code>ecosystem-analyzer</code> results</h2>
+<code>ecosystem-analyzer</code> results
 <p>| Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
 | <code>possibly-missing-attribute</code> | 620 | 0 | 0 |
@@ -357,28 +357,28 @@ prefect (https://github.com/PrefectHQ/prefect)
 The majority of the new diagnostics are from prefect:</p>
 <pre><code>Submodule `utilities` may not be available as an attribute on module `prefect.server`
 </code></pre>
-<p>I believe this is an accurate warning, since - given <code>import prefect</code>, <code>prefect.server</code> is only created via the root <code>__getattr__</code>, and <code>prefect.server.__init__</code> doesn't import or re-exports utilities, and there is no <code>__getattr__</code> on <code>prefect.server</code> to fill the gap. So <code>prefect.server.utilities</code> can legitimately raise at runtime unless a caller imports that subpackage explicitly first.</p>
+<p>I believe this is an accurate warning, since - given <code>import prefect</code>, <code>prefect.server</code> is only created via the root <code>__getattr__</code>, and <code>prefect.server.__init__</code> doesn&#x27;t import or re-exports utilities, and there is no <code>__getattr__</code> on <code>prefect.server</code> to fill the gap. So <code>prefect.server.utilities</code> can legitimately raise at runtime unless a caller imports that subpackage explicitly first.</p>
 <p>The changes in this PR tighten attribute resolution to stop auto-materializing subpackages unless they’re discoverable through normal import or explicit export. That means names missing from a package’s namespace (and not covered by a <strong>getattr</strong>) now surface as possibly-missing-attribute.</p>
-<p>It seems this implementation is stricter than mypy and pyright. I can remove it if you think that would be more appropriate. Removing this warning seems it would be very simple for prefect, so I think it makes sense to be stricter. But I'm happy to do whatever you think is best.</p>
+<p>It seems this implementation is stricter than mypy and pyright. I can remove it if you think that would be more appropriate. Removing this warning seems it would be very simple for prefect, so I think it makes sense to be stricter. But I&#x27;m happy to do whatever you think is best.</p>
 <p>I did not check in full, but other changes appear to be from other things merged to main since I made the PR.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @Gankra by @MichaReiser on 2026-01-04 17:31</div>
+            <div class="event">Review requested from <a href="https://github.com/Gankra">@Gankra</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-04 17:31</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @dcreager removed by @MichaReiser on 2026-01-04 17:32</div>
+            <div class="event">Review request for <a href="https://github.com/dcreager">@dcreager</a> removed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-04 17:32</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @sharkdp removed by @MichaReiser on 2026-01-04 17:32</div>
+            <div class="event">Review request for <a href="https://github.com/sharkdp">@sharkdp</a> removed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-04 17:32</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2026-01-05 12:53</div>
-            <div class="timeline-body"><p>Skimmed the ecosystem results and yeah all of the new positives seem roughly understandable, although the small number of fixes doesn't paint an incredible picture.</p>
+            <div class="timeline-body"><p>Skimmed the ecosystem results and yeah all of the new positives seem roughly understandable, although the small number of fixes doesn&#x27;t paint an incredible picture.</p>
 <p>The most interesting cases are in scipy, but I think they all relate to corners around <code>__all__</code> that are maybe fine/pre-existing:</p>
 <ul>
 <li>&quot;Module <code>scipy.linalg.blas</code> has no member <code>dnrm2</code>&quot; seems to be us failing to find things implicitly re-exported by <a href="https://github.com/scipy/scipy/blob/3afcc475b1d5003bf95e283a7afeb04d094aa6e4/scipy/linalg/blas.py#L239">a star import</a></li>
-<li>&quot;Module <code>scipy.special</code> has no member <code>multigammaln</code>&quot; is us failing to resolve the attribute access <code>scipy.special.multigammaln</code> which is also &quot;re-exported&quot; via a <code>*</code> import but in this case it's <a href="https://github.com/scipy/scipy/blob/3afcc475b1d5003bf95e283a7afeb04d094aa6e4/scipy/special/__init__.py#L829">also explicitly stated to exist via <code>__all__</code></a></li>
+<li>&quot;Module <code>scipy.special</code> has no member <code>multigammaln</code>&quot; is us failing to resolve the attribute access <code>scipy.special.multigammaln</code> which is also &quot;re-exported&quot; via a <code>*</code> import but in this case it&#x27;s <a href="https://github.com/scipy/scipy/blob/3afcc475b1d5003bf95e283a7afeb04d094aa6e4/scipy/special/__init__.py#L829">also explicitly stated to exist via <code>__all__</code></a></li>
 <li>&quot;Multiple values provided for parameter <code>dtype</code> of bound method <code>__init__</code> &quot; this escapes me and I assume is some unrelated issue.</li>
 </ul>
 </div>
@@ -386,7 +386,7 @@ The majority of the new diagnostics are from prefect:</p>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:18:37 UTC
+        Synced at 2026-01-20 19:22:30 UTC
     </footer>
 </body>
 </html>

@@ -23,13 +23,13 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/NickCrews">@NickCrews</a></div>
-            <div class="timeline-body"><p>This is related to https://github.com/astral-sh/ty/issues/2390.</p>
-<p>I am working in the ibis project, trying to fix up its typing so that <a href="https://github.com/ibis-project/ibis/blob/e5921c9a851afc8fd3980f6a0bbfd73720b4d5d6/ibis/expr/schema.py#L25">it's <code>Schema</code> class</a> typechecks against a <code>collections.abc.Mapping[str, ibis.DataType]</code>. It currently does not.</p>
-<p>The root of the issue is that the <a href="https://github.com/ibis-project/ibis/blob/e5921c9a851afc8fd3980f6a0bbfd73720b4d5d6/ibis/expr/schema.py#L25">Schema</a> class inherits from the <a href="https://github.com/ibis-project/ibis/blob/e5921c9a851afc8fd3980f6a0bbfd73720b4d5d6/ibis/common/collections.py#L157">MapSet abstract class</a>, which itself inherits from ibis's custom <a href="https://github.com/ibis-project/ibis/blob/e5921c9a851afc8fd3980f6a0bbfd73720b4d5d6/ibis/common/collections.py#L119">Mapping ABC</a>, which is effectively a re-implementation of <code>collections.abc.Mapping</code>. <a href="https://github.com/ibis-project/ibis/blob/e5921c9a851afc8fd3980f6a0bbfd73720b4d5d6/ibis/common/collections.py#L20-L23">The reason</a> that we re-implement collections.abc is to avoid metaclass conflicts, and for faster isinstance checks.</p>
-<p>See how we have the <a href="https://github.com/ibis-project/ibis/blob/e5921c9a851afc8fd3980f6a0bbfd73720b4d5d6/ibis/common/collections.py#L118-L119"><code>@collections.abc.Mapping.register</code> decorator on our <code>Mapping</code> class</a>? This makes it so that at runtime, isinstance checks work. BUT, it appears that ty doesn't support this registration mechanism for any <code>collections.abc</code> classes, except for Sized for some reason. See this screenshot of the ibis source code, you can see how ty doesn't seem to recognize the .register() method of any of the other classes:</p>
-<p><img width="513" height="607" alt="Image" src="https://github.com/user-attachments/assets/8aa000ca-4a7d-4841-ba9c-34011cd82b9c" /></p>
+            <div class="timeline-body"><p>This is related to <a href="https://github.com/astral-sh/ty/issues/2390">astral-sh/ty#2390</a>.</p>
+<p>I am working in the ibis project, trying to fix up its typing so that <a href="https://github.com/ibis-project/ibis/blob/e5921c9a851afc8fd3980f6a0bbfd73720b4d5d6/ibis/expr/schema.py#L25">it&#x27;s <code>Schema</code> class</a> typechecks against a <code>collections.abc.Mapping[str, ibis.DataType]</code>. It currently does not.</p>
+<p>The root of the issue is that the <a href="https://github.com/ibis-project/ibis/blob/e5921c9a851afc8fd3980f6a0bbfd73720b4d5d6/ibis/expr/schema.py#L25">Schema</a> class inherits from the <a href="https://github.com/ibis-project/ibis/blob/e5921c9a851afc8fd3980f6a0bbfd73720b4d5d6/ibis/common/collections.py#L157">MapSet abstract class</a>, which itself inherits from ibis&#x27;s custom <a href="https://github.com/ibis-project/ibis/blob/e5921c9a851afc8fd3980f6a0bbfd73720b4d5d6/ibis/common/collections.py#L119">Mapping ABC</a>, which is effectively a re-implementation of <code>collections.abc.Mapping</code>. <a href="https://github.com/ibis-project/ibis/blob/e5921c9a851afc8fd3980f6a0bbfd73720b4d5d6/ibis/common/collections.py#L20-L23">The reason</a> that we re-implement collections.abc is to avoid metaclass conflicts, and for faster isinstance checks.</p>
+<p>See how we have the <a href="https://github.com/ibis-project/ibis/blob/e5921c9a851afc8fd3980f6a0bbfd73720b4d5d6/ibis/common/collections.py#L118-L119"><code>@collections.abc.Mapping.register</code> decorator on our <code>Mapping</code> class</a>? This makes it so that at runtime, isinstance checks work. BUT, it appears that ty doesn&#x27;t support this registration mechanism for any <code>collections.abc</code> classes, except for Sized for some reason. See this screenshot of the ibis source code, you can see how ty doesn&#x27;t seem to recognize the .register() method of any of the other classes:</p>
+<p><img alt="Image" src="https://github.com/user-attachments/assets/8aa000ca-4a7d-4841-ba9c-34011cd82b9c"></p>
 <p>For a simpler reproducer, see this file:</p>
-<pre><code class="language-python">from __future__ import annotations
+<pre><code>from __future__ import annotations
 
 from collections.abc import ItemsView, Iterable, Iterator, KeysView, Mapping, ValuesView
 
@@ -119,19 +119,19 @@ assert isinstance(mr, Mapping) is True
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-08 13:25</div>
-            <div class="timeline-body"><p>I think you're combining one feature request with one bug report here 😄</p>
-<p>The bug report is that ty currently emits a false positive <code>unresolved-attribute</code> error when accessing the <code>register</code> attribute on classes such as <code>collections.abc.Iterable</code> and <code>collections.abc.Mapping</code>. This is indeed a bug, but it's already covered by https://github.com/astral-sh/ty/issues/1204.</p>
-<p>The feature request is for us to actually support <code>@collections.abc.Mapping.register</code> properly, such that we would understand classes decorated with that as being subtypes of <code>collections.abc.Mapping</code>. I think we're unlikely to add support for that, as no other type checker does, it's inherently somewhat unsound, and I believe one of the key reasons why other type checkers do not support this is because it would come with quite a large performance penalty (it would slow down all subtyping checks).</p>
+            <div class="timeline-body"><p>I think you&#x27;re combining one feature request with one bug report here 😄</p>
+<p>The bug report is that ty currently emits a false positive <code>unresolved-attribute</code> error when accessing the <code>register</code> attribute on classes such as <code>collections.abc.Iterable</code> and <code>collections.abc.Mapping</code>. This is indeed a bug, but it&#x27;s already covered by <a href="https://github.com/astral-sh/ty/issues/1204">astral-sh/ty#1204</a>.</p>
+<p>The feature request is for us to actually support <code>@collections.abc.Mapping.register</code> properly, such that we would understand classes decorated with that as being subtypes of <code>collections.abc.Mapping</code>. I think we&#x27;re unlikely to add support for that, as no other type checker does, it&#x27;s inherently somewhat unsound, and I believe one of the key reasons why other type checkers do not support this is because it would come with quite a large performance penalty (it would slow down all subtyping checks).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/NickCrews">@NickCrews</a> on 2026-01-08 17:10</div>
-            <div class="timeline-body"><p>Thank you for the link. I did search but didn't find that.</p>
+            <div class="timeline-body"><p>Thank you for the link. I did search but didn&#x27;t find that.</p>
 <blockquote>
-<p>I think we're unlikely to add support for that</p>
+<p>I think we&#x27;re unlikely to add support for that</p>
 </blockquote>
 <p>Yeah that makes sense how it would be hard to do correctly for th. It might not even be well defined, eg depends on import order, or the .register() could be inside an if block. So that makes sense why you just want to avoid the whole thing.</p>
-<p>Soooooo I'm thinking practically here, if we can't adjust ibis.Schema to inherit from collections.abc.Mapping (see above), then is there any way to get it to type check as though it does?
+<p>Soooooo I&#x27;m thinking practically here, if we can&#x27;t adjust ibis.Schema to inherit from collections.abc.Mapping (see above), then is there any way to get it to type check as though it does?
 My current understanding is there is not. Maybe have a giant if TYPE_CHECKING block where we define our Iterable, Mapping, Sequence, etc that defines the classes as stubs that actually do inherit from collections.abc?? Gross but possible?</p>
 </div>
         </div>
@@ -141,42 +141,42 @@ My current understanding is there is not. Maybe have a giant if TYPE_CHECKING bl
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Feat: support `collections.abc.<Class>.register` for more classes" to "Feat: support `collections.abc.<Class>.register`" by @carljm on 2026-01-09 01:08</div>
+            <div class="event">Renamed from &quot;Feat: support `collections.abc.&lt;Class&gt;.register` for more classes&quot; to &quot;Feat: support `collections.abc.&lt;Class&gt;.register`&quot; by <a href="https://github.com/carljm">@carljm</a> on 2026-01-09 01:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">wish</span> added by @carljm on 2026-01-09 01:08</div>
+            <div class="event">Label <span class="label">wish</span> added by <a href="https://github.com/carljm">@carljm</a> on 2026-01-09 01:08</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/NickCrews">@NickCrews</a> on 2026-01-10 17:54</div>
             <div class="timeline-body"><p>How difficult would it be for ty to special case the usage of collections.abc.Mapping.register as a decorator, right above the class definition?
 The implementation might be tricky, but at least I think the result would be well defined, eg avoid the import order/conditional pitfalls I describe above.</p>
-<p>I'm not sure of the internals of how ty works, but if it uses a lot of the same core code as ruff, I was thinking that perhaps you already had access to the info to be able to answer the question &quot;is this class definition decorated with an abc.ABC.register&quot;?</p>
-<p>If you special cased this one usage pattern, it would cover some fraction of use cases, idk I'm totally guessing here but maybe 30-80 percent of usages (I can do a more thorough grep over GitHub to get a more precise answer if this is important to you).</p>
+<p>I&#x27;m not sure of the internals of how ty works, but if it uses a lot of the same core code as ruff, I was thinking that perhaps you already had access to the info to be able to answer the question &quot;is this class definition decorated with an abc.ABC.register&quot;?</p>
+<p>If you special cased this one usage pattern, it would cover some fraction of use cases, idk I&#x27;m totally guessing here but maybe 30-80 percent of usages (I can do a more thorough grep over GitHub to get a more precise answer if this is important to you).</p>
 <p>I realize how unappealing it is to add these special cases to your codebase, so no pressure :)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/NickCrews">@NickCrews</a> on 2026-01-10 18:06</div>
-            <div class="timeline-body"><p>For example, I'm guessing you want to/already support the @dataclass decorator to transform a class, so maybe it wouldn't be too bad to piggy back on that infrastructure?</p>
+            <div class="timeline-body"><p>For example, I&#x27;m guessing you want to/already support the @dataclass decorator to transform a class, so maybe it wouldn&#x27;t be too bad to piggy back on that infrastructure?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-10 18:18</div>
-            <div class="timeline-body"><p>Has ibis ever run any other type checkers in CI before? As I say, to my knowledge this isn't supported by any other type checker (am I wrong?).</p>
-<p>It's not impossible that we could support this, but it's still likely to be low-priority if we'd be the first type checker to do so. And we'd need to do some design work to think about how to make it sound. For example, we'd need to emit a diagnostic if <code>@collections.abc.Mapping.register</code> was used to decorate a class <code>C</code> that did not have all methods and attributes available on <code>collections.abc.Mapping</code> (or if any attribute on <code>C</code> did not have a compatible type with the attribute on <code>Mapping</code>).</p>
+            <div class="timeline-body"><p>Has ibis ever run any other type checkers in CI before? As I say, to my knowledge this isn&#x27;t supported by any other type checker (am I wrong?).</p>
+<p>It&#x27;s not impossible that we could support this, but it&#x27;s still likely to be low-priority if we&#x27;d be the first type checker to do so. And we&#x27;d need to do some design work to think about how to make it sound. For example, we&#x27;d need to emit a diagnostic if <code>@collections.abc.Mapping.register</code> was used to decorate a class <code>C</code> that did not have all methods and attributes available on <code>collections.abc.Mapping</code> (or if any attribute on <code>C</code> did not have a compatible type with the attribute on <code>Mapping</code>).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/NickCrews">@NickCrews</a> on 2026-01-10 18:54</div>
-            <div class="timeline-body"><p>Ibis has never used type checkers before. I'm not even really trying to convert ibis to completely pass a type checker at this point, that is going to be too big of a task. I am running into this type error when using ibis in an app, the app is using ty. So I'm just trying to upstream a few of the best fixes so that my app sees fewer errors that it needs to ignore.</p>
-<p>I don't know of any other type checker that supports this (but I'm not familiar with them).</p>
-<p>Yes, those concerns also make sense. I won't be expecting anything. Feel free to close if you want to clean up your issues. Thanks!</p>
+            <div class="timeline-body"><p>Ibis has never used type checkers before. I&#x27;m not even really trying to convert ibis to completely pass a type checker at this point, that is going to be too big of a task. I am running into this type error when using ibis in an app, the app is using ty. So I&#x27;m just trying to upstream a few of the best fixes so that my app sees fewer errors that it needs to ignore.</p>
+<p>I don&#x27;t know of any other type checker that supports this (but I&#x27;m not familiar with them).</p>
+<p>Yes, those concerns also make sense. I won&#x27;t be expecting anything. Feel free to close if you want to clean up your issues. Thanks!</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:21:43 UTC
+        Synced at 2026-01-20 19:27:00 UTC
     </footer>
 </body>
 </html>

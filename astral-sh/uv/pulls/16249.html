@@ -24,33 +24,27 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/CrendKing">@CrendKing</a></div>
             <div class="timeline-body"><p>Here is an unsolicited attempt to implement the feature to <code>uv run</code> a script and make <code>uv</code> exit immediately without waiting for the spawned <code>python</code> process to finish.</p>
-<!--
-Thank you for contributing to uv! To help us out with reviewing, please consider the following:
 
-- Does this pull request include a summary of the change? (See below.)
-- Does this pull request include a descriptive title?
-- Does this pull request include references to any relevant issues?
--->
 
-<h2>Summary</h2>
+Summary
 <p>I usually need to wrap a bunch of <code>uv</code> invocations in other Python scripts. Since <code>uv</code> always waits for child process to finish, this ends up with a lot of recursive <code>uv</code> processes lingering. Sometimes this is useful, so that logic that must happen after the child process can run at right time. Other times this is unnecessary/wasteful because all I need is to let <code>uv</code> to spawn the virtual env. The child script will handle everything by themselves.</p>
 <p>This is a very rough initial attempt to implement <code>uv run --no-wait</code>. The PR basically consists of adding and passing the argument, then if user needs <code>--no-wait</code>, skip the <code>run_to_completion(handle).await</code> call. Additionally, only in Windows, to avoid the child process console being detached to the terminal, the process is spawned with <a href="https://learn.microsoft.com/en-us/windows/win32/procthread/process-creation-flags">CREATE_NEW_CONSOLE</a>. This way it has its own console.</p>
-<h2>Test Plan</h2>
-<p>As this is rough initial attempt, I only tested manually. If the PR is OK to be moved to next phase, I'll add programmatic tests.</p>
+Test Plan
+<p>As this is rough initial attempt, I only tested manually. If the PR is OK to be moved to next phase, I&#x27;ll add programmatic tests.</p>
 <ol>
 <li>Create two Python scripts, <code>a.py</code> and <code>b.py</code>.</li>
 </ol>
-<pre><code class="language-python">a.py
+<pre><code>a.py
 
 import subprocess
-subprocess.check_call(['uv.exe', 'run', 'b.py'])
+subprocess.check_call([&#x27;uv.exe&#x27;, &#x27;run&#x27;, &#x27;b.py&#x27;])
 </code></pre>
-<pre><code class="language-python">b.py
+<pre><code>b.py
 
 import time
 time.sleep(9999)
 </code></pre>
-<ol start="2">
+<ol>
 <li><code>uv run a.py</code>.</li>
 <li>Verify that there is no lingering <code>uv.exe</code> process in task manager.</li>
 </ol>
@@ -58,18 +52,18 @@ time.sleep(9999)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-12 13:05</div>
-            <div class="timeline-body"><p>There's some relevant discussion on https://github.com/astral-sh/uv/issues/3095</p>
+            <div class="timeline-body"><p>There&#x27;s some relevant discussion on <a href="https://github.com/astral-sh/uv/issues/3095">astral-sh/uv#3095</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/CrendKing">@CrendKing</a> on 2025-10-12 18:56</div>
-            <div class="timeline-body"><p>I see. You guys worry about temporary resource cleanup before the child is finished. Sure, there are use case where <code>uv run</code> needs to maintain and cleanup like temporary directory between invocations. But there are also other (majority for me) cases where nothing needs to be cleaned. The project is permanent. The dependencies are declared in <code>pyproject.toml</code> and saved in <code>.venv</code>. If the documentation for this argument explains what can be expected, I think it's fine.</p>
+            <div class="timeline-body"><p>I see. You guys worry about temporary resource cleanup before the child is finished. Sure, there are use case where <code>uv run</code> needs to maintain and cleanup like temporary directory between invocations. But there are also other (majority for me) cases where nothing needs to be cleaned. The project is permanent. The dependencies are declared in <code>pyproject.toml</code> and saved in <code>.venv</code>. If the documentation for this argument explains what can be expected, I think it&#x27;s fine.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:45:01 UTC
+        Synced at 2026-01-20 19:54:15 UTC
     </footer>
 </body>
 </html>

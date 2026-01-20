@@ -23,15 +23,15 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a></div>
-            <div class="timeline-body"><p>Right now, we have matches in each implementation that create bidirectional links between <code>CheckKind</code> and <code>CheckCode</code>. But there's nothing enforcing this behavior, and it's really tedious to implement.</p>
-<p>I'd love something like (made-up syntax):</p>
-<pre><code class="language-rust">CheckKind::UnusedImport(CheckCode::F401, ...)
+            <div class="timeline-body"><p>Right now, we have matches in each implementation that create bidirectional links between <code>CheckKind</code> and <code>CheckCode</code>. But there&#x27;s nothing enforcing this behavior, and it&#x27;s really tedious to implement.</p>
+<p>I&#x27;d love something like (made-up syntax):</p>
+<pre><code>CheckKind::UnusedImport(CheckCode::F401, ...)
 </code></pre>
-<p>...that keeps them coupled with a single definition. What's possible here?</p>
+<p>...that keeps them coupled with a single definition. What&#x27;s possible here?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> added by @charliermarsh on 2022-10-13 13:31</div>
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-10-13 13:31</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-10-27 17:09</div>
@@ -40,9 +40,9 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/squiddy">@squiddy</a> on 2022-12-06 20:01</div>
-            <div class="timeline-body"><p>Those bidirectional links I also struggled with (or rather, forgot to update certain parts) when implementing my first check. I've been looking at rust &amp; clippy lately, and there are some interesting ideas. Some of which also related to that other ticket about updating <code>Checker</code>.</p>
+            <div class="timeline-body"><p>Those bidirectional links I also struggled with (or rather, forgot to update certain parts) when implementing my first check. I&#x27;ve been looking at rust &amp; clippy lately, and there are some interesting ideas. Some of which also related to that other ticket about updating <code>Checker</code>.</p>
 <p>Short summary how this roughly works with clippy, taking the <code>REDUNDANT_FIELD_NAMES</code> lint. Declaring a lint:</p>
-<pre><code class="language-rust">declare_clippy_lint! {
+<pre><code>declare_clippy_lint! {
     /// ### What it does
     /// Checks for fields in struct literals where shorthands
     /// could be used.
@@ -52,21 +52,21 @@
 }
 </code></pre>
 <p>Through some macros from rust this eventually expands into something like this:</p>
-<pre><code class="language-rust">pub static REDUNDANT_FIELD_NAMES: &amp;crate::Lint = &amp;crate::Lint {
+<pre><code>pub static REDUNDANT_FIELD_NAMES: &amp;crate::Lint = &amp;crate::Lint {
     name: &quot;clippy::REDUNDANT_FIELD_NAMES&quot;,
     desc: &quot;...snip...&quot;,
     ...snip...
 };
 
-pub(crate) static REDUNDANT_FIELD_NAMES_INFO: &amp;'static crate::LintInfo = &amp;crate::LintInfo {
+pub(crate) static REDUNDANT_FIELD_NAMES_INFO: &amp;&#x27;static crate::LintInfo = &amp;crate::LintInfo {
     lint: &amp;REDUNDANT_FIELD_NAMES,
     category: crate::LintCategory::Style,
     explanation: &quot;... snip ...&quot;,
 };
 </code></pre>
-<hr />
+<hr>
 <p>Now this in itself I find valuable already, tying together everything related to a lint (or check/checkkind). We could have:</p>
-<pre><code class="language-rust">declare_check! {
+<pre><code>declare_check! {
     /// What does this do? Why is this bad?
     MODULE_IMPORT_NOT_AT_TOP_OF_FILE,
     E402,
@@ -75,10 +75,10 @@ pub(crate) static REDUNDANT_FIELD_NAMES_INFO: &amp;'static crate::LintInfo = &am
 }
 </code></pre>
 <p>Somewhere else, a global list of available checks:</p>
-<pre><code class="language-rust">pub static CHECKS: &amp;'static [&amp;Check] = &amp;[MODULE_IMPORT_NOT_AT_TOP_OF_FILE, ...];
+<pre><code>pub static CHECKS: &amp;&#x27;static [&amp;Check] = &amp;[MODULE_IMPORT_NOT_AT_TOP_OF_FILE, ...];
 </code></pre>
 <p>Using such a check (just making this up):</p>
-<pre><code class="language-rust">if self.settings.enabled.contains(&amp;MODULE_IMPORT_NOT_AT_TOP_OF_FILE) {
+<pre><code>if self.settings.enabled.contains(&amp;MODULE_IMPORT_NOT_AT_TOP_OF_FILE) {
    if self.seen_import_boundary &amp;&amp; stmt.location.column() == 0 {
        self.add_check(Check::new(
            MODULE_IMPORT_NOT_AT_TOP_OF_FILE,
@@ -87,16 +87,16 @@ pub(crate) static REDUNDANT_FIELD_NAMES_INFO: &amp;'static crate::LintInfo = &am
    }
 }
 </code></pre>
-<p>Making this check like this would also lower the significance of check code in ruff's code, which, if I understood that other ticket correctly, is something you see ruff moving to.</p>
-<hr />
-<p>I'm happy to look further into this and come up with some proof-of-concept.</p>
+<p>Making this check like this would also lower the significance of check code in ruff&#x27;s code, which, if I understood that other ticket correctly, is something you see ruff moving to.</p>
+<hr>
+<p>I&#x27;m happy to look further into this and come up with some proof-of-concept.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/squiddy">@squiddy</a> on 2022-12-06 20:12</div>
             <div class="timeline-body"><p>Clippy &amp; rust have traits for &quot;passes&quot;. <code>EarlyLintPass</code> for AST information, <code>LateLintPass</code> after type checking etc. <code>REDUNDANT_FIELD_NAMES</code> would use those like this (excerpt):</p>
-<pre><code class="language-rust">impl EarlyLintPass for RedundantFieldNames {
-    fn check_expr(&amp;mut self, cx: &amp;EarlyContext&lt;'_&gt;, expr: &amp;Expr) {
+<pre><code>impl EarlyLintPass for RedundantFieldNames {
+    fn check_expr(&amp;mut self, cx: &amp;EarlyContext&lt;&#x27;_&gt;, expr: &amp;Expr) {
         if let ExprKind::Struct(ref se) = expr.kind {
             for field in &amp;se.fields {
                 if field.is_shorthand {
@@ -128,26 +128,26 @@ pub(crate) static REDUNDANT_FIELD_NAMES_INFO: &amp;'static crate::LintInfo = &am
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-06 21:13</div>
-            <div class="timeline-body"><p>Yeah I'd definitely be interested in a proposal or draft PR here, and I think something based on macros would make sense. My main hesitation is that the current system based on enums has really strong type-safety (apart from the non-enforced coupling between &quot;code&quot; and &quot;kind&quot;) and plays well with autocomplete, and macros tend to make code harder to work with in the editor since it requires compile-time expansion (making a fuzzy claim here but hopefully you get what I mean).</p>
+            <div class="timeline-body"><p>Yeah I&#x27;d definitely be interested in a proposal or draft PR here, and I think something based on macros would make sense. My main hesitation is that the current system based on enums has really strong type-safety (apart from the non-enforced coupling between &quot;code&quot; and &quot;kind&quot;) and plays well with autocomplete, and macros tend to make code harder to work with in the editor since it requires compile-time expansion (making a fuzzy claim here but hopefully you get what I mean).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/squiddy">@squiddy</a> on 2022-12-06 22:31</div>
-            <div class="timeline-body"><p>Oh yeah, I get it. Initially I also wouldn't use macros but just type it out first. Syntactic sugar/shortcuts can come later. I think in the case of clippy the usage of macros also comes from it using existing infrastructure (based on macros) from the rust compiler.</p>
+            <div class="timeline-body"><p>Oh yeah, I get it. Initially I also wouldn&#x27;t use macros but just type it out first. Syntactic sugar/shortcuts can come later. I think in the case of clippy the usage of macros also comes from it using existing infrastructure (based on macros) from the rust compiler.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/squiddy">@squiddy</a> on 2022-12-18 06:31</div>
-            <div class="timeline-body"><pre><code class="language-rust">pub struct CheckDef {
-    pub name: &amp;'static str,
-    pub description: &amp;'static str,
+            <div class="timeline-body"><pre><code>pub struct CheckDef {
+    pub name: &amp;&#x27;static str,
+    pub description: &amp;&#x27;static str,
     pub code: CheckCode,
     pub category: CheckCategory,
     pub lint_source: LintSource,
 }
 
 pub struct Check {
-    pub definition: &amp;'static CheckDef,
+    pub definition: &amp;&#x27;static CheckDef,
     pub location: Location,
     pub end_location: Location,
     pub fix: Option&lt;Fix&gt;,
@@ -210,7 +210,7 @@ if self.settings.enabled.contains(RAISE_NOT_IMPLEMENTED) {
     }
 }
 </code></pre>
-<p>This doesn't give the same type safety guarantees as the current code though, e.g. multiple checks could map to the same error code, could reuse the same name etc. Haven't yet figured out that part.</p>
+<p>This doesn&#x27;t give the same type safety guarantees as the current code though, e.g. multiple checks could map to the same error code, could reuse the same name etc. Haven&#x27;t yet figured out that part.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -219,12 +219,12 @@ if self.settings.enabled.contains(RAISE_NOT_IMPLEMENTED) {
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-01-07 20:53</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-07 20:53</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:45:23 UTC
+        Synced at 2026-01-20 18:48:26 UTC
     </footer>
 </body>
 </html>

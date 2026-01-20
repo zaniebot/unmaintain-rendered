@@ -23,57 +23,50 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/WillDuke">@WillDuke</a></div>
-            <div class="timeline-body"><!--
-Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+            <div class="timeline-body">
 
-- Does this pull request include a summary of the change? (See below.)
-- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
-  requests.)
-- Does this pull request include references to any relevant issues?
--->
+Summary
 
-<h2>Summary</h2>
-<!-- What's the purpose of the change? What does it do, and why? -->
 
-<p>I had a go at improving the typing conformance workflow. I compared the path and beginning line from <code>ty</code>'s <code>gitlab</code> output to the path and line numbers matching &quot;# E&quot; in the conformance suite. Based on the presence of a corresponding error in the conformance tests, I broke out the diagnostics on the current branch into groups (true positives, false positives, etc.) that changed compared to the merge base. I've used Github's diff syntax to make new positives appear in green and new negatives appear in red (displaying the old diagnostic). I've also added a summary with counts for each group and a sentence indicating whether performance improved overall.</p>
-<p>Here's a standalone version of the script comparing <code>0.0.1a35</code> to <code>0.0.7</code>.</p>
-<details>
-  <summary>conformance.sh</summary>
+<p>I had a go at improving the typing conformance workflow. I compared the path and beginning line from <code>ty</code>&#x27;s <code>gitlab</code> output to the path and line numbers matching &quot;# E&quot; in the conformance suite. Based on the presence of a corresponding error in the conformance tests, I broke out the diagnostics on the current branch into groups (true positives, false positives, etc.) that changed compared to the merge base. I&#x27;ve used Github&#x27;s diff syntax to make new positives appear in green and new negatives appear in red (displaying the old diagnostic). I&#x27;ve also added a summary with counts for each group and a sentence indicating whether performance improved overall.</p>
+<p>Here&#x27;s a standalone version of the script comparing <code>0.0.1a35</code> to <code>0.0.7</code>.</p>
 
-<pre><code class="language-console">
+  conformance.sh
+
+<pre><code>
 #!/bin/bash
 
 git clone git@github.com:python/typing.git || true
 
-uvx 'ty@@0.0.1a35' check \
+uvx &#x27;ty@@0.0.1a35&#x27; check \
   typing/conformance/tests \
   --output-format gitlab \
-  | jq '.[] |
+  | jq &#x27;.[] |
     .key = .location?.path? + &quot;:&quot; + (.location?.positions?.begin?.line? | tostring) |
     .source = &quot;old&quot;
-  ' \
+  &#x27; \
   &gt; old.jsonl
 
-uvx 'ty@0.0.7' check \
+uvx &#x27;ty@0.0.7&#x27; check \
   typing/conformance/tests \
   --output-format gitlab \
-  | jq '.[] |
+  | jq &#x27;.[] |
     .key = .location?.path? + &quot;:&quot; + (.location?.positions?.begin?.line? | tostring) |
     .source = &quot;new&quot;
-  ' \
+  &#x27; \
   &gt; new.jsonl
 
-rg '# E\:?' typing/conformance/tests \
+rg &#x27;# E\:?&#x27; typing/conformance/tests \
   --json \
-  | jq '
+  | jq &#x27;
     select(.type == &quot;match&quot;) |
     {
       key: (.data?.path?.text? + &quot;:&quot; + (.data?.line_number? | tostring)),
       source: &quot;expected&quot;
-    }' \
+    }&#x27; \
   &gt; expected.jsonl
 
-jq -s -r '
+jq -s -r &#x27;
   def xor($a; $b): ($a or $b) and (($a and $b) | not);
   def has($a; $b): $a | index($b) != null;
   def missing($a; $b): $a | index($b) == null;
@@ -129,12 +122,12 @@ jq -s -r '
     + &quot;\n```diff\n&quot;
     + (map(sign(.classification) + .concise) | join(&quot;\n&quot;))
     + &quot;\n```\n&quot;
-' old.jsonl \
+&#x27; old.jsonl \
   new.jsonl \
   expected.jsonl \
   &gt; changed.md
 
-jq -s -r '
+jq -s -r &#x27;
   def has($a; $b): $a | index($b) != null;
   def stats(fp_source):
     map(select(has(.source; fp_source) or has(.source; &quot;expected&quot;)))
@@ -197,7 +190,7 @@ jq -s -r '
       recall_delta:    (.new.recall    - .old.recall)
     }
   | summary
-' \
+&#x27; \
 new.jsonl \
 old.jsonl \
 expected.jsonl \
@@ -211,14 +204,14 @@ expected.jsonl \
 
 
 </code></pre>
-</details>
+
 
 <p>Which produces the following markdown output:</p>
-<details>
-  <summary>comment.md</summary>
 
-<h2>Typing Conformance</h2>
-<h3>Summary</h3>
+  comment.md
+
+Typing Conformance
+Summary
 <p>| Metric     | Old | New | Δ |
 |------------|-----|-----|---|
 | True Positives | 647 | 654 | 7 |
@@ -227,22 +220,22 @@ expected.jsonl \
 | Precision  | 74.02% | 74.23% | +0.206% |
 | Recall     | 54.55% | 55.14% | +0.590% |</p>
 <p>Compared to the current merge base, this PR improves precision and improves recall (TP: 7, FP: 0, FN: -7).</p>
-<h3>False Positives</h3>
-<pre><code class="language-diff">+ typing/conformance/tests/constructors_callable.py:143:27: error[invalid-argument-type] Argument to function `accepts_callable` is incorrect: Expected `() -&gt; Any | Class6Any`, found `&lt;class 'Class6Any'&gt;`
+False Positives
+<pre><code>+ typing/conformance/tests/constructors_callable.py:143:27: error[invalid-argument-type] Argument to function `accepts_callable` is incorrect: Expected `() -&gt; Any | Class6Any`, found `&lt;class &#x27;Class6Any&#x27;&gt;`
 + typing/conformance/tests/constructors_callable.py:145:1: error[type-assertion-failure] Type `Any` does not match asserted type `Any | Class6Any`
-+ typing/conformance/tests/dataclasses_transform_converter.py:102:42: error[invalid-argument-type] Argument to function `model_field` is incorrect: Expected `(str | bytes, /) -&gt; ConverterClass`, found `&lt;class 'ConverterClass'&gt;`
++ typing/conformance/tests/dataclasses_transform_converter.py:102:42: error[invalid-argument-type] Argument to function `model_field` is incorrect: Expected `(str | bytes, /) -&gt; ConverterClass`, found `&lt;class &#x27;ConverterClass&#x27;&gt;`
 + typing/conformance/tests/dataclasses_transform_converter.py:103:31: error[invalid-argument-type] Argument to function `model_field` is incorrect: Expected `(str | list[str], /) -&gt; int`, found `Overload[(s: str) -&gt; int, (s: list[str]) -&gt; int]`
 + typing/conformance/tests/dataclasses_transform_converter.py:104:30: error[invalid-assignment] Object of type `dict[str, str] | dict[bytes, bytes]` is not assignable to `dict[str, str]`
 </code></pre>
-<h3>True Negatives</h3>
-<pre><code class="language-diff">- typing/conformance/tests/constructors_callable.py:128:1: error[type-assertion-failure] Argument does not have asserted type `Class6Proxy`
+True Negatives
+<pre><code>- typing/conformance/tests/constructors_callable.py:128:1: error[type-assertion-failure] Argument does not have asserted type `Class6Proxy`
 - typing/conformance/tests/constructors_callable.py:37:1: error[type-assertion-failure] Argument does not have asserted type `Class1`
 - typing/conformance/tests/constructors_callable.py:50:1: error[type-assertion-failure] Argument does not have asserted type `Class2`
 - typing/conformance/tests/constructors_callable.py:65:1: error[type-assertion-failure] Argument does not have asserted type `Class3`
 - typing/conformance/tests/constructors_callable.py:80:1: error[type-assertion-failure] Argument does not have asserted type `int`
 </code></pre>
-<h3>True Positives</h3>
-<pre><code class="language-diff">+ typing/conformance/tests/constructors_callable.py:146:8: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 1
+True Positives
+<pre><code>+ typing/conformance/tests/constructors_callable.py:146:8: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 1
 + typing/conformance/tests/constructors_callable.py:186:4: error[invalid-argument-type] Argument is incorrect: Expected `list[T@Class8]`, found `list[Unknown | int]`
 + typing/conformance/tests/dataclasses_transform_converter.py:133:31: error[invalid-argument-type] Argument to function `model_field` is incorrect: Expected `(str | int, /) -&gt; int`, found `def converter_simple(s: str) -&gt; int`
 + typing/conformance/tests/dataclasses_usage.py:88:14: error[invalid-assignment] Object of type `dataclasses.Field[str | int]` is not assignable to `int`
@@ -250,30 +243,30 @@ expected.jsonl \
 + typing/conformance/tests/typeddicts_extra_items.py:128:15: error[invalid-argument-type] Cannot delete required key &quot;name&quot; from TypedDict `MovieEI`
 + typing/conformance/tests/typeddicts_operations.py:49:11: error[invalid-argument-type] Cannot delete required key &quot;name&quot; from TypedDict `Movie`
 </code></pre>
-</details>
+
 
 <p>Partially addresses <a href="https://github.com/astral-sh/ty/issues/2205">#2205</a>.</p>
-<h2>Test Plan</h2>
-<!-- How was it tested? -->
+Test Plan
 
-<p>I have only tested the standalone version of this. I think I'd need some guidance on how to test the action if you think this is worth merging. For example, I'm just piping the markdown content into the original diff file.</p>
-<hr />
-<p>Edit: I've replaced the inline <code>jq</code> script with a python version at <code>scripts/conformance.py</code>. Invoking that script with e.g.</p>
+
+<p>I have only tested the standalone version of this. I think I&#x27;d need some guidance on how to test the action if you think this is worth merging. For example, I&#x27;m just piping the markdown content into the original diff file.</p>
+<hr>
+<p>Edit: I&#x27;ve replaced the inline <code>jq</code> script with a python version at <code>scripts/conformance.py</code>. Invoking that script with e.g.</p>
 <pre><code>uv run scripts/conformance.py --target ../typing/conformance/tests/
 </code></pre>
-<p>produces the same output assuming the <code>typing</code> repository has been cloned into the same parent as <code>ruff</code>. I also noticed in the interim that some errors in the conformance suite are tagged as accepted in one or more of a set of lines or are marked as optional, which I haven't yet implemented here. Instead, every line with a &quot;# E&quot; is currently matched to a single diagnostic on the same line in the old and new <code>ty</code> versions.</p>
+<p>produces the same output assuming the <code>typing</code> repository has been cloned into the same parent as <code>ruff</code>. I also noticed in the interim that some errors in the conformance suite are tagged as accepted in one or more of a set of lines or are marked as optional, which I haven&#x27;t yet implemented here. Instead, every line with a &quot;# E&quot; is currently matched to a single diagnostic on the same line in the old and new <code>ty</code> versions.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ci</span> added by @AlexWaygood on 2025-12-28 07:49</div>
+            <div class="event">Label <span class="label">ci</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-28 07:49</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-12-28 07:49</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-28 07:49</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>.github/workflows/typing_conformance.yaml</code>:194 on 2025-12-29 10:13</div>
             <div class="timeline-body"><p>This is very impressive that you were able to do all of this with jq.</p>
-<p>I don't know jq well and would find it difficult to make changes to this script in the future. Have you considered writing this as a Python script instead?</p>
+<p>I don&#x27;t know jq well and would find it difficult to make changes to this script in the future. Have you considered writing this as a Python script instead?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -281,9 +274,9 @@ expected.jsonl \
             <div class="timeline-body"><p>This is great!</p>
 <p>We only recently talked about that having something like this would make life so much easier. Thanks for working on this</p>
 <blockquote>
-<p>. I think I'd need some guidance on how to test the action if you think this is worth merging. For example, I'm just piping the markdown content into the original diff file.</p>
+<p>. I think I&#x27;d need some guidance on how to test the action if you think this is worth merging. For example, I&#x27;m just piping the markdown content into the original diff file.</p>
 </blockquote>
-<p>I think that should just work. We might need to limit the diff's length but I can look into this.</p>
+<p>I think that should just work. We might need to limit the diff&#x27;s length but I can look into this.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -301,7 +294,7 @@ expected.jsonl \
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>.github/workflows/typing_conformance.yaml</code>:194 on 2026-01-09 17:31</div>
-            <div class="timeline-body"><p>I'd also find a Python script much more maintainable! But thanks so much for taking this on, this is awesome!!</p>
+            <div class="timeline-body"><p>I&#x27;d also find a Python script much more maintainable! But thanks so much for taking this on, this is awesome!!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -310,43 +303,43 @@ expected.jsonl \
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/WillDuke">@WillDuke</a> on <code>.github/workflows/typing_conformance.yaml</code>:194 on 2026-01-09 17:58</div>
-            <div class="timeline-body"><p>Thanks, I've ported it over! I should find time to update this PR this weekend</p>
+            <div class="timeline-body"><p>Thanks, I&#x27;ve ported it over! I should find time to update this PR this weekend</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-11 16:09</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @WillDuke on 2026-01-11 16:37</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/WillDuke">@WillDuke</a> on 2026-01-11 16:37</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @WillDuke on 2026-01-11 16:37</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/WillDuke">@WillDuke</a> on 2026-01-11 16:37</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-11 17:04</div>
-            <div class="timeline-body"><p>Sorry about the ty false positive on your Python script! That's the &quot;support <code>enum.Flag</code>&quot; bullet point in https://github.com/astral-sh/ty/issues/876. Feel free to just add a <code>ty: ignore</code> comment to that line for now.</p>
-<p>I'm guessing the conformance workflow is failing because it tries to run the script on <code>main</code> in order to compare the results on <code>main</code> with the results on this PR, but the script doesn't exist on <code>main</code> yet?</p>
+            <div class="timeline-body"><p>Sorry about the ty false positive on your Python script! That&#x27;s the &quot;support <code>enum.Flag</code>&quot; bullet point in <a href="https://github.com/astral-sh/ty/issues/876">astral-sh/ty#876</a>. Feel free to just add a <code>ty: ignore</code> comment to that line for now.</p>
+<p>I&#x27;m guessing the conformance workflow is failing because it tries to run the script on <code>main</code> in order to compare the results on <code>main</code> with the results on this PR, but the script doesn&#x27;t exist on <code>main</code> yet?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/WillDuke">@WillDuke</a> on 2026-01-11 17:23</div>
             <div class="timeline-body"><blockquote>
-<p>Sorry about the ty false positive on your Python script! That's the &quot;support <code>enum.Flag</code>&quot; bullet point in <a href="https://github.com/astral-sh/ty/issues/876">astral-sh/ty#876</a>. Feel free to just add a <code>ty: ignore</code> comment to that line for now.</p>
-<p>I'm guessing the conformance workflow is failing because it tries to run the script on <code>main</code> in order to compare the results on <code>main</code> with the results on this PR, but the script doesn't exist on <code>main</code> yet?</p>
+<p>Sorry about the ty false positive on your Python script! That&#x27;s the &quot;support <code>enum.Flag</code>&quot; bullet point in <a href="https://github.com/astral-sh/ty/issues/876">astral-sh/ty#876</a>. Feel free to just add a <code>ty: ignore</code> comment to that line for now.</p>
+<p>I&#x27;m guessing the conformance workflow is failing because it tries to run the script on <code>main</code> in order to compare the results on <code>main</code> with the results on this PR, but the script doesn&#x27;t exist on <code>main</code> yet?</p>
 </blockquote>
-<p>Ah, I missed the <code>ty</code> failure! Yes, that's exactly the issue. Should I split this into two PRs?</p>
+<p>Ah, I missed the <code>ty</code> failure! Yes, that&#x27;s exactly the issue. Should I split this into two PRs?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -355,14 +348,14 @@ expected.jsonl \
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[ty] Update conformance workflow to compare ty diagnostics with expected errors " to "[ty] Add a conformance script to compare ty diagnostics with expected errors" by @WillDuke on 2026-01-11 17:58</div>
+            <div class="event">Renamed from &quot;[ty] Update conformance workflow to compare ty diagnostics with expected errors &quot; to &quot;[ty] Add a conformance script to compare ty diagnostics with expected errors&quot; by <a href="https://github.com/WillDuke">@WillDuke</a> on 2026-01-11 17:58</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/WillDuke">@WillDuke</a> on 2026-01-11 17:59</div>
             <div class="timeline-body"><blockquote>
 <p>Yeah, splitting it into two PRs would be great! We could have one PR to add the script and then another to actually run the script as part of a GitHub workflow.</p>
 </blockquote>
-<p>Sure thing. I've updated this PR to include only the script change, and I've opened #22504 to make the workflow change.</p>
+<p>Sure thing. I&#x27;ve updated this PR to include only the script change, and I&#x27;ve opened #22504 to make the workflow change.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -372,7 +365,7 @@ expected.jsonl \
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/conformance.py</code>:4 on 2026-01-11 18:15</div>
-            <div class="timeline-body"><p>hmm, this isn't an alias I've seen before... I think I'd prefer either <code>import itertools</code> or <code>from itertools import groupby</code> :-)</p>
+            <div class="timeline-body"><p>hmm, this isn&#x27;t an alias I&#x27;ve seen before... I think I&#x27;d prefer either <code>import itertools</code> or <code>from itertools import groupby</code> :-)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -382,31 +375,31 @@ expected.jsonl \
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/conformance.py</code>:33 on 2026-01-11 18:17</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">@dataclass(kw_only=True, slots=True)
+            <div class="timeline-body"><pre><code>@dataclass(kw_only=True, slots=True)
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/conformance.py</code>:39 on 2026-01-11 18:17</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">@dataclass(kw_only=True, slots=True)
+            <div class="timeline-body"><pre><code>@dataclass(kw_only=True, slots=True)
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/conformance.py</code>:45 on 2026-01-11 18:17</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">@dataclass(kw_only=True, slots=True)
+            <div class="timeline-body"><pre><code>@dataclass(kw_only=True, slots=True)
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/conformance.py</code>:51 on 2026-01-11 18:18</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">@dataclass(kw_only=True, slots=True)
+            <div class="timeline-body"><pre><code>@dataclass(kw_only=True, slots=True)
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/conformance.py</code>:88 on 2026-01-11 18:18</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">    def key(self) -&gt; str:
+            <div class="timeline-body"><pre><code>    def key(self) -&gt; str:
 </code></pre>
 </div>
         </div>
@@ -417,34 +410,34 @@ expected.jsonl \
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/conformance.py</code>:107 on 2026-01-11 18:19</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">@dataclass(kw_only=True, slots=True)
+            <div class="timeline-body"><pre><code>@dataclass(kw_only=True, slots=True)
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/conformance.py</code>:149 on 2026-01-11 18:25</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">@dataclass(kw_only=True, slots=True)
+            <div class="timeline-body"><pre><code>@dataclass(kw_only=True, slots=True)
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/conformance.py</code>:153 on 2026-01-11 18:26</div>
-            <div class="timeline-body"><p>Apologies, I don't have a maths background -- what do these stand for? Could we give them more descriptive names for folks who don't know their statistics jargon that well?</p>
+            <div class="timeline-body"><p>Apologies, I don&#x27;t have a maths background -- what do these stand for? Could we give them more descriptive names for folks who don&#x27;t know their statistics jargon that well?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/conformance.py</code>:271 on 2026-01-11 18:28</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">        num_errors = sum(
+            <div class="timeline-body"><pre><code>        num_errors = sum(
             1 for g in grouped_diagnostics if source.EXPECTED in g.sources  # ty:ignore[unsupported-operator]
         )
 </code></pre>
-<p>also, could you possibly add a comment that says we're ignoring the error because it's a false positive, and links to the ty issue?</p>
+<p>also, could you possibly add a comment that says we&#x27;re ignoring the error because it&#x27;s a false positive, and links to the ty issue?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/conformance.py</code>:374 on 2026-01-11 18:34</div>
-            <div class="timeline-body"><p>A trick I often like to pull is to put this kind of usage information in the module docstring at the top of the file, and then put <code>description=__doc__</code> in the ArgumentParser()` call, so that you don't have to write out the documentation more than once but it's still in both logical places a user/reader of the script might look for it:</p>
-<pre><code class="language-diff">diff --git a/scripts/conformance.py b/scripts/conformance.py
+            <div class="timeline-body"><p>A trick I often like to pull is to put this kind of usage information in the module docstring at the top of the file, and then put <code>description=__doc__</code> in the ArgumentParser()` call, so that you don&#x27;t have to write out the documentation more than once but it&#x27;s still in both logical places a user/reader of the script might look for it:</p>
+<pre><code>diff --git a/scripts/conformance.py b/scripts/conformance.py
 index 3771ae2928..992cc76440 100644
 --- a/scripts/conformance.py
 +++ b/scripts/conformance.py
@@ -502,7 +495,7 @@ index 3771ae2928..992cc76440 100644
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2026-01-11 18:34</div>
+            <div class="event">Assigned to <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-11 18:34</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/WillDuke">@WillDuke</a> reviewed on 2026-01-11 18:36</div>
@@ -519,40 +512,40 @@ index 3771ae2928..992cc76440 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/WillDuke">@WillDuke</a> on <code>scripts/conformance.py</code>:374 on 2026-01-11 21:46</div>
-            <div class="timeline-body"><p>That's a great tip, thanks!</p>
+            <div class="timeline-body"><p>That&#x27;s a great tip, thanks!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/conformance.py</code>:503 on 2026-01-12 14:58</div>
-            <div class="timeline-body"><p>What do the terms &quot;precision&quot; and &quot;recall&quot; mean in this context? Also, I'd again prefer it if we spelled out &quot;False positives&quot;, &quot;Ture positives&quot; and &quot;False negatives&quot; here</p>
+            <div class="timeline-body"><p>What do the terms &quot;precision&quot; and &quot;recall&quot; mean in this context? Also, I&#x27;d again prefer it if we spelled out &quot;False positives&quot;, &quot;Ture positives&quot; and &quot;False negatives&quot; here</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/conformance.py</code>:410 on 2026-01-12 15:00</div>
-            <div class="timeline-body"><p>We should state clearly in the module docstring that the script assumes you have uv installed (nearly all contributors to Ruff/ty will have it installed, of course, but it's still worth stating explicitly)</p>
+            <div class="timeline-body"><p>We should state clearly in the module docstring that the script assumes you have uv installed (nearly all contributors to Ruff/ty will have it installed, of course, but it&#x27;s still worth stating explicitly)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/conformance.py</code>:422 on 2026-01-12 15:01</div>
-            <div class="timeline-body"><p>Maybe <code>--conformance-tests-path</code>? We could also make it so that you can specify the argument with <code>-c</code> if that's getting on the wordy side</p>
+            <div class="timeline-body"><p>Maybe <code>--conformance-tests-path</code>? We could also make it so that you can specify the argument with <code>-c</code> if that&#x27;s getting on the wordy side</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/conformance.py</code>:381 on 2026-01-12 15:02</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">        | Metric     | Old | New | Delta |
+            <div class="timeline-body"><pre><code>        | Metric     | Old | New | Delta |
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/conformance.py</code>:355 on 2026-01-12 15:19</div>
-            <div class="timeline-body"><p>I ran this script locally to compare the results on https://github.com/astral-sh/ruff/pull/22317 with the results on <code>main</code>, and found the &quot;True negatives&quot; heading a bit confusing here:</p>
-<details>
-<summary>Screenshot</summary>
+            <div class="timeline-body"><p>I ran this script locally to compare the results on <a href="https://github.com/astral-sh/ruff/pull/22317">astral-sh/ruff#22317</a> with the results on <code>main</code>, and found the &quot;True negatives&quot; heading a bit confusing here:</p>
 
-<p><img width="2014" height="1446" alt="image" src="https://github.com/user-attachments/assets/08cec938-6dd8-4a48-931a-8abf0aa7f7a9" /></p>
-</details>
+Screenshot
 
-<p>I think a &quot;new true negative&quot; is the same as a &quot;removed false positive&quot;? What if we had three sections with these titles (I'm not a huge fan of emojis in general but here I think they'd help make it clear whether each section indicates good news or bad news):</p>
+<p><img alt="image" src="https://github.com/user-attachments/assets/08cec938-6dd8-4a48-931a-8abf0aa7f7a9"></p>
+
+
+<p>I think a &quot;new true negative&quot; is the same as a &quot;removed false positive&quot;? What if we had three sections with these titles (I&#x27;m not a huge fan of emojis in general but here I think they&#x27;d help make it clear whether each section indicates good news or bad news):</p>
 <ul>
 <li>&quot;True positives added 🎉&quot;</li>
 <li>&quot;False positives removed 🎉&quot;</li>
@@ -582,7 +575,7 @@ index 3771ae2928..992cc76440 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/WillDuke">@WillDuke</a> on <code>scripts/conformance.py</code>:503 on 2026-01-12 16:49</div>
-            <div class="timeline-body"><p>If you'd like to keep these stats, I could include a sentence explaining what they mean in the output.</p>
+            <div class="timeline-body"><p>If you&#x27;d like to keep these stats, I could include a sentence explaining what they mean in the output.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -591,18 +584,18 @@ index 3771ae2928..992cc76440 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/conformance.py</code>:503 on 2026-01-12 17:00</div>
-            <div class="timeline-body"><p>Yeah, these seem like useful statistics for sure! But rather than including them in the table, I think I'd prefer it if the script wrote out a descriptive sentence below the table: &quot;The percentage of diagnostic emitted that were true positives increased from 49% to 51%&quot;, &quot;The percentage of diagnostics emitted that were true positives held steady at 63%&quot; or &quot;The percentage of diagnostics emitted that were true positives fell from 78% to 74%&quot;, etc.</p>
+            <div class="timeline-body"><p>Yeah, these seem like useful statistics for sure! But rather than including them in the table, I think I&#x27;d prefer it if the script wrote out a descriptive sentence below the table: &quot;The percentage of diagnostic emitted that were true positives increased from 49% to 51%&quot;, &quot;The percentage of diagnostics emitted that were true positives held steady at 63%&quot; or &quot;The percentage of diagnostics emitted that were true positives fell from 78% to 74%&quot;, etc.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>scripts/conformance.py</code>:410 on 2026-01-12 17:12</div>
-            <div class="timeline-body"><p>The default here feels a bit arbitrary. I'm leaning towards removing it</p>
+            <div class="timeline-body"><p>The default here feels a bit arbitrary. I&#x27;m leaning towards removing it</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>scripts/conformance.py</code>:417 on 2026-01-12 17:12</div>
             <div class="timeline-body"><p>I think defaulting to the latest version is a more sensible default than some arbitrary old version</p>
-<pre><code class="language-suggestion">        default=[&quot;uvx&quot;, &quot;ty@latest&quot;],
+<pre><code>        default=[&quot;uvx&quot;, &quot;ty@latest&quot;],
 </code></pre>
 </div>
         </div>
@@ -613,7 +606,7 @@ index 3771ae2928..992cc76440 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>scripts/conformance.py</code>:503 on 2026-01-12 17:14</div>
-            <div class="timeline-body"><p>I find sentences much harder to parse. It's what I like about codspeed. I can just look at the last column to see the result.</p>
+            <div class="timeline-body"><p>I find sentences much harder to parse. It&#x27;s what I like about codspeed. I can just look at the last column to see the result.</p>
 <p>Adding some documentation at the end of the output makes sense to me</p>
 </div>
         </div>
@@ -628,8 +621,8 @@ index 3771ae2928..992cc76440 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/conformance.py</code>:503 on 2026-01-12 17:39</div>
-            <div class="timeline-body"><p>I'm fine with a jargony table and some documentation below it that explains the jargon :-)</p>
-<p>though I wonder if we could add a visual indicator somehow that makes it clear whether a number in the table going up or down is a good or bad thing without having to read a separate documentation paragraph somewhere else. Maybe something similar to the emoji suggestion I had in https://github.com/astral-sh/ruff/pull/22231#discussion_r2682732308?</p>
+            <div class="timeline-body"><p>I&#x27;m fine with a jargony table and some documentation below it that explains the jargon :-)</p>
+<p>though I wonder if we could add a visual indicator somehow that makes it clear whether a number in the table going up or down is a good or bad thing without having to read a separate documentation paragraph somewhere else. Maybe something similar to the emoji suggestion I had in <a href="https://github.com/astral-sh/ruff/pull/22231">astral-sh/ruff#22231</a>#discussion_r2682732308?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -639,7 +632,7 @@ index 3771ae2928..992cc76440 100644
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/conformance.py</code>:503 on 2026-01-12 17:40</div>
             <div class="timeline-body"><blockquote>
-<p>I'm fine with a jargony table and some documentation below it that explains the jargon :-)</p>
+<p>I&#x27;m fine with a jargony table and some documentation below it that explains the jargon :-)</p>
 </blockquote>
 <p>we can always do this for now and iterate on it</p>
 </div>
@@ -650,8 +643,8 @@ index 3771ae2928..992cc76440 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>scripts/conformance.py</code>:503 on 2026-01-12 18:04</div>
-            <div class="timeline-body"><p>This is what biomejs does https://github.com/biomejs/biome/pull/8361#issuecomment-3613423566</p>
-<p>and it does add nice emoji's for every row based on the change https://github.com/biomejs/biome/blob/f2445269b6a7bff5d81ee08a6a321bc229b61b50/xtask/coverage/src/results.rs#L37-L72</p>
+            <div class="timeline-body"><p>This is what biomejs does <a href="https://github.com/biomejs/biome/pull/8361">biomejs/biome#8361</a>#issuecomment-3613423566</p>
+<p>and it does add nice emoji&#x27;s for every row based on the change https://github.com/biomejs/biome/blob/f2445269b6a7bff5d81ee08a6a321bc229b61b50/xtask/coverage/src/results.rs#L37-L72</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -660,7 +653,7 @@ index 3771ae2928..992cc76440 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/WillDuke">@WillDuke</a> on <code>scripts/conformance.py</code>:355 on 2026-01-12 20:03</div>
-            <div class="timeline-body"><p>Along with those changes, I've also added a fourth category for new false negatives which are now rendered as &quot;True positives removed 🫤&quot;</p>
+            <div class="timeline-body"><p>Along with those changes, I&#x27;ve also added a fourth category for new false negatives which are now rendered as &quot;True positives removed 🫤&quot;</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -669,11 +662,11 @@ index 3771ae2928..992cc76440 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/WillDuke">@WillDuke</a> on <code>scripts/conformance.py</code>:503 on 2026-01-12 21:09</div>
-            <div class="timeline-body"><p>I've added an outcome column with the emojis and updated the summary sentence. Happy to iterate on it further.</p>
+            <div class="timeline-body"><p>I&#x27;ve added an outcome column with the emojis and updated the summary sentence. Happy to iterate on it further.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2026-01-13 08:31</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-13 08:31</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/WillDuke">@WillDuke</a> on <code>scripts/conformance.py</code>:375 on 2026-01-13 09:29</div>
@@ -696,7 +689,7 @@ index 3771ae2928..992cc76440 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/conformance.py</code>:435 on 2026-01-13 11:11</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">def diff_format(
+            <div class="timeline-body"><pre><code>def diff_format(
     diff: float,
     *,
     greater_is_better: bool = True,
@@ -709,26 +702,26 @@ index 3771ae2928..992cc76440 100644
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/conformance.py</code>:438 on 2026-01-13 11:13</div>
             <div class="timeline-body"><p>Is it good or bad if <code>Total</code> goes up? If neither, is it useful to have it at all?</p>
-<p>I find it a bit confusing currently, because a <code>Total</code> row at the bottom usually sums all of the above rows together if it's e.g. an excel spreadsheet. But here, that's not what it does (<code>(-1) + (-9) + 10 = 0</code>):</p>
-<p><img width="1328" height="786" alt="image" src="https://github.com/user-attachments/assets/7ab139cb-1b3a-46a7-a401-0db1fba6be1c" /></p>
+<p>I find it a bit confusing currently, because a <code>Total</code> row at the bottom usually sums all of the above rows together if it&#x27;s e.g. an excel spreadsheet. But here, that&#x27;s not what it does (<code>(-1) + (-9) + 10 = 0</code>):</p>
+<p><img alt="image" src="https://github.com/user-attachments/assets/7ab139cb-1b3a-46a7-a401-0db1fba6be1c"></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/conformance.py</code>:446 on 2026-01-13 11:14</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">        &quot; and the percentage of expected errors that received a diagnostic&quot;
+            <div class="timeline-body"><pre><code>        &quot; and the percentage of expected errors that received a diagnostic&quot;
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/conformance.py</code>:438 on 2026-01-13 11:22</div>
-            <div class="timeline-body"><p>I think I'd also find the table easier to read if the up/down arrow came first -- maybe something like this?</p>
-<p><img width="1272" height="936" alt="image" src="https://github.com/user-attachments/assets/597def52-ab64-4da6-bbc6-9b4441eee14b" /></p>
+            <div class="timeline-body"><p>I think I&#x27;d also find the table easier to read if the up/down arrow came first -- maybe something like this?</p>
+<p><img alt="image" src="https://github.com/user-attachments/assets/597def52-ab64-4da6-bbc6-9b4441eee14b"></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>scripts/conformance.py</code>:364 on 2026-01-13 11:22</div>
             <div class="timeline-body"><p>nit</p>
-<pre><code class="language-suggestion">        num_errors = sum(
+<pre><code>        num_errors = sum(
             1 for g in grouped_diagnostics if source.EXPECTED in g.sources  # ty:ignore[unsupported-operator]
         )
 </code></pre>
@@ -746,7 +739,7 @@ index 3771ae2928..992cc76440 100644
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>scripts/conformance.py</code>:438 on 2026-01-13 11:29</div>
             <div class="timeline-body"><p>We could move <code>Precision</code> and <code>Recall</code> after the total row.</p>
-<p>I also suggest always using a sign in the <code>Diff</code> column (+10) as it might otherwise be unclear what 0.74 means if there's no negative diff.</p>
+<p>I also suggest always using a sign in the <code>Diff</code> column (+10) as it might otherwise be unclear what 0.74 means if there&#x27;s no negative diff.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -769,11 +762,11 @@ index 3771ae2928..992cc76440 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/WillDuke">@WillDuke</a> on 2026-01-13 22:07</div>
-            <div class="timeline-body"><p>I've updated the format to create a table of diagnostics with links to the typing repository. The old behavior is available in case you want the local paths to the typing files to work in the terminal by passing <code>--format diff</code>.</p>
+            <div class="timeline-body"><p>I&#x27;ve updated the format to create a table of diagnostics with links to the typing repository. The old behavior is available in case you want the local paths to the typing files to work in the terminal by passing <code>--format diff</code>.</p>
 <p>The command
 <code>uv run --no-sync scripts/conformance.py --tests-path ../typing/conformance/tests/ --old-ty uvx &quot;ty@0.0.6&quot;</code> now produces the following:</p>
-<h2>Typing Conformance</h2>
-<h3>Summary</h3>
+Typing Conformance
+Summary
 <p>| Metric | Old | New | Diff | Outcome |
 |--------|-----|-----|------|---------|
 | True Positives  | 636 | 646 | +10 | ⏫(✅) |
@@ -783,7 +776,7 @@ index 3771ae2928..992cc76440 100644
 | Precision | 72.27% | 73.74% | +1.47% | ⏫(✅) |
 | Recall | 55.06% | 55.93% | +0.87% | ⏫(✅) |</p>
 <p>The percentage of diagnostics emitted that were expected errors increased from 72.27% to 73.74%, and the percentage of expected errors that received a diagnostic increased from 55.06% to 55.93%.</p>
-<h2>True positives added 🎉:</h2>
+True positives added 🎉:
 <p>| Location | Name | Message |
 |----------|------|---------|
 | <a href="https://github.com/python/typing/blob/main/conformance/tests/namedtuples_usage.py#L43">namedtuples_usage.py:43:5</a> | not-subscriptable | not-subscriptable: Cannot delete subscript on object of type <code>Point</code> with no <code>__delitem__</code> method |
@@ -796,7 +789,7 @@ index 3771ae2928..992cc76440 100644
 | <a href="https://github.com/python/typing/blob/main/conformance/tests/typeddicts_class_syntax.py#L38">typeddicts_class_syntax.py:38:5</a> | invalid-typed-dict-statement | invalid-typed-dict-statement: TypedDict class cannot have methods |
 | <a href="https://github.com/python/typing/blob/main/conformance/tests/typeddicts_extra_items.py#L128">typeddicts_extra_items.py:128:15</a> | invalid-argument-type | invalid-argument-type: Cannot delete required key &quot;name&quot; from TypedDict <code>MovieEI</code> |
 | <a href="https://github.com/python/typing/blob/main/conformance/tests/typeddicts_operations.py#L49">typeddicts_operations.py:49:11</a> | invalid-argument-type | invalid-argument-type: Cannot delete required key &quot;name&quot; from TypedDict <code>Movie</code> |</p>
-<h2>False positives removed 🎉:</h2>
+False positives removed 🎉:
 <p>| Location | Name | Message |
 |----------|------|---------|
 | <a href="https://github.com/python/typing/blob/main/conformance/tests/constructors_call_init.py#L25">constructors_call_init.py:25:1</a> | type-assertion-failure | type-assertion-failure: Argument does not have asserted type <code>Class1[int | float]</code> |
@@ -819,7 +812,7 @@ index 3771ae2928..992cc76440 100644
 | <a href="https://github.com/python/typing/blob/main/conformance/tests/narrowing_typeis.py#L80">narrowing_typeis.py:80:9</a> | type-assertion-failure | type-assertion-failure: Argument does not have asserted type <code>int</code> |
 | <a href="https://github.com/python/typing/blob/main/conformance/tests/narrowing_typeis.py#L92">narrowing_typeis.py:92:9</a> | type-assertion-failure | type-assertion-failure: Argument does not have asserted type <code>B</code> |
 | <a href="https://github.com/python/typing/blob/main/conformance/tests/narrowing_typeis.py#L96">narrowing_typeis.py:96:9</a> | type-assertion-failure | type-assertion-failure: Argument does not have asserted type <code>B</code> |</p>
-<h2>False positives added 🫤:</h2>
+False positives added 🫤:
 <p>| Location | Name | Message |
 |----------|------|---------|
 | <a href="https://github.com/python/typing/blob/main/conformance/tests/constructors_call_type.py#L19">constructors_call_type.py:19:55</a> | unused-ignore-comment | unused-ignore-comment: Unused blanket <code>type: ignore</code> directive |
@@ -844,10 +837,10 @@ index 3771ae2928..992cc76440 100644
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @AlexWaygood on 2026-01-13 22:19</div>
+            <div class="event">Merged by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-13 22:19</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2026-01-13 22:19</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-13 22:19</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2026-01-13 22:20</div>
@@ -855,7 +848,7 @@ index 3771ae2928..992cc76440 100644
     </div>
 
     <footer>
-        Synced at 2026-01-13 22:38:42 UTC
+        Synced at 2026-01-20 19:22:16 UTC
     </footer>
 </body>
 </html>

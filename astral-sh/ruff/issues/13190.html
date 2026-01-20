@@ -33,10 +33,10 @@
 <li><code>list comprehension</code></li>
 </ul>
 </blockquote>
-<h2>Issue summary</h2>
+Issue summary
 <p>Rule <a href="https://docs.astral.sh/ruff/rules/unused-annotation/">F842 (<code>unused-annotation</code>)</a> is incorrectly flagging a type-annotated local variable as unused when the variable is used in a list comprehension.</p>
 <p>For example, the snippet below:</p>
-<pre><code class="language-python">def main():
+<pre><code>def main():
     var: int
     [print(var) for var in range(1)]
 </code></pre>
@@ -49,13 +49,13 @@
 3 |     [print(var) for var in range(1)]
 </code></pre>
 <p>Note, however, that this does <strong><em>NOT</em></strong> get flagged when <code>var</code> is a global variable:</p>
-<pre><code class="language-python">var: int  # this is fine
+<pre><code>var: int  # this is fine
 [print(var) for var in range(1)]
 </code></pre>
-<hr />
-<h2>Configuration and invocation details</h2>
+<hr>
+Configuration and invocation details
 <p>I use Ruff in pre-commit -- hooks config is:</p>
-<pre><code class="language-yaml">- repo: https://github.com/astral-sh/ruff-pre-commit
+<pre><code>- repo: https://github.com/astral-sh/ruff-pre-commit
   rev: v0.6.3
   hooks:
     - id: ruff
@@ -64,7 +64,7 @@
 </code></pre>
 <p>...and Ruff was invoked both via <code>git commit</code> and <code>pre-commit run ruff --all-files</code>.</p>
 <p>My <code>pyproject.toml</code> settings for Ruff are:</p>
-<pre><code class="language-toml">[tool.ruff]
+<pre><code>[tool.ruff]
 line-length = 80
 indent-width = 4
 target-version = &quot;py311&quot;
@@ -83,7 +83,7 @@ unfixable = []
 # Allow unused variables when underscore-prefixed
 dummy-variable-rgx = &quot;^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$&quot;
 
-# https://github.com/astral-sh/ruff/issues/4368
+# <a href="https://github.com/astral-sh/ruff/issues/4368">astral-sh/ruff#4368</a>
 [tool.ruff.lint.extend-per-file-ignores]
 &quot;tests/**/*.py&quot; = [
     &quot;S101&quot;,    #  Use of `assert` detected
@@ -100,13 +100,13 @@ dummy-variable-rgx = &quot;^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$&quot;
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2024-09-01 10:14</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-01 10:14</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-09-01 15:53</div>
-            <div class="timeline-body"><p>Is this a bug? Isn't the <code>var</code> that appears in the comprehension in it's own local scope?</p>
+            <div class="timeline-body"><p>Is this a bug? Isn&#x27;t the <code>var</code> that appears in the comprehension in it&#x27;s own local scope?</p>
 <p>Like if I do:</p>
-<pre><code class="language-python">x = 3
+<pre><code>x = 3
 [print(x) for x in [&quot;a&quot;,&quot;b&quot;,&quot;c&quot;]]
 print(x)
 </code></pre>
@@ -116,21 +116,21 @@ b
 c
 3
 </code></pre>
-<p>So even if I know the first <code>x</code> is an int, there's no need for it to still be an <code>int</code> inside the comprehension.</p>
-<p>And the global variable example is part of the rule's documented behavior: &quot;Checks for local variables that are annotated but never used.&quot; (Presumably global variables are never checked in the 'used' rules since they may be imported - though this case is a little weird since I'm not sure people are declaring types of global variables without assigning them, then later importing those unbound variables... But in any event it is expected behavior for the rule, I think).</p>
+<p>So even if I know the first <code>x</code> is an int, there&#x27;s no need for it to still be an <code>int</code> inside the comprehension.</p>
+<p>And the global variable example is part of the rule&#x27;s documented behavior: &quot;Checks for local variables that are annotated but never used.&quot; (Presumably global variables are never checked in the &#x27;used&#x27; rules since they may be imported - though this case is a little weird since I&#x27;m not sure people are declaring types of global variables without assigning them, then later importing those unbound variables... But in any event it is expected behavior for the rule, I think).</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> removed by @AlexWaygood on 2024-09-01 16:06</div>
+            <div class="event">Label <span class="label">bug</span> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-01 16:06</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-01 16:08</div>
-            <div class="timeline-body"><p>Very good point @dylwil3! Apparently that's the <a href="https://github.com/astral-sh/ruff/pull/13177#discussion_r1739860392">second time</a> I've managed to confuse myself about the scoping of comprehension variables this weekend...</p>
+            <div class="timeline-body"><p>Very good point @dylwil3! Apparently that&#x27;s the <a href="https://github.com/astral-sh/ruff/pull/13177#discussion_r1739860392">second time</a> I&#x27;ve managed to confuse myself about the scoping of comprehension variables this weekend...</p>
 <p>@Bilbottom does that make sense to you?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @AlexWaygood on 2024-09-01 16:08</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-01 16:08</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/billwallis">@billwallis</a> on 2024-09-02 06:11</div>
@@ -139,12 +139,12 @@ c
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @billwallis on 2024-09-02 06:11</div>
+            <div class="event">Closed by <a href="https://github.com/billwallis">@billwallis</a> on 2024-09-02 06:11</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:51:01 UTC
+        Synced at 2026-01-20 18:48:57 UTC
     </footer>
 </body>
 </html>

@@ -25,40 +25,40 @@
             <div class="timeline-header"><a href="https://github.com/roblourens">@roblourens</a></div>
             <div class="timeline-body"><p>If I do a search like this:</p>
 <p><code>C:\&gt; rg -g &quot;!C:/foo/bar/**&quot; search &quot;C:\foo\&quot;</code></p>
-<p>Then the <code>-g</code> glob is not excluded. I have to write it like <code>-g &quot;!/foo/bar&quot;</code>. I think this is <strong>expected</strong> because globs starting with / should be matched as relative from the cwd. However, if I'm searching across drives,</p>
+<p>Then the <code>-g</code> glob is not excluded. I have to write it like <code>-g &quot;!/foo/bar&quot;</code>. I think this is <strong>expected</strong> because globs starting with / should be matched as relative from the cwd. However, if I&#x27;m searching across drives,</p>
 <p><code>C:\&gt; rg -g &quot;!Z:/foo/bar/**&quot; search &quot;Z:\foo\&quot;</code></p>
 <p>then the exclude glob is applied. I think this is correct too because <code>!/foo/bar</code> would match something in C:, not Z:.</p>
-<p>But if that works, then is there a reason that <code>-g &quot;!C:/foo/bar/**&quot;</code> can't also be applied when <code>C:\</code> is the cwd, just for consistency?</p>
+<p>But if that works, then is there a reason that <code>-g &quot;!C:/foo/bar/**&quot;</code> can&#x27;t also be applied when <code>C:\</code> is the cwd, just for consistency?</p>
 <p>My particular case is searching folders across multiple drives simultaneously, and processing glob patterns to be applied to those different folders, and not wanting to special-case C:.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2017-07-03 11:28</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-07-03 11:28</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-07-03 11:29</div>
-            <div class="timeline-body"><p>On the surface, this seems reasonable. I don't think I had ever taken drive letters into account when doing globs to be honest.</p>
+            <div class="timeline-body"><p>On the surface, this seems reasonable. I don&#x27;t think I had ever taken drive letters into account when doing globs to be honest.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2017-07-03 11:29</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-07-03 11:29</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">icebox</span> added by @BurntSushi on 2018-08-22 12:45</div>
+            <div class="event">Label <span class="label">icebox</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-22 12:45</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-22 12:48</div>
-            <div class="timeline-body"><p>So looking into this, I realized that my Windows laptop only has a <code>C:/</code> drive and I'm not sure how to get a <code>Z:/</code> to test with.</p>
+            <div class="timeline-body"><p>So looking into this, I realized that my Windows laptop only has a <code>C:/</code> drive and I&#x27;m not sure how to get a <code>Z:/</code> to test with.</p>
 <p>My other thoughts here:</p>
 <ul>
 <li>I have no idea why <code>C:/</code> is being treated differently from <code>Z:/</code>.</li>
-<li>In general, I'm not even sure I'd expect this to work at all, since the <code>-g</code> flag doesn't work with absolute globs. (Which I think you mentioned.)</li>
+<li>In general, I&#x27;m not even sure I&#x27;d expect this to work at all, since the <code>-g</code> flag doesn&#x27;t work with absolute globs. (Which I think you mentioned.)</li>
 </ul>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/roblourens">@roblourens</a> on 2018-08-22 17:21</div>
-            <div class="timeline-body"><p>Absolute globs do work if you are searching from <code>c:/</code>. That's what I do currently but I'm gradually changing to a different implementation that doesn't do that. This isn't a blocking issue on my end but if you want another drive letter to test with,</p>
+            <div class="timeline-body"><p>Absolute globs do work if you are searching from <code>c:/</code>. That&#x27;s what I do currently but I&#x27;m gradually changing to a different implementation that doesn&#x27;t do that. This isn&#x27;t a blocking issue on my end but if you want another drive letter to test with,</p>
 <ul>
 <li>Use <code>subst x: C:/some/folder</code> to mount some folder under a new drive letter</li>
 <li>Or plug in a usb drive</li>
@@ -67,14 +67,14 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-22 18:04</div>
-            <div class="timeline-body"><p>OK, so the issue here is that a glob like <code>C:/foo/bar</code> is treated no differently than a glob like <code>quux/foo/bar</code>. That is, the leading <code>C:</code> has no significance to ripgrep's glob matcher, so it matches it like normal against the target file name. <em>However</em>, in both searches, the root of ripgrep is <code>C:\\</code> and the root is always stripped off the file path before applying a glob match. In this case, <code>C:/</code> gets stripped from the file path, which will cause it to not match a glob that itself starts with <code>C:/</code>.</p>
-<p>I'm not sure exactly what to do here. I'm finding it very difficult to reason about how ripgrep does globbing in corner cases like this (among several others). I'm not sure if that's incidental or necessary complexity, but this might not get addressed unless glob matching is re-worked. I do kind of want to re-work the <code>ignore</code> crate---which is where most of this stuff happens---because when a bug springs up from there, I find them super hard to fix.</p>
+            <div class="timeline-body"><p>OK, so the issue here is that a glob like <code>C:/foo/bar</code> is treated no differently than a glob like <code>quux/foo/bar</code>. That is, the leading <code>C:</code> has no significance to ripgrep&#x27;s glob matcher, so it matches it like normal against the target file name. <em>However</em>, in both searches, the root of ripgrep is <code>C:\\</code> and the root is always stripped off the file path before applying a glob match. In this case, <code>C:/</code> gets stripped from the file path, which will cause it to not match a glob that itself starts with <code>C:/</code>.</p>
+<p>I&#x27;m not sure exactly what to do here. I&#x27;m finding it very difficult to reason about how ripgrep does globbing in corner cases like this (among several others). I&#x27;m not sure if that&#x27;s incidental or necessary complexity, but this might not get addressed unless glob matching is re-worked. I do kind of want to re-work the <code>ignore</code> crate---which is where most of this stuff happens---because when a bug springs up from there, I find them super hard to fix.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:42:13 UTC
+        Synced at 2026-01-20 18:48:04 UTC
     </footer>
 </body>
 </html>

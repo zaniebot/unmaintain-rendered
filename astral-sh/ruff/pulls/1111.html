@@ -28,20 +28,20 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/nanthony007">@nanthony007</a> on 2022-12-06 20:36</div>
-            <div class="timeline-body"><p>So currently I've added the two variants to <code>src/checks.rs</code> and set the <code>CheckKind::WhiteSpaceAfter</code> to take a <code>char</code> expecting it to somewhere take the '(', '[', '{' characters. I also added a template for the E201 fixture.</p>
+            <div class="timeline-body"><p>So currently I&#x27;ve added the two variants to <code>src/checks.rs</code> and set the <code>CheckKind::WhiteSpaceAfter</code> to take a <code>char</code> expecting it to somewhere take the &#x27;(&#x27;, &#x27;[&#x27;, &#x27;{&#x27; characters. I also added a template for the E201 fixture.</p>
 <p>Now I just am unsure as to how to go about implementing logic for either AST for tokens as per CONTRIBUTING.md suggestions.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-06 21:05</div>
-            <div class="timeline-body"><p>My approach here is to typically try and stay as closely as I can to the existing <code>pycodestyle</code> implementation -- you can see that check <a href="https://github.com/PyCQA/pycodestyle/blob/6cddabcb0a2f301441731fba23f655563ea0aba9/pycodestyle.py#L424">here</a>. So, typically, I'd say take that logic, and add it to <code>check_lines.rs</code> (the line-based checker, rather than the token- or AST-based checker).</p>
-<p>The hiccup is that <code>pycodestyle</code> is running that check over &quot;logical&quot; lines rather than &quot;physical&quot; lines. (I'm not sure whether you're familiar with the distinction (I wasn't until recently), but a logical line is Python statement, while a physical line is an actual line-of-code in the editor. We don't have support for generating logical lines in <code>check_lines.rs</code> right now.</p>
+            <div class="timeline-body"><p>My approach here is to typically try and stay as closely as I can to the existing <code>pycodestyle</code> implementation -- you can see that check <a href="https://github.com/PyCQA/pycodestyle/blob/6cddabcb0a2f301441731fba23f655563ea0aba9/pycodestyle.py#L424">here</a>. So, typically, I&#x27;d say take that logic, and add it to <code>check_lines.rs</code> (the line-based checker, rather than the token- or AST-based checker).</p>
+<p>The hiccup is that <code>pycodestyle</code> is running that check over &quot;logical&quot; lines rather than &quot;physical&quot; lines. (I&#x27;m not sure whether you&#x27;re familiar with the distinction (I wasn&#x27;t until recently), but a logical line is Python statement, while a physical line is an actual line-of-code in the editor. We don&#x27;t have support for generating logical lines in <code>check_lines.rs</code> right now.</p>
 <p>I could see a few paths forward here:</p>
 <ol>
-<li>Add support for generating logical lines by porting that logic from <code>pycodestyle</code>. (Not totally trivial but maybe a good exercise if you're interested, and useful beyond this specific rule since it would make it much easier to port arbitrary <code>pycodestyle</code> rules.)</li>
+<li>Add support for generating logical lines by porting that logic from <code>pycodestyle</code>. (Not totally trivial but maybe a good exercise if you&#x27;re interested, and useful beyond this specific rule since it would make it much easier to port arbitrary <code>pycodestyle</code> rules.)</li>
 <li>In <code>check_ast.rs#visit_stmt</code>, you could do something like this to extract the logical line based on the statement locations (we already know where statements start and end since we created an AST):</li>
 </ol>
-<pre><code class="language-rust">let text = checker.locator.slice_source_code_range(&amp;Range::from_located(stmt));
+<pre><code>let text = checker.locator.slice_source_code_range(&amp;Range::from_located(stmt));
 </code></pre>
 <p>Then, use run regular expressions against the <code>text</code> as in <code>pycodestyle</code>.</p>
 </div>
@@ -66,38 +66,38 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-07 21:53</div>
             <div class="timeline-body"><p>Ok cool!</p>
-<p>I've made a little bit of progress on the logical line stuff, but I need to benchmark it to know if it's way too slow.</p>
-<p>Happy to take a look at what you have thus far, it may end up being better. The main thing I was unsure about with Approach 2 (after writing that comment) is that statements are <em>nested</em>, so taking the source code for a single statement isn't actually equivalent to a logical line, unless I'm misunderstanding.</p>
+<p>I&#x27;ve made a little bit of progress on the logical line stuff, but I need to benchmark it to know if it&#x27;s way too slow.</p>
+<p>Happy to take a look at what you have thus far, it may end up being better. The main thing I was unsure about with Approach 2 (after writing that comment) is that statements are <em>nested</em>, so taking the source code for a single statement isn&#x27;t actually equivalent to a logical line, unless I&#x27;m misunderstanding.</p>
 <p>For example, if you have...</p>
-<pre><code class="language-py">def f():
+<pre><code>def f():
   x = 1
 </code></pre>
-<p>And you use the approach I described above, the first string would be the entire function, and the second would be <code>x = 1</code>. But maybe there's a way around this...</p>
+<p>And you use the approach I described above, the first string would be the entire function, and the second would be <code>x = 1</code>. But maybe there&#x27;s a way around this...</p>
 <p>To answer your questions:</p>
 <ol>
-<li>If you've added a new check code, you should run <code>cargo dev generate-check-code-prefix</code> to update the autogenerated mapping. Then you can run <code>cargo run foo.py --select E201</code> or whatever the code is. Does that work?</li>
+<li>If you&#x27;ve added a new check code, you should run <code>cargo dev generate-check-code-prefix</code> to update the autogenerated mapping. Then you can run <code>cargo run foo.py --select E201</code> or whatever the code is. Does that work?</li>
 <li>We have some helpers that might be useful for this, <code>helpers::to_absolute</code> might do what you want!</li>
 </ol>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-07 22:13</div>
-            <div class="timeline-body"><p>https://github.com/charliermarsh/ruff/pull/1130 implements the logical line building, and it seems to work in testing a variety of cases against pycodestyle. But it's way too slow, like more than doubles Ruff's runtime on the CPython benchmark. All the time is spent building the logical lines.</p>
+            <div class="timeline-body"><p>https://github.com/charliermarsh/ruff/pull/1130 implements the logical line building, and it seems to work in testing a variety of cases against pycodestyle. But it&#x27;s way too slow, like more than doubles Ruff&#x27;s runtime on the CPython benchmark. All the time is spent building the logical lines.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/nanthony007">@nanthony007</a> on 2022-12-08 14:41</div>
             <div class="timeline-body"><p>Alright I figured I would just push my code and we can go from there. I focused on implementation. I basically pull out the logical line you suggested and then implement the regex search. You can see from returned data (first screenshot) that we are capturing the errors but always with column: 1. The print statements verify we can get the correct column using <code>stmt.location.column() + found + 1</code> (second screenshot).</p>
-<img width="642" alt="CleanShot 2022-12-08 at 09 37 12@2x" src="https://user-images.githubusercontent.com/45318637/206474418-67e6b08a-caf6-44ba-9ccf-10438b6d842b.png">
+<img alt="CleanShot 2022-12-08 at 09 37 12@2x" src="https://user-images.githubusercontent.com/45318637/206474418-67e6b08a-caf6-44ba-9ccf-10438b6d842b.png">
 
-<img width="434" alt="CleanShot 2022-12-08 at 09 36 50@2x" src="https://user-images.githubusercontent.com/45318637/206474361-62fce23f-2423-432e-af48-520682031d00.png">
+<img alt="CleanShot 2022-12-08 at 09 36 50@2x" src="https://user-images.githubusercontent.com/45318637/206474361-62fce23f-2423-432e-af48-520682031d00.png">
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-11 15:15</div>
-            <div class="timeline-body"><p>I think that to get the right range, we'd want to do something like this:</p>
-<pre><code class="language-rs">self.add_check(Check::new(
+            <div class="timeline-body"><p>I think that to get the right range, we&#x27;d want to do something like this:</p>
+<pre><code>self.add_check(Check::new(
     CheckKind::WhiteSpaceAfter(character),
     Range {
         location: Location::new(stmt.location.row(), stmt.location.column() + found),
@@ -105,32 +105,32 @@
     }
 ));
 </code></pre>
-<p>(Not exactly right, doesn't handle newlines and multiple whitespaces, but the idea would be to use <code>Range { ... }</code> rather than <code>Range::from_located(...)</code>.)</p>
+<p>(Not exactly right, doesn&#x27;t handle newlines and multiple whitespaces, but the idea would be to use <code>Range { ... }</code> rather than <code>Range::from_located(...)</code>.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-11 15:18</div>
-            <div class="timeline-body"><p>I think this approach is going to be somewhat limiting though, because it's not the case that each statement corresponds to one logical line.</p>
+            <div class="timeline-body"><p>I think this approach is going to be somewhat limiting though, because it&#x27;s not the case that each statement corresponds to one logical line.</p>
 <p>For example, if we have a nested function:</p>
-<pre><code class="language-py">def f():
+<pre><code>def f():
   def g():
     pass
 </code></pre>
-<p>Then with the current approach, we'd first look at this string:</p>
-<pre><code class="language-py">&quot;&quot;&quot;
+<p>Then with the current approach, we&#x27;d first look at this string:</p>
+<pre><code>&quot;&quot;&quot;
 def f():
   def g():
     pass
 &quot;&quot;&quot;
 </code></pre>
-<p>And then, when we recursed, we'd look at this string:</p>
-<pre><code class="language-py">&quot;&quot;&quot;
+<p>And then, when we recursed, we&#x27;d look at this string:</p>
+<pre><code>&quot;&quot;&quot;
   def g():
     pass
 &quot;&quot;&quot;
 </code></pre>
-<p>Pycodestyle also has some rules whereby it removes comments and removes string contents (which I assume get in the way of the regular expressions), so we'd need to tokenize and find a way to handle those too.</p>
-<p>In short, I think we <em>do</em> need to create logical lines separately, or come up with a whole new strategy for this that's very different from Pycodestyle's strategy (e.g., iterate over the token stream, look for <code>Lpar</code> and <code>Lbrace</code> tokens, and see if they have whitespace after them).</p>
+<p>Pycodestyle also has some rules whereby it removes comments and removes string contents (which I assume get in the way of the regular expressions), so we&#x27;d need to tokenize and find a way to handle those too.</p>
+<p>In short, I think we <em>do</em> need to create logical lines separately, or come up with a whole new strategy for this that&#x27;s very different from Pycodestyle&#x27;s strategy (e.g., iterate over the token stream, look for <code>Lpar</code> and <code>Lbrace</code> tokens, and see if they have whitespace after them).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -139,12 +139,12 @@ def f():
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-01-06 15:50</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-06 15:50</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:55:05 UTC
+        Synced at 2026-01-20 18:51:34 UTC
     </footer>
 </body>
 </html>

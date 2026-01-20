@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>This PR addresses the feedback given here: https://github.com/astral-sh/ruff/pull/10477#discussion_r1533540673</p>
-<p><strong>Problem:</strong> The <code>as</code> pattern containing both the pattern and name (<code>foo as bar</code>) cannot be converted to an expression as there's no AST node to represent that.</p>
+            <div class="timeline-body">Summary
+<p>This PR addresses the feedback given here: <a href="https://github.com/astral-sh/ruff/pull/10477">astral-sh/ruff#10477</a>#discussion_r1533540673</p>
+<p><strong>Problem:</strong> The <code>as</code> pattern containing both the pattern and name (<code>foo as bar</code>) cannot be converted to an expression as there&#x27;s no AST node to represent that.</p>
 <p>The solution for now is to not drop any nodes, panic in the conversion if the parser is doing so, and make sure the calling code is avoiding the panic.</p>
 <p>There are 3 places where the conversion happens:</p>
 <ol>
@@ -33,21 +33,21 @@
 <li>Class pattern</li>
 <li>Complex literal pattern</li>
 </ol>
-<p>Another thing to keep in mind is that the <code>parse_match_pattern_lhs</code> method only parses the <code>as</code> pattern if it's parenthesized. The reason being that the <code>(</code> is ambiguous as to whether it's a parenthesized pattern or the start of a sequence pattern.</p>
-<p>Now, the mapping items are parsed using list parsing and it's only called if the start token is in the FIRST set which the <code>(</code> token isn't. This avoids the panic in mapping pattern.</p>
-<p>For the class and complex literal pattern, the starting point is <code>parse_match_pattern_lhs</code> method. It then checks if the parser is at <code>(</code> (as in <code>Foo(x, y)</code>) or <code>+</code>/<code>-</code> (as in <code>1 + 1j</code>) and continues with the respective parsing methods. We want to avoid going further in case we have an <code>as</code> pattern to avoid the panic. This means we'll exit early in that case.</p>
-<h2>Test Plan</h2>
+<p>Another thing to keep in mind is that the <code>parse_match_pattern_lhs</code> method only parses the <code>as</code> pattern if it&#x27;s parenthesized. The reason being that the <code>(</code> is ambiguous as to whether it&#x27;s a parenthesized pattern or the start of a sequence pattern.</p>
+<p>Now, the mapping items are parsed using list parsing and it&#x27;s only called if the start token is in the FIRST set which the <code>(</code> token isn&#x27;t. This avoids the panic in mapping pattern.</p>
+<p>For the class and complex literal pattern, the starting point is <code>parse_match_pattern_lhs</code> method. It then checks if the parser is at <code>(</code> (as in <code>Foo(x, y)</code>) or <code>+</code>/<code>-</code> (as in <code>1 + 1j</code>) and continues with the respective parsing methods. We want to avoid going further in case we have an <code>as</code> pattern to avoid the panic. This means we&#x27;ll exit early in that case.</p>
+Test Plan
 <p>Added a few test cases, updated the snapshots.</p>
-<p>Note that this PR isn't focused on error recovery, it's to avoid dropping any potential node which is the case when converting from an <code>as</code> pattern to an expression.</p>
-<p>Another thing to note is that the following test case fails (not added) because the error recovery is bad and the node ranges aren't in order:</p>
-<pre><code class="language-python">match subject:
+<p>Note that this PR isn&#x27;t focused on error recovery, it&#x27;s to avoid dropping any potential node which is the case when converting from an <code>as</code> pattern to an expression.</p>
+<p>Another thing to note is that the following test case fails (not added) because the error recovery is bad and the node ranges aren&#x27;t in order:</p>
+<pre><code>match subject:
     case {x as y: 1}:
         pass
 </code></pre>
-<details><summary>Click here to view the AST and errors for the above code:</summary>
+Click here to view the AST and errors for the above code:
 <p>
 
-<pre><code class="language-rs">Module(
+<pre><code>Module(
     ModModule {
         range: 0..50,
         body: [
@@ -157,28 +157,28 @@ Syntax Error: expected Comma, found Name at byte range 30..31
   |
 </code></pre>
 </p>
-</details> 
+ 
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">parser</span> added by @dhruvmanila on 2024-03-22 10:00</div>
+            <div class="event">Label <span class="label">parser</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-03-22 10:00</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-03-22 10:00</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-03-22 10:00</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-03-22 10:20</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
@@ -196,14 +196,14 @@ Syntax Error: expected Comma, found Name at byte range 30..31
             <div class="timeline-body"><blockquote>
 <p>Do you plan to look into the incorrect range issue of the following code (that you shared) separately?</p>
 </blockquote>
-<p>Yeah, my hunch is that it's got to do something with the empty nodes.</p>
+<p>Yeah, my hunch is that it&#x27;s got to do something with the empty nodes.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @dhruvmanila on 2024-03-22 14:53</div>
+            <div class="event">Merged by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-03-22 14:53</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dhruvmanila on 2024-03-22 14:53</div>
+            <div class="event">Closed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-03-22 14:53</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-03-22 14:53</div>
@@ -211,7 +211,7 @@ Syntax Error: expected Comma, found Name at byte range 30..31
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:03:14 UTC
+        Synced at 2026-01-20 19:02:26 UTC
     </footer>
 </body>
 </html>

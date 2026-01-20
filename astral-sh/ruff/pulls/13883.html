@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/rtpg">@rtpg</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This sets up &quot;jump to definition&quot; functionality in the <code>red_knot</code> server.</p>
 <p>Here are some challenges in doing this:</p>
 <ul>
@@ -31,29 +31,29 @@
 <li>Given an AST node, I need to look up definitions for them</li>
 <li>Given a definition, I need to figure out the location</li>
 </ul>
-<p>I tackled this with a custom trait, <code>CanLocate</code>. We can ask implementations of the <code>CanLocate</code> trait where their definition is, based on a cursor location. This combines &quot;traverse the AST&quot; with &quot;do the lookup of the definition&quot; because sometimes we'll need to just look up a name in a scope, but for attribute access in particular there's some interplay between types and definition that need to happen so that <code>a.b.c</code> is properly done as &quot;find the definition of <code>c</code> on the type of <code>a.b</code>&quot;.</p>
+<p>I tackled this with a custom trait, <code>CanLocate</code>. We can ask implementations of the <code>CanLocate</code> trait where their definition is, based on a cursor location. This combines &quot;traverse the AST&quot; with &quot;do the lookup of the definition&quot; because sometimes we&#x27;ll need to just look up a name in a scope, but for attribute access in particular there&#x27;s some interplay between types and definition that need to happen so that <code>a.b.c</code> is properly done as &quot;find the definition of <code>c</code> on the type of <code>a.b</code>&quot;.</p>
 <p>In practice this trait means I can traverse an AST tree, zooming down until I find the smallest node that a cursor is located in.</p>
 <p>From there, I have added a couple of methods to help go from an AST node to a <code>Definition</code>.</p>
-<p>From a <code>Definition</code> to a location has proven to be tricky. I have a <em>most definitely not the right answer</em> helper that is simply looking through a hash table to try and find the definition's location based on its hash key (<code>definition_range</code>). It's most definitely wrong, and would appreciate some advice there.</p>
+<p>From a <code>Definition</code> to a location has proven to be tricky. I have a <em>most definitely not the right answer</em> helper that is simply looking through a hash table to try and find the definition&#x27;s location based on its hash key (<code>definition_range</code>). It&#x27;s most definitely wrong, and would appreciate some advice there.</p>
 <p>This currently implements &quot;go to definition&quot; based on just names and attribute access (not handling instance attributes just yet, though I believe MRO work is happening in another branch). Import traversal seems to magically work .</p>
 <p>Still wanting to clean things up (in particular I think I can simplify some of the <code>CanLocate</code> implementations)</p>
-<h2>Test Plan</h2>
-<p>First you need to set up the LSP server. In Emacs I did this with the following with <code>lsp-mode</code> (please note I hardcoded the <code>red_knot</code> path , you'll have to point to whatever you need)</p>
+Test Plan
+<p>First you need to set up the LSP server. In Emacs I did this with the following with <code>lsp-mode</code> (please note I hardcoded the <code>red_knot</code> path , you&#x27;ll have to point to whatever you need)</p>
 <pre><code>(lsp-register-client
  (make-lsp-client
-  :new-connection (lsp-stdio-connection '(&quot;/Users/rtpg/proj/ruff/target/debug/red_knot&quot; &quot;server&quot;))
+  :new-connection (lsp-stdio-connection &#x27;(&quot;/Users/rtpg/proj/ruff/target/debug/red_knot&quot; &quot;server&quot;))
   :activation-fn (lsp-activate-on &quot;python&quot;)
-  :server-id 'red-knot-ls
+  :server-id &#x27;red-knot-ls
   )
  )
 </code></pre>
-<p>(in a project's <code>.dir-locals.el</code>)</p>
+<p>(in a project&#x27;s <code>.dir-locals.el</code>)</p>
 <pre><code>((python-mode . (
                  (+format-with . ruff)
                  (lsp-enabled-clients . (red-knot-ls))
                  )))
 </code></pre>
-<p>I then was playing around with this file. Some &quot;jump to definition&quot; stuff works, some doesn't.</p>
+<p>I then was playing around with this file. Some &quot;jump to definition&quot; stuff works, some doesn&#x27;t.</p>
 <pre><code>class C:
     a: int = 4
 
@@ -117,54 +117,54 @@ c.foo()
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/rtpg">@rtpg</a> on <code>crates/red_knot_python_semantic/src/location.rs</code>:73 on 2024-10-23 06:51</div>
-            <div class="timeline-body"><p>I believe I could get away with using <code>TextRange</code> or something similar. At the very least, renaming it <code>CursorPosition</code> would make it clear-ish what I'm using it for</p>
+            <div class="timeline-body"><p>I believe I could get away with using <code>TextRange</code> or something similar. At the very least, renaming it <code>CursorPosition</code> would make it clear-ish what I&#x27;m using it for</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-10-23 06:57</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-23 06:57</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-23 12:51</div>
             <div class="timeline-body"><p>Thanks for this contribution. This is a very cool feature.</p>
-<p>This is a feature we want long term but it isn't a short-term priority and there are a lot of things that we have to consider:</p>
+<p>This is a feature we want long term but it isn&#x27;t a short-term priority and there are a lot of things that we have to consider:</p>
 <ul>
-<li>The LSP shouldn't call salsa methods directly. Instead, it should go through a facade (or it panics when another thread changes an input)</li>
-<li>We don't want lsp dependencies in red_knot_python_semantic</li>
-<li>It's unclear to me what the best way is to locate a node. I know that rust analyzer inserts an identifier at the cursor position</li>
+<li>The LSP shouldn&#x27;t call salsa methods directly. Instead, it should go through a facade (or it panics when another thread changes an input)</li>
+<li>We don&#x27;t want lsp dependencies in red_knot_python_semantic</li>
+<li>It&#x27;s unclear to me what the best way is to locate a node. I know that rust analyzer inserts an identifier at the cursor position</li>
 <li>and more...</li>
 </ul>
-<p>That's why I don't expect us to get around to reviewing and merging this feature in the short term. That doesn't mean you shouldn't work on it. I just want to avoid frustration if we won't be able to make progress on this feature short term.</p>
+<p>That&#x27;s why I don&#x27;t expect us to get around to reviewing and merging this feature in the short term. That doesn&#x27;t mean you shouldn&#x27;t work on it. I just want to avoid frustration if we won&#x27;t be able to make progress on this feature short term.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/rtpg">@rtpg</a> on 2024-10-24 01:27</div>
             <div class="timeline-body"><p>@MichaReiser yeah, understandable.</p>
-<p>I appreciate how quick you all are for reviews, and believe that's downstream of everyone doing these reviews seriously. So thank you for the expectation setting here. I'll try to avoid this branch becoming a thing people have to consider until the time is right.</p>
-<p>I wanted to open this draft PR to publicly state I had something working here (in case someone else was already tackling this), but I am comfortable just keeping this work on-branch until it looks like what people actually want. And if y'all come up with a totally different way to do this and just do it on a clean branch, no harm done (except to my pride 😆 ). I'll still be working through this branch just because <em>I</em> need this functionality for now.</p>
+<p>I appreciate how quick you all are for reviews, and believe that&#x27;s downstream of everyone doing these reviews seriously. So thank you for the expectation setting here. I&#x27;ll try to avoid this branch becoming a thing people have to consider until the time is right.</p>
+<p>I wanted to open this draft PR to publicly state I had something working here (in case someone else was already tackling this), but I am comfortable just keeping this work on-branch until it looks like what people actually want. And if y&#x27;all come up with a totally different way to do this and just do it on a clean branch, no harm done (except to my pride 😆 ). I&#x27;ll still be working through this branch just because <em>I</em> need this functionality for now.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-10-24 08:35</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-30 09:26</div>
-            <div class="timeline-body"><p>Thanks again for your work. I close this PR because it's unlikely that we start working on this feature anytime soon (or review it). But we will pick it back up once we're further along with Red Knot and your work will be a great source of inspiration for it.</p>
+            <div class="timeline-body"><p>Thanks again for your work. I close this PR because it&#x27;s unlikely that we start working on this feature anytime soon (or review it). But we will pick it back up once we&#x27;re further along with Red Knot and your work will be a great source of inspiration for it.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2024-12-30 09:26</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-30 09:26</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/rtpg">@rtpg</a> on 2024-12-31 07:20</div>
@@ -174,7 +174,7 @@ c.foo()
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:07:11 UTC
+        Synced at 2026-01-20 19:07:42 UTC
     </footer>
 </body>
 </html>

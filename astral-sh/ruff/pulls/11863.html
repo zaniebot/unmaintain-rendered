@@ -23,59 +23,59 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>Work towards https://github.com/astral-sh/ruff/issues/11653.</p>
+            <div class="timeline-body">Summary
+<p>Work towards <a href="https://github.com/astral-sh/ruff/issues/11653">astral-sh/ruff#11653</a>.</p>
 <p>This PR adds a <code>VendoredFileSystem</code> implementation to the <code>ruff_db</code> crate, the idea being that this is the filesystem we would use for resolving vendored typeshed stubs.</p>
-<p>Some of this feels a bit awkward, but I'm not sure there's a better way. I ran into two problems while writing this PR:</p>
+<p>Some of this feels a bit awkward, but I&#x27;m not sure there&#x27;s a better way. I ran into two problems while writing this PR:</p>
 <ol>
-<li>The <code>ZipArchive</code> struct exposed by the <code>zip</code> crate takes <code>&amp;mut self</code> for most of the methods that query the underlying archive for information about files or directories within the archive. This means that in order to query zipped data from trait method implementations that take <code>&amp;self</code>, we end up having to clone the underlying archive. I think that's okay, as the <code>zip</code> docs say that it should be cheap to clone (at least right now), but it didn't fill me with joy.</li>
-<li>The <code>camino</code> crate strips trailing slashes in a lot of its methods, as they're not semantically significant for most paths. However, for zip archives, trailing slashes are very significant: if a <code>stdlib/</code> directory exists inside the zip, <code>zip.by_name(&quot;stdlib&quot;)</code> will not resolve to that directory (only <code>zip.by_name(&quot;stdlib/&quot;)</code> will). I've attempted to abstract over this difference to other kinds of paths, so that the <code>VendoredFileSystem</code> is consistent with the other <code>FileSystem</code> implementations in this respect. But it was slightly tricky to do so.</li>
+<li>The <code>ZipArchive</code> struct exposed by the <code>zip</code> crate takes <code>&amp;mut self</code> for most of the methods that query the underlying archive for information about files or directories within the archive. This means that in order to query zipped data from trait method implementations that take <code>&amp;self</code>, we end up having to clone the underlying archive. I think that&#x27;s okay, as the <code>zip</code> docs say that it should be cheap to clone (at least right now), but it didn&#x27;t fill me with joy.</li>
+<li>The <code>camino</code> crate strips trailing slashes in a lot of its methods, as they&#x27;re not semantically significant for most paths. However, for zip archives, trailing slashes are very significant: if a <code>stdlib/</code> directory exists inside the zip, <code>zip.by_name(&quot;stdlib&quot;)</code> will not resolve to that directory (only <code>zip.by_name(&quot;stdlib/&quot;)</code> will). I&#x27;ve attempted to abstract over this difference to other kinds of paths, so that the <code>VendoredFileSystem</code> is consistent with the other <code>FileSystem</code> implementations in this respect. But it was slightly tricky to do so.</li>
 </ol>
-<h2>Test Plan</h2>
+Test Plan
 <p>I added lots of parameterized tests.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-06-13 19:16</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-06-13 19:16</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @AlexWaygood on 2024-06-13 19:16</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-06-13 19:16</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-06-13 19:16</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-06-13 19:16</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Converted to draft by @AlexWaygood on 2024-06-13 19:27</div>
+            <div class="event">Converted to draft by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-06-13 19:27</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @AlexWaygood on 2024-06-13 20:03</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-06-13 20:03</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-06-13 20:24</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/file_system/vendored.rs</code>:46 on 2024-06-14 06:21</div>
-            <div class="timeline-body"><p>We shouldn't implement <code>FileSystem</code> for vendored paths. I think that's also the part that @carljm felt some confusion around. There are a few reasons:</p>
+            <div class="timeline-body"><p>We shouldn&#x27;t implement <code>FileSystem</code> for vendored paths. I think that&#x27;s also the part that @carljm felt some confusion around. There are a few reasons:</p>
 <ul>
-<li><code>FileSystem</code> is an abstraction over <code>std::fs</code>. It's not a way of implementing an overlay filesystem that supports reading files from different sources. That's that <code>Vfs</code> does</li>
+<li><code>FileSystem</code> is an abstraction over <code>std::fs</code>. It&#x27;s not a way of implementing an overlay filesystem that supports reading files from different sources. That&#x27;s that <code>Vfs</code> does</li>
 <li><code>FileSystem</code> works on <code>FileSystemPath</code>, but we want to use <code>VendoredFilePath</code> and <code>VendoredFilePathBuf</code> for vendored file. We intentionally use different types to prevent that someone tries to read a <code>VendoredPath</code> from the file system or the other way round</li>
-<li>Many <code>FileSystem</code> operations are simply irrelevant for <code>VendoredPath</code>s. The only thing that we need to support for vendored path is testing if a file exists (or a simplified metadata that returns the last modified date), and reading the content. We won't need file watching, directory traversal, or operations for testing if something's a directory. We only care about the files, and nothing else</li>
+<li>Many <code>FileSystem</code> operations are simply irrelevant for <code>VendoredPath</code>s. The only thing that we need to support for vendored path is testing if a file exists (or a simplified metadata that returns the last modified date), and reading the content. We won&#x27;t need file watching, directory traversal, or operations for testing if something&#x27;s a directory. We only care about the files, and nothing else</li>
 </ul>
-<p>That's why I think we can either implement the methods as free-standing functions similar to <code>fs::read_to_string</code>, or as a struct, but where we define our own functions.</p>
+<p>That&#x27;s why I think we can either implement the methods as free-standing functions similar to <code>fs::read_to_string</code>, or as a struct, but where we define our own functions.</p>
 <p>the vendored path because vendored path should be represented using <code>VendoredPath</code> and <code>VendoredPathBuf</code>.</p>
-<p>The other reason is that most operations aren't releve</p>
+<p>The other reason is that most operations aren&#x27;t releve</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -85,48 +85,48 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/file_system/vendored.rs</code>:17 on 2024-06-14 06:24</div>
-            <div class="timeline-body"><p>Can we use a <code>&amp;'static [u8]</code> instead of an <code>Arc&lt;[u8]&gt;</code></p>
-<pre><code class="language-suggestion">    pub fn new(raw_bytes: &amp;'static [u8]) -&gt; Result&lt;Self&gt; {
+            <div class="timeline-body"><p>Can we use a <code>&amp;&#x27;static [u8]</code> instead of an <code>Arc&lt;[u8]&gt;</code></p>
+<pre><code>    pub fn new(raw_bytes: &amp;&#x27;static [u8]) -&gt; Result&lt;Self&gt; {
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/file_system/vendored.rs</code>:35 on 2024-06-14 06:28</div>
-            <div class="timeline-body"><p>I'm not sure if I want to rely on this behavior. It feels very easy to get wrong when updating the crate.</p>
-<p>I think what I would do is to wrap the <code>ZipArchive</code> in a mutex instead and require explicitly locking. This will reduce concurrency a bit but I don't expect that any of the zip operations take long.</p>
+            <div class="timeline-body"><p>I&#x27;m not sure if I want to rely on this behavior. It feels very easy to get wrong when updating the crate.</p>
+<p>I think what I would do is to wrap the <code>ZipArchive</code> in a mutex instead and require explicitly locking. This will reduce concurrency a bit but I don&#x27;t expect that any of the zip operations take long.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/file_system/vendored.rs</code>:39 on 2024-06-14 06:29</div>
-            <div class="timeline-body"><p>Nit: This comment explains the implementation almost 1:1. I prefer comments that are either higher level or to omit the comment entirely, because it doesn't provide any additional information and is only at risk of being outdated.</p>
+            <div class="timeline-body"><p>Nit: This comment explains the implementation almost 1:1. I prefer comments that are either higher level or to omit the comment entirely, because it doesn&#x27;t provide any additional information and is only at risk of being outdated.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/file_system/vendored.rs</code>:122 on 2024-06-14 06:32</div>
-            <div class="timeline-body"><p>Can't we re-use <code>archive</code> here?</p>
-<pre><code class="language-suggestion"></code></pre>
+            <div class="timeline-body"><p>Can&#x27;t we re-use <code>archive</code> here?</p>
+<pre><code></code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/file_system/vendored.rs</code>:119 on 2024-06-14 06:33</div>
-            <div class="timeline-body"><p>What's the retry logic here? I get the impression that we do some trial and error here to read the file and that feels off. Can't we just return an error and ask callers to construct the right path instead of guessing paths?</p>
+            <div class="timeline-body"><p>What&#x27;s the retry logic here? I get the impression that we do some trial and error here to read the file and that feels off. Can&#x27;t we just return an error and ask callers to construct the right path instead of guessing paths?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/file_system/vendored.rs</code>:42 on 2024-06-14 06:35</div>
-            <div class="timeline-body"><p>I think we can just use <code>read_to_string</code> here. I haven't followed all the code but <code>zipfile.read_to_string</code> calls into <code>std::read_to_string</code> and I'm pretty sure they correctly resize the buffer before writing into it.</p>
+            <div class="timeline-body"><p>I think we can just use <code>read_to_string</code> here. I haven&#x27;t followed all the code but <code>zipfile.read_to_string</code> calls into <code>std::read_to_string</code> and I&#x27;m pretty sure they correctly resize the buffer before writing into it.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/file_system/vendored.rs</code>:39 on 2024-06-14 06:36</div>
             <div class="timeline-body"><p>Nit</p>
-<pre><code class="language-suggestion">    fn read_zipfile(mut zip_file: ZipFile) -&gt; Result&lt;String&gt; {
+<pre><code>    fn read_zipfile(mut zip_file: ZipFile) -&gt; Result&lt;String&gt; {
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/file_system/vendored.rs</code>:106 on 2024-06-14 06:37</div>
-            <div class="timeline-body"><p>We should use a revision other than zero or we might run into problems when the vendored file system content changes. We could use ruff's version, the last modified time of the files in the zip file, or the time when the <code>VendoredFileSystem</code> was created.</p>
+            <div class="timeline-body"><p>We should use a revision other than zero or we might run into problems when the vendored file system content changes. We could use ruff&#x27;s version, the last modified time of the files in the zip file, or the time when the <code>VendoredFileSystem</code> was created.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -136,15 +136,15 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/file_system/vendored.rs</code>:224 on 2024-06-14 06:40</div>
-            <div class="timeline-body"><p>I don't think we need a file here. You can use a <code>Vec&lt;u8&gt;</code> as a target and just write into that.</p>
+            <div class="timeline-body"><p>I don&#x27;t think we need a file here. You can use a <code>Vec&lt;u8&gt;</code> as a target and just write into that.</p>
 <p>But what could be simpler (and closer to the actual code) is to create a zip file manually  and commit it. You can then use <code>include_bytes!</code> to include the bytes.</p>
 <p>This also avoids creating a zip file on every test run.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/file_system/vendored.rs</code>:281 on 2024-06-14 06:43</div>
-            <div class="timeline-body"><p>I think we don't need to use macros here. They safe very little code but break IDE features. For example, I can't jump or run the test manually anymore. Rustfmt breaks down, and auto completion often doesn't work. They're also hard to read.</p>
-<pre><code class="language-suggestion">    fn assert_directory(directory_name: &amp;str) {
+            <div class="timeline-body"><p>I think we don&#x27;t need to use macros here. They safe very little code but break IDE features. For example, I can&#x27;t jump or run the test manually anymore. Rustfmt breaks down, and auto completion often doesn&#x27;t work. They&#x27;re also hard to read.</p>
+<pre><code>    fn assert_directory(directory_name: &amp;str) {
                 let mock_typeshed = mock_typeshed();
 
                 let path = FileSystemPath::new(directory_name);
@@ -177,7 +177,7 @@
 <li>Move the implementation out of the <code>vendored</code> directory.</li>
 <li>If we can, remove the probing where we append a slash at the end of the path when reading failed. This seems like trial and error.</li>
 </ul>
-<p>One open question for me is whether we should create a dedicated <code>ruff_vendored</code> crate that also contains all vendored files (and contains the <code>build.rs</code>). The benefit of that would be that integration tests can use the actual vendored files, which I think would be desired (but use stubed vendored files for unit tests). If that's undesired, I think leaving it in <code>ruff_db</code> is fine.</p>
+<p>One open question for me is whether we should create a dedicated <code>ruff_vendored</code> crate that also contains all vendored files (and contains the <code>build.rs</code>). The benefit of that would be that integration tests can use the actual vendored files, which I think would be desired (but use stubed vendored files for unit tests). If that&#x27;s undesired, I think leaving it in <code>ruff_db</code> is fine.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -195,7 +195,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/file_system/vendored.rs</code>:42 on 2024-06-14 07:04</div>
-            <div class="timeline-body"><p>You have to pass in a mutable reference to a pre-existing buffer for the zip crate's <code>read_to_string</code> method</p>
+            <div class="timeline-body"><p>You have to pass in a mutable reference to a pre-existing buffer for the zip crate&#x27;s <code>read_to_string</code> method</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -217,7 +217,7 @@
 <p>But what could be simpler (and closer to the actual code) is to create a zip file manually and commit it. You can then use <code>include_bytes!</code> to include the bytes.</p>
 <p>This also avoids creating a zip file on every test run.</p>
 </blockquote>
-<p>I considered this. But I thought it made for a much more readable test if you could see exactly which files are being put in the mocked zip as part of the test setup. Otherwise it feels unclear what exactly we're testing.</p>
+<p>I considered this. But I thought it made for a much more readable test if you could see exactly which files are being put in the mocked zip as part of the test setup. Otherwise it feels unclear what exactly we&#x27;re testing.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -227,12 +227,12 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/file_system/vendored.rs</code>:281 on 2024-06-14 07:11</div>
             <div class="timeline-body"><p>Duh. I felt so clever about this... How did I forget about this much simpler solution 😑</p>
-<p>(though FWIW, it didn't seem to break any IDE features for me on VSCode — I was still able to run the test manually locally)</p>
+<p>(though FWIW, it didn&#x27;t seem to break any IDE features for me on VSCode — I was still able to run the test manually locally)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/file_system/vendored.rs</code>:122 on 2024-06-14 07:12</div>
-            <div class="timeline-body"><p>No, or the borrow checker complains that we're mutably borrowing it twice in the same scope.</p>
+            <div class="timeline-body"><p>No, or the borrow checker complains that we&#x27;re mutably borrowing it twice in the same scope.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -246,7 +246,7 @@
 <li>Move the implementation out of the <code>vendored</code> directory.</li>
 </ul>
 </blockquote>
-<p>I'm guessing you mean <code>file_system</code> directory? :)</p>
+<p>I&#x27;m guessing you mean <code>file_system</code> directory? :)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -255,7 +255,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/file_system/vendored.rs</code>:17 on 2024-06-14 07:22</div>
-            <div class="timeline-body"><p>This relates to the conversation we're having at https://github.com/astral-sh/ruff/pull/11863#discussion_r1639342264. If we just committed a binary zip to the repo and used that in the test, then we could easily use <code>&amp;'static</code> for the implementation. But IMHO that would be a really bad test, because we wouldn't be able to easily see what we'd put in the zip archive, so I feel like any assertions we'd make would honestly not have that much value</p>
+            <div class="timeline-body"><p>This relates to the conversation we&#x27;re having at <a href="https://github.com/astral-sh/ruff/pull/11863">astral-sh/ruff#11863</a>#discussion_r1639342264. If we just committed a binary zip to the repo and used that in the test, then we could easily use <code>&amp;&#x27;static</code> for the implementation. But IMHO that would be a really bad test, because we wouldn&#x27;t be able to easily see what we&#x27;d put in the zip archive, so I feel like any assertions we&#x27;d make would honestly not have that much value</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -274,7 +274,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/file_system/vendored.rs</code>:122 on 2024-06-14 07:43</div>
             <div class="timeline-body"><p>This seems to compile fine</p>
-<pre><code class="language-rust">let normalized = normalize_vendored_path(path);
+<pre><code>let normalized = normalize_vendored_path(path);
         let mut archive = self.vendored_archive();
         let lookup_error = match archive.lookup_path(&amp;normalized) {
             Ok(zipfile) =&gt; return Self::read_zipfile(zipfile),
@@ -296,7 +296,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/file_system/vendored.rs</code>:42 on 2024-06-14 07:45</div>
             <div class="timeline-body"><p>Sorry. What I meant is we can simplify this to</p>
-<pre><code class="language-rust">let mut buffer = String::new();
+<pre><code>let mut buffer = String::new();
 zipfile.read_to_string(&amp;buffer)?;
 Ok(buffer)
 </code></pre>
@@ -318,10 +318,10 @@ Ok(buffer)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/file_system/vendored.rs</code>:17 on 2024-06-14 07:51</div>
-            <div class="timeline-body"><p>That's fair. I think we should allow both then. Using <code>&amp;'static [u8]</code> has the benefit that we can pass the bytes directly from the binary without having to copy the zip to the heap first (it's already on the heap because the binary is on the heap, but we can avoid duplicating it).</p>
+            <div class="timeline-body"><p>That&#x27;s fair. I think we should allow both then. Using <code>&amp;&#x27;static [u8]</code> has the benefit that we can pass the bytes directly from the binary without having to copy the zip to the heap first (it&#x27;s already on the heap because the binary is on the heap, but we can avoid duplicating it).</p>
 <p>You can implement it by having a</p>
-<pre><code class="language-rust">enum ZipData {
-	Static(&amp;'static [u8]),
+<pre><code>enum ZipData {
+	Static(&amp;&#x27;static [u8]),
 	Dynamic(Arc&lt;[u8]) // Or Box if we can drop the `Clone` requirement
 }
 </code></pre>
@@ -361,7 +361,7 @@ Ok(buffer)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/file_system/vendored.rs</code>:224 on 2024-06-14 08:02</div>
-            <div class="timeline-body"><p>Yeah, I'll make that change for sure!</p>
+            <div class="timeline-body"><p>Yeah, I&#x27;ll make that change for sure!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -370,7 +370,7 @@ Ok(buffer)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/file_system/vendored.rs</code>:122 on 2024-06-14 10:07</div>
-            <div class="timeline-body"><p>So it does. I'm sure I tried that yesterday. Ah well -- thanks!</p>
+            <div class="timeline-body"><p>So it does. I&#x27;m sure I tried that yesterday. Ah well -- thanks!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -379,24 +379,24 @@ Ok(buffer)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/file_system/vendored.rs</code>:119 on 2024-06-14 10:16</div>
-            <div class="timeline-body"><p>This is point (2) that I described in the PR description. For other file systems we use in Ruff, <code>file_system.exists(&quot;stdlib&quot;)</code> will return <code>true</code> if there exists a directory called <code>stdlib</code>. But without this retry logic, that will return <code>false</code> for the vendored filesystem, because zip archives use trailing slashes internally to distinguish between files and directories in the archive. So if there's a <code>stdlib</code> directory, then (without this retry logic) <code>file_system.exists(&quot;stdlib/&quot;)</code> would return <code>true</code>, but <code>file_system.exists(&quot;stdlib&quot;)</code> would return <code>false</code>.</p>
-<p>I wanted to try to abstract over that difference in my implementation here, as I think it would be a bug magnet for paths to work differently for the vendored file system compared to how they work with other file systems we're using elsewhere in Ruff.</p>
+            <div class="timeline-body"><p>This is point (2) that I described in the PR description. For other file systems we use in Ruff, <code>file_system.exists(&quot;stdlib&quot;)</code> will return <code>true</code> if there exists a directory called <code>stdlib</code>. But without this retry logic, that will return <code>false</code> for the vendored filesystem, because zip archives use trailing slashes internally to distinguish between files and directories in the archive. So if there&#x27;s a <code>stdlib</code> directory, then (without this retry logic) <code>file_system.exists(&quot;stdlib/&quot;)</code> would return <code>true</code>, but <code>file_system.exists(&quot;stdlib&quot;)</code> would return <code>false</code>.</p>
+<p>I wanted to try to abstract over that difference in my implementation here, as I think it would be a bug magnet for paths to work differently for the vendored file system compared to how they work with other file systems we&#x27;re using elsewhere in Ruff.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-06-14 11:13</div>
             <div class="timeline-body"><blockquote>
-<p>One open question for me is whether we should create a dedicated <code>ruff_vendored</code> crate that also contains all vendored files (and contains the <code>build.rs</code>). The benefit of that would be that integration tests can use the actual vendored files, which I think would be desired (but use stubed vendored files for unit tests). If that's undesired, I think leaving it in <code>ruff_db</code> is fine.</p>
+<p>One open question for me is whether we should create a dedicated <code>ruff_vendored</code> crate that also contains all vendored files (and contains the <code>build.rs</code>). The benefit of that would be that integration tests can use the actual vendored files, which I think would be desired (but use stubed vendored files for unit tests). If that&#x27;s undesired, I think leaving it in <code>ruff_db</code> is fine.</p>
 </blockquote>
-<p>I wasn't sure while writing this the extent to which we'd want to tie the <code>VendoredFileSystem</code> implementation to the exact details of the only repository we realistically expect to be vendoring (typeshed). In this implementation, I tried to keep things relatively abstract, so that it could theoretically work with any vendored zip archive. That means that I expect to have to build another layer of abstraction on top of this for working with typeshed specifically, because we have to take the <code>VERSIONS</code> file into account when deciding whether a file &quot;exists&quot; in typeshed. If a file <code>stdlib/foo.pyi</code> exists in the typeshed zip archive but <code>VERSIONS</code> tells us that it hadn't actually been added to the stdlib yet on the Python version the user has selected to be the target version, then the query to our typeshed abstraction should arguably report that the <code>stdlib/foo.pyi</code> doesn't exist at all. That's the reality at runtime on that Python version, after all: if the module hasn't been added to the stdlib yet, the file for that module physically doesn't exist at runtime on that Python version.</p>
+<p>I wasn&#x27;t sure while writing this the extent to which we&#x27;d want to tie the <code>VendoredFileSystem</code> implementation to the exact details of the only repository we realistically expect to be vendoring (typeshed). In this implementation, I tried to keep things relatively abstract, so that it could theoretically work with any vendored zip archive. That means that I expect to have to build another layer of abstraction on top of this for working with typeshed specifically, because we have to take the <code>VERSIONS</code> file into account when deciding whether a file &quot;exists&quot; in typeshed. If a file <code>stdlib/foo.pyi</code> exists in the typeshed zip archive but <code>VERSIONS</code> tells us that it hadn&#x27;t actually been added to the stdlib yet on the Python version the user has selected to be the target version, then the query to our typeshed abstraction should arguably report that the <code>stdlib/foo.pyi</code> doesn&#x27;t exist at all. That&#x27;s the reality at runtime on that Python version, after all: if the module hasn&#x27;t been added to the stdlib yet, the file for that module physically doesn&#x27;t exist at runtime on that Python version.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-06-14 17:31</div>
-            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/vendored-filesystem">CodSpeed Performance Report</a></h2>
-<h3>Merging #11863 will <strong>not alter performance</strong></h3>
-<p><sub>Comparing <code>vendored-filesystem</code> (3127ff6) with <code>vendored-filesystem</code> (5d511bb)</sub></p>
-<h3>Summary</h3>
+            <div class="timeline-body"><a href="https://codspeed.io/astral-sh/ruff/branches/vendored-filesystem">CodSpeed Performance Report</a>
+Merging #11863 will <strong>not alter performance</strong>
+<p>Comparing <code>vendored-filesystem</code> (3127ff6) with <code>vendored-filesystem</code> (5d511bb)</p>
+Summary
 <p><code>✅ 30</code> untouched benchmarks</p>
 </div>
         </div>
@@ -406,7 +406,7 @@ Ok(buffer)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/file_system/vendored.rs</code>:119 on 2024-06-15 10:58</div>
-            <div class="timeline-body"><p>...but this doesn't make any sense, because you can't read a directory, you can only read a file, and this is the <code>read()</code> method 🤦‍♂️</p>
+            <div class="timeline-body"><p>...but this doesn&#x27;t make any sense, because you can&#x27;t read a directory, you can only read a file, and this is the <code>read()</code> method 🤦‍♂️</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -415,21 +415,21 @@ Ok(buffer)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/file_system/vendored.rs</code>:35 on 2024-06-15 13:59</div>
-            <div class="timeline-body"><p>This is the problem I described as point (1) in my PR description. Because <code>ZipArchive::by_name</code> takes <code>&amp;mut self</code>, it's very hard to implement <code>VendoredFileSystem::read()</code> (which must take <code>&amp;self</code>). I think our options are as follows:</p>
+            <div class="timeline-body"><p>This is the problem I described as point (1) in my PR description. Because <code>ZipArchive::by_name</code> takes <code>&amp;mut self</code>, it&#x27;s very hard to implement <code>VendoredFileSystem::read()</code> (which must take <code>&amp;self</code>). I think our options are as follows:</p>
 <ol>
 <li>Creating a new <code>ZipArchive</code> instance every time <code>read()</code> is called</li>
 <li>Using the existing <code>ZipArchive</code> instance every time <code>read()</code> is called, but cloning it to create an owned copy</li>
-<li>Find a solution for reading from the zip at runtime that doesn't use the <code>zip</code> crate, and doesn't require mutable references in order to read files from the zip archive</li>
-<li>Accept that <code>VendoredFileSystem::read()</code> will need to take <code>&amp;mut self</code> rather than <code>&amp;self</code> (I don't like this at all).</li>
-<li>Unzip typeshed eagerly at runtime so that we don't need to use the <code>zip</code> crate at all to read vendored files.</li>
+<li>Find a solution for reading from the zip at runtime that doesn&#x27;t use the <code>zip</code> crate, and doesn&#x27;t require mutable references in order to read files from the zip archive</li>
+<li>Accept that <code>VendoredFileSystem::read()</code> will need to take <code>&amp;mut self</code> rather than <code>&amp;self</code> (I don&#x27;t like this at all).</li>
+<li>Unzip typeshed eagerly at runtime so that we don&#x27;t need to use the <code>zip</code> crate at all to read vendored files.</li>
 <li>something something interior mutability</li>
 </ol>
-<p>Currently I'm doing Option (2) in this PR, but maybe I'm missing something.</p>
+<p>Currently I&#x27;m doing Option (2) in this PR, but maybe I&#x27;m missing something.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/file_system.rs</code>:10 on 2024-06-15 15:12</div>
-            <div class="timeline-body"><p>I suggest moving <code>vendored</code> into its own module, considering that it isn't implementing <code>FileSystem</code>.</p>
+            <div class="timeline-body"><p>I suggest moving <code>vendored</code> into its own module, considering that it isn&#x27;t implementing <code>FileSystem</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -442,7 +442,7 @@ Ok(buffer)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/file_system.rs</code>:10 on 2024-06-15 15:13</div>
-            <div class="timeline-body"><p>Yes, I'm going to make that change. It still implements <code>FileSystem</code> in this PR currently, but I'm working on changing that.</p>
+            <div class="timeline-body"><p>Yes, I&#x27;m going to make that change. It still implements <code>FileSystem</code> in this PR currently, but I&#x27;m working on changing that.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -456,16 +456,16 @@ Ok(buffer)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-06-17 10:19</div>
-            <div class="timeline-body"><p>@MichaReiser -- I think I've addressed all your review comments now except for https://github.com/astral-sh/ruff/pull/11863#discussion_r1639324437 (where we want to do the path normalization). As I mentioned on our call earlier, I think I'd prefer to experiment with that in a followup, if that's okay, and see if we think it improves the API or not. So I think this PR should be ready for re-review now!</p>
+            <div class="timeline-body"><p>@MichaReiser -- I think I&#x27;ve addressed all your review comments now except for <a href="https://github.com/astral-sh/ruff/pull/11863">astral-sh/ruff#11863</a>#discussion_r1639324437 (where we want to do the path normalization). As I mentioned on our call earlier, I think I&#x27;d prefer to experiment with that in a followup, if that&#x27;s okay, and see if we think it improves the API or not. So I think this PR should be ready for re-review now!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-06-17 10:19</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-06-17 10:19</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/vendored.rs</code>:29 on 2024-06-17 10:21</div>
             <div class="timeline-body"><p>Style question: do you prefer an isolated scope like I currently have, or a call to <code>drop()</code>, for this kind of pattern? Not sure which is considered more idiomatic.</p>
-<pre><code class="language-suggestion">            let mut archive = ZipWriter::new(cursor);
+<pre><code>            let mut archive = ZipWriter::new(cursor);
             archive.finish().unwrap();
             drop(archive);
 </code></pre>
@@ -486,17 +486,17 @@ Ok(buffer)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/vendored.rs</code>:22 on 2024-06-17 11:54</div>
-            <div class="timeline-body"><p>Nit: I would remove the inner file type. It doesn't provide that much functionality but the nesting becomes somewhat hard to understand. It also allows to remove other wrapper types, reducing the overall code.</p>
+            <div class="timeline-body"><p>Nit: I would remove the inner file type. It doesn&#x27;t provide that much functionality but the nesting becomes somewhat hard to understand. It also allows to remove other wrapper types, reducing the overall code.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/vendored.rs</code>:97 on 2024-06-17 11:55</div>
-            <div class="timeline-body"><p>I prefer manual <code>is_*</code> implementations for enums with just a few variants. I can see how writing <code>is_</code> methods for enums with a lot of variants is a pain, but I think just two variants doesn't justify adding a dependency</p>
+            <div class="timeline-body"><p>I prefer manual <code>is_*</code> implementations for enums with just a few variants. I can see how writing <code>is_</code> methods for enums with a lot of variants is a pain, but I think just two variants doesn&#x27;t justify adding a dependency</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/vendored.rs</code>:60 on 2024-06-17 11:56</div>
-            <div class="timeline-body"><p>It's unclear to me how you plan on using the API but do we need a <code>file_type</code> method? From what I understand, the only operations that we perform are on files.</p>
+            <div class="timeline-body"><p>It&#x27;s unclear to me how you plan on using the API but do we need a <code>file_type</code> method? From what I understand, the only operations that we perform are on files.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -504,16 +504,16 @@ Ok(buffer)
             <div class="timeline-body"><p>I think the only two APIs that we need for implementing module resolution is</p>
 <ul>
 <li><code>read</code></li>
-<li><code>metadata</code> where metadata returns the CRC32 hash and is <code>None</code> (or an error) if the file doesn't exist.</li>
+<li><code>metadata</code> where metadata returns the CRC32 hash and is <code>None</code> (or an error) if the file doesn&#x27;t exist.</li>
 </ul>
-<p>Combining <code>exists</code>, <code>metadata</code>, and <code>file_type</code> has the advantage that we don't need to locate the file's that often (and fewer locking overall)</p>
+<p>Combining <code>exists</code>, <code>metadata</code>, and <code>file_type</code> has the advantage that we don&#x27;t need to locate the file&#x27;s that often (and fewer locking overall)</p>
 <p>Reducing <code>VendoredFs</code> to only support files (and documenting it in the struct) means we can remove the entire <code>with_trailing_slash</code> fallback logic, because as far as I understand this is only necessary for directories?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/vfs.rs</code>:329 on 2024-06-17 12:04</div>
             <div class="timeline-body"><p>Nit: Maybe rename to <code>vendored</code> to avoid confusion with <code>FileSystem</code></p>
-<pre><code class="language-suggestion">            VendoredVfs::Real(vendored) =&gt; vendored.read(path),
+<pre><code>            VendoredVfs::Real(vendored) =&gt; vendored.read(path),
 </code></pre>
 </div>
         </div>
@@ -524,24 +524,24 @@ Ok(buffer)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/vendored.rs</code>:92 on 2024-06-17 12:07</div>
-            <div class="timeline-body"><p>What are the reasons why <code>read_to_string</code> can fail? I'm not sure if just silently returning <code>None</code> in that case is the best solution. Because the file does exist, it just can't be read for obscure reasons. We may want to change this method to return a result instead.</p>
+            <div class="timeline-body"><p>What are the reasons why <code>read_to_string</code> can fail? I&#x27;m not sure if just silently returning <code>None</code> in that case is the best solution. Because the file does exist, it just can&#x27;t be read for obscure reasons. We may want to change this method to return a result instead.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/vendored.rs</code>:157 on 2024-06-17 12:08</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">    fn new(data: &amp;'static [u8]) -&gt; Result&lt;Self&gt; {
+            <div class="timeline-body"><pre><code>    fn new(data: &amp;&#x27;static [u8]) -&gt; Result&lt;Self&gt; {
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/vendored.rs</code>:29 on 2024-06-17 12:10</div>
-            <div class="timeline-body"><p>What's the use case for implementing <code>Default</code>? I think  I strongly prefer not to implement <code>Default</code> for this type because it just isn't very useful when empty.</p>
-<p>If you want to support an empty <code>VendoredFS</code>, then I think I would model it as an enum with <code>EMPTY</code> and <code>Data(&amp;'static [u8]</code>) variants.</p>
+            <div class="timeline-body"><p>What&#x27;s the use case for implementing <code>Default</code>? I think  I strongly prefer not to implement <code>Default</code> for this type because it just isn&#x27;t very useful when empty.</p>
+<p>If you want to support an empty <code>VendoredFS</code>, then I think I would model it as an enum with <code>EMPTY</code> and <code>Data(&amp;&#x27;static [u8]</code>) variants.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/vendored.rs</code>:197 on 2024-06-17 12:15</div>
-            <div class="timeline-body"><p>We don't want to use <code>is_absolute</code>. It's platform dependent, meaning <code>VendoredPath</code>'s suddenly become platform specific.</p>
+            <div class="timeline-body"><p>We don&#x27;t want to use <code>is_absolute</code>. It&#x27;s platform dependent, meaning <code>VendoredPath</code>&#x27;s suddenly become platform specific.</p>
 <p>If you want to use linux semantics, use <code>!path.starts_with(&quot;/&quot;)</code></p>
 </div>
         </div>
@@ -552,7 +552,7 @@ Ok(buffer)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-17 12:19</div>
-            <div class="timeline-body"><p>This overall looks good but I think we can make it much simpler by removing all code that's only necessary for handling directories. From what I understand, we won't need directory support to implement module resolution. All we need is to lookup a specific file path. Or are there operations that need to know about the existence of a directory?</p>
+            <div class="timeline-body"><p>This overall looks good but I think we can make it much simpler by removing all code that&#x27;s only necessary for handling directories. From what I understand, we won&#x27;t need directory support to implement module resolution. All we need is to lookup a specific file path. Or are there operations that need to know about the existence of a directory?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -561,7 +561,7 @@ Ok(buffer)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/vendored.rs</code>:60 on 2024-06-17 12:21</div>
-            <div class="timeline-body"><p>Yes, I wasn't sure if this was necessary or not, so I think you're right that it probably makes sense to remove it for now until there's a need for it.</p>
+            <div class="timeline-body"><p>Yes, I wasn&#x27;t sure if this was necessary or not, so I think you&#x27;re right that it probably makes sense to remove it for now until there&#x27;s a need for it.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -570,8 +570,8 @@ Ok(buffer)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/vendored.rs</code>:29 on 2024-06-17 12:27</div>
-            <div class="timeline-body"><p>I implemented <code>Default</code> here because you'd implemented <code>Default</code> on the <code>VendoredVfs</code> enum, and I assumed you had a reason for that 😆</p>
-<p>I don't see a great reason for implementing <code>Default</code> on this struct; I can get rid of it.</p>
+            <div class="timeline-body"><p>I implemented <code>Default</code> here because you&#x27;d implemented <code>Default</code> on the <code>VendoredVfs</code> enum, and I assumed you had a reason for that 😆</p>
+<p>I don&#x27;t see a great reason for implementing <code>Default</code> on this struct; I can get rid of it.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -580,7 +580,7 @@ Ok(buffer)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/vendored.rs</code>:163 on 2024-06-17 12:27</div>
-            <div class="timeline-body"><p>That's a nice idea.</p>
+            <div class="timeline-body"><p>That&#x27;s a nice idea.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -589,15 +589,15 @@ Ok(buffer)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/vfs.rs</code>:329 on 2024-06-17 12:28</div>
-            <div class="timeline-body"><p>It <em>is</em> a file system though, it just isn't an <em>OS</em> file system :) that's what the <code>fs</code> in <code>Vfs</code> stands for, right?</p>
-<p>I don't think <code>vendored</code> as a name works well here, because the distinction between the two enum branches is whether it's a &quot;Real file system&quot; or a &quot;Stubbed file system&quot;, not whether it's a &quot;Real vendored&quot; or a &quot;Stubbed vendored&quot; (that doesn't really make sense).</p>
+            <div class="timeline-body"><p>It <em>is</em> a file system though, it just isn&#x27;t an <em>OS</em> file system :) that&#x27;s what the <code>fs</code> in <code>Vfs</code> stands for, right?</p>
+<p>I don&#x27;t think <code>vendored</code> as a name works well here, because the distinction between the two enum branches is whether it&#x27;s a &quot;Real file system&quot; or a &quot;Stubbed file system&quot;, not whether it&#x27;s a &quot;Real vendored&quot; or a &quot;Stubbed vendored&quot; (that doesn&#x27;t really make sense).</p>
 <p>I would prefer it if we considered renaming the <code>FileSystem</code> trait instead</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/vfs.rs</code>:329 on 2024-06-17 12:43</div>
-            <div class="timeline-body"><p>Yeah not sure. The <code>FileSystem</code> maps to <code>std::fs</code> and vendored is not that. I don't think <code>FileSystem</code> maps to the <code>OS</code> file system, because an in memory (or wasm FS) isn't the OS's file system.</p>
-<p>I'm currently thinking about renaming <code>VfsFile</code> to <code>Files</code>, <code>VfsFile</code> to <code>File</code> (not sure about <code>VfsPath</code>). <code>VendoredFiles</code> would then fit well into this naming and would also make it clear, that it only supports files. But I'm okay deferring this for now.</p>
+            <div class="timeline-body"><p>Yeah not sure. The <code>FileSystem</code> maps to <code>std::fs</code> and vendored is not that. I don&#x27;t think <code>FileSystem</code> maps to the <code>OS</code> file system, because an in memory (or wasm FS) isn&#x27;t the OS&#x27;s file system.</p>
+<p>I&#x27;m currently thinking about renaming <code>VfsFile</code> to <code>Files</code>, <code>VfsFile</code> to <code>File</code> (not sure about <code>VfsPath</code>). <code>VendoredFiles</code> would then fit well into this naming and would also make it clear, that it only supports files. But I&#x27;m okay deferring this for now.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -610,7 +610,7 @@ Ok(buffer)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/vendored.rs</code>:197 on 2024-06-17 12:46</div>
-            <div class="timeline-body"><p>It's very surprising to me that <code>is_absolute</code> is platform specific. Thanks for the reminder!</p>
+            <div class="timeline-body"><p>It&#x27;s very surprising to me that <code>is_absolute</code> is platform specific. Thanks for the reminder!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -619,7 +619,7 @@ Ok(buffer)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/vendored.rs</code>:197 on 2024-06-17 12:51</div>
-            <div class="timeline-body"><p>Oh wait, no, you said &quot;platform-dependent&quot;, not &quot;platforms-specific&quot;. I think &quot;platform-dependent&quot; is what I want here. Whatever kind of path we're dealing with here, it should never have been resolved to an absolute OS-filesystem path. It should always be a path that's relative to the root of the zip directory. If this assertion ever fails on either Linux or Windows, I think that indicates a logical error in our code somewhere.</p>
+            <div class="timeline-body"><p>Oh wait, no, you said &quot;platform-dependent&quot;, not &quot;platforms-specific&quot;. I think &quot;platform-dependent&quot; is what I want here. Whatever kind of path we&#x27;re dealing with here, it should never have been resolved to an absolute OS-filesystem path. It should always be a path that&#x27;s relative to the root of the zip directory. If this assertion ever fails on either Linux or Windows, I think that indicates a logical error in our code somewhere.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -628,7 +628,7 @@ Ok(buffer)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/vendored.rs</code>:92 on 2024-06-17 12:56</div>
-            <div class="timeline-body"><p>It returns an <code>Err</code> if the data that it is trying to read into the <code>String</code> buffer turns out not to be valid UTF-8. I agree that we shouldn't silently return <code>None</code> here if that happens.</p>
+            <div class="timeline-body"><p>It returns an <code>Err</code> if the data that it is trying to read into the <code>String</code> buffer turns out not to be valid UTF-8. I agree that we shouldn&#x27;t silently return <code>None</code> here if that happens.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -646,7 +646,7 @@ Ok(buffer)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/vendored.rs</code>:22 on 2024-06-17 13:31</div>
-            <div class="timeline-body"><p>I got rid of one of the other wrapper types in https://github.com/astral-sh/ruff/pull/11863/commits/f4f97d4a2c183ed1777d6b610fa770f226e073f7, but I think I would prefer to keep using an inner file type for this. I tried changing it to a type alias, and in my opinion it made the <code>VendoredFileSystem</code> unduly coupled to the inner representation that used a lock/RefCell; I also found it less readable.</p>
+            <div class="timeline-body"><p>I got rid of one of the other wrapper types in <a href="https://github.com/astral-sh/ruff/pull/11863">astral-sh/ruff#11863</a>/commits/f4f97d4a2c183ed1777d6b610fa770f226e073f7, but I think I would prefer to keep using an inner file type for this. I tried changing it to a type alias, and in my opinion it made the <code>VendoredFileSystem</code> unduly coupled to the inner representation that used a lock/RefCell; I also found it less readable.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -655,7 +655,7 @@ Ok(buffer)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/vendored.rs</code>:197 on 2024-06-17 14:01</div>
-            <div class="timeline-body"><p>I'm still not sure I fully understand. The main purpose of this debug assertion is to make sure that the path hasn't been <code>canonicalize</code>d or otherwise &quot;made absolute&quot; prior to attempting to resolve the path relative to the zip archive. On a Unix system <code>canonicalize()</code> would mean that the path ould start with <code>/</code>, but on a Windows system it would mean that it would start with a prefix, right? So I think <code>is_absolute()</code> is what we want here?</p>
+            <div class="timeline-body"><p>I&#x27;m still not sure I fully understand. The main purpose of this debug assertion is to make sure that the path hasn&#x27;t been <code>canonicalize</code>d or otherwise &quot;made absolute&quot; prior to attempting to resolve the path relative to the zip archive. On a Unix system <code>canonicalize()</code> would mean that the path ould start with <code>/</code>, but on a Windows system it would mean that it would start with a prefix, right? So I think <code>is_absolute()</code> is what we want here?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -673,11 +673,11 @@ Ok(buffer)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/vendored.rs</code>:163 on 2024-06-17 16:13</div>
-            <div class="timeline-body"><p>Because of the &quot;trailing slashes are semantically significant for zip archives&quot; thing combined with the &quot;<code>ZipFile::by_name()</code> requires a mutable reference&quot; thing, it's hard for me to see how we could do this while keeping the borrow checker happy and avoiding doing path normalization twice. It doesn't seem possible to call <code>self.0.by_name()</code> twice in <code>lookup_path()</code> while keeping the borrow checker happy, unfortunately (unless I'm missing something), and because of the trailing-slash thing, we need to call it twice in <code>lookup_path()</code> if we're going to do the normalization inside <code>lookup_path()</code>.</p>
+            <div class="timeline-body"><p>Because of the &quot;trailing slashes are semantically significant for zip archives&quot; thing combined with the &quot;<code>ZipFile::by_name()</code> requires a mutable reference&quot; thing, it&#x27;s hard for me to see how we could do this while keeping the borrow checker happy and avoiding doing path normalization twice. It doesn&#x27;t seem possible to call <code>self.0.by_name()</code> twice in <code>lookup_path()</code> while keeping the borrow checker happy, unfortunately (unless I&#x27;m missing something), and because of the trailing-slash thing, we need to call it twice in <code>lookup_path()</code> if we&#x27;re going to do the normalization inside <code>lookup_path()</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-06-17 16:32</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-06-17 16:32</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-06-17 16:54</div>
@@ -685,7 +685,7 @@ Ok(buffer)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/vendored.rs</code>:197 on 2024-06-17 16:54</div>
-            <div class="timeline-body"><p>I think we want <code>VendoredPath</code> to be file system agnostic. It's not a real file system so we should avoid the madness of having different path representations for different systems. I'm also not sure what happens if you lookup the path <code>C:\test</code> in the zip file. I would simply assume that this would outright fail?</p>
+            <div class="timeline-body"><p>I think we want <code>VendoredPath</code> to be file system agnostic. It&#x27;s not a real file system so we should avoid the madness of having different path representations for different systems. I&#x27;m also not sure what happens if you lookup the path <code>C:\test</code> in the zip file. I would simply assume that this would outright fail?</p>
 <p>I recommend that <code>VendoredPath</code> uses unix representation exclusively.</p>
 </div>
         </div>
@@ -695,7 +695,7 @@ Ok(buffer)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/vendored.rs</code>:197 on 2024-06-17 16:57</div>
-            <div class="timeline-body"><p><code>VendoredPath</code> does use unix representation exclusively; this PR doesn't change that, and nor does this assertion. I think my takeaway here is that this debug assertion causes more confusion than clarification, so I think I'll just remove it altogether :)</p>
+            <div class="timeline-body"><p><code>VendoredPath</code> does use unix representation exclusively; this PR doesn&#x27;t change that, and nor does this assertion. I think my takeaway here is that this debug assertion causes more confusion than clarification, so I think I&#x27;ll just remove it altogether :)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -704,7 +704,7 @@ Ok(buffer)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/vendored.rs</code>:197 on 2024-06-17 17:14</div>
-            <div class="timeline-body"><p>The debug assertion itself is fine, but it can't be <code>is_absolute</code> because <code>is_absolute</code> returns <code>false</code> on Windows if the path starts with <code>/</code></p>
+            <div class="timeline-body"><p>The debug assertion itself is fine, but it can&#x27;t be <code>is_absolute</code> because <code>is_absolute</code> returns <code>false</code> on Windows if the path starts with <code>/</code></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -712,7 +712,7 @@ Ok(buffer)
             <div class="timeline-body"><blockquote>
 <p><code>is_absolute</code> returns <code>false</code> on Windows if the path starts with <code>/</code></p>
 </blockquote>
-<p>I understand that. I still think we're talking past each other a little bit here, but I've got rid of the assertion now anyway. I don't think it was <em>that</em> valuable in the first place.</p>
+<p>I understand that. I still think we&#x27;re talking past each other a little bit here, but I&#x27;ve got rid of the assertion now anyway. I don&#x27;t think it was <em>that</em> valuable in the first place.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -720,14 +720,14 @@ Ok(buffer)
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dhruvmanila by @MichaReiser on 2024-06-18 12:05</div>
+            <div class="event">Review requested from <a href="https://github.com/dhruvmanila">@dhruvmanila</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-18 12:05</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @dhruvmanila removed by @AlexWaygood on 2024-06-18 12:09</div>
+            <div class="event">Review request for <a href="https://github.com/dhruvmanila">@dhruvmanila</a> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-06-18 12:09</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/metadata.rs</code>:1 on 2024-06-18 13:53</div>
-            <div class="timeline-body"><p>Maybe rename the module to <code>file_revision</code>, considering that it doesn't contain anything else.</p>
+            <div class="timeline-body"><p>Maybe rename the module to <code>file_revision</code>, considering that it doesn&#x27;t contain anything else.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -738,7 +738,7 @@ Ok(buffer)
 <li>handle possible file</li>
 <li>handle possible directory</li>
 </ul>
-<pre><code class="language-suggestion">    pub fn metadata(&amp;self, path: &amp;VendoredPath) -&gt; Option&lt;Metadata&gt; {
+<pre><code>    pub fn metadata(&amp;self, path: &amp;VendoredPath) -&gt; Option&lt;Metadata&gt; {
         let normalized = normalize_vendored_path(path);
         let inner_locked = self.inner.lock();
         let mut archive = inner_locked.borrow_mut();
@@ -757,12 +757,12 @@ Ok(buffer)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/vendored.rs</code>:21 on 2024-06-18 13:56</div>
-            <div class="timeline-body"><p>It might be helpful to add some documentation to this struct, even if it's very brief</p>
+            <div class="timeline-body"><p>It might be helpful to add some documentation to this struct, even if it&#x27;s very brief</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/vendored.rs</code>:44 on 2024-06-18 13:57</div>
-            <div class="timeline-body"><p>I would find some documentation helpful that explains the difference between paths ending with trailing slash and once that don't. Because it isn't clear from reading this code what's happening here and why probing the zip two times is necesary.</p>
+            <div class="timeline-body"><p>I would find some documentation helpful that explains the difference between paths ending with trailing slash and once that don&#x27;t. Because it isn&#x27;t clear from reading this code what&#x27;s happening here and why probing the zip two times is necesary.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -780,14 +780,14 @@ Ok(buffer)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/vendored.rs</code>:34 on 2024-06-18 14:02</div>
-            <div class="timeline-body"><p>I couldn't resist micro-optimising this 😄 (this avoids calling <code>zip_file.crc32()</code> and <code>zip_file.is_dir()</code>, which aren't necessary if you only need to know whether the path exists or not)</p>
+            <div class="timeline-body"><p>I couldn&#x27;t resist micro-optimising this 😄 (this avoids calling <code>zip_file.crc32()</code> and <code>zip_file.is_dir()</code>, which aren&#x27;t necessary if you only need to know whether the path exists or not)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @AlexWaygood on 2024-06-18 15:43</div>
+            <div class="event">Merged by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-06-18 15:43</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2024-06-18 15:43</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-06-18 15:43</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-06-18 15:43</div>
@@ -795,7 +795,7 @@ Ok(buffer)
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:04:49 UTC
+        Synced at 2026-01-20 19:04:40 UTC
     </footer>
 </body>
 </html>

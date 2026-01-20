@@ -80,11 +80,11 @@ Found 1 error.
             <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-12-10 23:32</div>
             <div class="timeline-body"><p>Thanks for submitting this!</p>
 <p>So I think that the error message is pointing to the wrong spot (which is confusing...), PLC0206 is complaning about this:</p>
-<pre><code class="language-python">    if norm_name in updated_packages:
+<pre><code>    if norm_name in updated_packages:
         version = packages[package]
 </code></pre>
 <p>So I think it would be compatible with both rules to do something more like:</p>
-<pre><code class="language-diff">diff --git a/tmp.py b/tmp2.py
+<pre><code>diff --git a/tmp.py b/tmp2.py
 index dfa6d6f..6975214 100644
 --- a/tmp.py
 +++ b/tmp2.py
@@ -100,7 +100,7 @@ index dfa6d6f..6975214 100644
              version = parse_version(version.get(&quot;version&quot;, &quot;&quot;).replace(&quot;==&quot;, &quot;&quot;))
          else:
 </code></pre>
-<p>But I can't quite tell from your code if you're trying to mutate the dictionary key at that point, in which case you'd have to do something else. (The above patch would also violate <a href="https://docs.astral.sh/ruff/rules/redefined-loop-name/#redefined-loop-name-plw2901">redefined-loop-name (PLW2901)</a>, so if that rule is also enabled you would have to name the loop variable something else).</p>
+<p>But I can&#x27;t quite tell from your code if you&#x27;re trying to mutate the dictionary key at that point, in which case you&#x27;d have to do something else. (The above patch would also violate <a href="https://docs.astral.sh/ruff/rules/redefined-loop-name/#redefined-loop-name-plw2901">redefined-loop-name (PLW2901)</a>, so if that rule is also enabled you would have to name the loop variable something else).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -109,43 +109,43 @@ index dfa6d6f..6975214 100644
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @dylwil3 on 2024-12-10 23:33</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-12-10 23:33</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">diagnostics</span> added by @dylwil3 on 2024-12-10 23:33</div>
+            <div class="event">Label <span class="label">diagnostics</span> added by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-12-10 23:33</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "PLC0206 vs PERF102 limbo ..." to "PLC0206 diagnostic location is confusing" by @dylwil3 on 2024-12-11 19:38</div>
+            <div class="event">Renamed from &quot;PLC0206 vs PERF102 limbo ...&quot; to &quot;PLC0206 diagnostic location is confusing&quot; by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-12-11 19:38</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-12-13 16:48</div>
-            <div class="timeline-body"><p>I started looking into this and there's a bit of a design question: how should we handle multiple uses of the dictionary value inside the for-loop?</p>
+            <div class="timeline-body"><p>I started looking into this and there&#x27;s a bit of a design question: how should we handle multiple uses of the dictionary value inside the for-loop?</p>
 <p>Some options:</p>
 <ol>
 <li>Offer a separate diagnostic per violation, pointing to the location of the violation</li>
-<li>Same as (1) but add a &quot;parent&quot; for each of these diagnostics at the start of the for-loop, so users can <code># noqa</code> the whole block (I think that's how that would work?)</li>
+<li>Same as (1) but add a &quot;parent&quot; for each of these diagnostics at the start of the for-loop, so users can <code># noqa</code> the whole block (I think that&#x27;s how that would work?)</li>
 <li>Overhaul the diagnostic infrastructure to allow displaying multiple ranges for a single diagnostic (I imagine this would be a last resort)</li>
 <li>Keep it as-is</li>
 <li>Something else</li>
 </ol>
-<p>@AlexWaygood / @MichaReiser have y'all run into this issue before where you want to display multiple text ranges for a single diagnostic? Is there prior art?</p>
+<p>@AlexWaygood / @MichaReiser have y&#x27;all run into this issue before where you want to display multiple text ranges for a single diagnostic? Is there prior art?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-15 15:46</div>
             <div class="timeline-body"><p>Changing the location is, unfortunately, a breaking change because it breaks all <code>noqa</code> comments. We should avoid changing the location more than once.</p>
-<p>To me it's not clear what the right location should be but I'm leaning towards:</p>
+<p>To me it&#x27;s not clear what the right location should be but I&#x27;m leaning towards:</p>
 <ul>
 <li>Flagging the dictionary expression in <code>in &lt;dict&gt;</code> because the rule name and its description are both about dictionary iteration (and not *use of dict index in dictionary iteration)</li>
 <li>Flagging the <code>in &lt;dict&gt;</code> allows suppressing all usages with a single noqa comment</li>
 </ul>
-<p>However, I can see how this isn't useful. That's why I'm leaning towards renaming and redefining the rule to flag the usages instead. Requiring multiple <code>noqa</code> comments would then be okay in my view because the rule reports the usages and not the for loop itself.</p>
+<p>However, I can see how this isn&#x27;t useful. That&#x27;s why I&#x27;m leaning towards renaming and redefining the rule to flag the usages instead. Requiring multiple <code>noqa</code> comments would then be okay in my view because the rule reports the usages and not the for loop itself.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/beauxq">@beauxq</a> on 2025-11-22 18:11</div>
-            <div class="timeline-body"><p>Note that this diagnostic location has the same problem as this issue: https://github.com/astral-sh/ruff/issues/15570</p>
-<p>Marking an entire 100-line <code>for</code> loop with yellow squigglies is really noisy. It makes it hard to see other things that I'm looking for in the code.</p>
+            <div class="timeline-body"><p>Note that this diagnostic location has the same problem as this issue: <a href="https://github.com/astral-sh/ruff/issues/15570">astral-sh/ruff#15570</a></p>
+<p>Marking an entire 100-line <code>for</code> loop with yellow squigglies is really noisy. It makes it hard to see other things that I&#x27;m looking for in the code.</p>
 <p>Please steer away from marking anything that could be a large block of code.</p>
 </div>
         </div>
@@ -155,12 +155,12 @@ index dfa6d6f..6975214 100644
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ntBre on 2025-12-31 18:54</div>
+            <div class="event">Closed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-31 18:54</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:51:47 UTC
+        Synced at 2026-01-20 18:49:08 UTC
     </footer>
 </body>
 </html>

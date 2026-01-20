@@ -23,15 +23,15 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/SteveMcGrath">@SteveMcGrath</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>Whenever i resize my terminal window, I get spammed with the following (or similar) errors for as long as I am resizing my window.  I started getting these when a switch to using ghostty as my terminal app and am wondering if the refresh/repaint interval on the resize is just faster than expected.</p>
-<pre><code>❯ thread 'main2' panicked at /Users/brew/Library/Caches/Homebrew/cargo_cache/registry/src/index.crates.io-6f17d22bba15001f/clap_complete-4.5.44/src/aot/shells/fish.rs:45:33:
+<pre><code>❯ thread &#x27;main2&#x27; panicked at /Users/brew/Library/Caches/Homebrew/cargo_cache/registry/src/index.crates.io-6f17d22bba15001f/clap_complete-4.5.44/src/aot/shells/fish.rs:45:33:
 failed to write completion file: Os { code: 32, kind: BrokenPipe, message: &quot;Broken pipe&quot; }
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
-thread 'main' panicked at /private/tmp/uv-20250219-7867-jnorhr/uv-0.6.2/crates/uv/src/lib.rs:1933:10:
+thread &#x27;main&#x27; panicked at /private/tmp/uv-20250219-7867-jnorhr/uv-0.6.2/crates/uv/src/lib.rs:1933:10:
 </code></pre>
 <p>When i enable the full backtrace im getting:</p>
-<pre><code>❯ thread 'main2' panicked at /Users/brew/Library/Caches/Homebrew/cargo_cache/registry/src/index.crates.io-6f17d22bba15001f/clap_complete-4.5.44/src/aot/shells/fish.rs:269:8:
+<pre><code>❯ thread &#x27;main2&#x27; panicked at /Users/brew/Library/Caches/Homebrew/cargo_cache/registry/src/index.crates.io-6f17d22bba15001f/clap_complete-4.5.44/src/aot/shells/fish.rs:269:8:
 failed to write completion file: Os { code: 32, kind: BrokenPipe, message: &quot;Broken pipe&quot; }
 stack backtrace:
    0:        0x1004b8e70 - __mh_execute_header
@@ -50,7 +50,7 @@ stack backtrace:
   13:        0x10009a5ec - __mh_execute_header
   14:        0x100495810 - __mh_execute_header
   15:        0x18101c2e4 - __pthread_deallocate
-thread 'main' panicked at /private/tmp/uv-20250219-7867-jnorhr/uv-0.6.2/crates/uv/src/lib.rs:1933:10:
+thread &#x27;main&#x27; panicked at /private/tmp/uv-20250219-7867-jnorhr/uv-0.6.2/crates/uv/src/lib.rs:1933:10:
 Tokio executor failed, was there a panic?: Any { .. }
 stack backtrace:
    0:        0x1004b8e70 - __mh_execute_header
@@ -67,11 +67,11 @@ stack backtrace:
 </code></pre>
 <p>system details:</p>
 <pre><code>❯ neofetch
-                    'c.          steve@Aviendha.local
+                    &#x27;c.          steve@Aviendha.local
                  ,xNMM.          --------------------
                .OMMMMo           OS: macOS 15.3.2 24D81 arm64
                OMMM0,            Host: MacBookPro18,2
-     .;loddo:' loolloddol;.      Kernel: 24.3.0
+     .;loddo:&#x27; loolloddol;.      Kernel: 24.3.0
    cKMMMMMMMMMMNWMMMMMMMMMM0:    Uptime: 2 hours, 34 mins
  .KMMMMMMMMMMMMMMMMMMMMMMMWd.    Packages: 424 (brew)
  XMMMMMMMMMMMMMMMMMMMMMMMX.      Shell: fish 3.7.1
@@ -85,24 +85,24 @@ stack backtrace:
      ;KMMMMMMMWXXWMMMMMMMk.      Memory: 8484MiB / 65536MiB
        .cooc,.    .,coo:.
 </code></pre>
-<h3>Platform</h3>
+Platform
 <p>macOS 15.3</p>
-<h3>Version</h3>
+Version
 <p>uv 0.6.2</p>
-<h3>Python version</h3>
+Python version
 <p>Python 3.12.9</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @SteveMcGrath on 2025-03-17 18:00</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/SteveMcGrath">@SteveMcGrath</a> on 2025-03-17 18:00</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/geofft">@geofft</a> on 2025-03-17 22:15</div>
-            <div class="timeline-body"><p>At one level, what's going on here is that the shell completion generation code is trying to write a script but the reader is exiting/closing the pipe before it's done, which you can repro in isolation with e.g. <code>uv generate-shell-completion fish | head</code>.</p>
-<p>So there's sort of two angles here. The first is, should uv exit quietly if that happens? I <em>think</em> the answer is yes. The traditional UNIX behavior is for programs to just exit quietly via the SIGPIPE signal defaulting to killing the process (just like SIGINT, SIGKILL, etc. do); indeed, <code>| head</code> basically expects that behavior. I believe that this is largely happening because Rust by default ignores SIGPIPE (rust-lang/rust#62569), and so if you actually do a write to a broken pipe, instead of the program exiting you get an error from the write syscall, which turns into this panic. (There might be something more complicated with Tokio but I think there isn't.) If uv resets SIGPIPE back to the default UNIX behavior, then it would exit quietly and you wouldn't see the error message. There is an argument that diagnostics about the fact that the completion wasn't fully written are useful &quot;explicit is better than implicit&quot;). I'm not sure if that's a real concern here.</p>
-<p>The second angle is, why is this code running on resize, and why is it getting into a broken pipe situation? My initial guess is this has something to do with Ghostty's built-in fish integration. The <a href="https://docs.astral.sh/uv/getting-started/installation/#shell-autocompletion">uv setup instructions</a> encourage you to put a <code>uv generate-shell-completion fish | source</code> in ~/.config/fish/config.fish, and fish says that config.fish runs on <em>every</em> shell invocation, including non-interactive ones. Perhaps Ghostty is invoking a subshell on every resize step and terminating it before the next resize step, or something? That does seem like a lot of code to run on every single resize step, and it sort of feels at odds with the Ghostty philosphy (which uv shares) of being fast.</p>
+            <div class="timeline-body"><p>At one level, what&#x27;s going on here is that the shell completion generation code is trying to write a script but the reader is exiting/closing the pipe before it&#x27;s done, which you can repro in isolation with e.g. <code>uv generate-shell-completion fish | head</code>.</p>
+<p>So there&#x27;s sort of two angles here. The first is, should uv exit quietly if that happens? I <em>think</em> the answer is yes. The traditional UNIX behavior is for programs to just exit quietly via the SIGPIPE signal defaulting to killing the process (just like SIGINT, SIGKILL, etc. do); indeed, <code>| head</code> basically expects that behavior. I believe that this is largely happening because Rust by default ignores SIGPIPE (rust-lang/rust#62569), and so if you actually do a write to a broken pipe, instead of the program exiting you get an error from the write syscall, which turns into this panic. (There might be something more complicated with Tokio but I think there isn&#x27;t.) If uv resets SIGPIPE back to the default UNIX behavior, then it would exit quietly and you wouldn&#x27;t see the error message. There is an argument that diagnostics about the fact that the completion wasn&#x27;t fully written are useful &quot;explicit is better than implicit&quot;). I&#x27;m not sure if that&#x27;s a real concern here.</p>
+<p>The second angle is, why is this code running on resize, and why is it getting into a broken pipe situation? My initial guess is this has something to do with Ghostty&#x27;s built-in fish integration. The <a href="https://docs.astral.sh/uv/getting-started/installation/#shell-autocompletion">uv setup instructions</a> encourage you to put a <code>uv generate-shell-completion fish | source</code> in ~/.config/fish/config.fish, and fish says that config.fish runs on <em>every</em> shell invocation, including non-interactive ones. Perhaps Ghostty is invoking a subshell on every resize step and terminating it before the next resize step, or something? That does seem like a lot of code to run on every single resize step, and it sort of feels at odds with the Ghostty philosphy (which uv shares) of being fast.</p>
 <p>It does seem like it might be better anyway to <a href="https://fishshell.com/docs/current/language.html#configuration">only generate shell completion in the interactive case as the fish docs encourage</a>, e.g. something like</p>
-<pre><code class="language-fish">status --is-interactive; and uv generate-shell-completion fish | source
+<pre><code>status --is-interactive; and uv generate-shell-completion fish | source
 </code></pre>
 </div>
         </div>
@@ -119,12 +119,12 @@ stack backtrace:
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2025-06-01 04:58</div>
+            <div class="event">Label <span class="label">help wanted</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-01 04:58</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:30:28 UTC
+        Synced at 2026-01-20 19:37:48 UTC
     </footer>
 </body>
 </html>

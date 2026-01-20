@@ -23,18 +23,18 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>Currently we do not include a Windows manifest on the uv binary for windows builds. This can cause problems such as the one in https://github.com/astral-sh/uv/issues/16877 which can limit what uv can do for some Windows operations (e.g. symlinks) that can have restrictions imposed by the OS unbeknownst to us and make it none obvious to isolate the issue.</p>
+            <div class="timeline-body">Summary
+<p>Currently we do not include a Windows manifest on the uv binary for windows builds. This can cause problems such as the one in <a href="https://github.com/astral-sh/uv/issues/16877">astral-sh/uv#16877</a> which can limit what uv can do for some Windows operations (e.g. symlinks) that can have restrictions imposed by the OS unbeknownst to us and make it none obvious to isolate the issue.</p>
 <p>Given we already do this for the <code>uv-trampoline</code>, we should also do it for uv. In the case of uv, I opted for explicit entries in the manifest rather than using the defaults embed_manifest crate provides which are not appropriate in all general cases.</p>
 <p>The manifest now includes declarations for:</p>
 <ul>
-<li>Explicit &quot;system&quot; codepage declaration to retain backwards compat with previous uv releases. We should move to utf-8 codepage in the future to align with <code>uv-trampoline</code>, but it's arguably a breaking change in rare cases. We shouldn't have issues with using utf-8 as we don't really rely on *A calls to begin with.</li>
+<li>Explicit &quot;system&quot; codepage declaration to retain backwards compat with previous uv releases. We should move to utf-8 codepage in the future to align with <code>uv-trampoline</code>, but it&#x27;s arguably a breaking change in rare cases. We shouldn&#x27;t have issues with using utf-8 as we don&#x27;t really rely on *A calls to begin with.</li>
 <li>Explicit Windows 10+ support to ensure the executables are not treated as a legacy, preventing application compatibility layers being wrongly applied to it all the way back to NT 6.0 (Windows Vista). Note, other Windows compatibility entries do not imply support, rather they imply awareness as a preventive measure.</li>
 <li>Long Path support to avoid Windows operations assuming <a href="https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation">MAX_PATH</a> applies. This still requires the system to have long paths enabled via <code>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem@LongPathsEnabled</code> dword being set to <code>1</code> (see <a href="https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation#registry-setting-to-enable-long-paths">ref</a>).</li>
 <li>Standard invoker execution levels for CLI applications to disable UAC virtualization after including the manifest.</li>
 </ul>
 <p>The resulting manifest is the following</p>
-<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;
 &lt;assembly xmlns=&quot;urn:schemas-microsoft-com:asm.v1&quot; 
     xmlns:asmv3=&quot;urn:schemas-microsoft-com:asm.v3&quot; manifestVersion=&quot;1.0&quot;&gt;
     &lt;assemblyIdentity name=&quot;uv&quot; type=&quot;win32&quot; version=&quot;0.9.13.0&quot;&gt;&lt;/assemblyIdentity&gt;
@@ -61,8 +61,8 @@
     &lt;/ms_compatibility:compatibility&gt;
 &lt;/assembly&gt;
 </code></pre>
-<p>For reference, here's <code>cargo</code>'s manifest from 1.91</p>
-<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;
+<p>For reference, here&#x27;s <code>cargo</code>&#x27;s manifest from 1.91</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;
 &lt;assembly xmlns=&quot;urn:schemas-microsoft-com:asm.v1&quot; manifestVersion=&quot;1.0&quot; 
     xmlns:asmv3=&quot;urn:schemas-microsoft-com:asm.v3&quot;&gt;
     &lt;trustInfo xmlns=&quot;urn:schemas-microsoft-com:asm.v3&quot;&gt;
@@ -91,9 +91,9 @@
 &lt;/assembly&gt;
 </code></pre>
 <p>Closes #16877</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>Before changes on Windows 11 25H2 (without SeCreateSymbolicLinkPrivilege)</p>
-<pre><code class="language-console">$ uv init
+<pre><code>$ uv init
 $ uv add jupyterlab-widgets==3.0.16 --link-mode=symlink
 ...
 Resolved 2 packages in [TIME]
@@ -101,7 +101,7 @@ error: Failed to install: jupyterlab_widgets-3.0.16-py3-none-any.whl (jupyterlab
   Caused by: failed to symlink file from [CACHE_DIR]\archive-v0\aQcqEjLJAkVwuSzohqymc\jupyterlab_widgets-3.0.16.data\data\share\jupyter\labextensions\@jupyter-widgets\jupyterlab-manager\static\packages_base_lib_index_js-webpack_sharing_consume_default_jquery_jquery.5dd13f8e980fa3c50bfe.js to [ROOT]\.venv\Lib\site-packages\jupyterlab_widgets-3.0.16.data\data\share\jupyter\labextensions\@jupyter-widgets\jupyterlab-manager\static\packages_base_lib_index_js-webpack_sharing_consume_default_jquery_jquery.5dd13f8e980fa3c50bfe.js: A required privilege is not held by the client. (os error 1314)
 </code></pre>
 <p>Before changes on Windows 11 25H2 (with SeCreateSymbolicLinkPrivilege)</p>
-<pre><code class="language-console">$ uv init
+<pre><code>$ uv init
 $ uv add jupyterlab-widgets==3.0.16 --link-mode=symlink
 ...
 Resolved 2 packages in [TIME]
@@ -109,7 +109,7 @@ error: Failed to install: jupyterlab_widgets-3.0.16-py3-none-any.whl (jupyterlab
   Caused by: failed to symlink file from [CACHE_DIR]\archive-v0\aQcqEjLJAkVwuSzohqymc\jupyterlab_widgets-3.0.16.data\data\share\jupyter\labextensions\@jupyter-widgets\jupyterlab-manager\static\packages_base_lib_index_js-webpack_sharing_consume_default_jquery_jquery.5dd13f8e980fa3c50bfe.js to [ROOT]\.venv\Lib\site-packages\jupyterlab_widgets-3.0.16.data\data\share\jupyter\labextensions\@jupyter-widgets\jupyterlab-manager\static\packages_base_lib_index_js-webpack_sharing_consume_default_jquery_jquery.5dd13f8e980fa3c50bfe.js: The parameter is incorrect. (os error 87)
 </code></pre>
 <p>After changes on Windows 11 25H2 (with or without SeCreateSymbolicLinkPrivilege)</p>
-<pre><code class="language-console">$ uv init
+<pre><code>$ uv init
 $ uv add jupyterlab-widgets==3.0.16 --link-mode=symlink
 ...
 Resolved 2 packages in [TIME]
@@ -119,7 +119,7 @@ Installed 1 package in [TIME]
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @samypr100 on 2025-11-30 19:16</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/samypr100">@samypr100</a> on 2025-11-30 19:16</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-01 18:20</div>
@@ -140,28 +140,28 @@ Installed 1 package in [TIME]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-01 18:25</div>
-            <div class="timeline-body"><p>Does it matter though since they just spawn <code>uv</code> immediately? i.e., they don't need long path support right?</p>
+            <div class="timeline-body"><p>Does it matter though since they just spawn <code>uv</code> immediately? i.e., they don&#x27;t need long path support right?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2025-12-01 18:25</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-01 18:25</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">windows</span> added by @zanieb on 2025-12-01 18:25</div>
+            <div class="event">Label <span class="label">windows</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-01 18:25</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-12-01 18:26</div>
             <div class="timeline-body"><blockquote>
-<p>Does it matter though since they just spawn <code>uv</code> immediately? i.e., they don't need long path support right?</p>
+<p>Does it matter though since they just spawn <code>uv</code> immediately? i.e., they don&#x27;t need long path support right?</p>
 </blockquote>
-<p>Good point, I guess it doesn't matter in this case</p>
+<p>Good point, I guess it doesn&#x27;t matter in this case</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @zanieb on 2025-12-01 20:02</div>
+            <div class="event">Merged by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-01 20:02</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2025-12-01 20:02</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-01 20:02</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-12-01 20:57</div>
@@ -169,7 +169,7 @@ Installed 1 package in [TIME]
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:45:25 UTC
+        Synced at 2026-01-20 19:54:45 UTC
     </footer>
 </body>
 </html>

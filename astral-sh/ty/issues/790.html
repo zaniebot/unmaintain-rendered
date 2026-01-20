@@ -23,13 +23,13 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>Consider this situation:</p>
 <p><code>module.py</code>:</p>
-<pre><code class="language-py">import typing
+<pre><code>import typing
 </code></pre>
 <p><code>main.py</code>:</p>
-<pre><code class="language-py">from ty_extensions import is_subtype_of, is_equivalent_to, TypeOf
+<pre><code>from ty_extensions import is_subtype_of, is_equivalent_to, TypeOf
 
 import typing
 from module import typing as other_typing
@@ -41,26 +41,26 @@ reveal_type(is_equivalent_to(TypeOf[typing], TypeOf[other_typing]))
 <p>The <code>reveal_type</code> calls both reveal <code>Literal[False]</code> here, even though <code>typing</code> refers to the same module as <code>other_typing</code>. This is because our implementation of equivalence and subtyping for module-literal types just does a naive <code>==</code> comparison between two <code>ModuleLiteralType</code>s to determine whether one <code>ModuleLiteralType</code> is equivalent to another. But these two &quot;copies&quot; of the <code>typing</code> module in our representation were originally imported by different modules, so they do not compare equal, because we record the importing module on the type itself in the <code>importing_file</code> field on <code>ModuleLiteralType</code>: https://github.com/astral-sh/ruff/blob/f32f7a3b48ff11351c709c60109fafd5ca18ec6c/crates/ty_python_semantic/src/types.rs#L7499-L7510</p>
 <p>The reason <em>why</em> we store the <code>importing_file</code> field on <code>ModuleLiteralType</code>s at all is so that we can check whether any submodules of that module have been imported in the same file that imported the module. If there were, then we recognize those submodules as being available as attributes on the <code>ModuleLiteralType</code>. That means that for something like this, we would recognize an <code>abc</code> attribute as being available on <code>other_importlib</code> but not <code>importlib</code>:</p>
 <p><code>module.py</code>:</p>
-<pre><code class="language-py">import importlib
+<pre><code>import importlib
 import importlib.abc
 </code></pre>
 <p><code>main.py</code>:</p>
-<pre><code class="language-py">import importlib
+<pre><code>import importlib
 from module import importlib as other_importlib
 
-# error: Type `&lt;module 'importlib'&gt;` has no attribute `abc` (unresolved-attribute)
+# error: Type `&lt;module &#x27;importlib&#x27;&gt;` has no attribute `abc` (unresolved-attribute)
 reveal_type(importlib.abc)  # revealed: Unknown
 
-reveal_type(other_importlib.abc)  # revealed: &lt;module 'importlib.abc'&gt;
+reveal_type(other_importlib.abc)  # revealed: &lt;module &#x27;importlib.abc&#x27;&gt;
 </code></pre>
 <p>https://play.ty.dev/8b92c614-403a-47be-84dc-f3e3321f62c1</p>
-<p>So perhaps there <em>is</em> an argument that our current implementation is actually correct -- we <em>could</em> treat the two <code>ModuleLiteralType</code>s differently in some situations, so they shouldn't be seen as equivalent types, even if they point to the same underlying module?</p>
-<p>In any case, we should add some tests for this, and some comments to the test explaining why this is currently the case -- I don't think we have any at the moment. No tests fail if I apply this diff to <code>main</code>, which changes the result of the <code>reveal_type</code> calls in my original snippet from <code>Literal[False]</code> to <code>Literal[True]</code></p>
-<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/src/types.rs b/crates/ty_python_semantic/src/types.rs
+<p>So perhaps there <em>is</em> an argument that our current implementation is actually correct -- we <em>could</em> treat the two <code>ModuleLiteralType</code>s differently in some situations, so they shouldn&#x27;t be seen as equivalent types, even if they point to the same underlying module?</p>
+<p>In any case, we should add some tests for this, and some comments to the test explaining why this is currently the case -- I don&#x27;t think we have any at the moment. No tests fail if I apply this diff to <code>main</code>, which changes the result of the <code>reveal_type</code> calls in my original snippet from <code>Literal[False]</code> to <code>Literal[True]</code></p>
+<pre><code>diff --git a/crates/ty_python_semantic/src/types.rs b/crates/ty_python_semantic/src/types.rs
 index 71e7ab5798..1b3fe9ab5d 100644
 --- a/crates/ty_python_semantic/src/types.rs
 +++ b/crates/ty_python_semantic/src/types.rs
-@@ -1355,6 +1355,9 @@ impl&lt;'db&gt; Type&lt;'db&gt; {
+@@ -1355,6 +1355,9 @@ impl&lt;&#x27;db&gt; Type&lt;&#x27;db&gt; {
              (Type::MethodWrapper(self_method), Type::MethodWrapper(target_method)) =&gt; {
                  self_method.has_relation_to(db, target_method, relation)
              }
@@ -70,7 +70,7 @@ index 71e7ab5798..1b3fe9ab5d 100644
  
              // No literal type is a subtype of any other literal type, unless they are the same
              // type (which is handled above). This case is not necessary from a correctness
-@@ -1630,6 +1633,9 @@ impl&lt;'db&gt; Type&lt;'db&gt; {
+@@ -1630,6 +1633,9 @@ impl&lt;&#x27;db&gt; Type&lt;&#x27;db&gt; {
              | (nominal @ Type::NominalInstance(n), Type::ProtocolInstance(protocol)) =&gt; {
                  n.class.is_object(db) &amp;&amp; protocol.normalized(db) == nominal
              }
@@ -84,18 +84,18 @@ index 71e7ab5798..1b3fe9ab5d 100644
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">type properties</span> added by @AlexWaygood on 2025-07-09 10:49</div>
+            <div class="event">Label <span class="label">type properties</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-09 10:49</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Incorrect implementation of equivalence and subtyping for module-literal types" to "Incorrect implementation of equivalence and subtyping for module-literal types?" by @AlexWaygood on 2025-07-09 10:49</div>
+            <div class="event">Renamed from &quot;Incorrect implementation of equivalence and subtyping for module-literal types&quot; to &quot;Incorrect implementation of equivalence and subtyping for module-literal types?&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-09 10:49</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-07-10 09:11</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-10 09:11</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:16 UTC
+        Synced at 2026-01-20 19:25:01 UTC
     </footer>
 </body>
 </html>

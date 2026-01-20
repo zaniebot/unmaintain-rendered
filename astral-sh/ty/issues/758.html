@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Glyphack">@Glyphack</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>This was found by mypy primer in my <a href="https://github.com/astral-sh/ruff/pull/18473/">PR</a>.</p>
 <p>The following program has a high execution time:</p>
-<pre><code class="language-py">from typing import Self
+<pre><code>from typing import Self
 
 EMPTY = b&quot;&quot;
 
@@ -70,32 +70,32 @@ class GridOut:
         return b&quot;&quot;
 </code></pre>
 <p>https://play.ty.dev/80ab85b0-a6d7-4aa2-8de4-b4404d6a5b4e</p>
-<p>Check time with release is around 1 sec and in debug  it's 16 seconds for me(if you start editing the code the delay visible.)</p>
+<p>Check time with release is around 1 sec and in debug  it&#x27;s 16 seconds for me(if you start editing the code the delay visible.)</p>
 <p>Any line I remove reduces the check time significantly. So I left them in there.
 This is the original code that took 2 seconds in release and 40 seconds in debug:
 https://play.ty.dev/82349c52-7963-4388-9e45-a65a90032951</p>
 <p>From the traces I found that there is a cycle event on <code>member_lookup_with_policy</code>.
 TRACE ty_project::db: Salsa event: Event { thread_id: ThreadId(2), kind: WillIterateCycle { database_key: member_lookup_with_policy_(Id(f4e2)), iteration_count: IterationCount(1), fell_back: false } }</p>
-<p>I haven't done a good investigation yet, I'm creating this issue so it's not lost. I'll do more investigation in a few days.</p>
-<hr />
+<p>I haven&#x27;t done a good investigation yet, I&#x27;m creating this issue so it&#x27;s not lost. I&#x27;ll do more investigation in a few days.</p>
+<hr>
 <p>The original files that uncovered this issue:
 https://github.com/mongodb/mongo-python-driver/blob/65f7c542088356bba78bd70d68b7a4881cab7f8b/gridfs/synchronous/grid_file.py#L1622
 https://github.com/mongodb/mongo-python-driver/blob/65f7c542088356bba78bd70d68b7a4881cab7f8b/gridfs/asynchronous/grid_file.py#L1634</p>
-<h3>Version</h3>
+Version
 <p>f76d3f87c 2025-07-02</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">performance</span> added by @carljm on 2025-07-02 20:57</div>
+            <div class="event">Label <span class="label">performance</span> added by <a href="https://github.com/carljm">@carljm</a> on 2025-07-02 20:57</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">attribute access</span> added by @carljm on 2025-07-02 20:58</div>
+            <div class="event">Label <span class="label">attribute access</span> added by <a href="https://github.com/carljm">@carljm</a> on 2025-07-02 20:58</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-20 12:13</div>
             <div class="timeline-body"><p>Thank you for reporting this! I am looking into this today. Just writing down what I have so far.</p>
-<p>I attempted to further minimize the example, but it's hard (see above: <em>&quot;Any line I remove reduces the check time significantly&quot;</em>). Here is what I have. I added a few more <code>if size == …</code> checks to make the execution times even longer:</p>
-<pre><code class="language-py">class GridOut:
+<p>I attempted to further minimize the example, but it&#x27;s hard (see above: <em>&quot;Any line I remove reduces the check time significantly&quot;</em>). Here is what I have. I added a few more <code>if size == …</code> checks to make the execution times even longer:</p>
+<pre><code>class GridOut:
     def __init__(self: &quot;GridOut&quot;) -&gt; None:
         self._buffer = b&quot;&quot;
 
@@ -127,18 +127,18 @@ https://github.com/mongodb/mongo-python-driver/blob/65f7c542088356bba78bd70d68b7
 reveal_type(GridOut()._buffer)
 reveal_type(GridOut()._position)
 </code></pre>
-<p>What's very weird: if the order of the two <code>reveal_type</code> statements is changed, i.e. if we query the type of the <code>_position</code> member first, ty finishes instantly. However, if <code>_buffer</code> is accessed first (which depends on <code>_position</code> in complicated ways), we have this long execution time.</p>
+<p>What&#x27;s very weird: if the order of the two <code>reveal_type</code> statements is changed, i.e. if we query the type of the <code>_position</code> member first, ty finishes instantly. However, if <code>_buffer</code> is accessed first (which depends on <code>_position</code> in complicated ways), we have this long execution time.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-20 12:28</div>
-            <div class="timeline-body"><p>My current assumption is that this is very similar to the case that was patched in https://github.com/astral-sh/ruff/pull/18669; only that there are now actual bindings. Back then, I wrote …</p>
+            <div class="timeline-body"><p>My current assumption is that this is very similar to the case that was patched in <a href="https://github.com/astral-sh/ruff/pull/18669">astral-sh/ruff#18669</a>; only that there are now actual bindings. Back then, I wrote …</p>
 <blockquote>
 <p>This is not a fix for cases where there are actual bindings in the method. When we add self.a = 1; self.b = 1 to that example above, we still see that combinatorial explosion of runtime. […] I will open a ticket to track that separately.</p>
 </blockquote>
 <p>… but then failed to create that ticket. I assume this ticket here is basically the same (just much more convoluted): implicit instance attributes whose definitions are guarded by complex reachability constraints involving those same instance attributes.</p>
 <p>So I guess the easier example to reproduce this is:</p>
-<pre><code class="language-py">class C:
+<pre><code>class C:
     def f(self: &quot;C&quot;):
         if isinstance(self.a, str):
             return
@@ -182,18 +182,18 @@ reveal_type(GridOut()._position)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Slow execution for attribute assignment and access with narrowing constraints" to "Slow execution for attribute assignment and access with reachability constraints" by @sharkdp on 2025-08-20 16:17</div>
+            <div class="event">Renamed from &quot;Slow execution for attribute assignment and access with narrowing constraints&quot; to &quot;Slow execution for attribute assignment and access with reachability constraints&quot; by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-20 16:17</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @sharkdp by @sharkdp on 2025-08-22 13:58</div>
+            <div class="event">Assigned to <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-22 13:58</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @sharkdp on 2025-08-28 14:25</div>
+            <div class="event">Closed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-28 14:25</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:14 UTC
+        Synced at 2026-01-20 19:24:59 UTC
     </footer>
 </body>
 </html>

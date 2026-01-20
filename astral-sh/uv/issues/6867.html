@@ -23,19 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Afoucaul">@Afoucaul</a></div>
-            <div class="timeline-body"><!--
-Thank you for taking the time to report an issue! We're glad to have you involved with uv.
-
-If you're filing a bug report, please consider including the following information:
-
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
-* The current uv platform.
-* The current uv version (`uv --version
--->
+            <div class="timeline-body">
 
 <p>The <a href="https://docs.astral.sh/uv/guides/integration/docker/#intermediate-layers">doc</a> proposes the following Dockerfile to build a project into a Dockerfile while caching intermediate layers (uv version 0.4.0):</p>
-<pre><code class="language-Dockerfile"># Install uv
+<pre><code># Install uv
 FROM python:3.12-slim
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
 
@@ -55,7 +46,7 @@ ADD . /app
 # Sync the project
 RUN uv sync --frozen
 </code></pre>
-<p>However, when the project is a worskpace, <code>uv sync --frozen --no-install-project</code> won't do anything unless the workspace members are there. As a result, if a workspace contains libs in a <code>libs/</code> dir, one has to also <code>ADD</code> all <code>libs/*/pyproject.toml</code> files so <code>uv sync --frozen --no-install-project</code> actually installs 3rd party dependencies.
+<p>However, when the project is a worskpace, <code>uv sync --frozen --no-install-project</code> won&#x27;t do anything unless the workspace members are there. As a result, if a workspace contains libs in a <code>libs/</code> dir, one has to also <code>ADD</code> all <code>libs/*/pyproject.toml</code> files so <code>uv sync --frozen --no-install-project</code> actually installs 3rd party dependencies.
 We could easily <code>COPY</code> the whole <code>libs/</code> dir, but then the cache would be invalidated every time sources change.</p>
 <p>Is there a workaround? Or a workspace-specific strategy for building Docker images?</p>
 </div>
@@ -66,7 +57,7 @@ We could easily <code>COPY</code> the whole <code>libs/</code> dir, but then the
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-09-01 17:45</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-01 17:45</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Afoucaul">@Afoucaul</a> on 2024-09-02 08:08</div>
@@ -75,7 +66,7 @@ We could easily <code>COPY</code> the whole <code>libs/</code> dir, but then the
 </blockquote>
 <p>Actually I have, and I may be failing to understand what <code>--frozen</code> does.
 When I run <code>uv sync --frozen --no-install-workspace</code>, nothing gets installed:</p>
-<pre><code class="language-bash">$ uv sync --frozen --no-install-workspace
+<pre><code>$ uv sync --frozen --no-install-workspace
 Using Python 3.8.12
 Creating virtualenv at: .venv
 Audited in 0.00ms
@@ -84,7 +75,7 @@ $ ls -a .venv/lib/python3.8/site-packages
 _virtualenv.pth  _virtualenv.py
 </code></pre>
 <p>However when I replace <code>--frozen</code> with <code>--locked</code>, packages do get installed, except indeed workspace members:</p>
-<pre><code class="language-bash">$ uv sync --locked --no-install-workspace
+<pre><code>$ uv sync --locked --no-install-workspace
 Resolved 16 packages in 2ms
 Prepared 12 packages in 0.79ms
 Installed 12 packages in 19ms
@@ -109,20 +100,20 @@ anyio-4.4.0.dist-info  exceptiongroup                      httpcore-1.0.5.dist-i
 certifi                exceptiongroup-1.2.2.dist-info      httpx                     requests-2.32.3.dist-info  urllib3
 </code></pre>
 <p>From what I understand from <code>uv sync --help</code>, <code>--frozen</code> and <code>--locked</code> enforce the same behavior, except that <code>--locked</code> causes a failure if the lock file needs to be updated, while <code>--frozen</code> will proceed anyway:</p>
-<pre><code class="language-bash">      --locked                                   Assert that the `uv.lock` will remain unchanged
+<pre><code>      --locked                                   Assert that the `uv.lock` will remain unchanged
       --frozen                                   Sync without updating the `uv.lock` file
 </code></pre>
 <p>On that note, why would <code>--frozen</code> be recommended rather than <code>--locked</code> in Dockerfiles? It looks to me one would want to enforce as many static guarantees as possible at build time - but again I may be misunderstanding the purpose of these flags.</p>
-<p>Am I missing something here? (I'm sorry the discussion is drifting a bit, I guess I'm confused with the <code>sync</code> command in general)</p>
+<p>Am I missing something here? (I&#x27;m sorry the discussion is drifting a bit, I guess I&#x27;m confused with the <code>sync</code> command in general)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Afoucaul">@Afoucaul</a> on 2024-09-02 08:29</div>
-            <div class="timeline-body"><p>I can confirm that with uv 0.4.0, and the following layout, <code>uv sync --frozen --no-install-workspace</code> does not install anything if I don't <code>ADD</code> the <code>pyproject.toml</code> file of apps and libs in the Dockerfile</p>
-<details>
-<summary>Structure</summary>
+            <div class="timeline-body"><p>I can confirm that with uv 0.4.0, and the following layout, <code>uv sync --frozen --no-install-workspace</code> does not install anything if I don&#x27;t <code>ADD</code> the <code>pyproject.toml</code> file of apps and libs in the Dockerfile</p>
 
-<pre><code class="language-bash">.
+Structure
+
+<pre><code>.
 ├── Dockerfile
 ├── README.md
 ├── apps
@@ -157,10 +148,10 @@ certifi                exceptiongroup-1.2.2.dist-info      httpx                
 │       └── __init__.py
 └── uv.lock
 </code></pre>
-</details>
 
-<h2>With child <code>pyproject.toml</code> files</h2>
-<pre><code class="language-Dockerfile"># Install uv
+
+With child <code>pyproject.toml</code> files
+<pre><code># Install uv
 FROM python:3.12-slim
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
 
@@ -178,10 +169,10 @@ ADD apps/app1/pyproject.toml /app/apps/app1/pyproject.toml
 ADD apps/app2/pyproject.toml /app/apps/app2/pyproject.toml
 
 # Install dependencies
-# Omitting --frozen because I don't understand how it behaves
+# Omitting --frozen because I don&#x27;t understand how it behaves
 RUN uv sync --no-install-workspace
 </code></pre>
-<pre><code class="language-bash">$ docker build --quiet . -t demo &amp;&amp; docker run --rm demo ls -a .venv/lib/python3.12/site-packages
+<pre><code>$ docker build --quiet . -t demo &amp;&amp; docker run --rm demo ls -a .venv/lib/python3.12/site-packages
 sha256:62dffa4e4e3d9d54af08c172042e1f3f84749fdc0fef56b6aa891407ae04eb44
 .
 ..
@@ -209,8 +200,8 @@ sniffio-1.3.1.dist-info
 urllib3
 urllib3-2.2.2.dist-info
 </code></pre>
-<h2>Without child <code>pyproject.toml</code> files</h2>
-<pre><code class="language-Dockerfile"># Install uv
+Without child <code>pyproject.toml</code> files
+<pre><code># Install uv
 FROM python:3.12-slim
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
 
@@ -228,31 +219,31 @@ ADD pyproject.toml /app/pyproject.toml
 # ADD apps/app2/pyproject.toml /app/apps/app2/pyproject.toml
 
 # Install dependencies
-# Omitting --frozen because I don't understand how it behaves
+# Omitting --frozen because I don&#x27;t understand how it behaves
 RUN uv sync --no-install-workspace
 </code></pre>
-<pre><code class="language-bash">$ docker build --quiet . -t demo &amp;&amp; docker run --rm demo ls -a .venv/lib/python3.12/site-packages
+<pre><code>$ docker build --quiet . -t demo &amp;&amp; docker run --rm demo ls -a .venv/lib/python3.12/site-packages
 sha256:26cc1ba1a021cdc10d60c60f3015a545579a7a66f516dd81bb37ad1c60718c29
 .
 ..
 _virtualenv.pth
 _virtualenv.py
 </code></pre>
-<p>I'd be ok with <code>ADD</code>ing all <code>pyproject.toml</code> files, but Dockerfile <code>ADD</code> doesn't support a structure-preserving glob (eg an <code>ADD */*/pyproject.toml</code> that would add all <code>pyproject.toml</code> files under <code>apps/</code> or <code>libs/</code>, and which would end up at the same location in the Docker image), and <code>ADD</code>ing each file individually is tedious and error prone...</p>
+<p>I&#x27;d be ok with <code>ADD</code>ing all <code>pyproject.toml</code> files, but Dockerfile <code>ADD</code> doesn&#x27;t support a structure-preserving glob (eg an <code>ADD */*/pyproject.toml</code> that would add all <code>pyproject.toml</code> files under <code>apps/</code> or <code>libs/</code>, and which would end up at the same location in the Docker image), and <code>ADD</code>ing each file individually is tedious and error prone...</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Afoucaul">@Afoucaul</a> on 2024-09-02 13:42</div>
-            <div class="timeline-body"><p>Closing in favor of https://github.com/astral-sh/uv/issues/6935</p>
+            <div class="timeline-body"><p>Closing in favor of <a href="https://github.com/astral-sh/uv/issues/6935">astral-sh/uv#6935</a></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @Afoucaul on 2024-09-02 13:42</div>
+            <div class="event">Closed by <a href="https://github.com/Afoucaul">@Afoucaul</a> on 2024-09-02 13:42</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:26:43 UTC
+        Synced at 2026-01-20 19:33:29 UTC
     </footer>
 </body>
 </html>

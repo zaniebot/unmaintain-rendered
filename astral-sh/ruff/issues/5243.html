@@ -27,13 +27,13 @@
 <p>In this <a href="https://github.com/astral-sh/ruff/pull/4390">PR</a> RUF012 was extended to apply to non-dataclass classes.</p>
 <p>This has the (maybe desirable, maybe not, but was surprising to me) effect of <em>forcing typing</em> for a RUF rule, in places where you would not necessarily use typing (if you did not want to).</p>
 <p>For instance, in Django Rest Framework (<a href="https://www.django-rest-framework.org/api-guide/serializers/#modelserializer">from their docs</a>):</p>
-<pre><code class="language-python">class AccountSerializer(serializers.ModelSerializer):
+<pre><code>class AccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
-        fields = ['id', 'account_name', 'users', 'created']  # RUF012
+        fields = [&#x27;id&#x27;, &#x27;account_name&#x27;, &#x27;users&#x27;, &#x27;created&#x27;]  # RUF012
 </code></pre>
 <p>Or in Django <a href="https://docs.djangoproject.com/en/4.2/ref/models/options/#django.db.models.Options.indexes">itself</a>:</p>
-<pre><code class="language-python">class Customer(models.Model):
+<pre><code>class Customer(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
 
@@ -43,23 +43,23 @@
             models.Index(fields=[&quot;first_name&quot;], name=&quot;first_name_idx&quot;),  # RUF012
         ]
 </code></pre>
-<p>You could argue that's good, but at least to me, it's <em>different</em> from dataclasses, since in there you are required to use typing to even use them, so they are opt-in even before you use ruff. You could also argue both Django and Django Rest Framework should be recommending tuples instead.</p>
-<p>Isn't this too trigger happy for a RUF rule? Does it make sense to split it from the dataclass one?</p>
+<p>You could argue that&#x27;s good, but at least to me, it&#x27;s <em>different</em> from dataclasses, since in there you are required to use typing to even use them, so they are opt-in even before you use ruff. You could also argue both Django and Django Rest Framework should be recommending tuples instead.</p>
+<p>Isn&#x27;t this too trigger happy for a RUF rule? Does it make sense to split it from the dataclass one?</p>
 <p>EDIT: Actually, it is a separated code already 🤦🏽</p>
 <p>In any case, feel free to close if this is just what it is! Ignoring the rule is easy for these kind of projects.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tjkuson">@tjkuson</a> on 2023-06-21 09:01</div>
-            <div class="timeline-body"><p>For what it's worth, the Django project is against adding type hints, at least in the near future. You can read more in this <a href="https://github.com/django/deps/pull/65">PR</a> and a <a href="https://groups.google.com/g/django-developers/c/C_Phs05kL1Q/m/SX1oIqYKCQAJ">technical board statement</a>. This might be why it doesn't recommend the <code>ClassVar</code> type annotation (and annotations in general).</p>
-<p>For balance, however, the typed-django project also hasn't gone all-in with <code>ClassVar</code> as suggested in this <a href="https://github.com/typeddjango/django-stubs/pull/394#issuecomment-1302527184">PR</a> (though a quick search of the codebase shows <code>ClassVar</code> is still used in some places).</p>
+            <div class="timeline-body"><p>For what it&#x27;s worth, the Django project is against adding type hints, at least in the near future. You can read more in this <a href="https://github.com/django/deps/pull/65">PR</a> and a <a href="https://groups.google.com/g/django-developers/c/C_Phs05kL1Q/m/SX1oIqYKCQAJ">technical board statement</a>. This might be why it doesn&#x27;t recommend the <code>ClassVar</code> type annotation (and annotations in general).</p>
+<p>For balance, however, the typed-django project also hasn&#x27;t gone all-in with <code>ClassVar</code> as suggested in this <a href="https://github.com/typeddjango/django-stubs/pull/394#issuecomment-1302527184">PR</a> (though a quick search of the codebase shows <code>ClassVar</code> is still used in some places).</p>
 <p>Is it perhaps worth resolving a balance of only flagging a violation when type annotations are already used to annotate a variable?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/scastlara">@scastlara</a> on 2023-06-21 09:03</div>
             <div class="timeline-body"><blockquote>
-<p>For what it's worth, the Django project is against adding type hints, at least in the near future.</p>
+<p>For what it&#x27;s worth, the Django project is against adding type hints, at least in the near future.</p>
 </blockquote>
 <p>Yep, but I wonder why a RUF rule should really be forcing type hints at all.</p>
 </div>
@@ -70,21 +70,21 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-06-21 11:06</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-21 11:06</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-06-21 11:06</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-21 11:06</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ITProKyle">@ITProKyle</a> on 2023-06-21 18:11</div>
             <div class="timeline-body"><p>Adding to the <em>false positives</em>, this is also flagging pydantic models which function similar to dataclasses in how they are defined but actually create new instances of objects when instantiating the class.</p>
-<pre><code class="language-python">from pydantic import BaseModel
+<pre><code>from pydantic import BaseModel
 
 class MyExample(BaseModel):
 
     foo: dict[str, str] = {}
 </code></pre>
-<p>In this example, <code>foo</code> is flagged with <code>RUF012: Mutable class attributes should be annotated with typing.ClassVar</code> but pydantic creates a new instance of the empty dict each time the class is instantiated. It's not well documented if at all (https://github.com/pydantic/pydantic/discussions/3877) but is how it functions.</p>
+<p>In this example, <code>foo</code> is flagged with <code>RUF012: Mutable class attributes should be annotated with typing.ClassVar</code> but pydantic creates a new instance of the empty dict each time the class is instantiated. It&#x27;s not well documented if at all (https://github.com/pydantic/pydantic/discussions/3877) but is how it functions.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -92,21 +92,21 @@ class MyExample(BaseModel):
             <div class="timeline-body"><p>Thank you for all the feedback here :)</p>
 <p>A couple misc. reactions, from reading through the thread:</p>
 <ul>
-<li>This rule is admittedly &quot;pedantic&quot;. I wish we had a way to express &quot;pedantic&quot; rules, and we will in the future, but for now, I intentionally made this its own rule code, independent of the <code>dataclass</code> version, so that it could be selectively disabled for projects in which it doesn't apply. (I do consider that a valid workaround for the issues raised thus far.)</li>
+<li>This rule is admittedly &quot;pedantic&quot;. I wish we had a way to express &quot;pedantic&quot; rules, and we will in the future, but for now, I intentionally made this its own rule code, independent of the <code>dataclass</code> version, so that it could be selectively disabled for projects in which it doesn&#x27;t apply. (I do consider that a valid workaround for the issues raised thus far.)</li>
 <li>We should omit Pydantic models from this rule, that seems straightforward.</li>
 <li>On whether we should suggest <code>typing.ClassVar</code>: the question for me is whether the critique here is about the <em>rule</em>, or the <em>suggestion</em>. In the Django case, should we not be flagging those attributes <em>at all</em>, or should we not be <em>suggesting</em> <code>typing.ClassVar</code> (and instead suggest something else, like using immutable data structures)?</li>
-<li>Related to the above: I'm not opposed to confining this check to classes with at least one typed attribute, but the thing is, it's still problematic (in the sense of the rule) to use a mutable default in those contexts -- the thing we're linting against is still present. (<code>typing.ClassVar</code> at least gives you clear semantics around how the field is meant to behave, and a way to enforce those semantics via a type checker, which is why it's presented as a possible solution.)</li>
+<li>Related to the above: I&#x27;m not opposed to confining this check to classes with at least one typed attribute, but the thing is, it&#x27;s still problematic (in the sense of the rule) to use a mutable default in those contexts -- the thing we&#x27;re linting against is still present. (<code>typing.ClassVar</code> at least gives you clear semantics around how the field is meant to behave, and a way to enforce those semantics via a type checker, which is why it&#x27;s presented as a possible solution.)</li>
 </ul>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-21 18:39</div>
-            <div class="timeline-body"><p>(To be clear: I'm looking for more feedback here, including on the questions above. Thanks all!)</p>
+            <div class="timeline-body"><p>(To be clear: I&#x27;m looking for more feedback here, including on the questions above. Thanks all!)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/LefterisJP">@LefterisJP</a> on 2023-06-21 21:25</div>
-            <div class="timeline-body"><p>I also wanted to ask here, when you have a class variable as an &quot;immutable&quot; constant for that class, what should you do? Should you still annotate with this? Is there some other annotation here, as you probably don't want to have mutable class variables in most cases?</p>
+            <div class="timeline-body"><p>I also wanted to ask here, when you have a class variable as an &quot;immutable&quot; constant for that class, what should you do? Should you still annotate with this? Is there some other annotation here, as you probably don&#x27;t want to have mutable class variables in most cases?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -123,10 +123,10 @@ class MyExample(BaseModel):
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/g-as">@g-as</a> on 2023-06-21 22:48</div>
             <div class="timeline-body"><blockquote>
-<p>(To be clear: I'm looking for more feedback here, including on the questions above. Thanks all!)</p>
+<p>(To be clear: I&#x27;m looking for more feedback here, including on the questions above. Thanks all!)</p>
 </blockquote>
 <p>One of my use cases is the following:</p>
-<pre><code class="language-python">from typing import ClassVar
+<pre><code>from typing import ClassVar
 
 
 class SomeAbstractBaseClass:
@@ -143,7 +143,7 @@ class SomeConcreteNewClass(SomeAbstractBaseClass):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kpfleming">@kpfleming</a> on 2023-06-24 11:09</div>
-            <div class="timeline-body"><p>I've just had this fire on an Ansible plugin module which does not have any type annotations. For now I'll disable RUF012 and hope that #5275 resolves it.</p>
+            <div class="timeline-body"><p>I&#x27;ve just had this fire on an Ansible plugin module which does not have any type annotations. For now I&#x27;ll disable RUF012 and hope that #5275 resolves it.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -151,7 +151,7 @@ class SomeConcreteNewClass(SomeAbstractBaseClass):
             <div class="timeline-body"><blockquote>
 <p>We should omit Pydantic models from this rule, that seems straightforward.</p>
 </blockquote>
-<p>I'd suggest a setting that lets you whitelist certain ancestor classes, with maybe default set to <code>Pydantic.BaseModel</code> or whatever. Since there are multiple libs where the &quot;problem&quot; syntax is part of a DSL.</p>
+<p>I&#x27;d suggest a setting that lets you whitelist certain ancestor classes, with maybe default set to <code>Pydantic.BaseModel</code> or whatever. Since there are multiple libs where the &quot;problem&quot; syntax is part of a DSL.</p>
 <p>I am not sure if this is possible yet, but it might be with the new import resolver.</p>
 </div>
         </div>
@@ -166,36 +166,36 @@ class SomeConcreteNewClass(SomeAbstractBaseClass):
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2023-07-10 01:10</div>
+            <div class="event">Label <span class="label">question</span> removed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-10 01:10</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-07-10 01:10</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-10 01:10</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-07-10 01:10</div>
+            <div class="event">Label <span class="label">needs-decision</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-10 01:10</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/flaeppe">@flaeppe</a> on 2023-09-28 09:37</div>
             <div class="timeline-body"><blockquote>
 <p>[...] In the Django case, should we not be flagging those attributes at all, or should we not be suggesting typing.ClassVar (and instead suggest something else, like using immutable data structures)? [...]</p>
 </blockquote>
-<p>In the Django and its (database) model case it's not valid, as there's class descriptors doing a bit of magic there. As such the <code>ClassVar</code> is only valid for 1 case, when there's no instance of a <code>Model</code>. Though if you have a <code>Model</code> <em>instance</em>, the attribute contains the python value of what's stored in a database.</p>
+<p>In the Django and its (database) model case it&#x27;s not valid, as there&#x27;s class descriptors doing a bit of magic there. As such the <code>ClassVar</code> is only valid for 1 case, when there&#x27;s no instance of a <code>Model</code>. Though if you have a <code>Model</code> <em>instance</em>, the attribute contains the python value of what&#x27;s stored in a database.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/alexei">@alexei</a> on 2023-12-16 13:58</div>
             <div class="timeline-body"><p>I found Django migrations are an area where <code>ruff</code> and <code>mypy</code> might not agree as far as this rule is concerned.</p>
-<h3>Sample 1</h3>
-<pre><code class="language-python">class Migration(migrations.Migration):
+Sample 1
+<pre><code>class Migration(migrations.Migration):
     dependencies = [...]
     operations = [...]
 </code></pre>
-<p><code>ruff</code> isn't satisfied:</p>
+<p><code>ruff</code> isn&#x27;t satisfied:</p>
 <blockquote>
 <p>RUF012 Mutable class attributes should be annotated with <code>typing.ClassVar</code></p>
 </blockquote>
-<h3>Sample 2</h3>
-<pre><code class="language-python">class Migration(migrations.Migration):
+Sample 2
+<pre><code>class Migration(migrations.Migration):
     dependencies: ClassVar[list[tuple[str, str]]] = [...]
 
     operations: ClassVar[list[Operation]] = [...]
@@ -204,8 +204,8 @@ class SomeConcreteNewClass(SomeAbstractBaseClass):
 <blockquote>
 <p>error: Cannot override instance variable (previously declared on base class &quot;Migration&quot;) with class variable  [misc]</p>
 </blockquote>
-<h3>Sample 3</h3>
-<pre><code class="language-python">class Migration(migrations.Migration):
+Sample 3
+<pre><code>class Migration(migrations.Migration):
     dependencies: list[tuple[str, str]] = [...]
 
     operations: list[Operation] = [...]
@@ -223,7 +223,7 @@ class SomeConcreteNewClass(SomeAbstractBaseClass):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/alexei">@alexei</a> on 2023-12-16 16:24</div>
-            <div class="timeline-body"><p>@charliermarsh it behaves as desired. I hadn't considered <code>Sequence</code> before. Thanks for the tip!</p>
+            <div class="timeline-body"><p>@charliermarsh it behaves as desired. I hadn&#x27;t considered <code>Sequence</code> before. Thanks for the tip!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -234,7 +234,7 @@ class SomeConcreteNewClass(SomeAbstractBaseClass):
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ITProKyle">@ITProKyle</a> on 2023-12-18 15:14</div>
             <div class="timeline-body"><p>@charliermarsh, I appreciate the fix in #5274 to omit pydantic models however, it does not omit classes that subclass user defined models.</p>
-<pre><code class="language-python">from pydantic import BaseModel
+<pre><code>from pydantic import BaseModel
 
 
 class MyBaseModel(BaseModel):
@@ -248,12 +248,12 @@ class MyExample(MyBaseModel):
 
     subclass_field: dict[str, str] = {}  # RUF012
 </code></pre>
-<p>If this is not something that ruff can determine on it's own, an option like <a href="https://beta.ruff.rs/docs/settings/#flake8-type-checking"><code>runtime-evaluated-base-classes</code></a> for this case would be an acceptable solution.</p>
+<p>If this is not something that ruff can determine on it&#x27;s own, an option like <a href="https://beta.ruff.rs/docs/settings/#flake8-type-checking"><code>runtime-evaluated-base-classes</code></a> for this case would be an acceptable solution.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-18 15:47</div>
-            <div class="timeline-body"><p>@ITProKyle -- We can definitely detect this for subclasses defined in the same file, and I'll make that change now. Unfortunately we can't yet support it for classes defined <em>across</em> files.</p>
+            <div class="timeline-body"><p>@ITProKyle -- We can definitely detect this for subclasses defined in the same file, and I&#x27;ll make that change now. Unfortunately we can&#x27;t yet support it for classes defined <em>across</em> files.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -263,26 +263,26 @@ class MyExample(MyBaseModel):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-18 16:39</div>
-            <div class="timeline-body"><p>It would be nice if we could somehow reuse an existing setting here. It's not quite identical to <code>runtime-evaluated-base-classes</code> though 🤔</p>
+            <div class="timeline-body"><p>It would be nice if we could somehow reuse an existing setting here. It&#x27;s not quite identical to <code>runtime-evaluated-base-classes</code> though 🤔</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kratsg">@kratsg</a> on 2024-04-03 00:12</div>
-            <div class="timeline-body"><p>I ran into this for a <a href="https://github.com/roman-right/beanie"><code>beanie.Document</code></a> class where the MRO does include <code>pydantic</code> (my guess is <code>ruff</code> doesn't see the subclass):</p>
+            <div class="timeline-body"><p>I ran into this for a <a href="https://github.com/roman-right/beanie"><code>beanie.Document</code></a> class where the MRO does include <code>pydantic</code> (my guess is <code>ruff</code> doesn&#x27;t see the subclass):</p>
 <pre><code>&gt;&gt;&gt; Document.__mro__
-(&lt;class 'beanie.odm.documents.Document'&gt;, &lt;class 'lazy_model.parser.new.LazyModel'&gt;, &lt;class 'pydantic.main.BaseModel'&gt;, &lt;class 'beanie.odm.interfaces.setters.SettersInterface'&gt;, &lt;class 'beanie.odm.interfaces.inheritance.InheritanceInterface'&gt;, &lt;class 'beanie.odm.interfaces.find.FindInterface'&gt;, &lt;class 'beanie.odm.interfaces.aggregate.AggregateInterface'&gt;, &lt;class 'beanie.odm.interfaces.getters.OtherGettersInterface'&gt;, &lt;class 'object'&gt;)
+(&lt;class &#x27;beanie.odm.documents.Document&#x27;&gt;, &lt;class &#x27;lazy_model.parser.new.LazyModel&#x27;&gt;, &lt;class &#x27;pydantic.main.BaseModel&#x27;&gt;, &lt;class &#x27;beanie.odm.interfaces.setters.SettersInterface&#x27;&gt;, &lt;class &#x27;beanie.odm.interfaces.inheritance.InheritanceInterface&#x27;&gt;, &lt;class &#x27;beanie.odm.interfaces.find.FindInterface&#x27;&gt;, &lt;class &#x27;beanie.odm.interfaces.aggregate.AggregateInterface&#x27;&gt;, &lt;class &#x27;beanie.odm.interfaces.getters.OtherGettersInterface&#x27;&gt;, &lt;class &#x27;object&#x27;&gt;)
 </code></pre>
-<p>So I think for now, i will need to add in a <code>#noqa: RUF012</code> for those lines that have a problem at the moment, as I believe there's no way to configure to &quot;teach&quot; <code>ruff</code> about the <code>Document</code> class here.</p>
+<p>So I think for now, i will need to add in a <code>#noqa: RUF012</code> for those lines that have a problem at the moment, as I believe there&#x27;s no way to configure to &quot;teach&quot; <code>ruff</code> about the <code>Document</code> class here.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Anselmoo">@Anselmoo</a> on 2024-05-24 21:41</div>
             <div class="timeline-body"><blockquote>
 <blockquote>
-<p>(To be clear: I'm looking for more feedback here, including on the questions above. Thanks all!)</p>
+<p>(To be clear: I&#x27;m looking for more feedback here, including on the questions above. Thanks all!)</p>
 </blockquote>
 <p>One of my use cases is the following:</p>
-<pre><code class="language-python">from typing import ClassVar
+<pre><code>from typing import ClassVar
 
 
 class SomeAbstractBaseClass:
@@ -297,14 +297,14 @@ class SomeConcreteNewClass(SomeAbstractBaseClass):
 <p>This triggers <code>RUF012</code> on the subclass, where I would have expected this to pass.</p>
 </blockquote>
 <p>I find a similiar observation for:</p>
-<pre><code class="language-py">some_attribute = ClassVar[dict[str, str]]
+<pre><code>some_attribute = ClassVar[dict[str, str]]
 
 class MyExample:
 
     subclass_field: some_attribute = {}
 </code></pre>
 <p>here is <code>RUF012</code> appears, but I expect not to be, which might be more convenient if you inherit over several classes:</p>
-<pre><code class="language-py">class MyExample2:
+<pre><code>class MyExample2:
 
     subclass_field: some_attribute = {}
 class MyExample3:
@@ -317,7 +317,7 @@ class MyExample3:
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-27 05:05</div>
             <div class="timeline-body"><blockquote>
 <p>I find a similiar observation for:</p>
-<pre><code class="language-python">some_attribute = ClassVar[dict[str, str]]
+<pre><code>some_attribute = ClassVar[dict[str, str]]
 
 class MyExample:
 
@@ -337,7 +337,7 @@ class MyExample:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-28 04:19</div>
-            <div class="timeline-body"><p>No, it's not bad but just a limitation of Ruff which will be resolved with the ongoing red knot project.</p>
+            <div class="timeline-body"><p>No, it&#x27;s not bad but just a limitation of Ruff which will be resolved with the ongoing red knot project.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -348,27 +348,27 @@ class MyExample:
 </blockquote>
 <p>I personally would not put <code>ClassVar</code> in a type alias.
 I think of a type alias as an alias to a type, and <code>ClassVar</code> is not part of the type.</p>
-<pre><code class="language-python">MyTypeAlias = dict[str, tuple[int, bytes, Literal[1, 2]]]
+<pre><code>MyTypeAlias = dict[str, tuple[int, bytes, Literal[1, 2]]]
 
 class C:
     subclass_field: ClassVar[MyTypeAlias]
 </code></pre>
-<p>I would only put something in the type alias if it's part of the type.</p>
+<p>I would only put something in the type alias if it&#x27;s part of the type.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/beauxq">@beauxq</a> on 2025-01-10 16:11</div>
             <div class="timeline-body"><p>Since many voices here are expressing that <code>RUF012</code> is too strict, I just want to make sure other perspectives are heard.
-For me personally, <code>RUF012</code> is not strict enough ( https://github.com/astral-sh/ruff/issues/13137 )
-So I don't see a problem with it being too strict.</p>
+For me personally, <code>RUF012</code> is not strict enough ( <a href="https://github.com/astral-sh/ruff/issues/13137">astral-sh/ruff#13137</a> )
+So I don&#x27;t see a problem with it being too strict.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/beauxq">@beauxq</a> on 2025-01-10 19:11</div>
-            <div class="timeline-body"><p>I do think it's a problem the way it suggests <code>typing.ClassVar</code> when that is very often not the appropriate solution.
+            <div class="timeline-body"><p>I do think it&#x27;s a problem the way it suggests <code>typing.ClassVar</code> when that is very often not the appropriate solution.
 <code>ClassVar</code> is sometimes the appropriate solution.</p>
 <p>But more often, the better solution is to move the initialization to <code>__init__</code></p>
-<pre><code class="language-python">class C:
+<pre><code>class C:
     a: list[int]
 
     def __init__(self):
@@ -380,7 +380,7 @@ So I don't see a problem with it being too strict.</p>
             <div class="timeline-header">Comment by <a href="https://github.com/Tatsh">@Tatsh</a> on 2025-02-06 20:36</div>
             <div class="timeline-body"><p>My issue with RUF012 is that it triggers even when a parent class (type stub) has the attribute properly annotated.</p>
 <p>Type:</p>
-<pre><code class="language-python"># __set__ value type
+<pre><code># __set__ value type
 _ST = TypeVar(&quot;_ST&quot;, contravariant=True)
 # __get__ return type
 _GT = TypeVar(&quot;_GT&quot;, covariant=True)
@@ -390,43 +390,43 @@ class Field(RegisterLookupMixin, Generic[_ST, _GT]):
     default_error_messages: ClassVar[_ErrorMessagesDict]
 </code></pre>
 <p>Code:</p>
-<pre><code class="language-python">class CustomField(Field[Any, Any]):
-    default_error_messages = {'invalid': _('&quot;%(value)s&quot; is not a x')}  # RUF012
+<pre><code>class CustomField(Field[Any, Any]):
+    default_error_messages = {&#x27;invalid&#x27;: _(&#x27;&quot;%(value)s&quot; is not a x&#x27;)}  # RUF012
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zyv">@zyv</a> on 2025-03-04 06:44</div>
             <div class="timeline-body"><p>Could <code>django.contrib.admin.ModelAdmin</code> please be added to the base class exception list? For example, <code>radio_fields</code> is expected to be a dictionary... thanks!</p>
-<p>Migrations have already been mentioned, but it's so problematic that I had to add a per-file ignore:</p>
-<pre><code class="language-toml">[tool.ruff.lint.per-file-ignores]
+<p>Migrations have already been mentioned, but it&#x27;s so problematic that I had to add a per-file ignore:</p>
+<pre><code>[tool.ruff.lint.per-file-ignores]
 &quot;**/migrations/**.py&quot; = [&quot;RUF012&quot;]
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zyv">@zyv</a> on 2025-03-04 07:37</div>
-            <div class="timeline-body"><p>P.S. I opened typeddjango/django-stubs#2524 for the <code>ModelAdmin</code> issue. I was wondering what you (Astral) guys think about migrations. Are you open to adding an exception for <code>django.db.migrations.Migration</code> or would I have more luck trying to get <code>ClassVar</code> markers on <code>lists</code> in TypedDjango? I'm a bit on the fence on this.</p>
+            <div class="timeline-body"><p>P.S. I opened typeddjango/django-stubs#2524 for the <code>ModelAdmin</code> issue. I was wondering what you (Astral) guys think about migrations. Are you open to adding an exception for <code>django.db.migrations.Migration</code> or would I have more luck trying to get <code>ClassVar</code> markers on <code>lists</code> in TypedDjango? I&#x27;m a bit on the fence on this.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/beauxq">@beauxq</a> on 2025-03-04 11:59</div>
             <div class="timeline-body"><p>I think things can improve with this when we have red knot.
-Right now, ruff can't really see the relationship between  base classes and subclasses.</p>
-<pre><code class="language-python">class B:
+Right now, ruff can&#x27;t really see the relationship between  base classes and subclasses.</p>
+<pre><code>class B:
     a: ClassVar[int] = 3
 
 class C(B):
-    a = 4  # ruff can't see that this is already annotated with ClassVar
+    a = 4  # ruff can&#x27;t see that this is already annotated with ClassVar
 </code></pre>
 <p>So you might have to put <code>ClassVar</code> in thousands of subclasses, when it should be sufficient to just put it in one place.</p>
-<p>What <code>RUF012</code> is trying to do, can't be done well without a type-checker.</p>
+<p>What <code>RUF012</code> is trying to do, can&#x27;t be done well without a type-checker.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:47:30 UTC
+        Synced at 2026-01-20 18:48:38 UTC
     </footer>
 </body>
 </html>

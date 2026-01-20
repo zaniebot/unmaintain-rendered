@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/pasky">@pasky</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>Common <code>unittest.mock</code> patterns used in (at least my) test suite(s) produce false positives in ty, while pyright handles them correctly. This makes it difficult to type-check test files with ty.</p>
 <p>See the full reproducer at https://play.ty.dev/d95a7a51-6af0-486d-8ebb-a3b0ca0d0ea6</p>
-<h2>1. <code>possibly-missing-attribute</code> after mock assignment</h2>
+1. <code>possibly-missing-attribute</code> after mock assignment
 <p>When a typed attribute is replaced with <code>AsyncMock()</code> or <code>MagicMock()</code>, ty still tracks the union of possible types (<code>Unknown | OriginalType</code>). When accessing mock-specific attributes like <code>.assert_called()</code>, <code>.call_args</code>, or <code>.call_count</code> on child attributes of the mock, ty reports <code>possibly-missing-attribute</code> because it sees the original method signature in the union.</p>
 <pre><code>    agent.irc_monitor.varlink_sender = AsyncMock()
     await agent.irc_monitor.varlink_sender.send_message(&quot;#test&quot;, &quot;hello&quot;, &quot;server&quot;)
@@ -35,7 +35,7 @@
 <p>produces</p>
 <pre><code>warning[possibly-missing-attribute]: Attribute `assert_called` may be missing on object of type `Unknown | (bound method VarlinkSender.send_message(target: str, message: str, server: str) -&gt; CoroutineType[Any, Any, bool])`
 </code></pre>
-<h2>2. <code>invalid-assignment</code> for lambda stubs</h2>
+2. <code>invalid-assignment</code> for lambda stubs
 <p>Monkeypatching a method with a lambda that has a compatible but not identical signature (e.g., <code>lambda: False</code> vs <code>def check_limit(self) -&gt; bool</code>) triggers <code>invalid-assignment</code>. This is a common pattern for quickly stubbing out methods in tests.</p>
 <pre><code>class RateLimiter:
     def check_limit(self) -&gt; bool:
@@ -45,37 +45,37 @@ agent.irc_monitor.rate_limiter.check_limit = lambda: False  # ty: invalid-assign
 <p>produces</p>
 <pre><code>error[invalid-assignment]: Object of type `() -&gt; Unknown` is not assignable to attribute `check_limit` on type `Unknown | RateLimiter
 </code></pre>
-<p>Both of these cases work just fine with <code>pyright</code> (1.1.407) and I think having to exclude them manually seems unreasonable. I tried to look for some best practices around ty and tests, but didn't really find much so far...</p>
-<h3>Version</h3>
+<p>Both of these cases work just fine with <code>pyright</code> (1.1.407) and I think having to exclude them manually seems unreasonable. I tried to look for some best practices around ty and tests, but didn&#x27;t really find much so far...</p>
+Version
 <p>0.0.4</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-23 21:08</div>
             <div class="timeline-body"><p>Thanks for the report!</p>
-<p>I've opened #2193 to separately track the method-patching, since the two issues reported here have separate causes and fixes. This issue can track the <code>AsyncMock</code> patching.</p>
-<p>We do support the <code>AsyncMock</code> pattern, but currently only for one level of attribute. So <code>agent.irc_monitor = AsyncMock()</code> works, but deeper-nested attributes don't. I think this is a pretty arbitrary limitation that we can lift, though.</p>
+<p>I&#x27;ve opened #2193 to separately track the method-patching, since the two issues reported here have separate causes and fixes. This issue can track the <code>AsyncMock</code> patching.</p>
+<p>We do support the <code>AsyncMock</code> pattern, but currently only for one level of attribute. So <code>agent.irc_monitor = AsyncMock()</code> works, but deeper-nested attributes don&#x27;t. I think this is a pretty arbitrary limitation that we can lift, though.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Tests monkeypatching generate type errors" to "Support deeper-nested attribute type narrowing" by @carljm on 2025-12-23 21:08</div>
+            <div class="event">Renamed from &quot;Tests monkeypatching generate type errors&quot; to &quot;Support deeper-nested attribute type narrowing&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-12-23 21:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-23 21:08</div>
+            <div class="event">Added to milestone &quot;Stable&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-12-23 21:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @mtshiba by @mtshiba on 2025-12-24 11:27</div>
+            <div class="event">Assigned to <a href="https://github.com/mtshiba">@mtshiba</a> by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-12-24 11:27</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">narrowing</span> added by @mtshiba on 2025-12-24 11:27</div>
+            <div class="event">Label <span class="label">narrowing</span> added by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-12-24 11:27</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">attribute access</span> added by @mtshiba on 2025-12-24 11:27</div>
+            <div class="event">Label <span class="label">attribute access</span> added by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-12-24 11:27</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-12-24 14:57</div>
             <div class="timeline-body"><p>For the first issue, the immediate workaround is to use explicit typing, which will allow narrowing to work and eliminate the false-positive errors.</p>
-<pre><code class="language-python">from unittest.mock import AsyncMock
+<pre><code>from unittest.mock import AsyncMock
 
 class VarlinkSender:
     async def send_message(self, target: str, message: str, server: str) -&gt; bool:
@@ -102,10 +102,10 @@ async def test_mock_nested_attribute():
     args = agent.irc_monitor.varlink_sender.send_message.call_args
     count = agent.irc_monitor.varlink_sender.send_message.call_count
 </code></pre>
-<hr />
-<p>What follows is a detailed explanation of what's going on here (ty users don't need to read).</p>
-<p>We're recording attribute assignments at any level, but we can't use them to perform narrowing when they're implicit. This is because we can't rule out the possibility that the member is a data descriptor when the result of <code>class_member</code> is <code>Defined(Unknown)</code>.</p>
-<pre><code class="language-python">class Foo: ...
+<hr>
+<p>What follows is a detailed explanation of what&#x27;s going on here (ty users don&#x27;t need to read).</p>
+<p>We&#x27;re recording attribute assignments at any level, but we can&#x27;t use them to perform narrowing when they&#x27;re implicit. This is because we can&#x27;t rule out the possibility that the member is a data descriptor when the result of <code>class_member</code> is <code>Defined(Unknown)</code>.</p>
+<pre><code>class Foo: ...
 class Mock: ...
 
 class Bar:
@@ -142,7 +142,7 @@ reveal_type(baz.bar.foo)  # Unknown | Foo
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:21:29 UTC
+        Synced at 2026-01-20 19:26:40 UTC
     </footer>
 </body>
 </html>

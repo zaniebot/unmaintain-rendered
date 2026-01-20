@@ -23,23 +23,23 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Zaczero">@Zaczero</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<p>I've recently found out that some people are unaware that <strong>CONTAINS_OP</strong>'s <strong>LOAD_CONST</strong> optimization applies only to containers with trivial values. As long as the RHS is non-trivial, Python will not apply <strong>LOAD_CONST</strong> optimization and will build the container each time we do <strong>CONTAINS_OP</strong>. This is a <em>major performance bottlneck</em> that many people may accidentally stumble upon. I think there's great potential in having a new rule that checks for this kind of inefficiency.</p>
+            <div class="timeline-body">Summary
+<p>I&#x27;ve recently found out that some people are unaware that <strong>CONTAINS_OP</strong>&#x27;s <strong>LOAD_CONST</strong> optimization applies only to containers with trivial values. As long as the RHS is non-trivial, Python will not apply <strong>LOAD_CONST</strong> optimization and will build the container each time we do <strong>CONTAINS_OP</strong>. This is a <em>major performance bottlneck</em> that many people may accidentally stumble upon. I think there&#x27;s great potential in having a new rule that checks for this kind of inefficiency.</p>
 <p>I prepared an example that hopefully explains my idea and labels which cases should be considered for a warning:
 https://godbolt.org/z/radT91rdn</p>
-<p>For example, <code>0 in {'foo': 1, 'bar': 2}</code> is much more efficient in the form of <code>0 == 'foo' or 0 == 'bar'</code>, so manual iteration. An alternative would be to declare a variable for computing RHS once but that may not always be feasible.</p>
+<p>For example, <code>0 in {&#x27;foo&#x27;: 1, &#x27;bar&#x27;: 2}</code> is much more efficient in the form of <code>0 == &#x27;foo&#x27; or 0 == &#x27;bar&#x27;</code>, so manual iteration. An alternative would be to declare a variable for computing RHS once but that may not always be feasible.</p>
 <p>There is one potential issue: in the original code, all of the RHS is run, which can cause some side effects. After rewriting it to a sequence of <code>or...or</code> operations, Python may not run all the cases, potentially changing runtime behavior. Although I think such code would be of very poor quality in the first place.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-08-18 14:57</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-18 14:57</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> added by @ntBre on 2025-08-18 14:57</div>
+            <div class="event">Label <span class="label">needs-decision</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-18 14:57</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-18 15:41</div>
-            <div class="timeline-body"><p>Thanks for the suggestion! This is cool, and I didn't know godbolt had a Python option.</p>
+            <div class="timeline-body"><p>Thanks for the suggestion! This is cool, and I didn&#x27;t know godbolt had a Python option.</p>
 <p>One thing that concerns me about making this a lint rule is that it seems very dependent upon CPython implementation details that might vary between CPython versions and especially other implementations of Python.</p>
 <p>This also seems partially covered by two of our other rules:</p>
 <ul>
@@ -54,19 +54,19 @@ https://godbolt.org/z/radT91rdn</p>
             <div class="timeline-body"><blockquote>
 <p>This also seems partially covered by two of our other rules</p>
 </blockquote>
-<p>Not quite, my issue concerns the set/list being constructed from scratch whenever it's being tested. Some people are unaware that this LOAD_CONST optimization only applies to Python trivial values and when such optimization is missed, there's a significant performance degradation.</p>
-<hr />
+<p>Not quite, my issue concerns the set/list being constructed from scratch whenever it&#x27;s being tested. Some people are unaware that this LOAD_CONST optimization only applies to Python trivial values and when such optimization is missed, there&#x27;s a significant performance degradation.</p>
+<hr>
 <blockquote>
 <p>One thing that concerns me about making this a lint rule is that it seems very dependent upon CPython implementation details that might vary between CPython versions and especially other implementations of Python.</p>
 </blockquote>
-<p>Given that this rule should only be applied to cases that hurt performance (bad cases), the only false-positive I can think of is if there exists a Python version/implementation that can optimize sets/collections with potential creation-time side-effects (or be smarter about it: e.g., understand that <code>'foo'.lower()</code> is side-effect-free).</p>
+<p>Given that this rule should only be applied to cases that hurt performance (bad cases), the only false-positive I can think of is if there exists a Python version/implementation that can optimize sets/collections with potential creation-time side-effects (or be smarter about it: e.g., understand that <code>&#x27;foo&#x27;.lower()</code> is side-effect-free).</p>
 <p>PyPy 3.11 has the same behavior as CPython:
 https://godbolt.org/z/sf3xs5aa7</p>
-<details>
-<summary>Cython Pure Python Mode would result in false positives (it is actually smarter):</summary>
 
-<p><img height="400" alt="Screenshot from Cython Pure Python Mode HTML annotations" src="https://github.com/user-attachments/assets/d5b2e381-da6f-49eb-981a-7a32216ba3fa" /></p>
-</details>
+Cython Pure Python Mode would result in false positives (it is actually smarter):
+
+<p><img alt="Screenshot from Cython Pure Python Mode HTML annotations" src="https://github.com/user-attachments/assets/d5b2e381-da6f-49eb-981a-7a32216ba3fa"></p>
+
 
 <p>I have run AI research on the topic (https://claude.ai/public/artifacts/3d2baeed-0ad0-4db1-9042-a819ff24425f) and here are the key findings:</p>
 <ul>
@@ -79,7 +79,7 @@ https://godbolt.org/z/sf3xs5aa7</p>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:53:13 UTC
+        Synced at 2026-01-20 18:50:20 UTC
     </footer>
 </body>
 </html>

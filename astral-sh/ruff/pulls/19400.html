@@ -25,30 +25,30 @@
             <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a></div>
             <div class="timeline-body"><p>This PR is changes how <code>reveal_type</code> determines what type to reveal, in a way that should be a no-op to most callers.</p>
 <p>Previously, we would reveal the type of the first parameter, <em>after</em> all of the call binding machinery had done its work. This includes inferring the specialization of a generic function, and then applying that specialization to all parameter and argument types, which is relevant since the typeshed definition of <code>reveal_type</code> is generic:</p>
-<pre><code class="language-pyi">def reveal_type(obj: _T, /) -&gt; _T: ...
+<pre><code>def reveal_type(obj: _T, /) -&gt; _T: ...
 </code></pre>
 <p>Normally this does not matter, since we infer <code>_T = [arg type]</code> and apply that to the parameter type, yielding <code>[arg type]</code>. But applying that specialization also simplifies the argument type, which makes <code>reveal_type</code> less useful as a debugging aid when we want to see the actual, raw, unsimplified argument type.</p>
 <p>With this patch, we now grab the original unmodified argument type and reveal that instead.</p>
 <p>In addition to making the debugging aid example work, this also makes our <code>reveal_type</code> implementation more robust to custom typeshed definitions, such as</p>
-<pre><code class="language-py">def reveal_type(obj: Any) -&gt; Any: ...
+<pre><code>def reveal_type(obj: Any) -&gt; Any: ...
 </code></pre>
-<p>(That custom definition is probably not what anyone would want, since you wouldn't be able to depend on the return type being equivalent to the argument type, but still)</p>
+<p>(That custom definition is probably not what anyone would want, since you wouldn&#x27;t be able to depend on the return type being equivalent to the argument type, but still)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @dcreager on 2025-07-17 14:48</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/dcreager">@dcreager</a> on 2025-07-17 14:48</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-07-17 14:48</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/dcreager">@dcreager</a> on 2025-07-17 14:48</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @dcreager on 2025-07-17 14:48</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/dcreager">@dcreager</a> on 2025-07-17 14:48</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> added by @dcreager on 2025-07-17 14:48</div>
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/dcreager">@dcreager</a> on 2025-07-17 14:48</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @dcreager on 2025-07-17 14:48</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/dcreager">@dcreager</a> on 2025-07-17 14:48</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-07-17 14:50</div>
@@ -58,15 +58,15 @@
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:1056 on 2025-07-17 14:50</div>
             <div class="timeline-body"><p>This is the meat of the change; the rest is just refactoring to enable this + cleanup.</p>
 <p>We need the union builder because technically multiple arguments could be matched to the first parameter, though that would require a custom typeshed definition of <code>reveal_type</code> that uses a variadic parameter:</p>
-<pre><code class="language-pyi">def reveal_type(*args) -&gt; Any: ...
+<pre><code>def reveal_type(*args) -&gt; Any: ...
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-17 14:52</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
+<code>mypy_primer</code> results
 <p>No ecosystem changes detected ✅
 No memory usage changes detected ✅</p>
 </div>
@@ -76,7 +76,7 @@ No memory usage changes detected ✅</p>
             <div class="timeline-body"><p>Thank you very much!</p>
 <p>I was thinking about how to write a test for this. One could probably create an unsimplified <code>int | Literal[1]</code> union type via <code>UnionType::new(db, […])</code> (which we would ideally make private if we could, but for this test, it would be helpfully available).</p>
 <p>But then how do we feed that type into <code>reveal_type</code>? We could expose some unsafe functionality via <code>ty_extensions</code> maybe, but that seems like a very bad idea.</p>
-<p>All that is to say: I'm fine with there not being a test. It will help everyone who's working on the {Union/Intersection}Builder in the future.</p>
+<p>All that is to say: I&#x27;m fine with there not being a test. It will help everyone who&#x27;s working on the {Union/Intersection}Builder in the future.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -89,14 +89,14 @@ No memory usage changes detected ✅</p>
             <div class="timeline-body"><blockquote>
 <p>I can try writing a Rust test instead of an mdtest</p>
 </blockquote>
-<p>I was thinking about Rust tests as well. But I assume it's not trivial to invoke the whole call inference machinery without having an AST. And if you construct an AST by parsing some example, then it's unclear how to inject that &quot;wrong&quot; type? Maybe you figure something out, it's certainly not impossible. But I'm not sure if it's worth spending a lot of time on. That's what I wanted to say originally.</p>
+<p>I was thinking about Rust tests as well. But I assume it&#x27;s not trivial to invoke the whole call inference machinery without having an AST. And if you construct an AST by parsing some example, then it&#x27;s unclear how to inject that &quot;wrong&quot; type? Maybe you figure something out, it&#x27;s certainly not impossible. But I&#x27;m not sure if it&#x27;s worth spending a lot of time on. That&#x27;s what I wanted to say originally.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @dcreager on 2025-07-17 20:50</div>
+            <div class="event">Merged by <a href="https://github.com/dcreager">@dcreager</a> on 2025-07-17 20:50</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dcreager on 2025-07-17 20:50</div>
+            <div class="event">Closed by <a href="https://github.com/dcreager">@dcreager</a> on 2025-07-17 20:50</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-07-17 20:50</div>
@@ -104,7 +104,7 @@ No memory usage changes detected ✅</p>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:14:20 UTC
+        Synced at 2026-01-20 19:16:43 UTC
     </footer>
 </body>
 </html>

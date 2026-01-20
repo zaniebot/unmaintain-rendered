@@ -24,7 +24,7 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/yeswalrus">@yeswalrus</a></div>
             <div class="timeline-body"><p>Tested with uv 0.1.41</p>
-<p>While looking for workarounds to https://github.com/astral-sh/uv/issues/3512, I experimented with using --no-cache.
+<p>While looking for workarounds to <a href="https://github.com/astral-sh/uv/issues/3512">astral-sh/uv#3512</a>, I experimented with using --no-cache.
 In our case, this actually <em>increased</em> the failure rate, as we use a local artifactory based pypi mirror which appears rate limited.
 Using the same bash script as in the linked issue but with --no-cache added, and with significantly more packages, we began observing instances where the artifactory server would be overwhelmed and UV would fail with <code>connection reset by peer</code>.</p>
 <p>Under pip, this was also reproducible though it required a larger number of simultaneous processes (~80), but rather that failing outright PIP would retry connection failures. Please add (ideally configurable) support for retrying connection failures when downloading or querying indexes</p>
@@ -32,15 +32,15 @@ Using the same bash script as in the linked issue but with --no-cache added, and
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-10 18:08</div>
-            <div class="timeline-body"><p>Can you share more information, e.g., a trace with <code>--verbose</code> to demonstrate what's failing? In general, we do already retry.</p>
+            <div class="timeline-body"><p>Can you share more information, e.g., a trace with <code>--verbose</code> to demonstrate what&#x27;s failing? In general, we do already retry.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-05-10 18:17</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-10 18:17</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/yeswalrus">@yeswalrus</a> on 2024-05-10 22:34</div>
-            <div class="timeline-body"><p>This may be an issue with our artifactory server having an artificially low rate limit or something but I'm not entirely sure.
+            <div class="timeline-body"><p>This may be an issue with our artifactory server having an artificially low rate limit or something but I&#x27;m not entirely sure.
 Logs here:</p>
 <pre><code>Using Python 3.10.12 interpreter at: /usr/bin/python3
 Creating virtualenv at: test_venvs/6c38fa92-edb8-4dc3-8c34-6a395504bd9d/
@@ -65,12 +65,12 @@ error: Failed to download distributions
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-11 02:06</div>
-            <div class="timeline-body"><p>We don't retry on TCP layer e.g. connection reset errors afaik. I think we'll need to add custom middleware to retry these.</p>
-<p>If someone could link or summarize the relevant details about what exactly is retried today that'd be really helpful.</p>
+            <div class="timeline-body"><p>We don&#x27;t retry on TCP layer e.g. connection reset errors afaik. I think we&#x27;ll need to add custom middleware to retry these.</p>
+<p>If someone could link or summarize the relevant details about what exactly is retried today that&#x27;d be really helpful.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @zanieb by @zanieb on 2024-05-11 02:06</div>
+            <div class="event">Assigned to <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-11 02:06</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-05-11 02:42</div>
@@ -86,7 +86,7 @@ error: Failed to download distributions
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/yeswalrus">@yeswalrus</a> on 2024-05-11 02:50</div>
             <div class="timeline-body"><p>Complete (slightly obfuscated) log of one such instance captured with --verbose enabled, in case it helps with debugging.
-It's worth noting, this is a less serious issue - I only start seeing it reliably when I've got ~40 simultaneous venvs being created and --no-cache set, at least with my artificial benchmark, so this is something of an edge case. Still, having some ability to throttle or specify longer timeout windows might be helpful</p>
+It&#x27;s worth noting, this is a less serious issue - I only start seeing it reliably when I&#x27;ve got ~40 simultaneous venvs being created and --no-cache set, at least with my artificial benchmark, so this is something of an edge case. Still, having some ability to throttle or specify longer timeout windows might be helpful</p>
 <p><a href="https://github.com/astral-sh/uv/files/15281422/uv_err.log">uv_err.log</a></p>
 </div>
         </div>
@@ -97,19 +97,19 @@ It's worth noting, this is a less serious issue - I only start seeing it reliabl
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-05-30 16:29</div>
-            <div class="timeline-body"><p>FYI, I'm also seeing this same error semi-often in my work environment:</p>
+            <div class="timeline-body"><p>FYI, I&#x27;m also seeing this same error semi-often in my work environment:</p>
 <pre><code>⠙ defusedxml==0.7.1                                                                                                                                                                                                                                                                                                                              error: Failed to download `defusedxml==0.7.1`
   Caused by: request or response body error
   Caused by: error reading a body from connection
   Caused by: Connection reset by peer (os error 104)
 </code></pre>
-<p>I'm not sure the details, but we have some kind of Palo Alto Firewall that is almost certainly causing the issue, running the uv command again almost always ends in success.</p>
-<p>I'm going to test setting the new <code>UV_CONCURRENT_DOWNLOADS</code> (https://github.com/astral-sh/uv/pull/3493) to 1 and see if that makes a difference in how often I see this error. Though pip also has issues in my work environment from time to time, so it may just reduce the frequency of issues.</p>
+<p>I&#x27;m not sure the details, but we have some kind of Palo Alto Firewall that is almost certainly causing the issue, running the uv command again almost always ends in success.</p>
+<p>I&#x27;m going to test setting the new <code>UV_CONCURRENT_DOWNLOADS</code> (<a href="https://github.com/astral-sh/uv/pull/3493">astral-sh/uv#3493</a>) to 1 and see if that makes a difference in how often I see this error. Though pip also has issues in my work environment from time to time, so it may just reduce the frequency of issues.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-02 18:24</div>
-            <div class="timeline-body"><p>I assume those retries don't apply to streaming operations. Like, they apply to the initial request itself, but probably not the entirety of reading from the stream? We can fix this by adding our own retry around download operations.</p>
+            <div class="timeline-body"><p>I assume those retries don&#x27;t apply to streaming operations. Like, they apply to the initial request itself, but probably not the entirety of reading from the stream? We can fix this by adding our own retry around download operations.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -119,29 +119,29 @@ It's worth noting, this is a less serious issue - I only start seeing it reliabl
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-25 16:18</div>
-            <div class="timeline-body"><p>Hi @aybidi — we think this is important to address but haven't started working on a fix yet. If anyone is willing to investigate and contribute in the meantime I'm happy to review.</p>
+            <div class="timeline-body"><p>Hi @aybidi — we think this is important to address but haven&#x27;t started working on a fix yet. If anyone is willing to investigate and contribute in the meantime I&#x27;m happy to review.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> removed by @zanieb on 2024-06-25 16:19</div>
+            <div class="event">Label <span class="label">question</span> removed by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-25 16:19</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-06-25 16:19</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-25 16:19</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2024-06-25 16:19</div>
+            <div class="event">Label <span class="label">help wanted</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-25 16:19</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-06-25 16:30</div>
             <div class="timeline-body"><blockquote>
-<p>I'm going to test setting the new <code>UV_CONCURRENT_DOWNLOADS</code> (#3493) to 1 and see if that makes a difference in how often I see this error.</p>
+<p>I&#x27;m going to test setting the new <code>UV_CONCURRENT_DOWNLOADS</code> (#3493) to 1 and see if that makes a difference in how often I see this error.</p>
 </blockquote>
-<p>FWIW, for my use case setting this did not help, but one day the firewall just started behaving better and I've not seen the error again.</p>
+<p>FWIW, for my use case setting this did not help, but one day the firewall just started behaving better and I&#x27;ve not seen the error again.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kujenga">@kujenga</a> on 2024-07-01 16:59</div>
-            <div class="timeline-body"><p>Here's an example of a similar class of error that I observed in a CI build that would be nice to have uv retry automatically:</p>
+            <div class="timeline-body"><p>Here&#x27;s an example of a similar class of error that I observed in a CI build that would be nice to have uv retry automatically:</p>
 <pre><code>error: Failed to download distributions
   Caused by: Failed to fetch wheel: torch==2.1.0
   Caused by: Failed to extract archive
@@ -152,21 +152,21 @@ It's worth noting, this is a less serious issue - I only start seeing it reliabl
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">network</span> added by @konstin on 2024-07-02 09:35</div>
+            <div class="event">Label <span class="label">network</span> added by <a href="https://github.com/konstin">@konstin</a> on 2024-07-02 09:35</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/messense">@messense</a> on 2024-07-09 07:44</div>
-            <div class="timeline-body"><p>I'm also hitting this issue, it's rather painful when going through a corporate proxy that may have concurrent connection limits, retry manually doesn't always work in CI.</p>
+            <div class="timeline-body"><p>I&#x27;m also hitting this issue, it&#x27;s rather painful when going through a corporate proxy that may have concurrent connection limits, retry manually doesn&#x27;t always work in CI.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-07-09 08:34</div>
-            <div class="timeline-body"><p>@messense With the latest release, what's the error message, does it fail with retries or without?</p>
+            <div class="timeline-body"><p>@messense With the latest release, what&#x27;s the error message, does it fail with retries or without?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/messense">@messense</a> on 2024-07-09 08:47</div>
-            <div class="timeline-body"><p>I'm using uv 0.2.23, the error message is</p>
+            <div class="timeline-body"><p>I&#x27;m using uv 0.2.23, the error message is</p>
 <pre><code>error: Failed to prepare distributions
   Caused by: Failed to fetch wheel: jaxlib==0.4.16+cuda12.cudnn89
   Caused by: Failed to extract archive
@@ -179,17 +179,17 @@ It's worth noting, this is a less serious issue - I only start seeing it reliabl
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/messense">@messense</a> on 2024-07-10 02:51</div>
-            <div class="timeline-body"><p>Judging from the <a href="https://github.com/TrueLayer/reqwest-middleware/blob/cb2121478ad2de4ba04c6261416b5e11c4c7ebec/reqwest-retry/src/retryable_strategy.rs#L145-L150">code</a>, <code>reqwest-retry</code> simply won't retry body errors.</p>
+            <div class="timeline-body"><p>Judging from the <a href="https://github.com/TrueLayer/reqwest-middleware/blob/cb2121478ad2de4ba04c6261416b5e11c4c7ebec/reqwest-retry/src/retryable_strategy.rs#L145-L150">code</a>, <code>reqwest-retry</code> simply won&#x27;t retry body errors.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-10 02:52</div>
-            <div class="timeline-body"><p>Thanks, good catch! Let's fix that.</p>
+            <div class="timeline-body"><p>Thanks, good catch! Let&#x27;s fix that.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/benjamin-hodgson">@benjamin-hodgson</a> on 2024-07-10 11:52</div>
-            <div class="timeline-body"><p>Sounds like the fix would need to be on uv's end: https://github.com/TrueLayer/reqwest-middleware/issues/47#issuecomment-1170955570</p>
+            <div class="timeline-body"><p>Sounds like the fix would need to be on uv&#x27;s end: <a href="https://github.com/TrueLayer/reqwest-middleware/issues/47">TrueLayer/reqwest-middleware#47</a>#issuecomment-1170955570</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -199,17 +199,17 @@ It's worth noting, this is a less serious issue - I only start seeing it reliabl
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/benjamin-hodgson">@benjamin-hodgson</a> on 2024-07-10 16:07</div>
-            <div class="timeline-body"><p>I'll take <a href="https://github.com/astral-sh/uv/actions/runs/9876778011">this build</a> for a spin on my testing farm. The networking issues I was suffering were infrequent so I won't be able to say for certain but if it shows up I'll let you know</p>
+            <div class="timeline-body"><p>I&#x27;ll take <a href="https://github.com/astral-sh/uv/actions/runs/9876778011">this build</a> for a spin on my testing farm. The networking issues I was suffering were infrequent so I won&#x27;t be able to say for certain but if it shows up I&#x27;ll let you know</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-10 16:10</div>
-            <div class="timeline-body"><p>We'll probably release it soon too! Thanks though :)</p>
+            <div class="timeline-body"><p>We&#x27;ll probably release it soon too! Thanks though :)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/benjamin-hodgson">@benjamin-hodgson</a> on 2024-07-10 17:34</div>
-            <div class="timeline-body"><p>That build consistently gets stack overflow errors for me. I'm on Windows.</p>
+            <div class="timeline-body"><p>That build consistently gets stack overflow errors for me. I&#x27;m on Windows.</p>
 <pre><code>&gt; uv.exe pip install --verbose cowsay
 
 DEBUG uv 0.2.23
@@ -226,7 +226,7 @@ DEBUG Searching for a compatible version of cowsay (*)
 DEBUG Selecting: cowsay==6.1 (cowsay-6.1-py3-none-any.whl)
 DEBUG No cache entry for: https://files.pythonhosted.org/packages/f1/13/63c0a02c44024ee16f664e0b36eefeb22d54e93531630bd99e237986f534/cowsay-6.1-py3-none-any.whl.metadata
 
-thread 'main' has overflowed its stack
+thread &#x27;main&#x27; has overflowed its stack
 </code></pre>
 </div>
         </div>
@@ -266,18 +266,18 @@ error: Failed to prepare distributions
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-11 03:56</div>
-            <div class="timeline-body"><p>That's so tragic 😭 okay I'll dig deeper. I'll need to reproduce it with a fake server or something. If anyone has time to poke at a reproduction, let me know!</p>
+            <div class="timeline-body"><p>That&#x27;s so tragic 😭 okay I&#x27;ll dig deeper. I&#x27;ll need to reproduce it with a fake server or something. If anyone has time to poke at a reproduction, let me know!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/messense">@messense</a> on 2024-07-12 06:22</div>
             <div class="timeline-body"><p>If I add a <code>panic!()</code> inside https://github.com/astral-sh/uv/blob/23c6cd774b466924d02de23add7101bcaa7b7c3e/crates/uv-client/src/base_client.rs#L291</p>
-<p>then inject a connection reset error using <code>sudo iptables -A OUTPUT -p tcp --dport 3128 -j REJECT --reject-with tcp-reset</code> (our proxy is running on port 3128), the panic never happens, only the <code>Connection reset by peer</code> error message is printed, so my guess is that <code>reqwest-retry</code> or <code>reqwest-middleware</code> can't handle such kind of retry strategy at the moment.</p>
+<p>then inject a connection reset error using <code>sudo iptables -A OUTPUT -p tcp --dport 3128 -j REJECT --reject-with tcp-reset</code> (our proxy is running on port 3128), the panic never happens, only the <code>Connection reset by peer</code> error message is printed, so my guess is that <code>reqwest-retry</code> or <code>reqwest-middleware</code> can&#x27;t handle such kind of retry strategy at the moment.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-07-12 12:12</div>
-            <div class="timeline-body"><p>^ yea, I was able to achieve similar results using @hauntsaninja https://github.com/hauntsaninja/nginx_pypi_cache and @messense's approach
+            <div class="timeline-body"><p>^ yea, I was able to achieve similar results using @hauntsaninja https://github.com/hauntsaninja/nginx_pypi_cache and @messense&#x27;s approach
 I also tried with <code>tc</code> linux utility by dropping/corrupting packets and gave me other types of unrelated errors such as BufErrors 😂</p>
 </div>
         </div>
@@ -297,12 +297,12 @@ I also tried with <code>tc</code> linux utility by dropping/corrupting packets a
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-16 01:49</div>
-            <div class="timeline-body"><p>That's interesting, the actual download code is really similar for those two methods. They both use a <code>bytes_stream</code>, etc...</p>
+            <div class="timeline-body"><p>That&#x27;s interesting, the actual download code is really similar for those two methods. They both use a <code>bytes_stream</code>, etc...</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-16 01:51</div>
-            <div class="timeline-body"><p>I guess I don't see what's different between those methods. The latter just streams the wheel as-is to disk then unzips it; the former unzips as it streams.</p>
+            <div class="timeline-body"><p>I guess I don&#x27;t see what&#x27;s different between those methods. The latter just streams the wheel as-is to disk then unzips it; the former unzips as it streams.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -317,17 +317,17 @@ I also tried with <code>tc</code> linux utility by dropping/corrupting packets a
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-07-19 01:39</div>
-            <div class="timeline-body"><p>I'm unable to reproduce in my end either, curious if this resolves other's issues as well.</p>
+            <div class="timeline-body"><p>I&#x27;m unable to reproduce in my end either, curious if this resolves other&#x27;s issues as well.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-19 01:47</div>
-            <div class="timeline-body"><p>I'll close this while I'm here — I suspect we've fixed it. Feel free to chime in if you encounter this still!</p>
+            <div class="timeline-body"><p>I&#x27;ll close this while I&#x27;m here — I suspect we&#x27;ve fixed it. Feel free to chime in if you encounter this still!</p>
 <p>Thanks @messense !</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2024-07-19 01:47</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-19 01:47</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/stinodego">@stinodego</a> on 2024-07-26 21:57</div>
@@ -342,25 +342,25 @@ I also tried with <code>tc</code> linux utility by dropping/corrupting packets a
   Caused by: error reading a body from connection
   Caused by: end of file before message length reached
 </code></pre>
-<p>This pops up sometimes, rerunning the workflow fixes it. Probably something to do with the custom index (https://download.pytorch.org/whl/cpu) having some stability issues. But in this case, I would expect a retry to fix the issue. But retry behavior doesn't seem configurable for uv.</p>
+<p>This pops up sometimes, rerunning the workflow fixes it. Probably something to do with the custom index (https://download.pytorch.org/whl/cpu) having some stability issues. But in this case, I would expect a retry to fix the issue. But retry behavior doesn&#x27;t seem configurable for uv.</p>
 <p>Any pointers are appreciated!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-26 23:54</div>
-            <div class="timeline-body"><p>@stinodego -- Just confirming that you're on the most recent version of uv?</p>
+            <div class="timeline-body"><p>@stinodego -- Just confirming that you&#x27;re on the most recent version of uv?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/stinodego">@stinodego</a> on 2024-07-27 06:51</div>
-            <div class="timeline-body"><p>@charliermarsh These failures happened with uv 0.2.29 (you can check the link to our GitHub Actions to see some non-verbose logs). I'm pretty sure I've seen it on earlier versions as well.</p>
-<p>Haven't seen it yet with 0.2.30, but I can post here if I do see it. But I don't believe 0.2.30 contains any fixes related to this issue.</p>
+            <div class="timeline-body"><p>@charliermarsh These failures happened with uv 0.2.29 (you can check the link to our GitHub Actions to see some non-verbose logs). I&#x27;m pretty sure I&#x27;ve seen it on earlier versions as well.</p>
+<p>Haven&#x27;t seen it yet with 0.2.30, but I can post here if I do see it. But I don&#x27;t believe 0.2.30 contains any fixes related to this issue.</p>
 <p>If it helps, I can set our CI to verbose to get better logs on this issue?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-27 12:27</div>
-            <div class="timeline-body"><p>@stinodego -- Yeah I wouldn't expect any change in 0.2.30. Verbose could be helpful because I'm trying to understand if we're retrying the download or not.</p>
+            <div class="timeline-body"><p>@stinodego -- Yeah I wouldn&#x27;t expect any change in 0.2.30. Verbose could be helpful because I&#x27;m trying to understand if we&#x27;re retrying the download or not.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -371,30 +371,30 @@ I also tried with <code>tc</code> linux utility by dropping/corrupting packets a
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/stinodego">@stinodego</a> on 2024-07-27 20:04</div>
             <div class="timeline-body"><blockquote>
-<p>Verbose could be helpful because I'm trying to understand if we're retrying the download or not.</p>
+<p>Verbose could be helpful because I&#x27;m trying to understand if we&#x27;re retrying the download or not.</p>
 </blockquote>
 <p>I set our CI to verbose mode - will report back if I spot the error again.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-07-29 11:33</div>
-            <div class="timeline-body"><p>I think https://github.com/astral-sh/uv/pull/5555 should fix this.</p>
+            <div class="timeline-body"><p>I think <a href="https://github.com/astral-sh/uv/pull/5555">astral-sh/uv#5555</a> should fix this.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/laurence-kobold">@laurence-kobold</a> on 2024-08-30 21:11</div>
-            <div class="timeline-body"><p>I'm running into transient network issues when installing packages via git. Looking at the logs, there doesn't seem to be any retries for failures of <code>git clone</code> operations. This is on v0.3.1 of uv. Is it possible to add retries here as well?</p>
+            <div class="timeline-body"><p>I&#x27;m running into transient network issues when installing packages via git. Looking at the logs, there doesn&#x27;t seem to be any retries for failures of <code>git clone</code> operations. This is on v0.3.1 of uv. Is it possible to add retries here as well?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw-gts">@notatallshaw-gts</a> on 2024-09-10 16:45</div>
-            <div class="timeline-body"><p>I've seen a regression in this recently, in the last few days, using the latest version of uv, I've started seeing:</p>
+            <div class="timeline-body"><p>I&#x27;ve seen a regression in this recently, in the last few days, using the latest version of uv, I&#x27;ve started seeing:</p>
 <pre><code>⠼ defusedxml==0.7.1                                                                                                                                                                                                                                          error: Failed to download `defusedxml==0.7.1`
   Caused by: request or response body error
   Caused by: error reading a body from connection
   Caused by: Connection reset by peer (os error 104)
 </code></pre>
-<p>I run again and it's fine, but I thought uv was now retrying these low level network errors?</p>
+<p>I run again and it&#x27;s fine, but I thought uv was now retrying these low level network errors?</p>
 <p>It could of course just be my corporate network environment getting worse, worth reporting a new issue?</p>
 </div>
         </div>
@@ -405,22 +405,22 @@ I also tried with <code>tc</code> linux utility by dropping/corrupting packets a
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw-gts">@notatallshaw-gts</a> on 2024-09-10 18:28</div>
-            <div class="timeline-body"><p>All the errors were related to running <code>uv pip compile</code>, so it was only trying to collect metadata? I don't have any additional output than what I posted.</p>
+            <div class="timeline-body"><p>All the errors were related to running <code>uv pip compile</code>, so it was only trying to collect metadata? I don&#x27;t have any additional output than what I posted.</p>
 <p>The index is https://pypi.org/, but the network involves a Palo Alto firewall that will be decrypting and encrypting traffic, and it seems occasionally this will just fail (either kill the connection or send an empty body).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jgehrcke">@jgehrcke</a> on 2024-10-12 11:22</div>
             <div class="timeline-body"><blockquote>
-<p>I've seen a regression in this recently, in the last few days, using the latest version of uv,</p>
+<p>I&#x27;ve seen a regression in this recently, in the last few days, using the latest version of uv,</p>
 </blockquote>
-<p>I think I can confirm. Just opened https://github.com/astral-sh/uv/issues/8144 before I found this issue here.</p>
+<p>I think I can confirm. Just opened <a href="https://github.com/astral-sh/uv/issues/8144">astral-sh/uv#8144</a> before I found this issue here.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:24:53 UTC
+        Synced at 2026-01-20 19:31:05 UTC
     </footer>
 </body>
 </html>

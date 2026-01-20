@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/zsol">@zsol</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>For example checking the following takes 11s, but the real world example this is taken from takes many minutes (and is a bit more nested):</p>
-<pre><code class="language-python">from pydantic_core import core_schema
+<pre><code>from pydantic_core import core_schema
 
 core_schema.union_schema(
     [
@@ -45,24 +45,24 @@ core_schema.union_schema(
     ],
 )
 </code></pre>
-<h3>Version</h3>
+Version
 <p>0.0.2 with #22030 applied</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">performance</span> added by @carljm on 2025-12-17 18:09</div>
+            <div class="event">Label <span class="label">performance</span> added by <a href="https://github.com/carljm">@carljm</a> on 2025-12-17 18:09</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-17 18:10</div>
+            <div class="event">Added to milestone &quot;Stable&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-12-17 18:10</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-12-17 18:13</div>
-            <div class="timeline-body"><p>Yeah the performance of that specific <code>CoreSchema</code> union in Pydantic has been a known problem in https://github.com/astral-sh/ruff/pull/21467 and https://github.com/astral-sh/ruff/pull/21784. I'm working on <code>TypedDict</code> tagged union support right now, and the hope is that it'll help with this problem.</p>
+            <div class="timeline-body"><p>Yeah the performance of that specific <code>CoreSchema</code> union in Pydantic has been a known problem in <a href="https://github.com/astral-sh/ruff/pull/21467">astral-sh/ruff#21467</a> and <a href="https://github.com/astral-sh/ruff/pull/21784">astral-sh/ruff#21784</a>. I&#x27;m working on <code>TypedDict</code> tagged union support right now, and the hope is that it&#x27;ll help with this problem.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-19 01:22</div>
-            <div class="timeline-body"><p>I just verified that https://github.com/astral-sh/ruff/pull/22052 and https://github.com/astral-sh/ruff/pull/22048 do not appear to help with this particular snippet. Here's the flamegraph (with those pull requests combined) https://share.firefox.dev/3KErPOX</p>
+            <div class="timeline-body"><p>I just verified that <a href="https://github.com/astral-sh/ruff/pull/22052">astral-sh/ruff#22052</a> and <a href="https://github.com/astral-sh/ruff/pull/22048">astral-sh/ruff#22048</a> do not appear to help with this particular snippet. Here&#x27;s the flamegraph (with those pull requests combined) https://share.firefox.dev/3KErPOX</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -83,11 +83,11 @@ core_schema.union_schema(
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-19 02:12</div>
             <div class="timeline-body"><p>I pursued various caching approaches before attempting to fix the root cause of the explosion.</p>
 <p>I then had Claude look at a way to prevent the recursion and a patch like</p>
-<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/src/types/infer/builder.rs b/crates/ty_python_semantic/src/types/infer/builder.rs
+<pre><code>diff --git a/crates/ty_python_semantic/src/types/infer/builder.rs b/crates/ty_python_semantic/src/types/infer/builder.rs
 index ac6d092c08..5123f06cf0 100644
 --- a/crates/ty_python_semantic/src/types/infer/builder.rs
 +++ b/crates/ty_python_semantic/src/types/infer/builder.rs
-@@ -7008,12 +7008,18 @@ impl&lt;'db, 'ast&gt; TypeInferenceBuilder&lt;'db, 'ast&gt; {
+@@ -7008,12 +7008,18 @@ impl&lt;&#x27;db, &#x27;ast&gt; TypeInferenceBuilder&lt;&#x27;db, &#x27;ast&gt; {
          let db = self.db();
  
          // If the type context is a union, attempt to narrow to a specific element.
@@ -97,7 +97,7 @@ index ac6d092c08..5123f06cf0 100644
 -            // explosion of inference attempts, and is rarely needed in practice.
 -            Some(Type::Union(union)) =&gt; union.elements(db),
 -            _ =&gt; &amp;[],
-+        // However, skip narrowing if we're already inside a multi-inference context
++        // However, skip narrowing if we&#x27;re already inside a multi-inference context
 +        // (i.e., inside a nested call during union narrowing) to avoid exponential blowup.
 +        let narrow_targets: &amp;[_] = if self.context.is_in_multi_inference() {
 +            &amp;[]
@@ -120,27 +120,27 @@ index ac6d092c08..5123f06cf0 100644
   | 3-level | 13s      | 2.1s         | 0.02s              |                                                                                                                                                         
   | 4-level | &gt;120s    | 40.5s        | 0.02s              |     
 </code></pre>
-<p>I don't feel qualified to say if this is appropriate.</p>
+<p>I don&#x27;t feel qualified to say if this is appropriate.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-19 02:33</div>
-            <div class="timeline-body"><p>I felt it was probably not appropriate, so I pursued avoiding redundant narrowing of repeated unions instead as an alternative. https://github.com/astral-sh/ruff/pull/22066 tracks ancestor unions to avoid recursive analysis. This still gives a 250x improvement on the 4-level snippet. I can get another 4x on top of that (i.e., 1000x) with various caching changes.</p>
+            <div class="timeline-body"><p>I felt it was probably not appropriate, so I pursued avoiding redundant narrowing of repeated unions instead as an alternative. <a href="https://github.com/astral-sh/ruff/pull/22066">astral-sh/ruff#22066</a> tracks ancestor unions to avoid recursive analysis. This still gives a 250x improvement on the 4-level snippet. I can get another 4x on top of that (i.e., 1000x) with various caching changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-19 08:26</div>
-            <div class="timeline-body"><p>I don't think we should pursue any micro-optimisations that only benefit pydantic (especially not ones that regress memory usage) until we see the performance impact of @oconnor663's upcoming work to implement tagged-union narrowing for unions of TypedDicts. (We know the pathological performance on pydantic is caused by the fact that they have a huge union of TypedDicts, and it currently never gets narrowed by us.) E.g. the reported pydantic speedup on https://github.com/astral-sh/ruff/pull/22066 is currently very impressive, but it's possible the number changes a lot after Jack's work has landed.</p>
-<p>I continue to find https://github.com/astral-sh/ruff/pull/22065 interesting, however, since it's a very targeted change that also shows speedups on non-pydantic benchmarks, and actually shows a memory-usage <em>improvement</em>.</p>
+            <div class="timeline-body"><p>I don&#x27;t think we should pursue any micro-optimisations that only benefit pydantic (especially not ones that regress memory usage) until we see the performance impact of @oconnor663&#x27;s upcoming work to implement tagged-union narrowing for unions of TypedDicts. (We know the pathological performance on pydantic is caused by the fact that they have a huge union of TypedDicts, and it currently never gets narrowed by us.) E.g. the reported pydantic speedup on <a href="https://github.com/astral-sh/ruff/pull/22066">astral-sh/ruff#22066</a> is currently very impressive, but it&#x27;s possible the number changes a lot after Jack&#x27;s work has landed.</p>
+<p>I continue to find <a href="https://github.com/astral-sh/ruff/pull/22065">astral-sh/ruff#22065</a> interesting, however, since it&#x27;s a very targeted change that also shows speedups on non-pydantic benchmarks, and actually shows a memory-usage <em>improvement</em>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ibraheemdev on 2025-12-20 04:18</div>
+            <div class="event">Closed by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-12-20 04:18</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:21:23 UTC
+        Synced at 2026-01-20 19:26:32 UTC
     </footer>
 </body>
 </html>

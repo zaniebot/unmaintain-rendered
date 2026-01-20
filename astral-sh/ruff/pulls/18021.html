@@ -24,37 +24,37 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a></div>
             <div class="timeline-body"><p>This updates our function specialization inference to infer type mappings from parameters that are generic aliases, e.g.:</p>
-<pre><code class="language-py">def f[T](x: list[T]) -&gt; T: ...
+<pre><code>def f[T](x: list[T]) -&gt; T: ...
 
 reveal_type(f([&quot;a&quot;, &quot;b&quot;]))  # revealed: str
 </code></pre>
-<p>Though note that we're still inferring the type of list literals as <code>list[Unknown]</code>, so for now we actually need something like the following in our tests:</p>
-<pre><code class="language-py">def _(x: list[str]):
+<p>Though note that we&#x27;re still inferring the type of list literals as <code>list[Unknown]</code>, so for now we actually need something like the following in our tests:</p>
+<pre><code>def _(x: list[str]):
     reveal_type(f(x))  # revealed: str
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @dcreager on 2025-05-11 21:07</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/dcreager">@dcreager</a> on 2025-05-11 21:07</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @dcreager on 2025-05-11 21:07</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/dcreager">@dcreager</a> on 2025-05-11 21:07</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-05-11 21:07</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/dcreager">@dcreager</a> on 2025-05-11 21:07</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @dcreager on 2025-05-11 21:07</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/dcreager">@dcreager</a> on 2025-05-11 21:07</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-11 21:10</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">trio (https://github.com/python-trio/trio)
+Changes were detected when running on open source projects
+
+<pre><code>trio (https://github.com/python-trio/trio)
 - error[invalid-assignment] src/trio/_core/_tests/test_run.py:2745:9: Object of type `ExceptionGroup[Exception]` is not assignable to `ValueError | ExceptionGroup[ValueError]`
 + error[no-matching-overload] src/trio/_tests/test_testing_raisesgroup.py:394:10: No overload of bound method `__init__` matches arguments
 + error[no-matching-overload] src/trio/_tests/type_tests/raisesgroup.py:98:5: No overload of bound method `__init__` matches arguments
@@ -167,7 +167,7 @@ sympy (https://github.com/sympy/sympy)
 + error[unresolved-attribute] sympy/utilities/codegen.py:700:27: Type `property` has no attribute `label`
 
 </code></pre>
-</details>
+
 
 </div>
         </div>
@@ -196,7 +196,7 @@ sympy (https://github.com/sympy/sympy)
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/instance.rs</code>:52 on 2025-05-12 13:47</div>
             <div class="timeline-body"><p>Woof, talk about tunnel vision!  I had done this to be able to pattern-match on the field so that I could have a match arm that only applied to nominal instances of generic aliases.</p>
-<p>I'll back this out and tweak the match arm — though keeping it that way might become more difficult in the future if/when the match becomes more complex, with fallthroughs being needed.</p>
+<p>I&#x27;ll back this out and tweak the match arm — though keeping it that way might become more difficult in the future if/when the match becomes more complex, with fallthroughs being needed.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -205,7 +205,7 @@ sympy (https://github.com/sympy/sympy)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/instance.rs</code>:52 on 2025-05-12 13:49</div>
-            <div class="timeline-body"><p>Oh, actually there's another trick we can use here.  Let me push it up as a proposal to see what you think</p>
+            <div class="timeline-body"><p>Oh, actually there&#x27;s another trick we can use here.  Let me push it up as a proposal to see what you think</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -214,7 +214,7 @@ sympy (https://github.com/sympy/sympy)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/instance.rs</code>:52 on 2025-05-12 14:03</div>
-            <div class="timeline-body"><p>Here you go — if we add an unused <code>PhantomData</code> field, we can mark <em>that</em> as private to prevent construction, but still allow read/match access to the <code>class</code> field. wdyt? (If you're :+1: then I'll also remove the <code>class()</code> accessor method in favor of just reading the field, but didn't want to clutter the diff with that yet if you prefer the original)</p>
+            <div class="timeline-body"><p>Here you go — if we add an unused <code>PhantomData</code> field, we can mark <em>that</em> as private to prevent construction, but still allow read/match access to the <code>class</code> field. wdyt? (If you&#x27;re :+1: then I&#x27;ll also remove the <code>class()</code> accessor method in favor of just reading the field, but didn&#x27;t want to clutter the diff with that yet if you prefer the original)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -223,7 +223,7 @@ sympy (https://github.com/sympy/sympy)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/instance.rs</code>:68 on 2025-05-12 14:04</div>
-            <div class="timeline-body"><p>oh, that's clever! It's a shame I'm only learning about this trick now -- much of the diff in #17525 came from me making the <code>class</code> field private, and I guess that was unnecessary</p>
+            <div class="timeline-body"><p>oh, that&#x27;s clever! It&#x27;s a shame I&#x27;m only learning about this trick now -- much of the diff in #17525 came from me making the <code>class</code> field private, and I guess that was unnecessary</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -232,7 +232,7 @@ sympy (https://github.com/sympy/sympy)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/instance.rs</code>:52 on 2025-05-12 14:06</div>
-            <div class="timeline-body"><p>Yeah, I like the way that it allows for easier pattern-matching while preserving the property that it's only possible to construct <code>NominalInstanceType</code>s from the <code>Type::instance()</code> method!</p>
+            <div class="timeline-body"><p>Yeah, I like the way that it allows for easier pattern-matching while preserving the property that it&#x27;s only possible to construct <code>NominalInstanceType</code>s from the <code>Type::instance()</code> method!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -241,7 +241,7 @@ sympy (https://github.com/sympy/sympy)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:683 on 2025-05-12 14:33</div>
-            <div class="timeline-body"><p>Good idea, though I'd like to tackle that as a follow-on PR</p>
+            <div class="timeline-body"><p>Good idea, though I&#x27;d like to tackle that as a follow-on PR</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -255,10 +255,10 @@ sympy (https://github.com/sympy/sympy)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @dcreager on 2025-05-13 02:12</div>
+            <div class="event">Merged by <a href="https://github.com/dcreager">@dcreager</a> on 2025-05-13 02:12</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dcreager on 2025-05-13 02:12</div>
+            <div class="event">Closed by <a href="https://github.com/dcreager">@dcreager</a> on 2025-05-13 02:12</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-05-13 02:12</div>
@@ -266,7 +266,7 @@ sympy (https://github.com/sympy/sympy)
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:12:26 UTC
+        Synced at 2026-01-20 19:14:20 UTC
     </footer>
 </body>
 </html>

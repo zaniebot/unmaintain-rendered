@@ -23,14 +23,14 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a></div>
-            <div class="timeline-body"><p>Untyped libraries use <a href="https://typing.python.org/en/latest/spec/distributing.html#stub-files">stub files (<code>.pyi</code>)</a> to give downstream users a typed API even though the library itself might be untyped (or not fully typed). The stub files are all we need for type checking and ty's module resolver returns the stub files if both a regular python file and a stub file are present. That means, a type's <code>Definition</code> always points to the <code>Definition</code> in the stub file. This is fine for type checking but having access to the source definition has advantages for the LSP use case:</p>
+            <div class="timeline-body"><p>Untyped libraries use <a href="https://typing.python.org/en/latest/spec/distributing.html#stub-files">stub files (<code>.pyi</code>)</a> to give downstream users a typed API even though the library itself might be untyped (or not fully typed). The stub files are all we need for type checking and ty&#x27;s module resolver returns the stub files if both a regular python file and a stub file are present. That means, a type&#x27;s <code>Definition</code> always points to the <code>Definition</code> in the stub file. This is fine for type checking but having access to the source definition has advantages for the LSP use case:</p>
 <ul>
 <li>A user wants to jump to the source definition when using <em>go-to definition</em> (except for go-to declaration?)</li>
 <li>Stub files often lack documentation because the source definition is documented.</li>
 </ul>
 <p>This requires:</p>
 <ul>
-<li>Adding logic to resolve the location of the standard-library source files from a system or virtual environment's <code>sys.prefix</code> value</li>
+<li>Adding logic to resolve the location of the standard-library source files from a system or virtual environment&#x27;s <code>sys.prefix</code> value</li>
 <li>Extending the module resolver (see <code>resolve_module</code>) so that it can be parametrized whether it should return the stub or source file. We have a few options here:<ul>
 <li>Add a <code>source</code> field to <code>Module</code> and always populate it when the resolved module is a stub (this goes a bit against or lazy approach as the source file is only needed in the editor context for now)</li>
 <li>parametrize <code>resolve_module</code></li>
@@ -43,25 +43,25 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2025-07-09 08:52</div>
+            <div class="event">Label <span class="label">server</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-09 08:52</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @Gankra by @Gankra on 2025-07-17 23:25</div>
+            <div class="event">Assigned to <a href="https://github.com/Gankra">@Gankra</a> by <a href="https://github.com/Gankra">@Gankra</a> on 2025-07-17 23:25</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-07-21 14:22</div>
             <div class="timeline-body"><p>Currently planned approach for a v1 implementation:</p>
-<hr />
+<hr>
 <p>given a ResolvedDefinition:</p>
 <p>find its module + file
-if the file isn't a stub: return the input
+if the file isn&#x27;t a stub: return the input
 find the &quot;real&quot; module + file (rerun resolve_module but with .pyi files forbidden)
 if the ResolvedDefinition is for an entire file (module): return the &quot;real&quot; file (module)
 (up to here is all easy and i have implemented locally)</p>
 <p>if the ResolvedDefinition is for a Definition, do a heuristic match...</p>
 <p>idea:</p>
 <p>a definition has a &quot;path&quot; in a file based on nested definitions (~scopes):</p>
-<pre><code class="language-py">class myclass:  # ./myclass
+<pre><code>class myclass:  # ./myclass
   def some_func():  # ./myclass/some_func
   def other_func(args: bool):  
                # ^~~~ ./myclass/other_func/args/
@@ -69,19 +69,19 @@ if the ResolvedDefinition is for an entire file (module): return the &quot;real&
 def other_func():  # ./other_func 
 </code></pre>
 <p>So in the .pyi we figure out the &quot;path&quot; and then we try to find the equivalent &quot;path&quot; in the .py. Presumably end-of-module definitions are sufficient since the relevant definition is exported from the module?</p>
-<hr />
+<hr>
 <p>It sounds like the main hitch in this design is just when the stub and implementation actually disagree on the module an item comes from, but that this is otherwise a good 80/20 starting point.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @Gankra on 2025-07-22 12:42</div>
+            <div class="event">Closed by <a href="https://github.com/Gankra">@Gankra</a> on 2025-07-22 12:42</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @MichaReiser on 2025-07-22 12:43</div>
+            <div class="event">Reopened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-22 12:43</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-22 12:44</div>
-            <div class="timeline-body"><p>@Gankra did you intend on closing this. I assume there's some more to do for other types</p>
+            <div class="timeline-body"><p>@Gankra did you intend on closing this. I assume there&#x27;s some more to do for other types</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -104,24 +104,24 @@ def other_func():  # ./other_func
 <p>update 2: further looking into the code, it seems like the hover behaviour is incomplete, from
 <a href="https://github.com/astral-sh/ruff/blob/8230b79829db0148afeefa634f3dde00b3a52410/crates/ty_ide/src/hover.rs#L26-L27">hover.rs</a></p>
 <blockquote>
-<p>// TODO: Add documentation of the symbol (not the type's definition).
-// TODO: Render the symbol's signature instead of just its type.</p>
+<p>// TODO: Add documentation of the symbol (not the type&#x27;s definition).
+// TODO: Render the symbol&#x27;s signature instead of just its type.</p>
 </blockquote>
 <p>This belongs in a separate discussion (which can be found <a href="https://github.com/astral-sh/ty/issues/102">here</a>)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-08-11 14:54</div>
-            <div class="timeline-body"><p>I think with all the PRs I've landed this is done now -- we do get docstrings from source-defs, and yeah hover just doesn't render them (I am however literally implementing that now).</p>
+            <div class="timeline-body"><p>I think with all the PRs I&#x27;ve landed this is done now -- we do get docstrings from source-defs, and yeah hover just doesn&#x27;t render them (I am however literally implementing that now).</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @Gankra on 2025-08-11 14:54</div>
+            <div class="event">Closed by <a href="https://github.com/Gankra">@Gankra</a> on 2025-08-11 14:54</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:16 UTC
+        Synced at 2026-01-20 19:25:01 UTC
     </footer>
 </body>
 </html>

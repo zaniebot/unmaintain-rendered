@@ -23,30 +23,30 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/rodrigoscc">@rodrigoscc</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>Hello,</p>
-<p>I've found a case where autocomplete won't work even tho the type of the variable is clear. It is when I iterate over a list, the variable attributes are not autocompleted inside the for loop:
-<img width="638" height="347" alt="Image" src="https://github.com/user-attachments/assets/77452a4a-b079-429e-8a2f-e37e612eed87" /></p>
-<p><code>i</code> type is correctly detected as <code>Unknown | A</code> and I can even go to definition of its attributes, but autocomplete doesn't work. Here's the playground link: https://play.ty.dev/80851291-8503-4aaf-b5aa-f286949c820b</p>
+<p>I&#x27;ve found a case where autocomplete won&#x27;t work even tho the type of the variable is clear. It is when I iterate over a list, the variable attributes are not autocompleted inside the for loop:
+<img alt="Image" src="https://github.com/user-attachments/assets/77452a4a-b079-429e-8a2f-e37e612eed87"></p>
+<p><code>i</code> type is correctly detected as <code>Unknown | A</code> and I can even go to definition of its attributes, but autocomplete doesn&#x27;t work. Here&#x27;s the playground link: https://play.ty.dev/80851291-8503-4aaf-b5aa-f286949c820b</p>
 <p>Thanks for this amazing LSP! :)</p>
-<h3>Version</h3>
+Version
 <p>0.0.6</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-12-24 09:32</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-24 09:32</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">server</span> added by @AlexWaygood on 2025-12-24 09:32</div>
+            <div class="event">Label <span class="label">server</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-24 09:32</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">completions</span> added by @AlexWaygood on 2025-12-24 09:32</div>
+            <div class="event">Label <span class="label">completions</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-24 09:32</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sinon">@sinon</a> on 2025-12-24 10:16</div>
-            <div class="timeline-body"><p>The loop aspect doesn't seem to be the cause it's any union of types (not specifically to <code>Unknown</code>) seems to be stop the completions.</p>
+            <div class="timeline-body"><p>The loop aspect doesn&#x27;t seem to be the cause it&#x27;s any union of types (not specifically to <code>Unknown</code>) seems to be stop the completions.</p>
 <p>https://play.ty.dev/937e266f-1665-4b5d-a2c0-d7b4174c3a0d</p>
-<pre><code class="language-py">import random
+<pre><code>import random
 from ty_extensions import Unknown
 class A:
     def __init__(self, msg: str):
@@ -84,14 +84,14 @@ for i in c:
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "completion not working for loop variable attributes" to "No member completions offered for variable of type `T | Unknown`" by @AlexWaygood on 2025-12-24 12:50</div>
+            <div class="event">Renamed from &quot;completion not working for loop variable attributes&quot; to &quot;No member completions offered for variable of type `T | Unknown`&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-24 12:50</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-24 12:57</div>
             <div class="timeline-body"><p>Thanks @rodrigoscc for the report and thanks @sinon for the initial triage!!</p>
-<p>The problem here is <a href="https://github.com/astral-sh/ruff/blob/81f34fbc8e404cd26fa40ee86a339947dce7617c/crates/ty_python_semantic/src/types/list_members.rs#L165-L172">this branch</a> in our routine for collecting &quot;all members&quot; of a given type. On a union type <code>T | S</code>, the available members will be the <em>intersection</em> of <code>&lt;set of members available on T&gt;</code> with <code>&lt;set of members available on S&gt;</code>. That makes sense from a type-theory perspective, but it's obviously suboptimal for this specific case.</p>
+<p>The problem here is <a href="https://github.com/astral-sh/ruff/blob/81f34fbc8e404cd26fa40ee86a339947dce7617c/crates/ty_python_semantic/src/types/list_members.rs#L165-L172">this branch</a> in our routine for collecting &quot;all members&quot; of a given type. On a union type <code>T | S</code>, the available members will be the <em>intersection</em> of <code>&lt;set of members available on T&gt;</code> with <code>&lt;set of members available on S&gt;</code>. That makes sense from a type-theory perspective, but it&#x27;s obviously suboptimal for this specific case.</p>
 <p>The problem is that a dynamic type such as <code>Any</code> or <code>Unknown</code> has an infinite number of members available on it, but it would take a &quot;very long time&quot;™️ for us to enumerate an infinite number of members, so instead of attempting to do that the <code>all_members()</code> routine just returns an empty set if you ask for all members available on a dynamic type. And the intersection of any set with an empty set is another empty set.</p>
-<p>The long and short of it is that this routine is too naive currently when it comes to unions that include dynamic types. Shouldn't be too hard to fix.</p>
+<p>The long and short of it is that this routine is too naive currently when it comes to unions that include dynamic types. Shouldn&#x27;t be too hard to fix.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -104,32 +104,32 @@ for i in c:
             <div class="timeline-body"><blockquote>
 <p>Honestly I think this approach could be changed in general, not only for unions of dynamic types. Consider, for example, the type <code>T | None</code> (with T being some concrete type). While getting members from this type is not sound at runtime, it is still often useful to get autocompletion for its members, for example, i.e. to see what is possible to do with values of type T, without having to insert an <code>assert obj is not None</code> before that.</p>
 </blockquote>
-<p>Maybe. But wouldn't it be confusing for a user to have a situation where ty suggests an autocompletion, you accept that autocompletion suggestion, and then ty immediately complains about the code that it just added for you?</p>
+<p>Maybe. But wouldn&#x27;t it be confusing for a user to have a situation where ty suggests an autocompletion, you accept that autocompletion suggestion, and then ty immediately complains about the code that it just added for you?</p>
 <p>We should look at what other language servers like pylance do here.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Wizzerinus">@Wizzerinus</a> on 2025-12-24 14:01</div>
             <div class="timeline-body"><p>Basedpyright gives all (or at least, multiple of) union fields in the completions:</p>
-<p><img width="686" height="542" alt="Image" src="https://github.com/user-attachments/assets/1cb99c32-bbed-43a9-bf90-b451628cb09f" /></p>
-<p><img width="678" height="605" alt="Image" src="https://github.com/user-attachments/assets/20f15893-c183-4305-8c09-b544b8317e41" /></p>
+<p><img alt="Image" src="https://github.com/user-attachments/assets/1cb99c32-bbed-43a9-bf90-b451628cb09f"></p>
+<p><img alt="Image" src="https://github.com/user-attachments/assets/20f15893-c183-4305-8c09-b544b8317e41"></p>
 <p>So does pyrefly:</p>
-<p><img width="680" height="651" alt="Image" src="https://github.com/user-attachments/assets/94a0c388-c864-40e9-adea-2f5e68f17640" /></p>
-<p>(EDIT: fixed Basedpyright and Pyrefly ss's being swapped)</p>
+<p><img alt="Image" src="https://github.com/user-attachments/assets/94a0c388-c864-40e9-adea-2f5e68f17640"></p>
+<p>(EDIT: fixed Basedpyright and Pyrefly ss&#x27;s being swapped)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-24 14:04</div>
-            <div class="timeline-body"><p>Thanks @Wizzerinus, that's super helpful!</p>
-<p>I would still be inclined to view that as a separate issue that should maybe be fixed in a separate PR. But it's extremely valuable to know how other LSPs handle union types here!</p>
+            <div class="timeline-body"><p>Thanks @Wizzerinus, that&#x27;s super helpful!</p>
+<p>I would still be inclined to view that as a separate issue that should maybe be fixed in a separate PR. But it&#x27;s extremely valuable to know how other LSPs handle union types here!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Pre-stable 1" by @AlexWaygood on 2026-01-06 23:54</div>
+            <div class="event">Added to milestone &quot;Pre-stable 1&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-06 23:54</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-06 23:57</div>
-            <div class="timeline-body"><p>@zsol mentioned that this was one of his top annoyances with ty right now, and it was also mentioned as a point of frustration in https://github.com/astral-sh/ty/issues/2373, so we should treat this as high-priority</p>
+            <div class="timeline-body"><p>@zsol mentioned that this was one of his top annoyances with ty right now, and it was also mentioned as a point of frustration in <a href="https://github.com/astral-sh/ty/issues/2373">astral-sh/ty#2373</a>, so we should treat this as high-priority</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -138,12 +138,12 @@ for i in c:
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2026-01-07 15:15</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2026-01-07 15:15</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:21:33 UTC
+        Synced at 2026-01-20 19:26:45 UTC
     </footer>
 </body>
 </html>

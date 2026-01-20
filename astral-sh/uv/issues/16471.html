@@ -23,18 +23,18 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/patrontheo">@patrontheo</a></div>
-            <div class="timeline-body"><h3>Question</h3>
+            <div class="timeline-body">Question
 <p><strong>Description / Problem:</strong>
 I’m developing a library that depends on torch. For local development, I want to use a specific CUDA version (e.g., CUDA 11.8), but I also want to keep the pyproject.toml clean and generic so downstream projects can choose their own CUDA version.</p>
 <p>Currently, uv only allows package-specific sources via [tool.uv.sources] in the main pyproject.toml. There is no documented or working way to specify a package-specific index for local development without modifying the main pyproject.toml.</p>
 <p>What I tried:</p>
 <p><strong>1. Specify sources and index in my library’s pyproject.toml</strong></p>
-<pre><code class="language-toml">[sources]
+<pre><code>[sources]
 torch = [
-  { index = &quot;pytorch-cu118&quot;, marker = &quot;platform_system == 'Linux'&quot; },
+  { index = &quot;pytorch-cu118&quot;, marker = &quot;platform_system == &#x27;Linux&#x27;&quot; },
 ]
 torchvision = [
-  { index = &quot;pytorch-cu118&quot;, marker = &quot;platform_system == 'Linux'&quot; },
+  { index = &quot;pytorch-cu118&quot;, marker = &quot;platform_system == &#x27;Linux&#x27;&quot; },
 ]
 
 [index]
@@ -43,17 +43,17 @@ url = &quot;https://download.pytorch.org/whl/cu118&quot;
 explicit = true
 </code></pre>
 <p>Result: installing my library in another project with torch+cu128 failed:</p>
-<pre><code class="language-perl">× Failed to resolve dependencies for `my-library` (v0.1.0)
-  ╰─▶ Requirements contain conflicting indexes for package `torch` in split `sys_platform == 'linux'`:
+<pre><code>× Failed to resolve dependencies for `my-library` (v0.1.0)
+  ╰─▶ Requirements contain conflicting indexes for package `torch` in split `sys_platform == &#x27;linux&#x27;`:
       - https://download.pytorch.org/whl/cu118
       - https://download.pytorch.org/whl/cu128
 </code></pre>
-<p>I thought [tool.uv.sources] and index weren’t supposed to be read by consumers but maybe I'm wrong here.
-<strong>In any case, I think 'my-library' pyproject file should be clear of any cuda dependency (to leave it free for downstream projects), so I don't think I should be defining any sources or indexes here.</strong></p>
+<p>I thought [tool.uv.sources] and index weren’t supposed to be read by consumers but maybe I&#x27;m wrong here.
+<strong>In any case, I think &#x27;my-library&#x27; pyproject file should be clear of any cuda dependency (to leave it free for downstream projects), so I don&#x27;t think I should be defining any sources or indexes here.</strong></p>
 <p><strong>2. Use UV_EXTRA_INDEX_URL</strong></p>
-<pre><code class="language-bash">UV_EXTRA_INDEX_URL=https://download.pytorch.org/whl/cu118 uv sync
+<pre><code>UV_EXTRA_INDEX_URL=https://download.pytorch.org/whl/cu118 uv sync
 </code></pre>
-<p>Works as a fallback, but doesn’t guarantee the desired CUDA version if torch exists on PyPI (it installs the CPU or another CUDA variant first). So when doing local development on my-library, I can't hardcode the cuda version.</p>
+<p>Works as a fallback, but doesn’t guarantee the desired CUDA version if torch exists on PyPI (it installs the CPU or another CUDA variant first). So when doing local development on my-library, I can&#x27;t hardcode the cuda version.</p>
 <p><strong>3. Use uv.toml or a local pyproject.local.toml with [tool.uv.sources]</strong></p>
 <p>Fails: uv rejects [tool.uv.sources] outside the main pyproject.toml.</p>
 <p>Goal / Proposed feature:</p>
@@ -68,23 +68,23 @@ explicit = true
 <li>Downstream projects may require a different CUDA version.</li>
 <li>Right now, there is no clean way to configure this in uv without modifying pyproject.toml or globally replacing indexes.</li>
 </ul>
-<h3>Platform</h3>
+Platform
 <p>all</p>
-<h3>Version</h3>
+Version
 <p>uv 0.9.5</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @patrontheo on 2025-10-27 11:57</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/patrontheo">@patrontheo</a> on 2025-10-27 11:57</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/patrontheo">@patrontheo</a> on 2025-10-27 16:02</div>
-            <div class="timeline-body"><p>I realize that it's kind of a duplicate of #6772.</p>
+            <div class="timeline-body"><p>I realize that it&#x27;s kind of a duplicate of #6772.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-27 16:40</div>
-            <div class="timeline-body"><p><code>[tool.uv.sources]</code> aren't used when installing from a source distribution or wheel. How do your users install package, do use the package published to an index, or do they use a Git dependency with uv?</p>
+            <div class="timeline-body"><p><code>[tool.uv.sources]</code> aren&#x27;t used when installing from a source distribution or wheel. How do your users install package, do use the package published to an index, or do they use a Git dependency with uv?</p>
 <p>You can also use <code>[dependency-groups]</code> and sources that apply to a group for development, as <code>[dependency-groups]</code> are never used downstream.</p>
 </div>
         </div>
@@ -92,7 +92,7 @@ explicit = true
             <div class="timeline-header">Comment by <a href="https://github.com/patrontheo">@patrontheo</a> on 2025-10-27 16:59</div>
             <div class="timeline-body"><p>@konstin thanks for the answer.</p>
 <p>The users install the package with <code>uv</code> and a pyproject file as follows:</p>
-<pre><code class="language-toml">dependencies = [
+<pre><code>dependencies = [
     &quot;torch==2.5.1&quot;,
     &quot;my-library&quot;
 ]
@@ -100,7 +100,7 @@ explicit = true
 [tool.uv.sources]
 my-library = { git = &quot;https://github.com/company/name-of-repo.git&quot;, subdirectory = &quot;my-library-subdir&quot; }
 torch = [
-  { index = &quot;pytorch-cu128&quot;, marker = &quot;platform_system == 'Linux'&quot; },
+  { index = &quot;pytorch-cu128&quot;, marker = &quot;platform_system == &#x27;Linux&#x27;&quot; },
 ]
 
 [[tool.uv.index]]
@@ -109,12 +109,12 @@ url = &quot;https://download.pytorch.org/whl/cu128&quot;
 explicit = true
 </code></pre>
 <p>If the pyproject of <code>my-library</code> does <strong>not</strong> contain [sources] nor [index] (like below), I can successfully install the library with the pyproject shown above (running <code>uv sync</code>):</p>
-<pre><code class="language-toml">dependencies = [
+<pre><code>dependencies = [
   &quot;torch&gt;=2.5&quot;,
 ]
 </code></pre>
 <p>If the pyproject of <code>my-library</code> contains [sources] and [index] (like below), it fails to install with the error I mentioned in the issue description.</p>
-<pre><code class="language-toml">dependencies = [
+<pre><code>dependencies = [
   &quot;torch&gt;=2.5&quot;,
 ]
 
@@ -125,10 +125,10 @@ explicit = false
 
 [tool.uv.sources]
 torch = [
-  { index = &quot;pytorch-cu118&quot;, marker = &quot;platform_system == 'Linux'&quot; },
+  { index = &quot;pytorch-cu118&quot;, marker = &quot;platform_system == &#x27;Linux&#x27;&quot; },
 ]
 </code></pre>
-<p>Are you saying that it shouldn't behave like that and that it's a bug ?</p>
+<p>Are you saying that it shouldn&#x27;t behave like that and that it&#x27;s a bug ?</p>
 <p>What I would like is to be able to specify the source for <code>torch</code> when developing <code>my-library</code>, without this source being used when installing this lib as a dependency.</p>
 <p>Maybe I am doing something wrong here ? I am not sure how <code>[dependency-groups]</code> can be used here ? Can you explain a bit more about that ?</p>
 </div>
@@ -136,14 +136,14 @@ torch = [
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-27 18:01</div>
             <div class="timeline-body"><p>I think the ideal solution is being able to deactivate sources, especially index sources, for packages you depend on:</p>
-<pre><code class="language-toml">[tool.uv.sources]
+<pre><code>[tool.uv.sources]
 my-library = { git = &quot;https://github.com/company/name-of-repo.git&quot;, subdirectory = &quot;my-library-subdir&quot;, sources = false }
 torch = [
-  { index = &quot;pytorch-cu128&quot;, marker = &quot;platform_system == 'Linux'&quot; },
+  { index = &quot;pytorch-cu128&quot;, marker = &quot;platform_system == &#x27;Linux&#x27;&quot; },
 ]
 </code></pre>
-<p>I thought we had this tracked somewhere, but I can't find the issue. https://github.com/astral-sh/uv/issues/6772 is also an option for this too, though deactivating sources fits better into uv's design.</p>
-<p>The dependency groups approach doesn't work with this setup specifically.</p>
+<p>I thought we had this tracked somewhere, but I can&#x27;t find the issue. <a href="https://github.com/astral-sh/uv/issues/6772">astral-sh/uv#6772</a> is also an option for this too, though deactivating sources fits better into uv&#x27;s design.</p>
+<p>The dependency groups approach doesn&#x27;t work with this setup specifically.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -158,7 +158,7 @@ torch = [
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:33:17 UTC
+        Synced at 2026-01-20 19:40:49 UTC
     </footer>
 </body>
 </html>

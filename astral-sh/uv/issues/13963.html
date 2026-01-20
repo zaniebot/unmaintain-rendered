@@ -23,15 +23,15 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/bollwyvl">@bollwyvl</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>Thanks for <code>uv</code>!</p>
 <p>It would be lovely if users of <code>uv pip check</code> had a way to trigger validation optional dependencies, recursively, for a given set of specifiers.</p>
 <p><code>optional-dependencies</code>/<code>[extra]</code> are a blessing and curse for users. While these help projects keep their dependency hedges trimmed, once these are used recursively (e.g. an optional dependency of an optional dependency, maybe with some platform/tag selectors stirred in), it can become rather difficult to determine whether the state of an environment correctly fulfills all of them.</p>
 <p><code>dependency-groups</code>/<code>include-group</code> (per PEP-735) will make things <em>more</em> complicated for users, as their dependencies start using this syntax, and more terrifyingly, <em>combining</em> it with <code>optional-dependencies</code>/<code>[extra]</code>.</p>
-<p>My specific use case is testing repackaged python packages during a build for <code>conda-forge</code>, which presently has no concept of optional dependencies, much less python's specific conventions, so we're stuck with either &quot;kitchen sinking,&quot; all <code>[extras]</code> or inventing virtual packages. In either case, the <code>package</code>-with-<code>[extras]</code>-under-test should have been installed, but likely <em>won't</em> appear as the dependency of another package, so would evade detection with the current <code>uv pip check</code>, or <code>pip check</code>.</p>
-<h3>Example</h3>
+<p>My specific use case is testing repackaged python packages during a build for <code>conda-forge</code>, which presently has no concept of optional dependencies, much less python&#x27;s specific conventions, so we&#x27;re stuck with either &quot;kitchen sinking,&quot; all <code>[extras]</code> or inventing virtual packages. In either case, the <code>package</code>-with-<code>[extras]</code>-under-test should have been installed, but likely <em>won&#x27;t</em> appear as the dependency of another package, so would evade detection with the current <code>uv pip check</code>, or <code>pip check</code>.</p>
+Example
 <p>For <code>[ex,tras]</code>, likely just one argument would be needed, notionally which presumably could be either be given multiple times or further comma-separated.</p>
-<pre><code class="language-bash">~$ uv pip check --help
+<pre><code>~$ uv pip check --help
 Verify installed packages have compatible dependencies
 
 Usage: uv pip check [OPTIONS]
@@ -42,7 +42,7 @@ Options:
 </code></pre>
 <p>Not sure what to do about PEP-735, as it appears that will not have a pithy <code>requirements.txt</code>-compatible representation, but perhaps <code>--check-dep-groups</code> could be entirely separate, but reuse the square bracket convention.</p>
 <p>Running against a (potentially interactively edited) environment:</p>
-<pre><code class="language-bash">~$ uv pip check --check-optional fastapi[all] --check-optional strawberry-graphql[fastapi,pydantic]
+<pre><code>~$ uv pip check --check-optional fastapi[all] --check-optional strawberry-graphql[fastapi,pydantic]
 Using Python 3.xx.xx environment at: ~/projects/my-project/.venv
 Checked xxx packages in xxxms
 
@@ -52,18 +52,18 @@ uvicorn-standard[standard] 0.34.3 requires httptools &gt;=0.6.2 but httptools 0.
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @bollwyvl on 2025-06-11 12:32</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/bollwyvl">@bollwyvl</a> on 2025-06-11 12:32</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-11 20:09</div>
             <div class="timeline-body"><p>I think the solution here is probably to record requested extras during installation so <code>pip check</code> can read it, rather than adding CLI flags.</p>
-<p>I'm not quite sure what you expect for dependency groups? That's not an installable unit in the same way as <code>foo[bar]</code>, so there's no environment &quot;coherence&quot; to check for?</p>
+<p>I&#x27;m not quite sure what you expect for dependency groups? That&#x27;s not an installable unit in the same way as <code>foo[bar]</code>, so there&#x27;s no environment &quot;coherence&quot; to check for?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-06-11 20:51</div>
-            <div class="timeline-body"><p>I expect trying to record extras in installation metadata and trying to rely on it is going to have edge cases that don't work.</p>
-<p>What if extras was requested but wasn't met? What if extras was requested by user on one install but then not requested on the next install by a transative dependency?</p>
+            <div class="timeline-body"><p>I expect trying to record extras in installation metadata and trying to rely on it is going to have edge cases that don&#x27;t work.</p>
+<p>What if extras was requested but wasn&#x27;t met? What if extras was requested by user on one install but then not requested on the next install by a transative dependency?</p>
 <p>pip check is designed to validate if a users environment is consistent, not that it fufils certain requirements.</p>
 <p>If you want to check a users environment is consistent and fufils certain requirements maybe it makes sense for something like <code>pip check -r requirements.txt</code>?</p>
 </div>
@@ -71,13 +71,13 @@ uvicorn-standard[standard] 0.34.3 requires httptools &gt;=0.6.2 but httptools 0.
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-11 22:56</div>
             <div class="timeline-body"><blockquote>
-<p>What if extras was requested but wasn't met?</p>
+<p>What if extras was requested but wasn&#x27;t met?</p>
 </blockquote>
-<p>What does this mean? Wouldn't the install fail?</p>
+<p>What does this mean? Wouldn&#x27;t the install fail?</p>
 <blockquote>
 <p>What if extras was requested by user on one install but then not requested on the next install by a transitive dependency?</p>
 </blockquote>
-<p>That's a good question, I'm not sure what the best option is there. It certainly gets complicated.</p>
+<p>That&#x27;s a good question, I&#x27;m not sure what the best option is there. It certainly gets complicated.</p>
 <blockquote>
 <p>pip check is designed to validate if a users environment is consistent, not that it fufils certain requirements.</p>
 </blockquote>
@@ -89,7 +89,7 @@ uvicorn-standard[standard] 0.34.3 requires httptools &gt;=0.6.2 but httptools 0.
             <div class="timeline-body"><blockquote>
 <p>confusion with the <code>dependency-groups</code></p>
 </blockquote>
-<p>Indeed! I just don't know <em>how</em> it will play out, once multiple tools are in the field, as the spec is <a href="https://peps.python.org/pep-0735/#overlapping-install-ux-with-extras">pretty vague</a>.</p>
+<p>Indeed! I just don&#x27;t know <em>how</em> it will play out, once multiple tools are in the field, as the spec is <a href="https://peps.python.org/pep-0735/#overlapping-install-ux-with-extras">pretty vague</a>.</p>
 <blockquote>
 <blockquote>
 <p><strong>Overlapping Install UX with Extras</strong></p>
@@ -122,7 +122,7 @@ c. Do not pass <code>--universal</code> or anything that would select for a diff
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:31:44 UTC
+        Synced at 2026-01-20 19:38:59 UTC
     </footer>
 </body>
 </html>

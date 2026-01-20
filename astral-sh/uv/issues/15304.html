@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/srdecny">@srdecny</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>When installing packages, I get the following error:</p>
 <pre><code>(env) srdecny@bender7 ~/meaning4 (master)&gt; uv pip install torch torchaudio
 Using Python 3.11.8 environment at: env
@@ -32,20 +32,20 @@ error: Failed to install: torch-2.8.0-cp311-cp311-manylinux_2_28_x86_64.whl (tor
   Caused by: failed to copy file from /fsx_home/homes/srdecny/.cache/uv/archive-v0/kow9mkBtE1FIwZCcXJYyP/torch-2.8.0.dist-info/RECORD to /fsx_home/homes/srdecny/meaning4/env/lib/python3.11/site-packages/torch-2.8.0.dist-info/RECORD: No data available (os error 61)
 </code></pre>
 <p>The <code>/fsx_home</code> is a FSx for Lustre drive hosted on AWS. I assume this is relevant here. It seems to happen with any package, and it persists even if I delete the <code>~.cache/uv</code> folder and start with a fresh virtual env. The package it errors out also seems to be different every time. Maybe some race condition here?</p>
-<h3>Platform</h3>
+Platform
 <p>Linux 6.5.0-1024-aws x86_64 GNU/Linux</p>
-<h3>Version</h3>
+Version
 <p>uv 0.7.21</p>
-<h3>Python version</h3>
+Python version
 <p>3.11.8</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @srdecny on 2025-08-15 12:45</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/srdecny">@srdecny</a> on 2025-08-15 12:45</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/blaylockbk">@blaylockbk</a> on 2025-08-26 20:13</div>
-            <div class="timeline-body"><p>I've had the same issue on a Lustre FS. Usually running <code>uv cache clean</code> first fixes the issue. But this isn't ideal as clearing a rebuilding the cache takes time.</p>
+            <div class="timeline-body"><p>I&#x27;ve had the same issue on a Lustre FS. Usually running <code>uv cache clean</code> first fixes the issue. But this isn&#x27;t ideal as clearing a rebuilding the cache takes time.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -56,12 +56,12 @@ error: Failed to install: torch-2.8.0-cp311-cp311-manylinux_2_28_x86_64.whl (tor
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-26 20:51</div>
-            <div class="timeline-body"><p>(It'd be great if you could loop in someone from the AWS FSx team as they're likely to have domain knowledge we do not here)</p>
+            <div class="timeline-body"><p>(It&#x27;d be great if you could loop in someone from the AWS FSx team as they&#x27;re likely to have domain knowledge we do not here)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/bnikolic">@bnikolic</a> on 2025-09-17 13:43</div>
-            <div class="timeline-body"><p>Not to do with <em>uv</em> per se, but I've had very similar recurring issue building Rust itself (v1.85) on Amazon FSx/Lustre.</p>
+            <div class="timeline-body"><p>Not to do with <em>uv</em> per se, but I&#x27;ve had very similar recurring issue building Rust itself (v1.85) on Amazon FSx/Lustre.</p>
 <pre><code>  &gt;&gt; 6281    failed to copy `/shared/fsx1/bntemp/spack/opt/spack/linux-x86_64_v3/rust-bootstrap-1.85.0-llhzwidyz4uj4dekylhf5hdemfc7rezw/lib/
              rustlib/x86_64-unknown-linux-gnu/bin/llvm-ar` to `/tmp/b.nikolic/spack-stage/spack-stage-rust-1.85.0-wf2ccbxnnerjkdihdbjiexxf56
              ifwfzi/spack-src/build/x86_64-unknown-linux-gnu/stage0-sysroot/lib/rustlib/x86_64-unknown-linux-gnu/bin/llvm-ar`: No data avail
@@ -71,7 +71,7 @@ error: Failed to install: torch-2.8.0-cp311-cp311-manylinux_2_28_x86_64.whl (tor
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">external</span> added by @konstin on 2025-09-17 13:56</div>
+            <div class="event">Label <span class="label">external</span> added by <a href="https://github.com/konstin">@konstin</a> on 2025-09-17 13:56</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-17 13:58</div>
@@ -80,19 +80,19 @@ error: Failed to install: torch-2.8.0-cp311-cp311-manylinux_2_28_x86_64.whl (tor
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/bnikolic">@bnikolic</a> on 2025-09-18 08:52</div>
-            <div class="timeline-body"><p>I have traced this issue to the use of the sendfile(2) system call to do a file copy without getting the data into user space. Somewhere between the expected semantics in implementations (I've traced issues both to python's shutils and rusts fs::copy) and the actual semantics of FSx there is an issue and ENODATA error code is not handled correctly (by falling back to read()/write() or retrying).</p>
-<p>I'm not going to have a chance to look into this further personally but one of the team here may , I'll post a note here if that happens. In mean time, workaround can be achieved by turning off attempt to sendfile() copy files.</p>
+            <div class="timeline-body"><p>I have traced this issue to the use of the sendfile(2) system call to do a file copy without getting the data into user space. Somewhere between the expected semantics in implementations (I&#x27;ve traced issues both to python&#x27;s shutils and rusts fs::copy) and the actual semantics of FSx there is an issue and ENODATA error code is not handled correctly (by falling back to read()/write() or retrying).</p>
+<p>I&#x27;m not going to have a chance to look into this further personally but one of the team here may , I&#x27;ll post a note here if that happens. In mean time, workaround can be achieved by turning off attempt to sendfile() copy files.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/bnikolic">@bnikolic</a> on 2025-10-29 10:00</div>
-            <div class="timeline-body"><p>I've made a patch for Python's shutil to fix this issue: https://github.com/python/cpython/pull/139417 . I think this is the best way to deal with this issue, rather than relying on all FS implementations to never return ENODATA .</p>
+            <div class="timeline-body"><p>I&#x27;ve made a patch for Python&#x27;s shutil to fix this issue: <a href="https://github.com/python/cpython/pull/139417">python/cpython#139417</a> . I think this is the best way to deal with this issue, rather than relying on all FS implementations to never return ENODATA .</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:32:36 UTC
+        Synced at 2026-01-20 19:40:01 UTC
     </footer>
 </body>
 </html>

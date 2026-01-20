@@ -23,33 +23,27 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a></div>
-            <div class="timeline-body"><!--
-Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+            <div class="timeline-body">
 
-- Does this pull request include a summary of the change? (See below.)
-- Does this pull request include a descriptive title?
-- Does this pull request include references to any relevant issues?
--->
-
-<h2>Summary</h2>
-<p>We tend to apply all of our edits in one pass, similar to ESLint's model. However, there's one common case where it's not safe to apply edits in this way: deleting statements from indented bodies, where we run the risk of leading behind an empty body (and, instead, should leave behind a <code>pass</code> statement).</p>
-<p>For example, if we remove both imports here independently, we'll generate a syntax error:</p>
-<pre><code class="language-py">if True:
+Summary
+<p>We tend to apply all of our edits in one pass, similar to ESLint&#x27;s model. However, there&#x27;s one common case where it&#x27;s not safe to apply edits in this way: deleting statements from indented bodies, where we run the risk of leading behind an empty body (and, instead, should leave behind a <code>pass</code> statement).</p>
+<p>For example, if we remove both imports here independently, we&#x27;ll generate a syntax error:</p>
+<pre><code>if True:
   import os
   import sys
 </code></pre>
-<p>Historically, the way we solved this problem was by tracking statement deletions in the AST checker. So, when we generate the edit to delete <code>import os</code>, we'll mark that statement as deleted. When we go to delete <code>import sys</code>, we'll note that deleting this statement will leave the body empty (assuming all edits are applied), and instead create an edit to replace the statement with a <code>pass</code> (rather than deleting it outright).</p>
-<p>This makes the edit process stateful, since we're generating edits based on assumptions about how the code will change when <em>other</em> edits are applied. It also leads to subtle bugs when edits end up being applied in isolation, as in the LSP -- e.g., removing the second import here erroneously leaves the user with a <code>pass</code>:</p>
+<p>Historically, the way we solved this problem was by tracking statement deletions in the AST checker. So, when we generate the edit to delete <code>import os</code>, we&#x27;ll mark that statement as deleted. When we go to delete <code>import sys</code>, we&#x27;ll note that deleting this statement will leave the body empty (assuming all edits are applied), and instead create an edit to replace the statement with a <code>pass</code> (rather than deleting it outright).</p>
+<p>This makes the edit process stateful, since we&#x27;re generating edits based on assumptions about how the code will change when <em>other</em> edits are applied. It also leads to subtle bugs when edits end up being applied in isolation, as in the LSP -- e.g., removing the second import here erroneously leaves the user with a <code>pass</code>:</p>
 <p>https://github.com/charliermarsh/ruff/assets/1309177/a4d743cc-138d-46ae-8b41-89ba9602c740</p>
 <p>One alternative solution would be to only apply one edit at a time, then re-run Ruff, etc. We tried this previously, and it can really hurt performance for large codebases, since your we have to run Ruff as up to the maximum number of fixable errors in your file.</p>
-<p>This PR proposes a middle-ground solution, whereby fixes can declare themselves as require isolation. We only apply one isolation-requiring fix per run (though we will batch it with other, non-isolation-requiring fixes). It's rare that fixes require isolation, but in short, any fix that involves a statement deletion within a nested block must be isolated. (We already tracked these anyway, since we have a common helper for it.)</p>
+<p>This PR proposes a middle-ground solution, whereby fixes can declare themselves as require isolation. We only apply one isolation-requiring fix per run (though we will batch it with other, non-isolation-requiring fixes). It&#x27;s rare that fixes require isolation, but in short, any fix that involves a statement deletion within a nested block must be isolated. (We already tracked these anyway, since we have a common helper for it.)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-05-31 21:08</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-31 21:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @konstin by @charliermarsh on 2023-05-31 21:08</div>
+            <div class="event">Review requested from <a href="https://github.com/konstin">@konstin</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-31 21:08</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-05-31 21:14</div>
@@ -58,8 +52,8 @@ Thank you for contributing to Ruff! To help us out with reviewing, please consid
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-31 21:17</div>
-            <div class="timeline-body"><p>I'm not sure yet, but one thing I'm going to do to improve performance is add a key to the isolation groups, so that we can fix both of these in one pass:</p>
-<pre><code class="language-py">if False:
+            <div class="timeline-body"><p>I&#x27;m not sure yet, but one thing I&#x27;m going to do to improve performance is add a key to the isolation groups, so that we can fix both of these in one pass:</p>
+<pre><code>if False:
   import os
 
 if False:
@@ -70,11 +64,11 @@ if False:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-05-31 21:36</div>
-            <div class="timeline-body"><h2>PR Check Results</h2>
-<h3>Ecosystem</h3>
+            <div class="timeline-body">PR Check Results
+Ecosystem
 <p>✅ ecosystem check detected no changes.</p>
-<h3>Benchmark</h3>
-<h4>Linux</h4>
+Benchmark
+Linux
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 linter/all-rules/large/dataset.py          1.00     14.3±0.08ms     2.9 MB/sec    1.01     14.4±0.10ms     2.8 MB/sec
@@ -90,7 +84,7 @@ parser/numpy/ctypeslib.py                  1.00   1008.9±0.44µs    16.5 MB/sec
 parser/numpy/globals.py                    1.00    105.3±0.18µs    28.0 MB/sec    1.00    105.1±0.26µs    28.1 MB/sec
 parser/pydantic/types.py                   1.00      2.2±0.00ms    11.5 MB/sec    1.00      2.2±0.00ms    11.4 MB/sec
 </code></pre>
-<h4>Windows</h4>
+Windows
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 linter/all-rules/large/dataset.py          1.00     16.6±0.35ms     2.4 MB/sec    1.00     16.6±0.24ms     2.5 MB/sec
@@ -106,7 +100,7 @@ parser/numpy/ctypeslib.py                  1.01  1229.8±31.22µs    13.5 MB/sec
 parser/numpy/globals.py                    1.00    124.4±2.08µs    23.7 MB/sec    1.01    125.9±2.48µs    23.4 MB/sec
 parser/pydantic/types.py                   1.00      2.8±0.06ms     9.2 MB/sec    1.01      2.8±0.07ms     9.1 MB/sec
 </code></pre>
-<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
 
 </div>
         </div>
@@ -117,14 +111,14 @@ parser/pydantic/types.py                   1.00      2.8±0.06ms     9.2 MB/sec 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-01 04:01</div>
-            <div class="timeline-body"><p>It looks like in CPython, there are 143 unused imports in nested blocks, but many of these are tied to the same statement (e.g., <code>crates/ruff/resources/test/cpython/Lib/subprocess.py</code> reports 18 unused imports in nested block, but they're all part of one import-from statement, and so are fixed in one pass).</p>
-<p>The worst offender is <code>crates/ruff/resources/test/cpython/Lib/test/test_import/__init__.py</code>, which has 34 unused imports, all of which seem to come from separate statements. (It's a file that includes a bunch of imports within tests, to test the imports themselves.)</p>
-<p>Most other files that have at least one unused import in a nested block have ~1-4 such imports. So it's pretty rare.</p>
+            <div class="timeline-body"><p>It looks like in CPython, there are 143 unused imports in nested blocks, but many of these are tied to the same statement (e.g., <code>crates/ruff/resources/test/cpython/Lib/subprocess.py</code> reports 18 unused imports in nested block, but they&#x27;re all part of one import-from statement, and so are fixed in one pass).</p>
+<p>The worst offender is <code>crates/ruff/resources/test/cpython/Lib/test/test_import/__init__.py</code>, which has 34 unused imports, all of which seem to come from separate statements. (It&#x27;s a file that includes a bunch of imports within tests, to test the imports themselves.)</p>
+<p>Most other files that have at least one unused import in a nested block have ~1-4 such imports. So it&#x27;s pretty rare.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/rules/flake8_type_checking/rules/empty_type_checking_block.rs</code>:56 on 2023-06-01 06:31</div>
-            <div class="timeline-body"><p>(not your code) i'm surprised this didn't trigger clippy</p>
+            <div class="timeline-body"><p>(not your code) i&#x27;m surprised this didn&#x27;t trigger clippy</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -139,14 +133,14 @@ parser/pydantic/types.py                   1.00      2.8±0.06ms     9.2 MB/sec 
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/autofix/mod.rs</code>:71 on 2023-06-01 06:34</div>
             <div class="timeline-body"><p>Nit</p>
-<pre><code class="language-suggestion">        if fix.isolation().is_isolated() {
+<pre><code>        if fix.isolation().is_isolated() {
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-06-01 06:37</div>
             <div class="timeline-body"><p>Instead of setting isolation as a binary flag, would it be possible to set Isolation with a text range or a dummy edit on the parent node?</p>
-<pre><code class="language-rust">if True:
+<pre><code>if True:
   import os
   import sys
 
@@ -159,7 +153,7 @@ if 1==1:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/autofix/mod.rs</code>:70 on 2023-06-01 06:40</div>
-            <div class="timeline-body"><p>Oh, this is interesting. I expected that we run <code>isolated</code> fixes in full isolation -&gt; We apply no other fixes in that pass. But that's not what we do. Is there another word that may describe this behavior better?</p>
+            <div class="timeline-body"><p>Oh, this is interesting. I expected that we run <code>isolated</code> fixes in full isolation -&gt; We apply no other fixes in that pass. But that&#x27;s not what we do. Is there another word that may describe this behavior better?</p>
 <p>I guess I expected <code>Serializable</code> isolation (using SQL terminology) and our default isolation level is <code>NO_OVERLAPPING</code>. The way I think about this new isolation level is similar to NON_CONCURRENT but that feels wrong too. Hmm</p>
 <p>On naming:</p>
 <ul>
@@ -190,12 +184,12 @@ if 1==1:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-01 20:35</div>
-            <div class="timeline-body"><p>@konstin - Yes! I ended up doing this in https://github.com/charliermarsh/ruff/pull/4774.</p>
+            <div class="timeline-body"><p>@konstin - Yes! I ended up doing this in <a href="https://github.com/charliermarsh/ruff/pull/4774">charliermarsh/ruff#4774</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-01 20:36</div>
-            <div class="timeline-body"><p>We could probably go even further if we're willing to accept more heuristics. E.g., we could check if the body contains at least one statement that we would <em>never</em> delete (huge hack), we could avoid isolation levels...</p>
+            <div class="timeline-body"><p>We could probably go even further if we&#x27;re willing to accept more heuristics. E.g., we could check if the body contains at least one statement that we would <em>never</em> delete (huge hack), we could avoid isolation levels...</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -208,10 +202,10 @@ if 1==1:
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2023-06-02 02:45</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-02 02:45</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-06-02 02:45</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-02 02:45</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2023-06-02 02:45</div>
@@ -219,7 +213,7 @@ if 1==1:
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:57:46 UTC
+        Synced at 2026-01-20 18:54:07 UTC
     </footer>
 </body>
 </html>

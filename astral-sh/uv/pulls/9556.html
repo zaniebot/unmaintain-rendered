@@ -27,7 +27,7 @@
 <p>This does not enable the fast path for general source dependencies.</p>
 <p>There is a possible difference in execution if the latest uv version is newer than the one currently running: The PEP 517 path would use the latest version, while the fast path uses the current version.</p>
 <p>Please review commit-by-commit</p>
-<h3>Benchmark</h3>
+Benchmark
 <p><code>built_with_uv</code>, using the fast path:</p>
 <pre><code>$ hyperfine &quot;~/projects/uv/target/profiling/uv build&quot;
 Time (mean ± σ):       9.2 ms ±   1.1 ms    [User: 4.6 ms, System: 4.6 ms]
@@ -41,13 +41,13 @@ Range (min … max):   250.7 ms … 298.4 ms    10 runs
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">preview</span> added by @konstin on 2024-12-01 20:39</div>
+            <div class="event">Label <span class="label">preview</span> added by <a href="https://github.com/konstin">@konstin</a> on 2024-12-01 20:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @BurntSushi by @konstin on 2024-12-01 20:39</div>
+            <div class="event">Review requested from <a href="https://github.com/BurntSushi">@BurntSushi</a> by <a href="https://github.com/konstin">@konstin</a> on 2024-12-01 20:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @charliermarsh by @konstin on 2024-12-01 20:39</div>
+            <div class="event">Review requested from <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/konstin">@konstin</a> on 2024-12-01 20:39</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-01 21:09</div>
@@ -69,7 +69,7 @@ Range (min … max):   250.7 ms … 298.4 ms    10 runs
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/build_frontend.rs</code>:742 on 2024-12-01 22:26</div>
-            <div class="timeline-body"><p>I might structure these as just two entirely separate methods? That's always my instinct when I have a method that takes a bool and entirely forks behavior on that bool. Sort of a matter of preference, though.</p>
+            <div class="timeline-body"><p>I might structure these as just two entirely separate methods? That&#x27;s always my instinct when I have a method that takes a bool and entirely forks behavior on that bool. Sort of a matter of preference, though.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -91,7 +91,7 @@ Range (min … max):   250.7 ms … 298.4 ms    10 runs
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/build_frontend.rs</code>:742 on 2024-12-01 22:38</div>
-            <div class="timeline-body"><p>I like those, in this case i already know that I'll add more forks (listing vs. building) here later :)</p>
+            <div class="timeline-body"><p>I like those, in this case i already know that I&#x27;ll add more forks (listing vs. building) here later :)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -104,10 +104,10 @@ Range (min … max):   250.7 ms … 298.4 ms    10 runs
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @konstin on 2024-12-02 15:37</div>
+            <div class="event">Merged by <a href="https://github.com/konstin">@konstin</a> on 2024-12-02 15:37</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @konstin on 2024-12-02 15:37</div>
+            <div class="event">Closed by <a href="https://github.com/konstin">@konstin</a> on 2024-12-02 15:37</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-12-02 15:37</div>
@@ -120,14 +120,14 @@ Range (min … max):   250.7 ms … 298.4 ms    10 runs
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-12-03 14:25</div>
             <div class="timeline-body"><p>Nice! The benchmark shows a rather large perf difference. Do you have a sense of where this is coming from?</p>
-<p>And that also makes me curious about the perf difference between the fast path and <code>--force-pep517</code>. That seems like a more apples-to-apples comparison? (Unless I'm misunderstanding the benchmark in the PR description.)</p>
+<p>And that also makes me curious about the perf difference between the fast path and <code>--force-pep517</code>. That seems like a more apples-to-apples comparison? (Unless I&#x27;m misunderstanding the benchmark in the PR description.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-12-03 16:25</div>
             <div class="timeline-body"><p>For all the python build backends, we pay a cost for each import (see also https://peps.python.org/pep-0690/). A build backend is using a lot of features, so it gets slowed down by a lot of imports, even something manually optimized to have lazy imports such as hatchling.</p>
 <p>For uv-against-uv, we paying the cost for setting up the build env, syncing it, spawning python, the spawning uv from python. We do this for each hook we call (should be <code>build_sdist</code> and <code>build_wheel</code> here).</p>
-<p>Here's a uv-against-uv benchmark:</p>
+<p>Here&#x27;s a uv-against-uv benchmark:</p>
 <pre><code>UV_PREVIEW=1 hyperfine &quot;../../../target/profiling/uv build --find-links ../../../target/wheels/ --preview&quot; &quot;UV_PREVIEW=1 ../../../target/profiling/uv build --find-links ../../../target/wheels/ --preview --force-pep517&quot;
 Benchmark 1: ../../../target/profiling/uv build --find-links ../../../target/wheels/ --preview
   Time (mean ± σ):       9.7 ms ±   1.7 ms    [User: 4.7 ms, System: 4.9 ms]
@@ -141,23 +141,23 @@ Summary
   ../../../target/profiling/uv build --find-links ../../../target/wheels/ --preview ran
     9.08 ± 1.61 times faster than UV_PREVIEW=1 ../../../target/profiling/uv build --find-links ../../../target/wheels/ --preview --force-pep517
 </code></pre>
-<p>To illustrate the overhead from calling python, this is the cost for some std modules you'll want for building distributions:</p>
-<pre><code>$ hyperfine &quot;python -c ''&quot;
-Benchmark 1: python -c ''
+<p>To illustrate the overhead from calling python, this is the cost for some std modules you&#x27;ll want for building distributions:</p>
+<pre><code>$ hyperfine &quot;python -c &#x27;&#x27;&quot;
+Benchmark 1: python -c &#x27;&#x27;
   Time (mean ± σ):       7.9 ms ±   1.2 ms    [User: 5.9 ms, System: 2.0 ms]
   Range (min … max):     6.2 ms …  10.4 ms    383 runs
-$ hyperfine &quot;python -c 'import sys'&quot;
-Benchmark 1: python -c 'import sys'
+$ hyperfine &quot;python -c &#x27;import sys&#x27;&quot;
+Benchmark 1: python -c &#x27;import sys&#x27;
   Time (mean ± σ):       8.1 ms ±   1.2 ms    [User: 5.9 ms, System: 2.1 ms]
   Range (min … max):     6.3 ms …  10.7 ms    342 runs
-$ hyperfine &quot;python -c 'import sys, os, subprocess, pathlib, zipfile'&quot;
-Benchmark 1: python -c 'import sys, os, subprocess, pathlib, zipfile'
+$ hyperfine &quot;python -c &#x27;import sys, os, subprocess, pathlib, zipfile&#x27;&quot;
+Benchmark 1: python -c &#x27;import sys, os, subprocess, pathlib, zipfile&#x27;
   Time (mean ± σ):      17.5 ms ±   2.1 ms    [User: 14.3 ms, System: 3.1 ms]
   Range (min … max):    15.1 ms …  24.6 ms    170 runs
 </code></pre>
 <p>The uv build backend imports <code>sys</code> and <code>subprocess</code> lazily, and has to spawn uv, so we can look at their isolated overhead:</p>
-<pre><code>$ UV_PREVIEW=1 hyperfine &quot;python -c 'import sys, subprocess; from uv import build_wheel'&quot;
-Benchmark 1: python -c 'import sys, subprocess; from uv import build_wheel'
+<pre><code>$ UV_PREVIEW=1 hyperfine &quot;python -c &#x27;import sys, subprocess; from uv import build_wheel&#x27;&quot;
+Benchmark 1: python -c &#x27;import sys, subprocess; from uv import build_wheel&#x27;
   Time (mean ± σ):      14.7 ms ±   1.8 ms    [User: 11.8 ms, System: 2.9 ms]
   Range (min … max):    12.4 ms …  20.2 ms    219 runs
 $ hyperfine -N &quot;uv build-backend --version&quot;
@@ -175,7 +175,7 @@ Benchmark 1: uv build-backend --version
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:40:51 UTC
+        Synced at 2026-01-20 19:49:38 UTC
     </footer>
 </body>
 </html>

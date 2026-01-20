@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dscorbett">@dscorbett</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>The fix for <a href="https://docs.astral.sh/ruff/rules/duplicate-isinstance-call/"><code>duplicate-isinstance-call</code> (SIM101)</a> can introduce syntax errors when the duplicated expression is an f-string because it normalizes the expression instead of keeping it unchanged. <a href="https://play.ruff.rs/62d86c81-b089-4054-9ef2-e2414476f7ad">Example</a>:</p>
-<pre><code class="language-console">$ cat &gt;sim101_1.py &lt;&lt;'# EOF'
+<pre><code>$ cat &gt;sim101_1.py &lt;&lt;&#x27;# EOF&#x27;
 isinstance(f&quot;{(lambda: 0)}&quot;, int) or isinstance(f&quot;{(lambda: 0)}&quot;, str)
 isinstance(f&quot;{0:{(lambda: 0)}}&quot;, int) or isinstance(f&quot;{0:{(lambda: 0)}}&quot;, str)
 isinstance(f&quot;{0:\x22}&quot;, int) or isinstance(f&quot;{0:\x22}&quot;, str)
@@ -36,7 +36,7 @@ $ ruff --isolated check sim101_1.py --select SIM101 --unsafe-fixes --diff 2&gt;&
 error: Fix introduced a syntax error. Reverting all changes.
 </code></pre>
 <p>It can also change the program’s behavior. <a href="https://play.ruff.rs/61bb0edf-9317-4435-aa72-cdd450ff5eeb">Example</a>:</p>
-<pre><code class="language-console">$ cat &gt;sim101_2.py &lt;&lt;'# EOF'
+<pre><code>$ cat &gt;sim101_2.py &lt;&lt;&#x27;# EOF&#x27;
 from datetime import datetime
 d = datetime.min
 class OddMeta(type):
@@ -58,47 +58,47 @@ $ python sim101_2.py
 False
 False
 </code></pre>
-<h3>Version</h3>
+Version
 <p>ruff 0.12.5 (d13228ab8 2025-07-24)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-07-28 14:54</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-28 14:54</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-07-28 14:54</div>
+            <div class="event">Label <span class="label">fixes</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-28 14:54</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-07-28 17:13</div>
-            <div class="timeline-body"><p>I worked a lot with the code that is causing the problem while fixing #18742 (fixed in #18882), so here's my understanding of this issue:
+            <div class="timeline-body"><p>I worked a lot with the code that is causing the problem while fixing #18742 (fixed in #18882), so here&#x27;s my understanding of this issue:
 The issue is not isolated to <code>SIM101</code>. This can happen in any rule that uses AST-based re-writing, see #18742 for a (non-comprehensive) list of more rules.</p>
-<hr />
+<hr>
 <p>For some background, AST-base rule fixes work like this:</p>
 <ul>
 <li>Receive an AST node as input to the rule.</li>
 <li>Modify the node/generate a new node for the fix.</li>
 <li>Output the string conversion of the AST node</li>
 </ul>
-<p>The issue comes from the fact that in Ruff's python AST, strings are normalized eagerly. This is why <code>\x7b</code> turns into <code>{</code> when fixed by any of the AST-based rules, and is also why other odd behaviors like multiline strings turning into <code>\n</code>s happens - The round trip from code -&gt; AST -&gt; code loses information about unnecessary escapes/special characters in the string.</p>
+<p>The issue comes from the fact that in Ruff&#x27;s python AST, strings are normalized eagerly. This is why <code>\x7b</code> turns into <code>{</code> when fixed by any of the AST-based rules, and is also why other odd behaviors like multiline strings turning into <code>\n</code>s happens - The round trip from code -&gt; AST -&gt; code loses information about unnecessary escapes/special characters in the string.</p>
 <p>For normal strings this is mostly just annoying, but because interpolated strings have special rules, but still have this eager normalization applied, it leads to behavior changes/syntax errors.</p>
-<p>The best fix for this would be changing the AST so that strings are not eagerly normalized, or at least have a recoverable original representation for the generator, which would be a big improvement to all AST-based fixes. I don't have the energy/time to do that, but hopefully someone else does.</p>
-<hr />
+<p>The best fix for this would be changing the AST so that strings are not eagerly normalized, or at least have a recoverable original representation for the generator, which would be a big improvement to all AST-based fixes. I don&#x27;t have the energy/time to do that, but hopefully someone else does.</p>
+<hr>
 <p>For this specific case, the <code>\x7b</code> problems only occur in interpolation format specs and not in non-interpolated string parts because of this replace:
 https://github.com/astral-sh/ruff/blob/130d4e113559a97e5c2dae4f80bd6a9429cef68b/crates/ruff_python_codegen/src/generator.rs#L1504</p>
-<p>Fixing <code>not f&quot;\x7b&quot; == 1</code> as an example, it goes to <code>f&quot;{1: {{ }&quot; != 1</code>. It should be fixable by adding in an earlier replace to <code>\x7b</code>, since <code>{{</code> escapes don't work in format specs.</p>
-<hr />
-<p>As for the un-parenthesizing problem, I don't have an immediate idea on how to fix it, since I only looked at the f-string related code. There might be some existing facilities to make the generator create parenthesis if the expression is inside an interpolation element, or some new mechanism to pass that information down may have to be created. Unsure.</p>
+<p>Fixing <code>not f&quot;\x7b&quot; == 1</code> as an example, it goes to <code>f&quot;{1: {{ }&quot; != 1</code>. It should be fixable by adding in an earlier replace to <code>\x7b</code>, since <code>{{</code> escapes don&#x27;t work in format specs.</p>
+<hr>
+<p>As for the un-parenthesizing problem, I don&#x27;t have an immediate idea on how to fix it, since I only looked at the f-string related code. There might be some existing facilities to make the generator create parenthesis if the expression is inside an interpolation element, or some new mechanism to pass that information down may have to be created. Unsure.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-07-29 00:21</div>
-            <div class="timeline-body"><p>Update: I've tried to fix this by adding in the <code>&quot;\\x7b&quot;</code> case to the above replace code in <code>unparse_interpolated_string_literal_element</code>, but it doesn't work because the later <code>UnicodeEscape</code> causes the <code>\\</code> to be double-escaped into <code>\\\\</code>, so even fixing the <code>\x7b</code> case will probably require a large re-think of <code>unparse_interpolated_string_literal_element</code>, since in it's current form it's just copied from the normal string processing code, which I don't understand the choices behind it too well.</p>
+            <div class="timeline-body"><p>Update: I&#x27;ve tried to fix this by adding in the <code>&quot;\\x7b&quot;</code> case to the above replace code in <code>unparse_interpolated_string_literal_element</code>, but it doesn&#x27;t work because the later <code>UnicodeEscape</code> causes the <code>\\</code> to be double-escaped into <code>\\\\</code>, so even fixing the <code>\x7b</code> case will probably require a large re-think of <code>unparse_interpolated_string_literal_element</code>, since in it&#x27;s current form it&#x27;s just copied from the normal string processing code, which I don&#x27;t understand the choices behind it too well.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:53:07 UTC
+        Synced at 2026-01-20 18:50:16 UTC
     </footer>
 </body>
 </html>

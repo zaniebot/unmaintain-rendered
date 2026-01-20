@@ -29,12 +29,12 @@
 <li><a href="https://docs.astral.sh/ruff/settings/#lint_flake8-type-checking_runtime-evaluated-base-classes"><code>runtime-evaluated-base-classes</code></a></li>
 <li><a href="https://docs.astral.sh/ruff/settings/#lint_flake8-type-checking_runtime-evaluated-decorators"><code>runtime-evaluated-decorators</code></a></li>
 </ul>
-<p>One place which I think isn't covered is the argument to <code>Depends</code> and <code>Security</code> which allows FastAPI to execute functions in order to perform argument injection.</p>
+<p>One place which I think isn&#x27;t covered is the argument to <code>Depends</code> and <code>Security</code> which allows FastAPI to execute functions in order to perform argument injection.</p>
 <p>E.g.</p>
-<pre><code class="language-python">def get_foo():
+<pre><code>def get_foo():
     return &quot;foo&quot;
 </code></pre>
-<pre><code class="language-python">from .foo import get_foo
+<pre><code>from .foo import get_foo
 from fastapi import Depends
 from typing import Annotated
 
@@ -46,7 +46,7 @@ def repeat_foo(foo: Annotated[str, Depends(get_foo)]):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jonyscathe">@jonyscathe</a> on 2024-10-14 05:51</div>
-            <div class="timeline-body"><p>Have the exact same issue.<br />
+            <div class="timeline-body"><p>Have the exact same issue.<br>
 I have something like:</p>
 <pre><code>from __future__ import annotations
 
@@ -60,7 +60,7 @@ from .models import test_model
 
 app = FastAPI()
 
-@app.post('/test/', response_model=test_model.TestResponse)
+@app.post(&#x27;/test/&#x27;, response_model=test_model.TestResponse)
 def test(
     *,
     session: Annotated[Session, Depends(get_session)],
@@ -74,13 +74,13 @@ def test(
 <p>Ways to fix:</p>
 <ul>
 <li>Could add a list of dependencies that TCH001/TCH002 will never flag on</li>
-<li>Could add a list of functions that would mean TCH001/TCH002 won't flag on that function's annotations</li>
+<li>Could add a list of functions that would mean TCH001/TCH002 won&#x27;t flag on that function&#x27;s annotations</li>
 <li>Could somehow detect when things like <code>Depends</code> and <code>Security</code> are used and not flag them or their arguments (or their annotated types...)</li>
 </ul>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-10-14 14:13</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-14 14:13</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-14 14:13</div>
@@ -97,7 +97,7 @@ def test(
             <div class="timeline-body"><blockquote>
 <p>@jonyscathe @MichaReiser did you guys find any solution beside moving <code>app</code> declaration into a submodule?</p>
 </blockquote>
-<p>I'm not aware of any solution for this issue. I understand that we need a new setting to configure runtime-evaluated type annotations</p>
+<p>I&#x27;m not aware of any solution for this issue. I understand that we need a new setting to configure runtime-evaluated type annotations</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -120,16 +120,16 @@ def test(
             <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-11-07 07:47</div>
             <div class="timeline-body"><p>I think one sensible and easy-to-implement solution for this particular case is to special-case <code>Annotated</code> and treat itself and everything past the first element in the subscript as runtime context, since <code>Annotated</code> is almost always used for runtime introspection. Of course that stops working as soon as you move this out into a <code>TypeAlias</code> in a separate module, so it would still probably be a good idea to add a third setting for symbols that always need to be available at runtime, so corresponding imports would never emit TCH001-TCH003.</p>
 <p>But you will also need to take into account that with functions <code>typing.get_type_hints</code> will fail if any of the parameter or return annotations contain forward references to symbols within <code>TYPE_CHECKING</code> blocks, so if you get any hits within a function, you would likely have to retroactively treat all references as runtime references, which may be quite tricky to accomplish. You would likely have to eagerly go through all the annotations for every function to see if there are any matches so you can set a flag before traversing the annotation nodes on the function for semantic analysis, which would slow things down quite a bit.</p>
-<p>The same is technically true for classes, but there, you usually can rely on the existing settings. It's also worth pointing out that this should eventually be less of a problem once PEP-649 arrives, since it will extend <code>typing.get_type_hints</code> with the ability for partial failure, so failures in resolving part of one of the annotations will not spread to the rest of the annotation and all the other annotations on the same object. We may see earlier adoption of this improvement thanks to <code>typing_extensions</code> likely containing a backport.</p>
-<p>Also not every runtime library will use <code>typing.get_type_hints</code>, there's quite a few that implement their own logic, so the failure conditions are not always the same. That's why in <code>flake8-type-checking</code> I also have the concept of a soft-runtime use, i.e. we treat it as neither required nor not required and just never emit an error in either case, trusting that you know what you are doing.</p>
-<p>One good example where this is necessary is SQLAlchemy's <code>Mapped</code> which can refer to other models in relationships and these sometimes need to be forward references without a runtime import in order to break import cycles, but everything other than models needs to be available at runtime, so there's no &quot;one-size fits all&quot; solution there. With red knot we could eventually know which symbols refer to other SQLAlchemy models and make a more narrow exception, but at that point it would become a very targeted extension specific to SQLAlchemy.</p>
+<p>The same is technically true for classes, but there, you usually can rely on the existing settings. It&#x27;s also worth pointing out that this should eventually be less of a problem once PEP-649 arrives, since it will extend <code>typing.get_type_hints</code> with the ability for partial failure, so failures in resolving part of one of the annotations will not spread to the rest of the annotation and all the other annotations on the same object. We may see earlier adoption of this improvement thanks to <code>typing_extensions</code> likely containing a backport.</p>
+<p>Also not every runtime library will use <code>typing.get_type_hints</code>, there&#x27;s quite a few that implement their own logic, so the failure conditions are not always the same. That&#x27;s why in <code>flake8-type-checking</code> I also have the concept of a soft-runtime use, i.e. we treat it as neither required nor not required and just never emit an error in either case, trusting that you know what you are doing.</p>
+<p>One good example where this is necessary is SQLAlchemy&#x27;s <code>Mapped</code> which can refer to other models in relationships and these sometimes need to be forward references without a runtime import in order to break import cycles, but everything other than models needs to be available at runtime, so there&#x27;s no &quot;one-size fits all&quot; solution there. With red knot we could eventually know which symbols refer to other SQLAlchemy models and make a more narrow exception, but at that point it would become a very targeted extension specific to SQLAlchemy.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-11-13 08:48</div>
-            <div class="timeline-body"><p>Turns out ruff already properly clears the <code>TYPE_DEFINITION</code> flag for the second argument of <code>Annotated</code>, however there are additional flags for string annotations with a <code>__future__</code> import and for the runtime context of the annotation which don't get cleared.</p>
-<p>Not clearing those flags makes sense to me, since they provide important context, however we never check for <code>TYPE_DEFINITION</code> on <code>is_typing_reference</code>, so we treat <code>Depends</code> and <code>get_foo</code> as typing references, despite not being part of a type definition. Technically this is once again somewhat correct (especially for the <code>from __future__ import annotations</code> case), however it's not really helpful to treat those references that way, so it's better to never treat non-type-definitions as typing references (unless they're within a type checking block).</p>
-<p>I'll get a PR up with a fix.</p>
+            <div class="timeline-body"><p>Turns out ruff already properly clears the <code>TYPE_DEFINITION</code> flag for the second argument of <code>Annotated</code>, however there are additional flags for string annotations with a <code>__future__</code> import and for the runtime context of the annotation which don&#x27;t get cleared.</p>
+<p>Not clearing those flags makes sense to me, since they provide important context, however we never check for <code>TYPE_DEFINITION</code> on <code>is_typing_reference</code>, so we treat <code>Depends</code> and <code>get_foo</code> as typing references, despite not being part of a type definition. Technically this is once again somewhat correct (especially for the <code>from __future__ import annotations</code> case), however it&#x27;s not really helpful to treat those references that way, so it&#x27;s better to never treat non-type-definitions as typing references (unless they&#x27;re within a type checking block).</p>
+<p>I&#x27;ll get a PR up with a fix.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -139,12 +139,12 @@ def test(
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @JP-Ellis on 2025-02-18 23:10</div>
+            <div class="event">Closed by <a href="https://github.com/JP-Ellis">@JP-Ellis</a> on 2025-02-18 23:10</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:51:15 UTC
+        Synced at 2026-01-20 18:48:58 UTC
     </footer>
 </body>
 </html>

@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>For <em>definitely declared</em> symbols, we currently rely on the declared type only, even if we also see bindings for that symbol. This means that we handle the two cases (1) a symbol is undeclared and (2) a symbol is declared with type <code>Any</code>/<code>Unknown</code> differently, which seems inconsistent.</p>
 <p>One potential solution to this problem is the following: Instead of returning <code>T_declared</code> as the public type of a declared symbol, we return <code>T_declared | T_declared &amp; T_inferred</code> instead. This represents a type that is <em>no smaller than and no larger than</em> <code>T_declared</code>. For fully static types, this construct simplifies to <code>T_declared</code>. But for non-fully-static types, this can lead to more precise types. For example, if the declared type is <code>Any</code> (or <code>Unknown</code>), we now use <code>Any | Any &amp; T</code> which can be simplified to <code>Any | T</code>. This represents the fact that the public type for this symbol must be at least as large as the inferred type <code>T</code>. This allows us to issue diagnostics in cases like the following:</p>
-<pre><code class="language-py">from typing import Any
+<pre><code>from typing import Any
 
 class C:
     x: Any = 1
@@ -37,7 +37,7 @@ y: str = C.x  # error: [invalid-assignment]
 </code></pre>
 <p>Red knot (main), mypy and pyright issue no diagnostic in the last line here.</p>
 <p>In the example given above, it looks like the intersection is not necessary. However, consider the following scenario. We still want to see <code>int</code> as the public type here. This is possible because <code>int | int &amp; Any = int</code>:</p>
-<pre><code class="language-py">from typing import Any
+<pre><code>from typing import Any
 
 def any() -&gt; Any: ...
 
@@ -47,29 +47,29 @@ class C:
 reveal_type(C.x)  # int
 </code></pre>
 <p>The same behavior should also apply to possibly-declared symbols.</p>
-<h3>Why <code>(T_declared | T_declared &amp; T_inferred)</code>?</h3>
+Why <code>(T_declared | T_declared &amp; T_inferred)</code>?
 <p>The nice property of this expression is that it works for other cases in the matrix below as well.</p>
-<h4>Undeclared (<code>T_declared = Unknown</code>)</h4>
+Undeclared (<code>T_declared = Unknown</code>)
 <p>If a symbol is definitely undeclared, we can set <code>T_declared = Unknown</code>. In this case, the expression <code>T_declared | T_declared &amp; T_inferred = Unknown | Unknown &amp; T_inferred</code> simplifies to <code>Unknown | T_inferred</code>. This is exactly what we have in the <strong>last column</strong> of the matrix below (where the entry in the last <em>row</em> further simplifies because <code>Unknown | Unknown = Unknown</code>).</p>
-<h4>Unbound (<code>T_inferred = Unknown</code>)</h4>
+Unbound (<code>T_inferred = Unknown</code>)
 <p>If a symbol is definitely unbound, we can set <code>T_inferred = Unknown</code>. In this case, the expression <code>T_declared | T_declared &amp; T_inferred = T_declared | T_declared &amp; Unknown</code> simplifies to <code>T_declared</code>. This is exactly what we have in the <strong>last row</strong> of the matrix (where the entry in the last <em>column</em> simplifies because <code>T_declared</code> is <code>Unknown</code> in this case as well)</p>
-<h3>Type inference matrix</h3>
+Type inference matrix
 <p>(changes affect the first column only)</p>
-<h4>Before</h4>
+Before
 <p>| <strong>Public type</strong>  | declared                   | possibly-undeclared | undeclared         |
 | ---------------- | -------------------------- | ------------------- | -------------------|
 | bound            | <code>T_decl</code>                                   | <code>T_decl \| T_inf</code>   | <code>Unknown \| T_inf</code> |
 | possibly-unbound | <code>T_decl</code> | <code>T_decl \| T_inf</code>   | <code>Unknown \| T_inf</code> |
 | unbound          | <code>T_decl</code>                   | <code>T_decl</code>            | <code>Unknown</code>          |</p>
-<h4>After</h4>
+After
 <p>| <strong>Public type</strong>  | declared                   | possibly-undeclared  | undeclared         |
 | ---------------- | -------------------------- | ---------------------| ------------------ |
 | bound            | <code>T_decl \| T_decl &amp; T_inf</code> | <code>T_decl \| T_inf</code>    | <code>Unknown \| T_inf</code> |
 | possibly-unbound | <code>T_decl \| T_decl &amp; T_inf</code> | <code>T_decl \| T_inf</code>    | <code>Unknown \| T_inf</code> |
 | unbound          | <code>T_decl</code>                   | <code>T_decl</code>             | <code>Unknown</code>          |</p>
-<h3>What about possibly-undeclared?</h3>
-<p>It would be great if we could replace <code>T_declared -&gt; T_declared | Unknown</code> for this case (and similar for possibly unbound symbols). This is doable, but leads to lots of unions/intersections with <code>Unknown</code>, something that we don't fully simplify at the moment, so I have not fully looked into this yet. As it stands, our handling of possibly-undeclared symbols is at least debatable. For example, should we issue a diagnostic in the following example (we currently do not).</p>
-<pre><code class="language-py">def flag() -&gt; bool: return True
+What about possibly-undeclared?
+<p>It would be great if we could replace <code>T_declared -&gt; T_declared | Unknown</code> for this case (and similar for possibly unbound symbols). This is doable, but leads to lots of unions/intersections with <code>Unknown</code>, something that we don&#x27;t fully simplify at the moment, so I have not fully looked into this yet. As it stands, our handling of possibly-undeclared symbols is at least debatable. For example, should we issue a diagnostic in the following example (we currently do not).</p>
+<pre><code>def flag() -&gt; bool: return True
 def get_int() -&gt; int: ...
 
 class C:
@@ -80,21 +80,21 @@ class C:
 
 C.x = 1  # this seems to violate the `str` declaration?
 </code></pre>
-<h2>Test Plan</h2>
+Test Plan
 <p>Updated existing tests.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2025-01-24 13:15</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-01-24 13:15</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @sharkdp on 2025-01-24 13:15</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-01-24 13:15</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @sharkdp on 2025-01-24 13:15</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-01-24 13:15</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-01-24 13:15</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-01-24 13:15</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-01-24 13:39</div>
@@ -121,10 +121,10 @@ C.x = 1  # this seems to violate the `str` declaration?
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/assignment/annotations.md</code>:57 on 2025-01-24 14:40</div>
             <div class="timeline-body"><p>Yes. For <code>f</code>, and <code>g</code> once we understand the annotation we will infer the type as being</p>
-<pre><code class="language-py">tuple[str, *tuple[int, ...], bytes] | tuple[Literal[&quot;42&quot;], Literal[b&quot;42&quot;]]
+<pre><code>tuple[str, *tuple[int, ...], bytes] | tuple[Literal[&quot;42&quot;], Literal[b&quot;42&quot;]]
 </code></pre>
 <p>Which, since the second element in the union is a subtype of the first element, simplifies to</p>
-<pre><code class="language-py">tuple[str, *tuple[int, ...], bytes]
+<pre><code>tuple[str, *tuple[int, ...], bytes]
 </code></pre>
 <p>which is just what they have as their annotation already</p>
 </div>
@@ -146,7 +146,7 @@ C.x = 1  # this seems to violate the `str` declaration?
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/assignment/annotations.md</code>:57 on 2025-01-24 14:55</div>
             <div class="timeline-body"><p>Do we have any tests where the assigned value is inferred as having a non-fully-static type but the declared type <em>is</em> fully static? If not, could we add some?</p>
 <p>E.g. for this:</p>
-<pre><code class="language-py">from typing_extensions import Any, reveal_type
+<pre><code>from typing_extensions import Any, reveal_type
 
 def f(x: Any):
     y: int = x
@@ -175,8 +175,8 @@ def f(x: Any):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/assignment/annotations.md</code>:57 on 2025-01-24 15:04</div>
-            <div class="timeline-body"><p>I think that's a reasonable outcome. If they want <code>y</code> to have a narrower type than <code>int | Any</code>, they should check the type of <code>x</code> before assigning it to <code>y</code>, e.g. with an <code>assert</code></p>
-<pre><code class="language-py">from typing_extensions import Any, reveal_type
+            <div class="timeline-body"><p>I think that&#x27;s a reasonable outcome. If they want <code>y</code> to have a narrower type than <code>int | Any</code>, they should check the type of <code>x</code> before assigning it to <code>y</code>, e.g. with an <code>assert</code></p>
+<pre><code>from typing_extensions import Any, reveal_type
 
 def f(x: Any):
     assert isinstance(x, int)
@@ -197,8 +197,8 @@ def f(x: Any):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/assignment/annotations.md</code>:57 on 2025-01-24 15:11</div>
-            <div class="timeline-body"><p>I'm not sure that's a reasonable outcome. The assignment <code>y: int = x</code> is only valid because <code>x</code> has a not fully static type that can materialize to something that's a subtype of <code>int</code>. I don't think after that assignment we should be anymore accounting for a possibility that <code>y</code> has a type wider than <code>int</code>. If anything it seems like the type of <code>y</code> (and maybe also <code>x</code>!) here should be <code>int &amp; Any</code>, but I don't think that's quite right either, it corresponds to effectively ignoring annotated types on valid assignments, which is what we do in local inference but is not right for public types.</p>
-<p>Overall I'm not sold on this PR yet, would like to think it over a bit more.</p>
+            <div class="timeline-body"><p>I&#x27;m not sure that&#x27;s a reasonable outcome. The assignment <code>y: int = x</code> is only valid because <code>x</code> has a not fully static type that can materialize to something that&#x27;s a subtype of <code>int</code>. I don&#x27;t think after that assignment we should be anymore accounting for a possibility that <code>y</code> has a type wider than <code>int</code>. If anything it seems like the type of <code>y</code> (and maybe also <code>x</code>!) here should be <code>int &amp; Any</code>, but I don&#x27;t think that&#x27;s quite right either, it corresponds to effectively ignoring annotated types on valid assignments, which is what we do in local inference but is not right for public types.</p>
+<p>Overall I&#x27;m not sold on this PR yet, would like to think it over a bit more.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -207,7 +207,7 @@ def f(x: Any):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/assignment/annotations.md</code>:57 on 2025-01-24 15:12</div>
-            <div class="timeline-body"><p>No, that's a good point that I hadn't thought about. And I'm not sure I like the behavior. In the <code>x: Any = 1</code> case, we make the resulting public type <em>more precise</em>. But in the case <code>x: int = returns_any()</code> here, we make the public type of <code>x</code> <em>less</em> precise. I'm not sure if that's desirable. Maybe we want <code>(T_declared | T_inferred) &amp; T_declared</code>? :smile:</p>
+            <div class="timeline-body"><p>No, that&#x27;s a good point that I hadn&#x27;t thought about. And I&#x27;m not sure I like the behavior. In the <code>x: Any = 1</code> case, we make the resulting public type <em>more precise</em>. But in the case <code>x: int = returns_any()</code> here, we make the public type of <code>x</code> <em>less</em> precise. I&#x27;m not sure if that&#x27;s desirable. Maybe we want <code>(T_declared | T_inferred) &amp; T_declared</code>? :smile:</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -229,10 +229,10 @@ def f(x: Any):
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Converted to draft by @sharkdp on 2025-01-24 18:44</div>
+            <div class="event">Converted to draft by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-01-24 18:44</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[red-knot] Use `T_declared | T_inferred` for declared public symbols" to "[red-knot] Handle public symbols declared as `Unknown` like undeclared symbols" by @sharkdp on 2025-01-24 19:24</div>
+            <div class="event">Renamed from &quot;[red-knot] Use `T_declared | T_inferred` for declared public symbols&quot; to &quot;[red-knot] Handle public symbols declared as `Unknown` like undeclared symbols&quot; by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-01-24 19:24</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-01-24 21:16</div>
@@ -256,12 +256,12 @@ def f(x: Any):
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @sharkdp on 2025-01-25 12:25</div>
+            <div class="event">Closed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-01-25 12:25</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:09:27 UTC
+        Synced at 2026-01-20 19:10:47 UTC
     </footer>
 </body>
 </html>

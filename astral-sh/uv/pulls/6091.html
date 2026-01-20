@@ -23,13 +23,13 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>Historically, in order to &quot;resolve from a lockfile&quot;, we've taken the lockfile, used it to pre-populate the in-memory metadata index, then run a resolution. If the resolution didn't match our existing resolution, we re-resolved from scratch.</p>
-<p>This was an appealing approach because (in theory) it didn't require any dedicated logic beyond pre-populating the index. However, it's proven to be <em>really</em> hard to get right, because it's a stricter requirement than we need. We just need the current lockfile to <em>satisfy</em> the requirements provided by the user. We don't actually need a second resolution to produce the exact same result. And it's not uncommon that this second resolution differs, because we seed it with preferences, which fundamentally changes its course. We've worked hard to minimize those &quot;instabilities&quot;, but they're still present.</p>
-<p>The approach here is intended to be much simpler. Instead of resolving from the lockfile, we just check if the current resolution satisfies the state of the workspace. Specifically, we check if the lockfile (1) contains all the relevant members, and (2) matches the metadata for all dependencies, recursively. (We skip registry dependencies, assuming that they're immutable.)</p>
+            <div class="timeline-body">Summary
+<p>Historically, in order to &quot;resolve from a lockfile&quot;, we&#x27;ve taken the lockfile, used it to pre-populate the in-memory metadata index, then run a resolution. If the resolution didn&#x27;t match our existing resolution, we re-resolved from scratch.</p>
+<p>This was an appealing approach because (in theory) it didn&#x27;t require any dedicated logic beyond pre-populating the index. However, it&#x27;s proven to be <em>really</em> hard to get right, because it&#x27;s a stricter requirement than we need. We just need the current lockfile to <em>satisfy</em> the requirements provided by the user. We don&#x27;t actually need a second resolution to produce the exact same result. And it&#x27;s not uncommon that this second resolution differs, because we seed it with preferences, which fundamentally changes its course. We&#x27;ve worked hard to minimize those &quot;instabilities&quot;, but they&#x27;re still present.</p>
+<p>The approach here is intended to be much simpler. Instead of resolving from the lockfile, we just check if the current resolution satisfies the state of the workspace. Specifically, we check if the lockfile (1) contains all the relevant members, and (2) matches the metadata for all dependencies, recursively. (We skip registry dependencies, assuming that they&#x27;re immutable.)</p>
 <p>This may actually be too conservative, since we can have resolutions that satisfy the requirements, even if the requirements have changed slightly. But we want to bias towards correctness for now.</p>
 <p>My hope is that this scheme will be more performant, simpler, and more robust.</p>
-<p>Closes https://github.com/astral-sh/uv/issues/6063.</p>
+<p>Closes <a href="https://github.com/astral-sh/uv/issues/6063">astral-sh/uv#6063</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -39,12 +39,12 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/lock.rs</code>:738 on 2024-08-14 21:19</div>
-            <div class="timeline-body"><p>I think these are all fine, but I think will result in reporting &quot;not satisfied&quot; in cases where the lock file does actually satisfy the requirements. But I think this is something we can improve in follow-up PRs. Specifically, even if the dependency specification in the <code>pyproject.toml</code> changes, the version that's in the lock file can still satisfy it such that no actual updates are needed. But I think this implementation will say an update is needed if <em>any</em> change occurs.</p>
+            <div class="timeline-body"><p>I think these are all fine, but I think will result in reporting &quot;not satisfied&quot; in cases where the lock file does actually satisfy the requirements. But I think this is something we can improve in follow-up PRs. Specifically, even if the dependency specification in the <code>pyproject.toml</code> changes, the version that&#x27;s in the lock file can still satisfy it such that no actual updates are needed. But I think this implementation will say an update is needed if <em>any</em> change occurs.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-08-14 21:19</div>
-            <div class="timeline-body"><p>I feel like we should move forward in this direction. I still think there's probably an opportunity to limit what we need to write to the lock file, but I'd rather be in a position where our lock file is more bloated than it needs to be but we're more confident in its stability.</p>
+            <div class="timeline-body"><p>I feel like we should move forward in this direction. I still think there&#x27;s probably an opportunity to limit what we need to write to the lock file, but I&#x27;d rather be in a position where our lock file is more bloated than it needs to be but we&#x27;re more confident in its stability.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -62,8 +62,8 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/common/mod.rs</code>:52 on 2024-08-14 21:24</div>
-            <div class="timeline-body"><p>I replaced all the usages of this in <code>lock</code> with a second call to <code>.lock</code> with <code>--locked</code>. The <code>deterministic!</code> macro just makes it really hard to update the snapshots since you have to manually edit the tests, and <code>--locked</code> will fail more aggressively since it doesn't <em>just</em> require that the string contents changed.</p>
-<p>(I've uncommented this though, and left it in the ecosystem checks.)</p>
+            <div class="timeline-body"><p>I replaced all the usages of this in <code>lock</code> with a second call to <code>.lock</code> with <code>--locked</code>. The <code>deterministic!</code> macro just makes it really hard to update the snapshots since you have to manually edit the tests, and <code>--locked</code> will fail more aggressively since it doesn&#x27;t <em>just</em> require that the string contents changed.</p>
+<p>(I&#x27;ve uncommented this though, and left it in the ecosystem checks.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -72,23 +72,23 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/lock.rs</code>:738 on 2024-08-14 21:25</div>
-            <div class="timeline-body"><p>Yeah this may actually be too conservative... I mostly care about this capability to ensure that <code>uv run</code> is really fast / cheap, so I'm ok with having to do a resolution if the user edits the dependencies.</p>
+            <div class="timeline-body"><p>Yeah this may actually be too conservative... I mostly care about this capability to ensure that <code>uv run</code> is really fast / cheap, so I&#x27;m ok with having to do a resolution if the user edits the dependencies.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-08-14 21:29</div>
+            <div class="event">Review requested from <a href="https://github.com/BurntSushi">@BurntSushi</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-14 21:29</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @ibraheemdev by @charliermarsh on 2024-08-14 21:29</div>
+            <div class="event">Review requested from <a href="https://github.com/ibraheemdev">@ibraheemdev</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-14 21:29</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> added by @charliermarsh on 2024-08-14 21:29</div>
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-14 21:29</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">lock</span> added by @charliermarsh on 2024-08-14 21:29</div>
+            <div class="event">Label <span class="label">lock</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-14 21:29</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @charliermarsh on 2024-08-14 21:30</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-14 21:30</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-14 21:30</div>
@@ -111,12 +111,12 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> approved on 2024-08-14 21:42</div>
-            <div class="timeline-body"><p>It's a little unfortunate that we can't rely on the lockfile for metadata since that had a lot of potential in terms of performant incremental resolves (though I'm not sure this PR necessarily removes that as a future option). However, I agree that this approach is more obviously correct and probably our best option.</p>
+            <div class="timeline-body"><p>It&#x27;s a little unfortunate that we can&#x27;t rely on the lockfile for metadata since that had a lot of potential in terms of performant incremental resolves (though I&#x27;m not sure this PR necessarily removes that as a future option). However, I agree that this approach is more obviously correct and probably our best option.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-14 21:56</div>
-            <div class="timeline-body"><p>It's possible that we could still support that... But the framing would have to be a little different. Like, our goal would be to use metadata from the lockfile in the <em>normal</em> resolve, not the noop resolve.</p>
+            <div class="timeline-body"><p>It&#x27;s possible that we could still support that... But the framing would have to be a little different. Like, our goal would be to use metadata from the lockfile in the <em>normal</em> resolve, not the noop resolve.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -135,10 +135,10 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2024-08-15 00:00</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-15 00:00</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-08-15 00:00</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-15 00:00</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-08-15 00:00</div>
@@ -146,7 +146,7 @@
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:38:53 UTC
+        Synced at 2026-01-20 19:47:23 UTC
     </footer>
 </body>
 </html>

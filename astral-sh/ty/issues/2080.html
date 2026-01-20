@@ -23,8 +23,8 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/xxchan">@xxchan</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<pre><code class="language-python">from typing import Protocol, runtime_checkable
+            <div class="timeline-body">Summary
+<pre><code>from typing import Protocol, runtime_checkable
 
 @runtime_checkable
 class Outer(Protocol):
@@ -72,26 +72,26 @@ info: rule `invalid-argument-type` is enabled by default
 
 Found 1 diagnostic
 </code></pre>
-<h3>Version</h3>
+Version
 <p>ty 0.0.3 (fadfe0966 2025-12-17)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">Protocols</span> added by @carljm on 2025-12-18 17:06</div>
+            <div class="event">Label <span class="label">Protocols</span> added by <a href="https://github.com/carljm">@carljm</a> on 2025-12-18 17:06</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-18 17:07</div>
-            <div class="timeline-body"><p>Thanks for the report! Looks like a bug. Removing the <code>get_inner()</code> methods does not fix the error, so the issue is not with the use of the nested protocols, it's that we don't think <code>MyOuter.Inner</code> itself satisfies <code>Outer.Inner</code>. I suspect this is related to #903.</p>
+            <div class="timeline-body"><p>Thanks for the report! Looks like a bug. Removing the <code>get_inner()</code> methods does not fix the error, so the issue is not with the use of the nested protocols, it&#x27;s that we don&#x27;t think <code>MyOuter.Inner</code> itself satisfies <code>Outer.Inner</code>. I suspect this is related to #903.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-18 17:07</div>
+            <div class="event">Added to milestone &quot;Stable&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-12-18 17:07</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-18 17:59</div>
             <div class="timeline-body"><p>FWIW, while mypy and pyright are okay with this, pyrefly also rejects this code.</p>
-<p>If we add a call to our helper function <code>reveal_protocol_interface</code> here, it's easy to see what's going on:</p>
-<pre><code class="language-py">from typing import Protocol, runtime_checkable
+<p>If we add a call to our helper function <code>reveal_protocol_interface</code> here, it&#x27;s easy to see what&#x27;s going on:</p>
+<pre><code>from typing import Protocol, runtime_checkable
 from ty_extensions import reveal_protocol_interface
 
 @runtime_checkable
@@ -116,14 +116,14 @@ class MyOuter:
 def use_outer(o: Outer) -&gt; None:
     pass
 
-# Revealed protocol interface: `{&quot;Inner&quot;: AttributeMember(`&lt;class 'Inner'&gt;`), &quot;get_inner&quot;: MethodMember(`(self, /) -&gt; Inner`), &quot;name&quot;: AttributeMember(`str`)}`
+# Revealed protocol interface: `{&quot;Inner&quot;: AttributeMember(`&lt;class &#x27;Inner&#x27;&gt;`), &quot;get_inner&quot;: MethodMember(`(self, /) -&gt; Inner`), &quot;name&quot;: AttributeMember(`str`)}`
 reveal_protocol_interface(Outer)
 use_outer(MyOuter())  # ty error, pyright passes
 </code></pre>
-<p>In other words, ty has inferred that the protocol <code>Outer</code> has a member <code>Inner</code>, where the type of the <code>Inner</code> member is <code>&lt;class 'Outer.Inner'&gt;</code>. Instances of <code>MyOuter</code>, meanwhile, have an <code>Inner</code> attribute available, but that <code>Inner</code> attribute does not have a type that is assignable to <code>&lt;class Outer.Inner&gt;</code>. There is only one runtime value that inhabits the type <code>&lt;class Outer.Inner&gt;</code>, and that is the class <code>Outer.Inner</code>.</p>
-<p>I think that this is a reasonable interpretation of the user's code here, given that it's totally unspecified what type checkers are meant to do if they see nested classes inside <code>Protocol</code> classes. We should probably consider emitting an error when we see nested classes inside <code>Protocol</code> classes, as part of our <a href="https://docs.astral.sh/ty/reference/rules/#ambiguous-protocol-member"><code>ambiguous-protocol-member</code></a> check.</p>
+<p>In other words, ty has inferred that the protocol <code>Outer</code> has a member <code>Inner</code>, where the type of the <code>Inner</code> member is <code>&lt;class &#x27;Outer.Inner&#x27;&gt;</code>. Instances of <code>MyOuter</code>, meanwhile, have an <code>Inner</code> attribute available, but that <code>Inner</code> attribute does not have a type that is assignable to <code>&lt;class Outer.Inner&gt;</code>. There is only one runtime value that inhabits the type <code>&lt;class Outer.Inner&gt;</code>, and that is the class <code>Outer.Inner</code>.</p>
+<p>I think that this is a reasonable interpretation of the user&#x27;s code here, given that it&#x27;s totally unspecified what type checkers are meant to do if they see nested classes inside <code>Protocol</code> classes. We should probably consider emitting an error when we see nested classes inside <code>Protocol</code> classes, as part of our <a href="https://docs.astral.sh/ty/reference/rules/#ambiguous-protocol-member"><code>ambiguous-protocol-member</code></a> check.</p>
 <p>I think the correct way to write this code would be to move the <code>Inner</code> protocol to the global namespace:</p>
-<pre><code class="language-py">from typing import Protocol, runtime_checkable
+<pre><code>from typing import Protocol, runtime_checkable
 
 class Inner(Protocol):
     def foo(self) -&gt; int: ...
@@ -156,11 +156,11 @@ use_outer(MyOuter())
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-18 18:10</div>
             <div class="timeline-body"><p>I also think the mypy/pyright interpretation (which I roughly guess to be that a nested protocol class in a protocol is effectively the same as <code>Inner: ClassVar[type[GloballyDefinedInner]]</code> as an attribute on the protocol) is a reasonable interpretation of this, but I agree this is not specified anywhere.</p>
 <p>Your version also makes an assumption that the <code>Inner</code> attribute itself is not intended to be part of the protocol, but it may be that the user intent of the OP is that implementers of the protocol are required to have an <code>Inner</code> class implementing the <code>Inner</code> protocol.</p>
-<p>If we get reports indicating that this usage is common, then it seems worth matching the mypy/pyright behavior. If not, maybe not. For now, I'll take this out of stable milestone but leave it open?</p>
+<p>If we get reports indicating that this usage is common, then it seems worth matching the mypy/pyright behavior. If not, maybe not. For now, I&#x27;ll take this out of stable milestone but leave it open?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Removed from milestone "Stable" by @carljm on 2025-12-18 18:11</div>
+            <div class="event">Removed from milestone &quot;Stable&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-12-18 18:11</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-18 18:22</div>
@@ -168,7 +168,7 @@ use_outer(MyOuter())
 <p>Your version also makes an assumption that the <code>Inner</code> attribute itself is not intended to be part of the protocol, but it may be that the user intent of the OP is that implementers of the protocol are required to have an <code>Inner</code> class implementing the <code>Inner</code> protocol.</p>
 </blockquote>
 <p>Right. A variant that does not make that assumption, but still passes all four type checkers, would be:</p>
-<pre><code class="language-py">from typing import Protocol, runtime_checkable
+<pre><code>from typing import Protocol, runtime_checkable
 
 class InnerProtocol(Protocol):
     def foo(self) -&gt; int: ...
@@ -198,7 +198,7 @@ def use_outer(o: Outer) -&gt; None:
 use_outer(MyOuter())
 </code></pre>
 <p>I tried doing something like this, but if you do this then mypy/pyright/pyrefly all complain that <code>Outer</code> declares its <code>Inner</code> attribute must be settable, and apparently they all see <code>MyOuter.Inner</code> as implicitly read-only? Not sure why</p>
-<pre><code class="language-py">class InnerProtocol(Protocol):
+<pre><code>class InnerProtocol(Protocol):
     def foo(self) -&gt; int: ...
 
 @runtime_checkable
@@ -214,7 +214,7 @@ class Outer(Protocol):
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:21:26 UTC
+        Synced at 2026-01-20 19:26:36 UTC
     </footer>
 </body>
 </html>

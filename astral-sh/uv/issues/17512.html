@@ -25,43 +25,43 @@
             <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a></div>
             <div class="timeline-body"><p>We got reports that uv overruns the default open files limit (ulimit) for users on Linux and macOS:</p>
 <ul>
-<li>During sync/building packages: https://github.com/astral-sh/uv/issues/11296</li>
-<li>During bytecode compilation: https://github.com/astral-sh/uv/issues/16999</li>
+<li>During sync/building packages: <a href="https://github.com/astral-sh/uv/issues/11296">astral-sh/uv#11296</a></li>
+<li>During bytecode compilation: <a href="https://github.com/astral-sh/uv/issues/16999">astral-sh/uv#16999</a></li>
 <li>When uninstall Python versions (no GitHub issue yet)</li>
 </ul>
-<p>The default ulimits can be low, for example 1024 on linux, and we spawn up to a thread per core and several subprocesses. However, Cargo and other Rust tools which have very similar workloads and often very similar problems to us, don't have any problems with ulimits. A cargo maintainer <a href="https://rust-lang.zulipchat.com/#narrow/channel/246057-t-cargo/topic/Do.20cargo.2Frustc.20handle.20low.20ulimits.3F/near/568121917">told us</a>:</p>
+<p>The default ulimits can be low, for example 1024 on linux, and we spawn up to a thread per core and several subprocesses. However, Cargo and other Rust tools which have very similar workloads and often very similar problems to us, don&#x27;t have any problems with ulimits. A cargo maintainer <a href="https://rust-lang.zulipchat.com/#narrow/channel/246057-t-cargo/topic/Do.20cargo.2Frustc.20handle.20low.20ulimits.3F/near/568121917">told us</a>:</p>
 <blockquote>
 <p>From my testing for fine grain locking (unstable feature), I found that Cargo generally peaks with around ~70-80 file descriptors opened at once, and this remainly mostly static even for large projects.</p>
 </blockquote>
-<p>So the question is, why are we running into the ulimit, while Cargo doesn't? What file descriptors is uv even holding, do we need them? Is Cargo doing something different that we can adopt to avoid this?</p>
+<p>So the question is, why are we running into the ulimit, while Cargo doesn&#x27;t? What file descriptors is uv even holding, do we need them? Is Cargo doing something different that we can adopt to avoid this?</p>
 <p>This requires some Unix expertise and rust parallelism knowledge, but should otherwise not require much uv specific details, this is mostly around figuring out how to analyze this this in uv and determining the differences to Cargo.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @konstin on 2026-01-16 09:32</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/konstin">@konstin</a> on 2026-01-16 09:32</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">good first issue</span> added by @konstin on 2026-01-16 09:32</div>
+            <div class="event">Label <span class="label">good first issue</span> added by <a href="https://github.com/konstin">@konstin</a> on 2026-01-16 09:32</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">help wanted</span> added by @konstin on 2026-01-16 09:32</div>
+            <div class="event">Label <span class="label">help wanted</span> added by <a href="https://github.com/konstin">@konstin</a> on 2026-01-16 09:32</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/chilin0525">@chilin0525</a> on 2026-01-17 07:25</div>
             <div class="timeline-body"><p>I can reproduce this on macOS with the following steps:</p>
-<pre><code class="language-bash">git clone https://github.com/apache/airflow
+<pre><code>git clone https://github.com/apache/airflow
 cd airflow
 uv sync
 </code></pre>
 <p>Output:</p>
-<pre><code class="language-bash">Resolved 919 packages in 147ms
+<pre><code>Resolved 919 packages in 147ms
   × Failed to build `apache-airflow-providers-apache-beam @ file:///Users/chilin/airflow/providers/apache/beam`
   ├─▶ Failed to write to the distribution cache
   ╰─▶ Too many open files (os error 24) at path &quot;/Users/chilin/.cache/uv/sdists-v9/editable/e2cbf38bf7b0039e/.tmpFEZOEh&quot;
   help: `apache-airflow-providers-apache-beam` was included because `apache-airflow[all]` (v3.2.0) depends on `apache-airflow-providers-apache-beam`
 </code></pre>
 <p>To investigate further, I monitored the file descriptors opened by <code>uv</code> using <code>lsof</code>. It appears uv opens a large number of lock/temp files under the distribution cache:</p>
-<pre><code class="language-bash">COMMAND   PID   USER   FD      TYPE             DEVICE  SIZE/OFF      NODE NAME
+<pre><code>COMMAND   PID   USER   FD      TYPE             DEVICE  SIZE/OFF      NODE NAME
 uv      16284 chilin  cwd       DIR               1,17      2432 880274528 /Users/chilin/airflow
 uv      16284 chilin  txt       REG               1,17  42561408 880290718 /opt/homebrew/Cellar/uv/0.9.26/bin/uv
 uv      16284 chilin  txt       REG               1,17     64404 871574996 /Library/Preferences/Logging/.plist-cache.wYlFUyJH
@@ -270,13 +270,13 @@ uv      16284 chilin  199u      REG               1,17        56 880687413 /User
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2026-01-20 15:56</div>
-            <div class="timeline-body"><p>That's interesting - I wonder if we should have closed those locks?</p>
+            <div class="timeline-body"><p>That&#x27;s interesting - I wonder if we should have closed those locks?</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-20 16:38:26 UTC
+        Synced at 2026-01-20 19:41:33 UTC
     </footer>
 </body>
 </html>

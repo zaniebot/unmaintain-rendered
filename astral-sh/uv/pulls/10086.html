@@ -23,16 +23,16 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>Sort of undecided on this. These are already stored as <code>dyn Reporter</code> in each struct, so we're already using dynamic dispatch in that sense. But all the methods take <code>impl Reporter</code>. This is sometimes nice (the callsites are simpler?), but it also means that in practice, you often <em>can't</em> pass <code>None</code> to these methods that accept <code>Option&lt;impl Reporter&gt;</code>, because Rust can't infer the generic type.</p>
+            <div class="timeline-body">Summary
+<p>Sort of undecided on this. These are already stored as <code>dyn Reporter</code> in each struct, so we&#x27;re already using dynamic dispatch in that sense. But all the methods take <code>impl Reporter</code>. This is sometimes nice (the callsites are simpler?), but it also means that in practice, you often <em>can&#x27;t</em> pass <code>None</code> to these methods that accept <code>Option&lt;impl Reporter&gt;</code>, because Rust can&#x27;t infer the generic type.</p>
 <p>Anyway, this adds more consistency and simplifies the setup by using <code>Arc&lt;dyn Reporter&gt;</code> everywhere.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> added by @charliermarsh on 2024-12-21 23:45</div>
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-21 23:45</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-12-21 23:54</div>
+            <div class="event">Review requested from <a href="https://github.com/BurntSushi">@BurntSushi</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-21 23:54</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-12-21 23:57</div>
@@ -40,8 +40,8 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution/src/source/mod.rs</code>:1425 on 2024-12-21 23:57</div>
-            <div class="timeline-body"><p>I'm really annoyed by this whole <code>Facade</code> setup... I want to be able to do something like:</p>
-<pre><code class="language-rust">impl &lt;T: Reporter&gt; uv_distribution::Reporter for Arc&lt;dyn T&gt; {
+            <div class="timeline-body"><p>I&#x27;m really annoyed by this whole <code>Facade</code> setup... I want to be able to do something like:</p>
+<pre><code>impl &lt;T: Reporter&gt; uv_distribution::Reporter for Arc&lt;dyn T&gt; {
     fn on_build_start(&amp;self, source: &amp;BuildableSource) -&gt; usize {
         self.on_build_start(source)
     }
@@ -61,7 +61,7 @@
 </code></pre>
 <p>But I run into orphan trait problems.</p>
 <p>The general problem here is that I have multiple <code>Reporter</code> traits. And if you implement one of them, then you should get some others &quot;for free&quot;. But for now, I have to do this:</p>
-<pre><code class="language-rust">/// A facade for converting from [`Reporter`] to [`uv_git::Reporter`].
+<pre><code>/// A facade for converting from [`Reporter`] to [`uv_git::Reporter`].
 pub(crate) struct Facade {
     reporter: Arc&lt;dyn Reporter&gt;,
 }
@@ -86,16 +86,16 @@ impl uv_git::Reporter for Facade {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2025-01-06 15:49</div>
-            <div class="timeline-body"><p>I'm a believer in using dynamic dispatch for stuff like this. We don't need the monomorphization benefits, I think, here, so it probably helps compile times to use dynamic dispatch. (Whether this specific change moves the needle much is unlikely, but I think the philosophy applied more universally might.)</p>
+            <div class="timeline-body"><p>I&#x27;m a believer in using dynamic dispatch for stuff like this. We don&#x27;t need the monomorphization benefits, I think, here, so it probably helps compile times to use dynamic dispatch. (Whether this specific change moves the needle much is unlikely, but I think the philosophy applied more universally might.)</p>
 <p>I think your approach here is fine-ish. I did do a force push to this PR that tweaks it a bit to make the call sites a fair bit less annoying (although still a little more annoying than what they were before in the <code>Some</code> case). It uses the same basic idea as your approach, but cleans it up a little with an <code>impl dyn Reporter { ... }</code> block. (One of the many tricks to get around the straight jacket of dyn safety.)</p>
-<p>I think with more time there's probably a cleaner refactoring lurking here, but I didn't want to burn too much more time on it. My <em>instinct</em> is to encapsulate the dynamic dispatch somehow so that we aren't leaking the <code>Arc&lt;dyn Trait&gt;</code> out everywhere.</p>
+<p>I think with more time there&#x27;s probably a cleaner refactoring lurking here, but I didn&#x27;t want to burn too much more time on it. My <em>instinct</em> is to encapsulate the dynamic dispatch somehow so that we aren&#x27;t leaking the <code>Arc&lt;dyn Trait&gt;</code> out everywhere.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2025-01-06 17:04</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-06 17:04</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2025-01-06 17:04</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-06 17:04</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-06 17:04</div>
@@ -108,7 +108,7 @@ impl uv_git::Reporter for Facade {
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:41:08 UTC
+        Synced at 2026-01-20 19:49:57 UTC
     </footer>
 </body>
 </html>

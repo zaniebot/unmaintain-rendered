@@ -23,21 +23,12 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/fortminors">@fortminors</a></div>
-            <div class="timeline-body"><!--
-Thank you for taking the time to report an issue! We're glad to have you involved with uv.
-
-If you're filing a bug report, please consider including the following information:
-
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
-* The current uv platform.
-* The current uv version (`uv --version`).
--->
+            <div class="timeline-body">
 
 <p>I am unable to use uv to install dependencies inside dockerfile during build, while having git dependencies.
-I've created a fork of uv-docker-example repo at https://github.com/fortminors/uv-docker-example that reproduces the issue.
-In particular, I've added httpx package as a source:</p>
-<pre><code class="language-toml">dependencies = [
+I&#x27;ve created a fork of uv-docker-example repo at https://github.com/fortminors/uv-docker-example that reproduces the issue.
+In particular, I&#x27;ve added httpx package as a source:</p>
+<pre><code>dependencies = [
     &quot;httpx&quot;,
     &quot;fastapi[standard]&gt;=0.112.2&quot;,
 ]
@@ -47,7 +38,7 @@ httpx = { git = &quot;https://github.com/encode/httpx&quot; }
 </code></pre>
 <p>Then I do <code>uv sync</code> to install the project locally and create the .lock file, followed by <code>docker build --progress plain -t uvex .</code>
 I get the following output</p>
-<pre><code class="language-bash">#0 building with &quot;default&quot; instance using docker driver
+<pre><code>#0 building with &quot;default&quot; instance using docker driver
 
 #1 [internal] load build definition from Dockerfile
 #1 transferring dockerfile: 1.26kB done
@@ -141,7 +132,7 @@ I get the following output</p>
 ------
 Dockerfile:14
 --------------------
-  13 |     # Install the project's dependencies using the lockfile and settings
+  13 |     # Install the project&#x27;s dependencies using the lockfile and settings
   14 | &gt;&gt;&gt; RUN --mount=type=cache,target=/root/.cache/uv \
   15 | &gt;&gt;&gt;     --mount=type=bind,source=uv.lock,target=uv.lock \
   16 | &gt;&gt;&gt;     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
@@ -150,13 +141,13 @@ Dockerfile:14
 --------------------
 ERROR: failed to solve: process &quot;/bin/sh -c uv sync --verbose --frozen --no-install-project --no-dev&quot; did not complete successfully: exit code: 1
 </code></pre>
-<p>I've checked it produces the same error no matter what package I put there with a link to repository. The logs above indicate that the package is uncached, even though uv cache is mounted in dockerfile, which seems weird.</p>
-<pre><code class="language-bash">user:~/uv-docker-example$ uv --version
+<p>I&#x27;ve checked it produces the same error no matter what package I put there with a link to repository. The logs above indicate that the package is uncached, even though uv cache is mounted in dockerfile, which seems weird.</p>
+<pre><code>user:~/uv-docker-example$ uv --version
 uv 0.5.2
 user:~/uv-docker-example$ whereis uv
 uv: /home/user/.cargo/bin/uv /home/user/.local/bin/uv
 </code></pre>
-<pre><code class="language-bash">user:~/uv-docker-example$ cat /etc/*-release
+<pre><code>user:~/uv-docker-example$ cat /etc/*-release
 DISTRIB_ID=Ubuntu
 DISTRIB_RELEASE=22.04
 DISTRIB_CODENAME=jammy
@@ -178,65 +169,65 @@ UBUNTU_CODENAME=jammy
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-18 15:16</div>
-            <div class="timeline-body"><p>I think it's struggling to find the <code>git</code> binary. Is Git installed in the container?</p>
+            <div class="timeline-body"><p>I think it&#x27;s struggling to find the <code>git</code> binary. Is Git installed in the container?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-11-18 15:24</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-18 15:24</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/fortminors">@fortminors</a> on 2024-11-18 15:25</div>
-            <div class="timeline-body"><p>@charliermarsh You're right, thank you! Missed that, thought it was installed in the base image</p>
+            <div class="timeline-body"><p>@charliermarsh You&#x27;re right, thank you! Missed that, thought it was installed in the base image</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @fortminors on 2024-11-18 15:25</div>
+            <div class="event">Closed by <a href="https://github.com/fortminors">@fortminors</a> on 2024-11-18 15:25</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-18 15:27</div>
-            <div class="timeline-body"><p>That &quot;cannot find binary path&quot; error message is pretty bad. I wonder if we can do better (it might be an &quot;opaque&quot; error that we can't detect).</p>
+            <div class="timeline-body"><p>That &quot;cannot find binary path&quot; error message is pretty bad. I wonder if we can do better (it might be an &quot;opaque&quot; error that we can&#x27;t detect).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/fortminors">@fortminors</a> on 2024-11-18 15:33</div>
-            <div class="timeline-body"><p>It would be great if you could improve it, I initially thought it was looking for some binary inside the package and couldn't find it.
-I've had this line in my original Dockerfile:</p>
-<pre><code class="language-Dockerfile">RUN apt-get update --quiet &amp;&amp; apt-get install --quiet --no-install-recommends --assume-yes build-essential git ca-certificates
+            <div class="timeline-body"><p>It would be great if you could improve it, I initially thought it was looking for some binary inside the package and couldn&#x27;t find it.
+I&#x27;ve had this line in my original Dockerfile:</p>
+<pre><code>RUN apt-get update --quiet &amp;&amp; apt-get install --quiet --no-install-recommends --assume-yes build-essential git ca-certificates
 </code></pre>
 <p>So I thought I was installing git, but I missed apt-get upgrade and -y options, so it should be that:</p>
-<pre><code class="language-Dockerfile">RUN apt-get update --quiet &amp;&amp; apt-get upgrade -y &amp;&amp; apt-get install --quiet --no-install-recommends --assume-yes -y build-essential git ca-certificates
+<pre><code>RUN apt-get update --quiet &amp;&amp; apt-get upgrade -y &amp;&amp; apt-get install --quiet --no-install-recommends --assume-yes -y build-essential git ca-certificates
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-18 15:34</div>
-            <div class="timeline-body"><p>Yeah that's a very reasonable thing to think given the error message. I'll re-open and we can take a look.</p>
+            <div class="timeline-body"><p>Yeah that&#x27;s a very reasonable thing to think given the error message. I&#x27;ll re-open and we can take a look.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @charliermarsh on 2024-11-18 15:34</div>
+            <div class="event">Reopened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-18 15:34</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2024-11-18 15:34</div>
+            <div class="event">Label <span class="label">question</span> removed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-18 15:34</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">help wanted</span> added by @charliermarsh on 2024-11-18 15:34</div>
+            <div class="event">Label <span class="label">help wanted</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-18 15:34</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">error messages</span> added by @charliermarsh on 2024-11-18 15:34</div>
+            <div class="event">Label <span class="label">error messages</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-18 15:34</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-18 15:34</div>
-            <div class="timeline-body"><p>The action item here is: give a better error message when <code>git</code> isn't installed.</p>
+            <div class="timeline-body"><p>The action item here is: give a better error message when <code>git</code> isn&#x27;t installed.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-11-18 17:41</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-18 17:41</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:28:24 UTC
+        Synced at 2026-01-20 19:35:33 UTC
     </footer>
 </body>
 </html>

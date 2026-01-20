@@ -23,14 +23,14 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/fvbrandt">@fvbrandt</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<h1>Short summary</h1>
+            <div class="timeline-body">Summary
+Short summary
 <p>Ephemeral environments created via <code>--with</code> do not contain the &quot;scripts&quot; entry points (Windows: <code>scripts/&lt;script&gt;.exe</code>, Linux: <code>bin/&lt;script&gt;</code>) of their base venv. Thus, if one launches such an entry point from an ephemeral venv, one ends up running the interpreter from the base venv which lacks the packages installed by <code>--with</code>.</p>
 <p>I already asked about this in discord and @zanieb replied it might be worth opening an issue because it might be a bug.
 If it is not a bug, then at least it might be worth a warning in the documentation of the <code>--with</code> parameter.</p>
-<h1>Minimal example</h1>
-<details>
-<summary>Windows cmd commands</summary>
+Minimal example
+
+Windows cmd commands
 
 <pre><code>uv init uvEphemeralScriptsExample
 cd uvEphemeralScriptsExample
@@ -39,40 +39,40 @@ uv add pytest
 mkdir tests
 # Add a test case that depends on another package, e.g. &quot;pyyaml&quot;. We will install that package via --with
 (echo def test_pyyaml^(^):&amp; echo     import yaml)&gt; tests\test_pyyaml.py
-uv run --with pyyaml python -c &quot;import subprocess;subprocess.run(['pytest'], text=True)&quot;
+uv run --with pyyaml python -c &quot;import subprocess;subprocess.run([&#x27;pytest&#x27;], text=True)&quot;
 </code></pre>
-</details>
 
-<h1>Work arounds / why is this bad?</h1>
+
+Work arounds / why is this bad?
 <p>In my particular use case the script I needed was <code>pytest</code> and a work around was to call <code>[sys.executable, &quot;-m&quot;, &quot;pytest&quot;]</code>.</p>
 <p>But the pytest docs have an explicit warning that this triggers slightly different behavior: https://docs.pytest.org/en/7.1.x/explanation/pythonpath.html#invoking-pytest-versus-python-m-pytest</p>
 <p>Also, other python packages might define more complicated entry points and trying to circumvent the entry-points to directly call the underlying API seems like bad practice.</p>
-<h3>Platform</h3>
+Platform
 <p>Windows</p>
-<h3>Version</h3>
+Version
 <p>uv 0.7.2 (481d05d8d 2025-04-30)</p>
-<h3>Python version</h3>
+Python version
 <p>tested on 3.9 and 3.13</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @fvbrandt on 2025-05-07 10:46</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/fvbrandt">@fvbrandt</a> on 2025-05-07 10:46</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/hynek">@hynek</a> on 2025-06-08 10:12</div>
             <div class="timeline-body"><p>Ooof thanks for opening this issue, because this is a really nasty one and I would be still debugging otherwise!</p>
-<p>The fact that <code>uv run --with pdbpp python -c 'import pdbpp'</code> works and <code>uv run --with pdbpp pytest</code> claims pdbpp isn't installed is <em>really</em> confusing. 😅</p>
+<p>The fact that <code>uv run --with pdbpp python -c &#x27;import pdbpp&#x27;</code> works and <code>uv run --with pdbpp pytest</code> claims pdbpp isn&#x27;t installed is <em>really</em> confusing. 😅</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-09 14:36</div>
-            <div class="timeline-body"><p>@hynek just to be clear, the latter claims that <code>pytest</code> isn't installed, yes?</p>
+            <div class="timeline-body"><p>@hynek just to be clear, the latter claims that <code>pytest</code> isn&#x27;t installed, yes?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/hynek">@hynek</a> on 2025-06-09 14:38</div>
             <div class="timeline-body"><blockquote>
-<p>@hynek just to be clear, the latter claims that <code>pytest</code> isn't installed, yes?</p>
+<p>@hynek just to be clear, the latter claims that <code>pytest</code> isn&#x27;t installed, yes?</p>
 </blockquote>
 <p>No, much worse. :)</p>
 <p>It falls back to the pytest from the main venv which means the <code>--with</code> is meaningless.</p>
@@ -86,31 +86,31 @@ uv run --with pyyaml python -c &quot;import subprocess;subprocess.run(['pytest']
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/hynek">@hynek</a> on 2025-07-07 14:37</div>
-            <div class="timeline-body"><p>BTW, I would argue that the correct behavior here would be to only look at the venv's bin directory like tox – or at least warning if the command is coming from somewhere else. It's really hard to debug once a transparent fallback happens.</p>
+            <div class="timeline-body"><p>BTW, I would argue that the correct behavior here would be to only look at the venv&#x27;s bin directory like tox – or at least warning if the command is coming from somewhere else. It&#x27;s really hard to debug once a transparent fallback happens.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-07 14:58</div>
-            <div class="timeline-body"><p>That'd be really breaking and confusing, e.g., <code>uv run bash -c &quot;...&quot;</code> would warn?</p>
-<p>It might be reasonable to warn if a command comes from another <em>Python</em> environment, but not just if it's from outside the virtual environment.</p>
+            <div class="timeline-body"><p>That&#x27;d be really breaking and confusing, e.g., <code>uv run bash -c &quot;...&quot;</code> would warn?</p>
+<p>It might be reasonable to warn if a command comes from another <em>Python</em> environment, but not just if it&#x27;s from outside the virtual environment.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/hynek">@hynek</a> on 2025-07-07 15:02</div>
             <div class="timeline-body"><blockquote>
-<p>It might be reasonable to warn if a command comes from another <em>Python</em> environment, but not just if it's from outside the virtual environment.</p>
+<p>It might be reasonable to warn if a command comes from another <em>Python</em> environment, but not just if it&#x27;s from outside the virtual environment.</p>
 </blockquote>
 <p>ah yes, that!</p>
-<p>especially if it's the main one. that was really super confusing to debug. 😅</p>
+<p>especially if it&#x27;s the main one. that was really super confusing to debug. 😅</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2025-07-22 12:11</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-22 12:11</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:31:14 UTC
+        Synced at 2026-01-20 19:38:31 UTC
     </footer>
 </body>
 </html>

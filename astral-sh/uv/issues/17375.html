@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1><code>uv sync</code> don't support well armv7l / armv8l on aarch64 cpu</h1>
+    <h1><code>uv sync</code> don&#x27;t support well armv7l / armv8l on aarch64 cpu</h1>
 
     <div class="meta">
         <span class="state-icon state-closed"></span>
@@ -23,26 +23,26 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/patryk4815">@patryk4815</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>I am running <code>uv sync</code> inside an <code>ARMv7</code> Debian Docker container on a Raspberry Pi host (<code>aarch64</code>). Even though the <code>uv.lock</code> file contains a platform marker that <strong>excludes</strong> <code>armv7l</code>, <code>uv</code> still tries to install <code>lief</code>, which does not provide wheels for this platform.</p>
-<p>For example see: https://github.com/pypa/packaging/pull/690</p>
-<h2>Error</h2>
+<p>For example see: <a href="https://github.com/pypa/packaging/pull/690">pypa/packaging#690</a></p>
+Error
 <pre><code>(venv) root@9f83d1743cea:/pwndbg# uv sync --all-groups --all-extras
 Resolved 150 packages in 11ms
-error: Distribution `lief==0.17.1 @ registry+https://pypi.org/simple` can't be installed because it doesn't have a source distribution or wheel for the current platform
+error: Distribution `lief==0.17.1 @ registry+https://pypi.org/simple` can&#x27;t be installed because it doesn&#x27;t have a source distribution or wheel for the current platform
 
-hint: You're on Linux (`manylinux_2_41_armv7l`), but `lief` (v0.17.1) only has wheels for the following platforms: .....
+hint: You&#x27;re on Linux (`manylinux_2_41_armv7l`), but `lief` (v0.17.1) only has wheels for the following platforms: .....
 </code></pre>
-<h2>uv.lock snippet:</h2>
-<pre><code>{ name = &quot;lief&quot;, marker = &quot;platform_machine == 'aarch64' or platform_machine == 'i686' or platform_machine == 'x86_64' or sys_platform != 'linux'&quot;, specifier = &quot;&gt;=0.17.1&quot; },
+uv.lock snippet:
+<pre><code>{ name = &quot;lief&quot;, marker = &quot;platform_machine == &#x27;aarch64&#x27; or platform_machine == &#x27;i686&#x27; or platform_machine == &#x27;x86_64&#x27; or sys_platform != &#x27;linux&#x27;&quot;, specifier = &quot;&gt;=0.17.1&quot; },
 </code></pre>
 <p>From what I understand, the marker explicitly excludes <code>armv7l</code>, but <code>uv</code> still resolves and attempts to download lief. It appears this happens because the kernel reports aarch64, while the userspace and binaries (python+uv) are ARMv7.</p>
-<h2>Environment:</h2>
+Environment:
 <ul>
 <li>docker run --rm --platform linux/arm/v7 -it debian:13</li>
 <li>Host: Raspberry Pi (aarch64)</li>
 </ul>
-<h2>Binaries</h2>
+Binaries
 <pre><code>file /venv/bin/uv
 # ELF 32-bit LSB pie executable, ARM...
 
@@ -53,10 +53,10 @@ uname -m
 # aarch64
 </code></pre>
 <p>So Python and uv are 32‑bit ARM, but the kernel reports aarch64.</p>
-<h2>Question</h2>
+Question
 <p>How can I force uv to evaluate <code>platform_machine</code> as <code>armv7l</code> instead of <code>aarch64</code> so that the environment markers behave correctly?</p>
 <p>Repro:</p>
-<pre><code class="language-bash">docker run --rm --platform linux/arm/v7 -it debian:13
+<pre><code>docker run --rm --platform linux/arm/v7 -it debian:13
 
 apt install python3 python3-venv python3-pip git -y
 git clone https://github.com/pwndbg/pwndbg
@@ -67,7 +67,7 @@ source ./.venv/bin/activate
 pip install uv
 uv sync --all-groups --all-extras
 </code></pre>
-<hr />
+<hr>
 <p>Even when is force 32bit mode with <code>setarch armv7l</code>
 Uv still thinks is it 64bit aarch64?</p>
 <pre><code>(venv) root@9f83d1743cea:/pwndbg# setarch armv7l /bin/bash
@@ -79,30 +79,30 @@ Python 3.13.5 (main, Jun 25 2025, 18:55:22) [GCC 14.2.0] on linux
 Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
 &gt;&gt;&gt; import platform
 &gt;&gt;&gt; platform.machine()
-'armv8l'
+&#x27;armv8l&#x27;
 &gt;&gt;&gt;
 root@9f83d1743cea:/pwndbg# uv sync --all-groups --all-extras
 Resolved 150 packages in 11ms
-error: Distribution `lief==0.17.1 @ registry+https://pypi.org/simple` can't be installed because it doesn't have a source distribution or wheel for the current platform
+error: Distribution `lief==0.17.1 @ registry+https://pypi.org/simple` can&#x27;t be installed because it doesn&#x27;t have a source distribution or wheel for the current platform
 
-hint: You're on Linux (`manylinux_2_41_armv7l`), but `lief` (v0.17.1) only has wheels for the following platforms: `manylinux_2_28_i686`, `manylinux_2_28_x86_64`, `manylinux2014_aarch64`, `musllinux_1_2_aarch64`, `musllinux_1_2_i686`, `musllinux_1_2_x86_64`, `macosx_11_0_arm64`, `macosx_11_0_x86_64`, `win32`, `win_amd64`, `win_arm64`; consider adding &quot;sys_platform == 'linux' and platform_machine == 'aarch64'&quot; to `tool.uv.required-environments` to ensure uv resolves to a version with compatible wheels
+hint: You&#x27;re on Linux (`manylinux_2_41_armv7l`), but `lief` (v0.17.1) only has wheels for the following platforms: `manylinux_2_28_i686`, `manylinux_2_28_x86_64`, `manylinux2014_aarch64`, `musllinux_1_2_aarch64`, `musllinux_1_2_i686`, `musllinux_1_2_x86_64`, `macosx_11_0_arm64`, `macosx_11_0_x86_64`, `win32`, `win_amd64`, `win_arm64`; consider adding &quot;sys_platform == &#x27;linux&#x27; and platform_machine == &#x27;aarch64&#x27;&quot; to `tool.uv.required-environments` to ensure uv resolves to a version with compatible wheels
 </code></pre>
-<h3>Platform</h3>
+Platform
 <p>Debian 13 on raspberypi 4b</p>
-<h3>Version</h3>
+Version
 <p>0.9.22</p>
-<h3>Python version</h3>
+Python version
 <p>Python 3.13.5</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @patryk4815 on 2026-01-09 13:06</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/patryk4815">@patryk4815</a> on 2026-01-09 13:06</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/patryk4815">@patryk4815</a> on 2026-01-09 13:24</div>
             <div class="timeline-body"><p><code>setarch armv7l</code> + <code>pip install .</code> works fine ✅
-<code>setarch armv7l</code> + <code>uv pip install .</code> don't work ❌
-<code>setarch armv7l</code> + <code>uv sync</code> - don't work ❌</p>
+<code>setarch armv7l</code> + <code>uv pip install .</code> don&#x27;t work ❌
+<code>setarch armv7l</code> + <code>uv sync</code> - don&#x27;t work ❌</p>
 <pre><code># uv sync
 Resolved 150 packages in 4ms
       Built pwndbg @ file:///pwndbg
@@ -123,7 +123,7 @@ Resolved 150 packages in 4ms
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-09 17:35</div>
-            <div class="timeline-body"><p>That last error looks like a case from https://github.com/astral-sh/uv/pull/16074 which generally indicates a bug in the build backend? The build backend is the one building a wheel for the wrong platform, not uv. Maybe we should be considering armv8l as compatible with armv7l though?</p>
+            <div class="timeline-body"><p>That last error looks like a case from <a href="https://github.com/astral-sh/uv/pull/16074">astral-sh/uv#16074</a> which generally indicates a bug in the build backend? The build backend is the one building a wheel for the wrong platform, not uv. Maybe we should be considering armv8l as compatible with armv7l though?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -133,7 +133,7 @@ Resolved 150 packages in 4ms
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-09 17:43</div>
-            <div class="timeline-body"><p>I think per https://github.com/astral-sh/uv/pull/8881 we should consider these architectures compatible.</p>
+            <div class="timeline-body"><p>I think per <a href="https://github.com/astral-sh/uv/pull/8881">astral-sh/uv#8881</a> we should consider these architectures compatible.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -148,7 +148,7 @@ armv8l
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2026-01-09 18:29</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-09 18:29</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/patryk4815">@patryk4815</a> on 2026-01-09 21:59</div>
@@ -157,23 +157,23 @@ armv8l
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-09 22:01</div>
-            <div class="timeline-body"><p>It'd be great to know!</p>
+            <div class="timeline-body"><p>It&#x27;d be great to know!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/patryk4815">@patryk4815</a> on 2026-01-09 22:16</div>
             <div class="timeline-body"><blockquote>
-<p>It'd be great to know!</p>
+<p>It&#x27;d be great to know!</p>
 </blockquote>
-<p><img width="551" height="178" alt="Image" src="https://github.com/user-attachments/assets/a0022072-a347-4ff0-b3fb-fe27d5dcee17" /></p>
-<p><img width="430" height="132" alt="Image" src="https://github.com/user-attachments/assets/381200d2-3cc6-4785-89bb-f0d4768ae875" /></p>
+<p><img alt="Image" src="https://github.com/user-attachments/assets/a0022072-a347-4ff0-b3fb-fe27d5dcee17"></p>
+<p><img alt="Image" src="https://github.com/user-attachments/assets/381200d2-3cc6-4785-89bb-f0d4768ae875"></p>
 <p>Ok soo, I check linux kernel source, on any 64bit ARM cpu it will be <code>armv8l</code> (for little-endian) and <code>armv8b</code> (for big-endian)</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:33:50 UTC
+        Synced at 2026-01-20 19:41:29 UTC
     </footer>
 </body>
 </html>

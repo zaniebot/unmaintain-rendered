@@ -25,23 +25,23 @@
             <div class="timeline-header"><a href="https://github.com/remram44">@remram44</a></div>
             <div class="timeline-body"><p>I can understand your library not being designed to handle arguments that are not valid unicode (which are possible on UNIX, and can be valid filenames, but heh), however having your library panic the calling thread is not cool. Please consider using Result instead of crashing.</p>
 <p>Reproduce:</p>
-<pre><code>echo -e 'r\xE9mi' | xargs target/debug/myprogramusingclap
+<pre><code>echo -e &#x27;r\xE9mi&#x27; | xargs target/debug/myprogramusingclap
 </code></pre>
-<p>(note that you can't use <code>cargo run</code>, it can't handle unicode either (but at least it doesn't panic))</p>
-<p>Similar to https://github.com/rust-lang/getopts/pull/30; I'm still looking for a safe argument-parsing library :cry:</p>
+<p>(note that you can&#x27;t use <code>cargo run</code>, it can&#x27;t handle unicode either (but at least it doesn&#x27;t panic))</p>
+<p>Similar to <a href="https://github.com/rust-lang/getopts/pull/30">rust-lang/getopts#30</a>; I&#x27;m still looking for a safe argument-parsing library :cry:</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">T: bug</span> added by @sru on 2015-09-21 14:27</div>
+            <div class="event">Label <span class="label">T: bug</span> added by <a href="https://github.com/sru">@sru</a> on 2015-09-21 14:27</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">C: args</span> added by @sru on 2015-09-21 14:27</div>
+            <div class="event">Label <span class="label">C: args</span> added by <a href="https://github.com/sru">@sru</a> on 2015-09-21 14:27</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sru">@sru</a> on 2015-09-21 15:01</div>
             <div class="timeline-body"><p>Caused by <a href="http://doc.rust-lang.org/std/env/fn.args.html"><code>std::env::Args</code></a>.</p>
 <p>Using <code>std::env::ArgsOs</code> does not solve this issue because the <code>get_matches_*</code> functions take <code>AsRef&lt;str&gt;</code>, not <code>AsRef&lt;OsStr&gt;</code>. I tried to change all of them to <code>AsRef&lt;OsStr&gt;</code>, but it did not work.</p>
-<p>One solution could be: If the argument passed is not valid unicode, we could first check if it is a valid directory or file. If it isn't, then produce error.</p>
+<p>One solution could be: If the argument passed is not valid unicode, we could first check if it is a valid directory or file. If it isn&#x27;t, then produce error.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -54,16 +54,16 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/remram44">@remram44</a> on 2015-09-21 17:16</div>
-            <div class="timeline-body"><p>I think it's kind of weird -- in the Rust stdlib, lossy functions are clearly marked as such, and that is not the case of <code>get_matches()</code>. If a filename is mangled this way, the application will not access the correct pass, and thus fail with a surprising &quot;file not found&quot; or worse, go on creating the wrong file (with a replacement character in it). On the other hand you can't easily change your API at this point, and this behavior is better than panicking(?)</p>
+            <div class="timeline-body"><p>I think it&#x27;s kind of weird -- in the Rust stdlib, lossy functions are clearly marked as such, and that is not the case of <code>get_matches()</code>. If a filename is mangled this way, the application will not access the correct pass, and thus fail with a surprising &quot;file not found&quot; or worse, go on creating the wrong file (with a replacement character in it). On the other hand you can&#x27;t easily change your API at this point, and this behavior is better than panicking(?)</p>
 <p>Another option is to make <a href="http://kbknapp.github.io/clap-rs/clap/struct.App.html#method.get_matches_safe">get_matches_safe()</a> return an error (not panic) on invalid unicode, and get_matches() print out a readable error message instead of the default panic text.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/WildCryptoFox">@WildCryptoFox</a> on 2015-09-21 17:22</div>
             <div class="timeline-body"><blockquote>
-<p>On the other hand you can't easily change your API at this point</p>
+<p>On the other hand you can&#x27;t easily change your API at this point</p>
 </blockquote>
-<p>@remram44 <em>cough</em> I'm rewriting the entire clap-rs in #259, I'm open for changes like this. I am however, so far having lifetime issues when trying to use <code>OsStr</code>. ;-)</p>
+<p>@remram44 <em>cough</em> I&#x27;m rewriting the entire clap-rs in #259, I&#x27;m open for changes like this. I am however, so far having lifetime issues when trying to use <code>OsStr</code>. ;-)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -74,27 +74,27 @@
 <ul>
 <li>Lossy matching prevents flags and positional arguments from containing the invalid Unicode (in raw form). While in <code>--foo &lt;arg&gt;</code>, arg may contain invalid Unicode.</li>
 </ul>
-<hr />
-<p>I'm out for the night. zzZZZ</p>
+<hr>
+<p>I&#x27;m out for the night. zzZZZ</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/259.html">clap-rs/clap#259</a> on 2015-09-21 17:52</div>
+            <div class="event">Referenced in <a>clap-rs/clap#259</a> on 2015-09-21 17:52</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-09-21 23:35</div>
             <div class="timeline-body"><p>@remram44 Returning a Result on invalid unicode should be an easy addition. If this works for you we can probably have this added by tomorrow with a new version out to crates.io</p>
-<p>It would also be easy to add a <code>*_lossy()</code> version to the <code>get_matches()</code> family. We're also open for some discussion on what <code>clap2x</code>'s unicode handling will look like as stated by @james-darkfox</p>
+<p>It would also be easy to add a <code>*_lossy()</code> version to the <code>get_matches()</code> family. We&#x27;re also open for some discussion on what <code>clap2x</code>&#x27;s unicode handling will look like as stated by @james-darkfox</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">T: enhancement</span> added by @kbknapp on 2015-09-21 23:36</div>
+            <div class="event">Label <span class="label">T: enhancement</span> added by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-09-21 23:36</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">D: easy</span> added by @kbknapp on 2015-09-21 23:36</div>
+            <div class="event">Label <span class="label">D: easy</span> added by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-09-21 23:36</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">P3: want to have</span> added by @kbknapp on 2015-09-21 23:36</div>
+            <div class="event">Label <span class="label">P3: want to have</span> added by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-09-21 23:36</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sru">@sru</a> on 2015-09-22 01:54</div>
@@ -102,17 +102,17 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../pulls/265.html">clap-rs/clap#265</a> on 2015-09-22 02:08</div>
+            <div class="event">Referenced in <a>clap-rs/clap#265</a> on 2015-09-22 02:08</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-09-22 02:18</div>
-            <div class="timeline-body"><p>@sru Yep that's exactly what I did in #265 which doesn't affect things too heavily. I compared benches before and after, and no tests had to be changed to accommodate.</p>
-<p>I've heard it said that, &quot;All <code>str</code>s are <code>OsStr</code>s, but not all <code>OsStr</code>s are <code>str</code>s&quot;...if you like logic questions :wink:</p>
+            <div class="timeline-body"><p>@sru Yep that&#x27;s exactly what I did in #265 which doesn&#x27;t affect things too heavily. I compared benches before and after, and no tests had to be changed to accommodate.</p>
+<p>I&#x27;ve heard it said that, &quot;All <code>str</code>s are <code>OsStr</code>s, but not all <code>OsStr</code>s are <code>str</code>s&quot;...if you like logic questions :wink:</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-09-22 02:23</div>
-            <div class="timeline-body"><p>@remram44 #265 allows returning a Result <code>Err</code> on invalid unicode chars, or an optional lossy version. Granted this doesn't help with things like path/file names which have invalid unicode, but it's better than the current state of <code>clap</code> because it won't <code>panic!</code> unless you don't care about it or want it to <code>panic!</code> on invalid unicode.</p>
+            <div class="timeline-body"><p>@remram44 #265 allows returning a Result <code>Err</code> on invalid unicode chars, or an optional lossy version. Granted this doesn&#x27;t help with things like path/file names which have invalid unicode, but it&#x27;s better than the current state of <code>clap</code> because it won&#x27;t <code>panic!</code> unless you don&#x27;t care about it or want it to <code>panic!</code> on invalid unicode.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -122,7 +122,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/remram44">@remram44</a> on 2015-09-22 05:02</div>
-            <div class="timeline-body"><p><code>OsStr</code> doesn't implement <code>AsRef&lt;str&gt;</code>, no.</p>
+            <div class="timeline-body"><p><code>OsStr</code> doesn&#x27;t implement <code>AsRef&lt;str&gt;</code>, no.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -132,7 +132,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-09-22 12:28</div>
-            <div class="timeline-body"><p>@remram44 try the latest master and let us know if it works for your use case. If so, we'll publish a new version to crates.io, close this issue, and open a more general unicode handling tracking issue.</p>
+            <div class="timeline-body"><p>@remram44 try the latest master and let us know if it works for your use case. If so, we&#x27;ll publish a new version to crates.io, close this issue, and open a more general unicode handling tracking issue.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -142,12 +142,12 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @kbknapp on 2015-09-25 23:18</div>
+            <div class="event">Closed by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-09-25 23:18</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:46:25 UTC
+        Synced at 2026-01-20 19:56:14 UTC
     </footer>
 </body>
 </html>

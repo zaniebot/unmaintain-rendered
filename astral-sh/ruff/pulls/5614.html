@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/qdegraaf">@qdegraaf</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Adds Dlint plugin port and a first rule <code>DUO138</code> <code>catastrophic_backtracking_regular_expression</code> which checks for regex statements which can potentially lead to catastrophic backtracking and hence are vulnerable to ReDoS attacks.</p>
 <p>Upstream implementation uses <code>sre.parse</code>. We do not have this so we use the <code>regex_syntax</code> crate. We cannot directly copy the logic from dlint due to this so we have to find our own implementation</p>
 <p>TODOs:</p>
@@ -31,15 +31,15 @@
 <li>[x] Implement unbounded repetition within repetition logic for catastrophic backtracking in <code>detect_redos()</code></li>
 <li>[ ] Implement alternation with overlap logic for catastrophic backtracking in <code>detect_redos()</code></li>
 </ul>
-<h2>Test Plan</h2>
+Test Plan
 <p>Fixture added with many examples of catastrophic backtracking</p>
-<h2>Issue links</h2>
-<p>Refers: https://github.com/astral-sh/ruff/issues/4479</p>
+Issue links
+<p>Refers: <a href="https://github.com/astral-sh/ruff/issues/4479">astral-sh/ruff#4479</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/dlint/rules/catastrophic_re_use.rs</code>:45 on 2023-07-10 07:57</div>
-            <div class="timeline-body"><p>Nit: I'm not sure if we need the word <code>dangerous</code> here, especially because it isn't entirely clear to what dangerous refers (I assume it is dangerous because of the performance).</p>
+            <div class="timeline-body"><p>Nit: I&#x27;m not sure if we need the word <code>dangerous</code> here, especially because it isn&#x27;t entirely clear to what dangerous refers (I assume it is dangerous because of the performance).</p>
 <p>How about:
 <code>Regular expression with potential catastrophic backtracking</code></p>
 </div>
@@ -60,7 +60,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/qdegraaf">@qdegraaf</a> on <code>crates/ruff/src/rules/dlint/rules/catastrophic_re_use.rs</code>:45 on 2023-07-10 09:06</div>
             <div class="timeline-body"><p>The danger lies in the potential for ReDoS: https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS</p>
-<p>I'll change the message anyway, or specify &quot;vulnerable to ReDoS&quot; to be more specific</p>
+<p>I&#x27;ll change the message anyway, or specify &quot;vulnerable to ReDoS&quot; to be more specific</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -72,7 +72,7 @@
 <li>Overlapping alternation within repetition</li>
 </ol>
 <p>The current code should cover scenario 1. I have been trying to get scenario 2 to work but I think we are limited by the <code>regex_syntax</code> parser here. As for example the following two test cases from dlint:</p>
-<pre><code class="language-python">re.search(&quot;([a-c]|[c-e])+&quot;)  # DUO138
+<pre><code>re.search(&quot;([a-c]|[c-e])+&quot;)  # DUO138
 
 re.search(&quot;([a-c]|[d-e])+&quot;)  # OK
 </code></pre>
@@ -88,7 +88,7 @@ re.search(&quot;([a-c]|[d-e])+&quot;)  # OK
                 name: None,
                 sub: Class(
                     {
-                        'a'..='e',
+                        &#x27;a&#x27;..=&#x27;e&#x27;,
                     },
                 ),
             },
@@ -106,7 +106,7 @@ Repetition(
                 name: None,
                 sub: Class(
                     {
-                        'a'..='e',
+                        &#x27;a&#x27;..=&#x27;e&#x27;,
                     },
                 ),
             },
@@ -115,7 +115,7 @@ Repetition(
 )
 </code></pre>
 <p>So it would not be possible for us to determine overlap based on the HIR. The alternative is to write a custom parser or use the underlying AST of regex_syntax to detect this, which is outside of my current knowledge and skill level at the moment I think.</p>
-<p>There's a couple things I could do with the PR I was wondering if you had any preference:</p>
+<p>There&#x27;s a couple things I could do with the PR I was wondering if you had any preference:</p>
 <ol>
 <li>We implement the rule with just a check for scenario 1 for now (cleaning up and thorough reviewing etc. in the process) and leave scenario 2 as a TODO for the future<ul>
 <li><code>+</code> Potentially justifiable as vulnerable regex can come in many forms and catching all of them is outside the scope of upstream plugin too. Covering some cases is arguably better than covering no cases if we are clear about the coverage of the rule and minimise the risk of false positives.</li>
@@ -139,17 +139,17 @@ Repetition(
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/bluetech">@bluetech</a> on 2023-07-10 15:08</div>
-            <div class="timeline-body"><p>I don't think the regex syntax implemented by <code>regex-syntax </code> is fully compatible with Python's regex syntax, so it might parse invalid Python regex, or inversely fail to parse valid Python regex. That might be a problem?</p>
-<p>Relatedly, the code currently does <code>parser.parse(regex_string).unwrap()</code>. I think that <code>unwrap</code> shouldn't be used here, because it's possible for invalid regex to appear in Python source code and Ruff shouldn't crash due to this (I recommend adding a few tests with invalid regex syntax). As for what to do in this case, I think the only thing that can be done is to just skip. Possibly can be a separate &quot;invalid regex&quot; lint rule.</p>
+            <div class="timeline-body"><p>I don&#x27;t think the regex syntax implemented by <code>regex-syntax </code> is fully compatible with Python&#x27;s regex syntax, so it might parse invalid Python regex, or inversely fail to parse valid Python regex. That might be a problem?</p>
+<p>Relatedly, the code currently does <code>parser.parse(regex_string).unwrap()</code>. I think that <code>unwrap</code> shouldn&#x27;t be used here, because it&#x27;s possible for invalid regex to appear in Python source code and Ruff shouldn&#x27;t crash due to this (I recommend adding a few tests with invalid regex syntax). As for what to do in this case, I think the only thing that can be done is to just skip. Possibly can be a separate &quot;invalid regex&quot; lint rule.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/qdegraaf">@qdegraaf</a> on 2023-07-10 15:38</div>
             <div class="timeline-body"><blockquote>
-<p>I don't think the regex syntax implemented by <code>regex-syntax </code> is fully compatible with Python's regex syntax, so it might parse invalid Python regex, or inversely fail to parse valid Python regex. That might be a problem?</p>
-<p>Relatedly, the code currently does <code>parser.parse(regex_string).unwrap()</code>. I think that <code>unwrap</code> shouldn't be used here, because it's possible for invalid regex to appear in Python source code and Ruff shouldn't crash due to this (I recommend adding a few tests with invalid regex syntax). As for what to do in this case, I think the only thing that can be done is to just skip. Possibly can be a separate &quot;invalid regex&quot; lint rule.</p>
+<p>I don&#x27;t think the regex syntax implemented by <code>regex-syntax </code> is fully compatible with Python&#x27;s regex syntax, so it might parse invalid Python regex, or inversely fail to parse valid Python regex. That might be a problem?</p>
+<p>Relatedly, the code currently does <code>parser.parse(regex_string).unwrap()</code>. I think that <code>unwrap</code> shouldn&#x27;t be used here, because it&#x27;s possible for invalid regex to appear in Python source code and Ruff shouldn&#x27;t crash due to this (I recommend adding a few tests with invalid regex syntax). As for what to do in this case, I think the only thing that can be done is to just skip. Possibly can be a separate &quot;invalid regex&quot; lint rule.</p>
 </blockquote>
-<p>Yeah that's another point of concern indeed. I have yet to find an overview of the differences between Rust and Python regex and thereby estimate the size of potential incompatibility. As for the <code>unwrap()</code> I'll handle that properly if this PR is worth continuing (skipping probably being the best option, though this could add false negatives to an already flaky implementation). I am leaning more towards closing this and looking at how we want to handle regex related rules holistically as I think on it though.</p>
+<p>Yeah that&#x27;s another point of concern indeed. I have yet to find an overview of the differences between Rust and Python regex and thereby estimate the size of potential incompatibility. As for the <code>unwrap()</code> I&#x27;ll handle that properly if this PR is worth continuing (skipping probably being the best option, though this could add false negatives to an already flaky implementation). I am leaning more towards closing this and looking at how we want to handle regex related rules holistically as I think on it though.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -158,12 +158,12 @@ Repetition(
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @qdegraaf on 2023-07-20 09:43</div>
+            <div class="event">Closed by <a href="https://github.com/qdegraaf">@qdegraaf</a> on 2023-07-20 09:43</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:58:37 UTC
+        Synced at 2026-01-20 18:55:09 UTC
     </footer>
 </body>
 </html>

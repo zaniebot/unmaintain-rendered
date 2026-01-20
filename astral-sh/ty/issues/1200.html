@@ -23,13 +23,13 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a></div>
-            <div class="timeline-body"><p>I don't know when this changed, but this looks weird:</p>
-<p><img width="545" height="315" alt="Image" src="https://github.com/user-attachments/assets/c291c6d5-44b3-4cef-946f-02c493fb8559" /></p>
-<p>Maybe just a problem with my VS code setup, but I don't remember changing anything?</p>
+            <div class="timeline-body"><p>I don&#x27;t know when this changed, but this looks weird:</p>
+<p><img alt="Image" src="https://github.com/user-attachments/assets/c291c6d5-44b3-4cef-946f-02c493fb8559"></p>
+<p>Maybe just a problem with my VS code setup, but I don&#x27;t remember changing anything?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">server</span> added by @sharkdp on 2025-09-18 07:26</div>
+            <div class="event">Label <span class="label">server</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-18 07:26</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-18 07:37</div>
@@ -37,17 +37,17 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-09-18 07:38</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-18 07:38</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @BurntSushi by @BurntSushi on 2025-09-18 11:59</div>
+            <div class="event">Assigned to <a href="https://github.com/BurntSushi">@BurntSushi</a> by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-09-18 11:59</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-09-18 12:31</div>
-            <div class="timeline-body"><p>OK, so I think I understand what is happening here. Prior to https://github.com/astral-sh/ruff/pull/20439, I was <em>only</em> setting <a href="https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#completionItem"><code>CompletionItem.detail</code></a>. But after that PR, I am <em>also</em> setting <a href="https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#completionItem"><code>CompletionItem.labelDetails</code></a> to a <a href="https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#completionItemLabelDetails"><code>CompletionItemLabelDetails</code></a>.</p>
-<p>To set them, I followed the recommendation in the docs. That is, <code>CompletionItemLabelDetails.detail</code> has an example of a type signature going into it while <code>CompletionItemLabelDetails.description</code> includes a fully qualified name as an example. Indeed, that's what I did:</p>
+            <div class="timeline-body"><p>OK, so I think I understand what is happening here. Prior to <a href="https://github.com/astral-sh/ruff/pull/20439">astral-sh/ruff#20439</a>, I was <em>only</em> setting <a href="https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#completionItem"><code>CompletionItem.detail</code></a>. But after that PR, I am <em>also</em> setting <a href="https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#completionItem"><code>CompletionItem.labelDetails</code></a> to a <a href="https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#completionItemLabelDetails"><code>CompletionItemLabelDetails</code></a>.</p>
+<p>To set them, I followed the recommendation in the docs. That is, <code>CompletionItemLabelDetails.detail</code> has an example of a type signature going into it while <code>CompletionItemLabelDetails.description</code> includes a fully qualified name as an example. Indeed, that&#x27;s what I did:</p>
 <p>https://github.com/astral-sh/ruff/blob/48ada2d359b7c985454f4ac7ae7f23d1e980865a/crates/ty_server/src/server/api/requests/completion.rs#L88-L92</p>
-<p>Notice that <code>CompletionItem.detail</code> and <code>CompletionItemLabelDetails.detail</code> are identical. I think that's because not all LSP clients support the latter, so there is some redundancy in the LSP data types. Moreover, the docs for these two fields also exemplify redundancy:</p>
+<p>Notice that <code>CompletionItem.detail</code> and <code>CompletionItemLabelDetails.detail</code> are identical. I think that&#x27;s because not all LSP clients support the latter, so there is some redundancy in the LSP data types. Moreover, the docs for these two fields also exemplify redundancy:</p>
 <pre><code>
 	/**
 	 * A human-readable string with additional information
@@ -67,24 +67,24 @@
 <p>So I think what I have now is at least consistent with the LSP protocol docs.</p>
 <p>... but, it seems like this may not be common practice? If I go look at what <code>rust-analyzer</code> does, it calls <code>CompletionItemLabelDetails.detail</code> &quot;label left&quot; and <code>CompletionItemLabelDetails.description</code> &quot;label right&quot;:</p>
 <p>https://github.com/rust-lang/rust-analyzer/blob/e10fa9393ea2df4067e2258c9b8132244e415964/crates/rust-analyzer/src/lsp/to_proto.rs#L386-L399</p>
-<p>Those names come from how <code>detail</code> and <code>description</code> are <em>rendered</em>. <code>detail</code> gets left aligned (without spacing between it and the symbol name) where as <code>description</code> gets right aligned. Notably, the top-level <code>CompletionItem.detail</code> gets right aligned too it seems, at least in practice (although this isn't part of the docs, unlike for the fields in <code>CompletionItemLabelDetails</code>).</p>
+<p>Those names come from how <code>detail</code> and <code>description</code> are <em>rendered</em>. <code>detail</code> gets left aligned (without spacing between it and the symbol name) where as <code>description</code> gets right aligned. Notably, the top-level <code>CompletionItem.detail</code> gets right aligned too it seems, at least in practice (although this isn&#x27;t part of the docs, unlike for the fields in <code>CompletionItemLabelDetails</code>).</p>
 <p>And indeed, <code>rust-analyzer</code> puts the type signature in the <em>right</em> aligned field, that is, <code>CompletionItemLabelDetails.description</code>:</p>
 <p>https://github.com/rust-lang/rust-analyzer/blob/e10fa9393ea2df4067e2258c9b8132244e415964/crates/ide-completion/src/item.rs#L547-L582</p>
-<p>(It also uses the left aligned field for various things, depending on what the completion is, including the module path if it's a symbol that isn't already in scope.)</p>
+<p>(It also uses the left aligned field for various things, depending on what the completion is, including the module path if it&#x27;s a symbol that isn&#x27;t already in scope.)</p>
 <p>And indeed, it puts the type signature in the <em>right</em> aligned spot.</p>
-<p>Anywho, all we need to do is swap the fields: https://github.com/astral-sh/ruff/pull/20466</p>
+<p>Anywho, all we need to do is swap the fields: <a href="https://github.com/astral-sh/ruff/pull/20466">astral-sh/ruff#20466</a></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2025-09-18 13:11</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-09-18 13:11</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">completions</span> added by @AlexWaygood on 2025-10-03 12:19</div>
+            <div class="event">Label <span class="label">completions</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-03 12:19</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:39 UTC
+        Synced at 2026-01-20 19:25:32 UTC
     </footer>
 </body>
 </html>

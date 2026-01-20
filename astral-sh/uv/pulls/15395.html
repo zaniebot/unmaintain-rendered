@@ -23,27 +23,27 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>Right now, if you put <code>upgrade = false</code> in a <code>uv.toml</code>, then pass <code>--upgrade-package numpy</code> on the CLI, we won't upgrade NumPy. This PR fixes that interaction by ensuring that when we &quot;combine&quot;, we look at those arguments holistically (i.e., we bundle <code>upgrade</code> and <code>upgrade-package</code> into a single struct, which then goes through the <code>.combine</code> logic), rather than combining <code>upgrade</code> and <code>upgrade-package</code> independently.</p>
+            <div class="timeline-body">Summary
+<p>Right now, if you put <code>upgrade = false</code> in a <code>uv.toml</code>, then pass <code>--upgrade-package numpy</code> on the CLI, we won&#x27;t upgrade NumPy. This PR fixes that interaction by ensuring that when we &quot;combine&quot;, we look at those arguments holistically (i.e., we bundle <code>upgrade</code> and <code>upgrade-package</code> into a single struct, which then goes through the <code>.combine</code> logic), rather than combining <code>upgrade</code> and <code>upgrade-package</code> independently.</p>
 <p>If approved, I then need to add the same thing for <code>no-build-isolation</code>, <code>reinstall</code>, <code>no-build</code>, and <code>no-binary</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2025-08-20 16:58</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-20 16:58</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @charliermarsh on 2025-08-20 16:58</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-20 16:58</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @konstin by @charliermarsh on 2025-08-20 18:06</div>
+            <div class="event">Review requested from <a href="https://github.com/konstin">@konstin</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-20 18:06</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @zanieb by @charliermarsh on 2025-08-20 18:06</div>
+            <div class="event">Review requested from <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-20 18:06</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-08-21 08:48</div>
             <div class="timeline-body"><p>The new behavior makes sense to me!</p>
-<hr />
+<hr>
 <p>One thing that I found unexpected is that <code>--no-upgrade</code> causes <code>--upgrade-package</code> to be silently ignored:</p>
 <pre><code>$ uv venv -c -p 3.12 &amp;&amp; uv-debug pip install numpy==2 &amp;&amp; uv-debug pip install --no-upgrade --upgrade-package numpy pandas
 Using CPython 3.12.11
@@ -68,14 +68,14 @@ Activate with: source .venv/bin/activate
 Resolved 1 package in 8ms
 Installed 1 package in 15ms
  + numpy==2.0.0
-error: the argument '--no-build' cannot be used with '--no-binary &lt;NO_BINARY&gt;'
+error: the argument &#x27;--no-build&#x27; cannot be used with &#x27;--no-binary &lt;NO_BINARY&gt;&#x27;
 
 Usage: uv-debug pip install --no-build &lt;PACKAGE|--requirements &lt;REQUIREMENTS&gt;|--editable &lt;EDITABLE&gt;|--group &lt;GROUP&gt;&gt;
 
-For more information, try '--help'.
+For more information, try &#x27;--help&#x27;.
 </code></pre>
-<p>When reading the code, my main confusion was that the struct isn't fully usable, the upgrade package list is only consider if neither <code>--upgrade</code> nor <code>--no-upgrade</code> are passed and the upgrade value is <code>None</code>. I was struggling to verify that the merge logic is correct, if we had two <code>Option&lt;UpgradeSelection&gt;</code>, only <code>Some</code> if any upgrade option was passed, the merging logic could be written as:</p>
-<pre><code class="language-rust">#[derive(Debug, Clone)]
+<p>When reading the code, my main confusion was that the struct isn&#x27;t fully usable, the upgrade package list is only consider if neither <code>--upgrade</code> nor <code>--no-upgrade</code> are passed and the upgrade value is <code>None</code>. I was struggling to verify that the merge logic is correct, if we had two <code>Option&lt;UpgradeSelection&gt;</code>, only <code>Some</code> if any upgrade option was passed, the merging logic could be written as:</p>
+<pre><code>#[derive(Debug, Clone)]
 pub enum UpgradeSelection {
     All,
     None,
@@ -113,8 +113,8 @@ impl UpgradeSelection {
 <blockquote>
 <p>One thing that I found unexpected is that --no-upgrade causes --upgrade-package to be silently ignored</p>
 </blockquote>
-<p>I'd expect <code>--upgrade-package</code> to take precedence.</p>
-<p>Otherwise, I'm a +1 on the behavior. It sounds actually doesn't require encoding a relationship between the persistent configuration and the CLI like we were discussing? Or does <code>upgrade-package = [&quot;foo&quot;]</code> with <code>--no-upgrade</code> perform no upgrades?</p>
+<p>I&#x27;d expect <code>--upgrade-package</code> to take precedence.</p>
+<p>Otherwise, I&#x27;m a +1 on the behavior. It sounds actually doesn&#x27;t require encoding a relationship between the persistent configuration and the CLI like we were discussing? Or does <code>upgrade-package = [&quot;foo&quot;]</code> with <code>--no-upgrade</code> perform no upgrades?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -128,7 +128,7 @@ impl UpgradeSelection {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-08-21 11:48</div>
-            <div class="timeline-body"><p>I didn't see a TODO item for that, but delaying the breaking change to 0.9 makes sense, should we add a warning now that <code>--no-upgrade</code> with <code>--upgrade-package</code> doesn't work as expected that becomes an error in 0.9?</p>
+            <div class="timeline-body"><p>I didn&#x27;t see a TODO item for that, but delaying the breaking change to 0.9 makes sense, should we add a warning now that <code>--no-upgrade</code> with <code>--upgrade-package</code> doesn&#x27;t work as expected that becomes an error in 0.9?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -136,7 +136,7 @@ impl UpgradeSelection {
             <div class="timeline-body"><blockquote>
 <p>I thought we had discussed the the no-upgrade / upgrade-package behavior and decided we wanted to change it but that it was breaking?</p>
 </blockquote>
-<p>Oh I see, I didn't realize you were separating it out into a bug fix and a breaking change. Sorry. I don't mind doing it that way as long as we're aligned on the end behavior.</p>
+<p>Oh I see, I didn&#x27;t realize you were separating it out into a bug fix and a breaking change. Sorry. I don&#x27;t mind doing it that way as long as we&#x27;re aligned on the end behavior.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -152,33 +152,33 @@ impl UpgradeSelection {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-21 12:48</div>
-            <div class="timeline-body"><p>Ah sorry, I guess the TODO is in the test suite (specifically, above the test with the undesirable result) and was introduced in the PR that added the tests, so doesn't appear here.</p>
+            <div class="timeline-body"><p>Ah sorry, I guess the TODO is in the test suite (specifically, above the test with the undesirable result) and was introduced in the PR that added the tests, so doesn&#x27;t appear here.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-21 12:49</div>
             <div class="timeline-body"><blockquote>
-<p>I didn't see a TODO item for that, but delaying the breaking change to 0.9 makes sense, should we add a warning now that --no-upgrade with --upgrade-package doesn't work as expected that becomes an error in 0.9?</p>
+<p>I didn&#x27;t see a TODO item for that, but delaying the breaking change to 0.9 makes sense, should we add a warning now that --no-upgrade with --upgrade-package doesn&#x27;t work as expected that becomes an error in 0.9?</p>
 </blockquote>
-<p>I think I'd rather <em>not</em> do this because I don't want them to be an error in 0.9, I want <code>--upgrade-package</code> to override <code>--no-upgrade</code>.</p>
+<p>I think I&#x27;d rather <em>not</em> do this because I don&#x27;t want them to be an error in 0.9, I want <code>--upgrade-package</code> to override <code>--no-upgrade</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-21 12:49</div>
             <div class="timeline-body"><blockquote>
-<p>I think I'd rather not do this because I don't want them to be an error in 0.9, I want --upgrade-package to override --no-upgrade.</p>
+<p>I think I&#x27;d rather not do this because I don&#x27;t want them to be an error in 0.9, I want --upgrade-package to override --no-upgrade.</p>
 </blockquote>
 <p>I agree.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-08-21 12:50</div>
-            <div class="timeline-body"><p>That's even better!</p>
+            <div class="timeline-body"><p>That&#x27;s even better!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-21 12:52</div>
-            <div class="timeline-body"><p>(I'll take a look at @konstin's suggested refactor, might make things simpler.)</p>
+            <div class="timeline-body"><p>(I&#x27;ll take a look at @konstin&#x27;s suggested refactor, might make things simpler.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -205,10 +205,10 @@ impl UpgradeSelection {
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2025-08-21 15:20</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-21 15:20</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2025-08-21 15:20</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-21 15:20</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-08-21 15:20</div>
@@ -216,7 +216,7 @@ impl UpgradeSelection {
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:44:27 UTC
+        Synced at 2026-01-20 19:53:40 UTC
     </footer>
 </body>
 </html>

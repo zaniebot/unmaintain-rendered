@@ -27,24 +27,24 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[pyupgrade]: Removes quotes from annotations" to "[`pyupgrade`]: Removes quotes from annotations" by @colin99d on 2023-02-01 17:32</div>
+            <div class="event">Renamed from &quot;[pyupgrade]: Removes quotes from annotations&quot; to &quot;[`pyupgrade`]: Removes quotes from annotations&quot; by <a href="https://github.com/colin99d">@colin99d</a> on 2023-02-01 17:32</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @colin99d on 2023-02-04 02:58</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/colin99d">@colin99d</a> on 2023-02-04 02:58</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-02-04 03:21</div>
-            <div class="timeline-body"><p>@charliermarsh this just needs your input on how to handle rustpython's lack of an Index token (I highlight more in the comments). Feel free to let me know how we should handle it.</p>
+            <div class="timeline-body"><p>@charliermarsh this just needs your input on how to handle rustpython&#x27;s lack of an Index token (I highlight more in the comments). Feel free to let me know how we should handle it.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-02-04 21:58</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-04 21:58</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-04 22:04</div>
             <div class="timeline-body"><p>Am I correct that the way this works is by passing the rule each function definition, having it identify all the stringified types from the body, and then stripping the quotes?</p>
-<p>I'm wondering if we can simplify things here, since we <em>already</em> have to solve this problem in <code>Checker</code>. In <code>Checker</code>, we track all the deferred string annotations, so that we can validate them at the very end (grep for <code>in_deferred_string_type_definition</code>). So we have logic for detecting whether we're in an annotation-compatible place, and we have special-cases for all the <code>typing</code> stuff.</p>
-<p>Could we instead leverage that? Could we just pass every item in <code>in_deferred_string_type_definition</code> to a method that removes the quotes, and generate a fix from that? (i.e., in <code>check_deferred_string_type_definitions</code>, for each <code>expression</code> string, pass it to the new rule that just de-quotes it?) That way, we wouldn't have to reimplement all of the detection, and we'd have a centralized implementation. But I may be overlooking some of the details here.</p>
+<p>I&#x27;m wondering if we can simplify things here, since we <em>already</em> have to solve this problem in <code>Checker</code>. In <code>Checker</code>, we track all the deferred string annotations, so that we can validate them at the very end (grep for <code>in_deferred_string_type_definition</code>). So we have logic for detecting whether we&#x27;re in an annotation-compatible place, and we have special-cases for all the <code>typing</code> stuff.</p>
+<p>Could we instead leverage that? Could we just pass every item in <code>in_deferred_string_type_definition</code> to a method that removes the quotes, and generate a fix from that? (i.e., in <code>check_deferred_string_type_definitions</code>, for each <code>expression</code> string, pass it to the new rule that just de-quotes it?) That way, we wouldn&#x27;t have to reimplement all of the detection, and we&#x27;d have a centralized implementation. But I may be overlooking some of the details here.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -52,7 +52,7 @@
             <div class="timeline-body"><blockquote>
 <p>check_deferred_string_type_definitions</p>
 </blockquote>
-<p>I'm not 100% sure on the answer to this question, but let me dig in and I will find out.</p>
+<p>I&#x27;m not 100% sure on the answer to this question, but let me dig in and I will find out.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -74,7 +74,7 @@
 <blockquote>
 <p>It seems to be too aggressive, and change a bunch of my &quot;do NOT change&quot; items.</p>
 </blockquote>
-<p>Anything that <em>shouldn't</em> change, and is being changed, might be a bug in the code today. Grep for <code>Some(Callable::TypedDict) =&gt; {</code> in <code>ast.rs</code>. We handle each case and try to either mark the thing as an annotation or not.</p>
+<p>Anything that <em>shouldn&#x27;t</em> change, and is being changed, might be a bug in the code today. Grep for <code>Some(Callable::TypedDict) =&gt; {</code> in <code>ast.rs</code>. We handle each case and try to either mark the thing as an annotation or not.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -85,12 +85,12 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-02-05 00:03</div>
-            <div class="timeline-body"><p>It looks to me like the existing functionality just checks for a certain Type, while what I built has to decide when a string needs to be converted. Unless there is something I am missing, I don't think I can use what is built to replace what I created. Let me know if you agree, and I can revert my changes.</p>
+            <div class="timeline-body"><p>It looks to me like the existing functionality just checks for a certain Type, while what I built has to decide when a string needs to be converted. Unless there is something I am missing, I don&#x27;t think I can use what is built to replace what I created. Let me know if you agree, and I can revert my changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-05 00:44</div>
-            <div class="timeline-body"><p>It feels like the exact same problem... but I may still be misunderstanding. In the Checker, we have to identify all strings that should be treated as deferred type annotations, so that we can process them later (and find things like referenced to undefined variables). Here, don't we need to find all those deferred type annotations, then remove the quotes (if future annotations is enabled)?</p>
+            <div class="timeline-body"><p>It feels like the exact same problem... but I may still be misunderstanding. In the Checker, we have to identify all strings that should be treated as deferred type annotations, so that we can process them later (and find things like referenced to undefined variables). Here, don&#x27;t we need to find all those deferred type annotations, then remove the quotes (if future annotations is enabled)?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -113,7 +113,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-05 00:58</div>
             <div class="timeline-body"><p>But, I think we <em>must</em> be detecting this correctly, because:</p>
-<pre><code class="language-py">import typing
+<pre><code>import typing
 
 class D(typing.TypedDict):
     E: typing.TypedDict(E, {&quot;foo&quot;: &quot;bar&quot;})
@@ -127,7 +127,7 @@ class D(typing.TypedDict):
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-05 00:59</div>
             <div class="timeline-body"><p>E.g., this code block:</p>
-<pre><code class="language-rs">// Ex) TypedDict(&quot;a&quot;, {&quot;a&quot;: int})
+<pre><code>// Ex) TypedDict(&quot;a&quot;, {&quot;a&quot;: int})
 if args.len() &gt; 1 {
     if let ExprKind::Dict { keys, values } = &amp;args[1].node {
         for key in keys.iter().flatten() {
@@ -153,13 +153,13 @@ if args.len() &gt; 1 {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-05 01:08</div>
-            <div class="timeline-body"><p>I'll take a look and see where I'm confused. No need to dig further till I've actually looked at the changes more closely.</p>
+            <div class="timeline-body"><p>I&#x27;ll take a look and see where I&#x27;m confused. No need to dig further till I&#x27;ve actually looked at the changes more closely.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-05 05:00</div>
-            <div class="timeline-body"><p>I had to move a few things around, but I think this version mostly works? There are some errors, but they're errors that are also present in <code>Checker</code> and so we should fix them there. For example, it does change <code>&quot;name&quot;</code> here, incorrectly:</p>
-<pre><code class="language-py">x: DefaultNamedArg(name=&quot;name&quot;, quox=&quot;str&quot;)
+            <div class="timeline-body"><p>I had to move a few things around, but I think this version mostly works? There are some errors, but they&#x27;re errors that are also present in <code>Checker</code> and so we should fix them there. For example, it does change <code>&quot;name&quot;</code> here, incorrectly:</p>
+<pre><code>x: DefaultNamedArg(name=&quot;name&quot;, quox=&quot;str&quot;)
 </code></pre>
 </div>
         </div>
@@ -174,10 +174,10 @@ if args.len() &gt; 1 {
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2023-02-05 14:43</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-05 14:43</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-02-05 14:43</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-05 14:43</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-05 14:43</div>
@@ -187,7 +187,7 @@ if args.len() &gt; 1 {
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:55:56 UTC
+        Synced at 2026-01-20 18:52:03 UTC
     </footer>
 </body>
 </html>

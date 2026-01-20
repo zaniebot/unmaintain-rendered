@@ -23,19 +23,19 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>This PR attempts to address a problem in the parser related to the range's of <code>WithItem</code> nodes in certain contexts -- specifically, <code>WithItem</code> nodes in parentheses that do not have an <code>as</code> token after them.</p>
+            <div class="timeline-body">Summary
+<p>This PR attempts to address a problem in the parser related to the range&#x27;s of <code>WithItem</code> nodes in certain contexts -- specifically, <code>WithItem</code> nodes in parentheses that do not have an <code>as</code> token after them.</p>
 <p>For example, <a href="https://play.ruff.rs/71be2d0b-2a04-4c7e-9082-e72bff152679">here</a>:</p>
-<pre><code class="language-python">with (a, b):
+<pre><code>with (a, b):
     pass
 </code></pre>
 <p>The range of the <code>WithItem</code> <code>a</code> is set to the range of <code>(a, b)</code>, as is the range of the <code>WithItem</code> <code>b</code>. In other words, when we have this kind of sequence, we use the range of the entire parenthesized context, rather than the ranges of the items themselves.</p>
 <p>Note that this also applies to cases <a href="https://play.ruff.rs/c551e8e9-c3db-4b74-8cc6-7c4e3bf3713a">like</a>:</p>
-<pre><code class="language-python">with (a, b, c as d):
+<pre><code>with (a, b, c as d):
     pass
 </code></pre>
 <p>You can see the issue in the parser here:</p>
-<pre><code class="language-rust">#[inline]
+<pre><code>#[inline]
 WithItemsNoAs: Vec&lt;ast::WithItem&gt; = {
     &lt;location:@L&gt; &lt;all:OneOrMore&lt;Test&lt;&quot;all&quot;&gt;&gt;&gt; &lt;end_location:@R&gt; =&gt; {
         all.into_iter().map(|context_expr| ast::WithItem { context_expr, optional_vars: None, range: (location..end_location).into() }).collect()
@@ -43,11 +43,11 @@ WithItemsNoAs: Vec&lt;ast::WithItem&gt; = {
 }
 </code></pre>
 <p>Fixing this issue is... very tricky. The naive approach is to use the range of the <code>context_expr</code> as the range for the <code>WithItem</code>, but that range will be incorrect when the <code>context_expr</code> is itself parenthesized. For example, <em>that</em> solution would fail here, since the range of the first <code>WithItem</code> would be that of <code>a</code>, rather than <code>(a)</code>:</p>
-<pre><code class="language-python">with ((a), b):
+<pre><code>with ((a), b):
     pass
 </code></pre>
-<p>The <code>with</code> parsing in general is highly precarious due to ambiguities in the grammar. Changing it in <em>any</em> way seems to lead to an ambiguous grammar that LALRPOP fails to translate. Consensus seems to be that we don't really understand <em>why</em> the current grammar works (i.e., <em>how</em> it avoids these ambiguities as-is).</p>
-<p>The solution implemented here is to avoid changing the grammar itself, and instead change the shape of the nodes returned by various rules in the grammar. Specifically, everywhere that we return <code>Expr</code>, we instead return <code>ParenthesizedExpr</code>, which includes a parenthesized range and the underlying <code>Expr</code> itself. (If an <code>Expr</code> isn't parenthesized, the ranges will be equivalent.) In <code>WithItemsNoAs</code>, we can then use the parenthesized range as the range for the <code>WithItem</code>.</p>
+<p>The <code>with</code> parsing in general is highly precarious due to ambiguities in the grammar. Changing it in <em>any</em> way seems to lead to an ambiguous grammar that LALRPOP fails to translate. Consensus seems to be that we don&#x27;t really understand <em>why</em> the current grammar works (i.e., <em>how</em> it avoids these ambiguities as-is).</p>
+<p>The solution implemented here is to avoid changing the grammar itself, and instead change the shape of the nodes returned by various rules in the grammar. Specifically, everywhere that we return <code>Expr</code>, we instead return <code>ParenthesizedExpr</code>, which includes a parenthesized range and the underlying <code>Expr</code> itself. (If an <code>Expr</code> isn&#x27;t parenthesized, the ranges will be equivalent.) In <code>WithItemsNoAs</code>, we can then use the parenthesized range as the range for the <code>WithItem</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -78,10 +78,10 @@ WithItemsNoAs: Vec&lt;ast::WithItem&gt; = {
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-08-22 17:01</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-22 17:01</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @zanieb by @charliermarsh on 2023-08-22 17:01</div>
+            <div class="event">Review requested from <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-22 17:01</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-22 17:01</div>
@@ -89,7 +89,7 @@ WithItemsNoAs: Vec&lt;ast::WithItem&gt; = {
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @charliermarsh on 2023-08-22 22:27</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-22 22:27</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-22 22:27</div>
@@ -106,26 +106,26 @@ WithItemsNoAs: Vec&lt;ast::WithItem&gt; = {
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-08-22 22:28</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-22 22:28</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-22 23:39</div>
-            <div class="timeline-body"><h2>PR Check Results</h2>
-<h3>Ecosystem</h3>
+            <div class="timeline-body">PR Check Results
+Ecosystem
 <p>✅ ecosystem check detected no changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-23 13:45</div>
             <div class="timeline-body"><p>Note that, on <code>main</code>, given:</p>
-<pre><code class="language-python">with ((1), (2), 3 as x, (5)): pass
+<pre><code>with ((1), (2), 3 as x, (5)): pass
 </code></pre>
 <p>The last <code>WithItem</code> <em>does</em> use the full <code>(5)</code> range.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-23 13:47</div>
-            <div class="timeline-body"><p>AFAICT in the CPython AST the withitems don't have ranges at all so not sure it can guide us:</p>
+            <div class="timeline-body"><p>AFAICT in the CPython AST the withitems don&#x27;t have ranges at all so not sure it can guide us:</p>
 <pre><code>Module(
     body=[
         With(
@@ -152,7 +152,7 @@ WithItemsNoAs: Vec&lt;ast::WithItem&gt; = {
                         end_lineno=1,
                         end_col_offset=17),
                     optional_vars=Name(
-                        id='x',
+                        id=&#x27;x&#x27;,
                         ctx=Store(),
                         lineno=1,
                         col_offset=21,
@@ -190,12 +190,12 @@ WithItemsNoAs: Vec&lt;ast::WithItem&gt; = {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-08-24 06:41</div>
-            <div class="timeline-body"><p>I'm torn on this, mainly because of</p>
+            <div class="timeline-body"><p>I&#x27;m torn on this, mainly because of</p>
 <blockquote>
-<p>Consensus seems to be that we don't really understand why the current grammar works (i.e., how it avoids these ambiguities as-is).</p>
+<p>Consensus seems to be that we don&#x27;t really understand why the current grammar works (i.e., how it avoids these ambiguities as-is).</p>
 </blockquote>
-<p>and because I believe that LR(1) or LALR(1) grammars should be able to support with statements without the need for hacks (It's LL(1) grammars that the Python PEP points out are unsupported). That's why I'm convinced that the issue is somewhere else in our grammar (but yeah, LALRPOP ambiguity messages are impossible to understand).</p>
-<p>I'm okayish with merging this when we open an issue to follow up, ideally as part of the formatter Beta. Maybe I can get some time to play around with this.</p>
+<p>and because I believe that LR(1) or LALR(1) grammars should be able to support with statements without the need for hacks (It&#x27;s LL(1) grammars that the Python PEP points out are unsupported). That&#x27;s why I&#x27;m convinced that the issue is somewhere else in our grammar (but yeah, LALRPOP ambiguity messages are impossible to understand).</p>
+<p>I&#x27;m okayish with merging this when we open an issue to follow up, ideally as part of the formatter Beta. Maybe I can get some time to play around with this.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -205,21 +205,21 @@ WithItemsNoAs: Vec&lt;ast::WithItem&gt; = {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-24 13:32</div>
-            <div class="timeline-body"><p>I'm honestly not sure what's correct here.</p>
+            <div class="timeline-body"><p>I&#x27;m honestly not sure what&#x27;s correct here.</p>
 <p>Given:</p>
-<pre><code class="language-python">with (a): pass
+<pre><code>with (a): pass
 </code></pre>
 <p>We currently omit the parentheses for the range (so the withitem has the range of <code>a</code>).</p>
 <p>Given:</p>
-<pre><code class="language-python">with (a) as b: pass
+<pre><code>with (a) as b: pass
 </code></pre>
 <p>We use the full range of <code>(a) as b</code> as the withitem range.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-08-24 16:10</div>
-            <div class="timeline-body"><p>Those ranges look inconvenient but correct to me. It's the same if you'd see <code>as</code> as a bin op:</p>
-<pre><code class="language-python">with (a):
+            <div class="timeline-body"><p>Those ranges look inconvenient but correct to me. It&#x27;s the same if you&#x27;d see <code>as</code> as a bin op:</p>
+<pre><code>with (a):
     pass
 
 with (a) + b:
@@ -232,25 +232,25 @@ with (a) + b:
             <div class="timeline-body"><blockquote>
 <p>@MichaReiser - do you have an opinion on whether the ranges should include or exclude the parentheses? I’m torn on that myself. (Either outcome requires a code change — the PR here includes the parentheses, although that’s inconsistent with some other AST nodes, like the parenthesized pattern match case.)</p>
 </blockquote>
-<p>I'm leaning towards including the range similar to tuples, where the parentheses are optional. With items are different from parenthesized expressions (and patterns) in that they don't allow nesting:</p>
-<pre><code class="language-python">with (((a) as b)):
+<p>I&#x27;m leaning towards including the range similar to tuples, where the parentheses are optional. With items are different from parenthesized expressions (and patterns) in that they don&#x27;t allow nesting:</p>
+<pre><code>with (((a) as b)):
     pass
 </code></pre>
-<p>Isn't valid syntax</p>
+<p>Isn&#x27;t valid syntax</p>
 <p>However, this does raises the question of what the expected range should be for:</p>
-<pre><code class="language-python">with (a): pass
+<pre><code>with (a): pass
 </code></pre>
 <p>Is this a with item with a parenthesized expression or is the with item parenthesized, containing an expression? We would need to take a look at the grammar to understand the precedence.</p>
 <p>Edit:
 I studied the <a href="https://docs.python.org/3.12/reference/grammar.html">grammar</a> and the precedence rules described in <a href="https://peps.python.org/pep-0617/#background-on-peg-parsers">PEP617</a>.</p>
 <pre><code>with_stmt:
-    | 'with' '(' ','.with_item+ ','? ')' ':' block 
-    | 'with' ','.with_item+ ':' [TYPE_COMMENT] block 
-    | ASYNC 'with' '(' ','.with_item+ ','? ')' ':' block 
-    | ASYNC 'with' ','.with_item+ ':' [TYPE_COMMENT] block 
+    | &#x27;with&#x27; &#x27;(&#x27; &#x27;,&#x27;.with_item+ &#x27;,&#x27;? &#x27;)&#x27; &#x27;:&#x27; block 
+    | &#x27;with&#x27; &#x27;,&#x27;.with_item+ &#x27;:&#x27; [TYPE_COMMENT] block 
+    | ASYNC &#x27;with&#x27; &#x27;(&#x27; &#x27;,&#x27;.with_item+ &#x27;,&#x27;? &#x27;)&#x27; &#x27;:&#x27; block 
+    | ASYNC &#x27;with&#x27; &#x27;,&#x27;.with_item+ &#x27;:&#x27; [TYPE_COMMENT] block 
 
 with_item:
-    | expression 'as' star_target &amp;(',' | ')' | ':') 
+    | expression &#x27;as&#x27; star_target &amp;(&#x27;,&#x27; | &#x27;)&#x27; | &#x27;:&#x27;) 
     | expression 
 </code></pre>
 <blockquote>
@@ -262,17 +262,17 @@ with_item:
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-24 16:31</div>
             <div class="timeline-body"><p>I guess the <code>with (a)</code> is more involved than I thought because the following is valid as well:</p>
-<pre><code class="language-python">with (
+<pre><code>with (
 	a,
 	b
 ): pass
 </code></pre>
-<p>Meaning, it's not the with items that are parenthesized, but all of them.</p>
+<p>Meaning, it&#x27;s not the with items that are parenthesized, but all of them.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-24 16:46</div>
-            <div class="timeline-body"><p>Oh, I did read the spec incorrectly. With items that cannot be parenthesized. It's either parenthesizing all with items, or the expression in the with item.</p>
+            <div class="timeline-body"><p>Oh, I did read the spec incorrectly. With items that cannot be parenthesized. It&#x27;s either parenthesizing all with items, or the expression in the with item.</p>
 <p>I would still expect the <code>WithItem</code> range to span the full range for parenthesized expressions. This to align it with an expression statement</p>
 <pre><code>(a)
 </code></pre>
@@ -281,8 +281,8 @@ with_item:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-24 18:15</div>
-            <div class="timeline-body"><p>I might be misunderstanding your comment but <code>with (a, b): pass</code> <em>is</em> valid and it's two separate <code>WithItems</code>. Here are a few cases to consider:</p>
-<pre><code class="language-python">with (a, b): pass
+            <div class="timeline-body"><p>I might be misunderstanding your comment but <code>with (a, b): pass</code> <em>is</em> valid and it&#x27;s two separate <code>WithItems</code>. Here are a few cases to consider:</p>
+<pre><code>with (a, b): pass
 
 with (a, b) as c: pass
 
@@ -290,40 +290,40 @@ with ((a, b) as c): pass
 
 with (a as b): pass
 </code></pre>
-<p>In the first case, that's two <code>WithItem</code>'s (<code>a</code> and <code>b</code>), so both ranges should exclude the parentheses IIUC.</p>
-<p>In the second case, it's a single <code>WithItem</code> that should include the parentheses.</p>
-<p>In the third and fourth cases, that's a single <code>WithItem</code>. I guess it should include the outer parentheses?</p>
+<p>In the first case, that&#x27;s two <code>WithItem</code>&#x27;s (<code>a</code> and <code>b</code>), so both ranges should exclude the parentheses IIUC.</p>
+<p>In the second case, it&#x27;s a single <code>WithItem</code> that should include the parentheses.</p>
+<p>In the third and fourth cases, that&#x27;s a single <code>WithItem</code>. I guess it should include the outer parentheses?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-24 18:29</div>
             <div class="timeline-body"><blockquote>
-<p>In the third and fourth cases, that's a single WithItem. I guess it should include the outer parentheses?</p>
+<p>In the third and fourth cases, that&#x27;s a single WithItem. I guess it should include the outer parentheses?</p>
 </blockquote>
-<p>No, it should not include the ranges in my view because WithItems can't have parentheses. It's the <code>With</code> statement that allows parentheses or the expression, but not the with item.</p>
+<p>No, it should not include the ranges in my view because WithItems can&#x27;t have parentheses. It&#x27;s the <code>With</code> statement that allows parentheses or the expression, but not the with item.</p>
 <p>From ny comment aboce</p>
 <p>I studied the <a href="https://docs.python.org/3.12/reference/grammar.html">grammar</a> and the precedence rules described in <a href="https://peps.python.org/pep-0617/#background-on-peg-parsers">PEP617</a>.</p>
 <pre><code>with_stmt:
-    | 'with' '(' ','.with_item+ ','? ')' ':' block 
-    | 'with' ','.with_item+ ':' [TYPE_COMMENT] block 
-    | ASYNC 'with' '(' ','.with_item+ ','? ')' ':' block 
-    | ASYNC 'with' ','.with_item+ ':' [TYPE_COMMENT] block 
+    | &#x27;with&#x27; &#x27;(&#x27; &#x27;,&#x27;.with_item+ &#x27;,&#x27;? &#x27;)&#x27; &#x27;:&#x27; block 
+    | &#x27;with&#x27; &#x27;,&#x27;.with_item+ &#x27;:&#x27; [TYPE_COMMENT] block 
+    | ASYNC &#x27;with&#x27; &#x27;(&#x27; &#x27;,&#x27;.with_item+ &#x27;,&#x27;? &#x27;)&#x27; &#x27;:&#x27; block 
+    | ASYNC &#x27;with&#x27; &#x27;,&#x27;.with_item+ &#x27;:&#x27; [TYPE_COMMENT] block 
 
 with_item:
-    | expression 'as' star_target &amp;(',' | ')' | ':') 
+    | expression &#x27;as&#x27; star_target &amp;(&#x27;,&#x27; | &#x27;)&#x27; | &#x27;:&#x27;) 
     | expression 
 </code></pre>
 <blockquote>
 <p>...while a PEG parser will check if the first alternative succeeds and only if it fails, will it continue with the second or the third one in the order in which they are written. This makes the choice operator not commutative.</p>
 </blockquote>
 <p>My understanding of this is that the <code>a</code> in <code>with (a)</code> is not a parenthesized expression, the parentheses belong to the <code>with_stmt</code> because the parentheses rule is the first and it succeeds parsing.</p>
-<p>What I meant that isn't valid is <code>match (a as b), c: pass</code>, proving that with items can't have their own parentheses.</p>
+<p>What I meant that isn&#x27;t valid is <code>match (a as b), c: pass</code>, proving that with items can&#x27;t have their own parentheses.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-24 18:38</div>
-            <div class="timeline-body"><p>Ah, I see, I think I was just confused by the message you posted after that, saying that it <em>should</em> include the parentheses. But I assume there, when you say <code>(a)</code>, you're referring to something like:</p>
-<pre><code class="language-python">with ((a), b):
+            <div class="timeline-body"><p>Ah, I see, I think I was just confused by the message you posted after that, saying that it <em>should</em> include the parentheses. But I assume there, when you say <code>(a)</code>, you&#x27;re referring to something like:</p>
+<pre><code>with ((a), b):
   pass
 </code></pre>
 <p>Since in this case, the outer parentheses belong to the <code>with</code> statement, but the inner parentheses on <code>(a)</code> belong to the item?</p>
@@ -349,15 +349,15 @@ with_item:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-08-25 12:05</div>
-            <div class="timeline-body"><p>It hurts, but I think that's the best we can do without rewriting our parser :sob:</p>
-<p>I also don't fully understand why this is working. It could be poor luck, or even a bug, but we take it...</p>
+            <div class="timeline-body"><p>It hurts, but I think that&#x27;s the best we can do without rewriting our parser :sob:</p>
+<p>I also don&#x27;t fully understand why this is working. It could be poor luck, or even a bug, but we take it...</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">parser</span> added by @MichaReiser on 2023-08-25 12:06</div>
+            <div class="event">Label <span class="label">parser</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-25 12:06</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> removed by @MichaReiser on 2023-08-25 12:06</div>
+            <div class="event">Label <span class="label">bug</span> removed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-25 12:06</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-25 23:47</div>
@@ -371,10 +371,10 @@ with_item:
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-28 00:45</div>
             <div class="timeline-body"><p>This is still getting on case wrong (sigh):</p>
-<pre><code class="language-python">with (a := 1):
+<pre><code>with (a := 1):
     pass
 </code></pre>
-<p>The expression rules <em>require</em> that the named expression is parenthesized, so the <code>(</code> <code>withitem</code> <code>)</code> case <em>doesn't</em> match, and it ends up being difficult to treat the parentheses as part of the <code>WithItem</code>.</p>
+<p>The expression rules <em>require</em> that the named expression is parenthesized, so the <code>(</code> <code>withitem</code> <code>)</code> case <em>doesn&#x27;t</em> match, and it ends up being difficult to treat the parentheses as part of the <code>WithItem</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -424,22 +424,22 @@ with_item:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-31 06:42</div>
-            <div class="timeline-body"><p>(The formatter changes are downstream of this, for example, https://github.com/astral-sh/ruff/issues/3711.)</p>
+            <div class="timeline-body"><p>(The formatter changes are downstream of this, for example, <a href="https://github.com/astral-sh/ruff/issues/3711">astral-sh/ruff#3711</a>.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2023-08-31 13:41</div>
-            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/charlie/parse">CodSpeed Performance Report</a></h2>
-<h3>Merging #6782 will <strong>degrade performances by 1.73%</strong></h3>
-<p><sub>Comparing <code>charlie/parse</code> (9e2aec4) with <code>main</code> (f4ba0ea)</sub></p>
-<h3>Summary</h3>
+            <div class="timeline-body"><a href="https://codspeed.io/astral-sh/ruff/branches/charlie/parse">CodSpeed Performance Report</a>
+Merging #6782 will <strong>degrade performances by 1.73%</strong>
+<p>Comparing <code>charlie/parse</code> (9e2aec4) with <code>main</code> (f4ba0ea)</p>
+Summary
 <p><code>🔥 1</code> improvements
 <code>❌ 9</code> regressions
 <code>✅ 10</code> untouched benchmarks</p>
 <blockquote>
 <p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/ruff/branches/charlie/parse">acknowledge them on CodSpeed</a>.</em></p>
 </blockquote>
-<h3>Benchmarks breakdown</h3>
+Benchmarks breakdown
 <p>|     | Benchmark | <code>main</code> | <code>charlie/parse</code> | Change |
 | --- | --------- | ----------------------- | ------------------- | ------ |
 | 🔥 | <code>linter/default-rules[pydantic/types.py]</code> | 39.2 ms | 38.2 ms | +2.49% |
@@ -455,10 +455,10 @@ with_item:
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2023-08-31 15:21</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-31 15:21</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-08-31 15:21</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-31 15:21</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2023-08-31 15:21</div>
@@ -466,7 +466,7 @@ with_item:
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:59:44 UTC
+        Synced at 2026-01-20 18:56:34 UTC
     </footer>
 </body>
 </html>

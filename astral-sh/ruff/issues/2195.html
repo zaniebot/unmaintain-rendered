@@ -37,60 +37,60 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-26 14:51</div>
-            <div class="timeline-body"><p>@sondrelg - not urgent, but any input on these options based on your experience? Any thing you'd warn me about, etc.?</p>
+            <div class="timeline-body"><p>@sondrelg - not urgent, but any input on these options based on your experience? Any thing you&#x27;d warn me about, etc.?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-01-26 14:51</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-26 14:51</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2023-01-26 14:54</div>
+            <div class="event">Label <span class="label">configuration</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-26 14:54</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2023-01-26 15:24</div>
             <div class="timeline-body"><p>Is it feasible to create another script in addition to <code>add_rule.py</code> and <code>add_plugin.py</code>, e.g. <code>add_option.py</code>?
-Not sure if this can be automated, didn't look into it. Could be a good thought to have in mind when new options are implemented.</p>
+Not sure if this can be automated, didn&#x27;t look into it. Could be a good thought to have in mind when new options are implemented.</p>
 <p>ps. @charliermarsh some other options are labelled <code>isort</code> but I think should also have the <code>configuration</code> tag</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sondrelg">@sondrelg</a> on 2023-01-26 18:36</div>
             <div class="timeline-body"><p>Yeah <code>exempt-modules</code> and <code>strict</code> are easy and probably fine to implement, but the rest are.. sub-optimal:</p>
-<p>The follow snippets represent code that's incompatible with the general premise of the flake8-type-checking plugin:</p>
-<h3>Pydantic model annotations</h3>
-<pre><code class="language-python">from pydantic import BaseModel
+<p>The follow snippets represent code that&#x27;s incompatible with the general premise of the flake8-type-checking plugin:</p>
+Pydantic model annotations
+<pre><code>from pydantic import BaseModel
 from pandas import DataFrame    
 
 
 class Foo(BaseModel):
     df: DataFrame
 </code></pre>
-<h3>FastAPI view function annotations</h3>
-<pre><code class="language-python">@app.get()
+FastAPI view function annotations
+<pre><code>@app.get()
 def foo(request: Request) -&gt; Response:
     ...
 </code></pre>
-<h3>Any FastAPI dependency functions</h3>
-<pre><code class="language-python"># dependencies.py
+Any FastAPI dependency functions
+<pre><code># dependencies.py
 async def is_authorized(request: Request) -&gt; bool:  # Request here cannot be wrapped in quotes
     ...
 </code></pre>
-<pre><code class="language-python"># endpoints.py
+<pre><code># endpoints.py
 async def foo(request: Request, is_authorized: bool = Depends(is_authorized)) -&gt; bool:
     ...
 </code></pre>
-<hr />
-<p>Since we're performing static single file analysis, there is no way to be certain whether a function can be used as a &quot;dependency&quot; in FastAPI, or whether a class that inherits from some base class is pydantic model or not. <code>attrs</code> classes are a little simpler to spot, but we can never be certain there either.</p>
-<p>The reason this matters is because if we guard an import within a <code>TYPE_CHECKING</code> block, and it is attempted to be evaluated by, e.g., <code>pydantic</code> at runtime the consequences are runtime errors. This is a pretty terrible consequence, so my thinking has been that the bar for what uncertainty we'll tolerate should be very high.</p>
+<hr>
+<p>Since we&#x27;re performing static single file analysis, there is no way to be certain whether a function can be used as a &quot;dependency&quot; in FastAPI, or whether a class that inherits from some base class is pydantic model or not. <code>attrs</code> classes are a little simpler to spot, but we can never be certain there either.</p>
+<p>The reason this matters is because if we guard an import within a <code>TYPE_CHECKING</code> block, and it is attempted to be evaluated by, e.g., <code>pydantic</code> at runtime the consequences are runtime errors. This is a pretty terrible consequence, so my thinking has been that the bar for what uncertainty we&#x27;ll tolerate should be very high.</p>
 <p>So the pydantic plugin essentially just treats ALL classes with base classes as potential pydantic classes. The <code>type-checking-pydantic-enabled-baseclass-passlist</code> setting then gives users a way to tell us which base classes are definitely not an alias for- or abstract class containing <code>BaseModel</code>.</p>
 <p>The same thing happens for the FastAPI option. Any decorated function is ignored, and you can opt-into ignoring any function, since they may be used in the <code>Depends</code> wrapper.</p>
-<hr />
-<p>I think I would recommend adding a disclaimer to the readme informing users that this plugin is fundamentally incompatible with projects that evaluate type hints at runtime, and drop these config options -- but obviously feel free to add them if you want. In general though I think it's a lot of work for very little gain.</p>
+<hr>
+<p>I think I would recommend adding a disclaimer to the readme informing users that this plugin is fundamentally incompatible with projects that evaluate type hints at runtime, and drop these config options -- but obviously feel free to add them if you want. In general though I think it&#x27;s a lot of work for very little gain.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sasanjac">@sasanjac</a> on 2023-02-10 14:44</div>
-            <div class="timeline-body"><p>I don't understand the problem for <code>pydantic</code> support. Can't we just assume that every class that has <code>pydantic.BaseModel</code> as a base class needs to have the types of their class attributes checked at runtime?</p>
+            <div class="timeline-body"><p>I don&#x27;t understand the problem for <code>pydantic</code> support. Can&#x27;t we just assume that every class that has <code>pydantic.BaseModel</code> as a base class needs to have the types of their class attributes checked at runtime?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -106,26 +106,26 @@ async def foo(request: Request, is_authorized: bool = Depends(is_authorized)) -&
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sondrelg">@sondrelg</a> on 2023-02-10 15:53</div>
             <div class="timeline-body"><blockquote>
-<p>I don't understand the problem for <code>pydantic</code> support. Can't we just assume that every class that has <code>pydantic.BaseModel</code> as a base class needs to have the types of their class attributes checked at runtime?</p>
+<p>I don&#x27;t understand the problem for <code>pydantic</code> support. Can&#x27;t we just assume that every class that has <code>pydantic.BaseModel</code> as a base class needs to have the types of their class attributes checked at runtime?</p>
 </blockquote>
 <p>What if you do this?</p>
-<pre><code class="language-python"># a.py
+<pre><code># a.py
 
 class AppBaseModel(BaseModel):
     name: str  # every model in my app will have this attribute
 </code></pre>
-<pre><code class="language-python"># b.py 
+<pre><code># b.py 
 from a import AppBaseModel
 
 class Foo(AppBaseModel):
 </code></pre>
-<p>It's been a while since we discussed it, but I think there's a number of way to assume incorrectly. And since the consequence of a false negative is potential runtime errors in your prod app, we should try to avoid that at all costs.</p>
+<p>It&#x27;s been a while since we discussed it, but I think there&#x27;s a number of way to assume incorrectly. And since the consequence of a false negative is potential runtime errors in your prod app, we should try to avoid that at all costs.</p>
 <p>Does that make sense @sasanjac?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sondrelg">@sondrelg</a> on 2023-02-10 15:55</div>
-            <div class="timeline-body"><p>That's news to me @charliermarsh. Is that a 3.11 or 3.12 thing?</p>
+            <div class="timeline-body"><p>That&#x27;s news to me @charliermarsh. Is that a 3.11 or 3.12 thing?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -139,7 +139,7 @@ class Foo(AppBaseModel):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-10 16:30</div>
-            <div class="timeline-body"><p>@sondrelg - I don't <em>think</em> so but I haven't really looked back on it. You can see the docs <a href="https://docs.python.org/3/reference/simple_stmts.html#annotated-assignment-statements">here</a>. The logic is that if you're in a module or class scope, the annotations need to be added to <code>__annotations__</code>, so they end up getting evaluated at runtime. In a function scope, there's no such construct, so they just get skipped.</p>
+            <div class="timeline-body"><p>@sondrelg - I don&#x27;t <em>think</em> so but I haven&#x27;t really looked back on it. You can see the docs <a href="https://docs.python.org/3/reference/simple_stmts.html#annotated-assignment-statements">here</a>. The logic is that if you&#x27;re in a module or class scope, the annotations need to be added to <code>__annotations__</code>, so they end up getting evaluated at runtime. In a function scope, there&#x27;s no such construct, so they just get skipped.</p>
 <p>There are some comments from Python core contributors in that thread: https://twitter.com/MissingClara/status/1623435238289608709</p>
 </div>
         </div>
@@ -152,7 +152,7 @@ class Foo(AppBaseModel):
 </blockquote>
 <p>~No, because <code>Foo.mro()</code> still contains <code>BaseModel</code>.~</p>
 </blockquote>
-<p>But can't we then turn the procedure around? Explicitely state all base classes that inherit from BaseModel?</p>
+<p>But can&#x27;t we then turn the procedure around? Explicitely state all base classes that inherit from BaseModel?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -175,14 +175,14 @@ class Foo(AppBaseModel):
 </blockquote>
 <p>~No, because <code>Foo.mro()</code> still contains <code>BaseModel</code>.~</p>
 </blockquote>
-<p>But can't we then turn the procedure around? Explicitely state all base classes that inherit from BaseModel?</p>
+<p>But can&#x27;t we then turn the procedure around? Explicitely state all base classes that inherit from BaseModel?</p>
 </blockquote>
-<p>The example above isn't the worst case - we could have <code>n</code> layers of base classes and mixins to traverse located in <code>m</code> different files. Since flake8 operates in a one-file-at-the-time type of way, leaving the scope of the single file was not something that seemed worth the investment in the original plugin, but maybe ruff has some foundations that make it worth considering :slightly_smiling_face:</p>
+<p>The example above isn&#x27;t the worst case - we could have <code>n</code> layers of base classes and mixins to traverse located in <code>m</code> different files. Since flake8 operates in a one-file-at-the-time type of way, leaving the scope of the single file was not something that seemed worth the investment in the original plugin, but maybe ruff has some foundations that make it worth considering :slightly_smiling_face:</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sasanjac">@sasanjac</a> on 2023-02-11 09:02</div>
-            <div class="timeline-body"><p>Yeah I totally forgot about that. But why don't leave it up to the user to specify all <code>pydantic</code> base classes in the config file? I mean with the default config, the user will encounter runtime errors anyway.</p>
+            <div class="timeline-body"><p>Yeah I totally forgot about that. But why don&#x27;t leave it up to the user to specify all <code>pydantic</code> base classes in the config file? I mean with the default config, the user will encounter runtime errors anyway.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -198,7 +198,7 @@ For me it just seems the most straightforward way to have something like <code>t
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sondrelg">@sondrelg</a> on 2023-02-11 20:24</div>
-            <div class="timeline-body"><p>Maybe just call it <code>type-checking-pydantic-baseclasses</code>? Yeah I don't see why not if you want that feature :slightly_smiling_face:</p>
+            <div class="timeline-body"><p>Maybe just call it <code>type-checking-pydantic-baseclasses</code>? Yeah I don&#x27;t see why not if you want that feature :slightly_smiling_face:</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -212,12 +212,12 @@ For me it just seems the most straightforward way to have something like <code>t
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-03-07 04:34</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-07 04:34</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:46:12 UTC
+        Synced at 2026-01-20 18:48:31 UTC
     </footer>
 </body>
 </html>

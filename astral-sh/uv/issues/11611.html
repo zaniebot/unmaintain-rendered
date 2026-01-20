@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/shixuan-fan">@shixuan-fan</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>Today when we do <code>--compiled-bytecode</code>, the entire <code>site-packages</code> folder is compiled. This is not always desirable because we have our own managed download/install pipeline and each worker handles its own install and potentially uninstalls. During our migration to uv, we found out that when uninstall happens, the other installs with --compile will fail because a path in site-packages no longer exists during the installation:</p>
 <pre><code>Installed 1 package in 0.46ms
 DEBUG Starting 16 bytecode compilation workers
@@ -34,12 +34,12 @@ error: Failed to bytecode-compile Python file in: /usr/lib/python3.11/site-packa
   Caused by: No such file or directory (os error 2)
 </code></pre>
 <p>This behavior is different from pip so an option to only compile the installed packages, which is pip-compatible, would be very helpful for our drop-in replacement! :)</p>
-<h3>Example</h3>
+Example
 <p><em>No response</em></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @shixuan-fan on 2025-02-19 01:30</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/shixuan-fan">@shixuan-fan</a> on 2025-02-19 01:30</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-19 03:39</div>
@@ -47,14 +47,14 @@ error: Failed to bytecode-compile Python file in: /usr/lib/python3.11/site-packa
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> removed by @konstin on 2025-02-19 08:47</div>
+            <div class="event">Label <span class="label">enhancement</span> removed by <a href="https://github.com/konstin">@konstin</a> on 2025-02-19 08:47</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-mre</span> added by @konstin on 2025-02-19 08:47</div>
+            <div class="event">Label <span class="label">needs-mre</span> added by <a href="https://github.com/konstin">@konstin</a> on 2025-02-19 08:47</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-19 08:48</div>
-            <div class="timeline-body"><p>I haven't seen this error before, can you share commands that reproduce this problem?</p>
+            <div class="timeline-body"><p>I haven&#x27;t seen this error before, can you share commands that reproduce this problem?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -69,7 +69,7 @@ error: Failed to bytecode-compile Python file in: /usr/lib/python3.11/site-packa
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/shixuan-fan">@shixuan-fan</a> on 2025-02-19 16:42</div>
-            <div class="timeline-body"><p>Our use case is special because for security reasons we have to run these uv commands from a sandbox (e.g. NsJail). Each sandbox has a tmpfs mounted to their <code>/tmp</code> location. This means these uv commands cannot see each other's lock because the <code>/tmp</code> location is not shared.</p>
+            <div class="timeline-body"><p>Our use case is special because for security reasons we have to run these uv commands from a sandbox (e.g. NsJail). Each sandbox has a tmpfs mounted to their <code>/tmp</code> location. This means these uv commands cannot see each other&#x27;s lock because the <code>/tmp</code> location is not shared.</p>
 <p>Even if the uv commands share the <code>/tmp</code> and lock works, this does not seem efficient because ideally if these commands are installing different packages with <code>--compile-bytecode</code> flag, they should not block each other. This can be achieved by only compiling for the installed package, similar to what pip does.</p>
 </div>
         </div>
@@ -79,7 +79,7 @@ error: Failed to bytecode-compile Python file in: /usr/lib/python3.11/site-packa
 <blockquote>
 <p>this does not seem efficient because ideally if these commands are installing different packages with --compile-bytecode flag, they should not block each other</p>
 </blockquote>
-<p>It's not safe to install into an environment concurrently. Even if the packages are different, there can be transitive overlap. And even if there's not transitive overlap, Python packages can install into arbitrary conflicting paths in your environment.</p>
+<p>It&#x27;s not safe to install into an environment concurrently. Even if the packages are different, there can be transitive overlap. And even if there&#x27;s not transitive overlap, Python packages can install into arbitrary conflicting paths in your environment.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -94,17 +94,17 @@ error: Failed to bytecode-compile Python file in: /usr/lib/python3.11/site-packa
 <pre><code>Solve (pip dry run) -&gt; a list of wheels -&gt; pipeline for wheel 1 -&gt; download -&gt; install
                                         -&gt; pipeline for wheel 2...
 </code></pre>
-<p>The transitive overlap is unlikely for us. We are using <code>--no-deps</code> to install each package separately, because the environment that uv runs also don't have network access so we are feeding it wheel files. The package to install is determined by a solve process which today we are still using pip because uv does not have <code>--report</code> equivalent yet.</p>
-<p>The arbitrary conflicting paths is interesting, and IIRC there are some crypto libs that have this issue. I don't think there is a safe way to install it regardless how we do the install because to my best understanding it is always last-writer-win. I don't think it is the installer's responsibility to handle this not-working scenarios.</p>
+<p>The transitive overlap is unlikely for us. We are using <code>--no-deps</code> to install each package separately, because the environment that uv runs also don&#x27;t have network access so we are feeding it wheel files. The package to install is determined by a solve process which today we are still using pip because uv does not have <code>--report</code> equivalent yet.</p>
+<p>The arbitrary conflicting paths is interesting, and IIRC there are some crypto libs that have this issue. I don&#x27;t think there is a safe way to install it regardless how we do the install because to my best understanding it is always last-writer-win. I don&#x27;t think it is the installer&#x27;s responsibility to handle this not-working scenarios.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-19 18:51</div>
             <div class="timeline-body"><p>Interesting. Why not just compile bytecode at the end?</p>
 <blockquote>
-<p>I don't think there is a safe way to install it regardless how we do the install because to my best understanding it is always last-writer-win. I don't think it is the installer's responsibility to handle this not-working scenarios.</p>
+<p>I don&#x27;t think there is a safe way to install it regardless how we do the install because to my best understanding it is always last-writer-win. I don&#x27;t think it is the installer&#x27;s responsibility to handle this not-working scenarios.</p>
 </blockquote>
-<p>It's the difference between two partially installed packages (with arbitrarily mixed overrides) and one fully installed package with another partially overridden. Unfortunately, this is something we need to consider as some packages do this intentionally.</p>
+<p>It&#x27;s the difference between two partially installed packages (with arbitrarily mixed overrides) and one fully installed package with another partially overridden. Unfortunately, this is something we need to consider as some packages do this intentionally.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -112,48 +112,48 @@ error: Failed to bytecode-compile Python file in: /usr/lib/python3.11/site-packa
             <div class="timeline-body"><blockquote>
 <p>Why not just compile bytecode at the end?</p>
 </blockquote>
-<p>Great minds think alike :-) That's what we are now considering. The pipeline install does the no-compile install, and have a final &quot;compiler&quot;.</p>
+<p>Great minds think alike :-) That&#x27;s what we are now considering. The pipeline install does the no-compile install, and have a final &quot;compiler&quot;.</p>
 <p>Is there a uv command that compiles the entire site-packages for a given python env via <code>--python</code>? What I was considering is to do a <code>uv pip install --compile</code> on any one package that triggers the compile all. This does not seem very clean to me so trying to see if uv experts have some other suggestions.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-19 19:04</div>
-            <div class="timeline-body"><p>https://github.com/astral-sh/uv/pull/11633 isn't what you asked for, but seems like it would unblock you.</p>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/pull/11633 isn&#x27;t what you asked for, but seems like it would unblock you.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-19 19:05</div>
-            <div class="timeline-body"><p>We don't have a command for it no, it does seem fairly reasonable (and easy) to expose as a &quot;plumbing command&quot; though.</p>
+            <div class="timeline-body"><p>We don&#x27;t have a command for it no, it does seem fairly reasonable (and easy) to expose as a &quot;plumbing command&quot; though.</p>
 <p>We already have a copy of it in-tree https://github.com/astral-sh/uv/blob/41cd4bee5861cdda4d826c29cd413b97638186cb/crates/uv-dev/src/compile.rs</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/shixuan-fan">@shixuan-fan</a> on 2025-02-19 19:06</div>
             <div class="timeline-body"><blockquote>
-<p>https://github.com/astral-sh/uv/pull/11633 isn't what you asked for, but seems like it would unblock you.</p>
+<p>https://github.com/astral-sh/uv/pull/11633 isn&#x27;t what you asked for, but seems like it would unblock you.</p>
 </blockquote>
 <p>Thanks. Let me cherry-pick and test :)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/shixuan-fan">@shixuan-fan</a> on 2025-02-20 06:06</div>
-            <div class="timeline-body"><p>Unfortunately I don't think the patch helps :( I'm not a rust expert, but looks like we are doing the file existence check at the entrance of the producer, but the file can be deleted afterwards. I wonder if we need to do the following:</p>
+            <div class="timeline-body"><p>Unfortunately I don&#x27;t think the patch helps :( I&#x27;m not a rust expert, but looks like we are doing the file existence check at the entrance of the producer, but the file can be deleted afterwards. I wonder if we need to do the following:</p>
 <ul>
-<li>In producer, we also allow <code>if entry.metadata()?.is_file() &amp;&amp; entry.path().extension().is_some_and(|ext| ext == &quot;py&quot;)</code> to fail with OS error. Maybe we already handle it and it's just my lack of understanding in rust.</li>
-<li>Should we do the same on the consumer side? It's possible that when consumer reads the file, they no longer exists. Maybe somewhere in https://github.com/astral-sh/uv/blob/a08c2ead6d58001cccccd4a40f96b43501b985f8/crates/uv-installer/src/compile.rs#L339.</li>
+<li>In producer, we also allow <code>if entry.metadata()?.is_file() &amp;&amp; entry.path().extension().is_some_and(|ext| ext == &quot;py&quot;)</code> to fail with OS error. Maybe we already handle it and it&#x27;s just my lack of understanding in rust.</li>
+<li>Should we do the same on the consumer side? It&#x27;s possible that when consumer reads the file, they no longer exists. Maybe somewhere in https://github.com/astral-sh/uv/blob/a08c2ead6d58001cccccd4a40f96b43501b985f8/crates/uv-installer/src/compile.rs#L339.</li>
 </ul>
-<p>I'll try to see if I could get a portable repro from linux, but it might be hard given the environment we use.</p>
+<p>I&#x27;ll try to see if I could get a portable repro from linux, but it might be hard given the environment we use.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-mre</span> removed by @konstin on 2025-02-20 08:46</div>
+            <div class="event">Label <span class="label">needs-mre</span> removed by <a href="https://github.com/konstin">@konstin</a> on 2025-02-20 08:46</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-20 08:54</div>
             <div class="timeline-body"><blockquote>
 <p>Is there a uv command that compiles the entire site-packages for a given python env via <code>--python</code>? What I was considering is to do a <code>uv pip install --compile</code> on any one package that triggers the compile all. This does not seem very clean to me so trying to see if uv experts have some other suggestions.</p>
 </blockquote>
-<p>Usually, the uv steps happen sequentially, and you'd add <code>--compiled-bytecode</code> to the last command, so that everything is compiled on (container) startup.</p>
+<p>Usually, the uv steps happen sequentially, and you&#x27;d add <code>--compiled-bytecode</code> to the last command, so that everything is compiled on (container) startup.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -164,8 +164,8 @@ error: Failed to bytecode-compile Python file in: /usr/lib/python3.11/site-packa
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-20 14:29</div>
-            <div class="timeline-body"><p>I think you're right the <code>metadata()</code> call could fail too, though it's an even-tighter race condition. I added handling for that in https://github.com/astral-sh/uv/pull/11633/commits/860c9a2e5261887560a31a4ca8e71d43e2916070</p>
-<p>I'm not sure what happens if the worker fails to compile a file. It seems like it'd ignore it</p>
+            <div class="timeline-body"><p>I think you&#x27;re right the <code>metadata()</code> call could fail too, though it&#x27;s an even-tighter race condition. I added handling for that in <a href="https://github.com/astral-sh/uv/pull/11633">astral-sh/uv#11633</a>/commits/860c9a2e5261887560a31a4ca8e71d43e2916070</p>
+<p>I&#x27;m not sure what happens if the worker fails to compile a file. It seems like it&#x27;d ignore it</p>
 <p>https://github.com/astral-sh/uv/blob/a6602ad416a922060efb3c5f19daf4977c50ace3/crates/uv-installer/src/pip_compileall.py#L61-L65</p>
 </div>
         </div>
@@ -186,7 +186,7 @@ error: Failed to bytecode-compile Python file in: /usr/lib/python3.11/site-packa
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/shixuan-fan">@shixuan-fan</a> on 2025-02-21 21:11</div>
-            <div class="timeline-body"><p>Not urgent, but do you happen to know when could we expect 0.6.3? If it is soon enough then we don't have to create our own patched version :) Based on the release cadence I observe in this repo it seems pretty frequent.</p>
+            <div class="timeline-body"><p>Not urgent, but do you happen to know when could we expect 0.6.3? If it is soon enough then we don&#x27;t have to create our own patched version :) Based on the release cadence I observe in this repo it seems pretty frequent.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -205,12 +205,12 @@ error: Failed to bytecode-compile Python file in: /usr/lib/python3.11/site-packa
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @shixuan-fan on 2025-03-14 06:47</div>
+            <div class="event">Closed by <a href="https://github.com/shixuan-fan">@shixuan-fan</a> on 2025-03-14 06:47</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:29:59 UTC
+        Synced at 2026-01-20 19:37:23 UTC
     </footer>
 </body>
 </html>

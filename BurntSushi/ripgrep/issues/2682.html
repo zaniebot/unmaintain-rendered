@@ -23,78 +23,78 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/learnbyexample">@learnbyexample</a></div>
-            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+            <div class="timeline-body">Please tick this box to confirm you have reviewed the above.
 <ul>
 <li>[X] I have a different issue.</li>
 </ul>
-<h3>What version of ripgrep are you using?</h3>
+What version of ripgrep are you using?
 <p>ripgrep 14.0.3</p>
-<h3>How did you install ripgrep?</h3>
+How did you install ripgrep?
 <p>Using ripgrep_14.0.3-1_amd64.deb</p>
-<h3>What operating system are you using ripgrep on?</h3>
+What operating system are you using ripgrep on?
 <p>Ubuntu 20.04</p>
-<h3>Describe your bug.</h3>
-<p>Multiline fixed string search doesn't work when a newline character is followed by the <code>^</code> character.</p>
-<h3>What are the steps to reproduce the behavior?</h3>
+Describe your bug.
+<p>Multiline fixed string search doesn&#x27;t work when a newline character is followed by the <code>^</code> character.</p>
+What are the steps to reproduce the behavior?
 <p>Any multiline fixed string search for a literal newline character followed by a <code>^</code> character.</p>
-<h3>What is the actual behavior?</h3>
-<pre><code class="language-bash">$ s='apple fig\n^mango banana\n123 456\ndragon$\nunicorn\n'
+What is the actual behavior?
+<pre><code>$ s=&#x27;apple fig\n^mango banana\n123 456\ndragon$\nunicorn\n&#x27;
 
 # works as expected
-$ printf '%b' &quot;$s&quot; | rg -UF 'banana
-123'
+$ printf &#x27;%b&#x27; &quot;$s&quot; | rg -UF &#x27;banana
+123&#x27;
 ^mango banana
 123 456
 
 # failing case, no output when newline is followed by ^
-$ printf '%b' &quot;$s&quot; | rg -UF 'fig
-^mango'
+$ printf &#x27;%b&#x27; &quot;$s&quot; | rg -UF &#x27;fig
+^mango&#x27;
 # works if regex is used instead of fixed string
-$ printf '%b' &quot;$s&quot; | rg -U 'fig\n\^mango'
+$ printf &#x27;%b&#x27; &quot;$s&quot; | rg -U &#x27;fig\n\^mango&#x27;
 apple fig
 ^mango banana
-# interestingly, this also works - not sure what's the difference compared to the failing case
-$ printf '%b' &quot;$s&quot; | rg -UF $'fig\n^mango'
+# interestingly, this also works - not sure what&#x27;s the difference compared to the failing case
+$ printf &#x27;%b&#x27; &quot;$s&quot; | rg -UF $&#x27;fig\n^mango&#x27;
 apple fig
 ^mango banana
 # no issue if the first line starts with ^
-$ printf '%b' &quot;$s&quot; | rg -UF '^mango banana
-123'
+$ printf &#x27;%b&#x27; &quot;$s&quot; | rg -UF &#x27;^mango banana
+123&#x27;
 ^mango banana
 123 456
 
-# no issue if there's a $ at the end of a line
-$ printf '%b' &quot;$s&quot; | rg -UF '456
-dragon$'
+# no issue if there&#x27;s a $ at the end of a line
+$ printf &#x27;%b&#x27; &quot;$s&quot; | rg -UF &#x27;456
+dragon$&#x27;
 123 456
 dragon$
 </code></pre>
-<h3>What is the expected behavior?</h3>
+What is the expected behavior?
 <p>Fixed string search should work irrespective of the character being searched.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-12-11 13:41</div>
             <div class="timeline-body"><p>Interestingly, I cannot reproduce this:</p>
-<pre><code>$ s='apple fig\n^mango banana\n123 456\ndragon$\nunicorn\n'
-$ printf '%b' &quot;$s&quot; | rg -UF 'banana
-123'
+<pre><code>$ s=&#x27;apple fig\n^mango banana\n123 456\ndragon$\nunicorn\n&#x27;
+$ printf &#x27;%b&#x27; &quot;$s&quot; | rg -UF &#x27;banana
+123&#x27;
 ^mango banana
 123 456
-$ printf '%b' &quot;$s&quot; | rg -UF 'fig
-^mango'
+$ printf &#x27;%b&#x27; &quot;$s&quot; | rg -UF &#x27;fig
+^mango&#x27;
 apple fig
 ^mango banana
 </code></pre>
 <p>Can you re-run with <code>--trace</code>? That might show some information.</p>
-<p>I can't make heads or tails of this. The search shouldn't care about <code>^</code>.</p>
+<p>I can&#x27;t make heads or tails of this. The search shouldn&#x27;t care about <code>^</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/learnbyexample">@learnbyexample</a> on 2023-12-11 14:17</div>
-            <div class="timeline-body"><p>Oh. I did wonder if there's something wrong/different on my machine. Here's the <code>--trace</code> output:</p>
-<pre><code class="language-bash">$ printf '%b' &quot;$s&quot; | rg -UF --trace 'fig
-^mango'
+            <div class="timeline-body"><p>Oh. I did wonder if there&#x27;s something wrong/different on my machine. Here&#x27;s the <code>--trace</code> output:</p>
+<pre><code>$ printf &#x27;%b&#x27; &quot;$s&quot; | rg -UF --trace &#x27;fig
+^mango&#x27;
 DEBUG|rg::flags::parse|crates/core/flags/parse.rs:97: no extra arguments found from configuration file
 DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1099: using heuristics to determine whether to read from stdin or search ./ (is_readable_stdin=true, stdin_consumed=false, mode=Search(Standard))
 DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1112: heuristic chose to search stdin
@@ -109,14 +109,14 @@ TRACE|rg::search|crates/core/search.rs:254: &lt;stdin&gt;: binary detection: Bin
 TRACE|grep_searcher::searcher|crates/searcher/src/searcher/mod.rs:728: generic reader: reading everything to heap for multiline
 TRACE|grep_searcher::searcher|crates/searcher/src/searcher/mod.rs:732: generic reader: searching via multiline strategy
 </code></pre>
-<p>Final regex <code>(?:fig\n!!:s\\^mango)</code> seems very odd, compared to <code>(?:banana\n123)</code> and <code>(?:fig\n\\^mango)</code> (when I use <code>$'fig\n^mango'</code>).</p>
+<p>Final regex <code>(?:fig\n!!:s\\^mango)</code> seems very odd, compared to <code>(?:banana\n123)</code> and <code>(?:fig\n\\^mango)</code> (when I use <code>$&#x27;fig\n^mango&#x27;</code>).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-12-11 14:31</div>
-            <div class="timeline-body"><p>Yeah, odd indeed. Here's mine:</p>
-<pre><code>$ printf '%b' &quot;$s&quot; | rg --trace -UF 'fig
-^mango'
+            <div class="timeline-body"><p>Yeah, odd indeed. Here&#x27;s mine:</p>
+<pre><code>$ printf &#x27;%b&#x27; &quot;$s&quot; | rg --trace -UF &#x27;fig
+^mango&#x27;
 DEBUG|rg::flags::config|crates/core/flags/config.rs:41: /home/andrew/.ripgreprc: arguments loaded from config file: [&quot;--max-columns-preview&quot;, &quot;--colors=match:bg:0xff,0x7f,0x00&quot;, &quot;--colors=match:fg:white&quot;, &quot;--colors=line:none&quot;, &quot;--colors=line:fg:magenta&quot;, &quot;--colors=path:fg:green&quot;, &quot;--type-add=got:*_test.go&quot;]
 DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1099: using heuristics to determine whether to read from stdin or search ./ (is_readable_stdin=true, stdin_consumed=false, mode=Search(Standard))
 DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1112: heuristic chose to search stdin
@@ -133,11 +133,11 @@ TRACE|grep_searcher::searcher|crates/searcher/src/searcher/mod.rs:732: generic r
 apple fig
 ^mango banana
 </code></pre>
-<p>Where the regex is <code>&quot;(?:fig\n\\^mango)&quot;</code> is what I'd expect.</p>
+<p>Where the regex is <code>&quot;(?:fig\n\\^mango)&quot;</code> is what I&#x27;d expect.</p>
 <p>You seem to be having some kind of extra <code>!!:s</code> being inserted between the <code>\n</code> and the <code>\^</code>. I dunno where that is coming from. Can you try a different shell?</p>
 <p>Okay, that made <em>me</em> try a different shell. I use zsh by default. So I dropped into bash:</p>
-<pre><code>[andrew@duff ripgrep] printf '%b' &quot;$s&quot; | rg --trace -UF 'fig
-^mango'
+<pre><code>[andrew@duff ripgrep] printf &#x27;%b&#x27; &quot;$s&quot; | rg --trace -UF &#x27;fig
+^mango&#x27;
 DEBUG|rg::flags::config|crates/core/flags/config.rs:41: /home/andrew/.ripgreprc: arguments loaded from config file: [&quot;--max-columns-preview&quot;, &quot;--colors=match:bg:0xff,0x7f,0x00&quot;, &quot;--colors=match:fg:white&quot;, &quot;--colors=line:none&quot;, &quot;--colors=line:fg:magenta&quot;, &quot;--colors=path:fg:green&quot;, &quot;--type-add=got:*_test.go&quot;]
 DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1099: using heuristics to determine whether to read from stdin or search ./ (is_readable_stdin=true, stdin_consumed=false, mode=Search(Standard))
 DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1112: heuristic chose to search stdin
@@ -152,13 +152,13 @@ TRACE|rg::search|crates/core/search.rs:254: &lt;stdin&gt;: binary detection: Bin
 TRACE|grep_searcher::searcher|crates/searcher/src/searcher/mod.rs:728: generic reader: reading everything to heap for multiline
 TRACE|grep_searcher::searcher|crates/searcher/src/searcher/mod.rs:732: generic reader: searching via multiline strategy
 </code></pre>
-<p>This sadly therefore looks like something bash is doing. I haven't the faintest clue what it is. And I'm surprised by it, given that single quotes are being used here.</p>
+<p>This sadly therefore looks like something bash is doing. I haven&#x27;t the faintest clue what it is. And I&#x27;m surprised by it, given that single quotes are being used here.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-12-11 14:32</div>
-            <div class="timeline-body"><pre><code>$ echo 'fig
-^mango'
+            <div class="timeline-body"><pre><code>$ echo &#x27;fig
+^mango&#x27;
 fig
 !!:s^mango
 </code></pre>
@@ -167,12 +167,12 @@ fig
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/learnbyexample">@learnbyexample</a> on 2023-12-11 14:45</div>
-            <div class="timeline-body"><p>Oh! Didn't expect that! I'll try to check the <code>bash</code> bug list tomorrow. It feels like a regression, since this was working for me 3 years ago.</p>
+            <div class="timeline-body"><p>Oh! Didn&#x27;t expect that! I&#x27;ll try to check the <code>bash</code> bug list tomorrow. It feels like a regression, since this was working for me 3 years ago.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-12-11 15:21</div>
-            <div class="timeline-body"><p>I posted <a href="https://twitter.com/burntsushi5/status/1734223796914028647">about this on twitter</a>, and it looks like some kind interaction substitution based on history. But the fact that it's happening inside a single quoted string suggests this might be a bash bug.</p>
+            <div class="timeline-body"><p>I posted <a href="https://twitter.com/burntsushi5/status/1734223796914028647">about this on twitter</a>, and it looks like some kind interaction substitution based on history. But the fact that it&#x27;s happening inside a single quoted string suggests this might be a bash bug.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -181,18 +181,18 @@ fig
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @learnbyexample on 2023-12-15 03:48</div>
+            <div class="event">Closed by <a href="https://github.com/learnbyexample">@learnbyexample</a> on 2023-12-15 03:48</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-12-15 09:04</div>
-            <div class="timeline-body"><p>Thanks for the follow-up! I read through that thread and I can't even tell whether they consider the behavior a bug or not. It sounds like they are just going to fix the docs?</p>
+            <div class="timeline-body"><p>Thanks for the follow-up! I read through that thread and I can&#x27;t even tell whether they consider the behavior a bug or not. It sounds like they are just going to fix the docs?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/learnbyexample">@learnbyexample</a> on 2023-12-15 09:46</div>
             <div class="timeline-body"><p>I think they are going to fix it for single quotes (along with documentation update):</p>
 <blockquote>
-<p>The quick substitution feature didn't pay attention to the quoting state,
+<p>The quick substitution feature didn&#x27;t pay attention to the quoting state,
 however, and just translated the line into a standard history expansion,
 which was then skipped. The fix is to have it inhibit quick substitution
 the same way as other history expansions.</p>
@@ -207,7 +207,7 @@ the same way as other history expansions.</p>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:43:44 UTC
+        Synced at 2026-01-20 18:48:13 UTC
     </footer>
 </body>
 </html>

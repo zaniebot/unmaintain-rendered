@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/jeertmans">@jeertmans</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>Hi!</p>
 <p>I recently faced an issue when trying to correctly annotate the following pattern:</p>
-<pre><code class="language-python">from typing import Literal, get_args
+<pre><code>from typing import Literal, get_args
 
 Value = Literal[&quot;a&quot;, &quot;b&quot;]
 ALLOWED_VALUES = get_args(Value)
@@ -38,11 +38,11 @@ def f(x: str) -&gt; Value:
 </code></pre>
 <p>where <code>ty</code> would complain that <code>foo</code> returns a <code>str</code> and not a <code>Value</code>.</p>
 <p>I came up with different ideas to try to solve this issue, but none work, except for the last case, which is quite surprising. As you can see in the code below, <a href="https://play.ty.dev/c0941551-ec5a-4d3e-b06e-15b185d7ca46">link to playground</a>, the inferred type for <code>ALLOWED_VALUES_BAR</code> changes whether we are inside or outside the <code>bar</code> function.</p>
-<details>
 
-<summary>Full Python code</summary>
 
-<pre><code class="language-python">from typing import Any, Literal, assert_type, get_args
+Full Python code
+
+<pre><code>from typing import Any, Literal, assert_type, get_args
 
 Value = Literal[&quot;a&quot;, &quot;b&quot;]
 
@@ -87,11 +87,11 @@ def baz_any(x: Any) -&gt; Value:
     reveal_type(x)
     return x
 </code></pre>
-</details>
 
-<details>
 
-<summary>File diagnostic</summary>
+
+
+File diagnostic
 
 <pre><code>Revealed type: `str` (revealed-type) [Ln 12, Col 17]
 Return type does not match returned value: expected `Literal[&quot;a&quot;, &quot;b&quot;]`, found `str` (invalid-return-type) [Ln 13, Col 12]
@@ -103,19 +103,19 @@ Revealed type: `str` (revealed-type) [Ln 35, Col 17]
 Return type does not match returned value: expected `Literal[&quot;a&quot;, &quot;b&quot;]`, found `str` (invalid-return-type) [Ln 36, Col 12]
 Revealed type: `Any` (revealed-type) [Ln 43, Col 17]
 </code></pre>
-</details>
+
 
 <p>I hope this is not a duplicate of any existing issue.</p>
 <p>Thanks in advance!</p>
-<h3>Version</h3>
+Version
 <p>ty 0.0.8</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2026-01-02 22:11</div>
             <div class="timeline-body"><p>I think there are two main factors at play.</p>
-<p>One is https://github.com/astral-sh/ty/issues/136. The other is that <code>str</code> is an inheritable class, which disables narrowing in tuples.</p>
-<pre><code class="language-python">from typing import Literal
+<p>One is <a href="https://github.com/astral-sh/ty/issues/136">astral-sh/ty#136</a>. The other is that <code>str</code> is an inheritable class, which disables narrowing in tuples.</p>
+<pre><code>from typing import Literal
 
 Value = Literal[&quot;a&quot;, &quot;b&quot;]
 
@@ -132,7 +132,7 @@ x = f(BadStr(&quot;c&quot;))
 print(x)  # c
 </code></pre>
 <p>So you should probably use <code>LiteralString</code>.</p>
-<pre><code class="language-python">from typing import Literal, LiteralString
+<pre><code>from typing import Literal, LiteralString
 
 Value = Literal[&quot;a&quot;, &quot;b&quot;]
 
@@ -150,22 +150,22 @@ def g(x: LiteralString) -&gt; Value:
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">narrowing</span> added by @mtshiba on 2026-01-02 22:11</div>
+            <div class="event">Label <span class="label">narrowing</span> added by <a href="https://github.com/mtshiba">@mtshiba</a> on 2026-01-02 22:11</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bidirectional inference</span> added by @mtshiba on 2026-01-02 22:11</div>
+            <div class="event">Label <span class="label">bidirectional inference</span> added by <a href="https://github.com/mtshiba">@mtshiba</a> on 2026-01-02 22:11</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2026-01-03 17:33</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-03 17:33</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-04 21:08</div>
-            <div class="timeline-body"><p>The issue for tracking the possibility that we could add some unsafe narrowing even when a subclass could override <code>__eq__</code> is https://github.com/astral-sh/ty/issues/1566</p>
+            <div class="timeline-body"><p>The issue for tracking the possibility that we could add some unsafe narrowing even when a subclass could override <code>__eq__</code> is <a href="https://github.com/astral-sh/ty/issues/1566">astral-sh/ty#1566</a></p>
 <p>Will close this as duplicate - thanks for the report!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2026-01-04 21:08</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2026-01-04 21:08</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jeertmans">@jeertmans</a> on 2026-01-05 08:29</div>
@@ -175,7 +175,7 @@ def g(x: LiteralString) -&gt; Value:
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:21:39 UTC
+        Synced at 2026-01-20 19:26:53 UTC
     </footer>
 </body>
 </html>

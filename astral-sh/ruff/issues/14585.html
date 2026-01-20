@@ -24,13 +24,13 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/silverwind">@silverwind</a></div>
             <div class="timeline-body"><p>This code is flagged for <a href="https://docs.astral.sh/ruff/rules/dict-index-missing-items/">PLC0206</a> with v0.8.0:</p>
-<pre><code class="language-py">foo = {}
+<pre><code>foo = {}
 for key in foo.keys(): # PLC0206 Extracting value from dictionary without calling `.items()`
   if foo[key]:
     foo[key] = True
 </code></pre>
 <p>Arguable, changing <code>.keys()</code> to <code>.items()</code> here does not improve readability because one still needs to use <code>foo[key]</code> to write into the dict:</p>
-<pre><code class="language-py">foo = {}
+<pre><code>foo = {}
 for key, value in foo.items():
   if value:
     foo[key] = True
@@ -48,8 +48,8 @@ for key, value in foo.items():
             <div class="timeline-body"><blockquote>
 <p>What about using <code>.filter()</code> to only update items that match your criteria?</p>
 </blockquote>
-<p>The code isn't really meant to be taken seriously and the actual code where I hit this was more complex. If you like a slightly more complex example, take this one, which is also flagged:</p>
-<pre><code class="language-py">foo = {}
+<p>The code isn&#x27;t really meant to be taken seriously and the actual code where I hit this was more complex. If you like a slightly more complex example, take this one, which is also flagged:</p>
+<pre><code>foo = {}
 for key in foo.keys():
   if foo[key] == &quot;foo&quot;:
     foo[key] = &quot;bar&quot;
@@ -60,47 +60,47 @@ for key in foo.keys():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-25 15:58</div>
-            <div class="timeline-body"><p>That makes sense. I first thought that this is the same as https://github.com/astral-sh/ruff/issues/13821 but it's not because #13821 also reads the value while iterating</p>
+            <div class="timeline-body"><p>That makes sense. I first thought that this is the same as <a href="https://github.com/astral-sh/ruff/issues/13821">astral-sh/ruff#13821</a> but it&#x27;s not because #13821 also reads the value while iterating</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-11-25 15:58</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-25 15:58</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-11-26 04:26</div>
             <div class="timeline-body"><blockquote>
 <p>Interestingly, the rule already does not flag when the if is removed.</p>
 </blockquote>
-<p>That's because the rule triggers the first time it sees <code>foo[key]</code> in a <em>load</em> context - like in the if statement.</p>
-<p>I'm actually kind of borderline on whether we should or shouldn't flag, especially because we already don't flag if <code>foo[key]</code> is <em>only</em> used when someone assigns a new value to it (or deletes it).</p>
+<p>That&#x27;s because the rule triggers the first time it sees <code>foo[key]</code> in a <em>load</em> context - like in the if statement.</p>
+<p>I&#x27;m actually kind of borderline on whether we should or shouldn&#x27;t flag, especially because we already don&#x27;t flag if <code>foo[key]</code> is <em>only</em> used when someone assigns a new value to it (or deletes it).</p>
 <p>Already in your second example, it starts to get a little verbose. I kind of find it more readable:</p>
-<pre><code class="language-python">for key,val in foo.items():
+<pre><code>for key,val in foo.items():
   if val == &quot;foo&quot;:
     foo[key] = &quot;bar&quot;
   elif val == &quot;bar&quot;:
     foo[key] = &quot;foo&quot;
 </code></pre>
 <p>One could imagine even more gymnastics:</p>
-<pre><code class="language-python">for key in foo:
+<pre><code>for key in foo:
    # &lt;--- all sorts of complicated expressions with the value foo[key] ---&gt;
    if cond_now_holds:
        foo[key] = 10
 </code></pre>
 <p>It seems in the spirit of the rule to flag this.</p>
-<p>But I also see your point. I'm on the fence.</p>
+<p>But I also see your point. I&#x27;m on the fence.</p>
 <p>(P.S. - ignore the linked PR below. Bad copy pasting ... too many tabs open 😅 )</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-26 07:33</div>
-            <div class="timeline-body"><p>Oh, @dylwil3, you're right. This is the same as #13821. That's what you get for replying late in the day :laughing:</p>
-<p>I then agree that the rule should flag this pattern because it helps remove some repetition. It's unfortunate that Python doesn't allow assigning to <code>*value = new_value</code> the same way as rust does</p>
+            <div class="timeline-body"><p>Oh, @dylwil3, you&#x27;re right. This is the same as #13821. That&#x27;s what you get for replying late in the day :laughing:</p>
+<p>I then agree that the rule should flag this pattern because it helps remove some repetition. It&#x27;s unfortunate that Python doesn&#x27;t allow assigning to <code>*value = new_value</code> the same way as rust does</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kpfleming">@kpfleming</a> on 2024-12-01 11:37</div>
-            <div class="timeline-body"><p>I've got another one where PLC0206 is triggered but the loop is already 'expensive':</p>
-<pre><code class="language-python">class MyConfigParser(configparser.ConfigParser):
+            <div class="timeline-body"><p>I&#x27;ve got another one where PLC0206 is triggered but the loop is already &#x27;expensive&#x27;:</p>
+<pre><code>class MyConfigParser(configparser.ConfigParser):
   def as_dict(self) -&gt; Mapping[str, Any]:
     d = dict(self._sections)  # type: ignore[attr-defined]
     for k in d:
@@ -108,7 +108,7 @@ for key in foo.keys():
       d[k].pop(&quot;__name__&quot;, None)
     return d
 </code></pre>
-<p>I've already changed the code to silence the warning, but since Python doesn't provide a <em>reference</em> to the value attached to 'k', only a copy, writing to that key and calling methods on it will always require indexing by the key.</p>
+<p>I&#x27;ve already changed the code to silence the warning, but since Python doesn&#x27;t provide a <em>reference</em> to the value attached to &#x27;k&#x27;, only a copy, writing to that key and calling methods on it will always require indexing by the key.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -117,15 +117,15 @@ for key in foo.keys():
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-12-01 15:40</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-01 15:40</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2024-12-01 15:41</div>
+            <div class="event">Label <span class="label">help wanted</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-01 15:41</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-12-01 18:41</div>
             <div class="timeline-body"><p>This still feels somewhat borderline to me. On the one hand, as in the previous examples, you can use the value in your reassignment:</p>
-<pre><code class="language-python">class MyConfigParser(configparser.ConfigParser):
+<pre><code>class MyConfigParser(configparser.ConfigParser):
   def as_dict(self) -&gt; Mapping[str, Any]:
     d = dict(self._sections)  # type: ignore[attr-defined]
     for k,v in d.items():
@@ -133,39 +133,39 @@ for key in foo.keys():
       d[k].pop(&quot;__name__&quot;, None)
     return d
 </code></pre>
-<p>You might worry that if you don't reassign but just use <code>pop</code> then it wouldn't revise the value, but as long as you don't reassign <code>v</code> in the for loop it will still point to the mutable value, e.g.:</p>
-<pre><code class="language-console">&gt;&gt;&gt; d = {&quot;a&quot;: {&quot;b&quot;:1, &quot;c&quot;:2}}
+<p>You might worry that if you don&#x27;t reassign but just use <code>pop</code> then it wouldn&#x27;t revise the value, but as long as you don&#x27;t reassign <code>v</code> in the for loop it will still point to the mutable value, e.g.:</p>
+<pre><code>&gt;&gt;&gt; d = {&quot;a&quot;: {&quot;b&quot;:1, &quot;c&quot;:2}}
 &gt;&gt;&gt; for k,v in d.items():
 ...    v.pop(&quot;b&quot;)
 ...
 1
 &gt;&gt;&gt; d
-{'a': {'c': 2}}
+{&#x27;a&#x27;: {&#x27;c&#x27;: 2}}
 </code></pre>
-<p>I guess in this example you couldn't use <code>v</code>:</p>
-<pre><code class="language-python">for k in d:
+<p>I guess in this example you couldn&#x27;t use <code>v</code>:</p>
+<pre><code>for k in d:
     d[k] = new_object_not_depending_on_v
     d[k].pop()
 </code></pre>
-<p>but, of course, in that case you could have modified the new value for <code>d[k]</code> <em>before</em> assigning it to <code>d[k]</code> and you wouldn't get a lint warning.</p>
+<p>but, of course, in that case you could have modified the new value for <code>d[k]</code> <em>before</em> assigning it to <code>d[k]</code> and you wouldn&#x27;t get a lint warning.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kpfleming">@kpfleming</a> on 2024-12-01 22:19</div>
-            <div class="timeline-body"><p>Indeed, and that's exactly the change I made to the code to silence the warning. I don't really consider it to be an 'improvement' but it's also not harmful. The only reason I posted here is because this rule is intended to make the code more efficient, but in the situation where the value at the key is being written and/or other operations are being invoked on it, the efficiency gained is likely to be a tiny fraction of the overall time consumed by the loop.</p>
-<p>The loop could also be written to use a temporary variable to hold the value of the 'default or v' expression, and then <code>pop</code> invoked on that, before writing to <code>d[k]</code>. I wouldn't consider this really an 'improvement' either, but this is all pretty subjective :-)</p>
+            <div class="timeline-body"><p>Indeed, and that&#x27;s exactly the change I made to the code to silence the warning. I don&#x27;t really consider it to be an &#x27;improvement&#x27; but it&#x27;s also not harmful. The only reason I posted here is because this rule is intended to make the code more efficient, but in the situation where the value at the key is being written and/or other operations are being invoked on it, the efficiency gained is likely to be a tiny fraction of the overall time consumed by the loop.</p>
+<p>The loop could also be written to use a temporary variable to hold the value of the &#x27;default or v&#x27; expression, and then <code>pop</code> invoked on that, before writing to <code>d[k]</code>. I wouldn&#x27;t consider this really an &#x27;improvement&#x27; either, but this is all pretty subjective :-)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> removed by @MichaReiser on 2024-12-02 08:09</div>
+            <div class="event">Label <span class="label">bug</span> removed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-02 08:09</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">help wanted</span> removed by @MichaReiser on 2024-12-02 08:09</div>
+            <div class="event">Label <span class="label">help wanted</span> removed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-02 08:09</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:51:38 UTC
+        Synced at 2026-01-20 18:49:02 UTC
     </footer>
 </body>
 </html>

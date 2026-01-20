@@ -23,21 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/addoolit">@addoolit</a></div>
-            <div class="timeline-body"><!--
-Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+            <div class="timeline-body">
 
-If you're filing a bug report, please consider including the following information:
-
-* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
-  e.g. "RUF001", "unused variable", "Jupyter notebook"
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
-* The current Ruff settings (any relevant sections from your `pyproject.toml`).
-* The current Ruff version (`ruff --version`).
--->
-
-<p>The multi-value-repeated-key-literal (F601) rule doesn't detect when a key has been duplicated for <code>True</code> and <code>False</code> boolean when they duplicate a matching int literal. This is also true for the reverse where an int literal duplicates an existing bool key. This was found with ruff <code>0.5.7</code> and Python <code>3.12.2</code>.</p>
-<pre><code class="language-python">mydict = {
+<p>The multi-value-repeated-key-literal (F601) rule doesn&#x27;t detect when a key has been duplicated for <code>True</code> and <code>False</code> boolean when they duplicate a matching int literal. This is also true for the reverse where an int literal duplicates an existing bool key. This was found with ruff <code>0.5.7</code> and Python <code>3.12.2</code>.</p>
+<pre><code>mydict = {
     1: &quot;abc&quot;,
     1: &quot;def&quot;,
     True: &quot;ghi&quot;,
@@ -72,7 +61,7 @@ ruff_repro.py:6:5: F601 Dictionary key literal `0` repeated
 
 Found 2 errors.
 </code></pre>
-<p>This state of this dict is ultimately <code>{1: 'ghi', 0: 'baz'}</code>. I haven't found a stated guarantee that <code>True</code> is <em>always</em> <code>1</code>, and <code>False</code> is <em>always</em> <code>0</code>, but it appears that they are. The only thing I've seen related is this note in <a href="https://docs.python.org/3/library/stdtypes.html#typebool">Boolean type - bool</a>:</p>
+<p>This state of this dict is ultimately <code>{1: &#x27;ghi&#x27;, 0: &#x27;baz&#x27;}</code>. I haven&#x27;t found a stated guarantee that <code>True</code> is <em>always</em> <code>1</code>, and <code>False</code> is <em>always</em> <code>0</code>, but it appears that they are. The only thing I&#x27;ve seen related is this note in <a href="https://docs.python.org/3/library/stdtypes.html#typebool">Boolean type - bool</a>:</p>
 <blockquote>
 <p>In many numeric contexts, <code>False</code> and <code>True</code> behave like the integers 0 and 1, respectively. However, relying on this is discouraged; explicitly convert using <a href="https://docs.python.org/3/library/functions.html#int">int()</a> instead.</p>
 </blockquote>
@@ -81,26 +70,26 @@ Found 2 errors.
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-08-09 05:27</div>
             <div class="timeline-body"><p>I think this makes sense because <code>bool</code> is a subtype of <code>int</code>. We might want to change this within <a href="https://github.com/astral-sh/ruff/blob/bc5b9b81dd7ea8a2364898afd0f0a1cf7adeb1d1/crates/ruff_python_ast/src/comparable.rs#L846-L881"><code>ComparableExpr</code></a> such that <code>True == 1</code> and <code>False == 0</code>. Note that <code>int</code> is a subtype of <code>float</code> which means that <code>True == 1.0</code> and <code>False == 0.0</code> is also valid.</p>
-<p>I'd be wary of any side effects of this change because a lot of rules utilize the <code>ComparableExpr</code>, including the <code>HashableExpr</code> type.</p>
+<p>I&#x27;d be wary of any side effects of this change because a lot of rules utilize the <code>ComparableExpr</code>, including the <code>HashableExpr</code> type.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @dhruvmanila on 2024-08-09 05:28</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-08-09 05:28</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-09 13:19</div>
-            <div class="timeline-body"><p>I'm really surprised by this. @AlexWaygood or @carljm is this specified anywhere?</p>
+            <div class="timeline-body"><p>I&#x27;m really surprised by this. @AlexWaygood or @carljm is this specified anywhere?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-09 13:25</div>
-            <div class="timeline-body"><p>Yeah, this is a really common footgun. <code>1</code>, <code>1.0</code> and <code>True</code> compare and hash the same. There's an FAQ about it IIRC.</p>
-<p>(I think everybody agrees that it's terrible, but it's because early versions of Python didn't have a <code>bool</code> type, so it was implemented as a backwards-compatible subclass of <code>int</code>.)</p>
+            <div class="timeline-body"><p>Yeah, this is a really common footgun. <code>1</code>, <code>1.0</code> and <code>True</code> compare and hash the same. There&#x27;s an FAQ about it IIRC.</p>
+<p>(I think everybody agrees that it&#x27;s terrible, but it&#x27;s because early versions of Python didn&#x27;t have a <code>bool</code> type, so it was implemented as a backwards-compatible subclass of <code>int</code>.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-09 13:31</div>
-            <div class="timeline-body"><p>Okay maybe not an FAQ, but there's some specification of this here: https://docs.python.org/3/library/stdtypes.html#mapping-types-dict</p>
+            <div class="timeline-body"><p>Okay maybe not an FAQ, but there&#x27;s some specification of this here: https://docs.python.org/3/library/stdtypes.html#mapping-types-dict</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -109,15 +98,15 @@ Found 2 errors.
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">accepted</span> added by @charliermarsh on 2024-08-09 13:31</div>
+            <div class="event">Label <span class="label">accepted</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-09 13:31</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">help wanted</span> added by @charliermarsh on 2024-08-09 13:31</div>
+            <div class="event">Label <span class="label">help wanted</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-09 13:31</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-08-11 17:14</div>
             <div class="timeline-body"><p>Just to clarify, is the decision that we should include this identification as part of <code>ComparableExpr</code> or that we should make a more localized change?</p>
-<p>I could imagine both situations where we would want to distinguish between <code>True</code> and <code>1</code> and situations where we wouldn't. (From a strict type theoretic point of view I would think that these two objects shouldn't even be comparable and one could only ask about whether <code>bool(1)==True</code> or <code>int(True)==1</code> - but such is Python.)</p>
+<p>I could imagine both situations where we would want to distinguish between <code>True</code> and <code>1</code> and situations where we wouldn&#x27;t. (From a strict type theoretic point of view I would think that these two objects shouldn&#x27;t even be comparable and one could only ask about whether <code>bool(1)==True</code> or <code>int(True)==1</code> - but such is Python.)</p>
 <p>What about making a custom equivalence method on the <code>ComparableExpr</code> struct for this weaker equivalence relation? Like <code>expr1.iso(expr2)</code> (where &quot;iso&quot; is short for &quot;isomorphic&quot;).</p>
 </div>
         </div>
@@ -132,15 +121,15 @@ Found 2 errors.
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-11-03 18:00</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-03 18:00</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-11-03 19:16</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-03 19:16</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:50:49 UTC
+        Synced at 2026-01-20 18:48:56 UTC
     </footer>
 </body>
 </html>

@@ -23,19 +23,19 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/delvecccims">@delvecccims</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<p>During a scan of our Linux servers, there were some lock files that were flagged for having World Writable permissions in the temporary directory. It looks like this was changed in February as part of https://github.com/astral-sh/uv/pull/11328.</p>
-<p>There was a question about the security concerns from this change in https://github.com/astral-sh/uv/issues/12665, but there hasn't been a comment yet regarding it. Would it be possible to have a setting that can be enabled to ignore this change so that umask can set the permissions appropriately so that these lock files are no longer flagged in our scans for having World Writable permissions?</p>
-<h3>Example</h3>
+            <div class="timeline-body">Summary
+<p>During a scan of our Linux servers, there were some lock files that were flagged for having World Writable permissions in the temporary directory. It looks like this was changed in February as part of <a href="https://github.com/astral-sh/uv/pull/11328">astral-sh/uv#11328</a>.</p>
+<p>There was a question about the security concerns from this change in <a href="https://github.com/astral-sh/uv/issues/12665">astral-sh/uv#12665</a>, but there hasn&#x27;t been a comment yet regarding it. Would it be possible to have a setting that can be enabled to ignore this change so that umask can set the permissions appropriately so that these lock files are no longer flagged in our scans for having World Writable permissions?</p>
+Example
 <p><em>No response</em></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @delvecccims on 2025-11-18 16:56</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/delvecccims">@delvecccims</a> on 2025-11-18 16:56</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-11-18 17:31</div>
-            <div class="timeline-body"><p>This sounds like a false positive in the security scanner. We use files to coordinate between different processes, which often run with different permissions, e.g. from different containers that mount the same volume. These files are empty and uv doesn't read from them.</p>
+            <div class="timeline-body"><p>This sounds like a false positive in the security scanner. We use files to coordinate between different processes, which often run with different permissions, e.g. from different containers that mount the same volume. These files are empty and uv doesn&#x27;t read from them.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -46,12 +46,12 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-11-26 15:48</div>
-            <div class="timeline-body"><p>See https://github.com/astral-sh/uv/pull/16845 for taking away the executable bit, and thoughts on 666 vs 644 permissions.</p>
+            <div class="timeline-body"><p>See <a href="https://github.com/astral-sh/uv/pull/16845">astral-sh/uv#16845</a> for taking away the executable bit, and thoughts on 666 vs 644 permissions.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dcwatson">@dcwatson</a> on 2025-12-01 19:41</div>
-            <div class="timeline-body"><p>My understanding is that locking a file (via <code>flock</code>, which Rust's <code>try_lock</code> and friends <a href="https://doc.rust-lang.org/stable/std/fs/struct.File.html#platform-specific-behavior-3">currently use</a>) doesn't require write permissions (beyond being able to create the file if it doesn't exist, which shouldn't be a problem for temp files). From https://linux.die.net/man/2/flock:</p>
+            <div class="timeline-body"><p>My understanding is that locking a file (via <code>flock</code>, which Rust&#x27;s <code>try_lock</code> and friends <a href="https://doc.rust-lang.org/stable/std/fs/struct.File.html#platform-specific-behavior-3">currently use</a>) doesn&#x27;t require write permissions (beyond being able to create the file if it doesn&#x27;t exist, which shouldn&#x27;t be a problem for temp files). From https://linux.die.net/man/2/flock:</p>
 <blockquote>
 <p>A shared or exclusive lock can be placed on a file regardless of the mode in which the file was opened.</p>
 </blockquote>
@@ -61,14 +61,14 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-01 20:19</div>
             <div class="timeline-body"><p>Thanks for the reference!</p>
-<p>We don't remove lock files manually, no (some previous discussion in https://github.com/astral-sh/uv/issues/10773). We do remove temporary directories we create on drop though.</p>
-<p>I'm down to use 644 if someone verifies it doesn't regress.</p>
+<p>We don&#x27;t remove lock files manually, no (some previous discussion in <a href="https://github.com/astral-sh/uv/issues/10773">astral-sh/uv#10773</a>). We do remove temporary directories we create on drop though.</p>
+<p>I&#x27;m down to use 644 if someone verifies it doesn&#x27;t regress.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dcwatson">@dcwatson</a> on 2025-12-02 13:45</div>
             <div class="timeline-body"><p>Using the Dockerfile from the original issue (#11324), slightly modified to show debug logs, the uid, and contents of /tmp:</p>
-<pre><code class="language-Dockerfile">FROM python:3.13
+<pre><code>FROM python:3.13
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
 
 WORKDIR /src
@@ -87,9 +87,9 @@ RUN id -u &amp;&amp; \
 <p>Running <code>docker build --no-cache --progress=plain .</code>, there is a warning about not being able to open the file:</p>
 <pre><code>#10 0.084 WARN Failed to acquire project environment lock: failed to open file `/tmp/uv-a307630218d6a300.lock`: Permission denied (os error 13)
 </code></pre>
-<p>But I suspect that this is because it's trying to open the file as writable, not an error with acquiring a lock?</p>
+<p>But I suspect that this is because it&#x27;s trying to open the file as writable, not an error with acquiring a lock?</p>
 <p>https://github.com/astral-sh/uv/blob/main/crates/uv-fs/src/lib.rs#L822</p>
-<p>It's also tricky to &quot;test&quot; because this is just a warning now, uv doesn't fail if it can't get the lock. I'm not super comfortable with Rust, but I'm happy to test changes or take a stab at a PR. Seems like if uv doesn't need to write anything to the lock file, it shouldn't try to open it as writeable. That plus a 644 mode seems like it would be ideal.</p>
+<p>It&#x27;s also tricky to &quot;test&quot; because this is just a warning now, uv doesn&#x27;t fail if it can&#x27;t get the lock. I&#x27;m not super comfortable with Rust, but I&#x27;m happy to test changes or take a stab at a PR. Seems like if uv doesn&#x27;t need to write anything to the lock file, it shouldn&#x27;t try to open it as writeable. That plus a 644 mode seems like it would be ideal.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -99,7 +99,7 @@ RUN id -u &amp;&amp; \
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2026-01-12 14:24</div>
-            <div class="timeline-body"><p>We did change the permission: https://github.com/astral-sh/uv/pull/16845. Are you on the latest uv version?</p>
+            <div class="timeline-body"><p>We did change the permission: <a href="https://github.com/astral-sh/uv/pull/16845">astral-sh/uv#16845</a>. Are you on the latest uv version?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -109,13 +109,13 @@ RUN id -u &amp;&amp; \
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-12 15:05</div>
-            <div class="timeline-body"><p>What's your concrete security concern from this file being writable? What is the attack vector?</p>
+            <div class="timeline-body"><p>What&#x27;s your concrete security concern from this file being writable? What is the attack vector?</p>
 <p>Regardless, we can continue investigating changing to 644. The change needs to be validated to ensure it does not cause regressions.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ruttenb">@ruttenb</a> on 2026-01-12 15:17</div>
-            <div class="timeline-body"><p>CIS 6.1.10 - &quot;Ensure no world writable files exist&quot;.  I attached a PDF of the CIS benchmarks if you scroll down to 6.1.10 you'll see it there.  Here are a couple other links that talk about world write permissions:</p>
+            <div class="timeline-body"><p>CIS 6.1.10 - &quot;Ensure no world writable files exist&quot;.  I attached a PDF of the CIS benchmarks if you scroll down to 6.1.10 you&#x27;ll see it there.  Here are a couple other links that talk about world write permissions:</p>
 <ul>
 <li>https://www.tenable.com/audits/items/CIS_Red_Hat_EL7_STIG_v2.0.0_STIG.audit:9d80f2f418addc905a8d399be44485c0</li>
 <li>https://docs.datadoghq.com/security/default_rules/def-000-dv8/</li>
@@ -125,13 +125,13 @@ RUN id -u &amp;&amp; \
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-12 15:22</div>
-            <div class="timeline-body"><p>Sorry but those are just best practice security rules, there's nothing there that talks about concrete attack vectors.</p>
+            <div class="timeline-body"><p>Sorry but those are just best practice security rules, there&#x27;s nothing there that talks about concrete attack vectors.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dcwatson">@dcwatson</a> on 2026-01-12 18:10</div>
-            <div class="timeline-body"><p>Agreed that these are best practices. Personally I have a hard time imagining an &quot;attack&quot; that wasn't already possible - I can create world-writable files in /tmp as easy as uv can. That said, it <em>is</em> best practice not to leave world-writable files lying around if not necessary, and we (and probably other orgs) need to appease the scanner gods from time to time.</p>
-<p>I'm happy to do whatever validation work you need or submit a PR for this (although I see Claude beat me to it).</p>
+            <div class="timeline-body"><p>Agreed that these are best practices. Personally I have a hard time imagining an &quot;attack&quot; that wasn&#x27;t already possible - I can create world-writable files in /tmp as easy as uv can. That said, it <em>is</em> best practice not to leave world-writable files lying around if not necessary, and we (and probably other orgs) need to appease the scanner gods from time to time.</p>
+<p>I&#x27;m happy to do whatever validation work you need or submit a PR for this (although I see Claude beat me to it).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -142,14 +142,14 @@ Is it possible this change will make it into the next version?</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-16 21:42</div>
-            <div class="timeline-body"><p>@dcwatson feel free to open a pull request if you'd like, I don't trust the implementation that Claude spun up and can't investigate it further at the moment.</p>
-<p>@seanb1974 this is unlikely to land in the next version, there's not a pull request yet and nobody has built a version of uv which can be used to validate the changes.</p>
+            <div class="timeline-body"><p>@dcwatson feel free to open a pull request if you&#x27;d like, I don&#x27;t trust the implementation that Claude spun up and can&#x27;t investigate it further at the moment.</p>
+<p>@seanb1974 this is unlikely to land in the next version, there&#x27;s not a pull request yet and nobody has built a version of uv which can be used to validate the changes.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-16 22:06:28 UTC
+        Synced at 2026-01-20 19:41:05 UTC
     </footer>
 </body>
 </html>

@@ -27,26 +27,26 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Use #[cold] attribute on non-ASCII lexer path" to "Use `#[cold]` attribute on non-ASCII lexer path" by @charliermarsh on 2024-01-15 01:45</div>
+            <div class="event">Renamed from &quot;Use #[cold] attribute on non-ASCII lexer path&quot; to &quot;Use `#[cold]` attribute on non-ASCII lexer path&quot; by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-15 01:45</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-01-15 02:03</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-15 02:03</div>
-            <div class="timeline-body"><p>Seems like a 1% improvement on all lexer benchmarks (but doesn't meet the CodSpeed threshold to post): https://codspeed.io/astral-sh/ruff/branches/charlie/cold</p>
+            <div class="timeline-body"><p>Seems like a 1% improvement on all lexer benchmarks (but doesn&#x27;t meet the CodSpeed threshold to post): https://codspeed.io/astral-sh/ruff/branches/charlie/cold</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -56,12 +56,12 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1516 on 2024-01-15 14:46</div>
-            <div class="timeline-body"><p>How come you're forcing 64-bit alignment here?</p>
+            <div class="timeline-body"><p>How come you&#x27;re forcing 64-bit alignment here?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1503 on 2024-01-15 14:48</div>
-            <div class="timeline-body"><p>If you're looking to speed things up here for the ASCII fast path, it might make sense to refactor the calling code to deal with this <code>&amp;str</code> chunks instead. That way, you can get entire identifiers all in one go if that's the common path. (But if it's not the overwhelmingly common path, and it might not be, then it may not be such a good idea.) This <em>could</em> also be a good &quot;started SIMD&quot; task.</p>
+            <div class="timeline-body"><p>If you&#x27;re looking to speed things up here for the ASCII fast path, it might make sense to refactor the calling code to deal with this <code>&amp;str</code> chunks instead. That way, you can get entire identifiers all in one go if that&#x27;s the common path. (But if it&#x27;s not the overwhelmingly common path, and it might not be, then it may not be such a good idea.) This <em>could</em> also be a good &quot;started SIMD&quot; task.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -74,7 +74,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1503 on 2024-01-15 14:52</div>
-            <div class="timeline-body"><p>This sounds interesting even just to learn. Can you say a bit more here? What's the chunk?</p>
+            <div class="timeline-body"><p>This sounds interesting even just to learn. Can you say a bit more here? What&#x27;s the chunk?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -92,10 +92,10 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1503 on 2024-01-15 15:05</div>
-            <div class="timeline-body"><p>To be clear, I don't have any understanding of what the caller code looks like. So the idea may be bunk. But basically, if you're calling this function over and over on each individual codepoint, then you're paying a price for the latency of doing that check. If it's a <em>necessary</em> payment, then there is not much to do. But if &quot;a starting identifier char followed by continuation chars&quot; is extremely common, then it may make more sense to have an API like this:</p>
-<pre><code class="language-rust">fn get_ident_from_prefix(src: &amp;str) -&gt; Option&lt;Identifier&gt; { ... }
+            <div class="timeline-body"><p>To be clear, I don&#x27;t have any understanding of what the caller code looks like. So the idea may be bunk. But basically, if you&#x27;re calling this function over and over on each individual codepoint, then you&#x27;re paying a price for the latency of doing that check. If it&#x27;s a <em>necessary</em> payment, then there is not much to do. But if &quot;a starting identifier char followed by continuation chars&quot; is extremely common, then it may make more sense to have an API like this:</p>
+<pre><code>fn get_ident_from_prefix(src: &amp;str) -&gt; Option&lt;Identifier&gt; { ... }
 </code></pre>
-<p>The idea is that if you're <em>pretty</em> sure there's an identifier there in most cases, then you make the uncommon cases a little slower in favor of making the common case a lot faster. The idea here is that you might be able to detect identifiers very quickly with bit tricks and/or SIMD. The specific details of what the bit tricks/SIMD are is left as an exercise to for the reader. :)</p>
+<p>The idea is that if you&#x27;re <em>pretty</em> sure there&#x27;s an identifier there in most cases, then you make the uncommon cases a little slower in favor of making the common case a lot faster. The idea here is that you might be able to detect identifiers very quickly with bit tricks and/or SIMD. The specific details of what the bit tricks/SIMD are is left as an exercise to for the reader. :)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -131,12 +131,12 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-01-18 03:16</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-18 03:16</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:02:15 UTC
+        Synced at 2026-01-20 19:00:41 UTC
     </footer>
 </body>
 </html>

@@ -23,15 +23,15 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/bdmorin">@bdmorin</a></div>
-            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+            <div class="timeline-body">What version of ripgrep are you using?
 <pre><code>$ rg --version
 ripgrep 13.0.0
 -SIMD -AVX (compiled)
 +SIMD +AVX (runtime)
 </code></pre>
-<h4>How did you install ripgrep?</h4>
+How did you install ripgrep?
 <p><code>apt-get install ripgrep</code></p>
-<h4>What operating system are you using ripgrep on?</h4>
+What operating system are you using ripgrep on?
 <pre><code>$ uname -a
 Linux wafflelung 5.15.0-40-generic #43-Ubuntu SMP Wed Jun 15 12:54:21 UTC 2022 x86_64 x86_64 x86_64 GNU/Linux
 
@@ -53,8 +53,8 @@ CPU: Intel i7-7700HQ (8) @ 3.800GHz
 GPU: Intel HD Graphics 630
 Memory: 361MiB / 32041MiB
 </code></pre>
-<h4>Describe your bug.</h4>
-<p>Fresh install of Ubuntu 22.04, all I've done is install a few tools.</p>
+Describe your bug.
+<p>Fresh install of Ubuntu 22.04, all I&#x27;ve done is install a few tools.</p>
 <pre><code>$ history | rg apt
     6  sudo apt update
    18  sudo apt install aptitude -y
@@ -82,10 +82,10 @@ $ sudo rg -uuu comcast
 $ sudo rg -uuu comcast /etc/resolv.conf
 23:search hsd1.in.comcast.net
 
-$ sudo rg '10\.0\.0'
+$ sudo rg &#x27;10\.0\.0&#x27;
 dhcp/dhclient-exit-hooks.d/rfc3442-classless-routes
 6:#   10.0.0.0/8 via 10.10.17.66.41
-# it's properly recursing
+# it&#x27;s properly recursing
 
 $ sudo rg -uuu comcast --no-config
 # No output
@@ -129,31 +129,31 @@ $ fgrep comcast ./*
 $ sudo rg comcast *
 resolv.conf
 23:search hsd1.in.comcast.net
-# This one surprised me - I don't normally need to add any file globs to rg, perhaps it's something with the ubuntu build. 
+# This one surprised me - I don&#x27;t normally need to add any file globs to rg, perhaps it&#x27;s something with the ubuntu build. 
 
 </code></pre>
-<p>I assume this is the problem, I just don't know what it means.</p>
+<p>I assume this is the problem, I just don&#x27;t know what it means.</p>
 <p><code>ignoring ./resolv.conf: failed to pass subject filter: file type: Some(FileType(FileType { mode: 40960 }))</code></p>
-<h4>What are the steps to reproduce the behavior?</h4>
+What are the steps to reproduce the behavior?
 <ul>
 <li>Install fresh 22.04 server edition.</li>
 <li>apt update/upgrade</li>
 <li>rg [something] /etc/resolv.fonc</li>
 </ul>
-<h4>What is the actual behavior?</h4>
-<p>A normal ripgrep search isn't displaying the text found in a standard ascii file. The text is only displayed when directly referencing a file, a symlink will not get picked up in filename glob.</p>
-<h4>What is the expected behavior?</h4>
+What is the actual behavior?
+<p>A normal ripgrep search isn&#x27;t displaying the text found in a standard ascii file. The text is only displayed when directly referencing a file, a symlink will not get picked up in filename glob.</p>
+What is the expected behavior?
 <p>ripgrep should search the symlink file as if it were in the directory, if it will find it if I specify the file, it should find it during a normal search.</p>
-<h4>Searching old issues</h4>
+Searching old issues
 <p>I found issue symlink issues https://github.com/BurntSushi/ripgrep/issues?q=symlink
-So I'm guessing this is working as intended. I'd already wrote most of this issue before I figured out what was going on.</p>
-<p>I guess close this if everything is working like it's supposed to, but it seems odd to me that if you reference a file, it'll search it, but NOT search it if it's a symlink.</p>
-<p>Thanks for writing ripgrep, it's literally changed my sysadmin life.</p>
+So I&#x27;m guessing this is working as intended. I&#x27;d already wrote most of this issue before I figured out what was going on.</p>
+<p>I guess close this if everything is working like it&#x27;s supposed to, but it seems odd to me that if you reference a file, it&#x27;ll search it, but NOT search it if it&#x27;s a symlink.</p>
+<p>Thanks for writing ripgrep, it&#x27;s literally changed my sysadmin life.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-06-23 23:59</div>
-            <div class="timeline-body"><p>Yup, this is correct. Here's a much smaller reproduction:</p>
+            <div class="timeline-body"><p>Yup, this is correct. Here&#x27;s a much smaller reproduction:</p>
 <pre><code>$ mkdir /tmp/rg2242
 $ cd /tmp/rg2242
 $ echo test &gt; foo
@@ -183,21 +183,21 @@ bar:test
 foo:test
 </code></pre>
 <p>Notice the behavior matches <code>grep</code> precisely.</p>
-<p>The reason why <code>*</code> works here is because ripgrep doesn't expand <code>*</code>, the shell does. So to ripgrep, <code>*</code> is like <code>rg test foo bar</code>. And when you give a file explicitly to ripgrep (which happens in this case, because ripgrep doesn't know that you gave it a glob), then ripgrep <em>always</em> searches it, regardless of any of its smart filtering rules. This is to prevent even worse and surprising behavior where ripgrep just willy nilly ignores searching a file you gave it explicitly just because it matches a less specific ignore rule or something somewhere.</p>
-<p>So basically, when you do <code>rg test</code>, that's equivalent to <code>rg test ./</code>. And that means it's doing recursive directory traversal and <em>only</em> follows symlinks when it's instructed to do. Otherwise, symlinks are skipped.</p>
-<p>Somewhat unfortunate, but symlinks are weird. But at least GNU grep settled on the same behavior apparently. (I don't recall checking how GNU grep behaved when I decided on these semantics.)</p>
+<p>The reason why <code>*</code> works here is because ripgrep doesn&#x27;t expand <code>*</code>, the shell does. So to ripgrep, <code>*</code> is like <code>rg test foo bar</code>. And when you give a file explicitly to ripgrep (which happens in this case, because ripgrep doesn&#x27;t know that you gave it a glob), then ripgrep <em>always</em> searches it, regardless of any of its smart filtering rules. This is to prevent even worse and surprising behavior where ripgrep just willy nilly ignores searching a file you gave it explicitly just because it matches a less specific ignore rule or something somewhere.</p>
+<p>So basically, when you do <code>rg test</code>, that&#x27;s equivalent to <code>rg test ./</code>. And that means it&#x27;s doing recursive directory traversal and <em>only</em> follows symlinks when it&#x27;s instructed to do. Otherwise, symlinks are skipped.</p>
+<p>Somewhat unfortunate, but symlinks are weird. But at least GNU grep settled on the same behavior apparently. (I don&#x27;t recall checking how GNU grep behaved when I decided on these semantics.)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2022-06-23 23:59</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-06-23 23:59</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2022-06-23 23:59</div>
+            <div class="event">Label <span class="label">wontfix</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-06-23 23:59</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:43:33 UTC
+        Synced at 2026-01-20 18:48:12 UTC
     </footer>
 </body>
 </html>

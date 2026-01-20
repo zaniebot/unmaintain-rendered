@@ -26,16 +26,16 @@
             <div class="timeline-body"><p>The goal is to make the completion for <code>rg --hyperlink-format v&lt;TAB&gt;</code> work in the fish shell.</p>
 <p>These are not exhaustive (the user can also specify custom formats). If this ever makes a difference, perhaps <code>fn doc_choices_are_exhaustive(&amp;self) -&gt; bool</code> can be added to the <code>Flags</code> trait.</p>
 <p>The <code>grep+</code> value necessitated a change to a test.</p>
-<p>I'm not sure whether there's a good way to generate the choices directly from <code>hyperlink_aliases.rs</code> as a <code>&amp;'static [&amp;'static str]</code>. The simplest would be to reorganize <code>hyperlink_aliases.rs</code> to keep the keys and values in separate arrays, but that would be less readable. This would be easy if the return type of <code>doc_choices</code> could be changed. OTOH, the values already need to be kept in sync with the long-form description inside the help text, which currently also has to be an <code>&amp;'static str</code>.</p>
+<p>I&#x27;m not sure whether there&#x27;s a good way to generate the choices directly from <code>hyperlink_aliases.rs</code> as a <code>&amp;&#x27;static [&amp;&#x27;static str]</code>. The simplest would be to reorganize <code>hyperlink_aliases.rs</code> to keep the keys and values in separate arrays, but that would be less readable. This would be easy if the return type of <code>doc_choices</code> could be changed. OTOH, the values already need to be kept in sync with the long-form description inside the help text, which currently also has to be an <code>&amp;&#x27;static str</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "add complection for builting `--hyperlink-format`s" to "add complection for built-in `--hyperlink-format`s" by @ilyagr on 2025-07-06 23:36</div>
+            <div class="event">Renamed from &quot;add complection for builting `--hyperlink-format`s&quot; to &quot;add complection for built-in `--hyperlink-format`s&quot; by <a href="https://github.com/ilyagr">@ilyagr</a> on 2025-07-06 23:36</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2025-07-08 21:23</div>
-            <div class="timeline-body"><p>I like the idea of adding completion! But you don't need to duplicate the names:</p>
-<pre><code class="language-rust">const ALIAS_COUNT: usize = HYPERLINK_PATTERN_ALIASES.len();
+            <div class="timeline-body"><p>I like the idea of adding completion! But you don&#x27;t need to duplicate the names:</p>
+<pre><code>const ALIAS_COUNT: usize = HYPERLINK_PATTERN_ALIASES.len();
 
 const ALIAS_NAMES: &amp;[&amp;str] = &amp;{
     let mut names = [&quot;&quot;; ALIAS_COUNT];
@@ -50,7 +50,7 @@ const ALIAS_NAMES: &amp;[&amp;str] = &amp;{
 };
 </code></pre>
 <p>You can then return the required result type:</p>
-<pre><code class="language-rust">fn alias_names() -&gt; &amp;'static [&amp;'static str] {
+<pre><code>fn alias_names() -&gt; &amp;&#x27;static [&amp;&#x27;static str] {
     ALIAS_NAMES
 }
 </code></pre>
@@ -58,16 +58,16 @@ const ALIAS_NAMES: &amp;[&amp;str] = &amp;{
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ilyagr">@ilyagr</a> on 2025-07-08 21:54</div>
-            <div class="timeline-body"><p>Thanks, I was wondering if that's possible, glad to know the answer to the riddle!</p>
+            <div class="timeline-body"><p>Thanks, I was wondering if that&#x27;s possible, glad to know the answer to the riddle!</p>
 <p>This diff seems to work:</p>
-<pre><code class="language-diff">diff --git a/crates/core/flags/defs.rs b/crates/core/flags/defs.rs
+<pre><code>diff --git a/crates/core/flags/defs.rs b/crates/core/flags/defs.rs
 index 2d75a66a77..d8445c0a0f 100644
 --- a/crates/core/flags/defs.rs
 +++ b/crates/core/flags/defs.rs
 @@ -2954,18 +2954,7 @@
      }
  
-     fn doc_choices(&amp;self) -&gt; &amp;'static [&amp;'static str] {
+     fn doc_choices(&amp;self) -&gt; &amp;&#x27;static [&amp;&#x27;static str] {
 -        &amp;[
 -            &quot;default&quot;,
 -            &quot;none&quot;,
@@ -114,12 +114,12 @@ index 9bad1b862d..c13db22c0d 100644
  }
  
 +/// List of pre-defined hyperlink format aliases
-+pub fn hyperlink_alias_names() -&gt; &amp;'static [&amp;'static str] {
++pub fn hyperlink_alias_names() -&gt; &amp;&#x27;static [&amp;&#x27;static str] {
 +    HYPERLINK_FORMAT_ALIAS_NAMES
 +}
 +
  /// Return an iterator over all available alias names and their definitions.
- pub(crate) fn iter() -&gt; impl Iterator&lt;Item = (&amp;'static str, &amp;'static str)&gt; {
+ pub(crate) fn iter() -&gt; impl Iterator&lt;Item = (&amp;&#x27;static str, &amp;&#x27;static str)&gt; {
      HYPERLINK_PATTERN_ALIASES.iter().copied()
 diff --git a/crates/printer/src/lib.rs b/crates/printer/src/lib.rs
 index 5748862cb9..a046361bad 100644
@@ -134,7 +134,7 @@ index 5748862cb9..a046361bad 100644
      standard::{Standard, StandardBuilder, StandardSink},
      stats::Stats,
 </code></pre>
-<p>I'm happy to merge this into the PR if the author thinks the duplication reduction is worth changing the <code>grep</code> library public API.</p>
+<p>I&#x27;m happy to merge this into the PR if the author thinks the duplication reduction is worth changing the <code>grep</code> library public API.</p>
 <p>The next puzzle (with an even less clear complexity trade-off) would be to generate the <code>doc_long</code> portion that also duplicates these names:</p>
 <pre><code>Alternatively, a format string may correspond to one of the following aliases:
 \fBdefault\fP, \fBnone\fP, \fBfile\fP, \fBgrep+\fP, \fBkitty\fP, \fBmacvim\fP,
@@ -142,28 +142,28 @@ index 5748862cb9..a046361bad 100644
 alias will be replaced with a format string that is intended to work for the
 corresponding application.
 </code></pre>
-<p>I found that there is the https://docs.rs/const_format/ crate, but I'm not sure whether ripgrep wants to depend on such things.</p>
+<p>I found that there is the https://docs.rs/const_format/ crate, but I&#x27;m not sure whether ripgrep wants to depend on such things.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2025-07-08 22:35</div>
             <div class="timeline-body"><blockquote>
-<p>I'm happy to merge this into the PR if the author thinks the duplication reduction is worth changing the <code>grep</code> library public API.</p>
+<p>I&#x27;m happy to merge this into the PR if the author thinks the duplication reduction is worth changing the <code>grep</code> library public API.</p>
 </blockquote>
-<p>I put it into <code>HyperlinkFormat::alias_names()</code>. It's not pretty, but it's better than exposing <code>hyperlink_aliases</code> IMO. I made a commit <a href="https://github.com/ltrzesniewski/ripgrep/commit/922179259bb0485ecac2a1c97680d5baccd4faf6">here</a> if you'd like to take a look.</p>
+<p>I put it into <code>HyperlinkFormat::alias_names()</code>. It&#x27;s not pretty, but it&#x27;s better than exposing <code>hyperlink_aliases</code> IMO. I made a commit <a href="https://github.com/ltrzesniewski/ripgrep/commit/922179259bb0485ecac2a1c97680d5baccd4faf6">here</a> if you&#x27;d like to take a look.</p>
 <blockquote>
 <p>The next puzzle (with an even less clear complexity trade-off) would be to generate the <code>doc_long</code> portion that also duplicates these names</p>
 </blockquote>
-<p>That would be really nice, but don't expect being allowed to add a crate for this. 😅</p>
+<p>That would be really nice, but don&#x27;t expect being allowed to add a crate for this. 😅</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ilyagr">@ilyagr</a> on 2025-07-08 22:45</div>
-            <div class="timeline-body"><p>I'll save your commit for posterity below. I think <code>HyperlinkFormat::alias_names</code> is a better idea than what I have above, but the difference in my mind is slight. (<strong>Update:</strong> I modified the comment you added, I like mine slightly better, and, well, this is my comment :) )</p>
-<p>I generally find your approach very much worth knowing about. But, as far as the PR goes, the main question in my mind is whether the complexity is worth it, considering that there will still be duplication with <code>doc_long</code> (unless there's some clever but not ugly solution for that as well).</p>
-<p>I think I'd like a maintainer to think about this for a second and decide.</p>
-<hr />
-<pre><code class="language-diff">diff --git a/crates/core/flags/defs.rs b/crates/core/flags/defs.rs
+            <div class="timeline-body"><p>I&#x27;ll save your commit for posterity below. I think <code>HyperlinkFormat::alias_names</code> is a better idea than what I have above, but the difference in my mind is slight. (<strong>Update:</strong> I modified the comment you added, I like mine slightly better, and, well, this is my comment :) )</p>
+<p>I generally find your approach very much worth knowing about. But, as far as the PR goes, the main question in my mind is whether the complexity is worth it, considering that there will still be duplication with <code>doc_long</code> (unless there&#x27;s some clever but not ugly solution for that as well).</p>
+<p>I think I&#x27;d like a maintainer to think about this for a second and decide.</p>
+<hr>
+<pre><code>diff --git a/crates/core/flags/defs.rs b/crates/core/flags/defs.rs
 index 9a196c491..4c1c58c0e 100644
 --- a/crates/core/flags/defs.rs
 +++ b/crates/core/flags/defs.rs
@@ -171,7 +171,7 @@ index 9a196c491..4c1c58c0e 100644
  &quot;#
      }
  
-+    fn doc_choices(&amp;self) -&gt; &amp;'static [&amp;'static str] {
++    fn doc_choices(&amp;self) -&gt; &amp;&#x27;static [&amp;&#x27;static str] {
 +        grep::printer::HyperlinkFormat::alias_names()
 +    }
 +
@@ -181,10 +181,10 @@ index 9a196c491..4c1c58c0e 100644
 @@ -7665,9 +7669,10 @@ mod tests {
                  assert!(
                      choice.chars().all(|c| c.is_ascii_alphanumeric()
-                         || c == '-'
-+                        || c == '+'
-                         || c == ':'),
-                     &quot;choice '{choice}' for flag '{long}' does not match \
+                         || c == &#x27;-&#x27;
++                        || c == &#x27;+&#x27;
+                         || c == &#x27;:&#x27;),
+                     &quot;choice &#x27;{choice}&#x27; for flag &#x27;{long}&#x27; does not match \
 -                     ^[-:0-9A-Za-z]+$&quot;,
 +                     ^[-+:0-9A-Za-z]+$&quot;,
                  )
@@ -200,7 +200,7 @@ index ec1fd9211..afa662634 100644
      }
 +
 +    /// List of predefined hyperlink format aliases
-+    pub fn alias_names() -&gt; &amp;'static [&amp;'static str] {
++    pub fn alias_names() -&gt; &amp;&#x27;static [&amp;&#x27;static str] {
 +        hyperlink_aliases::alias_names()
 +    }
  }
@@ -231,11 +231,11 @@ index 9bad1b862..0dcf6a093 100644
  /// Look for the hyperlink format defined by the given alias name.
  ///
  /// If one does not exist, `None` is returned.
-@@ -36,6 +50,10 @@ pub(crate) fn iter() -&gt; impl Iterator&lt;Item = (&amp;'static str, &amp;'static str)&gt; {
+@@ -36,6 +50,10 @@ pub(crate) fn iter() -&gt; impl Iterator&lt;Item = (&amp;&#x27;static str, &amp;&#x27;static str)&gt; {
      HYPERLINK_PATTERN_ALIASES.iter().copied()
  }
  
-+pub(crate) fn alias_names() -&gt; &amp;'static [&amp;'static str] {
++pub(crate) fn alias_names() -&gt; &amp;&#x27;static [&amp;&#x27;static str] {
 +    ALIAS_NAMES
 +}
 +
@@ -248,10 +248,10 @@ index 9bad1b862..0dcf6a093 100644
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ilyagr">@ilyagr</a> on 2025-07-08 23:22</div>
             <div class="timeline-body"><blockquote>
-<p>I think I'd like a maintainer to think about this for a second and decide.</p>
+<p>I think I&#x27;d like a maintainer to think about this for a second and decide.</p>
 </blockquote>
-<p>To be clear, if you (Lucas) feel like you understand this repo's style well enough to judge what's best for <code>ripgrep</code>, I'm happy to use the approach you suggested. I hope that (or anything else I said) didn't sound dismissive.</p>
-<p><strong>Update:</strong> I see you're responsible for ripgrep supporting hyperlinks in the first place, https://github.com/BurntSushi/ripgrep/pull/2610. Thank you very much!</p>
+<p>To be clear, if you (Lucas) feel like you understand this repo&#x27;s style well enough to judge what&#x27;s best for <code>ripgrep</code>, I&#x27;m happy to use the approach you suggested. I hope that (or anything else I said) didn&#x27;t sound dismissive.</p>
+<p><strong>Update:</strong> I see you&#x27;re responsible for ripgrep supporting hyperlinks in the first place, <a href="https://github.com/BurntSushi/ripgrep/pull/2610">BurntSushi/ripgrep#2610</a>. Thank you very much!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -259,27 +259,27 @@ index 9bad1b862..0dcf6a093 100644
             <div class="timeline-body"><blockquote>
 <p>the main question in my mind is whether the complexity is worth it</p>
 </blockquote>
-<p>The way I see it, I just added a <code>while</code> loop instead of a third copy of the data. I wouldn't say it's complex code.</p>
+<p>The way I see it, I just added a <code>while</code> loop instead of a third copy of the data. I wouldn&#x27;t say it&#x27;s complex code.</p>
 <blockquote>
-<p>I hope that (or anything else I said) didn't sound dismissive.</p>
+<p>I hope that (or anything else I said) didn&#x27;t sound dismissive.</p>
 </blockquote>
-<p>Absolutely not, I don't even see why you would think that.</p>
+<p>Absolutely not, I don&#x27;t even see why you would think that.</p>
 <blockquote>
 <p>Thank you very much!</p>
 </blockquote>
-<p>You're welcome! 🙂</p>
+<p>You&#x27;re welcome! 🙂</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2025-07-09 21:14</div>
-            <div class="timeline-body"><p>I played a bit with eliminating the duplication in <code>doc_long</code>, and came up with <a href="https://github.com/ltrzesniewski/ripgrep/commit/41a7d17349b87555f3bc2adb6fe7dd5804ba7a80">this</a>. That's an extra loop, but I think it's worth it. 🙂</p>
-<p>I kept the code simple since the output of <code>doc_long</code> gets reformatted for <code>--help</code>, and I don't know if it makes sense to format it for the <code>man</code> page. The only difference is the order of the aliases, but this can be adjusted if needed.</p>
+            <div class="timeline-body"><p>I played a bit with eliminating the duplication in <code>doc_long</code>, and came up with <a href="https://github.com/ltrzesniewski/ripgrep/commit/41a7d17349b87555f3bc2adb6fe7dd5804ba7a80">this</a>. That&#x27;s an extra loop, but I think it&#x27;s worth it. 🙂</p>
+<p>I kept the code simple since the output of <code>doc_long</code> gets reformatted for <code>--help</code>, and I don&#x27;t know if it makes sense to format it for the <code>man</code> page. The only difference is the order of the aliases, but this can be adjusted if needed.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ilyagr">@ilyagr</a> on 2025-07-09 21:21</div>
             <div class="timeline-body"><p>Does it work in stable Rust? I tried to adjust the code above accordintly, to</p>
-<pre><code class="language-rust">const HYPERLINK_FORMAT_ALIAS_NAMES: &amp;[&amp;str] = &amp;{
+<pre><code>const HYPERLINK_FORMAT_ALIAS_NAMES: &amp;[&amp;str] = &amp;{
     let mut names = [&quot;&quot;; ALIAS_COUNT];
 
     for (i, (name, _)) in HYPERLINK_PATTERN_ALIASES.iter().enumerate() {
@@ -306,29 +306,29 @@ help: add `#![feature(const_slice_make_iter)]` to the crate attributes to enable
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2025-07-09 21:24</div>
             <div class="timeline-body"><p>The 2 commits I wrote (922179259bb0485ecac2a1c97680d5baccd4faf6 and 41a7d17349b87555f3bc2adb6fe7dd5804ba7a80) compile fine in stable Rust.</p>
-<p>But you can't use <code>.iter()</code> (and therefore a <code>for</code> loop) in a <code>const</code> block, that's why I used a <code>while</code> loop.</p>
+<p>But you can&#x27;t use <code>.iter()</code> (and therefore a <code>for</code> loop) in a <code>const</code> block, that&#x27;s why I used a <code>while</code> loop.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ilyagr">@ilyagr</a> on 2025-07-09 21:26</div>
             <div class="timeline-body"><p>Ah, I see, you used <code>LazyLock</code> instead of a <code>const</code> context in the newer commit. Also a trick well worth knowing.</p>
 <p>Why is <code>LazyLock</code> convertible to <code>&amp; static str</code>? I guess I can look it up in the docs.</p>
-<p>Could <code>doc_choices</code> also use <code>LazyLock</code> together with the existing <code>hyperlink_aliases::iter</code> function? (It'd still have to be changed to pub, or a different public interface would still have to be created)</p>
+<p>Could <code>doc_choices</code> also use <code>LazyLock</code> together with the existing <code>hyperlink_aliases::iter</code> function? (It&#x27;d still have to be changed to pub, or a different public interface would still have to be created)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2025-07-09 23:26</div>
             <div class="timeline-body"><blockquote>
-<p>Could <code>doc_choices</code> also use <code>LazyLock</code> together with the existing <code>hyperlink_aliases::iter</code> function? (It'd still have to be changed to pub, or a different public interface would still have to be created)</p>
+<p>Could <code>doc_choices</code> also use <code>LazyLock</code> together with the existing <code>hyperlink_aliases::iter</code> function? (It&#x27;d still have to be changed to pub, or a different public interface would still have to be created)</p>
 </blockquote>
 <p>Actually <code>hyperlink_aliases::iter()</code> could be removed - its only usage is: <code>hyperlink_aliases::iter().map(|(name, _)| name)</code>, so basically the same thing as <code>alias_names()</code></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2025-09-06 18:15</div>
+            <div class="event">Label <span class="label">rollup</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-09-06 18:15</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2025-09-20 01:08</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-09-20 01:08</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ilyagr">@ilyagr</a> on 2025-09-20 01:14</div>
@@ -338,7 +338,7 @@ help: add `#![feature(const_slice_make_iter)]` to the crate attributes to enable
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:44:21 UTC
+        Synced at 2026-01-20 18:48:20 UTC
     </footer>
 </body>
 </html>

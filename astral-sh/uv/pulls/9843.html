@@ -23,26 +23,26 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a></div>
-            <div class="timeline-body"><p>Background reading: https://github.com/astral-sh/uv/issues/8157
-Companion PR: https://github.com/astral-sh/pubgrub/pull/36
-Requires for test coverage: https://github.com/astral-sh/packse/pull/230</p>
-<p>When two packages A and B conflict, we have the option to choose a lower version of A, or a lower version of B. Currently, we determine this by the order we saw a package (assuming equal specificity of the requirement): If we saw A before B, we pin A until all versions of B are exhausted. This can lead to undesirable outcomes, from cases where it's just slow (sentry) to others cases without lower bounds where be backtrack to a very old version of B. This old version may fail to build (terminating the resolution), or it's a version so old that it doesn't depend on A (or the shared conflicting package) anymore - but also is too old for the user's application (fastapi). #8157 collects such cases, and the <code>wrong-backtracking</code> packse scenario contains a minimized example.</p>
+            <div class="timeline-body"><p>Background reading: <a href="https://github.com/astral-sh/uv/issues/8157">astral-sh/uv#8157</a>
+Companion PR: <a href="https://github.com/astral-sh/pubgrub/pull/36">astral-sh/pubgrub#36</a>
+Requires for test coverage: <a href="https://github.com/astral-sh/packse/pull/230">astral-sh/packse#230</a></p>
+<p>When two packages A and B conflict, we have the option to choose a lower version of A, or a lower version of B. Currently, we determine this by the order we saw a package (assuming equal specificity of the requirement): If we saw A before B, we pin A until all versions of B are exhausted. This can lead to undesirable outcomes, from cases where it&#x27;s just slow (sentry) to others cases without lower bounds where be backtrack to a very old version of B. This old version may fail to build (terminating the resolution), or it&#x27;s a version so old that it doesn&#x27;t depend on A (or the shared conflicting package) anymore - but also is too old for the user&#x27;s application (fastapi). #8157 collects such cases, and the <code>wrong-backtracking</code> packse scenario contains a minimized example.</p>
 <p>We try to solve this by tracking which packages are &quot;A&quot;s, culprits, and &quot;B&quot;s, affected, and manually interfering with project selection and backtracking. Whenever a version we just chose is rejected, we give the current package a counter for being affected, and the package it conflicted with a counter for being a culprit. If a package accumulates more counts than a threshold, we reprioritize: Undecided after the culprits, after the affected, after packages that only have a single version (URLs, <code>==&lt;version&gt;</code>). We then ask pubgrub to backtrack just before the culprit. Due to the changed priorities, we now select package B, the affected, instead of package A, the culprit.</p>
 <p>To do this efficiently, we ask pubgrub for the incompatibility that caused backtracking, or just the last version to be discarded (due to its dependencies). For backtracking, we use the last incompatibility from unit propagation as a heuristic. When a version is discarded because one of its dependencies conflicts with the partial solution, the incompatibility tells us the package in the partial solution that conflicted.</p>
-<p>We only backtrack once per package, on the first time it passes the threshold. This prevents backtracking loops in which we make the same decisions over and over again. But we also changed the priority, so that we shouldn't take the same path even after the one time we backtrack (it would defeat the purpose of this change).</p>
-<p>There are some parameters that can be tweaked: Currently, the threshold is set to 5, which feels not too eager with so me of the conflicts that we want to tolerate but also changes strategies quickly. The relative order of the new priorities can also be changed, as for each (A, B) pair the priority of B is afterwards lower than that for A. Currently, culprits capture conflict for the whole package, but we could limit that to a specific version. We could discard conflict counters after backtracking instead of keeping them eternally as we do now. Note that we're always taking about pairs (A, B), but in practice we track individual packages, not pairs.</p>
-<p>A case that we wouldn't capture is when B is only introduced to the dependency graph after A, but I think that would require cyclical dependency for A and B to conflict? There may also be cases where looking at the last incompatibility is insufficient.</p>
-<p>Another example that we can't repair with prioritization is urllib3/boto3/botocore: We actually have to check all the newer versions of boto3 and botocore to identify the version that allows with the older urllib3, no shortcuts allowed.</p>
+<p>We only backtrack once per package, on the first time it passes the threshold. This prevents backtracking loops in which we make the same decisions over and over again. But we also changed the priority, so that we shouldn&#x27;t take the same path even after the one time we backtrack (it would defeat the purpose of this change).</p>
+<p>There are some parameters that can be tweaked: Currently, the threshold is set to 5, which feels not too eager with so me of the conflicts that we want to tolerate but also changes strategies quickly. The relative order of the new priorities can also be changed, as for each (A, B) pair the priority of B is afterwards lower than that for A. Currently, culprits capture conflict for the whole package, but we could limit that to a specific version. We could discard conflict counters after backtracking instead of keeping them eternally as we do now. Note that we&#x27;re always taking about pairs (A, B), but in practice we track individual packages, not pairs.</p>
+<p>A case that we wouldn&#x27;t capture is when B is only introduced to the dependency graph after A, but I think that would require cyclical dependency for A and B to conflict? There may also be cases where looking at the last incompatibility is insufficient.</p>
+<p>Another example that we can&#x27;t repair with prioritization is urllib3/boto3/botocore: We actually have to check all the newer versions of boto3 and botocore to identify the version that allows with the older urllib3, no shortcuts allowed.</p>
 <pre><code>urllib3&lt;1.25.4
 boto3
 </code></pre>
-<p>All examples I tested were cases with two packages where we only had to switch the order, so I've abstracted them into a single packse case.</p>
+<p>All examples I tested were cases with two packages where we only had to switch the order, so I&#x27;ve abstracted them into a single packse case.</p>
 <p>This PR changes the resolution for certain paths, and there is the risk for regressions.</p>
 <p>Fixes #8157</p>
-<hr />
+<hr>
 <p>All tested examples improved.</p>
 <p>Input fastapi:</p>
-<pre><code class="language-text">starlette&lt;=0.36.0
+<pre><code>starlette&lt;=0.36.0
 fastapi&lt;=0.115.2
 </code></pre>
 <pre><code># BEFORE
@@ -70,7 +70,7 @@ starlette==0.35.1
 typing-extensions==4.12.2
 </code></pre>
 <p>Input xarray:</p>
-<pre><code class="language-text">xarray[accel]
+<pre><code>xarray[accel]
 </code></pre>
 <pre><code># BEFORE
 $ uv pip --no-progress compile -p 3.11 --exclude-newer 2024-10-01 --no-annotate debug/xarray-accel.txt
@@ -114,7 +114,7 @@ tzdata==2024.2
 xarray==2024.9.0
 </code></pre>
 <p>Input sentry: The resolution is identical, but arrived at much faster: main tries 69 versions (sentry-kafka-schemas: 63), PR tries 12 versions (sentry-kafka-schemas: 6; 5 times conflicting, then once the right version).</p>
-<pre><code class="language-text">python-rapidjson&lt;=1.20,&gt;=1.4
+<pre><code>python-rapidjson&lt;=1.20,&gt;=1.4
 sentry-kafka-schemas&lt;=0.1.113,&gt;=0.1.50
 </code></pre>
 <pre><code># BEFORE
@@ -136,7 +136,7 @@ sentry-kafka-schemas==0.1.111
 typing-extensions==4.12.2
 </code></pre>
 <p>Input apache-beam</p>
-<pre><code class="language-text"># Run on Python 3.10
+<pre><code># Run on Python 3.10
 dill&lt;0.3.9,&gt;=0.2.2
 apache-beam&lt;=2.49.0
 </code></pre>
@@ -182,27 +182,27 @@ zstandard==0.23.0
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2024-12-12 15:44</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/konstin">@konstin</a> on 2024-12-12 15:44</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">resolver</span> added by @konstin on 2024-12-12 15:44</div>
+            <div class="event">Label <span class="label">resolver</span> added by <a href="https://github.com/konstin">@konstin</a> on 2024-12-12 15:44</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Change backtracking when packages conflict a lot" to "Change backtracking when packages conflict too much" by @konstin on 2024-12-12 15:44</div>
+            <div class="event">Renamed from &quot;Change backtracking when packages conflict a lot&quot; to &quot;Change backtracking when packages conflict too much&quot; by <a href="https://github.com/konstin">@konstin</a> on 2024-12-12 15:44</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-12-12 15:51</div>
-            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/uv/branches/konsti%2Fbacktrack">CodSpeed Performance Report</a></h2>
-<h3>Merging #9843 will <strong>degrade performances by 23.19%</strong></h3>
-<p><sub>Comparing <code>konsti/backtrack</code> (bc074f0) with <code>main</code> (2b61a67)</sub></p>
-<h3>Summary</h3>
-<p><code>⚡ 1</code> improvements<br />
-<code>❌ 1</code> regressions<br />
+            <div class="timeline-body"><a href="https://codspeed.io/astral-sh/uv/branches/konsti%2Fbacktrack">CodSpeed Performance Report</a>
+Merging #9843 will <strong>degrade performances by 23.19%</strong>
+<p>Comparing <code>konsti/backtrack</code> (bc074f0) with <code>main</code> (2b61a67)</p>
+Summary
+<p><code>⚡ 1</code> improvements<br>
+<code>❌ 1</code> regressions<br>
 <code>✅ 12</code> untouched benchmarks</p>
 <blockquote>
 <p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/uv/branches/konsti%2Fbacktrack">acknowledge them on CodSpeed</a>.</em></p>
 </blockquote>
-<h3>Benchmarks breakdown</h3>
+Benchmarks breakdown
 <p>|     | Benchmark | <code>main</code> | <code>konsti/backtrack</code> | Change |
 | --- | --------- | ----------------------- | ------------------- | ------ |
 | ❌ | <code>resolve_warm_airflow</code> | 1.1 s | 1.4 s | -23.19% |
@@ -210,46 +210,46 @@ zstandard==0.23.0
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @konstin on 2024-12-12 16:02</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/konstin">@konstin</a> on 2024-12-12 16:02</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-12-12 16:18</div>
             <div class="timeline-body"><blockquote>
 <p>We only backtrack once per package, on the first time it passes the threshold</p>
 </blockquote>
-<p>I'm curious why you decided to choose a threshold for this rather than some other heuristic, such as the nature of the version specifier (e.g. triggering if the conflict was driven by one of <code>&lt;</code>, <code>&lt;=</code>, <code>!=</code>, <code>==N.*</code>)?</p>
+<p>I&#x27;m curious why you decided to choose a threshold for this rather than some other heuristic, such as the nature of the version specifier (e.g. triggering if the conflict was driven by one of <code>&lt;</code>, <code>&lt;=</code>, <code>!=</code>, <code>==N.*</code>)?</p>
 <p>In particular, as an end user I would find it surprising that I would get problematic behavior on a new release of a package, and then without any of its dependencies changing it just fixed itself once that package was released 4 more times.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-12-12 17:26</div>
             <div class="timeline-body"><p>These pathological behaviors can occur independent of the version specifiers used, tracking conflicts gives us a stronger heuristic. In the sentry example, we have both lower and upper bounds, so we can only avoid the wrong backtracking with conflict tracking. In all cases tested, the problematic behavior was resolved by current heuristic.</p>
-<p>While we're technically using a SAT solver and each solution that fulfills all constraints is correct to emit, we also have a goal to emit desirable resolutions, where desirable is a vague notion of using newer packages and avoiding old packages. In that sense we're somewhat more like integer linear programming because we're also optimizing for a (vague) target function. (There are approaches for a globally optimal solution to resolution that use a real target function for the most desirable solution, but they are prohibitively expensive.)</p>
-<p>In one framing, this switching priorities is trying to avoid a branch in which we would get a bad score. For the fastapi and apache-beam cases this is working: We're avoiding the bad solution with the very old fastapi and the apache-beam version that doesn't build anymore.</p>
+<p>While we&#x27;re technically using a SAT solver and each solution that fulfills all constraints is correct to emit, we also have a goal to emit desirable resolutions, where desirable is a vague notion of using newer packages and avoiding old packages. In that sense we&#x27;re somewhat more like integer linear programming because we&#x27;re also optimizing for a (vague) target function. (There are approaches for a globally optimal solution to resolution that use a real target function for the most desirable solution, but they are prohibitively expensive.)</p>
+<p>In one framing, this switching priorities is trying to avoid a branch in which we would get a bad score. For the fastapi and apache-beam cases this is working: We&#x27;re avoiding the bad solution with the very old fastapi and the apache-beam version that doesn&#x27;t build anymore.</p>
 <blockquote>
 <p>In particular, as an end user I would find it surprising that I would get problematic behavior on a new release of a package, and then without any of its dependencies changing it just fixed itself once that package was released 4 more times.</p>
 </blockquote>
-<p>While i agree that this would be annoying, it's a rare case that needs very specific circumstances. It requires that there are already two possible solutions, one with the older and one with the newer version of the package, that are only decided by prioritization, i.e. we consider both as acceptable solutions.</p>
+<p>While i agree that this would be annoying, it&#x27;s a rare case that needs very specific circumstances. It requires that there are already two possible solutions, one with the older and one with the newer version of the package, that are only decided by prioritization, i.e. we consider both as acceptable solutions.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @BurntSushi by @konstin on 2024-12-12 17:33</div>
+            <div class="event">Review requested from <a href="https://github.com/BurntSushi">@BurntSushi</a> by <a href="https://github.com/konstin">@konstin</a> on 2024-12-12 17:33</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @charliermarsh by @konstin on 2024-12-12 17:33</div>
+            <div class="event">Review requested from <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/konstin">@konstin</a> on 2024-12-12 17:33</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @charliermarsh removed by @konstin on 2024-12-12 17:33</div>
+            <div class="event">Review request for <a href="https://github.com/charliermarsh">@charliermarsh</a> removed by <a href="https://github.com/konstin">@konstin</a> on 2024-12-12 17:33</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @zanieb by @konstin on 2024-12-12 17:33</div>
+            <div class="event">Review requested from <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/konstin">@konstin</a> on 2024-12-12 17:33</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @charliermarsh by @konstin on 2024-12-12 17:33</div>
+            <div class="event">Review requested from <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/konstin">@konstin</a> on 2024-12-12 17:33</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-12-12 18:27</div>
-            <div class="timeline-body"><p>Thanks for the explanation, I'm eager to see the results in the real world, i.e. once it's unleashed on to the many users of uv, I think I can adapt this optimization to the pip-resolvelib stack (I have a lot more fixing of basic issues first, but I'm putting it on my to-do list to investigate).</p>
+            <div class="timeline-body"><p>Thanks for the explanation, I&#x27;m eager to see the results in the real world, i.e. once it&#x27;s unleashed on to the many users of uv, I think I can adapt this optimization to the pip-resolvelib stack (I have a lot more fixing of basic issues first, but I&#x27;m putting it on my to-do list to investigate).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -259,8 +259,8 @@ zstandard==0.23.0
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/pubgrub/priority.rs</code>:115 on 2024-12-12 19:17</div>
-            <div class="timeline-body"><p>Personally, I'd do this:</p>
-<pre><code class="language-rust">#[cfg(debug_assertions)]
+            <div class="timeline-body"><p>Personally, I&#x27;d do this:</p>
+<pre><code>#[cfg(debug_assertions)]
 {
     panic!(&quot;yadda yadda yadda&quot;);
 }
@@ -284,7 +284,7 @@ zstandard==0.23.0
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/pubgrub/priority.rs</code>:135 on 2024-12-14 02:07</div>
-            <div class="timeline-body"><p>Can you add a comment here, and clarify how it's different from <code>make_conflict_early</code>?</p>
+            <div class="timeline-body"><p>Can you add a comment here, and clarify how it&#x27;s different from <code>make_conflict_early</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -330,17 +330,17 @@ zstandard==0.23.0
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-12-16 10:02</div>
-            <div class="timeline-body"><p>Packse publishing broke (https://github.com/astral-sh/packse/actions/runs/12349693707/job/34461019415), I'll add the test case later.</p>
+            <div class="timeline-body"><p>Packse publishing broke (https://github.com/astral-sh/packse/actions/runs/12349693707/job/34461019415), I&#x27;ll add the test case later.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">performance</span> added by @konstin on 2024-12-16 10:02</div>
+            <div class="event">Label <span class="label">performance</span> added by <a href="https://github.com/konstin">@konstin</a> on 2024-12-16 10:02</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @konstin on 2024-12-16 10:39</div>
+            <div class="event">Merged by <a href="https://github.com/konstin">@konstin</a> on 2024-12-16 10:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @konstin on 2024-12-16 10:39</div>
+            <div class="event">Closed by <a href="https://github.com/konstin">@konstin</a> on 2024-12-16 10:39</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-12-16 10:39</div>
@@ -348,7 +348,7 @@ zstandard==0.23.0
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:41:01 UTC
+        Synced at 2026-01-20 19:49:48 UTC
     </footer>
 </body>
 </html>

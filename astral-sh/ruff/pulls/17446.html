@@ -23,40 +23,40 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>We currently have special-casing that avoids false positives for <code>typing.Protocol</code>, but the special-casing doesn't currently recognise <code>typing_extensions.Protocol</code> as also being a valid class base, etc. Due to various bugfixes and performance optimisations having been backported via typing_extensions, <code>typing_extensions.Protocol</code> is a different symbol to <code>typing.Protocol</code> on most Python versions: it would be wrong for us to infer <code>Literal[True]</code> as the result of the expression <code>typing_extensions.Protocol is typing.Protocol</code>, for example. Nonetheless, they should be treated identically by a type checker in terms of their semantics. This PR implements that.</p>
-<h2>Test Plan</h2>
+            <div class="timeline-body">Summary
+<p>We currently have special-casing that avoids false positives for <code>typing.Protocol</code>, but the special-casing doesn&#x27;t currently recognise <code>typing_extensions.Protocol</code> as also being a valid class base, etc. Due to various bugfixes and performance optimisations having been backported via typing_extensions, <code>typing_extensions.Protocol</code> is a different symbol to <code>typing.Protocol</code> on most Python versions: it would be wrong for us to infer <code>Literal[True]</code> as the result of the expression <code>typing_extensions.Protocol is typing.Protocol</code>, for example. Nonetheless, they should be treated identically by a type checker in terms of their semantics. This PR implements that.</p>
+Test Plan
 <p>Existing mdtests have been updated to reflect that we no longer issue false-positive diagnostics on classes inheriting from <code>typing_extensions.Protocol</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-04-17 11:54</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-17 11:54</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-04-17 11:54</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-17 11:54</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-04-17 11:54</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-17 11:54</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-04-17 11:54</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-17 11:54</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-17 11:56</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">dacite (https://github.com/konradhalas/dacite)
+Changes were detected when running on open source projects
+
+<pre><code>dacite (https://github.com/konradhalas/dacite)
 - error[lint:invalid-base] /tmp/mypy_primer/projects/dacite/dacite/data.py:8:12: Invalid class base with type `typing.Protocol | _SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
 - error[lint:invalid-return-type] /tmp/mypy_primer/projects/dacite/dacite/data.py:11:48: Function can implicitly return `None`, which is not assignable to return type `bool`
 - Found 158 diagnostics
 + Found 156 diagnostics
 
 </code></pre>
-</details>
+
 
 </div>
         </div>
@@ -70,19 +70,19 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Converted to draft by @AlexWaygood on 2025-04-17 12:15</div>
+            <div class="event">Converted to draft by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-17 12:15</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-17 12:36</div>
             <div class="timeline-body"><blockquote>
-<h2><code>mypy_primer</code> results</h2>
+<code>mypy_primer</code> results
 <p>Changes were detected when running on open source projects</p>
-<pre><code class="language-diff">dacite (https://github.com/konradhalas/dacite)
+<pre><code>dacite (https://github.com/konradhalas/dacite)
 + error[lint:invalid-base] /tmp/mypy_primer/projects/dacite/dacite/data.py:8:12: Invalid class base with type `typing.Protocol | typing_extensions.Protocol` (all bases must be a class, `Any`, `Unknown` or `Todo`)
 - error[lint:invalid-base] /tmp/mypy_primer/projects/dacite/dacite/data.py:8:12: Invalid class base with type `typing.Protocol | _SpecialForm` (all bases must be a class, `Any`, `Unknown` or `Todo`)
 </code></pre>
 </blockquote>
-<p>This shows the cost of treating the symbols <code>typing_extensions.Protocol</code> and <code>typing.Protocol</code> as inhabiting distinct types: if they were understood by us as inhabiting exactly the same type, then we wouldn't infer a union type for the <code>Protocol</code> symbol <a href="https://github.com/konradhalas/dacite/blob/9898ccbb783e7e6a35ae165e7deb9fa84edfe21c/dacite/data.py#L1-L4">here</a>, so we wouldn't emit that diagnostic. I think instead of my current approach, I'll switch to treating them as inhabiting exactly the same type, but rework some of the logic around <code>KnownInstanceType</code> so that we no longer assume a type is a singleton type if it's a <code>KnownInstanceType</code>. This doesn't necessarily hold true if the symbol could originate from either <code>typing</code> or <code>typing_extensions</code>.</p>
+<p>This shows the cost of treating the symbols <code>typing_extensions.Protocol</code> and <code>typing.Protocol</code> as inhabiting distinct types: if they were understood by us as inhabiting exactly the same type, then we wouldn&#x27;t infer a union type for the <code>Protocol</code> symbol <a href="https://github.com/konradhalas/dacite/blob/9898ccbb783e7e6a35ae165e7deb9fa84edfe21c/dacite/data.py#L1-L4">here</a>, so we wouldn&#x27;t emit that diagnostic. I think instead of my current approach, I&#x27;ll switch to treating them as inhabiting exactly the same type, but rework some of the logic around <code>KnownInstanceType</code> so that we no longer assume a type is a singleton type if it&#x27;s a <code>KnownInstanceType</code>. This doesn&#x27;t necessarily hold true if the symbol could originate from either <code>typing</code> or <code>typing_extensions</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -91,7 +91,7 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @AlexWaygood on 2025-04-17 12:53</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-17 12:53</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-04-17 20:52</div>
@@ -99,10 +99,10 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @AlexWaygood on 2025-04-17 20:54</div>
+            <div class="event">Merged by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-17 20:54</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-04-17 20:54</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-17 20:54</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-04-17 20:54</div>
@@ -110,7 +110,7 @@
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:11:39 UTC
+        Synced at 2026-01-20 19:13:24 UTC
     </footer>
 </body>
 </html>

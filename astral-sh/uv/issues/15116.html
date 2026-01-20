@@ -23,8 +23,8 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/DanielYang59">@DanielYang59</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<p>We (credit to @blueraft) have a <a href="https://gitlab.mpcdf.mpg.de/nomad-lab/nomad-distro/-/merge_requests/199">complex dependency structure</a> but I'm able to recreate with the following dummy packages:</p>
+            <div class="timeline-body">Summary
+<p>We (credit to @blueraft) have a <a href="https://gitlab.mpcdf.mpg.de/nomad-lab/nomad-distro/-/merge_requests/199">complex dependency structure</a> but I&#x27;m able to recreate with the following dummy packages:</p>
 <pre><code>dummy-distro
 ├── dummy-lab
 │   └── numpy (no version constraint)
@@ -34,9 +34,9 @@
 </code></pre>
 <p>Basically we have a wrapper package <code>dummy-distro</code> which depends on both <code>dummy-lab</code> (the core package) and <code>dummy-xrd</code> (a plugin). <code>dummy-lab</code> depends on <code>numpy</code> without version constraint. <code>dummy-xrd</code> depends on <code>dummy-lab</code> and <code>tensorflow</code>.</p>
 <p>Enclosed a copy of this dummy package structure: <a href="https://github.com/user-attachments/files/21632104/uv-override-recreate.tgz">uv-override-recreate.tgz</a></p>
-<hr />
+<hr>
 <p>In <code>dummy-distro</code> we used <code>override</code> to test numpy 2:</p>
-<pre><code class="language-toml">[tool.uv]
+<pre><code>[tool.uv]
 required-version = &quot;&gt;=0.5.15&quot;
 override-dependencies = [
   &quot;numpy&gt;=2&quot;,
@@ -44,40 +44,40 @@ override-dependencies = [
 ]
 </code></pre>
 <p>And used the following to generate <code>requirements.txt</code>:</p>
-<pre><code class="language-sh">uv pip compile --universal -p 3.10 --annotation-style=line --output-file=requirements.txt pyproject.toml
+<pre><code>uv pip compile --universal -p 3.10 --annotation-style=line --output-file=requirements.txt pyproject.toml
 </code></pre>
 <p>But the generated <code>requirements.txt</code> seems to contain incompatible <code>numpy</code> and <code>tensorflow</code> (when compatible resolution exists):</p>
 <pre><code>tensorflow==2.19.0        # via dummy-xrd, --override (workspace)
 
-numpy==2.2.6 ; python_full_version &lt; '3.11'  # via dummy-lab, h5py, keras, ml-dtypes, tensorboard, tensorflow, --override (workspace)
-numpy==2.3.2 ; python_full_version &gt;= '3.11'  # via dummy-lab, h5py, keras, ml-dtypes, tensorboard, tensorflow, --override (workspace)
+numpy==2.2.6 ; python_full_version &lt; &#x27;3.11&#x27;  # via dummy-lab, h5py, keras, ml-dtypes, tensorboard, tensorflow, --override (workspace)
+numpy==2.3.2 ; python_full_version &gt;= &#x27;3.11&#x27;  # via dummy-lab, h5py, keras, ml-dtypes, tensorboard, tensorflow, --override (workspace)
 </code></pre>
-<pre><code class="language-console">➜ tensorflow-2.19.0.dist-info: grep numpy METADATA 
+<pre><code>➜ tensorflow-2.19.0.dist-info: grep numpy METADATA 
 Requires-Dist: numpy &lt;2.2.0,&gt;=1.26.0
 </code></pre>
-<h3>Platform</h3>
+Platform
 <p>Darwin 24.6.0 arm64</p>
-<h3>Version</h3>
+Version
 <p>uv 0.8.5 (Homebrew 2025-08-05)</p>
-<h3>Python version</h3>
+Python version
 <p><em>No response</em></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @DanielYang59 on 2025-08-06 19:23</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/DanielYang59">@DanielYang59</a> on 2025-08-06 19:23</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "`override` leads to invalid resolution?" to "`override` gives invalid resolution?" by @DanielYang59 on 2025-08-06 19:23</div>
+            <div class="event">Renamed from &quot;`override` leads to invalid resolution?&quot; to &quot;`override` gives invalid resolution?&quot; by <a href="https://github.com/DanielYang59">@DanielYang59</a> on 2025-08-06 19:23</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-06 20:23</div>
-            <div class="timeline-body"><p>I think that's &quot;correct&quot; based on how overrides work. Overrides override the dependency definition for any package that requires the overridden package. So from uv's perspective, the <code>Requires-Dist: numpy &lt;2.2.0,&gt;=1.26.0</code> is ignored and replaced with <code>numpy&gt;=2</code>.</p>
+            <div class="timeline-body"><p>I think that&#x27;s &quot;correct&quot; based on how overrides work. Overrides override the dependency definition for any package that requires the overridden package. So from uv&#x27;s perspective, the <code>Requires-Dist: numpy &lt;2.2.0,&gt;=1.26.0</code> is ignored and replaced with <code>numpy&gt;=2</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/DanielYang59">@DanielYang59</a> on 2025-08-06 20:36</div>
             <div class="timeline-body"><p>Ok thanks for the quick reply and explanation ;)</p>
-<p>This is a bit unexpected to me (I don't quite know how the resolver works so likely I'm wrong) because I was expecting dependencies in the <code>override</code> group would still try to find a valid resolution <em>within</em> the <code>override</code> group, which would then be forced on the default group regardless of compatibility. I.e. the numpy requirement for tensorflow (as a member of the override group) would still be considered together with the override <code>numpy&gt;=2</code></p>
+<p>This is a bit unexpected to me (I don&#x27;t quite know how the resolver works so likely I&#x27;m wrong) because I was expecting dependencies in the <code>override</code> group would still try to find a valid resolution <em>within</em> the <code>override</code> group, which would then be forced on the default group regardless of compatibility. I.e. the numpy requirement for tensorflow (as a member of the override group) would still be considered together with the override <code>numpy&gt;=2</code></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -86,23 +86,23 @@ Requires-Dist: numpy &lt;2.2.0,&gt;=1.26.0
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-08-07 00:30</div>
+            <div class="event">Label <span class="label">bug</span> removed by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-07 00:30</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-08-07 00:30</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-07 00:30</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/DanielYang59">@DanielYang59</a> on 2025-08-07 09:37</div>
-            <div class="timeline-body"><p>Unfortunately I don't think we could use <code>constraint-dependencies</code> because some other plugins (not shown in this dummy structure) still haven't dropped <code>numpy&lt;2</code> pin, but we want to test <code>numpy&gt;=2</code> compatibility so I assume we have to use override here?</p>
+            <div class="timeline-body"><p>Unfortunately I don&#x27;t think we could use <code>constraint-dependencies</code> because some other plugins (not shown in this dummy structure) still haven&#x27;t dropped <code>numpy&lt;2</code> pin, but we want to test <code>numpy&gt;=2</code> compatibility so I assume we have to use override here?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-08 09:31</div>
-            <div class="timeline-body"><p>Ah yeah, I think this is roughly working as expected then. It's kind of important that overrides are a &quot;hammer&quot; like this, since adding constraints like (the overrides have to resolve together) would mean that you couldn't actually override dependencies that are dependencies of other overrides.</p>
+            <div class="timeline-body"><p>Ah yeah, I think this is roughly working as expected then. It&#x27;s kind of important that overrides are a &quot;hammer&quot; like this, since adding constraints like (the overrides have to resolve together) would mean that you couldn&#x27;t actually override dependencies that are dependencies of other overrides.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2025-08-08 09:31</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-08 09:31</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/DanielYang59">@DanielYang59</a> on 2025-08-09 20:49</div>
@@ -112,7 +112,7 @@ Requires-Dist: numpy &lt;2.2.0,&gt;=1.26.0
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:32:31 UTC
+        Synced at 2026-01-20 19:39:52 UTC
     </footer>
 </body>
 </html>

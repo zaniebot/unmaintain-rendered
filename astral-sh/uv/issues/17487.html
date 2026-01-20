@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/remidebette">@remidebette</a></div>
-            <div class="timeline-body"><h3>Question</h3>
+            <div class="timeline-body">Question
 <p>Hi,</p>
 <p>I am trying to use uv with a package (<code>causal-conv1d</code>) that has no wheels and is known not to build without nvidia cuda and related software on your machine (<code>nvcc</code> in the error below)</p>
 <p>I work with Mac, which does not typically come with an Nvidia GPU</p>
@@ -35,7 +35,7 @@
 </ul>
 <p>But it seems I cannot uv lock without building this lib, is it by design?</p>
 <p>pyproject.toml</p>
-<pre><code class="language-toml">[project]
+<pre><code>[project]
 name = &quot;testuv&quot;
 version = &quot;0.1.0&quot;
 description = &quot;Add your description here&quot;
@@ -46,7 +46,7 @@ dependencies = [
 
 ]
 </code></pre>
-<pre><code class="language-sh">uv lock
+<pre><code>uv lock
   × Failed to build `causal-conv1d==1.5.3.post1`
   ├─▶ The build backend returned an error
   ╰─▶ Call to `setuptools.build_meta.build_wheel` failed (exit status: 1)
@@ -60,11 +60,11 @@ dependencies = [
 
       [stderr]
       /Users/remi/.cache/uv/builds-v0/.tmppppoU9/lib/python3.11/site-packages/torch/_subclasses/functional_tensor.py:279:
-      UserWarning: Failed to initialize NumPy: No module named 'numpy' (Triggered internally at
+      UserWarning: Failed to initialize NumPy: No module named &#x27;numpy&#x27; (Triggered internally at
       /Users/runner/work/pytorch/pytorch/pytorch/torch/csrc/utils/tensor_numpy.cpp:84.)
         cpu = _conversion_method_template(device=torch.device(&quot;cpu&quot;))
       &lt;string&gt;:119: UserWarning: causal_conv1d was requested, but nvcc was not found.  Are you sure your environment has nvcc available?
-      If you're installing within a container from https://hub.docker.com/r/pytorch/pytorch, only images whose names contain 'devel' will
+      If you&#x27;re installing within a container from https://hub.docker.com/r/pytorch/pytorch, only images whose names contain &#x27;devel&#x27; will
       provide nvcc.
       Traceback (most recent call last):
         File &quot;&lt;string&gt;&quot;, line 14, in &lt;module&gt;
@@ -78,35 +78,35 @@ dependencies = [
         File &quot;/Users/remi/.cache/uv/builds-v0/.tmppppoU9/lib/python3.11/site-packages/setuptools/build_meta.py&quot;, line 317, in run_setup
           exec(code, locals())
         File &quot;&lt;string&gt;&quot;, line 176, in &lt;module&gt;
-      NameError: name 'bare_metal_version' is not defined
+      NameError: name &#x27;bare_metal_version&#x27; is not defined
 
       hint: This usually indicates a problem with the package or the build environment.
   help: `causal-conv1d` (v1.5.3.post1) was included because `testuv` (v0.1.0) depends on `causal-conv1d==1.5.3.post1`
 </code></pre>
 <p>No-build does not help</p>
-<pre><code class="language-sh">uv lock --no-build
+<pre><code>uv lock --no-build
   × No solution found when resolving dependencies:
   ╰─▶ Because causal-conv1d==1.5.3.post1 has no usable wheels and your project depends on causal-conv1d==1.5.3.post1, we can conclude that
-      your project's requirements are unsatisfiable.
+      your project&#x27;s requirements are unsatisfiable.
 
       hint: Wheels are required for `causal-conv1d` because building from source is disabled for all packages (i.e., with `--no-build`)
 </code></pre>
-<h3>Platform</h3>
+Platform
 <p>macOs</p>
-<h3>Version</h3>
+Version
 <p>uv 0.9.25 (Homebrew 2026-01-13)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @remidebette on 2026-01-15 16:04</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/remidebette">@remidebette</a> on 2026-01-15 16:04</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2026-01-15 16:42</div>
-            <div class="timeline-body"><p>To build a lockfile, uv needs to know the dependencies of causal-conv1d. There's several mechanisms that uv supports for getting static metadata from a source distribution, or at least not build everything, which causal-conv1d doesn't support:</p>
+            <div class="timeline-body"><p>To build a lockfile, uv needs to know the dependencies of causal-conv1d. There&#x27;s several mechanisms that uv supports for getting static metadata from a source distribution, or at least not build everything, which causal-conv1d doesn&#x27;t support:</p>
 <ul>
 <li>Static dependencies in <code>PKG-INFO</code>: They are explicitly marked as dynamic. <a href="https://inspector.pypi.io/project/causal-conv1d/1.6.0/packages/db/df/63a384c49743b9fc8fec4c05dbd0b515e1c1c2b07e4559acc4fc37c69223/causal_conv1d-1.6.0.tar.gz/causal_conv1d-1.6.0/PKG-INFO#line.25">https://inspector.pypi.io/project/causal-conv1d/1.6.0/packages/db/df/63a384c49743b9fc8fec4c05dbd0b515e1c1c2b07e4559acc4fc37c69223/causal_conv1d-1.6.0.tar.gz/causal_conv1d-1.6.0/PKG-INFO#line.25</a></li>
 <li>Static dependencies in <code>pyproject.toml</code>: Not present. https://inspector.pypi.io/project/causal-conv1d/1.6.0/packages/db/df/63a384c49743b9fc8fec4c05dbd0b515e1c1c2b07e4559acc4fc37c69223/causal_conv1d-1.6.0.tar.gz/causal_conv1d-1.6.0/pyproject.toml</li>
-<li>Implement <code>prepare_metadata_for_build_wheel</code>: setuptools or the way it uses setuptools doesn't seem to support that.</li>
+<li>Implement <code>prepare_metadata_for_build_wheel</code>: setuptools or the way it uses setuptools doesn&#x27;t seem to support that.</li>
 </ul>
 <p>From skimming the project, this could be solved by porting these entries to <code>pyproject.toml</code> https://github.com/Dao-AILab/causal-conv1d/blob/da6dbaa9fd5a919967f14d3fd031da1288ad5025/setup.py#L387-L390</p>
 </div>
@@ -114,7 +114,7 @@ dependencies = [
     </div>
 
     <footer>
-        Synced at 2026-01-15 16:54:16 UTC
+        Synced at 2026-01-20 19:41:32 UTC
     </footer>
 </body>
 </html>

@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>Enable autofix for annotations within 'simple' string literals</h1>
+    <h1>Enable autofix for annotations within &#x27;simple&#x27; string literals</h1>
 
     <div class="meta">
         <span class="state-icon state-merged"></span>
@@ -23,16 +23,16 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a></div>
-            <div class="timeline-body"><h2>Summary,</h2>
+            <div class="timeline-body">Summary,
 <p>Today, we avoid applying any autofixes for code within deferred string type annotations. For example:</p>
-<pre><code class="language-py"># Ruff will flag this, and convert it to `list[int]`.
+<pre><code># Ruff will flag this, and convert it to `list[int]`.
 x: List[int] = []
 
-# Ruff will flag this, but won't attempt to fix it.
+# Ruff will flag this, but won&#x27;t attempt to fix it.
 x: &quot;List[int]&quot; = []
 </code></pre>
-<p>This PR enables autofix for code within deferred string type annotations <em>in certain cases</em>. Namely, we allow these snippets to be fixed if and only if the annotation is &quot;simple&quot;, defined here as not containing any implicit concatenations or escaped characters. For example, we don't even try to fix this:</p>
-<pre><code class="language-py">x: &quot;Li&quot; &quot;st[int]&quot; = []
+<p>This PR enables autofix for code within deferred string type annotations <em>in certain cases</em>. Namely, we allow these snippets to be fixed if and only if the annotation is &quot;simple&quot;, defined here as not containing any implicit concatenations or escaped characters. For example, we don&#x27;t even try to fix this:</p>
+<pre><code>x: &quot;Li&quot; &quot;st[int]&quot; = []
 </code></pre>
 <p>...which is valid, but unusual.</p>
 <p>Another way to think of this definition is: can we accurately predict the source code location for expressions within the string? If a string is &quot;simple&quot;, then we can do a &quot;located parse&quot; starting at the beginning of the content, and all the parsed locations will be correct within the indexing scheme of the parent.</p>
@@ -42,18 +42,18 @@ x: &quot;List[int]&quot; = []
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-03-21 20:40</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-21 20:40</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @konstin by @charliermarsh on 2023-03-21 20:40</div>
+            <div class="event">Review requested from <a href="https://github.com/konstin">@konstin</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-21 20:40</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-03-21 21:05</div>
-            <div class="timeline-body"><h2>PR Check Results</h2>
-<h3>Ecosystem</h3>
+            <div class="timeline-body">PR Check Results
+Ecosystem
 <p>✅ ecosystem check detected no changes.</p>
-<h3>Benchmark</h3>
-<h4>Linux</h4>
+Benchmark
+Linux
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 linter/all-rules/large/dataset.py          1.00     14.2±0.02ms     2.9 MB/sec    1.01     14.2±0.06ms     2.9 MB/sec
@@ -65,7 +65,7 @@ linter/default-rules/numpy/ctypeslib.py    1.02   1711.8±3.84µs     9.7 MB/sec
 linter/default-rules/numpy/globals.py      1.00    173.1±0.70µs    17.0 MB/sec    1.01    175.5±2.11µs    16.8 MB/sec
 linter/default-rules/pydantic/types.py     1.00      3.6±0.01ms     7.0 MB/sec    1.01      3.7±0.01ms     7.0 MB/sec
 </code></pre>
-<h4>Windows</h4>
+Windows
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 linter/all-rules/large/dataset.py          1.01     15.1±0.10ms     2.7 MB/sec    1.00     14.9±0.07ms     2.7 MB/sec
@@ -77,20 +77,20 @@ linter/default-rules/numpy/ctypeslib.py    1.02   1765.7±7.78µs     9.4 MB/sec
 linter/default-rules/numpy/globals.py      1.00    181.4±0.99µs    16.3 MB/sec    1.00    180.7±2.60µs    16.3 MB/sec
 linter/default-rules/pydantic/types.py     1.00      3.8±0.01ms     6.7 MB/sec    1.00      3.8±0.07ms     6.7 MB/sec
 </code></pre>
-<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:4549 on 2023-03-22 08:05</div>
             <div class="timeline-body"><p>Nit: We can try to use <code>drain</code> to avoid the need for reversing and manually call pop</p>
-<pre><code class="language-rust">let mut string_type_definitions = self.deferred.string_type_definitions.drain(..).rev();
+<pre><code>let mut string_type_definitions = self.deferred.string_type_definitions.drain(..).rev();
 for ((range, value, (in_annotation, in_type_checking_block), deferral)) = string_type_definitions {
 	...
 }
 </code></pre>
 <p>If the borrow checker gets mad because of multiple mutable borrows of <code>self</code>, then try this:</p>
-<pre><code class="language-rust">let mut string_type_definitions = std::mem::take(&amp;mut self.deferred.string_type_definitions);
+<pre><code>let mut string_type_definitions = std::mem::take(&amp;mut self.deferred.string_type_definitions);
 for ((range, ..)) = string_type_definitions.drain(..).rev() {
   ..
 }
@@ -98,7 +98,7 @@ for ((range, ..)) = string_type_definitions.drain(..).rev() {
 // Restore vector, to re-use the heap allocations
 self.deferred.string_type_definitions = string_type_definitions; 
 </code></pre>
-<p>Both these approaches assume that the loop's body does not read from or write to `self.deferred.string_type_definitions.</p>
+<p>Both these approaches assume that the loop&#x27;s body does not read from or write to `self.deferred.string_type_definitions.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -112,7 +112,7 @@ self.deferred.string_type_definitions = string_type_definitions;
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_ast/src/typing.rs</code>:76 on 2023-03-22 09:53</div>
-            <div class="timeline-body"><p>isn't that a case for <code>derive(PartialEq, Eq)]</code>?</p>
+            <div class="timeline-body"><p>isn&#x27;t that a case for <code>derive(PartialEq, Eq)]</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -129,7 +129,7 @@ self.deferred.string_type_definitions = string_type_definitions;
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:4549 on 2023-03-22 16:09</div>
-            <div class="timeline-body"><p>I think we actually <em>do</em> want to write to <code>self.deferred.string_type_definitions</code>, but we probably <em>don't</em> do it currently (https://github.com/charliermarsh/ruff/issues/3655).</p>
+            <div class="timeline-body"><p>I think we actually <em>do</em> want to write to <code>self.deferred.string_type_definitions</code>, but we probably <em>don&#x27;t</em> do it currently (<a href="https://github.com/charliermarsh/ruff/issues/3655">charliermarsh/ruff#3655</a>).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -142,10 +142,10 @@ self.deferred.string_type_definitions = string_type_definitions;
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2023-03-22 16:45</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-22 16:45</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-03-22 16:45</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-22 16:45</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2023-03-22 16:45</div>
@@ -153,7 +153,7 @@ self.deferred.string_type_definitions = string_type_definitions;
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:56:45 UTC
+        Synced at 2026-01-20 18:52:54 UTC
     </footer>
 </body>
 </html>

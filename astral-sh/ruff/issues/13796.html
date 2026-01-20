@@ -26,22 +26,22 @@
             <div class="timeline-body"><p>As a work-around for forward references (given that by default type annotations are eagerly evaluated at runtime), the Python type system supports type annotations written as string literals, where the contents of the string should be interpreted by the type checker as an annotation expression. See https://typing.readthedocs.io/en/latest/spec/annotations.html#string-annotations</p>
 <p>See https://github.com/astral-sh/ruff/discussions/13499 for prior discussion here.</p>
 <p>Some salient things to consider:</p>
-<h2>Which strings should be considered stringified annotations?</h2>
-<details>
+Which strings should be considered stringified annotations?
+
 
 <p>All string literals found within a type annotation (variable annotation or function parameter/return annotation) should be parsed as stringified annotations. (This is recursive, not only when the entire annotation is a string: parts of annotations can be stringified, e.g. <code>list[&quot;MyType&quot;]</code>.)</p>
-<p>EXCEPT that a string found inside <code>typing.Literal[&quot;some random string&quot;]</code> or <code>typing.Annotated[SomeType, &quot;some string&quot;]</code> in an annotation should not be parsed as a stringified annotation. The difficulty here is that <code>foo[&quot;some random string&quot;]</code> is also a string literal type, not a stringified annotation, if <code>foo</code> is actually an alias for <code>typing.Literal</code>, even via multiple levels of aliasing and imports. This means we don't know for sure if a string in an annotation is a stringified annotation until we are actually doing type inference on that code, so we can reliably identify <code>typing.Literal</code> and <code>typing.Annotated</code>.</p>
-</details>
+<p>EXCEPT that a string found inside <code>typing.Literal[&quot;some random string&quot;]</code> or <code>typing.Annotated[SomeType, &quot;some string&quot;]</code> in an annotation should not be parsed as a stringified annotation. The difficulty here is that <code>foo[&quot;some random string&quot;]</code> is also a string literal type, not a stringified annotation, if <code>foo</code> is actually an alias for <code>typing.Literal</code>, even via multiple levels of aliasing and imports. This means we don&#x27;t know for sure if a string in an annotation is a stringified annotation until we are actually doing type inference on that code, so we can reliably identify <code>typing.Literal</code> and <code>typing.Annotated</code>.</p>
 
-<h2>How should names within stringified annotations be resolved?</h2>
-<details>
+
+How should names within stringified annotations be resolved?
+
 
 <p>The typing spec says only:</p>
 <blockquote>
 <p>The local and global namespace in which it is evaluated should be the same namespaces in which default arguments to the same function would be evaluated.</p>
 </blockquote>
-<p>In practice, this isn't how all type checkers behave, though. We can evaluate the actual behavior using this small module:</p>
-<pre><code class="language-py">from typing import TypeAlias, TYPE_CHECKING, get_type_hints
+<p>In practice, this isn&#x27;t how all type checkers behave, though. We can evaluate the actual behavior using this small module:</p>
+<pre><code>from typing import TypeAlias, TYPE_CHECKING, get_type_hints
 
 A: TypeAlias = int
 
@@ -69,8 +69,8 @@ res.py:16: note: Revealed type is &quot;def (self: res.C, x: builtins.str, y: bu
 </code></pre>
 <p>However, <code>typing.get_type_hints</code> at runtime implements a backwards-compatibility hack to prioritize the global namespace over the local one, and pyright has <a href="https://github.com/microsoft/pyright/discussions/8958">followed its lead</a>:</p>
 <pre><code>➜ python3 res.py
-{'A': typing.TypeAlias, 'x': &lt;class 'int'&gt;, 'y': &lt;class 'str'&gt;}
-{'x': &lt;class 'int'&gt;, 'y': &lt;class 'str'&gt;}
+{&#x27;A&#x27;: typing.TypeAlias, &#x27;x&#x27;: &lt;class &#x27;int&#x27;&gt;, &#x27;y&#x27;: &lt;class &#x27;str&#x27;&gt;}
+{&#x27;x&#x27;: &lt;class &#x27;int&#x27;&gt;, &#x27;y&#x27;: &lt;class &#x27;str&#x27;&gt;}
 </code></pre>
 <pre><code>➜ pyright
 /Users/carlmeyer/projects/pyright-testing/res.py
@@ -80,7 +80,7 @@ res.py:16: note: Revealed type is &quot;def (self: res.C, x: builtins.str, y: bu
 </code></pre>
 <p>They both consider the type of <code>x</code> (either as a class attribute or a method parameter annotation) to be <code>int</code>, prioritizing the global namespace over the local one.</p>
 <p>Pyright also does the same for non-stringified annotations which are deferred-evaluated because they are in a type stub, because the typing spec currently says that all annotations in a stub file should be treated as stringified:</p>
-<pre><code class="language-py"># file res1.py
+<pre><code># file res1.py
 from typing import TypeAlias
 
 A: TypeAlias = int
@@ -99,14 +99,14 @@ reveal_type(C.y)
   /Users/carlmeyer/projects/pyright-testing/res1.pyi:11:13 - information: Type of &quot;C.y&quot; is &quot;int&quot;
 </code></pre>
 <p>And pyright does the same for all annotations in a Python file when <code>from __future__ import annotations</code> is turned on, which makes sense, since at runtime those are actually all stringified annotations.</p>
-<p>It's not totally clear to me what we should do here. I think I would <em>prefer</em> to not implement this namespace swapping at all (like mypy), but maybe compatibility with <code>typing.get_type_hints</code> and pyright will be more important in practice? Not sure.</p>
+<p>It&#x27;s not totally clear to me what we should do here. I think I would <em>prefer</em> to not implement this namespace swapping at all (like mypy), but maybe compatibility with <code>typing.get_type_hints</code> and pyright will be more important in practice? Not sure.</p>
 <p>How we answer this question could have significant implications for how we implement this; the more special-cased the name lookup rules for stringified annotations are, the more it suggests we should not transparently try to parse them to AST in the parser.</p>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2024-10-17 16:41</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/carljm">@carljm</a> on 2024-10-17 16:41</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Viicos">@Viicos</a> on 2024-10-18 11:47</div>
@@ -122,21 +122,21 @@ reveal_type(C.y)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Red Knot 2024" by @carljm on 2024-11-07 15:23</div>
+            <div class="event">Added to milestone &quot;Red Knot 2024&quot; by <a href="https://github.com/carljm">@carljm</a> on 2024-11-07 15:23</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @dhruvmanila by @carljm on 2024-11-07 15:23</div>
+            <div class="event">Assigned to <a href="https://github.com/dhruvmanila">@dhruvmanila</a> by <a href="https://github.com/carljm">@carljm</a> on 2024-11-07 15:23</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dhruvmanila on 2024-11-15 04:10</div>
+            <div class="event">Closed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-11-15 04:10</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dhruvmanila on 2024-11-15 04:10</div>
+            <div class="event">Closed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-11-15 04:10</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:51:18 UTC
+        Synced at 2026-01-20 18:48:59 UTC
     </footer>
 </body>
 </html>

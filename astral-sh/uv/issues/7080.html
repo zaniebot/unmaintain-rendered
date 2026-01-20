@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>Unable to create an editable .pth without 'uv pip install -e .'</h1>
+    <h1>Unable to create an editable .pth without &#x27;uv pip install -e .&#x27;</h1>
 
     <div class="meta">
         <span class="state-icon state-closed"></span>
@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/jklaiho">@jklaiho</a></div>
-            <div class="timeline-body"><p>I've got a Django project in development inside a Docker container, structured like this:</p>
+            <div class="timeline-body"><p>I&#x27;ve got a Django project in development inside a Docker container, structured like this:</p>
 <pre><code>/code
   |_apps/
   |_project/
@@ -34,14 +34,14 @@
   |_uv.lock
   |_(more files not relevant here)
 </code></pre>
-<p>I've used this structure for over a decade, starting with virtualenvs in vagrant boxes, and it's survived to this day. Of course, <code>pyproject.toml</code> is a more recent addition to the mix. I have not created that file or this structure with <code>uv init</code> originally, both were there before I started experimenting with uv. I also use the brand new <code>UV_PROJECT_ENVIRONMENT=/opt/venv</code> variable in the container, but that probably isn't relevant here.</p>
+<p>I&#x27;ve used this structure for over a decade, starting with virtualenvs in vagrant boxes, and it&#x27;s survived to this day. Of course, <code>pyproject.toml</code> is a more recent addition to the mix. I have not created that file or this structure with <code>uv init</code> originally, both were there before I started experimenting with uv. I also use the brand new <code>UV_PROJECT_ENVIRONMENT=/opt/venv</code> variable in the container, but that probably isn&#x27;t relevant here.</p>
 <p><code>/code</code> is bind mounted from the host machine via Compose. <code>project</code> is the result of <code>django-admin startproject</code>. <code>apps</code> contains the Django apps (i.e. subdirs created with <code>/code/project/manage.py startapp</code>).</p>
-<p>In earlier projects, I've used pip-tools, creating a requirement file with <code>pip-compile</code> that would get <code>pip-sync</code>ed. Additionally, on container startups, using <code>command:</code> in <code>docker-compose.yml</code>,  I'd run <code>pip install -e .</code> inside the <code>/code</code> directory to create the <code>.pth</code> file containing the string <code>/code/apps</code>, so our later <code>&amp;&amp; /code/project/manage.py runserver</code> invocation in the same <code>command</code> block works correctly and finds the Django apps.</p>
+<p>In earlier projects, I&#x27;ve used pip-tools, creating a requirement file with <code>pip-compile</code> that would get <code>pip-sync</code>ed. Additionally, on container startups, using <code>command:</code> in <code>docker-compose.yml</code>,  I&#x27;d run <code>pip install -e .</code> inside the <code>/code</code> directory to create the <code>.pth</code> file containing the string <code>/code/apps</code>, so our later <code>&amp;&amp; /code/project/manage.py runserver</code> invocation in the same <code>command</code> block works correctly and finds the Django apps.</p>
 <p>What makes <code>pip install -e .</code> possible is this clause in <code>pyproject.toml</code>:</p>
 <pre><code>[tool.setuptools.packages.find]
 where = [&quot;apps&quot;]
 </code></pre>
-<p>So, I'd essentially use the src layout, but with a folder called <code>apps</code> instead of <code>src</code>. Note that <code>pyproject.toml</code> does not contain a build system definition.</p>
+<p>So, I&#x27;d essentially use the src layout, but with a folder called <code>apps</code> instead of <code>src</code>. Note that <code>pyproject.toml</code> does not contain a build system definition.</p>
 <p>This still works the same as before if I run <code>uv pip install -e .</code> inside the <code>/code</code> dir. The <code>.pth</code> file is created. However, with <code>uv add --editable .</code>, it is not created. That command causes these to be added to <code>pyproject.toml</code>, though:</p>
 <pre><code>[project]
 name=ProjectName
@@ -57,25 +57,25 @@ dependencies = [
 [tool.uv.sources]
 projectname = { workspace = true }
 </code></pre>
-<p>I have no idea where to go from here to get the .pth file created. <code>uv sync</code> doesn't do it. This is almost certainly just my ignorance about how uv works, but I haven't found an answer in the docs, or at least haven't understood what I've read properly.</p>
-<p>This isn't as much a bug report as a request for clarification, possibly at the documentation level. It feels weird to use the uv pip interface for creating the .pth file when everything else I can do without it.</p>
+<p>I have no idea where to go from here to get the .pth file created. <code>uv sync</code> doesn&#x27;t do it. This is almost certainly just my ignorance about how uv works, but I haven&#x27;t found an answer in the docs, or at least haven&#x27;t understood what I&#x27;ve read properly.</p>
+<p>This isn&#x27;t as much a bug report as a request for clarification, possibly at the documentation level. It feels weird to use the uv pip interface for creating the .pth file when everything else I can do without it.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/davidharting">@davidharting</a> on 2024-09-06 19:58</div>
-            <div class="timeline-body"><p>I having this issue as well. <code>uv add --editable .</code> seems to try to get me into a workspace-oriented setup. But workspaces don't seem appropriate for me, because I truly only want one pyproject.toml.</p>
+            <div class="timeline-body"><p>I having this issue as well. <code>uv add --editable .</code> seems to try to get me into a workspace-oriented setup. But workspaces don&#x27;t seem appropriate for me, because I truly only want one pyproject.toml.</p>
 <p>I am also noticing that maybe there was a behavior change between 0.3.3 and 0.4.6.</p>
 <p>I have a script that I run with:</p>
 <pre><code>uv run scripts/my_script.py
 </code></pre>
 <p>my_script.py imports from a local module:</p>
-<pre><code class="language-python"># scripts/my_script.py
+<pre><code># scripts/my_script.py
 from my_module.application import app
 
-if __name__ == '__main__':
+if __name__ == &#x27;__main__&#x27;:
   print(app)
 </code></pre>
-<p>Under <code>uv 0.3.3</code> this worked. I didn't have to install my package as editable or use workspaces.</p>
+<p>Under <code>uv 0.3.3</code> this worked. I didn&#x27;t have to install my package as editable or use workspaces.</p>
 <p>Under <code>uv 0.4.6</code> this no longer works: <code>ModuleImportError: Module my_module does not exit</code></p>
 <p>I can workaround this by running:</p>
 <pre><code>pip install -e .
@@ -87,14 +87,14 @@ if __name__ == '__main__':
             <div class="timeline-header">Comment by <a href="https://github.com/davidharting">@davidharting</a> on 2024-09-06 20:06</div>
             <div class="timeline-body"><p><strong>Update:</strong></p>
 <p>It looks like this diff from my uv.lock from upgrading from uv 0.3.3 to uv 0.4.6 might be related to my issue above.</p>
-<pre><code class="language-diff">[[package]]
+<pre><code>[[package]]
 name = &quot;my-package&quot;
 version = &quot;0.0.1&quot;
 - source = { editable = &quot;.&quot; }
 + source = { virtual = &quot;.&quot; }
 </code></pre>
-<hr />
-<p>I am happy to split off my discussion into a different issue. I'm not sure if @jklaiho and I are describing symptoms of the same problem or no</p>
+<hr>
+<p>I am happy to split off my discussion into a different issue. I&#x27;m not sure if @jklaiho and I are describing symptoms of the same problem or no</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -116,11 +116,11 @@ package = true
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-06 20:23</div>
-            <div class="timeline-body"><p>Yes I think you're looking for <code>package = true</code>. Documentation on this in: https://docs.astral.sh/uv/concepts/projects/#build-systems</p>
+            <div class="timeline-body"><p>Yes I think you&#x27;re looking for <code>package = true</code>. Documentation on this in: https://docs.astral.sh/uv/concepts/projects/#build-systems</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-09-06 20:24</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-06 20:24</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-07 15:15</div>
@@ -128,7 +128,7 @@ package = true
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2024-09-07 15:15</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-07 15:15</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jklaiho">@jklaiho</a> on 2024-09-10 12:24</div>
@@ -138,7 +138,7 @@ package = true
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:26:54 UTC
+        Synced at 2026-01-20 19:33:43 UTC
     </footer>
 </body>
 </html>

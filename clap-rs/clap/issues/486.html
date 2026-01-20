@@ -23,32 +23,32 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/hgrecco">@hgrecco</a></div>
-            <div class="timeline-body"><p>While contributing <code>cut</code> to redox's coreutils, I came across the <code>OptionExt</code> trait of <a href="https://github.com/redox-os/libextra/blob/master/src/option.rs#L9">libextra</a>. It is really nice as it provides a consistent way to exit a program when a problem occurs. Being clap a command line argument parser, I think it could be very useful if it provides such trait (and its implementation).</p>
+            <div class="timeline-body"><p>While contributing <code>cut</code> to redox&#x27;s coreutils, I came across the <code>OptionExt</code> trait of <a href="https://github.com/redox-os/libextra/blob/master/src/option.rs#L9">libextra</a>. It is really nice as it provides a consistent way to exit a program when a problem occurs. Being clap a command line argument parser, I think it could be very useful if it provides such trait (and its implementation).</p>
 <p>If there is consensus that this is a desired feature, I think we can discuss a few things regarding the implementation. For example, I think it might be a good idea to have a function that accepts the exit code. Additionally I think that there should be a function that defaults to stderr.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-04-18 04:19</div>
             <div class="timeline-body"><p>Currently we have a <a href="https://github.com/kbknapp/clap-rs/blob/fdbd12e83069386234d3ead0d7d8e70fb09b3551/src/errors.rs#L337-354">naive implementation</a>.</p>
-<p>I'm open to extended this to be a better implementation! I do, however, want to maintain a either a degree of separation between what should be handled by the argument parser, and what should be handled in user code (i.e. currently users can use <code>std::process::exit</code> and do whatever they want). Not to say we can't support adding those features <code>clap</code> but it just wouldn't be the default (or the default would at least be something 99.9% of users would do/need).</p>
+<p>I&#x27;m open to extended this to be a better implementation! I do, however, want to maintain a either a degree of separation between what should be handled by the argument parser, and what should be handled in user code (i.e. currently users can use <code>std::process::exit</code> and do whatever they want). Not to say we can&#x27;t support adding those features <code>clap</code> but it just wouldn&#x27;t be the default (or the default would at least be something 99.9% of users would do/need).</p>
 <p>Ideas?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">T: enhancement</span> added by @kbknapp on 2016-04-18 04:20</div>
+            <div class="event">Label <span class="label">T: enhancement</span> added by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-04-18 04:20</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2016-04-18 04:20</div>
+            <div class="event">Label <span class="label">W: 2.x</span> added by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-04-18 04:20</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">C: errors</span> added by @kbknapp on 2016-04-18 04:20</div>
+            <div class="event">Label <span class="label">C: errors</span> added by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-04-18 04:20</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/hgrecco">@hgrecco</a> on 2016-04-19 01:04</div>
             <div class="timeline-body"><p>I think that providing a way to terminate a command line program is a good idea. It might not belong in clap, though. I am open for discussions.</p>
 <p>Currently clap contains a way to handle argument parsing related errors. I think this works really well, and should not be touched nor expanded (Except maybe provide a way to select which error code to use on exit and internalization of the error message, but that is a different story)</p>
 <p>What I am proposing here is an Trait extending <code>Option</code> and <code>Result</code> that will give clap users a way to exit a program easily. Imagine that the trait is called <code>OptionExt</code> and contains just a <code>unwrap_or_exit</code> method that takes an error message. This will be a program that uses hyper to download something from the web and then saves it to a file.</p>
-<pre><code class="language-rust">extern crate clap;
+<pre><code>extern crate clap;
 extern crate hyper;
 
 use std::io::{Read, Write};
@@ -81,17 +81,17 @@ fn main() {
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-05-03 01:55</div>
             <div class="timeline-body"><p>Ah ok, yeah I can see the utility in this, especially in providing consistent error messages. Let me think on a way to best expose or do this. I think providing an extension to <code>Option</code> and <code>Result</code> is fine since users would have to manually import those traits to use. Perhaps also a macro or function which allows users to print an error message in the same style that <code>clap</code> does for consistency with an optional error code.</p>
-<p>Granted I think these are all easy things to add manually, i.e. not in <code>clap</code> but I also don't see the harm in including them. Especially for things like, only providing colored output when <code>clap</code> is compiled with colors, etc. All of that would be handled automatically behind the scenes with the user doing nothing more than proving a <code>str</code> for the message.</p>
+<p>Granted I think these are all easy things to add manually, i.e. not in <code>clap</code> but I also don&#x27;t see the harm in including them. Especially for things like, only providing colored output when <code>clap</code> is compiled with colors, etc. All of that would be handled automatically behind the scenes with the user doing nothing more than proving a <code>str</code> for the message.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">T: new feature</span> added by @kbknapp on 2016-05-03 01:55</div>
+            <div class="event">Label <span class="label">T: new feature</span> added by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-05-03 01:55</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">P4: nice to have</span> added by @kbknapp on 2016-05-03 01:55</div>
+            <div class="event">Label <span class="label">P4: nice to have</span> added by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-05-03 01:55</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">D: intermediate</span> added by @kbknapp on 2016-05-03 01:55</div>
+            <div class="event">Label <span class="label">D: intermediate</span> added by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-05-03 01:55</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/vks">@vks</a> on 2016-08-30 15:08</div>
@@ -104,7 +104,7 @@ fn main() {
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/vks">@vks</a> on 2016-09-06 22:15</div>
             <div class="timeline-body"><p>@hgrecco As of version 2.11.2, your suggestion can be implemented by users of clap:</p>
-<pre><code class="language-rust">trait UnwrapOrExit&lt;T&gt;
+<pre><code>trait UnwrapOrExit&lt;T&gt;
     where Self: Sized
 {
     fn unwrap_or_else&lt;F&gt;(self, f: F) -&gt; T
@@ -137,12 +137,12 @@ impl&lt;T, E&gt; UnwrapOrExit&lt;T&gt; for Result&lt;T, E&gt; {
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @kbknapp on 2017-01-30 04:57</div>
+            <div class="event">Closed by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-01-30 04:57</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:46:34 UTC
+        Synced at 2026-01-20 19:56:24 UTC
     </footer>
 </body>
 </html>

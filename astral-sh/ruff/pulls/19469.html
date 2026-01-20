@@ -23,20 +23,20 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>https://github.com/astral-sh/ruff/pull/18987 only partly implemented the special-casing required to make tuple instantiations sound. While that PR made instantiations of <code>tuple</code> itself sound, it did not make instantiations of tuple subclasses sound, as the way in which that PR added the special casing did not mean that the synthesized constructor signatures would be automatically inherited by subclasses. This PR fixes that by moving the special casing to a lower level, inside <code>ClassType::own_class_member</code>.</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>Mdtests added. Some existing mdtests also had to be slightly modified because they were unsoundly constructing instances of tuple subclasses.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-07-21 17:35</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-21 17:35</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-21 17:39</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
+<code>mypy_primer</code> results
 <p>No ecosystem changes detected ✅
 No memory usage changes detected ✅</p>
 </div>
@@ -54,28 +54,28 @@ No memory usage changes detected ✅</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-07-21 17:52</div>
-            <div class="timeline-body"><p>The new diagnostics look weird, though, because I would expect <code>&lt;class 'tuple'&gt;</code> to be assignable to <code>(Unknown, /) -&gt; Unknown</code>.</p>
+            <div class="timeline-body"><p>The new diagnostics look weird, though, because I would expect <code>&lt;class &#x27;tuple&#x27;&gt;</code> to be assignable to <code>(Unknown, /) -&gt; Unknown</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-21 17:53</div>
             <div class="timeline-body"><blockquote>
-<p>The new diagnostics look weird, though, because I would expect <code>&lt;class 'tuple'&gt;</code> to be assignable to <code>(Unknown, /) -&gt; Unknown</code>.</p>
+<p>The new diagnostics look weird, though, because I would expect <code>&lt;class &#x27;tuple&#x27;&gt;</code> to be assignable to <code>(Unknown, /) -&gt; Unknown</code>.</p>
 </blockquote>
-<p>yeah, that's why it's still in draft :P I'm looking into it!</p>
+<p>yeah, that&#x27;s why it&#x27;s still in draft :P I&#x27;m looking into it!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-21 18:59</div>
             <div class="timeline-body"><p>Minimal repro: this still passes on this branch:</p>
-<pre><code class="language-py">from typing import Callable, Any
+<pre><code>from typing import Callable, Any
 
 def f(x: Callable[..., Any]): ...
 
 f(tuple)
 </code></pre>
 <p>but this no longer does:</p>
-<pre><code class="language-py">from typing import Callable, Any
+<pre><code>from typing import Callable, Any
 
 def f(x: Callable[[Any], Any]): ...
 
@@ -85,30 +85,30 @@ f(tuple)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-21 19:08</div>
-            <div class="timeline-body"><p>The reason seems to be that this <code>.into_callable(db)</code> call is now returning <code>Callable[[], tuple[Unknown, ...]]</code> for <code>&lt;class 'tuple'&gt;</code>: https://github.com/astral-sh/ruff/blob/fcdffe4ac91daed9a227970aaf281119ce2c3007/crates/ty_python_semantic/src/types.rs#L1420-L1422</p>
+            <div class="timeline-body"><p>The reason seems to be that this <code>.into_callable(db)</code> call is now returning <code>Callable[[], tuple[Unknown, ...]]</code> for <code>&lt;class &#x27;tuple&#x27;&gt;</code>: https://github.com/astral-sh/ruff/blob/fcdffe4ac91daed9a227970aaf281119ce2c3007/crates/ty_python_semantic/src/types.rs#L1420-L1422</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-21 19:15</div>
-            <div class="timeline-body"><p>Oh, I think the bug is just https://github.com/astral-sh/ty/issues/760 again, but for <code>__new__</code> this time rather than <code>__init__</code></p>
+            <div class="timeline-body"><p>Oh, I think the bug is just <a href="https://github.com/astral-sh/ty/issues/760">astral-sh/ty#760</a> again, but for <code>__new__</code> this time rather than <code>__init__</code></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-21 19:34</div>
-            <div class="timeline-body"><p>Great, https://github.com/astral-sh/ruff/pull/19469/commits/38382034eac96277ad251a3bbbf10c89eeab1a59 fixed it! This now has a clean primer report.</p>
+            <div class="timeline-body"><p>Great, <a href="https://github.com/astral-sh/ruff/pull/19469">astral-sh/ruff#19469</a>/commits/38382034eac96277ad251a3bbbf10c89eeab1a59 fixed it! This now has a clean primer report.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @AlexWaygood on 2025-07-21 19:34</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-21 19:34</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-07-21 19:34</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-21 19:34</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-07-21 19:34</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-21 19:34</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-07-21 19:34</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-21 19:34</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:589 on 2025-07-21 20:28</div>
@@ -120,10 +120,10 @@ f(tuple)
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @AlexWaygood on 2025-07-21 21:25</div>
+            <div class="event">Merged by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-21 21:25</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-07-21 21:25</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-21 21:25</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-07-21 21:25</div>
@@ -131,7 +131,7 @@ f(tuple)
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:14:26 UTC
+        Synced at 2026-01-20 19:16:50 UTC
     </footer>
 </body>
 </html>

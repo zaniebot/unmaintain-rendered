@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Add a new <code>Type::EnumLiteral(…)</code> variant and infer this type for member accesses on enums.</p>
 <p><strong>Example</strong>: No more <code>@Todo</code> types here:</p>
-<pre><code class="language-py">from enum import Enum
+<pre><code>from enum import Enum
 
 class Answer(Enum):
     YES = 1
@@ -39,28 +39,28 @@ reveal_type(Answer.YES)  # revealed: Literal[Answer.YES]
 reveal_type(Answer.YES == Answer.NO)  # revealed: Literal[False]
 reveal_type(Answer.YES.is_yes())  # revealed: bool
 </code></pre>
-<h2>Test Plan</h2>
+Test Plan
 <ul>
 <li>Many new Markdown tests for the new type variant</li>
 <li>Added enum literal types to property tests, ran property tests</li>
 </ul>
-<h2>Ecosystem analysis</h2>
-<details>
+Ecosystem analysis
 
-<summary>Lots of false positives removed. All of the new diagnostics are either new true positives (the majority) or known problems. Click for detailed analysis</summary>
 
-<pre><code class="language-diff">AutoSplit (https://github.com/Toufool/AutoSplit)
+Lots of false positives removed. All of the new diagnostics are either new true positives (the majority) or known problems. Click for detailed analysis
+
+<pre><code>AutoSplit (https://github.com/Toufool/AutoSplit)
 + error[call-non-callable] src/capture_method/__init__.py:137:9: Method `__getitem__` of type `bound method CaptureMethodDict.__getitem__(key: Never, /) -&gt; type[CaptureMethodBase]` is not callable on object of type `CaptureMethodDict`
 + error[call-non-callable] src/capture_method/__init__.py:147:9: Method `__getitem__` of type `bound method CaptureMethodDict.__getitem__(key: Never, /) -&gt; type[CaptureMethodBase]` is not callable on object of type `CaptureMethodDict`
 + error[call-non-callable] src/capture_method/__init__.py:148:1: Method `__getitem__` of type `bound method CaptureMethodDict.__getitem__(key: Never, /) -&gt; type[CaptureMethodBase]` is not callable on object of type `CaptureMethodDict`
 </code></pre>
 <p>New true positives. That <code>__getitem__</code> method is apparently annotated with <code>Never</code> to prevent developers from using it.</p>
-<pre><code class="language-diff">dd-trace-py (https://github.com/DataDog/dd-trace-py)
+<pre><code>dd-trace-py (https://github.com/DataDog/dd-trace-py)
 + error[invalid-assignment] ddtrace/vendor/psutil/_common.py:29:5: Object of type `None` is not assignable to `Literal[AddressFamily.AF_INET6]`
 + error[invalid-assignment] ddtrace/vendor/psutil/_common.py:33:5: Object of type `None` is not assignable to `Literal[AddressFamily.AF_UNIX]`
 </code></pre>
 <p>Arguably true positives: https://github.com/DataDog/dd-trace-py/blob/e0a772c28bc3897a4b5df73125274999e0f58f30/ddtrace/vendor/psutil/_common.py#L29</p>
-<pre><code class="language-diff">ignite (https://github.com/pytorch/ignite)
+<pre><code>ignite (https://github.com/pytorch/ignite)
 + error[invalid-argument-type] tests/ignite/engine/test_custom_events.py:190:34: Argument to bound method `__call__` is incorrect: Expected `((...) -&gt; Unknown) | None`, found `Literal[&quot;123&quot;]`
 + error[invalid-argument-type] tests/ignite/engine/test_custom_events.py:220:37: Argument to function `default_event_filter` is incorrect: Expected `Engine`, found `None`
 + error[invalid-argument-type] tests/ignite/engine/test_custom_events.py:220:43: Argument to function `default_event_filter` is incorrect: Expected `int`, found `None`
@@ -68,52 +68,52 @@ reveal_type(Answer.YES.is_yes())  # revealed: bool
 + error[invalid-argument-type] tests/ignite/metrics/test_frequency.py:50:38: Argument to bound method `attach` is incorrect: Expected `Events`, found `CallableEventWithFilter`
 </code></pre>
 <p>All true positives. Some of them are inside <code>pytest.raises(TypeError, …)</code> blocks :upside_down_face:</p>
-<pre><code class="language-diff">meson (https://github.com/mesonbuild/meson)
+<pre><code>meson (https://github.com/mesonbuild/meson)
 + error[invalid-argument-type] unittests/internaltests.py:243:51: Argument to bound method `__init__` is incorrect: Expected `bool`, found `Literal[MachineChoice.HOST]`
 + error[invalid-argument-type] unittests/internaltests.py:271:51: Argument to bound method `__init__` is incorrect: Expected `bool`, found `Literal[MachineChoice.HOST]`
 </code></pre>
 <p>New true positives. Enum literals can not be assigned to <code>bool</code>, even if their value types are <code>0</code> and <code>1</code>.</p>
-<pre><code class="language-diff">poetry (https://github.com/python-poetry/poetry)
+<pre><code>poetry (https://github.com/python-poetry/poetry)
 + error[invalid-assignment] src/poetry/console/exceptions.py:101:5: Object of type `Literal[&quot;&quot;]` is not assignable to `InitVar[str]`
 </code></pre>
 <p>New false positive, missing support for <code>InitVar</code>.</p>
-<pre><code class="language-diff">prefect (https://github.com/PrefectHQ/prefect)
+<pre><code>prefect (https://github.com/PrefectHQ/prefect)
 + error[invalid-argument-type] src/integrations/prefect-dask/tests/test_task_runners.py:193:17: Argument is incorrect: Expected `StateType`, found `Literal[StateType.COMPLETED]`
 </code></pre>
-<p>This is confusing. There are two definitions (<a href="https://github.com/PrefectHQ/prefect/blob/74d8cd93eef68600d0c193fa8c4513cf9ac7fdb8/src/prefect/client/schemas/objects.py#L89-L100">one</a>, <a href="https://github.com/PrefectHQ/prefect/blob/main/src/prefect/server/schemas/states.py#L40">two</a>) of the <code>StateType</code> enum. Here, we're trying to assign one to the other. I don't think that should be allowed, so this is a true positive (?).</p>
-<pre><code class="language-diff">python-htmlgen (https://github.com/srittau/python-htmlgen)
+<p>This is confusing. There are two definitions (<a href="https://github.com/PrefectHQ/prefect/blob/74d8cd93eef68600d0c193fa8c4513cf9ac7fdb8/src/prefect/client/schemas/objects.py#L89-L100">one</a>, <a href="https://github.com/PrefectHQ/prefect/blob/main/src/prefect/server/schemas/states.py#L40">two</a>) of the <code>StateType</code> enum. Here, we&#x27;re trying to assign one to the other. I don&#x27;t think that should be allowed, so this is a true positive (?).</p>
+<pre><code>python-htmlgen (https://github.com/srittau/python-htmlgen)
 + error[invalid-assignment] test_htmlgen/form.py:51:9: Object of type `str` is not assignable to attribute `autocomplete` of type `Autocomplete | None`
 + error[invalid-assignment] test_htmlgen/video.py:38:9: Object of type `str` is not assignable to attribute `preload` of type `Preload | None`
 </code></pre>
 <p>True positives. <a href="https://github.com/srittau/python-htmlgen/blob/01e3b911ac282d067850bb324b913e3594bc0e23/htmlgen/form.pyi#L8-L10">The stubs are wrong</a>. These should not contain type annotations, but rather just <code>OFF = ...</code>.</p>
-<pre><code class="language-diff">rotki (https://github.com/rotki/rotki)
+<pre><code>rotki (https://github.com/rotki/rotki)
 + error[invalid-argument-type] rotkehlchen/tests/unit/test_serialization.py:62:30: Argument to bound method `deserialize` is incorrect: Expected `str`, found `Literal[15]`
 </code></pre>
 <p>New true positive.</p>
-<pre><code class="language-diff">vision (https://github.com/pytorch/vision)
+<pre><code>vision (https://github.com/pytorch/vision)
 + error[unresolved-attribute] test/test_extended_models.py:302:17: Type `type[WeightsEnum]` has no attribute `DEFAULT`
 + error[unresolved-attribute] test/test_extended_models.py:302:58: Type `type[WeightsEnum]` has no attribute `DEFAULT`
 </code></pre>
 <p>Also new true positives. No <code>DEFAULT</code> member exists on <code>WeightsEnum</code>.</p>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @sharkdp on 2025-07-14 13:12</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-14 13:12</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-07-14 13:12</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-14 13:12</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-14 13:16</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">python-htmlgen (https://github.com/srittau/python-htmlgen)
+Changes were detected when running on open source projects
+
+<pre><code>python-htmlgen (https://github.com/srittau/python-htmlgen)
 + error[invalid-assignment] test_htmlgen/form.py:51:9: Object of type `str` is not assignable to attribute `autocomplete` of type `Autocomplete | None`
 + error[invalid-assignment] test_htmlgen/video.py:38:9: Object of type `str` is not assignable to attribute `preload` of type `Preload | None`
 - Found 26 diagnostics
@@ -286,24 +286,24 @@ rotki (https://github.com/rotki/rotki)
 + Found 1579 diagnostics
 
 </code></pre>
-</details>
-<details>
-<summary>Memory usage changes were detected when running on open source projects</summary>
 
-<pre><code class="language-diff">trio (https://github.com/python-trio/trio)
+
+Memory usage changes were detected when running on open source projects
+
+<pre><code>trio (https://github.com/python-trio/trio)
 -     memo metadata = ~20MB
 +     memo metadata = ~21MB
 
 </code></pre>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-14 13:21</div>
-            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+            <div class="timeline-body">
 
-<h2><code>ecosystem-analyzer</code> results</h2>
+<code>ecosystem-analyzer</code> results
 <p>| Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
 | <code>type-assertion-failure</code> | 1 | 35 | 0 |
@@ -320,22 +320,22 @@ rotki (https://github.com/rotki/rotki)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-07-14 14:10</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-14 14:10</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-07-14 14:10</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-14 14:10</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-07-14 14:53</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-14 14:53</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-07-14 14:53</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-14 14:53</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-07-14 18:16</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-14 18:16</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-07-14 18:16</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-14 18:16</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-15 07:34</div>
@@ -343,57 +343,57 @@ rotki (https://github.com/rotki/rotki)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/call/overloads.md</code>:405 on 2025-07-15 07:34</div>
-            <div class="timeline-body"><p>I have not implemented expansion of enums yet. I didn't see any ecosystem impact (no new <code>no-matching-overload</code> diagnostics or similar), so I guess this change is fine. Returning <code>Unknown</code> instead of <code>A</code> seems better anyway.</p>
+            <div class="timeline-body"><p>I have not implemented expansion of enums yet. I didn&#x27;t see any ecosystem impact (no new <code>no-matching-overload</code> diagnostics or similar), so I guess this change is fine. Returning <code>Unknown</code> instead of <code>A</code> seems better anyway.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-15 07:45</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-07-15 08:46</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-15 08:46</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-07-15 08:46</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-15 08:46</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-07-15 09:12</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-15 09:12</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-07-15 09:12</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-15 09:12</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-07-15 09:40</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-15 09:40</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-07-15 09:40</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-15 09:40</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @sharkdp on 2025-07-15 09:57</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-15 09:57</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @sharkdp on 2025-07-15 09:57</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-15 09:57</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-07-15 09:57</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-15 09:57</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @sharkdp on 2025-07-15 09:57</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-15 09:57</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @sharkdp on 2025-07-15 09:57</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-15 09:57</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/enums.md</code>:442 on 2025-07-15 10:04</div>
             <div class="timeline-body"><p>you can even do this if you so desire:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; Answer.YES.NO
+<pre><code>&gt;&gt;&gt; Answer.YES.NO
 &lt;Answer.NO: 2&gt;
 &gt;&gt;&gt; Answer.YES.NO.YES.NO
 &lt;Answer.NO: 2&gt;
@@ -403,7 +403,7 @@ rotki (https://github.com/rotki/rotki)
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/enums.md</code>:454 on 2025-07-15 10:05</div>
             <div class="timeline-body"><p>do we internally simplify <code>type[Answer]</code> to a class-literal type, the same as we do for <code>type[C]</code> where <code>C</code> is explicitly decorated with <code>@final</code>? Is it worth adding a test for that?</p>
-<p>Do we have any tests for enum classes that are explicitly decorated with <code>@final</code>? Even though it's unnecessary, it should probably be allowed</p>
+<p>Do we have any tests for enum classes that are explicitly decorated with <code>@final</code>? Even though it&#x27;s unnecessary, it should probably be allowed</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -428,8 +428,8 @@ rotki (https://github.com/rotki/rotki)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/is_single_valued.md</code>:1 on 2025-07-15 10:16</div>
-            <div class="timeline-body"><p>Enum literals are very weird because they're always singletons (you can always narrow them using <code>is</code>) but I think we can only safely treat them as single-valued providing <code>__eq__</code> and <code>__ne__</code> are not defined:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; class Unfortunate(Enum):
+            <div class="timeline-body"><p>Enum literals are very weird because they&#x27;re always singletons (you can always narrow them using <code>is</code>) but I think we can only safely treat them as single-valued providing <code>__eq__</code> and <code>__ne__</code> are not defined:</p>
+<pre><code>&gt;&gt;&gt; class Unfortunate(Enum):
 ...     X = 2
 ...     Y = 3
 ...     def __eq__(self, other):
@@ -444,13 +444,13 @@ True
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:3252 on 2025-07-15 10:20</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">                                    Type::instance(db, ClassType::NonGeneric(enum_class)),
+            <div class="timeline-body"><pre><code>                                    Type::instance(db, ClassType::NonGeneric(enum_class)),
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:5652 on 2025-07-15 10:23</div>
-            <div class="timeline-body"><p>Ideally I guess we'd jump to the definition of the actual enum member here, right? But I know that this would be much harder. Worth a TODO?</p>
+            <div class="timeline-body"><p>Ideally I guess we&#x27;d jump to the definition of the actual enum member here, right? But I know that this would be much harder. Worth a TODO?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -461,7 +461,7 @@ True
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/enums.rs</code>:20 on 2025-07-15 10:29</div>
             <div class="timeline-body"><p>nit: we could enforce immutability here and maybe save a tiny bit of memory</p>
-<pre><code class="language-suggestion">    pub(crate) members: Box&lt;[Name]&gt;,
+<pre><code>    pub(crate) members: Box&lt;[Name]&gt;,
     pub(crate) aliases: FxHashMap&lt;Name, Name&gt;,
 }
 
@@ -493,7 +493,7 @@ impl EnumMetadata {
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/ty_python_semantic/src/types/enums.rs</code>:49 on 2025-07-15 11:27</div>
             <div class="timeline-body"><p>You should add <code>heap_size=get_size2::GetSize::get_heap_size</code> to any tracked function to ensure accurate memory reports, otherwise salsa assumes the type does not contain any heap allocations.</p>
-<p>The empty <code>GetSize</code> implementation for <code>EnumLiteralType</code> is correct, we don't have a way to report the heap size of the fields yet.</p>
+<p>The empty <code>GetSize</code> implementation for <code>EnumLiteralType</code> is correct, we don&#x27;t have a way to report the heap size of the fields yet.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -521,11 +521,11 @@ impl EnumMetadata {
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/is_single_valued.md</code>:1 on 2025-07-15 13:15</div>
             <div class="timeline-body"><blockquote>
-<p>Enum literals are very weird because they're always singletons (you can always narrow them using <code>is</code>) but I think we can only safely treat them as single-valued providing <code>__eq__</code> and <code>__ne__</code> are not defined:</p>
+<p>Enum literals are very weird because they&#x27;re always singletons (you can always narrow them using <code>is</code>) but I think we can only safely treat them as single-valued providing <code>__eq__</code> and <code>__ne__</code> are not defined:</p>
 </blockquote>
-<p>Hm, I don't think your example shows this? <code>Unfortunate.Y</code> is not of type <code>Literal[Unfortunate.X]</code>.</p>
+<p>Hm, I don&#x27;t think your example shows this? <code>Unfortunate.Y</code> is not of type <code>Literal[Unfortunate.X]</code>.</p>
 <p>The only way in which a singleton type could not be a single-valued type is if the single inhabitant does not compare equal to itself, I think?</p>
-<pre><code class="language-py">from enum import Enum
+<pre><code>from enum import Enum
 
 class Weird(Enum):
     A = 1
@@ -534,7 +534,7 @@ class Weird(Enum):
     def __eq__(self, other):
         return False
 </code></pre>
-<p>Anyway, I'll make single-valuedness dependent on the custom <code>__eq__</code>/<code>__ne__</code></p>
+<p>Anyway, I&#x27;ll make single-valuedness dependent on the custom <code>__eq__</code>/<code>__ne__</code></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -547,40 +547,40 @@ class Weird(Enum):
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-07-15 14:27</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-15 14:27</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-07-15 14:28</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-15 14:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-07-15 14:29</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-15 14:29</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-07-15 14:30</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-15 14:30</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/enums.md</code>:535 on 2025-07-15 14:31</div>
             <div class="timeline-body"><p>these might be useful additions to this test:</p>
-<pre><code class="language-suggestion">reveal_type(type(Answer.YES))  # revealed: &lt;class 'Answer'&gt;
+<pre><code>reveal_type(type(Answer.YES))  # revealed: &lt;class &#x27;Answer&#x27;&gt;
 
 class NoMembers(Enum): ...
 
 def _(x: Answer, y: NoMembers):
-    reveal_type(type(x))  # revealed: &lt;class 'Answer'&gt;
+    reveal_type(type(x))  # revealed: &lt;class &#x27;Answer&#x27;&gt;
     reveal_type(type(y))  # revealed: type[NoMembers]
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/narrow/conditionals/eq.md</code>:54 on 2025-07-15 14:34</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">    def __ne__(self, other) -&gt; bool:
+            <div class="timeline-body"><pre><code>    def __ne__(self, other) -&gt; bool:
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/narrow/conditionals/eq.md</code>:62 on 2025-07-15 14:35</div>
             <div class="timeline-body"><p>is it worth also adding a test for an enum that <em>inherits</em> from a class with a custom <code>__eq__</code> method, e.g.</p>
-<pre><code class="language-py">from enum import Enum
+<pre><code>from enum import Enum
 
 class Mixin:
     def __eq__(self, other) -&gt; bool:
@@ -600,19 +600,19 @@ def _(answer: AlsoAmbiguous):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-07-15 14:40</div>
-            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+            <div class="timeline-body">
 
-<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
 
-<h2><a href="https://codspeed.io/astral-sh/ruff/branches/david%2Fenum-literals?runnerMode=Instrumentation">CodSpeed Instrumentation Performance Report</a></h2>
-<h3>Merging #19328 will <strong>degrade performances by 5.69%</strong></h3>
-<p><sub>Comparing <code>david/enum-literals</code> (d0060c2) with <code>main</code> (a0d4e1f)</sub></p>
-<h3>Summary</h3>
-<p><code>⚡ 1</code> improvements<br />
-<code>❌ 2 (👁 2)</code> regressions<br />
-<code>✅ 37</code> untouched benchmarks<br />
+
+<a href="https://codspeed.io/astral-sh/ruff/branches/david%2Fenum-literals?runnerMode=Instrumentation">CodSpeed Instrumentation Performance Report</a>
+Merging #19328 will <strong>degrade performances by 5.69%</strong>
+<p>Comparing <code>david/enum-literals</code> (d0060c2) with <code>main</code> (a0d4e1f)</p>
+Summary
+<p><code>⚡ 1</code> improvements<br>
+<code>❌ 2 (👁 2)</code> regressions<br>
+<code>✅ 37</code> untouched benchmarks<br>
 <code>🆕 1</code> new benchmarks</p>
-<h3>Benchmarks breakdown</h3>
+Benchmarks breakdown
 <p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
 | --- | --------- | ----------------------- | ------------------- | ------ |
 | 👁 | <code>ty_micro[complex_constrained_attributes_1]</code> | 58 ms | 61.5 ms | -5.69% |
@@ -624,7 +624,7 @@ def _(answer: AlsoAmbiguous):
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:3501 on 2025-07-15 14:42</div>
             <div class="timeline-body"><p>hmmm... it looks like overriding <code>__len__</code> on an enum class also affects the truthiness of the enum members:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; class Foo(Enum):
+<pre><code>&gt;&gt;&gt; class Foo(Enum):
 ...     def __len__(self):
 ...         return 0
 ...     A = 42
@@ -632,13 +632,13 @@ def _(answer: AlsoAmbiguous):
 &gt;&gt;&gt; bool(Foo.A)
 False
 </code></pre>
-<p>I'm also not sure we should be doing anything for enum instances specifically that we wouldn't do for other instances of <code>@final</code> classes. E.g. it seems like it would be sound to infer instances of <code>Bar</code> here as being always truthy, since we can clearly see that no classes in its MRO define <code>__bool__</code> or <code>__len__</code>:</p>
-<pre><code class="language-py">from typing import final
+<p>I&#x27;m also not sure we should be doing anything for enum instances specifically that we wouldn&#x27;t do for other instances of <code>@final</code> classes. E.g. it seems like it would be sound to infer instances of <code>Bar</code> here as being always truthy, since we can clearly see that no classes in its MRO define <code>__bool__</code> or <code>__len__</code>:</p>
+<pre><code>from typing import final
 
 @final
 class Bar: ...
 </code></pre>
-<p>I'd be okay with inferring an ambiguous truthiness for enum members for now and deferring this question, since it seems like there's a few things to think through here.</p>
+<p>I&#x27;d be okay with inferring an ambiguous truthiness for enum members for now and deferring this question, since it seems like there&#x27;s a few things to think through here.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -648,7 +648,7 @@ class Bar: ...
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-15 14:50</div>
-            <div class="timeline-body"><p>hmm, could the codspeed complaints be due to the changes to <code>try_bool</code>? IIRC that's a very hot funciton</p>
+            <div class="timeline-body"><p>hmm, could the codspeed complaints be due to the changes to <code>try_bool</code>? IIRC that&#x27;s a very hot funciton</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -672,9 +672,9 @@ class Bar: ...
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-15 17:39</div>
             <div class="timeline-body"><blockquote>
-<p>hmm, could the codspeed complaints be due to the changes to <code>try_bool</code>? IIRC that's a very hot funciton</p>
+<p>hmm, could the codspeed complaints be due to the changes to <code>try_bool</code>? IIRC that&#x27;s a very hot funciton</p>
 </blockquote>
-<p>No, I'm afraid it might be due to the new <code>is_final</code> changes? Looking into it.</p>
+<p>No, I&#x27;m afraid it might be due to the new <code>is_final</code> changes? Looking into it.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -687,15 +687,15 @@ class Bar: ...
 | 🆕 | <code>ty_micro[many_enum_members]</code> | N/A | 112.4 ms | N/A |
 | ⚡ | <code>ty_micro[many_string_assignments]</code> | 78 ms | 74.8 ms | +4.28% |</p>
 </blockquote>
-<p>I did find a way to reduce the regression from -8% to -5% in the <code>complex_constrained_attributes_*</code> benchmarks. In the process, <code>many_string_assignments</code> is now suddenly a <code>+4.28%</code> improvement — I do not understand why. All of these benchmarks are extremely short (they are regression tests for cases where we initially took a long time). And we do need to perform some more work on this branch, because whenever we check if a type is final, we now also check if it's an enum — which requires a MRO traversal.</p>
-<p>I don't think that small regressions on these benchmarks are a huge deal, and all other benchmarks are below -2%, so I'm not going to investigate much further. Not because I'm out of ideas, but because it starts to feel like there are more important things to do. If someone disagrees, please let me know. Happy to take another look.</p>
+<p>I did find a way to reduce the regression from -8% to -5% in the <code>complex_constrained_attributes_*</code> benchmarks. In the process, <code>many_string_assignments</code> is now suddenly a <code>+4.28%</code> improvement — I do not understand why. All of these benchmarks are extremely short (they are regression tests for cases where we initially took a long time). And we do need to perform some more work on this branch, because whenever we check if a type is final, we now also check if it&#x27;s an enum — which requires a MRO traversal.</p>
+<p>I don&#x27;t think that small regressions on these benchmarks are a huge deal, and all other benchmarks are below -2%, so I&#x27;m not going to investigate much further. Not because I&#x27;m out of ideas, but because it starts to feel like there are more important things to do. If someone disagrees, please let me know. Happy to take another look.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @sharkdp on 2025-07-15 19:31</div>
+            <div class="event">Merged by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-15 19:31</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @sharkdp on 2025-07-15 19:31</div>
+            <div class="event">Closed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-15 19:31</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-07-15 19:31</div>
@@ -703,7 +703,7 @@ class Bar: ...
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:14:14 UTC
+        Synced at 2026-01-20 19:16:36 UTC
     </footer>
 </body>
 </html>

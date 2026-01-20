@@ -25,18 +25,18 @@
             <div class="timeline-header"><a href="https://github.com/spacemanspiff2007">@spacemanspiff2007</a></div>
             <div class="timeline-body"><p>I have subclasses which implement different behavior or restrict the data types of the base class.
 Additionally I have a docstring on the class which describes the behavior and the instance variables.
-Sphinx can only document the instance variable type if it's imported into the module.
+Sphinx can only document the instance variable type if it&#x27;s imported into the module.
 To prevent automatic deletion of the (falsely marked as unused) import I self assign the data type in the TYPE_CHECKING block.</p>
 <p>Example.:</p>
 <p>a.py:</p>
-<pre><code class="language-python">from decimal import Decimal
+<pre><code>from decimal import Decimal
 
 class MyComplexBaseClass:
     def __init__(self) -&gt; None:
-        self.var: Decimal = Decimal('1.3')
+        self.var: Decimal = Decimal(&#x27;1.3&#x27;)
 </code></pre>
 <p>b.py</p>
-<pre><code class="language-python">from decimal import Decimal  # &lt;-- Must be imported otherwise sphinx fails
+<pre><code>from decimal import Decimal  # &lt;-- Must be imported otherwise sphinx fails
 from typing import TYPE_CHECKING
 
 from a import MyComplexBaseClass
@@ -51,7 +51,7 @@ class MyClass1(MyComplexBaseClass):
     &quot;&quot;&quot;
 </code></pre>
 <p>This works well, however it triggers <a href="https://docs.astral.sh/ruff/rules/self-assigning-variable/">PLW0127</a></p>
-<pre><code class="language-text">b.py:8:5: PLW0127 Self-assignment of variable `Decimal`
+<pre><code>b.py:8:5: PLW0127 Self-assignment of variable `Decimal`
   |
 6 | if TYPE_CHECKING:
 7 |     Decimal = Decimal
@@ -61,54 +61,54 @@ class MyClass1(MyComplexBaseClass):
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-01-16 09:13</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-16 09:13</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-16 09:15</div>
             <div class="timeline-body"><p>Thanks for the detailed write-up.</p>
-<p>The main issue here seems to be that ruff doesn't understand the use of <code>Decimal</code> in the docstring. That's why I'm leaning against making this, also somewhat obscure and hard to discover, exception and instead prefer teaching Ruff to understand docstrings better.</p>
+<p>The main issue here seems to be that ruff doesn&#x27;t understand the use of <code>Decimal</code> in the docstring. That&#x27;s why I&#x27;m leaning against making this, also somewhat obscure and hard to discover, exception and instead prefer teaching Ruff to understand docstrings better.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-01-16 09:35</div>
-            <div class="timeline-body"><p>I personally feel that importing symbols purely for use in docstrings, is a bit of a code-smell. Shouldn't you be able to instead use the fully qualified name <code>decimal.Decimal</code> in the docstring? Or potentially <code>~decimal.Decimal</code> so it's still rendered as <code>Decimal</code>. That seems like a better solution to me.</p>
+            <div class="timeline-body"><p>I personally feel that importing symbols purely for use in docstrings, is a bit of a code-smell. Shouldn&#x27;t you be able to instead use the fully qualified name <code>decimal.Decimal</code> in the docstring? Or potentially <code>~decimal.Decimal</code> so it&#x27;s still rendered as <code>Decimal</code>. That seems like a better solution to me.</p>
 <p>But I agree that Ruff could do a better job here. Detecting the case where an import is only used for its use inside a docstring could then easily become its own rule.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/spacemanspiff2007">@spacemanspiff2007</a> on 2025-01-16 09:51</div>
             <div class="timeline-body"><blockquote>
-<p>Shouldn't you be able to instead use the fully qualified name <code>decimal.Decimal</code> in the docstring? Or potentially <code>~decimal.Decimal</code> so it's still rendered as <code>Decimal</code>. That seems like a better solution to me.</p>
+<p>Shouldn&#x27;t you be able to instead use the fully qualified name <code>decimal.Decimal</code> in the docstring? Or potentially <code>~decimal.Decimal</code> so it&#x27;s still rendered as <code>Decimal</code>. That seems like a better solution to me.</p>
 </blockquote>
-<p>I'm not sure if this works.
+<p>I&#x27;m not sure if this works.
 However <code>Decimal</code> is only a placeholder (I needed something that has to be imported) and the value is in my case typically a custom datatype. If I import the module my IDE properly refactors the import when I move the implementation around in my project which will not be the case if I use the fully qualified name.</p>
 <blockquote>
-<p>That's why I'm leaning against making this, also somewhat obscure and hard to discover, exception</p>
+<p>That&#x27;s why I&#x27;m leaning against making this, also somewhat obscure and hard to discover, exception</p>
 </blockquote>
-<p>I agree it's not very nice.
+<p>I agree it&#x27;s not very nice.
 However PyCharm does also not discover this properly, too.
-I have to do it anyway if I don't want PyCharm to flag it as an unused import.
+I have to do it anyway if I don&#x27;t want PyCharm to flag it as an unused import.
 😕</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-01-17 00:03</div>
             <div class="timeline-body"><p>Idk if you can do so in PyCharm, but in VSCode I disable organization and removal of unused imports.</p>
-<p>That way my linter (here Ruff's <code>I</code> group) takes care of it on save instead. And I can noqa it.</p>
+<p>That way my linter (here Ruff&#x27;s <code>I</code> group) takes care of it on save instead. And I can noqa it.</p>
 <p>https://github.com/python/typeshed/pull/13363</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-01-17 02:23</div>
-            <div class="timeline-body"><p>For the record, PyCharm's support for reStructuredText/Sphinx in general <a href="https://youtrack.jetbrains.com/issue/PY-73814">is pretty bad</a>, and <a href="https://youtrack.jetbrains.com/issue/PY-73814#focus=Comments-27-10865300.0-0">it won't be improved anytime soon</a>.</p>
+            <div class="timeline-body"><p>For the record, PyCharm&#x27;s support for reStructuredText/Sphinx in general <a href="https://youtrack.jetbrains.com/issue/PY-73814">is pretty bad</a>, and <a href="https://youtrack.jetbrains.com/issue/PY-73814#focus=Comments-27-10865300.0-0">it won&#x27;t be improved anytime soon</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">docstring</span> added by @dhruvmanila on 2025-01-17 05:04</div>
+            <div class="event">Label <span class="label">docstring</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-01-17 05:04</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/spacemanspiff2007">@spacemanspiff2007</a> on 2025-01-30 04:41</div>
-            <div class="timeline-body"><p>I'm don't think this is related to docstring only.</p>
+            <div class="timeline-body"><p>I&#x27;m don&#x27;t think this is related to docstring only.</p>
 <p>There are many use cases that requires where one would want to import an module or object that normally would be moved to the <code>TYPE_CHECKING</code> block or that even would be removed during import sort.
 E.g.</p>
 <ul>
@@ -116,33 +116,33 @@ E.g.</p>
 <li>if I want to resolve type hints and further work with the resolved types</li>
 </ul>
 <p>The most easy and consistent way to achieve this is to keep a self-assignment in the <code>TYPE_CHECKING</code> block.
-That's why I still think it's a good idea to make an exception for the <code>TYPE_CHECKING</code> block and allow the self assignment there.</p>
+That&#x27;s why I still think it&#x27;s a good idea to make an exception for the <code>TYPE_CHECKING</code> block and allow the self assignment there.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-01-30 07:01</div>
-            <div class="timeline-body"><p>I respectfully disagree. When static analysis gets something wrong, due to how  dynamic of a language Python is, the solution isn't to add some hack to your code, the solution is to add a <code>noqa</code> comment, that's what they're for.</p>
-<p>Self-assignment in type checking blocks is non-idiomatic, and besides you, nobody will understand what it's supposed to do, or that it can/should go away, once it's no longer needed to avoid the import related violation.</p>
-<p>Only once <code>noqa</code> isn't enough, because there's a whole cascade of issues that would require their own suppression comments, should you really be tempted to reach towards trickery using <code>TYPE_CHECKING</code> and even then you should ask yourself if a refactor of your code wouldn't serve you better.</p>
+            <div class="timeline-body"><p>I respectfully disagree. When static analysis gets something wrong, due to how  dynamic of a language Python is, the solution isn&#x27;t to add some hack to your code, the solution is to add a <code>noqa</code> comment, that&#x27;s what they&#x27;re for.</p>
+<p>Self-assignment in type checking blocks is non-idiomatic, and besides you, nobody will understand what it&#x27;s supposed to do, or that it can/should go away, once it&#x27;s no longer needed to avoid the import related violation.</p>
+<p>Only once <code>noqa</code> isn&#x27;t enough, because there&#x27;s a whole cascade of issues that would require their own suppression comments, should you really be tempted to reach towards trickery using <code>TYPE_CHECKING</code> and even then you should ask yourself if a refactor of your code wouldn&#x27;t serve you better.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/spacemanspiff2007">@spacemanspiff2007</a> on 2025-01-30 07:33</div>
-            <div class="timeline-body"><p>Thank you for your response. I agree that dynamically accessing module imports is somewhat hacky and a good candidate for refactoring. For this use case a <code>noqa</code> is sufficient because it doesn't happen often.</p>
+            <div class="timeline-body"><p>Thank you for your response. I agree that dynamically accessing module imports is somewhat hacky and a good candidate for refactoring. For this use case a <code>noqa</code> is sufficient because it doesn&#x27;t happen often.</p>
 <p>However I think you only addressed one point of my argument:
 Resolving type hints to the corresponding type and accessing it is something that is quite common and both done during testing and during code execution.
 Pseudo example using pydantic, but this works the same for any class:</p>
 <p>file a:</p>
-<pre><code class="language-python">class MyValue1(BaseModel):
-    type: Literal['MyValue1Type']
+<pre><code>class MyValue1(BaseModel):
+    type: Literal[&#x27;MyValue1Type&#x27;]
     ...
 
 class MyValue2(BaseModel):
-    type: Literal['MyValue2Type']
+    type: Literal[&#x27;MyValue2Type&#x27;]
     ...
 </code></pre>
 <p>file b:</p>
-<pre><code class="language-python">from a import MyValue1, MyValue2
+<pre><code>from a import MyValue1, MyValue2
 
 class MyOuterValue(BaseModel):
     event: MyValue1 | MyValue2
@@ -156,14 +156,14 @@ However to make it work the import has to be available and a self assignment in 
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-01-30 10:36</div>
             <div class="timeline-body"><p>@spacemanspiff2007 In order to support pydantic and other kinds of libraries that need to access type information at runtime there are settings like <a href="https://docs.astral.sh/ruff/settings/#lint_flake8-type-checking_runtime-evaluated-base-classes">runtime-evaluated-base-classes</a> and <a href="https://docs.astral.sh/ruff/settings/#lint_flake8-type-checking_runtime-evaluated-decorators">runtime-evaluated-decorators</a>, which can give you the desired effect.</p>
-<p>It's not a complete solution and there are still some other required runtime uses that are difficult/impossible to detect statically (there are also cases where we can't statically know either way, like forward references to models in SQLAlchemy's <code>Mapped</code>). I am actively working to make <code>flake8-type-checking</code> more flexible and support more use-cases, but it's never going to be able to be the right tool for absolutely everyone. If it's not the right fit, it's better to just disable the <code>TC</code> rules, or at least the ones that are causing issues for you.</p>
+<p>It&#x27;s not a complete solution and there are still some other required runtime uses that are difficult/impossible to detect statically (there are also cases where we can&#x27;t statically know either way, like forward references to models in SQLAlchemy&#x27;s <code>Mapped</code>). I am actively working to make <code>flake8-type-checking</code> more flexible and support more use-cases, but it&#x27;s never going to be able to be the right tool for absolutely everyone. If it&#x27;s not the right fit, it&#x27;s better to just disable the <code>TC</code> rules, or at least the ones that are causing issues for you.</p>
 <p>But either way, any solutions should ideally only rely on configuration and noqa directives, not on some magical piece of Python code.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:52:00 UTC
+        Synced at 2026-01-20 18:49:18 UTC
     </footer>
 </body>
 </html>

@@ -23,25 +23,25 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>This PR uses the new <code>Diagnostic</code> type for rendering formatter diagnostics. This allows the formatter to inherit all of the output formats already implemented in the linter and ty. For example, here's the new <code>full</code> output format, with the formatting diff displayed using the same infrastructure as the linter:</p>
-<p><img width="592" height="364" alt="image" src="https://github.com/user-attachments/assets/6d09817d-3f27-4960-aa8b-41ba47fb4dc0" /></p>
-<details><summary>Resolved TODOs</summary>
+            <div class="timeline-body">Summary
+<p>This PR uses the new <code>Diagnostic</code> type for rendering formatter diagnostics. This allows the formatter to inherit all of the output formats already implemented in the linter and ty. For example, here&#x27;s the new <code>full</code> output format, with the formatting diff displayed using the same infrastructure as the linter:</p>
+<p><img alt="image" src="https://github.com/user-attachments/assets/6d09817d-3f27-4960-aa8b-41ba47fb4dc0"></p>
+Resolved TODOs
 <p>
 
 <p>~~There are several limitiations/todos here still, especially around the <code>OutputFormat</code> type~~:</p>
 <ul>
 <li>[x] A few literal <code>todo!</code>s for the remaining <code>OutputFormat</code>s without matching <code>DiagnosticFormat</code>s</li>
 <li>[x] The default output format is <code>full</code> instead of something more concise like the current output</li>
-<li>[x] Some of the output formats (namely JSON) have information that doesn't make much sense for these diagnostics</li>
+<li>[x] Some of the output formats (namely JSON) have information that doesn&#x27;t make much sense for these diagnostics</li>
 </ul>
-<p>The first of these is definitely resolved, and I think the other two are as well, based on discussion on the design document. In brief, we're okay inheriting the default <code>OutputFormat</code> and can separate the global option into <code>lint.output-format</code> and <code>format.output-format</code> in the future, if needed; and we're okay including redundant information in the non-human-readable output formats.</p>
+<p>The first of these is definitely resolved, and I think the other two are as well, based on discussion on the design document. In brief, we&#x27;re okay inheriting the default <code>OutputFormat</code> and can separate the global option into <code>lint.output-format</code> and <code>format.output-format</code> in the future, if needed; and we&#x27;re okay including redundant information in the non-human-readable output formats.</p>
 <p>My last major concern is with the performance of the new code, as discussed in the <code>Benchmarks</code> section below.</p>
-<p>A smaller question is whether we should use <code>Diagnostic</code>s for formatting errors too. I think the answer to this is yes, in line with changes we're making in the linter too. I still need to implement that here.</p>
+<p>A smaller question is whether we should use <code>Diagnostic</code>s for formatting errors too. I think the answer to this is yes, in line with changes we&#x27;re making in the linter too. I still need to implement that here.</p>
 </p>
-</details> 
+ 
 
-<details><summary>Benchmarks</summary>
+Benchmarks
 <p>
 
 <p>The values in the table are from a large benchmark on the CPython 3.10 code
@@ -67,9 +67,9 @@ complete, which is ~3x more expensive even than the stable diffs produced by the
 <p>My main takeaways here are:</p>
 <ol>
 <li>Rendering <code>Edit</code>s is much more expensive than rendering the diffs from <code>--diff</code></li>
-<li>Constructing <code>Edit</code>s actually isn't too bad</li>
+<li>Constructing <code>Edit</code>s actually isn&#x27;t too bad</li>
 </ol>
-<h3>Constructing <code>Edit</code>s</h3>
+Constructing <code>Edit</code>s
 <p>I also took a closer look at <code>Edit</code> construction by modifying the code and
 repeating the <code>preview-concise</code> benchmark and found that the main issue is
 constructing a <code>SourceFile</code> for use in the <code>Edit</code> rendering. Commenting out the
@@ -86,114 +86,114 @@ diagnostics.</p>
 |:-----------------|------------:|---------:|---------:|------------:|
 | <code>stable</code>         | 202.4 ± 2.9 |    197.6 |    207.9 |        1.00 |
 | <code>no-source-text</code> | 202.7 ± 3.3 |    196.3 |    209.1 | 1.00 ± 0.02 |</p>
-<h3>Rendering diffs</h3>
+Rendering diffs
 <p>The main difference between <code>stable-diff</code> and <code>preview-full</code> seems to be the diffing strategy we use from <code>similar</code>. Both versions use the same algorithm, but in the existing <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/source_kind.rs#L259"><code>CodeDiff</code></a> rendering for the <code>--diff</code> flag, we only do line-level diffing, whereas for <code>Diagnostic</code>s we use <code>TextDiff::iter_inline_changes</code> to highlight word-level changes too. Skipping the word diff for <code>Diagnostic</code>s closes most of the gap:</p>
 <p>| Command | Mean [s] | Min [s] | Max [s] | Relative |
 |:---|---:|---:|---:|---:|
 | <code>stable-diff</code> | 3.323 ± 0.015 | 3.297 | 3.341 | 1.00 |
 | <code>preview-full</code> | 3.654 ± 0.019 | 3.618 | 3.682 | 1.10 ± 0.01 |</p>
-<p>(In some repeated runs, I've seen as small as a ~5% difference, down from 10% in the table)</p>
-<p>This doesn't actually change any of our snapshots, but it would obviously change the rendered result in a terminal since we wouldn't highlight the specific words that changed within a line.</p>
-<p>Another much smaller change that we can try is removing the deadline from the <code>iter_inline_changes</code> call. It looks like there's a fair amount of overhead from the default 500 ms deadline for computing these, and using <code>iter_inline_changes(op, None)</code> (<code>None</code> for the optional deadline argument) improves the runtime quite a bit:</p>
+<p>(In some repeated runs, I&#x27;ve seen as small as a ~5% difference, down from 10% in the table)</p>
+<p>This doesn&#x27;t actually change any of our snapshots, but it would obviously change the rendered result in a terminal since we wouldn&#x27;t highlight the specific words that changed within a line.</p>
+<p>Another much smaller change that we can try is removing the deadline from the <code>iter_inline_changes</code> call. It looks like there&#x27;s a fair amount of overhead from the default 500 ms deadline for computing these, and using <code>iter_inline_changes(op, None)</code> (<code>None</code> for the optional deadline argument) improves the runtime quite a bit:</p>
 <p>| Command | Mean [s] | Min [s] | Max [s] | Relative |
 |:---|---:|---:|---:|---:|
 | <code>stable-diff</code> | 3.322 ± 0.013 | 3.298 | 3.341 | 1.00 |
 | <code>preview-full</code> | 5.296 ± 0.030 | 5.251 | 5.366 | 1.59 ± 0.01 |</p>
 <hr>
 
-<details><summary>hyperfine command</summary>
+hyperfine command
 
-<pre><code class="language-shell">cargo build --release --bin ruff &amp;&amp; hyperfine --ignore-failure --warmup 10 --export-markdown /tmp/table.md \
+<pre><code>cargo build --release --bin ruff &amp;&amp; hyperfine --ignore-failure --warmup 10 --export-markdown /tmp/table.md \
   -n stable -n preview-full -n preview-concise -n stable-diff \
   &quot;./target/release/ruff format --check ./crates/ruff_linter/resources/test/cpython/ --no-cache&quot; \
   &quot;./target/release/ruff format --check ./crates/ruff_linter/resources/test/cpython/ --no-cache --preview --output-format=full&quot; \
   &quot;./target/release/ruff format --check ./crates/ruff_linter/resources/test/cpython/ --no-cache --preview --output-format=concise&quot; \
   &quot;./target/release/ruff format --check ./crates/ruff_linter/resources/test/cpython/ --no-cache --diff&quot;
 </code></pre>
-</details>
+
 
 </p>
-</details> 
+ 
 
-<h2>Test Plan</h2>
+Test Plan
 <p>Some new CLI tests and manual testing</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-16 22:21</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-17 07:16</div>
             <div class="timeline-body"><blockquote>
-<p>More broadly, it seems pretty expensive to add the entire file's contents as an Edit. I'm guessing that might show up in the benchmarks on this PR. On a related note, this is a pretty shallow conversion, only constructing the Diagnostics right before rendering. There might be a better way to use the new infrastructure more. We could also use them for rendering FormatCommandErrors, not just FormatPathResults.</p>
+<p>More broadly, it seems pretty expensive to add the entire file&#x27;s contents as an Edit. I&#x27;m guessing that might show up in the benchmarks on this PR. On a related note, this is a pretty shallow conversion, only constructing the Diagnostics right before rendering. There might be a better way to use the new infrastructure more. We could also use them for rendering FormatCommandErrors, not just FormatPathResults.</p>
 </blockquote>
 <p>A solution here could be to add a <code>diff</code> field to <code>Diagnostic</code> so that the &quot;edit&quot; is computed lazily or the diff is rendered directly instead of using the edit rendering.</p>
 <blockquote>
 <p>The default output format is full instead of something more concise like the current output</p>
 </blockquote>
-<p>Hmm, that's an interesting find. This needs some design work.</p>
+<p>Hmm, that&#x27;s an interesting find. This needs some design work.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-24 22:33</div>
             <div class="timeline-body"><p>I think this is mostly ready for review now. I did a lot of squashing today to make it easier to review commit-by-commit.</p>
 <p>The first 7 commits are all very small, standalone refactors used in later steps. The 8th commit is the biggest, converting <code>FormatPathResult</code>s into diagnostics. The 9th commit is an incremental improvement on that to split notebook <code>Edit</code>s by cell so that they can actually be rendered in the <code>full</code> output format (otherwise they never satisfy <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_db/src/diagnostic/render/full.rs#L141">this check</a>). Finally, the last commit emits errors as diagnostics too.</p>
-<p>I still have a bunch of TODO comments on the errors. I did my best to match up the error variants with <code>DiagnosticId</code>s, including adding two new <code>DiagnosticId</code>s, but I think there's still room for improvement. I should probably also add a test for some or all of these.</p>
-<p>I haven't tried to truncate the lines in the diff yet either. I know that came up in the design discussion, so I'm happy to tackle it now or leave it for a follow up if desired.</p>
-<p>Hopefully it's not too glaring, but in the screenshot in the summary you can see that the <code>|</code> for line numbers doesn't line up with the middle of the filename <code>--&gt;</code> like it does for lint diagnostics. I don't think there's really a good way around this since the arrow alignment comes from <code>annotate-snippets</code> and only gets indented if <code>annotate-snippets</code> renders line numbers too. I'm sure we could hack another option into <code>annotate-snippets</code>, but it would likely make https://github.com/astral-sh/ruff/issues/20411 harder still.</p>
+<p>I still have a bunch of TODO comments on the errors. I did my best to match up the error variants with <code>DiagnosticId</code>s, including adding two new <code>DiagnosticId</code>s, but I think there&#x27;s still room for improvement. I should probably also add a test for some or all of these.</p>
+<p>I haven&#x27;t tried to truncate the lines in the diff yet either. I know that came up in the design discussion, so I&#x27;m happy to tackle it now or leave it for a follow up if desired.</p>
+<p>Hopefully it&#x27;s not too glaring, but in the screenshot in the summary you can see that the <code>|</code> for line numbers doesn&#x27;t line up with the middle of the filename <code>--&gt;</code> like it does for lint diagnostics. I don&#x27;t think there&#x27;s really a good way around this since the arrow alignment comes from <code>annotate-snippets</code> and only gets indented if <code>annotate-snippets</code> renders line numbers too. I&#x27;m sure we could hack another option into <code>annotate-snippets</code>, but it would likely make <a href="https://github.com/astral-sh/ruff/issues/20411">astral-sh/ruff#20411</a> harder still.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-09-24 22:34</div>
+            <div class="event">Label <span class="label">preview</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-24 22:34</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">diagnostics</span> added by @ntBre on 2025-09-24 22:34</div>
+            <div class="event">Label <span class="label">diagnostics</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-24 22:34</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">formatter</span> added by @ntBre on 2025-09-24 22:34</div>
+            <div class="event">Label <span class="label">formatter</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-24 22:34</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-25 21:29</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a>
 <p>No changes detected when running ty on typing conformance tests ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-25 21:30</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
+<code>mypy_primer</code> results
 <p>No ecosystem changes detected ✅
 No memory usage changes detected ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-25 22:02</div>
-            <div class="timeline-body"><p>I'm marking this ready for review. I pushed a few more commits resolving the main issues I noted above:</p>
+            <div class="timeline-body"><p>I&#x27;m marking this ready for review. I pushed a few more commits resolving the main issues I noted above:</p>
 <ul>
 <li><p>I added a <code>lineno_offset</code>/<code>header_offset</code> field for improving the <code>--&gt;</code> alignment:</p>
-<p><img width="555" height="417" alt="image" src="https://github.com/user-attachments/assets/829cce57-0fe2-4ad1-b5b7-6f8b77fd2a94" /></p>
-<p>It can still go wrong and makes it harder to un-fork <code>annotate-snippets</code>, so I'm happy to revert this, but I think it's a visual improvement in general.</p>
+<p><img alt="image" src="https://github.com/user-attachments/assets/829cce57-0fe2-4ad1-b5b7-6f8b77fd2a94"></p>
+<p>It can still go wrong and makes it harder to un-fork <code>annotate-snippets</code>, so I&#x27;m happy to revert this, but I think it&#x27;s a visual improvement in general.</p>
 </li>
-<li><p>I added tests for all of the <code>FormatCommandError</code> variants and fixed a couple of oversights in their formatting, including factoring out and using some of ty's panic rendering. There are still TODOs on a few of these, but I think I could use some input on the best <code>DiagnosticId</code>s to use. The tests at least show what they look like to help us iterate on them.</p>
+<li><p>I added tests for all of the <code>FormatCommandError</code> variants and fixed a couple of oversights in their formatting, including factoring out and using some of ty&#x27;s panic rendering. There are still TODOs on a few of these, but I think I could use some input on the best <code>DiagnosticId</code>s to use. The tests at least show what they look like to help us iterate on them.</p>
 </li>
 </ul>
-<p>I think the performance hit is acceptable. It's only ~10 ms (~5%) for the <code>concise</code> output on a large project, and the larger discrepancy between <code>full</code> output and <code>--diff</code> seems justified given the additional work of computing more granular diffs. I am seeing slightly worse performance today compared to the last time I ran the benchmarks, so it may be worth a bit more profiling, but I think the point still stands.</p>
-<details><summary>New benchmark table</summary>
+<p>I think the performance hit is acceptable. It&#x27;s only ~10 ms (~5%) for the <code>concise</code> output on a large project, and the larger discrepancy between <code>full</code> output and <code>--diff</code> seems justified given the additional work of computing more granular diffs. I am seeing slightly worse performance today compared to the last time I ran the benchmarks, so it may be worth a bit more profiling, but I think the point still stands.</p>
+New benchmark table
 <p>
 
 <p>| Command           |     Mean [ms] | Min [ms] | Max [ms] |     Relative |
@@ -202,63 +202,63 @@ No memory usage changes detected ✅</p>
 | <code>preview-full</code>    | 9134.8 ± 32.1 |   9108.0 |   9197.5 | 45.67 ± 0.55 |
 | <code>preview-concise</code> |   232.6 ± 4.2 |    227.0 |    240.7 |  1.16 ± 0.02 |
 | <code>stable-diff</code>     | 3354.8 ± 15.9 |   3333.7 |   3383.6 | 16.77 ± 0.21 |</p>
-<p><code>stable</code> is basically identical to last time, but both <code>preview</code> versions are ~20 ms slower. <code>--diff</code> is almost 50 ms slower, which really doesn't make sense.</p>
+<p><code>stable</code> is basically identical to last time, but both <code>preview</code> versions are ~20 ms slower. <code>--diff</code> is almost 50 ms slower, which really doesn&#x27;t make sense.</p>
 </p>
-</details> 
+ 
 
 <p>Similarly, I think we may want to truncate large diffs at some point (Zanie even mentioned possibly making the limit configurable), but I think we can hold off on that for now.</p>
-<p>Oh, one other TODO is that it would be nice to emit a warning if the <code>output-format</code> is set without <code>preview</code>, but I don't think that's so easy to do since <code>output-format</code> is a global option and will have already been <code>unwrap_or_default</code>ed by the time we see it.</p>
+<p>Oh, one other TODO is that it would be nice to emit a warning if the <code>output-format</code> is set without <code>preview</code>, but I don&#x27;t think that&#x27;s so easy to do since <code>output-format</code> is a global option and will have already been <code>unwrap_or_default</code>ed by the time we see it.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @ntBre on 2025-09-25 22:03</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-25 22:03</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @ntBre on 2025-09-25 22:03</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-25 22:03</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-09-25 22:03</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-25 22:03</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @ntBre on 2025-09-25 22:03</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-25 22:03</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @ntBre on 2025-09-25 22:03</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-25 22:03</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @BurntSushi by @ntBre on 2025-09-25 22:03</div>
+            <div class="event">Review requested from <a href="https://github.com/BurntSushi">@BurntSushi</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-25 22:03</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dhruvmanila by @ntBre on 2025-09-25 22:03</div>
+            <div class="event">Review requested from <a href="https://github.com/dhruvmanila">@dhruvmanila</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-25 22:03</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @dcreager removed by @ntBre on 2025-09-25 22:03</div>
+            <div class="event">Review request for <a href="https://github.com/dcreager">@dcreager</a> removed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-25 22:03</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @carljm removed by @ntBre on 2025-09-25 22:03</div>
+            <div class="event">Review request for <a href="https://github.com/carljm">@carljm</a> removed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-25 22:03</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @BurntSushi removed by @ntBre on 2025-09-25 22:03</div>
+            <div class="event">Review request for <a href="https://github.com/BurntSushi">@BurntSushi</a> removed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-25 22:03</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @sharkdp removed by @ntBre on 2025-09-25 22:03</div>
+            <div class="event">Review request for <a href="https://github.com/sharkdp">@sharkdp</a> removed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-25 22:03</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @dhruvmanila removed by @ntBre on 2025-09-25 22:03</div>
+            <div class="event">Review request for <a href="https://github.com/dhruvmanila">@dhruvmanila</a> removed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-25 22:03</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[WIP] Use `Diagnostic`s for rendering formatting results" to "Use `Diagnostic`s for rendering formatting results" by @ntBre on 2025-09-25 22:03</div>
+            <div class="event">Renamed from &quot;[WIP] Use `Diagnostic`s for rendering formatting results&quot; to &quot;Use `Diagnostic`s for rendering formatting results&quot; by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-25 22:03</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/args.rs</code>:542 on 2025-09-26 07:33</div>
-            <div class="timeline-body"><p>We should document that this option is only respected in preview mode. Ideally, we'd emit a warning message if it is set when not using preview</p>
+            <div class="timeline-body"><p>We should document that this option is only respected in preview mode. Ideally, we&#x27;d emit a warning message if it is set when not using preview</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/commands/format.rs</code>:355 on 2025-09-26 07:43</div>
             <div class="timeline-body"><p>It seems the only reason that we need to add <code>unformatted</code> here is for the <code>From&lt;FormattedSource&gt; for FormatResult</code> implementation. This seems unfortunate because we do have an owned <code>unformatted</code> in all code paths where we convert from <code>FormattedSource</code> to <code>FormatResult</code>.</p>
 <p>I suggest removing <code>unformatted</code> here and making <code>From&lt;FormattedSource&gt;</code> a method on <code>FormattedSource</code> instead:</p>
-<pre><code class="language-rust">impl FormattedSource {
+<pre><code>impl FormattedSource {
 	fn into_format_result(unformatted: SourceKind) -&gt; FormatResult { ... }
 </code></pre>
 </div>
@@ -266,13 +266,13 @@ No memory usage changes detected ✅</p>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/commands/format.rs</code>:527 on 2025-09-26 07:46</div>
             <div class="timeline-body"><p>Do we still need both <code>Formatted</code> and <code>Diff</code>, given that they now represent the same?</p>
-<p>This makes me wonder: Do your changes regress the performance of <code>format</code> (without <code>--check</code> or <code>--diff</code>). I suspect it could because we're now always capturing <code>formatted</code> and <code>unformatted</code> even if the changes were written right to disk.</p>
+<p>This makes me wonder: Do your changes regress the performance of <code>format</code> (without <code>--check</code> or <code>--diff</code>). I suspect it could because we&#x27;re now always capturing <code>formatted</code> and <code>unformatted</code> even if the changes were written right to disk.</p>
 <p>I think we should keep both those variants but use <code>Diff</code> when using <code>--check</code> but keep using <code>Formatted</code> when using a bare <code>format</code> command.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/commands/format.rs</code>:617 on 2025-09-26 07:49</div>
-            <div class="timeline-body"><p>This seems a bit surprising to me. I saw that <code>self. diagnostics</code> does sort the diagnostics. What's the reason that we don't sort the entire <code>diagnostics</code> instead?</p>
+            <div class="timeline-body"><p>This seems a bit surprising to me. I saw that <code>self. diagnostics</code> does sort the diagnostics. What&#x27;s the reason that we don&#x27;t sort the entire <code>diagnostics</code> instead?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -294,7 +294,7 @@ No memory usage changes detected ✅</p>
 <li>Create IO errors for all other errors</li>
 </ul>
 <p>https://github.com/astral-sh/ruff/blob/959f55ae057843f8b3fe59a23577f5ae3948a903/crates/ruff_db/src/system/os.rs#L527-L533</p>
-<p>What's special about the ignore errors is that the path isn't guaranteed to be the current file path. E.g. the error could be related to the gitignore file in the same or even a parent directory.</p>
+<p>What&#x27;s special about the ignore errors is that the path isn&#x27;t guaranteed to be the current file path. E.g. the error could be related to the gitignore file in the same or even a parent directory.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -309,13 +309,13 @@ No memory usage changes detected ✅</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/commands/format.rs</code>:794 on 2025-09-26 08:23</div>
-            <div class="timeline-body"><p>I think it's worth trying to do a little better here and trim the edit to the range that is different. This can be done in <code>O(n)</code> by searching the first (or last) character that's different (I'm not sure if we should then move forward/backward to find the start/end of the line or if that doesn't matter). I think that would also remove the need to use <code>set_file_level(true)</code> and for <code>set_header_offset</code>?</p>
+            <div class="timeline-body"><p>I think it&#x27;s worth trying to do a little better here and trim the edit to the range that is different. This can be done in <code>O(n)</code> by searching the first (or last) character that&#x27;s different (I&#x27;m not sure if we should then move forward/backward to find the start/end of the line or if that doesn&#x27;t matter). I think that would also remove the need to use <code>set_file_level(true)</code> and for <code>set_header_offset</code>?</p>
 <p>While not as good as separate Edits, it should already narrow the `Edits significantly in practice.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/commands/format.rs</code>:945 on 2025-09-26 08:28</div>
-            <div class="timeline-body"><p>Can we remove this error? It seems that it is only created if we fail to write the diff to stdout... We've already lost if that happens.</p>
+            <div class="timeline-body"><p>Can we remove this error? It seems that it is only created if we fail to write the diff to stdout... We&#x27;ve already lost if that happens.</p>
 <p>I think we can simply ignore that error or log a warning with tracing. It might also be worth checking what ruff check does.</p>
 </div>
         </div>
@@ -331,14 +331,14 @@ No memory usage changes detected ✅</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/commands/format.rs</code>:845 on 2025-09-26 08:53</div>
-            <div class="timeline-body"><p>Using <code>set_file_level</code> here seems odd to me. I understand that the motivation for <code>set_file_level</code> was to suppress code snippets for diagnostics starting at 1:1 (or don't have a range).</p>
-<p>But we do want to show the code snippet for formatter diagnostics and I believe it's the reason why the <code>--&gt;</code> arrow gets misplaced.</p>
+            <div class="timeline-body"><p>Using <code>set_file_level</code> here seems odd to me. I understand that the motivation for <code>set_file_level</code> was to suppress code snippets for diagnostics starting at 1:1 (or don&#x27;t have a range).</p>
+<p>But we do want to show the code snippet for formatter diagnostics and I believe it&#x27;s the reason why the <code>--&gt;</code> arrow gets misplaced.</p>
 <p>Why do we need <code>set_file_level</code> here, could we avoid using it as it seems a misuse?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/mod.rs</code>:1040 on 2025-09-26 09:02</div>
-            <div class="timeline-body"><p>I don't think it's worth having a diagnostic ID for every CLI option that can possibly be invalid. Maybe <code>invalid-cli-option</code>?</p>
+            <div class="timeline-body"><p>I don&#x27;t think it&#x27;s worth having a diagnostic ID for every CLI option that can possibly be invalid. Maybe <code>invalid-cli-option</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -348,7 +348,7 @@ No memory usage changes detected ✅</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-09-26 09:03</div>
-            <div class="timeline-body"><p>Nice: I've a few suggestions. The part I feel most unsure about is if using <code>set_file_level</code> is correct for format diagnostics.</p>
+            <div class="timeline-body"><p>Nice: I&#x27;ve a few suggestions. The part I feel most unsure about is if using <code>set_file_level</code> is correct for format diagnostics.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -357,7 +357,7 @@ No memory usage changes detected ✅</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/src/args.rs</code>:542 on 2025-09-26 12:28</div>
-            <div class="timeline-body"><p>Yeah, I thought about the warning, but I wasn't sure how easy it would be to add since the output format is a global setting. I can go look again too, but is there a place where we know we're in the <code>format</code> sub-command without preview and before unwrapping to a default output format?</p>
+            <div class="timeline-body"><p>Yeah, I thought about the warning, but I wasn&#x27;t sure how easy it would be to add since the output format is a global setting. I can go look again too, but is there a place where we know we&#x27;re in the <code>format</code> sub-command without preview and before unwrapping to a default output format?</p>
 <p>It seems a bit easier if we want to check for non-default output formats, at least.</p>
 </div>
         </div>
@@ -406,8 +406,8 @@ No memory usage changes detected ✅</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/src/commands/format.rs</code>:845 on 2025-09-26 12:40</div>
-            <div class="timeline-body"><p>I wasn't sure that we do want to show the code snippet for these diagnostics as it also requires us to underline/annotate a range in the file. I didn't want to add a multi-line annotation possibly spanning the entire file, but maybe we can underline the first changed line? That could work well with your other suggestion about narrowing the edit range. It does seem slightly redundant to render any code if we're immediately going to render it again in the diff, but I can give it a try.</p>
-<p>But yes, you're right. If we set a real range and thus render a snippet we can avoid making these file-level diagnostics, and I can also revert my arrow changes.</p>
+            <div class="timeline-body"><p>I wasn&#x27;t sure that we do want to show the code snippet for these diagnostics as it also requires us to underline/annotate a range in the file. I didn&#x27;t want to add a multi-line annotation possibly spanning the entire file, but maybe we can underline the first changed line? That could work well with your other suggestion about narrowing the edit range. It does seem slightly redundant to render any code if we&#x27;re immediately going to render it again in the diff, but I can give it a try.</p>
+<p>But yes, you&#x27;re right. If we set a real range and thus render a snippet we can avoid making these file-level diagnostics, and I can also revert my arrow changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -434,8 +434,8 @@ No memory usage changes detected ✅</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/commands/format.rs</code>:845 on 2025-09-26 12:53</div>
-            <div class="timeline-body"><p>Oh, I see. The difference is that we don't actually render a code snippet, we only render a fix (which is something different in annotated snippet?)</p>
-<p>And the issue is that the rendering of <code>--&gt;</code> isn't aligned with the rendering of the fix.</p>
+            <div class="timeline-body"><p>Oh, I see. The difference is that we don&#x27;t actually render a code snippet, we only render a fix (which is something different in annotated snippet?)</p>
+<p>And the issue is that the rendering of <code>--&gt;</code> isn&#x27;t aligned with the rendering of the fix.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -453,7 +453,7 @@ No memory usage changes detected ✅</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/src/commands/format.rs</code>:845 on 2025-09-26 12:56</div>
-            <div class="timeline-body"><p>Yep, the fixes/diffs aren't actually rendered through <code>annotate-snippets</code>, they're my best attempt to emulate <code>annotate-snippets</code> after we render the rest of the diagnostic. That's why the arrow header can't align itself, the two steps are separate.</p>
+            <div class="timeline-body"><p>Yep, the fixes/diffs aren&#x27;t actually rendered through <code>annotate-snippets</code>, they&#x27;re my best attempt to emulate <code>annotate-snippets</code> after we render the rest of the diagnostic. That&#x27;s why the arrow header can&#x27;t align itself, the two steps are separate.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -462,7 +462,7 @@ No memory usage changes detected ✅</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/src/commands/format.rs</code>:650 on 2025-09-26 12:58</div>
-            <div class="timeline-body"><p>That's a good point, I can look into refactoring the linter calls and then reusing something here.</p>
+            <div class="timeline-body"><p>That&#x27;s a good point, I can look into refactoring the linter calls and then reusing something here.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -471,7 +471,7 @@ No memory usage changes detected ✅</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/commands/format.rs</code>:845 on 2025-09-26 13:18</div>
-            <div class="timeline-body"><p>I see. I think we should rename <code>set_file_level</code> to <code>hide_snippet</code> or similar to make the distinction clear now that it's used for more than just hiding snippets for file level diagnostics.</p>
+            <div class="timeline-body"><p>I see. I think we should rename <code>set_file_level</code> to <code>hide_snippet</code> or similar to make the distinction clear now that it&#x27;s used for more than just hiding snippets for file level diagnostics.</p>
 <p>For the alignment. We can probably get it &quot;right&quot; if we compute the line number where the first change is.</p>
 <p>An alternative would be to remove the need for the alignment altogether. Unfortunately, this might be another breaking change except if all we do is change the number of whitespace before after the arrow</p>
 </div>
@@ -483,38 +483,38 @@ No memory usage changes detected ✅</p>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/src/commands/format.rs</code>:845 on 2025-09-26 13:31</div>
             <div class="timeline-body"><blockquote>
-<p>I see. I think we should rename <code>set_file_level</code> to <code>hide_snippet</code> or similar to make the distinction clear now that it's used for more than just hiding snippets for file level diagnostics.</p>
+<p>I see. I think we should rename <code>set_file_level</code> to <code>hide_snippet</code> or similar to make the distinction clear now that it&#x27;s used for more than just hiding snippets for file level diagnostics.</p>
 </blockquote>
-<p>I guess I was still thinking of these conceptually as file-level diagnostics. That's what they are on stable anyway, &quot;File would be reformatted.&quot; But I'm happy to rename the setting, <code>hide_snippet</code> makes the actual effect more clear for sure.</p>
+<p>I guess I was still thinking of these conceptually as file-level diagnostics. That&#x27;s what they are on stable anyway, &quot;File would be reformatted.&quot; But I&#x27;m happy to rename the setting, <code>hide_snippet</code> makes the actual effect more clear for sure.</p>
 <blockquote>
 <p>For the alignment. We can probably get it &quot;right&quot; if we compute the line number where the first change is.</p>
 </blockquote>
-<p>That's roughly what I'm doing now, except it's a bit better to compute the line number of the <em>last</em> change (currently the end of the file) since that's likely to need a wider alignment than the start. Notebooks are also more complicated since the width is for the per-cell line number.</p>
+<p>That&#x27;s roughly what I&#x27;m doing now, except it&#x27;s a bit better to compute the line number of the <em>last</em> change (currently the end of the file) since that&#x27;s likely to need a wider alignment than the start. Notebooks are also more complicated since the width is for the per-cell line number.</p>
 <blockquote>
 <p>An alternative would be to remove the need for the alignment altogether. Unfortunately, this might be another breaking change except if all we do is change the number of whitespace before after the arrow</p>
 </blockquote>
-<p>That's interesting. I do think it looks nice aligning the middle of the arrow with the line number separator, but maybe it's not worth the trouble.</p>
+<p>That&#x27;s interesting. I do think it looks nice aligning the middle of the arrow with the line number separator, but maybe it&#x27;s not worth the trouble.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/src/commands/format.rs</code>:527 on 2025-09-26 17:43</div>
-            <div class="timeline-body"><p>Hmm that's a good point. They do look mostly the same comparing results from my branch release build and my system ruff 0.13.0 binary, but the branch version is a little slower:</p>
+            <div class="timeline-body"><p>Hmm that&#x27;s a good point. They do look mostly the same comparing results from my branch release build and my system ruff 0.13.0 binary, but the branch version is a little slower:</p>
 <p>| Command  |   Mean [ms] | Min [ms] | Max [ms] |    Relative |
 | :------- | ----------: | -------: | -------: | ----------: |
 | <code>branch</code> | 213.1 ± 2.5 |    209.7 |    217.4 | 1.00 ± 0.02 |
 | <code>stable</code> | 212.4 ± 3.5 |    206.4 |    217.6 |        1.00 |</p>
 <p>It makes sense to me to reuse <code>Diff</code> anyway, though.</p>
-<details><summary>hyperfine</summary>
+hyperfine
 <p>
 
-<pre><code class="language-shell">hyperfine --ignore-failure --warmup 10 --export-markdown /tmp/table.md \
+<pre><code>hyperfine --ignore-failure --warmup 10 --export-markdown /tmp/table.md \
   --prepare &quot;git restore .&quot;  \
   -n branch -n stable \
   &quot;~/astral/ruff/target/release/ruff format . --no-cache&quot; \
   &quot;ruff format . --no-cache&quot;
 </code></pre>
 </p>
-</details> 
+ 
 
 </div>
         </div>
@@ -537,7 +537,7 @@ No memory usage changes detected ✅</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/src/commands/format.rs</code>:868 on 2025-09-26 19:23</div>
-            <div class="timeline-body"><p>Ah that makes sense, thank you! I was wondering if the path might be a bit redundant in both the header and in the diagnostic message, but I didn't realize the two paths could be different. I'll just delete this todo for now then, although it makes sense to me to warn and keep going like in ty at some point.</p>
+            <div class="timeline-body"><p>Ah that makes sense, thank you! I was wondering if the path might be a bit redundant in both the header and in the diagnostic message, but I didn&#x27;t realize the two paths could be different. I&#x27;ll just delete this todo for now then, although it makes sense to me to warn and keep going like in ty at some point.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -551,7 +551,7 @@ No memory usage changes detected ✅</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/src/commands/format.rs</code>:794 on 2025-09-26 20:22</div>
-            <div class="timeline-body"><p>Sounds good, I had an earlier version that did this before I rebased over it. I'll add it back.</p>
+            <div class="timeline-body"><p>Sounds good, I had an earlier version that did this before I rebased over it. I&#x27;ll add it back.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -564,18 +564,18 @@ No memory usage changes detected ✅</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/src/commands/format.rs</code>:945 on 2025-09-26 21:07</div>
-            <div class="timeline-body"><p>Oh I think you're right. Can we just reuse the <code>Write</code> variant? That's what we do for the other failed stdout writes in the only place this is constructed:</p>
+            <div class="timeline-body"><p>Oh I think you&#x27;re right. Can we just reuse the <code>Write</code> variant? That&#x27;s what we do for the other failed stdout writes in the only place this is constructed:</p>
 <p>https://github.com/astral-sh/ruff/blob/6b3c493cff01ad1ab51102048d0d4f489b1e1aa4/crates/ruff/src/commands/format_stdin.rs#L111-L116</p>
 <p>In the linter I think we just bubble up an exit code that ends up reported here:</p>
 <p>https://github.com/astral-sh/ruff/blob/6b3c493cff01ad1ab51102048d0d4f489b1e1aa4/crates/ty/src/main.rs#L28</p>
-<pre><code class="language-shell">$ ruff check try.py &gt; /dev/full
+<pre><code>$ ruff check try.py &gt; /dev/full
 ruff failed
   Cause: No space left on device (os error 28)
 $ ruff format --check try.py &gt; /dev/full
 ruff failed
   Cause: No space left on device (os error 28)
 </code></pre>
-<p>I guess that's effectively the same in the formatter since any of our attempts to write diagnostics will fail.</p>
+<p>I guess that&#x27;s effectively the same in the formatter since any of our attempts to write diagnostics will fail.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -610,19 +610,19 @@ ruff failed
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/commands/format.rs</code>:816 on 2025-09-29 08:10</div>
-            <div class="timeline-body"><p>We should use the line number of the <code>Edit</code>'s end + rendered context window size. The arrow is otherwise over intended if only the first line changed in a 1000 lines file (which I think looks worse than always aligning with two spaces).</p>
+            <div class="timeline-body"><p>We should use the line number of the <code>Edit</code>&#x27;s end + rendered context window size. The arrow is otherwise over intended if only the first line changed in a 1000 lines file (which I think looks worse than always aligning with two spaces).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/commands/format.rs</code>:888 on 2025-09-29 08:16</div>
-            <div class="timeline-body"><p>Nit: I'd also classify this as an internal error. At least, how we're using it in the formatter.</p>
-<p>The way we use this error variant is to avoid panicking if we didn't see a specific syntax element when doing some ad-hoc lexing. This means, we incorrectly assumed some invariant that isn't true because the formatter is never called on code with syntax errors. This is always an implementation error -&gt; <code>InternalError</code>)</p>
-<p>The original intended use case for this error variant comes from biome where the formatter supports formatting code with syntax error. The way it works is that it formats all code without syntax errors. For sections that contain syntax errors, it falls back to preserving the formatting from the source by catching <code>FormatError::SyntaxError</code> at the statement level. But even for Biome, a <code>SyntaxError</code> should never be propagated passt the statement formatting. If it does, than that's consider an internal error too.</p>
+            <div class="timeline-body"><p>Nit: I&#x27;d also classify this as an internal error. At least, how we&#x27;re using it in the formatter.</p>
+<p>The way we use this error variant is to avoid panicking if we didn&#x27;t see a specific syntax element when doing some ad-hoc lexing. This means, we incorrectly assumed some invariant that isn&#x27;t true because the formatter is never called on code with syntax errors. This is always an implementation error -&gt; <code>InternalError</code>)</p>
+<p>The original intended use case for this error variant comes from biome where the formatter supports formatting code with syntax error. The way it works is that it formats all code without syntax errors. For sections that contain syntax errors, it falls back to preserving the formatting from the source by catching <code>FormatError::SyntaxError</code> at the statement level. But even for Biome, a <code>SyntaxError</code> should never be propagated passt the statement formatting. If it does, than that&#x27;s consider an internal error too.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-09-29 08:18</div>
-            <div class="timeline-body"><p>I've a few more suggestions about the computed diagnostic and <code>Edit</code> range and on how to compute the offset for the arrow.</p>
+            <div class="timeline-body"><p>I&#x27;ve a few more suggestions about the computed diagnostic and <code>Edit</code> range and on how to compute the offset for the arrow.</p>
 <p>I still very much dislike the offset hack but I think we can get it &quot;correct&quot; enough outside annotated snippet. However, it might be worth spending like a day to see if we can move the diff rendering to annotated snippets, removign the need for the offset workaround. But this can be a separate PR</p>
 </div>
         </div>
@@ -642,7 +642,7 @@ ruff failed
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/src/commands/format.rs</code>:831 on 2025-09-29 13:02</div>
-            <div class="timeline-body"><p>Oops, of course, thank you! I found my earlier commit in the reflog but obviously didn't finish integrating it with the other new code.</p>
+            <div class="timeline-body"><p>Oops, of course, thank you! I found my earlier commit in the reflog but obviously didn&#x27;t finish integrating it with the other new code.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -651,14 +651,14 @@ ruff failed
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/src/commands/format.rs</code>:816 on 2025-09-29 17:05</div>
-            <div class="timeline-body"><p>Ah good call. This was a bit surprising to me, so I just wanted to note it here: I think the context window size is up to 6 lines. We pass <code>3</code> to similar's <code>grouped_ops</code> function here:</p>
+            <div class="timeline-body"><p>Ah good call. This was a bit surprising to me, so I just wanted to note it here: I think the context window size is up to 6 lines. We pass <code>3</code> to similar&#x27;s <code>grouped_ops</code> function here:</p>
 <p>https://github.com/astral-sh/ruff/blob/1d3e4a91534448121c6db99c2baf83c1ccd2d909/crates/ruff_db/src/diagnostic/render/full.rs#L157-L159</p>
 <p>which is used in similar <a href="https://github.com/mitsuhiko/similar/blob/a169e29954502d67e26c9e766f2f719e99a52559/src/common.rs#L134-L136">here</a>:</p>
-<pre><code class="language-rust">            // End the current group and start a new one whenever
+<pre><code>            // End the current group and start a new one whenever
             // there is a large range with no changes.
             if len &gt; n * 2 {
 </code></pre>
-<p>I guess in a strict sense we should also <code>min</code> this with the actual number of lines in the file, so we don't end up with 105 in a 99 line file, for example.</p>
+<p>I guess in a strict sense we should also <code>min</code> this with the actual number of lines in the file, so we don&#x27;t end up with 105 in a 99 line file, for example.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -666,13 +666,13 @@ ruff failed
             <div class="timeline-body"><p>Thank you for the reviews!</p>
 <p>I think this could use one more look. I was over-complicating the range calculations for a while today, but they felt kind of tricky, at least when I was trying to use <code>zip</code> like the <code>start</code> calculation[^1]. The new <code>ModifiedRange</code> type seems to be working well now, though, unless I missed any edge cases.</p>
 <p>The other changes seemed relatively straightforward, and I also merged the changes from #20595.</p>
-<p>I'll timebox trying to move our diff rendering to annotate-snippets to one day later this week.</p>
-<p>[^1]: The tricky part was that zipping and <code>find</code>ing the first different character could easily fail if one of the snippets was shorter than the other; at that point it's not clear which one was shorter and caused the failure. We also want an exclusive range, so we've gone one character too far by finding the first different character rather than the last common character. Now I just loop from the end and track the length of the common suffix, which we can subtract from both <code>text_len</code>s despite the actual offsets likely being different.</p>
+<p>I&#x27;ll timebox trying to move our diff rendering to annotate-snippets to one day later this week.</p>
+<p>[^1]: The tricky part was that zipping and <code>find</code>ing the first different character could easily fail if one of the snippets was shorter than the other; at that point it&#x27;s not clear which one was shorter and caused the failure. We also want an exclusive range, so we&#x27;ve gone one character too far by finding the first different character rather than the last common character. Now I just loop from the end and track the length of the common suffix, which we can subtract from both <code>text_len</code>s despite the actual offsets likely being different.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/commands/format.rs</code>:782 on 2025-09-30 07:03</div>
-            <div class="timeline-body"><p>It shouldn't matter so I think it's fine leaving as is but there's the third case where <code>modified_range.unformatted</code> is empty (e.g. when adding blank lines between two classes), in which case its an insertion. We could add a <code>Edit::from_text_and_range(new_text, range)</code> (with a better name) that does this dance.</p>
+            <div class="timeline-body"><p>It shouldn&#x27;t matter so I think it&#x27;s fine leaving as is but there&#x27;s the third case where <code>modified_range.unformatted</code> is empty (e.g. when adding blank lines between two classes), in which case its an insertion. We could add a <code>Edit::from_text_and_range(new_text, range)</code> (with a better name) that does this dance.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -683,7 +683,7 @@ ruff failed
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/commands/format.rs</code>:1043 on 2025-09-30 07:07</div>
             <div class="timeline-body"><p>I wonder if a regular loop would have been easier here (similar to what you have below):</p>
-<pre><code class="language-rust">let mut prefix_length = TextSize::ZERO;
+<pre><code>let mut prefix_length = TextSize::ZERO;
 
 for (unformatted, formatted) in unformatted.chars().zip(formatted.chars()) {
     if unformatted != formatted {
@@ -723,7 +723,7 @@ for (unformatted, formatted) in unformatted.chars().zip(formatted.chars()) {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/src/commands/format.rs</code>:782 on 2025-09-30 14:48</div>
-            <div class="timeline-body"><p>I think I'll leave this for now. I only split out deletions because I hit the <code>debug_assert!</code> that <code>content</code> is not empty in <code>Edit::range_replacement</code>. Insertions seem okay to group with full replacements since <code>content</code> is <code>Some</code> in both cases, and we already have a <code>TextRange</code>, which <code>Edit::insertion</code> would otherwise construct.</p>
+            <div class="timeline-body"><p>I think I&#x27;ll leave this for now. I only split out deletions because I hit the <code>debug_assert!</code> that <code>content</code> is not empty in <code>Edit::range_replacement</code>. Insertions seem okay to group with full replacements since <code>content</code> is <code>Some</code> in both cases, and we already have a <code>TextRange</code>, which <code>Edit::insertion</code> would otherwise construct.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -736,25 +736,25 @@ for (unformatted, formatted) in unformatted.chars().zip(formatted.chars()) {
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Use `Diagnostic`s for rendering formatting results" to "Display diffs for `ruff format --check` and add support for different output formats" by @ntBre on 2025-09-30 16:00</div>
+            <div class="event">Renamed from &quot;Use `Diagnostic`s for rendering formatting results&quot; to &quot;Display diffs for `ruff format --check` and add support for different output formats&quot; by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-30 16:00</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @ntBre on 2025-09-30 16:00</div>
+            <div class="event">Merged by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-30 16:00</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ntBre on 2025-09-30 16:00</div>
+            <div class="event">Closed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-30 16:00</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-09-30 16:00</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kaddkaka">@kaddkaka</a> on 2025-10-02 20:27</div>
-            <div class="timeline-body"><p>Does this PR take any steps closer to solving https://github.com/astral-sh/ruff/issues/14452 ?</p>
+            <div class="timeline-body"><p>Does this PR take any steps closer to solving <a href="https://github.com/astral-sh/ruff/issues/14452">astral-sh/ruff#14452</a> ?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-02 21:03</div>
-            <div class="timeline-body"><p>No, I don't think so. This PR was for the <code>format</code> subcommand, so it shouldn't affect <code>ruff check</code> (the lint subcommand) at all. Micha's comment about Ruff only reporting leftover diagnostics after fixes have been applied is still accurate, as far as I know.</p>
+            <div class="timeline-body"><p>No, I don&#x27;t think so. This PR was for the <code>format</code> subcommand, so it shouldn&#x27;t affect <code>ruff check</code> (the lint subcommand) at all. Micha&#x27;s comment about Ruff only reporting leftover diagnostics after fixes have been applied is still accurate, as far as I know.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -762,7 +762,7 @@ for (unformatted, formatted) in unformatted.chars().zip(formatted.chars()) {
             <div class="timeline-body"><p>@ntBre</p>
 <p>Now, <code>ruff format --check</code>, become like <code>ruff format --diff</code>? But with more features.</p>
 <p>So, <code>ruff format --diff</code> is deprecated for preview mode now?</p>
-<p>And why the docs don't mention it?</p>
+<p>And why the docs don&#x27;t mention it?</p>
 <pre><code>      --check
           Avoid writing any formatted files back; instead, exit with a non-zero
           status code if any files would have been modified, and zero otherwise
@@ -771,24 +771,24 @@ for (unformatted, formatted) in unformatted.chars().zip(formatted.chars()) {
           status code and the difference between the current file and how the
           formatted file would look like
 </code></pre>
-<p>Looks like the <code>--check</code> CLI flag didn't change in the docs, But it did.</p>
+<p>Looks like the <code>--check</code> CLI flag didn&#x27;t change in the docs, But it did.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-03 03:59</div>
-            <div class="timeline-body"><p><code>--diff</code> produces a standalone diff that can still be useful for applying as a patch, for example, so it's not deprecated. The &quot;diff&quot; shown by the default <code>format --check</code> output uses the same format that's in preview for lint rules, which is a bit different.</p>
+            <div class="timeline-body"><p><code>--diff</code> produces a standalone diff that can still be useful for applying as a patch, for example, so it&#x27;s not deprecated. The &quot;diff&quot; shown by the default <code>format --check</code> output uses the same format that&#x27;s in preview for lint rules, which is a bit different.</p>
 <p>I also think the <code>--check</code> help message is still accurate. The new information is in the new <code>--output-format</code> entry in the CLI help.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/joukewitteveen">@joukewitteveen</a> on 2025-10-13 09:04</div>
-            <div class="timeline-body"><p>This would be even more powerful when <code>ruff format --check</code> (and <code>ty check</code>) would also support <code>--output-file</code>. Currently, only <code>ruff check</code> supports that. Redirection (<code>ruff format --check [...] &gt; DIR/OUTFILE</code>) doesn't fully solve the issue, since the directory containing the output file is required to exist.</p>
+            <div class="timeline-body"><p>This would be even more powerful when <code>ruff format --check</code> (and <code>ty check</code>) would also support <code>--output-file</code>. Currently, only <code>ruff check</code> supports that. Redirection (<code>ruff format --check [...] &gt; DIR/OUTFILE</code>) doesn&#x27;t fully solve the issue, since the directory containing the output file is required to exist.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kaddkaka">@kaddkaka</a> on 2026-01-08 05:29</div>
             <div class="timeline-body"><blockquote>
-<p>No, I don't think so. This PR was for the <code>format</code> subcommand, so it shouldn't affect <code>ruff check</code> (the lint subcommand) at all. Micha's comment about Ruff only reporting leftover diagnostics after fixes have been applied is still accurate, as far as I know.</p>
+<p>No, I don&#x27;t think so. This PR was for the <code>format</code> subcommand, so it shouldn&#x27;t affect <code>ruff check</code> (the lint subcommand) at all. Micha&#x27;s comment about Ruff only reporting leftover diagnostics after fixes have been applied is still accurate, as far as I know.</p>
 </blockquote>
 <p>Which comment are you referring to?</p>
 </div>
@@ -798,13 +798,13 @@ for (unformatted, formatted) in unformatted.chars().zip(formatted.chars()) {
             <div class="timeline-body"><blockquote>
 <p>Which comment are you referring to?</p>
 </blockquote>
-<p>I think I was referring to this comment: https://github.com/astral-sh/ruff/issues/14452#issuecomment-2487825730</p>
+<p>I think I was referring to this comment: <a href="https://github.com/astral-sh/ruff/issues/14452">astral-sh/ruff#14452</a>#issuecomment-2487825730</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:15:50 UTC
+        Synced at 2026-01-20 19:18:44 UTC
     </footer>
 </body>
 </html>

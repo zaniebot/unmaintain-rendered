@@ -27,7 +27,7 @@
 <p>If pydantic is enabled in the requirements.txt, pyjwt fails with</p>
 <pre><code>#12 7.705 Traceback (most recent call last):
 #12 7.705   File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
-#12 7.706 ImportError: cannot import name 'PyJWKClient' from 'jwt' (/opt/venv/lib/python3.12/site-packages/jwt/__init__.py)
+#12 7.706 ImportError: cannot import name &#x27;PyJWKClient&#x27; from &#x27;jwt&#x27; (/opt/venv/lib/python3.12/site-packages/jwt/__init__.py)
 </code></pre>
 <p>Looks like the <strong>init</strong>.py doesnt get updated with PyJWKClient in the failed runs, but no indication as to why.</p>
 <p>Cant make it fail deterministically but doing  <code>docker system prune</code>, it will fail every other (?) time.</p>
@@ -119,37 +119,37 @@ urllib3==1.26.13
             <div class="timeline-body"><p>Well, in the both examples there are things like:</p>
 <pre><code>#12 7.601 DEBUG File already exists (subsequent attempt), overwriting: /opt/venv/lib/python3.12/site-packages/jwt/__init__.py
 </code></pre>
-<p>It looks like there's a conflict between two packages and you're seeing a race condition where it succeeds or fails depending on which one overwrites the file last.</p>
+<p>It looks like there&#x27;s a conflict between two packages and you&#x27;re seeing a race condition where it succeeds or fails depending on which one overwrites the file last.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-08-24 05:09</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-24 05:09</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ramarnat">@ramarnat</a> on 2024-08-24 05:47</div>
             <div class="timeline-body"><p>That makes sense, pyjwt adds functionality to jwt, so its update to the <strong>init</strong>.py should probably come after. Is there a way to force a dependency? If it were possible to do, would that fix the race condition?</p>
-<p>I'll check to see if we can remove jwt, and only keep pyjwt. But I see the same issue for another library that seems to have the same issue, in that case I know I need both libraries.</p>
+<p>I&#x27;ll check to see if we can remove jwt, and only keep pyjwt. But I see the same issue for another library that seems to have the same issue, in that case I know I need both libraries.</p>
 <p>Or maybe I have to do a sync, and then separately install the 2nd library with <code>uv pip install</code>?</p>
-<p>The race condition doesn't happen in pip, because of its slowness.</p>
+<p>The race condition doesn&#x27;t happen in pip, because of its slowness.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-24 05:50</div>
-            <div class="timeline-body"><p>I see. I don't know if it's feasible for us to unpack packages in a defined order like that, @charliermarsh would know better.</p>
-<p>It seems like pretty bad behavior for a package to rely on patching an existing one by overwriting its files. I think in this case, you'd be best off running two separate install operations — one to prepare the environment, and the next to patch the package.</p>
+            <div class="timeline-body"><p>I see. I don&#x27;t know if it&#x27;s feasible for us to unpack packages in a defined order like that, @charliermarsh would know better.</p>
+<p>It seems like pretty bad behavior for a package to rely on patching an existing one by overwriting its files. I think in this case, you&#x27;d be best off running two separate install operations — one to prepare the environment, and the next to patch the package.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ramarnat">@ramarnat</a> on 2024-08-24 05:56</div>
-            <div class="timeline-body"><p>Could the warning be surfaced, so it's clearer that one is clobbering the other?</p>
+            <div class="timeline-body"><p>Could the warning be surfaced, so it&#x27;s clearer that one is clobbering the other?</p>
 <p>Agreed on the package behavior, but such is life with dependence on third party libs...</p>
 <p>And I take back that it may not happen for us in pip, but I see articles about the import not working.
-https://github.com/jpadilla/pyjwt/issues/685</p>
+<a href="https://github.com/jpadilla/pyjwt/issues/685">jpadilla/pyjwt#685</a></p>
 <p>https://stackoverflow.com/questions/68912059/module-not-found-error-when-using-google-search-api-serpapi</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Strange, non-deterministic issue with library not importing or not importing when running multiple times, failing sometimes and other times not" to "Race condition when two libraries update the same __init__.py" by @ramarnat on 2024-08-24 06:39</div>
+            <div class="event">Renamed from &quot;Strange, non-deterministic issue with library not importing or not importing when running multiple times, failing sometimes and other times not&quot; to &quot;Race condition when two libraries update the same __init__.py&quot; by <a href="https://github.com/ramarnat">@ramarnat</a> on 2024-08-24 06:39</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ramarnat">@ramarnat</a> on 2024-08-24 06:40</div>
@@ -211,17 +211,17 @@ RUN RUST_LOG=trace uv -v --no-cache sync --no-install-package pyjwt --no-install
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-26 13:50</div>
-            <div class="timeline-body"><p>I'm honestly not sure if we <em>should</em>, because I think there are packages that do this somewhat intentionally.</p>
+            <div class="timeline-body"><p>I&#x27;m honestly not sure if we <em>should</em>, because I think there are packages that do this somewhat intentionally.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-08-26 13:55</div>
-            <div class="timeline-body"><p>The cases i looked where <code>__init__.py</code> happened intentionally it was the <code>__init__.py</code> in both packages. We should show a warning when they are not the same, in which case we know there is a race condition. (We have to read the existing file for that, so we'll need to use <code>Locks</code> after <code>io::ErrorKind::AlreadyExists</code> to make sure the read is non-raced)</p>
+            <div class="timeline-body"><p>The cases i looked where <code>__init__.py</code> happened intentionally it was the <code>__init__.py</code> in both packages. We should show a warning when they are not the same, in which case we know there is a race condition. (We have to read the existing file for that, so we&#x27;ll need to use <code>Locks</code> after <code>io::ErrorKind::AlreadyExists</code> to make sure the read is non-raced)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-26 17:37</div>
-            <div class="timeline-body"><p>I think this one does do it intentionally but if it's installed in the same invocation as its target package that's a big problem since we don't do it in a deterministic order?</p>
+            <div class="timeline-body"><p>I think this one does do it intentionally but if it&#x27;s installed in the same invocation as its target package that&#x27;s a big problem since we don&#x27;t do it in a deterministic order?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -231,17 +231,17 @@ RUN RUST_LOG=trace uv -v --no-cache sync --no-install-package pyjwt --no-install
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-26 18:41</div>
-            <div class="timeline-body"><p>There <em>could</em> be but it's a pretty niche use-case and controlling the install order manually seems weird. I feel like this is a problem with the design of these packages, not a common use-case we should add configuration options for.</p>
+            <div class="timeline-body"><p>There <em>could</em> be but it&#x27;s a pretty niche use-case and controlling the install order manually seems weird. I feel like this is a problem with the design of these packages, not a common use-case we should add configuration options for.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> removed by @zanieb on 2024-10-21 21:17</div>
+            <div class="event">Label <span class="label">question</span> removed by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-21 21:17</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">wish</span> added by @zanieb on 2024-10-21 21:17</div>
+            <div class="event">Label <span class="label">wish</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-21 21:17</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-design</span> added by @zanieb on 2024-10-21 21:17</div>
+            <div class="event">Label <span class="label">needs-design</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-21 21:17</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ramarnat">@ramarnat</a> on 2025-02-06 04:38</div>
@@ -251,7 +251,7 @@ RUN RUST_LOG=trace uv -v --no-cache sync --no-install-package pyjwt --no-install
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:26:28 UTC
+        Synced at 2026-01-20 19:33:12 UTC
     </footer>
 </body>
 </html>

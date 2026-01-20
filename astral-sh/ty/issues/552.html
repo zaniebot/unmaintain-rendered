@@ -27,27 +27,27 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @dhruvmanila by @dhruvmanila on 2025-05-30 15:30</div>
+            <div class="event">Assigned to <a href="https://github.com/dhruvmanila">@dhruvmanila</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-05-30 15:30</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">overloads</span> added by @dhruvmanila on 2025-05-30 15:30</div>
+            <div class="event">Label <span class="label">overloads</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-05-30 15:30</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Beta" by @dhruvmanila on 2025-05-30 15:31</div>
+            <div class="event">Added to milestone &quot;Beta&quot; by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-05-30 15:31</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">calls</span> added by @dhruvmanila on 2025-05-30 15:37</div>
+            <div class="event">Label <span class="label">calls</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-05-30 15:37</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-10 14:18</div>
             <div class="timeline-body"><p>@dhruvmanila ran into an interesting case attempting to implement this. Consider this call:</p>
-<pre><code class="language-py">from typing import Any
+<pre><code>from typing import Any
 
 def _(a: Any, b: Any):
     reveal_type(&quot;%s, %s&quot; % (a, b))
 </code></pre>
 <p>And consider the overloads on <code>str.__mod__</code>:</p>
-<pre><code class="language-py">    @overload
+<pre><code>    @overload
     def __mod__(self: LiteralString, value: LiteralString | tuple[LiteralString, ...], /) -&gt; LiteralString: ...
     @overload
     def __mod__(self, value: Any, /) -&gt; str: ...
@@ -58,24 +58,24 @@ def _(a: Any, b: Any):
 <li>The call succeeds against either overload (<code>self</code> is <code>Literal[&quot;%s, %s&quot;]</code>, <code>value</code> is <code>tuple[Any, Any]</code> which is assignable to <code>tuple[LiteralString, ...]</code>; both overloads remain candidates.</li>
 <li>Step 3 is skipped since step 2 did not result in errors for all overloads.</li>
 <li>Step 4 has no effect, since neither overload has a variadic parameter.</li>
-<li>The first overload does not match all possible materializations of the arguments (<code>tuple[Any, Any]</code> can materialize to many types that aren't assignable to <code>LiteralString | tuple[LiteralString, ...]</code>), so no overloads are eliminated by the filtering. This means we have two remaining overloads, whose return types are not equivalent, therefore the spec says the return type should be <code>Any</code>.</li>
+<li>The first overload does not match all possible materializations of the arguments (<code>tuple[Any, Any]</code> can materialize to many types that aren&#x27;t assignable to <code>LiteralString | tuple[LiteralString, ...]</code>), so no overloads are eliminated by the filtering. This means we have two remaining overloads, whose return types are not equivalent, therefore the spec says the return type should be <code>Any</code>.</li>
 </ol>
-<p>But neither pyright nor mypy agree. <a href="https://pyright-play.net/?strict=true&amp;code=GYJw9gtgBALgngBwJYDsDmUkQWEMoCCKcAUCQCYCmwUA%2BgBQCGAXIcQDRQBGrRcAlMxJQRUEJQBulRgBta8BJXoAiAKQBnThuVRVUJpy79%2BQA">Pyright says</a> the return type is <code>LiteralString</code>, which seems both wrong per the spec, and clearly unsafe with respect to the intended guarantees of <code>LiteralString</code> (since the string resulting from this interpolation could easily contain user-controlled text). <a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=cac5863e589273f5a9a71aa6b2ad4dc0">Mypy says</a> <code>str</code>, which seems more reasonable, but also doesn't seem to match the conclusion in the spec.</p>
+<p>But neither pyright nor mypy agree. <a href="https://pyright-play.net/?strict=true&amp;code=GYJw9gtgBALgngBwJYDsDmUkQWEMoCCKcAUCQCYCmwUA%2BgBQCGAXIcQDRQBGrRcAlMxJQRUEJQBulRgBta8BJXoAiAKQBnThuVRVUJpy79%2BQA">Pyright says</a> the return type is <code>LiteralString</code>, which seems both wrong per the spec, and clearly unsafe with respect to the intended guarantees of <code>LiteralString</code> (since the string resulting from this interpolation could easily contain user-controlled text). <a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=cac5863e589273f5a9a71aa6b2ad4dc0">Mypy says</a> <code>str</code>, which seems more reasonable, but also doesn&#x27;t seem to match the conclusion in the spec.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/erictraut">@erictraut</a> on 2025-06-10 15:07</div>
-            <div class="timeline-body"><p>Yes, neither mypy nor pyright fully conform to the spec currently. It's a very difficult algorithm to implement in its entirety. For pyright, I'm tracking this noncompliance <a href="https://github.com/microsoft/pyright/issues/10232">here</a>.</p>
-<p>The conformance tests are also quite incomplete when it comes to the overload matching algorithm. For example, they don't catch this particular deviation from the algorithm. You can complain about that to the guy who wrote these tests. ;)</p>
-<p>There are a couple of reasons you're seeing the current behavior for pyright. The first is a bug (that I wasn't previously aware of) where it doesn't correctly handle argument types that contain an <code>Any</code> but are not actually <code>Any</code>. In your example, the type of the second argument is <code>tuple[Any, Any]</code>, and pyright wasn't handling this case correctly. I think mypy also handles this incorrectly.</p>
-<p>The second reason is that pyright deviates from the spec slightly in that it does not always return <code>Any</code> after step 5 in the algorithm. If more than one match exists and all remaining return types are overlapping, it chooses the widest type. In your example, that's <code>str</code>. That's a much better result from the perspective of someone who is using a language server, but it is not conformant with the documented algorithm.</p>
-<p>I plan to change this behavior in pyright at some point to fully match the spec, but I've been dragging my feet on it because the change is complicated and will cause some churn for pyright and pylance users.</p>
+            <div class="timeline-body"><p>Yes, neither mypy nor pyright fully conform to the spec currently. It&#x27;s a very difficult algorithm to implement in its entirety. For pyright, I&#x27;m tracking this noncompliance <a href="https://github.com/microsoft/pyright/issues/10232">here</a>.</p>
+<p>The conformance tests are also quite incomplete when it comes to the overload matching algorithm. For example, they don&#x27;t catch this particular deviation from the algorithm. You can complain about that to the guy who wrote these tests. ;)</p>
+<p>There are a couple of reasons you&#x27;re seeing the current behavior for pyright. The first is a bug (that I wasn&#x27;t previously aware of) where it doesn&#x27;t correctly handle argument types that contain an <code>Any</code> but are not actually <code>Any</code>. In your example, the type of the second argument is <code>tuple[Any, Any]</code>, and pyright wasn&#x27;t handling this case correctly. I think mypy also handles this incorrectly.</p>
+<p>The second reason is that pyright deviates from the spec slightly in that it does not always return <code>Any</code> after step 5 in the algorithm. If more than one match exists and all remaining return types are overlapping, it chooses the widest type. In your example, that&#x27;s <code>str</code>. That&#x27;s a much better result from the perspective of someone who is using a language server, but it is not conformant with the documented algorithm.</p>
+<p>I plan to change this behavior in pyright at some point to fully match the spec, but I&#x27;ve been dragging my feet on it because the change is complicated and will cause some churn for pyright and pylance users.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-13 04:09</div>
-            <div class="timeline-body"><p>This seems like another case where we would diverge in the behavior following the spec (example from Pyright's test suite):</p>
-<pre><code class="language-py">from typing import Any, Literal, overload, reveal_type
+            <div class="timeline-body"><p>This seems like another case where we would diverge in the behavior following the spec (example from Pyright&#x27;s test suite):</p>
+<pre><code>from typing import Any, Literal, overload, reveal_type
 
 
 @overload
@@ -103,17 +103,17 @@ def check(any: Any):
 <li>Type checking filters out the second overload because <code>True</code> is not assignable to <code>Literal[False]</code></li>
 <li>Step 3 is skipped since step 2 did not result in errors for all overloads</li>
 <li>Step 4 has no effect, since neither overload has a variadic parameter</li>
-<li>First overload does not match all materializations of the arguments since <code>Any</code> can materialize into anything that's not a <code>str</code> and similar case for the third overload. So, no overloads are filtered via this step and the remaining overloads are 1 and 3. The return types <code>int</code> and <code>int | str</code> are not equivalent so the return type of the call is <code>Any</code></li>
+<li>First overload does not match all materializations of the arguments since <code>Any</code> can materialize into anything that&#x27;s not a <code>str</code> and similar case for the third overload. So, no overloads are filtered via this step and the remaining overloads are 1 and 3. The return types <code>int</code> and <code>int | str</code> are not equivalent so the return type of the call is <code>Any</code></li>
 </ul>
-<p>But, it's only ty that infers it as <code>Any</code> while mypy and Pyright both infers <code>int</code>.</p>
+<p>But, it&#x27;s only ty that infers it as <code>Any</code> while mypy and Pyright both infers <code>int</code>.</p>
 <p>Similar case is for the second call (<code>f(any, flag=False)</code>).</p>
-<p>This seems incorrect because what if it's <code>check(1)</code> in the above example so <code>any</code> is actually an integer and not guaranteed to be a <code>str</code>. For Pyright, this might be because of the second reason that @erictraut has provided above.</p>
+<p>This seems incorrect because what if it&#x27;s <code>check(1)</code> in the above example so <code>any</code> is actually an integer and not guaranteed to be a <code>str</code>. For Pyright, this might be because of the second reason that @erictraut has provided above.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-13 04:27</div>
             <div class="timeline-body"><blockquote>
-<p>The second reason is that pyright deviates from the spec slightly in that it does not always return <code>Any</code> after step 5 in the algorithm. If more than one match exists and all remaining return types are overlapping, it chooses the widest type. In your example, that's <code>str</code>. That's a much better result from the perspective of someone who is using a language server, but it is not conformant with the documented algorithm.</p>
+<p>The second reason is that pyright deviates from the spec slightly in that it does not always return <code>Any</code> after step 5 in the algorithm. If more than one match exists and all remaining return types are overlapping, it chooses the widest type. In your example, that&#x27;s <code>str</code>. That&#x27;s a much better result from the perspective of someone who is using a language server, but it is not conformant with the documented algorithm.</p>
 </blockquote>
 <p>This is an interesting point. I agree that this seems useful from that perspective. One way to improve the UX in an editor would be something that @carljm mentioned here (https://discuss.python.org/t/pragmatic-type-checker-defaults-for-untyped-decorators/94938/8) where the inferred type could still be <code>Any</code> but it would contain a &quot;best guess type&quot; which would be used only by the language server (for now, possibly the linter in the future).</p>
 </div>
@@ -124,28 +124,28 @@ def check(any: Any):
 <p>This seems like another case where we would diverge in the behavior following the spec</p>
 </blockquote>
 <p>I think pyright and mypy are following the spec in this example — at least the intended meaning of the spec. I struggled with the wording of step 5 in the algorithm, and the spec is admittedly not crystal clear. If you have any suggestions for how to improve it, let me know.</p>
-<p>It would probably help to work through a concrete example, so let's use your code above. The idea is that if you need to consider all possible materializations of <code>Any</code> (the first argument type) that are potentially assignable to <code>str</code> (the first parameter type). If all such materializations are also assignable to the corresponding parameter in subsequent overloads, then this argument will never distinguish from among the overloads — even if its type was statically known. In other words, we can assume here that if the user eventually replaces the <code>Any</code> with a type that is assignable to <code>str</code>, then the first overload will always be chosen, and third one will never be chosen. If the user eventually replaces the <code>Any</code> with a type that is not assignable to <code>str</code>, then it's an error condition, and no overloads will match. There will never be a situation where both overloads 1 and 3 are both chosen, so we can assume in this case that overload 1 is the winner.</p>
+<p>It would probably help to work through a concrete example, so let&#x27;s use your code above. The idea is that if you need to consider all possible materializations of <code>Any</code> (the first argument type) that are potentially assignable to <code>str</code> (the first parameter type). If all such materializations are also assignable to the corresponding parameter in subsequent overloads, then this argument will never distinguish from among the overloads — even if its type was statically known. In other words, we can assume here that if the user eventually replaces the <code>Any</code> with a type that is assignable to <code>str</code>, then the first overload will always be chosen, and third one will never be chosen. If the user eventually replaces the <code>Any</code> with a type that is not assignable to <code>str</code>, then it&#x27;s an error condition, and no overloads will match. There will never be a situation where both overloads 1 and 3 are both chosen, so we can assume in this case that overload 1 is the winner.</p>
 <p>And yes, I realize this is really complicated. It was implemented this way in mypy, which established the precedent.</p>
 <blockquote>
 <p>One way to improve the UX in an editor...</p>
 </blockquote>
-<p>Yes, that's exactly what pyright already does already in the case where it returns an <code>Unknown</code>. You can see that in this screen shot. The revealed type is <code>Unknown</code> (consistent with the spec), but the presented completion suggestions come from the type <code>int | str</code>, which is the union of all unfiltered overloads.</p>
-<p><img src="https://github.com/user-attachments/assets/ae9a9c71-7666-4c54-b147-1c37eb5a90ce" alt="Image" /></p>
-<p>This is <a href="https://github.com/microsoft/pyright/blob/8112830b0d05175fc169e790e2ee8686bc86e1ab/packages/pyright-internal/src/analyzer/typeEvaluator.ts#L9429">implemented</a> using an internal variant of <code>Unknown</code> that I refer to as a &quot;possible type&quot; — as in, &quot;the type is unknown, but it's possibly one of the following...&quot;. :)</p>
+<p>Yes, that&#x27;s exactly what pyright already does already in the case where it returns an <code>Unknown</code>. You can see that in this screen shot. The revealed type is <code>Unknown</code> (consistent with the spec), but the presented completion suggestions come from the type <code>int | str</code>, which is the union of all unfiltered overloads.</p>
+<p><img src="https://github.com/user-attachments/assets/ae9a9c71-7666-4c54-b147-1c37eb5a90ce" alt="Image"></p>
+<p>This is <a href="https://github.com/microsoft/pyright/blob/8112830b0d05175fc169e790e2ee8686bc86e1ab/packages/pyright-internal/src/analyzer/typeEvaluator.ts#L9429">implemented</a> using an internal variant of <code>Unknown</code> that I refer to as a &quot;possible type&quot; — as in, &quot;the type is unknown, but it&#x27;s possibly one of the following...&quot;. :)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-13 06:03</div>
             <div class="timeline-body"><blockquote>
-<p>It would probably help to work through a concrete example, so let's use your code above. The idea is that if you need to consider all possible materializations of <code>Any</code> (the first argument type) that are potentially assignable to <code>str</code> (the first parameter type). If all such materializations are also assignable to the corresponding parameter in subsequent overloads, then this argument will never distinguish from among the overloads — even if its type was statically known. In other words, we can assume here that if the user eventually replaces the <code>Any</code> with a type that is assignable to <code>str</code>, then the first overload will always be chosen, and third one will never be chosen. If the user eventually replaces the <code>Any</code> with a type that is not assignable to <code>str</code>, then it's an error condition, and no overloads will match. There will never be a situation where both overloads 1 and 3 are both chosen, so we can assume in this case that overload 1 is the winner.</p>
+<p>It would probably help to work through a concrete example, so let&#x27;s use your code above. The idea is that if you need to consider all possible materializations of <code>Any</code> (the first argument type) that are potentially assignable to <code>str</code> (the first parameter type). If all such materializations are also assignable to the corresponding parameter in subsequent overloads, then this argument will never distinguish from among the overloads — even if its type was statically known. In other words, we can assume here that if the user eventually replaces the <code>Any</code> with a type that is assignable to <code>str</code>, then the first overload will always be chosen, and third one will never be chosen. If the user eventually replaces the <code>Any</code> with a type that is not assignable to <code>str</code>, then it&#x27;s an error condition, and no overloads will match. There will never be a situation where both overloads 1 and 3 are both chosen, so we can assume in this case that overload 1 is the winner.</p>
 </blockquote>
-<p>I had this in the back of my mind that it <em>might</em> be something related to the fact that the type of the first parameter is always <code>str</code> so it won't be required to be used to perform step 5. I think what you said makes sense, I'll have to think in terms of implementation based on what I already have.</p>
-<hr />
-<p>(You can skip this if the implementation algorithm isn't relevant.)</p>
-<p>For context, here's the current implementation of this step that is based on the concept of &quot;top materialization&quot; (<a href="https://github.com/astral-sh/ruff/blob/c5e01dc1884827156288b6d32662cdd7c51a78d3/crates/ty_python_semantic/resources/mdtest/type_properties/materialization.md">this document</a> has some context on what &quot;top materialization&quot; means):</p>
-<p>Given the argument types <code>U1, U2, ..., UN</code> and the top materialization of each of the argument types <code>U1', U2', ..., UN'</code>, we go through each of the remaining overloads in order from top to bottom and check if the tuple containing the top materialized argument types <code>(U1', U2', ..., UN')</code> is assignable to the tuple of union of the parameter types up to that overload. It might be best to explain this using an example and I'm going to use a single argument example to best demonstrate this:</p>
+<p>I had this in the back of my mind that it <em>might</em> be something related to the fact that the type of the first parameter is always <code>str</code> so it won&#x27;t be required to be used to perform step 5. I think what you said makes sense, I&#x27;ll have to think in terms of implementation based on what I already have.</p>
+<hr>
+<p>(You can skip this if the implementation algorithm isn&#x27;t relevant.)</p>
+<p>For context, here&#x27;s the current implementation of this step that is based on the concept of &quot;top materialization&quot; (<a href="https://github.com/astral-sh/ruff/blob/c5e01dc1884827156288b6d32662cdd7c51a78d3/crates/ty_python_semantic/resources/mdtest/type_properties/materialization.md">this document</a> has some context on what &quot;top materialization&quot; means):</p>
+<p>Given the argument types <code>U1, U2, ..., UN</code> and the top materialization of each of the argument types <code>U1&#x27;, U2&#x27;, ..., UN&#x27;</code>, we go through each of the remaining overloads in order from top to bottom and check if the tuple containing the top materialized argument types <code>(U1&#x27;, U2&#x27;, ..., UN&#x27;)</code> is assignable to the tuple of union of the parameter types up to that overload. It might be best to explain this using an example and I&#x27;m going to use a single argument example to best demonstrate this:</p>
 <p><code>overloaded.pyi</code>:</p>
-<pre><code class="language-pyi">from typing import Any, overload
+<pre><code>from typing import Any, overload
 
 @overload
 def f(x: tuple[int, str]) -&gt; int: ...
@@ -154,7 +154,7 @@ def f(x: tuple[int, Any]) -&gt; int: ...
 @overload
 def f(x: Any) -&gt; str: ...
 </code></pre>
-<pre><code class="language-py">from typing import Any
+<pre><code>from typing import Any
 
 from overloaded import f
 
@@ -163,22 +163,22 @@ def _(int_str: tuple[int, str], int_any: tuple[int, Any], any_any: tuple[Any, An
     reveal_type(f(int_any))  # revealed: int
     reveal_type(f(any_any))  # revealed: Any
 </code></pre>
-<p>Let's take the <code>f(int_any)</code> call and skipping directly to step 5 where all 3 overloads are remaining:</p>
+<p>Let&#x27;s take the <code>f(int_any)</code> call and skipping directly to step 5 where all 3 overloads are remaining:</p>
 <ol>
 <li>Tuple of top materialized argument types: <code>tuple[tuple[int, object]]</code> (replacing <code>Any</code> with <code>object</code> since it is in a covariant position)</li>
-<li>For overload 1, check whether <code>tuple[tuple[int, object]]</code> is assignable to <code>tuple[tuple[int, str]]</code> which it isn't since <code>object</code> is not assignable to <code>str</code>, so we move to the next overload</li>
-<li>For overload 2, check whether <code>tuple[tuple[int, object]]</code> is assignable to <code>tuple[tuple[int, Any]]</code> which it is, so we've found an overload where all materializations of the argument types are assignable to the parameter types</li>
+<li>For overload 1, check whether <code>tuple[tuple[int, object]]</code> is assignable to <code>tuple[tuple[int, str]]</code> which it isn&#x27;t since <code>object</code> is not assignable to <code>str</code>, so we move to the next overload</li>
+<li>For overload 2, check whether <code>tuple[tuple[int, object]]</code> is assignable to <code>tuple[tuple[int, Any]]</code> which it is, so we&#x27;ve found an overload where all materializations of the argument types are assignable to the parameter types</li>
 <li>Filter the remaining overloads</li>
 <li>Check whether the matching overloads (1 and 2) have equivalent type</li>
 </ol>
-<p>The <code>f(any_any)</code> is an interesting example. Here, steps 1 and 2 from above will be the same except that the top materialized argument type is <code>tuple[tuple[object, object]]</code>, so we move to overload 3 where <code>tuple[tuple[object, object]]</code> is assignable to <code>tuple[Any]</code> but it's the last overload so none of the overloads are filtered out. Here, the return types are not equivalent for the matching overloads (all) so the return type is <code>Any</code>.</p>
-<hr />
-<p>So, based on the above implementation, the reason we infer <code>Any</code> is that we are not intelligent about the fact that if the set of materialization of the argument type at a specific index that are assignable to the parameter type at the same index is same for all overloads, then it won't be participating in the filtering process.</p>
+<p>The <code>f(any_any)</code> is an interesting example. Here, steps 1 and 2 from above will be the same except that the top materialized argument type is <code>tuple[tuple[object, object]]</code>, so we move to overload 3 where <code>tuple[tuple[object, object]]</code> is assignable to <code>tuple[Any]</code> but it&#x27;s the last overload so none of the overloads are filtered out. Here, the return types are not equivalent for the matching overloads (all) so the return type is <code>Any</code>.</p>
+<hr>
+<p>So, based on the above implementation, the reason we infer <code>Any</code> is that we are not intelligent about the fact that if the set of materialization of the argument type at a specific index that are assignable to the parameter type at the same index is same for all overloads, then it won&#x27;t be participating in the filtering process.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/erictraut">@erictraut</a> on 2025-06-13 14:40</div>
-            <div class="timeline-body"><p>Makes sense. Thanks for explaining. I like your concept of &quot;top materialization&quot; and &quot;bottom materialization&quot;. I think that's useful, and I might borrow the idea in pyright's implementation.</p>
+            <div class="timeline-body"><p>Makes sense. Thanks for explaining. I like your concept of &quot;top materialization&quot; and &quot;bottom materialization&quot;. I think that&#x27;s useful, and I might borrow the idea in pyright&#x27;s implementation.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -190,12 +190,12 @@ def _(int_str: tuple[int, str], int_any: tuple[int, Any], any_any: tuple[Any, An
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dhruvmanila on 2025-06-17 10:05</div>
+            <div class="event">Closed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-17 10:05</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:02 UTC
+        Synced at 2026-01-20 19:24:43 UTC
     </footer>
 </body>
 </html>

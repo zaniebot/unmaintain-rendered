@@ -23,21 +23,21 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/bentheiii">@bentheiii</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>As per the documentation for BLE001, the following will not trigger the rule:</p>
-<pre><code class="language-py">try:
+<pre><code>try:
     foo()
 except BaseException:
     logging.error(&quot;Something went wrong&quot;, exc_info=True)
 </code></pre>
 <p>But this will</p>
-<pre><code class="language-py">try:
+<pre><code>try:
     foo()
 except BaseException:
     logging.warning(&quot;Something went wrong&quot;, exc_info=True)
 </code></pre>
-<p>I'd argue that, from a user perspective, the two are equivalent in terms of error handling. The user decided to log the error, including its entire stack trace. The level of the log then, is more or less irrelevant. For the purpose of the argument, the following will also be flagged:</p>
-<pre><code class="language-py">try:
+<p>I&#x27;d argue that, from a user perspective, the two are equivalent in terms of error handling. The user decided to log the error, including its entire stack trace. The level of the log then, is more or less irrelevant. For the purpose of the argument, the following will also be flagged:</p>
+<pre><code>try:
     foo()
 except BaseException:
     logging.log(logging.ERROR, &quot;Something went wrong&quot;, exc_info=True)
@@ -47,11 +47,11 @@ except BaseException:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-10 17:07</div>
-            <div class="timeline-body"><p>Hmm, yeah this makes sense to me! I looked through the history a bit and didn't see any reason why these were restricted to <code>error</code> and <code>critical</code> (<code>critical</code> itself is relatively new in https://github.com/astral-sh/ruff/pull/19520). All of the other methods seem to take <code>exc_info</code> too: https://docs.python.org/3/library/logging.html#logging.Logger.info, so I think they should all suppress the diagnostic.</p>
+            <div class="timeline-body"><p>Hmm, yeah this makes sense to me! I looked through the history a bit and didn&#x27;t see any reason why these were restricted to <code>error</code> and <code>critical</code> (<code>critical</code> itself is relatively new in <a href="https://github.com/astral-sh/ruff/pull/19520">astral-sh/ruff#19520</a>). All of the other methods seem to take <code>exc_info</code> too: https://docs.python.org/3/library/logging.html#logging.Logger.info, so I think they should all suppress the diagnostic.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-12-10 17:07</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-10 17:07</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/lubaskinc0de">@lubaskinc0de</a> on 2025-12-14 22:22</div>
@@ -60,45 +60,45 @@ except BaseException:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-15 14:22</div>
-            <div class="timeline-body"><p>Go for it! I don't see any open PRs for this issue or this rule.</p>
+            <div class="timeline-body"><p>Go for it! I don&#x27;t see any open PRs for this issue or this rule.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @lubaskinc0de by @ntBre on 2025-12-15 14:22</div>
+            <div class="event">Assigned to <a href="https://github.com/lubaskinc0de">@lubaskinc0de</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-15 14:22</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/lubaskinc0de">@lubaskinc0de</a> on 2025-12-16 08:45</div>
             <div class="timeline-body"><blockquote>
-<p>Go for it! I don't see any open PRs for this issue or this rule.
+<p>Go for it! I don&#x27;t see any open PRs for this issue or this rule.
 https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/rules/flake8_blind_except/rules/blind_except.rs#L228</p>
 </blockquote>
 <p>Right now I can see that only the <code>exc_info</code> set to the <code>True</code> constant is checked, even though the documentation says that <code>exc_info</code> can also be set to more than just <code>True</code></p>
 <blockquote>
 <p>If exc_info does not evaluate as false, it causes exception information to be added to the logging message. If an exception tuple (in the format returned by <a href="https://docs.python.org/3/library/sys.html#sys.exc_info">sys.exc_info()</a>) or an exception instance is provided, it is used; otherwise, <a href="https://docs.python.org/3/library/sys.html#sys.exc_info">sys.exc_info()</a> is called to get the exception information.</p>
 </blockquote>
-<pre><code class="language-py">import logging
+<pre><code>import logging
 
 try:
     2 + &quot;a&quot;
 except BaseException as e:
     logging.error(&quot;aaa&quot;, exc_info=e)
 </code></pre>
-<p>In the current version of ruff, this code also throws error BLE001 if <code>exc_info</code> is set to <code>e</code> and not <code>True</code>, although it shouldn't.</p>
+<p>In the current version of ruff, this code also throws error BLE001 if <code>exc_info</code> is set to <code>e</code> and not <code>True</code>, although it shouldn&#x27;t.</p>
 <p>The question is, should I correct this as well?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-16 14:26</div>
-            <div class="timeline-body"><p>I think it would be okay to try that change too and take a look at the ecosystem impact. I took a brief look through the git history and didn't see any reason we only consider literal <code>True</code>. We could at least try using <a href="https://github.com/astral-sh/ruff/blob/0f373603ebd007196af4f211e14d421024a6b947/crates/ruff_python_ast/src/helpers.rs#L1201"><code>Truthiness</code></a>, which would only be a little more relaxed.</p>
+            <div class="timeline-body"><p>I think it would be okay to try that change too and take a look at the ecosystem impact. I took a brief look through the git history and didn&#x27;t see any reason we only consider literal <code>True</code>. We could at least try using <a href="https://github.com/astral-sh/ruff/blob/0f373603ebd007196af4f211e14d421024a6b947/crates/ruff_python_ast/src/helpers.rs#L1201"><code>Truthiness</code></a>, which would only be a little more relaxed.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ntBre on 2026-01-14 21:18</div>
+            <div class="event">Closed by <a href="https://github.com/ntBre">@ntBre</a> on 2026-01-14 21:18</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-14 21:44:45 UTC
+        Synced at 2026-01-20 18:50:40 UTC
     </footer>
 </body>
 </html>

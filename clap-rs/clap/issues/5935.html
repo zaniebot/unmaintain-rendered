@@ -23,38 +23,38 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ilyagr">@ilyagr</a></div>
-            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+            <div class="timeline-body">Please complete the following tasks
 <ul>
 <li>[x] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
 <li>[x] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
 </ul>
-<p>(I looked, but it wasn't easy to search; I could have missed something)</p>
-<h3>Clap Version</h3>
+<p>(I looked, but it wasn&#x27;t easy to search; I could have missed something)</p>
+Clap Version
 <p>4.5.31</p>
-<h3>Describe your use case</h3>
-<p>In https://github.com/jj-vcs/jj/pull/5845 (<strong>Update:</strong> now merged as https://github.com/jj-vcs/jj/commit/d446a85c4a884b603bacf6e8a88dfe6da47d09c3, see also the discussion at https://github.com/jj-vcs/jj/pull/5845#discussion_r1976561273), I needed to modify the suggested command of a <code>clap::Error</code>.</p>
-<p>The motivation is that <code>jj</code> does not have a <code>jj clone</code> command, which brand new users experimented with <code>jj</code> are likely to try. Currently, it uselessly suggests <code>jj config</code> as an alternative. I'd like it to point the users to the correct <code>jj git clone</code> command.</p>
-<p>Less importantly, I'd love to remove the &quot;Usage&quot; message that does not seem useful.</p>
+Describe your use case
+<p>In <a href="https://github.com/jj-vcs/jj/pull/5845">jj-vcs/jj#5845</a> (<strong>Update:</strong> now merged as https://github.com/jj-vcs/jj/commit/d446a85c4a884b603bacf6e8a88dfe6da47d09c3, see also the discussion at <a href="https://github.com/jj-vcs/jj/pull/5845">jj-vcs/jj#5845</a>#discussion_r1976561273), I needed to modify the suggested command of a <code>clap::Error</code>.</p>
+<p>The motivation is that <code>jj</code> does not have a <code>jj clone</code> command, which brand new users experimented with <code>jj</code> are likely to try. Currently, it uselessly suggests <code>jj config</code> as an alternative. I&#x27;d like it to point the users to the correct <code>jj git clone</code> command.</p>
+<p>Less importantly, I&#x27;d love to remove the &quot;Usage&quot; message that does not seem useful.</p>
 <p>In other words, we currently have:</p>
-<pre><code> error: unrecognized subcommand 'clone'
+<pre><code> error: unrecognized subcommand &#x27;clone&#x27;
 
-      tip: a similar subcommand exists: 'config'
+      tip: a similar subcommand exists: &#x27;config&#x27;
 
     Usage: jj [OPTIONS] &lt;COMMAND&gt;
 
-    For more information, try '--help'.
+    For more information, try &#x27;--help&#x27;.
 </code></pre>
-<p>I'd like to modify the error so that it says:</p>
-<pre><code> error: unrecognized subcommand 'clone'
+<p>I&#x27;d like to modify the error so that it says:</p>
+<pre><code> error: unrecognized subcommand &#x27;clone&#x27;
 
-      tip: a similar subcommand exists: 'git clone'
+      tip: a similar subcommand exists: &#x27;git clone&#x27;
 
-    For more information, try '--help'.
+    For more information, try &#x27;--help&#x27;.
 </code></pre>
-<p>(Aside: either way, the command would be followed by a hint like &quot;&quot;&quot;Hint: You can configure <code>aliases.clone=[&quot;git&quot;, &quot;clone&quot;]</code> if you want <code>jj clone</code> to default to the Git backend.&quot;&quot;&quot;, but that's done independently of <code>clap</code>)</p>
-<h3>Describe the solution you'd like</h3>
-<p>I'd like something like the following to work, improving on https://docs.rs/clap/latest/clap/error/struct.Error.html#method.insert:</p>
-<pre><code class="language-rust">// Currently, `original_err` is Arc&lt;clap::Error&gt; for us
+<p>(Aside: either way, the command would be followed by a hint like &quot;&quot;&quot;Hint: You can configure <code>aliases.clone=[&quot;git&quot;, &quot;clone&quot;]</code> if you want <code>jj clone</code> to default to the Git backend.&quot;&quot;&quot;, but that&#x27;s done independently of <code>clap</code>)</p>
+Describe the solution you&#x27;d like
+<p>I&#x27;d like something like the following to work, improving on https://docs.rs/clap/latest/clap/error/struct.Error.html#method.insert:</p>
+<pre><code>// Currently, `original_err` is Arc&lt;clap::Error&gt; for us
 // since `clap::Error` is not `Clone`. So, the following
 // does *not* work.
 let new_clap_err = original_err.clone();
@@ -67,28 +67,28 @@ new_err.insert(  // Already exists
 );
 return CommandError::from(new_clap_err);
 </code></pre>
-<p>In other words, I'd like <code>clap::Error</code> to be <code>Clone</code> (perhaps by wrapping the non-clonable parts of it in an <code>Arc</code>) and to be able to remove error contexts.</p>
-<p>Moreover, I'd like the above to result in an error that gets formatted nicely, with color and the text above.</p>
-<h3>Alternatives, if applicable</h3>
-<h4>Alternative 1</h4>
-<p>Currently, ~~https://github.com/jj-vcs/jj/pull/5845~~ https://github.com/jj-vcs/jj/commit/d446a85c4a884b603bacf6e8a88dfe6da47d09c3 can only add an hint to the confusingly verbose message. The result is:</p>
-<pre><code>    error: unrecognized subcommand 'clone'
+<p>In other words, I&#x27;d like <code>clap::Error</code> to be <code>Clone</code> (perhaps by wrapping the non-clonable parts of it in an <code>Arc</code>) and to be able to remove error contexts.</p>
+<p>Moreover, I&#x27;d like the above to result in an error that gets formatted nicely, with color and the text above.</p>
+Alternatives, if applicable
+Alternative 1
+<p>Currently, ~~<a href="https://github.com/jj-vcs/jj/pull/5845">jj-vcs/jj#5845</a>~~ https://github.com/jj-vcs/jj/commit/d446a85c4a884b603bacf6e8a88dfe6da47d09c3 can only add an hint to the confusingly verbose message. The result is:</p>
+<pre><code>    error: unrecognized subcommand &#x27;clone&#x27;
 
-      tip: a similar subcommand exists: 'config'
+      tip: a similar subcommand exists: &#x27;config&#x27;
 
     Usage: jj [OPTIONS] &lt;COMMAND&gt;
 
-    For more information, try '--help'.
+    For more information, try &#x27;--help&#x27;.
     Hint: You can configure `aliases.clone=[&quot;git&quot;, &quot;clone&quot;]` if
     you want `jj clone` to work and always use the Git backend.
 </code></pre>
 <p>Screenshot of a slightly older version:</p>
-<p><img src="https://github.com/user-attachments/assets/ca0970e8-2c22-4931-8c2d-12ed93a99ba9" alt="Image" /></p>
-<h4>Alternative 2</h4>
+<p><img src="https://github.com/user-attachments/assets/ca0970e8-2c22-4931-8c2d-12ed93a99ba9" alt="Image"></p>
+Alternative 2
 <p><code>clap</code> could provide a facility for &quot;when the user types in command A, suggest command B&quot;, extending the recent &quot;do not suggest these commands&quot; functionality.</p>
-<h4>Alternative 3</h4>
-<p>I also tried to recreate the error manually, but the result lost formatting, and I'm afraid to forget to copy something important.</p>
-<pre><code class="language-rust">            let mut new_err = clap::Error::new(err.kind());
+Alternative 3
+<p>I also tried to recreate the error manually, but the result lost formatting, and I&#x27;m afraid to forget to copy something important.</p>
+<pre><code>            let mut new_err = clap::Error::new(err.kind());
             new_err.insert(
                 ContextKind::InvalidSubcommand,
                 ContextValue::String(format!(&quot;{cmd}&quot;)),
@@ -100,41 +100,41 @@ return CommandError::from(new_clap_err);
             return CommandError::from(new_err);
 </code></pre>
 <p>resulted in losing color in the output :</p>
-<p><img width="432" alt="Image" src="https://github.com/user-attachments/assets/99ba5233-4eec-48f7-8ec6-afcff066d974" /></p>
-<p>Still, if the above worked, it'd be an (imperfect) alternative,</p>
+<p><img alt="Image" src="https://github.com/user-attachments/assets/99ba5233-4eec-48f7-8ec6-afcff066d974"></p>
+<p>Still, if the above worked, it&#x27;d be an (imperfect) alternative,</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">C-enhancement</span> added by @ilyagr on 2025-03-02 23:06</div>
+            <div class="event">Label <span class="label">C-enhancement</span> added by <a href="https://github.com/ilyagr">@ilyagr</a> on 2025-03-02 23:06</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../jj-vcs/jj/pulls/5845.html">jj-vcs/jj#5845</a> on 2025-03-02 23:10</div>
+            <div class="event">Referenced in <a>jj-vcs/jj#5845</a> on 2025-03-02 23:10</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "FR: Make `clap::Error` `Clone`, make it easier to add/remove its properties" to "FR: Make it easier to edit `clap::Error`s: make it `Clone`, allow removing its properties" by @ilyagr on 2025-03-02 23:30</div>
+            <div class="event">Renamed from &quot;FR: Make `clap::Error` `Clone`, make it easier to add/remove its properties&quot; to &quot;FR: Make it easier to edit `clap::Error`s: make it `Clone`, allow removing its properties&quot; by <a href="https://github.com/ilyagr">@ilyagr</a> on 2025-03-02 23:30</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">A-help</span> added by @epage on 2025-03-03 15:13</div>
+            <div class="event">Label <span class="label">A-help</span> added by <a href="https://github.com/epage">@epage</a> on 2025-03-03 15:13</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "FR: Make it easier to edit `clap::Error`s: make it `Clone`, allow removing its properties" to "Custom subcommand suggestions on error" by @epage on 2025-03-03 15:36</div>
+            <div class="event">Renamed from &quot;FR: Make it easier to edit `clap::Error`s: make it `Clone`, allow removing its properties&quot; to &quot;Custom subcommand suggestions on error&quot; by <a href="https://github.com/epage">@epage</a> on 2025-03-03 15:36</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-03-03 15:38</div>
             <div class="timeline-body"><p>This jumps immediately to a solution, particularly one that requires advanced clap use to implement.</p>
-<p>Let's step back and focus on the core of the problem</p>
+<p>Let&#x27;s step back and focus on the core of the problem</p>
 <blockquote>
-<p>The motivation is that jj does not have a jj clone command, which brand new users experimented with jj are likely to try. Currently, it uselessly suggests jj config as an alternative. I'd like it to point the users to the correct jj git clone command.</p>
+<p>The motivation is that jj does not have a jj clone command, which brand new users experimented with jj are likely to try. Currently, it uselessly suggests jj config as an alternative. I&#x27;d like it to point the users to the correct jj git clone command.</p>
 </blockquote>
-<p>With our <code>ValueParsers</code>, we added support for <a href="https://docs.rs/clap/latest/clap/builder/struct.UnknownArgumentValueParser.html">UnknownArgumentValueParser</a> so you can create custom suggestions for arguments users assume to be present but aren't.  Cargo makes use of this.  I would love for our dynamic completions to be able to pull this out and complete a known bad argument as the proper one.</p>
+<p>With our <code>ValueParsers</code>, we added support for <a href="https://docs.rs/clap/latest/clap/builder/struct.UnknownArgumentValueParser.html">UnknownArgumentValueParser</a> so you can create custom suggestions for arguments users assume to be present but aren&#x27;t.  Cargo makes use of this.  I would love for our dynamic completions to be able to pull this out and complete a known bad argument as the proper one.</p>
 <p>It would be great to offer something similar for subcommands.</p>
 <p>Current workarounds</p>
 <ul>
 <li>Use <code>external_subcommands(true)</code> and manually implement it</li>
 <li>Mung the <code>Error</code> to get what you want</li>
 </ul>
-<p>I don't see <code>ValueParser</code>s having an analogue in subcommands.</p>
-<p>I have considered the idea of an Action for subcommands and for custom Actions.  I've not done custom <code>ArgAction</code>s because I wanted to see how the interface works out and its been fairly broad and evolving, making it hard to lock that down (and its tied to implementation details).</p>
+<p>I don&#x27;t see <code>ValueParser</code>s having an analogue in subcommands.</p>
+<p>I have considered the idea of an Action for subcommands and for custom Actions.  I&#x27;ve not done custom <code>ArgAction</code>s because I wanted to see how the interface works out and its been fairly broad and evolving, making it hard to lock that down (and its tied to implementation details).</p>
 <p>The challenge with subcommands is how to handle them.  <code>help</code> is a pre-parse action.  Some people have wanted a post-parse action.  It sounds like this would also be a pre-parse action.</p>
 <p>See also</p>
 <ul>
@@ -143,78 +143,78 @@ return CommandError::from(new_clap_err);
 </ul>
 <p>In designing something, we may want to consider how it interacts with #2222.</p>
 <blockquote>
-<p>Less importantly, I'd love to remove the &quot;Usage&quot; message that does not seem useful.</p>
+<p>Less importantly, I&#x27;d love to remove the &quot;Usage&quot; message that does not seem useful.</p>
 </blockquote>
-<p>We've not developed a good set of principles for when to show <code>Usage</code> and when not to.  I am open to someone exploring this.  I'd recommend creating a dedicated issue, organizing it as a table (type of error, whether usage is shown), writing out principles, and then updating the table with the proposals based on those principles.</p>
+<p>We&#x27;ve not developed a good set of principles for when to show <code>Usage</code> and when not to.  I am open to someone exploring this.  I&#x27;d recommend creating a dedicated issue, organizing it as a table (type of error, whether usage is shown), writing out principles, and then updating the table with the proposals based on those principles.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-03-03 15:43</div>
             <div class="timeline-body"><p>So all of that will benefit you and all future clap developers.  However, working through some of that would also be a lot of work.  Extending <code>Error</code> seems reasonable even if other changes are made so we can probably move forward with that.  I would prefer you at least focus on the <code>Usage</code> part in clap proper, rather than working around that.</p>
-<p>If you could list out more precisely what new APIs you are wanting, that'd be a big help.  Also, could you clarify why you need <code>Clone</code>?</p>
+<p>If you could list out more precisely what new APIs you are wanting, that&#x27;d be a big help.  Also, could you clarify why you need <code>Clone</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ilyagr">@ilyagr</a> on 2025-03-03 23:08</div>
             <div class="timeline-body"><p>Thank you very much for thinking about this and the many interesting points!</p>
-<p>I'm not sure whether you saw the edits I made to the question after the original version.</p>
+<p>I&#x27;m not sure whether you saw the edits I made to the question after the original version.</p>
 <blockquote>
-<p>Let's step back and focus on the core of the problem</p>
+<p>Let&#x27;s step back and focus on the core of the problem</p>
 </blockquote>
-<p>We should consider what I called &quot;Alternative 2&quot; above, which would be customized for my particular problem. However, there would still be some use for editing <code>Error</code>s even if that's implemented, and I'm not sure whether that's worth a purpose-made function.</p>
-<p>More generally, this FR could be split into many, and I'm not sure which of the possible features that could be implemented are most feasible and make the most sense. I described my main suggestion, and I'll try to motivate it again below (in another comment), but whether that's the right approach is still a question in my mind.</p>
-<hr />
-<p>For the rest of your first comment above, it's full of interesting ideas, but I don't think they quite address the part of my problem that I can't solve (though many of them might be better ways to address the part of the problem that we already have a workaround for). I could easily have misunderstood something.</p>
+<p>We should consider what I called &quot;Alternative 2&quot; above, which would be customized for my particular problem. However, there would still be some use for editing <code>Error</code>s even if that&#x27;s implemented, and I&#x27;m not sure whether that&#x27;s worth a purpose-made function.</p>
+<p>More generally, this FR could be split into many, and I&#x27;m not sure which of the possible features that could be implemented are most feasible and make the most sense. I described my main suggestion, and I&#x27;ll try to motivate it again below (in another comment), but whether that&#x27;s the right approach is still a question in my mind.</p>
+<hr>
+<p>For the rest of your first comment above, it&#x27;s full of interesting ideas, but I don&#x27;t think they quite address the part of my problem that I can&#x27;t solve (though many of them might be better ways to address the part of the problem that we already have a workaround for). I could easily have misunderstood something.</p>
 <blockquote>
 <p>With our ValueParsers, we added support for <code>UnknownArgumentValueParser</code>... It would be great to offer something similar for subcommands.</p>
 </blockquote>
-<p>Something similar to <code>UnknownArgumentValueParser</code> but for subcommands is an interesting idea. I think it is relevant, but not quite necessary or sufficient, since it would still require either manual creation or editing an <code>Error</code> object (we still probably want to generate an error for <code>jj clone</code>). As I described in &quot;Alternative 3&quot; above, I don't know how to create a good <code>clap::Error</code> manually; my attempts result in an error without formatting.</p>
-<p>But if the problem with creating native-looking <code>clap::Error</code>s was solved (or if it is already solved, and I just didn't find the solution), your suggestion could be a more flexible version of the &quot;Alternative 2&quot; I suggested above.</p>
-<p>Except for creating/modifying the <code>clap::Error</code>s, there is already a solution that more or less work. It might be sub-optimal, but it is available today, and <code>jj</code> uses it. Instead of creating a custom trigger for <code>clone</code> subcommand, we take a <code>clap::Error</code> and check whether <code>err.get(ContextKind::InvalidSubcommand)</code> matches <code>ContextValue::String(&quot;clone&quot;)</code>. It's in the last commit of the PR I linked (I don't have a permalink yet, since the PR isn't yet merged).</p>
+<p>Something similar to <code>UnknownArgumentValueParser</code> but for subcommands is an interesting idea. I think it is relevant, but not quite necessary or sufficient, since it would still require either manual creation or editing an <code>Error</code> object (we still probably want to generate an error for <code>jj clone</code>). As I described in &quot;Alternative 3&quot; above, I don&#x27;t know how to create a good <code>clap::Error</code> manually; my attempts result in an error without formatting.</p>
+<p>But if the problem with creating native-looking <code>clap::Error</code>s was solved (or if it is already solved, and I just didn&#x27;t find the solution), your suggestion could be a more flexible version of the &quot;Alternative 2&quot; I suggested above.</p>
+<p>Except for creating/modifying the <code>clap::Error</code>s, there is already a solution that more or less work. It might be sub-optimal, but it is available today, and <code>jj</code> uses it. Instead of creating a custom trigger for <code>clone</code> subcommand, we take a <code>clap::Error</code> and check whether <code>err.get(ContextKind::InvalidSubcommand)</code> matches <code>ContextValue::String(&quot;clone&quot;)</code>. It&#x27;s in the last commit of the PR I linked (I don&#x27;t have a permalink yet, since the PR isn&#x27;t yet merged).</p>
 <blockquote>
 <p>Use external_subcommands(true) and manually implement it</p>
 </blockquote>
 <p>I am not very familiar with <code>external_subcommands</code>, and do not quite understand at the moment whether that would help beyond the approach of post-processing errors.</p>
 <blockquote>
-<p>We've not developed a good set of principles for when to show Usage and when not to.</p>
+<p>We&#x27;ve not developed a good set of principles for when to show Usage and when not to.</p>
 </blockquote>
-<p>This is a bit tangential to most of this issue; being able to manually remove &quot;Usage&quot; from an error would be nice, but it doesn't make or break a solution to this problem. Still, I think it's a good idea to look further into this.</p>
-<p>At the moment, my understanding of when &quot;Usage:&quot; should be shown is minimal, all I know is that &quot;I saw one case where <code>Usage:</code> wasn't very useful&quot;.</p>
-<hr />
+<p>This is a bit tangential to most of this issue; being able to manually remove &quot;Usage&quot; from an error would be nice, but it doesn&#x27;t make or break a solution to this problem. Still, I think it&#x27;s a good idea to look further into this.</p>
+<p>At the moment, my understanding of when &quot;Usage:&quot; should be shown is minimal, all I know is that &quot;I saw one case where <code>Usage:</code> wasn&#x27;t very useful&quot;.</p>
+<hr>
 <p>I will write more, hopefully shortly, but this comment is getting long.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ilyagr">@ilyagr</a> on 2025-03-04 01:20</div>
             <div class="timeline-body"><blockquote>
-<p>If you could list out more precisely what new APIs you are wanting, that'd be a big help.</p>
+<p>If you could list out more precisely what new APIs you are wanting, that&#x27;d be a big help.</p>
 </blockquote>
-<p>TLDR: Making <code>clap::Error</code> <code>Clone</code> would go a long way; I'd also like <code>clap::Error::remove</code> to extend <code>clap::Error::insert</code>.</p>
-<h2>Prelude</h2>
-<p>The approach that seems most direct to me would be to provide a way to create a <code>clap::Error</code> for &quot;invalid command&quot; or &quot;invalid subcommand' that's just like the normal one <code>clap</code> creates, but with a different suggested command.</p>
+<p>TLDR: Making <code>clap::Error</code> <code>Clone</code> would go a long way; I&#x27;d also like <code>clap::Error::remove</code> to extend <code>clap::Error::insert</code>.</p>
+Prelude
+<p>The approach that seems most direct to me would be to provide a way to create a <code>clap::Error</code> for &quot;invalid command&quot; or &quot;invalid subcommand&#x27; that&#x27;s just like the normal one <code>clap</code> creates, but with a different suggested command.</p>
 <p>This could either be a new error created from nothing or it could be a way to take the error created by <code>clap</code> and modify it. The latter seems easier seems <code>clap</code> seems to treat <code>clap::Error</code> as an opaque structure which can change between releases (e.g. if a new <code>clap</code> release wants to keep track of more metadata), so if I create the &quot;correct&quot; <code>clap::Error</code> today it might starts diverging from normal <code>clap::Error</code>s <code>clap</code> creates in the future. Still, a better API from creating errors is a viable alternative.</p>
 <p>(In theory, creating <code>clap::Error</code>s from nothing is already possible, but as I explained in &quot;Alternative 3&quot; above, it does not end up with the same formatting.)</p>
 <blockquote>
 <p>Also, could you clarify why you need Clone?</p>
 </blockquote>
 <p>Very naively, if we allow editing <code>clap::Error</code>s (as <code>clap::Error::insert</code> already does), it seems natural to want to copy and preserve the original error and modify a copy of it.</p>
-<p>More technically, the immediate reason I need <code>clap::Error</code> to be <code>Clone</code> is that <code>jj</code> wraps <code>clap::Error</code> in <code>jj_lib::CommandError</code>, which needs to be <code>Clone</code>. Currently, this is done by storing <code>Arc&lt;clap::Error&gt;</code> (which is <code>Clone</code> even thought <code>clap::Error</code> isn't) inside <code>jj_lib::CommandError</code>. AFAIK, while it's trivial to get a <code>&amp;clap::Error</code> from <code>Arc&lt;clap::Error&gt;</code>, <code>clone()</code> would be the only way to get the <code>&amp;mut clap::Error</code> that I'd need to use <code>clap::Error::insert</code>.</p>
-<p>I'm not 100% sure that <code>jj_lib</code> couldn't be refactored to not require <code>jj_lib::CommandError</code> to be <code>Clone</code>, but it would be at least a pain; I couldn't do it in 5 minutes. I'm not an expert on Rust design patterns for non-Clone types, though.</p>
-<p>There's certainly no terrible performance cost to cloning <code>clap::Error</code>s.</p>
-<hr />
-<h2>Suggestion</h2>
+<p>More technically, the immediate reason I need <code>clap::Error</code> to be <code>Clone</code> is that <code>jj</code> wraps <code>clap::Error</code> in <code>jj_lib::CommandError</code>, which needs to be <code>Clone</code>. Currently, this is done by storing <code>Arc&lt;clap::Error&gt;</code> (which is <code>Clone</code> even thought <code>clap::Error</code> isn&#x27;t) inside <code>jj_lib::CommandError</code>. AFAIK, while it&#x27;s trivial to get a <code>&amp;clap::Error</code> from <code>Arc&lt;clap::Error&gt;</code>, <code>clone()</code> would be the only way to get the <code>&amp;mut clap::Error</code> that I&#x27;d need to use <code>clap::Error::insert</code>.</p>
+<p>I&#x27;m not 100% sure that <code>jj_lib</code> couldn&#x27;t be refactored to not require <code>jj_lib::CommandError</code> to be <code>Clone</code>, but it would be at least a pain; I couldn&#x27;t do it in 5 minutes. I&#x27;m not an expert on Rust design patterns for non-Clone types, though.</p>
+<p>There&#x27;s certainly no terrible performance cost to cloning <code>clap::Error</code>s.</p>
+<hr>
+Suggestion
 <p>Actually, I think making <code>clap::Error</code> <code>Clone</code> (possibly with the same trick of storing non-<code>Clone</code>-able parts inside an <code>Arc</code>) would be more or less sufficient to make what I want possible.</p>
-<p>It is not clearly documented (<strong>Update:</strong> https://github.com/clap-rs/clap/pull/5938, unless you think it's obvious), but after looking more carefully at <a href="https://docs.rs/clap/latest/clap/error/struct.Error.html#method.insert"><code>clap::Error::insert</code></a>, I expect that if <code>err: clap::Error</code>, <code>err.insert(ContextKind::SuggestedSubcommand, &quot;fred&quot;)</code> will <em>replace</em> the suggested subcommand inside <code>err</code> rather than insert an additional one. I expected otherwise since I can imagine an error including more than one suggested subcommand.</p>
-<hr />
-<p>Less importantly, I'd still want a <code>clap::Error::remove(&amp;mut self, kind: ContextKind) -&gt; Option&lt;ContextValue&gt;</code> command that could be used to remove a <code>SuggestedSubcommand</code> with no replacement. This could also be used to remove &quot;Usage&quot; and any other part of the error I don't find useful in some particular case.</p>
-<p>Or, if we're OK with breaking changes, we could change the signature of <code>clap::Error::insert</code> to take an <code>Option&lt;ContextValue&gt;</code> instead of a <code>ContextValue</code>.</p>
-<p>Either way, we don't need <code>clap::Error::remove_all</code> that I suggested previously. This would only be needed if an error's context was conceptually a map <code>ContextKind -&gt; Vec&lt;ContextValue&gt;</code>.</p>
+<p>It is not clearly documented (<strong>Update:</strong> <a href="https://github.com/clap-rs/clap/pull/5938">clap-rs/clap#5938</a>, unless you think it&#x27;s obvious), but after looking more carefully at <a href="https://docs.rs/clap/latest/clap/error/struct.Error.html#method.insert"><code>clap::Error::insert</code></a>, I expect that if <code>err: clap::Error</code>, <code>err.insert(ContextKind::SuggestedSubcommand, &quot;fred&quot;)</code> will <em>replace</em> the suggested subcommand inside <code>err</code> rather than insert an additional one. I expected otherwise since I can imagine an error including more than one suggested subcommand.</p>
+<hr>
+<p>Less importantly, I&#x27;d still want a <code>clap::Error::remove(&amp;mut self, kind: ContextKind) -&gt; Option&lt;ContextValue&gt;</code> command that could be used to remove a <code>SuggestedSubcommand</code> with no replacement. This could also be used to remove &quot;Usage&quot; and any other part of the error I don&#x27;t find useful in some particular case.</p>
+<p>Or, if we&#x27;re OK with breaking changes, we could change the signature of <code>clap::Error::insert</code> to take an <code>Option&lt;ContextValue&gt;</code> instead of a <code>ContextValue</code>.</p>
+<p>Either way, we don&#x27;t need <code>clap::Error::remove_all</code> that I suggested previously. This would only be needed if an error&#x27;s context was conceptually a map <code>ContextKind -&gt; Vec&lt;ContextValue&gt;</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ilyagr">@ilyagr</a> on 2025-03-04 02:16</div>
-            <div class="timeline-body"><p>Here's a naive patch that makes <code>clap::Error</code> become <code>Clone</code>. If it looks OK, I can make it into a PR (I haven't read the guide yet, I'm guessing it's mainly missing a changelog entry).</p>
-<pre><code class="language-diff">diff --git a/clap_builder/src/error/format.rs b/clap_builder/src/error/format.rs
+            <div class="timeline-body"><p>Here&#x27;s a naive patch that makes <code>clap::Error</code> become <code>Clone</code>. If it looks OK, I can make it into a PR (I haven&#x27;t read the guide yet, I&#x27;m guessing it&#x27;s mainly missing a changelog entry).</p>
+<pre><code>diff --git a/clap_builder/src/error/format.rs b/clap_builder/src/error/format.rs
 index 4c22bc2d9d..db6bed9391 100644
 --- a/clap_builder/src/error/format.rs
 +++ b/clap_builder/src/error/format.rs
@@ -265,7 +265,7 @@ index 7bd627375c..bf822e9e2d 100644
      message: Option&lt;Message&gt;,
 -    source: Option&lt;Box&lt;dyn error::Error + Send + Sync&gt;&gt;,
 +    source: Option&lt;Arc&lt;dyn error::Error + Send + Sync&gt;&gt;,
-     help_flag: Option&lt;Cow&lt;'static, str&gt;&gt;,
+     help_flag: Option&lt;Cow&lt;&#x27;static, str&gt;&gt;,
      styles: Styles,
      color_when: ColorChoice,
 @@ -300,7 +302,7 @@
@@ -303,28 +303,28 @@ index 7bd627375c..bf822e9e2d 100644
 +    static_assertions::assert_impl_all!(Error: Send, Sync, Unpin, Clone);
  }
 </code></pre>
-<p><strong>Update:</strong> Maybe I'd also require implementors of <code>ErrorFormatter</code> to be <code>Clone</code>, so that every version of <code>clap::Error</code> is guaranteed to be <code>Clone</code>. (I'm guessing, but not sure, that <code>PhantomData&lt;F&gt;</code> is not <code>Clone</code> if <code>F</code> isn't <code>Clone</code>).</p>
+<p><strong>Update:</strong> Maybe I&#x27;d also require implementors of <code>ErrorFormatter</code> to be <code>Clone</code>, so that every version of <code>clap::Error</code> is guaranteed to be <code>Clone</code>. (I&#x27;m guessing, but not sure, that <code>PhantomData&lt;F&gt;</code> is not <code>Clone</code> if <code>F</code> isn&#x27;t <code>Clone</code>).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ilyagr">@ilyagr</a> on 2025-03-04 04:00</div>
             <div class="timeline-body"><p>...and here is what I can get to work with that patch.</p>
 <p>https://github.com/ilyagr/jj/commit/clapclonerr</p>
-<p><img width="1075" alt="Image" src="https://github.com/user-attachments/assets/8b9f1001-ae76-4b13-bc76-2aa30fcf52ff" /></p>
+<p><img alt="Image" src="https://github.com/user-attachments/assets/8b9f1001-ae76-4b13-bc76-2aa30fcf52ff"></p>
 <p>(Compare this to &quot;Attempt 1&quot; from my original comment)</p>
-<p>If I also added <code>clap::Error::remove</code>, I'd get rid of the <code>Usage</code>.</p>
+<p>If I also added <code>clap::Error::remove</code>, I&#x27;d get rid of the <code>Usage</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-03-04 14:41</div>
             <div class="timeline-body"><blockquote>
-<p>Something similar to UnknownArgumentValueParser but for subcommands is an interesting idea. I think it is relevant, but not quite necessary or sufficient, since it would still require either manual creation or editing an Error object (we still probably want to generate an error for jj clone). As I described in &quot;Alternative 3&quot; above, I don't know how to create a good clap::Error manually; my attempts result in an error without formatting.</p>
+<p>Something similar to UnknownArgumentValueParser but for subcommands is an interesting idea. I think it is relevant, but not quite necessary or sufficient, since it would still require either manual creation or editing an Error object (we still probably want to generate an error for jj clone). As I described in &quot;Alternative 3&quot; above, I don&#x27;t know how to create a good clap::Error manually; my attempts result in an error without formatting.</p>
 </blockquote>
 <p>Why would you still need to manually create an error for <code>jj clone</code>, rather than having a <code>.subcommand(Command::new(&quot;clone&quot;).hide(true).action(UnknownSubcommand::new().suggest(&quot;git clone&quot;)))</code>?</p>
 <blockquote>
-<p>Or, if we're OK with breaking changes, we could change the signature of clap::Error::insert to take an Option<ContextValue> instead of a ContextValue.</p>
+<p>Or, if we&#x27;re OK with breaking changes, we could change the signature of clap::Error::insert to take an Option instead of a ContextValue.</p>
 </blockquote>
-<p><code>Error</code> is meant to be a map-like interface, so <code>insert(kind, None)</code> isn't right but <code>remove(kind)</code> is.</p>
+<p><code>Error</code> is meant to be a map-like interface, so <code>insert(kind, None)</code> isn&#x27;t right but <code>remove(kind)</code> is.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -332,58 +332,58 @@ index 7bd627375c..bf822e9e2d 100644
             <div class="timeline-body"><blockquote>
 <p>Why would you still need to manually create an error for <code>jj clone</code>, rather than having a <code>.subcommand(Command::new(&quot;clone&quot;).hide(true).action(UnknownSubcommand::new().suggest(&quot;git clone&quot;)))</code>?</p>
 </blockquote>
-<p>That would work[^caveat], I think it's a good idea. I'm not sure whether this is related to <code>UnknownArgumentValueParser</code>, but in any case I like the <code>UnknownSubcommand</code> action better.</p>
+<p>That would work[^caveat], I think it&#x27;s a good idea. I&#x27;m not sure whether this is related to <code>UnknownArgumentValueParser</code>, but in any case I like the <code>UnknownSubcommand</code> action better.</p>
 <p>It still sounds to me that making <code>Clone</code> and <code>remove</code> work would be easier in the short term. I think it only makes sense for a type that represents an opaque object (not a factory) and has methods for editing it, but is hard to manually recreate, to provide a <code>clone</code> interface.</p>
-<p>So, unless you tell me otherwise, I'm planning to turn the patches I suggested above into PRs.</p>
-<p>[^caveat]: There is a caveat that this functionality would have to be carefully designed to work well with <code>ignore_errors</code>, so that <code>jj</code>'s aliases support still works and it's possible to override <code>jj clone</code> with an alias. It does a complicated dance with parsing the command-line with <code>ignore_errors</code> first, substituting aliases, and then parsing again.</p>
+<p>So, unless you tell me otherwise, I&#x27;m planning to turn the patches I suggested above into PRs.</p>
+<p>[^caveat]: There is a caveat that this functionality would have to be carefully designed to work well with <code>ignore_errors</code>, so that <code>jj</code>&#x27;s aliases support still works and it&#x27;s possible to override <code>jj clone</code> with an alias. It does a complicated dance with parsing the command-line with <code>ignore_errors</code> first, substituting aliases, and then parsing again.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-03-07 19:47</div>
             <div class="timeline-body"><blockquote>
-<p>So, unless you tell me otherwise, I'm planning to turn the patches I suggested above into PRs.</p>
+<p>So, unless you tell me otherwise, I&#x27;m planning to turn the patches I suggested above into PRs.</p>
 </blockquote>
-<p>I'm fine with remove.</p>
-<p><code>Clone</code> feels a bit odd, specialized to your requirements without going into why those requirements exist.  That said, I've been in situations where that has been a problem and I wished they were more regularly cloneable (caching, particularly when you can't cache only on success, looking at you <code>LazyLock</code>).  The downsides to locking are relatively low (limited in which fields, already effectively immutable).  I'd say its ok to move forward with it.</p>
+<p>I&#x27;m fine with remove.</p>
+<p><code>Clone</code> feels a bit odd, specialized to your requirements without going into why those requirements exist.  That said, I&#x27;ve been in situations where that has been a problem and I wished they were more regularly cloneable (caching, particularly when you can&#x27;t cache only on success, looking at you <code>LazyLock</code>).  The downsides to locking are relatively low (limited in which fields, already effectively immutable).  I&#x27;d say its ok to move forward with it.</p>
 <blockquote>
-<p>There is a caveat that this functionality would have to be carefully designed to work well with ignore_errors, so that jj's aliases support still works and it's possible to override jj clone with an alias. It does a complicated dance with parsing the command-line with ignore_errors first, substituting aliases, and then parsing again</p>
+<p>There is a caveat that this functionality would have to be carefully designed to work well with ignore_errors, so that jj&#x27;s aliases support still works and it&#x27;s possible to override jj clone with an alias. It does a complicated dance with parsing the command-line with ignore_errors first, substituting aliases, and then parsing again</p>
 </blockquote>
-<p><code>ignore_errors</code> is a trap.  There is no clearly defined behavior of what it <em>should</em> do and is easily broken with any minor change and we can't exhaustively test for every potential way it can be broken.  I'd be interested in finding alternative solutions and deprecating it.</p>
+<p><code>ignore_errors</code> is a trap.  There is no clearly defined behavior of what it <em>should</em> do and is easily broken with any minor change and we can&#x27;t exhaustively test for every potential way it can be broken.  I&#x27;d be interested in finding alternative solutions and deprecating it.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ilyagr">@ilyagr</a> on 2025-03-08 00:09</div>
             <div class="timeline-body"><blockquote>
-<p>I'd say its ok to move forward with it.</p>
+<p>I&#x27;d say its ok to move forward with it.</p>
 </blockquote>
 <p>Thanks! I understand a perspective from which it can feel like a cludge, but I think more people than just me will find it useful.</p>
 <blockquote>
 <p>Clone feels a bit odd, specialized to your requirements without going into why those requirements exist.</p>
 </blockquote>
 <blockquote>
-<p>ignore_errors is a trap. ... I'd be interested in finding alternative solutions and deprecating it.</p>
+<p>ignore_errors is a trap. ... I&#x27;d be interested in finding alternative solutions and deprecating it.</p>
 </blockquote>
-<p>Both of these points run into the fact that, at least at the moment, I'm not the best expert on why <code>jj</code>'s CLI code is organized the way it is, and what options there are for reorganizing it without losing useful functionality. I shared what I do understand as best I could :).</p>
-<p>For example, I'd love to have <code>ignore_errors</code> replaced with something cleaner, but I'm not sure what would work nor exactly what our requirements are[^known]. For that discussion, perhaps @yuja, @torquestomp, @zummenix (who originally added the function I edited in https://github.com/jj-vcs/jj/commit/d446a85c4a884b603bacf6e8a88dfe6da47d09c3, AFAICT, for the <code>--templates</code> feature I described in the footnote), @elasticdog, or other people from https://github.com/jj-vcs/jj/blame/29e2ccf4aeae24fa031e561211750d7e6e93f0b0/cli/src/cli_util.rs#L3384 might have some thoughts.</p>
-<p>[^known]: Well, two relevant features <code>jj</code> has are <a href="https://jj-vcs.github.io/jj/prerelease/config/#aliases">aliases</a>, the <a href="https://jj-vcs.github.io/jj/prerelease/config/#default-command">default command</a>, and dynamic suggestions for configured templates if the user enters a <code>--template</code> arugment without a value. This is in addition to the feature I discussed in this issue (which is actually easier to change if we have to, since we don't have to worry about breaking changes as much for <code>jj</code>'s behavior that happens only when errors occur). One reason I pinged all the people above is that I may have forgotten some other important feature that's relevant here, and that I'm not sure whether <code>ignore_errors</code> is relevant to all of these or not.</p>
-<hr />
+<p>Both of these points run into the fact that, at least at the moment, I&#x27;m not the best expert on why <code>jj</code>&#x27;s CLI code is organized the way it is, and what options there are for reorganizing it without losing useful functionality. I shared what I do understand as best I could :).</p>
+<p>For example, I&#x27;d love to have <code>ignore_errors</code> replaced with something cleaner, but I&#x27;m not sure what would work nor exactly what our requirements are[^known]. For that discussion, perhaps @yuja, @torquestomp, @zummenix (who originally added the function I edited in https://github.com/jj-vcs/jj/commit/d446a85c4a884b603bacf6e8a88dfe6da47d09c3, AFAICT, for the <code>--templates</code> feature I described in the footnote), @elasticdog, or other people from https://github.com/jj-vcs/jj/blame/29e2ccf4aeae24fa031e561211750d7e6e93f0b0/cli/src/cli_util.rs#L3384 might have some thoughts.</p>
+<p>[^known]: Well, two relevant features <code>jj</code> has are <a href="https://jj-vcs.github.io/jj/prerelease/config/#aliases">aliases</a>, the <a href="https://jj-vcs.github.io/jj/prerelease/config/#default-command">default command</a>, and dynamic suggestions for configured templates if the user enters a <code>--template</code> arugment without a value. This is in addition to the feature I discussed in this issue (which is actually easier to change if we have to, since we don&#x27;t have to worry about breaking changes as much for <code>jj</code>&#x27;s behavior that happens only when errors occur). One reason I pinged all the people above is that I may have forgotten some other important feature that&#x27;s relevant here, and that I&#x27;m not sure whether <code>ignore_errors</code> is relevant to all of these or not.</p>
+<hr>
 <p>P.S. The PR I was discussing in the first message in this issue is now merged, so I can provide a better permalink to the commit I was talking about: https://github.com/jj-vcs/jj/commit/d446a85c4a884b603bacf6e8a88dfe6da47d09c3. I also edited the first message to include it.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/yuja">@yuja</a> on 2025-03-08 03:02</div>
-            <div class="timeline-body"><p>fwiw, <code>Clone</code> wouldn't be needed for jj's purpose. We can mutate <code>clap::Error</code> before wrapping it in <code>Arc&lt;dyn Error&gt;</code>.</p>
+            <div class="timeline-body"><p>fwiw, <code>Clone</code> wouldn&#x27;t be needed for jj&#x27;s purpose. We can mutate <code>clap::Error</code> before wrapping it in <code>Arc&lt;dyn Error&gt;</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../pulls/5941.html">clap-rs/clap#5941</a> on 2025-03-08 05:08</div>
+            <div class="event">Referenced in <a>clap-rs/clap#5941</a> on 2025-03-08 05:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../pulls/5942.html">clap-rs/clap#5942</a> on 2025-03-08 05:17</div>
+            <div class="event">Referenced in <a>clap-rs/clap#5942</a> on 2025-03-08 05:17</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-03-10 15:57</div>
-            <div class="timeline-body"><p>From https://github.com/clap-rs/clap/pull/5942#issue-2904541056</p>
+            <div class="timeline-body"><p>From <a href="https://github.com/clap-rs/clap/pull/5942">clap-rs/clap#5942</a>#issue-2904541056</p>
 <blockquote>
 <p>Some reasons to make <code>clap::Error</code> be <code>Clone</code>:</p>
 <ul>
@@ -393,9 +393,9 @@ index 7bd627375c..bf822e9e2d 100644
 </li>
 <li><p>Since <code>clap::Error</code>s can be edited, one might want to edit them in a fallible way. It should be possible to save a backup copy in case the edit fails.</p>
 </li>
-<li><p>More generally, all else being equal, it's nice to not require people to refactor their programs. In this case, one could argue that the refactor would improve their programs, but the improvement of avoiding a clone in the error path would be quite minor and might not be worth their time.</p>
+<li><p>More generally, all else being equal, it&#x27;s nice to not require people to refactor their programs. In this case, one could argue that the refactor would improve their programs, but the improvement of avoiding a clone in the error path would be quite minor and might not be worth their time.</p>
 </li>
-<li><p>There's little to no cost to doing so</p>
+<li><p>There&#x27;s little to no cost to doing so</p>
 </li>
 </ul>
 </blockquote>
@@ -407,8 +407,8 @@ index 7bd627375c..bf822e9e2d 100644
             <div class="timeline-body"><blockquote>
 <p>Clone types are convenient for new Rust users who might not be experienced in solving ownership problems</p>
 </blockquote>
-<p>Its a mixed bag of whether users have errors that can clone and new users shouldn't be dealing with clap's Error.</p>
-<p>Overall, I lean towards use-case driven development and since the use case has gone away, I'll pass on this.</p>
+<p>Its a mixed bag of whether users have errors that can clone and new users shouldn&#x27;t be dealing with clap&#x27;s Error.</p>
+<p>Overall, I lean towards use-case driven development and since the use case has gone away, I&#x27;ll pass on this.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -417,7 +417,7 @@ index 7bd627375c..bf822e9e2d 100644
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @epage on 2025-03-19 21:00</div>
+            <div class="event">Closed by <a href="https://github.com/epage">@epage</a> on 2025-03-19 21:00</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ilyagr">@ilyagr</a> on 2025-03-19 21:53</div>
@@ -427,7 +427,7 @@ index 7bd627375c..bf822e9e2d 100644
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:49:33 UTC
+        Synced at 2026-01-20 20:00:27 UTC
     </footer>
 </body>
 </html>

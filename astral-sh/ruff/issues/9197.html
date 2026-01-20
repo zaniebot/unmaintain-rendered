@@ -25,29 +25,29 @@
             <div class="timeline-header"><a href="https://github.com/picnixz">@picnixz</a></div>
             <div class="timeline-body"><p>This is a follow-up of #9196 (actually #9196 happened when I was trying to figure out this issue).</p>
 <p>Consider the following configuration:</p>
-<pre><code class="language-toml">[tool.ruff]
-target-version = 'py311'
-ignore = ['ALL']
-select = ['TCH']
+<pre><code>[tool.ruff]
+target-version = &#x27;py311&#x27;
+ignore = [&#x27;ALL&#x27;]
+select = [&#x27;TCH&#x27;]
 
 [tool.ruff.lint.flake8-type-checking]
 exempt-modules = []
 </code></pre>
 <p>Invoking</p>
-<pre><code class="language-bash">python3.11 -m ruff file.py --fix --unsafe-fixes
+<pre><code>python3.11 -m ruff file.py --fix --unsafe-fixes
 </code></pre>
 <p>on</p>
-<pre><code class="language-python">from __future__ import annotations
+<pre><code>from __future__ import annotations
 
 from typing import TYPE_CHECKING, Final
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-Const: Final[Sequence[str]] = ['a']
+Const: Final[Sequence[str]] = [&#x27;a&#x27;]
 </code></pre>
-<p>has no effect. However, the <code>Final</code> annotation should not be required because of <code>from __future__ import annotations</code>. More precisely, here's what I would expect:</p>
-<pre><code class="language-python">from __future__ import annotations
+<p>has no effect. However, the <code>Final</code> annotation should not be required because of <code>from __future__ import annotations</code>. More precisely, here&#x27;s what I would expect:</p>
+<pre><code>from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
@@ -55,15 +55,15 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
     from typing import Final
 
-Const: Final[Sequence[str]] = ['a']
+Const: Final[Sequence[str]] = [&#x27;a&#x27;]
 </code></pre>
 <p>I tried to find related issues but most of them were lacking <code>from __future__ import annotations</code> and thus annotations were treated as required at runtime. However, in my case, I really want the <code>Final</code> import to be moved inside a <code>TYPE_CHECKING</code> block, whence</p>
-<pre><code class="language-toml">[tool.ruff.lint.flake8-type-checking]
+<pre><code>[tool.ruff.lint.flake8-type-checking]
 exempt-modules = []
 </code></pre>
 <p>As such, I think the bug is related to <code>flake8-type-checking</code> itself.</p>
-<h3>Environment</h3>
-<pre><code class="language-text">Platform:              linux; (Linux-5.3.18-lp152.106-default-x86_64-with-glibc2.26)
+Environment
+<pre><code>Platform:              linux; (Linux-5.3.18-lp152.106-default-x86_64-with-glibc2.26)
 Python version:        3.11.6 (main, Nov 29 2023, 14:46:32) [GCC 7.5.0])
 Python implementation: CPython
 ruff version:          0.1.8
@@ -71,26 +71,26 @@ ruff version:          0.1.8
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[TCH]  `typing` imports into `TYPE_CHECKING` block are not always moved" to "[TCH] moving  `typing` imports into `TYPE_CHECKING` block does not work as intended" by @picnixz on 2023-12-19 10:15</div>
+            <div class="event">Renamed from &quot;[TCH]  `typing` imports into `TYPE_CHECKING` block are not always moved&quot; to &quot;[TCH] moving  `typing` imports into `TYPE_CHECKING` block does not work as intended&quot; by <a href="https://github.com/picnixz">@picnixz</a> on 2023-12-19 10:15</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-12-19 14:58</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-19 14:58</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">linter</span> added by @charliermarsh on 2023-12-19 14:58</div>
+            <div class="event">Label <span class="label">linter</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-19 14:58</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-12-19 14:58</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-19 14:58</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-20 03:56</div>
-            <div class="timeline-body"><p>We definitely shouldn't panic here, but can I ask why you want put your <code>typing</code> imports in the <code>TYPE_CHECKING</code> block? There's no runtime advantage to doing so since you already have to import <code>typing</code> to get <code>TYPE_CHECKING</code> itself, so it doesn't help with startup time or reducing circular dependencies or anything like that.</p>
+            <div class="timeline-body"><p>We definitely shouldn&#x27;t panic here, but can I ask why you want put your <code>typing</code> imports in the <code>TYPE_CHECKING</code> block? There&#x27;s no runtime advantage to doing so since you already have to import <code>typing</code> to get <code>TYPE_CHECKING</code> itself, so it doesn&#x27;t help with startup time or reducing circular dependencies or anything like that.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/eli-schwartz">@eli-schwartz</a> on 2023-12-20 04:31</div>
             <div class="timeline-body"><p>As far as I can tell this works as expected according to the documentation.</p>
-<pre><code class="language-diff">$ ruff check source.py --fix --unsafe-fixes --diff
+<pre><code>$ ruff check source.py --fix --unsafe-fixes --diff
 --- source.py
 +++ source.py
 @@ -1,9 +1,9 @@
@@ -103,7 +103,7 @@ ruff version:          0.1.8
 +    from typing import Final
      from collections.abc import Sequence
  
- Const: Final[Sequence[str]] = ['a']
+ Const: Final[Sequence[str]] = [&#x27;a&#x27;]
 
 Would fix 1 error.
 </code></pre>
@@ -111,59 +111,59 @@ Would fix 1 error.
 <blockquote>
 <p>Enforce TC001, TC002, and TC003 rules even when valid runtime imports are present for the same module.</p>
 </blockquote>
-<p>In case you're wondering why my example is different from yours, and has Final on its own import line -- without that change, it panicked again. I also had to remove <code>ignore = ['all']</code> as that just complains it's an unknown rule selector.</p>
+<p>In case you&#x27;re wondering why my example is different from yours, and has Final on its own import line -- without that change, it panicked again. I also had to remove <code>ignore = [&#x27;all&#x27;]</code> as that just complains it&#x27;s an unknown rule selector.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/eli-schwartz">@eli-schwartz</a> on 2023-12-20 04:37</div>
             <div class="timeline-body"><blockquote>
-<p>but can I ask why you want put your <code>typing</code> imports in the <code>TYPE_CHECKING</code> block? There's no runtime advantage to doing so since you already have to import <code>typing</code> to get <code>TYPE_CHECKING</code> itself, so it doesn't help with startup time or reducing circular dependencies or anything like that.</p>
+<p>but can I ask why you want put your <code>typing</code> imports in the <code>TYPE_CHECKING</code> block? There&#x27;s no runtime advantage to doing so since you already have to import <code>typing</code> to get <code>TYPE_CHECKING</code> itself, so it doesn&#x27;t help with startup time or reducing circular dependencies or anything like that.</p>
 </blockquote>
 <p>On general principle:</p>
 <ul>
 <li>It avoids binding the name</li>
-<li>I believe if you have a runtime circular import where typing.py imports from your current module, but after TYPE_CHECKING is defined and before Final is defined, then if you don't actually attempt to forcibly bind Final &quot;right now&quot;, you can return to processing the rest of your current module before finishing typing.py. It's kind of sketchy to want to do that but :shrug:</li>
+<li>I believe if you have a runtime circular import where typing.py imports from your current module, but after TYPE_CHECKING is defined and before Final is defined, then if you don&#x27;t actually attempt to forcibly bind Final &quot;right now&quot;, you can return to processing the rest of your current module before finishing typing.py. It&#x27;s kind of sketchy to want to do that but :shrug:</li>
 </ul>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/picnixz">@picnixz</a> on 2023-12-20 08:18</div>
             <div class="timeline-body"><blockquote>
-<p>We definitely shouldn't panic here, but can I ask why you want put your typing imports in the TYPE_CHECKING block? There's no runtime advantage to doing so since you already have to import typing to get TYPE_CHECKING itself, so it doesn't help with startup time or reducing circular dependencies or anything like that.</p>
+<p>We definitely shouldn&#x27;t panic here, but can I ask why you want put your typing imports in the TYPE_CHECKING block? There&#x27;s no runtime advantage to doing so since you already have to import typing to get TYPE_CHECKING itself, so it doesn&#x27;t help with startup time or reducing circular dependencies or anything like that.</p>
 </blockquote>
-<p>It's as eli said, it's to avoid binding the name. Also it's to reduce the amount of imports at the top of the file for clarity purposes (I can collapse the TYPE_CHECKING block).</p>
+<p>It&#x27;s as eli said, it&#x27;s to avoid binding the name. Also it&#x27;s to reduce the amount of imports at the top of the file for clarity purposes (I can collapse the TYPE_CHECKING block).</p>
 <blockquote>
-<p>I also had to remove ignore = ['all'] as that just complains it's an unknown rule selector.</p>
+<p>I also had to remove ignore = [&#x27;all&#x27;] as that just complains it&#x27;s an unknown rule selector.</p>
 </blockquote>
-<p>Ah sorry about that, I think it's 'ALL' that I needed to put; I'll edit the issue shortly.</p>
+<p>Ah sorry about that, I think it&#x27;s &#x27;ALL&#x27; that I needed to put; I&#x27;ll edit the issue shortly.</p>
 <blockquote>
 <p>... however, per the documentation you need to also add the strict = true setting.</p>
 </blockquote>
 <p>Oh I am also sorry about this. I usually carefully read the docs before complaining but I think it passed under the radar. However, with that enabled, I also have a linter panic in my case as yopu said and this is probably related to #9196. For instance, the following linter-panicks</p>
-<pre><code class="language-python">from __future__ import annotations
+<pre><code>from __future__ import annotations
 
 from typing import TYPE_CHECKING, Final
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-Const: Final[Sequence[str]] = ['a']
+Const: Final[Sequence[str]] = [&#x27;a&#x27;]
 </code></pre>
 <p>with</p>
-<pre><code class="language-toml">[tool.ruff.lint.flake8-type-checking]
+<pre><code>[tool.ruff.lint.flake8-type-checking]
 exempt-modules = []
 strict = true
 </code></pre>
-<p>So I agree that it works as intended but with 'strict' it's a linter panic. I'll update the title issue as well or we can move the discussion to #9196 if it's better for you.</p>
+<p>So I agree that it works as intended but with &#x27;strict&#x27; it&#x27;s a linter panic. I&#x27;ll update the title issue as well or we can move the discussion to #9196 if it&#x27;s better for you.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-12-20 16:03</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-20 16:03</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:49:18 UTC
+        Synced at 2026-01-20 18:48:48 UTC
     </footer>
 </body>
 </html>

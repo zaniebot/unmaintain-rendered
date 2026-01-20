@@ -23,24 +23,24 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>This PR introduces a new rule to sort <code>__slots__</code> and <code>__match_args__</code> according to a <a href="https://en.wikipedia.org/wiki/Natural_sort_order">natural sort</a>, as was requested in https://github.com/astral-sh/ruff/issues/1198#issuecomment-1881418365.</p>
-<p>The implementation here generalises some of the machinery introduced in https://github.com/astral-sh/ruff/commit/3aae16f1bdef51e2f64ea4e9e64f9201ad4d9020 so that different kinds of sorts can be applied to lists of string literals. (We use an &quot;isort-style&quot; sort for <code>__all__</code>, but that isn't really appropriate for <code>__slots__</code> and <code>__match_args__</code>, where nearly all items will be snake_case.) Several sections of code have been moved from <code>sort_dunder_all.rs</code> to a new module, <code>sorting_helpers.rs</code>, which <code>sort_dunder_all.rs</code> and <code>sort_dunder_slots.rs</code> both make use of.</p>
-<p><code>__match_args__</code> is very similar to <code>__all__</code>, in that it can only be a tuple or a list. <code>__slots__</code> differs from the other two, however, in that it can be any iterable of strings. If slots is a dictionary, the values are used by the builtin <code>help()</code> function as per-attribute docstrings that show up in the output of <code>help()</code>. (There's no particular use-case for making <code>__slots__</code> a set, but it's perfectly legal at runtime, so there's no reason for us not to handle it in this rule.)</p>
-<p>Currently I've only implemented an autofix for <code>__match_args__</code> and <code>__slots__</code> if the definition is on a single line. That's for two reasons:</p>
+            <div class="timeline-body">Summary
+<p>This PR introduces a new rule to sort <code>__slots__</code> and <code>__match_args__</code> according to a <a href="https://en.wikipedia.org/wiki/Natural_sort_order">natural sort</a>, as was requested in <a href="https://github.com/astral-sh/ruff/issues/1198">astral-sh/ruff#1198</a>#issuecomment-1881418365.</p>
+<p>The implementation here generalises some of the machinery introduced in https://github.com/astral-sh/ruff/commit/3aae16f1bdef51e2f64ea4e9e64f9201ad4d9020 so that different kinds of sorts can be applied to lists of string literals. (We use an &quot;isort-style&quot; sort for <code>__all__</code>, but that isn&#x27;t really appropriate for <code>__slots__</code> and <code>__match_args__</code>, where nearly all items will be snake_case.) Several sections of code have been moved from <code>sort_dunder_all.rs</code> to a new module, <code>sorting_helpers.rs</code>, which <code>sort_dunder_all.rs</code> and <code>sort_dunder_slots.rs</code> both make use of.</p>
+<p><code>__match_args__</code> is very similar to <code>__all__</code>, in that it can only be a tuple or a list. <code>__slots__</code> differs from the other two, however, in that it can be any iterable of strings. If slots is a dictionary, the values are used by the builtin <code>help()</code> function as per-attribute docstrings that show up in the output of <code>help()</code>. (There&#x27;s no particular use-case for making <code>__slots__</code> a set, but it&#x27;s perfectly legal at runtime, so there&#x27;s no reason for us not to handle it in this rule.)</p>
+<p>Currently I&#x27;ve only implemented an autofix for <code>__match_args__</code> and <code>__slots__</code> if the definition is on a single line. That&#x27;s for two reasons:</p>
 <ol>
 <li>I wanted to see what people thought of this before going any further!</li>
-<li>Multiline <code>__slots__</code> and <code>__match_args__</code> definitions are much rarer than multiline <code>__all__</code> definitions, so there's probably less value in implementing the autofix for those.</li>
+<li>Multiline <code>__slots__</code> and <code>__match_args__</code> definitions are much rarer than multiline <code>__all__</code> definitions, so there&#x27;s probably less value in implementing the autofix for those.</li>
 </ol>
-<p>Implementing an autofix for multiline <code>__match_args__</code> wouldn't be too hard: I'd just have to move more code from <code>sort_dunder_all.rs</code> to <code>sorting_helpers.rs</code>. The same is true for <code>__slots__</code> when it's a tuple, list or set. I don't feel enthused about implementing an autofix for multiline <code>__slots__</code> definitions where <code>__slots__</code> is a dict, however. That would require a lot of extra code, and using a dict for <code>__slots__</code> is pretty rare.</p>
-<p>If we're interested in autofixes for multiline <code>__slots__</code> and <code>__match_args__</code> definitions, let me know whether you'd prefer it in this PR or a followup!</p>
-<h2>Test Plan</h2>
+<p>Implementing an autofix for multiline <code>__match_args__</code> wouldn&#x27;t be too hard: I&#x27;d just have to move more code from <code>sort_dunder_all.rs</code> to <code>sorting_helpers.rs</code>. The same is true for <code>__slots__</code> when it&#x27;s a tuple, list or set. I don&#x27;t feel enthused about implementing an autofix for multiline <code>__slots__</code> definitions where <code>__slots__</code> is a dict, however. That would require a lot of extra code, and using a dict for <code>__slots__</code> is pretty rare.</p>
+<p>If we&#x27;re interested in autofixes for multiline <code>__slots__</code> and <code>__match_args__</code> definitions, let me know whether you&#x27;d prefer it in this PR or a followup!</p>
+Test Plan
 <p><code>cargo test</code> / <code>cargo insta review</code>.</p>
 <p>I also ran this rule on CPython. The autofix fixed 45 violations:</p>
-<details>
-<summary>Diff from the autofix</summary>
 
-<pre><code class="language-diff">diff --git a/Lib/_pydatetime.py b/Lib/_pydatetime.py
+Diff from the autofix
+
+<pre><code>diff --git a/Lib/_pydatetime.py b/Lib/_pydatetime.py
 index bca2acf1fc..657544aa47 100644
 --- a/Lib/_pydatetime.py
 +++ b/Lib/_pydatetime.py
@@ -48,8 +48,8 @@ index bca2acf1fc..657544aa47 100644
      # arbitrarily; the exact rationale originally specified in the docstring
      # was &quot;Because I felt like it.&quot;
  
--    __slots__ = '_days', '_seconds', '_microseconds', '_hashcode'
-+    __slots__ = '_days', '_hashcode', '_microseconds', '_seconds'
+-    __slots__ = &#x27;_days&#x27;, &#x27;_seconds&#x27;, &#x27;_microseconds&#x27;, &#x27;_hashcode&#x27;
++    __slots__ = &#x27;_days&#x27;, &#x27;_hashcode&#x27;, &#x27;_microseconds&#x27;, &#x27;_seconds&#x27;
  
      def __new__(cls, days=0, seconds=0, microseconds=0,
                  milliseconds=0, minutes=0, hours=0, weeks=0):
@@ -57,8 +57,8 @@ index bca2acf1fc..657544aa47 100644
      Properties (readonly):
      year, month, day
      &quot;&quot;&quot;
--    __slots__ = '_year', '_month', '_day', '_hashcode'
-+    __slots__ = '_day', '_hashcode', '_month', '_year'
+-    __slots__ = &#x27;_year&#x27;, &#x27;_month&#x27;, &#x27;_day&#x27;, &#x27;_hashcode&#x27;
++    __slots__ = &#x27;_day&#x27;, &#x27;_hashcode&#x27;, &#x27;_month&#x27;, &#x27;_year&#x27;
  
      def __new__(cls, year, month=None, day=None):
          &quot;&quot;&quot;Constructor.
@@ -66,8 +66,8 @@ index bca2acf1fc..657544aa47 100644
      Properties (readonly):
      hour, minute, second, microsecond, tzinfo, fold
      &quot;&quot;&quot;
--    __slots__ = '_hour', '_minute', '_second', '_microsecond', '_tzinfo', '_hashcode', '_fold'
-+    __slots__ = '_fold', '_hashcode', '_hour', '_microsecond', '_minute', '_second', '_tzinfo'
+-    __slots__ = &#x27;_hour&#x27;, &#x27;_minute&#x27;, &#x27;_second&#x27;, &#x27;_microsecond&#x27;, &#x27;_tzinfo&#x27;, &#x27;_hashcode&#x27;, &#x27;_fold&#x27;
++    __slots__ = &#x27;_fold&#x27;, &#x27;_hashcode&#x27;, &#x27;_hour&#x27;, &#x27;_microsecond&#x27;, &#x27;_minute&#x27;, &#x27;_second&#x27;, &#x27;_tzinfo&#x27;
  
      def __new__(cls, hour=0, minute=0, second=0, microsecond=0, tzinfo=None, *, fold=0):
          &quot;&quot;&quot;Constructor.
@@ -75,8 +75,8 @@ index bca2acf1fc..657544aa47 100644
  
  
  class timezone(tzinfo):
--    __slots__ = '_offset', '_name'
-+    __slots__ = '_name', '_offset'
+-    __slots__ = &#x27;_offset&#x27;, &#x27;_name&#x27;
++    __slots__ = &#x27;_name&#x27;, &#x27;_offset&#x27;
  
      # Sentinel value to disallow None
      _Omitted = object()
@@ -88,8 +88,8 @@ index 2692f2fcba..cd7929407d 100644
  class Decimal(object):
      &quot;&quot;&quot;Floating point class for decimal arithmetic.&quot;&quot;&quot;
  
--    __slots__ = ('_exp','_int','_sign', '_is_special')
-+    __slots__ = ('_exp', '_int', '_is_special', '_sign')
+-    __slots__ = (&#x27;_exp&#x27;,&#x27;_int&#x27;,&#x27;_sign&#x27;, &#x27;_is_special&#x27;)
++    __slots__ = (&#x27;_exp&#x27;, &#x27;_int&#x27;, &#x27;_is_special&#x27;, &#x27;_sign&#x27;)
      # Generally, the value of the Decimal instance is given by
      #  (-1)**_sign * _int * 10**_exp
      # Special values are signified by _is_special == True
@@ -97,8 +97,8 @@ index 2692f2fcba..cd7929407d 100644
      to_integral = to_integral_value
  
  class _WorkRep(object):
--    __slots__ = ('sign','int','exp')
-+    __slots__ = ('exp', 'int', 'sign')
+-    __slots__ = (&#x27;sign&#x27;,&#x27;int&#x27;,&#x27;exp&#x27;)
++    __slots__ = (&#x27;exp&#x27;, &#x27;int&#x27;, &#x27;sign&#x27;)
      # sign: 0 or 1
      # int:  int
      # exp:  None, int, or string
@@ -110,17 +110,17 @@ index b006d76c4e..3acba9e055 100644
  
  class _localimpl:
      &quot;&quot;&quot;A class managing thread-local dicts&quot;&quot;&quot;
--    __slots__ = 'key', 'dicts', 'localargs', 'locallock', '__weakref__'
-+    __slots__ = '__weakref__', 'dicts', 'key', 'localargs', 'locallock'
+-    __slots__ = &#x27;key&#x27;, &#x27;dicts&#x27;, &#x27;localargs&#x27;, &#x27;locallock&#x27;, &#x27;__weakref__&#x27;
++    __slots__ = &#x27;__weakref__&#x27;, &#x27;dicts&#x27;, &#x27;key&#x27;, &#x27;localargs&#x27;, &#x27;locallock&#x27;
  
      def __init__(self):
-         # The key used in the Thread objects' attribute dicts.
+         # The key used in the Thread objects&#x27; attribute dicts.
 @@ -202,7 +202,7 @@ def _patch(self):
  
  
  class local:
--    __slots__ = '_local__impl', '__dict__'
-+    __slots__ = '__dict__', '_local__impl'
+-    __slots__ = &#x27;_local__impl&#x27;, &#x27;__dict__&#x27;
++    __slots__ = &#x27;__dict__&#x27;, &#x27;_local__impl&#x27;
  
      def __new__(cls, /, *args, **kw):
          if (args or kw) and (cls.__init__ is object.__init__):
@@ -132,8 +132,8 @@ index 30fd41d49a..f3e641cb53 100644
      resume_writing() may be called.
      &quot;&quot;&quot;
  
--    __slots__ = ('_loop', '_protocol_paused', '_high_water', '_low_water')
-+    __slots__ = ('_high_water', '_loop', '_low_water', '_protocol_paused')
+-    __slots__ = (&#x27;_loop&#x27;, &#x27;_protocol_paused&#x27;, &#x27;_high_water&#x27;, &#x27;_low_water&#x27;)
++    __slots__ = (&#x27;_high_water&#x27;, &#x27;_loop&#x27;, &#x27;_low_water&#x27;, &#x27;_protocol_paused&#x27;)
  
      def __init__(self, extra=None, loop=None):
          super().__init__(extra)
@@ -145,11 +145,11 @@ index 2e527dfd81..62f76b903d 100644
              yield self._mapping[key]
  
  class _Link(object):
--    __slots__ = 'prev', 'next', 'key', '__weakref__'
-+    __slots__ = '__weakref__', 'key', 'next', 'prev'
+-    __slots__ = &#x27;prev&#x27;, &#x27;next&#x27;, &#x27;key&#x27;, &#x27;__weakref__&#x27;
++    __slots__ = &#x27;__weakref__&#x27;, &#x27;key&#x27;, &#x27;next&#x27;, &#x27;prev&#x27;
  
  class OrderedDict(dict):
-     'Dictionary that remembers insertion order'
+     &#x27;Dictionary that remembers insertion order&#x27;
 diff --git a/Lib/fractions.py b/Lib/fractions.py
 index 389ab386b6..f4f524d66e 100644
 --- a/Lib/fractions.py
@@ -158,10 +158,10 @@ index 389ab386b6..f4f524d66e 100644
  
      &quot;&quot;&quot;
  
--    __slots__ = ('_numerator', '_denominator')
-+    __slots__ = ('_denominator', '_numerator')
+-    __slots__ = (&#x27;_numerator&#x27;, &#x27;_denominator&#x27;)
++    __slots__ = (&#x27;_denominator&#x27;, &#x27;_numerator&#x27;)
  
-     # We're immutable, so use __new__ not __init__
+     # We&#x27;re immutable, so use __new__ not __init__
      def __new__(cls, numerator=0, denominator=None):
 diff --git a/Lib/functools.py b/Lib/functools.py
 index 55990e742b..a936d85185 100644
@@ -184,8 +184,8 @@ index f0b72662a9..d27ff1a2fc 100644
          `Parameter.KEYWORD_ONLY`, `Parameter.VAR_KEYWORD`.
      &quot;&quot;&quot;
  
--    __slots__ = ('_name', '_kind', '_default', '_annotation')
-+    __slots__ = ('_annotation', '_default', '_kind', '_name')
+-    __slots__ = (&#x27;_name&#x27;, &#x27;_kind&#x27;, &#x27;_default&#x27;, &#x27;_annotation&#x27;)
++    __slots__ = (&#x27;_annotation&#x27;, &#x27;_default&#x27;, &#x27;_kind&#x27;, &#x27;_name&#x27;)
  
      POSITIONAL_ONLY         = _POSITIONAL_ONLY
      POSITIONAL_OR_KEYWORD   = _POSITIONAL_OR_KEYWORD
@@ -193,17 +193,17 @@ index f0b72662a9..d27ff1a2fc 100644
          Dict of keyword arguments values.
      &quot;&quot;&quot;
  
--    __slots__ = ('arguments', '_signature', '__weakref__')
-+    __slots__ = ('__weakref__', '_signature', 'arguments')
+-    __slots__ = (&#x27;arguments&#x27;, &#x27;_signature&#x27;, &#x27;__weakref__&#x27;)
++    __slots__ = (&#x27;__weakref__&#x27;, &#x27;_signature&#x27;, &#x27;arguments&#x27;)
  
      def __init__(self, signature, arguments):
          self.arguments = arguments
 @@ -3042,7 +3042,7 @@ class Signature:
-         to parameters (simulating 'functools.partial' behavior.)
+         to parameters (simulating &#x27;functools.partial&#x27; behavior.)
      &quot;&quot;&quot;
  
--    __slots__ = ('_return_annotation', '_parameters')
-+    __slots__ = ('_parameters', '_return_annotation')
+-    __slots__ = (&#x27;_return_annotation&#x27;, &#x27;_parameters&#x27;)
++    __slots__ = (&#x27;_parameters&#x27;, &#x27;_return_annotation&#x27;)
  
      _parameter_cls = Parameter
      _bound_arguments_cls = BoundArguments
@@ -215,8 +215,8 @@ index e398cc1383..e7e6e20f79 100644
  
      &quot;&quot;&quot;Represent and manipulate single IPv4 Addresses.&quot;&quot;&quot;
  
--    __slots__ = ('_ip', '__weakref__')
-+    __slots__ = ('__weakref__', '_ip')
+-    __slots__ = (&#x27;_ip&#x27;, &#x27;__weakref__&#x27;)
++    __slots__ = (&#x27;__weakref__&#x27;, &#x27;_ip&#x27;)
  
      def __init__(self, address):
  
@@ -224,8 +224,8 @@ index e398cc1383..e7e6e20f79 100644
  
      &quot;&quot;&quot;Represent and manipulate single IPv6 Addresses.&quot;&quot;&quot;
  
--    __slots__ = ('_ip', '_scope_id', '__weakref__')
-+    __slots__ = ('__weakref__', '_ip', '_scope_id')
+-    __slots__ = (&#x27;_ip&#x27;, &#x27;_scope_id&#x27;, &#x27;__weakref__&#x27;)
++    __slots__ = (&#x27;__weakref__&#x27;, &#x27;_ip&#x27;, &#x27;_scope_id&#x27;)
  
      def __init__(self, address):
          &quot;&quot;&quot;Instantiate a new IPv6 address object.
@@ -234,11 +234,11 @@ index 76b915de74..60d6c622c1 100644
 --- a/Lib/multiprocessing/managers.py
 +++ b/Lib/multiprocessing/managers.py
 @@ -63,7 +63,7 @@ class Token(object):
-     '''
+     &#x27;&#x27;&#x27;
      Type to uniquely identify a shared object
-     '''
--    __slots__ = ('typeid', 'address', 'id')
-+    __slots__ = ('address', 'id', 'typeid')
+     &#x27;&#x27;&#x27;
+-    __slots__ = (&#x27;typeid&#x27;, &#x27;address&#x27;, &#x27;id&#x27;)
++    __slots__ = (&#x27;address&#x27;, &#x27;id&#x27;, &#x27;typeid&#x27;)
  
      def __init__(self, typeid, address, id):
          (self.typeid, self.address, self.id) = (typeid, address, id)
@@ -250,17 +250,17 @@ index 30116c1189..2f7371f42a 100644
      After f = itemgetter(2), the call f(r) returns r[2].
      After g = itemgetter(2, 5, 3), the call g(r) returns (r[2], r[5], r[3])
      &quot;&quot;&quot;
--    __slots__ = ('_items', '_call')
-+    __slots__ = ('_call', '_items')
+-    __slots__ = (&#x27;_items&#x27;, &#x27;_call&#x27;)
++    __slots__ = (&#x27;_call&#x27;, &#x27;_items&#x27;)
  
      def __init__(self, item, *items):
          if not items:
 @@ -306,7 +306,7 @@ class methodcaller:
-     After g = methodcaller('name', 'date', foo=1), the call g(r) returns
-     r.name('date', foo=1).
+     After g = methodcaller(&#x27;name&#x27;, &#x27;date&#x27;, foo=1), the call g(r) returns
+     r.name(&#x27;date&#x27;, foo=1).
      &quot;&quot;&quot;
--    __slots__ = ('_name', '_args', '_kwargs')
-+    __slots__ = ('_args', '_kwargs', '_name')
+-    __slots__ = (&#x27;_name&#x27;, &#x27;_args&#x27;, &#x27;_kwargs&#x27;)
++    __slots__ = (&#x27;_args&#x27;, &#x27;_kwargs&#x27;, &#x27;_name&#x27;)
  
      def __init__(self, name, /, *args, **kwargs):
          self._name = name
@@ -271,9 +271,9 @@ index f14d35bb00..7dbf627702 100644
 @@ -45,7 +45,7 @@
  class _PathParents(Sequence):
      &quot;&quot;&quot;This object provides sequence-like access to the logical ancestors
-     of a path.  Don't try to construct it yourself.&quot;&quot;&quot;
--    __slots__ = ('_path', '_drv', '_root', '_tail')
-+    __slots__ = ('_drv', '_path', '_root', '_tail')
+     of a path.  Don&#x27;t try to construct it yourself.&quot;&quot;&quot;
+-    __slots__ = (&#x27;_path&#x27;, &#x27;_drv&#x27;, &#x27;_root&#x27;, &#x27;_tail&#x27;)
++    __slots__ = (&#x27;_drv&#x27;, &#x27;_path&#x27;, &#x27;_root&#x27;, &#x27;_tail&#x27;)
  
      def __init__(self, path):
          self._path = path
@@ -298,8 +298,8 @@ index 8bda17358d..1d84157323 100644
          FixedOffset.__init__(self, offset, name, dstoffset)
  
  class PicklableFixedOffsetWithSlots(PicklableFixedOffset):
--    __slots__ = '_FixedOffset__offset', '_FixedOffset__name', 'spam'
-+    __slots__ = '_FixedOffset__name', '_FixedOffset__offset', 'spam'
+-    __slots__ = &#x27;_FixedOffset__offset&#x27;, &#x27;_FixedOffset__name&#x27;, &#x27;spam&#x27;
++    __slots__ = &#x27;_FixedOffset__name&#x27;, &#x27;_FixedOffset__offset&#x27;, &#x27;spam&#x27;
  
  class _TZInfo(tzinfo):
      def utcoffset(self, datetime_module):
@@ -311,8 +311,8 @@ index 299af09c49..19fafe865d 100644
  
      &quot;&quot;&quot;Rational number implemented as a normalized pair of ints.&quot;&quot;&quot;
  
--    __slots__ = ['_Rat__num', '_Rat__den']
-+    __slots__ = ['_Rat__den', '_Rat__num']
+-    __slots__ = [&#x27;_Rat__num&#x27;, &#x27;_Rat__den&#x27;]
++    __slots__ = [&#x27;_Rat__den&#x27;, &#x27;_Rat__num&#x27;]
  
      def __init__(self, num=0, den=1):
          &quot;&quot;&quot;Constructor: Rat([num[, den]]).
@@ -324,8 +324,8 @@ index a3804a945f..50f162cb2b 100644
      pass
  
  class ByteArraySubclassWithSlots(bytearray):
--    __slots__ = ('x', 'y', '__dict__')
-+    __slots__ = ('__dict__', 'x', 'y')
+-    __slots__ = (&#x27;x&#x27;, &#x27;y&#x27;, &#x27;__dict__&#x27;)
++    __slots__ = (&#x27;__dict__&#x27;, &#x27;x&#x27;, &#x27;y&#x27;)
  
  class BytesSubclass(bytes):
      pass
@@ -337,8 +337,8 @@ index ae1dfacd72..1d6199e3f4 100644
      pass
  
  class DequeWithSlots(deque):
--    __slots__ = ('x', 'y', '__dict__')
-+    __slots__ = ('__dict__', 'x', 'y')
+-    __slots__ = (&#x27;x&#x27;, &#x27;y&#x27;, &#x27;__dict__&#x27;)
++    __slots__ = (&#x27;__dict__&#x27;, &#x27;x&#x27;, &#x27;y&#x27;)
  
  class DequeWithBadIter(deque):
      def __iter__(self):
@@ -350,8 +350,8 @@ index 1d71dd9e26..6b5ff082f6 100644
          callback = unittest.mock.Mock()
  
          class A:
--            __slots__ = ['a', 'y', 'wz']
-+            __slots__ = ['a', 'wz', 'y']
+-            __slots__ = [&#x27;a&#x27;, &#x27;y&#x27;, &#x27;wz&#x27;]
++            __slots__ = [&#x27;a&#x27;, &#x27;wz&#x27;, &#x27;y&#x27;]
  
          class Z:
              pass
@@ -374,13 +374,13 @@ index c12c908d2e..cf7d424ea9 100644
 +++ b/Lib/test/test_property.py
 @@ -275,7 +275,7 @@ def documented_getter():
      def test_property_with_slots_and_doc_slot_docstring_present(self):
-         # https://github.com/python/cpython/issues/98963#issuecomment-1574413319
+         # <a href="https://github.com/python/cpython/issues/98963">python/cpython#98963</a>#issuecomment-1574413319
          class slotted_prop(property):
 -            __slots__ = (&quot;foo&quot;, &quot;__doc__&quot;)
 +            __slots__ = (&quot;__doc__&quot;, &quot;foo&quot;)
  
-         p = slotted_prop(doc=&quot;what's up&quot;)
-         self.assertEqual(&quot;what's up&quot;, p.__doc__)  # new in 3.12: This gets set.
+         p = slotted_prop(doc=&quot;what&#x27;s up&quot;)
+         self.assertEqual(&quot;what&#x27;s up&quot;, p.__doc__)  # new in 3.12: This gets set.
 diff --git a/Lib/test/test_set.py b/Lib/test/test_set.py
 index d9102eb98a..d19a377b85 100644
 --- a/Lib/test/test_set.py
@@ -389,8 +389,8 @@ index d9102eb98a..d19a377b85 100644
  
  
  class SetSubclassWithSlots(set):
--    __slots__ = ('x', 'y', '__dict__')
-+    __slots__ = ('__dict__', 'x', 'y')
+-    __slots__ = (&#x27;x&#x27;, &#x27;y&#x27;, &#x27;__dict__&#x27;)
++    __slots__ = (&#x27;__dict__&#x27;, &#x27;x&#x27;, &#x27;y&#x27;)
  
  class TestSetSubclassWithSlots(unittest.TestCase):
      thetype = SetSubclassWithSlots
@@ -398,8 +398,8 @@ index d9102eb98a..d19a377b85 100644
      test_pickling = TestJointOps.test_pickling
  
  class FrozenSetSubclassWithSlots(frozenset):
--    __slots__ = ('x', 'y', '__dict__')
-+    __slots__ = ('__dict__', 'x', 'y')
+-    __slots__ = (&#x27;x&#x27;, &#x27;y&#x27;, &#x27;__dict__&#x27;)
++    __slots__ = (&#x27;__dict__&#x27;, &#x27;x&#x27;, &#x27;y&#x27;)
  
  class TestFrozenSetSubclassWithSlots(TestSetSubclassWithSlots):
      thetype = FrozenSetSubclassWithSlots
@@ -411,8 +411,8 @@ index cec99c5970..aca59617cf 100644
      Statistic difference on memory allocations between two Snapshot instance.
      &quot;&quot;&quot;
  
--    __slots__ = ('traceback', 'size', 'count')
-+    __slots__ = ('count', 'size', 'traceback')
+-    __slots__ = (&#x27;traceback&#x27;, &#x27;size&#x27;, &#x27;count&#x27;)
++    __slots__ = (&#x27;count&#x27;, &#x27;size&#x27;, &#x27;traceback&#x27;)
  
      def __init__(self, traceback, size, count):
          self.traceback = traceback
@@ -420,8 +420,8 @@ index cec99c5970..aca59617cf 100644
      Statistic difference on memory allocations between an old and a new
      Snapshot instance.
      &quot;&quot;&quot;
--    __slots__ = ('traceback', 'size', 'size_diff', 'count', 'count_diff')
-+    __slots__ = ('count', 'count_diff', 'size', 'size_diff', 'traceback')
+-    __slots__ = (&#x27;traceback&#x27;, &#x27;size&#x27;, &#x27;size_diff&#x27;, &#x27;count&#x27;, &#x27;count_diff&#x27;)
++    __slots__ = (&#x27;count&#x27;, &#x27;count_diff&#x27;, &#x27;size&#x27;, &#x27;size_diff&#x27;, &#x27;traceback&#x27;)
  
      def __init__(self, traceback, size, size_diff, count, count_diff):
          self.traceback = traceback
@@ -433,8 +433,8 @@ index d278b4effc..85c1b269c2 100644
  # Internal indicator of special typing constructs.
  # See __doc__ instance attribute for specific docs.
  class _SpecialForm(_Final, _NotIterable, _root=True):
--    __slots__ = ('_name', '__doc__', '_getitem')
-+    __slots__ = ('__doc__', '_getitem', '_name')
+-    __slots__ = (&#x27;_name&#x27;, &#x27;__doc__&#x27;, &#x27;_getitem&#x27;)
++    __slots__ = (&#x27;__doc__&#x27;, &#x27;_getitem&#x27;, &#x27;_name&#x27;)
  
      def __init__(self, getitem):
          self._getitem = getitem
@@ -446,8 +446,8 @@ index 470bc0d685..4b405c35b9 100644
                      uuid_generate_time_safe(3).
      &quot;&quot;&quot;
  
--    __slots__ = ('int', 'is_safe', '__weakref__')
-+    __slots__ = ('__weakref__', 'int', 'is_safe')
+-    __slots__ = (&#x27;int&#x27;, &#x27;is_safe&#x27;, &#x27;__weakref__&#x27;)
++    __slots__ = (&#x27;__weakref__&#x27;, &#x27;int&#x27;, &#x27;is_safe&#x27;)
  
      def __init__(self, hex=None, bytes=None, bytes_le=None, fields=None,
                         int=None, version=None,
@@ -481,8 +481,8 @@ index 7dd667bf3f..812e00f1b2 100644
  
  
  class FilterCrutch(object):
--    __slots__ = '_builder', '_level', '_old_start', '_old_end'
-+    __slots__ = '_builder', '_level', '_old_end', '_old_start'
+-    __slots__ = &#x27;_builder&#x27;, &#x27;_level&#x27;, &#x27;_old_start&#x27;, &#x27;_old_end&#x27;
++    __slots__ = &#x27;_builder&#x27;, &#x27;_level&#x27;, &#x27;_old_end&#x27;, &#x27;_old_start&#x27;
  
      def __init__(self, builder):
          self._level = 0
@@ -494,8 +494,8 @@ index db51f350ea..7aed19c1c2 100644
  
  
  class TypeInfo(object):
--    __slots__ = 'namespace', 'name'
-+    __slots__ = 'name', 'namespace'
+-    __slots__ = &#x27;namespace&#x27;, &#x27;name&#x27;
++    __slots__ = &#x27;name&#x27;, &#x27;namespace&#x27;
  
      def __init__(self, namespace, name):
          self.namespace = namespace
@@ -503,8 +503,8 @@ index db51f350ea..7aed19c1c2 100644
  
  class ProcessingInstruction(Childless, Node):
      nodeType = Node.PROCESSING_INSTRUCTION_NODE
--    __slots__ = ('target', 'data')
-+    __slots__ = ('data', 'target')
+-    __slots__ = (&#x27;target&#x27;, &#x27;data&#x27;)
++    __slots__ = (&#x27;data&#x27;, &#x27;target&#x27;)
  
      def __init__(self, target, data):
          self.target = target
@@ -512,8 +512,8 @@ index db51f350ea..7aed19c1c2 100644
  
  
  class CharacterData(Childless, Node):
--    __slots__=('_data', 'ownerDocument','parentNode', 'previousSibling', 'nextSibling')
-+    __slots__=('_data', 'nextSibling', 'ownerDocument', 'parentNode', 'previousSibling')
+-    __slots__=(&#x27;_data&#x27;, &#x27;ownerDocument&#x27;,&#x27;parentNode&#x27;, &#x27;previousSibling&#x27;, &#x27;nextSibling&#x27;)
++    __slots__=(&#x27;_data&#x27;, &#x27;nextSibling&#x27;, &#x27;ownerDocument&#x27;, &#x27;parentNode&#x27;, &#x27;previousSibling&#x27;)
  
      def __init__(self):
          self.ownerDocument = self.parentNode = None
@@ -556,15 +556,15 @@ index aa5f6b9831..8b61321355 100644
      e.g. tuple subclasses.
      &quot;&quot;&quot;
  
--    __slots__ = ('initial', 'default', 'readonly', 'instances', 'name')
-+    __slots__ = ('default', 'initial', 'instances', 'name', 'readonly')
+-    __slots__ = (&#x27;initial&#x27;, &#x27;default&#x27;, &#x27;readonly&#x27;, &#x27;instances&#x27;, &#x27;name&#x27;)
++    __slots__ = (&#x27;default&#x27;, &#x27;initial&#x27;, &#x27;instances&#x27;, &#x27;name&#x27;, &#x27;readonly&#x27;)
  
      def __init__(self, initial=_NOT_SET, *,
                   default=_NOT_SET,
 </code></pre>
-</details>
 
-<p>The following 17 violations were flagged but left unfixed by the rule as it currently stands. (They were unfixed because they're multiline definitions):</p>
+
+<p>The following 17 violations were flagged but left unfixed by the rule as it currently stands. (They were unfixed because they&#x27;re multiline definitions):</p>
 <pre><code>cpython\Lib\asyncio\events.py:32:17: RUF023 `Handle.__slots__` is not sorted
 cpython\Lib\dataclasses.py:296:17: RUF023 `Field.__slots__` is not sorted
 cpython\Lib\dataclasses.py:360:17: RUF023 `_DataclassParams.__slots__` is not sorted
@@ -586,128 +586,128 @@ cpython\Lib\zoneinfo\_zoneinfo.py:422:17: RUF023 `_TZStr.__slots__` is not sorte
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @AlexWaygood on 2024-01-17 15:06</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-01-17 15:06</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-01-17 15:29</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+150 -0 violations, +0 -0 fixes in 3 projects; 40 projects unchanged)</p>
-<details><summary><a href="https://github.com/DisnakeDev/disnake">DisnakeDev/disnake</a> (+111 -0 violations, +0 -0 fixes)</summary>
+<a href="https://github.com/DisnakeDev/disnake">DisnakeDev/disnake</a> (+111 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --preview</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/abc.py#L201'>disnake/abc.py:201:17:</a> RUF023 [*] `_Overwrites.__slots__` is not sorted
-+ <a href='https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/activity.py#L289'>disnake/activity.py:289:17:</a> RUF023 [*] `Activity.__slots__` is not sorted
-+ <a href='https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/activity.py#L530'>disnake/activity.py:530:17:</a> RUF023 [*] `Streaming.__slots__` is not sorted
-+ <a href='https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/activity.py#L619'>disnake/activity.py:619:17:</a> RUF023 [*] `Spotify.__slots__` is not sorted
-+ <a href='https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/activity.py#L803'>disnake/activity.py:803:17:</a> RUF023 [*] `CustomActivity.__slots__` is not sorted
-+ <a href='https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/app_commands.py#L1017'>disnake/app_commands.py:1017:17:</a> RUF023 [*] `ApplicationCommandPermissions.__slots__` is not sorted
-+ <a href='https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/app_commands.py#L1075'>disnake/app_commands.py:1075:17:</a> RUF023 [*] `GuildApplicationCommandPermissions.__slots__` is not sorted
-+ <a href='https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/app_commands.py#L241'>disnake/app_commands.py:241:17:</a> RUF023 [*] `Option.__slots__` is not sorted
-+ <a href='https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/appinfo.py#L156'>disnake/appinfo.py:156:17:</a> RUF023 [*] `AppInfo.__slots__` is not sorted
-+ <a href='https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/appinfo.py#L297'>disnake/appinfo.py:297:17:</a> RUF023 [*] `PartialAppInfo.__slots__` is not sorted
-+ <a href='https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/appinfo.py#L43'>disnake/appinfo.py:43:17:</a> RUF023 [*] `InstallParams.__slots__` is not sorted
-+ <a href='https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/application_role_connection.py#L50'>disnake/application_role_connection.py:50:17:</a> RUF023 [*] `ApplicationRoleConnectionMetadata.__slots__` is not sorted
-+ <a href='https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/asset.py#L190'>disnake/asset.py:190:34:</a> RUF023 [*] `Asset.__slots__` is not sorted
-+ <a href='https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/automod.py#L283'>disnake/automod.py:283:17:</a> RUF023 [*] `AutoModTriggerMetadata.__slots__` is not sorted
-+ <a href='https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/automod.py#L455'>disnake/automod.py:455:17:</a> RUF023 [*] `AutoModRule.__slots__` is not sorted
-+ <a href='https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/automod.py#L729'>disnake/automod.py:729:17:</a> RUF023 [*] `AutoModActionExecution.__slots__` is not sorted
-+ <a href='https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/automod.py#L83'>disnake/automod.py:83:17:</a> RUF023 [*] `AutoModAction.__slots__` is not sorted
-+ <a href='https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/channel.py#L1101'>disnake/channel.py:1101:17:</a> RUF023 [*] `VocalGuildChannel.__slots__` is not sorted
-+ <a href='https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/channel.py#L1291'>disnake/channel.py:1291:17:</a> RUF023 [*] `VoiceChannel.__slots__` is not sorted
-+ <a href='https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/channel.py#L179'>disnake/channel.py:179:17:</a> RUF023 [*] `TextChannel.__slots__` is not sorted
-+ <a href='https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/channel.py#L1947'>disnake/channel.py:1947:17:</a> RUF023 [*] `StageChannel.__slots__` is not sorted
-+ <a href='https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/channel.py#L2737'>disnake/channel.py:2737:17:</a> RUF023 [*] `CategoryChannel.__slots__` is not sorted
-+ <a href='https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/channel.py#L3226'>disnake/channel.py:3226:17:</a> RUF023 [*] `ForumChannel.__slots__` is not sorted
-+ <a href='https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/channel.py#L4222'>disnake/channel.py:4222:17:</a> RUF023 [*] `DMChannel.__slots__` is not sorted
-+ <a href='https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/channel.py#L4388'>disnake/channel.py:4388:17:</a> RUF023 [*] `GroupChannel.__slots__` is not sorted
-+ <a href='https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/client.py#L173'>disnake/client.py:173:34:</a> RUF023 [*] `SessionStartLimit.__slots__` is not sorted
-+ <a href='https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/components.py#L189'>disnake/components.py:189:34:</a> RUF023 [*] `Button.__slots__` is not sorted
-+ <a href='https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/components.py#L269'>disnake/components.py:269:34:</a> RUF023 [*] `BaseSelectMenu.__slots__` is not sorted
-+ <a href='https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/components.py#L535'>disnake/components.py:535:34:</a> RUF023 [*] `SelectOption.__slots__` is not sorted
-+ <a href='https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/components.py#L646'>disnake/components.py:646:34:</a> RUF023 [*] `TextInput.__slots__` is not sorted
-+ <a href='https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/embeds.py#L170'>disnake/embeds.py:170:17:</a> RUF023 [*] `Embed.__slots__` is not sorted
-+ <a href='https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/emoji.py#L76'>disnake/emoji.py:76:34:</a> RUF023 [*] `Emoji.__slots__` is not sorted
-+ <a href='https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/entitlement.py#L81'>disnake/entitlement.py:81:17:</a> RUF023 [*] `Entitlement.__slots__` is not sorted
-+ <a href='https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/ext/commands/cooldowns.py#L282'>disnake/ext/commands/cooldowns.py:282:17:</a> RUF023 [*] `_Semaphore.__slots__` is not sorted
-+ <a href='https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/ext/commands/cooldowns.py#L330'>disnake/ext/commands/cooldowns.py:330:17:</a> RUF023 [*] `MaxConcurrency.__slots__` is not sorted
-+ <a href='https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/ext/commands/cooldowns.py#L71'>disnake/ext/commands/cooldowns.py:71:17:</a> RUF023 [*] `Cooldown.__slots__` is not sorted
-+ <a href='https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/ext/tasks/__init__.py#L53'>disnake/ext/tasks/__init__.py:53:17:</a> RUF023 [*] `SleepHandle.__slots__` is not sorted
++ <a href="https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/abc.py#L201">disnake/abc.py:201:17:</a> RUF023 [*] `_Overwrites.__slots__` is not sorted
++ <a href="https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/activity.py#L289">disnake/activity.py:289:17:</a> RUF023 [*] `Activity.__slots__` is not sorted
++ <a href="https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/activity.py#L530">disnake/activity.py:530:17:</a> RUF023 [*] `Streaming.__slots__` is not sorted
++ <a href="https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/activity.py#L619">disnake/activity.py:619:17:</a> RUF023 [*] `Spotify.__slots__` is not sorted
++ <a href="https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/activity.py#L803">disnake/activity.py:803:17:</a> RUF023 [*] `CustomActivity.__slots__` is not sorted
++ <a href="https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/app_commands.py#L1017">disnake/app_commands.py:1017:17:</a> RUF023 [*] `ApplicationCommandPermissions.__slots__` is not sorted
++ <a href="https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/app_commands.py#L1075">disnake/app_commands.py:1075:17:</a> RUF023 [*] `GuildApplicationCommandPermissions.__slots__` is not sorted
++ <a href="https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/app_commands.py#L241">disnake/app_commands.py:241:17:</a> RUF023 [*] `Option.__slots__` is not sorted
++ <a href="https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/appinfo.py#L156">disnake/appinfo.py:156:17:</a> RUF023 [*] `AppInfo.__slots__` is not sorted
++ <a href="https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/appinfo.py#L297">disnake/appinfo.py:297:17:</a> RUF023 [*] `PartialAppInfo.__slots__` is not sorted
++ <a href="https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/appinfo.py#L43">disnake/appinfo.py:43:17:</a> RUF023 [*] `InstallParams.__slots__` is not sorted
++ <a href="https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/application_role_connection.py#L50">disnake/application_role_connection.py:50:17:</a> RUF023 [*] `ApplicationRoleConnectionMetadata.__slots__` is not sorted
++ <a href="https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/asset.py#L190">disnake/asset.py:190:34:</a> RUF023 [*] `Asset.__slots__` is not sorted
++ <a href="https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/automod.py#L283">disnake/automod.py:283:17:</a> RUF023 [*] `AutoModTriggerMetadata.__slots__` is not sorted
++ <a href="https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/automod.py#L455">disnake/automod.py:455:17:</a> RUF023 [*] `AutoModRule.__slots__` is not sorted
++ <a href="https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/automod.py#L729">disnake/automod.py:729:17:</a> RUF023 [*] `AutoModActionExecution.__slots__` is not sorted
++ <a href="https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/automod.py#L83">disnake/automod.py:83:17:</a> RUF023 [*] `AutoModAction.__slots__` is not sorted
++ <a href="https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/channel.py#L1101">disnake/channel.py:1101:17:</a> RUF023 [*] `VocalGuildChannel.__slots__` is not sorted
++ <a href="https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/channel.py#L1291">disnake/channel.py:1291:17:</a> RUF023 [*] `VoiceChannel.__slots__` is not sorted
++ <a href="https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/channel.py#L179">disnake/channel.py:179:17:</a> RUF023 [*] `TextChannel.__slots__` is not sorted
++ <a href="https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/channel.py#L1947">disnake/channel.py:1947:17:</a> RUF023 [*] `StageChannel.__slots__` is not sorted
++ <a href="https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/channel.py#L2737">disnake/channel.py:2737:17:</a> RUF023 [*] `CategoryChannel.__slots__` is not sorted
++ <a href="https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/channel.py#L3226">disnake/channel.py:3226:17:</a> RUF023 [*] `ForumChannel.__slots__` is not sorted
++ <a href="https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/channel.py#L4222">disnake/channel.py:4222:17:</a> RUF023 [*] `DMChannel.__slots__` is not sorted
++ <a href="https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/channel.py#L4388">disnake/channel.py:4388:17:</a> RUF023 [*] `GroupChannel.__slots__` is not sorted
++ <a href="https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/client.py#L173">disnake/client.py:173:34:</a> RUF023 [*] `SessionStartLimit.__slots__` is not sorted
++ <a href="https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/components.py#L189">disnake/components.py:189:34:</a> RUF023 [*] `Button.__slots__` is not sorted
++ <a href="https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/components.py#L269">disnake/components.py:269:34:</a> RUF023 [*] `BaseSelectMenu.__slots__` is not sorted
++ <a href="https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/components.py#L535">disnake/components.py:535:34:</a> RUF023 [*] `SelectOption.__slots__` is not sorted
++ <a href="https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/components.py#L646">disnake/components.py:646:34:</a> RUF023 [*] `TextInput.__slots__` is not sorted
++ <a href="https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/embeds.py#L170">disnake/embeds.py:170:17:</a> RUF023 [*] `Embed.__slots__` is not sorted
++ <a href="https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/emoji.py#L76">disnake/emoji.py:76:34:</a> RUF023 [*] `Emoji.__slots__` is not sorted
++ <a href="https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/entitlement.py#L81">disnake/entitlement.py:81:17:</a> RUF023 [*] `Entitlement.__slots__` is not sorted
++ <a href="https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/ext/commands/cooldowns.py#L282">disnake/ext/commands/cooldowns.py:282:17:</a> RUF023 [*] `_Semaphore.__slots__` is not sorted
++ <a href="https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/ext/commands/cooldowns.py#L330">disnake/ext/commands/cooldowns.py:330:17:</a> RUF023 [*] `MaxConcurrency.__slots__` is not sorted
++ <a href="https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/ext/commands/cooldowns.py#L71">disnake/ext/commands/cooldowns.py:71:17:</a> RUF023 [*] `Cooldown.__slots__` is not sorted
++ <a href="https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/ext/tasks/__init__.py#L53">disnake/ext/tasks/__init__.py:53:17:</a> RUF023 [*] `SleepHandle.__slots__` is not sorted
 ... 74 additional changes omitted for project
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+2 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/apache/airflow">apache/airflow</a> (+2 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --preview --select ALL</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/apache/airflow/blob/2b4da0101f0314989d148c3c8a02c87e87048974/airflow/io/path.py#L88'>airflow/io/path.py:88:17:</a> RUF023 [*] `ObjectStoragePath.__slots__` is not sorted
-+ <a href='https://github.com/apache/airflow/blob/2b4da0101f0314989d148c3c8a02c87e87048974/airflow/providers_manager.py#L100'>airflow/providers_manager.py:100:17:</a> RUF023 [*] `LazyDictWithCache.__slots__` is not sorted
++ <a href="https://github.com/apache/airflow/blob/2b4da0101f0314989d148c3c8a02c87e87048974/airflow/io/path.py#L88">airflow/io/path.py:88:17:</a> RUF023 [*] `ObjectStoragePath.__slots__` is not sorted
++ <a href="https://github.com/apache/airflow/blob/2b4da0101f0314989d148c3c8a02c87e87048974/airflow/providers_manager.py#L100">airflow/providers_manager.py:100:17:</a> RUF023 [*] `LazyDictWithCache.__slots__` is not sorted
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+37 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+37 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --preview</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/ibis-project/ibis/blob/899dce1b92d08987b3cfbcb29b31729f0328df5f/ibis/backends/pandas/aggcontext.py#L254'>ibis/backends/pandas/aggcontext.py:254:17:</a> RUF023 [*] `AggregationContext.__slots__` is not sorted
-+ <a href='https://github.com/ibis-project/ibis/blob/899dce1b92d08987b3cfbcb29b31729f0328df5f/ibis/common/annotations.py#L103'>ibis/common/annotations.py:103:17:</a> RUF023 [*] `Annotation.__slots__` is not sorted
-+ <a href='https://github.com/ibis-project/ibis/blob/899dce1b92d08987b3cfbcb29b31729f0328df5f/ibis/common/annotations.py#L200'>ibis/common/annotations.py:200:17:</a> RUF023 [*] `Argument.__slots__` is not sorted
-+ <a href='https://github.com/ibis-project/ibis/blob/899dce1b92d08987b3cfbcb29b31729f0328df5f/ibis/common/annotations.py#L40'>ibis/common/annotations.py:40:17:</a> RUF023 [*] `AttributeValidationError.__slots__` is not sorted
-+ <a href='https://github.com/ibis-project/ibis/blob/899dce1b92d08987b3cfbcb29b31729f0328df5f/ibis/common/annotations.py#L52'>ibis/common/annotations.py:52:17:</a> RUF023 [*] `ReturnValidationError.__slots__` is not sorted
-+ <a href='https://github.com/ibis-project/ibis/blob/899dce1b92d08987b3cfbcb29b31729f0328df5f/ibis/common/annotations.py#L64'>ibis/common/annotations.py:64:17:</a> RUF023 [*] `SignatureValidationError.__slots__` is not sorted
-+ <a href='https://github.com/ibis-project/ibis/blob/899dce1b92d08987b3cfbcb29b31729f0328df5f/ibis/common/collections.py#L288'>ibis/common/collections.py:288:17:</a> RUF023 [*] `FrozenDict.__slots__` is not sorted
-+ <a href='https://github.com/ibis-project/ibis/blob/899dce1b92d08987b3cfbcb29b31729f0328df5f/ibis/common/collections.py#L347'>ibis/common/collections.py:347:17:</a> RUF023 [*] `RewindableIterator.__slots__` is not sorted
-+ <a href='https://github.com/ibis-project/ibis/blob/899dce1b92d08987b3cfbcb29b31729f0328df5f/ibis/common/deferred.py#L324'>ibis/common/deferred.py:324:17:</a> RUF023 [*] `Attr.__slots__` is not sorted
-+ <a href='https://github.com/ibis-project/ibis/blob/899dce1b92d08987b3cfbcb29b31729f0328df5f/ibis/common/deferred.py#L344'>ibis/common/deferred.py:344:17:</a> RUF023 [*] `Item.__slots__` is not sorted
-+ <a href='https://github.com/ibis-project/ibis/blob/899dce1b92d08987b3cfbcb29b31729f0328df5f/ibis/common/deferred.py#L378'>ibis/common/deferred.py:378:17:</a> RUF023 [*] `Call.__slots__` is not sorted
-+ <a href='https://github.com/ibis-project/ibis/blob/899dce1b92d08987b3cfbcb29b31729f0328df5f/ibis/common/deferred.py#L442'>ibis/common/deferred.py:442:17:</a> RUF023 [*] `UnaryOperator.__slots__` is not sorted
++ <a href="https://github.com/ibis-project/ibis/blob/899dce1b92d08987b3cfbcb29b31729f0328df5f/ibis/backends/pandas/aggcontext.py#L254">ibis/backends/pandas/aggcontext.py:254:17:</a> RUF023 [*] `AggregationContext.__slots__` is not sorted
++ <a href="https://github.com/ibis-project/ibis/blob/899dce1b92d08987b3cfbcb29b31729f0328df5f/ibis/common/annotations.py#L103">ibis/common/annotations.py:103:17:</a> RUF023 [*] `Annotation.__slots__` is not sorted
++ <a href="https://github.com/ibis-project/ibis/blob/899dce1b92d08987b3cfbcb29b31729f0328df5f/ibis/common/annotations.py#L200">ibis/common/annotations.py:200:17:</a> RUF023 [*] `Argument.__slots__` is not sorted
++ <a href="https://github.com/ibis-project/ibis/blob/899dce1b92d08987b3cfbcb29b31729f0328df5f/ibis/common/annotations.py#L40">ibis/common/annotations.py:40:17:</a> RUF023 [*] `AttributeValidationError.__slots__` is not sorted
++ <a href="https://github.com/ibis-project/ibis/blob/899dce1b92d08987b3cfbcb29b31729f0328df5f/ibis/common/annotations.py#L52">ibis/common/annotations.py:52:17:</a> RUF023 [*] `ReturnValidationError.__slots__` is not sorted
++ <a href="https://github.com/ibis-project/ibis/blob/899dce1b92d08987b3cfbcb29b31729f0328df5f/ibis/common/annotations.py#L64">ibis/common/annotations.py:64:17:</a> RUF023 [*] `SignatureValidationError.__slots__` is not sorted
++ <a href="https://github.com/ibis-project/ibis/blob/899dce1b92d08987b3cfbcb29b31729f0328df5f/ibis/common/collections.py#L288">ibis/common/collections.py:288:17:</a> RUF023 [*] `FrozenDict.__slots__` is not sorted
++ <a href="https://github.com/ibis-project/ibis/blob/899dce1b92d08987b3cfbcb29b31729f0328df5f/ibis/common/collections.py#L347">ibis/common/collections.py:347:17:</a> RUF023 [*] `RewindableIterator.__slots__` is not sorted
++ <a href="https://github.com/ibis-project/ibis/blob/899dce1b92d08987b3cfbcb29b31729f0328df5f/ibis/common/deferred.py#L324">ibis/common/deferred.py:324:17:</a> RUF023 [*] `Attr.__slots__` is not sorted
++ <a href="https://github.com/ibis-project/ibis/blob/899dce1b92d08987b3cfbcb29b31729f0328df5f/ibis/common/deferred.py#L344">ibis/common/deferred.py:344:17:</a> RUF023 [*] `Item.__slots__` is not sorted
++ <a href="https://github.com/ibis-project/ibis/blob/899dce1b92d08987b3cfbcb29b31729f0328df5f/ibis/common/deferred.py#L378">ibis/common/deferred.py:378:17:</a> RUF023 [*] `Call.__slots__` is not sorted
++ <a href="https://github.com/ibis-project/ibis/blob/899dce1b92d08987b3cfbcb29b31729f0328df5f/ibis/common/deferred.py#L442">ibis/common/deferred.py:442:17:</a> RUF023 [*] `UnaryOperator.__slots__` is not sorted
 ... 25 additional changes omitted for project
 </pre>
 
 </p>
-</details>
-<details><summary>Changes by rule (1 rules affected)</summary>
+
+Changes by rule (1 rules affected)
 <p>
 
 <p>| code | total | + violation | - violation | + fix | - fix |
 | ---- | ------- | --------- | -------- | ----- | ---- |
 | RUF023 | 150 | 150 | 0 | 0 | 0 |</p>
 </p>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[Proof of concept] Add a rule/autofix to sort __slots__ and `__match_args__`" to "Add a rule/autofix to sort __slots__ and `__match_args__`" by @AlexWaygood on 2024-01-18 17:55</div>
+            <div class="event">Renamed from &quot;[Proof of concept] Add a rule/autofix to sort __slots__ and `__match_args__`&quot; to &quot;Add a rule/autofix to sort __slots__ and `__match_args__`&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-01-18 17:55</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-01-18 17:56</div>
-            <div class="timeline-body"><p>Okay, after the latest push, we now fix all but one violation in CPython (there's only one place in CPython where a multiline dict is used for <code>__slots__</code>). Here's the diff from the autofix running on CPython: <a href="https://github.com/astral-sh/ruff/files/13980154/cpython_diff.txt">cpython_diff.txt</a></p>
+            <div class="timeline-body"><p>Okay, after the latest push, we now fix all but one violation in CPython (there&#x27;s only one place in CPython where a multiline dict is used for <code>__slots__</code>). Here&#x27;s the diff from the autofix running on CPython: <a href="https://github.com/astral-sh/ruff/files/13980154/cpython_diff.txt">cpython_diff.txt</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-01-18 18:02</div>
-            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/AlexWaygood:sort-dunder-slots">CodSpeed Performance Report</a></h2>
-<h3>Merging #9564 will <strong>not alter performance</strong></h3>
-<p><sub>Comparing <code>AlexWaygood:sort-dunder-slots</code> (333fe62) with <code>main</code> (a3d667e)</sub></p>
-<h3>Summary</h3>
+            <div class="timeline-body"><a href="https://codspeed.io/astral-sh/ruff/branches/AlexWaygood:sort-dunder-slots">CodSpeed Performance Report</a>
+Merging #9564 will <strong>not alter performance</strong>
+<p>Comparing <code>AlexWaygood:sort-dunder-slots</code> (333fe62) with <code>main</code> (a3d667e)</p>
+Summary
 <p><code>✅ 30</code> untouched benchmarks</p>
 </div>
         </div>
@@ -718,7 +718,7 @@ cpython\Lib\zoneinfo\_zoneinfo.py:422:17: RUF023 `_TZStr.__slots__` is not sorte
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sequence_sorting.rs</code>:93 on 2024-01-19 10:38</div>
             <div class="timeline-body"><p>This could also be written as:</p>
-<pre><code class="language-suggestion">pub(super) fn sort_single_line_elements_sequence(
+<pre><code>pub(super) fn sort_single_line_elements_sequence(
     kind: &amp;SequenceKind,
     elts: &amp;[ast::Expr],
     elements: &amp;[&amp;str],
@@ -726,24 +726,24 @@ cpython\Lib\zoneinfo\_zoneinfo.py:422:17: RUF023 `_TZStr.__slots__` is not sorte
     mut cmp_fn: impl FnMut(&amp;str, &amp;str) -&gt; Ordering,
 ) -&gt; String {
 </code></pre>
-<p>Don't know which is preferred in terms of style!</p>
+<p>Don&#x27;t know which is preferred in terms of style!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sequence_sorting.rs</code>:6 on 2024-01-19 16:09</div>
-            <div class="timeline-body"><p>Nit: It would have been helpful to extract <code>sequence_sorting</code> as part of its own PR or at least commit because there's now no tooling telling me which parts of it are new (and need review) and which parts are unchanged.</p>
+            <div class="timeline-body"><p>Nit: It would have been helpful to extract <code>sequence_sorting</code> as part of its own PR or at least commit because there&#x27;s now no tooling telling me which parts of it are new (and need review) and which parts are unchanged.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sequence_sorting.rs</code>:40 on 2024-01-19 16:09</div>
             <div class="timeline-body"><p>Nit, but could safe someone lifetime issues further down</p>
-<pre><code class="language-suggestion">    fn surrounding_parens(&amp;self, source: &amp;str) -&gt; (&amp;'static str, &amp;'static str) {
+<pre><code>    fn surrounding_parens(&amp;self, source: &amp;str) -&gt; (&amp;&#x27;static str, &amp;&#x27;static str) {
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sequence_sorting.rs</code>:63 on 2024-01-19 16:11</div>
-            <div class="timeline-body"><p>Nit: Do you need it to be a <code>Tok</code> or could it be a <code>TokenKind</code>. <code>Tok</code> has the disadvantage that it has variants that contain heap allocated data. That means, Rust needs to call the <code>Tok::drop</code> implementation (at least if it isn't able to figure out that the returned variants never allocate)</p>
+            <div class="timeline-body"><p>Nit: Do you need it to be a <code>Tok</code> or could it be a <code>TokenKind</code>. <code>Tok</code> has the disadvantage that it has variants that contain heap allocated data. That means, Rust needs to call the <code>Tok::drop</code> implementation (at least if it isn&#x27;t able to figure out that the returned variants never allocate)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -753,7 +753,7 @@ cpython\Lib\zoneinfo\_zoneinfo.py:422:17: RUF023 `_TZStr.__slots__` is not sorte
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sequence_sorting.rs</code>:93 on 2024-01-19 16:12</div>
-            <div class="timeline-body"><p>I don't think there's a consistent style in our repo. I prefer <code>where</code> because it can help to keep the parameters on a single line and simplifies the types of the parameters. But that's just me and even I don't do it very consistently.</p>
+            <div class="timeline-body"><p>I don&#x27;t think there&#x27;s a consistent style in our repo. I prefer <code>where</code> because it can help to keep the parameters on a single line and simplifies the types of the parameters. But that&#x27;s just me and even I don&#x27;t do it very consistently.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -766,8 +766,8 @@ cpython\Lib\zoneinfo\_zoneinfo.py:422:17: RUF023 `_TZStr.__slots__` is not sorte
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sequence_sorting.rs</code>:89 on 2024-01-19 16:19</div>
             <div class="timeline-body"><p>Nit: Allowing arbitrary functions is one of the most flexible solution but it has a few downsides:</p>
 <ul>
-<li>Rust monomorphizes <code>sort_single_line_elements_sequence</code> everytime it is called and a different <code>F</code> type is passed. It means, Rust will duplicate your code. This isn't as much of a problem here because the function isn't too large and only used a few times. But it can be a big problem if the implementation is large.</li>
-<li>This doesn't really apply here because <code>cmp_fn</code> is a very common pattern (maybe rename the function to <code>sort_single_line_elements_by</code>). However, accepting generic functions doesn't provide any addtional information to me as reader without reading different call-sites.</li>
+<li>Rust monomorphizes <code>sort_single_line_elements_sequence</code> everytime it is called and a different <code>F</code> type is passed. It means, Rust will duplicate your code. This isn&#x27;t as much of a problem here because the function isn&#x27;t too large and only used a few times. But it can be a big problem if the implementation is large.</li>
+<li>This doesn&#x27;t really apply here because <code>cmp_fn</code> is a very common pattern (maybe rename the function to <code>sort_single_line_elements_by</code>). However, accepting generic functions doesn&#x27;t provide any addtional information to me as reader without reading different call-sites.</li>
 </ul>
 <p>An alternative is to introduce a new enum <code>SortKeyKind</code> or <code>Sortable</code> that has two variants, one for slots and one for dunder all. You can then match on the sort key kind to determine how the elements should be sorted.</p>
 </div>
@@ -785,18 +785,18 @@ cpython\Lib\zoneinfo\_zoneinfo.py:422:17: RUF023 `_TZStr.__slots__` is not sorte
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sequence_sorting.rs</code>:169 on 2024-01-19 16:25</div>
             <div class="timeline-body"><p>Nit: I assume they are in order. Moving the documentation to the variants removes the need for numbers and ensures the documentation stays up to date even when re-ordering variants</p>
-<pre><code class="language-suggestion">
-/// 3. It's an unsorted display of string literals,
-///    and it's possible we could generate a fix for it
+<pre><code>
+/// 3. It&#x27;s an unsorted display of string literals,
+///    and it&#x27;s possible we could generate a fix for it
 /// 4. The display contains one or more items that are not string
 ///    literals.
 #[derive(Debug, is_macro::Is)]
-pub(super) enum SortClassification&lt;'a&gt; {
+pub(super) enum SortClassification&lt;&#x27;a&gt; {
     /// A display of string literals that is already sorted
     Sorted,
-    /// An unsorted display of string literals, but ruff isn't be able to autofix it.
+    /// An unsorted display of string literals, but ruff isn&#x27;t be able to autofix it.
     UnsortedButUnfixable,
-    UnsortedAndMaybeFixable { items: Vec&lt;&amp;'a str&gt; },
+    UnsortedAndMaybeFixable { items: Vec&lt;&amp;&#x27;a str&gt; },
     NotAListOfStringLiterals,
 }
 </code></pre>
@@ -809,15 +809,15 @@ pub(super) enum SortClassification&lt;'a&gt; {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_slots.rs</code>:159 on 2024-01-19 16:30</div>
-            <div class="timeline-body"><p>Nit: The name here isn't telling me much. What kind of analysis is it? Is it like the <code>SortDunderAnalysis</code>? Or can we give that structure another name, because the structure isn't the analysis. What does it represent?</p>
+            <div class="timeline-body"><p>Nit: The name here isn&#x27;t telling me much. What kind of analysis is it? Is it like the <code>SortDunderAnalysis</code>? Or can we give that structure another name, because the structure isn&#x27;t the analysis. What does it represent?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_slots.rs</code>:227 on 2024-01-19 16:36</div>
             <div class="timeline-body"><p>You could create a <code>Keys(&amp;[Option&lt;Expr&gt;])</code> newtype where the <code>new</code> function returns <code>None</code> when any value is <code>None</code> and <code>Some(Self)</code> otherwise.</p>
 <p>The <code>Keys</code> implementation can than expose functions to access the elements:</p>
-<pre><code class="language-rust">impl&lt;'a&gt; Keys&lt;'a&gt; {
-    fn iter() -&gt; impl Iterator&lt;Item=&amp;'a Expr&gt; {
+<pre><code>impl&lt;&#x27;a&gt; Keys&lt;&#x27;a&gt; {
+    fn iter() -&gt; impl Iterator&lt;Item=&amp;&#x27;a Expr&gt; {
         // SAFETY: Safe because the constructor guarantees that all values are non-None. 
         self.0.iter().map(Option::unwrap)
     }
@@ -825,7 +825,7 @@ pub(super) enum SortClassification&lt;'a&gt; {
     ... 
 }
 </code></pre>
-<p>But yeah, don't know if it's worth it. It probably depends on the boilerplate necessary.</p>
+<p>But yeah, don&#x27;t know if it&#x27;s worth it. It probably depends on the boilerplate necessary.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -840,7 +840,7 @@ pub(super) enum SortClassification&lt;'a&gt; {
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sequence_sorting.rs</code>:6 on 2024-01-19 18:02</div>
             <div class="timeline-body"><p>Sorry about that :(</p>
-<p>The reason it ended up like this was that I moved material from <code>sort_dunder_all.rs</code> piecemeal -- I wasn't sure at first how much I'd need to move over, so I did it in a slightly ad-hoc way. I appreciate that this made it a messy thing to review, though -- I'll try to do better in the future.</p>
+<p>The reason it ended up like this was that I moved material from <code>sort_dunder_all.rs</code> piecemeal -- I wasn&#x27;t sure at first how much I&#x27;d need to move over, so I did it in a slightly ad-hoc way. I appreciate that this made it a messy thing to review, though -- I&#x27;ll try to do better in the future.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -849,7 +849,7 @@ pub(super) enum SortClassification&lt;'a&gt; {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sequence_sorting.rs</code>:89 on 2024-01-19 18:07</div>
-            <div class="timeline-body"><p>Would the enum solution require moving all the &quot;isort-style&quot; sorting logic from <code>sort_dunder_all.rs</code> into <code>sequence_sorting.rs</code>? I don't mind that too much if it's necessary, but conceptually I'd rather keep the isort-style sorting logic in <code>sort_dunder_all.rs</code>, since it's specific to that rule</p>
+            <div class="timeline-body"><p>Would the enum solution require moving all the &quot;isort-style&quot; sorting logic from <code>sort_dunder_all.rs</code> into <code>sequence_sorting.rs</code>? I don&#x27;t mind that too much if it&#x27;s necessary, but conceptually I&#x27;d rather keep the isort-style sorting logic in <code>sort_dunder_all.rs</code>, since it&#x27;s specific to that rule</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -876,7 +876,7 @@ pub(super) enum SortClassification&lt;'a&gt; {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_slots.rs</code>:227 on 2024-01-19 19:08</div>
-            <div class="timeline-body"><p>Oh, that's clever! Hey, why not. Doesn't seem <em>too</em> hard to do.</p>
+            <div class="timeline-body"><p>Oh, that&#x27;s clever! Hey, why not. Doesn&#x27;t seem <em>too</em> hard to do.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -886,13 +886,13 @@ pub(super) enum SortClassification&lt;'a&gt; {
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sequence_sorting.rs</code>:94 on 2024-01-19 19:12</div>
             <div class="timeline-body"><p>Do you mean something like this:</p>
-<pre><code class="language-rs">struct Whatever&lt;'a&gt; {
-    elts: Vec&lt;&amp;'a ast::Expr&gt;,
-    elements: Vec&lt;&amp;'a str&gt;,
+<pre><code>struct Whatever&lt;&#x27;a&gt; {
+    elts: Vec&lt;&amp;&#x27;a ast::Expr&gt;,
+    elements: Vec&lt;&amp;&#x27;a str&gt;,
 }
 
-impl&lt;'a&gt; Whatever&lt;'a&gt; {
-    fn new(elts: Vec&lt;&amp;'a ast::Expr&gt;, elements: Vec&lt;&amp;'a str&gt;) -&gt; Self {
+impl&lt;&#x27;a&gt; Whatever&lt;&#x27;a&gt; {
+    fn new(elts: Vec&lt;&amp;&#x27;a ast::Expr&gt;, elements: Vec&lt;&amp;&#x27;a str&gt;) -&gt; Self {
         assert_eq!(elts.len(), elements.len());
         Self { elts, elements }
 </code></pre>
@@ -905,7 +905,7 @@ impl&lt;'a&gt; Whatever&lt;'a&gt; {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_slots.rs</code>:227 on 2024-01-19 19:33</div>
-            <div class="timeline-body"><p>Hmm, okay. Having tried to implement it, it's harder than I thought. Tempted to leave this for now, since, as I say, this is an edge case that it's really unlikely we'd hit very often</p>
+            <div class="timeline-body"><p>Hmm, okay. Having tried to implement it, it&#x27;s harder than I thought. Tempted to leave this for now, since, as I say, this is an edge case that it&#x27;s really unlikely we&#x27;d hit very often</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -920,25 +920,25 @@ impl&lt;'a&gt; Whatever&lt;'a&gt; {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Bibo-Joshi">@Bibo-Joshi</a> on 2024-01-20 20:03</div>
-            <div class="timeline-body"><p>I'm really astonished how quickly you closed #1198 and brought to live this follow-up PR - big kudos!</p>
+            <div class="timeline-body"><p>I&#x27;m really astonished how quickly you closed #1198 and brought to live this follow-up PR - big kudos!</p>
 <blockquote>
-<p>Implementing an autofix for multiline <code>__match_args__</code> wouldn't be too hard […]. The same is true for <code>__slots__</code> when it's a tuple, list or set. I don't feel enthused about implementing an autofix for multiline <code>__slots__</code> definitions where <code>__slots__</code> is a dict, however. […]</p>
-<p>If we're interested in autofixes for multiline <code>__slots__</code> and <code>__match_args__</code> definitions, let me know whether you'd prefer it in this PR or a followup!</p>
+<p>Implementing an autofix for multiline <code>__match_args__</code> wouldn&#x27;t be too hard […]. The same is true for <code>__slots__</code> when it&#x27;s a tuple, list or set. I don&#x27;t feel enthused about implementing an autofix for multiline <code>__slots__</code> definitions where <code>__slots__</code> is a dict, however. […]</p>
+<p>If we&#x27;re interested in autofixes for multiline <code>__slots__</code> and <code>__match_args__</code> definitions, let me know whether you&#x27;d prefer it in this PR or a followup!</p>
 </blockquote>
-<p>Just wanted to let you know that I'd be very interested in autofixes for multline tuple- <code>__slots__</code>. Not implementing that for dicts is completely understandable IMO (and I don't have a use case etiher …)</p>
+<p>Just wanted to let you know that I&#x27;d be very interested in autofixes for multline tuple- <code>__slots__</code>. Not implementing that for dicts is completely understandable IMO (and I don&#x27;t have a use case etiher …)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-01-20 20:15</div>
             <div class="timeline-body"><blockquote>
-<p>Just wanted to let you know that I'd be very interested in autofixes for multline tuple- <code>__slots__</code>. Not implementing that for dicts is completely understandable IMO (and I don't have a use case etiher …)</p>
+<p>Just wanted to let you know that I&#x27;d be very interested in autofixes for multline tuple- <code>__slots__</code>. Not implementing that for dicts is completely understandable IMO (and I don&#x27;t have a use case etiher …)</p>
 </blockquote>
-<p>Have no fear, the description in my PR summary is already slightly out of date — I've already implemented the autofix for multiline tuple <code>__slots__</code> ;)</p>
+<p>Have no fear, the description in my PR summary is already slightly out of date — I&#x27;ve already implemented the autofix for multiline tuple <code>__slots__</code> ;)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sequence_sorting.rs</code>:244 on 2024-01-21 19:49</div>
-            <div class="timeline-body"><p>I think in our codebase we'd tend to call this <code>current</code>.</p>
+            <div class="timeline-body"><p>I think in our codebase we&#x27;d tend to call this <code>current</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -958,7 +958,7 @@ impl&lt;'a&gt; Whatever&lt;'a&gt; {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sequence_sorting.rs</code>:81 on 2024-01-21 20:00</div>
-            <div class="timeline-body"><p>@BurntSushi - Do these <code>Ord</code> / <code>PartialOrd</code> / <code>PartialEq</code> / <code>Eq</code> implementations look right / consistent to you? (I've never properly learned the relationships between them.)</p>
+            <div class="timeline-body"><p>@BurntSushi - Do these <code>Ord</code> / <code>PartialOrd</code> / <code>PartialEq</code> / <code>Eq</code> implementations look right / consistent to you? (I&#x27;ve never properly learned the relationships between them.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -973,30 +973,30 @@ impl&lt;'a&gt; Whatever&lt;'a&gt; {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sequence_sorting.rs</code>:179 on 2024-01-21 20:25</div>
-            <div class="timeline-body"><p>You typically want <code>&amp;[ast::Expr]</code> instead of <code>&amp;Vec&lt;ast::Expr&gt;</code>. There are other ways to create a slice, and any function that accepts <code>&amp;[Expr]</code> will accept <code>&amp;Vec&lt;Expr&gt;</code>, but if you have an <code>&amp;[Expr]</code>, you can't convert it the other way to <code>&amp;Vec&lt;Expr&gt;</code> without allocating. So, you likely want the most permissive type here (<code>&amp;[Expr]</code>). It's similar to <code>&amp;String</code> vs. <code>&amp;str</code>.</p>
+            <div class="timeline-body"><p>You typically want <code>&amp;[ast::Expr]</code> instead of <code>&amp;Vec&lt;ast::Expr&gt;</code>. There are other ways to create a slice, and any function that accepts <code>&amp;[Expr]</code> will accept <code>&amp;Vec&lt;Expr&gt;</code>, but if you have an <code>&amp;[Expr]</code>, you can&#x27;t convert it the other way to <code>&amp;Vec&lt;Expr&gt;</code> without allocating. So, you likely want the most permissive type here (<code>&amp;[Expr]</code>). It&#x27;s similar to <code>&amp;String</code> vs. <code>&amp;str</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sequence_sorting.rs</code>:94 on 2024-01-21 20:26</div>
-            <div class="timeline-body"><p>I think he's suggesting creating a dedicated struct like that. Since you're allocating below anyway with <code>collect_vec</code>, perhaps you want to do something like:</p>
-<pre><code class="language-rust">struct Whatever&lt;'a&gt;(Vec&lt;(&amp;'a Expr, &amp;'a str)&gt;)
+            <div class="timeline-body"><p>I think he&#x27;s suggesting creating a dedicated struct like that. Since you&#x27;re allocating below anyway with <code>collect_vec</code>, perhaps you want to do something like:</p>
+<pre><code>struct Whatever&lt;&#x27;a&gt;(Vec&lt;(&amp;&#x27;a Expr, &amp;&#x27;a str)&gt;)
 </code></pre>
-<p>That is: store the zipped elements, so that the constraint is always enforced once you've created the struct.</p>
+<p>That is: store the zipped elements, so that the constraint is always enforced once you&#x27;ve created the struct.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sequence_sorting.rs</code>:258 on 2024-01-21 20:30</div>
-            <div class="timeline-body"><p>Could we possibly return <code>Self::UnsortedButUnfixable</code> when a later element in <code>elements</code> is not a string literal? Like what if the first two elements are string literals, and the second element is implicitly concatenated, and then the third element is not a string. (I suspect we should always return <code>NotAListOfStringLiterals</code> if any element is not a string, but I'm wondering if that's the case with the coed as-written.)</p>
+            <div class="timeline-body"><p>Could we possibly return <code>Self::UnsortedButUnfixable</code> when a later element in <code>elements</code> is not a string literal? Like what if the first two elements are string literals, and the second element is implicitly concatenated, and then the third element is not a string. (I suspect we should always return <code>NotAListOfStringLiterals</code> if any element is not a string, but I&#x27;m wondering if that&#x27;s the case with the coed as-written.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sequence_sorting.rs</code>:251 on 2024-01-21 20:31</div>
-            <div class="timeline-body"><p>So this is like: we found something that's out-of-order, so now we return all elements? If so, can you add a comment here to explain the logic.</p>
+            <div class="timeline-body"><p>So this is like: we found something that&#x27;s out-of-order, so now we return all elements? If so, can you add a comment here to explain the logic.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sequence_sorting.rs</code>:280 on 2024-01-21 20:31</div>
-            <div class="timeline-body"><p>Nit: I'd expect this to be called <code>len</code> (and for this to also implement <code>is_empty</code>).</p>
+            <div class="timeline-body"><p>Nit: I&#x27;d expect this to be called <code>len</code> (and for this to also implement <code>is_empty</code>).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1015,7 +1015,7 @@ impl&lt;'a&gt; Whatever&lt;'a&gt; {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sequence_sorting.rs</code>:56 on 2024-01-21 20:38</div>
-            <div class="timeline-body"><p>Yeah — and the isort rules have loads of complex configuration logic, which I'd definitely rather keep out of these rules if at all possible :)</p>
+            <div class="timeline-body"><p>Yeah — and the isort rules have loads of complex configuration logic, which I&#x27;d definitely rather keep out of these rules if at all possible :)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1024,7 +1024,7 @@ impl&lt;'a&gt; Whatever&lt;'a&gt; {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sequence_sorting.rs</code>:81 on 2024-01-21 20:39</div>
-            <div class="timeline-body"><p>(FWIW: these haven't changed in this PR, just moved to a different file, and Micha reviewed these in my previous PR (my initial implementations in my previous PR had some issues, which Micha pointed out))</p>
+            <div class="timeline-body"><p>(FWIW: these haven&#x27;t changed in this PR, just moved to a different file, and Micha reviewed these in my previous PR (my initial implementations in my previous PR had some issues, which Micha pointed out))</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1051,7 +1051,7 @@ impl&lt;'a&gt; Whatever&lt;'a&gt; {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sequence_sorting.rs</code>:280 on 2024-01-21 22:21</div>
-            <div class="timeline-body"><p>I've renamed <code>num_elems</code> to <code>len</code>. I tried implementing <code>is_empty()</code>, but I get a clippy warning about unused code, because it's never used currently</p>
+            <div class="timeline-body"><p>I&#x27;ve renamed <code>num_elems</code> to <code>len</code>. I tried implementing <code>is_empty()</code>, but I get a clippy warning about unused code, because it&#x27;s never used currently</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1060,7 +1060,7 @@ impl&lt;'a&gt; Whatever&lt;'a&gt; {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sequence_sorting.rs</code>:258 on 2024-01-21 22:30</div>
-            <div class="timeline-body"><p>Fixed in https://github.com/astral-sh/ruff/pull/9564/commits/606d85a74cfb8be467be0882fe94081c08463542, and I added a test!</p>
+            <div class="timeline-body"><p>Fixed in <a href="https://github.com/astral-sh/ruff/pull/9564">astral-sh/ruff#9564</a>/commits/606d85a74cfb8be467be0882fe94081c08463542, and I added a test!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1069,7 +1069,7 @@ impl&lt;'a&gt; Whatever&lt;'a&gt; {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_slots.rs</code>:240 on 2024-01-21 22:55</div>
-            <div class="timeline-body"><p>Not sure... it makes the signature cleaner, but I was thinking of this struct as just a pretty simple container for heterogenous data; this breaks my mental model of that slightly. Anyway, I implemented it as a method in https://github.com/astral-sh/ruff/pull/9564/commits/e64879a91ea16b09cf04ede8c6645cea3ba47757 :)</p>
+            <div class="timeline-body"><p>Not sure... it makes the signature cleaner, but I was thinking of this struct as just a pretty simple container for heterogenous data; this breaks my mental model of that slightly. Anyway, I implemented it as a method in <a href="https://github.com/astral-sh/ruff/pull/9564">astral-sh/ruff#9564</a>/commits/e64879a91ea16b09cf04ede8c6645cea3ba47757 :)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1087,20 +1087,20 @@ impl&lt;'a&gt; Whatever&lt;'a&gt; {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sequence_sorting.rs</code>:94 on 2024-01-22 00:04</div>
-            <div class="timeline-body"><p>Nice -- I gave this a go in https://github.com/astral-sh/ruff/pull/9564/commits/6645934e0f2d3e53071edc1b30a4d17e835ed76e.</p>
+            <div class="timeline-body"><p>Nice -- I gave this a go in <a href="https://github.com/astral-sh/ruff/pull/9564">astral-sh/ruff#9564</a>/commits/6645934e0f2d3e53071edc1b30a4d17e835ed76e.</p>
 <p>I experimented with doing this:</p>
-<pre><code class="language-diff">--- a/crates/ruff_linter/src/rules/ruff/rules/sequence_sorting.rs
+<pre><code>--- a/crates/ruff_linter/src/rules/ruff/rules/sequence_sorting.rs
 +++ b/crates/ruff_linter/src/rules/ruff/rules/sequence_sorting.rs
-@@ -258,7 +258,7 @@ pub(super) enum SortClassification&lt;'a&gt; {
-     /// and it's possible we could generate a fix for it;
-     /// here's the values of the elts so we can use them to
+@@ -258,7 +258,7 @@ pub(super) enum SortClassification&lt;&#x27;a&gt; {
+     /// and it&#x27;s possible we could generate a fix for it;
+     /// here&#x27;s the values of the elts so we can use them to
      /// generate an autofix:
--    UnsortedAndMaybeFixable { items: Vec&lt;&amp;'a str&gt; },
-+    UnsortedAndMaybeFixable { items: SequenceElements&lt;'a&gt; },
+-    UnsortedAndMaybeFixable { items: Vec&lt;&amp;&#x27;a str&gt; },
++    UnsortedAndMaybeFixable { items: SequenceElements&lt;&#x27;a&gt; },
      /// The display contains one or more items that are not string
      /// literals.
      NotAListOfStringLiterals,
-@@ -309,7 +309,7 @@ impl&lt;'a&gt; SortClassification&lt;'a&gt; {
+@@ -309,7 +309,7 @@ impl&lt;&#x27;a&gt; SortClassification&lt;&#x27;a&gt; {
                  if any_implicit_concatenation {
                      return Self::UnsortedButUnfixable;
                  }
@@ -1109,14 +1109,14 @@ impl&lt;'a&gt; Whatever&lt;'a&gt; {
              }
              current = next;
 </code></pre>
-<p>Unfortunately that doesn't really work, however, due to the fact that for single-line dicts, we also want to zip the dict-value nodes up along with the dict-key nodes and the string values of the dict keys</p>
+<p>Unfortunately that doesn&#x27;t really work, however, due to the fact that for single-line dicts, we also want to zip the dict-value nodes up along with the dict-key nodes and the string values of the dict keys</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @charliermarsh by @AlexWaygood on 2024-01-22 00:04</div>
+            <div class="event">Review requested from <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-01-22 00:04</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Add a rule/autofix to sort __slots__ and `__match_args__`" to "Add a rule/autofix to sort `__slots__` and `__match_args__`" by @AlexWaygood on 2024-01-22 00:33</div>
+            <div class="event">Renamed from &quot;Add a rule/autofix to sort __slots__ and `__match_args__`&quot; to &quot;Add a rule/autofix to sort `__slots__` and `__match_args__`&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-01-22 00:33</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-22 01:47</div>
@@ -1134,7 +1134,7 @@ impl&lt;'a&gt; Whatever&lt;'a&gt; {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sequence_sorting.rs</code>:22 on 2024-01-22 02:08</div>
-            <div class="timeline-body"><p>Nit: I think you should make this <code>Debug, Copy, Clone</code>. Then you can refer to it without references everywhere, e.g., you shouldn't need <code>const SORTING_STYLE: &amp;SortingStyle = &amp;SortingStyle::Natural;</code> -- you can just inline <code>SortingStyle::Natural</code> everywhere. If a struct is <code>Copy</code>, you don't need to call <code>.clone()</code> in order to pass an owned reference to it, since Rust will just copy it automatically. This struct is so tiny (smaller than a reference, even) that it's fine for it to be <code>Copy</code>.</p>
+            <div class="timeline-body"><p>Nit: I think you should make this <code>Debug, Copy, Clone</code>. Then you can refer to it without references everywhere, e.g., you shouldn&#x27;t need <code>const SORTING_STYLE: &amp;SortingStyle = &amp;SortingStyle::Natural;</code> -- you can just inline <code>SortingStyle::Natural</code> everywhere. If a struct is <code>Copy</code>, you don&#x27;t need to call <code>.clone()</code> in order to pass an owned reference to it, since Rust will just copy it automatically. This struct is so tiny (smaller than a reference, even) that it&#x27;s fine for it to be <code>Copy</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1143,7 +1143,7 @@ impl&lt;'a&gt; Whatever&lt;'a&gt; {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_slots.rs</code>:315 on 2024-01-22 04:50</div>
-            <div class="timeline-body"><p>I feel like I'd find it clearer to just have <code>.len()</code> on this and do <code>if i &lt; element_trios.len() - 1</code>, since that's such a common pattern in iteration.</p>
+            <div class="timeline-body"><p>I feel like I&#x27;d find it clearer to just have <code>.len()</code> on this and do <code>if i &lt; element_trios.len() - 1</code>, since that&#x27;s such a common pattern in iteration.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1157,8 +1157,8 @@ impl&lt;'a&gt; Whatever&lt;'a&gt; {
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sequence_sorting.rs</code>:244 on 2024-01-22 07:35</div>
             <div class="timeline-body"><p>It reminded me of the good old js days:</p>
-<pre><code class="language-javascript">var _this = this;
-element.addEventListener('click', function () {
+<pre><code>var _this = this;
+element.addEventListener(&#x27;click&#x27;, function () {
 	_this.onClick();
 });
 </code></pre>
@@ -1179,7 +1179,7 @@ element.addEventListener('click', function () {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sequence_sorting.rs</code>:142 on 2024-01-22 07:42</div>
-            <div class="timeline-body"><p>Actually, we don't :wink: . At least not in the formater. We call these <code>parentheses</code> (I avoid short forms wherever possible).</p>
+            <div class="timeline-body"><p>Actually, we don&#x27;t :wink: . At least not in the formater. We call these <code>parentheses</code> (I avoid short forms wherever possible).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1194,14 +1194,14 @@ element.addEventListener('click', function () {
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-01-22 12:17</div>
             <div class="timeline-body"><p>Thanks both for the reviews! :D</p>
-<p>I've had two approvals, so I'm landing this now, but very happy to tackle any further comments in followup PRs :)</p>
+<p>I&#x27;ve had two approvals, so I&#x27;m landing this now, but very happy to tackle any further comments in followup PRs :)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @AlexWaygood on 2024-01-22 12:21</div>
+            <div class="event">Merged by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-01-22 12:21</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2024-01-22 12:21</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-01-22 12:21</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-01-22 12:32</div>
@@ -1209,7 +1209,7 @@ element.addEventListener('click', function () {
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:02:19 UTC
+        Synced at 2026-01-20 19:00:48 UTC
     </footer>
 </body>
 </html>

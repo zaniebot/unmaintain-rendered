@@ -24,8 +24,8 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/tdulcet">@tdulcet</a></div>
             <div class="timeline-body"><p>Please consider adding new lint rules for <a href="https://en.wikipedia.org/wiki/Strength_reduction">strength reduction</a> optimizations. All of the types of optimizations included in the below examples would improve the performance of Python code, some significantly, especially when the numbers are large. Ruff is fast, so lets help make Python fast as well! A few of the examples would also improve the accuracy/precision of the expression. They should hopefully not decrease the readability of the code and in a few cases might even improve it by simplifying the expressions. Most of them are language agnostic, but they are particularly important in Python, as there is of course typically no compiler to perform the optimizations automatically (at least in CPython). The indented ones are just additional examples of what the proposed new lint rules could fix.</p>
-<h3>Power of 2 integer optimizations</h3>
-<pre><code class="language-py">x * 2                        # ⇒ x + x or x &lt;&lt; 1
+Power of 2 integer optimizations
+<pre><code>x * 2                        # ⇒ x + x or x &lt;&lt; 1
     x * 8                    # ⇒ x &lt;&lt; 3
 x // 2                       # ⇒ x &gt;&gt; 1
     x // 8                   # ⇒ x &gt;&gt; 3
@@ -36,8 +36,8 @@ x % 2                        # ⇒ x &amp; 1
     y * 2 ** x               # ⇒ y &lt;&lt; x
     8 ** 3                   # ⇒ 8 &lt;&lt; 6 or 1 &lt;&lt; 9
 </code></pre>
-<h3>Exponentiation and Modular optimizations</h3>
-<pre><code class="language-py">(x * x) % y                  # ⇒ pow(x, 2, y)
+Exponentiation and Modular optimizations
+<pre><code>(x * x) % y                  # ⇒ pow(x, 2, y)
     (x ** 2) % y
     (x * x * x) % y          # ⇒ pow(x, 3, y)
     (x ** 3) % y
@@ -51,8 +51,8 @@ len(bin(x)[2:])              # ⇒ x.bit_length() # Python 3.1+
     len(bin(x).lstrip(&quot;-0b&quot;))
 </code></pre>
 <p>Also see the <code>FURB161</code> rule.</p>
-<h3>Math library related, improves accuracy</h3>
-<pre><code class="language-py">math.ceil(x / y)             # ⇒ -(x // -y) # int only
+Math library related, improves accuracy
+<pre><code>math.ceil(x / y)             # ⇒ -(x // -y) # int only
 int(math.sqrt(x))            # ⇒ math.isqrt(x) # Python 3.8+
 x ** 0.5                     # ⇒ math.sqrt(x)
     x ** (1 / 2)
@@ -77,12 +77,12 @@ math.pi * 2                  # ⇒ math.tau # Python 3.6+
 functools.reduce(operator.mul, (x, y, z), 1) # ⇒ math.prod((x, y, z)) # Python 3.8+
 </code></pre>
 <p>These are similar to the existing rule <code>FURB163</code>.</p>
-<h3>Mathematical identities</h3>
+Mathematical identities
 <ul>
 <li>[ ] #19518</li>
 </ul>
 <p>May be useful in combination with other autofixes to simplify expressions or when refactoring</p>
-<pre><code class="language-py">x * -1               # ⇒ -x
+<pre><code>x * -1               # ⇒ -x
 x / -1.0             # ⇒ -x # float only
 x // -1              # ⇒ -x # int only
 x * 0                # ⇒ 0
@@ -101,9 +101,9 @@ x / 0.0              # ⇒ ERROR!
 x // 0               # ⇒ ERROR!
 x % 0                # ⇒ ERROR!
 </code></pre>
-<p>Using <a href="https://en.wikipedia.org/wiki/De_Morgan%27s_laws">DeMorgan’s theorem</a> to further simplify boolean expressions, similar to the <a href="https://clang.llvm.org/extra/clang-tidy/checks/readability/simplify-boolean-expr.html">simplify-boolean-expr</a> rule in Clang Tidy, would be very helpful here. Also see #15447 and https://github.com/tonybaloney/perflint/issues/50.</p>
-<h3>Opinionated, but improves performance</h3>
-<pre><code class="language-py"># Replace division with multiplication of the reciprocal
+<p>Using <a href="https://en.wikipedia.org/wiki/De_Morgan%27s_laws">DeMorgan’s theorem</a> to further simplify boolean expressions, similar to the <a href="https://clang.llvm.org/extra/clang-tidy/checks/readability/simplify-boolean-expr.html">simplify-boolean-expr</a> rule in Clang Tidy, would be very helpful here. Also see #15447 and <a href="https://github.com/tonybaloney/perflint/issues/50">tonybaloney/perflint#50</a>.</p>
+Opinionated, but improves performance
+<pre><code># Replace division with multiplication of the reciprocal
 x / 2.0                      # ⇒ x * 0.5 # float only
 # Prefer separate lines for assignments, unless tuple unpacking or the expressions depend on each other
 x, y = x + z, a * b          # ⇒ x += z; y = a * b
@@ -123,8 +123,8 @@ x, y = x + z, a * b          # ⇒ x += z; y = a * b
 10.0 ** 3.0                  # ⇒ 1e3 # float only
 2.0 * 10.0 ** 3.0            # ⇒ 2e3
 </code></pre>
-<p>Also see the <code>FURB140</code> rule and https://github.com/adamchainz/flake8-comprehensions/issues/503.</p>
-<hr />
+<p>Also see the <code>FURB140</code> rule and <a href="https://github.com/adamchainz/flake8-comprehensions/issues/503">adamchainz/flake8-comprehensions#503</a>.</p>
+<hr>
 <p>All of these should also work with <code>PLR6104</code> (#8877), so for example <code>x * 2</code> above should also catch <code>x *= 2</code> and offer to replace it with <code>x &lt;&lt;= 1</code>. There are of course more examples, but these are some of the ones I see most frequently in code reviews. As noted above, some of these may require type inference, but I believe an unsafe autofix would still be acceptable in many cases where the chance of a false positive would be low.</p>
 <p>I could see some of these proposed rules being added to the existing <code>UP</code>, <code>PL</code>, <code>PERF</code>, <code>FURB</code> and <code>RUF</code> categories, among others. Please let me know if you think I should file this request with one of those upstream linters instead.</p>
 <p>For a real world example, see this Python function to calculate the Jacobi symbol <a href="https://rosettacode.org/wiki/Jacobi_symbol#Python">before</a> and <a href="https://github.com/tdulcet/AutoPrimeNet/blob/d92313f882ec6dc11e9d79bd55f99ecee2645258/gimps_status.py#L611-L630">after</a> manually applying several of these strength reduction optimizations, which approximately doubled the resulting performance of the code.</p>
@@ -136,34 +136,34 @@ x, y = x + z, a * b          # ⇒ x += z; y = a * b
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @dhruvmanila on 2024-11-28 06:06</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-11-28 06:06</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> added by @dhruvmanila on 2024-11-28 06:06</div>
+            <div class="event">Label <span class="label">needs-decision</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-11-28 06:06</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-03-04 07:44</div>
             <div class="timeline-body"><p>&quot;Power of 2 integer optimizations&quot; I find a <em>lot</em> less readable. Bitshifts and masks are not intuitive unless you actively use them regularly.</p>
-<p>I'd expect those to be their own rule for when performance really matters. I'm all for &quot;free speed optimizations&quot; even (especially) for slow languages like Python. But these hurt readability a lot imo.</p>
+<p>I&#x27;d expect those to be their own rule for when performance really matters. I&#x27;m all for &quot;free speed optimizations&quot; even (especially) for slow languages like Python. But these hurt readability a lot imo.</p>
 <p>Some require type information that Ruff may not have atm (int vs float).</p>
-<p>Everything else I'd love to see anytime!</p>
+<p>Everything else I&#x27;d love to see anytime!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tdulcet">@tdulcet</a> on 2025-03-04 12:01</div>
             <div class="timeline-body"><blockquote>
-<p>I'd expect those to be their own rule for when performance really matters. I'm all for &quot;free speed optimizations&quot; even (especially) for slow languages like Python.</p>
+<p>I&#x27;d expect those to be their own rule for when performance really matters. I&#x27;m all for &quot;free speed optimizations&quot; even (especially) for slow languages like Python.</p>
 </blockquote>
 <p>Yes, I imagine each of these categories would include at least one rule. Note that the resulting performance improvement from those power of 2 optimizations can be significant (this is with Python 3.12):</p>
-<pre><code>$ python3 -m timeit -s 'x = 136279841' '2 ** x'
+<pre><code>$ python3 -m timeit -s &#x27;x = 136279841&#x27; &#x27;2 ** x&#x27;
 1 loop, best of 5: 551 msec per loop
-$ python3 -m timeit -s 'x = 136279841' '1 &lt;&lt; x'
+$ python3 -m timeit -s &#x27;x = 136279841&#x27; &#x27;1 &lt;&lt; x&#x27;
 500 loops, best of 5: 741 usec per loop
 </code></pre>
 <p>That is <strong>744×</strong> faster (ms to us).</p>
-<pre><code>$ python3 -m timeit -s 'x = (1 &lt;&lt; 136279841) - 1' 'x % 2'
+<pre><code>$ python3 -m timeit -s &#x27;x = (1 &lt;&lt; 136279841) - 1&#x27; &#x27;x % 2&#x27;
 5 loops, best of 5: 44.3 msec per loop
-$ python3 -m timeit -s 'x = (1 &lt;&lt; 136279841) - 1' 'x &amp; 1'
+$ python3 -m timeit -s &#x27;x = (1 &lt;&lt; 136279841) - 1&#x27; &#x27;x &amp; 1&#x27;
 10000000 loops, best of 5: 33.8 nsec per loop
 </code></pre>
 <p>That is <strong>762,980×</strong> faster (ms to ns)! 🤯</p>
@@ -173,34 +173,34 @@ $ python3 -m timeit -s 'x = (1 &lt;&lt; 136279841) - 1' 'x &amp; 1'
             <div class="timeline-header">Comment by <a href="https://github.com/kaddkaka">@kaddkaka</a> on 2025-06-18 17:55</div>
             <div class="timeline-body"><blockquote>
 <blockquote>
-<p>I'd expect those to be their own rule for when performance really matters. I'm all for &quot;free speed optimizations&quot; even (especially) for slow languages like Python.</p>
+<p>I&#x27;d expect those to be their own rule for when performance really matters. I&#x27;m all for &quot;free speed optimizations&quot; even (especially) for slow languages like Python.</p>
 </blockquote>
 <p>Yes, I imagine each of these categories would include at least one rule. Note that the resulting performance improvement from those power of 2 optimizations can be significant (this is with Python 3.12):</p>
-<pre><code>$ python3 -m timeit -s 'x = 136279841' '2 ** x'
+<pre><code>$ python3 -m timeit -s &#x27;x = 136279841&#x27; &#x27;2 ** x&#x27;
 1 loop, best of 5: 551 msec per loop
-$ python3 -m timeit -s 'x = 136279841' '1 &lt;&lt; x'
+$ python3 -m timeit -s &#x27;x = 136279841&#x27; &#x27;1 &lt;&lt; x&#x27;
 500 loops, best of 5: 741 usec per loop
 </code></pre>
 <p>That is <strong>744×</strong> faster (ms to us).</p>
-<pre><code>$ python3 -m timeit -s 'x = (1 &lt;&lt; 136279841) - 1' 'x % 2'
+<pre><code>$ python3 -m timeit -s &#x27;x = (1 &lt;&lt; 136279841) - 1&#x27; &#x27;x % 2&#x27;
 5 loops, best of 5: 44.3 msec per loop
-$ python3 -m timeit -s 'x = (1 &lt;&lt; 136279841) - 1' 'x &amp; 1'
+$ python3 -m timeit -s &#x27;x = (1 &lt;&lt; 136279841) - 1&#x27; &#x27;x &amp; 1&#x27;
 10000000 loops, best of 5: 33.8 nsec per loop
 </code></pre>
 <p>That is <strong>762,980×</strong> faster (ms to ns)! 🤯</p>
 </blockquote>
-<p>I'm not sure how fair this comparison is. Such large numbers must be very rare?</p>
+<p>I&#x27;m not sure how fair this comparison is. Such large numbers must be very rare?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tdulcet">@tdulcet</a> on 2025-06-18 19:27</div>
             <div class="timeline-body"><blockquote>
-<p>I'm not sure how fair this comparison is. Such large numbers must be very rare?</p>
+<p>I&#x27;m not sure how fair this comparison is. Such large numbers must be very rare?</p>
 </blockquote>
 <p>I used this large number to make it less noisy and easier to benchmark. Specifically, it is the <a href="https://en.wikipedia.org/wiki/Largest_known_prime_number">largest known prime number</a>. However, it is still much faster even with smaller numbers:</p>
-<pre><code>$ python3 -m timeit -s 'x = 127' '2 ** x'
+<pre><code>$ python3 -m timeit -s &#x27;x = 127&#x27; &#x27;2 ** x&#x27;
 1000000 loops, best of 5: 226 nsec per loop
-$ python3 -m timeit -s 'x = 127' '1 &lt;&lt; x'
+$ python3 -m timeit -s &#x27;x = 127&#x27; &#x27;1 &lt;&lt; x&#x27;
 10000000 loops, best of 5: 34.2 nsec per loop
 </code></pre>
 <p>That is 6.8× faster.</p>
@@ -209,7 +209,7 @@ $ python3 -m timeit -s 'x = 127' '1 &lt;&lt; x'
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:51:40 UTC
+        Synced at 2026-01-20 18:49:03 UTC
     </footer>
 </body>
 </html>

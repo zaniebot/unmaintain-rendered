@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/tboddyspargo">@tboddyspargo</a></div>
-            <div class="timeline-body"><h1>Summary</h1>
+            <div class="timeline-body">Summary
 <p>The presence of a directory (e.g. <code>snowflake</code>) at the &quot;config root&quot; of the <code>ruff</code> invocation causes any import starting with the same name (e.g. <code>snowflake.sqlalchemy</code>) to get categorized as &quot;first party&quot; instead of the expected &quot;third party.&quot;</p>
-<p>Background: We have a 3rd party dependency in some of our internal packages named <code>snowflake-sqlalchemy</code> (import path: <code>snowflake.sqlalchemy</code>). We also share a global <code>ruff.toml</code> file at the root of our monorepo which we use to achieve consistent formatting and linting behaviors across multiple packages. Finally, there happens to be a folder named <code>snowflake</code> at the root of our monorepo (sibling to <code>ruff.toml</code>) - which is not a python package and doesn't contain any python files at all. This triggers the behavior I'm seeing.</p>
-<details><summary>Minimal Repro</summary>
+<p>Background: We have a 3rd party dependency in some of our internal packages named <code>snowflake-sqlalchemy</code> (import path: <code>snowflake.sqlalchemy</code>). We also share a global <code>ruff.toml</code> file at the root of our monorepo which we use to achieve consistent formatting and linting behaviors across multiple packages. Finally, there happens to be a folder named <code>snowflake</code> at the root of our monorepo (sibling to <code>ruff.toml</code>) - which is not a python package and doesn&#x27;t contain any python files at all. This triggers the behavior I&#x27;m seeing.</p>
+Minimal Repro
 <p>
 
 <pre><code>├── pkg_b
@@ -48,47 +48,47 @@ assert my_var and snowdialect and os
 <pre><code>my_var = 1
 </code></pre>
 <p><em>ruff.toml</em></p>
-<pre><code class="language-toml">line-length = 120
+<pre><code>line-length = 120
 
 [lint]
 extend-select = [&quot;I&quot;]
 </code></pre>
 </p>
-</details> 
+ 
 
-<h1>Expected behavior</h1>
-<p>I expected that the categorization for an import path starting with <code>snowflake</code> to <em>not</em> be influenced by the presence of directories at the config root sharing that same name - in particular this is unexpected when the directory isn't related to python code in any way.</p>
+Expected behavior
+<p>I expected that the categorization for an import path starting with <code>snowflake</code> to <em>not</em> be influenced by the presence of directories at the config root sharing that same name - in particular this is unexpected when the directory isn&#x27;t related to python code in any way.</p>
 <p>Is it reasonable to expect that an import can only have a &quot;first party&quot; match if the src path is actually a valid and importable python module?</p>
-<h1>Actual behavior</h1>
+Actual behavior
 <p><code>snowflake.sqlalchemy</code> is (IMO incorrectly) categorized as a first party import.</p>
-<details><summary>Logs</summary>
+Logs
 <p>
 
 <pre><code>[2025-02-25][12:58:50][ruff::resolve][DEBUG] Using user-specified configuration file at: /Users/me/dev/ruff-repro/ruff.toml
 [2025-02-25][12:58:50][ruff::commands::check][DEBUG] Identified files to lint in: 3.140834ms
 [2025-02-25][12:58:50][ruff::diagnostics][DEBUG] Checking: /Users/me/dev/ruff-repro/pkg_b/__init__.py
-[2025-02-25][12:58:50][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'os' as Known(StandardLibrary) (KnownStandardLibrary)
-[2025-02-25][12:58:50][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'pkg_b.utils' as Known(FirstParty) (SamePackage)
-[2025-02-25][12:58:50][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'snowflake.sqlalchemy' as Known(FirstParty) (SourceMatch(&quot;/Users/me/dev/ruff-repro&quot;))
+[2025-02-25][12:58:50][ruff_linter::rules::isort::categorize][DEBUG] Categorized &#x27;os&#x27; as Known(StandardLibrary) (KnownStandardLibrary)
+[2025-02-25][12:58:50][ruff_linter::rules::isort::categorize][DEBUG] Categorized &#x27;pkg_b.utils&#x27; as Known(FirstParty) (SamePackage)
+[2025-02-25][12:58:50][ruff_linter::rules::isort::categorize][DEBUG] Categorized &#x27;snowflake.sqlalchemy&#x27; as Known(FirstParty) (SourceMatch(&quot;/Users/me/dev/ruff-repro&quot;))
 [2025-02-25][12:58:50][ruff::commands::check][DEBUG] Checked 1 files in: 614.042µs
 </code></pre>
 </p>
-</details> 
+ 
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2025-02-25 16:51</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-25 16:51</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-25 16:53</div>
             <div class="timeline-body"><p>Thanks. Let me have a look at it. It might be difficult for us to help without a reproduction.</p>
 <p>I do suspect that the problem comes from where the <code>ruff.toml</code> is located. Can you share the entire project structure including the location of the <code>ruff.toml</code> and where the file with the incorrectly sorted imports is?</p>
-<p>I moved this issue to the ruff repository because I didn't get the impression that it is specific to the VS code extension</p>
+<p>I moved this issue to the ruff repository because I didn&#x27;t get the impression that it is specific to the VS code extension</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">isort</span> added by @MichaReiser on 2025-02-25 16:53</div>
+            <div class="event">Label <span class="label">isort</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-25 16:53</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-25 16:55</div>
@@ -99,21 +99,21 @@ extend-select = [&quot;I&quot;]
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tboddyspargo">@tboddyspargo</a> on 2025-02-25 18:26</div>
             <div class="timeline-body"><blockquote>
-<p>I moved this issue to the ruff repository because I didn't get the impression that it is specific to the VS code extension</p>
+<p>I moved this issue to the ruff repository because I didn&#x27;t get the impression that it is specific to the VS code extension</p>
 </blockquote>
 <p>Thank you! Yes - my mistake!</p>
 <blockquote>
 <p>It might be difficult for us to help without a reproduction....
 Can you share the entire project structure including the location of the ruff.toml and where the file with the incorrectly sorted imports is?</p>
 </blockquote>
-<p>I'll work on providing more detail here. As a start, I added the location of <code>ruff.toml</code> to the main issue description. That structure roughly mimics what I have in real life. The submodule with a name that collides with a third-party package exists in <code>package_a</code>, while the file getting analyzed as having unsorted imports exists in <code>package_b</code>.</p>
+<p>I&#x27;ll work on providing more detail here. As a start, I added the location of <code>ruff.toml</code> to the main issue description. That structure roughly mimics what I have in real life. The submodule with a name that collides with a third-party package exists in <code>package_a</code>, while the file getting analyzed as having unsorted imports exists in <code>package_b</code>.</p>
 <blockquote>
 <p>And could you maybe share your <code>ruff.toml</code> configuration as well?</p>
 </blockquote>
-<details><summary>ruff.toml</summary>
+ruff.toml
 <p>
 
-<pre><code class="language-toml">line-length = 120
+<pre><code>line-length = 120
 
 extend-exclude = [
     &quot;*venv*&quot;,
@@ -165,14 +165,14 @@ convention = &quot;google&quot;
 
 </code></pre>
 </p>
-</details> 
+ 
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tboddyspargo">@tboddyspargo</a> on 2025-02-25 19:03</div>
-            <div class="timeline-body"><p>Okay - I found a detail that had escaped me before and also have a minimal repro! <strong>EDIT:</strong> I've updated the main issue description with the minimal repro.</p>
-<p>The detail I had missed is the presence of a directory named <code>snowflake</code> as a sibling of the <code>ruff.toml</code> file.  The repro doesn't depend on any name collision from internal packages or submodules, it's merely the presence of a directory of the same name at the &quot;config root&quot; that causes <code>ruff</code> to categorize a third party package import as &quot;first party&quot; - even when the directory doesn't have any python files in it.</p>
+            <div class="timeline-body"><p>Okay - I found a detail that had escaped me before and also have a minimal repro! <strong>EDIT:</strong> I&#x27;ve updated the main issue description with the minimal repro.</p>
+<p>The detail I had missed is the presence of a directory named <code>snowflake</code> as a sibling of the <code>ruff.toml</code> file.  The repro doesn&#x27;t depend on any name collision from internal packages or submodules, it&#x27;s merely the presence of a directory of the same name at the &quot;config root&quot; that causes <code>ruff</code> to categorize a third party package import as &quot;first party&quot; - even when the directory doesn&#x27;t have any python files in it.</p>
 <pre><code>├── pkg_b
 │   ├── __init__.py
 │   └── utils.py
@@ -192,7 +192,7 @@ assert my_var and snowdialect and os
 <pre><code>my_var = 1
 </code></pre>
 <p><em>ruff.toml</em></p>
-<pre><code class="language-toml">line-length = 120
+<pre><code>line-length = 120
 
 [lint]
 extend-select = [&quot;I&quot;]
@@ -212,17 +212,17 @@ extend-select = [&quot;I&quot;]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-26 08:59</div>
-            <div class="timeline-body"><p>Thanks for producing a repro. This now sounds to be the same as https://github.com/astral-sh/ruff/issues/10519</p>
+            <div class="timeline-body"><p>Thanks for producing a repro. This now sounds to be the same as <a href="https://github.com/astral-sh/ruff/issues/10519">astral-sh/ruff#10519</a></p>
 <p>Requiring an <code>__init__.py</code> does seem reasonable, but it would be a breaking change</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2025-02-26 08:59</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-26 08:59</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:52:17 UTC
+        Synced at 2026-01-20 18:49:34 UTC
     </footer>
 </body>
 </html>

@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/jsurany">@jsurany</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>We have a workflow that generates ephemeral files in-source that are used only for type-checking and are not checked in to source control or used by python at runtime. An example project may look something like -</p>
 <pre><code>project
 ├── pyproject.toml
@@ -36,7 +36,7 @@
     └── test_foo.py
 </code></pre>
 <p>We have a build plugin that generates a type stubs (all <code>TypeDict</code>s) file in-source (for editable installs). This generated file is used by other files like -</p>
-<pre><code class="language-python"># __init__.py
+<pre><code># __init__.py
 
 from __future__ import annotations
 
@@ -50,7 +50,7 @@ if TYPE_CHECKING:
 def do_something() -&gt; BarType:
     ...
 </code></pre>
-<pre><code class="language-python"># test_foo.py
+<pre><code># test_foo.py
 
 from __future__ import annotations
 
@@ -65,8 +65,8 @@ def test_something() -&gt; None:
     bar_type: BarType = {...}
     ...
 </code></pre>
-<p>If I don't explicitly tell ruff that <code>foo</code> is a first party package, rule I001 behaves differently between <code>__init__.py</code> and <code>test_foo.py</code> modules when the generated type stubs file does not exist in the source tree. For <code>__init__.py</code>, the module is considered first-party and the sorting order is perserved. For <code>test_foo.py</code>, the module is instead considered third-party, and ruff wants to make the following change -</p>
-<pre><code class="language-python"># test_foo.py
+<p>If I don&#x27;t explicitly tell ruff that <code>foo</code> is a first party package, rule I001 behaves differently between <code>__init__.py</code> and <code>test_foo.py</code> modules when the generated type stubs file does not exist in the source tree. For <code>__init__.py</code>, the module is considered first-party and the sorting order is perserved. For <code>test_foo.py</code>, the module is instead considered third-party, and ruff wants to make the following change -</p>
+<pre><code># test_foo.py
 
 from __future__ import annotations
 
@@ -81,8 +81,8 @@ def test_something() -&gt; None:
     ...
 </code></pre>
 <p>When <code>foo</code> is explicitly specified as a first party package, ruff does not want to make the above change.</p>
-<p>My preference when resolving this issue would be that the ephemeral file is considered a first-party module even if it doesn't exist, for both src and tests files. It seems to be consistent with how explicit first party resolution seems to work.</p>
-<h3>Version</h3>
+<p>My preference when resolving this issue would be that the ephemeral file is considered a first-party module even if it doesn&#x27;t exist, for both src and tests files. It seems to be consistent with how explicit first party resolution seems to work.</p>
+Version
 <p>0.13.0</p>
 </div>
         </div>
@@ -92,15 +92,15 @@ def test_something() -&gt; None:
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">isort</span> added by @MichaReiser on 2025-09-24 17:31</div>
+            <div class="event">Label <span class="label">isort</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-24 17:31</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2025-09-24 17:31</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-24 17:31</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-09-25 16:44</div>
             <div class="timeline-body"><p>Thanks for your description and question!</p>
-<p>I'm not sure I fully understand the details of your workflow, but I think the short answer is: This is a situation where one probably has to use the configuration option <a href="https://docs.astral.sh/ruff/settings/#lint_isort_known-first-party">known-first-party</a>.</p>
+<p>I&#x27;m not sure I fully understand the details of your workflow, but I think the short answer is: This is a situation where one probably has to use the configuration option <a href="https://docs.astral.sh/ruff/settings/#lint_isort_known-first-party">known-first-party</a>.</p>
 <p>But let me try to respond more directly in case that is helpful as well.</p>
 <blockquote>
 <p>We have a workflow that generates ephemeral files in-source that are used only for type-checking and are not checked in to source control or used by python at runtime.</p>
@@ -109,13 +109,13 @@ def test_something() -&gt; None:
 <blockquote>
 <p>rule I001 behaves differently between <strong>init</strong>.py and test_foo.py modules when the generated type stubs file does not exist in the source tree.</p>
 </blockquote>
-<p>Unless I'm misunderstanding there are actually two different things happening here. First, there is the question of whether a file exists or not, which would certainly affect what Ruff thinks is first or third party. Second, there is the question of whether a (non-relative) import in <code>__init__.py</code> might be classified differently than <em>the same import</em> in <code>test_foo.py</code>. That <em>should not</em> be happening and I would consider it a bug.</p>
-<p>But in your example you don't have the same import in both files - in <code>__init__.py</code> you have <code>from foo.bar_types import BarType</code> and in <code>test_foo.py</code> you have <code>from foo.bar.types import BarType</code>. I would expect that, given the directory structure you laid out in the beginning, the second import would be classified as third party whether it appears in <code>__init__.py</code> or in <code>test_foo.py</code>, because the <code>bar</code> subdirectory does not exist.</p>
+<p>Unless I&#x27;m misunderstanding there are actually two different things happening here. First, there is the question of whether a file exists or not, which would certainly affect what Ruff thinks is first or third party. Second, there is the question of whether a (non-relative) import in <code>__init__.py</code> might be classified differently than <em>the same import</em> in <code>test_foo.py</code>. That <em>should not</em> be happening and I would consider it a bug.</p>
+<p>But in your example you don&#x27;t have the same import in both files - in <code>__init__.py</code> you have <code>from foo.bar_types import BarType</code> and in <code>test_foo.py</code> you have <code>from foo.bar.types import BarType</code>. I would expect that, given the directory structure you laid out in the beginning, the second import would be classified as third party whether it appears in <code>__init__.py</code> or in <code>test_foo.py</code>, because the <code>bar</code> subdirectory does not exist.</p>
 <blockquote>
-<p>My preference when resolving this issue would be that the ephemeral file is considered a first-party module even if it doesn't exist, for both src and tests files.</p>
+<p>My preference when resolving this issue would be that the ephemeral file is considered a first-party module even if it doesn&#x27;t exist, for both src and tests files.</p>
 </blockquote>
-<p>Unfortunately there's no way for Ruff to infer that such a non-existent file &quot;ought&quot; to exist without the user specifying this in the form of the configuration <code>known-first-party</code>. And again - the behavior should not differ between <code>src</code> and <code>test</code> files here, as long as we are comparing apples to apples and use the same import statement.</p>
-<p>Hopefully this is helpful, but let me know if there's something I'm misunderstanding or anything additional that needs clarification.</p>
+<p>Unfortunately there&#x27;s no way for Ruff to infer that such a non-existent file &quot;ought&quot; to exist without the user specifying this in the form of the configuration <code>known-first-party</code>. And again - the behavior should not differ between <code>src</code> and <code>test</code> files here, as long as we are comparing apples to apples and use the same import statement.</p>
+<p>Hopefully this is helpful, but let me know if there&#x27;s something I&#x27;m misunderstanding or anything additional that needs clarification.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -124,24 +124,24 @@ def test_something() -&gt; None:
 <blockquote>
 <p>Second, there is the question of whether a (non-relative) import in <strong>init</strong>.py might be classified differently than the same import in test_foo.py. That <em>should not</em> be happening and I would consider it a bug.</p>
 </blockquote>
-<p>You hit the nail on the head - the import (possibly) being classified differently between in-source files and test files is exactly what I'm trying to highlight with this issue. Whatever solution for this issue ends up being implemented, I'll fix my broken CI if needed.</p>
+<p>You hit the nail on the head - the import (possibly) being classified differently between in-source files and test files is exactly what I&#x27;m trying to highlight with this issue. Whatever solution for this issue ends up being implemented, I&#x27;ll fix my broken CI if needed.</p>
 <blockquote>
-<p>But in your example you don't have the same import in both files - in <strong>init</strong>.py you have from foo.bar_types import BarType and in test_foo.py you have from foo.bar.types import BarType.</p>
+<p>But in your example you don&#x27;t have the same import in both files - in <strong>init</strong>.py you have from foo.bar_types import BarType and in test_foo.py you have from foo.bar.types import BarType.</p>
 </blockquote>
-<p>Sorry, this was my mistake when I was imagining a project where this issue would happen. I've edited my original comment to have the correct import path in the <code>test_foo.py</code> file examples.</p>
+<p>Sorry, this was my mistake when I was imagining a project where this issue would happen. I&#x27;ve edited my original comment to have the correct import path in the <code>test_foo.py</code> file examples.</p>
 <blockquote>
-<p>Unfortunately there's no way for Ruff to infer that such a non-existent file &quot;ought&quot; to exist without the user specifying this in the form of the configuration known-first-party. And again - the behavior should not differ between src and test files here, as long as we are comparing apples to apples and use the same import statement.</p>
+<p>Unfortunately there&#x27;s no way for Ruff to infer that such a non-existent file &quot;ought&quot; to exist without the user specifying this in the form of the configuration known-first-party. And again - the behavior should not differ between src and test files here, as long as we are comparing apples to apples and use the same import statement.</p>
 </blockquote>
-<p>Yeah as long as the behavior was made consistent I would be satisfied. In my original post, was just suggesting a potential path that would work better for me (my CI wouldn't be broken), but again I'll adapt to whatever solution is accepted.</p>
+<p>Yeah as long as the behavior was made consistent I would be satisfied. In my original post, was just suggesting a potential path that would work better for me (my CI wouldn&#x27;t be broken), but again I&#x27;ll adapt to whatever solution is accepted.</p>
 <p>Let me know if things are still confusing.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-09-25 18:54</div>
-            <div class="timeline-body"><p>Thank you for clarifying! Let's ignore the non-existent file then and focus on consistency.</p>
+            <div class="timeline-body"><p>Thank you for clarifying! Let&#x27;s ignore the non-existent file then and focus on consistency.</p>
 <p>Here was my attempt to reproduce. When the file actually exists, you can see that both imports are categorized as the same (first party), but for different reasons.</p>
-<p>(I've removed unnecessary debug logs for brevity)</p>
-<pre><code class="language-console">~/Documents/dev
+<p>(I&#x27;ve removed unnecessary debug logs for brevity)</p>
+<pre><code>~/Documents/dev
 ❯ uv init --lib foo &amp;&amp; cd foo
 Initialized project `foo` at `/Users/dmbp/Documents/dev/foo`
 
@@ -156,15 +156,15 @@ foo on  main [?]
 
 foo on  main [?]
 ❯ ruff check --no-cache --isolated --select I001 -v src/foo/bar.py
-[2025-09-25][13:42:11][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'foo.bar' as Known(FirstParty) (SamePackage)
+[2025-09-25][13:42:11][ruff_linter::rules::isort::categorize][DEBUG] Categorized &#x27;foo.bar&#x27; as Known(FirstParty) (SamePackage)
 All checks passed!
 
 foo on  main [?]
 ❯ ruff check --no-cache --isolated --select I001 -v tests/test_foo.py
-[2025-09-25][13:42:17][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'foo.bar' as Known(FirstParty) (SourceMatch(&quot;/Users/dmbp/Documents/dev/foo/src&quot;))
+[2025-09-25][13:42:17][ruff_linter::rules::isort::categorize][DEBUG] Categorized &#x27;foo.bar&#x27; as Known(FirstParty) (SourceMatch(&quot;/Users/dmbp/Documents/dev/foo/src&quot;))
 All checks passed!
 </code></pre>
-<p>So if the file <em>doesn't</em> exist, you will see different behavior as you mentioned.</p>
+<p>So if the file <em>doesn&#x27;t</em> exist, you will see different behavior as you mentioned.</p>
 <p>If you set <a href="https://docs.astral.sh/ruff/settings/#lint_isort_detect-same-package"><code>detect-same-package</code></a> to <code>false</code> I think you get what you expected. In that case the classifications should be the same: they will both be first-party if the file actually exists, otherwise they will both be third party.</p>
 <p>I wonder if it would make sense to change our default value of <code>detect-same-package</code> now that the detection of first-party imports is slightly more refined. (Before 0.13, in this example, the &quot;source match&quot; and &quot;detect same package&quot; would have accidentally agreed because Ruff was only searching for <code>foo</code> in your <code>src</code> directories for &quot;source match&quot;, not <code>foo/bar</code>.)</p>
 <p>Thanks for diving into this a bit further - I agree this is confusing!</p>
@@ -172,16 +172,16 @@ All checks passed!
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jsurany">@jsurany</a> on 2025-09-25 19:57</div>
-            <div class="timeline-body"><p>ah I didn't know about that configuration, and yes it is doing as you said. I'm ok with closing this, unless you want to chase down making the defualt value of <code>detect-same-package</code> to <code>false</code> and make this issue the motivator.</p>
+            <div class="timeline-body"><p>ah I didn&#x27;t know about that configuration, and yes it is doing as you said. I&#x27;m ok with closing this, unless you want to chase down making the defualt value of <code>detect-same-package</code> to <code>false</code> and make this issue the motivator.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2025-09-26 05:40</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-26 05:40</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:53:22 UTC
+        Synced at 2026-01-20 18:50:27 UTC
     </footer>
 </body>
 </html>

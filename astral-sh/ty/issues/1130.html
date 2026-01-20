@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/JelleZijlstra">@JelleZijlstra</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<p>We just closed #456, but there's one special case that needs more attention: <code>isinstance(x, dict)</code>. The tricky part is that TypedDicts are instances of <code>dict</code> at runtime, but are not (generally) assignable to any materialization of <code>dict[Any, Any]</code>. (See the proposed spec change in https://github.com/python/typing/pull/2072 for the details.)</p>
+            <div class="timeline-body">Summary
+<p>We just closed #456, but there&#x27;s one special case that needs more attention: <code>isinstance(x, dict)</code>. The tricky part is that TypedDicts are instances of <code>dict</code> at runtime, but are not (generally) assignable to any materialization of <code>dict[Any, Any]</code>. (See the proposed spec change in <a href="https://github.com/python/typing/pull/2072">python/typing#2072</a> for the details.)</p>
 <p>Current behavior is as follows (<a href="https://play.ty.dev/89647293-a588-442d-ae5c-d0e2fbdacd2c">playground</a>):</p>
-<pre><code class="language-python">from typing import TypedDict
+<pre><code>from typing import TypedDict
 
 class X(TypedDict):
     a: int
@@ -37,19 +37,19 @@ def _(x: list | X):
     else:
         reveal_type(x)  # list[Unknown] | (X &amp; ~Top[dict[Unknown, Unknown]])
 </code></pre>
-<p>Mypy and pyright both infer <code>X</code> in the positive branch and <code>list[Any]</code> in the negative branch, which is what we'd want.</p>
+<p>Mypy and pyright both infer <code>X</code> in the positive branch and <code>list[Any]</code> in the negative branch, which is what we&#x27;d want.</p>
 <p>I know TypedDict support is still missing a lot of functionality, so things will change, but I see a few options:</p>
 <ul>
-<li>Make TypedDict types into subtypes of <code>Top[dict[Unknown, Unknown]]</code>. That would make this sample work correctly, but it's technically wrong in that TypedDicts aren't materializations of <code>dict[Any, Any]</code>. As such, it may cause issues with other possible use cases for <code>Top[]</code>. It would also allow some unsafe operations (https://github.com/JelleZijlstra/unsoundness/blob/main/examples/narrowing/isinstance_dict.py).</li>
-<li>Change the spec so that TypedDict types are assignable to <code>dict[str, Any]</code>. I think that's a defensible change, but it's not what the current spec says and I don't know if such a change would see a positive reception.</li>
+<li>Make TypedDict types into subtypes of <code>Top[dict[Unknown, Unknown]]</code>. That would make this sample work correctly, but it&#x27;s technically wrong in that TypedDicts aren&#x27;t materializations of <code>dict[Any, Any]</code>. As such, it may cause issues with other possible use cases for <code>Top[]</code>. It would also allow some unsafe operations (https://github.com/JelleZijlstra/unsoundness/blob/main/examples/narrowing/isinstance_dict.py).</li>
+<li>Change the spec so that TypedDict types are assignable to <code>dict[str, Any]</code>. I think that&#x27;s a defensible change, but it&#x27;s not what the current spec says and I don&#x27;t know if such a change would see a positive reception.</li>
 <li>Add a new special form <code>ty_extensions.AnyTypedDict</code>, with the semantics that any TypedDict type is a subtype of <code>AnyTypedDict</code>. The only allowed operations on <code>AnyTypedDict</code> are those that are allowed on any TypedDict (so no <code>.clear()</code>; <code>.keys()</code> returns an iterable of <code>str</code>; <code>.values()</code> an iterable of <code>object</code>; etc.). <code>isinstance(x, dict)</code> would narrow to <code>AnyTypedDict | Top[dict[Unknown, Unknown]]</code>. This is technically correct and would fix the soundness hole in https://github.com/JelleZijlstra/unsoundness/blob/main/examples/narrowing/isinstance_dict.py, but it would introduce a new user-visible concept.</li>
 </ul>
-<h3>Version</h3>
+Version
 <p><em>No response</em></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">narrowing</span> added by @AlexWaygood on 2025-09-04 23:12</div>
+            <div class="event">Label <span class="label">narrowing</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-04 23:12</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-04 23:51</div>
@@ -65,22 +65,22 @@ def _(x: list | X):
 <li>it would introduce a new user-visible concept.</li>
 </ul>
 </blockquote>
-<p>We could potentially spell the new type <code>Top[TypedDict]</code> instead of <code>AnyTypedDict</code> (I'd probably prefer to stay away from the word &quot;Any&quot; regardless, as part of the name of a fully-static type), which means it doesn't require any new symbols.</p>
+<p>We could potentially spell the new type <code>Top[TypedDict]</code> instead of <code>AnyTypedDict</code> (I&#x27;d probably prefer to stay away from the word &quot;Any&quot; regardless, as part of the name of a fully-static type), which means it doesn&#x27;t require any new symbols.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Narrowing of `isinstance(..., dict)`" to "Account for TypedDicts in narrowing of `isinstance(..., dict)`" by @carljm on 2026-01-09 02:33</div>
+            <div class="event">Renamed from &quot;Narrowing of `isinstance(..., dict)`&quot; to &quot;Account for TypedDicts in narrowing of `isinstance(..., dict)`&quot; by <a href="https://github.com/carljm">@carljm</a> on 2026-01-09 02:33</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">typeddict</span> added by @carljm on 2026-01-09 02:33</div>
+            <div class="event">Label <span class="label">typeddict</span> added by <a href="https://github.com/carljm">@carljm</a> on 2026-01-09 02:33</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Stable" by @carljm on 2026-01-09 02:33</div>
+            <div class="event">Added to milestone &quot;Stable&quot; by <a href="https://github.com/carljm">@carljm</a> on 2026-01-09 02:33</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:35 UTC
+        Synced at 2026-01-20 19:25:27 UTC
     </footer>
 </body>
 </html>

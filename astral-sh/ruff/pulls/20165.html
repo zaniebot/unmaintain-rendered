@@ -23,48 +23,48 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>When determining whether a nominal type <code>N</code> satisfies a protocol type <code>P</code> with a method member <code>P.x</code>, check that the signature of the method <code>N.x</code> is a subtype of the signature of <code>P.x</code> before deciding that <code>N</code> is a subtype of <code>P</code>.</p>
-<p>Note that subtyping between two different types that are both protocols is a separate code path in <code>instance.rs</code>, and this PR doesn't touch that code path (I'll do that separately). So this doesn't yet provide a fix for e.g. https://github.com/astral-sh/ty/issues/1089 or https://github.com/astral-sh/ty/issues/733.</p>
-<p>Fixes https://github.com/astral-sh/ty/issues/637.
-Fixes https://github.com/astral-sh/ty/issues/889.</p>
-<h2>Test Plan</h2>
+<p>Note that subtyping between two different types that are both protocols is a separate code path in <code>instance.rs</code>, and this PR doesn&#x27;t touch that code path (I&#x27;ll do that separately). So this doesn&#x27;t yet provide a fix for e.g. <a href="https://github.com/astral-sh/ty/issues/1089">astral-sh/ty#1089</a> or <a href="https://github.com/astral-sh/ty/issues/733">astral-sh/ty#733</a>.</p>
+<p>Fixes <a href="https://github.com/astral-sh/ty/issues/637">astral-sh/ty#637</a>.
+Fixes <a href="https://github.com/astral-sh/ty/issues/889">astral-sh/ty#889</a>.</p>
+Test Plan
 <ul>
 <li>Mdtests updated</li>
 <li>Ran <code>QUICKCHECK_TESTS=1000000 cargo test --release -p ty_python_semantic -- --ignored types::property_tests::stable</code> to check that the <code>all_type_assignable_to_iterable_are_iterable</code> test can be safely marked as stable.</li>
 </ul>
-<h2>Typing conformance suite impact</h2>
-<p>These all look good! All the lines where we're emitting new diagnostics have <code># E</code> comments next to them.</p>
-<h2>Ecosystem impact</h2>
-<p>I analysed nearly all the mypy_primer diff in https://github.com/astral-sh/ruff/pull/20165#issuecomment-3276248772. I don't think there's anything there that indicates a bug in protocol assignability/subtyping logic. Most new hits are due to one of:</p>
+Typing conformance suite impact
+<p>These all look good! All the lines where we&#x27;re emitting new diagnostics have <code># E</code> comments next to them.</p>
+Ecosystem impact
+<p>I analysed nearly all the mypy_primer diff in <a href="https://github.com/astral-sh/ruff/pull/20165">astral-sh/ruff#20165</a>#issuecomment-3276248772. I don&#x27;t think there&#x27;s anything there that indicates a bug in protocol assignability/subtyping logic. Most new hits are due to one of:</p>
 <ol>
-<li>Us not understanding typeshed's overloads for <code>builtins.open()</code> (because that function uses PEP-613 type aliases). This is such a common source of new false positives that it might be worth us adding some temporary special-casing for <code>open()</code> where we infer it as returning <code>Todo</code>?</li>
-<li>Users using positional-or-keyword parameters in their protocol definitions, when they should probably be using positional-only parameters instead. I'm surprised this is showing up so much in the ecosystem because I would expect other type checkers to complain about this too. We should probably reimplement flake8-pyi's <a href="https://github.com/PyCQA/flake8-pyi/blob/main/ERRORCODES.md#Y091">Y091 rule</a> in Ruff and encourage users to enable it if they're type-checking their code with ty.</li>
+<li>Us not understanding typeshed&#x27;s overloads for <code>builtins.open()</code> (because that function uses PEP-613 type aliases). This is such a common source of new false positives that it might be worth us adding some temporary special-casing for <code>open()</code> where we infer it as returning <code>Todo</code>?</li>
+<li>Users using positional-or-keyword parameters in their protocol definitions, when they should probably be using positional-only parameters instead. I&#x27;m surprised this is showing up so much in the ecosystem because I would expect other type checkers to complain about this too. We should probably reimplement flake8-pyi&#x27;s <a href="https://github.com/PyCQA/flake8-pyi/blob/main/ERRORCODES.md#Y091">Y091 rule</a> in Ruff and encourage users to enable it if they&#x27;re type-checking their code with ty.</li>
 </ol>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-08-30 11:47</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-30 11:47</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/expression/len.md</code>:239 on 2025-08-30 11:48</div>
-            <div class="timeline-body"><p>I don't understand what these tests were meant to be showing... these <code>__len__</code> signatures all look incorrect? I think these new diagnostics are all correct?</p>
+            <div class="timeline-body"><p>I don&#x27;t understand what these tests were meant to be showing... these <code>__len__</code> signatures all look incorrect? I think these new diagnostics are all correct?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/expression/len.md</code>:269 on 2025-08-30 11:48</div>
-            <div class="timeline-body"><p>Just because there's a second optional argument in the <code>__len__</code> method doesn't mean the <code>len(SecondOptionalArgument())</code> call will fail, so I see no reason why we should be emitting a diagnostic here.</p>
+            <div class="timeline-body"><p>Just because there&#x27;s a second optional argument in the <code>__len__</code> method doesn&#x27;t mean the <code>len(SecondOptionalArgument())</code> call will fail, so I see no reason why we should be emitting a diagnostic here.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-30 11:49</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
-<details>
-<summary>Changes were detected when running ty on typing conformance tests</summary>
+Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a>
 
-<pre><code class="language-diff">--- old-output.txt	2025-09-12 10:07:15.533009560 +0000
+Changes were detected when running ty on typing conformance tests
+
+<pre><code>--- old-output.txt	2025-09-12 10:07:15.533009560 +0000
 +++ new-output.txt	2025-09-12 10:07:18.541030789 +0000
 @@ -720,6 +720,12 @@
  protocols_definition.py:159:1: error[invalid-assignment] Object of type `Concrete3_Bad4` is not assignable to `Template3`
@@ -80,20 +80,20 @@ Fixes https://github.com/astral-sh/ty/issues/889.</p>
  protocols_merging.py:53:1: error[invalid-assignment] Object of type `SCConcrete2` is not assignable to `SizedAndClosable2`
  protocols_merging.py:54:1: error[invalid-assignment] Object of type `SCConcrete2` is not assignable to `SizedAndClosable3`
 @@ -848,5 +854,5 @@
- typeddicts_usage.py:28:1: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
+ typeddicts_usage.py:28:1: error[missing-typed-dict-key] Missing required key &#x27;name&#x27; in TypedDict `Movie` constructor
  typeddicts_usage.py:28:18: error[invalid-key] Invalid key access on TypedDict `Movie`: Unknown key &quot;title&quot;
  typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions. Did you mean to use a concrete TypedDict or `collections.abc.Mapping[str, object]` instead?
 -Found 849 diagnostics
 +Found 855 diagnostics
  WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
 </code></pre>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:114 on 2025-08-30 11:49</div>
-            <div class="timeline-body"><p>I wanted to do a <code>dbg!()</code> call and it didn't work because a <code>Constraints</code> instance wasn't guaranteed to implement <code>Debug</code>. This improves debugabbility.</p>
+            <div class="timeline-body"><p>I wanted to do a <code>dbg!()</code> call and it didn&#x27;t work because a <code>Constraints</code> instance wasn&#x27;t guaranteed to implement <code>Debug</code>. This improves debugabbility.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -107,13 +107,13 @@ Fixes https://github.com/astral-sh/ty/issues/889.</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-30 11:52</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">pytest-robotframework (https://github.com/detachhead/pytest-robotframework)
+Changes were detected when running on open source projects
+
+<pre><code>pytest-robotframework (https://github.com/detachhead/pytest-robotframework)
 + pytest_robotframework/__init__.py:264:13: error[invalid-assignment] Object of type `_FullStackStatusReporter | nullcontext[None]` is not assignable to `AbstractContextManager[object, bool]`
 - Found 175 diagnostics
 + Found 176 diagnostics
@@ -241,10 +241,10 @@ xarray (https://github.com/pydata/xarray)
 - xarray/backends/common.py:192:56: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 
 mitmproxy (https://github.com/mitmproxy/mitmproxy)
-- examples/addons/contentview-interactive.py:20:18: error[invalid-argument-type] Argument to function `add` is incorrect: Expected `Contentview`, found `&lt;class 'InteractiveSwapCase'&gt;`
-- examples/addons/contentview.py:15:18: error[invalid-argument-type] Argument to function `add` is incorrect: Expected `Contentview`, found `&lt;class 'SwapCase'&gt;`
+- examples/addons/contentview-interactive.py:20:18: error[invalid-argument-type] Argument to function `add` is incorrect: Expected `Contentview`, found `&lt;class &#x27;InteractiveSwapCase&#x27;&gt;`
+- examples/addons/contentview.py:15:18: error[invalid-argument-type] Argument to function `add` is incorrect: Expected `Contentview`, found `&lt;class &#x27;SwapCase&#x27;&gt;`
 - test/individual_coverage.py:103:46: error[invalid-argument-type] Argument to function `run_tests` is incorrect: Expected `bool`, found `Match[str] | None`
-- test/mitmproxy/contentviews/test__registry.py:67:23: error[invalid-argument-type] Argument to bound method `register` is incorrect: Expected `Contentview`, found `&lt;class 'ExampleContentview'&gt;`
+- test/mitmproxy/contentviews/test__registry.py:67:23: error[invalid-argument-type] Argument to bound method `register` is incorrect: Expected `Contentview`, found `&lt;class &#x27;ExampleContentview&#x27;&gt;`
 - Found 1822 diagnostics
 + Found 1818 diagnostics
 
@@ -280,7 +280,7 @@ meson (https://github.com/mesonbuild/meson)
 + Found 812 diagnostics
 
 static-frame (https://github.com/static-frame/static-frame)
-+ static_frame/test/unit/test_frame.py:9855:34: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `Iterable[&lt;class 'int'&gt;]`, found `repeat[&lt;class 'str'&gt;]`
++ static_frame/test/unit/test_frame.py:9855:34: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `Iterable[&lt;class &#x27;int&#x27;&gt;]`, found `repeat[&lt;class &#x27;str&#x27;&gt;]`
 - static_frame/test/unit/test_quilt.py:1110:71: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 
 dd-trace-py (https://github.com/DataDog/dd-trace-py)
@@ -353,11 +353,11 @@ sympy (https://github.com/sympy/sympy)
 + Found 13417 diagnostics
 
 </code></pre>
-</details>
-<details>
-<summary>Memory usage changes were detected when running on open source projects</summary>
 
-<pre><code class="language-diff">trio (https://github.com/python-trio/trio)
+
+Memory usage changes were detected when running on open source projects
+
+<pre><code>trio (https://github.com/python-trio/trio)
 -     memo metadata = ~22MB
 +     memo metadata = ~23MB
 
@@ -366,37 +366,37 @@ sphinx (https://github.com/sphinx-doc/sphinx)
 +     struct fields = ~18MB
 
 </code></pre>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-08-30 11:54</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-30 11:54</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-30 11:55</div>
             <div class="timeline-body"><p>Everything in the typing conformance diff looks great, <em>except</em> for this one:</p>
 <blockquote>
-<pre><code class="language-diff">+specialtypes_none.py:24:1: error[invalid-assignment] Object of type `None` is not assignable to `Hashable`
+<pre><code>+specialtypes_none.py:24:1: error[invalid-assignment] Object of type `None` is not assignable to `Hashable`
 </code></pre>
 </blockquote>
 <p><code>None</code> should be assignable to <code>Hashable</code>.</p>
-<p>...and I think that this is https://github.com/astral-sh/ty/issues/737 back to bite us again.</p>
+<p>...and I think that this is <a href="https://github.com/astral-sh/ty/issues/737">astral-sh/ty#737</a> back to bite us again.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-08-30 11:58</div>
-            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+            <div class="timeline-body">
 
-<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
 
-<h2><a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Fmethod-members?runnerMode=Instrumentation">CodSpeed Instrumentation Performance Report</a></h2>
-<h3>Merging #20165 will <strong>improve performances by 13.92%</strong></h3>
-<p><sub>Comparing <code>alex/method-members</code> (80fc8fe) with <code>main</code> (bb9be26)</sub></p>
-<h3>Summary</h3>
-<p><code>⚡ 1</code> improvement<br />
+
+<a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Fmethod-members?runnerMode=Instrumentation">CodSpeed Instrumentation Performance Report</a>
+Merging #20165 will <strong>improve performances by 13.92%</strong>
+<p>Comparing <code>alex/method-members</code> (80fc8fe) with <code>main</code> (bb9be26)</p>
+Summary
+<p><code>⚡ 1</code> improvement<br>
 <code>✅ 42</code> untouched</p>
-<h3>Benchmarks breakdown</h3>
+Benchmarks breakdown
 <p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
 | --- | --------- | ----------------------- | ------------------- | ------ |
 | ⚡ | <code>DateType</code> | 256.9 ms | 225.5 ms | +13.92% |</p>
@@ -404,9 +404,9 @@ sphinx (https://github.com/sphinx-doc/sphinx)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-30 12:06</div>
-            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+            <div class="timeline-body">
 
-<h2><code>ecosystem-analyzer</code> results</h2>
+<code>ecosystem-analyzer</code> results
 <p>| Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
 | <code>invalid-argument-type</code> | 40 | 4 | 0 |
@@ -421,73 +421,73 @@ sphinx (https://github.com/sphinx-doc/sphinx)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @AlexWaygood on 2025-08-30 14:29</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-30 14:29</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-08-30 14:29</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-30 14:29</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @AlexWaygood on 2025-08-30 14:48</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-30 14:48</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-08-30 14:48</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-30 14:48</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @AlexWaygood on 2025-08-30 14:57</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-30 14:57</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-08-30 14:57</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-30 14:57</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @AlexWaygood on 2025-08-30 17:57</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-30 17:57</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-08-30 17:57</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-30 17:57</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-08-30 18:06</div>
-            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+            <div class="timeline-body">
 
-<!-- __CODSPEED_WALLTIME_PERFORMANCE_REPORT_COMMENT__ -->
 
-<h2><a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Fmethod-members?runnerMode=WallTime">CodSpeed WallTime Performance Report</a></h2>
-<h3>Merging #20165 will <strong>not alter performance</strong></h3>
-<p><sub>Comparing <code>alex/method-members</code> (80fc8fe) with <code>main</code> (bb9be26)</sub></p>
-<h3>Summary</h3>
+
+<a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Fmethod-members?runnerMode=WallTime">CodSpeed WallTime Performance Report</a>
+Merging #20165 will <strong>not alter performance</strong>
+<p>Comparing <code>alex/method-members</code> (80fc8fe) with <code>main</code> (bb9be26)</p>
+Summary
 <p><code>✅ 8</code> untouched</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @AlexWaygood on 2025-09-10 17:12</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-10 17:12</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-09-10 17:12</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-10 17:12</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @AlexWaygood on 2025-09-10 17:15</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-10 17:15</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-09-10 17:16</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-10 17:16</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-10 19:27</div>
-            <div class="timeline-body"><h1>Mypy_primer analysis</h1>
-<h2><code>comtypes</code></h2>
-<details>
+            <div class="timeline-body">Mypy_primer analysis
+<code>comtypes</code>
 
-<pre><code class="language-diff">comtypes (https://github.com/enthought/comtypes)
+
+<pre><code>comtypes (https://github.com/enthought/comtypes)
 + comtypes/test/test_variant.py:329:32: error[invalid-argument-type] Argument to function `load` is incorrect: Expected `_ReadableFileobj`, found `TextIOWrapper[_WrappedBuffer]`
 </code></pre>
-<p>This is because we don't yet understand PEP-613 type aliases. We should be inferring the result of the <code>open()</code> call <a href="https://github.com/enthought/comtypes/blob/2dc690a133cc1506bc3ec0baeaf85f8a7fdf3fda/comtypes/test/test_variant.py#L329">here</a> as being <code>_io.BufferedReader</code>, but instead we're inferring <code>io.TextIOWrapper</code> because typeshed uses type aliases in <a href="https://github.com/python/typeshed/blob/d9c76e1d9f0c0000c1971c3e936a69dd55f49ce1/stdlib/builtins.pyi#L1711-L1796">its (nightmarish) overloads for <code>builtins.open</code></a>. We're correct in saying that <a href="https://github.com/python/typeshed/blob/d9c76e1d9f0c0000c1971c3e936a69dd55f49ce1/stdlib/_io.pyi#L240"><code>TextIOWrapper</code></a> is not assignable to <a href="https://github.com/python/typeshed/blob/d9c76e1d9f0c0000c1971c3e936a69dd55f49ce1/stdlib/_pickle.pyi#L8-L10"><code>_ReadableFileobj</code></a> -- <code>_ReadableFileObj</code> states that classes must have a <code>read()</code> method returning <code>bytes</code> in order to satisfy its interface. <code>TextIOWrapper.read()</code> returns <code>str</code>.</p>
-</details>
+<p>This is because we don&#x27;t yet understand PEP-613 type aliases. We should be inferring the result of the <code>open()</code> call <a href="https://github.com/enthought/comtypes/blob/2dc690a133cc1506bc3ec0baeaf85f8a7fdf3fda/comtypes/test/test_variant.py#L329">here</a> as being <code>_io.BufferedReader</code>, but instead we&#x27;re inferring <code>io.TextIOWrapper</code> because typeshed uses type aliases in <a href="https://github.com/python/typeshed/blob/d9c76e1d9f0c0000c1971c3e936a69dd55f49ce1/stdlib/builtins.pyi#L1711-L1796">its (nightmarish) overloads for <code>builtins.open</code></a>. We&#x27;re correct in saying that <a href="https://github.com/python/typeshed/blob/d9c76e1d9f0c0000c1971c3e936a69dd55f49ce1/stdlib/_io.pyi#L240"><code>TextIOWrapper</code></a> is not assignable to <a href="https://github.com/python/typeshed/blob/d9c76e1d9f0c0000c1971c3e936a69dd55f49ce1/stdlib/_pickle.pyi#L8-L10"><code>_ReadableFileobj</code></a> -- <code>_ReadableFileObj</code> states that classes must have a <code>read()</code> method returning <code>bytes</code> in order to satisfy its interface. <code>TextIOWrapper.read()</code> returns <code>str</code>.</p>
 
-<h2><code>ddtrace</code></h2>
-<details>
 
-<pre><code class="language-diff">+ benchmarks/bm/iast_fixtures/str_methods.py:462:25: error[invalid-argument-type] Argument to bound method `format_map` is incorrect: Expected `_FormatMapMapping`, found `str`
+<code>ddtrace</code>
+
+
+<pre><code>+ benchmarks/bm/iast_fixtures/str_methods.py:462:25: error[invalid-argument-type] Argument to bound method `format_map` is incorrect: Expected `_FormatMapMapping`, found `str`
 </code></pre>
 <p>This looks correct; <a href="https://github.com/DataDog/dd-trace-py/blob/2b8bd63baaf1a6e954ea2994c4ba044fa6aeaa93/benchmarks/bm/iast_fixtures/str_methods.py#L460C1-L462C31">this function</a> causes <a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=f53d9312746bdb2d88d854825deea02f">other type checkers to issue complaints too</a>.</p>
-<pre><code class="language-diff">+ ddtrace/vendor/ply/yacc.py:2011:34: error[invalid-argument-type] Argument to function `load` is incorrect: Expected `_ReadableFileobj`, found `TextIOWrapper[_WrappedBuffer]`
+<pre><code>+ ddtrace/vendor/ply/yacc.py:2011:34: error[invalid-argument-type] Argument to function `load` is incorrect: Expected `_ReadableFileobj`, found `TextIOWrapper[_WrappedBuffer]`
 + ddtrace/vendor/ply/yacc.py:2014:38: error[invalid-argument-type] Argument to function `load` is incorrect: Expected `_ReadableFileobj`, found `TextIOWrapper[_WrappedBuffer]`
 + ddtrace/vendor/ply/yacc.py:2015:38: error[invalid-argument-type] Argument to function `load` is incorrect: Expected `_ReadableFileobj`, found `TextIOWrapper[_WrappedBuffer]`
 + ddtrace/vendor/ply/yacc.py:2016:38: error[invalid-argument-type] Argument to function `load` is incorrect: Expected `_ReadableFileobj`, found `TextIOWrapper[_WrappedBuffer]`
@@ -495,12 +495,12 @@ sphinx (https://github.com/sphinx-doc/sphinx)
 + ddtrace/vendor/ply/yacc.py:2018:38: error[invalid-argument-type] Argument to function `load` is incorrect: Expected `_ReadableFileobj`, found `TextIOWrapper[_WrappedBuffer]`
 </code></pre>
 <p>All the hits in this file have the same root cause as the one on <code>comtypes</code></p>
-</details>
 
-<h2><code>isort</code>, <code>pytest</code>, <code>pywin32</code>, <code>vision</code></h2>
-<details>
 
-<pre><code class="language-diff">isort (https://github.com/pycqa/isort)
+<code>isort</code>, <code>pytest</code>, <code>pywin32</code>, <code>vision</code>
+
+
+<pre><code>isort (https://github.com/pycqa/isort)
 + isort/io.py:47:34: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `TextIOWrapper[_WrappedBuffer]` does not satisfy upper bound `_WrappedBuffer` of type variable `_BufferT_co`
 + isort/io.py:47:34: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_WrappedBuffer`, found `TextIOWrapper[_WrappedBuffer]`
 
@@ -529,26 +529,26 @@ vision (https://github.com/pytorch/vision)
 + torchvision/datasets/lsun.py:28:37: error[invalid-argument-type] Argument to function `load` is incorrect: Expected `_ReadableFileobj`, found `TextIOWrapper[_WrappedBuffer]`
 + torchvision/datasets/lsun.py:32:36: error[invalid-argument-type] Argument to function `dump` is incorrect: Expected `SupportsWrite[bytes]`, found `TextIOWrapper[_WrappedBuffer]`
 </code></pre>
-<p>These are also caused by the same issue as the <code>comtypes</code> hit: we don't understand typeshed's overloads for <code>open()</code> because we don't yet understand PEP-613 type aliases.</p>
-</details>
+<p>These are also caused by the same issue as the <code>comtypes</code> hit: we don&#x27;t understand typeshed&#x27;s overloads for <code>open()</code> because we don&#x27;t yet understand PEP-613 type aliases.</p>
 
-<h2><code>antidote</code></h2>
-<details>
 
-<pre><code class="language-diff">antidote (https://github.com/Finistere/antidote)
+<code>antidote</code>
+
+
+<pre><code>antidote (https://github.com/Finistere/antidote)
 + tests/lib/interface/test_conditions.py:193:45: error[invalid-argument-type] Argument to bound method `when` is incorrect: Expected `Predicate[Weight | None] | Weight | None | NeutralWeight | bool`, found `OnlyIf`
 </code></pre>
-<p>This looks correct to me. The call to <code>when()</code> is <a href="https://github.com/Finistere/antidote/blob/7d64ff76b7e283e5d9593ca09ea7a52b9b054957/tests/lib/interface/test_conditions.py#L193">here</a> and the <code>when()</code> method is defined <a href="https://github.com/Finistere/antidote/blob/7d64ff76b7e283e5d9593ca09ea7a52b9b054957/src/antidote/lib/interface_ext/__init__.py#L1035-L1044">here</a>. The input parameter to <code>when()</code> is annotated as accepting a union of nominal types or <code>Weight</code>, which <a href="https://github.com/Finistere/antidote/blob/7d64ff76b7e283e5d9593ca09ea7a52b9b054957/src/antidote/lib/interface_ext/__init__.py#L59">is a <code>TypeVar</code> bound to a protocol</a>. The <a href="https://github.com/Finistere/antidote/blob/7d64ff76b7e283e5d9593ca09ea7a52b9b054957/src/antidote/lib/interface_ext/predicate.py#L28">protocol definition</a> doesn't appear to be satisfied by <a href="https://github.com/Finistere/antidote/blob/7d64ff76b7e283e5d9593ca09ea7a52b9b054957/tests/lib/interface/common.py#L53">the <code>OnlyIf</code> class</a> so it doesn't satisfy the upper bound of the TypeVar. I don't think it satisfies any of the other nominal types in the union either. If anything, I'm not sure why we accepted this call previously?</p>
-</details>
+<p>This looks correct to me. The call to <code>when()</code> is <a href="https://github.com/Finistere/antidote/blob/7d64ff76b7e283e5d9593ca09ea7a52b9b054957/tests/lib/interface/test_conditions.py#L193">here</a> and the <code>when()</code> method is defined <a href="https://github.com/Finistere/antidote/blob/7d64ff76b7e283e5d9593ca09ea7a52b9b054957/src/antidote/lib/interface_ext/__init__.py#L1035-L1044">here</a>. The input parameter to <code>when()</code> is annotated as accepting a union of nominal types or <code>Weight</code>, which <a href="https://github.com/Finistere/antidote/blob/7d64ff76b7e283e5d9593ca09ea7a52b9b054957/src/antidote/lib/interface_ext/__init__.py#L59">is a <code>TypeVar</code> bound to a protocol</a>. The <a href="https://github.com/Finistere/antidote/blob/7d64ff76b7e283e5d9593ca09ea7a52b9b054957/src/antidote/lib/interface_ext/predicate.py#L28">protocol definition</a> doesn&#x27;t appear to be satisfied by <a href="https://github.com/Finistere/antidote/blob/7d64ff76b7e283e5d9593ca09ea7a52b9b054957/tests/lib/interface/common.py#L53">the <code>OnlyIf</code> class</a> so it doesn&#x27;t satisfy the upper bound of the TypeVar. I don&#x27;t think it satisfies any of the other nominal types in the union either. If anything, I&#x27;m not sure why we accepted this call previously?</p>
 
-<h2><code>core</code></h2>
-<details>
 
-<pre><code class="language-diff">core (https://github.com/home-assistant/core)
+<code>core</code>
+
+
+<pre><code>core (https://github.com/home-assistant/core)
 + homeassistant/helpers/device_registry.py:916:50: error[invalid-argument-type] Argument to function `_normalize_connections` is incorrect: Expected `Iterable[tuple[str, str]]`, found `set[tuple[str, str]] | UndefinedType | (Unknown &amp; ~None)`
 </code></pre>
-<p>This is expected with our current behaviour. They're doing type narrowing like this, but it doesn't work because of the fact that we view <code>SINGLETON</code> here as having type <code>Foo | Unknown</code> from inside the function scope, rather than <code>Foo</code>:</p>
-<pre><code class="language-py">from enum import Enum
+<p>This is expected with our current behaviour. They&#x27;re doing type narrowing like this, but it doesn&#x27;t work because of the fact that we view <code>SINGLETON</code> here as having type <code>Foo | Unknown</code> from inside the function scope, rather than <code>Foo</code>:</p>
+<pre><code>from enum import Enum
 
 class Foo(Enum):
     SINGLETON = object()
@@ -560,16 +560,16 @@ def _(x: Foo | int):
     if x is not SINGLETON:
         reveal_type(x)
 </code></pre>
-<p>If you add an explicit <code>Final</code> annotation to <code>SINGLETON</code>, we're happy to narrow the type here in the way that they'd expect: https://play.ty.dev/a603b1ab-4d53-4f6f-ada4-09b0c398943f. Possibly we could make our behaviour more intuitive to users here in the future by treating SCREAMING_CASE global constants as being implicitly <code>Final</code> (pyright actually does this). https://github.com/astral-sh/ty/issues/1069 might also help here?</p>
-<pre><code class="language-diff">+ homeassistant/loader.py:1484:9: error[invalid-argument-type] Argument to function `_resolve_integrations_dependencies` is incorrect: Expected `_ResolveDependenciesCacheProtocol`, found `dict[@Todo(dict literal key type), @Todo(dict literal value type)]`
+<p>If you add an explicit <code>Final</code> annotation to <code>SINGLETON</code>, we&#x27;re happy to narrow the type here in the way that they&#x27;d expect: https://play.ty.dev/a603b1ab-4d53-4f6f-ada4-09b0c398943f. Possibly we could make our behaviour more intuitive to users here in the future by treating SCREAMING_CASE global constants as being implicitly <code>Final</code> (pyright actually does this). <a href="https://github.com/astral-sh/ty/issues/1069">astral-sh/ty#1069</a> might also help here?</p>
+<pre><code>+ homeassistant/loader.py:1484:9: error[invalid-argument-type] Argument to function `_resolve_integrations_dependencies` is incorrect: Expected `_ResolveDependenciesCacheProtocol`, found `dict[@Todo(dict literal key type), @Todo(dict literal value type)]`
 </code></pre>
 <p>This one is correct because the protocol states that a class must have positional-or-keyword parameters in its <code>get</code> and <code>__setitem__</code> methods in order for it to be a subtype. All parameters in <code>dict.get</code> and <code>dict.__setitem__</code> are positional-only.</p>
-</details>
 
-<h2><code>meson</code></h2>
-<details>
 
-<pre><code class="language-diff">meson (https://github.com/mesonbuild/meson)
+<code>meson</code>
+
+
+<pre><code>meson (https://github.com/mesonbuild/meson)
 + mesonbuild/backend/backends.py:1396:16: error[invalid-return-type] Return type does not match returned value: expected `ImmutableListProtocol[str]`, found `list[@Todo(list literal element type)]`
 + mesonbuild/backend/backends.py:1405:16: error[invalid-return-type] Return type does not match returned value: expected `ImmutableListProtocol[str]`, found `list[@Todo(list literal element type)]`
 + mesonbuild/backend/ninjabackend.py:2995:16: error[invalid-return-type] Return type does not match returned value: expected `tuple[ImmutableListProtocol[str], ImmutableListProtocol[str]]`, found `tuple[list[str], list[str] | list[@Todo(list literal element type)]]`
@@ -589,27 +589,27 @@ def _(x: Foo | int):
 + mesonbuild/utils/universal.py:238:9: error[invalid-assignment] Object of type `Unknown | list[@Todo(list literal element type)]` is not assignable to `ImmutableListProtocol[str] | None`
 + mesonbuild/utils/universal.py:712:12: error[invalid-return-type] Return type does not match returned value: expected `ImmutableListProtocol[str]`, found `list[@Todo(list comprehension element type)]`
 </code></pre>
-<p>These all look like they're because <a href="https://github.com/mesonbuild/meson/blob/3734ff4bb11e82e59cf66a82288b80db3def83ec/mesonbuild/_typing.py#L30">the <code>ImmutableListProtocol</code> protocol</a> has many method members that have positional-or-keyword parameters, whereas <code>list</code> only has positional-only parameters for the corresponding methods; therefore, <code>list</code> is not assignable to the protocol. I think our behaviour is correct here.</p>
-</details>
+<p>These all look like they&#x27;re because <a href="https://github.com/mesonbuild/meson/blob/3734ff4bb11e82e59cf66a82288b80db3def83ec/mesonbuild/_typing.py#L30">the <code>ImmutableListProtocol</code> protocol</a> has many method members that have positional-or-keyword parameters, whereas <code>list</code> only has positional-only parameters for the corresponding methods; therefore, <code>list</code> is not assignable to the protocol. I think our behaviour is correct here.</p>
 
-<h2><code>nionutils</code></h2>
-<details>
 
-<pre><code class="language-diff">nionutils (https://github.com/nion-software/nionutils)
+<code>nionutils</code>
+
+
+<pre><code>nionutils (https://github.com/nion-software/nionutils)
 + nion/utils/StructuredModel.py:91:16: error[invalid-return-type] Return type does not match returned value: expected `ModelLike`, found `RecordModel`
 + nion/utils/StructuredModel.py:93:16: error[invalid-return-type] Return type does not match returned value: expected `ModelLike`, found `ArrayModel`
 </code></pre>
 <p>It took me a while to figure this one out. I think this is correct. The <code>ModelLike</code> protocol <a href="https://github.com/nion-software/nionutils/blob/762ef25d29759c47610d0aa8e70600cc5fc5d785/nion/utils/StructuredModel.py#L66">here</a> states that a class must have a <code>from_dict_value</code> method with a <code>value</code> positional-or-only parameter in order for that class to be a subtype of <code>ModelLike</code>. Both <code>RecordModel</code> and <code>ArrayModel</code> have <code>from_dict_value</code> methods... but they both have <code>from_dict_value</code> methods with a parameter named <code>values</code> rather than <code>value</code> (notice the <code>s</code> at the end!).</p>
-</details>
 
-<h2><code>pandas</code></h2>
-<details>
 
-<pre><code class="language-diff">pandas (https://github.com/pandas-dev/pandas)
+<code>pandas</code>
+
+
+<pre><code>pandas (https://github.com/pandas-dev/pandas)
 + pandas/tests/interchange/test_impl.py:270:29: error[invalid-argument-type] Argument to function `from_dlpack` is incorrect: Expected `_SupportsDLPack[None]`, found `Buffer`
 </code></pre>
 <p>This looks correct to me. The <code>_SupportsDLPack</code> protocol is defined in <code>numpy</code> <a href="https://github.com/numpy/numpy/blob/85f973e241656142af868d020a080906b32ec290/numpy/__init__.pyi#L1065">here</a>. It states that in order for a class to satisfy the protocol, it must have a <code>__dlpack__</code> method which will not fail if you pass in a <code>stream</code> argument. But <a href="https://github.com/pandas-dev/pandas/blob/2f2664433f6ae18fc2013a0c1e86fe562cd74c3b/pandas/core/interchange/dataframe_protocol.py#L151"><code>Buffer.__dlpack__</code></a> has no <code>stream</code> parameter.</p>
-<pre><code class="language-diff">+ pandas/tests/scalar/timedelta/test_arithmetic.py:876:18: error[no-matching-overload] No overload of function `divmod` matches arguments
+<pre><code>+ pandas/tests/scalar/timedelta/test_arithmetic.py:876:18: error[no-matching-overload] No overload of function `divmod` matches arguments
 + pandas/tests/scalar/timedelta/test_arithmetic.py:882:18: error[no-matching-overload] No overload of function `divmod` matches arguments
 + pandas/tests/scalar/timedelta/test_arithmetic.py:895:18: error[no-matching-overload] No overload of function `divmod` matches arguments
 + pandas/tests/scalar/timedelta/test_arithmetic.py:900:18: error[no-matching-overload] No overload of function `divmod` matches arguments
@@ -618,79 +618,79 @@ def _(x: Foo | int):
 + pandas/tests/scalar/timedelta/test_arithmetic.py:943:13: error[no-matching-overload] No overload of function `divmod` matches arguments
 + pandas/tests/scalar/timedelta/test_arithmetic.py:946:13: error[no-matching-overload] No overload of function `divmod` matches arguments
 </code></pre>
-<p>I think our behaviour is correct here; this looks like a bug in pandas's type annotations. Their stub file <a href="https://github.com/pandas-dev/pandas/blob/2f2664433f6ae18fc2013a0c1e86fe562cd74c3b/pandas/_libs/tslibs/timedeltas.pyi#L153">here</a> clearly states that <code>Timedelta.__divmod__</code> only accepts instances of <code>timedelta</code>, but that's obviously not what their tests are asserting here. It's also clearly not true at runtime:</p>
-<pre><code class="language-pycon">% uvx --with=pandas python                  
+<p>I think our behaviour is correct here; this looks like a bug in pandas&#x27;s type annotations. Their stub file <a href="https://github.com/pandas-dev/pandas/blob/2f2664433f6ae18fc2013a0c1e86fe562cd74c3b/pandas/_libs/tslibs/timedeltas.pyi#L153">here</a> clearly states that <code>Timedelta.__divmod__</code> only accepts instances of <code>timedelta</code>, but that&#x27;s obviously not what their tests are asserting here. It&#x27;s also clearly not true at runtime:</p>
+<pre><code>% uvx --with=pandas python                  
 Installed 6 packages in 54ms
 Python 3.13.7 (main, Sep  2 2025, 14:05:52) [Clang 20.1.4 ] on darwin
 Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
 &gt;&gt;&gt; from pandas import Timedelta
 &gt;&gt;&gt; td = Timedelta(days=2, hours=6)
 &gt;&gt;&gt; td
-Timedelta('2 days 06:00:00')
+Timedelta(&#x27;2 days 06:00:00&#x27;)
 &gt;&gt;&gt; result = divmod(td, 53 * 3600 * 1e9)
 &gt;&gt;&gt; result
-(Timedelta('0 days 00:00:00.000000001'), Timedelta('0 days 01:00:00'))
+(Timedelta(&#x27;0 days 00:00:00.000000001&#x27;), Timedelta(&#x27;0 days 01:00:00&#x27;))
 </code></pre>
-<p>And in the actual (Cython!) implementation of the <code>__floordiv__</code> method (which the <code>__divmod__</code> method just defers to) here we can clearly see that there's a code path specifically for if a <code>float</code> is passed as the second argument: https://github.com/pandas-dev/pandas/blob/1fa95a15535b72c95c0e79e1bdc6164476c4af30/pandas/_libs/tslibs/timedeltas.pyx#L2396.</p>
-</details>
+<p>And in the actual (Cython!) implementation of the <code>__floordiv__</code> method (which the <code>__divmod__</code> method just defers to) here we can clearly see that there&#x27;s a code path specifically for if a <code>float</code> is passed as the second argument: https://github.com/pandas-dev/pandas/blob/1fa95a15535b72c95c0e79e1bdc6164476c4af30/pandas/_libs/tslibs/timedeltas.pyx#L2396.</p>
 
-<h2><code>pytest-robotframework</code></h2>
-<details>
 
-<pre><code class="language-diff">pytest-robotframework (https://github.com/detachhead/pytest-robotframework)
+<code>pytest-robotframework</code>
+
+
+<pre><code>pytest-robotframework (https://github.com/detachhead/pytest-robotframework)
 + pytest_robotframework/__init__.py:264:13: error[invalid-assignment] Object of type `_FullStackStatusReporter | nullcontext[None]` is not assignable to `AbstractContextManager[object, bool]`
 </code></pre>
 <p>This is correct: <code>nullcontext[None]</code> is not assignable to <code>AbstractContextManager[object, bool]</code> since <code>nullcontext.__exit__</code> returns <code>None</code>, not <code>bool</code>. They already have this line <code>pyright: ignore</code>d and a comment suggesting they know type checkers will complain here: https://github.com/DetachHead/pytest-robotframework/blob/cc6c6532abb66e885f81e3a027f80eafc65df5d3/pytest_robotframework/<strong>init</strong>.py#L262-L264.</p>
-</details>
 
-<h2><code>rich</code></h2>
-<details>
 
-<pre><code class="language-diff">rich (https://github.com/Textualize/rich)
+<code>rich</code>
+
+
+<pre><code>rich (https://github.com/Textualize/rich)
 + tests/test_containers.py:17:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Iterable[Unknown]`, found `Renderables`
 </code></pre>
 <p>This looks correct to me. <code>Renderables</code> has an <code>__iter__</code> method, but it <a href="https://github.com/Textualize/rich/blob/ea9d4db5d84b4e834979304e3053bf757daae322/rich/containers.py#L62-L63">is annotated as returning <code>Iterable</code></a>. In order for a class <code>X</code> to be considered a subtype of <code>Iterable</code>, however, <code>X.__iter__</code> must return <code>Iterator</code>, not <code>Iterable</code>.</p>
-</details>
 
-<h2><code>schemathesis</code></h2>
-<details>
 
-<pre><code class="language-diff">schemathesis (https://github.com/schemathesis/schemathesis)
+<code>schemathesis</code>
+
+
+<pre><code>schemathesis (https://github.com/schemathesis/schemathesis)
 + src/schemathesis/auths.py:323:53: error[invalid-argument-type] Argument is incorrect: Expected `AuthProvider[Unknown]`, found `RequestsAuth[Unknown]`
 + src/schemathesis/auths.py:351:17: error[invalid-assignment] Object of type `CachingAuthProvider[Unknown]` is not assignable to `AuthProvider[Unknown]`
 + src/schemathesis/auths.py:353:17: error[invalid-assignment] Object of type `KeyedCachingAuthProvider[Unknown]` is not assignable to `AuthProvider[Unknown]`
 + src/schemathesis/auths.py:360:13: error[invalid-assignment] Object of type `SelectiveAuthProvider[Unknown]` is not assignable to `AuthProvider[Unknown]`
 </code></pre>
-<p>Looks like another case where they really should have used positional-only arguments in their protocol's method members.</p>
-</details>
+<p>Looks like another case where they really should have used positional-only arguments in their protocol&#x27;s method members.</p>
 
-<h2><code>sphinx</code></h2>
-<details>
 
-<pre><code class="language-diff">sphinx (https://github.com/sphinx-doc/sphinx)
+<code>sphinx</code>
+
+
+<pre><code>sphinx (https://github.com/sphinx-doc/sphinx)
 + sphinx/ext/apidoc/_generate.py:50:12: error[no-matching-overload] No overload of bound method `join` matches arguments
 </code></pre>
 <p>This is because we have this behaviour:</p>
-<pre><code class="language-py">def module_join(*modnames: str | None) -&gt; str:
+<pre><code>def module_join(*modnames: str | None) -&gt; str:
     reveal_type(modnames)  # tuple[str | None, ...]
     reveal_type(filter(None, modnames))  # filter[str | None]`, but `filter[str]` would be better!
 </code></pre>
-<p>We're doing a suboptimal job at solving the TypeVar in <a href="https://github.com/python/typeshed/blob/6937a9b193bfc2f0696452d58aad96d7627aa29a/stdlib/builtins.pyi#L1506-L1507">this overload</a> of <code>filter.__new__</code>; this should be fixed by the new constraint solver.</p>
-</details>
+<p>We&#x27;re doing a suboptimal job at solving the TypeVar in <a href="https://github.com/python/typeshed/blob/6937a9b193bfc2f0696452d58aad96d7627aa29a/stdlib/builtins.pyi#L1506-L1507">this overload</a> of <code>filter.__new__</code>; this should be fixed by the new constraint solver.</p>
 
-<h2><code>static-frame</code></h2>
-<details>
 
-<pre><code class="language-diff">static-frame (https://github.com/static-frame/static-frame)
-+ static_frame/test/unit/test_frame.py:9855:34: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `Iterable[&lt;class 'int'&gt;]`, found `repeat[&lt;class 'str'&gt;]`
+<code>static-frame</code>
+
+
+<pre><code>static-frame (https://github.com/static-frame/static-frame)
++ static_frame/test/unit/test_frame.py:9855:34: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `Iterable[&lt;class &#x27;int&#x27;&gt;]`, found `repeat[&lt;class &#x27;str&#x27;&gt;]`
 </code></pre>
-<p>Looks like something that could be solved with an improved constraints solver. The TypeVar should be solved as <code>&lt;class 'int'&gt; | &lt;class 'str'&gt;</code> here; we shouldn't reject this <code>chain.__new__</code> call.</p>
-</details>
+<p>Looks like something that could be solved with an improved constraints solver. The TypeVar should be solved as <code>&lt;class &#x27;int&#x27;&gt; | &lt;class &#x27;str&#x27;&gt;</code> here; we shouldn&#x27;t reject this <code>chain.__new__</code> call.</p>
 
-<h2><code>sympy</code></h2>
-<details>
 
-<pre><code class="language-diff">sympy (https://github.com/sympy/sympy)
+<code>sympy</code>
+
+
+<pre><code>sympy (https://github.com/sympy/sympy)
 + sympy/core/tests/test_numbers.py:147:12: error[no-matching-overload] No overload of function `divmod` matches arguments
 + sympy/core/tests/test_numbers.py:148:12: error[no-matching-overload] No overload of function `divmod` matches arguments
 + sympy/core/tests/test_numbers.py:149:12: error[no-matching-overload] No overload of function `divmod` matches arguments
@@ -722,28 +722,28 @@ Timedelta('2 days 06:00:00')
 + sympy/core/tests/test_numbers.py:188:16: error[no-matching-overload] No overload of function `divmod` matches arguments
 + sympy/core/tests/test_numbers.py:189:16: error[no-matching-overload] No overload of function `divmod` matches arguments
 </code></pre>
-<p>I'm not totally sure what's going on here TBH (and struggling to repro these errors locally). But what I can say is that neither mypy nor pyright like this function at all either (they both also emit an error on almost every line -- though it is a slightly different error to what we report).</p>
-</details>
+<p>I&#x27;m not totally sure what&#x27;s going on here TBH (and struggling to repro these errors locally). But what I can say is that neither mypy nor pyright like this function at all either (they both also emit an error on almost every line -- though it is a slightly different error to what we report).</p>
 
-<h2><code>tornado</code></h2>
-<details>
 
-<pre><code class="language-diff">tornado (https://github.com/tornadoweb/tornado)
+<code>tornado</code>
+
+
+<pre><code>tornado (https://github.com/tornadoweb/tornado)
 + tornado/websocket.py:773:16: error[invalid-return-type] Return type does not match returned value: expected `_Compressor`, found `_Compress`
 + tornado/websocket.py:810:16: error[invalid-return-type] Return type does not match returned value: expected `_Decompressor`, found `_Decompress`
 </code></pre>
 <p>Another example where their protocol definition should be using positional-only parameters, but is instead using positional-or-keyword parameters.</p>
-</details>
 
-<h2><code>werkzeug</code></h2>
-<details>
 
-<pre><code class="language-diff">werkzeug (https://github.com/pallets/werkzeug)
+<code>werkzeug</code>
+
+
+<pre><code>werkzeug (https://github.com/pallets/werkzeug)
 + tests/test_wsgi.py:158:49: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `LimitedStream` does not satisfy upper bound `_BufferedReaderStream` of type variable `_BufferedReaderStreamT`
 + tests/test_wsgi.py:158:49: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_BufferedReaderStream`, found `LimitedStream`
 </code></pre>
-<p>It looks like the issue here is that typeshed's <code>_io._BufferedReaderStream</code> protocol has <a href="https://github.com/python/typeshed/blob/6937a9b193bfc2f0696452d58aad96d7627aa29a/stdlib/_io.pyi#L130">a <code>readinto</code> method member that takes in a <code>memoryview</code></a>. But werkzeug's <code>LimitedStream</code> class has <a href="https://github.com/pallets/werkzeug/blob/504a8c4fbda9b8b2fd09e817544ffd228f23458e/src/werkzeug/wsgi.py#L520">a <code>readinto</code> method</a> that takes in an instance of <code>bytearray</code>. There's no subtyping relation between <code>bytearray</code> and <code>memoryview</code>, so <code>LimitedStream</code> cannot be considered a subtype of <code>_BuffereadReaderStream</code>. <code>LimitedStream.readinto()</code> is even <code>type: ignore</code>d so that a type checker won't complain about the Liskov violation!</p>
-</details>
+<p>It looks like the issue here is that typeshed&#x27;s <code>_io._BufferedReaderStream</code> protocol has <a href="https://github.com/python/typeshed/blob/6937a9b193bfc2f0696452d58aad96d7627aa29a/stdlib/_io.pyi#L130">a <code>readinto</code> method member that takes in a <code>memoryview</code></a>. But werkzeug&#x27;s <code>LimitedStream</code> class has <a href="https://github.com/pallets/werkzeug/blob/504a8c4fbda9b8b2fd09e817544ffd228f23458e/src/werkzeug/wsgi.py#L520">a <code>readinto</code> method</a> that takes in an instance of <code>bytearray</code>. There&#x27;s no subtyping relation between <code>bytearray</code> and <code>memoryview</code>, so <code>LimitedStream</code> cannot be considered a subtype of <code>_BuffereadReaderStream</code>. <code>LimitedStream.readinto()</code> is even <code>type: ignore</code>d so that a type checker won&#x27;t complain about the Liskov violation!</p>
+
 
 </div>
         </div>
@@ -753,7 +753,7 @@ Timedelta('2 days 06:00:00')
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/protocols.md</code>:2232 on 2025-09-11 18:26</div>
-            <div class="timeline-body"><p>I believe this is because we don't consider <code>Foo</code> a fully static type currently, because it has an unannotated <code>self</code> parameter</p>
+            <div class="timeline-body"><p>I believe this is because we don&#x27;t consider <code>Foo</code> a fully static type currently, because it has an unannotated <code>self</code> parameter</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -766,34 +766,34 @@ Timedelta('2 days 06:00:00')
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @AlexWaygood on 2025-09-11 18:38</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-11 18:38</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-09-11 18:38</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-11 18:38</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-09-11 18:38</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-11 18:38</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-09-11 18:38</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-11 18:38</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-11 18:41</div>
             <div class="timeline-body"><blockquote>
 <p>Merging #20165 will <strong>improve performances by 13.56%</strong></p>
 </blockquote>
-<p>Quite unexpected, but I'll take it!!</p>
-<p>The <code>DateType</code> benchmark is so strange, because <code>DateType</code> has such huge protocols. My guess is that we're able to short-circuit subtyping checks sooner now for some of its very big protocols, because we more quickly realise that a given type cannot be a subtype of a given protocol due to a signature mismatch. The more quickly we short-circuit during a subtype check, the fewer protocol members we need to iterate through and test the existence of.</p>
+<p>Quite unexpected, but I&#x27;ll take it!!</p>
+<p>The <code>DateType</code> benchmark is so strange, because <code>DateType</code> has such huge protocols. My guess is that we&#x27;re able to short-circuit subtyping checks sooner now for some of its very big protocols, because we more quickly realise that a given type cannot be a subtype of a given protocol due to a signature mismatch. The more quickly we short-circuit during a subtype check, the fewer protocol members we need to iterate through and test the existence of.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/expression/len.md</code>:239 on 2025-09-11 23:05</div>
-            <div class="timeline-body"><p>I would just remove this whole section, I don't think it's testing anything useful.</p>
+            <div class="timeline-body"><p>I would just remove this whole section, I don&#x27;t think it&#x27;s testing anything useful.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:3275 on 2025-09-11 23:08</div>
-            <div class="timeline-body"><p>Do we have any direct tests of this (that the <code>__call__</code> of a callable type is itself), or only indirect tests via protocols? Would it be worth a direct test for it, to make it clearer what's happening if it ever regresses?</p>
+            <div class="timeline-body"><p>Do we have any direct tests of this (that the <code>__call__</code> of a callable type is itself), or only indirect tests via protocols? Would it be worth a direct test for it, to make it clearer what&#x27;s happening if it ever regresses?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -818,7 +818,7 @@ Timedelta('2 days 06:00:00')
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/protocol_class.rs</code>:568 on 2025-09-12 09:02</div>
-            <div class="timeline-body"><p>Ah, thank you! Fixed in https://github.com/astral-sh/ruff/pull/20165/commits/b3b0b5fa8f2b0a5e3ae8befb20ecf1d660f63006</p>
+            <div class="timeline-body"><p>Ah, thank you! Fixed in <a href="https://github.com/astral-sh/ruff/pull/20165">astral-sh/ruff#20165</a>/commits/b3b0b5fa8f2b0a5e3ae8befb20ecf1d660f63006</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -827,8 +827,8 @@ Timedelta('2 days 06:00:00')
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:3275 on 2025-09-12 09:43</div>
-            <div class="timeline-body"><p>What's changing here is a bit subtle. On <code>main</code> <a href="https://play.ty.dev/139ebe43-c29d-447e-9c2d-3ca17ad88286">we are already able to infer</a> that for an object <code>c</code> of a callable type <code>T</code>, the type of <code>c.__call__</code> will also be <code>T</code>. But naively looking up the <code>__call__</code> attribute directly on <code>c</code> isn't good enough for protocol assignability/subtyping -- it would mean that this assertion would not pass, for example, because <code>Foo.__iter__</code> has type <code>Callable[[Foo], str]</code> rather than <code>Callable[[], Foo]</code>. (The enum class object itself is iterable, but so is each enum member. Iterating over the enum members uses <code>str.__iter__</code> because each enum member is an instance of <code>str</code>; iterating over the enum class object itself uses <code>EnumType.__iter__</code>.):</p>
-<pre><code class="language-py">from typing import Iterable
+            <div class="timeline-body"><p>What&#x27;s changing here is a bit subtle. On <code>main</code> <a href="https://play.ty.dev/139ebe43-c29d-447e-9c2d-3ca17ad88286">we are already able to infer</a> that for an object <code>c</code> of a callable type <code>T</code>, the type of <code>c.__call__</code> will also be <code>T</code>. But naively looking up the <code>__call__</code> attribute directly on <code>c</code> isn&#x27;t good enough for protocol assignability/subtyping -- it would mean that this assertion would not pass, for example, because <code>Foo.__iter__</code> has type <code>Callable[[Foo], str]</code> rather than <code>Callable[[], Foo]</code>. (The enum class object itself is iterable, but so is each enum member. Iterating over the enum members uses <code>str.__iter__</code> because each enum member is an instance of <code>str</code>; iterating over the enum class object itself uses <code>EnumType.__iter__</code>.):</p>
+<pre><code>from typing import Iterable
 from enum import StrEnum
 from ty_extensions import static_assert, is_assignable_to, TypeOf
 
@@ -838,24 +838,24 @@ class Foo(StrEnum):
 
 static_assert(is_assignable_to(TypeOf[Foo], Iterable[Foo]))
 </code></pre>
-<pre><code class="language-pycon">&gt;&gt;&gt; from enum import StrEnum
+<pre><code>&gt;&gt;&gt; from enum import StrEnum
 &gt;&gt;&gt; class Foo(StrEnum):
 ...     X = &quot;foo&quot;
 ...     Y = &quot;bar&quot;
 ...     
 &gt;&gt;&gt; list(Foo)
-[&lt;Foo.X: 'foo'&gt;, &lt;Foo.Y: 'bar'&gt;]
+[&lt;Foo.X: &#x27;foo&#x27;&gt;, &lt;Foo.Y: &#x27;bar&#x27;&gt;]
 &gt;&gt;&gt; list(Foo.X)
-['f', 'o', 'o']
+[&#x27;f&#x27;, &#x27;o&#x27;, &#x27;o&#x27;]
 </code></pre>
-<p>Therefore to get the &quot;instance get-type&quot; of a method member, we can't simply lookup the type of that member on an object; instead we must lookup the type of that member on the object's meta-type and then invoke the descriptor protocol on the result of that lookup. On most types that works great, but not on <code>Callable</code> types, because we currently give the meta-type of a <code>Callable</code> type as being just <code>type</code> (it's a very lossy operation currently!). Ideally we would synthesize some kind of meta-protocol as the meta-type of a <code>Callable</code> type (I'd like to do that at some point!) so that it's not so lossy, but that feels out of scope for this PR.</p>
-<p>TL;DR: no, I don't think it's really possible to add an isolated unit test for this that doesn't involve protocols. It's a change that's very specific to the way we need to look up the <code>__call__</code> attribute on <code>Callable</code> types when determining whether a <code>Callable</code> type is a subtype of a protocol type with a <code>__call__</code> method.</p>
-<p><em>However</em>, I will add a comment to this bit of code noting that while this isn't inaccurate, it's basically a workaround until we have a better answer for the meta-type of <code>Callable</code> types.</p>
+<p>Therefore to get the &quot;instance get-type&quot; of a method member, we can&#x27;t simply lookup the type of that member on an object; instead we must lookup the type of that member on the object&#x27;s meta-type and then invoke the descriptor protocol on the result of that lookup. On most types that works great, but not on <code>Callable</code> types, because we currently give the meta-type of a <code>Callable</code> type as being just <code>type</code> (it&#x27;s a very lossy operation currently!). Ideally we would synthesize some kind of meta-protocol as the meta-type of a <code>Callable</code> type (I&#x27;d like to do that at some point!) so that it&#x27;s not so lossy, but that feels out of scope for this PR.</p>
+<p>TL;DR: no, I don&#x27;t think it&#x27;s really possible to add an isolated unit test for this that doesn&#x27;t involve protocols. It&#x27;s a change that&#x27;s very specific to the way we need to look up the <code>__call__</code> attribute on <code>Callable</code> types when determining whether a <code>Callable</code> type is a subtype of a protocol type with a <code>__call__</code> method.</p>
+<p><em>However</em>, I will add a comment to this bit of code noting that while this isn&#x27;t inaccurate, it&#x27;s basically a workaround until we have a better answer for the meta-type of <code>Callable</code> types.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/protocol_class.rs</code>:561 on 2025-09-12 10:03</div>
-            <div class="timeline-body"><p>Yes... also I'm not sure we have a great API right now for checking whether a method has a function-scoped generic context? Maybe I could add one, but I'm not sure it's worth it just for this (it looks kinda complicated -- we'd need to iterate over all overloads of the function?), since this is hopefully just a temporary workaround.</p>
+            <div class="timeline-body"><p>Yes... also I&#x27;m not sure we have a great API right now for checking whether a method has a function-scoped generic context? Maybe I could add one, but I&#x27;m not sure it&#x27;s worth it just for this (it looks kinda complicated -- we&#x27;d need to iterate over all overloads of the function?), since this is hopefully just a temporary workaround.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -863,10 +863,10 @@ static_assert(is_assignable_to(TypeOf[Foo], Iterable[Foo]))
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @AlexWaygood on 2025-09-12 10:10</div>
+            <div class="event">Merged by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-12 10:10</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-09-12 10:10</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-12 10:10</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-09-12 10:10</div>
@@ -877,7 +877,7 @@ static_assert(is_assignable_to(TypeOf[Foo], Iterable[Foo]))
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:3275 on 2025-09-12 17:20</div>
-            <div class="timeline-body"><p>I'm actually getting rid of this again in https://github.com/astral-sh/ruff/pull/20363 FWIW, and replacing it with special-casing somewhere else instead 😄</p>
+            <div class="timeline-body"><p>I&#x27;m actually getting rid of this again in <a href="https://github.com/astral-sh/ruff/pull/20363">astral-sh/ruff#20363</a> FWIW, and replacing it with special-casing somewhere else instead 😄</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -906,7 +906,7 @@ static_assert(is_assignable_to(TypeOf[Foo], Iterable[Foo]))
 <blockquote>
 <p>And does it handle classmethods, method accesses on class objects etc. correctly?</p>
 </blockquote>
-<p>I should definitely add more tests around this too, thanks. Note that there are some more checks that I'd like to do (such as checking the type on the meta-type as well as the type on the instance-type) which we can't yet do while we consider methods with unannotated <code>self</code>/<code>cls</code> to be non-fully-static. This PR is really an MVP</p>
+<p>I should definitely add more tests around this too, thanks. Note that there are some more checks that I&#x27;d like to do (such as checking the type on the meta-type as well as the type on the instance-type) which we can&#x27;t yet do while we consider methods with unannotated <code>self</code>/<code>cls</code> to be non-fully-static. This PR is really an MVP</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -925,7 +925,7 @@ static_assert(is_assignable_to(TypeOf[Foo], Iterable[Foo]))
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:15:25 UTC
+        Synced at 2026-01-20 19:18:11 UTC
     </footer>
 </body>
 </html>

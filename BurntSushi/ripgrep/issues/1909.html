@@ -23,8 +23,8 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/SergioBenitez">@SergioBenitez</a></div>
-            <div class="timeline-body"><p>In short, gitignore rules that should be relative to a specific gitgnore path are instead reinterpreted as <code>**/rule</code>. Here's the failing test case:</p>
-<pre><code class="language-rust">use std::path::PathBuf;
+            <div class="timeline-body"><p>In short, gitignore rules that should be relative to a specific gitgnore path are instead reinterpreted as <code>**/rule</code>. Here&#x27;s the failing test case:</p>
+<pre><code>use std::path::PathBuf;
 use ignore::gitignore::GitignoreBuilder;
 
 fn main() {
@@ -64,7 +64,7 @@ fn main() {
         is_only_dir: false,
     },
 )
-thread 'main' panicked at 'assertion failed: dbg!(matcher.matched(\&quot;/root/unknown/foo.html\&quot;, false)).is_none()', src/main.rs:10:5
+thread &#x27;main&#x27; panicked at &#x27;assertion failed: dbg!(matcher.matched(\&quot;/root/unknown/foo.html\&quot;, false)).is_none()&#x27;, src/main.rs:10:5
 </code></pre>
 </div>
         </div>
@@ -75,8 +75,8 @@ thread 'main' panicked at 'assertion failed: dbg!(matcher.matched(\&quot;/root/u
 <p>If there is a separator at the beginning or middle (or both) of the pattern, then the pattern is relative to the directory level of the particular .gitignore file itself. Otherwise the pattern may also match at any level below the .gitignore level.</p>
 </blockquote>
 <p>In particular, the &quot;Otherwise ...&quot; language applies here since there is no <code>/</code> in your pattern. The issue here is that it should <em>only</em> apply to any level <em>below</em> that <code>.gitignore</code> file, but here, it is also being applied (incorrectly) to a sibling directory. However, the pattern <code>foo.html</code> absolutely should match at any directory beneath the point in which it was defined. So the <code>**/foo.html</code> construction is correct... to a point.</p>
-<p>This is very likely an API-level bug. In particular, when building the crate, I likely assumed that a gitignore matcher would only be used on paths at or below the directory in which it was created. And generally speaking, that's how the <code>ignore</code> file traversal works. Fixing the gitignore matcher to handle this case correctly will likely incur an unavoidable additional cost (I think) to file traversal, and thus, some new API mechanism needs to exist.</p>
-<p>I don't see this bug getting fixed any time soon unfortunately. The <code>ignore</code> crate desperately needs a very very careful rewrite. (And has needed it for a long time.)</p>
+<p>This is very likely an API-level bug. In particular, when building the crate, I likely assumed that a gitignore matcher would only be used on paths at or below the directory in which it was created. And generally speaking, that&#x27;s how the <code>ignore</code> file traversal works. Fixing the gitignore matcher to handle this case correctly will likely incur an unavoidable additional cost (I think) to file traversal, and thus, some new API mechanism needs to exist.</p>
+<p>I don&#x27;t see this bug getting fixed any time soon unfortunately. The <code>ignore</code> crate desperately needs a very very careful rewrite. (And has needed it for a long time.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -88,14 +88,14 @@ thread 'main' panicked at 'assertion failed: dbg!(matcher.matched(\&quot;/root/u
 </blockquote>
 <p>In particular, the &quot;Otherwise ...&quot; language applies here since there is no <code>/</code> in your pattern. The issue here is that it should <em>only</em> apply to any level <em>below</em> that <code>.gitignore</code> file, but here, it is also being applied (incorrectly) to a sibling directory. However, the pattern <code>foo.html</code> absolutely should match at any directory beneath the point in which it was defined. So the <code>**/foo.html</code> construction is correct... to a point.</p>
 </blockquote>
-<p>I suppose it could depend on what <code>**/foo.html</code> means to <code>ignore</code>. Unfortunately it doesn't appear to mean anything with correct semantics as the following <em>also</em> doesn't work:</p>
-<pre><code class="language-rust">use std::path::PathBuf;
+<p>I suppose it could depend on what <code>**/foo.html</code> means to <code>ignore</code>. Unfortunately it doesn&#x27;t appear to mean anything with correct semantics as the following <em>also</em> doesn&#x27;t work:</p>
+<pre><code>use std::path::PathBuf;
 use ignore::gitignore::GitignoreBuilder;
 
 fn main() {
     let mut builder = GitignoreBuilder::new(&quot;/root/scratch&quot;);
     builder.add_line(Some(PathBuf::from(&quot;/root/scratch/.gitignore&quot;)), &quot;!/**/*.html&quot;).unwrap();
-    // builder.add_line(None, &quot;!/**/*.html&quot;).unwrap(); // Using `None` doesn't help, unfortunately.
+    // builder.add_line(None, &quot;!/**/*.html&quot;).unwrap(); // Using `None` doesn&#x27;t help, unfortunately.
 
     let matcher = dbg!(builder.build().unwrap());
 
@@ -130,12 +130,12 @@ fn main() {
         is_only_dir: false,
     },
 )
-thread 'main' panicked at 'assertion failed: dbg!(matcher.matched(\&quot;/root/unknown/foo.html\&quot;, false)).is_none()', src/main.rs:10:5
+thread &#x27;main&#x27; panicked at &#x27;assertion failed: dbg!(matcher.matched(\&quot;/root/unknown/foo.html\&quot;, false)).is_none()&#x27;, src/main.rs:10:5
 </code></pre>
 <blockquote>
-<p>I don't see this bug getting fixed any time soon unfortunately. The <code>ignore</code> crate desperately needs a very very careful rewrite. (And has needed it for a long time.)</p>
+<p>I don&#x27;t see this bug getting fixed any time soon unfortunately. The <code>ignore</code> crate desperately needs a very very careful rewrite. (And has needed it for a long time.)</p>
 </blockquote>
-<p>I understand. I'm working on a replacement for the core gitignore pattern matching part of <code>ignore</code> using <code>GlobSet</code> directly. Once it's complete, I imagine it wouldn't be too difficult to swap in this new library in <code>ignore</code>.</p>
+<p>I understand. I&#x27;m working on a replacement for the core gitignore pattern matching part of <code>ignore</code> using <code>GlobSet</code> directly. Once it&#x27;s complete, I imagine it wouldn&#x27;t be too difficult to swap in this new library in <code>ignore</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -151,7 +151,7 @@ thread 'main' panicked at 'assertion failed: dbg!(matcher.matched(\&quot;/root/u
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-10-22 12:19</div>
-            <div class="timeline-body"><p>@LeGEC No, such a grouping doesn't exist. You're right that it should, but it will take work and effort to do.</p>
+            <div class="timeline-body"><p>@LeGEC No, such a grouping doesn&#x27;t exist. You&#x27;re right that it should, but it will take work and effort to do.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -164,7 +164,7 @@ thread 'main' panicked at 'assertion failed: dbg!(matcher.matched(\&quot;/root/u
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:43:23 UTC
+        Synced at 2026-01-20 18:48:11 UTC
     </footer>
 </body>
 </html>

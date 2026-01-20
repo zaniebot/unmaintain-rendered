@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1><code>uv sync --no-build-isolation</code> doesn't remove extra dependencies</h1>
+    <h1><code>uv sync --no-build-isolation</code> doesn&#x27;t remove extra dependencies</h1>
 
     <div class="meta">
         <span class="state-icon state-closed"></span>
@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/kabouzeid">@kabouzeid</a></div>
-            <div class="timeline-body"><p>Whenever <code>uv sync</code> is called with <code>--no-build-isolation</code>, any extra packages that shouldn't be there aren't automatically removed.</p>
+            <div class="timeline-body"><p>Whenever <code>uv sync</code> is called with <code>--no-build-isolation</code>, any extra packages that shouldn&#x27;t be there aren&#x27;t automatically removed.</p>
 <pre><code>➜ uv --version
 uv 0.3.3 (Homebrew 2024-08-23)
 
@@ -79,13 +79,13 @@ Uninstalled 1 package in 0.65ms
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-24 12:19</div>
-            <div class="timeline-body"><p>I think this is intentional. If you're using <code>--no-build-isolation</code>, then you likely have packages in the environment that are necessary as build dependencies, but not first-party dependencies. I think this would end up causing people a lot of confusion.</p>
+            <div class="timeline-body"><p>I think this is intentional. If you&#x27;re using <code>--no-build-isolation</code>, then you likely have packages in the environment that are necessary as build dependencies, but not first-party dependencies. I think this would end up causing people a lot of confusion.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kabouzeid">@kabouzeid</a> on 2024-08-24 12:29</div>
             <div class="timeline-body"><p>Yes, but those should be removed after building, right?</p>
-<pre><code class="language-shell">uv sync
+<pre><code>uv sync
 uv sync --extra build-deps
 uv sync --extra compiled --no-build-isolation  # build-deps should be removed afterwards
 </code></pre>
@@ -93,37 +93,37 @@ uv sync --extra compiled --no-build-isolation  # build-deps should be removed af
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-24 12:38</div>
-            <div class="timeline-body"><p>It's a tough call, because you then run the risk that subsequent syncs fail due to lacking your build dependencies. (It makes sense in the context of the setup you have there, but in other cases, users install build dependencies into venv &quot;manually&quot; prior to <code>uv sync</code>, and don't even declare them as project dependencies.) I might suggest an extra <code>uv sync</code> at the end to explicitly remove them.</p>
+            <div class="timeline-body"><p>It&#x27;s a tough call, because you then run the risk that subsequent syncs fail due to lacking your build dependencies. (It makes sense in the context of the setup you have there, but in other cases, users install build dependencies into venv &quot;manually&quot; prior to <code>uv sync</code>, and don&#x27;t even declare them as project dependencies.) I might suggest an extra <code>uv sync</code> at the end to explicitly remove them.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-08-25 02:29</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-25 02:29</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-25 02:30</div>
-            <div class="timeline-body"><p>I'm going to call this working as intended, since we used to do the opposite and received issues that it was confusing.</p>
+            <div class="timeline-body"><p>I&#x27;m going to call this working as intended, since we used to do the opposite and received issues that it was confusing.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-08-25 02:30</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-25 02:30</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kabouzeid">@kabouzeid</a> on 2024-08-25 09:56</div>
             <div class="timeline-body"><p>Thank you for your consideration. I needed some time to fully think through this problem.</p>
-<p>I may have misunderstood how the various APIs are intended to be used. In my understanding, for projects you would typically use the <code>uv {add, remove, sync, lock, run}</code> project interface. In this context, the <code>uv pip</code> interface would only be used for temporarily installing packages that won't be locked and will be removed after the next sync. Here, I see <code>uv pip</code> as a low-level escape hatch for manually fixing-up the project. In git terms, <code>add</code> commits, <code>pip</code> leaves the project in dirty state and <code>sync</code> hard resets. That being said, I found the hidden side effect of <code>--no-build-isolation</code> quite confusing.</p>
-<p>I'm struggling to think of a use case where you'd want to install some dependencies using <code>pip</code> instead of <code>add</code>, choosing not to include them in your project's dependencies, yet still not wanting them to be removed by <code>sync</code>. Even if you really do want to keep undeclared dependencies, there's already the <code>--inexact</code> flag that serves that purpose. (I also just discovered that <code>--exact</code> has no effect when used with <code>--no-build-isolation</code> https://github.com/astral-sh/uv/issues/6599.)</p>
-<p>Perhaps I'm missing the bigger picture here regarding what people generally use <code>--no-build-isolation</code> for. Personally, I only use it for building torch extensions. Here, the extension always needs to be built with the exact version of torch that is used in the project, which is also the reason why torch extensions never specify torch as a build dependency.</p>
+<p>I may have misunderstood how the various APIs are intended to be used. In my understanding, for projects you would typically use the <code>uv {add, remove, sync, lock, run}</code> project interface. In this context, the <code>uv pip</code> interface would only be used for temporarily installing packages that won&#x27;t be locked and will be removed after the next sync. Here, I see <code>uv pip</code> as a low-level escape hatch for manually fixing-up the project. In git terms, <code>add</code> commits, <code>pip</code> leaves the project in dirty state and <code>sync</code> hard resets. That being said, I found the hidden side effect of <code>--no-build-isolation</code> quite confusing.</p>
+<p>I&#x27;m struggling to think of a use case where you&#x27;d want to install some dependencies using <code>pip</code> instead of <code>add</code>, choosing not to include them in your project&#x27;s dependencies, yet still not wanting them to be removed by <code>sync</code>. Even if you really do want to keep undeclared dependencies, there&#x27;s already the <code>--inexact</code> flag that serves that purpose. (I also just discovered that <code>--exact</code> has no effect when used with <code>--no-build-isolation</code> <a href="https://github.com/astral-sh/uv/issues/6599">astral-sh/uv#6599</a>.)</p>
+<p>Perhaps I&#x27;m missing the bigger picture here regarding what people generally use <code>--no-build-isolation</code> for. Personally, I only use it for building torch extensions. Here, the extension always needs to be built with the exact version of torch that is used in the project, which is also the reason why torch extensions never specify torch as a build dependency.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-25 11:39</div>
             <div class="timeline-body"><blockquote>
-<p>In this context, the uv pip interface would only be used for temporarily installing packages that won't be locked and will be removed after the next sync. Here, I see uv pip as a low-level escape hatch for manually fixing-up the project. In git terms, add commits, pip leaves the project in dirty state and sync hard resets.</p>
+<p>In this context, the uv pip interface would only be used for temporarily installing packages that won&#x27;t be locked and will be removed after the next sync. Here, I see uv pip as a low-level escape hatch for manually fixing-up the project. In git terms, add commits, pip leaves the project in dirty state and sync hard resets.</p>
 </blockquote>
 <p>This is all correct!</p>
 <p>The problem here is somewhat fundamental to <code>--no-build-isolation</code>, which is that the dependencies <em>must</em> be in the venv prior to running the install. So, like, if you just have <code>torch</code> and <code>flash-attn</code> in your dependency list, and run with <code>--no-build-isolation</code>, I expect that to fail, since <code>flash-attn</code> would be installed in the empty environment.</p>
-<p>I like what you're doing above, where you have separate extras for your build dependencies and those dependencies that require build isolation. In <em>that</em> case, it would be safe for you to run with <code>--exact</code> semantics. The question is just whether we use that behavior by default.</p>
-<p>We'd like to come up with a better solution for these kinds of dependencies that doesn't require <code>--no-build-isolation</code> at all (i.e., some other kind of API). In the meantime, I could consider adding documentation based on the workflow you described above, and changing the behavior to avoid special-casing <code>--no-build-isolation</code>. I have to look back at the issues that led us to add it.</p>
+<p>I like what you&#x27;re doing above, where you have separate extras for your build dependencies and those dependencies that require build isolation. In <em>that</em> case, it would be safe for you to run with <code>--exact</code> semantics. The question is just whether we use that behavior by default.</p>
+<p>We&#x27;d like to come up with a better solution for these kinds of dependencies that doesn&#x27;t require <code>--no-build-isolation</code> at all (i.e., some other kind of API). In the meantime, I could consider adding documentation based on the workflow you described above, and changing the behavior to avoid special-casing <code>--no-build-isolation</code>. I have to look back at the issues that led us to add it.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -132,18 +132,18 @@ uv sync --extra compiled --no-build-isolation  # build-deps should be removed af
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @charliermarsh on 2024-08-25 11:41</div>
+            <div class="event">Reopened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-25 11:41</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-08-25 11:41</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-25 11:41</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-08-26 18:05</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-26 18:05</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:26:29 UTC
+        Synced at 2026-01-20 19:33:13 UTC
     </footer>
 </body>
 </html>

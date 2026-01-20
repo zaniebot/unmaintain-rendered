@@ -23,20 +23,20 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>Currently, this mdtest fails, even though it should pass:</p>
-<pre><code class="language-py">def f3(a1: int, /, *args1: int, **kwargs2: int) -&gt; None: ...
+<pre><code>def f3(a1: int, /, *args1: int, **kwargs2: int) -&gt; None: ...
 def f4(a2: int, /, *args2: int, **kwargs1: int) -&gt; None: ...
 
 static_assert(is_equivalent_to(CallableTypeOf[f3] | bool | CallableTypeOf[f4], CallableTypeOf[f4] | bool | CallableTypeOf[f3]))
 </code></pre>
 <p>Note that this is despite the fact that the simpler assertion <code>static_assert(is_equivalent_to(CallableTypeOf[f3], CallableTypeOf[f4])</code> passes: the <code>Callable</code> types must appear in unions for the bug to occur.</p>
 <p>I hoped that applying this diff to <code>type_ordering.rs</code> would fix this bug, but the assertion still fails:</p>
-<pre><code class="language-diff">diff --git a/crates/red_knot_python_semantic/src/types/type_ordering.rs b/crates/red_knot_python_semantic/src/types/type_ordering.rs
+<pre><code>diff --git a/crates/red_knot_python_semantic/src/types/type_ordering.rs b/crates/red_knot_python_semantic/src/types/type_ordering.rs
 index 79f0abe1d..c0b160036 100644
 --- a/crates/red_knot_python_semantic/src/types/type_ordering.rs
 +++ b/crates/red_knot_python_semantic/src/types/type_ordering.rs
-@@ -83,9 +83,10 @@ pub(super) fn union_or_intersection_elements_ordering&lt;'db&gt;(
+@@ -83,9 +83,10 @@ pub(super) fn union_or_intersection_elements_ordering&lt;&#x27;db&gt;(
          (Type::Callable(CallableType::WrapperDescriptorDunderGet), _) =&gt; Ordering::Less,
          (_, Type::Callable(CallableType::WrapperDescriptorDunderGet)) =&gt; Ordering::Greater,
  
@@ -51,7 +51,7 @@ index 79f0abe1d..c0b160036 100644
          (_, Type::Callable(CallableType::General(_))) =&gt; Ordering::Greater,
 </code></pre>
 <p>Adding some <code>reveal_type</code> calls to the test indicates why: the two unions have <em>different</em> <code>Callable</code> types in them (even though the two <code>Callable</code> types are equivalent, they have different names for the parameters):</p>
-<pre><code class="language-py">def f3(a1: int, /, *args1: int, **kwargs2: int) -&gt; None: ...
+<pre><code>def f3(a1: int, /, *args1: int, **kwargs2: int) -&gt; None: ...
 def f4(a2: int, /, *args2: int, **kwargs1: int) -&gt; None: ...
 
 def f(x: CallableTypeOf[f3] | bool | CallableTypeOf[f4], y: CallableTypeOf[f4] | bool | CallableTypeOf[f3]):
@@ -62,16 +62,16 @@ def f(x: CallableTypeOf[f3] | bool | CallableTypeOf[f4], y: CallableTypeOf[f4] |
 <p>https://github.com/astral-sh/ruff/blob/ab1011ce70913a2ba66b51b569baed3bcb434602/crates/red_knot_python_semantic/src/types.rs#L5081-L5116</p>
 <p>There are two possible fixes here:</p>
 <ol>
-<li>Change things so that two equivalent <code>Callable</code> types are always guaranteed to have the same Salsa IDs (discussed as a possibility in https://github.com/astral-sh/ruff/pull/16698#discussion_r2003121350)</li>
+<li>Change things so that two equivalent <code>Callable</code> types are always guaranteed to have the same Salsa IDs (discussed as a possibility in <a href="https://github.com/astral-sh/ruff/pull/16698">astral-sh/ruff#16698</a>#discussion_r2003121350)</li>
 <li>Change the implementation of <code>UnionType::is_equivalent_to</code> so that it looks more similar to <code>UnionType::is_gradual_equivalent_to</code>, which takes care to iterate over all elements rather than simply checking the Salsa IDs: https://github.com/astral-sh/ruff/blob/ab1011ce70913a2ba66b51b569baed3bcb434602/crates/red_knot_python_semantic/src/types.rs#L5144-L5148</li>
 </ol>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-03-29 22:22</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-03-29 22:22</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-03-29 22:22</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-03-29 22:22</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-03-29 22:22</div>
@@ -79,18 +79,18 @@ def f(x: CallableTypeOf[f3] | bool | CallableTypeOf[f4], y: CallableTypeOf[f4] |
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[red-knot] Differently ordered unions that include `Callable` types are not always considered equal" to "[red-knot] Differently ordered unions that include `Callable` types are not always considered equivalent " by @AlexWaygood on 2025-03-29 23:01</div>
+            <div class="event">Renamed from &quot;[red-knot] Differently ordered unions that include `Callable` types are not always considered equal&quot; to &quot;[red-knot] Differently ordered unions that include `Callable` types are not always considered equivalent &quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-03-29 23:01</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2025-03-31 22:04</div>
+            <div class="event">Assigned to <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-03-31 22:04</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-04-02 17:43</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-02 17:43</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:52:29 UTC
+        Synced at 2026-01-20 18:49:45 UTC
     </footer>
 </body>
 </html>

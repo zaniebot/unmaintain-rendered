@@ -23,29 +23,29 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/joaotavora">@joaotavora</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<p>When an LSP documention is closed and immediately reopened by the editor with completely different content (simulating an external file modification detected via file watchers), <code>ty</code>'s response to the subsequent <code>textDocument/semanticTokens/full</code> response returns stale data from the previously opened version.</p>
+            <div class="timeline-body">Summary
+<p>When an LSP documention is closed and immediately reopened by the editor with completely different content (simulating an external file modification detected via file watchers), <code>ty</code>&#x27;s response to the subsequent <code>textDocument/semanticTokens/full</code> response returns stale data from the previously opened version.</p>
 <ol>
 <li>Open a Python file with this content (Version A):</li>
 </ol>
-<pre><code class="language-python">def calculate_sum(a):
+<pre><code>def calculate_sum(a):
     # Version A: Basic math
     return a
 
 result = calculate_sum(5)
 </code></pre>
-<ol start="2">
+<ol>
 <li>Request semantic tokens - server correctly responds with tokens for this content</li>
 <li>Close the file via <code>textDocument/didClose</code></li>
 <li>Immediately reopen the same file via <code>textDocument/didOpen</code> with completely different content (Version B):</li>
 </ol>
-<pre><code class="language-python"># Version B: Basic greeting
+<pre><code># Version B: Basic greeting
 def say_hello():
     print(&quot;Hello, World!&quot;)
 
 say_hello()
 </code></pre>
-<ol start="5">
+<ol>
 <li>Request semantic tokens again</li>
 </ol>
 <p>The expectation is that the server returns semantic tokens matching the new content (Version B with <code>say_hello</code> function).</p>
@@ -77,27 +77,27 @@ say_hello()
 </ol>
 <p>The semantic tokens data is byte-for-byte identical despite the file content being completely different. This causes incorrect syntax highlighting in the editor.</p>
 <p><a href="https://github.com/user-attachments/files/24436164/transcript.txt">transcript.txt</a></p>
-<h3>Version</h3>
+Version
 <p>ty 0.0.9</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">great-writeup</span> added by @MichaReiser on 2026-01-05 15:34</div>
+            <div class="event">Label <span class="label">great-writeup</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-05 15:34</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Pre-stable 1" by @MichaReiser on 2026-01-05 15:35</div>
+            <div class="event">Added to milestone &quot;Pre-stable 1&quot; by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-05 15:35</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2026-01-05 15:35</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-05 15:35</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2026-01-05 15:35</div>
+            <div class="event">Label <span class="label">server</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-05 15:35</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-05 15:38</div>
-            <div class="timeline-body"><p>Thanks for the great write-up and the transcript. Can you tell us what editor/client you're using?</p>
+            <div class="timeline-body"><p>Thanks for the great write-up and the transcript. Can you tell us what editor/client you&#x27;re using?</p>
 <p>I suspect the issue is that the second <code>didOpen</code> request re-uses the <code>version: 0</code>. This is likely to break our caching because we use the version to check for changes since we last read the file (in <code>source_text</code> by depending on <code>revision</code>).</p>
-<p>We might need to include a timestamp to disambiguate file versions, given that they aren't unique. Unless there's something else going on, why we don't propagate the change correctly to Salsa</p>
+<p>We might need to include a timestamp to disambiguate file versions, given that they aren&#x27;t unique. Unless there&#x27;s something else going on, why we don&#x27;t propagate the change correctly to Salsa</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -107,23 +107,23 @@ say_hello()
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-05 15:57</div>
-            <div class="timeline-body"><p>From @Gankra and my DM's.</p>
+            <div class="timeline-body"><p>From @Gankra and my DM&#x27;s.</p>
 <p>What I would expect to happen is:</p>
 <ul>
 <li>file is open: revision is 0</li>
 <li>file gets closed: revision is set to the timestamp on disk</li>
 <li>file gets opened: revision is 0</li>
 </ul>
-<p>So there should be at least 2 writes to <code>File::revision</code> that, in turn, invalidate Salsa's caching. We should add an E2E test for this exact scenario and log why <code>File::sync</code> isn't updating the revision (or if it is, why the request remain stale).</p>
+<p>So there should be at least 2 writes to <code>File::revision</code> that, in turn, invalidate Salsa&#x27;s caching. We should add an E2E test for this exact scenario and log why <code>File::sync</code> isn&#x27;t updating the revision (or if it is, why the request remain stale).</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2026-01-06 10:52</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-06 10:52</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:21:40 UTC
+        Synced at 2026-01-20 19:26:56 UTC
     </footer>
 </body>
 </html>

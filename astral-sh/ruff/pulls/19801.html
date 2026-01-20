@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/mikeleppane">@mikeleppane</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Improved <code>unnecessary-direct-lambda-call</code> (<a href="https://docs.astral.sh/ruff/rules/unnecessary-direct-lambda-call/">PLC3002</a>) to handle comprehension-related edge cases in class scopes.
 The rule now avoids false positives when lambda expressions contain comprehensions that reference class-scoped variables, as inlining these lambdas would cause <a href="https://docs.astral.sh/ruff/rules/undefined-name/">F821</a> (undefined name) errors. The enhancement adds sophisticated analysis to detect:</p>
 <ul>
@@ -31,9 +31,9 @@ The rule now avoids false positives when lambda expressions contain comprehensio
 <li>Class scope contexts where variable access semantics differ after inlining</li>
 <li>Parameter usage within comprehensions that would become undefined after transformation</li>
 </ul>
-<p>This prevents unsafe refactoring suggestions while maintaining the rule's effectiveness for genuinely unnecessary lambda calls.</p>
+<p>This prevents unsafe refactoring suggestions while maintaining the rule&#x27;s effectiveness for genuinely unnecessary lambda calls.</p>
 <p><strong>Safe cases that now correctly trigger the rule:</strong></p>
-<pre><code class="language-python">def function():
+<pre><code>def function():
     # Safe - no comprehensions, triggers PLC3002
     area = (lambda r: 3.14 * r ** 2)(radius)
     
@@ -42,55 +42,55 @@ The rule now avoids false positives when lambda expressions contain comprehensio
     result = (lambda lst: [x * 2 for x in lst])(numbers)
 
 class A:
-    # Safe - comprehension doesn't reference class variables, triggers PLC3002
+    # Safe - comprehension doesn&#x27;t reference class variables, triggers PLC3002
     y = (lambda: [i for i in range(3)])()
 </code></pre>
 <p><strong>Problematic cases that are now correctly ignored:</strong></p>
-<pre><code class="language-python">class A:
+<pre><code>class A:
     x = 1
     # Would cause F821 if inlined: [_ for _ in [1] if x]
     y = (lambda test: [_ for _ in [1] if test])(x)
 
 class Config:
     default_value = 42
-    # Would cause F821 if inlined: {k: default_value for k in ['a', 'b']}
-    mapping = (lambda val: {k: val for k in ['a', 'b']})(default_value)
+    # Would cause F821 if inlined: {k: default_value for k in [&#x27;a&#x27;, &#x27;b&#x27;]}
+    mapping = (lambda val: {k: val for k in [&#x27;a&#x27;, &#x27;b&#x27;]})(default_value)
 </code></pre>
-<h3>PEP709 and Its Impact</h3>
-<p><strong><a href="https://peps.python.org/pep-0709/">PEP 709</a> (Comprehension inlining)</strong> fundamentally changes Python's scoping semantics for comprehensions, which has direct implications for this fix:</p>
-<h3>Current Behavior vs. PEP 709</h3>
+PEP709 and Its Impact
+<p><strong><a href="https://peps.python.org/pep-0709/">PEP 709</a> (Comprehension inlining)</strong> fundamentally changes Python&#x27;s scoping semantics for comprehensions, which has direct implications for this fix:</p>
+Current Behavior vs. PEP 709
 <p><strong>Before PEP 709 (Python ≤3.11):</strong></p>
-<pre><code class="language-python">class A:
+<pre><code>class A:
     x = 1
     # This would fail with NameError if inlined
     y = (lambda test: [_ for _ in [1] if test])(x)
 </code></pre>
 <p><strong>After PEP 709 (Python 3.12+):</strong></p>
-<pre><code class="language-python">class A:
+<pre><code>class A:
     x = 1
     # This now works because comprehensions can access class scope
     y = [_ for _ in [1] if x]  # No longer causes NameError
 </code></pre>
 <p>Hopefully, this is a proper approach to add a specialization to the rule to handle problematic related classes and PEP709. In addition, I have taken a conservative approach and will not propose any warnings related to this specific case.</p>
 <p><a href="https://github.com/astral-sh/ruff/issues/19135">ISSUE</a></p>
-<h2>Test Plan</h2>
-<pre><code class="language-bash">cargo test
+Test Plan
+<pre><code>cargo test
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-07 11:10</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @ntBre by @ntBre on 2025-08-08 14:06</div>
+            <div class="event">Review requested from <a href="https://github.com/ntBre">@ntBre</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-08 14:06</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2025-08-10 17:29</div>
@@ -98,19 +98,19 @@ class Config:
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-08-27 18:18</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-27 18:18</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-08-27 18:18</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-27 18:18</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-27 18:30</div>
             <div class="timeline-body"><blockquote>
 <p>Instead of discarding the PEP709 case, add support for it, but it gate it behind the minimum Python version config value from ruff. We already have a lot of rules that support syntax in newer versions conditionally based on the specified target minimum or inferred automatically from pyproject.toml</p>
 </blockquote>
-<p>I might be missing something, but I don't think there's any version-dependent behavior here. My understanding from the discussion on the issue was that the behavior is the same after PEP 709, but that it's somewhat artificially enforced now instead of being a real function scope (https://github.com/astral-sh/ruff/issues/19135#issuecomment-3036462417). At least that's how I interpreted this comment and a couple of tests on different Python versions.</p>
+<p>I might be missing something, but I don&#x27;t think there&#x27;s any version-dependent behavior here. My understanding from the discussion on the issue was that the behavior is the same after PEP 709, but that it&#x27;s somewhat artificially enforced now instead of being a real function scope (<a href="https://github.com/astral-sh/ruff/issues/19135">astral-sh/ruff#19135</a>#issuecomment-3036462417). At least that&#x27;s how I interpreted this comment and a couple of tests on different Python versions.</p>
 <p>I think the PR summary here is just incorrect. This example does <em>not</em> work:</p>
-<pre><code class="language-pycon">Python 3.12.9 (main, Feb 12 2025, 14:50:50) [Clang 19.1.6 ] on linux
+<pre><code>Python 3.12.9 (main, Feb 12 2025, 14:50:50) [Clang 19.1.6 ] on linux
 Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
 &gt;&gt;&gt; class A:
 ...     x = 1
@@ -120,32 +120,32 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
 Traceback (most recent call last):
   File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
   File &quot;&lt;stdin&gt;&quot;, line 4, in A
-NameError: name 'x' is not defined
+NameError: name &#x27;x&#x27; is not defined
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/unnecessary_direct_lambda_call.rs</code>:57 on 2025-08-27 18:33</div>
-            <div class="timeline-body"><p>I think we should probably fold these two visitors into one. We're currently visiting the <code>lambda_body</code> once to check if it contains a comprehension and then again for each parameter in the lambda, which could be really expensive. If we have to have a visitor, we should collect all of the information we need in a single visit.</p>
+            <div class="timeline-body"><p>I think we should probably fold these two visitors into one. We&#x27;re currently visiting the <code>lambda_body</code> once to check if it contains a comprehension and then again for each parameter in the lambda, which could be really expensive. If we have to have a visitor, we should collect all of the information we need in a single visit.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> requested changes on 2025-08-27 18:34</div>
-            <div class="timeline-body"><p>I haven't done a full review, but I think we should combine the separate visitors and separate visitor calls into a single pass, as a start.</p>
+            <div class="timeline-body"><p>I haven&#x27;t done a full review, but I think we should combine the separate visitors and separate visitor calls into a single pass, as a start.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-12 06:29</div>
-            <div class="timeline-body"><p>Thanks for the work you put into this. I'll close this PR due to inactivity. A new PR that addresses the feedback is welcomed (by you or any other contributor).</p>
+            <div class="timeline-body"><p>Thanks for the work you put into this. I&#x27;ll close this PR due to inactivity. A new PR that addresses the feedback is welcomed (by you or any other contributor).</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2025-10-12 06:29</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-12 06:29</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:14:54 UTC
+        Synced at 2026-01-20 19:17:29 UTC
     </footer>
 </body>
 </html>

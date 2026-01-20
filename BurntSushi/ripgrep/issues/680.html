@@ -44,35 +44,35 @@ time (cat tmp.txt | rg -c &quot;[a-z]{4}&quot;) →0,43s user 0,08s system 111% 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-11-15 12:36</div>
-            <div class="timeline-body"><p>First of all, why are you lowering <code>--dfa-size-limit</code> all the way down to <code>0</code>? Is there a specific problem you're trying to solve, or are you just curious?</p>
-<p>Secondly, the key differentiator here isn't whether it's a pipe or not, but whether ripgrep is using memory maps or not. Your first command uses a memory map but your second does not. If you force your first command to not use memory maps, then you get a similar speed up. You can do that by passing the <code>--no-mmap</code> flag.</p>
-<p>Thirdly, when you reduce <code>--dfa-size-limit</code> all the way down to zero, then you wind up forcing ripgrep to use its (much) slower regex engine. Namely, if the DFA has no memory available to it, then it can't be used effectively. The point of this flag is to make it possible to <em>increase</em> the limit, not <em>decrease</em> it. :-)</p>
-<p>With that said, why is there a performance difference here? Good question. My guess is that whether you use memory maps or not results in yet another split choice between regex engines. Namely, if both your regex and your input are sufficiently small enough, then a bounded backtracking algorithm is used. When all else fails, a full simulation of the NFA is used (the so-called &quot;Pike VM&quot;). The bounded backtracker is faster, but because it's bounded, it needs to store memory proportional to the size of the input times the size of the regex, which means we only run it when that product is small.</p>
-<p>Why does mmap/no-mmap cause this split? Because when we don't use memory maps, we use the incremental searcher, which reads your input in <a href="https://github.com/BurntSushi/ripgrep/blob/d2a3b61220dc2d17c92dbb6b073776fd1223af66/src/search_stream.rs#L20-L21">chunks of 8KB</a>. Combine that with the fact that your regex is exceptionally small (6 VM instructions), then you have an overall space requirement of about 6KB for the bounded backtracker (<code>6 * 8000 / 8</code> since we only need one bit for each possible state). 6KB is less than the <a href="https://github.com/rust-lang/regex/blob/37bfbd9d96676297372713dfe4a60afc5f6966a8/src/backtrack.rs#L37">256KB limit for the bounded backtracker</a>, so the backtracker is used.</p>
-<p>We can test this by increasing the size of the regex. If the regex is big enough, then it should always force the NFA simulation, and therefore, result in consistent speeds across both forms of search (with memory map and without memory map). Here's one such example:</p>
-<pre><code>$ time rg --regex-size-limit 1G --dfa-size-limit 0 --no-mmap -c '\pL{1000}' /tmp/Opensubtitles100MB.txt 
+            <div class="timeline-body"><p>First of all, why are you lowering <code>--dfa-size-limit</code> all the way down to <code>0</code>? Is there a specific problem you&#x27;re trying to solve, or are you just curious?</p>
+<p>Secondly, the key differentiator here isn&#x27;t whether it&#x27;s a pipe or not, but whether ripgrep is using memory maps or not. Your first command uses a memory map but your second does not. If you force your first command to not use memory maps, then you get a similar speed up. You can do that by passing the <code>--no-mmap</code> flag.</p>
+<p>Thirdly, when you reduce <code>--dfa-size-limit</code> all the way down to zero, then you wind up forcing ripgrep to use its (much) slower regex engine. Namely, if the DFA has no memory available to it, then it can&#x27;t be used effectively. The point of this flag is to make it possible to <em>increase</em> the limit, not <em>decrease</em> it. :-)</p>
+<p>With that said, why is there a performance difference here? Good question. My guess is that whether you use memory maps or not results in yet another split choice between regex engines. Namely, if both your regex and your input are sufficiently small enough, then a bounded backtracking algorithm is used. When all else fails, a full simulation of the NFA is used (the so-called &quot;Pike VM&quot;). The bounded backtracker is faster, but because it&#x27;s bounded, it needs to store memory proportional to the size of the input times the size of the regex, which means we only run it when that product is small.</p>
+<p>Why does mmap/no-mmap cause this split? Because when we don&#x27;t use memory maps, we use the incremental searcher, which reads your input in <a href="https://github.com/BurntSushi/ripgrep/blob/d2a3b61220dc2d17c92dbb6b073776fd1223af66/src/search_stream.rs#L20-L21">chunks of 8KB</a>. Combine that with the fact that your regex is exceptionally small (6 VM instructions), then you have an overall space requirement of about 6KB for the bounded backtracker (<code>6 * 8000 / 8</code> since we only need one bit for each possible state). 6KB is less than the <a href="https://github.com/rust-lang/regex/blob/37bfbd9d96676297372713dfe4a60afc5f6966a8/src/backtrack.rs#L37">256KB limit for the bounded backtracker</a>, so the backtracker is used.</p>
+<p>We can test this by increasing the size of the regex. If the regex is big enough, then it should always force the NFA simulation, and therefore, result in consistent speeds across both forms of search (with memory map and without memory map). Here&#x27;s one such example:</p>
+<pre><code>$ time rg --regex-size-limit 1G --dfa-size-limit 0 --no-mmap -c &#x27;\pL{1000}&#x27; /tmp/Opensubtitles100MB.txt 
 
 real    0m10.862s
 user    0m10.794s
 sys     0m0.065s
-$ time rg --regex-size-limit 1G --dfa-size-limit 0 --mmap -c '\pL{1000}' /tmp/Opensubtitles100MB.txt 
+$ time rg --regex-size-limit 1G --dfa-size-limit 0 --mmap -c &#x27;\pL{1000}&#x27; /tmp/Opensubtitles100MB.txt 
 
 real    0m10.405s
 user    0m10.348s
 sys     0m0.055s
 </code></pre>
-<p>There's still a small difference where the memory map version is faster, but this seems somewhat expected since memory maps likely have less overhead for a single large file than the incremental reader.</p>
+<p>There&#x27;s still a small difference where the memory map version is faster, but this seems somewhat expected since memory maps likely have less overhead for a single large file than the incremental reader.</p>
 <p>Another interesting note is that in my previous test case, <code>--dfa-size-limit</code> is actually optional. The regex is so big that it blows the default DFA cache size anyway, thus resulting in a similar effect as setting it to <code>0</code>. If you bump the size limit way up, then ripgrep becomes fast again.</p>
 <p>TL;DR - regex engines are complicated. I wrote the damn thing and it took me a bit of time to figure this out. :-)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/pevalme">@pevalme</a> on 2017-11-15 13:40</div>
-            <div class="timeline-body"><p>That's a really good explanation!</p>
+            <div class="timeline-body"><p>That&#x27;s a really good explanation!</p>
 <p>With respect to the first part of your comment, I reduced <code>--dfa-size-limit</code> to <code>0</code> for research purposes. I just wanted to observe the behavior of ripgrep when working by simulating the NFA without any sort of determinization. Within this scenario, I have one more question.</p>
 <p>As I understand, the regex engine knows that the bounded backtracking algorithm requires too much memory and, therefore, it can only be used for <em>small pairs</em> <code>(input_regex, input_file)</code>. Then, <strong>why does the algorithm aims to <em>handle</em> the whole file at once rather than splitting it?</strong>
 <strong>Is there a particular scenario where Pike VM works better than incremental bounded backtracking?</strong></p>
-<p>I guess that when using back-references the bounded backtracking algorithm will cause some trouble but let me know if I'm wrong or there is something else I'm missing.</p>
+<p>I guess that when using back-references the bounded backtracking algorithm will cause some trouble but let me know if I&#x27;m wrong or there is something else I&#x27;m missing.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -80,24 +80,24 @@ sys     0m0.055s
             <div class="timeline-body"><blockquote>
 <p>Then, why does the algorithm aims to handle the whole file at once rather than splitting it?</p>
 </blockquote>
-<p>I don't think I understand your question. Could you please rephrase it without using the words &quot;it&quot; and &quot;the algorithm&quot;? Please consider the decision on which regex engine to use and which file searching strategy to use are largely decoupled.</p>
+<p>I don&#x27;t think I understand your question. Could you please rephrase it without using the words &quot;it&quot; and &quot;the algorithm&quot;? Please consider the decision on which regex engine to use and which file searching strategy to use are largely decoupled.</p>
 <blockquote>
 <p>Is there a particular scenario where Pike VM works better than incremental bounded backtracking?</p>
 </blockquote>
-<p>I don't know. My guess is no (other than large regex/input pairs, or pairs that result in a full exploration of the state space, e.g., lots of backtracking).</p>
+<p>I don&#x27;t know. My guess is no (other than large regex/input pairs, or pairs that result in a full exploration of the state space, e.g., lots of backtracking).</p>
 <blockquote>
-<p>I guess that when using back-references the bounded backtracking algorithm will cause some trouble but let me know if I'm wrong or there is something else I'm missing.</p>
+<p>I guess that when using back-references the bounded backtracking algorithm will cause some trouble but let me know if I&#x27;m wrong or there is something else I&#x27;m missing.</p>
 </blockquote>
-<p>ripgrep's regex engine doesn't support back-references. Back-references and bounded backtracking are incompatible. (This is a deep statement, in the sense that if you implemented back-references using bounded backtracking, then I think you could construct a proof that P=NP.)</p>
+<p>ripgrep&#x27;s regex engine doesn&#x27;t support back-references. Back-references and bounded backtracking are incompatible. (This is a deep statement, in the sense that if you implemented back-references using bounded backtracking, then I think you could construct a proof that P=NP.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/pevalme">@pevalme</a> on 2017-11-15 14:16</div>
             <div class="timeline-body"><blockquote>
-<p>I don't think I understand your question.</p>
+<p>I don&#x27;t think I understand your question.</p>
 </blockquote>
 <p>When the regex engine decides that it cannot use bounded backtracking because the 256KB bound is reached, why does it fall down to Pike VM?</p>
-<p>If bounded backtracking cannot be used but the regex size is lower than 32, wouldn't it be more efficient to perform incremental searching, since <code>32*8KB/1000 = 256KB</code>, and bounded backtracking (even if the whole file is already loaded due to mmap)? At least, this would improve the performance of my first experiments:</p>
+<p>If bounded backtracking cannot be used but the regex size is lower than 32, wouldn&#x27;t it be more efficient to perform incremental searching, since <code>32*8KB/1000 = 256KB</code>, and bounded backtracking (even if the whole file is already loaded due to mmap)? At least, this would improve the performance of my first experiments:</p>
 <pre><code>rg -c --dfa-size-limit 0 &quot;[a-z]{4}&quot; tmp.txt
 </code></pre>
 </div>
@@ -108,8 +108,8 @@ sys     0m0.055s
 <blockquote>
 <p>Please consider the decision on which regex engine to use and which file searching strategy to use are largely decoupled.</p>
 </blockquote>
-<p>doesn't clarify this for you? Or are you asking: &quot;why not couple them?&quot;</p>
-<p>To a first approximation, optimizing this case isn't worth anyone's time. I'm fine with exploring this as an academic exercise, but crossing over into proposing actual changes requires more than curiosity. We need use cases that justify the complications to the code. This in particular would either require a heuristic where ripgrep &quot;guesses&quot; at what the regex engine will do, or would require deeper coupling that simply isn't (and likely won't) be exposed by the regex engine. Remember, ripgrep's regex engine is <a href="https://crates.io/crates/regex">just Rust's regex crate</a>.</p>
+<p>doesn&#x27;t clarify this for you? Or are you asking: &quot;why not couple them?&quot;</p>
+<p>To a first approximation, optimizing this case isn&#x27;t worth anyone&#x27;s time. I&#x27;m fine with exploring this as an academic exercise, but crossing over into proposing actual changes requires more than curiosity. We need use cases that justify the complications to the code. This in particular would either require a heuristic where ripgrep &quot;guesses&quot; at what the regex engine will do, or would require deeper coupling that simply isn&#x27;t (and likely won&#x27;t) be exposed by the regex engine. Remember, ripgrep&#x27;s regex engine is <a href="https://crates.io/crates/regex">just Rust&#x27;s regex crate</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -120,12 +120,12 @@ I just wanted to satisfy my curiosity, not suggest any change.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @pevalme on 2017-11-15 14:41</div>
+            <div class="event">Closed by <a href="https://github.com/pevalme">@pevalme</a> on 2017-11-15 14:41</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:42:21 UTC
+        Synced at 2026-01-20 18:48:05 UTC
     </footer>
 </body>
 </html>

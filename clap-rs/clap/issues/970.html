@@ -41,13 +41,13 @@
 <li><code>--bar=1 --no-baz</code> yields only no-foo, and bar with value 0</li>
 </ul>
 <p>Any way to accomplish this with current clap implementation just by using the args builder?</p>
-<p>(Note for maybe another issue: Not sure if <code>flag(&quot;bar&quot;).overrides_with(&quot;bar&quot;)</code> is valid. The idea is that only the last provided value should be used. E.g. <code>--bar=0 --bar=1</code> should yield bar with value 1. Curiously, it works when at least 2 of the same option are given. But it fails with <code>The argument '--bar' was provided more than once, but cannot be used multiple times</code> when 3 or more are given...)</p>
+<p>(Note for maybe another issue: Not sure if <code>flag(&quot;bar&quot;).overrides_with(&quot;bar&quot;)</code> is valid. The idea is that only the last provided value should be used. E.g. <code>--bar=0 --bar=1</code> should yield bar with value 1. Curiously, it works when at least 2 of the same option are given. But it fails with <code>The argument &#x27;--bar&#x27; was provided more than once, but cannot be used multiple times</code> when 3 or more are given...)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-05-29 19:27</div>
-            <div class="timeline-body"><p>This accomplishes 95% of what you're looking for:</p>
-<pre><code class="language-rust">        .arg(flag(&quot;foo&quot;))
+            <div class="timeline-body"><p>This accomplishes 95% of what you&#x27;re looking for:</p>
+<pre><code>        .arg(flag(&quot;foo&quot;))
         .arg(flag(&quot;no-foo&quot;).overrides_with(&quot;foo&quot;))
         .arg(flag(&quot;bar&quot;)
              .takes_value(true)
@@ -57,12 +57,12 @@
         .arg(flag(&quot;baz&quot;))
         .arg(flag(&quot;no-baz&quot;).overrides_with_all(&amp;[&quot;baz&quot;, &quot;foo&quot;]))
 </code></pre>
-<p>The <code>&quot;bar&quot;</code> overrides with <code>&quot;bar&quot;</code> is the part that doesn't work at all with the above solution and I would say is a separate bug if you wouldn't mind filing it.</p>
-<p>The the above solution meet what you're looking for, or are there additional details I'm missing?</p>
+<p>The <code>&quot;bar&quot;</code> overrides with <code>&quot;bar&quot;</code> is the part that doesn&#x27;t work at all with the above solution and I would say is a separate bug if you wouldn&#x27;t mind filing it.</p>
+<p>The the above solution meet what you&#x27;re looking for, or are there additional details I&#x27;m missing?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2017-05-29 21:02</div>
+            <div class="event">Label <span class="label">T: RFC / question</span> added by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-05-29 21:02</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ericbn">@ericbn</a> on 2017-05-29 22:20</div>
@@ -76,7 +76,7 @@
 <li>no-baz works as an alias for <code>--no-foo --bar=0</code></li>
 <li>last options override previous ones, even the &quot;aliased&quot; ones</li>
 </ul>
-<p>I sure didn't provide all possible scenarios in the examples I gave before. Let me try a complete list now:</p>
+<p>I sure didn&#x27;t provide all possible scenarios in the examples I gave before. Let me try a complete list now:</p>
 <p>| Options provided | foo | no-foo | bar |
 |---|---|---|---|
 | --foo | ✔️ | | |
@@ -108,8 +108,8 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-05-30 00:35</div>
             <div class="timeline-body"><p>I greatly appreciate the additional details! 👍</p>
-<p>The parts that jump out at me are going to be things like <code>--baz</code> implying <code>--foo</code>. Currently that's not possible and happens purely in user code. I.e. If I'm designing a CLI and I know <code>--baz</code> implies foo, I just add that check manually when I'm checking for <code>foo</code></p>
-<pre><code class="language-rust">struct Args {
+<p>The parts that jump out at me are going to be things like <code>--baz</code> implying <code>--foo</code>. Currently that&#x27;s not possible and happens purely in user code. I.e. If I&#x27;m designing a CLI and I know <code>--baz</code> implies foo, I just add that check manually when I&#x27;m checking for <code>foo</code></p>
+<pre><code>struct Args {
     foo: bool,
     bar: i32 // for simplicity
 }
@@ -120,94 +120,94 @@ let a = Args {
     bar: matches.value_of(&quot;bar&quot;).unwrap() // all the encoding in clap made this unwrap safe
 };
 </code></pre>
-<p>That isn't to say I <em>can't</em> make a feature to imply another arg, as requiring already works. Right now, if one requires a flag it arbitrarily <code>panic!</code>s simply because at the time I had more opinionated views on CLI design. I'm willing to relax that though if people find it useful.</p>
-<p>The way requirements work, if a required arg is missing it throws an error. But it'd be super easy to add a check if the required arg is actually a flag, and just include it as if it was used.</p>
+<p>That isn&#x27;t to say I <em>can&#x27;t</em> make a feature to imply another arg, as requiring already works. Right now, if one requires a flag it arbitrarily <code>panic!</code>s simply because at the time I had more opinionated views on CLI design. I&#x27;m willing to relax that though if people find it useful.</p>
+<p>The way requirements work, if a required arg is missing it throws an error. But it&#x27;d be super easy to add a check if the required arg is actually a flag, and just include it as if it was used.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ericbn">@ericbn</a> on 2017-05-30 13:10</div>
             <div class="timeline-body"><p>In a usual <a href="http://pubs.opengroup.org/onlinepubs/9699919799/functions/getopt.html">POSIX implementation</a> I would be able to do so with something like (replaced foo, no-foo, bar, baz, no-baz by a, b, c, d, e respectively):</p>
-<pre><code class="language-c">int c, errflg = 0;
+<pre><code>int c, errflg = 0;
 bool foo = FALSE; // no-foo is the default
 char* bar = NULL;
 while ((c = getopt(argc, argv, &quot;:abc:de&quot;)) != -1) {
   switch(c) {
-  case 'a': // foo
+  case &#x27;a&#x27;: // foo
     foo = TRUE;
     break;
-  case 'b': // no-foo
+  case &#x27;b&#x27;: // no-foo
     foo = FALSE;
     break;
-  case 'c': // bar
+  case &#x27;c&#x27;: // bar
     bar = optarg;
     break;
-  case 'd': // baz
+  case &#x27;d&#x27;: // baz
     foo = TRUE;
     bar = &quot;1&quot;;
     break;
-  case 'e': // no-baz
+  case &#x27;e&#x27;: // no-baz
     foo = FALSE;
     bar = &quot;0&quot;;
     break;
-  case ':': // -c without operand
+  case &#x27;:&#x27;: // -c without operand
     fprintf(stderr, &quot;Option -%c requires an operand\n&quot;, optopt);
     errflg++;
     break;
-  case '?':
-    fprintf(stderr, &quot;Unrecognized option: '-%c'\n&quot;, optopt);
+  case &#x27;?&#x27;:
+    fprintf(stderr, &quot;Unrecognized option: &#x27;-%c&#x27;\n&quot;, optopt);
     errflg++;
   }
 }
 </code></pre>
-<p>The loop iterating the options in order guarantees that later options will override previous ones, and I'll get the result from the table above, in the previous comment, for each case.</p>
+<p>The loop iterating the options in order guarantees that later options will override previous ones, and I&#x27;ll get the result from the table above, in the previous comment, for each case.</p>
 <p>I could not figure out a way to achieve the same in clap. Declaring <code>foo: matches.is_present(&quot;foo&quot;) || matches.is_present(&quot;baz&quot;)</code>, for example, will not guarantee that a later baz replaces a foo that came before (or the other way around if I inverted the or expression operands), since this does take in account the order where the options appeared, just if they appeared at all...</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../BurntSushi/ripgrep/pulls/499.html">BurntSushi/ripgrep#499</a> on 2017-06-01 23:38</div>
+            <div class="event">Referenced in <a>BurntSushi/ripgrep#499</a> on 2017-06-01 23:38</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../BurntSushi/ripgrep/issues/491.html">BurntSushi/ripgrep#491</a> on 2017-06-02 00:00</div>
+            <div class="event">Referenced in <a>BurntSushi/ripgrep#491</a> on 2017-06-02 00:00</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-06-16 14:33</div>
             <div class="timeline-body"><blockquote>
 <p>since this does take in account the order where the options appeared, just if they appeared at all...</p>
 </blockquote>
-<p>This was the piece of information I was missing. In my mind, a flag being either present or not doesn't really matter <em>when</em> it appeared in the argv, just that it either did or didn't. What you're saying that it matters <em>where</em> it appears, as to whether or not it should be counted as present (i.e. if another flag overrides it, etc.)</p>
-<p>This change is doable by me relaxing the requirements for flags. Let me play with some implementations and I'll get this knocked out.</p>
+<p>This was the piece of information I was missing. In my mind, a flag being either present or not doesn&#x27;t really matter <em>when</em> it appeared in the argv, just that it either did or didn&#x27;t. What you&#x27;re saying that it matters <em>where</em> it appears, as to whether or not it should be counted as present (i.e. if another flag overrides it, etc.)</p>
+<p>This change is doable by me relaxing the requirements for flags. Let me play with some implementations and I&#x27;ll get this knocked out.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">C: flags</span> added by @kbknapp on 2017-06-16 14:34</div>
+            <div class="event">Label <span class="label">C: flags</span> added by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-06-16 14:34</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">D: intermediate</span> added by @kbknapp on 2017-06-16 14:34</div>
+            <div class="event">Label <span class="label">D: intermediate</span> added by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-06-16 14:34</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">P4: nice to have</span> added by @kbknapp on 2017-06-16 14:34</div>
+            <div class="event">Label <span class="label">P4: nice to have</span> added by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-06-16 14:34</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">T: enhancement</span> added by @kbknapp on 2017-06-16 14:34</div>
+            <div class="event">Label <span class="label">T: enhancement</span> added by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-06-16 14:34</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2017-06-16 14:34</div>
+            <div class="event">Label <span class="label">W: 2.x</span> added by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-06-16 14:34</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">T: RFC / question</span> removed by @kbknapp on 2017-06-16 14:34</div>
+            <div class="event">Label <span class="label">T: RFC / question</span> removed by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-06-16 14:34</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-02-15 14:43</div>
-            <div class="timeline-body"><p>This should be good now with 2.30.0. Feel free to re-open if there is something we're missing.</p>
+            <div class="timeline-body"><p>This should be good now with 2.30.0. Feel free to re-open if there is something we&#x27;re missing.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @kbknapp on 2018-02-15 14:43</div>
+            <div class="event">Closed by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-02-15 14:43</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:46:56 UTC
+        Synced at 2026-01-20 19:56:53 UTC
     </footer>
 </body>
 </html>

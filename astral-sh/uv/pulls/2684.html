@@ -23,14 +23,14 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This PR would enable us to support transitive URL requirements. The key idea is to leverage the fact that...</p>
 <ul>
 <li>URL requirements can only come from URL requirements.</li>
-<li>URL requirements identify a <em>specific</em> version, and so don't require backtracking.</li>
+<li>URL requirements identify a <em>specific</em> version, and so don&#x27;t require backtracking.</li>
 </ul>
 <p>Prior to running the &quot;real&quot; resolver, we recursively resolve any URL requirements, and collect all the known URLs upfront, then pass those to the resolver as &quot;lookahead&quot; requirements. This means the resolver knows upfront that if a given package is included, it <em>must</em> use the provided URL.</p>
-<p>Closes https://github.com/astral-sh/uv/issues/1808.</p>
+<p>Closes <a href="https://github.com/astral-sh/uv/issues/1808">astral-sh/uv#1808</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -53,8 +53,8 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-requirements/src/lookahead.rs</code>:57 on 2024-03-27 04:07</div>
-            <div class="timeline-body"><p>Uncertain how to handle these... I don't think we want to blindly resolve them recursively, because we can't <em>know</em> that a given constraint or override will <em>actually</em> be applied, and so we might end up incorporating requirements that won't end up being correct here.</p>
-<p>E.g., consider package <code>foo @ bar</code>, which has a URL requirement of <code>baz @ bop</code>. Assume <code>foo @ bar</code> is a constraint. If we include it here, then we'll also include <code>baz @ bop</code> as a required URL. But what if no one ever requests <code>foo</code>, and so the constraint should have no effect? Now we've added a <code>baz @ bop</code> requirement that shouldn't be enforced...</p>
+            <div class="timeline-body"><p>Uncertain how to handle these... I don&#x27;t think we want to blindly resolve them recursively, because we can&#x27;t <em>know</em> that a given constraint or override will <em>actually</em> be applied, and so we might end up incorporating requirements that won&#x27;t end up being correct here.</p>
+<p>E.g., consider package <code>foo @ bar</code>, which has a URL requirement of <code>baz @ bop</code>. Assume <code>foo @ bar</code> is a constraint. If we include it here, then we&#x27;ll also include <code>baz @ bop</code> as a required URL. But what if no one ever requests <code>foo</code>, and so the constraint should have no effect? Now we&#x27;ve added a <code>baz @ bop</code> requirement that shouldn&#x27;t be enforced...</p>
 <p>I think the best we can do (under this paradigm) is enforce overrides and constraints for the dependencies we see during <em>this</em> resolution pass.</p>
 </div>
         </div>
@@ -81,10 +81,10 @@ Installed 80 packages in 87ms
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @charliermarsh on 2024-04-01 15:37</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-01 15:37</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-04-01 15:37</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-01 15:37</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-01 15:37</div>
@@ -92,11 +92,11 @@ Installed 80 packages in 87ms
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-04-01 16:00</div>
+            <div class="event">Review requested from <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-01 16:00</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-01 16:23</div>
-            <div class="timeline-body"><p>It's only going to be a performance degradation for cases where the user previously had to enumerate all the URLs, correct?</p>
+            <div class="timeline-body"><p>It&#x27;s only going to be a performance degradation for cases where the user previously had to enumerate all the URLs, correct?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -108,8 +108,8 @@ Installed 80 packages in 87ms
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-01 16:29</div>
             <div class="timeline-body"><p>That seems fair, yes. There are two issues:</p>
 <ol>
-<li>In general, the use of the lookahead resolver is slower than the theoretically-optimal&quot; behavior of resolving as we go within the resolver, because (e.g.) we're spending time resolving source distributions when we could (in parallel) be fetching metadata from PyPI for other dependencies... So we're probably not saturating the network. By doing more work in the lookahead resolver, we make that a bit worse.</li>
-<li>Now, we're resolving at multiple levels rather than requiring users to enumerate all the URL requirements upfront, so what was previously parallel is now sequential (which is more directly-related to your comment).</li>
+<li>In general, the use of the lookahead resolver is slower than the theoretically-optimal&quot; behavior of resolving as we go within the resolver, because (e.g.) we&#x27;re spending time resolving source distributions when we could (in parallel) be fetching metadata from PyPI for other dependencies... So we&#x27;re probably not saturating the network. By doing more work in the lookahead resolver, we make that a bit worse.</li>
+<li>Now, we&#x27;re resolving at multiple levels rather than requiring users to enumerate all the URL requirements upfront, so what was previously parallel is now sequential (which is more directly-related to your comment).</li>
 </ol>
 </div>
         </div>
@@ -120,7 +120,7 @@ Installed 80 packages in 87ms
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-01 16:31</div>
-            <div class="timeline-body"><p>Yeah my guess is that it's pretty rare to have nested URL dependencies anyway, and in the cases that you <em>do</em>, users would definitely prefer that they work even if there's a performance hit.</p>
+            <div class="timeline-body"><p>Yeah my guess is that it&#x27;s pretty rare to have nested URL dependencies anyway, and in the cases that you <em>do</em>, users would definitely prefer that they work even if there&#x27;s a performance hit.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -129,10 +129,10 @@ Installed 80 packages in 87ms
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2024-04-01 21:16</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-01 21:16</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-04-01 21:16</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-01 21:16</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-04-01 21:16</div>
@@ -140,7 +140,7 @@ Installed 80 packages in 87ms
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:36:17 UTC
+        Synced at 2026-01-20 19:44:32 UTC
     </footer>
 </body>
 </html>

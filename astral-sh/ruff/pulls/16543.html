@@ -23,85 +23,85 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>This PR detects the use of PEP 701 f-strings before 3.12. This one sounded difficult and ended up being pretty easy, so I think there's a good chance I've over-simplified things. However, from experimenting in the Python REPL and checking with <a href="https://pyright-play.net/?pythonVersion=3.11&amp;strict=true&amp;code=EYQw5gBAvBAmCWBjALgCgO4gHaygRgEoAoEaCAIgBpyiiBiCLAUwGdknYIBHAVwHt2LIgDMA5AFlwSCJhwAuCAG8IoMAG1Rs2KIC6EAL6iIxosbPmLlq5foRWiEAAcmERAAsQAJxAomnltY2wuSKogA6WKIAdABWfPBYqCAE%2BuSBVqbpWVm2iHwAtvlMWMgB2ekiolUAgq4FjgA2TAAeEMieSADWCsoV5qoaqrrGDJ5MiDz%2B8ABuLqosAIREhlXlaybrmyYMXsDw7V4AnoysyAmQ5SIhwYo3d9cheADUeKlv5O%2BpQA">pyright</a>, I think this is correct. pyright actually doesn't even flag the comment case, but Python does.</p>
-<p>I also checked pyright's implementation for <a href="https://github.com/microsoft/pyright/blob/98dc4469cc5126bcdcbaf396a6c9d7e75dc1c4a0/packages/pyright-internal/src/analyzer/checker.ts#L1379-L1398">quotes</a> and <a href="https://github.com/microsoft/pyright/blob/98dc4469cc5126bcdcbaf396a6c9d7e75dc1c4a0/packages/pyright-internal/src/analyzer/checker.ts#L1365-L1377">escapes</a> and think I've approximated how they do it.</p>
-<p>Python's error messages also point to the simple approach of these characters simply not being allowed:</p>
-<pre><code class="language-pycon">Python 3.11.11 (main, Feb 12 2025, 14:51:05) [Clang 19.1.6 ] on linux
+            <div class="timeline-body">Summary
+<p>This PR detects the use of PEP 701 f-strings before 3.12. This one sounded difficult and ended up being pretty easy, so I think there&#x27;s a good chance I&#x27;ve over-simplified things. However, from experimenting in the Python REPL and checking with <a href="https://pyright-play.net/?pythonVersion=3.11&amp;strict=true&amp;code=EYQw5gBAvBAmCWBjALgCgO4gHaygRgEoAoEaCAIgBpyiiBiCLAUwGdknYIBHAVwHt2LIgDMA5AFlwSCJhwAuCAG8IoMAG1Rs2KIC6EAL6iIxosbPmLlq5foRWiEAAcmERAAsQAJxAomnltY2wuSKogA6WKIAdABWfPBYqCAE%2BuSBVqbpWVm2iHwAtvlMWMgB2ekiolUAgq4FjgA2TAAeEMieSADWCsoV5qoaqrrGDJ5MiDz%2B8ABuLqosAIREhlXlaybrmyYMXsDw7V4AnoysyAmQ5SIhwYo3d9cheADUeKlv5O%2BpQA">pyright</a>, I think this is correct. pyright actually doesn&#x27;t even flag the comment case, but Python does.</p>
+<p>I also checked pyright&#x27;s implementation for <a href="https://github.com/microsoft/pyright/blob/98dc4469cc5126bcdcbaf396a6c9d7e75dc1c4a0/packages/pyright-internal/src/analyzer/checker.ts#L1379-L1398">quotes</a> and <a href="https://github.com/microsoft/pyright/blob/98dc4469cc5126bcdcbaf396a6c9d7e75dc1c4a0/packages/pyright-internal/src/analyzer/checker.ts#L1365-L1377">escapes</a> and think I&#x27;ve approximated how they do it.</p>
+<p>Python&#x27;s error messages also point to the simple approach of these characters simply not being allowed:</p>
+<pre><code>Python 3.11.11 (main, Feb 12 2025, 14:51:05) [Clang 19.1.6 ] on linux
 Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
-&gt;&gt;&gt; f'''multiline {
+&gt;&gt;&gt; f&#x27;&#x27;&#x27;multiline {
 ... expression # comment
-... }'''
+... }&#x27;&#x27;&#x27;
   File &quot;&lt;stdin&gt;&quot;, line 3
-    }'''
+    }&#x27;&#x27;&#x27;
         ^
-SyntaxError: f-string expression part cannot include '#'
-&gt;&gt;&gt; f'''{not a line \
-... continuation}'''
+SyntaxError: f-string expression part cannot include &#x27;#&#x27;
+&gt;&gt;&gt; f&#x27;&#x27;&#x27;{not a line \
+... continuation}&#x27;&#x27;&#x27;
   File &quot;&lt;stdin&gt;&quot;, line 2
-    continuation}'''
+    continuation}&#x27;&#x27;&#x27;
                     ^
 SyntaxError: f-string expression part cannot include a backslash
-&gt;&gt;&gt; f'hello {'world'}'
+&gt;&gt;&gt; f&#x27;hello {&#x27;world&#x27;}&#x27;
   File &quot;&lt;stdin&gt;&quot;, line 1
-    f'hello {'world'}'
+    f&#x27;hello {&#x27;world&#x27;}&#x27;
               ^^^^^
-SyntaxError: f-string: expecting '}'
+SyntaxError: f-string: expecting &#x27;}&#x27;
 </code></pre>
-<p>And since escapes aren't allowed, I don't think there are any tricky cases where nested quotes or comments can sneak in.</p>
-<p>It's also slightly annoying that the error is repeated for every nested quote character, but that also mirrors pyright, although they highlight the whole nested string, which is a little nicer. However, their check is in the analysis phase, so I don't think we have such easy access to the quoted range, at least without adding another mini visitor.</p>
-<h2>Test Plan</h2>
+<p>And since escapes aren&#x27;t allowed, I don&#x27;t think there are any tricky cases where nested quotes or comments can sneak in.</p>
+<p>It&#x27;s also slightly annoying that the error is repeated for every nested quote character, but that also mirrors pyright, although they highlight the whole nested string, which is a little nicer. However, their check is in the analysis phase, so I don&#x27;t think we have such easy access to the quoted range, at least without adding another mini visitor.</p>
+Test Plan
 <p>New inline tests</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">parser</span> added by @ntBre on 2025-03-06 20:36</div>
+            <div class="event">Label <span class="label">parser</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-06 20:36</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-03-06 20:36</div>
+            <div class="event">Label <span class="label">preview</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-06 20:36</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-03-06 20:36</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-06 20:36</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dhruvmanila by @ntBre on 2025-03-06 20:36</div>
+            <div class="event">Review requested from <a href="https://github.com/dhruvmanila">@dhruvmanila</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-06 20:36</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-06 20:45</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-07 03:00</div>
             <div class="timeline-body"><p>I thought of some additional test cases tonight:</p>
-<pre><code class="language-pycon">Python 3.11.11 (main, Feb 12 2025, 14:51:05) [Clang 19.1.6 ] on linux
+<pre><code>Python 3.11.11 (main, Feb 12 2025, 14:51:05) [Clang 19.1.6 ] on linux
 Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
 &gt;&gt;&gt; f&quot;{&quot;&quot;&quot;x&quot;&quot;&quot;}&quot;
   File &quot;&lt;stdin&gt;&quot;, line 1
     f&quot;{&quot;&quot;&quot;x&quot;&quot;&quot;}&quot;
           ^
-SyntaxError: f-string: expecting '}'
-&gt;&gt;&gt; f'{'''x'''}'
+SyntaxError: f-string: expecting &#x27;}&#x27;
+&gt;&gt;&gt; f&#x27;{&#x27;&#x27;&#x27;x&#x27;&#x27;&#x27;}&#x27;
   File &quot;&lt;stdin&gt;&quot;, line 1
-    f'{'''x'''}'
+    f&#x27;{&#x27;&#x27;&#x27;x&#x27;&#x27;&#x27;}&#x27;
           ^
-SyntaxError: f-string: expecting '}'
+SyntaxError: f-string: expecting &#x27;}&#x27;
 &gt;&gt;&gt; f&quot;&quot;&quot;{&quot;x&quot;}&quot;&quot;&quot;
-'x'
-&gt;&gt;&gt; f'''{'x'}'''
-'x'
+&#x27;x&#x27;
+&gt;&gt;&gt; f&#x27;&#x27;&#x27;{&#x27;x&#x27;}&#x27;&#x27;&#x27;
+&#x27;x&#x27;
 </code></pre>
-<p>I'm pretty sure the code here handles these but it might be nice to add them as tests. I was especially concerned about the first two but checking for the outer <code>quote_str</code> should capture the right behavior.</p>
+<p>I&#x27;m pretty sure the code here handles these but it might be nice to add them as tests. I was especially concerned about the first two but checking for the outer <code>quote_str</code> should capture the right behavior.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -111,9 +111,9 @@ SyntaxError: f-string: expecting '}'
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:1368 on 2025-03-07 03:17</div>
             <div class="timeline-body"><p>I think this will give you false positive when a nested valid string inside an f-string contains a <code>#</code> character:</p>
-<pre><code class="language-py">❯ uv run --python=3.9 --no-project python -q                
-&gt;&gt;&gt; f&quot;outer {'# not a comment'}&quot;
-'outer # not a comment'
+<pre><code>❯ uv run --python=3.9 --no-project python -q                
+&gt;&gt;&gt; f&quot;outer {&#x27;# not a comment&#x27;}&quot;
+&#x27;outer # not a comment&#x27;
 </code></pre>
 </div>
         </div>
@@ -124,7 +124,7 @@ SyntaxError: f-string: expecting '}'
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:1378 on 2025-03-07 08:52</div>
             <div class="timeline-body"><p>This gives you false positives for triple quoted strings:</p>
-<pre><code>f&quot;{f'''{&quot;nested&quot;} inner'''} outer&quot;
+<pre><code>f&quot;{f&#x27;&#x27;&#x27;{&quot;nested&quot;} inner&#x27;&#x27;&#x27;} outer&quot;
 </code></pre>
 </div>
         </div>
@@ -135,9 +135,9 @@ SyntaxError: f-string: expecting '}'
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:1358 on 2025-03-07 08:53</div>
             <div class="timeline-body"><p>I think this also gives you false positives for</p>
-<pre><code class="language-py">&gt;&gt;&gt; f&quot;test \
+<pre><code>&gt;&gt;&gt; f&quot;test \
 ... more&quot;
-'test more'
+&#x27;test more&#x27;
 </code></pre>
 </div>
         </div>
@@ -168,8 +168,8 @@ SyntaxError: f-string: expecting '}'
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:1368 on 2025-03-07 11:06</div>
-            <div class="timeline-body"><p>And, in the format specifier. The following is valid as per Python 3.8 parser, it's the format specifier which is invalid (unrelated to the parser) and format specifiers are part of the f-string expression node:</p>
-<pre><code class="language-py">f'outer {x:{&quot;# not a comment&quot;} }'
+            <div class="timeline-body"><p>And, in the format specifier. The following is valid as per Python 3.8 parser, it&#x27;s the format specifier which is invalid (unrelated to the parser) and format specifiers are part of the f-string expression node:</p>
+<pre><code>f&#x27;outer {x:{&quot;# not a comment&quot;} }&#x27;
 </code></pre>
 </div>
         </div>
@@ -178,18 +178,18 @@ SyntaxError: f-string: expecting '}'
             <div class="timeline-body"><blockquote>
 <p>It does make me slightly nervous that the current approach does a lot oparations on the source text directly instead of analyzing the tokens but accessing the tokens might require making this an analyzer (linter) check</p>
 </blockquote>
-<p>Yeah, and f-strings are tricky because there's a lot more involved in here.</p>
-<p>Another approach here would be to use the tokens either in the parser or in the analyzer (which you've mentioned), more preference towards in the parser mainly because it already has the surrounding context i.e., are we in a nested f-string or are we in f-string expression?</p>
-<p>Maybe we could do this in the lexer itself and utilize <code>FStringErrorType</code> to emit the errors which then the parser would convert into <code>UnsupportedSyntaxError</code> but I haven't explored this option. In the lexer, it would be easier to just check for <code>Comment</code>, <code>Newline</code> tokens when in a f-string expression mode and emit the errors. My main worry regarding the lexer would be any performance implications.</p>
+<p>Yeah, and f-strings are tricky because there&#x27;s a lot more involved in here.</p>
+<p>Another approach here would be to use the tokens either in the parser or in the analyzer (which you&#x27;ve mentioned), more preference towards in the parser mainly because it already has the surrounding context i.e., are we in a nested f-string or are we in f-string expression?</p>
+<p>Maybe we could do this in the lexer itself and utilize <code>FStringErrorType</code> to emit the errors which then the parser would convert into <code>UnsupportedSyntaxError</code> but I haven&#x27;t explored this option. In the lexer, it would be easier to just check for <code>Comment</code>, <code>Newline</code> tokens when in a f-string expression mode and emit the errors. My main worry regarding the lexer would be any performance implications.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-07 15:01</div>
-            <div class="timeline-body"><p>Oof, thanks for the reviews. I had a feeling I over-simplified things, but these false positives look quite obvious in hindsight. I'll mark this as a draft for now and take a deeper look at this today.</p>
+            <div class="timeline-body"><p>Oof, thanks for the reviews. I had a feeling I over-simplified things, but these false positives look quite obvious in hindsight. I&#x27;ll mark this as a draft for now and take a deeper look at this today.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Converted to draft by @ntBre on 2025-03-07 15:01</div>
+            <div class="event">Converted to draft by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-07 15:01</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-03-07 15:20</div>
@@ -198,11 +198,11 @@ SyntaxError: f-string: expecting '}'
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:1378 on 2025-03-07 15:20</div>
             <div class="timeline-body"><p>I think this one actually is invalid:</p>
-<pre><code class="language-pycon">Python 3.11.11 (main, Feb 12 2025, 14:51:05) [Clang 19.1.6 ] on linux
+<pre><code>Python 3.11.11 (main, Feb 12 2025, 14:51:05) [Clang 19.1.6 ] on linux
 Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
-&gt;&gt;&gt; f&quot;{f'''{&quot;nested&quot;} inner'''} outer&quot;
+&gt;&gt;&gt; f&quot;{f&#x27;&#x27;&#x27;{&quot;nested&quot;} inner&#x27;&#x27;&#x27;} outer&quot;
   File &quot;&lt;stdin&gt;&quot;, line 1
-    f&quot;{f'''{&quot;nested&quot;} inner'''} outer&quot;
+    f&quot;{f&#x27;&#x27;&#x27;{&quot;nested&quot;} inner&#x27;&#x27;&#x27;} outer&quot;
              ^^^^^^
 SyntaxError: f-string: unterminated string
 </code></pre>
@@ -210,7 +210,7 @@ SyntaxError: f-string: unterminated string
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-07 16:31</div>
-            <div class="timeline-body"><p>I still need to look for more tricky cases in the formatter fixtures, but I checked on the suggested escape and quote test cases, and I believe those are true positives (I also added them as tests). So the main issues here are around comments, which might be quite tricky (maybe this is why pyright doesn't flag them?) and around inspecting the source text directly.</p>
+            <div class="timeline-body"><p>I still need to look for more tricky cases in the formatter fixtures, but I checked on the suggested escape and quote test cases, and I believe those are true positives (I also added them as tests). So the main issues here are around comments, which might be quite tricky (maybe this is why pyright doesn&#x27;t flag them?) and around inspecting the source text directly.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -233,28 +233,28 @@ SyntaxError: f-string: unterminated string
 </ul>
 <p>Based on this we can decide on the approach but also the prioritisation of what the check should detect and we can even split it up into multiple PRs.</p>
 </blockquote>
-<p>That's a good idea, thanks. The three main cases I took away from the PEP were:</p>
+<p>That&#x27;s a good idea, thanks. The three main cases I took away from the PEP were:</p>
 <ol>
 <li>Nested quotes</li>
 <li>Escape sequences</li>
 <li>Comments</li>
 </ol>
-<p>Escape sequences seem to be the easiest because as far as I can tell, CPython throws an error for any <code>\</code> in an f-string expression part, whether it's part of an escape character (<code>\n</code>) or looks like a line-continuation character.</p>
-<p>I think quotes are also easy because any nested <code>quote_str</code> (in our parlance) ends the string. That still feels oversimplified but I haven't seen any cases to the contrary. The PEP also includes this example:</p>
+<p>Escape sequences seem to be the easiest because as far as I can tell, CPython throws an error for any <code>\</code> in an f-string expression part, whether it&#x27;s part of an escape character (<code>\n</code>) or looks like a line-continuation character.</p>
+<p>I think quotes are also easy because any nested <code>quote_str</code> (in our parlance) ends the string. That still feels oversimplified but I haven&#x27;t seen any cases to the contrary. The PEP also includes this example:</p>
 <blockquote>
 <p>In fact, this is the most nested-fstring that can be written:</p>
 </blockquote>
-<pre><code class="language-pycon">&gt;&gt;&gt; f&quot;&quot;&quot;{f'''{f'{f&quot;{1+1}&quot;}'}'''}&quot;&quot;&quot;
-'2'
+<pre><code>&gt;&gt;&gt; f&quot;&quot;&quot;{f&#x27;&#x27;&#x27;{f&#x27;{f&quot;{1+1}&quot;}&#x27;}&#x27;&#x27;&#x27;}&quot;&quot;&quot;
+&#x27;2&#x27;
 </code></pre>
-<p>Comments are the hardest because you can't just check for <code>#</code> as Dhruv pointed out because that's a valid character inside of strings within the f-string.</p>
+<p>Comments are the hardest because you can&#x27;t just check for <code>#</code> as Dhruv pointed out because that&#x27;s a valid character inside of strings within the f-string.</p>
 <p>Those are the three cases I attempted to fix here.</p>
-<p>I see now in <a href="https://peps.python.org/pep-0498/#specification">PEP 498</a> that &quot;Expressions cannot contain <code>':'</code> or <code>'!'</code> outside of strings or parentheses, brackets, or braces. The exception is that the <code>'!='</code> operator is allowed as a special case.&quot; So that might be a fourth case we'd want to consider. At least initially it sounds roughly as complex as detecting comments.</p>
+<p>I see now in <a href="https://peps.python.org/pep-0498/#specification">PEP 498</a> that &quot;Expressions cannot contain <code>&#x27;:&#x27;</code> or <code>&#x27;!&#x27;</code> outside of strings or parentheses, brackets, or braces. The exception is that the <code>&#x27;!=&#x27;</code> operator is allowed as a special case.&quot; So that might be a fourth case we&#x27;d want to consider. At least initially it sounds roughly as complex as detecting comments.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-12 07:27</div>
-            <div class="timeline-body"><p>We discussed a possible approach in our 1:1. @ntBre let me know if that doesn't work and i can take another look</p>
+            <div class="timeline-body"><p>We discussed a possible approach in our 1:1. @ntBre let me know if that doesn&#x27;t work and i can take another look</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -263,32 +263,32 @@ SyntaxError: f-string: unterminated string
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/token_source.rs</code>:17 on 2025-03-14 07:43</div>
-            <div class="timeline-body"><p>I think I'd prefer an <code>in_range</code> method or similar instead of making <code>tokens </code>pub(crate)`</p>
+            <div class="timeline-body"><p>I think I&#x27;d prefer an <code>in_range</code> method or similar instead of making <code>tokens </code>pub(crate)`</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-14 22:36</div>
             <div class="timeline-body"><p>Thanks for the <code>in_range</code> suggestion! I factored out part of <code>Tokens::in_range</code> to reuse in the new <code>TokenSource::in_range</code> method, which made things much simpler.</p>
-<p>I tried applying a similar strategy to quotes, but <code>FStringStart</code>, <code>FStringEnd</code>, and <code>FStringMiddle</code> all carry their own string flags, so it's not easy to differentiate between the inner and outer f-strings. Maybe I could bring back the stack from the previous implementation to track that, though.</p>
-<p>I still think comparing the <code>quote_str</code> gets the correct answer because it includes triple quotes, but I'm still open to reworking that if you prefer. I could at least use <code>memmem</code> and <code>memchr</code> for the searches.</p>
-<p>Similarly, I don't think <code>\</code> is a token, so we pretty much have to do a text search for that, as far as I can tell.</p>
-<p>I also looked into the <code>:</code> and <code>!</code> mention from PEP 498 again, but I can't come up with anything that is valid syntax after 3.12 either. So I think it's okay not to check for those specially.</p>
+<p>I tried applying a similar strategy to quotes, but <code>FStringStart</code>, <code>FStringEnd</code>, and <code>FStringMiddle</code> all carry their own string flags, so it&#x27;s not easy to differentiate between the inner and outer f-strings. Maybe I could bring back the stack from the previous implementation to track that, though.</p>
+<p>I still think comparing the <code>quote_str</code> gets the correct answer because it includes triple quotes, but I&#x27;m still open to reworking that if you prefer. I could at least use <code>memmem</code> and <code>memchr</code> for the searches.</p>
+<p>Similarly, I don&#x27;t think <code>\</code> is a token, so we pretty much have to do a text search for that, as far as I can tell.</p>
+<p>I also looked into the <code>:</code> and <code>!</code> mention from PEP 498 again, but I can&#x27;t come up with anything that is valid syntax after 3.12 either. So I think it&#x27;s okay not to check for those specially.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @ntBre on 2025-03-14 22:37</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-14 22:37</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Converted to draft by @ntBre on 2025-03-15 04:54</div>
+            <div class="event">Converted to draft by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-15 04:54</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-17 08:32</div>
             <div class="timeline-body"><blockquote>
-<p>I still think comparing the quote_str gets the correct answer because it includes triple quotes, but I'm still open to reworking that if you prefer. I could at least use memmem and memchr for the searches.</p>
+<p>I still think comparing the quote_str gets the correct answer because it includes triple quotes, but I&#x27;m still open to reworking that if you prefer. I could at least use memmem and memchr for the searches.</p>
 </blockquote>
-<p>Yeah, that could work. An alternative is to inspect the parsed AST. What's important is that we only run the search over expression parts (e.g. <code>f&quot;test\&quot;abcd&quot;</code> is valid)</p>
+<p>Yeah, that could work. An alternative is to inspect the parsed AST. What&#x27;s important is that we only run the search over expression parts (e.g. <code>f&quot;test\&quot;abcd&quot;</code> is valid)</p>
 <blockquote>
-<p>I also looked into the : and ! mention from PEP 498 again, but I can't come up with anything that is valid syntax after 3.12 either. So I think it's okay not to check for those specially.</p>
+<p>I also looked into the : and ! mention from PEP 498 again, but I can&#x27;t come up with anything that is valid syntax after 3.12 either. So I think it&#x27;s okay not to check for those specially.</p>
 </blockquote>
 <p>Do you have a reference from PEP701 that anything changed related to <code>:</code> and <code>!</code> handling?</p>
 </div>
@@ -306,17 +306,17 @@ SyntaxError: f-string: unterminated string
 </li>
 </ul>
 <p>They were just mentioned along with comments and backslashes as receiving special treatment in PEP 498, so I was worried that they could have changed, but this sounds pretty conclusive after looking again, thanks!</p>
-<p>I left this in draft because I wanted to run the new code on the formatter tests you linked above. I'll do that now and then open it for review again.</p>
+<p>I left this in draft because I wanted to run the new code on the formatter tests you linked above. I&#x27;ll do that now and then open it for review again.</p>
 <p>I also just added your <code>f&quot;test\&quot;abcd&quot;</code> case as a test and will try out <code>memchr</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-17 14:25</div>
-            <div class="timeline-body"><p>I manually tested these out on the formatter test fixtures and all of the errors looked like true positives. Would it be worth adding those as permanent parser tests? It seemed weird to refer to test files in a different crate, but I could duplicate them. Hopefully I've already captured the key subset in the inline tests, though.</p>
+            <div class="timeline-body"><p>I manually tested these out on the formatter test fixtures and all of the errors looked like true positives. Would it be worth adding those as permanent parser tests? It seemed weird to refer to test files in a different crate, but I could duplicate them. Hopefully I&#x27;ve already captured the key subset in the inline tests, though.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @ntBre on 2025-03-17 15:03</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-17 15:03</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-17 15:55</div>
@@ -324,7 +324,7 @@ SyntaxError: f-string: unterminated string
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lib.rs</code>:579 on 2025-03-17 15:55</div>
-            <div class="timeline-body"><p>Do we need the same pattern for the <code>after</code> API? I think it's only the <code>in_range_impl</code> which is being shared?</p>
+            <div class="timeline-body"><p>Do we need the same pattern for the <code>after</code> API? I think it&#x27;s only the <code>in_range_impl</code> which is being shared?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -338,7 +338,7 @@ SyntaxError: f-string: unterminated string
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/lib.rs</code>:579 on 2025-03-17 16:23</div>
-            <div class="timeline-body"><p>You're right that only <code>in_range_impl</code> is called elsewhere, but <code>in_range_impl</code> uses <code>after_impl</code> internally. I didn't see another clean way of doing that.</p>
+            <div class="timeline-body"><p>You&#x27;re right that only <code>in_range_impl</code> is called elsewhere, but <code>in_range_impl</code> uses <code>after_impl</code> internally. I didn&#x27;t see another clean way of doing that.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -351,7 +351,7 @@ SyntaxError: f-string: unterminated string
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:1437 on 2025-03-17 16:28</div>
-            <div class="timeline-body"><p>That's much nicer to read, thanks!</p>
+            <div class="timeline-body"><p>That&#x27;s much nicer to read, thanks!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -361,7 +361,7 @@ SyntaxError: f-string: unterminated string
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lib.rs</code>:579 on 2025-03-17 16:46</div>
             <div class="timeline-body"><p>I would probably not do a binary search here and instead assume that <code>after</code> is close to the end. That means, you can simply search from the back and find the last token that starts at <code>after</code>.</p>
-<p>Edit: I see now that this in <code>Tokens</code>. I would suggest not using <code>Tokens</code> in <code>TokenSource</code> and instead handroll the implementation (it's very simple) by doing a backward search</p>
+<p>Edit: I see now that this in <code>Tokens</code>. I would suggest not using <code>Tokens</code> in <code>TokenSource</code> and instead handroll the implementation (it&#x27;s very simple) by doing a backward search</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -395,14 +395,14 @@ SyntaxError: f-string: unterminated string
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:1443 on 2025-03-18 03:27</div>
             <div class="timeline-body"><p>Is <code>TextSize::from(1)</code> to represent the size of <code>/</code> ? If so, we generally use <code>.text_len</code> instead to reflect what this size indicate:</p>
-<pre><code class="language-rs">'/'.text_len()
+<pre><code>&#x27;/&#x27;.text_len()
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/token_source.rs</code>:182 on 2025-03-18 03:35</div>
             <div class="timeline-body"><p>Do you plan on using this method elsewhere?</p>
-<p>If not, we could inline the logic in <code>check_fstring_comments</code> and simplify it to avoid the iteration for the <code>end</code> variable as, I think, the parser is already at that position? So, something like what Micha suggested in https://github.com/astral-sh/ruff/pull/16543#discussion_r1999208228 i.e., just iterate over the tokens in reverse order until we reach the f-string start and report an error for all the <code>Comment</code> tokens found.</p>
+<p>If not, we could inline the logic in <code>check_fstring_comments</code> and simplify it to avoid the iteration for the <code>end</code> variable as, I think, the parser is already at that position? So, something like what Micha suggested in <a href="https://github.com/astral-sh/ruff/pull/16543">astral-sh/ruff#16543</a>#discussion_r1999208228 i.e., just iterate over the tokens in reverse order until we reach the f-string start and report an error for all the <code>Comment</code> tokens found.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -418,9 +418,9 @@ SyntaxError: f-string: unterminated string
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/token_source.rs</code>:182 on 2025-03-18 13:08</div>
             <div class="timeline-body"><p>I think we need/want a method of some kind because <code>TokenSource::tokens</code> is a private field. I could just add a <code>tokens</code> getter though, of course.</p>
 <p>I also tried this without <code>end</code>, but cases like</p>
-<pre><code class="language-python">f'Magic wand: { bag['wand'] }'     # nested quotes
+<pre><code>f&#x27;Magic wand: { bag[&#x27;wand&#x27;] }&#x27;     # nested quotes
 </code></pre>
-<p>caught new errors on the trailing comment. At the point we do this processing, we've bumped past the <code>FStringEnd</code> <em>and</em> any trivia tokens after it, so I think we do need to find the <code>end</code> point as well.</p>
+<p>caught new errors on the trailing comment. At the point we do this processing, we&#x27;ve bumped past the <code>FStringEnd</code> <em>and</em> any trivia tokens after it, so I think we do need to find the <code>end</code> point as well.</p>
 <p>Hmm, maybe a <code>tokens</code> getter would be nicest. Then I could do all of the processing on a single iterator in <code>check_fstring_comments</code> at least.</p>
 </div>
         </div>
@@ -430,7 +430,7 @@ SyntaxError: f-string: unterminated string
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:1443 on 2025-03-18 13:28</div>
-            <div class="timeline-body"><p>Ahh yes, I've seen that pattern before but forgot to use it. Thanks!</p>
+            <div class="timeline-body"><p>Ahh yes, I&#x27;ve seen that pattern before but forgot to use it. Thanks!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -439,7 +439,7 @@ SyntaxError: f-string: unterminated string
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/token_source.rs</code>:182 on 2025-03-18 13:32</div>
-            <div class="timeline-body"><p>Can we not use the f-string range directly? Or, is there something else I'm missing? I don't think the comment is part of the f-string range.</p>
+            <div class="timeline-body"><p>Can we not use the f-string range directly? Or, is there something else I&#x27;m missing? I don&#x27;t think the comment is part of the f-string range.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -448,7 +448,7 @@ SyntaxError: f-string: unterminated string
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/token_source.rs</code>:182 on 2025-03-18 13:35</div>
-            <div class="timeline-body"><p>So, the <code>node_range</code> calculation avoids any trailing trivia tokens like the one that you've mentioned in the example above. This is done by keeping track of the end of the  previous token which excludes some tokens like comment. Here, when you call <code>node_range</code>, then it will give you the range which doesn't include the trailing comment. If it wouldn't then the f-string range would be incorrect here.</p>
+            <div class="timeline-body"><p>So, the <code>node_range</code> calculation avoids any trailing trivia tokens like the one that you&#x27;ve mentioned in the example above. This is done by keeping track of the end of the  previous token which excludes some tokens like comment. Here, when you call <code>node_range</code>, then it will give you the range which doesn&#x27;t include the trailing comment. If it wouldn&#x27;t then the f-string range would be incorrect here.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -466,15 +466,15 @@ SyntaxError: f-string: unterminated string
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/token_source.rs</code>:182 on 2025-03-18 13:50</div>
-            <div class="timeline-body"><p>Yeah I think that's a good summary. We have the exact f-string range but need to match that up with the actual <code>Token</code>s in the <code>tokens</code> field, which includes trailing comments.</p>
+            <div class="timeline-body"><p>Yeah I think that&#x27;s a good summary. We have the exact f-string range but need to match that up with the actual <code>Token</code>s in the <code>tokens</code> field, which includes trailing comments.</p>
 <p>I tried the <code>tokens</code> getter and moving the logic into <code>check_fstring_comments</code>, but I do aesthetically prefer how it looked with <code>self.tokens.in_range...</code> even if the <code>in_range</code> method itself looks a little weird. So I might just leave it alone for now. Thanks for double checking!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @ntBre on 2025-03-18 15:12</div>
+            <div class="event">Merged by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-18 15:12</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ntBre on 2025-03-18 15:12</div>
+            <div class="event">Closed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-18 15:12</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-03-18 15:12</div>
@@ -482,7 +482,7 @@ SyntaxError: f-string: unterminated string
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:10:32 UTC
+        Synced at 2026-01-20 19:12:05 UTC
     </footer>
 </body>
 </html>

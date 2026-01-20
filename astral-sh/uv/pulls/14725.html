@@ -30,16 +30,16 @@
 <li>Moves to the async <code>secret-service</code> crate that does not require clients on Linux to have <code>libdbus</code> on their machines. This includes updating <code>CredentialsAPI</code> trait (and implementations) to use async methods.</li>
 <li>Adds <code>uv-keyring</code> tests to <code>cargo test</code> jobs. For <code>cargo test | ubuntu</code>, this meant setting up secret service and priming gnome-keyring as an earlier step.</li>
 <li>Removes iOS code paths</li>
-<li>Patches in @oconnor663 's changes from his <a href="https://github.com/open-source-cooperative/keyring-rs/pull/261"><code>keyring-rs</code> PR</a></li>
+<li>Patches in @oconnor663 &#x27;s changes from his <a href="https://github.com/open-source-cooperative/keyring-rs/pull/261"><code>keyring-rs</code> PR</a></li>
 <li>Applies many clippy-driven updates</li>
 </ul>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> added by @jtfmumm on 2025-07-18 13:56</div>
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-07-18 13:56</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @jtfmumm on 2025-08-06 13:53</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-08-06 13:53</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-08-06 14:07</div>
@@ -74,14 +74,14 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-keyring/src/secret_service.rs</code>:479 on 2025-08-06 14:22</div>
-            <div class="timeline-body"><p><code>find_legacy_items</code> and <code>find_unique_legacy_items</code> replace methods in <code>keyring-rs</code> that took a closure and mapped over items. However, with async closures this created lifetime problems. I switched to an approach where we find and return items to the caller, which then applies the function to them directly. The tradeoff is more duplication but I'm not sure if there's a better way.</p>
+            <div class="timeline-body"><p><code>find_legacy_items</code> and <code>find_unique_legacy_items</code> replace methods in <code>keyring-rs</code> that took a closure and mapped over items. However, with async closures this created lifetime problems. I switched to an approach where we find and return items to the caller, which then applies the function to them directly. The tradeoff is more duplication but I&#x27;m not sure if there&#x27;s a better way.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @zanieb by @jtfmumm on 2025-08-11 10:52</div>
+            <div class="event">Review requested from <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-08-11 10:52</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @oconnor663 by @jtfmumm on 2025-08-11 10:52</div>
+            <div class="event">Review requested from <a href="https://github.com/oconnor663">@oconnor663</a> by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-08-11 10:52</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/oconnor663">@oconnor663</a> reviewed on 2025-08-11 18:53</div>
@@ -90,7 +90,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/uv-keyring/src/secret_service.rs</code>:479 on 2025-08-11 18:53</div>
             <div class="timeline-body"><p>John was kind enough to put up <a href="https://github.com/astral-sh/uv/tree/jtfm/vendor-keyring-async-lifetimes">a branch where I can play with this</a>. On that branch, I think I can get things working using the new <code>AsyncFn</code> trait like this:</p>
-<pre><code class="language-diff">diff --git i/crates/uv-keyring/src/secret_service.rs w/crates/uv-keyring/src/secret_service.rs
+<pre><code>diff --git i/crates/uv-keyring/src/secret_service.rs w/crates/uv-keyring/src/secret_service.rs
 index ef79f5cb1..de4b96e5f 100644
 --- i/crates/uv-keyring/src/secret_service.rs
 +++ w/crates/uv-keyring/src/secret_service.rs
@@ -101,7 +101,7 @@ index ef79f5cb1..de4b96e5f 100644
 -    async fn map_matching_items&lt;F, Fut, T&gt;(&amp;self, f: F, require_unique: bool) -&gt; Result&lt;Vec&lt;T&gt;&gt;
 +    async fn map_matching_items&lt;F, T&gt;(&amp;self, f: F, require_unique: bool) -&gt; Result&lt;Vec&lt;T&gt;&gt;
      where
--        F: for&lt;'a&gt; Fn(&amp;'a Item&lt;'_&gt;) -&gt; Fut,
+-        F: for&lt;&#x27;a&gt; Fn(&amp;&#x27;a Item&lt;&#x27;_&gt;) -&gt; Fut,
 -        Fut: std::future::Future&lt;Output = Result&lt;T&gt;&gt;,
 +        F: AsyncFn(&amp;Item) -&gt; Result&lt;T&gt;,
          T: Sized,
@@ -114,7 +114,7 @@ index ef79f5cb1..de4b96e5f 100644
 -    pub async fn map_matching_legacy_items&lt;F, Fut, T&gt;(
 +    pub async fn map_matching_legacy_items&lt;F, T&gt;(
          &amp;self,
-         ss: &amp;SecretService&lt;'_&gt;,
+         ss: &amp;SecretService&lt;&#x27;_&gt;,
          f: F,
          require_unique: bool,
      ) -&gt; Result&lt;Vec&lt;T&gt;&gt;
@@ -126,9 +126,9 @@ index ef79f5cb1..de4b96e5f 100644
      {
          let collection = ss.get_default_collection().await.map_err(decode_error)?;
 </code></pre>
-<p>The difference between these two approaches isn't crystal clear to me, but <a href="https://rust-lang.github.io/rfcs/3668-async-closures.html#inability-to-express-higher-ranked-async-function-signatures">this motivating example in the RFC was helpful</a>:</p>
+<p>The difference between these two approaches isn&#x27;t crystal clear to me, but <a href="https://rust-lang.github.io/rfcs/3668-async-closures.html#inability-to-express-higher-ranked-async-function-signatures">this motivating example in the RFC was helpful</a>:</p>
 <blockquote>
-<p>This happens because the type for the <code>Fut</code> generic parameter is chosen by the caller...and it cannot reference the higher-ranked lifetime <code>for&lt;'c&gt;</code> in the <code>FnMut</code> trait bound, but the anonymous future produced by calling <code>do_something</code> does capture a generic lifetime parameter, and <em>must</em> capture it in order to use the <code>&amp;str</code> argument.</p>
+<p>This happens because the type for the <code>Fut</code> generic parameter is chosen by the caller...and it cannot reference the higher-ranked lifetime <code>for&lt;&#x27;c&gt;</code> in the <code>FnMut</code> trait bound, but the anonymous future produced by calling <code>do_something</code> does capture a generic lifetime parameter, and <em>must</em> capture it in order to use the <code>&amp;str</code> argument.</p>
 </blockquote>
 </div>
         </div>
@@ -151,12 +151,12 @@ index ef79f5cb1..de4b96e5f 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/uv-keyring/tests/threading.rs</code>:143 on 2025-08-11 20:02</div>
-            <div class="timeline-body"><p>I'm not sure exactly what sort of mistakes this test is looking for, but I think wrapping blocking things in <code>spawn_blocking</code> will make it more faithful to the original without requiring any changes here?</p>
+            <div class="timeline-body"><p>I&#x27;m not sure exactly what sort of mistakes this test is looking for, but I think wrapping blocking things in <code>spawn_blocking</code> will make it more faithful to the original without requiring any changes here?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/uv-keyring/src/windows.rs</code>:432 on 2025-08-11 20:30</div>
-            <div class="timeline-body"><p>Agreed that it's not worth propagating <code>unsafe</code> everywhere, since these are module-private functions in vendored code.</p>
+            <div class="timeline-body"><p>Agreed that it&#x27;s not worth propagating <code>unsafe</code> everywhere, since these are module-private functions in vendored code.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -169,7 +169,7 @@ index ef79f5cb1..de4b96e5f 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-keyring/src/macos.rs</code>:60 on 2025-08-11 20:34</div>
-            <div class="timeline-body"><p>I'm definitely a big fan of avoiding unawaited blocking IO in async contexts.</p>
+            <div class="timeline-body"><p>I&#x27;m definitely a big fan of avoiding unawaited blocking IO in async contexts.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -192,7 +192,7 @@ index ef79f5cb1..de4b96e5f 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/uv-keyring/src/windows.rs</code>:298 on 2025-08-13 15:47</div>
-            <div class="timeline-body"><p><code>Send</code> is in the &quot;prelude&quot;, so I don't think it needs to be fully qualified.</p>
+            <div class="timeline-body"><p><code>Send</code> is in the &quot;prelude&quot;, so I don&#x27;t think it needs to be fully qualified.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -215,10 +215,10 @@ index ef79f5cb1..de4b96e5f 100644
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @jtfmumm on 2025-08-15 13:57</div>
+            <div class="event">Merged by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-08-15 13:57</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @jtfmumm on 2025-08-15 13:57</div>
+            <div class="event">Closed by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-08-15 13:57</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-08-15 13:57</div>
@@ -226,7 +226,7 @@ index ef79f5cb1..de4b96e5f 100644
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:44:02 UTC
+        Synced at 2026-01-20 19:53:11 UTC
     </footer>
 </body>
 </html>

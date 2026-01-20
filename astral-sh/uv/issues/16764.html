@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/larkost">@larkost</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>After #7281 the behavior around running __main__.py is not quite right. Namely it does not import the code as a package, so things like module-relative imports do not work. I am on uv 0.9.9 (4fac4cb7e) on a M1 MacBook running Sequoia 15.7.</p>
 <p>This is pretty easy to reproduce with a trivial example. In this case you need 3 files in a folder:
 | = red  (a folder)
@@ -31,19 +31,19 @@
 | === __main__.py  (see below)
 | === alpha.py (see below)</p>
 <p>alpha.py</p>
-<pre><code class="language-python">foo = &quot;This worked&quot;
+<pre><code>foo = &quot;This worked&quot;
 </code></pre>
 <p><strong>main</strong>.py</p>
-<pre><code class="language-python">from . import alpha
+<pre><code>from . import alpha
 
-if __name__ == '__main__':
+if __name__ == &#x27;__main__&#x27;:
     print(alpha.foo)
 </code></pre>
 <p>If you run this as expected from Python as a module (from the directory enclosing <code>red</code>), you get the expected &quot;This worked&quot;</p>
-<pre><code class="language-bash">python -m ./red
+<pre><code>python -m ./red
 </code></pre>
 <p>However trying this with <code>uv</code> wrongly just runs <code>__main__.py</code> directly, without using it as part of the package (which is the main point of <strong>main</strong>.py):</p>
-<pre><code class="language-bash">uv run ./red
+<pre><code>uv run ./red
 </code></pre>
 <p>The results of that last are:</p>
 <pre><code>Traceback (most recent call last):
@@ -54,46 +54,46 @@ if __name__ == '__main__':
 ImportError: attempted relative import with no known parent package
 </code></pre>
 <p>There was a mention in #7281 of using <code>-m</code>, but I think the author there missed this subtlety of the <code>-m</code> command (and __main__.py).</p>
-<h3>Platform</h3>
+Platform
 <p>MacOS (Darwin 24.6.0 arm64)</p>
-<h3>Version</h3>
+Version
 <p>uv 0.9.9 (4fac4cb7e 2025-11-12)</p>
-<h3>Python version</h3>
+Python version
 <p>Python 3.12.6</p>
 <p>Note: edits for formating</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @larkost on 2025-11-17 22:21</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/larkost">@larkost</a> on 2025-11-17 22:21</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/nooscraft">@nooscraft</a> on 2025-11-21 05:14</div>
-            <div class="timeline-body"><p>I can reproduce this. The issue is that when uv detects a package with <code>__main__.py</code>, it's running the file directly instead of executing it as a module, which breaks relative imports.</p>
-<p>Here's what's happening:</p>
-<p>When you run <code>uv run ./red</code>, uv detects the <code>__main__.py</code> file and creates a <code>PythonPackage</code> command, but then executes it incorrectly. Instead of running <code>python -m red</code> (which would import <code>red</code> as a package and execute <code>red.__main__</code>), it's running something like <code>python ./red/__main__.py</code> directly, which loses the package context.</p>
+            <div class="timeline-body"><p>I can reproduce this. The issue is that when uv detects a package with <code>__main__.py</code>, it&#x27;s running the file directly instead of executing it as a module, which breaks relative imports.</p>
+<p>Here&#x27;s what&#x27;s happening:</p>
+<p>When you run <code>uv run ./red</code>, uv detects the <code>__main__.py</code> file and creates a <code>PythonPackage</code> command, but then executes it incorrectly. Instead of running <code>python -m red</code> (which would import <code>red</code> as a package and execute <code>red.__main__</code>), it&#x27;s running something like <code>python ./red/__main__.py</code> directly, which loses the package context.</p>
 <p>You can see this in the error traceback - it shows the file path being executed directly:</p>
 <pre><code>File &quot;/personal/play_area/./red/__main__.py&quot;, line 1, in &lt;module&gt;
     from . import alpha
 ImportError: attempted relative import with no known parent package
 </code></pre>
 <p>The workaround is to explicitly use the <code>-m</code> flag:</p>
-<pre><code class="language-bash">uv run python -m red
+<pre><code>uv run python -m red
 </code></pre>
-<p>This works because it bypasses uv's package detection and directly invokes Python's module execution, which properly sets up the package context.</p>
+<p>This works because it bypasses uv&#x27;s package detection and directly invokes Python&#x27;s module execution, which properly sets up the package context.</p>
 <p>The bug is in <code>crates/uv/src/commands/project/run.rs</code> around line 1478. When handling <code>PythonPackage</code>, it should use <code>python -m &lt;package_name&gt;</code> instead of <code>python &lt;path&gt;</code>. The fix needs to:</p>
 <ol>
 <li>Extract the package name from the path (e.g., &quot;red&quot; from &quot;./red&quot;)</li>
 <li>Use <code>-m</code> flag: <code>process.arg(&quot;-m&quot;)</code> followed by <code>process.arg(package_name)</code></li>
 <li>Ensure the parent directory is in <code>sys.path</code> so Python can find the package</li>
 </ol>
-<p>I've reproduced this locally with your exact test case, and the workaround works. This is definitely a bug we should fix - packages with <code>__main__.py</code> should work the same way as <code>python -m</code> does.</p>
+<p>I&#x27;ve reproduced this locally with your exact test case, and the workaround works. This is definitely a bug we should fix - packages with <code>__main__.py</code> should work the same way as <code>python -m</code> does.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/nooscraft">@nooscraft</a> on 2025-11-21 06:58</div>
-            <div class="timeline-body"><p>@zanieb, @konstin! I've been poking around this issue and think I found the problem. The <code>PythonPackage</code> handler is passing the directory path directly to Python instead of using <code>-m</code> to run it as a module, which breaks relative imports.</p>
+            <div class="timeline-body"><p>@zanieb, @konstin! I&#x27;ve been poking around this issue and think I found the problem. The <code>PythonPackage</code> handler is passing the directory path directly to Python instead of using <code>-m</code> to run it as a module, which breaks relative imports.</p>
 <p>The fix is pretty straightforward - in <code>crates/uv/src/commands/project/run.rs</code> around line 1476-1480, instead of:</p>
-<pre><code class="language-rust">} else {
+<pre><code>} else {
     let mut process = Command::new(interpreter.sys_executable());
     process.arg(path);  // Wrong: runs file directly
     process.args(args);
@@ -101,7 +101,7 @@ ImportError: attempted relative import with no known parent package
 }
 </code></pre>
 <p>We should do:</p>
-<pre><code class="language-rust">} else {
+<pre><code>} else {
     let mut process = Command::new(interpreter.sys_executable());
     process.arg(&quot;-m&quot;);
     // Extract package name from path (e.g., &quot;red&quot; from &quot;./red&quot; or &quot;red/&quot;)
@@ -118,13 +118,13 @@ ImportError: attempted relative import with no known parent package
 }
 </code></pre>
 <p>This makes it run <code>python -m red</code> instead of <code>python ./red/__main__.py</code>, which properly sets up the package context.</p>
-<p>I've reproduced it locally with the exact test case from the issue, and the workaround (<code>uv run python -m red</code>) works as expected. Mind if I take a shot at implementing this? I can add a test case with relative imports to prevent regressions.</p>
+<p>I&#x27;ve reproduced it locally with the exact test case from the issue, and the workaround (<code>uv run python -m red</code>) works as expected. Mind if I take a shot at implementing this? I can add a test case with relative imports to prevent regressions.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-11-21 09:18</div>
-            <div class="timeline-body"><p>I'm not following with the example here, for me all the cases fail:</p>
-<pre><code class="language-console">$ python -m ./red
+            <div class="timeline-body"><p>I&#x27;m not following with the example here, for me all the cases fail:</p>
+<pre><code>$ python -m ./red
 /home/konsti/projects/red/.venv/bin/python: Relative module names not supported
 $ python ./red
 Traceback (most recent call last):
@@ -146,7 +146,7 @@ ImportError: attempted relative import with no known parent package
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/nooscraft">@nooscraft</a> on 2025-11-21 10:09</div>
-            <div class="timeline-body"><p>I see the confusion about the <code>python -m ./red</code> syntax in the original example - Python's <code>-m</code> flag doesn't accept relative paths like that, it needs just the module name.</p>
+            <div class="timeline-body"><p>I see the confusion about the <code>python -m ./red</code> syntax in the original example - Python&#x27;s <code>-m</code> flag doesn&#x27;t accept relative paths like that, it needs just the module name.</p>
 <p>I actually misinterpreted the example too when I first read it. I assumed <code>python -m ./red</code> meant &quot;run the red package as a module&quot; and just used <code>python -m red</code> directly when reproducing (from the parent directory). Looking back, I should have caught that the syntax was wrong.</p>
 <p>The correct setup is:</p>
 <pre><code>parent_dir/
@@ -156,7 +156,7 @@ ImportError: attempted relative import with no known parent package
     alpha.py
 </code></pre>
 <p>From <code>parent_dir/</code>:</p>
-<pre><code class="language-bash">python -m red        # Works - prints &quot;This worked&quot;
+<pre><code>python -m red        # Works - prints &quot;This worked&quot;
 uv run ./red        # Fails - relative import error
 </code></pre>
 <p>The question is whether <code>uv run ./red</code> should extract &quot;red&quot; from the path and execute <code>python -m red</code> (which would preserve package context for relative imports), or if the current behavior of running the <code>__main__.py</code> file directly is intentional.</p>
@@ -164,7 +164,7 @@ uv run ./red        # Fails - relative import error
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-11-24 13:54</div>
-            <div class="timeline-body"><p>The current behavior is intentional, we don't want to switch between module and path modes automatically. The current split is confusing, but trying to be smarter than that in uv would only add to the confusion.</p>
+            <div class="timeline-body"><p>The current behavior is intentional, we don&#x27;t want to switch between module and path modes automatically. The current split is confusing, but trying to be smarter than that in uv would only add to the confusion.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -181,18 +181,18 @@ uv run ./red        # Fails - relative import error
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-03 17:58</div>
-            <div class="timeline-body"><p>Per https://github.com/astral-sh/uv/issues/7275 we're just matching the behavior of the <code>python</code> binary which supports <code>python ./dir</code> to execute <code>python ./dir/__main__.py</code>? (that's what motivated https://github.com/astral-sh/uv/pull/7281 adding the behavior)</p>
+            <div class="timeline-body"><p>Per <a href="https://github.com/astral-sh/uv/issues/7275">astral-sh/uv#7275</a> we&#x27;re just matching the behavior of the <code>python</code> binary which supports <code>python ./dir</code> to execute <code>python ./dir/__main__.py</code>? (that&#x27;s what motivated <a href="https://github.com/astral-sh/uv/pull/7281">astral-sh/uv#7281</a> adding the behavior)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-03 18:01</div>
-            <div class="timeline-body"><p>I can see why (3) would be preferable, but breaking from the convention of the <code>python</code> binary will require a strong justification and I disagree that we've chosen &quot;the worst option&quot; by matching its behavior 1:1.</p>
+            <div class="timeline-body"><p>I can see why (3) would be preferable, but breaking from the convention of the <code>python</code> binary will require a strong justification and I disagree that we&#x27;ve chosen &quot;the worst option&quot; by matching its behavior 1:1.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:33:29 UTC
+        Synced at 2026-01-20 19:41:05 UTC
     </footer>
 </body>
 </html>

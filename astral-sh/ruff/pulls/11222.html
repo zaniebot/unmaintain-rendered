@@ -23,33 +23,33 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>Fixes https://github.com/astral-sh/ruff/issues/11207.</p>
+            <div class="timeline-body">Summary
+<p>Fixes <a href="https://github.com/astral-sh/ruff/issues/11207">astral-sh/ruff#11207</a>.</p>
 <p>The server would hang after handling a shutdown request on <code>IoThreads::join()</code> because a global sender (<code>MESSENGER</code>, used to send <code>window/showMessage</code> notifications) would remain allocated even after the event loop finished, which kept the writer I/O thread channel open.</p>
-<p>To fix this, I've made a few structural changes to <code>ruff server</code>. I've wrapped the send/receive channels and thread join handle behind a new struct, <code>Connection</code>, which facilitates message sending and receiving, and also runs <code>IoThreads::join()</code> after the event loop finishes. To control the number of sender channels, the <code>Connection</code> wraps the sender channel in an <code>Arc</code> and only allows the creation of a wrapper type, <code>ClientSender</code>, which hold a weak reference to this <code>Arc</code> instead of direct channel access. The wrapper type implements the channel methods directly to prevent access to the inner channel (which would allow the channel to be cloned). ClientSender's function is analogous to <a href="https://docs.rs/tokio/latest/tokio/sync/mpsc/struct.WeakSender.html"><code>WeakSender</code> in <code>tokio</code></a>. Additionally, the receiver channel cannot be accessed directly - the <code>Connection</code> only exposes an iterator over it.</p>
+<p>To fix this, I&#x27;ve made a few structural changes to <code>ruff server</code>. I&#x27;ve wrapped the send/receive channels and thread join handle behind a new struct, <code>Connection</code>, which facilitates message sending and receiving, and also runs <code>IoThreads::join()</code> after the event loop finishes. To control the number of sender channels, the <code>Connection</code> wraps the sender channel in an <code>Arc</code> and only allows the creation of a wrapper type, <code>ClientSender</code>, which hold a weak reference to this <code>Arc</code> instead of direct channel access. The wrapper type implements the channel methods directly to prevent access to the inner channel (which would allow the channel to be cloned). ClientSender&#x27;s function is analogous to <a href="https://docs.rs/tokio/latest/tokio/sync/mpsc/struct.WeakSender.html"><code>WeakSender</code> in <code>tokio</code></a>. Additionally, the receiver channel cannot be accessed directly - the <code>Connection</code> only exposes an iterator over it.</p>
 <p>These changes will guarantee that all channels are closed before the I/O threads are joined.</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>Repeatedly open and close an editor utilizing <code>ruff server</code> while observing the task monitor. The net total amount of open <code>ruff</code> instances should be zero once all editor windows have closed.</p>
 <p>The following logs should also appear after the server is shut down:</p>
-<img width="835" alt="Screenshot 2024-04-30 at 3 56 22 PM" src="https://github.com/astral-sh/ruff/assets/19577865/404b74f5-ef08-4bb4-9fa2-72e72b946695">
+<img alt="Screenshot 2024-04-30 at 3 56 22 PM" src="https://github.com/astral-sh/ruff/assets/19577865/404b74f5-ef08-4bb4-9fa2-72e72b946695">
 
 <p>This can be tested on VS Code by changing the settings and then checking <code>Output</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">server</span> added by @snowsignal on 2024-04-30 23:07</div>
+            <div class="event">Label <span class="label">server</span> added by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-04-30 23:07</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @snowsignal by @snowsignal on 2024-04-30 23:07</div>
+            <div class="event">Assigned to <a href="https://github.com/snowsignal">@snowsignal</a> by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-04-30 23:07</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-30 23:30</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
@@ -74,7 +74,7 @@ a) <code>connection</code> always outlives this function call<code>b)</code>sche
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/server.rs</code>:116 on 2024-05-02 02:25</div>
-            <div class="timeline-body"><p>That's funny because I originally called this method <code>close</code>. I can go back to that 😄</p>
+            <div class="timeline-body"><p>That&#x27;s funny because I originally called this method <code>close</code>. I can go back to that 😄</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -83,7 +83,7 @@ a) <code>connection</code> always outlives this function call<code>b)</code>sche
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/server.rs</code>:133 on 2024-05-02 02:28</div>
-            <div class="timeline-body"><p>We technically could use a strong reference but I'd rather enforce a weak-reference-only policy to guarantee that we don't have other strong references on <code>Connection::close</code>.</p>
+            <div class="timeline-body"><p>We technically could use a strong reference but I&#x27;d rather enforce a weak-reference-only policy to guarantee that we don&#x27;t have other strong references on <code>Connection::close</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -92,14 +92,14 @@ a) <code>connection</code> always outlives this function call<code>b)</code>sche
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/server.rs</code>:116 on 2024-05-02 02:31</div>
-            <div class="timeline-body"><p>Just FYI I don't think this would wait on active I/O, since we disconnect the message channels before joining the thread(s).</p>
+            <div class="timeline-body"><p>Just FYI I don&#x27;t think this would wait on active I/O, since we disconnect the message channels before joining the thread(s).</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @snowsignal on 2024-05-03 01:09</div>
+            <div class="event">Merged by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-05-03 01:09</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @snowsignal on 2024-05-03 01:09</div>
+            <div class="event">Closed by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-05-03 01:09</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-05-03 01:09</div>
@@ -107,7 +107,7 @@ a) <code>connection</code> always outlives this function call<code>b)</code>sche
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:04:06 UTC
+        Synced at 2026-01-20 19:03:50 UTC
     </footer>
 </body>
 </html>

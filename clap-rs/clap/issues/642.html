@@ -24,11 +24,11 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/SuperFluffy">@SuperFluffy</a></div>
             <div class="timeline-body"><p>Given the minimal example below, I get the following error message:</p>
-<pre><code>thread 'main' panicked at 'failed to convert YAML Real(&quot;0.1&quot;) value to a string'
+<pre><code>thread &#x27;main&#x27; panicked at &#x27;failed to convert YAML Real(&quot;0.1&quot;) value to a string&#x27;
 </code></pre>
-<p>Any idea what's going on here?</p>
+<p>Any idea what&#x27;s going on here?</p>
 <p><code>main.rs</code>:</p>
-<pre><code class="language-rust">#[macro_use] extern crate clap;
+<pre><code>#[macro_use] extern crate clap;
 
 use clap::App;
 
@@ -39,7 +39,7 @@ fn main() {
 }
 </code></pre>
 <p><code>cli.yml</code>:</p>
-<pre><code class="language-yaml">name: Clap Yaml Scrap
+<pre><code>name: Clap Yaml Scrap
 
 args:
     - test:
@@ -47,7 +47,7 @@ args:
         default_value: 0.1
 </code></pre>
 <p><code>Cargo.toml</code>:</p>
-<pre><code class="language-toml">[package]
+<pre><code>[package]
 name = &quot;clap-yaml-scrap&quot;
 version = &quot;0.1.0&quot;
 authors = [&quot;SuperFluffy&quot;]
@@ -58,24 +58,24 @@ authors = [&quot;SuperFluffy&quot;]
 version = &quot;2.11&quot;
 features = [&quot;yaml&quot;]
 </code></pre>
-<p><strong>EDIT:</strong> Alright, I figure the issue comes from <a href="https://github.com/kbknapp/clap-rs/blob/b7793a2f4d1132f29b3e7858d4ebbb1027f31d39/src/args/macros.rs#L25">this macro</a>. It's calling <code>as_str()</code> on the <code>Yaml::Real</code>, which is not defined. <code>as_str()</code> is only defined for <code>Yaml::String</code>, as you can see <a href="https://github.com/chyh1990/yaml-rust/blob/f7d2897bc0621ef38d7f6d844c6402d64dcbee23/src/yaml.rs#L232">here</a>.</p>
-<p><code>Yaml::Real</code> only has <code>as_f64()</code> defined, which however we cannot a priori invoke as we don't know whether or not <code>default_value</code> is a <code>f64</code> or something else entirely.</p>
+<p><strong>EDIT:</strong> Alright, I figure the issue comes from <a href="https://github.com/kbknapp/clap-rs/blob/b7793a2f4d1132f29b3e7858d4ebbb1027f31d39/src/args/macros.rs#L25">this macro</a>. It&#x27;s calling <code>as_str()</code> on the <code>Yaml::Real</code>, which is not defined. <code>as_str()</code> is only defined for <code>Yaml::String</code>, as you can see <a href="https://github.com/chyh1990/yaml-rust/blob/f7d2897bc0621ef38d7f6d844c6402d64dcbee23/src/yaml.rs#L232">here</a>.</p>
+<p><code>Yaml::Real</code> only has <code>as_f64()</code> defined, which however we cannot a priori invoke as we don&#x27;t know whether or not <code>default_value</code> is a <code>f64</code> or something else entirely.</p>
 <p>I guess the only way to work around this is by demanding that <code>default_value</code> be set to a string in the <code>Yaml</code>, i.e. <code>default_value: &quot;0.1&quot;</code>.</p>
 <p><strong>EDIT:</strong> Of course, this applies to <code>Yaml::Integer</code> as well. Basically, <code>default_value</code> <em>has</em> to take a string.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Panicking when converting YAML Real to String" to "Panicking default_value due to converting YAML Real to String" by @SuperFluffy on 2016-09-02 07:12</div>
+            <div class="event">Renamed from &quot;Panicking when converting YAML Real to String&quot; to &quot;Panicking default_value due to converting YAML Real to String&quot; by <a href="https://github.com/SuperFluffy">@SuperFluffy</a> on 2016-09-02 07:12</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-09-05 17:49</div>
             <div class="timeline-body"><p>This is partly due to that clap deals in strings, i.e. the default value will be the string <code>&quot;0.1&quot;</code> not the integer <code>0.1</code>. To fix this, use <code>default_value: &quot;0.1&quot;</code> and then in the user code convert that string to an integer (via <code>parse::&lt;f32&gt;()</code> or whichever is appropriate.</p>
-<p>I agree it's confusing, and less than optimal, but logically all command line arguments are strings, and it's the consumer code that does the conversions.</p>
-<p>There may be a better way to represent this in the docs/training. Of course I'd love to have <code>clap</code> automatically parse out to the correct number type, but at this time that's not quite doable on a large scale and thus gets left to consumer code.</p>
+<p>I agree it&#x27;s confusing, and less than optimal, but logically all command line arguments are strings, and it&#x27;s the consumer code that does the conversions.</p>
+<p>There may be a better way to represent this in the docs/training. Of course I&#x27;d love to have <code>clap</code> automatically parse out to the correct number type, but at this time that&#x27;s not quite doable on a large scale and thus gets left to consumer code.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2016-09-05 17:49</div>
+            <div class="event">Label <span class="label">T: RFC / question</span> added by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-09-05 17:49</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/SuperFluffy">@SuperFluffy</a> on 2016-09-07 13:01</div>
@@ -84,12 +84,12 @@ features = [&quot;yaml&quot;]
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @kbknapp on 2016-10-21 20:24</div>
+            <div class="event">Closed by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-10-21 20:24</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:46:41 UTC
+        Synced at 2026-01-20 19:56:33 UTC
     </footer>
 </body>
 </html>

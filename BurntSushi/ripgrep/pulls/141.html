@@ -23,15 +23,15 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/lilydjwg">@lilydjwg</a></div>
-            <div class="timeline-body"><p>I'm sorry, the result isn't stable, and I can't tell whether it's faster or slower....</p>
+            <div class="timeline-body"><p>I&#x27;m sorry, the result isn&#x27;t stable, and I can&#x27;t tell whether it&#x27;s faster or slower....</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @lilydjwg on 2016-10-01 09:58</div>
+            <div class="event">Closed by <a href="https://github.com/lilydjwg">@lilydjwg</a> on 2016-10-01 09:58</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-01 11:41</div>
-            <div class="timeline-body"><p>Yeah, I wouldn't expect this to make a difference. An Arc should only impose overhead when it's cloned, not when it's accessed. We only clone it once for each worker, which means the overhead is likely imperceptible.</p>
+            <div class="timeline-body"><p>Yeah, I wouldn&#x27;t expect this to make a difference. An Arc should only impose overhead when it&#x27;s cloned, not when it&#x27;s accessed. We only clone it once for each worker, which means the overhead is likely imperceptible.</p>
 <p>Can you explain more about your benchmark?</p>
 </div>
         </div>
@@ -43,30 +43,30 @@
 <p>then</p>
 <pre><code>sudo perf report
 </code></pre>
-<p>and press <kbd>a</kbd> on the function that uses the most of time to see assembly. Not very easy to read, but there is a <code>mfence</code> instruction, which clearly corresponds to the <code>fence(SeqCst)</code> call inside the <code>steal()</code> function.</p>
-<p><img src="https://cloud.githubusercontent.com/assets/440661/19013920/5e59f27e-8811-11e6-88a0-6f4415ae8674.png" alt="a" /></p>
+<p>and press a on the function that uses the most of time to see assembly. Not very easy to read, but there is a <code>mfence</code> instruction, which clearly corresponds to the <code>fence(SeqCst)</code> call inside the <code>steal()</code> function.</p>
+<p><img src="https://cloud.githubusercontent.com/assets/440661/19013920/5e59f27e-8811-11e6-88a0-6f4415ae8674.png" alt="a"></p>
 <p>Today rg took more than one minute to complete a search, so I tried to find out why. The time reduced to several seconds when I built the new master.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-01 12:03</div>
-            <div class="timeline-body"><p>Profiles can be hard to read, and in this case, it is probably misleading you. The profile reveals a lot of time spent in the work queue because it is <em>spinning</em> waiting for work. That is, the directory iterator can't produce work fast enough for the search workers.</p>
-<p>The time reduction on master almost certainly means that the directory you're searching has a very large gitignore file. I implemented a crude stopgap measure to make this faster, but I'm still working on it.</p>
-<p>If I'm right, then you should notice a large improvement by running with the <code>-u</code> flag.</p>
-<p>One way to extract a less confusing profile is to pass <code>-j1</code>. This will cause single threaded search to, which doesn't use a work queue at all.</p>
+            <div class="timeline-body"><p>Profiles can be hard to read, and in this case, it is probably misleading you. The profile reveals a lot of time spent in the work queue because it is <em>spinning</em> waiting for work. That is, the directory iterator can&#x27;t produce work fast enough for the search workers.</p>
+<p>The time reduction on master almost certainly means that the directory you&#x27;re searching has a very large gitignore file. I implemented a crude stopgap measure to make this faster, but I&#x27;m still working on it.</p>
+<p>If I&#x27;m right, then you should notice a large improvement by running with the <code>-u</code> flag.</p>
+<p>One way to extract a less confusing profile is to pass <code>-j1</code>. This will cause single threaded search to, which doesn&#x27;t use a work queue at all.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/lilydjwg">@lilydjwg</a> on 2016-10-01 12:59</div>
             <div class="timeline-body"><p>So there is a spinning lock? It makes my fan spin loudly....I prefer it to block instead.</p>
-<p>There is no gitignore file, though it's in a (huge) git repo---the &quot;community&quot; repo from Arch Linux. <code>-u</code> indeed makes it much faster.</p>
-<p>I take the source code outside the repo, and it's slow the same.</p>
-<p>With <code>-j1</code> rg uses only one core and it takes less time! Though it's still  much slower than <code>ag --workers 1</code>. And with <code>-j1</code>, the CPU time is spent on <code>regex::re_bytes::Regex::shortest_match_at</code> and <code>memchr</code> and <code>regex_syntax::Expr::simplify::simp</code>.</p>
+<p>There is no gitignore file, though it&#x27;s in a (huge) git repo---the &quot;community&quot; repo from Arch Linux. <code>-u</code> indeed makes it much faster.</p>
+<p>I take the source code outside the repo, and it&#x27;s slow the same.</p>
+<p>With <code>-j1</code> rg uses only one core and it takes less time! Though it&#x27;s still  much slower than <code>ag --workers 1</code>. And with <code>-j1</code>, the CPU time is spent on <code>regex::re_bytes::Regex::shortest_match_at</code> and <code>memchr</code> and <code>regex_syntax::Expr::simplify::simp</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-01 13:04</div>
-            <div class="timeline-body"><p>Could you please tell me how you're running your test? What command did you run to get the data? What <code>rg</code> commands are you running?</p>
+            <div class="timeline-body"><p>Could you please tell me how you&#x27;re running your test? What command did you run to get the data? What <code>rg</code> commands are you running?</p>
 <blockquote>
 <p>So there is a spinning lock? It makes my fan spin loudly....I prefer it to block instead.</p>
 </blockquote>
@@ -86,18 +86,18 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-01 13:11</div>
-            <div class="timeline-body"><p>Could you please tell me how to get the data you're searching? What command should I run?</p>
+            <div class="timeline-body"><p>Could you please tell me how to get the data you&#x27;re searching? What command should I run?</p>
 <blockquote>
 <p>Does this mean that, if I search on slow disks, it takes a lot of CPU time to wait?</p>
 </blockquote>
-<p>No, it doesn't mean that. If the disks are slow and the corpora isn't memory, then the search workers will also be slower.</p>
+<p>No, it doesn&#x27;t mean that. If the disks are slow and the corpora isn&#x27;t memory, then the search workers will also be slower.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/lilydjwg">@lilydjwg</a> on 2016-10-01 13:14</div>
             <div class="timeline-body"><p>Extract <a href="http://www.percona.com/downloads/Percona-Server-5.7/Percona-Server-5.7.14-8/source/tarball/percona-server-5.7.14-8.tar.gz">this tarball</a>.</p>
 <blockquote>
-<p>No, it doesn't mean that. If the disks are slow and the corpora isn't memory, then the search workers will also be slower.</p>
+<p>No, it doesn&#x27;t mean that. If the disks are slow and the corpora isn&#x27;t memory, then the search workers will also be slower.</p>
 </blockquote>
 <p>I see, thanks for the explanation :-)</p>
 </div>
@@ -105,20 +105,20 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-01 13:16</div>
             <div class="timeline-body"><blockquote>
-<p>There is no gitignore file, though it's in a (huge) git repo---the &quot;community&quot; repo from Arch Linux. -u indeed makes it much faster.</p>
+<p>There is no gitignore file, though it&#x27;s in a (huge) git repo---the &quot;community&quot; repo from Arch Linux. -u indeed makes it much faster.</p>
 </blockquote>
-<p>Could you show me how to get this data as well? And the <code>rg</code> command you're running?</p>
-<p>(I'm asking because it looks like there's more going on here. The only difference between <code>rg PAT</code> and <code>rg -u PAT</code> is that the latter doesn't look at ignore files.)</p>
+<p>Could you show me how to get this data as well? And the <code>rg</code> command you&#x27;re running?</p>
+<p>(I&#x27;m asking because it looks like there&#x27;s more going on here. The only difference between <code>rg PAT</code> and <code>rg -u PAT</code> is that the latter doesn&#x27;t look at ignore files.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-01 13:18</div>
-            <div class="timeline-body"><p>For <code>percona-server</code>, it seems clear to me that you're running into #134. There is a <em>giant</em> <code>.gitignore</code> file in the root directory of that tarball. This is where <code>rg</code> is spending all of its time. Since directory traversal is single threaded, it can't keep up with the search workers, so the search workers are constantly asking for more work, causing the queue to spin and use up CPU.</p>
+            <div class="timeline-body"><p>For <code>percona-server</code>, it seems clear to me that you&#x27;re running into #134. There is a <em>giant</em> <code>.gitignore</code> file in the root directory of that tarball. This is where <code>rg</code> is spending all of its time. Since directory traversal is single threaded, it can&#x27;t keep up with the search workers, so the search workers are constantly asking for more work, causing the queue to spin and use up CPU.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/lilydjwg">@lilydjwg</a> on 2016-10-01 13:19</div>
-            <div class="timeline-body"><p>Oh, I see! I used <code>ag -g</code> to search for <code>gitignore</code>, but it didn't search for hidden files either!</p>
+            <div class="timeline-body"><p>Oh, I see! I used <code>ag -g</code> to search for <code>gitignore</code>, but it didn&#x27;t search for hidden files either!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -137,7 +137,7 @@ real    0m1.687s
 user    0m2.263s
 sys     0m0.930s
 </code></pre>
-<p>(The counts are off because I'm pretty sure <code>ag</code> is getting the <code>.gitignore</code> file wrong in some places.)</p>
+<p>(The counts are off because I&#x27;m pretty sure <code>ag</code> is getting the <code>.gitignore</code> file wrong in some places.)</p>
 <p>If we ask both tools to skip ignore files, then they both get a lot faster, but <code>rg</code> still wins:</p>
 <pre><code>[andrew@Cheetah percona-server-5.7.14-8] time rg -u utf8mb4 | wc -l
 3117
@@ -152,7 +152,7 @@ real    0m0.399s
 user    0m0.617s
 sys     0m1.053s
 </code></pre>
-<p>The difference is almost entirely attributable to <code>ag</code>'s use of memory maps. Watch what happens when we ask <code>rg</code> to use memory maps:</p>
+<p>The difference is almost entirely attributable to <code>ag</code>&#x27;s use of memory maps. Watch what happens when we ask <code>rg</code> to use memory maps:</p>
 <pre><code>[andrew@Cheetah percona-server-5.7.14-8] time rg -u --mmap utf8mb4 | wc -l
 3117
 
@@ -170,7 +170,7 @@ sys     0m0.763s
     </div>
 
     <footer>
-        Synced at 2026-01-12 18:27:44 UTC
+        Synced at 2026-01-20 18:48:15 UTC
     </footer>
 </body>
 </html>

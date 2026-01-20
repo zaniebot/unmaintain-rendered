@@ -23,24 +23,24 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<p>The following code emits a <code>invalid-return-type</code> diagnostic, but shouldn't:</p>
-<pre><code class="language-py">from typing import NoReturn
+            <div class="timeline-body">Summary
+<p>The following code emits a <code>invalid-return-type</code> diagnostic, but shouldn&#x27;t:</p>
+<pre><code>from typing import NoReturn
 import sys
 
 def f() -&gt; NoReturn:
 #          ^^^^^^^^ Function can implicitly return `None`, which is not assignable to return type `Never`
     sys.exit(1)
 </code></pre>
-<p><code>sys.exit</code> is annotated with returning <code>NoReturn</code>, but the problem is that we don't have an explicit <code>return</code> statement here.</p>
+<p><code>sys.exit</code> is annotated with returning <code>NoReturn</code>, but the problem is that we don&#x27;t have an explicit <code>return</code> statement here.</p>
 <p>This is related to unreachable code analysis. We already have some special handling for detecting whether or not the end of scope is reachable (i.e. replacing <code>sys.exit(1)</code> with <code>while True: pass</code> works fine), but this does not take calls to functions returning <code>Never</code>/<code>NoReturn</code> into account.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2025-03-13 08:39</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-03-13 08:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[red-knot] Return type checking in presence of calls to `Never`/`NoReturn`" to "[red-knot] Return type checking for `Never`/`NoReturn`" by @sharkdp on 2025-03-13 08:40</div>
+            <div class="event">Renamed from &quot;[red-knot] Return type checking in presence of calls to `Never`/`NoReturn`&quot; to &quot;[red-knot] Return type checking for `Never`/`NoReturn`&quot; by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-03-13 08:40</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> on 2025-03-15 15:58</div>
@@ -57,14 +57,14 @@ def f() -&gt; NoReturn:
             <div class="timeline-body"><p>Got it. I will try to find another issue, or another minor task in this area (I do see some TODOs in the tests, for example).</p>
 <p>However, one thing is not clear to me. You mention in the issue description that replacing <code>sys.exit(1)</code> with <code>while True: pass</code> does not give an error. I tried that out, and indeed there is no error.</p>
 <p>However, the following <strong>also</strong> does not give any error:</p>
-<pre><code class="language-py">def f() -&gt; int:
+<pre><code>def f() -&gt; int:
   while True:
     pass
 </code></pre>
 <p>(Notice that I changed the return value to <code>int</code>.)</p>
 <p>Here, if the &quot;<code>while True</code> never returns anything&quot; inference was being done correctly, the above should have errored out, right?</p>
 <p>Moreover, the following gives an error:</p>
-<pre><code class="language-py"># &quot;Object of type `Literal[&quot;foo&quot;]` is not assignable to return type `int`&quot;
+<pre><code># &quot;Object of type `Literal[&quot;foo&quot;]` is not assignable to return type `int`&quot;
 def f() -&gt; int:
   while True:
     pass
@@ -72,11 +72,11 @@ def f() -&gt; int:
   return &quot;foo&quot;
 </code></pre>
 <p>... which makes me wonder if <code>red-knot</code> does not correctly understand the <code>while True: pass</code> case at all. Am I missing something?</p>
-<p>Edit: looking at https://github.com/astral-sh/ruff/pull/15676/, which introduced the unreachability-detection, I don't see a &quot;<code>while True</code> with no <code>break</code>&quot; condition.</p>
+<p>Edit: looking at <a href="https://github.com/astral-sh/ruff/pull/15676">astral-sh/ruff#15676</a>/, which introduced the unreachability-detection, I don&#x27;t see a &quot;<code>while True</code> with no <code>break</code>&quot; condition.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[red-knot] Return type checking for `Never`/`NoReturn`" to "[red-knot] calls to functions returning `Never`/`NoReturn` are terminal" by @carljm on 2025-03-26 20:12</div>
+            <div class="event">Renamed from &quot;[red-knot] Return type checking for `Never`/`NoReturn`&quot; to &quot;[red-knot] calls to functions returning `Never`/`NoReturn` are terminal&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-03-26 20:12</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> on 2025-04-08 13:39</div>
@@ -87,8 +87,8 @@ while True:
 pass</p>
 <p>(Notice that I changed the return value to <code>int</code>.)</p>
 </blockquote>
-<p>Because there are no reachable <code>return</code> statements, and the end of function scope is not visible, it makes sense that there are no diagnostics emitted currently, because we aren't checking the return value at all.</p>
-<p>However, in this case, the correct thing to do would be to enforce that the function's annotated return type is <code>Never</code>, isn't it?
+<p>Because there are no reachable <code>return</code> statements, and the end of function scope is not visible, it makes sense that there are no diagnostics emitted currently, because we aren&#x27;t checking the return value at all.</p>
+<p>However, in this case, the correct thing to do would be to enforce that the function&#x27;s annotated return type is <code>Never</code>, isn&#x27;t it?
 @sharkdp does this seem fit for a separate issue?</p>
 </div>
         </div>
@@ -98,11 +98,11 @@ pass</p>
 <blockquote>
 <p>Here, if the &quot;<code>while True</code> never returns anything&quot; inference was being done correctly, the above should have errored out, right?</p>
 </blockquote>
-<p>I don't think so. A function annotated with <code>int</code> that loops endlessly is not incorrect. You can think of the endless loop as returning <code>Never</code>, but <code>Never</code> is assignable to the return type <code>int</code> (<code>Never</code> is assignable to any type), so nothing wrong there.</p>
+<p>I don&#x27;t think so. A function annotated with <code>int</code> that loops endlessly is not incorrect. You can think of the endless loop as returning <code>Never</code>, but <code>Never</code> is assignable to the return type <code>int</code> (<code>Never</code> is assignable to any type), so nothing wrong there.</p>
 <blockquote>
 <p>Moreover, the following gives an error:</p>
 </blockquote>
-<p>Yes, we don't silence <em>all</em> errors in unreachable code. And in this case, it's arguable if that would be an improvement. If the loop were not endless, that return statement <em>would</em> be wrong. So flagging it does not seem like unwanted behavior to me.</p>
+<p>Yes, we don&#x27;t silence <em>all</em> errors in unreachable code. And in this case, it&#x27;s arguable if that would be an improvement. If the loop were not endless, that return statement <em>would</em> be wrong. So flagging it does not seem like unwanted behavior to me.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -114,16 +114,16 @@ pass</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[red-knot] calls to functions returning `Never`/`NoReturn` are terminal" to "calls to functions returning `Never`/`NoReturn` are terminal" by @MichaReiser on 2025-05-07 15:26</div>
+            <div class="event">Renamed from &quot;[red-knot] calls to functions returning `Never`/`NoReturn` are terminal&quot; to &quot;calls to functions returning `Never`/`NoReturn` are terminal&quot; by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-07 15:26</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/WAKayser">@WAKayser</a> on 2025-05-08 05:12</div>
             <div class="timeline-body"><p>Currently NoReturn cannot be used to narrow a type.  Which is a relatively common pattern in for example Flask examples. Where abort() can be used to return an error code early. This can be used to make sure that the request contains valid data.</p>
 <p>For reference here is another example that currently doesnt work.</p>
-<pre><code class="language-python">from typing import NoReturn, reveal_type
+<pre><code>from typing import NoReturn, reveal_type
 
 def raise_error() -&gt; NoReturn:
-    raise Exception('test')
+    raise Exception(&#x27;test&#x27;)
 
 
 def test(x: str | None) -&gt; None:
@@ -136,12 +136,12 @@ def test(x: str | None) -&gt; None:
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">control flow</span> added by @AlexWaygood on 2025-05-11 07:27</div>
+            <div class="event">Label <span class="label">control flow</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-11 07:27</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-05-18 18:34</div>
-            <div class="timeline-body"><p>Same issue, different symptoms. I have this simplified example that's causing <code>warning[possibly-unbound-attribute]: Attribute </code>ignore<code>on type</code>QCloseEvent | None<code> is possibly unbound</code> since ty doesn't see that</p>
-<pre><code class="language-py">from PySide6 import QtGui
+            <div class="timeline-body"><p>Same issue, different symptoms. I have this simplified example that&#x27;s causing <code>warning[possibly-unbound-attribute]: Attribute </code>ignore<code>on type</code>QCloseEvent | None<code> is possibly unbound</code> since ty doesn&#x27;t see that</p>
+<pre><code>from PySide6 import QtGui
 from PySide6.QtWidgets import QMainWindow
 
 class MainWindow(QMainWindow):
@@ -149,7 +149,7 @@ class MainWindow(QMainWindow):
         &quot;&quot;&quot;Exit safely when closing the window.&quot;&quot;&quot;
 
         if event is None or False:  # `or False` is actually some other condition, simplified for this example
-            sys.exit(1)  # Here ty should see that `event` can't be `None` if this branch wasn't taken
+            sys.exit(1)  # Here ty should see that `event` can&#x27;t be `None` if this branch wasn&#x27;t taken
 
         # ... some more checks and user prompts happened here
 
@@ -163,7 +163,7 @@ class MainWindow(QMainWindow):
             <div class="timeline-header">Comment by <a href="https://github.com/ilius">@ilius</a> on 2025-05-23 07:12</div>
             <div class="timeline-body"><p>Also for <code>os.execl</code>, <code>os.execle</code>, <code>os.execlp</code>, <code>os.execlpe</code>, <code>os.execvp</code>, <code>os.execvpe</code>.</p>
 <p>Funcs in <code>os.py</code> that mention &quot;replacing the current process&quot; in their doc.</p>
-<pre><code class="language-py">def restartLow() -&gt; typing.NoReturn:
+<pre><code>def restartLow() -&gt; typing.NoReturn:
 	&quot;&quot;&quot;Will not return from the function.&quot;&quot;&quot;
 	os.execl(
 		sys.executable,
@@ -171,7 +171,7 @@ class MainWindow(QMainWindow):
 		*sys.argv,
 	)
 </code></pre>
-<pre><code class="language-py">def execl(file, *args):
+<pre><code>def execl(file, *args):
     &quot;&quot;&quot;execl(file, *args)
 
     Execute the executable file with argument list args, replacing the
@@ -181,12 +181,12 @@ class MainWindow(QMainWindow):
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @abhijeetbodas2001 by @carljm on 2025-06-17 16:13</div>
+            <div class="event">Assigned to <a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> by <a href="https://github.com/carljm">@carljm</a> on 2025-06-17 16:13</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Eutropios">@Eutropios</a> on 2025-06-26 04:23</div>
             <div class="timeline-body"><p>This error arises in the context of the argparse module, where <code>argparse.ArgumentParser.error</code> calls <code>sys.exit</code>:</p>
-<pre><code class="language-py">    def exit(self, status=0, message=None):
+<pre><code>    def exit(self, status=0, message=None):
         if message:
             self._print_message(message, _sys.stderr)
         _sys.exit(status)
@@ -201,11 +201,11 @@ class MainWindow(QMainWindow):
         should either exit or raise an exception.
         &quot;&quot;&quot;
         self.print_usage(_sys.stderr)
-        args = {'prog': self.prog, 'message': message}
-        self.exit(2, _('%(prog)s: error: %(message)s\n') % args)
+        args = {&#x27;prog&#x27;: self.prog, &#x27;message&#x27;: message}
+        self.exit(2, _(&#x27;%(prog)s: error: %(message)s\n&#x27;) % args)
 </code></pre>
 <p>This issue persists when subclassing:</p>
-<pre><code class="language-py">class FooParser(argparse.ArgumentParser):
+<pre><code>class FooParser(argparse.ArgumentParser):
 
     def error(self, message: str) -&gt; NoReturn:
         self.exit(1, f&quot;{self.usage}: error: {message}\n&quot;)
@@ -215,16 +215,16 @@ class MainWindow(QMainWindow):
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2025-07-04 18:52</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2025-07-04 18:52</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/abhijeetbodas2001">@abhijeetbodas2001</a> on 2025-07-05 06:33</div>
-            <div class="timeline-body"><p>Most of the false positives were fixed in https://github.com/astral-sh/ruff/pull/18333, but see also https://github.com/astral-sh/ty/issues/685 for an issue pertaining to type narrowing.</p>
+            <div class="timeline-body"><p>Most of the false positives were fixed in <a href="https://github.com/astral-sh/ruff/pull/18333">astral-sh/ruff#18333</a>, but see also <a href="https://github.com/astral-sh/ty/issues/685">astral-sh/ty#685</a> for an issue pertaining to type narrowing.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/WAKayser">@WAKayser</a> on 2025-07-09 07:19</div>
-            <div class="timeline-body"><p>This has not been fully closed yet. And is not only in nested if statements like in #685.  My previous test case isnt supported correctly still. https://github.com/astral-sh/ty/issues/180#issuecomment-2861795534</p>
+            <div class="timeline-body"><p>This has not been fully closed yet. And is not only in nested if statements like in #685.  My previous test case isnt supported correctly still. <a href="https://github.com/astral-sh/ty/issues/180">astral-sh/ty#180</a>#issuecomment-2861795534</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -232,7 +232,7 @@ class MainWindow(QMainWindow):
             <div class="timeline-body"><blockquote>
 <p>My previous test case isnt supported correctly still. <a href="https://github.com/astral-sh/ty/issues/180#issuecomment-2861795534">#180 (comment)</a></p>
 </blockquote>
-<p>Unfortunately not, no. We do now consider the <code>raise_error()</code> call to be terminal (you can check that by <a href="https://play.ty.dev/079489c9-108e-43b0-9495-c05cb1a9b54b">adding an unknown symbol after the <code>raise_error()</code> call</a>, for which no error will be emitted, since it's unreachable), but we do not yet preserve the <code>x is not None</code> narrowing constraint from the (implicit) else branch in that conditional. This is already tracked in https://github.com/astral-sh/ty/issues/690.</p>
+<p>Unfortunately not, no. We do now consider the <code>raise_error()</code> call to be terminal (you can check that by <a href="https://play.ty.dev/079489c9-108e-43b0-9495-c05cb1a9b54b">adding an unknown symbol after the <code>raise_error()</code> call</a>, for which no error will be emitted, since it&#x27;s unreachable), but we do not yet preserve the <code>x is not None</code> narrowing constraint from the (implicit) else branch in that conditional. This is already tracked in <a href="https://github.com/astral-sh/ty/issues/690">astral-sh/ty#690</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -246,7 +246,7 @@ class MainWindow(QMainWindow):
 <p>My <a href="https://github.com/astral-sh/ty/issues/180#issuecomment-3007000359">issue</a> still persists even after the pull request. Should I open a new issue?</p>
 </blockquote>
 <p>When subclassing, in your example, if you explicitly annotate <code>self</code> as <code>FooParser</code>, then the error vanishes, for example: https://play.ty.dev/631e5827-6f8a-4144-9261-428a127486f0.</p>
-<p>Without this annotation, the type of <code>self</code> which ty infers is <code>Unknown</code> (which is also thus the inferred type of <code>self.exit</code>), which causes the error you see. Not inferring the type of <code>self</code> correctly seems to be tracked at https://github.com/astral-sh/ty/issues/159, though @sharkdp could confirm.</p>
+<p>Without this annotation, the type of <code>self</code> which ty infers is <code>Unknown</code> (which is also thus the inferred type of <code>self.exit</code>), which causes the error you see. Not inferring the type of <code>self</code> correctly seems to be tracked at <a href="https://github.com/astral-sh/ty/issues/159">astral-sh/ty#159</a>, though @sharkdp could confirm.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -272,7 +272,7 @@ class MainWindow(QMainWindow):
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:19:41 UTC
+        Synced at 2026-01-20 19:24:14 UTC
     </footer>
 </body>
 </html>

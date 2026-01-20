@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>Uv doesn't support index-url fallback as pip</h1>
+    <h1>Uv doesn&#x27;t support index-url fallback as pip</h1>
 
     <div class="meta">
         <span class="state-icon state-closed"></span>
@@ -23,20 +23,11 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/kkpattern">@kkpattern</a></div>
-            <div class="timeline-body"><!--
-Thank you for taking the time to report an issue! We're glad to have you involved with uv.
-
-If you're filing a bug report, please consider including the following information:
-
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
-* The current uv platform.
-* The current uv version (`uv --version`).
--->
+            <div class="timeline-body">
 
 <p>Thanks for this awesome tool.</p>
 <p>In our project, we have a <a href="https://pypi.org/project/pypiserver/"><code>pypiserver</code></a> set up to host our internal packages. For the public packages, <code>pypiserver</code> will fallback to pypi.org with a <code>303</code> http response. For example, when we install <code>wheel</code>, this is the log from <code>pip install</code>:</p>
-<pre><code class="language-bash">Looking in indexes: http://our.internal.pypiserver/simple/
+<pre><code>Looking in indexes: http://our.internal.pypiserver/simple/
 1 location(s) to search for versions of wheel:
 * http://our.internal.pypiserver/simple/wheel/
 Fetching project page and analyzing links: http://our.internal.pypiserver/simple/wheel/
@@ -50,7 +41,7 @@ Status code 303 not in (200, 203, 300, 301, 308)
 Starting new HTTP connection (1): pypi.python.org:80
 </code></pre>
 <p>When we use <code>UV_INDEX_URL</code> with uv, uv will fail to install the public packages:</p>
-<pre><code class="language-bash">error: Failed to download: wheel==0.42.0
+<pre><code>error: Failed to download: wheel==0.42.0
   Caused by: HTTP status client error (404 Not Found) for url (http://our.internal.pypiserver/simple/wheel/wheel-0.42.0-py3-none-any.whl)
 </code></pre>
 <p>The difference seems to be that <code>pip</code> will first look at <code>/simple/wheel/</code> and <code>uv</code> will look at <code>simple/wheel/wheel-0.42.0-py3-none-any.whl</code> directly. Maybe <code>pypiserver</code> should return <code>303</code> in the case too?</p>
@@ -62,10 +53,10 @@ Starting new HTTP connection (1): pypi.python.org:80
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-02-20 14:56</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-20 14:56</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-02-20 14:56</div>
+            <div class="event">Label <span class="label">needs-mre</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-20 14:56</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kkpattern">@kkpattern</a> on 2024-02-20 14:57</div>
@@ -84,7 +75,7 @@ Starting new HTTP connection (1): pypi.python.org:80
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-20 19:05</div>
-            <div class="timeline-body"><p>Is there anything you can share about how you've configured <code>pypiserver</code>?</p>
+            <div class="timeline-body"><p>Is there anything you can share about how you&#x27;ve configured <code>pypiserver</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -94,9 +85,9 @@ Starting new HTTP connection (1): pypi.python.org:80
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kkpattern">@kkpattern</a> on 2024-02-21 02:13</div>
-            <div class="timeline-body"><p>I found it's related to the fallback url configuration of <code>pypiserver</code>, we put a cache proxy before pypi.org.</p>
+            <div class="timeline-body"><p>I found it&#x27;s related to the fallback url configuration of <code>pypiserver</code>, we put a cache proxy before pypi.org.</p>
 <p>I can reproduce this locally with the following instructions:</p>
-<pre><code class="language-bash"># first setup a proxpi cache proxy
+<pre><code># first setup a proxpi cache proxy
 pip install proxpi gunicorn
 gunicorn proxpi.server:app --bind 0.0.0.0:8000
 
@@ -104,7 +95,7 @@ gunicorn proxpi.server:app --bind 0.0.0.0:8000
 pypi-server run -p 8080 /tmp/packages --fallback-url &quot;http://localhost:8000/index&quot;
 </code></pre>
 <p>Then uv will fail to install the packages through the <code>pypiserver</code>:</p>
-<pre><code class="language-bash">(.venv) ☁  uv  echo &quot;wheel&quot; | uv pip compile - --index-url http://localhost:8080/simple --verbose --no-cache
+<pre><code>(.venv) ☁  uv  echo &quot;wheel&quot; | uv pip compile - --index-url http://localhost:8080/simple --verbose --no-cache
  uv::requirements::from_source source=-
     0.001565s DEBUG uv_interpreter::virtual_env Found a virtualenv through VIRTUAL_ENV at: /home/user/test/uv/.venv
     0.001743s DEBUG uv_interpreter::interpreter Detecting markers for: /home/user/test/uv/.venv/bin/python
@@ -143,7 +134,7 @@ error: Failed to download: wheel==0.42.0
   Caused by: HTTP status client error (404 Not Found) for url (http://localhost:8080/simple/wheel/wheel-0.42.0-py3-none-any.whl)
 </code></pre>
 <p>Pip can install the package successfully in this case:</p>
-<pre><code class="language-bash">pip install --index-url http://localhost:8080/simple wheel -vv 
+<pre><code>pip install --index-url http://localhost:8080/simple wheel -vv 
 Using pip 22.3.1 from /home/user/test/uv/.venv/lib/python3.11/site-packages/pip (python 3.11)
 Non-user install because user site-packages disabled
 Created temporary directory: /tmp/pip-build-tracker-y2f89g7m
@@ -167,15 +158,15 @@ Fetched page http://localhost:8080/simple/wheel/ as application/vnd.pypi.simple.
   Found link http://localhost:8000/index/wheel/wheel-0.42.0-py3-none-any.whl (from http://localhost:8000/index/wheel/) (requires-python:&gt;=3.7), version: 0.42.0
   Found link http://localhost:8000/index/wheel/wheel-0.42.0.tar.gz (from http://localhost:8000/index/wheel/) (requires-python:&gt;=3.7), version: 0.42.0
 Skipping link: not a file: http://localhost:8080/simple/wheel/
-Given no hashes to check 130 links for project 'wheel': discarding no candidates
+Given no hashes to check 130 links for project &#x27;wheel&#x27;: discarding no candidates
 Collecting wheel
   Created temporary directory: /tmp/pip-unpack-p982xpms
   Resetting dropped connection: localhost
   http://localhost:8000 &quot;GET /index/wheel/wheel-0.42.0-py3-none-any.whl HTTP/1.1&quot; 200 65375
   Downloading http://localhost:8000/index/wheel/wheel-0.42.0-py3-none-any.whl (65 kB)
      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 65.4/65.4 kB 201.8 MB/s eta 0:00:00
-  Added wheel from http://localhost:8000/index/wheel/wheel-0.42.0-py3-none-any.whl to build tracker '/tmp/pip-build-tracker-y2f89g7m'
-  Removed wheel from http://localhost:8000/index/wheel/wheel-0.42.0-py3-none-any.whl from build tracker '/tmp/pip-build-tracker-y2f89g7m'
+  Added wheel from http://localhost:8000/index/wheel/wheel-0.42.0-py3-none-any.whl to build tracker &#x27;/tmp/pip-build-tracker-y2f89g7m&#x27;
+  Removed wheel from http://localhost:8000/index/wheel/wheel-0.42.0-py3-none-any.whl from build tracker &#x27;/tmp/pip-build-tracker-y2f89g7m&#x27;
 Created temporary directory: /tmp/pip-unpack-givexmn1
 Installing collected packages: wheel
 
@@ -184,13 +175,13 @@ Successfully installed wheel-0.42.0
 Remote version of pip: 24.0
 Local version of pip:  22.3.1
 Was pip installed by pip? True
-Removed build tracker: '/tmp/pip-build-tracker-y2f89g7m'
+Removed build tracker: &#x27;/tmp/pip-build-tracker-y2f89g7m&#x27;
 </code></pre>
 <p>Interestingly, if I set the fallback url to pypi.org:</p>
-<pre><code class="language-bash">pypi-server run -p 8080 /tmp/packages --fallback-url &quot;https://pypi.python.org/simple&quot;
+<pre><code>pypi-server run -p 8080 /tmp/packages --fallback-url &quot;https://pypi.python.org/simple&quot;
 </code></pre>
 <p>Then uv will install the package successfully:</p>
-<pre><code class="language-bash">(.venv) ☁  uv  echo &quot;wheel&quot; | uv pip compile - --index-url http://localhost:8080/simple --verbose --no-cache
+<pre><code>(.venv) ☁  uv  echo &quot;wheel&quot; | uv pip compile - --index-url http://localhost:8080/simple --verbose --no-cache
  uv::requirements::from_source source=-
     0.001598s DEBUG uv_interpreter::virtual_env Found a virtualenv through VIRTUAL_ENV at: /home/user/test/uv/.venv
     0.001756s DEBUG uv_interpreter::interpreter Detecting markers for: /home/user/test/uv/.venv/bin/python
@@ -236,11 +227,11 @@ wheel==0.42.0
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-21 05:41</div>
-            <div class="timeline-body"><p>Thanks, I'll give this another try tomorrow.</p>
+            <div class="timeline-body"><p>Thanks, I&#x27;ll give this another try tomorrow.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-02-21 05:42</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-21 05:42</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-21 14:50</div>
@@ -248,7 +239,7 @@ wheel==0.42.0
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-02-21 15:10</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-21 15:10</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-21 15:11</div>
@@ -268,7 +259,7 @@ wheel==0.42.0
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:23:51 UTC
+        Synced at 2026-01-20 19:29:48 UTC
     </footer>
 </body>
 </html>

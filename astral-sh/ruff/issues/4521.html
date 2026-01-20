@@ -31,7 +31,7 @@
 <p>ruff flags a false positive F401 for imports that are used in <code>__all__</code> that is guarded by a conditional statement.
 Running ruff with <code>--fix</code> on will result in broken imports.</p>
 <p><strong>MRE</strong></p>
-<pre><code class="language-python">import random
+<pre><code>import random
 
 
 def some_dependency_check():
@@ -45,7 +45,7 @@ else:
     __all__ = []
 
 </code></pre>
-<pre><code class="language-shell">-&gt; ruff mre.py
+<pre><code>-&gt; ruff mre.py
 mre.py:9:12: F401 [*] `math` imported but unused
 Found 1 error.
 [*] 1 potentially fixable with the --fix option.
@@ -53,13 +53,13 @@ Found 1 error.
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-05-19 12:34</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-19 12:34</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-19 12:50</div>
             <div class="timeline-body"><p>So, can and should avoid flagging this as unused...</p>
 <p>I do feel obligated to mention that you should try to avoid using conditionally-defined <code>__all__</code> assignments :) They will cause issues with all sorts of tooling, since many conditions are undecidable at &quot;compile&quot; time, e.g., Pyright treats <code>x</code> as undefined if you use a wildcard import on this file:</p>
-<pre><code class="language-py">x = 1
+<pre><code>x = 1
 
 if x &gt; 0:
     __all__ = [&quot;x&quot;]
@@ -69,7 +69,7 @@ else:
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-05-19 12:50</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-19 12:50</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-05-19 12:53</div>
@@ -83,8 +83,8 @@ else:
 <blockquote>
 <p>I do feel obligated to mention that you should try to avoid using conditionally-defined <strong>all</strong> assignments</p>
 </blockquote>
-<p>I agree, but I don't know how to avoid it in the pattern where I encountered this.  I want to support different backends/types for dispatching without making all of them dependencies:</p>
-<pre><code class="language-python">from foo.backends import pandas, spark
+<p>I agree, but I don&#x27;t know how to avoid it in the pattern where I encountered this.  I want to support different backends/types for dispatching without making all of them dependencies:</p>
+<pre><code>from foo.backends import pandas, spark
 
 @singledispatch
 def strip_punctuation(data):
@@ -97,7 +97,7 @@ if spark._supported:
     strip_punctuation.register(spark.strip_punctuation)
 </code></pre>
 <p>Where the imports are guarded, <code>foo.backends.pandas.__init__.py</code>:</p>
-<pre><code class="language-python">_supported = can_import(&quot;pandas&quot;)
+<pre><code>_supported = can_import(&quot;pandas&quot;)
 if _supported:
     from foo.backends.pandas.string import strip_punctuation
     
@@ -109,7 +109,7 @@ else:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-19 14:03</div>
-            <div class="timeline-body"><p>@JonathanPlasse - Yeah I think that's probably what we need to do.</p>
+            <div class="timeline-body"><p>@JonathanPlasse - Yeah I think that&#x27;s probably what we need to do.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -120,9 +120,9 @@ else:
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-05-19 14:26</div>
             <div class="timeline-body"><blockquote>
-<p>@JonathanPlasse - Yeah I think that's probably what we need to do.</p>
+<p>@JonathanPlasse - Yeah I think that&#x27;s probably what we need to do.</p>
 </blockquote>
-<p>I'm not sure if merging gives us the desired result in all situations:</p>
+<p>I&#x27;m not sure if merging gives us the desired result in all situations:</p>
 <ul>
 <li>When testing for public docstrings -&gt; Merging them is what we want</li>
 <li>When testing for invalid imports -&gt; Merging is unsound because it then wont flag imports that may not exist at runtime. A better approach for this use case is to explicitly determine the &quot;conditional&quot; exports and potentially warn about them (but not flag any that are in both sets)</li>
@@ -132,21 +132,21 @@ else:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-19 14:38</div>
-            <div class="timeline-body"><p>Yeah that's true. Another option could be to iterate over all <code>Export</code> bindings (even those that are overridden) when we do these checks.</p>
+            <div class="timeline-body"><p>Yeah that&#x27;s true. Another option could be to iterate over all <code>Export</code> bindings (even those that are overridden) when we do these checks.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-24 03:43</div>
-            <div class="timeline-body"><p>I'm looking into this.</p>
+            <div class="timeline-body"><p>I&#x27;m looking into this.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-06-06 00:48</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-06 00:48</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:47:14 UTC
+        Synced at 2026-01-20 18:48:36 UTC
     </footer>
 </body>
 </html>

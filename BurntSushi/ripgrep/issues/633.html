@@ -23,47 +23,47 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/chrmarti">@chrmarti</a></div>
-            <div class="timeline-body"><p>I'm investigating a report that listing files (<code>--files</code>) on Windows when following symlinks (<code>--follow</code>) takes much more time than without symlinks.</p>
-<p>It appears that in some cases <code>cnpm</code> (an <code>npm</code> replacement) uses symlinks to organize the <code>node_modules</code> folder and that then slows down ripgrep. (https://github.com/Microsoft/vscode/issues/35659#issuecomment-335535129 has an example <code>package.json</code> that when installed using <code>cnpm i</code> reproduces the problem.)</p>
-<p>Looking at the trace in Process Monitor I see many files being opened for reading metadata in <code>DirEntryRaw:from_link</code> and to detect loops in same_file's <code>Handle::from_path</code>.</p>
-<p>One area where this might be improved is where <code>check_symlink_loop()</code> loops over parent directories of each symlinked directory, causing is_same_file to open the same parent directory once for each of its symlinked subdirectories. Maybe a directory's id could be cached for the duration of its content being traversed?</p>
+            <div class="timeline-body"><p>I&#x27;m investigating a report that listing files (<code>--files</code>) on Windows when following symlinks (<code>--follow</code>) takes much more time than without symlinks.</p>
+<p>It appears that in some cases <code>cnpm</code> (an <code>npm</code> replacement) uses symlinks to organize the <code>node_modules</code> folder and that then slows down ripgrep. (<a href="https://github.com/Microsoft/vscode/issues/35659">Microsoft/vscode#35659</a>#issuecomment-335535129 has an example <code>package.json</code> that when installed using <code>cnpm i</code> reproduces the problem.)</p>
+<p>Looking at the trace in Process Monitor I see many files being opened for reading metadata in <code>DirEntryRaw:from_link</code> and to detect loops in same_file&#x27;s <code>Handle::from_path</code>.</p>
+<p>One area where this might be improved is where <code>check_symlink_loop()</code> loops over parent directories of each symlinked directory, causing is_same_file to open the same parent directory once for each of its symlinked subdirectories. Maybe a directory&#x27;s id could be cached for the duration of its content being traversed?</p>
 <p>/cc @roblourens</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/chrmarti">@chrmarti</a> on 2017-10-10 22:12</div>
             <div class="timeline-body"><p>From a recording in Process Monitor:
-<img src="https://user-images.githubusercontent.com/9205389/31413294-6afa6288-adcd-11e7-9e45-89451e310c8e.png" alt="image" /></p>
+<img src="https://user-images.githubusercontent.com/9205389/31413294-6afa6288-adcd-11e7-9e45-89451e310c8e.png" alt="image"></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-10 22:21</div>
             <div class="timeline-body"><blockquote>
-<p>Maybe a directory's id could be cached for the duration of its content being traversed?</p>
+<p>Maybe a directory&#x27;s id could be cached for the duration of its content being traversed?</p>
 </blockquote>
 <p>AFAIK, this is technically incorrect. See this comment here: https://github.com/BurntSushi/same-file/blob/master/src/win.rs#L19-L58</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/chrmarti">@chrmarti</a> on 2017-10-10 22:51</div>
-            <div class="timeline-body"><p>Maybe the cache could keep the directories open to avoid the filesystem reusing the index numbers. That shouldn't be too expensive, because for each 'cursor' (not sure if it's all threads) in the traversal you'd only need to keep the parent directories open which should be few.</p>
+            <div class="timeline-body"><p>Maybe the cache could keep the directories open to avoid the filesystem reusing the index numbers. That shouldn&#x27;t be too expensive, because for each &#x27;cursor&#x27; (not sure if it&#x27;s all threads) in the traversal you&#x27;d only need to keep the parent directories open which should be few.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-21 04:13</div>
-            <div class="timeline-body"><p>I have an attempt at fixing this here: https://github.com/BurntSushi/walkdir/pull/85/commits/5bcc5b87ee08a58a7f2a7ef4b1d23392b55155bb --- It's in the directory traversal library, so I still need to pull it into ripgrep.</p>
+            <div class="timeline-body"><p>I have an attempt at fixing this here: <a href="https://github.com/BurntSushi/walkdir/pull/85">BurntSushi/walkdir#85</a>/commits/5bcc5b87ee08a58a7f2a7ef4b1d23392b55155bb --- It&#x27;s in the directory traversal library, so I still need to pull it into ripgrep.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2017-10-22 02:40</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-22 02:40</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-22 12:11</div>
-            <div class="timeline-body"><p>This should be fixed in ripgrep 0.7.0. I didn't actually test that it resolves the performance problem, but the symlink loop checking should be opening far fewer file handles. We can definitely re-open this if it's still a problem (and having an easy to use test corpus to try this on would be a huge help, e.g., what steps can I take with <code>cnpm</code> to setup a directory big enough to notice this problem).</p>
+            <div class="timeline-body"><p>This should be fixed in ripgrep 0.7.0. I didn&#x27;t actually test that it resolves the performance problem, but the symlink loop checking should be opening far fewer file handles. We can definitely re-open this if it&#x27;s still a problem (and having an easy to use test corpus to try this on would be a huge help, e.g., what steps can I take with <code>cnpm</code> to setup a directory big enough to notice this problem).</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @BurntSushi on 2017-10-22 14:29</div>
+            <div class="event">Reopened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-22 14:29</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-22 14:36</div>
@@ -74,7 +74,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/chrmarti">@chrmarti</a> on 2017-10-24 17:42</div>
             <div class="timeline-body"><p>Great, thanks @BurntSushi! When testing it I see it panicking after a few (maybe unrelated) errors:</p>
-<pre><code>PS C:\devel\35659\cipchk&gt; (Measure-Command { &amp; 'C:\devel\ripgrep\target\debug\rg.exe' --files --no-ignore --hidden --follow -j1 -- . | Measure-Object –Line | Out-Default }).TotalSeconds
+<pre><code>PS C:\devel\35659\cipchk&gt; (Measure-Command { &amp; &#x27;C:\devel\ripgrep\target\debug\rg.exe&#x27; --files --no-ignore --hidden --follow -j1 -- . | Measure-Object –Line | Out-Default }).TotalSeconds
 File system loop found: .\node_modules\babel-core\node_modules\babel-register\node_modules\babel-core points to an ancestor .\node_modules\babel-core
 .\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-template\node_modules\babel-traverse\node_modules\babel-messages\node_modules\babel-runtime\node_modules\core-js\library\fn\dom-collections: The system cannot find the path specified. (os error 3)
 The system cannot find the path specified. (os error 3)
@@ -112,7 +112,7 @@ The system cannot find the path specified. (os error 3)
 .\node_modules\babel-plugin-transform-es2015-classes\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-helper-get-function-arity\node_modules\babel-runtime\node_modules\core-js\library\fn\object: The system cannot find the path specified. (os error 3)
 The system cannot find the path specified. (os error 3)
 .\node_modules\babel-plugin-transform-es2015-classes\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-helper-get-function-arity\node_modules\babel-runtime\node_modules\core-js\library\fn\promise: The system cannot find the path specified. (os error 3)
-thread 'main' panicked at 'BUG: list/path stacks out of sync', src\libcore\option.rs:819:4
+thread &#x27;main&#x27; panicked at &#x27;BUG: list/path stacks out of sync&#x27;, src\libcore\option.rs:819:4
 note: Run with `RUST_BACKTRACE=1` for a backtrace.
 
  Lines Words Characters Property
@@ -130,7 +130,7 @@ note: Run with `RUST_BACKTRACE=1` for a backtrace.
 <ol>
 <li>Does that happen with ripgrep 0.6.0?</li>
 <li>Can you run it with <code>RUST_BACKTRACE=1</code>?</li>
-<li>Would it be possible to list out the steps I'd need to follow to reproduce your results?</li>
+<li>Would it be possible to list out the steps I&#x27;d need to follow to reproduce your results?</li>
 </ol>
 </div>
         </div>
@@ -138,10 +138,10 @@ note: Run with `RUST_BACKTRACE=1` for a backtrace.
             <div class="timeline-header">Comment by <a href="https://github.com/chrmarti">@chrmarti</a> on 2017-10-24 17:53</div>
             <div class="timeline-body"><p>This is from running https://github.com/BurntSushi/ripgrep/commit/1aec4b11231ccb7de92e3008408e4d06a714d106 . A simple reproducible case on my machine is:</p>
 <pre><code>cnpm i babel-preset-es2015
-&amp; 'C:\devel\ripgrep\target\debug\rg.exe' --files --follow -j1 -- . | Measure-Object –Line
+&amp; &#x27;C:\devel\ripgrep\target\debug\rg.exe&#x27; --files --follow -j1 -- . | Measure-Object –Line
 </code></pre>
 <p>The full output with this and <code>RUST_BACKTRACE=1</code> is:</p>
-<pre><code>PS C:\devel\35659\panick&gt; &amp; 'C:\devel\ripgrep\target\debug\rg.exe' --files --follow -j1 -- . | Measure-Object –Line
+<pre><code>PS C:\devel\35659\panick&gt; &amp; &#x27;C:\devel\ripgrep\target\debug\rg.exe&#x27; --files --follow -j1 -- . | Measure-Object –Line
 .\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-template\node_modules\babel-traverse\node_modules\babel-messages\node_modules\babel-runtime\node_modules\core-js\library\fn\dom-collections: The system cannot find the path specified. (os error 3)
 The system cannot find the path specified. (os error 3)
 .\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-template\node_modules\babel-traverse\node_modules\babel-messages\node_modules\babel-runtime\node_modules\core-js\library\fn\function\virtual: The system cannot find the path specified. (os error 3)
@@ -178,7 +178,7 @@ The system cannot find the path specified. (os error 3)
 .\node_modules\babel-plugin-transform-es2015-classes\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-helper-get-function-arity\node_modules\babel-runtime\node_modules\core-js\library\fn\object: The system cannot find the path specified. (os error 3)
 The system cannot find the path specified. (os error 3)
 .\node_modules\babel-plugin-transform-es2015-classes\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-helper-get-function-arity\node_modules\babel-runtime\node_modules\core-js\library\fn\promise: The system cannot find the path specified. (os error 3)
-thread 'main' panicked at 'BUG: list/path stacks out of sync', src\libcore\option.rs:819:4
+thread &#x27;main&#x27; panicked at &#x27;BUG: list/path stacks out of sync&#x27;, src\libcore\option.rs:819:4
 stack backtrace:
    0: std::sys_common::backtrace::_print
              at C:\projects\rust\src\libstd\sys_common\backtrace.rs:94
@@ -239,27 +239,27 @@ stack backtrace:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/chrmarti">@chrmarti</a> on 2017-10-30 17:54</div>
-            <div class="timeline-body"><p>Btw., would it be an option to say that duplicate/missing results are unlikely and not fatal when you don't keep the files open while comparing ids? Maybe that could be enabled by a command line flag?</p>
+            <div class="timeline-body"><p>Btw., would it be an option to say that duplicate/missing results are unlikely and not fatal when you don&#x27;t keep the files open while comparing ids? Maybe that could be enabled by a command line flag?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-30 17:56</div>
-            <div class="timeline-body"><p>@chrmarti That thought has crossed my mind, and it is tempting to take. It's a tough balance to strike, and I'd rather not make something like this configurable.</p>
+            <div class="timeline-body"><p>@chrmarti That thought has crossed my mind, and it is tempting to take. It&#x27;s a tough balance to strike, and I&#x27;d rather not make something like this configurable.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-01 02:07</div>
-            <div class="timeline-body"><p>@chrmarti It looks like your <a href="https://github.com/BurntSushi/ripgrep/issues/633#issuecomment-339076246">comment containing the panic</a> isn't actually related to symlinks, but rather, the length of the path name. As an example, I tried running this in <code>cmd</code>:</p>
+            <div class="timeline-body"><p>@chrmarti It looks like your <a href="https://github.com/BurntSushi/ripgrep/issues/633#issuecomment-339076246">comment containing the panic</a> isn&#x27;t actually related to symlinks, but rather, the length of the path name. As an example, I tried running this in <code>cmd</code>:</p>
 <pre><code>$ dir C:\Users\andrew\work\bugs\ripgrep-633\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-template\node_modules\babel-traverse\node_modules\babel-messages\node_modules\babel-runtime\node_modules\core-js\library\fn\reflect
 </code></pre>
-<p>This told me the directory couldn't be found. I then removed the <code>\reflect</code> suffix and ran:</p>
+<p>This told me the directory couldn&#x27;t be found. I then removed the <code>\reflect</code> suffix and ran:</p>
 <pre><code>$ dir C:\Users\andrew\work\bugs\ripgrep-633\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-template\node_modules\babel-traverse\node_modules\babel-messages\node_modules\babel-runtime\node_modules\core-js\library\fn
 </code></pre>
-<p>This showed me the contents of the directory, which included a <code>reflect</code> sub-directory. I then tried cd'ing into <code>fn</code> and running <code>dir reflect</code>, but I got the same error. I then tried this:</p>
+<p>This showed me the contents of the directory, which included a <code>reflect</code> sub-directory. I then tried cd&#x27;ing into <code>fn</code> and running <code>dir reflect</code>, but I got the same error. I then tried this:</p>
 <pre><code>$ dir \\?\C:\Users\andrew\work\bugs\ripgrep-633\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-template\node_modules\babel-traverse\node_modules\babel-messages\node_modules\babel-runtime\node_modules\core-js\library\fn\reflect
 </code></pre>
-<p>My understanding is that the <code>\\?\</code> prefix permits the use of long path names, and this did indeed work. To me this implies that one of the bugs here is #364. With that said, ripgrep absolutely should not panic, so that's <em>another</em> bug.</p>
-<p>I did a little more investigation in the <code>node_modules</code> directory, and it's... kind of ridiculous. ripgrep doesn't just slow down on Windows, it also slows on Linux, and for good reason. Running against <code>cnpm</code>:</p>
+<p>My understanding is that the <code>\\?\</code> prefix permits the use of long path names, and this did indeed work. To me this implies that one of the bugs here is #364. With that said, ripgrep absolutely should not panic, so that&#x27;s <em>another</em> bug.</p>
+<p>I did a little more investigation in the <code>node_modules</code> directory, and it&#x27;s... kind of ridiculous. ripgrep doesn&#x27;t just slow down on Windows, it also slows on Linux, and for good reason. Running against <code>cnpm</code>:</p>
 <pre><code>$ time rg --files -L -uu -j1 ./ | wc -l
 2175424
 
@@ -275,13 +275,13 @@ real    0m0.019s
 user    0m0.004s
 sys     0m0.023s
 </code></pre>
-<p>So <code>cnpm</code> is adding over 2.1 million additional file entries. (On Windows, I get only ~1.3 million entries, likely because ripgrep doesn't descend beyond the maximum file path length.) That's a <strong>three order of magnitude</strong> increase. To ground you a bit, the entire Linux kernel source tree is a mere 56,919 files while the entire chromium repository is 234,000 files. Something seems very wrong in <code>cnpm</code> land, and I'm not sure ripgrep is going to be able to do much to improve the situation. (If anything, the long path name bug is probably helping matters here by preventing ripgrep from exploring the entire tree.) Note that you might want to make sure your stderr handling is decent on your end, since ripgrep is emitting lots of errors.</p>
-<p>I compared ripgrep's time to traverse the directory with parallelism enabled (because the single threaded walker has the bug you found) with the time it takes for <code>find</code> to run under cygwin on my Windows laptop. (Windows 10, 128GB SSD.) I redirected both programs to another file. <code>find</code> found more entries (seemingly because it handles long path names? but it reported a similar number as <code>find</code> does on my Linux machine). ripgrep took about 20 seconds while <code>find</code> took almost <strong>9 minutes</strong>. This isn't a surprise because the total output of <code>find</code> is almost a gigabyte while ripgrep's is about 25% of that. So you have hundreds of megabytes flowing through your pipe any time you try to crawl a cnpm produced <code>node_modules</code> directory with <code>-L/--follow</code> enabled. Just from eyeballing, it kind of seems like ripgrep's performance with respect to symlinks specifically is actually pretty decent. But there is just a metric shit ton of them.</p>
-<p>So here's my summary:</p>
+<p>So <code>cnpm</code> is adding over 2.1 million additional file entries. (On Windows, I get only ~1.3 million entries, likely because ripgrep doesn&#x27;t descend beyond the maximum file path length.) That&#x27;s a <strong>three order of magnitude</strong> increase. To ground you a bit, the entire Linux kernel source tree is a mere 56,919 files while the entire chromium repository is 234,000 files. Something seems very wrong in <code>cnpm</code> land, and I&#x27;m not sure ripgrep is going to be able to do much to improve the situation. (If anything, the long path name bug is probably helping matters here by preventing ripgrep from exploring the entire tree.) Note that you might want to make sure your stderr handling is decent on your end, since ripgrep is emitting lots of errors.</p>
+<p>I compared ripgrep&#x27;s time to traverse the directory with parallelism enabled (because the single threaded walker has the bug you found) with the time it takes for <code>find</code> to run under cygwin on my Windows laptop. (Windows 10, 128GB SSD.) I redirected both programs to another file. <code>find</code> found more entries (seemingly because it handles long path names? but it reported a similar number as <code>find</code> does on my Linux machine). ripgrep took about 20 seconds while <code>find</code> took almost <strong>9 minutes</strong>. This isn&#x27;t a surprise because the total output of <code>find</code> is almost a gigabyte while ripgrep&#x27;s is about 25% of that. So you have hundreds of megabytes flowing through your pipe any time you try to crawl a cnpm produced <code>node_modules</code> directory with <code>-L/--follow</code> enabled. Just from eyeballing, it kind of seems like ripgrep&#x27;s performance with respect to symlinks specifically is actually pretty decent. But there is just a metric shit ton of them.</p>
+<p>So here&#x27;s my summary:</p>
 <ul>
-<li>ripgrep can't handle long path names. That's a problem and I don't really know how to fix it. See #364.</li>
-<li>There is a bug in single threaded directory traversal on Windows. I haven't dug into this yet, but it should definitely get fixed.</li>
-<li>If ripgrep is going to print hundreds of MB worth of file paths, you're probably in for a bad time.</li>
+<li>ripgrep can&#x27;t handle long path names. That&#x27;s a problem and I don&#x27;t really know how to fix it. See #364.</li>
+<li>There is a bug in single threaded directory traversal on Windows. I haven&#x27;t dug into this yet, but it should definitely get fixed.</li>
+<li>If ripgrep is going to print hundreds of MB worth of file paths, you&#x27;re probably in for a bad time.</li>
 <li>I am by no means a Windows expert, so my intuition here could be way off. Please be on the look out for very basic mistakes on my part, and be skeptical of anything I say w.r.t. to Windows. :-)</li>
 </ul>
 </div>
@@ -293,7 +293,7 @@ sys     0m0.023s
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-01 02:10</div>
-            <div class="timeline-body"><p>w.r.t. long file names, @retep998 <a href="https://github.com/BurntSushi/ripgrep/issues/364#issuecomment-280148931">claims that I can enable a switch in a manifest</a> to turn on long file name support in Windows 10, but I don't understand how to do that. That would certainly be easier than doing path conversion manually.</p>
+            <div class="timeline-body"><p>w.r.t. long file names, @retep998 <a href="https://github.com/BurntSushi/ripgrep/issues/364#issuecomment-280148931">claims that I can enable a switch in a manifest</a> to turn on long file name support in Windows 10, but I don&#x27;t understand how to do that. That would certainly be easier than doing path conversion manually.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -306,17 +306,17 @@ sys     0m0.023s
             <div class="timeline-body"><blockquote>
 <p>So cnpm is adding over 2.1 million additional file entries.</p>
 </blockquote>
-<p>Wow. I'm guessing this is because of duplicates in the node_modules tree. Common dependencies are probably symlinked in multiple times, everywhere they are required.</p>
+<p>Wow. I&#x27;m guessing this is because of duplicates in the node_modules tree. Common dependencies are probably symlinked in multiple times, everywhere they are required.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2018-02-01 22:09</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-01 22:09</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-01 22:12</div>
-            <div class="timeline-body"><p>@chrmarti All right, I've fixed <code>walkdir</code> and updated ripgrep to bring in the new <code>walkdir</code> release which should fix the panic you reported above.</p>
-<p>I'm going to mark this issue as fixed since I think all issues that I'm aware of are either fixed (the panic is fixed and I think symlink performance is reasonable) or tracked elsewhere (e.g., #364 for long path names).</p>
-<p>I'd be happy to revisit the symlink performance issue if there's compelling evidence that we can do measurably better. A good example there might be showing the execution of another tool that can 1) successfully traverse <code>cnpm</code>'s <code>node_modules</code> directory contents and 2) print every file path that it visits and 3) doing it in a way that is faster than ripgrep today.</p>
+            <div class="timeline-body"><p>@chrmarti All right, I&#x27;ve fixed <code>walkdir</code> and updated ripgrep to bring in the new <code>walkdir</code> release which should fix the panic you reported above.</p>
+<p>I&#x27;m going to mark this issue as fixed since I think all issues that I&#x27;m aware of are either fixed (the panic is fixed and I think symlink performance is reasonable) or tracked elsewhere (e.g., #364 for long path names).</p>
+<p>I&#x27;d be happy to revisit the symlink performance issue if there&#x27;s compelling evidence that we can do measurably better. A good example there might be showing the execution of another tool that can 1) successfully traverse <code>cnpm</code>&#x27;s <code>node_modules</code> directory contents and 2) print every file path that it visits and 3) doing it in a way that is faster than ripgrep today.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -327,16 +327,16 @@ sys     0m0.023s
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-13 12:07</div>
-            <div class="timeline-body"><p>@warpdesign Thanks for the tip! Unfortunately, it doesn't really help. We need more details. Could you please open a new bug and fill in the issue template? Please remember that this is the ripgrep repo, and bugs should be reported against ripgrep using <code>rg</code> commands.</p>
+            <div class="timeline-body"><p>@warpdesign Thanks for the tip! Unfortunately, it doesn&#x27;t really help. We need more details. Could you please open a new bug and fill in the issue template? Please remember that this is the ripgrep repo, and bugs should be reported against ripgrep using <code>rg</code> commands.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2018-02-20 12:45</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-20 12:45</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:42:18 UTC
+        Synced at 2026-01-20 18:48:05 UTC
     </footer>
 </body>
 </html>

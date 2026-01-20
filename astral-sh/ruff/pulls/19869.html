@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>Don't cache files with diagnostics</h1>
+    <h1>Don&#x27;t cache files with diagnostics</h1>
 
     <div class="meta">
         <span class="state-icon state-merged"></span>
@@ -23,14 +23,14 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>To take advantage of the new diagnostics, we need to update our caching model to include all of the information supported by <code>ruff_db</code>'s diagnostic type. Instead of trying to serialize all of this information, Micha suggested simply not caching files with diagnostics, like we already do for files with syntax errors. This PR is an attempt at that approach.</p>
+            <div class="timeline-body">Summary
+<p>To take advantage of the new diagnostics, we need to update our caching model to include all of the information supported by <code>ruff_db</code>&#x27;s diagnostic type. Instead of trying to serialize all of this information, Micha suggested simply not caching files with diagnostics, like we already do for files with syntax errors. This PR is an attempt at that approach.</p>
 <p>This has the added benefit of trimming down our <code>Rule</code> derives since this was the last place the <code>FromStr</code>/<code>strum_macros::EnumString</code> implementation was used, as well as the (de)serialization macros and <code>CacheKey</code>.</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>Existing tests, with their input updated not to include a diagnostic, plus a new test showing that files with lint diagnostics are not cached.</p>
-<h2>Benchmarks</h2>
-<p>In addition to tests, we wanted to check that this doesn't degrade performance too much. I posted part of this new analysis in https://github.com/astral-sh/ruff/issues/18198#issuecomment-3175048672, but I'll duplicate it here. In short, there's not much difference between <code>main</code> and this branch for projects with few diagnostics (<code>home-assistant</code>, <code>airflow</code>), as expected. The difference for projects with many diagnostics (<code>cpython</code>) is quite a bit bigger (~300 ms vs ~220 ms), but most projects that run ruff regularly are likely to have very few diagnostics, so this may not be a problem practically.</p>
-<p>I guess GitHub isn't really rendering this as I intended, but the extra separator line is meant to separate the benchmarks on <code>main</code> (above the line) from this branch (below the line).</p>
+Benchmarks
+<p>In addition to tests, we wanted to check that this doesn&#x27;t degrade performance too much. I posted part of this new analysis in <a href="https://github.com/astral-sh/ruff/issues/18198">astral-sh/ruff#18198</a>#issuecomment-3175048672, but I&#x27;ll duplicate it here. In short, there&#x27;s not much difference between <code>main</code> and this branch for projects with few diagnostics (<code>home-assistant</code>, <code>airflow</code>), as expected. The difference for projects with many diagnostics (<code>cpython</code>) is quite a bit bigger (~300 ms vs ~220 ms), but most projects that run ruff regularly are likely to have very few diagnostics, so this may not be a problem practically.</p>
+<p>I guess GitHub isn&#x27;t really rendering this as I intended, but the extra separator line is meant to separate the benchmarks on <code>main</code> (above the line) from this branch (below the line).</p>
 <p>| Command                                                       | Mean [ms] | Min [ms] | Max [ms] |
 |:--------------------------------------------------------------|----------:|---------:|---------:|
 | <code>ruff check cpython --no-cache --isolated --exit-zero</code>        |     322.0 |    317.5 |    326.2 |
@@ -46,9 +46,9 @@
 | <code>ruff check home-assistant --isolated --exit-zero</code>            |      39.8 |     36.9 |     42.4 |
 | <code>ruff check airflow --no-cache --isolated --exit-zero</code>        |     134.5 |    131.3 |    140.6 |
 | <code>ruff check airflow --isolated --exit-zero</code>                   |      39.1 |     37.2 |     44.3 |</p>
-<p>I had Claude adapt one of the <a href="https://github.com/sharkdp/hyperfine/blob/master/scripts/plot_whisker.py">scripts</a> from the hyperfine repo to make this plot, so it's not quite perfect, but maybe it's still useful. The table is probably more reliable for close comparisons. I'll put more details about the benchmarks below for the sake of future reproducibility.</p>
-<p><img width="4472" height="2368" alt="image" src="https://github.com/user-attachments/assets/1c42d13e-818a-44e7-b34c-247340a936d7" /></p>
-<details><summary>Benchmark details</summary>
+<p>I had Claude adapt one of the <a href="https://github.com/sharkdp/hyperfine/blob/master/scripts/plot_whisker.py">scripts</a> from the hyperfine repo to make this plot, so it&#x27;s not quite perfect, but maybe it&#x27;s still useful. The table is probably more reliable for close comparisons. I&#x27;ll put more details about the benchmarks below for the sake of future reproducibility.</p>
+<p><img alt="image" src="https://github.com/user-attachments/assets/1c42d13e-818a-44e7-b34c-247340a936d7"></p>
+Benchmark details
 <p>
 
 <p>The versions of each project:</p>
@@ -58,9 +58,9 @@
 <li><code>airflow</code>: 29a1cb0cfde9d99b1774571688ed86cb60123896</li>
 </ul>
 <p>The last two are just the main branches at the time I cloned the repos.</p>
-<p>I don't think our Ruff config should be applied since I used <code>--isolated</code>, but these are cloned into my copy of Ruff at <code>crates/ruff_linter/resources/test</code>, and I trimmed the <code>./target/release/</code> prefix from each of the commands, but these are builds of Ruff in release mode.</p>
-<p>And here's the script with the <code>hyperfine</code> invocation:</p>
-<pre><code class="language-shell">#!/bin/bash
+<p>I don&#x27;t think our Ruff config should be applied since I used <code>--isolated</code>, but these are cloned into my copy of Ruff at <code>crates/ruff_linter/resources/test</code>, and I trimmed the <code>./target/release/</code> prefix from each of the commands, but these are builds of Ruff in release mode.</p>
+<p>And here&#x27;s the script with the <code>hyperfine</code> invocation:</p>
+<pre><code>#!/bin/bash
 
 cargo build --release --bin ruff
 
@@ -85,30 +85,30 @@ hyperfine --warmup 10 --export-json $base.json --export-markdown $base.md \
 </code></pre>
 <p>I ran this once on <code>main</code> (<code>baseline</code> in the graph, top half of the table) and once on this branch (<code>nocache</code> and bottom of the table).</p>
 </p>
-</details> 
+ 
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-11 17:14</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @ntBre on 2025-08-11 17:45</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-11 17:45</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-08-11 17:45</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-11 17:45</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-11 18:08</div>
-            <div class="timeline-body"><p>I don't mind the regression for CPython too much. It has a vast amount of diagnostics which should be uncommon. What I'm more surprised by is the regression for homeassitant and airflow. Do they have any diagnostics, is it just noise, or do you know where the regression is comming from?</p>
+            <div class="timeline-body"><p>I don&#x27;t mind the regression for CPython too much. It has a vast amount of diagnostics which should be uncommon. What I&#x27;m more surprised by is the regression for homeassitant and airflow. Do they have any diagnostics, is it just noise, or do you know where the regression is comming from?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -117,16 +117,16 @@ hyperfine --warmup 10 --export-json $base.json --export-markdown $base.md \
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/cache.rs</code>:392 on 2025-08-11 18:08</div>
-            <div class="timeline-body"><p>What's preventing us from removing the Notebook index too? (in which case <code>FileCacheData</code> only needs to store whether a file had any violations)</p>
+            <div class="timeline-body"><p>What&#x27;s preventing us from removing the Notebook index too? (in which case <code>FileCacheData</code> only needs to store whether a file had any violations)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-11 18:14</div>
             <div class="timeline-body"><blockquote>
-<p>I don't mind the regression for CPython too much. It has a vast amount of diagnostics which should be uncommon. What I'm more surprised by is the regression for homeassitant and airflow. Do they have any diagnostics, is it just noise, or do you know where the regression is comming from?</p>
+<p>I don&#x27;t mind the regression for CPython too much. It has a vast amount of diagnostics which should be uncommon. What I&#x27;m more surprised by is the regression for homeassitant and airflow. Do they have any diagnostics, is it just noise, or do you know where the regression is comming from?</p>
 </blockquote>
-<p>I <em>think</em> it's mostly noise (you can see CPython without a cache was 8 ms slower in the second run), but they both have some diagnostics too. <code>home-assistant</code> has 21 diagnostics, and <code>airflow</code> has 143, compared to 15,577 in <code>cpython</code>.</p>
-<p>I'll take another look at the notebook index too.</p>
+<p>I <em>think</em> it&#x27;s mostly noise (you can see CPython without a cache was 8 ms slower in the second run), but they both have some diagnostics too. <code>home-assistant</code> has 21 diagnostics, and <code>airflow</code> has 143, compared to 15,577 in <code>cpython</code>.</p>
+<p>I&#x27;ll take another look at the notebook index too.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -135,13 +135,13 @@ hyperfine --warmup 10 --export-json $base.json --export-markdown $base.md \
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/src/cache.rs</code>:392 on 2025-08-11 19:13</div>
-            <div class="timeline-body"><p>Ah of course, thanks. It kind of looked used, but obviously we won't actually look up a notebook in this map if the file has no diagnostics. I replaced <code>LintCacheData</code> with a <code>linted</code> field to mirror the <code>formatted</code> field.</p>
-<p>I also updated <code>lint_path</code> (and <code>lint_stdin</code>) to avoid constructing a <code>NotebookIndex</code> that wouldn't be cached (e2bc85e56a). Otherwise the <code>same_results</code> cache tests were failing with differences in the <code>NotebookIndex</code> field. At first I just fixed this in the test, but it seemed like a small optimization in the real code anyway.</p>
+            <div class="timeline-body"><p>Ah of course, thanks. It kind of looked used, but obviously we won&#x27;t actually look up a notebook in this map if the file has no diagnostics. I replaced <code>LintCacheData</code> with a <code>linted</code> field to mirror the <code>formatted</code> field.</p>
+<p>I also updated <code>lint_path</code> (and <code>lint_stdin</code>) to avoid constructing a <code>NotebookIndex</code> that wouldn&#x27;t be cached (e2bc85e56a). Otherwise the <code>same_results</code> cache tests were failing with differences in the <code>NotebookIndex</code> field. At first I just fixed this in the test, but it seemed like a small optimization in the real code anyway.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/cache.rs</code>:331 on 2025-08-12 07:28</div>
-            <div class="timeline-body"><p>This feels a bit overkill, given that it always returns an empty <code>Diagnostics</code> or <code>None</code>. I think I'd change this to a <code>bool</code> which should also allow simplifying the call site, e.g. the following can be removed entirely:</p>
+            <div class="timeline-body"><p>This feels a bit overkill, given that it always returns an empty <code>Diagnostics</code> or <code>None</code>. I think I&#x27;d change this to a <code>bool</code> which should also allow simplifying the call site, e.g. the following can be removed entirely:</p>
 <pre><code>// `FixMode::Generate` and `FixMode::Diff` rely on side-effects (writing to disk,
 // and writing the diff to stdout, respectively). If a file has diagnostics, we
 // need to avoid reading from and writing to the cache in these modes.
@@ -150,14 +150,14 @@ hyperfine --warmup 10 --export-json $base.json --export-markdown $base.md \
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/cache.rs</code>:580 on 2025-08-12 07:31</div>
-            <div class="timeline-body"><p>Nit: Maybe rename <code>errors</code> to <code>paths_with_diagnostics</code> to make it clear that this isn't storing the errors, but is a set of paths</p>
+            <div class="timeline-body"><p>Nit: Maybe rename <code>errors</code> to <code>paths_with_diagnostics</code> to make it clear that this isn&#x27;t storing the errors, but is a set of paths</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/diagnostics.rs</code>:329 on 2025-08-12 07:33</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">        // We don't cache files with diagnostics.
+            <div class="timeline-body"><pre><code>        // We don&#x27;t cache files with diagnostics.
 </code></pre>
-<p>I think this allows us to now remove <code>result.has_syntax_errors</code> all together. It's only used in the benchmarking code but we can just get that information from the parsed module instead.</p>
+<p>I think this allows us to now remove <code>result.has_syntax_errors</code> all together. It&#x27;s only used in the benchmarking code but we can just get that information from the parsed module instead.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -172,7 +172,7 @@ hyperfine --warmup 10 --export-json $base.json --export-markdown $base.md \
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-12 07:38</div>
-            <div class="timeline-body"><p>I think there's some more simplification that can be done here.</p>
+            <div class="timeline-body"><p>I think there&#x27;s some more simplification that can be done here.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -181,7 +181,7 @@ hyperfine --warmup 10 --export-json $base.json --export-markdown $base.md \
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/src/diagnostics.rs</code>:329 on 2025-08-12 14:05</div>
-            <div class="timeline-body"><p>I think the current assertion in the benchmark is a bit stronger than what we get from the parsed module because it also includes semantic syntax errors, but I'm not sure that was intentional. The comment on the assertion just says &quot;parse errors,&quot; so it's probably fine to assert only on those.</p>
+            <div class="timeline-body"><p>I think the current assertion in the benchmark is a bit stronger than what we get from the parsed module because it also includes semantic syntax errors, but I&#x27;m not sure that was intentional. The comment on the assertion just says &quot;parse errors,&quot; so it&#x27;s probably fine to assert only on those.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -190,7 +190,7 @@ hyperfine --warmup 10 --export-json $base.json --export-markdown $base.md \
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/src/diagnostics.rs</code>:329 on 2025-08-12 14:15</div>
-            <div class="timeline-body"><p>Do we need some kind of assertion on the benchmark result to make sure it doesn't get optimized out? If we assert on the parsed module, <code>result</code> becomes unused.</p>
+            <div class="timeline-body"><p>Do we need some kind of assertion on the benchmark result to make sure it doesn&#x27;t get optimized out? If we assert on the parsed module, <code>result</code> becomes unused.</p>
 <p>We can at least trim down the <code>LinterResult</code> methods to <code>has_no_syntax_errors</code> and <code>has_invalid_syntax</code>. Those are both only used in one place:</p>
 <p>https://github.com/astral-sh/ruff/blob/ad28b80f967282aaaaaff59c722faf087125ffc1/crates/ruff_benchmark/benches/linter.rs#L91-L92</p>
 <p>(after removing the <code>!</code> and using <code>has_no_syntax_errors</code>)</p>
@@ -204,10 +204,10 @@ hyperfine --warmup 10 --export-json $base.json --export-markdown $base.md \
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/diagnostics.rs</code>:329 on 2025-08-12 14:23</div>
             <div class="timeline-body"><blockquote>
-<p>The comment on the assertion just says &quot;parse errors,&quot; so it's probably fine to assert only on those.</p>
+<p>The comment on the assertion just says &quot;parse errors,&quot; so it&#x27;s probably fine to assert only on those.</p>
 </blockquote>
-<p>Yeah, I think that's fine. The reason I added the assertion originally because we used to download the test files from Github and I once copied the wrong link (not the raw.github but the regular github.com link). The result was that we downloaded and benchmarked the HTML files instead of the Python files... whoops :)</p>
-<p>That's why this assertion is there</p>
+<p>Yeah, I think that&#x27;s fine. The reason I added the assertion originally because we used to download the test files from Github and I once copied the wrong link (not the raw.github but the regular github.com link). The result was that we downloaded and benchmarked the HTML files instead of the Python files... whoops :)</p>
+<p>That&#x27;s why this assertion is there</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -225,7 +225,7 @@ hyperfine --warmup 10 --export-json $base.json --export-markdown $base.md \
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/src/diagnostics.rs</code>:340 on 2025-08-12 14:31</div>
-            <div class="timeline-body"><p>Ah, I think you're right. I guess this is different from <code>formatted</code> since that always gets set to <code>true</code> whether the file was reformatted or already formatted. I reworked this section a bit to set <code>linted</code> to <code>diagnostics.is_empty() &amp;&amp; use_fixes</code> where <code>use_fixes</code> is the result of the <code>match</code> above this.</p>
+            <div class="timeline-body"><p>Ah, I think you&#x27;re right. I guess this is different from <code>formatted</code> since that always gets set to <code>true</code> whether the file was reformatted or already formatted. I reworked this section a bit to set <code>linted</code> to <code>diagnostics.is_empty() &amp;&amp; use_fixes</code> where <code>use_fixes</code> is the result of the <code>match</code> above this.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -234,7 +234,7 @@ hyperfine --warmup 10 --export-json $base.json --export-markdown $base.md \
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/src/diagnostics.rs</code>:347 on 2025-08-12 14:40</div>
-            <div class="timeline-body"><p>We could also just do this filtering step in the test (or adjust the assertion not to check the notebook index), if you prefer. This didn't show any difference in the benchmarks, so it's not really helpful as an optimization, especially if it's confusing.</p>
+            <div class="timeline-body"><p>We could also just do this filtering step in the test (or adjust the assertion not to check the notebook index), if you prefer. This didn&#x27;t show any difference in the benchmarks, so it&#x27;s not really helpful as an optimization, especially if it&#x27;s confusing.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -252,27 +252,27 @@ hyperfine --warmup 10 --export-json $base.json --export-markdown $base.md \
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/src/diagnostics.rs</code>:347 on 2025-08-12 15:26</div>
-            <div class="timeline-body"><p>I'm realizing now that we probably <em>also</em> need the docs since it still affects <code>Diagnostics</code> created from the cache...</p>
+            <div class="timeline-body"><p>I&#x27;m realizing now that we probably <em>also</em> need the docs since it still affects <code>Diagnostics</code> created from the cache...</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-08-12 16:02</div>
-            <div class="timeline-body"><p>Nice. I think the perf regressions aren't unreasonable and it simplifies the implementation quiet a lot</p>
+            <div class="timeline-body"><p>Nice. I think the perf regressions aren&#x27;t unreasonable and it simplifies the implementation quiet a lot</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> added by @ntBre on 2025-08-12 19:25</div>
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-12 19:25</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-12 19:28</div>
-            <div class="timeline-body"><p><code>internal</code> might not be the right label here, but I don't really want it in the release notes. I certainly hope it doesn't cause any user-noticeable slowdown.</p>
+            <div class="timeline-body"><p><code>internal</code> might not be the right label here, but I don&#x27;t really want it in the release notes. I certainly hope it doesn&#x27;t cause any user-noticeable slowdown.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @ntBre on 2025-08-12 19:28</div>
+            <div class="event">Merged by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-12 19:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ntBre on 2025-08-12 19:28</div>
+            <div class="event">Closed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-12 19:28</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-08-12 19:28</div>
@@ -280,7 +280,7 @@ hyperfine --warmup 10 --export-json $base.json --export-markdown $base.md \
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:15:00 UTC
+        Synced at 2026-01-20 19:17:38 UTC
     </footer>
 </body>
 </html>

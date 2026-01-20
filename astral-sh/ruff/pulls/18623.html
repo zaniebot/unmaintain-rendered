@@ -23,13 +23,13 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>The main motivation for this refactor was to port the ty LSP refactors to Ruff. However, I ran into the problem that <code>ResolvedClientSettings::new</code> uses <code>show_err_msg</code> that now would require a <code>Client</code>, but I don't easily have access to a <code>Client</code> in <code>make_document_ref</code> (which is called from <code>take_snapshot</code>).</p>
-<p>Now, the refactor in this PR goes beyond what's required to remove the <code>Client</code> dependency but I only realized this when I was done with the larger refactor. I'm interested in second opinions on if I should narrow the refactor or if, what I've done here, overall improves the code (I think it does).</p>
+            <div class="timeline-body">Summary
+<p>The main motivation for this refactor was to port the ty LSP refactors to Ruff. However, I ran into the problem that <code>ResolvedClientSettings::new</code> uses <code>show_err_msg</code> that now would require a <code>Client</code>, but I don&#x27;t easily have access to a <code>Client</code> in <code>make_document_ref</code> (which is called from <code>take_snapshot</code>).</p>
+<p>Now, the refactor in this PR goes beyond what&#x27;s required to remove the <code>Client</code> dependency but I only realized this when I was done with the larger refactor. I&#x27;m interested in second opinions on if I should narrow the refactor or if, what I&#x27;ve done here, overall improves the code (I think it does).</p>
 <p>The changes required to remove the <code>Client</code> dependency are:</p>
 <ol>
-<li>Change <code>ResolvedClientSettings::new</code> to return a <code>Result</code>. This way, it's up to the caller to call <code>show_err_msg</code></li>
-<li>Introduce a new <code>GlobalClientSettings</code> that validates the global options exactly once (instead everytime they're needed). We can store a <code>Client</code> on <code>GlobalClientOptions</code> instead of having to pass it to <code>make_document_ref</code>.</li>
+<li>Change <code>ResolvedClientSettings::new</code> to return a <code>Result</code>. This way, it&#x27;s up to the caller to call <code>show_err_msg</code></li>
+<li>Introduce a new <code>GlobalClientSettings</code> that validates the global options exactly once (instead everytime they&#x27;re needed). We can store a <code>Client</code> on <code>GlobalClientOptions</code> instead of having to pass it to <code>make_document_ref</code>.</li>
 </ol>
 <p>Now, the other refactor that I did was to align the settings handling with Ruff/ty:</p>
 <ul>
@@ -42,7 +42,7 @@
 </li>
 </ul>
 <p>I find this two staged process easier to reason about and using the same terminology as in Ruff and ty helps when navigating the code.</p>
-<h2>Test plan</h2>
+Test plan
 <ul>
 <li>I tested that toggling global options toggles the corresponding behavior in the server</li>
 <li>I verified that settings can be overriden at the workspace level</li>
@@ -51,7 +51,7 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2025-06-11 09:30</div>
+            <div class="event">Label <span class="label">server</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-11 09:30</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-11 09:31</div>
@@ -73,12 +73,12 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-11 09:36</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
@@ -88,19 +88,19 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session/options.rs</code>:442 on 2025-06-11 11:22</div>
-            <div class="timeline-body"><p>It's a bit unfortunate that this is now our third version of <code>Combine</code>. I tried to use Ruff's <code>CombineOptions</code> but had to realise that the server's combine logic is closer to ty's but also inconsistent. Making it impossible to use either ty's nor Ruff's implementation</p>
+            <div class="timeline-body"><p>It&#x27;s a bit unfortunate that this is now our third version of <code>Combine</code>. I tried to use Ruff&#x27;s <code>CombineOptions</code> but had to realise that the server&#x27;s combine logic is closer to ty&#x27;s but also inconsistent. Making it impossible to use either ty&#x27;s nor Ruff&#x27;s implementation</p>
 <ul>
-<li>Unlike Ruff, the server deeply merges options. E.g., setting <code>lint</code> in the workspace settings doesn't override all <code>lint</code> settings from the global settings.</li>
-<li>Unlike ty, the server doesn't merge vectors.</li>
-<li>The server was inconsistent about how to handle <code>.configuration</code>: Before, it tried to resolve the field from the workspace, but it fell back to the <code>configuration</code> field from the global settings if, e.g., the file didn't exist. Now, we'll use the <code>configuration</code> value from the workspace without falling back to the global settings <code>configuration</code> if the server fails to resolve the configuration. This seems more correct in my view (and consistent with how we handle configurations in other places)</li>
+<li>Unlike Ruff, the server deeply merges options. E.g., setting <code>lint</code> in the workspace settings doesn&#x27;t override all <code>lint</code> settings from the global settings.</li>
+<li>Unlike ty, the server doesn&#x27;t merge vectors.</li>
+<li>The server was inconsistent about how to handle <code>.configuration</code>: Before, it tried to resolve the field from the workspace, but it fell back to the <code>configuration</code> field from the global settings if, e.g., the file didn&#x27;t exist. Now, we&#x27;ll use the <code>configuration</code> value from the workspace without falling back to the global settings <code>configuration</code> if the server fails to resolve the configuration. This seems more correct in my view (and consistent with how we handle configurations in other places)</li>
 </ul>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Refactor Ruff-server options" to "Centralize client options validation" by @MichaReiser on 2025-06-11 11:30</div>
+            <div class="event">Renamed from &quot;Refactor Ruff-server options&quot; to &quot;Centralize client options validation&quot; by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-11 11:30</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @MichaReiser on 2025-06-11 11:39</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-11 11:39</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-11 11:57</div>
@@ -128,7 +128,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/server.rs</code>:80 on 2025-06-12 07:52</div>
             <div class="timeline-body"><p>Rename to align with the new enum name</p>
-<pre><code class="language-suggestion">        let mut all_options = AllOptions::from_value(
+<pre><code>        let mut all_options = AllOptions::from_value(
 </code></pre>
 </div>
         </div>
@@ -147,7 +147,7 @@
 <p>In (1), this split between the global and workspace mainly exists in VS Code and is one of the reason I want to move us away from this model and pull the settings for a workspace from the client directly so that the client gives us the final value that we need to use and the only thing we need to do is (2).</p>
 <blockquote>
 <ul>
-<li>The server was inconsistent about how to handle <code>.configuration</code>: Before, it tried to resolve the field from the workspace, but it fell back to the <code>configuration</code> field from the global settings if, e.g., the file didn't exist. Now, we'll use the <code>configuration</code> value from the workspace without falling back to the global settings <code>configuration</code> if the server fails to resolve the configuration. This seems more correct in my view (and consistent with how we handle configurations in other places)</li>
+<li>The server was inconsistent about how to handle <code>.configuration</code>: Before, it tried to resolve the field from the workspace, but it fell back to the <code>configuration</code> field from the global settings if, e.g., the file didn&#x27;t exist. Now, we&#x27;ll use the <code>configuration</code> value from the workspace without falling back to the global settings <code>configuration</code> if the server fails to resolve the configuration. This seems more correct in my view (and consistent with how we handle configurations in other places)</li>
 </ul>
 </blockquote>
 <p>Yeah, I agree.</p>
@@ -155,25 +155,25 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-06-12 08:44</div>
-            <div class="timeline-body"><p>Looks good! Thanks for making this change. I think what you're calling &quot;combine&quot; is actually &quot;choosing&quot; between the workspace and global options :)</p>
+            <div class="timeline-body"><p>Looks good! Thanks for making this change. I think what you&#x27;re calling &quot;combine&quot; is actually &quot;choosing&quot; between the workspace and global options :)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @MichaReiser on 2025-06-12 16:58</div>
+            <div class="event">Merged by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-12 16:58</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2025-06-12 16:58</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-12 16:58</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-06-12 16:58</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2025-06-12 16:58</div>
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-12 16:58</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:13:21 UTC
+        Synced at 2026-01-20 19:15:28 UTC
     </footer>
 </body>
 </html>

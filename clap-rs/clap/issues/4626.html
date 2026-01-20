@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/tmccombs">@tmccombs</a></div>
-            <div class="timeline-body"><p>As brought up in #4600 and #3661, there are cases where it would be nice to support additional types with special semantics for clap_derive fields. However, doing so for any existing isn't backwards compatible, because users might have custom value parsers that produce those types. In addition, currently in order to opt out of special behavior for field types of <code>Opt</code> or <code>Vec</code>, you need to fully qualify the paths for those types (ex. <code>::std::vec::Vec</code>), which is both undocumented, and non-obvious. It would be nice to have a consistent, easy to understand way to specify how 0 or more values for an option are aggregated into a single type.</p>
+            <div class="timeline-body"><p>As brought up in #4600 and #3661, there are cases where it would be nice to support additional types with special semantics for clap_derive fields. However, doing so for any existing isn&#x27;t backwards compatible, because users might have custom value parsers that produce those types. In addition, currently in order to opt out of special behavior for field types of <code>Opt</code> or <code>Vec</code>, you need to fully qualify the paths for those types (ex. <code>::std::vec::Vec</code>), which is both undocumented, and non-obvious. It would be nice to have a consistent, easy to understand way to specify how 0 or more values for an option are aggregated into a single type.</p>
 <p>In particular here are some cases that are currently difficult or impossible to include in a <code>Parser</code> derived using clap_derive:</p>
 <ul>
 <li><code>Vec&lt;Vec&lt;T&gt;&gt;</code> containing the values passed in, grouped by occurrence</li>
@@ -33,7 +33,7 @@
 <li>Probably others</li>
 </ul>
 <p>The current types with special behavior are described <a href="https://docs.rs/clap/latest/clap/_derive/index.html#arg-types">here</a>. It should also be noted, that if you specify an action of <code>Count</code> with an integral field type, also sort of fits in this category.</p>
-<h1>Requirements</h1>
+Requirements
 <ul>
 <li>Derive code continues to be easy to write and read</li>
 <li>Can both configure the <code>Arg</code> and extract the value from <code>ArgMatches</code> for our specialized types, including<ul>
@@ -49,15 +49,15 @@
 </ul>
 </li>
 </ul>
-<h1>Options</h1>
-<h2>Add semantics for additional types in a breaking change</h2>
+Options
+Add semantics for additional types in a breaking change
 <p>This perhaps the most straightforward way to do it. But it has several downsides:</p>
 <ol>
 <li>It requires breaking changes, which might not be caught by the compiler</li>
 <li>It adds more &quot;magic&quot; to how types communicate information to the derive macro</li>
 <li>It increases the importance of being able to opt</li>
 </ol>
-<h2>Add an additional argument to the arg attribute</h2>
+Add an additional argument to the arg attribute
 <p>We could add one or more additional arguments to the <code>arg</code> attribute on fields.</p>
 <p>There are a few ways this could be done:</p>
 <ol>
@@ -69,11 +69,11 @@
 <p>1-3 have the downside that either the attribute must agree with the type of the field, or there has to be some magic conversion of the field type.</p>
 <p>4 would make it difficult to express sitiutations <code>Option&lt;Vec&lt;MyType&gt;&gt;</code> where the value parser parses a <code>Vec&lt;MyType&gt;</code>, but the <code>Option</code> is because the option is optional. It also still has the backwards
 compatibility problem if we add anything new in the future.</p>
-<h3>User-extensible trait</h3>
+User-extensible trait
 <p>For 3 above, we can define a trait that encapsulates the wanted behavior, and give the derive macro an implementation of that trait. While it can be defined for standard types in clap_derive, it would
 also be possible to allow users to create their own implementations, opening up additional ways to expand this functionality in other crates.</p>
 <p>Note: bikeshed on the actual names</p>
-<pre><code class="language-rust">trait AggregateParser {
+<pre><code>trait AggregateParser {
   type Aggregate;
 
   /// Make any necessary changes to the `Arg` before it is used in a `Command`
@@ -85,7 +85,7 @@ also be possible to allow users to create their own implementations, opening up 
 }
 </code></pre>
 <p>And one possible implementation would be:</p>
-<pre><code class="language-rust">struct OptionalValues&lt;T&gt;(PhantomData&lt;T&gt;); // goes with `Option&lt;Vec&lt;T&gt;&gt;`
+<pre><code>struct OptionalValues&lt;T&gt;(PhantomData&lt;T&gt;); // goes with `Option&lt;Vec&lt;T&gt;&gt;`
 impl&lt;T&gt; AggregateParser for OptionalValues&lt;T&gt; {
   type Aggregate = Option&lt;Vec&lt;T&gt;&gt;;
 
@@ -102,9 +102,9 @@ impl&lt;T&gt; AggregateParser for OptionalValues&lt;T&gt; {
   }
 }
 </code></pre>
-<p>This could potentially use  GATs, so that it isn't necessary to include type parameters to the type itself.</p>
-<h3>Expected Example Code</h3>
-<pre><code class="language-rust">// 1. different arguments
+<p>This could potentially use  GATs, so that it isn&#x27;t necessary to include type parameters to the type itself.</p>
+Expected Example Code
+<pre><code>// 1. different arguments
 #[arg(long, optional)]
 a: Option&lt;u32&gt;,
 #[arg(long, flag)]
@@ -136,7 +136,7 @@ c: Vec&lt;Vec&lt;String&gt;&gt;,
 #[arg(long, magic_types)]
 a: Vec&lt;Vec&lt;String&gt;&gt;
 </code></pre>
-<h2>Support parsing a macro invocation inside the struct definition</h2>
+Support parsing a macro invocation inside the struct definition
 <p>This might look like:</p>
 <ul>
 <li><code>optional!(T)</code> is equivalent to the current <code>Option&lt;T&gt;</code></li>
@@ -147,7 +147,7 @@ a: Vec&lt;Vec&lt;String&gt;&gt;
 <li>Maybe for completeness also have <code>required!(T)</code> which is the same as T but would make the option required?</li>
 </ul>
 <p>These all use the Value type <code>T</code>, but it could also use the final type instead (for example: <code>occurrences!(Vec&lt;Vec&lt;T&gt;&gt;)</code>)</p>
-<h3>Custom macros</h3>
+Custom macros
 <p>This method could potentially support custom behavior by delegating to actual macro invocations in the generated impl. If the macro used looked like <code>example!(T)</code> then the generated code would have the following:</p>
 <ul>
 <li>When implementing <code>CommandFactory</code> invoking the macro like: <code>example!(T, arg: arg_value)</code> where <code>arg_value</code> is the <code>Arg</code> for the field, and it returns a new <code>Arg</code> to actually use, so that it can make modifications to the argument.</li>
@@ -155,8 +155,8 @@ a: Vec&lt;Vec&lt;String&gt;&gt;
 <li>When implementing <code>FromArgMatches</code>, to get the value of the field, invoke <code>example!(T, matches: matches_val, name)</code> where <code>matches_val</code> is an <code>ArgMatches</code> and <code>name</code> is the name of the option to extract.</li>
 </ul>
 <p>Note the similarity between this and the custom trait in the section on using an attribute</p>
-<h3>Expected Example Code</h3>
-<pre><code class="language-rust">#[arg(long)]
+Expected Example Code
+<pre><code>#[arg(long)]
 a: optional!(u32),
 #[arg(long)]
 b: flag!(),
@@ -165,15 +165,15 @@ c:  occurrences!(String),
 #[arg(long, optional_option)]
 d: optional_option!(String),
 </code></pre>
-<h2>Use newtypes</h2>
-<p>Wrapper types might be the least confusing, since they would be clearly intended for the purpose of communicating how the field should be parsed. However, they are probably the least ergonomic to use, since you would often have to unwrap the value. Although... I'm not sure how to determine for sure that the path actually points to the right type, and not a user-defined type with the same name, without require the type to be fully specified.</p>
+Use newtypes
+<p>Wrapper types might be the least confusing, since they would be clearly intended for the purpose of communicating how the field should be parsed. However, they are probably the least ergonomic to use, since you would often have to unwrap the value. Although... I&#x27;m not sure how to determine for sure that the path actually points to the right type, and not a user-defined type with the same name, without require the type to be fully specified.</p>
 <p>From @epage:</p>
 <blockquote>
-<p>One option would be to use deref specialization. We could move some (or all?) of the type handling to a macro that takes in a field's type and uses deref specialization to find the right Arg policy type which would have a function to apply that policy to an Arg</p>
+<p>One option would be to use deref specialization. We could move some (or all?) of the type handling to a macro that takes in a field&#x27;s type and uses deref specialization to find the right Arg policy type which would have a function to apply that policy to an Arg</p>
 </blockquote>
 <p>Another possibility is we could have the newtypes implement a trait similar to the one defined above in <a href="#user-extensible-trait">User-extensible trait</a> (but with <code>Self</code> instead of <code>Self::Aggregate</code>) for the newtypes. Tha could also potentially make it user-extensible, but we still have the question of how to identify if a type is one of these types and extract the type for the value parser. Perhaps it could be combined witht he autoref specialized macro @epage mentioned above? Or use an attribute. Probably if it is user-extensible we would require that it has 0 or 1 type parameters, and if it is 1, use that to infer the type for th value parser. Or maybe we could use an associated type?</p>
-<h3>Expected Example Code</h3>
-<pre><code class="language-rust">#[arg(long)]
+Expected Example Code
+<pre><code>#[arg(long)]
 a: Optional&lt;u32&gt;,
 #[arg(long)]
 b: Flag,
@@ -183,21 +183,21 @@ c: Occurrences&lt;String&gt;,
 d: OptionalOption&lt;String&gt;,
 </code></pre>
 <p>Footnote:
-I haven't put a lot of thought into the specific names for types, macros, attribute arguments etc. We can hash out better names for those once we decide on the general direction.</p>
+I haven&#x27;t put a lot of thought into the specific names for types, macros, attribute arguments etc. We can hash out better names for those once we decide on the general direction.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">C-enhancement</span> added by @epage on 2023-01-11 13:11</div>
+            <div class="event">Label <span class="label">C-enhancement</span> added by <a href="https://github.com/epage">@epage</a> on 2023-01-11 13:11</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2023-01-11 13:11</div>
+            <div class="event">Label <span class="label">A-derive</span> added by <a href="https://github.com/epage">@epage</a> on 2023-01-11 13:11</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">S-waiting-on-design</span> added by @epage on 2023-01-11 13:11</div>
+            <div class="event">Label <span class="label">S-waiting-on-design</span> added by <a href="https://github.com/epage">@epage</a> on 2023-01-11 13:11</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-01-11 13:22</div>
-            <div class="timeline-body"><p>I've added a requirements section and changed the headers so it was easier to see what the top-level options are.</p>
+            <div class="timeline-body"><p>I&#x27;ve added a requirements section and changed the headers so it was easier to see what the top-level options are.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -206,22 +206,22 @@ I haven't put a lot of thought into the specific names for types, macros, attrib
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../pulls/4635.html">clap-rs/clap#4635</a> on 2023-01-13 03:38</div>
+            <div class="event">Referenced in <a>clap-rs/clap#4635</a> on 2023-01-13 03:38</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/4636.html">clap-rs/clap#4636</a> on 2023-01-13 14:49</div>
+            <div class="event">Referenced in <a>clap-rs/clap#4636</a> on 2023-01-13 14:49</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/4481.html">clap-rs/clap#4481</a> on 2023-01-30 13:55</div>
+            <div class="event">Referenced in <a>clap-rs/clap#4481</a> on 2023-01-30 13:55</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/4679.html">clap-rs/clap#4679</a> on 2023-02-06 15:49</div>
+            <div class="event">Referenced in <a>clap-rs/clap#4679</a> on 2023-02-06 15:49</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Proposal: more extensible pattern for clap derive field types" to "Improve how we infer behavior from field types" by @epage on 2023-02-10 16:13</div>
+            <div class="event">Renamed from &quot;Proposal: more extensible pattern for clap derive field types&quot; to &quot;Improve how we infer behavior from field types&quot; by <a href="https://github.com/epage">@epage</a> on 2023-02-10 16:13</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/3114.html">clap-rs/clap#3114</a> on 2023-02-13 16:54</div>
+            <div class="event">Referenced in <a>clap-rs/clap#3114</a> on 2023-02-13 16:54</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/valkum">@valkum</a> on 2023-02-13 18:24</div>
@@ -231,24 +231,24 @@ Is this something you thought of @tmccombs ? If not, as you thought about differ
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tmccombs">@tmccombs</a> on 2023-02-14 07:46</div>
-            <div class="timeline-body"><p>Are you suggesting having a way to derive <code>CommandFactory</code> without deriving <code>FromArgMatches</code>? I could see there being cases where that might be useful, but that removes a lot of the usefulness of clap_derive IMO. And I don't really see how it solves the original problem. Namely that there are additional types, such as <code>Vec&lt;Vec&lt;T&gt;&gt;</code> and <code>[T; N]</code> that we would like clap_derive to treat specially.</p>
+            <div class="timeline-body"><p>Are you suggesting having a way to derive <code>CommandFactory</code> without deriving <code>FromArgMatches</code>? I could see there being cases where that might be useful, but that removes a lot of the usefulness of clap_derive IMO. And I don&#x27;t really see how it solves the original problem. Namely that there are additional types, such as <code>Vec&lt;Vec&lt;T&gt;&gt;</code> and <code>[T; N]</code> that we would like clap_derive to treat specially.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/valkum">@valkum</a> on 2023-02-14 14:44</div>
             <div class="timeline-body"><p>That was the initial idea. I guess it more related to custom containers than to support <code>Vec&lt;Vec&lt;T&gt;&gt;</code>. Currently, you need to implement <code>CommandFactory</code>, <code>Subcommand</code>, or <code>Args</code> yourself if you need your own <code>FromArgMatches</code> implementation.
 I guess both problems can best benefit from approach 3.
-For the types above, clap provides default aggregators and for custom types you can impl a trait yourself. Similar to serde's <code>(de)serialize_with</code> attribute.</p>
+For the types above, clap provides default aggregators and for custom types you can impl a trait yourself. Similar to serde&#x27;s <code>(de)serialize_with</code> attribute.</p>
 <p>The other options seem limiting regarding custom container support.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/4808.html">clap-rs/clap#4808</a> on 2023-03-29 13:16</div>
+            <div class="event">Referenced in <a>clap-rs/clap#4808</a> on 2023-03-29 13:16</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tgockel">@tgockel</a> on 2023-06-15 20:25</div>
             <div class="timeline-body"><p>Just adding a somewhat minimal real-world example of where this is useful, imagine I want to use a letter to represent a list (this came up in the context of logging):</p>
-<pre><code class="language-rust">use clap::Parser;
+<pre><code>use clap::Parser;
 
 #[derive(Debug)]
 struct MyError;
@@ -287,10 +287,10 @@ impl TryFrom&lt;char&gt; for Level {
 
     fn try_from(value: char) -&gt; Result&lt;Self, MyError&gt; {
         match value {
-            'd' =&gt; Ok(Self::Debug),
-            'i' =&gt; Ok(Self::Info),
-            'w' =&gt; Ok(Self::Warning),
-            'e' =&gt; Ok(Self::Error),
+            &#x27;d&#x27; =&gt; Ok(Self::Debug),
+            &#x27;i&#x27; =&gt; Ok(Self::Info),
+            &#x27;w&#x27; =&gt; Ok(Self::Warning),
+            &#x27;e&#x27; =&gt; Ok(Self::Error),
             _ =&gt; Err(MyError),
         }
     }
@@ -313,13 +313,13 @@ fn main() {
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/4989.html">clap-rs/clap#4989</a> on 2023-06-27 15:34</div>
+            <div class="event">Referenced in <a>clap-rs/clap#4989</a> on 2023-06-27 15:34</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../EspressoSystems/espresso-polygon-zkevm-demo/pulls/53.html">EspressoSystems/espresso-polygon-zkevm-demo#53</a> on 2023-07-04 17:27</div>
+            <div class="event">Referenced in <a>EspressoSystems/espresso-polygon-zkevm-demo#53</a> on 2023-07-04 17:27</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/5019.html">clap-rs/clap#5019</a> on 2023-07-19 13:50</div>
+            <div class="event">Referenced in <a>clap-rs/clap#5019</a> on 2023-07-19 13:50</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dzmitry-lahoda">@dzmitry-lahoda</a> on 2023-07-22 20:08</div>
@@ -328,7 +328,7 @@ fn main() {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-07-24 12:49</div>
-            <div class="timeline-body"><p>I am not aware of a way to detect the cases you are interested in to provide better errors. The proc macro is generating code and we'd need information from compile time.</p>
+            <div class="timeline-body"><p>I am not aware of a way to detect the cases you are interested in to provide better errors. The proc macro is generating code and we&#x27;d need information from compile time.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -350,34 +350,34 @@ at compile time, just fail compilation if not full path in case of option vex us
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dzmitry-lahoda">@dzmitry-lahoda</a> on 2023-07-24 19:08</div>
-            <div class="timeline-body"><p>in case of ambiguilty like Option&lt;Vec<T>&gt; and other case proc macro can stop not generating code and const panic or any other well know error reporting, sure proc macros can do these things. proc macro can have strict flag for people who prefer compile time validation.</p>
+            <div class="timeline-body"><p>in case of ambiguilty like Option&lt;Vec&gt; and other case proc macro can stop not generating code and const panic or any other well know error reporting, sure proc macros can do these things. proc macro can have strict flag for people who prefer compile time validation.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-07-24 19:22</div>
             <div class="timeline-body"><p>Yes, proc-macros can provide errors; we provide a lot today and have UI tests for (hopefully) most of them.</p>
-<p>However, at the time we can error, we do not have enough information for providing a better error for users.  If you have concrete ideas on what sources of information our proc macro can pull from to generate errors to help people, I would be open.  Otherwise, I feel like this conversation isn't being productive with its handy-waivy solutions that I would ask that we stop so we don't detract from this actual issue</p>
+<p>However, at the time we can error, we do not have enough information for providing a better error for users.  If you have concrete ideas on what sources of information our proc macro can pull from to generate errors to help people, I would be open.  Otherwise, I feel like this conversation isn&#x27;t being productive with its handy-waivy solutions that I would ask that we stop so we don&#x27;t detract from this actual issue</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/5078.html">clap-rs/clap#5078</a> on 2023-08-18 14:57</div>
+            <div class="event">Referenced in <a>clap-rs/clap#5078</a> on 2023-08-18 14:57</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/5166.html">clap-rs/clap#5166</a> on 2023-10-09 17:41</div>
+            <div class="event">Referenced in <a>clap-rs/clap#5166</a> on 2023-10-09 17:41</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../cspr-rad/kairos/pulls/17.html">cspr-rad/kairos#17</a> on 2024-02-13 14:31</div>
+            <div class="event">Referenced in <a>cspr-rad/kairos#17</a> on 2024-02-13 14:31</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/1717.html">clap-rs/clap#1717</a> on 2024-04-16 00:22</div>
+            <div class="event">Referenced in <a>clap-rs/clap#1717</a> on 2024-04-16 00:22</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/5536.html">clap-rs/clap#5536</a> on 2024-06-20 01:17</div>
+            <div class="event">Referenced in <a>clap-rs/clap#5536</a> on 2024-06-20 01:17</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:48:58 UTC
+        Synced at 2026-01-20 19:59:35 UTC
     </footer>
 </body>
 </html>

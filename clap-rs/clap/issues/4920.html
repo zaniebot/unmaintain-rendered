@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>Display order of subcommands' pre-existing args is not merged/updated</h1>
+    <h1>Display order of subcommands&#x27; pre-existing args is not merged/updated</h1>
 
     <div class="meta">
         <span class="state-icon state-open"></span>
@@ -23,17 +23,17 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/kornelski">@kornelski</a></div>
-            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+            <div class="timeline-body">Please complete the following tasks
 <ul>
 <li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
 <li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
 </ul>
-<h3>Rust Version</h3>
+Rust Version
 <p>rustc 1.69.0 (84c898d65 2023-04-16)</p>
-<h3>Clap Version</h3>
+Clap Version
 <p>4.2.1</p>
-<h3>Minimal reproducible code</h3>
-<pre><code class="language-rust"> Command::new(&quot;top&quot;)
+Minimal reproducible code
+<pre><code> Command::new(&quot;top&quot;)
         .arg(Arg::new(&quot;A&quot;).long(&quot;A&quot;).global(true))
         .arg(Arg::new(&quot;B&quot;).long(&quot;B&quot;).global(true))
         .arg(Arg::new(&quot;C&quot;).long(&quot;C&quot;).global(true))
@@ -42,10 +42,10 @@
             .arg(Arg::new(&quot;E&quot;).long(&quot;E&quot;))
             .arg(Arg::new(&quot;F&quot;).long(&quot;F&quot;)));
 </code></pre>
-<h3>Steps to reproduce the bug with the above code</h3>
+Steps to reproduce the bug with the above code
 <p>cargo run -- sub --help</p>
-<h3>Actual Behaviour</h3>
-<pre><code class="language-text">Options:
+Actual Behaviour
+<pre><code>Options:
       --A &lt;A&gt;
       --D &lt;D&gt;
       --B &lt;B&gt;
@@ -53,8 +53,8 @@
       --C &lt;C&gt;
       --F &lt;F&gt;
 </code></pre>
-<h3>Expected Behaviour</h3>
-<pre><code class="language-text">Options:
+Expected Behaviour
+<pre><code>Options:
       --A &lt;A&gt;
       --B &lt;B&gt;
       --C &lt;C&gt;
@@ -62,11 +62,11 @@
       --E &lt;E&gt;
       --F &lt;F&gt;
 </code></pre>
-<h3>Additional Context</h3>
+Additional Context
 <p>Cargo is affected by this. <code>cargo build -h</code> displays:</p>
-<pre><code class="language-text">      --keep-going              Do not abort the build as soon as there is an error (unstable)
+<pre><code>      --keep-going              Do not abort the build as soon as there is an error (unstable)
       --frozen                  Require Cargo.lock and cache are up to date
-      --lib                     Build only this package's library
+      --lib                     Build only this package&#x27;s library
       --bin [&lt;NAME&gt;]            Build only the specified binary
       --locked                  Require Cargo.lock is up to date
       --bins                    Build all binaries
@@ -76,31 +76,31 @@
       --examples                Build all examples
 </code></pre>
 <p>Note that <code>--locked</code> inserted between <code>--bin</code> and <code>--bins</code>. Cargo defines lib, bin, bins, example, examples one after another. But global args happen to be numbered the same and get interspersed with unrelated commands.</p>
-<p>I believe it's because each command has its own <code>disp_order</code> numbering starting from zero, and <code>subcommand_internal</code> resets the number for future args, but doesn't update order of existing args to give them their unique number range. This means that global args from the parent numbered from zero are sorted together with subcommands' args numbered from zero.</p>
-<h3>Debug Output</h3>
+<p>I believe it&#x27;s because each command has its own <code>disp_order</code> numbering starting from zero, and <code>subcommand_internal</code> resets the number for future args, but doesn&#x27;t update order of existing args to give them their unique number range. This means that global args from the parent numbered from zero are sorted together with subcommands&#x27; args numbered from zero.</p>
+Debug Output
 <p><em>No response</em></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">C-bug</span> added by @kornelski on 2023-05-18 22:26</div>
+            <div class="event">Label <span class="label">C-bug</span> added by <a href="https://github.com/kornelski">@kornelski</a> on 2023-05-18 22:26</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../rust-lang/cargo/pulls/12157.html">rust-lang/cargo#12157</a> on 2023-05-18 22:37</div>
+            <div class="event">Referenced in <a>rust-lang/cargo#12157</a> on 2023-05-18 22:37</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-05-19 13:24</div>
-            <div class="timeline-body"><p>I'm wondering what would  be the right way to solve this.  We are setting the display order when calling <code>Command::arg</code> and the subcommand doesn't know about the next display order from the parent command.  When propagating global arguments, I'd rather not make guesses as to whether the user intended their display order or not and change things.</p>
+            <div class="timeline-body"><p>I&#x27;m wondering what would  be the right way to solve this.  We are setting the display order when calling <code>Command::arg</code> and the subcommand doesn&#x27;t know about the next display order from the parent command.  When propagating global arguments, I&#x27;d rather not make guesses as to whether the user intended their display order or not and change things.</p>
 <p>A workaround for this would be calling <code>Command::next_display_order</code> on subcommands before adding any arguments.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kornelski">@kornelski</a> on 2023-05-20 01:51</div>
-            <div class="timeline-body"><p>To me the interspersed A/D/B/E/C/F order looks wrong, and I can't imagine users actually wanting that behavior.  It is a logical consequence of the implementation, but not a feature to desire.</p>
-<p>Adding all of subcommand's args (in their subcommand's order) after args existing in the parent seems sensible to me. It'd be analogous to adding these args directly to the parent without subcommand's indirection.</p>
+            <div class="timeline-body"><p>To me the interspersed A/D/B/E/C/F order looks wrong, and I can&#x27;t imagine users actually wanting that behavior.  It is a logical consequence of the implementation, but not a feature to desire.</p>
+<p>Adding all of subcommand&#x27;s args (in their subcommand&#x27;s order) after args existing in the parent seems sensible to me. It&#x27;d be analogous to adding these args directly to the parent without subcommand&#x27;s indirection.</p>
 <p>I think the fix should be, when adding a subcommand to a parent:</p>
 <ol>
-<li>Add parent's latest <code>disp_order</code> value to every arg's order in the subcommand. This will &quot;move&quot; args of the subcommand to where they'd be added now in the parent, while preserving their relative order.</li>
-<li>Then increase parent's <code>disp_order</code> to be after all of subcommand's args (take max of updated subcommand's order values + 1), so that newly added args in the parent appear after the subcommand.</li>
+<li>Add parent&#x27;s latest <code>disp_order</code> value to every arg&#x27;s order in the subcommand. This will &quot;move&quot; args of the subcommand to where they&#x27;d be added now in the parent, while preserving their relative order.</li>
+<li>Then increase parent&#x27;s <code>disp_order</code> to be after all of subcommand&#x27;s args (take max of updated subcommand&#x27;s order values + 1), so that newly added args in the parent appear after the subcommand.</li>
 </ol>
 <p>This would work well for a typical usage with <code>parent.subcommand(Command)</code>.</p>
 <p>This leaves <code>find_subcommand_mut</code> with potentially interspersed behavior if users add subcommand, then find it, and then add args to it. That would still intersperse newly added args. I hope this usage is not common. Perhaps it simply could be documented to require managing <code>next_display_order</code> explicitly. Alternatively, in the algorithm above change step two from using <code>max + 1</code> to <code>max + sufficiently_large_value_for_anybody</code>. That feels a bit arbitrary and less elegant, but 64-bit integers are plentiful and the just-in-case gap for new subcommand args could be large enough for all practical purposes.</p>
@@ -109,27 +109,27 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-05-21 02:19</div>
             <div class="timeline-body"><blockquote>
-<p>To me the interspersed A/D/B/E/C/F order looks wrong, and I can't imagine users actually wanting that behavior. It is a logical consequence of the implementation, but not a feature to desire.</p>
+<p>To me the interspersed A/D/B/E/C/F order looks wrong, and I can&#x27;t imagine users actually wanting that behavior. It is a logical consequence of the implementation, but not a feature to desire.</p>
 </blockquote>
 <p>To be clear, I never said it does look right.   I also disagree that this is a consequence of implementation but is instead a matter of trade offs.</p>
 <blockquote>
-<p>Adding all of subcommand's args (in their subcommand's order) after args existing in the parent seems sensible to me. It'd be analogous to adding these args directly to the parent without subcommand's indirection.</p>
+<p>Adding all of subcommand&#x27;s args (in their subcommand&#x27;s order) after args existing in the parent seems sensible to me. It&#x27;d be analogous to adding these args directly to the parent without subcommand&#x27;s indirection.</p>
 </blockquote>
-<p>FYI I would consider this a breaking change so this would not be able to go in until clap v5, if we go this route.  The reason is what I had hinted at before as to why I was not considering this route: a user can be setting the display order, explicitly with <code>Arg::display_order</code> or implicitly with <code>Command::next_display_order</code> to be getting the behavior they want and us changing the order could undo the careful design people do.    While not likely, this would also prevent users from intermixing global flags in with their command's flags.</p>
+<p>FYI I would consider this a breaking change so this would not be able to go in until clap v5, if we go this route.  The reason is what I had hinted at before as to why I was not considering this route: a user can be setting the display order, explicitly with <code>Arg::display_order</code> or implicitly with <code>Command::next_display_order</code> to be getting the behavior they want and us changing the order could undo the careful design people do.    While not likely, this would also prevent users from intermixing global flags in with their command&#x27;s flags.</p>
 <p>We could try to track intent (what was done explicitly) but that is adding a lot of extra complexity to try to out-guess the user.</p>
 <blockquote>
 <p>This leaves find_subcommand_mut with potentially interspersed behavior if users add subcommand, then find it, and then add args to it.</p>
 </blockquote>
-<p>Globals are passed down while building the <code>Command</code>.  I expect a lot of clap to not work if you muck with things after the <code>Command</code> is built, so I'm not too worried about this case.  I would love to address this in the type system but the builder and built forms are large with so much overlap, I've been hesitant.</p>
+<p>Globals are passed down while building the <code>Command</code>.  I expect a lot of clap to not work if you muck with things after the <code>Command</code> is built, so I&#x27;m not too worried about this case.  I would love to address this in the type system but the builder and built forms are large with so much overlap, I&#x27;ve been hesitant.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../pallets/click/pulls/3056.html">pallets/click#3056</a> on 2025-09-07 21:49</div>
+            <div class="event">Referenced in <a>pallets/click#3056</a> on 2025-09-07 21:49</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:49:05 UTC
+        Synced at 2026-01-20 19:59:47 UTC
     </footer>
 </body>
 </html>

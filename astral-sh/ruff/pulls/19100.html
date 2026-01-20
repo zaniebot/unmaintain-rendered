@@ -23,8 +23,8 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>This is a second attempt at addressing https://github.com/astral-sh/ruff/issues/18502 instead of reusing <code>FA100</code> (#18919).</p>
+            <div class="timeline-body">Summary
+<p>This is a second attempt at addressing <a href="https://github.com/astral-sh/ruff/issues/18502">astral-sh/ruff#18502</a> instead of reusing <code>FA100</code> (#18919).</p>
 <p>This PR:</p>
 <ul>
 <li>adds a new <code>lint.allow-importing-future-annotations</code> option</li>
@@ -33,13 +33,13 @@
 <li>uses the option to allow the <code>|</code> union syntax before 3.10 in <a href="https://docs.astral.sh/ruff/rules/implicit-optional/#implicit-optional-ruf013">implicit-optional (RUF013)</a></li>
 </ul>
 <p>I started adding a fix for <a href="https://docs.astral.sh/ruff/rules/runtime-string-union/#runtime-string-union-tc010">runtime-string-union (TC010)</a> too, as mentioned in my previous <a href="https://github.com/astral-sh/ruff/issues/18502#issuecomment-3005238092">comment</a>, but some of the existing tests  already imported <code>from __future__ import annotations</code>, so I think we intentionally flag these cases for the user to inspect. Adding the import is <em>a</em> fix but probably not the best one.</p>
-<h2>Test Plan</h2>
-<p>Existing <code>TC</code> tests, new copies of them with the option enabled, and new tests based on ideas in https://github.com/astral-sh/ruff/pull/18919#discussion_r2166292705 and the following thread. For UP037 and RUF013, the new tests are also copies of the existing tests, with the new option enabled. The easiest way to review them is probably by their diffs from the existing snapshots:</p>
-<h3>UP037</h3>
+Test Plan
+<p>Existing <code>TC</code> tests, new copies of them with the option enabled, and new tests based on ideas in <a href="https://github.com/astral-sh/ruff/pull/18919">astral-sh/ruff#18919</a>#discussion_r2166292705 and the following thread. For UP037 and RUF013, the new tests are also copies of the existing tests, with the new option enabled. The easiest way to review them is probably by their diffs from the existing snapshots:</p>
+UP037
 <p><code>UP037_0.py</code> and <code>UP037_2.pyi</code> have no diffs. The diff for <code>UP037_1.py</code> is below. It correctly unquotes an annotation in module scope that would otherwise be invalid.</p>
-<details><summary>UP037_1.py</summary>
+UP037_1.py
 
-<pre><code class="language-diff">3d2
+<pre><code>3d2
 &lt; snapshot_kind: text
 23c22,42
 &lt; 12 12 |
@@ -66,13 +66,13 @@
 &gt; 14    |-X: &quot;Tuple[int, int]&quot; = (0, 0)
 &gt;    15 |+X: Tuple[int, int] = (0, 0)
 </code></pre>
-</details>
 
-<h3>RUF013</h3>
-<p>The diffs here are mostly just the imports because the original snaps were on 3.13. So we're getting the same fixes now on 3.9.</p>
-<details><summary>RUF013_0.py</summary>
 
-<pre><code class="language-diff">3d2
+RUF013
+<p>The diffs here are mostly just the imports because the original snaps were on 3.13. So we&#x27;re getting the same fixes now on 3.9.</p>
+RUF013_0.py
+
+<pre><code>3d2
 &lt; snapshot_kind: text
 14,16c13,20
 &lt; 17 17 |     pass
@@ -486,11 +486,11 @@
 &gt; 206 207 | 
 &gt; 207 208 |
 </code></pre>
-</details>
 
-<details><summary>RUF013_1.py</summary>
 
-<pre><code class="language-diff">3d2
+RUF013_1.py
+
+<pre><code>3d2
 &lt; snapshot_kind: text
 15,16c14,16
 &lt; 2 2 |
@@ -506,11 +506,11 @@
 &gt;   5 |+def f(arg: int | None = None):  # RUF013
 &gt; 5 6 |     pass
 </code></pre>
-</details>
 
-<details><summary>RUF013_3.py</summary>
 
-<pre><code class="language-diff">3d2
+RUF013_3.py
+
+<pre><code>3d2
 &lt; snapshot_kind: text
 14,16c13,16
 &lt; 1 1 | import typing
@@ -574,18 +574,18 @@
 &gt;    30 |+def f(arg: typing.Literal[1, &quot;foo&quot;, True] | None = None):  # RUF013
 &gt; 30 31 |     pass
 </code></pre>
-</details>
 
-<details><summary>RUF013_4.py</summary>
 
-<pre><code class="language-diff">3d2
+RUF013_4.py
+
+<pre><code>3d2
 &lt; snapshot_kind: text
 13,15c12,20
 &lt; 12 12 | def multiple_1(arg1: Optional, arg2: Optional = None): ...
 &lt; 13 13 |
 &lt; 14 14 |
 ---
-&gt; 1  1  | # https://github.com/astral-sh/ruff/issues/13833
+&gt; 1  1  | # <a href="https://github.com/astral-sh/ruff/issues/13833">astral-sh/ruff#13833</a>
 &gt;    2  |+from __future__ import annotations
 &gt; 2  3  |
 &gt; 3  4  | from typing import Optional
@@ -605,35 +605,35 @@
 &gt; 17 18 |
 &gt; 18 19 | def return_type(arg: Optional = None) -&gt; Optional: ...
 </code></pre>
-</details>
 
-<h2>Future work</h2>
-<p>This PR does not touch UP006, UP007, or UP045, which are currently coupled to FA100. If this new approach turns out well, we may eventually want to deprecate FA100 and add a <code>__future__</code> import in those rules' fixes too.</p>
+
+Future work
+<p>This PR does not touch UP006, UP007, or UP045, which are currently coupled to FA100. If this new approach turns out well, we may eventually want to deprecate FA100 and add a <code>__future__</code> import in those rules&#x27; fixes too.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-07-02 19:39</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-02 19:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">configuration</span> added by @ntBre on 2025-07-02 19:39</div>
+            <div class="event">Label <span class="label">configuration</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-02 19:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-07-02 19:39</div>
+            <div class="event">Label <span class="label">fixes</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-02 19:39</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-02 19:47</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/mod.rs</code>:95 on 2025-07-03 14:07</div>
-            <div class="timeline-body"><p>I'd enable <code>flake8-type-checking.quote-annotations</code> as well, or at least add a separate test case for that, so we're sure these two settings don't interact badly, especially since it can change the result of <code>is_typing_reference</code>.</p>
+            <div class="timeline-body"><p>I&#x27;d enable <code>flake8-type-checking.quote-annotations</code> as well, or at least add a separate test case for that, so we&#x27;re sure these two settings don&#x27;t interact badly, especially since it can change the result of <code>is_typing_reference</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -666,16 +666,16 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-09 22:09</div>
-            <div class="timeline-body"><p>Thanks @Daverball, your suspicions were true. I wasn't handling the quoting setting properly. I resurrected some of the ideas from #18919 but with four values, as you suggested there (<code>Yes</code>, <code>No</code>, <code>Future</code>, and <code>Quote</code> instead of <code>Yes</code>/<code>No</code>/<code>Maybe</code>).</p>
+            <div class="timeline-body"><p>Thanks @Daverball, your suspicions were true. I wasn&#x27;t handling the quoting setting properly. I resurrected some of the ideas from #18919 but with four values, as you suggested there (<code>Yes</code>, <code>No</code>, <code>Future</code>, and <code>Quote</code> instead of <code>Yes</code>/<code>No</code>/<code>Maybe</code>).</p>
 <p>I think this looks a lot nicer (modulo the somewhat awkward names I picked) <em>and</em> handles both settings being enabled, as the updated tests show.</p>
-<p>I'll extend this to the UP rules tomorrow, but hopefully this is a solid draft of the TC rules.</p>
+<p>I&#x27;ll extend this to the UP rules tomorrow, but hopefully this is a solid draft of the TC rules.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @ntBre on 2025-07-14 14:12</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-14 14:12</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-07-14 14:12</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-14 14:12</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-14 14:17</div>
@@ -689,7 +689,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:37 on 2025-07-14 14:43</div>
             <div class="timeline-body"><p>Should we move this documentation to the variants on <code>TypingReference</code>?</p>
-<p>The <code>Yes</code> variant seems a bit odd given that <code>from_references</code> isn't asking a boolean question. How about <code>Yes</code> -&gt; <code>TypingOnly</code>. <code>No</code> -&gt; <code>Runtime</code>. I'd also suggest you to order them as <code>No</code>, <code>Quote</code>, <code>Future</code>, <code>Yes</code> (or opposite ordering)</p>
+<p>The <code>Yes</code> variant seems a bit odd given that <code>from_references</code> isn&#x27;t asking a boolean question. How about <code>Yes</code> -&gt; <code>TypingOnly</code>. <code>No</code> -&gt; <code>Runtime</code>. I&#x27;d also suggest you to order them as <code>No</code>, <code>Quote</code>, <code>Future</code>, <code>Yes</code> (or opposite ordering)</p>
 <p>Another possible representation is to use <code>TypingReference::Typing</code> and <code>::Runtime(Option&lt;RuntimeKind&gt;)</code> where <code>RuntimeKind</code> is <code>Future</code> or <code>Quote</code></p>
 </div>
         </div>
@@ -710,16 +710,16 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/tests/lint.rs</code>:996 on 2025-07-15 12:12</div>
-            <div class="timeline-body"><p>I did a quick scan through our settings that use the <code>allow</code> prefix and the once I checked are exclusively used to allow (ignore the rule) for specific patterns either because it's an allowlist or allows a specific pattern in general.</p>
-<p>It also doesn't align well with <code>quote-annotations</code> which is technically its pendant.</p>
-<p>That's why I think that <code>allow</code> isn't a good prefix here.</p>
-<p>I'd probably go with something like <code>future-annotations</code>, or <code>import-future-annotations</code>, similar to <code>typing_extension</code>.</p>
+            <div class="timeline-body"><p>I did a quick scan through our settings that use the <code>allow</code> prefix and the once I checked are exclusively used to allow (ignore the rule) for specific patterns either because it&#x27;s an allowlist or allows a specific pattern in general.</p>
+<p>It also doesn&#x27;t align well with <code>quote-annotations</code> which is technically its pendant.</p>
+<p>That&#x27;s why I think that <code>allow</code> isn&#x27;t a good prefix here.</p>
+<p>I&#x27;d probably go with something like <code>future-annotations</code>, or <code>import-future-annotations</code>, similar to <code>typing_extension</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:2785 on 2025-07-15 12:23</div>
             <div class="timeline-body"><p>Nit: I would probably move the entire condition into <code>quoted_annotation</code>, considering that <code>quoted_annotation</code> already takes <code>self</code> as an argument (it has everything it needs to determine itself if it should put this into quotes or not).</p>
-<pre><code class="language-suggestion">                        if self.is_rule_enabled(Rule::QuotedAnnotation) {
+<pre><code>                        if self.is_rule_enabled(Rule::QuotedAnnotation) {
                             pyupgrade::rules::quoted_annotation(
                                 self,
                                 annotation,
@@ -734,26 +734,26 @@
             <div class="timeline-body"><blockquote>
 <p>I started adding a fix for <a href="https://docs.astral.sh/ruff/rules/runtime-string-union/#runtime-string-union-tc010">runtime-string-union (TC010)</a> too, as mentioned in my previous <a href="https://github.com/astral-sh/ruff/issues/18502#issuecomment-3005238092">comment</a>, but some of the existing tests already imported <code>from __future__ import annotations</code>, so I think we intentionally flag these cases for the user to inspect. Adding the import is <em>a</em> fix but probably not the best one.</p>
 </blockquote>
-<p>Hmm, I'm not sure I'm <em>totally</em> convinced by this reasoning. I think if you're happy with <code>from __future__ import annotations</code> being added in some modules, you'll probably want it to be imported in most modules where it's useful. It results in a lot less visual clutter than having quoted annotations everywhere.</p>
-<p>That said, I'm fine deferring TC010 for now!</p>
+<p>Hmm, I&#x27;m not sure I&#x27;m <em>totally</em> convinced by this reasoning. I think if you&#x27;re happy with <code>from __future__ import annotations</code> being added in some modules, you&#x27;ll probably want it to be imported in most modules where it&#x27;s useful. It results in a lot less visual clutter than having quoted annotations everywhere.</p>
+<p>That said, I&#x27;m fine deferring TC010 for now!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/rules/typing_only_runtime_import.rs</code>:307 on 2025-07-15 12:31</div>
             <div class="timeline-body"><p>Could we avoid doing all the extra work below if the setting is false (I assume the <code>Yes</code> and <code>Quote</code> cases are the only cases where the rule did something before)</p>
-<pre><code class="language-suggestion">            TypingReference::Future =&gt; if allow_future_import { add_future_import = true } else { continue }
+<pre><code>            TypingReference::Future =&gt; if allow_future_import { add_future_import = true } else { continue }
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/rules/typing_only_runtime_import.rs</code>:513 on 2025-07-15 12:35</div>
-            <div class="timeline-body"><p>Nit: I'm somewhat inclined to store on the binding whether it needs a from future import, given that we iterate all bindings anyway to find <code>at</code></p>
+            <div class="timeline-body"><p>Nit: I&#x27;m somewhat inclined to store on the binding whether it needs a from future import, given that we iterate all bindings anyway to find <code>at</code></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/implicit_optional.rs</code>:231 on 2025-07-15 12:41</div>
             <div class="timeline-body"><p>I think we can remove the <code>add_future_import</code> variable and instead compute it in <code>generate_fix</code>: It needs to add the future import if <code>BinOpOr</code> is <code>true</code> and the Python version is older than Python 3.10</p>
-<pre><code class="language-suggestion">            let mut add_future_import = false;
+<pre><code>            let mut add_future_import = false;
             let conversion_type = if checker.target_version() &gt;= PythonVersion::PY310 || checker.settings().allow_importing_future_annotations {
                 ConversionType::BinOpOr
             } else {
@@ -771,7 +771,7 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-15 12:48</div>
             <div class="timeline-body"><p>Thank you. This overall looks good to me.</p>
-<p>I think we want to make this a preview only change so that we can iterate on it's behavior without requiring a minor release (or add new rules).</p>
+<p>I think we want to make this a preview only change so that we can iterate on it&#x27;s behavior without requiring a minor release (or add new rules).</p>
 <p>We also need to update all rule documentation to mention the new setting and how it changes behavior.</p>
 <p>Lastely, we should create follow up issues to tackle the remaining rules.</p>
 </div>
@@ -784,18 +784,18 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:22 on 2025-07-15 13:00</div>
             <div class="timeline-body"><p>nit</p>
-<pre><code class="language-suggestion">#[derive(Clone, Copy, Debug)]
+<pre><code>#[derive(Clone, Copy, Debug)]
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:37 on 2025-07-15 13:02</div>
-            <div class="timeline-body"><p>nit: I'd find this documentation easier to read if you had a separate doc-comment for each variant above, I think</p>
+            <div class="timeline-body"><p>nit: I&#x27;d find this documentation easier to read if you had a separate doc-comment for each variant above, I think</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-15 13:04</div>
-            <div class="timeline-body"><p>(Micha asked me to take a quick look, but I haven't done an exhaustive review. It all basically LGTM!)</p>
+            <div class="timeline-body"><p>(Micha asked me to take a quick look, but I haven&#x27;t done an exhaustive review. It all basically LGTM!)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -806,7 +806,7 @@
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/importer/mod.rs</code>:538 on 2025-07-15 13:23</div>
             <div class="timeline-body"><p>I believe so. This is how the fix for FA100 works too:</p>
 <p>https://github.com/astral-sh/ruff/blob/92a302e291eb61791335178a48c9240a794d2f88/crates/ruff_linter/src/rules/flake8_future_annotations/rules/future_rewritable_type_annotation.rs#L98-L108</p>
-<p>I also wrote that, so it's a bit circular to cite it, but I think I got it from a preexisting <code>__future__</code> import example. I'll double check that and also factor out this FA100 call.</p>
+<p>I also wrote that, so it&#x27;s a bit circular to cite it, but I think I got it from a preexisting <code>__future__</code> import example. I&#x27;ll double check that and also factor out this FA100 call.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -815,7 +815,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/importer/mod.rs</code>:538 on 2025-07-15 13:29</div>
-            <div class="timeline-body"><p>Oh that's right, I got it from FA102:</p>
+            <div class="timeline-body"><p>Oh that&#x27;s right, I got it from FA102:</p>
 <p>https://github.com/astral-sh/ruff/blob/f200d5c3ea758b3d349666aa4364083d2f51c37f/crates/ruff_linter/src/rules/flake8_future_annotations/rules/future_required_type_annotation.rs#L90-L98</p>
 <p>I <em>think</em> the <code>TextSize::default</code> ensures it goes at the beginning of the file. That should take the <code>Insertion::start_of_file</code> branch in <code>Importer::add_import</code>, which should place it right after the docstring and any commented lines.</p>
 </div>
@@ -835,7 +835,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:96 on 2025-07-15 14:23</div>
-            <div class="timeline-body"><p>Oh, neat! I had to use the order <code>No</code>/<code>Runtime</code>, <code>Future</code>, <code>Quote</code>, <code>Yes</code>/<code>TypingOnly</code> (swapping <code>Quote</code> and <code>Future</code> from your suggestion above), but that's really nice.</p>
+            <div class="timeline-body"><p>Oh, neat! I had to use the order <code>No</code>/<code>Runtime</code>, <code>Future</code>, <code>Quote</code>, <code>Yes</code>/<code>TypingOnly</code> (swapping <code>Quote</code> and <code>Future</code> from your suggestion above), but that&#x27;s really nice.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -846,7 +846,7 @@
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/rules/typing_only_runtime_import.rs</code>:307 on 2025-07-15 14:41</div>
             <div class="timeline-body"><p>I <em>think</em> we should have already continued in that case:</p>
 <p>https://github.com/astral-sh/ruff/blob/0748c1141bf4785dede0d5e585554318a9f3f5d1/crates/ruff_linter/src/rules/flake8_type_checking/rules/typing_only_runtime_import.rs#L275-L284</p>
-<p>I added a <code>panic!</code> instead of continue in your snippet and none of our tests hit this, at least, but I'm happy to include it just in case. It's definitely more clear-cut than the code I linked to above.</p>
+<p>I added a <code>panic!</code> instead of continue in your snippet and none of our tests hit this, at least, but I&#x27;m happy to include it just in case. It&#x27;s definitely more clear-cut than the code I linked to above.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -874,11 +874,11 @@
 <blockquote>
 <p>I started adding a fix for <a href="https://docs.astral.sh/ruff/rules/runtime-string-union/#runtime-string-union-tc010">runtime-string-union (TC010)</a> too, as mentioned in my previous <a href="https://github.com/astral-sh/ruff/issues/18502#issuecomment-3005238092">comment</a>, but some of the existing tests already imported <code>from __future__ import annotations</code>, so I think we intentionally flag these cases for the user to inspect. Adding the import is <em>a</em> fix but probably not the best one.</p>
 </blockquote>
-<p>Hmm, I'm not sure I'm <em>totally</em> convinced by this reasoning. I think if you're happy with <code>from __future__ import annotations</code> being added in some modules, you'll probably want it to be imported in most modules where it's useful. It results in a lot less visual clutter than having quoted annotations everywhere.</p>
-<p>That said, I'm fine deferring TC010 for now!</p>
+<p>Hmm, I&#x27;m not sure I&#x27;m <em>totally</em> convinced by this reasoning. I think if you&#x27;re happy with <code>from __future__ import annotations</code> being added in some modules, you&#x27;ll probably want it to be imported in most modules where it&#x27;s useful. It results in a lot less visual clutter than having quoted annotations everywhere.</p>
+<p>That said, I&#x27;m fine deferring TC010 for now!</p>
 </blockquote>
-<p>Ah, I see what you mean. My draft fix added the import but didn't unquote the annotation, which is why I thought it didn't make much sense. If we add the import and then unquote the annotation, this would be a nice fix.</p>
-<p>I added this and the other rules we mentioned to https://github.com/astral-sh/ruff/issues/19359. Let me know if I missed any!</p>
+<p>Ah, I see what you mean. My draft fix added the import but didn&#x27;t unquote the annotation, which is why I thought it didn&#x27;t make much sense. If we add the import and then unquote the annotation, this would be a nice fix.</p>
+<p>I added this and the other rules we mentioned to <a href="https://github.com/astral-sh/ruff/issues/19359">astral-sh/ruff#19359</a>. Let me know if I missed any!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -887,7 +887,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/rules/typing_only_runtime_import.rs</code>:513 on 2025-07-15 15:30</div>
-            <div class="timeline-body"><p>That makes sense. I think this revealed another place where we could add an import. TC004 also uses <code>ImportBinding</code>. It looks like we may be able to reuse the <code>TypingReference</code> enum in place of its current <code>Action</code> enum too. I'll add this to the follow-up issue.</p>
+            <div class="timeline-body"><p>That makes sense. I think this revealed another place where we could add an import. TC004 also uses <code>ImportBinding</code>. It looks like we may be able to reuse the <code>TypingReference</code> enum in place of its current <code>Action</code> enum too. I&#x27;ll add this to the follow-up issue.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -896,7 +896,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/implicit_optional.rs</code>:231 on 2025-07-15 15:37</div>
-            <div class="timeline-body"><p>That's much nicer, thanks.</p>
+            <div class="timeline-body"><p>That&#x27;s much nicer, thanks.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -905,7 +905,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:35 on 2025-07-15 16:17</div>
-            <div class="timeline-body"><p>I added a <code>LinterSettings</code> method that checks both the setting and if preview is enabled to enable this new behavior. Let me know if that's not what you had in mind.</p>
+            <div class="timeline-body"><p>I added a <code>LinterSettings</code> method that checks both the setting and if preview is enabled to enable this new behavior. Let me know if that&#x27;s not what you had in mind.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -914,15 +914,15 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/tests/lint.rs</code>:996 on 2025-07-15 16:25</div>
-            <div class="timeline-body"><p>Makes sense. I liked <code>import-future-annotations</code> at first, but I think you're right that this has basically the same semantics as <code>typing-extensions</code>, so it makes sense to call it just <code>future-annotations</code>. I made this change last in case it's easier to review.</p>
+            <div class="timeline-body"><p>Makes sense. I liked <code>import-future-annotations</code> at first, but I think you&#x27;re right that this has basically the same semantics as <code>typing-extensions</code>, so it makes sense to call it just <code>future-annotations</code>. I made this change last in case it&#x27;s easier to review.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2025-07-15 16:26</div>
+            <div class="event">Label <span class="label">preview</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-15 16:26</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-15 16:27</div>
-            <div class="timeline-body"><p>I'll do another review tomorrow. Could you rebase the PR before then?</p>
+            <div class="timeline-body"><p>I&#x27;ll do another review tomorrow. Could you rebase the PR before then?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -932,7 +932,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:19 on 2025-07-16 07:13</div>
-            <div class="timeline-body"><p>Let's add a comment explaining that the variants need to be ordered by their precedence. It's sort of important</p>
+            <div class="timeline-body"><p>Let&#x27;s add a comment explaining that the variants need to be ordered by their precedence. It&#x27;s sort of important</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -946,13 +946,13 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[`flake8-type-checking`] Add `from __future__ import annotations` to allow a fix" to "[`flake8-type-checking`, `pyupgrade`, `ruff`] Add `from __future__ import annotations` when it would allow new fixes (`TC001`, `TC002`, `TC003`, `UP037`, `RUF013`)" by @ntBre on 2025-07-16 12:43</div>
+            <div class="event">Renamed from &quot;[`flake8-type-checking`] Add `from __future__ import annotations` to allow a fix&quot; to &quot;[`flake8-type-checking`, `pyupgrade`, `ruff`] Add `from __future__ import annotations` when it would allow new fixes (`TC001`, `TC002`, `TC003`, `UP037`, `RUF013`)&quot; by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-16 12:43</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @ntBre on 2025-07-16 12:50</div>
+            <div class="event">Merged by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-16 12:50</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ntBre on 2025-07-16 12:50</div>
+            <div class="event">Closed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-16 12:50</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-07-16 12:50</div>
@@ -960,7 +960,7 @@
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:13:53 UTC
+        Synced at 2026-01-20 19:16:09 UTC
     </footer>
 </body>
 </html>

@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/TaylorZowtuk">@TaylorZowtuk</a></div>
-            <div class="timeline-body"><h3>Question</h3>
+            <div class="timeline-body">Question
 <p>Many of the complexities going on here are way over my head, so I apologize if this has been directly answered in issues/PRs/the docs.</p>
-<p>Objective: I use Docker to create a shell in a container for a development environment. I am trying to use an Alpine image to avoid bloat and to have a smaller/more secure image. I don't use <code>python3.x-alpine</code> based image (unsure if that even would resolve this issue) because it doesn't seem necessary to have a system python when using uv.</p>
-<p>Problem: I can't get numpy to import without raising an exception</p>
+<p>Objective: I use Docker to create a shell in a container for a development environment. I am trying to use an Alpine image to avoid bloat and to have a smaller/more secure image. I don&#x27;t use <code>python3.x-alpine</code> based image (unsure if that even would resolve this issue) because it doesn&#x27;t seem necessary to have a system python when using uv.</p>
+<p>Problem: I can&#x27;t get numpy to import without raising an exception</p>
 <p>Potential cause: I think due to a mismatch between the expected platform extension suffix for compiled extensions between the installed NumPy and what the Python at runtime expects? From what I can see from checking the repo, it looks like Alpine/musl has been a problem area in the past. However, since x86_64 builds of Alpine are made available, I would have thought that this should work.</p>
 <p>Potential related issues:</p>
 <ul>
@@ -35,25 +35,25 @@
 <li>(not related to UV but explains what I think is going on here too) https://stackoverflow.com/questions/68752830/numpy-from-alpine-package-repo-fails-to-import-c-extensions/69360361#69360361</li>
 </ul>
 <p>Minimal reproducible example TLDR:</p>
-<pre><code class="language-shell">docker run -it --rm --name build-test ghcr.io/astral-sh/uv:alpine3.22 /bin/sh
+<pre><code>docker run -it --rm --name build-test ghcr.io/astral-sh/uv:alpine3.22 /bin/sh
 uv python pin 3.12 --verbose
 uv venv --verbose
 uv pip install numpy==1.26.4 --verbose
 uv run python -c &quot;import numpy&quot; --verbose
   ...
-  ModuleNotFoundError: No module named 'numpy.core._multiarray_umath'
+  ModuleNotFoundError: No module named &#x27;numpy.core._multiarray_umath&#x27;
 find / -name &quot;*_multiarray_umath*&quot;
   /.venv/lib/python3.12/site-packages/numpy/core/_multiarray_umath.cpython-312-x86_64-linux-musl.so
   /.venv/lib/python3.12/site-packages/numpy/_core/_multiarray_umath.py
 mv /.venv/lib/python3.12/site-packages/numpy/core/_multiarray_umath.cpython-312-x86_64-linux-musl.so /.venv/lib/python3.12/site-packages/numpy/core/_multiarray_umath.cpython-312-x86_64-linux-gnu.so
 uv run python -c &quot;import numpy&quot;
   ...
-  ModuleNotFoundError: No module named 'numpy.core._multiarray_tests'
+  ModuleNotFoundError: No module named &#x27;numpy.core._multiarray_tests&#x27;
 </code></pre>
-<details>
-  <summary>w/ verbose output:</summary>
 
-<pre><code class="language-shell">blah@blahip:~/recommender-systems$ docker run -it --rm --name build-test ghcr.io/astral-sh/uv:alpine3.22 /bin/sh
+  w/ verbose output:
+
+<pre><code>blah@blahip:~/recommender-systems$ docker run -it --rm --name build-test ghcr.io/astral-sh/uv:alpine3.22 /bin/sh
 / # uv python pin 3.12 --verbose
 DEBUG uv 0.9.3
 DEBUG Acquired shared lock for `/root/.cache/uv`
@@ -161,7 +161,7 @@ Traceback (most recent call last):
     from . import overrides
   File &quot;/.venv/lib/python3.12/site-packages/numpy/core/overrides.py&quot;, line 8, in &lt;module&gt;
     from numpy.core._multiarray_umath import (
-ModuleNotFoundError: No module named 'numpy.core._multiarray_umath'
+ModuleNotFoundError: No module named &#x27;numpy.core._multiarray_umath&#x27;
 
 During handling of the above exception, another exception occurred:
 
@@ -192,7 +192,7 @@ Please note and check the following:
 and make sure that they are the versions you expect.
 Please carefully study the documentation linked above for further help.
 
-Original error was: No module named 'numpy.core._multiarray_umath'
+Original error was: No module named &#x27;numpy.core._multiarray_umath&#x27;
 
 
 The above exception was the direct cause of the following exception:
@@ -220,11 +220,11 @@ Traceback (most recent call last):
   File &quot;/.venv/lib/python3.12/site-packages/numpy/core/__init__.py&quot;, line 100, in &lt;module&gt;
     from . import _add_newdocs
   File &quot;/.venv/lib/python3.12/site-packages/numpy/core/_add_newdocs.py&quot;, line 4973, in &lt;module&gt;
-    add_newdoc('numpy.core._multiarray_tests', 'format_float_OSprintf_g',
+    add_newdoc(&#x27;numpy.core._multiarray_tests&#x27;, &#x27;format_float_OSprintf_g&#x27;,
   File &quot;/.venv/lib/python3.12/site-packages/numpy/core/function_base.py&quot;, line 543, in add_newdoc
     new = getattr(__import__(place, globals(), {}, [obj]), obj)
                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-ModuleNotFoundError: No module named 'numpy.core._multiarray_tests'
+ModuleNotFoundError: No module named &#x27;numpy.core._multiarray_tests&#x27;
 
 The above exception was the direct cause of the following exception:
 
@@ -236,42 +236,42 @@ ImportError: Error importing numpy: you should not try to import numpy from
         its source directory; please exit the numpy source tree, and relaunch
         your python interpreter from there.
 </code></pre>
-</details>
+
 
 <p>Note: what supports the idea that the Python installation is looking for <code>-linux-gnu.so</code> libraries instead of <code>-linux-musl.so</code> is that when we rename the <code>_multiarray_umath</code> library, it seems to get past the issue and fails instead on the next improperly linked library (now <code>_multiarray_tests</code>).</p>
 <p>I appreciate any direction on how to resolve this issue, and I apologize if this is just user error on my end!</p>
-<h3>Platform</h3>
+Platform
 <p>Linux 6.8.0-1040-aws x86_64 Linux</p>
-<h3>Version</h3>
+Version
 <p>uv 0.9.3</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @TaylorZowtuk on 2025-10-17 20:22</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/TaylorZowtuk">@TaylorZowtuk</a> on 2025-10-17 20:22</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-19 09:27</div>
-            <div class="timeline-body"><p>This is a bug of the numpy musl build for Python 3.12, I can reproduce this with numpy 2.3.4 and Python 3.12, but not with numpy 2.3.4 and Python 3.13 and 3.14. Please report this to numpy, this isn't something we can fix on the uv side.</p>
+            <div class="timeline-body"><p>This is a bug of the numpy musl build for Python 3.12, I can reproduce this with numpy 2.3.4 and Python 3.12, but not with numpy 2.3.4 and Python 3.13 and 3.14. Please report this to numpy, this isn&#x27;t something we can fix on the uv side.</p>
 <p>For context, we can confirm that we have the correct musl Python interpreter with <code>ldd</code>:</p>
 <pre><code>$ ldd /.venv/bin/python
 	/lib/ld-musl-x86_64.so.1 (0x7a211bab1000)
 	libc.so =&gt; /lib/ld-musl-x86_64.so.1 (0x7a211bab1000)
 </code></pre>
-<p>The logs also confirm we're installing the musl numpy build:</p>
+<p>The logs also confirm we&#x27;re installing the musl numpy build:</p>
 <pre><code>DEBUG Selecting: numpy==2.3.4 [compatible] (numpy-2.3.4-cp312-cp312-musllinux_1_2_x86_64.whl)
 DEBUG Found fresh response for: https://files.pythonhosted.org/packages/b0/e7/b106253c7c0d5dc352b9c8fab91afd76a93950998167fa3e5afe4ef3a18f/numpy-2.3.4-cp312-cp312-musllinux_1_2_x86_64.whl.metadata
 </code></pre>
 <blockquote>
-<p>Objective: I use Docker to create a shell in a container for a development environment. I am trying to use an Alpine image to avoid bloat and to have a smaller/more secure image. I don't use <code>python3.x-alpine</code> based image (unsure if that even would resolve this issue) because it doesn't seem necessary to have a system python when using uv.</p>
+<p>Objective: I use Docker to create a shell in a container for a development environment. I am trying to use an Alpine image to avoid bloat and to have a smaller/more secure image. I don&#x27;t use <code>python3.x-alpine</code> based image (unsure if that even would resolve this issue) because it doesn&#x27;t seem necessary to have a system python when using uv.</p>
 </blockquote>
-<p>While what you reported is a bug, please note that alpine isn't just a smaller image, musl as a libc is fundamentally different from glibc, which requires dedicated support by packages and can change runtime characteristics (https://pythonspeed.com/articles/alpine-docker-python/).</p>
+<p>While what you reported is a bug, please note that alpine isn&#x27;t just a smaller image, musl as a libc is fundamentally different from glibc, which requires dedicated support by packages and can change runtime characteristics (https://pythonspeed.com/articles/alpine-docker-python/).</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> removed by @konstin on 2025-10-19 09:28</div>
+            <div class="event">Label <span class="label">question</span> removed by <a href="https://github.com/konstin">@konstin</a> on 2025-10-19 09:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">external</span> added by @konstin on 2025-10-19 09:28</div>
+            <div class="event">Label <span class="label">external</span> added by <a href="https://github.com/konstin">@konstin</a> on 2025-10-19 09:28</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/TaylorZowtuk">@TaylorZowtuk</a> on 2025-10-19 17:33</div>
@@ -283,7 +283,7 @@ DEBUG Found fresh response for: https://files.pythonhosted.org/packages/b0/e7/b1
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @TaylorZowtuk on 2025-10-19 17:33</div>
+            <div class="event">Closed by <a href="https://github.com/TaylorZowtuk">@TaylorZowtuk</a> on 2025-10-19 17:33</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mattip">@mattip</a> on 2025-10-20 15:56</div>
@@ -292,39 +292,39 @@ DEBUG Found fresh response for: https://files.pythonhosted.org/packages/b0/e7/b1
 Python 3.12.12 (main, Oct 14 2025, 21:17:41) [Clang 14.0.3 ] on linux
 &gt;&gt;&gt; import _imp
 &gt;&gt;&gt; _imp.extension_suffixes()
-['.cpython-312-x86_64-linux-gnu.so', '.abi3.so', '.so']
+[&#x27;.cpython-312-x86_64-linux-gnu.so&#x27;, &#x27;.abi3.so&#x27;, &#x27;.so&#x27;]
 
 # uv run --python 3.13 python
 Python 3.13.9 (main, Oct 14 2025, 21:18:37) [Clang 14.0.3 ] on linux
 &gt;&gt;&gt; import _imp              
 &gt;&gt;&gt; _imp.extension_suffixes()
-['.cpython-313-x86_64-linux-musl.so', '.abi3.so', '.so']
+[&#x27;.cpython-313-x86_64-linux-musl.so&#x27;, &#x27;.abi3.so&#x27;, &#x27;.so&#x27;]
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">external</span> removed by @konstin on 2025-10-20 15:59</div>
+            <div class="event">Label <span class="label">external</span> removed by <a href="https://github.com/konstin">@konstin</a> on 2025-10-20 15:59</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-10-20 15:59</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/konstin">@konstin</a> on 2025-10-20 15:59</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-20 16:00</div>
-            <div class="timeline-body"><p>We're using Astral's Python distribution (https://github.com/astral-sh/python-build-standalone). CC @geofft That's a PBS bug I think?</p>
+            <div class="timeline-body"><p>We&#x27;re using Astral&#x27;s Python distribution (https://github.com/astral-sh/python-build-standalone). CC @geofft That&#x27;s a PBS bug I think?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @konstin on 2025-10-20 16:02</div>
+            <div class="event">Reopened by <a href="https://github.com/konstin">@konstin</a> on 2025-10-20 16:02</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @konstin on 2025-10-20 16:02</div>
+            <div class="event">Closed by <a href="https://github.com/konstin">@konstin</a> on 2025-10-20 16:02</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @konstin on 2025-10-20 16:02</div>
+            <div class="event">Reopened by <a href="https://github.com/konstin">@konstin</a> on 2025-10-20 16:02</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/TaylorZowtuk">@TaylorZowtuk</a> on 2025-10-20 16:06</div>
-            <div class="timeline-body"><p>Ah hang on, I think this is a known issue; https://github.com/astral-sh/python-build-standalone/issues/724</p>
+            <div class="timeline-body"><p>Ah hang on, I think this is a known issue; <a href="https://github.com/astral-sh/python-build-standalone/issues/724">astral-sh/python-build-standalone#724</a></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -332,7 +332,7 @@ Python 3.13.9 (main, Oct 14 2025, 21:18:37) [Clang 14.0.3 ] on linux
             <div class="timeline-body"><blockquote>
 <p>docker run -it --rm --name build-test ghcr.io/astral-sh/uv:alpine3.22 /bin/sh</p>
 </blockquote>
-<p>@TaylorZowtuk You could use <code>docker run -it --rm --name build-test ghcr.io/astral-sh/uv:python3.12-alpine /bin/sh</code> for the time being and it won't use the PBS build and the image is Alpine 3.22 based upstream from official Python docker images. The container size ends up being relatively similar as PBS would get downloaded on the pure alpine one.</p>
+<p>@TaylorZowtuk You could use <code>docker run -it --rm --name build-test ghcr.io/astral-sh/uv:python3.12-alpine /bin/sh</code> for the time being and it won&#x27;t use the PBS build and the image is Alpine 3.22 based upstream from official Python docker images. The container size ends up being relatively similar as PBS would get downloaded on the pure alpine one.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -351,7 +351,7 @@ uv python install --reinstall
 Following the same steps in my minimal reproducible example no longer results in an error when we get to the step attempting to import numpy.</p>
 </blockquote>
 <p>Commands executed:</p>
-<pre><code class="language-shell">$ docker run -it --rm --name build-test ghcr.io/astral-sh/uv:alpine3.22 /bin/sh
+<pre><code>$ docker run -it --rm --name build-test ghcr.io/astral-sh/uv:alpine3.22 /bin/sh
 / # uv python pin 3.12 --verbose
 / # uv venv --verbose
 / # uv pip install numpy==1.26.4 --verbose
@@ -367,18 +367,18 @@ uv 0.9.7
 Python 3.12.12 (main, Oct 28 2025, 11:59:18) [Clang 14.0.3 ] on linux
 &gt;&gt;&gt; import _imp
 &gt;&gt;&gt; _imp.extension_suffixes()
-['.cpython-312-x86_64-linux-musl.so', '.abi3.so', '.so']
+[&#x27;.cpython-312-x86_64-linux-musl.so&#x27;, &#x27;.abi3.so&#x27;, &#x27;.so&#x27;]
 </code></pre>
 <p>Thanks for the help/fix everyone.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @TaylorZowtuk on 2025-11-04 17:29</div>
+            <div class="event">Closed by <a href="https://github.com/TaylorZowtuk">@TaylorZowtuk</a> on 2025-11-04 17:29</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:33:12 UTC
+        Synced at 2026-01-20 19:40:42 UTC
     </footer>
 </body>
 </html>

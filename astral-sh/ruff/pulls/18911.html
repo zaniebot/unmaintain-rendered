@@ -23,46 +23,46 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>An increasingly common pattern in our codebase is to do something like this, where we iterate over a sequence of types and apply a fallible mapping operation to each element in turn:</p>
-<pre><code class="language-rs">                let mut builder = UnionBuilder::new(db);
+<pre><code>                let mut builder = UnionBuilder::new(db);
                 for element in union.elements(db) {
                     builder = builder.add(element.to_instance(db)?);
                 }
                 Some(builder.build())
 </code></pre>
-<p>While the mapping function continues to return <code>Some(Type&lt;'db&gt;)</code> for each element, we build up a union; but as soon as the mapping operation returns <code>None</code> for any element, we short-circuit and return <code>None</code>.</p>
+<p>While the mapping function continues to return <code>Some(Type&lt;&#x27;db&gt;)</code> for each element, we build up a union; but as soon as the mapping operation returns <code>None</code> for any element, we short-circuit and return <code>None</code>.</p>
 <p>This PR adds some helper functions to <code>UnionType</code> to make this pattern less verbose: <code>UnionType::try_from_elements()</code> and <code>UnionType::try_map</code>.</p>
 <p>Unfortunately there are a couple of places where a mapping function returns a <code>Result</code>:</p>
 <p>https://github.com/astral-sh/ruff/blob/27eee5a1a845498aa6a938281cea60c1b1f3f7c9/crates/ty_python_semantic/src/types/infer.rs#L7465-L7480</p>
-<p>But I don't think this approach can be generalized to support mapping operations that return <code>Result</code>s as well as mapping operations that return <code>Option</code>s until <a href="https://doc.rust-lang.org/std/ops/trait.Try.html">the <code>Try</code> trait is stabilised</a> in Rust.</p>
-<h2>Test Plan</h2>
+<p>But I don&#x27;t think this approach can be generalized to support mapping operations that return <code>Result</code>s as well as mapping operations that return <code>Option</code>s until <a href="https://doc.rust-lang.org/std/ops/trait.Try.html">the <code>Try</code> trait is stabilised</a> in Rust.</p>
+Test Plan
 <p><code>cargo test -p ty_python_semantic</code></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-06-24 11:28</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-24 11:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-06-24 11:28</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-24 11:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-06-24 11:28</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-24 11:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> added by @AlexWaygood on 2025-06-24 11:28</div>
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-24 11:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-06-24 11:28</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-24 11:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Introduce `UnionType::try_from_elements` and `UnionType::try_map`" to "[ty] Introduce `UnionType::try_from_elements` and `UnionType::try_map`" by @AlexWaygood on 2025-06-24 11:28</div>
+            <div class="event">Renamed from &quot;Introduce `UnionType::try_from_elements` and `UnionType::try_map`&quot; to &quot;[ty] Introduce `UnionType::try_from_elements` and `UnionType::try_map`&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-24 11:28</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-24 11:31</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
+<code>mypy_primer</code> results
 <p>No ecosystem changes detected ✅</p>
 </div>
         </div>
@@ -74,12 +74,12 @@
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types.rs</code>:7665 on 2025-06-24 11:38</div>
             <div class="timeline-body"><p>Maybe: <code>try_map</code> and <code>try_map_result</code> or <code>try_map</code> and <code>try_map_ok</code>?</p>
 <p>and <code>try_from_elements</code> and <code>try_from_result_elements</code>?</p>
-<p>I also think it's important to document what &quot;fallible&quot; means because it wasn't clear to me if it bails if there's any <code>None</code> value or if it skip sover <code>None</code> values.</p>
+<p>I also think it&#x27;s important to document what &quot;fallible&quot; means because it wasn&#x27;t clear to me if it bails if there&#x27;s any <code>None</code> value or if it skip sover <code>None</code> values.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-06-24 11:55</div>
-            <div class="timeline-body"><p>It's unfortunate that the <code>Try</code> trait isn't stabilized :(</p>
+            <div class="timeline-body"><p>It&#x27;s unfortunate that the <code>Try</code> trait isn&#x27;t stabilized :(</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -92,18 +92,18 @@
 <p>Maybe: <code>try_map</code> and <code>try_map_result</code> or <code>try_map</code> and <code>try_map_ok</code>?</p>
 <p>and <code>try_from_elements</code> and <code>try_from_result_elements</code>?</p>
 </blockquote>
-<p>We could, but I don't think it's worth it right now considering that there's only one callsite that uses <code>Result</code>s. We can add it later if that pattern becomes more common, I think.</p>
+<p>We could, but I don&#x27;t think it&#x27;s worth it right now considering that there&#x27;s only one callsite that uses <code>Result</code>s. We can add it later if that pattern becomes more common, I think.</p>
 <blockquote>
-<p>I also think it's important to document what &quot;fallible&quot; means because it wasn't clear to me if it bails if there's any <code>None</code> value or if it skip sover <code>None</code> values.</p>
+<p>I also think it&#x27;s important to document what &quot;fallible&quot; means because it wasn&#x27;t clear to me if it bails if there&#x27;s any <code>None</code> value or if it skip sover <code>None</code> values.</p>
 </blockquote>
-<p>👍 I'll push an update</p>
+<p>👍 I&#x27;ll push an update</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @AlexWaygood on 2025-06-24 12:09</div>
+            <div class="event">Merged by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-24 12:09</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-06-24 12:09</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-24 12:09</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-06-24 12:09</div>
@@ -111,7 +111,7 @@
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:13:39 UTC
+        Synced at 2026-01-20 19:15:51 UTC
     </footer>
 </body>
 </html>

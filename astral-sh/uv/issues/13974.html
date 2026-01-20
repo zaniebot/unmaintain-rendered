@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<p>We currently don't support requesting a previously defined index by name in various operations, but we should.</p>
-<h3>Example</h3>
+            <div class="timeline-body">Summary
+<p>We currently don&#x27;t support requesting a previously defined index by name in various operations, but we should.</p>
+Example
 <p>e.g., where an index is defined in a <code>pyproject.toml</code>, I should be able to use</p>
 <pre><code>$ uv add --index &lt;name&gt;
 </code></pre>
@@ -35,11 +35,11 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2025-06-11 19:12</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-11 19:12</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-11 19:12</div>
-            <div class="timeline-body"><p>I thought this was discussed elsewhere, but can't find it.</p>
+            <div class="timeline-body"><p>I thought this was discussed elsewhere, but can&#x27;t find it.</p>
 <p>Related</p>
 <ul>
 <li>#13874</li>
@@ -55,16 +55,16 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/EliteTK">@EliteTK</a> on 2026-01-05 23:12</div>
-            <div class="timeline-body"><p>So at least in <code>uv add</code>'s case. If only one index is provided, the requirements are pinned to that index. And then regardless of how many indexes are provided, the specified indexes are added/re-added to the pyproject.toml (such that any pre-existing entries appear at the top in the order they are passed on the command line (or from other sources)).</p>
+            <div class="timeline-body"><p>So at least in <code>uv add</code>&#x27;s case. If only one index is provided, the requirements are pinned to that index. And then regardless of how many indexes are provided, the specified indexes are added/re-added to the pyproject.toml (such that any pre-existing entries appear at the top in the order they are passed on the command line (or from other sources)).</p>
 <p>Regarding <code>uv tool install</code>, currently what you pass via <code>--index</code> seems to get checked after whatever is already in your <code>uv.toml</code>.</p>
 <p>It seems like maybe we should be prioritising the index passed there?</p>
-<p>As for how to achieve this, I've considered a few different ideas but I think what makes the most sense to me is something like: Add a new type for an <code>IndexOrName</code> which is what we would take on the CLI instead of an <code>Index</code>. The direct consumers of the arguments would then attempt resolve this from the pyproject.toml (or the embedded script toml) before treating it like a normal index.</p>
+<p>As for how to achieve this, I&#x27;ve considered a few different ideas but I think what makes the most sense to me is something like: Add a new type for an <code>IndexOrName</code> which is what we would take on the CLI instead of an <code>Index</code>. The direct consumers of the arguments would then attempt resolve this from the pyproject.toml (or the embedded script toml) before treating it like a normal index.</p>
 <p>Alternatively we could add some logic to <code>Index::from_str</code> which attempts to find the right <code>pyproject.toml</code> / script toml / <code>uv.toml</code> but this seemed a bit too dirty.</p>
 <p>Happy to hear other suggestions.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @EliteTK by @EliteTK on 2026-01-09 20:53</div>
+            <div class="event">Assigned to <a href="https://github.com/EliteTK">@EliteTK</a> by <a href="https://github.com/EliteTK">@EliteTK</a> on 2026-01-09 20:53</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/EliteTK">@EliteTK</a> on 2026-01-13 17:31</div>
@@ -73,20 +73,20 @@
 <li>We could technically allow <code>pyproject.toml</code> to reference <code>uv.toml</code> indices by name.</li>
 <li>We could include also include the index name in <code>uv-receipt.toml</code> for a tool, instead of the index URL, if it is installed.</li>
 </ol>
-<p>#1 seems like it could lead to surprises. I think #2 might be an okay idea. But for now, I'm going to not do/allow either of those... Just wanted to document this decision in case there were interesting objections to this choice.</p>
+<p>#1 seems like it could lead to surprises. I think #2 might be an okay idea. But for now, I&#x27;m going to not do/allow either of those... Just wanted to document this decision in case there were interesting objections to this choice.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/EliteTK">@EliteTK</a> on 2026-01-16 16:28</div>
             <div class="timeline-body"><p>As written, my PR makes passing <code>--index name</code> equivalent to passing <code>--index name=uri</code> which has the impact that, for a workspace child package, it will copy the index definition into it.</p>
-<p>Additionally, this means that if you're in the directory of a workspace child or using --project in the workspace root, and the child has its own index defined with a conflicting name, the definition will get overwritten by the workspace's. This again matches the behaviour of doing <code>--index name=url</code> and the resolution logic matches our normal resolution logic (which honestly seems a bit unusual to me).</p>
-<p>While it would in some sense deviate from the behaviour of <code>--index name=uri</code>, I think we shouldn't write new index definitions when picking up an <code>--index</code> by name. Not quite sure how to make that happen yet though...</p>
+<p>Additionally, this means that if you&#x27;re in the directory of a workspace child or using --project in the workspace root, and the child has its own index defined with a conflicting name, the definition will get overwritten by the workspace&#x27;s. This again matches the behaviour of doing <code>--index name=url</code> and the resolution logic matches our normal resolution logic (which honestly seems a bit unusual to me).</p>
+<p>While it would in some sense deviate from the behaviour of <code>--index name=uri</code>, I think we shouldn&#x27;t write new index definitions when picking up an <code>--index</code> by name. Not quite sure how to make that happen yet though...</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-16 17:03:47 UTC
+        Synced at 2026-01-20 19:39:00 UTC
     </footer>
 </body>
 </html>

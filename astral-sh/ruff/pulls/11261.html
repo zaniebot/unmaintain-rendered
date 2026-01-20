@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This PR removes the cyclic dev dependency some of the crates had with the parser crate.</p>
 <p>The cyclic dependencies are:</p>
 <ul>
@@ -38,35 +38,35 @@
 </ul>
 </li>
 </ul>
-<h3>Motivation</h3>
-<p>The main motivation for this PR is to help development. Before this PR, <code>rust-analyzer</code> wouldn't provide any intellisense in the <code>ruff_python_parser</code> crate regarding the symbols in <code>ruff_python_ast</code> crate.</p>
+Motivation
+<p>The main motivation for this PR is to help development. Before this PR, <code>rust-analyzer</code> wouldn&#x27;t provide any intellisense in the <code>ruff_python_parser</code> crate regarding the symbols in <code>ruff_python_ast</code> crate.</p>
 <pre><code>[ERROR][2024-05-03 13:47:06] .../vim/lsp/rpc.lua:770	&quot;rpc&quot;	&quot;/Users/dhruv/.cargo/bin/rust-analyzer&quot;	&quot;stderr&quot;	&quot;[ERROR project_model::workspace] cyclic deps: ruff_python_parser(Idx::&lt;CrateData&gt;(50)) -&gt; ruff_python_ast(Idx::&lt;CrateData&gt;(37)), alternative path: ruff_python_ast(Idx::&lt;CrateData&gt;(37)) -&gt; ruff_python_parser(Idx::&lt;CrateData&gt;(50))\n&quot;
 </code></pre>
-<h2>Test Plan</h2>
+Test Plan
 <p>Check the logs of <code>rust-analyzer</code> to not see any signs of cyclic dependency.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> added by @dhruvmanila on 2024-05-03 08:52</div>
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-03 08:52</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @dhruvmanila on 2024-05-03 09:00</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-03 09:00</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-05-03 09:00</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-03 09:00</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-05-03 09:09</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
@@ -94,7 +94,7 @@
             <div class="timeline-body"><blockquote>
 <p>Removing the cyclic dep is more important to me than co-locating the tests, so I’d still vote in favor of this.</p>
 </blockquote>
-<p>Because of rust-analyzer? Because it isn't a cyclic dependency according to rust</p>
+<p>Because of rust-analyzer? Because it isn&#x27;t a cyclic dependency according to rust</p>
 <ul>
 <li>ruff_python_ast</li>
 <li>ruff_python_parser: depends on ruff_python_ast</li>
@@ -109,19 +109,19 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-05-03 16:15</div>
-            <div class="timeline-body"><p>Yeah. A few alternative options where I don't have a strong preference:</p>
+            <div class="timeline-body"><p>Yeah. A few alternative options where I don&#x27;t have a strong preference:</p>
 <ul>
 <li>Create a subfolder in the parser crate for the <code>ast</code> tests, e.g. <code>tests/ast</code> to make it clear what this tests are about</li>
 <li>Create a sub-crate in the <code>ruff_python_ast/integration_tests</code> named <code>ruff_python_ast_integration_tests</code> and add it to the workspace members in the root <code>Cargo.toml</code></li>
 </ul>
-<p>I'm slightly preferring the second option. I don't know if @BurntSushi has any other recommendation on how we could restructure our project to avoid the rust-analyzer cyclic dependency.</p>
+<p>I&#x27;m slightly preferring the second option. I don&#x27;t know if @BurntSushi has any other recommendation on how we could restructure our project to avoid the rust-analyzer cyclic dependency.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-03 16:50</div>
-            <div class="timeline-body"><p>It seems like this is the rust-analyzer issue: https://github.com/rust-lang/rust-analyzer/issues/3390</p>
-<p>I guess it's a problem because <code>rust-analyzer</code> just always enables <code>cfg(test)</code>. Which makes sense. That's what you want. But when the test library introduces a circular dependency, that turns into a true circular dependency if <code>cfg(test)</code> is always unconditionally enabled.</p>
-<p>I don't really know another way to disable it. I ran into this problem too, but didn't diagnose the root cause. I'd definitely vote in favor of fixing this somehow. It'd be nice if RA could figure out how to make this work though, because this is a legitimate pattern in the ecosystem.</p>
+            <div class="timeline-body"><p>It seems like this is the rust-analyzer issue: <a href="https://github.com/rust-lang/rust-analyzer/issues/3390">rust-lang/rust-analyzer#3390</a></p>
+<p>I guess it&#x27;s a problem because <code>rust-analyzer</code> just always enables <code>cfg(test)</code>. Which makes sense. That&#x27;s what you want. But when the test library introduces a circular dependency, that turns into a true circular dependency if <code>cfg(test)</code> is always unconditionally enabled.</p>
+<p>I don&#x27;t really know another way to disable it. I ran into this problem too, but didn&#x27;t diagnose the root cause. I&#x27;d definitely vote in favor of fixing this somehow. It&#x27;d be nice if RA could figure out how to make this work though, because this is a legitimate pattern in the ecosystem.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -131,11 +131,11 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-06 10:53</div>
-            <div class="timeline-body"><p>I've updated the PR description to reflect the recent changes. Thank you all for the recommendations.</p>
+            <div class="timeline-body"><p>I&#x27;ve updated the PR description to reflect the recent changes. Thank you all for the recommendations.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @charliermarsh by @dhruvmanila on 2024-05-07 03:31</div>
+            <div class="event">Review requested from <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-07 03:31</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-05-07 03:45</div>
@@ -148,10 +148,10 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @dhruvmanila on 2024-05-07 09:24</div>
+            <div class="event">Merged by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-07 09:24</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dhruvmanila on 2024-05-07 09:24</div>
+            <div class="event">Closed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-07 09:24</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-05-07 09:24</div>
@@ -161,13 +161,13 @@
             <div class="timeline-body"><blockquote>
 <p>It seems like this is the rust-analyzer issue: <a href="https://github.com/rust-lang/rust-analyzer/issues/3390">rust-lang/rust-analyzer#3390</a></p>
 </blockquote>
-<p>Stumbled upon this just now, there is an issue on the rust-analyzer repo with some more info about this than the one you linked here https://github.com/rust-lang/rust-analyzer/issues/14167</p>
+<p>Stumbled upon this just now, there is an issue on the rust-analyzer repo with some more info about this than the one you linked here <a href="https://github.com/rust-lang/rust-analyzer/issues/14167">rust-lang/rust-analyzer#14167</a></p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:04:08 UTC
+        Synced at 2026-01-20 19:03:52 UTC
     </footer>
 </body>
 </html>

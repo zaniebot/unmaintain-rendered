@@ -23,47 +23,47 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/jankatins">@jankatins</a></div>
-            <div class="timeline-body"><p>In the following code snippet, a TRY400 violation is raised because I use log.error() and not log.exception() in an exception handler. In this case it's by design as I immediately re-raise the exception, I just want to add some message to the exception and I don't want the stacktrace shown twice.</p>
+            <div class="timeline-body"><p>In the following code snippet, a TRY400 violation is raised because I use log.error() and not log.exception() in an exception handler. In this case it&#x27;s by design as I immediately re-raise the exception, I just want to add some message to the exception and I don&#x27;t want the stacktrace shown twice.</p>
 <pre><code>import logging
 log = logging.get_logger(__name__)
 # The outer app loop...
 try:
-    # actually some function call which can't handle the error but wants to abort...
+    # actually some function call which can&#x27;t handle the error but wants to abort...
     try:
         raise Exception(&quot;bad&quot;)
     except Exception:
         # to get some info into the log to &quot;enrich&quot; it...
-        # and I don't want to see the exception stacktrace twice
+        # and I don&#x27;t want to see the exception stacktrace twice
         log.error(&quot;That might mean ...&quot; ) # noqa: TRY400: use log.exception()
         raise
 except Exception:
     log.exception(&quot;Caught unhandled exception in outer context&quot;)
 </code></pre>
-<p>In my opinion the pattern &quot;in except block, with a log.something + 'raise' in all cases` should be something TRY400 should ignore/be ok with.</p>
+<p>In my opinion the pattern &quot;in except block, with a log.something + &#x27;raise&#x27; in all cases` should be something TRY400 should ignore/be ok with.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "TRY400 is too eager to flag something" to "TRY400 flags log.error() + raise" by @jankatins on 2023-04-27 19:11</div>
+            <div class="event">Renamed from &quot;TRY400 is too eager to flag something&quot; to &quot;TRY400 flags log.error() + raise&quot; by <a href="https://github.com/jankatins">@jankatins</a> on 2023-04-27 19:11</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tjkuson">@tjkuson</a> on 2023-04-27 20:38</div>
-            <div class="timeline-body"><p>Is there a reason why you couldn't pass <code>exc_info=False</code> into the <code>log.exception</code> method to suppress the stacktrace?</p>
+            <div class="timeline-body"><p>Is there a reason why you couldn&#x27;t pass <code>exc_info=False</code> into the <code>log.exception</code> method to suppress the stacktrace?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jankatins">@jankatins</a> on 2023-04-27 21:27</div>
-            <div class="timeline-body"><p>Mostly because I didn't know of it :-) but also because I wanted a different log level than EXCEPTION.</p>
+            <div class="timeline-body"><p>Mostly because I didn&#x27;t know of it :-) but also because I wanted a different log level than EXCEPTION.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-04-28 05:12</div>
-            <div class="timeline-body"><p>If you're using Python 3.11, then you should use the new <a href="https://docs.python.org/3/whatsnew/3.11.html#pep-678-exceptions-can-be-enriched-with-notes"><code>add_notes</code> feature</a> to enhance the message.</p>
+            <div class="timeline-body"><p>If you&#x27;re using Python 3.11, then you should use the new <a href="https://docs.python.org/3/whatsnew/3.11.html#pep-678-exceptions-can-be-enriched-with-notes"><code>add_notes</code> feature</a> to enhance the message.</p>
 <blockquote>
 <p>I wanted a different log level than EXCEPTION.</p>
 </blockquote>
-<p>Is this a custom defined log level as it doesn't exists in the <a href="https://docs.python.org/3/library/logging.html?highlight=logging#logging-levels"><code>logging</code> module</a>?</p>
-<p>Correct me if I'm wrong as I might not be aware of the context, but I think you could get away with just using <code>logging.exception</code>. Whatever message you pass in <code>logging.exception</code> is logged at <code>ERROR</code> level and in addition to that the traceback is printed as well. You could provide the additional message and have the traceback message in the logs as well. Example:</p>
-<pre><code class="language-python">def foo():
+<p>Is this a custom defined log level as it doesn&#x27;t exists in the <a href="https://docs.python.org/3/library/logging.html?highlight=logging#logging-levels"><code>logging</code> module</a>?</p>
+<p>Correct me if I&#x27;m wrong as I might not be aware of the context, but I think you could get away with just using <code>logging.exception</code>. Whatever message you pass in <code>logging.exception</code> is logged at <code>ERROR</code> level and in addition to that the traceback is printed as well. You could provide the additional message and have the traceback message in the logs as well. Example:</p>
+<pre><code>def foo():
 	def bar():
 		try:
 			raise Exception(&quot;exception message&quot;)
@@ -86,31 +86,31 @@ foo()
             <div class="timeline-body"><blockquote>
 <p>Whatever message you pass in logging.exception is logged at ERROR level</p>
 </blockquote>
-<p>Wow, thanks, I didn't know that. Always though that exception is it's own level.</p>
-<p>re add_notes: Yes, I think that would be nice, but I haven't checked how this is then displayed in the logs. It's really nice that one has a extra log line with just the extra info instead of the &quot;log lines explosion&quot; of the stacktrace...</p>
-<p>Anyway: I still think this pattern should be not flagged: it's perfectly good code to use e.g. <code>log.info(&quot;message&quot;)</code> or whatever else is printed...</p>
+<p>Wow, thanks, I didn&#x27;t know that. Always though that exception is it&#x27;s own level.</p>
+<p>re add_notes: Yes, I think that would be nice, but I haven&#x27;t checked how this is then displayed in the logs. It&#x27;s really nice that one has a extra log line with just the extra info instead of the &quot;log lines explosion&quot; of the stacktrace...</p>
+<p>Anyway: I still think this pattern should be not flagged: it&#x27;s perfectly good code to use e.g. <code>log.info(&quot;message&quot;)</code> or whatever else is printed...</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-04-29 19:07</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-29 19:07</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/saippuakauppias">@saippuakauppias</a> on 2023-06-15 12:29</div>
             <div class="timeline-body"><p>If you disable the sending of information about the exception with <code>exc_info=False</code> - there is another error: <code>TRY401 Redundant exception object included in logging.exception call</code>:</p>
-<pre><code class="language-python">import logging
+<pre><code>import logging
 
 
-logger = logging.getLogger('stream.logger')
+logger = logging.getLogger(&#x27;stream.logger&#x27;)
 
 
 def foo():
     try:
-        raise ValueError('error message')
+        raise ValueError(&#x27;error message&#x27;)
     except Exception as e:
-        logger.error('Found handled error: %s', e)
-        logger.error('Found handled error: %s', e, exc_info=False)
-        logger.exception('Found handled error: %s', e, exc_info=False)
-        logger.exception('Found handled error: %s', str(e), exc_info=False)
+        logger.error(&#x27;Found handled error: %s&#x27;, e)
+        logger.error(&#x27;Found handled error: %s&#x27;, e, exc_info=False)
+        logger.exception(&#x27;Found handled error: %s&#x27;, e, exc_info=False)
+        logger.exception(&#x27;Found handled error: %s&#x27;, str(e), exc_info=False)
 </code></pre>
 <pre><code>$ ruff &quot;ruff_errors/TRY400.py&quot; --select=TRY400,TRY401
 ruff_errors/TRY400.py:11:9: TRY400 Use `logging.exception` instead of `logging.error`
@@ -129,7 +129,7 @@ Found 4 errors.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-15 13:43</div>
-            <div class="timeline-body"><p>Hm, I guess if <code>exc_info</code> is set to <code>False</code>, we shouldn't raise &quot;Redundant exception object included in call&quot;.</p>
+            <div class="timeline-body"><p>Hm, I guess if <code>exc_info</code> is set to <code>False</code>, we shouldn&#x27;t raise &quot;Redundant exception object included in call&quot;.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -182,23 +182,23 @@ ValueError: some error
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-06-15 14:55</div>
-            <div class="timeline-body"><p>For what it's worth, I agree <code>logger.exception</code> is not correct to suggest if you are going to raise the exception after and do not want to log the stack trace. In the same way that we suggest you should use <code>logger.exception</code> to set <code>exc_info=True</code>, you should use <code>logger.error</code> to set <code>exc_info=False</code>. Using <code>logger.exception</code> then opting back out of <code>exc_info</code> is weird.</p>
+            <div class="timeline-body"><p>For what it&#x27;s worth, I agree <code>logger.exception</code> is not correct to suggest if you are going to raise the exception after and do not want to log the stack trace. In the same way that we suggest you should use <code>logger.exception</code> to set <code>exc_info=True</code>, you should use <code>logger.error</code> to set <code>exc_info=False</code>. Using <code>logger.exception</code> then opting back out of <code>exc_info</code> is weird.</p>
 <p>In part, I may have qualms with <code>TRY400</code> itself. If I do <code>logger.error(&quot;foo&quot;, exc_info=True)</code> it should be corrected to <code>logger.exception(&quot;foo&quot;)</code> but it is pretty common to want to write error logs in an exception handler without including the stack trace. Is there another rule that just covers that narrower conversion?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-07-10 01:15</div>
+            <div class="event">Label <span class="label">needs-decision</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-10 01:15</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2023-07-10 01:15</div>
+            <div class="event">Label <span class="label">question</span> removed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-10 01:15</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-07-10 01:15</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-10 01:15</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jankatins">@jankatins</a> on 2023-12-18 11:14</div>
             <div class="timeline-body"><p>Another bad case: when the log is followed by a <code>sys.exit()</code>:</p>
-<pre><code class="language-py"># In an optional script
+<pre><code># In an optional script
 try:
     import ....
 except ImportError:
@@ -210,11 +210,11 @@ except ImportError:
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "TRY400 flags log.error() + raise" to "TRY400 flags log.error() + raise/sys.exit()" by @jankatins on 2023-12-18 11:16</div>
+            <div class="event">Renamed from &quot;TRY400 flags log.error() + raise&quot; to &quot;TRY400 flags log.error() + raise/sys.exit()&quot; by <a href="https://github.com/jankatins">@jankatins</a> on 2023-12-18 11:16</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/bcyran">@bcyran</a> on 2024-10-17 13:15</div>
-            <div class="timeline-body"><p>I just want to say that I wholeheartedly agree with @zanieb's stance on this. <code>TRY400</code> should not be reported for exceptions which are immediately re-raised. It would be very nice to see this issue picked up again.</p>
+            <div class="timeline-body"><p>I just want to say that I wholeheartedly agree with @zanieb&#x27;s stance on this. <code>TRY400</code> should not be reported for exceptions which are immediately re-raised. It would be very nice to see this issue picked up again.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -222,10 +222,10 @@ except ImportError:
             <div class="timeline-body"><p>Personally I find this a weird rule that I strongly disagree with.</p>
 <p>I always avoid <code>logger.exception</code>, as it is not a loglevel <code>logger.&lt;loglevel&gt;</code></p>
 <p>My best practice is to use <code>logger.error(..., exc_info=True|False)</code>.
-It's more consistent, more explicit.
+It&#x27;s more consistent, more explicit.
 You can even use different loglevels .
 And you can easily make showing the traceback conditional.</p>
-<p>Most people use logger.exception because they don't know about <code>exc_info=True|False</code>.</p>
+<p>Most people use logger.exception because they don&#x27;t know about <code>exc_info=True|False</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -234,8 +234,8 @@ And you can easily make showing the traceback conditional.</p>
 <ol>
 <li>If the exception block contains a <code>raise</code>, pass the rule.</li>
 <li>If the exception block contains a <code>return</code>?</li>
-<li>If it calls <code>sys.exit()</code> or otherwise terminates the program: debatable. I understand @jankatins's point, but I’d still prefer a failure in this case. Opting out is always possible via <code># noqa</code>, so I don’t think this should be a default exclusion.</li>
-<li>Per https://github.com/astral-sh/ruff/issues/18070, allow the rule to pass if there is at least one <code>logger.exception()</code> call within the exception context.</li>
+<li>If it calls <code>sys.exit()</code> or otherwise terminates the program: debatable. I understand @jankatins&#x27;s point, but I’d still prefer a failure in this case. Opting out is always possible via <code># noqa</code>, so I don’t think this should be a default exclusion.</li>
+<li>Per <a href="https://github.com/astral-sh/ruff/issues/18070">astral-sh/ruff#18070</a>, allow the rule to pass if there is at least one <code>logger.exception()</code> call within the exception context.</li>
 </ol>
 <p>All these could also possibly be made configurable in a <code>lint.try</code> section.</p>
 </div>
@@ -243,7 +243,7 @@ And you can easily make showing the traceback conditional.</p>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:47:05 UTC
+        Synced at 2026-01-20 18:48:35 UTC
     </footer>
 </body>
 </html>

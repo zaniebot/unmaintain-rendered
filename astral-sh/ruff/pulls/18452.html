@@ -23,11 +23,11 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This PR resolves the way diagnostics are reported for an invalid call to an overloaded function.</p>
-<p>If any of the steps in the overload call evaluation algorithm yields a matching overload but it's type checking that failed, the <code>no-matching-overload</code> diagnostic is incorrect because there is a matching overload, it's the arguments passed that are invalid as per the signature. So, this PR improves that by surfacing the diagnostics on the matching overload directly.</p>
+<p>If any of the steps in the overload call evaluation algorithm yields a matching overload but it&#x27;s type checking that failed, the <code>no-matching-overload</code> diagnostic is incorrect because there is a matching overload, it&#x27;s the arguments passed that are invalid as per the signature. So, this PR improves that by surfacing the diagnostics on the matching overload directly.</p>
 <p>It also provides additional context, specifically the matching overload where this error occurred and other non-matching overloads. Consider the following example:</p>
-<pre><code class="language-py">from typing import overload
+<pre><code>from typing import overload
 
 
 @overload
@@ -43,21 +43,21 @@ def f(x: int | None = None, y: int | None = None) -&gt; int | None:
 f(&quot;a&quot;)
 </code></pre>
 <p>We get:</p>
-<p><img width="857" alt="Screenshot 2025-06-18 at 11 07 10" src="https://github.com/user-attachments/assets/8dbcaf13-2a74-4661-aa94-1225c9402ea6" /></p>
-<h2>Test Plan</h2>
+<p><img alt="Screenshot 2025-06-18 at 11 07 10" src="https://github.com/user-attachments/assets/8dbcaf13-2a74-4661-aa94-1225c9402ea6"></p>
+Test Plan
 <p>Update test cases, resolve existing todos and validate the updated snapshots.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @dhruvmanila on 2025-06-04 03:32</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-04 03:32</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">diagnostics</span> added by @dhruvmanila on 2025-06-04 03:32</div>
+            <div class="event">Label <span class="label">diagnostics</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-04 03:32</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/union_call.md_-_Calling_a_union_of_f…_-_Try_to_cover_all_pos…_-_Cover_non-keyword_re…_(707b284610419a54).snap</code>:125 on 2025-06-04 03:34</div>
             <div class="timeline-body"><p>This seems correct to me as the reveal type of <code>x</code> in the following gives us the bound method:</p>
-<pre><code class="language-py">from inspect import getattr_static
+<pre><code>from inspect import getattr_static
 from typing import reveal_type
 
 
@@ -72,12 +72,12 @@ f5 = getattr_static(OverloadExample, &quot;f&quot;).__get__
 reveal_type(f5(3))
 </code></pre>
 <p>So, it seems like this test is actually incorrect.</p>
-<p>The overload matching did yield a matching overload but still it reported <code>no-matching-overload</code> diagnostic. You can see this in the following logs which suggests that the matching overload is at index 1 after the arity check and the type checking shouldn't fail either because <code>Literal[3]</code> is assignable to <code>~None</code>:</p>
+<p>The overload matching did yield a matching overload but still it reported <code>no-matching-overload</code> diagnostic. You can see this in the following logs which suggests that the matching overload is at index 1 after the arity check and the type checking shouldn&#x27;t fail either because <code>Literal[3]</code> is assignable to <code>~None</code>:</p>
 <pre><code>INFO matching overload index: 1
 INFO overload signature: (instance: ~None, owner: type | None = None, /) -&gt; Unknown
 INFO argument types: Literal[3]
 </code></pre>
-<p>The reason this was happening earlier is that we'd unconditionally report <code>no-matching-overload</code> without actually checking whether this is the case. This is the branch where that is happening:</p>
+<p>The reason this was happening earlier is that we&#x27;d unconditionally report <code>no-matching-overload</code> without actually checking whether this is the case. This is the branch where that is happening:</p>
 <p>https://github.com/astral-sh/ruff/blob/a2cd6df429a3e76880a48a5eb8816a86c36927ed/crates/ty_python_semantic/src/types/call/bind.rs#L1590</p>
 </div>
         </div>
@@ -87,19 +87,19 @@ INFO argument types: Literal[3]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-04 03:35</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">mypy_primer (https://github.com/hauntsaninja/mypy_primer)
+Changes were detected when running on open source projects
+
+<pre><code>mypy_primer (https://github.com/hauntsaninja/mypy_primer)
 - error[no-matching-overload] mypy_primer/utils.py:33:12: No overload of bound method `__init__` matches arguments
 + error[invalid-argument-type] mypy_primer/utils.py:33:16: Argument to bound method `__init__` is incorrect: Expected `Iterable[Unknown]`, found `Path`
 
 python-chess (https://github.com/niklasf/python-chess)
 - error[no-matching-overload] chess/pgn.py:1857:17: No overload of function `read_game` matches arguments
-+ error[invalid-argument-type] chess/pgn.py:1857:35: Argument to function `read_game` is incorrect: Expected `() -&gt; BaseVisitor[Unknown]`, found `&lt;class 'SkipVisitor'&gt;`
++ error[invalid-argument-type] chess/pgn.py:1857:35: Argument to function `read_game` is incorrect: Expected `() -&gt; BaseVisitor[Unknown]`, found `&lt;class &#x27;SkipVisitor&#x27;&gt;`
 
 Expression (https://github.com/cognitedata/Expression)
 - error[no-matching-overload] expression/extra/option/pipeline.py:91:12: No overload of function `reduce` matches arguments
@@ -121,7 +121,7 @@ Expression (https://github.com/cognitedata/Expression)
 
 attrs (https://github.com/python-attrs/attrs)
 - error[no-matching-overload] tests/test_converters.py:25:13: No overload of bound method `__init__` matches arguments
-+ error[invalid-argument-type] tests/test_converters.py:25:23: Argument to bound method `__init__` is incorrect: Expected `(Unknown, AttrsInstance, Attribute[Unknown], /) -&gt; Unknown`, found `&lt;class 'int'&gt;`
++ error[invalid-argument-type] tests/test_converters.py:25:23: Argument to bound method `__init__` is incorrect: Expected `(Unknown, AttrsInstance, Attribute[Unknown], /) -&gt; Unknown`, found `&lt;class &#x27;int&#x27;&gt;`
 - error[no-matching-overload] tests/test_converters.py:59:13: No overload of bound method `__init__` matches arguments
 + error[invalid-argument-type] tests/test_converters.py:59:23: Argument to bound method `__init__` is incorrect: Expected `(Unknown, AttrsInstance, Attribute[Unknown], /) -&gt; Unknown`, found `None`
 - error[no-matching-overload] tests/test_converters.py:104:13: No overload of bound method `__init__` matches arguments
@@ -196,7 +196,7 @@ trio (https://github.com/python-trio/trio)
 - error[no-matching-overload] src/trio/_core/_tests/test_run.py:2133:22: No overload of bound method `__init__` matches arguments
 + error[invalid-argument-type] src/trio/_core/_tests/test_run.py:2133:40: Argument to bound method `__init__` is incorrect: Expected `(BaseException, /) -&gt; bool`, found `def check_traceback(exc: KeyError) -&gt; bool`
 - error[no-matching-overload] src/trio/_tests/test_subprocess.py:370:15: No overload of function `run_process` matches arguments
-+ error[invalid-argument-type] src/trio/_tests/test_subprocess.py:370:32: Argument to function `run_process` is incorrect: Expected `bytes | bytearray | memoryview[Unknown] | int | HasFileno | None`, found `Literal[&quot;oh no, it's text&quot;]`
++ error[invalid-argument-type] src/trio/_tests/test_subprocess.py:370:32: Argument to function `run_process` is incorrect: Expected `bytes | bytearray | memoryview[Unknown] | int | HasFileno | None`, found `Literal[&quot;oh no, it&#x27;s text&quot;]`
 - error[no-matching-overload] src/trio/_tests/type_tests/raisesgroup.py:71:5: No overload of bound method `__init__` matches arguments
 - error[no-matching-overload] src/trio/_tests/type_tests/raisesgroup.py:74:5: No overload of bound method `__init__` matches arguments
 + error[invalid-argument-type] src/trio/_tests/type_tests/raisesgroup.py:71:32: Argument to bound method `__init__` is incorrect: Expected `(BaseException, /) -&gt; bool`, found `def check_filenotfound(exc: FileNotFoundError) -&gt; bool`
@@ -358,8 +358,8 @@ django-stubs (https://github.com/typeddjango/django-stubs)
 bokeh (https://github.com/bokeh/bokeh)
 - error[no-matching-overload] src/bokeh/embed/bundle.py:186:25: No overload of function `__new__` matches arguments
 - error[no-matching-overload] src/bokeh/embed/bundle.py:189:26: No overload of function `__new__` matches arguments
-+ error[invalid-argument-type] src/bokeh/embed/bundle.py:186:29: Argument to function `__new__` is incorrect: Expected `(str, /) -&gt; Unknown`, found `&lt;class 'URL'&gt;`
-+ error[invalid-argument-type] src/bokeh/embed/bundle.py:189:30: Argument to function `__new__` is incorrect: Expected `(str, /) -&gt; Unknown`, found `&lt;class 'URL'&gt;`
++ error[invalid-argument-type] src/bokeh/embed/bundle.py:186:29: Argument to function `__new__` is incorrect: Expected `(str, /) -&gt; Unknown`, found `&lt;class &#x27;URL&#x27;&gt;`
++ error[invalid-argument-type] src/bokeh/embed/bundle.py:189:30: Argument to function `__new__` is incorrect: Expected `(str, /) -&gt; Unknown`, found `&lt;class &#x27;URL&#x27;&gt;`
 - error[no-matching-overload] src/bokeh/layouts.py:571:39: No overload of function `__new__` matches arguments
 + error[invalid-argument-type] src/bokeh/layouts.py:571:43: Argument to function `__new__` is incorrect: Expected `(UIElement, /) -&gt; Unknown`, found `(def traverse(children: list[LayoutDOM], level: int = Literal[0]) -&gt; Unknown) | (def traverse(item: LayoutDOM, top_level: bool = Literal[False]) -&gt; Unknown)`
 - error[no-matching-overload] src/bokeh/palettes.py:1676:50: No overload of function `__new__` matches arguments
@@ -367,7 +367,7 @@ bokeh (https://github.com/bokeh/bokeh)
 
 openlibrary (https://github.com/internetarchive/openlibrary)
 - error[no-matching-overload] openlibrary/core/imports.py:146:20: No overload of function `__new__` matches arguments
-+ error[invalid-argument-type] openlibrary/core/imports.py:146:24: Argument to function `__new__` is incorrect: Expected `(Unknown, /) -&gt; Unknown`, found `&lt;class 'ImportItem'&gt;`
++ error[invalid-argument-type] openlibrary/core/imports.py:146:24: Argument to function `__new__` is incorrect: Expected `(Unknown, /) -&gt; Unknown`, found `&lt;class &#x27;ImportItem&#x27;&gt;`
 
 sphinx (https://github.com/sphinx-doc/sphinx)
 - error[no-matching-overload] sphinx/config.py:642:16: No overload of function `__new__` matches arguments
@@ -542,9 +542,9 @@ sympy (https://github.com/sympy/sympy)
 - error[no-matching-overload] sympy/core/mul.py:1015:24: No overload of function `__new__` matches arguments
 - error[no-matching-overload] sympy/core/mul.py:1015:24: No overload of function `__new__` matches arguments
 - error[no-matching-overload] sympy/core/mul.py:1015:24: No overload of function `__new__` matches arguments
-+ error[invalid-argument-type] sympy/core/mul.py:1015:28: Argument to function `__new__` is incorrect: Expected `(Unknown, /) -&gt; Unknown`, found `&lt;class 'factorial'&gt;`
-+ error[invalid-argument-type] sympy/core/mul.py:1015:28: Argument to function `__new__` is incorrect: Expected `(Unknown, /) -&gt; Unknown`, found `&lt;class 'factorial'&gt;`
-+ error[invalid-argument-type] sympy/core/mul.py:1015:28: Argument to function `__new__` is incorrect: Expected `(Unknown, /) -&gt; Unknown`, found `&lt;class 'factorial'&gt;`
++ error[invalid-argument-type] sympy/core/mul.py:1015:28: Argument to function `__new__` is incorrect: Expected `(Unknown, /) -&gt; Unknown`, found `&lt;class &#x27;factorial&#x27;&gt;`
++ error[invalid-argument-type] sympy/core/mul.py:1015:28: Argument to function `__new__` is incorrect: Expected `(Unknown, /) -&gt; Unknown`, found `&lt;class &#x27;factorial&#x27;&gt;`
++ error[invalid-argument-type] sympy/core/mul.py:1015:28: Argument to function `__new__` is incorrect: Expected `(Unknown, /) -&gt; Unknown`, found `&lt;class &#x27;factorial&#x27;&gt;`
 - error[no-matching-overload] sympy/core/power.py:1505:21: No overload of function `symbols` matches arguments
 - error[no-matching-overload] sympy/core/power.py:1505:21: No overload of function `symbols` matches arguments
 - error[no-matching-overload] sympy/core/power.py:1505:21: No overload of function `symbols` matches arguments
@@ -568,9 +568,9 @@ sympy (https://github.com/sympy/sympy)
 - error[no-matching-overload] sympy/core/tests/test_basic.py:259:12: No overload of function `__new__` matches arguments
 - error[no-matching-overload] sympy/core/tests/test_basic.py:259:12: No overload of function `__new__` matches arguments
 - error[no-matching-overload] sympy/core/tests/test_basic.py:259:12: No overload of function `__new__` matches arguments
-+ error[invalid-argument-type] sympy/core/tests/test_basic.py:259:16: Argument to function `__new__` is incorrect: Expected `(Unknown, /) -&gt; Unknown`, found `&lt;class 'Function'&gt;`
-+ error[invalid-argument-type] sympy/core/tests/test_basic.py:259:16: Argument to function `__new__` is incorrect: Expected `(Unknown, /) -&gt; Unknown`, found `&lt;class 'Function'&gt;`
-+ error[invalid-argument-type] sympy/core/tests/test_basic.py:259:16: Argument to function `__new__` is incorrect: Expected `(Unknown, /) -&gt; Unknown`, found `&lt;class 'Function'&gt;`
++ error[invalid-argument-type] sympy/core/tests/test_basic.py:259:16: Argument to function `__new__` is incorrect: Expected `(Unknown, /) -&gt; Unknown`, found `&lt;class &#x27;Function&#x27;&gt;`
++ error[invalid-argument-type] sympy/core/tests/test_basic.py:259:16: Argument to function `__new__` is incorrect: Expected `(Unknown, /) -&gt; Unknown`, found `&lt;class &#x27;Function&#x27;&gt;`
++ error[invalid-argument-type] sympy/core/tests/test_basic.py:259:16: Argument to function `__new__` is incorrect: Expected `(Unknown, /) -&gt; Unknown`, found `&lt;class &#x27;Function&#x27;&gt;`
 - error[no-matching-overload] sympy/core/tests/test_containers.py:26:12: No overload of bound method `__init__` matches arguments
 - error[no-matching-overload] sympy/core/tests/test_containers.py:28:12: No overload of bound method `__init__` matches arguments
 + error[invalid-argument-type] sympy/core/tests/test_containers.py:26:16: Argument to bound method `__init__` is incorrect: Expected `Iterable[Unknown]`, found `Basic`
@@ -578,9 +578,9 @@ sympy (https://github.com/sympy/sympy)
 - error[no-matching-overload] sympy/core/tests/test_eval.py:92:12: No overload of function `__new__` matches arguments
 - error[no-matching-overload] sympy/core/tests/test_eval.py:92:12: No overload of function `__new__` matches arguments
 - error[no-matching-overload] sympy/core/tests/test_eval.py:92:12: No overload of function `__new__` matches arguments
-+ error[invalid-argument-type] sympy/core/tests/test_eval.py:92:16: Argument to function `__new__` is incorrect: Expected `(Unknown, /) -&gt; Unknown`, found `&lt;class 'Function'&gt;`
-+ error[invalid-argument-type] sympy/core/tests/test_eval.py:92:16: Argument to function `__new__` is incorrect: Expected `(Unknown, /) -&gt; Unknown`, found `&lt;class 'Function'&gt;`
-+ error[invalid-argument-type] sympy/core/tests/test_eval.py:92:16: Argument to function `__new__` is incorrect: Expected `(Unknown, /) -&gt; Unknown`, found `&lt;class 'Function'&gt;`
++ error[invalid-argument-type] sympy/core/tests/test_eval.py:92:16: Argument to function `__new__` is incorrect: Expected `(Unknown, /) -&gt; Unknown`, found `&lt;class &#x27;Function&#x27;&gt;`
++ error[invalid-argument-type] sympy/core/tests/test_eval.py:92:16: Argument to function `__new__` is incorrect: Expected `(Unknown, /) -&gt; Unknown`, found `&lt;class &#x27;Function&#x27;&gt;`
++ error[invalid-argument-type] sympy/core/tests/test_eval.py:92:16: Argument to function `__new__` is incorrect: Expected `(Unknown, /) -&gt; Unknown`, found `&lt;class &#x27;Function&#x27;&gt;`
 - error[no-matching-overload] sympy/core/tests/test_match.py:520:15: No overload of function `symbols` matches arguments
 - error[no-matching-overload] sympy/core/tests/test_match.py:520:15: No overload of function `symbols` matches arguments
 - error[no-matching-overload] sympy/core/tests/test_match.py:520:15: No overload of function `symbols` matches arguments
@@ -599,16 +599,16 @@ sympy (https://github.com/sympy/sympy)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/resources/mdtest/diagnostics/union_call.md</code>:106 on 2025-06-18 06:16</div>
-            <div class="timeline-body"><p>Refer to my other comment here: https://github.com/astral-sh/ruff/pull/18452/files#r2125498558</p>
+            <div class="timeline-body"><p>Refer to my other comment here: <a href="https://github.com/astral-sh/ruff/pull/18452">astral-sh/ruff#18452</a>/files#r2125498558</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:1107 on 2025-06-18 06:22</div>
             <div class="timeline-body"><p>For step 2, the matching overload would have no error.</p>
 <p>For step 3, there would be either multiple matching overloads or no matching overloads. For the former, the return type is populated via <code>overload_call_return_type</code> field.</p>
-<p>For step 5, the matching overload is determined by step 6 if it's unambiguous and is the first overload remaining after the filtering process. This is done by the <code>return_type</code> method.</p>
-<p>Technically, we could populate this field even for other steps and then it could be used in other methods but I don't think it's worth it right now.</p>
-<p>For additional context related to this, the <code>matching_overloads</code> / <code>matching_overloads_mut</code> method differs slightly in that it would not return the matching overload because there was a type checking error but this field would populate the matching overload even in that case. This field could possibly be used in the <code>return_type</code> method instead of relying on <code>overload_call_return_type</code> and <code>matching_overloads</code> but we'd still need to differentiate between union-ing the return types for step 3 and picking the first return type for step 6.</p>
+<p>For step 5, the matching overload is determined by step 6 if it&#x27;s unambiguous and is the first overload remaining after the filtering process. This is done by the <code>return_type</code> method.</p>
+<p>Technically, we could populate this field even for other steps and then it could be used in other methods but I don&#x27;t think it&#x27;s worth it right now.</p>
+<p>For additional context related to this, the <code>matching_overloads</code> / <code>matching_overloads_mut</code> method differs slightly in that it would not return the matching overload because there was a type checking error but this field would populate the matching overload even in that case. This field could possibly be used in the <code>return_type</code> method instead of relying on <code>overload_call_return_type</code> and <code>matching_overloads</code> but we&#x27;d still need to differentiate between union-ing the return types for step 3 and picking the first return type for step 6.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -627,19 +627,19 @@ sympy (https://github.com/sympy/sympy)
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @dhruvmanila on 2025-06-18 06:24</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-18 06:24</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @dhruvmanila on 2025-06-18 06:24</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-18 06:24</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2025-06-18 06:24</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-18 06:24</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @dhruvmanila on 2025-06-18 06:24</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-18 06:24</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @dhruvmanila on 2025-06-18 06:24</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-18 06:24</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/diagnostics/union_call.md</code>:106 on 2025-06-18 22:50</div>
@@ -657,7 +657,7 @@ sympy (https://github.com/sympy/sympy)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/resources/mdtest/diagnostics/union_call.md</code>:106 on 2025-06-19 05:14</div>
-            <div class="timeline-body"><p>Thanks, that makes sense, I've expanded the test case with two cases of overloads: <code>no-matching-overload</code> and <code>invalid-argument-type</code> (for a single matching overload).</p>
+            <div class="timeline-body"><p>Thanks, that makes sense, I&#x27;ve expanded the test case with two cases of overloads: <code>no-matching-overload</code> and <code>invalid-argument-type</code> (for a single matching overload).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -666,24 +666,24 @@ sympy (https://github.com/sympy/sympy)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @BurntSushi by @dhruvmanila on 2025-06-19 05:31</div>
+            <div class="event">Review requested from <a href="https://github.com/BurntSushi">@BurntSushi</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-19 05:31</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-19 05:32</div>
-            <div class="timeline-body"><p>Sorry, I totally missed requesting @BurntSushi review. I'll probably go ahead and merge this but happy to address any feedback in a follow-up PR.</p>
+            <div class="timeline-body"><p>Sorry, I totally missed requesting @BurntSushi review. I&#x27;ll probably go ahead and merge this but happy to address any feedback in a follow-up PR.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2025-06-19 09:43</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-19 09:43</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @MichaReiser on 2025-06-19 09:43</div>
+            <div class="event">Reopened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-19 09:43</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @dhruvmanila on 2025-06-20 03:06</div>
+            <div class="event">Merged by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-20 03:06</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dhruvmanila on 2025-06-20 03:06</div>
+            <div class="event">Closed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-20 03:06</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-06-20 03:06</div>
@@ -696,7 +696,7 @@ sympy (https://github.com/sympy/sympy)
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:13:07 UTC
+        Synced at 2026-01-20 19:15:11 UTC
     </footer>
 </body>
 </html>

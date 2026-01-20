@@ -23,61 +23,61 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/woodruffw">@woodruffw</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Was reading this code while looking at adding PEP 792 support and noticed these: by using the borrowing deserializer instead of the owning one, we can probably save a good number of small-ish String allocations in the <code>PypiFile</code> and <code>PyxFile</code> deserializers.</p>
 <p>(These deserializers in turn are probably pretty hot, since large installations/resolutions require pulling lots of candidates from indices.)</p>
-<h2>Test Plan</h2>
-<p>No functional change expected; I'm not sure what the best way to microbenchmark this is. I'll try and contrive something locally.</p>
+Test Plan
+<p>No functional change expected; I&#x27;m not sure what the best way to microbenchmark this is. I&#x27;ll try and contrive something locally.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @charliermarsh by @woodruffw on 2025-12-22 21:20</div>
+            <div class="event">Review requested from <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/woodruffw">@woodruffw</a> on 2025-12-22 21:20</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @woodruffw by @woodruffw on 2025-12-22 21:20</div>
+            <div class="event">Assigned to <a href="https://github.com/woodruffw">@woodruffw</a> by <a href="https://github.com/woodruffw">@woodruffw</a> on 2025-12-22 21:20</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">performance</span> added by @woodruffw on 2025-12-22 21:20</div>
+            <div class="event">Label <span class="label">performance</span> added by <a href="https://github.com/woodruffw">@woodruffw</a> on 2025-12-22 21:20</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2025-12-22 21:27</div>
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @woodruffw on 2025-12-22 21:38</div>
+            <div class="event">Merged by <a href="https://github.com/woodruffw">@woodruffw</a> on 2025-12-22 21:38</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @woodruffw on 2025-12-22 21:38</div>
+            <div class="event">Closed by <a href="https://github.com/woodruffw">@woodruffw</a> on 2025-12-22 21:38</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-12-22 21:38</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/woodruffw">@woodruffw</a> on 2025-12-25 18:26</div>
-            <div class="timeline-body"><p>Note: I realized after-the-fact that this <em>could</em> be subtly incorrect. For example, sometimes serde can't borrow a string because it needs to de-escape it from its JSON or other serialized form.</p>
-<p>In <em>practice</em> that's probably fine in this context, since we don't really expect any weird escaping to happen on these key names. But it means that we can't just go around swapping <code>&lt;String&gt;</code> for <code>&lt;&amp;str&gt;</code> with full generality.</p>
-<p>Ref: https://github.com/serde-rs/serde/issues/1413</p>
+            <div class="timeline-body"><p>Note: I realized after-the-fact that this <em>could</em> be subtly incorrect. For example, sometimes serde can&#x27;t borrow a string because it needs to de-escape it from its JSON or other serialized form.</p>
+<p>In <em>practice</em> that&#x27;s probably fine in this context, since we don&#x27;t really expect any weird escaping to happen on these key names. But it means that we can&#x27;t just go around swapping <code>&lt;String&gt;</code> for <code>&lt;&amp;str&gt;</code> with full generality.</p>
+<p>Ref: <a href="https://github.com/serde-rs/serde/issues/1413">serde-rs/serde#1413</a></p>
 <p>Ref: https://users.rust-lang.org/t/solved-serde-deserialize-str-containig-special-chars/27218</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2026-01-05 18:51</div>
-            <div class="timeline-body"><p>Can we use <code>Cow&lt;str, _&gt;</code> here, which is both correct and doesn't allocate in the regular case?</p>
+            <div class="timeline-body"><p>Can we use <code>Cow&lt;str, _&gt;</code> here, which is both correct and doesn&#x27;t allocate in the regular case?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/woodruffw">@woodruffw</a> on 2026-01-05 20:25</div>
             <div class="timeline-body"><blockquote>
-<p>Can we use <code>Cow&lt;str, _&gt;</code> here, which is both correct and doesn't allocate in the regular case?</p>
+<p>Can we use <code>Cow&lt;str, _&gt;</code> here, which is both correct and doesn&#x27;t allocate in the regular case?</p>
 </blockquote>
 <p>Yeah, that would be the most correct/general solution! I think we could probably do the same for every callsite of <code>String::deserialize</code> as well, although some of those may not meaningfully benefit from saving a copy if we need an owned String anyways.</p>
-<p>For example, <code>impl&lt;'a&gt; serde::Deserialize&lt;'a&gt; for PythonRequest</code> can probably be cow'd.</p>
+<p>For example, <code>impl&lt;&#x27;a&gt; serde::Deserialize&lt;&#x27;a&gt; for PythonRequest</code> can probably be cow&#x27;d.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:45:39 UTC
+        Synced at 2026-01-20 19:55:00 UTC
     </footer>
 </body>
 </html>

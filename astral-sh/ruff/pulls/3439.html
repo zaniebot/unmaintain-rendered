@@ -32,24 +32,24 @@
 <p>The implementation now assumes ASCII and falls back (and converts the intermediate state) to UTF8 when it sees the first non-ascii character while building the index.</p>
 <p>The second optimization is to use <code>u32</code> to store the offsets (has anyone ever tried running a 4GB+ source document with Python?)</p>
 <p>The last optimization avoids the nested <code>Vec&lt;Vec&lt;usize&gt;&gt;</code> for the <code>Utf8Index</code>. I tried two different approaches</p>
-<h2>Line -&gt; Char and Char -&gt; Byte Index</h2>
+Line -&gt; Char and Char -&gt; Byte Index
 <p>The idea is to use two vectors instead of a nested vector:</p>
 <ul>
 <li>The first vector stores the <em>character</em> offset at which a new line starts</li>
 <li>The second vector stores the <em>byte</em> offsets for each character</li>
 </ul>
 <p>You can then compute the [Location] offset by:</p>
-<pre><code class="language-rust">// retrieving the start character on that line and add the column (character offset)
+<pre><code>// retrieving the start character on that line and add the column (character offset)
 let char_offset = lines[location.row() - 1] + location.column();
 let byte_offset = char_to_byte_offsets[char_offset]
 </code></pre>
 <p>0b39da539059d87301f7319a2575114d87363e49</p>
-<h2>Lazy column computation</h2>
-<p>This implementation makes the assumption that we're only querying a few locations and that computing the column offset for a single line is cheap (no minified documents where everything is on a single line).</p>
+Lazy column computation
+<p>This implementation makes the assumption that we&#x27;re only querying a few locations and that computing the column offset for a single line is cheap (no minified documents where everything is on a single line).</p>
 <p>Based on this assumption, it is sufficient to only store the byte offsets for every line and then lazily compute the column offset.</p>
 <p>Computing the index lazily has the added benefit of reducing the memory footprint.</p>
 <p>7527612fcd254a14fcba1fa6d34a7d15883802e9</p>
-<h2>Benchmark</h2>
+Benchmark
 <pre><code>❯ hyperfine --ignore-failure --warmup 10 \
         &quot;./ruff_two ./crates/ruff/resources/test/cpython/ --no-cache&quot; \
         &quot;./ruff_main ./crates/ruff/resources/test/cpython/ --no-cache&quot; \
@@ -73,24 +73,24 @@ Benchmark 3: ./ruff_lazy ./crates/ruff/resources/test/cpython/ --no-cache
   Warning: Ignoring non-zero exit code.
  
 Summary
-  './ruff_lazy ./crates/ruff/resources/test/cpython/ --no-cache' ran
-    1.01 ± 0.03 times faster than './ruff_two ./crates/ruff/resources/test/cpython/ --no-cache'
-    1.02 ± 0.03 times faster than './ruff_main ./crates/ruff/resources/test/cpython/ --no-cache'
+  &#x27;./ruff_lazy ./crates/ruff/resources/test/cpython/ --no-cache&#x27; ran
+    1.01 ± 0.03 times faster than &#x27;./ruff_two ./crates/ruff/resources/test/cpython/ --no-cache&#x27;
+    1.02 ± 0.03 times faster than &#x27;./ruff_main ./crates/ruff/resources/test/cpython/ --no-cache&#x27;
 
 </code></pre>
-<h2>Memory usage</h2>
+Memory usage
 <p>I used <code>/usr/bin/time</code> to get the max resident memory when linting cpython</p>
 <ul>
 <li><code>main</code>:  ~324MB</li>
 <li><code>two</code>: ~298MB</li>
 <li><code>lazy</code>: ~287MB</li>
 </ul>
-<h2>Verdict</h2>
+Verdict
 <p>This PR implements the <code>lazy</code> computation as it has a similar performance as storing all character positions but requires significantly less memory (only stores line mappings, not also mappings for every line)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @MichaReiser on 2023-03-10 16:30</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-03-10 16:30</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/source_code/locator.rs</code>:68 on 2023-03-10 16:47</div>
@@ -104,12 +104,12 @@ Summary
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/source_code/locator.rs</code>:92 on 2023-03-10 16:50</div>
-            <div class="timeline-body"><p>(For context, 48 was chosen based on some rough benchmarking of various constants, so it's sort of arbitrary but not totally arbitrary.)</p>
+            <div class="timeline-body"><p>(For context, 48 was chosen based on some rough benchmarking of various constants, so it&#x27;s sort of arbitrary but not totally arbitrary.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/source_code/locator.rs</code>:129 on 2023-03-10 16:51</div>
-            <div class="timeline-body"><p>Does this now properly handle CR line endings for UTF-8 files? (We don't support them right now which often leads to panics.)</p>
+            <div class="timeline-body"><p>Does this now properly handle CR line endings for UTF-8 files? (We don&#x27;t support them right now which often leads to panics.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -129,15 +129,15 @@ Summary
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-03-11 10:47</div>
             <div class="timeline-body"><p>✅ ecosystem check detected no changes.</p>
-<!-- thollander/actions-comment-pull-request "ecosystem-results" -->
+
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @MichaReiser on 2023-03-11 12:12</div>
+            <div class="event">Merged by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-03-11 12:12</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2023-03-11 12:12</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-03-11 12:12</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2023-03-11 12:12</div>
@@ -145,7 +145,7 @@ Summary
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:56:35 UTC
+        Synced at 2026-01-20 18:52:41 UTC
     </footer>
 </body>
 </html>

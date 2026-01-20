@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This PR updates the error handling logic for certain expressions in a way to either perform it automatically or provide an option for the user. The expression in discussion here are <code>lambda</code>, starred and <code>yield</code> expression.</p>
-<h3>Problem</h3>
-<p>The current parser allows these expressions at arbitrary context. This is because the mentioned expressions are parsed using <code>parse_lhs_expression</code> which is part of other higher level grammar rules. This means that the caller needs to validate the parsed expression and report an error if it isn't allowed in that context. This can get quite cumbersome to do so as it needs to be done for all of the call sites for following methods:</p>
+Problem
+<p>The current parser allows these expressions at arbitrary context. This is because the mentioned expressions are parsed using <code>parse_lhs_expression</code> which is part of other higher level grammar rules. This means that the caller needs to validate the parsed expression and report an error if it isn&#x27;t allowed in that context. This can get quite cumbersome to do so as it needs to be done for all of the call sites for following methods:</p>
 <ol>
 <li><code>parse_expression_list</code>: 14 references</li>
 <li><code>parse_star_expression_list</code>: 4 references</li>
@@ -36,9 +36,9 @@
 <li><code>parse_simple_expression</code>: 4 references</li>
 </ol>
 <p>The numbers corresponding to the methods are the number of references as of today. This list is also in the correct hierarchy of grammar precedence. For example, <code>parse_expression_list</code> calls into <code>parse_conditional_expression_or_higher</code> but not the other way around.</p>
-<h3>Solution</h3>
-<p>We'll take the above expression one at a time to understand the solution:</p>
-<h4>Lambda expression</h4>
+Solution
+<p>We&#x27;ll take the above expression one at a time to understand the solution:</p>
+Lambda expression
 <p>Lambda expressions are only allowed in <code>expression</code> grammar rule which corresponds to <code>parse_conditional_expression_or_higher</code>. This means that this expression is only allowed when using either of the following functions:</p>
 <ol>
 <li><code>parse_expression_list</code></li>
@@ -48,21 +48,21 @@
 <li><code>parse_conditional_expression_or_higher</code></li>
 </ol>
 <p>The solution is to move the error handling in <code>parse_simple_expression</code> and parameterize it where any of the above listed function would always use <code>AllowLambdaExpression::Yes</code>.</p>
-<h4>Starred expression</h4>
+Starred expression
 <p>There are two grammar rules related to starred expression:</p>
 <ol>
 <li><code>star_expression</code> which corresponds to <code>parse_star_expression_or_higher</code></li>
 <li><code>starred_expression</code> which is parsed in LHS parsing</li>
 </ol>
-<p>Remember that LHS parsing isn't accessed directly but only via any of the above listed functions in the problem section. Now, starred expressions are allowed in a lot of places but sometimes in a limited capacity. For example, an assignment target can have a starred expression but only if it is a name node (<code>*x</code>).</p>
+<p>Remember that LHS parsing isn&#x27;t accessed directly but only via any of the above listed functions in the problem section. Now, starred expressions are allowed in a lot of places but sometimes in a limited capacity. For example, an assignment target can have a starred expression but only if it is a name node (<code>*x</code>).</p>
 <p>The solution here is to adopt the one used in star pattern matching which is to use a parameter. The following functions are parameterized:</p>
 <ol>
 <li><code>parse_expression_list</code></li>
 <li><code>parse_named_expression_or_higher</code></li>
 <li><code>parse_conditional_expression_or_higher</code></li>
 </ol>
-<p>Now, <code>parse_star_expression_list</code> and <code>parse_star_expression_or_higher</code> aren't parameterized because they handle the <code>star_expression</code> grammar which means that the caller wants to parse a starred expression but with a limited precedence.</p>
-<h4>Yield expression</h4>
+<p>Now, <code>parse_star_expression_list</code> and <code>parse_star_expression_or_higher</code> aren&#x27;t parameterized because they handle the <code>star_expression</code> grammar which means that the caller wants to parse a starred expression but with a limited precedence.</p>
+Yield expression
 <p>Yield expressions are only allowed in the following context:</p>
 <ol>
 <li>Top level as yield statement</li>
@@ -70,9 +70,9 @@
 <li>F-string expression</li>
 <li>Assignment (including annotated and augmented) value</li>
 </ol>
-<p>We could parameterize it similar to starred expression but that seems like a waste given the limited number of locations they're allowed.</p>
+<p>We could parameterize it similar to starred expression but that seems like a waste given the limited number of locations they&#x27;re allowed.</p>
 <p>The solution is to add a <code>parse_yield_expression_or_else</code> method which parses a yield expression if the parser is at <code>yield</code> token or else calls the given method to parse the expression. The call site would like:</p>
-<pre><code class="language-rs">// (yield_expr | named_expression)
+<pre><code>// (yield_expr | named_expression)
 self.try_parse_yield_expression()
   .unwrap_or_else(|| self.parse_named_expression_or_higher())
 
@@ -81,43 +81,43 @@ self.try_parse_yield_expression()
   .unwrap_or_else(|| self.parse_star_expression_list())
 </code></pre>
 <p>An added benefit for this is that the call site looks exactly like the grammar.</p>
-<h2>Review</h2>
+Review
 <ul>
 <li>The reviewer would mainly just look at the de-duplication logic.</li>
-<li>The reviewer doesn't really need to verify the call sites as they're verified by existing test cases. For nodes which aren't yet tested, they will be done so in their own PR.</li>
+<li>The reviewer doesn&#x27;t really need to verify the call sites as they&#x27;re verified by existing test cases. For nodes which aren&#x27;t yet tested, they will be done so in their own PR.</li>
 </ul>
-<h2>Test Plan</h2>
+Test Plan
 <p>Run existing test cases and verify the snapshot updates.</p>
 <p>Additional test cases will be added when working on specific nodes.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> added by @dhruvmanila on 2024-04-07 02:23</div>
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-07 02:23</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-07 04:13</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @dhruvmanila on 2024-04-07 11:42</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-07 11:42</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-04-07 11:42</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-07 11:42</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@expressions__if__recover.py.snap</code>:312 on 2024-04-08 09:08</div>
-            <div class="timeline-body"><p>You quote <code>lambda</code> in this error message but <code>yield</code> isn't quoted in the error message below. I think we should either always or never quote the expression name.</p>
+            <div class="timeline-body"><p>You quote <code>lambda</code> in this error message but <code>yield</code> isn&#x27;t quoted in the error message below. I think we should either always or never quote the expression name.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -135,12 +135,12 @@ self.try_parse_yield_expression()
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:1971 on 2024-04-09 08:33</div>
-            <div class="timeline-body"><p>Actually, I think we can remove the <code>AllowLambdaExpression</code> because it's only allowed in <code>parse_conditional_expression_or_higher</code>. So, we can have a dedicated branch for it and always throw an error if we see it at a later point. This would be similar to yield expression but without the <code>parse_yield_expression_or_higher</code> method.</p>
-<pre><code class="language-diff">diff --git a/crates/ruff_python_parser/src/parser/expression.rs b/crates/ruff_python_parser/src/parser/expression.rs
+            <div class="timeline-body"><p>Actually, I think we can remove the <code>AllowLambdaExpression</code> because it&#x27;s only allowed in <code>parse_conditional_expression_or_higher</code>. So, we can have a dedicated branch for it and always throw an error if we see it at a later point. This would be similar to yield expression but without the <code>parse_yield_expression_or_higher</code> method.</p>
+<pre><code>diff --git a/crates/ruff_python_parser/src/parser/expression.rs b/crates/ruff_python_parser/src/parser/expression.rs
 index cedc5a7da..8a1a026b5 100644
 --- a/crates/ruff_python_parser/src/parser/expression.rs
 +++ b/crates/ruff_python_parser/src/parser/expression.rs
-@@ -208,14 +208,18 @@ impl&lt;'src&gt; Parser&lt;'src&gt; {
+@@ -208,14 +208,18 @@ impl&lt;&#x27;src&gt; Parser&lt;&#x27;src&gt; {
          &amp;mut self,
          allow_starred_expression: AllowStarredExpression,
      ) -&gt; ParsedExpr {
@@ -166,7 +166,7 @@ index cedc5a7da..8a1a026b5 100644
          }
      }
  
-@@ -440,9 +444,7 @@ impl&lt;'src&gt; Parser&lt;'src&gt; {
+@@ -440,9 +444,7 @@ impl&lt;&#x27;src&gt; Parser&lt;&#x27;src&gt; {
              }
              TokenKind::Lambda =&gt; {
                  let lambda_expr = self.parse_lambda_expr();
@@ -187,14 +187,14 @@ index cedc5a7da..8a1a026b5 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@expressions__if__recover.py.snap</code>:312 on 2024-04-09 08:47</div>
-            <div class="timeline-body"><p>There are other inconsistencies with error messages, I'll club this with them in a single PR. Thanks for noticing.</p>
+            <div class="timeline-body"><p>There are other inconsistencies with error messages, I&#x27;ll club this with them in a single PR. Thanks for noticing.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @dhruvmanila on 2024-04-09 08:48</div>
+            <div class="event">Merged by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-09 08:48</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dhruvmanila on 2024-04-09 08:48</div>
+            <div class="event">Closed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-09 08:48</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-04-09 08:48</div>
@@ -202,7 +202,7 @@ index cedc5a7da..8a1a026b5 100644
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:03:36 UTC
+        Synced at 2026-01-20 19:03:09 UTC
     </footer>
 </body>
 </html>

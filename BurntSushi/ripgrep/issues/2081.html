@@ -23,48 +23,48 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/the8472">@the8472</a></div>
-            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+            <div class="timeline-body">What version of ripgrep are you using?
 <pre><code>ripgrep 13.0.0
 -SIMD -AVX (compiled)
 +SIMD +AVX (runtime)
 </code></pre>
-<h4>How did you install ripgrep?</h4>
+How did you install ripgrep?
 <p>cargo install ripgrep</p>
-<h4>What operating system are you using ripgrep on?</h4>
+What operating system are you using ripgrep on?
 <p>arch linux, 5.14.15-arch1-1</p>
-<h4>Describe your bug.</h4>
+Describe your bug.
 <p>When running <code>rg -C3 --multiline --multiline-dotall &quot;does not exist.{0,200}does not exit&quot;</code> on a directory tree containing 70GB of <code>perf</code> recordings ripgrep freezes the system until it gets OOM-killed.</p>
-<h4>What are the steps to reproduce the behavior?</h4>
+What are the steps to reproduce the behavior?
 <p>Locally I reproduce it by</p>
 <ol>
 <li>cloning the rust-lang repo</li>
 <li><code>perf record --call-graph dwarf -e instructions,cycles ./x.py test --stage 1 src/test/ui</code> - this will take a while depending on your hardware and take up about 80GB of disk space</li>
 <li>run <code>rg -C3 --multiline --multiline-dotall &quot;does not exist.{0,200}does not exit&quot;</code></li>
 </ol>
-<p>It most likely doesn't have to be the rust repo itself, just any profiling session that generates huge <code>perf.data</code>.</p>
+<p>It most likely doesn&#x27;t have to be the rust repo itself, just any profiling session that generates huge <code>perf.data</code>.</p>
 <p>The issue does not reproduce without the <code>--multiline-dotall</code>, neither does it if I delete <code>perf.data</code>.</p>
-<h4>What is the actual behavior?</h4>
+What is the actual behavior?
 <p>https://gist.githubusercontent.com/the8472/d43602305da791704e5c318e7f1d4163/raw/8efbbf267064f362c25238572586f89ba5cafed7/gistfile1.txt</p>
-<h4>What is the expected behavior?</h4>
+What is the expected behavior?
 <p>Not OOM or maybe print a warning before attempting to proceed anyway.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-11-23 16:07</div>
-            <div class="timeline-body"><p>It will be a bit before I'm able to invest time in this, but it is worth pointing out that &quot;ripgrep OOMs&quot; is not in and of itself unexpected or a bug unfortunately. It's non-ideal, for sure, but it's difficult to do otherwise. GNU grep has the same problem.</p>
-<p>Ignoring multi-line mode for a moment, ripgrep can use unbounded memory usage because it doesn't place a limit on how long a line can be. If a single line is GBs, ripgrep won't stop reading until it is either forced to stop or until it sees a <code>\n</code>. There aren't too many other choices here.</p>
+            <div class="timeline-body"><p>It will be a bit before I&#x27;m able to invest time in this, but it is worth pointing out that &quot;ripgrep OOMs&quot; is not in and of itself unexpected or a bug unfortunately. It&#x27;s non-ideal, for sure, but it&#x27;s difficult to do otherwise. GNU grep has the same problem.</p>
+<p>Ignoring multi-line mode for a moment, ripgrep can use unbounded memory usage because it doesn&#x27;t place a limit on how long a line can be. If a single line is GBs, ripgrep won&#x27;t stop reading until it is either forced to stop or until it sees a <code>\n</code>. There aren&#x27;t too many other choices here.</p>
 <ul>
-<li>In theory, ripgrep could use fallible allocation APIs, and if an allocation fails, somehow abort the process. But this is little different than the status quo, and would only work if overcommit isn't enabled anyway.</li>
+<li>In theory, ripgrep could use fallible allocation APIs, and if an allocation fails, somehow abort the process. But this is little different than the status quo, and would only work if overcommit isn&#x27;t enabled anyway.</li>
 <li>Another possibility is to permit the user to manually set a memory limit and ripgrep would try not to allocate more than for its line buffer. But ripgrep does a lot more allocation than just its line buffer, and not all of which is easily controlled. (For example, allocation at various points while doing directory tree traversal.)</li>
 <li>Like the former, but with ripgrep trying to automatically detect the memory limit. In addition to the problems with the former, you also now have the problem of devising a heuristic to determine what the memory limit should be.</li>
 </ul>
 <p>ripgrep has other problems with memory, some of which are specifically related to your use case:</p>
 <ul>
-<li>In multi-line mode, ripgrep has no practical choice but to either use memory maps or read the entire file into memory. Rust's regex engine doesn't support searching non-contiguous strings, so you're kind of hosed here.</li>
+<li>In multi-line mode, ripgrep has no practical choice but to either use memory maps or read the entire file into memory. Rust&#x27;s regex engine doesn&#x27;t support searching non-contiguous strings, so you&#x27;re kind of hosed here.</li>
 <li>When using parallelism, ripgrep has to buffer all of the search results for each file. So if your search produces lots of results, that can influence memory usage as well. My guess is that your query is designed not to matching anything though, so it seems unlikely that this is a problem.</li>
-<li>Any regex involving big bounded repeats (like <code>.{0,200}</code>) tends to be quite memory hungry. Now, <code>.</code> itself is pretty small, so this isn't particularly egregious. (Using <code>\w{0,200}</code> for example would be around 60 times bigger, to a first approximation.)</li>
+<li>Any regex involving big bounded repeats (like <code>.{0,200}</code>) tends to be quite memory hungry. Now, <code>.</code> itself is pretty small, so this isn&#x27;t particularly egregious. (Using <code>\w{0,200}</code> for example would be around 60 times bigger, to a first approximation.)</li>
 </ul>
-<p>Now the interesting bit here is that <code>(?s:.)</code> provokes the problem but <code>.</code> doesn't. That is pretty interesting. If you're willing to do a little debugging, you might try:</p>
+<p>Now the interesting bit here is that <code>(?s:.)</code> provokes the problem but <code>.</code> doesn&#x27;t. That is pretty interesting. If you&#x27;re willing to do a little debugging, you might try:</p>
 <ul>
 <li>A search with <code>--mmap</code> and another with <code>--no-mmap</code>.</li>
 <li>A search with <code>-j1</code> to force single threaded mode.</li>
@@ -74,19 +74,19 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-24 20:08</div>
-            <div class="timeline-body"><p>I think my last comment on this issue pretty much covers what I know here. It's unfortunate but OOM is difficult to avoid given ripgrep's design and goals.</p>
+            <div class="timeline-body"><p>I think my last comment on this issue pretty much covers what I know here. It&#x27;s unfortunate but OOM is difficult to avoid given ripgrep&#x27;s design and goals.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2023-11-24 20:08</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-24 20:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2023-11-24 20:08</div>
+            <div class="event">Label <span class="label">wontfix</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-24 20:08</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:43:29 UTC
+        Synced at 2026-01-20 18:48:11 UTC
     </footer>
 </body>
 </html>

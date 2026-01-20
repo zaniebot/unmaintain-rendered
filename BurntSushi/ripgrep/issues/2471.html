@@ -33,34 +33,34 @@ list of matches where each match is {file, line, text}.</p>
 <p>My goal is to map the patterns that led to this match.
 To do that, the output should include patterns that match each result.
 For backward compatibility, it makes sense only to add this output if a new flag is added.</p>
-<p>I'm not familiar enough with the internals of ripgrep to tell if it's possible technically, i.e., in case it doesn't play well with the concurrency model.
-I assume that the first match is written to the stream, and later matches are filtered out, so there's no way to &quot;list&quot; the patterns without breaking the streaming.</p>
-<p>So, as a second-best solution, it'd be helpful to output only the &quot;first&quot; pattern that matches, where the order is determined by the order of the patterns in the inputs (in the -f case, the first line that matches).
+<p>I&#x27;m not familiar enough with the internals of ripgrep to tell if it&#x27;s possible technically, i.e., in case it doesn&#x27;t play well with the concurrency model.
+I assume that the first match is written to the stream, and later matches are filtered out, so there&#x27;s no way to &quot;list&quot; the patterns without breaking the streaming.</p>
+<p>So, as a second-best solution, it&#x27;d be helpful to output only the &quot;first&quot; pattern that matches, where the order is determined by the order of the patterns in the inputs (in the -f case, the first line that matches).
 I guess this would be problematic for the same reasons (the concurrency model is unaware of any such order).
-So as an alternative, I think it'd be helpful to have the same match shown multiple times in the output, each time with the relevant pattern. That'll keep the streaming going, but allow me to parse the output and merge the list myself.</p>
+So as an alternative, I think it&#x27;d be helpful to have the same match shown multiple times in the output, each time with the relevant pattern. That&#x27;ll keep the streaming going, but allow me to parse the output and merge the list myself.</p>
 <p>p.s.
 Obviously, I can run rg repeatedly, providing only a single pattern at a time, but the time difference is huge (dealing with ~100 patterns and lots of files)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-03-22 15:54</div>
-            <div class="timeline-body"><p>I think the fundamental problem with your suggestion is that you've assumed that ripgrep even knows which pattern matched. It doesn't. If you pass a file like</p>
+            <div class="timeline-body"><p>I think the fundamental problem with your suggestion is that you&#x27;ve assumed that ripgrep even knows which pattern matched. It doesn&#x27;t. If you pass a file like</p>
 <pre><code>foo
 bar
 quux
 </code></pre>
-<p>to ripgrep's <code>-f/--file</code> flag, then that's just equivalent to <code>rg -e foo -e bar -e quux</code>. And <em>that</em> is just equivalent to <code>rg 'foo|bar|quux'</code>. The regex engine doesn't report which branch matches. No regex engine does.</p>
-<p>In the future, with some ongoing improvements to ripgrep's underlying regex engine, it will be possible to construct a multi-pattern regex that <em>is</em> aware of which pattern matches. But whether and how that information is exposed through ripgrep is not clear to me. And as you've demonstrated, it is a feature that begets more features.</p>
+<p>to ripgrep&#x27;s <code>-f/--file</code> flag, then that&#x27;s just equivalent to <code>rg -e foo -e bar -e quux</code>. And <em>that</em> is just equivalent to <code>rg &#x27;foo|bar|quux&#x27;</code>. The regex engine doesn&#x27;t report which branch matches. No regex engine does.</p>
+<p>In the future, with some ongoing improvements to ripgrep&#x27;s underlying regex engine, it will be possible to construct a multi-pattern regex that <em>is</em> aware of which pattern matches. But whether and how that information is exposed through ripgrep is not clear to me. And as you&#x27;ve demonstrated, it is a feature that begets more features.</p>
 <blockquote>
-<p>So, as a second-best solution, it'd be helpful to output only the &quot;first&quot; pattern that matches, where the order is determined by the order of the patterns in the inputs (in the -f case, the first line that matches).</p>
+<p>So, as a second-best solution, it&#x27;d be helpful to output only the &quot;first&quot; pattern that matches, where the order is determined by the order of the patterns in the inputs (in the -f case, the first line that matches).</p>
 </blockquote>
-<p>That's what happens today. It just doesn't tell you <em>which</em> pattern it is.</p>
+<p>That&#x27;s what happens today. It just doesn&#x27;t tell you <em>which</em> pattern it is.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/gofri">@gofri</a> on 2023-03-22 16:04</div>
             <div class="timeline-body"><p>Ahh, I see. Makes sense.</p>
-<p>For now I think I'll revert to:</p>
+<p>For now I think I&#x27;ll revert to:</p>
 <ol>
 <li>run ripgrep as mentioned</li>
 <li>map the matches (file, line, match)</li>
@@ -68,24 +68,24 @@ quux
 </ol>
 <p>Assuming the result set is much smaller than the original text that we search,
 it should be much faster than any alternative I can think of anyway.
-I'd be glad to hear any better ideas to solve it (given ripgrep's current status).</p>
+I&#x27;d be glad to hear any better ideas to solve it (given ripgrep&#x27;s current status).</p>
 <p>Thank you for your response! you can close the issue afaic</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-03-22 16:33</div>
-            <div class="timeline-body"><p>That makes sense. When the regex engine changes land, you'll be able to write a program that does it in one pass. You'll want to watch https://github.com/rust-lang/regex/issues/656 for status updates on those changes. They should be landing in the next few months.</p>
-<p>Now, you'd have to write a Rust program in that case. I don't know when, if ever, that sort of &quot;which pattern matched&quot; functionality will be exposed in ripgrep.</p>
+            <div class="timeline-body"><p>That makes sense. When the regex engine changes land, you&#x27;ll be able to write a program that does it in one pass. You&#x27;ll want to watch <a href="https://github.com/rust-lang/regex/issues/656">rust-lang/regex#656</a> for status updates on those changes. They should be landing in the next few months.</p>
+<p>Now, you&#x27;d have to write a Rust program in that case. I don&#x27;t know when, if ever, that sort of &quot;which pattern matched&quot; functionality will be exposed in ripgrep.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2023-03-22 16:33</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-03-22 16:33</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/gofri">@gofri</a> on 2023-03-29 12:42</div>
             <div class="timeline-body"><p>@BurntSushi - following directly from this issue -</p>
 <blockquote>
-<p>to ripgrep's -f/--file flag, then that's just equivalent to rg -e foo -e bar -e quux. And that is just equivalent to rg 'foo|bar|quux'.</p>
+<p>to ripgrep&#x27;s -f/--file flag, then that&#x27;s just equivalent to rg -e foo -e bar -e quux. And that is just equivalent to rg &#x27;foo|bar|quux&#x27;.</p>
 </blockquote>
 <p>I just found out an unexpected behavior for me:
 Indeed, using multiple patterns e.g.:</p>
@@ -98,31 +98,31 @@ Indeed, using multiple patterns e.g.:</p>
 <pre><code>(?:foo)|(?:bar)|(?:quux)
 </code></pre>
 <p>as a result, the following outputs a match:</p>
-<pre><code>echo 'MyText' | rg -e '(?i)notintext' -e 'text'
+<pre><code>echo &#x27;MyText&#x27; | rg -e &#x27;(?i)notintext&#x27; -e &#x27;text&#x27;
 </code></pre>
-<p>where each of the following isn't:</p>
-<pre><code>echo 'MyText' | rg -e '(?i)notintext'
-echo 'MyText' | rg -e 'text'
+<p>where each of the following isn&#x27;t:</p>
+<pre><code>echo &#x27;MyText&#x27; | rg -e &#x27;(?i)notintext&#x27;
+echo &#x27;MyText&#x27; | rg -e &#x27;text&#x27;
 </code></pre>
 <p>The following would work as expected:</p>
-<pre><code>echo 'MyText' | rg -e '(?i:notintext)' -e 'text'
+<pre><code>echo &#x27;MyText&#x27; | rg -e &#x27;(?i:notintext)&#x27; -e &#x27;text&#x27;
 </code></pre>
 <p>and the following too:</p>
-<pre><code>echo 'MyText' | rg -e '(?:(?i:notintext))' -e '(?:text)'
+<pre><code>echo &#x27;MyText&#x27; | rg -e &#x27;(?:(?i:notintext))&#x27; -e &#x27;(?:text)&#x27;
 </code></pre>
-<p>but I wonder if that's intentional behavior.
-otherwise, I'd open a bug for it</p>
+<p>but I wonder if that&#x27;s intentional behavior.
+otherwise, I&#x27;d open a bug for it</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-03-29 12:54</div>
-            <div class="timeline-body"><p>Yeah open a bug please. I'll comment more about it and why it's tricky to fix in all cases there.</p>
+            <div class="timeline-body"><p>Yeah open a bug please. I&#x27;ll comment more about it and why it&#x27;s tricky to fix in all cases there.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:43:39 UTC
+        Synced at 2026-01-20 18:48:12 UTC
     </footer>
 </body>
 </html>

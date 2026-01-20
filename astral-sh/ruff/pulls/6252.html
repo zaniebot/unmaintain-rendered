@@ -23,31 +23,25 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a></div>
-            <div class="timeline-body"><!--
-Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+            <div class="timeline-body">
 
-- Does this pull request include a summary of the change? (See below.)
-- Does this pull request include a descriptive title?
-- Does this pull request include references to any relevant issues?
--->
-
-<h2>Summary</h2>
-<p>This is a draft of the <code>fmt: off</code> / <code>fmt: on</code> suppression comment formatting. I admint, it feels a bit hacky but it mostly works (there's some instability now that I handle <code>fmt: off</code> comments in trailing comments too, but that can be fixed by writing the right amount of newlines).</p>
+Summary
+<p>This is a draft of the <code>fmt: off</code> / <code>fmt: on</code> suppression comment formatting. I admint, it feels a bit hacky but it mostly works (there&#x27;s some instability now that I handle <code>fmt: off</code> comments in trailing comments too, but that can be fixed by writing the right amount of newlines).</p>
 <p>The implementation is a post-traversal on the formatted IR. It searches for sections of <code>fmt: off</code>..<code>fmt: on</code>, replaces all existing content with <code>FormatElement::Tombstone</code>, and instead inserts a verbatim node with the source code.</p>
 <p>Why this approach instead of handling it during formatting. The main reason is that Black allows <code>fmt: off</code> in all possible positions: E.g. the following is valid:</p>
-<pre><code class="language-python">def a(
+<pre><code>def a(
 	b,
 	# fmt: off
 	c,   d, eee, ff
 ): ...
 </code></pre>
-<p>The issue is, that the arguments formatting would now need to check whether the next argument is suppressed, and if that's the case, omit the <code>,</code> and newline after the argument, but only if the next argument is also suppressed. It would be necessary to add this kind of check everywhere where we iterate over a node sequence, which seems cumbersome.</p>
-<h2>Downsides</h2>
+<p>The issue is, that the arguments formatting would now need to check whether the next argument is suppressed, and if that&#x27;s the case, omit the <code>,</code> and newline after the argument, but only if the next argument is also suppressed. It would be necessary to add this kind of check everywhere where we iterate over a node sequence, which seems cumbersome.</p>
+Downsides
 <ul>
 <li>The suppression comments are not a viable option when the formatter panics during formatting (because we still format the whole file)</li>
-<li>Suppression comments won't help to speed up the formatting of very large files.</li>
+<li>Suppression comments won&#x27;t help to speed up the formatting of very large files.</li>
 </ul>
-<h2>Alternatives</h2>
+Alternatives
 <p>We could decide to only support <code>fmt: off</code> and <code>fmt: on</code> at the statements level. I collected a few numbers and it seems that using <code>fmt: off</code> to suppress expression seems somewhat common and is e.g. useful when disabling formatting for the if condition.</p>
 <pre><code>ruff_python_formatter::comments::map::InOrderEntry                         5_029_089       15_032            0
 ruff_python_formatter::comments::map::OutOfOrderEntry                          1_904            9            0
@@ -56,10 +50,10 @@ ruff_python_formatter::comments::visitor::OtherSuppressionComment               
 ruff_python_formatter::comments::visitor::StatementSuppressionComment         16_482            1            0
                                                                                 total     max_live         live
 </code></pre>
-<!-- What's the purpose of the change? What does it do, and why? -->
 
-<h2>Test Plan</h2>
-<!-- How was it tested? -->
+
+Test Plan
+
 
 </div>
         </div>
@@ -68,8 +62,8 @@ ruff_python_formatter::comments::visitor::StatementSuppressionComment         16
             <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
 <ul>
 <li>main<ul>
-<li><strong>PR #6251</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6251" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a><ul>
-<li><strong>PR #6252</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6252" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a>  👈</li>
+<li><strong>PR #6251</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6251"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite"></a><ul>
+<li><strong>PR #6252</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6252"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite"></a>  👈</li>
 </ul>
 </li>
 </ul>
@@ -80,7 +74,7 @@ ruff_python_formatter::comments::visitor::StatementSuppressionComment         16
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@simple_cases__fmtonoff.py.snap</code>:206 on 2023-08-01 16:42</div>
-            <div class="timeline-body"><p>We incorrectly remove the trailing comma because we don't know that it is part of the value (it has no source information attached). It works as expected if the dictionary contains a <code>fmt: on</code> comment.</p>
+            <div class="timeline-body"><p>We incorrectly remove the trailing comma because we don&#x27;t know that it is part of the value (it has no source information attached). It works as expected if the dictionary contains a <code>fmt: on</code> comment.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -99,9 +93,9 @@ ruff_python_formatter::comments::visitor::StatementSuppressionComment         16
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-01 16:53</div>
-            <div class="timeline-body"><h2>PR Check Results</h2>
-<h3>Benchmark</h3>
-<h4>Linux</h4>
+            <div class="timeline-body">PR Check Results
+Benchmark
+Linux
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 formatter/large/dataset.py                 1.00      8.1±0.06ms     5.0 MB/sec    1.06      8.6±0.17ms     4.7 MB/sec
@@ -117,7 +111,7 @@ linter/default-rules/numpy/ctypeslib.py    1.01  1208.4±16.54µs    13.8 MB/sec
 linter/default-rules/numpy/globals.py      1.00    131.8±3.40µs    22.4 MB/sec    1.01    133.5±0.30µs    22.1 MB/sec
 linter/default-rules/pydantic/types.py     1.01      2.6±0.07ms     9.8 MB/sec    1.00      2.6±0.04ms    10.0 MB/sec
 </code></pre>
-<h4>Windows</h4>
+Windows
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 formatter/large/dataset.py                 1.00     10.3±0.15ms     4.0 MB/sec    1.05     10.8±0.25ms     3.8 MB/sec
@@ -133,14 +127,14 @@ linter/default-rules/numpy/ctypeslib.py    1.02  1551.2±41.51µs    10.7 MB/sec
 linter/default-rules/numpy/globals.py      1.02    171.5±7.53µs    17.2 MB/sec    1.00    168.2±4.73µs    17.5 MB/sec
 linter/default-rules/pydantic/types.py     1.00      3.4±0.07ms     7.6 MB/sec    1.00      3.4±0.07ms     7.6 MB/sec
 </code></pre>
-<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_formatter/src/format_element.rs</code>:78 on 2023-08-03 08:59</div>
             <div class="timeline-body"><p>nit: maybe:</p>
-<pre><code class="language-suggestion">        if elements.len() &gt; 2 {
+<pre><code>        if elements.len() &gt; 2 {
             Some(FormatElement::Interned(Interned::new(elements)))
         } else {
             elements.pop()
@@ -150,7 +144,7 @@ linter/default-rules/pydantic/types.py     1.00      3.4±0.07ms     7.6 MB/sec 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/src/comments/format.rs</code>:85 on 2023-08-03 09:04</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">    /// `# fmt: off`
+            <div class="timeline-body"><pre><code>    /// `# fmt: off`
     FormatOff,
     /// `# fmt: on`
     FormatOn,
@@ -159,12 +153,12 @@ linter/default-rules/pydantic/types.py     1.00      3.4±0.07ms     7.6 MB/sec 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/src/lib.rs</code>:188 on 2023-08-03 09:19</div>
-            <div class="timeline-body"><p>i'm in favor of warnings in that case independent of how we handle it</p>
+            <div class="timeline-body"><p>i&#x27;m in favor of warnings in that case independent of how we handle it</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/src/lib.rs</code>:255 on 2023-08-03 09:24</div>
-            <div class="timeline-body"><p>these don't need tombstones?</p>
+            <div class="timeline-body"><p>these don&#x27;t need tombstones?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -174,7 +168,7 @@ linter/default-rules/pydantic/types.py     1.00      3.4±0.07ms     7.6 MB/sec 
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/davidszotten">@davidszotten</a> on 2023-08-03 10:38</div>
             <div class="timeline-body"><blockquote>
-<p>Suppression comments won't help to speed up the formatting of very large files.</p>
+<p>Suppression comments won&#x27;t help to speed up the formatting of very large files.</p>
 </blockquote>
 <p>should we consider doing both? ie supporting some statement level during formatting and only doing the ones inside expressions as post traversal?</p>
 </div>
@@ -183,17 +177,17 @@ linter/default-rules/pydantic/types.py     1.00      3.4±0.07ms     7.6 MB/sec 
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-03 11:53</div>
             <div class="timeline-body"><blockquote>
 <blockquote>
-<p>Suppression comments won't help to speed up the formatting of very large files.</p>
+<p>Suppression comments won&#x27;t help to speed up the formatting of very large files.</p>
 </blockquote>
 <p>should we consider doing both? ie supporting some statement level during formatting and only doing the ones inside expressions as post traversal?</p>
 </blockquote>
-<p>Doing both comes at a maintenance cost (need to test that both cases work) and introduces additional complexity (which, can reduce performance for all cases where no suppressions are used). I don't think comfortable justifying this without having concrete use cases where performance is a problem and disabling formatting for the whole file isn't a viable solution.</p>
+<p>Doing both comes at a maintenance cost (need to test that both cases work) and introduces additional complexity (which, can reduce performance for all cases where no suppressions are used). I don&#x27;t think comfortable justifying this without having concrete use cases where performance is a problem and disabling formatting for the whole file isn&#x27;t a viable solution.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-04 12:53</div>
             <div class="timeline-body"><p>I still like this approach a lot, but it will restrict us never to move a comment, or it may cause invalid syntax:</p>
-<pre><code class="language-python">re.compile(
+<pre><code>re.compile(
     # fmt: off
     a
     # fmt: on
@@ -217,12 +211,12 @@ re.compile(
     re.MULTILINE | re.VERBOSE,
 )
 </code></pre>
-<p>The output misses a <code>,</code> after the <code>a</code> argument because our formatter associates the <code>fmt: on</code> with the <code>re.MULTILINE</code> node. Whether this is correct or not is not important, it just shows that a comment moving can introduce syntax errors and there's no good way for us to detect at least that we messed up and provide guidance (We could parse the whole file, but still)</p>
-<p>I want to keep the ability to move comments because I'm convinced this ability allows better formatting overall.</p>
+<p>The output misses a <code>,</code> after the <code>a</code> argument because our formatter associates the <code>fmt: on</code> with the <code>re.MULTILINE</code> node. Whether this is correct or not is not important, it just shows that a comment moving can introduce syntax errors and there&#x27;s no good way for us to detect at least that we messed up and provide guidance (We could parse the whole file, but still)</p>
+<p>I want to keep the ability to move comments because I&#x27;m convinced this ability allows better formatting overall.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2023-08-04 12:53</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-04 12:53</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-01-16 10:03</div>
@@ -230,7 +224,7 @@ re.compile(
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:59:14 UTC
+        Synced at 2026-01-20 18:55:54 UTC
     </footer>
 </body>
 </html>

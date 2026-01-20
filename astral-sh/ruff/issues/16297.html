@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/kkom">@kkom</a></div>
-            <div class="timeline-body"><h3>Description</h3>
-<p>According to Python's docs class variables should be ignored by the dataclass mechanism: https://docs.python.org/3/library/dataclasses.html#class-variables</p>
-<p>Which means that I think they don't need an explicit type hint in cases like this:</p>
-<pre><code class="language-python">@dataclass
+            <div class="timeline-body">Description
+<p>According to Python&#x27;s docs class variables should be ignored by the dataclass mechanism: https://docs.python.org/3/library/dataclasses.html#class-variables</p>
+<p>Which means that I think they don&#x27;t need an explicit type hint in cases like this:</p>
+<pre><code>@dataclass
 class MyBaseClass:
     class_var_field: ClassVar[int]
 
@@ -38,12 +38,12 @@ class MySubClass(MyBaseClass):
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @dylwil3 on 2025-02-21 12:21</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-02-21 12:21</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-21 15:05</div>
-            <div class="timeline-body"><p>I'm not very familiar with data classes but I'm not sure if this is a bug. It does seem to me that the <code>MySubClass.class_var_field</code> and <code>MyBaseClass.class_var_field</code> are two different fields.</p>
-<pre><code class="language-py">&gt;&gt;&gt; from typing import ClassVar
+            <div class="timeline-body"><p>I&#x27;m not very familiar with data classes but I&#x27;m not sure if this is a bug. It does seem to me that the <code>MySubClass.class_var_field</code> and <code>MyBaseClass.class_var_field</code> are two different fields.</p>
+<pre><code>&gt;&gt;&gt; from typing import ClassVar
 ... from dataclasses import dataclass
 ...
 ... @dataclass
@@ -59,17 +59,17 @@ class MySubClass(MyBaseClass):
 Traceback (most recent call last):
   File &quot;&lt;python-input-34&gt;&quot;, line 1, in &lt;module&gt;
     MyBaseClass.class_var_field
-AttributeError: type object 'MyBaseClass' has no attribute 'class_var_field'
+AttributeError: type object &#x27;MyBaseClass&#x27; has no attribute &#x27;class_var_field&#x27;
 &gt;&gt;&gt; MySubClass.class_var_field
 7
 </code></pre>
-<p>But I might be wrong here. Even if that's not the case. I still think that we want to warn here because it may, after all, have been the intention to create an instance variable here.</p>
+<p>But I might be wrong here. Even if that&#x27;s not the case. I still think that we want to warn here because it may, after all, have been the intention to create an instance variable here.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-02-21 15:30</div>
             <div class="timeline-body"><p>@MichaReiser The point of this rule is to avoid attributes that look like dataclass fields but are not fields:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; from typing import ClassVar
+<pre><code>&gt;&gt;&gt; from typing import ClassVar
 &gt;&gt;&gt; from dataclasses import dataclass
 &gt;&gt;&gt;
 &gt;&gt;&gt; @dataclass
@@ -92,7 +92,7 @@ __init__(self, other_field: __dataclass_type_other_field__ = 8) -&gt; __dataclas
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-21 16:14</div>
-            <div class="timeline-body"><p>The part I don't see his how inheritance is relevant here. I can remove the base class and get the exact same fields for <code>MySubClass</code>:</p>
+            <div class="timeline-body"><p>The part I don&#x27;t see his how inheritance is relevant here. I can remove the base class and get the exact same fields for <code>MySubClass</code>:</p>
 <pre><code>... @dataclass
 ... class MySubClass:
 ...      class_var_field = 7
@@ -115,11 +115,11 @@ __init__(self, other_field: int = 8) -&gt; None
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-24 13:13</div>
-            <div class="timeline-body"><p>I talked to @AlexWaygood because I couldn't find any reference for how type checkers handle <code>ClassVar</code> for &quot;inherited&quot; class attributes and he confirmed what you both point out, they handle such attributes as class vars.</p>
+            <div class="timeline-body"><p>I talked to @AlexWaygood because I couldn&#x27;t find any reference for how type checkers handle <code>ClassVar</code> for &quot;inherited&quot; class attributes and he confirmed what you both point out, they handle such attributes as class vars.</p>
 <p>That means type checkers can clearly determine whether a field is an instance attribute or a class attribute.</p>
 <p>However, as my <em>not knowing</em> has shown, using explicit <code>ClassVar</code> annotations can help readers understand whether a field is an instance or class attribute without having to click through the entire class hierarchy.</p>
-<p>Reading through the original issue (https://github.com/astral-sh/ruff/issues/12877), I get the impression that the focus is mainly the second -- improve clarity for readers. In fact, the <code>ClassVar</code> attribute technically is never necessary. Attributes without an annotation always are class variables and using <code>ClassVar</code> is mainly to improve readability. That's why I think that making this exception for inherited attributes goes against the rule's intent.</p>
-<p>@adigitoleo what's your take on this as the person who originally requested the addition of the rule?</p>
+<p>Reading through the original issue (<a href="https://github.com/astral-sh/ruff/issues/12877">astral-sh/ruff#12877</a>), I get the impression that the focus is mainly the second -- improve clarity for readers. In fact, the <code>ClassVar</code> attribute technically is never necessary. Attributes without an annotation always are class variables and using <code>ClassVar</code> is mainly to improve readability. That&#x27;s why I think that making this exception for inherited attributes goes against the rule&#x27;s intent.</p>
+<p>@adigitoleo what&#x27;s your take on this as the person who originally requested the addition of the rule?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -128,7 +128,7 @@ __init__(self, other_field: int = 8) -&gt; None
 <p>Attributes without an annotation always are class variables and using <code>ClassVar</code> is mainly to improve readability.</p>
 </blockquote>
 <p>Small correction: Attributes defined <em>with default values</em> create class variables, regardless of <code>@dataclass</code> and annotations.</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; @dataclass
+<pre><code>&gt;&gt;&gt; @dataclass
 ... class C:
 ...     a: int = 42
 ...
@@ -141,7 +141,7 @@ __init__(self, other_field: int = 8) -&gt; None
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/adigitoleo">@adigitoleo</a> on 2025-02-24 14:00</div>
-            <div class="timeline-body"><p>That's essentially correct. The rule was added in response to the issues I raised around the arguably surprising behaviour of un-annotated variables in dataclass definitions. There is a detailed pitch in the linked issue, and some discussion in the forum (link in the OP of that issue).</p>
+            <div class="timeline-body"><p>That&#x27;s essentially correct. The rule was added in response to the issues I raised around the arguably surprising behaviour of un-annotated variables in dataclass definitions. There is a detailed pitch in the linked issue, and some discussion in the forum (link in the OP of that issue).</p>
 <p>Although it is valid syntax, I found it to be a stumbling block, especially when trying to offer a dataclass as public API for (novice) users to subclass. Using the explicit annotation for class variables makes the behaviour obvious.</p>
 <p>Put another way: <code>ClassVar</code> being optional implicitly makes type annotations for instance variables mandatory. There is no way to avoid using at least <em>some</em> annotations with dataclass variables. It is therefore my opinion (shared, I hope, by those who merged the new rule) that the least surprising dataclass definition, for readers (&amp; maintainers) will necessarily use annotations for all variables.</p>
 <p>Note that there are also other rules in the RUF category that trigger on valid, but &quot;distasteful&quot; syntax.</p>
@@ -153,24 +153,24 @@ __init__(self, other_field: int = 8) -&gt; None
 <blockquote>
 <p><code>ClassVar</code> annotations are inheritable in the type system, so an inherited one should be deemed equally explicit</p>
 </blockquote>
-<p>I'm still leaning towards ruff taking the conservative stance that inherited <code>ClassVar</code> are not &quot;equally explicit&quot;, because they do not explicitly appear in the subclass definition. However, I am sympathetic to the concern that this will add more verbosity in some cases (&quot;duplication&quot; of the <code>ClassVar</code> annotation on the subclass). My feeling is that the benefit of encouraging <code>ClassVar</code> annotations regardless of inheritance outweighs this concern. When using lots of inherited dataclass class variables in a codebase, I would prefer to switch off RUF045 in the linter configuration.</p>
+<p>I&#x27;m still leaning towards ruff taking the conservative stance that inherited <code>ClassVar</code> are not &quot;equally explicit&quot;, because they do not explicitly appear in the subclass definition. However, I am sympathetic to the concern that this will add more verbosity in some cases (&quot;duplication&quot; of the <code>ClassVar</code> annotation on the subclass). My feeling is that the benefit of encouraging <code>ClassVar</code> annotations regardless of inheritance outweighs this concern. When using lots of inherited dataclass class variables in a codebase, I would prefer to switch off RUF045 in the linter configuration.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kkom">@kkom</a> on 2025-03-08 16:57</div>
-            <div class="timeline-body"><p>@adigitoleo – I see! If it is indeed true there is no functional difference between an &quot;inherited&quot; <code>ClassVar</code> and an &quot;implied&quot; one, I'm happy with biasing toward explicitness.</p>
+            <div class="timeline-body"><p>@adigitoleo – I see! If it is indeed true there is no functional difference between an &quot;inherited&quot; <code>ClassVar</code> and an &quot;implied&quot; one, I&#x27;m happy with biasing toward explicitness.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> removed by @MichaReiser on 2025-03-12 08:07</div>
+            <div class="event">Label <span class="label">bug</span> removed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-12 08:07</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-03-12 08:07</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-12 08:07</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:52:15 UTC
+        Synced at 2026-01-20 18:49:33 UTC
     </footer>
 </body>
 </html>

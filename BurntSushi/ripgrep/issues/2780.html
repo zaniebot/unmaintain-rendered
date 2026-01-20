@@ -23,30 +23,30 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sxyazi">@sxyazi</a></div>
-            <div class="timeline-body"><p>Hey, I'm using globset to match a set of icon rules, which are mostly extension-based rules, like this:</p>
+            <div class="timeline-body"><p>Hey, I&#x27;m using globset to match a set of icon rules, which are mostly extension-based rules, like this:</p>
 <pre><code>*.jpg icon1
 *.png icon2
 *.gif icon3
 </code></pre>
-<p>They are a group of rules with similar structures, and I only need to get the first matching icon. So, I'm thinking of detecting the strategy of glob through <code>MatchStrategy::new()</code> and further encapsulating it.</p>
+<p>They are a group of rules with similar structures, and I only need to get the first matching icon. So, I&#x27;m thinking of detecting the strategy of glob through <code>MatchStrategy::new()</code> and further encapsulating it.</p>
 <p>Is it possible to make <code>MatchStrategy</code> public? If you think it makes sense, I can try to create a PR for it. Thanks for your work on globset!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-04-16 01:20</div>
-            <div class="timeline-body"><p>No, it's an implementation detail. It's not totally clear to me why your use case needs it to be public.</p>
+            <div class="timeline-body"><p>No, it&#x27;s an implementation detail. It&#x27;s not totally clear to me why your use case needs it to be public.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sxyazi">@sxyazi</a> on 2024-04-16 01:40</div>
             <div class="timeline-body"><p>I want to know what kind of glob the user has set, such as whether it is just a simple extension glob. If it is, I can go through my own optimized processing logic without compiling a regular expression for it and performing regex matching, and only need to compare a small part of the path.</p>
-<p>So I need to detect the type of glob the user has set and decide on a strategy, and I found that globset has implemented this very well just not make it public, of course I could refer to globset and re-implement it from scratch, but I think that's unnecessary workload.</p>
+<p>So I need to detect the type of glob the user has set and decide on a strategy, and I found that globset has implemented this very well just not make it public, of course I could refer to globset and re-implement it from scratch, but I think that&#x27;s unnecessary workload.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sxyazi">@sxyazi</a> on 2024-04-16 01:57</div>
             <div class="timeline-body"><p>Add more details:</p>
-<p>After reading the source code of <code>globset</code>, I found that only <code>GlobSet</code> uses this strategy optimization during matching, while single glob matching (<code>GlobMatcher</code>) does not (please correct me if I'm wrong).</p>
+<p>After reading the source code of <code>globset</code>, I found that only <code>GlobSet</code> uses this strategy optimization during matching, while single glob matching (<code>GlobMatcher</code>) does not (please correct me if I&#x27;m wrong).</p>
 <p>However, <code>GlobSet::matches()</code> matches all glob rules and then returns all indexes. For my needs (only needing to get the first matching icon), this is an unnecessary additional overhead because it could have ended early.</p>
 <p>So what I need is a combination of strategy matching and early termination, which <code>globset</code> cannot provide since it uses <code>strats: Vec&lt;GlobSetMatchStrategy&gt;</code> to save each glob grouped according to the strategy, as the order between globs is no longer available, which is why it must calculate all the indexes and reorder them:</p>
 <p>https://github.com/BurntSushi/ripgrep/blob/d922b7ac114c24d6800ae5f79d2967481f380c83/crates/globset/src/lib.rs#L406-L410</p>
@@ -56,11 +56,11 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-04-16 01:58</div>
             <div class="timeline-body"><p>globset already avoids compiling a regex in some cases. Perhaps more cases could be added.</p>
-<p>Sorry, but I don't want to expose internals like what you're requesting. I would be open to adding optimizations though.</p>
+<p>Sorry, but I don&#x27;t want to expose internals like what you&#x27;re requesting. I would be open to adding optimizations though.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2024-04-16 01:58</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-04-16 01:58</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sxyazi">@sxyazi</a> on 2024-04-16 02:09</div>
@@ -68,20 +68,20 @@
 <blockquote>
 <p>globset already avoids compiling a regex in some cases. Perhaps more cases could be added.</p>
 </blockquote>
-<p>I couldn't find the relevant code, could you give me some hints? I'll see if I can add it - I'm interested in optimizing extension globs like <code>*.jpg</code> in <code>GlobMatcher</code>.</p>
+<p>I couldn&#x27;t find the relevant code, could you give me some hints? I&#x27;ll see if I can add it - I&#x27;m interested in optimizing extension globs like <code>*.jpg</code> in <code>GlobMatcher</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-04-16 11:33</div>
-            <div class="timeline-body"><p>I'm confused because you are literally asking about the very thing that does what you want. It even has an optimization path for extensions.</p>
+            <div class="timeline-body"><p>I&#x27;m confused because you are literally asking about the very thing that does what you want. It even has an optimization path for extensions.</p>
 <p>https://github.com/BurntSushi/ripgrep/blob/d922b7ac114c24d6800ae5f79d2967481f380c83/crates/globset/src/glob.rs#L155-L177</p>
-<p>It does not appear to skip compiling the regex, though, it does not use it for matching. I'd be open to adjustments that skip the regex compilation where possible. I can't remember whether that will be hard or not though. It could be a big refactor. But maybe not.</p>
+<p>It does not appear to skip compiling the regex, though, it does not use it for matching. I&#x27;d be open to adjustments that skip the regex compilation where possible. I can&#x27;t remember whether that will be hard or not though. It could be a big refactor. But maybe not.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:43:47 UTC
+        Synced at 2026-01-20 18:48:13 UTC
     </footer>
 </body>
 </html>

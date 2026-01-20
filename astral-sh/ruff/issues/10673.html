@@ -29,7 +29,7 @@ ruff 0.3.4
  cssutils ead999fc @ ruff check --fix --select I
 Found 85 errors (85 fixed, 0 remaining).
  cssutils ead999fc @ tox -q
-ImportError while loading conftest '/Users/jaraco/code/jaraco/cssutils/conftest.py'.
+ImportError while loading conftest &#x27;/Users/jaraco/code/jaraco/cssutils/conftest.py&#x27;.
 conftest.py:5: in &lt;module&gt;
     import cssutils
 cssutils/__init__.py:79: in &lt;module&gt;
@@ -40,12 +40,12 @@ cssutils/css/csscharsetrule.py:10: in &lt;module&gt;
     from . import cssrule
 cssutils/css/cssrule.py:10: in &lt;module&gt;
     class CSSRule(cssutils.util.Base2):
-E   AttributeError: partially initialized module 'cssutils' has no attribute 'util' (most likely due to a circular import)
+E   AttributeError: partially initialized module &#x27;cssutils&#x27; has no attribute &#x27;util&#x27; (most likely due to a circular import)
 py: exit 4 (0.17 seconds) /Users/jaraco/code/jaraco/cssutils&gt; pytest pid=8630
   py: FAIL code 4 (1.67 seconds)
   evaluation failed :( (1.71 seconds)
 </code></pre>
-<pre><code class="language-diff"> cssutils ead999fc @ git diff cssutils/__init__.py
+<pre><code> cssutils ead999fc @ git diff cssutils/__init__.py
 diff --git a/cssutils/__init__.py b/cssutils/__init__.py
 index 37c54894..38d22353 100644
 --- a/cssutils/__init__.py
@@ -74,34 +74,34 @@ index 37c54894..38d22353 100644
 -
 +from .serialize import CSSSerializer
  
- __all__ = ['css', 'stylesheets', 'CSSParser', 'CSSSerializer']
+ __all__ = [&#x27;css&#x27;, &#x27;stylesheets&#x27;, &#x27;CSSParser&#x27;, &#x27;CSSSerializer&#x27;]
 </code></pre>
 <p>In cssutils, the imports are sensitive to order to avoid circular imports, but isort prefers alphabetical irrespective of the dependency graph.</p>
-<p>I presumed that because I didn't pass <code>--unsafe-fixes</code>, the fixes would be guaranteed safe, but it seems they're not.</p>
+<p>I presumed that because I didn&#x27;t pass <code>--unsafe-fixes</code>, the fixes would be guaranteed safe, but it seems they&#x27;re not.</p>
 <p>I suspect what needs to be done here is I need to invest some time in understanding how the isort actions work and how to apply them to the cssutils codebase to allow for sorting without breaking the package.</p>
 <p>I suppose if ruff was really ambitious, it could analyze the imports and detect circular imports and try to solve the import order for a viable order (keeping stability otherwise).</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">isort</span> added by @AlexWaygood on 2024-03-30 18:31</div>
+            <div class="event">Label <span class="label">isort</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-30 18:31</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jaraco">@jaraco</a> on 2024-03-30 18:38</div>
-            <div class="timeline-body"><p>Oh! The error message from Python was misleading. The issue isn't a circular import, but the fact that <code>cssutils.util</code> was never imported (it must have been implicitly imported elsewhere prior to the isort operation). Making sure that import was made (jaraco/cssutils@4fd6bbe3) prior to running isort works around the issue.</p>
+            <div class="timeline-body"><p>Oh! The error message from Python was misleading. The issue isn&#x27;t a circular import, but the fact that <code>cssutils.util</code> was never imported (it must have been implicitly imported elsewhere prior to the isort operation). Making sure that import was made (jaraco/cssutils@4fd6bbe3) prior to running isort works around the issue.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jaraco">@jaraco</a> on 2024-03-30 18:41</div>
-            <div class="timeline-body"><p>So maybe this issue should be closed as wontfix, at least until such a time that someone else encounters the issue in another real-world case. I wonder if this finding is indicative of a missing linter - should ruff be checking for a missing import of a submodule? I'll file a separate ticket for that (after searching).</p>
+            <div class="timeline-body"><p>So maybe this issue should be closed as wontfix, at least until such a time that someone else encounters the issue in another real-world case. I wonder if this finding is indicative of a missing linter - should ruff be checking for a missing import of a submodule? I&#x27;ll file a separate ticket for that (after searching).</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-03-30 18:48</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-30 18:48</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:49:59 UTC
+        Synced at 2026-01-20 18:48:52 UTC
     </footer>
 </body>
 </html>

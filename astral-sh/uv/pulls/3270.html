@@ -23,19 +23,19 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p><code>mimalloc</code> tends to provide performance benefits, especially in multi-threaded scenarios, and even more when using work-stealing schedulers where data is migrated across threads between allocation and de-allocation. Currently, we only use <code>mimalloc</code> on Windows, but we can also use it on MacOS and Linux (<code>mimalloc</code> supports more platforms than this, but those seem to be the only officially supported ones https://github.com/microsoft/mimalloc/issues/482#issuecomment-953190795).</p>
-<h2>Test Plan</h2>
-<p>On Linux, I'm seeing between 15-30% performance improvements on the <code>install-warm</code> and <code>resolve-warm</code> benchmarks. On M1 I'm seeing a slight regression, so it might only be beneficial to switch on Linux, but I want to see the results on other machines first.</p>
+            <div class="timeline-body">Summary
+<p><code>mimalloc</code> tends to provide performance benefits, especially in multi-threaded scenarios, and even more when using work-stealing schedulers where data is migrated across threads between allocation and de-allocation. Currently, we only use <code>mimalloc</code> on Windows, but we can also use it on MacOS and Linux (<code>mimalloc</code> supports more platforms than this, but those seem to be the only officially supported ones <a href="https://github.com/microsoft/mimalloc/issues/482">microsoft/mimalloc#482</a>#issuecomment-953190795).</p>
+Test Plan
+<p>On Linux, I&#x27;m seeing between 15-30% performance improvements on the <code>install-warm</code> and <code>resolve-warm</code> benchmarks. On M1 I&#x27;m seeing a slight regression, so it might only be beneficial to switch on Linux, but I want to see the results on other machines first.</p>
 <p>We should also test the memory usage affects of this change.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">performance</span> added by @zanieb on 2024-04-25 23:37</div>
+            <div class="event">Label <span class="label">performance</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-25 23:37</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-26 04:03</div>
-            <div class="timeline-body"><p>I did some benchmarking on my M3. Hard to draw firm conclusions but I think I see something like a 5-10% regression in <code>install-warm</code> for <code>./scripts/requirements/compiled/jupyter.txt</code> (replicated in three runs with <code>--min-runs 50 --warmup 20</code>), although in one run, this branch was 5% faster. I'd probably err on the side of <em>not</em> changing the allocator on macOS based on that, though.</p>
+            <div class="timeline-body"><p>I did some benchmarking on my M3. Hard to draw firm conclusions but I think I see something like a 5-10% regression in <code>install-warm</code> for <code>./scripts/requirements/compiled/jupyter.txt</code> (replicated in three runs with <code>--min-runs 50 --warmup 20</code>), although in one run, this branch was 5% faster. I&#x27;d probably err on the side of <em>not</em> changing the allocator on macOS based on that, though.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -81,8 +81,8 @@ Summary
   target/profiling/uv-branch pip compile scripts/requirements/boto3.in ran
     1.00 ± 0.01 times faster than target/profiling/uv-main pip compile scripts/requirements/boto3.in
 </code></pre>
-<p>I don't mind the 0.8ms (that's ms, not s) more for jupyter since it doesn't affect more complex resolutions.</p>
-<p>I'm all for merging this just for removing the tikv-jemallocator dependency and the simpler cfg's.</p>
+<p>I don&#x27;t mind the 0.8ms (that&#x27;s ms, not s) more for jupyter since it doesn&#x27;t affect more complex resolutions.</p>
+<p>I&#x27;m all for merging this just for removing the tikv-jemallocator dependency and the simpler cfg&#x27;s.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -91,7 +91,7 @@ Summary
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-26 14:32</div>
-            <div class="timeline-body"><h2>macOS (M1 Pro)</h2>
+            <div class="timeline-body">macOS (M1 Pro)
 <pre><code>❯ python -m scripts.bench \
     --uv-path ./baseline \
     --uv-path ./target/release/uv \
@@ -176,7 +176,7 @@ Summary
   ./baseline (resolve-warm) ran
     1.07 ± 0.24 times faster than ./target/release/uv (resolve-warm)
 </code></pre>
-<h2>Linux (AMD Ryzen 7 3800X)</h2>
+Linux (AMD Ryzen 7 3800X)
 <pre><code>❯ python3 -m scripts.bench \
     --uv-path ./baseline \
     --uv-path ./target/release/uv \
@@ -267,26 +267,26 @@ Summary
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-26 14:35</div>
-            <div class="timeline-body"><p>Not really seeing anything definitive, I think I'd need to run more samples if we want more data for a decision.</p>
+            <div class="timeline-body"><p>Not really seeing anything definitive, I think I&#x27;d need to run more samples if we want more data for a decision.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-26 17:22</div>
-            <div class="timeline-body"><p>I think the warm-resolve benchmarks are so fast that there won't be much signal in them. And the cold benchmarks are so bounded by other things that it's hard to get much signal from them either. So I'd suggest we focus on the warm-install benchmarks, I guess?</p>
+            <div class="timeline-body"><p>I think the warm-resolve benchmarks are so fast that there won&#x27;t be much signal in them. And the cold benchmarks are so bounded by other things that it&#x27;s hard to get much signal from them either. So I&#x27;d suggest we focus on the warm-install benchmarks, I guess?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-04-30 19:37</div>
-            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/uv/branches/ibraheemdev:mimalloc">CodSpeed Performance Report</a></h2>
-<h3>Merging #3270 will <strong>degrade performances by 11.59%</strong></h3>
-<p><sub>Comparing <code>ibraheemdev:mimalloc</code> (2b5fefc) with <code>main</code> (630d3fd)</sub></p>
-<h3>Summary</h3>
+            <div class="timeline-body"><a href="https://codspeed.io/astral-sh/uv/branches/ibraheemdev:mimalloc">CodSpeed Performance Report</a>
+Merging #3270 will <strong>degrade performances by 11.59%</strong>
+<p>Comparing <code>ibraheemdev:mimalloc</code> (2b5fefc) with <code>main</code> (630d3fd)</p>
+Summary
 <p><code>❌ 1</code> regressions
 <code>✅ 11</code> untouched benchmarks</p>
 <blockquote>
 <p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/uv/branches/ibraheemdev:mimalloc">acknowledge them on CodSpeed</a>.</em></p>
 </blockquote>
-<h3>Benchmarks breakdown</h3>
+Benchmarks breakdown
 <p>|     | Benchmark | <code>main</code> | <code>ibraheemdev:mimalloc</code> | Change |
 | --- | --------- | ----------------------- | ------------------- | ------ |
 | ❌ | <code>resolve_warm_jupyter</code> | 367.5 ms | 415.7 ms | -11.59% |</p>
@@ -294,11 +294,11 @@ Summary
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-04-30 19:55</div>
-            <div class="timeline-body"><p>I'm going to close this for now, I'm also seeing the regression locally with the new resolver benchmarks, so it's not just CodSpeed.</p>
+            <div class="timeline-body"><p>I&#x27;m going to close this for now, I&#x27;m also seeing the regression locally with the new resolver benchmarks, so it&#x27;s not just CodSpeed.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ibraheemdev on 2024-04-30 19:55</div>
+            <div class="event">Closed by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-04-30 19:55</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-30 20:22</div>
@@ -318,12 +318,12 @@ Summary
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-04-30 20:49</div>
-            <div class="timeline-body"><p>@zanieb Can you run <code>cargo bench --bench uv</code> locally? I'm seeing a large regression on that benchmark on my Linux machine.</p>
+            <div class="timeline-body"><p>@zanieb Can you run <code>cargo bench --bench uv</code> locally? I&#x27;m seeing a large regression on that benchmark on my Linux machine.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-01 13:27</div>
-            <div class="timeline-body"><p>I don't see a large regression on my Linux machine.</p>
+            <div class="timeline-body"><p>I don&#x27;t see a large regression on my Linux machine.</p>
 <pre><code>❯ cargo bench --bench uv
 resolve_warm_jupyter    time:   [12.663 ms 12.739 ms 12.816 ms]
                         change: [+1.2044% +1.9636% +2.6014%] (p = 0.00 &lt; 0.05)
@@ -343,7 +343,7 @@ resolve_warm_jupyter    time:   [12.460 ms 12.516 ms 12.571 ms]
             <div class="timeline-body"><blockquote>
 <p>@ibraheemdev just be warned, I think allocations are &quot;free&quot; and not part of the measurements in CodSpeed.</p>
 </blockquote>
-<p>Yes and no. The <code>alloc</code> syscall is free, but not the <code>alloc</code> of a custom memory allocator. CodSpeed will measure the instructions in the custom allocator the same as our user code. In general, all syscalls are free (which I think should be fixed because they're the most expensive calls).</p>
+<p>Yes and no. The <code>alloc</code> syscall is free, but not the <code>alloc</code> of a custom memory allocator. CodSpeed will measure the instructions in the custom allocator the same as our user code. In general, all syscalls are free (which I think should be fixed because they&#x27;re the most expensive calls).</p>
 <p>That means, codspeed will not measure if this PR e.g. reduces the calls to the system <code>alloc</code> (or <code>free</code> to that matter) function. But it still measures how many other non-syscall instructions our code runs.</p>
 <p><strong>Linux (AMD Ryzen 9 5900X 12-Core Processor)</strong></p>
 <pre><code>python3 -m scripts.bench \
@@ -379,7 +379,7 @@ Summary
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:36:48 UTC
+        Synced at 2026-01-20 19:45:05 UTC
     </footer>
 </body>
 </html>

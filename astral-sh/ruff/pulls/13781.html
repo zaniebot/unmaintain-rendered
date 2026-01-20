@@ -23,38 +23,32 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a></div>
-            <div class="timeline-body"><!--
-Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+            <div class="timeline-body">
 
-- Does this pull request include a summary of the change? (See below.)
-- Does this pull request include a descriptive title?
-- Does this pull request include references to any relevant issues?
--->
-
-<h2>Summary</h2>
+Summary
 <p>Add type inference for comparisons involving union types. For example:</p>
-<pre><code class="language-py">one_or_two = 1 if flag else 2
+<pre><code>one_or_two = 1 if flag else 2
 
 reveal_type(one_or_two &lt;= 2)  # revealed: Literal[True]
 reveal_type(one_or_two &lt;= 1)  # revealed: bool
 reveal_type(one_or_two &lt;= 0)  # revealed: Literal[False]
 </code></pre>
 <p>closes #13779</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>See <code>resources/mdtest/comparison/unions.md</code></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2024-10-16 18:39</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-10-16 18:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @sharkdp on 2024-10-16 18:39</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-10-16 18:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @sharkdp on 2024-10-16 18:39</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-10-16 18:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2024-10-16 18:39</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-10-16 18:39</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-10-16 18:41</div>
@@ -62,7 +56,7 @@ reveal_type(one_or_two &lt;= 0)  # revealed: Literal[False]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2937 on 2024-10-16 18:41</div>
-            <div class="timeline-body"><p>I can remove this again if we prefer to return <code>Type::Todo</code> for now, to remind us that we <em>could</em> do better in some cases (and return <code>Literal[True]</code> or <code>Literal[False]</code> instead). But compared to the other operators, it can't be overloaded, so <code>bool</code> should always be correct(?).</p>
+            <div class="timeline-body"><p>I can remove this again if we prefer to return <code>Type::Todo</code> for now, to remind us that we <em>could</em> do better in some cases (and return <code>Literal[True]</code> or <code>Literal[False]</code> instead). But compared to the other operators, it can&#x27;t be overloaded, so <code>bool</code> should always be correct(?).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -71,7 +65,7 @@ reveal_type(one_or_two &lt;= 0)  # revealed: Literal[False]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2725 on 2024-10-16 18:45</div>
-            <div class="timeline-body"><p>I'm not 100% sure it's correct to filter out <code>None</code>s here. But it seems wrong to return <code>None</code> if there are valid <code>Some(…)</code> cases in the overall union of result types. But maybe we should return <code>None</code> if the resulting union is empty, i.e. return <code>None</code> instead of <code>Some(Type::Never)</code>?</p>
+            <div class="timeline-body"><p>I&#x27;m not 100% sure it&#x27;s correct to filter out <code>None</code>s here. But it seems wrong to return <code>None</code> if there are valid <code>Some(…)</code> cases in the overall union of result types. But maybe we should return <code>None</code> if the resulting union is empty, i.e. return <code>None</code> instead of <code>Some(Type::Never)</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -81,20 +75,20 @@ reveal_type(one_or_two &lt;= 0)  # revealed: Literal[False]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2725 on 2024-10-16 18:52</div>
-            <div class="timeline-body"><p>A <code>None</code> return from <code>infer_binary_type_comparison</code> means &quot;op not supported for these operands.&quot; If <code>infer_compare_expression</code> gets <code>None</code> it will emit a diagnostic and fall back to <code>Unknown</code> (if there was a comparison error we can't really say what the result should be.)</p>
-<p>Using <code>filter_map</code> here silently excludes the <code>None</code> results from consideration, meaning we won't emit a diagnostic when we should, and we will provide an &quot;answer&quot; when we should fall back to <code>Unknown</code>.</p>
+            <div class="timeline-body"><p>A <code>None</code> return from <code>infer_binary_type_comparison</code> means &quot;op not supported for these operands.&quot; If <code>infer_compare_expression</code> gets <code>None</code> it will emit a diagnostic and fall back to <code>Unknown</code> (if there was a comparison error we can&#x27;t really say what the result should be.)</p>
+<p>Using <code>filter_map</code> here silently excludes the <code>None</code> results from consideration, meaning we won&#x27;t emit a diagnostic when we should, and we will provide an &quot;answer&quot; when we should fall back to <code>Unknown</code>.</p>
 <p>I think instead we should short-circuit and return <code>None</code> if we see any <code>None</code>.</p>
-<p>Probably we also want to change this at some point to return a <code>Result</code> instead of <code>Option</code>, both simply because it's more explicit, and because then the <code>Err</code> variant can propagate details of precisely which two &quot;inner&quot; types we failed to compare, in the recursive cases, allowing us to offer a better diagnostic.</p>
+<p>Probably we also want to change this at some point to return a <code>Result</code> instead of <code>Option</code>, both simply because it&#x27;s more explicit, and because then the <code>Err</code> variant can propagate details of precisely which two &quot;inner&quot; types we failed to compare, in the recursive cases, allowing us to offer a better diagnostic.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2937 on 2024-10-16 18:55</div>
-            <div class="timeline-body"><p>I'm fine with this change; we don't need <code>Todo</code> if we are returning a correct and &quot;reasonably precise&quot; (<em>waves hands</em>) result -- something that a user isn't likely to consider outright broken. I think this certainly qualifies.</p>
+            <div class="timeline-body"><p>I&#x27;m fine with this change; we don&#x27;t need <code>Todo</code> if we are returning a correct and &quot;reasonably precise&quot; (<em>waves hands</em>) result -- something that a user isn&#x27;t likely to consider outright broken. I think this certainly qualifies.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> requested changes on 2024-10-16 18:55</div>
-            <div class="timeline-body"><p>Tests look good! Requesting changes because I don't think we should <code>filter_map</code> out unsupported comparisons, and we should add a test for an unsupported-comparison-with-unions case.</p>
+            <div class="timeline-body"><p>Tests look good! Requesting changes because I don&#x27;t think we should <code>filter_map</code> out unsupported comparisons, and we should add a test for an unsupported-comparison-with-unions case.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -114,7 +108,7 @@ reveal_type(one_or_two &lt;= 0)  # revealed: Literal[False]
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2725 on 2024-10-16 19:00</div>
             <div class="timeline-body"><p>Oh, I submitted my review without seeing this comment.</p>
 <p>I still think we should short-circuit and return <code>None</code> if any of the comparisons failed. If the comparison may raise <code>TypeError</code>, we need to emit a diagnostic.</p>
-<p>I'm less settled on whether we have to fall back to <code>Unknown</code> (or <code>bool</code>) in this case. I think we <em>could</em> still try to give a more precise best-effort answer, along with the diagnostic. But I don't think it's critical that we do that, and I think it will take some effort; we'd need to return a <code>Result</code> here instead of <code>Option</code>, and have the <code>Err</code> variant carry not only the two types that failed to compare, but also our best-effort conclusion from the &quot;rest&quot; of the comparison. (And I think comparing unions (and intersections?) may be the only case where we even have a best-effort conclusion?)</p>
+<p>I&#x27;m less settled on whether we have to fall back to <code>Unknown</code> (or <code>bool</code>) in this case. I think we <em>could</em> still try to give a more precise best-effort answer, along with the diagnostic. But I don&#x27;t think it&#x27;s critical that we do that, and I think it will take some effort; we&#x27;d need to return a <code>Result</code> here instead of <code>Option</code>, and have the <code>Err</code> variant carry not only the two types that failed to compare, but also our best-effort conclusion from the &quot;rest&quot; of the comparison. (And I think comparing unions (and intersections?) may be the only case where we even have a best-effort conclusion?)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -128,20 +122,20 @@ reveal_type(one_or_two &lt;= 0)  # revealed: Literal[False]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-10-16 19:48</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2024-10-17 00:04</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-17 00:04</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @AlexWaygood on 2024-10-17 00:04</div>
+            <div class="event">Reopened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-17 00:04</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-10-17 07:15</div>
@@ -149,7 +143,7 @@ reveal_type(one_or_two &lt;= 0)  # revealed: Literal[False]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2732 on 2024-10-17 07:15</div>
-            <div class="timeline-body"><p>Would be nice to avoid the duplication here, but I couldn't think of a good way to do this without introducing much more code.</p>
+            <div class="timeline-body"><p>Would be nice to avoid the duplication here, but I couldn&#x27;t think of a good way to do this without introducing much more code.</p>
 <p>I also looked for ways to replace the <code>for</code> loop with an iterator expression, but that would require something like <a href="https://doc.rust-lang.org/std/iter/trait.Iterator.html#method.try_collect"><code>Iterator::try_collect</code></a>, which is nightly-only. And would require an additional allocation.</p>
 </div>
         </div>
@@ -168,7 +162,7 @@ reveal_type(one_or_two &lt;= 0)  # revealed: Literal[False]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2732 on 2024-10-17 08:08</div>
-            <div class="timeline-body"><p>I don't mind the repetition (or use of a for loop, I'm a huge fan of for loops) but maybe <code>Itertools::fold_options</code> is what you want</p>
+            <div class="timeline-body"><p>I don&#x27;t mind the repetition (or use of a for loop, I&#x27;m a huge fan of for loops) but maybe <code>Itertools::fold_options</code> is what you want</p>
 <p>https://docs.rs/itertools/latest/itertools/trait.Itertools.html#method.fold_options</p>
 </div>
         </div>
@@ -182,7 +176,7 @@ reveal_type(one_or_two &lt;= 0)  # revealed: Literal[False]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2732 on 2024-10-17 08:31</div>
-            <div class="timeline-body"><p>It will require refactoring this method (so shouldn't be done in this PR), but in the long term something like #13787 seems like a good idea. I also think we'll want to emit a separate diagnostic on each member of the union that would be invalid for this operation (or one diagnostic that mentions all possibly erroring Union members). So I'd also just leave this as it is for now</p>
+            <div class="timeline-body"><p>It will require refactoring this method (so shouldn&#x27;t be done in this PR), but in the long term something like #13787 seems like a good idea. I also think we&#x27;ll want to emit a separate diagnostic on each member of the union that would be invalid for this operation (or one diagnostic that mentions all possibly erroring Union members). So I&#x27;d also just leave this as it is for now</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -200,8 +194,8 @@ reveal_type(one_or_two &lt;= 0)  # revealed: Literal[False]
 <p>maybe <code>Itertools::fold_options</code> is what you want</p>
 <p>https://docs.rs/itertools/latest/itertools/trait.Itertools.html#method.fold_options</p>
 </blockquote>
-<p>Hm, not quite. <code>fold_options</code> short-circuits on <code>None</code>s in the input iterator. But we want to short-circuit if the output of the <code>fold</code>-function returns <code>None</code>. So we would need something like <a href="https://docs.rs/itertools/latest/itertools/trait.Itertools.html#method.fold_while"><code>Itertools::fold_while</code></a>. That <em>works</em>, but it's completely ridiculous:</p>
-<pre><code class="language-rs">union
+<p>Hm, not quite. <code>fold_options</code> short-circuits on <code>None</code>s in the input iterator. But we want to short-circuit if the output of the <code>fold</code>-function returns <code>None</code>. So we would need something like <a href="https://docs.rs/itertools/latest/itertools/trait.Itertools.html#method.fold_while"><code>Itertools::fold_while</code></a>. That <em>works</em>, but it&#x27;s completely ridiculous:</p>
+<pre><code>union
     .elements(self.db)
     .iter()
     .fold_while(Some(UnionBuilder::new(self.db)), |builder, element| {
@@ -214,14 +208,14 @@ reveal_type(one_or_two &lt;= 0)  # revealed: Literal[False]
     .into_inner()
     .map(UnionBuilder::build)
 </code></pre>
-<p>I'll go with the <code>for</code> loop :smile:</p>
+<p>I&#x27;ll go with the <code>for</code> loop :smile:</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @sharkdp on 2024-10-17 09:03</div>
+            <div class="event">Merged by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-10-17 09:03</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @sharkdp on 2024-10-17 09:03</div>
+            <div class="event">Closed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-10-17 09:03</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-10-17 09:03</div>
@@ -229,7 +223,7 @@ reveal_type(one_or_two &lt;= 0)  # revealed: Literal[False]
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:418 on 2024-10-17 14:43</div>
             <div class="timeline-body"><p>Nice catch, I really thought we had this already 🤦</p>
-<p>There are unit tests at the bottom of this module for <code>is_subtype_of</code>, ideally we'd add one for this case. (Though the union-builder tests are great, too, and do transitively test this.)</p>
+<p>There are unit tests at the bottom of this module for <code>is_subtype_of</code>, ideally we&#x27;d add one for this case. (Though the union-builder tests are great, too, and do transitively test this.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -239,7 +233,7 @@ reveal_type(one_or_two &lt;= 0)  # revealed: Literal[False]
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:07:01 UTC
+        Synced at 2026-01-20 19:07:30 UTC
     </footer>
 </body>
 </html>

@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/lervag">@lervag</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>Consider this short snippet:</p>
-<pre><code class="language-python">from concurrent.futures import Future, ProcessPoolExecutor
+<pre><code>from concurrent.futures import Future, ProcessPoolExecutor
 from typing import Callable, ParamSpec, TypeVar
 
 P = ParamSpec(&quot;P&quot;)
@@ -43,7 +43,7 @@ class ProcessPoolManager:
 
         return future
 </code></pre>
-<p>With pyright/basedpyright, I don't get any type warnings (it seems the assume callable is a named function). But with <code>ty</code> I get the following:</p>
+<p>With pyright/basedpyright, I don&#x27;t get any type warnings (it seems the assume callable is a named function). But with <code>ty</code> I get the following:</p>
 <pre><code>&gt; ty check test.py
 error[unresolved-attribute]: Object of type `(**P@submit_job) -&gt; T@submit_job` has no attribute `__name__`
   --&gt; test.py:15:75
@@ -60,9 +60,9 @@ info: rule `unresolved-attribute` is enabled by default
 
 Found 1 diagnostic
 </code></pre>
-<p>The help message is very useful here, and I see that it is probably right. But I can't figure out how to either change my signature to only allow &quot;named&quot; functions or how to adjust so that we only get <code>__name__</code> if it is available. I was hoping someone here might have an idea?</p>
-<h3>Version</h3>
-<pre><code class="language-sh">&gt; ty version
+<p>The help message is very useful here, and I see that it is probably right. But I can&#x27;t figure out how to either change my signature to only allow &quot;named&quot; functions or how to adjust so that we only get <code>__name__</code> if it is available. I was hoping someone here might have an idea?</p>
+Version
+<pre><code>&gt; ty version
 ty 0.0.9
 </code></pre>
 </div>
@@ -73,10 +73,10 @@ ty 0.0.9
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @AlexWaygood on 2026-01-07 12:16</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-07 12:16</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">callables</span> added by @AlexWaygood on 2026-01-07 12:16</div>
+            <div class="event">Label <span class="label">callables</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-07 12:16</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-07 12:17</div>
@@ -87,7 +87,7 @@ ty 0.0.9
             <div class="timeline-header">Comment by <a href="https://github.com/lervag">@lervag</a> on 2026-01-07 12:38</div>
             <div class="timeline-body"><p>Thanks! That was definitely helpful!</p>
 <p>After posting my issue I ended up solving my issue like this:</p>
-<pre><code class="language-python">    def submit_job(self, fn: Callable[P, T], *args: P.args, **kwargs: P.kwargs) -&gt; Future[T]:
+<pre><code>    def submit_job(self, fn: Callable[P, T], *args: P.args, **kwargs: P.kwargs) -&gt; Future[T]:
         future = self._executor.submit(fn, *args, **kwargs)
 
         fn_name = getattr(fn, &quot;__name__&quot;, &quot;unnamed&quot;)
@@ -97,30 +97,30 @@ ty 0.0.9
         future.add_done_callback(lambda f: self._handle_job_completion(f, fn_name))
         return future
 </code></pre>
-<p>That resolves my typing issue. I don't think we'd ever run into a case where my original variant would fail, but I don't see a reason not to just stay on the safe side.</p>
+<p>That resolves my typing issue. I don&#x27;t think we&#x27;d ever run into a case where my original variant would fail, but I don&#x27;t see a reason not to just stay on the safe side.</p>
 <p>Again thanks for the quick reply and for already having written a good explenation of this issue!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @lervag on 2026-01-07 12:38</div>
+            <div class="event">Closed by <a href="https://github.com/lervag">@lervag</a> on 2026-01-07 12:38</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/lervag">@lervag</a> on 2026-01-07 12:51</div>
             <div class="timeline-body"><p>Oh, I missed the info box on my first read:</p>
-<pre><code class="language-python">if TYPE_CHECKING:
+<pre><code>if TYPE_CHECKING:
     from ty_extensions import Intersection
 
     type FunctionLikeCallable[**P, R] = Intersection[Callable[P, R], FunctionType]
 else:
     FunctionLikeCallable = Callable
 </code></pre>
-<p>That's neat and exactly what I wanted. &lt;3</p>
+<p>That&#x27;s neat and exactly what I wanted. &lt;3</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:21:42 UTC
+        Synced at 2026-01-20 19:26:59 UTC
     </footer>
 </body>
 </html>

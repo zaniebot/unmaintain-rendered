@@ -23,20 +23,20 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Rubikoid">@Rubikoid</a></div>
-            <div class="timeline-body"><h1>About issue</h1>
+            <div class="timeline-body">About issue
 <p>uv platform: MacOS Sonoma 14.3.1
 uv version: <code>uv 0.2.13</code></p>
 <p><code>sys_prefix</code> on uv-created venvs points to the wrong place on nix-managed python.</p>
-<p>I'm using Nix for python installation, so I have kinda two variations of python:</p>
+<p>I&#x27;m using Nix for python installation, so I have kinda two variations of python:</p>
 <ul>
 <li><code>/nix/store/blahA-python3-3.12.3/</code> with pure python without any packages</li>
 <li><code>/nix/store/blahB-python3-3.12.3-env/</code> with partially symlinks to <code>/nix/store/blahA-python3-3.12.3/</code> and have packages installed.</li>
 </ul>
 <p>From the user view, all symlinks to python goes to <code>*-env</code> thing.</p>
 <p>When creating venvs with uv they have wrong <code>sys_prefix</code> set, so it is impossible to install any package in read-only python site-packages.</p>
-<h1>Reproducing</h1>
+Reproducing
 <p>uv thinks that my <code>*-env</code> python is not &quot;system&quot; (which it quite right) so when I specify just <code>-p $version</code> to uv, it founds nothing</p>
-<pre><code class="language-sh">-&gt; % uv venv uv-venv -vv -p 3.12
+<pre><code>-&gt; % uv venv uv-venv -vv -p 3.12
     0.002848s DEBUG uv_toolchain::discovery Searching for Python 3.12 in search path
     0.005586s DEBUG uv_toolchain::discovery Found CPython 3.12.3 at `/Users/rubikoid/.nix-profile/bin/python3.12` (search path)
     0.005749s DEBUG uv_toolchain::discovery Ignoring Python interpreter at `/nix/store/blahB-python3-3.12.3-env/bin/python3.12`: system interpreter required
@@ -48,31 +48,31 @@ uv version: <code>uv 0.2.13</code></p>
   × No interpreter found for Python 3.12 in search path
 </code></pre>
 <p>Because of it i have to specify direct path to python.</p>
-<h2>Creating venvs with vu</h2>
+Creating venvs with vu
 <p>So for the first i create venv with <code>*-env</code> python:</p>
-<pre><code class="language-sh">-&gt; % uv venv uv-venv -vv -p /nix/store/blahB-python3-3.12.3-env/bin/python3.12
+<pre><code>-&gt; % uv venv uv-venv -vv -p /nix/store/blahB-python3-3.12.3-env/bin/python3.12
     0.003919s DEBUG uv_toolchain::discovery Checking for Python interpreter at path `/nix/store/blahB-python3-3.12.3-env/bin/python3.12`
 Using Python 3.12.3 interpreter at: /nix/store/blahB-python3-3.12.3-env/bin/python3.12
 Creating virtualenv at: uv-venv
 Activate with: source uv-venv/bin/activate
 </code></pre>
 <p>And then venv from &quot;original&quot; python:</p>
-<pre><code class="language-sh">-&gt; % uv venv uv-venv-2 -vv -p /nix/store/blahA-python3-3.12.3/bin/python3.12
+<pre><code>-&gt; % uv venv uv-venv-2 -vv -p /nix/store/blahA-python3-3.12.3/bin/python3.12
     0.003196s DEBUG uv_toolchain::discovery Checking for Python interpreter in directory `/nix/store/blahA-python3-3.12.3`
 Using Python 3.12.3 interpreter at: /nix/store/blahA-python3-3.12.3/bin/python3
 Creating virtualenv at: uv-venv-2
 Activate with: source uv-venv-2/bin/activate
 </code></pre>
-<h2>Creating venvs with python venv module</h2>
+Creating venvs with python venv module
 <p>And then the same thing, but with the native venv module:</p>
-<pre><code class="language-sh">/nix/store/blahB-python3-3.12.3-env/bin/python3.12 -m venv py-venv
+<pre><code>/nix/store/blahB-python3-3.12.3-env/bin/python3.12 -m venv py-venv
 /nix/store/blahA-python3-3.12.3/bin/python3.12 -m venv py-venv-2
 </code></pre>
-<h2>Checking results</h2>
+Checking results
 <p>Everything run at <code>uv/crates/uv-toolchain</code>:</p>
-<h3>uv</h3>
+uv
 <p>uv venv created from <code>*-env</code> python:</p>
-<pre><code class="language-sh">-&gt; % ~/test/uv-venv/bin/python3.12 -m python.get_interpreter_info | jq '. | {sys_prefix: .sys_prefix, sys_base_prefix: .sys_base_prefix, sys_path: .sys_path}'
+<pre><code>-&gt; % ~/test/uv-venv/bin/python3.12 -m python.get_interpreter_info | jq &#x27;. | {sys_prefix: .sys_prefix, sys_base_prefix: .sys_base_prefix, sys_path: .sys_path}&#x27;
 {
   &quot;sys_prefix&quot;: &quot;/nix/store/blahB-python3-3.12.3-env&quot;,
   &quot;sys_base_prefix&quot;: &quot;/nix/store/blahA-python3-3.12.3&quot;,
@@ -87,7 +87,7 @@ Activate with: source uv-venv-2/bin/activate
 }
 </code></pre>
 <p>uv venv created from fresh python:</p>
-<pre><code class="language-sh">-&gt; % ~/test/uv-venv-2/bin/python3.12 -m python.get_interpreter_info | jq '. | {sys_prefix: .sys_prefix, sys_base_prefix: .sys_base_prefix, sys_path: .sys_path}'
+<pre><code>-&gt; % ~/test/uv-venv-2/bin/python3.12 -m python.get_interpreter_info | jq &#x27;. | {sys_prefix: .sys_prefix, sys_base_prefix: .sys_base_prefix, sys_path: .sys_path}&#x27;
 {
   &quot;sys_prefix&quot;: &quot;/Users/rubikoid/test/uv-venv-2&quot;,
   &quot;sys_base_prefix&quot;: &quot;/nix/store/blahA-python3-3.12.3&quot;,
@@ -100,9 +100,9 @@ Activate with: source uv-venv-2/bin/activate
   ]
 }
 </code></pre>
-<h3>Native python</h3>
+Native python
 <p>Native python venv, created from <code>*-env</code> python:</p>
-<pre><code class="language-sh">-&gt; % ~/test/py-venv/bin/python3.12 -m python.get_interpreter_info | jq '. | {sys_prefix: .sys_prefix, sys_base_prefix: .sys_base_prefix, sys_path: .sys_path}'
+<pre><code>-&gt; % ~/test/py-venv/bin/python3.12 -m python.get_interpreter_info | jq &#x27;. | {sys_prefix: .sys_prefix, sys_base_prefix: .sys_base_prefix, sys_path: .sys_path}&#x27;
 {
   &quot;sys_prefix&quot;: &quot;/Users/rubikoid/test/py-venv&quot;,
   &quot;sys_base_prefix&quot;: &quot;/nix/store/blahA-python3-3.12.3&quot;,
@@ -116,7 +116,7 @@ Activate with: source uv-venv-2/bin/activate
 }
 </code></pre>
 <p>Native python venv, created from fresh python:</p>
-<pre><code class="language-sh">-&gt; % ~/test/py-venv-2/bin/python3.12 -m python.get_interpreter_info | jq '. | {sys_prefix: .sys_prefix, sys_base_prefix: .sys_base_prefix, sys_path: .sys_path}'
+<pre><code>-&gt; % ~/test/py-venv-2/bin/python3.12 -m python.get_interpreter_info | jq &#x27;. | {sys_prefix: .sys_prefix, sys_base_prefix: .sys_base_prefix, sys_path: .sys_path}&#x27;
 {
   &quot;sys_prefix&quot;: &quot;/Users/rubikoid/test/py-venv-2&quot;,
   &quot;sys_base_prefix&quot;: &quot;/nix/store/65ackbgqn02p6fy75rksjbp17zj6440j-python3-3.12.3&quot;,
@@ -129,10 +129,10 @@ Activate with: source uv-venv-2/bin/activate
   ]
 }
 </code></pre>
-<h2>Result</h2>
+Result
 <p><code>sys_prefix</code> for the first created venv different from others.</p>
 <p>Impossible to install package:</p>
-<pre><code class="language-sh">-&gt; % uv pip install -vv -p ~/test/uv-venv uv
+<pre><code>-&gt; % uv pip install -vv -p ~/test/uv-venv uv
  uv_requirements::specification::from_source source=uv
     0.005069s DEBUG uv_toolchain::discovery Checking for Python interpreter in directory `/Users/rubikoid/test/uv-venv`
     0.007050s DEBUG uv::commands::pip::install Using Python 3.12.3 environment at /nix/store/blahB-python3-3.12.3-env/bin/python3.12
@@ -140,53 +140,53 @@ error: failed to create file `/nix/store/blahB-python3-3.12.3-env/.lock`
   Caused by: Permission denied (os error 13)
 </code></pre>
 <p>Maybe this is more a nix than uv issue, if so - feel free to say it and close this.</p>
-<p>I don't find anything about patching venvs on nix, only <code>site</code> <a href="https://github.com/NixOS/nixpkgs/blob/master/pkgs/development/interpreters/python/sitecustomize.py">customisation</a></p>
+<p>I don&#x27;t find anything about patching venvs on nix, only <code>site</code> <a href="https://github.com/NixOS/nixpkgs/blob/master/pkgs/development/interpreters/python/sitecustomize.py">customisation</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-23 17:20</div>
-            <div class="timeline-body"><p>Is this roughly the same as https://github.com/astral-sh/uv/issues/1795 -- that if we resolved the symlink on the interpreter, we would match the behavior you're expecting?</p>
+            <div class="timeline-body"><p>Is this roughly the same as <a href="https://github.com/astral-sh/uv/issues/1795">astral-sh/uv#1795</a> -- that if we resolved the symlink on the interpreter, we would match the behavior you&#x27;re expecting?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-06-23 17:20</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-23 17:20</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">virtualenv</span> added by @charliermarsh on 2024-06-23 17:20</div>
+            <div class="event">Label <span class="label">virtualenv</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-23 17:20</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">compatibility</span> added by @charliermarsh on 2024-06-23 17:20</div>
+            <div class="event">Label <span class="label">compatibility</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-23 17:20</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Rubikoid">@Rubikoid</a> on 2024-06-23 21:36</div>
             <div class="timeline-body"><blockquote>
-<p>that if we resolved the symlink on the interpreter, we would match the behavior you're expecting</p>
+<p>that if we resolved the symlink on the interpreter, we would match the behavior you&#x27;re expecting</p>
 </blockquote>
-<p>I'm not sure.</p>
+<p>I&#x27;m not sure.</p>
 <p><code>/nix/store/blahB-python3-3.12.3-env/bin/python3.12</code> is not a symlink, in fact it is a wrapper, which updates few env vars (such as <code>NIX_PYTHONPREFIX</code>, they are used further in <code>site</code> customization thing) and then execve original <code>/nix/store/blahA-python3-3.12.3/bin/python3.12</code>.</p>
 <p>Sounds like this more about creating venv from existing venv.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kreha1">@kreha1</a> on 2024-07-05 20:11</div>
-            <div class="timeline-body"><p>The fact that python from nix store isn't treated as a system interpreter isn't really an issue imo, as we can easily set the UV_PYTHON env dynamically in a derivation.</p>
-<p>The real issue is the fact that uv wants to create a <code>.lock</code> file in there, but <code>/nix/store</code> is read-only, so that won't be possible.
-While looking for a workaround, I found a similar issue with flutter https://github.com/NixOS/nix/issues/3217</p>
-<p>And with that said, I think we would need to at least be able to set where the lock file is created... unless that defeats the purpose of a lock file, but I don't know if that's a standard for python-related software to be honest...</p>
+            <div class="timeline-body"><p>The fact that python from nix store isn&#x27;t treated as a system interpreter isn&#x27;t really an issue imo, as we can easily set the UV_PYTHON env dynamically in a derivation.</p>
+<p>The real issue is the fact that uv wants to create a <code>.lock</code> file in there, but <code>/nix/store</code> is read-only, so that won&#x27;t be possible.
+While looking for a workaround, I found a similar issue with flutter <a href="https://github.com/NixOS/nix/issues/3217">NixOS/nix#3217</a></p>
+<p>And with that said, I think we would need to at least be able to set where the lock file is created... unless that defeats the purpose of a lock file, but I don&#x27;t know if that&#x27;s a standard for python-related software to be honest...</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-05 20:27</div>
-            <div class="timeline-body"><p>We could make the <code>.lock</code> stuff fallible (just skip it if we can't write, or fallback to a different location).</p>
+            <div class="timeline-body"><p>We could make the <code>.lock</code> stuff fallible (just skip it if we can&#x27;t write, or fallback to a different location).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kreha1">@kreha1</a> on 2024-07-05 20:39</div>
-            <div class="timeline-body"><p>Hmm, I think the problem could be elsewhere. I've managed to make <code>uv pip install</code> work with newly created venv (via <code>uv venv</code>).</p>
+            <div class="timeline-body"><p>Hmm, I think the problem could be elsewhere. I&#x27;ve managed to make <code>uv pip install</code> work with newly created venv (via <code>uv venv</code>).</p>
 <p>So for my setup which uses nix flake, the first fix was to make <code>uv</code> always use my selected python version, basically
 <code>export UV_PYTHON=${supportedPython}</code> which then turns into <code>export UV_PYTHON=/nix/store/j6j5mv16lbx32m4qjhj5zsygqy0p5zcf-python3-3.10.14-env</code> when entering a shell.</p>
 <p>Since this is a nix flake and not NixOS distro which has the entire /nix/store directory mounted as read-only, I just made that path <code>sudo chmod +w</code> and I thought that it would work, but packages still wanted to be installed to the nix store location.</p>
-<p>Then I've realized that after I unset the variable, the lock gets created, as I suspect correctly, inside <code>.venv</code> directory. That would suggest it's a bug, where setting <code>UV_PYTHON</code> variable prevents <code>uv</code> from installing packages in a virtual environment.</p>
+<p>Then I&#x27;ve realized that after I unset the variable, the lock gets created, as I suspect correctly, inside <code>.venv</code> directory. That would suggest it&#x27;s a bug, where setting <code>UV_PYTHON</code> variable prevents <code>uv</code> from installing packages in a virtual environment.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -197,7 +197,7 @@ While looking for a workaround, I found a similar issue with flutter https://git
 <p>I think, I quite disagree there.</p>
 <p>.lock problem is kinda a symptom, while wrong pythons selection / strange venvs are disease.</p>
 <blockquote>
-<p>Then I've realized that after I unset the variable, the lock gets created, as I suspect correctly, inside .venv directory.</p>
+<p>Then I&#x27;ve realized that after I unset the variable, the lock gets created, as I suspect correctly, inside .venv directory.</p>
 </blockquote>
 <p>That’s interesting. I did not use environment variables at all, only cli args. I’ll recheck this issue using env vars.</p>
 </div>
@@ -205,20 +205,20 @@ While looking for a workaround, I found a similar issue with flutter https://git
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kreha1">@kreha1</a> on 2024-07-05 23:16</div>
             <div class="timeline-body"><p>Well, there is an issue with symlink resolution for sure, but I agree 100% with what you are saying.</p>
-<p>After reproducing this issue on a different machine, I realized that I didn't manage to make it work... What worked was actually a different tool (hatch), as since it can be configured to use uv, I mistakenly assumed that it also uses it for venv creation.
+<p>After reproducing this issue on a different machine, I realized that I didn&#x27;t manage to make it work... What worked was actually a different tool (hatch), as since it can be configured to use uv, I mistakenly assumed that it also uses it for venv creation.
 So, sorry for giving incorrect info.</p>
-<p>I believe that hatch uses <code>python -m venv</code> under the hood, hence why it worked (but it's just a guess).</p>
+<p>I believe that hatch uses <code>python -m venv</code> under the hood, hence why it worked (but it&#x27;s just a guess).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kreha1">@kreha1</a> on 2024-07-05 23:23</div>
-            <div class="timeline-body"><p>And now I'm really confused. Creating venv via <code>python -m venv</code> and <code>uv venv</code> will resolve different nix store paths.</p>
-<h3>python module</h3>
+            <div class="timeline-body"><p>And now I&#x27;m really confused. Creating venv via <code>python -m venv</code> and <code>uv venv</code> will resolve different nix store paths.</p>
+python module
 <pre><code>$ /nix/store/j6j5mv16lbx32m4qjhj5zsygqy0p5zcf-python3-3.10.14-env/bin/python3 -m venv .venv
 $ readlink .venv/bin/python3
 /nix/store/igfc19nl0zv95wj77sf7nnmkbykb4idj-python3-3.10.14/bin/python3
 </code></pre>
-<h3>uv venv</h3>
+uv venv
 <pre><code>$ uv venv -p /nix/store/j6j5mv16lbx32m4qjhj5zsygqy0p5zcf-python3-3.10.14-env/bin/python3
 Using Python 3.10.14 interpreter at: /nix/store/j6j5mv16lbx32m4qjhj5zsygqy0p5zcf-python3-3.10.14-env/bin/python3.10
 Creating virtualenv at: .venv
@@ -226,13 +226,13 @@ Activate with: source .venv/bin/activate
 $ readlink .venv/bin/python
 /nix/store/j6j5mv16lbx32m4qjhj5zsygqy0p5zcf-python3-3.10.14-env/bin/python3.10
 </code></pre>
-<p>And fun fact, with venv module, <code>.venv/bin/python</code> points to <code>.venv/bin/python3</code> and for uv venv it's reversed</p>
+<p>And fun fact, with venv module, <code>.venv/bin/python</code> points to <code>.venv/bin/python3</code> and for uv venv it&#x27;s reversed</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Rubikoid">@Rubikoid</a> on 2024-07-05 23:42</div>
             <div class="timeline-body"><blockquote>
-<p>And now I'm really confused. Creating venv via python -m venv and uv venv will resolve different nix store paths.</p>
+<p>And now I&#x27;m really confused. Creating venv via python -m venv and uv venv will resolve different nix store paths.</p>
 </blockquote>
 <p>Yeah -)</p>
 <p>This is literally the spirit of this issue)</p>
@@ -246,11 +246,11 @@ $ readlink .venv/bin/python
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/darinkishore">@darinkishore</a> on 2024-07-06 06:09</div>
-            <div class="timeline-body"><p>Please correct me if I'm wrong, @Rubikoid @kreha1 , but this is an issue if you're using uv and trying to point to a globally managed nix python installation, right?</p>
-<p>I think this is the case because I currently use a devshell for managing python/uv, and i haven't had a single installation issue.</p>
-<p>Isn't using a devshell the solution to this? I know @kreha1 you said you only got it working through hatch, but I don't think you need hatch, pretty sure you can use uv to install things alongside the python from nixpkgs.</p>
-<p>Here's the devshell <code>flake.nix</code> I'm using:</p>
-<pre><code class="language-nix">
+            <div class="timeline-body"><p>Please correct me if I&#x27;m wrong, @Rubikoid @kreha1 , but this is an issue if you&#x27;re using uv and trying to point to a globally managed nix python installation, right?</p>
+<p>I think this is the case because I currently use a devshell for managing python/uv, and i haven&#x27;t had a single installation issue.</p>
+<p>Isn&#x27;t using a devshell the solution to this? I know @kreha1 you said you only got it working through hatch, but I don&#x27;t think you need hatch, pretty sure you can use uv to install things alongside the python from nixpkgs.</p>
+<p>Here&#x27;s the devshell <code>flake.nix</code> I&#x27;m using:</p>
+<pre><code>
 {
   description = &quot;Python development environment with uv&quot;;
 
@@ -272,14 +272,14 @@ $ readlink .venv/bin/python
           ];
 
           # this runs when we do `nix develop .` 
-          shellHook = ''
-            # Create a virtual environment if it doesn't exist
+          shellHook = &#x27;&#x27;
+            # Create a virtual environment if it doesn&#x27;t exist
             if [ ! -d &quot;.venv&quot; ]; then
               uv venv .venv
             fi
             source .venv/bin/activate
             echo &quot;uv pip env ready&quot;
-          '';
+          &#x27;&#x27;;
         };
       }
     );
@@ -287,7 +287,7 @@ $ readlink .venv/bin/python
 </code></pre>
 <p>direnv bonus copy paste: <code>echo &quot;use flake&quot; &gt;&gt; .envrc</code></p>
 <p>Have installed torch w/cuda support, jupyter, all sorts of things that are usually a massive pain on nixos with a modified version of this flake.</p>
-<p>Could you let me know if this solves or helps the issue, or if I'm just misunderstanding things?</p>
+<p>Could you let me know if this solves or helps the issue, or if I&#x27;m just misunderstanding things?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -295,24 +295,24 @@ $ readlink .venv/bin/python
             <div class="timeline-body"><blockquote>
 <p>I just need to find time to setup Nix and play around with the behaviors. It’s a little hard for me to keep track of what’s going wrong from here.</p>
 </blockquote>
-<p>I started a couple months ago! It's a LOT.</p>
+<p>I started a couple months ago! It&#x27;s a LOT.</p>
 <p>Fastest way to hit the ground running and have a uv + py nix-managed environment is:</p>
 <ol>
-<li><p>install nix via: https://github.com/DeterminateSystems/nix-installer (just run <code>curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s — install</code>, if you don't mind curl to sh)</p>
+<li><p>install nix via: https://github.com/DeterminateSystems/nix-installer (just run <code>curl --proto &#x27;=https&#x27; --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s — install</code>, if you don&#x27;t mind curl to sh)</p>
 </li>
-<li><p>make a new directory, copy the code in the previous response into a file called <code>flake.nix</code> inside your new dir (remove shellHook if you don't want a venv off the bat)</p>
+<li><p>make a new directory, copy the code in the previous response into a file called <code>flake.nix</code> inside your new dir (remove shellHook if you don&#x27;t want a venv off the bat)</p>
 </li>
 <li><p>Run <code>nix develop .</code> and try <code>which uv</code>. To exit this temporary shell, just do <code>exit</code>!</p>
 </li>
-<li><p>(optional) if you think you're going to be doing this more often, <code>zero-to-nix</code> is a great starting resource for practical, usable nix. <a href="https://direnv.net/docs/installation.html">direnv</a>  with <a href="https://github.com/nix-community/nix-direnv">nix-direnv</a> (use the nix-profile install method) makes activating and deactivating the shell an afterthought. finally, <a href="https://devenv.sh">devenv</a> is a great layer of abstraction over nix, especially for beginners.</p>
+<li><p>(optional) if you think you&#x27;re going to be doing this more often, <code>zero-to-nix</code> is a great starting resource for practical, usable nix. <a href="https://direnv.net/docs/installation.html">direnv</a>  with <a href="https://github.com/nix-community/nix-direnv">nix-direnv</a> (use the nix-profile install method) makes activating and deactivating the shell an afterthought. finally, <a href="https://devenv.sh">devenv</a> is a great layer of abstraction over nix, especially for beginners.</p>
 </li>
 </ol>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kreha1">@kreha1</a> on 2024-07-06 12:48</div>
-            <div class="timeline-body"><p>@darinkishore This is exactly what I'm doing, but not on all systems this works.</p>
-<pre><code class="language-nix">{
+            <div class="timeline-body"><p>@darinkishore This is exactly what I&#x27;m doing, but not on all systems this works.</p>
+<pre><code>{
   description = &quot;A Nix-flake-based Python development environment&quot;;
 
   inputs.nixpkgs.url = &quot;github:nixos/nixpkgs?ref=nixos-unstable&quot;;
@@ -332,7 +332,7 @@ $ readlink .venv/bin/python
           packages = [
             (supportedPython.withPackages(ps: [ps.uv]))
           ];
-          shellHook = ''
+          shellHook = &#x27;&#x27;
             rm -rf .venv &amp;&amp; echo &quot; * Deleted previous .venv&quot;
             uv venv -p ${supportedPython} -v
             . .venv/bin/activate
@@ -342,13 +342,13 @@ $ readlink .venv/bin/python
             which -a python3 | while read path; do echo &quot;$path is $($path -V)&quot;; done
             echo &quot; * System info:&quot;
             lsb_release -a
-          '';
+          &#x27;&#x27;;
         };
       });
     };
 }
 </code></pre>
-<h3>Ubuntu 20.04 (has only system python 3.8.10 installed)</h3>
+Ubuntu 20.04 (has only system python 3.8.10 installed)
 <pre><code>  * Deleted previous .venv
 DEBUG uv 0.2.15
 DEBUG Checking for Python interpreter in directory `/nix/store/igfc19nl0zv95wj77sf7nnmkbykb4idj-python3-3.10.14`
@@ -386,7 +386,7 @@ Description:    Ubuntu 20.04.6 LTS
 Release:        20.04
 Codename:       focal
 </code></pre>
-<h3>Ubuntu 22.04 (system python 3.10.12 and pyenv managed versions)</h3>
+Ubuntu 22.04 (system python 3.10.12 and pyenv managed versions)
 <pre><code> * Deleted previous .venv
 DEBUG uv 0.2.15
 DEBUG Checking for Python interpreter in directory `/nix/store/igfc19nl0zv95wj77sf7nnmkbykb4idj-python3-3.10.14`
@@ -423,13 +423,13 @@ Codename:       jammy
             <div class="timeline-header">Comment by <a href="https://github.com/Rubikoid">@Rubikoid</a> on 2024-07-06 13:16</div>
             <div class="timeline-body"><p>@darinkishore,</p>
 <blockquote>
-<p>but this is an issue if you're using uv and trying to point to a globally managed nix python installation, right?</p>
+<p>but this is an issue if you&#x27;re using uv and trying to point to a globally managed nix python installation, right?</p>
 </blockquote>
 <p>Partially. I have globally managed nix python installation <em>with some additional python packages</em>, builded using <code>python.withPackages</code>.
 I add the most used packages to global python environment with nix, and want to manage per-project deps using uv.</p>
 <p>Due to how nix work, when you use <code>python.withPackages</code>, you end up with two derivations in store: &quot;clean&quot; python and &quot;dirty&quot; python with requested packages and python wrapper, which points to &quot;clean&quot; python.</p>
 <p>So my setup is more like this:</p>
-<pre><code class="language-nix">{
+<pre><code>{
   inputs.nixpkgs.url = &quot;github:NixOS/nixpkgs/nixos-unstable&quot;;
 
   outputs = { self, nixpkgs }:
@@ -451,7 +451,7 @@ I add the most used packages to global python environment with nix, and want to 
             pythonWithEnv
             pkgs.uv
           ];
-          shellHook = ''
+          shellHook = &#x27;&#x27;
             rm -rf .venv &amp;&amp; echo &quot; * Deleted previous .venv&quot;
             uv venv -p ${pythonWithEnv} -v
             . .venv/bin/activate
@@ -459,7 +459,7 @@ I add the most used packages to global python environment with nix, and want to 
             uv pip install numpy -v
             echo &quot; * All python versions:&quot;
             which -a python3 | while read path; do echo &quot;$path is $($path -V)&quot;; done
-          '';
+          &#x27;&#x27;;
         });
       });
     };
@@ -490,22 +490,22 @@ error: failed to create file `/nix/store/g5s961289kggv2cah6wh3mc4alyailk7-python
 <code>/nix/store/65ackbgqn02p6fy75rksjbp17zj6440j-python3-3.12.3/bin/python3</code> - is &quot;clean&quot; python
 <code>/nix/store/g5s961289kggv2cah6wh3mc4alyailk7-python3-3.12.3-env/bin/python3</code> - is &quot;dirty&quot; python env with pydantic, which i created with <code>python.withPackages</code>.</p>
 <p>Also, if I replace <code>uv venv -p ${pythonWithEnv} -v</code> with <code>uv venv -p ${python} -v</code>, everything will work perfectly.</p>
-<p>@kreha1, no, i don't use <code>pyenv</code> at all, only nix's <code>python.withPackages</code>.
+<p>@kreha1, no, i don&#x27;t use <code>pyenv</code> at all, only nix&#x27;s <code>python.withPackages</code>.
 The reason, why your example on ubuntu succeeded, is because you hardcoded &quot;clean&quot; python in <code>uv venv -p</code>, while adding &quot;dirty&quot; python with packages to shell environment</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kreha1">@kreha1</a> on 2024-07-06 13:52</div>
-            <div class="timeline-body"><p>That makes sense, thanks for explaining, as I don't have much experience with nix :).</p>
+            <div class="timeline-body"><p>That makes sense, thanks for explaining, as I don&#x27;t have much experience with nix :).</p>
 <p>But that is still odd, that this same flake results in different behaviour on two systems - on 20.04 uv venv chooses clean python as provided, but on 22.04 it will choose dirty python, resulting in writing to read-only directory.</p>
-<pre><code class="language-nix">shellHook = ''
+<pre><code>shellHook = &#x27;&#x27;
   echo &quot;Clean python is ${supportedPython}&quot;
   which -a python3 | while read path; do echo &quot;$path is $($path -V)&quot;; done
   rm -rf .venv &amp;&amp; echo &quot; * Deleted previous .venv&quot;
   uv venv -p ${supportedPython} -v
-'';
+&#x27;&#x27;;
 </code></pre>
-<h3>ubuntu 20.04</h3>
+ubuntu 20.04
 <pre><code>Clean python is /nix/store/igfc19nl0zv95wj77sf7nnmkbykb4idj-python3-3.10.14
 /nix/store/j6j5mv16lbx32m4qjhj5zsygqy0p5zcf-python3-3.10.14-env/bin/python3 is Python 3.10.14
 /usr/bin/python3 is Python 3.8.10
@@ -517,7 +517,7 @@ DEBUG Checking for Python interpreter at directory `/nix/store/igfc19nl0zv95wj77
 Using Python 3.10.14 interpreter at: /nix/store/igfc19nl0zv95wj77sf7nnmkbykb4idj-python3-3.10.14/bin/python3
 ...
 </code></pre>
-<h3>ubuntu 22.04</h3>
+ubuntu 22.04
 <pre><code>Clean python is /nix/store/igfc19nl0zv95wj77sf7nnmkbykb4idj-python3-3.10.14
 /nix/store/j6j5mv16lbx32m4qjhj5zsygqy0p5zcf-python3-3.10.14-env/bin/python3 is Python 3.10.14
 /home/t.rymkiewicz/.pyenv/shims/python3 is Python 3.10.13
@@ -535,17 +535,17 @@ Using Python 3.10.14 interpreter at: /nix/store/j6j5mv16lbx32m4qjhj5zsygqy0p5zcf
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/akaihola">@akaihola</a> on 2024-09-14 14:56</div>
             <div class="timeline-body"><p>I have this problem with all virtualenvs on NixOS, whether created with <code>uv venv</code> or <code>python -m venv</code>:</p>
-<pre><code class="language-shell">$ source .venv/bin/activate
+<pre><code>$ source .venv/bin/activate
 $ pip install -U pip
 error: failed to create file `/nix/store/pnavhjx4pdya95nx2apl2yxz6x46snh2-python3-3.12.4-env/.lock`
   Caused by: Read-only file system (os error 30)
 </code></pre>
-<p>I'm working around it by making sure I always</p>
+<p>I&#x27;m working around it by making sure I always</p>
 <ul>
 <li>create my virtualenv using <code>python -m venv</code></li>
 <li>do this before using <code>uv pip</code>:</li>
 </ul>
-<pre><code class="language-shell">source .venv/bin/activate
+<pre><code>source .venv/bin/activate
 export UV_PYTHON=$VIRTUAL_ENV/bin/python
 </code></pre>
 <p>See #7395 for more details.</p>
@@ -553,22 +553,22 @@ export UV_PYTHON=$VIRTUAL_ENV/bin/python
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Rubikoid">@Rubikoid</a> on 2024-09-14 15:46</div>
-            <div class="timeline-body"><p>So far, I've come to the following bizzare solution for creating working envs:</p>
-<pre><code class="language-sh">uv venv -p `python3 -c 'import sys; from pathlib import Path; print(str(Path(sys.path[1]).parent.parent))'`
+            <div class="timeline-body"><p>So far, I&#x27;ve come to the following bizzare solution for creating working envs:</p>
+<pre><code>uv venv -p `python3 -c &#x27;import sys; from pathlib import Path; print(str(Path(sys.path[1]).parent.parent))&#x27;`
 </code></pre>
 <p>This works on <code>a58bc8ad779655e790115244571758e8de055e3d</code> rev of nixpkgs</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ShaddyDC">@ShaddyDC</a> on 2024-09-18 09:19</div>
-            <div class="timeline-body"><p>Instead of setting all the environment variables in bash, it seems much better to set them in your nix flake or whatever you're using for your environment. It's more robust and precise.
+            <div class="timeline-body"><p>Instead of setting all the environment variables in bash, it seems much better to set them in your nix flake or whatever you&#x27;re using for your environment. It&#x27;s more robust and precise.
 Something like</p>
-<pre><code class="language-nix">UV_PYTHON_PREFERENCE = &quot;only-system&quot;;
+<pre><code>UV_PYTHON_PREFERENCE = &quot;only-system&quot;;
 UV_PYTHON = &quot;${pkgs.python310}&quot;;
 </code></pre>
-<p>Unfortunately, the uv-installed numpy version isn't nixos compatible (<code>ImportError: libstdc++.so.6: cannot open shared object file: No such file or directory</code>).
+<p>Unfortunately, the uv-installed numpy version isn&#x27;t nixos compatible (<code>ImportError: libstdc++.so.6: cannot open shared object file: No such file or directory</code>).
 I was thinking of using <code>uv sync --no-install-package numpy</code> and a nix python environment that pulls in numpy with <code>withPackages</code>, but that fails because it tries to create the lockfile in the nix store as others have reported.
-For now I'm just using distrobox.</p>
+For now I&#x27;m just using distrobox.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -576,18 +576,18 @@ For now I'm just using distrobox.</p>
             <div class="timeline-body"><blockquote>
 <p>UV_PYTHON</p>
 </blockquote>
-<p>Yeah, great idea, I did't mind.</p>
+<p>Yeah, great idea, I did&#x27;t mind.</p>
 <blockquote>
-<p>Unfortunately, the uv-installed numpy version isn't nixos compatible</p>
+<p>Unfortunately, the uv-installed numpy version isn&#x27;t nixos compatible</p>
 </blockquote>
 <p>I guess, this can be fixed if (or when) the &quot;using packages from other venv in venv&quot; thing is implemented, which is, i think, core issue here.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jakob1379">@jakob1379</a> on 2024-10-12 20:05</div>
-            <div class="timeline-body"><p>Just to add to the plathora of solutions I usually just have this which haven't caused any issues so far</p>
+            <div class="timeline-body"><p>Just to add to the plathora of solutions I usually just have this which haven&#x27;t caused any issues so far</p>
 <p><em>EDIT</em>: tried in Ubuntu, NixOS, and PiOS.</p>
-<pre><code class="language-nix">{
+<pre><code>{
   inputs = { utils.url = &quot;github:numtide/flake-utils&quot;; };
   outputs = { self, nixpkgs, utils }:
     utils.lib.eachDefaultSystem (system:
@@ -595,10 +595,10 @@ For now I'm just using distrobox.</p>
       in {
         devShell = pkgs.mkShell {
           buildInputs = with pkgs; [ uv python312 ];
-          shellHook = ''
+          shellHook = &#x27;&#x27;
             export UV_PYTHON=${pkgs.python312}
             uv venv
-          '';
+          &#x27;&#x27;;
         };
       });
 }
@@ -606,37 +606,37 @@ For now I'm just using distrobox.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> removed by @zanieb on 2024-10-21 21:26</div>
+            <div class="event">Label <span class="label">question</span> removed by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-21 21:26</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">wish</span> added by @zanieb on 2024-10-21 21:26</div>
+            <div class="event">Label <span class="label">wish</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-21 21:26</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/purepani">@purepani</a> on 2024-11-13 15:49</div>
             <div class="timeline-body"><blockquote>
-<p>Instead of setting all the environment variables in bash, it seems much better to set them in your nix flake or whatever you're using for your environment. It's more robust and precise. Something like</p>
-<pre><code class="language-nix">UV_PYTHON_PREFERENCE = &quot;only-system&quot;;
+<p>Instead of setting all the environment variables in bash, it seems much better to set them in your nix flake or whatever you&#x27;re using for your environment. It&#x27;s more robust and precise. Something like</p>
+<pre><code>UV_PYTHON_PREFERENCE = &quot;only-system&quot;;
 UV_PYTHON = &quot;${pkgs.python310}&quot;;
 </code></pre>
-<p>Unfortunately, the uv-installed numpy version isn't nixos compatible (<code>ImportError: libstdc++.so.6: cannot open shared object file: No such file or directory</code>). I was thinking of using <code>uv sync --no-install-package numpy</code> and a nix python environment that pulls in numpy with <code>withPackages</code>, but that fails because it tries to create the lockfile in the nix store as others have reported. For now I'm just using distrobox.</p>
+<p>Unfortunately, the uv-installed numpy version isn&#x27;t nixos compatible (<code>ImportError: libstdc++.so.6: cannot open shared object file: No such file or directory</code>). I was thinking of using <code>uv sync --no-install-package numpy</code> and a nix python environment that pulls in numpy with <code>withPackages</code>, but that fails because it tries to create the lockfile in the nix store as others have reported. For now I&#x27;m just using distrobox.</p>
 </blockquote>
 <p>I would like to point out that this is normal in nix and not something that is solvable by UV.
-Numpy requires dynamic libraries to be installed, which wheels don't automatically install. The &quot;correct&quot; nix solution would be to expose whatever dynamic libraries are needed for whatever libraries to the Python interpreter when declaring the nix shell, or even better, using something like <a href="https://github.com/nix-community/dream2nix">dream2nix</a>(which doesn't support UV yet but could) or <a href="https://github.com/adisbladis/uv2nix">uv2nix</a> where you can declare the dynamic  libraries needed for whatever packages you're using.</p>
+Numpy requires dynamic libraries to be installed, which wheels don&#x27;t automatically install. The &quot;correct&quot; nix solution would be to expose whatever dynamic libraries are needed for whatever libraries to the Python interpreter when declaring the nix shell, or even better, using something like <a href="https://github.com/nix-community/dream2nix">dream2nix</a>(which doesn&#x27;t support UV yet but could) or <a href="https://github.com/adisbladis/uv2nix">uv2nix</a> where you can declare the dynamic  libraries needed for whatever packages you&#x27;re using.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Alsiri0n">@Alsiri0n</a> on 2025-02-18 15:22</div>
             <div class="timeline-body"><p>uv platform: MacOS Sequoia 15.3.1
 uv version: uv 0.6.1</p>
-<p>Hello, I'm a little bit of confused behaviour of uv and creating venv. Possible I incorrectly create venv with help uv.
-Before uv I'm used to default command for creating venv. And after I checked with help pip the location of my venv</p>
-<pre><code class="language-shell">-&gt; % python3.11 -m venv .pyvenv
+<p>Hello, I&#x27;m a little bit of confused behaviour of uv and creating venv. Possible I incorrectly create venv with help uv.
+Before uv I&#x27;m used to default command for creating venv. And after I checked with help pip the location of my venv</p>
+<pre><code>-&gt; % python3.11 -m venv .pyvenv
 -&gt; % source .pyvenv/bin/activate
 -&gt; % pip -V
 pip 24.0 from /Users/alsiri0n/coding/python/test/.pyvenv/lib/python3.11/site-packages/pip (python 3.11)
 </code></pre>
 <p>But if I use uv, I got another path</p>
-<pre><code class="language-shell">-&gt; % uv venv 
+<pre><code>-&gt; % uv venv 
 Using CPython 3.11.9 interpreter at: /Library/Frameworks/Python.framework/Versions/3.11/bin/python3.11
 Creating virtual environment at: .venv
 Activate with: source .venv/bin/activate
@@ -644,14 +644,14 @@ Activate with: source .venv/bin/activate
 -&gt; % pip -V
 pip 25.0.1 from /Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/pip (python 3.11)
 </code></pre>
-<p>This path some frustrated me and I don't know how to trust with path.
-I didn't find any related topics instead this one. Maybe anyone know community chats or something else) or any related issue.
-Maybe it's correct behaviour for pip, but it's differed at default path.</p>
+<p>This path some frustrated me and I don&#x27;t know how to trust with path.
+I didn&#x27;t find any related topics instead this one. Maybe anyone know community chats or something else) or any related issue.
+Maybe it&#x27;s correct behaviour for pip, but it&#x27;s differed at default path.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-18 15:31</div>
-            <div class="timeline-body"><p>@Alsiri0n this issue is for using uv with Nix, which it looks like you're not using. We don't install <code>pip</code> in new virtual environments by default, you want <code>uv venv --seed</code> to include that. Please read #9452 and open a new issue if you have more questions.</p>
+            <div class="timeline-body"><p>@Alsiri0n this issue is for using uv with Nix, which it looks like you&#x27;re not using. We don&#x27;t install <code>pip</code> in new virtual environments by default, you want <code>uv venv --seed</code> to include that. Please read #9452 and open a new issue if you have more questions.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -661,8 +661,8 @@ Maybe it's correct behaviour for pip, but it's differed at default path.</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/iniw">@iniw</a> on 2025-02-19 02:08</div>
-            <div class="timeline-body"><p>For reference, if anyone bumps into this issue, here's a devshell that allows you to mix nix-managed and uv-managed libraries:</p>
-<pre><code class="language-nix">{
+            <div class="timeline-body"><p>For reference, if anyone bumps into this issue, here&#x27;s a devshell that allows you to mix nix-managed and uv-managed libraries:</p>
+<pre><code>{
   inputs = {
     nixpkgs.url = &quot;github:NixOS/nixpkgs/nixpkgs-unstable&quot;;
     flake-utils.url = &quot;github:numtide/flake-utils&quot;;
@@ -680,7 +680,7 @@ Maybe it's correct behaviour for pip, but it's differed at default path.</p>
         pkgs = import nixpkgs { inherit system; };
         python = pkgs.python3;
         pythonEnv = python.withPackages (p: [
-          # Here goes all the libraries that can't be managed by uv because of dynamic linking issues
+          # Here goes all the libraries that can&#x27;t be managed by uv because of dynamic linking issues
           # or that you just want to be managed by nix for one reason or another
           p.pandas
         ]);
@@ -695,10 +695,10 @@ Maybe it's correct behaviour for pip, but it's differed at default path.</p>
               pythonEnv
             ];
 
-            shellHook = ''
+            shellHook = &#x27;&#x27;
               export UV_PYTHON_PREFERENCE=&quot;only-system&quot;;
               export UV_PYTHON=${python}
-            '';
+            &#x27;&#x27;;
           };
       }
     );
@@ -710,10 +710,10 @@ Maybe it's correct behaviour for pip, but it's differed at default path.</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/lucasew">@lucasew</a> on 2025-07-21 23:18</div>
-            <div class="timeline-body"><p>Standard NixOS, for not being FHS compliant, often do not run binaries not packaged for it because how the programs do dynamic linking. You can use steam-run or make a FHS wrapper like how it's done in Conda.</p>
+            <div class="timeline-body"><p>Standard NixOS, for not being FHS compliant, often do not run binaries not packaged for it because how the programs do dynamic linking. You can use steam-run or make a FHS wrapper like how it&#x27;s done in Conda.</p>
 <p>I prefer this approach: https://github.com/lucasew/nixcfg/blob/master/nix/nodes/common/nix-ld.nix</p>
 <p>It allows even appimages to work out of the box</p>
-<p>Edit 1: as it's not NixOS, I'd suggest to just use the UV python directly. Mixing stuff up can cause weird bugs.</p>
+<p>Edit 1: as it&#x27;s not NixOS, I&#x27;d suggest to just use the UV python directly. Mixing stuff up can cause weird bugs.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -721,10 +721,10 @@ Maybe it's correct behaviour for pip, but it's differed at default path.</p>
             <div class="timeline-body"><blockquote>
 <p>Standard NixOS, for not being FHS compliant, often do not run binaries not packaged for it because how the programs do dynamic linking.</p>
 </blockquote>
-<p>The problem is not with dynamic linking nor FHS compatibility, the problem in complex python system for package search, which somehow works different on python's venv and uv's venv.</p>
+<p>The problem is not with dynamic linking nor FHS compatibility, the problem in complex python system for package search, which somehow works different on python&#x27;s venv and uv&#x27;s venv.</p>
 <p>This affects native libraries, but only as a side effect.</p>
 <blockquote>
-<p>as it's not NixOS, I'd suggest to just use the UV python directly. Mixing stuff up can cause weird bugs.</p>
+<p>as it&#x27;s not NixOS, I&#x27;d suggest to just use the UV python directly. Mixing stuff up can cause weird bugs.</p>
 </blockquote>
 <p>This is not depends on which distro/nix installation you use.</p>
 </div>
@@ -732,7 +732,7 @@ Maybe it's correct behaviour for pip, but it's differed at default path.</p>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:25:20 UTC
+        Synced at 2026-01-20 19:31:41 UTC
     </footer>
 </body>
 </html>

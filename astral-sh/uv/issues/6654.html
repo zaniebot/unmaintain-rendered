@@ -24,18 +24,18 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/albertferras-vrf">@albertferras-vrf</a></div>
             <div class="timeline-body"><p><strong>Summary</strong>
-<code>uv</code> seems to cache the package's index-of page (example: https://pypi.org/simple/fastapi ) following cache-control headers, while <code>pip</code> doesn't seem to ever cache it.
-If the repository returns a <code>no-cache</code> header (a private repository) or after cache expired (pypi's max-age=600s), then <code>uv</code> always has to redownload the package index-of page when installing this package.</p>
-<p>For pinned versions which have already been downloaded locally, <code>uv</code> could resolve the packages without redownloading the 'index of' page.</p>
+<code>uv</code> seems to cache the package&#x27;s index-of page (example: https://pypi.org/simple/fastapi ) following cache-control headers, while <code>pip</code> doesn&#x27;t seem to ever cache it.
+If the repository returns a <code>no-cache</code> header (a private repository) or after cache expired (pypi&#x27;s max-age=600s), then <code>uv</code> always has to redownload the package index-of page when installing this package.</p>
+<p>For pinned versions which have already been downloaded locally, <code>uv</code> could resolve the packages without redownloading the &#x27;index of&#x27; page.</p>
 <p>This affects two cases:</p>
 <ul>
 <li>Private repositories with no-cache header</li>
 <li>Public pypi repository, after cache has expired</li>
 </ul>
 <p><strong>Longer explanation</strong>
-Consider the following page: https://pypi.org/simple/fastapi/ I will name it &quot;package page&quot; because I don't know the proper name for it. This page is used by <code>uv</code> and <code>pip</code> to find which are the available versions of a given package (example: fastapi).</p>
-<p>When requesting this 'package page', PyPi returns a <code>max-age: 600</code> (10min) which makes any <code>pip install</code> command not need to redownload the package page until 10min later when having to resolve, and <code>uv</code> would seem to do the same.</p>
-<p>In my company we have a private pip repository where the package page response is set to <code>Cache-Control: no-cache</code>, I believe because we want to be able to install recently published versions right after they've been published. Anyway, wether or not no-cache is right or wrong doesn't matter here, let's just focus on the case where custom --index-url returns <code>no-cache</code> responses.</p>
+Consider the following page: https://pypi.org/simple/fastapi/ I will name it &quot;package page&quot; because I don&#x27;t know the proper name for it. This page is used by <code>uv</code> and <code>pip</code> to find which are the available versions of a given package (example: fastapi).</p>
+<p>When requesting this &#x27;package page&#x27;, PyPi returns a <code>max-age: 600</code> (10min) which makes any <code>pip install</code> command not need to redownload the package page until 10min later when having to resolve, and <code>uv</code> would seem to do the same.</p>
+<p>In my company we have a private pip repository where the package page response is set to <code>Cache-Control: no-cache</code>, I believe because we want to be able to install recently published versions right after they&#x27;ve been published. Anyway, wether or not no-cache is right or wrong doesn&#x27;t matter here, let&#x27;s just focus on the case where custom --index-url returns <code>no-cache</code> responses.</p>
 <p>I have made a simple project that reproduces this here: https://github.com/albertferras-vrf/uv_cache_test/tree/main</p>
 <ul>
 <li>Start local pypi proxy with two base paths that can be used as <code>--index-url</code>: one with <code>cache-control: max-age=600</code> and one with <code>cache-control: no-cache</code>.</li>
@@ -48,7 +48,7 @@ Consider the following page: https://pypi.org/simple/fastapi/ I will name it &qu
 <li>For every index url (pypi public, local proxy with max-age=600s, local proxy with no-cache):<ul>
 <li>Install packages normally (pinned versions)</li>
 <li>Uninstall packages</li>
-<li>Install packages again. Here the downloaded files should be already been cached. The 'package page' too, but that does not happen with <code>no-cache</code> header.</li>
+<li>Install packages again. Here the downloaded files should be already been cached. The &#x27;package page&#x27; too, but that does not happen with <code>no-cache</code> header.</li>
 </ul>
 </li>
 </ul>
@@ -86,9 +86,9 @@ Uninstalled 8 packages in 18ms
 <li>Reinstall when package page cached with <code>no-cache</code>: 1.5s</li>
 </ul>
 <p>When running the same experiment with <code>pip</code> (<code>test_pip.sh</code>) then one can see that <code>pip</code> always redownloads the package page, even if it has already downloaded it seconds ago, in both cases with cache-control:max-age=600 and no-cache.</p>
-<p>I don't know if this distinct behaviour is intentional in <code>uv</code>.</p>
+<p>I don&#x27;t know if this distinct behaviour is intentional in <code>uv</code>.</p>
 <p>My question/suggestion is the following:
-<strong>Would it make sense to skip the 'package page' download if we already have a cached version of the package we're trying to download?</strong>
+<strong>Would it make sense to skip the &#x27;package page&#x27; download if we already have a cached version of the package we&#x27;re trying to download?</strong>
 This change could improve the speed to install packages from pinned versions in 2 cases: when public pypi package page was previously downloaded (but expired after <code>max-age=600</code>) OR when private repository has <code>no-cache</code> header. We would be saving some http requests.</p>
 <p>In my case (private repository with <code>no-cache</code>), reinstalling packages I already have downloaded takes ~13s just to do the Resolve (my project has ~140 pinned packages)</p>
 </div>
@@ -102,18 +102,18 @@ This change could improve the speed to install packages from pinned versions in 
             <div class="timeline-header">Comment by <a href="https://github.com/albertferras-vrf">@albertferras-vrf</a> on 2024-08-28 21:23</div>
             <div class="timeline-body"><p>discussed in discord. Best solution would be to:</p>
 <ul>
-<li>enable cache on private repository's &quot;indexof&quot; page for all packages</li>
-<li>when we know there's a new recently released package, bypass the cache with <code>--refresh-package &lt;name&gt;</code> if doing <code>uv pip install</code> or <code>--refresh</code> when generating lock files</li>
+<li>enable cache on private repository&#x27;s &quot;indexof&quot; page for all packages</li>
+<li>when we know there&#x27;s a new recently released package, bypass the cache with <code>--refresh-package &lt;name&gt;</code> if doing <code>uv pip install</code> or <code>--refresh</code> when generating lock files</li>
 </ul>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @albertferras-vrf on 2024-08-28 21:24</div>
+            <div class="event">Closed by <a href="https://github.com/albertferras-vrf">@albertferras-vrf</a> on 2024-08-28 21:24</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:26:33 UTC
+        Synced at 2026-01-20 19:33:17 UTC
     </footer>
 </body>
 </html>

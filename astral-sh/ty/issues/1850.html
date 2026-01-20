@@ -23,26 +23,26 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/galah92">@galah92</a></div>
-            <div class="timeline-body"><h3>Question</h3>
-<p>Using <code>from transformers import AutoModel, AutoTokenizer</code>, since <code>transformers</code> is poorly typed, I'm getting many usage errors from <code>AutoModel</code> and <code>AutoTokenizer</code>. Is it possible to ignore the entire <code>transformers</code> package from <code>ty</code> perspective?</p>
-<h3>Version</h3>
+            <div class="timeline-body">Question
+<p>Using <code>from transformers import AutoModel, AutoTokenizer</code>, since <code>transformers</code> is poorly typed, I&#x27;m getting many usage errors from <code>AutoModel</code> and <code>AutoTokenizer</code>. Is it possible to ignore the entire <code>transformers</code> package from <code>ty</code> perspective?</p>
+Version
 <p><em>No response</em></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @galah92 on 2025-12-11 07:43</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/galah92">@galah92</a> on 2025-12-11 07:43</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-11 07:47</div>
             <div class="timeline-body"><p>Thank you for reporting this.</p>
 <blockquote>
-<p>I'm getting many usage errors from <code>AutoModel</code> and <code>AutoTokenizer</code></p>
+<p>I&#x27;m getting many usage errors from <code>AutoModel</code> and <code>AutoTokenizer</code></p>
 </blockquote>
 <p>Can you please share some code and some of the errors that you are seeing?</p>
 <blockquote>
 <p>since <code>transformers</code> is poorly typed</p>
 </blockquote>
-<p>Ideally, ty shouldn't raise a lot of errors when using classes and functions from <em>untyped</em> libraries. What exactly do you mean by &quot;poorly typed&quot;?</p>
+<p>Ideally, ty shouldn&#x27;t raise a lot of errors when using classes and functions from <em>untyped</em> libraries. What exactly do you mean by &quot;poorly typed&quot;?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -50,7 +50,7 @@
             <div class="timeline-body"><blockquote>
 <p>Can you please share some code and some of the errors that you are seeing?</p>
 </blockquote>
-<pre><code class="language-python">from transformers import AutoModel, AutoTokenizer
+<pre><code>from transformers import AutoModel, AutoTokenizer
 
 # Global cache pattern (common in ML code)
 _model: AutoModel | None = None
@@ -84,42 +84,42 @@ def run_inference(model: AutoModel, tokenizer: AutoTokenizer) -&gt; str:
     output = model.infer(tokenizer, prompt=&quot;Hello&quot;)
     return output
 </code></pre>
-<p>It looks like <code>transformers</code> doesn't provide better classes to use that has <code>from_pretrained</code> / <code>encode</code>.</p>
+<p>It looks like <code>transformers</code> doesn&#x27;t provide better classes to use that has <code>from_pretrained</code> / <code>encode</code>.</p>
 <blockquote>
-<p>Ideally, ty shouldn't raise a lot of errors when using classes and functions from <em>untyped</em> libraries. What exactly do you mean by &quot;poorly typed&quot;?</p>
+<p>Ideally, ty shouldn&#x27;t raise a lot of errors when using classes and functions from <em>untyped</em> libraries. What exactly do you mean by &quot;poorly typed&quot;?</p>
 </blockquote>
-<p>It's not that classes are untyped entirely, it's just &quot;poorly&quot;. I expected <code>AutoModel</code> to have <code>from_pretrained</code> or to inherit from a base class that has that, for example.</p>
+<p>It&#x27;s not that classes are untyped entirely, it&#x27;s just &quot;poorly&quot;. I expected <code>AutoModel</code> to have <code>from_pretrained</code> or to inherit from a base class that has that, for example.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-11 08:29</div>
             <div class="timeline-body"><p>I see, thank you for providing examples.</p>
 <blockquote>
-<pre><code class="language-py">global _model, _tokenizer
+<pre><code>global _model, _tokenizer
     if _model is not None:
         # ty: tuple[..., AutoTokenizer | None] not assignable to tuple[..., AutoTokenizer]
 </code></pre>
 </blockquote>
-<p>This is not related to <code>transformers</code>. You probably want to check <code>if _model is not None and _tokenizer is not None</code>, or otherwise <code>ty</code> can't narrow <code>_tokenizer</code> from <code>AutoTokenizer | None</code> to <code>AutoTokenizer</code></p>
+<p>This is not related to <code>transformers</code>. You probably want to check <code>if _model is not None and _tokenizer is not None</code>, or otherwise <code>ty</code> can&#x27;t narrow <code>_tokenizer</code> from <code>AutoTokenizer | None</code> to <code>AutoTokenizer</code></p>
 <blockquote>
-<pre><code class="language-py">    _tokenizer = AutoTokenizer.from_pretrained(&quot;bert-base-uncased&quot;)
+<pre><code>    _tokenizer = AutoTokenizer.from_pretrained(&quot;bert-base-uncased&quot;)
     # ty warning: possibly-missing-attribute on from_pretrained
 </code></pre>
 </blockquote>
-<p>I can't reproduce this. It also doesn't seem like an error that ty would throw? Did you see a <code>possibly-missing-attribute</code> on <code>AutoTokenizer</code> or <code>AutoModel</code> instead?</p>
+<p>I can&#x27;t reproduce this. It also doesn&#x27;t seem like an error that ty would throw? Did you see a <code>possibly-missing-attribute</code> on <code>AutoTokenizer</code> or <code>AutoModel</code> instead?</p>
 <blockquote>
-<pre><code class="language-py">        # ty: Object of type `AutoTokenizer` has no attribute `encode`
+<pre><code>        # ty: Object of type `AutoTokenizer` has no attribute `encode`
         return len(tokenizer.encode(text))
 </code></pre>
 </blockquote>
-<p>Does this code work? I couldn't find this method in the documentation, and if I try it at runtime, it fails:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; from transformers import AutoTokenizer
-None of PyTorch, TensorFlow &gt;= 2.0, or Flax have been found. Models won't be available and only tokenizers, configuration and file/data utilities can be used.
+<p>Does this code work? I couldn&#x27;t find this method in the documentation, and if I try it at runtime, it fails:</p>
+<pre><code>&gt;&gt;&gt; from transformers import AutoTokenizer
+None of PyTorch, TensorFlow &gt;= 2.0, or Flax have been found. Models won&#x27;t be available and only tokenizers, configuration and file/data utilities can be used.
 &gt;&gt;&gt; AutoTokenizer.encode
 Traceback (most recent call last):
   File &quot;&lt;python-input-1&gt;&quot;, line 1, in &lt;module&gt;
     AutoTokenizer.encode
-AttributeError: type object 'AutoTokenizer' has no attribute 'encode'
+AttributeError: type object &#x27;AutoTokenizer&#x27; has no attribute &#x27;encode&#x27;
 </code></pre>
 </div>
         </div>
@@ -131,7 +131,7 @@ AttributeError: type object 'AutoTokenizer' has no attribute 'encode'
 if _model is not None:
 # ty: tuple[..., AutoTokenizer | None] not assignable to tuple[..., AutoTokenizer]</p>
 </blockquote>
-<p>This is not related to <code>transformers</code>. You probably want to check <code>if _model is not None and _tokenizer is not None</code>, or otherwise <code>ty</code> can't narrow <code>_tokenizer</code> from <code>AutoTokenizer | None</code> to <code>AutoTokenizer</code></p>
+<p>This is not related to <code>transformers</code>. You probably want to check <code>if _model is not None and _tokenizer is not None</code>, or otherwise <code>ty</code> can&#x27;t narrow <code>_tokenizer</code> from <code>AutoTokenizer | None</code> to <code>AutoTokenizer</code></p>
 </blockquote>
 <p>Correct, sorry for that.</p>
 <blockquote>
@@ -139,28 +139,28 @@ if _model is not None:
 <p>_tokenizer = AutoTokenizer.from_pretrained(&quot;bert-base-uncased&quot;)
 # ty warning: possibly-missing-attribute on from_pretrained</p>
 </blockquote>
-<p>I can't reproduce this. It also doesn't seem like an error that ty would throw? Did you see a <code>possibly-missing-attribute</code> on <code>AutoTokenizer</code> or <code>AutoModel</code> instead?</p>
+<p>I can&#x27;t reproduce this. It also doesn&#x27;t seem like an error that ty would throw? Did you see a <code>possibly-missing-attribute</code> on <code>AutoTokenizer</code> or <code>AutoModel</code> instead?</p>
 </blockquote>
 <p>Yes, on <code>AutoModel</code>.</p>
 <blockquote>
 <blockquote>
-<pre><code class="language-python"># ty: Object of type `AutoTokenizer` has no attribute `encode`
+<pre><code># ty: Object of type `AutoTokenizer` has no attribute `encode`
         return len(tokenizer.encode(text))
 </code></pre>
 </blockquote>
-<p>Does this code work? I couldn't find this method in the documentation, and if I try it at runtime, it fails:</p>
+<p>Does this code work? I couldn&#x27;t find this method in the documentation, and if I try it at runtime, it fails:</p>
 </blockquote>
-<p>It works at runtime, I guess it depends on the exact tokenizer that's being loaded, so it's like a factory.</p>
-<hr />
-<p>EDIT: to clarify, I'm working with https://huggingface.co/deepseek-ai/DeepSeek-OCR.</p>
-<p>It looks like they defined their own <code>DeepSeek</code> types but these might not be available until a newer <code>transformers</code> version will be released, which is why <code>AutoModel</code> &amp; <code>AutoTokenizer</code> are helpful. So they aim to operate without type checking, and given that, I wonder if it's possible to &quot;shut-down&quot; <code>ty</code> for the entire package.</p>
+<p>It works at runtime, I guess it depends on the exact tokenizer that&#x27;s being loaded, so it&#x27;s like a factory.</p>
+<hr>
+<p>EDIT: to clarify, I&#x27;m working with https://huggingface.co/deepseek-ai/DeepSeek-OCR.</p>
+<p>It looks like they defined their own <code>DeepSeek</code> types but these might not be available until a newer <code>transformers</code> version will be released, which is why <code>AutoModel</code> &amp; <code>AutoTokenizer</code> are helpful. So they aim to operate without type checking, and given that, I wonder if it&#x27;s possible to &quot;shut-down&quot; <code>ty</code> for the entire package.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-11 09:08</div>
             <div class="timeline-body"><blockquote>
 <blockquote>
-<p>I can't reproduce this. It also doesn't seem like an error that ty would throw? Did you see a <code>possibly-missing-attribute</code> on <code>AutoTokenizer</code> or <code>AutoModel</code> instead?</p>
+<p>I can&#x27;t reproduce this. It also doesn&#x27;t seem like an error that ty would throw? Did you see a <code>possibly-missing-attribute</code> on <code>AutoTokenizer</code> or <code>AutoModel</code> instead?</p>
 </blockquote>
 <p>Yes, on <code>AutoModel</code>.</p>
 </blockquote>
@@ -168,16 +168,16 @@ if _model is not None:
 <blockquote>
 <blockquote>
 <blockquote>
-<pre><code class="language-py"># ty: Object of type `AutoTokenizer` has no attribute `encode`
+<pre><code># ty: Object of type `AutoTokenizer` has no attribute `encode`
         return len(tokenizer.encode(text))
 </code></pre>
 </blockquote>
-<p>Does this code work? I couldn't find this method in the documentation, and if I try it at runtime, it fails:</p>
+<p>Does this code work? I couldn&#x27;t find this method in the documentation, and if I try it at runtime, it fails:</p>
 </blockquote>
-<p>It works at runtime, I guess it depends on the exact tokenizer that's being loaded, so it's like a factory.</p>
+<p>It works at runtime, I guess it depends on the exact tokenizer that&#x27;s being loaded, so it&#x27;s like a factory.</p>
 </blockquote>
 <p>One trick to work around this would be to add a new class that inherits from <code>AutoTokenizer</code> and <code>Any</code>. This will still give you autocompletion for all methods that actually exist on <code>AutoTokenizer</code>, but silence any errors if you access attributes that do not (seem to) exist:</p>
-<pre><code class="language-py">from transformers import AutoTokenizer as _AutoTokenizer
+<pre><code>from transformers import AutoTokenizer as _AutoTokenizer
 
 class AutoTokenizerAutoTokenizer, Any):
     pass
@@ -187,7 +187,7 @@ def f(tokenizer: AutoTokenizer):
 </code></pre>
 <p>See full example in this playground: https://play.ty.dev/625acadd-e05c-40cb-a547-d2029ee43282</p>
 <p>A related method that is specific to ty is to use intersection types. This way, you could intersect <code>AutoTokenizer &amp; Any</code> to achieve the same effect:</p>
-<pre><code class="language-py">if TYPE_CHECKING:
+<pre><code>if TYPE_CHECKING:
     from ty_extensions import Intersection
     type AutoTokenizer = Intersection[_AutoTokenizer, Any]
 </code></pre>
@@ -201,12 +201,12 @@ def f(tokenizer: AutoTokenizer):
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @sharkdp on 2025-12-11 09:29</div>
+            <div class="event">Closed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-11 09:29</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:21:16 UTC
+        Synced at 2026-01-20 19:26:22 UTC
     </footer>
 </body>
 </html>

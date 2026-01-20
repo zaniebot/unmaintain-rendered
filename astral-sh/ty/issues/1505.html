@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/FHaggs">@FHaggs</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>https://play.ty.dev/54af2346-91e3-407f-a99f-bad9b19360ef</p>
 <p>ty does not flag violations of Python’s type variance rules when using list and Sequence type hints.</p>
 <p>Specifically:</p>
@@ -31,7 +31,7 @@
 <p>Sequence should be covariant</p>
 <p>However, ty currently accepts code that passes list[Dog] where list[Animal] is expected which breaks type safety guarantees that every other checker (Pyright) enforces. Check the reference for more information.</p>
 <p>Also the other way around does not flag an error.</p>
-<pre><code class="language-py">def imutable_thing(arr: list[Animal]) -&gt; int:
+<pre><code>def imutable_thing(arr: list[Animal]) -&gt; int:
     return len(arr)
 </code></pre>
 <p>These should not accept a list[Dog], the function signature should be arr: Sequence[Animal]. That would be ok.</p>
@@ -42,8 +42,8 @@ https://peps.python.org/pep-0484/#covariance-and-contravariance</p>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-09 16:50</div>
             <div class="timeline-body"><p>Thanks for the report!</p>
-<p>The issue here isn't that ty doesn't understand variance -- we do! Here's your initial snippet, and you're correct that we don't emit any diagnostics on it:</p>
-<pre><code class="language-py">from typing import Sequence
+<p>The issue here isn&#x27;t that ty doesn&#x27;t understand variance -- we do! Here&#x27;s your initial snippet, and you&#x27;re correct that we don&#x27;t emit any diagnostics on it:</p>
+<pre><code>from typing import Sequence
 
 class Animal:
     pass
@@ -67,7 +67,7 @@ mutable(a)               # ✅ OK
 mutable(d)               # ❌ Should FAIL — List is invariant
 </code></pre>
 <p>But if I apply this diff to your snippet...</p>
-<pre><code class="language-diff">
+<pre><code>
 ```py
   from typing import Sequence
 
@@ -94,7 +94,7 @@ mutable(d)               # ❌ Should FAIL — List is invariant
   mutable(a)               # ✅ OK
   mutable(d)               # ❌ Should FAIL — List is invariant
 </code></pre>
-<p>Then ty does indeed emit the diagnostic you're expecting:</p>
+<p>Then ty does indeed emit the diagnostic you&#x27;re expecting:</p>
 <pre><code>error[invalid-argument-type]: Argument to function `mutable` is incorrect
   --&gt; foo.py:22:9
    |
@@ -116,9 +116,9 @@ info: rule `invalid-argument-type` is enabled by default
 
 Found 1 diagnostic
 </code></pre>
-<p>The issue is that without the explicit annotations, ty doesn't infer the type of <code>a</code> as <code>list[Animal]</code> (it infers <code>list[Animal | Unknown]</code>) and doesn't infer the type of <code>d</code> as <code>list[Dog]</code> (it infers <code>list[Dog | Unknown]</code>).</p>
+<p>The issue is that without the explicit annotations, ty doesn&#x27;t infer the type of <code>a</code> as <code>list[Animal]</code> (it infers <code>list[Animal | Unknown]</code>) and doesn&#x27;t infer the type of <code>d</code> as <code>list[Dog]</code> (it infers <code>list[Dog | Unknown]</code>).</p>
 <p>Correctly inferring the type of unannotated collection literals is a surprisingly hard problem. We know we need to do better here; the <code>| Unknown</code> union is a temporary measure to avoid false positives. One such false positive can be demonstrated from your example here: an equally valid inference for the <code>d</code> variable would be <code>list[Animal]</code> rather than <code>list[Dog]</code> -- no type checker has an issue if you provide <code>list[Animal]</code> as the annotation for that variable:</p>
-<pre><code class="language-py">from typing import Sequence
+<pre><code>from typing import Sequence
 
 class Animal:
     pass
@@ -147,12 +147,12 @@ mutable(d)               # ❌ Should FAIL — List is invariant
 <li><a href="https://pyright-play.net/?pyrightVersion=1.1.405&amp;strict=true&amp;code=GYJw9gtgBALgngBwJYDsDmUkQWEMoDKApgI4CuRKAxkQLABQDVANgIYDO7UAgilq8wBcDKKKgIO7BkzacoAETBoAFL37MAlMPpjxk6Y3oATIsEwQyMVgCNmRAPowAFqhWsQIQYVIVqRANpqEAIAuhpQALQAfJgoMNq6IEQwZCAoUHYoyu4gGgYmZhZWtkTZHl7MSOwwgXzBzGEJYjkAdKwICJRGqnUCyhp5hgysFVU1QaFQALxQter9ADQ8vcz9IQxGo9Vz9SHTs4oqGkuHawZJXDNYljZ2ji7oykbhUADEUICg5IROYGTMRlBrEQoMBUMDlMRyJQaJguFQwAA3dxIVhxQZFW6lVgvXS43TvL4AeQA0gwMSUnji8Xj3oAZcm%2Bv3%2BUAAYtwAJIAGSggBQCKAcsaw2JIkAouIGIA">Pyright</a></li>
 <li><a href="https://pyrefly.org/sandbox/?project=N4IgZglgNgpgziAXKOBDAdgEwEYHsAeAdAA4CeS4ATrgLYAEALqcROgOZ0Q3G6UN0BlGAEcArjHQBjGAB10cyVFRw4dAILouqKIjl19dYsrhyFSlXQAiuNgAoNWqAEpd6A4eOn5WGGE41RBlRsWAB9BgALVjtUSkpEQRFxKRgAbQcabQBdJzoAWgA%2BTnQGV3dKGAZRSjdYdFtYyicvTF86AKCQmAa4hKgIOAZ0zUyoHLKDRsJUYmIJTHsR7VsnZu85VD6BoYzsugBeOmHHFYAadSWoFay5TC3B49Gsg6PrOydzt%2BuvCtVDrkCwTCkWitkwuToAGI6IBQckEEVwoigmDo2BgdEg6HRtiEYgk0k4qkkuAAbrEIBgGGsOkDuqgIe5Ge5oXCAPIAaTkNK6YIZTKZ0MAMuTwxHIugAMTUAEkADJ0QAoBHQZdtCcUyZQKSUvCBTiBAtA4CRyIgQNCAKoMaAQJgY0RSS24dAmbytPxgXiZBihdCiGhoyi2fAJVhU-JFQbxPQGCpVGoYmQgAByvv9CWA%2BAAvgm5DqQGQKmAoKRCAxaFAKNCAAqkAtFuhoLB4fB0YnoSBsaqoB3oQhyaFCdERBgMYhwRAAenH%2Bd8RcIvDY44k48wuEkcHHrfbne744xvDoqDJ0FpLcdW8oXYgjrouGI3cNcjIkUdeRJMEocCvbkOCYAzIQAEYACZs3QEAM11VBJEtN9xWgGAKAbHACCNcCgA">Pyrefly</a></li>
 </ul>
-<p>So we can't know exactly what the user intended without an explicit annotation. In situations like this, other type checkers either demand type annotations or make (what we consider to be) unwarranted assumptions regarding the user's intent (for example, solving the type as <code>list[Dog]</code> even though <code>list[Animal]</code> would be an equally valid way to solve the type and would avoid a type error being emitted later on in the scope). We hope eventually to be able to use constraints and bidirectional inference to do better than other type checkers in this area -- but this is still some way off.</p>
-<p>See https://github.com/astral-sh/ty/issues/1473 for more detail on our plans in this area.</p>
+<p>So we can&#x27;t know exactly what the user intended without an explicit annotation. In situations like this, other type checkers either demand type annotations or make (what we consider to be) unwarranted assumptions regarding the user&#x27;s intent (for example, solving the type as <code>list[Dog]</code> even though <code>list[Animal]</code> would be an equally valid way to solve the type and would avoid a type error being emitted later on in the scope). We hope eventually to be able to use constraints and bidirectional inference to do better than other type checkers in this area -- but this is still some way off.</p>
+<p>See <a href="https://github.com/astral-sh/ty/issues/1473">astral-sh/ty#1473</a> for more detail on our plans in this area.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-11-09 16:50</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-09 16:50</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/FHaggs">@FHaggs</a> on 2025-11-09 16:53</div>
@@ -162,7 +162,7 @@ mutable(d)               # ❌ Should FAIL — List is invariant
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:56 UTC
+        Synced at 2026-01-20 19:25:55 UTC
     </footer>
 </body>
 </html>

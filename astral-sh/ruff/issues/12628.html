@@ -23,28 +23,17 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/divaltor">@divaltor</a></div>
-            <div class="timeline-body"><!--
-Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
-
-If you're filing a bug report, please consider including the following information:
-
-* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
-  e.g. "RUF001", "unused variable", "Jupyter notebook"
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
-* The current Ruff settings (any relevant sections from your `pyproject.toml`).
-* The current Ruff version (`ruff --version`).
--->
+            <div class="timeline-body">
 
 <p><strong>Thanks for your work and the awesome tool</strong> ❤️</p>
-<h3>Problem</h3>
+Problem
 <p>Some docstring formats support raise blocks for describing potential exceptions a function may throw. However, neither LSP (pyright) nor IDEs (PyCharm) can suggest handling these exceptions when a function is called. This limitation often leads to two bad practices:</p>
 <ul>
 <li>Handling all types of errors using a broad <code>except Exception</code> block, which can mask specific issues and make debugging more difficult.</li>
 <li>Completely overlooking potential exceptions, resulting in unhandled errors that can cause unexpected runtime bugs.</li>
 </ul>
 <p>Is it possible to create a rule for highlighting unhandled exceptions? Most related feature in PHP Storm - https://blog.jetbrains.com/phpstorm/2017/11/bring-exceptions-under-control/#unhandled-exception</p>
-<pre><code class="language-python">def positive_sum(a: int, b: int) -&gt; int:
+<pre><code>def positive_sum(a: int, b: int) -&gt; int:
 	&quot;&quot;&quot;
 	Summarize two positive integers
 
@@ -52,7 +41,7 @@ If you're filing a bug report, please consider including the following informati
 		ValueError: when value is not positive
 	&quot;&quot;&quot;
 	if a &lt; 0 or b &lt; 0:
-		raise ValueError('value must be positive integer')
+		raise ValueError(&#x27;value must be positive integer&#x27;)
 
 	return a + b
 
@@ -68,16 +57,16 @@ try:
 except Exception:
 	...
 </code></pre>
-<p>But there can be problem (may be, I didn't read a whole ruff code to understand how parser and semantic work):</p>
-<pre><code class="language-python">def validate_number(num: int) -&gt; int:
+<p>But there can be problem (may be, I didn&#x27;t read a whole ruff code to understand how parser and semantic work):</p>
+<pre><code>def validate_number(num: int) -&gt; int:
 	&quot;&quot;&quot;
-	Validate number and return error if it's not positive
+	Validate number and return error if it&#x27;s not positive
 
 	Raises:
 		ValueError: when value is not positive
 	&quot;&quot;&quot;
 	if num &lt; 0:
-		raise ValueError('value must be positive integer')
+		raise ValueError(&#x27;value must be positive integer&#x27;)
 	
 	return num
 
@@ -91,7 +80,7 @@ def positive_sum(a: int, b: int) -&gt; int:
 positive_sum(15, 15)  &lt;-- RUF999: Unhandled ValueError exception
 </code></pre>
 <p>Also there could be cases when we use <code>assert</code> statements without docstring, like</p>
-<pre><code class="language-python">def positive_sum(a: int, b: int) -&gt; int:
+<pre><code>def positive_sum(a: int, b: int) -&gt; int:
 	assert a &gt; 0
 	assert b &gt; 0
 
@@ -101,9 +90,9 @@ positive_sum(15, 15)  &lt;-- RUF999: Unhandled ValueError exception
 positive_sum(15, 15)  &lt;-- RUF999: Unhandled AssertionError exception
 </code></pre>
 <p><strong>Is it possible to implement such a rule at all? Because my concern is that is job for LSP, not for linter.</strong></p>
-<h3>Possible limitations</h3>
+Possible limitations
 <ol>
-<li>Ruff can't analyze external libraries or their docstrings. This means it's not possible to highlight code that calls external libraries, like <code>requests</code>.</li>
+<li>Ruff can&#x27;t analyze external libraries or their docstrings. This means it&#x27;s not possible to highlight code that calls external libraries, like <code>requests</code>.</li>
 <li>Developers may forget to update docstrings after modifying code, leading to outdated or inaccurate exception information.</li>
 </ol>
 </div>
@@ -111,39 +100,39 @@ positive_sum(15, 15)  &lt;-- RUF999: Unhandled AssertionError exception
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-02 13:14</div>
             <div class="timeline-body"><p>Thanks for the kind words.</p>
-<p>If I'm not mistaken than this rule shipped as part of ruff 0.5.5 but under preview mode only. See https://github.com/astral-sh/ruff/pull/11471</p>
+<p>If I&#x27;m not mistaken than this rule shipped as part of ruff 0.5.5 but under preview mode only. See <a href="https://github.com/astral-sh/ruff/pull/11471">astral-sh/ruff#11471</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/divaltor">@divaltor</a> on 2024-08-02 13:19</div>
             <div class="timeline-body"><blockquote>
 <p>Thanks for the kind words.</p>
-<p>If I'm not mistaken than this rule shipped as part of ruff 0.5.5 but under preview mode only. See #11471</p>
+<p>If I&#x27;m not mistaken than this rule shipped as part of ruff 0.5.5 but under preview mode only. See #11471</p>
 </blockquote>
-<p>I guess this rule just prevent cases when user forgets to update its docstring, but do nothing when user <em>actually executes</em> function with <code>Raises</code> block, see my example again (or look at PHPStorm blog which I've attached to at the top)</p>
+<p>I guess this rule just prevent cases when user forgets to update its docstring, but do nothing when user <em>actually executes</em> function with <code>Raises</code> block, see my example again (or look at PHPStorm blog which I&#x27;ve attached to at the top)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-02 13:23</div>
-            <div class="timeline-body"><p>Oh yeah sorry. That's something else. I don't think we have the necessary infrastructure in place today because ruff can't do any cross-file analysis.</p>
+            <div class="timeline-body"><p>Oh yeah sorry. That&#x27;s something else. I don&#x27;t think we have the necessary infrastructure in place today because ruff can&#x27;t do any cross-file analysis.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">multifile-analysis</span> added by @MichaReiser on 2024-08-02 13:23</div>
+            <div class="event">Label <span class="label">multifile-analysis</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-02 13:23</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">docstring</span> added by @AlexWaygood on 2024-08-02 14:12</div>
+            <div class="event">Label <span class="label">docstring</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-02 14:12</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">type-inference</span> added by @MichaReiser on 2024-10-24 14:32</div>
+            <div class="event">Label <span class="label">type-inference</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-24 14:32</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">multifile-analysis</span> removed by @MichaReiser on 2024-10-24 14:33</div>
+            <div class="event">Label <span class="label">multifile-analysis</span> removed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-24 14:33</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:50:46 UTC
+        Synced at 2026-01-20 18:48:56 UTC
     </footer>
 </body>
 </html>

@@ -24,37 +24,37 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/robsdedude">@robsdedude</a></div>
             <div class="timeline-body"><p>Please consider</p>
-<pre><code class="language-python">import abc
+<pre><code>import abc
 from typing_extensions import Protocol
 
 
 class Foo(Protocol, metclass=abc.ABCMeta):
     ...
 </code></pre>
-<p>Now this rule will re-write the class to <code>class Foo(Protocol, abc.ABC): ...</code>. Well, that won't work at runtime :) <code>Protocol</code> checks that it only inherits from other Protocols.</p>
+<p>Now this rule will re-write the class to <code>class Foo(Protocol, abc.ABC): ...</code>. Well, that won&#x27;t work at runtime :) <code>Protocol</code> checks that it only inherits from other Protocols.</p>
 <p>Not sure what the fix is here.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-10 13:23</div>
-            <div class="timeline-body"><p>Hmm, what's the purpose of using <code>metaclass=abc.ABCMeta</code> here? Just inheriting from <code>Protocol</code> sets the metaclass as <code>_ProtocolMeta</code>, which is a subclass of <code>ABCMeta</code></p>
+            <div class="timeline-body"><p>Hmm, what&#x27;s the purpose of using <code>metaclass=abc.ABCMeta</code> here? Just inheriting from <code>Protocol</code> sets the metaclass as <code>_ProtocolMeta</code>, which is a subclass of <code>ABCMeta</code></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "`FURB180` should consider whitelisting some classes" to "`FURB180` should consider allowlisting some classes" by @MichaReiser on 2024-09-10 13:26</div>
+            <div class="event">Renamed from &quot;`FURB180` should consider whitelisting some classes&quot; to &quot;`FURB180` should consider allowlisting some classes&quot; by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-10 13:26</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/robsdedude">@robsdedude</a> on 2024-09-11 10:41</div>
-            <div class="timeline-body"><p>That's a fair point. But I'm a fan of being explicit here.. Imagine someone not being super familiar with Python (or just the <code>typing</code> module). They might easily not know that this is the case. Further, you have to dig into CPython's code to be sure about this. The docs are somewhat vague. They mention &quot;abstract base class&quot; (but not <code>abc.ABC</code>) when following <code>Protocol</code>'s inheritance of <code>Generic</code>. Lastly,  being explicit makes sure that the assumption is true and remains true in the future (or at least explodes with a metaclass conflict if Python decides to change this).</p>
-<p>Regardless whether you agree with my approach or don't think it's worth supporting, the auto-fix does break the code and the documentation is incorrect.</p>
+            <div class="timeline-body"><p>That&#x27;s a fair point. But I&#x27;m a fan of being explicit here.. Imagine someone not being super familiar with Python (or just the <code>typing</code> module). They might easily not know that this is the case. Further, you have to dig into CPython&#x27;s code to be sure about this. The docs are somewhat vague. They mention &quot;abstract base class&quot; (but not <code>abc.ABC</code>) when following <code>Protocol</code>&#x27;s inheritance of <code>Generic</code>. Lastly,  being explicit makes sure that the assumption is true and remains true in the future (or at least explodes with a metaclass conflict if Python decides to change this).</p>
+<p>Regardless whether you agree with my approach or don&#x27;t think it&#x27;s worth supporting, the auto-fix does break the code and the documentation is incorrect.</p>
 <blockquote>
 <p>Inheriting from the <code>ABC</code> wrapper class is semantically identical to setting <code>metaclass=abc.ABCMeta</code>, but more succinct.</p>
 </blockquote>
-<p>It's not exactly semantically identical. Only in most cases.</p>
+<p>It&#x27;s not exactly semantically identical. Only in most cases.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-09-18 03:27</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-18 03:27</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/robsdedude">@robsdedude</a> on 2025-05-17 07:52</div>
@@ -65,55 +65,55 @@ class Foo(Protocol, metclass=abc.ABCMeta):
 <li>Simply mark the fix as unsafe (if the class has any super-class(es)).</li>
 </ol>
 <p>Maybe 3 should happen anyway as this fix cannot be blindly applied without breaking any code.</p>
-<p>Before I invest time I'd like to know which option(s) you prefer.</p>
-<p>PS: if the label &quot;question&quot; means &quot;user question&quot;, I don't think the issue is labeled quite right. It's not really that I don't know how to use the tool, but more that I am of the opinion that this rule needs some small fixing.</p>
+<p>Before I invest time I&#x27;d like to know which option(s) you prefer.</p>
+<p>PS: if the label &quot;question&quot; means &quot;user question&quot;, I don&#x27;t think the issue is labeled quite right. It&#x27;s not really that I don&#x27;t know how to use the tool, but more that I am of the opinion that this rule needs some small fixing.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-06-12 15:34</div>
             <div class="timeline-body"><p>Could you say a bit more @robsdedude about how this configuration might be used other than the <code>Protocol</code> example?</p>
-<p>I feel like the original issue raised along with Alex's comment has been addressed now that the fix is considered unsafe. I don't necessarily find this justification in response to Alex's point super convincing:</p>
+<p>I feel like the original issue raised along with Alex&#x27;s comment has been addressed now that the fix is considered unsafe. I don&#x27;t necessarily find this justification in response to Alex&#x27;s point super convincing:</p>
 <blockquote>
 <p>Imagine someone not being super familiar with Python (or just the typing module). They might easily not know that this is the case.</p>
 </blockquote>
 <p>If someone is not super familiar with Python, would they be writing code like the original example in the first place?</p>
-<p>Anyway, I'm open to the idea of the configuration option, I just don't have a clear picture of the use-cases.</p>
+<p>Anyway, I&#x27;m open to the idea of the configuration option, I just don&#x27;t have a clear picture of the use-cases.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/robsdedude">@robsdedude</a> on 2025-06-13 21:23</div>
-            <div class="timeline-body"><p>@dylwil3 there's also a discussion in parallel on the linked <a href="https://github.com/astral-sh/ruff/pull/18148">PR</a>, in case you've not seen that. To not spread the high-level discussion about whether the option is even desired, I'll address parts of that <a href="https://github.com/astral-sh/ruff/pull/18148#issuecomment-2965287966">MichaReiser's comment</a> here as well.</p>
-<hr />
+            <div class="timeline-body"><p>@dylwil3 there&#x27;s also a discussion in parallel on the linked <a href="https://github.com/astral-sh/ruff/pull/18148">PR</a>, in case you&#x27;ve not seen that. To not spread the high-level discussion about whether the option is even desired, I&#x27;ll address parts of that <a href="https://github.com/astral-sh/ruff/pull/18148#issuecomment-2965287966">MichaReiser&#x27;s comment</a> here as well.</p>
+<hr>
 <blockquote>
-<p>[I] don't necessarily find this justification in response to Alex's point super convincing</p>
+<p>[I] don&#x27;t necessarily find this justification in response to Alex&#x27;s point super convincing</p>
 <blockquote>
 <p>Imagine someone not being super familiar with Python (or just the typing module). They might easily not know that this is the case.</p>
 </blockquote>
 </blockquote>
-<p>Yeah, they would 😇 that &quot;they&quot; was me. I mean, I wouldn't necessarily say I'm not familiar with Python, but before looking it up, I wouldn't have know whether <code>Protocol</code> inherits from <code>ABC</code>/has <code>ABCMeta</code> (or a subclass) as its metaclass or not.</p>
+<p>Yeah, they would 😇 that &quot;they&quot; was me. I mean, I wouldn&#x27;t necessarily say I&#x27;m not familiar with Python, but before looking it up, I wouldn&#x27;t have know whether <code>Protocol</code> inherits from <code>ABC</code>/has <code>ABCMeta</code> (or a subclass) as its metaclass or not.</p>
 <p>But even after finding out, I still want to keep that <code>ABCMeta</code> there for the aforementioned reason</p>
 <blockquote>
 <p>being explicit makes sure that the assumption is true and remains true in the future (or at least explodes with a metaclass conflict if Python decides to change this).</p>
 </blockquote>
-<hr />
+<hr>
 <blockquote>
-<p>I just don't have a clear picture of the use-cases.
-Besides <code>Protocol</code>, I figured there could be any user-defined class or class defined in a 3rd party package that alters runtime behavior depending on subclasses' bases (validates bases, changes behavior depending on present bases, ...), and if that class requires you to use <code>ABCMeta</code> instead of <code>ABC</code>, this option would help.</p>
+<p>I just don&#x27;t have a clear picture of the use-cases.
+Besides <code>Protocol</code>, I figured there could be any user-defined class or class defined in a 3rd party package that alters runtime behavior depending on subclasses&#x27; bases (validates bases, changes behavior depending on present bases, ...), and if that class requires you to use <code>ABCMeta</code> instead of <code>ABC</code>, this option would help.</p>
 </blockquote>
-<p>Imagine a class that like <code>Protocol</code> validates that no other bases are present, but unlike <code>Protocol</code> does not inherit from <code>ABC</code>. This option would allow users to allow-list such classes instead of heaving to slap a <code># noqa</code> at every sub-class definition. So in this case there isn't even a work-around of the sorts &quot;just omit ABC all together&quot;, just <code>noqa</code>.</p>
-<hr />
-<p>From @MichaReiser's comment on the PR</p>
+<p>Imagine a class that like <code>Protocol</code> validates that no other bases are present, but unlike <code>Protocol</code> does not inherit from <code>ABC</code>. This option would allow users to allow-list such classes instead of heaving to slap a <code># noqa</code> at every sub-class definition. So in this case there isn&#x27;t even a work-around of the sorts &quot;just omit ABC all together&quot;, just <code>noqa</code>.</p>
+<hr>
+<p>From @MichaReiser&#x27;s comment on the PR</p>
 <blockquote>
 <p>More specifically, options have a non-zero cost because users need to understand them.</p>
 </blockquote>
-<p>That's a good point I've not considered.</p>
-<p>Less than before but still I'd still like to see the option become a thing because I like the core of <code>FURB180</code>, but I disagree with having to work around it here in order to be explicit with my class being an abstract base class without having to use <code>noqa</code> comments.</p>
+<p>That&#x27;s a good point I&#x27;ve not considered.</p>
+<p>Less than before but still I&#x27;d still like to see the option become a thing because I like the core of <code>FURB180</code>, but I disagree with having to work around it here in order to be explicit with my class being an abstract base class without having to use <code>noqa</code> comments.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:51:03 UTC
+        Synced at 2026-01-20 18:48:57 UTC
     </footer>
 </body>
 </html>

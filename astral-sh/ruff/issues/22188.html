@@ -23,30 +23,30 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/tuttle">@tuttle</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>FAST002 autofix rewrites code substantially and is currently pretty smart, indeed saves a lot of work.</p>
-<p>Anyway I see two possible improvements, yet I'm not sure how complicated they would be to implement:</p>
-<h2>1. FAST002 creates too long lines.</h2>
+<p>Anyway I see two possible improvements, yet I&#x27;m not sure how complicated they would be to implement:</p>
+1. FAST002 creates too long lines.
 <p>The autofix generates this:</p>
-<pre><code class="language-python">    query: Annotated[str | None, Query(description=&quot;Optional filtering of websites by registered domain name.&quot;)] = None,
+<pre><code>    query: Annotated[str | None, Query(description=&quot;Optional filtering of websites by registered domain name.&quot;)] = None,
 </code></pre>
 <p>which immediately triggers <strong>E501 Line too long</strong> in the same run.</p>
 <p>This would be great to generate instead if it is possible to do:</p>
-<pre><code class="language-python">    query: Annotated[
+<pre><code>    query: Annotated[
         str | None,
         Query(description=&quot;Optional filtering of websites by registered domain name.&quot;),
     ] = None,
 </code></pre>
 <p>with possible wrap of too long strings.</p>
-<h2>2. FAST002 silently skips autofix of badly ordered arguments.</h2>
+2. FAST002 silently skips autofix of badly ordered arguments.
 <p>In our code we had this endpoint argument as the last one:</p>
-<pre><code class="language-python">    website_ids: str = Query(
+<pre><code>    website_ids: str = Query(
         ...,
         description=&quot;Comma separated list of website IDs&quot;,
     ),
 </code></pre>
-<p>It appears to me the FAST002's autofix detects it WOULD create:</p>
-<pre><code class="language-python">    website_ids: Annotated[str, Query(description=&quot;Comma separated list of website IDs&quot;)],
+<p>It appears to me the FAST002&#x27;s autofix detects it WOULD create:</p>
+<pre><code>    website_ids: Annotated[str, Query(description=&quot;Comma separated list of website IDs&quot;)],
 </code></pre>
 <p>That means, from the Python POV, it <strong>would turn the argument with default value to argument without default value</strong>. But because the argument is placed AFTER other arguments with default value <strong>which is impossible in Python</strong>, the autofix is disabled and the code is left with unconverted arguments that still trigger FAST002.</p>
 <p>Would it be possible to either of these?</p>
@@ -57,33 +57,33 @@ b. Reorder the arguments appropriately as part of the autofix.</p>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-25 15:14</div>
             <div class="timeline-body"><p>Thanks for the report!</p>
-<p>I think the long line is kind of a known issue. We don't really try to produce formatted fixes, expecting the user to run a formatter after any lint fixes. Some day we hope to combine the lint and format steps into one though (https://github.com/astral-sh/ruff/issues/8232).</p>
+<p>I think the long line is kind of a known issue. We don&#x27;t really try to produce formatted fixes, expecting the user to run a formatter after any lint fixes. Some day we hope to combine the lint and format steps into one though (<a href="https://github.com/astral-sh/ruff/issues/8232">astral-sh/ruff#8232</a>).</p>
 <p>I think a hint as to why the fix was not offered is a great idea! We now have the ability to attach sub-diagnostics, so we could add a line like:</p>
 <pre><code>info: Fix was unavailable because ...
 </code></pre>
 <p>to the diagnostic. That might be interesting to explore in other rules too.</p>
-<p>We <em>could</em> also consider reordering the arguments, but that feels like it's going a bit beyond what we usually call an unsafe fix, at least to me.</p>
+<p>We <em>could</em> also consider reordering the arguments, but that feels like it&#x27;s going a bit beyond what we usually call an unsafe fix, at least to me.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-12-25 15:14</div>
+            <div class="event">Label <span class="label">fixes</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-25 15:14</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">diagnostics</span> added by @ntBre on 2025-12-25 15:14</div>
+            <div class="event">Label <span class="label">diagnostics</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-25 15:14</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tuttle">@tuttle</a> on 2025-12-31 12:00</div>
             <div class="timeline-body"><p>@ntBre Thank you, Brent.</p>
-<p>It's great you add sub-diag messages!</p>
-<p>The reason I came up with hinting is that I consider FAST002's autofix to be kind of unique in changing the arguments so much.</p>
-<p>Also, the reason for disabling the fix here is so subtle, I suspect many developers simply won't see it.</p>
+<p>It&#x27;s great you add sub-diag messages!</p>
+<p>The reason I came up with hinting is that I consider FAST002&#x27;s autofix to be kind of unique in changing the arguments so much.</p>
+<p>Also, the reason for disabling the fix here is so subtle, I suspect many developers simply won&#x27;t see it.</p>
 <p>Happy New Year.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:53:44 UTC
+        Synced at 2026-01-20 18:50:42 UTC
     </footer>
 </body>
 </html>

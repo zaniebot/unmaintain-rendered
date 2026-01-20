@@ -23,17 +23,17 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dtolnay">@dtolnay</a></div>
-            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+            <div class="timeline-body">Please complete the following tasks
 <ul>
 <li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
 <li>[X] I have searched the existing issues</li>
 </ul>
-<h3>Rust Version</h3>
+Rust Version
 <p>rustc 1.59.0-nightly (cfa3fe5af 2021-12-31)</p>
-<h3>Clap Version</h3>
+Clap Version
 <p>3.0.0</p>
-<h3>Minimal reproducible code</h3>
-<pre><code class="language-rust">use clap::{App, Arg};
+Minimal reproducible code
+<pre><code>use clap::{App, Arg};
 
 fn main() {
     let x_help = &quot;....&quot;.to_owned();
@@ -42,32 +42,32 @@ fn main() {
         .arg(arg_y());
 }
 
-fn arg_x&lt;'help&gt;(help: &amp;'help str) -&gt; Arg&lt;'help&gt; {
+fn arg_x&lt;&#x27;help&gt;(help: &amp;&#x27;help str) -&gt; Arg&lt;&#x27;help&gt; {
     Arg::new(&quot;x&quot;).help(help)
 }
 
-fn arg_y() -&gt; Arg&lt;'static&gt; {
+fn arg_y() -&gt; Arg&lt;&#x27;static&gt; {
     Arg::new(&quot;y&quot;)
 }
 </code></pre>
-<h3>Steps to reproduce the bug with the above code</h3>
+Steps to reproduce the bug with the above code
 <p><code>cargo check</code></p>
-<h3>Actual Behaviour</h3>
-<pre><code class="language-console">error[E0597]: `x_help` does not live long enough
+Actual Behaviour
+<pre><code>error[E0597]: `x_help` does not live long enough
  --&gt; src/main.rs:6:20
   |
 6 |         .arg(arg_x(&amp;x_help))
   |              ------^^^^^^^-
   |              |     |
   |              |     borrowed value does not live long enough
-  |              argument requires that `x_help` is borrowed for `'static`
+  |              argument requires that `x_help` is borrowed for `&#x27;static`
 7 |         .arg(arg_y());
 8 | }
   | - `x_help` dropped here while still borrowed
 </code></pre>
-<h3>Expected Behaviour</h3>
+Expected Behaviour
 <p>It would be ideal if this compiled. Exactly analogous code using clap 2.x does compile:</p>
-<pre><code class="language-rust">use clap2::{App, Arg};
+<pre><code>use clap2::{App, Arg};
 
 fn main() {
     let x_help = &quot;....&quot;.to_owned();
@@ -76,60 +76,60 @@ fn main() {
         .arg(arg_y());
 }
 
-fn arg_x&lt;'help&gt;(help: &amp;'help str) -&gt; Arg&lt;'static, 'help&gt; {
+fn arg_x&lt;&#x27;help&gt;(help: &amp;&#x27;help str) -&gt; Arg&lt;&#x27;static, &#x27;help&gt; {
     Arg::with_name(&quot;x&quot;).help(help)
 }
 
-fn arg_y() -&gt; Arg&lt;'static, 'static&gt; {
+fn arg_y() -&gt; Arg&lt;&#x27;static, &#x27;static&gt; {
     Arg::with_name(&quot;y&quot;)
 }
 </code></pre>
-<h3>Additional Context</h3>
+Additional Context
 <p>The relevant difference appears to be the covariance of clap::Arg in 2.x / invariance in 3.0.0.</p>
-<pre><code class="language-rust">// [dependencies]
+<pre><code>// [dependencies]
 // clap2 = { package = &quot;clap&quot;, version = &quot;2&quot; }
 // clap3 = { package = &quot;clap&quot;, version = &quot;3&quot; }
 
-fn repro2&lt;'arg&gt;(arg: clap2::Arg&lt;'static, 'static&gt;) -&gt; clap2::Arg&lt;'arg, 'arg&gt; {
+fn repro2&lt;&#x27;arg&gt;(arg: clap2::Arg&lt;&#x27;static, &#x27;static&gt;) -&gt; clap2::Arg&lt;&#x27;arg, &#x27;arg&gt; {
     arg // okay
 }
 
-fn repro3&lt;'arg&gt;(arg: clap3::Arg&lt;'static&gt;) -&gt; clap3::Arg&lt;'arg&gt; {
+fn repro3&lt;&#x27;arg&gt;(arg: clap3::Arg&lt;&#x27;static&gt;) -&gt; clap3::Arg&lt;&#x27;arg&gt; {
     arg // fail
 }
 </code></pre>
-<pre><code class="language-console">error[E0308]: mismatched types
+<pre><code>error[E0308]: mismatched types
   --&gt; src/main.rs:10:5
    |
 10 |     arg // fail
    |     ^^^ lifetime mismatch
    |
-   = note: expected struct `clap::Arg&lt;'arg&gt;`
-              found struct `clap::Arg&lt;'static&gt;`
-note: the lifetime `'arg` as defined here...
+   = note: expected struct `clap::Arg&lt;&#x27;arg&gt;`
+              found struct `clap::Arg&lt;&#x27;static&gt;`
+note: the lifetime `&#x27;arg` as defined here...
   --&gt; src/main.rs:9:11
    |
-9  | fn repro3&lt;'arg&gt;(arg: clap3::Arg&lt;'static&gt;) -&gt; clap3::Arg&lt;'arg&gt; {
+9  | fn repro3&lt;&#x27;arg&gt;(arg: clap3::Arg&lt;&#x27;static&gt;) -&gt; clap3::Arg&lt;&#x27;arg&gt; {
    |           ^^^^
    = note: ...does not necessarily outlive the static lifetime
 </code></pre>
-<h3>Debug Output</h3>
+Debug Output
 <p><em>No response</em></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">C-bug</span> added by @dtolnay on 2022-01-01 05:29</div>
+            <div class="event">Label <span class="label">C-bug</span> added by <a href="https://github.com/dtolnay">@dtolnay</a> on 2022-01-01 05:29</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-01 18:50</div>
-            <div class="timeline-body"><p>In seeing the first example, I originally expected this to work in clap2 because of how the different lifetimes on <code>Arg&lt;'static, 'help&gt;</code> worked but then I saw the second example and I'm unsure what could change to cause that behavior.  @dtolnay have you seen this kind of thing before and have any pointers?</p>
+            <div class="timeline-body"><p>In seeing the first example, I originally expected this to work in clap2 because of how the different lifetimes on <code>Arg&lt;&#x27;static, &#x27;help&gt;</code> worked but then I saw the second example and I&#x27;m unsure what could change to cause that behavior.  @dtolnay have you seen this kind of thing before and have any pointers?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">A-builder</span> added by @epage on 2022-01-04 01:34</div>
+            <div class="event">Label <span class="label">A-builder</span> added by <a href="https://github.com/epage">@epage</a> on 2022-01-04 01:34</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">S-triage</span> added by @epage on 2022-01-04 01:34</div>
+            <div class="event">Label <span class="label">S-triage</span> added by <a href="https://github.com/epage">@epage</a> on 2022-01-04 01:34</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-11-08 04:56</div>
@@ -137,12 +137,12 @@ note: the lifetime `'arg` as defined here...
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @epage on 2022-11-08 04:56</div>
+            <div class="event">Closed by <a href="https://github.com/epage">@epage</a> on 2022-11-08 04:56</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:48:21 UTC
+        Synced at 2026-01-20 19:58:41 UTC
     </footer>
 </body>
 </html>

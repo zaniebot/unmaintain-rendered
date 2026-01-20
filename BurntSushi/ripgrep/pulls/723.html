@@ -26,9 +26,9 @@
             <div class="timeline-body"><p>As per the discussion on #544, this is my initial attempt at adding support for fixed width line numbers. Please review and let me know if things can be improved upon.</p>
 <p>A few thoughts I had as I worked on this:</p>
 <ul>
-<li>Rust's <code>format!</code> macro currently has no way of providing a custom padding character as a parameter. You have to provide it directly in the format string itself. (As per <a href="https://doc.rust-lang.org/std/fmt/#syntax">this</a>, only the width can be provided as a parameter.)</li>
-<li>This meant that adding support for format strings as suggested in the issue discussion proved to be difficult. Right now, the argument only accepts a number. It seems that we'll have to write a custom code for left padding or rely on a library to achieve this. I'm open to suggestions on this one.</li>
-<li>Should we handle possible combinations of CLI args? In the long help message for <code>line-number-width</code>, I've mentioned that it has no effect if <code>--no-line-number</code> is enabled, which is very obvious. Should I handle any other cases specific to this newly introduced argument to ensure nothing breaks?</li>
+<li>Rust&#x27;s <code>format!</code> macro currently has no way of providing a custom padding character as a parameter. You have to provide it directly in the format string itself. (As per <a href="https://doc.rust-lang.org/std/fmt/#syntax">this</a>, only the width can be provided as a parameter.)</li>
+<li>This meant that adding support for format strings as suggested in the issue discussion proved to be difficult. Right now, the argument only accepts a number. It seems that we&#x27;ll have to write a custom code for left padding or rely on a library to achieve this. I&#x27;m open to suggestions on this one.</li>
+<li>Should we handle possible combinations of CLI args? In the long help message for <code>line-number-width</code>, I&#x27;ve mentioned that it has no effect if <code>--no-line-number</code> is enabled, which is very obvious. Should I handle any other cases specific to this newly introduced argument to ensure nothing breaks?</li>
 </ul>
 <p>Thanks in advance!</p>
 </div>
@@ -36,7 +36,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2017-12-30 19:37</div>
             <div class="timeline-body"><p>In order to handle it as i suggested, i think you would want to have it check the argument string before conversion to <code>usize</code> and set a boolean in the <code>Args</code> struct to <code>arg.starts_with(&quot;0&quot;)</code>. Then you would pass that boolean to the printer and just have an <code>if</code> condition determine the format string to use</p>
-<p>But it doesn't really matter either way obv. Would be a cute feature but certainly not important</p>
+<p>But it doesn&#x27;t really matter either way obv. Would be a cute feature but certainly not important</p>
 <p>Will add further comments on the diff</p>
 </div>
         </div>
@@ -46,11 +46,11 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/okdana">@okdana</a> on <code>complete/_rg</code>:48 on 2017-12-30 19:43</div>
-            <div class="timeline-body"><p>The 'exclusive-or' list at the beginning should exclude all options that this one makes irrelevant. So we would probably want something like this at the very least:</p>
+            <div class="timeline-body"><p>The &#x27;exclusive-or&#x27; list at the beginning should exclude all options that this one makes irrelevant. So we would probably want something like this at the very least:</p>
 <pre><code>(-l -N --line-number-width --no-line-number)
 </code></pre>
 <p>Then the definition for <code>-N</code> should be updated similarly to exclude <code>--line-number-width</code></p>
-<p>(I think we should also add a few more, like <code>-c</code>, but it seems i haven't accounted for them in the past)</p>
+<p>(I think we should also add a few more, like <code>-c</code>, but it seems i haven&#x27;t accounted for them in the past)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -59,16 +59,16 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/okdana">@okdana</a> on <code>complete/_rg</code>:48 on 2017-12-30 19:46</div>
-            <div class="timeline-body"><p>Oh, i was going to comment that i don't think a short option is necessary, but it seems you reached that conclusion too, since you didn't actually add one. You should remove the <code>-l+</code> (which is used by something else anyway) then. So it'd be just one string, <code>(...)--line-number-width[...]:...</code></p>
-<p>ETA: And if you remove the <code>-l</code> you don't need to reference <code>--line-number-width</code> in the list any more; it's included by default</p>
+            <div class="timeline-body"><p>Oh, i was going to comment that i don&#x27;t think a short option is necessary, but it seems you reached that conclusion too, since you didn&#x27;t actually add one. You should remove the <code>-l+</code> (which is used by something else anyway) then. So it&#x27;d be just one string, <code>(...)--line-number-width[...]:...</code></p>
+<p>ETA: And if you remove the <code>-l</code> you don&#x27;t need to reference <code>--line-number-width</code> in the list any more; it&#x27;s included by default</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> requested changes on 2017-12-30 21:33</div>
             <div class="timeline-body"><p>This looks great to me! Nice PR. :-)</p>
-<p>My main concern here is supporting arguments like <code>06</code> to mean &quot;left pad, using zeroes.&quot; Right now, in this PR, I believe <code>06</code> will be parsed as <code>6</code>, which we will left pad with spaces. I am fine with starting there, but I very much expect someone to come along and request zero padding as well. At that point, if we change <code>06</code> to left pad zeroes, then it would technically be a breaking change, which I'd like to avoid.</p>
-<p>As a simple work-around to this, I'd suggest return an error if the number starts with a <code>0</code>.</p>
-<p>If and when we add a custom format character, we shouldn't use some other library to do left padding for us. Re-implementing this specific part of the <code>format!</code> macro should be a very short helper function.</p>
+<p>My main concern here is supporting arguments like <code>06</code> to mean &quot;left pad, using zeroes.&quot; Right now, in this PR, I believe <code>06</code> will be parsed as <code>6</code>, which we will left pad with spaces. I am fine with starting there, but I very much expect someone to come along and request zero padding as well. At that point, if we change <code>06</code> to left pad zeroes, then it would technically be a breaking change, which I&#x27;d like to avoid.</p>
+<p>As a simple work-around to this, I&#x27;d suggest return an error if the number starts with a <code>0</code>.</p>
+<p>If and when we add a custom format character, we shouldn&#x27;t use some other library to do left padding for us. Re-implementing this specific part of the <code>format!</code> macro should be a very short helper function.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -77,8 +77,8 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/balajisivaraman">@balajisivaraman</a> on <code>complete/_rg</code>:48 on 2017-12-31 04:55</div>
-            <div class="timeline-body"><p>Ah, it is with some embarrassment that I have to admit I was very excited by raising what would be my first PR in an OSS project that I failed to get this part of the change absolutely right. 😞  I'm sorry about that. Thanks for clarifying. I will make the changes you suggested.</p>
-<p>And yes, I also felt like we didn't need a short option for this. I briefly considered using <code>-w</code> but decided against it.</p>
+            <div class="timeline-body"><p>Ah, it is with some embarrassment that I have to admit I was very excited by raising what would be my first PR in an OSS project that I failed to get this part of the change absolutely right. 😞  I&#x27;m sorry about that. Thanks for clarifying. I will make the changes you suggested.</p>
+<p>And yes, I also felt like we didn&#x27;t need a short option for this. I briefly considered using <code>-w</code> but decided against it.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -105,8 +105,8 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/balajisivaraman">@balajisivaraman</a> on 2017-12-31 20:13</div>
-            <div class="timeline-body"><p>@BurntSushi, Oops! For some reason, I thought that was something automatically provided by <code>clap</code>. I've now updated the PR for the man pages as well as you suggested.</p>
-<p>ETA: Do we need to add the issue number in the commit message, or is it enough to add it to the PR only? I see that it ends up creating a lot of noise in the actual issue thread. (Apologies if I did it wrong and it created noise in this issue's thread.)</p>
+            <div class="timeline-body"><p>@BurntSushi, Oops! For some reason, I thought that was something automatically provided by <code>clap</code>. I&#x27;ve now updated the PR for the man pages as well as you suggested.</p>
+<p>ETA: Do we need to add the issue number in the commit message, or is it enough to add it to the PR only? I see that it ends up creating a lot of noise in the actual issue thread. (Apologies if I did it wrong and it created noise in this issue&#x27;s thread.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -120,14 +120,14 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/balajisivaraman">@balajisivaraman</a> on 2018-01-01 04:25</div>
-            <div class="timeline-body"><p>Sorry, that is something I should've known better and added when I made that change itself. It is done now.</p>
+            <div class="timeline-body"><p>Sorry, that is something I should&#x27;ve known better and added when I made that change itself. It is done now.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @BurntSushi on 2018-01-01 14:00</div>
+            <div class="event">Merged by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-01-01 14:00</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2018-01-01 14:00</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-01-01 14:00</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-01-01 14:00</div>
@@ -140,7 +140,7 @@
     </div>
 
     <footer>
-        Synced at 2026-01-12 18:27:56 UTC
+        Synced at 2026-01-20 18:48:16 UTC
     </footer>
 </body>
 </html>

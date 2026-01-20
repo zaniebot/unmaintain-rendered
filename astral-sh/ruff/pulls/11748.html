@@ -23,14 +23,14 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>Fixes https://github.com/astral-sh/ruff/issues/11724#issuecomment-2148183543</p>
+            <div class="timeline-body">Summary
+<p>Fixes <a href="https://github.com/astral-sh/ruff/issues/11724">astral-sh/ruff#11724</a>#issuecomment-2148183543</p>
 <p>Code from the linked issue that produces instable formatting:</p>
-<pre><code class="language-python">
-'''
+<pre><code>
+&#x27;&#x27;&#x27;
 
 
-'''
+&#x27;&#x27;&#x27;
 </code></pre>
 <p>This turned out to be something entirely different than I expected.
 I initially thought that it was an issue with the docstring rendering, which uses <code>trim</code> instead of <code>PythonWhitespace::trim</code>.
@@ -39,65 +39,65 @@ Both snippets generate the same IR! That means this is a bug in the <code>Printe
 <p>It turns out that the fix is relatively simple.</p>
 <p>The <code>Printer</code> omits <code>hard_line_break</code> IR elements or only renders a single <code>\n</code> for a <code>empty_line</code> IR elements when the
 current line is all empty. The problem is that the <code>Printer</code> uses the line width to determine if the line is empty.
-However, using the line width here isn't correct because a line can be non-empty but has a zero width if it only consists of zero-width characters, which is exactly what we have in the reported instability.</p>
-<p>I considered removing this behavior but we rely heavily on it in <code>suite.rs</code> and I'm not going to touch this to fix this bug!
+However, using the line width here isn&#x27;t correct because a line can be non-empty but has a zero width if it only consists of zero-width characters, which is exactly what we have in the reported instability.</p>
+<p>I considered removing this behavior but we rely heavily on it in <code>suite.rs</code> and I&#x27;m not going to touch this to fix this bug!
 So what I did instead is to change the <code>Printer</code> to keep track of the start of the current line and test if the current formatted line is empty.</p>
-<p>I don't suspect that this changes performance much because it only adds a single write after a newline character. Testing whether the line gets a bit more expensive
+<p>I don&#x27;t suspect that this changes performance much because it only adds a single write after a newline character. Testing whether the line gets a bit more expensive
 because it now needs to dereference into the buffer, but I think in total, this is just noise.</p>
-<p>And I was wrong lol. THis has a huge perf impact. Let's see if I can do better</p>
-<h2>Backwards compatibility</h2>
-<p>It's hard to be a 100% sure, but I'm confident that it doesn't have widespread impact because zero-width characters are rare, even more so zero-width lines only consisting of zero-width characters.</p>
+<p>And I was wrong lol. THis has a huge perf impact. Let&#x27;s see if I can do better</p>
+Backwards compatibility
+<p>It&#x27;s hard to be a 100% sure, but I&#x27;m confident that it doesn&#x27;t have widespread impact because zero-width characters are rare, even more so zero-width lines only consisting of zero-width characters.</p>
 <p>The only zero-width character that Python allows outside strings and comments is the form-feed character. Ruff does not preserve line-feed characters except in suppressed ranges. The existing implementation used a work-around to avoid this very specific printer behavior. This PR allows to remove the work around and the tests keep passing.</p>
 <p>For strings, we write the entire string content as a single text, preserving line breaks as is.</p>
-<p>For comments: That's the issue discovered here. Existing code would already have the trailing line stripped and reformatting the same code wouldn't insert the trailing line after the zero-width characters line.</p>
+<p>For comments: That&#x27;s the issue discovered here. Existing code would already have the trailing line stripped and reformatting the same code wouldn&#x27;t insert the trailing line after the zero-width characters line.</p>
 <p>So we should be good</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>Added test. All existing tests keep passing.</p>
-<h2>Thanks</h2>
+Thanks
 <p>Thanks to @jasikpark for finding the instability and helping me to reproduce the issue.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-06-05 07:54</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-05 07:54</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2024-06-05 07:54</div>
+            <div class="event">Label <span class="label">formatter</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-05 07:54</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-06-05 07:57</div>
-            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/fix-docstring-non-visible-whitespace-content">CodSpeed Performance Report</a></h2>
-<h3>Merging #11748 will <strong>degrade performances by 12.18%</strong></h3>
-<p><sub>Comparing <code>fix-docstring-non-visible-whitespace-content</code> (945b033) with <code>main</code> (b021b5b)</sub></p>
-<h3>Summary</h3>
+            <div class="timeline-body"><a href="https://codspeed.io/astral-sh/ruff/branches/fix-docstring-non-visible-whitespace-content">CodSpeed Performance Report</a>
+Merging #11748 will <strong>degrade performances by 12.18%</strong>
+<p>Comparing <code>fix-docstring-non-visible-whitespace-content</code> (945b033) with <code>main</code> (b021b5b)</p>
+Summary
 <p><code>❌ 1 (👁 1)</code> regressions
 <code>✅ 29</code> untouched benchmarks</p>
-<h3>Benchmarks breakdown</h3>
+Benchmarks breakdown
 <p>|     | Benchmark | <code>main</code> | <code>fix-docstring-non-visible-whitespace-content</code> | Change |
 | --- | --------- | ----------------------- | ------------------- | ------ |
 | 👁 | <code>linter/all-with-preview-rules[numpy/globals.py]</code> | 802.8 µs | 914.1 µs | -12.18% |</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Converted to draft by @MichaReiser on 2024-06-05 08:14</div>
+            <div class="event">Converted to draft by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-05 08:14</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @MichaReiser on 2024-06-05 08:27</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-05 08:27</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2024-06-05 08:27</div>
+            <div class="event">Review requested from <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-05 08:27</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-06-05 08:41</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
@@ -111,10 +111,10 @@ because it now needs to dereference into the buffer, but I think in total, this 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @MichaReiser on 2024-06-05 15:55</div>
+            <div class="event">Merged by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-05 15:55</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2024-06-05 15:55</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-05 15:55</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-06-05 15:55</div>
@@ -122,7 +122,7 @@ because it now needs to dereference into the buffer, but I think in total, this 
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:04:40 UTC
+        Synced at 2026-01-20 19:04:28 UTC
     </footer>
 </body>
 </html>

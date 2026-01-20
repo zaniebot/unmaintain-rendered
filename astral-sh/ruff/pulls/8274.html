@@ -23,50 +23,50 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/akx">@akx</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This PR is a heavy WIP and RFC for adding support for wildcard paths for <a href="https://docs.astral.sh/ruff/rules/banned-api/"><code>banned-api</code></a>.</p>
 <p>In short, the goal would be to be able to do</p>
 <pre><code>[tool.ruff.flake8-tidy-imports.banned-api]
 &quot;some_package.ANCIENT*&quot;.msg = &quot;None of the ancient powers of `some_package` may be invoked&quot;
 </code></pre>
-<p>instead of having to spell out all of the ancients' names in the config.</p>
-<h2>How?!</h2>
-<p>This PR implements this by way of a new <code>CallPathPattern</code> struct, which is basically a <code>CallPath</code> but with possible wildcard segments (<code>glob.Pattern</code>s; I looked at <code>wildmatch</code> and decided not to introduce another dependency) and can be matched against a qualified name <code>CallPath</code>. I'm not 100% sure that's the best way here, and especially e.g. config parsing becomes a bit hairier since turning the strings in the config to CallPathPatterns could fail (e.g. <code>some_package.ANCI[</code> is invalid).<br />
-(I also noticed there's a NameMatchPolicy thing in the <code>flake8_tidy_imports</code> linter that kind-of does the same thing.)</p>
-<p>Then, there's a possible concern about performance, since we can no longer just use an FxHashMap for looking up bans. (Since this is very much a WIP (and who knows, maybe this is deemed a Bad Idea all in all), I haven't measured things.)</p>
-<p>Of course we could come up with a smarter data structure that's both an FxHashMap for the exact-match happy path, and a vector of CallPathPatterns for other situations?</p>
-<h2>Test Plan</h2>
-<!-- How was it tested? -->
+<p>instead of having to spell out all of the ancients&#x27; names in the config.</p>
+How?!
+<p>This PR implements this by way of a new <code>CallPathPattern</code> struct, which is basically a <code>CallPath</code> but with possible wildcard segments (<code>glob.Pattern</code>s; I looked at <code>wildmatch</code> and decided not to introduce another dependency) and can be matched against a qualified name <code>CallPath</code>. I&#x27;m not 100% sure that&#x27;s the best way here, and especially e.g. config parsing becomes a bit hairier since turning the strings in the config to CallPathPatterns could fail (e.g. <code>some_package.ANCI[</code> is invalid).<br>
+(I also noticed there&#x27;s a NameMatchPolicy thing in the <code>flake8_tidy_imports</code> linter that kind-of does the same thing.)</p>
+<p>Then, there&#x27;s a possible concern about performance, since we can no longer just use an FxHashMap for looking up bans. (Since this is very much a WIP (and who knows, maybe this is deemed a Bad Idea all in all), I haven&#x27;t measured things.)</p>
+<p>Of course we could come up with a smarter data structure that&#x27;s both an FxHashMap for the exact-match happy path, and a vector of CallPathPatterns for other situations?</p>
+Test Plan
 
-<p>Not very well yet. It's probably buggy (but compiles!). The patch is currently also peppered with TODOs.</p>
+
+<p>Not very well yet. It&#x27;s probably buggy (but compiles!). The patch is currently also peppered with TODOs.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2023-10-30 10:18</div>
-            <div class="timeline-body"><p>Sorry to ping, but: any thoughts, @charliermarsh et al.? I wouldn't want to continue here until the whole idea is even slightly validated :)</p>
+            <div class="timeline-body"><p>Sorry to ping, but: any thoughts, @charliermarsh et al.? I wouldn&#x27;t want to continue here until the whole idea is even slightly validated :)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-30 23:52</div>
-            <div class="timeline-body"><p>I think the overall idea is reasonable. I assume we'd also want to support:</p>
-<pre><code class="language-toml">&quot;some_package.*.ANCIENT&quot;.msg = &quot;None of the ancient powers of `some_package` may be invoked&quot;
+            <div class="timeline-body"><p>I think the overall idea is reasonable. I assume we&#x27;d also want to support:</p>
+<pre><code>&quot;some_package.*.ANCIENT&quot;.msg = &quot;None of the ancient powers of `some_package` may be invoked&quot;
 </code></pre>
 <p>One idea: could we use a <code>GlobSet</code>? So, combine all the patterns into one, and do that single test; if it passes, then run all the individual tests to find the relevant message.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2023-10-31 08:41</div>
-            <div class="timeline-body"><p>@charliermarsh Mm, yeah! (This would already support <code>some_package.*.ANCIENT</code>, but not <code>some_package.**.ANCIENT</code>.) Using a GlobSet would be a grand idea otherwise, but it doesn't look like you can customize which character(s) the globs think are path separators, so I don't think we can just easily match them against full <code>CallPath</code>s then.</p>
-<p>We'd want these patterns to consider <code>.</code> path separators, not <code>/</code> ... unless we do spooky things on our side and turn the <code>CallPath</code>s into slash-separated strings (which, tbh, isn't completely unreasonable, probably...)?</p>
+            <div class="timeline-body"><p>@charliermarsh Mm, yeah! (This would already support <code>some_package.*.ANCIENT</code>, but not <code>some_package.**.ANCIENT</code>.) Using a GlobSet would be a grand idea otherwise, but it doesn&#x27;t look like you can customize which character(s) the globs think are path separators, so I don&#x27;t think we can just easily match them against full <code>CallPath</code>s then.</p>
+<p>We&#x27;d want these patterns to consider <code>.</code> path separators, not <code>/</code> ... unless we do spooky things on our side and turn the <code>CallPath</code>s into slash-separated strings (which, tbh, isn&#x27;t completely unreasonable, probably...)?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2023-11-01 11:39</div>
-            <div class="timeline-body"><p>Oh hey, huh... there's some prior art: https://github.com/astral-sh/ruff/pull/5024</p>
+            <div class="timeline-body"><p>Oh hey, huh... there&#x27;s some prior art: <a href="https://github.com/astral-sh/ruff/pull/5024">astral-sh/ruff#5024</a></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Converted to draft by @akx on 2023-11-01 12:44</div>
+            <div class="event">Converted to draft by <a href="https://github.com/akx">@akx</a> on 2023-11-01 12:44</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2023-11-01 12:44</div>
@@ -75,25 +75,25 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-12 18:33</div>
-            <div class="timeline-body"><p>@MichaReiser I've assigned you to this to decide what the path forward looks like. Let me know if that's not a good fit.</p>
+            <div class="timeline-body"><p>@MichaReiser I&#x27;ve assigned you to this to decide what the path forward looks like. Let me know if that&#x27;s not a good fit.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @MichaReiser by @zanieb on 2024-03-12 18:34</div>
+            <div class="event">Assigned to <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-12 18:34</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-28 17:50</div>
-            <div class="timeline-body"><p>I only saw the ping when browsing through open Ruff PRs. I'm sorry.</p>
-<p>I don't have a clear path forward for this, but I'm now looking into multifile analysis and plan to significantly change Ruff's semantic model. I think it does make sense to defer this work until we have a better understanding of how our semantic model looks (I don't expect <code>CallPath</code> to survive the refactor).</p>
+            <div class="timeline-body"><p>I only saw the ping when browsing through open Ruff PRs. I&#x27;m sorry.</p>
+<p>I don&#x27;t have a clear path forward for this, but I&#x27;m now looking into multifile analysis and plan to significantly change Ruff&#x27;s semantic model. I think it does make sense to defer this work until we have a better understanding of how our semantic model looks (I don&#x27;t expect <code>CallPath</code> to survive the refactor).</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2024-04-08 07:03</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-08 07:03</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:01:06 UTC
+        Synced at 2026-01-20 18:58:48 UTC
     </footer>
 </body>
 </html>

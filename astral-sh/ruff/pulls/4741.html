@@ -23,25 +23,19 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a></div>
-            <div class="timeline-body"><!--
-Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+            <div class="timeline-body">
 
-- Does this pull request include a summary of the change? (See below.)
-- Does this pull request include a descriptive title?
-- Does this pull request include references to any relevant issues?
--->
-
-<h2>Summary</h2>
+Summary
 <p>This PR adds a new <code>Insertion::start_of_block</code> mechanism, which will be used by the flake8-type-checking autofixes to add an import statement within an <code>if TYPE_CHECKING:</code> block.</p>
 <p>Also necessary is the ability to differentiate between inline and own-line insertions. If we see a block like:</p>
-<pre><code class="language-py">import foo; x = 1
+<pre><code>import foo; x = 1
 </code></pre>
-<p>...and we try to add content between <code>import foo</code> and <code>x = 1</code>, we'll note that this is an inline insertion. Notably, we can't add multi-line statements (like <code>if</code> blocks with indented bodies) inline, so differentiating these positions in the API will enable us to avoid generating invalid edits for those rare cases.</p>
+<p>...and we try to add content between <code>import foo</code> and <code>x = 1</code>, we&#x27;ll note that this is an inline insertion. Notably, we can&#x27;t add multi-line statements (like <code>if</code> blocks with indented bodies) inline, so differentiating these positions in the API will enable us to avoid generating invalid edits for those rare cases.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/importer/insertion.rs</code>:306 on 2023-05-31 02:59</div>
-            <div class="timeline-body"><p>I'd like to change these to declarative snapshot tests, if I have time.</p>
+            <div class="timeline-body"><p>I&#x27;d like to change these to declarative snapshot tests, if I have time.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -50,16 +44,16 @@ Thank you for contributing to Ruff! To help us out with reviewing, please consid
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-31 03:09</div>
-            <div class="timeline-body"><p>I'm not very happy with this API or concept, but I'm kind of just accepting it as &quot;fine&quot; for now. It already exists, and I just need to extend it for the purpose of supporting this new edit kind.</p>
+            <div class="timeline-body"><p>I&#x27;m not very happy with this API or concept, but I&#x27;m kind of just accepting it as &quot;fine&quot; for now. It already exists, and I just need to extend it for the purpose of supporting this new edit kind.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-05-31 03:32</div>
-            <div class="timeline-body"><h2>PR Check Results</h2>
-<h3>Ecosystem</h3>
+            <div class="timeline-body">PR Check Results
+Ecosystem
 <p>✅ ecosystem check detected no changes.</p>
-<h3>Benchmark</h3>
-<h4>Linux</h4>
+Benchmark
+Linux
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 linter/all-rules/large/dataset.py          1.00     18.0±0.49ms     2.3 MB/sec    1.02     18.3±0.60ms     2.2 MB/sec
@@ -75,7 +69,7 @@ parser/numpy/ctypeslib.py                  1.00  1282.2±34.15µs    13.0 MB/sec
 parser/numpy/globals.py                    1.02    130.9±4.44µs    22.5 MB/sec    1.00    128.3±4.18µs    23.0 MB/sec
 parser/pydantic/types.py                   1.01      2.9±0.10ms     8.9 MB/sec    1.00      2.8±0.09ms     9.0 MB/sec
 </code></pre>
-<h4>Windows</h4>
+Windows
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 linter/all-rules/large/dataset.py          1.01     22.1±0.71ms  1886.8 KB/sec    1.00     22.0±0.75ms  1896.9 KB/sec
@@ -91,7 +85,7 @@ parser/numpy/ctypeslib.py                  1.00  1660.4±51.59µs    10.0 MB/sec
 parser/numpy/globals.py                    1.00   170.7±13.38µs    17.3 MB/sec    1.00    170.6±8.18µs    17.3 MB/sec
 parser/pydantic/types.py                   1.00      3.7±0.24ms     6.8 MB/sec    1.00      3.7±0.11ms     6.9 MB/sec
 </code></pre>
-<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
 
 </div>
         </div>
@@ -103,13 +97,13 @@ parser/pydantic/types.py                   1.00      3.7±0.24ms     6.8 MB/sec 
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/importer/insertion.rs</code>:64 on 2023-05-31 07:14</div>
             <div class="timeline-body"><p>Nit: Calling into the <code>Lexer</code> for this feels a bit overkill. What we want here is to find the next non-trivia character. We should be able to do this with a simple string search. We only need to track whether we are in a comment, and, if so, skip all content until we reach the end of the line. We can otherwise return the first token that we find.</p>
-<p>But I think this here is even simpler because you only want the next non whitespace character. So all you want is to <code>locator.slice(location.to_usize().._).trim_start_matches(is_python_whitespace).first() == Some(';')</code></p>
-<p>I actually don't know how expensive it is to call into the Lexer. So maybe this is totally fine.</p>
+<p>But I think this here is even simpler because you only want the next non whitespace character. So all you want is to <code>locator.slice(location.to_usize().._).trim_start_matches(is_python_whitespace).first() == Some(&#x27;;&#x27;)</code></p>
+<p>I actually don&#x27;t know how expensive it is to call into the Lexer. So maybe this is totally fine.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/importer/insertion.rs</code>:76 on 2023-05-31 07:15</div>
-            <div class="timeline-body"><p>Shouldn't this also skip over <code>NonLogicalNewlines</code>?</p>
+            <div class="timeline-body"><p>Shouldn&#x27;t this also skip over <code>NonLogicalNewlines</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -120,7 +114,7 @@ parser/pydantic/types.py                   1.00      3.7±0.24ms     6.8 MB/sec 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/importer/insertion.rs</code>:142 on 2023-05-31 07:21</div>
-            <div class="timeline-body"><p>I'm trying to figure out the right terminology for &quot;indented&quot; content. In most languages, it's called a block. I, thus far, called it Body in the formatter.</p>
+            <div class="timeline-body"><p>I&#x27;m trying to figure out the right terminology for &quot;indented&quot; content. In most languages, it&#x27;s called a block. I, thus far, called it Body in the formatter.</p>
 <p>The only term that I found in the python documentation is <em>grouping of statements</em> even though this is, strictly speaking, not correct, because it also applies to non-statements (e.g. match cases)</p>
 <blockquote>
 <p>Leading whitespace (spaces and tabs) at the beginning of a logical line is used to compute the indentation level of the line, which in turn is used to determine the grouping of statements.</p>
@@ -130,7 +124,7 @@ parser/pydantic/types.py                   1.00      3.7±0.24ms     6.8 MB/sec 
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/importer/insertion.rs</code>:167 on 2023-05-31 07:21</div>
             <div class="timeline-body"><p>Nit: To avoid panicking if the parentheses are unbalanced.</p>
-<pre><code class="language-suggestion">                        state = Awaiting::Colon(depth.saturdating_sub(1));
+<pre><code>                        state = Awaiting::Colon(depth.saturdating_sub(1));
 </code></pre>
 </div>
         </div>
@@ -140,14 +134,14 @@ parser/pydantic/types.py                   1.00      3.7±0.24ms     6.8 MB/sec 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-31 17:01</div>
-            <div class="timeline-body"><p>I'm going to follow-up on the lexing comments in a separate PR -- all of that code already existed in <code>Insertion</code>, it was just moved around a bit. I agree that we should change it, will do it today.</p>
+            <div class="timeline-body"><p>I&#x27;m going to follow-up on the lexing comments in a separate PR -- all of that code already existed in <code>Insertion</code>, it was just moved around a bit. I agree that we should change it, will do it today.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2023-05-31 17:08</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-31 17:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-05-31 17:08</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-31 17:08</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2023-05-31 17:08</div>
@@ -155,7 +149,7 @@ parser/pydantic/types.py                   1.00      3.7±0.24ms     6.8 MB/sec 
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:57:44 UTC
+        Synced at 2026-01-20 18:54:05 UTC
     </footer>
 </body>
 </html>

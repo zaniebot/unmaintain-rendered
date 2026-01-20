@@ -23,11 +23,11 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/nadav7679">@nadav7679</a></div>
-            <div class="timeline-body"><h3>Question</h3>
+            <div class="timeline-body">Question
 <p>Hi ty team, loving your work.</p>
-<p>I encountered quite a simple piece of logic that I can't seem to restructure in a way that passes ty check. I was wondering what is the best practice to handle it.</p>
+<p>I encountered quite a simple piece of logic that I can&#x27;t seem to restructure in a way that passes ty check. I was wondering what is the best practice to handle it.</p>
 <p>The use case is something like this (also view it in this <a href="https://play.ty.dev/a94c53c4-a77d-49c7-8743-2b5e33669991">playground</a>):</p>
-<pre><code class="language-python3">from typing import reveal_type
+<pre><code>from typing import reveal_type
 
 class A:
     pass
@@ -52,25 +52,25 @@ def f(
 
     return (a, b)
 </code></pre>
-<p>Basically, the function <code>f</code> is allowed to be triggered with either <code>a</code>, <code>b</code>, or both, but is not allowed to be triggered with two <code>None</code>s. <code>ty</code> can't recognise this logic so it treats <code>b</code> as type <code>B | None</code> and displays this error when trying to return B:</p>
+<p>Basically, the function <code>f</code> is allowed to be triggered with either <code>a</code>, <code>b</code>, or both, but is not allowed to be triggered with two <code>None</code>s. <code>ty</code> can&#x27;t recognise this logic so it treats <code>b</code> as type <code>B | None</code> and displays this error when trying to return B:</p>
 <pre><code>Return type does not match returned value: expected `A | B | tuple[A, B]`, found `B | None` (invalid-return-type) [Ln 18, Col 16]
 </code></pre>
-<p>I tried playing around with it and couldn't find a good solution. I was wondering what's the best practice in these kinds of cases.</p>
+<p>I tried playing around with it and couldn&#x27;t find a good solution. I was wondering what&#x27;s the best practice in these kinds of cases.</p>
 <p>Thanks!</p>
-<h3>Version</h3>
+Version
 <p><em>No response</em></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @nadav7679 on 2026-01-14 17:03</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/nadav7679">@nadav7679</a> on 2026-01-14 17:03</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Implementing two variable type detection" to "Best practices for type detection with two variable logic" by @nadav7679 on 2026-01-14 17:04</div>
+            <div class="event">Renamed from &quot;Implementing two variable type detection&quot; to &quot;Best practices for type detection with two variable logic&quot; by <a href="https://github.com/nadav7679">@nadav7679</a> on 2026-01-14 17:04</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-14 17:11</div>
-            <div class="timeline-body"><p>It's maybe a bit weird, but we do support narrowing unions of tuples via subscript checks, and we also support narrowing of individual subscript elements, so you <em>could</em> do something like this:</p>
-<pre><code class="language-py">from typing import reveal_type
+            <div class="timeline-body"><p>It&#x27;s maybe a bit weird, but we do support narrowing unions of tuples via subscript checks, and we also support narrowing of individual subscript elements, so you <em>could</em> do something like this:</p>
+<pre><code>from typing import reveal_type
 
 class A:
     value: int
@@ -94,7 +94,7 @@ def f(ab: tuple[A | None, B] | tuple[A, B | None]) -&gt; A | B | tuple[A, B]:
 
     # at this point, `a[0]` has been narrowed to `A`
     # and `a[1]` has been narrowed to `B`,
-    # (although we don't *currently* narrow the tuple as a whole
+    # (although we don&#x27;t *currently* narrow the tuple as a whole
     # to `tuple[A, B]` at this location)
     return ab[0], ab[1]
 </code></pre>
@@ -108,7 +108,7 @@ def f(ab: tuple[A | None, B] | tuple[A, B | None]) -&gt; A | B | tuple[A, B]:
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-14 17:17</div>
             <div class="timeline-body"><p>The more usual thing to do is probably not to wrap your variables in a tuple, but just use an <code>assert</code> to help the type checker out:</p>
-<pre><code class="language-py">from typing import reveal_type
+<pre><code>from typing import reveal_type
 
 class A:
     pass
@@ -138,10 +138,10 @@ def f(
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-14 23:27</div>
-            <div class="timeline-body"><p>The key thing that ty (and all other Python type checkers I know of) don't track here is &quot;conditional narrowing&quot;. To handle this example, we'd need to track that after <code>if a is None and b is None: return</code>, <code>a is not None OR b is not None</code>, so that later we know that <code>a is None</code> implies <code>b is not None</code>.</p>
-<p>Some amount of this is doable, but since no other type checker does it either, it probably won't be a priority in the short term. I'll keep this issue open and track it as a &quot;wish&quot;.</p>
+            <div class="timeline-body"><p>The key thing that ty (and all other Python type checkers I know of) don&#x27;t track here is &quot;conditional narrowing&quot;. To handle this example, we&#x27;d need to track that after <code>if a is None and b is None: return</code>, <code>a is not None OR b is not None</code>, so that later we know that <code>a is None</code> implies <code>b is not None</code>.</p>
+<p>Some amount of this is doable, but since no other type checker does it either, it probably won&#x27;t be a priority in the short term. I&#x27;ll keep this issue open and track it as a &quot;wish&quot;.</p>
 <p>In addition to the suggestions above, you can also restructure the conditionals:</p>
-<pre><code class="language-py">if a is None:
+<pre><code>if a is None:
     if b is None:
         raise
     return b
@@ -152,27 +152,27 @@ return (a, b)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> removed by @carljm on 2026-01-14 23:27</div>
+            <div class="event">Label <span class="label">question</span> removed by <a href="https://github.com/carljm">@carljm</a> on 2026-01-14 23:27</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">wish</span> added by @carljm on 2026-01-14 23:27</div>
+            <div class="event">Label <span class="label">wish</span> added by <a href="https://github.com/carljm">@carljm</a> on 2026-01-14 23:27</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Best practices for type detection with two variable logic" to "Track conditional narrowing between multiple variables" by @carljm on 2026-01-14 23:27</div>
+            <div class="event">Renamed from &quot;Best practices for type detection with two variable logic&quot; to &quot;Track conditional narrowing between multiple variables&quot; by <a href="https://github.com/carljm">@carljm</a> on 2026-01-14 23:27</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/nadav7679">@nadav7679</a> on 2026-01-15 10:56</div>
             <div class="timeline-body"><p>Thanks both!</p>
 <blockquote>
-<p>we'd need to track that after if a is None and b is None: return, a is not None OR b is not None, so that later we know that a is None implies b is not None.</p>
+<p>we&#x27;d need to track that after if a is None and b is None: return, a is not None OR b is not None, so that later we know that a is None implies b is not None.</p>
 </blockquote>
-<p>Yeah that's exactly what I thought. Would be nice to have (and impressive) but definitely not a must.</p>
+<p>Yeah that&#x27;s exactly what I thought. Would be nice to have (and impressive) but definitely not a must.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-15 11:45:47 UTC
+        Synced at 2026-01-20 19:27:08 UTC
     </footer>
 </body>
 </html>

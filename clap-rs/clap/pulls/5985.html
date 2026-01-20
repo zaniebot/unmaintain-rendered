@@ -25,13 +25,13 @@
             <div class="timeline-header"><a href="https://github.com/mernen">@mernen</a></div>
             <div class="timeline-body"><p>Fixes #5979, along with a few other issues:</p>
 <ul>
-<li>Dynamic completion didn't work properly when the argument is quoted (e.g. <code>exhaustive 'hi</code>) — static completion works because <code>compgen</code> apparently ignores leading quotes in the input word</li>
+<li>Dynamic completion didn&#x27;t work properly when the argument is quoted (e.g. <code>exhaustive &#x27;hi</code>) — static completion works because <code>compgen</code> apparently ignores leading quotes in the input word</li>
 <li>Both static and dynamic completion gave wrong results when the cursor was not at the end of the word (e.g. <code>exhaustive --h⇥XYZ</code> should result in <code>cargo --helpXYZ</code>, where <code>⇥</code> represents the position the cursor should be when pressing Tab)</li>
 </ul>
 <p>The fix for static completion is fairly straightforward: rather than <code>cur=&quot;${COMP_WORDS[COMP_CWORD]}&quot;</code>, we use <code>cur=&quot;$2&quot;</code>. <code>$2</code> omits leading quotes (which are inserted back by Bash automatically) and only returns the word up until the cursor point. The latter point is what also addresses #5979.</p>
-<p>I couldn't find any downsides to this in Bash 4+ — back in 3.x days <code>$COMP_WORDS</code> would ignore <code>$COMP_WORDBREAKS</code>, so this was a way to e.g. capture <code>--foo=</code>, but sadly Bash's behavior keeps changing in subtle ways. I included a conditional to keep old behavior for &lt;4, as it seems the least bad option.</p>
-<p>The change for dynamic completion, though, is quite the hack — to keep the same contract and minimize impact, I still pass <code>$COMP_WORDS</code> as arguments to the binary, but replace <code>$COMP_WORDS[$COMP_CWORD]</code> with <code>$2</code>. For the common case (cursor at the last position) everything I said for static completion still applies, but otherwise it does destroy some information — for example, if the user types <code>exhaustive hint ⇥ --dir /foo</code>, the binary will receive the arguments <code>[&quot;exhaustive&quot;, &quot;hint&quot;, &quot;&quot;, &quot;/foo&quot;]</code>, completely missing <code>--dir</code>. No issue for completers that don't inspect the argument list, but if <code>--dir /foo</code> was for example relevant for context, it wouldn't be parsed. This can be worked around by injecting <code>${COMP_LINE:$COMP_POINT}</code> until the rest of the word as a new item in the array, but I found it caused a few other corner cases, so I'm not sure it's worth the trouble.</p>
-<p>Completely by accident, this also partially, arguably improves <code>--foo=</code> Bash ≥4 — the binary now receives <code>[&quot;--foo&quot;, &quot;&quot;]</code> and has one shot at providing a completion. If any character is entered, however, <code>--foo=b</code> turns into <code>[&quot;--foo&quot;, &quot;=&quot;, &quot;b&quot;]</code>, and stops working again. I'm afraid the way to <em>properly</em> solve this along with the previously mentioned loss of data is to parse <code>$COMP_LINE</code>, as was previously discussed on #5512.</p>
+<p>I couldn&#x27;t find any downsides to this in Bash 4+ — back in 3.x days <code>$COMP_WORDS</code> would ignore <code>$COMP_WORDBREAKS</code>, so this was a way to e.g. capture <code>--foo=</code>, but sadly Bash&#x27;s behavior keeps changing in subtle ways. I included a conditional to keep old behavior for &lt;4, as it seems the least bad option.</p>
+<p>The change for dynamic completion, though, is quite the hack — to keep the same contract and minimize impact, I still pass <code>$COMP_WORDS</code> as arguments to the binary, but replace <code>$COMP_WORDS[$COMP_CWORD]</code> with <code>$2</code>. For the common case (cursor at the last position) everything I said for static completion still applies, but otherwise it does destroy some information — for example, if the user types <code>exhaustive hint ⇥ --dir /foo</code>, the binary will receive the arguments <code>[&quot;exhaustive&quot;, &quot;hint&quot;, &quot;&quot;, &quot;/foo&quot;]</code>, completely missing <code>--dir</code>. No issue for completers that don&#x27;t inspect the argument list, but if <code>--dir /foo</code> was for example relevant for context, it wouldn&#x27;t be parsed. This can be worked around by injecting <code>${COMP_LINE:$COMP_POINT}</code> until the rest of the word as a new item in the array, but I found it caused a few other corner cases, so I&#x27;m not sure it&#x27;s worth the trouble.</p>
+<p>Completely by accident, this also partially, arguably improves <code>--foo=</code> Bash ≥4 — the binary now receives <code>[&quot;--foo&quot;, &quot;&quot;]</code> and has one shot at providing a completion. If any character is entered, however, <code>--foo=b</code> turns into <code>[&quot;--foo&quot;, &quot;=&quot;, &quot;b&quot;]</code>, and stops working again. I&#x27;m afraid the way to <em>properly</em> solve this along with the previously mentioned loss of data is to parse <code>$COMP_LINE</code>, as was previously discussed on #5512.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -40,7 +40,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/epage">@epage</a> on <code>clap_complete/src/aot/shells/bash.rs</code>:28 on 2025-05-05 19:11</div>
-            <div class="timeline-body"><p>I'm much more of a fan of explicit conditionals (e.g. our other version check in here)</p>
+            <div class="timeline-body"><p>I&#x27;m much more of a fan of explicit conditionals (e.g. our other version check in here)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -55,7 +55,7 @@
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:49:47 UTC
+        Synced at 2026-01-20 20:00:49 UTC
     </footer>
 </body>
 </html>

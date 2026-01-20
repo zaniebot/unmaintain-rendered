@@ -24,17 +24,17 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a></div>
             <div class="timeline-body"><p>We should add an <code>--compile-bytecode</code> option to <code>uv python install</code> that bytecode compiles the standard library.</p>
-<h2>Background</h2>
-<p>See https://github.com/astral-sh/uv/issues/16378 for previous discussion.</p>
-<p><code>sudo apt install python3</code> on Ubuntu installs Python with a bytecode compiled standard library (<code>__pycache__/*.pyc</code>). The <code>python</code> docker images strip <code>.pyc</code> files, to save image space (https://github.com/docker-library/python/issues/615#issuecomment-842692129). Python build standalone installations currently aren't bytecode compiled either.</p>
-<p>When installing packages with bytecode compilation (default in pip, in uv with <code>--compile-bytecode</code>), only installed Python files are compiled, but not the standard library. But when using pip in the <code>python</code> docker as the (default) root user in the runtime stage, or when using it with Python build standalone, just running pip imports many standard library packages, which compiles them to bytecode. This primes the cache for faster startup, while running uv doesn't do that.</p>
-<p>While the situation with the <code>python</code> docker image is more ambiguous (e.g., changing the system installation requires root, and we don't want to recommend running uv as root for faster performance), we can implement faster startup from (Docker) images with Python build standalone by adding an option to bytecode compile the standard library on installation:</p>
+Background
+<p>See <a href="https://github.com/astral-sh/uv/issues/16378">astral-sh/uv#16378</a> for previous discussion.</p>
+<p><code>sudo apt install python3</code> on Ubuntu installs Python with a bytecode compiled standard library (<code>__pycache__/*.pyc</code>). The <code>python</code> docker images strip <code>.pyc</code> files, to save image space (<a href="https://github.com/docker-library/python/issues/615">docker-library/python#615</a>#issuecomment-842692129). Python build standalone installations currently aren&#x27;t bytecode compiled either.</p>
+<p>When installing packages with bytecode compilation (default in pip, in uv with <code>--compile-bytecode</code>), only installed Python files are compiled, but not the standard library. But when using pip in the <code>python</code> docker as the (default) root user in the runtime stage, or when using it with Python build standalone, just running pip imports many standard library packages, which compiles them to bytecode. This primes the cache for faster startup, while running uv doesn&#x27;t do that.</p>
+<p>While the situation with the <code>python</code> docker image is more ambiguous (e.g., changing the system installation requires root, and we don&#x27;t want to recommend running uv as root for faster performance), we can implement faster startup from (Docker) images with Python build standalone by adding an option to bytecode compile the standard library on installation:</p>
 <pre><code>uv python install --compile-bytecode
 </code></pre>
 <p>We should also bytecode compile the standard library when <code>uv sync --compile-bytecode</code> installs a Python interpreter.</p>
-<h2>Benchmarks</h2>
+Benchmarks
 <p><strong>Dockerfile.uv</strong></p>
-<pre><code class="language-Dockerfile">FROM ghcr.io/astral-sh/uv:debian-slim
+<pre><code>FROM ghcr.io/astral-sh/uv:debian-slim
 
 RUN uv python install 3.13.9
 RUN uv venv
@@ -43,7 +43,7 @@ RUN uv pip install --compile-bytecode fastapi==0.119.0
 ENV PATH=&quot;/.venv/bin:$PATH&quot;
 </code></pre>
 <p><strong>Dockerfile.uv-compile</strong></p>
-<pre><code class="language-Dockerfile">FROM ghcr.io/astral-sh/uv:debian-slim
+<pre><code>FROM ghcr.io/astral-sh/uv:debian-slim
 
 RUN uv python install 3.13.9
 RUN uv venv
@@ -55,10 +55,10 @@ RUN python -B -m compileall ~/.local/share/uv/python/cpython-3.13.9-linux-x86_64
 <pre><code>docker build . -t uv-fastapi -f Dockerfile.uv
 docker build . -t uv-fastapi-compile -f Dockerfile.uv-compile
 hyperfine  --warmup 2 \
-    'docker run --rm uv-fastapi python -c &quot;import fastapi&quot;' \
-    'docker run --rm uv-fastapi-compile python -c &quot;import fastapi&quot;'
+    &#x27;docker run --rm uv-fastapi python -c &quot;import fastapi&quot;&#x27; \
+    &#x27;docker run --rm uv-fastapi-compile python -c &quot;import fastapi&quot;&#x27;
 </code></pre>
-<pre><code>$ hyperfine 'docker run --rm uv-fastapi python -c &quot;import fastapi&quot;' 'docker run --rm uv-fastapi-compile python -c &quot;import fastapi&quot;' --warmup 2
+<pre><code>$ hyperfine &#x27;docker run --rm uv-fastapi python -c &quot;import fastapi&quot;&#x27; &#x27;docker run --rm uv-fastapi-compile python -c &quot;import fastapi&quot;&#x27; --warmup 2
 Benchmark 1: docker run --rm uv-fastapi python -c &quot;import fastapi&quot;
   Time (mean ± σ):     872.7 ms ±  19.8 ms    [User: 7.0 ms, System: 6.0 ms]
   Range (min … max):   845.7 ms … 914.1 ms    10 runs
@@ -74,18 +74,18 @@ Summary
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2025-10-22 11:22</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/konstin">@konstin</a> on 2025-10-22 11:22</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @EliteTK by @EliteTK on 2025-12-11 16:32</div>
+            <div class="event">Assigned to <a href="https://github.com/EliteTK">@EliteTK</a> by <a href="https://github.com/EliteTK">@EliteTK</a> on 2025-12-11 16:32</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @EliteTK on 2026-01-13 17:22</div>
+            <div class="event">Closed by <a href="https://github.com/EliteTK">@EliteTK</a> on 2026-01-13 17:22</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-13 17:29:10 UTC
+        Synced at 2026-01-20 19:40:45 UTC
     </footer>
 </body>
 </html>

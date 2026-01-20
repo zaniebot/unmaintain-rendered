@@ -24,7 +24,7 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/fortminors">@fortminors</a></div>
             <div class="timeline-body"><p>I have the following pyproject.toml:</p>
-<pre><code class="language-toml">[project]
+<pre><code>[project]
 name = &quot;cv_tests&quot;
 version = &quot;0.1.0&quot;
 description = &quot;cv_tests&quot;
@@ -63,7 +63,7 @@ dependencies = [
 sam-2 = { git = &quot;https://github.com/facebookresearch/segment-anything-2.git&quot;, rev = &quot;c2ec8e14a185632b0a5d8b161928ceb50197eddc&quot; }
 </code></pre>
 <p>and the following Dockerfile:</p>
-<pre><code class="language-Dockerfile">FROM nvcr.io/nvidia/cuda:12.6.2-cudnn-devel-ubuntu22.04
+<pre><code>FROM nvcr.io/nvidia/cuda:12.6.2-cudnn-devel-ubuntu22.04
 
 # https://docs.docker.com/reference/dockerfile/#shell-and-exec-form
 # https://manpages.ubuntu.com/manpages/noble/en/man1/sh.1.html
@@ -101,33 +101,33 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 </code></pre>
 <p>It builds successfully, however when the last RUN command is executed, it creates a huge layer of size 9.5 GB.
 I inspected it with <a href="https://github.com/wagoodman/dive">dive</a>, to find that it is all taken by /app/lib/python3.11/site-packages
-<img src="https://github.com/user-attachments/assets/7a93f3a7-3c8c-4888-92e7-13e3b5a16433" alt="image" />
-<img src="https://github.com/user-attachments/assets/b399d76c-daab-468a-b287-61e9dc1fec23" alt="image" /></p>
+<img src="https://github.com/user-attachments/assets/7a93f3a7-3c8c-4888-92e7-13e3b5a16433" alt="image">
+<img src="https://github.com/user-attachments/assets/b399d76c-daab-468a-b287-61e9dc1fec23" alt="image"></p>
 <p>I thought that whenever I do <code>RUN --mount=type=cache,target=/root/.cache/uv</code>, the packages are cached internally in a local docker instance and it is not a part of the current image that I am building. Is there anything I can do about that? I thought of building a base (reusable) image with thick packages like pytorch and then inheriting from it and installing the other packages, so to split the installation in several layers, but then I would need several .toml project configurations and lock files. So I am curious what is the best way to do that? I am not sure if multi-stage build would help me here, but I might be mistaken.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-22 14:48</div>
-            <div class="timeline-body"><p>I don't quite follow the issue. <code>uv sync</code> installs the packages. If the layer is big because of installed packages, I'm not sure what we could do differently.</p>
-<p>Using a cache mount can speed up installation, but won't remove the installed packages from the image because then it'd be broken.</p>
+            <div class="timeline-body"><p>I don&#x27;t quite follow the issue. <code>uv sync</code> installs the packages. If the layer is big because of installed packages, I&#x27;m not sure what we could do differently.</p>
+<p>Using a cache mount can speed up installation, but won&#x27;t remove the installed packages from the image because then it&#x27;d be broken.</p>
 <p>You could try <code>--no-install-package &lt;big-package&gt;</code> to separate that one out from the rest.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-11-22 14:48</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-22 14:48</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/fortminors">@fortminors</a> on 2024-11-22 15:11</div>
-            <div class="timeline-body"><p>Thank you for the suggestion. I thought that if I use <code>RUN --mount=type=cache,target=/root/.cache/uv</code>, it will mount the packages and cache to the image, but now that I think of it, <code>RUN --mount</code> invokes a temporary mount during build time only, so launching scripts won't work - there will be no packages any longer.</p>
+            <div class="timeline-body"><p>Thank you for the suggestion. I thought that if I use <code>RUN --mount=type=cache,target=/root/.cache/uv</code>, it will mount the packages and cache to the image, but now that I think of it, <code>RUN --mount</code> invokes a temporary mount during build time only, so launching scripts won&#x27;t work - there will be no packages any longer.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @fortminors on 2024-11-22 15:11</div>
+            <div class="event">Closed by <a href="https://github.com/fortminors">@fortminors</a> on 2024-11-22 15:11</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:28:29 UTC
+        Synced at 2026-01-20 19:35:40 UTC
     </footer>
 </body>
 </html>

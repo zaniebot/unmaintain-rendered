@@ -23,67 +23,67 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Disocver workspaces and packages by searching for <code>pyproject.toml</code>. This PR loads the pyproject.toml files but it disregards all settings other than <code>knot.workspace</code> and <code>project.name</code>. I plan to add settings support in a separate PR (this one is already chunky).</p>
 <ol>
-<li>Traverse upwards in the <code>path</code>'s ancestor chain and find the first <code>pyproject.toml</code>.</li>
-<li>If the <code>pyproject.toml</code> contains no <code>knot.workspace</code> table, then keep traversing the <code>path</code>'s ancestor
+<li>Traverse upwards in the <code>path</code>&#x27;s ancestor chain and find the first <code>pyproject.toml</code>.</li>
+<li>If the <code>pyproject.toml</code> contains no <code>knot.workspace</code> table, then keep traversing the <code>path</code>&#x27;s ancestor
 chain until we find one or reach the root.</li>
-<li>If we've found a workspace, then resolve the workspace's members and assert that the closest
+<li>If we&#x27;ve found a workspace, then resolve the workspace&#x27;s members and assert that the closest
 package (the first found package without a <code>knot.workspace</code> table is a member. If not, create
 a single package workspace for the closest package.</li>
-<li>If there's no <code>pyproject.toml</code> with a <code>knot.workspace</code> table, then create a single-package workspace.</li>
+<li>If there&#x27;s no <code>pyproject.toml</code> with a <code>knot.workspace</code> table, then create a single-package workspace.</li>
 <li>If no ancestor directory contains any <code>pyproject.toml</code>, create an ad-hoc workspace for <code>path</code>
 that consists of a single package and uses the default settings.</li>
 </ol>
-<h2>Differences to uv</h2>
-<p>I tried to keep the implementation close to uv's behavior. The main differences are:</p>
+Differences to uv
+<p>I tried to keep the implementation close to uv&#x27;s behavior. The main differences are:</p>
 <ul>
 <li>Running Red Knot in a directory without any <code>pyproject.toml</code> (nor in any of its ancestor) is a valid use case. Red knot then creates a single package workspace with the default settings.</li>
 <li>Red knot allows <code>pyproject.toml</code> without a <code>project</code> table.</li>
-<li>uv errors when the current workspace is included in any outer workspace. However, I think it won't complain if the current workspace contains a member that is a workspace itself. This seems the wrong way around to me because what's important is that the current workspace has no nested workspace. Outer workspaces can be validated when running a command in them. This is why Red Knot only validates the workspace's members instead of discovering parent directories (https://github.com/astral-sh/uv/blob/e47e8fe9656b9f23891f9651f7bbc881f9e2bc7f/crates/uv-workspace/src/workspace.rs#L1193)</li>
+<li>uv errors when the current workspace is included in any outer workspace. However, I think it won&#x27;t complain if the current workspace contains a member that is a workspace itself. This seems the wrong way around to me because what&#x27;s important is that the current workspace has no nested workspace. Outer workspaces can be validated when running a command in them. This is why Red Knot only validates the workspace&#x27;s members instead of discovering parent directories (https://github.com/astral-sh/uv/blob/e47e8fe9656b9f23891f9651f7bbc881f9e2bc7f/crates/uv-workspace/src/workspace.rs#L1193)</li>
 <li>~~Red knot includes a member if it is explicitly listed in members but matches a <code>exclude</code> glob. E.g. <code>members=[&quot;packages/*&quot;, &quot;frontend&quot;]</code> and <code>exclude=[&quot;frontend-*]</code> still includes <code>frontend</code> if the directory is an exact match (not a glob-match). I think uv always excludes <code>frontend</code> which seems counterintuitive~~</li>
 <li>The member discovery in Red Knot collects all member paths by running all <code>members</code> globs and then removing excluded members. uv does that too, but not for the &quot;current package&quot; where it uses <code>is_excluded_from_workspace</code> and <code>is_included_in_workspace</code>. I found using only globs easier. (https://github.com/astral-sh/uv/blob/e47e8fe9656b9f23891f9651f7bbc881f9e2bc7f/crates/uv-workspace/src/workspace.rs#L1133-L1147)</li>
 </ul>
 <p>CC: @charliermarsh</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>Added unit tests and basic file watcher tests. We should add more file watcher tests but I struggled coming up with good examples because most test cases require some form of configuration support to make the change observable.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-11-13 09:45</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-13 09:45</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-13 10:05</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-13 12:24</div>
-            <div class="timeline-body"><p>Oh damn you pre-commit. I'm just going to exclude that file over wasting time fighting pre-commit configuration.</p>
+            <div class="timeline-body"><p>Oh damn you pre-commit. I&#x27;m just going to exclude that file over wasting time fighting pre-commit configuration.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @MichaReiser on 2024-11-13 16:28</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-13 16:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @MichaReiser on 2024-11-13 16:28</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-13 16:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2024-11-13 16:28</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-13 16:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @MichaReiser on 2024-11-13 16:28</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-13 16:28</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-13 17:23</div>
@@ -96,7 +96,7 @@ that consists of a single package and uses the default settings.</li>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/red_knot_workspace/src/workspace/pyproject/package_name.rs</code>:10 on 2024-11-13 17:29</div>
-            <div class="timeline-body"><p>Can you not use uv's implementation of this?</p>
+            <div class="timeline-body"><p>Can you not use uv&#x27;s implementation of this?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -105,7 +105,7 @@ that consists of a single package and uses the default settings.</li>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_db/src/system/memory_fs.rs</code>:249 on 2024-11-13 17:32</div>
-            <div class="timeline-body"><p>(Couldn't this be incredibly expensive? Doesn't it mean you're iterating over everything in <code>.git</code>, <code>node_modules</code>, etc.?)</p>
+            <div class="timeline-body"><p>(Couldn&#x27;t this be incredibly expensive? Doesn&#x27;t it mean you&#x27;re iterating over everything in <code>.git</code>, <code>node_modules</code>, etc.?)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -119,15 +119,15 @@ that consists of a single package and uses the default settings.</li>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-13 17:34</div>
-            <div class="timeline-body"><p>Oh I'm not requested here -- that's fine actually. Some feedback on the summary:</p>
+            <div class="timeline-body"><p>Oh I&#x27;m not requested here -- that&#x27;s fine actually. Some feedback on the summary:</p>
 <blockquote>
-<p>uv errors when the current workspace is included in any outer workspace. However, I think it won't complain if the current workspace contains a member that is a workspace itself. This seems the wrong way around to me because what's important is that the current workspace has no nested workspace. Outer workspaces can be validated when running a command in them.</p>
+<p>uv errors when the current workspace is included in any outer workspace. However, I think it won&#x27;t complain if the current workspace contains a member that is a workspace itself. This seems the wrong way around to me because what&#x27;s important is that the current workspace has no nested workspace. Outer workspaces can be validated when running a command in them.</p>
 </blockquote>
-<p>No strong opinion though it'd be nice to change this in uv if you decide to do something different here.</p>
+<p>No strong opinion though it&#x27;d be nice to change this in uv if you decide to do something different here.</p>
 <blockquote>
 <p>Red knot includes a member if it is explicitly listed in members but matches a exclude glob. E.g. members=[&quot;packages/<em>&quot;, &quot;frontend&quot;] and exclude=[&quot;frontend-</em>] still includes frontend if the directory is an exact match (not a glob-match). I think uv always excludes frontend which seems counterintuitive</p>
 </blockquote>
-<p>I would probably advise against doing this... It makes the logic more complex to implement, test, and document, and it deviates from uv without good reason? I would be surprised if this ever comes up. Even the example you gave isn't quite right given that the exclude contains a dash, if I'm understanding correctly ;)</p>
+<p>I would probably advise against doing this... It makes the logic more complex to implement, test, and document, and it deviates from uv without good reason? I would be surprised if this ever comes up. Even the example you gave isn&#x27;t quite right given that the exclude contains a dash, if I&#x27;m understanding correctly ;)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -145,7 +145,7 @@ that consists of a single package and uses the default settings.</li>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/system/memory_fs.rs</code>:249 on 2024-11-13 17:40</div>
-            <div class="timeline-body"><p>It does, but it's a memory file system that we use for testing and the playground... We can do a proper implementation when we run into cases where we have many files in those use cases.</p>
+            <div class="timeline-body"><p>It does, but it&#x27;s a memory file system that we use for testing and the playground... We can do a proper implementation when we run into cases where we have many files in those use cases.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -163,7 +163,7 @@ that consists of a single package and uses the default settings.</li>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_db/src/system/memory_fs.rs</code>:249 on 2024-11-13 17:54</div>
-            <div class="timeline-body"><p>I see, and for the &quot;real&quot; implementation you're running each glob separately via <code>glob::glob</code>.</p>
+            <div class="timeline-body"><p>I see, and for the &quot;real&quot; implementation you&#x27;re running each glob separately via <code>glob::glob</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -177,59 +177,59 @@ that consists of a single package and uses the default settings.</li>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/program.rs</code>:73 on 2024-11-13 20:15</div>
-            <div class="timeline-body"><p>I'm not clear what our intended semantics are in cases where the location of <code>pyproject.toml</code> is not the Python search path root, for example if the search path root for Python code is inside a <code>src/</code> directory relative to <code>pyproject.toml</code> (I think this is a common setup.) Should <code>workspace_root</code> in this case be the directory containing <code>pyproject.toml</code>, or the <code>src/</code> subdirectory?</p>
-<p>It seems to me that the &quot;workspace root&quot; should probably be the directory containing <code>pyproject.toml</code>, but that path doesn't really belong in <code>SearchPathSettings</code>, it belongs in a project/workspace config struct. <code>SearchPathSettings</code> should IMO only contain the path(s) where we actually find Python imports relative to (which in the above example would be the <code>src/</code> subdirectory.) So renaming a <code>SearchPathSettings</code> member to <code>workspace_root</code> seems confusing to me, and probably not the right direction? (I realize the comment already described this as &quot;the root of the workspace&quot;.)</p>
-<p>A related question is how workspace members' code is expected to get onto the import search path. Do we offer some red-knot-specific functionality to make this happen automatically, or do we require that either workspace members are editable-installed into the venv (and thus we find them via <code>.pth</code> files) or else you have to use <code>extra_paths</code> explicitly for them?</p>
+            <div class="timeline-body"><p>I&#x27;m not clear what our intended semantics are in cases where the location of <code>pyproject.toml</code> is not the Python search path root, for example if the search path root for Python code is inside a <code>src/</code> directory relative to <code>pyproject.toml</code> (I think this is a common setup.) Should <code>workspace_root</code> in this case be the directory containing <code>pyproject.toml</code>, or the <code>src/</code> subdirectory?</p>
+<p>It seems to me that the &quot;workspace root&quot; should probably be the directory containing <code>pyproject.toml</code>, but that path doesn&#x27;t really belong in <code>SearchPathSettings</code>, it belongs in a project/workspace config struct. <code>SearchPathSettings</code> should IMO only contain the path(s) where we actually find Python imports relative to (which in the above example would be the <code>src/</code> subdirectory.) So renaming a <code>SearchPathSettings</code> member to <code>workspace_root</code> seems confusing to me, and probably not the right direction? (I realize the comment already described this as &quot;the root of the workspace&quot;.)</p>
+<p>A related question is how workspace members&#x27; code is expected to get onto the import search path. Do we offer some red-knot-specific functionality to make this happen automatically, or do we require that either workspace members are editable-installed into the venv (and thus we find them via <code>.pth</code> files) or else you have to use <code>extra_paths</code> explicitly for them?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_workspace/src/workspace/metadata.rs</code>:72 on 2024-11-13 20:36</div>
-            <div class="timeline-body"><p>Can you run red-knot on a single file within a package (if you want to see errors only from that one file, but you want imports from other modules to work)? If so, is it the caller's responsibility to call this function with just the directory portion of the file name?</p>
+            <div class="timeline-body"><p>Can you run red-knot on a single file within a package (if you want to see errors only from that one file, but you want imports from other modules to work)? If so, is it the caller&#x27;s responsibility to call this function with just the directory portion of the file name?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_workspace/src/workspace/metadata.rs</code>:172 on 2024-11-13 21:03</div>
-            <div class="timeline-body"><p>Should we be looking for <code>__init__.py</code> and walking up until we don't find one here, so that virtual packages can work (and imports within them can work) even if you give a path inside the package? I think both pyright and mypy have some version of this logic. It doesn't work with namespace packages, but I'm not sure there's anything that can be done there -- at that point we can't really figure out where the root is supposed to be, and you need explicit config.</p>
+            <div class="timeline-body"><p>Should we be looking for <code>__init__.py</code> and walking up until we don&#x27;t find one here, so that virtual packages can work (and imports within them can work) even if you give a path inside the package? I think both pyright and mypy have some version of this logic. It doesn&#x27;t work with namespace packages, but I&#x27;m not sure there&#x27;s anything that can be done there -- at that point we can&#x27;t really figure out where the root is supposed to be, and you need explicit config.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_workspace/src/workspace/metadata.rs</code>:173 on 2024-11-13 21:03</div>
-            <div class="timeline-body"><p>I'm confused by this TODO comment; isn't this the case where there is no <code>pyproject.toml</code>?</p>
+            <div class="timeline-body"><p>I&#x27;m confused by this TODO comment; isn&#x27;t this the case where there is no <code>pyproject.toml</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_workspace/src/workspace/metadata.rs</code>:215 on 2024-11-13 21:10</div>
-            <div class="timeline-body"><p>Is there any reason this needs to be an error for us? It seems odd to me that we'll happily synthesize a workspace with the name <code>&lt;virtual&gt;</code> if you don't have a <code>pyproject.toml</code> at all, but if you do have a <code>pyproject.toml</code> we'll error if it doesn't supply a name.</p>
+            <div class="timeline-body"><p>Is there any reason this needs to be an error for us? It seems odd to me that we&#x27;ll happily synthesize a workspace with the name <code>&lt;virtual&gt;</code> if you don&#x27;t have a <code>pyproject.toml</code> at all, but if you do have a <code>pyproject.toml</code> we&#x27;ll error if it doesn&#x27;t supply a name.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>_typos.toml</code>:7 on 2024-11-13 21:11</div>
             <div class="timeline-body"><p>What are the typos it complains about?</p>
-<p>I don't have any particular affection for the typo linter, but I also don't love adding random files to permanent exclude lists without a clear rationale.</p>
+<p>I don&#x27;t have any particular affection for the typo linter, but I also don&#x27;t love adding random files to permanent exclude lists without a clear rationale.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_workspace/src/workspace/metadata.rs</code>:62 on 2024-11-13 21:11</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">    /// 1. If there's no `pyproject.toml` with a `knot.workspace` table, then create a single-package workspace.
+            <div class="timeline-body"><pre><code>    /// 1. If there&#x27;s no `pyproject.toml` with a `knot.workspace` table, then create a single-package workspace.
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_workspace/src/workspace/metadata.rs</code>:462 on 2024-11-13 21:32</div>
-            <div class="timeline-body"><p>In the project structure in this test, the workspace root should not be a search path at all for the module resolver; only the <code>src/</code> subdirectory should be. Because Python imports in this structure won't look like <code>import src.foo</code>, they'll look like <code>import foo</code>. It's not clear to me the intention in this PR of how to handle that.</p>
-<p>Maybe we expect the <code>src/</code> subdirectory to get onto the search path via editable install of this project into the venv, but in that case we really don't want to add the workspace root to the search path, because then both <code>/app</code> and <code>/app/src</code> would be on the search path and we'd wrongly support <em>both</em> <code>import src.foo</code> and <code>import foo</code> as different ways to import the same module, and this is really confusing; those imports won't both work at runtime, and if they do that's even worse, because you end up with two separate copies of the <code>foo</code> module and all its contents. Overlapping search paths are bad.</p>
-<p>If the intention is that <code>SearchPathSettings::workspace_root</code> should not itself go onto the <code>SearchPaths::static_paths</code> at all, but instead should just be used to categorize other search paths discovered (e.g. from editable-install pth files in the venv) into first-party vs third-party (depending whether they are within the workspace root), this could work, but it would mean that we need to change the code in <code>SearchPaths::from_settings</code> so that it doesn't add <code>workspace_root</code> to <code>static_paths</code>.</p>
-<p>In this case my concern would be that I think some projects <em>don't</em> install their main first-party codebase into their venv as an editable install, and we need to figure out how to support that case (and how to tell the difference.) I think other type checkers don't rely on editable install of the main first-party codebase.</p>
+            <div class="timeline-body"><p>In the project structure in this test, the workspace root should not be a search path at all for the module resolver; only the <code>src/</code> subdirectory should be. Because Python imports in this structure won&#x27;t look like <code>import src.foo</code>, they&#x27;ll look like <code>import foo</code>. It&#x27;s not clear to me the intention in this PR of how to handle that.</p>
+<p>Maybe we expect the <code>src/</code> subdirectory to get onto the search path via editable install of this project into the venv, but in that case we really don&#x27;t want to add the workspace root to the search path, because then both <code>/app</code> and <code>/app/src</code> would be on the search path and we&#x27;d wrongly support <em>both</em> <code>import src.foo</code> and <code>import foo</code> as different ways to import the same module, and this is really confusing; those imports won&#x27;t both work at runtime, and if they do that&#x27;s even worse, because you end up with two separate copies of the <code>foo</code> module and all its contents. Overlapping search paths are bad.</p>
+<p>If the intention is that <code>SearchPathSettings::workspace_root</code> should not itself go onto the <code>SearchPaths::static_paths</code> at all, but instead should just be used to categorize other search paths discovered (e.g. from editable-install pth files in the venv) into first-party vs third-party (depending whether they are within the workspace root), this could work, but it would mean that we need to change the code in <code>SearchPaths::from_settings</code> so that it doesn&#x27;t add <code>workspace_root</code> to <code>static_paths</code>.</p>
+<p>In this case my concern would be that I think some projects <em>don&#x27;t</em> install their main first-party codebase into their venv as an editable install, and we need to figure out how to support that case (and how to tell the difference.) I think other type checkers don&#x27;t rely on editable install of the main first-party codebase.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_workspace/src/workspace/metadata.rs</code>:436 on 2024-11-13 21:37</div>
             <div class="timeline-body"><p>I find it somewhat confusing to use the <code>src/</code> naming convention in this test, because I think it strongly suggests that this case simply represents user error.</p>
 <p>The specific name <code>src/</code> suggests &quot;my top-level Python package(s) live inside <code>app/src/</code>, and that should be the search path root&quot;, not &quot;my top-level Python package is named <code>src</code>, and <code>app/</code> should be the search path root&quot;. But our handling here assumes the latter.</p>
-<p>If someone has a Python codebase that isn't packaged with a <code>pyproject.toml</code>, it's unlikely they put their top-level Python modules inside a <code>src/</code> subdirectory; they probably just put them directly in <code>/app</code>. (The reason this is likely is that if they don't have packaging metadata, they can't easily editable-install their project into the venv, and so they are probably relying on Python's implicit &quot;CWD is on <code>sys.path</code>&quot; behavior.) I've seen lots of real-world apps without packaging metadata that worked this way.</p>
-<p>If they don't have packaging metadata, they should run red-knot directly on their Python source tree, not on a parent directory of it, because we don't have a good way to figure out which subdirectory is the Python import root (unless we special-case <code>src/</code> and assume that a subdirectory with that name is where the Python code lives.)</p>
-<p>If they do run red-knot on <code>/app</code> when their Python modules live in <code>app/src</code>, and we have no packaging metadata to tell us that the <code>src/</code> subdirectory is the real import root, I guess we have to just assume that <code>/app</code> is the import root (and their top-level Python package is actually named <code>src</code>), since there's no config to tell us otherwise. But given the specific subdirectory name <code>src</code>, this is probably the wrong conclusion; most likely all their imports will fail to resolve because they <code>import foo</code>, they don't <code>import src.foo</code>. We could consider some heuristics, e.g. treat the subdirectory name <code>src/</code> specially, or look for whether or not there is a <code>src/__init__.py</code>.</p>
-<p>This is also related (in the opposite direction) to whether if they run red-knot on <code>/app/src/foo/bar/</code> and <code>/app/src/foo/__init__.py</code> exists, should we walk up to the first directory that doesn't have <code>__init__.py</code> and determine that <code>app/src/</code> is the actual root, or should we just let their imports fail because we are assuming the wrong root. (I think in this case we should do the walk-up.)</p>
+<p>If someone has a Python codebase that isn&#x27;t packaged with a <code>pyproject.toml</code>, it&#x27;s unlikely they put their top-level Python modules inside a <code>src/</code> subdirectory; they probably just put them directly in <code>/app</code>. (The reason this is likely is that if they don&#x27;t have packaging metadata, they can&#x27;t easily editable-install their project into the venv, and so they are probably relying on Python&#x27;s implicit &quot;CWD is on <code>sys.path</code>&quot; behavior.) I&#x27;ve seen lots of real-world apps without packaging metadata that worked this way.</p>
+<p>If they don&#x27;t have packaging metadata, they should run red-knot directly on their Python source tree, not on a parent directory of it, because we don&#x27;t have a good way to figure out which subdirectory is the Python import root (unless we special-case <code>src/</code> and assume that a subdirectory with that name is where the Python code lives.)</p>
+<p>If they do run red-knot on <code>/app</code> when their Python modules live in <code>app/src</code>, and we have no packaging metadata to tell us that the <code>src/</code> subdirectory is the real import root, I guess we have to just assume that <code>/app</code> is the import root (and their top-level Python package is actually named <code>src</code>), since there&#x27;s no config to tell us otherwise. But given the specific subdirectory name <code>src</code>, this is probably the wrong conclusion; most likely all their imports will fail to resolve because they <code>import foo</code>, they don&#x27;t <code>import src.foo</code>. We could consider some heuristics, e.g. treat the subdirectory name <code>src/</code> specially, or look for whether or not there is a <code>src/__init__.py</code>.</p>
+<p>This is also related (in the opposite direction) to whether if they run red-knot on <code>/app/src/foo/bar/</code> and <code>/app/src/foo/__init__.py</code> exists, should we walk up to the first directory that doesn&#x27;t have <code>__init__.py</code> and determine that <code>app/src/</code> is the actual root, or should we just let their imports fail because we are assuming the wrong root. (I think in this case we should do the walk-up.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -240,8 +240,8 @@ that consists of a single package and uses the default settings.</li>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-11-13 22:28</div>
             <div class="timeline-body"><p>The workspace discovery looks great, thank you!</p>
-<p>My main question about this PR (and most of my comments) are about how we intend to map these workspace settings to a module resolver search paths config (which is one of the most important outputs from workspace discovery.) I think currently in this PR there is a mismatch between workspace discovery and the module resolver's translation to search paths, which means we will do the wrong thing in a lot of cases, but I'm not sure if it's the module resolver or the workspace code that should change, because I don't understand what the intended semantics of <code>SearchPathSettings::workspace_root</code> are.</p>
-<p>My review is mostly focused on these semantic and project structure questions; relying on Charlie's greater relevant experience from <code>uv</code> for the more filesystem and pyproject oriented stuff.</p>
+<p>My main question about this PR (and most of my comments) are about how we intend to map these workspace settings to a module resolver search paths config (which is one of the most important outputs from workspace discovery.) I think currently in this PR there is a mismatch between workspace discovery and the module resolver&#x27;s translation to search paths, which means we will do the wrong thing in a lot of cases, but I&#x27;m not sure if it&#x27;s the module resolver or the workspace code that should change, because I don&#x27;t understand what the intended semantics of <code>SearchPathSettings::workspace_root</code> are.</p>
+<p>My review is mostly focused on these semantic and project structure questions; relying on Charlie&#x27;s greater relevant experience from <code>uv</code> for the more filesystem and pyproject oriented stuff.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -251,9 +251,9 @@ that consists of a single package and uses the default settings.</li>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/program.rs</code>:73 on 2024-11-14 06:56</div>
             <div class="timeline-body"><p>I did ask about this in Discord because I felt we discussed this before and it was unclear to me how it should work. @AlexWaygood then gave me a reply that seemed reasonable to me, see https://discord.com/channels/1039017663004942429/1228460843033821285/1304410214757433364</p>
-<p>Generally, this PR doesn't change how we resolve the search path settings. It keeps doing what we used to do and I also don't mind reverting the rename of the <code>SearchPathSettings::workspace_root</code>.</p>
+<p>Generally, this PR doesn&#x27;t change how we resolve the search path settings. It keeps doing what we used to do and I also don&#x27;t mind reverting the rename of the <code>SearchPathSettings::workspace_root</code>.</p>
 <blockquote>
-<p>A related question is how workspace members' code is expected to get onto the import search path. Do we offer some red-knot-specific functionality to make this happen automatically, or do we require that either workspace members are editable-installed into the venv (and thus we find them via .pth files) or else you have to use extra_paths explicitly for them?</p>
+<p>A related question is how workspace members&#x27; code is expected to get onto the import search path. Do we offer some red-knot-specific functionality to make this happen automatically, or do we require that either workspace members are editable-installed into the venv (and thus we find them via .pth files) or else you have to use extra_paths explicitly for them?</p>
 </blockquote>
 <p>I understand that we rely on the package manager to put projects on the path.</p>
 </div>
@@ -267,9 +267,9 @@ that consists of a single package and uses the default settings.</li>
             <div class="timeline-body"><blockquote>
 <p>Can you run red-knot on a single file within a package (if you want to see errors only from that one file, but you want imports from other modules to work)?</p>
 </blockquote>
-<p>Not today, long-term yes. But it doesn't fundamentally change how red knot works. It only changes which files it calls <code>check</code> for.</p>
+<p>Not today, long-term yes. But it doesn&#x27;t fundamentally change how red knot works. It only changes which files it calls <code>check</code> for.</p>
 <p>In the file case, red knot searches the workspace, and then sets the <code>open_files</code> (or possibly <code>open_paths</code>, this is TBD) to the paths provided via the CLI and then calls <code>check</code>.</p>
-<p>It's important that the workspace discovery is done as if no path was provided to guarantee that red knot picks up the same settings.</p>
+<p>It&#x27;s important that the workspace discovery is done as if no path was provided to guarantee that red knot picks up the same settings.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -287,8 +287,8 @@ that consists of a single package and uses the default settings.</li>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_workspace/src/workspace/metadata.rs</code>:215 on 2024-11-14 07:05</div>
-            <div class="timeline-body"><p>I don't think there's a strong reason for it. The same as that it doesn't matter much to us whether packages have unique names inside a workspace. But I do see value in having the discovery consistent between uv and red-knot and <code>name</code> is a required setting according to the <a href="https://packaging.python.org/en/latest/specifications/pyproject-toml/#declaring-project-metadata-the-project-table"><code>pyproject.toml</code> specification</a>, unless the <code>project</code> table isn't specified at all.</p>
-<p>That's why I think the question rather is: Should the <code>project</code> table be required?</p>
+            <div class="timeline-body"><p>I don&#x27;t think there&#x27;s a strong reason for it. The same as that it doesn&#x27;t matter much to us whether packages have unique names inside a workspace. But I do see value in having the discovery consistent between uv and red-knot and <code>name</code> is a required setting according to the <a href="https://packaging.python.org/en/latest/specifications/pyproject-toml/#declaring-project-metadata-the-project-table"><code>pyproject.toml</code> specification</a>, unless the <code>project</code> table isn&#x27;t specified at all.</p>
+<p>That&#x27;s why I think the question rather is: Should the <code>project</code> table be required?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -297,13 +297,13 @@ that consists of a single package and uses the default settings.</li>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>_typos.toml</code>:7 on 2024-11-14 07:05</div>
-            <div class="timeline-body"><p>It doesn't like <code>FrIeNdLy-._.-bArD</code>. For good reasons, but it's intentional and changing the pattern to something else would make the test more complicated.</p>
+            <div class="timeline-body"><p>It doesn&#x27;t like <code>FrIeNdLy-._.-bArD</code>. For good reasons, but it&#x27;s intentional and changing the pattern to something else would make the test more complicated.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_workspace/src/workspace/metadata.rs</code>:215 on 2024-11-14 08:57</div>
             <div class="timeline-body"><blockquote>
-<p>Is there any reason this needs to be an error for us? It seems odd to me that we'll happily synthesize a workspace with the name <virtual></p>
+<p>Is there any reason this needs to be an error for us? It seems odd to me that we&#x27;ll happily synthesize a workspace with the name </p>
 </blockquote>
 <p>We also only use <code>virtual</code> in case red knot runs in <code>/</code>. It otherwise uses the directory name as fallback</p>
 </div>
@@ -319,9 +319,9 @@ that consists of a single package and uses the default settings.</li>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_workspace/src/workspace/metadata.rs</code>:436 on 2024-11-14 09:14</div>
             <div class="timeline-body"><blockquote>
-<p>This is also related (in the opposite direction) to whether if they run red-knot on /app/src/foo/bar/ and /app/src/foo/<strong>init</strong>.py exists, should we walk up to the first directory that doesn't have <strong>init</strong>.py and determine that app/src/ is the actual root, or should we just let their imports fail because we are assuming the wrong root. (I think in this case we should do the walk-up.)</p>
+<p>This is also related (in the opposite direction) to whether if they run red-knot on /app/src/foo/bar/ and /app/src/foo/<strong>init</strong>.py exists, should we walk up to the first directory that doesn&#x27;t have <strong>init</strong>.py and determine that app/src/ is the actual root, or should we just let their imports fail because we are assuming the wrong root. (I think in this case we should do the walk-up.)</p>
 </blockquote>
-<p>This is an interesting example and I think it might make sense for us to walk up the tree, but I'm not sure if it should change the workspace-root or only the inferred <code>SearchPathSettings</code>. I'd like to exclude this for now but it's something I should bring up in the CLI design document</p>
+<p>This is an interesting example and I think it might make sense for us to walk up the tree, but I&#x27;m not sure if it should change the workspace-root or only the inferred <code>SearchPathSettings</code>. I&#x27;d like to exclude this for now but it&#x27;s something I should bring up in the CLI design document</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -330,8 +330,8 @@ that consists of a single package and uses the default settings.</li>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/red_knot_workspace/src/workspace/metadata.rs</code>:215 on 2024-11-14 14:00</div>
-            <div class="timeline-body"><p>I think it would be reasonable to allow this (projects without a <code>project</code> table). The <code>project</code> table isn't required in the spec, and recent PEPs (like the dependency groups PEP) have tried to make those more first-class. We don't fully support them in uv (we allow them as workspace roots, but it's considered legacy), but we arguably should in the future.</p>
-<p>So, in short: I think it <em>would</em> make more sense for red-knot to allow members / roots that lack a <code>[project]</code> table, but it's also reasonable to defer in favor of consistency with uv.</p>
+            <div class="timeline-body"><p>I think it would be reasonable to allow this (projects without a <code>project</code> table). The <code>project</code> table isn&#x27;t required in the spec, and recent PEPs (like the dependency groups PEP) have tried to make those more first-class. We don&#x27;t fully support them in uv (we allow them as workspace roots, but it&#x27;s considered legacy), but we arguably should in the future.</p>
+<p>So, in short: I think it <em>would</em> make more sense for red-knot to allow members / roots that lack a <code>[project]</code> table, but it&#x27;s also reasonable to defer in favor of consistency with uv.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -340,8 +340,8 @@ that consists of a single package and uses the default settings.</li>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_workspace/src/workspace/metadata.rs</code>:436 on 2024-11-14 15:23</div>
-            <div class="timeline-body"><p>Yes, I think it's totally fine to defer the walking-up thing, as long as we have it noted somehow as something we probably want to address in future.</p>
-<p>In general I don't think my comments on this PR are blocking, which is why I accepted. I don't think this PR does anything wrong, it's more that the rename to <code>workspace_root</code> and the way the projects in the tests are structured highlight an existing issue that I think we need to come to a resolution on. (If the tests just didn't use a <code>src/</code> subdirectory layout, then I think they would be fully correct as-is, and we'd just be punting the problem of how we handle <code>src/</code> layouts for future resolution.)</p>
+            <div class="timeline-body"><p>Yes, I think it&#x27;s totally fine to defer the walking-up thing, as long as we have it noted somehow as something we probably want to address in future.</p>
+<p>In general I don&#x27;t think my comments on this PR are blocking, which is why I accepted. I don&#x27;t think this PR does anything wrong, it&#x27;s more that the rename to <code>workspace_root</code> and the way the projects in the tests are structured highlight an existing issue that I think we need to come to a resolution on. (If the tests just didn&#x27;t use a <code>src/</code> subdirectory layout, then I think they would be fully correct as-is, and we&#x27;d just be punting the problem of how we handle <code>src/</code> layouts for future resolution.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -350,7 +350,7 @@ that consists of a single package and uses the default settings.</li>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_workspace/src/workspace/metadata.rs</code>:215 on 2024-11-14 15:27</div>
-            <div class="timeline-body"><p>I'm leaning towards keeping it as is for now. We might actually need the name, depending on where we land on how workspaces integrate into module resolution (do we rely on the packager, in this case we won't need the name, or do we have our own, custom handling for packages, in which case we need the name)</p>
+            <div class="timeline-body"><p>I&#x27;m leaning towards keeping it as is for now. We might actually need the name, depending on where we land on how workspaces integrate into module resolution (do we rely on the packager, in this case we won&#x27;t need the name, or do we have our own, custom handling for packages, in which case we need the name)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -359,9 +359,9 @@ that consists of a single package and uses the default settings.</li>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_workspace/src/workspace/metadata.rs</code>:72 on 2024-11-14 15:53</div>
-            <div class="timeline-body"><p>Makes sense, but I'm not sure if I fully understand this comment:</p>
+            <div class="timeline-body"><p>Makes sense, but I&#x27;m not sure if I fully understand this comment:</p>
 <blockquote>
-<p>It's important that the workspace discovery is done as if no path was provided to guarantee that red knot picks up the same settings.</p>
+<p>It&#x27;s important that the workspace discovery is done as if no path was provided to guarantee that red knot picks up the same settings.</p>
 </blockquote>
 <p>Workspace discovery always starts with <em>some</em> path that is provided by the user, right? So what does it mean to do workspace discovery &quot;as if no path was provided&quot;?</p>
 </div>
@@ -372,11 +372,11 @@ that consists of a single package and uses the default settings.</li>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/program.rs</code>:73 on 2024-11-14 16:00</div>
-            <div class="timeline-body"><p>I agree with everything @AlexWaygood says in the first two paragraphs of that Discord comment. I'm not sure about this part:</p>
+            <div class="timeline-body"><p>I agree with everything @AlexWaygood says in the first two paragraphs of that Discord comment. I&#x27;m not sure about this part:</p>
 <blockquote>
-<p>I think we should probably rename the first-party search path; calling it src is kind of confusing. It's not meant to correspond to the src directory inside a workspace; it's meant to correspond to the workspace root</p>
+<p>I think we should probably rename the first-party search path; calling it src is kind of confusing. It&#x27;s not meant to correspond to the src directory inside a workspace; it&#x27;s meant to correspond to the workspace root</p>
 </blockquote>
-<p>In a project layout where the Python packages all go inside a <code>src/</code> subdirectory, at runtime the project must be installed to be importable, and usually it is run via some installed command/script, and <code>.</code> is not actually added to the import search path in that case. Which is a good thing, because if it were, you'd end up with overlapping search paths and all your modules importable as both <code>foo</code> and <code>src.foo</code>, which is not good, especially at runtime.</p>
+<p>In a project layout where the Python packages all go inside a <code>src/</code> subdirectory, at runtime the project must be installed to be importable, and usually it is run via some installed command/script, and <code>.</code> is not actually added to the import search path in that case. Which is a good thing, because if it were, you&#x27;d end up with overlapping search paths and all your modules importable as both <code>foo</code> and <code>src.foo</code>, which is not good, especially at runtime.</p>
 <p>It is not clear to me how we can detect this project structure and avoid putting the workspace root on the search path in this case. I guess one option is just to punt on it and hope nobody is affected by the fact that <code>src.foo</code> imports are wrongly allowed.</p>
 <blockquote>
 <p>I understand that we rely on the package manager to put projects on the path.</p>
@@ -390,7 +390,7 @@ that consists of a single package and uses the default settings.</li>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/program.rs</code>:73 on 2024-11-14 16:08</div>
-            <div class="timeline-body"><p>I guess I'm also not clear that it's right to have only one &quot;first-party&quot; search path. I guess it partly depends what we mean by &quot;first-party&quot;, but to the extent that it influences things like &quot;which code do we show diagnostics for&quot;, I think it is important that all code within the workspace root (even if it is inside a <code>src/</code> subdir or a workspace member, and thus discovered via editable-install <code>.pth</code> files in the venv) should be considered as &quot;first-party&quot;.</p>
+            <div class="timeline-body"><p>I guess I&#x27;m also not clear that it&#x27;s right to have only one &quot;first-party&quot; search path. I guess it partly depends what we mean by &quot;first-party&quot;, but to the extent that it influences things like &quot;which code do we show diagnostics for&quot;, I think it is important that all code within the workspace root (even if it is inside a <code>src/</code> subdir or a workspace member, and thus discovered via editable-install <code>.pth</code> files in the venv) should be considered as &quot;first-party&quot;.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -400,9 +400,9 @@ that consists of a single package and uses the default settings.</li>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/program.rs</code>:73 on 2024-11-14 16:11</div>
             <div class="timeline-body"><blockquote>
-<p>I guess I'm also not clear that it's right to have only one &quot;first-party&quot; search path. I guess it partly depends what we mean by &quot;first-party&quot;, but to the extent that it influences things like &quot;which code do we show diagnostics for&quot;, I think it is important that all code within the workspace root (even if it is discovered via editable-install <code>.pth</code> files in the venv) should be considered as &quot;first-party&quot;.</p>
+<p>I guess I&#x27;m also not clear that it&#x27;s right to have only one &quot;first-party&quot; search path. I guess it partly depends what we mean by &quot;first-party&quot;, but to the extent that it influences things like &quot;which code do we show diagnostics for&quot;, I think it is important that all code within the workspace root (even if it is discovered via editable-install <code>.pth</code> files in the venv) should be considered as &quot;first-party&quot;.</p>
 </blockquote>
-<p>I suppose that depends what we're using the &quot;first-party search path&quot; for. If we're using it as the canonical definition for what constitutes &quot;first-party&quot; code, then what you say makes sense. But <em>do</em> we need to tie those two concepts together? (I guess it would simplify some things?)</p>
+<p>I suppose that depends what we&#x27;re using the &quot;first-party search path&quot; for. If we&#x27;re using it as the canonical definition for what constitutes &quot;first-party&quot; code, then what you say makes sense. But <em>do</em> we need to tie those two concepts together? (I guess it would simplify some things?)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -412,9 +412,9 @@ that consists of a single package and uses the default settings.</li>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_workspace/src/workspace/metadata.rs</code>:215 on 2024-11-14 16:14</div>
             <div class="timeline-body"><blockquote>
-<p>I'm leaning towards keeping it as is for now. We might actually need the name, depending on where we land on how workspaces integrate into module resolution (do we rely on the packager, in this case we won't need the name, or do we have our own, custom handling for packages, in which case we need the name)</p>
+<p>I&#x27;m leaning towards keeping it as is for now. We might actually need the name, depending on where we land on how workspaces integrate into module resolution (do we rely on the packager, in this case we won&#x27;t need the name, or do we have our own, custom handling for packages, in which case we need the name)</p>
 </blockquote>
-<p>I don't understand how these two things are related at all, or why we would ever need a project name for module resolution. The project name is just PyPI metadata that's unrelated to the import system or package names.</p>
+<p>I don&#x27;t understand how these two things are related at all, or why we would ever need a project name for module resolution. The project name is just PyPI metadata that&#x27;s unrelated to the import system or package names.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -423,7 +423,7 @@ that consists of a single package and uses the default settings.</li>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/program.rs</code>:73 on 2024-11-14 16:15</div>
-            <div class="timeline-body"><p>There are obviously lots of possible ways to structure this that could work, but I think it's pretty confusing to have a &quot;first-party search path&quot; and then a concept of &quot;first-party code&quot; which is not related to the first-party search path. It overloads the term &quot;first-party&quot; and suggests that one of those things should be renamed.</p>
+            <div class="timeline-body"><p>There are obviously lots of possible ways to structure this that could work, but I think it&#x27;s pretty confusing to have a &quot;first-party search path&quot; and then a concept of &quot;first-party code&quot; which is not related to the first-party search path. It overloads the term &quot;first-party&quot; and suggests that one of those things should be renamed.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -432,7 +432,7 @@ that consists of a single package and uses the default settings.</li>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/program.rs</code>:73 on 2024-11-14 16:17</div>
-            <div class="timeline-body"><p>Agreed. If we're going to go with the &quot;there should only ever be one of this kind of search path&quot;, I'd rename it everywhere to <code>workspace_root</code> or just <code>root</code>, rather than <code>first_party</code>.</p>
+            <div class="timeline-body"><p>Agreed. If we&#x27;re going to go with the &quot;there should only ever be one of this kind of search path&quot;, I&#x27;d rename it everywhere to <code>workspace_root</code> or just <code>root</code>, rather than <code>first_party</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -450,7 +450,7 @@ that consists of a single package and uses the default settings.</li>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/program.rs</code>:73 on 2024-11-15 17:31</div>
-            <div class="timeline-body"><p>I don't have a strong opinion. I'm leaning towards removing the field and pushing the workspace root path as the first <code>extra_path</code>. But I won't do this as part of this PR. For this PR, I'll undo the rename because the changes are entirely unrelated.</p>
+            <div class="timeline-body"><p>I don&#x27;t have a strong opinion. I&#x27;m leaning towards removing the field and pushing the workspace root path as the first <code>extra_path</code>. But I won&#x27;t do this as part of this PR. For this PR, I&#x27;ll undo the rename because the changes are entirely unrelated.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -459,7 +459,7 @@ that consists of a single package and uses the default settings.</li>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_workspace/src/workspace/settings.rs</code>:80 on 2024-11-15 17:39</div>
-            <div class="timeline-body"><p>We should change the behavior as we discussed it in our 1:1 but it's out of scope for this PR</p>
+            <div class="timeline-body"><p>We should change the behavior as we discussed it in our 1:1 but it&#x27;s out of scope for this PR</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -468,7 +468,7 @@ that consists of a single package and uses the default settings.</li>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_workspace/src/workspace/metadata.rs</code>:72 on 2024-11-15 17:42</div>
-            <div class="timeline-body"><p>My CLI proposal goes into that in more detail and I think it's best if we discuss it there. The design question is if red knot should always discover the workspace closest to the current working directory or if it should e.g. consider the provided paths. The current behavior is to only consider the current working directory. I'll change the behavior in a follow up PR if we decide that red knot should take the provided path arguments into account.</p>
+            <div class="timeline-body"><p>My CLI proposal goes into that in more detail and I think it&#x27;s best if we discuss it there. The design question is if red knot should always discover the workspace closest to the current working directory or if it should e.g. consider the provided paths. The current behavior is to only consider the current working directory. I&#x27;ll change the behavior in a follow up PR if we decide that red knot should take the provided path arguments into account.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -486,7 +486,7 @@ that consists of a single package and uses the default settings.</li>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_workspace/src/workspace/metadata.rs</code>:462 on 2024-11-15 17:55</div>
-            <div class="timeline-body"><p>I moved the <code>src</code> into the <code>app</code> directory for now. I'll address the module resolution path configuration in a follow up PR</p>
+            <div class="timeline-body"><p>I moved the <code>src</code> into the <code>app</code> directory for now. I&#x27;ll address the module resolution path configuration in a follow up PR</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -495,14 +495,14 @@ that consists of a single package and uses the default settings.</li>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_workspace/src/workspace/metadata.rs</code>:436 on 2024-11-15 17:55</div>
-            <div class="timeline-body"><p>I went ahead and deleted all <code>src</code> usages 😆 Now there's no files left other than <code>pyproject.toml</code>. So all of them are in the right place ;)</p>
+            <div class="timeline-body"><p>I went ahead and deleted all <code>src</code> usages 😆 Now there&#x27;s no files left other than <code>pyproject.toml</code>. So all of them are in the right place ;)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @MichaReiser on 2024-11-15 18:20</div>
+            <div class="event">Merged by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-15 18:20</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2024-11-15 18:20</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-15 18:20</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-11-15 18:20</div>
@@ -510,7 +510,7 @@ that consists of a single package and uses the default settings.</li>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:07:41 UTC
+        Synced at 2026-01-20 19:08:26 UTC
     </footer>
 </body>
 </html>

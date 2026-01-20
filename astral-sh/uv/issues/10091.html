@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>build backend: optional dependencies don't make it to PKG-INFO</h1>
+    <h1>build backend: optional dependencies don&#x27;t make it to PKG-INFO</h1>
 
     <div class="meta">
         <span class="state-icon state-closed"></span>
@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/cthoyt">@cthoyt</a></div>
-            <div class="timeline-body"><p>I'm on uv 0.5.11 (c4d0caaee 2024-12-19).</p>
-<p>The issue here is that optional dependencies aren't being written properly to PKG-INFO, therefore making it impossible to pip install the package with options. This was originally identified in https://github.com/biopragmatics/curies/issues/147. Here's a minimal reproduction:</p>
-<pre><code class="language-console">$ uv --preview init xyz --build-backend uv
+            <div class="timeline-body"><p>I&#x27;m on uv 0.5.11 (c4d0caaee 2024-12-19).</p>
+<p>The issue here is that optional dependencies aren&#x27;t being written properly to PKG-INFO, therefore making it impossible to pip install the package with options. This was originally identified in <a href="https://github.com/biopragmatics/curies/issues/147">biopragmatics/curies#147</a>. Here&#x27;s a minimal reproduction:</p>
+<pre><code>$ uv --preview init xyz --build-backend uv
 Initialized project `xyz` at `/Users/cthoyt/xyz`
 
 $ cd xyz
@@ -41,14 +41,14 @@ Installed 2 packages in 3ms
  + xyz==0.1.0 (from file:///Users/cthoyt/xyz)
 
 $ echo &quot;import defusedxml&quot; &gt; src/xyz/__init__.py
-$ echo &quot;def main(): print('hello from modified xyz')&quot; &gt;&gt; src/xyz/__init__.py
+$ echo &quot;def main(): print(&#x27;hello from modified xyz&#x27;)&quot; &gt;&gt; src/xyz/__init__.py
 
 $ uv run xyz
 hello from modified xyz
 </code></pre>
-<p>If you start from scratch, you need to do <code>uv run --extra xml xyz</code>, since the option isn't installed yet.</p>
+<p>If you start from scratch, you need to do <code>uv run --extra xml xyz</code>, since the option isn&#x27;t installed yet.</p>
 <p>Now comes the problematic part, after building:</p>
-<pre><code class="language-console">$ uv --preview build
+<pre><code>$ uv --preview build
 Building source distribution (uv build backend)...
 Building wheel from source distribution (uv build backend)...
 Successfully built dist/xyz-0.1.0.tar.gz
@@ -65,12 +65,12 @@ Requires-Python: &gt;=3.11
 Provides-Extra: xml
 Description-Content-Type: text/markdown
 </code></pre>
-<p><strong>Here's the bug:</strong> This PKG-INFO file should also include the line <code>Requires-Dist: defusedxml&gt;=0.7.1; extra == 'xml'</code>.</p>
-<p>I believe this also implies that the test scenario at https://github.com/astral-sh/uv/blob/ad92aaf186f59e7f9b3145b62308c8f8a7230bd5/crates/uv-build-backend/src/metadata.rs#L1029-L1036 is incomplete, since it's also missing the appropriate <code>Requires-Dist:</code> lines for mysql and postgres</p>
-<h2>What this means for <code>pip</code> users</h2>
-<p>This affects users by the following scenario using pip to install the package. The minimal reproduction below should follow the code before, in which it creates a virtual environment, activates it (I'm using fish, but so activation will vary based on your console), installing pip in the virtual environment, then using pip to install the package locally</p>
-<p>This can be reproduced with a pip installation scenario by creating a new virtual environment, installing pip in it, then using pip to install. Note that the same thing happens whether you're using <code>-e</code> for an editable installation or not.</p>
-<pre><code class="language-console">$ uv venv
+<p><strong>Here&#x27;s the bug:</strong> This PKG-INFO file should also include the line <code>Requires-Dist: defusedxml&gt;=0.7.1; extra == &#x27;xml&#x27;</code>.</p>
+<p>I believe this also implies that the test scenario at https://github.com/astral-sh/uv/blob/ad92aaf186f59e7f9b3145b62308c8f8a7230bd5/crates/uv-build-backend/src/metadata.rs#L1029-L1036 is incomplete, since it&#x27;s also missing the appropriate <code>Requires-Dist:</code> lines for mysql and postgres</p>
+What this means for <code>pip</code> users
+<p>This affects users by the following scenario using pip to install the package. The minimal reproduction below should follow the code before, in which it creates a virtual environment, activates it (I&#x27;m using fish, but so activation will vary based on your console), installing pip in the virtual environment, then using pip to install the package locally</p>
+<p>This can be reproduced with a pip installation scenario by creating a new virtual environment, installing pip in it, then using pip to install. Note that the same thing happens whether you&#x27;re using <code>-e</code> for an editable installation or not.</p>
+<pre><code>$ uv venv
 Creating virtual environment at: .venv
 Activate with: source .venv/bin/activate.fish
 
@@ -101,10 +101,10 @@ Package Version Editable project location
 pip     24.3.1
 xyz     0.1.0   /Users/cthoyt/Desktop/xyz
 </code></pre>
-<p>This listing should include <code>defusedxml</code>, but doesn't</p>
-<h2>How it should look, using <code>hatch</code> backend</h2>
-<p>Here's an alternate reproduction that gets the right thing, using hatchling as the backend:</p>
-<pre><code class="language-console">$ uv init xyz --build-backend hatch
+<p>This listing should include <code>defusedxml</code>, but doesn&#x27;t</p>
+How it should look, using <code>hatch</code> backend
+<p>Here&#x27;s an alternate reproduction that gets the right thing, using hatchling as the backend:</p>
+<pre><code>$ uv init xyz --build-backend hatch
 Initialized project `xyz` at `/Users/cthoyt/Desktop/xyz`
 
 $ cd xyz
@@ -133,34 +133,34 @@ Summary: Add your description here
 Author-email: Charles Tapley Hoyt &lt;cthoyt@gmail.com&gt;
 Requires-Python: &gt;=3.11
 Provides-Extra: xml
-Requires-Dist: defusedxml&gt;=0.7.1; extra == 'xml'
+Requires-Dist: defusedxml&gt;=0.7.1; extra == &#x27;xml&#x27;
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-12-22 23:08</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-22 23:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">preview</span> added by @charliermarsh on 2024-12-22 23:08</div>
+            <div class="event">Label <span class="label">preview</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-22 23:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-12-22 23:10</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-22 23:10</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-22 23:39</div>
-            <div class="timeline-body"><p>(I'll fix this, I've already implemented it before.)</p>
+            <div class="timeline-body"><p>(I&#x27;ll fix this, I&#x27;ve already implemented it before.)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-12-23 13:56</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-23 13:56</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-12-23 13:56</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-23 13:56</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:29:01 UTC
+        Synced at 2026-01-20 19:36:22 UTC
     </footer>
 </body>
 </html>

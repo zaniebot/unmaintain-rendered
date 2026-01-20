@@ -23,56 +23,56 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/wrodis">@wrodis</a></div>
-            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+            <div class="timeline-body">What version of ripgrep are you using?
 <p>ripgrep 11.0.1
 -SIMD -AVX (compiled)
 +SIMD +AVX (runtime)</p>
-<h4>How did you install ripgrep?</h4>
+How did you install ripgrep?
 <p>Compiled from repo.</p>
-<h4>What operating system are you using ripgrep on?</h4>
+What operating system are you using ripgrep on?
 <p>CentOS 7.</p>
-<h4>Describe your question, feature request, or bug.</h4>
-<p>ripgrep's behaviour seems inconsistent with grep's when using an empty file with --file and inverting match with -v.</p>
+Describe your question, feature request, or bug.
+<p>ripgrep&#x27;s behaviour seems inconsistent with grep&#x27;s when using an empty file with --file and inverting match with -v.</p>
 <pre><code>$ echo text &gt; /tmp/file; touch /tmp/empty_patterns; grep --file /tmp/empty_patterns -v /tmp/file; echo $?; rg --debug --file /tmp/empty_patterns -v /tmp/file; echo $?
 text
 0
 1
 </code></pre>
-<p>Not 100% sure if it's a bug or a feature.</p>
+<p>Not 100% sure if it&#x27;s a bug or a feature.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-07-29 10:54</div>
-            <div class="timeline-body"><p>Interesting. This is <em>probably</em> a bug. For corner cases like these, I've generally deferred to <code>grep</code>'s behavior, but this probably should get some careful thought. With that said, just because ripgrep and grep differ, that doesn't mean there's a bug.</p>
-<p>One thing that is making this a bit harder to make sense of, is that if ripgrep detects that a match can never occur, then it exits immediately. One of those cases, on master right now, is when the number of patterns given to ripgrep is zero. The thinking there is that if you have nothing to search for, then you can't get any results. So, right now, this doesn't check whether <code>-v</code> is given or not. Whether <code>-v</code> should mean &quot;match everything&quot; even when there are no patterns isn't quite clear to me. Do you have a specific use case in mind?</p>
-<p>Interestingly, if I <em>remove</em> the optimization that causes ripgrep to bail early, then an empty pattern file gets compiled to an empty regex, and an <a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2018&amp;gist=d80819c8a984c4c07b17fc48123f6c98">empty regex correctly matches at every position</a>. So the question here, to me, is how an empty pattern file should be interpreted. Is it a single empty regex? Or is it zero regexes? If it's an empty regex, then <code>-v</code> should turn up nothing, but if it's zero regexes, then <code>-v</code> should turn up everything. Presumably, the latter is the choice grep made. It is possible to provide a single empty regex (provide a pattern file with a single new line), so it does kind of seem like an empty pattern file should be treated as providing no regexes. In which case, grep's behavior here is probably correct.</p>
+            <div class="timeline-body"><p>Interesting. This is <em>probably</em> a bug. For corner cases like these, I&#x27;ve generally deferred to <code>grep</code>&#x27;s behavior, but this probably should get some careful thought. With that said, just because ripgrep and grep differ, that doesn&#x27;t mean there&#x27;s a bug.</p>
+<p>One thing that is making this a bit harder to make sense of, is that if ripgrep detects that a match can never occur, then it exits immediately. One of those cases, on master right now, is when the number of patterns given to ripgrep is zero. The thinking there is that if you have nothing to search for, then you can&#x27;t get any results. So, right now, this doesn&#x27;t check whether <code>-v</code> is given or not. Whether <code>-v</code> should mean &quot;match everything&quot; even when there are no patterns isn&#x27;t quite clear to me. Do you have a specific use case in mind?</p>
+<p>Interestingly, if I <em>remove</em> the optimization that causes ripgrep to bail early, then an empty pattern file gets compiled to an empty regex, and an <a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2018&amp;gist=d80819c8a984c4c07b17fc48123f6c98">empty regex correctly matches at every position</a>. So the question here, to me, is how an empty pattern file should be interpreted. Is it a single empty regex? Or is it zero regexes? If it&#x27;s an empty regex, then <code>-v</code> should turn up nothing, but if it&#x27;s zero regexes, then <code>-v</code> should turn up everything. Presumably, the latter is the choice grep made. It is possible to provide a single empty regex (provide a pattern file with a single new line), so it does kind of seem like an empty pattern file should be treated as providing no regexes. In which case, grep&#x27;s behavior here is probably correct.</p>
 <p>Do you have a particular use case in mind here, or did you just happen to notice a curious inconsistency?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2019-07-29 10:54</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-07-29 10:54</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2019-07-29 10:54</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-07-29 10:54</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/wrodis">@wrodis</a> on 2019-07-29 12:57</div>
-            <div class="timeline-body"><p>I do have a particular use case. I'm compiling a list of ids for objects to remove from a database and have some other checks that produce a list of ids that should <em>not</em> be removed. Instead of creating an arcane sql query (and because I might switch away from a database), I put the list of ids not to remove in a patterns file and use(d) rg to produce the final list of ids with</p>
+            <div class="timeline-body"><p>I do have a particular use case. I&#x27;m compiling a list of ids for objects to remove from a database and have some other checks that produce a list of ids that should <em>not</em> be removed. Instead of creating an arcane sql query (and because I might switch away from a database), I put the list of ids not to remove in a patterns file and use(d) rg to produce the final list of ids with</p>
 <pre><code>$ rg --file ids-not-to-remove ids-to-remove.i-think &gt; ids-to-remove.actually
 </code></pre>
-<p>The list of ids-not-to-remove sometimes comes up empty and that's how I noticed.</p>
-<p>I agree with your and grep's reasoning that an empty pattern file is &quot;no regexes&quot;, not &quot;an empty regex&quot;.</p>
-<p>(Note that what you're saying about rg exiting early is a bit surprising, given that the below doesn't have any patterns, but still doesn't exit immediately.)</p>
-<pre><code>$ rg --files --glob '*.txt'
+<p>The list of ids-not-to-remove sometimes comes up empty and that&#x27;s how I noticed.</p>
+<p>I agree with your and grep&#x27;s reasoning that an empty pattern file is &quot;no regexes&quot;, not &quot;an empty regex&quot;.</p>
+<p>(Note that what you&#x27;re saying about rg exiting early is a bit surprising, given that the below doesn&#x27;t have any patterns, but still doesn&#x27;t exit immediately.)</p>
+<pre><code>$ rg --files --glob &#x27;*.txt&#x27;
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-07-29 13:01</div>
             <div class="timeline-body"><blockquote>
-<p>Note that what you're saying about rg exiting early is a bit surprising</p>
+<p>Note that what you&#x27;re saying about rg exiting early is a bit surprising</p>
 </blockquote>
-<p>Yeah, I'm just being terse. It exits early when it is otherwise in search mode. If it's doing something else, then the logic doesn't apply. The case analysis in the code is probably clearer:</p>
+<p>Yeah, I&#x27;m just being terse. It exits early when it is otherwise in search mode. If it&#x27;s doing something else, then the logic doesn&#x27;t apply. The case analysis in the code is probably clearer:</p>
 <p>https://github.com/BurntSushi/ripgrep/blob/08ae4da2b79cc4e59a43e98f61ce4fd6e0adc81d/src/args.rs#L244-L260</p>
 </div>
         </div>
@@ -80,67 +80,67 @@ text
             <div class="timeline-header">Comment by <a href="https://github.com/pierreprinetti">@pierreprinetti</a> on 2020-04-10 14:49</div>
             <div class="timeline-body"><p>Hello,
 I am experiencing this behaviour and I am perceiving it as a bug.</p>
-<h2>Minimal example</h2>
-<pre><code>$ echo -e 'one\ntwo\nthree' | rg --invert-match --file &lt;(echo 'two')
+Minimal example
+<pre><code>$ echo -e &#x27;one\ntwo\nthree&#x27; | rg --invert-match --file &lt;(echo &#x27;two&#x27;)
 one
 three
-$ echo -e 'one\ntwo\nthree' | rg --invert-match --file &lt;(echo '')
+$ echo -e &#x27;one\ntwo\nthree&#x27; | rg --invert-match --file &lt;(echo &#x27;&#x27;)
 $ echo $?
 1
 </code></pre>
-<h2>My use-case</h2>
+My use-case
 <p>I use <code>rg</code> to remove stale resources on a cloud. I have a script that produces an exclusion-list of resources not to be deleted.</p>
 <p>I use <code>rg</code> to filter the resources to be deleted, using <code>--invert-match</code>.</p>
 <p><strong>When the exclusion-list is empty, no stale resource is deleted.</strong></p>
 <pre><code>$ list-resources | rg -vf &lt;(./exclusion-list) | xargs delete-resources
 </code></pre>
 <p>My workaround is to add a dummy value:</p>
-<pre><code>$ list-resources | rg -vf &lt;(echo 'dummy' &amp;&amp; ./exclusion-list) | xargs delete-resources
+<pre><code>$ list-resources | rg -vf &lt;(echo &#x27;dummy&#x27; &amp;&amp; ./exclusion-list) | xargs delete-resources
 </code></pre>
 <p>Works, but man how ugly is it.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-04-10 14:57</div>
-            <div class="timeline-body"><p>@pierreprinetti Aye, thanks for the details! I agree at this point that ripgrep should match grep's behavior.</p>
+            <div class="timeline-body"><p>@pierreprinetti Aye, thanks for the details! I agree at this point that ripgrep should match grep&#x27;s behavior.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/pierreprinetti">@pierreprinetti</a> on 2020-04-10 16:28</div>
             <div class="timeline-body"><p><strong>&lt;opinion&gt;</strong></p>
-<p>It's confusing.</p>
-<p>Personally: empty filter means no filter means everything passes. But that's just my point of view and I might be missing context.</p>
-<p>Behaving differently with an empty file vs. a file containing newlines seems questionable UX (and that's precisely what <code>grep</code> does). However, I understand that backwards compatibility with <code>grep</code> represents a target.</p>
-<p>In conclusion, I'd like <code>rg</code> to have at least one way of outputting everything, so that I don't have to use my hacky workaround anymore.</p>
+<p>It&#x27;s confusing.</p>
+<p>Personally: empty filter means no filter means everything passes. But that&#x27;s just my point of view and I might be missing context.</p>
+<p>Behaving differently with an empty file vs. a file containing newlines seems questionable UX (and that&#x27;s precisely what <code>grep</code> does). However, I understand that backwards compatibility with <code>grep</code> represents a target.</p>
+<p>In conclusion, I&#x27;d like <code>rg</code> to have at least one way of outputting everything, so that I don&#x27;t have to use my hacky workaround anymore.</p>
 <p><strong>&lt;/opinion&gt;</strong></p>
-<h2>Recap of the current <code>-v</code> situation</h2>
+Recap of the current <code>-v</code> situation
 <p><code>GNU grep 3.3</code> vs <code>rg 12.0.1</code></p>
-<p>| pattern file | grep's output | rg's output |
+<p>| pattern file | grep&#x27;s output | rg&#x27;s output |
 |:-|:-:|:-:|
 | <strong>empty</strong> | everything |  nothing |
 | <strong>newline</strong> | nothing | nothing |</p>
-<pre><code>$ echo -e 'one\ntwo\nthree' | grep --invert-match --file &lt;(echo -ne '')
+<pre><code>$ echo -e &#x27;one\ntwo\nthree&#x27; | grep --invert-match --file &lt;(echo -ne &#x27;&#x27;)
 one
 two
 three
-$ echo -e 'one\ntwo\nthree' | grep --invert-match --file &lt;(echo -ne '\n')
+$ echo -e &#x27;one\ntwo\nthree&#x27; | grep --invert-match --file &lt;(echo -ne &#x27;\n&#x27;)
 $
 </code></pre>
-<pre><code>$ echo -e 'one\ntwo\nthree' | rg --invert-match --file &lt;(echo -ne '')
-$ echo -e 'one\ntwo\nthree' | rg --invert-match --file &lt;(echo -ne '\n')
+<pre><code>$ echo -e &#x27;one\ntwo\nthree&#x27; | rg --invert-match --file &lt;(echo -ne &#x27;&#x27;)
+$ echo -e &#x27;one\ntwo\nthree&#x27; | rg --invert-match --file &lt;(echo -ne &#x27;\n&#x27;)
 $
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-04-10 16:32</div>
-            <div class="timeline-body"><p>@pierreprinetti Sorry, I'm not following you here? I'm agreeing that this is a bug and that ripgrep should match GNU grep's behavior here. Basically, if you interpret an empty file as &quot;zero regexes&quot; and a file containing a new line as &quot;one empty regex,&quot; then everything should follow from there. Matching &quot;zero regexes&quot; yields nothing, so inverting that should return everything. (That's where the bug is in ripgrep today.) Similarly, matching a regex that matches the empty string matches everywhere. Inverting that matches nothing.</p>
+            <div class="timeline-body"><p>@pierreprinetti Sorry, I&#x27;m not following you here? I&#x27;m agreeing that this is a bug and that ripgrep should match GNU grep&#x27;s behavior here. Basically, if you interpret an empty file as &quot;zero regexes&quot; and a file containing a new line as &quot;one empty regex,&quot; then everything should follow from there. Matching &quot;zero regexes&quot; yields nothing, so inverting that should return everything. (That&#x27;s where the bug is in ripgrep today.) Similarly, matching a regex that matches the empty string matches everywhere. Inverting that matches nothing.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/pierreprinetti">@pierreprinetti</a> on 2020-04-10 17:55</div>
-            <div class="timeline-body"><p>I appreciate the logic and your solution (matching grep's behaviour) sounds solid :ok_hand:</p>
-<p>(I was concerned about the different behaviour with empty vs newline, but you can't have everything :slightly_smiling_face:)</p>
+            <div class="timeline-body"><p>I appreciate the logic and your solution (matching grep&#x27;s behaviour) sounds solid :ok_hand:</p>
+<p>(I was concerned about the different behaviour with empty vs newline, but you can&#x27;t have everything :slightly_smiling_face:)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -155,15 +155,15 @@ $
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2025-07-27 19:13</div>
+            <div class="event">Label <span class="label">rollup</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-07-27 19:13</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2025-09-20 01:08</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-09-20 01:08</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:42:57 UTC
+        Synced at 2026-01-20 18:48:08 UTC
     </footer>
 </body>
 </html>

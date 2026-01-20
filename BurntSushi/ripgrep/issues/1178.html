@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/jessegrosjean">@jessegrosjean</a></div>
-            <div class="timeline-body"><p>You've mentioned a few times that you'd like to move directory traversal to rayon. Here's a working/incomplete sketch of one approach to doing that:</p>
+            <div class="timeline-body"><p>You&#x27;ve mentioned a few times that you&#x27;d like to move directory traversal to rayon. Here&#x27;s a working/incomplete sketch of one approach to doing that:</p>
 <p>https://github.com/jessegrosjean/walk</p>
-<p>Maybe all obvious, but maybe a useful resource (and was good learning for me) for later development. The basic design is to create a channel to use as work queue. And then use rayon's <code>par_bridge()</code> to process that channel of work in parallel.</p>
+<p>Maybe all obvious, but maybe a useful resource (and was good learning for me) for later development. The basic design is to create a channel to use as work queue. And then use rayon&#x27;s <code>par_bridge()</code> to process that channel of work in parallel.</p>
 <p>Performance is comparable to <code>ignore</code> crate walking linux source:</p>
 <pre><code>par_ignore_walk         time:   [72.235 ms 73.115 ms 73.753 ms]                           
                         change: [-3.4721% -2.1156% -0.7586%] (p = 0.01 &lt; 0.05)
@@ -35,14 +35,14 @@ rayon_walk              time:   [60.600 ms 60.734 ms 60.917 ms]
                         change: [+0.0896% +0.5440% +1.0160%] (p = 0.04 &lt; 0.05)
                         Change within noise threshold.
 </code></pre>
-<p>In this run I have ignore crate not doing any filtering, but it's still likely doing more then my rayon_walk, so I expect performance is about the same between the two even though rayon walk is running faster. Another benefit of this design is that it's fairly strait forward to get sorted results also computed in parallel. But that adds some complexity so I figured I would post this without that code for now.</p>
-<p>Last you also mentioned wanting to rethink the <code>ignore</code> create API. Currently it's callback based. I wonder if it would make more sense (again if you are thinking long term about a redesign) to make it iterator based. So ignore crate would just be responsible for generating an iterator over <code>DirEntry</code> results as quickly as possible. If you also wanted to do heavy processing on those entries you could call <code>par_bridge</code> again on those results and do your heavy processing (such as perform ripgrep search) there.</p>
+<p>In this run I have ignore crate not doing any filtering, but it&#x27;s still likely doing more then my rayon_walk, so I expect performance is about the same between the two even though rayon walk is running faster. Another benefit of this design is that it&#x27;s fairly strait forward to get sorted results also computed in parallel. But that adds some complexity so I figured I would post this without that code for now.</p>
+<p>Last you also mentioned wanting to rethink the <code>ignore</code> create API. Currently it&#x27;s callback based. I wonder if it would make more sense (again if you are thinking long term about a redesign) to make it iterator based. So ignore crate would just be responsible for generating an iterator over <code>DirEntry</code> results as quickly as possible. If you also wanted to do heavy processing on those entries you could call <code>par_bridge</code> again on those results and do your heavy processing (such as perform ripgrep search) there.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-01-28 21:37</div>
-            <div class="timeline-body"><p>@jessegrosjean Very nice! I didn't know about <code>par_bridge</code>. That seems like a very handy function! It will be a while before I can dig into that code, but it looks promising.</p>
-<p>With respect to the <code>ignore</code> refactor... It's a fairly daunting task with a ton of tiny details, so I haven't really allowed myself to think about it too closely. Briefly, here are my objectives:</p>
+            <div class="timeline-body"><p>@jessegrosjean Very nice! I didn&#x27;t know about <code>par_bridge</code>. That seems like a very handy function! It will be a while before I can dig into that code, but it looks promising.</p>
+<p>With respect to the <code>ignore</code> refactor... It&#x27;s a fairly daunting task with a ton of tiny details, so I haven&#x27;t really allowed myself to think about it too closely. Briefly, here are my objectives:</p>
 <ul>
 <li>Figure out how to make ignore rules easier to understand and reason about. Both from an API perspective and an implementation perspective.</li>
 <li>Figure out how to de-couple the the parallel directory traverser with ignore rule processing. There is some interesting work to be done here since we need to retain the requirement that every <code>.gitignore</code>/<code>.ignore</code>/etc file is parsed and built exactly once, and then reused. Currently, this is done by maintaining what is effectively a thread safe linked list.</li>
@@ -54,14 +54,14 @@ rayon_walk              time:   [60.600 ms 60.734 ms 60.917 ms]
             <div class="timeline-body"><blockquote>
 <p>Figure out how to de-couple the the parallel directory traverser with ignore rule processing. There is some interesting work to be done here since we need to retain the requirement that every .gitignore/.ignore/etc file is parsed and built exactly once, and then reused. Currently, this is done by maintaining what is effectively a thread safe linked list.</p>
 </blockquote>
-<p>Can you describe this problem in a little more detail? I'm working under assumption that .gitignore/.ignore/etc rules only apply to the current directory (and subdirectories). Is that correct?</p>
+<p>Can you describe this problem in a little more detail? I&#x27;m working under assumption that .gitignore/.ignore/etc rules only apply to the current directory (and subdirectories). Is that correct?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-01-29 22:01</div>
-            <div class="timeline-body"><p>I really don't have the bandwidth to go into a lot of detail. If you look at the parallel traverser in the crate today, then the logic for iterating over directory entries is coupled with the logic for filtering file paths. These <em>should</em> be orthogonal concerns and I'm not yet convinced the coupling is necessary.</p>
+            <div class="timeline-body"><p>I really don&#x27;t have the bandwidth to go into a lot of detail. If you look at the parallel traverser in the crate today, then the logic for iterating over directory entries is coupled with the logic for filtering file paths. These <em>should</em> be orthogonal concerns and I&#x27;m not yet convinced the coupling is necessary.</p>
 <blockquote>
-<p>I'm working under assumption that .gitignore/.ignore/etc rules only apply to the current directory (and subdirectories). Is that correct?</p>
+<p>I&#x27;m working under assumption that .gitignore/.ignore/etc rules only apply to the current directory (and subdirectories). Is that correct?</p>
 </blockquote>
 <p>Yes. With the exception being global gitignore rules or explicitly specified ignore files. But those are easy; they are applied everywhere.</p>
 </div>
@@ -69,16 +69,16 @@ rayon_walk              time:   [60.600 ms 60.734 ms 60.917 ms]
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jessegrosjean">@jessegrosjean</a> on 2019-01-29 22:30</div>
             <div class="timeline-body"><blockquote>
-<p>These should be orthogonal concerns and I'm not yet convinced the coupling is necessary.</p>
+<p>These should be orthogonal concerns and I&#x27;m not yet convinced the coupling is necessary.</p>
 </blockquote>
-<p>I'm not sure that I follow. It seems to me that (at least as an optimization) it makes sense for the walk to know about any ignore/filtering logic. That will save lots of work, not having to walk ignored directories.</p>
-<p>I do think that the walk shouldn't be coupled with any particular ignore logic. The user of the walk should be able to provide that logic as they see fit, just like they can also provide there own sort logic.</p>
-<p>Anyway, I'll post a more concrete implementation to talk about in a few days, then can talk more about the details.</p>
+<p>I&#x27;m not sure that I follow. It seems to me that (at least as an optimization) it makes sense for the walk to know about any ignore/filtering logic. That will save lots of work, not having to walk ignored directories.</p>
+<p>I do think that the walk shouldn&#x27;t be coupled with any particular ignore logic. The user of the walk should be able to provide that logic as they see fit, just like they can also provide there own sort logic.</p>
+<p>Anyway, I&#x27;ll post a more concrete implementation to talk about in a few days, then can talk more about the details.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jessegrosjean">@jessegrosjean</a> on 2019-01-30 21:52</div>
-            <div class="timeline-body"><p>Here's a more complete implementation. It follows the same rayon usage pattern, but is more complex because it now supports streamed sorted results. I think it also has the needed API to support .gitignore based filtering, though I haven't implemented that. Performance is about the same as before.</p>
+            <div class="timeline-body"><p>Here&#x27;s a more complete implementation. It follows the same rayon usage pattern, but is more complex because it now supports streamed sorted results. I think it also has the needed API to support .gitignore based filtering, though I haven&#x27;t implemented that. Performance is about the same as before.</p>
 <p>At the top level is a simple simple WalkDir implementation that shows how to use the more complex <code>core::walk</code> function. <code>core::walk</code> allows for arbitrary sorting/filtering and maintaining a state value for each directory read. That state value is then cloned and sent on to child directory reads.</p>
 <p>https://github.com/jessegrosjean/jwalk</p>
 </div>
@@ -86,36 +86,36 @@ rayon_walk              time:   [60.600 ms 60.734 ms 60.917 ms]
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-01-31 12:25</div>
             <div class="timeline-body"><blockquote>
-<p>I'm not sure that I follow. It seems to me that (at least as an optimization) it makes sense for the walk to know about any ignore/filtering logic. That will save lots of work, not having to walk ignored directories.</p>
+<p>I&#x27;m not sure that I follow. It seems to me that (at least as an optimization) it makes sense for the walk to know about any ignore/filtering logic. That will save lots of work, not having to walk ignored directories.</p>
 </blockquote>
-<p>It's not clear to me that the coupling is necessary for performance.</p>
-<p>Again, I'm just trying to state what my high level goals are. I'm sorry, but I really just do not have the bandwidth to dive into this right now. It's too complex for me to look at this passively, so the best I can do is say what I <em>think</em> my goals are. Whether they are obtainable or not is not something I know right now.</p>
-<p>Consider, for example, users that want parallel directory traversal as an alternative to <code>walkdir</code> without all the ignore-related logic. The ideal way to provide that is to provide a crate that only cares about parallel directory traversal and another crate that layers ignore logic on top of it. This is exactly how the <code>ignore</code> crate works today for the single threaded case, since it uses <code>walkdir</code> for directory traversal in that case because <code>walkdir</code> has hooks for permitting the caller to skip the traversal of sub-directories. I don't know whether a parallel directory iterator is amenable to the same de-coupling, but it's not immediately obvious to me that it isn't. So that's where I'd start.</p>
-<p>I'd just like to say once again that I'm super happy to see work being done on this. However, it could unfortunately be months before I really sink my teeth into this.</p>
+<p>It&#x27;s not clear to me that the coupling is necessary for performance.</p>
+<p>Again, I&#x27;m just trying to state what my high level goals are. I&#x27;m sorry, but I really just do not have the bandwidth to dive into this right now. It&#x27;s too complex for me to look at this passively, so the best I can do is say what I <em>think</em> my goals are. Whether they are obtainable or not is not something I know right now.</p>
+<p>Consider, for example, users that want parallel directory traversal as an alternative to <code>walkdir</code> without all the ignore-related logic. The ideal way to provide that is to provide a crate that only cares about parallel directory traversal and another crate that layers ignore logic on top of it. This is exactly how the <code>ignore</code> crate works today for the single threaded case, since it uses <code>walkdir</code> for directory traversal in that case because <code>walkdir</code> has hooks for permitting the caller to skip the traversal of sub-directories. I don&#x27;t know whether a parallel directory iterator is amenable to the same de-coupling, but it&#x27;s not immediately obvious to me that it isn&#x27;t. So that&#x27;s where I&#x27;d start.</p>
+<p>I&#x27;d just like to say once again that I&#x27;m super happy to see work being done on this. However, it could unfortunately be months before I really sink my teeth into this.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2019-01-31 12:26</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-01-31 12:26</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">icebox</span> added by @BurntSushi on 2019-01-31 12:26</div>
+            <div class="event">Label <span class="label">icebox</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-01-31 12:26</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jessegrosjean">@jessegrosjean</a> on 2019-01-31 16:26</div>
-            <div class="timeline-body"><p>No problem and thanks for all the help and feedback so far. I'll likely continue to work on this and publish as a crate if I get far enough. When you get time check back in.</p>
+            <div class="timeline-body"><p>No problem and thanks for all the help and feedback so far. I&#x27;ll likely continue to work on this and publish as a crate if I get far enough. When you get time check back in.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jessegrosjean">@jessegrosjean</a> on 2019-02-09 17:59</div>
-            <div class="timeline-body"><p>When you get a chance I've polished this idea further and published the crate here:</p>
+            <div class="timeline-body"><p>When you get a chance I&#x27;ve polished this idea further and published the crate here:</p>
 <p>https://crates.io/crates/jwalk</p>
-<p>It doesn't support &quot;ignore&quot; features, but I &quot;think&quot; it's possible to add that sort of filtering with a custom <code>WalkDir::process_entries</code> function.</p>
+<p>It doesn&#x27;t support &quot;ignore&quot; features, but I &quot;think&quot; it&#x27;s possible to add that sort of filtering with a custom <code>WalkDir::process_entries</code> function.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:42:49 UTC
+        Synced at 2026-01-20 18:48:08 UTC
     </footer>
 </body>
 </html>

@@ -23,40 +23,40 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/mil-ad">@mil-ad</a></div>
-            <div class="timeline-body"><h3>Question</h3>
-<p>Is it safe to run <code>uv cache clean</code> when there's potentially another process running uv operations? Does it acquire fnlock or something similar?</p>
+            <div class="timeline-body">Question
+<p>Is it safe to run <code>uv cache clean</code> when there&#x27;s potentially another process running uv operations? Does it acquire fnlock or something similar?</p>
 <p>Why? I have multiple users using uv (and each setting UV_CACHE_DIR) and I want to have a cron job occasionally cleaning caches</p>
-<h3>Platform</h3>
+Platform
 <p>amd64</p>
-<h3>Version</h3>
+Version
 <p>uv 0.8.5</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @mil-ad on 2025-08-06 10:33</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/mil-ad">@mil-ad</a> on 2025-08-06 10:33</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/hutch3232">@hutch3232</a> on 2025-08-06 13:03</div>
             <div class="timeline-body"><p>https://docs.astral.sh/uv/concepts/cache/#cache-safety</p>
 <blockquote>
-<p>Note that it's not safe to modify the uv cache (e.g., uv cache clean) while other uv commands are running, and never safe to modify the cache directly (e.g., by removing a file or directory).</p>
+<p>Note that it&#x27;s not safe to modify the uv cache (e.g., uv cache clean) while other uv commands are running, and never safe to modify the cache directly (e.g., by removing a file or directory).</p>
 </blockquote>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/hutch3232">@hutch3232</a> on 2025-08-06 13:27</div>
-            <div class="timeline-body"><p>I'm in a similar situation to you, where I have multiple users sharing one cache. We've done this by having everyone set <code>UV_CACHE_DIR</code> to the same value. Over time, the size of the cache has blown up, so I was hoping to get rid of old unused installs. Similar to you, I saw <code>uv cache prune</code> which:</p>
+            <div class="timeline-body"><p>I&#x27;m in a similar situation to you, where I have multiple users sharing one cache. We&#x27;ve done this by having everyone set <code>UV_CACHE_DIR</code> to the same value. Over time, the size of the cache has blown up, so I was hoping to get rid of old unused installs. Similar to you, I saw <code>uv cache prune</code> which:</p>
 <blockquote>
 <p>uv cache prune removes all unused cache entries. For example, the cache directory may contain entries created in previous uv versions that are no longer necessary and can be safely removed. uv cache prune is safe to run periodically, to keep the cache directory clean.</p>
 </blockquote>
-<p>That sounded like it would be safe in my case, since the cache entries were &quot;unused&quot;, so I ran it. Unfortunately it broke a bunch of users venv's. They had errors like &quot;module not found&quot; but it would be for like submodules (specific error example I saw: No module named 'pytz.tzinfo' when importing pandas). It was pretty disruptive - oops - and the solution was to have each user run <code>rm -rf .venv/ &amp;&amp; uv sync</code>. Simply running <code>uv sync</code> did not work - it said it was still in-sync. Possibly relevant detail: we are also setting <code>UV_LINK_MODE=symlink</code>. I am thinking that this command <code>uv cache prune</code> really only makes sense when you are using the standalone / system-level install, instead of <code>uv</code> being installed into the venv itself. The reason is that with the system-level install, you have a consistent version of <code>uv</code> (and thus the cache versions) so it is safe to remove old cache version archives... but when users are all using different versions of <code>uv</code>, removing cache entries for prior <code>uv</code> versions isn't safe for users still on old versions of <code>uv</code>.</p>
-<p>I have two thoughts coming out of this experience. Maybe the docs could be elaborated to explain what &quot;unused cache entries&quot; means specifically. Also, perhaps <code>uv sync</code> could have an optional setting to more thoroughly check... perhaps by following symlinks or something. Note: my initial attempt to fix this was with <code>uv sync --refresh</code> and that didn't work. Only removing the whole venv and resyncing worked.</p>
+<p>That sounded like it would be safe in my case, since the cache entries were &quot;unused&quot;, so I ran it. Unfortunately it broke a bunch of users venv&#x27;s. They had errors like &quot;module not found&quot; but it would be for like submodules (specific error example I saw: No module named &#x27;pytz.tzinfo&#x27; when importing pandas). It was pretty disruptive - oops - and the solution was to have each user run <code>rm -rf .venv/ &amp;&amp; uv sync</code>. Simply running <code>uv sync</code> did not work - it said it was still in-sync. Possibly relevant detail: we are also setting <code>UV_LINK_MODE=symlink</code>. I am thinking that this command <code>uv cache prune</code> really only makes sense when you are using the standalone / system-level install, instead of <code>uv</code> being installed into the venv itself. The reason is that with the system-level install, you have a consistent version of <code>uv</code> (and thus the cache versions) so it is safe to remove old cache version archives... but when users are all using different versions of <code>uv</code>, removing cache entries for prior <code>uv</code> versions isn&#x27;t safe for users still on old versions of <code>uv</code>.</p>
+<p>I have two thoughts coming out of this experience. Maybe the docs could be elaborated to explain what &quot;unused cache entries&quot; means specifically. Also, perhaps <code>uv sync</code> could have an optional setting to more thoroughly check... perhaps by following symlinks or something. Note: my initial attempt to fix this was with <code>uv sync --refresh</code> and that didn&#x27;t work. Only removing the whole venv and resyncing worked.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/powercoconola">@powercoconola</a> on 2025-08-06 17:25</div>
             <div class="timeline-body"><blockquote>
-<p>We've done this by having everyone set <code>UV_CACHE_DIR</code> to the same value.</p>
+<p>We&#x27;ve done this by having everyone set <code>UV_CACHE_DIR</code> to the same value.</p>
 </blockquote>
 <p>Is the cache directory a spot on the network drive or something? How is it that multiple users can access the same cache directory? Did you set it to a global spot on a drive instead of a user-directory?</p>
 <p>We just leave the cache dir as default, as mentioned in docs:</p>
@@ -68,18 +68,18 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/hutch3232">@hutch3232</a> on 2025-08-06 18:11</div>
             <div class="timeline-body"><p>Good questions - I might be in a strange situation. I will say it has worked incredibly well for us except for this one-off user error situation.</p>
-<p>Basically we are using python in containerized workspaces. These workspaces are largely ephemeral - if we left the cache as the default location they'd be wiped out on shutdown. For significant time savings, we created a drive used to store the <code>uv</code> cache which we then mount to each ephemeral workspace. These are linux (ubuntu) environments built using Docker fwiw. When running the image, we're all the same &quot;user&quot; i.e., <code>$USER</code>, which is how we don't get into horrible unix permissions issues situation when installing into the same cache location.</p>
+<p>Basically we are using python in containerized workspaces. These workspaces are largely ephemeral - if we left the cache as the default location they&#x27;d be wiped out on shutdown. For significant time savings, we created a drive used to store the <code>uv</code> cache which we then mount to each ephemeral workspace. These are linux (ubuntu) environments built using Docker fwiw. When running the image, we&#x27;re all the same &quot;user&quot; i.e., <code>$USER</code>, which is how we don&#x27;t get into horrible unix permissions issues situation when installing into the same cache location.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-08-06 18:53</div>
-            <div class="timeline-body"><p>@hutch3232 I'm sorry you've been affected by this, we had a warning about this case specifically but it got cut out of the rendered docs: https://github.com/astral-sh/uv/issues/15115.</p>
-<p>Regarding the original question, it's not safe to prune or clear the cache while other uv commands are running, but (with the notable exception of <code>UV_LINK_MODE=symlink</code>) it is safe to run <code>uv cache clear</code> or <code>uv cache prune</code> for cache maintenance without breaking existing venvs.</p>
+            <div class="timeline-body"><p>@hutch3232 I&#x27;m sorry you&#x27;ve been affected by this, we had a warning about this case specifically but it got cut out of the rendered docs: <a href="https://github.com/astral-sh/uv/issues/15115">astral-sh/uv#15115</a>.</p>
+<p>Regarding the original question, it&#x27;s not safe to prune or clear the cache while other uv commands are running, but (with the notable exception of <code>UV_LINK_MODE=symlink</code>) it is safe to run <code>uv cache clear</code> or <code>uv cache prune</code> for cache maintenance without breaking existing venvs.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/hutch3232">@hutch3232</a> on 2025-08-06 19:16</div>
-            <div class="timeline-body"><p>Thanks, @konstin! The behavior makes sense. I wish I could use hardlinks. When I tried a year ago it didn't work - presumably because of my mounted drive setup. Seems like a me-problem.</p>
+            <div class="timeline-body"><p>Thanks, @konstin! The behavior makes sense. I wish I could use hardlinks. When I tried a year ago it didn&#x27;t work - presumably because of my mounted drive setup. Seems like a me-problem.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -87,7 +87,7 @@
             <div class="timeline-body"><blockquote>
 <p>Is the cache directory a spot on the network drive or something? How is it that multiple users can access the same cache directory? Did you set it to a global spot on a drive instead of a user-directory?</p>
 </blockquote>
-<p>@powercoconola  It doesn't have to be multiple users (though uv cache is additive so sharing it among multiple users shouldn't be an issue?). The same user could be running multiple jobs in parallel.</p>
+<p>@powercoconola  It doesn&#x27;t have to be multiple users (though uv cache is additive so sharing it among multiple users shouldn&#x27;t be an issue?). The same user could be running multiple jobs in parallel.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -96,12 +96,12 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2025-08-30 22:43</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-30 22:43</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:32:30 UTC
+        Synced at 2026-01-20 19:39:52 UTC
     </footer>
 </body>
 </html>

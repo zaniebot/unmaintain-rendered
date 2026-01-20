@@ -23,44 +23,44 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Add initial support for applying auto-fixes in Jupyter Notebook.</p>
-<h3>Solution</h3>
+Solution
 <p>Cell offsets are the boundaries for each cell in the concatenated source code. They are represented using <code>TextSize</code>. It includes the start and end offset as well, thus creating a range for each cell. These offsets are updated using the <code>SourceMap</code> markers.</p>
-<h3>SourceMap</h3>
+SourceMap
 <p><code>SourceMap</code> contains markers constructed from each edits which tracks the original source code position to the transformed positions. The following drawing might make it clear:</p>
-<p><img src="https://github.com/astral-sh/ruff/assets/67177269/3c94e591-70a7-4b57-bd32-0baa91cc7858" alt="image" /></p>
+<p><img src="https://github.com/astral-sh/ruff/assets/67177269/3c94e591-70a7-4b57-bd32-0baa91cc7858" alt="image"></p>
 <p>The center column where the dotted lines are present are the markers included in the <code>SourceMap</code>. The <code>Notebook</code> looks at these markers and updates the cell offsets after each linter loop. If you notice closely, the destination takes into account all of the markers before it.</p>
-<p>The index is constructed only when required as it's only used to render the diagnostics. So, a <code>OnceCell</code> is used for this purpose. The cell offsets, cell content and the index will be updated after each iteration of linting in the mentioned order. The order is important here as the content is updated as per the new offsets and index is updated as per the new content.</p>
-<h2>Limitations</h2>
-<h3>1 (resolved https://github.com/charliermarsh/ruff/pull/4665/commits/d72192301c88f77c2709f0759a77b554c30f5eb3)</h3>
-<p>Auto-fixes which spans across multiple cell will <em>panic</em>. This is because it's difficult to determine which part of the edit content belongs to which cell. This mainly includes the import sorter in the following scenario where there are 2 continuous cells with import statements:</p>
-<pre><code class="language-python">import random
+<p>The index is constructed only when required as it&#x27;s only used to render the diagnostics. So, a <code>OnceCell</code> is used for this purpose. The cell offsets, cell content and the index will be updated after each iteration of linting in the mentioned order. The order is important here as the content is updated as per the new offsets and index is updated as per the new content.</p>
+Limitations
+1 (resolved <a href="https://github.com/charliermarsh/ruff/pull/4665">charliermarsh/ruff#4665</a>/commits/d72192301c88f77c2709f0759a77b554c30f5eb3)
+<p>Auto-fixes which spans across multiple cell will <em>panic</em>. This is because it&#x27;s difficult to determine which part of the edit content belongs to which cell. This mainly includes the import sorter in the following scenario where there are 2 continuous cells with import statements:</p>
+<pre><code>import random
 import os
 # ---
 import math
 </code></pre>
 <p>(The commented line break is just to visualize cell separation and is not part of the code.)</p>
 <p>Here, the concatenated content would be:</p>
-<pre><code class="language-python">import random
+<pre><code>import random
 import os
 import math
 </code></pre>
 <p>And the formatted output would be:</p>
-<pre><code class="language-python">import math
+<pre><code>import math
 import random
 import os
 </code></pre>
-<p>Now, it's not possible to determine which part of the content belongs to which cell and even if we try to update it as per the line count the context will change as an import might move out from the actual cell.</p>
-<h4>Possible solutions:</h4>
+<p>Now, it&#x27;s not possible to determine which part of the content belongs to which cell and even if we try to update it as per the line count the context will change as an import might move out from the actual cell.</p>
+Possible solutions:
 <ul>
-<li>We could ignore the <code>Edit</code> which spans across multiple cells but this creates a problem in the lint loop. Take the above code as an example where there are 2 cells containing import statements which needs to be sorted. Now, this edit will span both cells, we'll ignore this edit, in the next iteration the same edit will be created and ignored and this will go on till we reach <code>MAX_ITERATION</code>.</li>
+<li>We could ignore the <code>Edit</code> which spans across multiple cells but this creates a problem in the lint loop. Take the above code as an example where there are 2 cells containing import statements which needs to be sorted. Now, this edit will span both cells, we&#x27;ll ignore this edit, in the next iteration the same edit will be created and ignored and this will go on till we reach <code>MAX_ITERATION</code>.</li>
 <li>Scope rules to be either global or local to the cell -- should we apply this rule to the concatenated source code or individually to each cell?</li>
-<li>As this problem mainly occurs in the import sorter due to the fact that the <code>Edit</code> is scoped to an entire import block, we could refactor the sorter to create individual edits such as move this import statement from line 4 to line 2, remove this import statement, remove this symbol from this import statement, add a symbol to this import statement, etc. We would have to think about how to represent an edit like separating each symbol on it's own line (black style).</li>
+<li>As this problem mainly occurs in the import sorter due to the fact that the <code>Edit</code> is scoped to an entire import block, we could refactor the sorter to create individual edits such as move this import statement from line 4 to line 2, remove this import statement, remove this symbol from this import statement, add a symbol to this import statement, etc. We would have to think about how to represent an edit like separating each symbol on it&#x27;s own line (black style).</li>
 </ul>
-<h3>2</h3>
-<p>Styling rules such as the ones in <code>pycodestyle</code> will not be applicable everywhere in Jupyter notebook, especially at the cell boundaries. Let's take an example where a rule suggests to have 2 blank lines before a function and the cells contains the following code:</p>
-<pre><code class="language-python">import something
+2
+<p>Styling rules such as the ones in <code>pycodestyle</code> will not be applicable everywhere in Jupyter notebook, especially at the cell boundaries. Let&#x27;s take an example where a rule suggests to have 2 blank lines before a function and the cells contains the following code:</p>
+<pre><code>import something
 # ---
 def first():
 	pass
@@ -69,16 +69,16 @@ def second():
 	pass
 </code></pre>
 <p>(Again, the comment is only to visualize cell boundaries.)</p>
-<p>In the concatenated source code, the 2 blank lines will be added but it shouldn't actually be added when we look in terms of Jupyter notebook. It's as if the function <code>first</code> is at the start of a file.</p>
-<p><code>nbqa</code> solves this by recording newlines before and after running <code>autopep8</code>, then running the tool and restoring the newlines at the end (refer https://github.com/nbQA-dev/nbQA/pull/807).</p>
-<h2>Test Plan</h2>
+<p>In the concatenated source code, the 2 blank lines will be added but it shouldn&#x27;t actually be added when we look in terms of Jupyter notebook. It&#x27;s as if the function <code>first</code> is at the start of a file.</p>
+<p><code>nbqa</code> solves this by recording newlines before and after running <code>autopep8</code>, then running the tool and restoring the newlines at the end (refer <a href="https://github.com/nbQA-dev/nbQA/pull/807">nbQA-dev/nbQA#807</a>).</p>
+Test Plan
 <p>Three commands were run in order with common flags (<code>--select=ALL --no-cache --isolated</code>) to isolate which stage the problem is occurring:</p>
 <ol>
 <li>Only diagnostics</li>
 <li>Fix with diff (<code>--fix --diff</code>)</li>
 <li>Fix (<code>--fix</code>)</li>
 </ol>
-<h3>https://github.com/facebookresearch/segment-anything</h3>
+https://github.com/facebookresearch/segment-anything
 <pre><code>-------------------------------------------------------------------------------
  Jupyter Notebooks       3            0            0            0            0
  |- Markdown             3           98            0           94            4
@@ -86,11 +86,11 @@ def second():
  (Total)                            611          468           98           45
 -------------------------------------------------------------------------------
 </code></pre>
-<pre><code class="language-console">$ cargo run --all-features --bin ruff -- check --no-cache --isolated --select=ALL /path/to/segment-anything/**/*.ipynb --fix
+<pre><code>$ cargo run --all-features --bin ruff -- check --no-cache --isolated --select=ALL /path/to/segment-anything/**/*.ipynb --fix
 ...
 Found 180 errors (89 fixed, 91 remaining).
 </code></pre>
-<h3>https://github.com/openai/openai-cookbook</h3>
+https://github.com/openai/openai-cookbook
 <pre><code>-------------------------------------------------------------------------------
  Jupyter Notebooks      65            0            0            0            0
  |- Markdown            64         3475           12         2507          956
@@ -98,12 +98,12 @@ Found 180 errors (89 fixed, 91 remaining).
  (Total)                          13175         7374         3608         2193
 ===============================================================================
 </code></pre>
-<pre><code class="language-console">$ cargo run --all-features --bin ruff -- check --no-cache --isolated --select=ALL /path/to/openai-cookbook/**/*.ipynb --fix
-error: Failed to parse /path/to/openai-cookbook/examples/vector_databases/Using_vector_databases_for_embeddings_search.ipynb:cell 4:29:18: unexpected token '-'
+<pre><code>$ cargo run --all-features --bin ruff -- check --no-cache --isolated --select=ALL /path/to/openai-cookbook/**/*.ipynb --fix
+error: Failed to parse /path/to/openai-cookbook/examples/vector_databases/Using_vector_databases_for_embeddings_search.ipynb:cell 4:29:18: unexpected token &#x27;-&#x27;
 ...
 Found 4227 errors (2165 fixed, 2062 remaining).
 </code></pre>
-<h3>https://github.com/tensorflow/docs</h3>
+https://github.com/tensorflow/docs
 <pre><code>-------------------------------------------------------------------------------
  Jupyter Notebooks     150            0            0            0            0
  |- Markdown             1           55            0           46            9
@@ -111,8 +111,8 @@ Found 4227 errors (2165 fixed, 2062 remaining).
  (Total)                            457          289          106           62
 -------------------------------------------------------------------------------
 </code></pre>
-<p>~These repository includes some notebooks where it panics because an edit spans across multiple cells. This is due to the import statements are in 2 or more continuous cells.~ (resolved https://github.com/charliermarsh/ruff/pull/4665/commits/d72192301c88f77c2709f0759a77b554c30f5eb3)</p>
-<pre><code class="language-console">$ cargo run --all-features --bin ruff -- check --no-cache --isolated --select=ALL /path/to/tensorflow-docs/**/*.ipynb --fix
+<p>~These repository includes some notebooks where it panics because an edit spans across multiple cells. This is due to the import statements are in 2 or more continuous cells.~ (resolved <a href="https://github.com/charliermarsh/ruff/pull/4665">charliermarsh/ruff#4665</a>/commits/d72192301c88f77c2709f0759a77b554c30f5eb3)</p>
+<pre><code>$ cargo run --all-features --bin ruff -- check --no-cache --isolated --select=ALL /path/to/tensorflow-docs/**/*.ipynb --fix
 error: Failed to parse /path/to/tensorflow-docs/site/en/guide/extension_type.ipynb:cell 80:1:1: unexpected token Indent
 error: Failed to parse /path/to/tensorflow-docs/site/en/r1/tutorials/eager/custom_layers.ipynb:cell 20:1:1: unexpected token Indent
 error: Failed to parse /path/to/tensorflow-docs/site/en/guide/data.ipynb:cell 175:5:14: unindent does not match any outer indentation level
@@ -120,7 +120,7 @@ error: Failed to parse /path/to/tensorflow-docs/site/en/r1/tutorials/representat
 ...
 Found 12726 errors (5140 fixed, 7586 remaining).
 </code></pre>
-<h3>https://github.com/tensorflow/models</h3>
+https://github.com/tensorflow/models
 <pre><code>-------------------------------------------------------------------------------
  Jupyter Notebooks      46            0            0            0            0
  |- Markdown             1           11            0            6            5
@@ -128,33 +128,33 @@ Found 12726 errors (5140 fixed, 7586 remaining).
  (Total)                            339          249           25           65
 -------------------------------------------------------------------------------
 </code></pre>
-<pre><code class="language-console">$ cargo run --all-features --bin ruff -- check --no-cache --isolated --select=ALL /path/to/tensorflow-models/**/*.ipynb --fix
+<pre><code>$ cargo run --all-features --bin ruff -- check --no-cache --isolated --select=ALL /path/to/tensorflow-models/**/*.ipynb --fix
 ...
 Found 4856 errors (2690 fixed, 2166 remaining).
 </code></pre>
-<h2>To-Do:</h2>
+To-Do:
 <ul>
 <li>[ ] ~Revert back the auto-fixes if the linter loop panics (as is done for Python files)~</li>
 <li>[x] Verify that the updated notebook is parseable by <code>nbformat</code> (only for testing purposes)</li>
 <li>[ ] ~Add roundtrip support (this will most likely be done with the second todo)~ (different PR)</li>
 <li>[x] Ignore cells containing magic commands (<code>%</code>, <code>!</code>, <code>?</code>) on any cells (this will ignore cells which contains code as well as magic commands). ~Just for backup, ignore any cells containing syntax error~</li>
 <li>[ ] ~Add <code>--diff</code> preview for Jupyter notebook~</li>
-<li>[x] Newline at the end of each cell is removed but then Ruff will complain about missing newline at the end of file. The <code>--fix</code> flag will try to add the newline, but we'll remove it before updating the cell and this loop will go on.</li>
+<li>[x] Newline at the end of each cell is removed but then Ruff will complain about missing newline at the end of file. The <code>--fix</code> flag will try to add the newline, but we&#x27;ll remove it before updating the cell and this loop will go on.</li>
 </ul>
 <p>resolves: #1218
 fixes: #4556</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Converted to draft by @dhruvmanila on 2023-05-26 08:33</div>
+            <div class="event">Converted to draft by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-05-26 08:33</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-05-26 09:02</div>
-            <div class="timeline-body"><h2>PR Check Results</h2>
-<h3>Ecosystem</h3>
+            <div class="timeline-body">PR Check Results
+Ecosystem
 <p>✅ ecosystem check detected no changes.</p>
-<h3>Benchmark</h3>
-<h4>Linux</h4>
+Benchmark
+Linux
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 formatter/large/dataset.py                 1.04      8.5±0.18ms     4.8 MB/sec    1.00      8.2±0.16ms     5.0 MB/sec
@@ -170,7 +170,7 @@ linter/default-rules/numpy/ctypeslib.py    1.00  1867.9±53.82µs     8.9 MB/sec
 linter/default-rules/numpy/globals.py      1.00   218.4±12.47µs    13.5 MB/sec    1.01    219.8±6.26µs    13.4 MB/sec
 linter/default-rules/pydantic/types.py     1.00      4.0±0.09ms     6.4 MB/sec    1.02      4.1±0.14ms     6.3 MB/sec
 </code></pre>
-<h4>Windows</h4>
+Windows
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 formatter/large/dataset.py                 1.01      8.0±0.05ms     5.1 MB/sec    1.00      7.9±0.06ms     5.1 MB/sec
@@ -186,7 +186,7 @@ linter/default-rules/numpy/ctypeslib.py    1.01  1768.0±13.79µs     9.4 MB/sec
 linter/default-rules/numpy/globals.py      1.00    189.9±2.89µs    15.5 MB/sec    1.00    189.7±5.45µs    15.6 MB/sec
 linter/default-rules/pydantic/types.py     1.00      3.8±0.02ms     6.7 MB/sec    1.00      3.8±0.02ms     6.7 MB/sec
 </code></pre>
-<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
 
 </div>
         </div>
@@ -202,12 +202,12 @@ linter/default-rules/pydantic/types.py     1.00      3.8±0.02ms     6.7 MB/sec 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/jupyter/notebook.rs</code>:234 on 2023-05-26 15:43</div>
-            <div class="timeline-body"><p>can't we just always add <code>new_text_size - current_text_size</code>?</p>
+            <div class="timeline-body"><p>can&#x27;t we just always add <code>new_text_size - current_text_size</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-05-26 15:48</div>
-            <div class="timeline-body"><p>looks good so far, i'll give it a more nit-picky review once it's not a draft anymore</p>
+            <div class="timeline-body"><p>looks good so far, i&#x27;ll give it a more nit-picky review once it&#x27;s not a draft anymore</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -216,7 +216,7 @@ linter/default-rules/pydantic/types.py     1.00      3.8±0.02ms     6.7 MB/sec 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff/src/jupyter/notebook.rs</code>:234 on 2023-05-29 02:20</div>
-            <div class="timeline-body"><p>No, we can't otherwise it'll overflow as it's a <code>TextSize</code> which is internally a <code>u32</code>.</p>
+            <div class="timeline-body"><p>No, we can&#x27;t otherwise it&#x27;ll overflow as it&#x27;s a <code>TextSize</code> which is internally a <code>u32</code>.</p>
 <p>This is a replacement edit which means that the new text could be less in length as compared to the existing text.</p>
 </div>
         </div>
@@ -261,15 +261,15 @@ linter/default-rules/pydantic/types.py     1.00      3.8±0.02ms     6.7 MB/sec 
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff/src/jupyter/index.rs</code>:59 on 2023-06-01 10:23</div>
             <div class="timeline-body"><p>This was a hard bug to find. Trailing newline need to be considered in the count as well. Take the following cell source value:</p>
-<pre><code class="language-python">&quot;import os\n&quot;
+<pre><code>&quot;import os\n&quot;
 </code></pre>
 <p>This will be 2 lines instead of 1.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff/src/jupyter/index.rs</code>:79 on 2023-06-01 10:23</div>
-            <div class="timeline-body"><p>Same as above, here we'll have to check the last vector element:</p>
-<pre><code class="language-python">[
+            <div class="timeline-body"><p>Same as above, here we&#x27;ll have to check the last vector element:</p>
+<pre><code>[
 	&quot;import os\n&quot;,
 	&quot;import math\n&quot;
 ]
@@ -282,18 +282,18 @@ linter/default-rules/pydantic/types.py     1.00      3.8±0.02ms     6.7 MB/sec 
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @dhruvmanila on 2023-06-01 10:44</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-06-01 10:44</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @konstin by @dhruvmanila on 2023-06-01 10:44</div>
+            <div class="event">Review requested from <a href="https://github.com/konstin">@konstin</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-06-01 10:44</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @charliermarsh by @charliermarsh on 2023-06-01 15:17</div>
+            <div class="event">Review requested from <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-01 15:17</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/jupyter/index.rs</code>:19 on 2023-06-02 06:45</div>
-            <div class="timeline-body"><p>Nit: Rust's convention is to not use the <code>get</code> prefix for getters and only use the <code>set</code> prefix for setters</p>
-<pre><code class="language-suggestion">    pub fn cell(&amp;self, row: usize) -&gt; u32 {
+            <div class="timeline-body"><p>Nit: Rust&#x27;s convention is to not use the <code>get</code> prefix for getters and only use the <code>set</code> prefix for setters</p>
+<pre><code>    pub fn cell(&amp;self, row: usize) -&gt; u32 {
 </code></pre>
 </div>
         </div>
@@ -311,9 +311,9 @@ linter/default-rules/pydantic/types.py     1.00      3.8±0.02ms     6.7 MB/sec 
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/jupyter/notebook.rs</code>:45 on 2023-06-02 06:59</div>
             <div class="timeline-body"><p>Nit: The collect here is fairly expensive (more than I would expect from a <code>is_valid_code_cell</code>) method because it copies the whole contents of the cell.</p>
 <p>You can either move the <code>lines.iter().any</code> check into the match arms OR write your own iterator:</p>
-<pre><code>enum CellLinesIter&lt;'a&gt; {
-	String(Lines&lt;'a&gt;),
-	Array(std::slice::Iter&lt;'a, &amp;'a str&gt;),
+<pre><code>enum CellLinesIter&lt;&#x27;a&gt; {
+	String(Lines&lt;&#x27;a&gt;),
+	Array(std::slice::Iter&lt;&#x27;a, &amp;&#x27;a str&gt;),
 }
 </code></pre>
 </div>
@@ -334,7 +334,7 @@ linter/default-rules/pydantic/types.py     1.00      3.8±0.02ms     6.7 MB/sec 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/jupyter/notebook.rs</code>:63 on 2023-06-02 07:02</div>
-            <div class="timeline-body"><p>What's the difference between a <code>JupyterNotebook</code> and a <code>Notebook</code>?</p>
+            <div class="timeline-body"><p>What&#x27;s the difference between a <code>JupyterNotebook</code> and a <code>Notebook</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -359,17 +359,17 @@ linter/default-rules/pydantic/types.py     1.00      3.8±0.02ms     6.7 MB/sec 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/jupyter/index.rs</code>:14 on 2023-06-02 07:46</div>
-            <div class="timeline-body"><p>What's the purpose of this being an <code>Arc</code>?</p>
+            <div class="timeline-body"><p>What&#x27;s the purpose of this being an <code>Arc</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/jupyter/index.rs</code>:79 on 2023-06-02 07:49</div>
-            <div class="timeline-body"><p>i'd make this a source code comment</p>
+            <div class="timeline-body"><p>i&#x27;d make this a source code comment</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/jupyter/notebook.rs</code>:48 on 2023-06-02 07:56</div>
-            <div class="timeline-body"><p>it's fine for this PR, but i believe we do need to keep the python code or we'll see some undefined symbol false positives because they were defined in cell that starts with a <code>%</code> line</p>
+            <div class="timeline-body"><p>it&#x27;s fine for this PR, but i believe we do need to keep the python code or we&#x27;ll see some undefined symbol false positives because they were defined in cell that starts with a <code>%</code> line</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -379,19 +379,19 @@ linter/default-rules/pydantic/types.py     1.00      3.8±0.02ms     6.7 MB/sec 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-06-02 08:04</div>
-            <div class="timeline-body"><p>needs tests, otherwise it's looking good</p>
+            <div class="timeline-body"><p>needs tests, otherwise it&#x27;s looking good</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-02 15:18</div>
-            <div class="timeline-body"><p>My main suggestion for resolving (1), at least for import sorting (which, I think, is the only edit that spans multiple statements in this way), is to find a way to make the <code>BlockBuilder</code> aware of cell boundaries. The <code>BlockBuilder</code> already <em>kind of</em> supports this behavior, because it has to support isort's split directives:</p>
-<pre><code class="language-py">import sys
+            <div class="timeline-body"><p>My main suggestion for resolving (1), at least for import sorting (which, I think, is the only edit that spans multiple statements in this way), is to find a way to make the <code>BlockBuilder</code> aware of cell boundaries. The <code>BlockBuilder</code> already <em>kind of</em> supports this behavior, because it has to support isort&#x27;s split directives:</p>
+<pre><code>import sys
 import os
 # isort: split
 import abc
 import collections
 </code></pre>
-<p>In this case, the first two imports will be treated as an import block, and the second two imports will be treated as an independent import block. Conceptually, this is identical (?) to the splits we want to enforce between cells. I'd suggest finding a way to feed those splits into the <code>BlockBuilder</code>!</p>
+<p>In this case, the first two imports will be treated as an import block, and the second two imports will be treated as an independent import block. Conceptually, this is identical (?) to the splits we want to enforce between cells. I&#x27;d suggest finding a way to feed those splits into the <code>BlockBuilder</code>!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -411,7 +411,7 @@ import collections
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff/src/jupyter/index.rs</code>:20 on 2023-06-03 16:19</div>
             <div class="timeline-body"><p>So, these are only used when emitting the diagnostics. How do you think we should handle the <code>None</code> case?</p>
 <p>If we use the default value, that would render the diagnostic at the top of file.</p>
-<p>This is not similar but I think <code>source_location</code> panics as well if it's out of bounds.</p>
+<p>This is not similar but I think <code>source_location</code> panics as well if it&#x27;s out of bounds.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -429,12 +429,12 @@ import collections
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff/src/jupyter/notebook.rs</code>:45 on 2023-06-03 16:31</div>
-            <div class="timeline-body"><p>Correct me if I'm wrong, but that's a vector of string slice (<code>&amp;str</code>), so is it not just collecting into a vector of view to the actual <code>String</code> and <em>not</em> copying it? The only reason I'm collecting is to avoid code repetition, although one could argue against it :)</p>
+            <div class="timeline-body"><p>Correct me if I&#x27;m wrong, but that&#x27;s a vector of string slice (<code>&amp;str</code>), so is it not just collecting into a vector of view to the actual <code>String</code> and <em>not</em> copying it? The only reason I&#x27;m collecting is to avoid code repetition, although one could argue against it :)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff/src/jupyter/index.rs</code>:13 on 2023-06-03 16:36</div>
-            <div class="timeline-body"><p>Actually, I'm not sure if Newtype wrappers would be correct as the cell and row numbers are generated internally and it's only returned via the public interface. It's used directly when emitting the diagnostic message and it won't have any context about these newtypes.</p>
+            <div class="timeline-body"><p>Actually, I&#x27;m not sure if Newtype wrappers would be correct as the cell and row numbers are generated internally and it&#x27;s only returned via the public interface. It&#x27;s used directly when emitting the diagnostic message and it won&#x27;t have any context about these newtypes.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -456,7 +456,7 @@ import collections
 <blockquote>
 <p>How is the cell number defined?</p>
 </blockquote>
-<p>Oh, actually it's an index value in a <code>Vec&lt;Cell&gt;</code> which are available on <code>JupyterNotebook</code></p>
+<p>Oh, actually it&#x27;s an index value in a <code>Vec&lt;Cell&gt;</code> which are available on <code>JupyterNotebook</code></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -469,13 +469,13 @@ import collections
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff/src/jupyter/notebook.rs</code>:182 on 2023-06-03 16:44</div>
-            <div class="timeline-body"><p>I believe that's what is happening here unless I'm mistaken with what you're referring to as &quot;expensive&quot;?</p>
-<p>Here, we're collecting all the indices which are valid code cells, storing it on <code>Notebook</code> to be used wherever required.</p>
+            <div class="timeline-body"><p>I believe that&#x27;s what is happening here unless I&#x27;m mistaken with what you&#x27;re referring to as &quot;expensive&quot;?</p>
+<p>Here, we&#x27;re collecting all the indices which are valid code cells, storing it on <code>Notebook</code> to be used wherever required.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff/src/jupyter/index.rs</code>:8 on 2023-06-03 16:49</div>
-            <div class="timeline-body"><p>Good point. The index is only required when emitting the diagnostics, I believe we could use <code>OnceCell</code> to only compute it when we're emitting them. Then, I think it would even eliminate the need to refresh the index.</p>
+            <div class="timeline-body"><p>Good point. The index is only required when emitting the diagnostics, I believe we could use <code>OnceCell</code> to only compute it when we&#x27;re emitting them. Then, I think it would even eliminate the need to refresh the index.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -493,7 +493,7 @@ import collections
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff/src/jupyter/notebook.rs</code>:48 on 2023-06-03 17:14</div>
-            <div class="timeline-body"><p>Yes, we'll have to roll out our own magic transformer :)</p>
+            <div class="timeline-body"><p>Yes, we&#x27;ll have to roll out our own magic transformer :)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -503,26 +503,26 @@ import collections
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-06-03 17:17</div>
             <div class="timeline-body"><blockquote>
-<p>i'd make this a source code comment</p>
+<p>i&#x27;d make this a source code comment</p>
 </blockquote>
-<p>(There's no reply section for this comment, so putting it out here)</p>
-<p>I'm not sure what do you mean by &quot;source code comment&quot;. Do you want me to comment the reason for the <code>trailing_newline</code>?</p>
+<p>(There&#x27;s no reply section for this comment, so putting it out here)</p>
+<p>I&#x27;m not sure what do you mean by &quot;source code comment&quot;. Do you want me to comment the reason for the <code>trailing_newline</code>?</p>
 <blockquote>
 <p>would also make this a code comment</p>
 </blockquote>
 <p>Same as above.</p>
 <blockquote>
-<p>needs tests, otherwise it's looking good</p>
+<p>needs tests, otherwise it&#x27;s looking good</p>
 </blockquote>
-<p>Yes, I wanted to wait for the initial feedback incase there were some changes although I've already started writing some basic test cases.</p>
+<p>Yes, I wanted to wait for the initial feedback incase there were some changes although I&#x27;ve already started writing some basic test cases.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-06-03 17:21</div>
             <div class="timeline-body"><blockquote>
-<p>(There's no reply section for this comment, so putting it out here)</p>
+<p>(There&#x27;s no reply section for this comment, so putting it out here)</p>
 </blockquote>
-<p>fyi GitHub does weird things with threaded conversations — the threads are up higher at https://github.com/charliermarsh/ruff/pull/4665#discussion_r1214042114 / https://github.com/charliermarsh/ruff/pull/4665#discussion_r1214052152</p>
+<p>fyi GitHub does weird things with threaded conversations — the threads are up higher at <a href="https://github.com/charliermarsh/ruff/pull/4665">charliermarsh/ruff#4665</a>#discussion_r1214042114 / <a href="https://github.com/charliermarsh/ruff/pull/4665">charliermarsh/ruff#4665</a>#discussion_r1214052152</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -541,13 +541,13 @@ import collections
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/jupyter/index.rs</code>:20 on 2023-06-05 07:17</div>
             <div class="timeline-body"><blockquote>
-<p>This is not similar but I think source_location panics as well if it's out of bounds.</p>
+<p>This is not similar but I think source_location panics as well if it&#x27;s out of bounds.</p>
 </blockquote>
-<p>That's true and we should probably avoid that too... It's unfortunate if ruff dies just because it fails to render a single diagnostic (This isn't meant that YOU should change it, it should probably be me)</p>
+<p>That&#x27;s true and we should probably avoid that too... It&#x27;s unfortunate if ruff dies just because it fails to render a single diagnostic (This isn&#x27;t meant that YOU should change it, it should probably be me)</p>
 <blockquote>
 <p>So, these are only used when emitting the diagnostics. How do you think we should handle the None case?</p>
 </blockquote>
-<p>I think that's' a reasonable fallback and provides better usability than taking down ruff. I would expect users to report a bug that we can then fix.</p>
+<p>I think that&#x27;s&#x27; a reasonable fallback and provides better usability than taking down ruff. I would expect users to report a bug that we can then fix.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -590,7 +590,7 @@ import collections
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/jupyter/notebook.rs</code>:182 on 2023-06-05 07:23</div>
-            <div class="timeline-body"><p>You're right, lol. I'm sorry</p>
+            <div class="timeline-body"><p>You&#x27;re right, lol. I&#x27;m sorry</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -628,7 +628,7 @@ import collections
 <li>cell start: Find the last source map entry that is smaller or equal to the cell start. The output position of the start is: <code>marker.dest + cell.start - marker.source</code> I think we need to use the first entry if multiple source marker start RIGHT at the start of the cell.</li>
 <li>cell end: Find the last source map entry that ends before or at <code>cel.end</code>. You can map the end as: <code>marker.dest + marker.source - cell.end</code></li>
 </ul>
-<p>There are probably some corner cases that I didn't consider.</p>
+<p>There are probably some corner cases that I didn&#x27;t consider.</p>
 <p>One downside of this is that returning the <code>BTreeMap</code> is free because we build it anyway whereas building the source map has the cost of writing the source mark entries for each edit.</p>
 </div>
         </div>
@@ -638,15 +638,15 @@ import collections
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff/src/jupyter/notebook.rs</code>:75 on 2023-06-06 08:14</div>
-            <div class="timeline-body"><p>I'm not sure if that'll work, correct me if I'm wrong. So, <code>IndexVec</code> will own it's elements. This means we'll have to copy all of the valid code <code>Cell</code> objects into this vector. At the end, we'll have to copy it back to the <code>RawNotebook</code> to serialize it into JSON. Move won't work here as only valid cells will be part of the vector thus leaving a partial vector.</p>
+            <div class="timeline-body"><p>I&#x27;m not sure if that&#x27;ll work, correct me if I&#x27;m wrong. So, <code>IndexVec</code> will own it&#x27;s elements. This means we&#x27;ll have to copy all of the valid code <code>Cell</code> objects into this vector. At the end, we&#x27;ll have to copy it back to the <code>RawNotebook</code> to serialize it into JSON. Move won&#x27;t work here as only valid cells will be part of the vector thus leaving a partial vector.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Initial support for auto-fix in Jupyter notebooks" to "Add support for auto-fix in Jupyter notebooks" by @dhruvmanila on 2023-06-09 13:05</div>
+            <div class="event">Renamed from &quot;Initial support for auto-fix in Jupyter notebooks&quot; to &quot;Add support for auto-fix in Jupyter notebooks&quot; by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-06-09 13:05</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-06-09 13:16</div>
-            <div class="timeline-body"><h2>Updates since last review</h2>
+            <div class="timeline-body">Updates since last review
 <ul>
 <li><code>SourceMap</code> have been added and the cell offsets are updated using that</li>
 <li>Empty code cells are handled while creating the index</li>
@@ -657,7 +657,7 @@ import collections
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/linter.rs</code>:296 on 2023-06-11 02:25</div>
-            <div class="timeline-body"><p>Let's use TODO over FIXME for consistency within the codebase.</p>
+            <div class="timeline-body"><p>Let&#x27;s use TODO over FIXME for consistency within the codebase.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -677,7 +677,7 @@ import collections
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/jupyter/notebook.rs</code>:344 on 2023-06-11 02:40</div>
-            <div class="timeline-body"><p>I'm loving all the documentation you're adding as you go. This is a very, very good habit. Props.</p>
+            <div class="timeline-body"><p>I&#x27;m loving all the documentation you&#x27;re adding as you go. This is a very, very good habit. Props.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -692,7 +692,7 @@ import collections
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/jupyter/notebook.rs</code>:46 on 2023-06-12 08:32</div>
-            <div class="timeline-body"><p>my concern before setting this to on by default would be that this causes a bunch of undefined symbols when the symbols do exist. but i'd say let's merge this and check with notebooks from github whether this is even actually a problem.</p>
+            <div class="timeline-body"><p>my concern before setting this to on by default would be that this causes a bunch of undefined symbols when the symbols do exist. but i&#x27;d say let&#x27;s merge this and check with notebooks from github whether this is even actually a problem.</p>
 <p><code>find . -name &quot;*.ipynb&quot; | wc -l</code> in the ecosystem checkouts says 7639, so we have more than enough notebooks to check</p>
 </div>
         </div>
@@ -707,12 +707,12 @@ import collections
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff/src/autofix/source_map.rs</code>:8 on 2023-06-12 13:42</div>
-            <div class="timeline-body"><p>This isn't possible currently as <code>Notebook</code> is being initialized in <code>ruff_cli</code> which uses <code>SourceMap</code> in one of it's public function which utilizes <code>SourceMarker</code>.</p>
+            <div class="timeline-body"><p>This isn&#x27;t possible currently as <code>Notebook</code> is being initialized in <code>ruff_cli</code> which uses <code>SourceMap</code> in one of it&#x27;s public function which utilizes <code>SourceMarker</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff/src/autofix/source_map.rs</code>:8 on 2023-06-12 13:48</div>
-            <div class="timeline-body"><p>Hmm, so it is possible it's just that the some parts will be public to allow <code>ruff_cli</code> to access.</p>
+            <div class="timeline-body"><p>Hmm, so it is possible it&#x27;s just that the some parts will be public to allow <code>ruff_cli</code> to access.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -725,7 +725,7 @@ import collections
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff/src/jupyter/notebook.rs</code>:46 on 2023-06-12 13:57</div>
-            <div class="timeline-body"><p>Yes, I do think this will be a problem, I've looked at how black handles it. I'll open an issue detailing out what needs to happen and we can then implement it.</p>
+            <div class="timeline-body"><p>Yes, I do think this will be a problem, I&#x27;ve looked at how black handles it. I&#x27;ll open an issue detailing out what needs to happen and we can then implement it.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -733,14 +733,14 @@ import collections
             <div class="timeline-body"><blockquote>
 <p>Is there any integration test that shows a jupyter notebook before and after being fixed?</p>
 </blockquote>
-<p>Currently, I've tested it out on the repositories mentioned in the PR description. I'm trying to think how to have E2E testing here as just the snapshots might not be enough. I'll run it on the ecosystem notebooks.</p>
+<p>Currently, I&#x27;ve tested it out on the repositories mentioned in the PR description. I&#x27;m trying to think how to have E2E testing here as just the snapshots might not be enough. I&#x27;ll run it on the ecosystem notebooks.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @dhruvmanila on 2023-06-12 14:14</div>
+            <div class="event">Merged by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-06-12 14:14</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dhruvmanila on 2023-06-12 14:14</div>
+            <div class="event">Closed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-06-12 14:14</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2023-06-12 14:15</div>
@@ -770,7 +770,7 @@ import collections
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:57:39 UTC
+        Synced at 2026-01-20 18:53:59 UTC
     </footer>
 </body>
 </html>

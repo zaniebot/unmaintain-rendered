@@ -23,39 +23,39 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/lubaskinc0de">@lubaskinc0de</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>/closes #18895</p>
-<h2>Test Plan</h2>
+Test Plan
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-06-23 17:37</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-23 17:37</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-06-23 17:37</div>
+            <div class="event">Label <span class="label">fixes</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-23 17:37</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/unicode_kind_prefix.rs</code>:51 on 2025-06-23 17:54</div>
-            <div class="timeline-body"><p>I don't think this arithmetic is necessary. The <code>is_unicode</code> check above confirms that the first character will be a <code>u</code>, so this just boils down to what was inside <code>Edit::range_deletion</code> originally.</p>
-<pre><code class="language-suggestion">        let prefix_range = TextRange::at(string.start(), TextSize::new(1));
+            <div class="timeline-body"><p>I don&#x27;t think this arithmetic is necessary. The <code>is_unicode</code> check above confirms that the first character will be a <code>u</code>, so this just boils down to what was inside <code>Edit::range_deletion</code> originally.</p>
+<pre><code>        let prefix_range = TextRange::at(string.start(), TextSize::new(1));
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-23 18:01</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/unicode_kind_prefix.rs</code>:51 on 2025-06-23 18:09</div>
             <div class="timeline-body"><p>In general, I think something like this might be a simpler version of the current implementation:</p>
-<pre><code class="language-rust">        let prefix_range = TextRange::at(string.start(), TextSize::new(1));
+<pre><code>        let prefix_range = TextRange::at(string.start(), TextSize::new(1));
 
         let locator = checker.locator();
         let content = locator
@@ -64,7 +64,7 @@
         // If the preceding character is equivalent to the quote character, insert a space to avoid a
         // syntax error. For example, when removing the `u` prefix in `&quot;&quot;u&quot;&quot;`, rewrite to `&quot;&quot; &quot;&quot;`
         // instead of `&quot;&quot;&quot;&quot;`.
-        // see https://github.com/astral-sh/ruff/issues/18895
+        // see <a href="https://github.com/astral-sh/ruff/issues/18895">astral-sh/ruff#18895</a>
         let edit = if locator
             .slice(TextRange::up_to(prefix_range.start()))
             .chars()
@@ -83,24 +83,24 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/snapshots/ruff_linter__rules__pyupgrade__tests__UP025.py.snap</code>:284 on 2025-06-23 18:42</div>
-            <div class="timeline-body"><p>I'm slightly concerned that we're now adding spaces where they aren't totally necessary. The issue indicated a few more constraints on the problem:</p>
+            <div class="timeline-body"><p>I&#x27;m slightly concerned that we&#x27;re now adding spaces where they aren&#x27;t totally necessary. The issue indicated a few more constraints on the problem:</p>
 <blockquote>
 <p>introduce a syntax error when the prefixed string follows a <strong>non-triple-quoted empty</strong> string with the same kind of quotation marks without an intervening space</p>
 </blockquote>
 <p>Cases like this (<code>&quot;foo&quot;&quot;bar&quot;</code> and even <code>&quot;foo&quot;&quot;&quot;</code>) are okay, as are empty triple-quoted strings like <code>&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;</code> (8 double quotes):</p>
-<pre><code class="language-shell">$ python -m tokenize &lt;&lt;&lt;'&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;'
-1,0-1,6:            STRING         '&quot;&quot;&quot;&quot;&quot;&quot;'
-1,6-1,8:            STRING         '&quot;&quot;'
-1,8-1,9:            NEWLINE        '\n'
-2,0-2,0:            ENDMARKER      ''
+<pre><code>$ python -m tokenize &lt;&lt;&lt;&#x27;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&#x27;
+1,0-1,6:            STRING         &#x27;&quot;&quot;&quot;&quot;&quot;&quot;&#x27;
+1,6-1,8:            STRING         &#x27;&quot;&quot;&#x27;
+1,8-1,9:            NEWLINE        &#x27;\n&#x27;
+2,0-2,0:            ENDMARKER      &#x27;&#x27;
 </code></pre>
-<p>I think we could check the kind of the preceding token to see if it's a triple-quoted string, but I don't think we can perform an <code>is_empty</code> check on the tokens.</p>
-<p>@MichaReiser what do you think? Is it okay to add spaces where they aren't strictly necessary, or do you know of a better way to check if the previous string part is non-triple-quoted and empty?</p>
+<p>I think we could check the kind of the preceding token to see if it&#x27;s a triple-quoted string, but I don&#x27;t think we can perform an <code>is_empty</code> check on the tokens.</p>
+<p>@MichaReiser what do you think? Is it okay to add spaces where they aren&#x27;t strictly necessary, or do you know of a better way to check if the previous string part is non-triple-quoted and empty?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-06-23 18:42</div>
-            <div class="timeline-body"><p>Thanks! I had a suggestion for a slightly simpler version of the current implementation and also a question that I'm not sure about either.</p>
+            <div class="timeline-body"><p>Thanks! I had a suggestion for a slightly simpler version of the current implementation and also a question that I&#x27;m not sure about either.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -111,16 +111,16 @@
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pyupgrade/snapshots/ruff_linter__rules__pyupgrade__tests__UP025.py.snap</code>:284 on 2025-06-24 06:45</div>
             <div class="timeline-body"><p>I think the easiest would be to make this a rule that operates on <code>StringLike</code> and then iterate over all parts. This also ensures that, when removing multiple parts, that the spacing is only inserted when necessary.</p>
 <blockquote>
-<p>I think we could check the kind of the preceding token to see if it's a triple-quoted string, but I don't think we can perform an is_empty check on the tokens.</p>
+<p>I think we could check the kind of the preceding token to see if it&#x27;s a triple-quoted string, but I don&#x27;t think we can perform an is_empty check on the tokens.</p>
 </blockquote>
-<p>I think this is correct because of line continuations where subtracting the prefix from the range doesn't yield the correct result:</p>
-<pre><code class="language-py">a= &quot;\
+<p>I think this is correct because of line continuations where subtracting the prefix from the range doesn&#x27;t yield the correct result:</p>
+<pre><code>a= &quot;\
 &quot; u&quot;c&quot;
 </code></pre>
 <blockquote>
-<p>s it okay to add spaces where they aren't strictly necessary, or do you know of a better way to check if the previous string part is non-triple-quoted and empty?</p>
+<p>s it okay to add spaces where they aren&#x27;t strictly necessary, or do you know of a better way to check if the previous string part is non-triple-quoted and empty?</p>
 </blockquote>
-<p>I think it's fine for as long as it only pads at most one space (never results in two consecutive spaces)</p>
+<p>I think it&#x27;s fine for as long as it only pads at most one space (never results in two consecutive spaces)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -129,8 +129,8 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/lubaskinc0de">@lubaskinc0de</a> on <code>crates/ruff_linter/src/rules/pyupgrade/snapshots/ruff_linter__rules__pyupgrade__tests__UP025.py.snap</code>:284 on 2025-06-29 11:52</div>
-            <div class="timeline-body"><p>Going back to this problem, I don't really understand the next steps. Here's the current implementation</p>
-<pre><code class="language-rust">/// UP025
+            <div class="timeline-body"><p>Going back to this problem, I don&#x27;t really understand the next steps. Here&#x27;s the current implementation</p>
+<pre><code>/// UP025
 pub(crate) fn unicode_kind_prefix(checker: &amp;Checker, string: &amp;StringLiteral) {
     if string.flags.prefix().is_unicode() {
         let mut diagnostic = checker.report_diagnostic(UnicodeKindPrefix, string.range);
@@ -144,7 +144,7 @@ pub(crate) fn unicode_kind_prefix(checker: &amp;Checker, string: &amp;StringLite
         // If the preceding character is equivalent to the quote character, insert a space to avoid a
         // syntax error. For example, when removing the `u` prefix in `&quot;&quot;u&quot;&quot;`, rewrite to `&quot;&quot; &quot;&quot;`
         // instead of `&quot;&quot;&quot;&quot;`.
-        // see https://github.com/astral-sh/ruff/issues/18895
+        // see <a href="https://github.com/astral-sh/ruff/issues/18895">astral-sh/ruff#18895</a>
         let edit = if locator
             .slice(TextRange::up_to(prefix_range.start()))
             .chars()
@@ -162,7 +162,7 @@ pub(crate) fn unicode_kind_prefix(checker: &amp;Checker, string: &amp;StringLite
 </code></pre>
 <p>As far as I understand, it correctly handles the following cases:
 before fix:</p>
-<pre><code class="language-py">a = &quot;\
+<pre><code>a = &quot;\
 &quot; u&quot;c&quot;
 
 f&quot;foo&quot;u&quot;bar&quot;
@@ -172,7 +172,7 @@ f&quot;foo&quot; u&quot;bar&quot;
 &quot;&quot;u&quot;&quot;
 </code></pre>
 <p>after fix:</p>
-<pre><code class="language-py">a = &quot;\
+<pre><code>a = &quot;\
 &quot; &quot;c&quot;
 
 f&quot;foo&quot; &quot;bar&quot;
@@ -181,7 +181,7 @@ f&quot;foo&quot; &quot;bar&quot;
 
 &quot;&quot; &quot;&quot;
 </code></pre>
-<p>In that case, I don't understand the drawbacks of the current simple implementation. Are there any cases that are currently being handled differently than desired?</p>
+<p>In that case, I don&#x27;t understand the drawbacks of the current simple implementation. Are there any cases that are currently being handled differently than desired?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -191,19 +191,19 @@ f&quot;foo&quot; &quot;bar&quot;
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/snapshots/ruff_linter__rules__pyupgrade__tests__UP025.py.snap</code>:284 on 2025-06-30 21:43</div>
             <div class="timeline-body"><p>My argument was that a case like this:</p>
-<pre><code class="language-python">f&quot;foo&quot;u&quot;bar&quot;
+<pre><code>f&quot;foo&quot;u&quot;bar&quot;
 </code></pre>
-<p>is <em>not</em> being handled correctly because we're adding a space that isn't necessary. In other words, this fix would be fine:</p>
-<pre><code class="language-python">f&quot;foo&quot;&quot;bar&quot;
+<p>is <em>not</em> being handled correctly because we&#x27;re adding a space that isn&#x27;t necessary. In other words, this fix would be fine:</p>
+<pre><code>f&quot;foo&quot;&quot;bar&quot;
 </code></pre>
-<p>but it's being fixed to</p>
-<pre><code class="language-python">f&quot;foo&quot; &quot;bar&quot;
+<p>but it&#x27;s being fixed to</p>
+<pre><code>f&quot;foo&quot; &quot;bar&quot;
 </code></pre>
-<p>Micha said that could be okay as long as we never add a second space, but I don't entirely follow the line-continuation example. It does seem to be handled properly in the current version, as you said.</p>
+<p>Micha said that could be okay as long as we never add a second space, but I don&#x27;t entirely follow the line-continuation example. It does seem to be handled properly in the current version, as you said.</p>
 <p>As Micha pointed out, another approach would be to iterate over the parts of the string instead of looking at a single part at a time. Then we could check the conditions mentioned in the issue that actually <em>require</em> a space to be inserted: the preceding string part is not triple quoted and not empty.</p>
 <p>To be more concrete, we would pass in <code>value</code> here (or a transformed version of it to allow passing both f-strings and regular strings) instead of passing a single <code>string_part</code> at a time:</p>
 <p>https://github.com/astral-sh/ruff/blob/10a14a9fc852afcef30eac5c82ad0671e6ec1b76/crates/ruff_linter/src/checkers/ast/analyze/expression.rs#L1575-L1579</p>
-<p>With all that being said, maybe it's not worth worrying about and we can just move ahead with this version. I think the space looks better anyway, and I can't come up with a counter-example that adds a second space.</p>
+<p>With all that being said, maybe it&#x27;s not worth worrying about and we can just move ahead with this version. I think the space looks better anyway, and I can&#x27;t come up with a counter-example that adds a second space.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -212,7 +212,7 @@ f&quot;foo&quot; &quot;bar&quot;
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/lubaskinc0de">@lubaskinc0de</a> on <code>crates/ruff_linter/src/rules/pyupgrade/snapshots/ruff_linter__rules__pyupgrade__tests__UP025.py.snap</code>:284 on 2025-07-01 08:35</div>
-            <div class="timeline-body"><p>I think that the simpler the implementation (and it's quite simple now) the better, and if it works correctly, why not keep it as it is? but it might be worth asking someone else</p>
+            <div class="timeline-body"><p>I think that the simpler the implementation (and it&#x27;s quite simple now) the better, and if it works correctly, why not keep it as it is? but it might be worth asking someone else</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -221,7 +221,7 @@ f&quot;foo&quot; &quot;bar&quot;
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/lubaskinc0de">@lubaskinc0de</a> on <code>crates/ruff_linter/src/rules/pyupgrade/snapshots/ruff_linter__rules__pyupgrade__tests__UP025.py.snap</code>:284 on 2025-07-01 08:37</div>
-            <div class="timeline-body"><p>anyway, if you need to do it differently, I'll do it, just tell me</p>
+            <div class="timeline-body"><p>anyway, if you need to do it differently, I&#x27;ll do it, just tell me</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -230,7 +230,7 @@ f&quot;foo&quot; &quot;bar&quot;
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/snapshots/ruff_linter__rules__pyupgrade__tests__UP025.py.snap</code>:284 on 2025-07-01 13:31</div>
-            <div class="timeline-body"><p>I think you're right, let's move ahead with the simple fix for now. Thank you!</p>
+            <div class="timeline-body"><p>I think you&#x27;re right, let&#x27;s move ahead with the simple fix for now. Thank you!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -238,18 +238,18 @@ f&quot;foo&quot; &quot;bar&quot;
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[``ruff``] Fix introduces a syntax error for an empty string followed by a u-prefixed string (``UP025``)" to "[`ruff`] Fix syntax error introduced for an empty string followed by a u-prefixed string (`UP025`)" by @ntBre on 2025-07-01 13:33</div>
+            <div class="event">Renamed from &quot;[``ruff``] Fix introduces a syntax error for an empty string followed by a u-prefixed string (``UP025``)&quot; to &quot;[`ruff`] Fix syntax error introduced for an empty string followed by a u-prefixed string (`UP025`)&quot; by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-01 13:33</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @ntBre on 2025-07-01 13:34</div>
+            <div class="event">Merged by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-01 13:34</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ntBre on 2025-07-01 13:34</div>
+            <div class="event">Closed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-01 13:34</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:13:38 UTC
+        Synced at 2026-01-20 19:15:50 UTC
     </footer>
 </body>
 </html>

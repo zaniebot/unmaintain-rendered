@@ -31,45 +31,45 @@ And another group for fixes you only want applied automatically when you are foc
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">core</span> added by @charliermarsh on 2023-04-04 02:26</div>
+            <div class="event">Label <span class="label">core</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-04 02:26</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-04-09 20:26</div>
-            <div class="timeline-body"><p>I can start looking into this - work's a bit busy, so if it's urgent I may ask to be unassigned.</p>
-<p>As far as the <code>.toml</code> changes required, I'm thinking something like this.</p>
-<pre><code class="language-toml"># ...
+            <div class="timeline-body"><p>I can start looking into this - work&#x27;s a bit busy, so if it&#x27;s urgent I may ask to be unassigned.</p>
+<p>As far as the <code>.toml</code> changes required, I&#x27;m thinking something like this.</p>
+<pre><code># ...
 [fixable_groups]
 safe = [&quot;T001&quot;, &quot;T002&quot;, &quot;T003&quot;]
 code_quality = [&quot;T001&quot;, &quot;T004&quot;, &quot;T006&quot;, &quot;invalid_rule]
 # ...
 </code></pre>
-<p>Groups shouldn't be mutually exclusive. Usage could be something like:</p>
-<pre><code class="language-shell">ruff check --fix code_quality .
+<p>Groups shouldn&#x27;t be mutually exclusive. Usage could be something like:</p>
+<pre><code>ruff check --fix code_quality .
 </code></pre>
 <p>If a rule is invalid, like in the case of <code>code_quality</code>, we should simply print a warning for that rule and perform autofixes on the valid rules in the group.</p>
 <p>Let me know if that sounds like a decent design - if so, I can get started on implementation.</p>
-<p>E: We could also do <code>--fix-group</code> instead of <code>--fix</code> - I'm trying to get a handle on the CLI implementation, but tough so far. If <code>--fix-group</code> would be easier than overriding <code>--fix</code>, would be happy to do it that way instead.</p>
+<p>E: We could also do <code>--fix-group</code> instead of <code>--fix</code> - I&#x27;m trying to get a handle on the CLI implementation, but tough so far. If <code>--fix-group</code> would be easier than overriding <code>--fix</code>, would be happy to do it that way instead.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2023-04-13 14:08</div>
             <div class="timeline-body"><p>This could probably be achieved through different config files and <code>extend</code> if  extend supported an array. (though you could just call ruff multiple times instead of having an &quot;all&quot; config).</p>
 <p><code>base.ruff.toml</code></p>
-<pre><code class="language-toml"># ...
+<pre><code># ...
 </code></pre>
 <p><code>safe.ruff.toml</code></p>
-<pre><code class="language-toml">extend = &quot;./base.ruff.toml&quot;
+<pre><code>extend = &quot;./base.ruff.toml&quot;
 extend-select = [&quot;T001&quot;, &quot;T002&quot;, &quot;T003&quot;]
 </code></pre>
 <p><code>code_quality.ruff.toml</code></p>
-<pre><code class="language-toml">extend = &quot;./base.ruff.toml&quot;
+<pre><code>extend = &quot;./base.ruff.toml&quot;
 extend-select = [&quot;T001&quot;, &quot;T004&quot;, &quot;T006&quot;]
 </code></pre>
 <p><code>pyproject.toml</code> (all)</p>
-<pre><code class="language-toml">[tool.ruff]
+<pre><code>[tool.ruff]
 extend = [&quot;./safe.ruff.toml&quot;, &quot;./code_quality.ruff.toml&quot;]
 </code></pre>
-<hr />
+<hr>
 <p><code>ruff check --config ./safe.ruff.toml</code>
 <code>ruff check --config ./code_quality.ruff.toml</code>
 <code>ruff check</code> (defaults to <code>pyproject.toml</code>)</p>
@@ -79,41 +79,41 @@ extend = [&quot;./safe.ruff.toml&quot;, &quot;./code_quality.ruff.toml&quot;]
             <div class="timeline-header">Comment by <a href="https://github.com/ghost">@ghost</a> on 2023-04-13 14:16</div>
             <div class="timeline-body"><p>Hi everyone,</p>
 <p>thanks for pointing out a way to do this right now, Avasam!
-In the long run I'd prefer the solution suggested by evanrittenhouse, as it is a lot easier to understand und requires fewer files.
+In the long run I&#x27;d prefer the solution suggested by evanrittenhouse, as it is a lot easier to understand und requires fewer files.
 Thank you for considering to implement this!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-04-14 02:39</div>
-            <div class="timeline-body"><p>Cool. I'll get to work on implementing this</p>
+            <div class="timeline-body"><p>Cool. I&#x27;ll get to work on implementing this</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-14 02:48</div>
-            <div class="timeline-body"><p>@evanrittenhouse - Before we start on implementation, I think we should make sure that we're aligned on design -- I want to make sure you don't sink time into something only for us to run into disagreements on core API and such later on :)</p>
-<p>In the proposal here, is the idea such that users are responsible for defining those fix groups? I had historically thought of fixable levels as core metadata on the rule itself, e.g., you could have rules that are considered very safe to fix, rules that are experimental, rules that are risky and so may change semantics. If that were the case, users wouldn't be required to define fix groups. Instead, we could just define them in Ruff, and then users could specify an autofix safety level when running with <code>--fix</code>. Do you think that would be too inflexible?</p>
-<p>(I also want to \cc @MichaReiser who's been thinking about configuration broadly and may well disagree with what I've written here :))</p>
+            <div class="timeline-body"><p>@evanrittenhouse - Before we start on implementation, I think we should make sure that we&#x27;re aligned on design -- I want to make sure you don&#x27;t sink time into something only for us to run into disagreements on core API and such later on :)</p>
+<p>In the proposal here, is the idea such that users are responsible for defining those fix groups? I had historically thought of fixable levels as core metadata on the rule itself, e.g., you could have rules that are considered very safe to fix, rules that are experimental, rules that are risky and so may change semantics. If that were the case, users wouldn&#x27;t be required to define fix groups. Instead, we could just define them in Ruff, and then users could specify an autofix safety level when running with <code>--fix</code>. Do you think that would be too inflexible?</p>
+<p>(I also want to \cc @MichaReiser who&#x27;s been thinking about configuration broadly and may well disagree with what I&#x27;ve written here :))</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-04-14 03:00</div>
-            <div class="timeline-body"><p>In my opinion, I like the idea of user-defined groups <em>somewhere</em> down the line. Safety levels would certainly be a helpful piece of information for rules, and I think it's quite valuable to add, but I wonder if that alone could shoehorn users into checks they don't want/need. They'd also allow us to only compare rules on one dimension (safe, unsafe, etc.), though we could probably get around that by implementing something like rule &quot;traits&quot; instead (handles imports, handles trailing commas, etc.).</p>
-<p>For example, you could gather all rules around imports and run them together, or @xyxz-web's suggestion around &quot;code quality&quot; rules which could vary on a per-user basis.</p>
-<p>Very open to more discussion on the design though! I haven't been around as long as some other folks so I definitely could be missing some stuff.</p>
+            <div class="timeline-body"><p>In my opinion, I like the idea of user-defined groups <em>somewhere</em> down the line. Safety levels would certainly be a helpful piece of information for rules, and I think it&#x27;s quite valuable to add, but I wonder if that alone could shoehorn users into checks they don&#x27;t want/need. They&#x27;d also allow us to only compare rules on one dimension (safe, unsafe, etc.), though we could probably get around that by implementing something like rule &quot;traits&quot; instead (handles imports, handles trailing commas, etc.).</p>
+<p>For example, you could gather all rules around imports and run them together, or @xyxz-web&#x27;s suggestion around &quot;code quality&quot; rules which could vary on a per-user basis.</p>
+<p>Very open to more discussion on the design though! I haven&#x27;t been around as long as some other folks so I definitely could be missing some stuff.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ghost">@ghost</a> on 2023-04-14 07:46</div>
-            <div class="timeline-body"><p>Personally I'd prefer to have the flexibility to define my own groups, though having a way to figure out which fixes are considered safe would also be very helpful.</p>
+            <div class="timeline-body"><p>Personally I&#x27;d prefer to have the flexibility to define my own groups, though having a way to figure out which fixes are considered safe would also be very helpful.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2023-10-06 03:41</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-06 03:41</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:46:57 UTC
+        Synced at 2026-01-20 18:48:35 UTC
     </footer>
 </body>
 </html>

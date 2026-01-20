@@ -23,47 +23,47 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/danijar">@danijar</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>We have been exploring uv extensively for our mono repository, and noticed that currently the only way to support our requirements is to wrap all uv commands to generate <code>pyproject.toml</code> entries before calling into uv.</p>
 <p>Being able to register a custom command with uv for ensuring a consistent environment would make this much easier, allowing our users to still call uv directly (and rely on the uv documentation).</p>
 <p>This could be done by specifying an environment variable <code>UV_PRE_SYNC_COMMAND=&quot;shell command&quot;</code>. uv would execute this command each time it needs to ensure a consistent environment.</p>
-<h3>Example</h3>
+Example
 <p>As one example, we want to specify our dependencies as repository-absolute paths like <code>org-deep-nested-namespace-dependency</code> instead of relative paths like <code>../../../namespace/dependency</code>.</p>
 <p>For this, we can add a custom section to the <code>pyproject.toml</code> of each package in the monorepo:</p>
-<pre><code class="language-toml">[tool.monorepo]
+<pre><code>[tool.monorepo]
 dependencies = [
-  'org-deep-nested-namespace-dependency',
+  &#x27;org-deep-nested-namespace-dependency&#x27;,
 ]
 </code></pre>
 <p>We then have a custom <code>sync_deps.sh</code> script that finds all <code>pyproject.toml</code> files in the monorepo, reads the above config block, and generates the <code>[tool.uv.sources]</code> block with relatives paths as required by uv:</p>
-<pre><code class="language-toml"># generated
+<pre><code># generated
 [tool.uv.source]
 org-deep-nested-namespace-dependency = { path = &quot;../../../namespace/dependency&quot;, editable = true }
 </code></pre>
-<p>Currently, we have to manually call <code>sync_deps.sh</code> each time we change a <code>pyproject.toml</code> file, which slows down developers and is easy to forget. We could also wrap all uv commands to always call <code>sync_deps.sh</code> (for the whole repo or just the <code>pyproject.toml</code> targeted by the uv command and its recursive dependencies) before forwarding the call to the uv binary, but then our developers can't call the familiar uv binary directly anymore.</p>
-<p>With a custom command hook, we'd register <code>sync_deps.sh</code> with uv, for example via an environment variable:</p>
+<p>Currently, we have to manually call <code>sync_deps.sh</code> each time we change a <code>pyproject.toml</code> file, which slows down developers and is easy to forget. We could also wrap all uv commands to always call <code>sync_deps.sh</code> (for the whole repo or just the <code>pyproject.toml</code> targeted by the uv command and its recursive dependencies) before forwarding the call to the uv binary, but then our developers can&#x27;t call the familiar uv binary directly anymore.</p>
+<p>With a custom command hook, we&#x27;d register <code>sync_deps.sh</code> with uv, for example via an environment variable:</p>
 <pre><code>export UV_PRE_SYNC_COMMAND=&quot;repo/sync_deps.sh&quot;
 </code></pre>
 <p>We could then use uv natively and with low maintenance burden.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @danijar on 2025-12-28 20:10</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/danijar">@danijar</a> on 2025-12-28 20:10</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2026-01-06 19:20</div>
-            <div class="timeline-body"><p>This sounds like https://github.com/astral-sh/uv/issues/11826</p>
+            <div class="timeline-body"><p>This sounds like <a href="https://github.com/astral-sh/uv/issues/11826">astral-sh/uv#11826</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/danijar">@danijar</a> on 2026-01-12 17:47</div>
-            <div class="timeline-body"><h3>Commit vs. Runtime Consistency</h3>
+            <div class="timeline-body">Commit vs. Runtime Consistency
 <p>At first I also thought #11826 was the same feature, but it seems to be more about the pre-commit use case, i.e. enforcing constraints of commits to the repository. They mention husky and lint-staged, which lints files or runs tests. Those tasks just need to happen <strong>at some point before a commit is created</strong>.</p>
 <p>My feature request here is about ensuring runtime constraints to the local files, even before they are committed. We want to enforce correct and consistent <code>uv run</code> results when sections of <code>pyproject.toml</code> are generated. This needs to be enforced <strong>before every uv command that reads <code>pyproject.toml</code></strong>.</p>
-<p>There may be one feature that solves both problems, but it's not entirely clear one way or the other yet.</p>
-<h3>Task Runners</h3>
+<p>There may be one feature that solves both problems, but it&#x27;s not entirely clear one way or the other yet.</p>
+Task Runners
 <p>I also saw your comment about task runners in the other thread, for example using hatch:</p>
-<pre><code class="language-toml">[tool.hatch.envs.default.scripts]
+<pre><code>[tool.hatch.envs.default.scripts]
 sync = [&quot;sh sync_deps.sh&quot;, &quot;uv sync&quot;]
 build = [&quot;sh sync_deps.sh&quot;, &quot;uv build&quot;]
 run = [&quot;sh sync_deps.sh&quot;, &quot;uv run&quot;]
@@ -72,7 +72,7 @@ run = [&quot;sh sync_deps.sh&quot;, &quot;uv run&quot;]
 <p>The problems here are:</p>
 <ul>
 <li>Have to wrap every single uv command (boilerplate, hassle to maintain)</li>
-<li>Developers can't use familiar <code>uv ...</code> commands anymore (cognitive overhead, both when using commands and when copying uv commands from websites, from Claude, etc)</li>
+<li>Developers can&#x27;t use familiar <code>uv ...</code> commands anymore (cognitive overhead, both when using commands and when copying uv commands from websites, from Claude, etc)</li>
 <li>More verbose to type out and harder to read, e.g. <code>hatch run run python</code> instead of <code>uv run python</code></li>
 <li>Forwarding args to uv is possible but needs workarounds</li>
 <li>Makes everything less standard (if there are other scripts, they all need to use the new commands now instead of plain uv)</li>
@@ -83,7 +83,7 @@ run = [&quot;sh sync_deps.sh&quot;, &quot;uv run&quot;]
     </div>
 
     <footer>
-        Synced at 2026-01-12 18:33:08 UTC
+        Synced at 2026-01-20 19:41:24 UTC
     </footer>
 </body>
 </html>

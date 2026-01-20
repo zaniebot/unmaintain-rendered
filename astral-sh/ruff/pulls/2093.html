@@ -29,8 +29,8 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/scop">@scop</a> on <code>src/rules/pydocstyle/rules/multi_line_summary_start.rs</code>:67 on 2023-01-22 22:01</div>
             <div class="timeline-body"><p>This is to protect against breakage with https://github.com/charliermarsh/ruff/blob/ebfdefd110e83bcd1d101ee5a424fc6a82e020b5/resources/test/fixtures/pydocstyle/D.py#L438
-The docstring's <code>indentation</code> ends up as <code>def docstring_start_in_same_line(): </code> which we obviously cannot insert as indentation after the newline we'd insert. I guess it's fine to just skip these cases for now.</p>
-<p>If that's acceptable, is this an ok way to conditionalize the fix, or is there some other preferred way? The thing is marked as an <code>AlwaysAutofixableViolation</code> but with this, it would not be <em>always</em> autofixable. The CLI output says &quot;potentially fixable&quot; for these, and there doesn't seem to be a concept of codified conditional fixability, so I guess it's ok.</p>
+The docstring&#x27;s <code>indentation</code> ends up as <code>def docstring_start_in_same_line(): </code> which we obviously cannot insert as indentation after the newline we&#x27;d insert. I guess it&#x27;s fine to just skip these cases for now.</p>
+<p>If that&#x27;s acceptable, is this an ok way to conditionalize the fix, or is there some other preferred way? The thing is marked as an <code>AlwaysAutofixableViolation</code> but with this, it would not be <em>always</em> autofixable. The CLI output says &quot;potentially fixable&quot; for these, and there doesn&#x27;t seem to be a concept of codified conditional fixability, so I guess it&#x27;s ok.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -43,15 +43,15 @@ The docstring's <code>indentation</code> ends up as <code>def docstring_start_in
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/scop">@scop</a> on <code>src/rules/pydocstyle/rules/multi_line_summary_start.rs</code>:46 on 2023-01-22 22:24</div>
-            <div class="timeline-body"><p>This could cause exceeding <code>line-length</code> on the start row. Should that be taken into account somehow, e.g. skipping the fix if it'd happen?</p>
+            <div class="timeline-body"><p>This could cause exceeding <code>line-length</code> on the start row. Should that be taken into account somehow, e.g. skipping the fix if it&#x27;d happen?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/pydocstyle/rules/multi_line_summary_start.rs</code>:67 on 2023-01-23 02:50</div>
             <div class="timeline-body"><p>A few things:</p>
 <ol>
-<li>We do have a pattern for a rule that's conditionally fixable. If you grep for <code>autofix_title_formatter</code>, you'll see some examples of that :)</li>
-<li>We probably <em>could</em> fix those cases, or at least try, although I'd still merge this even if we don't. <code>checker.stylist.indentation()</code> will contain the inferred indentation for the file... so you could look at the current indentation of the <code>def</code>, then add <code>checker.stylist.indentation()</code> to it. That could be wrong in some cases, like files with mixed indentation, but <em>should</em> otherwise be correct. I'll leave it to you whether you want to enable that behavior :)</li>
+<li>We do have a pattern for a rule that&#x27;s conditionally fixable. If you grep for <code>autofix_title_formatter</code>, you&#x27;ll see some examples of that :)</li>
+<li>We probably <em>could</em> fix those cases, or at least try, although I&#x27;d still merge this even if we don&#x27;t. <code>checker.stylist.indentation()</code> will contain the inferred indentation for the file... so you could look at the current indentation of the <code>def</code>, then add <code>checker.stylist.indentation()</code> to it. That could be wrong in some cases, like files with mixed indentation, but <em>should</em> otherwise be correct. I&#x27;ll leave it to you whether you want to enable that behavior :)</li>
 </ol>
 </div>
         </div>
@@ -65,13 +65,13 @@ The docstring's <code>indentation</code> ends up as <code>def docstring_start_in
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/pydocstyle/rules/multi_line_summary_start.rs</code>:46 on 2023-01-23 02:52</div>
-            <div class="timeline-body"><p>We do sometimes check that the generated line is <code>&lt; checker.settings.line_length</code>. But mostly for opinionated checks, like proposed simplifications. In this case, I think it's okay to apply the fix anyway. It's consistent with how we handle other docstring fixes.</p>
+            <div class="timeline-body"><p>We do sometimes check that the generated line is <code>&lt; checker.settings.line_length</code>. But mostly for opinionated checks, like proposed simplifications. In this case, I think it&#x27;s okay to apply the fix anyway. It&#x27;s consistent with how we handle other docstring fixes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/scop">@scop</a> on <code>src/rules/pydocstyle/rules/multi_line_summary_start.rs</code>:67 on 2023-01-23 20:12</div>
-            <div class="timeline-body"><p>Thanks for the advice! I opted to go for 2), mostly for practice purposes, 6a7f2f15d2713106f4ee015f71e886977b35ee5b has it. There are still some cases in which we skip the fix (parent definition is not function/class, or their indentation contains something besides whitespace), but I'm not sure if they can actually happen, or are more on the theoretical side.</p>
-<p>The implementation reads a bit clumsy to me now, but that's what my Rust-fu is up to at time of writing :|</p>
+            <div class="timeline-body"><p>Thanks for the advice! I opted to go for 2), mostly for practice purposes, 6a7f2f15d2713106f4ee015f71e886977b35ee5b has it. There are still some cases in which we skip the fix (parent definition is not function/class, or their indentation contains something besides whitespace), but I&#x27;m not sure if they can actually happen, or are more on the theoretical side.</p>
+<p>The implementation reads a bit clumsy to me now, but that&#x27;s what my Rust-fu is up to at time of writing :|</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -80,7 +80,7 @@ The docstring's <code>indentation</code> ends up as <code>def docstring_start_in
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/pydocstyle/rules/multi_line_summary_start.rs</code>:67 on 2023-01-23 21:04</div>
-            <div class="timeline-body"><p>Awesome, I'll review this today :)</p>
+            <div class="timeline-body"><p>Awesome, I&#x27;ll review this today :)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -88,10 +88,10 @@ The docstring's <code>indentation</code> ends up as <code>def docstring_start_in
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2023-01-24 13:17</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-24 13:17</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-01-24 13:17</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-24 13:17</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-24 13:17</div>
@@ -109,7 +109,7 @@ The docstring's <code>indentation</code> ends up as <code>def docstring_start_in
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/scop">@scop</a> on <code>src/rules/pydocstyle/rules/multi_line_summary_start.rs</code>:99 on 2023-01-25 19:55</div>
             <div class="timeline-body"><p>Ah, I thought about that and remember grepping for what should be done about it, but failed to follow through. Thanks for taking care of it!</p>
-<p>There's a literal <code>\n</code> at https://github.com/charliermarsh/ruff/blob/662e29b1ce9dd99e1456aae6f5817335ca1a7562/src/autofix/helpers.rs#L182, too. Don't know if it's an issue, but thought I'd mention now that I noticed when re-grepping.</p>
+<p>There&#x27;s a literal <code>\n</code> at https://github.com/charliermarsh/ruff/blob/662e29b1ce9dd99e1456aae6f5817335ca1a7562/src/autofix/helpers.rs#L182, too. Don&#x27;t know if it&#x27;s an issue, but thought I&#x27;d mention now that I noticed when re-grepping.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -117,7 +117,7 @@ The docstring's <code>indentation</code> ends up as <code>def docstring_start_in
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/pydocstyle/rules/multi_line_summary_start.rs</code>:99 on 2023-01-25 19:59</div>
-            <div class="timeline-body"><p>Oh, thanks, I'll fix that real quick.</p>
+            <div class="timeline-body"><p>Oh, thanks, I&#x27;ll fix that real quick.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -127,7 +127,7 @@ The docstring's <code>indentation</code> ends up as <code>def docstring_start_in
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:55:43 UTC
+        Synced at 2026-01-20 18:51:56 UTC
     </footer>
 </body>
 </html>

@@ -23,11 +23,11 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/cmayet">@cmayet</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<p>When using <code>pyproject.toml</code>'s dynamic dependencies ( deps in a <code>requirements.in</code> file) and <code>cache-keys = [{ file = &quot;requirements.in&quot; }]</code>, <code>uv sync &amp;&amp; uv add whatever_new_dep</code> does not fail as it should.</p>
+            <div class="timeline-body">Summary
+<p>When using <code>pyproject.toml</code>&#x27;s dynamic dependencies ( deps in a <code>requirements.in</code> file) and <code>cache-keys = [{ file = &quot;requirements.in&quot; }]</code>, <code>uv sync &amp;&amp; uv add whatever_new_dep</code> does not fail as it should.</p>
 <p>Dockerfile to build a  python lib project with dynamic dependencies in a requirements.in</p>
 <p><em>Dockerfile_ok</em></p>
-<pre><code class="language-dockerfile">FROM ghcr.io/astral-sh/uv:0.6.1-debian-slim
+<pre><code>FROM ghcr.io/astral-sh/uv:0.6.1-debian-slim
 
 WORKDIR /mre
 RUN uv init --lib /mre
@@ -54,32 +54,32 @@ pydantic
 EOF
 </code></pre>
 <p>Build the image and exec the container</p>
-<pre><code class="language-sh">docker build -f Dockerfile_ok -t ok .
+<pre><code>docker build -f Dockerfile_ok -t ok .
 docker run -d --name c1 ok sleep infinity
 docker exec -ti c1 bash
 </code></pre>
-<p>Let's try to add new deps / requirements using uv add. This should fail as build backends do not accept both static and dynamic dependencies (and uv can not handle dynamic dependencies).</p>
-<pre><code class="language-sh">uv sync # runs OK
+<p>Let&#x27;s try to add new deps / requirements using uv add. This should fail as build backends do not accept both static and dynamic dependencies (and uv can not handle dynamic dependencies).</p>
+<pre><code>uv sync # runs OK
 uv add fastapi # fails as expected
 </code></pre>
 <p><code>uv add</code> raises an exception as uv cannot handle dynamic dependencies. The build backend prevents uv from adding new deps. This is the expected outcome (though it would be great if uv could handle this specific use case but this is out of the scope of this ticket).</p>
-<p>Now if we add a dependency in <code>requirements.in</code>, the documentation (https://docs.astral.sh/uv/concepts/cache/#dynamic-metadata) says that nothing should happen as uv doesn't look at requirements.in changes (uv's aggressive caching) :</p>
-<pre><code class="language-sh"># manually add new dependency in requirements.in
+<p>Now if we add a dependency in <code>requirements.in</code>, the documentation (https://docs.astral.sh/uv/concepts/cache/#dynamic-metadata) says that nothing should happen as uv doesn&#x27;t look at requirements.in changes (uv&#x27;s aggressive caching) :</p>
+<pre><code># manually add new dependency in requirements.in
 echo &quot;flask&quot; | tee -a requirements.in
 #and run uv sync
 uv sync
 </code></pre>
 <p>but flask gets installed... <strong>WHY !?!</strong></p>
-<p>Now, following the doc's recommendations : (https://docs.astral.sh/uv/concepts/cache/#dynamic-metadata) :</p>
+<p>Now, following the doc&#x27;s recommendations : (https://docs.astral.sh/uv/concepts/cache/#dynamic-metadata) :</p>
 <blockquote>
-<p>Similarly, if a project reads from a requirements.txt to populate its dependencies, you can add the following to the project's
+<p>Similarly, if a project reads from a requirements.txt to populate its dependencies, you can add the following to the project&#x27;s
 pyproject.toml:
 [tool.uv]
 cache-keys = [{ file = &quot;requirements.txt&quot; }]</p>
 </blockquote>
-<p>let's build a new image with the cache-keys metadata :
+<p>let&#x27;s build a new image with the cache-keys metadata :
 <em>Dockerfile_bad</em></p>
-<pre><code class="language-dockerfile">FROM ghcr.io/astral-sh/uv:0.6.2-debian-slim
+<pre><code>FROM ghcr.io/astral-sh/uv:0.6.2-debian-slim
 
 WORKDIR /mre
 RUN uv init --lib /mre
@@ -110,67 +110,67 @@ COPY &lt;&lt;EOF /mre/requirements.in
 pydantic
 EOF
 </code></pre>
-<p>let's build the image and run the container :</p>
-<pre><code class="language-sh">docker build -f Dockerfile_bad -t bad .
+<p>let&#x27;s build the image and run the container :</p>
+<pre><code>docker build -f Dockerfile_bad -t bad .
 docker run -d --name c2 bad sleep infinity
 docker exec -ti c2 bash
 </code></pre>
 <p>From inside the new container:</p>
-<pre><code class="language-sh">uv sync #all is OK
+<pre><code>uv sync #all is OK
 uv add fastapi # fails silently
 # no exception is raised !!
-cat pyproject.toml | grep fastapi   # uv added fastapi in pyproject.toml's dependencies
+cat pyproject.toml | grep fastapi   # uv added fastapi in pyproject.toml&#x27;s dependencies
 cat uv.lock | grep fastapi                # but did not sync .lock
 uv pip list | grep fastapi                 # nor venv
 </code></pre>
 <p><code>uv add</code> (<strong>after a first <code>uv sync</code></strong>) fails silently, the new dependency is added to pyproject.toml but .lock and venv are not updated.</p>
 <p>Sorry for this very long post. Is that a bug or misunderstanding from me ?</p>
-<h3>Platform</h3>
+Platform
 <p>debian</p>
-<h3>Version</h3>
+Version
 <p>0.6.2</p>
-<h3>Python version</h3>
+Python version
 <p>3.13.2</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @cmayet on 2025-02-20 17:27</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/cmayet">@cmayet</a> on 2025-02-20 17:27</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-02-21 05:05</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-21 05:05</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-21 05:20</div>
-            <div class="timeline-body"><p>The first part can be explained by the fact that <code>uv add</code> modifies the <code>pyproject.toml</code> (and then we undo those modifications when the operation fails). So the modification time of the <code>pyproject.toml</code> changes, which invalidates the cached metadata. That's why the failed <code>uv add</code> still causes the subsequent <code>uv sync</code> to take affect, despite not including <code>requirements.in</code> in the cache keys.</p>
+            <div class="timeline-body"><p>The first part can be explained by the fact that <code>uv add</code> modifies the <code>pyproject.toml</code> (and then we undo those modifications when the operation fails). So the modification time of the <code>pyproject.toml</code> changes, which invalidates the cached metadata. That&#x27;s why the failed <code>uv add</code> still causes the subsequent <code>uv sync</code> to take affect, despite not including <code>requirements.in</code> in the cache keys.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-21 05:23</div>
             <div class="timeline-body"><p>The second part is explained by the fact that setting:</p>
-<pre><code class="language-toml">[tool.uv]
+<pre><code>[tool.uv]
 cache-keys = [{ file = &quot;requirements.in&quot; }]
 </code></pre>
-<p>...means that we <em>don't</em> invalidate the metadata when the <code>pyproject.toml</code> changes. Setting <code>cache-keys</code> is <em>not</em> additive, so by setting it to <code>&quot;requirements.in&quot;</code>, you're actually overriding the defaults!</p>
+<p>...means that we <em>don&#x27;t</em> invalidate the metadata when the <code>pyproject.toml</code> changes. Setting <code>cache-keys</code> is <em>not</em> additive, so by setting it to <code>&quot;requirements.in&quot;</code>, you&#x27;re actually overriding the defaults!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-02-21 05:23</div>
+            <div class="event">Label <span class="label">bug</span> removed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-21 05:23</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-02-21 05:23</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-21 05:23</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/cmayet">@cmayet</a> on 2025-02-21 09:41</div>
             <div class="timeline-body"><p>Thank you @charliermarsh for your quick answers !</p>
 <p>The first one was a bit tricky, you made it clear that it was a side effect of uv touching pyproject.toml (even though no change remains).
 Running the following is indeed much more consistent than my previous test.</p>
-<pre><code class="language-sh">uv sync #runs OK
+<pre><code>uv sync #runs OK
 echo &quot;flask&quot; | tee -a requirements.in     # add a requirement in requirements.in
 uv sync  # nothing happens as uv was not told to watch requirements.in
 </code></pre>
 <p>For second one, I understand that the modification of <code>cache-keys</code> I made <strong>overrides</strong> the default instead of <strong>appending</strong> to it. When running <code>uv add</code>, the new dependency is written in <code>pyproject.toml</code> but this file is ignored because of my <code>cache-keys = [{ file = &quot;requirements.in&quot; }</code>.</p>
 <p>The desired outcome was indeed obtained by setting</p>
-<pre><code class="language-toml">[tool.uv]
+<pre><code>[tool.uv]
 cache-keys = [{ file = &quot;requirements.in&quot; },
               { file = &quot;pyproject.toml&quot;}]
 </code></pre>
@@ -184,7 +184,7 @@ The following sentence (from https://docs.astral.sh/uv/concepts/cache/#dynamic-m
 <p>To <strong>override the default cache key</strong> for a given package, you can <strong>set</strong> cache key entries under tool.uv.cache-keys, which can include both file paths and Git commit hashes.</p>
 </blockquote>
 <p>, with -maybe- a small example as</p>
-<pre><code class="language-toml">[tool.uv]
+<pre><code>[tool.uv]
 cache-keys = [
               { file = &quot;pyproject.toml&quot;},
               { file = &quot;setup.py&quot;},
@@ -196,12 +196,12 @@ cache-keys = [
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @cmayet on 2025-02-21 09:41</div>
+            <div class="event">Closed by <a href="https://github.com/cmayet">@cmayet</a> on 2025-02-21 09:41</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:30:02 UTC
+        Synced at 2026-01-20 19:37:26 UTC
     </footer>
 </body>
 </html>

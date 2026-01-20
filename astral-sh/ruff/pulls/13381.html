@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This PR addresses the issue where subscript and other parenthesized expressions in function return type positions were wrapped in an extra pair of parentheses if the function has no parameters. This leads to rather verbose code:</p>
-<pre><code class="language-patch"> @pytest.fixture
+<pre><code> @pytest.fixture
 -def mock_legacy_device_tracker_setup() -&gt; (
 -    Callable[[HomeAssistant, &quot;MockScanner&quot;], None]
 -):
@@ -36,8 +36,8 @@
      from tests.components.device_tracker.common import mock_legacy_device_tracker_setup
 
 </code></pre>
-<p>It's also inconsistent to how the same return type gets formatted when the function has parameters:</p>
-<pre><code class="language-python">@pytest.fixture
+<p>It&#x27;s also inconsistent to how the same return type gets formatted when the function has parameters:</p>
+<pre><code>@pytest.fixture
 def mock_legacy_device_tracker_setup(
     a,
 ) -&gt; Callable[
@@ -46,17 +46,17 @@ def mock_legacy_device_tracker_setup(
     &quot;&quot;&quot;Return setup callable for legacy device tracker setup.&quot;&quot;&quot;
     from tests.components.device_tracker.common import mock_legacy_device_tracker_setup
 </code></pre>
-<p>Fixes https://github.com/astral-sh/ruff/issues/9447</p>
-<h2>Black deviation</h2>
+<p>Fixes <a href="https://github.com/astral-sh/ruff/issues/9447">astral-sh/ruff#9447</a></p>
+Black deviation
 <p>The PR adds two fairly extensive tests that walk through the black deviations. The most notable deviation is that black tries to parenthesize types before splitting the type itself (only applies to subscript)</p>
 <p><strong>Black</strong></p>
-<pre><code class="language-python">def func() -&gt; (
+<pre><code>def func() -&gt; (
     list[1, 2222222222222222222, 3333333333333333333333333333333333333333333333333]
 ):
     pass
 </code></pre>
-<p>But it only does so if the function has <strong>no</strong> parameters. Below is Black's formatting if the function has a parameter.</p>
-<pre><code class="language-python">
+<p>But it only does so if the function has <strong>no</strong> parameters. Below is Black&#x27;s formatting if the function has a parameter.</p>
+<pre><code>
 def func(
     a,
 ) -&gt; list[
@@ -72,7 +72,7 @@ def func(
 </code></pre>
 <p>This seems inconsistent. Ruff only parenthesizes the <code>list</code> if the subscript value up to the <code>[</code> exceeds the line length</p>
 <p><strong>Ruff</strong></p>
-<pre><code class="language-python">def func() -&gt; list[
+<pre><code>def func() -&gt; list[
     1, 2222222222222222222, 3333333333333333333333333333333333333333333333333
 ]:
     pass
@@ -98,39 +98,39 @@ def thiiiiiiiiiiiiiiiiiis_iiiiiiiiiiiiiiiiiiiiiiiiiiiiiis_veeeeeeeeeeedooooong()
 ): ...
 
 </code></pre>
-<p>The main counterargument is that most changes in the ecosystem are cases where Black would parenthesize the subscript. I'm interested to get a second opinion on this.</p>
+<p>The main counterargument is that most changes in the ecosystem are cases where Black would parenthesize the subscript. I&#x27;m interested to get a second opinion on this.</p>
 <blockquote>
-<p><strong>Note</strong>: Supporting black's formatting would introduce a fair amount of extra complexity. We couldn't use <code>maybe_parenthesize_expression</code> anymore and need to use <code>best_fitting</code> to model the three cases (type fits, type parenthesized fits, split the type)</p>
+<p><strong>Note</strong>: Supporting black&#x27;s formatting would introduce a fair amount of extra complexity. We couldn&#x27;t use <code>maybe_parenthesize_expression</code> anymore and need to use <code>best_fitting</code> to model the three cases (type fits, type parenthesized fits, split the type)</p>
 </blockquote>
-<h2>Preview</h2>
+Preview
 <p>This is a preview-only change because it changes the formatting of already formatted code.</p>
-<h2>Test Plan</h2>
-<p>I reformatted some projects locally and skimmed through the changes. Overall, there are only few, and I generally prefer the new formatting (see <a href="https://github.com/astral-sh/ruff/pull/13381#issuecomment-2355998843">this comment</a>). Whether one prefers Black's formatting with the extra parentheses or not is probably the only &quot;questionable&quot; formatting change. IMO, consistency is more important (it reduces surprises for users: Why is it parenthesized here?).</p>
+Test Plan
+<p>I reformatted some projects locally and skimmed through the changes. Overall, there are only few, and I generally prefer the new formatting (see <a href="https://github.com/astral-sh/ruff/pull/13381#issuecomment-2355998843">this comment</a>). Whether one prefers Black&#x27;s formatting with the extra parentheses or not is probably the only &quot;questionable&quot; formatting change. IMO, consistency is more important (it reduces surprises for users: Why is it parenthesized here?).</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2024-09-17 13:49</div>
+            <div class="event">Label <span class="label">formatter</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-17 13:49</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2024-09-17 13:49</div>
+            <div class="event">Label <span class="label">preview</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-17 13:49</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-09-17 13:57</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Formatter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>ℹ️ ecosystem check <strong>detected format changes</strong>. (+44 -58 lines in 7 files in 5 projects; 49 projects unchanged)</p>
-<details><summary><a href="https://github.com/RasaHQ/rasa">RasaHQ/rasa</a> (+3 -3 lines across 1 file)</summary>
+<a href="https://github.com/RasaHQ/rasa">RasaHQ/rasa</a> (+3 -3 lines across 1 file)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/tests/core/test_tracker_stores.py#L309'>tests/core/test_tracker_stores.py~L309</a></p>
-<pre><code class="language-diff">     assert isinstance(tracker_store, InMemoryTrackerStore)
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/tests/core/test_tracker_stores.py#L309">tests/core/test_tracker_stores.py~L309</a></p>
+<pre><code>     assert isinstance(tracker_store, InMemoryTrackerStore)
  
  
 -async def _tracker_store_and_tracker_with_slot_set() -&gt; (
@@ -144,15 +144,15 @@ def thiiiiiiiiiiiiiiiiiis_iiiiiiiiiiiiiiiiiiiiiiiiiiiiiis_veeeeeeeeeeedooooong()
      slot_key = &quot;cuisine&quot;
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+3 -3 lines across 1 file)</summary>
+
+<a href="https://github.com/apache/superset">apache/superset</a> (+3 -3 lines across 1 file)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/apache/superset/blob/cd8b56706bce667d768456a29cdc85a3fa27ab7c/tests/unit_tests/db_engine_specs/test_ocient.py#L223'>tests/unit_tests/db_engine_specs/test_ocient.py~L223</a></p>
-<pre><code class="language-diff">     assert result == [expected]
+<p><a href="https://github.com/apache/superset/blob/cd8b56706bce667d768456a29cdc85a3fa27ab7c/tests/unit_tests/db_engine_specs/test_ocient.py#L223">tests/unit_tests/db_engine_specs/test_ocient.py~L223</a></p>
+<pre><code>     assert result == [expected]
  
  
 -def _generate_gis_type_sanitization_test_cases() -&gt; (
@@ -166,15 +166,15 @@ def thiiiiiiiiiiiiiiiiiis_iiiiiiiiiiiiiiiiiiiiiiiiiiiiiis_veeeeeeeeeeedooooong()
  
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/langchain-ai/langchain">langchain-ai/langchain</a> (+8 -10 lines across 1 file)</summary>
+
+<a href="https://github.com/langchain-ai/langchain">langchain-ai/langchain</a> (+8 -10 lines across 1 file)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/langchain-ai/langchain/blob/a47b33284152d85d2233f069f993f9c0ef4da0d7/libs/community/tests/integration_tests/retrievers/docarray/fixtures.py#L22'>libs/community/tests/integration_tests/retrievers/docarray/fixtures.py~L22</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/langchain-ai/langchain/blob/a47b33284152d85d2233f069f993f9c0ef4da0d7/libs/community/tests/integration_tests/retrievers/docarray/fixtures.py#L22">libs/community/tests/integration_tests/retrievers/docarray/fixtures.py~L22</a></p>
+<pre><code> 
  
  @pytest.fixture
 -def init_weaviate() -&gt; (
@@ -193,8 +193,8 @@ def thiiiiiiiiiiiiiiiiiis_iiiiiiiiiiiiiiiiiiiiiiiiiiiiiis_veeeeeeeeeeedooooong()
      cd tests/integration_tests/vectorstores/docker-compose
      docker compose -f weaviate.yml up
 </code></pre>
-<p><a href='https://github.com/langchain-ai/langchain/blob/a47b33284152d85d2233f069f993f9c0ef4da0d7/libs/community/tests/integration_tests/retrievers/docarray/fixtures.py#L73'>libs/community/tests/integration_tests/retrievers/docarray/fixtures.py~L73</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/langchain-ai/langchain/blob/a47b33284152d85d2233f069f993f9c0ef4da0d7/libs/community/tests/integration_tests/retrievers/docarray/fixtures.py#L73">libs/community/tests/integration_tests/retrievers/docarray/fixtures.py~L73</a></p>
+<pre><code> 
  
  @pytest.fixture
 -def init_elastic() -&gt; (
@@ -208,15 +208,15 @@ def thiiiiiiiiiiiiiiiiiis_iiiiiiiiiiiiiiiiiiiiiiiiiiiiiis_veeeeeeeeeeedooooong()
      docker-compose -f elasticsearch.yml up
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/rotki/rotki">rotki/rotki</a> (+6 -6 lines across 1 file)</summary>
+
+<a href="https://github.com/rotki/rotki">rotki/rotki</a> (+6 -6 lines across 1 file)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/rotki/rotki/blob/3cf1e77ee7e5dc89107d6baab879b6c2832051d2/rotkehlchen/chain/evm/decoding/velodrome/velodrome_cache.py#L149'>rotkehlchen/chain/evm/decoding/velodrome/velodrome_cache.py~L149</a></p>
-<pre><code class="language-diff">     return pool_addresses, gauge_addresses
+<p><a href="https://github.com/rotki/rotki/blob/3cf1e77ee7e5dc89107d6baab879b6c2832051d2/rotkehlchen/chain/evm/decoding/velodrome/velodrome_cache.py#L149">rotkehlchen/chain/evm/decoding/velodrome/velodrome_cache.py~L149</a></p>
+<pre><code>     return pool_addresses, gauge_addresses
  
  
 -def read_velodrome_pools_and_gauges_from_cache() -&gt; (
@@ -229,8 +229,8 @@ def thiiiiiiiiiiiiiiiiiis_iiiiiiiiiiiiiiiiiiiiiiiiiiiiiis_veeeeeeeeeeedooooong()
      Reads globaldb cache and returns:
      - A set of all known addresses of velodrome pools.
 </code></pre>
-<p><a href='https://github.com/rotki/rotki/blob/3cf1e77ee7e5dc89107d6baab879b6c2832051d2/rotkehlchen/chain/evm/decoding/velodrome/velodrome_cache.py#L163'>rotkehlchen/chain/evm/decoding/velodrome/velodrome_cache.py~L163</a></p>
-<pre><code class="language-diff">     )
+<p><a href="https://github.com/rotki/rotki/blob/3cf1e77ee7e5dc89107d6baab879b6c2832051d2/rotkehlchen/chain/evm/decoding/velodrome/velodrome_cache.py#L163">rotkehlchen/chain/evm/decoding/velodrome/velodrome_cache.py~L163</a></p>
+<pre><code>     )
  
  
 -def read_aerodrome_pools_and_gauges_from_cache() -&gt; (
@@ -244,15 +244,15 @@ def thiiiiiiiiiiiiiiiiiis_iiiiiiiiiiiiiiiiiiiiiiiiiiiiiis_veeeeeeeeeeedooooong()
      - A set of all known addresses of aerodrome pools.
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/python-trio/trio">python-trio/trio</a> (+24 -36 lines across 3 files)</summary>
+
+<a href="https://github.com/python-trio/trio">python-trio/trio</a> (+24 -36 lines across 3 files)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/python-trio/trio/blob/b834f73cbdd6b0c087ac2d19c5c47f7101a279bd/src/trio/_tests/test_ssl.py#L864'>src/trio/_tests/test_ssl.py~L864</a></p>
-<pre><code class="language-diff">     client_ctx: SSLContext,
+<p><a href="https://github.com/python-trio/trio/blob/b834f73cbdd6b0c087ac2d19c5c47f7101a279bd/src/trio/_tests/test_ssl.py#L864">src/trio/_tests/test_ssl.py~L864</a></p>
+<pre><code>     client_ctx: SSLContext,
      https_compatible: bool,
  ) -&gt; None:
 -    async def stream_maker() -&gt; (
@@ -282,11 +282,11 @@ def thiiiiiiiiiiiiiiiiiis_iiiiiiiiiiiiiiiiiiiiiiiiiiiiiis_veeeeeeeeeeedooooong()
 +        SSLStream[MyStapledStream],
 +    ]:
          client, server = ssl_lockstep_stream_pair(client_ctx)
-         # If we don't do handshakes up front, then we run into a problem in
+         # If we don&#x27;t do handshakes up front, then we run into a problem in
          # the following situation:
 </code></pre>
-<p><a href='https://github.com/python-trio/trio/blob/b834f73cbdd6b0c087ac2d19c5c47f7101a279bd/src/trio/_tests/test_testing.py#L604'>src/trio/_tests/test_testing.py~L604</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/python-trio/trio/blob/b834f73cbdd6b0c087ac2d19c5c47f7101a279bd/src/trio/_tests/test_testing.py#L604">src/trio/_tests/test_testing.py~L604</a></p>
+<pre><code> 
      await check_one_way_stream(one_way_stream_maker, None)
  
 -    async def half_closeable_stream_maker() -&gt; (
@@ -303,8 +303,8 @@ def thiiiiiiiiiiiiiiiiiis_iiiiiiiiiiiiiiiiiiiiiiiiiiiiiis_veeeeeeeeeeedooooong()
  
      await check_half_closeable_stream(half_closeable_stream_maker, None)
 </code></pre>
-<p><a href='https://github.com/python-trio/trio/blob/b834f73cbdd6b0c087ac2d19c5c47f7101a279bd/src/trio/_tests/test_testing.py#L621'>src/trio/_tests/test_testing.py~L621</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/python-trio/trio/blob/b834f73cbdd6b0c087ac2d19c5c47f7101a279bd/src/trio/_tests/test_testing.py#L621">src/trio/_tests/test_testing.py~L621</a></p>
+<pre><code> 
      await check_one_way_stream(one_way_stream_maker, one_way_stream_maker)
  
 -    async def two_way_stream_maker() -&gt; (
@@ -321,8 +321,8 @@ def thiiiiiiiiiiiiiiiiiis_iiiiiiiiiiiiiiiiiiiiiiiiiiiiiis_veeeeeeeeeeedooooong()
  
      await check_two_way_stream(two_way_stream_maker, two_way_stream_maker)
 </code></pre>
-<p><a href='https://github.com/python-trio/trio/blob/b834f73cbdd6b0c087ac2d19c5c47f7101a279bd/src/trio/testing/_memory_streams.py#L368'>src/trio/testing/_memory_streams.py~L368</a></p>
-<pre><code class="language-diff">     return stream1, stream2
+<p><a href="https://github.com/python-trio/trio/blob/b834f73cbdd6b0c087ac2d19c5c47f7101a279bd/src/trio/testing/_memory_streams.py#L368">src/trio/testing/_memory_streams.py~L368</a></p>
+<pre><code>     return stream1, stream2
  
  
 -def memory_stream_pair() -&gt; (
@@ -339,8 +339,8 @@ def thiiiiiiiiiiiiiiiiiis_iiiiiiiiiiiiiiiiiiiiiiiiiiiiiis_veeeeeeeeeeedooooong()
      buffering and flexible configuration options.
  
 </code></pre>
-<p><a href='https://github.com/python-trio/trio/blob/b834f73cbdd6b0c087ac2d19c5c47f7101a279bd/src/trio/testing/_memory_streams.py#L609'>src/trio/testing/_memory_streams.py~L609</a></p>
-<pre><code class="language-diff">     return _LockstepSendStream(lbq), _LockstepReceiveStream(lbq)
+<p><a href="https://github.com/python-trio/trio/blob/b834f73cbdd6b0c087ac2d19c5c47f7101a279bd/src/trio/testing/_memory_streams.py#L609">src/trio/testing/_memory_streams.py~L609</a></p>
+<pre><code>     return _LockstepSendStream(lbq), _LockstepReceiveStream(lbq)
  
  
 -def lockstep_stream_pair() -&gt; (
@@ -358,14 +358,14 @@ def thiiiiiiiiiiiiiiiiiis_iiiiiiiiiiiiiiiiiiiiiiiiiiiiiis_veeeeeeeeeeedooooong()
  
 </code></pre>
 </p>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-17 14:22</div>
             <div class="timeline-body"><p>Some more examples:</p>
-<pre><code class="language-patch"> @cache
+<pre><code> @cache
 -def _register_filesystems() -&gt; (
 -    Mapping[
 -        str,
@@ -526,13 +526,13 @@ index bde8cad5ea..ce24f0d614 100644
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-17 14:49</div>
             <div class="timeline-body"><p>Ruff preserves the parentheses around:</p>
-<pre><code class="language-python">def thiiiiiiiiiiiiiiiiiis_iiiiiiiiiiiiiiiiiiiiiiiiiiiiiis_veeeeeeeeeeedooooong() -&gt; (
+<pre><code>def thiiiiiiiiiiiiiiiiiis_iiiiiiiiiiiiiiiiiiiiiiiiiiiiiis_veeeeeeeeeeedooooong() -&gt; (
     list[int, float]
 ): ...
 </code></pre>
 <p>Edit: The reason why ruff adds parentheses above is because the <code>(</code> is already past the configured line length limit. Adding parentheses in this case does seem reasonable because <code>list</code> would exceed the line length by more characters than adding <code>(</code> and then breaking.</p>
-<p>The argument against it is that we don't do so when the function has a parameter:</p>
-<pre><code class="language-python">
+<p>The argument against it is that we don&#x27;t do so when the function has a parameter:</p>
+<pre><code>
 def a():
     def b():
         def c():
@@ -567,7 +567,7 @@ def a():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@statement__return_annotation.py.snap</code>:582 on 2024-09-18 16:09</div>
-            <div class="timeline-body"><p>This looks surprising but it matches black's formatting</p>
+            <div class="timeline-body"><p>This looks surprising but it matches black&#x27;s formatting</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -575,10 +575,10 @@ def a():
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @MichaReiser on 2024-09-18 16:09</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-18 16:09</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2024-09-18 16:11</div>
+            <div class="event">Review requested from <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-18 16:11</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-18 16:31</div>
@@ -587,16 +587,16 @@ def a():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-09-19 01:37</div>
-            <div class="timeline-body"><p>Interesting... I do prefer what you implemented here. I was looking back at https://github.com/astral-sh/ruff/pull/6436 -- I'm wondering why we didn't make this change then? I guess we were biasing towards improving compatibility as much as possible, despite us not understanding why Black had different styling at that point in time.</p>
+            <div class="timeline-body"><p>Interesting... I do prefer what you implemented here. I was looking back at <a href="https://github.com/astral-sh/ruff/pull/6436">astral-sh/ruff#6436</a> -- I&#x27;m wondering why we didn&#x27;t make this change then? I guess we were biasing towards improving compatibility as much as possible, despite us not understanding why Black had different styling at that point in time.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-19 08:22</div>
             <div class="timeline-body"><blockquote>
-<p>Interesting... I do prefer what you implemented here. I was looking back at #6436 -- I'm wondering why we didn't make this change then? I guess we were biasing towards improving compatibility as much as possible, despite us not understanding why Black had different styling at that point in time.</p>
+<p>Interesting... I do prefer what you implemented here. I was looking back at #6436 -- I&#x27;m wondering why we didn&#x27;t make this change then? I guess we were biasing towards improving compatibility as much as possible, despite us not understanding why Black had different styling at that point in time.</p>
 </blockquote>
 <p>Looking through the tests added in #6436 the once that are relevant for this change are</p>
-<pre><code class="language-diff">-def xxxxxxxxxxxxxxxxxxxxxxxxxxxx() -&gt; (
+<pre><code>-def xxxxxxxxxxxxxxxxxxxxxxxxxxxx() -&gt; (
 -    Set[
 -        &quot;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;
 -    ]
@@ -636,19 +636,19 @@ def a():
 +]: ...
 </code></pre>
 <p>These are all cases where black keeps the parentheses. But it removes them as soon as the subscript contains another element</p>
-<pre><code class="language-python">def xxxxxxxxxxxxxxxxxxxxxxxxxxxx() -&gt; Set[
+<pre><code>def xxxxxxxxxxxxxxxxxxxxxxxxxxxx() -&gt; Set[
     &quot;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;,
     &quot;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;
 ]: ...
 </code></pre>
-<p>That's why I see this mainly as a refinement of the formatting you implemented in #6436.</p>
+<p>That&#x27;s why I see this mainly as a refinement of the formatting you implemented in #6436.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @MichaReiser on 2024-09-20 07:23</div>
+            <div class="event">Merged by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-20 07:23</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2024-09-20 07:23</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-20 07:23</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-09-20 07:23</div>
@@ -656,7 +656,7 @@ def a():
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:06:33 UTC
+        Synced at 2026-01-20 19:06:48 UTC
     </footer>
 </body>
 </html>

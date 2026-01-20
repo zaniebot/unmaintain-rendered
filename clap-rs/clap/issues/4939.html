@@ -23,17 +23,17 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/lukesneeringer">@lukesneeringer</a></div>
-            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+            <div class="timeline-body">Please complete the following tasks
 <ul>
 <li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
 <li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
 </ul>
-<h3>Rust Version</h3>
+Rust Version
 <p>1.69.0</p>
-<h3>Clap Version</h3>
+Clap Version
 <p>4.3.0</p>
-<h3>Minimal reproducible code</h3>
-<pre><code class="language-rust">use anyhow::Result;
+Minimal reproducible code
+<pre><code>use anyhow::Result;
 use clap::Parser;
 
 #[derive(Clone, Debug)]
@@ -55,18 +55,18 @@ fn main() {
     println!(&quot;Hello, world!&quot;);
 }
 </code></pre>
-<h3>Steps to reproduce the bug with the above code</h3>
+Steps to reproduce the bug with the above code
 <pre><code>cargo build
 </code></pre>
-<h3>Actual Behaviour</h3>
+Actual Behaviour
 <pre><code>error: implementation of `FnOnce` is not general enough
   --&gt; src/main.rs:13:24
    |
 13 | #[derive(Clone, Debug, Parser)]
    |                        ^^^^^^ implementation of `FnOnce` is not general enough
    |
-   = note: `fn(&amp;'2 str) -&gt; Result&lt;Offset, anyhow::Error&gt; {Offset::parse::&lt;&amp;'2 str&gt;}` must implement `FnOnce&lt;(&amp;'1 str,)&gt;`, for any lifetime `'1`...
-   = note: ...but it actually implements `FnOnce&lt;(&amp;'2 str,)&gt;`, for some specific lifetime `'2`
+   = note: `fn(&amp;&#x27;2 str) -&gt; Result&lt;Offset, anyhow::Error&gt; {Offset::parse::&lt;&amp;&#x27;2 str&gt;}` must implement `FnOnce&lt;(&amp;&#x27;1 str,)&gt;`, for any lifetime `&#x27;1`...
+   = note: ...but it actually implements `FnOnce&lt;(&amp;&#x27;2 str,)&gt;`, for some specific lifetime `&#x27;2`
    = note: this error originates in the derive macro `Parser` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0308]: mismatched types
@@ -75,7 +75,7 @@ error[E0308]: mismatched types
 13  | #[derive(Clone, Debug, Parser)]
     |                        ^^^^^^ one type is more general than the other
     |
-    = note: expected trait `for&lt;'a&gt; Fn&lt;(&amp;'a str,)&gt;`
+    = note: expected trait `for&lt;&#x27;a&gt; Fn&lt;(&amp;&#x27;a str,)&gt;`
                found trait `Fn&lt;(&amp;str,)&gt;`
 note: the lifetime requirement is introduced here
    --&gt; /Users/luke/.cargo/registry/src/github.com-1ecc6299db9ec823/clap_builder-4.3.0/src/builder/arg.rs:975:48
@@ -84,16 +84,16 @@ note: the lifetime requirement is introduced here
     |                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: this error originates in the derive macro `Parser` (in Nightly builds, run with -Z macro-backtrace for more info)
 </code></pre>
-<h3>Expected Behaviour</h3>
+Expected Behaviour
 <p>Successful compilation.</p>
-<h3>Additional Context</h3>
+Additional Context
 <p>This program compiled successfully with clap 4.2, and broke in clap 4.3.</p>
-<h3>Debug Output</h3>
+Debug Output
 <p>Same as &quot;actual behavior&quot; above.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">C-bug</span> added by @lukesneeringer on 2023-05-24 19:46</div>
+            <div class="event">Label <span class="label">C-bug</span> added by <a href="https://github.com/lukesneeringer">@lukesneeringer</a> on 2023-05-24 19:46</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-05-24 20:59</div>
@@ -101,7 +101,7 @@ note: the lifetime requirement is introduced here
 <p>This program compiled successfully with clap 4.2, and broke in clap 4.3.</p>
 </blockquote>
 <p>I just ran with</p>
-<pre><code class="language-rust">#!/usr/bin/env rust-script
+<pre><code>#!/usr/bin/env rust-script
 
 //! ```cargo
 //! [dependencies]
@@ -131,9 +131,9 @@ fn main() {
     println!(&quot;Hello, world!&quot;);
 }
 </code></pre>
-<p>and I'm seeing the failure</p>
+<p>and I&#x27;m seeing the failure</p>
 <p>even if I drop to</p>
-<pre><code class="language-rust">#!/usr/bin/env rust-script
+<pre><code>#!/usr/bin/env rust-script
 
 //! ```cargo
 //! [dependencies]
@@ -171,8 +171,8 @@ fn main() {
             <div class="timeline-body"><p>Rust Version: 1.74.1
 Clap Version: 4.4.11</p>
 <p>@epage @lukesneeringer  I did a bit of diving into the the problem since I ran into something similar on latest clap &amp; latest rust. I made the smallest reproducible example I could:</p>
-<h3>Problem</h3>
-<pre><code class="language-rust">#[derive(Clone)]
+Problem
+<pre><code>#[derive(Clone)]
 struct Offset;
 
 pub fn offset_parse(_: impl AsRef&lt;str&gt;) -&gt; Result&lt;Offset, String&gt; {
@@ -186,13 +186,13 @@ fn main() {
 </code></pre>
 <p>the compiler (nightly or stable) still seems to have a hard time at showing the actual origin of the problem when dealing with higher ranked trait bounds, the actual source of the error is the line below:
 https://github.com/clap-rs/clap/blob/d092896d61fd73a5467db85eac035a9ce2ddbc60/clap_builder/src/builder/value_parser.rs#L910</p>
-<h3>Partial solution</h3>
+Partial solution
 <p>I found a reddit comment that touches very closely on the problem encountered in this issue and managed to reproduce most of the pattern:
 https://old.reddit.com/r/rust/comments/f1spyt/higher_kinded_lifetime_on_return_types/fh8n2b2/</p>
 <p>However, the last step in the post using the nested function that returns an <code>impl</code> still seems to be tricky to invoke:</p>
 <blockquote>
 <p>As it turns out, rustc is quite bad with type inference when it comes to HRTB - for some weird reason here it cannot &gt; prove that our closure is general enough, even though it is. Well, once again, we have to help the compiler:</p>
-<pre><code class="language-rust">fn fancy_copy_2(value: i32) -&gt; i32 {
+<pre><code>fn fancy_copy_2(value: i32) -&gt; i32 {
     fn build_callback(value: i32) -&gt; impl FnOnce(&amp;Source) -&gt; Ref {
         move |s| {
             s.new_ref(value)
@@ -203,7 +203,7 @@ https://old.reddit.com/r/rust/comments/f1spyt/higher_kinded_lifetime_on_return_t
 }
 </code></pre>
 </blockquote>
-<p>I've made a separate feature branch to test out the issue that includes the modified <code>impl&lt;F, T, E&gt; TypedValueParser for F</code>:
+<p>I&#x27;ve made a separate feature branch to test out the issue that includes the modified <code>impl&lt;F, T, E&gt; TypedValueParser for F</code>:
 https://github.com/clap-rs/clap/blob/9920bfaaa7b1488f7106d906c68dfbac74580063/clap_builder/src/builder/value_parser.rs#L908-L935</p>
 <p>As well as a unit test to reproduce the issue:
 https://github.com/clap-rs/clap/blob/9920bfaaa7b1488f7106d906c68dfbac74580063/clap_builder/src/builder/tests.rs#L58-L69</p>
@@ -216,20 +216,20 @@ error: implementation of `Callback` is not general enough
 67 |     let arg = Arg::new(&quot;offset&quot;).value_parser(offset_parse);
    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ implementation of `Callback` is not general enough
    |
-   = note: `fn(&amp;str) -&gt; std::result::Result&lt;Offset, String&gt; {offset_parse::&lt;&amp;str&gt;}` must implement `Callback&lt;'0&gt;`, for any lifetime `'0`...
-   = note: ...but it actually implements `Callback&lt;'1&gt;`, for some specific lifetime `'1`
+   = note: `fn(&amp;str) -&gt; std::result::Result&lt;Offset, String&gt; {offset_parse::&lt;&amp;str&gt;}` must implement `Callback&lt;&#x27;0&gt;`, for any lifetime `&#x27;0`...
+   = note: ...but it actually implements `Callback&lt;&#x27;1&gt;`, for some specific lifetime `&#x27;1`
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../rust-lang/rust/issues/119045.html">rust-lang/rust#119045</a> on 2023-12-17 12:05</div>
+            <div class="event">Referenced in <a>rust-lang/rust#119045</a> on 2023-12-17 12:05</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Patryk27">@Patryk27</a> on 2023-12-17 12:05</div>
-            <div class="timeline-body"><p>I've experimented with this for a while now and I think this is some limitation in the compiler - I've reported it here, we'll see:
-https://github.com/rust-lang/rust/issues/119045</p>
+            <div class="timeline-body"><p>I&#x27;ve experimented with this for a while now and I think this is some limitation in the compiler - I&#x27;ve reported it here, we&#x27;ll see:
+<a href="https://github.com/rust-lang/rust/issues/119045">rust-lang/rust#119045</a></p>
 <p>I think the best solution for now is to use a closure, i.e.:</p>
-<pre><code class="language-rust">let arg = Arg::new(&quot;offset&quot;).value_parser(|a: &amp;str| offset_parse(a));
+<pre><code>let arg = Arg::new(&quot;offset&quot;).value_parser(|a: &amp;str| offset_parse(a));
 </code></pre>
 </div>
         </div>
@@ -238,9 +238,9 @@ https://github.com/rust-lang/rust/issues/119045</p>
             <div class="timeline-body"><p>EDIT:
 rust: rustc 1.80.0 (051478957 2024-07-21)
 clap: 4.5.13</p>
-<p>I encountered the similar problem. I'm using clap with builder pattern.
+<p>I encountered the similar problem. I&#x27;m using clap with builder pattern.
 Minimal steps to reproduce:</p>
-<pre><code class="language-rs">#[derive(Clone)]
+<pre><code>#[derive(Clone)]
 pub enum ListColumn {
     All,
     Url,
@@ -251,7 +251,7 @@ pub enum ListColumn {
 // make command and this as arg
                 .arg(
                     Arg::new(&quot;cols&quot;)
-                        .short('c')
+                        .short(&#x27;c&#x27;)
                         .long(&quot;cols&quot;)
                         .default_value(&quot;all&quot;)
                         .value_parser(|str| {
@@ -278,14 +278,14 @@ pub enum ListColumn {
 </code></pre>
 <p>And I encountered the error like this:</p>
 <pre><code>rustc: implementation of `FnOnce` is not general enough
-closure with signature `fn(&amp;'2 str) -&gt; Result&lt;ListColumn, clap::error::Error&gt;` must implement `FnOnce&lt;(&amp;'1 str,)&gt;`, for any lifetime `'1`...
-...but it actually implements `FnOnce&lt;(&amp;'2 str,)&gt;`, for some specific lifetime `'2`
+closure with signature `fn(&amp;&#x27;2 str) -&gt; Result&lt;ListColumn, clap::error::Error&gt;` must implement `FnOnce&lt;(&amp;&#x27;1 str,)&gt;`, for any lifetime `&#x27;1`...
+...but it actually implements `FnOnce&lt;(&amp;&#x27;2 str,)&gt;`, for some specific lifetime `&#x27;2`
 rustc: implementation of `Fn` is not general enough
-closure with signature `fn(&amp;'2 str) -&gt; Result&lt;ListColumn, clap::error::Error&gt;` must implement `Fn&lt;(&amp;'1 str,)&gt;`, for any lifetime `'1`...
-...but it actually implements `Fn&lt;(&amp;'2 str,)&gt;`, for some specific lifetime `'2`
+closure with signature `fn(&amp;&#x27;2 str) -&gt; Result&lt;ListColumn, clap::error::Error&gt;` must implement `Fn&lt;(&amp;&#x27;1 str,)&gt;`, for any lifetime `&#x27;1`...
+...but it actually implements `Fn&lt;(&amp;&#x27;2 str,)&gt;`, for some specific lifetime `&#x27;2`
 </code></pre>
-<p>What I'm trying to do is to restrict the user to provide the value only supported by enum ListColumn and thus in value_parser() I've written a small sample logic to accept or throw error based on what is provided by user.</p>
-<p>Is there some better way to do this ? Or what I'm doing is correct and this is like a genuine error which needs to be fixed ?</p>
+<p>What I&#x27;m trying to do is to restrict the user to provide the value only supported by enum ListColumn and thus in value_parser() I&#x27;ve written a small sample logic to accept or throw error based on what is provided by user.</p>
+<p>Is there some better way to do this ? Or what I&#x27;m doing is correct and this is like a genuine error which needs to be fixed ?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -293,7 +293,7 @@ closure with signature `fn(&amp;'2 str) -&gt; Result&lt;ListColumn, clap::error:
             <div class="timeline-body"><p>@abhaysp95 I expect a workaround would be to split the closure out into a dedicated function.</p>
 <p>Also, using <code>clap::Error</code> might not have the best results.  Maybe thats something we can dynamic cast for an improve.</p>
 <p>You could also do</p>
-<pre><code class="language-rust">PossibleValuesParser::new([&quot;all&quot;, &quot;tags&quot;]).map(|s| {
+<pre><code>PossibleValuesParser::new([&quot;all&quot;, &quot;tags&quot;]).map(|s| {
     match s {
         &quot;all&quot; =&gt; ListColumn::All,
         &quot;tags&quot; =&gt; ListColumn::AllTag,
@@ -306,7 +306,7 @@ closure with signature `fn(&amp;'2 str) -&gt; Result&lt;ListColumn, clap::error:
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:49:06 UTC
+        Synced at 2026-01-20 19:59:47 UTC
     </footer>
 </body>
 </html>

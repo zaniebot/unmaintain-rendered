@@ -23,20 +23,20 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a></div>
-            <div class="timeline-body"><p>Certain modules are imported by <code>BuiltinImporter</code>, which comes first in <code>sys.meta_path</code> by default (before <code>PathFinder</code> which implements the normal filesystem-based module resolution.) These modules will always take precedence over any module on the filesystem (i.e. first-party code can't ever shadow these modules, unless somebody starts rearranging <code>sys.meta_path</code>, which throws everything out the window and we can't reasonably support.)</p>
+            <div class="timeline-body"><p>Certain modules are imported by <code>BuiltinImporter</code>, which comes first in <code>sys.meta_path</code> by default (before <code>PathFinder</code> which implements the normal filesystem-based module resolution.) These modules will always take precedence over any module on the filesystem (i.e. first-party code can&#x27;t ever shadow these modules, unless somebody starts rearranging <code>sys.meta_path</code>, which throws everything out the window and we can&#x27;t reasonably support.)</p>
 <p>So our module resolver should special-case these modules to always resolve to typeshed, and never to user code. The module names are listed at https://github.com/python/cpython/blob/main/Modules/config.c.in#L35 -- currently they are <code>marshal</code>, <code>_imp</code>, <code>_ast</code>, <code>_tokenize</code>, <code>builtins</code>, <code>sys</code>, <code>gc</code>, <code>_warnings</code>, <code>_string</code>.</p>
-<p>(I also verified experimentally that I can't override these modules by creating e.g. a <code>gc.py</code> or <code>sys.py</code> or <code>builtins.py</code> file.)</p>
+<p>(I also verified experimentally that I can&#x27;t override these modules by creating e.g. a <code>gc.py</code> or <code>sys.py</code> or <code>builtins.py</code> file.)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2024-07-18 23:04</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/carljm">@carljm</a> on 2024-07-18 23:04</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-07-19 10:10</div>
             <div class="timeline-body"><blockquote>
 <p>The module names are listed at <a href="https://github.com/python/cpython/blob/main/Modules/config.c.in?rgh-link-date=2024-07-18T23%3A04%3A04Z#L35">python/cpython@<code>main</code>/Modules/config.c.in#L35</a> -- currently they are <code>marshal</code>, <code>_imp</code>, <code>_ast</code>, <code>_tokenize</code>, <code>builtins</code>, <code>sys</code>, <code>gc</code>, <code>_warnings</code>, <code>_string</code>.</p>
 </blockquote>
-<p>This isn't a complete list of the modules that are special-cased by the interpreter; I think there must be additional special-casing done elsewhere. A more complete list can be obtained using the <code>sys.builtin_module_names</code> constant. Experimenting locally confirms that there are names included in that list which are not included in your list and are special-cased in the same way when it comes to module resolution.</p>
+<p>This isn&#x27;t a complete list of the modules that are special-cased by the interpreter; I think there must be additional special-casing done elsewhere. A more complete list can be obtained using the <code>sys.builtin_module_names</code> constant. Experimenting locally confirms that there are names included in that list which are not included in your list and are special-cased in the same way when it comes to module resolution.</p>
 <p>We should add special-casing for these modules by writing a Python script to generate a Rust function similar to the one in https://github.com/astral-sh/ruff/blob/main/crates/ruff_python_stdlib/src/sys.rs, which can be queried to determine which modules are considered builtin on any given Python version.</p>
 </div>
         </div>
@@ -50,13 +50,13 @@
             <div class="timeline-body"><blockquote>
 <p>It might be worth double-checking the list of paths with the paths that Pyright uses.</p>
 </blockquote>
-<p>From what I can tell, I'm not sure pyright ever respects first-party modules overriding stdlib modules. I can't find any relevant list of paths in the pyright source code; and from local experimentation, pyright appears to resolve <code>random</code> to the stdlib module even if it's locally overridden (despite emitting a warning telling you that the local <code>random.py</code> file is shadowing a stdlib module).</p>
+<p>From what I can tell, I&#x27;m not sure pyright ever respects first-party modules overriding stdlib modules. I can&#x27;t find any relevant list of paths in the pyright source code; and from local experimentation, pyright appears to resolve <code>random</code> to the stdlib module even if it&#x27;s locally overridden (despite emitting a warning telling you that the local <code>random.py</code> file is shadowing a stdlib module).</p>
 <p>I have high confidence that the list of modules given by <code>sys.builtin_module_names</code> is the correct one, however.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-07-19 15:31</div>
-            <div class="timeline-body"><p>Yeah, <code>sys.builtin_module_names</code> is the right complete list. It's the same special-casing (<code>BuiltinImporter</code>), it's just that the file I linked is the input template to code generation that happens at CPython build time, resulting in an output <code>config.c</code> module that has more built-in modules listed in the inittab. (This is because some built-in modules are conditionally built.)</p>
+            <div class="timeline-body"><p>Yeah, <code>sys.builtin_module_names</code> is the right complete list. It&#x27;s the same special-casing (<code>BuiltinImporter</code>), it&#x27;s just that the file I linked is the input template to code generation that happens at CPython build time, resulting in an output <code>config.c</code> module that has more built-in modules listed in the inittab. (This is because some built-in modules are conditionally built.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -65,12 +65,12 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2024-08-05 20:33</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-05 20:33</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:50:39 UTC
+        Synced at 2026-01-20 18:48:55 UTC
     </footer>
 </body>
 </html>

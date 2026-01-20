@@ -24,7 +24,7 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a></div>
             <div class="timeline-body"><p>#17897 added variance handling for legacy typevars — but they were only being considered when checking generic aliases of the same class:</p>
-<pre><code class="language-py">class A: ...
+<pre><code>class A: ...
 class B(A): ...
 
 class C[T]: ...
@@ -32,35 +32,35 @@ class C[T]: ...
 static_assert(is_subtype_of(C[B], C[A]))
 </code></pre>
 <p>and not for generic subclasses:</p>
-<pre><code class="language-py">class D[U](C[U]): ...
+<pre><code>class D[U](C[U]): ...
 
 static_assert(is_subtype_of(D[B], C[A]))
 </code></pre>
 <p>Now we check those too!</p>
-<p>Closes https://github.com/astral-sh/ty/issues/101</p>
+<p>Closes <a href="https://github.com/astral-sh/ty/issues/101">astral-sh/ty#101</a></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @dcreager on 2025-05-07 17:05</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/dcreager">@dcreager</a> on 2025-05-07 17:05</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-05-07 17:05</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/dcreager">@dcreager</a> on 2025-05-07 17:05</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @dcreager on 2025-05-07 17:05</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/dcreager">@dcreager</a> on 2025-05-07 17:05</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @dcreager on 2025-05-07 17:05</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/dcreager">@dcreager</a> on 2025-05-07 17:05</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-07 17:09</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">dacite (https://github.com/konradhalas/dacite)
+Changes were detected when running on open source projects
+
+<pre><code>dacite (https://github.com/konradhalas/dacite)
 - error[lint:invalid-assignment] dacite/core.py:48:5: Object of type `dict[Unknown, Unknown]` is not assignable to `MutableMapping[str, Any]`
 - error[lint:invalid-assignment] dacite/core.py:49:5: Object of type `dict[Unknown, Unknown]` is not assignable to `MutableMapping[str, Any]`
 - Found 25 diagnostics
@@ -541,20 +541,20 @@ pip (https://github.com/pypa/pip)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1520 on 2025-05-07 17:15</div>
-            <div class="timeline-body"><p>I don't love this part. This is a hack to make some existing tests continue to pass.</p>
+            <div class="timeline-body"><p>I don&#x27;t love this part. This is a hack to make some existing tests continue to pass.</p>
 <p>There are a few underlying issues:</p>
 <ol>
 <li>The type of a slice literal is currently inferred as <code>slice</code></li>
 <li><code>slice</code> is a generic class, whose default specialization includes <code>Any</code></li>
-<li>At this point in the <code>is_assignable_to</code> method, we assume that we've already handled any cases that have dynamic types on the RHS, and so we can delegate to <code>is_subtype_of</code> to perform the actual check.</li>
-<li>That <code>is_subtype_of</code> <em>should</em> fail for <code>slice[Any, etc]</code>, since it contains a dynamic type. It doesn't because we're not checking the specialization (of several kinds of <code>Type</code>) in <code>is_fully_static</code>.</li>
+<li>At this point in the <code>is_assignable_to</code> method, we assume that we&#x27;ve already handled any cases that have dynamic types on the RHS, and so we can delegate to <code>is_subtype_of</code> to perform the actual check.</li>
+<li>That <code>is_subtype_of</code> <em>should</em> fail for <code>slice[Any, etc]</code>, since it contains a dynamic type. It doesn&#x27;t because we&#x27;re not checking the specialization (of several kinds of <code>Type</code>) in <code>is_fully_static</code>.</li>
 <li>Because <code>is_subtype_of</code> incorrectly succeeds, <code>is_assignable_of</code> ends up (correctly but for the wrong reason) succeeding.</li>
 <li>And therefore the call <a href="https://github.com/astral-sh/ruff/blob/51386b3c7abb622ceac4ba1dec0d8a2cae486b70/crates/ty_python_semantic/resources/mdtest/subscript/bytes.md#L48">here</a> is allowed.</li>
 </ol>
 <p>The new implementation of <code>is_subclass_of</code> for generic classes, however, now correctly returns <code>false</code>, which at first caused <code>is_assignable_of</code> to start (incorrectly) returning <code>false</code>, making the call fail.</p>
 <p>This is a very surgical fix that replaces (3) so that we call <code>is_assignable_to</code> to check whether the slice literal conforms to the argument type.</p>
 <p>I could copy/paste the other literal branches in <code>is_subtype_of</code>, to make this slightly less disgustingly surgical. (And/or, this is another point in favor of combining <code>is_subtype_of</code> and <code>is_assignable_to</code> into a single method with a policy parameter, so that that copy/paste is not needed.)</p>
-<p>We also should revisit <code>is_fully_static</code>, since (a) I haven't actually fixed it here, and (b) I imagine that there are other cases where we're not inducting into the type as fully as we should.</p>
+<p>We also should revisit <code>is_fully_static</code>, since (a) I haven&#x27;t actually fixed it here, and (b) I imagine that there are other cases where we&#x27;re not inducting into the type as fully as we should.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -572,8 +572,8 @@ pip (https://github.com/pypa/pip)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/is_subtype_of.md</code>:347 on 2025-05-07 18:24</div>
-            <div class="timeline-body"><p>We usually try to put a very specific TODO comment right above the wrong assertions, to make it super clear when updating the tests later when the TODO is fixed. Also I think it's usually better to make the right assertion (and add a TODO comment about the wrong result) rather than leaving a wrong assertion in the tests.</p>
-<pre><code class="language-suggestion">static_assert(not is_subtype_of(TypeOf[1:2:3], slice))
+            <div class="timeline-body"><p>We usually try to put a very specific TODO comment right above the wrong assertions, to make it super clear when updating the tests later when the TODO is fixed. Also I think it&#x27;s usually better to make the right assertion (and add a TODO comment about the wrong result) rather than leaving a wrong assertion in the tests.</p>
+<pre><code>static_assert(not is_subtype_of(TypeOf[1:2:3], slice))
 # TODO no error
 # error: [static-assert-error]
 static_assert(is_subtype_of(TypeOf[1:2:3], slice[int]))
@@ -591,7 +591,7 @@ static_assert(is_subtype_of(TypeOf[1:2:3], slice[int]))
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1520 on 2025-05-07 19:05</div>
-            <div class="timeline-body"><p>I like that idea of removing <code>SliceLiteral</code>.  I'll tackle that as a follow-on PR</p>
+            <div class="timeline-body"><p>I like that idea of removing <code>SliceLiteral</code>.  I&#x27;ll tackle that as a follow-on PR</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -604,10 +604,10 @@ static_assert(is_subtype_of(TypeOf[1:2:3], slice[int]))
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @dcreager on 2025-05-07 19:21</div>
+            <div class="event">Merged by <a href="https://github.com/dcreager">@dcreager</a> on 2025-05-07 19:21</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dcreager on 2025-05-07 19:21</div>
+            <div class="event">Closed by <a href="https://github.com/dcreager">@dcreager</a> on 2025-05-07 19:21</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-05-07 19:21</div>
@@ -615,7 +615,7 @@ static_assert(is_subtype_of(TypeOf[1:2:3], slice[int]))
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:12:17 UTC
+        Synced at 2026-01-20 19:14:09 UTC
     </footer>
 </body>
 </html>

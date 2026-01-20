@@ -23,13 +23,13 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/epage">@epage</a></div>
-            <div class="timeline-body"><p><a href="https://github.com/lucab"><img src="https://avatars.githubusercontent.com/u/98086?v=4" align="left" width="96" height="96" hspace="10"></img></a> <strong>Issue by <a href="https://github.com/lucab">lucab</a></strong>
+            <div class="timeline-body"><p><a href="https://github.com/lucab"><img src="https://avatars.githubusercontent.com/u/98086?v=4"></a> <strong>Issue by <a href="https://github.com/lucab">lucab</a></strong>
 <em>Monday Apr 01, 2019 at 10:40 GMT</em>
-<em>Originally opened as https://github.com/TeXitoi/structopt/issues/175</em></p>
-<hr />
+<em>Originally opened as <a href="https://github.com/TeXitoi/structopt/issues/175">TeXitoi/structopt#175</a></em></p>
+<hr>
 <p>I have a usecase where a bunch of structures are used by both <code>serde_derive</code> and <code>structopt_derive</code> in order to source cli-options and file-options in a uniform way. It works pretty well with <code>#[structopt(flatten)]</code> and other annotations, except when trying to flatten <code>Option&lt;_&gt;</code> fields.</p>
 <p>That is, a simplified example is as following:</p>
-<pre><code class="language-rust">#[macro_use]
+<pre><code>#[macro_use]
 extern crate serde_derive;
 #[macro_use]
 extern crate structopt_derive;
@@ -49,15 +49,15 @@ struct SectionA {
 <p>This fails with:</p>
 <pre><code>the trait `structopt::StructOpt` is not implemented for `std::option::Option&lt;SectionA&gt;`
 </code></pre>
-<p>Approaching this from my own crate, I think I can't solve this alone due to orphan rules (both the <code>StructOpt</code> trait and the <code>Option</code> receiver are not originating in the crate). Thus I tried to add a blanket <code>impl&lt;T: StructOpt&gt; StructOpt for Option&lt;T: StructOpt&gt;</code> in <code>structopt</code>; that pushed the issue a bit forward, but then I ended up stuck in proc-macro logic.</p>
-<p>@TeXitoi I'd like to know if you think it generally makes sense for <code>structopt</code> to take care of the Option case above, and if so adapting the derive logic to handle that.</p>
+<p>Approaching this from my own crate, I think I can&#x27;t solve this alone due to orphan rules (both the <code>StructOpt</code> trait and the <code>Option</code> receiver are not originating in the crate). Thus I tried to add a blanket <code>impl&lt;T: StructOpt&gt; StructOpt for Option&lt;T: StructOpt&gt;</code> in <code>structopt</code>; that pushed the issue a bit forward, but then I ended up stuck in proc-macro logic.</p>
+<p>@TeXitoi I&#x27;d like to know if you think it generally makes sense for <code>structopt</code> to take care of the Option case above, and if so adapting the derive logic to handle that.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:16</div>
-            <div class="timeline-body"><p><a href="https://github.com/TeXitoi"><img src="https://avatars.githubusercontent.com/u/5787066?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/TeXitoi">TeXitoi</a></strong>
+            <div class="timeline-body"><p><a href="https://github.com/TeXitoi"><img src="https://avatars.githubusercontent.com/u/5787066?v=4"></a> <strong>Comment by <a href="https://github.com/TeXitoi">TeXitoi</a></strong>
 <em>Monday Apr 01, 2019 at 20:24 GMT</em></p>
-<hr />
+<hr>
 <p>The problem is &quot;what does it mean?&quot;</p>
 <p>Here, we have one field that is an option. Should structopt create a <code>TopLevel { section_a: None }</code> or a <code>TopLevel { section_a: Some(SectionA { field: None }) }</code>?</p>
 <p>If we have 2 <code>String</code> fields, should the 2 fields be optional, but if you have one, you must have 2?</p>
@@ -66,9 +66,9 @@ struct SectionA {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:16</div>
-            <div class="timeline-body"><p><a href="https://github.com/TimoFreiberg"><img src="https://avatars.githubusercontent.com/u/5281645?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/TimoFreiberg">TimoFreiberg</a></strong>
+            <div class="timeline-body"><p><a href="https://github.com/TimoFreiberg"><img src="https://avatars.githubusercontent.com/u/5281645?v=4"></a> <strong>Comment by <a href="https://github.com/TimoFreiberg">TimoFreiberg</a></strong>
 <em>Thursday Oct 17, 2019 at 13:05 GMT</em></p>
-<hr />
+<hr>
 <p>I just encountered this problem too, and I think my case is more clearcut:</p>
 <p>I have an optional filter argument and I want to add an additional second filter that can only be added if the first filter is set. I tried to represent this as following:</p>
 <pre><code>struct Params {
@@ -89,12 +89,12 @@ struct RangeFilter {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:16</div>
-            <div class="timeline-body"><p><a href="https://github.com/CreepySkeleton"><img src="https://avatars.githubusercontent.com/u/50968528?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/CreepySkeleton">CreepySkeleton</a></strong>
+            <div class="timeline-body"><p><a href="https://github.com/CreepySkeleton"><img src="https://avatars.githubusercontent.com/u/50968528?v=4"></a> <strong>Comment by <a href="https://github.com/CreepySkeleton">CreepySkeleton</a></strong>
 <em>Thursday Oct 17, 2019 at 13:26 GMT</em></p>
-<hr />
+<hr>
 <p>@TimoFreiberg How do you expect the top (<code>-t</code>) option should be handled? What this double-<code>Option</code> would mean?</p>
 <p>I guess this should work for you just fine</p>
-<pre><code class="language-rust">struct Params {
+<pre><code>struct Params {
     #[structopt(flatten)]
     range_filter: RangeFilter
 }
@@ -111,19 +111,19 @@ struct RangeFilter {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:16</div>
-            <div class="timeline-body"><p><a href="https://github.com/TimoFreiberg"><img src="https://avatars.githubusercontent.com/u/5281645?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/TimoFreiberg">TimoFreiberg</a></strong>
+            <div class="timeline-body"><p><a href="https://github.com/TimoFreiberg"><img src="https://avatars.githubusercontent.com/u/5281645?v=4"></a> <strong>Comment by <a href="https://github.com/TimoFreiberg">TimoFreiberg</a></strong>
 <em>Thursday Oct 17, 2019 at 14:30 GMT</em></p>
-<hr />
+<hr>
 <p>top should not be set unless bottom is set. I handled it similar to your suggestion now, but I panic when only top is set.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:16</div>
-            <div class="timeline-body"><p><a href="https://github.com/CreepySkeleton"><img src="https://avatars.githubusercontent.com/u/50968528?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/CreepySkeleton">CreepySkeleton</a></strong>
+            <div class="timeline-body"><p><a href="https://github.com/CreepySkeleton"><img src="https://avatars.githubusercontent.com/u/50968528?v=4"></a> <strong>Comment by <a href="https://github.com/CreepySkeleton">CreepySkeleton</a></strong>
 <em>Thursday Oct 17, 2019 at 16:07 GMT</em></p>
-<hr />
+<hr>
 <p>@TimoFreiberg You can use <a href="https://docs.rs/clap/2.33.0/clap/struct.Arg.html#method.requires"><code>clap::Arg::requires</code></a> instead of panic:</p>
-<pre><code class="language-rust">#[derive(StructOpt)]
+<pre><code>#[derive(StructOpt)]
 struct RangeFilter {
     #[structopt(short = &quot;b&quot;)]
     bottom: Option&lt;String&gt;,
@@ -135,15 +135,15 @@ struct RangeFilter {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:16</div>
-            <div class="timeline-body"><p><a href="https://github.com/CreepySkeleton"><img src="https://avatars.githubusercontent.com/u/50968528?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/CreepySkeleton">CreepySkeleton</a></strong>
+            <div class="timeline-body"><p><a href="https://github.com/CreepySkeleton"><img src="https://avatars.githubusercontent.com/u/50968528?v=4"></a> <strong>Comment by <a href="https://github.com/CreepySkeleton">CreepySkeleton</a></strong>
 <em>Tuesday Dec 03, 2019 at 01:44 GMT</em></p>
-<hr />
+<hr>
 <blockquote>
 <p>The problem is &quot;what does it mean?&quot;</p>
 <p>Here, we have one field that is an option. Should structopt create a <code>TopLevel { section_a: None }</code> or a <code>TopLevel { section_a: Some(SectionA { field: None }) }</code>?</p>
 </blockquote>
 <p>I propose to implement the first design variant since it would allow us to handle nested flatten quite naturally:</p>
-<pre><code class="language-rust">#[derive(StructOpt)]
+<pre><code>#[derive(StructOpt)]
 struct TopLevel {
     #[structopt(flatten)]
     section_a: Option&lt;SectionA&gt;,
@@ -166,7 +166,7 @@ struct InnerSection {
 </code></pre>
 <ul>
 <li><code>app %no args%</code> =&gt; <code>TopLevel { section_a: None }</code></li>
-<li><pre><code class="language-rust">// app --section_a.field arg
+<li><pre><code>// app --section_a.field arg
 TopLevel { 
     section_a: Some(SectionA { 
         field: &quot;arg&quot;,  
@@ -175,7 +175,7 @@ TopLevel {
 }
 </code></pre>
 </li>
-<li><pre><code class="language-rust">// app --section_a.field arg --inner_section.flag inner
+<li><pre><code>// app --section_a.field arg --inner_section.flag inner
 TopLevel { 
     section_a: Some(SectionA { 
         field: &quot;arg&quot;,  
@@ -191,42 +191,42 @@ cc @TeXitoi do you agree?</li>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:16</div>
-            <div class="timeline-body"><p><a href="https://github.com/TeXitoi"><img src="https://avatars.githubusercontent.com/u/5787066?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/TeXitoi">TeXitoi</a></strong>
+            <div class="timeline-body"><p><a href="https://github.com/TeXitoi"><img src="https://avatars.githubusercontent.com/u/5787066?v=4"></a> <strong>Comment by <a href="https://github.com/TeXitoi">TeXitoi</a></strong>
 <em>Tuesday Dec 03, 2019 at 08:42 GMT</em></p>
-<hr />
+<hr>
 <p>What about <code>app --inner_section.field foo</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:16</div>
-            <div class="timeline-body"><p><a href="https://github.com/TeXitoi"><img src="https://avatars.githubusercontent.com/u/5787066?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/TeXitoi">TeXitoi</a></strong>
+            <div class="timeline-body"><p><a href="https://github.com/TeXitoi"><img src="https://avatars.githubusercontent.com/u/5787066?v=4"></a> <strong>Comment by <a href="https://github.com/TeXitoi">TeXitoi</a></strong>
 <em>Tuesday Dec 03, 2019 at 08:44 GMT</em></p>
-<hr />
-<p>I'm afraid that implementing this will be very complicated to code, maintain and understand who to use.</p>
+<hr>
+<p>I&#x27;m afraid that implementing this will be very complicated to code, maintain and understand who to use.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:16</div>
-            <div class="timeline-body"><p><a href="https://github.com/integrer"><img src="https://avatars.githubusercontent.com/u/31435980?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/integrer">integrer</a></strong>
+            <div class="timeline-body"><p><a href="https://github.com/integrer"><img src="https://avatars.githubusercontent.com/u/31435980?v=4"></a> <strong>Comment by <a href="https://github.com/integrer">integrer</a></strong>
 <em>Friday Feb 07, 2020 at 22:05 GMT</em></p>
-<hr />
+<hr>
 <p>In my case:</p>
 <p><strong>Given:</strong>
 <code>external/command1.rs</code>:</p>
-<pre><code class="language-rust">#[derive(StructOpt, Debug, Serialize, Deserialize)]
+<pre><code>#[derive(StructOpt, Debug, Serialize, Deserialize)]
 pub struct Command1 {
     // Some arguments
 }
 </code></pre>
 <p><code>external/command2.rs</code>:</p>
-<pre><code class="language-rust">#[derive(StructOpt, Debug, Serialize, Deserialize)]
+<pre><code>#[derive(StructOpt, Debug, Serialize, Deserialize)]
 pub struct Command2 {
     // Some arguments
 }
 </code></pre>
 <p><strong>Need:</strong>
 <code>mycrate/command.rs</code>:</p>
-<pre><code class="language-rust">#[derive(StructOpt, Debug, Serialize, Deserialize)]
+<pre><code>#[derive(StructOpt, Debug, Serialize, Deserialize)]
 pub struct MyCommand {
     #[serde(flatten)]
     #[structopt(flatten)]
@@ -243,7 +243,7 @@ pub struct MyCommand {
 <p>In other words, in structure <code>MyCommand</code> arguments from <code>Command1</code> required always, but arguments from <code>Command2</code> required only if <code>arg1</code> appears (i.e. true).</p>
 <p>Of course we can create two separate structures for two options (with <code>arg1</code> and without it), but it not consistent with DRY.</p>
 <p>But good solution may be use flatten between our structures:</p>
-<pre><code class="language-rust">#[derive(StructOpt, Debug, Serialize, Deserialize)]
+<pre><code>#[derive(StructOpt, Debug, Serialize, Deserialize)]
 pub struct MyCommand {
     #[serde(flatten)]
     #[structopt(flatten)]
@@ -266,15 +266,15 @@ pub struct MyCommandWithArg1 {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:16</div>
-            <div class="timeline-body"><p><a href="https://github.com/scottlamb"><img src="https://avatars.githubusercontent.com/u/8949524?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/scottlamb">scottlamb</a></strong>
+            <div class="timeline-body"><p><a href="https://github.com/scottlamb"><img src="https://avatars.githubusercontent.com/u/8949524?v=4"></a> <strong>Comment by <a href="https://github.com/scottlamb">scottlamb</a></strong>
 <em>Thursday May 06, 2021 at 16:07 GMT</em></p>
-<hr />
+<hr>
 <blockquote>
 <p>The problem is &quot;what does it mean?&quot;</p>
 </blockquote>
-<p>My two cents: maybe match whatever serde does? The feature request opened with &quot;I have a usecase where a bunch of structures are used by both <code>serde_derive</code> and <code>structopt_derive</code>&quot;, and consistency would help with that. I haven't verified serde has reasonable behavior, but off-hand I don't see any reason the two should behave differently.</p>
+<p>My two cents: maybe match whatever serde does? The feature request opened with &quot;I have a usecase where a bunch of structures are used by both <code>serde_derive</code> and <code>structopt_derive</code>&quot;, and consistency would help with that. I haven&#x27;t verified serde has reasonable behavior, but off-hand I don&#x27;t see any reason the two should behave differently.</p>
 <p>fwiw, I ended up here after trying a simpler thing:</p>
-<pre><code class="language-rust">#[derive(StructOpt)]
+<pre><code>#[derive(StructOpt)]
 struct Credentials {
     #[structopt(long)]
     username: String,
@@ -293,8 +293,8 @@ struct Opt {
     // ...
 }
 </code></pre>
-<p>which I'd expect to have similar behavior as the following, with a more structured representation.</p>
-<pre><code class="language-rust">#[derive(StructOpt)]
+<p>which I&#x27;d expect to have similar behavior as the following, with a more structured representation.</p>
+<pre><code>#[derive(StructOpt)]
 struct Opt {
     // ...
 
@@ -307,8 +307,8 @@ struct Opt {
     // ...
 }
 </code></pre>
-<p>Not a must-have; it'd just make my code more readable and avoid having an unreachable error case later on:</p>
-<pre><code class="language-rust">let credentials = match (opt.username, opt.password) {
+<p>Not a must-have; it&#x27;d just make my code more readable and avoid having an unreachable error case later on:</p>
+<pre><code>let credentials = match (opt.username, opt.password) {
     (Some(username), Some(password)) =&gt; Some(Credentials {
         username,
         password,
@@ -321,42 +321,42 @@ struct Opt {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:16</div>
-            <div class="timeline-body"><p><a href="https://github.com/TeXitoi"><img src="https://avatars.githubusercontent.com/u/5787066?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/TeXitoi">TeXitoi</a></strong>
+            <div class="timeline-body"><p><a href="https://github.com/TeXitoi"><img src="https://avatars.githubusercontent.com/u/5787066?v=4"></a> <strong>Comment by <a href="https://github.com/TeXitoi">TeXitoi</a></strong>
 <em>Thursday May 06, 2021 at 16:42 GMT</em></p>
-<hr />
+<hr>
 <p>That would be really tricky to do this kind of things.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2021-12-09 16:29</div>
+            <div class="event">Label <span class="label">A-derive</span> added by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:29</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">C-enhancement</span> added by @epage on 2021-12-09 16:29</div>
+            <div class="event">Label <span class="label">C-enhancement</span> added by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:29</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">S-waiting-on-design</span> added by @epage on 2021-12-13 22:38</div>
+            <div class="event">Label <span class="label">S-waiting-on-design</span> added by <a href="https://github.com/epage">@epage</a> on 2021-12-13 22:38</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/3706.html">clap-rs/clap#3706</a> on 2022-05-09 14:51</div>
+            <div class="event">Referenced in <a>clap-rs/clap#3706</a> on 2022-05-09 14:51</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-05-09 14:55</div>
             <div class="timeline-body"><p>Since this was discussed, <code>update_from_args</code> was added that makes all fields optional which has the appearance of allowing this to be implemented without requiring extra cross-derive communication that tends to be the bane of derive feature requests (see pretty much any A-derive issue).  #3707  experimented with this.</p>
 <ol>
 <li>In general, I feel hesitant of what corner cases might be lurking because that API call was not designed with that purpose in mind and there is a lot of nuanced behavior to <code>update_from_args</code>.</li>
-<li>It is derive-only behavior so the rest of clap doesn't know, like help rendering</li>
-<li>We'd need to make sure it works in all contexts, including when flattening other structs, pulling in subcommands, etc.</li>
+<li>It is derive-only behavior so the rest of clap doesn&#x27;t know, like help rendering</li>
+<li>We&#x27;d need to make sure it works in all contexts, including when flattening other structs, pulling in subcommands, etc.</li>
 </ol>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../pulls/4350.html">clap-rs/clap#4350</a> on 2022-10-05 21:30</div>
+            <div class="event">Referenced in <a>clap-rs/clap#4350</a> on 2022-10-05 21:30</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/4211.html">clap-rs/clap#4211</a> on 2022-10-05 21:30</div>
+            <div class="event">Referenced in <a>clap-rs/clap#4211</a> on 2022-10-05 21:30</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @epage on 2022-10-05 21:48</div>
+            <div class="event">Closed by <a href="https://github.com/epage">@epage</a> on 2022-10-05 21:48</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-10-05 21:52</div>
@@ -364,15 +364,15 @@ struct Opt {
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/4697.html">clap-rs/clap#4697</a> on 2023-02-08 13:03</div>
+            <div class="event">Referenced in <a>clap-rs/clap#4697</a> on 2023-02-08 13:03</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/5711.html">clap-rs/clap#5711</a> on 2024-08-30 20:30</div>
+            <div class="event">Referenced in <a>clap-rs/clap#5711</a> on 2024-08-30 20:30</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:48:16 UTC
+        Synced at 2026-01-20 19:58:34 UTC
     </footer>
 </body>
 </html>

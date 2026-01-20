@@ -23,70 +23,64 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sbrugman">@sbrugman</a></div>
-            <div class="timeline-body"><!--
-Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+            <div class="timeline-body">
 
-- Does this pull request include a summary of the change? (See below.)
-- Does this pull request include a descriptive title?
-- Does this pull request include references to any relevant issues?
--->
-
-<h2>Summary</h2>
+Summary
 <p>In previous work on PYI rules we found that the current traversal misses nested literals and unions.
 These are rare but valid. As mentioned before, correctly handling these cases might be relevant for auto-generated stubs.</p>
-<!-- What's the purpose of the change? What does it do, and why? -->
 
-<h2>Test Plan</h2>
+
+Test Plan
 <p>Added test cases in an earlier PR. Snapshots are updated and show nested literals and unions are now handled as expected.
 No ecosystem changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @sbrugman on 2024-11-27 18:06</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/sbrugman">@sbrugman</a> on 2024-11-27 18:06</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-27 18:12</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/snapshots/ruff_linter__rules__flake8_pyi__tests__PYI055_PYI055.pyi.snap</code>:144 on 2024-11-27 19:07</div>
-            <div class="timeline-body"><p>hmm, this isn't an equivalent rewrite. <code>type[float, int]</code> isn't a valid type expression (it would need to be either <code>type[float | int]</code> or <code>type[Union[float, int]]</code>, and therefore <code>Union[type[float, int], type[complex]]</code> isn't a valid type expression, and therefore <code>Union[Union[Union[type[float, int], type[complex]]]]</code> isn't a valid type expression. The rewrite here turns it into something that <em>is</em> valid.</p>
+            <div class="timeline-body"><p>hmm, this isn&#x27;t an equivalent rewrite. <code>type[float, int]</code> isn&#x27;t a valid type expression (it would need to be either <code>type[float | int]</code> or <code>type[Union[float, int]]</code>, and therefore <code>Union[type[float, int], type[complex]]</code> isn&#x27;t a valid type expression, and therefore <code>Union[Union[Union[type[float, int], type[complex]]]]</code> isn&#x27;t a valid type expression. The rewrite here turns it into something that <em>is</em> valid.</p>
 <p>I think it would be better if we refused the temptation to guess here and did not emit the diagnostic at all if <code>type</code> is subscripted with multiple arguments.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/snapshots/ruff_linter__rules__flake8_pyi__tests__PYI055_PYI055.pyi.snap</code>:165 on 2024-11-27 19:08</div>
-            <div class="timeline-body"><p>same issue here: <code>type[float, int]</code> isn't valid in a type annotation, therefore the whole annotation is invalid, but the fix here turns it into something that's valid. That should be outside the scope of this rule.</p>
+            <div class="timeline-body"><p>same issue here: <code>type[float, int]</code> isn&#x27;t valid in a type annotation, therefore the whole annotation is invalid, but the fix here turns it into something that&#x27;s valid. That should be outside the scope of this rule.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:1536 on 2024-11-27 19:20</div>
-            <div class="timeline-body"><p>I don't understand why we have to consider <code>current_expression_parent()</code> <em>and</em> <code>current_expression_grandparent()</code> for subscript-based unions, but we only have to consider <code>current_expression_parent()</code> for <code>|</code>-based unions. Does that mean that this function will recognise this as being a nested union:</p>
-<pre><code class="language-py">Union[Union[int, str]]
+            <div class="timeline-body"><p>I don&#x27;t understand why we have to consider <code>current_expression_parent()</code> <em>and</em> <code>current_expression_grandparent()</code> for subscript-based unions, but we only have to consider <code>current_expression_parent()</code> for <code>|</code>-based unions. Does that mean that this function will recognise this as being a nested union:</p>
+<pre><code>Union[Union[int, str]]
 </code></pre>
 <p>but not necessarily this?</p>
-<pre><code class="language-py">Union[int, str] | Union[bytes, list]
+<pre><code>Union[int, str] | Union[bytes, list]
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-11-27 19:21</div>
-            <div class="timeline-body"><p>Thank you!! Most of the snapshot changes look great, but I spotted a couple of issues and I'm not sure I fully understand the changes you're making to the methods on <code>SemanticModel</code></p>
+            <div class="timeline-body"><p>Thank you!! Most of the snapshot changes look great, but I spotted a couple of issues and I&#x27;m not sure I fully understand the changes you&#x27;re making to the methods on <code>SemanticModel</code></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">linter</span> added by @AlexWaygood on 2024-11-27 19:41</div>
+            <div class="event">Label <span class="label">linter</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-27 19:41</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2024-11-28 10:36</div>
-            <div class="timeline-body"><p>Thanks Alex! I'll pick this up tomorrow.</p>
+            <div class="timeline-body"><p>Thanks Alex! I&#x27;ll pick this up tomorrow.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -105,11 +99,11 @@ No ecosystem changes.</p>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sbrugman">@sbrugman</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/snapshots/ruff_linter__rules__flake8_pyi__tests__PYI055_PYI055.pyi.snap</code>:144 on 2024-11-28 11:11</div>
             <div class="timeline-body"><p>Good catch. I see this behaviour was already in place before, where we fixed an invalid type expression to a valid type expression:</p>
-<pre><code class="language-diff">-x: Union[Union[type[float, int], type[complex]]]
+<pre><code>-x: Union[Union[type[float, int], type[complex]]]
 +x: Union[type[Union[float, int, complex]]]
 </code></pre>
 <p>In this PR we just handle the nesting better:</p>
-<pre><code class="language-diff">-x: Union[Union[type[float, int], type[complex]]]
+<pre><code>-x: Union[Union[type[float, int], type[complex]]]
 +x: type[Union[float, int, complex]]
 </code></pre>
 <p>But the premise of the fix is still wrong, and needs to be fixed in PYI055.</p>
@@ -121,7 +115,7 @@ No ecosystem changes.</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sbrugman">@sbrugman</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:1536 on 2024-11-28 13:21</div>
-            <div class="timeline-body"><p>This is indeed the case. I've added an additional test case to confirm.</p>
+            <div class="timeline-body"><p>This is indeed the case. I&#x27;ve added an additional test case to confirm.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -130,18 +124,18 @@ No ecosystem changes.</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sbrugman">@sbrugman</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/snapshots/ruff_linter__rules__flake8_pyi__tests__PYI055_PYI055.pyi.snap</code>:144 on 2024-11-28 13:22</div>
-            <div class="timeline-body"><p>I'll address this in a separate PR so that the change gets its own entry in the changelog.</p>
+            <div class="timeline-body"><p>I&#x27;ll address this in a separate PR so that the change gets its own entry in the changelog.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:1536 on 2024-11-28 13:51</div>
             <div class="timeline-body"><p>Okay, I think I now understand why we must consider both the <code>current_expression_grandparent()</code> and the <code>current_expression_parent()</code> for subscript unions. Please tell me if I misunderstand anything here.</p>
-<p>It's because there's a difference in AST structure for these two nested unions:</p>
-<pre><code class="language-py">A = Union[Union[int]]
+<p>It&#x27;s because there&#x27;s a difference in AST structure for these two nested unions:</p>
+<pre><code>A = Union[Union[int]]
 B = Union[Union[int], bytes]
 </code></pre>
-<p>For union <code>A</code>, there, the AST structure looks like this (simplifying a little; this isn't valid Rust, obviously):</p>
-<pre><code class="language-rs">Subscript {
+<p>For union <code>A</code>, there, the AST structure looks like this (simplifying a little; this isn&#x27;t valid Rust, obviously):</p>
+<pre><code>Subscript {
     value: Name(&quot;Union&quot;)
     slice: Subscript {
         value: Name(&quot;Union&quot;)
@@ -150,7 +144,7 @@ B = Union[Union[int], bytes]
 }
 </code></pre>
 <p>But for union <code>B</code>, the AST structure looks like this:</p>
-<pre><code class="language-rs">Subscript {
+<pre><code>Subscript {
     value: Name(&quot;Union&quot;)
     slice: Tuple([
         Subscript {
@@ -161,10 +155,10 @@ B = Union[Union[int], bytes]
     ])
 }
 </code></pre>
-<p>So from the perspective of the inner union for <code>A</code>, the outer union is the <code>current_expression_parent</code> (there's no intermediate <code>Tuple</code> expression because there's only one element in the subscript slice). But from the perpespective of the inner union for <code>B</code>, the outer union is the <code>current_expression_grandparent</code> (there's an intermediate <code>Tuple</code> expression because there's more than one element in the subscript slice).</p>
+<p>So from the perspective of the inner union for <code>A</code>, the outer union is the <code>current_expression_parent</code> (there&#x27;s no intermediate <code>Tuple</code> expression because there&#x27;s only one element in the subscript slice). But from the perpespective of the inner union for <code>B</code>, the outer union is the <code>current_expression_grandparent</code> (there&#x27;s an intermediate <code>Tuple</code> expression because there&#x27;s more than one element in the subscript slice).</p>
 <p>Is that correct? If so, please could you expand on the comments you have here, as it took me quite a while to understand all this :-)</p>
 <p>I also think you could make the implementation more efficient and accurate (accurate in that <code>current_expression_parent</code> must be a <code>Tuple</code> as well as <code>current_expression_grandparent</code> being a <code>Union</code> subscript in order for it to be a nested union). Something like this?</p>
-<pre><code class="language-rs">    /// Return `true` if the model is in a nested union expression (e.g., the inner `Union` in
+<pre><code>    /// Return `true` if the model is in a nested union expression (e.g., the inner `Union` in
     /// `Union[Union[int, str], float]`).
     pub fn in_nested_union(&amp;self) -&gt; bool {
         let mut parent_expressions = self.current_expressions().skip(1);
@@ -200,7 +194,7 @@ B = Union[Union[int], bytes]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sbrugman">@sbrugman</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:1536 on 2024-11-28 15:23</div>
-            <div class="timeline-body"><p>100%, this is much cleaner 👍 I'll expand this with comments and rewrite <code>in_nested_literal</code> in a similar fashion.</p>
+            <div class="timeline-body"><p>100%, this is much cleaner 👍 I&#x27;ll expand this with comments and rewrite <code>in_nested_literal</code> in a similar fashion.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -209,16 +203,16 @@ B = Union[Union[int], bytes]
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2024-11-28 17:57</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-28 17:57</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Fix traversal of nested literals and unions" to "[`flake8-pyi`, `ruff`] Fix traversal of nested literals and unions (`PYI016`, `PYI051`, `PYI055`, `PYI062`, `RUF041`)" by @AlexWaygood on 2024-11-28 18:07</div>
+            <div class="event">Renamed from &quot;Fix traversal of nested literals and unions&quot; to &quot;[`flake8-pyi`, `ruff`] Fix traversal of nested literals and unions (`PYI016`, `PYI051`, `PYI055`, `PYI062`, `RUF041`)&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-28 18:07</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @AlexWaygood on 2024-11-28 18:07</div>
+            <div class="event">Merged by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-28 18:07</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2024-11-28 18:07</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-28 18:07</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-11-28 18:08</div>
@@ -226,7 +220,7 @@ B = Union[Union[int], bytes]
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:08:04 UTC
+        Synced at 2026-01-20 19:08:55 UTC
     </footer>
 </body>
 </html>

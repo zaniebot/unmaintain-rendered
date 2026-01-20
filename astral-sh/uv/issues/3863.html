@@ -23,26 +23,26 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/aochagavia">@aochagavia</a></div>
-            <div class="timeline-body"><p>This is a feature request to modify the API of <code>install_wheel_rs::linker::install_wheel</code>. I'd love to hear whether you consider it to be within the scope of uv (in which case I might submit a PR) or out of scope (in which case I'll be using a workaround).</p>
-<h3>Use case</h3>
+            <div class="timeline-body"><p>This is a feature request to modify the API of <code>install_wheel_rs::linker::install_wheel</code>. I&#x27;d love to hear whether you consider it to be within the scope of uv (in which case I might submit a PR) or out of scope (in which case I&#x27;ll be using a workaround).</p>
+Use case
 <p><em>Note: this is somewhat simplified, but I hope it illustrates the point.</em></p>
-<p>I have an HTTP API providing a &quot;virtual environment build service&quot;. People submit a request to generate a virtual environment, based on specific pip requirements. Behind the scenes, I'm using the <code>uv</code> libraries (including the <code>install_wheel</code> function) to instantiate the environment. Once the environment is ready, I zip the resulting files and let the user download the archive.</p>
-<p>The current implementation of <code>install_wheel</code>, however, requires that the path to the environment both in the builder and the target machine is exactly the same (e.g. if you built the environment at <code>/foo/bar</code>, which I'm calling the &quot;build path&quot;, you need to extract it and use it at <code>/foo/bar</code>, which I'm calling the &quot;target path&quot;). This is limiting, because it forces the user to extract the environment in a path determined by the server, or it forces the server to let the user specify the path where the environment should be built (with some validation code to keep things secure).</p>
-<p>Conceptually, the limitation is unnecessary. As far as I can see, there's nothing in the way of making <code>install_wheel</code> more flexible, letting it distinguish between:</p>
+<p>I have an HTTP API providing a &quot;virtual environment build service&quot;. People submit a request to generate a virtual environment, based on specific pip requirements. Behind the scenes, I&#x27;m using the <code>uv</code> libraries (including the <code>install_wheel</code> function) to instantiate the environment. Once the environment is ready, I zip the resulting files and let the user download the archive.</p>
+<p>The current implementation of <code>install_wheel</code>, however, requires that the path to the environment both in the builder and the target machine is exactly the same (e.g. if you built the environment at <code>/foo/bar</code>, which I&#x27;m calling the &quot;build path&quot;, you need to extract it and use it at <code>/foo/bar</code>, which I&#x27;m calling the &quot;target path&quot;). This is limiting, because it forces the user to extract the environment in a path determined by the server, or it forces the server to let the user specify the path where the environment should be built (with some validation code to keep things secure).</p>
+<p>Conceptually, the limitation is unnecessary. As far as I can see, there&#x27;s nothing in the way of making <code>install_wheel</code> more flexible, letting it distinguish between:</p>
 <ol>
 <li>The directory where the files end up after linking (in the machine that creates the environment), and;</li>
 <li>The directory where the environment should be located when you use it (in the machine that uses the environment).</li>
 </ol>
 <p>With this modification, the builder could create environments at arbitrary locations (e.g. <code>/tmp/env1</code>), while targeting different paths on the target machine (e.g. <code>/usr/local/my-env</code>).</p>
-<h3>Current workaround</h3>
+Current workaround
 <p>According to <a href="https://packaging.python.org/en/latest/specifications/binary-distribution-format/#installing-a-wheel-distribution-1-0-py32-none-any-whl">the PyPA documentation</a>, the only changes made to files during wheel installation is replacing shebangs at the beginning of python scripts (to make them point to the right interpreter). If you move the environment to a different place in the filesystem, the paths in the python scripts get broken. However, you can work around this problem by manually going through the scripts and re-rewriting the shebangs to the new path. Not ideal, but it works.</p>
-<h3>Prior art</h3>
+Prior art
 <p>Though focused on the conda ecosystem, the <a href="https://github.com/mamba-org/rattler">rattler</a> collection of crates offers an API that decouples the &quot;build&quot; and &quot;target&quot; paths of a conda prefix, in an analogous way as described in this feature request. The relevant function is <a href="https://docs.rs/rattler/0.26.0/rattler/install/fn.link_package.html">link_package</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-27 16:36</div>
-            <div class="timeline-body"><p>This seems very similar to https://github.com/astral-sh/uv/issues/3669 -- what do you think?</p>
+            <div class="timeline-body"><p>This seems very similar to <a href="https://github.com/astral-sh/uv/issues/3669">astral-sh/uv#3669</a> -- what do you think?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -51,24 +51,24 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-05-27 16:41</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-27 16:41</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/aochagavia">@aochagavia</a> on 2024-05-27 17:58</div>
             <div class="timeline-body"><p>Thanks for thinking with me ;)</p>
-<p>Another alternative would be an option to leave the shebangs as they were originally, and letting the user do the rewriting (though I can imagine it's an uncommon use case). I see it as an improved version of my workaround, and it would probably be much easier to implement than my original proposal.</p>
+<p>Another alternative would be an option to leave the shebangs as they were originally, and letting the user do the rewriting (though I can imagine it&#x27;s an uncommon use case). I see it as an improved version of my workaround, and it would probably be much easier to implement than my original proposal.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2024-07-22 15:16</div>
-            <div class="timeline-body"><p>I'm interested in this as well. I am thinking, a <code>uv pip install --relocatable</code> flag could work quite nicely? Should be straightforward to add this CLI flag and then poke its value through to <code>install_wheel()</code> and <code>write_script_entrypoints()</code>. Let me know if you agree with this approach and I can take a stab at a PR.</p>
-<p>Would probably have to caveat that this only works for 'pure' script entrypoints, as opposed to arbitrary executables/scripts. (e.g. <code>venv/(bin|Scripts)/uv(.exe)?</code> itself)</p>
+            <div class="timeline-body"><p>I&#x27;m interested in this as well. I am thinking, a <code>uv pip install --relocatable</code> flag could work quite nicely? Should be straightforward to add this CLI flag and then poke its value through to <code>install_wheel()</code> and <code>write_script_entrypoints()</code>. Let me know if you agree with this approach and I can take a stab at a PR.</p>
+<p>Would probably have to caveat that this only works for &#x27;pure&#x27; script entrypoints, as opposed to arbitrary executables/scripts. (e.g. <code>venv/(bin|Scripts)/uv(.exe)?</code> itself)</p>
 <p>Also x-referencing #3587 which is similar but on the venv side. In fact, if/when a venv is created in relocatable mode (can we/should we persist this info in <code>pyvenv.cfg</code>?), the <code>--relocatable</code> flag can be auto-inferred from the underlying venv.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-22 15:52</div>
-            <div class="timeline-body"><p>I'm open to something like a <code>--relocatable</code> flag. I'm not certain how it should interact with the <code>venv</code> flag. It would be nice to know why it was removed from <code>virtualenv</code>.</p>
+            <div class="timeline-body"><p>I&#x27;m open to something like a <code>--relocatable</code> flag. I&#x27;m not certain how it should interact with the <code>venv</code> flag. It would be nice to know why it was removed from <code>virtualenv</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -77,21 +77,21 @@
 <p>It would be nice to know why it was removed from <code>virtualenv</code>.</p>
 </blockquote>
 <p>Found some reading: pypa/virtualenv#1473 and pypa/virtualenv#1549.</p>
-<p>IMO it appears that the problem was largely caused by the virtual environment provisioner (<code>virtualenv</code>) being a totally separate entity from the package installer (<code>distlib</code>/<code>pip</code>). As a result, <code>virtualenv</code> could only do a half-hearted (and post-hoc) job at making virtual environments relocatable. And it's not just a matter of sequencing of operations -- the owners of <code>virtualenv</code> would have had to play catch-up with the various different platform implementations (e.g. trampoline binaries on Windows). Overall a very fragile design, and a pretty thankless job maintaining such a feature.</p>
-<p>So I totally understand why they decided to axe the feature -- it didn't really belong in <code>virtualenv</code>.</p>
+<p>IMO it appears that the problem was largely caused by the virtual environment provisioner (<code>virtualenv</code>) being a totally separate entity from the package installer (<code>distlib</code>/<code>pip</code>). As a result, <code>virtualenv</code> could only do a half-hearted (and post-hoc) job at making virtual environments relocatable. And it&#x27;s not just a matter of sequencing of operations -- the owners of <code>virtualenv</code> would have had to play catch-up with the various different platform implementations (e.g. trampoline binaries on Windows). Overall a very fragile design, and a pretty thankless job maintaining such a feature.</p>
+<p>So I totally understand why they decided to axe the feature -- it didn&#x27;t really belong in <code>virtualenv</code>.</p>
 <p>But <code>uv</code> is IMO different because it encompasses both virtual environment provisioning (<code>uv venv</code>) as well as package installation (<code>uv pip</code>). It controls both ends of the equation, and can do a much better job at this. And we can have end-to-end tests to prevent this functionality from randomly regressing.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2024-07-22 22:01</div>
-            <div class="timeline-body"><p>I did some experiments in my local checkout. The good news is that the change to <code>get_script_executable()</code> would be trivial -- I added a <code>relocatable: bool</code> arg, an <code>if</code>-<code>else</code> that forces the path to relative, and it 'just' works. I managed to poke this new arg all the way out through the call stack, right down to the CLI handler. The whole thing works as expected -- yay, relocatable entrypoints on demand!</p>
+            <div class="timeline-body"><p>I did some experiments in my local checkout. The good news is that the change to <code>get_script_executable()</code> would be trivial -- I added a <code>relocatable: bool</code> arg, an <code>if</code>-<code>else</code> that forces the path to relative, and it &#x27;just&#x27; works. I managed to poke this new arg all the way out through the call stack, right down to the CLI handler. The whole thing works as expected -- yay, relocatable entrypoints on demand!</p>
 <p>The ugly part is that, since I am pretty new to this codebase (and Rust in general), I was playing it pretty fast and loose. Since <code>Installer</code> is used in so many places (e.g. <code>uv add</code>, <code>uv sync</code>, ...), adding this otherwise innocuous boolean creates a real domino/fan-out effect. I ended up hardcoding it to <code>false</code> for all commands except <code>uv pip install</code>. Not ideal, but hey, it worked.</p>
 <p>Self-deprecation aside, to me it became clear that this merits a more involved architectural discussion. <code>relocatable: bool</code> <em>could</em> sit in <code>PipInstallSettings</code> as does in my scratch workspace, but then what about other the install-flavoured commands such as (<code>add</code>, <code>sync</code> et al)? Do they need their own copy of this flag? Is this good UX or does this create a footgun? Or do we normalise this up the way into <code>PipSettings</code> -- still a footgun? Or perhaps all signs indeed point towards this being a property of the venv itself? Really quite unsure...</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ceache">@ceache</a> on 2024-07-25 14:31</div>
-            <div class="timeline-body"><p>Just a thought but wouldn't make more sense to make the <code>relocatable</code> flag a venv config attribute? Something akin to <code>uv venv --relocatable ...</code></p>
+            <div class="timeline-body"><p>Just a thought but wouldn&#x27;t make more sense to make the <code>relocatable</code> flag a venv config attribute? Something akin to <code>uv venv --relocatable ...</code></p>
 <p>The fact that each install action (<code>install</code>, <code>sync</code>, <code>add</code>) against a given venv needs to remember to pass a <code>relocatable</code> option to be consistent seems like a poor UX / good footgun.</p>
 <p>(this was, in IMHO, one of the worse aspects of the virtualenv package relocatable implementation: you had to go back and patch/fix packages after each new pip install)</p>
 <p>Making it somehow a venv attribute would alleviate this UX issue</p>
@@ -99,20 +99,20 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2024-07-28 14:29</div>
-            <div class="timeline-body"><p>It does seem that all roads lead to this being a flag to <code>uv venv</code>. I gave it another shot and the code change looks <em>a lot</em> tidier now -- it's almost as if it's telling me that this is the right level of abstraction :-)</p>
+            <div class="timeline-body"><p>It does seem that all roads lead to this being a flag to <code>uv venv</code>. I gave it another shot and the code change looks <em>a lot</em> tidier now -- it&#x27;s almost as if it&#x27;s telling me that this is the right level of abstraction :-)</p>
 <p>I have opened a draft PR @ #5515. It still has a few things needing done at the periphery, but the basic workings of it are pretty much ready to review.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-07-29 00:10</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-29 00:10</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-07-29 00:10</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-29 00:10</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:25:02 UTC
+        Synced at 2026-01-20 19:31:16 UTC
     </footer>
 </body>
 </html>

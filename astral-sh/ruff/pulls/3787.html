@@ -23,54 +23,54 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>We often have rules (and violations) that could in theory be autofixed, but that rely on the presence of an imported symbol that may or may not be available in scope.</p>
-<p>The <code>sys-exit-alias</code> rule is a good example. It recommends replacing calls to the builtin <code>exit</code> and <code>quit</code> methods with calls to <code>sys.exit</code>. That's &quot;easy&quot; to autofix... as long as <code>sys.exit</code> is in-scope.</p>
-<p>This PR enables rules to import symbols into the current scope in a fairly general way, enabling autofix support for rules like <code>sys-exit-alias</code>. Below, I've also extended autofix support for <code>lru-cache-with-maxsize-none</code>, which relies on making <code>functools.cache</code> available.</p>
-<h3>How it works</h3>
-<p>From a rule's perspective, the end-user API leans on a single <code>get_or_import_symbol</code> method, which returns (1) an <code>Edit</code> (to &quot;insert&quot; the symbol into the scope) and (2) the bound name of the resolved symbol (e.g., <code>exit</code>, if we added <code>from sys import exit</code>, or <code>sys.exit</code>, if we added <code>import sys</code>).</p>
+<p>The <code>sys-exit-alias</code> rule is a good example. It recommends replacing calls to the builtin <code>exit</code> and <code>quit</code> methods with calls to <code>sys.exit</code>. That&#x27;s &quot;easy&quot; to autofix... as long as <code>sys.exit</code> is in-scope.</p>
+<p>This PR enables rules to import symbols into the current scope in a fairly general way, enabling autofix support for rules like <code>sys-exit-alias</code>. Below, I&#x27;ve also extended autofix support for <code>lru-cache-with-maxsize-none</code>, which relies on making <code>functools.cache</code> available.</p>
+How it works
+<p>From a rule&#x27;s perspective, the end-user API leans on a single <code>get_or_import_symbol</code> method, which returns (1) an <code>Edit</code> (to &quot;insert&quot; the symbol into the scope) and (2) the bound name of the resolved symbol (e.g., <code>exit</code>, if we added <code>from sys import exit</code>, or <code>sys.exit</code>, if we added <code>import sys</code>).</p>
 <p>Under-the-hood, that method performs a series of lookups:</p>
 <ol>
 <li>First, it checks to see if <code>sys.exit</code> is <em>already</em> available in any form (e.g., <code>from sys import exit as foo</code>, <code>import sys as foo</code>); if so, it returns a reference to it.</li>
-<li>Otherwise, it checks to see if there's an <code>import ... from</code> for the relevant module (e.g., <code>from sys import path</code>). If so, it modifies that import to include the necessary symbol (<code>from sys import path, exit</code>). If <code>exit</code> is already bound to something else, it aborts and logs an error.</li>
+<li>Otherwise, it checks to see if there&#x27;s an <code>import ... from</code> for the relevant module (e.g., <code>from sys import path</code>). If so, it modifies that import to include the necessary symbol (<code>from sys import path, exit</code>). If <code>exit</code> is already bound to something else, it aborts and logs an error.</li>
 <li>Otherwise, it generates an edit to insert an <code>import sys</code>, and returns <code>sys.exit</code> as the bound reference.</li>
 </ol>
-<p>The logic for inserting imports is crude and follows LibCST's own logic: if there are no imports, we insert at top-of-file; otherwise, we insert after the last-seen top-level import statement.</p>
-<h3>Limitations</h3>
+<p>The logic for inserting imports is crude and follows LibCST&#x27;s own logic: if there are no imports, we insert at top-of-file; otherwise, we insert after the last-seen top-level import statement.</p>
+Limitations
 <p>There are a few limitations to the current approach:</p>
 <ol>
-<li><p>We don't attempt to retain import order at all. We leave that up to the <code>isort</code> rules (or <code>isort</code> itself, if you're using <code>isort</code>).</p>
+<li><p>We don&#x27;t attempt to retain import order at all. We leave that up to the <code>isort</code> rules (or <code>isort</code> itself, if you&#x27;re using <code>isort</code>).</p>
 </li>
-<li><p>We <em>only</em> respect top-level imports, so here, we'd still insert an <code>import sys</code>:</p>
+<li><p>We <em>only</em> respect top-level imports, so here, we&#x27;d still insert an <code>import sys</code>:</p>
 </li>
 </ol>
-<pre><code class="language-py">def f():
+<pre><code>def f():
   from sys import path
 
   quit()
 </code></pre>
-<ol start="3">
+<ol>
 <li>Every individual fix (that relies on import insertion) has to go through this process. We may want to implement some sort of cache here.</li>
 </ol>
 <p>Closes #835.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @konstin by @charliermarsh on 2023-03-28 22:52</div>
+            <div class="event">Review requested from <a href="https://github.com/konstin">@konstin</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-28 22:52</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-03-28 22:52</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-28 22:52</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @charliermarsh on 2023-03-28 22:52</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-28 22:52</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-03-28 22:54</div>
-            <div class="timeline-body"><h2>PR Check Results</h2>
-<h3>Ecosystem</h3>
+            <div class="timeline-body">PR Check Results
+Ecosystem
 <p>✅ ecosystem check detected no changes.</p>
-<h3>Benchmark</h3>
-<h4>Linux</h4>
+Benchmark
+Linux
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 linter/all-rules/large/dataset.py          1.00     17.1±0.34ms     2.4 MB/sec    1.04     17.8±0.36ms     2.3 MB/sec
@@ -82,7 +82,7 @@ linter/default-rules/numpy/ctypeslib.py    1.00  1977.1±55.79µs     8.4 MB/sec
 linter/default-rules/numpy/globals.py      1.00    235.8±7.58µs    12.5 MB/sec    1.03   242.3±11.21µs    12.2 MB/sec
 linter/default-rules/pydantic/types.py     1.00      4.0±0.09ms     6.4 MB/sec    1.06      4.3±0.11ms     6.0 MB/sec
 </code></pre>
-<h4>Windows</h4>
+Windows
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 linter/all-rules/large/dataset.py          1.00     13.7±0.17ms     3.0 MB/sec    1.00     13.7±0.18ms     3.0 MB/sec
@@ -94,7 +94,7 @@ linter/default-rules/numpy/ctypeslib.py    1.01  1508.0±13.70µs    11.0 MB/sec
 linter/default-rules/numpy/globals.py      1.00    156.1±1.85µs    18.9 MB/sec    1.00    156.3±3.88µs    18.9 MB/sec
 linter/default-rules/pydantic/types.py     1.01      3.2±0.03ms     7.9 MB/sec    1.00      3.2±0.04ms     8.0 MB/sec
 </code></pre>
-<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
 
 </div>
         </div>
@@ -104,18 +104,18 @@ linter/default-rules/pydantic/types.py     1.01      3.2±0.03ms     7.9 MB/sec 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/importer.rs</code>:145 on 2023-03-28 22:54</div>
-            <div class="timeline-body"><p>GitHub isn't picking it up, but everything from here down is moved from <code>rules/isort/rules/add_required_import.rs</code> (which now uses this <code>Importer</code> struct).</p>
+            <div class="timeline-body"><p>GitHub isn&#x27;t picking it up, but everything from here down is moved from <code>rules/isort/rules/add_required_import.rs</code> (which now uses this <code>Importer</code> struct).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/autofix/helpers.rs</code>:488 on 2023-03-28 22:56</div>
             <div class="timeline-body"><p>This piece here is a hack. Consider:</p>
-<pre><code class="language-py">import sys
+<pre><code>import sys
 
 quit()
 </code></pre>
-<p>Assume you <em>omit</em> this hack. If you run with <code>unused-imports</code> and <code>sys-exit-alias</code> here, then we'll generate two fixes: (1) we'll remove the unused <code>import sys</code>; (2) we'll replace <code>quit()</code> with <code>sys.exit()</code>, under the assumption that <code>sys</code> is already imported and available. That'd leave us with an invalid reference.</p>
-<p>The workaround is to add a &quot;fake&quot; edit to replace <code>import sys</code> with <code>import sys</code>. This ensures that we don't try to apply conflicting autofixes to the file.</p>
+<p>Assume you <em>omit</em> this hack. If you run with <code>unused-imports</code> and <code>sys-exit-alias</code> here, then we&#x27;ll generate two fixes: (1) we&#x27;ll remove the unused <code>import sys</code>; (2) we&#x27;ll replace <code>quit()</code> with <code>sys.exit()</code>, under the assumption that <code>sys</code> is already imported and available. That&#x27;d leave us with an invalid reference.</p>
+<p>The workaround is to add a &quot;fake&quot; edit to replace <code>import sys</code> with <code>import sys</code>. This ensures that we don&#x27;t try to apply conflicting autofixes to the file.</p>
 <p>We may be getting to the point at which we want to avoid trying to apply multiple fixes in the same autofix pass (which would also avoid this issue).</p>
 </div>
         </div>
@@ -131,13 +131,13 @@ Do you import <code>sys</code> with an alias like <code>sys_</code> with as many
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-29 13:47</div>
-            <div class="timeline-body"><p>No, we avoid fixing if the name is already bound to something else. In practice, I think that's the least surprising behavior.</p>
+            <div class="timeline-body"><p>No, we avoid fixing if the name is already bound to something else. In practice, I think that&#x27;s the least surprising behavior.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:205 on 2023-03-30 06:36</div>
-            <div class="timeline-body"><p>Nit: Surprising that clippy isn't flagging this</p>
-<pre><code class="language-suggestion">            if scope_index.is_global() &amp;&amp;self.ctx.current_stmt_parent().is_none() {
+            <div class="timeline-body"><p>Nit: Surprising that clippy isn&#x27;t flagging this</p>
+<pre><code>            if scope_index.is_global() &amp;&amp;self.ctx.current_stmt_parent().is_none() {
                 self.importer.visit_import(stmt);
             }
 </code></pre>
@@ -145,26 +145,26 @@ Do you import <code>sys</code> with an alias like <code>sys_</code> with as many
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/cst/matchers.rs</code>:64 on 2023-03-30 06:37</div>
-            <div class="timeline-body"><p>What's the reason for using <code>bail</code> here instead of returning <code>Err</code> and propagating the error (we'll have to replace all <code>bail</code>, <code>warn_once</code> at some point in the future if we want to build a python API)</p>
+            <div class="timeline-body"><p>What&#x27;s the reason for using <code>bail</code> here instead of returning <code>Err</code> and propagating the error (we&#x27;ll have to replace all <code>bail</code>, <code>warn_once</code> at some point in the future if we want to build a python API)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/importer.rs</code>:54 on 2023-03-30 06:39</div>
-            <div class="timeline-body"><p>Nit: I would use <code>panic</code> here instead of <code>unreachable</code> because you use it as an invariant. It isn't that the code above guarantees that this path isn't possible.</p>
+            <div class="timeline-body"><p>Nit: I would use <code>panic</code> here instead of <code>unreachable</code> because you use it as an invariant. It isn&#x27;t that the code above guarantees that this path isn&#x27;t possible.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-03-30 06:42</div>
             <div class="timeline-body"><p>Nice!</p>
 <p>Can we add a test case that demonstrates what happens if we have</p>
-<pre><code class="language-python">if test:
+<pre><code>if test:
 	import path
 
 
 exit(1)
 </code></pre>
 <p>or</p>
-<pre><code class="language-python">import path
+<pre><code>import path
 
 if test:
 	pass
@@ -179,17 +179,17 @@ exit(1)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/autofix/helpers.rs</code>:488 on 2023-03-30 09:56</div>
-            <div class="timeline-body"><p>i'd add this to the code comment</p>
+            <div class="timeline-body"><p>i&#x27;d add this to the code comment</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/autofix/helpers.rs</code>:508 on 2023-03-30 09:59</div>
-            <div class="timeline-body"><p>why not <code>from functools import lru_cache</code>? that's what i'd expect and afaik that's what pycharm generally does</p>
+            <div class="timeline-body"><p>why not <code>from functools import lru_cache</code>? that&#x27;s what i&#x27;d expect and afaik that&#x27;s what pycharm generally does</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/cst/matchers.rs</code>:64 on 2023-03-30 10:03</div>
-            <div class="timeline-body"><p>(fwiw there's anyhow integration with pyo3 that translates them into <code>RuntimeError</code>, but i agree that proper error types are better)</p>
+            <div class="timeline-body"><p>(fwiw there&#x27;s anyhow integration with pyo3 that translates them into <code>RuntimeError</code>, but i agree that proper error types are better)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -200,13 +200,13 @@ exit(1)
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/importer.rs</code>:47 on 2023-03-30 10:14</div>
             <div class="timeline-body"><p>Nit: i find those easier to read</p>
-<pre><code class="language-suggestion">                if level == Some(0) {
+<pre><code>                if level == Some(0) {
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_ast/src/imports.rs</code>:64 on 2023-03-30 10:31</div>
-            <div class="timeline-body"><p>i never realized that <code>from ....bar import foo</code> valid syntax and now i'm a scared of imports</p>
+            <div class="timeline-body"><p>i never realized that <code>from ....bar import foo</code> valid syntax and now i&#x27;m a scared of imports</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -215,7 +215,7 @@ exit(1)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/cst/matchers.rs</code>:64 on 2023-03-30 10:33</div>
-            <div class="timeline-body"><p>Oh, I think I confused what <code>bail!</code> does. Does bail return an <code>Err</code>? If so, then I think that's fine for now.</p>
+            <div class="timeline-body"><p>Oh, I think I confused what <code>bail!</code> does. Does bail return an <code>Err</code>? If so, then I think that&#x27;s fine for now.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -228,7 +228,7 @@ exit(1)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/cst/matchers.rs</code>:64 on 2023-03-30 10:47</div>
-            <div class="timeline-body"><p>yes it's just a convenience macro around that: https://docs.rs/anyhow/latest/src/anyhow/macros.rs.html#56-66</p>
+            <div class="timeline-body"><p>yes it&#x27;s just a convenience macro around that: https://docs.rs/anyhow/latest/src/anyhow/macros.rs.html#56-66</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -237,7 +237,7 @@ exit(1)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:205 on 2023-03-30 15:18</div>
-            <div class="timeline-body"><p>We have that rule disabled, I actually find nested <code>if</code> blocks to be much clearer but it's a completely subjective thing 🙈</p>
+            <div class="timeline-body"><p>We have that rule disabled, I actually find nested <code>if</code> blocks to be much clearer but it&#x27;s a completely subjective thing 🙈</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -246,12 +246,12 @@ exit(1)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/importer.rs</code>:17 on 2023-03-30 15:19</div>
-            <div class="timeline-body"><p>It comes from RustPython. It's kind of like how a test suite is a collection of tests. <code>Suite</code> is just <code>Vec&lt;Stmt&gt;</code> IIRC -- so, a collection of statements.</p>
+            <div class="timeline-body"><p>It comes from RustPython. It&#x27;s kind of like how a test suite is a collection of tests. <code>Suite</code> is just <code>Vec&lt;Stmt&gt;</code> IIRC -- so, a collection of statements.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/importer.rs</code>:54 on 2023-03-30 15:20</div>
-            <div class="timeline-body"><p>Let me change this in a separate pass because we do this in a lot of places (but what you're saying makes sense).</p>
+            <div class="timeline-body"><p>Let me change this in a separate pass because we do this in a lot of places (but what you&#x27;re saying makes sense).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -273,8 +273,8 @@ exit(1)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/autofix/helpers.rs</code>:508 on 2023-03-30 15:23</div>
-            <div class="timeline-body"><p>Yeah I wasn't sure what the default should be here. I was thinking that it should be rule-dependent (e.g., it makes sense to do <code>from typing import List</code> rather than <code>import typing; typing.List</code> if we need to inject from typing).</p>
-<p>Where does PyCharm do this? When you have <code>@cache</code> and cache isn't imported? (But in that case, the user has already expressed that they want the member, not the fully-qualified name.)</p>
+            <div class="timeline-body"><p>Yeah I wasn&#x27;t sure what the default should be here. I was thinking that it should be rule-dependent (e.g., it makes sense to do <code>from typing import List</code> rather than <code>import typing; typing.List</code> if we need to inject from typing).</p>
+<p>Where does PyCharm do this? When you have <code>@cache</code> and cache isn&#x27;t imported? (But in that case, the user has already expressed that they want the member, not the fully-qualified name.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -289,7 +289,7 @@ exit(1)
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:205 on 2023-03-30 15:26</div>
             <div class="timeline-body"><p>It was useful for us because we often had things gated beyond <code>settings.rules.enabled</code> checks and it was useful to separate them conceptually, like:</p>
-<pre><code class="language-rust">if settings.rules.enabled(Rule:...) {
+<pre><code>if settings.rules.enabled(Rule:...) {
   if condition_for_rule {
     do_rule
   }
@@ -317,12 +317,12 @@ exit(1)
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/autofix/helpers.rs</code>:508 on 2023-03-30 15:29</div>
             <div class="timeline-body"><p>yes, this:</p>
-<pre><code class="language-python">@cache
+<pre><code>@cache
 def foo():
     ...
 </code></pre>
 <p>quck fix -&gt; enter -&gt; enter:</p>
-<pre><code class="language-python">from functools import cache
+<pre><code>from functools import cache
 
 
 @cache
@@ -332,10 +332,10 @@ def foo():
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2023-03-30 15:33</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-30 15:33</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-03-30 15:33</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-30 15:33</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2023-03-30 15:33</div>
@@ -344,18 +344,18 @@ def foo():
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/autofix/helpers.rs</code>:508 on 2023-03-30 15:33</div>
             <div class="timeline-body"><p>Yeah but in that case, the user has already written <code>@cache</code>.</p>
 <p>Given:</p>
-<pre><code class="language-py">@functools.cache
+<pre><code>@functools.cache
 def f(x):
     return x
 </code></pre>
 <p>Then the same action yields:</p>
-<pre><code class="language-py">import functools
+<pre><code>import functools
 
 @functools.cache
 def f(x):
     return x
 </code></pre>
-<p>Here, we don't know which the user prefers ahead-of-time.</p>
+<p>Here, we don&#x27;t know which the user prefers ahead-of-time.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -365,7 +365,7 @@ def f(x):
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:56:52 UTC
+        Synced at 2026-01-20 18:53:03 UTC
     </footer>
 </body>
 </html>

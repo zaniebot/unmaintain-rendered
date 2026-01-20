@@ -23,42 +23,42 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This PR fixes a small quirk in the semantic model. Typically, when we see an import, like <code>import foo</code>, we create a <code>BindingKind::Importation</code> for it. However, if <code>foo</code> has been declared as a <code>global</code>, then we propagate the kind forward. So given:</p>
-<pre><code class="language-python">global foo
+<pre><code>global foo
 
 import foo
 </code></pre>
-<p>We'd create two bindings for <code>foo</code>, both with type <code>global</code>.</p>
+<p>We&#x27;d create two bindings for <code>foo</code>, both with type <code>global</code>.</p>
 <p>This was originally borrowed from Pyflakes, and it exists to help avoid false-positives like:</p>
-<pre><code class="language-python">def f():
+<pre><code>def f():
     global foo
 
-    # Don't mark `foo` as &quot;assigned but unused&quot;! It's a global!
+    # Don&#x27;t mark `foo` as &quot;assigned but unused&quot;! It&#x27;s a global!
     foo = 1
 </code></pre>
-<p>This PR removes that behavior, and instead tracks &quot;Does this binding refer to a global?&quot; as a flag. This is much cleaner, since it means we don't &quot;lose&quot; the identity of various bindings.</p>
+<p>This PR removes that behavior, and instead tracks &quot;Does this binding refer to a global?&quot; as a flag. This is much cleaner, since it means we don&#x27;t &quot;lose&quot; the identity of various bindings.</p>
 <p>As a very strange example of why this matters, consider:</p>
-<pre><code class="language-python">def foo():
+<pre><code>def foo():
     global Member
 
     from module import Member
 
     x: Member = 1
 </code></pre>
-<p><code>Member</code> is only used in a typing context, so we should flag it and say &quot;move it to a <code>TYPE_CHECKING</code> block&quot;. However, when we go to analyze <code>from module import Member</code>, it has <code>BindingKind::Global</code>. So we don't even know that it's an import!</p>
+<p><code>Member</code> is only used in a typing context, so we should flag it and say &quot;move it to a <code>TYPE_CHECKING</code> block&quot;. However, when we go to analyze <code>from module import Member</code>, it has <code>BindingKind::Global</code>. So we don&#x27;t even know that it&#x27;s an import!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @konstin by @charliermarsh on 2023-06-16 02:59</div>
+            <div class="event">Review requested from <a href="https://github.com/konstin">@konstin</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-16 02:59</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-06-16 03:11</div>
-            <div class="timeline-body"><h2>PR Check Results</h2>
-<h3>Ecosystem</h3>
+            <div class="timeline-body">PR Check Results
+Ecosystem
 <p>✅ ecosystem check detected no changes.</p>
-<h3>Benchmark</h3>
-<h4>Linux</h4>
+Benchmark
+Linux
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 formatter/large/dataset.py                 1.00      7.6±0.03ms     5.3 MB/sec    1.00      7.6±0.03ms     5.4 MB/sec
@@ -74,7 +74,7 @@ linter/default-rules/numpy/ctypeslib.py    1.04   1864.6±2.56µs     8.9 MB/sec
 linter/default-rules/numpy/globals.py      1.04   212.2±17.78µs    13.9 MB/sec    1.00    205.0±8.68µs    14.4 MB/sec
 linter/default-rules/pydantic/types.py     1.06      4.1±0.15ms     6.2 MB/sec    1.00      3.9±0.16ms     6.6 MB/sec
 </code></pre>
-<h4>Windows</h4>
+Windows
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 formatter/large/dataset.py                 1.00      7.9±0.08ms     5.2 MB/sec    1.00      7.9±0.08ms     5.2 MB/sec
@@ -90,7 +90,7 @@ linter/default-rules/numpy/ctypeslib.py    1.00  1770.5±30.83µs     9.4 MB/sec
 linter/default-rules/numpy/globals.py      1.00    190.6±7.02µs    15.5 MB/sec    1.00    191.5±6.42µs    15.4 MB/sec
 linter/default-rules/pydantic/types.py     1.00      3.9±0.03ms     6.6 MB/sec    1.00      3.9±0.03ms     6.6 MB/sec
 </code></pre>
-<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
 
 </div>
         </div>
@@ -100,7 +100,7 @@ linter/default-rules/pydantic/types.py     1.00      3.9±0.03ms     6.6 MB/sec 
 <blockquote>
 <p>airflow/configuration.py:1513:13: F841 [*] Local variable <code>FERNET_KEY</code> is assigned to but never used</p>
 </blockquote>
-<p>Through https://github.com/apache/airflow/blob/bdfebad5c9491234a78453856bd8c3baac98f75e/airflow/configuration.py#L1805 and seeing <code>AIRFLOW__CORE__FERNET_KEY</code> else in the code it looks like they are using that module level argument elsewhere through metaprogramming. It's a bit of a problem because there's no <code>__all__</code>, but marking this as an unused local variable is wrong.</p>
+<p>Through https://github.com/apache/airflow/blob/bdfebad5c9491234a78453856bd8c3baac98f75e/airflow/configuration.py#L1805 and seeing <code>AIRFLOW__CORE__FERNET_KEY</code> else in the code it looks like they are using that module level argument elsewhere through metaprogramming. It&#x27;s a bit of a problem because there&#x27;s no <code>__all__</code>, but marking this as an unused local variable is wrong.</p>
 <p>Otherwise the ecosystem checks improve.</p>
 </div>
         </div>
@@ -110,14 +110,14 @@ linter/default-rules/pydantic/types.py     1.00      3.9±0.03ms     6.6 MB/sec 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-16 14:43</div>
-            <div class="timeline-body"><p>Thanks, that's a bug, will fix :)</p>
+            <div class="timeline-body"><p>Thanks, that&#x27;s a bug, will fix :)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2023-06-16 15:07</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-16 15:07</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-06-16 15:07</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-16 15:07</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2023-06-16 15:07</div>
@@ -125,7 +125,7 @@ linter/default-rules/pydantic/types.py     1.00      3.9±0.03ms     6.6 MB/sec 
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:58:08 UTC
+        Synced at 2026-01-20 18:54:34 UTC
     </footer>
 </body>
 </html>

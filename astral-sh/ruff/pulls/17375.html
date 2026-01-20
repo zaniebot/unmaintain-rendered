@@ -23,31 +23,31 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Fixes #17322. Remove any need for snapshotting when applying visibility constraints to <code>*</code> imports. This also ends up simplifying the code!</p>
-<h2>Test Plan</h2>
-<p>Existing tests all pass. I'd appreciate a careful review, though. Is it definitely safe to remove these calls, as I am doing currently in the PR?</p>
+Test Plan
+<p>Existing tests all pass. I&#x27;d appreciate a careful review, though. Is it definitely safe to remove these calls, as I am doing currently in the PR?</p>
 <p>E.g. the <code>UseDefMapBuilder::negate_star_import_visibility_constraint</code> method on <code>main</code> has this call:</p>
-<pre><code class="language-rs">        self.scope_start_visibility = self
+<pre><code>        self.scope_start_visibility = self
             .visibility_constraints
             .add_and_constraint(self.scope_start_visibility, negated_constraint);
 </code></pre>
 <p>and <code>UseDefMapBuilder::merge</code> has this call:</p>
-<pre><code class="language-rs">        self.scope_start_visibility = self
+<pre><code>        self.scope_start_visibility = self
             .visibility_constraints
             .add_or_constraint(self.scope_start_visibility, snapshot.scope_start_visibility);
 </code></pre>
-<p>Both calls are currently removed in this PR for the &quot;fast path&quot; for newly added <code>*</code>-import definitions, since <code>UseDefMapBuilder::negate_star_import_visibility_constraint</code> is removed as part of this PR, and <code>UseDefMapBuilder::merge</code> is no longer called in the fast path. If it's <em>not</em> safe to remove these calls from the fast path, is there a test I could add that passes on <code>main</code>, but fails with them removed?</p>
+<p>Both calls are currently removed in this PR for the &quot;fast path&quot; for newly added <code>*</code>-import definitions, since <code>UseDefMapBuilder::negate_star_import_visibility_constraint</code> is removed as part of this PR, and <code>UseDefMapBuilder::merge</code> is no longer called in the fast path. If it&#x27;s <em>not</em> safe to remove these calls from the fast path, is there a test I could add that passes on <code>main</code>, but fails with them removed?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-04-13 17:49</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-13 17:49</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-13 17:50</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
+<code>mypy_primer</code> results
 <p>No ecosystem changes detected ✅</p>
 </div>
         </div>
@@ -57,29 +57,29 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">performance</span> added by @AlexWaygood on 2025-04-13 17:58</div>
+            <div class="event">Label <span class="label">performance</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-13 17:58</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @AlexWaygood on 2025-04-13 18:04</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-13 18:04</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-04-13 18:04</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-13 18:04</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-04-13 18:04</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-13 18:04</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-04-13 18:04</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-13 18:04</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-04-14 08:45</div>
             <div class="timeline-body"><p>Thank you, this looks correct! Great that we can reclaim even more performance.</p>
 <p><code>self.scope_start_visibility</code> tracks the visibility of <code>x_new = &lt;unbound&gt;</code> bindings of symbols that are <em>not yet defined</em> (symbols that <em>are</em> already defined, track visibility of their own <code>x_defined = &lt;unbound&gt;</code> binding). This is important when we model something like</p>
-<pre><code class="language-py">if True:
+<pre><code>if True:
     x = 1
 else:
     # At this point in control flow, we have a scope_start_visibility
-    # of `~[True]`, which we'll use for the `x = &lt;unbound&gt;` binding
+    # of `~[True]`, which we&#x27;ll use for the `x = &lt;unbound&gt;` binding
     # that will be implicitly created for this control flow branch
     # when we merge control flow with the `if` branch below.
 
@@ -87,14 +87,14 @@ else:
 # `x = &lt;unbound&gt;` with visibility `~[True]`.
 </code></pre>
 <p>The important thing is that <code>scope_start_visibility</code> returns to <code>AlwaysTrue</code> after this <code>if</code>-<code>else</code> branch. <code>x</code> can not be unbound, but <em>new</em> symbols would still be unbound. You can basically ask: if I would see a use of <code>has_not_been_bound_yet</code> at this point in control flow, would I still be able to see the implicit <code>has_not_been_bound_yet = &lt;unbound&gt;</code> binding at the scope start? And the answer for this example is yes. Things could be different if there would be terminal statements inside the branches:</p>
-<pre><code class="language-py">def _():
+<pre><code>def _():
     if True:
         return
 
     # scope_start_visibility would be AlwaysFalse here
 </code></pre>
-<p>For the star-import construct that we're modeling, the scope-start-visibility should not be affected (after control flow has merged), since there are no terminal statements inside. A use of <code>has_not_been_bound_yet</code> after this construct would have the same visibility of the scope start than before:</p>
-<pre><code class="language-py">if &lt;condition&gt;:
+<p>For the star-import construct that we&#x27;re modeling, the scope-start-visibility should not be affected (after control flow has merged), since there are no terminal statements inside. A use of <code>has_not_been_bound_yet</code> after this construct would have the same visibility of the scope start than before:</p>
+<pre><code>if &lt;condition&gt;:
     from module import X
 else:
     # empty
@@ -113,8 +113,8 @@ else:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-15 10:51</div>
-            <div class="timeline-body"><p>I think there are probably some optimisations we could also make for the &quot;slow path&quot; where the <code>*</code> import redefines a symbol that already exists in the global namespace. Even in the slow path, we're probably doing much more work than we need to by snapshotting all definition/declaration states -- we really only need to snapshot the definition/declaration states for a single symbol.</p>
-<p>But I don't know if it's worth the complexity cost to make that optimisation, since I think it would require adding more APIs to the use-def map that would only be used in this one place, and we probably don't hit the slow path very often at all.</p>
+            <div class="timeline-body"><p>I think there are probably some optimisations we could also make for the &quot;slow path&quot; where the <code>*</code> import redefines a symbol that already exists in the global namespace. Even in the slow path, we&#x27;re probably doing much more work than we need to by snapshotting all definition/declaration states -- we really only need to snapshot the definition/declaration states for a single symbol.</p>
+<p>But I don&#x27;t know if it&#x27;s worth the complexity cost to make that optimisation, since I think it would require adding more APIs to the use-def map that would only be used in this one place, and we probably don&#x27;t hit the slow path very often at all.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -133,10 +133,10 @@ else:
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @AlexWaygood on 2025-04-15 11:32</div>
+            <div class="event">Merged by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-15 11:32</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-04-15 11:32</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-15 11:32</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-04-15 11:32</div>
@@ -144,7 +144,7 @@ else:
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:11:34 UTC
+        Synced at 2026-01-20 19:13:18 UTC
     </footer>
 </body>
 </html>

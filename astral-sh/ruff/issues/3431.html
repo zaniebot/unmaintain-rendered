@@ -23,25 +23,25 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/onerandomusername">@onerandomusername</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>When ignoring a remapped error code, ruff is <em>very</em> insistent in error logs that the error code has been remapped.</p>
-<h3>Steps to reproduce</h3>
+Steps to reproduce
 <p>pyproject.toml:</p>
-<pre><code class="language-toml">[tool.ruff]
+<pre><code>[tool.ruff]
 select = [&quot;RUF&quot;]
 ignore = [&quot;RUF004&quot;]
 </code></pre>
 <p>command: <code>ruff .</code>
 There does not need to be any python files in the current directory.</p>
-<h3>Screenshots</h3>
-<p><img src="https://user-images.githubusercontent.com/71233171/224229246-28d0a0b1-1081-4c2f-8700-b5ac9e97e9f6.png" alt="image" /></p>
+Screenshots
+<p><img src="https://user-images.githubusercontent.com/71233171/224229246-28d0a0b1-1081-4c2f-8700-b5ac9e97e9f6.png" alt="image"></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-03-10 05:29</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-10 05:29</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">cli</span> added by @charliermarsh on 2023-03-10 05:29</div>
+            <div class="event">Label <span class="label">cli</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-10 05:29</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-10 05:30</div>
@@ -56,39 +56,39 @@ There does not need to be any python files in the current directory.</p>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MithicSpirit">@MithicSpirit</a> on 2023-03-10 05:59</div>
             <div class="timeline-body"><p>It seems that this warning is coming from https://github.com/charliermarsh/ruff/blob/bb3bb24b59d8f0da5c42972b177cd29db9390d6f/crates/ruff/src/settings/mod.rs#L362-L369
-Is the issue that the function (<code>RuleTable::from</code>) is being called multiple times or is it just that there are multiple instances of the value in <code>redirects</code>? If it's the latter it shouldn't be hard to deduplicate, although the fact that it seems to be iterating over a hashmap makes me doubtful that this is the case.</p>
+Is the issue that the function (<code>RuleTable::from</code>) is being called multiple times or is it just that there are multiple instances of the value in <code>redirects</code>? If it&#x27;s the latter it shouldn&#x27;t be hard to deduplicate, although the fact that it seems to be iterating over a hashmap makes me doubtful that this is the case.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-10 23:25</div>
-            <div class="timeline-body"><p>I think it's that we may call <code>RuleTable::from</code> multiple times. We actually <em>do</em> have a mechanism to show a warning &quot;exactly once&quot;, but it doesn't work with dynamic warnings (i.e., warnings like this that depend on data), since it basically inlines a one-time static boolean into the code via a macro.</p>
+            <div class="timeline-body"><p>I think it&#x27;s that we may call <code>RuleTable::from</code> multiple times. We actually <em>do</em> have a mechanism to show a warning &quot;exactly once&quot;, but it doesn&#x27;t work with dynamic warnings (i.e., warnings like this that depend on data), since it basically inlines a one-time static boolean into the code via a macro.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MithicSpirit">@MithicSpirit</a> on 2023-03-10 23:57</div>
-            <div class="timeline-body"><p>Yeah I looked into that macro but realized that it wouldn't fix it. I think that it could be adapted for dynamic warnings like these by using a static hashmap with the appropriate locks, but I'm not sure if the overhead from that is worth it.</p>
+            <div class="timeline-body"><p>Yeah I looked into that macro but realized that it wouldn&#x27;t fix it. I think that it could be adapted for dynamic warnings like these by using a static hashmap with the appropriate locks, but I&#x27;m not sure if the overhead from that is worth it.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-11 00:00</div>
-            <div class="timeline-body"><p>I think it's probably worth it, since this isn't a high-performance codepath. Are you interested in giving that a try?</p>
+            <div class="timeline-body"><p>I think it&#x27;s probably worth it, since this isn&#x27;t a high-performance codepath. Are you interested in giving that a try?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-11 00:01</div>
             <div class="timeline-body"><p>I started on a kind of ridiculous change to use macros in <code>rule_redirects.rs</code>, like:</p>
-<pre><code class="language-rust">/// Returns the redirect target for the given code.
-pub(crate) fn get_redirect_target(code: &amp;str) -&gt; Option&lt;&amp;'static str&gt; {
+<pre><code>/// Returns the redirect target for the given code.
+pub(crate) fn get_redirect_target(code: &amp;str) -&gt; Option&lt;&amp;&#x27;static str&gt; {
     redirect(code).map(|(_, target)| target)
 }
 
 /// Returns the code and the redirect target if the given code is a redirect.
 /// (The same code is returned to obtain it with a static lifetime).
-pub(crate) fn get_redirect(code: &amp;str) -&gt; Option&lt;(&amp;'static str, &amp;'static str)&gt; {
+pub(crate) fn get_redirect(code: &amp;str) -&gt; Option&lt;(&amp;&#x27;static str, &amp;&#x27;static str)&gt; {
     redirect(code)
 }
 
-fn redirect(code: &amp;str) -&gt; Option&lt;(&amp;'static str, &amp;'static str)&gt; {
+fn redirect(code: &amp;str) -&gt; Option&lt;(&amp;&#x27;static str, &amp;&#x27;static str)&gt; {
     macro_rules! redirect {
         ($src:expr, $dst:expr) =&gt; {{
             if code == $src {
@@ -103,33 +103,33 @@ fn redirect(code: &amp;str) -&gt; Option&lt;(&amp;'static str, &amp;'static str)
     return None;
 }
 </code></pre>
-<p>That actually <em>does</em> work, but the issue is that the redirect itself is done <em>before</em> we set up the logger (e.g., if the codes are provided as command-line arguments), so the warning doesn't show up in all cases because it's &quot;too soon&quot;.</p>
+<p>That actually <em>does</em> work, but the issue is that the redirect itself is done <em>before</em> we set up the logger (e.g., if the codes are provided as command-line arguments), so the warning doesn&#x27;t show up in all cases because it&#x27;s &quot;too soon&quot;.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MithicSpirit">@MithicSpirit</a> on 2023-03-11 02:14</div>
             <div class="timeline-body"><blockquote>
-<p>I think it's probably worth it, since this isn't a high-performance codepath. Are you interested in giving that a try?</p>
+<p>I think it&#x27;s probably worth it, since this isn&#x27;t a high-performance codepath. Are you interested in giving that a try?</p>
 </blockquote>
-<p>I can give it a shot, but I should say I'm not too familiar with atomics (might be a good opportunity to learn, though).</p>
-<p>Since this function is not async, things like <code>Mutex</code> and <code>RwLock</code> are out. I'm thinking that the best option would be to use a static <code>FxHashSet</code> to keep track of which redirects have already been printed and a static <code>AtomicBool</code> to act as a lock on the hashset. From there I believe that it would be necessary to use a spinlock (again, because this function is not async); while this isn't great, the lock will be held only briefly, so there shouldn't be much time wasted spinlocking. What do you think about this solution?</p>
+<p>I can give it a shot, but I should say I&#x27;m not too familiar with atomics (might be a good opportunity to learn, though).</p>
+<p>Since this function is not async, things like <code>Mutex</code> and <code>RwLock</code> are out. I&#x27;m thinking that the best option would be to use a static <code>FxHashSet</code> to keep track of which redirects have already been printed and a static <code>AtomicBool</code> to act as a lock on the hashset. From there I believe that it would be necessary to use a spinlock (again, because this function is not async); while this isn&#x27;t great, the lock will be held only briefly, so there shouldn&#x27;t be much time wasted spinlocking. What do you think about this solution?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/onerandomusername">@onerandomusername</a> on 2023-03-11 02:24</div>
             <div class="timeline-body"><blockquote>
-<p>That actually does work, but the issue is that the redirect itself is done before we set up the logger (e.g., if the codes are provided as command-line arguments), so the warning doesn't show up in all cases because it's &quot;too soon&quot;.</p>
+<p>That actually does work, but the issue is that the redirect itself is done before we set up the logger (e.g., if the codes are provided as command-line arguments), so the warning doesn&#x27;t show up in all cases because it&#x27;s &quot;too soon&quot;.</p>
 </blockquote>
 <p>If a refactor is necessary than I also think it might be better to show warnings like this near the end of the output.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MithicSpirit">@MithicSpirit</a> on 2023-03-11 02:29</div>
-            <div class="timeline-body"><p>We could make the redirects <code>FxHashMap</code> static (and do the whole spinlocking thing while writing to it), then wait until all of the linting is done to print it out. This would require more refactoring than my solution, but probably less than @charliermarsh's current solution.</p>
+            <div class="timeline-body"><p>We could make the redirects <code>FxHashMap</code> static (and do the whole spinlocking thing while writing to it), then wait until all of the linting is done to print it out. This would require more refactoring than my solution, but probably less than @charliermarsh&#x27;s current solution.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-03-13 23:33</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-13 23:33</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-13 23:33</div>
@@ -137,12 +137,12 @@ fn redirect(code: &amp;str) -&gt; Option&lt;(&amp;'static str, &amp;'static str)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-03-14 15:22</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-14 15:22</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:46:45 UTC
+        Synced at 2026-01-20 18:48:34 UTC
     </footer>
 </body>
 </html>

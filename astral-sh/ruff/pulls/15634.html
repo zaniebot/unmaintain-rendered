@@ -23,12 +23,12 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This PR adds support for relative paths in configurations and the CLI.</p>
 <p>The challenge with relative paths is that they are relative to a different root based on where the configuration value comes from:</p>
 <ul>
 <li>CLI: Paths are relative to the current working directory</li>
-<li>Configuration: Paths are relative to the project's root</li>
+<li>Configuration: Paths are relative to the project&#x27;s root</li>
 </ul>
 <p>While Red Knot already supported relative paths from the CLI, it incorrecty
 resolved relative paths in configuration files as relative to the current working directory.
@@ -38,39 +38,39 @@ resolve to an absolute path when going from &quot;raw&quot; <code>Options</code>
 tuple allows resolving the absolute path when given the <code>project_root</code> and <code>system</code>.</p>
 <p>I plan to generalize the <em>value with a source</em> in a follow up PR where we also start
 tracking the source span for every value to enable rich diagnostics for configuration errors.</p>
-<p>Part of https://github.com/astral-sh/ty/issues/219</p>
-<h2>Alternatives</h2>
+<p>Part of <a href="https://github.com/astral-sh/ty/issues/219">astral-sh/ty#219</a></p>
+Alternatives
 <p>An alternative to using the <code>thread_local</code> for passing the <code>ValueSource</code> would be
 to instead have a <code>Options::apply_source</code> or similar method that changes the source
 for all values recursively. I decided against it because it would require a fair
 bit of boilerplate (or a macro).</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>Added integration tests.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2025-01-21 10:52</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-21 10:52</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @MichaReiser on 2025-01-21 11:06</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-21 11:06</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @MichaReiser on 2025-01-21 11:06</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-21 11:06</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-01-21 11:06</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-21 11:06</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-01-21 11:06</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-21 11:06</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-21 11:09</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
@@ -79,7 +79,7 @@ bit of boilerplate (or a macro).</p>
             <div class="timeline-body"><p>I did a coarse-grained review, but would like to understand the problem better before going into more detail.</p>
 <p>Let me try to rephrase what you wrote just to see if I understand this correctly: The core problem is with options like <code>extra-search-path</code> which represents a list of paths. We could have one path in the list coming from a configuration file (anchored at the directory where the config file resides) and another path coming from the CLI (anchored at the CWD).</p>
 <p>The approach you chose here is to attach that anchor <em>to each and every path</em> in the options struct, which leads to this slightly awkward solution with the thread-local because we create the options struct directly using serde.</p>
-<p>Another approach might be to store a <em>global</em> anchor <em>next to</em> the options struct that we get from a particular source. For the scenario above, we would then have something like <code>(/path/to/project/root, &lt;options read from config file&gt;)</code> and <code>(/path/to/cwd, &lt;options read from CLI&gt;)</code> where each of the deserialized options structs would still contain bare relative paths. The obvious problem with this approach is that we can't <code>Combine</code> those, because for every path in the combined options struct, we wouldn't know what its original anchor was. But what if we turned those <code>Options</code> into <code>Settings</code> (with absolute paths) first, and <em>then</em> used <code>Combine</code> on the <code>Settings</code>? Would that be possible?</p>
+<p>Another approach might be to store a <em>global</em> anchor <em>next to</em> the options struct that we get from a particular source. For the scenario above, we would then have something like <code>(/path/to/project/root, &lt;options read from config file&gt;)</code> and <code>(/path/to/cwd, &lt;options read from CLI&gt;)</code> where each of the deserialized options structs would still contain bare relative paths. The obvious problem with this approach is that we can&#x27;t <code>Combine</code> those, because for every path in the combined options struct, we wouldn&#x27;t know what its original anchor was. But what if we turned those <code>Options</code> into <code>Settings</code> (with absolute paths) first, and <em>then</em> used <code>Combine</code> on the <code>Settings</code>? Would that be possible?</p>
 <p>(Sorry if this is basically what you meant with the alternative solution in the PR description)</p>
 <p>(Edit: the problem is even present for a config option with just a single path, not just with lists of paths)</p>
 </div>
@@ -93,14 +93,14 @@ bit of boilerplate (or a macro).</p>
 <li><code>Configuration</code>: The <code>Options</code> are converted into a <code>Configuration</code>. Multiple <code>Configuration</code>s can be combined together.</li>
 <li><code>Settings</code>: The &quot;resolved&quot; values. That includes filling in default values or using representation optimized for reading (e.g. a configuration listing <code>allowed-types</code> uses a <code>Vec&lt;String&gt;</code> in <code>Options</code> but a <code>Vec&lt;Type&gt;</code> in `Settings).</li>
 </ul>
-<p>This separation has proven to be somewhat painful in Ruff because there's a lot of redundancy: Each structure roughly defines the same fields, only sometimes with slightly different types.</p>
-<p>There's a second problem that I only touched on in the summary: We want to validate the user configuration. Some of those validations are local to a single value and could be done when going from <code>Options</code> to <code>Configuration</code>, for example warning about unknown rules. However, other settings require a global view on all provided configuration values and can only be done once all configurations were merged. An example from Ruff is that we want to warn about conflicting rules. It isn't sufficient to only look at a single configuration before combining it because the user might disable one of the conflicting rules using the CLI.</p>
+<p>This separation has proven to be somewhat painful in Ruff because there&#x27;s a lot of redundancy: Each structure roughly defines the same fields, only sometimes with slightly different types.</p>
+<p>There&#x27;s a second problem that I only touched on in the summary: We want to validate the user configuration. Some of those validations are local to a single value and could be done when going from <code>Options</code> to <code>Configuration</code>, for example warning about unknown rules. However, other settings require a global view on all provided configuration values and can only be done once all configurations were merged. An example from Ruff is that we want to warn about conflicting rules. It isn&#x27;t sufficient to only look at a single configuration before combining it because the user might disable one of the conflicting rules using the CLI.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot/tests/cli.rs</code>:109 on 2025-01-22 14:38</div>
             <div class="timeline-body"><p>Since this is a slightly involved test setup, I think I would appreciate something like</p>
-<pre><code class="language-suggestion">
+<pre><code>
     // Make sure that the CLI fails when the `libs` directory is not in the search path.
     insta::with_settings!({filters =&gt; vec![(&amp;*tempdir_filter(&amp;tempdir), &quot;&lt;temp_dir&gt;/&quot;)]}, {
         assert_cmd_snapshot!(knot().current_dir(&amp;child), @r#&quot;
@@ -132,7 +132,7 @@ bit of boilerplate (or a macro).</p>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_project/src/metadata/value.rs</code>:35 on 2025-01-22 14:44</div>
             <div class="timeline-body"><p>Maybe</p>
-<pre><code class="language-suggestion">    /// but we want to associate each deserialized [`RelativePath`] with the source from
+<pre><code>    /// but we want to associate each deserialized [`RelativePath`] with the source from
     /// which it originated. We use a thread local variable to work around this limitation.
 </code></pre>
 </div>
@@ -156,7 +156,7 @@ bit of boilerplate (or a macro).</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_project/src/metadata/value.rs</code>:50 on 2025-01-22 14:51</div>
-            <div class="timeline-body"><p>It isn't needed but I considered it good practice to leave the environment in the same state as before. It should lead to fewer surprises (e.g. if we ever end up with nested calls for whatever reason.</p>
+            <div class="timeline-body"><p>It isn&#x27;t needed but I considered it good practice to leave the environment in the same state as before. It should lead to fewer surprises (e.g. if we ever end up with nested calls for whatever reason.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -166,7 +166,7 @@ bit of boilerplate (or a macro).</p>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_project/src/metadata/value.rs</code>:20 on 2025-01-22 14:51</div>
             <div class="timeline-body"><p>Minor: Do we need this for something else besides path anchoring? If not, I think I would prefer if this struct were a little more tailored to this use case in terms of naming (<code>ValueSource</code> could mean a lot of things). This would also make the comments a bit simpler(?). Something like</p>
-<pre><code class="language-rs">pub enum PathAnchor {
+<pre><code>pub enum PathAnchor {
     /// …
     RelativeTo(Arc&lt;SystemPathBuf&gt;)
     /// …
@@ -182,10 +182,10 @@ bit of boilerplate (or a macro).</p>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_project/src/metadata/value.rs</code>:97 on 2025-01-22 14:54</div>
             <div class="timeline-body"><p>Maybe</p>
-<pre><code class="language-suggestion">    /// Resolves the absolute path for `self` based on its origin
+<pre><code>    /// Resolves the absolute path for `self` based on its origin
 </code></pre>
 <p>or</p>
-<pre><code class="language-suggestion">    /// Resolves the absolute path for `self` based on the anchor that it originates from
+<pre><code>    /// Resolves the absolute path for `self` based on the anchor that it originates from
 </code></pre>
 <p>(and similar below)</p>
 </div>
@@ -193,7 +193,7 @@ bit of boilerplate (or a macro).</p>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-01-22 14:55</div>
             <div class="timeline-body"><p>Thank you — looks great!</p>
-<p>I don't <em>love</em> the thread-local solution, but your reasoning makes sense — thank you for writing it down!</p>
+<p>I don&#x27;t <em>love</em> the thread-local solution, but your reasoning makes sense — thank you for writing it down!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -202,7 +202,7 @@ bit of boilerplate (or a macro).</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_project/src/metadata/value.rs</code>:20 on 2025-01-22 14:56</div>
-            <div class="timeline-body"><p>The idea is to also use it in diagnostic. E.g. the rule <code>x</code> that you specified via the CLI is unknown or this rule is checked because it was enabled via the CLI. That's why I designed the enum around where the value comes from rather than how it influences path anchoring.</p>
+            <div class="timeline-body"><p>The idea is to also use it in diagnostic. E.g. the rule <code>x</code> that you specified via the CLI is unknown or this rule is checked because it was enabled via the CLI. That&#x27;s why I designed the enum around where the value comes from rather than how it influences path anchoring.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -217,16 +217,16 @@ bit of boilerplate (or a macro).</p>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-22 15:00</div>
             <div class="timeline-body"><blockquote>
-<p>I don't love the thread-local solution, but your reasoning makes sense — thank you for writing it down!</p>
+<p>I don&#x27;t love the thread-local solution, but your reasoning makes sense — thank you for writing it down!</p>
 </blockquote>
-<p>Neither do I :( It's a shame that there's no other solution for passing down state to serde.</p>
-<p>We'll face a similar problem when implementing the JSON schema for rules because the schema also doesn't allow passing down any additional data but we'll need access to the rule registry</p>
+<p>Neither do I :( It&#x27;s a shame that there&#x27;s no other solution for passing down state to serde.</p>
+<p>We&#x27;ll face a similar problem when implementing the JSON schema for rules because the schema also doesn&#x27;t allow passing down any additional data but we&#x27;ll need access to the rule registry</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-01-22 15:15</div>
             <div class="timeline-body"><blockquote>
-<p>Neither do I :( It's a shame that there's no other solution for passing down state to serde.</p>
+<p>Neither do I :( It&#x27;s a shame that there&#x27;s no other solution for passing down state to serde.</p>
 </blockquote>
 <p>Is there a way to do it using <a href="https://docs.rs/serde/1.0.217/serde/de/trait.DeserializeSeed.html"><code>DeserializeSeed</code></a>?</p>
 </div>
@@ -236,22 +236,22 @@ bit of boilerplate (or a macro).</p>
             <div class="timeline-body"><blockquote>
 <p>Is there a way to do it using <a href="https://docs.rs/serde/1.0.217/serde/de/trait.DeserializeSeed.html">DeserializeSeed</a>?</p>
 </blockquote>
-<p>Possibly. I didn't look too much into it, but it seems that you'd have to write your own <code>Deserializer</code> and recognize whenever a <code>RelativePath</code> gets deserialized but maybe this isn't too hard? I can explore that if we want as a follow up PR.</p>
+<p>Possibly. I didn&#x27;t look too much into it, but it seems that you&#x27;d have to write your own <code>Deserializer</code> and recognize whenever a <code>RelativePath</code> gets deserialized but maybe this isn&#x27;t too hard? I can explore that if we want as a follow up PR.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-01-22 16:24</div>
             <div class="timeline-body"><blockquote>
-<p>Possibly. I didn't look too much into it, but it seems that you'd have to write your own <code>Deserializer</code> and recognize whenever a <code>RelativePath</code> gets deserialized but maybe this isn't too hard? I can explore that if we want as a follow up PR.</p>
+<p>Possibly. I didn&#x27;t look too much into it, but it seems that you&#x27;d have to write your own <code>Deserializer</code> and recognize whenever a <code>RelativePath</code> gets deserialized but maybe this isn&#x27;t too hard? I can explore that if we want as a follow up PR.</p>
 </blockquote>
-<p>If it's a pain, and the thread-local version is working, I'd say it's not worth it.</p>
+<p>If it&#x27;s a pain, and the thread-local version is working, I&#x27;d say it&#x27;s not worth it.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @MichaReiser on 2025-01-23 09:14</div>
+            <div class="event">Merged by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-23 09:14</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2025-01-23 09:14</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-23 09:14</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-01-23 09:14</div>
@@ -259,7 +259,7 @@ bit of boilerplate (or a macro).</p>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:09:20 UTC
+        Synced at 2026-01-20 19:10:39 UTC
     </footer>
 </body>
 </html>

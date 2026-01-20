@@ -23,17 +23,17 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/danparizher">@danparizher</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Fixed unclear error messages when <code>line-length</code> configuration values exceed <code>u16::MAX</code> (65535). Previously, values &gt; 65535 would produce a cryptic TOML parsing error &quot;expected u16&quot; instead of a clear validation message. Now all invalid values produce consistent, user-friendly error messages.</p>
 <p>Fixes #21328</p>
-<h2>Problem Analysis</h2>
-<p>The <code>LineLength</code> type's <code>Deserialize</code> implementation attempted to deserialize directly as <code>u16</code>. When TOML contained values exceeding <code>u16::MAX</code> (65535), the TOML deserializer would fail before reaching the validation logic, resulting in unclear error messages:</p>
+Problem Analysis
+<p>The <code>LineLength</code> type&#x27;s <code>Deserialize</code> implementation attempted to deserialize directly as <code>u16</code>. When TOML contained values exceeding <code>u16::MAX</code> (65535), the TOML deserializer would fail before reaching the validation logic, resulting in unclear error messages:</p>
 <ul>
 <li>Values &gt; 65535: <code>&quot;invalid value: integer </code>65536<code>, expected u16&quot;</code> (unclear)</li>
 <li>Values 321-65535: <code>&quot;line-length must be between 1 and 320 (got 500)&quot;</code> (clear)</li>
 </ul>
-<p>This inconsistency violated the TOML spec's requirement to accept arbitrary 64-bit signed integers and handle validation errors gracefully.</p>
-<h2>Approach</h2>
+<p>This inconsistency violated the TOML spec&#x27;s requirement to accept arbitrary 64-bit signed integers and handle validation errors gracefully.</p>
+Approach
 <p>Modified the <code>Deserialize</code> implementation for <code>LineLength</code> in <code>crates/ruff_linter/src/line_width.rs</code> to:</p>
 <ol>
 <li><strong>Deserialize as <code>u64</code> first</strong>: Accept any valid TOML integer value</li>
@@ -50,12 +50,12 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[`configuration`] Fix unclear error messages for line-length values exceeding u16::MAX" to "[`configuration`] Fix unclear error messages for line-length values exceeding `u16::MAX`" by @danparizher on 2025-11-07 23:15</div>
+            <div class="event">Renamed from &quot;[`configuration`] Fix unclear error messages for line-length values exceeding u16::MAX&quot; to &quot;[`configuration`] Fix unclear error messages for line-length values exceeding `u16::MAX`&quot; by <a href="https://github.com/danparizher">@danparizher</a> on 2025-11-07 23:15</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/line_width.rs</code>:66 on 2025-11-10 09:44</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">        // Convert to u16 and validate range
-        // Safe to unwrap since we've already checked value &lt;= u16::MAX
+            <div class="timeline-body"><pre><code>        // Convert to u16 and validate range
+        // Safe to unwrap since we&#x27;ve already checked value &lt;= u16::MAX
         let value = u16::try_from(value).map_err(|_| serde::de::Error::custom(format!(
             &quot;line-length must be between 1 and {} (got {value})&quot;,
             Self::MAX,
@@ -66,7 +66,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/line_width.rs</code>:66 on 2025-11-10 09:46</div>
             <div class="timeline-body"><p>But I suspect we can even merge this with the next branch by doing something like this</p>
-<pre><code class="language-suggestion">				u16::try_from(value)
+<pre><code>				u16::try_from(value)
 					.and_then(|value| Self::try_from(value))
 					.map_err(|_| serde::de::Error::custom(format!(
                 &quot;line-length must be between 1 and {} (got {value})&quot;,
@@ -91,14 +91,14 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-10 18:27</div>
             <div class="timeline-body"><p>Thank you.</p>
-<p>For us reviewers, it's very helpful to get feedback when suggestions don't work (I obviously didn't realize that Rust won't like <code>and_then</code> over different error types) and/or resolve suggestions. It helps us understand which comments were addressed and, if not, why not (without having to clone the PR and applying the changes manually).</p>
+<p>For us reviewers, it&#x27;s very helpful to get feedback when suggestions don&#x27;t work (I obviously didn&#x27;t realize that Rust won&#x27;t like <code>and_then</code> over different error types) and/or resolve suggestions. It helps us understand which comments were addressed and, if not, why not (without having to clone the PR and applying the changes manually).</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @MichaReiser on 2025-11-10 18:29</div>
+            <div class="event">Merged by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-10 18:29</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2025-11-10 18:29</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-10 18:29</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-11-10 18:45</div>
@@ -106,7 +106,7 @@
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:17:03 UTC
+        Synced at 2026-01-20 19:20:20 UTC
     </footer>
 </body>
 </html>

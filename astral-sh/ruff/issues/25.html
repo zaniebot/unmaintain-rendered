@@ -23,14 +23,14 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a></div>
-            <div class="timeline-body"><p>What's the right strategy for autofixing? Should we modify the AST? Should we use the generated rules, and modify via regex? (This is what <a href="https://github.com/PyCQA/autoflake">autoflake</a> does, and there's a start on implementing autofix for F401 in #34.)</p>
+            <div class="timeline-body"><p>What&#x27;s the right strategy for autofixing? Should we modify the AST? Should we use the generated rules, and modify via regex? (This is what <a href="https://github.com/PyCQA/autoflake">autoflake</a> does, and there&#x27;s a start on implementing autofix for F401 in #34.)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Add autofix for f-string rule" to "Implement autofix" by @charliermarsh on 2022-08-28 13:55</div>
+            <div class="event">Renamed from &quot;Add autofix for f-string rule&quot; to &quot;Implement autofix&quot; by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-08-28 13:55</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2022-08-28 13:55</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-08-28 13:55</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-08-28 14:01</div>
@@ -76,18 +76,18 @@
 <li>Adding the <code>CSTTypedVisitorFunctions</code> interface</li>
 <li>Implement <code>_visit_and_replace_children</code> for all nodes, plus all the visitor helpers like <code>visit_iterable</code></li>
 </ul>
-<p>LibCST is very powerful so it's worth exploring. If we adhere closely to their API, we can also get all of the <code>fixit</code> lint rules out of the box <em>and</em> trivially support autofix. The CST would be a super powerful foundation.</p>
+<p>LibCST is very powerful so it&#x27;s worth exploring. If we adhere closely to their API, we can also get all of the <code>fixit</code> lint rules out of the box <em>and</em> trivially support autofix. The CST would be a super powerful foundation.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-01 02:22</div>
-            <div class="timeline-body"><p>Interestingly, it looks like <code>Fixit</code> will lint code repeatedly, applying one autofix at a time, then re-linting, applying the next fix, and so on. I wonder if that's strictly necessary 🤔</p>
+            <div class="timeline-body"><p>Interestingly, it looks like <code>Fixit</code> will lint code repeatedly, applying one autofix at a time, then re-linting, applying the next fix, and so on. I wonder if that&#x27;s strictly necessary 🤔</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-03 16:58</div>
-            <div class="timeline-body"><p>Here's my working summary of how other tools handle this behavior.</p>
-<h3>Flynt</h3>
+            <div class="timeline-body"><p>Here&#x27;s my working summary of how other tools handle this behavior.</p>
+Flynt
 <ol>
 <li>Iterate over the tokens in the source code, finding complete chunks.</li>
 <li>Pass each complete chunk to a method that parses the AST and runs a custom <code>ast.NodeTransformer</code> on the node.</li>
@@ -95,34 +95,34 @@
 <li>Build up the new representation of the code by concatenating the transformed and untransformed chunks as you go.</li>
 </ol>
 <p>The things ruff are missing: <code>NodeTransformer</code> abstraction, AST-to-code generation (something like astor).</p>
-<h3>Fixit</h3>
+Fixit
 <ol>
 <li>Run the Fixit linter over the file.</li>
 <li>Look for &quot;fixable&quot; issues.</li>
 <li>Apply the first fixable issue.</li>
 <li>Repeat up to ~100 iterations.</li>
 </ol>
-<p>To support the actual autofixing, rules can set a <code>replacement_node</code> property when they run. On the Python side, they also implement a codegen API for every CST node. (I'm a little confused because they implement effectively the same interface in <code>LibCST/native</code> on the rust side. I'm not sure if they're codegening the Python codegen code or just maintaining both implementations.)</p>
-<h3>Autoflake</h3>
+<p>To support the actual autofixing, rules can set a <code>replacement_node</code> property when they run. On the Python side, they also implement a codegen API for every CST node. (I&#x27;m a little confused because they implement effectively the same interface in <code>LibCST/native</code> on the rust side. I&#x27;m not sure if they&#x27;re codegening the Python codegen code or just maintaining both implementations.)</p>
+Autoflake
 <ol>
 <li>Run Pyflakes the file.</li>
 <li>Extract the line numbers for the errors it can fix.</li>
 <li>Iterate over the code line-by-line, fixing each error individually. (The fixing is all regex-based, with some additional bookkeeping to support multiline fixes. Whenever they remove code, they add a <code>pass</code> statement, and they do a second pass to remove unnecessary <code>pass</code> statements by iterating over the <code>tokenize.generate_tokens</code> representation for each line.)</li>
 <li>Repeat until the file stops changing.</li>
 </ol>
-<p>ruff could do this, it's just a matter of implementing the same logic.</p>
-<h3>ESLint</h3>
+<p>ruff could do this, it&#x27;s just a matter of implementing the same logic.</p>
+ESLint
 <ul>
 <li>When rules report an error, they can provide a &quot;fix&quot;, which is a function that takes a <code>fixer</code> and modifies the code in some way. The <code>fixer</code> has methods like <code>insertTextBeforeRange</code>, <code>remove(nodeOrToken)</code>, etc. The <code>fixer</code> really just takes those commands and generates a &quot;fix&quot;, which is a source text range and a replacement snippet.</li>
-<li>When they go to apply the fixes, they re-build the source code by cutting the original code, adding in the next fix, and continuing where they left off when they move on to a new fix. They ignore any fixes that have conflicting ranges (so it's just &quot;best effort&quot;).</li>
+<li>When they go to apply the fixes, they re-build the source code by cutting the original code, adding in the next fix, and continuing where they left off when they move on to a new fix. They ignore any fixes that have conflicting ranges (so it&#x27;s just &quot;best effort&quot;).</li>
 </ul>
-<p>ruff could do this... but our AST isn't as good. We don't always have accurate start and end ranges for our nodes, and we don't have a way to go from AST node to token.</p>
+<p>ruff could do this... but our AST isn&#x27;t as good. We don&#x27;t always have accurate start and end ranges for our nodes, and we don&#x27;t have a way to go from AST node to token.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-03 17:09</div>
-            <div class="timeline-body"><p>I think the ESLint approach is the most likely to be performant, since we can continue to use the existing AST (faster parser than LibCST), and we can generate fixes at lint-time (so we don't need to re-lint the file or regenerate the AST or anything). It's also very tractable. It's not going to be as powerful as Fixit/LibCST though.</p>
-<p>Separately, I think the Fixit API is a bit limiting, because you're required to do node replacement at visit-time. I don't think you can support things like &quot;automatically removing unused imports&quot; with this strategy, because you can't detect unused imports until you've traversed the entire AST. (So, when you see an &quot;import&quot; node, you can't <em>know</em> that you have to delete it.)</p>
+            <div class="timeline-body"><p>I think the ESLint approach is the most likely to be performant, since we can continue to use the existing AST (faster parser than LibCST), and we can generate fixes at lint-time (so we don&#x27;t need to re-lint the file or regenerate the AST or anything). It&#x27;s also very tractable. It&#x27;s not going to be as powerful as Fixit/LibCST though.</p>
+<p>Separately, I think the Fixit API is a bit limiting, because you&#x27;re required to do node replacement at visit-time. I don&#x27;t think you can support things like &quot;automatically removing unused imports&quot; with this strategy, because you can&#x27;t detect unused imports until you&#x27;ve traversed the entire AST. (So, when you see an &quot;import&quot; node, you can&#x27;t <em>know</em> that you have to delete it.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -136,12 +136,12 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2022-09-06 14:15</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-06 14:15</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:45:14 UTC
+        Synced at 2026-01-20 18:48:25 UTC
     </footer>
 </body>
 </html>

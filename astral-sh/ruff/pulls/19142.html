@@ -23,81 +23,81 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Infer the type of symbols with a <code>Final</code> qualifier as their right-hand-side inferred type:</p>
-<pre><code class="language-py">x: Final = 1
+<pre><code>x: Final = 1
 y: Final[int] = 1
 
 def _():
     reveal_type(x)  # previously: Unknown, now: Literal[1]
     reveal_type(y)  # int, same as before
 </code></pre>
-<p>Part of https://github.com/astral-sh/ty/issues/158</p>
-<h2>Ecosystem analysis</h2>
-<h3>aiohttp</h3>
-<pre><code class="language-diff">aiohttp (https://github.com/aio-libs/aiohttp)
-+ error[invalid-argument-type] aiohttp/compression_utils.py:131:54: Argument to bound method `__init__` is incorrect: Expected `ZLibBackendProtocol`, found `&lt;module 'zlib'&gt;`
+<p>Part of <a href="https://github.com/astral-sh/ty/issues/158">astral-sh/ty#158</a></p>
+Ecosystem analysis
+aiohttp
+<pre><code>aiohttp (https://github.com/aio-libs/aiohttp)
++ error[invalid-argument-type] aiohttp/compression_utils.py:131:54: Argument to bound method `__init__` is incorrect: Expected `ZLibBackendProtocol`, found `&lt;module &#x27;zlib&#x27;&gt;`
 </code></pre>
 <p>This code <a href="https://github.com/aio-libs/aiohttp/blob/a83597fa88be7ac7dd5f6081d236d751cb40fe4d/aiohttp/compression_utils.py#L52-L77">creates a protocol</a> that looks like</p>
-<pre><code class="language-pyi">class ZLibBackendProtocol(Protocol):
+<pre><code>class ZLibBackendProtocol(Protocol):
     Z_FULL_FLUSH: int
     Z_SYNC_FLUSH: int
     # more fields…
 </code></pre>
 <p>It then <a href="https://github.com/aio-libs/aiohttp/blob/a83597fa88be7ac7dd5f6081d236d751cb40fe4d/aiohttp/compression_utils.py#L131">tries to assign</a> the module literal <code>zlib</code> to that protocol. Howefer, in typeshed, these <code>zlib</code> members are annotated like this:</p>
-<pre><code class="language-pyi">Z_FULL_FLUSH: Final = 3
+<pre><code>Z_FULL_FLUSH: Final = 3
 Z_SYNC_FLUSH: Final = 2
 </code></pre>
 <p>With the proposed change here, we now infer these as <code>Literal[3]</code> / <code>Literal[2]</code>. Since protocol members have to be assignable both ways (invariance), we do not consider <code>zlib</code> assignable to this protocol anymore.</p>
-<p>That seems rather unfortunate. Not sure who is to blame here? That <code>ZLibBackendProtocol</code> protocol should probably not annotate the members with <code>int</code>, given that <code>typeshed</code> doesn't use an explicit annotation here either? But what should they do instead? Annotate those fields with <code>Any</code>?</p>
+<p>That seems rather unfortunate. Not sure who is to blame here? That <code>ZLibBackendProtocol</code> protocol should probably not annotate the members with <code>int</code>, given that <code>typeshed</code> doesn&#x27;t use an explicit annotation here either? But what should they do instead? Annotate those fields with <code>Any</code>?</p>
 <p>Or is it another case where we should consider literal-widening?</p>
 <p>FYI @AlexWaygood</p>
-<h3>cloud-init</h3>
-<pre><code class="language-diff">cloud-init (https://github.com/canonical/cloud-init)
+cloud-init
+<pre><code>cloud-init (https://github.com/canonical/cloud-init)
 + error[invalid-argument-type] tests/unittests/sources/test_smartos.py:575:32: Argument to function `oct` is incorrect: Expected `SupportsIndex`, found `int | float`
 + error[invalid-argument-type] tests/unittests/sources/test_smartos.py:593:32: Argument to function `oct` is incorrect: Expected `SupportsIndex`, found `int | float`
 + error[invalid-argument-type] tests/unittests/sources/test_smartos.py:647:35: Argument to function `oct` is incorrect: Expected `SupportsIndex`, found `int | float`
 </code></pre>
 <p>New false positives on expressions like <code>oct(os.stat(legacy_script_f)[stat.ST_MODE])</code>. We now correctly infer <code>stat.ST_MODE</code> as <code>Literal[1]</code>, because in typeshed, it is annotated as <code>ST_MODE: Final = 0</code>. <code>os.stat</code> returns a <code>stat_result</code> which is a tuple subclass. Accessing it at index 0 should return an <code>int</code>, but we currently return <code>int | float</code>, presumably due to missing support for tuple subclasses (FYI @AlexWaygood):</p>
-<pre><code class="language-pyi">class stat_result(structseq[float], tuple[int, int, int, int, int, int, int, float, float, float]):
+<pre><code>class stat_result(structseq[float], tuple[int, int, int, int, int, int, int, float, float, float]):
 </code></pre>
 <p>In terms of <code>typing.Final</code>, things are working as expected here.</p>
-<h3>pywin-32</h3>
+pywin-32
 <p>Many new false positives similar to:</p>
-<pre><code class="language-diff">pywin32 (https://github.com/mhammond/pywin32)
+<pre><code>pywin32 (https://github.com/mhammond/pywin32)
 + error[invalid-argument-type] Pythonwin/pywin/docking/DockingBar.py:288:55: Argument to function `LoadCursor` is incorrect: Expected `PyResourceId`, found `Literal[32645]`
 </code></pre>
 <p>The line in question calls <code>win32api.LoadCursor(0, win32con.IDC_ARROW)</code>. The <code>win32con.IDC_ARROW</code> symbol is annotated as <a href="https://github.com/python/typeshed/blob/2408c028f4f677e0db4eabef0c70e9f6ab33e365/stubs/pywin32/win32/lib/win32con.pyi#L594"><code>IDC_ARROW: Final = 32512</code> in typeshed</a>, but <a href="https://github.com/python/typeshed/blob/2408c028f4f677e0db4eabef0c70e9f6ab33e365/stubs/pywin32/win32/win32api.pyi#L197"><code>LoadCursor</code></a> expects a <a href="https://github.com/python/typeshed/blob/2408c028f4f677e0db4eabef0c70e9f6ab33e365/stubs/pywin32/_win32typing.pyi#L1252"><code>PyResourceId</code></a>, which is an empty class. So.. this seems like a true positive to me, unless that typeshed annotation of <code>IDC_ARROW</code> is meant to imply that the type should be <code>Unknown</code>/<code>Any</code>?</p>
-<h3>streamlit</h3>
-<pre><code class="language-diff">streamlit (https://github.com/streamlit/streamlit)
+streamlit
+<pre><code>streamlit (https://github.com/streamlit/streamlit)
 + error[invalid-argument-type] lib/streamlit/string_util.py:163:37: Argument to bound method `translate` is incorrect: Expected `bytes`, found `bytearray`
 </code></pre>
 <p>This looks like a true positive? The code calls <code>inp.translate(None, TEXTCHARS)</code>. <code>inp</code> is <code>bytes</code>, and <code>TEXTCHARS</code> is:</p>
-<pre><code class="language-py">TEXTCHARS: Final = bytearray(
+<pre><code>TEXTCHARS: Final = bytearray(
     {7, 8, 9, 10, 12, 13, 27} | set(range(0x20, 0x100)) - {0x7F}
 )
 </code></pre>
 <p>~~We now infer this as <code>bytearray</code>, but <code>bytes.translate</code> <a href="https://github.com/python/typeshed/blob/2408c028f4f677e0db4eabef0c70e9f6ab33e365/stdlib/builtins.pyi#L710">expects <code>bytes</code> for its <code>delete</code> parameter</a>. This seems to work at runtime, so maybe the typeshed annotation is wrong?~~ (Edit: this is now fixed in typeshed)</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; b&quot;abc&quot;.translate(None, bytearray(b&quot;b&quot;))
-b'ac'
+<pre><code>&gt;&gt;&gt; b&quot;abc&quot;.translate(None, bytearray(b&quot;b&quot;))
+b&#x27;ac&#x27;
 </code></pre>
-<h2>rotki</h2>
-<pre><code class="language-diff">+ error[invalid-return-type] rotkehlchen/chain/ethereum/modules/yearn/decoder.py:412:13: Return type does not match returned value: expected `dict[Unknown, str]`, found `dict[Unknown, Literal[&quot;yearn-v1&quot;, &quot;yearn-v2&quot;]]`
+rotki
+<pre><code>+ error[invalid-return-type] rotkehlchen/chain/ethereum/modules/yearn/decoder.py:412:13: Return type does not match returned value: expected `dict[Unknown, str]`, found `dict[Unknown, Literal[&quot;yearn-v1&quot;, &quot;yearn-v2&quot;]]`
 </code></pre>
 <p>The code in question looks like</p>
-<pre><code class="language-py">    def addresses_to_counterparties(self) -&gt; dict[ChecksumEvmAddress, str]:
+<pre><code>    def addresses_to_counterparties(self) -&gt; dict[ChecksumEvmAddress, str]:
         return dict.fromkeys(self.vaults, CPT_BEEFY_FINANCE)
 </code></pre>
-<p>where <code>CPT_BEEFY_FINANCE: Final = 'beefy_finance'. We previously inferred the value type of the returned </code>dict<code>as</code>Unknown<code>, and now we infer it as </code>Literal[&quot;beefy_finance&quot;]<code>, which does not match the annotated return type because </code>dict` is invariant in the value type.</p>
-<pre><code class="language-diff">+ error[invalid-argument-type] rotkehlchen/tests/unit/decoders/test_curve.py:249:9: Argument is incorrect: Expected `int`, found `FVal`
+<p>where <code>CPT_BEEFY_FINANCE: Final = &#x27;beefy_finance&#x27;. We previously inferred the value type of the returned </code>dict<code>as</code>Unknown<code>, and now we infer it as </code>Literal[&quot;beefy_finance&quot;]<code>, which does not match the annotated return type because </code>dict` is invariant in the value type.</p>
+<pre><code>+ error[invalid-argument-type] rotkehlchen/tests/unit/decoders/test_curve.py:249:9: Argument is incorrect: Expected `int`, found `FVal`
 </code></pre>
 <p>There are true positives that were previously silenced through the <code>Unknown</code>.</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>New Markdown tests</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @sharkdp on 2025-07-04 08:53</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-04 08:53</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-04 08:53</div>
@@ -110,13 +110,13 @@ b'ac'
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-04 08:56</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">parso (https://github.com/davidhalter/parso)
+Changes were detected when running on open source projects
+
+<pre><code>parso (https://github.com/davidhalter/parso)
 -     memo fields = ~49MB
 +     memo fields = ~54MB
 
@@ -141,8 +141,8 @@ hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
 + info[revealed-type] tests/annotations/declarations.py:122:9: Revealed type: `@Todo(unsupported nested subscript in type[X])`
 - info[revealed-type] tests/annotations/declarations.py:233:9: Revealed type: `Unknown`
 + info[revealed-type] tests/annotations/declarations.py:233:9: Revealed type: `@Todo(unsupported nested subscript in type[X])`
-- error[invalid-argument-type] tests/annotations/declarations.py:434:26: Argument to function `make_config` is incorrect: Expected `tuple[type[DataClass_], ...]`, found `tuple[type[DataClass], Unknown, &lt;class 'P3'&gt;, Unknown]`
-+ error[invalid-argument-type] tests/annotations/declarations.py:434:26: Argument to function `make_config` is incorrect: Expected `tuple[type[DataClass_], ...]`, found `tuple[type[DataClass], @Todo(unsupported nested subscript in type[X]), &lt;class 'P3'&gt;, @Todo(unsupported nested subscript in type[X])]`
+- error[invalid-argument-type] tests/annotations/declarations.py:434:26: Argument to function `make_config` is incorrect: Expected `tuple[type[DataClass_], ...]`, found `tuple[type[DataClass], Unknown, &lt;class &#x27;P3&#x27;&gt;, Unknown]`
++ error[invalid-argument-type] tests/annotations/declarations.py:434:26: Argument to function `make_config` is incorrect: Expected `tuple[type[DataClass_], ...]`, found `tuple[type[DataClass], @Todo(unsupported nested subscript in type[X]), &lt;class &#x27;P3&#x27;&gt;, @Todo(unsupported nested subscript in type[X])]`
 - warning[unused-ignore-comment] tests/annotations/declarations.py:495:15: Unused blanket `type: ignore` directive
 - warning[unused-ignore-comment] tests/annotations/declarations.py:859:31: Unused blanket `type: ignore` directive
 - warning[unused-ignore-comment] tests/annotations/declarations.py:1238:45: Unused blanket `type: ignore` directive
@@ -263,7 +263,7 @@ pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
 +     memo metadata = ~30MB
 
 aiohttp (https://github.com/aio-libs/aiohttp)
-+ error[invalid-argument-type] aiohttp/compression_utils.py:131:54: Argument to bound method `__init__` is incorrect: Expected `ZLibBackendProtocol`, found `&lt;module 'zlib'&gt;`
++ error[invalid-argument-type] aiohttp/compression_utils.py:131:54: Argument to bound method `__init__` is incorrect: Expected `ZLibBackendProtocol`, found `&lt;module &#x27;zlib&#x27;&gt;`
 - Found 176 diagnostics
 + Found 177 diagnostics
 
@@ -303,29 +303,29 @@ rotki (https://github.com/rotki/rotki)
 + Found 1725 diagnostics
 
 </code></pre>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-07-04 08:58</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-04 08:58</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-04 10:25</div>
             <div class="timeline-body"><blockquote>
 <p>With the proposed change here, we now infer these as <code>Literal[3]</code> / <code>Literal[2]</code>. Since protocol members have to be assignable both ways (invariance), we do not consider <code>zlib</code> assignable to this protocol anymore.</p>
-<p>That seems rather unfortunate. Not sure who is to blame here? That <code>ZLibBackendProtocol</code> protocol should probably not annotate the members with <code>int</code>, given that <code>typeshed</code> doesn't use an explicit annotation here either? But what should they do instead? Annotate those fields with <code>Any</code>?</p>
+<p>That seems rather unfortunate. Not sure who is to blame here? That <code>ZLibBackendProtocol</code> protocol should probably not annotate the members with <code>int</code>, given that <code>typeshed</code> doesn&#x27;t use an explicit annotation here either? But what should they do instead? Annotate those fields with <code>Any</code>?</p>
 <p>Or is it another case where we should consider literal-widening?</p>
 </blockquote>
-<p>I think our behaviour is correct here. Even if we put aside the issue of variance, the module still shouldn't satisfy <code>ZLibBackendProtocol</code>, because the protocol declares <code>Z_FULL_FLUSH</code> and <code>Z_SYNC_FLUSH</code> as mutable attribute members -- but because these members are declared as <code>Final</code> in the module, they therefore cannot be reassigned on the class, so they are immutable, so they should not satisfy the protocol interface. (We don't yet look at qualifiers when deciding subtyping/assignability of types to protocol types, but we'll need to in due course.)</p>
+<p>I think our behaviour is correct here. Even if we put aside the issue of variance, the module still shouldn&#x27;t satisfy <code>ZLibBackendProtocol</code>, because the protocol declares <code>Z_FULL_FLUSH</code> and <code>Z_SYNC_FLUSH</code> as mutable attribute members -- but because these members are declared as <code>Final</code> in the module, they therefore cannot be reassigned on the class, so they are immutable, so they should not satisfy the protocol interface. (We don&#x27;t yet look at qualifiers when deciding subtyping/assignability of types to protocol types, but we&#x27;ll need to in due course.)</p>
 <p>For the module to satisfy the protocol, either the members on the module would need to be made mutable (and declared as <code>int</code> if the author wants precise types), e.g.</p>
-<pre><code class="language-diff">- Z_FULL_FLUSH: Final = 3
+<pre><code>- Z_FULL_FLUSH: Final = 3
 - Z_SYNC_FLUSH: Final = 2
 + Z_FULL_FLUSH: int = 3
 + Z_SYNC_FLUSH: int = 2
 </code></pre>
 <p>or the protocol would need to be changed so that it uses immutable, covariant members rather than mutable, invariant members. The only way to do that on a protocol currently (at least until https://peps.python.org/pep-0767/ is approved) is to use <code>@property</code> members:</p>
-<pre><code class="language-diff">  class ZLibBackendProtocol(Protocol):
+<pre><code>  class ZLibBackendProtocol(Protocol):
 -     Z_FULL_FLUSH: int
 -     Z_SYNC_FLUSH: int
 +     @property
@@ -348,42 +348,42 @@ rotki (https://github.com/rotki/rotki)
             <div class="timeline-body"><blockquote>
 <p>We now infer this as <code>bytearray</code>, but <code>bytes.translate</code> <a href="https://github.com/python/typeshed/blob/2408c028f4f677e0db4eabef0c70e9f6ab33e365/stdlib/builtins.pyi#L710">expects <code>bytes</code> for its <code>delete</code> parameter</a>. This seems to work at runtime, so maybe the typeshed annotation is wrong?</p>
 <pre><code>&gt;&gt;&gt; b&quot;abc&quot;.translate(None, bytearray(b&quot;b&quot;))
-b'ac'
+b&#x27;ac&#x27;
 </code></pre>
 </blockquote>
-<p>That sounds like a typeshed bug, yes. I think it's probably a remnant of a special case that used to exist in the type system, but now no longer does, where <code>bytes</code> in a type expression would be interpreted in a similar way to <code>bytes | bytearray | memoryview</code> by type checkers in some situations (similar to the special case that still exists for <code>float</code>/<code>int</code>/<code>complex</code>). See https://peps.python.org/pep-0688 for details.</p>
+<p>That sounds like a typeshed bug, yes. I think it&#x27;s probably a remnant of a special case that used to exist in the type system, but now no longer does, where <code>bytes</code> in a type expression would be interpreted in a similar way to <code>bytes | bytearray | memoryview</code> by type checkers in some situations (similar to the special case that still exists for <code>float</code>/<code>int</code>/<code>complex</code>). See https://peps.python.org/pep-0688 for details.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[ty] Use inferred type for `Final` symbols" to "[ty] Use RHS inferred type for bare `Final` symbols" by @sharkdp on 2025-07-07 09:16</div>
+            <div class="event">Renamed from &quot;[ty] Use inferred type for `Final` symbols&quot; to &quot;[ty] Use RHS inferred type for bare `Final` symbols&quot; by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-07 09:16</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-07-07 09:18</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-07 09:18</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-07-07 10:03</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-07 10:03</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @sharkdp on 2025-07-07 10:24</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-07 10:24</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @sharkdp on 2025-07-07 10:24</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-07 10:24</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-07-07 10:24</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-07 10:24</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @sharkdp on 2025-07-07 10:24</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-07 10:24</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/place.rs</code>:540 on 2025-07-07 10:57</div>
             <div class="timeline-body"><p>Does this mean that we would consider <code>x</code> to be &quot;qualified with bare <code>Final</code>&quot; here?</p>
-<pre><code class="language-py">from ty_extensions import Unknown
+<pre><code>from ty_extensions import Unknown
 from typing import Final
 
 x: Final[Unknown]
 </code></pre>
-<p>I think that's okay if so; people just shouldn't do that ;)</p>
+<p>I think that&#x27;s okay if so; people just shouldn&#x27;t do that ;)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -397,14 +397,14 @@ x: Final[Unknown]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/place.rs</code>:540 on 2025-07-07 11:16</div>
-            <div class="timeline-body"><p>Yes, well spotted :smile:. I agree that it's not as clean as it could be. The alternative is much more complicated as it requires us to return <code>Option&lt;Type&gt;</code> and <code>TypeQualifiers</code> instead of just <code>Type</code> and <code>TypeQualifiers</code> from <code>infer_annotation_expression</code> and related methods (such that we could return <code>None</code> for a bare <code>Final</code> or <code>ClassVar</code>), which has a lot of downstream consequences.</p>
+            <div class="timeline-body"><p>Yes, well spotted :smile:. I agree that it&#x27;s not as clean as it could be. The alternative is much more complicated as it requires us to return <code>Option&lt;Type&gt;</code> and <code>TypeQualifiers</code> instead of just <code>Type</code> and <code>TypeQualifiers</code> from <code>infer_annotation_expression</code> and related methods (such that we could return <code>None</code> for a bare <code>Final</code> or <code>ClassVar</code>), which has a lot of downstream consequences.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @sharkdp on 2025-07-07 11:16</div>
+            <div class="event">Merged by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-07 11:16</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @sharkdp on 2025-07-07 11:16</div>
+            <div class="event">Closed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-07 11:16</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-07-07 11:16</div>
@@ -412,7 +412,7 @@ x: Final[Unknown]
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:13:58 UTC
+        Synced at 2026-01-20 19:16:16 UTC
     </footer>
 </body>
 </html>

@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/kwaegel">@kwaegel</a></div>
-            <div class="timeline-body"><p>I have a project that uses a private JFrog Artifactory repository to host internal packages, and as a proxy for PyPi. I just noticed that calling <code>uv add internal_package==specific_version</code> when overriding with <code>UV_DEFAULT_INDEX</code> will leak credentials into the <code>pyproject.toml</code> file, even if the lockfile isn't modified.</p>
+            <div class="timeline-body"><p>I have a project that uses a private JFrog Artifactory repository to host internal packages, and as a proxy for PyPi. I just noticed that calling <code>uv add internal_package==specific_version</code> when overriding with <code>UV_DEFAULT_INDEX</code> will leak credentials into the <code>pyproject.toml</code> file, even if the lockfile isn&#x27;t modified.</p>
 <p>Original index entry (company name redacted):</p>
 <pre><code># Set JFrog Artifactory as the default index.
 [[tool.uv.index]]
@@ -50,45 +50,45 @@ default = true
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "`uv add` leaks credentials to `tool.uv.index`" to "`uv add` leaks credentials to `tool.uv.index` when `UV_DEFAULT_INDEX` is set" by @kwaegel on 2024-10-23 01:25</div>
+            <div class="event">Renamed from &quot;`uv add` leaks credentials to `tool.uv.index`&quot; to &quot;`uv add` leaks credentials to `tool.uv.index` when `UV_DEFAULT_INDEX` is set&quot; by <a href="https://github.com/kwaegel">@kwaegel</a> on 2024-10-23 01:25</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kwaegel">@kwaegel</a> on 2024-10-23 03:07</div>
-            <div class="timeline-body"><p>I tried using <code>UV_INDEX_URL</code> (which is marked as deprecated) instead of <code>UV_DEFAULT_INDEX</code>, and it seems to work without leaking credentials, but it also emitted a warning suggesting that the behaviour I'm seeing might be intentional?</p>
+            <div class="timeline-body"><p>I tried using <code>UV_INDEX_URL</code> (which is marked as deprecated) instead of <code>UV_DEFAULT_INDEX</code>, and it seems to work without leaking credentials, but it also emitted a warning suggesting that the behaviour I&#x27;m seeing might be intentional?</p>
 <pre><code>warning: Indexes specified via `--index-url` will not be persisted to the `pyproject.toml` file; use `--default-index` instead.
 </code></pre>
 <p>Not sure what to do in this case, since I want to set <code>UV_INDEX_URL</code> (for <code>uv pip</code> commands to pick up), but also not overwrite/leak credentials when I already have <code>pyproject.toml</code> configured properly.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-10-23 12:55</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-23 12:55</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-10-23 12:55</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-23 12:55</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-23 12:55</div>
-            <div class="timeline-body"><p>It's just a bug. We shouldn't be overwriting with credentials like that IMO.</p>
+            <div class="timeline-body"><p>It&#x27;s just a bug. We shouldn&#x27;t be overwriting with credentials like that IMO.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-23 13:39</div>
-            <div class="timeline-body"><p>I'll fix it for today's release.</p>
+            <div class="timeline-body"><p>I&#x27;ll fix it for today&#x27;s release.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-10-23 14:57</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-23 14:57</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dan-jacobson">@dan-jacobson</a> on 2024-11-12 00:14</div>
-            <div class="timeline-body"><p>Hey @charliermarsh, I'm still seeing a variant of this behavior with <code>uv 0.5.1</code>, IF the <code>UV_DEFAULT_INDEX</code> is set, but there's no existing <code>[[tool.uv.index]]</code> in the <code>pyproject.toml</code>.</p>
-<p>Just to be clear, it's not overwriting the existing <code>[[tool.uv.index]]</code> anymore, it's only setting when it's blank. So I can go in and delete the token when I know to look for it.</p>
+            <div class="timeline-body"><p>Hey @charliermarsh, I&#x27;m still seeing a variant of this behavior with <code>uv 0.5.1</code>, IF the <code>UV_DEFAULT_INDEX</code> is set, but there&#x27;s no existing <code>[[tool.uv.index]]</code> in the <code>pyproject.toml</code>.</p>
+<p>Just to be clear, it&#x27;s not overwriting the existing <code>[[tool.uv.index]]</code> anymore, it&#x27;s only setting when it&#x27;s blank. So I can go in and delete the token when I know to look for it.</p>
 <p>But it does leak creds into <code>pyproject.toml</code> going through a standard new project workflow of <code>uv init</code> -&gt; <code>uv add</code> with my <code>UV_DEFAULT_INDEX</code> set. Feels like this has a decent potential to be a foot-gun.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-12 03:42</div>
-            <div class="timeline-body"><p>You're right! Thanks.</p>
+            <div class="timeline-body"><p>You&#x27;re right! Thanks.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -96,18 +96,18 @@ default = true
             <div class="timeline-body"><p>Hey,</p>
 <p>Sorry to chime in on a closed issue, but I did get owned by this issue recently, using <code>uv==0.5.11</code>.
 Both <code>UV_DEFAULT_INDEX</code> and <code>UV_EXTRA_INDEX_URL</code> are defined as environment variables, but I did not set anything in <code>pyproject.toml</code>, so using <code>uv add library</code> leaked my private info.</p>
-<p>I have read the docs on configuration and private indexes, but I don't get the point of defining a <code>[[tool.uv.index]]</code> entry in the <code>pyproject.toml</code> if you have environment variables or a proper global <code>uv.toml</code> file.</p>
+<p>I have read the docs on configuration and private indexes, but I don&#x27;t get the point of defining a <code>[[tool.uv.index]]</code> entry in the <code>pyproject.toml</code> if you have environment variables or a proper global <code>uv.toml</code> file.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-06 15:16</div>
-            <div class="timeline-body"><p>That's ok. I thought I fixed it but I may be misremembering -- I'll look again today.</p>
+            <div class="timeline-body"><p>That&#x27;s ok. I thought I fixed it but I may be misremembering -- I&#x27;ll look again today.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:27:53 UTC
+        Synced at 2026-01-20 19:34:59 UTC
     </footer>
 </body>
 </html>

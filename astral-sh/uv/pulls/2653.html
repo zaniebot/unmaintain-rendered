@@ -23,35 +23,35 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This PR removes our dependabot configuration, and replaces it with renovate. The motivations are:</p>
 <ul>
 <li>Renovate will also update our pre-commit dependencies</li>
-<li>It's good to keep this kind of configuration in sync between the two repositories, and we just switched Ruff over in https://github.com/astral-sh/ruff/pull/10567</li>
+<li>It&#x27;s good to keep this kind of configuration in sync between the two repositories, and we just switched Ruff over in <a href="https://github.com/astral-sh/ruff/pull/10567">astral-sh/ruff#10567</a></li>
 <li>Renovate supports the <code>update-lockfile</code> strategy for Cargo dependencies, and dependabot <a href="https://github.com/dependabot/dependabot-core/issues/4009">does not</a>.</li>
 </ul>
-<p>The only differences to the configuration we added to Ruff in https://github.com/astral-sh/ruff/pull/10567 are that I haven't selected the <code>npm</code> or <code>pep621</code> package managers for the <code>uv</code> repo. We don't seem to have any npm or PEP-621 dependencies in this repo right now (unlike in Ruff), and the PEP-621 manager in particular looks like it might have some false positives in the <code>scripts/</code> directory, which has lots of benchmark-related <code>pyproject.toml</code> files with dependencies that we probably don't really want to update.</p>
-<h2>Test Plan</h2>
-<!-- How was it tested? -->
+<p>The only differences to the configuration we added to Ruff in <a href="https://github.com/astral-sh/ruff/pull/10567">astral-sh/ruff#10567</a> are that I haven&#x27;t selected the <code>npm</code> or <code>pep621</code> package managers for the <code>uv</code> repo. We don&#x27;t seem to have any npm or PEP-621 dependencies in this repo right now (unlike in Ruff), and the PEP-621 manager in particular looks like it might have some false positives in the <code>scripts/</code> directory, which has lots of benchmark-related <code>pyproject.toml</code> files with dependencies that we probably don&#x27;t really want to update.</p>
+Test Plan
 
-<p>I used renovate's CLI tool (which you install via npm) to validate the configuration locally:</p>
-<pre><code class="language-sh">(renovate-switch) % npx --yes --package renovate -- renovate-config-validator                  ~/dev/uv
+
+<p>I used renovate&#x27;s CLI tool (which you install via npm) to validate the configuration locally:</p>
+<pre><code>(renovate-switch) % npx --yes --package renovate -- renovate-config-validator                  ~/dev/uv
 (node:1829) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
 (Use `node --trace-deprecation ...` to show where the warning was created)
  INFO: Validating .github/renovate.json5
  INFO: Config validated successfully
 </code></pre>
-<p>Once this PR is merged and the bot has been granted authorisation, it will either open an issue similar to https://github.com/astral-sh/ruff/issues/10578 (if the configuration is all okay) or an issue similar to https://github.com/python/typeshed/issues/11586 (if there are errors in the configuration).</p>
+<p>Once this PR is merged and the bot has been granted authorisation, it will either open an issue similar to <a href="https://github.com/astral-sh/ruff/issues/10578">astral-sh/ruff#10578</a> (if the configuration is all okay) or an issue similar to <a href="https://github.com/python/typeshed/issues/11586">python/typeshed#11586</a> (if there are errors in the configuration).</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @zanieb by @AlexWaygood on 2024-03-25 18:53</div>
+            <div class="event">Review requested from <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-25 18:53</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @zanieb by @AlexWaygood on 2024-03-25 18:53</div>
+            <div class="event">Assigned to <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-25 18:53</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Unassigned @zanieb by @AlexWaygood on 2024-03-25 18:54</div>
+            <div class="event">Unassigned <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-25 18:54</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-25 19:04</div>
@@ -68,14 +68,14 @@
 <p>We <em>could</em> use PEP 621 for <a href="https://github.com/astral-sh/uv/blob/main/scripts/scenarios/requirements.in?rgh-link-date=2024-03-25T19%3A04%3A10Z"><code>main</code>/scripts/scenarios/requirements.in</a> and <a href="https://github.com/astral-sh/uv/blob/main/scripts/release/requirements.in?rgh-link-date=2024-03-25T19%3A04%3A10Z"><code>main</code>/scripts/release/requirements.in</a> if we wanted</p>
 </blockquote>
 <p>The PEP-621 manager is just for <code>pyproject.toml</code> files.</p>
-<p>If we wanted those files to be autoupdated as they currently are, I think either we'd use the <a href="https://docs.renovatebot.com/modules/manager/pip_requirements/"><code>pip_requirements</code> manager</a>, in which case it would update the <code>requirements.in</code> file but not the <code>requirements.txt</code> file (not really what we want), or we'd use the <a href="https://docs.renovatebot.com/modules/manager/pip-compile/"><code>pip-compile</code> manager</a>, which would mean that renovate would generate the <code>requirements.txt</code> file from the <code>requirements.in</code> file using <code>pip-compile</code>. That's closer to what we want, but it feels kinda funny to have <code>uv</code> depend on <code>pip-compile</code> internally, even if it's only via renovate 😄. I'm also a big proponent of us eating our own dogfood where possible.</p>
+<p>If we wanted those files to be autoupdated as they currently are, I think either we&#x27;d use the <a href="https://docs.renovatebot.com/modules/manager/pip_requirements/"><code>pip_requirements</code> manager</a>, in which case it would update the <code>requirements.in</code> file but not the <code>requirements.txt</code> file (not really what we want), or we&#x27;d use the <a href="https://docs.renovatebot.com/modules/manager/pip-compile/"><code>pip-compile</code> manager</a>, which would mean that renovate would generate the <code>requirements.txt</code> file from the <code>requirements.in</code> file using <code>pip-compile</code>. That&#x27;s closer to what we want, but it feels kinda funny to have <code>uv</code> depend on <code>pip-compile</code> internally, even if it&#x27;s only via renovate 😄. I&#x27;m also a big proponent of us eating our own dogfood where possible.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @AlexWaygood on 2024-03-25 19:26</div>
+            <div class="event">Merged by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-25 19:26</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2024-03-25 19:26</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-25 19:26</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-03-25 19:26</div>
@@ -83,7 +83,7 @@
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:36:15 UTC
+        Synced at 2026-01-20 19:44:29 UTC
     </footer>
 </body>
 </html>

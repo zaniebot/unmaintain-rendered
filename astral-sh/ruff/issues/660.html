@@ -24,31 +24,31 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a></div>
             <div class="timeline-body"><p>If we have a line like:</p>
-<pre><code class="language-py">x: Union[int, Option[str]]
+<pre><code>x: Union[int, Option[str]]
 </code></pre>
-<p>Then if the relevant rules and Python version permit it, we'd like to autofix that line to:</p>
-<pre><code class="language-py">x: int | str | None
+<p>Then if the relevant rules and Python version permit it, we&#x27;d like to autofix that line to:</p>
+<pre><code>x: int | str | None
 </code></pre>
-<p>However, as-is, that requires two overlapping fixes, which we don't support. So Ruff will fix the outer rule (to <code>x: int | Option[str]</code>), then fix the inner rule if you re-run it (<code>x: int | str | None</code>).</p>
-<p>We need to implement an autofix strategy that's amenable to multiple &quot;concurrent&quot; fixes.</p>
+<p>However, as-is, that requires two overlapping fixes, which we don&#x27;t support. So Ruff will fix the outer rule (to <code>x: int | Option[str]</code>), then fix the inner rule if you re-run it (<code>x: int | str | None</code>).</p>
+<p>We need to implement an autofix strategy that&#x27;s amenable to multiple &quot;concurrent&quot; fixes.</p>
 <p>This will also apply to import sorting: we want to be able to remove unused imports <em>and</em> re-sort imports in a single pass.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2022-11-08 14:43</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-08 14:43</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-08 14:47</div>
-            <div class="timeline-body"><p>I don't know how to implement this yet. I need to do some research. But a few ideas come to mind:</p>
+            <div class="timeline-body"><p>I don&#x27;t know how to implement this yet. I need to do some research. But a few ideas come to mind:</p>
 <ol>
 <li>Structure it as a CRDT-like concurrent editing problem. Use CRDTs or similar to enable us to reconcile these kinds of concurrent edits.</li>
-<li>Re-write rules to batch these changes. For example, above, maybe we just surface a <em>single</em> error with the autofix for the entire expression, rather than emitting an error for <code>Union</code> and an error for <code>Option</code>. This is pretty limiting, as it wouldn't work for (e.g.) the unused import + re-order import case.</li>
-<li>Make the fix API more AST-aware? Enable some kind of composition semantics, such that if we know we're replacing a list of Statements with a list of Statements, then we should allow any edits of the form Statement -&gt; Statement.</li>
+<li>Re-write rules to batch these changes. For example, above, maybe we just surface a <em>single</em> error with the autofix for the entire expression, rather than emitting an error for <code>Union</code> and an error for <code>Option</code>. This is pretty limiting, as it wouldn&#x27;t work for (e.g.) the unused import + re-order import case.</li>
+<li>Make the fix API more AST-aware? Enable some kind of composition semantics, such that if we know we&#x27;re replacing a list of Statements with a list of Statements, then we should allow any edits of the form Statement -&gt; Statement.</li>
 </ol>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Implement conflicting autofixes" to "Handle conflicting autofix instructions" by @charliermarsh on 2022-11-08 20:01</div>
+            <div class="event">Renamed from &quot;Implement conflicting autofixes&quot; to &quot;Handle conflicting autofix instructions&quot; by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-08 20:01</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ljodal">@ljodal</a> on 2022-11-08 21:53</div>
@@ -59,9 +59,9 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-08 22:09</div>
-            <div class="timeline-body"><p>Yeah! We use LibCST internally to power some (not all) of our autofix operations. However, I think that LibCST's visitor API is entirely defined on the Python side, so I haven't used it before (we just use the CST parser and the ability to generate code from a modified CST struct)...</p>
-<p>I do like what you're describing here. The main challenge, as-is, is that we don't actually create a CST for every module -- we create them eagerly, since CST generation is quite expensive. When we want to autofix something via LibCST, we extract the source code (using the delimiters defined by the AST), pass it to LibCST, generate the modified source, and then treat that source-to-source replacement as the &quot;fix&quot;.</p>
-<p>In other words, as-implemented, the individual fix operations have access to a CST, but there's no concept of passing the modified code or CST from check to check. (That's not to say we can't use this approach; rather, that it would take work.)</p>
+            <div class="timeline-body"><p>Yeah! We use LibCST internally to power some (not all) of our autofix operations. However, I think that LibCST&#x27;s visitor API is entirely defined on the Python side, so I haven&#x27;t used it before (we just use the CST parser and the ability to generate code from a modified CST struct)...</p>
+<p>I do like what you&#x27;re describing here. The main challenge, as-is, is that we don&#x27;t actually create a CST for every module -- we create them eagerly, since CST generation is quite expensive. When we want to autofix something via LibCST, we extract the source code (using the delimiters defined by the AST), pass it to LibCST, generate the modified source, and then treat that source-to-source replacement as the &quot;fix&quot;.</p>
+<p>In other words, as-implemented, the individual fix operations have access to a CST, but there&#x27;s no concept of passing the modified code or CST from check to check. (That&#x27;s not to say we can&#x27;t use this approach; rather, that it would take work.)</p>
 <p>I do think we probably need to do something AST-aware (or CST-aware) in order to solve this problem.</p>
 </div>
         </div>
@@ -83,8 +83,8 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ljodal">@ljodal</a> on 2022-11-08 22:24</div>
-            <div class="timeline-body"><p>Ah, then I'd misunderstood how ruff works. I naively assumed it built up a cst of the source code and then traversed that. As a developer that's at least an interface that is great to work with and one benefit is that you can share a lot of code between linting and fixing.</p>
-<p>The visitor pattern in libcst is indeed implemented in Python. It's documented <a href="https://libcst.readthedocs.io/en/latest/tutorial.html#Build-Visitor-or-Transformer">here</a> and basically mirrors the visitors from the <code>ast</code> library with extensions for modifying the tree.</p>
+            <div class="timeline-body"><p>Ah, then I&#x27;d misunderstood how ruff works. I naively assumed it built up a cst of the source code and then traversed that. As a developer that&#x27;s at least an interface that is great to work with and one benefit is that you can share a lot of code between linting and fixing.</p>
+<p>The visitor pattern in libcst is indeed implemented in Python. It&#x27;s documented <a href="https://libcst.readthedocs.io/en/latest/tutorial.html#Build-Visitor-or-Transformer">here</a> and basically mirrors the visitors from the <code>ast</code> library with extensions for modifying the tree.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -94,8 +94,8 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-09 00:09</div>
-            <div class="timeline-body"><p>On CRDTs -- what I'm trying to describe is something like this:</p>
-<pre><code class="language-rust">use operational_transform::OperationSeq;
+            <div class="timeline-body"><p>On CRDTs -- what I&#x27;m trying to describe is something like this:</p>
+<pre><code>use operational_transform::OperationSeq;
 
 pub fn main() {
     let s = &quot;Union[int, Option[str]]&quot;;
@@ -121,20 +121,20 @@ pub fn main() {
     println!(&quot;{}&quot;, s); // int | str | None
 }
 </code></pre>
-<p>I'm not convinced that this is a good idea since we could easily start producing invalid Python.</p>
+<p>I&#x27;m not convinced that this is a good idea since we could easily start producing invalid Python.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-09 01:49</div>
-            <div class="timeline-body"><p>The way that <code>pyupgrade</code> handles this is somewhat interesting. They have a roundtrip tokenizer, and they implement all fixes as lazy transformations on the token stream. I don't see how that's completely safe, but it does work for the cases they implement.</p>
+            <div class="timeline-body"><p>The way that <code>pyupgrade</code> handles this is somewhat interesting. They have a roundtrip tokenizer, and they implement all fixes as lazy transformations on the token stream. I don&#x27;t see how that&#x27;s completely safe, but it does work for the cases they implement.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ljodal">@ljodal</a> on 2022-11-09 07:48</div>
             <div class="timeline-body"><p>Hmm, does it have to be lazy?</p>
-<p>My (new) understanding is that ruff builds up an ast of the file being checked, if that's correct it would be great to be able to build both checkers and fixers on top of the ast.</p>
+<p>My (new) understanding is that ruff builds up an ast of the file being checked, if that&#x27;s correct it would be great to be able to build both checkers and fixers on top of the ast.</p>
 <p>If we can keep both the tokens and the ast in memory and link them, then it should based on my naive understanding be possible to use the ast to detect where changes are needed, get the tokens for that ast and update them, and then based on the updated tokens update the ast representation again.</p>
-<p>I'm a bit rusty when it comes to compiler theory, but I assume the ast is built up from the tokens, so we should have everything available. The hard part here would probably be to deal with certain things that don't map direly to ast nodes like white space, commas etc</p>
+<p>I&#x27;m a bit rusty when it comes to compiler theory, but I assume the ast is built up from the tokens, so we should have everything available. The hard part here would probably be to deal with certain things that don&#x27;t map direly to ast nodes like white space, commas etc</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -145,21 +145,21 @@ pub fn main() {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-20 15:07</div>
-            <div class="timeline-body"><p>Yeah, I think that's very likely what we'll have to do.</p>
+            <div class="timeline-body"><p>Yeah, I think that&#x27;s very likely what we&#x27;ll have to do.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-22 21:38</div>
-            <div class="timeline-body"><p>Should be fixed by https://github.com/charliermarsh/ruff/pull/875.</p>
+            <div class="timeline-body"><p>Should be fixed by <a href="https://github.com/charliermarsh/ruff/pull/875">charliermarsh/ruff#875</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2022-11-22 21:38</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-22 21:38</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:45:29 UTC
+        Synced at 2026-01-20 18:48:26 UTC
     </footer>
 </body>
 </html>

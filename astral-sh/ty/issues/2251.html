@@ -23,8 +23,8 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/phistep">@phistep</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<pre><code class="language-py">from typing import Generic, TypeAlias, TypeVar
+            <div class="timeline-body">Summary
+<pre><code>from typing import Generic, TypeAlias, TypeVar
 
 
 def foo(a: str, b: int, c: int, d: str): ...
@@ -62,9 +62,9 @@ Found 1 diagnostic
 </code></pre>
 <p>when actually <code>d</code> is only passed once and <code>D[&quot;b&quot;]</code> is unpacked into <code>b</code> <em>and</em> <code>c</code>.</p>
 <p>This is similar to #2250 and #1985 but produces an error message and not only misleading inlays.</p>
-<p><img width="699" height="532" alt="Image" src="https://github.com/user-attachments/assets/dceaa659-3762-466d-94b4-f56b910b9877" /></p>
-<hr />
-<pre><code class="language-py">foo(&quot;foo&quot;, D[&quot;b&quot;][0], D[&quot;b&quot;][1], d=&quot;bar&quot;)
+<p><img alt="Image" src="https://github.com/user-attachments/assets/dceaa659-3762-466d-94b4-f56b910b9877"></p>
+<hr>
+<pre><code>foo(&quot;foo&quot;, D[&quot;b&quot;][0], D[&quot;b&quot;][1], d=&quot;bar&quot;)
 </code></pre>
 <p>gives the expected[^1] errors</p>
 <pre><code>error[non-subscriptable]: Cannot subscript object of type `Foo[int]` with no `__getitem__` method
@@ -109,41 +109,41 @@ info: rule `non-subscriptable` is enabled by default
 
 Found 4 diagnostics
 </code></pre>
-<p><img width="627" height="134" alt="Image" src="https://github.com/user-attachments/assets/83cd6b65-aeb0-4ea0-87d1-22e36a6ec14d" /></p>
+<p><img alt="Image" src="https://github.com/user-attachments/assets/83cd6b65-aeb0-4ea0-87d1-22e36a6ec14d"></p>
 <p>[^1]: sadly unsatisfactory due to impossible type inference w/o <code>TypedDict</code>.</p>
-<h3>Version</h3>
+Version
 <p><code>ty 0.0.7 (cf82a04b5 2025-12-24)</code></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-29 11:15</div>
-            <div class="timeline-body"><p>@dhruvmanila do you know what's happening here?</p>
+            <div class="timeline-body"><p>@dhruvmanila do you know what&#x27;s happening here?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-12-29 12:05</div>
-            <div class="timeline-body"><p>I think this might be related to https://github.com/astral-sh/ty/issues/1584, what's happening is that <code>D[&quot;b&quot;]</code> cannot be unpacked because it's not an iterable (the type is <code>Foo[int] | Foo[tuple[int, int]]</code> as seen in the inlay hint of <code>D</code>), so it must be unpacking into <code>Unknown</code>s, but we don't know how many elements are there in the unpacking so it has matched all of the remaining arguments by the time we reach to <code>d=&quot;bar&quot;</code> which is why you're seeing <code>parameter-already-assigned</code> error.</p>
+            <div class="timeline-body"><p>I think this might be related to <a href="https://github.com/astral-sh/ty/issues/1584">astral-sh/ty#1584</a>, what&#x27;s happening is that <code>D[&quot;b&quot;]</code> cannot be unpacked because it&#x27;s not an iterable (the type is <code>Foo[int] | Foo[tuple[int, int]]</code> as seen in the inlay hint of <code>D</code>), so it must be unpacking into <code>Unknown</code>s, but we don&#x27;t know how many elements are there in the unpacking so it has matched all of the remaining arguments by the time we reach to <code>d=&quot;bar&quot;</code> which is why you&#x27;re seeing <code>parameter-already-assigned</code> error.</p>
 <blockquote>
 <p><code>D[&quot;b&quot;]</code> is unpacked into <code>b</code> <em>and</em> <code>c</code>.</p>
 </blockquote>
-<p>I don't think this is correct, refer to my previous paragraph. For a literal dictionary creation, ty will infer the general type of <code>dict[str, &lt;union of value types&gt;]</code>.</p>
+<p>I don&#x27;t think this is correct, refer to my previous paragraph. For a literal dictionary creation, ty will infer the general type of <code>dict[str, &lt;union of value types&gt;]</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-29 16:34</div>
-            <div class="timeline-body"><p>Yeah, the implied request here is to do some kind of implicit <code>TypedDict</code> inference of dict literals -- which we could do, but it's quite tricky to handle subsequent mutation without either introducing false positives or false negatives. This is tracked in https://github.com/astral-sh/ty/issues/1248</p>
-<p>Barring that, it does seem like there are two bugs in ty here. One is discussed above (and tracked in #1584): given we don't know which arguments <code>D[&quot;b&quot;]</code> will unpack to, we should prefer to assume a valid call, not assume it eats all arguments, including those otherwise explicitly provided.</p>
-<p>The second is, we should emit an error on the attempt to unpack <code>D[&quot;b&quot;]</code> (as <a href="https://pyright-play.net/?pyrightVersion=1.1.405&amp;pythonVersion=3.13&amp;reportUnreachable=true&amp;code=GYJw9gtgBALgngBwJYDsDmUkQWEMoDiApikSEgMYA0UAKokQIIA2SAhgM430JEBqbEACgRAEyLAowMGAAUbAFxQOMEDQBGS1DBoUtKHVFFKVIAJRKAdNZFC%2BPIkoct2HKAF5MBqAB9YAVwRmIgBtbRptAF07DzoGARBZACI%2BJI0wfxRRd3sGM1sKZk43ADEZWWJScgoQvkiLISgmqAA3JT4RZqMJKAB9XtQkGH7ZDiJmYBo2qD4Grq6xicsW2JbbABFY0UoYWUbmtncyuRb3AEYzKn2m9SPy09kAJhpHs0uhfOk5JK%2B0qAAqdYhJLqJKRGjZEGCJJmIA">pyright does</a>) -- that would help clarify what's going on. We can use this issue to track that.</p>
+            <div class="timeline-body"><p>Yeah, the implied request here is to do some kind of implicit <code>TypedDict</code> inference of dict literals -- which we could do, but it&#x27;s quite tricky to handle subsequent mutation without either introducing false positives or false negatives. This is tracked in <a href="https://github.com/astral-sh/ty/issues/1248">astral-sh/ty#1248</a></p>
+<p>Barring that, it does seem like there are two bugs in ty here. One is discussed above (and tracked in #1584): given we don&#x27;t know which arguments <code>D[&quot;b&quot;]</code> will unpack to, we should prefer to assume a valid call, not assume it eats all arguments, including those otherwise explicitly provided.</p>
+<p>The second is, we should emit an error on the attempt to unpack <code>D[&quot;b&quot;]</code> (as <a href="https://pyright-play.net/?pyrightVersion=1.1.405&amp;pythonVersion=3.13&amp;reportUnreachable=true&amp;code=GYJw9gtgBALgngBwJYDsDmUkQWEMoDiApikSEgMYA0UAKokQIIA2SAhgM430JEBqbEACgRAEyLAowMGAAUbAFxQOMEDQBGS1DBoUtKHVFFKVIAJRKAdNZFC%2BPIkoct2HKAF5MBqAB9YAVwRmIgBtbRptAF07DzoGARBZACI%2BJI0wfxRRd3sGM1sKZk43ADEZWWJScgoQvkiLISgmqAA3JT4RZqMJKAB9XtQkGH7ZDiJmYBo2qD4Grq6xicsW2JbbABFY0UoYWUbmtncyuRb3AEYzKn2m9SPy09kAJhpHs0uhfOk5JK%2B0qAAqdYhJLqJKRGjZEGCJJmIA">pyright does</a>) -- that would help clarify what&#x27;s going on. We can use this issue to track that.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Misleading error message when using argument unpacking of Unknown" to "Emit error when unpacking a not-iterable argument in a call" by @carljm on 2025-12-29 16:35</div>
+            <div class="event">Renamed from &quot;Misleading error message when using argument unpacking of Unknown&quot; to &quot;Emit error when unpacking a not-iterable argument in a call&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-12-29 16:35</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-29 16:35</div>
+            <div class="event">Added to milestone &quot;Stable&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-12-29 16:35</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2025-12-30 05:38</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-12-30 05:38</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/phistep">@phistep</a> on 2025-12-30 23:06</div>
@@ -153,15 +153,15 @@ Found 4 diagnostics
 <blockquote>
 <p><code>D[&quot;b&quot;]</code> is unpacked into <code>b</code> <em>and</em> <code>c</code>.</p>
 </blockquote>
-<p>I don't think this is correct, refer to my previous paragraph. For a literal dictionary creation, ty will infer the general type of <code>dict[str, &lt;union of value types&gt;]</code>.</p>
+<p>I don&#x27;t think this is correct, refer to my previous paragraph. For a literal dictionary creation, ty will infer the general type of <code>dict[str, &lt;union of value types&gt;]</code>.</p>
 </blockquote>
-<p>I'm sorry, I made a typo when boiling down my code to the MWE. I meant to pass <code>.v</code> acutally, so that the unpacking would make sense</p>
+<p>I&#x27;m sorry, I made a typo when boiling down my code to the MWE. I meant to pass <code>.v</code> acutally, so that the unpacking would make sense</p>
 <blockquote>
 <p><code>D[&quot;b&quot;].v</code> (<em>sic!</em>) is unpacked into <code>b</code> <em>and</em> <code>c</code>.</p>
 </blockquote>
-<pre><code class="language-python">foo(&quot;foo&quot;, *D[&quot;b&quot;].v, d=&quot;bar&quot;)
+<pre><code>foo(&quot;foo&quot;, *D[&quot;b&quot;].v, d=&quot;bar&quot;)
 </code></pre>
-<p><img width="496" height="82" alt="Image" src="https://github.com/user-attachments/assets/dff3708a-16a6-4535-92a8-96a26de019a0" /></p>
+<p><img alt="Image" src="https://github.com/user-attachments/assets/dff3708a-16a6-4535-92a8-96a26de019a0"></p>
 <p>Then the report is</p>
 <pre><code>error[invalid-argument-type]: Argument to function `foo` is incorrect
   --&gt; test.py:22:12
@@ -192,9 +192,9 @@ info: rule `parameter-already-assigned` is enabled by default
 Found 2 diagnostics
 </code></pre>
 <p>Which is wrong and misleading in a different way...</p>
-<hr />
+<hr>
 <p>Whereas this givers the correct error message (where it is sad but understanable that no implicit TypedDict style inference can take place)</p>
-<pre><code class="language-py">foo(&quot;foo&quot;, D[&quot;b&quot;].v[0], D[&quot;b&quot;].v[1], d=&quot;bar&quot;)
+<pre><code>foo(&quot;foo&quot;, D[&quot;b&quot;].v[0], D[&quot;b&quot;].v[1], d=&quot;bar&quot;)
 </code></pre>
 <pre><code>error[not-subscriptable]: Cannot subscript object of type `int` with no `__getitem__` method
   --&gt; test.py:24:12
@@ -220,13 +220,13 @@ info: rule `not-subscriptable` is enabled by default
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-06 02:15</div>
-            <div class="timeline-body"><p>@phistep I think that your &quot;wrong and misleading in a different way&quot; example would still be covered by #1584 -- we shouldn't map the unpacking to argument <code>d</code> when it is provided explicitly.</p>
+            <div class="timeline-body"><p>@phistep I think that your &quot;wrong and misleading in a different way&quot; example would still be covered by #1584 -- we shouldn&#x27;t map the unpacking to argument <code>d</code> when it is provided explicitly.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:21:35 UTC
+        Synced at 2026-01-20 19:26:49 UTC
     </footer>
 </body>
 </html>

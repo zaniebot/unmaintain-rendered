@@ -23,38 +23,32 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/j-helland">@j-helland</a></div>
-            <div class="timeline-body"><!--
-Thank you for contributing to uv! To help us out with reviewing, please consider the following:
-
-- Does this pull request include a summary of the change? (See below.)
-- Does this pull request include a descriptive title?
-- Does this pull request include references to any relevant issues?
--->
+            <div class="timeline-body">
 
 <p>Relates to (#15767)</p>
-<h2>Summary</h2>
+Summary
 <p>Before this PR, specific preview features could only be specified via a comma-separated list in CLI <code>--preview-features</code>. Now, preview features can be specified as a list of strings in <code>pyproject.toml</code> or <code>uv.toml</code>. For example,</p>
-<pre><code class="language-toml"># pyproject.toml
+<pre><code># pyproject.toml
 [tool.uv]
 preview-features = [&quot;format&quot;]
 </code></pre>
 <p>Commandline arguments (<code>--preview</code>, <code>--no-preview</code>, and <code>--preview-features</code>) take precedence over config settings (<code>tool.uv.preview</code>, <code>tool.uv.preview-features</code>), which matches the semantics of other settings in <code>uv</code>.</p>
-<h3>Alternatives Considered</h3>
-<p>From https://github.com/astral-sh/uv/issues/15767#issue-3402381105:</p>
+Alternatives Considered
+<p>From <a href="https://github.com/astral-sh/uv/issues/15767">astral-sh/uv#15767</a>#issue-3402381105:</p>
 <blockquote>
 <p>setting <code>tool.uv.preview-features.pylock = false</code> would disable it, taking precedence over the feature potentially being enabled at a user level. If tool.uv.preview were changed to false, all preview features would be disabled, regardless of the content of tool.uv.preview-features.</p>
 </blockquote>
-<p>I chose not to take this approach because it adds complexity and the semantics don't align with <code>uv</code> today. For example, <code>--no-preview</code> will currently take priority, even if <code>pyproject.toml</code> has <code>uv.tool.preview = true</code>. I think driving <code>uv</code> from the top-down like this is generally the right decision (and changing the semantics for a small feature like this would certainly not be).</p>
-<h2>Test Plan</h2>
+<p>I chose not to take this approach because it adds complexity and the semantics don&#x27;t align with <code>uv</code> today. For example, <code>--no-preview</code> will currently take priority, even if <code>pyproject.toml</code> has <code>uv.tool.preview = true</code>. I think driving <code>uv</code> from the top-down like this is generally the right decision (and changing the semantics for a small feature like this would certainly not be).</p>
+Test Plan
 <ul>
 <li><code>cargo nextest run</code></li>
 <li><code>cargo build</code></li>
 <li>New snapshot tests.</li>
 </ul>
 <p>In addition to the above, I also tried a small test project:</p>
-<h3><code>pyproject.toml</code> test</h3>
+<code>pyproject.toml</code> test
 <p>From the <code>uv/</code> project root:</p>
-<pre><code class="language-shell">$ mkdir tmp &amp;&amp; cd tmp
+<pre><code>$ mkdir tmp &amp;&amp; cd tmp
 $ cargo run -- init
 
 # Warning
@@ -82,32 +76,32 @@ warning: `uv format` is experimental and may change without warning. Pass `--pre
 <pre><code>Error: missing API token, please run `depot login`
 Error: failed with: Error: missing API token, please run `depot login`
 </code></pre>
-<p>I've checked other recent PRs and I'm seeing similar failures (<a href="https://github.com/astral-sh/uv/actions/runs/18797165291/job/53638969254">example</a>), so I suspect this is a transient issue not related to my changes.</p>
+<p>I&#x27;ve checked other recent PRs and I&#x27;m seeing similar failures (<a href="https://github.com/astral-sh/uv/actions/runs/18797165291/job/53638969254">example</a>), so I suspect this is a transient issue not related to my changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @j-helland on 2025-10-26 08:16</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/j-helland">@j-helland</a> on 2025-10-26 08:16</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/j-helland">@j-helland</a> on 2025-10-26 08:17</div>
-            <div class="timeline-body"><p>This being my first PR in <code>uv</code>, I'm especially open to any and all feedback / changes requested (not that I wouldn't be if it was my 500th 🙂). If there's anything I can do to make the review process easier, don't hesitate to let me know!</p>
+            <div class="timeline-body"><p>This being my first PR in <code>uv</code>, I&#x27;m especially open to any and all feedback / changes requested (not that I wouldn&#x27;t be if it was my 500th 🙂). If there&#x27;s anything I can do to make the review process easier, don&#x27;t hesitate to let me know!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-26 15:55</div>
             <div class="timeline-body"><p>Cool thanks!</p>
-<p>Some quick high-level thoughts (I haven't looked at the code yet)</p>
+<p>Some quick high-level thoughts (I haven&#x27;t looked at the code yet)</p>
 <blockquote>
-<p>Passing --preview-features via CLI does NOT combine with uv.tool.preview-features, it overrides it completely. This behavior makes sense to me, otherwise there isn't a clear way to say &quot;No, don't use your config feature X, use Y and Z instead&quot;.</p>
+<p>Passing --preview-features via CLI does NOT combine with uv.tool.preview-features, it overrides it completely. This behavior makes sense to me, otherwise there isn&#x27;t a clear way to say &quot;No, don&#x27;t use your config feature X, use Y and Z instead&quot;.</p>
 </blockquote>
-<p>I think we should actually combine them. If we get feedback that people need to be able to disable specific features, then the canonical way to do so in uv's interface would be to add a <code>--no-preview-features &lt;names&gt;</code> flag.</p>
-<p>Don't worry about those Depot authentication failures — we're working with them to resolve those.</p>
+<p>I think we should actually combine them. If we get feedback that people need to be able to disable specific features, then the canonical way to do so in uv&#x27;s interface would be to add a <code>--no-preview-features &lt;names&gt;</code> flag.</p>
+<p>Don&#x27;t worry about those Depot authentication failures — we&#x27;re working with them to resolve those.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/j-helland">@j-helland</a> on 2025-10-26 16:05</div>
             <div class="timeline-body"><blockquote>
-<p>I think we should actually combine them. If we get feedback that people need to be able to disable specific features, then the canonical way to do so in uv's interface would be to add a --no-preview-features <names> flag.</p>
+<p>I think we should actually combine them. If we get feedback that people need to be able to disable specific features, then the canonical way to do so in uv&#x27;s interface would be to add a --no-preview-features  flag.</p>
 </blockquote>
 <p>Got it, thanks for explaining. That should be an easy fix, I’ll get to that later today.</p>
 </div>
@@ -115,7 +109,7 @@ Error: failed with: Error: missing API token, please run `depot login`
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/j-helland">@j-helland</a> on 2025-10-27 02:46</div>
             <div class="timeline-body"><p>@zanieb I want to clarify one thing before submitting my revision. Suppose we pass <code>--preview-features pylock</code> with an underlying config like</p>
-<pre><code class="language-toml">preview = false
+<pre><code>preview = false
 preview-features = [&quot;format&quot;]
 </code></pre>
 <ol>
@@ -144,16 +138,16 @@ preview-features = [&quot;format&quot;]
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/j-helland">@j-helland</a> on 2025-11-27 20:50</div>
             <div class="timeline-body"><p>Nice, no more Depot auth failures.</p>
-<p>I'm curious if anyone will get a chance to look at this PR? It would be nice to have this functionality at my current job. I'm sure it's very low-priority, though, so no worries.</p>
-<p>If I made any mistakes in my approach that makes this work too time-consuming to review, I'd be happy to take that feedback so I can contribute more productively to <code>uv</code> in the future 🙂</p>
+<p>I&#x27;m curious if anyone will get a chance to look at this PR? It would be nice to have this functionality at my current job. I&#x27;m sure it&#x27;s very low-priority, though, so no worries.</p>
+<p>If I made any mistakes in my approach that makes this work too time-consuming to review, I&#x27;d be happy to take that feedback so I can contribute more productively to <code>uv</code> in the future 🙂</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @zanieb by @konstin on 2025-11-28 08:19</div>
+            <div class="event">Review requested from <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/konstin">@konstin</a> on 2025-11-28 08:19</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/laundmo">@laundmo</a> approved on 2025-12-18 12:44</div>
-            <div class="timeline-body"><p>I'm just a random python/rust dev who was looking for something like this, but to me the code looks reasonable and seems to match how other config options are written.</p>
+            <div class="timeline-body"><p>I&#x27;m just a random python/rust dev who was looking for something like this, but to me the code looks reasonable and seems to match how other config options are written.</p>
 <p>Would be nice to get this feature, I specifically want to enable <code>python-upgrade</code> globally</p>
 </div>
         </div>
@@ -163,7 +157,7 @@ preview-features = [&quot;format&quot;]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-preview/src/lib.rs</code>:122 on 2025-12-18 14:06</div>
-            <div class="timeline-body"><p>I think this serializer is wrong per https://github.com/astral-sh/uv/pull/16452/commits/9232ece843a60fd1eb97346f4744e88c314ee1b9</p>
+            <div class="timeline-body"><p>I think this serializer is wrong per <a href="https://github.com/astral-sh/uv/pull/16452">astral-sh/uv#16452</a>/commits/9232ece843a60fd1eb97346f4744e88c314ee1b9</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -172,7 +166,7 @@ preview-features = [&quot;format&quot;]
 <p>Suppose we pass --preview-features pylock with an underlying config like [...]</p>
 </blockquote>
 <p>I think if we see a config file like</p>
-<pre><code class="language-toml">preview = false
+<pre><code>preview = false
 preview-features = [&quot;format&quot;]
 </code></pre>
 <p>we should probably just fail?</p>
@@ -183,7 +177,7 @@ preview-features = [&quot;format&quot;]
             <div class="timeline-body"><blockquote>
 <p>Similarly, if tool.uv.preview = true, should any --preview-features merge into that de facto, resulting in all features being enabled?</p>
 </blockquote>
-<p>I think I'd expect us just to activate the subset of preview features specified in the CLI since the CLI takes precedence over the configuration file, though I'm not entirely sure and don't feel strongly.</p>
+<p>I think I&#x27;d expect us just to activate the subset of preview features specified in the CLI since the CLI takes precedence over the configuration file, though I&#x27;m not entirely sure and don&#x27;t feel strongly.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -197,7 +191,7 @@ preview-features = [&quot;format&quot;]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-18 14:12</div>
-            <div class="timeline-body"><p>Sorry for the delayed review, we've just had a lot on our backlog — it's not anything you did wrong.</p>
+            <div class="timeline-body"><p>Sorry for the delayed review, we&#x27;ve just had a lot on our backlog — it&#x27;s not anything you did wrong.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -206,7 +200,7 @@ preview-features = [&quot;format&quot;]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-preview/src/lib.rs</code>:181 on 2025-12-18 14:24</div>
-            <div class="timeline-body"><p>I presume it's for merging purposes?</p>
+            <div class="timeline-body"><p>I presume it&#x27;s for merging purposes?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -245,10 +239,10 @@ preview-features = [&quot;format&quot;]
             <div class="timeline-header">Review comment by <a href="https://github.com/j-helland">@j-helland</a> on <code>crates/uv-preview/src/lib.rs</code>:181 on 2025-12-20 02:31</div>
             <div class="timeline-body"><p>Yes, I introduced it for the merging behavior. On further reflection, it could probably be consolidated into the existing <code>Preview</code>.</p>
 <blockquote>
-<p>I think I'd expect us just to activate the subset of preview features specified in the CLI since the CLI takes precedence over the configuration file, though I'm not entirely sure and don't feel strongly.</p>
+<p>I think I&#x27;d expect us just to activate the subset of preview features specified in the CLI since the CLI takes precedence over the configuration file, though I&#x27;m not entirely sure and don&#x27;t feel strongly.</p>
 </blockquote>
-<p>Your intuition makes sense to me and I think minimizes surprise for the user. I'll update the implementation to align and get rid of <code>PreviewFeaturesMode</code>.</p>
-<p>We could go a little further here and emit some kind of warning if <code>--preview-features</code> overwrites an existing config file, but I'm not sure if that's copacetic?</p>
+<p>Your intuition makes sense to me and I think minimizes surprise for the user. I&#x27;ll update the implementation to align and get rid of <code>PreviewFeaturesMode</code>.</p>
+<p>We could go a little further here and emit some kind of warning if <code>--preview-features</code> overwrites an existing config file, but I&#x27;m not sure if that&#x27;s copacetic?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -257,34 +251,34 @@ preview-features = [&quot;format&quot;]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/j-helland">@j-helland</a> on <code>crates/uv-preview/src/lib.rs</code>:122 on 2025-12-20 02:35</div>
-            <div class="timeline-body"><p>Great catch, thanks. I'll fix that in my next push.</p>
+            <div class="timeline-body"><p>Great catch, thanks. I&#x27;ll fix that in my next push.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/j-helland">@j-helland</a> on 2025-12-20 02:42</div>
             <div class="timeline-body"><blockquote>
 <p>I think if we see a config file like</p>
-<pre><code class="language-toml">preview = false
+<pre><code>preview = false
 preview-features = [&quot;format&quot;]
 </code></pre>
 <p>we should probably just fail?</p>
 </blockquote>
-<p>That makes intuitive sense to me, but doesn't match the current behavior of the commandline arguments, where you can pass <code>--no-preview --preview-features upgrade-python</code> without complaint.</p>
-<p>Unless I'm missing something (very possible), it seems like implementing the validation you suggest is nontrivial. The closest thing I can find is <a href="https://github.com/astral-sh/uv/blob/main/crates/uv-settings/src/lib.rs#L133">validate_uv_toml</a>, seems like we'd have to add an entirely new validation flow. Does that sound right?</p>
-<p>Does it make sense to add that validation in this PR or in a separate effort to keep the scope here limited? I'm open to either option.</p>
+<p>That makes intuitive sense to me, but doesn&#x27;t match the current behavior of the commandline arguments, where you can pass <code>--no-preview --preview-features upgrade-python</code> without complaint.</p>
+<p>Unless I&#x27;m missing something (very possible), it seems like implementing the validation you suggest is nontrivial. The closest thing I can find is <a href="https://github.com/astral-sh/uv/blob/main/crates/uv-settings/src/lib.rs#L133">validate_uv_toml</a>, seems like we&#x27;d have to add an entirely new validation flow. Does that sound right?</p>
+<p>Does it make sense to add that validation in this PR or in a separate effort to keep the scope here limited? I&#x27;m open to either option.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-20 04:24</div>
             <div class="timeline-body"><p>I think we can be more strict in the configuration file than in the CLI.</p>
 <blockquote>
-<p>The closest thing I can find is <a href="https://github.com/astral-sh/uv/blob/main/crates/uv-settings/src/lib.rs#L133">validate_uv_toml</a>, seems like we'd have to add an entirely new validation flow.</p>
+<p>The closest thing I can find is <a href="https://github.com/astral-sh/uv/blob/main/crates/uv-settings/src/lib.rs#L133">validate_uv_toml</a>, seems like we&#x27;d have to add an entirely new validation flow.</p>
 </blockquote>
-<p>Ah, hm. That's a little unfortunate. It does seem useful long-term though.</p>
+<p>Ah, hm. That&#x27;s a little unfortunate. It does seem useful long-term though.</p>
 <blockquote>
-<p>Does it make sense to add that validation in this PR or in a separate effort to keep the scope here limited? I'm open to either option.</p>
+<p>Does it make sense to add that validation in this PR or in a separate effort to keep the scope here limited? I&#x27;m open to either option.</p>
 </blockquote>
-<p>I think the only trouble with doing it in a separate pull request is that we don't want to release support for including both fields then &quot;break&quot; it in a subsequent release. Would you mind sketching it in a separate pull request and we can merge them together?</p>
+<p>I think the only trouble with doing it in a separate pull request is that we don&#x27;t want to release support for including both fields then &quot;break&quot; it in a subsequent release. Would you mind sketching it in a separate pull request and we can merge them together?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -292,23 +286,23 @@ preview-features = [&quot;format&quot;]
             <div class="timeline-body"><blockquote>
 <p>Would you mind sketching it in a separate pull request and we can merge them together?</p>
 </blockquote>
-<p>Sure thing! I'll try to get to that this weekend.</p>
+<p>Sure thing! I&#x27;ll try to get to that this weekend.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-12-20 05:33</div>
-            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+            <div class="timeline-body">
 
-<h2><a href="https://codspeed.io/astral-sh/uv/branches/j-helland%3Ajwh%2Ftoml-config-preview-features?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a></h2>
-<h3>Merging #16452 will <strong>not alter performance</strong></h3>
-<p><sub>Comparing <code>j-helland:jwh/toml-config-preview-features</code> (dbe5958) with <code>main</code> (7865672)</sub></p>
-<h3>Summary</h3>
+<a href="https://codspeed.io/astral-sh/uv/branches/j-helland%3Ajwh%2Ftoml-config-preview-features?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a>
+Merging #16452 will <strong>not alter performance</strong>
+<p>Comparing <code>j-helland:jwh/toml-config-preview-features</code> (dbe5958) with <code>main</code> (7865672)</p>
+Summary
 <p><code>✅ 5</code> untouched</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/j-helland">@j-helland</a> on 2025-12-21 02:08</div>
-            <div class="timeline-body"><p>@zanieb I sketched what you suggested in https://github.com/astral-sh/uv/pull/17202 let me know what you think.</p>
+            <div class="timeline-body"><p>@zanieb I sketched what you suggested in <a href="https://github.com/astral-sh/uv/pull/17202">astral-sh/uv#17202</a> let me know what you think.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -323,7 +317,7 @@ preview-features = [&quot;format&quot;]
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:45:07 UTC
+        Synced at 2026-01-20 19:54:22 UTC
     </footer>
 </body>
 </html>

@@ -23,52 +23,41 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Skylion007">@Skylion007</a></div>
-            <div class="timeline-body"><!--
-Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
-
-If you're filing a bug report, please consider including the following information:
-
-* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
-  e.g. "RUF001", "unused variable", "Jupyter notebook"
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
-* The current Ruff settings (any relevant sections from your `pyproject.toml`).
-* The current Ruff version (`ruff --version`).
--->
+            <div class="timeline-body">
 
 <p>Saw this in code:</p>
-<pre><code class="language-python">a = sorted(l)[0]
+<pre><code>a = sorted(l)[0]
 a = sorted(l, reverse=True)[-1] # not sure about this one....
 </code></pre>
 <p>should be</p>
-<pre><code class="language-python">a = min(l)
+<pre><code>a = min(l)
 </code></pre>
 <p>Additionally, the following code pattern can also be simplified</p>
-<pre><code class="language-python">a = sorted(l, reverse=True)[0] 
+<pre><code>a = sorted(l, reverse=True)[0] 
 a = sorted(l)[-1] # not sure about this, sort stability could make it output a different value, right?
 </code></pre>
 <p>should be</p>
-<pre><code class="language-python">a = max(l)
+<pre><code>a = max(l)
 </code></pre>
-<p>Is there already a pylint rule for this? I wouldn't be surprised. If not, let's add it as a RUFF rule.</p>
+<p>Is there already a pylint rule for this? I wouldn&#x27;t be surprised. If not, let&#x27;s add it as a RUFF rule.</p>
 <p>I am not sure about the <code>[-1]</code> variants, as there may be some subtlety there with sort stability?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2024-03-18 21:19</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-18 21:19</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ottaviohartman">@ottaviohartman</a> on 2024-03-18 23:44</div>
             <div class="timeline-body"><p>This seems nice for my first rule contribution. It occurs way more than I was expecting from <a href="https://github.com/search?q=%2Fsorted%5C%28.*%5C%29%5C%5B0%5C%5D%2F+language%3APython&amp;type=code&amp;p=2">this GitHub search</a>, though some of these are not actual cases of this violation.</p>
 <p><code>min()</code> and <code>max()</code> support a <code>key</code> argument as well, so the fix would forward that to these functions.</p>
 <blockquote>
-<p>Is there already a pylint rule for this? I wouldn't be surprised. If not, let's add it as a RUFF rule.</p>
+<p>Is there already a pylint rule for this? I wouldn&#x27;t be surprised. If not, let&#x27;s add it as a RUFF rule.</p>
 </blockquote>
 <p>Not from a quick search in their docs.</p>
 <p>@charliermarsh do you think this is something I could tackle? Any guidance would be nice but not necessary until I hit roadblocks.</p>
-<h2>Performance impact of fixing this violation</h2>
+Performance impact of fixing this violation
 <p>Test script</p>
-<pre><code class="language-python">import timeit
+<pre><code>import timeit
 import random
 
 def method_sorted(a):
@@ -90,13 +79,13 @@ for size in sizes:
     print(f&quot;Size: {size}, sorted(a)[0] time: {time_sorted:.5f}s, min(a) time: {time_min:.5f}s, Speedup: {speedup:.2f}x&quot;)
 </code></pre>
 <p>On my M1 pro:</p>
-<pre><code class="language-python">Size: 10, sorted(a)[0] time: 0.00024s, min(a) time: 0.00021s, Speedup: 1.17x
+<pre><code>Size: 10, sorted(a)[0] time: 0.00024s, min(a) time: 0.00021s, Speedup: 1.17x
 Size: 100, sorted(a)[0] time: 0.00279s, min(a) time: 0.00118s, Speedup: 2.36x
 Size: 1000, sorted(a)[0] time: 0.05002s, min(a) time: 0.01093s, Speedup: 4.58x
 Size: 10000, sorted(a)[0] time: 0.88557s, min(a) time: 0.10932s, Speedup: 8.10x
 </code></pre>
 <p>Results are less impressive, but still good, with <code>key=lambda x: x</code>:</p>
-<pre><code class="language-python">Size: 10, sorted(a)[0] time: 0.00067s, min(a) time: 0.00065s, Speedup: 1.03x
+<pre><code>Size: 10, sorted(a)[0] time: 0.00067s, min(a) time: 0.00065s, Speedup: 1.03x
 Size: 100, sorted(a)[0] time: 0.00629s, min(a) time: 0.00433s, Speedup: 1.45x
 Size: 1000, sorted(a)[0] time: 0.08372s, min(a) time: 0.04047s, Speedup: 2.07x
 Size: 10000, sorted(a)[0] time: 1.23920s, min(a) time: 0.40743s, Speedup: 3.04x
@@ -104,24 +93,24 @@ Size: 10000, sorted(a)[0] time: 1.23920s, min(a) time: 0.40743s, Speedup: 3.04x
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Rule Suggestion min/max instead of `sorted(l)[0]`" to "Rule Suggestion `min`/`max` instead of `sorted(l)[0]`" by @Skylion007 on 2024-03-19 14:03</div>
+            <div class="event">Renamed from &quot;Rule Suggestion min/max instead of `sorted(l)[0]`&quot; to &quot;Rule Suggestion `min`/`max` instead of `sorted(l)[0]`&quot; by <a href="https://github.com/Skylion007">@Skylion007</a> on 2024-03-19 14:03</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dosisod">@dosisod</a> on 2024-03-20 06:54</div>
-            <div class="timeline-body"><p>Just implemented this as FURB192 in Refurb: https://github.com/dosisod/refurb/pull/333</p>
+            <div class="timeline-body"><p>Just implemented this as FURB192 in Refurb: <a href="https://github.com/dosisod/refurb/pull/333">dosisod/refurb#333</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/hikaru-kajita">@hikaru-kajita</a> on 2024-03-20 07:42</div>
             <div class="timeline-body"><p>Python <code>sort</code> and <code>sorted</code> are <a href="https://docs.python.org/3/howto/sorting.html#sort-stability-and-complex-sorts">guaranteed to be stable</a>, so it could have problem like this:</p>
-<pre><code class="language-python">from operator import itemgetter
-data = [('red', 1), ('blue', 1), ('red', 2), ('blue', 2)]
+<pre><code>from operator import itemgetter
+data = [(&#x27;red&#x27;, 1), (&#x27;blue&#x27;, 1), (&#x27;red&#x27;, 2), (&#x27;blue&#x27;, 2)]
 
-min(data, key=itemgetter(0))  # ('blue', 1)
-sorted(data, key=itemgetter(0))[0]  # ('blue', 1)
-sorted(data, key=itemgetter(0), reverse=True)[-1]  # ('blue, 2')
+min(data, key=itemgetter(0))  # (&#x27;blue&#x27;, 1)
+sorted(data, key=itemgetter(0))[0]  # (&#x27;blue&#x27;, 1)
+sorted(data, key=itemgetter(0), reverse=True)[-1]  # (&#x27;blue, 2&#x27;)
 </code></pre>
-<p>In this case, the order of <code>('red', 1), ('red', 2)</code> and <code>('blue', 1), ('blue', 2)</code> is retained for both <code>sorted</code> call, which cause the result of the two to become different.
+<p>In this case, the order of <code>(&#x27;red&#x27;, 1), (&#x27;red&#x27;, 2)</code> and <code>(&#x27;blue&#x27;, 1), (&#x27;blue&#x27;, 2)</code> is retained for both <code>sorted</code> call, which cause the result of the two to become different.
 So we need to be careful when adding the rule for <code>[-1]</code>, though I think it is not very frequent to intentionally use <code>sorted</code> function that way.</p>
 </div>
         </div>
@@ -142,29 +131,29 @@ So we need to be careful when adding the rule for <code>[-1]</code>, though I th
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2024-03-30 15:28</div>
-            <div class="timeline-body"><p>We should test it out using the example provided above but I think only the '[-1]' index pattern is unstable.</p>
+            <div class="timeline-body"><p>We should test it out using the example provided above but I think only the &#x27;[-1]&#x27; index pattern is unstable.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2024-03-30 15:32</div>
-            <div class="timeline-body"><p>Actually to clarify, all these sorts are stable, but reverse=True reverse the order unstable elements apparently. (And reverse=True, '[-1]'). So only the first proposed fix using min (and it's reversed version) will always be guaranteed to be the same. I suppose. Maybe that warrants its own rule in that case or a rule toggle not flag it when it could change the returned value on ties.</p>
+            <div class="timeline-body"><p>Actually to clarify, all these sorts are stable, but reverse=True reverse the order unstable elements apparently. (And reverse=True, &#x27;[-1]&#x27;). So only the first proposed fix using min (and it&#x27;s reversed version) will always be guaranteed to be the same. I suppose. Maybe that warrants its own rule in that case or a rule toggle not flag it when it could change the returned value on ties.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ottaviohartman">@ottaviohartman</a> on 2024-04-02 00:27</div>
-            <div class="timeline-body"><p>I'd like to start working on this if nobody has started yet :)</p>
+            <div class="timeline-body"><p>I&#x27;d like to start working on this if nobody has started yet :)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @ottaviohartman by @MichaReiser on 2024-04-02 09:13</div>
+            <div class="event">Assigned to <a href="https://github.com/ottaviohartman">@ottaviohartman</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-02 09:13</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-04-23 01:13</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-23 01:13</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:49:53 UTC
+        Synced at 2026-01-20 18:48:51 UTC
     </footer>
 </body>
 </html>

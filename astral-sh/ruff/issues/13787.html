@@ -23,44 +23,44 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/cake-monotone">@cake-monotone</a></div>
-            <div class="timeline-body"><p>This issue was suggested by @carljm and is related to the following threads: https://github.com/astral-sh/ruff/pull/13712#discussion_r1797193581, https://github.com/astral-sh/ruff/pull/13781#discussion_r1803637742, https://github.com/astral-sh/ruff/pull/13712#discussion_r1801739049</p>
-<h2>Current Problems</h2>
+            <div class="timeline-body"><p>This issue was suggested by @carljm and is related to the following threads: <a href="https://github.com/astral-sh/ruff/pull/13712">astral-sh/ruff#13712</a>#discussion_r1797193581, <a href="https://github.com/astral-sh/ruff/pull/13781">astral-sh/ruff#13781</a>#discussion_r1803637742, <a href="https://github.com/astral-sh/ruff/pull/13712">astral-sh/ruff#13712</a>#discussion_r1801739049</p>
+Current Problems
 <p>Currently, the <code>infer_binary_type_comparison</code>, <code>infer_lexicographic_type_comparison</code>, and <code>perform_rich_comparison functions</code> in infer.rs return an <code>Option&lt;Type&gt;</code>, where <code>None</code> indicates that the comparison is not defined.</p>
 <p>However, with the addition of comparison logic for Tuple and Union types, we’ve found that using <code>Option</code> may not provide sufficient diagnostic information.</p>
 <p>For example, consider the following code:</p>
-<pre><code class="language-py">(1, 2) &lt; (1, &quot;hello&quot;)
+<pre><code>(1, 2) &lt; (1, &quot;hello&quot;)
 </code></pre>
 <p>The Python runtime provides an appropriate diagnostic message:</p>
 <pre><code>Traceback (most recent call last):
   File &quot;/home/cake/works/playground/test.py&quot;, line 9, in &lt;module&gt;
     (1, 2) &lt; (1, &quot;hello&quot;)
-TypeError: '&lt;' not supported between instances of 'int' and 'str'
+TypeError: &#x27;&lt;&#x27; not supported between instances of &#x27;int&#x27; and &#x27;str&#x27;
 </code></pre>
 <p>In contrast, our current <code>Option</code> implementation would result in:</p>
 <pre><code>Operator `&lt;` is not supported for types `tuple[Literal[1], Literal[2]]` and `tuple[Literal[1], Literal[&quot;hello&quot;]]`
 </code></pre>
 <p>(This is just my expected result; comparison between int and str isn’t implemented yet.)</p>
-<h2>Implementation</h2>
+Implementation
 <p>I’m considering a straightforward change to the following structure. Any suggestions are welcome!</p>
-<pre><code class="language-rs">struct OperatorUnsupportedError&lt;'db&gt; {
+<pre><code>struct OperatorUnsupportedError&lt;&#x27;db&gt; {
     op: ast::CmpOp,
-    lhs: Type&lt;'db&gt;,
-    rhs: Type&lt;'db&gt;,
+    lhs: Type&lt;&#x27;db&gt;,
+    rhs: Type&lt;&#x27;db&gt;,
 }
 
 // ...
 
 fn infer_binary_type_comparison(
     &amp;mut self,
-    left: Type&lt;'db&gt;,
+    left: Type&lt;&#x27;db&gt;,
     op: ast::CmpOp,
-    right: Type&lt;'db&gt;,
-) -&gt; Result&lt;Type&lt;'db&gt;, OperatorUnsupportedError&lt;'db&gt;&gt;
+    right: Type&lt;&#x27;db&gt;,
+) -&gt; Result&lt;Type&lt;&#x27;db&gt;, OperatorUnsupportedError&lt;&#x27;db&gt;&gt;
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-10-17 08:04</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-17 08:04</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-10-17 22:12</div>
@@ -90,13 +90,13 @@ fn infer_binary_type_comparison(
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">diagnostics</span> added by @MichaReiser on 2024-10-18 06:39</div>
+            <div class="event">Label <span class="label">diagnostics</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-18 06:39</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-18 06:40</div>
             <div class="timeline-body"><p>Messages from other tools:</p>
 <p>TypeScript
-<code>Operator '&lt;' cannot be applied to types '[string, number]' and '[string, string]'.(2365)</code></p>
+<code>Operator &#x27;&lt;&#x27; cannot be applied to types &#x27;[string, number]&#x27; and &#x27;[string, string]&#x27;.(2365)</code></p>
 <p><strong>Flow</strong> (Nice! We should consider something with our new diagnostics)</p>
 <pre><code>    2:   a &lt; b
          ^ Cannot compare tuple type [1] to tuple type [2]. [invalid-compare]
@@ -107,42 +107,42 @@ fn infer_binary_type_comparison(
                                                  ^ [2]
 </code></pre>
 <p>Pyright</p>
-<p><code>Operator &quot;&lt;&quot; not supported for types &quot;tuple[Literal[1], Literal[2]]&quot; and &quot;tuple[Literal[1], Literal['hello']]&quot;  (reportOperatorIssue)</code></p>
+<p><code>Operator &quot;&lt;&quot; not supported for types &quot;tuple[Literal[1], Literal[2]]&quot; and &quot;tuple[Literal[1], Literal[&#x27;hello&#x27;]]&quot;  (reportOperatorIssue)</code></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on 2024-10-18 08:42</div>
             <div class="timeline-body"><p>Thanks for reasearching this!!!!! Would it be possible to share an example of how Flow’s diagnostics could be applied to this case? I’m a little unsure about which parts of Flow’s diagnostics we should apply to.</p>
-<p>By the way, pyright doesn't show inner-type either... :cry:</p>
+<p>By the way, pyright doesn&#x27;t show inner-type either... :cry:</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-18 08:46</div>
-            <div class="timeline-body"><p>Here's a link to <a href="https://flow.org/try/#1N4Igxg9gdgZglgcxALlAIwIZoKYBsD6uEEAztvhgE6UYCe+JADpdhgCYowa5kA0I2KAFcAtiRQAXSkOz9sADwxgJ+NPTbYuQ3BMnTZA+Y2yU4IwRO4A6SFBIrGVDGM7c+h46fNRLuKxJIGWh8MeT0ZfhYlCStpHzNsFBAMIQkIEQwJODAQfiEyfBE4eWw2fDgofDBMsAALfAA3KjgsXGxxZC4eAw0G-GhcWn9aY3wWZldu-g1mbGqJUoBaCRHEzrcDEgBrbAk62kXhXFxJ923d-cPRHEpTgyEoMDaqZdW7vKgoOfaSKgOKpqmDA+d4gB5fMA-P6LCCMLLQbiLOoYCqgh6-GDYRYIXYLSgkRZkCR4jpddwPfJLZjpOBkO4AX34kA0SRgD2UcGgAAIFvYABQYZBcgDawhEN14XPspigCAAupK0ELhdKKghJarZXKAJRCtDEZ5QLnAAA6Rq5FpYEiElCNGC5AB4uWgzfTciAGiYSJyoEkGgAGKwAJgALABOKz+kD0oA">flow's playground</a></p>
-<p>What I like about flow is that it renders the longer types, including those declared outside of the message header. I would have to install their CLI to see how that looks. But I do like that they don't try to squeeze everything into the message.</p>
+            <div class="timeline-body"><p>Here&#x27;s a link to <a href="https://flow.org/try/#1N4Igxg9gdgZglgcxALlAIwIZoKYBsD6uEEAztvhgE6UYCe+JADpdhgCYowa5kA0I2KAFcAtiRQAXSkOz9sADwxgJ+NPTbYuQ3BMnTZA+Y2yU4IwRO4A6SFBIrGVDGM7c+h46fNRLuKxJIGWh8MeT0ZfhYlCStpHzNsFBAMIQkIEQwJODAQfiEyfBE4eWw2fDgofDBMsAALfAA3KjgsXGxxZC4eAw0G-GhcWn9aY3wWZldu-g1mbGqJUoBaCRHEzrcDEgBrbAk62kXhXFxJ923d-cPRHEpTgyEoMDaqZdW7vKgoOfaSKgOKpqmDA+d4gB5fMA-P6LCCMLLQbiLOoYCqgh6-GDYRYIXYLSgkRZkCR4jpddwPfJLZjpOBkO4AX34kA0SRgD2UcGgAAIFvYABQYZBcgDawhEN14XPspigCAAupK0ELhdKKghJarZXKAJRCtDEZ5QLnAAA6Rq5FpYEiElCNGC5AB4uWgzfTciAGiYSJyoEkGgAGKwAJgALABOKz+kD0oA">flow&#x27;s playground</a></p>
+<p>What I like about flow is that it renders the longer types, including those declared outside of the message header. I would have to install their CLI to see how that looks. But I do like that they don&#x27;t try to squeeze everything into the message.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-10-18 18:22</div>
-            <div class="timeline-body"><p>I think something like Flow's diagnostic would be great, once we have a more complete diagnostics system in place that allows formatting code frames like that; I definitely wouldn't try to implement that now.</p>
-<p>I guess the one thing it suggests is that maybe the error return value should include both the erroring types and their nodes (or at least node locations). But I also think probably we don't need to worry about that yet, either. The main thing is to change the return value to <code>Result</code> and propagate it correctly; if we do that, it's not hard to add more information to the Err variant in future once we have a new diagnostics system in place.</p>
+            <div class="timeline-body"><p>I think something like Flow&#x27;s diagnostic would be great, once we have a more complete diagnostics system in place that allows formatting code frames like that; I definitely wouldn&#x27;t try to implement that now.</p>
+<p>I guess the one thing it suggests is that maybe the error return value should include both the erroring types and their nodes (or at least node locations). But I also think probably we don&#x27;t need to worry about that yet, either. The main thing is to change the return value to <code>Result</code> and propagate it correctly; if we do that, it&#x27;s not hard to add more information to the Err variant in future once we have a new diagnostics system in place.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-10-18 18:23</div>
             <div class="timeline-body"><blockquote>
-<p>By the way, pyright doesn't show inner-type either</p>
+<p>By the way, pyright doesn&#x27;t show inner-type either</p>
 </blockquote>
-<p>Weird, I definitely thought I recently saw a pyright diagnostic for a case like this, where it stacked multiple errors for the innermost vs outer types. But now I can't figure out what code example I was looking at that produced that.</p>
+<p>Weird, I definitely thought I recently saw a pyright diagnostic for a case like this, where it stacked multiple errors for the innermost vs outer types. But now I can&#x27;t figure out what code example I was looking at that produced that.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2024-11-07 15:11</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2024-11-07 15:11</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:51:17 UTC
+        Synced at 2026-01-20 18:48:59 UTC
     </footer>
 </body>
 </html>

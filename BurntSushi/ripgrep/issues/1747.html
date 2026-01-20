@@ -23,30 +23,30 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/shabble">@shabble</a></div>
-            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+            <div class="timeline-body">What version of ripgrep are you using?
 <p>ripgrep 12.1.1 (rev 7cb211378a)
 -SIMD -AVX (compiled)
 +SIMD +AVX (runtime)</p>
-<h4>How did you install ripgrep?</h4>
+How did you install ripgrep?
 <p>manual install into /bin from github release zipfile</p>
-<h4>What operating system are you using ripgrep on?</h4>
+What operating system are you using ripgrep on?
 <p>Ubuntu 20.04 LTS
 5.4.0-52-generic #57-Ubuntu SMP Thu Oct 15 10:57:00 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux</p>
-<h4>Describe your bug.</h4>
+Describe your bug.
 <p><code>--byte-offset</code> appears to corrupt or confuse the output reporting when searching binary files for specific byte sequence patterns</p>
-<h4>What are the steps to reproduce the behavior?</h4>
-<pre><code>    $ echo -ne '\x01\x00\x07\x0a\x00\x05\x0a' | rg --encoding=none --text --only-matching  --multiline --multiline-dotall -e     '\x07\x0a\x00..' | xxd              
+What are the steps to reproduce the behavior?
+<pre><code>    $ echo -ne &#x27;\x01\x00\x07\x0a\x00\x05\x0a&#x27; | rg --encoding=none --text --only-matching  --multiline --multiline-dotall -e     &#x27;\x07\x0a\x00..&#x27; | xxd              
     00000000: 070a 0005 0a                             .....
 </code></pre>
-<pre><code>    $ echo -ne '\x01\x00\x07\x0a\x00\x05\x0a' | rg --encoding=none --text --only-matching  --multiline --multiline-dotall -e '\x07\x0a\x00..' --byte-offset | xxd
+<pre><code>    $ echo -ne &#x27;\x01\x00\x07\x0a\x00\x05\x0a&#x27; | rg --encoding=none --text --only-matching  --multiline --multiline-dotall -e &#x27;\x07\x0a\x00..&#x27; --byte-offset | xxd
     00000000: 323a 070a 323a 0005 0a                   2:..2:...
 </code></pre>
-<p>Running with <code>--debug</code> produces the exact same following line in both cases (separated here for readability, so it's not in  the hex dump):</p>
+<p>Running with <code>--debug</code> produces the exact same following line in both cases (separated here for readability, so it&#x27;s not in  the hex dump):</p>
 <pre><code>DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes</code></pre>
-<h4>What is the actual behavior?</h4>
+What is the actual behavior?
 <p>See above.</p>
 <p>The second (with <code>--byte-offset</code>) repeats the offset again at the nul byte, and splits the match</p>
-<h4>What is the expected behavior?</h4>
+What is the expected behavior?
 <p>With byte-offset, I would expect something like:</p>
 <pre><code>(unhexed):
 
@@ -66,48 +66,48 @@
 <p>Print the 0-based byte offset within the input file <strong>before each line of output.</strong></p>
 </blockquote>
 <p>For example:</p>
-<pre><code>$ echo -ne 'foo\nbar\nbaz\n' | rg --multiline --multiline-dotall '.*' --byte-offset
+<pre><code>$ echo -ne &#x27;foo\nbar\nbaz\n&#x27; | rg --multiline --multiline-dotall &#x27;.*&#x27; --byte-offset
 0:foo
 4:bar
 8:baz
 </code></pre>
-<p>And that's exactly what's happening here in your example. ripgrep isn't splitting the match at the NUL byte, it's splitting the match at the line terminator. Replace NUL bytes with, for example, <code>\x03</code> and you'll see the same behavior.</p>
+<p>And that&#x27;s exactly what&#x27;s happening here in your example. ripgrep isn&#x27;t splitting the match at the NUL byte, it&#x27;s splitting the match at the line terminator. Replace NUL bytes with, for example, <code>\x03</code> and you&#x27;ll see the same behavior.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2020-11-27 21:01</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-11-27 21:01</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2020-11-27 21:01</div>
+            <div class="event">Label <span class="label">invalid</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-11-27 21:01</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/shabble">@shabble</a> on 2020-11-27 22:09</div>
             <div class="timeline-body"><p>Thanks, I managed to overlook that in the help when I was trying to figure it out, but just after opening this I was starting to suspect it was intentional in that it mimics the <code>--line-numbers</code> behaviour for multi-line, so this is indeed as-intended.</p>
 <p>My usage is probably fairly niche, but there seem to be very few tools that can search arbitrary byte patterns in binary data, so I was hoping rg would save the day :-)</p>
-<p>I don't know nearly enough about the details of how things operate internally, but how plausible would it be to support changing the line/record separator to an arbitrary character, and potentially undefining it to treat the entire file as a single very long line/record?</p>
+<p>I don&#x27;t know nearly enough about the details of how things operate internally, but how plausible would it be to support changing the line/record separator to an arbitrary character, and potentially undefining it to treat the entire file as a single very long line/record?</p>
 <p>I assume it would hurt performance, but would it necessarily be any worse than multi-line matching, or even text-based searching on actual very long single-line files like some JS minifiers spit out?</p>
 <p>Regardless, thanks for the quick response and helpful explanation.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-11-27 22:44</div>
-            <div class="timeline-body"><p>If there were a simple way to implement that feature, I'd be open to it. But I can't think of a way. Everything is oriented around lines, <em>even multi-line search</em>. Line numbers and what not are added in a line oriented way. Lines are a critical part of the architecture of a grep tool, because doing a search in a way that is <em>not</em> line oriented is a very different architecture. It's either <em>stupidly</em> simple or <em>stupidly</em> hard, depending on what you're trying to do, the tools available and what your resource constraints are.</p>
-<p>Now, it is possible to expose something that permits configuring the line terminator. Indeed, <code>--null-data</code> is a <a href="https://github.com/BurntSushi/ripgrep/blob/a6d05475fb353c756e88f605fd5366a67943e591/crates/core/args.rs#L681-L683">special case of this that sets the line terminator to the NUL byte</a>. That option could in theory be exposed via a flag. But <em>unsetting</em> the line terminator entirely is something that I'm not really sure how to do easily. And yeah, if it isn't easy to do, then I don't think it's worth doing for cases like this.</p>
+            <div class="timeline-body"><p>If there were a simple way to implement that feature, I&#x27;d be open to it. But I can&#x27;t think of a way. Everything is oriented around lines, <em>even multi-line search</em>. Line numbers and what not are added in a line oriented way. Lines are a critical part of the architecture of a grep tool, because doing a search in a way that is <em>not</em> line oriented is a very different architecture. It&#x27;s either <em>stupidly</em> simple or <em>stupidly</em> hard, depending on what you&#x27;re trying to do, the tools available and what your resource constraints are.</p>
+<p>Now, it is possible to expose something that permits configuring the line terminator. Indeed, <code>--null-data</code> is a <a href="https://github.com/BurntSushi/ripgrep/blob/a6d05475fb353c756e88f605fd5366a67943e591/crates/core/args.rs#L681-L683">special case of this that sets the line terminator to the NUL byte</a>. That option could in theory be exposed via a flag. But <em>unsetting</em> the line terminator entirely is something that I&#x27;m not really sure how to do easily. And yeah, if it isn&#x27;t easy to do, then I don&#x27;t think it&#x27;s worth doing for cases like this.</p>
 <p>With that said, you might find that the <code>--json</code> output will give what you want. The <code>--json</code> output is more match oriented.</p>
-<p>And finally, it seems to me like this output mode doesn't actually inhibit anything. It just might make interpreted the results a bit more complex, but no information is being removed.</p>
+<p>And finally, it seems to me like this output mode doesn&#x27;t actually inhibit anything. It just might make interpreted the results a bit more complex, but no information is being removed.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/shabble">@shabble</a> on 2020-11-27 23:23</div>
             <div class="timeline-body"><p>I think <code>--json</code> with some post-processing should do exactly what I need, thanks again for pointing it out.</p>
-<p>Against your last point (and, on further thought, probably my original suggested &quot;fixed&quot; output format as well), I'm not sure it would be all that easy to separate the individual matches, as the matched portion could contain sequences that look like <code>Record_sep;Digit;Digit*;Colon</code> and depending on the pattern, might not have any fixed literals that you could use to decide if it's a new match or part of the previous one.</p>
-<p>I started down the grep_{matcher,searcher,...} rust-docs rabbithole, but it's a bit over my head at the moment, so I'll stick with wrapping the json output for now.</p>
+<p>Against your last point (and, on further thought, probably my original suggested &quot;fixed&quot; output format as well), I&#x27;m not sure it would be all that easy to separate the individual matches, as the matched portion could contain sequences that look like <code>Record_sep;Digit;Digit*;Colon</code> and depending on the pattern, might not have any fixed literals that you could use to decide if it&#x27;s a new match or part of the previous one.</p>
+<p>I started down the grep_{matcher,searcher,...} rust-docs rabbithole, but it&#x27;s a bit over my head at the moment, so I&#x27;ll stick with wrapping the json output for now.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:43:17 UTC
+        Synced at 2026-01-20 18:48:10 UTC
     </footer>
 </body>
 </html>

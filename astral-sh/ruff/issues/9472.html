@@ -23,19 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/jakkdl">@jakkdl</a></div>
-            <div class="timeline-body"><!--
-Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+            <div class="timeline-body">
 
-If you're filing a bug report, please consider including the following information:
-
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
-* The current Ruff settings (any relevant sections from your `pyproject.toml`).
-* The current Ruff version (`ruff --version`).
--->
-
-<h2>input</h2>
-<pre><code class="language-python">from typing import TYPE_CHECKING
+input
+<pre><code>from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from types import TracebackType
@@ -43,8 +34,8 @@ if TYPE_CHECKING:
 if sys.version_info &lt; (3, 11):
     from exceptiongroup import ExceptionGroup
 </code></pre>
-<h2><code>ruff --fix</code></h2>
-<pre><code class="language-python">from typing import TYPE_CHECKING
+<code>ruff --fix</code>
+<pre><code>from typing import TYPE_CHECKING
 import sys
 
 if TYPE_CHECKING:
@@ -53,8 +44,8 @@ if TYPE_CHECKING:
 if sys.version_info &lt; (3, 11):
     pass
 </code></pre>
-<h2>problem</h2>
-<p>The latter is clearly awful code with fully redundant if statements, and the <code>sys</code> and <code>TYPE_CHECKING</code> imports are in fact unused. There seems to be some custom logic for inserting the <code>pass</code> statement, which I think should be removed and this case should not be treated as an auto-fix - since currently you need to manually fix it anyway (except currently you aren't warned about it, and have to check the diff).
+problem
+<p>The latter is clearly awful code with fully redundant if statements, and the <code>sys</code> and <code>TYPE_CHECKING</code> imports are in fact unused. There seems to be some custom logic for inserting the <code>pass</code> statement, which I think should be removed and this case should not be treated as an auto-fix - since currently you need to manually fix it anyway (except currently you aren&#x27;t warned about it, and have to check the diff).
 Other solutions include warning and/or autofixing* <code>if [...]: pass</code> statements. If they exist, they should be included by default.</p>
 <p>This is running a new, clean, venv with no config. Version 0.1.11</p>
 <ul>
@@ -63,10 +54,10 @@ Other solutions include warning and/or autofixing* <code>if [...]: pass</code> s
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Lone unused import in if-statement should not get autofixed, or the if-statement removed" to "Lone unused import in if-statement should not get autofixed, or the if-statement should removed" by @jakkdl on 2024-01-11 16:35</div>
+            <div class="event">Renamed from &quot;Lone unused import in if-statement should not get autofixed, or the if-statement removed&quot; to &quot;Lone unused import in if-statement should not get autofixed, or the if-statement should removed&quot; by <a href="https://github.com/jakkdl">@jakkdl</a> on 2024-01-11 16:35</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2024-01-11 17:42</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-11 17:42</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-11 17:43</div>
@@ -78,26 +69,26 @@ Other solutions include warning and/or autofixing* <code>if [...]: pass</code> s
             <div class="timeline-body"><blockquote>
 <p>I think we have a rule for detecting and deleting empty type-checking blocks specifically, but we could make this part of the fix for the general &quot;delete statement&quot; logic.</p>
 </blockquote>
-<p>Ah you're right, <code>TCH005</code>. So a partial fix would be enabling that by default.</p>
-<p>Searching through the rules, I'm not seeing a rule for &quot;empty/unnecessary if-statement&quot; - even in cases where an if statement does have side-effects and removing it outright is dangerous, <code>if &lt;condition&gt;: pass</code> should probably have a rule.</p>
+<p>Ah you&#x27;re right, <code>TCH005</code>. So a partial fix would be enabling that by default.</p>
+<p>Searching through the rules, I&#x27;m not seeing a rule for &quot;empty/unnecessary if-statement&quot; - even in cases where an if statement does have side-effects and removing it outright is dangerous, <code>if &lt;condition&gt;: pass</code> should probably have a rule.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/gpauloski">@gpauloski</a> on 2024-10-24 20:37</div>
-            <div class="timeline-body"><p>Is there interest in a PR for an &quot;empty-if-statement&quot; rule (potentially with an unsafe autofix)? I'd really love a way to catch empty <code>if sys.version_info</code> statements when unused imports are removed.</p>
+            <div class="timeline-body"><p>Is there interest in a PR for an &quot;empty-if-statement&quot; rule (potentially with an unsafe autofix)? I&#x27;d really love a way to catch empty <code>if sys.version_info</code> statements when unused imports are removed.</p>
 <p>Alternatively, RUF034 (#13218) could be expanded to check statements rather than just expressions to cover this case. This might also depend on if there should be an unsafe autofix (re: #13852).</p>
 <p>cc @AlexWaygood @MichaReiser</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-25 07:03</div>
-            <div class="timeline-body"><p>@gpauloski I could see such a rule to be useful, but we should think about its scope. E.g what about empty <code>else</code> branches (in <code>for</code>, <code>try</code> etc statements)? And we have to be careful about typing stubs. It's probably best to discuss such a rule in a new issue</p>
+            <div class="timeline-body"><p>@gpauloski I could see such a rule to be useful, but we should think about its scope. E.g what about empty <code>else</code> branches (in <code>for</code>, <code>try</code> etc statements)? And we have to be careful about typing stubs. It&#x27;s probably best to discuss such a rule in a new issue</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:49:25 UTC
+        Synced at 2026-01-20 18:48:48 UTC
     </footer>
 </body>
 </html>

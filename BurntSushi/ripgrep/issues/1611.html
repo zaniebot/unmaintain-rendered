@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>ripgrep doesn't apply .gitignore when following a symlink to a subdirectory of a git repo</h1>
+    <h1>ripgrep doesn&#x27;t apply .gitignore when following a symlink to a subdirectory of a git repo</h1>
 
     <div class="meta">
         <span class="state-icon state-closed"></span>
@@ -23,25 +23,25 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/tavianator">@tavianator</a></div>
-            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+            <div class="timeline-body">What version of ripgrep are you using?
 <pre><code>$ rg --version
 ripgrep 12.1.1
 -SIMD -AVX (compiled)
 +SIMD +AVX (runtime)
 </code></pre>
-<h4>How did you install ripgrep?</h4>
+How did you install ripgrep?
 <pre><code># pacman -S ripgrep
 </code></pre>
-<h4>What operating system are you using ripgrep on?</h4>
+What operating system are you using ripgrep on?
 <p>Arch Linux.</p>
-<h4>Describe your bug.</h4>
-<p>I'm not sure if it should be expected to, but if ripgrep follows a symlink to a <code>git/repo/subdirectory</code>, it doesn't apply any of the rules from <code>git/repo/.gitignore</code>.</p>
-<h4>What are the steps to reproduce the behavior?</h4>
+Describe your bug.
+<p>I&#x27;m not sure if it should be expected to, but if ripgrep follows a symlink to a <code>git/repo/subdirectory</code>, it doesn&#x27;t apply any of the rules from <code>git/repo/.gitignore</code>.</p>
+What are the steps to reproduce the behavior?
 <pre><code>$ mkdir repo
 $ cd repo
 $ git init
 Initialized empty Git repository in /home/tavianator/foo/repo/.git/
-$ echo '*.o' &gt;.gitignore
+$ echo &#x27;*.o&#x27; &gt;.gitignore
 $ mkdir dir
 $ echo hello &gt;dir/not_ignored.o
 $ git status
@@ -60,7 +60,7 @@ $ rg -L .
 link/not_ignored.o
 1:hello
 </code></pre>
-<h4>What is the actual behavior?</h4>
+What is the actual behavior?
 <pre><code>$ rg --debug -L .
 DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
 DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
@@ -82,35 +82,35 @@ DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basen
 DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
 DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
 </code></pre>
-<h4>What is the expected behavior?</h4>
+What is the expected behavior?
 <p>Maybe when ripgrep descends into a symlink to a directory, it should re-check the chain of parents to see if it is inside a git repo.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-06-09 19:40</div>
-            <div class="timeline-body"><p>This is correct behavior. For the purposes of gitignore filtering, symlinks are filtered on the basis of the link, not on the thing it points to. Your link exists outside the git repository, so there is no expectation that <code>.gitignore</code> files inside that repo will apply to that link itself. If you need this kind of filtering, you'll need to add <code>.ignore</code> or <code>.rgignore</code> files in appropriate places.</p>
+            <div class="timeline-body"><p>This is correct behavior. For the purposes of gitignore filtering, symlinks are filtered on the basis of the link, not on the thing it points to. Your link exists outside the git repository, so there is no expectation that <code>.gitignore</code> files inside that repo will apply to that link itself. If you need this kind of filtering, you&#x27;ll need to add <code>.ignore</code> or <code>.rgignore</code> files in appropriate places.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2020-06-09 19:40</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-06-09 19:40</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2020-06-09 19:40</div>
+            <div class="event">Label <span class="label">wontfix</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-06-09 19:40</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tavianator">@tavianator</a> on 2020-06-09 20:14</div>
-            <div class="timeline-body"><p>I'm not expecting the link to be filtered, rather the things underneath that link.  If you did <code>cd link &amp;&amp; rg .</code>, the file would get ignored.  So I thought maybe <code>rg -L .</code> should also ignore it.</p>
+            <div class="timeline-body"><p>I&#x27;m not expecting the link to be filtered, rather the things underneath that link.  If you did <code>cd link &amp;&amp; rg .</code>, the file would get ignored.  So I thought maybe <code>rg -L .</code> should also ignore it.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-06-09 20:37</div>
-            <div class="timeline-body"><p>Yeah, I see what you mean, but everything I said still pretty much applies. Even if I agreed that this was a bug, fixing it wouldn't be feasible. It would require resolving the symlink to its real absolute path and doing some crazy shenanigans to figure out how to correctly apply any pertinent <code>.gitignore</code> rules. The code is so complicated already, that fixing this just isn't something I'm capable of doing.</p>
+            <div class="timeline-body"><p>Yeah, I see what you mean, but everything I said still pretty much applies. Even if I agreed that this was a bug, fixing it wouldn&#x27;t be feasible. It would require resolving the symlink to its real absolute path and doing some crazy shenanigans to figure out how to correctly apply any pertinent <code>.gitignore</code> rules. The code is so complicated already, that fixing this just isn&#x27;t something I&#x27;m capable of doing.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:43:11 UTC
+        Synced at 2026-01-20 18:48:10 UTC
     </footer>
 </body>
 </html>

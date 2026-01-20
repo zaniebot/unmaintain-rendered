@@ -23,21 +23,21 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/carderne">@carderne</a></div>
-            <div class="timeline-body"><p>I've put a decent amount of effort trying to figure out a workable &quot;monorepo&quot; solution with pip-tools/Rye/etc and now uv. What I mean by a monorepo:</p>
+            <div class="timeline-body"><p>I&#x27;ve put a decent amount of effort trying to figure out a workable &quot;monorepo&quot; solution with pip-tools/Rye/etc and now uv. What I mean by a monorepo:</p>
 <ol>
 <li>2+ packages with interdependencies.</li>
 <li>The ability to lock dependencies across packages (where not needed, split into multiple workspaces). More sophisticated multi-version handling would be great but out of scope.</li>
 <li>Multiple entrypoints. Packages are peers and there is no &quot;root&quot; package.</li>
 <li>Probably want to distribute the packages in a Dockerfile or similar.</li>
 </ol>
-<p>I'm packaging a few thoughts into this issue as I think they're all related, but happy to split things out if any portions of this are more likely to be worked on than others.</p>
-<h2>Should uv support this?</h2>
-<p>I think yes. Pants/Bazel/etc are a big step up in complexity and lose a lot of nice UX. uv is shaping up as the defacto Python tool and I think this is a common pattern for medium-sized teams that are trying to move past multirepo but don't want more sophisticated tooling. If you (uv maintainers) are unconvinced (but convince-able), I'm happy to spend more time doing so!</p>
-<h2>Issues</h2>
-<h3>1. Multiple packages with single lockfile</h3>
-<p>Unfortunately, uv <code>v0.4.0</code> seems to be a step back for this. It's no longer possible to <code>uv sync</code> for the whole workspace (related #6874), and the root project being &quot;virtual&quot; is not really supported. The docs make it clear that uv workspaces aren't (currently) meant for this, but I think that's a mistake. Have separate uv packages isn't a great solution, as you lose the global version locks (which makes housekeeping 10x easier), so you have multiple venvs, multiple pyright/pytest installs/configs etc.</p>
-<p>For clarity, I'm talking about the structure below. I think adding a <code>tool.uv.virtual: bool</code> flag (like Rye has) would be a great step. In that case the root is not a package and can't be built.</p>
-<pre><code class="language-bash">.
+<p>I&#x27;m packaging a few thoughts into this issue as I think they&#x27;re all related, but happy to split things out if any portions of this are more likely to be worked on than others.</p>
+Should uv support this?
+<p>I think yes. Pants/Bazel/etc are a big step up in complexity and lose a lot of nice UX. uv is shaping up as the defacto Python tool and I think this is a common pattern for medium-sized teams that are trying to move past multirepo but don&#x27;t want more sophisticated tooling. If you (uv maintainers) are unconvinced (but convince-able), I&#x27;m happy to spend more time doing so!</p>
+Issues
+1. Multiple packages with single lockfile
+<p>Unfortunately, uv <code>v0.4.0</code> seems to be a step back for this. It&#x27;s no longer possible to <code>uv sync</code> for the whole workspace (related #6874), and the root project being &quot;virtual&quot; is not really supported. The docs make it clear that uv workspaces aren&#x27;t (currently) meant for this, but I think that&#x27;s a mistake. Have separate uv packages isn&#x27;t a great solution, as you lose the global version locks (which makes housekeeping 10x easier), so you have multiple venvs, multiple pyright/pytest installs/configs etc.</p>
+<p>For clarity, I&#x27;m talking about the structure below. I think adding a <code>tool.uv.virtual: bool</code> flag (like Rye has) would be a great step. In that case the root is not a package and can&#x27;t be built.</p>
+<pre><code>.
 ├── pyproject.toml                 # virtual
 ├── uv.lock
 └── packages
@@ -50,54 +50,54 @@
         └── mylib
             └── __init__.py
 </code></pre>
-<h3>2. Distributing in Dockerfiles etc</h3>
-<p>This is I think orthogonal to the issue above. (And much less important, as it's possible to work around it with plugins.) Currently, there's no good way to get an efficient (cacheable) Docker build in a uv workspace. You'd like to do something like the Dockerfile below, but you can't (related #6867).</p>
-<pre><code class="language-Dockerfile">FROM python:3.12.5-slim-bookworm
+2. Distributing in Dockerfiles etc
+<p>This is I think orthogonal to the issue above. (And much less important, as it&#x27;s possible to work around it with plugins.) Currently, there&#x27;s no good way to get an efficient (cacheable) Docker build in a uv workspace. You&#x27;d like to do something like the Dockerfile below, but you can&#x27;t (related #6867).</p>
+<pre><code>FROM python:3.12.5-slim-bookworm
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
 
 WORKDIR /app
 COPY uv.lock pyproject.toml /app/
 
-# NB: doesn't work as the server package isn't there!
+# NB: doesn&#x27;t work as the server package isn&#x27;t there!
 RUN uv sync --locked --no-install-project --package=server
 
 COPY packages /app/packages
 RUN uv sync --locked --package=server
 ENV PATH=&quot;/app/.venv/bin:$PATH&quot;
 </code></pre>
-<p>If that gets resolved, there's another issue, but this is very likely to be outside the scope of uv. Just sharing it for context.</p>
+<p>If that gets resolved, there&#x27;s another issue, but this is very likely to be outside the scope of uv. Just sharing it for context.</p>
 <ul>
 <li>Either you have to copy the entire <code>packages/</code> directory into every Dockerfile (regardless of what they actually need), forcing tons of unnecessary rebuilds.</li>
 <li>OR you have custom COPY lines in each Dockerfile, which is a mess to maintain with more than a couple of packages, and has to be constantly updated to match the dependency graph.</li>
 </ul>
 <p>My own solution has been to build wheels that include any dependencies so you can just do this:</p>
-<pre><code class="language-bash"># uv is nice enough to resolve transitive dependencies of server
+<pre><code># uv is nice enough to resolve transitive dependencies of server
 uv export --format=requirements-txt --package=server &gt; reqs.txt
 </code></pre>
 <p>Then in Dockerfile:</p>
-<pre><code class="language-Dockerfile">COPY reqs.txt reqs.txt
+<pre><code>COPY reqs.txt reqs.txt
 RUN uv pip install -r reqs.txt
 # add --no-index to prevent internet access to ensure only the
 # hash-locked versions in reqs.txt are downloaded
 RUN uv pip install server.whl --no-deps --no-index
 </code></pre>
-<p>I've written a tiny Hatch plugin <a href="https://github.com/carderne/una/blob/main/plugins/hatch/hatch_una/hatch_build.py">here</a> that injects all the required workspace code into the wheel. This won't work for many use-cases (local dev hot reload) but is one way around the problem of COPYing the entire workspace into the Dockerfile. I don't think there's any solution that solves both together, and at least this way permits efficient Docker builds and simple Dockerfiles. (Note: since uv v0.4.0 the plugin seems to break uv's editable builds, haven't yet looked into why.)</p>
+<p>I&#x27;ve written a tiny Hatch plugin <a href="https://github.com/carderne/una/blob/main/plugins/hatch/hatch_una/hatch_build.py">here</a> that injects all the required workspace code into the wheel. This won&#x27;t work for many use-cases (local dev hot reload) but is one way around the problem of COPYing the entire workspace into the Dockerfile. I don&#x27;t think there&#x27;s any solution that solves both together, and at least this way permits efficient Docker builds and simple Dockerfiles. (Note: since uv v0.4.0 the plugin seems to break uv&#x27;s editable builds, haven&#x27;t yet looked into why.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Afoucaul">@Afoucaul</a> on 2024-09-02 13:24</div>
             <div class="timeline-body"><p>To expand on the Docker image, this is what I would want to do:</p>
-<pre><code class="language-Dockerfile">FROM python:3.12.5-slim-bookworm AS python-builder
+<pre><code>FROM python:3.12.5-slim-bookworm AS python-builder
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
 
-# Create a venv at a well-known location so it can be COPY'd later
+# Create a venv at a well-known location so it can be COPY&#x27;d later
 RUN uv venv /opt/python
 # Tell uv to use that venv
 ENV UV_PYTHON=/opt/python
 
 WORKDIR /app
 COPY uv.lock pyproject.toml /app/
-# No need to COPY pyproject.toml of libs - they're all well-specified in uv.lock anyway
+# No need to COPY pyproject.toml of libs - they&#x27;re all well-specified in uv.lock anyway
 
 # Install the app without all workspace members - ie all 3rd party dependencies 
 RUN uv sync --locked --no-install-workspace --package=server
@@ -114,21 +114,21 @@ FROM python:3.12.5-slim-bookworm AS runtime
 COPY --from=python-builder /opt/python /opt/python
 ENV PATH=&quot;/opt/python/bin:$PATH&quot;
 </code></pre>
-<p>I can't do that because:</p>
+<p>I can&#x27;t do that because:</p>
 <ol>
-<li><code>uv sync --locked --no-install-workspace --package=server</code> complains because <code>server</code> isn't there (nor are its dependencies anyway)</li>
+<li><code>uv sync --locked --no-install-workspace --package=server</code> complains because <code>server</code> isn&#x27;t there (nor are its dependencies anyway)</li>
 </ol>
 <ul>
 <li>it seems that <code>uv.lock</code> already has all the information needed to resolve this: it contains workspace members, so uv can know of <code>server</code>, and of its dependencies, without all <code>pyproject.toml</code> files needing to be there</li>
 </ul>
-<ol start="2">
-<li>There's no such flag as <code>--no-editable</code> - uv will install workspace members as editable packages, so <code>COPY</code>ing the venv in the final stage won't work because the packages pointed at won't be there</li>
+<ol>
+<li>There&#x27;s no such flag as <code>--no-editable</code> - uv will install workspace members as editable packages, so <code>COPY</code>ing the venv in the final stage won&#x27;t work because the packages pointed at won&#x27;t be there</li>
 </ol>
 <ul>
 <li>this would allow to build a complete venv that can be shipped, with all and only the dependencies it needs</li>
 </ul>
-<ol start="3">
-<li><code>uv sync</code> doesn't support targetting a venv (although that's under discussion from what I've gathered)</li>
+<ol>
+<li><code>uv sync</code> doesn&#x27;t support targetting a venv (although that&#x27;s under discussion from what I&#x27;ve gathered)</li>
 </ol>
 </div>
         </div>
@@ -140,44 +140,44 @@ ENV PATH=&quot;/opt/python/bin:$PATH&quot;
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carderne">@carderne</a> on 2024-09-02 16:32</div>
             <div class="timeline-body"><p>(1) Yes, that would be great!
-(I'll start working on a patch but I suspect I'll still be noodling by the time you merge yours.)</p>
-<p>For (2), I suspect the only generally useful solution would be to encode the package-specific dependency tree in <code>uv.lock</code> (like <code>pnpm-lock.yaml</code>) rather than calculating it on the fly. That might make it harder to dovetail with <a href="https://peps.python.org/pep-0751/">PEP 751</a>, but from what I understand you're planning to support pylock as an output format that uv won't use internally, so maybe not important.</p>
+(I&#x27;ll start working on a patch but I suspect I&#x27;ll still be noodling by the time you merge yours.)</p>
+<p>For (2), I suspect the only generally useful solution would be to encode the package-specific dependency tree in <code>uv.lock</code> (like <code>pnpm-lock.yaml</code>) rather than calculating it on the fly. That might make it harder to dovetail with <a href="https://peps.python.org/pep-0751/">PEP 751</a>, but from what I understand you&#x27;re planning to support pylock as an output format that uv won&#x27;t use internally, so maybe not important.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-02 17:21</div>
-            <div class="timeline-body"><p>For (2), we're thinking of perhaps a dedicated command like <code>uv bundle</code> that would handle a lot of the defaults that you want for this kind of workflow. But otherwise a <code>--no-editable</code> or similar seems reasonable to me.</p>
+            <div class="timeline-body"><p>For (2), we&#x27;re thinking of perhaps a dedicated command like <code>uv bundle</code> that would handle a lot of the defaults that you want for this kind of workflow. But otherwise a <code>--no-editable</code> or similar seems reasonable to me.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-02 20:53</div>
-            <div class="timeline-body"><p>Lets track (2) in https://github.com/astral-sh/uv/issues/5792.</p>
+            <div class="timeline-body"><p>Lets track (2) in <a href="https://github.com/astral-sh/uv/issues/5792">astral-sh/uv#5792</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-09-02 20:55</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-02 20:55</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-02 20:57</div>
             <div class="timeline-body"><blockquote>
-<p>I think adding a tool.uv.virtual: bool flag (like Rye has) would be a great step. In that case the root is not a package and can't be built.</p>
+<p>I think adding a tool.uv.virtual: bool flag (like Rye has) would be a great step. In that case the root is not a package and can&#x27;t be built.</p>
 </blockquote>
 <p>How is this different than <code>tool.uv.package = false</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-02 20:57</div>
-            <div class="timeline-body"><p>I think that does what you're describing?</p>
+            <div class="timeline-body"><p>I think that does what you&#x27;re describing?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-09-02 21:00</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-02 21:00</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-09-02 21:01</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-02 21:01</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @charliermarsh on 2024-09-02 21:04</div>
+            <div class="event">Reopened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-02 21:04</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-02 21:04</div>
@@ -186,11 +186,11 @@ ENV PATH=&quot;/opt/python/bin:$PATH&quot;
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carderne">@carderne</a> on 2024-09-03 11:58</div>
-            <div class="timeline-body"><p>Sorry you're moving too quickly for me!</p>
-<h2>About (1)</h2>
-<p>You're right that <code>package=false</code> does what is needed. It allows a very minimal root <code>pyproject.toml</code> that looks like the one below. The only downside is that in order for <code>uv sync</code> to sync the entire workspace, you need to add each package to <code>project.dependencies</code> and to <code>tool.uv.sources</code> <em>and</em> in <code>tool.uv.workspace.members</code>. I should have been more explicit in my first message that what I think is needed here is <code>uv sync --the-entire-workspace</code>. (This is the default behaviour in Rye and was the default in <code>uv&lt;0.4.0</code>.)</p>
+            <div class="timeline-body"><p>Sorry you&#x27;re moving too quickly for me!</p>
+About (1)
+<p>You&#x27;re right that <code>package=false</code> does what is needed. It allows a very minimal root <code>pyproject.toml</code> that looks like the one below. The only downside is that in order for <code>uv sync</code> to sync the entire workspace, you need to add each package to <code>project.dependencies</code> and to <code>tool.uv.sources</code> <em>and</em> in <code>tool.uv.workspace.members</code>. I should have been more explicit in my first message that what I think is needed here is <code>uv sync --the-entire-workspace</code>. (This is the default behaviour in Rye and was the default in <code>uv&lt;0.4.0</code>.)</p>
 <p>Alternatively a more explicit flag in the config like <code>tool.uv.workspace.this-project-is-virtual-so-sync-all-members-by-default: bool</code>.</p>
-<pre><code class="language-toml">[project]
+<pre><code>[project]
 name = &quot;monorepo-root&quot;
 version = &quot;0&quot;
 requires-python = &quot;==3.12&quot;
@@ -207,14 +207,14 @@ myserver = { workspace = true }
 [tool.uv.workspace]
 members = [&quot;packages/mylib&quot;, &quot;packages/myserver&quot;]
 </code></pre>
-<h2>On (2) the Docker stuff</h2>
-<p>I don't really understand how #6943 helps but seems sensible anyway. I see three obvious ways (not uv specific) of getting stuff into a Docker image:</p>
+On (2) the Docker stuff
+<p>I don&#x27;t really understand how #6943 helps but seems sensible anyway. I see three obvious ways (not uv specific) of getting stuff into a Docker image:</p>
 <ol>
 <li>Export a package-specific <code>requirements.txt</code>, install those, then COPY in all needed packages.</li>
 <li>Same for <code>requirements.txt</code>. <strong>Then create a <code>site-packages</code> and COPY that in. I assume this is what the <code>--non-editable</code> is about in #5792.</strong></li>
 <li>Same for <code>requirements.txt</code>. Then create sdists/wheels from the packages (the plugin I mentioned).</li>
 </ol>
-<p>All of these require a little pre-Docker script to generate the <code>requirements.txt</code> which isn't ideal but fine. Assuming I've understood correctly on (2) above then I'll move any more comments I have to that Issue.</p>
+<p>All of these require a little pre-Docker script to generate the <code>requirements.txt</code> which isn&#x27;t ideal but fine. Assuming I&#x27;ve understood correctly on (2) above then I&#x27;ll move any more comments I have to that Issue.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -226,7 +226,7 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
 WORKDIR /app
 COPY uv.lock pyproject.toml /app/
 
-# NB: doesn't work as the server package isn't there!
+# NB: doesn&#x27;t work as the server package isn&#x27;t there!
 RUN uv sync --locked --no-install-project --package=server
 
 COPY packages /app/packages
@@ -239,12 +239,12 @@ ENV PATH=&quot;/app/.venv/bin:$PATH&quot;
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/b-phi">@b-phi</a> on 2024-09-03 13:24</div>
             <div class="timeline-body"><p>This is also causing some issues for me with 0.4.0+. Locally sync works fine</p>
-<pre><code class="language-shell">&gt; uv sync
+<pre><code>&gt; uv sync
 Resolved 341 packages in 76ms
 Audited 307 packages in 3ms
 </code></pre>
 <p>But when adding <code>--frozen</code>, which we use in CI, uv ignores the workspace members</p>
-<pre><code class="language-shell">&gt; uv sync --frozen
+<pre><code>&gt; uv sync --frozen
 Uninstalled 97 packages in 7.57s
 ...
 Audited 210 packages in 0.25ms
@@ -260,19 +260,19 @@ Audited 210 packages in 0.25ms
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/b-phi">@b-phi</a> on 2024-09-03 13:46</div>
             <div class="timeline-body"><p>No, just a &quot;virtual&quot; workspace, effectively this.</p>
-<pre><code class="language-toml">[tool.uv]
+<pre><code>[tool.uv]
 dev-dependencies = [
     &quot;...&quot;,
 ]
 
 [tool.uv.workspace]
-members = ['libs/*', 'sandbox']
+members = [&#x27;libs/*&#x27;, &#x27;sandbox&#x27;]
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-03 13:47</div>
-            <div class="timeline-body"><p>I can look into why you're seeing differences (it sounds like a bug!). I'd suggest migrating to a virtual project though, i.e., adding a <code>[project]</code> table (but not a <code>build-system</code>) to your root <code>pyproject.toml</code>. We redesigned those in v0.4.0 and the version above is now considered legacy.</p>
+            <div class="timeline-body"><p>I can look into why you&#x27;re seeing differences (it sounds like a bug!). I&#x27;d suggest migrating to a virtual project though, i.e., adding a <code>[project]</code> table (but not a <code>build-system</code>) to your root <code>pyproject.toml</code>. We redesigned those in v0.4.0 and the version above is now considered legacy.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -288,23 +288,23 @@ members = ['libs/*', 'sandbox']
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carderne">@carderne</a> on 2024-09-03 15:03</div>
             <div class="timeline-body"><p>What @b-phi is talking about is exactly what I mentioned in (1) of my <a href="https://github.com/astral-sh/uv/issues/6935#issuecomment-2326341785">comment</a> up above. Basically you have to add each workspace member in three places. Would be great if that could be made unnecessary (in one of the ways I suggested or some other way).</p>
-<p>On (2) the Dockerfiles, the command you added helps, but it still doesn't work if there arae dependencies between packages and you haven't yet copied in the files. There's an MRE <a href="https://github.com/carderne/uv-workspace-example">here</a>. It fails when trying to run the <code>--no-install-project</code> sync because <code>packages/server</code> wants <code>packages/greeter</code> but it's not there. Currently the only way around this (afaict) is to pre-export a <code>requirements.txt</code> and use that.</p>
+<p>On (2) the Dockerfiles, the command you added helps, but it still doesn&#x27;t work if there arae dependencies between packages and you haven&#x27;t yet copied in the files. There&#x27;s an MRE <a href="https://github.com/carderne/uv-workspace-example">here</a>. It fails when trying to run the <code>--no-install-project</code> sync because <code>packages/server</code> wants <code>packages/greeter</code> but it&#x27;s not there. Currently the only way around this (afaict) is to pre-export a <code>requirements.txt</code> and use that.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-03 15:22</div>
-            <div class="timeline-body"><p>I'm confused on (2). We have <code>--no-install-workspace</code> that does exactly this, right?</p>
+            <div class="timeline-body"><p>I&#x27;m confused on (2). We have <code>--no-install-workspace</code> that does exactly this, right?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carderne">@carderne</a> on 2024-09-03 17:30</div>
-            <div class="timeline-body"><p>Oh of course, sorry. So (2) I think is resolved. The remaining stuff about getting the right files into the Dockerfile are not really uv's problem. (Although could be helped by stuff like <code>--non-editable</code>.)</p>
-<p>The main point of this issue is (1) but I'm very happy to wait for you to figure out an approach that you're happy with. But I think it would be great to resolve.</p>
+            <div class="timeline-body"><p>Oh of course, sorry. So (2) I think is resolved. The remaining stuff about getting the right files into the Dockerfile are not really uv&#x27;s problem. (Although could be helped by stuff like <code>--non-editable</code>.)</p>
+<p>The main point of this issue is (1) but I&#x27;m very happy to wait for you to figure out an approach that you&#x27;re happy with. But I think it would be great to resolve.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-03 17:32</div>
-            <div class="timeline-body"><p>👍 Part of what I'm hearing here too is that we need more + better documentation for this stuff.</p>
+            <div class="timeline-body"><p>👍 Part of what I&#x27;m hearing here too is that we need more + better documentation for this stuff.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -315,16 +315,16 @@ The question is whether the <code>sync</code> command could have an <code>--all-
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Workspaces and monorepo support" to "Workspaces and monorepo support (add sync --all-packages)" by @carderne on 2024-09-04 07:05</div>
+            <div class="event">Renamed from &quot;Workspaces and monorepo support&quot; to &quot;Workspaces and monorepo support (add sync --all-packages)&quot; by <a href="https://github.com/carderne">@carderne</a> on 2024-09-04 07:05</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Afoucaul">@Afoucaul</a> on 2024-09-04 08:54</div>
             <div class="timeline-body"><blockquote>
-<p>👍 Part of what I'm hearing here too is that we need more + better documentation for this stuff.</p>
+<p>👍 Part of what I&#x27;m hearing here too is that we need more + better documentation for this stuff.</p>
 </blockquote>
-<p>I'm probably biased, but it seems to me that a monorepo with possibly interdependent libs, and independently buildable (most of the time into Docker images) apps is a common pattern - at least it's what workspaces promote.
-With that in mind, it would indeed be great to have documentation about how Astral intends us to use uv to manage such a repo and such builds. Until now, it feels like I'm hacking my way to a satisfying set-up, although uv maintainers obviously have a &quot;right way&quot; in mind.</p>
-<p>That said, I must say I'm having an amazing experience with uv (and ruff, and Astral in general), and that I'll advocate to use it in all the projects I maintain!</p>
+<p>I&#x27;m probably biased, but it seems to me that a monorepo with possibly interdependent libs, and independently buildable (most of the time into Docker images) apps is a common pattern - at least it&#x27;s what workspaces promote.
+With that in mind, it would indeed be great to have documentation about how Astral intends us to use uv to manage such a repo and such builds. Until now, it feels like I&#x27;m hacking my way to a satisfying set-up, although uv maintainers obviously have a &quot;right way&quot; in mind.</p>
+<p>That said, I must say I&#x27;m having an amazing experience with uv (and ruff, and Astral in general), and that I&#x27;ll advocate to use it in all the projects I maintain!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -335,7 +335,7 @@ With that in mind, it would indeed be great to have documentation about how Astr
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/PhilipVinc">@PhilipVinc</a> on 2024-09-04 09:38</div>
             <div class="timeline-body"><p>Is it possible for a package, virtual project or workspace to depend on another workspace, or on a package in a workspace?</p>
-<p>I'm thinking of the case common in data science where we have a set of packages developed in a workspace (let's say numpy and scipy are the packages developed in WRKSPC) and we don't really publish them to a repository or anywhere.</p>
+<p>I&#x27;m thinking of the case common in data science where we have a set of packages developed in a workspace (let&#x27;s say numpy and scipy are the packages developed in WRKSPC) and we don&#x27;t really publish them to a repository or anywhere.</p>
 <p>At some point I want to start a data science project, so I will create a virtual package with some scripts that require <code>scipy</code>, which in turn depends on the workspace version of numpy.
 How can I express this dependency?</p>
 </div>
@@ -356,9 +356,9 @@ How can I express this dependency?</p>
 </blockquote>
 <p>Jumping in here, managing multiple environments would be very helpful. In our repo, some sub-packages have heavy ML dependencies, others have linux-only dependencies. Ideally I would be able to manage multiple environments for different use cases, e.g. lightweight venv on OSX host, a linux venv that I use via docker, a heavier ML env etc.</p>
 </blockquote>
-<p>I've managed to do that by defining apps as packages (that you target with <code>--package</code>), and extras.
-For instance, I've created an <code>ai</code> package that needs tensorflow, which I added with <code>uv add --package ai --optional ml extra</code>. That way, a package that needs <code>ai</code> but never actually reaches the part where tensorflow is imported, can depend on it via <code>uv add --package consumer ai</code>, whereas a package that actually needs that would declare it via <code>uv add --package consumer ai[ml]</code> (note <code>ai</code> vs <code>ai[ml]</code>).
-That's actually very useful to install a venv on an ARM macbook for a project that needs tensorflow somewhere - you run <code>uv sync</code> without <code>--extra ml</code>, so you don't end up with <code>tensorflow</code>, but everything else - good enough for developing.
+<p>I&#x27;ve managed to do that by defining apps as packages (that you target with <code>--package</code>), and extras.
+For instance, I&#x27;ve created an <code>ai</code> package that needs tensorflow, which I added with <code>uv add --package ai --optional ml extra</code>. That way, a package that needs <code>ai</code> but never actually reaches the part where tensorflow is imported, can depend on it via <code>uv add --package consumer ai</code>, whereas a package that actually needs that would declare it via <code>uv add --package consumer ai[ml]</code> (note <code>ai</code> vs <code>ai[ml]</code>).
+That&#x27;s actually very useful to install a venv on an ARM macbook for a project that needs tensorflow somewhere - you run <code>uv sync</code> without <code>--extra ml</code>, so you don&#x27;t end up with <code>tensorflow</code>, but everything else - good enough for developing.
 Then in your actual runtime, you do <code>uv sync --all-extras</code> (assuming all extras are prod, all dev deps are declared as such) to get everything you need.</p>
 <p>If you need very specific environments that are orthogonal to apps, you could create one with <code>uv init environments/my-env</code>, add deps via <code>uv add --package my-env ai</code>, and then <code>uv sync --package my-env</code>.</p>
 </div>
@@ -368,24 +368,24 @@ Then in your actual runtime, you do <code>uv sync --all-extras</code> (assuming 
             <div class="timeline-body"><blockquote>
 <p>@Afoucaul Is there anything else you think is missing apart from a <code>sync --all-packages</code> (if you agree that is needed)</p>
 </blockquote>
-<p>I've resolved that point by adding all local packages to the root package (<code>uv add foo</code> where <code>foo</code> is a workspace member), but I do agree it's error prone and requires an extra command each time you create a new package.</p>
+<p>I&#x27;ve resolved that point by adding all local packages to the root package (<code>uv add foo</code> where <code>foo</code> is a workspace member), but I do agree it&#x27;s error prone and requires an extra command each time you create a new package.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Afoucaul">@Afoucaul</a> on 2024-09-04 13:31</div>
             <div class="timeline-body"><blockquote>
 <p>Is it possible for a package, virtual project or workspace to depend on another workspace, or on a package in a workspace?</p>
-<p>I'm thinking of the case common in data science where we have a set of packages developed in a workspace (let's say numpy and scipy are the packages developed in WRKSPC) and we don't really publish them to a repository or anywhere.</p>
+<p>I&#x27;m thinking of the case common in data science where we have a set of packages developed in a workspace (let&#x27;s say numpy and scipy are the packages developed in WRKSPC) and we don&#x27;t really publish them to a repository or anywhere.</p>
 <p>At some point I want to start a data science project, so I will create a virtual package with some scripts that require <code>scipy</code>, which in turn depends on the workspace version of numpy. How can I express this dependency?</p>
 </blockquote>
-<p>There's only one lockfile, so if at the root of your monorepo you run <code>uv init projects/testing-around-some-stuff</code> then <code>uv add --package testing-around-some-stuff scipy</code> you'll end up with the workspace's scipy. There's some caveats though, if you try to use in <code>testing-around-some-stuff</code> a different version of some package that's already specified in the <code>uv.lock</code>: either you'd be unable to do so because of the set of constraints, or you could and that would update that package's version for the whole workspace - not ideal either.
-I'm not sure how one would create a project in a workspace and specify that it should always respect the workspace's requirements and never change them.</p>
+<p>There&#x27;s only one lockfile, so if at the root of your monorepo you run <code>uv init projects/testing-around-some-stuff</code> then <code>uv add --package testing-around-some-stuff scipy</code> you&#x27;ll end up with the workspace&#x27;s scipy. There&#x27;s some caveats though, if you try to use in <code>testing-around-some-stuff</code> a different version of some package that&#x27;s already specified in the <code>uv.lock</code>: either you&#x27;d be unable to do so because of the set of constraints, or you could and that would update that package&#x27;s version for the whole workspace - not ideal either.
+I&#x27;m not sure how one would create a project in a workspace and specify that it should always respect the workspace&#x27;s requirements and never change them.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/rokos-angus">@rokos-angus</a> on 2024-09-13 08:50</div>
             <div class="timeline-body"><p>One thing preventing us from switching over our monorepo to uv is that its really hard to tell in CI which projects in a workspace actually changed when uv lock changes.</p>
-<p>We have many apps deployed from a single monorepo and don't want to have to build docker images for all of them every time uv.lock changes (e.g. someone adding a new project or library to the workspace)</p>
+<p>We have many apps deployed from a single monorepo and don&#x27;t want to have to build docker images for all of them every time uv.lock changes (e.g. someone adding a new project or library to the workspace)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -395,11 +395,11 @@ I'm not sure how one would create a project in a workspace and specify that it s
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/vlad-ivanov-name">@vlad-ivanov-name</a> on 2024-09-13 10:00</div>
-            <div class="timeline-body"><p>where i work we use http://github.com/josh-project/josh to figure out what changed (disclaimer: i'm a contributor in that project)</p>
-<p>with that said I think CI is a separate problem. when it comes to python, here's what i've been able to narrow down the requirements to:</p>
+            <div class="timeline-body"><p>where i work we use http://github.com/josh-project/josh to figure out what changed (disclaimer: i&#x27;m a contributor in that project)</p>
+<p>with that said I think CI is a separate problem. when it comes to python, here&#x27;s what i&#x27;ve been able to narrow down the requirements to:</p>
 <ol>
 <li>it should be possible to make packages depend on packages with relative paths</li>
-<li>at the same time, it should be possible to build packages for a scenario where they are eventually uploaded to a package registry, so relative paths won't work there</li>
+<li>at the same time, it should be possible to build packages for a scenario where they are eventually uploaded to a package registry, so relative paths won&#x27;t work there</li>
 <li>every package has multiple sets of dependencies (&quot;environments&quot;). this can be either due to feature switches or for example because CI needs more deps to run tests</li>
 </ol>
 <p>how we solved is for us is a custom script connected via https://github.com/recogni/setuptools-monorepo that resolves those dependencies in a desired way depending on context (for example either to <code>file://</code> path or to a name in the registry). this way we can have monorepo but we can also publish wheels from this monorepo and ship them. but i would really like to see a more &quot;native&quot; solution</p>
@@ -408,13 +408,13 @@ I'm not sure how one would create a project in a workspace and specify that it s
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carderne">@carderne</a> on 2024-09-13 10:23</div>
-            <div class="timeline-body"><p>@vlad-ivanov-name I'm slowly working on something similar at https://github.com/carderne/una albeit uv-specific and Hatch not setuptools. It figures out where to find files using uv's <code>{ workspace = true }</code> config rather than the URL.</p>
-<p>I haven't really thought about your point (2). Nor much for (3), but my assumption is that for testing you'd use <code>uv sync</code> and for deployment use the plugin.</p>
+            <div class="timeline-body"><p>@vlad-ivanov-name I&#x27;m slowly working on something similar at https://github.com/carderne/una albeit uv-specific and Hatch not setuptools. It figures out where to find files using uv&#x27;s <code>{ workspace = true }</code> config rather than the URL.</p>
+<p>I haven&#x27;t really thought about your point (2). Nor much for (3), but my assumption is that for testing you&#x27;d use <code>uv sync</code> and for deployment use the plugin.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/JasperHG90">@JasperHG90</a> on 2024-09-15 16:58</div>
-            <div class="timeline-body"><p>I've compiled <a href="https://github.com/JasperHG90/uv-monorepo">an example</a> that works for my purposes that might help some folks looking for a monorepo setup using uv.</p>
+            <div class="timeline-body"><p>I&#x27;ve compiled <a href="https://github.com/JasperHG90/uv-monorepo">an example</a> that works for my purposes that might help some folks looking for a monorepo setup using uv.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -433,7 +433,7 @@ I'm not sure how one would create a project in a workspace and specify that it s
 <p>https://github.com/DavidVujic/python-polylith-example-uv is another example which I think supports this or similar use cases.</p>
 </blockquote>
 <p>Thanks for the mention!</p>
-<p>Yes, if I have understood the things talked about in this issue correctly I think that Polylith in combination with <code>uv</code> might be helpful. It's an architecture for monorepos originating from the Clojure community. There's tooling support, and  I'm the maintainer of the Python tooling. It works well with <code>uv</code> and here's the <a href="https://davidvujic.github.io/python-polylith-docs/">docs</a> if you want to know more.</p>
+<p>Yes, if I have understood the things talked about in this issue correctly I think that Polylith in combination with <code>uv</code> might be helpful. It&#x27;s an architecture for monorepos originating from the Clojure community. There&#x27;s tooling support, and  I&#x27;m the maintainer of the Python tooling. It works well with <code>uv</code> and here&#x27;s the <a href="https://davidvujic.github.io/python-polylith-docs/">docs</a> if you want to know more.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -451,19 +451,19 @@ I'm not sure how one would create a project in a workspace and specify that it s
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/nickmuoh">@nickmuoh</a> on 2024-09-25 20:59</div>
-            <div class="timeline-body"><p>Hey @JasperHG90 @JuanoD @gwdekker @carderne, I checked out your examples which are extremely useful as I have been trying to figure out how to setup my teams mono repo for data science and engineering workflows. One thing that I have been struggling with how to still use <code>uv</code> workspaces's amazing single virtualenv and lock file with packages or apps with conflicting package versions. So for example shared packageA using <code>pandas==2.2.0</code> while app needs version <code>pandas&lt;2.0.0</code>.</p>
+            <div class="timeline-body"><p>Hey @JasperHG90 @JuanoD @gwdekker @carderne, I checked out your examples which are extremely useful as I have been trying to figure out how to setup my teams mono repo for data science and engineering workflows. One thing that I have been struggling with how to still use <code>uv</code> workspaces&#x27;s amazing single virtualenv and lock file with packages or apps with conflicting package versions. So for example shared packageA using <code>pandas==2.2.0</code> while app needs version <code>pandas&lt;2.0.0</code>.</p>
 <p>Any ideas on how to handle such a situation or if you have how did you handle it.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-25 21:01</div>
-            <div class="timeline-body"><p>@nickmuoh we're considering a solution to that in #6981</p>
+            <div class="timeline-body"><p>@nickmuoh we&#x27;re considering a solution to that in #6981</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/idlsoft">@idlsoft</a> on 2024-09-25 21:31</div>
             <div class="timeline-body"><blockquote>
-<p>@nickmuoh we're considering a solution to that in #6981</p>
+<p>@nickmuoh we&#x27;re considering a solution to that in #6981</p>
 </blockquote>
 <p>This is for optional dependencies only though.
 There is also #4574, which would make it possible to explicitly require a private <code>uv.lock</code> and <code>.venv</code> for a given workspace member.</p>
@@ -479,7 +479,7 @@ disclaimer: I talk about the uv with polylith setup not the uv workspaces setup.
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/luke-layerhealth">@luke-layerhealth</a> on 2024-10-22 21:23</div>
             <div class="timeline-body"><p>Not sure if this is related. If unrelated I can open a new issue.</p>
-<p>I'd like to publish standalone packages from a monorepo that use an (unpublished) shared library. This comment in the <a href="https://github.com/pypa/hatch/issues/233#issuecomment-2173239721">hatch repo</a> echoes a similar problem.</p>
+<p>I&#x27;d like to publish standalone packages from a monorepo that use an (unpublished) shared library. This comment in the <a href="https://github.com/pypa/hatch/issues/233#issuecomment-2173239721">hatch repo</a> echoes a similar problem.</p>
 <p>I have the following package structure where <code>client</code> depends on <code>shared</code>.</p>
 <pre><code>packages/
 ├── client/
@@ -487,16 +487,16 @@ disclaimer: I talk about the uv with polylith setup not the uv workspaces setup.
 </code></pre>
 <p>I would like to publish a standalone wheel for <code>client</code> that includes the source code for <code>shared</code> and updates the dependencies of <code>client</code> to also include dependencies from <code>shared</code>.
 Ideally I can send users the <code>client</code> wheel and they can install it with no issues.</p>
-<p>Right now this doesn't work because the <code>client</code> wheel generated by <code>uv build --package client --wheel</code> doesn't include the source code for <code>shared</code> or the dependencies for <code>shared</code>.</p>
+<p>Right now this doesn&#x27;t work because the <code>client</code> wheel generated by <code>uv build --package client --wheel</code> doesn&#x27;t include the source code for <code>shared</code> or the dependencies for <code>shared</code>.</p>
 <p>Couple of questions</p>
 <ol>
 <li>Is this possible with <code>uv</code> right now?</li>
 <li>If not, is this potentially within scope for <code>uv</code>?</li>
 </ol>
-<p>I see that <a href="https://github.com/carderne/una">una</a> attempts to support this but I would be more confident in a solution built directly into <code>uv</code>. Sadly, <code>una</code> doesn't seem to work right now.</p>
+<p>I see that <a href="https://github.com/carderne/una">una</a> attempts to support this but I would be more confident in a solution built directly into <code>uv</code>. Sadly, <code>una</code> doesn&#x27;t seem to work right now.</p>
 <p>Proposed solution</p>
 <p>I feel like what I want is a <code>--include-workspace-deps</code> flag on <code>uv build</code></p>
-<pre><code class="language-sh">uv build --package client --wheel --include-workspace-deps
+<pre><code>uv build --package client --wheel --include-workspace-deps
 </code></pre>
 </div>
         </div>
@@ -514,7 +514,7 @@ Ideally I can send users the <code>client</code> wheel and they can install it w
 </ol>
 </blockquote>
 <p>Assuming <code>shared</code> is being published at some point, you can do something like</p>
-<pre><code class="language-toml">dependencies = [
+<pre><code>dependencies = [
    &quot;shared ~= 1.0&quot;,
 ]
 
@@ -526,17 +526,17 @@ shared = { path = &quot;../shared&quot;, editable = true}
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mmerickel">@mmerickel</a> on 2024-10-22 21:54</div>
-            <div class="timeline-body"><p>I'd replace <code>include</code> with <code>vendor</code> in your terminology. Something like that feels out of scope to me but I'm not the decider there. You can currently build 2 wheels and then you could postprocess them to vendor one into the other:</p>
+            <div class="timeline-body"><p>I&#x27;d replace <code>include</code> with <code>vendor</code> in your terminology. Something like that feels out of scope to me but I&#x27;m not the decider there. You can currently build 2 wheels and then you could postprocess them to vendor one into the other:</p>
 <ul>
 <li>extract the wheels</li>
 <li>copy the shared python package into the client wheel</li>
-<li>remove the shared package from the client's dependencies metadata</li>
-<li>update the client's metadata to declare that it provides the shared package</li>
+<li>remove the shared package from the client&#x27;s dependencies metadata</li>
+<li>update the client&#x27;s metadata to declare that it provides the shared package</li>
 <li>repackage the client wheel</li>
 </ul>
-<p>This feels to me like a pretty unique situation you're asking for though that is outside of any standard python project workspace and is very specific to distributing the packages from uv into a wheel.</p>
+<p>This feels to me like a pretty unique situation you&#x27;re asking for though that is outside of any standard python project workspace and is very specific to distributing the packages from uv into a wheel.</p>
 <p>You could probably define a separate package + pyproject.toml already that symlinks in the code from both packages and just have uv build that when needed.</p>
-<p>I'd suggest opening a separate ticket for your feature request considering workspace support is already available and this ticket probably doesn't have a super clear scope anymore.</p>
+<p>I&#x27;d suggest opening a separate ticket for your feature request considering workspace support is already available and this ticket probably doesn&#x27;t have a super clear scope anymore.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -616,30 +616,30 @@ Containerfile
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Tremeschin">@Tremeschin</a> on 2024-11-10 07:05</div>
             <div class="timeline-body"><p>Should <code>--all-packages</code> be the default of <code>uv sync</code>, or could it be an opt-in config of <code>[tool.uv]</code> root pyproject?</p>
-<p>I kind of expect all projects in the workspace members to be installed when syncing, as I've already explicitly listed them as subordinates (as in rye's behavior iirc). It could be a breaking feature, so the later option seems more reasonable.</p>
+<p>I kind of expect all projects in the workspace members to be installed when syncing, as I&#x27;ve already explicitly listed them as subordinates (as in rye&#x27;s behavior iirc). It could be a breaking feature, so the later option seems more reasonable.</p>
 <p><strong>Edit</strong>: It also allows for installing but not listing private packages of the members glob pattern 😄</p>
-<p><sup>Just a thought though, as I'll always use <code>--all-packages</code> flag from now on in local dev environment, it works great!</sup></p>
+<p>Just a thought though, as I&#x27;ll always use <code>--all-packages</code> flag from now on in local dev environment, it works great!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/eruvanos">@eruvanos</a> on 2024-11-10 07:20</div>
             <div class="timeline-body"><blockquote>
 <p>Should <code>--all-packages</code> be the default of <code>uv sync</code>, or could it be an opt-in config of <code>[tool.uv]</code> root pyproject?</p>
-<p>I kind of expect all projects in the workspace members to be installed when syncing, as I've already explicitly listed them as subordinates (as in rye's behavior iirc). It could be a breaking feature, so the later option seems more reasonable.</p>
-<p><sup>Just a thought though, as I'll always use <code>--all-packages</code> flag from now on in local dev environment, it works great!</sup></p>
+<p>I kind of expect all projects in the workspace members to be installed when syncing, as I&#x27;ve already explicitly listed them as subordinates (as in rye&#x27;s behavior iirc). It could be a breaking feature, so the later option seems more reasonable.</p>
+<p>Just a thought though, as I&#x27;ll always use <code>--all-packages</code> flag from now on in local dev environment, it works great!</p>
 </blockquote>
 <p>I would assume that all packages are synced, as long as I am in the root dir 🤔</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Tremeschin">@Tremeschin</a> on 2024-11-10 07:33</div>
-            <div class="timeline-body"><p>@eruvanos I'm always on the root dir, but they didn't seem to be synced for me still 🙂. I was having to list all of <code>[tool.uv.sources]</code> entries in <code>dev-dependencies</code> for their deps and <code>[project.scripts]</code> to be installed on the root venv</p>
+            <div class="timeline-body"><p>@eruvanos I&#x27;m always on the root dir, but they didn&#x27;t seem to be synced for me still 🙂. I was having to list all of <code>[tool.uv.sources]</code> entries in <code>dev-dependencies</code> for their deps and <code>[project.scripts]</code> to be installed on the root venv</p>
 <p>Maybe I was <a href="https://github.com/BrokenSource/BrokenSource/blob/2f3129591df15feca37eae4395de7cd4922a68ac/pyproject.toml#L133">doing something wrong</a> but <code>--all-packages</code> installs everyone and everything properly now</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mmerickel">@mmerickel</a> on 2024-11-14 21:45</div>
-            <div class="timeline-body"><p>I was also surprised that <code>--all-packages</code> is not the default when initially setting up my workspace. At least in my case where I'm a workspace-only project with <code>tool.uv.managed = false</code>.  However, after adding a couple of the top-level packages in the workspace as dependencies it works ok by default. I think it'd make sense to support a <code>tool.uv.sync_all_packages = true</code> however that would affect the default behavior.</p>
+            <div class="timeline-body"><p>I was also surprised that <code>--all-packages</code> is not the default when initially setting up my workspace. At least in my case where I&#x27;m a workspace-only project with <code>tool.uv.managed = false</code>.  However, after adding a couple of the top-level packages in the workspace as dependencies it works ok by default. I think it&#x27;d make sense to support a <code>tool.uv.sync_all_packages = true</code> however that would affect the default behavior.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -652,22 +652,22 @@ Containerfile
             <div class="timeline-body"><blockquote>
 <p>I made https://github.com/JuanoD/uv-mono as an example repo. Feel free to correct me if something is wrong</p>
 </blockquote>
-<p>Just wanted to say thank you. This was hugely helpful in figuring out how to set up a &quot;monorepo&quot;. It would be great to add something like this to the workspace documentation, since the existing documentation doesn't at all mention what the pyproject.toml files should look like for the workspace members, nor what the top-level pyproject.toml should look like if you don't want a top-level project.</p>
+<p>Just wanted to say thank you. This was hugely helpful in figuring out how to set up a &quot;monorepo&quot;. It would be great to add something like this to the workspace documentation, since the existing documentation doesn&#x27;t at all mention what the pyproject.toml files should look like for the workspace members, nor what the top-level pyproject.toml should look like if you don&#x27;t want a top-level project.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-11 03:07</div>
-            <div class="timeline-body"><p>I'm going to close this out as we now have <code>--all-packages</code> and similar settings. Folks are welcome to open separate issues for any follow-ups that I've missed here.</p>
+            <div class="timeline-body"><p>I&#x27;m going to close this out as we now have <code>--all-packages</code> and similar settings. Folks are welcome to open separate issues for any follow-ups that I&#x27;ve missed here.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-12-11 03:07</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-11 03:07</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carderne">@carderne</a> on 2025-01-14 14:33</div>
-            <div class="timeline-body"><p>For anyone who's interested, I put together an example monorepo using uv <a href="https://github.com/carderne/postmodern-mono">here</a>.</p>
+            <div class="timeline-body"><p>For anyone who&#x27;s interested, I put together an example monorepo using uv <a href="https://github.com/carderne/postmodern-mono">here</a>.</p>
 <p>You can skip straight to the <a href="https://github.com/carderne/postmodern-mono/blob/main/apps/server/Dockerfile">Dockerfile</a>:</p>
-<pre><code class="language-Dockerfile"># this Dockerfile should be built from the repo root
+<pre><code># this Dockerfile should be built from the repo root
 FROM python:3.13.1-slim-bookworm
 
 ENV PYTHONUNBUFFERED=True
@@ -688,7 +688,7 @@ CMD [&quot;/workspace/.venv/bin/python&quot;, &quot;/workspace/path/to/script.py
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Tremeschin">@Tremeschin</a> on 2025-01-14 20:26</div>
-            <div class="timeline-body"><p>Adding to @carderne's example, I also have a monorepo but needed the <code>--inexact</code> parameter in <code>uv sync</code> so I keep custom torch versions installed (not defined on pyproject), plus I did bind mounts instead of copying the lock and project files, as well as cache mount so it's not on the final image, here's also my <a href="https://github.com/BrokenSource/BrokenSource/blob/main/Docker/broken-base.dockerfile">Dockerfile</a></p>
+            <div class="timeline-body"><p>Adding to @carderne&#x27;s example, I also have a monorepo but needed the <code>--inexact</code> parameter in <code>uv sync</code> so I keep custom torch versions installed (not defined on pyproject), plus I did bind mounts instead of copying the lock and project files, as well as cache mount so it&#x27;s not on the final image, here&#x27;s also my <a href="https://github.com/BrokenSource/BrokenSource/blob/main/Docker/broken-base.dockerfile">Dockerfile</a></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -704,7 +704,7 @@ CMD [&quot;/workspace/.venv/bin/python&quot;, &quot;/workspace/path/to/script.py
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/vvuk">@vvuk</a> on 2025-03-26 16:58</div>
             <div class="timeline-body"><blockquote>
-<p>I'm going to close this out as we now have <code>--all-packages</code> and similar settings. Folks are welcome to open separate issues for any follow-ups that I've missed here.</p>
+<p>I&#x27;m going to close this out as we now have <code>--all-packages</code> and similar settings. Folks are welcome to open separate issues for any follow-ups that I&#x27;ve missed here.</p>
 </blockquote>
 <p>For &quot;similar settings&quot; -- is there a pyproject.toml setting that will make &quot;all-packages&quot; the workspace default for a uv sync/run/etc?</p>
 </div>
@@ -713,27 +713,27 @@ CMD [&quot;/workspace/.venv/bin/python&quot;, &quot;/workspace/path/to/script.py
             <div class="timeline-header">Comment by <a href="https://github.com/Saran33">@Saran33</a> on 2025-03-28 23:17</div>
             <div class="timeline-body"><blockquote>
 <blockquote>
-<p>I'm going to close this out as we now have <code>--all-packages</code> and similar settings. Folks are welcome to open separate issues for any follow-ups that I've missed here.</p>
+<p>I&#x27;m going to close this out as we now have <code>--all-packages</code> and similar settings. Folks are welcome to open separate issues for any follow-ups that I&#x27;ve missed here.</p>
 </blockquote>
 <p>For &quot;similar settings&quot; -- is there a pyproject.toml setting that will make &quot;all-packages&quot; the workspace default for a uv sync/run/etc?</p>
 </blockquote>
 <p>@vvuk You could add a Makefile to the project root</p>
-<pre><code class="language-make">sync:
+<pre><code>sync:
     @uv sync --all-extras --dev --all-packages
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/KevinMind">@KevinMind</a> on 2025-07-22 12:25</div>
-            <div class="timeline-body"><p>The only issue I have with this solution is that <code>--frozen</code> won't update the <code>uv.lock</code> file, but it also doesn't complain if it would need to be updated. This is a big code smell for containerized builds. You want to be damn sure that the dependencies you end up with are locked in the image at build time.</p>
-<p>The issue I seem to be facing is that when using the --package flag, it wants to install my workspaces as <code>editable</code> egg packages... I don't want that. I want worksapce packages. And I want to be able to install all of the dependencies for all packages with just the root <code>pyproject.toml</code> and the <code>uv.lock</code> file.</p>
+            <div class="timeline-body"><p>The only issue I have with this solution is that <code>--frozen</code> won&#x27;t update the <code>uv.lock</code> file, but it also doesn&#x27;t complain if it would need to be updated. This is a big code smell for containerized builds. You want to be damn sure that the dependencies you end up with are locked in the image at build time.</p>
+<p>The issue I seem to be facing is that when using the --package flag, it wants to install my workspaces as <code>editable</code> egg packages... I don&#x27;t want that. I want worksapce packages. And I want to be able to install all of the dependencies for all packages with just the root <code>pyproject.toml</code> and the <code>uv.lock</code> file.</p>
 <p>This issue and the fix for it seem to accomplish that other than the 2 points:</p>
 <ul>
-<li><code>--frozen</code> doesn't give an option for asserting the lock file doesn't change.</li>
+<li><code>--frozen</code> doesn&#x27;t give an option for asserting the lock file doesn&#x27;t change.</li>
 <li>seems like if I use <code>--frozen --package &lt;MY_PACKAGE&gt;</code> then the lockfile wants to update from workspace to editable dependencies..</li>
 </ul>
 <p>Any ideas? Relevant parts of my Dockerfile</p>
-<pre><code class="language-Dockerfile">##############################################################################################
+<pre><code>##############################################################################################
 FROM base AS installer
 ##############################################################################################
 
@@ -753,7 +753,7 @@ pnpm fetch
 EOF
 </code></pre>
 <p>And then in Production, we should be able to install locked and offline because <code>installer</code> has the cache for both <code>pnpm</code> and for <code>uv</code> and the caches are all configured correctly. On</p>
-<pre><code class="language-Dockerfile">##############################################################################################
+<pre><code>##############################################################################################
 FROM runner AS production
 ##############################################################################################
 
@@ -770,7 +770,7 @@ pnpm install --frozen-lockfile --offline --prod --offline
 EOF
 </code></pre>
 <p>If I build the image to the <code>installer</code> stage, the cache is populated</p>
-<pre><code class="language-bash">/app# ls /home/nodeuser/deps/uv/cache/wheels-v5/pypi/
+<pre><code>/app# ls /home/nodeuser/deps/uv/cache/wheels-v5/pypi/
 asgiref/                   django-filter/             drf-spectacular/           jsonschema-specifications/ psycopg2-binary/           sqlparse/
 attrs/                     django-stubs/              gunicorn/                  markupsafe/                pyyaml/                    types-pyyaml/
 certifi/                   django-stubs-ext/          idna/                      mypy/                      referencing/               types-requests/
@@ -779,14 +779,14 @@ dj-database-url/           djangorestframework/       jinja2/                   
 django/                    djangorestframework-stubs/ jsonschema/                pathspec/                  ruff/                      urllib3/
 </code></pre>
 <p>If I add a mount of the source code to that image and run <code>uv sync</code> with <code>--locked</code></p>
-<pre><code class="language-bash">/app# uv sync --locked --package nopo
+<pre><code>/app# uv sync --locked --package nopo
 Resolved 39 packages in 792ms
 The lockfile at `uv.lock` needs to be updated, but `--locked` was provided. To update the lockfile, run `uv lock`.
 </code></pre>
 <p>If I run the sync command to modify the uv.lock, making it <code>editable</code> instead of <code>virtual</code> or <code>workspace</code></p>
 <p>Then in the production stage we fail due to missing <code>dev</code> dependency setup needed to build the eggs</p>
 <blockquote>
-<p>Production image should be able to install offline meaning setup was not installed. In fact, it isn't even listed in the uv.lock file? Do I need to manually add this now.. seems odd since uv is the one that decided it's important.</p>
+<p>Production image should be able to install offline meaning setup was not installed. In fact, it isn&#x27;t even listed in the uv.lock file? Do I need to manually add this now.. seems odd since uv is the one that decided it&#x27;s important.</p>
 </blockquote>
 <pre><code>/app# uv sync --locked --no-dev --package nopo --offline
 Resolved 39 packages in 24ms
@@ -798,21 +798,21 @@ Resolved 39 packages in 24ms
       hint: Packages were unavailable because the network was disabled. When the network is disabled, registry packages may only be read from the cache.
   help: `nopo-backend` was included because `nopo` (v0.1.0) depends on `nopo-backend`
 </code></pre>
-<p>Running <code>uv add setuptools&gt;=40.8.0 --package nopo-backend</code> fixed the issue... but still odd that this is required as setuptools should be seen as a transitive dependency I don't need to worry about manually adding..</p>
+<p>Running <code>uv add setuptools&gt;=40.8.0 --package nopo-backend</code> fixed the issue... but still odd that this is required as setuptools should be seen as a transitive dependency I don&#x27;t need to worry about manually adding..</p>
 <p>Is it possible that <code>uv sync</code> is ignoring [build-system] <code>requires</code> packages when installing?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/drmason13">@drmason13</a> on 2025-07-25 07:26</div>
             <div class="timeline-body"><blockquote>
-<p>wants to install my workspaces as editable egg packages... I don't want that</p>
+<p>wants to install my workspaces as editable egg packages... I don&#x27;t want that</p>
 </blockquote>
 <p>Sounds like you want <code>--no-editable</code></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/iamWing">@iamWing</a> on 2025-12-17 09:32</div>
-            <div class="timeline-body"><p>Having read through all comments above, I'm still not clear what's the recommended approach for <code>uv</code> when the root project for the workspace is a virtual project. It seems to me that the documentations are still lacking.</p>
+            <div class="timeline-body"><p>Having read through all comments above, I&#x27;m still not clear what&#x27;s the recommended approach for <code>uv</code> when the root project for the workspace is a virtual project. It seems to me that the documentations are still lacking.</p>
 <ul>
 <li>Do I still need to add the workspace members (a.k.a. sub-projects) to the root project as dependencies?</li>
 <li>Should I always run <code>uv sync</code> with the option <code>--all-packages</code> when working locally?</li>
@@ -823,7 +823,7 @@ Resolved 39 packages in 24ms
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:26:46 UTC
+        Synced at 2026-01-20 19:33:34 UTC
     </footer>
 </body>
 </html>

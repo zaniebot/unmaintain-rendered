@@ -23,23 +23,14 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/benniekiss">@benniekiss</a></div>
-            <div class="timeline-body"><!--
-Thank you for taking the time to report an issue! We're glad to have you involved with uv.
-
-If you're filing a bug report, please consider including the following information:
-
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
-* The current uv platform.
-* The current uv version (`uv --version`).
--->
+            <div class="timeline-body">
 
 <p>uv version = 0.1.40
 uv platform = Fedora Atomic Linux (Bazzite) within a podman container</p>
 <p>I am using <code>uv</code> to install python dependencies during a container build using podman.
 I am using <code>uv pip compile</code> to generate a requirements.txt from my projects pyproject.toml, and I then install these dependencies using <code>uv pip install -r requirements.txt</code>.</p>
 <p>The requirements.txt includes several ML and AI python libraries, such as transformers, openaiwhisper, and llama-cpp-python, some of which require wheels to be built.</p>
-<p>I've experienced consistent issues in both steps of the install. Either <code>uv pip compile</code> or <code>uv pip install</code> will fail intermittently with the following error:</p>
+<p>I&#x27;ve experienced consistent issues in both steps of the install. Either <code>uv pip compile</code> or <code>uv pip install</code> will fail intermittently with the following error:</p>
 <pre><code>Caused by: Failed to fetch wheel: ctranslate2==4.2.1                                                                                                                         
 Caused by: Failed to extract archive                                                                                                                                         
 Caused by: error decoding response body                                                                                                                                      
@@ -47,9 +38,9 @@ Caused by: request or response body error
 Caused by: error reading a body from connection                                                                                                                              
 Caused by: Connection reset by peer (os error 104)  
 </code></pre>
-<p>The specific package of the failure is inconsistent -- the install will fail on an almost random one. I've noticed it often fails on building llama-cpp-python</p>
-<p>I've noticed the problem is exacerbated when using cached layers, such that re-running the build pipeline is more likely to trigger the failure, and simply running <code>podman image prune</code> after a failure and re-running the build increases the likelihood of the package install succeeding.</p>
-<p>I've also noticed that <code>uv pip compile --no-cache</code> and <code>uv pip install --no-cache-dir</code> increase the likelihood of failure. Without the <code>--no-cache</code> and <code>--no-cache-dir</code> flags, the initial build succeeds, however, subsequent builds fail if the <code>uv pip compile</code> or the <code>uv pip install</code> layer has been invalidated</p>
+<p>The specific package of the failure is inconsistent -- the install will fail on an almost random one. I&#x27;ve noticed it often fails on building llama-cpp-python</p>
+<p>I&#x27;ve noticed the problem is exacerbated when using cached layers, such that re-running the build pipeline is more likely to trigger the failure, and simply running <code>podman image prune</code> after a failure and re-running the build increases the likelihood of the package install succeeding.</p>
+<p>I&#x27;ve also noticed that <code>uv pip compile --no-cache</code> and <code>uv pip install --no-cache-dir</code> increase the likelihood of failure. Without the <code>--no-cache</code> and <code>--no-cache-dir</code> flags, the initial build succeeds, however, subsequent builds fail if the <code>uv pip compile</code> or the <code>uv pip install</code> layer has been invalidated</p>
 <p>here is a sample pyproject.toml and Containerfile where multiple build attempts using the following command cause the error:</p>
 <p>pyproject.toml:</p>
 <pre><code>[project]
@@ -82,7 +73,7 @@ USER $MAMBA_USER
 
 RUN micromamba create --yes \
     -n build_failure -c conda-forge \
-    'python&gt;3.12,&lt;3.13' 'uv' 'cxx-compiler' 'cmake' \
+    &#x27;python&gt;3.12,&lt;3.13&#x27; &#x27;uv&#x27; &#x27;cxx-compiler&#x27; &#x27;cmake&#x27; \
     &amp;&amp; micromamba clean --yes --all -f
 
 ENV ENV_NAME=build_failure
@@ -104,7 +95,7 @@ RUN uv pip install --no-cache-dir \
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-05-08 23:37</div>
             <div class="timeline-body"><p>@benniekiss can you add <code>RUST_LOG=uv=trace</code> to your <code>uv</code> commands and attach the uv log output when they fail? Ideally using the latest uv version (0.1.42) as of writting. Thank you!</p>
-<pre><code class="language-dockerfile">RUN RUST_LOG=uv=trace uv pip compile pyproject.toml \
+<pre><code>RUN RUST_LOG=uv=trace uv pip compile pyproject.toml \
     --quiet --no-cache --no-annotate \
     -o runtime_requirements.txt
 
@@ -115,13 +106,13 @@ RUN RUST_LOG=uv=trace uv pip install --no-cache-dir \
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/benniekiss">@benniekiss</a> on 2024-05-09 10:45</div>
-            <div class="timeline-body"><p>I ran it with trace, but the console logs are immense, so I'll share some snippets from the end. I can share the full logs if a file upload is alright.</p>
+            <div class="timeline-body"><p>I ran it with trace, but the console logs are immense, so I&#x27;ll share some snippets from the end. I can share the full logs if a file upload is alright.</p>
 <p>~~this is also for <code>uv==1.41</code>~~
 ~~as of writing, conda-forge has not updated to <code>uv==1.42</code>~~
 EDIT: tested on <code>uv==0.1.42</code>, and the same issue occurs.</p>
 <p>In one of my tests, I received this new error:
 <code>Error: server probably quit: unexpected EOF</code></p>
-<details><summary>Details</summary>
+Details
 <p>
 
 <pre><code>TRACE No cache entry exists for /tmp/.tmpN3tiGS/wheels-v1/pypi/fsspec/fsspec-2024.3.1-py3-none-any.http
@@ -131,9 +122,9 @@ TRACE Handling request for https://files.pythonhosted.org/packages/93/6d/66d48b0
 TRACE Request for https://files.pythonhosted.org/packages/93/6d/66d48b03460768f523da62a57a7e14e5e95fdf339d79e996ce3cecda2cdb/fsspec-2024.3.1-py3-none-any.whl is unauthenticated, checking cache
 TRACE No credentials in cache for URL https://files.pythonhosted.org/packages/93/6d/66d48b03460768f523da62a57a7e14e5e95fdf339d79e996ce3cecda2cdb/fsspec-2024.3.1-py3-none-any.whl
 TRACE Attempting unauthenticated request for https://files.pythonhosted.org/packages/93/6d/66d48b03460768f523da62a57a7e14e5e95fdf339d79e996ce3cecda2cdb/fsspec-2024.3.1-py3-none-any.whl
-TRACE cached request https://files.pythonhosted.org/packages/93/6d/66d48b03460768f523da62a57a7e14e5e95fdf339d79e996ce3cecda2cdb/fsspec-2024.3.1-py3-none-any.whl is storable because its response has a 'public' cache-control directive
-TRACE cached request https://files.pythonhosted.org/packages/7f/50/9fb3a5c80df6eb6516693270621676980acd6d5a9a7efdbfa273f8d616c7/alembic-1.13.1-py3-none-any.whl is storable because its response has a 'public' cache-control directive
-TRACE cached request https://files.pythonhosted.org/packages/65/58/f9c9e6be752e9fcb8b6a0ee9fb87e6e7a1f6bcab2cdc73f02bb7ba91ada0/tzdata-2024.1-py2.py3-none-any.whl is storable because its response has a 'public' cache-control directive
+TRACE cached request https://files.pythonhosted.org/packages/93/6d/66d48b03460768f523da62a57a7e14e5e95fdf339d79e996ce3cecda2cdb/fsspec-2024.3.1-py3-none-any.whl is storable because its response has a &#x27;public&#x27; cache-control directive
+TRACE cached request https://files.pythonhosted.org/packages/7f/50/9fb3a5c80df6eb6516693270621676980acd6d5a9a7efdbfa273f8d616c7/alembic-1.13.1-py3-none-any.whl is storable because its response has a &#x27;public&#x27; cache-control directive
+TRACE cached request https://files.pythonhosted.org/packages/65/58/f9c9e6be752e9fcb8b6a0ee9fb87e6e7a1f6bcab2cdc73f02bb7ba91ada0/tzdata-2024.1-py2.py3-none-any.whl is storable because its response has a &#x27;public&#x27; cache-control directive
 TRACE No cache entry exists for /tmp/.tmpN3tiGS/wheels-v1/pypi/certifi/certifi-2024.2.2-py3-none-any.http
 DEBUG No cache entry for: https://files.pythonhosted.org/packages/ba/06/a07f096c664aeb9f01624f858c3add0a4e913d6c96257acb4fce61e7de14/certifi-2024.2.2-py3-none-any.whl
 TRACE Sending fresh GET request for https://files.pythonhosted.org/packages/ba/06/a07f096c664aeb9f01624f858c3add0a4e913d6c96257acb4fce61e7de14/certifi-2024.2.2-py3-none-any.whl
@@ -144,11 +135,11 @@ TRACE Attempting unauthenticated request for https://files.pythonhosted.org/pack
 Error: server probably quit: unexpected EOF
 </code></pre>
 </p>
-</details> 
+ 
 
 <p>I also ran the build command a few times, and it failed on a different package each time -- av, llama-cpp-python, torchvision, and scikit-learn. I used <code>podman build --no-cache</code> each time.</p>
 <p>Here is the console output from one of those builds:</p>
-<details><summary>Details</summary>
+Details
 <p>
 
 <pre><code>TRACE found candidate for package PackageName(&quot;wheel&quot;) with range Range { segments: [(Unbounded, Unbounded)] } after 1 steps: &quot;0.43.0&quot; version
@@ -198,10 +189,10 @@ error: Failed to download distributions
 Error: building at STEP &quot;RUN RUST_LOG=uv=trace uv pip install -v --no-cache-dir --refresh      -r runtime_requirements.txt&quot;: while running runtime: exit status 2
 </code></pre>
 </p>
-</details> 
+ 
 
-<p>Here's another output with a build failure, not just download failure:</p>
-<details><summary>Details</summary>
+<p>Here&#x27;s another output with a build failure, not just download failure:</p>
+Details
 <p>
 
 <pre><code>DEBUG Searching for a compatible version of julius (==0.2.7)
@@ -284,31 +275,31 @@ error: Failed to download and build `llama-cpp-python==0.2.71`
 Error: building at STEP &quot;RUN RUST_LOG=uv=trace uv pip install -v --no-cache-dir --refresh      -r runtime_requirements.txt&quot;: while running runtime: exit status 2
 </code></pre>
 </p>
-</details> 
+ 
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-05-09 19:08</div>
-            <div class="timeline-body"><p>Do you know if there's anything special about your network, like a proxy or a vpn?</p>
+            <div class="timeline-body"><p>Do you know if there&#x27;s anything special about your network, like a proxy or a vpn?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-05-09 20:01</div>
-            <div class="timeline-body"><p>I don't have a solution nor do I know what exactly is causing your issue. What I noticed when benchmarking <code>uv</code> is that I saw a lot of connection reset by peer errors. I suspect that it's my internet service provider who resets the connections because it thinks I'm doing something malicious because my computer issues a lot of requests to the same host in a very short period of time.</p>
+            <div class="timeline-body"><p>I don&#x27;t have a solution nor do I know what exactly is causing your issue. What I noticed when benchmarking <code>uv</code> is that I saw a lot of connection reset by peer errors. I suspect that it&#x27;s my internet service provider who resets the connections because it thinks I&#x27;m doing something malicious because my computer issues a lot of requests to the same host in a very short period of time.</p>
 <p>What helped in my case is to use a VPN (Proton to be precise) to bypass my ISPs throttling. Do you have a VPN that you could connect to?</p>
-<p>We're planning to add an environment variable that would allow you to reduce the number of parallel requests https://github.com/astral-sh/uv/pull/3493. You could try to reduce the number of parallel requests once that PR is shipped.</p>
+<p>We&#x27;re planning to add an environment variable that would allow you to reduce the number of parallel requests <a href="https://github.com/astral-sh/uv/pull/3493">astral-sh/uv#3493</a>. You could try to reduce the number of parallel requests once that PR is shipped.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/benniekiss">@benniekiss</a> on 2024-05-09 20:13</div>
-            <div class="timeline-body"><p>I have been able to reproduce the issue on two different machines in two different geographic locations. I've also tested locally with a VPN.</p>
+            <div class="timeline-body"><p>I have been able to reproduce the issue on two different machines in two different geographic locations. I&#x27;ve also tested locally with a VPN.</p>
 <p>The Fedora Linux machine is a PC with AMD 7800x3D and the other machine is an Apple M2 Max laptop, where podman is running in a linux VM.</p>
-<p>It's interesting because maybe 2/10 times it will succeed and install, otherwise, it fails--either with a build or download error, and always <code>os error 104</code></p>
+<p>It&#x27;s interesting because maybe 2/10 times it will succeed and install, otherwise, it fails--either with a build or download error, and always <code>os error 104</code></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @konstin on 2024-05-09 20:14</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/konstin">@konstin</a> on 2024-05-09 20:14</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-05-09 20:15</div>
@@ -326,12 +317,12 @@ Error: building at STEP &quot;RUN RUST_LOG=uv=trace uv pip install -v --no-cache
 <p>In both cases you’re running with Podman? Are there any other commonalities? (Very strange, we’ve never seen reports of this.)</p>
 </blockquote>
 <p>Yep, both cases are with <code>podman v5.0.2</code>. I connect to the remote PC via tailscale, but I tested the build again with all of my vpns off, and I am getting the same errors locally.</p>
-<p>I'm using the example pyproject.toml and Containerfile each time, on both machines.</p>
+<p>I&#x27;m using the example pyproject.toml and Containerfile each time, on both machines.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-05-09 22:46</div>
-            <div class="timeline-body"><p>I was able to reproduce 1/20~ times, but using <code>docker</code> instead. I've been playing around with rayon, ulimits and throttling my bandwith to see there's some consistent way to reproduce. I did get an failed to unpack error on the one failure. Will keep experimenting.</p>
+            <div class="timeline-body"><p>I was able to reproduce 1/20~ times, but using <code>docker</code> instead. I&#x27;ve been playing around with rayon, ulimits and throttling my bandwith to see there&#x27;s some consistent way to reproduce. I did get an failed to unpack error on the one failure. Will keep experimenting.</p>
 <pre><code>error: Failed to download and build `llama-cpp-python==0.2.71`
   Caused by: Failed to extract archive
   Caused by: failed to unpack `/tmp/.tmppG2oG4/built-wheels-v3/.tmptTJnWx/llama_cpp_python-0.2.71/vendor/llama.cpp/kompute/docs/images/komputer-godot-4.gif`
@@ -350,8 +341,8 @@ Error: building at STEP &quot;RUN RUST_LOG=uv=trace uv pip install -v --no-cache
 <p>remote PC via tailscale</p>
 </blockquote>
 <p>Does that affect DNS at all?</p>
-<p>While I haven't encountered an issue myself with <code>uv</code>, I recently used some other tools which have encountered issues when run in Docker containers. Turned out to be due to the default DNS layer managed by Docker internally.</p>
-<pre><code class="language-console"># Get an IP address:
+<p>While I haven&#x27;t encountered an issue myself with <code>uv</code>, I recently used some other tools which have encountered issues when run in Docker containers. Turned out to be due to the default DNS layer managed by Docker internally.</p>
+<pre><code># Get an IP address:
 $ docker run --rm -it ghcr.io/natesales/q smtp.gmail.com
 smtp.gmail.com. 2m22s A 64.233.170.108
 smtp.gmail.com. 4m47s AAAA 2404:6800:4003:c1a::6c
@@ -378,14 +369,14 @@ DEBU[0000] Using UDP with TCP fallback: 1.1.1.1:53
 
 108.170.233.64.in-addr.arpa. 1h PTR sg-in-f108.1e100.net.
 </code></pre>
-<p>I can run <code>dig -x</code> for the equivalent on the Docker host and it resolves no problem (<em>goes through the DNS from the router IIRC</em>), so it appears to be an issue with the CRI networking layer. I'm not sure what Podman does, but it's probably similar to support related networking features?</p>
-<p>I've also encountered other issues like a <code>TXT</code> record for <code>github.com</code> that is multi-part (exceeds the 255 limit) where this internal DNS cannot handle the reply and fails.</p>
+<p>I can run <code>dig -x</code> for the equivalent on the Docker host and it resolves no problem (<em>goes through the DNS from the router IIRC</em>), so it appears to be an issue with the CRI networking layer. I&#x27;m not sure what Podman does, but it&#x27;s probably similar to support related networking features?</p>
+<p>I&#x27;ve also encountered other issues like a <code>TXT</code> record for <code>github.com</code> that is multi-part (exceeds the 255 limit) where this internal DNS cannot handle the reply and fails.</p>
 <p>While performing larger queries (<em>resolve a variety of DNS records for a domain, and resolve the CNAME records to get any from those too</em>) can work, there were some stalls and failures. This would still occur when querying <code>1.1.1.1</code>, and I had not tried to reproduce outside of the container to check if it only occurs there.</p>
-<hr />
-<p>Not sure if DNS issues like above could contribute to the failure here, just thought I'd draw attention to a known networking caveat within a container environment.</p>
-<h2>Additional context</h2>
-<p>With Docker the daemon is by default also configured to use the <code>userland-proxy</code>, which IIRC halved the I/O rate vs host connections when I tested, but was minimal overhead when disabled. There's also host mode networking which should skip some other indirections which might help minimize the issue. Additionally the default network a container is assigned with Docker is the legacy bridge, it's slightly different than using custom networks (<em><code>docker network create</code>, which Docker Compose uses by default implicitly, not the legacy bridge</em>).</p>
-<pre><code class="language-console"># NOTE: Doesn't use the host DNS (still the same one the Docker daemon is configured for):
+<hr>
+<p>Not sure if DNS issues like above could contribute to the failure here, just thought I&#x27;d draw attention to a known networking caveat within a container environment.</p>
+Additional context
+<p>With Docker the daemon is by default also configured to use the <code>userland-proxy</code>, which IIRC halved the I/O rate vs host connections when I tested, but was minimal overhead when disabled. There&#x27;s also host mode networking which should skip some other indirections which might help minimize the issue. Additionally the default network a container is assigned with Docker is the legacy bridge, it&#x27;s slightly different than using custom networks (<em><code>docker network create</code>, which Docker Compose uses by default implicitly, not the legacy bridge</em>).</p>
+<pre><code># NOTE: Doesn&#x27;t use the host DNS (still the same one the Docker daemon is configured for):
 $ docker run --rm -it --network host ghcr.io/natesales/q --verbose --reverse 64.233.170.108
 DEBU[0000] Name: 108.170.233.64.in-addr.arpa.
 DEBU[0000] RR types: [A AAAA NS MX TXT CNAME PTR]
@@ -395,32 +386,32 @@ DEBU[0000] Server(s): [192.168.65.7]
 DEBU[0000] Using server 192.168.65.7:53 with transport plain
 DEBU[0000] Using UDP with TCP fallback: 192.168.65.7:53
 </code></pre>
-<p>For added context, the snippets are run via WSL2 (Ubuntu) on Windows 11 with Docker Desktop (<em>which has <code>192.168.65.0/24</code> configured as it's managed network subnet for containers</em>), and runs Docker within a separate WSL2 distro than the default Ubuntu distro I run the commands from.</p>
+<p>For added context, the snippets are run via WSL2 (Ubuntu) on Windows 11 with Docker Desktop (<em>which has <code>192.168.65.0/24</code> configured as it&#x27;s managed network subnet for containers</em>), and runs Docker within a separate WSL2 distro than the default Ubuntu distro I run the commands from.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/vikigenius">@vikigenius</a> on 2024-06-11 17:08</div>
-            <div class="timeline-body"><p>I am also facing this issue. I don't use docker or any containers, I get this just on my local machine. Like mentioned above it's not consistent. I got it 1/5 times</p>
+            <div class="timeline-body"><p>I am also facing this issue. I don&#x27;t use docker or any containers, I get this just on my local machine. Like mentioned above it&#x27;s not consistent. I got it 1/5 times</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-22 20:34</div>
-            <div class="timeline-body"><p>We've added a lot more retrying, including for the cases described here, so I'm going to close for now.</p>
+            <div class="timeline-body"><p>We&#x27;ve added a lot more retrying, including for the cases described here, so I&#x27;m going to close for now.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-11-22 20:34</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-22 20:34</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-11-22 20:34</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-22 20:34</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">network</span> added by @konstin on 2024-11-26 11:43</div>
+            <div class="event">Label <span class="label">network</span> added by <a href="https://github.com/konstin">@konstin</a> on 2024-11-26 11:43</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:24:51 UTC
+        Synced at 2026-01-20 19:31:03 UTC
     </footer>
 </body>
 </html>

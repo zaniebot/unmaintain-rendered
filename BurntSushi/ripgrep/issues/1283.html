@@ -23,21 +23,21 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/JensTimmerman">@JensTimmerman</a></div>
-            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+            <div class="timeline-body">What version of ripgrep are you using?
 <p>ripgrep 0.9.0
 -SIMD -AVX</p>
-<h4>How did you install ripgrep?</h4>
+How did you install ripgrep?
 <p>dnf install ripgrep on fedora 29</p>
-<h4>What operating system are you using ripgrep on?</h4>
+What operating system are you using ripgrep on?
 <p>fedora 29</p>
-<h4>Describe your question, feature request, or bug.</h4>
-<p>I'm trying to grep trought files containing unicode characters and I find some peculiar differences between grep and ripgrep, I'm wondering if this is a bug in grep, ripgrep or a consequence of the better unicode support in ripgrep.:</p>
-<pre><code> cat test1  | grep -i '[^a-z]uresdnd([^y-z][^/]*)?$'
- cat test1  | grep -i '[^a-z]uresdnd([^y][^/]*)?$'
+Describe your question, feature request, or bug.
+<p>I&#x27;m trying to grep trought files containing unicode characters and I find some peculiar differences between grep and ripgrep, I&#x27;m wondering if this is a bug in grep, ripgrep or a consequence of the better unicode support in ripgrep.:</p>
+<pre><code> cat test1  | grep -i &#x27;[^a-z]uresdnd([^y-z][^/]*)?$&#x27;
+ cat test1  | grep -i &#x27;[^a-z]uresdnd([^y][^/]*)?$&#x27;
 uresdndɎᚶİᛘ.png
- cat test1  | grep -i '[^a-z]uresdnd([^z][^/]*)?$'
+ cat test1  | grep -i &#x27;[^a-z]uresdnd([^z][^/]*)?$&#x27;
 uresdndɎᚶİᛘ.png
- cat test1  | rg -i '[^a-z]uresdnd([^y-z][^/]*)?$'
+ cat test1  | rg -i &#x27;[^a-z]uresdnd([^y-z][^/]*)?$&#x27;
 uresdndɎᚶİᛘ.png
 </code></pre>
 <p>As you can see, on my system grep thinks <code>Ɏ</code> lies between y and z, rg disagrees.
@@ -46,17 +46,17 @@ I am wondering where this difference comes from, and if I should consider this a
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-05-16 15:57</div>
-            <div class="timeline-body"><p>Interesting question. I did have trouble following your example though. Here's a much simpler reproduction:</p>
+            <div class="timeline-body"><p>Interesting question. I did have trouble following your example though. Here&#x27;s a much simpler reproduction:</p>
 <pre><code>$ cat test
 Ɏ
-$ LC_ALL=en_US.UTF-8 grep '[Y-Z]' test
+$ LC_ALL=en_US.UTF-8 grep &#x27;[Y-Z]&#x27; test
 Ɏ
-$ LC_ALL=C grep '[Y-Z]' test
-$ rg '[Y-Z]' test
+$ LC_ALL=C grep &#x27;[Y-Z]&#x27; test
+$ rg &#x27;[Y-Z]&#x27; test
 $
 </code></pre>
 <p>The <code>Ɏ</code> character is <code>LATIN CAPITAL LETTER Y WITH STROKE</code>.</p>
-<p>It's hard to say which one is &quot;better.&quot; I typically find GNU grep's behavior here more surprising, but the root cause is that GNU grep <a href="https://www.gnu.org/software/grep/manual/html_node/Character-Classes-and-Bracket-Expressions.html">implements bracketed expressions using your locale's collation semantics</a>. In particular:</p>
+<p>It&#x27;s hard to say which one is &quot;better.&quot; I typically find GNU grep&#x27;s behavior here more surprising, but the root cause is that GNU grep <a href="https://www.gnu.org/software/grep/manual/html_node/Character-Classes-and-Bracket-Expressions.html">implements bracketed expressions using your locale&#x27;s collation semantics</a>. In particular:</p>
 <blockquote>
 <p>Within a bracket expression, a range expression consists of two characters separated by a hyphen. It matches any single character that sorts between the two characters, inclusive. In the default C locale, the sorting sequence is the native character order; for example, ‘[a-d]’ is equivalent to ‘[abcd]’. In other locales, the sorting sequence is not specified, and ‘[a-d]’ might be equivalent to ‘[abcd]’ or to ‘[aBbCcDd]’, or it might fail to match any character, or the set of characters that it matches might even be erratic. To obtain the traditional interpretation of bracket expressions, you can use the ‘C’ locale by setting the LC_ALL environment variable to the value ‘C’.</p>
 </blockquote>
@@ -64,15 +64,15 @@ $
 <blockquote>
 <p>In the POSIX locale, a range expression represents the set of collating elements that fall between two elements in the collation sequence, inclusive.</p>
 </blockquote>
-<p>This is interesting phrasing, since the POSIX locale and the C locale are the same. But this entire section of POSIX talks in terms of collation elements, so GNU grep's interpretation seems right with respect to POSIX.</p>
+<p>This is interesting phrasing, since the POSIX locale and the C locale are the same. But this entire section of POSIX talks in terms of collation elements, so GNU grep&#x27;s interpretation seems right with respect to POSIX.</p>
 <p>As far as ripgrep goes, it does not and will never support the POSIX standard. The ordering of characters inside character classes for ripgrep is simply the ordering of codepoints according to the assigned codepoint number.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2019-05-16 15:57</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-05-16 15:57</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2019-05-16 15:57</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-05-16 15:57</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/JensTimmerman">@JensTimmerman</a> on 2019-05-17 08:00</div>
@@ -83,7 +83,7 @@ I agree that I was surprised by gnu grep and find ripgreps result more intuitive
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:42:55 UTC
+        Synced at 2026-01-20 18:48:08 UTC
     </footer>
 </body>
 </html>

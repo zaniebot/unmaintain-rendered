@@ -23,24 +23,15 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/jamesbraza">@jamesbraza</a></div>
-            <div class="timeline-body"><!--
-Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+            <div class="timeline-body">
 
-If you're filing a bug report, please consider including the following information:
-
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
-* The current Ruff settings (any relevant sections from your `pyproject.toml`).
-* The current Ruff version (`ruff --version`).
--->
-
-<h3>Motivation</h3>
+Motivation
 <p>Here is an overcomplicated minimal repro of using a fake filesystem from <a href="https://github.com/pytest-dev/pyfakefs"><code>pyfakefs==5.2.2</code></a>, a very useful tool for unit testing with filesystems.  I am using <code>pytest==7.3.1</code>.</p>
-<p>Aside: if you don't know <code>pyfakefs</code>, here's a snippet from its docs:</p>
+<p>Aside: if you don&#x27;t know <code>pyfakefs</code>, here&#x27;s a snippet from its docs:</p>
 <blockquote>
 <p>Pyfakefs creates a new empty in-memory file system at each test start, which replaces the real filesystem during the test. Think of pyfakefs as making a per-test temporary directory, except for an entire file system.</p>
 </blockquote>
-<pre><code class="language-python">import csv
+<pre><code>import csv
 import pathlib
 
 import pytest
@@ -57,21 +48,21 @@ def test_with_numpy_genfromtxt(this_dir_fs) -&gt; None:  # ARG001 gets thrown he
     with open(csv_file, mode=&quot;w&quot;, newline=&quot;&quot;, encoding=&quot;utf-8&quot;) as f:
        csv.writer(f).writerows([(1, 2), (3, 4)])
 </code></pre>
-<p>The fake filesystem <code>pytest</code> fixture is not supposed to be used, it's more of an inclusion in the signature.  It works more invisibly behind the scene, patching lots file I/O stuff.</p>
+<p>The fake filesystem <code>pytest</code> fixture is not supposed to be used, it&#x27;s more of an inclusion in the signature.  It works more invisibly behind the scene, patching lots file I/O stuff.</p>
 <p>Thus, we run into false positive <code>ARG001</code> with <code>ruff==0.0.270</code>:</p>
-<pre><code class="language-console">&gt; ruff --select=ARG001 --isolated a.py
+<pre><code>&gt; ruff --select=ARG001 --isolated a.py
 a.py:13:32: ARG001 Unused function argument: `this_dir_fs`
 </code></pre>
 <p>Similarly, if the test is moved to a test method, the error code thrown will be <code>ARG002</code>.</p>
-<h3>Request</h3>
-<p><code>pyfakefs</code> is one of many cases where a <code>pytest</code> fixture gets included in a test signature, but goes unused within the test's body.</p>
+Request
+<p><code>pyfakefs</code> is one of many cases where a <code>pytest</code> fixture gets included in a test signature, but goes unused within the test&#x27;s body.</p>
 <p>Is there anything ruff can do for this?  Can <code>ruff</code> detect if an argument is a <code>pytest</code> fixture?</p>
 <p>I am wondering if <code>ARG001</code>/<code>ARG002</code> should not be thrown for <code>pytest</code> fixtures in signatures.</p>
-<p>For what it's worth, <code>pylint</code>'s <code>unused-argument</code> has the same problem.</p>
+<p>For what it&#x27;s worth, <code>pylint</code>&#x27;s <code>unused-argument</code> has the same problem.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "`ARG001` being thrown for `pytest` fixtures" to "`ARG001`/`ARG002` being thrown for `pytest` fixtures" by @jamesbraza on 2023-05-26 20:17</div>
+            <div class="event">Renamed from &quot;`ARG001` being thrown for `pytest` fixtures&quot; to &quot;`ARG001`/`ARG002` being thrown for `pytest` fixtures&quot; by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2023-05-26 20:17</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/calumy">@calumy</a> on 2023-05-26 23:34</div>
@@ -81,7 +72,7 @@ a.py:13:32: ARG001 Unused function argument: `this_dir_fs`
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2023-05-26 23:44</div>
             <div class="timeline-body"><p>Oh I forgot about that!  Using it no longer emits <code>ARG001</code>.</p>
-<pre><code class="language-python">import csv
+<pre><code>import csv
 import pathlib
 
 import pytest
@@ -108,23 +99,23 @@ def test_with_numpy_genfromtxt() -&gt; None:  # ARG001 is no longer thrown
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-05-27 00:33</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-27 00:33</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sanga">@sanga</a> on 2023-11-01 14:17</div>
-            <div class="timeline-body"><p>So as I understand it, the problem with 'usefixtures' is that it can't be used on fixtures (fixtures may depend upon other fixtures in pytest) only on tests. That being the case, how would the ruff project feel about the following solution? If one were able to define a regular expression that if a function matched, then the unused argument check would be disabled. That would allow pytest ruff uses to define for example</p>
-<p>'''
+            <div class="timeline-body"><p>So as I understand it, the problem with &#x27;usefixtures&#x27; is that it can&#x27;t be used on fixtures (fixtures may depend upon other fixtures in pytest) only on tests. That being the case, how would the ruff project feel about the following solution? If one were able to define a regular expression that if a function matched, then the unused argument check would be disabled. That would allow pytest ruff uses to define for example</p>
+<p>&#x27;&#x27;&#x27;
 arg_ignore_regex = &quot;fix_|test_&quot;
-'''</p>
-<p>And that would cause unused checking to be disabled for functions or methods that began with 'fix_' or 'test_'. And that would default to the empty string i.e. we would always check. I realise that this is somewhat ugly, but I suppose that pytest is pretty widely used and we are not the only ones suffering from this &quot;unused argument&quot; problem. Also, it would be basically invisible to anyone who didn't care about this problem, so the only cost would be the maintenance load of that code</p>
-<p>If the ruff project thinks that that is an okay idea, I could look at sending in a PR for it. Assuming it's doable with a reasonable amount of effort.</p>
-<p>(Apologies for any potential formatting or grammar problems here I'm tapping this out on my phone)</p>
+&#x27;&#x27;&#x27;</p>
+<p>And that would cause unused checking to be disabled for functions or methods that began with &#x27;fix_&#x27; or &#x27;test_&#x27;. And that would default to the empty string i.e. we would always check. I realise that this is somewhat ugly, but I suppose that pytest is pretty widely used and we are not the only ones suffering from this &quot;unused argument&quot; problem. Also, it would be basically invisible to anyone who didn&#x27;t care about this problem, so the only cost would be the maintenance load of that code</p>
+<p>If the ruff project thinks that that is an okay idea, I could look at sending in a PR for it. Assuming it&#x27;s doable with a reasonable amount of effort.</p>
+<p>(Apologies for any potential formatting or grammar problems here I&#x27;m tapping this out on my phone)</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:47:17 UTC
+        Synced at 2026-01-20 18:48:36 UTC
     </footer>
 </body>
 </html>

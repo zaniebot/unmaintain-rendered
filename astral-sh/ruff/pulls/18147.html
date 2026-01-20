@@ -23,51 +23,44 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/maxmynter">@maxmynter</a></div>
-            <div class="timeline-body"><!--
-Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
-
-- Does this pull request include a summary of the change? (See below.)
-- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
-  requests.)
-- Does this pull request include references to any relevant issues?
--->
+            <div class="timeline-body">
 
 <p>Closes #17969</p>
-<h2>Summary</h2>
+Summary
 <p>Add check to sequence type determination of <code>match</code> formatting to distinguish between a list and a tuple whose leading element is a list.</p>
 <p>Previously, we only checked for an opening bracket, <code>[</code>, now we additionally check for top level commata to determine if it is a tuple and return the according type.</p>
 <p>The resulting formatting behaviour is consistent with Black.</p>
-<!-- What's the purpose of the change? What does it do, and why? -->
 
-<h2>Test Plan</h2>
-<p>Added a test case to ruff's tests.
+
+Test Plan
+<p>Added a test case to ruff&#x27;s tests.
 Note: this case is not covered in tests imported from Black.</p>
 <p>Manually compared Black, and this fix on the example from the issue.</p>
-<!-- How was it tested? -->
+
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @maxmynter on 2025-05-17 04:51</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/maxmynter">@maxmynter</a> on 2025-05-17 04:51</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-17 04:57</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Formatter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2025-05-17 15:17</div>
+            <div class="event">Label <span class="label">formatter</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-17 15:17</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/pattern/pattern_match_sequence.rs</code>:97 on 2025-05-17 15:22</div>
             <div class="timeline-body"><p>I think the proper fix here is to only look at the text of the outer pattern by using:</p>
-<pre><code class="language-rust">let text = &amp;source[TextRange::new(pattern.start(), pattern.values.first().map(Ranged::end).unwrap_or(pattern.end())];
+<pre><code>let text = &amp;source[TextRange::new(pattern.start(), pattern.values.first().map(Ranged::end).unwrap_or(pattern.end())];
 </code></pre>
 <p>This will return `` <code>case [], []:</code> because the <code>[</code> belongs to the inner pattern (and not the outer.</p>
 <p>We can then use the same text for the elif on line 97</p>
@@ -75,7 +68,7 @@ Note: this case is not covered in tests imported from Black.</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-05-17 15:23</div>
-            <div class="timeline-body"><p>Thank you. I've a small suggestion which may make this less fragile.</p>
+            <div class="timeline-body"><p>Thank you. I&#x27;ve a small suggestion which may make this less fragile.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -84,13 +77,13 @@ Note: this case is not covered in tests imported from Black.</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/maxmynter">@maxmynter</a> on <code>crates/ruff_python_formatter/src/pattern/pattern_match_sequence.rs</code>:97 on 2025-05-18 02:06</div>
-            <div class="timeline-body"><p>I'm not sure if my understanding is correct.</p>
+            <div class="timeline-body"><p>I&#x27;m not sure if my understanding is correct.</p>
 <p>On the on the first example of the issue it gives</p>
-<pre><code class="language-bash">[crates/ruff_python_formatter/src/pattern/pattern_match_sequence.rs:82:29] &amp;source[TextRange::new(pattern.start(),
+<pre><code>[crates/ruff_python_formatter/src/pattern/pattern_match_sequence.rs:82:29] &amp;source[TextRange::new(pattern.start(),
 pattern.patterns.first().map(Ranged::end).unwrap_or(pattern.end()),)] = &quot;[]&quot;
 </code></pre>
 <p>Do you mean something  like this:</p>
-<pre><code class="language-rust">    pub(crate) fn from_pattern(pattern: &amp;PatternMatchSequence, source: &amp;str) -&gt; SequenceType {
+<pre><code>    pub(crate) fn from_pattern(pattern: &amp;PatternMatchSequence, source: &amp;str) -&gt; SequenceType {
         let first_element = dbg!(&amp;source[TextRange::new(
             pattern.start(),
             pattern
@@ -105,7 +98,7 @@ pattern.patterns.first().map(Ranged::end).unwrap_or(pattern.end()),)] = &quot;[]
             } else {
                 SequenceType::TupleNoParens
             }
-        } else if first_element.starts_with('(') {
+        } else if first_element.starts_with(&#x27;(&#x27;) {
 </code></pre>
 <p>(this breaks format and black compatibility tests, though).</p>
 <p>We cannot check for a leading <code>[</code> because that way we cannot discriminate between a tuple that starts with a list, <code>[],_</code> and a list, <code>[_]</code>.</p>
@@ -118,7 +111,7 @@ pattern.patterns.first().map(Ranged::end).unwrap_or(pattern.end()),)] = &quot;[]
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/pattern/pattern_match_sequence.rs</code>:97 on 2025-05-18 15:27</div>
             <div class="timeline-body"><p>Sorry, I messed up the code example. We should take the <code>start</code> of the first pattern, not the end</p>
-<pre><code class="language-rust">let text = &amp;source[TextRange::new(pattern.start(), pattern.values.first().map(Ranged::start).unwrap_or(pattern.end())];
+<pre><code>let text = &amp;source[TextRange::new(pattern.start(), pattern.values.first().map(Ranged::start).unwrap_or(pattern.end())];
 </code></pre>
 </div>
         </div>
@@ -129,22 +122,22 @@ pattern.patterns.first().map(Ranged::end).unwrap_or(pattern.end()),)] = &quot;[]
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/maxmynter">@maxmynter</a> on <code>crates/ruff_python_formatter/src/pattern/pattern_match_sequence.rs</code>:97 on 2025-05-19 01:14</div>
             <div class="timeline-body"><p>This implementation</p>
-<pre><code class="language-rust">    pub(crate) fn from_pattern(pattern: &amp;PatternMatchSequence, source: &amp;str) -&gt; SequenceType {
+<pre><code>    pub(crate) fn from_pattern(pattern: &amp;PatternMatchSequence, source: &amp;str) -&gt; SequenceType {
         let text = &amp;source[TextRange::new(
             pattern.start(),
             pattern
-                .patterns // Note: I use `.patterns` as `.values` doesn't exist.
+                .patterns // Note: I use `.patterns` as `.values` doesn&#x27;t exist.
                 .first()
                 .map(Ranged::start)
                 .unwrap_or(pattern.end()),
         )];
-        if text.starts_with('[') {
+        if text.starts_with(&#x27;[&#x27;) {
             SequenceType::List
-        } else if text.starts_with('(') {
+        } else if text.starts_with(&#x27;(&#x27;) {
 ...
 </code></pre>
 <p>fails for nested lists. E.g. the following Black consistency test:</p>
-<pre><code class="language-bash">   65       │-    case [
+<pre><code>   65       │-    case [
          57 │+    case (
    66    58 │         [[5], (6)],
    67    59 │         [7],
@@ -164,7 +157,7 @@ pattern.patterns.first().map(Ranged::end).unwrap_or(pattern.end()),)] = &quot;[]
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/pattern/pattern_match_sequence.rs</code>:97 on 2025-05-19 06:00</div>
             <div class="timeline-body"><p>This change is good! It reduces another incompatibility with black. But I do think that we also need to account for a trailing comma like this</p>
-<pre><code class="language-patch">Index: crates/ruff_python_formatter/src/pattern/pattern_match_sequence.rs
+<pre><code>Index: crates/ruff_python_formatter/src/pattern/pattern_match_sequence.rs
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 &lt;+&gt;UTF-8
@@ -176,7 +169,7 @@ diff --git a/crates/ruff_python_formatter/src/pattern/pattern_match_sequence.rs 
  
  impl SequenceType {
      pub(crate) fn from_pattern(pattern: &amp;PatternMatchSequence, source: &amp;str) -&gt; SequenceType {
--        if source[pattern.range()].starts_with('[') {
+-        if source[pattern.range()].starts_with(&#x27;[&#x27;) {
 +        let before_first_pattern = &amp;source[TextRange::new(
 +            pattern.start(),
 +            pattern
@@ -195,22 +188,22 @@ diff --git a/crates/ruff_python_formatter/src/pattern/pattern_match_sequence.rs 
 +            pattern.end(),
 +        )];
 +
-+        if before_first_pattern.starts_with('[') &amp;&amp; !after_last_pattern.ends_with(',') {
++        if before_first_pattern.starts_with(&#x27;[&#x27;) &amp;&amp; !after_last_pattern.ends_with(&#x27;,&#x27;) {
              SequenceType::List
--        } else if source[pattern.range()].starts_with('(') {
-+        } else if before_first_pattern.starts_with('(') {
+-        } else if source[pattern.range()].starts_with(&#x27;(&#x27;) {
++        } else if before_first_pattern.starts_with(&#x27;(&#x27;) {
              // If the pattern is empty, it must be a parenthesized tuple with no members. (This
              // branch exists to differentiate between a tuple with and without its own parentheses,
              // but a tuple without its own parentheses must have at least one member.)
 </code></pre>
 <p>To correctly hanlde</p>
-<pre><code class="language-py">match more := (than, one), indeed,:
+<pre><code>match more := (than, one), indeed,:
     case [[5], (6)],:
         pass
     case _:
         pass
 </code></pre>
-<p>but we should add a test for this. We should also add tests that this change doesn't the formatting of any already formatted code (where Ruff added the extra <code>[</code> <code>]</code> because we otherwise need to gate this change behind preview mode.</p>
+<p>but we should add a test for this. We should also add tests that this change doesn&#x27;t the formatting of any already formatted code (where Ruff added the extra <code>[</code> <code>]</code> because we otherwise need to gate this change behind preview mode.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -219,13 +212,13 @@ diff --git a/crates/ruff_python_formatter/src/pattern/pattern_match_sequence.rs 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/maxmynter">@maxmynter</a> on <code>crates/ruff_python_formatter/src/pattern/pattern_match_sequence.rs</code>:97 on 2025-05-21 15:29</div>
-            <div class="timeline-body"><p>Allright, i've adapted the code according to your suggestions in <a href="https://github.com/astral-sh/ruff/pull/18147/commits/fdcebbc6bb8b8825a048737417491e9e5a29d0c0">fdcebbc</a></p>
+            <div class="timeline-body"><p>Allright, i&#x27;ve adapted the code according to your suggestions in <a href="https://github.com/astral-sh/ruff/pull/18147/commits/fdcebbc6bb8b8825a048737417491e9e5a29d0c0">fdcebbc</a></p>
 <p>The updates to the Black compatibility are in <a href="https://github.com/astral-sh/ruff/pull/18147/commits/0ac564fe607afe47a72e7e0e31c5e24986326386">0ac564f</a> -- thanks for pointing out that the changes are desired. I was very much in a red things = bad mindset. Took some time to learn about how you do this after. :)</p>
-<p>The previously applied formatting is not changed back. So i don't think preview gating is necessary. I added a test for it in <a href="https://github.com/astral-sh/ruff/pull/18147/commits/019e5c01c9ba738f0c33b6ec9c6cff14e8db1fbd">019e5c0</a>.</p>
+<p>The previously applied formatting is not changed back. So i don&#x27;t think preview gating is necessary. I added a test for it in <a href="https://github.com/astral-sh/ruff/pull/18147/commits/019e5c01c9ba738f0c33b6ec9c6cff14e8db1fbd">019e5c0</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @maxmynter on 2025-05-21 15:30</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/maxmynter">@maxmynter</a> on 2025-05-21 15:30</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-22 05:51</div>
@@ -233,18 +226,18 @@ diff --git a/crates/ruff_python_formatter/src/pattern/pattern_match_sequence.rs 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-05-22 05:51</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-22 05:51</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @MichaReiser on 2025-05-22 05:52</div>
+            <div class="event">Merged by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-22 05:52</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2025-05-22 05:52</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-22 05:52</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:12:39 UTC
+        Synced at 2026-01-20 19:14:35 UTC
     </footer>
 </body>
 </html>

@@ -23,13 +23,13 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/danparizher">@danparizher</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Fixes #21142</p>
 <p>B006 now flags mutable defaults passed via module-level named constants. Previously, it only flagged inline mutable defaults (e.g., <code>{}</code>, <code>[]</code>, <code>set()</code>), missing cases where the default references a module-level constant bound to a mutable object (e.g., <code>MY_SET = {&quot;ABC&quot;, &quot;DEF&quot;}</code>).</p>
-<h2>Problem Analysis</h2>
+Problem Analysis
 <p>B006’s detection was syntax-local and didn’t resolve identifiers to check mutability. When a default used a name like <code>MY_SET</code>, it wasn’t resolved to the bound mutable object, causing false negatives.</p>
 <p><strong>Example:</strong></p>
-<pre><code class="language-python">MY_SET = {&quot;ABC&quot;, &quot;DEF&quot;}  # module-level mutable constant
+<pre><code>MY_SET = {&quot;ABC&quot;, &quot;DEF&quot;}  # module-level mutable constant
 
 def func_A(s: set[str] = MY_SET):  # Not flagged (should be flagged)
     return s
@@ -38,7 +38,7 @@ def func_B(s: set[str] = {&quot;ABC&quot;, &quot;DEF&quot;}):  # Correctly flagg
     return s
 </code></pre>
 <p>This is a false negative because <code>func_A</code> and <code>func_B</code> share the same mutable default object.</p>
-<h2>Approach</h2>
+Approach
 <p>Extended <code>is_guaranteed_mutable_expr</code> (used in preview mode) to handle <code>Expr::Name</code>:</p>
 <ol>
 <li>Resolve the identifier using <code>semantic.only_binding()</code> to get the binding.</li>
@@ -57,14 +57,14 @@ def func_B(s: set[str] = {&quot;ABC&quot;, &quot;DEF&quot;}):  # Correctly flagg
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-11-01 19:27</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+1 -0 violations, +0 -0 fixes in 1 projects; 54 projects unchanged)</p>
-<details><summary><a href="https://github.com/mlflow/mlflow">mlflow/mlflow</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<a href="https://github.com/mlflow/mlflow">mlflow/mlflow</a> (+1 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
 </p>
@@ -75,15 +75,15 @@ def func_B(s: set[str] = {&quot;ABC&quot;, &quot;DEF&quot;}):  # Correctly flagg
 </pre>
 
 </p>
-</details>
-<details><summary>Changes by rule (1 rules affected)</summary>
+
+Changes by rule (1 rules affected)
 <p>
 
 <p>| code | total | + violation | - violation | + fix | - fix |
 | ---- | ------- | --------- | -------- | ----- | ---- |
 | B006 | 1 | 1 | 0 | 0 | 0 |</p>
 </p>
-</details>
+
 
 </div>
         </div>
@@ -95,7 +95,7 @@ Lets get it merged.</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-10 13:10</div>
-            <div class="timeline-body"><p>Hmm, I'm not sure I agree with this change. The <code>UPPER_CASE</code> indicates a constant:</p>
+            <div class="timeline-body"><p>Hmm, I&#x27;m not sure I agree with this change. The <code>UPPER_CASE</code> indicates a constant:</p>
 <blockquote>
 <p>Constants are usually defined on a module level and written in all capital letters with underscores separating words. Examples include MAX_OVERFLOW and TOTAL.
 https://peps.python.org/pep-0008/#constants</p>
@@ -104,7 +104,7 @@ https://peps.python.org/pep-0008/#constants</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-11-10 13:13</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-10 13:13</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-10 13:15</div>
@@ -112,19 +112,19 @@ https://peps.python.org/pep-0008/#constants</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/mutable_argument_default.rs</code>:159 on 2025-11-10 13:15</div>
-            <div class="timeline-body"><p>This is interesting. That means using <code>a = imported.MY_LIST</code> is fine but using <code>MY_LIST</code> in the module itself isn't.</p>
+            <div class="timeline-body"><p>This is interesting. That means using <code>a = imported.MY_LIST</code> is fine but using <code>MY_LIST</code> in the module itself isn&#x27;t.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-10 13:26</div>
-            <div class="timeline-body"><p>I'm not sure if I agree with this change. Especially because the proposed fix doesn't really help.</p>
-<p><code>ALL_UPPERCASE</code> names in Python are considered constants. That's why I think using them in a default value position is fine. The only risk really is that the function body might change the value, which in turn changes the constant.</p>
-<pre><code class="language-py">A = [1, 2, 3]
+            <div class="timeline-body"><p>I&#x27;m not sure if I agree with this change. Especially because the proposed fix doesn&#x27;t really help.</p>
+<p><code>ALL_UPPERCASE</code> names in Python are considered constants. That&#x27;s why I think using them in a default value position is fine. The only risk really is that the function body might change the value, which in turn changes the constant.</p>
+<pre><code>A = [1, 2, 3]
 
 def test(a = A): a.append(3) # changes `A`
 </code></pre>
 <p>But this is still the case even when applying the proposed fix:</p>
-<pre><code class="language-py">&gt;&gt;&gt; def test(a):
+<pre><code>&gt;&gt;&gt; def test(a):
 ...     if a is None:
 ...         a = A
 ...     a.append(4) # changes `A`
@@ -140,22 +140,22 @@ def test(a = A): a.append(3) # changes `A`
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/danparizher">@danparizher</a> on 2025-11-10 21:27</div>
-            <div class="timeline-body"><p>Thanks for the feedback, I've updated the implementation to exclude <code>UPPER_CASE</code> constants from being flagged,</p>
-<p>Since we're no longer flagging that, no fix is suggested for them, which avoids the underlying mutation problem. For inline mutable defaults, the current fix works because it creates a new object per call.</p>
+            <div class="timeline-body"><p>Thanks for the feedback, I&#x27;ve updated the implementation to exclude <code>UPPER_CASE</code> constants from being flagged,</p>
+<p>Since we&#x27;re no longer flagging that, no fix is suggested for them, which avoids the underlying mutation problem. For inline mutable defaults, the current fix works because it creates a new object per call.</p>
 <p>Maybe what we can do is when flagging a constant like <code>MY_LIST</code>, we could suggest using <code>MY_LIST.copy()</code> or <code>copy.deepcopy(MY_LIST)</code> to create a new instance, or suggest changing the type annotation to <code>Sequence[int]</code> to indicate immutability.</p>
-<p>We could also analyze the function body to detect if the argument is mutated and suggest appropriate fixes—if it's only read, suggest <code>Sequence</code>/<code>Mapping</code> types; if it's mutated, suggest copies or immutable alternatives like <code>tuple</code> or <code>frozenset</code>.</p>
+<p>We could also analyze the function body to detect if the argument is mutated and suggest appropriate fixes—if it&#x27;s only read, suggest <code>Sequence</code>/<code>Mapping</code> types; if it&#x27;s mutated, suggest copies or immutable alternatives like <code>tuple</code> or <code>frozenset</code>.</p>
 <p>This would require more design work as you noted, but could be a good follow-up. For now, I think excluding <code>UPPER_CASE</code> constants seems like the right pragmatic approach.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @amyreese on 2025-11-26 01:54</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/amyreese">@amyreese</a> on 2025-11-26 01:54</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @ntBre by @amyreese on 2025-11-26 01:54</div>
+            <div class="event">Review requested from <a href="https://github.com/ntBre">@ntBre</a> by <a href="https://github.com/amyreese">@amyreese</a> on 2025-11-26 01:54</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/mutable_argument_default.rs</code>:153 on 2025-11-26 08:38</div>
-            <div class="timeline-body"><p>I think this comment here is inaccurate as it doesn't just resolve module level constants:</p>
+            <div class="timeline-body"><p>I think this comment here is inaccurate as it doesn&#x27;t just resolve module level constants:</p>
 <ul>
 <li>It resolves constants and non constants</li>
 <li>It resolves any name in the current scope</li>
@@ -171,12 +171,12 @@ def test(a = A): a.append(3) # changes `A`
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B006_10.py</code>:6 on 2025-11-26 08:40</div>
-            <div class="timeline-body"><p>The comment here is a bit misleading. PEP8 doesn't specify that this rule should exclude constants. Instead, PEP8 specifies that UPPER_CASE variables are considered constants.</p>
+            <div class="timeline-body"><p>The comment here is a bit misleading. PEP8 doesn&#x27;t specify that this rule should exclude constants. Instead, PEP8 specifies that UPPER_CASE variables are considered constants.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-26 08:40</div>
-            <div class="timeline-body"><p>I've a few more inline comments. Could you also update the PR title and summary to reflect your most recent changes?</p>
+            <div class="timeline-body"><p>I&#x27;ve a few more inline comments. Could you also update the PR title and summary to reflect your most recent changes?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -185,15 +185,15 @@ def test(a = A): a.append(3) # changes `A`
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[`flake8-bugbear`] Flag mutable defaults passed via named constants (`B006`)" to "[`flake8-bugbear`] Flag mutable defaults passed via named variables, excluding UPPER_CASE (`B006`)" by @danparizher on 2025-11-29 05:07</div>
+            <div class="event">Renamed from &quot;[`flake8-bugbear`] Flag mutable defaults passed via named constants (`B006`)&quot; to &quot;[`flake8-bugbear`] Flag mutable defaults passed via named variables, excluding UPPER_CASE (`B006`)&quot; by <a href="https://github.com/danparizher">@danparizher</a> on 2025-11-29 05:07</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @danparizher on 2025-11-29 05:31</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/danparizher">@danparizher</a> on 2025-11-29 05:31</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:16:51 UTC
+        Synced at 2026-01-20 19:20:05 UTC
     </footer>
 </body>
 </html>

@@ -23,42 +23,42 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a></div>
-            <div class="timeline-body"><p>This is a followup to https://github.com/astral-sh/ruff/pull/21173 and pertains to behaviours described in <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/import/nonstandard_conventions.md">imports/nonstandard_conventions.md</a></p>
-<p>The &quot;first from first serve&quot; rule says it applies to the &quot;first time in this scope (or any parent scope)&quot;, but we actually only implement &quot;first time in the entire file&quot; which doesn't make sense but was easy to implement and worked well. There is a test in that file that currently demonstrates the failure mode of this (two functions import a submodule, only the first function gets the submodule as a local).</p>
+            <div class="timeline-body"><p>This is a followup to <a href="https://github.com/astral-sh/ruff/pull/21173">astral-sh/ruff#21173</a> and pertains to behaviours described in <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/import/nonstandard_conventions.md">imports/nonstandard_conventions.md</a></p>
+<p>The &quot;first from first serve&quot; rule says it applies to the &quot;first time in this scope (or any parent scope)&quot;, but we actually only implement &quot;first time in the entire file&quot; which doesn&#x27;t make sense but was easy to implement and worked well. There is a test in that file that currently demonstrates the failure mode of this (two functions import a submodule, only the first function gets the submodule as a local).</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @Gankra by @Gankra on 2025-11-05 15:03</div>
+            <div class="event">Assigned to <a href="https://github.com/Gankra">@Gankra</a> by <a href="https://github.com/Gankra">@Gankra</a> on 2025-11-05 15:03</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">imports</span> added by @Gankra on 2025-11-05 15:03</div>
+            <div class="event">Label <span class="label">imports</span> added by <a href="https://github.com/Gankra">@Gankra</a> on 2025-11-05 15:03</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @Gankra on 2025-11-05 17:16</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/Gankra">@Gankra</a> on 2025-11-05 17:16</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "first from first serve analysis is too coarse" to ""first from first serve" analysis is too coarse" by @Gankra on 2025-11-05 17:51</div>
+            <div class="event">Renamed from &quot;first from first serve analysis is too coarse&quot; to &quot;&quot;first from first serve&quot; analysis is too coarse&quot; by <a href="https://github.com/Gankra">@Gankra</a> on 2025-11-05 17:51</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-05 21:10</div>
-            <div class="timeline-body"><p>Didn't we discuss that the right answer here is that <em>neither</em> function should get the submodule as a local? That is, we should skip the extra Definition-of-submodule entirely in nested scopes. Where the failure mode we have currently is something like this:</p>
-<pre><code class="language-py">def somefunc(mything):
+            <div class="timeline-body"><p>Didn&#x27;t we discuss that the right answer here is that <em>neither</em> function should get the submodule as a local? That is, we should skip the extra Definition-of-submodule entirely in nested scopes. Where the failure mode we have currently is something like this:</p>
+<pre><code>def somefunc(mything):
     from .mything import whatever
     # now we think that `mything` is the submodule instead of the function parameter, but at runtime it is not
 </code></pre>
-<p>This would mean we don't model that the submodule (on first import) is added to module global scope, but given that we don't know if or when the function will be called, I think this is the right conservative modeling.</p>
+<p>This would mean we don&#x27;t model that the submodule (on first import) is added to module global scope, but given that we don&#x27;t know if or when the function will be called, I think this is the right conservative modeling.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-11-05 21:29</div>
             <div class="timeline-body"><p>The intuitive model I was hoping to push for was essentially that &quot;if you really want to do lazy imports by doing them inside a function body, you should have to do it in every function body you want that import in&quot;.</p>
-<p>It has similar vibes to this note in pyright's docs:</p>
+<p>It has similar vibes to this note in pyright&#x27;s docs:</p>
 <blockquote>
 <p>If a module contains the statement <code>import a.b</code> in the global scope and a function that includes the statement <code>import a</code> or <code>import a.c</code>, the function should not assume that it can access <code>a.b</code>. This assumption might or might not be safe depending on execution order.</p>
 </blockquote>
-<p>Although not quite the same approach, and I'm not sure I agree with that rule, it's gesturing to the idea that imports are partially &quot;function-local&quot;.</p>
-<hr />
-<p>I think it's worth trying a &quot;global-only&quot; implementation (neither function gets submodule) and seeing how much that affects the ecosystem.</p>
+<p>Although not quite the same approach, and I&#x27;m not sure I agree with that rule, it&#x27;s gesturing to the idea that imports are partially &quot;function-local&quot;.</p>
+<hr>
+<p>I think it&#x27;s worth trying a &quot;global-only&quot; implementation (neither function gets submodule) and seeing how much that affects the ecosystem.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -66,13 +66,13 @@
             <div class="timeline-body"><blockquote>
 <p>The intuitive model I was hoping to push for was essentially that &quot;if you really want to do lazy imports by doing them inside a function body, you should have to do it in every function body you want that import in&quot;.</p>
 </blockquote>
-<p>This is already true for the RHS of the import. The problem with the left-hand-submodule part of the import is that at runtime it is not added to the function's own scope, it is actually added to the global scope. This leads to the bug shown in the code example in my previous comment.</p>
-<p>I think it is better to not model the left-hand-submodule-attribute part at all for imports-in-functions, than to model it with this scoping bug. So I think if we want to model the submodule-attribute effects of in-function imports, we also need to place the attribute in the right scope, which I think is quite tricky since you don't actually know where in the module global control flow to consider that submodule attributed added. So I doubt that it is worth it at all.</p>
+<p>This is already true for the RHS of the import. The problem with the left-hand-submodule part of the import is that at runtime it is not added to the function&#x27;s own scope, it is actually added to the global scope. This leads to the bug shown in the code example in my previous comment.</p>
+<p>I think it is better to not model the left-hand-submodule-attribute part at all for imports-in-functions, than to model it with this scoping bug. So I think if we want to model the submodule-attribute effects of in-function imports, we also need to place the attribute in the right scope, which I think is quite tricky since you don&#x27;t actually know where in the module global control flow to consider that submodule attributed added. So I doubt that it is worth it at all.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-11-05 21:40</div>
-            <div class="timeline-body"><p>Yeah, I'm aware it should go to global scope, and therefore the semantic is incorrect. In a fantasy world I had been considering a fake scope that exists under the current scope (or maybe under global scope?) where we can stow &quot;things that are logically in global scope but execution order is a nightmare so it's in scope as long as a local wouldn't be shadowing it&quot;. Which I guess now that I've said it out loud, is another instance of:</p>
+            <div class="timeline-body"><p>Yeah, I&#x27;m aware it should go to global scope, and therefore the semantic is incorrect. In a fantasy world I had been considering a fake scope that exists under the current scope (or maybe under global scope?) where we can stow &quot;things that are logically in global scope but execution order is a nightmare so it&#x27;s in scope as long as a local wouldn&#x27;t be shadowing it&quot;. Which I guess now that I&#x27;ve said it out loud, is another instance of:</p>
 <ul>
 <li>#1488</li>
 </ul>
@@ -80,7 +80,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-05 21:45</div>
-            <div class="timeline-body"><p>Except you'd also want a version of <code>available_submodule_attributes</code> that is somehow per-function? Because I do think it's important that we only make it available in the function where the import occurs, where we know it's actually available. If we don't do that also, then I still think it is better (not just &quot;better because less work&quot;, but actually preferable) to be conservative and not model it as making the submodule attribute available at all. Overall it still feels very likely not worth trying to model it at all, but I guess the ecosystem report will tell.</p>
+            <div class="timeline-body"><p>Except you&#x27;d also want a version of <code>available_submodule_attributes</code> that is somehow per-function? Because I do think it&#x27;s important that we only make it available in the function where the import occurs, where we know it&#x27;s actually available. If we don&#x27;t do that also, then I still think it is better (not just &quot;better because less work&quot;, but actually preferable) to be conservative and not model it as making the submodule attribute available at all. Overall it still feels very likely not worth trying to model it at all, but I guess the ecosystem report will tell.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -89,15 +89,15 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from ""first from first serve" analysis is too coarse" to "Submodule imports: "first from first serve" analysis is too coarse" by @AlexWaygood on 2025-11-09 17:02</div>
+            <div class="event">Renamed from &quot;&quot;first from first serve&quot; analysis is too coarse&quot; to &quot;Submodule imports: &quot;first from first serve&quot; analysis is too coarse&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-09 17:02</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @Gankra on 2025-11-10 23:59</div>
+            <div class="event">Closed by <a href="https://github.com/Gankra">@Gankra</a> on 2025-11-10 23:59</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:54 UTC
+        Synced at 2026-01-20 19:25:53 UTC
     </footer>
 </body>
 </html>

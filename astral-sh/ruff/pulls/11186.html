@@ -23,26 +23,26 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <ol>
 <li>Bump dependency pins in <code>scripts/fuzz-parser/requirements.txt</code>. The latest versions of <code>pysource-codegen</code> and <code>pysource-minimize</code> have some typing improvements that mean that pyright and mypy now both give the <code>scripts/fuzz-parser</code> directory a clean bill of health.</li>
-<li>If <code>cargo build --release</code> fails, print the captured stderr to the terminal so it's easy to diagnose what's gone wrong.</li>
+<li>If <code>cargo build --release</code> fails, print the captured stderr to the terminal so it&#x27;s easy to diagnose what&#x27;s gone wrong.</li>
 <li>Add instructions to the module docstring (also displayed if you run <code>py scripts/fuzz-parser/fuzz.py --help</code> in a terminal window) for how to run the script with randomly selected seeds.</li>
-<li>Alter <code>FuzzResult.print_description()</code> so that it prints how far through the overall fuzzing the script is. This is especially useful if you've fed randomly selected seeds to the script, as it's hard to know what the distribution of the seeds will be if they've been randomly selected.</li>
+<li>Alter <code>FuzzResult.print_description()</code> so that it prints how far through the overall fuzzing the script is. This is especially useful if you&#x27;ve fed randomly selected seeds to the script, as it&#x27;s hard to know what the distribution of the seeds will be if they&#x27;ve been randomly selected.</li>
 <li>Colourise <code>--help</code> output with <code>rich-argparse</code> (why not)</li>
 </ol>
-<h2>Test Plan</h2>
+Test Plan
 <p>I ran the following commands to test the script:</p>
 <pre><code>$ py scripts/fuzz-parser/fuzz.py --help
 $ py scripts/fuzz-parser/fuzz.py 0-100
 $ py scripts/fuzz-parser/fuzz.py $(shuf -i 0-1000000 -n 10000)
 </code></pre>
 <p>I also applied this diff to the parser and then ran the script again to check the output if the script found parser bugs:</p>
-<details>
 
-<pre><code class="language-diff">--- a/crates/ruff_python_parser/src/parser/expression.rs
+
+<pre><code>--- a/crates/ruff_python_parser/src/parser/expression.rs
 +++ b/crates/ruff_python_parser/src/parser/expression.rs
-@@ -308,15 +308,13 @@ impl&lt;'src&gt; Parser&lt;'src&gt; {
+@@ -308,15 +308,13 @@ impl&lt;&#x27;src&gt; Parser&lt;&#x27;src&gt; {
          if let Some(unary_op) = token.as_unary_operator() {
              let expr = self.parse_unary_expression(unary_op, context);
  
@@ -50,7 +50,7 @@ $ py scripts/fuzz-parser/fuzz.py $(shuf -i 0-1000000 -n 10000)
 -                if left_precedence &gt; OperatorPrecedence::Not {
 -                    self.add_error(
 -                        ParseErrorType::OtherError(
--                            &quot;Boolean 'not' expression cannot be used here&quot;.to_string(),
+-                            &quot;Boolean &#x27;not&#x27; expression cannot be used here&quot;.to_string(),
 -                        ),
 -                        &amp;expr,
 -                    );
@@ -58,18 +58,18 @@ $ py scripts/fuzz-parser/fuzz.py $(shuf -i 0-1000000 -n 10000)
 +            if left_precedence &gt; OperatorPrecedence::Not {
 +                self.add_error(
 +                    ParseErrorType::OtherError(
-+                        &quot;Boolean 'not' expression cannot be used here&quot;.to_string(),
++                        &quot;Boolean &#x27;not&#x27; expression cannot be used here&quot;.to_string(),
 +                    ),
 +                    &amp;expr,
 +                );
              } else {
                  if left_precedence &gt; OperatorPrecedence::PosNegBitNot
 </code></pre>
-</details>
 
-<h2>New output</h2>
-<h3>If it passes:</h3>
-<details>
+
+New output
+If it passes:
+
 
 <pre><code>(ruff) (fuzz-build-failure) % py scripts/fuzz-parser/fuzz.py 100-200                                                                      ~/dev/ruff
 Running `cargo build --release` since no test executable was specified...
@@ -108,16 +108,16 @@ Ran fuzzer successfully on seed 123                   [31/101]
 Ran fuzzer successfully on seed 131                   [32/101]
 Ran fuzzer successfully on seed 128                   [33/101]
 </code></pre>
-</details>
 
-<details>
-<summary>Screenshot</summary>
 
-<p><img src="https://github.com/astral-sh/ruff/assets/66076021/2bb17322-8acf-4466-83b8-889b100e0b1b" alt="image" /></p>
-</details>
 
-<h3>With randomly selected seeds:</h3>
-<details>
+Screenshot
+
+<p><img src="https://github.com/astral-sh/ruff/assets/66076021/2bb17322-8acf-4466-83b8-889b100e0b1b" alt="image"></p>
+
+
+With randomly selected seeds:
+
 
 <pre><code>(ruff) (fuzz-build-failure) % py scripts/fuzz-parser/fuzz.py $(shuf -i 0-1000000 -n 30)                                                   ~/dev/ruff
 Running `cargo build --release` since no test executable was specified...
@@ -154,16 +154,16 @@ Ran fuzzer successfully on seed 823008                 [29/30]
 Ran fuzzer successfully on seed 852077                 [30/30]
 No bugs found!
 </code></pre>
-</details>
 
-<details>
-<summary>Screenshot</summary>
 
-<p><img src="https://github.com/astral-sh/ruff/assets/66076021/a403f7d3-4925-4cfb-a33c-e89b210b6993" alt="image" /></p>
-</details>
 
-<h3>If it fails:</h3>
-<details>
+Screenshot
+
+<p><img src="https://github.com/astral-sh/ruff/assets/66076021/a403f7d3-4925-4cfb-a33c-e89b210b6993" alt="image"></p>
+
+
+If it fails:
+
 
 <pre><code>(ruff) (fuzz-build-failure) % py scripts/fuzz-parser/fuzz.py 0-500                                                                        ~/dev/ruff
 Running `cargo build --release` since no test executable was specified...
@@ -196,31 +196,31 @@ The following code triggers a bug:
 
 Ran fuzzer successfully on seed 13                    [11/501]
 </code></pre>
-</details>
 
-<details>
-<summary>Screenshot</summary>
 
-<p><img src="https://github.com/astral-sh/ruff/assets/66076021/91fc5635-cf04-4527-aded-a7fbe47b44fe" alt="image" /></p>
-</details>
 
-<h3><code>--help</code> output</h3>
-<details>
-<summary>Screenshot</summary>
+Screenshot
 
-<p><img src="https://github.com/astral-sh/ruff/assets/66076021/11a28499-ba0b-4ca3-9509-801d6a9bdda9" alt="image" /></p>
-</details>
+<p><img src="https://github.com/astral-sh/ruff/assets/66076021/91fc5635-cf04-4527-aded-a7fbe47b44fe" alt="image"></p>
+
+
+<code>--help</code> output
+
+Screenshot
+
+<p><img src="https://github.com/astral-sh/ruff/assets/66076021/11a28499-ba0b-4ca3-9509-801d6a9bdda9" alt="image"></p>
+
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> added by @AlexWaygood on 2024-04-28 17:58</div>
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-04-28 17:58</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @AlexWaygood on 2024-04-28 18:17</div>
+            <div class="event">Merged by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-04-28 18:17</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2024-04-28 18:17</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-04-28 18:17</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-04-28 18:17</div>
@@ -228,7 +228,7 @@ Ran fuzzer successfully on seed 13                    [11/501]
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:04:03 UTC
+        Synced at 2026-01-20 19:03:46 UTC
     </footer>
 </body>
 </html>

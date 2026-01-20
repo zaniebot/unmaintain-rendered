@@ -24,20 +24,20 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/kdeldycke">@kdeldycke</a></div>
             <div class="timeline-body"><p>Using the latest version of <code>uv</code>:</p>
-<pre><code class="language-shell-session">$ uv --version
+<pre><code>$ uv --version
 uv 0.2.21 (ebfe6d8fc 2024-07-03)
 </code></pre>
 <p>When I try to install in my local venv all extras, I get the following error:</p>
-<pre><code class="language-shell-session">$ uv pip install --all-extras .
+<pre><code>$ uv pip install --all-extras .
 error: Requesting extras requires a `pyproject.toml`, `setup.cfg`, or `setup.py` file.
 </code></pre>
 <p>Still, <a href="https://github.com/kdeldycke/mail-deduplicate/blob/main/pyproject.toml">I have a <code>pyproject.toml</code> at the root</a>, so I expect <code>uv</code> to use it:</p>
-<pre><code class="language-shell-session">$ ls -lah ./pyproject.toml
+<pre><code>$ ls -lah ./pyproject.toml
 Permissions Size User Date Modified    Name
 .rw-r--r--  4.5k kde  2024-07-03 10:16  ./pyproject.toml
 </code></pre>
 <p>This can be reproduced from scratch with my project with the following commands:</p>
-<pre><code class="language-shell-session">$ cd ~
+<pre><code>$ cd ~
 $ git clone https://github.com/kdeldycke/mail-deduplicate
 $ cd mail-deduplicate
 $ uv venv
@@ -59,13 +59,13 @@ $ uv pip install --all-extras .
 </blockquote>
 <p>So there is no way to tell <code>uv</code> to install all extras, whatever their numbers or IDs?</p>
 <p>I tried different ways like:</p>
-<pre><code class="language-shell-session">$ uv pip install &quot;.[*]&quot;
+<pre><code>$ uv pip install &quot;.[*]&quot;
 error: Failed to parse: `.[*]`
-  Caused by: Expected an alphanumeric character starting the extra name, found '*'
+  Caused by: Expected an alphanumeric character starting the extra name, found &#x27;*&#x27;
 .[*]
   ^
 </code></pre>
-<pre><code class="language-shell-session">$ uv pip install &quot;.[all]&quot;
+<pre><code>$ uv pip install &quot;.[all]&quot;
 Resolved 23 packages in 1.13s
    Built meta-package-manager @ file:///Users/kde/meta-package-manager
 Prepared 1 package in 797ms
@@ -78,12 +78,12 @@ warning: The package `meta-package-manager @ file:///Users/kde/meta-package-mana
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-07-03 12:50</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-03 12:50</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-03 22:36</div>
             <div class="timeline-body"><p>The typical thing would be to define an extra called <code>all</code> in your package, and recursively reference the others, like:</p>
-<pre><code class="language-toml">[project]
+<pre><code>[project]
 name = &quot;black&quot;
 
 [project.optional-dependencies]
@@ -98,27 +98,27 @@ all = [
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kdeldycke">@kdeldycke</a> on 2024-07-05 06:18</div>
-            <div class="timeline-body"><p>Oh ok I see. Thanks @charliermarsh for the hint. Now I get it. The <code>all</code> keyword is more like a convention than a technical feature. And so I'm pretty sure that this is not specified or enforced in any PEP XXX.</p>
-<p>Given the diversity of packages I'm likely to stumble upon, and because I'm <a href="https://github.com/kdeldycke/workflows/">trying to implement the most generic reusable workflows</a>, I prefer the safety of the <code>--all-extras</code> parameter.</p>
+            <div class="timeline-body"><p>Oh ok I see. Thanks @charliermarsh for the hint. Now I get it. The <code>all</code> keyword is more like a convention than a technical feature. And so I&#x27;m pretty sure that this is not specified or enforced in any PEP XXX.</p>
+<p>Given the diversity of packages I&#x27;m likely to stumble upon, and because I&#x27;m <a href="https://github.com/kdeldycke/workflows/">trying to implement the most generic reusable workflows</a>, I prefer the safety of the <code>--all-extras</code> parameter.</p>
 <p>So for example, my strategy to implement <a href="https://github.com/kdeldycke/workflows/blob/495fb192b43dd54c91fe31c294576df6877612d8/.github/workflows/lint.yaml#L83-L113">a generic <code>mypy</code> type checking job</a>, consist in running the following command to get all dependencies installed, including the optional ones from the various <a href="https://github.com/python/typeshed"><code>typeshed</code></a> packages:</p>
-<pre><code class="language-shell-session">$ uv pip install --all-extras ${{ needs.project-metadata.outputs.uv_requirement_params }}
+<pre><code>$ uv pip install --all-extras ${{ needs.project-metadata.outputs.uv_requirement_params }}
 </code></pre>
 <p>Where <code>needs.project-metadata.outputs.uv_requirement_params</code> is a variable produce by my <code>gha-utils</code> CLI:</p>
-<pre><code class="language-shell-session">$ pipx install gha-utils
+<pre><code>$ pipx install gha-utils
 $ gha-utils metadata
 (...)
 uv_requirement_params=--requirement pyproject.toml --requirement requirements.txt --requirement requirements/yamllint.txt --requirement requirements/mypy.txt --requirement requirements/format-python.txt --requirement requirements/build.txt --requirement requirements/nuitka.txt --requirement requirements/mdformat.txt --requirement requirements/pipdeptree.txt --requirement requirements/uv.txt --requirement requirements/changelog.txt --requirement requirements/gha-utils.txt
 </code></pre>
-<p>It's quite convoluted, but it works.</p>
+<p>It&#x27;s quite convoluted, but it works.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2024-10-21 21:25</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-21 21:25</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:25:28 UTC
+        Synced at 2026-01-20 19:31:51 UTC
     </footer>
 </body>
 </html>

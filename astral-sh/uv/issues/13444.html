@@ -23,11 +23,11 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/tlandschoff-scale">@tlandschoff-scale</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>First, thanks for uv, it is a great help for us. We used to use pip + virtualenv, and regularly ran into errors because a dev did not update the venv. uv run now takes care of this 😄</p>
 <p>We are currently migrating toward using manylinux wheels (used to pip install everything from source) and ran into issues because the virtual environment <code>$PROJECT/.venv</code> is recreated without <code>--system-site-packages</code>, but uv does not catch that change.</p>
 <p>Here is a transcript of the misbehavior on my Ubuntu noble system:</p>
-<pre><code class="language-console">~/tmp/2025-05-14/broken$ uv init --python `which python3`
+<pre><code>~/tmp/2025-05-14/broken$ uv init --python `which python3`
 ~/tmp/2025-05-14/broken$ uv python pin `which python3`
 ~/tmp/2025-05-14/broken$ uv venv --system-site-packages
 
@@ -38,7 +38,7 @@ Using CPython 3.9.20 interpreter at: /opt/scalesdk/python39/bin/python3.9
 Removed virtual environment at: .venv
 Creating virtual environment at: .venv
 Resolved 3 packages in 599ms
-error: Distribution `cffi==1.17.1 @ registry+https://pypi.service.scale/simple/` can't be installed because it is marked as `--no-build` but has no binary distribution
+error: Distribution `cffi==1.17.1 @ registry+https://pypi.service.scale/simple/` can&#x27;t be installed because it is marked as `--no-build` but has no binary distribution
 
 # But after recreating the virtualenv without this issue, it should work
 
@@ -48,7 +48,7 @@ Using CPython 3.9.20 interpreter at: /opt/scalesdk/python39/bin/python3.9
 Removed virtual environment at: .venv
 Creating virtual environment at: .venv
 Resolved 3 packages in 615ms
-error: Distribution `cffi==1.17.1 @ registry+https://pypi.service.scale/simple/` can't be installed because it is marked as `--no-build` but has no binary distribution
+error: Distribution `cffi==1.17.1 @ registry+https://pypi.service.scale/simple/` can&#x27;t be installed because it is marked as `--no-build` but has no binary distribution
 </code></pre>
 <p>This appears to be a caching issue, it can be fixed by deleting the interpreter-v4 cache. Here is a Dockerfile based on Debian bookworm that reproduces the behavior:</p>
 <pre><code>FROM python:3.12-bookworm
@@ -63,8 +63,8 @@ manylinux2010_compatible = False\n\
 manylinux2014_compatible = False\n\
 def manylinux_compatible(*_, **__):\n\
     return False\n\
-&quot; &gt; `python -c &quot;import sysconfig;print(sysconfig.get_path('purelib'))&quot;`/_manylinux.py
-RUN cat `python -c &quot;import sysconfig;print(sysconfig.get_path('purelib'))&quot;`/_manylinux.py
+&quot; &gt; `python -c &quot;import sysconfig;print(sysconfig.get_path(&#x27;purelib&#x27;))&quot;`/_manylinux.py
+RUN cat `python -c &quot;import sysconfig;print(sysconfig.get_path(&#x27;purelib&#x27;))&quot;`/_manylinux.py
 
 RUN uv self version &amp;&amp; python --version
 RUN uv init --python `which python` &amp;&amp; uv venv --system-site-packages
@@ -75,7 +75,7 @@ RUN rm -rf $HOME/.cache/uv/interpreter-v4
 RUN uv add --no-build cffi==1.17.1  # works
 </code></pre>
 <p>Running it, I get this:</p>
-<pre><code class="language-console">$ docker build . --progress plain --no-cache
+<pre><code>$ docker build . --progress plain --no-cache
 [sudo] password for torsten.landschoff: 
 #0 building with &quot;default&quot; instance using docker driver
 
@@ -111,10 +111,10 @@ RUN uv add --no-build cffi==1.17.1  # works
 #9 [stage-0  4/13] WORKDIR /workspace
 #9 DONE 0.0s
 
-#10 [stage-0  5/13] RUN echo &quot;manylinux1_compatible = False\nmanylinux2010_compatible = False\nmanylinux2014_compatible = False\ndef manylinux_compatible(*_, **__):\n    return False\n&quot; &gt; `python -c &quot;import sysconfig;print(sysconfig.get_path('purelib'))&quot;`/_manylinux.py
+#10 [stage-0  5/13] RUN echo &quot;manylinux1_compatible = False\nmanylinux2010_compatible = False\nmanylinux2014_compatible = False\ndef manylinux_compatible(*_, **__):\n    return False\n&quot; &gt; `python -c &quot;import sysconfig;print(sysconfig.get_path(&#x27;purelib&#x27;))&quot;`/_manylinux.py
 #10 DONE 0.3s
 
-#11 [stage-0  6/13] RUN cat `python -c &quot;import sysconfig;print(sysconfig.get_path('purelib'))&quot;`/_manylinux.py
+#11 [stage-0  6/13] RUN cat `python -c &quot;import sysconfig;print(sysconfig.get_path(&#x27;purelib&#x27;))&quot;`/_manylinux.py
 #11 0.207 manylinux1_compatible = False
 #11 0.207 manylinux2010_compatible = False
 #11 0.207 manylinux2014_compatible = False
@@ -136,7 +136,7 @@ RUN uv add --no-build cffi==1.17.1  # works
 
 #14 [stage-0  9/13] RUN uv add --no-build cffi==1.17.1 || true  # uv add fails: no binary
 #14 0.655 Resolved 3 packages in 254ms
-#14 0.657 error: Distribution `cffi==1.17.1 @ registry+https://pypi.org/simple` can't be installed because it is marked as `--no-build` but has no binary distribution
+#14 0.657 error: Distribution `cffi==1.17.1 @ registry+https://pypi.org/simple` can&#x27;t be installed because it is marked as `--no-build` but has no binary distribution
 #14 DONE 0.7s
 
 #15 [stage-0 10/13] RUN rm -rf .venv &amp;&amp; uv venv
@@ -146,7 +146,7 @@ RUN uv add --no-build cffi==1.17.1  # works
 
 #16 [stage-0 11/13] RUN uv add --no-build cffi==1.17.1 || true  # fails again, why?
 #16 0.231 Resolved 3 packages in 10ms
-#16 0.233 error: Distribution `cffi==1.17.1 @ registry+https://pypi.org/simple` can't be installed because it is marked as `--no-build` but has no binary distribution
+#16 0.233 error: Distribution `cffi==1.17.1 @ registry+https://pypi.org/simple` can&#x27;t be installed because it is marked as `--no-build` but has no binary distribution
 #16 DONE 0.3s
 
 #17 [stage-0 12/13] RUN rm -rf $HOME/.cache/uv/interpreter-v4
@@ -167,16 +167,16 @@ RUN uv add --no-build cffi==1.17.1  # works
 #19 DONE 0.4s
 </code></pre>
 <p>The workaround to remove the interpreter cache helps us out here, but this happens for every developer that updates to our current main branch, and also during <code>uv sync</code>.</p>
-<h3>Platform</h3>
+Platform
 <p>Debian bookworm (docker image python:3.12-bookworm)</p>
-<h3>Version</h3>
+Version
 <p>uv 0.7.3</p>
-<h3>Python version</h3>
+Python version
 <p>Python 3.12.10</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @tlandschoff-scale on 2025-05-14 07:21</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/tlandschoff-scale">@tlandschoff-scale</a> on 2025-05-14 07:21</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-14 19:30</div>
@@ -184,14 +184,14 @@ RUN uv add --no-build cffi==1.17.1  # works
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-05-14 23:26</div>
+            <div class="event">Label <span class="label">bug</span> removed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-14 23:26</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-05-14 23:26</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-14 23:26</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tlandschoff-scale">@tlandschoff-scale</a> on 2025-05-15 08:31</div>
-            <div class="timeline-body"><p>I think you don't get the point. Nobody toggled manylinux, I created a completely new virtual environment from scratch after deleting it.</p>
+            <div class="timeline-body"><p>I think you don&#x27;t get the point. Nobody toggled manylinux, I created a completely new virtual environment from scratch after deleting it.</p>
 <p>I would expect that cache to forget all cached information that is older than the creation time of the venv.</p>
 <blockquote>
 <p>invalidating this is impossible without querying Python</p>
@@ -209,7 +209,7 @@ RUN uv add --no-build cffi==1.17.1  # works
     ///   &quot;timestamp&quot;: 1698047994491,
 </code></pre>
 <p>And at least on Unix, the stat information of the directory contains the birth time:</p>
-<pre><code class="language-console">$ stat -c %W .venv/
+<pre><code>$ stat -c %W .venv/
 1747297754
 </code></pre>
 <p>I would expect to discard a cache entry that is older than the whole venv folder.</p>
@@ -223,16 +223,16 @@ RUN uv add --no-build cffi==1.17.1  # works
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tlandschoff-scale">@tlandschoff-scale</a> on 2025-05-15 09:44</div>
             <div class="timeline-body"><p>Are you sure about that? I dropped the interpreter-v4 cache and played around a bit:</p>
-<h3>Initial state: nothing cached</h3>
-<pre><code class="language-console">$ uv self version
+Initial state: nothing cached
+<pre><code>$ uv self version
 uv 0.7.3
 $ tree ~/.cache/uv/interpreter-v4/
 /home/torsten.landschoff/.cache/uv/interpreter-v4/
 
 0 directories, 0 files
 </code></pre>
-<h3>Initialize uv: two interpreters cached</h3>
-<pre><code class="language-console">$ tree ~/.cache/uv/interpreter-v4/
+Initialize uv: two interpreters cached
+<pre><code>$ tree ~/.cache/uv/interpreter-v4/
 /home/torsten.landschoff/.cache/uv/interpreter-v4/
 └── 22dbb80d45d1d804
     ├── abd8c262a82f2e6a.msgpack
@@ -240,8 +240,8 @@ $ tree ~/.cache/uv/interpreter-v4/
 
 2 directories, 2 files
 </code></pre>
-<h3>Add a package (creates venv): still 2 interpreters</h3>
-<pre><code class="language-console">$ uv add msgpack
+Add a package (creates venv): still 2 interpreters
+<pre><code>$ uv add msgpack
 Using CPython 3.13.1
 Creating virtual environment at: .venv
 Resolved 2 packages in 696ms
@@ -257,8 +257,8 @@ $ tree ~/.cache/uv/interpreter-v4/
 
 2 directories, 2 files
 </code></pre>
-<h3>Run uv sync: 3 interpreters cached</h3>
-<pre><code class="language-console">$ uv sync
+Run uv sync: 3 interpreters cached
+<pre><code>$ uv sync
 Resolved 2 packages in 14ms
 Audited 1 package in 0.02ms
 $ tree ~/.cache/uv/interpreter-v4/
@@ -270,8 +270,8 @@ $ tree ~/.cache/uv/interpreter-v4/
 
 2 directories, 3 files
 </code></pre>
-<p>It appears that the cache entry contains the site packages of the venv, so I'd expect it to be per venv:</p>
-<pre><code class="language-console">$ mpk -j b25974a1e7203b4e.msgpack|jq .[1][2]
+<p>It appears that the cache entry contains the site packages of the venv, so I&#x27;d expect it to be per venv:</p>
+<pre><code>$ mpk -j b25974a1e7203b4e.msgpack|jq .[1][2]
 [
   &quot;/home/torsten.landschoff/uv-testing/.venv/lib/python3.13/site-packages&quot;,
   &quot;/home/torsten.landschoff/uv-testing/.venv/lib/python3.13/site-packages&quot;,
@@ -280,9 +280,9 @@ $ tree ~/.cache/uv/interpreter-v4/
   &quot;/home/torsten.landschoff/uv-testing/.venv/include/site/python3.13&quot;
 ]
 </code></pre>
-<h3>One cache entry per venv</h3>
+One cache entry per venv
 <p>Looks like the interpreter cache entry is created on syncing the virtual env a second time. This creates enva up to envd and syncs each env again:</p>
-<pre><code class="language-console">$ for env in a a b b c c d d; do VIRTUAL_ENV=&quot;env$env&quot; uv sync --active --quiet; done
+<pre><code>$ for env in a a b b c c d d; do VIRTUAL_ENV=&quot;env$env&quot; uv sync --active --quiet; done
 
 $ tree ~/.cache/uv/interpreter-v4/
 /home/torsten.landschoff/.cache/uv/interpreter-v4/
@@ -304,15 +304,15 @@ $ tree ~/.cache/uv/interpreter-v4/
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-16 10:56</div>
             <div class="timeline-body"><p>Thanks for catching that! The logic is slightly: We do cache per venv, but the cache key (on Unix) is the timestamp of the underlying interpreter , as we need to invalidate the cache when the underlying interpreter was e.g. update through a system package manager.</p>
-<p>Another part of this is that we currently don't really support <code>--system-site-packages</code> (it's a hard problem), uv only looks at the current venv.</p>
+<p>Another part of this is that we currently don&#x27;t really support <code>--system-site-packages</code> (it&#x27;s a hard problem), uv only looks at the current venv.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tlandschoff-scale">@tlandschoff-scale</a> on 2025-05-16 13:17</div>
             <div class="timeline-body"><blockquote>
-<p>Another part of this is that we currently don't really support --system-site-packages (it's a hard problem), uv only looks at the current venv.</p>
+<p>Another part of this is that we currently don&#x27;t really support --system-site-packages (it&#x27;s a hard problem), uv only looks at the current venv.</p>
 </blockquote>
-<p>I am happy with that, we try to drop system site packages anyway. Being dependent on packages that lie outside the virtual env should definitely be avoided. (We have that setup as we did not have binaries for some packages on the customer's target systems we had to support).</p>
+<p>I am happy with that, we try to drop system site packages anyway. Being dependent on packages that lie outside the virtual env should definitely be avoided. (We have that setup as we did not have binaries for some packages on the customer&#x27;s target systems we had to support).</p>
 <blockquote>
 <p>but the cache key (on Unix) is the timestamp of the underlying interpreter</p>
 </blockquote>
@@ -322,7 +322,7 @@ $ tree ~/.cache/uv/interpreter-v4/
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:31:20 UTC
+        Synced at 2026-01-20 19:38:38 UTC
     </footer>
 </body>
 </html>

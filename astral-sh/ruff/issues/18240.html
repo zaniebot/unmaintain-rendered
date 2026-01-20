@@ -23,22 +23,22 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/JackAshwell11">@JackAshwell11</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>If you had a module <code>foo</code> which internally used a C/C++ extension <code>bar</code> and had a dependency on a third-party pip package <code>abc</code>, a conflict could arise due to the recent rule changes with <code>I001</code> in #16565.</p>
 <p>If the import statements were ordered like this in previous versions:</p>
-<pre><code class="language-py">import abc  # This is the third-party pip package
+<pre><code>import abc  # This is the third-party pip package
 
 import bar  # This is the custom C/C++ extension
 </code></pre>
 <p>The recent rule change would rearrange these imports to being:</p>
-<pre><code class="language-py">import bar  # This is the custom C/C++ extension
+<pre><code>import bar  # This is the custom C/C++ extension
 import abc  # This is the third-party pip package
 </code></pre>
 <p>Which when run through other linters such as <code>pylint</code> would raise the error:</p>
 <pre><code>C0411: third party import &quot;abc&quot; should be placed before first party imports &quot;bar&quot;
 </code></pre>
-<p>As the custom <code>bar</code> package shouldn't be considered a third-party import like the <code>abc</code> package.</p>
-<h3>Version</h3>
+<p>As the custom <code>bar</code> package shouldn&#x27;t be considered a third-party import like the <code>abc</code> package.</p>
+Version
 <p>ruff 0.11.10</p>
 </div>
         </div>
@@ -49,7 +49,7 @@ import abc  # This is the third-party pip package
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-05-21 17:31</div>
-            <div class="timeline-body"><p>Thanks for the report! I'm not super familiar with this situation - would it be possible to give a minimal reproducible example? Alternatively, even just a description of what the directory layout looks like in your situation would help.</p>
+            <div class="timeline-body"><p>Thanks for the report! I&#x27;m not super familiar with this situation - would it be possible to give a minimal reproducible example? Alternatively, even just a description of what the directory layout looks like in your situation would help.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -67,14 +67,14 @@ import abc  # This is the third-party pip package
 </code></pre>
 <p>Where <code>project</code> is the main Python module and <code>src/foo/__main__.py</code> imports a few things from <code>bar</code> (which is the C/C++ extension). This C/C++ extension is compiled in the <code>src/bar</code> folder with added Python bindings so it can be interacted with.</p>
 <p>In <code>src/foo/__main__.py</code>, we may have the code:</p>
-<pre><code class="language-py">import abc   # This is the third-party pip package
+<pre><code>import abc   # This is the third-party pip package
 
 import bar  # This is the custom C/C++ extension
 
 ...
 </code></pre>
-<p>Showing that it imports the C/C++ extension <code>bar</code> and a third-party pip package <code>abc</code>. Running <code>ruff check . --select I001</code> will change <code>src/foo/__main__.py</code>'s code to:</p>
-<pre><code class="language-py">import bar  # This is the custom C/C++ extension
+<p>Showing that it imports the C/C++ extension <code>bar</code> and a third-party pip package <code>abc</code>. Running <code>ruff check . --select I001</code> will change <code>src/foo/__main__.py</code>&#x27;s code to:</p>
+<pre><code>import bar  # This is the custom C/C++ extension
 import abc   # This is the third-party pip package
 
 ...
@@ -84,8 +84,8 @@ import abc   # This is the third-party pip package
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-05-21 23:06</div>
-            <div class="timeline-body"><p>Could you share your ruff settings? I'm not able to reproduce this:</p>
-<pre><code class="language-console">❯ tree
+            <div class="timeline-body"><p>Could you share your ruff settings? I&#x27;m not able to reproduce this:</p>
+<pre><code>❯ tree
 .
 ├── bar
 │   └── __init__.pyi
@@ -105,24 +105,24 @@ import bizbuzz
 import bar
 
 ❯ ruff check --no-cache --select I001 -v .
-[2025-05-21][18:01:31][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'bizbuzz' as Known(ThirdParty) (NoMatch)
-[2025-05-21][18:01:31][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'bar' as Known(FirstParty) (SourceMatch(&quot;/Users/dmbp/Documents/dev/foo&quot;))
+[2025-05-21][18:01:31][ruff_linter::rules::isort::categorize][DEBUG] Categorized &#x27;bizbuzz&#x27; as Known(ThirdParty) (NoMatch)
+[2025-05-21][18:01:31][ruff_linter::rules::isort::categorize][DEBUG] Categorized &#x27;bar&#x27; as Known(FirstParty) (SourceMatch(&quot;/Users/dmbp/Documents/dev/foo&quot;))
 All checks passed!
 
 ❯ ruff check --no-cache --select I001 --preview -v .
-[2025-05-21][18:01:37][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'bizbuzz' as Known(ThirdParty) (NoMatch)
-[2025-05-21][18:01:37][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'bar' as Known(FirstParty) (SourceMatch(&quot;/Users/dmbp/Documents/dev/foo&quot;))
+[2025-05-21][18:01:37][ruff_linter::rules::isort::categorize][DEBUG] Categorized &#x27;bizbuzz&#x27; as Known(ThirdParty) (NoMatch)
+[2025-05-21][18:01:37][ruff_linter::rules::isort::categorize][DEBUG] Categorized &#x27;bar&#x27; as Known(FirstParty) (SourceMatch(&quot;/Users/dmbp/Documents/dev/foo&quot;))
 All checks passed!
 </code></pre>
-<p>(I deleted irrelevant debug logs above so if you do this yourself it'll be more verbose).</p>
-<p>Note also that the changes in the PR you mentioned only apply in preview mode, so if you were invoking <code>ruff</code> without preview then there shouldn't have been any change from before and after that PR was merged.</p>
+<p>(I deleted irrelevant debug logs above so if you do this yourself it&#x27;ll be more verbose).</p>
+<p>Note also that the changes in the PR you mentioned only apply in preview mode, so if you were invoking <code>ruff</code> without preview then there shouldn&#x27;t have been any change from before and after that PR was merged.</p>
 <p>Is there anything else that might have been relevant to help me re-create the situation where you encountered this behavior?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/JackAshwell11">@JackAshwell11</a> on 2025-05-22 09:44</div>
-            <div class="timeline-body"><p>So I wasn't able to recreate this with a simplified example, but I think my config was just missing the <code>know-first-party</code> option:</p>
-<pre><code class="language-toml">[tool.ruff.lint.isort]
+            <div class="timeline-body"><p>So I wasn&#x27;t able to recreate this with a simplified example, but I think my config was just missing the <code>know-first-party</code> option:</p>
+<pre><code>[tool.ruff.lint.isort]
 known-first-party = [&quot;bar&quot;]
 </code></pre>
 </div>
@@ -140,25 +140,25 @@ known-first-party = [&quot;bar&quot;]
             <div class="timeline-body"><blockquote>
 <p>FWIW the change works like a charm in my testing with preview mode on. Does it require a “breaking change” release for this to be brought out of preview mode? e.g. are we waiting for 0.12.0 instead of 0.11.X?</p>
 </blockquote>
-<p>Yes, we're waiting for a new minor. We wanted to get some more signal before changing the behavior, and it's breaking as well. We plan to do a minor next month and I expect this change to be stabilizie as part of it.</p>
+<p>Yes, we&#x27;re waiting for a new minor. We wanted to get some more signal before changing the behavior, and it&#x27;s breaking as well. We plan to do a minor next month and I expect this change to be stabilizie as part of it.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-info</span> added by @MichaReiser on 2025-05-23 13:18</div>
+            <div class="event">Label <span class="label">needs-info</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-23 13:18</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-info</span> removed by @MichaReiser on 2025-05-23 13:18</div>
+            <div class="event">Label <span class="label">needs-info</span> removed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-23 13:18</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-mre</span> added by @MichaReiser on 2025-05-23 13:18</div>
+            <div class="event">Label <span class="label">needs-mre</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-23 13:18</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2025-07-24 12:04</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-24 12:04</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:52:44 UTC
+        Synced at 2026-01-20 18:49:58 UTC
     </footer>
 </body>
 </html>

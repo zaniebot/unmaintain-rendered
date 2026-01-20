@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This PR does some non-behavior-changing refactoring of the AST checker. Specifically, it breaks the <code>Stmt</code>, <code>Expr</code>, and <code>ExceptHandler</code> visitors into four distinct, consistent phases:</p>
 <ol>
 <li><strong>Phase 1: Analysis</strong>: Run any lint rules on the node.</li>
@@ -32,7 +32,7 @@
 <li><strong>Phase 4: Clean-up</strong>: Pop scopes, etc.</li>
 </ol>
 <p>There are some fuzzy boundaries in the last three phases, but the most important divide is between the Phase 1 and all the others -- the goal here is (as much as possible) to disentangle all of the vanilla lint-rule calls from any other semantic analysis or model building.</p>
-<p>Part of the motivation here is that I'm considering re-ordering some of these phases, and it was just impossible to reason about that change as long as we had miscellaneous binding-creation and scope-modification code intermingled with lint rules. However, this could also enable us to (e.g.) move the entire analysis phase elsewhere, and even with a more limited API that has read-only access to <code>Checker</code> (but can push to a diagnostics vector).</p>
+<p>Part of the motivation here is that I&#x27;m considering re-ordering some of these phases, and it was just impossible to reason about that change as long as we had miscellaneous binding-creation and scope-modification code intermingled with lint rules. However, this could also enable us to (e.g.) move the entire analysis phase elsewhere, and even with a more limited API that has read-only access to <code>Checker</code> (but can push to a diagnostics vector).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -73,11 +73,11 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-07-17 04:34</div>
-            <div class="timeline-body"><h2>PR Check Results</h2>
-<h3>Ecosystem</h3>
+            <div class="timeline-body">PR Check Results
+Ecosystem
 <p>✅ ecosystem check detected no changes.</p>
-<h3>Benchmark</h3>
-<h4>Linux</h4>
+Benchmark
+Linux
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 formatter/large/dataset.py                 1.00      9.4±0.06ms     4.3 MB/sec    1.01      9.5±0.04ms     4.3 MB/sec
@@ -93,7 +93,7 @@ linter/default-rules/numpy/ctypeslib.py    1.00   1399.6±1.96µs    11.9 MB/sec
 linter/default-rules/numpy/globals.py      1.00    156.2±2.70µs    18.9 MB/sec    1.00    156.2±0.28µs    18.9 MB/sec
 linter/default-rules/pydantic/types.py     1.00      2.9±0.01ms     8.7 MB/sec    1.01      3.0±0.01ms     8.6 MB/sec
 </code></pre>
-<h4>Windows</h4>
+Windows
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 formatter/large/dataset.py                 1.00     11.3±0.14ms     3.6 MB/sec    1.00     11.3±0.14ms     3.6 MB/sec
@@ -109,7 +109,7 @@ linter/default-rules/numpy/ctypeslib.py    1.00  1665.2±50.79µs    10.0 MB/sec
 linter/default-rules/numpy/globals.py      1.00    173.5±3.80µs    17.0 MB/sec    1.00    174.0±3.90µs    17.0 MB/sec
 linter/default-rules/pydantic/types.py     1.00      3.6±0.03ms     7.0 MB/sec    1.00      3.6±0.04ms     7.0 MB/sec
 </code></pre>
-<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
 
 </div>
         </div>
@@ -121,13 +121,13 @@ linter/default-rules/pydantic/types.py     1.00      3.6±0.03ms     7.0 MB/sec 
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-07-17 06:23</div>
             <div class="timeline-body"><p>Okay, I now understand the phases. They are very different from what I understood from Phases and the fact that they overlap (The pre-processing of expression happens during a statements recursion phase) is confusing to me. The issue could just be that it they are named <em>Phases</em>.</p>
-<p>I didn't review the changes line by line because the PR seems to mainly move code around.
-I don't have a good recommendation on what to do differently or an alternate name suggestion (maybe step?))</p>
+<p>I didn&#x27;t review the changes line by line because the PR seems to mainly move code around.
+I don&#x27;t have a good recommendation on what to do differently or an alternate name suggestion (maybe step?))</p>
 <p>For maintainability. How do we ensure that new rules are added to the right <em>phase</em> in the future?</p>
-<p>How does it work that lint rules can run and use the semantic model before the binder phase for that node completed? For example, wouldn't that mean that we miss a <em>read</em> of the <code>callee</code> when analysing a call expression?</p>
+<p>How does it work that lint rules can run and use the semantic model before the binder phase for that node completed? For example, wouldn&#x27;t that mean that we miss a <em>read</em> of the <code>callee</code> when analysing a call expression?</p>
 <p>Written before I understood the <em>phases</em> concept. Kept for completness</p>
-<p>What's the motivation for splitting <code>Syntax</code> and <code>Binding</code> into two phases?</p>
-<p>I don't see the two as so different: Lint rules only generate diagnostics whereas <code>Binding</code> constructs a new representation.</p>
+<p>What&#x27;s the motivation for splitting <code>Syntax</code> and <code>Binding</code> into two phases?</p>
+<p>I don&#x27;t see the two as so different: Lint rules only generate diagnostics whereas <code>Binding</code> constructs a new representation.</p>
 <p>The way I think about it is that <em>visitors</em> take different inputs and can produce different outputs:</p>
 <ul>
 <li>Binder:<ul>
@@ -155,8 +155,8 @@ As you can see, th</p>
             <div class="timeline-body"><p>@MichaReiser - Couple quick things (I almost just wrote this in Discord but want to err on the side of putting things in GitHub -- but <em>also</em> trying to let myself write brief and informal comments on GitHub):</p>
 <ol>
 <li>I was going to reorder the &quot;phases&quot; in a second PR such that we run lint rules after binding. I think it probably works right now because we tend to only do all-usage-renames in deferred phases.</li>
-<li>If I were to merge the last three &quot;phases&quot;, would it make sense to you to retain the &quot;phase&quot; terminology? Since we'd have one model-building and visitation phase, and then the linting phase.</li>
-<li>RE &quot;For maintainability. How do we ensure that new rules are added to the right phase in the future?&quot; -- I was thinking of doing something very dumb and lightweight, like moving the analysis phase to its own module (maybe a trait, maybe just a method on <code>Checker</code>). Then, we'd point to that separate module in the docs, etc. Eventually we can enforce this with better API, which would have other benefits (e.g., the rules should only have mutable access to <code>diagnostics</code>, not to anything else on <code>Checker</code>), but I'm hesitant to do larger API refactors without spending more time thinking it through.</li>
+<li>If I were to merge the last three &quot;phases&quot;, would it make sense to you to retain the &quot;phase&quot; terminology? Since we&#x27;d have one model-building and visitation phase, and then the linting phase.</li>
+<li>RE &quot;For maintainability. How do we ensure that new rules are added to the right phase in the future?&quot; -- I was thinking of doing something very dumb and lightweight, like moving the analysis phase to its own module (maybe a trait, maybe just a method on <code>Checker</code>). Then, we&#x27;d point to that separate module in the docs, etc. Eventually we can enforce this with better API, which would have other benefits (e.g., the rules should only have mutable access to <code>diagnostics</code>, not to anything else on <code>Checker</code>), but I&#x27;m hesitant to do larger API refactors without spending more time thinking it through.</li>
 </ol>
 </div>
         </div>
@@ -167,17 +167,17 @@ As you can see, th</p>
 </blockquote>
 <p>Would this be moving to something close to what I outlined above? Where we have two phases, one syntax based and phase where we also have the semantic model?</p>
 <blockquote>
-<p>If I were to merge the last three &quot;phases&quot;, would it make sense to you to retain the &quot;phase&quot; terminology? Since we'd have one model-building and visitation phase, and then the linting phase.</p>
+<p>If I were to merge the last three &quot;phases&quot;, would it make sense to you to retain the &quot;phase&quot; terminology? Since we&#x27;d have one model-building and visitation phase, and then the linting phase.</p>
 </blockquote>
 <p>I guess that works too. My gut feeling is that I would prefer running the syntax rules together with the binder to avoid that the semantic model construction prevents them from running (and we could even emit these diagnostics earlier).</p>
-<p>Feel free to merge. I think I'm mainly interested in how you lay out the phases in your next PR (with explanations)</p>
+<p>Feel free to merge. I think I&#x27;m mainly interested in how you lay out the phases in your next PR (with explanations)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2023-07-17 17:02</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-17 17:02</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-07-17 17:02</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-17 17:02</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2023-07-17 17:02</div>
@@ -185,7 +185,7 @@ As you can see, th</p>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:58:49 UTC
+        Synced at 2026-01-20 18:55:24 UTC
     </footer>
 </body>
 </html>

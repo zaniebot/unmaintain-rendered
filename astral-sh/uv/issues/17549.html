@@ -23,16 +23,16 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/GideonBear">@GideonBear</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>When adding or removing a trailing <code>.0</code> from a specifier in <code>pyproject.toml</code>, <code>uv lock</code> does not update the specifier in the lockfile, while some other operations will update the specifier in the lockfile. This causes:</p>
 <ol>
 <li>Unnecessary merge conflicts</li>
 <li>The change to be spread to unrelated commits</li>
 </ol>
 <p>I expect <code>uv lock</code> to have a consistent output.</p>
-<h3>Reproduction</h3>
-<p>I will be using <code>git</code> to make it clearer what's happening, but this is not necessary to see the bug.</p>
-<pre><code class="language-console">$ mkdir delme &amp;&amp; cd delme
+Reproduction
+<p>I will be using <code>git</code> to make it clearer what&#x27;s happening, but this is not necessary to see the bug.</p>
+<pre><code>$ mkdir delme &amp;&amp; cd delme
 $ uv init
 $ uv sync
 $ git add .
@@ -41,7 +41,7 @@ $ git commit -m &quot;Initial commit&quot;
 $ uv add termcolor
 $ git diff
 </code></pre>
-<pre><code class="language-diff">diff --git a/pyproject.toml b/pyproject.toml
+<pre><code>diff --git a/pyproject.toml b/pyproject.toml
 index 92a83e5..d95598e 100644
 --- a/pyproject.toml
 +++ b/pyproject.toml
@@ -77,15 +77,15 @@ index b1b7a41..5a32051 100644
 +    { url = &quot;https://files.pythonhosted.org/packages/33/d1/8bb87d21e9aeb323cc03034f5eaf2c8f69841e40e4853c2627edf8111ed3/termcolor-3.3.0-py3-none-any.whl&quot;, hash = &quot;sha256:cf642efadaf0a8ebbbf4bc7a31cec2f9b5f21a9f726f4ccbb08192c9c26f43a5&quot;, size = 7734, upload-time = &quot;2025-12-29T12:55:20.718Z&quot; },
 +]
 </code></pre>
-<pre><code class="language-console">$ git commit -am &quot;Add termcolor&quot;
+<pre><code>$ git commit -am &quot;Add termcolor&quot;
 
-$ sed -i 's/3.3.0/3.3/' pyproject.toml
+$ sed -i &#x27;s/3.3.0/3.3/&#x27; pyproject.toml
 # Or:
 $ uvx pyproject-fmt pyproject.toml
 
 $ git diff
 </code></pre>
-<pre><code class="language-diff">diff --git a/pyproject.toml b/pyproject.toml
+<pre><code>diff --git a/pyproject.toml b/pyproject.toml
 index d95598e..c2b1a39 100644
 --- a/pyproject.toml
 +++ b/pyproject.toml
@@ -97,7 +97,7 @@ index d95598e..c2b1a39 100644
 +    &quot;termcolor&gt;=3.3&quot;,
  ]
 </code></pre>
-<pre><code class="language-console">$ uv lock
+<pre><code>$ uv lock
 # No change in lockfile!
 $ git commit -am &quot;Format pyproject.toml&quot;
 
@@ -105,7 +105,7 @@ $ git commit -am &quot;Format pyproject.toml&quot;
 $ uv version --bump patch
 $ git diff
 </code></pre>
-<pre><code class="language-diff">diff --git a/pyproject.toml b/pyproject.toml
+<pre><code>diff --git a/pyproject.toml b/pyproject.toml
 index c2b1a39..a447926 100644
 --- a/pyproject.toml
 +++ b/pyproject.toml
@@ -139,20 +139,20 @@ index 5a32051..72af669 100644
  [[package]]
  name = &quot;termcolor&quot;
 </code></pre>
-<h3>Platform</h3>
+Platform
 <p>Linux Mint 22.3 - Cinnamon 64-bit - Linux 6.8.0-90-generic x86_64 GNU/Linux</p>
-<h3>Version</h3>
+Version
 <p>uv 0.9.26</p>
-<h3>Python version</h3>
+Python version
 <p>Python 3.14.2</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @GideonBear on 2026-01-17 14:15</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/GideonBear">@GideonBear</a> on 2026-01-17 14:15</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-17 14:58</div>
-            <div class="timeline-body"><p>Per the specification trailing zeros have no semantic meaning so we're probably just considering these versions equal. It's not clear to me that we should actually invalidate the lockfile in this case. It seems pretty rare to be adding <code>.0</code> to your dependencies, no?</p>
+            <div class="timeline-body"><p>Per the specification trailing zeros have no semantic meaning so we&#x27;re probably just considering these versions equal. It&#x27;s not clear to me that we should actually invalidate the lockfile in this case. It seems pretty rare to be adding <code>.0</code> to your dependencies, no?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -162,11 +162,11 @@ index 5a32051..72af669 100644
 </blockquote>
 <p>No, the removal occurs pretty often when using <code>pyproject-fmt</code> (https://github.com/tox-dev/pyproject-fmt). It enforces removing trailing zeroes, while <code>uv add</code> adds them by default. (So this happens every time I <code>uv add</code> a dep whose latest version is <code>*.0</code>)</p>
 <blockquote>
-<p>It's not clear to me that we should actually invalidate the lockfile in this case</p>
+<p>It&#x27;s not clear to me that we should actually invalidate the lockfile in this case</p>
 </blockquote>
-<p>I use <code>uv-pre-commit</code>'s <code>uv-lock</code> to ensure I don't accidentally commit with an old lockfile. But because of this, there is nothing preventing me from committing a lockfile that is, arguably, outdated, since running <code>uv version --bump patch</code> changes the specifier.</p>
-<p>This looks like an edge case where it is updatable but not invalidated. I haven't seen any other way to get this behavior.
-Semantically there's no difference, but there <em>is</em> a difference in the file content; and Git doesn't care about the semantics, only the file content.</p>
+<p>I use <code>uv-pre-commit</code>&#x27;s <code>uv-lock</code> to ensure I don&#x27;t accidentally commit with an old lockfile. But because of this, there is nothing preventing me from committing a lockfile that is, arguably, outdated, since running <code>uv version --bump patch</code> changes the specifier.</p>
+<p>This looks like an edge case where it is updatable but not invalidated. I haven&#x27;t seen any other way to get this behavior.
+Semantically there&#x27;s no difference, but there <em>is</em> a difference in the file content; and Git doesn&#x27;t care about the semantics, only the file content.</p>
 <p>I propose to either:</p>
 <ol>
 <li>Normalize the specifier in the lockfile (to always <code>&gt;=3.3.0</code> or always <code>&gt;=3.3</code>)</li>
@@ -176,15 +176,37 @@ Semantically there's no difference, but there <em>is</em> a difference in the fi
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2026-01-20 17:33</div>
+            <div class="event">Label <span class="label">bug</span> removed by <a href="https://github.com/konstin">@konstin</a> on 2026-01-20 17:33</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @konstin on 2026-01-20 17:33</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/konstin">@konstin</a> on 2026-01-20 17:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2026-01-20 17:37</div>
+            <div class="timeline-body"><p>uv tries to only update the lockfile when required, and do only the minimal update if changes are required. I wouldn&#x27;t consider it outdated if there&#x27;s only a cosmetic change such as a trailing zero. <code>uv sync --locked</code> still passes with the lockfile, so I don&#x27;t think we need to update here. We could normalize the specifier, but I don&#x27;t think we gain something by doing it, as all parts of uv are aware that they are semantically equivalent.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GideonBear">@GideonBear</a> on 2026-01-20 18:01</div>
+            <div class="timeline-body"><blockquote>
+<p>We could normalize the specifier, but I don&#x27;t think we gain something by doing it, as all parts of uv are aware that they are semantically equivalent.</p>
+</blockquote>
+<p>Like I said, the problem is only that the next lockfile change (like <code>uv version --bump</code> in my example) changes the <code>termcolor</code> version, which is completely unrelated. This gives some review strain (which is admittedly not a big deal in a lockfile).</p>
+<blockquote>
+<p>uv tries to only update the lockfile when required, and do <strong>only the minimal update if changes are required</strong>.</p>
+</blockquote>
+<p>By this logic, can the second lockfile update (<code>uv version --bump</code>) leave the <code>termcolor</code> specifier alone? That would also solve my problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GideonBear">@GideonBear</a> on 2026-01-20 18:04</div>
+            <div class="timeline-body"><p>I&#x27;m curious now whether there are any other objects in the lockfile that are <code>x == y</code> but not <code>serialize(x) == serialize(y)</code>, I speculate that that is where it is coming from; with something like <code>if current_lockfile != new_lockfile { write_lockfile(serialize(new_lockfile)) }</code></p>
+</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-20 17:41:35 UTC
+        Synced at 2026-01-20 19:41:34 UTC
     </footer>
 </body>
 </html>

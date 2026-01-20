@@ -28,33 +28,33 @@
 <li>What operating system are you using ripgrep on? <strong>macOS 10.14.2</strong>, Mojave</li>
 <li>How did you install ripgrep? <strong>Homebrew</strong></li>
 </ul>
-<h4>Describe your question, feature request, or bug.</h4>
-<p>So, <a href="https://github.com/BurntSushi/ripgrep/issues/188#issuecomment-254797251">as suggested</a> in #188, I've been trying to come up with a somewhat-reliable ‘80% approach’ to searching <em>just code</em> with ripgrep — that is, excluding content that is probably part of a comment.</p>
+Describe your question, feature request, or bug.
+<p>So, <a href="https://github.com/BurntSushi/ripgrep/issues/188#issuecomment-254797251">as suggested</a> in #188, I&#x27;ve been trying to come up with a somewhat-reliable ‘80% approach’ to searching <em>just code</em> with ripgrep — that is, excluding content that is probably part of a comment.</p>
 <p>Eventually, I ended up  finding what I was looking for across our codebases with the following monstrosity:</p>
-<pre><code class="language-sh">command rg -g '*.js' '^.*//' ~/Work             \
+<pre><code>command rg -g &#x27;*.js&#x27; &#x27;^.*//&#x27; ~/Work             \
    --only-matching --passthru --max-filesize 10M --max-columns 200 --line-buffered  \
    --line-number --no-heading --with-filename   \
- | command rg -v -- '-\s*\*'                    \
+ | command rg -v -- &#x27;-\s*\*&#x27;                    \
  | command rg returns
 </code></pre>
 <p>Note a couple really uncompfortable things about this:</p>
 <ol>
 <li>I have to explicitly duplicate some work that I would generally do in a ripgrep config or shell-alias, in the <em>first</em> command in the chain, so the various invocations have to do less work (also note having to <code>command</code> my way around my existing configuration);</li>
-<li>I have to do some careful reading of ripgrep's documentation, and understand something of the behaviour in detail, to get it to do this <em>at all</em>;</li>
+<li>I have to do some careful reading of ripgrep&#x27;s documentation, and understand something of the behaviour in detail, to get it to do this <em>at all</em>;</li>
 <li>Only the first <code>rg</code> command is aware of the filenames and line-numbers for the files being searched; so that information has to effectively be attached immediately, without formatting (and precluding beautification such as the usual file-headings) …</li>
-<li>… and requiring that later invocations' regexes <em>be aware of</em> said line-information that's now being carried in-band (i.e. note that the second command's regex starts with <code>-</code>, to match the last <code>-</code> in the line-number format, instead of the expected <code>^</code> for <em>actual</em> start-of-line.)</li>
+<li>… and requiring that later invocations&#x27; regexes <em>be aware of</em> said line-information that&#x27;s now being carried in-band (i.e. note that the second command&#x27;s regex starts with <code>-</code>, to match the last <code>-</code> in the line-number format, instead of the expected <code>^</code> for <em>actual</em> start-of-line.)</li>
 </ol>
 <p>Anyway, case-study aside — I suggest here, basically, that <code>rg</code> supports its own <code>--null</code>-flag for NUL-delimited output, but on the <em>input</em> stream. For instance, in a flow like this:</p>
-<pre><code class="language-sh">rg -g '*.js' '^.*//' ~/Work    \
+<pre><code>rg -g &#x27;*.js&#x27; &#x27;^.*//&#x27; ~/Work    \
    --only-matching --passthru --chain  \
- | rg -v '^\s*\*' --chain   \
- | rg 'returns' --chain
+ | rg -v &#x27;^\s*\*&#x27; --chain   \
+ | rg &#x27;returns&#x27; --chain
 </code></pre>
 <p>The first invocation of <code>rg</code>, given <code>--chain</code>, will behave approximately as if all of <code>--line-number --no-heading --with-filename --null --line-buffered</code> were passed. It would print a null-separated record for each match obtained, containing the filename, line-number, and line.</p>
 <p>The second, and later, invocations, would then expect (and produce) that same format, but crucially, treat the filename/line-number provided on stdin <em>as if they were where that information were found in a file</em>, for the purposes of globbing, formatting, etceteras.</p>
 <p>Finally, the last invocation, assuming it were attached to an interactive terminal, would print output in the normal, expected <code>--pretty</code> format.</p>
-<hr />
-<p>As further explanation, here's some imaginary documentation for this feature:</p>
+<hr>
+<p>As further explanation, here&#x27;s some imaginary documentation for this feature:</p>
 <pre><code>-O, --chain-out
     This flag works in conjunction with the -I, --chain-in flag. It causes the
     output of ripgrep to be null-separated, as the -0, --null flag; and prints
@@ -73,8 +73,8 @@
     This can be used to attach multiple ripgrep instances to sequentially
     process complicated information:
 
-        rg -O -g '*.js' -v '^\s*//' \
-          | rg -I '^import'
+        rg -O -g &#x27;*.js&#x27; -v &#x27;^\s*//&#x27; \
+          | rg -I &#x27;^import&#x27;
 
     Without the --chain family of flags, the above would either have to discard
     line-number and filename information from the matched files, or would have
@@ -85,11 +85,11 @@
     This is a convenience flag to decide which of --chain-in and --chain-out to
     apply.
 
-     1. If this ripgrep's *stdin* is not attached to an interactive terminal,
+     1. If this ripgrep&#x27;s *stdin* is not attached to an interactive terminal,
         i.e. input was piped and is not being read from the filesystem, then
         this implies --chain-in.
 
-     2. If this ripgrep's *stdout* is not attached to an interactive terminal,
+     2. If this ripgrep&#x27;s *stdout* is not attached to an interactive terminal,
         i.e. output was piped and is not being printed to a user, then this
         implies --chain-out.
 
@@ -102,10 +102,10 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-12-29 04:21</div>
-            <div class="timeline-body"><p>@ELLIOTTCABLE Thanks for the detailed issue! Unfortunately, I think you lost me in the very beginning. Could you please describe the high level problem you're trying to solve? Ideally, please do it without invoking <code>rg</code> (or an equivalent). I don't think I understand what it is you're searching for or what the expected output should (especially vs actual output).</p>
-<p>It is very unlikely that I'll be convinced to add anything like your <code>--chain</code> idea. It looks far too complicated to me. Even after reading your suggested docs (thanks!), I still don't really know what they do or why they're needed. If they are really necessary complexity in order to solve your problem, then I'd suggest finding a different tool or writing a wrapper script for ripgrep.</p>
+            <div class="timeline-body"><p>@ELLIOTTCABLE Thanks for the detailed issue! Unfortunately, I think you lost me in the very beginning. Could you please describe the high level problem you&#x27;re trying to solve? Ideally, please do it without invoking <code>rg</code> (or an equivalent). I don&#x27;t think I understand what it is you&#x27;re searching for or what the expected output should (especially vs actual output).</p>
+<p>It is very unlikely that I&#x27;ll be convinced to add anything like your <code>--chain</code> idea. It looks far too complicated to me. Even after reading your suggested docs (thanks!), I still don&#x27;t really know what they do or why they&#x27;re needed. If they are really necessary complexity in order to solve your problem, then I&#x27;d suggest finding a different tool or writing a wrapper script for ripgrep.</p>
 <blockquote>
-<p>So, as suggested in #188, I've been trying to come up with a somewhat-reliable ‘80% approach’ to searching just code with ripgrep — that is, excluding content that is probably part of a comment.</p>
+<p>So, as suggested in #188, I&#x27;ve been trying to come up with a somewhat-reliable ‘80% approach’ to searching just code with ripgrep — that is, excluding content that is probably part of a comment.</p>
 </blockquote>
 <p>The issue you linked is about look-around. ripgrep now has PCRE support, which can be enabled with the <code>-P/--pcre2</code> flag. Does that help your situation?</p>
 </div>
@@ -113,25 +113,25 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ELLIOTTCABLE">@ELLIOTTCABLE</a> on 2018-12-29 10:33</div>
             <div class="timeline-body"><p>Thanks for the thanks! Yeah, I went a little too hard.</p>
-<p>In terms of high-level goal, yes, efficiently duplicating lookaround was basically the original goal; hence piping together multiple ripgrep 'filters', one approach that solves that. Also, <em>actual</em> lookaround is definitely a superior solution!</p>
-<p>You're welcome to close this issue if you can't think of a high-level problem which this solves — but maybe keep my solution in mind if one comes up! Thanks for attempting to follow me, nonetheless! 🤣</p>
+<p>In terms of high-level goal, yes, efficiently duplicating lookaround was basically the original goal; hence piping together multiple ripgrep &#x27;filters&#x27;, one approach that solves that. Also, <em>actual</em> lookaround is definitely a superior solution!</p>
+<p>You&#x27;re welcome to close this issue if you can&#x27;t think of a high-level problem which this solves — but maybe keep my solution in mind if one comes up! Thanks for attempting to follow me, nonetheless! 🤣</p>
 <blockquote>
-<p>apropos nothing — I love ripgrep, and it's had a measurably positive effect on my daily life as a software developer. Maintainership is hard, but your work is appreciated. Take care of yourself. <code>&lt;3</code></p>
+<p>apropos nothing — I love ripgrep, and it&#x27;s had a measurably positive effect on my daily life as a software developer. Maintainership is hard, but your work is appreciated. Take care of yourself. <code>&lt;3</code></p>
 </blockquote>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-12-29 13:49</div>
-            <div class="timeline-body"><p>@ELLIOTTCABLE Thanks for the kind words! I'll close this for now but I'll keep it in mind!</p>
+            <div class="timeline-body"><p>@ELLIOTTCABLE Thanks for the kind words! I&#x27;ll close this for now but I&#x27;ll keep it in mind!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2018-12-29 13:49</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-12-29 13:49</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AckslD">@AckslD</a> on 2020-08-21 12:50</div>
             <div class="timeline-body"><p>@BurntSushi @ELLIOTTCABLE I was also looking for something like this after reading the answer to #1266 which is to do</p>
-<pre><code>rg apple | rg -v '.*#'
+<pre><code>rg apple | rg -v &#x27;.*#&#x27;
 </code></pre>
 <p>to search for <code>apple</code> but ignore lines starting with <code>#</code> (comments).
 However, after chaining the two commands the printout is not as <em>nice</em> as when only using one, i.e. colouring and grouping by file.
@@ -140,7 +140,7 @@ Is there some way to also achieve the colouring etc for the above?</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-08-21 13:59</div>
-            <div class="timeline-body"><p>@AckslD The simplest thing would be <code>rg apple | rg -v '^\s*#' | rg apple</code>. That will regain coloring. There is no way to regain grouping because that format is just plain incompatible with shell pipelines. (Note the regex change from <code>.*#</code> to <code>^\s*#</code>. The former is not equivalent to &quot;ignore lines starting with <code>#</code>.&quot;)</p>
+            <div class="timeline-body"><p>@AckslD The simplest thing would be <code>rg apple | rg -v &#x27;^\s*#&#x27; | rg apple</code>. That will regain coloring. There is no way to regain grouping because that format is just plain incompatible with shell pipelines. (Note the regex change from <code>.*#</code> to <code>^\s*#</code>. The former is not equivalent to &quot;ignore lines starting with <code>#</code>.&quot;)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -154,7 +154,7 @@ Is there some way to also achieve the colouring etc for the above?</p>
 Could this be achieved by accepting multiple search parameters?</p>
 <p>It would be a lot easier than lookarounds and would preserve pretty formatting.</p>
 <p>For example, <code>ripgrep --expression &quot;first pattern&quot; --expression &quot;second pattern&quot; --expression &quot;third pattern&quot;</code>.</p>
-<p>Order obviously doesn't matter.</p>
+<p>Order obviously doesn&#x27;t matter.</p>
 <p>ripgrep would get the files matching the first, and search them for the second, then search those results for the third and display the files matching all three.</p>
 <p>Thanks! 🙂</p>
 <p>Also, thumbs up for the tool!</p>
@@ -163,31 +163,31 @@ Could this be achieved by accepting multiple search parameters?</p>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-11-04 13:40</div>
             <div class="timeline-body"><p>@gd4c See #875</p>
-<p>ripgrep already supports searching for multiple regexes. Look at the <code>-e/--regexp</code> flag (or the <code>-f/--file</code> flag). But as is standard with a grep tool, multiple regexes are matched as a disjunction. You want a conjunction. That's what #875 is about. I have not yet decided on whether I'll add it to ripgrep.</p>
+<p>ripgrep already supports searching for multiple regexes. Look at the <code>-e/--regexp</code> flag (or the <code>-f/--file</code> flag). But as is standard with a grep tool, multiple regexes are matched as a disjunction. You want a conjunction. That&#x27;s what #875 is about. I have not yet decided on whether I&#x27;ll add it to ripgrep.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/gd4c">@gd4c</a> on 2020-11-04 20:04</div>
             <div class="timeline-body"><p>Thanks for replying.</p>
 <blockquote>
-<p>I have not yet decided on whether I'll add it to ripgrep.
+<p>I have not yet decided on whether I&#x27;ll add it to ripgrep.
 It has my vote, for what it is worth.</p>
 </blockquote>
 <p>&quot;Search within results&quot; is a feature of many tools and services and it is very useful, especially when you have a lot of files.</p>
-<p>ripgrep is fast, with clear output and it would be very good to me to keep that output when looking for multiple strings, and I would imagine it wouldn't cost much complexity to pass the list of matching files internally to the next run.</p>
+<p>ripgrep is fast, with clear output and it would be very good to me to keep that output when looking for multiple strings, and I would imagine it wouldn&#x27;t cost much complexity to pass the list of matching files internally to the next run.</p>
 <p>Thanks!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-11-04 20:12</div>
             <div class="timeline-body"><p>The implementation complexity of more sophisticated boolean matching is precisely my main argument against it. And it requires a very thorough specification of behavior.</p>
-<p>And the upsides are limited. Yes, you can't get the &quot;nice&quot; output when using pipelines, but you can still use pipelines and the output is still serviceable.</p>
+<p>And the upsides are limited. Yes, you can&#x27;t get the &quot;nice&quot; output when using pipelines, but you can still use pipelines and the output is still serviceable.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:42:47 UTC
+        Synced at 2026-01-20 18:48:07 UTC
     </footer>
 </body>
 </html>

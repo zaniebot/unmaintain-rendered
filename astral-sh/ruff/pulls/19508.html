@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Implements proper reachability analysis and — in effect — exhaustiveness checking for <code>match</code> statements. This allows us to check the following code without any errors (leads to <em>&quot;can implicitly return <code>None</code>&quot;</em> on <code>main</code>):</p>
-<pre><code class="language-py">from enum import Enum, auto
+<pre><code>from enum import Enum, auto
 
 class Color(Enum):
     RED = auto()
@@ -44,12 +44,12 @@ def hex(color: Color) -&gt; str:
 <p>Note that code like this already worked fine if there was a <code>assert_never(color)</code> statement in a catch-all case, because we would then consider that <code>assert_never</code> call terminal. But now this also works without the wildcard case. Adding a member to the enum would still lead to an error here, if that case would not be handled in <code>hex</code>.</p>
 <p>What needed to happen to support this is a new way of evaluating match pattern constraints. Previously, we would simply compare the type of the subject expression against the patterns. For the last case here, the subject type would still be <code>Color</code> and the value type would be <code>Literal[Color.BLUE]</code>, so we would infer an ambiguous truthiness.</p>
 <p>Now, before we compare the subject type against the pattern, we first generate a union type that corresponds to the set of all values that would have <em>definitely been matched</em> by previous patterns. Then, we build a &quot;narrowed&quot; subject type by computing <code>subject_type &amp; ~already_matched_type</code>, and compare <em>that</em> against the pattern type. For the example here, <code>already_matched_type = Literal[Color.RED] | Literal[Color.GREEN]</code>, and so we have a narrowed subject type of <code>Color &amp; ~(Literal[Color.RED] | Literal[Color.GREEN]) = Literal[Color.BLUE]</code>, which allows us to infer a reachability of <code>AlwaysTrue</code>.</p>
-<details>
 
-<summary>A note on negated reachability constraints</summary>
+
+A note on negated reachability constraints
 
 <p>It might seem that we now perform duplicate work, because we also record <em>negated</em> reachability constraints. But that is still important for cases like the following (and possibly also for more realistic scenarios):</p>
-<pre><code class="language-py">from typing import Literal
+<pre><code>from typing import Literal
 
 def _(x: int | str):
     match x:
@@ -60,35 +60,35 @@ def _(x: int | str):
 
     y
 </code></pre>
-</details>
 
-<p>closes https://github.com/astral-sh/ty/issues/99</p>
-<h2>Test Plan</h2>
+
+<p>closes <a href="https://github.com/astral-sh/ty/issues/99">astral-sh/ty#99</a></p>
+Test Plan
 <ul>
-<li>I verified that this solves all examples from the linked ticket (the first example needs a PEP 695 type alias, because we don't support legacy type aliases yet)</li>
+<li>I verified that this solves all examples from the linked ticket (the first example needs a PEP 695 type alias, because we don&#x27;t support legacy type aliases yet)</li>
 <li>Verified that the ecosystem changes are all because of removed false positives</li>
 <li>Updated tests</li>
 </ul>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @sharkdp on 2025-07-23 13:00</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-23 13:00</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-07-23 13:00</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-23 13:00</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[ty] Exhaustiveness checking / reachability modeling for `match` statements" to "[ty] Exhaustiveness checking & reachability for `match` statements" by @sharkdp on 2025-07-23 13:00</div>
+            <div class="event">Renamed from &quot;[ty] Exhaustiveness checking / reachability modeling for `match` statements&quot; to &quot;[ty] Exhaustiveness checking &amp; reachability for `match` statements&quot; by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-23 13:00</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-23 13:04</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">pwndbg (https://github.com/pwndbg/pwndbg)
+Changes were detected when running on open source projects
+
+<pre><code>pwndbg (https://github.com/pwndbg/pwndbg)
 - pwndbg/commands/mallocng.py:345:55: error[invalid-return-type] Function can implicitly return `None`, which is not assignable to return type `str`
 - Found 2246 diagnostics
 + Found 2245 diagnostics
@@ -105,16 +105,16 @@ rotki (https://github.com/rotki/rotki)
 + Found 1569 diagnostics
 
 </code></pre>
-</details>
+
 No memory usage changes detected ✅
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-23 13:09</div>
-            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+            <div class="timeline-body">
 
-<h2><code>ecosystem-analyzer</code> results</h2>
+<code>ecosystem-analyzer</code> results
 <p>| Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
 | <code>possibly-unresolved-reference</code> | 0 | 2 | 0 |
@@ -125,10 +125,10 @@ No memory usage changes detected ✅
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-07-23 14:22</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-23 14:22</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-07-23 14:22</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-23 14:22</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-23 16:55</div>
@@ -140,16 +140,16 @@ No memory usage changes detected ✅
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @sharkdp on 2025-07-23 17:15</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-23 17:15</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @sharkdp on 2025-07-23 17:15</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-23 17:15</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-07-23 17:15</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-23 17:15</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @sharkdp on 2025-07-23 17:15</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-23 17:15</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-07-23 20:37</div>
@@ -157,10 +157,10 @@ No memory usage changes detected ✅
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @sharkdp on 2025-07-23 20:45</div>
+            <div class="event">Merged by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-23 20:45</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @sharkdp on 2025-07-23 20:45</div>
+            <div class="event">Closed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-23 20:45</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-07-23 20:45</div>
@@ -173,7 +173,7 @@ No memory usage changes detected ✅
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:14:29 UTC
+        Synced at 2026-01-20 19:16:55 UTC
     </footer>
 </body>
 </html>

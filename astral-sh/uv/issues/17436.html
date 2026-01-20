@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Vaeyrun">@Vaeyrun</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>This is a subtle bug, as it only effects calling <code>uv tool run</code> or <code>uvx</code> with the <code>@latest</code> version qualifier (e.g. <code>uvx ruff@latest</code> when your environment is configured to use keyring subprocess authentication for a private index on a non-windows (or in my case macOS) environment.</p>
 <p>Given a user configuration <code>uv.toml</code> with the following structure (in our case using artifacts-keyring with Azure DevOps):</p>
 <pre><code>keyring-provider = &quot;subprocess&quot;
@@ -37,8 +37,8 @@ However, doing the same with <code>uvx ruff@latest</code> fails with a 401 unaut
 
       hint: An index URL (https://pkgs.dev.azure.com/&lt;org&gt;/_packaging/&lt;feed&gt;/pypi/simple) could not be queried due to a lack of valid authentication credentials (401 Unauthorized).
 </code></pre>
-<p>I've already dug into the code, and I believe I've confirmed the root cause of the bug as well as a fix that seems to work when I build locally.</p>
-<p>In <code>crates/uv/src/commands/tool/run.rs:920</code> we have the following code to create the RegistryClient to find the latest version of the package for the '@latest' scenario:</p>
+<p>I&#x27;ve already dug into the code, and I believe I&#x27;ve confirmed the root cause of the bug as well as a fix that seems to work when I build locally.</p>
+<p>In <code>crates/uv/src/commands/tool/run.rs:920</code> we have the following code to create the RegistryClient to find the latest version of the package for the &#x27;@latest&#x27; scenario:</p>
 <pre><code>        // Build the registry client to fetch the latest version.
         let client = RegistryClientBuilder::new(client_builder.clone(), cache.clone())
             .index_locations(settings.resolver.index_locations.clone())
@@ -47,10 +47,10 @@ However, doing the same with <code>uvx ruff@latest</code> fails with a 401 unaut
             .platform(interpreter.platform())
             .build();
 </code></pre>
-<p>Digging further, I've identified that in other scenarios where the code searches the indexes, it's using <code>resolve_names</code> as defined in <code>crates/uv/src/commands/project/mod.rs:1735</code> which has some additional config when creating a clone of the client_builder on line 1792:</p>
+<p>Digging further, I&#x27;ve identified that in other scenarios where the code searches the indexes, it&#x27;s using <code>resolve_names</code> as defined in <code>crates/uv/src/commands/project/mod.rs:1735</code> which has some additional config when creating a clone of the client_builder on line 1792:</p>
 <pre><code>let client_builder = client_builder.clone().keyring(*keyring_provider);
 </code></pre>
-<p>It looks like the injection of the <code>keyring</code> settings into the client_builder has been missed when searching for the <code>@latest</code> version when running <code>uvx</code>, which I've confirmed and tested locally by updating the code snippet at <code>crates/uv/src/commands/tool/run.rs:920</code> to be:</p>
+<p>It looks like the injection of the <code>keyring</code> settings into the client_builder has been missed when searching for the <code>@latest</code> version when running <code>uvx</code>, which I&#x27;ve confirmed and tested locally by updating the code snippet at <code>crates/uv/src/commands/tool/run.rs:920</code> to be:</p>
 <pre><code>        // Build the registry client to fetch the latest version.
         let client = RegistryClientBuilder::new(client_builder.clone().keyring(settings.resolver.keyring_provider), cache.clone())
             .index_locations(settings.resolver.index_locations.clone())
@@ -59,17 +59,17 @@ However, doing the same with <code>uvx ruff@latest</code> fails with a 401 unaut
             .platform(interpreter.platform())
             .build();
 </code></pre>
-<p>Very happy to raise a PR to fix this, although I'm not sure I have the time to work out how to expand the current test cases to try and cover this edge-case, but I wanted to get the Issue raised as the basis for tracking a fix first.</p>
-<h3>Platform</h3>
+<p>Very happy to raise a PR to fix this, although I&#x27;m not sure I have the time to work out how to expand the current test cases to try and cover this edge-case, but I wanted to get the Issue raised as the basis for tracking a fix first.</p>
+Platform
 <p>macOS 15.7.3 M4</p>
-<h3>Version</h3>
+Version
 <p>0.9.18 (Homebrew 2025-12-16)</p>
-<h3>Python version</h3>
+Python version
 <p>3.14.0</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @Vaeyrun on 2026-01-13 10:47</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/Vaeyrun">@Vaeyrun</a> on 2026-01-13 10:47</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-13 22:09</div>
@@ -77,12 +77,12 @@ However, doing the same with <code>uvx ruff@latest</code> fails with a 401 unaut
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2026-01-13 22:31</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-13 22:31</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-13 23:39:13 UTC
+        Synced at 2026-01-20 19:41:31 UTC
     </footer>
 </body>
 </html>

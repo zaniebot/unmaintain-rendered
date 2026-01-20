@@ -23,19 +23,12 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a></div>
-            <div class="timeline-body"><!--
-Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+            <div class="timeline-body">
 
-- Does this pull request include a summary of the change? (See below.)
-- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
-  requests.)
-- Does this pull request include references to any relevant issues?
--->
+Summary
 
-<h2>Summary</h2>
-<!-- What's the purpose of the change? What does it do, and why? -->
 
-<p>Closes https://github.com/astral-sh/ty/issues/989</p>
+<p>Closes <a href="https://github.com/astral-sh/ty/issues/989">astral-sh/ty#989</a></p>
 <p>There are various situations where users expect the Python packages installed in the same environment as ty itself to be considered during type checking. A minimal example would look like:</p>
 <pre><code>uv venv my-env
 uv pip install my-env ty httpx
@@ -47,23 +40,23 @@ echo &quot;import httpx&quot; &gt; foo.py
 echo &quot;import httpx&quot; &gt; foo.py
 ty check foo.py
 </code></pre>
-<p>While these are a bit contrived, there are real-world situations where a user would expect a similar behavior to work. Notably, all of the other type checkers consider their own environment when determining search paths (though I'll admit that I have not verified when they choose not to do this).</p>
-<p>One common situation where users are encountering this today is with <code>uvx --with-requirements script.py ty check script.py</code> — which is currently our &quot;best&quot; recommendation for type checking a PEP 723 script, but it doesn't work.</p>
-<p>Of the options discussed in https://github.com/astral-sh/ty/issues/989#issuecomment-3307417985, I've chosen (2) as our criteria for including ty's environment in the search paths.</p>
+<p>While these are a bit contrived, there are real-world situations where a user would expect a similar behavior to work. Notably, all of the other type checkers consider their own environment when determining search paths (though I&#x27;ll admit that I have not verified when they choose not to do this).</p>
+<p>One common situation where users are encountering this today is with <code>uvx --with-requirements script.py ty check script.py</code> — which is currently our &quot;best&quot; recommendation for type checking a PEP 723 script, but it doesn&#x27;t work.</p>
+<p>Of the options discussed in <a href="https://github.com/astral-sh/ty/issues/989">astral-sh/ty#989</a>#issuecomment-3307417985, I&#x27;ve chosen (2) as our criteria for including ty&#x27;s environment in the search paths.</p>
 <ul>
-<li>If no virtual environment is discovered, we will always include ty's environment.</li>
-<li>If a <code>.venv</code> is discovered in the working directory, we will <em>prepend</em> ty's environment to the search paths. The dependencies in ty's environment (e.g., from <code>uvx --with</code>) will take precedence.</li>
-<li>If a virtual environment is active, e.g., <code>VIRTUAL_ENV</code> (i.e., including conda prefixes) is set, we will not include ty's environment.</li>
+<li>If no virtual environment is discovered, we will always include ty&#x27;s environment.</li>
+<li>If a <code>.venv</code> is discovered in the working directory, we will <em>prepend</em> ty&#x27;s environment to the search paths. The dependencies in ty&#x27;s environment (e.g., from <code>uvx --with</code>) will take precedence.</li>
+<li>If a virtual environment is active, e.g., <code>VIRTUAL_ENV</code> (i.e., including conda prefixes) is set, we will not include ty&#x27;s environment.</li>
 </ul>
 <p>The reason we need to special case the <code>.venv</code> case is that we both</p>
 <ol>
 <li>Recommend <code>uvx ty</code> today as a way to check your project</li>
 <li>Want to enable <code>uvx --with &lt;...&gt; ty</code></li>
 </ol>
-<p>And I don't want (2) to break when you <em>happen</em> to be in a project (i.e., if we only included ty's environment when <em>no</em> environment is found) and don't want to remove support for (1).</p>
-<p>I think long-term, I want to make <code>uvx &lt;cmd&gt;</code> layer the environment on <em>top</em> of the project environment (in uv), which would obviate the need for this change when you're using uv. However, that change is breaking and I think users will expect this behavior in contexts where they're not using uv, so I think we should handle it in ty regardless.</p>
-<p>I've opted not to include the environment if it's non-virtual (i.e., a system environment) for now. It seems better to start by being more restrictive. I left a comment in the code.</p>
-<h2>Test Plan</h2>
+<p>And I don&#x27;t want (2) to break when you <em>happen</em> to be in a project (i.e., if we only included ty&#x27;s environment when <em>no</em> environment is found) and don&#x27;t want to remove support for (1).</p>
+<p>I think long-term, I want to make <code>uvx &lt;cmd&gt;</code> layer the environment on <em>top</em> of the project environment (in uv), which would obviate the need for this change when you&#x27;re using uv. However, that change is breaking and I think users will expect this behavior in contexts where they&#x27;re not using uv, so I think we should handle it in ty regardless.</p>
+<p>I&#x27;ve opted not to include the environment if it&#x27;s non-virtual (i.e., a system environment) for now. It seems better to start by being more restrictive. I left a comment in the code.</p>
+Test Plan
 <p>I did some manual testing with the initial commit, then subsequently added some unit tests.</p>
 <pre><code>❯ echo &quot;import httpx&quot; &gt; example.py
 ❯ uvx --with httpx ty check example.py
@@ -88,7 +81,7 @@ All checks passed!
 <pre><code>❯ uv init --script foo.py
 Initialized script at `foo.py`
 ❯ uv add --script foo.py httpx
-warning: The Python request from `.python-version` resolved to Python 3.13.8, which is incompatible with the script's Python requirement: `&gt;=3.14`
+warning: The Python request from `.python-version` resolved to Python 3.13.8, which is incompatible with the script&#x27;s Python requirement: `&gt;=3.14`
 Updated `foo.py`
 ❯ echo &quot;import httpx&quot; &gt;&gt; foo.py
 ❯ uvx --with-requirements foo.py ty check foo.py
@@ -111,7 +104,7 @@ Found 1 diagnostic
 ❯ uvx --from . --with-requirements foo.py ty check foo.py
 All checks passed!
 </code></pre>
-<p>Notice we do not include ty's environment if <code>VIRTUAL_ENV</code> is set</p>
+<p>Notice we do not include ty&#x27;s environment if <code>VIRTUAL_ENV</code> is set</p>
 <pre><code>❯ VIRTUAL_ENV=.venv uvx --with httpx ty check foo/example.py
 error[unresolved-import]: Cannot resolve imported module `httpx`
  --&gt; foo/example.py:1:8
@@ -133,29 +126,29 @@ Found 1 diagnostic
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-11-05 19:28</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a>
 <p>No changes detected when running ty on typing conformance tests ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-11-05 19:29</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
+<code>mypy_primer</code> results
 <p>No ecosystem changes detected ✅
 No memory usage changes detected ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "ty: Discover site-packages from the environment that ty is installed in" to "[ty] Discover site-packages from the environment that ty is installed in" by @AlexWaygood on 2025-11-05 19:29</div>
+            <div class="event">Renamed from &quot;ty: Discover site-packages from the environment that ty is installed in&quot; to &quot;[ty] Discover site-packages from the environment that ty is installed in&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-05 19:29</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-11-05 19:29</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-05 19:29</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @Gankra by @Gankra on 2025-11-05 20:09</div>
+            <div class="event">Review requested from <a href="https://github.com/Gankra">@Gankra</a> by <a href="https://github.com/Gankra">@Gankra</a> on 2025-11-05 20:09</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_project/src/metadata/options.rs</code>:499 on 2025-11-05 20:38</div>
@@ -174,7 +167,7 @@ No memory usage changes detected ✅</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ty_project/src/metadata/options.rs</code>:499 on 2025-11-05 20:47</div>
-            <div class="timeline-body"><p>If we do it after that call it's pretty confusing, I had it there first but moved it. I can look into this more though...</p>
+            <div class="timeline-body"><p>If we do it after that call it&#x27;s pretty confusing, I had it there first but moved it. I can look into this more though...</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -195,8 +188,8 @@ No memory usage changes detected ✅</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-06 03:45</div>
-            <div class="timeline-body"><p>It doesn't seem horribly slow so let's just not worry about it.</p>
-<p>What's the best practice for filtering here...?</p>
+            <div class="timeline-body"><p>It doesn&#x27;t seem horribly slow so let&#x27;s just not worry about it.</p>
+<p>What&#x27;s the best practice for filtering here...?</p>
 <pre><code>        FAIL [   0.433s] (3977/5273) ty::cli python_environment::ty_environment_and_active_environment
   stdout ───
 
@@ -226,7 +219,7 @@ No memory usage changes detected ✅</p>
        18    18 │ Found 1 diagnostic
 </code></pre>
 <p>Of course, this snapshot is broken on Windows.</p>
-<p>I see there's some <code>add_filter</code> stuff going on in <code>CliTest::new</code> but this doesn't seem like it belongs there unconditionally?</p>
+<p>I see there&#x27;s some <code>add_filter</code> stuff going on in <code>CliTest::new</code> but this doesn&#x27;t seem like it belongs there unconditionally?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -235,22 +228,22 @@ No memory usage changes detected ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @zanieb on 2025-11-06 04:42</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-06 04:42</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @zanieb on 2025-11-06 04:42</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-06 04:42</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @zanieb on 2025-11-06 04:42</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-06 04:42</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @zanieb on 2025-11-06 04:42</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-06 04:42</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @zanieb on 2025-11-06 04:42</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-06 04:42</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @zanieb on 2025-11-06 04:42</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-06 04:42</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> approved on 2025-11-06 14:27</div>
@@ -258,10 +251,10 @@ No memory usage changes detected ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @Gankra on 2025-11-06 14:27</div>
+            <div class="event">Merged by <a href="https://github.com/Gankra">@Gankra</a> on 2025-11-06 14:27</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @Gankra on 2025-11-06 14:27</div>
+            <div class="event">Closed by <a href="https://github.com/Gankra">@Gankra</a> on 2025-11-06 14:27</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-11-06 14:27</div>
@@ -269,7 +262,7 @@ No memory usage changes detected ✅</p>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:16:59 UTC
+        Synced at 2026-01-20 19:20:16 UTC
     </footer>
 </body>
 </html>

@@ -23,45 +23,36 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/cjolowicz">@cjolowicz</a></div>
-            <div class="timeline-body"><!--
-Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
-
-If you're filing a bug report, please consider including the following information:
-
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
-* The current Ruff settings (any relevant sections from your `pyproject.toml`).
-* The current Ruff version (`ruff --version`).
--->
+            <div class="timeline-body">
 
 <p>Hello 👋</p>
 <p>B006 (<code>mutable-argument-default</code>) no longer offers an autofix even when <code>--unsafe-fixes</code> is passed.</p>
 <p>Use the example from <code>ruff rule B006</code> to reproduce this:</p>
-<pre><code class="language-python"># /tmp/bad.py
+<pre><code># /tmp/bad.py
 def add_to_list(item, some_list=[]):
     some_list.append(item)
     return some_list
 </code></pre>
 <p>At HEAD (df807ff91248c896cf7f11b25e4f64ecb1d77066) and v0.1.1:</p>
-<pre><code class="language-sh">❯ cargo run -p ruff_cli -- check --select B --unsafe-fixes /tmp/bad.py --no-cache
+<pre><code>❯ cargo run -p ruff_cli -- check --select B --unsafe-fixes /tmp/bad.py --no-cache
 /tmp/bad.py:1:33: B006 Do not use mutable data structures for argument defaults
 Found 1 error.
 </code></pre>
-<p>I've bisected this to 22e18741bdf58bc15a69da2503d7b48443e5a038, but that may only be where the issue was surfaced in the CLI.</p>
-<p>The output is slightly different in that commit, there's an additional line:</p>
-<pre><code class="language-sh">/tmp/bad.py:1:33: B006 Do not use mutable data structures for argument defaults
+<p>I&#x27;ve bisected this to 22e18741bdf58bc15a69da2503d7b48443e5a038, but that may only be where the issue was surfaced in the CLI.</p>
+<p>The output is slightly different in that commit, there&#x27;s an additional line:</p>
+<pre><code>/tmp/bad.py:1:33: B006 Do not use mutable data structures for argument defaults
 Found 1 error.
 [*] 0 fixable with the --fix option.
 </code></pre>
-<p>If I omit <code>--unsafe-fixes</code> there's a hint about a hidden fix:</p>
-<pre><code class="language-sh">❯ cargo run -p ruff_cli -- check --select B /tmp/bad2.py --no-cache
+<p>If I omit <code>--unsafe-fixes</code> there&#x27;s a hint about a hidden fix:</p>
+<pre><code>❯ cargo run -p ruff_cli -- check --select B /tmp/bad2.py --no-cache
 /tmp/bad.py:1:33: B006 Do not use mutable data structures for argument defaults
 Found 1 error.
 1 hidden fix can be enabled with the `--unsafe-fixes` option.
 </code></pre>
-<p>(I don't see this hint in 0.1.1 or HEAD, but I haven't bisected where it went away.)</p>
+<p>(I don&#x27;t see this hint in 0.1.1 or HEAD, but I haven&#x27;t bisected where it went away.)</p>
 <p>In the parent of the bisected commit and in v0.0.292, I get the expected output:</p>
-<pre><code class="language-sh">/tmp/bad.py:1:33: B006 [*] Do not use mutable data structures for argument defaults
+<pre><code>/tmp/bad.py:1:33: B006 [*] Do not use mutable data structures for argument defaults
 Found 1 error.
 [*] 1 potentially fixable with the --fix option.
 </code></pre>
@@ -72,8 +63,8 @@ Found 1 error.
             <div class="timeline-header">Comment by <a href="https://github.com/cjolowicz">@cjolowicz</a> on 2023-10-21 14:05</div>
             <div class="timeline-body"><p>FWIW the fix is deemed unapplicable in FixableStatistics::try_from</p>
 <p>https://github.com/astral-sh/ruff/blob/df807ff91248c896cf7f11b25e4f64ecb1d77066/crates/ruff_cli/src/printer.rs#L521</p>
-<p>Here's what the diagnostics look like:</p>
-<pre><code class="language-rust">Diagnostics {
+<p>Here&#x27;s what the diagnostics look like:</p>
+<pre><code>Diagnostics {
     messages: [
         Message {
             kind: DiagnosticKind {
@@ -101,13 +92,13 @@ Found 1 error.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/cjolowicz">@cjolowicz</a> on 2023-10-21 14:23</div>
-            <div class="timeline-body"><p>I think I understand what's going on now.</p>
-<p>#6131 added the fix as a &quot;manual edit&quot;, a concept which later became <code>applicability: Display</code>. This means that the fix should only be displayed to the user but never applied by Ruff. Before 22e18741bdf58bc15a69da2503d7b48443e5a038 (the bisected commit), applicability levels weren't respected, which explains why the fix was available before 0.1.0 and then went away.</p>
+            <div class="timeline-body"><p>I think I understand what&#x27;s going on now.</p>
+<p>#6131 added the fix as a &quot;manual edit&quot;, a concept which later became <code>applicability: Display</code>. This means that the fix should only be displayed to the user but never applied by Ruff. Before 22e18741bdf58bc15a69da2503d7b48443e5a038 (the bisected commit), applicability levels weren&#x27;t respected, which explains why the fix was available before 0.1.0 and then went away.</p>
 <p>So I suppose this issue is a feature request, not a bug:</p>
 <ul>
 <li>Can we move the fix from display to unsafe (or even safe)?</li>
 </ul>
-<p>I haven't found discussion of this (but may have missed it).</p>
+<p>I haven&#x27;t found discussion of this (but may have missed it).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -123,21 +114,21 @@ Found 1 error.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-21 15:01</div>
-            <div class="timeline-body"><p>I support upgrading this to unsafe -- we could probably increase all of those to unsafe now that it's supported on the CLI.</p>
+            <div class="timeline-body"><p>I support upgrading this to unsafe -- we could probably increase all of those to unsafe now that it&#x27;s supported on the CLI.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-21 15:01</div>
-            <div class="timeline-body"><p>(But also, we probably shouldn't mark &quot;display&quot; rules as fixable in the docs.)</p>
+            <div class="timeline-body"><p>(But also, we probably shouldn&#x27;t mark &quot;display&quot; rules as fixable in the docs.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-21 15:10</div>
             <div class="timeline-body"><blockquote>
-<p>(But also, we probably shouldn't mark &quot;display&quot; rules as fixable in the docs.)</p>
+<p>(But also, we probably shouldn&#x27;t mark &quot;display&quot; rules as fixable in the docs.)</p>
 </blockquote>
 <p>We do not know applicability levels of fixes when generating the documentation. Perhaps <code>FixAvailability</code> needs a maximum applicability field.</p>
-<p>I'll need to look at those specific rules but I presume they were categorized as display-only for good reason?</p>
+<p>I&#x27;ll need to look at those specific rules but I presume they were categorized as display-only for good reason?</p>
 <p>Note after #7352 these fixes will be displayed instead of entirely hidden.</p>
 </div>
         </div>
@@ -145,7 +136,7 @@ Found 1 error.
             <div class="timeline-header">Comment by <a href="https://github.com/cjolowicz">@cjolowicz</a> on 2023-10-21 15:43</div>
             <div class="timeline-body"><p>I opened #8108 to promote <code>mutable-argument-default</code> to unsafe.</p>
 <blockquote>
-<p>I'll need to look at those specific rules but I presume they were categorized as display-only for good reason?</p>
+<p>I&#x27;ll need to look at those specific rules but I presume they were categorized as display-only for good reason?</p>
 </blockquote>
 <p>I found some discussion of this, after all:</p>
 <ul>
@@ -154,7 +145,7 @@ Found 1 error.
 </ul>
 <p>To my understanding, the rule was left in manual because of an edge case where the newline between the function signature and the body is escaped with a backslash (second link above). But it seems like there was some question whether this edge case justified making the fix display-only.</p>
 <p>cc @qdegraaf @MichaReiser</p>
-<p>(As a reminder for myself, the reason the fix isn't safe is because mutable argument defaults can be used intentionally, e.g. for caching.)</p>
+<p>(As a reminder for myself, the reason the fix isn&#x27;t safe is because mutable argument defaults can be used intentionally, e.g. for caching.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -163,15 +154,15 @@ Found 1 error.
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">autofix</span> added by @zanieb on 2023-10-21 16:07</div>
+            <div class="event">Label <span class="label">autofix</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-21 16:07</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-10-21 19:29</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-21 19:29</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:48:41 UTC
+        Synced at 2026-01-20 18:48:44 UTC
     </footer>
 </body>
 </html>

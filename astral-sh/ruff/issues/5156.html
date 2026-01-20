@@ -23,25 +23,16 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/jasikpark">@jasikpark</a></div>
-            <div class="timeline-body"><!--
-Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
-
-If you're filing a bug report, please consider including the following information:
-
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
-* The current Ruff settings (any relevant sections from your `pyproject.toml`).
-* The current Ruff version (`ruff --version`).
--->
+            <div class="timeline-body">
 
 <p>With this program:</p>
-<pre><code class="language-python">##d####
+<pre><code>##d####
 \
 import ost
 </code></pre>
 <p>(possibly importantly w/ the lack of a return character after <code>ost</code></p>
 <p>outputs this when run w/ <code>--fix</code>:</p>
-<pre><code class="language-shell">ruff artifacts/ruff_fix_validity/minimized-from-crash-dd75211301269fe8 --fix
+<pre><code>ruff artifacts/ruff_fix_validity/minimized-from-crash-dd75211301269fe8 --fix
 warning: Detected debug build without --no-cache.
 error: Autofix introduced a syntax error in `artifacts/ruff_fix_validity/minimized-from-crash-dd75211301269fe8` with rule codes F401: unexpected EOF while parsing at byte offset 11
 ---
@@ -56,11 +47,11 @@ Found 1 error.
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-06-17 14:39</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-17 14:39</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-17 14:40</div>
-            <div class="timeline-body"><p>Yeah the general problem here is that a file can't <em>end</em> in a backslash, I think (even a newline is sufficient).</p>
+            <div class="timeline-body"><p>Yeah the general problem here is that a file can&#x27;t <em>end</em> in a backslash, I think (even a newline is sufficient).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -75,13 +66,13 @@ Found 1 error.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-17 16:44</div>
-            <div class="timeline-body"><p>We should of course fix it, but it's worth noting that this is a fairly unlikely case to hit in the wild. Continuations themselves are relatively rare, and most editors don't even let you save a file without a trailing newline :)</p>
+            <div class="timeline-body"><p>We should of course fix it, but it&#x27;s worth noting that this is a fairly unlikely case to hit in the wild. Continuations themselves are relatively rare, and most editors don&#x27;t even let you save a file without a trailing newline :)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-17 16:45</div>
             <div class="timeline-body"><p>I actually thought we did handle this case already:</p>
-<pre><code class="language-rust">pub(crate) fn delete_stmt(
+<pre><code>pub(crate) fn delete_stmt(
     stmt: &amp;Stmt,
     parent: Option&lt;&amp;Stmt&gt;,
     locator: &amp;Locator,
@@ -103,7 +94,7 @@ Found 1 error.
             Edit::range_deletion(stmt.range())
         } else if helpers::preceded_by_continuation(stmt, indexer, locator) {
             if is_end_of_file(stmt, locator) &amp;&amp; locator.is_at_start_of_line(stmt.start()) {
-                // Special-case: a file can't end in a continuation.
+                // Special-case: a file can&#x27;t end in a continuation.
                 Edit::range_replacement(stylist.line_ending().to_string(), stmt.range())
             } else {
                 Edit::range_deletion(stmt.range())
@@ -115,7 +106,7 @@ Found 1 error.
     }
 }
 </code></pre>
-<p>Note the branch that says <code>// Special-case: a file can't end in a continuation.</code>. Need to look into that...</p>
+<p>Note the branch that says <code>// Special-case: a file can&#x27;t end in a continuation.</code>. Need to look into that...</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -126,21 +117,21 @@ Found 1 error.
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-06-17 23:15</div>
             <div class="timeline-body"><blockquote>
-<p>Yeah the general problem here is that a file can't end in a backslash, I think (even a newline is sufficient).</p>
+<p>Yeah the general problem here is that a file can&#x27;t end in a backslash, I think (even a newline is sufficient).</p>
 </blockquote>
-<p>I'm pretty sure that the trailing newline is what's causing a similar issue #4404. We attempt to strip the newline, then on the next iteration, the file ends in a <code>\</code>. I think the fix will rely on some combination of physical lines (<code>Line</code>) and <code>Stmt</code>, but not quite sure how to unify them yet.</p>
+<p>I&#x27;m pretty sure that the trailing newline is what&#x27;s causing a similar issue #4404. We attempt to strip the newline, then on the next iteration, the file ends in a <code>\</code>. I think the fix will rely on some combination of physical lines (<code>Line</code>) and <code>Stmt</code>, but not quite sure how to unify them yet.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-06-18 03:45</div>
             <div class="timeline-body"><blockquote>
-<p>Note the branch that says <code>// Special-case: a file can't end in a continuation.</code>. Need to look into that...</p>
+<p>Note the branch that says <code>// Special-case: a file can&#x27;t end in a continuation.</code>. Need to look into that...</p>
 </blockquote>
 <p>Did a quick debug, it turns out that specific continuation offset is not being stored here:</p>
 <p>https://github.com/astral-sh/ruff/blob/653a0ebf2d3bac67c170c247676aabd8d087d11f/crates/ruff_python_ast/src/source_code/indexer.rs#L14-L15</p>
 <p>~This is happening as the logic is not considering a possibility of having a continuation character before the first token in file.~</p>
 <p>Edit: It seems to be happening whenever the continuation character is at the start of the line because these continuation offsets are not being considered:</p>
-<pre><code class="language-python">\
+<pre><code>\
 import sys
 
 \
@@ -160,16 +151,16 @@ import os
             <div class="timeline-body"><blockquote>
 <p>Is that only a start-of-file problem? I wonder if that match should allow <code>None</code>?</p>
 </blockquote>
-<p>No, sorry I updated the comment. It's occurring whenever the continuation character is at the start of line. This means the previous token was either a newline or <code>None</code>. The opposite of this condition is used to check whether to add the offset or not.</p>
+<p>No, sorry I updated the comment. It&#x27;s occurring whenever the continuation character is at the start of line. This means the previous token was either a newline or <code>None</code>. The opposite of this condition is used to check whether to add the offset or not.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-06-19 04:09</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-19 04:09</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:47:29 UTC
+        Synced at 2026-01-20 18:48:38 UTC
     </footer>
 </body>
 </html>

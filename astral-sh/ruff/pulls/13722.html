@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>[red-knot] Implement C3 linearisation for calculating a class's Method Resolution Order</h1>
+    <h1>[red-knot] Implement C3 linearisation for calculating a class&#x27;s Method Resolution Order</h1>
 
     <div class="meta">
         <span class="state-icon state-closed"></span>
@@ -23,22 +23,22 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>A Python class's <a href="https://docs.python.org/3/glossary.html#term-method-resolution-order">&quot;Method Resolution Order&quot;</a> (&quot;MRO&quot;) is the order in which superclasses of that class are traversed by the Python runtime when searching for an attribute (which includes methods) on that class. Accurately inferring a class's MRO is essential for a type checker if it is going to be able to accurately lookup the types of attributes and methods accessed on that class (or instances of that class).</p>
+            <div class="timeline-body">Summary
+<p>A Python class&#x27;s <a href="https://docs.python.org/3/glossary.html#term-method-resolution-order">&quot;Method Resolution Order&quot;</a> (&quot;MRO&quot;) is the order in which superclasses of that class are traversed by the Python runtime when searching for an attribute (which includes methods) on that class. Accurately inferring a class&#x27;s MRO is essential for a type checker if it is going to be able to accurately lookup the types of attributes and methods accessed on that class (or instances of that class).</p>
 <p>For simple classes, the MRO (which is accessible at runtime via the <code>__mro__</code> attribute on a class) is simple:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; object.__mro__
-(&lt;class 'object'&gt;,)
+<pre><code>&gt;&gt;&gt; object.__mro__
+(&lt;class &#x27;object&#x27;&gt;,)
 &gt;&gt;&gt; class Foo: pass
 ... 
 &gt;&gt;&gt; Foo.__mro__  # classes without explicit bases implicitly inherit from `object`
-(&lt;class '__main__.Foo'&gt;, &lt;class 'object'&gt;)
+(&lt;class &#x27;__main__.Foo&#x27;&gt;, &lt;class &#x27;object&#x27;&gt;)
 &gt;&gt;&gt; class Bar(Foo): pass
 ... 
 &gt;&gt;&gt; Bar.__mro__
-(&lt;class '__main__.Bar'&gt;, &lt;class '__main__.Foo'&gt;, &lt;class 'object'&gt;)
+(&lt;class &#x27;__main__.Bar&#x27;&gt;, &lt;class &#x27;__main__.Foo&#x27;&gt;, &lt;class &#x27;object&#x27;&gt;)
 </code></pre>
 <p>For more complex classes that use multiple inheritance, things can get a bit more complicated, however:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; class Foo: pass
+<pre><code>&gt;&gt;&gt; class Foo: pass
 ... 
 &gt;&gt;&gt; class Bar(Foo): pass
 ... 
@@ -47,10 +47,10 @@
 &gt;&gt;&gt; class Spam(Bar, Baz): pass
 ... 
 &gt;&gt;&gt; Spam.__mro__  # no class ever appears more than once in an `__mro__`
-(&lt;class '__main__.Spam'&gt;, &lt;class '__main__.Bar'&gt;, &lt;class '__main__.Baz'&gt;, &lt;class '__main__.Foo'&gt;, &lt;class 'object'&gt;)
+(&lt;class &#x27;__main__.Spam&#x27;&gt;, &lt;class &#x27;__main__.Bar&#x27;&gt;, &lt;class &#x27;__main__.Baz&#x27;&gt;, &lt;class &#x27;__main__.Foo&#x27;&gt;, &lt;class &#x27;object&#x27;&gt;)
 </code></pre>
 <p>And for some classes, Python realises that it cannot determine which order the superclasses should be positioned in order to create the MRO at class creation time:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; class Foo(object, int): pass
+<pre><code>&gt;&gt;&gt; class Foo(object, int): pass
 ... 
 Traceback (most recent call last):
   File &quot;&lt;python-input-12&gt;&quot;, line 1, in &lt;module&gt;
@@ -71,57 +71,57 @@ Traceback (most recent call last):
     class E(C, D): pass
 TypeError: Cannot create a consistent method resolution order (MRO) for bases A, B
 </code></pre>
-<p>The algorithm Python uses at runtime to determine what a class's MRO should be is known as the C3 linearisation algorithm. An in-depth description of the motivations and details of the algorithm can be found in <a href="https://docs.python.org/3/howto/mro.html#python-2-3-mro">this article</a> in the Python docs. The article is quite old, however, and the algorithm given at the bottom of the page is written in Python 2. As part of working on this PR, I translated the algorithm first into Python 3 (see <a href="https://gist.github.com/AlexWaygood/674db1fce6856a90f251f63e73853639">this gist</a>), and then into Rust (the <code>c3_merge</code> function in <code>mro.rs</code> in this PR). In order for us to correctly infer a class's MRO, we need our own implementation of the C3 linearisation algorithm.</p>
-<p>The C3 linearisation algorithm isn't <em>too</em> complicated by itself. However, there are additional complexities for a type checker when it comes to calculating a class's MRO. The C3 linearisation algorithm calculates an MRO from a list of bases given to it: but what if one of the bases of a class is inferred as a <code>Union</code> type by red-knot? In this situation, there will be multiple possible lists of bases, and therefore potentially multiple possible MROs, for that single class. For this reason, mypy and pyright both reject classes that have an object in their bases list which is inferred as a <code>Union</code> type, as it adds a fair amount of complexity to the semantic model. However, this PR nonetheless attempts to support such cases, for several reasons:</p>
+<p>The algorithm Python uses at runtime to determine what a class&#x27;s MRO should be is known as the C3 linearisation algorithm. An in-depth description of the motivations and details of the algorithm can be found in <a href="https://docs.python.org/3/howto/mro.html#python-2-3-mro">this article</a> in the Python docs. The article is quite old, however, and the algorithm given at the bottom of the page is written in Python 2. As part of working on this PR, I translated the algorithm first into Python 3 (see <a href="https://gist.github.com/AlexWaygood/674db1fce6856a90f251f63e73853639">this gist</a>), and then into Rust (the <code>c3_merge</code> function in <code>mro.rs</code> in this PR). In order for us to correctly infer a class&#x27;s MRO, we need our own implementation of the C3 linearisation algorithm.</p>
+<p>The C3 linearisation algorithm isn&#x27;t <em>too</em> complicated by itself. However, there are additional complexities for a type checker when it comes to calculating a class&#x27;s MRO. The C3 linearisation algorithm calculates an MRO from a list of bases given to it: but what if one of the bases of a class is inferred as a <code>Union</code> type by red-knot? In this situation, there will be multiple possible lists of bases, and therefore potentially multiple possible MROs, for that single class. For this reason, mypy and pyright both reject classes that have an object in their bases list which is inferred as a <code>Union</code> type, as it adds a fair amount of complexity to the semantic model. However, this PR nonetheless attempts to support such cases, for several reasons:</p>
 <ul>
-<li>As long as all elements in the union are valid class bases, it's perfectly type-safe. We should, in general, try not to emit false positives on valid code.</li>
-<li>It's nice to support more things than mypy and pyright do; we should attempt to provide added value over these existing type checkers that goes beyond simply being faster</li>
+<li>As long as all elements in the union are valid class bases, it&#x27;s perfectly type-safe. We should, in general, try not to emit false positives on valid code.</li>
+<li>It&#x27;s nice to support more things than mypy and pyright do; we should attempt to provide added value over these existing type checkers that goes beyond simply being faster</li>
 <li>Doing multi-version checking will probably be difficult without this feature due to the way that typeshed branches on <code>sys.version_info</code> conditions, which means that we will likely often infer a union for an object used as a class base.</li>
 </ul>
 <p>As well as having to adapt the C3 linearisation algorithm to account for the possibility that a class might have a <code>Union</code> in its bases, I also had to make some changes to account for the fact that a class might have a dynamic type in its bases: in our current model, we have three dynamic types, which are <code>Unknown</code>, <code>Any</code> and <code>Todo</code>. This PR takes the simple approach of deciding that the MRO of <code>Any</code> is <code>[Any, object]</code>, the MRO of <code>Unknown</code> is <code>[Unknown, object]</code>, and the MRO of <code>Todo</code> is <code>[Todo, object]</code>; other than that, they are not treated particularly specially by the C3 linearisation algorithm. Other than simplicity, this has a few advantages:</p>
 <ul>
-<li>It matches the runtime:<pre><code class="language-pycon">&gt;&gt;&gt; from typing import Any
+<li>It matches the runtime:<pre><code>&gt;&gt;&gt; from typing import Any
 &gt;&gt;&gt; Any.__mro__
-(typing.Any, &lt;class 'object'&gt;)
+(typing.Any, &lt;class &#x27;object&#x27;&gt;)
 </code></pre>
 </li>
 <li>It means that they behave just like any other class base in Python: an invariant upheld by all other class bases in Python is that they all inherit from <code>object</code>.</li>
 </ul>
 <p>Dynamic types will have to be treated specially when it comes to attribute and method access from these types; however, that is for a separate PR.</p>
-<h2>Implementation strategy</h2>
-<p>The implementation is encapsulated in a new <code>red_knot_python_semantic</code> submodule, <code>types/mro.rs</code>. <code>ClassType::mro_possibilities</code> returns a HashSet of possible MROs that the class could have given its bases, and this calls out to functions in the <code>mro.rs</code> submodule. If there are no union types in the bases list (or in any of the bases of those bases), then there will be exactly one possible MRO for the class; but if there are any union types in the class's bases or the bases of those bases (etc.), then the class could have one of several possible MROs. At each stage, the implementation tries to avoid forking if possible. I've attempted to optimise the implementation based on the assumption that most classes will not have union types in their bases (or the bases of their bases, etc.); there are various fast paths that are predicated on this.</p>
-<p>It's necessary for us to emit a diagnostic if we can determine that a particular list of bases will (or could) cause a <code>TypeError</code> to be raised at runtime due to an unresolvable MRO. However, we can't do this while creating the <code>ClassType</code> and storing it in <code>self.types.declarations</code> in <code>infer.rs</code>, as we need to know the bases of the class in order to determine its MRO, and some of the bases may be deferred. This PR therefore iterates over all classes in a certain scope after all types (including deferred types) have been inferred, as part of <code>TypeInferenceBuilder::infer_region_scope</code>. For types that will (or could) raise an exception due to an invalid MRO, we infer the MRO as being <code>[&lt;class in question&gt;, Unknown, object]</code> as well as emitting the diagnostic.</p>
-<h2>For discussion</h2>
-<p>There's a performance regression of around 4% on the codspeed incremental benchmark. I've tried to get it down a bit, and it has gone down a bit, but I'm out of ideas for how to reduce it further. Open to suggestions :-)</p>
-<h2>Test Plan</h2>
-<p>Beautiful Markdown tests added using @carljm's new test framework. Several tests taken from https://docs.python.org/3/howto/mro.html#python-2-3-mro.</p>
+Implementation strategy
+<p>The implementation is encapsulated in a new <code>red_knot_python_semantic</code> submodule, <code>types/mro.rs</code>. <code>ClassType::mro_possibilities</code> returns a HashSet of possible MROs that the class could have given its bases, and this calls out to functions in the <code>mro.rs</code> submodule. If there are no union types in the bases list (or in any of the bases of those bases), then there will be exactly one possible MRO for the class; but if there are any union types in the class&#x27;s bases or the bases of those bases (etc.), then the class could have one of several possible MROs. At each stage, the implementation tries to avoid forking if possible. I&#x27;ve attempted to optimise the implementation based on the assumption that most classes will not have union types in their bases (or the bases of their bases, etc.); there are various fast paths that are predicated on this.</p>
+<p>It&#x27;s necessary for us to emit a diagnostic if we can determine that a particular list of bases will (or could) cause a <code>TypeError</code> to be raised at runtime due to an unresolvable MRO. However, we can&#x27;t do this while creating the <code>ClassType</code> and storing it in <code>self.types.declarations</code> in <code>infer.rs</code>, as we need to know the bases of the class in order to determine its MRO, and some of the bases may be deferred. This PR therefore iterates over all classes in a certain scope after all types (including deferred types) have been inferred, as part of <code>TypeInferenceBuilder::infer_region_scope</code>. For types that will (or could) raise an exception due to an invalid MRO, we infer the MRO as being <code>[&lt;class in question&gt;, Unknown, object]</code> as well as emitting the diagnostic.</p>
+For discussion
+<p>There&#x27;s a performance regression of around 4% on the codspeed incremental benchmark. I&#x27;ve tried to get it down a bit, and it has gone down a bit, but I&#x27;m out of ideas for how to reduce it further. Open to suggestions :-)</p>
+Test Plan
+<p>Beautiful Markdown tests added using @carljm&#x27;s new test framework. Several tests taken from https://docs.python.org/3/howto/mro.html#python-2-3-mro.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-10-11 22:08</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-11 22:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Add a failing test" to "[WIP] [red-knot] Implement C3 linearisation for calculating a Method Resolution Order" by @AlexWaygood on 2024-10-11 22:08</div>
+            <div class="event">Renamed from &quot;Add a failing test&quot; to &quot;[WIP] [red-knot] Implement C3 linearisation for calculating a Method Resolution Order&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-11 22:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[WIP] [red-knot] Implement C3 linearisation for calculating a Method Resolution Order" to "[WIP] [red-knot] Implement C3 linearisation for calculating a class's Method Resolution Order" by @AlexWaygood on 2024-10-11 22:08</div>
+            <div class="event">Renamed from &quot;[WIP] [red-knot] Implement C3 linearisation for calculating a Method Resolution Order&quot; to &quot;[WIP] [red-knot] Implement C3 linearisation for calculating a class&#x27;s Method Resolution Order&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-11 22:08</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-10-11 22:46</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>ℹ️ ecosystem check <strong>encountered linter errors</strong>. (no lint changes; 1 project error)</p>
-<details><summary><a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+0 -0 violations, +0 -0 fixes)</summary>
+<a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+0 -0 violations, +0 -0 fixes)
 <p>
 
 <pre>
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (error)</summary>
+
+<a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (error)
 <p>
 
 <pre><code>Failed to clone ibis-project/ibis: error: RPC failed; curl 92 HTTP/2 stream 5 was not closed cleanly: CANCEL (err 8)
@@ -131,11 +131,11 @@ fatal: early EOF
 fatal: fetch-pack: invalid index-pack output
 </code></pre>
 </p>
-</details>
 
-<h3>Linter (preview)</h3>
+
+Linter (preview)
 <p>ℹ️ ecosystem check <strong>encountered linter errors</strong>. (no lint changes; 1 project error)</p>
-<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (error)</summary>
+<a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (error)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
 </p>
@@ -148,7 +148,7 @@ fatal: early EOF
 fatal: fetch-pack: invalid index-pack output
 </code></pre>
 </p>
-</details>
+
 
 </div>
         </div>
@@ -166,7 +166,7 @@ fatal: fetch-pack: invalid index-pack output
 <li>https://docs.python.org/3/glossary.html#term-method-resolution-order</li>
 <li>https://docs.python.org/3/howto/mro.html#python-2-3-mro</li>
 </ul>
-<p>Both linked to in various doc comments. I'll fill in the PR description more when it's closer to being ready for review :-)</p>
+<p>Both linked to in various doc comments. I&#x27;ll fill in the PR description more when it&#x27;s closer to being ready for review :-)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -174,41 +174,41 @@ fatal: fetch-pack: invalid index-pack output
             <div class="timeline-body"><blockquote>
 <p><a href="https://docs.python.org/3/howto/mro.html#python-2-3-mro">docs.python.org/3/howto/mro.html#python-2-3-mro</a></p>
 </blockquote>
-<p>The algorithm written at the bottom of this document is unfortunately written in Python 2, but I've written a Python 3 translation here: https://gist.github.com/AlexWaygood/674db1fce6856a90f251f63e73853639</p>
+<p>The algorithm written at the bottom of this document is unfortunately written in Python 2, but I&#x27;ve written a Python 3 translation here: https://gist.github.com/AlexWaygood/674db1fce6856a90f251f63e73853639</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-10-12 18:00</div>
-            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/alex/mro">CodSpeed Performance Report</a></h2>
-<h3>Merging #13722 will <strong>degrade performances by 4.05%</strong></h3>
-<p><sub>Comparing <code>alex/mro</code> (953f6f8) with <code>main</code> (04b636c)</sub></p>
-<h3>Summary</h3>
+            <div class="timeline-body"><a href="https://codspeed.io/astral-sh/ruff/branches/alex/mro">CodSpeed Performance Report</a>
+Merging #13722 will <strong>degrade performances by 4.05%</strong>
+<p>Comparing <code>alex/mro</code> (953f6f8) with <code>main</code> (04b636c)</p>
+Summary
 <p><code>❌ 1</code> regressions
 <code>✅ 31</code> untouched benchmarks</p>
 <blockquote>
 <p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/ruff/branches/alex/mro">acknowledge them on CodSpeed</a>.</em></p>
 </blockquote>
-<h3>Benchmarks breakdown</h3>
+Benchmarks breakdown
 <p>|     | Benchmark | <code>main</code> | <code>alex/mro</code> | Change |
 | --- | --------- | ----------------------- | ------------------- | ------ |
 | ❌ | <code>red_knot_check_file[incremental]</code> | 4.5 ms | 4.7 ms | -4.05% |</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @AlexWaygood on 2024-10-12 20:47</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-12 20:47</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @AlexWaygood on 2024-10-12 20:47</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-12 20:47</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-10-12 20:47</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-12 20:47</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[WIP] [red-knot] Implement C3 linearisation for calculating a class's Method Resolution Order" to "[red-knot] Implement C3 linearisation for calculating a class's Method Resolution Order" by @AlexWaygood on 2024-10-12 20:47</div>
+            <div class="event">Renamed from &quot;[WIP] [red-knot] Implement C3 linearisation for calculating a class&#x27;s Method Resolution Order&quot; to &quot;[red-knot] Implement C3 linearisation for calculating a class&#x27;s Method Resolution Order&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-12 20:47</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-12 20:52</div>
-            <div class="timeline-body"><p>@MichaReiser I've updated the PR summary and taken the PR out of draft mode :-)</p>
+            <div class="timeline-body"><p>@MichaReiser I&#x27;ve updated the PR summary and taken the PR out of draft mode :-)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -217,12 +217,12 @@ fatal: fetch-pack: invalid index-pack output
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/mro.md</code>:72 on 2024-10-13 13:31</div>
-            <div class="timeline-body"><p>I'm not a massive fan of using <code>O</code> (that's a capital-O letter!) as a variable name here, because it's so easy to misread it as <code>0</code> (the digit zero). However, I experimented with using a different variable name, and I found it even more confusing, because it was very hard to remember which class it corresponded to in the <code>ex_2</code> example in https://docs.python.org/3/howto/mro.html#the-end. Unfortunately that article uses <code>O</code> as the class name.</p>
+            <div class="timeline-body"><p>I&#x27;m not a massive fan of using <code>O</code> (that&#x27;s a capital-O letter!) as a variable name here, because it&#x27;s so easy to misread it as <code>0</code> (the digit zero). However, I experimented with using a different variable name, and I found it even more confusing, because it was very hard to remember which class it corresponded to in the <code>ex_2</code> example in https://docs.python.org/3/howto/mro.html#the-end. Unfortunately that article uses <code>O</code> as the class name.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-14 12:35</div>
-            <div class="timeline-body"><p>@AlexWaygood do you have an understanding of what's causing the perf regression?</p>
+            <div class="timeline-body"><p>@AlexWaygood do you have an understanding of what&#x27;s causing the perf regression?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -241,60 +241,60 @@ fatal: fetch-pack: invalid index-pack output
             <div class="timeline-body"><p>I suggest that we</p>
 <ul>
 <li>implement this as an <code>Iterator</code> to avoid allocating for every class if the code is in the hot path (probably?)</li>
-<li>return an <code>impl Iterator</code> and always returning a <code>Vec</code> over a <code>Box&lt;[]&gt;</code> (boxed slices are mainly useful when storing in another struct it doesn't matter much when the variable is stored on the stack) when the code isn't performance sensitive.</li>
+<li>return an <code>impl Iterator</code> and always returning a <code>Vec</code> over a <code>Box&lt;[]&gt;</code> (boxed slices are mainly useful when storing in another struct it doesn&#x27;t matter much when the variable is stored on the stack) when the code isn&#x27;t performance sensitive.</li>
 </ul>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-14 12:57</div>
             <div class="timeline-body"><blockquote>
-<p>@AlexWaygood do you have an understanding of what's causing the perf regression?</p>
+<p>@AlexWaygood do you have an understanding of what&#x27;s causing the perf regression?</p>
 </blockquote>
-<p>Not fully. The CodSpeed flamegraph isn't very informative because of all the Salsa frames.</p>
-<p>The fact that the incremental benchmark regresses much more than the cold benchmark makes me think that it's something to do with the method having the <code>#[salsa::tracked]</code> attribute on it: these are reasonably large objects I'm storing in the Salsa cache. I tried to reduce the size of the objects stored in the cache by doing something like this:</p>
-<pre><code class="language-diff">diff --git a/crates/red_knot_python_semantic/src/types/mro.rs b/crates/red_knot_python_semantic/src/types/mro.rs
+<p>Not fully. The CodSpeed flamegraph isn&#x27;t very informative because of all the Salsa frames.</p>
+<p>The fact that the incremental benchmark regresses much more than the cold benchmark makes me think that it&#x27;s something to do with the method having the <code>#[salsa::tracked]</code> attribute on it: these are reasonably large objects I&#x27;m storing in the Salsa cache. I tried to reduce the size of the objects stored in the cache by doing something like this:</p>
+<pre><code>diff --git a/crates/red_knot_python_semantic/src/types/mro.rs b/crates/red_knot_python_semantic/src/types/mro.rs
 index b32faf71a..ad4b6ea73 100644
 --- a/crates/red_knot_python_semantic/src/types/mro.rs
 +++ b/crates/red_knot_python_semantic/src/types/mro.rs
-@@ -20,19 +20,19 @@ pub(super) enum MroPossibilities&lt;'db&gt; {
+@@ -20,19 +20,19 @@ pub(super) enum MroPossibilities&lt;&#x27;db&gt; {
      /// There are multiple possible `__mro__` values for this class, but they would
      /// all lead to the class being successfully created. Here are the different
      /// possibilities:
--    MultipleSuccesses(FxHashSet&lt;Mro&lt;'db&gt;&gt;),
-+    MultipleSuccesses(Box&lt;[Mro&lt;'db&gt;]&gt;),
+-    MultipleSuccesses(FxHashSet&lt;Mro&lt;&#x27;db&gt;&gt;),
++    MultipleSuccesses(Box&lt;[Mro&lt;&#x27;db&gt;]&gt;),
  
      /// It can be statically determined that the `__mro__` possibilities for this class
      /// (possibly one, possibly many) always fail. Here are the various possible
      /// bases that all lead to class creation failing:
--    CertainFailure(FxHashSet&lt;BasesList&lt;'db&gt;&gt;),
-+    CertainFailure(Box&lt;[BasesList&lt;'db&gt;]&gt;),
+-    CertainFailure(FxHashSet&lt;BasesList&lt;&#x27;db&gt;&gt;),
++    CertainFailure(Box&lt;[BasesList&lt;&#x27;db&gt;]&gt;),
  
      /// There are multiple possible `__mro__`s for this class. Some of these
      /// possibilities result in the class being successfully created; some of them
      /// result in class creation failure.
      PossibleSuccess {
--        possible_mros: FxHashSet&lt;Mro&lt;'db&gt;&gt;,
--        failure_cases: FxHashSet&lt;BasesList&lt;'db&gt;&gt;,
-+        possible_mros: Box&lt;[Mro&lt;'db&gt;]&gt;,
-+        failure_cases: Box&lt;[BasesList&lt;'db&gt;]&gt;,
+-        possible_mros: FxHashSet&lt;Mro&lt;&#x27;db&gt;&gt;,
+-        failure_cases: FxHashSet&lt;BasesList&lt;&#x27;db&gt;&gt;,
++        possible_mros: Box&lt;[Mro&lt;&#x27;db&gt;]&gt;,
++        failure_cases: Box&lt;[BasesList&lt;&#x27;db&gt;]&gt;,
      },
  
 </code></pre>
-<p>but unfortunately converting the HashSets into boxed slices seemed to cause a slowdown rather than a speedup; the cost of the conversion and new allocation was worse than any speed gained by storing smaller objects in the cache. Defining the <code>Mro</code> type as <code>struct Mro&lt;'db&gt;(Box&lt;[ClassBase&lt;'db&gt;]&gt;);</code> rather than <code>struct Mro&lt;'db&gt;(VecDeque&lt;ClassBase&lt;'db&gt;&gt;);</code> (which it was in an earlier iteration) <em>did</em> provide a significant speedup, however.</p>
-<p>The algorithm is in itself also inherently nontrivial (even with the fast paths I added for the common cases), and we have to call it for every class definition we encounter. There's quite a lot of allocation currently in some places: I think some of this is unfortunately unavoidable, but <code>fork_bases</code> and <code>add_next_base</code> could probably be improved somewhat.</p>
+<p>but unfortunately converting the HashSets into boxed slices seemed to cause a slowdown rather than a speedup; the cost of the conversion and new allocation was worse than any speed gained by storing smaller objects in the cache. Defining the <code>Mro</code> type as <code>struct Mro&lt;&#x27;db&gt;(Box&lt;[ClassBase&lt;&#x27;db&gt;]&gt;);</code> rather than <code>struct Mro&lt;&#x27;db&gt;(VecDeque&lt;ClassBase&lt;&#x27;db&gt;&gt;);</code> (which it was in an earlier iteration) <em>did</em> provide a significant speedup, however.</p>
+<p>The algorithm is in itself also inherently nontrivial (even with the fast paths I added for the common cases), and we have to call it for every class definition we encounter. There&#x27;s quite a lot of allocation currently in some places: I think some of this is unfortunately unavoidable, but <code>fork_bases</code> and <code>add_next_base</code> could probably be improved somewhat.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1463 on 2024-10-14 13:00</div>
-            <div class="timeline-body"><p>Nit: Isn't this the same as using <code>break</code>?</p>
-<pre><code class="language-suggestion">                    break;
+            <div class="timeline-body"><p>Nit: Isn&#x27;t this the same as using <code>break</code>?</p>
+<pre><code>                    break;
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:419 on 2024-10-14 13:03</div>
             <div class="timeline-body"><p>It might help to move out of <code>declarations</code> for better performance.</p>
-<pre><code class="language-suggestion">        let declarations = std::mem::take(&amp;mut self.types.declarations);
+<pre><code>        let declarations = std::mem::take(&amp;mut self.types.declarations);
 
         let class_definitions = declarations.values().filter_map(|ty| ty.into_class_type());
 
@@ -326,7 +326,7 @@ index b32faf71a..ad4b6ea73 100644
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/mro.rs</code>:182 on 2024-10-14 13:11</div>
             <div class="timeline-body"><p>You can avoid the <code>expect</code> call by using</p>
-<pre><code class="language-suggestion">            let mro = match single_base.into_class_type() {
+<pre><code>            let mro = match single_base.into_class_type() {
                 Some(class) if class.is_known(db, KnownClass::Object) =&gt; {
                     MroPossibilities::single([class])
                 }
@@ -348,8 +348,8 @@ index b32faf71a..ad4b6ea73 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/mro.rs</code>:180 on 2024-10-14 13:15</div>
-            <div class="timeline-body"><p>I'm not sure I fully understand what's happening here but what I read here is that we always allocate a hash set if a class has an explicit base even though we only end up with a unique &quot;MRO&quot;.</p>
-<pre><code class="language-python">class A:
+            <div class="timeline-body"><p>I&#x27;m not sure I fully understand what&#x27;s happening here but what I read here is that we always allocate a hash set if a class has an explicit base even though we only end up with a unique &quot;MRO&quot;.</p>
+<pre><code>class A:
 	...
 
 class B(A): ...
@@ -359,12 +359,12 @@ class B(A): ...
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/mro.rs</code>:531 on 2024-10-14 13:19</div>
-            <div class="timeline-body"><p>What's the meaning of an empty base list. Is it if there's no explicit base?</p>
+            <div class="timeline-body"><p>What&#x27;s the meaning of an empty base list. Is it if there&#x27;s no explicit base?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/mro.rs</code>:358 on 2024-10-14 13:21</div>
-            <div class="timeline-body"><p>I'm struggling a bit with the names. There are so many <code>Bases</code> and lists. I think a module-level comment explaining the different types and how this all fits together would be useful.</p>
+            <div class="timeline-body"><p>I&#x27;m struggling a bit with the names. There are so many <code>Bases</code> and lists. I think a module-level comment explaining the different types and how this all fits together would be useful.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -379,12 +379,12 @@ class B(A): ...
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/mro.rs</code>:313 on 2024-10-14 13:26</div>
-            <div class="timeline-body"><p>Can you explain why one variant is always the implicit <code>object</code> parent even if it isn't included in the <code>bases</code> of the parents?</p>
+            <div class="timeline-body"><p>Can you explain why one variant is always the implicit <code>object</code> parent even if it isn&#x27;t included in the <code>bases</code> of the parents?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/mro.rs</code>:325 on 2024-10-14 13:28</div>
-            <div class="timeline-body"><p>What's the reason why we copy over the <code>base_possibilities</code> into a <code>new_possibilities</code> hash set. This seems very expensive because it results in <code>O(cases)</code> allocations and memcopy.</p>
+            <div class="timeline-body"><p>What&#x27;s the reason why we copy over the <code>base_possibilities</code> into a <code>new_possibilities</code> hash set. This seems very expensive because it results in <code>O(cases)</code> allocations and memcopy.</p>
 <p>Could we initialize the hash map with the <code>bases_possibilities</code> length to reduce re-hashing?</p>
 </div>
         </div>
@@ -395,20 +395,20 @@ class B(A): ...
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/mro.rs</code>:456 on 2024-10-14 13:37</div>
-            <div class="timeline-body"><p>I would be surprised if <code>display</code> returns something that doesn't implement <code>std::fmt::Display</code></p>
-<pre><code class="language-suggestion">    pub(super) fn display(self, db: &amp;'db dyn Db) -&gt; impl std::fmt::Display {
-        struct Display&lt;'a&gt; {
-            base: &amp;'a ClassBase&lt;'a&gt;,
-            db: &amp;'a dyn Db,
+            <div class="timeline-body"><p>I would be surprised if <code>display</code> returns something that doesn&#x27;t implement <code>std::fmt::Display</code></p>
+<pre><code>    pub(super) fn display(self, db: &amp;&#x27;db dyn Db) -&gt; impl std::fmt::Display {
+        struct Display&lt;&#x27;a&gt; {
+            base: &amp;&#x27;a ClassBase&lt;&#x27;a&gt;,
+            db: &amp;&#x27;a dyn Db,
         }
 
-        impl std::fmt::Display for Display&lt;'_&gt; {
-            fn fmt(&amp;self, f: &amp;mut Formatter&lt;'_&gt;) -&gt; std::fmt::Result {
+        impl std::fmt::Display for Display&lt;&#x27;_&gt; {
+            fn fmt(&amp;self, f: &amp;mut Formatter&lt;&#x27;_&gt;) -&gt; std::fmt::Result {
                 match self.base {
                     Self::Any =&gt; f.write_str(&quot;Any&quot;),
                     Self::Todo =&gt; f.write_str(&quot;Todo&quot;),
                     Self::Unknown =&gt; f.write_str(&quot;Unknown&quot;),
-                    Self::Class(class) =&gt; write!(f, &quot;&lt;class '{}'&gt;&quot;, class.name(self.db)),
+                    Self::Class(class) =&gt; write!(f, &quot;&lt;class &#x27;{}&#x27;&gt;&quot;, class.name(self.db)),
                 }
             }
         }
@@ -423,13 +423,13 @@ class B(A): ...
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/mro.rs</code>:650 on 2024-10-14 13:47</div>
-            <div class="timeline-body"><p>It seems we're always poping from the front. Would it instead be possible to use regular <code>Vec</code>s and reverse the elements (and poping from the end)?</p>
+            <div class="timeline-body"><p>It seems we&#x27;re always poping from the front. Would it instead be possible to use regular <code>Vec</code>s and reverse the elements (and poping from the end)?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/mro.rs</code>:630 on 2024-10-14 13:52</div>
-            <div class="timeline-body"><p>Nit: I would combine the two iterators because the iterator code adds more boilerplate, making it harder to follow what's happening</p>
-<pre><code class="language-suggestion">        // If the candidate exists &quot;deeper down&quot; in the inheritance hierarchy,
+            <div class="timeline-body"><p>Nit: I would combine the two iterators because the iterator code adds more boilerplate, making it harder to follow what&#x27;s happening</p>
+<pre><code>        // If the candidate exists &quot;deeper down&quot; in the inheritance hierarchy,
         // we should refrain from adding it to the MRO for now. Add the first candidate
         // for which this does not hold true. If this holds true for all candidates,
         // return `None`; it will be impossible to find a consistent MRO for the class
@@ -451,9 +451,9 @@ class B(A): ...
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-14 13:53</div>
             <div class="timeline-body"><p>Thanks for the excellent write up.</p>
-<p>This code is indeed complicated. I don't think I fully understand what's going on and supporting multiple MROs also results in a fair amount of allocations and hashing all over the place (both are expensive). That's why I'm inclined to not support union MROs unless we have common use cases demonstrating why it's needed. I do fear that this requires making a decision on <code>sys.version_info</code>.
+<p>This code is indeed complicated. I don&#x27;t think I fully understand what&#x27;s going on and supporting multiple MROs also results in a fair amount of allocations and hashing all over the place (both are expensive). That&#x27;s why I&#x27;m inclined to not support union MROs unless we have common use cases demonstrating why it&#x27;s needed. I do fear that this requires making a decision on <code>sys.version_info</code>.
 I think we should prioritise our decision on checking multiple python versions because my first reaction on supporting unions was to defer the implementation (and all downstream complexity) until we have real use cases where it matters. But you then mentioned <code>sys.version_info</code> support...</p>
-<p>I do feel like there's a lot of boilerplate going on with many intermediate types. I would have to take a deeper look to understand if it's possible to simplify it some way but I noted that I struggled to connect all the dots and would probably also struggle to make changes to the implementation. I'm not sure if there's any simplification potential but it might be worth going over the implementation again to see if we can remove some of the many intermediate structs.</p>
+<p>I do feel like there&#x27;s a lot of boilerplate going on with many intermediate types. I would have to take a deeper look to understand if it&#x27;s possible to simplify it some way but I noted that I struggled to connect all the dots and would probably also struggle to make changes to the implementation. I&#x27;m not sure if there&#x27;s any simplification potential but it might be worth going over the implementation again to see if we can remove some of the many intermediate structs.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -463,12 +463,12 @@ I think we should prioritise our decision on checking multiple python versions b
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/mro.rs</code>:531 on 2024-10-14 14:00</div>
             <div class="timeline-body"><p>The <code>BasesList</code> represents all bases the class has (both implicit and explicit). For a class that implicitly inherits from <code>object</code>, e.g. <code>class Foo: pass</code>, the bases of <code>Foo</code> will be <code>[object]</code>. Only one class has an empty bases list in Python: <code>object</code> itself:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; object.__bases__
+<pre><code>&gt;&gt;&gt; object.__bases__
 ()
 &gt;&gt;&gt; class Foo: pass
 ... 
 &gt;&gt;&gt; Foo.__bases__
-(&lt;class 'object'&gt;,)
+(&lt;class &#x27;object&#x27;&gt;,)
 </code></pre>
 </div>
         </div>
@@ -478,7 +478,7 @@ I think we should prioritise our decision on checking multiple python versions b
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/mro.rs</code>:531 on 2024-10-14 14:01</div>
-            <div class="timeline-body"><p>I tried using <code>SmallVec</code> but struggled to get it to work. I'll have another go.</p>
+            <div class="timeline-body"><p>I tried using <code>SmallVec</code> but struggled to get it to work. I&#x27;ll have another go.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -497,10 +497,10 @@ I think we should prioritise our decision on checking multiple python versions b
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/mro.rs</code>:313 on 2024-10-14 14:03</div>
             <div class="timeline-body"><p>If a class does not explicitly inherit from anything, Python synthesizes a <code>__bases__</code> tuple consisting solely of <code>object</code>. This is because all classes in Python are subclasses of <code>object</code>, which is the top type, the supertype of everything else.</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; class Foo: pass
+<pre><code>&gt;&gt;&gt; class Foo: pass
 ... 
 &gt;&gt;&gt; Foo.__bases__
-(&lt;class 'object'&gt;,)
+(&lt;class &#x27;object&#x27;&gt;,)
 </code></pre>
 </div>
         </div>
@@ -519,7 +519,7 @@ I think we should prioritise our decision on checking multiple python versions b
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/mro.rs</code>:630 on 2024-10-14 14:05</div>
-            <div class="timeline-body"><p>Oh, sure. I did it that way originally, but rewrote it like this for clarity 😄 I'll change it back if that's backfiring!</p>
+            <div class="timeline-body"><p>Oh, sure. I did it that way originally, but rewrote it like this for clarity 😄 I&#x27;ll change it back if that&#x27;s backfiring!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -546,7 +546,7 @@ I think we should prioritise our decision on checking multiple python versions b
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1363 on 2024-10-14 14:12</div>
-            <div class="timeline-body"><p>Oh I see. Sure, I'll go for something like that!</p>
+            <div class="timeline-body"><p>Oh I see. Sure, I&#x27;ll go for something like that!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -555,7 +555,7 @@ I think we should prioritise our decision on checking multiple python versions b
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1463 on 2024-10-14 14:29</div>
-            <div class="timeline-body"><p>No, we need to skip the <code>union_builder = union_builder.add(Type::Unbound);</code> line which is called after the termination of the inner loop. We wouldn't skip that line if we used <code>break</code>.</p>
+            <div class="timeline-body"><p>No, we need to skip the <code>union_builder = union_builder.add(Type::Unbound);</code> line which is called after the termination of the inner loop. We wouldn&#x27;t skip that line if we used <code>break</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -564,7 +564,7 @@ I think we should prioritise our decision on checking multiple python versions b
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1363 on 2024-10-14 14:30</div>
-            <div class="timeline-body"><p>I expect it to be called very frequently. We need to iterate over the MRO whenever we resolve the type of an attribute or method access (explicit or implict) on a class or an instance of a class. This PR already starts using it in <code>ClassType::inherited_class_member</code>, which currently (incorrectly) only iterates over a class's bases rather than over a class's entire MRO.</p>
+            <div class="timeline-body"><p>I expect it to be called very frequently. We need to iterate over the MRO whenever we resolve the type of an attribute or method access (explicit or implict) on a class or an instance of a class. This PR already starts using it in <code>ClassType::inherited_class_member</code>, which currently (incorrectly) only iterates over a class&#x27;s bases rather than over a class&#x27;s entire MRO.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -594,7 +594,7 @@ I think we should prioritise our decision on checking multiple python versions b
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/mro.rs</code>:180 on 2024-10-14 14:57</div>
-            <div class="timeline-body"><p>Yeah, I think you're right, we can take hte fast path much more often than I do currently. I'll rejig this.</p>
+            <div class="timeline-body"><p>Yeah, I think you&#x27;re right, we can take hte fast path much more often than I do currently. I&#x27;ll rejig this.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -624,7 +624,7 @@ I think we should prioritise our decision on checking multiple python versions b
             <div class="timeline-body"><blockquote>
 <p>what are you thinking of exactly? An MRO that requires an import cycle to be resolved?</p>
 </blockquote>
-<p>No, an actual cycle in the MRO, i.e. what you'd get if you had <code>class str(str): ...</code> in a type stub. Clearly we can't allow this and have to error on it as an invalid MRO, but it would be good to have a test showing that we do this, rather than getting stuck in an infinite loop building the MRO.</p>
+<p>No, an actual cycle in the MRO, i.e. what you&#x27;d get if you had <code>class str(str): ...</code> in a type stub. Clearly we can&#x27;t allow this and have to error on it as an invalid MRO, but it would be good to have a test showing that we do this, rather than getting stuck in an infinite loop building the MRO.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -651,20 +651,20 @@ I think we should prioritise our decision on checking multiple python versions b
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/mro.rs</code>:650 on 2024-10-14 18:07</div>
-            <div class="timeline-body"><p>I'll try this out and see if it's workable. A downside is that the implementation will become less recognisably a reimplementation of the algorithm given in the Python docs, so it'll be less self-evident that the function does the correct thing. But I've already made many changes in the process of rewriting it in Python 3, then Rust, so perhaps that's already lost</p>
+            <div class="timeline-body"><p>I&#x27;ll try this out and see if it&#x27;s workable. A downside is that the implementation will become less recognisably a reimplementation of the algorithm given in the Python docs, so it&#x27;ll be less self-evident that the function does the correct thing. But I&#x27;ve already made many changes in the process of rewriting it in Python 3, then Rust, so perhaps that&#x27;s already lost</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-10-16 12:43</div>
-            <div class="timeline-body"><p>I'm not doing a detailed review of this yet because my understanding is we need to come to agreement on multi-version checking before we are ready to land this with union support. Let me know if that's wrong.</p>
+            <div class="timeline-body"><p>I&#x27;m not doing a detailed review of this yet because my understanding is we need to come to agreement on multi-version checking before we are ready to land this with union support. Let me know if that&#x27;s wrong.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-16 12:45</div>
             <div class="timeline-body"><blockquote>
-<p>I'm not doing a detailed review of this yet because my understanding is we need to come to agreement on multi-version checking before we are ready to land this with union support. Let me know if that's wrong.</p>
+<p>I&#x27;m not doing a detailed review of this yet because my understanding is we need to come to agreement on multi-version checking before we are ready to land this with union support. Let me know if that&#x27;s wrong.</p>
 </blockquote>
-<p>That, and also @MichaReiser's review made me look again and realise that I can make some of this a fair bit more efficient and easier to understand with a rewrite :-) So yes, not much use looking at it right now.</p>
+<p>That, and also @MichaReiser&#x27;s review made me look again and realise that I can make some of this a fair bit more efficient and easier to understand with a rewrite :-) So yes, not much use looking at it right now.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -675,16 +675,16 @@ I think we should prioritise our decision on checking multiple python versions b
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-10-18 19:26</div>
             <div class="timeline-body"><p>It occurred to me today that if we do want to go forward with supporting multi-version-checking and thus unions in class bases, the better representation for that would probably be to have the single <code>class</code> statement result in a union of <code>Type::Class</code>, one for each possible MRO. Having a single <code>ClassType</code> with multiple MRO will I think result in us having to effectively re-implement a lot of union handling inside methods of <code>ClassType</code>.</p>
-<p>The trick here is that we can't really do this easily in stub files, where type inference of class bases can be cyclic and must be deferred :/ I wonder if the right fix for that is to not actually defer resolution of class bases in stub files, but only defer resolution of generic parameters <em>within</em> class bases; this would be sufficient to handle the actual cases that we need to support (like <code>class str(Sequence[str])</code> -- we don't actually need to support <code>class str(str):</code>, because it's meaningless.)</p>
+<p>The trick here is that we can&#x27;t really do this easily in stub files, where type inference of class bases can be cyclic and must be deferred :/ I wonder if the right fix for that is to not actually defer resolution of class bases in stub files, but only defer resolution of generic parameters <em>within</em> class bases; this would be sufficient to handle the actual cases that we need to support (like <code>class str(Sequence[str])</code> -- we don&#x27;t actually need to support <code>class str(str):</code>, because it&#x27;s meaningless.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-31 22:24</div>
-            <div class="timeline-body"><p>Closing in favour of #14027, since we've decided to postpone a decision on whether to do multi-version checking for now</p>
+            <div class="timeline-body"><p>Closing in favour of #14027, since we&#x27;ve decided to postpone a decision on whether to do multi-version checking for now</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2024-10-31 22:24</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-31 22:24</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-10-31 22:24</div>
@@ -692,7 +692,7 @@ I think we should prioritise our decision on checking multiple python versions b
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:06:56 UTC
+        Synced at 2026-01-20 19:07:23 UTC
     </footer>
 </body>
 </html>

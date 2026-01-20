@@ -23,53 +23,53 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This PR removes our special casing for tuple addition from <code>TypeInferenceBuilder::infer_binary_expression_type</code>. After #19635 (which this PR is based on top of) has landed, our generics solver works well enough with tuple types that we can just use the generic signature on the typeshed stub for <code>tuple.__add__</code> rather than implementing any special casing here for tuples. The typeshed <code>__add__</code> signature results in us inferring less precise types in many instances, but we nonetheless continue to infer a type that is <em>precise enough</em> for nearly all practical use cases involving tuples. This can be seen from the fact that this PR has no impact on the typing conformance tests, and has a very minimal mypy_primer diff (two diagnostics removed, four diagnostics changed).</p>
 <p>The special casing on <code>main</code> has minimal upside, then -- but it has significant downsides.</p>
 <ul>
-<li><p>It causes significant performance issues for various pathological cases involving tuples. This can be seen from the Codspeed results on this PR. We also no longer hang when checking the snippet given in https://github.com/astral-sh/ty/issues/765 -- in fact, we type-check it almost instantly. Even with this PR, it's probably possible to produce pathological code samples that will make ty's execution time blow up due to extremely large tuple types, and we should work on a more comprehensive fix for this issue. But I think it's notable that many of the cases we've found regarding this so far have been related to tuple addition, and this PR gets rid of that particular trigger for the problem.</p>
+<li><p>It causes significant performance issues for various pathological cases involving tuples. This can be seen from the Codspeed results on this PR. We also no longer hang when checking the snippet given in <a href="https://github.com/astral-sh/ty/issues/765">astral-sh/ty#765</a> -- in fact, we type-check it almost instantly. Even with this PR, it&#x27;s probably possible to produce pathological code samples that will make ty&#x27;s execution time blow up due to extremely large tuple types, and we should work on a more comprehensive fix for this issue. But I think it&#x27;s notable that many of the cases we&#x27;ve found regarding this so far have been related to tuple addition, and this PR gets rid of that particular trigger for the problem.</p>
 </li>
-<li><p>The special casing is currently not applied for tuple subclasses: but a subclass of <code>tuple[int, str]</code> should be treated exactly the same way as <code>tuple[int, str]</code> with respect to the special casing applied by ty, since we would allow an instance of the subclass to be passed wherever an instance of <code>tuple[int, str]</code> is expected. Extending the special casing so that it also applies to tuple subclasses would be possible, but in order to do this in a sound manner we would have to ban any overrides of <code>__add__</code> or <code>__radd__</code> on a tuple subclass. Otherwise, we'd have no way of ensuring that an <code>__(r)add__</code> override on a tuple subclass was sound, since the behaviour of <code>tuple.__(r)add__</code> cannot be described fully in a type annotation.</p>
+<li><p>The special casing is currently not applied for tuple subclasses: but a subclass of <code>tuple[int, str]</code> should be treated exactly the same way as <code>tuple[int, str]</code> with respect to the special casing applied by ty, since we would allow an instance of the subclass to be passed wherever an instance of <code>tuple[int, str]</code> is expected. Extending the special casing so that it also applies to tuple subclasses would be possible, but in order to do this in a sound manner we would have to ban any overrides of <code>__add__</code> or <code>__radd__</code> on a tuple subclass. Otherwise, we&#x27;d have no way of ensuring that an <code>__(r)add__</code> override on a tuple subclass was sound, since the behaviour of <code>tuple.__(r)add__</code> cannot be described fully in a type annotation.</p>
 <p>Banning <code>__add__</code> and <code>__radd__</code> overrides on tuple subclasses feels overly restrictive to me; given the other downsides and the minimal upsides of this special casing, I lean towards simply removing it.</p>
 </li>
 </ul>
-<p>Closes https://github.com/astral-sh/ty/issues/765</p>
-<h2>Test Plan</h2>
+<p>Closes <a href="https://github.com/astral-sh/ty/issues/765">astral-sh/ty#765</a></p>
+Test Plan
 <p>Mdtests updated</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-07-30 12:06</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-30 12:06</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-07-30 12:06</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-30 12:06</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-07-30 12:06</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-30 12:06</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-07-30 12:06</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-30 12:06</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Converted to draft by @AlexWaygood on 2025-07-30 12:06</div>
+            <div class="event">Converted to draft by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-30 12:06</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-30 12:09</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2>Diagnostic diff on typing conformance tests</h2>
+Diagnostic diff on typing conformance tests
 <p>No changes detected when running ty on typing conformance tests ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-30 12:10</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">vision (https://github.com/pytorch/vision)
+Changes were detected when running on open source projects
+
+<pre><code>vision (https://github.com/pytorch/vision)
 - references/depth/stereo/transforms.py:190:16: error[invalid-return-type] Return type does not match returned value: expected `tuple[tuple[Unknown, Unknown], tuple[@Todo(Inference of subscript on special form), @Todo(Inference of subscript on special form)], tuple[@Todo(Inference of subscript on special form), @Todo(Inference of subscript on special form)]]`, found `tuple[tuple[Unknown, Unknown], tuple[()] | tuple[Unknown] | tuple[None], tuple[()] | tuple[Unknown] | tuple[None]]`
 + references/depth/stereo/transforms.py:190:16: error[invalid-return-type] Return type does not match returned value: expected `tuple[tuple[Unknown, Unknown], tuple[@Todo(Inference of subscript on special form), @Todo(Inference of subscript on special form)], tuple[@Todo(Inference of subscript on special form), @Todo(Inference of subscript on special form)]]`, found `tuple[tuple[Unknown, Unknown], tuple[Unknown, ...] | tuple[None, ...], tuple[Unknown, ...] | tuple[None, ...]]`
 - references/depth/stereo/transforms.py:485:16: error[invalid-return-type] Return type does not match returned value: expected `tuple[tuple[Unknown, Unknown], tuple[@Todo(Inference of subscript on special form), @Todo(Inference of subscript on special form)], tuple[@Todo(Inference of subscript on special form), @Todo(Inference of subscript on special form)]]`, found `tuple[tuple[()] | tuple[Unknown], tuple[()] | tuple[Unknown] | tuple[None], tuple[()] | tuple[Unknown] | tuple[None]]`
@@ -88,25 +88,25 @@ scipy (https://github.com/scipy/scipy)
 + Found 6802 diagnostics
 
 </code></pre>
-</details>
+
 No memory usage changes detected ✅
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-07-30 12:16</div>
-            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+            <div class="timeline-body">
 
-<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
 
-<h2><a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Ftuple-add?runnerMode=Instrumentation">CodSpeed Instrumentation Performance Report</a></h2>
-<h3>Merging #19636 will <strong>improve performances by 90.81%</strong></h3>
-<p><sub>Comparing <code>alex/tuple-add</code> (dbe53ab) with <code>main</code> (38049aa)</sub></p>
-<h3>Summary</h3>
-<p><code>⚡ 1</code> improvements<br />
-<code>✅ 40</code> untouched benchmarks<br />
+
+<a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Ftuple-add?runnerMode=Instrumentation">CodSpeed Instrumentation Performance Report</a>
+Merging #19636 will <strong>improve performances by 90.81%</strong>
+<p>Comparing <code>alex/tuple-add</code> (dbe53ab) with <code>main</code> (38049aa)</p>
+Summary
+<p><code>⚡ 1</code> improvements<br>
+<code>✅ 40</code> untouched benchmarks<br>
 <code>🆕 1</code> new benchmarks</p>
-<h3>Benchmarks breakdown</h3>
+Benchmarks breakdown
 <p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
 | --- | --------- | ----------------------- | ------------------- | ------ |
 | ⚡ | <code>ty_micro[many_tuple_assignments]</code> | 119.4 ms | 62.6 ms | +90.81% |
@@ -114,7 +114,7 @@ No memory usage changes detected ✅
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @AlexWaygood on 2025-07-30 12:33</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-30 12:33</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-30 12:42</div>
@@ -122,18 +122,18 @@ No memory usage changes detected ✅
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_benchmark/benches/ty.rs</code>:357 on 2025-07-30 12:42</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">    criterion.bench_function(&quot;ty_micro[tuple_implicit_instance_attributes]&quot;, |b| {
+            <div class="timeline-body"><pre><code>    criterion.bench_function(&quot;ty_micro[tuple_implicit_instance_attributes]&quot;, |b| {
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-30 12:42</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
@@ -142,14 +142,14 @@ No memory usage changes detected ✅
             <div class="timeline-body"><blockquote>
 <p>The special casing on <code>main</code> has minimal upside, then</p>
 </blockquote>
-<p>I do think it was a fun &quot;look what we can do&quot; feature, but that's not worth it given the downsides you've listed</p>
+<p>I do think it was a fun &quot;look what we can do&quot; feature, but that&#x27;s not worth it given the downsides you&#x27;ve listed</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @AlexWaygood on 2025-07-30 16:25</div>
+            <div class="event">Merged by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-30 16:25</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-07-30 16:25</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-30 16:25</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-07-30 16:25</div>
@@ -157,7 +157,7 @@ No memory usage changes detected ✅
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:14:40 UTC
+        Synced at 2026-01-20 19:17:10 UTC
     </footer>
 </body>
 </html>

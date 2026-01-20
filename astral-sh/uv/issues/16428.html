@@ -23,8 +23,8 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/lmmx">@lmmx</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<p>I tried removing all aspects of this and could not find any confounding factors so I think it's a real bug.</p>
+            <div class="timeline-body">Summary
+<p>I tried removing all aspects of this and could not find any confounding factors so I think it&#x27;s a real bug.</p>
 <p>I isolated a bug using a CI workflow that appears to show CPython 3.13t, 3.14t not picking up the venv in the way expected via the <code>uv python find</code> API after <code>uv sync</code> in an immediately prior step in the same job</p>
 <ul>
 <li><strong>edit</strong> originally I thought this was other versions, later clarified only 3.13t, 3.14t</li>
@@ -32,15 +32,15 @@
 <p>I echoed the python it found and it was <code>/usr/bin/python3</code></p>
 <p>My understanding it is best practice to use <code>uv python find</code> over just directly referencing <code>.venv/bin/python</code></p>
 <ul>
-<li>I used v6 of the <code>astral-sh/setup-uv</code> Action here but I then bumped to v7 and it didn't heal so it's not that</li>
-<li>I removed Swatinem/rust-cache and the mold linker and didn't heal so not that</li>
+<li>I used v6 of the <code>astral-sh/setup-uv</code> Action here but I then bumped to v7 and it didn&#x27;t heal so it&#x27;s not that</li>
+<li>I removed Swatinem/rust-cache and the mold linker and didn&#x27;t heal so not that</li>
 <li>The error said maturin not found but I could call maturin in <code>.venv/bin</code> directly so not that</li>
 <li>I turned off the <code>with_cache</code> in the setup uv action step but not that</li>
 <li>I tried passing <code>--directory .venv</code> to hint to look in there but same as without so not that</li>
 </ul>
 <p>CI run link: https://github.com/lmmx/comrak/actions/runs/18766098367/job/53541371018?pr=28</p>
-<details>
-<summary>📝 Click to show CI logs</summary>
+
+📝 Click to show CI logs
 
 <pre><code>
 Run uv sync --only-group build --only-group test
@@ -91,13 +91,13 @@ VENV_PYTHON: /usr/bin/python3
 /usr/bin/python3: No module named maturin
 Error: Process completed with exit code 1.
 </code></pre>
-</details>
+
 
 <p>The workflow file is available on the job logs <a href="https://github.com/lmmx/comrak/actions/runs/18766098367/workflow?pr=28">here</a> and also attached here:</p>
-<details>
-<summary>🗃️ Click to show CI workflow</summary>
 
-<pre><code class="language-yaml">name: Test
+🗃️ Click to show CI workflow
+
+<pre><code>name: Test
 
 on:
   push:
@@ -125,13 +125,13 @@ jobs:
       - name: Get Python versions from uv
         id: get-versions
         run: |
-          MIN_VERSION=$(uvx --from=toml-cli toml get --toml-path=pyproject.toml project.requires-python | sed 's/&gt;=//;s/&quot;//g')
-          versions=$(uv python list --all-versions --output-format json | jq -c --arg min &quot;$MIN_VERSION&quot; '
+          MIN_VERSION=$(uvx --from=toml-cli toml get --toml-path=pyproject.toml project.requires-python | sed &#x27;s/&gt;=//;s/&quot;//g&#x27;)
+          versions=$(uv python list --all-versions --output-format json | jq -c --arg min &quot;$MIN_VERSION&quot; &#x27;
             ($min | split(&quot;.&quot;) | {major: .[0]|tonumber, minor: .[1]|tonumber}) as $minv |
             [.[] | {v:.version_parts, t:.variant}]
             | unique_by([.v.minor,.t])
             | map(select(.v.major &gt; $minv.major or (.v.major == $minv.major and .v.minor &gt;= $minv.minor)))
-            | map(&quot;\(.v.major).\(.v.minor)\(if .t==&quot;freethreaded&quot; then &quot;t&quot; else &quot;&quot; end)&quot;)')
+            | map(&quot;\(.v.major).\(.v.minor)\(if .t==&quot;freethreaded&quot; then &quot;t&quot; else &quot;&quot; end)&quot;)&#x27;)
           echo &quot;python-versions=$versions&quot; &gt;&gt; $GITHUB_OUTPUT
   test:
     needs: get-python-versions
@@ -169,23 +169,23 @@ jobs:
       - name: Run tests
         run: $(uv python find) -m pytest tests/ -v
 </code></pre>
-</details>
 
-<h3>Platform</h3>
+
+Platform
 <p>ubuntu-latest</p>
-<h3>Version</h3>
+Version
 <p>0.9.5</p>
-<h3>Python version</h3>
+Python version
 <p>3.13t (also on: 3.14t)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @lmmx on 2025-10-24 01:25</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/lmmx">@lmmx</a> on 2025-10-24 01:25</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-24 03:45</div>
             <div class="timeline-body"><p>Can you share verbose logs for <code>uv python find</code>? e.g., <code>uv python find -vv</code>?</p>
-<p>Separately, if your goal is to invoke Python in a virtual environment, I'd use <code>uv run python</code> instead. You can also use <code>uv run -m</code> directly.</p>
+<p>Separately, if your goal is to invoke Python in a virtual environment, I&#x27;d use <code>uv run python</code> instead. You can also use <code>uv run -m</code> directly.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -198,14 +198,14 @@ jobs:
 <li>I tried removing source .venv/bin/activate and it has the same result</li>
 <li>I now see 3.14 (not <code>t</code>) working normally, so I think that must have been a separate failure, not related.</li>
 </ul>
-<details>
-<summary> 📸 Click to show screenshot</summary>
 
-<p><img src="https://github.com/user-attachments/assets/c2ae91f7-2533-459f-bd51-7b34f7a74311" alt="Image" /></p>
-</details>
+ 📸 Click to show screenshot
 
-<details>
-<summary>📝 Click to show verbose output</summary>
+<p><img src="https://github.com/user-attachments/assets/c2ae91f7-2533-459f-bd51-7b34f7a74311" alt="Image"></p>
+
+
+
+📝 Click to show verbose output
 
 <pre><code>Run source .venv/bin/activate
   source .venv/bin/activate
@@ -239,7 +239,7 @@ DEBUG Skipping interpreter at `.venv/bin/python3` from virtual environment: does
 DEBUG Searching for managed installations at `/home/runner/work/_temp/uv-python-dir`
 TRACE Found `ld` path: /lib64/ld-linux-x86-64.so.2
 TRACE stdout output from `ld`: &quot;&quot;
-TRACE stderr output from `ld`: &quot;/lib64/ld-linux-x86-64.so.2: missing program name\nTry '/lib64/ld-linux-x86-64.so.2 --help' for more information.\n&quot;
+TRACE stderr output from `ld`: &quot;/lib64/ld-linux-x86-64.so.2: missing program name\nTry &#x27;/lib64/ld-linux-x86-64.so.2 --help&#x27; for more information.\n&quot;
 TRACE Tried to find musl version by running `&quot;/lib64/ld-linux-x86-64.so.2&quot;`, but failed: Could not find musl version in output of: `/lib64/ld-linux-x86-64.so.2`
 TRACE Tried to find libc version from possible symlink at &quot;/lib64/ld-linux-x86-64.so.2&quot;, but failed: Failed to find glibc version in the filename of linker: `../lib/x86_64-linux-gnu/ld-linux-x86-64.so.2`
 TRACE stdout output from `ld.so --version`: &quot;ld.so (Ubuntu GLIBC 2.39-0ubuntu8.6) stable release version 2.39.\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.\nThere is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A\nPARTICULAR PURPOSE.\n&quot;
@@ -284,13 +284,13 @@ DEBUG Released lock at `/home/runner/.cache/uv/.lock`
 -- END OF uv python find DEBUG
 /usr/bin/python3: No module named maturin
 </code></pre>
-</details>
+
 
 <p>It seems to reject it!</p>
 <ul>
 <li>First as python3</li>
 </ul>
-<pre><code class="language-sh">TRACE Found possible Python executable: /home/runner/work/comrak/comrak/.venv/bin/python3
+<pre><code>TRACE Found possible Python executable: /home/runner/work/comrak/comrak/.venv/bin/python3
 TRACE Found cached interpreter info for Python 3.13.9, skipping query of: .venv/bin/python3
 DEBUG Found `cpython-3.13.9+freethreaded-linux-x86_64-gnu` at `/home/runner/work/comrak/comrak/.venv/bin/python3` (first executable in the search path)
 DEBUG Skipping interpreter at `.venv/bin/python3` from first executable in the search path: does not satisfy request `&gt;=3.9`
@@ -298,7 +298,7 @@ DEBUG Skipping interpreter at `.venv/bin/python3` from first executable in the s
 <ul>
 <li>Then as python</li>
 </ul>
-<pre><code class="language-sh">TRACE Found possible Python executable: /home/runner/work/comrak/comrak/.venv/bin/python
+<pre><code>TRACE Found possible Python executable: /home/runner/work/comrak/comrak/.venv/bin/python
 TRACE Querying interpreter executable at /home/runner/work/comrak/comrak/.venv/bin/python
 DEBUG Found `cpython-3.13.9+freethreaded-linux-x86_64-gnu` at `/home/runner/work/comrak/comrak/.venv/bin/python` (search path)
 DEBUG Skipping interpreter at `.venv/bin/python` from search path: does not satisfy request `&gt;=3.9`
@@ -306,7 +306,7 @@ DEBUG Skipping interpreter at `.venv/bin/python` from search path: does not sati
 <ul>
 <li>Then as python13</li>
 </ul>
-<pre><code class="language-sh">TRACE Found possible Python executable: /home/runner/work/comrak/comrak/.venv/bin/python3.13
+<pre><code>TRACE Found possible Python executable: /home/runner/work/comrak/comrak/.venv/bin/python3.13
 TRACE Querying interpreter executable at /home/runner/work/comrak/comrak/.venv/bin/python3.13
 DEBUG Found `cpython-3.13.9+freethreaded-linux-x86_64-gnu` at `/home/runner/work/comrak/comrak/.venv/bin/python3.13` (search path)
 DEBUG Skipping interpreter at `.venv/bin/python3.13` from search path: does not satisfy request `&gt;=3.9`
@@ -314,20 +314,20 @@ DEBUG Skipping interpreter at `.venv/bin/python3.13` from search path: does not 
 <ul>
 <li>Then as python13t</li>
 </ul>
-<pre><code class="language-sh">TRACE Found possible Python executable: /home/runner/work/comrak/comrak/.venv/bin/python3.13t
+<pre><code>TRACE Found possible Python executable: /home/runner/work/comrak/comrak/.venv/bin/python3.13t
 TRACE Querying interpreter executable at /home/runner/work/comrak/comrak/.venv/bin/python3.13t
 DEBUG Found `cpython-3.13.9+freethreaded-linux-x86_64-gnu` at `/home/runner/work/comrak/comrak/.venv/bin/python3.13t` (search path)
 DEBUG Skipping interpreter at `.venv/bin/python3.13t` from search path: does not satisfy request `&gt;=3.9`
 </code></pre>
 <blockquote>
-<p>Separately, if your goal is to invoke Python in a virtual environment, I'd use <code>uv run python</code> instead. You can also use <code>uv run -m</code> directly.</p>
+<p>Separately, if your goal is to invoke Python in a virtual environment, I&#x27;d use <code>uv run python</code> instead. You can also use <code>uv run -m</code> directly.</p>
 </blockquote>
 <p>I thought that was the one that pulls the dependency at call time not uses the venv one?</p>
 <p>I want to ensure I am using the exactly right version in CI (in this case a free-threaded Python maturin) not just let it pull in a suitable one (and mislead me that it is free-threaded if actually there is a bug in that)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "`uv python find` does not detect venv Python in CPython 3.13t and 3.14+ (CI)" to "`uv python find` does not detect venv Python in CPython 3.13t and 3.14t (CI)" by @lmmx on 2025-10-24 08:26</div>
+            <div class="event">Renamed from &quot;`uv python find` does not detect venv Python in CPython 3.13t and 3.14+ (CI)&quot; to &quot;`uv python find` does not detect venv Python in CPython 3.13t and 3.14t (CI)&quot; by <a href="https://github.com/lmmx">@lmmx</a> on 2025-10-24 08:26</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/lmmx">@lmmx</a> on 2025-10-24 09:02</div>
@@ -345,15 +345,15 @@ Fatal Python error: Segmentation fault
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @lmmx on 2025-10-24 09:02</div>
+            <div class="event">Closed by <a href="https://github.com/lmmx">@lmmx</a> on 2025-10-24 09:02</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "`uv python find` does not detect venv Python in CPython 3.13t and 3.14t (CI)" to "`uv python find` does not detect venv Python in CPython 3.13t" by @lmmx on 2025-10-24 09:32</div>
+            <div class="event">Renamed from &quot;`uv python find` does not detect venv Python in CPython 3.13t and 3.14t (CI)&quot; to &quot;`uv python find` does not detect venv Python in CPython 3.13t&quot; by <a href="https://github.com/lmmx">@lmmx</a> on 2025-10-24 09:32</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:33:16 UTC
+        Synced at 2026-01-20 19:40:47 UTC
     </footer>
 </body>
 </html>

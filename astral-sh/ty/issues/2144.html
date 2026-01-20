@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dedeswim">@dedeswim</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>Hi, thank you so much for ty!</p>
 <p>In my codebase I have this:</p>
-<pre><code class="language-py">if sys.version_info &lt; (3, 11):
+<pre><code>if sys.version_info &lt; (3, 11):
     from exceptiongroup import ExceptionGroup
 </code></pre>
 <p>My environment looks like this:</p>
@@ -37,10 +37,10 @@
 <li>I use uv to manage the project, and <code>.python-version</code> is 3.13</li>
 </ul>
 <p>And in <code>pyproject.toml</code> I have</p>
-<pre><code class="language-toml">dependencies = [
+<pre><code>dependencies = [
     # Only needed for py3.10 as &gt;=3.11 comes with
     # ExceptionGroup in the standard library
-    &quot;exceptiongroup&gt;=1.2.0; python_version &lt; '3.11'&quot;,
+    &quot;exceptiongroup&gt;=1.2.0; python_version &lt; &#x27;3.11&#x27;&quot;,
 ]
 </code></pre>
 <p>However, when I run <code>uv run ty check src</code>, I get</p>
@@ -65,15 +65,15 @@ info: rule `unresolved-import` is enabled by default
 </code></pre>
 <p>You can find a minimal example to reproduce this issue <a href="https://github.com/dedeswim/ty-py-version-issue">here</a>.</p>
 <p>I know I can specify <code>python-version = &quot;3.13&quot;</code> in <code>pyproject.toml</code> but I think that ideally <code>ty</code> should pick the Python version from the virtual environment.</p>
-<p>My issue looks similar to #1733, but I don't think it's exactly the same, as in my case all other packages are correctly recognized and imported, and this one is specifically related to picking the right python-version from the environment.</p>
-<h3>Version</h3>
+<p>My issue looks similar to #1733, but I don&#x27;t think it&#x27;s exactly the same, as in my case all other packages are correctly recognized and imported, and this one is specifically related to picking the right python-version from the environment.</p>
+Version
 <p>ty 0.0.5 (d37b7dbd9 2025-12-20)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-21 12:49</div>
-            <div class="timeline-body"><p>Hey, thanks for the report! I'm guessing you have a low <code>requires-python</code> set in your pyproject.toml file?</p>
-<p>I think this issue is the same as https://github.com/astral-sh/ty/issues/1708</p>
+            <div class="timeline-body"><p>Hey, thanks for the report! I&#x27;m guessing you have a low <code>requires-python</code> set in your pyproject.toml file?</p>
+<p>I think this issue is the same as <a href="https://github.com/astral-sh/ty/issues/1708">astral-sh/ty#1708</a></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -81,27 +81,27 @@ info: rule `unresolved-import` is enabled by default
             <div class="timeline-body"><blockquote>
 <p>I think that ideally <code>ty</code> should pick the Python version from the virtual environment</p>
 </blockquote>
-<p>We do have have this fallback already, but it only triggers if you don't have a <code>requires-python</code> set in your pyproject.toml file. If we see that setting there, we assume you probably want your project to type-check with the lowest version of Python your project supports, so we assume that version when type-checking your project</p>
+<p>We do have have this fallback already, but it only triggers if you don&#x27;t have a <code>requires-python</code> set in your pyproject.toml file. If we see that setting there, we assume you probably want your project to type-check with the lowest version of Python your project supports, so we assume that version when type-checking your project</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-21 16:22</div>
-            <div class="timeline-body"><p>We don't read <code>.python-version</code> files at all right now, but even if we did I think we'd probably only fallback to them if your pyproject.toml file <em>didn't</em> have a <code>requires-python</code> configuration field set.</p>
+            <div class="timeline-body"><p>We don&#x27;t read <code>.python-version</code> files at all right now, but even if we did I think we&#x27;d probably only fallback to them if your pyproject.toml file <em>didn&#x27;t</em> have a <code>requires-python</code> configuration field set.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dedeswim">@dedeswim</a> on 2025-12-22 08:46</div>
             <div class="timeline-body"><p>Thank you so much for the reply!</p>
 <blockquote>
-<p>I'm guessing you have a low requires-python set in your pyproject.toml file?</p>
+<p>I&#x27;m guessing you have a low requires-python set in your pyproject.toml file?</p>
 </blockquote>
 <p>Yeah, it is indeed <code>requires-python = &quot;&gt;=3.10,&lt;3.14&quot;</code></p>
 <blockquote>
-<p>but it only triggers if you don't have a requires-python set in your pyproject.toml file.</p>
+<p>but it only triggers if you don&#x27;t have a requires-python set in your pyproject.toml file.</p>
 </blockquote>
 <p>So how would you recommend approaching cases where you need certain dependencies only if using a given Python version? To use <code>--python-version</code>? To set <code>.python-version</code> to the lowest supported version so that <code>uv</code> uses that one?</p>
 <blockquote>
-<p>We don't read .python-version files at all right now</p>
+<p>We don&#x27;t read .python-version files at all right now</p>
 </blockquote>
 <p>Yeah I do not expect ty to read <code>.python-version</code>. I just mentioned this to say that <code>uv</code> is set up to use Python 3.13.</p>
 <p>Btw, I believe that pyright and basedpyright prioritize the venv version over the lowest supported <code>requires-python</code> in pyproject.toml</p>
@@ -113,20 +113,20 @@ info: rule `unresolved-import` is enabled by default
             <div class="timeline-body"><blockquote>
 <p>So how would you recommend approaching cases where you need certain dependencies only if using a given Python version? To use <code>--python-version</code>? To set <code>.python-version</code> to the lowest supported version so that <code>uv</code> uses that one?</p>
 </blockquote>
-<p>I would include <code>exceptiongroup</code> as a dev-dependency on all Python versions, even though it's only a runtime dependency for you on Python &lt;3.11, so that you can easily type-check your code locally with a virtual environment that uses a newer version of Python</p>
+<p>I would include <code>exceptiongroup</code> as a dev-dependency on all Python versions, even though it&#x27;s only a runtime dependency for you on Python &lt;3.11, so that you can easily type-check your code locally with a virtual environment that uses a newer version of Python</p>
 <blockquote>
-<p>Also, yeah it seems to be a duplicate of https://github.com/astral-sh/ty/issues/1708. Sorry about that!</p>
+<p>Also, yeah it seems to be a duplicate of <a href="https://github.com/astral-sh/ty/issues/1708">astral-sh/ty#1708</a>. Sorry about that!</p>
 </blockquote>
 <p>Oh, no problem at all! Finding dupes on GitHub is ~impossible, especially on a project full of jargon like a type checker 😃</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-12-22 12:06</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-22 12:06</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:21:30 UTC
+        Synced at 2026-01-20 19:26:41 UTC
     </footer>
 </body>
 </html>

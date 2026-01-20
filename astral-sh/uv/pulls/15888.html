@@ -40,7 +40,7 @@ Part of #13883</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-09-16 08:49</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/konstin">@konstin</a> on 2025-09-16 08:49</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-17 10:52</div>
@@ -52,7 +52,7 @@ Part of #13883</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-17 11:18</div>
-            <div class="timeline-body"><p>Given that there's support for this in the Rust standard library without warnings about platforms that don't support this, I expect wide support. I added a path that ignores platforms and filesystems with missing shared lock support.</p>
+            <div class="timeline-body"><p>Given that there&#x27;s support for this in the Rust standard library without warnings about platforms that don&#x27;t support this, I expect wide support. I added a path that ignores platforms and filesystems with missing shared lock support.</p>
 <p>CC @BurntSushi who knows about file locking and @geofft who knows about Unix.</p>
 </div>
         </div>
@@ -62,8 +62,8 @@ Part of #13883</p>
 <blockquote>
 <p>This function currently corresponds to the <code>flock</code> function on Unix with the <code>LOCK_SH</code> flag, and the <code>LockFileEx</code> function on Windows.</p>
 </blockquote>
-<p>Both of these seem supported and work properly on OS versions from the last few decades. [There is a quirk(https://utcc.utoronto.ca/~cks/space/blog/linux/FlockFcntlAndNFS) with <code>flock</code> on NFS if one client is accessing over NFS and another is directly accessing the local filesystem on the NFS server, but that's kind of a &quot;don't do that&quot; situation.</p>
-<p>I haven't looked in detail at the implementation but the rough approach of making a .lock file in the directory, ensuring every client is referring go the same actual file by relying on atomic hardlinks into place (which does work reliably on NFS), and then using shared or exclusive locks of the same lock type (and not byte-range locks), seems sound to me.</p>
+<p>Both of these seem supported and work properly on OS versions from the last few decades. [There is a quirk(https://utcc.utoronto.ca/~cks/space/blog/linux/FlockFcntlAndNFS) with <code>flock</code> on NFS if one client is accessing over NFS and another is directly accessing the local filesystem on the NFS server, but that&#x27;s kind of a &quot;don&#x27;t do that&quot; situation.</p>
+<p>I haven&#x27;t looked in detail at the implementation but the rough approach of making a .lock file in the directory, ensuring every client is referring go the same actual file by relying on atomic hardlinks into place (which does work reliably on NFS), and then using shared or exclusive locks of the same lock type (and not byte-range locks), seems sound to me.</p>
 <p>I have a very slight worry about implementations that desugar <code>flock</code> into byte-range locks if there are no actual bytes in the file, i.e., the locked range is zero length. I am not sure if this is a real worry but we can just write one byte into the file to avoid the risk.</p>
 </div>
         </div>
@@ -85,7 +85,7 @@ Part of #13883</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-09-17 12:22</div>
-            <div class="timeline-body"><p>If memory serves, <code>flock</code> and POSIX <code>fcntl</code> locks are process <em>global</em>. So the main footgun to be aware of here is that you can't use them as synchronization primitives across threads within the same process.</p>
+            <div class="timeline-body"><p>If memory serves, <code>flock</code> and POSIX <code>fcntl</code> locks are process <em>global</em>. So the main footgun to be aware of here is that you can&#x27;t use them as synchronization primitives across threads within the same process.</p>
 <p>AFAIK, open file description locks on Linux support NFS and can be used as synchronization primitives across threads. But I think they are Linux-only unfortunately.</p>
 </div>
         </div>
@@ -94,23 +94,23 @@ Part of #13883</p>
             <div class="timeline-body"><blockquote>
 <p>If the cache is read only, this will cause a regression?</p>
 </blockquote>
-<p>Like elsewhere, I'd suggest we <code>tracing::warn!</code> if we can't acquire it, but not fail.</p>
+<p>Like elsewhere, I&#x27;d suggest we <code>tracing::warn!</code> if we can&#x27;t acquire it, but not fail.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-17 14:16</div>
-            <div class="timeline-body"><p>That's implemented :) <a href="https://github.com/astral-sh/uv/pull/15888/files#diff-d0c8455b65232353aa60383cd8a80d99a8b31cf7cd76bf22c18d32de36bed34cR403-R409">https://github.com/astral-sh/uv/pull/15888/files#diff-d0c8455b65232353aa60383cd8a80d99a8b31cf7cd76bf22c18d32de36bed34cR403-R409</a></p>
+            <div class="timeline-body"><p>That&#x27;s implemented :) <a href="https://github.com/astral-sh/uv/pull/15888/files#diff-d0c8455b65232353aa60383cd8a80d99a8b31cf7cd76bf22c18d32de36bed34cR403-R409">astral-sh/uv#15888</a></p>
 <p>(I still have to test the read-only cache and handle the Windows CI failure before we can merge)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-18 16:48</div>
-            <div class="timeline-body"><p>It seems read-only caches already don't work, I filed a separate bug for it: https://github.com/astral-sh/uv/issues/15934</p>
+            <div class="timeline-body"><p>It seems read-only caches already don&#x27;t work, I filed a separate bug for it: <a href="https://github.com/astral-sh/uv/issues/15934">astral-sh/uv#15934</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-18 17:54</div>
-            <div class="timeline-body"><p>I cannot reproduce the CI failure locally, any ideas what's happening? I could see something about the locked file not being deletable, but that should happen consistently, and it also doesn't match the error message.</p>
+            <div class="timeline-body"><p>I cannot reproduce the CI failure locally, any ideas what&#x27;s happening? I could see something about the locked file not being deletable, but that should happen consistently, and it also doesn&#x27;t match the error message.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -120,12 +120,12 @@ Part of #13883</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-18 19:00</div>
-            <div class="timeline-body"><p>re. CI vs locally... maybe because it's on a ReFS drive?</p>
+            <div class="timeline-body"><p>re. CI vs locally... maybe because it&#x27;s on a ReFS drive?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-19 07:39</div>
-            <div class="timeline-body"><p>I thought so too, but I'm using a ReFS drive on my laptop and it passes there.</p>
+            <div class="timeline-body"><p>I thought so too, but I&#x27;m using a ReFS drive on my laptop and it passes there.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -134,10 +134,10 @@ Part of #13883</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @konstin on 2025-09-19 08:21</div>
+            <div class="event">Merged by <a href="https://github.com/konstin">@konstin</a> on 2025-09-19 08:21</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @konstin on 2025-09-19 08:21</div>
+            <div class="event">Closed by <a href="https://github.com/konstin">@konstin</a> on 2025-09-19 08:21</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-09-19 08:21</div>
@@ -146,20 +146,20 @@ Part of #13883</p>
             <div class="timeline-header">Comment by <a href="https://github.com/markuspi">@markuspi</a> on 2025-11-07 14:45</div>
             <div class="timeline-body"><p>Hi @konstin considering this PR, is the note in the documentation regarding <a href="https://docs.astral.sh/uv/concepts/cache/#cache-safety">cache safety</a> still relevant?</p>
 <blockquote>
-<p>Note that it's not safe to modify the uv cache (e.g., uv cache clean) while other uv commands are running, [...]</p>
+<p>Note that it&#x27;s not safe to modify the uv cache (e.g., uv cache clean) while other uv commands are running, [...]</p>
 </blockquote>
 <p>Specifically, i am interested in periodically running <code>uv cache prune</code></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-11-07 15:19</div>
-            <div class="timeline-body"><p>Currently, uv blocks, but we want to make some further adjustment that might weaken this a bit so I don't want to remove the warning. I don't recommend using <code>uv cache</code> operations on a timer, I'd only use them manually and when required.</p>
+            <div class="timeline-body"><p>Currently, uv blocks, but we want to make some further adjustment that might weaken this a bit so I don&#x27;t want to remove the warning. I don&#x27;t recommend using <code>uv cache</code> operations on a timer, I&#x27;d only use them manually and when required.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:44:47 UTC
+        Synced at 2026-01-20 19:54:01 UTC
     </footer>
 </body>
 </html>

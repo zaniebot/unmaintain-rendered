@@ -24,7 +24,7 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/bmalehorn">@bmalehorn</a></div>
             <div class="timeline-body"><p>From <code>man 7 glob</code>:</p>
-<pre><code>One can remove the special meaning of '?', '*' and '[' by preceding
+<pre><code>One can remove the special meaning of &#x27;?&#x27;, &#x27;*&#x27; and &#x27;[&#x27; by preceding
 them by a backslash, or, in case this is part of a shell command
 line, enclosing them in quotes.</code></pre>
 <p>Conform to glob / fnmatch / git implementations by parsing <code>\?</code>, <code>\*</code>
@@ -40,28 +40,28 @@ anything else, parse it as before.</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2018-02-17 05:10</div>
-            <div class="timeline-body"><p>Aside from the Windows path issue, if i'm reading it right, this doesn't actually conform to the real-world behaviour of either <code>fnmatch(3)</code> or Git: A <code>\</code> should escape <em>any</em> character that follows it, even if it's not a meta-character. In other words, not only does the pattern <code>foo\*bar</code> match the string <code>foo*bar</code>, <code>foo\bar</code> also matches <code>foobar</code>.</p>
+            <div class="timeline-body"><p>Aside from the Windows path issue, if i&#x27;m reading it right, this doesn&#x27;t actually conform to the real-world behaviour of either <code>fnmatch(3)</code> or Git: A <code>\</code> should escape <em>any</em> character that follows it, even if it&#x27;s not a meta-character. In other words, not only does the pattern <code>foo\*bar</code> match the string <code>foo*bar</code>, <code>foo\bar</code> also matches <code>foobar</code>.</p>
 <p>(For comparison, <a href="https://github.com/BurntSushi/ripgrep/issues/526#issuecomment-310754910">here</a> is where i provided my own attempt at fixing it, and as mentioned i think it behaves pretty well on UNIX, but it leaves the Windows issues unaddressed just like this one does.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/bmalehorn">@bmalehorn</a> on 2018-02-17 05:50</div>
-            <div class="timeline-body"><p>@okdana That's not quite correct, <code>foo\*bar</code> matches <code>foo*bar</code> but <code>foo\bar</code> will still only match <code>foo\bar</code>. If the character after <code>\</code> isn't one of the special characters, we emit both characters.</p>
-<p>However I'm realizing now what you two probably realized a while ago, that this is going to break <code>-g</code> on Windows. Even though <code>src\foo.rs</code> will still work on Windows with this commit, globs like <code>src\*.rs</code> won't. Instead, you'd have to type <code>src/*.rs</code> or <code>src[\]*.rs</code>.</p>
+            <div class="timeline-body"><p>@okdana That&#x27;s not quite correct, <code>foo\*bar</code> matches <code>foo*bar</code> but <code>foo\bar</code> will still only match <code>foo\bar</code>. If the character after <code>\</code> isn&#x27;t one of the special characters, we emit both characters.</p>
+<p>However I&#x27;m realizing now what you two probably realized a while ago, that this is going to break <code>-g</code> on Windows. Even though <code>src\foo.rs</code> will still work on Windows with this commit, globs like <code>src\*.rs</code> won&#x27;t. Instead, you&#x27;d have to type <code>src/*.rs</code> or <code>src[\]*.rs</code>.</p>
 <p>I suppose the real problem stems from using the same glob code for both <code>-g</code> and gitignores. <code>rg -g</code> is considerate to Windows and allows backslashes. Meanwhile Git demands .gitignores be written only with forward slashes, freeing up backslashes for escaping. Ditto for Mercurial and .hgignores.</p>
 <p>So I suppose the only ways to parse .gitignores 100% accurately are:</p>
 <ol>
 <li>(this PR) make <code>\</code> unusable in some situations; annoy Windows users, OR</li>
 <li>only apply this glob change for .gitignores; parse <code>-g</code> and .gitignores differently; be inconsistent</li>
 </ol>
-<p>Both of these kind of suck so I can see why this issue hasn't been closed yet.</p>
-<p>Does that explanation make sense to everyone? Perhaps it's best to leave everything as it is: don't annoy Windows users, don't be inconsistent, but do parse a rare .gitignore pattern incorrectly.</p>
+<p>Both of these kind of suck so I can see why this issue hasn&#x27;t been closed yet.</p>
+<p>Does that explanation make sense to everyone? Perhaps it&#x27;s best to leave everything as it is: don&#x27;t annoy Windows users, don&#x27;t be inconsistent, but do parse a rare .gitignore pattern incorrectly.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2018-02-17 06:03</div>
             <div class="timeline-body"><blockquote>
-<p>@okdana That's not quite correct, <code>foo\*bar</code> matches <code>foo*bar</code> but <code>foo\bar</code> will still only match <code>foo\bar</code></p>
+<p>@okdana That&#x27;s not quite correct, <code>foo\*bar</code> matches <code>foo*bar</code> but <code>foo\bar</code> will still only match <code>foo\bar</code></p>
 </blockquote>
 <p>How did you come to that conclusion?</p>
 <pre><code>% cat fnmatch.c
@@ -73,37 +73,37 @@ int main(int argc, char *argv[]) {
 
 % gcc -o fnmatch fnmatch.c
 
-% ./fnmatch 'foo\bar' 'foo\bar'
+% ./fnmatch &#x27;foo\bar&#x27; &#x27;foo\bar&#x27;
 fnmatch() returned 1
-% ./fnmatch 'foo\bar' 'foobar'
+% ./fnmatch &#x27;foo\bar&#x27; &#x27;foobar&#x27;
 fnmatch() returned 0
 </code></pre>
 <p>Or with Git:</p>
 <pre><code>% mkdir rg811 &amp;&amp; cd rg811 &amp;&amp; git init
 Initialized empty Git repository in /private/tmp/rg811/.git/
-% touch .gitignore foobar 'foo\bar'
+% touch .gitignore foobar &#x27;foo\bar&#x27;
 
 % git status --porcelain
 ?? .gitignore
 ?? &quot;foo\\bar&quot;
 ?? foobar
 
-% echo 'foo\bar' &gt; .gitignore; git status --porcelain
+% echo &#x27;foo\bar&#x27; &gt; .gitignore; git status --porcelain
 ?? .gitignore
 ?? &quot;foo\\bar&quot;
 
-% echo 'foo\\bar' &gt; .gitignore; git status --porcelain
+% echo &#x27;foo\\bar&#x27; &gt; .gitignore; git status --porcelain
 ?? .gitignore
 ?? foobar
 </code></pre>
-<p>I personally would like <code>\</code> to work as expected on UNIX, and since the <code>gitignore</code> spec doesn't support <code>\</code> as a path separator on Windows i feel like it's kind of problematic that <code>globset</code> does. If i were a Windows user i think i would just expect <code>rg</code> to behave like Git. But i can imagine that making a unilateral change like that could break stuff, so idk</p>
+<p>I personally would like <code>\</code> to work as expected on UNIX, and since the <code>gitignore</code> spec doesn&#x27;t support <code>\</code> as a path separator on Windows i feel like it&#x27;s kind of problematic that <code>globset</code> does. If i were a Windows user i think i would just expect <code>rg</code> to behave like Git. But i can imagine that making a unilateral change like that could break stuff, so idk</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/bmalehorn">@bmalehorn</a> on 2018-02-17 08:42</div>
-            <div class="timeline-body"><p>@okdana Sorry if I wasn't clear, but I was describing the behavior of my patch, not <code>fnmatch</code> or <code>git</code>. But I see now how my patch differs from <code>fnmatch</code>.</p>
+            <div class="timeline-body"><p>@okdana Sorry if I wasn&#x27;t clear, but I was describing the behavior of my patch, not <code>fnmatch</code> or <code>git</code>. But I see now how my patch differs from <code>fnmatch</code>.</p>
 <blockquote>
-<p>I personally would like \ to work as expected on UNIX, and since the gitignore spec doesn't support \ as a path separator on Windows i feel like it's kind of problematic that globset does. If i were a Windows user i think i would just expect rg to behave like Git. But i can imagine that making a unilateral change like that could break stuff, so idk</p>
+<p>I personally would like \ to work as expected on UNIX, and since the gitignore spec doesn&#x27;t support \ as a path separator on Windows i feel like it&#x27;s kind of problematic that globset does. If i were a Windows user i think i would just expect rg to behave like Git. But i can imagine that making a unilateral change like that could break stuff, so idk</p>
 </blockquote>
 <p>I propose a compromise: on Windows, globset would behave as-is, but on Unix, we would correct it to behave like fnmatch (like in your patch). Windows users could still use <code>\</code> in pathnames, and Unix users would get exactly fnmatch behavior. Does that sound like a good idea to anyone?</p>
 </div>
@@ -111,13 +111,13 @@ Initialized empty Git repository in /private/tmp/rg811/.git/
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2018-02-17 17:40</div>
             <div class="timeline-body"><blockquote>
-<p>Sorry if I wasn't clear, but I was describing the behavior of my patch</p>
+<p>Sorry if I wasn&#x27;t clear, but I was describing the behavior of my patch</p>
 </blockquote>
 <p>Oh, sorry.</p>
 <blockquote>
 <p>Does that sound like a good idea to anyone?</p>
 </blockquote>
-<p>That's how PHP does it. Not sure if it's the best option or not, but it's an option...</p>
+<p>That&#x27;s how PHP does it. Not sure if it&#x27;s the best option or not, but it&#x27;s an option...</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -125,14 +125,14 @@ Initialized empty Git repository in /private/tmp/rg811/.git/
             <div class="timeline-body"><blockquote>
 <p>I propose a compromise: on Windows, globset would behave as-is, but on Unix, we would correct it to behave like fnmatch (like in your patch). Windows users could still use <code>\</code> in pathnames, and Unix users would get exactly fnmatch behavior. Does that sound like a good idea to anyone?</p>
 </blockquote>
-<p>This sounds plausible, but we need to be fastidious in how we go about this. That is, I suspect this should be a <a href="https://docs.rs/globset/0.3.0/globset/struct.GlobBuilder.html">configuration knob on the <code>Glob</code> type</a> so that users of the library can choose what behavior they want explicitly, if necessary. I'd probably call it:</p>
-<pre><code class="language-rust">fn forward_slash_separator(&amp;mut sefl, yes: bool) -&gt; &amp;mut GlobBuilder&lt;'a&gt; {
+<p>This sounds plausible, but we need to be fastidious in how we go about this. That is, I suspect this should be a <a href="https://docs.rs/globset/0.3.0/globset/struct.GlobBuilder.html">configuration knob on the <code>Glob</code> type</a> so that users of the library can choose what behavior they want explicitly, if necessary. I&#x27;d probably call it:</p>
+<pre><code>fn forward_slash_separator(&amp;mut sefl, yes: bool) -&gt; &amp;mut GlobBuilder&lt;&#x27;a&gt; {
 </code></pre>
 <p>We should document this to say that when a forward slash is a separator, then it will never be interpreted as the start of an escape sequence. But when disabled, <code>\</code> may be used to escape meta characters. We should document this in the syntax description in the main docs of the <code>globset</code> crate.</p>
-<p>I'm tempted to say that this should be disabled by default on all non-Windows platforms and enabled by default on Windows platforms, but that kind of conditional logic in a somewhat fundamental crate like this seems... unwise. Alas, we already have some conditional logic in that we always treat <code>\</code> as a separator on Windows: https://github.com/BurntSushi/ripgrep/blob/597bf04a56d43aa9c0eb0f8fbb90c9d51c53656c/globset/src/glob.rs#L730</p>
-<p>And looking at that more, explicitly calling out &quot;forward slash&quot; in the API seems wrong too, since we've broken the &quot;path separator&quot; abstraction by doing so.</p>
+<p>I&#x27;m tempted to say that this should be disabled by default on all non-Windows platforms and enabled by default on Windows platforms, but that kind of conditional logic in a somewhat fundamental crate like this seems... unwise. Alas, we already have some conditional logic in that we always treat <code>\</code> as a separator on Windows: https://github.com/BurntSushi/ripgrep/blob/597bf04a56d43aa9c0eb0f8fbb90c9d51c53656c/globset/src/glob.rs#L730</p>
+<p>And looking at that more, explicitly calling out &quot;forward slash&quot; in the API seems wrong too, since we&#x27;ve broken the &quot;path separator&quot; abstraction by doing so.</p>
 <p>What about this instead?</p>
-<pre><code class="language-rust">/// When enabled, a forward slash (`\`) may be used to escape
+<pre><code>/// When enabled, a forward slash (`\`) may be used to escape
 /// special characters in a glob pattern. Additionally, this will
 /// prevent `\` from being interpreted as a path separator on all
 /// platforms.
@@ -140,7 +140,7 @@ Initialized empty Git repository in /private/tmp/rg811/.git/
 /// This is enabled by default on platforms where `\` is not a
 /// path separator and disabled by default on platforms where `\`
 /// is a path separator.
-fn forward_slash_escape(&amp;mut sefl, yes: bool) -&gt; &amp;mut GlobBuilder&lt;'a&gt; {
+fn forward_slash_escape(&amp;mut sefl, yes: bool) -&gt; &amp;mut GlobBuilder&lt;&#x27;a&gt; {
 </code></pre>
 <p>Regrettably, there is no way around a breaking change here, which means this will require another semver bump. /sigh</p>
 </div>
@@ -153,8 +153,8 @@ fn forward_slash_escape(&amp;mut sefl, yes: bool) -&gt; &amp;mut GlobBuilder&lt;
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2018-02-20 12:47</div>
             <div class="timeline-body"><p>Nit-pick: <code>\</code> is the back-slash, not forward-slash</p>
-<p>An option like that sounds reasonable to me for whatever it's worth. The only concerns i can think of with the platform-specific method are (1) it might trick Windows users into thinking that Git supports <code>\</code> as a separator (which it apparently doesn't), and (2) it still leaves them out in the cold when it comes to being able to escape things.</p>
-<p>I never use Windows, so i have zero personal stake in how well <code>rg</code> works there, but if i <em>were</em> a Windows user i think i'd find that limitation somewhat bothersome. On the other hand, like i mentioned in the other thread, most of the glob meta-characters are illegal in Windows file names anyway (or they were last time i used it), so maybe it doesn't actually matter that much in practice...</p>
+<p>An option like that sounds reasonable to me for whatever it&#x27;s worth. The only concerns i can think of with the platform-specific method are (1) it might trick Windows users into thinking that Git supports <code>\</code> as a separator (which it apparently doesn&#x27;t), and (2) it still leaves them out in the cold when it comes to being able to escape things.</p>
+<p>I never use Windows, so i have zero personal stake in how well <code>rg</code> works there, but if i <em>were</em> a Windows user i think i&#x27;d find that limitation somewhat bothersome. On the other hand, like i mentioned in the other thread, most of the glob meta-characters are illegal in Windows file names anyway (or they were last time i used it), so maybe it doesn&#x27;t actually matter that much in practice...</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -164,9 +164,9 @@ fn forward_slash_escape(&amp;mut sefl, yes: bool) -&gt; &amp;mut GlobBuilder&lt;
 </blockquote>
 <p>:rofl: Thanks for that. Derp.</p>
 <blockquote>
-<p>I never use Windows, so i have zero personal stake in how well rg works there, but if i were a Windows user i think i'd find that limitation somewhat bothersome. On the other hand, like i mentioned in the other thread, most of the glob meta-characters are illegal in Windows file names anyway (or they were last time i used it), so maybe it doesn't actually matter that much in practice...</p>
+<p>I never use Windows, so i have zero personal stake in how well rg works there, but if i were a Windows user i think i&#x27;d find that limitation somewhat bothersome. On the other hand, like i mentioned in the other thread, most of the glob meta-characters are illegal in Windows file names anyway (or they were last time i used it), so maybe it doesn&#x27;t actually matter that much in practice...</p>
 </blockquote>
-<p>Yeah, I share your trepidation, definitely. I don't use Windows either, so I basically have no idea what the common or expected usage patterns are. Bascially, I hear your argument, but I also think, &quot;Shouldn't Windows users be able to use their native path separator? Maybe they are just annoyed that git doesn't allow it?&quot; But yeah, hopefully @retep998 can shed some light. @roblourens might also have opinions!</p>
+<p>Yeah, I share your trepidation, definitely. I don&#x27;t use Windows either, so I basically have no idea what the common or expected usage patterns are. Bascially, I hear your argument, but I also think, &quot;Shouldn&#x27;t Windows users be able to use their native path separator? Maybe they are just annoyed that git doesn&#x27;t allow it?&quot; But yeah, hopefully @retep998 can shed some light. @roblourens might also have opinions!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -191,13 +191,13 @@ fn forward_slash_escape(&amp;mut sefl, yes: bool) -&gt; &amp;mut GlobBuilder&lt;
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-20 18:56</div>
-            <div class="timeline-body"><p>All right, I guess that's good enough for me.</p>
-<p>@bmalehorn I think my comment here still seems mostly relevant: https://github.com/BurntSushi/ripgrep/pull/811#issuecomment-366962156 That is, we still need to make <code>\</code> as an escape character be a toggleable feature. I think enabling it by default on Unix and disabling it by default on Windows makes the most sense for <code>globset</code>. Then in the <code>ignore</code> crate, we can enable it unconditionally regardless of platform.</p>
+            <div class="timeline-body"><p>All right, I guess that&#x27;s good enough for me.</p>
+<p>@bmalehorn I think my comment here still seems mostly relevant: <a href="https://github.com/BurntSushi/ripgrep/pull/811">BurntSushi/ripgrep#811</a>#issuecomment-366962156 That is, we still need to make <code>\</code> as an escape character be a toggleable feature. I think enabling it by default on Unix and disabling it by default on Windows makes the most sense for <code>globset</code>. Then in the <code>ignore</code> crate, we can enable it unconditionally regardless of platform.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/bmalehorn">@bmalehorn</a> on 2018-02-22 07:20</div>
-            <div class="timeline-body"><p>This all makes sense and sounds like the most reasonable solution. I'll update this PR tomorrow.</p>
+            <div class="timeline-body"><p>This all makes sense and sounds like the most reasonable solution. I&#x27;ll update this PR tomorrow.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -206,12 +206,12 @@ fn forward_slash_escape(&amp;mut sefl, yes: bool) -&gt; &amp;mut GlobBuilder&lt;
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2018-03-10 14:31</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-03-10 14:31</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 18:27:59 UTC
+        Synced at 2026-01-20 18:48:17 UTC
     </footer>
 </body>
 </html>

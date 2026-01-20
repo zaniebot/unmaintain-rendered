@@ -25,7 +25,7 @@
             <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a></div>
             <div class="timeline-body"><p>This is a tracking issue for the re-implementation/re-packaging of the control flow graph in Ruff. The hope is that may eventually power some finer analyses and improve the correctness of some of our lint rules.</p>
 <p>Thanks goes to @augustelalande for completing the implementation of the control flow graph that currently exists in Ruff! Many of the ideas present there have survived to the new specification and implementation.</p>
-<h1>Task list</h1>
+Task list
 <p>Control flow graph</p>
 <ul>
 <li>[x] Setup: <code>CFG</code> struct, builder (skeleton), visualization, and snapshot testing #17064</li>
@@ -44,11 +44,11 @@
 <ul>
 <li>[ ] Benchmark alternative graph designs, e.g. the arena approach <a href="https://docs.rs/petgraph/latest/petgraph/graph/struct.Graph.html">used here</a> or returning to the bivalent approach from the original implementation</li>
 </ul>
-<p>A detailed specification for what we're attempting to implement can be found below.</p>
-<details>
-<summary> Specification </summary>
+<p>A detailed specification for what we&#x27;re attempting to implement can be found below.</p>
 
-<h1>Overview</h1>
+ Specification 
+
+Overview
 <p>A control flow graph is a grouping of statements into <em>basic blocks</em>
 and edges indicating possible paths that a program may take through
 those statements. In general, this is an <em>over</em> approximation to the
@@ -67,18 +67,18 @@ reach a statement that invokes control flow. These are exactly the following:
 <p>There are also <code>assert</code> and <code>with</code> statements, which are syntactic sugar
 for a combination of the above.</p>
 <p>We now discuss how each kind of control flow is handled.</p>
-<h2>Switch Statements</h2>
+Switch Statements
 <p>Upon reaching a switch statement, the statement
 itself terminates the basic block, and several outgoing
 edges are added, labeled by the condition that needs to
 be satisfied in order to traverse that edge. For example:</p>
-<pre><code class="language-python">if cond:
+<pre><code>if cond:
   f()
 else:
   g()
 </code></pre>
 <p>Produces:</p>
-<pre><code class="language-text">         +--------+
+<pre><code>         +--------+
          |  Start |
          +--------+
              |
@@ -100,13 +100,13 @@ else:
       |  End   |
       +--------+
 </code></pre>
-<h2>Loops</h2>
+Loops
 <p>A loop consists of a <em>loop guard</em>, a <em>body</em>, and an optional
 <em>else</em> clause. The <em>loop guard</em> is a condition we check to
 determine whether to re-enter the loop body, the <em>body</em> is again
 a list of statements, and the <em>else</em> clause is a possible
 exit from the loop body or guard (depending). For simplicity,
-let's ignore the else clause for a moment and specialize to the
+let&#x27;s ignore the else clause for a moment and specialize to the
 case of <code>while</code> loops.</p>
 <p>When we reach a <code>while</code> loop, we begin by creating a new
 basic block that is comprised entirely of the <code>loop</code> guard,
@@ -120,11 +120,11 @@ which points back to the loop guard, and another that goes to the
 loop exit. An exception would be the case of a jump statement, like
 <code>continue</code> or <code>return</code>.</p>
 <p>For example,</p>
-<pre><code class="language-python">while cond:
+<pre><code>while cond:
   continue
 </code></pre>
 <p>would create</p>
-<pre><code class="language-text">         +--------+
+<pre><code>         +--------+
          |  Start |
          +--------+
              |
@@ -145,11 +145,11 @@ loop exit. An exception would be the case of a jump statement, like
   +-&gt; |  End   |
       +--------+
 </code></pre>
-<h2>Exception Handling</h2>
+Exception Handling
 <p>Before discussing jumps, which ought to have been
 relatively straightforward, we must introduce a wrinkle:
 exception handling. Control flow would be much simpler
-if it weren't for <code>try</code> statements!</p>
+if it weren&#x27;t for <code>try</code> statements!</p>
 <p>First, we have to alter our interpretation of what
 the control flow graph actually represents when we
 are inside of a <code>try</code> statement. Basic blocks within
@@ -163,7 +163,7 @@ control flow. They are <code>EXCEPTION DISPATCH</code> and <code>RECOVERY</code>
 blocks, which we use in the presence of <code>except</code> and <code>finally</code>
 clauses, respectively.</p>
 <p>For example:</p>
-<pre><code class="language-python">try:
+<pre><code>try:
   maybe_raise()
 except ValueError:
   this()
@@ -173,7 +173,7 @@ finally:
   cleanup()
 </code></pre>
 <p>results in:</p>
-<pre><code class="language-text">        +-------+
+<pre><code>        +-------+
         | START |
         +-------+
             |
@@ -203,7 +203,7 @@ ValueError|        | TypeError    | else
 </code></pre>
 <p>The recovery block is especially useful in the handling
 of deferred jumps, which we now discuss.</p>
-<h2>Jumps</h2>
+Jumps
 <p>Upon reaching a jump statement, we must first examine
 the stack of _try context_s. That is, we need to know whether we
 are in certain clauses of a (nested) <code>try</code> statement,
@@ -233,20 +233,20 @@ and we have checked that we do not need to further defer jumps,
 we then resolve all deferred jumps and pop a <code>TryContext</code>.
 Resolving the jumps just means that we add edges to the corresponding
 targets out of the <code>RECOVERY</code> block.</p>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> added by @dylwil3 on 2025-03-30 22:06</div>
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-03-30 22:06</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @dylwil3 by @dylwil3 on 2025-03-30 22:06</div>
+            <div class="event">Assigned to <a href="https://github.com/dylwil3">@dylwil3</a> by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-03-30 22:06</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:52:29 UTC
+        Synced at 2026-01-20 18:49:45 UTC
     </footer>
 </body>
 </html>

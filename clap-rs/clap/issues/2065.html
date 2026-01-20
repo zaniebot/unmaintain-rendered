@@ -23,8 +23,8 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/mkantor">@mkantor</a></div>
-            <div class="timeline-body"><h3>Code</h3>
-<pre><code class="language-rust">use clap::App;
+            <div class="timeline-body">Code
+<pre><code>use clap::App;
 
 fn main() {
     let mut app = App::new(&quot;This string is 34 characters long.&quot;)
@@ -34,78 +34,78 @@ fn main() {
     app.print_help();
 }
 </code></pre>
-<h3>Steps to reproduce the issue</h3>
+Steps to reproduce the issue
 <ol>
 <li>Run <code>cargo run</code></li>
 <li>Observe that the first line of the output (<code>This string is 34 characters long. v12.34.56</code>) is wider than the desired width (35), even though there are places where it could have been wrapped.</li>
 </ol>
 <p>See <a href="https://github.com/clap-rs/clap/compare/master...mkantor:demonstrate-incorrect-wrapping">this diff</a> for additional test cases.</p>
-<h3>Version</h3>
+Version
 <ul>
 <li><strong>Rust</strong>: <code>rustc 1.45.2 (d3fb005a3 2020-07-31)</code></li>
 <li><strong>Clap</strong>: <code>master</code></li>
 </ul>
-<h3>Actual Behavior Summary</h3>
+Actual Behavior Summary
 <p>When getting help output that has been line-wrapped to fit the terminal width the output can be wider than the terminal, even if there are places where wrapping could have been applied.</p>
-<h3>Expected Behavior Summary</h3>
+Expected Behavior Summary
 <p>Lines should never be wider than specified terminal width unless they contain no word breaks.</p>
-<h3>Additional context</h3>
+Additional context
 <p>Wrapping is currently applied to individual bits and pieces of the overall help message without taking into account their context. For example, as demonstrated above the version number and binary name are displayed on the same line by default, but the binary name is always wrapped as if its last character is at the end of the line. Similarly, some template tags have their output wrapped, but without preceding/trailing characters being accounted for.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">T: bug</span> added by @mkantor on 2020-08-14 00:15</div>
+            <div class="event">Label <span class="label">T: bug</span> added by <a href="https://github.com/mkantor">@mkantor</a> on 2020-08-14 00:15</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../pulls/2066.html">clap-rs/clap#2066</a> on 2020-08-14 00:16</div>
+            <div class="event">Referenced in <a>clap-rs/clap#2066</a> on 2020-08-14 00:16</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mkantor">@mkantor</a> on 2020-08-14 00:19</div>
-            <div class="timeline-body"><p>One way to solve this would be to buffer the entire help message into a string, then apply wrapping to it all at once. This could have a performance impact (I haven't tried it).</p>
+            <div class="timeline-body"><p>One way to solve this would be to buffer the entire help message into a string, then apply wrapping to it all at once. This could have a performance impact (I haven&#x27;t tried it).</p>
 <p>A more sophisticated approach could be to buffer the help message in chunks, flushing it to output whenever wrapping occurs (or when an explicit newline is encountered). That could be fairly complex, though.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mkantor">@mkantor</a> on 2020-08-14 00:25</div>
-            <div class="timeline-body"><p>Expanding on the second paragraph in my previous comment, here's a sketch of what a &quot;buffer in chunks&quot; wrapping algorithm could look like. This hasn't been tested and there are likely edge cases I've missed:</p>
+            <div class="timeline-body"><p>Expanding on the second paragraph in my previous comment, here&#x27;s a sketch of what a &quot;buffer in chunks&quot; wrapping algorithm could look like. This hasn&#x27;t been tested and there are likely edge cases I&#x27;ve missed:</p>
 <ul>
 <li>When writing chunks of the help message, append them to an internal buffer.</li>
-<li>If the buffer's width ever exceeds the terminal width, start wrapping:<ul>
+<li>If the buffer&#x27;s width ever exceeds the terminal width, start wrapping:<ul>
 <li>Scan from the beginning of the buffer up to the terminal width, then backtrack to the previous word break, then flush everything up to that point plus a newline.</li>
-<li>Repeat until the buffer's width is less than the terminal width.</li>
-<li>This process would also need to handle lines that are wider than the terminal but which can't be broken up (e.g. the whole line is one long word).</li>
-<li>It'd also need to handle strings with literal newlines, I guess by stopping each scan early and flushing immediately if a newline is encountered.</li>
+<li>Repeat until the buffer&#x27;s width is less than the terminal width.</li>
+<li>This process would also need to handle lines that are wider than the terminal but which can&#x27;t be broken up (e.g. the whole line is one long word).</li>
+<li>It&#x27;d also need to handle strings with literal newlines, I guess by stopping each scan early and flushing immediately if a newline is encountered.</li>
 </ul>
 </li>
 <li>At the end of the help message, flush whatever is left in the buffer.</li>
 </ul>
-<p>The <code>HelpWriter::Normal</code> vs <code>HelpWriter::Buffer</code> distinction complicates this. Maybe <code>Normal</code> wouldn't get wrapping, just like it doesn't get colors currently? ¯\_(ツ)_/¯</p>
-<p>Anyway, it's probably worth measuring the performance impact of a &quot;buffer it all&quot; strategy first as it should be much simpler. Or maybe there's a better approach than either of these which I've missed.</p>
+<p>The <code>HelpWriter::Normal</code> vs <code>HelpWriter::Buffer</code> distinction complicates this. Maybe <code>Normal</code> wouldn&#x27;t get wrapping, just like it doesn&#x27;t get colors currently? ¯\_(ツ)_/¯</p>
+<p>Anyway, it&#x27;s probably worth measuring the performance impact of a &quot;buffer it all&quot; strategy first as it should be much simpler. Or maybe there&#x27;s a better approach than either of these which I&#x27;ve missed.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../pulls/2067.html">clap-rs/clap#2067</a> on 2020-08-14 01:00</div>
+            <div class="event">Referenced in <a>clap-rs/clap#2067</a> on 2020-08-14 01:00</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-08-14 01:13</div>
-            <div class="timeline-body"><p>If you don't mind, a couple of questions:</p>
+            <div class="timeline-body"><p>If you don&#x27;t mind, a couple of questions:</p>
 <ul>
 <li>Why on earth would you create an app with <code>&quot;horrifyingly and obscenely long binary name&quot;</code> in the first place?</li>
 <li>How did you end up with a display width this tiny? Some sort of mobile device?</li>
 </ul>
-<p>That was out of curiosity. For the record, I'd like to see this fixed, not ignored, even if the decided fix will be &quot;don't support width less than N and assert that&quot;.</p>
+<p>That was out of curiosity. For the record, I&#x27;d like to see this fixed, not ignored, even if the decided fix will be &quot;don&#x27;t support width less than N and assert that&quot;.</p>
 <blockquote>
-<p>This hasn't been tested and there are likely edge cases I've missed:</p>
+<p>This hasn&#x27;t been tested and there are likely edge cases I&#x27;ve missed:</p>
 </blockquote>
 <p>Aha. Word wrap.</p>
 <blockquote>
-<p>Maybe Normal wouldn't get wrapping, just like it doesn't get colors currently</p>
+<p>Maybe Normal wouldn&#x27;t get wrapping, just like it doesn&#x27;t get colors currently</p>
 </blockquote>
-<p><strong>No</strong>. I don't see any reason why lack of color should imply lack of wrapping.</p>
+<p><strong>No</strong>. I don&#x27;t see any reason why lack of color should imply lack of wrapping.</p>
 <blockquote>
-<p>Anyway, it's probably worth measuring the performance impact of a &quot;buffer it all&quot; strategy first as it should be much simpler. Or maybe there's a better approach than either of these which I've missed.</p>
+<p>Anyway, it&#x27;s probably worth measuring the performance impact of a &quot;buffer it all&quot; strategy first as it should be much simpler. Or maybe there&#x27;s a better approach than either of these which I&#x27;ve missed.</p>
 </blockquote>
-<p>And this is not-too-far description of my &quot;Refactor&quot; PR. I've done only some preliminary measurements, but they didn't show any significant difference.</p>
+<p>And this is not-too-far description of my &quot;Refactor&quot; PR. I&#x27;ve done only some preliminary measurements, but they didn&#x27;t show any significant difference.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -117,25 +117,25 @@ fn main() {
 <blockquote>
 <p>How did you end up with a display width this tiny? Some sort of mobile device?</p>
 </blockquote>
-<p>The tiny width was just to make the example short. I don't set an explicit width in any of my real uses of clap.</p>
+<p>The tiny width was just to make the example short. I don&#x27;t set an explicit width in any of my real uses of clap.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mkantor">@mkantor</a> on 2020-08-14 01:25</div>
             <div class="timeline-body"><blockquote>
 <blockquote>
-<p>Maybe Normal wouldn't get wrapping, just like it doesn't get colors currently</p>
+<p>Maybe Normal wouldn&#x27;t get wrapping, just like it doesn&#x27;t get colors currently</p>
 </blockquote>
-<p><strong>No.</strong> I don't see any reason why lack of color should imply lack of wrapping.</p>
+<p><strong>No.</strong> I don&#x27;t see any reason why lack of color should imply lack of wrapping.</p>
 </blockquote>
-<p>I agree. I think the variant names are throwing me off; since it's <code>Buffered</code> vs <code>Normal</code> it sounds like the latter shouldn't do any buffering (even though it already does).</p>
+<p>I agree. I think the variant names are throwing me off; since it&#x27;s <code>Buffered</code> vs <code>Normal</code> it sounds like the latter shouldn&#x27;t do any buffering (even though it already does).</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "3.1" by @pksunkara on 2020-08-23 04:50</div>
+            <div class="event">Added to milestone &quot;3.1&quot; by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-08-23 04:50</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">C: help message</span> added by @pksunkara on 2020-08-23 04:50</div>
+            <div class="event">Label <span class="label">C: help message</span> added by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-08-23 04:50</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-10-26 08:11</div>
@@ -143,11 +143,11 @@ fn main() {
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../mkantor/clap/pulls/4.html">mkantor/clap#4</a> on 2020-10-27 00:29</div>
+            <div class="event">Referenced in <a>mkantor/clap#4</a> on 2020-10-27 00:29</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mkantor">@mkantor</a> on 2020-10-27 18:48</div>
-            <div class="timeline-body"><p>@pksunkara I rebased <a href="https://github.com/clap-rs/clap/compare/master...mkantor:demonstrate-incorrect-wrapping">the tests</a> and <a href="https://github.com/mkantor/clap/runs/1312044427?check_suite_focus=true">they still fail</a>, so it appears this issue hasn't been fixed.</p>
+            <div class="timeline-body"><p>@pksunkara I rebased <a href="https://github.com/clap-rs/clap/compare/master...mkantor:demonstrate-incorrect-wrapping">the tests</a> and <a href="https://github.com/mkantor/clap/runs/1312044427?check_suite_focus=true">they still fail</a>, so it appears this issue hasn&#x27;t been fixed.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -156,16 +156,16 @@ fn main() {
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../foriequal0/git-trim/issues/180.html">foriequal0/git-trim#180</a> on 2021-06-03 01:20</div>
+            <div class="event">Referenced in <a>foriequal0/git-trim#180</a> on 2021-06-03 01:20</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../epage/clapng/issues/162.html">epage/clapng#162</a> on 2021-12-06 20:18</div>
+            <div class="event">Referenced in <a>epage/clapng#162</a> on 2021-12-06 20:18</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">S-waiting-on-design</span> added by @epage on 2021-12-10 22:17</div>
+            <div class="event">Label <span class="label">S-waiting-on-design</span> added by <a href="https://github.com/epage">@epage</a> on 2021-12-10 22:17</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Removed from milestone "3.1" by @epage on 2021-12-10 22:17</div>
+            <div class="event">Removed from milestone &quot;3.1&quot; by <a href="https://github.com/epage">@epage</a> on 2021-12-10 22:17</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-10 22:19</div>
@@ -176,7 +176,7 @@ fn main() {
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:47:44 UTC
+        Synced at 2026-01-20 19:57:53 UTC
     </footer>
 </body>
 </html>

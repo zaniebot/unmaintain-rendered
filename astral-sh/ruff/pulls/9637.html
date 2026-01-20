@@ -23,45 +23,45 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>This PR changes our <code>multiline_string</code> preview style implementation (added in https://github.com/astral-sh/ruff/pull/9243) to only hug strings in call arguments when there's no newline between the <code>(</code> and the string's quotes.</p>
-<p>This is to address the feedback raised in Black's repository (<a href="https://github.com/psf/black/issues/4159">issue</a>)</p>
+            <div class="timeline-body">Summary
+<p>This PR changes our <code>multiline_string</code> preview style implementation (added in <a href="https://github.com/astral-sh/ruff/pull/9243">astral-sh/ruff#9243</a>) to only hug strings in call arguments when there&#x27;s no newline between the <code>(</code> and the string&#x27;s quotes.</p>
+<p>This is to address the feedback raised in Black&#x27;s repository (<a href="https://github.com/psf/black/issues/4159">issue</a>)</p>
 <p>The stable formatting always indents strings:</p>
-<pre><code class="language-python">dedent(
+<pre><code>dedent(
     &quot;&quot;&quot;
     value
     &quot;&quot;&quot;
 )
 </code></pre>
 <p>The preview style as it is implemented today (not this PR) tries to hug multiline strings, and only falls back to indenting the string if the first line of the string exceeds the configured line width:</p>
-<pre><code class="language-python">dedent(&quot;&quot;&quot;
+<pre><code>dedent(&quot;&quot;&quot;
     value
 &quot;&quot;&quot;)
 </code></pre>
-<p>The benefit of the new style is that it reduces vertical spacing (The two strings in the examples aren't equivalent because of the whitespace before the closing quotes but the whitespace before the closing quotes with <code>indent</code> is only used to align the quotes.</p>
-<p>The main concern with the new preview style is that it messes up the multiline string formatting for existing Black users because it can dealign the quotes and fixing the quote alignment isn't possible without knowing if the argument is whitespace sensitive or not.</p>
+<p>The benefit of the new style is that it reduces vertical spacing (The two strings in the examples aren&#x27;t equivalent because of the whitespace before the closing quotes but the whitespace before the closing quotes with <code>indent</code> is only used to align the quotes.</p>
+<p>The main concern with the new preview style is that it messes up the multiline string formatting for existing Black users because it can dealign the quotes and fixing the quote alignment isn&#x27;t possible without knowing if the argument is whitespace sensitive or not.</p>
 <p>For example, it turns...</p>
-<pre><code class="language-python">dedent(
+<pre><code>dedent(
     &quot;&quot;&quot;
     value
     &quot;&quot;&quot;
 )
 </code></pre>
 <p>into...</p>
-<pre><code class="language-python">dedent(&quot;&quot;&quot;
+<pre><code>dedent(&quot;&quot;&quot;
     value
     &quot;&quot;&quot;)
 </code></pre>
 <p>which looks worse.</p>
 <p>However, the preview style improves formatting for new black users or new code written when you have:</p>
-<pre><code class="language-python">def test():
+<pre><code>def test():
     a = dedent(&quot;&quot;&quot;
       Some code
       that needs dedenting
     &quot;&quot;&quot;)
 </code></pre>
 <p>because it no longer changes it to</p>
-<pre><code class="language-python">def test():
+<pre><code>def test():
     a = dedent(
         &quot;&quot;&quot;
       Some code
@@ -70,144 +70,144 @@
     )
 </code></pre>
 <p>This PR refiens the <code>multiline_string</code> preview style with a heuristic of when to hug the multiline string and when not.</p>
-<p>The idea is to honor the author's decision by checking if the opening parentheses and the string both start on the same line. If so, hug the multline string, otherwise don't.</p>
+<p>The idea is to honor the author&#x27;s decision by checking if the opening parentheses and the string both start on the same line. If so, hug the multline string, otherwise don&#x27;t.</p>
 <p>There are two advantages to this:</p>
 <ul>
-<li>Existing Blacked code won't change because the formatter detects the newline between the opening parentheses and the quotes and continues to indent the multiline string</li>
-<li>Existing Blacked or Ruffed code using preview style won't change because the formatter detects that there's no newline between the opening parentheses and the string start and, because of it, won't indent the multiline string.</li>
+<li>Existing Blacked code won&#x27;t change because the formatter detects the newline between the opening parentheses and the quotes and continues to indent the multiline string</li>
+<li>Existing Blacked or Ruffed code using preview style won&#x27;t change because the formatter detects that there&#x27;s no newline between the opening parentheses and the string start and, because of it, won&#x27;t indent the multiline string.</li>
 </ul>
 <p>This heuristic is the same as Prettier uses for single-argument, multiline string call expressions.</p>
-<h2>Downsides</h2>
-<p>The downside of this heuristic over always hugging single argument multiline strings is that existing calls to <code>dedent</code> need manual updating to match the desired formatting. I think that's fine because the new formatting also requires to manually updating the spacing before the closing <code>&quot;&quot;&quot;</code> to match indentation:</p>
-<pre><code class="language-python">dedent(&quot;&quot;&quot;
+Downsides
+<p>The downside of this heuristic over always hugging single argument multiline strings is that existing calls to <code>dedent</code> need manual updating to match the desired formatting. I think that&#x27;s fine because the new formatting also requires to manually updating the spacing before the closing <code>&quot;&quot;&quot;</code> to match indentation:</p>
+<pre><code>dedent(&quot;&quot;&quot;
 	Multiline
 	&quot;&quot;&quot;)
 </code></pre>
-<p>Doesn't look good. You want</p>
-<pre><code class="language-python">dedent(&quot;&quot;&quot;
+<p>Doesn&#x27;t look good. You want</p>
+<pre><code>dedent(&quot;&quot;&quot;
 	Multiline
 &quot;&quot;&quot;)
 </code></pre>
-<p>which ruff can't do without changing the string's semantics.</p>
-<h2>Test Plan</h2>
+<p>which ruff can&#x27;t do without changing the string&#x27;s semantics.</p>
+Test Plan
 <p><strong>Running Ruff before introducing the <code>multline-string</code> preview style and then this branch</strong>:</p>
 <p>There are no upgrade changes, compared to the original <code>multiline-string</code> preview style PR that changed+2971 -5900 lines in 374 files in 31 projects.</p>
 <p>ℹ️ ecosystem check <strong>detected format changes</strong>. (+7 -8 lines in 3 files in 3 projects; 1 project error; 39 projects unchanged)</p>
-<details><summary><a href="https://github.com/demisto/content">demisto/content</a> (+2 -5 lines across 1 file)</summary>
+<a href="https://github.com/demisto/content">demisto/content</a> (+2 -5 lines across 1 file)
 <p>
 <pre>ruff format --preview --exclude Packs/ThreatQ/Integrations/ThreatQ/ThreatQ.py</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/demisto/content/blob/3d621f512f4575d87e68e317570dcd90411b9607/Packs/IntegrationsAndIncidentsHealthCheck/Scripts/GetFailedTasks/GetFailedTasks.py#L107'>Packs/IntegrationsAndIncidentsHealthCheck/Scripts/GetFailedTasks/GetFailedTasks.py~L107</a></p>
-<pre><code class="language-diff">     )
+<p><a href="https://github.com/demisto/content/blob/3d621f512f4575d87e68e317570dcd90411b9607/Packs/IntegrationsAndIncidentsHealthCheck/Scripts/GetFailedTasks/GetFailedTasks.py#L107">Packs/IntegrationsAndIncidentsHealthCheck/Scripts/GetFailedTasks/GetFailedTasks.py~L107</a></p>
+<pre><code>     )
  
      if is_error(response):
 -        error = (
--            f'Failed retrieving tasks for incident ID {incident[&quot;id&quot;]}.\n \
-+        error = f'Failed retrieving tasks for incident ID {incident[&quot;id&quot;]}.\n \
+-            f&#x27;Failed retrieving tasks for incident ID {incident[&quot;id&quot;]}.\n \
++        error = f&#x27;Failed retrieving tasks for incident ID {incident[&quot;id&quot;]}.\n \
             Make sure that the API key configured in the Core REST API integration \
--is one with sufficient permissions to access that incident.\n'
+-is one with sufficient permissions to access that incident.\n&#x27;
 -            + get_error(response)
 -        )
-+is one with sufficient permissions to access that incident.\n' + get_error(response)
++is one with sufficient permissions to access that incident.\n&#x27; + get_error(response)
          raise Exception(error)
  
      return response[0][&quot;Contents&quot;][&quot;response&quot;]
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/reflex-dev/reflex">reflex-dev/reflex</a> (+3 -1 lines across 1 file)</summary>
+
+<a href="https://github.com/reflex-dev/reflex">reflex-dev/reflex</a> (+3 -1 lines across 1 file)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/reflex-dev/reflex/blob/0d8efb9b5570425615db00cd65e6070317488f6f/reflex/components/markdown/markdown.py#L253'>reflex/components/markdown/markdown.py~L253</a></p>
-<pre><code class="language-diff">         }
+<p><a href="https://github.com/reflex-dev/reflex/blob/0d8efb9b5570425615db00cd65e6070317488f6f/reflex/components/markdown/markdown.py#L253">reflex/components/markdown/markdown.py~L253</a></p>
+<pre><code>         }
  
          # Separate out inline code and code blocks.
 -        components[&quot;code&quot;] = f&quot;&quot;&quot;{{({{node, inline, className, {_CHILDREN._var_name}, {_PROPS._var_name}}}) =&gt; {{
 +        components[
 +            &quot;code&quot;
 +        ] = f&quot;&quot;&quot;{{({{node, inline, className, {_CHILDREN._var_name}, {_PROPS._var_name}}}) =&gt; {{
-     const match = (className || '').match(/language-(?&lt;lang&gt;.*)/);
-     const language = match ? match[1] : '';
+     const match = (className || &#x27;&#x27;).match(/language-(?&lt;lang&gt;.*)/);
+     const language = match ? match[1] : &#x27;&#x27;;
      if (language) {{
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/rotki/rotki">rotki/rotki</a> (+2 -2 lines across 1 file)</summary>
+
+<a href="https://github.com/rotki/rotki">rotki/rotki</a> (+2 -2 lines across 1 file)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/rotki/rotki/blob/5b72d2f90a87d5f82df519cbe385edd7a61474fd/rotkehlchen/rotkehlchen.py#L1196'>rotkehlchen/rotkehlchen.py~L1196</a></p>
-<pre><code class="language-diff">         if oracle != HistoricalPriceOracle.CRYPTOCOMPARE:
+<p><a href="https://github.com/rotki/rotki/blob/5b72d2f90a87d5f82df519cbe385edd7a61474fd/rotkehlchen/rotkehlchen.py#L1196">rotkehlchen/rotkehlchen.py~L1196</a></p>
+<pre><code>         if oracle != HistoricalPriceOracle.CRYPTOCOMPARE:
              return  # only for cryptocompare for now
  
 -        with (
 -            contextlib.suppress(UnknownAsset)
 +        with contextlib.suppress(
 +            UnknownAsset
-         ):  # if suppress -&gt; assets are not crypto or fiat, so we can't query cryptocompare  # noqa: E501
+         ):  # if suppress -&gt; assets are not crypto or fiat, so we can&#x27;t query cryptocompare  # noqa: E501
              self.cryptocompare.create_cache(
                  from_asset=from_asset,
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+
+<a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<pre><code>error: Failed to parse examples/dalle/Image_generations_edits_and_variations_with_DALL-E.ipynb:3:7:8: Unexpected token 'prompt'
+<pre><code>error: Failed to parse examples/dalle/Image_generations_edits_and_variations_with_DALL-E.ipynb:3:7:8: Unexpected token &#x27;prompt&#x27;
 </code></pre>
 </p>
-</details>
+
 
 <p><strong>Running ruff preview (main) and then this branch</strong>:</p>
 <p>Results in no changes</p>
 <p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
-<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<pre><code>error: Failed to parse examples/dalle/Image_generations_edits_and_variations_with_DALL-E.ipynb:3:7:8: Unexpected token 'prompt'
+<pre><code>error: Failed to parse examples/dalle/Image_generations_edits_and_variations_with_DALL-E.ipynb:3:7:8: Unexpected token &#x27;prompt&#x27;
 </code></pre>
 </p>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2024-01-24 17:25</div>
+            <div class="event">Label <span class="label">formatter</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-01-24 17:25</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2024-01-24 17:25</div>
+            <div class="event">Label <span class="label">preview</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-01-24 17:25</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-01-24 17:32</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Formatter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>ℹ️ ecosystem check <strong>detected format changes</strong>. (+10156 -5096 lines in 500 files in 30 projects; 13 projects unchanged)</p>
-<details><summary><a href="https://github.com/DisnakeDev/disnake">DisnakeDev/disnake</a> (+4 -2 lines across 1 file)</summary>
+<a href="https://github.com/DisnakeDev/disnake">DisnakeDev/disnake</a> (+4 -2 lines across 1 file)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/scripts/codemods/typed_flags.py#L104'>scripts/codemods/typed_flags.py~L104</a></p>
-<pre><code class="language-diff">             else:
-                 # one doesn't currently exist, great.
+<p><a href="https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/scripts/codemods/typed_flags.py#L104">scripts/codemods/typed_flags.py~L104</a></p>
+<pre><code>             else:
+                 # one doesn&#x27;t currently exist, great.
                  # so we have two options here... we could make a typechecking block from scratch or... we could cheat
 -                code = textwrap.dedent(&quot;&quot;&quot;
 +                code = textwrap.dedent(
@@ -224,15 +224,15 @@
                  )
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/RasaHQ/rasa">RasaHQ/rasa</a> (+892 -446 lines across 32 files)</summary>
+
+<a href="https://github.com/RasaHQ/rasa">RasaHQ/rasa</a> (+892 -446 lines across 32 files)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/cli/telemetry.py#L57'>rasa/cli/telemetry.py~L57</a></p>
-<pre><code class="language-diff">         )
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/cli/telemetry.py#L57">rasa/cli/telemetry.py~L57</a></p>
+<pre><code>         )
  
      print(
 -        textwrap.dedent(&quot;&quot;&quot;
@@ -246,8 +246,8 @@
  
      if not is_enabled:
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/telemetry.py#L105'>rasa/telemetry.py~L105</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/rasa/telemetry.py#L105">rasa/telemetry.py~L105</a></p>
+<pre><code> 
  def print_telemetry_reporting_info() -&gt; None:
      &quot;&quot;&quot;Print telemetry information to std out.&quot;&quot;&quot;
 -    message = textwrap.dedent(f&quot;&quot;&quot;
@@ -256,7 +256,7 @@
          Rasa Open Source reports anonymous usage telemetry to help improve the product
          for all its users.
  
-         If you'd like to opt-out, you can use `rasa telemetry disable`.
+         If you&#x27;d like to opt-out, you can use `rasa telemetry disable`.
 -        To learn more, check out {DOCS_URL_TELEMETRY}.&quot;&quot;&quot;).strip()
 +        To learn more, check out {DOCS_URL_TELEMETRY}.&quot;&quot;&quot;
 +    ).strip()
@@ -264,8 +264,8 @@
      table = SingleTable([[message]])
      print(table.table)
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/cli/test_utils.py#L357'>tests/cli/test_utils.py~L357</a></p>
-<pre><code class="language-diff">     file_type: Text, data_type: Text, tmp_path: Path
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/cli/test_utils.py#L357">tests/cli/test_utils.py~L357</a></p>
+<pre><code>     file_type: Text, data_type: Text, tmp_path: Path
  ):
      file_name = tmp_path / f&quot;{file_type}.yml&quot;
 -    file_name.write_text(f&quot;&quot;&quot;
@@ -284,8 +284,8 @@
      importer = TrainingDataImporter.load_from_config(
          &quot;data/test_config/config_defaults.yml&quot;,
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/cli/test_utils.py#L387'>tests/cli/test_utils.py~L387</a></p>
-<pre><code class="language-diff">     file_type: Text, data_type: Text, tmp_path: Path
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/cli/test_utils.py#L387">tests/cli/test_utils.py~L387</a></p>
+<pre><code>     file_type: Text, data_type: Text, tmp_path: Path
  ):
      file_name = tmp_path / f&quot;{file_type}.yml&quot;
 -    file_name.write_text(f&quot;&quot;&quot;
@@ -295,8 +295,8 @@
          {file_type}:
          - {data_type}: test path
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/cli/test_utils.py#L395'>tests/cli/test_utils.py~L395</a></p>
-<pre><code class="language-diff">             - intent: request_restaurant
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/cli/test_utils.py#L395">tests/cli/test_utils.py~L395</a></p>
+<pre><code>             - intent: request_restaurant
              - action: restaurant_form
              - active_loop: restaurant_form
 -        &quot;&quot;&quot;)
@@ -306,8 +306,8 @@
      importer = TrainingDataImporter.load_from_config(
          &quot;data/test_config/config_defaults.yml&quot;,
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/cli/test_utils.py#L421'>tests/cli/test_utils.py~L421</a></p>
-<pre><code class="language-diff">     )
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/cli/test_utils.py#L421">tests/cli/test_utils.py~L421</a></p>
+<pre><code>     )
      nlu_file = &quot;data/test_nlu/test_nlu_validate_files_with_active_loop_null.yml&quot;
      file_name = tmp_path / f&quot;{file_type}.yml&quot;
 -    file_name.write_text(f&quot;&quot;&quot;
@@ -317,8 +317,8 @@
          {file_type}:
          - {data_type}: test path
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/cli/test_utils.py#L431'>tests/cli/test_utils.py~L431</a></p>
-<pre><code class="language-diff">             - active_loop: restaurant_form
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/cli/test_utils.py#L431">tests/cli/test_utils.py~L431</a></p>
+<pre><code>             - active_loop: restaurant_form
              - active_loop: null
              - action: action_search_restaurants
 -        &quot;&quot;&quot;)
@@ -328,8 +328,8 @@
      importer = TrainingDataImporter.load_from_config(
          &quot;data/test_config/config_unique_assistant_id.yml&quot;,
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/cli/test_utils.py#L458'>tests/cli/test_utils.py~L458</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/cli/test_utils.py#L458">tests/cli/test_utils.py~L458</a></p>
+<pre><code> 
  def test_validate_files_form_slots_not_matching(tmp_path: Path):
      domain_file_name = tmp_path / &quot;domain.yml&quot;
 -    domain_file_name.write_text(f&quot;&quot;&quot;
@@ -339,8 +339,8 @@
          forms:
            name_form:
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/cli/test_utils.py#L474'>tests/cli/test_utils.py~L474</a></p>
-<pre><code class="language-diff">                 type: text
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/cli/test_utils.py#L474">tests/cli/test_utils.py~L474</a></p>
+<pre><code>                 type: text
                  mappings:
                  - type: from_text
 -        &quot;&quot;&quot;)
@@ -350,8 +350,8 @@
      importer = TrainingDataImporter.load_from_config(
          &quot;data/test_config/config_defaults.yml&quot;,
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/cli/test_utils.py#L528'>tests/cli/test_utils.py~L528</a></p>
-<pre><code class="language-diff">     tested_slot = &quot;duration&quot;
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/cli/test_utils.py#L528">tests/cli/test_utils.py~L528</a></p>
+<pre><code>     tested_slot = &quot;duration&quot;
      form_name = &quot;booking_form&quot;
      # form required_slots does not include the tested_slot
 -    domain.write_text(f&quot;&quot;&quot;
@@ -361,8 +361,8 @@
              intents:
              - state_length_of_time
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/cli/test_utils.py#L552'>tests/cli/test_utils.py~L552</a></p>
-<pre><code class="language-diff">               {form_name}:
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/cli/test_utils.py#L552">tests/cli/test_utils.py~L552</a></p>
+<pre><code>               {form_name}:
                  required_slots:
                  - location
 -                &quot;&quot;&quot;)
@@ -372,8 +372,8 @@
          &quot;data/test_config/config_defaults.yml&quot;, str(domain), None
      )
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/conftest.py#L172'>tests/conftest.py~L172</a></p>
-<pre><code class="language-diff"> def simple_config_path(tmp_path_factory: TempPathFactory) -&gt; Text:
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/conftest.py#L172">tests/conftest.py~L172</a></p>
+<pre><code> def simple_config_path(tmp_path_factory: TempPathFactory) -&gt; Text:
      project_path = tmp_path_factory.mktemp(uuid.uuid4().hex)
  
 -    config = textwrap.dedent(f&quot;&quot;&quot;
@@ -383,8 +383,8 @@
          assistant_id: placeholder_default
          pipeline:
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/conftest.py#L183'>tests/conftest.py~L183</a></p>
-<pre><code class="language-diff">         - name: AugmentedMemoizationPolicy
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/conftest.py#L183">tests/conftest.py~L183</a></p>
+<pre><code>         - name: AugmentedMemoizationPolicy
            max_history: 3
          - name: RulePolicy
 -        &quot;&quot;&quot;)
@@ -394,8 +394,8 @@
      rasa.shared.utils.io.write_text_file(config, config_path)
  
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L44'>tests/core/actions/test_forms.py~L44</a></p>
-<pre><code class="language-diff">     form_name = &quot;my form&quot;
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L44">tests/core/actions/test_forms.py~L44</a></p>
+<pre><code>     form_name = &quot;my form&quot;
      action = FormAction(form_name, None)
      slot_name = &quot;num_people&quot;
 -    domain = textwrap.dedent(f&quot;&quot;&quot;
@@ -405,8 +405,8 @@
        {slot_name}:
          type: float
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L58'>tests/core/actions/test_forms.py~L58</a></p>
-<pre><code class="language-diff">     responses:
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L58">tests/core/actions/test_forms.py~L58</a></p>
+<pre><code>     responses:
        utter_ask_num_people:
        - text: &quot;How many people?&quot;
 -      &quot;&quot;&quot;)
@@ -416,8 +416,8 @@
  
      events = await action.run(
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L79'>tests/core/actions/test_forms.py~L79</a></p>
-<pre><code class="language-diff">     domain_required_slot_name = &quot;num_people&quot;
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L79">tests/core/actions/test_forms.py~L79</a></p>
+<pre><code>     domain_required_slot_name = &quot;num_people&quot;
      slot_set_by_remote_custom_extraction_method = &quot;some_slot&quot;
      slot_value_set_by_remote_custom_extraction_method = &quot;anything&quot;
 -    domain = textwrap.dedent(f&quot;&quot;&quot;
@@ -427,8 +427,8 @@
        {domain_required_slot_name}:
          type: float
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L99'>tests/core/actions/test_forms.py~L99</a></p>
-<pre><code class="language-diff">       - text: &quot;How many people?&quot;
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L99">tests/core/actions/test_forms.py~L99</a></p>
+<pre><code>       - text: &quot;How many people?&quot;
      actions:
        - validate_{form_name}
 -      &quot;&quot;&quot;)
@@ -438,8 +438,8 @@
  
      form_validation_events = [
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L137'>tests/core/actions/test_forms.py~L137</a></p>
-<pre><code class="language-diff">     form_name = &quot;my form&quot;
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L137">tests/core/actions/test_forms.py~L137</a></p>
+<pre><code>     form_name = &quot;my form&quot;
      action = FormAction(form_name, None)
      slot_name = &quot;num_people&quot;
 -    domain = textwrap.dedent(f&quot;&quot;&quot;
@@ -449,8 +449,8 @@
        {slot_name}:
          type: float
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L153'>tests/core/actions/test_forms.py~L153</a></p>
-<pre><code class="language-diff">     responses:
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L153">tests/core/actions/test_forms.py~L153</a></p>
+<pre><code>     responses:
        utter_ask_num_people:
        - text: &quot;How many people?&quot;
 -      &quot;&quot;&quot;)
@@ -460,8 +460,8 @@
  
      events = await action.run(
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L863'>tests/core/actions/test_forms.py~L863</a></p>
-<pre><code class="language-diff"> def test_temporary_tracker():
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L863">tests/core/actions/test_forms.py~L863</a></p>
+<pre><code> def test_temporary_tracker():
      extra_slot = &quot;some_slot&quot;
      sender_id = &quot;test&quot;
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -480,8 +480,8 @@
      previous_events = [ActionExecuted(ACTION_LISTEN_NAME)]
      old_tracker = DialogueStateTracker.from_events(
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L1535'>tests/core/actions/test_forms.py~L1535</a></p>
-<pre><code class="language-diff">     form = FormAction(form_name, None)
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L1535">tests/core/actions/test_forms.py~L1535</a></p>
+<pre><code>     form = FormAction(form_name, None)
  
      domain = Domain.from_yaml(
 -        textwrap.dedent(f&quot;&quot;&quot;
@@ -491,8 +491,8 @@
              intent:
              - greet
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L1564'>tests/core/actions/test_forms.py~L1564</a></p>
-<pre><code class="language-diff">                required_slots:
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L1564">tests/core/actions/test_forms.py~L1564</a></p>
+<pre><code>                required_slots:
                   - email
                   - name
 -            &quot;&quot;&quot;)
@@ -502,8 +502,8 @@
  
      tracker = DialogueStateTracker.from_events(
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L1605'>tests/core/actions/test_forms.py~L1605</a></p>
-<pre><code class="language-diff">     form = FormAction(form_name, None)
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L1605">tests/core/actions/test_forms.py~L1605</a></p>
+<pre><code>     form = FormAction(form_name, None)
  
      domain = Domain.from_yaml(
 -        textwrap.dedent(f&quot;&quot;&quot;
@@ -513,8 +513,8 @@
              intent:
              - greet
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L1634'>tests/core/actions/test_forms.py~L1634</a></p>
-<pre><code class="language-diff">                required_slots:
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L1634">tests/core/actions/test_forms.py~L1634</a></p>
+<pre><code>                required_slots:
                   - email
                   - name
 -            &quot;&quot;&quot;)
@@ -524,8 +524,8 @@
  
      tracker = DialogueStateTracker.from_events(
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L1673'>tests/core/actions/test_forms.py~L1673</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L1673">tests/core/actions/test_forms.py~L1673</a></p>
+<pre><code> 
  
  async def test_action_extract_slots_custom_mapping_with_condition():
 -    domain_yaml = textwrap.dedent(f&quot;&quot;&quot;
@@ -535,8 +535,8 @@
  
          slots:
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L1692'>tests/core/actions/test_forms.py~L1692</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L1692">tests/core/actions/test_forms.py~L1692</a></p>
+<pre><code> 
          actions:
          - validate_some_form
 -        &quot;&quot;&quot;)
@@ -546,8 +546,8 @@
      events = [ActiveLoop(&quot;some_form&quot;), UserUttered(&quot;Hi&quot;)]
      tracker = DialogueStateTracker.from_events(
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L1733'>tests/core/actions/test_forms.py~L1733</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L1733">tests/core/actions/test_forms.py~L1733</a></p>
+<pre><code> 
  async def test_form_slots_empty_with_restart():
      domain = Domain.from_yaml(
 -        textwrap.dedent(f&quot;&quot;&quot;
@@ -557,8 +557,8 @@
              intent:
              - greet
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L1753'>tests/core/actions/test_forms.py~L1753</a></p>
-<pre><code class="language-diff">              some_form:
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L1753">tests/core/actions/test_forms.py~L1753</a></p>
+<pre><code>              some_form:
                 required_slots:
                   - name
 -            &quot;&quot;&quot;)
@@ -568,8 +568,8 @@
  
      tracker = DialogueStateTracker.from_events(
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L1795'>tests/core/actions/test_forms.py~L1795</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L1795">tests/core/actions/test_forms.py~L1795</a></p>
+<pre><code> 
      form_name = &quot;test_form&quot;
  
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -579,8 +579,8 @@
      - {entity_name}
      slots:
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L1810'>tests/core/actions/test_forms.py~L1810</a></p>
-<pre><code class="language-diff">       {form_name}:
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L1810">tests/core/actions/test_forms.py~L1810</a></p>
+<pre><code>       {form_name}:
          {REQUIRED_SLOTS_KEY}:
              - {slot_name}
 -    &quot;&quot;&quot;)
@@ -590,8 +590,8 @@
      events = [
          ActionExecuted(&quot;action_listen&quot;),
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L1861'>tests/core/actions/test_forms.py~L1861</a></p>
-<pre><code class="language-diff">     action_server = EndpointConfig(ACTION_SERVER_URL)
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L1861">tests/core/actions/test_forms.py~L1861</a></p>
+<pre><code>     action_server = EndpointConfig(ACTION_SERVER_URL)
      action = FormAction(form_name, action_server)
      slot_name = &quot;num_people&quot;
 -    domain = textwrap.dedent(f&quot;&quot;&quot;
@@ -601,8 +601,8 @@
        {slot_name}:
          type: float
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L1877'>tests/core/actions/test_forms.py~L1877</a></p>
-<pre><code class="language-diff">       - text: &quot;How many people?&quot;
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L1877">tests/core/actions/test_forms.py~L1877</a></p>
+<pre><code>       - text: &quot;How many people?&quot;
      actions:
        - validate_{form_name}
 -    &quot;&quot;&quot;)
@@ -612,8 +612,8 @@
      form_validation_events = [
          {
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L1929'>tests/core/actions/test_forms.py~L1929</a></p>
-<pre><code class="language-diff">     required_slot = &quot;send_sms&quot;
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L1929">tests/core/actions/test_forms.py~L1929</a></p>
+<pre><code>     required_slot = &quot;send_sms&quot;
      global_slot = &quot;membership&quot;
  
 -    domain = textwrap.dedent(f&quot;&quot;&quot;
@@ -623,8 +623,8 @@
      - start_form
      entities:
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L1967'>tests/core/actions/test_forms.py~L1967</a></p>
-<pre><code class="language-diff">       - text: &quot;Would you like to receive an SMS?&quot;
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L1967">tests/core/actions/test_forms.py~L1967</a></p>
+<pre><code>       - text: &quot;Would you like to receive an SMS?&quot;
      actions:
        - validate_{form}
 -    &quot;&quot;&quot;)
@@ -634,8 +634,8 @@
  
      tracker = DialogueStateTracker.from_events(
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L2033'>tests/core/actions/test_forms.py~L2033</a></p>
-<pre><code class="language-diff">     dynamic_slot = &quot;customer_name&quot;
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L2033">tests/core/actions/test_forms.py~L2033</a></p>
+<pre><code>     dynamic_slot = &quot;customer_name&quot;
      bot_utterance = &quot;What is your name?&quot;
  
 -    domain = textwrap.dedent(f&quot;&quot;&quot;
@@ -645,8 +645,8 @@
      - start_form
  
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L2052'>tests/core/actions/test_forms.py~L2052</a></p>
-<pre><code class="language-diff">       - text: &quot;{bot_utterance}&quot;
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_forms.py#L2052">tests/core/actions/test_forms.py~L2052</a></p>
+<pre><code>       - text: &quot;{bot_utterance}&quot;
      actions:
        - validate_{form}
 -    &quot;&quot;&quot;)
@@ -656,8 +656,8 @@
  
      tracker = DialogueStateTracker.from_events(
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_two_stage_fallback.py#L157'>tests/core/actions/test_two_stage_fallback.py~L157</a></p>
-<pre><code class="language-diff">         ],
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/actions/test_two_stage_fallback.py#L157">tests/core/actions/test_two_stage_fallback.py~L157</a></p>
+<pre><code>         ],
      )
  
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -674,8 +674,8 @@
  
      events = await action.run(
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_generator.py#L89'>tests/core/nlg/test_generator.py~L89</a></p>
-<pre><code class="language-diff">     )
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_generator.py#L89">tests/core/nlg/test_generator.py~L89</a></p>
+<pre><code>     )
      output_channel = &quot;default&quot;
  
 -    domain_yaml = textwrap.dedent(&quot;&quot;&quot;
@@ -685,8 +685,8 @@
  
          intents:
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_generator.py#L124'>tests/core/nlg/test_generator.py~L124</a></p>
-<pre><code class="language-diff">               - type: slot
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_generator.py#L124">tests/core/nlg/test_generator.py~L124</a></p>
+<pre><code>               - type: slot
                  name: logged_in
                  value: true
 -        &quot;&quot;&quot;)
@@ -696,8 +696,8 @@
      domain = Domain.from_yaml(domain_yaml)
      response_variation_filter = ResponseVariationFilter(domain.responses)
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_generator.py#L161'>tests/core/nlg/test_generator.py~L161</a></p>
-<pre><code class="language-diff">     )
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_generator.py#L161">tests/core/nlg/test_generator.py~L161</a></p>
+<pre><code>     )
      output_channel = &quot;default&quot;
  
 -    domain_yaml = textwrap.dedent(&quot;&quot;&quot;
@@ -707,8 +707,8 @@
  
          intents:
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_generator.py#L192'>tests/core/nlg/test_generator.py~L192</a></p>
-<pre><code class="language-diff">               - type: slot
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_generator.py#L192">tests/core/nlg/test_generator.py~L192</a></p>
+<pre><code>               - type: slot
                  name: membership
                  value: gold
 -        &quot;&quot;&quot;)
@@ -718,8 +718,8 @@
      domain = Domain.from_yaml(domain_yaml)
      response_variation_filter = ResponseVariationFilter(domain.responses)
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_generator.py#L220'>tests/core/nlg/test_generator.py~L220</a></p>
-<pre><code class="language-diff">         sender_id=&quot;crv_channel&quot;, evts=[UserUttered(&quot;Hello&quot;)], slots=[membership_slot]
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_generator.py#L220">tests/core/nlg/test_generator.py~L220</a></p>
+<pre><code>         sender_id=&quot;crv_channel&quot;, evts=[UserUttered(&quot;Hello&quot;)], slots=[membership_slot]
      )
  
 -    domain_yaml = textwrap.dedent(&quot;&quot;&quot;
@@ -729,8 +729,8 @@
  
          intents:
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_generator.py#L257'>tests/core/nlg/test_generator.py~L257</a></p>
-<pre><code class="language-diff">                 name: membership
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_generator.py#L257">tests/core/nlg/test_generator.py~L257</a></p>
+<pre><code>                 name: membership
                  value: gold
                channel: web
 -        &quot;&quot;&quot;)
@@ -740,8 +740,8 @@
      domain = Domain.from_yaml(domain_yaml)
      response_variation_filter = ResponseVariationFilter(domain.responses)
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_generator.py#L312'>tests/core/nlg/test_generator.py~L312</a></p>
-<pre><code class="language-diff">         sender_id=&quot;edge_cases&quot;, evts=[UserUttered(&quot;Hello&quot;)], slots=[membership_slot]
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_generator.py#L312">tests/core/nlg/test_generator.py~L312</a></p>
+<pre><code>         sender_id=&quot;edge_cases&quot;, evts=[UserUttered(&quot;Hello&quot;)], slots=[membership_slot]
      )
  
 -    domain_yaml = textwrap.dedent(&quot;&quot;&quot;
@@ -751,8 +751,8 @@
  
          intents:
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_generator.py#L363'>tests/core/nlg/test_generator.py~L363</a></p>
-<pre><code class="language-diff">               - type: slot
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_generator.py#L363">tests/core/nlg/test_generator.py~L363</a></p>
+<pre><code>               - type: slot
                  name: membership
                  value: gold
 -        &quot;&quot;&quot;)
@@ -762,8 +762,8 @@
      domain = Domain.from_yaml(domain_yaml)
      response_variation_filter = ResponseVariationFilter(domain.responses)
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_generator.py#L391'>tests/core/nlg/test_generator.py~L391</a></p>
-<pre><code class="language-diff">         sender_id=&quot;duplicate_ids&quot;, evts=[UserUttered(&quot;Hello&quot;)], slots=[membership_slot]
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_generator.py#L391">tests/core/nlg/test_generator.py~L391</a></p>
+<pre><code>         sender_id=&quot;duplicate_ids&quot;, evts=[UserUttered(&quot;Hello&quot;)], slots=[membership_slot]
      )
  
 -    domain_yaml = textwrap.dedent(&quot;&quot;&quot;
@@ -773,8 +773,8 @@
  
          intents:
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_generator.py#L418'>tests/core/nlg/test_generator.py~L418</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_generator.py#L418">tests/core/nlg/test_generator.py~L418</a></p>
+<pre><code> 
              - text: &quot;&quot;
                id: &quot;ID_1&quot;
 -        &quot;&quot;&quot;)
@@ -784,8 +784,8 @@
      domain = Domain.from_yaml(domain_yaml)
      response_variation_filter = ResponseVariationFilter(domain.responses)
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_response.py#L368'>tests/core/nlg/test_response.py~L368</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_response.py#L368">tests/core/nlg/test_response.py~L368</a></p>
+<pre><code> 
  
  async def test_nlg_non_matching_channel():
 -    domain = Domain.from_yaml(&quot;&quot;&quot;
@@ -804,8 +804,8 @@
      tracker = DialogueStateTracker(sender_id=&quot;test&quot;, slots=[])
      r = await t.generate(&quot;utter_hi&quot;, tracker, &quot;signal&quot;)
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_response.py#L383'>tests/core/nlg/test_response.py~L383</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_response.py#L383">tests/core/nlg/test_response.py~L383</a></p>
+<pre><code> 
  
  async def test_nlg_conditional_response_variations_with_none_slot():
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -815,8 +815,8 @@
          responses:
              utter_action:
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_response.py#L392'>tests/core/nlg/test_response.py~L392</a></p>
-<pre><code class="language-diff">               - type: slot
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_response.py#L392">tests/core/nlg/test_response.py~L392</a></p>
+<pre><code>               - type: slot
                  name: account
                  value: &quot;A&quot;
 -        &quot;&quot;&quot;)
@@ -826,8 +826,8 @@
      slot = AnySlot(
          name=&quot;account&quot;, mappings=[{}], initial_value=None, influence_conversation=False
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_response.py#L403'>tests/core/nlg/test_response.py~L403</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_response.py#L403">tests/core/nlg/test_response.py~L403</a></p>
+<pre><code> 
  
  async def test_nlg_conditional_response_variations_with_slot_not_a_constraint():
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -837,8 +837,8 @@
              responses:
                  utter_action:
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_response.py#L412'>tests/core/nlg/test_response.py~L412</a></p>
-<pre><code class="language-diff">                   - type: slot
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_response.py#L412">tests/core/nlg/test_response.py~L412</a></p>
+<pre><code>                   - type: slot
                      name: account
                      value: &quot;A&quot;
 -            &quot;&quot;&quot;)
@@ -848,8 +848,8 @@
      slot = TextSlot(
          name=&quot;account&quot;, mappings=[{}], initial_value=&quot;B&quot;, influence_conversation=False
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_response.py#L423'>tests/core/nlg/test_response.py~L423</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_response.py#L423">tests/core/nlg/test_response.py~L423</a></p>
+<pre><code> 
  
  async def test_nlg_conditional_response_variations_with_null_slot():
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -859,8 +859,8 @@
                  responses:
                      utter_action:
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_response.py#L432'>tests/core/nlg/test_response.py~L432</a></p>
-<pre><code class="language-diff">                       - type: slot
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_response.py#L432">tests/core/nlg/test_response.py~L432</a></p>
+<pre><code>                       - type: slot
                          name: account
                          value: null
 -                &quot;&quot;&quot;)
@@ -870,8 +870,8 @@
      slot = AnySlot(
          name=&quot;account&quot;, mappings=[{}], initial_value=None, influence_conversation=False
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_response.py#L447'>tests/core/nlg/test_response.py~L447</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_response.py#L447">tests/core/nlg/test_response.py~L447</a></p>
+<pre><code> 
  
  async def test_nlg_conditional_response_variations_channel_no_condition_met():
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -881,8 +881,8 @@
          responses:
             utter_action:
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_response.py#L458'>tests/core/nlg/test_response.py~L458</a></p>
-<pre><code class="language-diff">                   value: A
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_response.py#L458">tests/core/nlg/test_response.py~L458</a></p>
+<pre><code>                   value: A
                 channel: os
               - text: &quot;default&quot;
 -        &quot;&quot;&quot;)
@@ -892,8 +892,8 @@
      tracker = DialogueStateTracker(sender_id=&quot;test&quot;, slots=[])
      r = await t.generate(&quot;utter_action&quot;, tracker, &quot;os&quot;)
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_response.py#L466'>tests/core/nlg/test_response.py~L466</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_response.py#L466">tests/core/nlg/test_response.py~L466</a></p>
+<pre><code> 
  
  async def test_nlg_conditional_response_variation_condition_met_channel_mismatch():
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -903,8 +903,8 @@
          responses:
             utter_action:
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_response.py#L478'>tests/core/nlg/test_response.py~L478</a></p>
-<pre><code class="language-diff">                channel: os
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_response.py#L478">tests/core/nlg/test_response.py~L478</a></p>
+<pre><code>                channel: os
               - text: &quot;app default&quot;
                 channel: app
 -        &quot;&quot;&quot;)
@@ -914,8 +914,8 @@
      slot = TextSlot(
          &quot;test&quot;, mappings=[{}], initial_value=&quot;A&quot;, influence_conversation=False
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_response.py#L530'>tests/core/nlg/test_response.py~L530</a></p>
-<pre><code class="language-diff">     ],
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_response.py#L530">tests/core/nlg/test_response.py~L530</a></p>
+<pre><code>     ],
  )
  async def test_nlg_conditional_edgecases(slots, channel, expected_response):
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -925,8 +925,8 @@
          responses:
             utter_action:
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_response.py#L561'>tests/core/nlg/test_response.py~L561</a></p>
-<pre><code class="language-diff">                   value: B
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_response.py#L561">tests/core/nlg/test_response.py~L561</a></p>
+<pre><code>                   value: B
  
               - text: &quot;default&quot;
 -        &quot;&quot;&quot;)
@@ -936,8 +936,8 @@
      tracker = DialogueStateTracker(sender_id=&quot;test&quot;, slots=slots)
      r = await t.generate(&quot;utter_action&quot;, tracker, channel)
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_response.py#L571'>tests/core/nlg/test_response.py~L571</a></p>
-<pre><code class="language-diff"> async def test_nlg_conditional_response_variations_condition_logging(
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_response.py#L571">tests/core/nlg/test_response.py~L571</a></p>
+<pre><code> async def test_nlg_conditional_response_variations_condition_logging(
      caplog: LogCaptureFixture,
  ):
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -947,8 +947,8 @@
          responses:
             utter_action:
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_response.py#L584'>tests/core/nlg/test_response.py~L584</a></p>
-<pre><code class="language-diff">                   name: test_B
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/nlg/test_response.py#L584">tests/core/nlg/test_response.py~L584</a></p>
+<pre><code>                   name: test_B
                    value: B
               - text: &quot;default&quot;
 -        &quot;&quot;&quot;)
@@ -958,8 +958,8 @@
      slot_A = TextSlot(
          name=&quot;test_A&quot;, mappings=[{}], initial_value=&quot;A&quot;, influence_conversation=False
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L157'>tests/core/policies/test_rule_policy.py~L157</a></p>
-<pre><code class="language-diff">     # conversation start -&gt; ensure that this isn't flagged as a contradiction.
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L157">tests/core/policies/test_rule_policy.py~L157</a></p>
+<pre><code>     # conversation start -&gt; ensure that this isn&#x27;t flagged as a contradiction.
  
      utter_anti_greet_action = &quot;utter_anti_greet&quot;
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -978,8 +978,8 @@
      greet_rule_at_conversation_start = TrackerWithCachedStates.from_events(
          &quot;greet rule at conversation start&quot;,
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L208'>tests/core/policies/test_rule_policy.py~L208</a></p>
-<pre><code class="language-diff">     utter_anti_greet_action = &quot;utter_anti_greet&quot;
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L208">tests/core/policies/test_rule_policy.py~L208</a></p>
+<pre><code>     utter_anti_greet_action = &quot;utter_anti_greet&quot;
      some_slot = &quot;slot1&quot;
      some_slot_initial_value = &quot;slot1value&quot;
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -989,8 +989,8 @@
          intents:
          - {GREET_INTENT_NAME}
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L221'>tests/core/policies/test_rule_policy.py~L221</a></p>
-<pre><code class="language-diff">             initial_value: {some_slot_initial_value}
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L221">tests/core/policies/test_rule_policy.py~L221</a></p>
+<pre><code>             initial_value: {some_slot_initial_value}
              mappings:
              - type: from_text
 -        &quot;&quot;&quot;)
@@ -1000,8 +1000,8 @@
          &quot;greet rule at conversation start&quot;,
          domain=domain,
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L279'>tests/core/policies/test_rule_policy.py~L279</a></p>
-<pre><code class="language-diff">     utter_anti_greet_action = &quot;utter_anti_greet&quot;
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L279">tests/core/policies/test_rule_policy.py~L279</a></p>
+<pre><code>     utter_anti_greet_action = &quot;utter_anti_greet&quot;
      some_slot = &quot;slot1&quot;
      some_slot_initial_value = &quot;slot1value&quot;
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -1011,8 +1011,8 @@
          intents:
          - {GREET_INTENT_NAME}
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L292'>tests/core/policies/test_rule_policy.py~L292</a></p>
-<pre><code class="language-diff">             initial_value: {some_slot_initial_value}
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L292">tests/core/policies/test_rule_policy.py~L292</a></p>
+<pre><code>             initial_value: {some_slot_initial_value}
              mappings:
              - type: from_text
 -        &quot;&quot;&quot;)
@@ -1022,8 +1022,8 @@
      greet_rule_at_conversation_start = TrackerWithCachedStates.from_events(
          &quot;greet rule at conversation start&quot;,
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L342'>tests/core/policies/test_rule_policy.py~L342</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L342">tests/core/policies/test_rule_policy.py~L342</a></p>
+<pre><code> 
  
  def test_restrict_multiple_user_inputs_in_rules(policy: RulePolicy):
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -1041,8 +1041,8 @@
      greet_events = [
          UserUttered(intent={&quot;name&quot;: GREET_INTENT_NAME}),
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L372'>tests/core/policies/test_rule_policy.py~L372</a></p>
-<pre><code class="language-diff"> def test_incomplete_rules_due_to_slots(policy: RulePolicy):
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L372">tests/core/policies/test_rule_policy.py~L372</a></p>
+<pre><code> def test_incomplete_rules_due_to_slots(policy: RulePolicy):
      some_action = &quot;some_action&quot;
      some_slot = &quot;some_slot&quot;
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -1052,8 +1052,8 @@
          intents:
          - {GREET_INTENT_NAME}
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L383'>tests/core/policies/test_rule_policy.py~L383</a></p>
-<pre><code class="language-diff">             type: text
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L383">tests/core/policies/test_rule_policy.py~L383</a></p>
+<pre><code>             type: text
              mappings:
              - type: from_text
 -        &quot;&quot;&quot;)
@@ -1063,8 +1063,8 @@
      complete_rule = TrackerWithCachedStates.from_events(
          &quot;complete_rule&quot;,
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L440'>tests/core/policies/test_rule_policy.py~L440</a></p>
-<pre><code class="language-diff"> def test_no_incomplete_rules_due_to_slots_after_listen(policy: RulePolicy):
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L440">tests/core/policies/test_rule_policy.py~L440</a></p>
+<pre><code> def test_no_incomplete_rules_due_to_slots_after_listen(policy: RulePolicy):
      some_action = &quot;some_action&quot;
      some_slot = &quot;some_slot&quot;
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -1074,8 +1074,8 @@
          intents:
          - {GREET_INTENT_NAME}
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L453'>tests/core/policies/test_rule_policy.py~L453</a></p>
-<pre><code class="language-diff">             type: text
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L453">tests/core/policies/test_rule_policy.py~L453</a></p>
+<pre><code>             type: text
              mappings:
              - type: from_text
 -        &quot;&quot;&quot;)
@@ -1085,8 +1085,8 @@
      complete_rule = TrackerWithCachedStates.from_events(
          &quot;complete_rule&quot;,
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L500'>tests/core/policies/test_rule_policy.py~L500</a></p>
-<pre><code class="language-diff">     some_slot_value = &quot;value1&quot;
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L500">tests/core/policies/test_rule_policy.py~L500</a></p>
+<pre><code>     some_slot_value = &quot;value1&quot;
      some_other_slot = &quot;some_other_slot&quot;
      some_other_slot_value = &quot;value2&quot;
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -1096,8 +1096,8 @@
          intents:
          - {GREET_INTENT_NAME}
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L515'>tests/core/policies/test_rule_policy.py~L515</a></p>
-<pre><code class="language-diff">             type: text
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L515">tests/core/policies/test_rule_policy.py~L515</a></p>
+<pre><code>             type: text
              mappings:
              - type: from_text
 -        &quot;&quot;&quot;)
@@ -1107,8 +1107,8 @@
      simple_rule = TrackerWithCachedStates.from_events(
          &quot;simple rule with an action that sets 1 slot&quot;,
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L553'>tests/core/policies/test_rule_policy.py~L553</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L553">tests/core/policies/test_rule_policy.py~L553</a></p>
+<pre><code> 
  def test_incomplete_rules_due_to_loops(policy: RulePolicy):
      some_form = &quot;some_form&quot;
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -1127,8 +1127,8 @@
      complete_rule = TrackerWithCachedStates.from_events(
          &quot;complete_rule&quot;,
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L616'>tests/core/policies/test_rule_policy.py~L616</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L616">tests/core/policies/test_rule_policy.py~L616</a></p>
+<pre><code> 
  def test_contradicting_rules(policy: RulePolicy):
      utter_anti_greet_action = &quot;utter_anti_greet&quot;
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -1147,8 +1147,8 @@
      anti_greet_rule = TrackerWithCachedStates.from_events(
          &quot;anti greet rule&quot;,
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L654'>tests/core/policies/test_rule_policy.py~L654</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L654">tests/core/policies/test_rule_policy.py~L654</a></p>
+<pre><code> 
  def test_contradicting_rules_and_stories(policy: RulePolicy):
      utter_anti_greet_action = &quot;utter_anti_greet&quot;
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -1167,8 +1167,8 @@
      anti_greet_story = TrackerWithCachedStates.from_events(
          &quot;anti greet story&quot;,
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L796'>tests/core/policies/test_rule_policy.py~L796</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L796">tests/core/policies/test_rule_policy.py~L796</a></p>
+<pre><code> 
  
  def test_faq_rule(policy: RulePolicy):
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -1186,8 +1186,8 @@
      policy.train([GREET_RULE], domain)
      # remove first ... action and utter_greet and last action_listen from greet rule
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L821'>tests/core/policies/test_rule_policy.py~L821</a></p>
-<pre><code class="language-diff"> async def test_predict_form_action_if_in_form(policy: RulePolicy):
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L821">tests/core/policies/test_rule_policy.py~L821</a></p>
+<pre><code> async def test_predict_form_action_if_in_form(policy: RulePolicy):
      form_name = &quot;some_form&quot;
  
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -1197,8 +1197,8 @@
          intents:
          - {GREET_INTENT_NAME}
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L836'>tests/core/policies/test_rule_policy.py~L836</a></p>
-<pre><code class="language-diff">         forms:
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L836">tests/core/policies/test_rule_policy.py~L836</a></p>
+<pre><code>         forms:
            {form_name}:
              required_slots: []
 -        &quot;&quot;&quot;)
@@ -1208,8 +1208,8 @@
      policy.train([GREET_RULE], domain)
  
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L864'>tests/core/policies/test_rule_policy.py~L864</a></p>
-<pre><code class="language-diff"> async def test_predict_loop_action_if_in_loop_but_there_is_e2e_rule(policy: RulePolicy):
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L864">tests/core/policies/test_rule_policy.py~L864</a></p>
+<pre><code> async def test_predict_loop_action_if_in_loop_but_there_is_e2e_rule(policy: RulePolicy):
      loop_name = &quot;some_loop&quot;
  
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -1219,8 +1219,8 @@
          intents:
          - {GREET_INTENT_NAME}
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L879'>tests/core/policies/test_rule_policy.py~L879</a></p>
-<pre><code class="language-diff">         forms:
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L879">tests/core/policies/test_rule_policy.py~L879</a></p>
+<pre><code>         forms:
            {loop_name}:
              required_slots: []
 -        &quot;&quot;&quot;)
@@ -1230,8 +1230,8 @@
          &quot;bla&quot;,
          domain=domain,
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L918'>tests/core/policies/test_rule_policy.py~L918</a></p>
-<pre><code class="language-diff"> async def test_predict_form_action_if_multiple_turns(policy: RulePolicy):
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L918">tests/core/policies/test_rule_policy.py~L918</a></p>
+<pre><code> async def test_predict_form_action_if_multiple_turns(policy: RulePolicy):
      form_name = &quot;some_form&quot;
      other_intent = &quot;bye&quot;
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -1241,8 +1241,8 @@
          intents:
          - {GREET_INTENT_NAME}
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L934'>tests/core/policies/test_rule_policy.py~L934</a></p>
-<pre><code class="language-diff">         forms:
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L934">tests/core/policies/test_rule_policy.py~L934</a></p>
+<pre><code>         forms:
            {form_name}:
              required_slots: []
 -        &quot;&quot;&quot;)
@@ -1252,8 +1252,8 @@
      policy.train([GREET_RULE], domain)
  
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L966'>tests/core/policies/test_rule_policy.py~L966</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L966">tests/core/policies/test_rule_policy.py~L966</a></p>
+<pre><code> 
  
  async def test_predict_slot_initial_value_not_required_in_rule(policy: RulePolicy):
 -    domain = Domain.from_yaml(&quot;&quot;&quot;
@@ -1263,8 +1263,8 @@
  - i1
  actions:
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L980'>tests/core/policies/test_rule_policy.py~L980</a></p>
-<pre><code class="language-diff">     initial_value: v1
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L980">tests/core/policies/test_rule_policy.py~L980</a></p>
+<pre><code>     initial_value: v1
      mappings:
      - type: from_text
 -&quot;&quot;&quot;)
@@ -1274,8 +1274,8 @@
      rule = DialogueStateTracker.from_events(
          &quot;slot rule&quot;,
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1014'>tests/core/policies/test_rule_policy.py~L1014</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1014">tests/core/policies/test_rule_policy.py~L1014</a></p>
+<pre><code> 
  
  async def test_predict_slot_with_initial_slot_matches_rule(policy: RulePolicy):
 -    domain = Domain.from_yaml(&quot;&quot;&quot;
@@ -1285,8 +1285,8 @@
  - i1
  actions:
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1028'>tests/core/policies/test_rule_policy.py~L1028</a></p>
-<pre><code class="language-diff">     initial_value: v1
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1028">tests/core/policies/test_rule_policy.py~L1028</a></p>
+<pre><code>     initial_value: v1
      mappings:
      - type: from_text
 -&quot;&quot;&quot;)
@@ -1296,8 +1296,8 @@
      rule = DialogueStateTracker.from_events(
          &quot;slot rule&quot;,
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1061'>tests/core/policies/test_rule_policy.py~L1061</a></p>
-<pre><code class="language-diff"> async def test_predict_action_listen_after_form(policy: RulePolicy):
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1061">tests/core/policies/test_rule_policy.py~L1061</a></p>
+<pre><code> async def test_predict_action_listen_after_form(policy: RulePolicy):
      form_name = &quot;some_form&quot;
  
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -1307,8 +1307,8 @@
          intents:
          - {GREET_INTENT_NAME}
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1076'>tests/core/policies/test_rule_policy.py~L1076</a></p>
-<pre><code class="language-diff">         forms:
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1076">tests/core/policies/test_rule_policy.py~L1076</a></p>
+<pre><code>         forms:
            {form_name}:
              required_slots: []
 -        &quot;&quot;&quot;)
@@ -1318,8 +1318,8 @@
      policy.train([GREET_RULE], domain)
  
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1106'>tests/core/policies/test_rule_policy.py~L1106</a></p>
-<pre><code class="language-diff"> async def test_dont_predict_form_if_already_finished(policy: RulePolicy):
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1106">tests/core/policies/test_rule_policy.py~L1106</a></p>
+<pre><code> async def test_dont_predict_form_if_already_finished(policy: RulePolicy):
      form_name = &quot;some_form&quot;
  
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -1329,8 +1329,8 @@
          intents:
          - {GREET_INTENT_NAME}
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1121'>tests/core/policies/test_rule_policy.py~L1121</a></p>
-<pre><code class="language-diff">         forms:
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1121">tests/core/policies/test_rule_policy.py~L1121</a></p>
+<pre><code>         forms:
            {form_name}:
              required_slots: []
 -        &quot;&quot;&quot;)
@@ -1340,8 +1340,8 @@
      policy.train([GREET_RULE], domain)
  
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1155'>tests/core/policies/test_rule_policy.py~L1155</a></p>
-<pre><code class="language-diff"> async def test_form_unhappy_path(policy: RulePolicy):
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1155">tests/core/policies/test_rule_policy.py~L1155</a></p>
+<pre><code> async def test_form_unhappy_path(policy: RulePolicy):
      form_name = &quot;some_form&quot;
  
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -1351,8 +1351,8 @@
          intents:
          - {GREET_INTENT_NAME}
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1170'>tests/core/policies/test_rule_policy.py~L1170</a></p>
-<pre><code class="language-diff">         forms:
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1170">tests/core/policies/test_rule_policy.py~L1170</a></p>
+<pre><code>         forms:
            {form_name}:
              required_slots: []
 -        &quot;&quot;&quot;)
@@ -1362,8 +1362,8 @@
      policy.train([GREET_RULE], domain)
  
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1198'>tests/core/policies/test_rule_policy.py~L1198</a></p>
-<pre><code class="language-diff"> async def test_form_unhappy_path_from_general_rule(policy: RulePolicy):
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1198">tests/core/policies/test_rule_policy.py~L1198</a></p>
+<pre><code> async def test_form_unhappy_path_from_general_rule(policy: RulePolicy):
      form_name = &quot;some_form&quot;
  
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -1373,8 +1373,8 @@
          intents:
          - {GREET_INTENT_NAME}
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1213'>tests/core/policies/test_rule_policy.py~L1213</a></p>
-<pre><code class="language-diff">         forms:
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1213">tests/core/policies/test_rule_policy.py~L1213</a></p>
+<pre><code>         forms:
            {form_name}:
              required_slots: []
 -        &quot;&quot;&quot;)
@@ -1384,8 +1384,8 @@
      # RulePolicy should memorize that unhappy_rule overrides GREET_RULE
      policy.train([GREET_RULE], domain)
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1253'>tests/core/policies/test_rule_policy.py~L1253</a></p>
-<pre><code class="language-diff">     form_name = &quot;some_form&quot;
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1253">tests/core/policies/test_rule_policy.py~L1253</a></p>
+<pre><code>     form_name = &quot;some_form&quot;
      handle_rejection_action_name = &quot;utter_handle_rejection&quot;
  
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -1395,8 +1395,8 @@
          intents:
          - {GREET_INTENT_NAME}
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1269'>tests/core/policies/test_rule_policy.py~L1269</a></p>
-<pre><code class="language-diff">         forms:
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1269">tests/core/policies/test_rule_policy.py~L1269</a></p>
+<pre><code>         forms:
            {form_name}:
              required_slots: []
 -        &quot;&quot;&quot;)
@@ -1406,8 +1406,8 @@
      unhappy_rule = TrackerWithCachedStates.from_events(
          &quot;bla&quot;,
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1327'>tests/core/policies/test_rule_policy.py~L1327</a></p>
-<pre><code class="language-diff">     form_name = &quot;some_form&quot;
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1327">tests/core/policies/test_rule_policy.py~L1327</a></p>
+<pre><code>     form_name = &quot;some_form&quot;
      handle_rejection_action_name = &quot;utter_handle_rejection&quot;
  
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -1417,8 +1417,8 @@
          intents:
          - {GREET_INTENT_NAME}
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1343'>tests/core/policies/test_rule_policy.py~L1343</a></p>
-<pre><code class="language-diff">         forms:
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1343">tests/core/policies/test_rule_policy.py~L1343</a></p>
+<pre><code>         forms:
            {form_name}:
              required_slots: []
 -        &quot;&quot;&quot;)
@@ -1428,8 +1428,8 @@
      unhappy_story = TrackerWithCachedStates.from_events(
          &quot;bla&quot;,
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1402'>tests/core/policies/test_rule_policy.py~L1402</a></p>
-<pre><code class="language-diff">     form_name = &quot;some_form&quot;
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1402">tests/core/policies/test_rule_policy.py~L1402</a></p>
+<pre><code>     form_name = &quot;some_form&quot;
      handle_rejection_action_name = &quot;utter_handle_rejection&quot;
  
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -1439,8 +1439,8 @@
          intents:
          - {GREET_INTENT_NAME}
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1418'>tests/core/policies/test_rule_policy.py~L1418</a></p>
-<pre><code class="language-diff">         forms:
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1418">tests/core/policies/test_rule_policy.py~L1418</a></p>
+<pre><code>         forms:
            {form_name}:
              required_slots: []
 -        &quot;&quot;&quot;)
@@ -1450,8 +1450,8 @@
      unhappy_rule = TrackerWithCachedStates.from_events(
          &quot;bla&quot;,
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1491'>tests/core/policies/test_rule_policy.py~L1491</a></p>
-<pre><code class="language-diff">     form_name = &quot;some_form&quot;
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1491">tests/core/policies/test_rule_policy.py~L1491</a></p>
+<pre><code>     form_name = &quot;some_form&quot;
      handle_rejection_action_name = &quot;utter_handle_rejection&quot;
  
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -1461,8 +1461,8 @@
          intents:
          - {GREET_INTENT_NAME}
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1507'>tests/core/policies/test_rule_policy.py~L1507</a></p>
-<pre><code class="language-diff">         forms:
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1507">tests/core/policies/test_rule_policy.py~L1507</a></p>
+<pre><code>         forms:
            {form_name}:
              required_slots: []
 -        &quot;&quot;&quot;)
@@ -1472,8 +1472,8 @@
      unhappy_story = TrackerWithCachedStates.from_events(
          &quot;bla&quot;,
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1559'>tests/core/policies/test_rule_policy.py~L1559</a></p>
-<pre><code class="language-diff"> async def test_form_unhappy_path_without_rule(policy: RulePolicy):
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1559">tests/core/policies/test_rule_policy.py~L1559</a></p>
+<pre><code> async def test_form_unhappy_path_without_rule(policy: RulePolicy):
      form_name = &quot;some_form&quot;
      other_intent = &quot;bye&quot;
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -1483,8 +1483,8 @@
          intents:
          - {GREET_INTENT_NAME}
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1575'>tests/core/policies/test_rule_policy.py~L1575</a></p>
-<pre><code class="language-diff">         forms:
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1575">tests/core/policies/test_rule_policy.py~L1575</a></p>
+<pre><code>         forms:
            {form_name}:
              required_slots: []
 -        &quot;&quot;&quot;)
@@ -1494,8 +1494,8 @@
      policy.train([GREET_RULE], domain)
  
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1603'>tests/core/policies/test_rule_policy.py~L1603</a></p>
-<pre><code class="language-diff"> async def test_form_activation_rule(policy: RulePolicy):
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1603">tests/core/policies/test_rule_policy.py~L1603</a></p>
+<pre><code> async def test_form_activation_rule(policy: RulePolicy):
      form_name = &quot;some_form&quot;
      other_intent = &quot;bye&quot;
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -1505,8 +1505,8 @@
          intents:
          - {GREET_INTENT_NAME}
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1619'>tests/core/policies/test_rule_policy.py~L1619</a></p>
-<pre><code class="language-diff">         forms:
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1619">tests/core/policies/test_rule_policy.py~L1619</a></p>
+<pre><code>         forms:
            {form_name}:
              required_slots: []
 -        &quot;&quot;&quot;)
@@ -1516,8 +1516,8 @@
      form_activation_rule = _form_activation_rule(domain, form_name, other_intent)
      policy.train([GREET_RULE, form_activation_rule], domain)
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1642'>tests/core/policies/test_rule_policy.py~L1642</a></p>
-<pre><code class="language-diff"> async def test_failing_form_activation_due_to_no_rule(policy: RulePolicy):
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1642">tests/core/policies/test_rule_policy.py~L1642</a></p>
+<pre><code> async def test_failing_form_activation_due_to_no_rule(policy: RulePolicy):
      form_name = &quot;some_form&quot;
      other_intent = &quot;bye&quot;
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -1527,8 +1527,8 @@
          intents:
          - {GREET_INTENT_NAME}
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1658'>tests/core/policies/test_rule_policy.py~L1658</a></p>
-<pre><code class="language-diff">         forms:
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1658">tests/core/policies/test_rule_policy.py~L1658</a></p>
+<pre><code>         forms:
            {form_name}:
              required_slots: []
 -        &quot;&quot;&quot;)
@@ -1538,8 +1538,8 @@
      policy.train([GREET_RULE], domain)
  
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1681'>tests/core/policies/test_rule_policy.py~L1681</a></p>
-<pre><code class="language-diff"> def test_form_submit_rule(policy: RulePolicy):
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1681">tests/core/policies/test_rule_policy.py~L1681</a></p>
+<pre><code> def test_form_submit_rule(policy: RulePolicy):
      form_name = &quot;some_form&quot;
      submit_action_name = &quot;utter_submit&quot;
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -1549,8 +1549,8 @@
          intents:
          - {GREET_INTENT_NAME}
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1697'>tests/core/policies/test_rule_policy.py~L1697</a></p>
-<pre><code class="language-diff">         forms:
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1697">tests/core/policies/test_rule_policy.py~L1697</a></p>
+<pre><code>         forms:
            {form_name}:
              required_slots: []
 -        &quot;&quot;&quot;)
@@ -1560,8 +1560,8 @@
      form_submit_rule = _form_submit_rule(domain, submit_action_name, form_name)
  
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1733'>tests/core/policies/test_rule_policy.py~L1733</a></p>
-<pre><code class="language-diff">     submit_action_name = &quot;utter_submit&quot;
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1733">tests/core/policies/test_rule_policy.py~L1733</a></p>
+<pre><code>     submit_action_name = &quot;utter_submit&quot;
      entity = &quot;some_entity&quot;
      slot = &quot;some_slot&quot;
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -1571,8 +1571,8 @@
          intents:
          - {GREET_INTENT_NAME}
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1755'>tests/core/policies/test_rule_policy.py~L1755</a></p>
-<pre><code class="language-diff">             required_slots: []
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1755">tests/core/policies/test_rule_policy.py~L1755</a></p>
+<pre><code>             required_slots: []
          entities:
          - {entity}
 -        &quot;&quot;&quot;)
@@ -1582,8 +1582,8 @@
      form_activation_rule = _form_activation_rule(domain, form_name, GREET_INTENT_NAME)
      form_submit_rule = _form_submit_rule(domain, submit_action_name, form_name)
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1837'>tests/core/policies/test_rule_policy.py~L1837</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1837">tests/core/policies/test_rule_policy.py~L1837</a></p>
+<pre><code> 
  
  async def test_one_stage_fallback_rule(policy: RulePolicy):
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -1602,8 +1602,8 @@
      fallback_recover_rule = TrackerWithCachedStates.from_events(
          &quot;bla&quot;,
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1918'>tests/core/policies/test_rule_policy.py~L1918</a></p>
-<pre><code class="language-diff"> def test_default_actions(
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1918">tests/core/policies/test_rule_policy.py~L1918</a></p>
+<pre><code> def test_default_actions(
      intent_name: Text, expected_action_name: Text, policy: RulePolicy
  ):
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -1621,8 +1621,8 @@
      new_conversation = DialogueStateTracker.from_events(
          &quot;bla2&quot;,
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1944'>tests/core/policies/test_rule_policy.py~L1944</a></p>
-<pre><code class="language-diff">     &quot;intent_name&quot;, [USER_INTENT_RESTART, USER_INTENT_BACK, USER_INTENT_SESSION_START]
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L1944">tests/core/policies/test_rule_policy.py~L1944</a></p>
+<pre><code>     &quot;intent_name&quot;, [USER_INTENT_RESTART, USER_INTENT_BACK, USER_INTENT_SESSION_START]
  )
  def test_e2e_beats_default_actions(intent_name: Text, policy: RulePolicy):
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -1640,8 +1640,8 @@
      e2e_rule = TrackerWithCachedStates.from_events(
          &quot;bla&quot;,
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L2003'>tests/core/policies/test_rule_policy.py~L2003</a></p>
-<pre><code class="language-diff">     expected_prediction: Text,
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L2003">tests/core/policies/test_rule_policy.py~L2003</a></p>
+<pre><code>     expected_prediction: Text,
  ):
      other_intent = &quot;other&quot;
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -1651,8 +1651,8 @@
          intents:
          - {GREET_INTENT_NAME}
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L2011'>tests/core/policies/test_rule_policy.py~L2011</a></p>
-<pre><code class="language-diff">         actions:
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L2011">tests/core/policies/test_rule_policy.py~L2011</a></p>
+<pre><code>         actions:
          - {UTTER_GREET_ACTION}
          - my_core_fallback
 -        &quot;&quot;&quot;)
@@ -1662,8 +1662,8 @@
      rule_policy.train([GREET_RULE], domain)
  
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L2034'>tests/core/policies/test_rule_policy.py~L2034</a></p>
-<pre><code class="language-diff">     policy_with_config: Callable[..., RulePolicy],
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L2034">tests/core/policies/test_rule_policy.py~L2034</a></p>
+<pre><code>     policy_with_config: Callable[..., RulePolicy],
  ):
      other_intent = &quot;other&quot;
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -1682,8 +1682,8 @@
      policy.train([GREET_RULE], domain)
      new_conversation = DialogueStateTracker.from_events(
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L2059'>tests/core/policies/test_rule_policy.py~L2059</a></p>
-<pre><code class="language-diff"> def test_hide_rule_turn(policy: RulePolicy):
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L2059">tests/core/policies/test_rule_policy.py~L2059</a></p>
+<pre><code> def test_hide_rule_turn(policy: RulePolicy):
      chitchat = &quot;chitchat&quot;
      action_chitchat = &quot;action_chitchat&quot;
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -1693,8 +1693,8 @@
          intents:
          - {GREET_INTENT_NAME}
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L2067'>tests/core/policies/test_rule_policy.py~L2067</a></p>
-<pre><code class="language-diff">         actions:
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L2067">tests/core/policies/test_rule_policy.py~L2067</a></p>
+<pre><code>         actions:
          - {UTTER_GREET_ACTION}
          - {action_chitchat}
 -        &quot;&quot;&quot;)
@@ -1704,8 +1704,8 @@
          &quot;chitchat story&quot;,
          domain=domain,
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L2137'>tests/core/policies/test_rule_policy.py~L2137</a></p>
-<pre><code class="language-diff">     some_slot_value = &quot;value1&quot;
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L2137">tests/core/policies/test_rule_policy.py~L2137</a></p>
+<pre><code>     some_slot_value = &quot;value1&quot;
      slot_which_is_also_in_story = &quot;slot_which_is_also_in_story&quot;
      some_other_slot_value = &quot;value2&quot;
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -1715,8 +1715,8 @@
          intents:
          - {some_intent}
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L2154'>tests/core/policies/test_rule_policy.py~L2154</a></p>
-<pre><code class="language-diff">             type: text
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L2154">tests/core/policies/test_rule_policy.py~L2154</a></p>
+<pre><code>             type: text
              mappings:
              - type: from_text
 -        &quot;&quot;&quot;)
@@ -1726,8 +1726,8 @@
      simple_rule = TrackerWithCachedStates.from_events(
          &quot;simple rule with an action that sets 1 slot&quot;,
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L2262'>tests/core/policies/test_rule_policy.py~L2262</a></p>
-<pre><code class="language-diff">     chitchat = &quot;chitchat&quot;
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L2262">tests/core/policies/test_rule_policy.py~L2262</a></p>
+<pre><code>     chitchat = &quot;chitchat&quot;
      action_chitchat = &quot;action_chitchat&quot;
      followup_on_chitchat = &quot;followup_on_chitchat&quot;
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -1737,8 +1737,8 @@
          intents:
          - {chitchat}
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L2274'>tests/core/policies/test_rule_policy.py~L2274</a></p>
-<pre><code class="language-diff">             type: bool
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L2274">tests/core/policies/test_rule_policy.py~L2274</a></p>
+<pre><code>             type: bool
              mappings:
              - type: from_text
 -        &quot;&quot;&quot;)
@@ -1748,8 +1748,8 @@
          &quot;simple rule without action listen in the end&quot;,
          domain=domain,
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L2348'>tests/core/policies/test_rule_policy.py~L2348</a></p>
-<pre><code class="language-diff">     activate_another_form = &quot;activate_another_form&quot;
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L2348">tests/core/policies/test_rule_policy.py~L2348</a></p>
+<pre><code>     activate_another_form = &quot;activate_another_form&quot;
      chitchat = &quot;chitchat&quot;
      action_chitchat = &quot;action_chitchat&quot;
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -1759,8 +1759,8 @@
          intents:
          - {GREET_INTENT_NAME}
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L2368'>tests/core/policies/test_rule_policy.py~L2368</a></p>
-<pre><code class="language-diff">             required_slots: []
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L2368">tests/core/policies/test_rule_policy.py~L2368</a></p>
+<pre><code>             required_slots: []
            {another_form_name}:
              required_slots: []
 -        &quot;&quot;&quot;)
@@ -1770,8 +1770,8 @@
      form_activation_rule = _form_activation_rule(domain, form_name, activate_form)
  
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L2454'>tests/core/policies/test_rule_policy.py~L2454</a></p>
-<pre><code class="language-diff"> def test_do_not_hide_rule_turn_with_loops_in_stories(policy: RulePolicy):
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L2454">tests/core/policies/test_rule_policy.py~L2454</a></p>
+<pre><code> def test_do_not_hide_rule_turn_with_loops_in_stories(policy: RulePolicy):
      form_name = &quot;some_form&quot;
      activate_form = &quot;activate_form&quot;
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -1781,8 +1781,8 @@
          intents:
          - {activate_form}
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L2466'>tests/core/policies/test_rule_policy.py~L2466</a></p>
-<pre><code class="language-diff">         forms:
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L2466">tests/core/policies/test_rule_policy.py~L2466</a></p>
+<pre><code>         forms:
            {form_name}:
              required_slots: []
 -        &quot;&quot;&quot;)
@@ -1792,8 +1792,8 @@
      form_activation_rule = _form_activation_rule(domain, form_name, activate_form)
      form_activation_story = form_activation_rule.copy()
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L2507'>tests/core/policies/test_rule_policy.py~L2507</a></p>
-<pre><code class="language-diff"> def test_hide_rule_turn_with_loops_as_followup_action(policy: RulePolicy):
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L2507">tests/core/policies/test_rule_policy.py~L2507</a></p>
+<pre><code> def test_hide_rule_turn_with_loops_as_followup_action(policy: RulePolicy):
      form_name = &quot;some_form&quot;
      activate_form = &quot;activate_form&quot;
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -1803,8 +1803,8 @@
          intents:
          - {GREET_INTENT_NAME}
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L2522'>tests/core/policies/test_rule_policy.py~L2522</a></p>
-<pre><code class="language-diff">         forms:
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L2522">tests/core/policies/test_rule_policy.py~L2522</a></p>
+<pre><code>         forms:
            {form_name}:
              required_slots: []
 -        &quot;&quot;&quot;)
@@ -1814,8 +1814,8 @@
      form_activation_rule = _form_activation_rule(domain, form_name, activate_form)
      form_activation_story = form_activation_rule.copy()
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L2609'>tests/core/policies/test_rule_policy.py~L2609</a></p>
-<pre><code class="language-diff">     intent_1 = &quot;intent_1&quot;
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L2609">tests/core/policies/test_rule_policy.py~L2609</a></p>
+<pre><code>     intent_1 = &quot;intent_1&quot;
      utter_1 = &quot;utter_1&quot;
      utter_2 = &quot;utter_2&quot;
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -1834,8 +1834,8 @@
          &quot;conditioned on action&quot;,
          domain=domain,
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L2652'>tests/core/policies/test_rule_policy.py~L2652</a></p>
-<pre><code class="language-diff">     utter_1 = &quot;utter_1&quot;
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L2652">tests/core/policies/test_rule_policy.py~L2652</a></p>
+<pre><code>     utter_1 = &quot;utter_1&quot;
      utter_2 = &quot;utter_2&quot;
      utter_3 = &quot;utter_3&quot;
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -1845,8 +1845,8 @@
          intents:
          - {intent_1}
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L2660'>tests/core/policies/test_rule_policy.py~L2660</a></p>
-<pre><code class="language-diff">         - {utter_1}
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L2660">tests/core/policies/test_rule_policy.py~L2660</a></p>
+<pre><code>         - {utter_1}
          - {utter_2}
          - {utter_3}
 -        &quot;&quot;&quot;)
@@ -1856,8 +1856,8 @@
          &quot;action_listen after predictable action&quot;,
          domain=domain,
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L2696'>tests/core/policies/test_rule_policy.py~L2696</a></p>
-<pre><code class="language-diff">     intent_1 = &quot;intent_1&quot;
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L2696">tests/core/policies/test_rule_policy.py~L2696</a></p>
+<pre><code>     intent_1 = &quot;intent_1&quot;
      utter_1 = &quot;utter_1&quot;
      utter_2 = &quot;utter_2&quot;
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -1876,8 +1876,8 @@
          &quot;last prediction is action_listen&quot;,
          domain=domain,
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L2735'>tests/core/policies/test_rule_policy.py~L2735</a></p>
-<pre><code class="language-diff">     intent_1 = &quot;intent_1&quot;
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L2735">tests/core/policies/test_rule_policy.py~L2735</a></p>
+<pre><code>     intent_1 = &quot;intent_1&quot;
      utter_1 = &quot;utter_1&quot;
      utter_2 = &quot;utter_2&quot;
 -    domain = Domain.from_yaml(f&quot;&quot;&quot;
@@ -1896,8 +1896,8 @@
          &quot;conditioned on action&quot;,
          domain=domain,
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L2776'>tests/core/policies/test_rule_policy.py~L2776</a></p>
-<pre><code class="language-diff">     intent_1 = &quot;intent_1&quot;
+<p><a href="https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/core/policies/test_rule_policy.py#L2776">tests/core/policies/test_rule_policy.py~L2776</a></p>
+<pre><code>     intent_1 = &quot;intent_1&quot;
      utter_1 = &quot;utter_1&quot;
      utter_2 = &quot;utter_2&quot;
 -    domain = Domain.from_yaml(f&quot;&quot;...*[Comment body truncated]*
@@ -1905,13 +1905,13 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @zanieb by @MichaReiser on 2024-01-25 08:28</div>
+            <div class="event">Review requested from <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-01-25 08:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2024-01-25 08:39</div>
+            <div class="event">Review requested from <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-01-25 08:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @MichaReiser on 2024-01-25 08:39</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-01-25 08:39</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-01-25 17:40</div>
@@ -1929,7 +1929,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/parentheses.rs</code>:199 on 2024-01-26 07:18</div>
-            <div class="timeline-body"><p>Yes. Breaking only if the first line doesn't fit required a more complicated IR. Now it's simpler, because we always or never indent.</p>
+            <div class="timeline-body"><p>Yes. Breaking only if the first line doesn&#x27;t fit required a more complicated IR. Now it&#x27;s simpler, because we always or never indent.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1937,10 +1937,10 @@
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @MichaReiser on 2024-01-26 07:18</div>
+            <div class="event">Merged by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-01-26 07:18</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2024-01-26 07:18</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-01-26 07:18</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-01-26 07:18</div>
@@ -1948,7 +1948,7 @@
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:02:25 UTC
+        Synced at 2026-01-20 19:00:58 UTC
     </footer>
 </body>
 </html>

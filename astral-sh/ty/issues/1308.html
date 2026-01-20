@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>On <code>main</code> we have this behaviour:</p>
-<pre><code class="language-py">from typing import reveal_type
+<pre><code>from typing import reveal_type
 from ty_extensions import is_subtype_of
 
 class Covariant[T]:
@@ -37,21 +37,21 @@ reveal_type(is_subtype_of(Covariant[int | str], Covariant[str] | Covariant[int])
 </code></pre>
 <p>This is incorrect: due to covariance, the types <code>Covariant[int | str]</code> and <code>Covariant[str] | Covariant[int]</code> are actually equivalent types.</p>
 <p>Possibly we could fix this by ensuring that (for covariant and bivariant types) we always eagerly explode unions when creating specialized generics. So, similar to the way the type  <code>T &amp; (U | V)</code> can never exist in our type representation (we would always represent the type as <code>(T &amp; U) | (T &amp; V)</code>, we would never permit the type <code>Covariant[int | str]</code> to exist in our internal representation (it would always be represented internally as <code>Covariant[str] | Covariant[int]</code>).</p>
-<p>The same issue exists for tuples (https://github.com/astral-sh/ty/issues/493 tracks that)</p>
-<h3>Version</h3>
+<p>The same issue exists for tuples (<a href="https://github.com/astral-sh/ty/issues/493">astral-sh/ty#493</a> tracks that)</p>
+Version
 <p><em>No response</em></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-10-04 17:54</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-04 17:54</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">type properties</span> added by @AlexWaygood on 2025-10-04 17:54</div>
+            <div class="event">Label <span class="label">type properties</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-04 17:54</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Wizzerinus">@Wizzerinus</a> on 2025-10-05 14:54</div>
             <div class="timeline-body"><p>Note that this is only true if you do not use a backward constraint inference, i.e.</p>
-<pre><code class="language-py">@dataclass(frozen=True)
+<pre><code>@dataclass(frozen=True)
 class Covariant[T]:
   first: T
   second: T
@@ -64,18 +64,18 @@ def thing(x: Covariant[int | str]):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-09 03:05</div>
-            <div class="timeline-body"><p>I think @Wizzerinus' point is really broader than it is stated -- regardless of whether we do backwards constraint inference or not, the equivalence proposed here is not sound. The type <code>Covariant[int | str]</code> is not equivalent to <code>Covariant[int] | Covariant[str]</code>, because (given the definition of <code>Covariant</code> from @Wizzerinus ) an object with <code>first: int</code> and <code>second: str</code> is an inhabitant of <code>Covariant[int | str]</code>, but it is not an inhabitant of either <code>Covariant[int]</code> nor <code>Covariant[str]</code>.</p>
+            <div class="timeline-body"><p>I think @Wizzerinus&#x27; point is really broader than it is stated -- regardless of whether we do backwards constraint inference or not, the equivalence proposed here is not sound. The type <code>Covariant[int | str]</code> is not equivalent to <code>Covariant[int] | Covariant[str]</code>, because (given the definition of <code>Covariant</code> from @Wizzerinus ) an object with <code>first: int</code> and <code>second: str</code> is an inhabitant of <code>Covariant[int | str]</code>, but it is not an inhabitant of either <code>Covariant[int]</code> nor <code>Covariant[str]</code>.</p>
 <p>Similarly, in the OP example, an object which sometimes returns <code>int</code> and sometimes returns <code>str</code> from its <code>get</code> method (in other words, has <code>def get(self) -&gt; int | str</code>) would inhabit <code>Covariant[int | str]</code>, but neither <code>Covariant[int]</code> nor <code>Covariant[str]</code>.</p>
-<p>Closing as not planned -- @AlexWaygood feel free to reopen if I'm missing something!</p>
+<p>Closing as not planned -- @AlexWaygood feel free to reopen if I&#x27;m missing something!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2026-01-09 03:05</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2026-01-09 03:05</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-09 13:31</div>
-            <div class="timeline-body"><p>I had to work this out a bit more fully to get it straight in my head, but yes, I think you're correct here. The equivalence and subtyping relationships I proposed in the OP do not hold:</p>
-<pre><code class="language-py">from typing import reveal_type, Protocol
+            <div class="timeline-body"><p>I had to work this out a bit more fully to get it straight in my head, but yes, I think you&#x27;re correct here. The equivalence and subtyping relationships I proposed in the OP do not hold:</p>
+<pre><code>from typing import reveal_type, Protocol
 from ty_extensions import is_subtype_of
 
 class CovariantProtocol[T](Protocol):
@@ -106,14 +106,14 @@ class A:
 # `CovariantProtocol[int]` or `CovariantProtocol[str]`, therefore does not
 # inhabit `CovariantProtocol[int] | CovariantProtocol[str]`. 
 </code></pre>
-<p>Something I'm still not quite clear on, though, is: what makes tuples special? Why does https://github.com/astral-sh/ty/issues/493 (based on the equivalence rules laid out in https://typing.python.org/en/latest/spec/tuples.html#type-compatibility-rules) still hold true, despite the fact that it is not generally true for immutable covariant types?</p>
+<p>Something I&#x27;m still not quite clear on, though, is: what makes tuples special? Why does <a href="https://github.com/astral-sh/ty/issues/493">astral-sh/ty#493</a> (based on the equivalence rules laid out in https://typing.python.org/en/latest/spec/tuples.html#type-compatibility-rules) still hold true, despite the fact that it is not generally true for immutable covariant types?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-09 19:32</div>
             <div class="timeline-body"><p>I think in this case our knowledge of the runtime details of tuples allows us to make stronger guarantees. In particular, we know (outside of the type system) that for a given type parameter of a (non-variadic) tuple type, it corresponds to exactly one (immutable) value stored in the tuple: there is no way for a <code>tuple[int | str]</code> to contain both an int and a str, both typed as <code>int | str</code>.</p>
 <p>That makes the <code>tuple[int | str] == tuple[int] | tuple[str]</code> equivalence safe. But as far as the type system is concerned, this is something we just have to define as a special case, because it is not generally true for all covariant generics.</p>
-<p>It's also worth noting that #493 cannot apply to variadic tuples: <code>tuple[int | str, ...]</code> is not equivalent to <code>tuple[int, ...] | tuple[str, ...]</code>, because <code>(1, &quot;foo&quot;)</code> inhabits the first type, but not the second. Variadic tuples (like most generic types) do not have the &quot;type argument corresponds to precisely one immutable value&quot; property.</p>
+<p>It&#x27;s also worth noting that #493 cannot apply to variadic tuples: <code>tuple[int | str, ...]</code> is not equivalent to <code>tuple[int, ...] | tuple[str, ...]</code>, because <code>(1, &quot;foo&quot;)</code> inhabits the first type, but not the second. Variadic tuples (like most generic types) do not have the &quot;type argument corresponds to precisely one immutable value&quot; property.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -126,13 +126,13 @@ class A:
             <div class="timeline-body"><blockquote>
 <p>I think in this case our knowledge of the runtime details of tuples allows us to make stronger guarantees. In particular, we know (outside of the type system) that for a given type parameter of a (non-variadic) tuple type, it corresponds to exactly one (immutable) value stored in the tuple: there is no way for a <code>tuple[int | str]</code> to contain both an int and a str, both typed as <code>int | str</code>.</p>
 </blockquote>
-<p>I'm not sure this necessarily holds true when you bring tuple subclasses into the mix. But maybe there's only so much thought you should give to the soundness of tuple subclasses if you want to stay sane :-)</p>
+<p>I&#x27;m not sure this necessarily holds true when you bring tuple subclasses into the mix. But maybe there&#x27;s only so much thought you should give to the soundness of tuple subclasses if you want to stay sane :-)</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:45 UTC
+        Synced at 2026-01-20 19:25:41 UTC
     </footer>
 </body>
 </html>

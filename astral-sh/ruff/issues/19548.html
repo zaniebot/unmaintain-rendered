@@ -23,14 +23,14 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/vivodi">@vivodi</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>This issue proposes a new linting rule to discourage placing imports within a <code>typing.TYPE_CHECKING</code> block when another import from the same module already exists at the top level. This pattern offers no performance benefits and harms code readability.</p>
 <p><strong>Motivation</strong></p>
 <p>The primary purpose of a <code>TYPE_CHECKING</code> block is to prevent circular imports or to import types solely for static analysis, avoiding runtime overhead. However, it is often misused for imports that could be safely imported at runtime without issue, especially when the module is already being imported from.</p>
 <p>When one object is already imported from a module at the top level, placing another import from that same module inside a <code>TYPE_CHECKING</code> block provides no tangible benefit:</p>
 <ol>
 <li><strong>No Performance Gain:</strong> The overhead of importing the <code>my_library</code> module has already been incurred to import object <code>A</code>. Importing an additional object (<code>B</code>) from the already-loaded module is negligible.</li>
-<li><strong>Reduced Readability:</strong> It unnecessarily splits imports from the same library into two separate locations, making it harder for developers to get a quick overview of the module's dependencies.</li>
+<li><strong>Reduced Readability:</strong> It unnecessarily splits imports from the same library into two separate locations, making it harder for developers to get a quick overview of the module&#x27;s dependencies.</li>
 <li><strong>Increased Verbosity:</strong> The code is longer and more complex than it needs to be.</li>
 <li><strong>Misleading Signal:</strong> It incorrectly signals that <code>B</code> is a problematic or heavy import when it is not. The use of <code>TYPE_CHECKING</code> should be reserved for cases where it is truly necessary.</li>
 </ol>
@@ -38,7 +38,7 @@
 <p><strong>Proposed Rule and Autofix</strong></p>
 <p>The rule would trigger when an import inside a <code>TYPE_CHECKING</code> block can be merged with an existing import from the same module outside the block. The rule should have an automatic fix that consolidates the imports.</p>
 <p><strong>Non-compliant code:</strong></p>
-<pre><code class="language-python">from my_library import A
+<pre><code>from my_library import A
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -48,7 +48,7 @@ def func(param: &quot;B&quot;) -&gt; A:
     return A()
 </code></pre>
 <p><strong>Compliant code (after autofix):</strong></p>
-<pre><code class="language-python">from my_library import A, B
+<pre><code>from my_library import A, B
 
 def func(param: &quot;B&quot;) -&gt; A:
     return A()
@@ -58,14 +58,14 @@ def func(param: &quot;B&quot;) -&gt; A:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-25 13:38</div>
-            <div class="timeline-body"><p>This makes some sense to me. It's similar to <a href="https://docs.astral.sh/ruff/rules/runtime-import-in-type-checking-block/#runtime-import-in-type-checking-block-tc004">runtime-import-in-type-checking-block (TC004)</a> but extending to members of the same module.</p>
+            <div class="timeline-body"><p>This makes some sense to me. It&#x27;s similar to <a href="https://docs.astral.sh/ruff/rules/runtime-import-in-type-checking-block/#runtime-import-in-type-checking-block-tc004">runtime-import-in-type-checking-block (TC004)</a> but extending to members of the same module.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-07-25 13:38</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-25 13:38</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> added by @ntBre on 2025-07-25 13:38</div>
+            <div class="event">Label <span class="label">needs-decision</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-25 13:38</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/nickdrozd">@nickdrozd</a> on 2025-07-28 15:58</div>
@@ -84,16 +84,16 @@ Personally this is a high priority issue to me, since the switch towards Python 
 <p>Apart from not changing existing code, what benefits are there for keeping the import inside the type checking block?</p>
 </blockquote>
 <p>I like to know what imports are actually used for runtime behavior and what imports are only used for typechecking. Helpful for figuring out proper module structure.</p>
-<p>Maybe you don't find that information interesting. That's okay, we have different opinions. Hence opinionated 🐈</p>
+<p>Maybe you don&#x27;t find that information interesting. That&#x27;s okay, we have different opinions. Hence opinionated 🐈</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/GideonBear">@GideonBear</a> on 2025-12-11 18:00</div>
             <div class="timeline-body"><p>To add what I said in #21921: This is the enforcement of the opposite of <code>strict</code>.</p>
 <blockquote>
-<p>Looks like a duplicate to me as well. Overall I don't dislike the idea, but it definitely can't be a boolean setting at this point. We don't want to cause arguably unnecessary churn in either direction, unless people specifically opt into it for aesthetics/consistency. So it would have to be a three-stage setting, either you prefer imports staying together, you prefer all the typing only imports staying in type checking blocks, even if it means splitting up imports or you have no preference and ruff will only nag you when there's a tangible benefit to moving the import beyond aesthetics/consistency.</p>
+<p>Looks like a duplicate to me as well. Overall I don&#x27;t dislike the idea, but it definitely can&#x27;t be a boolean setting at this point. We don&#x27;t want to cause arguably unnecessary churn in either direction, unless people specifically opt into it for aesthetics/consistency. So it would have to be a three-stage setting, either you prefer imports staying together, you prefer all the typing only imports staying in type checking blocks, even if it means splitting up imports or you have no preference and ruff will only nag you when there&#x27;s a tangible benefit to moving the import beyond aesthetics/consistency.</p>
 </blockquote>
-<p>I would personally like this to be the default when using <code>strict = false</code>, because <em>I don't like allowing inconsistency</em>. But I can see why this should be a three-stage setting instead.</p>
+<p>I would personally like this to be the default when using <code>strict = false</code>, because <em>I don&#x27;t like allowing inconsistency</em>. But I can see why this should be a three-stage setting instead.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -103,14 +103,14 @@ Personally this is a high priority issue to me, since the switch towards Python 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-12-15 18:01</div>
-            <div class="timeline-body"><p>There's a danger here when it comes to type-checking-only symbols (often found in stubs for protocols or to expose an internal return type).
-Maybe that warrant configuration, or maybe it's rare enough one should just <code>noqa</code> it. But overall an autofix wouldn't be safe here (unless specifically detecting imports used at runtime, but then <a href="https://docs.astral.sh/ruff/rules/runtime-import-in-type-checking-block/#runtime-import-in-type-checking-block-tc004">TC004</a> already covers that)</p>
+            <div class="timeline-body"><p>There&#x27;s a danger here when it comes to type-checking-only symbols (often found in stubs for protocols or to expose an internal return type).
+Maybe that warrant configuration, or maybe it&#x27;s rare enough one should just <code>noqa</code> it. But overall an autofix wouldn&#x27;t be safe here (unless specifically detecting imports used at runtime, but then <a href="https://docs.astral.sh/ruff/rules/runtime-import-in-type-checking-block/#runtime-import-in-type-checking-block-tc004">TC004</a> already covers that)</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:53:06 UTC
+        Synced at 2026-01-20 18:50:15 UTC
     </footer>
 </body>
 </html>

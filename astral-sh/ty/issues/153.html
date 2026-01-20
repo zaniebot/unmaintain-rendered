@@ -37,13 +37,13 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[red-knot] supporting @typing.deprecated" to "[red-knot] supporting `@warnings.deprecated` and its backport in `typing_extensions`" by @AlexWaygood on 2025-04-11 12:45</div>
+            <div class="event">Renamed from &quot;[red-knot] supporting @typing.deprecated&quot; to &quot;[red-knot] supporting `@warnings.deprecated` and its backport in `typing_extensions`&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-11 12:45</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[red-knot] supporting `@warnings.deprecated` and its backport in `typing_extensions`" to "supporting `@warnings.deprecated` and its backport in `typing_extensions`" by @MichaReiser on 2025-05-07 15:25</div>
+            <div class="event">Renamed from &quot;[red-knot] supporting `@warnings.deprecated` and its backport in `typing_extensions`&quot; to &quot;supporting `@warnings.deprecated` and its backport in `typing_extensions`&quot; by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-07 15:25</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">typing semantics</span> added by @AlexWaygood on 2025-05-11 07:55</div>
+            <div class="event">Label <span class="label">typing semantics</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-11 07:55</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-08 14:42</div>
@@ -57,7 +57,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-08 14:45</div>
-            <div class="timeline-body"><p>(Doesn't contradict anything you said above, just adding to it)</p>
+            <div class="timeline-body"><p>(Doesn&#x27;t contradict anything you said above, just adding to it)</p>
 <p>Note that a diagnostic stemming from <code>@deprecated</code> can also be triggered by an implicit call to a dunder method. For example, here pyright emits a diagnostic on <code>~ True</code>, because <code>bool.__invert__</code> is decorated with <code>@deprecated</code>, and <code>~</code> implicitly calls the <code>__invert__</code> dunder: https://pyright-play.net/?pythonVersion=3.12&amp;strict=true&amp;enableExperimentalFeatures=true&amp;code=B4AgvCB%2BAqBOCuBTIA</p>
 </div>
         </div>
@@ -68,13 +68,13 @@
 <li>For calls (constructor or function calls), check if the used callable is deprecated and if so, emit a diagnostic. The diagnostic should add the <code>Deprecated</code> flag.</li>
 </ul>
 </blockquote>
-<p>We also need to capture the deprecation message that's part of the decorator which should be shown to the user.</p>
+<p>We also need to capture the deprecation message that&#x27;s part of the decorator which should be shown to the user.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/erictraut">@erictraut</a> on 2025-07-09 14:36</div>
             <div class="timeline-body"><p>Another thing to consider: The deprecated state (and associated message) need to &quot;ride along with&quot; a function signature or class as it is transformed by function or class decorators. For example:</p>
-<pre><code class="language-python">from typing import Callable
+<pre><code>from typing import Callable
 from warnings import deprecated
 
 def add_docs[T: Callable](f: T) -&gt; T:
@@ -87,7 +87,7 @@ def my_func(a: int, b: int) -&gt; int:
 
 my_func(0, 0)
 </code></pre>
-<p><img width="355" height="439" alt="Image" src="https://github.com/user-attachments/assets/40bb9c8a-3493-400d-85d2-285019b6e061" /></p>
+<p><img alt="Image" src="https://github.com/user-attachments/assets/40bb9c8a-3493-400d-85d2-285019b6e061"></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -96,46 +96,46 @@ my_func(0, 0)
 <p>Another thing to consider: The deprecated state (and associated message) need to &quot;ride along with&quot; a function signature or class as it is transformed by function or class decorators.</p>
 </blockquote>
 <p>An elegant way of achieving this in our model might be to have a new <code>Type::Deprecated</code> variant. The type of the <code>my_func</code> symbol in your example above might be inferred as <code>Type::Intersection([Type::FunctionLiteral(&quot;my_func&quot;), Type::Deprecated(&quot;Use my_new_func instead&quot;)])</code>. Then we could piggyback on our existing implementation of intersections.</p>
-<p>One question about that strategy however would be what type to display for <code>my_func</code> in error messages. <code>&lt;function 'my_func'&gt; &amp; Deprecated(&quot;Use my_new_func instead&quot;)</code> probably isn't a very user-friendly display to show in <code>reveal_type</code> calls and similar. But maybe <code>&lt;function 'my_func' (deprecated)&gt;</code> might work? I think it would be reasonably easy to add some special-casing to <code>Type::display()</code> for intersections with <code>Type::Deprecated</code> to make that work.</p>
+<p>One question about that strategy however would be what type to display for <code>my_func</code> in error messages. <code>&lt;function &#x27;my_func&#x27;&gt; &amp; Deprecated(&quot;Use my_new_func instead&quot;)</code> probably isn&#x27;t a very user-friendly display to show in <code>reveal_type</code> calls and similar. But maybe <code>&lt;function &#x27;my_func&#x27; (deprecated)&gt;</code> might work? I think it would be reasonably easy to add some special-casing to <code>Type::display()</code> for intersections with <code>Type::Deprecated</code> to make that work.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-07-09 15:25</div>
-            <div class="timeline-body"><p>I suspect we shouldn't use intersections and a new type variant for this. It would require us to answer all kinds of questions that make no sense for the new &quot;deprecated&quot; variant (since it's not really a type at all), and would I think require a lot of special casing to get not just the display right for such intersections, but also all other type operations (member, call, etc).</p>
-<p>I'm not sure we need to do anything special here for the given example, besides keeping the deprecated information on the FunctionLiteral type. In the given generic example, we should just solve T to the original FunctionLiteral type, and no information should be lost.</p>
-<p>There are other cases where a decorator transforms the signature of the decorated function and returns a <code>Callable</code> type, and isn't simply a pass-through generic, where we might need to do something special. I think it might make sense for a callable type to optionally preserve a link back to its original FunctionLiteral, when it results from a decorator application?</p>
+            <div class="timeline-body"><p>I suspect we shouldn&#x27;t use intersections and a new type variant for this. It would require us to answer all kinds of questions that make no sense for the new &quot;deprecated&quot; variant (since it&#x27;s not really a type at all), and would I think require a lot of special casing to get not just the display right for such intersections, but also all other type operations (member, call, etc).</p>
+<p>I&#x27;m not sure we need to do anything special here for the given example, besides keeping the deprecated information on the FunctionLiteral type. In the given generic example, we should just solve T to the original FunctionLiteral type, and no information should be lost.</p>
+<p>There are other cases where a decorator transforms the signature of the decorated function and returns a <code>Callable</code> type, and isn&#x27;t simply a pass-through generic, where we might need to do something special. I think it might make sense for a callable type to optionally preserve a link back to its original FunctionLiteral, when it results from a decorator application?</p>
 <p>(One other case is BoundMethod, where it wraps a deprecated function.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-09 15:28</div>
             <div class="timeline-body"><blockquote>
-<p>I suspect we shouldn't use intersections and a new type variant for this. It would require us to answer all kinds of questions that make no sense for the new &quot;deprecated&quot; variant (since it's not really a type at all), and would I think require a lot of special casing to get not just the display right for such intersections, but also all other type operations (member, call, etc).</p>
+<p>I suspect we shouldn&#x27;t use intersections and a new type variant for this. It would require us to answer all kinds of questions that make no sense for the new &quot;deprecated&quot; variant (since it&#x27;s not really a type at all), and would I think require a lot of special casing to get not just the display right for such intersections, but also all other type operations (member, call, etc).</p>
 </blockquote>
-<p>that's true, and we already map other non-type metadata through various operations, such as type qualifiers and boundness. (Though it feels somewhat painful every time we have to do so...)</p>
+<p>that&#x27;s true, and we already map other non-type metadata through various operations, such as type qualifiers and boundness. (Though it feels somewhat painful every time we have to do so...)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-09 15:36</div>
             <div class="timeline-body"><blockquote>
-<p>since it's not really a type at all</p>
+<p>since it&#x27;s not really a type at all</p>
 </blockquote>
 <p>(Well, it <em>could</em> be a type if you think about it the right way: just as <code>AlwaysTruthy</code> is &quot;the set of all possible objects that are guaranteed to be <em>always</em> truthy in a boolean context, <code>Deprecated(&quot;Use my_new_func instead&quot;)</code> would be the set of all possible objects that are guaranteed to be deprecated with that particular message. But I take your point that special-casing the display for all possible types that could be deprecated might be a tall order.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-07-10 04:18</div>
-            <div class="timeline-body"><p>Personally, I think of <code>@deprecated</code> as a kind of annotation. In other words, <code>@deprecated('Message')</code> <code>def f(): ...</code> is just syntactic sugar for what would otherwise look like <code>f: Annotated[TypeOf[f], Deprecated('Message')]</code>.</p>
-<p>I'm not sure how hard it would be to implement things this way, but I think it makes more intuitive sense than making <code>Deprecated</code> a type variant.</p>
+            <div class="timeline-body"><p>Personally, I think of <code>@deprecated</code> as a kind of annotation. In other words, <code>@deprecated(&#x27;Message&#x27;)</code> <code>def f(): ...</code> is just syntactic sugar for what would otherwise look like <code>f: Annotated[TypeOf[f], Deprecated(&#x27;Message&#x27;)]</code>.</p>
+<p>I&#x27;m not sure how hard it would be to implement things this way, but I think it makes more intuitive sense than making <code>Deprecated</code> a type variant.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @Gankra on 2025-07-18 23:50</div>
+            <div class="event">Closed by <a href="https://github.com/Gankra">@Gankra</a> on 2025-07-18 23:50</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:19:38 UTC
+        Synced at 2026-01-20 19:24:11 UTC
     </footer>
 </body>
 </html>

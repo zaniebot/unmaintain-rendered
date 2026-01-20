@@ -26,59 +26,59 @@
             <div class="timeline-body"><p>I got this all working and solved the API lifetime issues without Arc, by means of a new set of <code>XTypeRef</code> structs.</p>
 <p>The remaining potential performance issue is that anytime you hold on to any of the new <code>XTypeRef</code> structs, you lock a shard of the <code>TypeStore::modules</code> dashmap to writes (because you are holding a reference into it). So it will be important to minimize the use and scope of these type-refs. I think we can do this to some degree by caching type judgments using just type IDs. I also think for CLI use when we want to be highly parallel, we can be smart about ordering (check all module bodies first, then check function bodies when module level types are all populated) to minimize write contention. Also, if needed we can break up <code>ModuleTypeStore</code>, or use inner mutability and internal locking to have finer-grained locking within it.</p>
 <p>I went with this version instead of rewriting to have the type arenas hold Arc to the types, because I am not totally convinced the Arc version will be better. With Arc every &quot;read&quot; turns into a write to the atomic reference count, which introduces overhead (which is really useless overhead for us, since ultimately we rely on the arenas for garbage collection). And so we will introduce contention on the atomic reference count even for reads of highly-used types. So for both versions we will have to be careful with our use of references. I think the Arc-free version is lower overhead and sets us up better for future optimization of the locking strategy, once we have more working code to optimize against.</p>
-<p>Even if I turn out to be wrong about the above and eventually we decide to use Arc, I'd rather go with this for now and move on to type evaluation, and make the Arc change later when we can evaluate the effects better.</p>
+<p>Even if I turn out to be wrong about the above and eventually we decide to use Arc, I&#x27;d rather go with this for now and move on to type evaluation, and make the Arc change later when we can evaluate the effects better.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Converted to draft by @carljm on 2024-04-25 20:43</div>
+            <div class="event">Converted to draft by <a href="https://github.com/carljm">@carljm</a> on 2024-04-25 20:43</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @carljm on 2024-04-25 20:48</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/carljm">@carljm</a> on 2024-04-25 20:48</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[WIP] per-module arenas" to "[red-knot] per-module arenas" by @carljm on 2024-04-25 21:34</div>
+            <div class="event">Renamed from &quot;[WIP] per-module arenas&quot; to &quot;[red-knot] per-module arenas&quot; by <a href="https://github.com/carljm">@carljm</a> on 2024-04-25 21:34</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-25 21:52</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+1 -0 violations, +0 -0 fixes in 1 projects; 43 projects unchanged)</p>
-<details><summary><a href="https://github.com/python/typeshed">python/typeshed</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<a href="https://github.com/python/typeshed">python/typeshed</a> (+1 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select E,F,FA,I,PYI,RUF,UP,W</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/python/typeshed/blob/48a68f521ee1cb23a2aea43951a5000d2600d824/stubs/setuptools/pkg_resources/_vendored_packaging/specifiers.pyi#L10'>stubs/setuptools/pkg_resources/_vendored_packaging/specifiers.pyi:10:22:</a> PYI001 Name of private `TypeVar` must start with `_`
++ <a href="https://github.com/python/typeshed/blob/48a68f521ee1cb23a2aea43951a5000d2600d824/stubs/setuptools/pkg_resources/_vendored_packaging/specifiers.pyi#L10">stubs/setuptools/pkg_resources/_vendored_packaging/specifiers.pyi:10:22:</a> PYI001 Name of private `TypeVar` must start with `_`
 </pre>
 
 </p>
-</details>
-<details><summary>Changes by rule (1 rules affected)</summary>
+
+Changes by rule (1 rules affected)
 <p>
 
 <p>| code | total | + violation | - violation | + fix | - fix |
 | ---- | ------- | --------- | -------- | ----- | ---- |
 | PYI001 | 1 | 1 | 0 | 0 | 0 |</p>
 </p>
-</details>
 
-<h3>Formatter (stable)</h3>
+
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @carljm on 2024-04-25 22:50</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/carljm">@carljm</a> on 2024-04-25 22:50</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @BurntSushi by @carljm on 2024-04-25 22:50</div>
+            <div class="event">Review requested from <a href="https://github.com/BurntSushi">@BurntSushi</a> by <a href="https://github.com/carljm">@carljm</a> on 2024-04-25 22:50</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-04-25 22:51</div>
@@ -86,11 +86,11 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @carljm on 2024-04-25 22:55</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/carljm">@carljm</a> on 2024-04-25 22:55</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-04-25 22:56</div>
-            <div class="timeline-body"><p>And @AlexWaygood, mostly just to observe that I switched unions and intersections from <code>HashSet</code> to <code>IndexSet</code>, which provides both O(1) containment checks and de-duplication, and preserves ordering. So we have the capability to distinguish order, both for UX purposes (I wanted it even just for stable tests of the union/intersection display code!), and if needed for actual type system purposes (I don't think we should, but now we can, if you convince me otherwise!)</p>
+            <div class="timeline-body"><p>And @AlexWaygood, mostly just to observe that I switched unions and intersections from <code>HashSet</code> to <code>IndexSet</code>, which provides both O(1) containment checks and de-duplication, and preserves ordering. So we have the capability to distinguish order, both for UX purposes (I wanted it even just for stable tests of the union/intersection display code!), and if needed for actual type system purposes (I don&#x27;t think we should, but now we can, if you convince me otherwise!)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -104,8 +104,8 @@
 <blockquote>
 <p>And so we will introduce contention on the atomic reference count even for reads of highly-used types.</p>
 </blockquote>
-<p>I'm not sure I follow the reasoning here. Isn't the main contention the module lock that guards access to the type? And if so, isn't holding on to the lock for longer than necessary (for longer than incrementing a reference counter) causing worse contention?</p>
-<p>I think my main worry is that it's non obvious for callers that they're holding on to a lock, making it very easy to hold on to a lock for too-long (I just call this very expensive function and pass a reference to a &amp;FunctionType).</p>
+<p>I&#x27;m not sure I follow the reasoning here. Isn&#x27;t the main contention the module lock that guards access to the type? And if so, isn&#x27;t holding on to the lock for longer than necessary (for longer than incrementing a reference counter) causing worse contention?</p>
+<p>I think my main worry is that it&#x27;s non obvious for callers that they&#x27;re holding on to a lock, making it very easy to hold on to a lock for too-long (I just call this very expensive function and pass a reference to a &amp;FunctionType).</p>
 <p>I wonder if Salsa solves some of this by making the accessors methods on the <code>Id</code> types.</p>
 <pre><code>let function: FunctionId = // somehow get a function id
 let name = function.name(db); // smolstr::Clone is O(1)
@@ -115,8 +115,8 @@ for parameter in parameters.iter(db) {
 	let name = parameter.name(db);
 }
 </code></pre>
-<p>I must admit, it's a bit awkward dealing with so many ids and I don't know what the overhead of all the hash table lookups is.</p>
-<p>But I'm happy to try this out and iterate on it later on.</p>
+<p>I must admit, it&#x27;s a bit awkward dealing with so many ids and I don&#x27;t know what the overhead of all the hash table lookups is.</p>
+<p>But I&#x27;m happy to try this out and iterate on it later on.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -125,52 +125,52 @@ for parameter in parameters.iter(db) {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types.rs</code>:64 on 2024-04-26 13:55</div>
-            <div class="timeline-body"><p>Yeah, that might actually make some things more convenient, I'll try it out and see how it works out.</p>
+            <div class="timeline-body"><p>Yeah, that might actually make some things more convenient, I&#x27;ll try it out and see how it works out.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-04-26 15:52</div>
             <div class="timeline-body"><blockquote>
-<p>Isn't the main contention the module lock that guards access to the type? And if so, isn't holding on to the lock for longer than necessary (for longer than incrementing a reference counter) causing worse contention?</p>
+<p>Isn&#x27;t the main contention the module lock that guards access to the type? And if so, isn&#x27;t holding on to the lock for longer than necessary (for longer than incrementing a reference counter) causing worse contention?</p>
 </blockquote>
 <p>I am really not sure how all this will play out in practice with our actual workload, so take all of this with a grain of salt! (Really my top-line motivation here was just to do the quickest thing that would work and move on, and re-evaluate once we can actually benchmark on real workloads and see how the contention plays out.)</p>
-<p>Dashmap allows multiple simultaneous readers (they have to take a reader lock, but they don't contend with each other, only with writers). With the approach in this PR, there is no contention between readers, but readers may block writers for longer (however long a TypeRef is held). If we add Arc, then even readers have to contend over incrementing the atomic reference count (even if there is no writer). It may be that this is a non-issue in practice, I don't know. I just know that e.g. for CPython, which also does reference counting, contention over reference counts for hot shared objects is a huge performance issue if you try to run Python code concurrently and make reference counts atomic. And I know in general (just from searching on the topic) that Arc contention can be a big problem for scaling parallel Rust workloads too.</p>
+<p>Dashmap allows multiple simultaneous readers (they have to take a reader lock, but they don&#x27;t contend with each other, only with writers). With the approach in this PR, there is no contention between readers, but readers may block writers for longer (however long a TypeRef is held). If we add Arc, then even readers have to contend over incrementing the atomic reference count (even if there is no writer). It may be that this is a non-issue in practice, I don&#x27;t know. I just know that e.g. for CPython, which also does reference counting, contention over reference counts for hot shared objects is a huge performance issue if you try to run Python code concurrently and make reference counts atomic. And I know in general (just from searching on the topic) that Arc contention can be a big problem for scaling parallel Rust workloads too.</p>
 <blockquote>
-<p>I think my main worry is that it's non obvious for callers that they're holding on to a lock, making it very easy to hold on to a lock for too-long (I just call this very expensive function and pass a reference to a &amp;FunctionType).</p>
+<p>I think my main worry is that it&#x27;s non obvious for callers that they&#x27;re holding on to a lock, making it very easy to hold on to a lock for too-long (I just call this very expensive function and pass a reference to a &amp;FunctionType).</p>
 </blockquote>
-<p>Yes, I'm also concerned that this will be a foot-gun.</p>
+<p>Yes, I&#x27;m also concerned that this will be a foot-gun.</p>
 <blockquote>
 <p>I wonder if Salsa solves some of this by making the accessors methods on the Id types.</p>
 </blockquote>
-<p>Yes, I saw you did this with the <code>Module</code> type, and it's an alternative we could move towards if we need to. My main concerns about it are all the extra hashmap lookups if you need multiple things from a type all at once (as you mentioned), and the need to copy anything returned by these accessors (though this may not be an issue if it's mostly just small strings and other type IDs.)</p>
+<p>Yes, I saw you did this with the <code>Module</code> type, and it&#x27;s an alternative we could move towards if we need to. My main concerns about it are all the extra hashmap lookups if you need multiple things from a type all at once (as you mentioned), and the need to copy anything returned by these accessors (though this may not be an issue if it&#x27;s mostly just small strings and other type IDs.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-04-26 15:56</div>
-            <div class="timeline-body"><p>My other issue with using Arc here is similar to your objection to using a GC crate: it's just overhead that we don't actually need. We don't need reference counting, because we are using arenas to deallocate the types all at once, and IDs to refer between them. So all the work to update the reference counts (and any contention it causes) is just waste.</p>
+            <div class="timeline-body"><p>My other issue with using Arc here is similar to your objection to using a GC crate: it&#x27;s just overhead that we don&#x27;t actually need. We don&#x27;t need reference counting, because we are using arenas to deallocate the types all at once, and IDs to refer between them. So all the work to update the reference counts (and any contention it causes) is just waste.</p>
 <p>(Not pure waste, because it does provide a solution to the problem of callers taking temporary references to the type data and knowing they will keep it alive, without blocking writers to the arena. But it still feels like a big hammer for that problem, which should be solvable with just references and lifetimes.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-26 16:37</div>
-            <div class="timeline-body"><p>On the <code>Arc</code> overhead. I agree, it's neglectagble for e.g building the symbol table but it can become a problem if the object is used often. I think we want to explore a non-std <code>Arc</code> to get an implementation without <code>WeakRef</code> support. That will help but obviously doesn't mitigate the perf overhead entirely.</p>
+            <div class="timeline-body"><p>On the <code>Arc</code> overhead. I agree, it&#x27;s neglectagble for e.g building the symbol table but it can become a problem if the object is used often. I think we want to explore a non-std <code>Arc</code> to get an implementation without <code>WeakRef</code> support. That will help but obviously doesn&#x27;t mitigate the perf overhead entirely.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-04-26 16:46</div>
-            <div class="timeline-body"><p>Another option is using a different concurrent hash-table library, like <code>flurry</code>, where holding a read guard doesn't block writers, just potentially block memory from being freed.</p>
+            <div class="timeline-body"><p>Another option is using a different concurrent hash-table library, like <code>flurry</code>, where holding a read guard doesn&#x27;t block writers, just potentially block memory from being freed.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-04-26 18:05</div>
             <div class="timeline-body"><blockquote>
-<p>I think we want to explore a non-std Arc to get an implementation without WeakRef support. That will help but obviously doesn't mitigate the perf overhead entirely.</p>
+<p>I think we want to explore a non-std Arc to get an implementation without WeakRef support. That will help but obviously doesn&#x27;t mitigate the perf overhead entirely.</p>
 </blockquote>
-<p>Where would the savings come from here? It looks to me like weakrefs only really have a cost if you use them. You could save a tiny bit of memory in <code>ArcInner</code>, I guess (one <code>AtomicUsize</code>), but otherwise I'm not seeing where not supporting weakrefs would make Arc itself faster (or reduce refcount contention.)</p>
+<p>Where would the savings come from here? It looks to me like weakrefs only really have a cost if you use them. You could save a tiny bit of memory in <code>ArcInner</code>, I guess (one <code>AtomicUsize</code>), but otherwise I&#x27;m not seeing where not supporting weakrefs would make Arc itself faster (or reduce refcount contention.)</p>
 <blockquote>
-<p>Another option is using a different concurrent hash-table library, like flurry, where holding a read guard doesn't block writers, just potentially block memory from being freed.</p>
+<p>Another option is using a different concurrent hash-table library, like flurry, where holding a read guard doesn&#x27;t block writers, just potentially block memory from being freed.</p>
 </blockquote>
-<p>Ooh, thank you for pointing this out! I spent a few minutes yesterday looking for exactly this, but for some reason <code>flurry</code> didn't come up in my search. Definitely might consider this instead of DashMap for the type store.</p>
+<p>Ooh, thank you for pointing this out! I spent a few minutes yesterday looking for exactly this, but for some reason <code>flurry</code> didn&#x27;t come up in my search. Definitely might consider this instead of DashMap for the type store.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -183,21 +183,21 @@ for parameter in parameters.iter(db) {
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @carljm on 2024-04-26 18:54</div>
+            <div class="event">Merged by <a href="https://github.com/carljm">@carljm</a> on 2024-04-26 18:54</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2024-04-26 18:54</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2024-04-26 18:54</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-04-26 18:54</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> added by @carljm on 2024-04-26 20:05</div>
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/carljm">@carljm</a> on 2024-04-26 20:05</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:04:00 UTC
+        Synced at 2026-01-20 19:03:42 UTC
     </footer>
 </body>
 </html>

@@ -23,19 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Mr-Pepe">@Mr-Pepe</a></div>
-            <div class="timeline-body"><!--
-Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
-
-If you're filing a bug report, please consider including the following information:
-
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
-* The current Ruff settings (any relevant sections from your `pyproject.toml`).
-* The current Ruff version (`ruff --version`).
--->
+            <div class="timeline-body">
 
 <p>Consider the following file, written for Python3.9+.</p>
-<pre><code class="language-Python"># tmp.py
+<pre><code># tmp.py
 from __future__ import annotations
 
 from typing import Union
@@ -49,7 +40,7 @@ class A(BaseModel):
     y: Union[int, str] = 5
 </code></pre>
 <p>Running <code>ruff check tmp.py --target-version py39 --select UP --fix</code> with Ruff version <code>0.0.275</code> yields:</p>
-<pre><code class="language-Python">from __future__ import annotations
+<pre><code>from __future__ import annotations
 
 from typing import Union
 
@@ -73,53 +64,53 @@ class A(BaseModel):
   File &quot;/home/felipe/.pyenv/versions/3.9.13/lib/python3.9/typing.py&quot;, line 554, in _evaluate
     eval(self.__forward_code__, globalns, localns),
   File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
-TypeError: unsupported operand type(s) for |: 'type' and 'type'
+TypeError: unsupported operand type(s) for |: &#x27;type&#x27; and &#x27;type&#x27;
 </code></pre>
 <p>The module-level x seems to work fine (because of the <code>__future__</code> import?). Should Ruff maybe not change the type annotation if <code>from __future__ import annotations</code> is present? The type annotation might be evaluated in a different context where the import is not available.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tmke8">@tmke8</a> on 2023-06-29 10:04</div>
-            <div class="timeline-body"><p>Yeah, the problem stems from the fact that pydantic evaluates the type annotations at runtime. I've had similar problems with <a href="https://github.com/facebookresearch/hydra">hydra</a> which also evaluates type annotations in order to do type validation at runtime.</p>
-<p>Also note that <code>from __future__ import annotations</code> is generally problematic in pydantic: https://github.com/pydantic/pydantic/issues/2678 which is why the Python steering council has not made it the default in Python 3.10 as originally planned, and instead has decided on the alternative mechanism proposed in <a href="https://peps.python.org/pep-0649/">PEP 649</a>.</p>
-<p>Ruff could check for these libraries and exempt them from UP007 but that would be a lot of special casing because I don't think you can in general tell whether a type annotation will be evaluated at runtime without knowing what the library does internally.</p>
+            <div class="timeline-body"><p>Yeah, the problem stems from the fact that pydantic evaluates the type annotations at runtime. I&#x27;ve had similar problems with <a href="https://github.com/facebookresearch/hydra">hydra</a> which also evaluates type annotations in order to do type validation at runtime.</p>
+<p>Also note that <code>from __future__ import annotations</code> is generally problematic in pydantic: <a href="https://github.com/pydantic/pydantic/issues/2678">pydantic/pydantic#2678</a> which is why the Python steering council has not made it the default in Python 3.10 as originally planned, and instead has decided on the alternative mechanism proposed in <a href="https://peps.python.org/pep-0649/">PEP 649</a>.</p>
+<p>Ruff could check for these libraries and exempt them from UP007 but that would be a lot of special casing because I don&#x27;t think you can in general tell whether a type annotation will be evaluated at runtime without knowing what the library does internally.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/eli-schwartz">@eli-schwartz</a> on 2023-06-30 00:10</div>
-            <div class="timeline-body"><p>While it's true ruff can special case imports of pydantic and just assume <em>all</em> annotations aren't safe to apply UP007 to, it's also true that UP007 is quite narrowly scoped and should arguably be disabled entirely in codebases that both support older versions of python, and use pydantic in some form.</p>
+            <div class="timeline-body"><p>While it&#x27;s true ruff can special case imports of pydantic and just assume <em>all</em> annotations aren&#x27;t safe to apply UP007 to, it&#x27;s also true that UP007 is quite narrowly scoped and should arguably be disabled entirely in codebases that both support older versions of python, and use pydantic in some form.</p>
 <p>A dedicated config setting for &quot;i-use-runtime-annotations-please-dont-break-that = true&quot; would allow UP007 to smartly detect when the minimum required python is updated and automatically re-enable itself.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-30 02:13</div>
             <div class="timeline-body"><p>Yeah, I generally recommend against using <code>from __future__ import annotations</code> with Pydantic for the above reasons (or disabling <code>UP007</code>).</p>
-<p>We actually used to have a <code>keep-runtime-typing</code> flag, similar to Pyupgrade, but the way it was implemented meant that it was equivalent to disabling <code>UP006</code> and <code>UP007</code> entirely. I ended up deprecating it (https://github.com/astral-sh/ruff/pull/4427), since it felt odd to have special configuration that was exactly equivalent to just specifying the rules in an <code>ignore</code>, but I think I made a mistake (\cc @layday). We should've kept that flag, but fixed the semantics, such that it only disabled those rules for cases in which the syntax is not yet supported at runtime (i.e., &lt; Python 3.9 or Python 3.10 depending on the rule). IMO we should restore it with those semantics.</p>
+<p>We actually used to have a <code>keep-runtime-typing</code> flag, similar to Pyupgrade, but the way it was implemented meant that it was equivalent to disabling <code>UP006</code> and <code>UP007</code> entirely. I ended up deprecating it (<a href="https://github.com/astral-sh/ruff/pull/4427">astral-sh/ruff#4427</a>), since it felt odd to have special configuration that was exactly equivalent to just specifying the rules in an <code>ignore</code>, but I think I made a mistake (\cc @layday). We should&#x27;ve kept that flag, but fixed the semantics, such that it only disabled those rules for cases in which the syntax is not yet supported at runtime (i.e., &lt; Python 3.9 or Python 3.10 depending on the rule). IMO we should restore it with those semantics.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2023-06-30 02:38</div>
+            <div class="event">Label <span class="label">configuration</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-30 02:38</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-30 02:39</div>
-            <div class="timeline-body"><p>I'm going to use this Issue as an opportunity to reintroduce that <code>keep-runtime-typing</code> setting.</p>
+            <div class="timeline-body"><p>I&#x27;m going to use this Issue as an opportunity to reintroduce that <code>keep-runtime-typing</code> setting.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/layday">@layday</a> on 2023-06-30 11:09</div>
-            <div class="timeline-body"><p>My suggestion would be to actually reverse the flag, so that people don't break things by accident.</p>
+            <div class="timeline-body"><p>My suggestion would be to actually reverse the flag, so that people don&#x27;t break things by accident.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-07-03 00:18</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-03 00:18</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-07-03 02:11</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-03 02:11</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:47:34 UTC
+        Synced at 2026-01-20 18:48:38 UTC
     </footer>
 </body>
 </html>

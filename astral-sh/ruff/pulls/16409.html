@@ -23,71 +23,71 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/mishamsk">@mishamsk</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Make a small-ish change, marking all declarations in stubs from annotated assignments as bound, even if there is no RHS. This is done by changing the implementation of <code>category</code>, that now takes whether it is in a stub context as an argument. I think this reflects logic encapsulation better then checking for stub context in downstream code, combining the category return with the stub flag.</p>
 <p>However, current state of red knot would only reveal one behavior change: avoid a very rare (maybe even non-existent) false negative when a stub uses a global variable defined without a default value in the same stub.</p>
 <p>With the current symbol boundness inference logic is not changed, unbound class and instance attributes do not emit diagnostics =&gt; there is no apparent difference between stubs &amp; regular modules.</p>
 <p>Fixes #16264</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>A couple of new mdtest sections.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-02-27 04:10</div>
             <div class="timeline-body"><p>@carljm need your help here before I mark this for review.</p>
-<p>I've implemented the change, however I wanted to make sure that I fully understand what you meant in the original issue.</p>
+<p>I&#x27;ve implemented the change, however I wanted to make sure that I fully understand what you meant in the original issue.</p>
 <p><strong>1. The mention of Protocol case</strong></p>
-<p>You mentioned <code>Protocol</code> as an instance of a special form in non-annotation position that will not be properly handled by knot. I was very surprised to see how it is typed in the <a href="https://github.com/python/typeshed/blob/main/stdlib/typing.pyi">typeshed</a>. It doesn't match the <a href="https://github.com/python/cpython/blob/fda056e64bdfcac3dd3d13eebda0a24994d83cb8/Lib/typing.py#L2114">actual implementation</a>. In the implementation <code>SpecialForm</code> is not used as a base class, moreover it explicitly defines <code>__mro_entires__</code> that will raise if one attempts to subclass it. It is used to mark special forms used only in annotation position. <code>Protocol</code> on the other hand is a proper subclass of <code>Generic</code> and can be used as a base class.</p>
+<p>You mentioned <code>Protocol</code> as an instance of a special form in non-annotation position that will not be properly handled by knot. I was very surprised to see how it is typed in the <a href="https://github.com/python/typeshed/blob/main/stdlib/typing.pyi">typeshed</a>. It doesn&#x27;t match the <a href="https://github.com/python/cpython/blob/fda056e64bdfcac3dd3d13eebda0a24994d83cb8/Lib/typing.py#L2114">actual implementation</a>. In the implementation <code>SpecialForm</code> is not used as a base class, moreover it explicitly defines <code>__mro_entires__</code> that will raise if one attempts to subclass it. It is used to mark special forms used only in annotation position. <code>Protocol</code> on the other hand is a proper subclass of <code>Generic</code> and can be used as a base class.</p>
 <p>Running mypy on a subset of <code>typing.pyi</code> yields something along these lines:</p>
 <pre><code>ttt.pyi:7: error: Variable &quot;ttt.Protocol&quot; is not valid as a type  [valid-type]
 ttt.pyi:7: note: See https://mypy.readthedocs.io/en/stable/common_issues.html#variables-vs-type-aliases
 ttt.pyi:7: error: Invalid base class &quot;Protocol&quot;  [misc]
 </code></pre>
 <p>and knot reports roughly equivalent diagnostic. Which seems legit to me.</p>
-<p>What am I missing? What was the case you were thinking about? Check out the new test I've added, that's the only thing I could come up with.</p>
+<p>What am I missing? What was the case you were thinking about? Check out the new test I&#x27;ve added, that&#x27;s the only thing I could come up with.</p>
 <p><strong>2. Class/Instance variables</strong></p>
-<p>The result of this change will be invisible unless/until access to unbound class/instance variables will start emitting diagnostics. I assume it wasn't the goal of this issue/PR to tackle the re-design of symbol boundness classification. Am I right?</p>
+<p>The result of this change will be invisible unless/until access to unbound class/instance variables will start emitting diagnostics. I assume it wasn&#x27;t the goal of this issue/PR to tackle the re-design of symbol boundness classification. Am I right?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-02-27 04:25</div>
-            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+            <div class="timeline-body">
 
-<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
 
-<h2><a href="https://codspeed.io/astral-sh/ruff/branches/mishamsk%3A16264-treat-declarations-in-stubs-as-bindings">CodSpeed Performance Report</a></h2>
-<h3>Merging #16409 will <strong>improve performances by 5.09%</strong></h3>
-<p><sub>Comparing <code>mishamsk:16264-treat-declarations-in-stubs-as-bindings</code> (f8e7136) with <code>main</code> (980faff)</sub></p>
-<h3>Summary</h3>
-<p><code>⚡ 1</code> improvements<br />
+
+<a href="https://codspeed.io/astral-sh/ruff/branches/mishamsk%3A16264-treat-declarations-in-stubs-as-bindings">CodSpeed Performance Report</a>
+Merging #16409 will <strong>improve performances by 5.09%</strong>
+<p>Comparing <code>mishamsk:16264-treat-declarations-in-stubs-as-bindings</code> (f8e7136) with <code>main</code> (980faff)</p>
+Summary
+<p><code>⚡ 1</code> improvements<br>
 <code>✅ 31</code> untouched benchmarks</p>
-<h3>Benchmarks breakdown</h3>
+Benchmarks breakdown
 <p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
 | --- | --------- | ----------------------- | ------------------- | ------ |
 | ⚡ | <code>red_knot_check_file[incremental]</code> | 5.5 ms | 5.2 ms | +5.09% |</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-02-27 09:31</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-27 09:31</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/attributes.md</code>:1053 on 2025-02-27 18:55</div>
-            <div class="timeline-body"><p>This class seems unused? I'd expect a) that this attribute should be named <code>class_or_instance_var</code> instead of <code>instance_var</code> (to emphasize the point that in a stub we consider it possibly a class-and-instance var, not necessarily a pure instance var, despite the lack of initialization) and b) to then have the <code>py</code> file below do a <code>reveal_type(C.class_or_instance_var)</code> to demonstrate that we don't error on accessing it on the class. (This would be explicitly testing precisely the same case that causes this PR to eliminate the <code>__module__</code> false positive in the tomllib benchmark.)</p>
+            <div class="timeline-body"><p>This class seems unused? I&#x27;d expect a) that this attribute should be named <code>class_or_instance_var</code> instead of <code>instance_var</code> (to emphasize the point that in a stub we consider it possibly a class-and-instance var, not necessarily a pure instance var, despite the lack of initialization) and b) to then have the <code>py</code> file below do a <code>reveal_type(C.class_or_instance_var)</code> to demonstrate that we don&#x27;t error on accessing it on the class. (This would be explicitly testing precisely the same case that causes this PR to eliminate the <code>__module__</code> false positive in the tomllib benchmark.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/attributes.md</code>:1061 on 2025-02-27 18:56</div>
-            <div class="timeline-body"><p>This test doesn't really seem relevant to this PR at all; when importing a symbol we have always preferred declarations, I'm pretty sure we already test this for both stubs and non-stubs over in the import tests. AFAICS this test would have passed the same before this PR.</p>
+            <div class="timeline-body"><p>This test doesn&#x27;t really seem relevant to this PR at all; when importing a symbol we have always preferred declarations, I&#x27;m pretty sure we already test this for both stubs and non-stubs over in the import tests. AFAICS this test would have passed the same before this PR.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/attributes.md</code>:1050 on 2025-02-27 18:59</div>
-            <div class="timeline-body"><p>This test does look relevant to this PR, but it doesn't seem like it fits here in <code>attributes.md</code>, as it's not related to attributes. I think it would fit better in something like <code>stubs/locals.md</code>. The test I suggest below regarding <code>C.class_or_instance_var</code> would reasonably belong in this file.</p>
+            <div class="timeline-body"><p>This test does look relevant to this PR, but it doesn&#x27;t seem like it fits here in <code>attributes.md</code>, as it&#x27;s not related to attributes. I think it would fit better in something like <code>stubs/locals.md</code>. The test I suggest below regarding <code>C.class_or_instance_var</code> would reasonably belong in this file.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/stubs/class.md</code>:19 on 2025-02-27 19:00</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">## Access to attributes declarated in stubs
+            <div class="timeline-body"><pre><code>## Access to attributes declarated in stubs
 </code></pre>
 </div>
         </div>
@@ -98,7 +98,7 @@ ttt.pyi:7: error: Invalid base class &quot;Protocol&quot;  [misc]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/stubs/class.md</code>:57 on 2025-02-27 19:43</div>
-            <div class="timeline-body"><p>It's not clear to me what particular edge cases we are aiming to test by having a subclass of <code>C</code> defined in a non-stub file; it feels like a lot of these assertions aren't really related to the behavior that declarations in stubs are considered bindings? I feel like the main test we need here is one we don't yet have (a test of <code>C.class_or_instance_var</code>, assuming it is renamed). Though that's the same test I recommended above, we maybe don't need it in both test files.</p>
+            <div class="timeline-body"><p>It&#x27;s not clear to me what particular edge cases we are aiming to test by having a subclass of <code>C</code> defined in a non-stub file; it feels like a lot of these assertions aren&#x27;t really related to the behavior that declarations in stubs are considered bindings? I feel like the main test we need here is one we don&#x27;t yet have (a test of <code>C.class_or_instance_var</code>, assuming it is renamed). Though that&#x27;s the same test I recommended above, we maybe don&#x27;t need it in both test files.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -111,21 +111,21 @@ ttt.pyi:7: error: Invalid base class &quot;Protocol&quot;  [misc]
             <div class="timeline-body"><blockquote>
 <p>@carljm need your help here before I mark this for review.</p>
 </blockquote>
-<p>Oops, once I was here I kinda forgot it wasn't marked ready for review, and I went ahead and looked it over and commented; sorry if some of my comments were things you already knew about and planned to change.</p>
+<p>Oops, once I was here I kinda forgot it wasn&#x27;t marked ready for review, and I went ahead and looked it over and commented; sorry if some of my comments were things you already knew about and planned to change.</p>
 <p>FWIW the code changes here look great to me! My inline comments are only about the tests. So all in all I think this PR is very close to ready for merge.</p>
 <blockquote>
 <p><strong>1. The mention of Protocol case</strong></p>
-<p>You mentioned <code>Protocol</code> as an instance of a special form in non-annotation position that will not be properly handled by knot. I was very surprised to see how it is typed in the <a href="https://github.com/python/typeshed/blob/main/stdlib/typing.pyi">typeshed</a>. It doesn't match the <a href="https://github.com/python/cpython/blob/fda056e64bdfcac3dd3d13eebda0a24994d83cb8/Lib/typing.py#L2114">actual implementation</a>. In the implementation <code>SpecialForm</code> is not used as a base class, moreover it explicitly defines <code>__mro_entires__</code> that will raise if one attempts to subclass it. It is used to mark special forms used only in annotation position. <code>Protocol</code> on the other hand is a proper subclass of <code>Generic</code> and can be used as a base class.</p>
+<p>You mentioned <code>Protocol</code> as an instance of a special form in non-annotation position that will not be properly handled by knot. I was very surprised to see how it is typed in the <a href="https://github.com/python/typeshed/blob/main/stdlib/typing.pyi">typeshed</a>. It doesn&#x27;t match the <a href="https://github.com/python/cpython/blob/fda056e64bdfcac3dd3d13eebda0a24994d83cb8/Lib/typing.py#L2114">actual implementation</a>. In the implementation <code>SpecialForm</code> is not used as a base class, moreover it explicitly defines <code>__mro_entires__</code> that will raise if one attempts to subclass it. It is used to mark special forms used only in annotation position. <code>Protocol</code> on the other hand is a proper subclass of <code>Generic</code> and can be used as a base class.</p>
 </blockquote>
-<p><code>_SpecialForm</code> is used to annotate symbols in typeshed that type checkers cannot handle according to the &quot;normal&quot; rules, and will need to special case. <code>Protocol</code> is one of these symbols. The annotation of <code>_SpecialForm</code> is not intended to suggest that type-checkers should handle <code>Protocol</code> as if it were literally an instance of <code>_SpecialForm</code> at runtime. Instead it just means &quot;you're on your own, this is going to need special-casing directly in the type checker.&quot;</p>
-<p>You can look at our <code>KnownClass</code> struct (and its usage) for how we handle special-casing of many of these special forms (as well as other builtin types) already. We don't yet recognize or support <code>typing.Protocol</code> in <code>KnownClass</code>, so we currently just infer it as an instance of <code>_SpecialForm</code>, but this is something that will have to change for us to add any support for protocols.</p>
-<p>It's kind of confusing that I mentioned <code>Protocol</code> in the issue description even though we don't have support for it yet; sorry about that. I think what happened is @sharkdp tried adding minimal recognition of <code>Protocol</code> in an earlier PR, and ran into the bug you are fixing in this PR, and because of that bug we never landed the <code>Protocol</code> recognition.</p>
+<p><code>_SpecialForm</code> is used to annotate symbols in typeshed that type checkers cannot handle according to the &quot;normal&quot; rules, and will need to special case. <code>Protocol</code> is one of these symbols. The annotation of <code>_SpecialForm</code> is not intended to suggest that type-checkers should handle <code>Protocol</code> as if it were literally an instance of <code>_SpecialForm</code> at runtime. Instead it just means &quot;you&#x27;re on your own, this is going to need special-casing directly in the type checker.&quot;</p>
+<p>You can look at our <code>KnownClass</code> struct (and its usage) for how we handle special-casing of many of these special forms (as well as other builtin types) already. We don&#x27;t yet recognize or support <code>typing.Protocol</code> in <code>KnownClass</code>, so we currently just infer it as an instance of <code>_SpecialForm</code>, but this is something that will have to change for us to add any support for protocols.</p>
+<p>It&#x27;s kind of confusing that I mentioned <code>Protocol</code> in the issue description even though we don&#x27;t have support for it yet; sorry about that. I think what happened is @sharkdp tried adding minimal recognition of <code>Protocol</code> in an earlier PR, and ran into the bug you are fixing in this PR, and because of that bug we never landed the <code>Protocol</code> recognition.</p>
 <p>You can already see this bug with <code>Protocol</code>:</p>
-<pre><code class="language-py">from typing import SupportsInt
+<pre><code>from typing import SupportsInt
 reveal_type(SupportsInt.__mro__)
 </code></pre>
-<p>On main this reveals <code>tuple[Literal[SupportsInt], Unknown, Literal[object]]</code>. The <code>Unknown</code> in the middle of that MRO is the bug you are fixing in this PR. It's currently <code>Unknown</code> because local uses of a name in the same scope consider only bindings, not declarations, and (until this PR) <code>Protocol: _SpecialForm</code> is not considered a binding, even in a stub file, so we just consider uses of <code>Protocol</code> in the global scope of <code>typing.pyi</code> as uses of an unbound name, resulting in the type <code>Unknown</code>. Of course, if we fix that bug without also adding recognition of <code>Protocol</code> and support for using it as a base class, then we'd instead just have an error about an instance of <code>_SpecialForm</code> not being a valid base class, and we'd still end up with <code>Unknown</code> in the MRO.</p>
-<p>All that said, I don't actually think we should add support for <code>Protocol</code> and a test for this in this PR. Your simpler test with <code>uses_constant = CONSTANT</code> is testing the same behavior fix in a simpler way, and is IMO sufficient for this PR.</p>
+<p>On main this reveals <code>tuple[Literal[SupportsInt], Unknown, Literal[object]]</code>. The <code>Unknown</code> in the middle of that MRO is the bug you are fixing in this PR. It&#x27;s currently <code>Unknown</code> because local uses of a name in the same scope consider only bindings, not declarations, and (until this PR) <code>Protocol: _SpecialForm</code> is not considered a binding, even in a stub file, so we just consider uses of <code>Protocol</code> in the global scope of <code>typing.pyi</code> as uses of an unbound name, resulting in the type <code>Unknown</code>. Of course, if we fix that bug without also adding recognition of <code>Protocol</code> and support for using it as a base class, then we&#x27;d instead just have an error about an instance of <code>_SpecialForm</code> not being a valid base class, and we&#x27;d still end up with <code>Unknown</code> in the MRO.</p>
+<p>All that said, I don&#x27;t actually think we should add support for <code>Protocol</code> and a test for this in this PR. Your simpler test with <code>uses_constant = CONSTANT</code> is testing the same behavior fix in a simpler way, and is IMO sufficient for this PR.</p>
 <blockquote>
 <p>Running mypy on a subset of <code>typing.pyi</code> yields something along these lines:</p>
 <pre><code>ttt.pyi:7: error: Variable &quot;ttt.Protocol&quot; is not valid as a type  [valid-type]
@@ -134,27 +134,27 @@ ttt.pyi:7: error: Invalid base class &quot;Protocol&quot;  [misc]
 </code></pre>
 <p>and knot reports roughly equivalent diagnostic. Which seems legit to me.</p>
 </blockquote>
-<p>This kind of an experiment is I think perhaps more confusing than useful, because type checkers (including both us and mypy) special-case many names in <code>typing.pyi</code>, and do so based on those names occurring in a module named <code>typing</code>. So the behavior seen when you check that same code in a module not named <code>typing</code> bears little resemblance to how the same type checker treats the actual <code>typing</code> module. (I guess this is relevant if you want to know how a type checker would treat the same code without any special-casing, but I don't think that tells us much here.)</p>
+<p>This kind of an experiment is I think perhaps more confusing than useful, because type checkers (including both us and mypy) special-case many names in <code>typing.pyi</code>, and do so based on those names occurring in a module named <code>typing</code>. So the behavior seen when you check that same code in a module not named <code>typing</code> bears little resemblance to how the same type checker treats the actual <code>typing</code> module. (I guess this is relevant if you want to know how a type checker would treat the same code without any special-casing, but I don&#x27;t think that tells us much here.)</p>
 <blockquote>
 <p><strong>2. Class/Instance variables</strong></p>
 <p>The result of this change will be invisible unless/until access to unbound class/instance variables will start emitting diagnostics.</p>
 </blockquote>
-<p>No, I think the change is already visible in how we interpret <code>x: int</code> in a class body in a stub file. Before this PR, we would consider <code>x</code> to be an instance-only variable (because no binding in class body) and would issue an error if its accessed directly on the class. After this PR, we should consider it a class-or-instance var, and allow access on the class. This change is visible in the removed <code>__module__</code> false positive in the benchmark, and I've also suggested in my inline comments that we test it explicitly.</p>
+<p>No, I think the change is already visible in how we interpret <code>x: int</code> in a class body in a stub file. Before this PR, we would consider <code>x</code> to be an instance-only variable (because no binding in class body) and would issue an error if its accessed directly on the class. After this PR, we should consider it a class-or-instance var, and allow access on the class. This change is visible in the removed <code>__module__</code> false positive in the benchmark, and I&#x27;ve also suggested in my inline comments that we test it explicitly.</p>
 <blockquote>
-<p>I assume it wasn't the goal of this issue/PR to tackle the re-design of symbol boundness classification. Am I right?</p>
+<p>I assume it wasn&#x27;t the goal of this issue/PR to tackle the re-design of symbol boundness classification. Am I right?</p>
 </blockquote>
 <p>Correct, that should be a separate PR.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-02-27 20:30</div>
-            <div class="timeline-body"><p>The CodSpeed perf results here are really interesting. It's nice to see the win on the incremental benchmark, but I'm not sure I understand where it's coming from! It looks like we also see a 3% regression on the cold-check benchmark. I suspect this is just because we now understand many more name references inside stub files, leading to more complex work than just &quot;consider it unbound and fall back to Unknown&quot;. So I don't think we need to do anything about that.</p>
-<p>Regarding the &quot;missing key&quot; panic, it looks like<a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/resources/test/fixtures/pycodestyle/E501_4.py"> the file it panics on</a> has just a single line of code, which we end up parsing as <a href="https://play.ruff.rs/3f294d91-1d79-4421-8d9c-94729197bcb6">an annotated assignment with no RHS and a BinOp annotation, followed by a number of bare Name expressions</a>. One possibility is that somehow this PR is triggering a query cycle analyzing this code. Per the TODO comment in <code>infer_definition_types_cycle_recovery</code>, a cycle can currently lead to missing expression types. If you can verify that we are newly hitting <code>infer_definition_types_cycle_recovery</code> when checking this example, then I think we can just add this example to the <code>KNOWN_FAILURES</code> list in <code>crates/red_knot_project/tests/check.rs</code> and move on -- I'm working on cycle issues already.</p>
+            <div class="timeline-body"><p>The CodSpeed perf results here are really interesting. It&#x27;s nice to see the win on the incremental benchmark, but I&#x27;m not sure I understand where it&#x27;s coming from! It looks like we also see a 3% regression on the cold-check benchmark. I suspect this is just because we now understand many more name references inside stub files, leading to more complex work than just &quot;consider it unbound and fall back to Unknown&quot;. So I don&#x27;t think we need to do anything about that.</p>
+<p>Regarding the &quot;missing key&quot; panic, it looks like<a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/resources/test/fixtures/pycodestyle/E501_4.py"> the file it panics on</a> has just a single line of code, which we end up parsing as <a href="https://play.ruff.rs/3f294d91-1d79-4421-8d9c-94729197bcb6">an annotated assignment with no RHS and a BinOp annotation, followed by a number of bare Name expressions</a>. One possibility is that somehow this PR is triggering a query cycle analyzing this code. Per the TODO comment in <code>infer_definition_types_cycle_recovery</code>, a cycle can currently lead to missing expression types. If you can verify that we are newly hitting <code>infer_definition_types_cycle_recovery</code> when checking this example, then I think we can just add this example to the <code>KNOWN_FAILURES</code> list in <code>crates/red_knot_project/tests/check.rs</code> and move on -- I&#x27;m working on cycle issues already.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-02-27 20:33</div>
-            <div class="timeline-body"><p>On second look, given that the name assigned to is also referenced in the annotation, I'm quite confident that the problem there is a cycle. When looking up bindings for that name before this PR, we'd have found none; after this PR, we find the same binding we are already trying to analyze (because annotations are also &quot;lazy&quot; in stub files, so they don't only look at previous bindings but also subsequent ones.)</p>
+            <div class="timeline-body"><p>On second look, given that the name assigned to is also referenced in the annotation, I&#x27;m quite confident that the problem there is a cycle. When looking up bindings for that name before this PR, we&#x27;d have found none; after this PR, we find the same binding we are already trying to analyze (because annotations are also &quot;lazy&quot; in stub files, so they don&#x27;t only look at previous bindings but also subsequent ones.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -181,55 +181,55 @@ ttt.pyi:7: error: Invalid base class &quot;Protocol&quot;  [misc]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/red_knot_python_semantic/resources/mdtest/stubs/class.md</code>:57 on 2025-02-28 02:24</div>
-            <div class="timeline-body"><p>Agree. When I wrote this I haven't realized the class_or_instance impact. I only noticed that the bench has been fixed after initial commit.</p>
-<p>I remove irrelevant tests as you've suggested</p>
+            <div class="timeline-body"><p>Agree. When I wrote this I haven&#x27;t realized the class_or_instance impact. I only noticed that the bench has been fixed after initial commit.</p>
+<p>I remove irrelevant tests as you&#x27;ve suggested</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @mishamsk on 2025-02-28 02:24</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-02-28 02:24</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @mishamsk on 2025-02-28 02:24</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-02-28 02:24</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @mishamsk on 2025-02-28 02:24</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-02-28 02:24</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @mishamsk on 2025-02-28 02:24</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-02-28 02:24</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-02-28 02:34</div>
-            <div class="timeline-body"><p>@carljm I've applied all suggestions and consolidated tests in stub subfolder.</p>
-<p>I also did further investigation into the cycle related panic, and looks like I'll need your and maybe @MichaReiser help. What I've learned:</p>
+            <div class="timeline-body"><p>@carljm I&#x27;ve applied all suggestions and consolidated tests in stub subfolder.</p>
+<p>I also did further investigation into the cycle related panic, and looks like I&#x27;ll need your and maybe @MichaReiser help. What I&#x27;ve learned:</p>
 <ul>
 <li>I did confirm that it is the cycle recovery by temporarily injecting some debugging code</li>
 <li>After adding the first panic to known errors, the second popped up in https://github.com/mishamsk/ruff/blob/16264-treat-declarations-in-stubs-as-bindings/crates/ruff_linter/resources/test/fixtures/pyflakes/F401_0.py#L43</li>
 </ul>
 <p>For convenience here is the snippet that causes a cycle:</p>
-<pre><code class="language-py">class X:
+<pre><code>class X:
     datetime: datetime
 </code></pre>
-<p>what I do not understand is why it happens in this test that uses <code>SemanticModel</code> API's, but if I run compiled knot on this file OR add similar code to mdtests - everything is fine, no panic/cycle. I haven't traced the differences between <a href="https://github.com/mishamsk/ruff/blob/16264-treat-declarations-in-stubs-as-bindings/crates/red_knot_python_semantic/src/semantic_model.rs#L52">HasType::inferred_type</a> that's is used in the failing test vs. regular tests/cli. But there has to be something that causes the cycle.</p>
-<p>I tried ignoring the <code>F401_0</code>, but then another one panics. I didn't check how many, but this PR seems to be triggering a lot of panics. So I thought it may be more prudent to fix the root cause. Any suggestions?</p>
+<p>what I do not understand is why it happens in this test that uses <code>SemanticModel</code> API&#x27;s, but if I run compiled knot on this file OR add similar code to mdtests - everything is fine, no panic/cycle. I haven&#x27;t traced the differences between <a href="https://github.com/mishamsk/ruff/blob/16264-treat-declarations-in-stubs-as-bindings/crates/red_knot_python_semantic/src/semantic_model.rs#L52">HasType::inferred_type</a> that&#x27;s is used in the failing test vs. regular tests/cli. But there has to be something that causes the cycle.</p>
+<p>I tried ignoring the <code>F401_0</code>, but then another one panics. I didn&#x27;t check how many, but this PR seems to be triggering a lot of panics. So I thought it may be more prudent to fix the root cause. Any suggestions?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-02-28 02:39</div>
             <div class="timeline-body"><blockquote>
-<p>The CodSpeed perf results here are really interesting. It's nice to see the win on the incremental benchmark, but I'm not sure I understand where it's coming from!</p>
+<p>The CodSpeed perf results here are really interesting. It&#x27;s nice to see the win on the incremental benchmark, but I&#x27;m not sure I understand where it&#x27;s coming from!</p>
 </blockquote>
-<p>yes, I've also noticed this. Magic?;-) A random guess - before that a lack of binding caused <a href="https://github.com/mishamsk/ruff/blob/16264-treat-declarations-in-stubs-as-bindings/crates/red_knot_python_semantic/src/types/infer.rs#L3577">back-off logic</a> during symbol search (in <code>infer_name_load</code>), which is now unnecessary. If so, that would mean that this back-off mechanism is complicated enough to cause such a negative impact when symbol is not bound locally and needs to be looked up further up the chain.</p>
+<p>yes, I&#x27;ve also noticed this. Magic?;-) A random guess - before that a lack of binding caused <a href="https://github.com/mishamsk/ruff/blob/16264-treat-declarations-in-stubs-as-bindings/crates/red_knot_python_semantic/src/types/infer.rs#L3577">back-off logic</a> during symbol search (in <code>infer_name_load</code>), which is now unnecessary. If so, that would mean that this back-off mechanism is complicated enough to cause such a negative impact when symbol is not bound locally and needs to be looked up further up the chain.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-02-28 02:44</div>
             <div class="timeline-body"><blockquote>
-<p>what I do not understand is why it happens in this test that uses <code>SemanticModel</code> API's</p>
+<p>what I do not understand is why it happens in this test that uses <code>SemanticModel</code> API&#x27;s</p>
 </blockquote>
-<p>It's because only these tests assert (as a bug-catching mechanism, via the PullTypes visitor) that every expression has a type recorded for it. In normal type inference we do not spend the time to do a full AST walk and assert this. The cycle itself does not fail (due to the cycle recovery function) but that cycle recovery function doesn't insert a type for every expression, so it causes these coverage tests to panic due to missing types for some expressions.</p>
-<p>This will be fixed by https://github.com/astral-sh/ruff/pull/14029, so it's OK to just add a lot of new <code>KNOWN_FAILURES</code> here. The examples you've shown so far look like legitimate cycles that would be expected with the change of semantics in this PR, so I'm OK with just silencing them for now.</p>
-<p>The other option would be to extract just the &quot;fallback type&quot; part of https://github.com/astral-sh/ruff/pull/14029 (not the fixpoint iteration part), where it gives <code>TypeInference</code> the possibility to have a &quot;fallback type&quot; used for all expressions that don't have a specific type inserted. Then we can create this <code>TypeInference</code> with fallback (probably just to <code>Type::Todo(cycle handling)</code>) in the cycle recovery function, and these panics should go away.</p>
-<p>If we do the latter, it would probably be better to do it as a separate PR, so we can see the perf impact of just the &quot;fallback type&quot; feature alone. There may be some ways we can improve it if it's a regression.</p>
+<p>It&#x27;s because only these tests assert (as a bug-catching mechanism, via the PullTypes visitor) that every expression has a type recorded for it. In normal type inference we do not spend the time to do a full AST walk and assert this. The cycle itself does not fail (due to the cycle recovery function) but that cycle recovery function doesn&#x27;t insert a type for every expression, so it causes these coverage tests to panic due to missing types for some expressions.</p>
+<p>This will be fixed by <a href="https://github.com/astral-sh/ruff/pull/14029">astral-sh/ruff#14029</a>, so it&#x27;s OK to just add a lot of new <code>KNOWN_FAILURES</code> here. The examples you&#x27;ve shown so far look like legitimate cycles that would be expected with the change of semantics in this PR, so I&#x27;m OK with just silencing them for now.</p>
+<p>The other option would be to extract just the &quot;fallback type&quot; part of <a href="https://github.com/astral-sh/ruff/pull/14029">astral-sh/ruff#14029</a> (not the fixpoint iteration part), where it gives <code>TypeInference</code> the possibility to have a &quot;fallback type&quot; used for all expressions that don&#x27;t have a specific type inserted. Then we can create this <code>TypeInference</code> with fallback (probably just to <code>Type::Todo(cycle handling)</code>) in the cycle recovery function, and these panics should go away.</p>
+<p>If we do the latter, it would probably be better to do it as a separate PR, so we can see the perf impact of just the &quot;fallback type&quot; feature alone. There may be some ways we can improve it if it&#x27;s a regression.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -237,34 +237,34 @@ ttt.pyi:7: error: Invalid base class &quot;Protocol&quot;  [misc]
             <div class="timeline-body"><blockquote>
 <p>A random guess - before that a lack of binding caused <a href="https://github.com/mishamsk/ruff/blob/16264-treat-declarations-in-stubs-as-bindings/crates/red_knot_python_semantic/src/types/infer.rs#L3577">back-off logic</a> during symbol search (in <code>infer_name_load</code>), which is now unnecessary. If so, that would mean that this back-off mechanism is complicated enough to cause such a negative impact when symbol is not bound locally and needs to be looked up further up the chain.</p>
 </blockquote>
-<p>It could be related to this. The improvement shows up in the &quot;incremental&quot; benchmark, not the &quot;cold&quot; benchmark. In the incremental benchmark we make a no-op change to one file (add a comment), so we are not really testing the performance of type inference, we are testing how fast Salsa can re-validate that nothing has changed. So usually improvements here are because we call fewer Salsa queries, or have fewer dependencies between Salsa queries. But it's true that this change could mean many fewer inference queries on scopes in stub files now take on dependencies on a different scope (the global or builtins scopes). This makes sense, because I don't expect that fallback to actually be a lot of extra work (so we don't gain much from this in cold benchmark), but it can generate a lot of extra Salsa query dependencies (so we do gain in the incremental benchmark.)</p>
+<p>It could be related to this. The improvement shows up in the &quot;incremental&quot; benchmark, not the &quot;cold&quot; benchmark. In the incremental benchmark we make a no-op change to one file (add a comment), so we are not really testing the performance of type inference, we are testing how fast Salsa can re-validate that nothing has changed. So usually improvements here are because we call fewer Salsa queries, or have fewer dependencies between Salsa queries. But it&#x27;s true that this change could mean many fewer inference queries on scopes in stub files now take on dependencies on a different scope (the global or builtins scopes). This makes sense, because I don&#x27;t expect that fallback to actually be a lot of extra work (so we don&#x27;t gain much from this in cold benchmark), but it can generate a lot of extra Salsa query dependencies (so we do gain in the incremental benchmark.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-28 03:01</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-02-28 03:03</div>
             <div class="timeline-body"><blockquote>
-<p>It's because only these tests assert (as a bug-catching mechanism, via the PullTypes visitor) that every expression has a type recorded for it. In normal type inference we do not spend the time to do a full AST walk and assert this. The cycle itself does not fail (due to the cycle recovery function) but that cycle recovery function doesn't insert a type for every expression, so it causes these coverage tests to panic due to missing types for some expressions.</p>
+<p>It&#x27;s because only these tests assert (as a bug-catching mechanism, via the PullTypes visitor) that every expression has a type recorded for it. In normal type inference we do not spend the time to do a full AST walk and assert this. The cycle itself does not fail (due to the cycle recovery function) but that cycle recovery function doesn&#x27;t insert a type for every expression, so it causes these coverage tests to panic due to missing types for some expressions.</p>
 </blockquote>
-<p>Got it, thanks. Now it makes sense. I used bare <code>println!</code> to see where the cycle is being triggered, and didn't see the output when running the cli - that's why I thought the cycle wasn't even triggered. But I may just missed it among verbose logs or stdout is just getting captured somewhere along the way.</p>
+<p>Got it, thanks. Now it makes sense. I used bare <code>println!</code> to see where the cycle is being triggered, and didn&#x27;t see the output when running the cli - that&#x27;s why I thought the cycle wasn&#x27;t even triggered. But I may just missed it among verbose logs or stdout is just getting captured somewhere along the way.</p>
 <blockquote>
-<p>so it's OK to just add a lot of new KNOWN_FAILURES here</p>
+<p>so it&#x27;s OK to just add a lot of new KNOWN_FAILURES here</p>
 </blockquote>
 <p>well it turned out to be just 3 more files. Checked all of them, seems legit, so added to <code>KNOWN_FAILURES</code></p>
 <blockquote>
-<p>The other option would be to extract just the &quot;fallback type&quot; part of https://github.com/astral-sh/ruff/pull/14029</p>
+<p>The other option would be to extract just the &quot;fallback type&quot; part of <a href="https://github.com/astral-sh/ruff/pull/14029">astral-sh/ruff#14029</a></p>
 </blockquote>
-<p>From what I can see, you've added the fallback type on the struct and it's usage in getter API's that access hasmaps, but if I am not mistaken it is not yet populated with actual fallbacks depending on the context. So I thought it would require more work to finalize. So I think this can be merged as-is. Especially since it is only 4 new exceptions to tests.</p>
+<p>From what I can see, you&#x27;ve added the fallback type on the struct and it&#x27;s usage in getter API&#x27;s that access hasmaps, but if I am not mistaken it is not yet populated with actual fallbacks depending on the context. So I thought it would require more work to finalize. So I think this can be merged as-is. Especially since it is only 4 new exceptions to tests.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -274,16 +274,16 @@ ttt.pyi:7: error: Invalid base class &quot;Protocol&quot;  [misc]
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/stubs/class.md</code>:21 on 2025-02-28 14:03</div>
             <div class="timeline-body"><p>nit</p>
-<pre><code class="language-suggestion">Unlike regular Python modules, stub files often omit the right-hand side in declarations, including in class
+<pre><code>Unlike regular Python modules, stub files often omit the right-hand side in declarations, including in class
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/stubs/class.md</code>:27 on 2025-02-28 14:08</div>
-            <div class="timeline-body"><p>I'm not a huge fan of the term &quot;class or instance&quot; attribute. It doesn't appear in the typing spec, and conceptually I think it's the wrong model to have. The <a href="https://typing.readthedocs.io/en/latest/spec/class-compat.html">spec</a> says that these are instance attributes that just have class-level defaults, and other than the fact that they can be accessed safely on the class object they behave like &quot;pure&quot; instance attributes in nearly every other way -- so I think that's the better way to think about them.</p>
-<p>I'd suggest rewording this paragraph like so:</p>
-<pre><code class="language-suggestion">One implication of this is that we'll always treat symbols in class scope as safe to be
-accessed from the class object itself. We'll never infer a &quot;pure instance attribute&quot; from
+            <div class="timeline-body"><p>I&#x27;m not a huge fan of the term &quot;class or instance&quot; attribute. It doesn&#x27;t appear in the typing spec, and conceptually I think it&#x27;s the wrong model to have. The <a href="https://typing.readthedocs.io/en/latest/spec/class-compat.html">spec</a> says that these are instance attributes that just have class-level defaults, and other than the fact that they can be accessed safely on the class object they behave like &quot;pure&quot; instance attributes in nearly every other way -- so I think that&#x27;s the better way to think about them.</p>
+<p>I&#x27;d suggest rewording this paragraph like so:</p>
+<pre><code>One implication of this is that we&#x27;ll always treat symbols in class scope as safe to be
+accessed from the class object itself. We&#x27;ll never infer a &quot;pure instance attribute&quot; from
 a stub.
 </code></pre>
 </div>
@@ -299,14 +299,14 @@ a stub.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/definition.rs</code>:518 on 2025-02-28 14:17</div>
-            <div class="timeline-body"><p>it probably doesn't matter much, but it might be slightly more strongly typed if this method took a <code>file: File</code> argument rather than an <code>in_stub: bool</code> argument, e.g.</p>
-<details>
+            <div class="timeline-body"><p>it probably doesn&#x27;t matter much, but it might be slightly more strongly typed if this method took a <code>file: File</code> argument rather than an <code>in_stub: bool</code> argument, e.g.</p>
 
-<pre><code class="language-diff">diff --git a/crates/red_knot_python_semantic/src/semantic_index/builder.rs b/crates/red_knot_python_semantic/src/semantic_index/builder.rs
+
+<pre><code>diff --git a/crates/red_knot_python_semantic/src/semantic_index/builder.rs b/crates/red_knot_python_semantic/src/semantic_index/builder.rs
 index 74e3494a6..4f2a7f470 100644
 --- a/crates/red_knot_python_semantic/src/semantic_index/builder.rs
 +++ b/crates/red_knot_python_semantic/src/semantic_index/builder.rs
-@@ -353,7 +353,7 @@ impl&lt;'db&gt; SemanticIndexBuilder&lt;'db&gt; {
+@@ -353,7 +353,7 @@ impl&lt;&#x27;db&gt; SemanticIndexBuilder&lt;&#x27;db&gt; {
          #[allow(unsafe_code)]
          // SAFETY: `definition_node` is guaranteed to be a child of `self.module`
          let kind = unsafe { definition_node.into_owned(self.module.clone()) };
@@ -319,7 +319,7 @@ diff --git a/crates/red_knot_python_semantic/src/semantic_index/definition.rs b/
 index d41c3ccdb..22caa2111 100644
 --- a/crates/red_knot_python_semantic/src/semantic_index/definition.rs
 +++ b/crates/red_knot_python_semantic/src/semantic_index/definition.rs
-@@ -515,7 +515,7 @@ impl DefinitionKind&lt;'_&gt; {
+@@ -515,7 +515,7 @@ impl DefinitionKind&lt;&#x27;_&gt; {
          }
      }
  
@@ -328,7 +328,7 @@ index d41c3ccdb..22caa2111 100644
          match self {
              // functions, classes, and imports always bind, and we consider them declarations
              DefinitionKind::Function(_)
-@@ -546,7 +546,7 @@ impl DefinitionKind&lt;'_&gt; {
+@@ -546,7 +546,7 @@ impl DefinitionKind&lt;&#x27;_&gt; {
              // Annotated assignment is always a declaration. It is also a binding if there is a RHS
              // or if we are in a stub file. Unfortunately, it is common for stubs to omit even an `...` value placeholder.
              DefinitionKind::AnnotatedAssignment(ann_assign) =&gt; {
@@ -341,8 +341,8 @@ diff --git a/crates/red_knot_python_semantic/src/types/infer.rs b/crates/red_kno
 index 224086ec4..b5881ddfa 100644
 --- a/crates/red_knot_python_semantic/src/types/infer.rs
 +++ b/crates/red_knot_python_semantic/src/types/infer.rs
-@@ -119,7 +119,7 @@ fn infer_definition_types_cycle_recovery&lt;'db&gt;(
- ) -&gt; TypeInference&lt;'db&gt; {
+@@ -119,7 +119,7 @@ fn infer_definition_types_cycle_recovery&lt;&#x27;db&gt;(
+ ) -&gt; TypeInference&lt;&#x27;db&gt; {
      tracing::trace!(&quot;infer_definition_types_cycle_recovery&quot;);
      let mut inference = TypeInference::empty(input.scope(db));
 -    let category = input.kind(db).category(input.file(db).is_stub(db.upcast()));
@@ -350,8 +350,8 @@ index 224086ec4..b5881ddfa 100644
      if category.is_declaration() {
          inference
              .declarations
-@@ -905,7 +905,7 @@ impl&lt;'db&gt; TypeInferenceBuilder&lt;'db&gt; {
-     fn add_binding(&amp;mut self, node: AnyNodeRef, binding: Definition&lt;'db&gt;, ty: Type&lt;'db&gt;) {
+@@ -905,7 +905,7 @@ impl&lt;&#x27;db&gt; TypeInferenceBuilder&lt;&#x27;db&gt; {
+     fn add_binding(&amp;mut self, node: AnyNodeRef, binding: Definition&lt;&#x27;db&gt;, ty: Type&lt;&#x27;db&gt;) {
          debug_assert!(binding
              .kind(self.db())
 -            .category(self.context.in_stub())
@@ -359,7 +359,7 @@ index 224086ec4..b5881ddfa 100644
              .is_binding());
          let use_def = self.index.use_def_map(binding.file_scope(self.db()));
          let declarations = use_def.declarations_at_binding(binding);
-@@ -943,7 +943,7 @@ impl&lt;'db&gt; TypeInferenceBuilder&lt;'db&gt; {
+@@ -943,7 +943,7 @@ impl&lt;&#x27;db&gt; TypeInferenceBuilder&lt;&#x27;db&gt; {
      ) {
          debug_assert!(declaration
              .kind(self.db())
@@ -368,7 +368,7 @@ index 224086ec4..b5881ddfa 100644
              .is_declaration());
          let use_def = self.index.use_def_map(declaration.file_scope(self.db()));
          let prior_bindings = use_def.bindings_at_declaration(declaration);
-@@ -976,11 +976,11 @@ impl&lt;'db&gt; TypeInferenceBuilder&lt;'db&gt; {
+@@ -976,11 +976,11 @@ impl&lt;&#x27;db&gt; TypeInferenceBuilder&lt;&#x27;db&gt; {
      ) {
          debug_assert!(definition
              .kind(self.db())
@@ -383,9 +383,9 @@ index 224086ec4..b5881ddfa 100644
  
          let (declared_ty, inferred_ty) = match *declared_and_inferred_ty {
 </code></pre>
-</details>
 
-<p>I'm also fine with what you have now, though</p>
+
+<p>I&#x27;m also fine with what you have now, though</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -395,10 +395,10 @@ index 224086ec4..b5881ddfa 100644
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-02-28 14:28</div>
             <div class="timeline-body"><blockquote>
-<p>From what I can see, you've added the fallback type on the struct and it's usage in getter API's that access hasmaps, but if I am not mistaken it is not yet populated with actual fallbacks depending on the context.</p>
+<p>From what I can see, you&#x27;ve added the fallback type on the struct and it&#x27;s usage in getter API&#x27;s that access hasmaps, but if I am not mistaken it is not yet populated with actual fallbacks depending on the context.</p>
 </blockquote>
-<p>The only place we want to populate a fallback is when we are creating a <code>TypeInference</code> from scratch in cycle recovery, and my PR already does this. It would look different in <code>main</code> than in my PR because in <code>main</code> there is only one cycle recovery function, so only one place we'd want to use a fallback type (right at that TODO comment about missing expression types).</p>
-<p>But since there are so few failures it's fine to just put them in known failures instead!</p>
+<p>The only place we want to populate a fallback is when we are creating a <code>TypeInference</code> from scratch in cycle recovery, and my PR already does this. It would look different in <code>main</code> than in my PR because in <code>main</code> there is only one cycle recovery function, so only one place we&#x27;d want to use a fallback type (right at that TODO comment about missing expression types).</p>
+<p>But since there are so few failures it&#x27;s fine to just put them in known failures instead!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -407,7 +407,7 @@ index 224086ec4..b5881ddfa 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/red_knot_python_semantic/src/semantic_index/definition.rs</code>:518 on 2025-02-28 15:37</div>
-            <div class="timeline-body"><p>It may be used in different contexts, including when <code>in_stub</code> is a pre-calculated context struct field. So the narrower API makes it less cumbersome to use. I usually prefer functions with the narrowest possible APIs until the number of arguments becomes &gt;4-5. So I'd say add the full <code>File</code> when/if more of it's methods are necessary inside the function.</p>
+            <div class="timeline-body"><p>It may be used in different contexts, including when <code>in_stub</code> is a pre-calculated context struct field. So the narrower API makes it less cumbersome to use. I usually prefer functions with the narrowest possible APIs until the number of arguments becomes &gt;4-5. So I&#x27;d say add the full <code>File</code> when/if more of it&#x27;s methods are necessary inside the function.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -416,7 +416,7 @@ index 224086ec4..b5881ddfa 100644
 <p>The only place we want to populate a fallback is when we are creating a TypeInference from scratch in cycle recovery</p>
 </blockquote>
 <p>ah, I think I missed that usage. I was just skimming over on GitHub.</p>
-<p>I've applied two comment changes suggested by @AlexWaygood . I think it is good to be merged.</p>
+<p>I&#x27;ve applied two comment changes suggested by @AlexWaygood . I think it is good to be merged.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -425,10 +425,10 @@ index 224086ec4..b5881ddfa 100644
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @AlexWaygood on 2025-02-28 16:45</div>
+            <div class="event">Merged by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-28 16:45</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-02-28 16:45</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-28 16:45</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-02-28 19:47</div>
@@ -436,7 +436,7 @@ index 224086ec4..b5881ddfa 100644
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:10:22 UTC
+        Synced at 2026-01-20 19:11:51 UTC
     </footer>
 </body>
 </html>

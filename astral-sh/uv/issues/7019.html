@@ -24,18 +24,18 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Kobzol">@Kobzol</a></div>
             <div class="timeline-body"><p>Hi! While migrating an existing Python project to <code>uv</code>, I encountered a situation where a command similar to <code>cargo update --precise</code> would be quite useful. Essentially, I would like to have the option to tell <code>uv</code> to set a package version (usually of a transitive dependency, one that is not specified in <code>dependencies</code>) in a lockfile to a specific version (that is semver compatible with the other dependencies).</p>
-<p>I have the following use-case (related to https://github.com/astral-sh/uv/issues/7018): I'm porting an existing Python project using a <code>requirements.txt</code> lockfile to <code>uv</code>. Let's say that I have a root dependency <code>a</code> that depends on a transitive dependency <code>b&gt;2.1</code>, and the latest published version of <code>b</code> is <code>2.3</code>. However, in my existing Python environment, I'm using <code>b==2.2</code>, and I want to continue doing that. In theory, according to semver, <code>2.3</code> is compatible with <code>2.2</code>, but theory is not always practice (especially in the world of Python package management :) ).</p>
-<p>If I want to move to <code>uv</code>, I'll generate a new project, set <code>dependencies = [&quot;a==xyz&quot;]</code> and generate a lockfile. However, <code>uv</code> will forcefully set the version of <code>b</code> to <code>2.3</code>, the newest compatible version. I haven't found any way to tell <code>uv</code> to set a specific version of the transitive dependency (aside from manually modifying the lockfile, but that's really not a good solution).</p>
-<h1>Workaround</h1>
+<p>I have the following use-case (related to <a href="https://github.com/astral-sh/uv/issues/7018">astral-sh/uv#7018</a>): I&#x27;m porting an existing Python project using a <code>requirements.txt</code> lockfile to <code>uv</code>. Let&#x27;s say that I have a root dependency <code>a</code> that depends on a transitive dependency <code>b&gt;2.1</code>, and the latest published version of <code>b</code> is <code>2.3</code>. However, in my existing Python environment, I&#x27;m using <code>b==2.2</code>, and I want to continue doing that. In theory, according to semver, <code>2.3</code> is compatible with <code>2.2</code>, but theory is not always practice (especially in the world of Python package management :) ).</p>
+<p>If I want to move to <code>uv</code>, I&#x27;ll generate a new project, set <code>dependencies = [&quot;a==xyz&quot;]</code> and generate a lockfile. However, <code>uv</code> will forcefully set the version of <code>b</code> to <code>2.3</code>, the newest compatible version. I haven&#x27;t found any way to tell <code>uv</code> to set a specific version of the transitive dependency (aside from manually modifying the lockfile, but that&#x27;s really not a good solution).</p>
+Workaround
 <p>What I found to work is to do <code>uv add b==2.2</code>, which will update the lockfile, and then manually delete <code>&quot;b==2.2&quot;</code> from the <code>dependencies</code> array. This seems to work fine, but it would be nice if <code>uv</code> allowed me to do this in a more straightforward way, e.g. with something like <code>uv lock update b=2.2</code>.</p>
-<h1>Related issue</h1>
-<p>A bit similar to https://github.com/astral-sh/uv/issues/6794, but I'm looking for a way to set the version of a specific package to a specific version, not just update everything.</p>
+Related issue
+<p>A bit similar to <a href="https://github.com/astral-sh/uv/issues/6794">astral-sh/uv#6794</a>, but I&#x27;m looking for a way to set the version of a specific package to a specific version, not just update everything.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-04 14:04</div>
-            <div class="timeline-body"><p>I comment on some future upgrade options at https://github.com/astral-sh/uv/issues/6781#issuecomment-2318265988</p>
-<p>However, it sounds like you're looking for constraints or overrides:</p>
+            <div class="timeline-body"><p>I comment on some future upgrade options at <a href="https://github.com/astral-sh/uv/issues/6781">astral-sh/uv#6781</a>#issuecomment-2318265988</p>
+<p>However, it sounds like you&#x27;re looking for constraints or overrides:</p>
 <ul>
 <li>https://docs.astral.sh/uv/concepts/resolution/#dependency-constraints</li>
 <li>https://docs.astral.sh/uv/concepts/resolution/#dependency-overrides</li>
@@ -46,17 +46,17 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Kobzol">@Kobzol</a> on 2024-09-04 14:15</div>
             <div class="timeline-body"><p>I saw the constraints and overrides in the documentation, but it looks like a too big hammer for this use-case, I think. Here I mostly just want to take a one-time snapshot of an existing package environment. Also, in general, <code>cargo update --precise</code> is a useful tool for other use-cases.</p>
-<p>I'm not sure how to use the <code>--constraint</code> flag to affect the generation of the lockfile.</p>
+<p>I&#x27;m not sure how to use the <code>--constraint</code> flag to affect the generation of the lockfile.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-04 23:34</div>
-            <div class="timeline-body"><p>The workaround I generally recommend here is to snapshot the environment, add the versions as constraints, run <code>uv lock</code>, then remove the constraints (and we'll continue to respect those versions once set). But agree we should have a better workflow.</p>
+            <div class="timeline-body"><p>The workaround I generally recommend here is to snapshot the environment, add the versions as constraints, run <code>uv lock</code>, then remove the constraints (and we&#x27;ll continue to respect those versions once set). But agree we should have a better workflow.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Kobzol">@Kobzol</a> on 2024-09-05 06:49</div>
-            <div class="timeline-body"><p>Yeah, that's exactly the workaround I described in the issue. Thanks for confirming that there probably isn't a better way for now 👍</p>
+            <div class="timeline-body"><p>Yeah, that&#x27;s exactly the workaround I described in the issue. Thanks for confirming that there probably isn&#x27;t a better way for now 👍</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -71,17 +71,17 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Kobzol">@Kobzol</a> on 2024-09-05 14:12</div>
-            <div class="timeline-body"><p>Ooh, that's it, thank you! I thought that I tried this before, not sure why I thought it doesn't work. This is essentially <code>cargo update</code>, and it solves this issue. Thanks :heart:</p>
+            <div class="timeline-body"><p>Ooh, that&#x27;s it, thank you! I thought that I tried this before, not sure why I thought it doesn&#x27;t work. This is essentially <code>cargo update</code>, and it solves this issue. Thanks :heart:</p>
 <p>It would be nice to add some more visible information about this to the documentation, because I only found <code>uv lock --upgrade</code> to update everything. Do you think it would be good to add it e.g. <a href="https://docs.astral.sh/uv/concepts/projects/#upgrading-locked-package-versions">here</a>? I can send a PR.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-05 14:13</div>
-            <div class="timeline-body"><p>@Kobzol that'd be great, thanks!</p>
+            <div class="timeline-body"><p>@Kobzol that&#x27;d be great, thanks!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">documentation</span> added by @zanieb on 2024-09-05 14:14</div>
+            <div class="event">Label <span class="label">documentation</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-05 14:14</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Kobzol">@Kobzol</a> on 2024-09-05 14:38</div>
@@ -89,15 +89,15 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2024-09-05 16:37</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-05 16:37</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2024-09-05 16:37</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-05 16:37</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:26:51 UTC
+        Synced at 2026-01-20 19:33:40 UTC
     </footer>
 </body>
 </html>

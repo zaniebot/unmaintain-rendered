@@ -41,7 +41,7 @@ os.execlp(&quot;ls&quot;, &quot;ls&quot;)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-10-07 07:45</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-07 07:45</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-07 07:45</div>
@@ -50,21 +50,21 @@ os.execlp(&quot;ls&quot;, &quot;ls&quot;)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-07 10:35</div>
-            <div class="timeline-body"><p>I think the issue here is mostly one of documentation. <code>S606</code> is a security-related rule, but the documentation for the rule makes it sound like the motivation for the rule is stylistic, and doesn't describe any of the security motivations for preferring to avoid these functions. (If the motivation for the rule were purely stylistic, then I agree that this could be a false positive, as there's functionality that <code>os.exec*</code> provides that the <code>subprocess</code> module cannot provide.)</p>
-<p>This rule was originally provided as <code>B606</code> by the security-focussed linter bandit; Ruff's <code>S606</code> rule is a reimplementation of bandit's rule. Bandit's documentation <a href="https://bandit.readthedocs.io/en/latest/plugins/b606_start_process_with_no_shell.html">states</a>:</p>
+            <div class="timeline-body"><p>I think the issue here is mostly one of documentation. <code>S606</code> is a security-related rule, but the documentation for the rule makes it sound like the motivation for the rule is stylistic, and doesn&#x27;t describe any of the security motivations for preferring to avoid these functions. (If the motivation for the rule were purely stylistic, then I agree that this could be a false positive, as there&#x27;s functionality that <code>os.exec*</code> provides that the <code>subprocess</code> module cannot provide.)</p>
+<p>This rule was originally provided as <code>B606</code> by the security-focussed linter bandit; Ruff&#x27;s <code>S606</code> rule is a reimplementation of bandit&#x27;s rule. Bandit&#x27;s documentation <a href="https://bandit.readthedocs.io/en/latest/plugins/b606_start_process_with_no_shell.html">states</a>:</p>
 <blockquote>
 <p>Python possesses many mechanisms to invoke an external executable. However, doing so may present a security issue if appropriate care is not taken to sanitize any user provided or variable input.</p>
 <p>This plugin test is part of a family of tests built to check for process spawning and warn appropriately. Specifically, this test looks for the spawning of a subprocess in a way that doesn’t use a shell. Although this is generally safe, it maybe useful for penetration testing workflows to track where external system calls are used. As such a LOW severity message is generated.</p>
 </blockquote>
 <p>This makes it much clearer than our documentation that the primary motivation for this rule is security-related rather than simply style.</p>
-<p>Bandit also allows you to configure exactly which <code>os.exec*</code> and <code>os.spawn*</code> functions are flagged by this rule, however, if you've decided that you want to treat one of these rules as &quot;always safe&quot; from a security perspective. We could possibly consider adding a similar configuration option.</p>
+<p>Bandit also allows you to configure exactly which <code>os.exec*</code> and <code>os.spawn*</code> functions are flagged by this rule, however, if you&#x27;ve decided that you want to treat one of these rules as &quot;always safe&quot; from a security perspective. We could possibly consider adding a similar configuration option.</p>
 <blockquote>
 <p>Additionally, I would suggest changing the name of the linter. The change suggested has nothing at all to do with whether a shell is involved at all. In fact it is mildly harder to use a shell with the <code>os.spawn*</code>, as the <code>subprocess</code> members usually have a <code>shell=True</code> method. I would suggest something like &quot;prefer-subprocess&quot; or &quot;spawn-is-obsolete&quot;, as those communicate accurately what the problem is.</p>
 </blockquote>
-<p>This may be true, but we also have the <code>S602</code> rule (<code>subprocess-popen-with-shell-equals-true</code>, adapted from <a href="https://bandit.readthedocs.io/en/latest/plugins/b602_subprocess_popen_with_shell_equals_true.html">bandit's <code>B602</code> rule</a>) to flag possibly insecure uses of the <code>subprocess</code> module that would lead to a new shell being spawned.</p>
+<p>This may be true, but we also have the <code>S602</code> rule (<code>subprocess-popen-with-shell-equals-true</code>, adapted from <a href="https://bandit.readthedocs.io/en/latest/plugins/b602_subprocess_popen_with_shell_equals_true.html">bandit&#x27;s <code>B602</code> rule</a>) to flag possibly insecure uses of the <code>subprocess</code> module that would lead to a new shell being spawned.</p>
 <p>In summary, I would not change the rule here. Instead, I would:</p>
 <ul>
-<li>Rewrite the docs (I'll take this on)</li>
+<li>Rewrite the docs (I&#x27;ll take this on)</li>
 <li>Consider making it configurable</li>
 </ul>
 </div>
@@ -75,14 +75,14 @@ os.execlp(&quot;ls&quot;, &quot;ls&quot;)
 <p>Additionally, I would suggest changing the name of the linter. The change suggested has nothing at all to do with whether a shell is involved at all. In fact it is mildly harder to use a shell with the <code>os.spawn*</code>, as the <code>subprocess</code> members usually have a <code>shell=True</code> method. I would suggest something like &quot;prefer-subprocess&quot; or &quot;spawn-is-obsolete&quot;, as those communicate accurately what the problem is.</p>
 </blockquote>
 <p>I think specifically the reason why this rule has <code>shell</code> in the title is because there is another rule which flags <code>os</code> functions that spawn new processes and <em>do</em> use a shell to spawn those new processes (<a href="https://docs.astral.sh/ruff/rules/start-process-with-a-shell/"><code>S605</code>: <code>start-process-with-a-shell</code></a>). <code>with-no-shell</code> in the title of this rule distinguishes it from the title of the other rule.</p>
-<p>Both processes that are spawned using a shell and those that don't use a shell are security risks (which is why both are reported), but the first category are a much bigger security risk. This is why it's split into two rules: one rule for the <code>os</code> functions that spawn subprocesses using shells, and one rule for the <code>os</code> functions that spawn subprocesses without shells. If you decided that the security risk of the second category is tolerable but the security risk of the first category is not, you could plausibly enable the first rule while disabling the second.</p>
+<p>Both processes that are spawned using a shell and those that don&#x27;t use a shell are security risks (which is why both are reported), but the first category are a much bigger security risk. This is why it&#x27;s split into two rules: one rule for the <code>os</code> functions that spawn subprocesses using shells, and one rule for the <code>os</code> functions that spawn subprocesses without shells. If you decided that the security risk of the second category is tolerable but the security risk of the first category is not, you could plausibly enable the first rule while disabling the second.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Linter S606 incorrectly including os.exec*" to "Should `S606` (`start-process-with-no-shell`) include `os.exec*` functions?" by @AlexWaygood on 2024-10-07 10:54</div>
+            <div class="event">Renamed from &quot;Linter S606 incorrectly including os.exec*&quot; to &quot;Should `S606` (`start-process-with-no-shell`) include `os.exec*` functions?&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-07 10:54</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Should `S606` (`start-process-with-no-shell`) include `os.exec*` functions?" to "Should `S606` (`start-process-with-no-shell`) flag `os.exec*` functions?" by @AlexWaygood on 2024-10-07 10:54</div>
+            <div class="event">Renamed from &quot;Should `S606` (`start-process-with-no-shell`) include `os.exec*` functions?&quot; to &quot;Should `S606` (`start-process-with-no-shell`) flag `os.exec*` functions?&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-07 10:54</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-07 12:37</div>
@@ -92,7 +92,7 @@ os.execlp(&quot;ls&quot;, &quot;ls&quot;)
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:51:11 UTC
+        Synced at 2026-01-20 18:48:58 UTC
     </footer>
 </body>
 </html>

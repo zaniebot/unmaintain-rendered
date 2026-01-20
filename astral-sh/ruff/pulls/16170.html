@@ -23,14 +23,14 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>This PR updates the formatter and linter to use the <code>PythonVersion</code> struct from the <code>ruff_python_ast</code> crate internally. While this doesn't remove the need for the <code>linter::PythonVersion</code> enum, it does remove the <code>formatter::PythonVersion</code> enum and limits the use in the linter to deserializing from CLI arguments and config files and moves most of the remaining methods to the <code>ast::PythonVersion</code> struct.</p>
-<h2>Test Plan</h2>
-<p>Existing tests, with some inputs and outputs updated to reflect the new (de)serialization format. I think these are test-specific and shouldn't affect any external (de)serialization.</p>
+            <div class="timeline-body">Summary
+<p>This PR updates the formatter and linter to use the <code>PythonVersion</code> struct from the <code>ruff_python_ast</code> crate internally. While this doesn&#x27;t remove the need for the <code>linter::PythonVersion</code> enum, it does remove the <code>formatter::PythonVersion</code> enum and limits the use in the linter to deserializing from CLI arguments and config files and moves most of the remaining methods to the <code>ast::PythonVersion</code> struct.</p>
+Test Plan
+<p>Existing tests, with some inputs and outputs updated to reflect the new (de)serialization format. I think these are test-specific and shouldn&#x27;t affect any external (de)serialization.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> added by @ntBre on 2025-02-14 20:49</div>
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-14 20:49</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-14 20:57</div>
@@ -61,9 +61,9 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/python_version.rs</code>:199 on 2025-02-17 07:54</div>
-            <div class="timeline-body"><p>I guess that's a work around for serde's lack of <code>TryFrom</code> and <code>Into</code> on the field level?</p>
-<p>I'm inclined to move those into <code>serde</code> and rename them to <code>deserialize_into</code>, <code>try_serialize_from</code>, <code>deserialize_into</code></p>
-<p>An alternative, which would also remove the need for <code>deserialize_option</code>, <code>serialize_option</code> and potential <code>deserialize_*</code> variants for any other type parametrized with <code>PythonVersion</code> is to introduce a newtype wrapper around <code>PythonVersion</code> in <code>ruff_workspace</code> and attribute that newtype wrapper with serde's <a href="https://serde.rs/container-attrs.html#try_from">try_from</a> or implement the logic right on that type.</p>
+            <div class="timeline-body"><p>I guess that&#x27;s a work around for serde&#x27;s lack of <code>TryFrom</code> and <code>Into</code> on the field level?</p>
+<p>I&#x27;m inclined to move those into <code>serde</code> and rename them to <code>deserialize_into</code>, <code>try_serialize_from</code>, <code>deserialize_into</code></p>
+<p>An alternative, which would also remove the need for <code>deserialize_option</code>, <code>serialize_option</code> and potential <code>deserialize_*</code> variants for any other type parametrized with <code>PythonVersion</code> is to introduce a newtype wrapper around <code>PythonVersion</code> in <code>ruff_workspace</code> and attribute that newtype wrapper with serde&#x27;s <a href="https://serde.rs/container-attrs.html#try_from">try_from</a> or implement the logic right on that type.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -72,7 +72,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/options.rs</code>:27 on 2025-02-17 07:57</div>
-            <div class="timeline-body"><p>Is this type used anywhere in a user facing facade? If not, I then think it's fine if the representation changes.</p>
+            <div class="timeline-body"><p>Is this type used anywhere in a user facing facade? If not, I then think it&#x27;s fine if the representation changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -90,8 +90,8 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_ast/src/python_version.rs</code>:199 on 2025-02-17 13:09</div>
-            <div class="timeline-body"><p>Yes that's exactly right. I named the first two <code>serialize</code> and <code>deserialize</code> because you're supposed to be able to pass a whole module to the <a href="https://serde.rs/field-attrs.html#with"><code>with</code></a> attribute if they have those names, but I had to specify the generics and couldn't use <code>with</code> anyway. And then I still couldn't reuse the code for <code>Option</code>s because <code>Option&lt;T&gt;</code> doesn't implement <code>Into&lt;Option&lt;U&gt;&gt;</code> even if <code>T: Into&lt;U&gt;</code>.</p>
-<p>I was hesitant to add a new type when I was trying to remove types, but I think you're right that it would be more elegant. I'll give it a try!</p>
+            <div class="timeline-body"><p>Yes that&#x27;s exactly right. I named the first two <code>serialize</code> and <code>deserialize</code> because you&#x27;re supposed to be able to pass a whole module to the <a href="https://serde.rs/field-attrs.html#with"><code>with</code></a> attribute if they have those names, but I had to specify the generics and couldn&#x27;t use <code>with</code> anyway. And then I still couldn&#x27;t reuse the code for <code>Option</code>s because <code>Option&lt;T&gt;</code> doesn&#x27;t implement <code>Into&lt;Option&lt;U&gt;&gt;</code> even if <code>T: Into&lt;U&gt;</code>.</p>
+<p>I was hesitant to add a new type when I was trying to remove types, but I think you&#x27;re right that it would be more elegant. I&#x27;ll give it a try!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -100,7 +100,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/src/options.rs</code>:27 on 2025-02-17 13:12</div>
-            <div class="timeline-body"><p>It comes out in <code>ruff check --show-setttings</code>, but the version that's printed now (<code>Py39</code>) can't be directly pasted back into a config file anyway, so I think it should be fine, like you said.</p>
+            <div class="timeline-body"><p>It comes out in <code>ruff check --show-setttings</code>, but the version that&#x27;s printed now (<code>Py39</code>) can&#x27;t be directly pasted back into a config file anyway, so I think it should be fine, like you said.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -109,7 +109,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/python_version.rs</code>:199 on 2025-02-17 13:22</div>
-            <div class="timeline-body"><p>My main goal is to reduce the <code>PythonVersion</code> used internally. I do think it's okay to have specific types that are specific to the user interface (that get converted to the internal representation at the API boundaries)</p>
+            <div class="timeline-body"><p>My main goal is to reduce the <code>PythonVersion</code> used internally. I do think it&#x27;s okay to have specific types that are specific to the user interface (that get converted to the internal representation at the API boundaries)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -138,7 +138,7 @@
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_ast/src/python_version.rs</code>:199 on 2025-02-17 14:16</div>
             <div class="timeline-body"><p>That totally makes sense.</p>
 <p>This ended up also being helped by your suggestion only to convert to <code>AstPythonVersion</code> in the <code>Configuration</code>. I renamed <code>serialize</code> and <code>deserialize</code> as suggested but was able to delete the <code>_option</code> variants entirely.</p>
-<p>We could still use a newtype or just move the conversion functions to the formatter where they're used (and drop the generics). What do you think?</p>
+<p>We could still use a newtype or just move the conversion functions to the formatter where they&#x27;re used (and drop the generics). What do you think?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -152,16 +152,16 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-17 14:25</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
@@ -183,7 +183,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/python_version.rs</code>:199 on 2025-02-17 14:33</div>
             <div class="timeline-body"><p>I would just move it into the formatter. Less feature gating and it is more obvious when it needs to be removed.</p>
-<p>I'm surprised that we don't need it in the linter?</p>
+<p>I&#x27;m surprised that we don&#x27;t need it in the linter?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -193,7 +193,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_ast/src/python_version.rs</code>:199 on 2025-02-17 15:00</div>
             <div class="timeline-body"><p>Sounds good.</p>
-<p>Yeah I was surprised too, but in the linter it was all handled by using the derived (de)serialize implementations for the existing <code>PythonVersion</code> in the <code>Options</code> and just mapping those to <code>AstPythonVersion</code> in the <code>Configuration</code>. I guess it's basically acting like the newtype already.</p>
+<p>Yeah I was surprised too, but in the linter it was all handled by using the derived (de)serialize implementations for the existing <code>PythonVersion</code> in the <code>Options</code> and just mapping those to <code>AstPythonVersion</code> in the <code>Configuration</code>. I guess it&#x27;s basically acting like the newtype already.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -202,8 +202,8 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/python_version.rs</code>:199 on 2025-02-17 15:08</div>
-            <div class="timeline-body"><p>I don't think <code>PyFormatOptions</code> is used externally (other than tests)? So we could change it to use <code>PythonVersion</code>.</p>
-<p>The naming might be a bit confusing but the <code>PyFormatOptions</code> isn't the same as the other <code>Options</code> struct. It is an internal (minus maybe the playground?) options struct that's used by the internal formatter api.</p>
+            <div class="timeline-body"><p>I don&#x27;t think <code>PyFormatOptions</code> is used externally (other than tests)? So we could change it to use <code>PythonVersion</code>.</p>
+<p>The naming might be a bit confusing but the <code>PyFormatOptions</code> isn&#x27;t the same as the other <code>Options</code> struct. It is an internal (minus maybe the playground?) options struct that&#x27;s used by the internal formatter api.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -212,12 +212,12 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_ast/src/python_version.rs</code>:199 on 2025-02-17 15:41</div>
-            <div class="timeline-body"><p>Oh nice, that let me get rid of the serde stuff entirely. I had to update a bunch of JSON files to use the dotted version syntax, but I guess we don't read files like that from users?</p>
+            <div class="timeline-body"><p>Oh nice, that let me get rid of the serde stuff entirely. I had to update a bunch of JSON files to use the dotted version syntax, but I guess we don&#x27;t read files like that from users?</p>
 <p>The JSON files were referenced in</p>
 <p>https://github.com/astral-sh/ruff/blob/b5cd4f2f70408b8ba2ebd32e554d0fef2472e9c2/crates/ruff_python_formatter/tests/fixtures.rs#L175-L186</p>
 <p>and</p>
 <p>https://github.com/astral-sh/ruff/blob/b5cd4f2f70408b8ba2ebd32e554d0fef2472e9c2/crates/ruff_python_formatter/tests/fixtures.rs#L20-L30</p>
-<p>I think I was scared of breaking <code>black_compatibility</code> in the first draft of this PR, but from reading the docs, I think <code>black</code> uses TOML too, so I'm guessing these JSON files are just for our tests like you said.</p>
+<p>I think I was scared of breaking <code>black_compatibility</code> in the first draft of this PR, but from reading the docs, I think <code>black</code> uses TOML too, so I&#x27;m guessing these JSON files are just for our tests like you said.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -226,7 +226,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_ast/src/python_version.rs</code>:199 on 2025-02-17 17:23</div>
-            <div class="timeline-body"><p>I updated the <code>Display</code> implementation for the tests and accepted output snap changes for the <code>format</code> test here and that also let me delete the <code>From</code> and <code>TryFrom</code> impls for the formatter. Running tests locally and then I'll push that here too. That should finally be a net decrease in code!</p>
+            <div class="timeline-body"><p>I updated the <code>Display</code> implementation for the tests and accepted output snap changes for the <code>format</code> test here and that also let me delete the <code>From</code> and <code>TryFrom</code> impls for the formatter. Running tests locally and then I&#x27;ll push that here too. That should finally be a net decrease in code!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -241,21 +241,21 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-17 17:52</div>
             <div class="timeline-body"><p>Thanks @MichaReiser for the very helpful feedback here. I thought it was a lost cause on Friday, but with your help, I think it might be a nice change now.</p>
-<p>Apologies for such a large diff. Many of the changes had to happen at the same time, but let me know if there's a way to make it easier to review. I could probably come up with a more useful commit ordering if nothing else.</p>
+<p>Apologies for such a large diff. Many of the changes had to happen at the same time, but let me know if there&#x27;s a way to make it easier to review. I could probably come up with a more useful commit ordering if nothing else.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @ntBre on 2025-02-17 17:53</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-17 17:53</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @ntBre on 2025-02-17 17:53</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-17 17:53</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Try unifying linter and formatter `PythonVersion` enums" to "Use `ast::PythonVersion` internally in the formatter and linter" by @ntBre on 2025-02-17 17:54</div>
+            <div class="event">Renamed from &quot;Try unifying linter and formatter `PythonVersion` enums&quot; to &quot;Use `ast::PythonVersion` internally in the formatter and linter&quot; by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-17 17:54</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/src/options.rs</code>:26 on 2025-02-18 06:48</div>
-            <div class="timeline-body"><p>nit: I'd use <code>ast::PythonVersion</code> instead as I'd find that a useful indicator that it's from the <code>ruff_python_ast</code> crate (similar for wherever <code>AstPythonVersion</code> is being used</p>
+            <div class="timeline-body"><p>nit: I&#x27;d use <code>ast::PythonVersion</code> instead as I&#x27;d find that a useful indicator that it&#x27;s from the <code>ruff_python_ast</code> crate (similar for wherever <code>AstPythonVersion</code> is being used</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -265,12 +265,12 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-02-18 06:50</div>
-            <div class="timeline-body"><p>Thank you for doing this. I've a couple of minor comments but this looks good. I'll let Micha give the green light on this as the main reviewer.</p>
+            <div class="timeline-body"><p>Thank you for doing this. I&#x27;ve a couple of minor comments but this looks good. I&#x27;ll let Micha give the green light on this as the main reviewer.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/args.rs</code>:732 on 2025-02-18 08:05</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">            target_version: self.target_version.into(),
+            <div class="timeline-body"><pre><code>            target_version: self.target_version.into(),
 </code></pre>
 </div>
         </div>
@@ -281,23 +281,23 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/settings/types.rs</code>:49 on 2025-02-18 08:11</div>
-            <div class="timeline-body"><p>Could we create a manual <code>Default</code> implementation that calls <code>PythonVersion</code> internally (and unwraps)? But we should make sure that there's a doctest or unit test that asserts that <code>Default::default</code> can be called successfully</p>
+            <div class="timeline-body"><p>Could we create a manual <code>Default</code> implementation that calls <code>PythonVersion</code> internally (and unwraps)? But we should make sure that there&#x27;s a doctest or unit test that asserts that <code>Default::default</code> can be called successfully</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/python_version.rs</code>:100 on 2025-02-18 08:14</div>
-            <div class="timeline-body"><p>What's the reason that this module needs to be <code>pub</code>?</p>
+            <div class="timeline-body"><p>What&#x27;s the reason that this module needs to be <code>pub</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/resources/test/fixtures/black/cases/funcdef_return_type_trailing_comma.options.json</code>:1 on 2025-02-18 08:15</div>
-            <div class="timeline-body"><p>We'll need to update this import script</p>
+            <div class="timeline-body"><p>We&#x27;ll need to update this import script</p>
 <p>https://github.com/astral-sh/ruff/blob/02297d4b7b2ab177bac79ed54920cf7ddcba7012/crates/ruff_python_formatter/resources/test/fixtures/import_black_tests.py#L57-L62</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/options.rs</code>:481 on 2025-02-18 08:20</div>
-            <div class="timeline-body"><p>I don't think this type is used anymore (other than in a public module export). We should remove it.</p>
+            <div class="timeline-body"><p>I don&#x27;t think this type is used anymore (other than in a public module export). We should remove it.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -316,8 +316,8 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/src/args.rs</code>:732 on 2025-02-18 11:12</div>
-            <div class="timeline-body"><p>that doesn't work here because <code>self.target_version</code> is an <code>Option</code>. But my nit here would be that our usual style in the repo is to fully qualify imports from the <code>ruff_python_ast</code> crate rather than aliasing the struct itself, e.g.</p>
-<pre><code class="language-diff">diff --git a/crates/ruff/src/args.rs b/crates/ruff/src/args.rs
+            <div class="timeline-body"><p>that doesn&#x27;t work here because <code>self.target_version</code> is an <code>Option</code>. But my nit here would be that our usual style in the repo is to fully qualify imports from the <code>ruff_python_ast</code> crate rather than aliasing the struct itself, e.g.</p>
+<pre><code>diff --git a/crates/ruff/src/args.rs b/crates/ruff/src/args.rs
 index 6d35b226d..6c37948f3 100644
 --- a/crates/ruff/src/args.rs
 +++ b/crates/ruff/src/args.rs
@@ -390,7 +390,7 @@ index a54c8a2b2..cdbb9c8f3 100644
 +mod serde {
      use super::PythonVersion;
  
-     impl&lt;'de&gt; serde::Deserialize&lt;'de&gt; for PythonVersion {
+     impl&lt;&#x27;de&gt; serde::Deserialize&lt;&#x27;de&gt; for PythonVersion {
 </code></pre>
 </div>
         </div>
@@ -400,8 +400,8 @@ index a54c8a2b2..cdbb9c8f3 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/settings/types.rs</code>:28 on 2025-02-18 11:27</div>
-            <div class="timeline-body"><p>The <code>PartialOrd</code> and <code>Ord</code> implementations on this enum are now unused. Conceptually they make sense, but I think I'm inclined to remove them unless they're used.</p>
-<p>We might also be able to remove the <code>CacheKey</code> implementation? Things seem to compile without it... but I don't know enough about how Ruff's cache works to be confident about that. @MichaReiser might know more</p>
+            <div class="timeline-body"><p>The <code>PartialOrd</code> and <code>Ord</code> implementations on this enum are now unused. Conceptually they make sense, but I think I&#x27;m inclined to remove them unless they&#x27;re used.</p>
+<p>We might also be able to remove the <code>CacheKey</code> implementation? Things seem to compile without it... but I don&#x27;t know enough about how Ruff&#x27;s cache works to be confident about that. @MichaReiser might know more</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -419,7 +419,7 @@ index a54c8a2b2..cdbb9c8f3 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/src/args.rs</code>:732 on 2025-02-18 11:30</div>
-            <div class="timeline-body"><p>hehe, my nit is basically the same as @dhruvmanila's in https://github.com/astral-sh/ruff/pull/16170/files#r1959159116 😄</p>
+            <div class="timeline-body"><p>hehe, my nit is basically the same as @dhruvmanila&#x27;s in <a href="https://github.com/astral-sh/ruff/pull/16170">astral-sh/ruff#16170</a>/files#r1959159116 😄</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -433,7 +433,7 @@ index a54c8a2b2..cdbb9c8f3 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/settings/types.rs</code>:49 on 2025-02-18 13:55</div>
-            <div class="timeline-body"><p>Oh that's a great idea, thanks!</p>
+            <div class="timeline-body"><p>Oh that&#x27;s a great idea, thanks!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -443,7 +443,7 @@ index a54c8a2b2..cdbb9c8f3 100644
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/settings/types.rs</code>:28 on 2025-02-18 14:12</div>
             <div class="timeline-body"><p>I think <code>CacheKey</code> is needed for WASM, some of the earlier CI jobs were failing when I tried removing this (or really when I failed to feature gate it properly).</p>
-<p>I'll remove the <code>Ord</code> impls.</p>
+<p>I&#x27;ll remove the <code>Ord</code> impls.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -452,7 +452,7 @@ index a54c8a2b2..cdbb9c8f3 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/settings/types.rs</code>:28 on 2025-02-18 14:15</div>
-            <div class="timeline-body"><p>Oh maybe not, I ran clippy with <code>--target wasm32-unknown-unknown</code> and it didn't cause any errors. I'll try removing that too!</p>
+            <div class="timeline-body"><p>Oh maybe not, I ran clippy with <code>--target wasm32-unknown-unknown</code> and it didn&#x27;t cause any errors. I&#x27;ll try removing that too!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -461,7 +461,7 @@ index a54c8a2b2..cdbb9c8f3 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_ast/src/python_version.rs</code>:100 on 2025-02-18 14:26</div>
-            <div class="timeline-body"><p>It doesn't, good catch. I made it <code>pub</code> while moving the <code>adapter</code> functions into it but then deleted those.</p>
+            <div class="timeline-body"><p>It doesn&#x27;t, good catch. I made it <code>pub</code> while moving the <code>adapter</code> functions into it but then deleted those.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -488,14 +488,14 @@ index a54c8a2b2..cdbb9c8f3 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/src/options.rs</code>:481 on 2025-02-18 14:31</div>
-            <div class="timeline-body"><p>Wow, I actually could delete one of the <code>PythonVersion</code>s and I didn't even notice... Done!</p>
+            <div class="timeline-body"><p>Wow, I actually could delete one of the <code>PythonVersion</code>s and I didn&#x27;t even notice... Done!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @ntBre on 2025-02-18 14:46</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-18 14:46</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @ntBre on 2025-02-18 14:46</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-18 14:46</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-18 14:46</div>
@@ -504,16 +504,16 @@ index a54c8a2b2..cdbb9c8f3 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-18 14:47</div>
-            <div class="timeline-body"><p>Oh, maybe it won't be the last commit anymore. Let me merge main.</p>
+            <div class="timeline-body"><p>Oh, maybe it won&#x27;t be the last commit anymore. Let me merge main.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_annotations/rules/definition.rs</code>:526 on 2025-02-18 15:44</div>
             <div class="timeline-body"><p><code>type_hint_resolves_to_any()</code> should probably take a <code>version: ast::PythonVersion</code> rather than a <code>minor_version: u8</code> argument, looking at this. It would make the method more strongly typed.</p>
-<details>
-<summary>Patch</summary>
 
-<pre><code class="language-diff">diff --git a/crates/ruff_linter/src/rules/flake8_annotations/rules/definition.rs b/crates/ruff_linter/src/rules/flake8_annotations/rules/definition.rs
+Patch
+
+<pre><code>diff --git a/crates/ruff_linter/src/rules/flake8_annotations/rules/definition.rs b/crates/ruff_linter/src/rules/flake8_annotations/rules/definition.rs
 index 692ed478d..e637f0ea1 100644
 --- a/crates/ruff_linter/src/rules/flake8_annotations/rules/definition.rs
 +++ b/crates/ruff_linter/src/rules/flake8_annotations/rules/definition.rs
@@ -574,20 +574,20 @@ index 3faea2fa8..a12ab9b6d 100644
          _ =&gt; false,
      }
  }
-@@ -70,7 +70,11 @@ enum TypingTarget&lt;'a&gt; {
+@@ -70,7 +70,11 @@ enum TypingTarget&lt;&#x27;a&gt; {
  }
  
- impl&lt;'a&gt; TypingTarget&lt;'a&gt; {
--    fn try_from_expr(expr: &amp;'a Expr, checker: &amp;'a Checker, minor_version: u8) -&gt; Option&lt;Self&gt; {
+ impl&lt;&#x27;a&gt; TypingTarget&lt;&#x27;a&gt; {
+-    fn try_from_expr(expr: &amp;&#x27;a Expr, checker: &amp;&#x27;a Checker, minor_version: u8) -&gt; Option&lt;Self&gt; {
 +    fn try_from_expr(
-+        expr: &amp;'a Expr,
-+        checker: &amp;'a Checker,
++        expr: &amp;&#x27;a Expr,
++        checker: &amp;&#x27;a Checker,
 +        version: ast::PythonVersion,
 +    ) -&gt; Option&lt;Self&gt; {
          let semantic = checker.semantic();
          match expr {
              Expr::Subscript(ast::ExprSubscript { value, slice, .. }) =&gt; {
-@@ -91,7 +95,7 @@ impl&lt;'a&gt; TypingTarget&lt;'a&gt; {
+@@ -91,7 +95,7 @@ impl&lt;&#x27;a&gt; TypingTarget&lt;&#x27;a&gt; {
                                  resolve_slice_value(slice.as_ref()).next(),
                              ))
                          } else {
@@ -596,16 +596,16 @@ index 3faea2fa8..a12ab9b6d 100644
                                  Some(TypingTarget::Known)
                              } else {
                                  Some(TypingTarget::Unknown)
-@@ -137,7 +141,7 @@ impl&lt;'a&gt; TypingTarget&lt;'a&gt; {
+@@ -137,7 +141,7 @@ impl&lt;&#x27;a&gt; TypingTarget&lt;&#x27;a&gt; {
                          )
                      {
                          Some(TypingTarget::Hashable)
 -                    } else if !is_known_type(&amp;qualified_name, minor_version) {
 +                    } else if !is_known_type(&amp;qualified_name, version) {
-                         // If it's not a known type, we assume it's `Any`.
+                         // If it&#x27;s not a known type, we assume it&#x27;s `Any`.
                          Some(TypingTarget::Unknown)
                      } else {
-@@ -149,7 +153,7 @@ impl&lt;'a&gt; TypingTarget&lt;'a&gt; {
+@@ -149,7 +153,7 @@ impl&lt;&#x27;a&gt; TypingTarget&lt;&#x27;a&gt; {
      }
  
      /// Check if the [`TypingTarget`] explicitly allows `None`.
@@ -614,7 +614,7 @@ index 3faea2fa8..a12ab9b6d 100644
          match self {
              TypingTarget::None
              | TypingTarget::Optional(_)
-@@ -162,10 +166,10 @@ impl&lt;'a&gt; TypingTarget&lt;'a&gt; {
+@@ -162,10 +166,10 @@ impl&lt;&#x27;a&gt; TypingTarget&lt;&#x27;a&gt; {
                  resolve_slice_value(slice).any(|element| {
                      // Literal can only contain `None`, a literal value, other `Literal`
                      // or an enum value.
@@ -627,7 +627,7 @@ index 3faea2fa8..a12ab9b6d 100644
                          }
                          _ =&gt; false,
                      }
-@@ -173,35 +177,32 @@ impl&lt;'a&gt; TypingTarget&lt;'a&gt; {
+@@ -173,35 +177,32 @@ impl&lt;&#x27;a&gt; TypingTarget&lt;&#x27;a&gt; {
              }),
              TypingTarget::Union(slice) =&gt; slice.is_some_and(|slice| {
                  resolve_slice_value(slice).any(|element| {
@@ -674,8 +674,8 @@ index 3faea2fa8..a12ab9b6d 100644
 +    fn contains_any(&amp;self, checker: &amp;Checker, version: ast::PythonVersion) -&gt; bool {
          match self {
              TypingTarget::Any =&gt; true,
-             // `Literal` cannot contain `Any` as it's a dynamic value.
-@@ -213,31 +214,23 @@ impl&lt;'a&gt; TypingTarget&lt;'a&gt; {
+             // `Literal` cannot contain `Any` as it&#x27;s a dynamic value.
+@@ -213,31 +214,23 @@ impl&lt;&#x27;a&gt; TypingTarget&lt;&#x27;a&gt; {
              | TypingTarget::Unknown =&gt; false,
              TypingTarget::Union(slice) =&gt; slice.is_some_and(|slice| {
                  resolve_slice_value(slice).any(|element| {
@@ -715,19 +715,19 @@ index 3faea2fa8..a12ab9b6d 100644
              }
          }
      }
-@@ -253,9 +246,9 @@ impl&lt;'a&gt; TypingTarget&lt;'a&gt; {
- pub(crate) fn type_hint_explicitly_allows_none&lt;'a&gt;(
-     annotation: &amp;'a Expr,
-     checker: &amp;'a Checker,
+@@ -253,9 +246,9 @@ impl&lt;&#x27;a&gt; TypingTarget&lt;&#x27;a&gt; {
+ pub(crate) fn type_hint_explicitly_allows_none&lt;&#x27;a&gt;(
+     annotation: &amp;&#x27;a Expr,
+     checker: &amp;&#x27;a Checker,
 -    minor_version: u8,
 +    version: ast::PythonVersion,
- ) -&gt; Option&lt;&amp;'a Expr&gt; {
+ ) -&gt; Option&lt;&amp;&#x27;a Expr&gt; {
 -    match TypingTarget::try_from_expr(annotation, checker, minor_version) {
 +    match TypingTarget::try_from_expr(annotation, checker, version) {
          None |
              // Short circuit on top level `None`, `Any` or `Optional`
              Some(TypingTarget::None | TypingTarget::Optional(_) | TypingTarget::Any) =&gt; None,
-@@ -264,10 +257,10 @@ pub(crate) fn type_hint_explicitly_allows_none&lt;'a&gt;(
+@@ -264,10 +257,10 @@ pub(crate) fn type_hint_explicitly_allows_none&lt;&#x27;a&gt;(
          // is found nested inside another type, then the outer type should
          // be returned.
          Some(TypingTarget::Annotated(expr)) =&gt; {
@@ -740,7 +740,7 @@ index 3faea2fa8..a12ab9b6d 100644
                  return None;
              }
              Some(annotation)
-@@ -281,9 +274,9 @@ pub(crate) fn type_hint_explicitly_allows_none&lt;'a&gt;(
+@@ -281,9 +274,9 @@ pub(crate) fn type_hint_explicitly_allows_none&lt;&#x27;a&gt;(
  pub(crate) fn type_hint_resolves_to_any(
      annotation: &amp;Expr,
      checker: &amp;Checker,
@@ -805,21 +805,21 @@ index 3faea2fa8..a12ab9b6d 100644
      }
  }
 </code></pre>
-</details>
 
-<p>Should probably be a followup, though; this is already a big PR and the change isn't directly related</p>
+
+<p>Should probably be a followup, though; this is already a big PR and the change isn&#x27;t directly related</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/settings/types.rs</code>:41 on 2025-02-18 15:51</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">        // SAFETY: the unit test `default_python_version_works()` checks that this doesn't panic
+            <div class="timeline-body"><pre><code>        // SAFETY: the unit test `default_python_version_works()` checks that this doesn&#x27;t panic
         Self::try_from(ast::PythonVersion::default()).unwrap()
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_formatter/tests/fixtures.rs</code>:186 on 2025-02-18 15:54</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">                .unwrap_or_else(|_| panic!(&quot;Expected option file {options_path:?} to be a valid Json file&quot;));
+            <div class="timeline-body"><pre><code>                .unwrap_or_else(|_| panic!(&quot;Expected option file {options_path:?} to be a valid Json file&quot;));
 </code></pre>
 </div>
         </div>
@@ -842,14 +842,14 @@ index 3faea2fa8..a12ab9b6d 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_annotations/rules/definition.rs</code>:526 on 2025-02-18 16:37</div>
-            <div class="timeline-body"><p>Ooh good idea. I'll save this as a fast follow-up.</p>
+            <div class="timeline-body"><p>Ooh good idea. I&#x27;ll save this as a fast follow-up.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @ntBre on 2025-02-18 17:03</div>
+            <div class="event">Merged by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-18 17:03</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ntBre on 2025-02-18 17:03</div>
+            <div class="event">Closed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-18 17:03</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-02-18 17:03</div>
@@ -857,7 +857,7 @@ index 3faea2fa8..a12ab9b6d 100644
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:10:04 UTC
+        Synced at 2026-01-20 19:11:29 UTC
     </footer>
 </body>
 </html>

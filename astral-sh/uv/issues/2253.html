@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>Nexus doesn't return a <code>Last-Modified</code> header</h1>
+    <h1>Nexus doesn&#x27;t return a <code>Last-Modified</code> header</h1>
 
     <div class="meta">
         <span class="state-icon state-open"></span>
@@ -23,40 +23,40 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a></div>
-            <div class="timeline-body"><p>Okay, so it looks like we're failing to use the cache because:</p>
+            <div class="timeline-body"><p>Okay, so it looks like we&#x27;re failing to use the cache because:</p>
 <ul>
 <li><code>new_policy.response.headers.last_modified_unix_timestamp</code> is <code>None</code>...</li>
 <li>But <code>self.response.headers.last_modified_unix_timestamp</code> is <code>Some(1709511660)</code>.</li>
 </ul>
-<p>So the server isn't returning a <code>last_modified_unix_timestamp</code>. My read is that technically we're not supposed to use the cached value here, based on https://www.rfc-editor.org/rfc/rfc9111.html#section-4.3.4?</p>
+<p>So the server isn&#x27;t returning a <code>last_modified_unix_timestamp</code>. My read is that technically we&#x27;re not supposed to use the cached value here, based on https://www.rfc-editor.org/rfc/rfc9111.html#section-4.3.4?</p>
 <p>\cc @BurntSushi</p>
-<p><em>Originally posted by @charliermarsh in https://github.com/astral-sh/uv/issues/1754#issuecomment-1981790355</em></p>
+<p><em>Originally posted by @charliermarsh in <a href="https://github.com/astral-sh/uv/issues/1754">astral-sh/uv#1754</a>#issuecomment-1981790355</em></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">registry</span> added by @charliermarsh on 2024-03-06 23:22</div>
+            <div class="event">Label <span class="label">registry</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-06 23:22</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-03-07 16:24</div>
             <div class="timeline-body"><p>I looked into this, and as far as I can tell, we are following the relevant HTTP caching specifications correctly. Notably, we should be <a href="https://github.com/astral-sh/uv/blob/4796927c4c61b2508c850c03d24f36647513e628/crates/uv-client/src/httpcache/mod.rs#L507-L546">setting the <code>If-None-Match</code> and <code>If-Modified-Since</code></a> headers when building our revalidation request. But it turns out that even though our cached response has a <code>Last-Modified</code> header, the revalidation response (status=304) we get back does not, seemingly.</p>
 <p>I think there are probably two ways forward here:</p>
 <ol>
-<li>Dig into the problem more and try to reproduce the issue with Nexus. IIRC, @charliermarsh tried this but couldn't manage to reproduce the problem. In particular, one possibility is that we aren't doing something correctly in our revalidation request that is causing the registry to omit the <code>Last-Modified</code> header.</li>
-<li>We could diverge from the HTTP caching specs and treat a 304 as unconditionally implying that the stored response is still fresh when it doesn't have any validators on it, regardless of whether the cached response has any validators. (That is, if our cached response <em>and</em> our revalidation response were both missing <code>E-Tag</code> and <code>Last-Modified</code> headers, then we'd treat the 304 as indicating that our cached response is fresh. But the fact that the cached response has it and the revalidation response doesn't is what fouls things up here. So we could relax this a little bit.) But I'm hesitant to diverge from the spec here.</li>
+<li>Dig into the problem more and try to reproduce the issue with Nexus. IIRC, @charliermarsh tried this but couldn&#x27;t manage to reproduce the problem. In particular, one possibility is that we aren&#x27;t doing something correctly in our revalidation request that is causing the registry to omit the <code>Last-Modified</code> header.</li>
+<li>We could diverge from the HTTP caching specs and treat a 304 as unconditionally implying that the stored response is still fresh when it doesn&#x27;t have any validators on it, regardless of whether the cached response has any validators. (That is, if our cached response <em>and</em> our revalidation response were both missing <code>E-Tag</code> and <code>Last-Modified</code> headers, then we&#x27;d treat the 304 as indicating that our cached response is fresh. But the fact that the cached response has it and the revalidation response doesn&#x27;t is what fouls things up here. So we could relax this a little bit.) But I&#x27;m hesitant to diverge from the spec here.</li>
 </ol>
-<p>It's unclear how broadly this is impacting things, so I'm going to stop here for now until I have more data. It's also possible that this was an issue on Nexus' end that is fixed in a newer version.</p>
+<p>It&#x27;s unclear how broadly this is impacting things, so I&#x27;m going to stop here for now until I have more data. It&#x27;s also possible that this was an issue on Nexus&#x27; end that is fixed in a newer version.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-mre</span> added by @BurntSushi on 2024-03-07 16:25</div>
+            <div class="event">Label <span class="label">needs-mre</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-03-07 16:25</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">cache</span> added by @BurntSushi on 2024-03-07 16:25</div>
+            <div class="event">Label <span class="label">cache</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-03-07 16:25</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kendallbailey">@kendallbailey</a> on 2024-03-13 16:22</div>
-            <div class="timeline-body"><p>Here's another data point related to Nexus and caching. I published a new version of a package in Nexus, and <code>pip</code> could install it but <code>uv</code> insisted it didn't exist until I deleted the related <code>.rkyv</code> file.</p>
-<p>I'm using <code>uv</code> 0.1.17</p>
+            <div class="timeline-body"><p>Here&#x27;s another data point related to Nexus and caching. I published a new version of a package in Nexus, and <code>pip</code> could install it but <code>uv</code> insisted it didn&#x27;t exist until I deleted the related <code>.rkyv</code> file.</p>
+<p>I&#x27;m using <code>uv</code> 0.1.17</p>
 <pre><code>$ uv pip install --no-deps ray-torch-meta==1.2
   × No solution found when resolving dependencies:
   ╰─▶ Because there is no version of ray-torch-meta==1.2 and you require ray-torch-meta==1.2, we can conclude that the
@@ -81,7 +81,7 @@ Installed 1 package in 2ms
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/bewinsnw">@bewinsnw</a> on 2024-05-26 00:41</div>
             <div class="timeline-body"><p>FWIW, I just investigated a similar problem with simple-repository-server (https://github.com/simple-repository/simple-repository-server).  TLDR; this is fixed at the bottom of this comment, which is just here to show how.</p>
-<p>I'm trying to use that because it claims to act as a proxy that will add things like PEP-658 support to PEP-503 repos. It does do that and I'm seeing some nice speedups now that uv looks at data-core-metadata in index files; but I do still see some odd reactions in uv to their 304s.</p>
+<p>I&#x27;m trying to use that because it claims to act as a proxy that will add things like PEP-658 support to PEP-503 repos. It does do that and I&#x27;m seeing some nice speedups now that uv looks at data-core-metadata in index files; but I do still see some odd reactions in uv to their 304s.</p>
 <pre><code>DEBUG Found modified response for: http://localhost:9191/resources/nwpy-awskms/nwpy_awskms-1.2.6-py3-none-any.whl.metadata
 WARN Server returned unusable 304 for: http://localhost:9191/resources/nwpy-awskms/nwpy_awskms-1.2.6-py3-none-any.whl.metadata
 DEBUG Found modified response for: http://localhost:9191/resources/nwpy-app-config/nwpy_app_config-1.10.2-py3-none-any.whl.metadata
@@ -90,14 +90,14 @@ DEBUG Found modified response for: http://localhost:9191/resources/nwpy-logging/
 WARN Server returned unusable 304 for: http://localhost:9191/resources/nwpy-logging/nwpy_logging-2.19.6-py3-none-any.whl.metadata
 </code></pre>
 <p>in the code, when it 304s, it does it mostly by raising an HttpException(304) eg https://github.com/simple-repository/simple-repository-server/blob/main/simple_repository_server/routers/simple.py#L158
-this doesn't match what 304s are supposed to do,</p>
+this doesn&#x27;t match what 304s are supposed to do,</p>
 <pre><code>The server generating a 304 response MUST generate any of the following header fields that would have been sent in a [200 (OK)](https://www.rfc-editor.org/rfc/rfc9110#status.200) response to the same request:
 
 [Content-Location](https://www.rfc-editor.org/rfc/rfc9110#field.content-location), [Date](https://www.rfc-editor.org/rfc/rfc9110#field.date), [ETag](https://www.rfc-editor.org/rfc/rfc9110#field.etag), and [Vary](https://www.rfc-editor.org/rfc/rfc9110#field.vary)
 Cache-Control and Expires (see [[CACHING](https://www.rfc-editor.org/rfc/rfc9110#CACHING)])
 </code></pre>
-<p>(from https://www.rfc-editor.org/rfc/rfc9110#name-304-not-modified) but it's not clear to me what uv is complaining about, specifically. In the responses from the server that produced the errors above,  the responses are pretty short:</p>
-<pre><code>$ curl -v -H 'if-none-match: &quot;c8b73eca5053&quot;' http://localhost:9191/resources/nwpy-logging/nwpy_logging-2.19.6-py3-none-any.whl.metadata  
+<p>(from https://www.rfc-editor.org/rfc/rfc9110#name-304-not-modified) but it&#x27;s not clear to me what uv is complaining about, specifically. In the responses from the server that produced the errors above,  the responses are pretty short:</p>
+<pre><code>$ curl -v -H &#x27;if-none-match: &quot;c8b73eca5053&quot;&#x27; http://localhost:9191/resources/nwpy-logging/nwpy_logging-2.19.6-py3-none-any.whl.metadata  
 *   Trying [::1]:9191...
 * Connected to localhost (::1) port 9191
 &gt; GET /resources/nwpy-logging/nwpy_logging-2.19.6-py3-none-any.whl.metadata HTTP/1.1
@@ -124,7 +124,7 @@ DEBUG Adding transitive dependency for nwpy-app-config==1.10.2: jinja2&gt;=2.10.
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:24:15 UTC
+        Synced at 2026-01-20 19:30:19 UTC
     </footer>
 </body>
 </html>

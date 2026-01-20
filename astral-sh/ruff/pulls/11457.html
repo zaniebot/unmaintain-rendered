@@ -23,16 +23,16 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This PR updates the entire parser stack in multiple ways:</p>
-<h3>Make the lexer lazy</h3>
+Make the lexer lazy
 <ul>
 <li>https://github.com/astral-sh/ruff/pull/11244</li>
 <li>https://github.com/astral-sh/ruff/pull/11473</li>
 </ul>
-<p>Previously, Ruff's lexer would act as an iterator. The parser would collect all the tokens in a vector first and then process the tokens to create the syntax tree.</p>
+<p>Previously, Ruff&#x27;s lexer would act as an iterator. The parser would collect all the tokens in a vector first and then process the tokens to create the syntax tree.</p>
 <p>The first task in this project is to update the entire parsing flow to make the lexer lazy. This includes the <code>Lexer</code>, <code>TokenSource</code>, and <code>Parser</code>. For context, the <code>TokenSource</code> is a wrapper around the <code>Lexer</code> to filter out the trivia tokens[^1]. Now, the parser will ask the token source to get the next token and only then the lexer will continue and emit the token. This means that the lexer needs to be aware of the &quot;current&quot; token. When the <code>next_token</code> is called, the current token will be updated with the newly lexed token.</p>
-<p>The main motivation to make the lexer lazy is to allow re-lexing a token in a different context. This is going to be really useful to make the parser error resilience. For example, currently the emitted tokens remains the same even if the parser can recover from an unclosed parenthesis. This is important because the lexer emits a <code>NonLogicalNewline</code> in parenthesized context while a normal <code>Newline</code> in non-parenthesized context. This different kinds of newline is also used to emit the indentation tokens which is important for the parser as it's used to determine the start and end of a block.</p>
+<p>The main motivation to make the lexer lazy is to allow re-lexing a token in a different context. This is going to be really useful to make the parser error resilience. For example, currently the emitted tokens remains the same even if the parser can recover from an unclosed parenthesis. This is important because the lexer emits a <code>NonLogicalNewline</code> in parenthesized context while a normal <code>Newline</code> in non-parenthesized context. This different kinds of newline is also used to emit the indentation tokens which is important for the parser as it&#x27;s used to determine the start and end of a block.</p>
 <p>Additionally, this allows us to implement the following functionalities:</p>
 <ol>
 <li>Checkpoint - rewind infrastructure: The idea here is to create a checkpoint and continue lexing. At a later point, this checkpoint can be used to rewind the lexer back to the provided checkpoint.</li>
@@ -41,7 +41,7 @@
 </ol>
 <p>This brings up a question as to how will the parser get the owned value which was stored on <code>Tok</code>. This will be solved by introducing a new <code>TokenValue</code> enum which only contains a subset of token kinds which has the owned value. This is stored on the lexer and is requested by the parser when it wants to process the data. For example: https://github.com/astral-sh/ruff/blob/8196720f809380d8f1fc7651679ff3fc2cb58cd7/crates/ruff_python_parser/src/parser/expression.rs#L1260-L1262</p>
 <p>[^1]: Trivia tokens are <code>NonLogicalNewline</code> and <code>Comment</code></p>
-<h3>Remove <code>SoftKeywordTransformer</code></h3>
+Remove <code>SoftKeywordTransformer</code>
 <ul>
 <li>https://github.com/astral-sh/ruff/pull/11441</li>
 <li>https://github.com/astral-sh/ruff/pull/11459</li>
@@ -49,27 +49,27 @@
 <li>https://github.com/astral-sh/ruff/pull/11443</li>
 <li>https://github.com/astral-sh/ruff/pull/11474</li>
 </ul>
-<p>For context, https://github.com/RustPython/RustPython/pull/4519/files#diff-5de40045e78e794aa5ab0b8aacf531aa477daf826d31ca129467703855408220 added support for soft keywords in the parser which uses infinite lookahead to classify a soft keyword as a keyword or an identifier. This is a brilliant idea as it basically wraps the existing Lexer and works on top of it which means that the logic for lexing and re-lexing a soft keyword remains separate. The change here is to remove <code>SoftKeywordTransformer</code> and let the parser determine this based on context, lookahead and speculative parsing.</p>
+<p>For context, <a href="https://github.com/RustPython/RustPython/pull/4519">RustPython/RustPython#4519</a>/files#diff-5de40045e78e794aa5ab0b8aacf531aa477daf826d31ca129467703855408220 added support for soft keywords in the parser which uses infinite lookahead to classify a soft keyword as a keyword or an identifier. This is a brilliant idea as it basically wraps the existing Lexer and works on top of it which means that the logic for lexing and re-lexing a soft keyword remains separate. The change here is to remove <code>SoftKeywordTransformer</code> and let the parser determine this based on context, lookahead and speculative parsing.</p>
 <ul>
 <li><strong>Context:</strong> The transformer needs to know the position of the lexer between it being at a statement position or a simple statement position. This is because a <code>match</code> token starts a compound statement while a <code>type</code> token starts a simple statement. <strong>The parser already knows this.</strong></li>
 <li><strong>Lookahead:</strong> Now that the parser knows the context it can perform lookahead of up to two tokens to classify the soft keyword. The logic for this is mentioned in the PR implementing it for <code>type</code> and `match soft keyword.</li>
-<li><strong>Speculative parsing:</strong> This is where the checkpoint - rewind infrastructure helps. For <code>match</code> soft keyword, there are certain cases for which we can't classify based on lookahead. The idea here is to create a checkpoint and keep parsing. Based on whether the parsing was successful and what tokens are ahead we can classify the remaining cases. Refer to #11443 for more details.</li>
+<li><strong>Speculative parsing:</strong> This is where the checkpoint - rewind infrastructure helps. For <code>match</code> soft keyword, there are certain cases for which we can&#x27;t classify based on lookahead. The idea here is to create a checkpoint and keep parsing. Based on whether the parsing was successful and what tokens are ahead we can classify the remaining cases. Refer to #11443 for more details.</li>
 </ul>
-<p>If the soft keyword is being parsed in an identifier context, it'll be converted to an identifier and the emitted token will be updated as well. Refer https://github.com/astral-sh/ruff/blob/8196720f809380d8f1fc7651679ff3fc2cb58cd7/crates/ruff_python_parser/src/parser/expression.rs#L487-L491.</p>
-<p>The <code>case</code> soft keyword doesn't require any special handling because it'll be a keyword only in the context of a match statement.</p>
-<h3>Update the parser API</h3>
+<p>If the soft keyword is being parsed in an identifier context, it&#x27;ll be converted to an identifier and the emitted token will be updated as well. Refer https://github.com/astral-sh/ruff/blob/8196720f809380d8f1fc7651679ff3fc2cb58cd7/crates/ruff_python_parser/src/parser/expression.rs#L487-L491.</p>
+<p>The <code>case</code> soft keyword doesn&#x27;t require any special handling because it&#x27;ll be a keyword only in the context of a match statement.</p>
+Update the parser API
 <ul>
 <li>https://github.com/astral-sh/ruff/pull/11494</li>
 <li>https://github.com/astral-sh/ruff/pull/11505</li>
 </ul>
-<p>Now that the lexer is in sync with the parser, and the parser helps to determine whether a soft keyword is a keyword or an identifier, the lexer cannot be used on its own. The reason being that it's not sensitive to the context (which is correct). This means that the parser API needs to be updated to not allow any access to the lexer.</p>
+<p>Now that the lexer is in sync with the parser, and the parser helps to determine whether a soft keyword is a keyword or an identifier, the lexer cannot be used on its own. The reason being that it&#x27;s not sensitive to the context (which is correct). This means that the parser API needs to be updated to not allow any access to the lexer.</p>
 <p>Previously, there were multiple ways to parse the source code:</p>
 <ol>
 <li>Passing the source code itself</li>
 <li>Or, passing the tokens</li>
 </ol>
-<p>Now that the lexer and parser are working together, the API corresponding to (2) cannot exists. The final API is mentioned in this PR description: https://github.com/astral-sh/ruff/pull/11494.</p>
-<h3>Refactor the downstream tools (linter and formatter)</h3>
+<p>Now that the lexer and parser are working together, the API corresponding to (2) cannot exists. The final API is mentioned in this PR description: <a href="https://github.com/astral-sh/ruff/pull/11494">astral-sh/ruff#11494</a>.</p>
+Refactor the downstream tools (linter and formatter)
 <ul>
 <li>https://github.com/astral-sh/ruff/pull/11511</li>
 <li>https://github.com/astral-sh/ruff/pull/11515</li>
@@ -79,7 +79,7 @@
 </ul>
 <p>And, the final set of changes involves updating all references of the lexer and <code>Tok</code> enum. This was done in two-parts:</p>
 <ol>
-<li>Update all the references in a way that doesn't require any changes from this PR i.e., it can be done independently<ul>
+<li>Update all the references in a way that doesn&#x27;t require any changes from this PR i.e., it can be done independently<ul>
 <li>https://github.com/astral-sh/ruff/pull/11402</li>
 <li>https://github.com/astral-sh/ruff/pull/11406</li>
 <li>https://github.com/astral-sh/ruff/pull/11418</li>
@@ -97,10 +97,10 @@
 <li><code>in_range</code> and <code>after</code> which replaces the <code>lex_starts_at</code> function where the former returns the tokens within the given range while the latter returns all the tokens after the given offset</li>
 </ol>
 </li>
-<li>Introduce a new <code>TokenFlags</code> which is a set of flags to query certain information from a token. Currently, this information is only limited to any string type token but can be expanded to include other information in the future as needed. https://github.com/astral-sh/ruff/pull/11578</li>
+<li>Introduce a new <code>TokenFlags</code> which is a set of flags to query certain information from a token. Currently, this information is only limited to any string type token but can be expanded to include other information in the future as needed. <a href="https://github.com/astral-sh/ruff/pull/11578">astral-sh/ruff#11578</a></li>
 <li>Move the <code>CommentRanges</code> to the parsed output because this information is common to both the linter and the formatter. This removes the need for <code>tokens_and_ranges</code> function.</li>
 </ol>
-<h2>Test Plan</h2>
+Test Plan
 <ul>
 <li>[x] Update and verify the test snapshots</li>
 <li>[x] Make sure the entire test suite is passing</li>
@@ -108,7 +108,7 @@
 <li>[x] Run the fuzzer on the parser</li>
 <li>[x] Run this change on dozens of open-source projects</li>
 </ul>
-<h3>Running this change on dozens of open-source projects</h3>
+Running this change on dozens of open-source projects
 <p>The following open source projects were used:</p>
 <ul>
 <li>https://github.com/python-pillow/Pillow</li>
@@ -193,22 +193,22 @@
 <li>Compare the output of <code>--select=ALL</code></li>
 </ol>
 <p><strong>Conclusion: all output were same</strong></p>
-<h2>What's next?</h2>
+What&#x27;s next?
 <p>The next step is to introduce re-lexing logic and update the parser to feed the recovery information to the lexer so that it can emit the correct token. This moves us one step closer to having error resilience in the parser and provides Ruff the possibility to lint even if the source code contains syntax errors.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">parser</span> added by @dhruvmanila on 2024-05-21 04:45</div>
+            <div class="event">Label <span class="label">parser</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-21 04:45</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-05-30 11:18</div>
-            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/dhruv/parser-phase-2">CodSpeed Performance Report</a></h2>
-<h3>Merging #11457 will <strong>improve performances by 28.11%</strong></h3>
-<p><sub>Comparing <code>dhruv/parser-phase-2</code> (e3d09f3) with <code>main</code> (a9b6c4f)</sub></p>
-<h3>Summary</h3>
+            <div class="timeline-body"><a href="https://codspeed.io/astral-sh/ruff/branches/dhruv/parser-phase-2">CodSpeed Performance Report</a>
+Merging #11457 will <strong>improve performances by 28.11%</strong>
+<p>Comparing <code>dhruv/parser-phase-2</code> (e3d09f3) with <code>main</code> (a9b6c4f)</p>
+Summary
 <p><code>⚡ 20</code> improvements
 <code>✅ 10</code> untouched benchmarks</p>
-<h3>Benchmarks breakdown</h3>
+Benchmarks breakdown
 <p>|     | Benchmark | <code>main</code> | <code>dhruv/parser-phase-2</code> | Change |
 | --- | --------- | ----------------------- | ------------------- | ------ |
 | ⚡ | <code>lexer[large/dataset.py]</code> | 1.4 ms | 1.1 ms | +27.61% |
@@ -235,36 +235,36 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-05-31 03:37</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @dhruvmanila on 2024-05-31 14:13</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-31 14:13</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @dhruvmanila on 2024-05-31 14:13</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-31 14:13</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-05-31 14:13</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-31 14:13</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2024-05-31 14:13</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-31 14:13</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @carljm removed by @dhruvmanila on 2024-06-03 04:17</div>
+            <div class="event">Review request for <a href="https://github.com/carljm">@carljm</a> removed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-03 04:17</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @AlexWaygood removed by @dhruvmanila on 2024-06-03 04:17</div>
+            <div class="event">Review request for <a href="https://github.com/AlexWaygood">@AlexWaygood</a> removed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-03 04:17</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-06-03 06:58</div>
@@ -274,8 +274,8 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-03 11:47</div>
-            <div class="timeline-body"><p>As a side effect of the changes in this PR, Ruff will detect any violations related to comments in a file containing syntax errors. For example, in https://play.ruff.rs/948508af-407e-49e5-8c12-7409e59a5e73 (code below), the second comment is not highlighted because there's a lexical error (unterminated string). But, now Ruff will highlight both comments for <code>ERA001</code>.</p>
-<pre><code class="language-py"># import os
+            <div class="timeline-body"><p>As a side effect of the changes in this PR, Ruff will detect any violations related to comments in a file containing syntax errors. For example, in https://play.ruff.rs/948508af-407e-49e5-8c12-7409e59a5e73 (code below), the second comment is not highlighted because there&#x27;s a lexical error (unterminated string). But, now Ruff will highlight both comments for <code>ERA001</code>.</p>
+<pre><code># import os
 
 &quot;hello
 
@@ -284,21 +284,21 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @dhruvmanila on 2024-06-03 12:53</div>
+            <div class="event">Merged by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-03 12:53</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dhruvmanila on 2024-06-03 12:53</div>
+            <div class="event">Closed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-03 12:53</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-06-03 12:53</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">performance</span> added by @dhruvmanila on 2024-06-05 14:42</div>
+            <div class="event">Label <span class="label">performance</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-05 14:42</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:04:22 UTC
+        Synced at 2026-01-20 19:04:08 UTC
     </footer>
 </body>
 </html>

@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/pplmx">@pplmx</a></div>
-            <div class="timeline-body"><h2>Reproduce Steps</h2>
-<h3>1. Using <code>uv build</code></h3>
-<pre><code class="language-bash">cookiecutter gh:x-pt/template --directory template/py --no-input &amp;&amp; \
+            <div class="timeline-body">Reproduce Steps
+1. Using <code>uv build</code>
+<pre><code>cookiecutter gh:x-pt/template --directory template/py --no-input &amp;&amp; \
 cd my-awesome-project &amp;&amp; \
 uv sync &amp;&amp; \
 time uv build &amp;&amp; \
@@ -34,8 +34,8 @@ time uv build &amp;&amp; \
 time uv build &amp;&amp; \
 cd .. &amp;&amp; rm -fr my-awesome-project
 </code></pre>
-<h3>2. Using <code>uvx hatch build</code></h3>
-<pre><code class="language-bash">cookiecutter gh:x-pt/template --directory template/py --no-input &amp;&amp; \
+2. Using <code>uvx hatch build</code>
+<pre><code>cookiecutter gh:x-pt/template --directory template/py --no-input &amp;&amp; \
 cd my-awesome-project &amp;&amp; \
 uv sync &amp;&amp; \
 time uvx hatch build &amp;&amp; \
@@ -44,30 +44,30 @@ time uvx hatch build &amp;&amp; \
 time uvx hatch build &amp;&amp; \
 cd .. &amp;&amp; rm -fr my-awesome-project
 </code></pre>
-<h3>Additional Information</h3>
+Additional Information
 <ul>
-<li><strong>Inconsistent Performance:</strong> It's worth noting that the first build with <code>uv build</code> is <strong>not always faster</strong> compared to <code>uvx hatch build</code>.</li>
+<li><strong>Inconsistent Performance:</strong> It&#x27;s worth noting that the first build with <code>uv build</code> is <strong>not always faster</strong> compared to <code>uvx hatch build</code>.</li>
 </ul>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-05 02:18</div>
-            <div class="timeline-body"><p>I don't know if there's a ton for us to optimize here but we can look into it. The majority of the time is in invoking the Python interpreter and calling the build backend.</p>
+            <div class="timeline-body"><p>I don&#x27;t know if there&#x27;s a ton for us to optimize here but we can look into it. The majority of the time is in invoking the Python interpreter and calling the build backend.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2024-09-05 02:18</div>
+            <div class="event">Label <span class="label">performance</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-05 02:18</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-05 02:27</div>
-            <div class="timeline-body"><p>There's so little work happening here that my guess is Hatch benefits from building a project that uses <code>hatchling</code> as its own backend, so there's less overhead? Like, we're probably paying overhead to invoke Python several times.</p>
+            <div class="timeline-body"><p>There&#x27;s so little work happening here that my guess is Hatch benefits from building a project that uses <code>hatchling</code> as its own backend, so there&#x27;s less overhead? Like, we&#x27;re probably paying overhead to invoke Python several times.</p>
 <p>If you compare <code>uv build</code> to <code>python -m build --installer uv</code>, I believe <code>uv build</code> is faster (so, e.g., if you try the same thing with a setuptools project, I would guess uv will be faster).</p>
-<p>We'll get similar benefits when we build our own build backend!</p>
+<p>We&#x27;ll get similar benefits when we build our own build backend!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/pplmx">@pplmx</a> on 2024-09-05 02:44</div>
-            <div class="timeline-body"><p>Expect the UV's own build backend to be used. ❤️</p>
+            <div class="timeline-body"><p>Expect the UV&#x27;s own build backend to be used. ❤️</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -75,8 +75,8 @@ cd .. &amp;&amp; rm -fr my-awesome-project
             <div class="timeline-body"><blockquote>
 <p>If you compare <code>uv build</code> to <code>python -m build --installer uv</code>, I believe uv build is faster</p>
 </blockquote>
-<p>Hopefully @matthewfeickert doesn't mind me stealing this from him:</p>
-<pre><code class="language-console">$ time pipx run build .
+<p>Hopefully @matthewfeickert doesn&#x27;t mind me stealing this from him:</p>
+<pre><code>$ time pipx run build .
 * Creating isolated environment: venv+pip...
 * Installing packages in isolated environment:
   - hatch-vcs&gt;=0.3.0
@@ -126,13 +126,13 @@ real	0m0.799s
 user	0m0.634s
 sys	0m0.193s
 </code></pre>
-<p>And if there was a Rust build backend (like maturin) and uv could skip Python entirely when calling it (like <code>maturin</code> the command does), I'd expect <code>uv build</code> would be ridiculously fast in that case. But under a second isn't bad. :) For a built package though, the compiler takes most of the time.</p>
+<p>And if there was a Rust build backend (like maturin) and uv could skip Python entirely when calling it (like <code>maturin</code> the command does), I&#x27;d expect <code>uv build</code> would be ridiculously fast in that case. But under a second isn&#x27;t bad. :) For a built package though, the compiler takes most of the time.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-06 20:59</div>
             <div class="timeline-body"><blockquote>
-<p>...uv could skip Python entirely when calling it (like maturin the command does), I'd expect uv build would be ridiculously fast in that case.</p>
+<p>...uv could skip Python entirely when calling it (like maturin the command does), I&#x27;d expect uv build would be ridiculously fast in that case.</p>
 </blockquote>
 <p>Yeah this is one of the motivations. Would be really cool!</p>
 </div>
@@ -145,8 +145,8 @@ Benchmark 1: uv build
   Time (mean ± σ):       7.2 ms ±   0.2 ms    [User: 3.4 ms, System: 3.3 ms]
   Range (min … max):     6.8 ms …   9.1 ms    299 runs
 </code></pre>
-<p>(It's still in <code>--preview</code>, we don't recommend using it for real projects yet.)</p>
-<p>Meanwhile, comparing <code>hatchling</code> with <code>uv build</code> vs. <code>uvx hatch build</code> is still pretty decent given that we can't use a fast-path:</p>
+<p>(It&#x27;s still in <code>--preview</code>, we don&#x27;t recommend using it for real projects yet.)</p>
+<p>Meanwhile, comparing <code>hatchling</code> with <code>uv build</code> vs. <code>uvx hatch build</code> is still pretty decent given that we can&#x27;t use a fast-path:</p>
 <pre><code>❯ hyperfine &quot;uv build&quot;
 Benchmark 1: uv build
   Time (mean ± σ):     300.9 ms ±   2.2 ms    [User: 215.5 ms, System: 78.7 ms]
@@ -161,12 +161,12 @@ Benchmark 1: uvx hatch build
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2025-02-16 19:20</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-16 19:20</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:26:53 UTC
+        Synced at 2026-01-20 19:33:42 UTC
     </footer>
 </body>
 </html>

@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p><a href="https://www.notion.so/astral-sh/In-editor-settings-19e48797e1ca807fa8c2c91b689d9070?pvs=4">Internal design document</a></p>
 <p>This PR expands <code>ruff.configuration</code> to allow inline configuration directly in the editor. For example:</p>
-<pre><code class="language-json">{
+<pre><code>{
 	&quot;ruff.configuration&quot;: {
 		&quot;line-length&quot;: 100,
 		&quot;lint&quot;: {
@@ -45,22 +45,22 @@
 	}
 }
 </code></pre>
-<p>This means that now <code>ruff.configuration</code> accepts either a path to configuration file or the raw config itself. It's <em>mostly</em> similar to <code>--config</code> with one difference that's highlighted in the following section. So, it can be said that the format of <code>ruff.configuration</code> when provided the config map is same as the one on the <a href="https://play.ruff.rs">playground</a> [^1].</p>
-<h2>Limitations</h2>
-<details><summary><b>Casing (<code>kebab-case</code> v/s/ <code>camelCase</code>)</b></summary>
+<p>This means that now <code>ruff.configuration</code> accepts either a path to configuration file or the raw config itself. It&#x27;s <em>mostly</em> similar to <code>--config</code> with one difference that&#x27;s highlighted in the following section. So, it can be said that the format of <code>ruff.configuration</code> when provided the config map is same as the one on the <a href="https://play.ruff.rs">playground</a> [^1].</p>
+Limitations
+Casing (<code>kebab-case</code> v/s/ <code>camelCase</code>)
 <p>
 
 <p>The config keys needs to be in <code>kebab-case</code> instead of <code>camelCase</code> which is being used for other settings in the editor.</p>
 <p>This could be a bit confusing. For example, the <code>line-length</code> option can be set directly via an editor setting or can be configured via <code>ruff.configuration</code>:</p>
-<pre><code class="language-json">{
+<pre><code>{
 	&quot;ruff.configuration&quot;: {
         &quot;line-length&quot;: 100
     },
     &quot;ruff.lineLength&quot;: 120
 }
 </code></pre>
-<h4>Possible solution</h4>
-<p>We could use feature flag with <a href="https://doc.rust-lang.org/reference/conditional-compilation.html#the-cfg_attr-attribute">conditional compilation</a> to indicate that when used in <code>ruff_server</code>, we need the <code>Options</code> fields to be renamed as <code>camelCase</code> while for other crates it needs to be renamed as <code>kebab-case</code>. But, this might not work very easily because it will require wrapping the <code>Options</code> struct and create two structs in which we'll have to add <code>#[cfg_attr(...)]</code> because otherwise <code>serde</code> will complain:</p>
+Possible solution
+<p>We could use feature flag with <a href="https://doc.rust-lang.org/reference/conditional-compilation.html#the-cfg_attr-attribute">conditional compilation</a> to indicate that when used in <code>ruff_server</code>, we need the <code>Options</code> fields to be renamed as <code>camelCase</code> while for other crates it needs to be renamed as <code>kebab-case</code>. But, this might not work very easily because it will require wrapping the <code>Options</code> struct and create two structs in which we&#x27;ll have to add <code>#[cfg_attr(...)]</code> because otherwise <code>serde</code> will complain:</p>
 <pre><code>error: duplicate serde attribute `rename_all`
   --&gt; crates/ruff_workspace/src/options.rs:43:38
    |
@@ -68,15 +68,15 @@
    |                                      ^^^^^^^^^^
 </code></pre>
 </p>
-</details> 
+ 
 
-<details><summary><b>Nesting (flat v/s nested keys)</b></summary>
+Nesting (flat v/s nested keys)
 <p>
 
 <p>This is the major difference between <code>--config</code> flag on the command-line v/s <code>ruff.configuration</code> and it makes it such that <code>ruff.configuration</code> has same value format as <a href="https://play.ruff.rs">playground</a> [^1].</p>
 <p>The config keys needs to be split up into keys which can result in nested structure instead of flat structure:</p>
-<p>So, the following <strong>won't work</strong>:</p>
-<pre><code class="language-json">{
+<p>So, the following <strong>won&#x27;t work</strong>:</p>
+<pre><code>{
 	&quot;ruff.configuration&quot;: {
 		&quot;format.quote-style&quot;: &quot;single&quot;,
 		&quot;lint.flake8-tidy-imports.banned-api.\&quot;typing.TypedDict\&quot;.msg&quot;: &quot;Use `typing_extensions.TypedDict` instead&quot;
@@ -84,7 +84,7 @@
 }
 </code></pre>
 <p>But, instead it would need to be split up like the following:</p>
-<pre><code class="language-json">{
+<pre><code>{
 	&quot;ruff.configuration&quot;: {
 		&quot;format&quot;: {
 			&quot;quote-style&quot;: &quot;single&quot;
@@ -101,25 +101,25 @@
 	}
 }
 </code></pre>
-<h4>Possible solution (1)</h4>
+Possible solution (1)
 <p>The way we could solve this and make it same as <code>--config</code> would be to add a manual logic of converting the JSON map into an equivalent TOML string which would be then parsed into <code>Options</code>.</p>
 <p>So, the following JSON map:</p>
-<pre><code class="language-json">{ &quot;lint.flake8-tidy-imports&quot;: { &quot;banned-api&quot;: {&quot;\&quot;typing.TypedDict\&quot;.msg&quot;: &quot;Use typing_extensions.TypedDict instead&quot;}}}
+<pre><code>{ &quot;lint.flake8-tidy-imports&quot;: { &quot;banned-api&quot;: {&quot;\&quot;typing.TypedDict\&quot;.msg&quot;: &quot;Use typing_extensions.TypedDict instead&quot;}}}
 </code></pre>
 <p>would need to be converted into the following TOML string:</p>
-<pre><code class="language-toml">lint.flake8-tidy-imports = { banned-api = { &quot;typing.TypedDict&quot;.msg = &quot;Use typing_extensions.TypedDict instead&quot; } }
+<pre><code>lint.flake8-tidy-imports = { banned-api = { &quot;typing.TypedDict&quot;.msg = &quot;Use typing_extensions.TypedDict instead&quot; } }
 </code></pre>
 <p>by recursively convering <code>&quot;key&quot;: value</code> into <code>key = value</code> which is to remove the quotes from key and replacing <code>:</code> with <code>=</code>.</p>
-<h4>Possible solution (2)</h4>
-<p>Another would be to just accept <code>Map&lt;String, String&gt;</code> strictly and convert it into <code>key = value</code> and then parse it as a TOML string. This would also match <code>--config</code> but quotes might become a nuisance because JSON only allows double quotes and so it'll require escaping any inner quotes or use single quotes.</p>
+Possible solution (2)
+<p>Another would be to just accept <code>Map&lt;String, String&gt;</code> strictly and convert it into <code>key = value</code> and then parse it as a TOML string. This would also match <code>--config</code> but quotes might become a nuisance because JSON only allows double quotes and so it&#x27;ll require escaping any inner quotes or use single quotes.</p>
 </p>
-</details> 
+ 
 
-<h2>Test Plan</h2>
-<h3>VS Code</h3>
-<p><strong>Requires https://github.com/astral-sh/ruff-vscode/pull/702</strong></p>
+Test Plan
+VS Code
+<p><strong>Requires <a href="https://github.com/astral-sh/ruff-vscode/pull/702">astral-sh/ruff-vscode#702</a></strong></p>
 <p><strong><code>settings.json</code></strong>:</p>
-<pre><code class="language-json">{
+<pre><code>{
   &quot;ruff.lint.extendSelect&quot;: [&quot;TID&quot;],
   &quot;ruff.configuration&quot;: {
     &quot;line-length&quot;: 50,
@@ -146,25 +146,25 @@
 <li>Run <code>Format: Document</code> to test <code>line-length</code> and <code>quote-style</code></li>
 </ol>
 <p>https://github.com/user-attachments/assets/0a38176f-3fb0-4960-a213-73b2ea5b1180</p>
-<h3>Neovim</h3>
+Neovim
 <p><strong><code>init.lua</code></strong>:</p>
-<pre><code class="language-lua">require('lspconfig').ruff.setup {
+<pre><code>require(&#x27;lspconfig&#x27;).ruff.setup {
   init_options = {
     settings = {
       lint = {
-        extendSelect = { 'TID' },
+        extendSelect = { &#x27;TID&#x27; },
       },
       configuration = {
-        ['line-length'] = 50,
+        [&#x27;line-length&#x27;] = 50,
         format = {
-          ['quote-style'] = 'single',
+          [&#x27;quote-style&#x27;] = &#x27;single&#x27;,
         },
         lint = {
-          unfixable = { 'F401' },
-          ['flake8-tidy-imports'] = {
-            ['banned-api'] = {
-              ['typing.TypedDict'] = {
-                msg = 'Use typing_extensions.TypedDict instead',
+          unfixable = { &#x27;F401&#x27; },
+          [&#x27;flake8-tidy-imports&#x27;] = {
+            [&#x27;banned-api&#x27;] = {
+              [&#x27;typing.TypedDict&#x27;] = {
+                msg = &#x27;Use typing_extensions.TypedDict instead&#x27;,
               },
             },
           },
@@ -176,31 +176,31 @@
 </code></pre>
 <p>Same steps as in the VS Code test:</p>
 <p>https://github.com/user-attachments/assets/cfe49a9b-9a89-43d7-94f2-7f565d6e3c9d</p>
-<h2>Documentation Preview</h2>
+Documentation Preview
 <p>https://github.com/user-attachments/assets/e0062f58-6ec8-4e01-889d-fac76fd8b3c7</p>
 <p>[^1]: This has one advantage that the value can be copy-pasted directly into the playground</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">server</span> added by @dhruvmanila on 2025-02-21 08:35</div>
+            <div class="event">Label <span class="label">server</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-21 08:35</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-21 08:45</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Expand `ruff.configuration` to allow all config" to "Expand `ruff.configuration` to allow inline config" by @dhruvmanila on 2025-02-21 08:58</div>
+            <div class="event">Renamed from &quot;Expand `ruff.configuration` to allow all config&quot; to &quot;Expand `ruff.configuration` to allow inline config&quot; by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-21 08:58</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-02-21 10:27</div>
@@ -221,7 +221,7 @@
             <div class="timeline-body"><blockquote>
 <p>Does this mean the following existing settings will be deprecated?</p>
 </blockquote>
-<p>No, I don't think so we'll deprecate them. It's similar to how there's <code>ruff format --line-length 100 .</code> but the same can be set via <code>ruff format --config='line-length = 100' .</code></p>
+<p>No, I don&#x27;t think so we&#x27;ll deprecate them. It&#x27;s similar to how there&#x27;s <code>ruff format --line-length 100 .</code> but the same can be set via <code>ruff format --config=&#x27;line-length = 100&#x27; .</code></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -230,48 +230,48 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/session/settings.rs</code>:373 on 2025-02-24 05:12</div>
-            <div class="timeline-body"><p>I'm planning to open a follow-up PR to notify the user that resolving the client settings failed. We currently don't log or notify the user if it fails. For example, <code>lint.select = [&quot;RUF07&quot;, &quot;I001&quot;]</code> will see that <code>RUF07</code> fails and thus ignores this config value which means that <code>I001</code> is not selected either.</p>
+            <div class="timeline-body"><p>I&#x27;m planning to open a follow-up PR to notify the user that resolving the client settings failed. We currently don&#x27;t log or notify the user if it fails. For example, <code>lint.select = [&quot;RUF07&quot;, &quot;I001&quot;]</code> will see that <code>RUF07</code> fails and thus ignores this config value which means that <code>I001</code> is not selected either.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-24 06:15</div>
-            <div class="timeline-body"><p>I need to update the documentation but I'll wait to first make sure that this is the approach that we want to take. I'd appreciate getting an initial feedback for the approach, I've documented the limitations along with potential solutions that could be implemented to resolve them.</p>
+            <div class="timeline-body"><p>I need to update the documentation but I&#x27;ll wait to first make sure that this is the approach that we want to take. I&#x27;d appreciate getting an initial feedback for the approach, I&#x27;ve documented the limitations along with potential solutions that could be implemented to resolve them.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @dhruvmanila on 2025-02-24 06:16</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-24 06:16</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2025-02-24 06:16</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-24 06:16</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-24 12:41</div>
-            <div class="timeline-body"><p>I'll reply to some of the design questions before taking a look at the code itself.</p>
+            <div class="timeline-body"><p>I&#x27;ll reply to some of the design questions before taking a look at the code itself.</p>
 <blockquote>
-<p>This means that now ruff.configuration accepts either a path to configuration file or the raw config itself. It's mostly similar to --config with one difference that's highlighted in the following section.</p>
+<p>This means that now ruff.configuration accepts either a path to configuration file or the raw config itself. It&#x27;s mostly similar to --config with one difference that&#x27;s highlighted in the following section.</p>
 </blockquote>
-<p>One consequence of this is that it won't be possible to specify both a configuration file and individual configuration options, which is different from the CLI. I mainly want to call this out but I think this is an okay limitation because we could always introduce a <code>configuration-file</code> option and deprecate <code>configuration: &lt;path&gt;</code> in favor of that option.</p>
-<p>The casing difference is interesting. I don't think we should change the casing of configuration options because they're then different from what we list in the documentation. Again, I think this limitation is fine.</p>
+<p>One consequence of this is that it won&#x27;t be possible to specify both a configuration file and individual configuration options, which is different from the CLI. I mainly want to call this out but I think this is an okay limitation because we could always introduce a <code>configuration-file</code> option and deprecate <code>configuration: &lt;path&gt;</code> in favor of that option.</p>
+<p>The casing difference is interesting. I don&#x27;t think we should change the casing of configuration options because they&#x27;re then different from what we list in the documentation. Again, I think this limitation is fine.</p>
 <blockquote>
-<p>Another would be to just accept Map&lt;String, String&gt; strictly and convert it into key = value and then parse it as a TOML string. This would also match --config but quotes might become a nuisance because JSON only allows double quotes and so it'll require escaping any inner quotes or use single quotes.</p>
+<p>Another would be to just accept Map&lt;String, String&gt; strictly and convert it into key = value and then parse it as a TOML string. This would also match --config but quotes might become a nuisance because JSON only allows double quotes and so it&#x27;ll require escaping any inner quotes or use single quotes.</p>
 </blockquote>
-<p>I'm not sure I fully understand this limitation. I believe all field and table identifiers have to be string. It's only the values that can be numbers, strings, or entire tables. Could we, therefore, deserialize the settings to <code>Map&lt;String, Value&gt;</code> where <code>Value</code> is any acceptable <a href="https://docs.rs/toml/latest/toml/enum.Value.html">TOML value</a>? Doing so would allow writing <code>&quot;format&quot;: { &quot;line-length&quot;: 100 }</code> but also <code>&quot;format.line-length&quot;: 100</code></p>
+<p>I&#x27;m not sure I fully understand this limitation. I believe all field and table identifiers have to be string. It&#x27;s only the values that can be numbers, strings, or entire tables. Could we, therefore, deserialize the settings to <code>Map&lt;String, Value&gt;</code> where <code>Value</code> is any acceptable <a href="https://docs.rs/toml/latest/toml/enum.Value.html">TOML value</a>? Doing so would allow writing <code>&quot;format&quot;: { &quot;line-length&quot;: 100 }</code> but also <code>&quot;format.line-length&quot;: 100</code></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-24 14:54</div>
             <div class="timeline-body"><blockquote>
-<p>One consequence of this is that it won't be possible to specify both a configuration file and individual configuration options, which is different from the CLI. I mainly want to call this out but I think this is an okay limitation because we could always introduce a <code>configuration-file</code> option and deprecate <code>configuration: &lt;path&gt;</code> in favor of that option.</p>
+<p>One consequence of this is that it won&#x27;t be possible to specify both a configuration file and individual configuration options, which is different from the CLI. I mainly want to call this out but I think this is an okay limitation because we could always introduce a <code>configuration-file</code> option and deprecate <code>configuration: &lt;path&gt;</code> in favor of that option.</p>
 </blockquote>
-<p>Yes, I'm aware of this limitation and as you mention, it wouldn't be too much of an effort to add <code>configurationFile</code> option.</p>
+<p>Yes, I&#x27;m aware of this limitation and as you mention, it wouldn&#x27;t be too much of an effort to add <code>configurationFile</code> option.</p>
 <blockquote>
-<p>The casing difference is interesting. I don't think we should change the casing of configuration options because they're then different from what we list in the documentation. Again, I think this limitation is fine.</p>
+<p>The casing difference is interesting. I don&#x27;t think we should change the casing of configuration options because they&#x27;re then different from what we list in the documentation. Again, I think this limitation is fine.</p>
 </blockquote>
 <p>👍</p>
 <blockquote>
-<p>I'm not sure I fully understand this limitation. I believe all field and table identifiers have to be string. It's only the values that can be numbers, strings, or entire tables. Could we, therefore, deserialize the settings to <code>Map&lt;String, Value&gt;</code> where <code>Value</code> is any acceptable <a href="https://docs.rs/toml/latest/toml/enum.Value.html">TOML value</a>? Doing so would allow writing <code>&quot;format&quot;: { &quot;line-length&quot;: 100 }</code> but also <code>&quot;format.line-length&quot;: 100</code></p>
+<p>I&#x27;m not sure I fully understand this limitation. I believe all field and table identifiers have to be string. It&#x27;s only the values that can be numbers, strings, or entire tables. Could we, therefore, deserialize the settings to <code>Map&lt;String, Value&gt;</code> where <code>Value</code> is any acceptable <a href="https://docs.rs/toml/latest/toml/enum.Value.html">TOML value</a>? Doing so would allow writing <code>&quot;format&quot;: { &quot;line-length&quot;: 100 }</code> but also <code>&quot;format.line-length&quot;: 100</code></p>
 </blockquote>
-<p>That won't work. So, currently this is what happens:</p>
+<p>That won&#x27;t work. So, currently this is what happens:</p>
 <pre><code>InitializeParams (JSON string) 
   -&gt; Deserialize into json::Map&lt;String, json::Value&gt; (ClientSettings)
     -&gt; Deserialize into toml Table
@@ -285,9 +285,9 @@
 </code></pre>
 <p>Remember that in JSON all keys are <strong>strings</strong>.</p>
 <p>Then, we create a TOML table and deserialize it into <code>Options</code>:</p>
-<pre><code class="language-rs">toml::Table::try_from(map)?.try_into::&lt;Options&gt;()?;
+<pre><code>toml::Table::try_from(map)?.try_into::&lt;Options&gt;()?;
 </code></pre>
-<p>Here, the <code>format.quote-style</code> is still interpreted as <code>format.quote-style</code> and not <code>format = {quote-style = ... }</code> which then fails stating that there's no key like <code>format.quote-style</code> in <code>Options</code>.</p>
+<p>Here, the <code>format.quote-style</code> is still interpreted as <code>format.quote-style</code> and not <code>format = {quote-style = ... }</code> which then fails stating that there&#x27;s no key like <code>format.quote-style</code> in <code>Options</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -300,7 +300,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-24 15:08</div>
-            <div class="timeline-body"><p>I took a look at Ruff's CLI and it seems to directly deserialize into the Table. I still think that it should be possible, but it may require some post/pre processing on our side. I'd have look closer into how TOML deserializes tables (which are thin wrappers around <code>HashMap&lt;String. Value&gt;</code> but it seems to me that it should be possible to automatically do the string unwrapping for the key.</p>
+            <div class="timeline-body"><p>I took a look at Ruff&#x27;s CLI and it seems to directly deserialize into the Table. I still think that it should be possible, but it may require some post/pre processing on our side. I&#x27;d have look closer into how TOML deserializes tables (which are thin wrappers around <code>HashMap&lt;String. Value&gt;</code> but it seems to me that it should be possible to automatically do the string unwrapping for the key.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -308,97 +308,97 @@
             <div class="timeline-body"><blockquote>
 <p>Yeah, I think we would have to do the same as on the CLI where we parse the setting name as well. Simply deserializing into <code>Options</code> wont do</p>
 </blockquote>
-<p>There's a small difference between the CLI and what we have here. The command-line value if already a TOML string which means it can just use <code>toml::Table::from_str</code> but here we have a JSON string.</p>
-<p>What you're describing is then what I've laid down with &quot;Nesting &gt; Possible solution (1)&quot; section where we'll have to create this TOML string ourselves from the JSON value. Does that make sense? I know it's a bit confusing 😅</p>
+<p>There&#x27;s a small difference between the CLI and what we have here. The command-line value if already a TOML string which means it can just use <code>toml::Table::from_str</code> but here we have a JSON string.</p>
+<p>What you&#x27;re describing is then what I&#x27;ve laid down with &quot;Nesting &gt; Possible solution (1)&quot; section where we&#x27;ll have to create this TOML string ourselves from the JSON value. Does that make sense? I know it&#x27;s a bit confusing 😅</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-24 15:18</div>
-            <div class="timeline-body"><p>(Oops, I didn't see your comment)</p>
+            <div class="timeline-body"><p>(Oops, I didn&#x27;t see your comment)</p>
 <blockquote>
-<p>I still think that it should be possible, but it may require some post/pre processing on our side. I'd have look closer into how TOML deserializes tables (which are thin wrappers around <code>HashMap&lt;String. Value&gt;</code> but it seems to me that it should be possible to automatically do the string unwrapping for the key.</p>
+<p>I still think that it should be possible, but it may require some post/pre processing on our side. I&#x27;d have look closer into how TOML deserializes tables (which are thin wrappers around <code>HashMap&lt;String. Value&gt;</code> but it seems to me that it should be possible to automatically do the string unwrapping for the key.</p>
 </blockquote>
-<p>Fair enough. I tried a few things but that didn't work, I can time box it and look into how the library deserializes tables.</p>
+<p>Fair enough. I tried a few things but that didn&#x27;t work, I can time box it and look into how the library deserializes tables.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-24 15:54</div>
-            <div class="timeline-body"><p>Okay. I played a bit with <code>toml</code> and the <code>toml-edit</code> crates and I now understand the problem. The issue is that <code>format.line-length</code> needs to deserialize to a nested hash map. I feel like it should be possible somehow to drive the toml <code>Table</code> deserializer to make this work but it's not obvious how. I don't think it's worth investing more time into this and using JSON is fine then.</p>
+            <div class="timeline-body"><p>Okay. I played a bit with <code>toml</code> and the <code>toml-edit</code> crates and I now understand the problem. The issue is that <code>format.line-length</code> needs to deserialize to a nested hash map. I feel like it should be possible somehow to drive the toml <code>Table</code> deserializer to make this work but it&#x27;s not obvious how. I don&#x27;t think it&#x27;s worth investing more time into this and using JSON is fine then.</p>
 <p>Do you want me to review the code as well or did you mainly want to get feedback on the config format?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-24 16:58</div>
             <div class="timeline-body"><blockquote>
-<p>Okay. I played a bit with <code>toml</code> and the <code>toml-edit</code> crates and I now understand the problem. The issue is that <code>format.line-length</code> needs to deserialize to a nested hash map. I feel like it should be possible somehow to drive the toml <code>Table</code> deserializer to make this work but it's not obvious how. I don't think it's worth investing more time into this and using JSON is fine then.</p>
+<p>Okay. I played a bit with <code>toml</code> and the <code>toml-edit</code> crates and I now understand the problem. The issue is that <code>format.line-length</code> needs to deserialize to a nested hash map. I feel like it should be possible somehow to drive the toml <code>Table</code> deserializer to make this work but it&#x27;s not obvious how. I don&#x27;t think it&#x27;s worth investing more time into this and using JSON is fine then.</p>
 </blockquote>
 <p>Thank you for spending time looking into it.</p>
-<p>I also think this could possibly be done in the future if we get user feedback on this specific format issue because it would still be backwards compatible in that both nested and flat keys would be supported but right now it's only nested keys.</p>
+<p>I also think this could possibly be done in the future if we get user feedback on this specific format issue because it would still be backwards compatible in that both nested and flat keys would be supported but right now it&#x27;s only nested keys.</p>
 <blockquote>
 <p>Do you want me to review the code as well or did you mainly want to get feedback on the config format?</p>
 </blockquote>
-<p>I mainly wanted to get feedback on the format. I'm planning to work on the documentation part tomorrow morning. I think it be would best to defer the review for tomorrow to save review cycle.</p>
+<p>I mainly wanted to get feedback on the format. I&#x27;m planning to work on the documentation part tomorrow morning. I think it be would best to defer the review for tomorrow to save review cycle.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @MichaReiser removed by @dhruvmanila on 2025-02-25 04:28</div>
+            <div class="event">Review request for <a href="https://github.com/MichaReiser">@MichaReiser</a> removed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-25 04:28</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-25 07:39</div>
-            <div class="timeline-body"><p>I hope you don't mind if I put this back into draft. It makes it easier for me to see when I'm supposed to review it.</p>
+            <div class="timeline-body"><p>I hope you don&#x27;t mind if I put this back into draft. It makes it easier for me to see when I&#x27;m supposed to review it.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Converted to draft by @MichaReiser on 2025-02-25 07:39</div>
+            <div class="event">Converted to draft by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-25 07:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @dhruvmanila on 2025-02-25 08:00</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-25 08:00</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2025-02-25 08:00</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-25 08:00</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>docs/editors/settings.md</code>:88 on 2025-02-25 09:46</div>
-            <div class="timeline-body"><p>(directly-) nested tabs feels a bit odd to me. I'm leaning towards using two sections here instead, one for inline configuration and one with an external file. It does use more space but I do find it less confusing.</p>
+            <div class="timeline-body"><p>(directly-) nested tabs feels a bit odd to me. I&#x27;m leaning towards using two sections here instead, one for inline configuration and one with an external file. It does use more space but I do find it less confusing.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session/index/ruff_settings.rs</code>:398 on 2025-02-25 09:48</div>
-            <div class="timeline-body"><p>What's the reason for using <code>context</code> + <code>unwrap_err</code>? Does it give us nicer diagnostic rendering? Could we use <code>tracing::error!(&quot;Unable to load editor-specified inline configuration: {:?}&quot;)</code> instead?</p>
+            <div class="timeline-body"><p>What&#x27;s the reason for using <code>context</code> + <code>unwrap_err</code>? Does it give us nicer diagnostic rendering? Could we use <code>tracing::error!(&quot;Unable to load editor-specified inline configuration: {:?}&quot;)</code> instead?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session/settings.rs</code>:82 on 2025-02-25 09:52</div>
-            <div class="timeline-body"><p>It's unclear to me where we serialize the value to TOML. I understand deserialization but I don't see where we perform any serialization.</p>
-<p>I worry that this error message is also not very helpful for users because it's not clear what's going wrong. Can we use a more specific error message? <em>Failed to load configuration from <code>ruff.configurations</code></em>:</p>
+            <div class="timeline-body"><p>It&#x27;s unclear to me where we serialize the value to TOML. I understand deserialization but I don&#x27;t see where we perform any serialization.</p>
+<p>I worry that this error message is also not very helpful for users because it&#x27;s not clear what&#x27;s going wrong. Can we use a more specific error message? <em>Failed to load configuration from <code>ruff.configurations</code></em>:</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session/settings.rs</code>:86 on 2025-02-25 09:53</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">    #[error(&quot;using `extend` is unsupported in `ruff.configuration`&quot;)]
+            <div class="timeline-body"><pre><code>    #[error(&quot;using `extend` is unsupported in `ruff.configuration`&quot;)]
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session/settings.rs</code>:369 on 2025-02-25 09:54</div>
-            <div class="timeline-body"><p>I think we should mention <code>ruff.configuration</code> here to guide users towards how to fix this error. It's otherwise unclear what configuration the LSP is referring to and how it can be fixed.</p>
+            <div class="timeline-body"><p>I think we should mention <code>ruff.configuration</code> here to guide users towards how to fix this error. It&#x27;s otherwise unclear what configuration the LSP is referring to and how it can be fixed.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>docs/editors/settings.md</code>:14 on 2025-02-25 09:55</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">The `configuration` setting allows you to configure editor-specific Ruff.
+            <div class="timeline-body"><pre><code>The `configuration` setting allows you to configure editor-specific Ruff.
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>docs/editors/settings.md</code>:21 on 2025-02-25 10:01</div>
-            <div class="timeline-body"><p>I'm not sure if referencing the playground is useful for our users. Most people have never used the playground before. It's very likely that they've never heard about it before.</p>
-<p>That's why I'd suggest removing the reference for now. We can add a more detailed documentation explaining how our configuration in JSON if this proves to be a problem.</p>
+            <div class="timeline-body"><p>I&#x27;m not sure if referencing the playground is useful for our users. Most people have never used the playground before. It&#x27;s very likely that they&#x27;ve never heard about it before.</p>
+<p>That&#x27;s why I&#x27;d suggest removing the reference for now. We can add a more detailed documentation explaining how our configuration in JSON if this proves to be a problem.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>docs/editors/settings.md</code>:26 on 2025-02-25 10:02</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">    The **Inline JSON configuration** option was introduced in Ruff `0.9.8`.
+            <div class="timeline-body"><pre><code>    The **Inline JSON configuration** option was introduced in Ruff `0.9.8`.
 </code></pre>
 <p>I think this is enough, considering that it was explained right above</p>
 </div>
@@ -408,16 +408,16 @@
             <div class="timeline-body"><p>I find this explanation a bit confusing for two reasons:</p>
 <ul>
 <li>You say <strong>Ruff</strong> will automatically detect.. consistent with the behavior of the <em>Ruff CLI</em>. What I find confusing about it is that it suggests that the editor integration is the &quot;core&quot; Ruff and the Ruff CLI is some form of an extension</li>
-<li>It's unclear to me what the project's filesystem is.</li>
+<li>It&#x27;s unclear to me what the project&#x27;s filesystem is.</li>
 </ul>
 <p>The second item seems an issue inherent to the naming of our options. Naming the option <code>projectFirst</code> might have been more intuitive</p>
 <p>Maybe;</p>
-<p>The default behavior, if <code>configuration</code> is unset, is to load the settings from the project's configuration (a <code>ruff.toml</code> or <code>pyproject.toml</code> in the project's directory), consistent with when running Ruff on the CLI.</p>
+<p>The default behavior, if <code>configuration</code> is unset, is to load the settings from the project&#x27;s configuration (a <code>ruff.toml</code> or <code>pyproject.toml</code> in the project&#x27;s directory), consistent with when running Ruff on the CLI.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>docs/editors/settings.md</code>:33 on 2025-02-25 10:11</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">When both an editor-provided configuration and a local configuration file are present, you can
+            <div class="timeline-body"><pre><code>When both an editor-provided configuration and a local configuration file are present, you can
 control how Ruff resolves conflicts between them using the
 The [`configurationPreference`](#configurationpreference) controls the precedence if both an editor-provided configuration (`ruff.configuration`) and a project level configuration are present.
 </code></pre>
@@ -425,19 +425,19 @@ The [`configurationPreference`](#configurationpreference) controls the precedenc
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>docs/editors/settings.md</code>:46 on 2025-02-25 10:11</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">    project's directory (if present)
+            <div class="timeline-body"><pre><code>    project&#x27;s directory (if present)
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>docs/editors/settings.md</code>:49 on 2025-02-25 10:12</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">For example, if the line length is specified in all three sources, Ruff will use the value from the [`lineLength`](#linelength) setting.
+            <div class="timeline-body"><pre><code>For example, if the line length is specified in all three sources, Ruff will use the value from the [`lineLength`](#linelength) setting.
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-02-25 10:12</div>
-            <div class="timeline-body"><p>Thanks. This looks great. I've mainly some documentation and error handling suggestions.</p>
+            <div class="timeline-body"><p>Thanks. This looks great. I&#x27;ve mainly some documentation and error handling suggestions.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -450,8 +450,8 @@ The [`configurationPreference`](#configurationpreference) controls the precedenc
             <div class="timeline-body"><blockquote>
 <p>One noteworthy drawback of having a single option for <code>configuration</code> is that setting the path is no longer possible from the Settings UI.</p>
 </blockquote>
-<p>Yeah, that's a good point. Maybe it might be worth adding the <code>configurationFile</code> option along with this change. Let me think about it.</p>
-<p>I was also wondering if something like <code>ruff.experimental</code> is worth using such that we can first add <code>ruff.experimental.configuration</code> to allow initial feedback and then later merge it. It does raise questions on when can we promote a feature out of experimental phase because it's going to be tied up with the Ruff version. It might just be too complicated and not worth it.</p>
+<p>Yeah, that&#x27;s a good point. Maybe it might be worth adding the <code>configurationFile</code> option along with this change. Let me think about it.</p>
+<p>I was also wondering if something like <code>ruff.experimental</code> is worth using such that we can first add <code>ruff.experimental.configuration</code> to allow initial feedback and then later merge it. It does raise questions on when can we promote a feature out of experimental phase because it&#x27;s going to be tied up with the Ruff version. It might just be too complicated and not worth it.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -461,7 +461,7 @@ The [`configurationPreference`](#configurationpreference) controls the precedenc
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>docs/editors/settings.md</code>:88 on 2025-02-25 12:26</div>
             <div class="timeline-body"><p>Yeah, it does seem simpler. Thanks for the suggestion!</p>
-<p><img width="2560" alt="Screenshot 2025-02-25 at 5 56 30 PM" src="https://github.com/user-attachments/assets/8a609655-7e7e-4edd-8366-3b9f562bf03c" /></p>
+<p><img alt="Screenshot 2025-02-25 at 5 56 30 PM" src="https://github.com/user-attachments/assets/8a609655-7e7e-4edd-8366-3b9f562bf03c"></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -494,7 +494,7 @@ Caused by:
          |               ^^^^
        invalid type: string &quot;90&quot;, expected a nonzero u16
 </code></pre>
-<p>It might be that the additional text isn't required given it already starts out with <code>Failed to load configuration ...:</code></p>
+<p>It might be that the additional text isn&#x27;t required given it already starts out with <code>Failed to load configuration ...:</code></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -508,10 +508,10 @@ Caused by:
 <pre><code>   0.011989375s ERROR ThreadId(10) ruff_server::session::index::ruff_settings: Unable to load editor-specified inline configuration
 
 Caused by:
-    Invalid `cache-dir` value: error looking key 'RANDOM' up: environment variable not found
+    Invalid `cache-dir` value: error looking key &#x27;RANDOM&#x27; up: environment variable not found
 </code></pre>
 <p>Without <code>context</code>:</p>
-<pre><code> 0.018654333s ERROR ThreadId(09) ruff_server::session::index::ruff_settings: Unable to load editor-specified inline configuration: Invalid `cache-dir` value: error looking key 'RANDOM' up: environment variable not found
+<pre><code> 0.018654333s ERROR ThreadId(09) ruff_server::session::index::ruff_settings: Unable to load editor-specified inline configuration: Invalid `cache-dir` value: error looking key &#x27;RANDOM&#x27; up: environment variable not found
 </code></pre>
 </div>
         </div>
@@ -521,7 +521,7 @@ Caused by:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/session/index/ruff_settings.rs</code>:398 on 2025-02-25 12:38</div>
-            <div class="timeline-body"><p>I'll avoid using <code>context</code> for inline configuration but will keep it for file configuration for now.</p>
+            <div class="timeline-body"><p>I&#x27;ll avoid using <code>context</code> for inline configuration but will keep it for file configuration for now.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -532,7 +532,7 @@ Caused by:
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/session/settings.rs</code>:82 on 2025-02-25 12:39</div>
             <div class="timeline-body"><p>The serialization of <code>map</code> to TOML happens here (<code>try_from</code>):</p>
 <p>https://github.com/astral-sh/ruff/blob/c60924d52e41ea897e03fe9db8d1cefdae94fd96/crates/ruff_server/src/session/settings.rs#L65-L65</p>
-<p>I'll update the error message</p>
+<p>I&#x27;ll update the error message</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -547,25 +547,25 @@ Caused by:
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-25 12:51</div>
             <div class="timeline-body"><blockquote>
-<p>Yeah, that's a good point. Maybe it might be worth adding the configurationFile option along with this change. Let me think about it.</p>
+<p>Yeah, that&#x27;s a good point. Maybe it might be worth adding the configurationFile option along with this change. Let me think about it.</p>
 </blockquote>
-<p>I'm fine deferring it for now. I just thought it worth calling out. I expect that many users will want to use the inline config anyway</p>
+<p>I&#x27;m fine deferring it for now. I just thought it worth calling out. I expect that many users will want to use the inline config anyway</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/session/settings.rs</code>:82 on 2025-02-25 15:21</div>
-            <div class="timeline-body"><p>I'm going to keep this message for now. The &quot;Failed to load ...&quot; message that you've suggested is already going to be appended before this. The reason I want to keep this is that for something like:</p>
-<pre><code class="language-json">  &quot;ruff.configuration&quot;: {
+            <div class="timeline-body"><p>I&#x27;m going to keep this message for now. The &quot;Failed to load ...&quot; message that you&#x27;ve suggested is already going to be appended before this. The reason I want to keep this is that for something like:</p>
+<pre><code>  &quot;ruff.configuration&quot;: {
     &quot;line-length&quot;: null
   },
 </code></pre>
-<p>We'll get:</p>
+<p>We&#x27;ll get:</p>
 <pre><code>Failed to load settings from `configuration`: unsupported unit type
 </code></pre>
 <p>But, with the above message:</p>
 <pre><code>Failed to load settings from `configuration`: error serializing configuration to TOML: unsupported unit type
 </code></pre>
-<p>We'll atleast know that the issue is with TOML deserialization</p>
+<p>We&#x27;ll atleast know that the issue is with TOML deserialization</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -578,7 +578,7 @@ Caused by:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/session/settings.rs</code>:86 on 2025-02-25 15:22</div>
-            <div class="timeline-body"><p>Actually, this is only relevant for inline configuration specifically as <code>extend</code> is allowed when providing file path. I'll leave this as is.</p>
+            <div class="timeline-body"><p>Actually, this is only relevant for inline configuration specifically as <code>extend</code> is allowed when providing file path. I&#x27;ll leave this as is.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -587,7 +587,7 @@ Caused by:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/session/settings.rs</code>:369 on 2025-02-25 15:23</div>
-            <div class="timeline-body"><p>I've updated this to use &quot;Failed to load settings from <code>configuration</code>: {err}&quot;</p>
+            <div class="timeline-body"><p>I&#x27;ve updated this to use &quot;Failed to load settings from <code>configuration</code>: {err}&quot;</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -596,7 +596,7 @@ Caused by:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>docs/editors/settings.md</code>:14 on 2025-02-25 15:24</div>
-            <div class="timeline-body"><p>I don't think I follow with what you mean with &quot;... to configure editor-specific Ruff.&quot; ?</p>
+            <div class="timeline-body"><p>I don&#x27;t think I follow with what you mean with &quot;... to configure editor-specific Ruff.&quot; ?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -605,7 +605,7 @@ Caused by:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>docs/editors/settings.md</code>:29 on 2025-02-25 15:36</div>
-            <div class="timeline-body"><p>I've incorporated this suggestion, thanks</p>
+            <div class="timeline-body"><p>I&#x27;ve incorporated this suggestion, thanks</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -617,7 +617,7 @@ Caused by:
             <div class="timeline-body"><blockquote>
 <p>Failed to load settings from <code>configuration</code>: error serializing configuration to TOML: unsupported unit type</p>
 </blockquote>
-<p>I don't think I would understand this message or even know what I have to do.</p>
+<p>I don&#x27;t think I would understand this message or even know what I have to do.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -626,7 +626,7 @@ Caused by:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>docs/editors/settings.md</code>:14 on 2025-02-25 16:32</div>
-            <div class="timeline-body"><p>oh, there's a missing <em>behavior</em> at the end.</p>
+            <div class="timeline-body"><p>oh, there&#x27;s a missing <em>behavior</em> at the end.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -635,7 +635,7 @@ Caused by:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/session/settings.rs</code>:82 on 2025-02-26 04:20</div>
-            <div class="timeline-body"><p>I think one solution would be to handle these <code>null</code> cases because that's the only case where I'm able to get this serialization error. I checked the spec as well (https://toml.io/en/v1.0.0#keys) but can't get the <code>InvalidToml</code> error</p>
+            <div class="timeline-body"><p>I think one solution would be to handle these <code>null</code> cases because that&#x27;s the only case where I&#x27;m able to get this serialization error. I checked the spec as well (https://toml.io/en/v1.0.0#keys) but can&#x27;t get the <code>InvalidToml</code> error</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -650,10 +650,10 @@ Caused by:
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @dhruvmanila on 2025-02-26 04:47</div>
+            <div class="event">Merged by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-26 04:47</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dhruvmanila on 2025-02-26 04:47</div>
+            <div class="event">Closed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-26 04:47</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-02-26 04:47</div>
@@ -661,7 +661,7 @@ Caused by:
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:10:15 UTC
+        Synced at 2026-01-20 19:11:41 UTC
     </footer>
 </body>
 </html>

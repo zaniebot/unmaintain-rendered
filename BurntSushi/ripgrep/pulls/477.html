@@ -23,23 +23,23 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/kalekseev">@kalekseev</a></div>
-            <div class="timeline-body"><p>Support for mercurial https://github.com/BurntSushi/ripgrep/issues/6
+            <div class="timeline-body"><p>Support for mercurial <a href="https://github.com/BurntSushi/ripgrep/issues/6">BurntSushi/ripgrep#6</a>
 Very basic support is implemented for now, although it covers my own usecases:</p>
 <ul>
-<li>patterns from repo's <code>.hgignore</code> and from <code>ignore</code> control in ui part of <code>$HOME/.hgrc</code></li>
+<li>patterns from repo&#x27;s <code>.hgignore</code> and from <code>ignore</code> control in ui part of <code>$HOME/.hgrc</code></li>
 <li><code>syntax: glob</code> rules (mostly using git logic)</li>
 <li><code>syntax: regexp</code> rules (they are directly translated into <code>Glob::re</code>)</li>
 </ul>
-<p>I'm planning to translate mercurial's tests suit for hgignore files as my next step.</p>
+<p>I&#x27;m planning to translate mercurial&#x27;s tests suit for hgignore files as my next step.</p>
 <p>@BurntSushi, I want to start a discussion about support for <code>subinclude</code> directives:</p>
 <pre><code>subinclude:path/to/subignorefile reads patterns specifically for paths in the subdirectory</code></pre>
-<p>To support this the process of building Ignore object has to depend on the information from .hgignore file near the .hg directory. Therefore we have to guaranty that dirs under mercurial are processed after the parsing of a repo's .hgignore (and all the <code>subinclude</code>, <code>include</code> files). In the parallel run that looks hard until we lock all the worker's threads (hardly the option).</p>
+<p>To support this the process of building Ignore object has to depend on the information from .hgignore file near the .hg directory. Therefore we have to guaranty that dirs under mercurial are processed after the parsing of a repo&#x27;s .hgignore (and all the <code>subinclude</code>, <code>include</code> files). In the parallel run that looks hard until we lock all the worker&#x27;s threads (hardly the option).</p>
 <p>The other they may be to update retroactively all Ignore objects with the content of the related subignore file.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>globset/src/glob.rs</code>:198 on 2017-05-09 13:17</div>
-            <div class="timeline-body"><p>I'm not sure this is quite the right way to go about this. In particular, you wind up storing a regex in a field called <code>glob</code>, which doesn't seem good to me. Additionally, the <code>from_regex</code> option isn't really compatible with the <code>case_insensitive</code> or <code>literal_separator</code> flags, which also makes the builder strange. I think I'd rather see <code>Glob</code> itself be an enum and support a <code>from_regex</code> constructor. In that approach, <code>GlobBuilder</code> doesn't need to be modified at all.</p>
+            <div class="timeline-body"><p>I&#x27;m not sure this is quite the right way to go about this. In particular, you wind up storing a regex in a field called <code>glob</code>, which doesn&#x27;t seem good to me. Additionally, the <code>from_regex</code> option isn&#x27;t really compatible with the <code>case_insensitive</code> or <code>literal_separator</code> flags, which also makes the builder strange. I think I&#x27;d rather see <code>Glob</code> itself be an enum and support a <code>from_regex</code> constructor. In that approach, <code>GlobBuilder</code> doesn&#x27;t need to be modified at all.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -49,22 +49,22 @@ Very basic support is implemented for now, although it covers my own usecases:</
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>ignore/src/hgignore.rs</code>:323 on 2017-05-09 13:21</div>
-            <div class="timeline-body"><p>There's a lot in common with this method and a similar method in <code>GitignoreBuilder</code>. Are the semantics really this identical? And if so, can we split the logic out into a function that both builders can use?</p>
+            <div class="timeline-body"><p>There&#x27;s a lot in common with this method and a similar method in <code>GitignoreBuilder</code>. Are the semantics really this identical? And if so, can we split the logic out into a function that both builders can use?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2017-05-09 13:27</div>
-            <div class="timeline-body"><p>Thanks for starting this work. :-) I realize it's a hefty undertaking, so I appreciate you tackling it. I've left some comments based on a cursory review, but I'll wait to do a deeper dive until you think I should.</p>
+            <div class="timeline-body"><p>Thanks for starting this work. :-) I realize it&#x27;s a hefty undertaking, so I appreciate you tackling it. I&#x27;ve left some comments based on a cursory review, but I&#x27;ll wait to do a deeper dive until you think I should.</p>
 <p>Some more comments:</p>
 <blockquote>
-<p>To support this the process of building Ignore object has to depend on the information from .hgignore file near the .hg directory. Therefore we have to guaranty that dirs under mercurial are processed after the parsing of a repo's .hgignore (and all the subinclude, include files). In the parallel run that looks hard until we lock all the worker's threads (hardly the option).</p>
+<p>To support this the process of building Ignore object has to depend on the information from .hgignore file near the .hg directory. Therefore we have to guaranty that dirs under mercurial are processed after the parsing of a repo&#x27;s .hgignore (and all the subinclude, include files). In the parallel run that looks hard until we lock all the worker&#x27;s threads (hardly the option).</p>
 </blockquote>
-<p>Hmm. It seems like this should be part of building the hgignore matcher itself. I don't think it requires directory traversal, right? You just follow the include paths instead? Maybe you could say more about the semantics because I feel like I'm missing something.</p>
-<p>If it's really more complicated than I'm making it out to be, then perhaps inspecting how mercurial itself handles this would be fruitful.</p>
+<p>Hmm. It seems like this should be part of building the hgignore matcher itself. I don&#x27;t think it requires directory traversal, right? You just follow the include paths instead? Maybe you could say more about the semantics because I feel like I&#x27;m missing something.</p>
+<p>If it&#x27;s really more complicated than I&#x27;m making it out to be, then perhaps inspecting how mercurial itself handles this would be fruitful.</p>
 <blockquote>
 <p>syntax: regexp rules (they are directly translated into Glob::re)</p>
 </blockquote>
-<p>Surely the regex syntax supported by mercurial is not in precise correspondence with Rust's regex engine. Is the plan to just emit an error message and suffer wontfix bug reports for eternity? (I say this with some snark as the maintainer, but I suppose there isn't a good alternative.)</p>
+<p>Surely the regex syntax supported by mercurial is not in precise correspondence with Rust&#x27;s regex engine. Is the plan to just emit an error message and suffer wontfix bug reports for eternity? (I say this with some snark as the maintainer, but I suppose there isn&#x27;t a good alternative.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -74,16 +74,16 @@ Very basic support is implemented for now, although it covers my own usecases:</
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/kalekseev">@kalekseev</a> on <code>globset/src/glob.rs</code>:198 on 2017-05-09 22:35</div>
             <div class="timeline-body"><blockquote>
-<p>I'd rather see Glob itself be an enum</p>
+<p>I&#x27;d rather see Glob itself be an enum</p>
 </blockquote>
 <p>Could you provide a draft definition for that enum that will suit the project best?
-I've tried to replace the Glob structure with the</p>
+I&#x27;ve tried to replace the Glob structure with the</p>
 <pre><code>pub enum Pattern {
     Glob { glob: String, re: String, opts: GlobOptions, tokens: Tokens },
     Regex(String),
 }
 </code></pre>
-<p>but it seems that enums don't have constructors in rust so the private GlobOptions and Tokens types leak.</p>
+<p>but it seems that enums don&#x27;t have constructors in rust so the private GlobOptions and Tokens types leak.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -92,29 +92,29 @@ I've tried to replace the Glob structure with the</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>globset/src/glob.rs</code>:198 on 2017-05-09 22:38</div>
-            <div class="timeline-body"><p>Ah, right, yeah you'll have to do something like this:</p>
-<pre><code class="language-rust">pub struct Glob(GlobInner);
+            <div class="timeline-body"><p>Ah, right, yeah you&#x27;ll have to do something like this:</p>
+<pre><code>pub struct Glob(GlobInner);
 
 enum GlobInner {
     Glob { ... },
     Regex(String),
 }
 </code></pre>
-<p>The other interesting bit here is that by offering a constructor that accepts a regex, we've essentially tied to the implementation itself to regexes as well. It's mildly unfortunate, but I think it's the right path forward for now.</p>
+<p>The other interesting bit here is that by offering a constructor that accepts a regex, we&#x27;ve essentially tied to the implementation itself to regexes as well. It&#x27;s mildly unfortunate, but I think it&#x27;s the right path forward for now.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-08-23 21:53</div>
-            <div class="timeline-body"><p>@kalekseev I'm trying to clean up the PR queue, so I think I'm going to close this for now due to inactivity, but please feel free to re-open another PR if you want to continue to attack this!</p>
+            <div class="timeline-body"><p>@kalekseev I&#x27;m trying to clean up the PR queue, so I think I&#x27;m going to close this for now due to inactivity, but please feel free to re-open another PR if you want to continue to attack this!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2017-08-23 21:53</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-08-23 21:53</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 18:27:50 UTC
+        Synced at 2026-01-20 18:48:16 UTC
     </footer>
 </body>
 </html>

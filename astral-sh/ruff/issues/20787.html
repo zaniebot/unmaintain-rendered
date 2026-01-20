@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dscorbett">@dscorbett</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>When a function has multiple fixes for <a href="https://docs.astral.sh/ruff/rules/mutable-argument-default/"><code>mutable-argument-default</code> (B006)</a>, the fixes’ <code>if</code> blocks appear in the opposite order of the parameters. This changes the program’s behavior if the default values have side effects or depend on each other. It’s an unsafe fix and the program’s behavior changes anyway, but it seems like it should be possible to keep the blocks in the same order as the parameters, which is probably closer to the original intent. Also, even for more normal-looking functions where it makes no behavioral difference, it would be clearer to set the parameters in the same order they appear in the signature. <a href="https://play.ruff.rs/6c9aeedc-ac49-4122-8c5b-70cded4ab311">Example</a>:</p>
-<pre><code class="language-console">$ cat &gt;b006.py &lt;&lt;'# EOF'
+<pre><code>$ cat &gt;b006.py &lt;&lt;&#x27;# EOF&#x27;
 def f(x=[print(&quot;1&quot;)], y=[print(&quot;2&quot;)]):
     print(x, y)
 f()
@@ -71,29 +71,29 @@ $ python b006.py
 2
 1
 [None] [None]
-cannot access local variable 'x0' where it is not associated with a value
+cannot access local variable &#x27;x0&#x27; where it is not associated with a value
 </code></pre>
-<h3>Version</h3>
+Version
 <p>ruff 0.14.0 (beea8cdfe 2025-10-07)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-10-09 13:39</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-09 13:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-10-09 13:39</div>
+            <div class="event">Label <span class="label">fixes</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-09 13:39</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/IDrokin117">@IDrokin117</a> on 2025-10-09 15:25</div>
-            <div class="timeline-body"><p>I'll take this one</p>
+            <div class="timeline-body"><p>I&#x27;ll take this one</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @IDrokin117 by @ntBre on 2025-10-09 16:30</div>
+            <div class="event">Assigned to <a href="https://github.com/IDrokin117">@IDrokin117</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-09 16:30</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/IDrokin117">@IDrokin117</a> on 2025-10-10 19:48</div>
-            <div class="timeline-body"><p>I've investigated the root cause of this behavior and possible solutions, but I don't think any of them are ideal. Here's how the diagnostic generation and fix application logic currently works:</p>
+            <div class="timeline-body"><p>I&#x27;ve investigated the root cause of this behavior and possible solutions, but I don&#x27;t think any of them are ideal. Here&#x27;s how the diagnostic generation and fix application logic currently works:</p>
 <ol>
 <li>All function parameters are checked sequentially, and for each parameter matching the rule, if any. https://github.com/astral-sh/ruff/blob/bbd3856de8f83c31db84ef8a104d67ae104732ee/crates/ruff_linter/src/rules/flake8_bugbear/rules/mutable_argument_default.rs#L121-L132</li>
 <li>Currently, one diagnostic is created for each parameter with two fixes: replacing the default value with <code>None</code> and inserting an <code>if stmt</code> at the beginning of the function. https://github.com/astral-sh/ruff/blob/bbd3856de8f83c31db84ef8a104d67ae104732ee/crates/ruff_linter/src/rules/flake8_bugbear/rules/mutable_argument_default.rs#L259-L260</li>
@@ -101,22 +101,22 @@ cannot access local variable 'x0' where it is not associated with a value
 https://github.com/astral-sh/ruff/blob/bbd3856de8f83c31db84ef8a104d67ae104732ee/crates/ruff_diagnostics/src/fix.rs#L88-L90 https://github.com/astral-sh/ruff/blob/bbd3856de8f83c31db84ef8a104d67ae104732ee/crates/ruff_linter/src/fix/mod.rs#L144</li>
 <li>Importantly, a fix application is skipped on the current iteration if its range overlaps with or comes before the range of a previously applied fix. https://github.com/astral-sh/ruff/blob/bbd3856de8f83c31db84ef8a104d67ae104732ee/crates/ruff_linter/src/fix/mod.rs#L87-L89</li>
 </ol>
-<p>Given the above, here's the algorithm for fixing the following code:</p>
-<pre><code class="language-python">def f(x=[print(&quot;1&quot;)], y=[print(&quot;2&quot;)]):
+<p>Given the above, here&#x27;s the algorithm for fixing the following code:</p>
+<pre><code>def f(x=[print(&quot;1&quot;)], y=[print(&quot;2&quot;)]):
     pass
 </code></pre>
 <ol>
 <li>Two diagnostics are created for <strong>x</strong> and <strong>y</strong> with their corresponding fixes.</li>
 <li>The fix for x is applied:</li>
 </ol>
-<pre><code class="language-python">def f(x=None, y=[print(&quot;2&quot;)]):
+<pre><code>def f(x=None, y=[print(&quot;2&quot;)]):
 #       ^x_edit.start()
     if x is None:
         x = [print(&quot;1&quot;)]
 #                       ^x_edit.end()
 </code></pre>
-<ol start="3">
-<li>Since the fix for <strong>y</strong> starts within the range where the fix for <strong>x</strong> was applied, it's skipped.</li>
+<ol>
+<li>Since the fix for <strong>y</strong> starts within the range where the fix for <strong>x</strong> was applied, it&#x27;s skipped.</li>
 <li>The workflow returns to step 1, re-checking the rule for the function. This time, only 1 diagnostic with a fix for <strong>y</strong> is created.</li>
 <li>Since the if statement must be inserted at the beginning of the function, the if statement for <strong>y</strong> will appear before the if statement for <strong>x</strong>.</li>
 </ol>
@@ -124,7 +124,7 @@ https://github.com/astral-sh/ruff/blob/bbd3856de8f83c31db84ef8a104d67ae104732ee/
 <ol>
 <li>Check parameters in reverse order for a single function and only apply the fix for the last parameter. This way, if statements would be added in reverse order. <em>Drawback:</em> Only the fix for 1 diagnostic would be shown in the preview. This is the simplest implementation.</li>
 <li>Insert if statements after all existing <code>if parameter is None</code> statements instead of at the beginning of the function body. <em>Drawback:</em> User-defined if statements would also be considered.</li>
-<li>Generate a single fix and attach it to the first diagnostic. <em>Drawback:</em> Potential issues with the first diagnostic containing fixes that don't belong to it.</li>
+<li>Generate a single fix and attach it to the first diagnostic. <em>Drawback:</em> Potential issues with the first diagnostic containing fixes that don&#x27;t belong to it.</li>
 <li>Generate a single diagnostic with one fix per function, regardless of the number of parameters. <em>Drawback:</em> Issues with suppression and the use of secondary annotations.</li>
 </ol>
 <p>@ntBre What are your thoughts on this?</p>
@@ -132,7 +132,7 @@ https://github.com/astral-sh/ruff/blob/bbd3856de8f83c31db84ef8a104d67ae104732ee/
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-10 21:08</div>
-            <div class="timeline-body"><p>Thank you for looking into this so carefully! Based on your findings, I'm kind of tempted not to make any changes here.</p>
+            <div class="timeline-body"><p>Thank you for looking into this so carefully! Based on your findings, I&#x27;m kind of tempted not to make any changes here.</p>
 <p>Another option is to clone the same multi-parameter fix across each of the diagnostics. We have other rules like that, such as <code>F401</code>:</p>
 <pre><code>&gt; ruff check --preview --select F - &lt;&lt;EOF
 import math, sys
@@ -158,7 +158,7 @@ help: Remove unused import
 Found 2 errors.
 [*] 2 fixable with the `--fix` option.
 </code></pre>
-<p>but I hadn't really considered how that interacted with the new fix display in preview. I think we may want to avoid adding more cases like that.</p>
+<p>but I hadn&#x27;t really considered how that interacted with the new fix display in preview. I think we may want to avoid adding more cases like that.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -168,14 +168,14 @@ Found 2 errors.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-13 20:22</div>
-            <div class="timeline-body"><p>Hmm, I usually think of <code>Known problems</code> as more like the rule applying when it shouldn't. This is more of an implementation detail, but I guess if we can't fix it easily, it makes sense to point it out in the docs.</p>
+            <div class="timeline-body"><p>Hmm, I usually think of <code>Known problems</code> as more like the rule applying when it shouldn&#x27;t. This is more of an implementation detail, but I guess if we can&#x27;t fix it easily, it makes sense to point it out in the docs.</p>
 <p>It might fit a little better in the <code>Fix Safety</code> section actually since it also changes the evaluation order.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:53:26 UTC
+        Synced at 2026-01-20 18:50:30 UTC
     </footer>
 </body>
 </html>

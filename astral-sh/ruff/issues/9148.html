@@ -25,7 +25,7 @@
             <div class="timeline-header"><a href="https://github.com/valentincalomme">@valentincalomme</a></div>
             <div class="timeline-body"><p>A code guideline I enforce in my projects is only to use boolean values or expressions resulting in a boolean in an if statement. So far, I have not found a linter that enforces this automatically, hence my proposal to add this rule to <code>ruff</code>.</p>
 <p>In essence, I would like a lint rule that allows the following.</p>
-<pre><code class="language-py">if x &lt; 0:
+<pre><code>if x &lt; 0:
     ...
 
 if isinstance(x, int):
@@ -35,7 +35,7 @@ if True:
     ...
 </code></pre>
 <p>And disallows things like this</p>
-<pre><code class="language-py">if [1,2,3]: # list is not a boolean value
+<pre><code>if [1,2,3]: # list is not a boolean value
     ...
 
 if &quot;Hello world&quot;: # str is not a boolean value
@@ -44,7 +44,7 @@ if &quot;Hello world&quot;: # str is not a boolean value
 if None:
     ...
 </code></pre>
-<p>Don't know if this is something that <code>ruff</code> could implement. If this already exists in another linter, I'd be happy to hear it.</p>
+<p>Don&#x27;t know if this is something that <code>ruff</code> could implement. If this already exists in another linter, I&#x27;d be happy to hear it.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -56,15 +56,15 @@ if None:
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-12-15 23:38</div>
             <div class="timeline-body"><p>Thanks for opening an issue!</p>
-<p>This feels contrary to the design of the Python language. I'm curious why you prefer this?</p>
-<p>Separately from whether or not it makes sense, I don't think we can actually do a good job implementing this until we have strong type inference.</p>
+<p>This feels contrary to the design of the Python language. I&#x27;m curious why you prefer this?</p>
+<p>Separately from whether or not it makes sense, I don&#x27;t think we can actually do a good job implementing this until we have strong type inference.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @zanieb on 2023-12-15 23:38</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2023-12-15 23:38</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">type-inference</span> added by @zanieb on 2023-12-15 23:38</div>
+            <div class="event">Label <span class="label">type-inference</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2023-12-15 23:38</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/andersk">@andersk</a> on 2023-12-15 23:49</div>
@@ -73,31 +73,31 @@ if None:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/valentincalomme">@valentincalomme</a> on 2023-12-16 10:54</div>
-            <div class="timeline-body"><p>It would indeed require type inference, as in my case, I don't care what the value in the if statement is or where it comes from as long as it evaluates to a boolean.</p>
-<p>I would indeed expect to find these checks in <code>mypy</code> or even in something like <code>flake8-bugbear</code>, as it's not a mistake but a potentially hard-to-debug bug.</p>
-<p>As for the motivation, here is how I'd imagine finding this in the <code>ruff</code> documentation. (Maybe a good idea to to provide this as a template for issues dealing with rule proposals?)</p>
-<h1>implicit-conditional (RUF-0XX)</h1>
-<h2>What it does</h2>
+            <div class="timeline-body"><p>It would indeed require type inference, as in my case, I don&#x27;t care what the value in the if statement is or where it comes from as long as it evaluates to a boolean.</p>
+<p>I would indeed expect to find these checks in <code>mypy</code> or even in something like <code>flake8-bugbear</code>, as it&#x27;s not a mistake but a potentially hard-to-debug bug.</p>
+<p>As for the motivation, here is how I&#x27;d imagine finding this in the <code>ruff</code> documentation. (Maybe a good idea to to provide this as a template for issues dealing with rule proposals?)</p>
+implicit-conditional (RUF-0XX)
+What it does
 <p>Checks whether non-boolean expressions are used in conditional statements.</p>
-<h2>Why is it bad</h2>
+Why is it bad
 <p>Although it is allowed in Python, using non-booleans in conditional statements can have unintended consequences. For instance, a developer might intend to perform a null-check, but it might result in False if an integer equals 0, if a list or dictionary is empty, if a string is empty, etc.</p>
-<h2>Example</h2>
-<p>In the following example, an empty list or a None will be treated the same, as <code>[]</code> asserts to <code>False</code>. But it isn't clear whether it is what we intend to do.</p>
-<pre><code class="language-py">def average(x: list[int] | None = None) -&gt; float | None:
+Example
+<p>In the following example, an empty list or a None will be treated the same, as <code>[]</code> asserts to <code>False</code>. But it isn&#x27;t clear whether it is what we intend to do.</p>
+<pre><code>def average(x: list[int] | None = None) -&gt; float | None:
     if x:
         return None
         
     return sum(x) / len(x)
 </code></pre>
-<p>If we'd like an empty list or a None to be treated the same, use instead:</p>
-<pre><code class="language-py">def average(x: list[int] | None = None) -&gt; float | None:
+<p>If we&#x27;d like an empty list or a None to be treated the same, use instead:</p>
+<pre><code>def average(x: list[int] | None = None) -&gt; float | None:
     if x is None or len(x) == 0:
         return None
     
     return sum(x) / len(x)
 </code></pre>
-<p>And if we don't, use instead:</p>
-<pre><code class="language-py">def average(x: list[int] | None = None) -&gt; float | None:
+<p>And if we don&#x27;t, use instead:</p>
+<pre><code>def average(x: list[int] | None = None) -&gt; float | None:
     if x is None:
         return None
     
@@ -106,7 +106,7 @@ if None:
     
     return sum(x) / len(x)
 </code></pre>
-<h2>When not to use it</h2>
+When not to use it
 <p>If you do not rely on optional types or if you want to keep your code short (i.e. in comprehensions), then, this rule might not be as useful to you.</p>
 <p>Similar scenarios may arise with:</p>
 <ul>
@@ -120,7 +120,7 @@ if None:
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:49:16 UTC
+        Synced at 2026-01-20 18:48:48 UTC
     </footer>
 </body>
 </html>

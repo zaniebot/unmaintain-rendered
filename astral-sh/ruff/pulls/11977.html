@@ -23,35 +23,35 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/alexcdennis">@alexcdennis</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Implements rule B907 <code>quoted-fstring-value</code>.</p>
 <p>Tracking Issue: #3758</p>
 <p>From the <a href="https://github.com/PyCQA/flake8-bugbear/tree/18abb9fdec66430d36010ffcee2d7dc54c802d3a?tab=readme-ov-file#opinionated-warnings">bugbear documentation</a></p>
 <blockquote>
-<p>B907: Consider replacing f&quot;'{foo}'&quot; with f&quot;{foo!r}&quot; which is both easier to read and will escape quotes inside foo if that would appear. The check tries to filter out any format specs that are invalid together with !r. If you're using other conversion flags then e.g. f&quot;'{foo!a}'&quot; can be replaced with f&quot;{ascii(foo)!r}&quot;. Not currently implemented for python&lt;3.8 or str.format() calls.</p>
+<p>B907: Consider replacing f&quot;&#x27;{foo}&#x27;&quot; with f&quot;{foo!r}&quot; which is both easier to read and will escape quotes inside foo if that would appear. The check tries to filter out any format specs that are invalid together with !r. If you&#x27;re using other conversion flags then e.g. f&quot;&#x27;{foo!a}&#x27;&quot; can be replaced with f&quot;{ascii(foo)!r}&quot;. Not currently implemented for python&lt;3.8 or str.format() calls.</p>
 </blockquote>
-<h2>Changes from original</h2>
-<p>The original rule in bugbear was marked as optional/opinionated (https://github.com/PyCQA/flake8-bugbear/pull/333) because there were several complaints about limitations (https://github.com/PyCQA/flake8-bugbear/issues/329, https://github.com/PyCQA/flake8-bugbear/issues/331, https://github.com/PyCQA/flake8-bugbear/issues/332, https://github.com/astral-sh/ruff/issues/1893#issuecomment-1383132618).</p>
+Changes from original
+<p>The original rule in bugbear was marked as optional/opinionated (<a href="https://github.com/PyCQA/flake8-bugbear/pull/333">PyCQA/flake8-bugbear#333</a>) because there were several complaints about limitations (<a href="https://github.com/PyCQA/flake8-bugbear/issues/329">PyCQA/flake8-bugbear#329</a>, <a href="https://github.com/PyCQA/flake8-bugbear/issues/331">PyCQA/flake8-bugbear#331</a>, <a href="https://github.com/PyCQA/flake8-bugbear/issues/332">PyCQA/flake8-bugbear#332</a>, <a href="https://github.com/astral-sh/ruff/issues/1893">astral-sh/ruff#1893</a>#issuecomment-1383132618).</p>
 <p>The cause of all these limitations was that the suggested fix (to always add <code>!r</code>) was too opinionated and could changed the semantics of the output.</p>
 <p>As such, this implementation diverges from the original by changing the framing in the documentation and error messages to remove all reference to the problematic suggested fix. Instead, it opts for a more nuanced approach which requires the user to consider their own fix on a case-by-case basis, while also providing an opt out (the user may add a noop to the code).</p>
-<h2>Test Plan</h2>
+Test Plan
 <p><code>cargo nextest run</code></p>
-<h2>Sources</h2>
+Sources
 <p>Implementation inspired by <a href="https://github.com/PyCQA/flake8-bugbear/blob/18abb9fdec66430d36010ffcee2d7dc54c802d3a/bugbear.py#L1419">original bugbear implementation</a>
 Test cases include all test cases from the <a href="https://github.com/PyCQA/flake8-bugbear/blob/18abb9fdec66430d36010ffcee2d7dc54c802d3a/tests/b907.py">original bugbear test file</a>, plus extras</p>
-<h2>Related/References</h2>
-<h3>ruff</h3>
+Related/References
+ruff
 <p>#1893
-https://github.com/astral-sh/ruff/issues/2954#issuecomment-1483594606</p>
-<h3>bugbear</h3>
+<a href="https://github.com/astral-sh/ruff/issues/2954">astral-sh/ruff#2954</a>#issuecomment-1483594606</p>
+bugbear
 <p>https://github.com/PyCQA/flake8-bugbear/issues/319</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2024-06-23 16:53</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-23 16:53</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">preview</span> added by @charliermarsh on 2024-06-23 16:53</div>
+            <div class="event">Label <span class="label">preview</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-23 16:53</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-26 00:41</div>
@@ -62,8 +62,8 @@ https://github.com/astral-sh/ruff/issues/2954#issuecomment-1483594606</p>
             <div class="timeline-header">Comment by <a href="https://github.com/alexcdennis">@alexcdennis</a> on 2024-06-27 01:10</div>
             <div class="timeline-body"><p>This rule has all of the same limitations as the original, since it is the same algorithm.</p>
 <p>All of the limitations that I have seen suggested fall under the same issue: this rule may suggests a fix (adding <code>!r</code>) that changes the meaning of the output.
-(1) If the value is not a string, adding <code>!r</code> changes the output (https://github.com/PyCQA/flake8-bugbear/issues/329, https://github.com/astral-sh/ruff/issues/1893#issuecomment-1383132618)
-(2) If the value is a string where there is a different meaning between double quotes and single quotes, then <code>!r</code> can change this meaning (eg an SQL query https://github.com/PyCQA/flake8-bugbear/issues/331) (since <code>!r</code> considers double and single quotes to be interchangeable and will substitute one for the other at unexpected times)</p>
+(1) If the value is not a string, adding <code>!r</code> changes the output (<a href="https://github.com/PyCQA/flake8-bugbear/issues/329">PyCQA/flake8-bugbear#329</a>, <a href="https://github.com/astral-sh/ruff/issues/1893">astral-sh/ruff#1893</a>#issuecomment-1383132618)
+(2) If the value is a string where there is a different meaning between double quotes and single quotes, then <code>!r</code> can change this meaning (eg an SQL query <a href="https://github.com/PyCQA/flake8-bugbear/issues/331">PyCQA/flake8-bugbear#331</a>) (since <code>!r</code> considers double and single quotes to be interchangeable and will substitute one for the other at unexpected times)</p>
 <p>Under the current framing (that adding <code>!r</code> is the correct fix), neither of these limitations can be overcome.
 (1) Detecting whether or not the value is a string requires type inference
 (2) This is no static rule that can understand the intent of the programmer for the arbitrary semantics of the string output</p>
@@ -85,7 +85,7 @@ If so, is there a way to reword it to make it clearer?</p>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:04:56 UTC
+        Synced at 2026-01-20 19:04:48 UTC
     </footer>
 </body>
 </html>

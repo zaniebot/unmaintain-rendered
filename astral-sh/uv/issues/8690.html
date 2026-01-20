@@ -23,14 +23,14 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/akozlu">@akozlu</a></div>
-            <div class="timeline-body"><p>Hey team, experiencing an issue w.r.t. <code>uv remove</code> and then <code>uv add</code> operations, was looking for direction/wondering if there's a known fix. One similar closed issue I found is this one: https://github.com/astral-sh/uv/issues/1525</p>
+            <div class="timeline-body"><p>Hey team, experiencing an issue w.r.t. <code>uv remove</code> and then <code>uv add</code> operations, was looking for direction/wondering if there&#x27;s a known fix. One similar closed issue I found is this one: <a href="https://github.com/astral-sh/uv/issues/1525">astral-sh/uv#1525</a></p>
 <pre><code>uv is already installed.
 uv 0.4.27 (36b729e92 2024-10-25)
 Searching for Python versions matching: Python 3.8.20
 Found existing installation for Python 3.8.20: cpython-3.8.20-linux-x86_64-gnu
 Using CPython 3.8.20
 </code></pre>
-<p>The problem seems to be the leftover <code>dist-info</code> folder after running the remove command. Once that file is deleted manually, the re-installation occurs as expected. I've looked around and there are some suggestions to pass <code>--ignore-installed</code> as a flag through pip: https://github.com/pypa/pip/issues/4785.
+<p>The problem seems to be the leftover <code>dist-info</code> folder after running the remove command. Once that file is deleted manually, the re-installation occurs as expected. I&#x27;ve looked around and there are some suggestions to pass <code>--ignore-installed</code> as a flag through pip: <a href="https://github.com/pypa/pip/issues/4785">pypa/pip#4785</a>.
 Appreciate any direction &amp; assistance.</p>
 <pre><code># uv remove xgboost
 Resolved 67 packages in 115ms
@@ -64,17 +64,17 @@ warning: Failed to uninstall package at .venv/lib/python3.8/site-packages/xgboos
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/akozlu">@akozlu</a> on 2024-10-29 23:41</div>
-            <div class="timeline-body"><p>i guess https://github.com/astral-sh/uv/issues/2467 also implies that previous remove command has gone wrong but not seeing any error/warnings come from the preceding <code>uv remove</code> command.</p>
+            <div class="timeline-body"><p>i guess <a href="https://github.com/astral-sh/uv/issues/2467">astral-sh/uv#2467</a> also implies that previous remove command has gone wrong but not seeing any error/warnings come from the preceding <code>uv remove</code> command.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-30 13:05</div>
-            <div class="timeline-body"><p>Is this something you're able to reproduce repeatedly, or just the state of a current environment?</p>
+            <div class="timeline-body"><p>Is this something you&#x27;re able to reproduce repeatedly, or just the state of a current environment?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/akozlu">@akozlu</a> on 2024-10-30 16:50</div>
-            <div class="timeline-body"><p>Hey Charlie, yes, we've been able to reproduce repeatedly. The team looked into this further today, and we have a possible lead tied back to the <code>warning: Failed to hard link files; falling back to a full copy.</code> you produce.
+            <div class="timeline-body"><p>Hey Charlie, yes, we&#x27;ve been able to reproduce repeatedly. The team looked into this further today, and we have a possible lead tied back to the <code>warning: Failed to hard link files; falling back to a full copy.</code> you produce.
 In our Linux environment, we have an EFS mount on the <code>/home/</code> directory, so the <code>/tmp/</code> and <code>/home/</code> are on different filesystems, and we think this is leading into issue in downstream <code>uv add</code> or <code>uv remove</code> operations. Example:</p>
 <pre><code>DEBUG Failed to hardlink `/home/&lt;REPO&gt;/.venv/lib/python3.11/site-packages/pytz/__init__.py` to `/tmp/.tmphrEC5x/archive-v0/mMQe5cXzRdbHNG9Qcjta6/pytz/__init__.py`, attempting to copy files as a fallback
 [...]
@@ -98,8 +98,8 @@ All installed packages are compatible
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/akozlu">@akozlu</a> on 2024-10-30 20:31</div>
             <div class="timeline-body"><p>I was about to make this edit :) The reason we went for the <code>--no-cache</code> option were the build/wheel issues we experienced with packages like <code>pandasql=0.7</code>, <code>deap-1.4.1</code>, again related to filesystem setup we have on linux</p>
-<p>Understand that it's not intuitive to provide a <code>--no-cache</code> flag and then ask to write that to a different temporary directory other than <code>/tmp/</code>.
-looking to confirm then there's no redirecting to another folder then <code>/tmp/</code> with <code>no-cache</code> option.  Looking at <a href="https://docs.astral.sh/uv/configuration/environment/#environment-variables">environment variables </a>, I thought <code>XDG_CACHE_HOME</code> is something that can be attempted to set. Thanks for the direction again.</p>
+<p>Understand that it&#x27;s not intuitive to provide a <code>--no-cache</code> flag and then ask to write that to a different temporary directory other than <code>/tmp/</code>.
+looking to confirm then there&#x27;s no redirecting to another folder then <code>/tmp/</code> with <code>no-cache</code> option.  Looking at <a href="https://docs.astral.sh/uv/configuration/environment/#environment-variables">environment variables </a>, I thought <code>XDG_CACHE_HOME</code> is something that can be attempted to set. Thanks for the direction again.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -110,7 +110,7 @@ looking to confirm then there's no redirecting to another folder then <code>/tmp
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-31 00:47</div>
             <div class="timeline-body"><p><code>--no-cache</code> is equivalent to setting <code>--cache-dir &lt;path&gt;</code> then discarding the directory.</p>
-<p>We don't respect <code>XDG_CACHE_HOME</code> for <code>--no-cache</code>, https://github.com/astral-sh/uv/blob/e9f1161b953b017d21e70761a52b3fd426a8c111/crates/uv-cache/src/lib.rs#L139-L147</p>
+<p>We don&#x27;t respect <code>XDG_CACHE_HOME</code> for <code>--no-cache</code>, https://github.com/astral-sh/uv/blob/e9f1161b953b017d21e70761a52b3fd426a8c111/crates/uv-cache/src/lib.rs#L139-L147</p>
 <p>However, we are just using the standard <code>tempdir</code> function which looks like it <a href="https://doc.rust-lang.org/std/env/fn.temp_dir.html#platform-specific-behavior">respects <code>TMPDIR</code> on Unix</a>.</p>
 </div>
         </div>
@@ -120,12 +120,12 @@ looking to confirm then there's no redirecting to another folder then <code>/tmp
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @akozlu on 2024-10-31 14:25</div>
+            <div class="event">Closed by <a href="https://github.com/akozlu">@akozlu</a> on 2024-10-31 14:25</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:28:01 UTC
+        Synced at 2026-01-20 19:35:09 UTC
     </footer>
 </body>
 </html>

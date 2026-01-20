@@ -23,33 +23,24 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/gusutabopb">@gusutabopb</a></div>
-            <div class="timeline-body"><!--
-Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+            <div class="timeline-body">
 
-If you're filing a bug report, please consider including the following information:
-
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
-* The current uv platform.
-* The current uv version (`uv --version`).
--->
-
-<h3>Summary</h3>
+Summary
 <p>I used <code>uv add</code> with an <code>extra-index-url</code> to add a package that is <strong>not</strong> present in the <code>extra-index-url</code> registry.</p>
 <p>I expected uv to list the URL of the registry where the package actually lives as the &quot;source&quot;.
 However, in case the registry returns HTTP 303 responses, uv lists the <code>extra-index-url</code> (and not the default index = PyPI) as the &quot;source&quot;.</p>
-<p>Is there some reasoning to listing the <code>extra-index-url</code> as &quot;source&quot; when it actually isn't?</p>
-<h3>Details</h3>
+<p>Is there some reasoning to listing the <code>extra-index-url</code> as &quot;source&quot; when it actually isn&#x27;t?</p>
+Details
 <p>I have an internal index/registry (e.g. <code>registry.loc/simple</code>) at work (running <a href="https://github.com/pypiserver/pypiserver"><code>pypiserver</code></a>), which contains just a few internal packages. It does not contain any packages that are available from PyPI.
 In order for those internal packages to be <code>uv add</code>-able, I have <code>extra-index-url</code> on my <code>uv.toml</code> config.</p>
 <p>However, to my surprise <code>uv.lock</code> lists <strong>all</strong> the dependencies on my projects as coming from this internal registry. That is, the <code>source</code> registry has the following for packages that were actually fetched from PyPI:</p>
 <pre><code>source = { registry = &quot;http://registry.loc/simple&quot; }
 </code></pre>
 <p>Doing some digging, I found out that the registry returns an HTTP 303 response (which is the default behavior of <a href="https://github.com/pypiserver/pypiserver"><code>pypiserver</code></a>),
-But uv doesn't list the redirected URL registry as the &quot;source&quot;. My expectation is that for dependencies/sub-depdendencies fetched from PyPI after a redirect would list PyPI as the &quot;source&quot;:</p>
+But uv doesn&#x27;t list the redirected URL registry as the &quot;source&quot;. My expectation is that for dependencies/sub-depdendencies fetched from PyPI after a redirect would list PyPI as the &quot;source&quot;:</p>
 <pre><code>source = { registry = &quot;https://pypi.org/simple&quot; }
 </code></pre>
-<h3>Workarounds</h3>
+Workarounds
 <ul>
 <li>Remove <code>extra-index-url</code> from <code>uv.toml</code> and use it only when adding an internal package (e.g. <code>my-lib</code>)<ul>
 <li>This is not ideal as any PyPI-only dependencies of <code>my-lib</code> would still have the &quot;wrong&quot; source.</li>
@@ -60,7 +51,7 @@ But uv doesn't list the redirected URL registry as the &quot;source&quot;. My ex
 </ul>
 </li>
 </ul>
-<h3>Environment</h3>
+Environment
 <pre><code>&gt; uv --version
 uv 0.4.6 (84f25e8cf 2024-09-05)
 </code></pre>
@@ -68,13 +59,13 @@ uv 0.4.6 (84f25e8cf 2024-09-05)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/gusutabopb">@gusutabopb</a> on 2024-09-07 03:11</div>
-            <div class="timeline-body"><p>For full disclosure, here's a MRE.
+            <div class="timeline-body"><p>For full disclosure, here&#x27;s a MRE.
 Note that <code>pydantic</code> is not available from http://registry.loc/simple</p>
 <pre><code>uv init
 uv add pydantic --extra-index-url http://registry.loc/simple
 </code></pre>
 <p><code>pyproject.toml</code></p>
-<pre><code class="language-toml">[project]
+<pre><code>[project]
 name = &quot;uv-test&quot;
 version = &quot;0.1.0&quot;
 description = &quot;Add your description here&quot;
@@ -85,14 +76,14 @@ dependencies = [
 ]
 </code></pre>
 <p><code>uv.lock</code></p>
-<details>
-<summary>When `registry.loc/simple` redirects (303)</summary>
 
-<pre><code class="language-toml">version = 1
+When `registry.loc/simple` redirects (303)
+
+<pre><code>version = 1
 requires-python = &quot;&gt;=3.12&quot;
 resolution-markers = [
-    &quot;python_full_version &lt; '3.13'&quot;,
-    &quot;python_full_version &gt;= '3.13'&quot;,
+    &quot;python_full_version &lt; &#x27;3.13&#x27;&quot;,
+    &quot;python_full_version &gt;= &#x27;3.13&#x27;&quot;,
 ]
 
 [[package]]
@@ -183,16 +174,16 @@ dependencies = [
 [package.metadata]
 requires-dist = [{ name = &quot;pydantic&quot;, specifier = &quot;&gt;=2.9.0&quot; }]
 </code></pre>
-</details>
 
-<details>
-<summary>When `registry.loc/simple` does not redirect (404)</summary>
 
-<pre><code class="language-toml">version = 1
+
+When `registry.loc/simple` does not redirect (404)
+
+<pre><code>version = 1
 requires-python = &quot;&gt;=3.12&quot;
 resolution-markers = [
-    &quot;python_full_version &lt; '3.13'&quot;,
-    &quot;python_full_version &gt;= '3.13'&quot;,
+    &quot;python_full_version &lt; &#x27;3.13&#x27;&quot;,
+    &quot;python_full_version &gt;= &#x27;3.13&#x27;&quot;,
 ]
 
 [[package]]
@@ -283,16 +274,16 @@ dependencies = [
 [package.metadata]
 requires-dist = [{ name = &quot;pydantic&quot;, specifier = &quot;&gt;=2.9.0&quot; }]
 </code></pre>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2024-09-07 11:47</div>
+            <div class="event">Label <span class="label">needs-decision</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-07 11:47</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-07 11:48</div>
-            <div class="timeline-body"><p>I would suggest inverting the order, such that your registry is the <code>index-url</code> and PyPI is the <code>extra-index-url</code>. In that case, we'll look at PyPI first, and only look at your registry for packages that don't exist on PyPI.</p>
+            <div class="timeline-body"><p>I would suggest inverting the order, such that your registry is the <code>index-url</code> and PyPI is the <code>extra-index-url</code>. In that case, we&#x27;ll look at PyPI first, and only look at your registry for packages that don&#x27;t exist on PyPI.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -309,21 +300,21 @@ requires-dist = [{ name = &quot;pydantic&quot;, specifier = &quot;&gt;=2.9.0&quo
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-08 15:04</div>
-            <div class="timeline-body"><p>Honestly I'm not sure that it'd be correct for us to write the redirected URL to the lockfile. We write the correct paths for the actual distribution <em>files</em> of course, but it's true that we found the package by querying the <code>pypiserver</code> URL. It would be strange if users saw registries in the lockfile that weren't included as index URLs at all in their configuration.</p>
+            <div class="timeline-body"><p>Honestly I&#x27;m not sure that it&#x27;d be correct for us to write the redirected URL to the lockfile. We write the correct paths for the actual distribution <em>files</em> of course, but it&#x27;s true that we found the package by querying the <code>pypiserver</code> URL. It would be strange if users saw registries in the lockfile that weren&#x27;t included as index URLs at all in their configuration.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/gusutabopb">@gusutabopb</a> on 2024-09-09 01:04</div>
-            <div class="timeline-body"><p>Fair enough. I can see how that could be strange in case the redirected registry wasn't the same as <code>index-url</code> (which happens to be my case).</p>
+            <div class="timeline-body"><p>Fair enough. I can see how that could be strange in case the redirected registry wasn&#x27;t the same as <code>index-url</code> (which happens to be my case).</p>
 <p>I guess it could be argued what I considered an uv issue was just a <code>pypiserver</code> misconfiguration.</p>
-<p>Also, this should become less of an issue once https://github.com/astral-sh/uv/issues/171 is implemented.</p>
+<p>Also, this should become less of an issue once <a href="https://github.com/astral-sh/uv/issues/171">astral-sh/uv#171</a> is implemented.</p>
 <p>Please feel free to close if the current behavior with regards to the different 303/404 handling is considered correct/expected.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:26:56 UTC
+        Synced at 2026-01-20 19:33:46 UTC
     </footer>
 </body>
 </html>

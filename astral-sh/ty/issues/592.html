@@ -23,11 +23,11 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/samuelcolvin">@samuelcolvin</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>Checking the following code</p>
-<pre><code class="language-py">from typing import TypeVar
+<pre><code>from typing import TypeVar
 
-D = TypeVar('D')
+D = TypeVar(&#x27;D&#x27;)
 
 
 def foo(x: D = None) -&gt; D:
@@ -45,38 +45,38 @@ info: rule `invalid-parameter-default` is enabled by default
 </code></pre>
 <p>This passes with pyright and IMHO should not cause an error.</p>
 <p>Apologies if this is reported elsewhere, nothing came up with the search &quot;invalid-parameter-default generic&quot;.</p>
-<h3>Version</h3>
+Version
 <p>ty 0.0.1-alpha.8 (c1337c962 2025-06-02)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-06 13:02</div>
             <div class="timeline-body"><p>Thanks for the report!</p>
-<p>It's interesting that pyright accepts this, <a href="https://pyright-play.net/?pythonVersion=3.12&amp;strict=true&amp;enableExperimentalFeatures=true&amp;code=GYJw9gtgBALgngBwJYDsDmUkQWEMoAqiApgGoCGIAUFQCJQC8hJFIAFAOS0cCUNVAE2LAowMGDYAPAFxR6TAHJgUxHlAC0APjnSqUfVBDEYAVxAookqkA">even in strict mode</a>. For comparison, mypy <a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=60a0120a02a47a7b15e162a9c143e639">rejects this</a>, as does <a href="https://pyrefly.org/sandbox/?code=GYJw9gtgBALgngBwJYDsDmUkQWEMoAqiApgGoCGIAUFQCJQC8hJFIAFAOS0cCUNVAE2LAowMGDYAPAFxR6TAHJgUxHlAC0APjnSqUfVBDEYAVxAookqkA">pyrefly</a>.</p>
+<p>It&#x27;s interesting that pyright accepts this, <a href="https://pyright-play.net/?pythonVersion=3.12&amp;strict=true&amp;enableExperimentalFeatures=true&amp;code=GYJw9gtgBALgngBwJYDsDmUkQWEMoAqiApgGoCGIAUFQCJQC8hJFIAFAOS0cCUNVAE2LAowMGDYAPAFxR6TAHJgUxHlAC0APjnSqUfVBDEYAVxAookqkA">even in strict mode</a>. For comparison, mypy <a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=60a0120a02a47a7b15e162a9c143e639">rejects this</a>, as does <a href="https://pyrefly.org/sandbox/?code=GYJw9gtgBALgngBwJYDsDmUkQWEMoAqiApgGoCGIAUFQCJQC8hJFIAFAOS0cCUNVAE2LAowMGDYAPAFxR6TAHJgUxHlAC0APjnSqUfVBDEYAVxAookqkA">pyrefly</a>.</p>
 <p>Getting ty to both accept this <em>and</em> correctly solve the TypeVar in cases where no value is passed for the parameter could be tricky. But I do think we should at least give a better diagnostic here.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">generics</span> added by @AlexWaygood on 2025-06-06 13:02</div>
+            <div class="event">Label <span class="label">generics</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-06 13:02</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-06 13:29</div>
-            <div class="timeline-body"><p>Unless this is explicitly specified somewhere, I don't really see a good reason why mypy and pyrefly reject this?</p>
+            <div class="timeline-body"><p>Unless this is explicitly specified somewhere, I don&#x27;t really see a good reason why mypy and pyrefly reject this?</p>
 <blockquote>
 <p>Getting ty to both accept this <em>and</em> correctly solve the TypeVar […] could be tricky</p>
 </blockquote>
-<p>Why do you think so? Constraint-solving-wise, couldn't <code>f()</code> be handled in the exact same way as <code>f(None)</code>?</p>
+<p>Why do you think so? Constraint-solving-wise, couldn&#x27;t <code>f()</code> be handled in the exact same way as <code>f(None)</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-06 13:34</div>
             <div class="timeline-body"><blockquote>
-<p>Constraint-solving-wise, couldn't <code>f()</code> be handled in the exact same way as <code>f(None)</code>?</p>
+<p>Constraint-solving-wise, couldn&#x27;t <code>f()</code> be handled in the exact same way as <code>f(None)</code>?</p>
 </blockquote>
-<p>Sure. But I think you might have to handle bare TypeVars in this position differently to TypeVars nested inside other contexts. For comparison, here's a snippet that neither mypy nor pyright rejects, though I think they probably should? Pyright reveals <code>Unknown</code> for the last line; mypy reveals <code>Never</code>:</p>
-<pre><code class="language-py">from typing import TypeVar
+<p>Sure. But I think you might have to handle bare TypeVars in this position differently to TypeVars nested inside other contexts. For comparison, here&#x27;s a snippet that neither mypy nor pyright rejects, though I think they probably should? Pyright reveals <code>Unknown</code> for the last line; mypy reveals <code>Never</code>:</p>
+<pre><code>from typing import TypeVar
 
-D = TypeVar('D')
+D = TypeVar(&#x27;D&#x27;)
 
 def foo(x: D | None = None) -&gt; D:
     assert x
@@ -88,21 +88,21 @@ reveal_type(foo())  # ?
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-06 13:40</div>
-            <div class="timeline-body"><p>Okay, but I don't see how that's related to the question whether or not we should be able to understand calls to generic functions with default values. You could ask the same questions for <code>def foo(x: D | None) -&gt; D</code> with an explicit <code>foo(None)</code> call.</p>
+            <div class="timeline-body"><p>Okay, but I don&#x27;t see how that&#x27;s related to the question whether or not we should be able to understand calls to generic functions with default values. You could ask the same questions for <code>def foo(x: D | None) -&gt; D</code> with an explicit <code>foo(None)</code> call.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-06 13:46</div>
-            <div class="timeline-body"><p>That's true.</p>
-<p>I'm pretty sure that there are cases where using TypeVars for parameters with defaults can cause issues, but possibly these only apply to constrained or bound TypeVars. I'd have to reread https://github.com/microsoft/pyright/issues/3494 and https://github.com/python/typeshed/issues/7928 to refresh my memory on exactly what the issues are...</p>
+            <div class="timeline-body"><p>That&#x27;s true.</p>
+<p>I&#x27;m pretty sure that there are cases where using TypeVars for parameters with defaults can cause issues, but possibly these only apply to constrained or bound TypeVars. I&#x27;d have to reread <a href="https://github.com/microsoft/pyright/issues/3494">microsoft/pyright#3494</a> and <a href="https://github.com/python/typeshed/issues/7928">python/typeshed#7928</a> to refresh my memory on exactly what the issues are...</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/erictraut">@erictraut</a> on 2025-06-06 16:45</div>
             <div class="timeline-body"><p>Handling defaults for parameters annotated with TypeVars is tricky. As noted above, mypy rejects it outright. It is even disallowed in TypeScript, which generally has a more advanced type system and supports more features than Python.</p>
-<p>I decided to support it in pyright because it was a highly-requested feature. It's also one of the most-highly-requested features in the <a href="https://github.com/python/mypy/issues/3737">mypy issue tracker</a>.</p>
-<p>It's pretty straightforward to handle in cases where the TypeVar occurs only once in a function signature, but it's more complicated when the TypeVar appears multiple times. There are also some complexities when it's used in a constructor with a class-scoped TypeVar. I think I was able to plug all of the type safety issues that arose from this feature, but it wasn't easy. It's also possible that there are some subtle holes that I missed. Here are some code samples that show where it can be problematic. All of these required additional logic in the type checker to handle correctly.</p>
-<pre><code class="language-python">class A[T]:
+<p>I decided to support it in pyright because it was a highly-requested feature. It&#x27;s also one of the most-highly-requested features in the <a href="https://github.com/python/mypy/issues/3737">mypy issue tracker</a>.</p>
+<p>It&#x27;s pretty straightforward to handle in cases where the TypeVar occurs only once in a function signature, but it&#x27;s more complicated when the TypeVar appears multiple times. There are also some complexities when it&#x27;s used in a constructor with a class-scoped TypeVar. I think I was able to plug all of the type safety issues that arose from this feature, but it wasn&#x27;t easy. It&#x27;s also possible that there are some subtle holes that I missed. Here are some code samples that show where it can be problematic. All of these required additional logic in the type checker to handle correctly.</p>
+<pre><code>class A[T]:
     def __init__(self, value: T = 1):
         self.value = value
 
@@ -110,7 +110,7 @@ reveal_type(foo())  # ?
 a1 = A()  # OK
 a2 = A[str]()  # Error
 </code></pre>
-<pre><code class="language-python">class B[T]:
+<pre><code>class B[T]:
     def __init__(self, value: T) -&gt; None:
         self._value: T = value
 
@@ -121,7 +121,7 @@ b = B(&quot;&quot;)
 b.update(&quot;&quot;)  # OK
 b.update()  # Error
 </code></pre>
-<pre><code class="language-python">from typing import Mapping, OrderedDict
+<pre><code>from typing import Mapping, OrderedDict
 
 
 class C[T: Mapping[str, str]]:
@@ -134,7 +134,7 @@ class UserMapping(Mapping[str, str]): ...
 c1 = C[UserMapping](UserMapping)  # OK
 c2 = C[UserMapping]()  # Error
 </code></pre>
-<pre><code class="language-python">def func1[T](x: list[T], y: T = 1) -&gt; T: ...
+<pre><code>def func1[T](x: list[T], y: T = 1) -&gt; T: ...
 
 func1([&quot;&quot;], &quot;&quot;)  # OK
 func1([&quot;&quot;])  # Error
@@ -142,20 +142,20 @@ func1([&quot;&quot;])  # Error
 x1: Callable[[list[int]], int] = func1  # OK
 x2: Callable[[list[str]], str] = func1  # Error
 </code></pre>
-<pre><code class="language-python">def test1[T](func: Callable[[T], T], value: T) -&gt; T:
+<pre><code>def test1[T](func: Callable[[T], T], value: T) -&gt; T:
     return func(value)
 
 def func2[T](x: T, y: Iterable[T] = [&quot;&quot;], z: T = &quot;&quot;, /) -&gt; T: ...
 
 reveal_type(test1(func2, 1))  # str | int
 </code></pre>
-<p>I'll also note that a default value of <code>None</code> introduces another challenge if the type checker optionally supports the original PEP 484 (now obsolete) semantics that <code>= None</code> in a parameter annotation implicitly makes the parameter type <code>Optional</code>. Pyright and mypy both support (non-default) modes that enable this obsolete behavior. When this mode is enabled, <code>x: T = None</code> effectively means <code>x: T | None = None</code>, which can leave the TypeVar unsolved. I don't know if ty plans to support such a mode for backward compatibility or if @samuelcolvin assumed these semantics in his initial post.</p>
+<p>I&#x27;ll also note that a default value of <code>None</code> introduces another challenge if the type checker optionally supports the original PEP 484 (now obsolete) semantics that <code>= None</code> in a parameter annotation implicitly makes the parameter type <code>Optional</code>. Pyright and mypy both support (non-default) modes that enable this obsolete behavior. When this mode is enabled, <code>x: T = None</code> effectively means <code>x: T | None = None</code>, which can leave the TypeVar unsolved. I don&#x27;t know if ty plans to support such a mode for backward compatibility or if @samuelcolvin assumed these semantics in his initial post.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/erictraut">@erictraut</a> on 2025-06-06 17:20</div>
-            <div class="timeline-body"><p>Here's another tricky case that I forgot in my list above. Note the revealed types for <code>transformed3</code> and <code>transformed4</code> below. For <code>func3</code>, the higher-order type variables remain unspecialized and can be solved later. For <code>func4</code>, the presence of a default value for parameter <code>y</code> requires <code>T@func4</code> to be specialized in the call <code>transform(func4)</code>.</p>
-<pre><code class="language-python">from typing import Callable
+            <div class="timeline-body"><p>Here&#x27;s another tricky case that I forgot in my list above. Note the revealed types for <code>transformed3</code> and <code>transformed4</code> below. For <code>func3</code>, the higher-order type variables remain unspecialized and can be solved later. For <code>func4</code>, the presence of a default value for parameter <code>y</code> requires <code>T@func4</code> to be specialized in the call <code>transform(func4)</code>.</p>
+<pre><code>from typing import Callable
 
 def transform[T, R](cb: Callable[[list[T]], R]) -&gt; Callable[[list[T]], R]: ...
 
@@ -177,12 +177,12 @@ transformed4([&quot;&quot;])  # Error
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Stable" by @carljm on 2025-11-13 06:33</div>
+            <div class="event">Added to milestone &quot;Stable&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-11-13 06:33</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:05 UTC
+        Synced at 2026-01-20 19:24:46 UTC
     </footer>
 </body>
 </html>

@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/anabelle2001">@anabelle2001</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>The second assignment reports that ROI_COLORS is not annotated with ClassVar. I think this is a false positive.</p>
 <p>View in Playground: <a href="https://play.ruff.rs/d208fa8c-4554-415c-86cd-9986c0a0d76f">https://play.ruff.rs/d208fa8c-4554-415c-86cd-9986c0a0d76f</a></p>
-<pre><code class="language-py">from typing import ClassVar
+<pre><code>from typing import ClassVar
 import matplotlib
 
 class SomeClass:
@@ -35,52 +35,52 @@ class SomeClass:
     # Shuffle the order around
     ROI_COLORS = [*ROI_COLORS[0::2], *ROI_COLORS[1::2]]  # Mutable class attributes should be annotated with `typing.ClassVar` (RUF012) [Ln 11, Col 18]
 </code></pre>
-<h3>Version</h3>
+Version
 <p>ruff 0.14.4</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-12 21:52</div>
             <div class="timeline-body"><p>Hmm, yeah this feels a bit like a false positive to me. In Rust I would do something like this pseudocode:</p>
-<pre><code class="language-rust">static ROI_COLORS: [...] = {
+<pre><code>static ROI_COLORS: [...] = {
     let tmp = matplotlib.color_sequences[&quot;tab20&quot;];
     [*tmp[0::2], *tmp[1::2]]
 };
 </code></pre>
-<p>but obviously Python doesn't have similar blocks.</p>
+<p>but obviously Python doesn&#x27;t have similar blocks.</p>
 <p>@amyreese  is there a more idiomatic pattern here, or should we try to check if a variable has ever been declared a <code>ClassVar</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @ntBre on 2025-11-12 21:52</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-12 21:52</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/amyreese">@amyreese</a> on 2025-11-12 22:35</div>
-            <div class="timeline-body"><p>It feels like an anti-pattern to redefine a class value twice inline — I'd probably try to find a one-liner or define an intermediate variable elsewhere — but the lint rule itself is a false positive IMO because the variable was explicitly defined already with <code>ClassVar</code>. I'm guessing the lint rule is not expecting a class attribute to be redefined like this (back to the anti-pattern part).</p>
+            <div class="timeline-body"><p>It feels like an anti-pattern to redefine a class value twice inline — I&#x27;d probably try to find a one-liner or define an intermediate variable elsewhere — but the lint rule itself is a false positive IMO because the variable was explicitly defined already with <code>ClassVar</code>. I&#x27;m guessing the lint rule is not expecting a class attribute to be redefined like this (back to the anti-pattern part).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/anabelle2001">@anabelle2001</a> on 2025-11-12 23:47</div>
-            <div class="timeline-body"><p>yeah. I would agree that redefinition of class variables is not common. It doesn't surprise me that people aren't doing this that often.</p>
+            <div class="timeline-body"><p>yeah. I would agree that redefinition of class variables is not common. It doesn&#x27;t surprise me that people aren&#x27;t doing this that often.</p>
 <p>I think the best way to do it in one line would be to write <code>matplotlib.color_sequences[&quot;tab20&quot;]</code> twice:</p>
-<pre><code class="language-py">class SomeClass:
+<pre><code>class SomeClass:
     ROI_COLORS: ClassVar[list] = [
         *matplotlib.color_sequences[&quot;tab20&quot;][0::2],
         *matplotlib.color_sequences[&quot;tab20&quot;][1::2]
     ]
 </code></pre>
-<p>It's not too bad for a dictionary lookup, but for more expensive tasks, it probably makes sense to declare a variable before / inside the class, and delete it afterwards:</p>
-<pre><code class="language-py">tab20 = matplotlib.color_sequences[&quot;tab20&quot;]
+<p>It&#x27;s not too bad for a dictionary lookup, but for more expensive tasks, it probably makes sense to declare a variable before / inside the class, and delete it afterwards:</p>
+<pre><code>tab20 = matplotlib.color_sequences[&quot;tab20&quot;]
 class SomeClass1:
     x: ClassVar[list] = [*tab20[0::2], *tab20[1::2]]
 del tab20
 </code></pre>
-<pre><code class="language-py">class SomeClass3:
+<pre><code>class SomeClass3:
     x: ClassVar[list] = [*(tab20:=matplotlib.color_sequences[&quot;tab20&quot;])[0::2], *tab20[1::2]]
     del tab20
 </code></pre>
-<p>You could also modify the list in place without reassignment, but if you use a loop, i think you'd have to delete the variable afterwards?</p>
-<pre><code class="language-py">class SomeClass2:
+<p>You could also modify the list in place without reassignment, but if you use a loop, i think you&#x27;d have to delete the variable afterwards?</p>
+<pre><code>class SomeClass2:
     x: ClassVar[list] = matplotlib.color_sequences[&quot;tab20&quot;]
     
     for item in x[1::2]:
@@ -88,27 +88,27 @@ del tab20
         x.append(item)
     del item
 </code></pre>
-<p>Here, I prefer using <code>ClassVar</code> reassignment over the alternatives, but if there's a more elegant way that i'm not seeing, please let me know! For now i've just added a <code>#type: ignore</code>.</p>
+<p>Here, I prefer using <code>ClassVar</code> reassignment over the alternatives, but if there&#x27;s a more elegant way that i&#x27;m not seeing, please let me know! For now i&#x27;ve just added a <code>#type: ignore</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-13 15:41</div>
-            <div class="timeline-body"><p>It seems reasonable to me to look for previous declarations of the variable in the same scope. Let's give it a try in preview since the rule is stable.</p>
+            <div class="timeline-body"><p>It seems reasonable to me to look for previous declarations of the variable in the same scope. Let&#x27;s give it a try in preview since the rule is stable.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> removed by @ntBre on 2025-11-13 15:42</div>
+            <div class="event">Label <span class="label">question</span> removed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-13 15:42</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-11-13 15:42</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-13 15:42</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ntBre on 2025-11-17 20:52</div>
+            <div class="event">Closed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-17 20:52</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:53:35 UTC
+        Synced at 2026-01-20 18:50:37 UTC
     </footer>
 </body>
 </html>

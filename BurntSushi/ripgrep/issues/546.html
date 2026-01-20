@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/roblourens">@roblourens</a></div>
-            <div class="timeline-body"><p>It seems like ripgrep could be more aggressive in not walking folders that won't have any included files. I'm not sure whether this is just an optimization that isn't implemented, or if there's a scenario I'm missing where this would be necessary.</p>
+            <div class="timeline-body"><p>It seems like ripgrep could be more aggressive in not walking folders that won&#x27;t have any included files. I&#x27;m not sure whether this is just an optimization that isn&#x27;t implemented, or if there&#x27;s a scenario I&#x27;m missing where this would be necessary.</p>
 <p>Here I have</p>
 <pre><code>foo/
   - a.txt
@@ -33,14 +33,14 @@ bar/
   - b.txt
 </code></pre>
 <p>I search to include only /foo, but ripgrep walks everything under <code>bar/</code>.</p>
-<pre><code>robmac:rgtest roblou$ rg --files -g '/foo/**' --debug
-DEBUG:globset: glob converted to regex: Glob { glob: &quot;foo/**/*&quot;, re: &quot;(?-u)^foo(?:/|/.*/)[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true }, tokens: Tokens([Literal('f'), Literal('o'), Literal('o'), RecursiveZeroOrMore, ZeroOrMore]) }
+<pre><code>robmac:rgtest roblou$ rg --files -g &#x27;/foo/**&#x27; --debug
+DEBUG:globset: glob converted to regex: Glob { glob: &quot;foo/**/*&quot;, re: &quot;(?-u)^foo(?:/|/.*/)[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true }, tokens: Tokens([Literal(&#x27;f&#x27;), Literal(&#x27;o&#x27;), Literal(&#x27;o&#x27;), RecursiveZeroOrMore, ZeroOrMore]) }
 DEBUG:globset: built glob set; 0 literals, 0 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 1 regexes
 DEBUG:grep::search: regex ast:
 Repeat {
     e: Literal {
         chars: [
-            'z'
+            &#x27;z&#x27;
         ],
         casei: false
     },
@@ -70,25 +70,25 @@ foo/b.txt
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-07-19 11:36</div>
-            <div class="timeline-body"><p>As you say, I think this is &quot;just&quot; an optimization that ripgrep doesn't do. It might be tricky to do this in the general case. Basically, the <code>/foo/**</code> glob doesn't actually match <code>foo</code> itself, only whatever is inside of it. So you have to descend into every top-level directory <em>in the general case</em> to determine matches. <a href="https://github.com/BurntSushi/ripgrep/blob/master/ignore/src/overrides.rs#L101-L103">This conditional check</a> is important:</p>
-<pre><code class="language-rust">        if mat.is_none() &amp;&amp; self.num_whitelists() &gt; 0 &amp;&amp; !is_dir {
+            <div class="timeline-body"><p>As you say, I think this is &quot;just&quot; an optimization that ripgrep doesn&#x27;t do. It might be tricky to do this in the general case. Basically, the <code>/foo/**</code> glob doesn&#x27;t actually match <code>foo</code> itself, only whatever is inside of it. So you have to descend into every top-level directory <em>in the general case</em> to determine matches. <a href="https://github.com/BurntSushi/ripgrep/blob/master/ignore/src/overrides.rs#L101-L103">This conditional check</a> is important:</p>
+<pre><code>        if mat.is_none() &amp;&amp; self.num_whitelists() &gt; 0 &amp;&amp; !is_dir {
             return Match::Ignore(Glob::unmatched());
         }
 </code></pre>
-<p>What this is saying is that if there is no match (<code>/foo/**</code> does not match <code>./bar</code>) and there is at least one whitelisted glob (there is) <em>and</em> it's not a directory, then we can safely ignore it. But since <code>./bar</code> is a directory, we have to return the non-match, which means the path isn't skipped.</p>
-<p>One thing you could do is start with &quot;ignore everything&quot; and then specifically whitelist the thing you want to descend. You can do this because, fundamentally, the <code>-g</code> flag is essentially a command line interface to specifying adhoc <code>.ignore</code> rules. The only difference is the matching behavior I outlined above and the fact that it is inverted (<code>-g</code> whitelists where as <code>-g '!glob'</code> blacklists). So you might try this:</p>
-<pre><code>$ rg --files -g '!*' -g '/foo/**'
+<p>What this is saying is that if there is no match (<code>/foo/**</code> does not match <code>./bar</code>) and there is at least one whitelisted glob (there is) <em>and</em> it&#x27;s not a directory, then we can safely ignore it. But since <code>./bar</code> is a directory, we have to return the non-match, which means the path isn&#x27;t skipped.</p>
+<p>One thing you could do is start with &quot;ignore everything&quot; and then specifically whitelist the thing you want to descend. You can do this because, fundamentally, the <code>-g</code> flag is essentially a command line interface to specifying adhoc <code>.ignore</code> rules. The only difference is the matching behavior I outlined above and the fact that it is inverted (<code>-g</code> whitelists where as <code>-g &#x27;!glob&#x27;</code> blacklists). So you might try this:</p>
+<pre><code>$ rg --files -g &#x27;!*&#x27; -g &#x27;/foo/**&#x27;
 </code></pre>
 <p>But this does not work. This causes <code>./foo</code> to be ignored because <code>/foo/**</code> does not actually match <code>./foo</code>---it only matches whatever is inside of it. So all you need to do here is just whitelist <code>/foo</code> specifically:</p>
-<pre><code>$ rg --files -g '!*' -g '/foo' -g '/foo/**' --debug
+<pre><code>$ rg --files -g &#x27;!*&#x27; -g &#x27;/foo&#x27; -g &#x27;/foo/**&#x27; --debug
 DEBUG:globset: glob converted to regex: Glob { glob: &quot;**/*&quot;, re: &quot;(?-u)^(?:/?|.*/).*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: false }, tokens: Tokens([RecursivePrefix, ZeroOrMore]) }
-DEBUG:globset: glob converted to regex: Glob { glob: &quot;foo/**/*&quot;, re: &quot;(?-u)^foo(?:/|/.*/)[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true }, tokens: Tokens([Literal('f'), Literal('o'), Literal('o'), RecursiveZeroOrMore, ZeroOrMore]) }
+DEBUG:globset: glob converted to regex: Glob { glob: &quot;foo/**/*&quot;, re: &quot;(?-u)^foo(?:/|/.*/)[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true }, tokens: Tokens([Literal(&#x27;f&#x27;), Literal(&#x27;o&#x27;), Literal(&#x27;o&#x27;), RecursiveZeroOrMore, ZeroOrMore]) }
 DEBUG:globset: built glob set; 1 literals, 0 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 2 regexes
 DEBUG:grep::search: regex ast:
 Repeat {
     e: Literal {
         chars: [
-            'z'
+            &#x27;z&#x27;
         ],
         casei: false
     },
@@ -105,33 +105,33 @@ DEBUG:ignore::walk: whitelisting ./foo: Whitelist(IgnoreMatch(Override(Glob(Matc
 DEBUG:ignore::walk: whitelisting ./foo/b.txt: Whitelist(IgnoreMatch(Override(Glob(Matched(Glob { from: None, original: &quot;/foo/**&quot;, actual: &quot;foo/**/*&quot;, is_whitelist: false, is_only_dir: false })))))
 DEBUG:ignore::walk: whitelisting ./foo/a.txt: Whitelist(IgnoreMatch(Override(Glob(Matched(Glob { from: None, original: &quot;/foo/**&quot;, actual: &quot;foo/**/*&quot;, is_whitelist: false, is_only_dir: false })))))
 </code></pre>
-<p>And you can see here that <code>./bar</code> is ignored and isn't descended into.</p>
-<p>I don't know whether this specific work-around will suit your needs. But you can specify multiple whitelists, so it at least generalizes in that sense. I agree it would probably be better if ripgrep could just do this automatically. But the semantics are tricky and it requires more thought. In this case, you probably need something like &quot;is it possible for this glob to ever match a path below this directory,&quot; which in turn seems to imply deeper analysis into the glob.</p>
+<p>And you can see here that <code>./bar</code> is ignored and isn&#x27;t descended into.</p>
+<p>I don&#x27;t know whether this specific work-around will suit your needs. But you can specify multiple whitelists, so it at least generalizes in that sense. I agree it would probably be better if ripgrep could just do this automatically. But the semantics are tricky and it requires more thought. In this case, you probably need something like &quot;is it possible for this glob to ever match a path below this directory,&quot; which in turn seems to imply deeper analysis into the glob.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/roblourens">@roblourens</a> on 2017-07-19 20:40</div>
-            <div class="timeline-body"><p>Thanks, that makes sense. That workaround is a good idea. I'm working around it by splitting out the path portion and passing that to ripgrep as a path to search. And yeah, what I'm asking for would require some understanding of what the glob does and prediction of what will match.</p>
+            <div class="timeline-body"><p>Thanks, that makes sense. That workaround is a good idea. I&#x27;m working around it by splitting out the path portion and passing that to ripgrep as a path to search. And yeah, what I&#x27;m asking for would require some understanding of what the glob does and prediction of what will match.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2017-07-19 20:58</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-07-19 20:58</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">icebox</span> added by @BurntSushi on 2017-07-19 20:58</div>
+            <div class="event">Label <span class="label">icebox</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-07-19 20:58</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-22 12:54</div>
-            <div class="timeline-body"><p>I'm going to close this out because I don't anticipate working on this any time soon, and I'm not sure whether it's actually worth doing considering the code complexity that is involved here. If and when the directory traversal gets a face lift, I'll try to revisit whether an optimization like this is possible to do.</p>
+            <div class="timeline-body"><p>I&#x27;m going to close this out because I don&#x27;t anticipate working on this any time soon, and I&#x27;m not sure whether it&#x27;s actually worth doing considering the code complexity that is involved here. If and when the directory traversal gets a face lift, I&#x27;ll try to revisit whether an optimization like this is possible to do.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2018-08-22 12:54</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-22 12:54</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:42:14 UTC
+        Synced at 2026-01-20 18:48:04 UTC
     </footer>
 </body>
 </html>

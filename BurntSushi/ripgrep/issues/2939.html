@@ -23,32 +23,32 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/DavidArchibald">@DavidArchibald</a></div>
-            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+            <div class="timeline-body">Please tick this box to confirm you have reviewed the above.
 <ul>
 <li>[X] I have a different issue.</li>
 </ul>
-<h3>What version of ripgrep are you using?</h3>
+What version of ripgrep are you using?
 <p>ripgrep 13.0.0
 -SIMP -AVX (compiled)
 +SIMD +AVX (runtime)</p>
 <p>Also tried when building from source with PCRE support. Cloned at SHA 79cbe89deb1151e703f4d91b19af9cdcc128b765.</p>
-<h3>How did you install ripgrep?</h3>
+How did you install ripgrep?
 <p>I believe I installed through APT initially but it also failed after compiling from source. I suspect this would occur in any version.</p>
-<h3>What operating system are you using ripgrep on?</h3>
+What operating system are you using ripgrep on?
 <p>Linux 5.15.167.4-microsoft-standard-WSL2</p>
-<h3>Describe your bug.</h3>
+Describe your bug.
 <p>This code actually exhibits a race condition:</p>
-<pre><code class="language-sh">set -o pipefail
+<pre><code>set -o pipefail
 
 if ! echo &quot;$contents&quot; | rg -q -U &quot;$search&quot;; then
    echo &quot;Failure!&quot;
 fi
 </code></pre>
-<p>Namely <code>echo</code> might exit with a status code of 1 because of <code>SIGPIPE</code> thus masking rg's status code and and obfuscating the intended meaning of the exit code 1 of being &quot;not matched&quot;</p>
-<p>To be honest I'm not sure there's even anything to fix here because it may just be an annoying trivia about Bash rather than anything Ripgrep is doing wrong. I tried rewriting this as <code>rg -q -U &quot;$search&quot; &lt;&lt;&lt; &quot;$contents&quot;</code> and it has always worked. However this race-y behaviour really doesn't seem desirable to me and if there's anything Ripgrep could do about it that'd be great.</p>
-<h3>What are the steps to reproduce the behavior?</h3>
+<p>Namely <code>echo</code> might exit with a status code of 1 because of <code>SIGPIPE</code> thus masking rg&#x27;s status code and and obfuscating the intended meaning of the exit code 1 of being &quot;not matched&quot;</p>
+<p>To be honest I&#x27;m not sure there&#x27;s even anything to fix here because it may just be an annoying trivia about Bash rather than anything Ripgrep is doing wrong. I tried rewriting this as <code>rg -q -U &quot;$search&quot; &lt;&lt;&lt; &quot;$contents&quot;</code> and it has always worked. However this race-y behaviour really doesn&#x27;t seem desirable to me and if there&#x27;s anything Ripgrep could do about it that&#x27;d be great.</p>
+What are the steps to reproduce the behavior?
 <p>Create a harness named <code>test.sh</code>:</p>
-<pre><code class="language-sh">#!/usr/bin/env bash
+<pre><code>#!/usr/bin/env bash
 
 # Strictly only `-o pipefail` is necessary.
 set -ueE -o pipefail
@@ -56,7 +56,7 @@ set -ueE -o pipefail
 # This bug does NOT seem to occur when the file is passed directly to rg.
 contents=$(cat testData)
 
-# This isn't actually necessary for the bug, it just causes it to emits a log when it happens.
+# This isn&#x27;t actually necessary for the bug, it just causes it to emits a log when it happens.
 # I get something like `echo: write error: Broken pipe`
 trap &quot;&quot; SIGPIPE
 
@@ -73,37 +73,37 @@ done
 
 [...]
 </code></pre>
-<p>Fill in the <code>[...]</code>s with a lots of unrelated text that won't match. In my case I made it about 5,000 lines of the text &quot;useless garbage&quot;. In your case significantly longer or shorter may be necessary. Regardless once the file is large enough this test will consistently fail with the <code>SIGPIPE</code> error.</p>
-<p>Furthermore you can see that it's racey or at the very least not deterministic if you use a file with a sweet spot size you can observe an exit code of 1 or 0.</p>
-<h3>What is the actual behavior?</h3>
-<p><code>SIGPIPE</code> races with <code>rg</code>'s exit code and so can seem to spuriously fail to match in <em>seemingly</em> idiomatic Bash code. As I alluded to maybe what I'm doing is an anti-pattern but I'd never heard of such issues with Bash and I consider myself to be <em>fairly</em> well versed in Bash's footguns.</p>
-<h3>What is the expected behavior?</h3>
-<p>Ripgrep to always succeed as the file always contains <code>abc</code> which is what's being searched for.</p>
+<p>Fill in the <code>[...]</code>s with a lots of unrelated text that won&#x27;t match. In my case I made it about 5,000 lines of the text &quot;useless garbage&quot;. In your case significantly longer or shorter may be necessary. Regardless once the file is large enough this test will consistently fail with the <code>SIGPIPE</code> error.</p>
+<p>Furthermore you can see that it&#x27;s racey or at the very least not deterministic if you use a file with a sweet spot size you can observe an exit code of 1 or 0.</p>
+What is the actual behavior?
+<p><code>SIGPIPE</code> races with <code>rg</code>&#x27;s exit code and so can seem to spuriously fail to match in <em>seemingly</em> idiomatic Bash code. As I alluded to maybe what I&#x27;m doing is an anti-pattern but I&#x27;d never heard of such issues with Bash and I consider myself to be <em>fairly</em> well versed in Bash&#x27;s footguns.</p>
+What is the expected behavior?
+<p>Ripgrep to always succeed as the file always contains <code>abc</code> which is what&#x27;s being searched for.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-11-27 12:57</div>
-            <div class="timeline-body"><p>As far as I can tell, you've misinterpreted the behavior of your shell program. If you remove the <code>-q</code> switch, you'll notice that the SIGPIPE error goes away. This to me reveals what is actually happening here: when you give ripgrep the <code>-q</code> switch, you're instructing it to be &quot;quiet.&quot; That is, you're only running it for its exit code, not for its output. Because of that, ripgrep can exit early as soon as it finds its first match, since it knows at that point that the exit code is going to be <code>0</code>. (Well, actually, it could be a <code>&gt;1</code> exit code if it encountered an error later in the search, but the optimization assumes no errors.) It then <em>stops reading input from stdin and exits</em>. This closes the pipe that <code>echo</code> is writing to and provokes the <code>SIGPIPE</code> error you're seeing. This also varies by input size because of buffering. If the input it small enough, <code>echo</code> can write all of it into a buffer before ripgrep can find the match and quit.</p>
-<p>You'll notice that this same behavior happens with <code>grep</code> too.</p>
-<p>There really isn't anything ripgrep can do here other than always consume the entire input on <code>stdin</code>. But I don't see that happening. This is really just one of the many, <em>many</em>, <strong><em>many</em></strong> subtle footguns you'll find in shell scripting.</p>
+            <div class="timeline-body"><p>As far as I can tell, you&#x27;ve misinterpreted the behavior of your shell program. If you remove the <code>-q</code> switch, you&#x27;ll notice that the SIGPIPE error goes away. This to me reveals what is actually happening here: when you give ripgrep the <code>-q</code> switch, you&#x27;re instructing it to be &quot;quiet.&quot; That is, you&#x27;re only running it for its exit code, not for its output. Because of that, ripgrep can exit early as soon as it finds its first match, since it knows at that point that the exit code is going to be <code>0</code>. (Well, actually, it could be a <code>&gt;1</code> exit code if it encountered an error later in the search, but the optimization assumes no errors.) It then <em>stops reading input from stdin and exits</em>. This closes the pipe that <code>echo</code> is writing to and provokes the <code>SIGPIPE</code> error you&#x27;re seeing. This also varies by input size because of buffering. If the input it small enough, <code>echo</code> can write all of it into a buffer before ripgrep can find the match and quit.</p>
+<p>You&#x27;ll notice that this same behavior happens with <code>grep</code> too.</p>
+<p>There really isn&#x27;t anything ripgrep can do here other than always consume the entire input on <code>stdin</code>. But I don&#x27;t see that happening. This is really just one of the many, <em>many</em>, <strong><em>many</em></strong> subtle footguns you&#x27;ll find in shell scripting.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2024-11-27 12:57</div>
+            <div class="event">Label <span class="label">wontfix</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-11-27 12:57</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2024-11-27 12:59</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-11-27 12:59</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-11-27 13:01</div>
-            <div class="timeline-body"><p>I also forgot to mention, crucially, ripgrep's exit code itself is unaffected here. It isn't giving up or not searching or not finding a match that exists. It is precisely because it finds a match early and quits that a SIGPIPE occurs. If you remove <code>abc</code> from <code>testData</code>, you'll notice that the SIGPIPE error does not occur. This is because ripgrep fully consumes it's entire input and doesn't exit early. (It can only exit early when <code>-q</code> is given when a match is found. But no match requires searching the entire input.)</p>
+            <div class="timeline-body"><p>I also forgot to mention, crucially, ripgrep&#x27;s exit code itself is unaffected here. It isn&#x27;t giving up or not searching or not finding a match that exists. It is precisely because it finds a match early and quits that a SIGPIPE occurs. If you remove <code>abc</code> from <code>testData</code>, you&#x27;ll notice that the SIGPIPE error does not occur. This is because ripgrep fully consumes it&#x27;s entire input and doesn&#x27;t exit early. (It can only exit early when <code>-q</code> is given when a match is found. But no match requires searching the entire input.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/DavidArchibald">@DavidArchibald</a> on 2024-12-03 00:23</div>
             <div class="timeline-body"><p>Yeah I understood all that. I mentioned it here:</p>
 <blockquote>
-<p>Namely echo might exit with a status code of 1 because of SIGPIPE thus masking rg's status code and and obfuscating the intended meaning of the exit code 1 of being &quot;not matched&quot;</p>
+<p>Namely echo might exit with a status code of 1 because of SIGPIPE thus masking rg&#x27;s status code and and obfuscating the intended meaning of the exit code 1 of being &quot;not matched&quot;</p>
 </blockquote>
 <p>And as I said I was unsure if there was even anything ripgrep could do but I wanted to raise it in the off chance there was. Thanks for checking anways.</p>
 </div>
@@ -111,7 +111,7 @@ done
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:43:52 UTC
+        Synced at 2026-01-20 18:48:14 UTC
     </footer>
 </body>
 </html>

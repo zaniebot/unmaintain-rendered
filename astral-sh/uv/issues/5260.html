@@ -25,7 +25,7 @@
             <div class="timeline-header"><a href="https://github.com/paveldikov">@paveldikov</a></div>
             <div class="timeline-body"><p>Many organisations employ in-band scanner tools on their internal PyPI mirrors, with the aim of preventing the ingress of compromised/non-compliant dependencies. Usually such tools will make their blocking decisions known by way of a HTTP 403 response code at download time.</p>
 <p>One of the key pain-points with this approach is that, as new versions of packages come out, they will almost inevitably 403-upon-first-download, as they are yet to be scanned and cleared.</p>
-<p>Currently the resolver completely gives up when encountering a 403 code, perhaps on the assumption that this is the usual 'permission denied' meaning, as opposed to a more granular 'not this one, please' meaning. This behaviour is not unique to <code>uv</code>; <code>pip</code> also does this, but <code>uv</code> probably hits this worse than <code>pip</code> thanks to supporting universal resolution etc. Regardless, it is a pretty substantial negative impact to developer experience.</p>
+<p>Currently the resolver completely gives up when encountering a 403 code, perhaps on the assumption that this is the usual &#x27;permission denied&#x27; meaning, as opposed to a more granular &#x27;not this one, please&#x27; meaning. This behaviour is not unique to <code>uv</code>; <code>pip</code> also does this, but <code>uv</code> probably hits this worse than <code>pip</code> thanks to supporting universal resolution etc. Regardless, it is a pretty substantial negative impact to developer experience.</p>
 <p>I think there should be a resolver option to allow backtracking when 403 codes are encountered, so that older (but scanned + cleared) versions will be considered.</p>
 </div>
         </div>
@@ -40,29 +40,29 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2024-07-21 17:16</div>
+            <div class="event">Label <span class="label">needs-decision</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-21 17:16</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-07-22 19:43</div>
             <div class="timeline-body"><p>Btw, has this request ever been reported to pip? I had a search through the issue tracker and the only issues related to 403 were all SSL issues, which it makes sense not to retry on.</p>
-<p>And do you know the mirror software your organization is using? Back when I used to use artifactory the error I got for this sort of situation was a timeout, usually for large wheels as the mirror was still downloading the wheel and wouldn't start providing data to the client until it had finished.</p>
+<p>And do you know the mirror software your organization is using? Back when I used to use artifactory the error I got for this sort of situation was a timeout, usually for large wheels as the mirror was still downloading the wheel and wouldn&#x27;t start providing data to the client until it had finished.</p>
 <p>It may be worth making a request to the mirror software to provide a 502, 503, or 504 error rather than a 403 error, as they are general considered retryable, where as, in general, 403 is not usually considered retryable.</p>
 <p>In fact, on a 403 response, the spec explicitly says if credentials were provided that the client SHOULD NOT automatically repeat the request with the same credentials.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-22 20:01</div>
-            <div class="timeline-body"><p>I think the request is is not to retry the request but to try another package version. I think if don't get a 403 when listing packages, it's reasonable for us to try another version after a 403 for a specific archive.</p>
+            <div class="timeline-body"><p>I think the request is is not to retry the request but to try another package version. I think if don&#x27;t get a 403 when listing packages, it&#x27;s reasonable for us to try another version after a 403 for a specific archive.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-07-22 20:10</div>
-            <div class="timeline-body"><p>ah, that makes sense, I guess I hadn't fully groked the scenario.</p>
+            <div class="timeline-body"><p>ah, that makes sense, I guess I hadn&#x27;t fully groked the scenario.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2024-07-22 21:40</div>
-            <div class="timeline-body"><p>That's exactly it. 403 on archive download should definitely not be re-tried, but it <em>may</em> make sense to move along the next archive on the list.</p>
+            <div class="timeline-body"><p>That&#x27;s exactly it. 403 on archive download should definitely not be re-tried, but it <em>may</em> make sense to move along the next archive on the list.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -72,7 +72,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2024-07-23 07:58</div>
-            <div class="timeline-body"><p>Interesting one. I was thinking 'next version', but this is primarily because of my specific circumstances. Not sure if they are safe to make for the general case:</p>
+            <div class="timeline-body"><p>Interesting one. I was thinking &#x27;next version&#x27;, but this is primarily because of my specific circumstances. Not sure if they are safe to make for the general case:</p>
 <ul>
 <li>since the policy engine in this case is a scanner, it would <em>likely</em> make the same decision for other distributions of the same version</li>
 <li>rather not waste time downloading incompatible distributions (not sure if the compatibility decision can be made without incurring the cost of a download?)</li>
@@ -87,9 +87,9 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2024-07-29 07:55</div>
-            <div class="timeline-body"><p>Yes, I think 'next version' should do it, <em>even</em> if it is a somewhat presumptious heuristic. Whilst it is still possible for it to yield false negatives, it is still fewer false negatives than the current approach.</p>
-<p>On a pragmatic level: assuming that the 'first' distribution to be attempted is the most optimal one (closest platform/ABI tag match), then it's really 'best wheel or bust' as far as most users are concerned. The value to be gained from attempting a sub-optimal distribution (even sdist) is <em>probably</em> diminishing returns.</p>
-<p>And if it doesn't go far enough (which I doubt, but is a possibility) we could track this as a separate issue?</p>
+            <div class="timeline-body"><p>Yes, I think &#x27;next version&#x27; should do it, <em>even</em> if it is a somewhat presumptious heuristic. Whilst it is still possible for it to yield false negatives, it is still fewer false negatives than the current approach.</p>
+<p>On a pragmatic level: assuming that the &#x27;first&#x27; distribution to be attempted is the most optimal one (closest platform/ABI tag match), then it&#x27;s really &#x27;best wheel or bust&#x27; as far as most users are concerned. The value to be gained from attempting a sub-optimal distribution (even sdist) is <em>probably</em> diminishing returns.</p>
+<p>And if it doesn&#x27;t go far enough (which I doubt, but is a possibility) we could track this as a separate issue?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -98,7 +98,7 @@
 <blockquote>
 <p>And do you know the mirror software your organization is using?</p>
 </blockquote>
-<p>I've run into it with Sonatype Nexus in combination with Repository Firewall. The symptoms are just as paveldikov reported - the packages are visible and exist, but access is blocked when it comes to pulling the wheels</p>
+<p>I&#x27;ve run into it with Sonatype Nexus in combination with Repository Firewall. The symptoms are just as paveldikov reported - the packages are visible and exist, but access is blocked when it comes to pulling the wheels</p>
 <blockquote>
 <p>build logs may only show a 403 error message for quarantined components</p>
 </blockquote>
@@ -107,22 +107,22 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-16 01:42</div>
-            <div class="timeline-body"><p>@paveldikov -- I want to help you with this, since I get the sense it's causing a lot of trouble. In your index, is this happening when we go to fetch the metadata for the distribution?</p>
+            <div class="timeline-body"><p>@paveldikov -- I want to help you with this, since I get the sense it&#x27;s causing a lot of trouble. In your index, is this happening when we go to fetch the metadata for the distribution?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-16 01:44</div>
-            <div class="timeline-body"><p>When we resolve, we have to get the metadata from the wheel. If the registry includes <code>.whl.metadata</code> files, we use those; otherwise, we try to use range requests, and if those too aren't supported, we download the wheel. I assume this is happening when we try to do one of those three things. Do you know which?</p>
+            <div class="timeline-body"><p>When we resolve, we have to get the metadata from the wheel. If the registry includes <code>.whl.metadata</code> files, we use those; otherwise, we try to use range requests, and if those too aren&#x27;t supported, we download the wheel. I assume this is happening when we try to do one of those three things. Do you know which?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-02-16 01:44</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-16 01:44</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2025-02-17 15:24</div>
-            <div class="timeline-body"><p>I ran with debug just now and it appears that it's fetching the whole wheel.</p>
-<p>I see a warning message about 'range requests not supported for ...; streaming wheel'</p>
-<p>The registry doesn't appear to include <code>.whl.metadata</code> files. (The log doesn't have anything particularly telling on that part, so I can't tell more about its reasoning)</p>
+            <div class="timeline-body"><p>I ran with debug just now and it appears that it&#x27;s fetching the whole wheel.</p>
+<p>I see a warning message about &#x27;range requests not supported for ...; streaming wheel&#x27;</p>
+<p>The registry doesn&#x27;t appear to include <code>.whl.metadata</code> files. (The log doesn&#x27;t have anything particularly telling on that part, so I can&#x27;t tell more about its reasoning)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -137,18 +137,18 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-17 15:37</div>
-            <div class="timeline-body"><p>Hmm, unfortunately that's not a common practice for us so it would take some work. Maybe I can just ship it and we test against the released binary.</p>
+            <div class="timeline-body"><p>Hmm, unfortunately that&#x27;s not a common practice for us so it would take some work. Maybe I can just ship it and we test against the released binary.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-18 01:09</div>
-            <div class="timeline-body"><p>Okay, I have something up here: https://github.com/astral-sh/uv/pull/12255</p>
+            <div class="timeline-body"><p>Okay, I have something up here: <a href="https://github.com/astral-sh/uv/pull/12255">astral-sh/uv#12255</a></p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:25:42 UTC
+        Synced at 2026-01-20 19:32:08 UTC
     </footer>
 </body>
 </html>

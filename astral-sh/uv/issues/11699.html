@@ -23,12 +23,12 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/vicchi">@vicchi</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>Using the <a href="https://docs.astral.sh/uv/guides/integration/docker/#intermediate-layers">intermediate layers approach</a> with a multi-arch Docker build causes the build to frequently hang during the second <code>uv sync</code> when building for an architecture which is not the one the build is being invoked from.</p>
 <p>Or to put it another way, building for <code>linux/arm64/v8</code> and <code>linux/amd64</code> on a <code>linux/amd64</code> machine, the build will succeed on the native architecture and roughly 50-60% of the time hang on the non-native, <code>linux/arm64/v8</code> build. And by hang I mean the build was still &quot;running&quot; an hour after it commenced where the average successful full rebuild time, without the Docker cache, is just over 1 minute.</p>
 <p>Limiting the build architectures to a single target and the builds run to completion, both for native and non-native architectures. Enabling multiple target architectures and the hangs will start to recur.</p>
-<p>In the <code>Dockerfile</code> below, it's the second invocation of <code>uv sync</code> where the hang, when it happens, will reliably occur.</p>
-<p>This is happening as part of migrating our Docker builds for <code>&lt;day-job&gt;</code> which makes a reproducible test case ... challenging as there's lots of components and private depedencies in our private GitHub repos. However, a redacted set of build components are below.</p>
+<p>In the <code>Dockerfile</code> below, it&#x27;s the second invocation of <code>uv sync</code> where the hang, when it happens, will reliably occur.</p>
+<p>This is happening as part of migrating our Docker builds for <code>&lt;day-job&gt;</code> which makes a reproducible test case ... challenging as there&#x27;s lots of components and private depedencies in our private GitHub repos. However, a redacted set of build components are below.</p>
 <p><code>pyproject.toml</code> :-</p>
 <pre><code>[project]
 name = &quot;refdata-api&quot;
@@ -154,7 +154,7 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 # - setup uv for this build ...
 # - copy instead of hard linking (which uv will complain about)
 # - compile to bytecode after installation for faster startup times
-# - use the just installed Python version and don't (un-helpfully) download one
+# - use the just installed Python version and don&#x27;t (un-helpfully) download one
 # - tell uv which Python binary to use
 # - tell uv sync where to sync to
 
@@ -172,7 +172,7 @@ ENV UV_LINK_MODE=copy \
 # - install runtime dependencies only, without the application itself
 # - this layer will be cached until either uv.lock or pyproject.toml
 #   change (these are mounted here into the builder layer as we
-#   don't need them at runtime)
+#   don&#x27;t need them at runtime)
 
 
 RUN --mount=type=cache,target=/root/.cache/uv \
@@ -185,7 +185,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     --no-install-project
 
 # - install everything else (the application itself), without dependencies
-# - /build is temporary to this layer and won't be copied into the runtime layer
+# - /build is temporary to this layer and won&#x27;t be copied into the runtime layer
 
 ADD . /build
 WORKDIR /build
@@ -251,33 +251,33 @@ HEALTHCHECK CMD curl --silent --fail http://localhost:80/ping || exit 1
 
 # - check that the installed Python version is what we expect
 # - check that one of the dependencies can be imported
-# - check that what we've installed can actually be imported
+# - check that what we&#x27;ve installed can actually be imported
 
 RUN &lt;&lt;EOT
 python3 --version
-python3 -Ic 'import uvicorn'
-python3 -Ic 'import refdata_api'
+python3 -Ic &#x27;import uvicorn&#x27;
+python3 -Ic &#x27;import refdata_api&#x27;
 EOT
 
 ### End - smoke test
 </code></pre>
-<h3>Platform</h3>
+Platform
 <p>Ubuntu 22.04 - Linux 6.8.0-49-generic x86_64 GNU/Linux</p>
-<h3>Version</h3>
+Version
 <p>uv 0.6.2 (Homebrew 2025-02-19)</p>
-<h3>Python version</h3>
+Python version
 <p>Python 3.10.12</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @vicchi on 2025-02-21 15:15</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/vicchi">@vicchi</a> on 2025-02-21 15:15</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/vicchi">@vicchi</a> on 2025-02-24 10:02</div>
-            <div class="timeline-body"><p>Update ... I've managed to come up with a reproducible test case; see https://github.com/vicchi/buildtest</p>
+            <div class="timeline-body"><p>Update ... I&#x27;ve managed to come up with a reproducible test case; see https://github.com/vicchi/buildtest</p>
 <p>In terms of test environments:</p>
 <p>To run the build, clone the repo above, copy <code>.env.sample</code> to <code>.env</code> and update with your GitHub API credentials. The repo assumes <code>direnv</code>, <code>uv</code> and Docker are pre-installed and available. Run <code>make build</code> to build with Docker layer caching and <code>make rebuild</code> to build without layer caching.</p>
-<h1>Build Test 1</h1>
+Build Test 1
 <ul>
 <li>Build host: Ubuntu 22.04 <code>Linux 6.8.0-49-generic x86_64 GNU/Linux</code></li>
 <li>uv version:<code>uv 0.6.2 (Homebrew 2025-02-19)</code></li>
@@ -287,7 +287,7 @@ EOT
 <p>Build for <code>linux/amd64</code> only succeeds: https://gist.github.com/vicchi/9df29f32d822a0454bba8c56e32830a0
 Build for <code>linux/arm64</code> only succeeds: https://gist.github.com/vicchi/9bbb41113ea991ef7f9a31b61de9abeb
 Build for <code>linux/amd64</code> and <code>linux/arm64</code> hangs: https://gist.github.com/vicchi/101c521e080fcb9f572b8f8540503039</p>
-<h1>Build Test 2</h1>
+Build Test 2
 <ul>
 <li>Build host: Ubuntu 24.04 <code>Linux 6.8.0-49-generic x86_64 GNU/Linux</code></li>
 <li>uv version:<code>uv 0.6.2 (Homebrew 2025-02-19)</code></li>
@@ -297,7 +297,7 @@ Build for <code>linux/amd64</code> and <code>linux/arm64</code> hangs: https://g
 <p>Build for <code>linux/amd64</code> only succeeds
 Build for <code>linux/arm64</code> only succeeds
 Build for <code>linux/amd64</code> and <code>linux/arm64</code> hangs</p>
-<h1>Build Test 3</h1>
+Build Test 3
 <ul>
 <li>Build host: macOS Sequoia 15.3.1 <code>Darwin 24.3.0 arm64</code></li>
 <li>uv version:<code>uv 0.6.2 (Homebrew 2025-02-19)</code></li>
@@ -311,7 +311,7 @@ Build for <code>linux/amd64</code> and <code>linux/arm64</code> succeeds</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-24 10:13</div>
-            <div class="timeline-body"><p>Thanks for the clear reproducer, this seems to be another instance of https://github.com/astral-sh/uv/issues/6105. I've transformed your example into an MRE: https://github.com/astral-sh/uv/issues/6105.</p>
+            <div class="timeline-body"><p>Thanks for the clear reproducer, this seems to be another instance of <a href="https://github.com/astral-sh/uv/issues/6105">astral-sh/uv#6105</a>. I&#x27;ve transformed your example into an MRE: <a href="https://github.com/astral-sh/uv/issues/6105">astral-sh/uv#6105</a>.</p>
 <p>Am I reading your comment correctly that only arm64 ever fails, and only if the host is also linux?</p>
 </div>
         </div>
@@ -320,9 +320,9 @@ Build for <code>linux/amd64</code> and <code>linux/arm64</code> succeeds</p>
             <div class="timeline-body"><blockquote>
 <p>Am I reading your comment correctly that only arm64 ever fails, and only if the host is also linux?</p>
 </blockquote>
-<p>@konstin Thanks for the reply and yes ... if the build host is <code>linux/amd64</code> then the build only hangs if a) the target architecture is <code>linux/arm64</code> and b) this is a multi-arch build which also targets the build host's architecture as <code>linux/amd64</code>.</p>
-<p>This issue doesn't occur if the build host if <code>linux/arm64</code> (macOS).</p>
-<p>That said, these two architectures are the only ones we target, but I'll add another CPU architecture into the mix to see if it's <code>linux/arm64</code> which is the root cause in a multi-arch build or any architecture which isn't the host's.</p>
+<p>@konstin Thanks for the reply and yes ... if the build host is <code>linux/amd64</code> then the build only hangs if a) the target architecture is <code>linux/arm64</code> and b) this is a multi-arch build which also targets the build host&#x27;s architecture as <code>linux/amd64</code>.</p>
+<p>This issue doesn&#x27;t occur if the build host if <code>linux/arm64</code> (macOS).</p>
+<p>That said, these two architectures are the only ones we target, but I&#x27;ll add another CPU architecture into the mix to see if it&#x27;s <code>linux/arm64</code> which is the root cause in a multi-arch build or any architecture which isn&#x27;t the host&#x27;s.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -337,33 +337,33 @@ Build for <code>linux/amd64</code> and <code>linux/arm64</code> succeeds</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/vicchi">@vicchi</a> on 2025-02-24 13:17</div>
-            <div class="timeline-body"><p>@konstin I read through #6105 and on a hunch disabled bytecode compilation in my <code>Dockerfile</code> ... so <code>UV_COMPILE_BYTECODE=0</code> ... and both architecture's builds complete successfully as evidenced by https://github.com/vicchi/buildtest/pkgs/container/buildtest</p>
-<p>It's not a fix but it's a viable workaround in the interim.</p>
+            <div class="timeline-body"><p>@konstin I read through #6105 and on a hunch disabled bytecode compilation in my <code>Dockerfile</code> ... so <code>UV_COMPILE_BYTECODE=0</code> ... and both architecture&#x27;s builds complete successfully as evidenced by https://github.com/vicchi/buildtest/pkgs/container/buildtest</p>
+<p>It&#x27;s not a fix but it&#x27;s a viable workaround in the interim.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-24 13:34</div>
-            <div class="timeline-body"><p>I assume it has something with qemu not properly handling the way we spawn the worker processes and pass their stdin/stdout, but i couldn't yet figure out yet where. With <code>RUST_LOG=&quot;uv_installer::compile=trace&quot;</code>, we show that some of the workers exit while others get stuck, but i couldn't yet figure out how to attach gdb to properly debug where its stuck (https://github.com/astral-sh/uv/issues/6105#issuecomment-2677954298). Deactivating bytecode compilation on aarch64 is a workaround for now.</p>
+            <div class="timeline-body"><p>I assume it has something with qemu not properly handling the way we spawn the worker processes and pass their stdin/stdout, but i couldn&#x27;t yet figure out yet where. With <code>RUST_LOG=&quot;uv_installer::compile=trace&quot;</code>, we show that some of the workers exit while others get stuck, but i couldn&#x27;t yet figure out how to attach gdb to properly debug where its stuck (<a href="https://github.com/astral-sh/uv/issues/6105">astral-sh/uv#6105</a>#issuecomment-2677954298). Deactivating bytecode compilation on aarch64 is a workaround for now.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/vicchi">@vicchi</a> on 2025-02-24 14:17</div>
-            <div class="timeline-body"><p>@konstin I'll take a fully functioning build, albeit one with slightly slower startup times, over a build which doesn't build any day.</p>
-<p>If there's any more diagnositics, tests or changes you'd like me to make on my environment please shout loudly at me</p>
+            <div class="timeline-body"><p>@konstin I&#x27;ll take a fully functioning build, albeit one with slightly slower startup times, over a build which doesn&#x27;t build any day.</p>
+<p>If there&#x27;s any more diagnositics, tests or changes you&#x27;d like me to make on my environment please shout loudly at me</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-28 16:51</div>
-            <div class="timeline-body"><p>I'm merging this with #6105 since we found the cause</p>
+            <div class="timeline-body"><p>I&#x27;m merging this with #6105 since we found the cause</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @konstin on 2025-02-28 16:51</div>
+            <div class="event">Closed by <a href="https://github.com/konstin">@konstin</a> on 2025-02-28 16:51</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:30:04 UTC
+        Synced at 2026-01-20 19:37:26 UTC
     </footer>
 </body>
 </html>

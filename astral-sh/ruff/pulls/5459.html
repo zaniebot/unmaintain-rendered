@@ -23,31 +23,31 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Previously, <code>StmtIf</code> was defined recursively as</p>
-<pre><code class="language-rust">pub struct StmtIf {
+<pre><code>pub struct StmtIf {
     pub range: TextRange,
     pub test: Box&lt;Expr&gt;,
     pub body: Vec&lt;Stmt&gt;,
     pub orelse: Vec&lt;Stmt&gt;,
 }
 </code></pre>
-<p>Every <code>elif</code> was represented as an <code>orelse</code> with a single <code>StmtIf</code>. This means that this representation couldn't differentiate between</p>
-<pre><code class="language-python">if cond1:
+<p>Every <code>elif</code> was represented as an <code>orelse</code> with a single <code>StmtIf</code>. This means that this representation couldn&#x27;t differentiate between</p>
+<pre><code>if cond1:
     x = 1
 else:
     if cond2:
         x = 2
 </code></pre>
 <p>and</p>
-<pre><code class="language-python">if cond1:
+<pre><code>if cond1:
     x = 1
 elif cond2:
     x = 2
 </code></pre>
-<p>It also makes many checks harder than they need to be because we have to recurse just to iterate over an entire if-elif-else and because we're lacking nodes and ranges on the <code>elif</code> and <code>else</code> branches.</p>
+<p>It also makes many checks harder than they need to be because we have to recurse just to iterate over an entire if-elif-else and because we&#x27;re lacking nodes and ranges on the <code>elif</code> and <code>else</code> branches.</p>
 <p>We change the representation to a flat</p>
-<pre><code class="language-rust">pub struct StmtIf {
+<pre><code>pub struct StmtIf {
     pub range: TextRange,
     pub test: Box&lt;Expr&gt;,
     pub body: Vec&lt;Stmt&gt;,
@@ -61,19 +61,19 @@ pub struct ElifElseClause {
 }
 </code></pre>
 <p>where <code>test: Some(_)</code> represents an <code>elif</code> and <code>test: None</code> an else.</p>
-<p>This representation is different tradeoff, e.g. we need to allocate the <code>Vec&lt;ElifElseClause&gt;</code>, the <code>elif</code>s are now different than the <code>if</code>s (which matters in rules where want to check both <code>if</code>s and <code>elif</code>s) and the type system doesn't guarantee that the <code>test: None</code> else is actually last. We're also now a bit more inconsistent since all other <code>else</code>, those from <code>for</code>, <code>while</code> and <code>try</code>, still don't have nodes. With the new representation some things became easier, e.g. finding the <code>elif</code> token (we can use the start of the <code>ElifElseClause</code>) and formatting comments for if-elif-else (no more dangling comments splitting, we only have to insert the dangling comment after the colon manually and set <code>leading_alternate_branch_comments</code>, everything else is taken of by having nodes for each branch and the usual placement.rs fixups).</p>
-<h2>Merge Plan</h2>
-<p>This PR requires coordination between the parser repo and the main ruff repo. I've split the ruff part, into two stacked PRs which have to be merged together (only the second one fixes all tests), the first for the formatter to be reviewed by @michareiser and the second for the linter to be reviewed by @charliermarsh.</p>
+<p>This representation is different tradeoff, e.g. we need to allocate the <code>Vec&lt;ElifElseClause&gt;</code>, the <code>elif</code>s are now different than the <code>if</code>s (which matters in rules where want to check both <code>if</code>s and <code>elif</code>s) and the type system doesn&#x27;t guarantee that the <code>test: None</code> else is actually last. We&#x27;re also now a bit more inconsistent since all other <code>else</code>, those from <code>for</code>, <code>while</code> and <code>try</code>, still don&#x27;t have nodes. With the new representation some things became easier, e.g. finding the <code>elif</code> token (we can use the start of the <code>ElifElseClause</code>) and formatting comments for if-elif-else (no more dangling comments splitting, we only have to insert the dangling comment after the colon manually and set <code>leading_alternate_branch_comments</code>, everything else is taken of by having nodes for each branch and the usual placement.rs fixups).</p>
+Merge Plan
+<p>This PR requires coordination between the parser repo and the main ruff repo. I&#x27;ve split the ruff part, into two stacked PRs which have to be merged together (only the second one fixes all tests), the first for the formatter to be reviewed by @michareiser and the second for the linter to be reviewed by @charliermarsh.</p>
 <ul>
-<li>MH: Review and merge https://github.com/astral-sh/RustPython-Parser/pull/20</li>
-<li>MH: Review and merge or move later in stack https://github.com/astral-sh/RustPython-Parser/pull/21</li>
-<li>MH: Review and approve https://github.com/astral-sh/RustPython-Parser/pull/22</li>
-<li>MH: Review and approve formatter PR https://github.com/astral-sh/ruff/pull/5459</li>
-<li>CM: Review and approve linter PR https://github.com/astral-sh/ruff/pull/5460</li>
-<li>Merge linter PR in formatter PR, fix ecosystem checks (ecosystem checks can't run on the formatter PR and won't run on the linter PR, so we need to merge them first)</li>
-<li>Merge https://github.com/astral-sh/RustPython-Parser/pull/22</li>
+<li>MH: Review and merge <a href="https://github.com/astral-sh/RustPython-Parser/pull/20">astral-sh/RustPython-Parser#20</a></li>
+<li>MH: Review and merge or move later in stack <a href="https://github.com/astral-sh/RustPython-Parser/pull/21">astral-sh/RustPython-Parser#21</a></li>
+<li>MH: Review and approve <a href="https://github.com/astral-sh/RustPython-Parser/pull/22">astral-sh/RustPython-Parser#22</a></li>
+<li>MH: Review and approve formatter PR <a href="https://github.com/astral-sh/ruff/pull/5459">astral-sh/ruff#5459</a></li>
+<li>CM: Review and approve linter PR <a href="https://github.com/astral-sh/ruff/pull/5460">astral-sh/ruff#5460</a></li>
+<li>Merge linter PR in formatter PR, fix ecosystem checks (ecosystem checks can&#x27;t run on the formatter PR and won&#x27;t run on the linter PR, so we need to merge them first)</li>
+<li>Merge <a href="https://github.com/astral-sh/RustPython-Parser/pull/22">astral-sh/RustPython-Parser#22</a></li>
 <li>Create tag in the parser, update linter+formatter PR</li>
-<li>Merge linter+formatter PR https://github.com/astral-sh/ruff/pull/5459</li>
+<li>Merge linter+formatter PR <a href="https://github.com/astral-sh/ruff/pull/5459">astral-sh/ruff#5459</a></li>
 </ul>
 </div>
         </div>
@@ -82,8 +82,8 @@ pub struct ElifElseClause {
             <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
 <ul>
 <li>main<ul>
-<li><strong>PR #5459</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/5459" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a>  👈<ul>
-<li><strong>PR #5460</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/5460" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #5459</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/5459"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite"></a>  👈<ul>
+<li><strong>PR #5460</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/5460"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite"></a></li>
 </ul>
 </li>
 </ul>
@@ -93,11 +93,11 @@ pub struct ElifElseClause {
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @konstin on 2023-07-01 20:24</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/konstin">@konstin</a> on 2023-07-01 20:24</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/comparable.rs</code>:484 on 2023-07-03 08:18</div>
-            <div class="timeline-body"><p>Ouch... that's expensive</p>
+            <div class="timeline-body"><p>Ouch... that&#x27;s expensive</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -108,7 +108,7 @@ pub struct ElifElseClause {
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/helpers.rs</code>:966 on 2023-07-03 08:20</div>
             <div class="timeline-body"><p>Nit: I explained this in your other PR. I think we should change <code>Visitor</code> to have instead a <code>visit_elif_else_clause</code> method to be consistent with <code>ExceptHandler</code> (it has a visit function for every node).  We then need to call <code>walk_elif_else_clause</code> here and override the <code>visit_elif_else_clause</code></p>
-<pre><code class="language-suggestion">                for clause in elif_else_clauses {
+<pre><code>                for clause in elif_else_clauses {
                 	walk_elif_else_clause(&amp;clause);
                 }
 </code></pre>
@@ -116,7 +116,7 @@ pub struct ElifElseClause {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/visitor.rs</code>:245 on 2023-07-03 08:22</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">                walk_elif_else_clause(&amp;clause);
+            <div class="timeline-body"><pre><code>                walk_elif_else_clause(&amp;clause);
 </code></pre>
 <p>and add a <code>visit_elif_else_clause</code> method</p>
 <p>We should also visit the test condition.</p>
@@ -144,7 +144,7 @@ pub struct ElifElseClause {
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/statement/stmt_if.rs</code>:94 on 2023-07-03 08:28</div>
             <div class="timeline-body"><p>Nit: I find it hard to identify what the difference is between the two branches if they alsoc contain the shared logic</p>
-<pre><code class="language-suggestion">    leading_alternate_branch_comments(leading_comments, last_node).fmt(f)?;
+<pre><code>    leading_alternate_branch_comments(leading_comments, last_node).fmt(f)?;
     
     if let Some(test) = test {
         write!(
@@ -173,7 +173,7 @@ pub struct ElifElseClause {
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @MichaReiser on 2023-07-03 08:31</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-07-03 08:31</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-07-03 09:24</div>
@@ -226,344 +226,344 @@ pub struct ElifElseClause {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/src/statement/stmt_if.rs</code>:52 on 2023-07-03 11:09</div>
-            <div class="timeline-body"><p>in that case i just wouldn't implement <code>FormatNodeRule</code> for <code>ElifElseClause</code>, i mainly added it because it's effectively free and i can imagine use cases where we want to format a fixed elif branch and newline more or less is acceptable</p>
+            <div class="timeline-body"><p>in that case i just wouldn&#x27;t implement <code>FormatNodeRule</code> for <code>ElifElseClause</code>, i mainly added it because it&#x27;s effectively free and i can imagine use cases where we want to format a fixed elif branch and newline more or less is acceptable</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">formatter</span> added by @konstin on 2023-07-07 19:32</div>
+            <div class="event">Label <span class="label">formatter</span> added by <a href="https://github.com/konstin">@konstin</a> on 2023-07-07 19:32</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-07-11 17:32</div>
-            <div class="timeline-body"><h2>PR Check Results</h2>
-<h3>Ecosystem</h3>
+            <div class="timeline-body">PR Check Results
+Ecosystem
 <p>ℹ️ ecosystem check <strong>detected changes</strong>. (+148, -155, 0 error(s))</p>
-<details><summary>airflow (+96, -97)</summary>
+airflow (+96, -97)
 <p>
 
 <pre>
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/jobs/backfill_job_runner.py#L428'>airflow/jobs/backfill_job_runner.py:428:9:</a> PLR0915 Too many statements (126 > 50)
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/jobs/backfill_job_runner.py#L428'>airflow/jobs/backfill_job_runner.py:428:9:</a> PLR0915 Too many statements (127 > 50)
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/jobs/backfill_job_runner.py#L462'>airflow/jobs/backfill_job_runner.py:462:17:</a> PLR0912 Too many branches (23 > 12)
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/jobs/backfill_job_runner.py#L462'>airflow/jobs/backfill_job_runner.py:462:17:</a> PLR0912 Too many branches (24 > 12)
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/jobs/backfill_job_runner.py#L462'>airflow/jobs/backfill_job_runner.py:462:17:</a> PLR0915 Too many statements (72 > 50)
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/jobs/backfill_job_runner.py#L462'>airflow/jobs/backfill_job_runner.py:462:17:</a> PLR0915 Too many statements (73 > 50)
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/jobs/backfill_job_runner.py#L495'>airflow/jobs/backfill_job_runner.py:495:17:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/jobs/backfill_job_runner.py#L497'>airflow/jobs/backfill_job_runner.py:497:21:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/models/baseoperator.py#L1105'>airflow/models/baseoperator.py:1105:14:</a> SIM114 Combine `if` branches using logical `or` operator
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/models/baseoperator.py#L1105'>airflow/models/baseoperator.py:1105:9:</a> SIM114 Combine `if` branches using logical `or` operator
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/models/dag.py#L1670'>airflow/models/dag.py:1670:9:</a> PLR0912 Too many branches (40 > 12)
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/models/dag.py#L1670'>airflow/models/dag.py:1670:9:</a> PLR0912 Too many branches (41 > 12)
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/models/dag.py#L1670'>airflow/models/dag.py:1670:9:</a> PLR0915 Too many statements (92 > 50)
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/models/dag.py#L1670'>airflow/models/dag.py:1670:9:</a> PLR0915 Too many statements (93 > 50)
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/models/dag.py#L1735'>airflow/models/dag.py:1735:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/models/dag.py#L1737'>airflow/models/dag.py:1737:17:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/models/dag.py#L409'>airflow/models/dag.py:409:9:</a> PLR0912 Too many branches (31 > 12)
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/models/dag.py#L409'>airflow/models/dag.py:409:9:</a> PLR0912 Too many branches (32 > 12)
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/models/dag.py#L409'>airflow/models/dag.py:409:9:</a> PLR0915 Too many statements (122 > 50)
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/models/dag.py#L409'>airflow/models/dag.py:409:9:</a> PLR0915 Too many statements (123 > 50)
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/models/dagrun.py#L478'>airflow/models/dagrun.py:478:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/models/dagrun.py#L480'>airflow/models/dagrun.py:480:17:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/models/taskinstance.py#L1906'>airflow/models/taskinstance.py:1906:9:</a> PLR0912 Too many branches (19 > 12)
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/models/taskinstance.py#L1906'>airflow/models/taskinstance.py:1906:9:</a> PLR0912 Too many branches (20 > 12)
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/models/taskinstance.py#L1906'>airflow/models/taskinstance.py:1906:9:</a> PLR0915 Too many statements (56 > 50)
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/models/taskinstance.py#L1906'>airflow/models/taskinstance.py:1906:9:</a> PLR0915 Too many statements (57 > 50)
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/models/variable.py#L142'>airflow/models/variable.py:142:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/models/variable.py#L143'>airflow/models/variable.py:143:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/models/variable.py#L147'>airflow/models/variable.py:147:13:</a> RET505 Unnecessary `else` after `return` statement
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/operators/bash.py#L180'>airflow/operators/bash.py:180:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/operators/bash.py#L181'>airflow/operators/bash.py:181:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/amazon/aws/operators/batch.py#L301'>airflow/providers/amazon/aws/operators/batch.py:301:9:</a> PLR0912 Too many branches (13 > 12)
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/amazon/aws/operators/batch.py#L343'>airflow/providers/amazon/aws/operators/batch.py:343:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/amazon/aws/operators/batch.py#L344'>airflow/providers/amazon/aws/operators/batch.py:344:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/amazon/aws/operators/eks.py#L1038'>airflow/providers/amazon/aws/operators/eks.py:1038:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/amazon/aws/operators/eks.py#L1039'>airflow/providers/amazon/aws/operators/eks.py:1039:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/amazon/aws/sensors/s3.py#L145'>airflow/providers/amazon/aws/sensors/s3.py:145:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/amazon/aws/sensors/s3.py#L146'>airflow/providers/amazon/aws/sensors/s3.py:146:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/amazon/aws/sensors/s3.py#L337'>airflow/providers/amazon/aws/sensors/s3.py:337:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/amazon/aws/sensors/s3.py#L338'>airflow/providers/amazon/aws/sensors/s3.py:338:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/amazon/aws/transfers/ftp_to_s3.py#L114'>airflow/providers/amazon/aws/transfers/ftp_to_s3.py:114:9:</a> PLR0912 Too many branches (13 > 12)
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/amazon/aws/transfers/ftp_to_s3.py#L143'>airflow/providers/amazon/aws/transfers/ftp_to_s3.py:143:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/amazon/aws/transfers/ftp_to_s3.py#L144'>airflow/providers/amazon/aws/transfers/ftp_to_s3.py:144:17:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/amazon/aws/utils/connection_wrapper.py#L132'>airflow/providers/amazon/aws/utils/connection_wrapper.py:132:9:</a> PLR0912 Too many branches (23 > 12)
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/amazon/aws/utils/connection_wrapper.py#L132'>airflow/providers/amazon/aws/utils/connection_wrapper.py:132:9:</a> PLR0912 Too many branches (24 > 12)
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/amazon/aws/utils/connection_wrapper.py#L132'>airflow/providers/amazon/aws/utils/connection_wrapper.py:132:9:</a> PLR0915 Too many statements (63 > 50)
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/amazon/aws/utils/connection_wrapper.py#L132'>airflow/providers/amazon/aws/utils/connection_wrapper.py:132:9:</a> PLR0915 Too many statements (64 > 50)
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/apache/hive/transfers/s3_to_hive.py#L140'>airflow/providers/apache/hive/transfers/s3_to_hive.py:140:9:</a> PLR0915 Too many statements (52 > 50)
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/apache/hive/transfers/s3_to_hive.py#L140'>airflow/providers/apache/hive/transfers/s3_to_hive.py:140:9:</a> PLR0915 Too many statements (53 > 50)
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/celery/executors/celery_executor.py#L220'>airflow/providers/celery/executors/celery_executor.py:220:13:</a> SIM114 Combine `if` branches using logical `or` operator
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/celery/executors/celery_executor.py#L220'>airflow/providers/celery/executors/celery_executor.py:220:18:</a> SIM114 Combine `if` branches using logical `or` operator
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/cncf/kubernetes/utils/pod_manager.py#L430'>airflow/providers/cncf/kubernetes/utils/pod_manager.py:430:9:</a> PLR0912 Too many branches (13 > 12)
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/cncf/kubernetes/utils/pod_manager.py#L430'>airflow/providers/cncf/kubernetes/utils/pod_manager.py:430:9:</a> PLR0912 Too many branches (15 > 12)
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/cncf/kubernetes/utils/pod_manager.py#L442'>airflow/providers/cncf/kubernetes/utils/pod_manager.py:442:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/cncf/kubernetes/utils/pod_manager.py#L443'>airflow/providers/cncf/kubernetes/utils/pod_manager.py:443:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/cncf/kubernetes/utils/pod_manager.py#L468'>airflow/providers/cncf/kubernetes/utils/pod_manager.py:468:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/cncf/kubernetes/utils/pod_manager.py#L470'>airflow/providers/cncf/kubernetes/utils/pod_manager.py:470:17:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/databricks/operators/databricks.py#L44'>airflow/providers/databricks/operators/databricks.py:44:5:</a> PLR0912 Too many branches (17 > 12)
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/databricks/operators/databricks.py#L44'>airflow/providers/databricks/operators/databricks.py:44:5:</a> PLR0912 Too many branches (18 > 12)
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/dbt/cloud/operators/dbt.py#L162'>airflow/providers/dbt/cloud/operators/dbt.py:162:17:</a> RET503 [*] Missing explicit `return` at the end of function able to return non-`None` value
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/dbt/cloud/operators/dbt.py#L177'>airflow/providers/dbt/cloud/operators/dbt.py:177:17:</a> RET503 [*] Missing explicit `return` at the end of function able to return non-`None` value
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/google/cloud/operators/bigquery.py#L2673'>airflow/providers/google/cloud/operators/bigquery.py:2673:9:</a> PLR0912 Too many branches (13 > 12)
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/google/cloud/operators/bigquery.py#L2673'>airflow/providers/google/cloud/operators/bigquery.py:2673:9:</a> PLR0912 Too many branches (14 > 12)
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/google/cloud/operators/datacatalog.py#L384'>airflow/providers/google/cloud/operators/datacatalog.py:384:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/google/cloud/operators/datacatalog.py#L385'>airflow/providers/google/cloud/operators/datacatalog.py:385:17:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/google/cloud/operators/datacatalog.py#L385'>airflow/providers/google/cloud/operators/datacatalog.py:385:17:</a> SIM108 [*] Use ternary operator `template_name = self.tag.template if isinstance(self.tag, Tag) else self.tag["template"]` instead of `if`-`else`-block
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/google/cloud/operators/datafusion.py#L834'>airflow/providers/google/cloud/operators/datafusion.py:834:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/google/cloud/operators/datafusion.py#L835'>airflow/providers/google/cloud/operators/datafusion.py:835:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/google/cloud/operators/kubernetes_engine.py#L470'>airflow/providers/google/cloud/operators/kubernetes_engine.py:470:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/google/cloud/operators/kubernetes_engine.py#L471'>airflow/providers/google/cloud/operators/kubernetes_engine.py:471:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/google/cloud/sensors/bigquery.py#L116'>airflow/providers/google/cloud/sensors/bigquery.py:116:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/google/cloud/sensors/bigquery.py#L117'>airflow/providers/google/cloud/sensors/bigquery.py:117:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/google/cloud/sensors/bigquery.py#L222'>airflow/providers/google/cloud/sensors/bigquery.py:222:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/google/cloud/sensors/bigquery.py#L223'>airflow/providers/google/cloud/sensors/bigquery.py:223:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/google/cloud/sensors/gcs.py#L104'>airflow/providers/google/cloud/sensors/gcs.py:104:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/google/cloud/sensors/gcs.py#L105'>airflow/providers/google/cloud/sensors/gcs.py:105:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/google/cloud/sensors/gcs.py#L236'>airflow/providers/google/cloud/sensors/gcs.py:236:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/google/cloud/sensors/gcs.py#L237'>airflow/providers/google/cloud/sensors/gcs.py:237:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/google/cloud/sensors/gcs.py#L328'>airflow/providers/google/cloud/sensors/gcs.py:328:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/google/cloud/sensors/gcs.py#L328'>airflow/providers/google/cloud/sensors/gcs.py:328:9:</a> RET505 Unnecessary `elif` after `return` statement
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/google/cloud/sensors/gcs.py#L328'>airflow/providers/google/cloud/sensors/gcs.py:328:9:</a> RET505 Unnecessary `else` after `return` statement
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/google/cloud/sensors/gcs.py#L329'>airflow/providers/google/cloud/sensors/gcs.py:329:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/hashicorp/hooks/vault.py#L108'>airflow/providers/hashicorp/hooks/vault.py:108:9:</a> PLR0912 Too many branches (21 > 12)
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/hashicorp/hooks/vault.py#L108'>airflow/providers/hashicorp/hooks/vault.py:108:9:</a> PLR0912 Too many branches (22 > 12)
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/hashicorp/hooks/vault.py#L108'>airflow/providers/hashicorp/hooks/vault.py:108:9:</a> PLR0915 Too many statements (51 > 50)
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/hashicorp/hooks/vault.py#L108'>airflow/providers/hashicorp/hooks/vault.py:108:9:</a> PLR0915 Too many statements (52 > 50)
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/hashicorp/hooks/vault.py#L196'>airflow/providers/hashicorp/hooks/vault.py:196:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/hashicorp/hooks/vault.py#L197'>airflow/providers/hashicorp/hooks/vault.py:197:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/microsoft/azure/hooks/asb.py#L174'>airflow/providers/microsoft/azure/hooks/asb.py:174:17:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/microsoft/azure/hooks/asb.py#L175'>airflow/providers/microsoft/azure/hooks/asb.py:175:21:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/microsoft/azure/operators/data_factory.py#L226'>airflow/providers/microsoft/azure/operators/data_factory.py:226:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/microsoft/azure/operators/data_factory.py#L227'>airflow/providers/microsoft/azure/operators/data_factory.py:227:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/microsoft/azure/sensors/data_factory.py#L100'>airflow/providers/microsoft/azure/sensors/data_factory.py:100:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/microsoft/azure/sensors/data_factory.py#L99'>airflow/providers/microsoft/azure/sensors/data_factory.py:99:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/microsoft/azure/sensors/wasb.py#L185'>airflow/providers/microsoft/azure/sensors/wasb.py:185:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/microsoft/azure/sensors/wasb.py#L186'>airflow/providers/microsoft/azure/sensors/wasb.py:186:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/microsoft/azure/sensors/wasb.py#L83'>airflow/providers/microsoft/azure/sensors/wasb.py:83:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/microsoft/azure/sensors/wasb.py#L84'>airflow/providers/microsoft/azure/sensors/wasb.py:84:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/oracle/hooks/oracle.py#L299'>airflow/providers/oracle/hooks/oracle.py:299:22:</a> SIM114 Combine `if` branches using logical `or` operator
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/slack/hooks/slack_webhook.py#L261'>airflow/providers/slack/hooks/slack_webhook.py:261:9:</a> SIM102 Use a single `if` statement instead of nested `if` statements
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/slack/hooks/slack_webhook.py#L261'>airflow/providers/slack/hooks/slack_webhook.py:261:9:</a> SIM102 [*] Use a single `if` statement instead of nested `if` statements
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/tableau/operators/tableau.py#L124'>airflow/providers/tableau/operators/tableau.py:124:17:</a> SIM102 [*] Use a single `if` statement instead of nested `if` statements
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers_manager.py#L687'>airflow/providers_manager.py:687:21:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers_manager.py#L688'>airflow/providers_manager.py:688:25:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers_manager.py#L787'>airflow/providers_manager.py:787:9:</a> PLR0912 Too many branches (17 > 12)
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers_manager.py#L787'>airflow/providers_manager.py:787:9:</a> PLR0912 Too many branches (18 > 12)
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/sensors/external_task.py#L225'>airflow/sensors/external_task.py:225:9:</a> PLR0912 Too many branches (17 > 12)
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/sensors/external_task.py#L225'>airflow/sensors/external_task.py:225:9:</a> PLR0912 Too many branches (18 > 12)
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/serialization/serialized_objects.py#L556'>airflow/serialization/serialized_objects.py:556:13:</a> RET503 [*] Missing explicit `return` at the end of function able to return non-`None` value
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/serialization/serialized_objects.py#L562'>airflow/serialization/serialized_objects.py:562:13:</a> RET503 [*] Missing explicit `return` at the end of function able to return non-`None` value
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/serialization/serialized_objects.py#L961'>airflow/serialization/serialized_objects.py:961:13:</a> SIM114 Combine `if` branches using logical `or` operator
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/serialization/serialized_objects.py#L961'>airflow/serialization/serialized_objects.py:961:18:</a> SIM114 Combine `if` branches using logical `or` operator
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/ti_deps/deps/not_previously_skipped_dep.py#L64'>airflow/ti_deps/deps/not_previously_skipped_dep.py:64:17:</a> SIM114 Combine `if` branches using logical `or` operator
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/ti_deps/deps/trigger_rule_dep.py#L252'>airflow/ti_deps/deps/trigger_rule_dep.py:252:17:</a> SIM102 Use a single `if` statement instead of nested `if` statements
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/ti_deps/deps/trigger_rule_dep.py#L252'>airflow/ti_deps/deps/trigger_rule_dep.py:252:17:</a> SIM102 [*] Use a single `if` statement instead of nested `if` statements
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/ti_deps/deps/trigger_rule_dep.py#L372'>airflow/ti_deps/deps/trigger_rule_dep.py:372:14:</a> SIM114 Combine `if` branches using logical `or` operator
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/ti_deps/deps/trigger_rule_dep.py#L372'>airflow/ti_deps/deps/trigger_rule_dep.py:372:9:</a> SIM114 Combine `if` branches using logical `or` operator
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/utils/dates.py#L97'>airflow/utils/dates.py:97:10:</a> SIM114 Combine `if` branches using logical `or` operator
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/utils/dates.py#L97'>airflow/utils/dates.py:97:5:</a> SIM114 Combine `if` branches using logical `or` operator
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/utils/log/file_task_handler.py#L323'>airflow/utils/log/file_task_handler.py:323:9:</a> SIM114 Combine `if` branches using logical `or` operator
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/utils/operator_helpers.py#L106'>airflow/utils/operator_helpers.py:106:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/utils/operator_helpers.py#L107'>airflow/utils/operator_helpers.py:107:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/utils/operator_helpers.py#L63'>airflow/utils/operator_helpers.py:63:5:</a> PLR0912 Too many branches (14 > 12)
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/utils/operator_helpers.py#L63'>airflow/utils/operator_helpers.py:63:5:</a> PLR0912 Too many branches (15 > 12)
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/www/fab_security/manager.py#L543'>airflow/www/fab_security/manager.py:543:9:</a> RET503 [*] Missing explicit `return` at the end of function able to return non-`None` value
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/www/fab_security/manager.py#L545'>airflow/www/fab_security/manager.py:545:9:</a> RET503 [*] Missing explicit `return` at the end of function able to return non-`None` value
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/www/fab_security/sqla/manager.py#L160'>airflow/www/fab_security/sqla/manager.py:160:9:</a> RET503 [*] Missing explicit `return` at the end of function able to return non-`None` value
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/www/fab_security/sqla/manager.py#L177'>airflow/www/fab_security/sqla/manager.py:177:9:</a> RET503 [*] Missing explicit `return` at the end of function able to return non-`None` value
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/www/views.py#L2766'>airflow/www/views.py:2766:9:</a> RET503 [*] Missing explicit `return` at the end of function able to return non-`None` value
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/www/views.py#L2779'>airflow/www/views.py:2779:9:</a> RET503 [*] Missing explicit `return` at the end of function able to return non-`None` value
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/www/views.py#L2822'>airflow/www/views.py:2822:9:</a> RET503 [*] Missing explicit `return` at the end of function able to return non-`None` value
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/www/views.py#L2835'>airflow/www/views.py:2835:9:</a> RET503 [*] Missing explicit `return` at the end of function able to return non-`None` value
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/www/views.py#L4391'>airflow/www/views.py:4391:13:</a> TRY004 Prefer `TypeError` exception for invalid type
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/assign_cherry_picked_prs_with_milestone.py#L250'>dev/assign_cherry_picked_prs_with_milestone.py:250:5:</a> PLR0912 Too many branches (33 > 12)
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/assign_cherry_picked_prs_with_milestone.py#L250'>dev/assign_cherry_picked_prs_with_milestone.py:250:5:</a> PLR0912 Too many branches (34 > 12)
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/assign_cherry_picked_prs_with_milestone.py#L250'>dev/assign_cherry_picked_prs_with_milestone.py:250:5:</a> PLR0915 Too many statements (97 > 50)
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/assign_cherry_picked_prs_with_milestone.py#L250'>dev/assign_cherry_picked_prs_with_milestone.py:250:5:</a> PLR0915 Too many statements (98 > 50)
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/assign_cherry_picked_prs_with_milestone.py#L283'>dev/assign_cherry_picked_prs_with_milestone.py:283:5:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/assign_cherry_picked_prs_with_milestone.py#L284'>dev/assign_cherry_picked_prs_with_milestone.py:284:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/commands/ci_commands.py#L124'>dev/breeze/src/airflow_breeze/commands/ci_commands.py:124:5:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/commands/ci_commands.py#L125'>dev/breeze/src/airflow_breeze/commands/ci_commands.py:125:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/commands/ci_commands.py#L359'>dev/breeze/src/airflow_breeze/commands/ci_commands.py:359:10:</a> SIM114 Combine `if` branches using logical `or` operator
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/commands/ci_commands.py#L359'>dev/breeze/src/airflow_breeze/commands/ci_commands.py:359:5:</a> SIM114 Combine `if` branches using logical `or` operator
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/commands/ci_commands.py#L363'>dev/breeze/src/airflow_breeze/commands/ci_commands.py:363:10:</a> SIM114 Combine `if` branches using logical `or` operator
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/commands/ci_commands.py#L363'>dev/breeze/src/airflow_breeze/commands/ci_commands.py:363:5:</a> SIM114 Combine `if` branches using logical `or` operator
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/commands/kubernetes_commands.py#L532'>dev/breeze/src/airflow_breeze/commands/kubernetes_commands.py:532:5:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/commands/kubernetes_commands.py#L533'>dev/breeze/src/airflow_breeze/commands/kubernetes_commands.py:533:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/commands/kubernetes_commands.py#L555'>dev/breeze/src/airflow_breeze/commands/kubernetes_commands.py:555:5:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/commands/kubernetes_commands.py#L556'>dev/breeze/src/airflow_breeze/commands/kubernetes_commands.py:556:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/commands/production_image_commands.py#L446'>dev/breeze/src/airflow_breeze/commands/production_image_commands.py:446:5:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/commands/production_image_commands.py#L447'>dev/breeze/src/airflow_breeze/commands/production_image_commands.py:447:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/commands/release_management_commands.py#L894'>dev/breeze/src/airflow_breeze/commands/release_management_commands.py:894:5:</a> PLR0912 Too many branches (17 > 12)
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/commands/release_management_commands.py#L894'>dev/breeze/src/airflow_breeze/commands/release_management_commands.py:894:5:</a> PLR0912 Too many branches (18 > 12)
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/commands/release_management_commands.py#L894'>dev/breeze/src/airflow_breeze/commands/release_management_commands.py:894:5:</a> PLR0915 Too many statements (57 > 50)
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/commands/release_management_commands.py#L894'>dev/breeze/src/airflow_breeze/commands/release_management_commands.py:894:5:</a> PLR0915 Too many statements (58 > 50)
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/commands/release_management_commands.py#L910'>dev/breeze/src/airflow_breeze/commands/release_management_commands.py:910:5:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/commands/release_management_commands.py#L911'>dev/breeze/src/airflow_breeze/commands/release_management_commands.py:911:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/commands/setup_commands.py#L600'>dev/breeze/src/airflow_breeze/commands/setup_commands.py:600:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/commands/setup_commands.py#L601'>dev/breeze/src/airflow_breeze/commands/setup_commands.py:601:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/utils/confirm.py#L111'>dev/breeze/src/airflow_breeze/utils/confirm.py:111:10:</a> SIM114 Combine `if` branches using logical `or` operator
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/utils/confirm.py#L111'>dev/breeze/src/airflow_breeze/utils/confirm.py:111:5:</a> SIM114 Combine `if` branches using logical `or` operator
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/utils/confirm.py#L34'>dev/breeze/src/airflow_breeze/utils/confirm.py:34:5:</a> PLR0912 Too many branches (17 > 12)
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/utils/confirm.py#L34'>dev/breeze/src/airflow_breeze/utils/confirm.py:34:5:</a> PLR0912 Too many branches (18 > 12)
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/utils/publish_docs_builder.py#L191'>dev/breeze/src/airflow_breeze/utils/publish_docs_builder.py:191:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/utils/publish_docs_builder.py#L192'>dev/breeze/src/airflow_breeze/utils/publish_docs_builder.py:192:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/system_tests/update_issue_status.py#L118'>dev/system_tests/update_issue_status.py:118:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/system_tests/update_issue_status.py#L119'>dev/system_tests/update_issue_status.py:119:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/system_tests/update_issue_status.py#L132'>dev/system_tests/update_issue_status.py:132:5:</a> PLR0912 Too many branches (18 > 12)
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/system_tests/update_issue_status.py#L132'>dev/system_tests/update_issue_status.py:132:5:</a> PLR0912 Too many branches (19 > 12)
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/system_tests/update_issue_status.py#L132'>dev/system_tests/update_issue_status.py:132:5:</a> PLR0915 Too many statements (77 > 50)
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/system_tests/update_issue_status.py#L132'>dev/system_tests/update_issue_status.py:132:5:</a> PLR0915 Too many statements (78 > 50)
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/system_tests/update_issue_status.py#L187'>dev/system_tests/update_issue_status.py:187:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/system_tests/update_issue_status.py#L188'>dev/system_tests/update_issue_status.py:188:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/docs/conf.py#L815'>docs/conf.py:815:10:</a> SIM114 Combine `if` branches using logical `or` operator
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/docs/conf.py#L815'>docs/conf.py:815:5:</a> SIM114 Combine `if` branches using logical `or` operator
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/docs/exts/docs_build/docs_builder.py#L191'>docs/exts/docs_build/docs_builder.py:191:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/docs/exts/docs_build/docs_builder.py#L192'>docs/exts/docs_build/docs_builder.py:192:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/scripts/ci/pre_commit/pre_commit_checkout_no_credentials.py#L59'>scripts/ci/pre_commit/pre_commit_checkout_no_credentials.py:59:17:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/scripts/ci/pre_commit/pre_commit_checkout_no_credentials.py#L59'>scripts/ci/pre_commit/pre_commit_checkout_no_credentials.py:59:17:</a> RET507 Unnecessary `elif` after `continue` statement
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/scripts/ci/pre_commit/pre_commit_checkout_no_credentials.py#L59'>scripts/ci/pre_commit/pre_commit_checkout_no_credentials.py:59:17:</a> RET507 Unnecessary `else` after `continue` statement
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/scripts/ci/pre_commit/pre_commit_checkout_no_credentials.py#L60'>scripts/ci/pre_commit/pre_commit_checkout_no_credentials.py:60:21:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/scripts/ci/pre_commit/pre_commit_update_common_sql_api_stubs.py#L275'>scripts/ci/pre_commit/pre_commit_update_common_sql_api_stubs.py:275:5:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/scripts/ci/pre_commit/pre_commit_update_common_sql_api_stubs.py#L276'>scripts/ci/pre_commit/pre_commit_update_common_sql_api_stubs.py:276:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/tests/operators/test_branch_operator.py#L163'>tests/operators/test_branch_operator.py:163:13:</a> SIM114 Combine `if` branches using logical `or` operator
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/tests/operators/test_branch_operator.py#L163'>tests/operators/test_branch_operator.py:163:18:</a> SIM114 Combine `if` branches using logical `or` operator
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/tests/providers/amazon/aws/hooks/test_eks.py#L780'>tests/providers/amazon/aws/hooks/test_eks.py:780:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/tests/providers/amazon/aws/hooks/test_eks.py#L781'>tests/providers/amazon/aws/hooks/test_eks.py:781:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/tests/providers/common/sql/operators/test_sql.py#L1161'>tests/providers/common/sql/operators/test_sql.py:1161:13:</a> SIM114 Combine `if` branches using logical `or` operator
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/tests/providers/common/sql/operators/test_sql.py#L1161'>tests/providers/common/sql/operators/test_sql.py:1161:18:</a> SIM114 Combine `if` branches using logical `or` operator
-+ <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/tests/providers/common/sql/operators/test_sql.py#L1234'>tests/providers/common/sql/operators/test_sql.py:1234:17:</a> SIM114 Combine `if` branches using logical `or` operator
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/tests/providers/common/sql/operators/test_sql.py#L1234'>tests/providers/common/sql/operators/test_sql.py:1234:22:</a> SIM114 Combine `if` branches using logical `or` operator
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/tests/providers/elasticsearch/log/elasticmock/fake_elasticsearch.py#L502'>tests/providers/elasticsearch/log/elasticmock/fake_elasticsearch.py:502:13:</a> TRY004 Prefer `TypeError` exception for invalid type
-- <a href='https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/tests/providers/elasticsearch/log/elasticmock/fake_elasticsearch.py#L521'>tests/providers/elasticsearch/log/elasticmock/fake_elasticsearch.py:521:13:</a> TRY004 Prefer `TypeError` exception for invalid type
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/jobs/backfill_job_runner.py#L428">airflow/jobs/backfill_job_runner.py:428:9:</a> PLR0915 Too many statements (126 &gt; 50)
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/jobs/backfill_job_runner.py#L428">airflow/jobs/backfill_job_runner.py:428:9:</a> PLR0915 Too many statements (127 &gt; 50)
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/jobs/backfill_job_runner.py#L462">airflow/jobs/backfill_job_runner.py:462:17:</a> PLR0912 Too many branches (23 &gt; 12)
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/jobs/backfill_job_runner.py#L462">airflow/jobs/backfill_job_runner.py:462:17:</a> PLR0912 Too many branches (24 &gt; 12)
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/jobs/backfill_job_runner.py#L462">airflow/jobs/backfill_job_runner.py:462:17:</a> PLR0915 Too many statements (72 &gt; 50)
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/jobs/backfill_job_runner.py#L462">airflow/jobs/backfill_job_runner.py:462:17:</a> PLR0915 Too many statements (73 &gt; 50)
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/jobs/backfill_job_runner.py#L495">airflow/jobs/backfill_job_runner.py:495:17:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/jobs/backfill_job_runner.py#L497">airflow/jobs/backfill_job_runner.py:497:21:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/models/baseoperator.py#L1105">airflow/models/baseoperator.py:1105:14:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/models/baseoperator.py#L1105">airflow/models/baseoperator.py:1105:9:</a> SIM114 Combine `if` branches using logical `or` operator
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/models/dag.py#L1670">airflow/models/dag.py:1670:9:</a> PLR0912 Too many branches (40 &gt; 12)
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/models/dag.py#L1670">airflow/models/dag.py:1670:9:</a> PLR0912 Too many branches (41 &gt; 12)
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/models/dag.py#L1670">airflow/models/dag.py:1670:9:</a> PLR0915 Too many statements (92 &gt; 50)
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/models/dag.py#L1670">airflow/models/dag.py:1670:9:</a> PLR0915 Too many statements (93 &gt; 50)
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/models/dag.py#L1735">airflow/models/dag.py:1735:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/models/dag.py#L1737">airflow/models/dag.py:1737:17:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/models/dag.py#L409">airflow/models/dag.py:409:9:</a> PLR0912 Too many branches (31 &gt; 12)
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/models/dag.py#L409">airflow/models/dag.py:409:9:</a> PLR0912 Too many branches (32 &gt; 12)
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/models/dag.py#L409">airflow/models/dag.py:409:9:</a> PLR0915 Too many statements (122 &gt; 50)
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/models/dag.py#L409">airflow/models/dag.py:409:9:</a> PLR0915 Too many statements (123 &gt; 50)
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/models/dagrun.py#L478">airflow/models/dagrun.py:478:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/models/dagrun.py#L480">airflow/models/dagrun.py:480:17:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/models/taskinstance.py#L1906">airflow/models/taskinstance.py:1906:9:</a> PLR0912 Too many branches (19 &gt; 12)
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/models/taskinstance.py#L1906">airflow/models/taskinstance.py:1906:9:</a> PLR0912 Too many branches (20 &gt; 12)
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/models/taskinstance.py#L1906">airflow/models/taskinstance.py:1906:9:</a> PLR0915 Too many statements (56 &gt; 50)
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/models/taskinstance.py#L1906">airflow/models/taskinstance.py:1906:9:</a> PLR0915 Too many statements (57 &gt; 50)
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/models/variable.py#L142">airflow/models/variable.py:142:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/models/variable.py#L143">airflow/models/variable.py:143:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/models/variable.py#L147">airflow/models/variable.py:147:13:</a> RET505 Unnecessary `else` after `return` statement
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/operators/bash.py#L180">airflow/operators/bash.py:180:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/operators/bash.py#L181">airflow/operators/bash.py:181:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/amazon/aws/operators/batch.py#L301">airflow/providers/amazon/aws/operators/batch.py:301:9:</a> PLR0912 Too many branches (13 &gt; 12)
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/amazon/aws/operators/batch.py#L343">airflow/providers/amazon/aws/operators/batch.py:343:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/amazon/aws/operators/batch.py#L344">airflow/providers/amazon/aws/operators/batch.py:344:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/amazon/aws/operators/eks.py#L1038">airflow/providers/amazon/aws/operators/eks.py:1038:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/amazon/aws/operators/eks.py#L1039">airflow/providers/amazon/aws/operators/eks.py:1039:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/amazon/aws/sensors/s3.py#L145">airflow/providers/amazon/aws/sensors/s3.py:145:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/amazon/aws/sensors/s3.py#L146">airflow/providers/amazon/aws/sensors/s3.py:146:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/amazon/aws/sensors/s3.py#L337">airflow/providers/amazon/aws/sensors/s3.py:337:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/amazon/aws/sensors/s3.py#L338">airflow/providers/amazon/aws/sensors/s3.py:338:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/amazon/aws/transfers/ftp_to_s3.py#L114">airflow/providers/amazon/aws/transfers/ftp_to_s3.py:114:9:</a> PLR0912 Too many branches (13 &gt; 12)
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/amazon/aws/transfers/ftp_to_s3.py#L143">airflow/providers/amazon/aws/transfers/ftp_to_s3.py:143:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/amazon/aws/transfers/ftp_to_s3.py#L144">airflow/providers/amazon/aws/transfers/ftp_to_s3.py:144:17:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/amazon/aws/utils/connection_wrapper.py#L132">airflow/providers/amazon/aws/utils/connection_wrapper.py:132:9:</a> PLR0912 Too many branches (23 &gt; 12)
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/amazon/aws/utils/connection_wrapper.py#L132">airflow/providers/amazon/aws/utils/connection_wrapper.py:132:9:</a> PLR0912 Too many branches (24 &gt; 12)
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/amazon/aws/utils/connection_wrapper.py#L132">airflow/providers/amazon/aws/utils/connection_wrapper.py:132:9:</a> PLR0915 Too many statements (63 &gt; 50)
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/amazon/aws/utils/connection_wrapper.py#L132">airflow/providers/amazon/aws/utils/connection_wrapper.py:132:9:</a> PLR0915 Too many statements (64 &gt; 50)
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/apache/hive/transfers/s3_to_hive.py#L140">airflow/providers/apache/hive/transfers/s3_to_hive.py:140:9:</a> PLR0915 Too many statements (52 &gt; 50)
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/apache/hive/transfers/s3_to_hive.py#L140">airflow/providers/apache/hive/transfers/s3_to_hive.py:140:9:</a> PLR0915 Too many statements (53 &gt; 50)
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/celery/executors/celery_executor.py#L220">airflow/providers/celery/executors/celery_executor.py:220:13:</a> SIM114 Combine `if` branches using logical `or` operator
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/celery/executors/celery_executor.py#L220">airflow/providers/celery/executors/celery_executor.py:220:18:</a> SIM114 Combine `if` branches using logical `or` operator
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/cncf/kubernetes/utils/pod_manager.py#L430">airflow/providers/cncf/kubernetes/utils/pod_manager.py:430:9:</a> PLR0912 Too many branches (13 &gt; 12)
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/cncf/kubernetes/utils/pod_manager.py#L430">airflow/providers/cncf/kubernetes/utils/pod_manager.py:430:9:</a> PLR0912 Too many branches (15 &gt; 12)
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/cncf/kubernetes/utils/pod_manager.py#L442">airflow/providers/cncf/kubernetes/utils/pod_manager.py:442:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/cncf/kubernetes/utils/pod_manager.py#L443">airflow/providers/cncf/kubernetes/utils/pod_manager.py:443:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/cncf/kubernetes/utils/pod_manager.py#L468">airflow/providers/cncf/kubernetes/utils/pod_manager.py:468:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/cncf/kubernetes/utils/pod_manager.py#L470">airflow/providers/cncf/kubernetes/utils/pod_manager.py:470:17:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/databricks/operators/databricks.py#L44">airflow/providers/databricks/operators/databricks.py:44:5:</a> PLR0912 Too many branches (17 &gt; 12)
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/databricks/operators/databricks.py#L44">airflow/providers/databricks/operators/databricks.py:44:5:</a> PLR0912 Too many branches (18 &gt; 12)
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/dbt/cloud/operators/dbt.py#L162">airflow/providers/dbt/cloud/operators/dbt.py:162:17:</a> RET503 [*] Missing explicit `return` at the end of function able to return non-`None` value
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/dbt/cloud/operators/dbt.py#L177">airflow/providers/dbt/cloud/operators/dbt.py:177:17:</a> RET503 [*] Missing explicit `return` at the end of function able to return non-`None` value
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/google/cloud/operators/bigquery.py#L2673">airflow/providers/google/cloud/operators/bigquery.py:2673:9:</a> PLR0912 Too many branches (13 &gt; 12)
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/google/cloud/operators/bigquery.py#L2673">airflow/providers/google/cloud/operators/bigquery.py:2673:9:</a> PLR0912 Too many branches (14 &gt; 12)
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/google/cloud/operators/datacatalog.py#L384">airflow/providers/google/cloud/operators/datacatalog.py:384:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/google/cloud/operators/datacatalog.py#L385">airflow/providers/google/cloud/operators/datacatalog.py:385:17:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/google/cloud/operators/datacatalog.py#L385">airflow/providers/google/cloud/operators/datacatalog.py:385:17:</a> SIM108 [*] Use ternary operator `template_name = self.tag.template if isinstance(self.tag, Tag) else self.tag[&quot;template&quot;]` instead of `if`-`else`-block
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/google/cloud/operators/datafusion.py#L834">airflow/providers/google/cloud/operators/datafusion.py:834:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/google/cloud/operators/datafusion.py#L835">airflow/providers/google/cloud/operators/datafusion.py:835:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/google/cloud/operators/kubernetes_engine.py#L470">airflow/providers/google/cloud/operators/kubernetes_engine.py:470:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/google/cloud/operators/kubernetes_engine.py#L471">airflow/providers/google/cloud/operators/kubernetes_engine.py:471:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/google/cloud/sensors/bigquery.py#L116">airflow/providers/google/cloud/sensors/bigquery.py:116:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/google/cloud/sensors/bigquery.py#L117">airflow/providers/google/cloud/sensors/bigquery.py:117:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/google/cloud/sensors/bigquery.py#L222">airflow/providers/google/cloud/sensors/bigquery.py:222:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/google/cloud/sensors/bigquery.py#L223">airflow/providers/google/cloud/sensors/bigquery.py:223:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/google/cloud/sensors/gcs.py#L104">airflow/providers/google/cloud/sensors/gcs.py:104:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/google/cloud/sensors/gcs.py#L105">airflow/providers/google/cloud/sensors/gcs.py:105:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/google/cloud/sensors/gcs.py#L236">airflow/providers/google/cloud/sensors/gcs.py:236:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/google/cloud/sensors/gcs.py#L237">airflow/providers/google/cloud/sensors/gcs.py:237:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/google/cloud/sensors/gcs.py#L328">airflow/providers/google/cloud/sensors/gcs.py:328:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/google/cloud/sensors/gcs.py#L328">airflow/providers/google/cloud/sensors/gcs.py:328:9:</a> RET505 Unnecessary `elif` after `return` statement
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/google/cloud/sensors/gcs.py#L328">airflow/providers/google/cloud/sensors/gcs.py:328:9:</a> RET505 Unnecessary `else` after `return` statement
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/google/cloud/sensors/gcs.py#L329">airflow/providers/google/cloud/sensors/gcs.py:329:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/hashicorp/hooks/vault.py#L108">airflow/providers/hashicorp/hooks/vault.py:108:9:</a> PLR0912 Too many branches (21 &gt; 12)
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/hashicorp/hooks/vault.py#L108">airflow/providers/hashicorp/hooks/vault.py:108:9:</a> PLR0912 Too many branches (22 &gt; 12)
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/hashicorp/hooks/vault.py#L108">airflow/providers/hashicorp/hooks/vault.py:108:9:</a> PLR0915 Too many statements (51 &gt; 50)
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/hashicorp/hooks/vault.py#L108">airflow/providers/hashicorp/hooks/vault.py:108:9:</a> PLR0915 Too many statements (52 &gt; 50)
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/hashicorp/hooks/vault.py#L196">airflow/providers/hashicorp/hooks/vault.py:196:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/hashicorp/hooks/vault.py#L197">airflow/providers/hashicorp/hooks/vault.py:197:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/microsoft/azure/hooks/asb.py#L174">airflow/providers/microsoft/azure/hooks/asb.py:174:17:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/microsoft/azure/hooks/asb.py#L175">airflow/providers/microsoft/azure/hooks/asb.py:175:21:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/microsoft/azure/operators/data_factory.py#L226">airflow/providers/microsoft/azure/operators/data_factory.py:226:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/microsoft/azure/operators/data_factory.py#L227">airflow/providers/microsoft/azure/operators/data_factory.py:227:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/microsoft/azure/sensors/data_factory.py#L100">airflow/providers/microsoft/azure/sensors/data_factory.py:100:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/microsoft/azure/sensors/data_factory.py#L99">airflow/providers/microsoft/azure/sensors/data_factory.py:99:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/microsoft/azure/sensors/wasb.py#L185">airflow/providers/microsoft/azure/sensors/wasb.py:185:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/microsoft/azure/sensors/wasb.py#L186">airflow/providers/microsoft/azure/sensors/wasb.py:186:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/microsoft/azure/sensors/wasb.py#L83">airflow/providers/microsoft/azure/sensors/wasb.py:83:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/microsoft/azure/sensors/wasb.py#L84">airflow/providers/microsoft/azure/sensors/wasb.py:84:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/oracle/hooks/oracle.py#L299">airflow/providers/oracle/hooks/oracle.py:299:22:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/slack/hooks/slack_webhook.py#L261">airflow/providers/slack/hooks/slack_webhook.py:261:9:</a> SIM102 Use a single `if` statement instead of nested `if` statements
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/slack/hooks/slack_webhook.py#L261">airflow/providers/slack/hooks/slack_webhook.py:261:9:</a> SIM102 [*] Use a single `if` statement instead of nested `if` statements
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers/tableau/operators/tableau.py#L124">airflow/providers/tableau/operators/tableau.py:124:17:</a> SIM102 [*] Use a single `if` statement instead of nested `if` statements
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers_manager.py#L687">airflow/providers_manager.py:687:21:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers_manager.py#L688">airflow/providers_manager.py:688:25:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers_manager.py#L787">airflow/providers_manager.py:787:9:</a> PLR0912 Too many branches (17 &gt; 12)
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/providers_manager.py#L787">airflow/providers_manager.py:787:9:</a> PLR0912 Too many branches (18 &gt; 12)
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/sensors/external_task.py#L225">airflow/sensors/external_task.py:225:9:</a> PLR0912 Too many branches (17 &gt; 12)
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/sensors/external_task.py#L225">airflow/sensors/external_task.py:225:9:</a> PLR0912 Too many branches (18 &gt; 12)
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/serialization/serialized_objects.py#L556">airflow/serialization/serialized_objects.py:556:13:</a> RET503 [*] Missing explicit `return` at the end of function able to return non-`None` value
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/serialization/serialized_objects.py#L562">airflow/serialization/serialized_objects.py:562:13:</a> RET503 [*] Missing explicit `return` at the end of function able to return non-`None` value
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/serialization/serialized_objects.py#L961">airflow/serialization/serialized_objects.py:961:13:</a> SIM114 Combine `if` branches using logical `or` operator
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/serialization/serialized_objects.py#L961">airflow/serialization/serialized_objects.py:961:18:</a> SIM114 Combine `if` branches using logical `or` operator
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/ti_deps/deps/not_previously_skipped_dep.py#L64">airflow/ti_deps/deps/not_previously_skipped_dep.py:64:17:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/ti_deps/deps/trigger_rule_dep.py#L252">airflow/ti_deps/deps/trigger_rule_dep.py:252:17:</a> SIM102 Use a single `if` statement instead of nested `if` statements
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/ti_deps/deps/trigger_rule_dep.py#L252">airflow/ti_deps/deps/trigger_rule_dep.py:252:17:</a> SIM102 [*] Use a single `if` statement instead of nested `if` statements
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/ti_deps/deps/trigger_rule_dep.py#L372">airflow/ti_deps/deps/trigger_rule_dep.py:372:14:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/ti_deps/deps/trigger_rule_dep.py#L372">airflow/ti_deps/deps/trigger_rule_dep.py:372:9:</a> SIM114 Combine `if` branches using logical `or` operator
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/utils/dates.py#L97">airflow/utils/dates.py:97:10:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/utils/dates.py#L97">airflow/utils/dates.py:97:5:</a> SIM114 Combine `if` branches using logical `or` operator
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/utils/log/file_task_handler.py#L323">airflow/utils/log/file_task_handler.py:323:9:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/utils/operator_helpers.py#L106">airflow/utils/operator_helpers.py:106:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/utils/operator_helpers.py#L107">airflow/utils/operator_helpers.py:107:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/utils/operator_helpers.py#L63">airflow/utils/operator_helpers.py:63:5:</a> PLR0912 Too many branches (14 &gt; 12)
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/utils/operator_helpers.py#L63">airflow/utils/operator_helpers.py:63:5:</a> PLR0912 Too many branches (15 &gt; 12)
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/www/fab_security/manager.py#L543">airflow/www/fab_security/manager.py:543:9:</a> RET503 [*] Missing explicit `return` at the end of function able to return non-`None` value
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/www/fab_security/manager.py#L545">airflow/www/fab_security/manager.py:545:9:</a> RET503 [*] Missing explicit `return` at the end of function able to return non-`None` value
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/www/fab_security/sqla/manager.py#L160">airflow/www/fab_security/sqla/manager.py:160:9:</a> RET503 [*] Missing explicit `return` at the end of function able to return non-`None` value
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/www/fab_security/sqla/manager.py#L177">airflow/www/fab_security/sqla/manager.py:177:9:</a> RET503 [*] Missing explicit `return` at the end of function able to return non-`None` value
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/www/views.py#L2766">airflow/www/views.py:2766:9:</a> RET503 [*] Missing explicit `return` at the end of function able to return non-`None` value
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/www/views.py#L2779">airflow/www/views.py:2779:9:</a> RET503 [*] Missing explicit `return` at the end of function able to return non-`None` value
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/www/views.py#L2822">airflow/www/views.py:2822:9:</a> RET503 [*] Missing explicit `return` at the end of function able to return non-`None` value
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/www/views.py#L2835">airflow/www/views.py:2835:9:</a> RET503 [*] Missing explicit `return` at the end of function able to return non-`None` value
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/airflow/www/views.py#L4391">airflow/www/views.py:4391:13:</a> TRY004 Prefer `TypeError` exception for invalid type
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/assign_cherry_picked_prs_with_milestone.py#L250">dev/assign_cherry_picked_prs_with_milestone.py:250:5:</a> PLR0912 Too many branches (33 &gt; 12)
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/assign_cherry_picked_prs_with_milestone.py#L250">dev/assign_cherry_picked_prs_with_milestone.py:250:5:</a> PLR0912 Too many branches (34 &gt; 12)
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/assign_cherry_picked_prs_with_milestone.py#L250">dev/assign_cherry_picked_prs_with_milestone.py:250:5:</a> PLR0915 Too many statements (97 &gt; 50)
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/assign_cherry_picked_prs_with_milestone.py#L250">dev/assign_cherry_picked_prs_with_milestone.py:250:5:</a> PLR0915 Too many statements (98 &gt; 50)
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/assign_cherry_picked_prs_with_milestone.py#L283">dev/assign_cherry_picked_prs_with_milestone.py:283:5:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/assign_cherry_picked_prs_with_milestone.py#L284">dev/assign_cherry_picked_prs_with_milestone.py:284:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/commands/ci_commands.py#L124">dev/breeze/src/airflow_breeze/commands/ci_commands.py:124:5:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/commands/ci_commands.py#L125">dev/breeze/src/airflow_breeze/commands/ci_commands.py:125:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/commands/ci_commands.py#L359">dev/breeze/src/airflow_breeze/commands/ci_commands.py:359:10:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/commands/ci_commands.py#L359">dev/breeze/src/airflow_breeze/commands/ci_commands.py:359:5:</a> SIM114 Combine `if` branches using logical `or` operator
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/commands/ci_commands.py#L363">dev/breeze/src/airflow_breeze/commands/ci_commands.py:363:10:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/commands/ci_commands.py#L363">dev/breeze/src/airflow_breeze/commands/ci_commands.py:363:5:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/commands/kubernetes_commands.py#L532">dev/breeze/src/airflow_breeze/commands/kubernetes_commands.py:532:5:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/commands/kubernetes_commands.py#L533">dev/breeze/src/airflow_breeze/commands/kubernetes_commands.py:533:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/commands/kubernetes_commands.py#L555">dev/breeze/src/airflow_breeze/commands/kubernetes_commands.py:555:5:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/commands/kubernetes_commands.py#L556">dev/breeze/src/airflow_breeze/commands/kubernetes_commands.py:556:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/commands/production_image_commands.py#L446">dev/breeze/src/airflow_breeze/commands/production_image_commands.py:446:5:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/commands/production_image_commands.py#L447">dev/breeze/src/airflow_breeze/commands/production_image_commands.py:447:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/commands/release_management_commands.py#L894">dev/breeze/src/airflow_breeze/commands/release_management_commands.py:894:5:</a> PLR0912 Too many branches (17 &gt; 12)
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/commands/release_management_commands.py#L894">dev/breeze/src/airflow_breeze/commands/release_management_commands.py:894:5:</a> PLR0912 Too many branches (18 &gt; 12)
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/commands/release_management_commands.py#L894">dev/breeze/src/airflow_breeze/commands/release_management_commands.py:894:5:</a> PLR0915 Too many statements (57 &gt; 50)
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/commands/release_management_commands.py#L894">dev/breeze/src/airflow_breeze/commands/release_management_commands.py:894:5:</a> PLR0915 Too many statements (58 &gt; 50)
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/commands/release_management_commands.py#L910">dev/breeze/src/airflow_breeze/commands/release_management_commands.py:910:5:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/commands/release_management_commands.py#L911">dev/breeze/src/airflow_breeze/commands/release_management_commands.py:911:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/commands/setup_commands.py#L600">dev/breeze/src/airflow_breeze/commands/setup_commands.py:600:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/commands/setup_commands.py#L601">dev/breeze/src/airflow_breeze/commands/setup_commands.py:601:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/utils/confirm.py#L111">dev/breeze/src/airflow_breeze/utils/confirm.py:111:10:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/utils/confirm.py#L111">dev/breeze/src/airflow_breeze/utils/confirm.py:111:5:</a> SIM114 Combine `if` branches using logical `or` operator
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/utils/confirm.py#L34">dev/breeze/src/airflow_breeze/utils/confirm.py:34:5:</a> PLR0912 Too many branches (17 &gt; 12)
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/utils/confirm.py#L34">dev/breeze/src/airflow_breeze/utils/confirm.py:34:5:</a> PLR0912 Too many branches (18 &gt; 12)
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/utils/publish_docs_builder.py#L191">dev/breeze/src/airflow_breeze/utils/publish_docs_builder.py:191:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/breeze/src/airflow_breeze/utils/publish_docs_builder.py#L192">dev/breeze/src/airflow_breeze/utils/publish_docs_builder.py:192:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/system_tests/update_issue_status.py#L118">dev/system_tests/update_issue_status.py:118:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/system_tests/update_issue_status.py#L119">dev/system_tests/update_issue_status.py:119:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/system_tests/update_issue_status.py#L132">dev/system_tests/update_issue_status.py:132:5:</a> PLR0912 Too many branches (18 &gt; 12)
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/system_tests/update_issue_status.py#L132">dev/system_tests/update_issue_status.py:132:5:</a> PLR0912 Too many branches (19 &gt; 12)
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/system_tests/update_issue_status.py#L132">dev/system_tests/update_issue_status.py:132:5:</a> PLR0915 Too many statements (77 &gt; 50)
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/system_tests/update_issue_status.py#L132">dev/system_tests/update_issue_status.py:132:5:</a> PLR0915 Too many statements (78 &gt; 50)
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/system_tests/update_issue_status.py#L187">dev/system_tests/update_issue_status.py:187:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/dev/system_tests/update_issue_status.py#L188">dev/system_tests/update_issue_status.py:188:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/docs/conf.py#L815">docs/conf.py:815:10:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/docs/conf.py#L815">docs/conf.py:815:5:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/docs/exts/docs_build/docs_builder.py#L191">docs/exts/docs_build/docs_builder.py:191:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/docs/exts/docs_build/docs_builder.py#L192">docs/exts/docs_build/docs_builder.py:192:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/scripts/ci/pre_commit/pre_commit_checkout_no_credentials.py#L59">scripts/ci/pre_commit/pre_commit_checkout_no_credentials.py:59:17:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/scripts/ci/pre_commit/pre_commit_checkout_no_credentials.py#L59">scripts/ci/pre_commit/pre_commit_checkout_no_credentials.py:59:17:</a> RET507 Unnecessary `elif` after `continue` statement
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/scripts/ci/pre_commit/pre_commit_checkout_no_credentials.py#L59">scripts/ci/pre_commit/pre_commit_checkout_no_credentials.py:59:17:</a> RET507 Unnecessary `else` after `continue` statement
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/scripts/ci/pre_commit/pre_commit_checkout_no_credentials.py#L60">scripts/ci/pre_commit/pre_commit_checkout_no_credentials.py:60:21:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/scripts/ci/pre_commit/pre_commit_update_common_sql_api_stubs.py#L275">scripts/ci/pre_commit/pre_commit_update_common_sql_api_stubs.py:275:5:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/scripts/ci/pre_commit/pre_commit_update_common_sql_api_stubs.py#L276">scripts/ci/pre_commit/pre_commit_update_common_sql_api_stubs.py:276:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/tests/operators/test_branch_operator.py#L163">tests/operators/test_branch_operator.py:163:13:</a> SIM114 Combine `if` branches using logical `or` operator
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/tests/operators/test_branch_operator.py#L163">tests/operators/test_branch_operator.py:163:18:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/tests/providers/amazon/aws/hooks/test_eks.py#L780">tests/providers/amazon/aws/hooks/test_eks.py:780:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/tests/providers/amazon/aws/hooks/test_eks.py#L781">tests/providers/amazon/aws/hooks/test_eks.py:781:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/tests/providers/common/sql/operators/test_sql.py#L1161">tests/providers/common/sql/operators/test_sql.py:1161:13:</a> SIM114 Combine `if` branches using logical `or` operator
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/tests/providers/common/sql/operators/test_sql.py#L1161">tests/providers/common/sql/operators/test_sql.py:1161:18:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/tests/providers/common/sql/operators/test_sql.py#L1234">tests/providers/common/sql/operators/test_sql.py:1234:17:</a> SIM114 Combine `if` branches using logical `or` operator
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/tests/providers/common/sql/operators/test_sql.py#L1234">tests/providers/common/sql/operators/test_sql.py:1234:22:</a> SIM114 Combine `if` branches using logical `or` operator
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/tests/providers/elasticsearch/log/elasticmock/fake_elasticsearch.py#L502">tests/providers/elasticsearch/log/elasticmock/fake_elasticsearch.py:502:13:</a> TRY004 Prefer `TypeError` exception for invalid type
+- <a href="https://github.com/apache/airflow/blob/52d932f659d881a0b17bc1c1ba7e7bfd87d45848/tests/providers/elasticsearch/log/elasticmock/fake_elasticsearch.py#L521">tests/providers/elasticsearch/log/elasticmock/fake_elasticsearch.py:521:13:</a> TRY004 Prefer `TypeError` exception for invalid type
 </pre>
 
 </p>
-</details>
-<details><summary>bokeh (+17, -20)</summary>
+
+bokeh (+17, -20)
 <p>
 
 <pre>
-+ <a href='https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/examples/server/app/clustering/main.py#L83'>examples/server/app/clustering/main.py:83:5:</a> RET503 [*] Missing explicit `return` at the end of function able to return non-`None` value
-- <a href='https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/examples/server/app/clustering/main.py#L96'>examples/server/app/clustering/main.py:96:5:</a> RET503 [*] Missing explicit `return` at the end of function able to return non-`None` value
-+ <a href='https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/client/session.py#L454'>src/bokeh/client/session.py:454:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/client/session.py#L455'>src/bokeh/client/session.py:455:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/core/query.py#L110'>src/bokeh/core/query.py:110:5:</a> PLR0912 Too many branches (24 > 12)
-+ <a href='https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/core/query.py#L110'>src/bokeh/core/query.py:110:5:</a> PLR0912 Too many branches (25 > 12)
-+ <a href='https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/core/query.py#L210'>src/bokeh/core/query.py:210:17:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/core/query.py#L211'>src/bokeh/core/query.py:211:21:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-+ <a href='https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/core/serialization.py#L714'>src/bokeh/core/serialization.py:714:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/core/serialization.py#L715'>src/bokeh/core/serialization.py:715:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-+ <a href='https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/core/serialization.py#L718'>src/bokeh/core/serialization.py:718:13:</a> RET505 Unnecessary `else` after `return` statement
-+ <a href='https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/core/validation/check.py#L215'>src/bokeh/core/validation/check.py:215:5:</a> SIM102 Use a single `if` statement instead of nested `if` statements
-- <a href='https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/core/validation/check.py#L215'>src/bokeh/core/validation/check.py:215:5:</a> SIM102 [*] Use a single `if` statement instead of nested `if` statements
-+ <a href='https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/embed/util.py#L146'>src/bokeh/embed/util.py:146:5:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/embed/util.py#L147'>src/bokeh/embed/util.py:147:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/layouts.py#L292'>src/bokeh/layouts.py:292:17:</a> TRY004 Prefer `TypeError` exception for invalid type
-- <a href='https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/plotting/_graph.py#L54'>src/bokeh/plotting/_graph.py:54:5:</a> PLR0912 Too many branches (18 > 12)
-+ <a href='https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/plotting/_graph.py#L54'>src/bokeh/plotting/_graph.py:54:5:</a> PLR0912 Too many branches (19 > 12)
-- <a href='https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/plotting/_graph.py#L54'>src/bokeh/plotting/_graph.py:54:5:</a> PLR0915 Too many statements (61 > 50)
-+ <a href='https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/plotting/_graph.py#L54'>src/bokeh/plotting/_graph.py:54:5:</a> PLR0915 Too many statements (62 > 50)
-- <a href='https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/plotting/_renderer.py#L282'>src/bokeh/plotting/_renderer.py:282:17:</a> SIM114 Combine `if` branches using logical `or` operator
-- <a href='https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/plotting/_renderer.py#L284'>src/bokeh/plotting/_renderer.py:284:22:</a> SIM114 Combine `if` branches using logical `or` operator
-- <a href='https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/plotting/_renderer.py#L286'>src/bokeh/plotting/_renderer.py:286:22:</a> SIM114 Combine `if` branches using logical `or` operator
-- <a href='https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/server/tornado.py#L252'>src/bokeh/server/tornado.py:252:9:</a> PLR0912 Too many branches (49 > 12)
-+ <a href='https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/server/tornado.py#L252'>src/bokeh/server/tornado.py:252:9:</a> PLR0912 Too many branches (50 > 12)
-- <a href='https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/server/tornado.py#L252'>src/bokeh/server/tornado.py:252:9:</a> PLR0915 Too many statements (125 > 50)
-+ <a href='https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/server/tornado.py#L252'>src/bokeh/server/tornado.py:252:9:</a> PLR0915 Too many statements (126 > 50)
-+ <a href='https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/server/tornado.py#L315'>src/bokeh/server/tornado.py:315:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/server/tornado.py#L315'>src/bokeh/server/tornado.py:315:9:</a> RET506 Unnecessary `elif` after `raise` statement
-+ <a href='https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/server/tornado.py#L315'>src/bokeh/server/tornado.py:315:9:</a> RET506 Unnecessary `else` after `raise` statement
-- <a href='https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/server/tornado.py#L316'>src/bokeh/server/tornado.py:316:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-+ <a href='https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/sphinxext/util.py#L56'>src/bokeh/sphinxext/util.py:56:5:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/sphinxext/util.py#L58'>src/bokeh/sphinxext/util.py:58:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-+ <a href='https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/util/sampledata.py#L119'>src/bokeh/util/sampledata.py:119:5:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/util/sampledata.py#L120'>src/bokeh/util/sampledata.py:120:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-+ <a href='https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/util/sampledata.py#L173'>src/bokeh/util/sampledata.py:173:5:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/util/sampledata.py#L174'>src/bokeh/util/sampledata.py:174:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href="https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/examples/server/app/clustering/main.py#L83">examples/server/app/clustering/main.py:83:5:</a> RET503 [*] Missing explicit `return` at the end of function able to return non-`None` value
+- <a href="https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/examples/server/app/clustering/main.py#L96">examples/server/app/clustering/main.py:96:5:</a> RET503 [*] Missing explicit `return` at the end of function able to return non-`None` value
++ <a href="https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/client/session.py#L454">src/bokeh/client/session.py:454:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/client/session.py#L455">src/bokeh/client/session.py:455:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/core/query.py#L110">src/bokeh/core/query.py:110:5:</a> PLR0912 Too many branches (24 &gt; 12)
++ <a href="https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/core/query.py#L110">src/bokeh/core/query.py:110:5:</a> PLR0912 Too many branches (25 &gt; 12)
++ <a href="https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/core/query.py#L210">src/bokeh/core/query.py:210:17:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/core/query.py#L211">src/bokeh/core/query.py:211:21:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href="https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/core/serialization.py#L714">src/bokeh/core/serialization.py:714:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/core/serialization.py#L715">src/bokeh/core/serialization.py:715:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href="https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/core/serialization.py#L718">src/bokeh/core/serialization.py:718:13:</a> RET505 Unnecessary `else` after `return` statement
++ <a href="https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/core/validation/check.py#L215">src/bokeh/core/validation/check.py:215:5:</a> SIM102 Use a single `if` statement instead of nested `if` statements
+- <a href="https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/core/validation/check.py#L215">src/bokeh/core/validation/check.py:215:5:</a> SIM102 [*] Use a single `if` statement instead of nested `if` statements
++ <a href="https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/embed/util.py#L146">src/bokeh/embed/util.py:146:5:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/embed/util.py#L147">src/bokeh/embed/util.py:147:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/layouts.py#L292">src/bokeh/layouts.py:292:17:</a> TRY004 Prefer `TypeError` exception for invalid type
+- <a href="https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/plotting/_graph.py#L54">src/bokeh/plotting/_graph.py:54:5:</a> PLR0912 Too many branches (18 &gt; 12)
++ <a href="https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/plotting/_graph.py#L54">src/bokeh/plotting/_graph.py:54:5:</a> PLR0912 Too many branches (19 &gt; 12)
+- <a href="https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/plotting/_graph.py#L54">src/bokeh/plotting/_graph.py:54:5:</a> PLR0915 Too many statements (61 &gt; 50)
++ <a href="https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/plotting/_graph.py#L54">src/bokeh/plotting/_graph.py:54:5:</a> PLR0915 Too many statements (62 &gt; 50)
+- <a href="https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/plotting/_renderer.py#L282">src/bokeh/plotting/_renderer.py:282:17:</a> SIM114 Combine `if` branches using logical `or` operator
+- <a href="https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/plotting/_renderer.py#L284">src/bokeh/plotting/_renderer.py:284:22:</a> SIM114 Combine `if` branches using logical `or` operator
+- <a href="https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/plotting/_renderer.py#L286">src/bokeh/plotting/_renderer.py:286:22:</a> SIM114 Combine `if` branches using logical `or` operator
+- <a href="https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/server/tornado.py#L252">src/bokeh/server/tornado.py:252:9:</a> PLR0912 Too many branches (49 &gt; 12)
++ <a href="https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/server/tornado.py#L252">src/bokeh/server/tornado.py:252:9:</a> PLR0912 Too many branches (50 &gt; 12)
+- <a href="https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/server/tornado.py#L252">src/bokeh/server/tornado.py:252:9:</a> PLR0915 Too many statements (125 &gt; 50)
++ <a href="https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/server/tornado.py#L252">src/bokeh/server/tornado.py:252:9:</a> PLR0915 Too many statements (126 &gt; 50)
++ <a href="https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/server/tornado.py#L315">src/bokeh/server/tornado.py:315:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/server/tornado.py#L315">src/bokeh/server/tornado.py:315:9:</a> RET506 Unnecessary `elif` after `raise` statement
++ <a href="https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/server/tornado.py#L315">src/bokeh/server/tornado.py:315:9:</a> RET506 Unnecessary `else` after `raise` statement
+- <a href="https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/server/tornado.py#L316">src/bokeh/server/tornado.py:316:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href="https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/sphinxext/util.py#L56">src/bokeh/sphinxext/util.py:56:5:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/sphinxext/util.py#L58">src/bokeh/sphinxext/util.py:58:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href="https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/util/sampledata.py#L119">src/bokeh/util/sampledata.py:119:5:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/util/sampledata.py#L120">src/bokeh/util/sampledata.py:120:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href="https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/util/sampledata.py#L173">src/bokeh/util/sampledata.py:173:5:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/util/sampledata.py#L174">src/bokeh/util/sampledata.py:174:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
 </pre>
 
 </p>
-</details>
-<details><summary>zulip (+35, -38)</summary>
+
+zulip (+35, -38)
 <p>
 
 <pre>
-- <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/analytics/views/stats.py#L232'>analytics/views/stats.py:232:5:</a> PLR0912 Too many branches (32 > 12)
-+ <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/analytics/views/stats.py#L232'>analytics/views/stats.py:232:5:</a> PLR0912 Too many branches (34 > 12)
-+ <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/analytics/views/stats.py#L232'>analytics/views/stats.py:232:5:</a> PLR0915 Too many statements (101 > 50)
-- <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/analytics/views/stats.py#L232'>analytics/views/stats.py:232:5:</a> PLR0915 Too many statements (99 > 50)
-+ <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/analytics/views/stats.py#L258'>analytics/views/stats.py:258:5:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/analytics/views/stats.py#L259'>analytics/views/stats.py:259:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-+ <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/corporate/lib/stripe.py#L1181'>corporate/lib/stripe.py:1181:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/corporate/lib/stripe.py#L1182'>corporate/lib/stripe.py:1182:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-+ <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/scripts/lib/zulip_tools.py#L202'>scripts/lib/zulip_tools.py:202:5:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/scripts/lib/zulip_tools.py#L203'>scripts/lib/zulip_tools.py:203:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-+ <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/tools/lib/provision.py#L91'>tools/lib/provision.py:91:1:</a> SIM114 Combine `if` branches using logical `or` operator
-- <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/tools/lib/provision.py#L91'>tools/lib/provision.py:91:6:</a> SIM114 Combine `if` branches using logical `or` operator
-+ <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/tools/lib/provision.py#L95'>tools/lib/provision.py:95:1:</a> SIM114 Combine `if` branches using logical `or` operator
-- <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/tools/lib/provision.py#L95'>tools/lib/provision.py:95:6:</a> SIM114 Combine `if` branches using logical `or` operator
-+ <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/tools/lib/template_parser.py#L514'>tools/lib/template_parser.py:514:17:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/tools/lib/template_parser.py#L515'>tools/lib/template_parser.py:515:21:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-+ <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/actions/message_edit.py#L1050'>zerver/actions/message_edit.py:1050:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/actions/message_edit.py#L1051'>zerver/actions/message_edit.py:1051:17:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-+ <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/actions/message_edit.py#L271'>zerver/actions/message_edit.py:271:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/actions/message_edit.py#L272'>zerver/actions/message_edit.py:272:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/actions/message_edit.py#L353'>zerver/actions/message_edit.py:353:5:</a> PLR0912 Too many branches (56 > 12)
-+ <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/actions/message_edit.py#L353'>zerver/actions/message_edit.py:353:5:</a> PLR0912 Too many branches (58 > 12)
-- <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/actions/message_edit.py#L353'>zerver/actions/message_edit.py:353:5:</a> PLR0915 Too many statements (236 > 50)
-+ <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/actions/message_edit.py#L353'>zerver/actions/message_edit.py:353:5:</a> PLR0915 Too many statements (238 > 50)
-+ <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/addressee.py#L117'>zerver/lib/addressee.py:117:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/addressee.py#L121'>zerver/lib/addressee.py:121:17:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-+ <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/addressee.py#L138'>zerver/lib/addressee.py:138:13:</a> RET503 [*] Missing explicit `return` at the end of function able to return non-`None` value
-- <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/addressee.py#L141'>zerver/lib/addressee.py:141:13:</a> RET503 [*] Missing explicit `return` at the end of function able to return non-`None` value
-- <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/addressee.py#L98'>zerver/lib/addressee.py:98:9:</a> PLR0912 Too many branches (13 > 12)
-+ <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/addressee.py#L98'>zerver/lib/addressee.py:98:9:</a> PLR0912 Too many branches (14 > 12)
-+ <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/email_mirror.py#L259'>zerver/lib/email_mirror.py:259:5:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/email_mirror.py#L260'>zerver/lib/email_mirror.py:260:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-+ <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/email_mirror.py#L262'>zerver/lib/email_mirror.py:262:9:</a> RET505 Unnecessary `else` after `return` statement
-- <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/events.py#L1256'>zerver/lib/events.py:1256:10:</a> SIM114 Combine `if` branches using logical `or` operator
-- <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/events.py#L1259'>zerver/lib/events.py:1259:10:</a> SIM114 Combine `if` branches using logical `or` operator
-- <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/events.py#L1262'>zerver/lib/events.py:1262:10:</a> SIM114 Combine `if` branches using logical `or` operator
-- <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/events.py#L690'>zerver/lib/events.py:690:5:</a> PLR0912 Too many branches (239 > 12)
-+ <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/events.py#L690'>zerver/lib/events.py:690:5:</a> PLR0912 Too many branches (240 > 12)
-- <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/events.py#L690'>zerver/lib/events.py:690:5:</a> PLR0915 Too many statements (443 > 50)
-+ <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/events.py#L690'>zerver/lib/events.py:690:5:</a> PLR0915 Too many statements (444 > 50)
-- <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/import_realm.py#L747'>zerver/lib/import_realm.py:747:5:</a> PLR0912 Too many branches (31 > 12)
-+ <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/import_realm.py#L747'>zerver/lib/import_realm.py:747:5:</a> PLR0912 Too many branches (32 > 12)
-- <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/import_realm.py#L747'>zerver/lib/import_realm.py:747:5:</a> PLR0915 Too many statements (87 > 50)
-+ <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/import_realm.py#L747'>zerver/lib/import_realm.py:747:5:</a> PLR0915 Too many statements (88 > 50)
-+ <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/import_realm.py#L801'>zerver/lib/import_realm.py:801:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/import_realm.py#L806'>zerver/lib/import_realm.py:806:17:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-+ <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/push_notifications.py#L1111'>zerver/lib/push_notifications.py:1111:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/push_notifications.py#L1115'>zerver/lib/push_notifications.py:1115:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/push_notifications.py#L628'>zerver/lib/push_notifications.py:628:5:</a> SIM114 Combine `if` branches using logical `or` operator
-- <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/signals.py#L56'>zerver/signals.py:56:10:</a> SIM114 Combine `if` branches using logical `or` operator
-+ <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/signals.py#L56'>zerver/signals.py:56:5:</a> SIM114 Combine `if` branches using logical `or` operator
-- <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/tornado/event_queue.py#L659'>zerver/tornado/event_queue.py:659:5:</a> PLR0912 Too many branches (14 > 12)
-+ <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/tornado/event_queue.py#L659'>zerver/tornado/event_queue.py:659:5:</a> PLR0912 Too many branches (15 > 12)
-- <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/views/documentation.py#L80'>zerver/views/documentation.py:80:14:</a> SIM114 Combine `if` branches using logical `or` operator
-- <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/views/documentation.py#L84'>zerver/views/documentation.py:84:14:</a> SIM114 Combine `if` branches using logical `or` operator
-+ <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/views/documentation.py#L84'>zerver/views/documentation.py:84:9:</a> SIM114 Combine `if` branches using logical `or` operator
-- <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/views/message_send.py#L132'>zerver/views/message_send.py:132:5:</a> PLR0912 Too many branches (15 > 12)
-+ <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/views/message_send.py#L132'>zerver/views/message_send.py:132:5:</a> PLR0912 Too many branches (16 > 12)
-- <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/webhooks/clubhouse/view.py#L103'>zerver/webhooks/clubhouse/view.py:103:14:</a> SIM114 Combine `if` branches using logical `or` operator
-+ <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/webhooks/clubhouse/view.py#L103'>zerver/webhooks/clubhouse/view.py:103:9:</a> SIM114 Combine `if` branches using logical `or` operator
-- <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/webhooks/newrelic/view.py#L143'>zerver/webhooks/newrelic/view.py:143:14:</a> SIM114 Combine `if` branches using logical `or` operator
-+ <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/webhooks/newrelic/view.py#L143'>zerver/webhooks/newrelic/view.py:143:9:</a> SIM114 Combine `if` branches using logical `or` operator
-- <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/webhooks/newrelic/view.py#L145'>zerver/webhooks/newrelic/view.py:145:14:</a> SIM114 Combine `if` branches using logical `or` operator
-+ <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/webhooks/newrelic/view.py#L145'>zerver/webhooks/newrelic/view.py:145:9:</a> SIM114 Combine `if` branches using logical `or` operator
-- <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/webhooks/newrelic/view.py#L92'>zerver/webhooks/newrelic/view.py:92:14:</a> SIM114 Combine `if` branches using logical `or` operator
-+ <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/webhooks/newrelic/view.py#L92'>zerver/webhooks/newrelic/view.py:92:9:</a> SIM114 Combine `if` branches using logical `or` operator
-+ <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/webhooks/pagerduty/view.py#L271'>zerver/webhooks/pagerduty/view.py:271:5:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/webhooks/pagerduty/view.py#L272'>zerver/webhooks/pagerduty/view.py:272:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-+ <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zilencer/views.py#L136'>zilencer/views.py:136:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zilencer/views.py#L137'>zilencer/views.py:137:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-+ <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zilencer/views.py#L139'>zilencer/views.py:139:13:</a> RET506 Unnecessary `else` after `raise` statement
-+ <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zproject/backends.py#L704'>zproject/backends.py:704:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
-- <a href='https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zproject/backends.py#L706'>zproject/backends.py:706:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/analytics/views/stats.py#L232">analytics/views/stats.py:232:5:</a> PLR0912 Too many branches (32 &gt; 12)
++ <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/analytics/views/stats.py#L232">analytics/views/stats.py:232:5:</a> PLR0912 Too many branches (34 &gt; 12)
++ <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/analytics/views/stats.py#L232">analytics/views/stats.py:232:5:</a> PLR0915 Too many statements (101 &gt; 50)
+- <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/analytics/views/stats.py#L232">analytics/views/stats.py:232:5:</a> PLR0915 Too many statements (99 &gt; 50)
++ <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/analytics/views/stats.py#L258">analytics/views/stats.py:258:5:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/analytics/views/stats.py#L259">analytics/views/stats.py:259:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/corporate/lib/stripe.py#L1181">corporate/lib/stripe.py:1181:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/corporate/lib/stripe.py#L1182">corporate/lib/stripe.py:1182:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/scripts/lib/zulip_tools.py#L202">scripts/lib/zulip_tools.py:202:5:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/scripts/lib/zulip_tools.py#L203">scripts/lib/zulip_tools.py:203:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/tools/lib/provision.py#L91">tools/lib/provision.py:91:1:</a> SIM114 Combine `if` branches using logical `or` operator
+- <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/tools/lib/provision.py#L91">tools/lib/provision.py:91:6:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/tools/lib/provision.py#L95">tools/lib/provision.py:95:1:</a> SIM114 Combine `if` branches using logical `or` operator
+- <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/tools/lib/provision.py#L95">tools/lib/provision.py:95:6:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/tools/lib/template_parser.py#L514">tools/lib/template_parser.py:514:17:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/tools/lib/template_parser.py#L515">tools/lib/template_parser.py:515:21:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/actions/message_edit.py#L1050">zerver/actions/message_edit.py:1050:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/actions/message_edit.py#L1051">zerver/actions/message_edit.py:1051:17:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/actions/message_edit.py#L271">zerver/actions/message_edit.py:271:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/actions/message_edit.py#L272">zerver/actions/message_edit.py:272:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/actions/message_edit.py#L353">zerver/actions/message_edit.py:353:5:</a> PLR0912 Too many branches (56 &gt; 12)
++ <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/actions/message_edit.py#L353">zerver/actions/message_edit.py:353:5:</a> PLR0912 Too many branches (58 &gt; 12)
+- <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/actions/message_edit.py#L353">zerver/actions/message_edit.py:353:5:</a> PLR0915 Too many statements (236 &gt; 50)
++ <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/actions/message_edit.py#L353">zerver/actions/message_edit.py:353:5:</a> PLR0915 Too many statements (238 &gt; 50)
++ <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/addressee.py#L117">zerver/lib/addressee.py:117:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/addressee.py#L121">zerver/lib/addressee.py:121:17:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/addressee.py#L138">zerver/lib/addressee.py:138:13:</a> RET503 [*] Missing explicit `return` at the end of function able to return non-`None` value
+- <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/addressee.py#L141">zerver/lib/addressee.py:141:13:</a> RET503 [*] Missing explicit `return` at the end of function able to return non-`None` value
+- <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/addressee.py#L98">zerver/lib/addressee.py:98:9:</a> PLR0912 Too many branches (13 &gt; 12)
++ <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/addressee.py#L98">zerver/lib/addressee.py:98:9:</a> PLR0912 Too many branches (14 &gt; 12)
++ <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/email_mirror.py#L259">zerver/lib/email_mirror.py:259:5:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/email_mirror.py#L260">zerver/lib/email_mirror.py:260:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/email_mirror.py#L262">zerver/lib/email_mirror.py:262:9:</a> RET505 Unnecessary `else` after `return` statement
+- <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/events.py#L1256">zerver/lib/events.py:1256:10:</a> SIM114 Combine `if` branches using logical `or` operator
+- <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/events.py#L1259">zerver/lib/events.py:1259:10:</a> SIM114 Combine `if` branches using logical `or` operator
+- <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/events.py#L1262">zerver/lib/events.py:1262:10:</a> SIM114 Combine `if` branches using logical `or` operator
+- <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/events.py#L690">zerver/lib/events.py:690:5:</a> PLR0912 Too many branches (239 &gt; 12)
++ <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/events.py#L690">zerver/lib/events.py:690:5:</a> PLR0912 Too many branches (240 &gt; 12)
+- <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/events.py#L690">zerver/lib/events.py:690:5:</a> PLR0915 Too many statements (443 &gt; 50)
++ <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/events.py#L690">zerver/lib/events.py:690:5:</a> PLR0915 Too many statements (444 &gt; 50)
+- <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/import_realm.py#L747">zerver/lib/import_realm.py:747:5:</a> PLR0912 Too many branches (31 &gt; 12)
++ <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/import_realm.py#L747">zerver/lib/import_realm.py:747:5:</a> PLR0912 Too many branches (32 &gt; 12)
+- <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/import_realm.py#L747">zerver/lib/import_realm.py:747:5:</a> PLR0915 Too many statements (87 &gt; 50)
++ <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/import_realm.py#L747">zerver/lib/import_realm.py:747:5:</a> PLR0915 Too many statements (88 &gt; 50)
++ <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/import_realm.py#L801">zerver/lib/import_realm.py:801:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/import_realm.py#L806">zerver/lib/import_realm.py:806:17:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/push_notifications.py#L1111">zerver/lib/push_notifications.py:1111:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/push_notifications.py#L1115">zerver/lib/push_notifications.py:1115:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/lib/push_notifications.py#L628">zerver/lib/push_notifications.py:628:5:</a> SIM114 Combine `if` branches using logical `or` operator
+- <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/signals.py#L56">zerver/signals.py:56:10:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/signals.py#L56">zerver/signals.py:56:5:</a> SIM114 Combine `if` branches using logical `or` operator
+- <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/tornado/event_queue.py#L659">zerver/tornado/event_queue.py:659:5:</a> PLR0912 Too many branches (14 &gt; 12)
++ <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/tornado/event_queue.py#L659">zerver/tornado/event_queue.py:659:5:</a> PLR0912 Too many branches (15 &gt; 12)
+- <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/views/documentation.py#L80">zerver/views/documentation.py:80:14:</a> SIM114 Combine `if` branches using logical `or` operator
+- <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/views/documentation.py#L84">zerver/views/documentation.py:84:14:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/views/documentation.py#L84">zerver/views/documentation.py:84:9:</a> SIM114 Combine `if` branches using logical `or` operator
+- <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/views/message_send.py#L132">zerver/views/message_send.py:132:5:</a> PLR0912 Too many branches (15 &gt; 12)
++ <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/views/message_send.py#L132">zerver/views/message_send.py:132:5:</a> PLR0912 Too many branches (16 &gt; 12)
+- <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/webhooks/clubhouse/view.py#L103">zerver/webhooks/clubhouse/view.py:103:14:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/webhooks/clubhouse/view.py#L103">zerver/webhooks/clubhouse/view.py:103:9:</a> SIM114 Combine `if` branches using logical `or` operator
+- <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/webhooks/newrelic/view.py#L143">zerver/webhooks/newrelic/view.py:143:14:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/webhooks/newrelic/view.py#L143">zerver/webhooks/newrelic/view.py:143:9:</a> SIM114 Combine `if` branches using logical `or` operator
+- <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/webhooks/newrelic/view.py#L145">zerver/webhooks/newrelic/view.py:145:14:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/webhooks/newrelic/view.py#L145">zerver/webhooks/newrelic/view.py:145:9:</a> SIM114 Combine `if` branches using logical `or` operator
+- <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/webhooks/newrelic/view.py#L92">zerver/webhooks/newrelic/view.py:92:14:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/webhooks/newrelic/view.py#L92">zerver/webhooks/newrelic/view.py:92:9:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/webhooks/pagerduty/view.py#L271">zerver/webhooks/pagerduty/view.py:271:5:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zerver/webhooks/pagerduty/view.py#L272">zerver/webhooks/pagerduty/view.py:272:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zilencer/views.py#L136">zilencer/views.py:136:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zilencer/views.py#L137">zilencer/views.py:137:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zilencer/views.py#L139">zilencer/views.py:139:13:</a> RET506 Unnecessary `else` after `raise` statement
++ <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zproject/backends.py#L704">zproject/backends.py:704:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href="https://github.com/zulip/zulip/blob/b188e6fa047e16e6842ae710ff2654d794a20a85/zproject/backends.py#L706">zproject/backends.py:706:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
 </pre>
 
 </p>
-</details>
+
 Rules changed: 11
 
 <p>| Rule | Changes | Additions | Removals |
@@ -579,8 +579,8 @@ Rules changed: 11
 | RET506 | 3 | 2 | 1 |
 | RET507 | 2 | 1 | 1 |
 | SIM108 | 1 | 1 | 0 |</p>
-<h3>Benchmark</h3>
-<h4>Linux</h4>
+Benchmark
+Linux
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 formatter/large/dataset.py                 1.04      9.8±0.03ms     4.1 MB/sec    1.00      9.4±0.03ms     4.3 MB/sec
@@ -596,7 +596,7 @@ linter/default-rules/numpy/ctypeslib.py    1.00   1380.1±4.78µs    12.1 MB/sec
 linter/default-rules/numpy/globals.py      1.00    150.8±0.57µs    19.6 MB/sec    1.05    158.7±0.33µs    18.6 MB/sec
 linter/default-rules/pydantic/types.py     1.00      2.9±0.05ms     8.7 MB/sec    1.01      3.0±0.01ms     8.6 MB/sec
 </code></pre>
-<h4>Windows</h4>
+Windows
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 formatter/large/dataset.py                 1.00     14.5±0.53ms     2.8 MB/sec    1.01     14.6±0.78ms     2.8 MB/sec
@@ -612,7 +612,7 @@ linter/default-rules/numpy/ctypeslib.py    1.00      2.1±0.09ms     8.0 MB/sec 
 linter/default-rules/numpy/globals.py      1.02   236.3±22.54µs    12.5 MB/sec    1.00    232.0±8.30µs    12.7 MB/sec
 linter/default-rules/pydantic/types.py     1.00      4.6±0.23ms     5.6 MB/sec    1.00      4.6±0.24ms     5.6 MB/sec
 </code></pre>
-<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
 
 </div>
         </div>
@@ -622,13 +622,13 @@ linter/default-rules/pydantic/types.py     1.00      4.6±0.23ms     5.6 MB/sec 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Refactor `StmtIf`: Formatter" to "Refactor `StmtIf`: Formatter and Linter" by @konstin on 2023-07-16 19:09</div>
+            <div class="event">Renamed from &quot;Refactor `StmtIf`: Formatter&quot; to &quot;Refactor `StmtIf`: Formatter and Linter&quot; by <a href="https://github.com/konstin">@konstin</a> on 2023-07-16 19:09</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-07-16 19:10</div>
             <div class="timeline-body"><p>This pull request now ready for (hopefully) final review.</p>
-<p>I went through the ecosystem checks, all checks should be either minor (exact complexity numbers or spans), intended (SIM114 ignoring identical branches with different comments) or improvements (fixed RET505 and SIM108 false negatives). I'm a bit unsure about the TRY004 removals, e.g. (https://github.com/apache/airflow/blob/f1e1cdcc3b2826e68ba133f350300b5065bbca33/airflow/www/views.py#L4391):</p>
-<pre><code class="language-python">        if items is None:
+<p>I went through the ecosystem checks, all checks should be either minor (exact complexity numbers or spans), intended (SIM114 ignoring identical branches with different comments) or improvements (fixed RET505 and SIM108 false negatives). I&#x27;m a bit unsure about the TRY004 removals, e.g. (https://github.com/apache/airflow/blob/f1e1cdcc3b2826e68ba133f350300b5065bbca33/airflow/www/views.py#L4391):</p>
+<pre><code>        if items is None:
             dag_ids: set[str] = set()
         elif isinstance(items, list):
             dag_ids = {item.dag_id for item in items if item is not None}
@@ -641,14 +641,14 @@ linter/default-rules/pydantic/types.py     1.00      4.6±0.23ms     5.6 MB/sec 
                 f&quot;Was of type: {type(items)}&quot;
             )
 </code></pre>
-<p><code>is None</code> does not count as a type checking step and since we now always look at the entire if statement, we don't raise TRY004, but arguably that's a limitation of the rule.</p>
+<p><code>is None</code> does not count as a type checking step and since we now always look at the entire if statement, we don&#x27;t raise TRY004, but arguably that&#x27;s a limitation of the rule.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @MichaReiser removed by @konstin on 2023-07-16 19:10</div>
+            <div class="event">Review request for <a href="https://github.com/MichaReiser">@MichaReiser</a> removed by <a href="https://github.com/konstin">@konstin</a> on 2023-07-16 19:10</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @konstin on 2023-07-16 19:10</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/konstin">@konstin</a> on 2023-07-16 19:10</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-07-16 19:53</div>
@@ -657,7 +657,7 @@ linter/default-rules/pydantic/types.py     1.00      4.6±0.23ms     5.6 MB/sec 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-07-16 21:15</div>
-            <div class="timeline-body"><p>the formatter changes are in the first 4 commits and are virtually unchanged since the last time you reviewed (i had to rebase, but i hope i didn't change anything). The only changes are in the linter part fixing bugs that showed up in the ecosystem checks. I tried to break the linter changes into commits for specifics rules, in hope that this makes reviewing individual parts on their own easier.</p>
+            <div class="timeline-body"><p>the formatter changes are in the first 4 commits and are virtually unchanged since the last time you reviewed (i had to rebase, but i hope i didn&#x27;t change anything). The only changes are in the linter part fixing bugs that showed up in the ecosystem checks. I tried to break the linter changes into commits for specifics rules, in hope that this makes reviewing individual parts on their own easier.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -672,20 +672,20 @@ linter/default-rules/pydantic/types.py     1.00      4.6±0.23ms     5.6 MB/sec 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/visitor/preorder.rs</code>:304 on 2023-07-17 09:17</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">                visitor.visit_elif_else_clause(visitor, clause);
+            <div class="timeline-body"><pre><code>                visitor.visit_elif_else_clause(visitor, clause);
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/visitor.rs</code>:245 on 2023-07-17 09:19</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">                visitor.visit_elif_else_clause(clause);
+            <div class="timeline-body"><pre><code>                visitor.visit_elif_else_clause(clause);
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/stmt_if.rs</code>:18 on 2023-07-17 09:21</div>
             <div class="timeline-body"><p>Nit</p>
-<pre><code class="language-suggestion">pub fn elif_else_range(clause: &amp;ElifElseClause, locator: &amp;Locator) -&gt; Option&lt;TextRange&gt; {
+<pre><code>pub fn elif_else_range(clause: &amp;ElifElseClause, locator: &amp;Locator) -&gt; Option&lt;TextRange&gt; {
     let contents = &amp;locator.contents()[clause.range];
     let token = lexer::lex_starts_at(contents, Mode::Module, clause.range.start())
         .flatten()
@@ -701,7 +701,7 @@ linter/default-rules/pydantic/types.py     1.00      4.6±0.23ms     5.6 MB/sec 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/statement_visitor.rs</code>:62 on 2023-07-17 09:22</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">            visitor.visit_elif_else_clause(clause);
+            <div class="timeline-body"><pre><code>            visitor.visit_elif_else_clause(clause);
 </code></pre>
 </div>
         </div>
@@ -713,7 +713,7 @@ linter/default-rules/pydantic/types.py     1.00      4.6±0.23ms     5.6 MB/sec 
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/source_code/comment_ranges.rs</code>:36 on 2023-07-17 09:23</div>
             <div class="timeline-body"><p>Nit: The end must be after the start.</p>
-<pre><code class="language-suggestion">        let end = start + self
+<pre><code>        let end = start + self
             .raw[start..]
             .partition_point(|comment| comment.end() &lt; range.end());
 </code></pre>
@@ -740,14 +740,14 @@ else...else
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-07-17 09:37</div>
-            <div class="timeline-body"><p>I didn't review all the code changes because that would require too much time. Overall. Amazing work. This is a huge refactor that fixes many bugs, improves reported ranges, and removes many hacky checks.</p>
+            <div class="timeline-body"><p>I didn&#x27;t review all the code changes because that would require too much time. Overall. Amazing work. This is a huge refactor that fixes many bugs, improves reported ranges, and removes many hacky checks.</p>
 <p>I left a few comments that we need to address before merging, mostly:</p>
 <ul>
 <li>The visitor implementations do not call into <code>visit_elif_else_clause</code></li>
 <li>The number of branches rule is incorrect for nested ifs (somewhat certain).</li>
 <li>There are a few unaddressed todos.</li>
 </ul>
-<p>I would prefer to handle the <code>ElifElseClause</code> as any other node in the formatter's comments extraction. When reviewing the code, it kind of dripped me over that the <code>encosing_node</code> can be the <code>if</code> statement, but the following node is the <code>elif</code> condition. I propose to create an issue, merge this PR, and follow up soon (except you have reasons that justify the diverging behavior).</p>
+<p>I would prefer to handle the <code>ElifElseClause</code> as any other node in the formatter&#x27;s comments extraction. When reviewing the code, it kind of dripped me over that the <code>encosing_node</code> can be the <code>if</code> statement, but the following node is the <code>elif</code> condition. I propose to create an issue, merge this PR, and follow up soon (except you have reasons that justify the diverging behavior).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -773,7 +773,7 @@ else...else
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/rules/pylint/rules/too_many_branches.rs</code>:208 on 2023-07-18 10:54</div>
-            <div class="timeline-body"><p>With <code>elif</code> it would be, but with the <code>else</code> 4 makes more sense (that's different for python than for curly braces languages)</p>
+            <div class="timeline-body"><p>With <code>elif</code> it would be, but with the <code>else</code> 4 makes more sense (that&#x27;s different for python than for curly braces languages)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -782,14 +782,14 @@ else...else
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/rules/pylint/snapshots/ruff__rules__pylint__tests__PLR5501_collapsible_else_if.py.snap</code>:10 on 2023-07-18 10:55</div>
-            <div class="timeline-body"><p>i made it that way because it now spans the region that you have to replace with an elif, i'm fine to change the ranges later</p>
+            <div class="timeline-body"><p>i made it that way because it now spans the region that you have to replace with an elif, i&#x27;m fine to change the ranges later</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @konstin on 2023-07-18 11:40</div>
+            <div class="event">Merged by <a href="https://github.com/konstin">@konstin</a> on 2023-07-18 11:40</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @konstin on 2023-07-18 11:40</div>
+            <div class="event">Closed by <a href="https://github.com/konstin">@konstin</a> on 2023-07-18 11:40</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2023-07-18 11:40</div>
@@ -797,7 +797,7 @@ else...else
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:58:29 UTC
+        Synced at 2026-01-20 18:54:57 UTC
     </footer>
 </body>
 </html>

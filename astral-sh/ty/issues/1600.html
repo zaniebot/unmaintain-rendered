@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>We currently emit a diagnostic when an invalid <code>types.UnionType</code> instance is used as the second argument to <code>isinstance()</code> or <code>issubclass()</code>. But we do not currently detect this if the <code>types.UnionType</code> instance is nested inside a tuple.</p>
-<p>It's probably not high-priority to fix this because I'm not sure why you'd write code like this, but it's a known edge case that we don't handle currently, so it seemed worth opening an issue about.</p>
-<pre><code class="language-py">from typing import Literal
+<p>It&#x27;s probably not high-priority to fix this because I&#x27;m not sure why you&#x27;d write code like this, but it&#x27;s a known edge case that we don&#x27;t handle currently, so it seemed worth opening an issue about.</p>
+<pre><code>from typing import Literal
 
 def f(x):
     if isinstance(x, str | Literal[42]):  # diagnostic (good! this fails at runtime)
@@ -39,15 +39,15 @@ def f(x):
         reveal_type(x)  # revealed: Unknown
 </code></pre>
 <p>At runtime:</p>
-<pre><code class="language-pycon">Python 3.13.1 (main, Jan  3 2025, 12:04:03) [Clang 15.0.0 (clang-1500.3.9.4)] on darwin
+<pre><code>Python 3.13.1 (main, Jan  3 2025, 12:04:03) [Clang 15.0.0 (clang-1500.3.9.4)] on darwin
 Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
 &gt;&gt;&gt; from typing import Literal
 &gt;&gt;&gt; if isinstance(42, (bytes, str | int)):
-...     print('got you')
+...     print(&#x27;got you&#x27;)
 ...     
 got you
 &gt;&gt;&gt; if isinstance(42, (bytes, str | Literal[42])):
-...     print('got you')
+...     print(&#x27;got you&#x27;)
 ...     
 Traceback (most recent call last):
   File &quot;&lt;python-input-3&gt;&quot;, line 1, in &lt;module&gt;
@@ -64,46 +64,46 @@ Traceback (most recent call last):
                     &quot; class and instance checks&quot;)
 TypeError: Subscripted generics cannot be used with class and instance checks
 </code></pre>
-<h3>Version</h3>
+Version
 <p><em>No response</em></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">runtime semantics</span> added by @AlexWaygood on 2025-11-20 12:08</div>
+            <div class="event">Label <span class="label">runtime semantics</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-20 12:08</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-20 15:38</div>
-            <div class="timeline-body"><p>Thanks. Yeah, I had it on my list to reopen https://github.com/astral-sh/ty/issues/620, since TypeAlias support doesn't fix the given example there. But this issue works just as well!</p>
+            <div class="timeline-body"><p>Thanks. Yeah, I had it on my list to reopen <a href="https://github.com/astral-sh/ty/issues/620">astral-sh/ty#620</a>, since TypeAlias support doesn&#x27;t fix the given example there. But this issue works just as well!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Stable" by @carljm on 2025-11-20 15:38</div>
+            <div class="event">Added to milestone &quot;Stable&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-11-20 15:38</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-20 15:46</div>
             <div class="timeline-body"><blockquote>
-<p>Thanks. Yeah, I had it on my list to reopen <a href="https://github.com/astral-sh/ty/issues/620">#620</a>, since TypeAlias support doesn't fix the given example there. But this issue works just as well!</p>
+<p>Thanks. Yeah, I had it on my list to reopen <a href="https://github.com/astral-sh/ty/issues/620">#620</a>, since TypeAlias support doesn&#x27;t fix the given example there. But this issue works just as well!</p>
 </blockquote>
-<p>Hmm, I think that's actually a separate issue relating to us not understanding recursive type aliases properly yet? Currently we infer the type of <code>isinstance()</code> as being</p>
+<p>Hmm, I think that&#x27;s actually a separate issue relating to us not understanding recursive type aliases properly yet? Currently we infer the type of <code>isinstance()</code> as being</p>
 <pre><code>def isinstance(obj: object, class_or_tuple: type | UnionType | tuple[Divergent, ...], /) -&gt; bool
 </code></pre>
 <p>But ideally we would understand <a href="https://github.com/astral-sh/ruff/blob/416e2267daaf9699c26ec73c644a03356e3de7f2/crates/ty_vendored/vendor/typeshed/stdlib/builtins.pyi#L3736-L3739">this recursive PEP-613 type alias</a>, and that would lead us to flag <code>isinstance(42, (None,))</code> calls because <code>tuple[None]</code> is not assignable to <code>tuple[_ClassInfo, ...]</code> (<code>None</code> is not an instance of <code>type</code>/<code>UnionType</code> or a tuple thereof.)</p>
-<p>This issue is about something different (and it's lower-priority than the one you're talking about): even once we understand recursive type aliases, we <em>still</em> wouldn't flag the example I gave above, because <code>str | Literal[42]</code> <em>is</em> a <code>types.UnionType</code> instance (and therefore permitted according to typeshed's recursive type alias), it's just a <code>types.UnionType</code> instance with invalid elements in it.</p>
+<p>This issue is about something different (and it&#x27;s lower-priority than the one you&#x27;re talking about): even once we understand recursive type aliases, we <em>still</em> wouldn&#x27;t flag the example I gave above, because <code>str | Literal[42]</code> <em>is</em> a <code>types.UnionType</code> instance (and therefore permitted according to typeshed&#x27;s recursive type alias), it&#x27;s just a <code>types.UnionType</code> instance with invalid elements in it.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-21 00:00</div>
-            <div class="timeline-body"><p>I see - the diagnostic you're talking about here is not a failing assignability check to the parameter type in typeshed, it's an additional diagnostic we offer when special-casing <code>isinstance</code> calls, to mention if the PEP 604 union has invalid elements in it. So it's checking something that isn't expressible in the typeshed annotations, since <code>UnionType</code> doesn't express anything about the types of its elements. And that additional check doesn't recursively descend into tuples.</p>
-<p>I'll probably just open a separate issue for recursive PEP 613 type aliases, with <code>isinstance</code> as an example case.</p>
+            <div class="timeline-body"><p>I see - the diagnostic you&#x27;re talking about here is not a failing assignability check to the parameter type in typeshed, it&#x27;s an additional diagnostic we offer when special-casing <code>isinstance</code> calls, to mention if the PEP 604 union has invalid elements in it. So it&#x27;s checking something that isn&#x27;t expressible in the typeshed annotations, since <code>UnionType</code> doesn&#x27;t express anything about the types of its elements. And that additional check doesn&#x27;t recursively descend into tuples.</p>
+<p>I&#x27;ll probably just open a separate issue for recursive PEP 613 type aliases, with <code>isinstance</code> as an example case.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Removed from milestone "Stable" by @AlexWaygood on 2025-11-21 00:08</div>
+            <div class="event">Removed from milestone &quot;Stable&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-21 00:08</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:21:01 UTC
+        Synced at 2026-01-20 19:26:02 UTC
     </footer>
 </body>
 </html>

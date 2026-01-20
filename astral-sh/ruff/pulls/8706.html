@@ -23,49 +23,43 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexBieg">@AlexBieg</a></div>
-            <div class="timeline-body"><!--
-Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+            <div class="timeline-body">
 
-- Does this pull request include a summary of the change? (See below.)
-- Does this pull request include a descriptive title?
-- Does this pull request include references to any relevant issues?
--->
-
-<h2>Summary</h2>
+Summary
 <p>Adds the Pylint rule E1132 to check for repeated keyword arguments in a function call.</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>Tested via the included unit tests and manual spot checking.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-11-15 23:13</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-16 01:03</div>
             <div class="timeline-body"><p>Awesome, thanks for this PR and for getting involved!</p>
-<p>There's <em>some</em> overlap here with https://github.com/astral-sh/ruff/pull/8450, I'm almost wondering if they should one rule since they both only deal with static dictionary spreads, but I think I need to take a closer look at the code before I have a clear answer to that.</p>
+<p>There&#x27;s <em>some</em> overlap here with <a href="https://github.com/astral-sh/ruff/pull/8450">astral-sh/ruff#8450</a>, I&#x27;m almost wondering if they should one rule since they both only deal with static dictionary spreads, but I think I need to take a closer look at the code before I have a clear answer to that.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-11-16 01:03</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-16 01:03</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexBieg">@AlexBieg</a> on 2023-11-16 17:23</div>
-            <div class="timeline-body"><p>Oh yeah! I totally did not see that other PR. I'm happy to help merge stuff if we go down that route.</p>
+            <div class="timeline-body"><p>Oh yeah! I totally did not see that other PR. I&#x27;m happy to help merge stuff if we go down that route.</p>
 <p>I also should have mentioned this in the summary, but this is my first meaningful Rust code besides random side projects, so feel free to be extra nit-picky with your comments 😄</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/pylint/rules/repeated_keywords.rs</code>:67 on 2023-11-18 01:22</div>
-            <div class="timeline-body"><p>Since you asked for nitpicks: it'd be more common to express this as <code>keywords: &amp;[Keyword]</code> -- a slice, rather than a vector. You wouldn't need to change the call-site at all, but a slice is basically a more &quot;permissive&quot; type: you can always make a slice from a vector, but you can't go the other way around (if you have a slice like <code>&amp;[Keyword]</code>, you can't pass that to a function that takes <code>&amp;Vec&lt;Keyword&gt;</code>).</p>
+            <div class="timeline-body"><p>Since you asked for nitpicks: it&#x27;d be more common to express this as <code>keywords: &amp;[Keyword]</code> -- a slice, rather than a vector. You wouldn&#x27;t need to change the call-site at all, but a slice is basically a more &quot;permissive&quot; type: you can always make a slice from a vector, but you can&#x27;t go the other way around (if you have a slice like <code>&amp;[Keyword]</code>, you can&#x27;t pass that to a function that takes <code>&amp;Vec&lt;Keyword&gt;</code>).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -75,7 +69,7 @@ Thank you for contributing to Ruff! To help us out with reviewing, please consid
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/pylint/rules/repeated_keywords.rs</code>:37 on 2023-11-18 01:23</div>
             <div class="timeline-body"><p>I think more common would be to destructure here, like:</p>
-<pre><code class="language-rust">let Self { duplicate_keyword} = self;
+<pre><code>let Self { duplicate_keyword} = self;
 format!(&quot;Repeated keyword argument: `{duplicate_keyword}`&quot;)
 </code></pre>
 </div>
@@ -90,7 +84,7 @@ format!(&quot;Repeated keyword argument: `{duplicate_keyword}`&quot;)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/expression.rs</code>:780 on 2023-11-18 01:25</div>
-            <div class="timeline-body"><p>Most rules don't yet follow this pattern, but we tend to prefer passing <code>call</code> here in lieu of <code>keywords</code>, and then accessing <code>call.keywords</code> as-needed within <code>repeated_keywords</code>. The benefit is that we ensure callers pass an AST node of the right type, rather than passing some arbitrary vector of keywords. That benefit isn't so clear in <em>this</em> case, but consider the call to <code>nested_min_max</code> right above, where the third argument is just an arbitrary <code>&amp;Expr</code>. A caller could pass <em>any</em> expression, but in truth, we'd prefer that call to take an <code>ExprCall</code>.</p>
+            <div class="timeline-body"><p>Most rules don&#x27;t yet follow this pattern, but we tend to prefer passing <code>call</code> here in lieu of <code>keywords</code>, and then accessing <code>call.keywords</code> as-needed within <code>repeated_keywords</code>. The benefit is that we ensure callers pass an AST node of the right type, rather than passing some arbitrary vector of keywords. That benefit isn&#x27;t so clear in <em>this</em> case, but consider the call to <code>nested_min_max</code> right above, where the third argument is just an arbitrary <code>&amp;Expr</code>. A caller could pass <em>any</em> expression, but in truth, we&#x27;d prefer that call to take an <code>ExprCall</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -100,7 +94,7 @@ format!(&quot;Repeated keyword argument: `{duplicate_keyword}`&quot;)
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/pylint/rules/repeated_keywords.rs</code>:93 on 2023-11-18 01:33</div>
             <div class="timeline-body"><p>My advice would be to drop <code>generate_record_func</code>, and rewrite this as:</p>
-<pre><code class="language-rust">pub(crate) fn repeated_keywords(checker: &amp;mut Checker, keywords: &amp;Vec&lt;Keyword&gt;) {
+<pre><code>pub(crate) fn repeated_keywords(checker: &amp;mut Checker, keywords: &amp;Vec&lt;Keyword&gt;) {
     let mut seen =
         FxHashSet::with_capacity_and_hasher(keywords.len(), BuildHasherDefault::default());
 
@@ -143,20 +137,20 @@ format!(&quot;Repeated keyword argument: `{duplicate_keyword}`&quot;)
     }
 }
 </code></pre>
-<p>There are a couple distinct changes here, so I'll walk through them one by one:</p>
+<p>There are a couple distinct changes here, so I&#x27;ll walk through them one by one:</p>
 <ol>
-<li>We tend to use <code>FxHashSet</code> over the standard library's <code>HashSet</code>. It tends to perform much better for smaller inputs.</li>
+<li>We tend to use <code>FxHashSet</code> over the standard library&#x27;s <code>HashSet</code>. It tends to perform much better for smaller inputs.</li>
 <li>You can initialize the hash set with a known capacity, which avoids resizing it unnecessarily for cases in which we know its approximate size.</li>
-<li>In Rust, <code>seen.insert</code> returns a boolean (<code>false</code> if the element was already in the set). So we can both insert the element and test if it was already present in a single operation. The behavior here <em>is</em> different than in your version, since we'll now flag the same argument multiple times if it's repeated more than twice, but honestly I think that's fine.</li>
-<li>We can use a <code>FxHashSet&lt;&amp;str&gt;</code> rather than an <code>FxHashSet&lt;String&gt;</code>, since we know the data will live longer than the hash set -- so there's no need to allocate a new String and have the hash set own the data. It can just use references.</li>
-<li>I think the use of <code>Box</code>, <code>dyn</code>, etc. is not totally necessary since we're only calling this function twice, and after the refactor its been reduced to just a couple lines.</li>
+<li>In Rust, <code>seen.insert</code> returns a boolean (<code>false</code> if the element was already in the set). So we can both insert the element and test if it was already present in a single operation. The behavior here <em>is</em> different than in your version, since we&#x27;ll now flag the same argument multiple times if it&#x27;s repeated more than twice, but honestly I think that&#x27;s fine.</li>
+<li>We can use a <code>FxHashSet&lt;&amp;str&gt;</code> rather than an <code>FxHashSet&lt;String&gt;</code>, since we know the data will live longer than the hash set -- so there&#x27;s no need to allocate a new String and have the hash set own the data. It can just use references.</li>
+<li>I think the use of <code>Box</code>, <code>dyn</code>, etc. is not totally necessary since we&#x27;re only calling this function twice, and after the refactor its been reduced to just a couple lines.</li>
 </ol>
 <p>Happy to answer any questions!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-18 01:33</div>
-            <div class="timeline-body"><p>Okay, it's probably fine to just proceed with this rule on its own. Left a few comments!</p>
+            <div class="timeline-body"><p>Okay, it&#x27;s probably fine to just proceed with this rule on its own. Left a few comments!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -165,12 +159,12 @@ format!(&quot;Repeated keyword argument: `{duplicate_keyword}`&quot;)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexBieg">@AlexBieg</a> on <code>crates/ruff_linter/src/rules/pylint/rules/repeated_keywords.rs</code>:93 on 2023-11-18 20:33</div>
-            <div class="timeline-body"><p>That makes a ton of sense. Thanks for such a detailed review! Needing to use the <code>Box</code> and <code>dyn</code> in what was logically a pretty simple function felt wrong, so I'm glad there was a more straightforward way of doing things</p>
+            <div class="timeline-body"><p>That makes a ton of sense. Thanks for such a detailed review! Needing to use the <code>Box</code> and <code>dyn</code> in what was logically a pretty simple function felt wrong, so I&#x27;m glad there was a more straightforward way of doing things</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexBieg">@AlexBieg</a> on 2023-11-18 20:39</div>
-            <div class="timeline-body"><p>@charliermarsh Okay this is ready for another pass. All of your comments should be addressed. I also updated some of my destructuring statements to use <code>..</code> so that unused values weren't just destructured into <code>_</code> variables. I think it made it easier to read, but happy to change it back if it's not the preferred style.</p>
+            <div class="timeline-body"><p>@charliermarsh Okay this is ready for another pass. All of your comments should be addressed. I also updated some of my destructuring statements to use <code>..</code> so that unused values weren&#x27;t just destructured into <code>_</code> variables. I think it made it easier to read, but happy to change it back if it&#x27;s not the preferred style.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -179,18 +173,18 @@ format!(&quot;Repeated keyword argument: `{duplicate_keyword}`&quot;)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">preview</span> added by @charliermarsh on 2023-11-19 00:22</div>
+            <div class="event">Label <span class="label">preview</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-19 00:22</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2023-11-19 00:26</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-19 00:26</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-11-19 00:26</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-19 00:26</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:01:27 UTC
+        Synced at 2026-01-20 18:59:23 UTC
     </footer>
 </body>
 </html>

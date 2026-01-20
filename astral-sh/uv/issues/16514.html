@@ -23,26 +23,26 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ncoghlan">@ncoghlan</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>When exporting to <code>pylock.toml</code>, <code>uv</code> currently emits absolute file URLs on all platforms. The &quot;URLs&quot; emitted on windows dump in the raw Windows path, including the use of backslash separators instead of forward slash ones.</p>
-<p>This is inconvenient when the local files should be located relative to the lock file (e.g. when they're stored in Git LFS).</p>
+<p>This is inconvenient when the local files should be located relative to the lock file (e.g. when they&#x27;re stored in Git LFS).</p>
 <p>Proposed changes:</p>
 <ul>
 <li>always use POSIX path separators in <code>pylock.toml</code>, even on Windows</li>
 <li>emit relative <code>path</code> entries rather than absolute <code>url</code> entries where possible</li>
 <li>emit absolute <code>path</code> entries on Windows if the files referenced are on a different drive from the lock file export location</li>
 </ul>
-<p>There could potentially be a config flag to force the use of absolute paths (that may still be useful for some use cases where the files are in known locations on target systems of interest, but the location of the lock file itself at installation time isn't the same as it's location when being exported)</p>
-<h3>Example</h3>
+<p>There could potentially be a config flag to force the use of absolute paths (that may still be useful for some use cases where the files are in known locations on target systems of interest, but the location of the lock file itself at installation time isn&#x27;t the same as it&#x27;s location when being exported)</p>
+Example
 <p><em>No response</em></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @ncoghlan on 2025-10-30 15:26</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/ncoghlan">@ncoghlan</a> on 2025-10-30 15:26</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-10-30 15:43</div>
-            <div class="timeline-body"><p>I think those changes generally match how we treat paths in <code>uv.lock</code> (normalize to forward slashes, relativize if possible, fallback to absolute). I can't remember if relative paths are &quot;allowed&quot; under the <code>pylock.toml</code> spec.</p>
+            <div class="timeline-body"><p>I think those changes generally match how we treat paths in <code>uv.lock</code> (normalize to forward slashes, relativize if possible, fallback to absolute). I can&#x27;t remember if relative paths are &quot;allowed&quot; under the <code>pylock.toml</code> spec.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -51,11 +51,11 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-10-30 18:55</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-10-30 18:55</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-10-30 19:00</div>
-            <div class="timeline-body"><p>Do you mind providing an example? I think we already do this in some cases so want to understand when we're getting it wrong.</p>
+            <div class="timeline-body"><p>Do you mind providing an example? I think we already do this in some cases so want to understand when we&#x27;re getting it wrong.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -136,23 +136,23 @@ wheels = [{ url = &quot;file:///C:/Users/Alyssa/AppData/Local/Temp/tmpu8r76ysx/w
 <blockquote>
 <p>find-links = [&quot;C:\Users\Alyssa\AppData\Local\Temp\tmpo1yqij0_\wheels&quot;]</p>
 </blockquote>
-<p>I don't think we can handle absolute paths in input files properly in lockfile, neither choice seems portable, and e.g. relative paths in the lockfile invalidate it when the project moves relative to the absolute directory.</p>
+<p>I don&#x27;t think we can handle absolute paths in input files properly in lockfile, neither choice seems portable, and e.g. relative paths in the lockfile invalidate it when the project moves relative to the absolute directory.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ncoghlan">@ncoghlan</a> on 2025-11-03 15:10</div>
-            <div class="timeline-body"><p>I expect paths relative to the lock file (as <code>uv.lock</code> already includes). It does tightly couple the lock file to the local wheels it is consuming, but that's fine for the two cases that I think are reasonable to support:</p>
+            <div class="timeline-body"><p>I expect paths relative to the lock file (as <code>uv.lock</code> already includes). It does tightly couple the lock file to the local wheels it is consuming, but that&#x27;s fine for the two cases that I think are reasonable to support:</p>
 <ul>
 <li>no portability (locking and installation happen on the same system, nothing moves between the two steps)</li>
 <li>lock file + local wheels are transported together (e.g. via an archive or a version control system)</li>
 </ul>
-<p>For the first case, it doesn't matter whether the paths are relative or absolute, but for the second the paths need to be relative</p>
-<p>The case that absolute paths support but relative paths don't is one where the local wheels are stored in a shared cache that's in a fixed location on every potential installation target, but there are better ways of handling that (starting with relying on uv's own cache, and including alternatives like running a local devpi instance so the cached wheel access is via a localhost URL instead of a filesystem path)</p>
+<p>For the first case, it doesn&#x27;t matter whether the paths are relative or absolute, but for the second the paths need to be relative</p>
+<p>The case that absolute paths support but relative paths don&#x27;t is one where the local wheels are stored in a shared cache that&#x27;s in a fixed location on every potential installation target, but there are better ways of handling that (starting with relying on uv&#x27;s own cache, and including alternatives like running a local devpi instance so the cached wheel access is via a localhost URL instead of a filesystem path)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-11-28 16:49</div>
-            <div class="timeline-body"><p>I think it makes sense to emit relative paths here, though not sure what we should do about <code>index</code>. Should we just omit it? I think that <em>has</em> to be a URL and so can't be relative.</p>
+            <div class="timeline-body"><p>I think it makes sense to emit relative paths here, though not sure what we should do about <code>index</code>. Should we just omit it? I think that <em>has</em> to be a URL and so can&#x27;t be relative.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -163,7 +163,7 @@ wheels = [{ url = &quot;file:///C:/Users/Alyssa/AppData/Local/Temp/tmpu8r76ysx/w
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:33:19 UTC
+        Synced at 2026-01-20 19:40:51 UTC
     </footer>
 </body>
 </html>

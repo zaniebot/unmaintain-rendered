@@ -23,26 +23,26 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/brendan-morin">@brendan-morin</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<p>Hi, I'm running into a bit of a weird issue where <code>uv pip compile</code> is lightning fast when run in a normal terminal, but really slow when run in a subprocess. While many deps are internal (so I can't share an exact repro), I do not think this is related to specific dependencies.</p>
+            <div class="timeline-body">Summary
+<p>Hi, I&#x27;m running into a bit of a weird issue where <code>uv pip compile</code> is lightning fast when run in a normal terminal, but really slow when run in a subprocess. While many deps are internal (so I can&#x27;t share an exact repro), I do not think this is related to specific dependencies.</p>
 <p>The command:</p>
 <pre><code>uv pip compile --universal --python-version 3.10 --overrides overrides.txt --output-file requirements.txt --group mygroup --constraints constraints.txt --verbose pyproject.toml 
 </code></pre>
 <p>When running in a normal terminal (last few logs):</p>
-<pre><code>DEBUG split `python_full_version == '3.10.*'` resolution took 0.007s
+<pre><code>DEBUG split `python_full_version == &#x27;3.10.*&#x27;` resolution took 0.007s
 INFO Solved your requirements for 3 environments
-DEBUG Distinct solution for split (python_full_version &gt;= '3.12') with 122 packages
-DEBUG Distinct solution for split (python_full_version == '3.11.*') with 122 packages
-DEBUG Distinct solution for split (python_full_version == '3.10.*') with 124 packages
+DEBUG Distinct solution for split (python_full_version &gt;= &#x27;3.12&#x27;) with 122 packages
+DEBUG Distinct solution for split (python_full_version == &#x27;3.11.*&#x27;) with 122 packages
+DEBUG Distinct solution for split (python_full_version == &#x27;3.10.*&#x27;) with 124 packages
 Resolved 128 packages in 39ms
 
 </code></pre>
 <p>And when running the same command in a subprocess <code>subprocess.run(args=cmd, capture_output=True, text=True, check=True)</code>:</p>
-<pre><code>DEBUG split `python_full_version == '3.10.*'` resolution took 0.528s
+<pre><code>DEBUG split `python_full_version == &#x27;3.10.*&#x27;` resolution took 0.528s
 INFO Solved your requirements for 3 environments
-DEBUG Distinct solution for split (python_full_version &gt;= '3.12') with 122 packages
-DEBUG Distinct solution for split (python_full_version == '3.11.*') with 122 packages
-DEBUG Distinct solution for split (python_full_version == '3.10.*') with 124 packages
+DEBUG Distinct solution for split (python_full_version &gt;= &#x27;3.12&#x27;) with 122 packages
+DEBUG Distinct solution for split (python_full_version == &#x27;3.11.*&#x27;) with 122 packages
+DEBUG Distinct solution for split (python_full_version == &#x27;3.10.*&#x27;) with 124 packages
 Resolved 128 packages in 7.94s
 </code></pre>
 <p>I see a lot of these logs in the subprocess version that are not present in the normal terminal version</p>
@@ -50,33 +50,33 @@ Resolved 128 packages in 7.94s
 DEBUG Sending revalidation request for: https://internal.example.com/api/pypi/something.whl
 DEBUG Found not-modified response for: https://internal.example.com/api/pypi/something.whl
 </code></pre>
-<p>There's a lot of logs, but just searching the output I see 200+ mentions of &quot;stale&quot; in the subprocess version and none in the normal terminal one. I have also confirmed both are using the same cache dir.</p>
+<p>There&#x27;s a lot of logs, but just searching the output I see 200+ mentions of &quot;stale&quot; in the subprocess version and none in the normal terminal one. I have also confirmed both are using the same cache dir.</p>
 <p>Any idea on things I could try to speed up the subprocess runs? This can occasionally take as long as 40+ seconds.</p>
-<h3>Platform</h3>
+Platform
 <p>Darwin 24.5.0 arm64</p>
-<h3>Version</h3>
+Version
 <p>uv 0.8.3 (Homebrew 2025-07-24)</p>
-<h3>Python version</h3>
+Python version
 <p>3.11.11</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @brendan-morin on 2025-07-29 20:51</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/brendan-morin">@brendan-morin</a> on 2025-07-29 20:51</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-29 22:04</div>
-            <div class="timeline-body"><p>I can't imagine a reason there'd be a difference here. Can you demonstrate the difference with a dummy set of requirements?</p>
+            <div class="timeline-body"><p>I can&#x27;t imagine a reason there&#x27;d be a difference here. Can you demonstrate the difference with a dummy set of requirements?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-mre</span> added by @zanieb on 2025-07-29 22:04</div>
+            <div class="event">Label <span class="label">needs-mre</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-29 22:04</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/brendan-morin">@brendan-morin</a> on 2025-07-29 22:21</div>
-            <div class="timeline-body"><p>Yeah this is pretty consistent for me and straightforward to reproduce. Let's say this <code>example.py</code>:</p>
+            <div class="timeline-body"><p>Yeah this is pretty consistent for me and straightforward to reproduce. Let&#x27;s say this <code>example.py</code>:</p>
 <pre><code>import subprocess
 
-if __name__ == '__main__':
+if __name__ == &#x27;__main__&#x27;:
     r = subprocess.run(
         args=[
             &quot;uv&quot;,
@@ -125,7 +125,7 @@ Resolved 32 packages in 3.91s
 Resolved 32 packages in 5.54s
 Resolved 32 packages in 727ms
 </code></pre>
-<ol start="2">
+<ol>
 <li>Using <code>uv pip compile --universal --python-version 3.10 --output-file requirements.txt requirements.in</code> (from the top of the previously generated <code>requirements.txt</code>):</li>
 </ol>
 <pre><code>Resolved 32 packages in 12ms
@@ -138,34 +138,34 @@ Resolved 32 packages in 12ms
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/brendan-morin">@brendan-morin</a> on 2025-07-29 22:25</div>
-            <div class="timeline-body"><p>Oh man... it is the <code>--upgrade</code> flag. It wasn't being output to the <code>requirements.txt</code>. Adding that to the command seems to explain this. I don't know if I'd call it a bug not being there either since I can see why it's not, but it is a little footgun in this case.</p>
+            <div class="timeline-body"><p>Oh man... it is the <code>--upgrade</code> flag. It wasn&#x27;t being output to the <code>requirements.txt</code>. Adding that to the command seems to explain this. I don&#x27;t know if I&#x27;d call it a bug not being there either since I can see why it&#x27;s not, but it is a little footgun in this case.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-29 22:41</div>
-            <div class="timeline-body"><p>Ah that makes more sense. Yeah I don't know if that should be emitted. Does <code>pip-compile</code>?</p>
+            <div class="timeline-body"><p>Ah that makes more sense. Yeah I don&#x27;t know if that should be emitted. Does <code>pip-compile</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-29 22:42</div>
-            <div class="timeline-body"><p>I believe it's intentionally omitted.</p>
+            <div class="timeline-body"><p>I believe it&#x27;s intentionally omitted.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-01 16:49</div>
-            <div class="timeline-body"><p>Confirming that <code>pip-tools</code> strips <code>--upgrade</code>, and I think that's the right behavior here.</p>
+            <div class="timeline-body"><p>Confirming that <code>pip-tools</code> strips <code>--upgrade</code>, and I think that&#x27;s the right behavior here.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2025-08-01 16:49</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-01 16:49</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-08-01 16:49</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-01 16:49</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:32:24 UTC
+        Synced at 2026-01-20 19:39:45 UTC
     </footer>
 </body>
 </html>

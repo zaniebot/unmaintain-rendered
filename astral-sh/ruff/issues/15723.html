@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a></div>
-            <div class="timeline-body"><h3>Description</h3>
+            <div class="timeline-body">Description
 <p>This bug was discovered in #15719</p>
 <p>Given something like:</p>
-<pre><code class="language-python">from __future__ import annotations
+<pre><code>from __future__ import annotations
 
 import importlib.abc
 from typing import TYPE_CHECKING
@@ -39,16 +39,16 @@ class Foo(importlib.abc.MetaPathFinder):
 </code></pre>
 <p><code>importlib.machinery</code> will incorrectly be flagged with <code>TC004</code>, since <code>importlib.abc.MetaPathFinder</code> binds to the same binding as <code>importlib.machinery.ModuleSpec</code>, so since the former is used at runtime, it thinks that <code>importlib.machinery</code> needs to be moved outside the <code>TYPE_CHECKING</code> block.</p>
 <p>Combining the two imports into a shared binding makes sense, since what will be looked up is <code>importlib</code> and not <code>importlib.machinery</code> or <code>importlib.abc</code>.</p>
-<p>This means that when we're checking the import bindings we need to expand the single <code>importlib</code> binding to its two import statements <code>importlib.abc</code> and <code>importlib.machinery</code> and for each reference check which of the two imports will actually be relevant.</p>
+<p>This means that when we&#x27;re checking the import bindings we need to expand the single <code>importlib</code> binding to its two import statements <code>importlib.abc</code> and <code>importlib.machinery</code> and for each reference check which of the two imports will actually be relevant.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-01-24 17:34</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-24 17:34</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/coredumperror">@coredumperror</a> on 2025-12-04 00:13</div>
-            <div class="timeline-body"><p>Could this possibly be why I'm getting <code>TC004</code> from the following code?</p>
-<pre><code class="language-python">from typing import TYPE_CHECKING
+            <div class="timeline-body"><p>Could this possibly be why I&#x27;m getting <code>TC004</code> from the following code?</p>
+<pre><code>from typing import TYPE_CHECKING
 from django.urls import reverse_lazy
 
 if TYPE_CHECKING:
@@ -61,20 +61,20 @@ class ApplicationTable:
     form_url: StrOrPromise = reverse_lazy(&quot;operations:applications--actions&quot;)
 </code></pre>
 <p>https://play.ruff.rs/d3e8ee0f-a7ba-477c-964c-d59bda9c396d</p>
-<p>It doesn't seem to make any sense that this would be triggering TC004.</p>
+<p>It doesn&#x27;t seem to make any sense that this would be triggering TC004.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-12-04 06:59</div>
             <div class="timeline-body"><p>No, it makes perfect sense that this would emit <code>TC004</code>.</p>
-<p>It's because your target version is Python 3.9 and you're not using <code>from __future__ import annotations</code>, so all annotations are evaluated at runtime, so this code will fail with a <code>NameError</code> at runtime if you run it with Python 3.9 - 3.13, it only works like this on Python 3.14.</p>
+<p>It&#x27;s because your target version is Python 3.9 and you&#x27;re not using <code>from __future__ import annotations</code>, so all annotations are evaluated at runtime, so this code will fail with a <code>NameError</code> at runtime if you run it with Python 3.9 - 3.13, it only works like this on Python 3.14.</p>
 <p>Overlapping imports are only a concern if you import entire submodules from the same parent package.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:52:04 UTC
+        Synced at 2026-01-20 18:49:22 UTC
     </footer>
 </body>
 </html>

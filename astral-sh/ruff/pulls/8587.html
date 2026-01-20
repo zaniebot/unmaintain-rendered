@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>refine pyupgrade's TimeoutErrorAlias lint (UP041) to remove false positives</h1>
+    <h1>refine pyupgrade&#x27;s TimeoutErrorAlias lint (UP041) to remove false positives</h1>
 
     <div class="meta">
         <span class="state-icon state-merged"></span>
@@ -33,7 +33,7 @@ detected socket.timeout as an alias.</p>
 detected as aliases in Python 3.11+, and only socket.timeout is
 detected as an alias in Python 3.10.</p>
 <p>Fixes #8565</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>I tested this by updating the existing snapshot test which had erroneously
 asserted that socket.timeout should not be replaced with TimeoutError in Python
 3.11+. I also added a new regression test that targets Python 3.10 and ensures
@@ -42,19 +42,19 @@ occur.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @zanieb by @BurntSushi on 2023-11-09 17:50</div>
+            <div class="event">Review requested from <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-09 17:50</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @charliermarsh by @BurntSushi on 2023-11-09 17:51</div>
+            <div class="event">Review requested from <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-09 17:51</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-11-09 18:04</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
@@ -69,11 +69,11 @@ Should we just do not produce a warning about <code>asyncio.TimeoutError</code> 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-09 23:59</div>
-            <div class="timeline-body"><p>Ah yeah, I think we may have misdiagnosed in the original issue. We probably shouldn't raise on <code>asyncio.TimeoutError</code> in Python 3.10 <em>at all</em>. The initial PR actually suggests that this was the intention:</p>
-<img width="313" alt="Screen Shot 2023-11-09 at 5 08 56 PM" src="https://github.com/astral-sh/ruff/assets/1309177/02f13677-ed55-450d-b4b9-c30b9e598a65">
+            <div class="timeline-body"><p>Ah yeah, I think we may have misdiagnosed in the original issue. We probably shouldn&#x27;t raise on <code>asyncio.TimeoutError</code> in Python 3.10 <em>at all</em>. The initial PR actually suggests that this was the intention:</p>
+<img alt="Screen Shot 2023-11-09 at 5 08 56 PM" src="https://github.com/astral-sh/ruff/assets/1309177/02f13677-ed55-450d-b4b9-c30b9e598a65">
 
 <p>But then has this code:</p>
-<pre><code class="language-rust">/// Return `true` if an [`Expr`] is an alias of `TimeoutError`.
+<pre><code>/// Return `true` if an [`Expr`] is an alias of `TimeoutError`.
 fn is_alias(expr: &amp;Expr, semantic: &amp;SemanticModel, target_version: PythonVersion) -&gt; bool {
     semantic.resolve_call_path(expr).is_some_and(|call_path| {
         if target_version &gt;= PythonVersion::Py311 {
@@ -94,7 +94,7 @@ fn is_alias(expr: &amp;Expr, semantic: &amp;SemanticModel, target_version: Pytho
             <div class="timeline-header">Comment by <a href="https://github.com/alex-700">@alex-700</a> on 2023-11-10 11:21</div>
             <div class="timeline-body"><p>@charliermarsh yes.
 Something like</p>
-<pre><code class="language-rust">/// Return `true` if an [`Expr`] is an alias of `TimeoutError`.
+<pre><code>/// Return `true` if an [`Expr`] is an alias of `TimeoutError`.
 fn is_alias(expr: &amp;Expr, semantic: &amp;SemanticModel, target_version: PythonVersion) -&gt; bool {
     semantic.resolve_call_path(expr).is_some_and(|call_path| {
         if target_version &gt;= PythonVersion::Py311 {
@@ -110,7 +110,7 @@ fn is_alias(expr: &amp;Expr, semantic: &amp;SemanticModel, target_version: Pytho
 </code></pre>
 <p>^ to minimize a difference from the current code.</p>
 <p>Or maybe something like</p>
-<pre><code class="language-rust">/// Return `true` if an [`Expr`] is an alias of `TimeoutError`.
+<pre><code>/// Return `true` if an [`Expr`] is an alias of `TimeoutError`.
 fn is_alias(expr: &amp;Expr, semantic: &amp;SemanticModel, target_version: PythonVersion) -&gt; bool {
     semantic
         .resolve_call_path(expr)
@@ -123,7 +123,7 @@ fn is_alias(expr: &amp;Expr, semantic: &amp;SemanticModel, target_version: Pytho
 }
 </code></pre>
 <p>or (implicitly used the information that target_version &gt;= py310)</p>
-<pre><code class="language-rust">/// Return `true` if an [`Expr`] is an alias of `TimeoutError`.
+<pre><code>/// Return `true` if an [`Expr`] is an alias of `TimeoutError`.
 fn is_alias(expr: &amp;Expr, semantic: &amp;SemanticModel, target_version: PythonVersion) -&gt; bool {
     semantic
         .resolve_call_path(expr)
@@ -143,7 +143,7 @@ fn is_alias(expr: &amp;Expr, semantic: &amp;SemanticModel, target_version: Pytho
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-10 12:41</div>
-            <div class="timeline-body"><p>Okay, I've dropped the last commit and updated the PR description.</p>
+            <div class="timeline-body"><p>Okay, I&#x27;ve dropped the last commit and updated the PR description.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -157,16 +157,16 @@ fn is_alias(expr: &amp;Expr, semantic: &amp;SemanticModel, target_version: Pytho
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2023-11-10 14:52</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-10 14:52</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @zanieb on 2023-11-10 14:52</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-10 14:52</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @BurntSushi on 2023-11-10 15:15</div>
+            <div class="event">Merged by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-10 15:15</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2023-11-10 15:15</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-10 15:15</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2023-11-10 15:15</div>
@@ -174,7 +174,7 @@ fn is_alias(expr: &amp;Expr, semantic: &amp;SemanticModel, target_version: Pytho
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:01:22 UTC
+        Synced at 2026-01-20 18:59:13 UTC
     </footer>
 </body>
 </html>

@@ -78,7 +78,7 @@ zipp               3.19.2
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-07-26 14:09</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-26 14:09</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/larsevj">@larsevj</a> on 2024-07-26 15:22</div>
@@ -89,12 +89,12 @@ Maybe I am missing something here, but it seems to me like this has the potentia
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-26 17:34</div>
-            <div class="timeline-body"><p>Yes, that's possible and would be correct behavior. There's a good chance that pip would do exactly the same thing.</p>
+            <div class="timeline-body"><p>Yes, that&#x27;s possible and would be correct behavior. There&#x27;s a good chance that pip would do exactly the same thing.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-26 17:35</div>
-            <div class="timeline-body"><p>We can't invent constraints that don't exist. Who knows, the inverse order could be equally problematic.</p>
+            <div class="timeline-body"><p>We can&#x27;t invent constraints that don&#x27;t exist. Who knows, the inverse order could be equally problematic.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -111,18 +111,18 @@ Anyway since this seems like it is intended from <code>uv</code> side, you can p
             <div class="timeline-body"><blockquote>
 <p>If I understood the resolution strategy correctly, if you have for instance a package Y that depends upon numpy and has pinned it to numpy&lt;2. Then if you do uv pip install numpy Y (or lists numpy before package Y in you requirements file), then uv will install the latest numpy version 2.0.1 and then it will find a version of Y that does not have numpy pinned, which is propably a version released before the announcement of the numpy 2 release, so it will most certainly not work with numpy 2?</p>
 </blockquote>
-<p>As a dependency resolution algorithm, we need to trust the packages that their metadata is correct (with the escape hatches of constraints and overrides), so when a package adds a new constraint, we have to assume that the new release has become incompatible. When a package does not provide upper bounds, we have to assume it's compatible with all versions, we have no means to figure out the actual bound in uv.</p>
+<p>As a dependency resolution algorithm, we need to trust the packages that their metadata is correct (with the escape hatches of constraints and overrides), so when a package adds a new constraint, we have to assume that the new release has become incompatible. When a package does not provide upper bounds, we have to assume it&#x27;s compatible with all versions, we have no means to figure out the actual bound in uv.</p>
 <blockquote>
 <p>The thing that surprises me the most about the examples above is the fact that a package that has no dependencies itself, (e.g. numpy) will if placed properly &quot;determine&quot; the version of the package that depends upon it. I would have thought that the opposite would always be the case in simple cases like this. That you start resolving from the highest version of the package that has the other packages as dependencies.</p>
 </blockquote>
-<p>While this is possible algorithmically, it would be prohibitively expensive in uv's case. The by far slowest part is fetching metadata (even when we just read it from the cache), so we make the decision which package to prioritize without metadata. Another aspect is that the number of dependencies can change between releases, so we'd need to come up with a reliable, robust topological prioritization. Our current rules are using tighter specifiers first (<code>numpy==...</code> before <code>torch&gt;=...</code>), which helps trying fewer wrong versions, and otherwise apply them in the order we first saw a package.</p>
+<p>While this is possible algorithmically, it would be prohibitively expensive in uv&#x27;s case. The by far slowest part is fetching metadata (even when we just read it from the cache), so we make the decision which package to prioritize without metadata. Another aspect is that the number of dependencies can change between releases, so we&#x27;d need to come up with a reliable, robust topological prioritization. Our current rules are using tighter specifiers first (<code>numpy==...</code> before <code>torch&gt;=...</code>), which helps trying fewer wrong versions, and otherwise apply them in the order we first saw a package.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Enayaaa">@Enayaaa</a> on 2024-07-30 09:11</div>
-            <div class="timeline-body"><p>I recently had a quite confusing problem related to this. I don't think I understand why the resolver installs the version it does.</p>
+            <div class="timeline-body"><p>I recently had a quite confusing problem related to this. I don&#x27;t think I understand why the resolver installs the version it does.</p>
 <p><strong>requirements.txt</strong>:</p>
-<pre><code class="language-txt">sphinx
+<pre><code>sphinx
 sphinx_rtd_theme
 </code></pre>
 <p><strong>environment</strong>:</p>
@@ -153,7 +153,7 @@ tomli                         2.0.1
 urllib3                       2.2.2
 </code></pre>
 <p><strong>requirements.txt</strong>:</p>
-<pre><code class="language-txt">sphinx_rtd_theme
+<pre><code>sphinx_rtd_theme
 sphinx
 </code></pre>
 <p><strong>environment:</strong></p>
@@ -190,25 +190,25 @@ urllib3                       2.2.2
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-07-30 11:41</div>
-            <div class="timeline-body"><p>We have <code>sphinx-rtd-theme==2.0.0: sphinx&gt;=5, &lt;8</code>, so a resolver has to make a decision whether to pick the highest version of the theme, or the latest version of sphinx. From a resolver's perspective, both options are equally valid, while i'd expect you want the newest theme version with sphinx 7. It seems that pip does this choice in a different order than uv, where uv considers the order in your input file, pip doesn't. Your best path moving forward is probably adding lower bounds for the theme and for sphinx, this will make any resolver produce the result you want.</p>
-<p>From a pubgrub perspective, this is an interesting problem: Pubgrub works so that we first select a package, and then try all versions for that package. That means that we select either sphinx or sphinx-rtd-theme before we know that there is a sphinx-rtd-theme -&gt; sphinx dep we want to consider. What we'd need to do to generate the desirable solution and this and the original case is: We have picked sphinx, and we have found a compatible version of sphinx. We next select sphinx-rtd-theme, and try the first version of sphinx-rtd-theme. We see a dep onto <code>sphinx</code> that is incompatible. We would now have to switch prioritization, lock in that version of sphinx-rtd-theme, remove the selection of sphinx from the partial solution (something that pubgrub doesn't support atm) and start iterating over versions of sphinx instead.</p>
+            <div class="timeline-body"><p>We have <code>sphinx-rtd-theme==2.0.0: sphinx&gt;=5, &lt;8</code>, so a resolver has to make a decision whether to pick the highest version of the theme, or the latest version of sphinx. From a resolver&#x27;s perspective, both options are equally valid, while i&#x27;d expect you want the newest theme version with sphinx 7. It seems that pip does this choice in a different order than uv, where uv considers the order in your input file, pip doesn&#x27;t. Your best path moving forward is probably adding lower bounds for the theme and for sphinx, this will make any resolver produce the result you want.</p>
+<p>From a pubgrub perspective, this is an interesting problem: Pubgrub works so that we first select a package, and then try all versions for that package. That means that we select either sphinx or sphinx-rtd-theme before we know that there is a sphinx-rtd-theme -&gt; sphinx dep we want to consider. What we&#x27;d need to do to generate the desirable solution and this and the original case is: We have picked sphinx, and we have found a compatible version of sphinx. We next select sphinx-rtd-theme, and try the first version of sphinx-rtd-theme. We see a dep onto <code>sphinx</code> that is incompatible. We would now have to switch prioritization, lock in that version of sphinx-rtd-theme, remove the selection of sphinx from the partial solution (something that pubgrub doesn&#x27;t support atm) and start iterating over versions of sphinx instead.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2024-08-19 16:53</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-19 16:53</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2024-08-19 16:53</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-19 16:53</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-19 16:53</div>
-            <div class="timeline-body"><p>Discussion welcome to continue here — just closing as I've documented this now.</p>
+            <div class="timeline-body"><p>Discussion welcome to continue here — just closing as I&#x27;ve documented this now.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:25:47 UTC
+        Synced at 2026-01-20 19:32:17 UTC
     </footer>
 </body>
 </html>

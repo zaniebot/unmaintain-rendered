@@ -23,32 +23,32 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/tpgillam">@tpgillam</a></div>
-            <div class="timeline-body"><p>uv 0.4.20 -- we've run into the following scenario with some internal packages:</p>
+            <div class="timeline-body"><p>uv 0.4.20 -- we&#x27;ve run into the following scenario with some internal packages:</p>
 <ul>
-<li><code>pyproject.toml</code> has a <code>[tool.uv.sources]</code> section that defines a git source for a package. Let's call it <code>moo</code>. It's pinned to commit hash <code>A</code></li>
+<li><code>pyproject.toml</code> has a <code>[tool.uv.sources]</code> section that defines a git source for a package. Let&#x27;s call it <code>moo</code>. It&#x27;s pinned to commit hash <code>A</code></li>
 <li><code>uv.lock</code> is committed, and specifies commit hash <code>B</code> (not equal to <code>A</code>) for <code>moo</code></li>
 <li>in a repository without a <code>.venv</code>, running <code>uv sync --locked</code> will install commit hash <code>B</code></li>
 </ul>
 <p>This inconsistency between <code>pyproject.toml</code> and <code>uv.lock</code> arose due to a bit of a git merge accident we think. But it would be nice if <code>uv</code> errored if it spots this issue, as then our CI would have caught it!</p>
-<p>(I can construct a reproducing example if useful, but maybe it's obvious enough given description above - let me know if not!)</p>
+<p>(I can construct a reproducing example if useful, but maybe it&#x27;s obvious enough given description above - let me know if not!)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-09 17:10</div>
             <div class="timeline-body"><p>Yeah that seems wrong... So the <code>pyproject.toml</code> said <code>A</code>, the lock said <code>B</code>, but <code>uv sync --locked</code> succeeded?</p>
-<p>Just to confirm: you're using <code>moo = { git = &quot;...&quot;, rev = &quot;&lt;full commit hash&gt;&quot; }</code>?</p>
+<p>Just to confirm: you&#x27;re using <code>moo = { git = &quot;...&quot;, rev = &quot;&lt;full commit hash&gt;&quot; }</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-09 17:20</div>
-            <div class="timeline-body"><p>On its own I can't reproduce that, any help would be much appreciated.</p>
+            <div class="timeline-body"><p>On its own I can&#x27;t reproduce that, any help would be much appreciated.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-10-09 17:20</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-09 17:20</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-10-09 17:20</div>
+            <div class="event">Label <span class="label">needs-mre</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-09 17:20</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-09 17:21</div>
@@ -69,7 +69,7 @@ error: The lockfile at `uv.lock` needs to be updated, but `--locked` was provide
             <div class="timeline-body"><p>OK... so it seems this <code>uv.lock</code> had also ended up being internally inconsistent!</p>
 <p>Condensing, we have this situation:</p>
 <p><code>pyproject.toml</code></p>
-<pre><code class="language-toml">[project]
+<pre><code>[project]
 name = &quot;puffin&quot;
 dependencies = [&quot;moo&quot;]
 
@@ -77,7 +77,7 @@ dependencies = [&quot;moo&quot;]
 moo = { git = &quot;https://github.com/MonumoLtd/moo.git&quot;, rev=&quot;A&quot; }
 </code></pre>
 <p><code>uv.lock</code> (NB that <code>A</code> appears in one place and <code>B</code> the other)</p>
-<pre><code class="language-toml">[[package]]
+<pre><code>[[package]]
 name = &quot;puffin&quot;
 [package.metadata]
 requires-dist = [{ name = &quot;moo&quot;, git = &quot;https://github.com/MonumoLtd/moo.git?rev=A&quot; }]
@@ -103,28 +103,28 @@ source = { git = &quot;https://github.com/MonumoLtd/moo#B&quot; }
             <div class="timeline-header">Comment by <a href="https://github.com/tpgillam">@tpgillam</a> on 2024-10-10 07:17</div>
             <div class="timeline-body"><p>It looks to me like the original state was <code>moo</code> unpinned in pyproject.</p>
 <p>Then a PR (1) was merged that added a pin to A and correctly used A everywhere in the lock file.</p>
-<p>Then a second PR (2) introduced the error - this PR has been in flight for a while, so it had merged back in from main after (1) had been merged. I can't tell if someone had accidentally mis-resolved a conflict in the lock file. But this is my best guess.</p>
-<p>Anyway, certainly I agree this is a bit of a weird one and not of <code>uv</code>'s causing. We have lock files committed for certain projects to help aid reproducibility, which I suspect opens us up to this kind of fragility..</p>
+<p>Then a second PR (2) introduced the error - this PR has been in flight for a while, so it had merged back in from main after (1) had been merged. I can&#x27;t tell if someone had accidentally mis-resolved a conflict in the lock file. But this is my best guess.</p>
+<p>Anyway, certainly I agree this is a bit of a weird one and not of <code>uv</code>&#x27;s causing. We have lock files committed for certain projects to help aid reproducibility, which I suspect opens us up to this kind of fragility..</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-10 11:48</div>
-            <div class="timeline-body"><p>Reproduced, thank you! Agree there's some odd edit happening outside of uv's control here, but I think we should be erroring and not silently accepting it.</p>
+            <div class="timeline-body"><p>Reproduced, thank you! Agree there&#x27;s some odd edit happening outside of uv&#x27;s control here, but I think we should be erroring and not silently accepting it.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-mre</span> removed by @charliermarsh on 2024-10-10 11:55</div>
+            <div class="event">Label <span class="label">needs-mre</span> removed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-10 11:55</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-10-10 11:55</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-10 11:55</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Unassigned @charliermarsh by @charliermarsh on 2024-10-24 00:13</div>
+            <div class="event">Unassigned <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-24 00:13</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:27:35 UTC
+        Synced at 2026-01-20 19:34:37 UTC
     </footer>
 </body>
 </html>

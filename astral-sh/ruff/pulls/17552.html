@@ -24,33 +24,33 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a></div>
             <div class="timeline-body"><p>We now handle generic constructor methods on generic classes correctly:</p>
-<pre><code class="language-py">class C[T]:
+<pre><code>class C[T]:
     def __init__[S](self, t: T, s: S): ...
 
 x = C(1, &quot;str&quot;)
 </code></pre>
 <p>Here, constructing <code>C</code> requires us to infer a specialization for the generic contexts of <code>C</code> and <code>__init__</code> at the same time.</p>
 <p>At first I thought I would need to track the full stack of nested generic contexts here (since the <code>[S]</code> context is nested within the <code>[T]</code> context). But I think this is the only way that we might need to specialize more than one generic context at once — in all other cases, a containing generic context must be specialized before we get to a nested one, and so we can just special-case this.</p>
-<p>While we're here, we also construct the generic context for a generic function lazily, when its signature is accessed, instead of eagerly when inferring the function body.</p>
+<p>While we&#x27;re here, we also construct the generic context for a generic function lazily, when its signature is accessed, instead of eagerly when inferring the function body.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @dcreager on 2025-04-22 14:01</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/dcreager">@dcreager</a> on 2025-04-22 14:01</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @dcreager on 2025-04-22 14:01</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/dcreager">@dcreager</a> on 2025-04-22 14:01</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-04-22 14:01</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/dcreager">@dcreager</a> on 2025-04-22 14:01</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @dcreager on 2025-04-22 14:01</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/dcreager">@dcreager</a> on 2025-04-22 14:01</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-22 14:07</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
+<code>mypy_primer</code> results
 <p>No ecosystem changes detected ✅</p>
 </div>
         </div>
@@ -60,8 +60,8 @@ x = C(1, &quot;str&quot;)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:6070 on 2025-04-23 15:04</div>
-            <div class="timeline-body"><p>@sharkdp This is where I pulled function literals out into &quot;an enum&quot;...though I ended up not needing any new variants for this PR, so it's still technically a struct.  At the point where we need to introduce synthetic function literals, this is where they would go.  (And this struct would become one of the variants.)</p>
-<p>I went ahead and did this separation here even though I don't need an additional variant to clearly separate the parts apply to a function literal that appears in the source, and the generic-related stuff that comes from inheriting/specializing (which would apply to synthetic function literals once we have them, too)</p>
+            <div class="timeline-body"><p>@sharkdp This is where I pulled function literals out into &quot;an enum&quot;...though I ended up not needing any new variants for this PR, so it&#x27;s still technically a struct.  At the point where we need to introduce synthetic function literals, this is where they would go.  (And this struct would become one of the variants.)</p>
+<p>I went ahead and did this separation here even though I don&#x27;t need an additional variant to clearly separate the parts apply to a function literal that appears in the source, and the generic-related stuff that comes from inheriting/specializing (which would apply to synthetic function literals once we have them, too)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -70,30 +70,30 @@ x = C(1, &quot;str&quot;)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:5918 on 2025-04-23 15:34</div>
-            <div class="timeline-body"><p>if you add an <code>IntoIterator</code> implementation for <code>&amp;'a mut FunctionSignature&lt;'db&gt;</code>, then you can iterate over <code>&amp;mut self</code> directly in <code>set_inherited_generic_context</code> and <code>apply_specialization</code> rather than having to call <code>iter_mut()</code> explicitly:</p>
-<pre><code class="language-suggestion">    fn iter_mut&lt;'a&gt;(&amp;'a mut self) -&gt; std::slice::IterMut&lt;'a, Signature&lt;'db&gt;&gt; {
+            <div class="timeline-body"><p>if you add an <code>IntoIterator</code> implementation for <code>&amp;&#x27;a mut FunctionSignature&lt;&#x27;db&gt;</code>, then you can iterate over <code>&amp;mut self</code> directly in <code>set_inherited_generic_context</code> and <code>apply_specialization</code> rather than having to call <code>iter_mut()</code> explicitly:</p>
+<pre><code>    fn iter_mut&lt;&#x27;a&gt;(&amp;&#x27;a mut self) -&gt; std::slice::IterMut&lt;&#x27;a, Signature&lt;&#x27;db&gt;&gt; {
         match self {
             Self::Single(signature) =&gt; std::slice::from_mut(signature).iter_mut(),
             Self::Overloaded(signatures, _) =&gt; signatures.iter_mut(),
         }
     }
 
-    fn set_inherited_generic_context(&amp;mut self, inherited_generic_context: GenericContext&lt;'db&gt;) {
+    fn set_inherited_generic_context(&amp;mut self, inherited_generic_context: GenericContext&lt;&#x27;db&gt;) {
         for signature in self {
             signature.set_inherited_generic_context(inherited_generic_context);
         }
     }
 
-    fn apply_specialization(&amp;mut self, db: &amp;'db dyn Db, specialization: Specialization&lt;'db&gt;) {
+    fn apply_specialization(&amp;mut self, db: &amp;&#x27;db dyn Db, specialization: Specialization&lt;&#x27;db&gt;) {
         for signature in self {
             signature.apply_specialization(db, specialization);
         }
     }
 }
 
-impl&lt;'a, 'db&gt; IntoIterator for &amp;'a mut FunctionSignature&lt;'db&gt; {
-    type Item = &amp;'a mut Signature&lt;'db&gt;;
-    type IntoIter = std::slice::IterMut&lt;'a, Signature&lt;'db&gt;&gt;;
+impl&lt;&#x27;a, &#x27;db&gt; IntoIterator for &amp;&#x27;a mut FunctionSignature&lt;&#x27;db&gt; {
+    type Item = &amp;&#x27;a mut Signature&lt;&#x27;db&gt;;
+    type IntoIter = std::slice::IterMut&lt;&#x27;a, Signature&lt;&#x27;db&gt;&gt;;
     fn into_iter(self) -&gt; Self::IntoIter {
         self.iter_mut()
     }
@@ -107,7 +107,7 @@ impl&lt;'a, 'db&gt; IntoIterator for &amp;'a mut FunctionSignature&lt;'db&gt; {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:6070 on 2025-04-23 17:53</div>
-            <div class="timeline-body"><p>This causes a stack overflow in the ecosystem check, and I don't want to hold up this PR on debugging that, since this change is entirely orthogonal.</p>
+            <div class="timeline-body"><p>This causes a stack overflow in the ecosystem check, and I don&#x27;t want to hold up this PR on debugging that, since this change is entirely orthogonal.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -125,12 +125,12 @@ impl&lt;'a, 'db&gt; IntoIterator for &amp;'a mut FunctionSignature&lt;'db&gt; {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:6070 on 2025-04-23 18:06</div>
-            <div class="timeline-body"><p>Thanks for the reference anyway! I guess we can still look at your changes in https://github.com/astral-sh/ruff/pull/17552/commits/43ce8d58f6104a38374691f27b2aafea0eed2ca1 if we want to go back.</p>
+            <div class="timeline-body"><p>Thanks for the reference anyway! I guess we can still look at your changes in <a href="https://github.com/astral-sh/ruff/pull/17552">astral-sh/ruff#17552</a>/commits/43ce8d58f6104a38374691f27b2aafea0eed2ca1 if we want to go back.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:6088 on 2025-04-23 18:45</div>
-            <div class="timeline-body"><p>Reasonable to debug-assert here that it's <code>None</code>, or is this not an invariant in this case?</p>
+            <div class="timeline-body"><p>Reasonable to debug-assert here that it&#x27;s <code>None</code>, or is this not an invariant in this case?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -144,14 +144,14 @@ impl&lt;'a, 'db&gt; IntoIterator for &amp;'a mut FunctionSignature&lt;'db&gt; {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:6088 on 2025-04-23 19:03</div>
-            <div class="timeline-body"><p>I don't think it's an invariant, since then a user could trigger a panic by applying <code>dataclass_transform</code> twice.  That could be a diagnostic we want to enforce, but shouldn't be an assertion.  (Inheriting a generic context at most once is a proper invariant, since it's not possible for a user to declare a function &quot;doubly&quot; generic)</p>
+            <div class="timeline-body"><p>I don&#x27;t think it&#x27;s an invariant, since then a user could trigger a panic by applying <code>dataclass_transform</code> twice.  That could be a diagnostic we want to enforce, but shouldn&#x27;t be an assertion.  (Inheriting a generic context at most once is a proper invariant, since it&#x27;s not possible for a user to declare a function &quot;doubly&quot; generic)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @dcreager on 2025-04-23 19:06</div>
+            <div class="event">Merged by <a href="https://github.com/dcreager">@dcreager</a> on 2025-04-23 19:06</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dcreager on 2025-04-23 19:06</div>
+            <div class="event">Closed by <a href="https://github.com/dcreager">@dcreager</a> on 2025-04-23 19:06</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-04-23 19:06</div>
@@ -168,7 +168,7 @@ impl&lt;'a, 'db&gt; IntoIterator for &amp;'a mut FunctionSignature&lt;'db&gt; {
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:11:47 UTC
+        Synced at 2026-01-20 19:13:33 UTC
     </footer>
 </body>
 </html>

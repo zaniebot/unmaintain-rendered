@@ -26,45 +26,45 @@
             <div class="timeline-body"><p>We previously had separate <code>CallArguments</code> and <code>CallArgumentTypes</code> types in support of our two-phase call binding logic. <code>CallArguments</code> would store only the arity/kind of each argument (positional, keyword, variadic, etc). We then performed parameter matching using only this arity/kind information, and then infered the type of each argument, placing the result of this second phase into a new <code>CallArgumentTypes</code>.</p>
 <p>In #18996, we will need to infer the types of splatted arguments <em>before</em> performing parameter matching, since we need to know the argument type to accurately infer its length, which informs how many parameters the splatted argument is matched against.</p>
 <p>That makes this separation of Rust types no longer useful. This PR merges everything back into a single <code>CallArguments</code>. In the case where we are performing two-phase call binding, the types will be initialized to <code>None</code>, and updated to the actual argument type during the second <code>check_types</code> phase.</p>
-<p><em>[This is a refactoring in support of fixing the merge conflicts on #18996. I've pulled this out into a separate PR to make it easier to review in isolation.]</em></p>
+<p><em>[This is a refactoring in support of fixing the merge conflicts on #18996. I&#x27;ve pulled this out into a separate PR to make it easier to review in isolation.]</em></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @dcreager on 2025-07-14 18:51</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/dcreager">@dcreager</a> on 2025-07-14 18:51</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-07-14 18:51</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/dcreager">@dcreager</a> on 2025-07-14 18:51</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @dcreager on 2025-07-14 18:51</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/dcreager">@dcreager</a> on 2025-07-14 18:51</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> added by @dcreager on 2025-07-14 18:51</div>
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/dcreager">@dcreager</a> on 2025-07-14 18:51</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @dcreager on 2025-07-14 18:51</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/dcreager">@dcreager</a> on 2025-07-14 18:51</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-14 18:54</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
+<code>mypy_primer</code> results
 <p>No ecosystem changes detected ✅
 No memory usage changes detected ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-07-14 20:19</div>
-            <div class="timeline-body"><p>Haven't looked at the code here yet, but I'm curious if defaulting to <code>Type::Unknown</code> is the best option here, vs using an <code>Option&lt;Type&lt;'db&gt;&gt;</code> Rust type? It seems like we might at some point regret the semantic muddiness of the former, where in principle <code>Type::Unknown</code> could mean &quot;we haven't tried to infer any type for this argument yet&quot;, or it could equally well mean &quot;we inferred a type for this argument, and the type that we found is &quot;Unknown&quot;.</p>
+            <div class="timeline-body"><p>Haven&#x27;t looked at the code here yet, but I&#x27;m curious if defaulting to <code>Type::Unknown</code> is the best option here, vs using an <code>Option&lt;Type&lt;&#x27;db&gt;&gt;</code> Rust type? It seems like we might at some point regret the semantic muddiness of the former, where in principle <code>Type::Unknown</code> could mean &quot;we haven&#x27;t tried to infer any type for this argument yet&quot;, or it could equally well mean &quot;we inferred a type for this argument, and the type that we found is &quot;Unknown&quot;.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-07-14 20:28</div>
             <div class="timeline-body"><blockquote>
-<p>Haven't looked at the code here yet, but I'm curious if defaulting to <code>Type::Unknown</code> is the best option here, vs using an <code>Option&lt;Type&lt;'db&gt;&gt;</code> Rust type? It seems like we might at some point regret the semantic muddiness of the former, where in principle <code>Type::Unknown</code> could mean &quot;we haven't tried to infer any type for this argument yet&quot;, or it could equally well mean &quot;we inferred a type for this argument, and the type that we found is &quot;Unknown&quot;.</p>
+<p>Haven&#x27;t looked at the code here yet, but I&#x27;m curious if defaulting to <code>Type::Unknown</code> is the best option here, vs using an <code>Option&lt;Type&lt;&#x27;db&gt;&gt;</code> Rust type? It seems like we might at some point regret the semantic muddiness of the former, where in principle <code>Type::Unknown</code> could mean &quot;we haven&#x27;t tried to infer any type for this argument yet&quot;, or it could equally well mean &quot;we inferred a type for this argument, and the type that we found is &quot;Unknown&quot;.</p>
 </blockquote>
-<p>Yeah I started that way but it was shaping up to be a much more invasive change, especially in the argument expansion code. The only thing we'd use that distinction for at the moment is to verify that we've already inferred the type of a splatted argument, like <a href="https://github.com/astral-sh/ruff/blob/87f2ff9516dccddc385b4ed136700284ca3d1979/crates/ty_python_semantic/src/types/infer.rs#L4592">here</a>.</p>
-<p>Rather, I think a better approach in the spirit of your suggestion would be to keep separate <code>CallArguments</code> and <code>CallArgumentTypes</code>, but where the first has a <code>Vec&lt;Option&lt;Type&lt;'db&gt;&gt;&gt;</code> and the second has a <code>Vec&lt;Type&lt;'db&gt;&gt;</code>. (Maybe the types would deserve different names at that point? <code>CallArgumentsBuilder</code> and <code>CallArguments</code>?)</p>
+<p>Yeah I started that way but it was shaping up to be a much more invasive change, especially in the argument expansion code. The only thing we&#x27;d use that distinction for at the moment is to verify that we&#x27;ve already inferred the type of a splatted argument, like <a href="https://github.com/astral-sh/ruff/blob/87f2ff9516dccddc385b4ed136700284ca3d1979/crates/ty_python_semantic/src/types/infer.rs#L4592">here</a>.</p>
+<p>Rather, I think a better approach in the spirit of your suggestion would be to keep separate <code>CallArguments</code> and <code>CallArgumentTypes</code>, but where the first has a <code>Vec&lt;Option&lt;Type&lt;&#x27;db&gt;&gt;&gt;</code> and the second has a <code>Vec&lt;Type&lt;&#x27;db&gt;&gt;</code>. (Maybe the types would deserve different names at that point? <code>CallArgumentsBuilder</code> and <code>CallArguments</code>?)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -92,7 +92,7 @@ No memory usage changes detected ✅</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:4744 on 2025-07-15 07:53</div>
-            <div class="timeline-body"><p>Let's add a debug assertion that <code>arguments</code>, <code>arguments_forms</code>, and <code>ast_arguments</code> all have the same length</p>
+            <div class="timeline-body"><p>Let&#x27;s add a debug assertion that <code>arguments</code>, <code>arguments_forms</code>, and <code>ast_arguments</code> all have the same length</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -105,11 +105,11 @@ No memory usage changes detected ✅</p>
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @sharkdp removed by @sharkdp on 2025-07-15 09:13</div>
+            <div class="event">Review request for <a href="https://github.com/sharkdp">@sharkdp</a> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-15 09:13</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/call/arguments.rs</code>:190 on 2025-07-15 13:54</div>
-            <div class="timeline-body"><p>Turns out this wasn't being used! Removed</p>
+            <div class="timeline-body"><p>Turns out this wasn&#x27;t being used! Removed</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -124,7 +124,7 @@ No memory usage changes detected ✅</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:7813 on 2025-07-15 14:01</div>
-            <div class="timeline-body"><p>Done (had to name it <code>iter_types</code> since there was already a <code>types</code> accessor that returns a <code>&amp;[Option&lt;Type&lt;'db&gt;&gt;]</code></p>
+            <div class="timeline-body"><p>Done (had to name it <code>iter_types</code> since there was already a <code>types</code> accessor that returns a <code>&amp;[Option&lt;Type&lt;&#x27;db&gt;&gt;]</code></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -132,13 +132,13 @@ No memory usage changes detected ✅</p>
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-07-15 14:03</div>
+            <div class="event">Review request for <a href="https://github.com/AlexWaygood">@AlexWaygood</a> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-15 14:03</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @dcreager on 2025-07-15 14:20</div>
+            <div class="event">Merged by <a href="https://github.com/dcreager">@dcreager</a> on 2025-07-15 14:20</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dcreager on 2025-07-15 14:20</div>
+            <div class="event">Closed by <a href="https://github.com/dcreager">@dcreager</a> on 2025-07-15 14:20</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-07-15 14:21</div>
@@ -146,7 +146,7 @@ No memory usage changes detected ✅</p>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:14:15 UTC
+        Synced at 2026-01-20 19:16:37 UTC
     </footer>
 </body>
 </html>

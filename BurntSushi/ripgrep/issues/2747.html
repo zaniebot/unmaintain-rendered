@@ -23,24 +23,24 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/tmccombs">@tmccombs</a></div>
-            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+            <div class="timeline-body">Please tick this box to confirm you have reviewed the above.
 <ul>
 <li>[X] I have a different issue.</li>
 </ul>
-<h3>What version of ripgrep are you using?</h3>
+What version of ripgrep are you using?
 <p>ripgrep 14.1.0</p>
 <p>features:-simd-accel,+pcre2
 simd(compile):+SSE2,-SSSE3,-AVX2
 simd(runtime):+SSE2,+SSSE3,+AVX2</p>
 <p>PCRE2 10.42 is available (JIT is available)</p>
-<h3>How did you install ripgrep?</h3>
+How did you install ripgrep?
 <p>pacman</p>
-<h3>What operating system are you using ripgrep on?</h3>
+What operating system are you using ripgrep on?
 <p>archlinux</p>
-<h3>Describe your bug.</h3>
-<p>If you have an ignore rule like &quot;/a/*/b&quot; in .ignore or .gitignore,  then it will ignore files it shouldn't if you are in a subdirectory that has a grandchild named b.</p>
-<p>See also https://github.com/sharkdp/fd/issues/1506</p>
-<h3>What are the steps to reproduce the behavior?</h3>
+Describe your bug.
+<p>If you have an ignore rule like &quot;/a/*/b&quot; in .ignore or .gitignore,  then it will ignore files it shouldn&#x27;t if you are in a subdirectory that has a grandchild named b.</p>
+<p>See also <a href="https://github.com/sharkdp/fd/issues/1506">sharkdp/fd#1506</a></p>
+What are the steps to reproduce the behavior?
 <p>Create a directory with a layout like:</p>
 <pre><code>.
 └── a
@@ -59,24 +59,24 @@ simd(runtime):+SSE2,+SSSE3,+AVX2</p>
 </code></pre>
 <p>From the root run <code>rg --files</code>
 then run <code>rg --files</code> from the a/src directory (either cd into that directory or supply it as the path)</p>
-<h3>What is the actual behavior?</h3>
+What is the actual behavior?
 <p>When run from the root folder, it works as expected and finds a/src/f/b/foo but not a/c/b/foo (because <code>*</code> only matches a single directory).</p>
-<p>However, if I run from <code>a/src</code> then it doesn't find any files.</p>
-<p>Possibly related, if I run <code>rg --files</code> from the <code>a/</code> folder, then it actually finds both foo files, even though a/c/b/foo <em>should</em> be excluded because of it's relation to the folder containing the .ignore file (and the ignore pattern is absolute).</p>
-<h3>What is the expected behavior?</h3>
+<p>However, if I run from <code>a/src</code> then it doesn&#x27;t find any files.</p>
+<p>Possibly related, if I run <code>rg --files</code> from the <code>a/</code> folder, then it actually finds both foo files, even though a/c/b/foo <em>should</em> be excluded because of it&#x27;s relation to the folder containing the .ignore file (and the ignore pattern is absolute).</p>
+What is the expected behavior?
 <p>a/src/f/b/foo should not be ignored, regardless of which directory I run <code>rg</code> from.</p>
 <p>a/c/b/foo should be ignored, regardless of which directory I run <code>rg</code> from.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2024-03-06 12:16</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-03-06 12:16</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/em9797b">@em9797b</a> on 2024-03-07 02:44</div>
             <div class="timeline-body"><p>Where it goes wrong:</p>
 <p>https://github.com/BurntSushi/ripgrep/blob/master/crates/ignore/src/dir.rs#L456</p>
 <p>In the specific test case, we have:</p>
-<pre><code>abs_parent_path = &quot;[...]/a/src'
+<pre><code>abs_parent_path = &quot;[...]/a/src&#x27;
 dirpath = &quot;./f/b&quot;
 </code></pre>
 <p>Prefix is computed to be <code>f</code> and that and the <code>/</code> are stripped before the base is concatenated with the absolute path giving:</p>
@@ -84,26 +84,26 @@ dirpath = &quot;./f/b&quot;
 </code></pre>
 <p>So that matches on the ignore regex and is filtered. The obvious (to me) solution seemed to be to strip the &quot;./&quot; (if necessary) and just do plain concatenation. We would expect our path not to have overlap its absolute parent, right? However, making that change causes regression of #1757. So, either get we doubled-up segments or segments missing.</p>
 <blockquote>
-<p>Possibly related, if I run rg --files from the a/ folder, then it actually finds both foo files, even though a/c/b/foo should be excluded because of it's relation to the folder containing the .ignore file (and the ignore pattern is absolute).</p>
+<p>Possibly related, if I run rg --files from the a/ folder, then it actually finds both foo files, even though a/c/b/foo should be excluded because of it&#x27;s relation to the folder containing the .ignore file (and the ignore pattern is absolute).</p>
 </blockquote>
 <p>They are related! The same sequence of events results in the <code>b</code> being sliced out of <code>a/c/b/foo</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/WalterScottYoung">@WalterScottYoung</a> on 2024-11-15 12:14</div>
-            <div class="timeline-body"><p>i think this is essentially the same bug as https://github.com/BurntSushi/ripgrep/issues/2836, and I tested https://github.com/BurntSushi/ripgrep/pull/2933 is able to fix this.</p>
+            <div class="timeline-body"><p>i think this is essentially the same bug as <a href="https://github.com/BurntSushi/ripgrep/issues/2836">BurntSushi/ripgrep#2836</a>, and I tested <a href="https://github.com/BurntSushi/ripgrep/pull/2933">BurntSushi/ripgrep#2933</a> is able to fix this.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2025-07-11 16:32</div>
+            <div class="event">Label <span class="label">rollup</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-07-11 16:32</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2025-09-20 01:08</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-09-20 01:08</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:43:46 UTC
+        Synced at 2026-01-20 18:48:13 UTC
     </footer>
 </body>
 </html>

@@ -23,44 +23,44 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This fixes the infinite loop reported in #14389 by raising an error to the user about conflicting ICN001 (<code>unconventional-import-alias</code>) and I002 (<code>missing-required-import</code>) configuration options.</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>Added a CLI integration test reproducing the old behavior and then confirming the fix.</p>
 <p>Closes #14389</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-14 21:00</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-14 21:06</div>
-            <div class="timeline-body"><p>Can you tell me about what you tried to do in the configuration and why it didn't work?</p>
+            <div class="timeline-body"><p>Can you tell me about what you tried to do in the configuration and why it didn&#x27;t work?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-01-14 21:19</div>
-            <div class="timeline-body"><p>Well, I didn't really try anything exactly. I looked at #14477 that @AlexWaygood sent me as a similar fix, and then I spent some time looking through how configurations are constructed. But #14477 looked like validation on a single configuration field that could be handled during deserialization, while this issue looks to me like it requires validation between two configuration fields (<code>LinterSettings.isort.required_imports</code> and <code>LinterSettings.flake8_import_conventions.aliases</code>), so I didn't think I could handle it in the same way.</p>
-<p>Then I found <code>LintConfiguration::as_rule_table</code>, which looked like a possible place to do this kind of validation. I only noticed warnings being emitted earlier, but now I see that it returns a <code>Result</code>. Could I do the validation there and return an <code>Err</code> on this conflict? Or if you have another suggestion I'd be happy to hear it. I should have asked before the PR, but this approach was mentioned in the issue, and it seemed reasonable to me too.</p>
+            <div class="timeline-body"><p>Well, I didn&#x27;t really try anything exactly. I looked at #14477 that @AlexWaygood sent me as a similar fix, and then I spent some time looking through how configurations are constructed. But #14477 looked like validation on a single configuration field that could be handled during deserialization, while this issue looks to me like it requires validation between two configuration fields (<code>LinterSettings.isort.required_imports</code> and <code>LinterSettings.flake8_import_conventions.aliases</code>), so I didn&#x27;t think I could handle it in the same way.</p>
+<p>Then I found <code>LintConfiguration::as_rule_table</code>, which looked like a possible place to do this kind of validation. I only noticed warnings being emitted earlier, but now I see that it returns a <code>Result</code>. Could I do the validation there and return an <code>Err</code> on this conflict? Or if you have another suggestion I&#x27;d be happy to hear it. I should have asked before the PR, but this approach was mentioned in the issue, and it seemed reasonable to me too.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2025-01-15 05:14</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-01-15 05:14</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-15 08:19</div>
             <div class="timeline-body"><p>There are a few places where we verify configurations but they all have their trade-offs:</p>
 <ul>
-<li>Inside <code>Configuration::from_options</code>: The main advantage validating options in <code>from_options</code> is that Ruff knows the corresponding configuration file, allowing it to point users directly to which file contains the incorrect configuration. However, <code>from_options</code> is called before combining different configuration file, meaning, it's an incomplete view.</li>
-<li>Inside <code>Configuration::into_settings</code>: <code>into_settings</code> is called after all configuration files were combined. It's where Ruff has a complete view of all settings, but it no longer knows the source of individual setting values.</li>
+<li>Inside <code>Configuration::from_options</code>: The main advantage validating options in <code>from_options</code> is that Ruff knows the corresponding configuration file, allowing it to point users directly to which file contains the incorrect configuration. However, <code>from_options</code> is called before combining different configuration file, meaning, it&#x27;s an incomplete view.</li>
+<li>Inside <code>Configuration::into_settings</code>: <code>into_settings</code> is called after all configuration files were combined. It&#x27;s where Ruff has a complete view of all settings, but it no longer knows the source of individual setting values.</li>
 </ul>
 <p>In your case, <code>Configuration::into_settings</code> is probably the better fit because you need the fully resolved configuration.</p>
 </div>
@@ -93,14 +93,14 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_workspace/src/configuration.rs</code>:1583 on 2025-01-16 13:59</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">            `lint.flake8-import-conventions.extend-aliases` (ICN001):\
+            <div class="timeline-body"><pre><code>            `lint.flake8-import-conventions.extend-aliases` (ICN001):\
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_workspace/src/configuration.rs</code>:1574 on 2025-01-16 14:01</div>
             <div class="timeline-body"><p>Maybe add backticks? Not sure though</p>
-<pre><code class="language-suggestion">            writeln!(err_body, &quot;    - `{name}` -&gt; `{alias}`&quot;).unwrap();
+<pre><code>            writeln!(err_body, &quot;    - `{name}` -&gt; `{alias}`&quot;).unwrap();
 </code></pre>
 </div>
         </div>
@@ -119,10 +119,10 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @ntBre on 2025-01-16 15:45</div>
+            <div class="event">Merged by <a href="https://github.com/ntBre">@ntBre</a> on 2025-01-16 15:45</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ntBre on 2025-01-16 15:45</div>
+            <div class="event">Closed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-01-16 15:45</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-01-16 15:45</div>
@@ -130,7 +130,7 @@
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:09:09 UTC
+        Synced at 2026-01-20 19:10:23 UTC
     </footer>
 </body>
 </html>

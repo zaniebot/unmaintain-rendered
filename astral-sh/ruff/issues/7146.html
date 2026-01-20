@@ -28,30 +28,30 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">wish</span> added by @MichaReiser on 2023-09-05 19:46</div>
+            <div class="event">Label <span class="label">wish</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-05 19:46</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2023-09-05 19:47</div>
+            <div class="event">Label <span class="label">formatter</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-05 19:47</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-05 19:51</div>
-            <div class="timeline-body"><p>This sounds really useful and something our formatter could do. However, I don't expect us to make progress on this in the near future but happy to talk external contributors through on how this could be implemented.</p>
+            <div class="timeline-body"><p>This sounds really useful and something our formatter could do. However, I don&#x27;t expect us to make progress on this in the near future but happy to talk external contributors through on how this could be implemented.</p>
 <p>One question that comes to mind is what do with code that has syntax errors but the easiest is to just leave such code unchanged.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/stinodego">@stinodego</a> on 2023-09-05 20:49</div>
             <div class="timeline-body"><blockquote>
-<p>This sounds really useful and something our formatter could do. However, I don't expect us to make progress on this in the near future but happy to talk external contributors through on how this could be implemented.</p>
+<p>This sounds really useful and something our formatter could do. However, I don&#x27;t expect us to make progress on this in the near future but happy to talk external contributors through on how this could be implemented.</p>
 </blockquote>
 <p>Without any knowledge of the code base:</p>
 <p>I think Examples blocks can already be detected as there are some docstring formatting rules in <code>pydocstyle</code> related to sections.
 Then within the block, code examples should be easy to detect as lines starting with <code>&gt;&gt;&gt; </code>, followed by one or more lines starting with <code>... </code>.  Example:</p>
-<pre><code class="language-shell">&gt;&gt;&gt; pl.date_range(
+<pre><code>&gt;&gt;&gt; pl.date_range(
 ...     date(2023, 1, 1), date(2023, 5, 1), &quot;1mo&quot;, eager=True
 ... ).dt.month_end()
 </code></pre>
-<p>You'll probably find more refined logic by looking at the <code>blackdoc</code> source code, though.</p>
+<p>You&#x27;ll probably find more refined logic by looking at the <code>blackdoc</code> source code, though.</p>
 <blockquote>
 <p>One question that comes to mind is what do with code that has syntax errors but the easiest is to just leave such code unchanged.</p>
 </blockquote>
@@ -69,7 +69,7 @@ Then within the block, code examples should be easy to detect as lines starting 
 <blockquote>
 <p>I would imagine code examples with syntax errors raise an error, and would lead to that specific example to not be autofixed.</p>
 </blockquote>
-<p>That's my intuition but the question is would the rest of the file still be formatted? I would say yes, but the formatter then needs a way to raise a warning which we lack today.</p>
+<p>That&#x27;s my intuition but the question is would the rest of the file still be formatted? I would say yes, but the formatter then needs a way to raise a warning which we lack today.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -79,7 +79,7 @@ Then within the block, code examples should be easy to detect as lines starting 
 </blockquote>
 <p>I would imagine this would have to be part of the autoformatter.</p>
 <blockquote>
-<p>That's my intuition but the question is would the rest of the file still be formatted?</p>
+<p>That&#x27;s my intuition but the question is would the rest of the file still be formatted?</p>
 </blockquote>
 <p>Yes, definitely. Other code examples in the same docstring could probably still be formatted, even. Each example is a self-contained Python interpreter command.</p>
 </div>
@@ -91,25 +91,25 @@ Then within the block, code examples should be easy to detect as lines starting 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/stinodego">@stinodego</a> on 2023-11-14 17:29</div>
-            <div class="timeline-body"><p>I didn't pick blackdoc myself, it was introduced to the project at some point by someone else and I never thought to try other tools. I had heard of blacken-docs but have never tried it myself. It seems to do more than I need.</p>
-<p>We currently only format Python in docstring examples. We don't autoformat code in our README, and code in our other docs is magically imported from Python files, so we can use ruff autoformatter for those.</p>
+            <div class="timeline-body"><p>I didn&#x27;t pick blackdoc myself, it was introduced to the project at some point by someone else and I never thought to try other tools. I had heard of blacken-docs but have never tried it myself. It seems to do more than I need.</p>
+<p>We currently only format Python in docstring examples. We don&#x27;t autoformat code in our README, and code in our other docs is magically imported from Python files, so we can use ruff autoformatter for those.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-14 19:50</div>
-            <div class="timeline-body"><p>I spent some time looking into this and I think I've come up with a rough proposal on how to move this forward.</p>
-<h2>Straw implementation proposal</h2>
-<p>Tactically, my plan is to follow <a href="https://github.com/astral-sh/ruff/issues/7146#issuecomment-1707749664">@MichaReiser's suggestion above</a>
+            <div class="timeline-body"><p>I spent some time looking into this and I think I&#x27;ve come up with a rough proposal on how to move this forward.</p>
+Straw implementation proposal
+<p>Tactically, my plan is to follow <a href="https://github.com/astral-sh/ruff/issues/7146#issuecomment-1707749664">@MichaReiser&#x27;s suggestion above</a>
 and add this as <strong>opt-in</strong> functionality to the formatter in
 <a href="https://github.com/astral-sh/ruff/blob/964a861f946156676fc1bae5449ca9a8399302ac/crates/ruff_python_formatter/src/expression/string.rs#L974"><code>format_docstring</code></a>. My initial plan is to support Markdown and
 reStructuredText formatted doc strings, and within each, to support both
-<code>python</code> and <code>pycon</code> code blocks. I'm proposing opt-in in at least the initial
+<code>python</code> and <code>pycon</code> code blocks. I&#x27;m proposing opt-in in at least the initial
 release as a precautionary step.</p>
 <p>For example, all the following Python snippets have doc strings that would be
 reformatted.</p>
 <p>Markdown docstrings with Python snippets:</p>
-<pre><code class="language-python">def foo():
-    '''
+<pre><code>def foo():
+    &#x27;&#x27;&#x27;
     Docs about foo.
 
     ```python
@@ -117,12 +117,12 @@ reformatted.</p>
         x = do_something(foo())
         return x + 1
     ```
-    '''
+    &#x27;&#x27;&#x27;
     pass
 </code></pre>
 <p>Markdown docstrings with pycon (&quot;Python console&quot;) snippets:</p>
-<pre><code class="language-python">def foo():
-    '''
+<pre><code>def foo():
+    &#x27;&#x27;&#x27;
     Docs about foo.
 
     ```pycon
@@ -130,24 +130,24 @@ reformatted.</p>
     ...     x = do_something(foo())
     ...     return x + 1
     ```
-    '''
+    &#x27;&#x27;&#x27;
     pass
 </code></pre>
 <p>reStructuredText docstrings with Python snippets:</p>
-<pre><code class="language-python">def foo():
-    '''
+<pre><code>def foo():
+    &#x27;&#x27;&#x27;
     Docs about foo.
 
     .. code-block:: python
         def quux():
             x = do_something(foo())
             return x + 1
-    '''
+    &#x27;&#x27;&#x27;
     pass
 </code></pre>
 <p>reStructuredText docstrings with pycon (&quot;Python console&quot;) snippets:</p>
-<pre><code class="language-python">def foo():
-    '''
+<pre><code>def foo():
+    &#x27;&#x27;&#x27;
     Docs about foo.
 
     .. code-block:: pycon
@@ -155,24 +155,24 @@ reformatted.</p>
         &gt;&gt;&gt; def quux():
         ...     x = do_something(foo())
         ...     return x + 1
-    '''
+    &#x27;&#x27;&#x27;
     pass
 </code></pre>
-<p>It's plausible we'll want to support more than this, perhaps even in the
-initial implementation. But I'm unsure. I included more details about possible
+<p>It&#x27;s plausible we&#x27;ll want to support more than this, perhaps even in the
+initial implementation. But I&#x27;m unsure. I included more details about possible
 extensions below.</p>
-<h2>Prior art</h2>
+Prior art
 <p>I believe the main prior art in this space is <a href="https://github.com/adamchainz/blacken-docs">blacken-docs</a> and <a href="https://github.com/keewis/blackdoc">blackdoc</a>.</p>
 <p>It looks like <code>blacken-docs</code> and <code>blackdoc</code> take similar approaches,
 but <code>blackdoc</code> looks a fair bit more sophisticated. Its <a href="https://blackdoc.readthedocs.io/en/latest/usage.html">initial
 example</a> shows that it can handle nested docstrings
 (something that <code>blacken-docs</code> cannot do). <code>blackdoc</code> does still use regexes,
-but also appears to use Python's standard library <code>tokenize</code> module for
+but also appears to use Python&#x27;s standard library <code>tokenize</code> module for
 tokenizing Python code.</p>
-<h2>Testing plan</h2>
+Testing plan
 <p>In addition to the usual snapshot tests we can write by hand, I think another
 effective way to test this is to try it on real code bases. Django, for
-example, comes to mind. I'll also look for other projects using <code>blacken-docs</code>
+example, comes to mind. I&#x27;ll also look for other projects using <code>blacken-docs</code>
 to run this on and see what the diff looks like. That experience should then
 lead to adding more unit/regression tests.</p>
 <p><a href="https://github.com/django/django/pull/16261">Django ran into some interesting challenges when switching over to
@@ -184,86 +184,86 @@ the code snippet is reformatted to use the same docstring quote style as
 the docstring containing the snippet, then that could produce an <a href="https://github.com/adamchainz/blacken-docs/issues/226">invalid
 result</a>. In that particular case,
 I think we can solve it by using the opposite quote-style as the parent
-docstring, but even that isn't bullet proof. In theory, the docstring within
+docstring, but even that isn&#x27;t bullet proof. In theory, the docstring within
 the docstring might contain a code snippet itself. As a practical restriction,
 we probably want to introduce some way of ensuring that only &quot;top-level&quot; code
 snippets are reformatted. (Perhaps this could be done by introducing some state
 in the Python formatted context?)</p>
-<h2>Maybe should be in scope</h2>
-<h3>reStructuredText literal blocks</h3>
+Maybe should be in scope
+reStructuredText literal blocks
 <p>We will <em>probably</em> also want to support plain literal blocks. The <a href="https://github.com/adamchainz/blacken-docs/pull/196">Django
 project insisted on it</a> when adopting
 <code>blacken-docs</code>. So for example:</p>
-<pre><code class="language-python">def foo():
-    '''
+<pre><code>def foo():
+    &#x27;&#x27;&#x27;
     Docs about foo.
 
-    Here's an example that uses foo::
+    Here&#x27;s an example that uses foo::
 
         def quux():
             x = do_something(foo())
             return x + 1
-    '''
+    &#x27;&#x27;&#x27;
     pass
 </code></pre>
 <p>The above represents a literal block where in theory any kind of &quot;code-like&quot;
-text can go. But apparently it's an old convention to treat it as Python code
+text can go. But apparently it&#x27;s an old convention to treat it as Python code
 by default. I suspect that if we do the first four, then doing the last literal
-piece won't be too hard. We could even use Ruff's heuristics for detecting
-whether a snippet of code is actually Python or not. It's not clear how much
+piece won&#x27;t be too hard. We could even use Ruff&#x27;s heuristics for detecting
+whether a snippet of code is actually Python or not. It&#x27;s not clear how much
 of this should be in the initial implementation though.</p>
-<h3>Plain doctests</h3>
+Plain doctests
 <p>I went and looked through CPython and Django source code to get a &quot;sense&quot; of
 what some code snippets actually look like. It turns out that many code snippets
 are just implicit &quot;pycon&quot; style without any reStructuredText code block (or
 Markdown) syntax. For example:</p>
-<pre><code class="language-python">def _property_resolver(arg):
+<pre><code>def _property_resolver(arg):
     &quot;&quot;&quot;
     When arg is convertible to float, behave like operator.itemgetter(arg)
     Otherwise, chain __getitem__() and getattr().
 
-    &gt;&gt;&gt; _property_resolver(1)('abc')
-    'b'
-    &gt;&gt;&gt; _property_resolver('1')('abc')
+    &gt;&gt;&gt; _property_resolver(1)(&#x27;abc&#x27;)
+    &#x27;b&#x27;
+    &gt;&gt;&gt; _property_resolver(&#x27;1&#x27;)(&#x27;abc&#x27;)
     Traceback (most recent call last):
     ...
     TypeError: string indices must be integers
     &gt;&gt;&gt; class Foo:
     ...     a = 42
     ...     b = 3.14
-    ...     c = 'Hey!'
-    &gt;&gt;&gt; _property_resolver('b')(Foo())
+    ...     c = &#x27;Hey!&#x27;
+    &gt;&gt;&gt; _property_resolver(&#x27;b&#x27;)(Foo())
     3.14
     &quot;&quot;&quot;
     pass
 </code></pre>
-<p>This doesn't look like a one-off to me. They appear quite commonplace. It also
+<p>This doesn&#x27;t look like a one-off to me. They appear quite commonplace. It also
 looks like <code>blackdoc</code> supports formatting these &quot;plain&quot; doctests.</p>
-<h2>Not in scope</h2>
-<h3>A way to toggle formatting of individual code blocks</h3>
+Not in scope
+A way to toggle formatting of individual code blocks
 <p>This is a <a href="https://github.com/adamchainz/blacken-docs/issues/193">feature requested in <code>blacken-docs</code> too</a>.
-It doesn't look like they've settled on method of doing this, and I think
+It doesn&#x27;t look like they&#x27;ve settled on method of doing this, and I think
 <em>choosing</em> a method will require some careful thought. Namely, you really
-don't want to require something in the code snippet itself because then it
+don&#x27;t want to require something in the code snippet itself because then it
 clutters up your example code in the docs. So you probably need something in
 the docstring itself or elsewhere. The best way to do this seems unclear enough
-that it's probably worth not including in scope for now.</p>
-<h3>Formatting Python code in other formats</h3>
-<p>This means you won't be able to run the formatter over a <code>.rst</code> or a <code>.md</code> file
+that it&#x27;s probably worth not including in scope for now.</p>
+Formatting Python code in other formats
+<p>This means you won&#x27;t be able to run the formatter over a <code>.rst</code> or a <code>.md</code> file
 and have it format any Python code blocks in it. This initial implementation
 will only support reformatting Python snippets within docstrings inside Python
 files. We can consider formatting Python code in other formats as a future
 project.</p>
-<h3>Avoid Markdown/reStructuredText parsing</h3>
+Avoid Markdown/reStructuredText parsing
 <p>I think that trying to parse docstrings as Markdown or reStructuredText
 documents should be out of scope for now. If this turns out to be required (it
-shouldn't be), then we should re-evaluate at that point. The reason for this is
+shouldn&#x27;t be), then we should re-evaluate at that point. The reason for this is
 that it likely complicates the implementation and could introduce performance
-regressions (although it's likely any perf problems could be mitigated with
+regressions (although it&#x27;s likely any perf problems could be mitigated with
 some care).</p>
 <p>With that said, I do think this means that our detection logic will necessarily
 be a little ad hoc. This means it could do some incorrect things like attempt
-to format blocks that aren't actually Python. This is partially why I'm
+to format blocks that aren&#x27;t actually Python. This is partially why I&#x27;m
 proposing making this opt-in, at least initially.</p>
 </div>
         </div>
@@ -271,7 +271,7 @@ proposing making this opt-in, at least initially.</p>
             <div class="timeline-header">Comment by <a href="https://github.com/stinodego">@stinodego</a> on 2023-11-14 20:04</div>
             <div class="timeline-body"><p>Great to see this become more concrete!</p>
 <p>For our specific use case, the &quot;plain doctests&quot; you mention are most important. We follow the numpy docstring standard, and most of our docstrings look something like:</p>
-<pre><code class="language-python">def cool_stuff(arg):
+<pre><code>def cool_stuff(arg):
     &quot;&quot;&quot;
     Do cool stuff.
 
@@ -291,7 +291,7 @@ proposing making this opt-in, at least initially.</p>
 
 	&gt;&gt;&gt; input = &quot;q&quot;
 	&gt;&gt;&gt; cool_stuff(input)
-	'x'
+	&#x27;x&#x27;
     &quot;&quot;&quot;
     pass
 </code></pre>
@@ -311,30 +311,30 @@ https://github.com/pola-rs/polars/blob/main/py-polars/polars/expr/string.py</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-15 12:56</div>
-            <div class="timeline-body"><p>@stinodego Ah that's useful feedback, thank you! I think that means it makes sense to have plain doctests in the initial scope.</p>
+            <div class="timeline-body"><p>@stinodego Ah that&#x27;s useful feedback, thank you! I think that means it makes sense to have plain doctests in the initial scope.</p>
 <p>@konstin Yeah that sounds like a good idea. :-)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-27 14:40</div>
-            <div class="timeline-body"><p>@stinodego So I ran the docstring code formatter (from #8811) on polars, and here's the diff I got: https://github.com/BurntSushi/polars/commit/559b9d683bce3d4fd48d7946359fbdaeea1afccc</p>
+            <div class="timeline-body"><p>@stinodego So I ran the docstring code formatter (from #8811) on polars, and here&#x27;s the diff I got: https://github.com/BurntSushi/polars/commit/559b9d683bce3d4fd48d7946359fbdaeea1afccc</p>
 <p>Most things seem to be unwrapping wrapped lines. Thoughts?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2023-11-27 16:14</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-27 16:14</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-27 17:01</div>
-            <div class="timeline-body"><p>Re-opening because I think #8811 doesn't actually close this. Probably once #8854 is merged, then it will actually be usable by end users in the following release.</p>
+            <div class="timeline-body"><p>Re-opening because I think #8811 doesn&#x27;t actually close this. Probably once #8854 is merged, then it will actually be usable by end users in the following release.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @BurntSushi on 2023-11-27 17:01</div>
+            <div class="event">Reopened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-27 17:01</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-27 17:05</div>
-            <div class="timeline-body"><p>I've created some finer grained issues for tracking additional work here:</p>
+            <div class="timeline-body"><p>I&#x27;ve created some finer grained issues for tracking additional work here:</p>
 <ul>
 <li>https://github.com/astral-sh/ruff/issues/8855</li>
 <li>https://github.com/astral-sh/ruff/issues/8856</li>
@@ -350,7 +350,7 @@ https://github.com/pola-rs/polars/blob/main/py-polars/polars/expr/string.py</p>
             <div class="timeline-body"><p>@BurntSushi Thanks so much for your work - this is great! Looking forward to putting this into practice soon.</p>
 <p>About the diff you posted:</p>
 <ul>
-<li>It doesn't seem to respect line length in the same way, as you've noticed. We have all line length limits set to 88. I would love it if the doctest pragma comments (e.g. <code># doctest: +SKIP</code>) would not be counted towards line length.</li>
+<li>It doesn&#x27;t seem to respect line length in the same way, as you&#x27;ve noticed. We have all line length limits set to 88. I would love it if the doctest pragma comments (e.g. <code># doctest: +SKIP</code>) would not be counted towards line length.</li>
 <li>It trims trailing lines with <code>...</code> sometimes. These lines are not very informative but they do in fact show up when you use the Python console, e.g. if you have a multi-line command, you have to press enter twice before the example runs. So these are a valid part of the example.</li>
 </ul>
 <p>I think that accounts for most/all of the diff!</p>
@@ -363,58 +363,58 @@ https://github.com/pola-rs/polars/blob/main/py-polars/polars/expr/string.py</p>
 <li>It trims trailing lines with <code>...</code> sometimes. These lines are not very informative but they do in fact show up when you use the Python console, e.g. if you have a multi-line command, you have to press enter twice before the example runs. So these are a valid part of the example.</li>
 </ul>
 </blockquote>
-<p>Yeah I came across this during my work and it seemed like trimming the <code>...</code> was most consistent with auto-formatting since it reflects an extra blank line at the end of the code. If it were &quot;real&quot; code, that line would be trimmed. I'm unsure of introducing specific rules that are different about formatting code snippets than outside of docstrings. Maybe @MichaReiser has an opinion here though?</p>
+<p>Yeah I came across this during my work and it seemed like trimming the <code>...</code> was most consistent with auto-formatting since it reflects an extra blank line at the end of the code. If it were &quot;real&quot; code, that line would be trimmed. I&#x27;m unsure of introducing specific rules that are different about formatting code snippets than outside of docstrings. Maybe @MichaReiser has an opinion here though?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/stinodego">@stinodego</a> on 2023-11-28 15:42</div>
-            <div class="timeline-body"><p>I don't feel very strongly either way about the trailing <code>...</code>.</p>
+            <div class="timeline-body"><p>I don&#x27;t feel very strongly either way about the trailing <code>...</code>.</p>
 <p>Seems like it occurs with indentation differences, so when defining functions or using a context manager. Those are relatively rare, at least in our docs.</p>
-<p>I'd be fine with either pruning the trailing <code>...</code> or enforcing it. Pruning saves some lines, enforcing makes it closer to how the example would look in the actual Python console.</p>
+<p>I&#x27;d be fine with either pruning the trailing <code>...</code> or enforcing it. Pruning saves some lines, enforcing makes it closer to how the example would look in the actual Python console.</p>
 <p>The line length differences is a more fundamental issue - I commented my thoughts on the separate issue you opened.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-11-28 23:47</div>
             <div class="timeline-body"><blockquote>
-<p>Yeah I came across this during my work and it seemed like trimming the ... was most consistent with auto-formatting since it reflects an extra blank line at the end of the code. If it were &quot;real&quot; code, that line would be trimmed. I'm unsure of introducing specific rules that are different about formatting code snippets than outside of docstrings. Maybe @MichaReiser has an opinion here though?</p>
+<p>Yeah I came across this during my work and it seemed like trimming the ... was most consistent with auto-formatting since it reflects an extra blank line at the end of the code. If it were &quot;real&quot; code, that line would be trimmed. I&#x27;m unsure of introducing specific rules that are different about formatting code snippets than outside of docstrings. Maybe @MichaReiser has an opinion here though?</p>
 </blockquote>
-<p>I don't have any experience writing examples in Python myself. So I can't make a recommendation on whether we should enforce the extra line or not.</p>
-<p>Implementation wise I see two options for enforcing the extra line and I'm fine with either, although I would probably prefer 1. because the logic may not apply to other example formats and is closer to the problem its solving.</p>
+<p>I don&#x27;t have any experience writing examples in Python myself. So I can&#x27;t make a recommendation on whether we should enforce the extra line or not.</p>
+<p>Implementation wise I see two options for enforcing the extra line and I&#x27;m fine with either, although I would probably prefer 1. because the logic may not apply to other example formats and is closer to the problem its solving.</p>
 <ol>
 <li>We insert the extra empty line as part of the docstring example logic that @BurntSushi added. We can just always append it to the formatted string (or am I overlooking something?)</li>
-<li>We can add a special case handling in the module formatting to emit an extra newline if the <code>embedded_snipped</code> (I don't remember the precise field name) in the <code>PyFormatContext</code> is <code>Some</code>.</li>
+<li>We can add a special case handling in the module formatting to emit an extra newline if the <code>embedded_snipped</code> (I don&#x27;t remember the precise field name) in the <code>PyFormatContext</code> is <code>Some</code>.</li>
 </ol>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2023-11-28 23:57</div>
             <div class="timeline-body"><p>cc @pawamoy for visibility as the person at the forefront of docstrings and documentation generation</p>
-<p>edit: you might want to take a look at this as well https://github.com/astral-sh/ruff/issues/8855</p>
+<p>edit: you might want to take a look at this as well <a href="https://github.com/astral-sh/ruff/issues/8855">astral-sh/ruff#8855</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-29 13:18</div>
-            <div class="timeline-body"><p>To make sure we don't lose track of the decision about the trailing empty line or not, I created an issue about it: https://github.com/astral-sh/ruff/issues/8908</p>
-<p>@MichaReiser Aye. I think we can't unconditionally add a trailing line, so we'll need a heuristic, but I also favor that approach if we decide to go that route. And in particular, if we do need a heuristic, then we probably <em>have</em> to go route (1) since we'll probably want to base the decision on things like &quot;were there any other non-empty PS2 prompt lines.&quot;</p>
+            <div class="timeline-body"><p>To make sure we don&#x27;t lose track of the decision about the trailing empty line or not, I created an issue about it: <a href="https://github.com/astral-sh/ruff/issues/8908">astral-sh/ruff#8908</a></p>
+<p>@MichaReiser Aye. I think we can&#x27;t unconditionally add a trailing line, so we&#x27;ll need a heuristic, but I also favor that approach if we decide to go that route. And in particular, if we do need a heuristic, then we probably <em>have</em> to go route (1) since we&#x27;ll probably want to base the decision on things like &quot;were there any other non-empty PS2 prompt lines.&quot;</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Formatter: Stable" by @BurntSushi on 2023-11-29 13:20</div>
+            <div class="event">Added to milestone &quot;Formatter: Stable&quot; by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-29 13:20</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">wish</span> removed by @dhruvmanila on 2023-12-07 04:12</div>
+            <div class="event">Label <span class="label">wish</span> removed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-12-07 04:12</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @BurntSushi by @charliermarsh on 2023-12-07 14:47</div>
+            <div class="event">Assigned to <a href="https://github.com/BurntSushi">@BurntSushi</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-07 14:47</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2023-12-13 16:02</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-12-13 16:02</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:48:15 UTC
+        Synced at 2026-01-20 18:48:41 UTC
     </footer>
 </body>
 </html>

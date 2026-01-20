@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>Don't emit Liskov violations w.r.t. grandparent class if the violation cannot be fixed without breaking Liskov w.r.t. the parent class</h1>
+    <h1>Don&#x27;t emit Liskov violations w.r.t. grandparent class if the violation cannot be fixed without breaking Liskov w.r.t. the parent class</h1>
 
     <div class="meta">
         <span class="state-icon state-closed"></span>
@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/t-moe">@t-moe</a></div>
-            <div class="timeline-body"><h3>Question</h3>
+            <div class="timeline-body">Question
 <p>I have the following code:</p>
-<pre><code class="language-python">from typing import Iterable
+<pre><code>from typing import Iterable
 from collections import UserList
 
 class Errors(UserList[str]):
@@ -85,18 +85,18 @@ Found 2 diagnostics
 </code></pre>
 <p>What am I missing?
 Forgive me, if there is an obvious error hidden in plain sight. I havent written a lot of python lately..</p>
-<h3>Version</h3>
+Version
 <p>ty 0.0.2</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @t-moe on 2025-12-17 11:50</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/t-moe">@t-moe</a> on 2025-12-17 11:50</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-17 12:08</div>
             <div class="timeline-body"><p>Hey @t-moe, thanks for the bug report!</p>
 <p>The issue here is with the parameter names. If I have a class hierarchy like this, then instances of <code>Bar</code> cannot be used as a drop-in substitute wherever instances of <code>Foo</code> are expected, because you can call <code>Foo.method()</code> with a <code>x=</code> keyword argument, but the same call fails on an instance of <code>Bar</code>:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; class Foo:
+<pre><code>&gt;&gt;&gt; class Foo:
 ...     def method(self, x: int): ...
 ...     
 &gt;&gt;&gt; class Bar(Foo):
@@ -108,26 +108,26 @@ Traceback (most recent call last):
   File &quot;&lt;python-input-3&gt;&quot;, line 1, in &lt;module&gt;
     Bar().method(x=42)
     ~~~~~~~~~~~~^^^^^^
-TypeError: Bar.method() got an unexpected keyword argument 'x'
+TypeError: Bar.method() got an unexpected keyword argument &#x27;x&#x27;
 </code></pre>
-<p>In your code here, your parameter name <code>item</code> you've given to <code>Errors.append</code> matches the parameter name for the method on <code>Errors</code>'s immediate parent class (<code>UserList</code>), but doesn't match the parameter name for the method on its <em>grandparent</em> class (<code>MutableSequence</code>). So it would be okay to use an instance of <code>Errors</code> wherever a <code>UserList[str]</code> is accepted, but it <em>wouldn't</em> be okay to use an instance of <code>Errors</code> wherever a <code>MutableSequence[str]</code> is accepted -- this violates the Liskov Substitution Principle.</p>
-<p>Unfortunately... there's not much you can do about it here, in this situation! If you change your parameter names so that they match the parameter names on <code>MutableSequence.append()</code>, <code>Errors</code> will no longer violate the Liskov Substitution Principle with respect to <code>MutableSequence</code>, but it will now violate the Liskov Substitution Principle with respect to <code>UserList</code>. So you're in a bit of a bind, because of the fact that <code>UserList</code> itself violates the Liskov Substitution Principle.</p>
+<p>In your code here, your parameter name <code>item</code> you&#x27;ve given to <code>Errors.append</code> matches the parameter name for the method on <code>Errors</code>&#x27;s immediate parent class (<code>UserList</code>), but doesn&#x27;t match the parameter name for the method on its <em>grandparent</em> class (<code>MutableSequence</code>). So it would be okay to use an instance of <code>Errors</code> wherever a <code>UserList[str]</code> is accepted, but it <em>wouldn&#x27;t</em> be okay to use an instance of <code>Errors</code> wherever a <code>MutableSequence[str]</code> is accepted -- this violates the Liskov Substitution Principle.</p>
+<p>Unfortunately... there&#x27;s not much you can do about it here, in this situation! If you change your parameter names so that they match the parameter names on <code>MutableSequence.append()</code>, <code>Errors</code> will no longer violate the Liskov Substitution Principle with respect to <code>MutableSequence</code>, but it will now violate the Liskov Substitution Principle with respect to <code>UserList</code>. So you&#x27;re in a bit of a bind, because of the fact that <code>UserList</code> itself violates the Liskov Substitution Principle.</p>
 <p>I think there are several things we need to do here:</p>
 <ol>
-<li>We need to improve the error message to make clear that it's the parameter names that are the problem! This is tracked in https://github.com/astral-sh/ty/issues/1644</li>
-<li>Ideally I think we would split errors about bad parameter <em>names</em> into their own, more specific error code. Mypy doesn't emit these errors at all, and pyright doesn't emit them for dunder methods. This, like #1644, is also blocked by https://github.com/astral-sh/ty/issues/163 right now.</li>
+<li>We need to improve the error message to make clear that it&#x27;s the parameter names that are the problem! This is tracked in <a href="https://github.com/astral-sh/ty/issues/1644">astral-sh/ty#1644</a></li>
+<li>Ideally I think we would split errors about bad parameter <em>names</em> into their own, more specific error code. Mypy doesn&#x27;t emit these errors at all, and pyright doesn&#x27;t emit them for dunder methods. This, like #1644, is also blocked by <a href="https://github.com/astral-sh/ty/issues/163">astral-sh/ty#163</a> right now.</li>
 <li>If we detect that it would actually be impossible to fix the Liskov violation without introducing a new (worse) violation, then we should probably avoid emitting the diagnostic.</li>
 </ol>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> removed by @AlexWaygood on 2025-12-17 12:08</div>
+            <div class="event">Label <span class="label">question</span> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-17 12:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-12-17 12:08</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-17 12:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Stable" by @AlexWaygood on 2025-12-17 12:08</div>
+            <div class="event">Added to milestone &quot;Stable&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-17 12:08</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-18 00:26</div>
@@ -135,39 +135,39 @@ TypeError: Bar.method() got an unexpected keyword argument 'x'
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "`invalid-method-override` false positive when subclassing `UserList` ?" to "Don't emit Liskov violations w.r.t. grandparent class if the violation cannot be fixed without breaking Liskov w.r.t. the parent class" by @AlexWaygood on 2025-12-18 14:31</div>
+            <div class="event">Renamed from &quot;`invalid-method-override` false positive when subclassing `UserList` ?&quot; to &quot;Don&#x27;t emit Liskov violations w.r.t. grandparent class if the violation cannot be fixed without breaking Liskov w.r.t. the parent class&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-18 14:31</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-18 14:32</div>
             <div class="timeline-body"><blockquote>
 <p><a href="https://github.com/AlexWaygood">@AlexWaygood</a> is this issue left open in order to track item (3)? Should we re-title it to reflect that? Do we have an issue for (2)?</p>
 </blockquote>
-<p>Yes. I have retitled the issue to reflect that, and opened https://github.com/astral-sh/ty/issues/2073 for splitting the more pedantic Liskov checks into separate error codes.</p>
+<p>Yes. I have retitled the issue to reflect that, and opened <a href="https://github.com/astral-sh/ty/issues/2073">astral-sh/ty#2073</a> for splitting the more pedantic Liskov checks into separate error codes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/The-Red-Dragons">@The-Red-Dragons</a> on 2025-12-25 13:39</div>
-            <div class="timeline-body"><h3>Real-world use case: discord.py Modal overrides</h3>
-<p>I'm experiencing this with discord.py's <code>Modal</code> class:</p>
+            <div class="timeline-body">Real-world use case: discord.py Modal overrides
+<p>I&#x27;m experiencing this with discord.py&#x27;s <code>Modal</code> class:</p>
 <p><strong>Inheritance chain:</strong></p>
 <ul>
 <li><code>discord.ui.BaseView.on_error(self, interaction, error, item)</code> (grandparent)</li>
 <li><code>discord.ui.Modal.on_error(self, interaction, error, /)</code> (parent - already breaks Liskov)</li>
 <li><code>MyModal.on_error(self, interaction, error, /)</code> (child - correctly overrides Modal)</li>
 </ul>
-<pre><code class="language-python">class MyModal(discord.ui.Modal):
+<pre><code>class MyModal(discord.ui.Modal):
     async def on_error(self, interaction: discord.Interaction, error: Exception, /) -&gt; None:
-        # ty warns: Invalid override of method 'on_error' - references BaseView.on_error
+        # ty warns: Invalid override of method &#x27;on_error&#x27; - references BaseView.on_error
         # But this correctly matches Modal.on_error signature
         await interaction.response.send_message(&quot;Error occurred&quot;, ephemeral=True)
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Removed from milestone "Stable" by @AlexWaygood on 2025-12-25 13:41</div>
+            <div class="event">Removed from milestone &quot;Stable&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-25 13:41</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Pre-stable 1" by @AlexWaygood on 2025-12-25 13:41</div>
+            <div class="event">Added to milestone &quot;Pre-stable 1&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-25 13:41</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-27 19:09</div>
@@ -180,15 +180,15 @@ TypeError: Bar.method() got an unexpected keyword argument 'x'
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2026-01-09 20:44</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2026-01-09 20:44</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2026-01-10 00:27</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2026-01-10 00:27</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:21:21 UTC
+        Synced at 2026-01-20 19:26:30 UTC
     </footer>
 </body>
 </html>

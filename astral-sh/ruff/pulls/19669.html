@@ -24,10 +24,10 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
             <div class="timeline-body"><p>(This PR is easiest to review commit-by-commit. The first commit achieves all the improvements to semantics; following commits are focussed on improving performance.)</p>
-<h2>Summary</h2>
+Summary
 <p>This PR removes the <code>Tuple</code> variant from our <code>Type</code> enum. Instead, <code>Tuple</code> types are now all represented as <code>Type::NominalInstance</code>s with a certain <code>TupleSpec</code> stored as part of their generic specialisation.</p>
-<p>Removing a <code>Type</code> variant leads to simpler code; the more <code>Type</code> variants we have, the more complex methods like <code>Type::has_relation_to</code> and <code>Type::is_disjoint_from</code> become. The main motivation for making this change is not to do with code complexity, however. Instead, it's to refocus how we think about tuple types.</p>
-<p>Tuple types are obviously special in the Python type system in many ways. But one way in which they are exactly the same as all other <code>NominalInstance</code> type (and different to <code>Literal</code> types such as <code>StringLiteral</code>, <code>BytesLiteral</code> and <code>BooleanLiteral</code>) is that the type <code>tuple[int, str]</code> does not only include runtime objects where the <code>__class__</code> is <em>exactly</em> <code>tuple</code>; it also includes instances of <em>subclasses</em> of <code>tuple[int, str]</code>. Explicit subclasses of specialised tuples are somewhat rare (though, as the ecosystem report on this PR shows, not as rare as you might think!) -- but tuple subclasses nonetheless appear an awful lot in Python code, since <code>NamedTuple</code>s are popular, and every <code>NamedTuple</code> class is a tuple subclass. In order to achieve consistent and principled behaviour, all special-casing we apply to <code>tuple[int, str]</code> should ideally also be applied to subclasses of <code>tuple[int, str]</code>; but this is not something we've done up till now, and it's highly awkward to achieve this if instances of the tuple subclass are represented internally as <code>Type::NominalInstance</code>s when the tuple supertype is represented internally as a <code>Type::Tuple</code>. Using <code>Type::NominalInstance</code> to represent both the tuple type and any subclasses of the tuple type means that it becomes easy to apply special casing to subclasses, and forces us to think explicitly about whether any special casing we add for tuples should apply to &quot;<em>just</em> that tuple type&quot; (though there's really no such thing, since the tuple type is a superset of all its subtypes) or to subtypes of that tuple type too.</p>
+<p>Removing a <code>Type</code> variant leads to simpler code; the more <code>Type</code> variants we have, the more complex methods like <code>Type::has_relation_to</code> and <code>Type::is_disjoint_from</code> become. The main motivation for making this change is not to do with code complexity, however. Instead, it&#x27;s to refocus how we think about tuple types.</p>
+<p>Tuple types are obviously special in the Python type system in many ways. But one way in which they are exactly the same as all other <code>NominalInstance</code> type (and different to <code>Literal</code> types such as <code>StringLiteral</code>, <code>BytesLiteral</code> and <code>BooleanLiteral</code>) is that the type <code>tuple[int, str]</code> does not only include runtime objects where the <code>__class__</code> is <em>exactly</em> <code>tuple</code>; it also includes instances of <em>subclasses</em> of <code>tuple[int, str]</code>. Explicit subclasses of specialised tuples are somewhat rare (though, as the ecosystem report on this PR shows, not as rare as you might think!) -- but tuple subclasses nonetheless appear an awful lot in Python code, since <code>NamedTuple</code>s are popular, and every <code>NamedTuple</code> class is a tuple subclass. In order to achieve consistent and principled behaviour, all special-casing we apply to <code>tuple[int, str]</code> should ideally also be applied to subclasses of <code>tuple[int, str]</code>; but this is not something we&#x27;ve done up till now, and it&#x27;s highly awkward to achieve this if instances of the tuple subclass are represented internally as <code>Type::NominalInstance</code>s when the tuple supertype is represented internally as a <code>Type::Tuple</code>. Using <code>Type::NominalInstance</code> to represent both the tuple type and any subclasses of the tuple type means that it becomes easy to apply special casing to subclasses, and forces us to think explicitly about whether any special casing we add for tuples should apply to &quot;<em>just</em> that tuple type&quot; (though there&#x27;s really no such thing, since the tuple type is a superset of all its subtypes) or to subtypes of that tuple type too.</p>
 <p>Removing <code>Type::Tuple</code> therefore has the effect that all our tuple special casing is now applied to tuple subclasses as well as &quot;exact tuple types&quot;:</p>
 <ul>
 <li>We now infer precise types from slicing instances of tuple subclasses</li>
@@ -35,30 +35,30 @@
 <li>Comparisons are now precisely inferred between instances of tuple subclasses in the same way as between instances of tuples. This allows us to consolidate our special casing for <code>sys.version_info</code>: rather than having dedicated branches in multiple places to handle <code>sys.version_info</code> comparisons, we now just treat <code>sys.version_info</code> as what it really is at runtime: an instance of a tuple subclass with a very particular tuple spec.</li>
 <li>Tuple subclasses are now understood as sometimes being single-valued types in the same way as &quot;exact tuple types&quot;.</li>
 </ul>
-<p>Representing all tuple types using <code>Type::NominalInstance</code> also appears to have had the unexpected (but very welcome!) effect of improving our ability to solve TypeVars in several situations that showed up in the primer report (and for which I've added regression tests).</p>
+<p>Representing all tuple types using <code>Type::NominalInstance</code> also appears to have had the unexpected (but very welcome!) effect of improving our ability to solve TypeVars in several situations that showed up in the primer report (and for which I&#x27;ve added regression tests).</p>
 <p>#19560, which is stacked on top of this, extends our special-casing for tuples and tuple subclasses to <em>named</em> tuples by inserting precise tuple types into the MRO of <code>NamedTuple</code> classes (currently, we model all <code>NamedTuple</code> classes as inheriting from <code>tuple[Unknown, ...]</code>, which avoids false positives but at the cost of many false negatives).</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>Many mdtests added.</p>
-<p>I haven't added any new tests specifically for precise comparison inference between instances of tuple subclasses, because this is already tested extensively (both explicitly and implicitly) by our support for <code>sys.version_info</code> branches. Our ability to infer <code>sys.version_info &gt;= (3, 9)</code> as either <code>True</code> or <code>False</code> now just directly relies on us seeing that the <code>sys._version_info</code> class in typeshed is a tuple subclass (with a special-cased spec), and therefore taking the tuple-and-tuple-subclass path in <code>TypeInferenceBuilder::infer_binary_type_comparison()</code>.</p>
-<h2>Ecosystem analysis</h2>
-<p>See https://github.com/astral-sh/ruff/pull/19669#issuecomment-3155770703 for a full analysis. Overall, I think it looks great. The typing conformance diff also shows that this PR brings us closer to conformance with the typing spec.</p>
-<h2>Performance impact</h2>
-<p>Earlier versions of this PR caused large performance regressions, and also regressed memory usage. The latest version of this PR still causes some performance regressions, but they are all 1-2%, which is much reduced. I think partly the remaining regressions ared due to the fact that we're just doing a lot more work than we used to. We're able to infer precise types in many instances where we previously inferred Unknown, and we're able to solve many TypeVars that we previously couldn't.</p>
-<p>I've experimented with adding Salsa caching to the methods on <code>ClassType</code> for figuring out what a class's tuple spec is. It appeared to speedup <code>ty_micro[many_string_assignments]</code> a little, but it had negligible difference on the other benchmarks (and possibly regressed performance slightly on some benchmarks, including colour-science).</p>
+<p>I haven&#x27;t added any new tests specifically for precise comparison inference between instances of tuple subclasses, because this is already tested extensively (both explicitly and implicitly) by our support for <code>sys.version_info</code> branches. Our ability to infer <code>sys.version_info &gt;= (3, 9)</code> as either <code>True</code> or <code>False</code> now just directly relies on us seeing that the <code>sys._version_info</code> class in typeshed is a tuple subclass (with a special-cased spec), and therefore taking the tuple-and-tuple-subclass path in <code>TypeInferenceBuilder::infer_binary_type_comparison()</code>.</p>
+Ecosystem analysis
+<p>See <a href="https://github.com/astral-sh/ruff/pull/19669">astral-sh/ruff#19669</a>#issuecomment-3155770703 for a full analysis. Overall, I think it looks great. The typing conformance diff also shows that this PR brings us closer to conformance with the typing spec.</p>
+Performance impact
+<p>Earlier versions of this PR caused large performance regressions, and also regressed memory usage. The latest version of this PR still causes some performance regressions, but they are all 1-2%, which is much reduced. I think partly the remaining regressions ared due to the fact that we&#x27;re just doing a lot more work than we used to. We&#x27;re able to infer precise types in many instances where we previously inferred Unknown, and we&#x27;re able to solve many TypeVars that we previously couldn&#x27;t.</p>
+<p>I&#x27;ve experimented with adding Salsa caching to the methods on <code>ClassType</code> for figuring out what a class&#x27;s tuple spec is. It appeared to speedup <code>ty_micro[many_string_assignments]</code> a little, but it had negligible difference on the other benchmarks (and possibly regressed performance slightly on some benchmarks, including colour-science).</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-07-31 19:05</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-31 19:05</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-31 19:09</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
-<details>
-<summary>Changes were detected when running ty on typing conformance tests</summary>
+Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a>
 
-<pre><code class="language-diff">--- old-output.txt	2025-08-11 20:53:33.906552447 +0000
+Changes were detected when running ty on typing conformance tests
+
+<pre><code>--- old-output.txt	2025-08-11 20:53:33.906552447 +0000
 +++ new-output.txt	2025-08-11 20:53:33.968552586 +0000
 @@ -865,8 +865,6 @@
  tuples_type_compat.py:127:13: error[type-assertion-failure] Argument does not have asserted type `@Todo`
@@ -76,19 +76,19 @@
 -Found 887 diagnostics
 +Found 885 diagnostics
 </code></pre>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-31 19:12</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">parso (https://github.com/davidhalter/parso)
+Changes were detected when running on open source projects
+
+<pre><code>parso (https://github.com/davidhalter/parso)
 - parso/python/tokenize.py:230:42: error[invalid-argument-type] Argument is incorrect: Expected `tuple[str]`, found `set[Unknown]`
 + parso/python/tokenize.py:230:42: error[invalid-argument-type] Argument is incorrect: Expected `tuple[str]`, found `set[str]`
 
@@ -260,34 +260,34 @@ scipy (https://github.com/scipy/scipy)
 + Found 6392 diagnostics
 
 </code></pre>
-</details>
+
 No memory usage changes detected ✅
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-07-31 19:17</div>
-            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+            <div class="timeline-body">
 
-<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
 
-<h2><a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Fremove-tuples?runnerMode=Instrumentation">CodSpeed Instrumentation Performance Report</a></h2>
-<h3>Merging #19669 will <strong>not alter performance</strong></h3>
-<p><sub>Comparing <code>alex/remove-tuples</code> (6797e9f) with <code>main</code> (2abd683)</sub></p>
-<h3>Summary</h3>
+
+<a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Fremove-tuples?runnerMode=Instrumentation">CodSpeed Instrumentation Performance Report</a>
+Merging #19669 will <strong>not alter performance</strong>
+<p>Comparing <code>alex/remove-tuples</code> (6797e9f) with <code>main</code> (2abd683)</p>
+Summary
 <p><code>✅ 42</code> untouched benchmarks</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-07-31 19:17</div>
-            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+            <div class="timeline-body">
 
-<!-- __CODSPEED_WALLTIME_PERFORMANCE_REPORT_COMMENT__ -->
 
-<h2><a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Fremove-tuples?runnerMode=WallTime">CodSpeed WallTime Performance Report</a></h2>
-<h3>Merging #19669 will <strong>not alter performance</strong></h3>
-<p><sub>Comparing <code>alex/remove-tuples</code> (6797e9f) with <code>main</code> (2abd683)</sub></p>
-<h3>Summary</h3>
+
+<a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Fremove-tuples?runnerMode=WallTime">CodSpeed WallTime Performance Report</a>
+Merging #19669 will <strong>not alter performance</strong>
+<p>Comparing <code>alex/remove-tuples</code> (6797e9f) with <code>main</code> (2abd683)</p>
+Summary
 <p><code>✅ 8</code> untouched benchmarks</p>
 </div>
         </div>
@@ -297,13 +297,13 @@ No memory usage changes detected ✅
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-08-04 17:10</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-04 17:10</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-04 17:21</div>
-            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+            <div class="timeline-body">
 
-<h2><code>ecosystem-analyzer</code> results</h2>
+<code>ecosystem-analyzer</code> results
 <p>| Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
 | <code>possibly-unbound-attribute</code> | 0 | 73 | 0 |
@@ -319,42 +319,42 @@ No memory usage changes detected ✅
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @AlexWaygood on 2025-08-04 22:08</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-04 22:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-08-04 22:09</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-04 22:09</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-08-05 11:29</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-05 11:29</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @AlexWaygood on 2025-08-05 11:29</div>
+            <div class="event">Reopened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-05 11:29</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @AlexWaygood on 2025-08-05 13:53</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-05 13:53</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-08-05 13:53</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-05 13:53</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @AlexWaygood on 2025-08-05 14:06</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-05 14:06</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-08-05 14:07</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-05 14:07</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @AlexWaygood on 2025-08-05 14:43</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-05 14:43</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-08-05 14:44</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-05 14:44</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @AlexWaygood on 2025-08-05 16:12</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-05 16:12</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-05 16:12</div>
-            <div class="timeline-body"><h1>Ecosystem analysis</h1>
-<pre><code class="language-diff">anyio (https://github.com/agronholm/anyio)
+            <div class="timeline-body">Ecosystem analysis
+<pre><code>anyio (https://github.com/agronholm/anyio)
 - src/anyio/_backends/_trio.py:909:47: error[not-iterable] Object of type `MemoryObjectSendStream[Unknown] | MemoryObjectReceiveStream[Unknown]` may not be async-iterable
 - Found 82 diagnostics
 + Found 81 diagnostics
@@ -449,16 +449,16 @@ trio (https://github.com/python-trio/trio)
 - src/trio/_tests/test_channel.py:420:9: warning[possibly-unbound-attribute] Attribute `receive_nowait` on type `MemorySendChannel[int] | MemoryReceiveChannel[int]` is possibly unbound
 </code></pre>
 <p>These diagnostics are false positives going away because we now infer precise types when users unpack instances of <a href="https://github.com/agronholm/anyio/blob/fef093c1e33563493182b95a0c7028b86c61dd90/src/anyio/_core/_streams.py#L16-L18"><code>anyio._core._streams.create_memory_object_stream</code></a>, which is a subclass of a two-element heterogeneous tuple.</p>
-<hr />
-<pre><code class="language-diff">trio (https://github.com/python-trio/trio)
+<hr>
+<pre><code>trio (https://github.com/python-trio/trio)
 - src/trio/_tests/type_tests/raisesgroup.py:30:5: error[invalid-assignment] Object of type `ExceptionGroup[Exception]` is not assignable to `ExceptionGroup[ValueError] | ValueError`
 - src/trio/_tests/type_tests/raisesgroup.py:32:9: error[type-assertion-failure] Argument does not have asserted type `ExceptionGroup[ValueError]`
 - src/trio/_tests/type_tests/raisesgroup.py:40:5: error[invalid-assignment] Object of type `BaseExceptionGroup[BaseException]` is not assignable to `BaseExceptionGroup[KeyboardInterrupt]`
 - src/trio/_tests/type_tests/raisesgroup.py:154:5: error[invalid-assignment] Object of type `ExceptionGroup[Exception]` is not assignable to `ExceptionGroup[ExceptionGroup[ValueError]]`
 </code></pre>
-<p>These false positives go away because on <code>main</code> we are unable to solve <a href="https://github.com/python/typeshed/blob/aeb9c4cb393468ea4e1b387993a3af51781ab28e/stdlib/builtins.pyi#L2238">this TypeVar</a> in the call <code>ExceptionGroup(&quot;&quot;, (ValueError(),))</code>, leading us to fall back to the TypeVar's default value (<a href="https://github.com/python/typeshed/blob/aeb9c4cb393468ea4e1b387993a3af51781ab28e/stdlib/builtins.pyi#L2195"><code>Exception</code></a> and infer <code>ExceptionGroup[Exception]</code> for the result of the constructor call. On this PR branch, we are able to solve the TypeVar to <code>ValueError</code>, leading us to infer <code>ExceptionGroup[ValueError]</code> as the result of the constructor call.</p>
-<hr />
-<pre><code class="language-diff">dedupe (https://github.com/dedupeio/dedupe)
+<p>These false positives go away because on <code>main</code> we are unable to solve <a href="https://github.com/python/typeshed/blob/aeb9c4cb393468ea4e1b387993a3af51781ab28e/stdlib/builtins.pyi#L2238">this TypeVar</a> in the call <code>ExceptionGroup(&quot;&quot;, (ValueError(),))</code>, leading us to fall back to the TypeVar&#x27;s default value (<a href="https://github.com/python/typeshed/blob/aeb9c4cb393468ea4e1b387993a3af51781ab28e/stdlib/builtins.pyi#L2195"><code>Exception</code></a> and infer <code>ExceptionGroup[Exception]</code> for the result of the constructor call. On this PR branch, we are able to solve the TypeVar to <code>ValueError</code>, leading us to infer <code>ExceptionGroup[ValueError]</code> as the result of the constructor call.</p>
+<hr>
+<pre><code>dedupe (https://github.com/dedupeio/dedupe)
 + dedupe/predicates.py:116:20: error[invalid-return-type] Return type does not match returned value: expected `frozenset[Literal[&quot;0&quot;, &quot;1&quot;]]`, found `frozenset[str]`
 + dedupe/predicates.py:118:20: error[invalid-return-type] Return type does not match returned value: expected `frozenset[Literal[&quot;0&quot;, &quot;1&quot;]]`, found `frozenset[str]`
 - Found 54 diagnostics
@@ -470,24 +470,24 @@ altair (https://github.com/vega/altair)
 + Found 1305 diagnostics
 </code></pre>
 <p>These are new false positives due to things like this:</p>
-<pre><code class="language-py">from typing import Literal
+<pre><code>from typing import Literal
 
 X: frozenset[Literal[1, 2, 3]] = frozenset((1, 2, 3))
 </code></pre>
-<p>Previously we inferred <code>frozenset[Unknown]</code> for the right-hand side of that assignment; now, we are able to solve the TypeVar in <code>frozenset.__new__</code>; but due to <code>Literal</code> promotion, we infer <code>frozenset[int]</code> rather than <code>frozenset[Literal[1, 2, 3]]</code>, leading us to complain that this is an invalid assignment. I tried out a change where we avoid doing <code>Literal</code> promotions in covariant contexts, but it's tricky to get it right all the time. For example, in the following case we'd want <code>list[tuple[int, int]]</code> to be inferred rather than <code>list[tuple[Literal[1], Literal[2]]]</code>, because even though the inner variance context (from <code>tuple</code>) is covariant, the outer context (from <code>list</code>) is invariant:</p>
-<pre><code class="language-py">Y = list(((1, 2),))
+<p>Previously we inferred <code>frozenset[Unknown]</code> for the right-hand side of that assignment; now, we are able to solve the TypeVar in <code>frozenset.__new__</code>; but due to <code>Literal</code> promotion, we infer <code>frozenset[int]</code> rather than <code>frozenset[Literal[1, 2, 3]]</code>, leading us to complain that this is an invalid assignment. I tried out a change where we avoid doing <code>Literal</code> promotions in covariant contexts, but it&#x27;s tricky to get it right all the time. For example, in the following case we&#x27;d want <code>list[tuple[int, int]]</code> to be inferred rather than <code>list[tuple[Literal[1], Literal[2]]]</code>, because even though the inner variance context (from <code>tuple</code>) is covariant, the outer context (from <code>list</code>) is invariant:</p>
+<pre><code>Y = list(((1, 2),))
 </code></pre>
-<p>As such, I've added a test with some TODOs about this issue, but haven't tried to fix these new false positives in this PR.</p>
-<hr />
-<pre><code class="language-diff">aiohttp-devtools (https://github.com/aio-libs/aiohttp-devtools)
+<p>As such, I&#x27;ve added a test with some TODOs about this issue, but haven&#x27;t tried to fix these new false positives in this PR.</p>
+<hr>
+<pre><code>aiohttp-devtools (https://github.com/aio-libs/aiohttp-devtools)
 + tests/test_runserver_watch.py:108:5: error[invalid-assignment] Object of type `set[tuple[MagicMock, str]]` is not assignable to `set[tuple[WebSocketResponse, str]]`
 - Found 57 diagnostics
 + Found 58 diagnostics
 </code></pre>
-<p>This is a new false positive. I think we'd need bidirectional inference to figure this one out. <code>MagicMock</code> is assignable to <code>WebSocketResponse</code> (because the class inherits from <code>Any</code>), and therefore <code>tuple[MagicMock, str]</code> is assignable to <code>tuple[WebSocketResponse, str]</code>. But <code>set[tuple[MagicMock, str]]</code> is not assignable to <code>set[tuple[WebSocketResponse, str]]</code>, because of invariance.</p>
-<p>There's no way we'd infer the type of the first tuple element as being <code>WebSocketResponse</code> without bidirectionally looking at the type annotation the user has given, I don't think: https://github.com/aio-libs/aiohttp-devtools/blob/fa4af72434e016f9fef0d367e94d2a4b5ca93204/tests/test_runserver_watch.py#L108.</p>
-<hr />
-<pre><code class="language-diff">urllib3 (https://github.com/urllib3/urllib3)
+<p>This is a new false positive. I think we&#x27;d need bidirectional inference to figure this one out. <code>MagicMock</code> is assignable to <code>WebSocketResponse</code> (because the class inherits from <code>Any</code>), and therefore <code>tuple[MagicMock, str]</code> is assignable to <code>tuple[WebSocketResponse, str]</code>. But <code>set[tuple[MagicMock, str]]</code> is not assignable to <code>set[tuple[WebSocketResponse, str]]</code>, because of invariance.</p>
+<p>There&#x27;s no way we&#x27;d infer the type of the first tuple element as being <code>WebSocketResponse</code> without bidirectionally looking at the type annotation the user has given, I don&#x27;t think: https://github.com/aio-libs/aiohttp-devtools/blob/fa4af72434e016f9fef0d367e94d2a4b5ca93204/tests/test_runserver_watch.py#L108.</p>
+<hr>
+<pre><code>urllib3 (https://github.com/urllib3/urllib3)
 - src/urllib3/filepost.py:72:9: warning[possibly-unbound-attribute] Attribute `write` on type `Unknown | tuple[bytes, int]` is possibly unbound
 - src/urllib3/filepost.py:72:16: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Expected `str`, found `BytesIO`
 - src/urllib3/filepost.py:79:13: warning[possibly-unbound-attribute] Attribute `write` on type `Unknown | tuple[bytes, int]` is possibly unbound
@@ -495,10 +495,10 @@ X: frozenset[Literal[1, 2, 3]] = frozenset((1, 2, 3))
 - Found 396 diagnostics
 + Found 392 diagnostics
 </code></pre>
-<p>These are false positives going away. We now understand that <a href="https://github.com/urllib3/urllib3/blob/6e0e96c76fedec21a7189342f59cd39a1d8e7086/src/urllib3/filepost.py#L72">the <code>writer</code> variable here</a> is an instance of typeshed's <a href="https://github.com/python/typeshed/blob/aeb9c4cb393468ea4e1b387993a3af51781ab28e/stdlib/codecs.pyi#L109-L111"><code>codecs._StreamWriter</code></a> protocol. <code>writer</code> is defined <a href="https://github.com/urllib3/urllib3/blob/6e0e96c76fedec21a7189342f59cd39a1d8e7086/src/urllib3/filepost.py#L11">here</a> as the result of a <code>codecs.lookup(&quot;utf-8&quot;)[3]</code> call; <code>codecs.lookup</code> is defined <a href="https://github.com/python/typeshed/blob/aeb9c4cb393468ea4e1b387993a3af51781ab28e/stdlib/_codecs.pyi#L74">here</a> and we can see that it returns an instance of <a href="https://github.com/python/typeshed/blob/aeb9c4cb393468ea4e1b387993a3af51781ab28e/stdlib/codecs.pyi#L125"><code>codecs.CodecInfo</code></a>, which is a subclass of a heterogeneous tuple: we now infer a precise type for the <code>[3]</code> index into a <code>CodecInfo</code> instance, rather than a union of all element types in the tuple subclass (which is what we did previously).</p>
-<p>This case <em>should</em> have been fixed by https://github.com/astral-sh/ruff/pull/19493, but wasn't, because of a limitation in our <code>Protocol</code> implementation that will be fixed when we are more rigorous in our understanding of equivalence of protocols that have method members. Protocols are relevant here because each element of the tuple superclass of <code>codecs.CodecInfo</code> is a protocol type.</p>
-<hr />
-<pre><code class="language-diff">bokeh (https://github.com/bokeh/bokeh)
+<p>These are false positives going away. We now understand that <a href="https://github.com/urllib3/urllib3/blob/6e0e96c76fedec21a7189342f59cd39a1d8e7086/src/urllib3/filepost.py#L72">the <code>writer</code> variable here</a> is an instance of typeshed&#x27;s <a href="https://github.com/python/typeshed/blob/aeb9c4cb393468ea4e1b387993a3af51781ab28e/stdlib/codecs.pyi#L109-L111"><code>codecs._StreamWriter</code></a> protocol. <code>writer</code> is defined <a href="https://github.com/urllib3/urllib3/blob/6e0e96c76fedec21a7189342f59cd39a1d8e7086/src/urllib3/filepost.py#L11">here</a> as the result of a <code>codecs.lookup(&quot;utf-8&quot;)[3]</code> call; <code>codecs.lookup</code> is defined <a href="https://github.com/python/typeshed/blob/aeb9c4cb393468ea4e1b387993a3af51781ab28e/stdlib/_codecs.pyi#L74">here</a> and we can see that it returns an instance of <a href="https://github.com/python/typeshed/blob/aeb9c4cb393468ea4e1b387993a3af51781ab28e/stdlib/codecs.pyi#L125"><code>codecs.CodecInfo</code></a>, which is a subclass of a heterogeneous tuple: we now infer a precise type for the <code>[3]</code> index into a <code>CodecInfo</code> instance, rather than a union of all element types in the tuple subclass (which is what we did previously).</p>
+<p>This case <em>should</em> have been fixed by <a href="https://github.com/astral-sh/ruff/pull/19493">astral-sh/ruff#19493</a>, but wasn&#x27;t, because of a limitation in our <code>Protocol</code> implementation that will be fixed when we are more rigorous in our understanding of equivalence of protocols that have method members. Protocols are relevant here because each element of the tuple superclass of <code>codecs.CodecInfo</code> is a protocol type.</p>
+<hr>
+<pre><code>bokeh (https://github.com/bokeh/bokeh)
 - src/bokeh/util/serialization.py:146:47: error[parameter-already-assigned] Multiple values provided for parameter `tzinfo` of function `__new__`
 
 zulip (https://github.com/zulip/zulip)
@@ -507,61 +507,61 @@ zulip (https://github.com/zulip/zulip)
 - Found 7417 diagnostics
 + Found 7415 diagnostics
 </code></pre>
-<p>These false positives goes away because we're now able to infer exactly how many arguments are splatted into the <code>dt.datetime</code> call <a href="https://github.com/bokeh/bokeh/blob/a47e3ac623e2425d08af6aa7bea83585cda338e2/src/bokeh/util/serialization.py#L146">here</a>, and in similar places. This is because we now infer a precise type from slicing an instance of the stdlib class <a href="https://github.com/python/typeshed/blob/aeb9c4cb393468ea4e1b387993a3af51781ab28e/stdlib/time.pyi#L42"><code>time.struct_time</code></a>, which is a subclass of a heterogeneous tuple.</p>
-<hr />
-<pre><code class="language-diff">bokeh (https://github.com/bokeh/bokeh)
+<p>These false positives goes away because we&#x27;re now able to infer exactly how many arguments are splatted into the <code>dt.datetime</code> call <a href="https://github.com/bokeh/bokeh/blob/a47e3ac623e2425d08af6aa7bea83585cda338e2/src/bokeh/util/serialization.py#L146">here</a>, and in similar places. This is because we now infer a precise type from slicing an instance of the stdlib class <a href="https://github.com/python/typeshed/blob/aeb9c4cb393468ea4e1b387993a3af51781ab28e/stdlib/time.pyi#L42"><code>time.struct_time</code></a>, which is a subclass of a heterogeneous tuple.</p>
+<hr>
+<pre><code>bokeh (https://github.com/bokeh/bokeh)
 + src/bokeh/layouts.py:666:16: error[invalid-return-type] Return type does not match returned value: expected `list[L@_parse_children_arg]`, found `list[L@_parse_children_arg | list[L@_parse_children_arg]]`
 </code></pre>
-<p>There's something complicated going on with <code>TypeVar</code> solving here; I haven't investigated in-depth but I suspect it falls under the category of https://github.com/astral-sh/ty/issues/623.</p>
-<hr />
-<pre><code class="language-diff">sympy (https://github.com/sympy/sympy)
+<p>There&#x27;s something complicated going on with <code>TypeVar</code> solving here; I haven&#x27;t investigated in-depth but I suspect it falls under the category of <a href="https://github.com/astral-sh/ty/issues/623">astral-sh/ty#623</a>.</p>
+<hr>
+<pre><code>sympy (https://github.com/sympy/sympy)
 + sympy/tensor/array/expressions/from_array_to_matrix.py:149:5: error[invalid-assignment] Object of type `list[Basic]` is not assignable to `list[Basic | None]`
 </code></pre>
-<p>This is another one that would need bidirectional inference to fix. <code>Basic | None</code> would be a perfectly valid solution to the <code>list</code> class constructor's TypeVar <a href="https://github.com/sympy/sympy/blob/c8310e2b9620b9bf9e24b2262f8a811b01d173a5/sympy/tensor/array/expressions/from_array_to_matrix.py#L149">here</a>, but there's no way we'd ever arrive at that particular solution without bidirectionally looking at the annotation the user provided.</p>
-<hr />
-<pre><code class="language-diff">scipy (https://github.com/scipy/scipy)
+<p>This is another one that would need bidirectional inference to fix. <code>Basic | None</code> would be a perfectly valid solution to the <code>list</code> class constructor&#x27;s TypeVar <a href="https://github.com/sympy/sympy/blob/c8310e2b9620b9bf9e24b2262f8a811b01d173a5/sympy/tensor/array/expressions/from_array_to_matrix.py#L149">here</a>, but there&#x27;s no way we&#x27;d ever arrive at that particular solution without bidirectionally looking at the annotation the user provided.</p>
+<hr>
+<pre><code>scipy (https://github.com/scipy/scipy)
 + scipy/integrate/tests/test_quadrature.py:124:31: error[invalid-argument-type] Argument to bound method `insert` is incorrect: Expected `int`, found `slice[Any, _StartT_co@slice, _StartT_co@slice | _StopT_co@slice]`
 + scipy/integrate/tests/test_quadrature.py:145:31: error[invalid-argument-type] Argument to bound method `insert` is incorrect: Expected `int`, found `slice[Any, _StartT_co@slice, _StartT_co@slice | _StopT_co@slice]`
 - Found 6796 diagnostics
 + Found 6798 diagnostics
 </code></pre>
-<p>These look like true positives to me. The <code>it</code> variable <a href="https://github.com/scipy/scipy/blob/fa4f00d896306fc5dd60ea55a857b16712652c84/scipy/integrate/tests/test_quadrature.py#L121">here</a> is inferred as being an instance of <a href="https://github.com/numpy/numpy/blob/287cf8f7edadc99999da64f8be053f55b9c5d63e/numpy/__init__.pyi#L5059"><code>numpy.nditer</code></a>, which therefore means that the <code>idx</code> variable <a href="https://github.com/scipy/scipy/blob/fa4f00d896306fc5dd60ea55a857b16712652c84/scipy/integrate/tests/test_quadrature.py#L123">here</a> is inferred as being type <code>list[int]</code> because it's constructed as <code>list(it.multi_index)</code> and the <code>multi_index</code> property on <code>numpy.nditer</code> is <a href="https://github.com/numpy/numpy/blob/287cf8f7edadc99999da64f8be053f55b9c5d63e/numpy/__init__.pyi#L5118-L5119">annotated as returning <code>tuple[int, ...]</code></a>. You can't <code>.insert()</code> an instance of <code>slice</code> into an object of <code>list[int]</code>!</p>
+<p>These look like true positives to me. The <code>it</code> variable <a href="https://github.com/scipy/scipy/blob/fa4f00d896306fc5dd60ea55a857b16712652c84/scipy/integrate/tests/test_quadrature.py#L121">here</a> is inferred as being an instance of <a href="https://github.com/numpy/numpy/blob/287cf8f7edadc99999da64f8be053f55b9c5d63e/numpy/__init__.pyi#L5059"><code>numpy.nditer</code></a>, which therefore means that the <code>idx</code> variable <a href="https://github.com/scipy/scipy/blob/fa4f00d896306fc5dd60ea55a857b16712652c84/scipy/integrate/tests/test_quadrature.py#L123">here</a> is inferred as being type <code>list[int]</code> because it&#x27;s constructed as <code>list(it.multi_index)</code> and the <code>multi_index</code> property on <code>numpy.nditer</code> is <a href="https://github.com/numpy/numpy/blob/287cf8f7edadc99999da64f8be053f55b9c5d63e/numpy/__init__.pyi#L5118-L5119">annotated as returning <code>tuple[int, ...]</code></a>. You can&#x27;t <code>.insert()</code> an instance of <code>slice</code> into an object of <code>list[int]</code>!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-08-05 16:21</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-05 16:21</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-05 17:18</div>
             <div class="timeline-body"><blockquote>
 <p>What might give us more insight is if you could run ty with <code>TY_MEMORY_REPORT=full</code> on <code>colour-science</code>. Is there a significant increase of any salsa ingredient count (query or struct). If so, which one?</p>
 </blockquote>
-<details>
-<summary>Results on b324ae1be3183220ee42c01b394e81c91f0012f5</summary>
+
+Results on b324ae1be3183220ee42c01b394e81c91f0012f5
 
 <pre><code>=======SALSA STRUCTS=======
 `Definition`                                       metadata=4.15MB   fields=8.31MB   count=103863
 `Expression`                                       metadata=2.31MB   fields=2.69MB   count=48045
-`Type &lt; 'db &gt;::member_lookup_with_policy_::interned_arguments` metadata=0.86MB   fields=0.74MB   count=15324
+`Type &lt; &#x27;db &gt;::member_lookup_with_policy_::interned_arguments` metadata=0.86MB   fields=0.74MB   count=15324
 `IntersectionType`                                 metadata=0.28MB   fields=0.55MB   count=4941
 `OverloadLiteral`                                  metadata=0.32MB   fields=0.27MB   count=5673
-`Type &lt; 'db &gt;::class_member_with_policy_::interned_arguments` metadata=0.29MB   fields=0.25MB   count=5195
+`Type &lt; &#x27;db &gt;::class_member_with_policy_::interned_arguments` metadata=0.29MB   fields=0.25MB   count=5195
 `ScopeId`                                          metadata=0.55MB   fields=0.24MB   count=19789
 `StringLiteralType`                                metadata=0.81MB   fields=0.23MB   count=14431
 `place_by_id::interned_arguments`                  metadata=0.60MB   fields=0.23MB   count=11511
 `File`                                             metadata=0.20MB   fields=0.20MB   count=3080
 `FunctionType`                                     metadata=0.36MB   fields=0.15MB   count=6456
 `TupleType`                                        metadata=0.12MB   fields=0.14MB   count=2200
-`Type &lt; 'db &gt;::apply_specialization_::interned_arguments` metadata=0.22MB   fields=0.09MB   count=3866
+`Type &lt; &#x27;db &gt;::apply_specialization_::interned_arguments` metadata=0.22MB   fields=0.09MB   count=3866
 `FunctionLiteral`                                  metadata=0.32MB   fields=0.09MB   count=5702
 `Specialization`                                   metadata=0.16MB   fields=0.09MB   count=2771
-`Type &lt; 'db &gt;::try_call_dunder_get_::interned_arguments` metadata=0.10MB   fields=0.09MB   count=1794
+`Type &lt; &#x27;db &gt;::try_call_dunder_get_::interned_arguments` metadata=0.10MB   fields=0.09MB   count=1794
 `CallableType`                                     metadata=0.05MB   fields=0.07MB   count=811
 `ClassLiteral`                                     metadata=0.08MB   fields=0.07MB   count=1475
 `TypeVarInstance`                                  metadata=0.05MB   fields=0.07MB   count=851
 `Unpack`                                           metadata=0.06MB   fields=0.07MB   count=1403
 `ModuleLiteralType`                                metadata=0.17MB   fields=0.06MB   count=3194
-`ClassLiteral &lt; 'db &gt;::try_mro_::interned_arguments` metadata=0.17MB   fields=0.05MB   count=3111
+`ClassLiteral &lt; &#x27;db &gt;::try_mro_::interned_arguments` metadata=0.17MB   fields=0.05MB   count=3111
 `GenericAlias`                                     metadata=0.13MB   fields=0.04MB   count=2403
 `UnionType`                                        metadata=0.13MB   fields=0.04MB   count=2351
 `FileModule`                                       metadata=0.02MB   fields=0.03MB   count=561
@@ -570,7 +570,7 @@ zulip (https://github.com/zulip/zulip)
 `StarImportPlaceholderPredicate`                   metadata=0.03MB   fields=0.02MB   count=1062
 `ModuleNameIngredient`                             metadata=0.03MB   fields=0.02MB   count=596
 `PropertyInstanceType`                             metadata=0.02MB   fields=0.01MB   count=290
-`Type &lt; 'db &gt;::lookup_dunder_new_::interned_arguments` metadata=0.01MB   fields=0.00MB   count=206
+`Type &lt; &#x27;db &gt;::lookup_dunder_new_::interned_arguments` metadata=0.01MB   fields=0.00MB   count=206
 `ProtocolInterface`                                metadata=0.00MB   fields=0.00MB   count=83
 `BareTypeAliasType`                                metadata=0.00MB   fields=0.00MB   count=36
 `BoundSuperType`                                   metadata=0.00MB   fields=0.00MB   count=47
@@ -608,9 +608,9 @@ zulip (https://github.com/zulip/zulip)
     metadata=0.09MB   fields=2.81MB   count=1802
 `infer_deferred_types -&gt; ty_python_semantic::types::infer::DefinitionInference`
     metadata=1.53MB   fields=1.42MB   count=5287
-`FunctionType &lt; 'db &gt;::signature_ -&gt; ty_python_semantic::types::signatures::CallableSignature`
+`FunctionType &lt; &#x27;db &gt;::signature_ -&gt; ty_python_semantic::types::signatures::CallableSignature`
     metadata=0.39MB   fields=1.02MB   count=2473
-`Type &lt; 'db &gt;::member_lookup_with_policy_ -&gt; ty_python_semantic::place::PlaceAndQualifiers`
+`Type &lt; &#x27;db &gt;::member_lookup_with_policy_ -&gt; ty_python_semantic::place::PlaceAndQualifiers`
     metadata=2.06MB   fields=0.49MB   count=15324
 `line_index -&gt; ruff_source_file::line_index::LineIndex`
     metadata=0.01MB   fields=0.47MB   count=134
@@ -618,17 +618,17 @@ zulip (https://github.com/zulip/zulip)
     metadata=0.16MB   fields=0.41MB   count=683
 `place_by_id -&gt; ty_python_semantic::place::PlaceAndQualifiers`
     metadata=0.78MB   fields=0.37MB   count=11511
-`ClassLiteral &lt; 'db &gt;::try_mro_ -&gt; core::result::Result&lt;ty_python_semantic::types::mro::Mro, ty_python_semantic::types::mro::MroError&gt;`
+`ClassLiteral &lt; &#x27;db &gt;::try_mro_ -&gt; core::result::Result&lt;ty_python_semantic::types::mro::Mro, ty_python_semantic::types::mro::MroError&gt;`
     metadata=0.64MB   fields=0.30MB   count=3111
 `infer_unpack_types -&gt; ty_python_semantic::types::unpacker::UnpackResult`
     metadata=0.25MB   fields=0.24MB   count=1306
-`Type &lt; 'db &gt;::class_member_with_policy_ -&gt; ty_python_semantic::place::PlaceAndQualifiers`
+`Type &lt; &#x27;db &gt;::class_member_with_policy_ -&gt; ty_python_semantic::place::PlaceAndQualifiers`
     metadata=0.98MB   fields=0.17MB   count=5195
 `all_narrowing_constraints_for_expression -&gt; core::option::Option&lt;std::collections::hash::map::HashMap&lt;ty_python_semantic::semantic_index::place::ScopedPlaceId, ty_python_semantic::types::Type, rustc_hash::FxBuildHasher&gt;&gt;`
     metadata=0.26MB   fields=0.16MB   count=2186
 `infer_expression_type -&gt; ty_python_semantic::types::Type`
     metadata=0.68MB   fields=0.14MB   count=8952
-`FunctionLiteral &lt; 'db &gt;::overloads_and_implementation_ -&gt; (alloc::boxed::Box&lt;[ty_python_semantic::types::function::OverloadLiteral]&gt;, core::option::Option&lt;ty_python_semantic::types::function::OverloadLiteral&gt;)`
+`FunctionLiteral &lt; &#x27;db &gt;::overloads_and_implementation_ -&gt; (alloc::boxed::Box&lt;[ty_python_semantic::types::function::OverloadLiteral]&gt;, core::option::Option&lt;ty_python_semantic::types::function::OverloadLiteral&gt;)`
     metadata=0.30MB   fields=0.12MB   count=4469
 `imported_modules -&gt; alloc::sync::Arc&lt;std::collections::hash::set::HashSet&lt;ty_python_semantic::module_name::ModuleName, rustc_hash::FxBuildHasher&gt;&gt;`
     metadata=0.04MB   fields=0.09MB   count=735
@@ -638,35 +638,35 @@ zulip (https://github.com/zulip/zulip)
     metadata=0.13MB   fields=0.09MB   count=1085
 `dunder_all_names -&gt; core::option::Option&lt;std::collections::hash::set::HashSet&lt;ruff_python_ast::name::Name, rustc_hash::FxBuildHasher&gt;&gt;`
     metadata=0.00MB   fields=0.07MB   count=36
-`ClassLiteral &lt; 'db &gt;::try_metaclass_ -&gt; core::result::Result&lt;(ty_python_semantic::types::Type, core::option::Option&lt;ty_python_semantic::types::function::DataclassTransformerParams&gt;), ty_python_semantic::types::class::MetaclassError&gt;`
+`ClassLiteral &lt; &#x27;db &gt;::try_metaclass_ -&gt; core::result::Result&lt;(ty_python_semantic::types::Type, core::option::Option&lt;ty_python_semantic::types::function::DataclassTransformerParams&gt;), ty_python_semantic::types::class::MetaclassError&gt;`
     metadata=0.27MB   fields=0.06MB   count=1343
-`Type &lt; 'db &gt;::apply_specialization_ -&gt; ty_python_semantic::types::Type`
+`Type &lt; &#x27;db &gt;::apply_specialization_ -&gt; ty_python_semantic::types::Type`
     metadata=0.23MB   fields=0.06MB   count=3866
-`Type &lt; 'db &gt;::try_call_dunder_get_ -&gt; core::option::Option&lt;(ty_python_semantic::types::Type, ty_python_semantic::types::AttributeKind)&gt;`
+`Type &lt; &#x27;db &gt;::try_call_dunder_get_ -&gt; core::option::Option&lt;(ty_python_semantic::types::Type, ty_python_semantic::types::AttributeKind)&gt;`
     metadata=1.06MB   fields=0.04MB   count=1794
-`ClassLiteral &lt; 'db &gt;::explicit_bases_ -&gt; alloc::boxed::Box&lt;[ty_python_semantic::types::Type]&gt;`
+`ClassLiteral &lt; &#x27;db &gt;::explicit_bases_ -&gt; alloc::boxed::Box&lt;[ty_python_semantic::types::Type]&gt;`
     metadata=0.11MB   fields=0.03MB   count=1466
 `enum_metadata -&gt; core::option::Option&lt;ty_python_semantic::types::enums::EnumMetadata&gt;`
     metadata=0.11MB   fields=0.03MB   count=307
 `exported_names -&gt; alloc::boxed::Box&lt;[ruff_python_ast::name::Name]&gt;`
     metadata=0.00MB   fields=0.03MB   count=31
-`ClassLiteral &lt; 'db &gt;::pep695_generic_context_ -&gt; core::option::Option&lt;ty_python_semantic::types::generics::GenericContext&gt;`
+`ClassLiteral &lt; &#x27;db &gt;::pep695_generic_context_ -&gt; core::option::Option&lt;ty_python_semantic::types::generics::GenericContext&gt;`
     metadata=0.11MB   fields=0.01MB   count=1466
 `resolve_module_query -&gt; core::option::Option&lt;ty_python_semantic::module_resolver::module::Module&gt;`
     metadata=0.16MB   fields=0.01MB   count=596
-`ClassLiteral &lt; 'db &gt;::decorators_ -&gt; alloc::boxed::Box&lt;[ty_python_semantic::types::Type]&gt;`
+`ClassLiteral &lt; &#x27;db &gt;::decorators_ -&gt; alloc::boxed::Box&lt;[ty_python_semantic::types::Type]&gt;`
     metadata=0.02MB   fields=0.01MB   count=320
-`Type &lt; 'db &gt;::lookup_dunder_new_ -&gt; core::option::Option&lt;ty_python_semantic::place::PlaceAndQualifiers&gt;`
+`Type &lt; &#x27;db &gt;::lookup_dunder_new_ -&gt; core::option::Option&lt;ty_python_semantic::place::PlaceAndQualifiers&gt;`
     metadata=0.05MB   fields=0.01MB   count=206
 `global_scope -&gt; ty_python_semantic::semantic_index::scope::ScopeId`
     metadata=0.04MB   fields=0.01MB   count=758
 `file_settings -&gt; ty_project::metadata::settings::FileSettings`
     metadata=0.05MB   fields=0.01MB   count=683
-`ClassLiteral &lt; 'db &gt;::is_typed_dict_ -&gt; bool`
+`ClassLiteral &lt; &#x27;db &gt;::is_typed_dict_ -&gt; bool`
     metadata=0.13MB   fields=0.00MB   count=1382
 `file_to_module -&gt; core::option::Option&lt;ty_python_semantic::module_resolver::module::Module&gt;`
     metadata=0.01MB   fields=0.00MB   count=110
-`ClassLiteral &lt; 'db &gt;::inheritance_cycle_ -&gt; core::option::Option&lt;ty_python_semantic::types::class::InheritanceCycle&gt;`
+`ClassLiteral &lt; &#x27;db &gt;::inheritance_cycle_ -&gt; core::option::Option&lt;ty_python_semantic::types::class::InheritanceCycle&gt;`
     metadata=0.08MB   fields=0.00MB   count=1217
 `module_type_symbols -&gt; smallvec::SmallVec&lt;[ruff_python_ast::name::Name; 8]&gt;`
     metadata=0.00MB   fields=0.00MB   count=1
@@ -681,18 +681,18 @@ TOTAL MEMORY USAGE: 292.33MB
     memo metadata = 43.00MB
     memo fields = 221.69MB
 </code></pre>
-</details>
 
-<details>
-<summary>Results on this PR (after rebasing on b324ae1be3183220ee42c01b394e81c91f0012f5)</summary>
+
+
+Results on this PR (after rebasing on b324ae1be3183220ee42c01b394e81c91f0012f5)
 
 <pre><code>=======SALSA STRUCTS=======
 `Definition`                                       metadata=4.15MB   fields=8.30MB   count=103772
 `Expression`                                       metadata=2.31MB   fields=2.69MB   count=48026
 `IntersectionType`                                 metadata=0.38MB   fields=0.76MB   count=6792
-`Type &lt; 'db &gt;::member_lookup_with_policy_::interned_arguments` metadata=0.86MB   fields=0.74MB   count=15371
+`Type &lt; &#x27;db &gt;::member_lookup_with_policy_::interned_arguments` metadata=0.86MB   fields=0.74MB   count=15371
 `OverloadLiteral`                                  metadata=0.32MB   fields=0.27MB   count=5674
-`Type &lt; 'db &gt;::class_member_with_policy_::interned_arguments` metadata=0.29MB   fields=0.25MB   count=5267
+`Type &lt; &#x27;db &gt;::class_member_with_policy_::interned_arguments` metadata=0.29MB   fields=0.25MB   count=5267
 `ScopeId`                                          metadata=0.55MB   fields=0.24MB   count=19766
 `StringLiteralType`                                metadata=0.81MB   fields=0.23MB   count=14432
 `place_by_id::interned_arguments`                  metadata=0.60MB   fields=0.23MB   count=11511
@@ -700,11 +700,11 @@ TOTAL MEMORY USAGE: 292.33MB
 `Specialization`                                   metadata=0.33MB   fields=0.19MB   count=5958
 `FunctionType`                                     metadata=0.36MB   fields=0.16MB   count=6466
 `TupleType`                                        metadata=0.12MB   fields=0.14MB   count=2214
-`Type &lt; 'db &gt;::apply_specialization_::interned_arguments` metadata=0.22MB   fields=0.10MB   count=4000
+`Type &lt; &#x27;db &gt;::apply_specialization_::interned_arguments` metadata=0.22MB   fields=0.10MB   count=4000
 `FunctionLiteral`                                  metadata=0.32MB   fields=0.09MB   count=5703
 `GenericAlias`                                     metadata=0.31MB   fields=0.09MB   count=5578
-`Type &lt; 'db &gt;::try_call_dunder_get_::interned_arguments` metadata=0.10MB   fields=0.09MB   count=1807
-`ClassLiteral &lt; 'db &gt;::try_mro_::interned_arguments` metadata=0.27MB   fields=0.08MB   count=4738
+`Type &lt; &#x27;db &gt;::try_call_dunder_get_::interned_arguments` metadata=0.10MB   fields=0.09MB   count=1807
+`ClassLiteral &lt; &#x27;db &gt;::try_mro_::interned_arguments` metadata=0.27MB   fields=0.08MB   count=4738
 `CallableType`                                     metadata=0.05MB   fields=0.07MB   count=815
 `ClassLiteral`                                     metadata=0.08MB   fields=0.07MB   count=1475
 `TypeVarInstance`                                  metadata=0.05MB   fields=0.07MB   count=853
@@ -717,7 +717,7 @@ TOTAL MEMORY USAGE: 292.33MB
 `StarImportPlaceholderPredicate`                   metadata=0.03MB   fields=0.02MB   count=1062
 `ModuleNameIngredient`                             metadata=0.03MB   fields=0.02MB   count=595
 `PropertyInstanceType`                             metadata=0.02MB   fields=0.01MB   count=292
-`Type &lt; 'db &gt;::lookup_dunder_new_::interned_arguments` metadata=0.01MB   fields=0.00MB   count=206
+`Type &lt; &#x27;db &gt;::lookup_dunder_new_::interned_arguments` metadata=0.01MB   fields=0.00MB   count=206
 `ProtocolInterface`                                metadata=0.00MB   fields=0.00MB   count=83
 `BareTypeAliasType`                                metadata=0.00MB   fields=0.00MB   count=36
 `BoundSuperType`                                   metadata=0.00MB   fields=0.00MB   count=47
@@ -755,11 +755,11 @@ TOTAL MEMORY USAGE: 292.33MB
     metadata=0.09MB   fields=2.81MB   count=1799
 `infer_deferred_types -&gt; ty_python_semantic::types::infer::DefinitionInference`
     metadata=1.59MB   fields=1.42MB   count=5286
-`FunctionType &lt; 'db &gt;::signature_ -&gt; ty_python_semantic::types::signatures::CallableSignature`
+`FunctionType &lt; &#x27;db &gt;::signature_ -&gt; ty_python_semantic::types::signatures::CallableSignature`
     metadata=0.39MB   fields=1.02MB   count=2475
-`Type &lt; 'db &gt;::member_lookup_with_policy_ -&gt; ty_python_semantic::place::PlaceAndQualifiers`
+`Type &lt; &#x27;db &gt;::member_lookup_with_policy_ -&gt; ty_python_semantic::place::PlaceAndQualifiers`
     metadata=2.07MB   fields=0.49MB   count=15371
-`ClassLiteral &lt; 'db &gt;::try_mro_ -&gt; core::result::Result&lt;ty_python_semantic::types::mro::Mro, ty_python_semantic::types::mro::MroError&gt;`
+`ClassLiteral &lt; &#x27;db &gt;::try_mro_ -&gt; core::result::Result&lt;ty_python_semantic::types::mro::Mro, ty_python_semantic::types::mro::MroError&gt;`
     metadata=1.05MB   fields=0.48MB   count=4738
 `line_index -&gt; ruff_source_file::line_index::LineIndex`
     metadata=0.01MB   fields=0.47MB   count=134
@@ -769,13 +769,13 @@ TOTAL MEMORY USAGE: 292.33MB
     metadata=0.78MB   fields=0.37MB   count=11511
 `infer_unpack_types -&gt; ty_python_semantic::types::unpacker::UnpackResult`
     metadata=0.33MB   fields=0.24MB   count=1306
-`Type &lt; 'db &gt;::class_member_with_policy_ -&gt; ty_python_semantic::place::PlaceAndQualifiers`
+`Type &lt; &#x27;db &gt;::class_member_with_policy_ -&gt; ty_python_semantic::place::PlaceAndQualifiers`
     metadata=0.98MB   fields=0.17MB   count=5267
 `all_narrowing_constraints_for_expression -&gt; core::option::Option&lt;std::collections::hash::map::HashMap&lt;ty_python_semantic::semantic_index::place::ScopedPlaceId, ty_python_semantic::types::Type, rustc_hash::FxBuildHasher&gt;&gt;`
     metadata=0.27MB   fields=0.16MB   count=2186
 `infer_expression_type -&gt; ty_python_semantic::types::Type`
     metadata=0.68MB   fields=0.14MB   count=8952
-`FunctionLiteral &lt; 'db &gt;::overloads_and_implementation_ -&gt; (alloc::boxed::Box&lt;[ty_python_semantic::types::function::OverloadLiteral]&gt;, core::option::Option&lt;ty_python_semantic::types::function::OverloadLiteral&gt;)`
+`FunctionLiteral &lt; &#x27;db &gt;::overloads_and_implementation_ -&gt; (alloc::boxed::Box&lt;[ty_python_semantic::types::function::OverloadLiteral]&gt;, core::option::Option&lt;ty_python_semantic::types::function::OverloadLiteral&gt;)`
     metadata=0.30MB   fields=0.12MB   count=4470
 `imported_modules -&gt; alloc::sync::Arc&lt;std::collections::hash::set::HashSet&lt;ty_python_semantic::module_name::ModuleName, rustc_hash::FxBuildHasher&gt;&gt;`
     metadata=0.04MB   fields=0.09MB   count=735
@@ -785,35 +785,35 @@ TOTAL MEMORY USAGE: 292.33MB
     metadata=0.13MB   fields=0.09MB   count=1086
 `dunder_all_names -&gt; core::option::Option&lt;std::collections::hash::set::HashSet&lt;ruff_python_ast::name::Name, rustc_hash::FxBuildHasher&gt;&gt;`
     metadata=0.00MB   fields=0.07MB   count=36
-`ClassLiteral &lt; 'db &gt;::try_metaclass_ -&gt; core::result::Result&lt;(ty_python_semantic::types::Type, core::option::Option&lt;ty_python_semantic::types::function::DataclassTransformerParams&gt;), ty_python_semantic::types::class::MetaclassError&gt;`
+`ClassLiteral &lt; &#x27;db &gt;::try_metaclass_ -&gt; core::result::Result&lt;(ty_python_semantic::types::Type, core::option::Option&lt;ty_python_semantic::types::function::DataclassTransformerParams&gt;), ty_python_semantic::types::class::MetaclassError&gt;`
     metadata=0.27MB   fields=0.06MB   count=1347
-`Type &lt; 'db &gt;::apply_specialization_ -&gt; ty_python_semantic::types::Type`
+`Type &lt; &#x27;db &gt;::apply_specialization_ -&gt; ty_python_semantic::types::Type`
     metadata=0.26MB   fields=0.06MB   count=4000
-`Type &lt; 'db &gt;::try_call_dunder_get_ -&gt; core::option::Option&lt;(ty_python_semantic::types::Type, ty_python_semantic::types::AttributeKind)&gt;`
+`Type &lt; &#x27;db &gt;::try_call_dunder_get_ -&gt; core::option::Option&lt;(ty_python_semantic::types::Type, ty_python_semantic::types::AttributeKind)&gt;`
     metadata=1.11MB   fields=0.04MB   count=1807
-`ClassLiteral &lt; 'db &gt;::explicit_bases_ -&gt; alloc::boxed::Box&lt;[ty_python_semantic::types::Type]&gt;`
+`ClassLiteral &lt; &#x27;db &gt;::explicit_bases_ -&gt; alloc::boxed::Box&lt;[ty_python_semantic::types::Type]&gt;`
     metadata=0.11MB   fields=0.03MB   count=1464
 `enum_metadata -&gt; core::option::Option&lt;ty_python_semantic::types::enums::EnumMetadata&gt;`
     metadata=0.11MB   fields=0.03MB   count=308
 `exported_names -&gt; alloc::boxed::Box&lt;[ruff_python_ast::name::Name]&gt;`
     metadata=0.00MB   fields=0.03MB   count=31
-`ClassLiteral &lt; 'db &gt;::pep695_generic_context_ -&gt; core::option::Option&lt;ty_python_semantic::types::generics::GenericContext&gt;`
+`ClassLiteral &lt; &#x27;db &gt;::pep695_generic_context_ -&gt; core::option::Option&lt;ty_python_semantic::types::generics::GenericContext&gt;`
     metadata=0.11MB   fields=0.01MB   count=1464
 `resolve_module_query -&gt; core::option::Option&lt;ty_python_semantic::module_resolver::module::Module&gt;`
     metadata=0.15MB   fields=0.01MB   count=595
-`ClassLiteral &lt; 'db &gt;::decorators_ -&gt; alloc::boxed::Box&lt;[ty_python_semantic::types::Type]&gt;`
+`ClassLiteral &lt; &#x27;db &gt;::decorators_ -&gt; alloc::boxed::Box&lt;[ty_python_semantic::types::Type]&gt;`
     metadata=0.02MB   fields=0.01MB   count=318
-`Type &lt; 'db &gt;::lookup_dunder_new_ -&gt; core::option::Option&lt;ty_python_semantic::place::PlaceAndQualifiers&gt;`
+`Type &lt; &#x27;db &gt;::lookup_dunder_new_ -&gt; core::option::Option&lt;ty_python_semantic::place::PlaceAndQualifiers&gt;`
     metadata=0.05MB   fields=0.01MB   count=206
 `global_scope -&gt; ty_python_semantic::semantic_index::scope::ScopeId`
     metadata=0.04MB   fields=0.01MB   count=757
 `file_settings -&gt; ty_project::metadata::settings::FileSettings`
     metadata=0.05MB   fields=0.01MB   count=683
-`ClassLiteral &lt; 'db &gt;::is_typed_dict_ -&gt; bool`
+`ClassLiteral &lt; &#x27;db &gt;::is_typed_dict_ -&gt; bool`
     metadata=0.13MB   fields=0.00MB   count=1382
 `file_to_module -&gt; core::option::Option&lt;ty_python_semantic::module_resolver::module::Module&gt;`
     metadata=0.01MB   fields=0.00MB   count=110
-`ClassLiteral &lt; 'db &gt;::inheritance_cycle_ -&gt; core::option::Option&lt;ty_python_semantic::types::class::InheritanceCycle&gt;`
+`ClassLiteral &lt; &#x27;db &gt;::inheritance_cycle_ -&gt; core::option::Option&lt;ty_python_semantic::types::class::InheritanceCycle&gt;`
     metadata=0.08MB   fields=0.00MB   count=1218
 `module_type_symbols -&gt; smallvec::SmallVec&lt;[ruff_python_ast::name::Name; 8]&gt;`
     metadata=0.00MB   fields=0.00MB   count=1
@@ -828,11 +828,11 @@ TOTAL MEMORY USAGE: 293.82MB
     memo metadata = 45.09MB
     memo fields = 220.04MB
 </code></pre>
-</details>
+
 
 <p>Both reports obtained by running <code>TY_MEMORY_REPORT=full uv run cargo run --release --manifest-path ../ruff/Cargo.toml -p ty check</code> from a local clone of <code>colour</code>.</p>
-<hr />
-<h2>Big changes between the two memory reports</h2>
+<hr>
+Big changes between the two memory reports
 <ul>
 <li>Intersections:<ul>
 <li>On <code>main</code> we intern 4941 <code>IntersectionType</code> instances when analysing <code>colour</code><ul>
@@ -873,7 +873,7 @@ TOTAL MEMORY USAGE: 293.82MB
 </li>
 </ul>
 </li>
-<li><code>ClassLiteral &lt; 'db &gt;::try_mro_::interned_arguments</code><ul>
+<li><code>ClassLiteral &lt; &#x27;db &gt;::try_mro_::interned_arguments</code><ul>
 <li><code>main</code>: 3111 instances interned<ul>
 <li>metadata: 0.17MB</li>
 <li>fields: 0.05MB</li>
@@ -908,32 +908,32 @@ TOTAL MEMORY USAGE: 293.82MB
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:656 on 2025-08-06 22:27</div>
-            <div class="timeline-body"><p>I honestly have no idea if this is a correct change or not. No tests fail if I remove this block, and I've struggled to find a behaviour difference from having this block or not having it.</p>
-<p>This comment would suggest that it's incorrect to have this block here:</p>
+            <div class="timeline-body"><p>I honestly have no idea if this is a correct change or not. No tests fail if I remove this block, and I&#x27;ve struggled to find a behaviour difference from having this block or not having it.</p>
+<p>This comment would suggest that it&#x27;s incorrect to have this block here:</p>
 <p>https://github.com/astral-sh/ruff/blob/ef1802b94f3bf7e7afcba2dfb9bd8896e73485c8/crates/ty_python_semantic/src/types/class.rs#L250-L258</p>
 <p>But if I remove this, then all the <code>find_legacy_typevars</code> methods in <code>tuple.rs</code> are flagged as unused. Is it really okay to just delete them as part of this PR...?</p>
 <p>Paging @dcreager for help!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @AlexWaygood on 2025-08-06 22:28</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-06 22:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-08-06 22:28</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-06 22:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-08-06 22:28</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-06 22:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-08-06 22:28</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-06 22:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[ty] [WIP] Remove `Type::Tuple`" to "[ty] Remove `Type::Tuple`" by @AlexWaygood on 2025-08-06 22:30</div>
+            <div class="event">Renamed from &quot;[ty] [WIP] Remove `Type::Tuple`&quot; to &quot;[ty] Remove `Type::Tuple`&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-06 22:30</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:656 on 2025-08-06 22:57</div>
-            <div class="timeline-body"><p>The tuple part of a specialization should™ be entirely redundant with the <code>types</code> part, since we are careful to always make sure that <code>types</code> is the union of all of the elements of the tuple. So it should be safe to remove this block. (It should also be safe to keep it, since <code>find_legacy_typevars</code> is building up a set, so it doesn't break anything to add the tuple elements twice).)</p>
-<p>It should also be safe to remove the methods from the various tuple classes — those were there for completeness, since we'd need to recurse into them for the <code>Type::Tuple(tuple)</code> variant. But if that's now replaced with <code>NominalInstance</code> of a <code>tuple</code> subclass, then I think it's correct that they're now unused. (There are no other places I'm aware of where a <code>Type</code> can contain <code>Tuple&lt;Type&lt;'db&gt;&gt;</code> inside of it, but if there were, then we'd still need the <code>find_legacy_typevars</code> methods in <code>tuple.rs</code>.)</p>
+            <div class="timeline-body"><p>The tuple part of a specialization should™ be entirely redundant with the <code>types</code> part, since we are careful to always make sure that <code>types</code> is the union of all of the elements of the tuple. So it should be safe to remove this block. (It should also be safe to keep it, since <code>find_legacy_typevars</code> is building up a set, so it doesn&#x27;t break anything to add the tuple elements twice).)</p>
+<p>It should also be safe to remove the methods from the various tuple classes — those were there for completeness, since we&#x27;d need to recurse into them for the <code>Type::Tuple(tuple)</code> variant. But if that&#x27;s now replaced with <code>NominalInstance</code> of a <code>tuple</code> subclass, then I think it&#x27;s correct that they&#x27;re now unused. (There are no other places I&#x27;m aware of where a <code>Type</code> can contain <code>Tuple&lt;Type&lt;&#x27;db&gt;&gt;</code> inside of it, but if there were, then we&#x27;d still need the <code>find_legacy_typevars</code> methods in <code>tuple.rs</code>.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -946,22 +946,22 @@ TOTAL MEMORY USAGE: 293.82MB
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:656 on 2025-08-07 08:59</div>
-            <div class="timeline-body"><p>Okaaay, I removed the call and the methods from the various types in <code>tuple.rs</code>. It seems to have had ~no ecosystem impact... the only new diagnostics I can see in the primer report are a few strange ones on pycryptodome that... I can't reproduce locally.</p>
+            <div class="timeline-body"><p>Okaaay, I removed the call and the methods from the various types in <code>tuple.rs</code>. It seems to have had ~no ecosystem impact... the only new diagnostics I can see in the primer report are a few strange ones on pycryptodome that... I can&#x27;t reproduce locally.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/tuple.rs</code>:1149 on 2025-08-07 10:26</div>
-            <div class="timeline-body"><p>here I ran into lifetime issues similar to https://github.com/astral-sh/ruff/pull/19687 (but unlike with that PR, it didn't really seem to me to make sense to split this change into its own PR -- it doesn't have any obvious benefits to callsites to fix the lifetimes bug here, except in the context of this PR)</p>
+            <div class="timeline-body"><p>here I ran into lifetime issues similar to <a href="https://github.com/astral-sh/ruff/pull/19687">astral-sh/ruff#19687</a> (but unlike with that PR, it didn&#x27;t really seem to me to make sense to split this change into its own PR -- it doesn&#x27;t have any obvious benefits to callsites to fix the lifetimes bug here, except in the context of this PR)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:7955 on 2025-08-07 10:34</div>
-            <div class="timeline-body"><p>I did a refactoring of <code>infer_binary_type_comparison</code> here similar to the one I did to <code>infer_subscript_expression_types</code> in https://github.com/astral-sh/ruff/pull/19658. It noticeably helps performance on this PR branch, but I doubt it would if we did the refactor as a standalone PR to <code>main</code>, and it makes the method more complicated. So unlike #19658, I don't think this refactor makes much sense as a standalone change, unfortunately.</p>
+            <div class="timeline-body"><p>I did a refactoring of <code>infer_binary_type_comparison</code> here similar to the one I did to <code>infer_subscript_expression_types</code> in <a href="https://github.com/astral-sh/ruff/pull/19658">astral-sh/ruff#19658</a>. It noticeably helps performance on this PR branch, but I doubt it would if we did the refactor as a standalone PR to <code>main</code>, and it makes the method more complicated. So unlike #19658, I don&#x27;t think this refactor makes much sense as a standalone change, unfortunately.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:4683 on 2025-08-07 10:34</div>
-            <div class="timeline-body"><p>this is a micro-optimisation that appears to help performance a bit on this branch, but doesn't seem to have a noticeable impact for me locally if I apply the change straight to <code>main</code></p>
+            <div class="timeline-body"><p>this is a micro-optimisation that appears to help performance a bit on this branch, but doesn&#x27;t seem to have a noticeable impact for me locally if I apply the change straight to <code>main</code></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -970,7 +970,7 @@ TOTAL MEMORY USAGE: 293.82MB
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-07 11:56</div>
-            <div class="timeline-body"><p>I've extracted the new tests out into a standalone PR to make this one easier to review: #19803. This PR is now based on top of that one.</p>
+            <div class="timeline-body"><p>I&#x27;ve extracted the new tests out into a standalone PR to make this one easier to review: #19803. This PR is now based on top of that one.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -985,25 +985,25 @@ TOTAL MEMORY USAGE: 293.82MB
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-07 12:54</div>
             <div class="timeline-body"><p>This is pretty cool!</p>
-<p>It looks like the performance regression is in large part due to the fact that tuple types are common, and our representation for a simple (non-subclass) tuple type now becomes significantly heavier: rather than just a tuple-spec, it now includes a GenericAlias and a Specialization as well. And that Specialization includes an eagerly-created union of all the tuple element types, to fill the <code>types</code> attribute of <code>Specialization</code>, whereas before that &quot;homogenized union&quot; was created only on-demand, when necessary (and it's not necessary for many uses of tuple types). So that means we now also create a lot more union types.</p>
-<p>This latter part will also be somewhat in conflict with support for recursive type aliases involving tuples (see https://github.com/astral-sh/ruff/pull/19805), where it becomes important that we <em>don't</em> eagerly create a union of all tuple element types (because adding a type alias to a union unpacks the type alias). There are probably some ways around this (e.g. add support for creating a union with a type alias without unpacking it).</p>
+<p>It looks like the performance regression is in large part due to the fact that tuple types are common, and our representation for a simple (non-subclass) tuple type now becomes significantly heavier: rather than just a tuple-spec, it now includes a GenericAlias and a Specialization as well. And that Specialization includes an eagerly-created union of all the tuple element types, to fill the <code>types</code> attribute of <code>Specialization</code>, whereas before that &quot;homogenized union&quot; was created only on-demand, when necessary (and it&#x27;s not necessary for many uses of tuple types). So that means we now also create a lot more union types.</p>
+<p>This latter part will also be somewhat in conflict with support for recursive type aliases involving tuples (see <a href="https://github.com/astral-sh/ruff/pull/19805">astral-sh/ruff#19805</a>), where it becomes important that we <em>don&#x27;t</em> eagerly create a union of all tuple element types (because adding a type alias to a union unpacks the type alias). There are probably some ways around this (e.g. add support for creating a union with a type alias without unpacking it).</p>
 <p>But it does seem like there are multiple reasons why it may be valuable to avoid eagerly creating this homogenized union. It seems possible to do this by making <code>Specialization</code> an enum, so that when we create a tuple <code>Specialization</code> we can by default store only the tuple spec, and leave the homogenized union to be created lazily on-demand. (I think I saw you mentioned something like this above as a possibility.)</p>
-<p>In general, I think the focus for improving perf of this PR will be to see how much we can &quot;slim down&quot; our representation of a tuple type to avoid doing unnecessary work and storing/interning unnecessary extra data. I think this will be worth doing even if it reintroduces somewhat more special handling of tuple types internally. I think that's not necessarily in conflict with the goals of this PR, if that special handling is done internally to the NominalInstance/ClassType/GenericAlias infrastructure, so it doesn't leak out into all the type-semantics, like the current <code>Type::Tuple</code> does.</p>
+<p>In general, I think the focus for improving perf of this PR will be to see how much we can &quot;slim down&quot; our representation of a tuple type to avoid doing unnecessary work and storing/interning unnecessary extra data. I think this will be worth doing even if it reintroduces somewhat more special handling of tuple types internally. I think that&#x27;s not necessarily in conflict with the goals of this PR, if that special handling is done internally to the NominalInstance/ClassType/GenericAlias infrastructure, so it doesn&#x27;t leak out into all the type-semantics, like the current <code>Type::Tuple</code> does.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-07 13:01</div>
             <div class="timeline-body"><blockquote>
 <p>But it does seem like there are multiple reasons why it may be valuable to avoid eagerly creating this homogenized union. It seems possible to do this by making <code>Specialization</code> an enum, so that when we create a tuple <code>Specialization</code> we can by default store only the tuple spec, and leave the homogenized union to be created lazily on-demand. (I think I saw you mentioned something like this above as a possibility.)</p>
-<p>In general, I think the focus for improving perf of this PR will be to see how much we can &quot;slim down&quot; our representation of a tuple type to avoid doing unnecessary work and storing/interning unnecessary extra data. I think this will be worth doing even if it reintroduces somewhat more special handling of tuple types internally. I think that's not necessarily in conflict with the goals of this PR, if that special handling is done internally to the NominalInstance/ClassType/GenericAlias infrastructure, so it doesn't leak out into all the type-semantics, like the current <code>Type::Tuple</code> does.</p>
+<p>In general, I think the focus for improving perf of this PR will be to see how much we can &quot;slim down&quot; our representation of a tuple type to avoid doing unnecessary work and storing/interning unnecessary extra data. I think this will be worth doing even if it reintroduces somewhat more special handling of tuple types internally. I think that&#x27;s not necessarily in conflict with the goals of this PR, if that special handling is done internally to the NominalInstance/ClassType/GenericAlias infrastructure, so it doesn&#x27;t leak out into all the type-semantics, like the current <code>Type::Tuple</code> does.</p>
 </blockquote>
-<p>Yup, agreed. I started experimenting with something like this, but then got nervous that it would make the diff on this PR much bigger (and it's already a big diff!). But given the potential conflict with #19805, I'll resume experimenting!</p>
+<p>Yup, agreed. I started experimenting with something like this, but then got nervous that it would make the diff on this PR much bigger (and it&#x27;s already a big diff!). But given the potential conflict with #19805, I&#x27;ll resume experimenting!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-07 13:18</div>
-            <div class="timeline-body"><p>It might be worth considering whether this approach could be applied at a much higher level; that is, make <code>NominalInstanceType</code> an enum with a special case for non-subclass tuples that only stores the tuple spec, and lazily creates the full <code>ClassType</code> on demand (probably behind a Salsa query). I suspect that if that's doable, it might improve the perf here a lot.</p>
-<p>I don't think the potential conflict with #19805 necessarily needs to drive what gets done in this PR, but I do think there's enough likelihood that the perf impact here is due mostly to this PR making our internal representation for a common type less efficient (as opposed to <em>just</em> being &quot;we understand more types now&quot;, though it's quite possible there's some of that too) that it's worth trying some of these things to bring down the perf impact in this PR, rather than landing it as-is and doing those as follow-up. (But I'm also not closed to the latter option if you reach a point where you feel strongly that's the best way to go.)</p>
+            <div class="timeline-body"><p>It might be worth considering whether this approach could be applied at a much higher level; that is, make <code>NominalInstanceType</code> an enum with a special case for non-subclass tuples that only stores the tuple spec, and lazily creates the full <code>ClassType</code> on demand (probably behind a Salsa query). I suspect that if that&#x27;s doable, it might improve the perf here a lot.</p>
+<p>I don&#x27;t think the potential conflict with #19805 necessarily needs to drive what gets done in this PR, but I do think there&#x27;s enough likelihood that the perf impact here is due mostly to this PR making our internal representation for a common type less efficient (as opposed to <em>just</em> being &quot;we understand more types now&quot;, though it&#x27;s quite possible there&#x27;s some of that too) that it&#x27;s worth trying some of these things to bring down the perf impact in this PR, rather than landing it as-is and doing those as follow-up. (But I&#x27;m also not closed to the latter option if you reach a point where you feel strongly that&#x27;s the best way to go.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1011,28 +1011,28 @@ TOTAL MEMORY USAGE: 293.82MB
             <div class="timeline-body"><blockquote>
 <p>as opposed to <em>just</em> being &quot;we understand more types now&quot;</p>
 </blockquote>
-<p>Sorry if this sounded hand-wavy in my PR description! That wasn't my intent. I fully agree with you -- from the analysis I did in https://github.com/astral-sh/ruff/pull/19669#issuecomment-3155972695 of Salsa structs being created during a run on colour-science, it definitely looks like we're creating many more <code>Union</code>s, <code>GenericAlias</code>es and <code>Specialization</code>s than we used to.</p>
-<p>I think it's pretty likely that us understanding more types is <em>part</em> of the cause for the perf regression, but I definitely didn't mean to say that it was the only cause, or that it wouldn't be possible to find ways to mitigate the perf regression.</p>
+<p>Sorry if this sounded hand-wavy in my PR description! That wasn&#x27;t my intent. I fully agree with you -- from the analysis I did in <a href="https://github.com/astral-sh/ruff/pull/19669">astral-sh/ruff#19669</a>#issuecomment-3155972695 of Salsa structs being created during a run on colour-science, it definitely looks like we&#x27;re creating many more <code>Union</code>s, <code>GenericAlias</code>es and <code>Specialization</code>s than we used to.</p>
+<p>I think it&#x27;s pretty likely that us understanding more types is <em>part</em> of the cause for the perf regression, but I definitely didn&#x27;t mean to say that it was the only cause, or that it wouldn&#x27;t be possible to find ways to mitigate the perf regression.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-07 13:31</div>
-            <div class="timeline-body"><p>No, I didn't mean to imply that at all! I think what you wrote about perf in the PR summary is reasonable and covers both aspects.</p>
+            <div class="timeline-body"><p>No, I didn&#x27;t mean to imply that at all! I think what you wrote about perf in the PR summary is reasonable and covers both aspects.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-07 21:12</div>
             <div class="timeline-body"><blockquote>
-<p>It might be worth considering whether this approach could be applied at a much higher level; that is, make <code>NominalInstanceType</code> an enum with a special case for non-subclass tuples that only stores the tuple spec, and lazily creates the full <code>ClassType</code> on demand (probably behind a Salsa query). I suspect that if that's doable, it might improve the perf here a lot.</p>
+<p>It might be worth considering whether this approach could be applied at a much higher level; that is, make <code>NominalInstanceType</code> an enum with a special case for non-subclass tuples that only stores the tuple spec, and lazily creates the full <code>ClassType</code> on demand (probably behind a Salsa query). I suspect that if that&#x27;s doable, it might improve the perf here a lot.</p>
 </blockquote>
-<p>I tried this out in #19811 (stacked on top of this one), and it does indeed significantly help with perf, without sacrificing much of the code-architecture improvements this PR makes! There does seem to be some primer diff on that PR, which I'll look through tomorrow — though I'm not totally sure if we get reliable primer diffs on stacked PRs? I've had trouble reproducing some of the diffs locally for some other stacked PRs I've done recently</p>
+<p>I tried this out in #19811 (stacked on top of this one), and it does indeed significantly help with perf, without sacrificing much of the code-architecture improvements this PR makes! There does seem to be some primer diff on that PR, which I&#x27;ll look through tomorrow — though I&#x27;m not totally sure if we get reliable primer diffs on stacked PRs? I&#x27;ve had trouble reproducing some of the diffs locally for some other stacked PRs I&#x27;ve done recently</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-08-08 12:05</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-08 12:05</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @AlexWaygood on 2025-08-08 12:05</div>
+            <div class="event">Reopened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-08 12:05</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:1106 on 2025-08-08 16:47</div>
@@ -1041,7 +1041,7 @@ TOTAL MEMORY USAGE: 293.82MB
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-08 16:50</div>
-            <div class="timeline-body"><p>There's nothing standing out to me why this would regress performance so much other than that walking MROs might be expensive but the MRO should be cached already.</p>
+            <div class="timeline-body"><p>There&#x27;s nothing standing out to me why this would regress performance so much other than that walking MROs might be expensive but the MRO should be cached already.</p>
 <p>Have you tried capturing a perf profile locally and comparing it between main and this branch (it might be fruitless but just curious). I can try as well if that would be helpful</p>
 </div>
         </div>
@@ -1051,17 +1051,17 @@ TOTAL MEMORY USAGE: 293.82MB
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:1106 on 2025-08-08 16:51</div>
-            <div class="timeline-body"><p>no, I tried it, it doesn't :-)</p>
+            <div class="timeline-body"><p>no, I tried it, it doesn&#x27;t :-)</p>
 <p>See the last paragraph in my PR description</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-08 16:59</div>
             <div class="timeline-body"><blockquote>
-<p>There's nothing standing out to me why this would regress performance so much other than that walking MROs might be expensive but the MRO should be cached already.</p>
+<p>There&#x27;s nothing standing out to me why this would regress performance so much other than that walking MROs might be expensive but the MRO should be cached already.</p>
 <p>Have you tried capturing a perf profile locally and comparing it between main and this branch (it might be fruitless but just curious). I can try as well if that would be helpful</p>
 </blockquote>
-<p>I believe #19811 (which is stacked on top of this PR) buys back almost all the performance and memory regressions from this change, so I think @carljm's analysis in https://github.com/astral-sh/ruff/pull/19669#issuecomment-3164071301 was correct: this PR just meant that we were eagerly constructing a lot more unions and <code>Specialization</code>s than we were previously; it's much better for performance to lazily figure out the union of all the element types in the union if and when we actually <em>need</em> to figure out the <code>Sequence</code> supertype of the tuple.</p>
+<p>I believe #19811 (which is stacked on top of this PR) buys back almost all the performance and memory regressions from this change, so I think @carljm&#x27;s analysis in <a href="https://github.com/astral-sh/ruff/pull/19669">astral-sh/ruff#19669</a>#issuecomment-3164071301 was correct: this PR just meant that we were eagerly constructing a lot more unions and <code>Specialization</code>s than we were previously; it&#x27;s much better for performance to lazily figure out the union of all the element types in the union if and when we actually <em>need</em> to figure out the <code>Sequence</code> supertype of the tuple.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1075,27 +1075,27 @@ TOTAL MEMORY USAGE: 293.82MB
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:245 on 2025-08-09 15:52</div>
-            <div class="timeline-body"><p>It seems unfortunate to me that we add this <code>known_class</code> field to <code>GenericContext</code>. It's a bit of extra memory, of course, but more that it seems like an encapsulation/layering violation for <code>GenericContext</code> to have to know what kind of class it is a context for.</p>
-<p>And it doesn't seem necessary to me. The only two call sites for <code>default_specialization</code> are both in <code>ClassLiteral</code>, which already knows its own known-class, so it seems to me this logic could pretty easily be moved up a layer into <code>ClassLiteral</code> by adding an extra parameter to <code>default_specialization</code> instead?</p>
+            <div class="timeline-body"><p>It seems unfortunate to me that we add this <code>known_class</code> field to <code>GenericContext</code>. It&#x27;s a bit of extra memory, of course, but more that it seems like an encapsulation/layering violation for <code>GenericContext</code> to have to know what kind of class it is a context for.</p>
+<p>And it doesn&#x27;t seem necessary to me. The only two call sites for <code>default_specialization</code> are both in <code>ClassLiteral</code>, which already knows its own known-class, so it seems to me this logic could pretty easily be moved up a layer into <code>ClassLiteral</code> by adding an extra parameter to <code>default_specialization</code> instead?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-11 11:00</div>
             <div class="timeline-body"><blockquote>
-<p>I believe #19811 (which is stacked on top of this PR) buys back almost all the performance and memory regressions from this change, so I think @carljm's analysis in <a href="https://github.com/astral-sh/ruff/pull/19669#issuecomment-3164071301">#19669 (comment)</a> was correct: this PR just meant that we were eagerly constructing a lot more unions and <code>Specialization</code>s than we were previously; it's much better for performance to lazily figure out the union of all the element types in the union if and when we actually <em>need</em> to figure out the <code>Sequence</code> supertype of the tuple.</p>
+<p>I believe #19811 (which is stacked on top of this PR) buys back almost all the performance and memory regressions from this change, so I think @carljm&#x27;s analysis in <a href="https://github.com/astral-sh/ruff/pull/19669#issuecomment-3164071301">#19669 (comment)</a> was correct: this PR just meant that we were eagerly constructing a lot more unions and <code>Specialization</code>s than we were previously; it&#x27;s much better for performance to lazily figure out the union of all the element types in the union if and when we actually <em>need</em> to figure out the <code>Sequence</code> supertype of the tuple.</p>
 </blockquote>
-<p>I've merged the changes from #19811 into this one. This PR now passes the codspeed CI check: there are still regressions on many benchmarks, but they are nearly all 1-2% regressions (pydantic and sympy show regressions of 3%).</p>
+<p>I&#x27;ve merged the changes from #19811 into this one. This PR now passes the codspeed CI check: there are still regressions on many benchmarks, but they are nearly all 1-2% regressions (pydantic and sympy show regressions of 3%).</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @AlexWaygood on 2025-08-11 11:00</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-11 11:00</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-08-11 11:00</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-11 11:00</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/tuple.rs</code>:230 on 2025-08-11 11:02</div>
-            <div class="timeline-body"><p>This <code>.expect()</code> call means we now panic if we're given a custom typeshed without a <code>tuple</code> class. I don't <em>love</em> this but I also think it's <em>okay</em> -- there are already classes where we panic if they're not available in typeshed, such as <code>object</code> and <code>types.ModuleType</code>. <code>tuple</code> is similarly special; I think it's okay if we effectively mandate that custom typesheds have to have a <code>tuple</code> class in them.</p>
+            <div class="timeline-body"><p>This <code>.expect()</code> call means we now panic if we&#x27;re given a custom typeshed without a <code>tuple</code> class. I don&#x27;t <em>love</em> this but I also think it&#x27;s <em>okay</em> -- there are already classes where we panic if they&#x27;re not available in typeshed, such as <code>object</code> and <code>types.ModuleType</code>. <code>tuple</code> is similarly special; I think it&#x27;s okay if we effectively mandate that custom typesheds have to have a <code>tuple</code> class in them.</p>
 <p>Doing the refactor in the third commit of this PR (which provided a big performance boost) without the <code>.expect()</code> call here would be quite a bit harder, I think.</p>
 </div>
         </div>
@@ -1105,12 +1105,12 @@ TOTAL MEMORY USAGE: 293.82MB
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:404 on 2025-08-11 12:56</div>
-            <div class="timeline-body"><p>this is now moved to be a method on <code>NominalInstanceType</code>, so that we avoid materializing the <code>class</code> for an instance type where it's unnecessary</p>
+            <div class="timeline-body"><p>this is now moved to be a method on <code>NominalInstanceType</code>, so that we avoid materializing the <code>class</code> for an instance type where it&#x27;s unnecessary</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:4597 on 2025-08-11 13:03</div>
-            <div class="timeline-body"><p>also moved to be a method on <code>NominalInstanceType</code>, so that we can avoid materializing <code>ClassType</code>s where it's unnecessary</p>
+            <div class="timeline-body"><p>also moved to be a method on <code>NominalInstanceType</code>, so that we can avoid materializing <code>ClassType</code>s where it&#x27;s unnecessary</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1124,17 +1124,17 @@ TOTAL MEMORY USAGE: 293.82MB
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:404 on 2025-08-11 19:57</div>
-            <div class="timeline-body"><p>It does seem like there are still &gt;1 remaining call sites where you already have a <code>class</code> and could use this method rather than the raw <code>is_known</code> check? That is, there's no efficiency reason we can't have both this method and the one on <code>NominalInstanceType</code>? Marginally more concise and expressive for a few call sites, not a big deal either way.</p>
+            <div class="timeline-body"><p>It does seem like there are still &gt;1 remaining call sites where you already have a <code>class</code> and could use this method rather than the raw <code>is_known</code> check? That is, there&#x27;s no efficiency reason we can&#x27;t have both this method and the one on <code>NominalInstanceType</code>? Marginally more concise and expressive for a few call sites, not a big deal either way.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/type_ordering.rs</code>:134 on 2025-08-11 20:01</div>
-            <div class="timeline-body"><p>It seems like this might still cause us to materialize classes for tuples in many cases where we don't really need to? We could pretty easily do something a bit more involved here to avoid that...</p>
+            <div class="timeline-body"><p>It seems like this might still cause us to materialize classes for tuples in many cases where we don&#x27;t really need to? We could pretty easily do something a bit more involved here to avoid that...</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/instance.rs</code>:322 on 2025-08-11 20:14</div>
-            <div class="timeline-body"><p>I think we should keep the comment here that was previously on the <code>Type::Tuple</code> branch of <code>Type::is_singleton</code>, and is removed in this diff (that although the empty tuple is in practice a singleton on CPython, this isn't a language guarantee, isn't true for all Python implementations, and shouldn't be relied on.)</p>
+            <div class="timeline-body"><p>I think we should keep the comment here that was previously on the <code>Type::Tuple</code> branch of <code>Type::is_singleton</code>, and is removed in this diff (that although the empty tuple is in practice a singleton on CPython, this isn&#x27;t a language guarantee, isn&#x27;t true for all Python implementations, and shouldn&#x27;t be relied on.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1149,8 +1149,8 @@ TOTAL MEMORY USAGE: 293.82MB
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/type_ordering.rs</code>:134 on 2025-08-11 20:45</div>
-            <div class="timeline-body"><p>Yeah... I wasn't sure about how far to go with that kind of optimisation generally. It felt like it made sense for methods already on <code>NominalInstanceType</code>, and it felt like it made sense to move commonly used methods like <code>is_object()</code> to <code>NominalInstanceType</code> (especially since for that one in particular, it also arguably improves ergonomics to move the method onto <code>NominalInstanceType</code>). But the premise underlying this PR is that we should basically be treating <code>tuple</code>-instance types the same as other <code>NominalInstance</code> types in 95% of cases -- adding new methods to <code>NominalInstanceType</code> that branch on the inner enum, purely for the purpose of optimisation, feels like it works against that principle to a certain extent?</p>
-<p>TL;DR I don't plan to do this in this PR, but also wouldn't object to it being done if you feel like tackling it!</p>
+            <div class="timeline-body"><p>Yeah... I wasn&#x27;t sure about how far to go with that kind of optimisation generally. It felt like it made sense for methods already on <code>NominalInstanceType</code>, and it felt like it made sense to move commonly used methods like <code>is_object()</code> to <code>NominalInstanceType</code> (especially since for that one in particular, it also arguably improves ergonomics to move the method onto <code>NominalInstanceType</code>). But the premise underlying this PR is that we should basically be treating <code>tuple</code>-instance types the same as other <code>NominalInstance</code> types in 95% of cases -- adding new methods to <code>NominalInstanceType</code> that branch on the inner enum, purely for the purpose of optimisation, feels like it works against that principle to a certain extent?</p>
+<p>TL;DR I don&#x27;t plan to do this in this PR, but also wouldn&#x27;t object to it being done if you feel like tackling it!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1172,7 +1172,7 @@ TOTAL MEMORY USAGE: 293.82MB
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:245 on 2025-08-11 20:52</div>
-            <div class="timeline-body"><p>Ahh, that's much better -- thank you!</p>
+            <div class="timeline-body"><p>Ahh, that&#x27;s much better -- thank you!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1181,10 +1181,10 @@ TOTAL MEMORY USAGE: 293.82MB
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @AlexWaygood on 2025-08-11 21:03</div>
+            <div class="event">Merged by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-11 21:03</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-08-11 21:03</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-11 21:03</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-08-11 21:03</div>
@@ -1192,7 +1192,7 @@ TOTAL MEMORY USAGE: 293.82MB
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:14:43 UTC
+        Synced at 2026-01-20 19:17:14 UTC
     </footer>
 </body>
 </html>

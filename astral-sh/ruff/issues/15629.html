@@ -23,52 +23,52 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/DetachHead">@DetachHead</a></div>
-            <div class="timeline-body"><p><code>contextlib.contextmanager</code> is dangerous because its <code>__exit__</code> won't get run if an exception is raised, which is rarely what you want:</p>
-<pre><code class="language-py">from contextlib import contextmanager
+            <div class="timeline-body"><p><code>contextlib.contextmanager</code> is dangerous because its <code>__exit__</code> won&#x27;t get run if an exception is raised, which is rarely what you want:</p>
+<pre><code>from contextlib import contextmanager
 
 @contextmanager
 def foo():
-    print('starting')
+    print(&#x27;starting&#x27;)
     yield
-    print('ending')
+    print(&#x27;ending&#x27;)
 
 with foo():
     raise Exception
 </code></pre>
 <p>it would be nice if ruff had a rule to enforce <code>try</code>/<code>finally</code> on these types of context managers:</p>
-<pre><code class="language-py">from contextlib import contextmanager
+<pre><code>from contextlib import contextmanager
 
 @contextmanager
 def foo():
-    print('starting')
+    print(&#x27;starting&#x27;)
     try:
         yield
     finally:
-        print('ending')
+        print(&#x27;ending&#x27;)
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-01-21 07:32</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-21 07:32</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> added by @MichaReiser on 2025-01-21 07:32</div>
+            <div class="event">Label <span class="label">needs-decision</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-21 07:32</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-21 13:32</div>
             <div class="timeline-body"><p>we would need to make sure to also support context managers that delegate to other context managers. E.g. the <code>g()</code> function definition is fine here:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; from contextlib import contextmanager
+<pre><code>&gt;&gt;&gt; from contextlib import contextmanager
 &gt;&gt;&gt; @contextmanager
 ... def f():
 ...     try:
-...         print('hi')
+...         print(&#x27;hi&#x27;)
 ...         yield
 ...     finally:
-...         print('bye')
+...         print(&#x27;bye&#x27;)
 ...         
 &gt;&gt;&gt; @contextmanager
 ... def g():
-...     print('hiiiii')
+...     print(&#x27;hiiiii&#x27;)
 ...     with f():
 ...         yield
 ...         
@@ -87,49 +87,49 @@ Exception
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-01-21 14:33</div>
-            <div class="timeline-body"><p>isn't that still unsafe if you have anything after the <code>yield</code> statement in <code>g</code>?</p>
-<pre><code class="language-py">@contextmanager
+            <div class="timeline-body"><p>isn&#x27;t that still unsafe if you have anything after the <code>yield</code> statement in <code>g</code>?</p>
+<pre><code>@contextmanager
 def g():
     print(&quot;hiiiii&quot;)
     with f():
         yield
-        print(&quot;byeee&quot;)  # doesn't run
+        print(&quot;byeee&quot;)  # doesn&#x27;t run
     print(&quot;byeee2&quot;)  # neither does this
 </code></pre>
 <p>i guess the rule can just not report on context managers where <code>yield</code> is the last statement:</p>
-<pre><code class="language-py">@contextmanager
+<pre><code>@contextmanager
 def g():
     print(&quot;hiiiii&quot;)
     with f():
         yield # no error
 </code></pre>
-<pre><code class="language-py">@contextmanager
+<pre><code>@contextmanager
 def f():
     print(&quot;hi&quot;)
     yield # no error
 </code></pre>
-<p>but the last example probably isn't very common</p>
+<p>but the last example probably isn&#x27;t very common</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-21 14:41</div>
             <div class="timeline-body"><blockquote>
-<p>isn't that still unsafe if you have anything after the <code>yield</code> statement in <code>g</code>?</p>
+<p>isn&#x27;t that still unsafe if you have anything after the <code>yield</code> statement in <code>g</code>?</p>
 </blockquote>
 <p>yes, fair point</p>
 <blockquote>
 <p>i guess the rule can just not report on context managers where <code>yield</code> is the last statement:</p>
 </blockquote>
 <p>sure, that seems like a reasonable way to handle this.</p>
-<hr />
-<p>Overall this seems like a reasonable rule to me, since you're right that this is easy to get wrong, and it's never <em>incorrect</em> to put the <code>yield</code> inside a <code>try</code>/<code>finally</code> guard. Some might find it a little strict/noisy, since in some cases it isn't actually necessary to do the post-<code>yield</code> cleanup in the event that an exception is terminating the current scope's execution. But I do agree that it is strictly more correct to make sure that you always use <code>try</code>/<code>finally</code> in a <code>@contextmanager</code>-decorated function or method.</p>
+<hr>
+<p>Overall this seems like a reasonable rule to me, since you&#x27;re right that this is easy to get wrong, and it&#x27;s never <em>incorrect</em> to put the <code>yield</code> inside a <code>try</code>/<code>finally</code> guard. Some might find it a little strict/noisy, since in some cases it isn&#x27;t actually necessary to do the post-<code>yield</code> cleanup in the event that an exception is terminating the current scope&#x27;s execution. But I do agree that it is strictly more correct to make sure that you always use <code>try</code>/<code>finally</code> in a <code>@contextmanager</code>-decorated function or method.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> removed by @AlexWaygood on 2025-01-21 14:41</div>
+            <div class="event">Label <span class="label">needs-decision</span> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-21 14:41</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">accepted</span> added by @AlexWaygood on 2025-01-21 14:41</div>
+            <div class="event">Label <span class="label">accepted</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-21 14:41</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-21 15:00</div>
@@ -138,14 +138,14 @@ def f():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-01-29 23:15</div>
-            <div class="timeline-body"><p>I'd take a stab at this one if/when you confirm it should be taken.</p>
+            <div class="timeline-body"><p>I&#x27;d take a stab at this one if/when you confirm it should be taken.</p>
 <p>PS. very helpful rule for pytest fixtures that ensures no side-effects. Been bitten more than once due to the lack of try-finally</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:52:02 UTC
+        Synced at 2026-01-20 18:49:20 UTC
     </footer>
 </body>
 </html>

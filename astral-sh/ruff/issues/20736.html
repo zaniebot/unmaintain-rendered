@@ -23,16 +23,16 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/gwdekker">@gwdekker</a></div>
-            <div class="timeline-body"><p>tach by default ignores dependencies if the import statement is wrapped by if TYPE_CHECKING:. Is that something that is possible with ruff analyze graph as well, and would you consider adding it if not yet possible? (from another thread on the issue tracker I found <a href="https://grimp.readthedocs.io/en/stable/usage.html">Grimp</a>, which supports this with graph = grimp.build_graph('mypackage', exclude_type_checking_imports=True).</p>
-<p>came up in https://github.com/astral-sh/ruff/issues/20701</p>
+            <div class="timeline-body"><p>tach by default ignores dependencies if the import statement is wrapped by if TYPE_CHECKING:. Is that something that is possible with ruff analyze graph as well, and would you consider adding it if not yet possible? (from another thread on the issue tracker I found <a href="https://grimp.readthedocs.io/en/stable/usage.html">Grimp</a>, which supports this with graph = grimp.build_graph(&#x27;mypackage&#x27;, exclude_type_checking_imports=True).</p>
+<p>came up in <a href="https://github.com/astral-sh/ruff/issues/20701">astral-sh/ruff#20701</a></p>
 <p>@seddonym</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">wish</span> added by @MichaReiser on 2025-10-07 10:23</div>
+            <div class="event">Label <span class="label">wish</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-07 10:23</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">analyze</span> added by @MichaReiser on 2025-10-07 10:23</div>
+            <div class="event">Label <span class="label">analyze</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-07 10:23</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-07 10:24</div>
@@ -47,27 +47,27 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/seddonym">@seddonym</a> on 2025-10-10 09:23</div>
-            <div class="timeline-body"><p>If you're looking for a Tach replacement right now, Import Linter supports this via the exclude-type-checking-imports setting. https://import-linter.readthedocs.io/en/stable/usage.html#top-level-configuration</p>
+            <div class="timeline-body"><p>If you&#x27;re looking for a Tach replacement right now, Import Linter supports this via the exclude-type-checking-imports setting. https://import-linter.readthedocs.io/en/stable/usage.html#top-level-configuration</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/gauthsvenkat">@gauthsvenkat</a> on 2025-11-03 09:18</div>
             <div class="timeline-body"><p>Happy to pick this up, though I need some advice on what would be the best way to do this.</p>
 <ul>
-<li><p>If we do it right, we need to build a semantic model in <code>ruff analyze</code> and create a dependency on <code>crates/ruff_python_semantic</code> which has a <code> is_type_checking_block</code> <a href="https://github.com/astral-sh/ruffruff/blob/main/crates/ruff_python_semantic/src/analyze/typing.rs#L419-L419">helper function</a>.<br />
-We should be able to plug it in <code>collector.rs</code>'s <code>visit_stmt</code> <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_graph/src/collector.rs#L97">method</a> to track type checking blocks.</p>
+<li><p>If we do it right, we need to build a semantic model in <code>ruff analyze</code> and create a dependency on <code>crates/ruff_python_semantic</code> which has a <code> is_type_checking_block</code> <a href="https://github.com/astral-sh/ruffruff/blob/main/crates/ruff_python_semantic/src/analyze/typing.rs#L419-L419">helper function</a>.<br>
+We should be able to plug it in <code>collector.rs</code>&#x27;s <code>visit_stmt</code> <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_graph/src/collector.rs#L97">method</a> to track type checking blocks.</p>
 </li>
 <li><p>The <code>CollectedImport</code> <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_graph/src/collector.rs#L156">enum</a> can be made in to a struct and have a <code>typing_only</code> boolean field for this purpose.</p>
 </li>
 </ul>
-<p>@MichaReiser do we go this route? Let me know if I'm overlooking something.</p>
+<p>@MichaReiser do we go this route? Let me know if I&#x27;m overlooking something.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-03 15:08</div>
-            <div class="timeline-body"><p>I don't think it's enough to just depend on <code>ruff_python_semantic</code>. We'd have to do the AST walking to build the semantic model, and I believe, this is somewhat tight to our linting. The good news is that we don't have to be that strict about <code>TYPE_CHECKING</code>. In fact, ty, our upcoming type checker, treats any <code>if TYPE_CHECKING:</code> as a type checking block, regardless from where <code>TYPE_CHECKING</code> is imported from or if it's a local variable.</p>
+            <div class="timeline-body"><p>I don&#x27;t think it&#x27;s enough to just depend on <code>ruff_python_semantic</code>. We&#x27;d have to do the AST walking to build the semantic model, and I believe, this is somewhat tight to our linting. The good news is that we don&#x27;t have to be that strict about <code>TYPE_CHECKING</code>. In fact, ty, our upcoming type checker, treats any <code>if TYPE_CHECKING:</code> as a type checking block, regardless from where <code>TYPE_CHECKING</code> is imported from or if it&#x27;s a local variable.</p>
 <p>E.g. see here https://github.com/astral-sh/ruff/blob/cedf36c415e54054c172699738bed559506870b0/crates/ty_python_semantic/src/types/infer/builder.rs#L4797-L4801</p>
-<p>What's unclear to me is how we want to design this feature. Do we want to change the output format (which would be a breaking change) or make this a configuration option? What's the better solution very much depends on how you all intend to use the feature. Is it that you always want to ignore type-checking imports or do you want to ignore type checking imports only for some analysis runs?</p>
+<p>What&#x27;s unclear to me is how we want to design this feature. Do we want to change the output format (which would be a breaking change) or make this a configuration option? What&#x27;s the better solution very much depends on how you all intend to use the feature. Is it that you always want to ignore type-checking imports or do you want to ignore type checking imports only for some analysis runs?</p>
 <p>Hearing more about your use cases would help us make a decision here</p>
 </div>
         </div>
@@ -79,7 +79,7 @@ We should be able to plug it in <code>collector.rs</code>'s <code>visit_stmt</co
 <ul>
 <li>#15195 has a good list of ideas, including a way of marking if an import was for typing purposes or not</li>
 <li>#20737 adding line numbers could maybe also be part of that.
-(as an aside, you could even consider adding 3 levels of detail: one where the outputs are grouped on package level (as mentioned here: https://github.com/astral-sh/ruff/issues/13431), one as is right now, and one more detailed one). Although as long as you have the more detailed one, constructing the others is not that complicated either).</li>
+(as an aside, you could even consider adding 3 levels of detail: one where the outputs are grouped on package level (as mentioned here: <a href="https://github.com/astral-sh/ruff/issues/13431">astral-sh/ruff#13431</a>), one as is right now, and one more detailed one). Although as long as you have the more detailed one, constructing the others is not that complicated either).</li>
 </ul>
 <p>So my suggestion would be:</p>
 <ul>
@@ -91,10 +91,10 @@ We should be able to plug it in <code>collector.rs</code>'s <code>visit_stmt</co
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/gwdekker">@gwdekker</a> on 2025-11-04 06:51</div>
             <div class="timeline-body"><blockquote>
-<p>In fact, ty, our upcoming type checker, treats any if TYPE_CHECKING: as a type checking block, regardless from where TYPE_CHECKING is imported from or if it's a local variable.</p>
+<p>In fact, ty, our upcoming type checker, treats any if TYPE_CHECKING: as a type checking block, regardless from where TYPE_CHECKING is imported from or if it&#x27;s a local variable.</p>
 </blockquote>
 <p>A bit off-topic but wanted to ask, feel free to ignore: so would <code>ty</code> correctly find a type checking block if I would do the following:</p>
-<pre><code class="language-python">from typing import TYPE_CHECKING as TC
+<pre><code>from typing import TYPE_CHECKING as TC
 
 if TC:
    ...
@@ -119,12 +119,12 @@ if TC:
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2025-11-16 12:30</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-16 12:30</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:53:25 UTC
+        Synced at 2026-01-20 18:50:29 UTC
     </footer>
 </body>
 </html>

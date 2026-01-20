@@ -109,7 +109,7 @@ conflicts = [
 </code></pre>
 <p>Full zipped example with lock file:
 <a href="https://github.com/user-attachments/files/18557374/parent-surface.zip">parent-surface.zip</a></p>
-<hr />
+<hr>
 <p>Edit: Looking at their repo and build system in <a href="https://github.com/Lightning-AI/torchmetrics/blob/master/setup.py#L162">setup.py</a> I see that they define <a href="https://github.com/Lightning-AI/torchmetrics/blob/master/requirements/base.txt#L6C1-L6C22">base requirements</a> which is just <code>torch &gt;=2.0.0, &lt;2.7.0</code></p>
 <p>So uv resolver has installed <code>torch==2.4.1+cu124</code> and then installs <code>torch==2.4.1</code> which is strange having two different versions of the same package</p>
 <p>This behavior changed after introducing this change</p>
@@ -118,7 +118,7 @@ conflicts = [
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2025-01-27 14:05</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-01-27 14:05</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-01-27 14:11</div>
@@ -128,7 +128,7 @@ conflicts = [
 </code></pre>
 <p>The same thing happens for <code>uv sync --extra gpu</code>, but you get <code>torch==2.4.1+cu124</code> instead.</p>
 <p>My guess here is that when I relaxed the error checking around unconditional enabling of conflicting extras in #10875, this may have uncovered a new bug in how forks are created and managed for conflicting extras? Not sure. But the relevant lines in the lock file are:</p>
-<pre><code class="language-toml">[[package]]
+<pre><code>[[package]]
 name = &quot;torchmetrics&quot;
 version = &quot;1.6.1&quot;
 source = { registry = &quot;https://pypi.org/simple&quot; }
@@ -136,11 +136,11 @@ dependencies = [
     { name = &quot;lightning-utilities&quot; },
     { name = &quot;numpy&quot; },
     { name = &quot;packaging&quot; },
-    { name = &quot;torch&quot;, version = &quot;2.4.1&quot;, source = { registry = &quot;https://download.pytorch.org/whl/cpu&quot; }, marker = &quot;(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'extra-13-child-surface-cpu') or (platform_machine != 'aarch64' and extra == 'extra-13-child-surface-cpu' and extra == 'extra-13-child-surface-gpu') or (platform_machine != 'aarch64' and extra == 'extra-14-parent-surface-cpu' and extra == 'extra-14-parent-surface-gpu') or (sys_platform == 'darwin' and extra == 'extra-13-child-surface-cpu') or (sys_platform != 'linux' and extra == 'extra-13-child-surface-cpu' and extra == 'extra-13-child-surface-gpu') or (sys_platform != 'linux' and extra == 'extra-14-parent-surface-cpu' and extra == 'extra-14-parent-surface-gpu') or (sys_platform == 'darwin' and extra == 'extra-14-parent-surface-cpu' and extra == 'extra-14-parent-surface-gpu') or (extra != 'extra-13-child-surface-cpu' and extra == 'extra-14-parent-surface-cpu' and extra == 'extra-14-parent-surface-gpu')&quot; },
-    { name = &quot;torch&quot;, version = &quot;2.4.1&quot;, source = { registry = &quot;https://download.pytorch.org/whl/cu124&quot; }, marker = &quot;(platform_machine == 'aarch64' and sys_platform == 'linux' and extra == 'extra-13-child-surface-gpu') or (platform_machine != 'aarch64' and extra == 'extra-13-child-surface-cpu' and extra == 'extra-13-child-surface-gpu') or (platform_machine != 'aarch64' and extra == 'extra-14-parent-surface-cpu' and extra == 'extra-14-parent-surface-gpu') or (sys_platform != 'linux' and extra == 'extra-13-child-surface-cpu' and extra == 'extra-13-child-surface-gpu') or (sys_platform != 'linux' and extra != 'extra-13-child-surface-cpu' and extra == 'extra-14-parent-surface-cpu' and extra == 'extra-14-parent-surface-gpu') or (extra != 'extra-13-child-surface-gpu' and extra == 'extra-14-parent-surface-cpu' and extra == 'extra-14-parent-surface-gpu')&quot; },
-    { name = &quot;torch&quot;, version = &quot;2.4.1&quot;, source = { registry = &quot;https://pypi.org/simple&quot; }, marker = &quot;(extra == 'extra-13-child-surface-cpu' and extra == 'extra-13-child-surface-gpu') or (extra != 'extra-13-child-surface-cpu' and extra != 'extra-13-child-surface-gpu')&quot; },
-    { name = &quot;torch&quot;, version = &quot;2.4.1+cpu&quot;, source = { registry = &quot;https://download.pytorch.org/whl/cpu&quot; }, marker = &quot;(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'extra-13-child-surface-cpu') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'extra-13-child-surface-cpu') or (sys_platform == 'darwin' and extra == 'extra-13-child-surface-cpu' and extra == 'extra-13-child-surface-gpu') or (sys_platform == 'linux' and extra == 'extra-13-child-surface-cpu' and extra == 'extra-13-child-surface-gpu') or (sys_platform == 'darwin' and extra != 'extra-13-child-surface-gpu' and extra == 'extra-14-parent-surface-cpu' and extra == 'extra-14-parent-surface-gpu') or (sys_platform == 'linux' and extra == 'extra-13-child-surface-cpu' and extra == 'extra-14-parent-surface-cpu' and extra == 'extra-14-parent-surface-gpu') or (extra != 'extra-13-child-surface-cpu' and extra == 'extra-14-parent-surface-cpu' and extra == 'extra-14-parent-surface-gpu')&quot; },
-    { name = &quot;torch&quot;, version = &quot;2.4.1+cu124&quot;, source = { registry = &quot;https://download.pytorch.org/whl/cu124&quot; }, marker = &quot;(platform_machine != 'aarch64' and extra == 'extra-13-child-surface-gpu') or (sys_platform != 'linux' and extra == 'extra-13-child-surface-gpu') or (extra == 'extra-13-child-surface-cpu' and extra == 'extra-13-child-surface-gpu') or (extra == 'extra-14-parent-surface-cpu' and extra == 'extra-14-parent-surface-gpu')&quot; },
+    { name = &quot;torch&quot;, version = &quot;2.4.1&quot;, source = { registry = &quot;https://download.pytorch.org/whl/cpu&quot; }, marker = &quot;(platform_machine == &#x27;aarch64&#x27; and sys_platform == &#x27;linux&#x27; and extra == &#x27;extra-13-child-surface-cpu&#x27;) or (platform_machine != &#x27;aarch64&#x27; and extra == &#x27;extra-13-child-surface-cpu&#x27; and extra == &#x27;extra-13-child-surface-gpu&#x27;) or (platform_machine != &#x27;aarch64&#x27; and extra == &#x27;extra-14-parent-surface-cpu&#x27; and extra == &#x27;extra-14-parent-surface-gpu&#x27;) or (sys_platform == &#x27;darwin&#x27; and extra == &#x27;extra-13-child-surface-cpu&#x27;) or (sys_platform != &#x27;linux&#x27; and extra == &#x27;extra-13-child-surface-cpu&#x27; and extra == &#x27;extra-13-child-surface-gpu&#x27;) or (sys_platform != &#x27;linux&#x27; and extra == &#x27;extra-14-parent-surface-cpu&#x27; and extra == &#x27;extra-14-parent-surface-gpu&#x27;) or (sys_platform == &#x27;darwin&#x27; and extra == &#x27;extra-14-parent-surface-cpu&#x27; and extra == &#x27;extra-14-parent-surface-gpu&#x27;) or (extra != &#x27;extra-13-child-surface-cpu&#x27; and extra == &#x27;extra-14-parent-surface-cpu&#x27; and extra == &#x27;extra-14-parent-surface-gpu&#x27;)&quot; },
+    { name = &quot;torch&quot;, version = &quot;2.4.1&quot;, source = { registry = &quot;https://download.pytorch.org/whl/cu124&quot; }, marker = &quot;(platform_machine == &#x27;aarch64&#x27; and sys_platform == &#x27;linux&#x27; and extra == &#x27;extra-13-child-surface-gpu&#x27;) or (platform_machine != &#x27;aarch64&#x27; and extra == &#x27;extra-13-child-surface-cpu&#x27; and extra == &#x27;extra-13-child-surface-gpu&#x27;) or (platform_machine != &#x27;aarch64&#x27; and extra == &#x27;extra-14-parent-surface-cpu&#x27; and extra == &#x27;extra-14-parent-surface-gpu&#x27;) or (sys_platform != &#x27;linux&#x27; and extra == &#x27;extra-13-child-surface-cpu&#x27; and extra == &#x27;extra-13-child-surface-gpu&#x27;) or (sys_platform != &#x27;linux&#x27; and extra != &#x27;extra-13-child-surface-cpu&#x27; and extra == &#x27;extra-14-parent-surface-cpu&#x27; and extra == &#x27;extra-14-parent-surface-gpu&#x27;) or (extra != &#x27;extra-13-child-surface-gpu&#x27; and extra == &#x27;extra-14-parent-surface-cpu&#x27; and extra == &#x27;extra-14-parent-surface-gpu&#x27;)&quot; },
+    { name = &quot;torch&quot;, version = &quot;2.4.1&quot;, source = { registry = &quot;https://pypi.org/simple&quot; }, marker = &quot;(extra == &#x27;extra-13-child-surface-cpu&#x27; and extra == &#x27;extra-13-child-surface-gpu&#x27;) or (extra != &#x27;extra-13-child-surface-cpu&#x27; and extra != &#x27;extra-13-child-surface-gpu&#x27;)&quot; },
+    { name = &quot;torch&quot;, version = &quot;2.4.1+cpu&quot;, source = { registry = &quot;https://download.pytorch.org/whl/cpu&quot; }, marker = &quot;(platform_machine != &#x27;aarch64&#x27; and sys_platform == &#x27;linux&#x27; and extra == &#x27;extra-13-child-surface-cpu&#x27;) or (sys_platform != &#x27;darwin&#x27; and sys_platform != &#x27;linux&#x27; and extra == &#x27;extra-13-child-surface-cpu&#x27;) or (sys_platform == &#x27;darwin&#x27; and extra == &#x27;extra-13-child-surface-cpu&#x27; and extra == &#x27;extra-13-child-surface-gpu&#x27;) or (sys_platform == &#x27;linux&#x27; and extra == &#x27;extra-13-child-surface-cpu&#x27; and extra == &#x27;extra-13-child-surface-gpu&#x27;) or (sys_platform == &#x27;darwin&#x27; and extra != &#x27;extra-13-child-surface-gpu&#x27; and extra == &#x27;extra-14-parent-surface-cpu&#x27; and extra == &#x27;extra-14-parent-surface-gpu&#x27;) or (sys_platform == &#x27;linux&#x27; and extra == &#x27;extra-13-child-surface-cpu&#x27; and extra == &#x27;extra-14-parent-surface-cpu&#x27; and extra == &#x27;extra-14-parent-surface-gpu&#x27;) or (extra != &#x27;extra-13-child-surface-cpu&#x27; and extra == &#x27;extra-14-parent-surface-cpu&#x27; and extra == &#x27;extra-14-parent-surface-gpu&#x27;)&quot; },
+    { name = &quot;torch&quot;, version = &quot;2.4.1+cu124&quot;, source = { registry = &quot;https://download.pytorch.org/whl/cu124&quot; }, marker = &quot;(platform_machine != &#x27;aarch64&#x27; and extra == &#x27;extra-13-child-surface-gpu&#x27;) or (sys_platform != &#x27;linux&#x27; and extra == &#x27;extra-13-child-surface-gpu&#x27;) or (extra == &#x27;extra-13-child-surface-cpu&#x27; and extra == &#x27;extra-13-child-surface-gpu&#x27;) or (extra == &#x27;extra-14-parent-surface-cpu&#x27; and extra == &#x27;extra-14-parent-surface-gpu&#x27;)&quot; },
 ]
 sdist = { url = &quot;https://files.pythonhosted.org/packages/14/c5/8d916585d4d6eb158105c21b28cd4b0ed296d74e499bf8f104368de16619/torchmetrics-1.6.1.tar.gz&quot;, hash = &quot;sha256:a5dc236694b392180949fdd0a0fcf2b57135c8b600e557c725e077eb41e53e64&quot;, size = 540022 }
 wheels = [
@@ -156,21 +156,21 @@ wheels = [
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "multiple versions of the same package can be installed in some cases when using conflicting dependencies" to "multiple versions of the same package can be installed in some cases when using conflicting extras" by @BurntSushi on 2025-01-27 14:13</div>
+            <div class="event">Renamed from &quot;multiple versions of the same package can be installed in some cases when using conflicting dependencies&quot; to &quot;multiple versions of the same package can be installed in some cases when using conflicting extras&quot; by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-01-27 14:13</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @BurntSushi by @BurntSushi on 2025-01-27 14:20</div>
+            <div class="event">Assigned to <a href="https://github.com/BurntSushi">@BurntSushi</a> by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-01-27 14:20</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2025-01-29 22:21</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-01-29 22:21</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2025-01-29 22:21</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-01-29 22:21</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:29:33 UTC
+        Synced at 2026-01-20 19:36:54 UTC
     </footer>
 </body>
 </html>

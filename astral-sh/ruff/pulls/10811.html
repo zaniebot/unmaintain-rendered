@@ -23,27 +23,27 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This PR fixes with item parsing considering the yield, starred and named expression.</p>
-<h3>But, what's the bug?</h3>
-<p>The yield and starred expressions weren't being considered when determining whether the with items are parenthesized or if it's a parenthesized expression. Taking a simple example:</p>
-<pre><code class="language-py">with (item1, *item2): ...
+But, what&#x27;s the bug?
+<p>The yield and starred expressions weren&#x27;t being considered when determining whether the with items are parenthesized or if it&#x27;s a parenthesized expression. Taking a simple example:</p>
+<pre><code>with (item1, *item2): ...
 </code></pre>
 <p>This is parsed as two individual with items currently but this is actually a tuple expression with two elements. This is easier to understand with the grammar:</p>
-<pre><code class="language-ebnf">with_stmt:
-    | 'with' '(' ','.with_item+ ','? ')' ':' block 
-    | 'with' ','.with_item+ ':' [TYPE_COMMENT] block 
+<pre><code>with_stmt:
+    | &#x27;with&#x27; &#x27;(&#x27; &#x27;,&#x27;.with_item+ &#x27;,&#x27;? &#x27;)&#x27; &#x27;:&#x27; block 
+    | &#x27;with&#x27; &#x27;,&#x27;.with_item+ &#x27;:&#x27; [TYPE_COMMENT] block 
 
 with_item:
-    | expression 'as' star_target &amp;(',' | ')' | ':') 
+    | expression &#x27;as&#x27; star_target &amp;(&#x27;,&#x27; | &#x27;)&#x27; | &#x27;:&#x27;) 
     | expression 
 </code></pre>
 <p>(Omitted the <code>async</code> variant for brevity.)</p>
-<p>Here, the PEG parser will <em>try</em> the first variant in <code>with_stmt</code> which is a parenthesized with items and if that fails then it'll try the second variant. The grammar for a with item is <code>expression</code> which doesn't allow yield, starred, and named expression. This means that if they're present then the first variant would fail and it'll be the second variant which can possibly parse them.</p>
-<h3>Solution</h3>
-<p>I've updated the logic so that it resembles what the PEG parser does.</p>
-<p>Our algorithm starts in a similar manner by assuming that it's a parenthesized with items. This means that the <code>parse_with_item</code> should parse the context expression with a higher grammar rule between parenthesized with items and parenthesized expression. Here's an explanation mentioned in the code:</p>
-<pre><code class="language-rs">// If it's in an ambiguous state, the parenthesis (`(`) could be part of any
+<p>Here, the PEG parser will <em>try</em> the first variant in <code>with_stmt</code> which is a parenthesized with items and if that fails then it&#x27;ll try the second variant. The grammar for a with item is <code>expression</code> which doesn&#x27;t allow yield, starred, and named expression. This means that if they&#x27;re present then the first variant would fail and it&#x27;ll be the second variant which can possibly parse them.</p>
+Solution
+<p>I&#x27;ve updated the logic so that it resembles what the PEG parser does.</p>
+<p>Our algorithm starts in a similar manner by assuming that it&#x27;s a parenthesized with items. This means that the <code>parse_with_item</code> should parse the context expression with a higher grammar rule between parenthesized with items and parenthesized expression. Here&#x27;s an explanation mentioned in the code:</p>
+<pre><code>// If it&#x27;s in an ambiguous state, the parenthesis (`(`) could be part of any
 // of the following expression:
 //
 // Tuple expression          -  star_named_expression
@@ -56,7 +56,7 @@ with_item:
 //
 // So, the grammar used should be able to parse an element belonging to any
 // of the above expression. At a later point, once the parser understands
-// where the parenthesis belongs to, it'll validate and report errors for
+// where the parenthesis belongs to, it&#x27;ll validate and report errors for
 // any invalid expression usage.
 //
 // Thus, we can conclude that the grammar used should be:
@@ -64,30 +64,30 @@ with_item:
 </code></pre>
 <p>Now, there are two important things to determine the with item kind:</p>
 <ol>
-<li>If any of the with item has optional variables, it's a parenthesized with items</li>
-<li>If any of the context expression is yield, starred or named, it's a parenthesized expression</li>
+<li>If any of the with item has optional variables, it&#x27;s a parenthesized with items</li>
+<li>If any of the context expression is yield, starred or named, it&#x27;s a parenthesized expression</li>
 </ol>
 <p>Whatever the with item kind turns out to be, the parser needs to limit the expression because, as mentioned above, it parses using the highest common grammar.</p>
 <p>This is basically what the change is.</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>Added new valid and invalid test cases and verified the snapshots.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">parser</span> added by @dhruvmanila on 2024-04-07 10:08</div>
+            <div class="event">Label <span class="label">parser</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-07 10:08</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-07 10:26</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
@@ -97,27 +97,27 @@ with_item:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/statement.rs</code>:1457 on 2024-04-07 11:58</div>
-            <div class="timeline-body"><p>One or more with item have an optional variable, so it's a parenthesized with items. Limit the parsed expression by reporting error for invalid expressions in this context.</p>
+            <div class="timeline-body"><p>One or more with item have an optional variable, so it&#x27;s a parenthesized with items. Limit the parsed expression by reporting error for invalid expressions in this context.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/statement.rs</code>:1479 on 2024-04-07 11:59</div>
-            <div class="timeline-body"><p>None of the with items have an optional variable, if these expressions are present, it's a parenthesized expression.</p>
+            <div class="timeline-body"><p>None of the with items have an optional variable, if these expressions are present, it&#x27;s a parenthesized expression.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/statement.rs</code>:1497 on 2024-04-07 11:59</div>
-            <div class="timeline-body"><p>Now, there's a dedicated branch if <code>has_optional_vars</code> is true.</p>
+            <div class="timeline-body"><p>Now, there&#x27;s a dedicated branch if <code>has_optional_vars</code> is true.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/statement.rs</code>:1522 on 2024-04-07 11:59</div>
-            <div class="timeline-body"><p>Limiting the expression because we know it's a parenthesized expression.</p>
+            <div class="timeline-body"><p>Limiting the expression because we know it&#x27;s a parenthesized expression.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/statement.rs</code>:1541 on 2024-04-07 11:59</div>
-            <div class="timeline-body"><p>Limiting the expression because we know it's a tuple expression.</p>
+            <div class="timeline-body"><p>Limiting the expression because we know it&#x27;s a tuple expression.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -128,7 +128,7 @@ with_item:
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/tests/snapshots/ruff_python_parser__parser__tests__parser__tests__parse_with_stmt.snap</code>:477 on 2024-04-07 12:01</div>
             <div class="timeline-body"><p>This range update is similar to the one for named expression:</p>
-<pre><code class="language-py">with (x := 1): ...
+<pre><code>with (x := 1): ...
 #    ^^^^^^^^ with item range
 #     ^^^^^^ expression range
 
@@ -148,23 +148,23 @@ with (yield x): ...
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @dhruvmanila on 2024-04-07 12:05</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-07 12:05</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-04-07 12:05</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-07 12:05</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2024-04-07 12:53</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-07 12:53</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-04-08 12:12</div>
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @dhruvmanila on 2024-04-09 08:50</div>
+            <div class="event">Merged by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-09 08:50</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dhruvmanila on 2024-04-09 08:50</div>
+            <div class="event">Closed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-09 08:50</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-04-09 08:50</div>
@@ -172,7 +172,7 @@ with (yield x): ...
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:03:36 UTC
+        Synced at 2026-01-20 19:03:09 UTC
     </footer>
 </body>
 </html>

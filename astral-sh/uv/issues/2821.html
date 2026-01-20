@@ -26,48 +26,39 @@
             <div class="timeline-body"><p>I have  really weird issue with latest uv (0.1.28) and I <em>think</em> there is an issue with how errors is parsing candidate metadata might cause the whole build to fail.</p>
 <p>In some cases of <code>uv pip install</code> - some old releases of some transitive dependencies with broken metadata <strong>might</strong> cause the whole installation to fail - even if there are other candidates that are perfectly fine.</p>
 <p>This one is pretty similar to one which I opened in the past and closed (#2411) - but this time, I <strong>think</strong> the way how uv fails is a bit too &quot;panicky&quot;.</p>
-<p>One of the steps of our CI is building PROD images and while doing it in release branch, we are buding the released airflow from sources to wheel and install it with 'PROD' image extras - which will pull provider packages and a number of transitive dependencies from <code>PyPI</code>.</p>
+<p>One of the steps of our CI is building PROD images and while doing it in release branch, we are buding the released airflow from sources to wheel and install it with &#x27;PROD&#x27; image extras - which will pull provider packages and a number of transitive dependencies from <code>PyPI</code>.</p>
 <p>The command to run is:</p>
-<pre><code>uv pip install 'apache-airflow[aiobotocore,amazon,async,celery,cncf-kubernetes,common-io,docker,elasticsearch,ftp,google,google-auth,graphviz,grpc,hashicorp,http,ldap,microsoft-azure,mysql,odbc,openlineage,pandas,postgres,redis,sendgrid,sftp,slack,snowflake,ssh,statsd,uv,virtualenv] @ file:///docker-context-files/apache_airflow-2.9.0-py3-none-any.whl'
+<pre><code>uv pip install &#x27;apache-airflow[aiobotocore,amazon,async,celery,cncf-kubernetes,common-io,docker,elasticsearch,ftp,google,google-auth,graphviz,grpc,hashicorp,http,ldap,microsoft-azure,mysql,odbc,openlineage,pandas,postgres,redis,sendgrid,sftp,slack,snowflake,ssh,statsd,uv,virtualenv] @ file:///docker-context-files/apache_airflow-2.9.0-py3-none-any.whl&#x27;
 </code></pre>
 <p>This nicely work for Python 3.8 - 3.10 and 3.12, but for Python 3.11 (and only for Python 3.11) it fails with this error:</p>
 <pre><code>#64 6.287 error: Failed to download: google-cloud-bigquery==1.28.2
-  #64 6.287   Caused by: Couldn't parse metadata of google_cloud_bigquery-1.28.2-py2.py3-none-any.whl from https://files.pythonhosted.org/packages/ce/af/89ccb3dd70a86516cb408dd7b7484d2fdd073bdce6405f722f75e6058e66/google_cloud_bigquery-1.28.2-py2.py3-none-any.whl.metadata
+  #64 6.287   Caused by: Couldn&#x27;t parse metadata of google_cloud_bigquery-1.28.2-py2.py3-none-any.whl from https://files.pythonhosted.org/packages/ce/af/89ccb3dd70a86516cb408dd7b7484d2fdd073bdce6405f722f75e6058e66/google_cloud_bigquery-1.28.2-py2.py3-none-any.whl.metadata
   #64 6.287   Caused by: after parsing 2.0, found &quot;de&quot; after it, which is not part of a valid version
-  #64 6.287 pyarrow (&lt;2.0de,&gt;=1.0.0) ; (python_version &gt;= &quot;3.5&quot;) and extra == 'all'
+  #64 6.287 pyarrow (&lt;2.0de,&gt;=1.0.0) ; (python_version &gt;= &quot;3.5&quot;) and extra == &#x27;all&#x27;
   #64 6.287          ^^^^^^
 </code></pre>
-<p>Of course - it's obvious what the problem is with the <code>google-cloud-bigquery</code> package - but this is a REALLLY old version of the package (4 years) and it's not the one that the installation should resolve to. All the previous resolutions correctly resolved it to google-cloud-bigquery==3.20.1  - which is latest version released on 1st of April (not an April's fool joke). But the PROD image installation somehow fails the whole <code>uv pip install</code> fails - because of that wrong metadata, in package version that should not even be considered.</p>
+<p>Of course - it&#x27;s obvious what the problem is with the <code>google-cloud-bigquery</code> package - but this is a REALLLY old version of the package (4 years) and it&#x27;s not the one that the installation should resolve to. All the previous resolutions correctly resolved it to google-cloud-bigquery==3.20.1  - which is latest version released on 1st of April (not an April&#x27;s fool joke). But the PROD image installation somehow fails the whole <code>uv pip install</code> fails - because of that wrong metadata, in package version that should not even be considered.</p>
 <p>I am attempting to battle this in two ways:</p>
 <ol>
-<li>add a more direct dependency to the future provider (and lower-bind it) https://github.com/apache/airflow/pull/38753</li>
-<li>switch back to <code>pip</code> for &quot;Release&quot; PROD builds when we do PROD image building using <code>pip</code> rather than locally build providers (which we use in <code>main</code> : https://github.com/apache/airflow/pull/38749 and https://github.com/apache/airflow/pull/38752</li>
+<li>add a more direct dependency to the future provider (and lower-bind it) <a href="https://github.com/apache/airflow/pull/38753">apache/airflow#38753</a></li>
+<li>switch back to <code>pip</code> for &quot;Release&quot; PROD builds when we do PROD image building using <code>pip</code> rather than locally build providers (which we use in <code>main</code> : <a href="https://github.com/apache/airflow/pull/38749">apache/airflow#38749</a> and <a href="https://github.com/apache/airflow/pull/38752">apache/airflow#38752</a></li>
 </ol>
 <p>I  am not sure if 1. will help, 2. should help for sure - (and for now we anyhow use <code>pip</code> to install airflow in &quot;real&quot; PROD image - so that is going to stay likely (release branches should be as close to &quot;production&quot; releases as possible) - but it would be cool to investigate and see why such a metadata issue in an old version that is not really even going to be used is causing the whole installation to fail.  It does not seem too robust if someone could release (or have released in the past) an old, broken version of the package that would break new installation for new versions of the same package (being transitive dependency)</p>
-<p>Link to show thee failure (logs will disappear in 30 days or so) : https://github.com/apache/airflow/actions/runs/8555464849/job/23446007205#step:10:3693 - and you can see that it's only Python 3.11 that fails (which is even stranger).</p>
-<!--
-Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+<p>Link to show thee failure (logs will disappear in 30 days or so) : https://github.com/apache/airflow/actions/runs/8555464849/job/23446007205#step:10:3693 - and you can see that it&#x27;s only Python 3.11 that fails (which is even stranger).</p>
 
-If you're filing a bug report, please consider including the following information:
-
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
-* The current uv platform.
-* The current uv version (`uv --version`).
--->
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-04 18:08</div>
-            <div class="timeline-body"><p>Thanks for all the details! I'm not sure why we're backtracking so far here, but you can see some more information about the general problem at https://github.com/astral-sh/uv/issues/1398</p>
+            <div class="timeline-body"><p>Thanks for all the details! I&#x27;m not sure why we&#x27;re backtracking so far here, but you can see some more information about the general problem at <a href="https://github.com/astral-sh/uv/issues/1398">astral-sh/uv#1398</a></p>
 <p>Reasonable lower bounds are definitely a good solution to help a resolver in a situation like this.</p>
-<p>I'm not sure about dropping the candidates vs failing — cc @konstin.</p>
+<p>I&#x27;m not sure about dropping the candidates vs failing — cc @konstin.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-04 18:11</div>
-            <div class="timeline-body"><p>This looks similar to https://github.com/astral-sh/uv/issues/1800.</p>
+            <div class="timeline-body"><p>This looks similar to <a href="https://github.com/astral-sh/uv/issues/1800">astral-sh/uv#1800</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -77,7 +68,7 @@ If you're filing a bug report, please consider including the following informati
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-04 18:12</div>
-            <div class="timeline-body"><p>We do this in some cases already though. I'm trying to remember when.</p>
+            <div class="timeline-body"><p>We do this in some cases already though. I&#x27;m trying to remember when.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -85,7 +76,7 @@ If you're filing a bug report, please consider including the following informati
             <div class="timeline-body"><blockquote>
 <p>I think we should be skipping invalid candidates...</p>
 </blockquote>
-<p>Yeah. Sounds about right :) . They are invalid and won't be installed anyway, so we might very safely reject them :)</p>
+<p>Yeah. Sounds about right :) . They are invalid and won&#x27;t be installed anyway, so we might very safely reject them :)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -94,7 +85,7 @@ If you're filing a bug report, please consider including the following informati
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-04-04 18:26</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-04 18:26</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-05 04:24</div>
@@ -102,15 +93,15 @@ If you're filing a bug report, please consider including the following informati
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-04-05 13:22</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-05 13:22</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-04-05 22:00</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-05 22:00</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:24:36 UTC
+        Synced at 2026-01-20 19:30:44 UTC
     </footer>
 </body>
 </html>

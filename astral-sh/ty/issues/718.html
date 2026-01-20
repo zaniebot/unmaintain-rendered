@@ -24,25 +24,25 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a></div>
             <div class="timeline-body"><p><a href="https://github.com/search?q=lang%3APython%20%2F__import__%5C(%5B%27%22%5D%5Cw%2B%5B%27%22%5D%5C">More often than not</a>%2F&amp;type=code), <a href="https://docs.python.org/3/library/functions.html#import__"><code>__import__()</code></a> is called with a single literal string value. For example:</p>
-<pre><code class="language-python">print(__import__('sys').version)
+<pre><code>print(__import__(&#x27;sys&#x27;).version)
 </code></pre>
-<p>Currently, the revealed type of <code>__import__('sys')</code> is <code>ModuleType</code>, which is not wrong but less helpful than it could be. I think it is possible and probably desired to have ty infer <code>&lt;module 'sys'&gt;</code> here instead.</p>
+<p>Currently, the revealed type of <code>__import__(&#x27;sys&#x27;)</code> is <code>ModuleType</code>, which is not wrong but less helpful than it could be. I think it is possible and probably desired to have ty infer <code>&lt;module &#x27;sys&#x27;&gt;</code> here instead.</p>
 <p>This feature is not without precedence; TypeScript understands <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import">dynamic imports</a> as it would normal imports (<a href="https://www.typescriptlang.org/play/?#code/MYewdgzgLgBAZhGBeGBDA7qglrLBbABxACcoAKAcgQoEoBuAKAHomY2YA9AfgYYFMAHkVIwA3gF9GQA">playground</a>):</p>
-<pre><code class="language-typescript">const fs = await import('fs');
+<pre><code>const fs = await import(&#x27;fs&#x27;);
 //    ^? { default: typeof import(&quot;fs&quot;), rename: typeof rename; ... }
 </code></pre>
 <p>(It should be noted that <code>import</code> in TS/JS is a keyword and thus cannot be overridden like <code>__import__</code> can.)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Special-casing `__import__` for simple cases" to "Special-casing `__import__()` for simple cases" by @InSyncWithFoo on 2025-06-27 18:49</div>
+            <div class="event">Renamed from &quot;Special-casing `__import__` for simple cases&quot; to &quot;Special-casing `__import__()` for simple cases&quot; by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-06-27 18:49</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">imports</span> added by @carljm on 2025-06-27 19:25</div>
+            <div class="event">Label <span class="label">imports</span> added by <a href="https://github.com/carljm">@carljm</a> on 2025-06-27 19:25</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-27 19:29</div>
-            <div class="timeline-body"><p>The GH code search does suggest this could be worth doing (it should be a fairly easy change, I think?). Though I think it's low priority, since <code>ModuleType</code> already has a <code>__getattr__</code> returning <code>Any</code>, which should silence false positives arising from this.</p>
+            <div class="timeline-body"><p>The GH code search does suggest this could be worth doing (it should be a fairly easy change, I think?). Though I think it&#x27;s low priority, since <code>ModuleType</code> already has a <code>__getattr__</code> returning <code>Any</code>, which should silence false positives arising from this.</p>
 <p>FWIW, pyright appears to special-case <code>__import__</code> to return <code>Any</code> (I wonder why, since the <code>__getattr__</code> in typeshed seems like it should be sufficient?), while mypy just follows typeshed and returns <code>ModuleType</code>.</p>
 </div>
         </div>
@@ -51,21 +51,21 @@
             <div class="timeline-body"><blockquote>
 <p>I wonder why, since the <code>__getattr__</code> in typeshed seems like it should be sufficient?</p>
 </blockquote>
-<p>I'd have to do some historical spelunking to answer that definitively, but I think it's because <code>ModuleType</code> didn't previously have a <code>__getattr__</code> method. Looks like Alex added it to <code>types.pyi</code> a few years back. In any case, I agree with your observation that the special-casing in pyright could be removed now.</p>
+<p>I&#x27;d have to do some historical spelunking to answer that definitively, but I think it&#x27;s because <code>ModuleType</code> didn&#x27;t previously have a <code>__getattr__</code> method. Looks like Alex added it to <code>types.pyi</code> a few years back. In any case, I agree with your observation that the special-casing in pyright could be removed now.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-27 20:36</div>
-            <div class="timeline-body"><p>Yeah, I added it to the <code>ModuleType</code> stub specifically to make use cases with dynamic imports like this less annoying for users to deal with. FWIW ty currently ignores <code>ModuleType.__getattr__</code> too much -- I think we actually ignore it in all cases, whereas we should really only ignore it when we're falling back to <code>ModuleType</code> from an attribute lookup on a module-literal type: https://play.ty.dev/c306c468-2839-461f-86a6-bb8a750b62a7</p>
+            <div class="timeline-body"><p>Yeah, I added it to the <code>ModuleType</code> stub specifically to make use cases with dynamic imports like this less annoying for users to deal with. FWIW ty currently ignores <code>ModuleType.__getattr__</code> too much -- I think we actually ignore it in all cases, whereas we should really only ignore it when we&#x27;re falling back to <code>ModuleType</code> from an attribute lookup on a module-literal type: https://play.ty.dev/c306c468-2839-461f-86a6-bb8a750b62a7</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-06-29 10:49</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-29 10:49</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:13 UTC
+        Synced at 2026-01-20 19:24:57 UTC
     </footer>
 </body>
 </html>

@@ -28,11 +28,11 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-04 23:49</div>
-            <div class="timeline-body"><p>👍 Can you walk me through how you'd use this? Like, if they were included in the requirements.txt, how would you &quot;restore&quot; / respect them in subsequent commands given build isolation?</p>
+            <div class="timeline-body"><p>👍 Can you walk me through how you&#x27;d use this? Like, if they were included in the requirements.txt, how would you &quot;restore&quot; / respect them in subsequent commands given build isolation?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-09-04 23:49</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-04 23:49</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-04 23:49</div>
@@ -46,7 +46,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/alex">@alex</a> on 2024-09-08 16:38</div>
-            <div class="timeline-body"><p>Now that <code>uv build</code> has <code>--build-constraint</code> support, this would enable easily building those constraints files. Right now we do it by manually preparing a <code>requirements.in</code> from the <code>build-system.requires</code>, but that's obviously manual and error prone.</p>
+            <div class="timeline-body"><p>Now that <code>uv build</code> has <code>--build-constraint</code> support, this would enable easily building those constraints files. Right now we do it by manually preparing a <code>requirements.in</code> from the <code>build-system.requires</code>, but that&#x27;s obviously manual and error prone.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -56,34 +56,34 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/alex">@alex</a> on 2024-09-08 17:18</div>
-            <div class="timeline-body"><p>Interesting question, I hadn't considered that. I'm not sure that would occur in our use case (taking specific local projects and getting their build dependencies), but clearly in the <em>general</em> case, it'd be a problem.</p>
+            <div class="timeline-body"><p>Interesting question, I hadn&#x27;t considered that. I&#x27;m not sure that would occur in our use case (taking specific local projects and getting their build dependencies), but clearly in the <em>general</em> case, it&#x27;d be a problem.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/lmmx">@lmmx</a> on 2024-09-16 15:55</div>
-            <div class="timeline-body"><p>If I'm understanding this rightly, then this is also desirable for building wheels in a Docker container from source, in which situation you want to programmatically obtain the build requirements before doing a <code>--no-build-isolation</code> run of <code>pip download</code>. You may assume here they are compatible, and just need resolving (i.e. a <code>uv pip compile</code> step), without this you just do this by hand by inspecting the <code>build-system.requires</code> TOML section of each package's build dependencies).</p>
-<p>In this case conflict would be fine to error out on, it'd just cue the user to split this <code>download</code> process up per-requirement (or use separate lists?</p>
-<p>I've ended up making distinct subpackages named (<code>dependencyname_build</code>) with the build system requirements as dependencies in my current project to achieve this... (WIP)</p>
+            <div class="timeline-body"><p>If I&#x27;m understanding this rightly, then this is also desirable for building wheels in a Docker container from source, in which situation you want to programmatically obtain the build requirements before doing a <code>--no-build-isolation</code> run of <code>pip download</code>. You may assume here they are compatible, and just need resolving (i.e. a <code>uv pip compile</code> step), without this you just do this by hand by inspecting the <code>build-system.requires</code> TOML section of each package&#x27;s build dependencies).</p>
+<p>In this case conflict would be fine to error out on, it&#x27;d just cue the user to split this <code>download</code> process up per-requirement (or use separate lists?</p>
+<p>I&#x27;ve ended up making distinct subpackages named (<code>dependencyname_build</code>) with the build system requirements as dependencies in my current project to achieve this... (WIP)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-09-17 16:34</div>
-            <div class="timeline-body"><p>Here's my 2 cents:</p>
+            <div class="timeline-body"><p>Here&#x27;s my 2 cents:</p>
 <ol>
-<li>Unlike pip-compile which includes build dependencies in it's <a href="https://github.com/jazzband/pip-tools?tab=readme-ov-file#maximizing-reproducibility">regular output</a> with <code>--all-build-deps</code>, uv pip compile should only have an option to output build dependencies only, this is because uv supports <code>--build-constraints</code> where as pip-tools is bound by the fact pip can only pass build constraints via <code>PIP_CONSTRAINT</code>, which also affects runtime dependencies</li>
+<li>Unlike pip-compile which includes build dependencies in it&#x27;s <a href="https://github.com/jazzband/pip-tools?tab=readme-ov-file#maximizing-reproducibility">regular output</a> with <code>--all-build-deps</code>, uv pip compile should only have an option to output build dependencies only, this is because uv supports <code>--build-constraints</code> where as pip-tools is bound by the fact pip can only pass build constraints via <code>PIP_CONSTRAINT</code>, which also affects runtime dependencies</li>
 <li>It should be recommended / defaulted / forced to use <code>--only-binary :all:</code>, for the build dependencies, when resolving build dependencies, as not to deal with recursive build dependencies</li>
-<li>It should be documented that if the user wants maximum reproducibility they must create the build dependencies of each runtime requirement source distribution, and build each one with it's own build constraints</li>
+<li>It should be documented that if the user wants maximum reproducibility they must create the build dependencies of each runtime requirement source distribution, and build each one with it&#x27;s own build constraints</li>
 <li>If there is a conflict in build dependencies point them to some version of 3, that they must build the packages independently</li>
 <li>It <em>might</em> make sense not to resolve runtime requirements when resolving build dependencies, so the workflow would be <code>requirement.in</code> -&gt; <code>requirements.txt</code> -&gt; <code>build-constraints.txt</code>, I think you would need to consider carefully if all existing CLI options apply to runtime requirements or build dependencies or both</li>
 </ol>
-<p>Build dependencies are complicated enough that you will not be able to capture all use cases in a requirements file, but this approach should be &quot;good enough&quot; for a lot of users I think. Most users will probably find they are pinned to some versions of setuptools and some version of hatch, and maybe one or two more build backends, and that's it.</p>
+<p>Build dependencies are complicated enough that you will not be able to capture all use cases in a requirements file, but this approach should be &quot;good enough&quot; for a lot of users I think. Most users will probably find they are pinned to some versions of setuptools and some version of hatch, and maybe one or two more build backends, and that&#x27;s it.</p>
 <p>However, for true locking you would need to be able to capture the potential recursive nature of build dependencies in a lock file format. Unfortunately when I asked some questions about PEP 751 build dependencies the response was to <a href="https://discuss.python.org/t/pep-751-lock-files-again/59173/222">drop build dependencies</a> from the spec.</p>
 <p>Finally these would be &quot;nice to have&quot; features if this uv pip compile &quot;build-dependencies&quot; options existed:</p>
 <ol>
 <li>Generate build dependencies for all the packages in a requirement file and it only generate the requirements for those packages that are &quot;allowed&quot; to be sdists, taking into account <code>--only-binary</code> and <code>--no-binary</code> options (although again, this is complex on what the CLI options are being applied to)</li>
 <li>The hash output should (optionally) not include sdist hashes</li>
 </ol>
-<p>P.S. I'm sure there's stuff I'm not thinking of, e.g. maybe it makes more sense for uv that the build constraints are outputed into a seperate output file instead of only outputing the build constraints for various technical or workflow reasons.</p>
+<p>P.S. I&#x27;m sure there&#x27;s stuff I&#x27;m not thinking of, e.g. maybe it makes more sense for uv that the build constraints are outputed into a seperate output file instead of only outputing the build constraints for various technical or workflow reasons.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -91,9 +91,9 @@
             <div class="timeline-body"><p>Doing build deps only would be fine for me</p>
 <p>On Tue, Sep 17, 2024, 12:34 PM Damian Shaw <em><strong>@</strong></em>.***&gt; wrote:</p>
 <blockquote>
-<p>Here's my 2 cents:</p>
+<p>Here&#x27;s my 2 cents:</p>
 <ol>
-<li>Unlike pip-compile which includes build dependencies in it's regular
+<li>Unlike pip-compile which includes build dependencies in it&#x27;s regular
 output
 <a href="https://github.com/jazzband/pip-tools?tab=readme-ov-file#maximizing-reproducibility">https://github.com/jazzband/pip-tools?tab=readme-ov-file#maximizing-reproducibility</a>
 with --all-build-deps, uv pip compile should only have an option to
@@ -105,7 +105,7 @@ only pass build constraints via PIP_CONSTRAINT</li>
 build requirements</li>
 <li>It should be documented that if the user wants maximum
 reproducibility they must create the build requirements of each runtime
-requirement source distribution, and build each one with it's own build
+requirement source distribution, and build each one with it&#x27;s own build
 constraints</li>
 <li>If there is a conflict in build requirements point them to some
 version of 3, that they must build the packages independently</li>
@@ -114,7 +114,7 @@ version of 3, that they must build the packages independently</li>
 capture all use cases in a requirements file, but this approach should be
 &quot;good enough&quot; for a lot of users I think. Most users will probably find
 they are pinned to some versions of setuptools and some version of hatch,
-and maybe one or two more build backends, and that's it.</p>
+and maybe one or two more build backends, and that&#x27;s it.</p>
 <p>However, for true locking you would need to be able to capture the
 potential recursive nature of build requirements in a lock file format.
 Unfortunately when I asked some questions anout PEP 751 the response was to drop
@@ -132,7 +132,7 @@ file and it only generate the requirements for those packages that are
 </ol>
 <p>—
 Reply to this email directly, view it on GitHub
-<a href="https://github.com/astral-sh/uv/issues/7052#issuecomment-2356406708">https://github.com/astral-sh/uv/issues/7052#issuecomment-2356406708</a>, or
+<a href="https://github.com/astral-sh/uv/issues/7052#issuecomment-2356406708">astral-sh/uv#7052</a>, or
 unsubscribe
 <a href="https://github.com/notifications/unsubscribe-auth/AAAAGBDPNF3AMPKAKWE7W73ZXBK25AVCNFSM6AAAAABNVFZFTGVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZDGNJWGQYDMNZQHA">https://github.com/notifications/unsubscribe-auth/AAAAGBDPNF3AMPKAKWE7W73ZXBK25AVCNFSM6AAAAABNVFZFTGVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZDGNJWGQYDMNZQHA</a>
 .
@@ -143,17 +143,17 @@ You are receiving this because you authored the thread.Message ID:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-17 17:55</div>
-            <div class="timeline-body"><p>Yeah the thing I don't know how to solve is (4) -- that every dependency defines its own build requirements, and they're welcome to conflict.</p>
+            <div class="timeline-body"><p>Yeah the thing I don&#x27;t know how to solve is (4) -- that every dependency defines its own build requirements, and they&#x27;re welcome to conflict.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-09-17 18:06</div>
             <div class="timeline-body"><blockquote>
-<p>Yeah the thing I don't know how to solve is (4) -- that every dependency defines its own build requirements, and they're welcome to conflict.</p>
+<p>Yeah the thing I don&#x27;t know how to solve is (4) -- that every dependency defines its own build requirements, and they&#x27;re welcome to conflict.</p>
 </blockquote>
-<p>For producing a constraints file (and not a structured lock file) I don't think it's possible.</p>
+<p>For producing a constraints file (and not a structured lock file) I don&#x27;t think it&#x27;s possible.</p>
 <p>The user would be responsible for handling this situation themselves, they would need to build each package separately with their own file, e.g by making a script that loops over their requirements and running like this overly simplified pseudo code:</p>
-<pre><code class="language-bash">for requirement in sdist-requirements.txt:
+<pre><code>for requirement in sdist-requirements.txt:
 	echo {requirement} | uv pip compile {build dependency options} - &gt; build-constraints-{requirement}.txt
 	uv build {requirement} --build-constraints build-constraints-{requirement}.txt
 	{move wheel to index / file location}
@@ -165,18 +165,18 @@ uv pip install {install options that include newly built wheel}
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/alex">@alex</a> on 2024-09-17 18:07</div>
             <div class="timeline-body"><p>I guess my answer would be: within the limits of the requirements.txt
-format, you probably can't solve it fully.</p>
+format, you probably can&#x27;t solve it fully.</p>
 <p>But then what Damian says comes in: it effects probably a small number of
-users, and just unifying all of them likely works well enough, and doesn't
+users, and just unifying all of them likely works well enough, and doesn&#x27;t
 precludes a better format later.</p>
 <p>On Tue, Sep 17, 2024, 1:56 PM Charlie Marsh <em><strong>@</strong></em>.***&gt;
 wrote:</p>
 <blockquote>
-<p>Yeah the thing I don't know how to solve is (4) -- that every dependency
-defines its own build requirements, and they're welcome to conflict.</p>
+<p>Yeah the thing I don&#x27;t know how to solve is (4) -- that every dependency
+defines its own build requirements, and they&#x27;re welcome to conflict.</p>
 <p>—
 Reply to this email directly, view it on GitHub
-<a href="https://github.com/astral-sh/uv/issues/7052#issuecomment-2356564030">https://github.com/astral-sh/uv/issues/7052#issuecomment-2356564030</a>, or
+<a href="https://github.com/astral-sh/uv/issues/7052#issuecomment-2356564030">astral-sh/uv#7052</a>, or
 unsubscribe
 <a href="https://github.com/notifications/unsubscribe-auth/AAAAGBGUEM6RINC5YRBHS2TZXBULXAVCNFSM6AAAAABNVFZFTGVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZDGNJWGU3DIMBTGA">https://github.com/notifications/unsubscribe-auth/AAAAGBGUEM6RINC5YRBHS2TZXBULXAVCNFSM6AAAAABNVFZFTGVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZDGNJWGU3DIMBTGA</a>
 .
@@ -186,7 +186,7 @@ You are receiving this because you authored the thread.Message ID:
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Add the ability for `uv pip compile` to include build dependencies" to "Include build dependencies in locked resolutions (`uv pip compile`, `uv lock`)" by @charliermarsh on 2024-10-28 21:12</div>
+            <div class="event">Renamed from &quot;Add the ability for `uv pip compile` to include build dependencies&quot; to &quot;Include build dependencies in locked resolutions (`uv pip compile`, `uv lock`)&quot; by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-28 21:12</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/alex">@alex</a> on 2025-01-31 02:31</div>
@@ -195,7 +195,7 @@ You are receiving this because you authored the thread.Message ID:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-31 02:39</div>
-            <div class="timeline-body"><p>We could, like, output a build constraints file that includes all the constraints required for the all build dependencies, assuming they aren't in conflict?</p>
+            <div class="timeline-body"><p>We could, like, output a build constraints file that includes all the constraints required for the all build dependencies, assuming they aren&#x27;t in conflict?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -206,16 +206,16 @@ You are receiving this because you authored the thread.Message ID:
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/alex">@alex</a> on 2025-01-31 02:42</div>
             <div class="timeline-body"><blockquote>
-<p>We could, like, output a build constraints file that includes all the constraints required for the all build dependencies, assuming they aren't in conflict?</p>
+<p>We could, like, output a build constraints file that includes all the constraints required for the all build dependencies, assuming they aren&#x27;t in conflict?</p>
 </blockquote>
-<p>Personally that works for my use case (where I just want to generate a lockfile for one package's build deps).</p>
+<p>Personally that works for my use case (where I just want to generate a lockfile for one package&#x27;s build deps).</p>
 <p>Cheers</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2025-02-16 10:57</div>
-            <div class="timeline-body"><p>I feel like this would generally be useful if it can be sorted out, but I'd like to illustrate one specific use case where it could be argued that this feature is actually vital:
-Say I develop a package (<code>pkg</code>) whose build backend doesn't support build isolation[^1]. I can specify</p>
+            <div class="timeline-body"><p>I feel like this would generally be useful if it can be sorted out, but I&#x27;d like to illustrate one specific use case where it could be argued that this feature is actually vital:
+Say I develop a package (<code>pkg</code>) whose build backend doesn&#x27;t support build isolation[^1]. I can specify</p>
 <pre><code>[tool.uv]
 no-build-isolation-package = [&quot;pkg&quot;]
 </code></pre>
@@ -223,22 +223,22 @@ no-build-isolation-package = [&quot;pkg&quot;]
 cannot use high level APIs like <code>uv sync</code> and have to resort to <code>uv pip install</code>. My current workaround is to duplicate build-time requirements into the <code>dev</code> dependency group so they are always installed on <code>uv sync</code> (unless specifically opted-out), but this is fragile for two reasons:</p>
 <ul>
 <li>I now need to manually keep <code>[build-system]</code> and <code>[dependency-groups]</code> in sync</li>
-<li>I still can't bootstrap my env in a single command. Rather, I need to do <code>uv sync --only-dev &amp;&amp; uv sync</code>, which feels like a hack (which it <em>is</em>, I suppose).</li>
+<li>I still can&#x27;t bootstrap my env in a single command. Rather, I need to do <code>uv sync --only-dev &amp;&amp; uv sync</code>, which feels like a hack (which it <em>is</em>, I suppose).</li>
 </ul>
-<p>[^1]: I'm simplifying a bit, but the real-life use case is that I use <code>meson-python</code> as a build backend, which by design, supports build isolation <em>or</em> editable installs, but not the combination of both. This is done because C-extensions installed in editable mode require re-compilation ahead of runtime, which can only be performed if build-time requirements are available in the same environment.</p>
+<p>[^1]: I&#x27;m simplifying a bit, but the real-life use case is that I use <code>meson-python</code> as a build backend, which by design, supports build isolation <em>or</em> editable installs, but not the combination of both. This is done because C-extensions installed in editable mode require re-compilation ahead of runtime, which can only be performed if build-time requirements are available in the same environment.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/alex">@alex</a> on 2025-04-01 12:35</div>
-            <div class="timeline-body"><p>Hmm, is this the same as https://github.com/astral-sh/uv/issues/5190 ?</p>
+            <div class="timeline-body"><p>Hmm, is this the same as <a href="https://github.com/astral-sh/uv/issues/5190">astral-sh/uv#5190</a> ?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2025-04-01 13:02</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-01 13:02</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-01 13:03</div>
-            <div class="timeline-body"><p>Ah yeah. Both issues have a fair number of comments and history but I'll just merge into that one. We do expect to start on this soon.</p>
+            <div class="timeline-body"><p>Ah yeah. Both issues have a fair number of comments and history but I&#x27;ll just merge into that one. We do expect to start on this soon.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -249,7 +249,7 @@ cannot use high level APIs like <code>uv sync</code> and have to resort to <code
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:26:52 UTC
+        Synced at 2026-01-20 19:33:41 UTC
     </footer>
 </body>
 </html>

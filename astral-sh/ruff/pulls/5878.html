@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>Fix <code>SimpleTokenizer</code>'s backward lexing of <code># </code></h1>
+    <h1>Fix <code>SimpleTokenizer</code>&#x27;s backward lexing of <code># </code></h1>
 
     <div class="meta">
         <span class="state-icon state-merged"></span>
@@ -23,37 +23,31 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a></div>
-            <div class="timeline-body"><!--
-Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+            <div class="timeline-body">
 
-- Does this pull request include a summary of the change? (See below.)
-- Does this pull request include a descriptive title?
-- Does this pull request include references to any relevant issues?
--->
-
-<h2>Summary</h2>
+Summary
 <p>This PR fixes the <code>SimpleTokenizer</code>s backward lexing to handle <code>#</code> tokens inside multiline strings correctly.</p>
-<pre><code class="language-python">'a multiline\
-string containing a # token'
+<pre><code>&#x27;a multiline\
+string containing a # token&#x27;
 
-'''a multiline
-string containing a # token'''
+&#x27;&#x27;&#x27;a multiline
+string containing a # token&#x27;&#x27;&#x27;
 </code></pre>
-<p>For both these cases, <code>#</code> is not the start of a comment. Instead, it's just a regular hash inside of the multiline string.</p>
+<p>For both these cases, <code>#</code> is not the start of a comment. Instead, it&#x27;s just a regular hash inside of the multiline string.</p>
 <p>However, the following is a comment</p>
-<pre><code class="language-python">'a string' # comment 'with quotes'
+<pre><code>&#x27;a string&#x27; # comment &#x27;with quotes&#x27;
 </code></pre>
-<p>Unfortunately, there's no easy way to detect whether <code># token'</code> is a comment or part of a string when lexing backward because it's impossible to tell if two quotes form a pair when looking backward:</p>
-<pre><code class="language-python"># It looks like the ''' in the comment match the opening ''' on the first line
-'''
-a # comment '''
+<p>Unfortunately, there&#x27;s no easy way to detect whether <code># token&#x27;</code> is a comment or part of a string when lexing backward because it&#x27;s impossible to tell if two quotes form a pair when looking backward:</p>
+<pre><code># It looks like the &#x27;&#x27;&#x27; in the comment match the opening &#x27;&#x27;&#x27; on the first line
+&#x27;&#x27;&#x27;
+a # comment &#x27;&#x27;&#x27;
 
-# But let's zoom out... are they matching pairs?
+# But let&#x27;s zoom out... are they matching pairs?
 
-a + '''
+a + &#x27;&#x27;&#x27;
 some multiline text
-'''
-a # comment '''
+&#x27;&#x27;&#x27;
+a # comment &#x27;&#x27;&#x27;
 </code></pre>
 <p>The way this is solved in this PR is that we lex out all strings and comments if we encounter any <code>#</code> that is followed by a quote. This should be rare because:</p>
 <ul>
@@ -61,10 +55,10 @@ a # comment '''
 <li>Strings are common, but they rarely contain hashes</li>
 </ul>
 <p>Also, backward lexing is strongly discouraged, and you should prefer <code>up_to_no_back_comment</code>, which skips over the expensive comments handling until it reaches a new line (and the whole purpose of the lexer is only to lex very few tokens).</p>
-<p>For most cases, lexing the &quot;whole&quot; source should be fast because we only lex over a very limited range. This is not true for <code>up_to</code>, which we used in <code>lines_before</code>. That's why I went ahead and rewrote <code>lines_before</code> and <code>lines_after</code> to <strong>not</strong> use the <code>SimpleTokenizer</code> anymore. They don't care about trivia, meaning we can get away with a trivial <code>Cursor</code> based implementation.</p>
-<h2>Test Plan</h2>
+<p>For most cases, lexing the &quot;whole&quot; source should be fast because we only lex over a very limited range. This is not true for <code>up_to</code>, which we used in <code>lines_before</code>. That&#x27;s why I went ahead and rewrote <code>lines_before</code> and <code>lines_after</code> to <strong>not</strong> use the <code>SimpleTokenizer</code> anymore. They don&#x27;t care about trivia, meaning we can get away with a trivial <code>Cursor</code> based implementation.</p>
+Test Plan
 <p>I added new snapshot tests</p>
-<!-- How was it tested? -->
+
 
 </div>
         </div>
@@ -73,7 +67,7 @@ a # comment '''
             <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
 <ul>
 <li>main<ul>
-<li><strong>PR #5878</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/5878" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a>  👈</li>
+<li><strong>PR #5878</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/5878"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite"></a>  👈</li>
 </ul>
 </li>
 </ul>
@@ -90,10 +84,10 @@ a # comment '''
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2023-07-19 10:12</div>
+            <div class="event">Review requested from <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-07-19 10:12</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @konstin by @MichaReiser on 2023-07-19 10:12</div>
+            <div class="event">Review requested from <a href="https://github.com/konstin">@konstin</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-07-19 10:12</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-07-19 10:16</div>
@@ -106,9 +100,9 @@ a # comment '''
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-07-19 10:50</div>
-            <div class="timeline-body"><h2>PR Check Results</h2>
-<h3>Benchmark</h3>
-<h4>Linux</h4>
+            <div class="timeline-body">PR Check Results
+Benchmark
+Linux
 <pre><code>group                                      main                                    pr
 -----                                      ----                                    --
 formatter/large/dataset.py                 1.01     10.0±0.44ms     4.1 MB/sec     1.00      9.8±0.58ms     4.1 MB/sec
@@ -124,7 +118,7 @@ linter/default-rules/numpy/ctypeslib.py    1.00  1580.4±110.05µs    10.5 MB/se
 linter/default-rules/numpy/globals.py      1.07   198.0±12.38µs    14.9 MB/sec     1.00   184.7±11.22µs    16.0 MB/sec
 linter/default-rules/pydantic/types.py     1.03      3.5±0.17ms     7.4 MB/sec     1.00      3.4±0.21ms     7.6 MB/sec
 </code></pre>
-<h4>Windows</h4>
+Windows
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 formatter/large/dataset.py                 1.00     11.0±0.18ms     3.7 MB/sec    1.01     11.1±0.14ms     3.7 MB/sec
@@ -140,7 +134,7 @@ linter/default-rules/numpy/ctypeslib.py    1.00  1671.6±15.32µs    10.0 MB/sec
 linter/default-rules/numpy/globals.py      1.00    189.6±3.33µs    15.6 MB/sec    1.01    191.7±3.73µs    15.4 MB/sec
 linter/default-rules/pydantic/types.py     1.00      3.6±0.04ms     7.1 MB/sec    1.00      3.6±0.03ms     7.1 MB/sec
 </code></pre>
-<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
 
 </div>
         </div>
@@ -151,10 +145,10 @@ linter/default-rules/pydantic/types.py     1.00      3.6±0.04ms     7.1 MB/sec 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Fix SimpleTokenizer hash in string handling" to "Fix SimpleTokenizer backwards lexing of # " by @MichaReiser on 2023-07-19 12:49</div>
+            <div class="event">Renamed from &quot;Fix SimpleTokenizer hash in string handling&quot; to &quot;Fix SimpleTokenizer backwards lexing of # &quot; by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-07-19 12:49</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Fix SimpleTokenizer backwards lexing of # " to "Fix `SimpleTokenizer`'s backward lexing of `# `" by @MichaReiser on 2023-07-19 14:45</div>
+            <div class="event">Renamed from &quot;Fix SimpleTokenizer backwards lexing of # &quot; to &quot;Fix `SimpleTokenizer`&#x27;s backward lexing of `# `&quot; by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-07-19 14:45</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-07-19 14:49</div>
@@ -165,14 +159,14 @@ linter/default-rules/pydantic/types.py     1.00      3.6±0.04ms     7.1 MB/sec 
 <blockquote>
 <p>This feels like a lot of effort given that we should already know comment positions and the caller should know expression ranges that would avoid most of the effort</p>
 </blockquote>
-<p>That's fair. I could see us split out the <code>BackwardTokenizer</code> and require you to pass in the <code>CommentRanges</code>.</p>
+<p>That&#x27;s fair. I could see us split out the <code>BackwardTokenizer</code> and require you to pass in the <code>CommentRanges</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @MichaReiser on 2023-07-20 09:54</div>
+            <div class="event">Merged by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-07-20 09:54</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2023-07-20 09:54</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-07-20 09:54</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2023-07-20 09:54</div>
@@ -180,7 +174,7 @@ linter/default-rules/pydantic/types.py     1.00      3.6±0.04ms     7.1 MB/sec 
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:58:52 UTC
+        Synced at 2026-01-20 18:55:28 UTC
     </footer>
 </body>
 </html>

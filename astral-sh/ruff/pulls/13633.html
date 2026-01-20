@@ -23,42 +23,42 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>This PR adds control flow for <code>try</code>/<code>except</code>/<code>else</code>/<code>finally</code> blocks to red-knot. It's a replacement PR for astral-sh/ruff#13338, which had some fundamental issues in its approach, in particular with regards to <code>finally</code> blocks.</p>
-<p>The semantics of <code>try</code>/<code>except</code> blocks are very complicated! I've written up a long document outlining all the various jumps control flow could take, which can be found <a href="https://astral-sh.notion.site/Exception-handler-control-flow-11348797e1ca80bb8ce1e9aedbbe439d">here</a>. I won't try to summarise that document in this PR description. But I will give a brief description of some of the ways I've attempted to model these semantics in this PR:</p>
+            <div class="timeline-body">Summary
+<p>This PR adds control flow for <code>try</code>/<code>except</code>/<code>else</code>/<code>finally</code> blocks to red-knot. It&#x27;s a replacement PR for astral-sh/ruff#13338, which had some fundamental issues in its approach, in particular with regards to <code>finally</code> blocks.</p>
+<p>The semantics of <code>try</code>/<code>except</code> blocks are very complicated! I&#x27;ve written up a long document outlining all the various jumps control flow could take, which can be found <a href="https://astral-sh.notion.site/Exception-handler-control-flow-11348797e1ca80bb8ce1e9aedbbe439d">here</a>. I won&#x27;t try to summarise that document in this PR description. But I will give a brief description of some of the ways I&#x27;ve attempted to model these semantics in this PR:</p>
 <p>Abstractions for handling <code>try</code>/<code>except</code> blocks have been added to a new <code>builder</code> submodule, <code>builder/exception_handlers.rs</code>:</p>
 <ul>
-<li><code>TryNodeContext</code> keeps track of state for a single <code>try</code>/<code>except</code>/<code>else</code>/<code>finally</code> block. Exactly what state we need to keep track of varies according to whether the node has a <code>finally</code> branch, and according to which branch of the <code>StmtTry</code> node we're currently visiting.</li>
+<li><code>TryNodeContext</code> keeps track of state for a single <code>try</code>/<code>except</code>/<code>else</code>/<code>finally</code> block. Exactly what state we need to keep track of varies according to whether the node has a <code>finally</code> branch, and according to which branch of the <code>StmtTry</code> node we&#x27;re currently visiting.</li>
 <li><code>TryNodeContextStack</code> is a stack of <code>TryNodeContext</code> instances. For any given scope, <code>try</code> blocks can be arbitrarily nested; this means that we must keep a stack of <code>TryNodeContext</code>s for each scope we visit.</li>
 <li><code>TryNodeContextStackManager</code> is a stack of <code>TryNodeContextStack</code>s. Whenever we enter a nested scope, a new <code>TryNodeContextStack</code> is initialised by the <code>TryNodeContextStackManager</code> and appended to the stack of stacks. Whenever we exit that scope, the <code>TryNodeContextStack</code> is popped off the stack of stacks.</li>
 </ul>
-<p>The diff for this PR is quite large, but this is mostly tests. There aren't actually <em>that</em> many tests, but they unfortunately need to be quite verbose. This is because we may add a more sophisticated understanding of exception handlers in the future (where we would understand that e.g. <code>x = 1</code> can never raise an exception), and I wanted the tests to be robust to this so that they wouldn't have to be rewritten when that happens. (This also helps readability of the tests, since we obviously know that <code>x = 1</code> can never raise exceptions.) To address this, I made sure to use assignments to function calls for testing places where a raised exception could cause a jump in control flow. This will be robust to future improvements, since it will always be the case that we will consider a function call capable of raising arbitrary exceptions.</p>
-<h2>Test Plan</h2>
+<p>The diff for this PR is quite large, but this is mostly tests. There aren&#x27;t actually <em>that</em> many tests, but they unfortunately need to be quite verbose. This is because we may add a more sophisticated understanding of exception handlers in the future (where we would understand that e.g. <code>x = 1</code> can never raise an exception), and I wanted the tests to be robust to this so that they wouldn&#x27;t have to be rewritten when that happens. (This also helps readability of the tests, since we obviously know that <code>x = 1</code> can never raise exceptions.) To address this, I made sure to use assignments to function calls for testing places where a raised exception could cause a jump in control flow. This will be robust to future improvements, since it will always be the case that we will consider a function call capable of raising arbitrary exceptions.</p>
+Test Plan
 <p>All tests have been added to <code>infer.rs</code>. They all use <code>reveal_type</code> to assert that the type of a variable changes as we move through the various <code>try</code>/<code>except</code>/<code>else</code>/<code>finally</code> branches.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-10-04 18:19</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-04 18:19</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @AlexWaygood on 2024-10-04 18:19</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-04 18:19</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-10-04 18:19</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-04 18:19</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-04 18:33</div>
-            <div class="timeline-body"><p>Codspeed reports a 2% regression in the <code>red_knot[cold]</code> benchmark. Unless there's either something I'm doing that's completely the wrong approach performance-wise <em>or</em> there are some easy wins we can see that aren't too complicated, I'd prefer not to worry about that too much and try to optimize it in followup PRs. Getting the semantics correct was hard enough 😅</p>
+            <div class="timeline-body"><p>Codspeed reports a 2% regression in the <code>red_knot[cold]</code> benchmark. Unless there&#x27;s either something I&#x27;m doing that&#x27;s completely the wrong approach performance-wise <em>or</em> there are some easy wins we can see that aren&#x27;t too complicated, I&#x27;d prefer not to worry about that too much and try to optimize it in followup PRs. Getting the semantics correct was hard enough 😅</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-10-04 18:36</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
@@ -69,7 +69,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/T-256">@T-256</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:5686 on 2024-10-04 22:48</div>
             <div class="timeline-body"><p>I think it should be always Unbound ( or Unknown?) in outer context. here is my testing:</p>
-<pre><code class="language-py">&gt;&gt;&gt; try:
+<pre><code>&gt;&gt;&gt; try:
 	1/0
 except Exception as e:
 	pass
@@ -78,7 +78,7 @@ except Exception as e:
 Traceback (most recent call last):
   File &quot;&lt;pyshell#8&gt;&quot;, line 1, in &lt;module&gt;
     e
-NameError: name 'e' is not defined
+NameError: name &#x27;e&#x27; is not defined
 &gt;&gt;&gt; try:
 	1/0
 except Exception as e:
@@ -89,7 +89,7 @@ except Exception as e:
 Traceback (most recent call last):
   File &quot;&lt;pyshell#11&gt;&quot;, line 1, in &lt;module&gt;
     e
-NameError: name 'e' is not defined
+NameError: name &#x27;e&#x27; is not defined
 &gt;&gt;&gt; try:
 	1/0
 except Exception as e:
@@ -97,15 +97,15 @@ except Exception as e:
 
 	
 &gt;&gt;&gt; ee
-ZeroDivisionError('division by zero')
+ZeroDivisionError(&#x27;division by zero&#x27;)
 &gt;&gt;&gt; 
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:5686 on 2024-10-04 22:54</div>
-            <div class="timeline-body"><p>That's correct, but it's actually a separate thing to anything that this PR is trying to fix. (Though we might not have an issue to track this detail, and we probably should!)</p>
-<p>try/except blocks don't create new scopes in Python; most variables defined in exception handlers will persist until after the block has finished. Bindings created using <code>as</code> in the <code>except</code> itself are however special-cased by the interpreter — the interpreter literally inserts an implicit <code>del</code> statement for that specific variable prior to the block ending. This is to reduce the chance of creating reference cycles, which would otherwise be very common for this kind of pattern and would create a lot of unnecessary work for the garbage collector.</p>
+            <div class="timeline-body"><p>That&#x27;s correct, but it&#x27;s actually a separate thing to anything that this PR is trying to fix. (Though we might not have an issue to track this detail, and we probably should!)</p>
+<p>try/except blocks don&#x27;t create new scopes in Python; most variables defined in exception handlers will persist until after the block has finished. Bindings created using <code>as</code> in the <code>except</code> itself are however special-cased by the interpreter — the interpreter literally inserts an implicit <code>del</code> statement for that specific variable prior to the block ending. This is to reduce the chance of creating reference cycles, which would otherwise be very common for this kind of pattern and would create a lot of unnecessary work for the garbage collector.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -118,7 +118,7 @@ ZeroDivisionError('division by zero')
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:5686 on 2024-10-04 22:57</div>
-            <div class="timeline-body"><p>I discussed this issue in more depth in the PR description to one of my previous PRs, and there's some discussion in that PR thread of how we plan to model this: https://github.com/astral-sh/ruff/pull/13267#issue-2510259051</p>
+            <div class="timeline-body"><p>I discussed this issue in more depth in the PR description to one of my previous PRs, and there&#x27;s some discussion in that PR thread of how we plan to model this: <a href="https://github.com/astral-sh/ruff/pull/13267">astral-sh/ruff#13267</a>#issue-2510259051</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -127,7 +127,7 @@ ZeroDivisionError('division by zero')
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:5686 on 2024-10-05 14:41</div>
-            <div class="timeline-body"><p>Created https://github.com/astral-sh/ruff/issues/13641 to track this.</p>
+            <div class="timeline-body"><p>Created <a href="https://github.com/astral-sh/ruff/issues/13641">astral-sh/ruff#13641</a> to track this.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -141,8 +141,8 @@ ZeroDivisionError('division by zero')
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:895 on 2024-10-05 14:59</div>
-            <div class="timeline-body"><p>Ah, this is tricky indeed. I hadn't fully understood the awkward consequences of the way finally blocks work for our CFG. Thanks for taking the time to think this through!</p>
-<p>Unfortunately I don't think this approach (of storing and then re-applying Definitions in the finally block) is going to give us the right results. Consider a case like this:</p>
+            <div class="timeline-body"><p>Ah, this is tricky indeed. I hadn&#x27;t fully understood the awkward consequences of the way finally blocks work for our CFG. Thanks for taking the time to think this through!</p>
+<p>Unfortunately I don&#x27;t think this approach (of storing and then re-applying Definitions in the finally block) is going to give us the right results. Consider a case like this:</p>
 <pre><code>x = 1
 try:
     x = could_raise_returns_str()
@@ -151,15 +151,15 @@ finally:
 reveal_type(y)
 </code></pre>
 <p>The correct revealed type for <code>y</code> is <code>str</code>, because in any case where code flow continues after the <code>finally</code>, that means the <code>try</code> block actually completed without an exception. But this PR currently gives the revealed type as <code>Literal[1] | str</code>. By storing and reapplying the <code>Definition</code> for <code>y</code>, we get the type of the RHS from the scenario where we might have an exception.</p>
-<p>I think the only way to handle this correctly is to, in some form, duplicate or double visit the <code>finally</code> block. We effectively need to type it twice, once under the assumption that any code it protects might have raised, and again under the assumption that it didn't.</p>
-<p>This will be a significant bit of work, as it troubles some core assumptions we have about visiting every expression exactly once. I don't think we should do it in this PR.</p>
-<p>But I also don't think we should do this store-and-reapply-definitions thing, either, for two reasons. One is that I think it's just generally important for correctness that we maintain the control-flow-graph abstraction and don't work around it with tricks like this. The other is just about the tradeoff in semantics for Python code. Until/unless we get to a correct double-visit fix, I think the best tradeoff is to accept some false negatives while checking the <code>finally</code> block itself, but ensure we get the types correct after the <code>finally</code> block. In other words, for now I think we should just visit the finally block under the no-exceptions assumption.</p>
+<p>I think the only way to handle this correctly is to, in some form, duplicate or double visit the <code>finally</code> block. We effectively need to type it twice, once under the assumption that any code it protects might have raised, and again under the assumption that it didn&#x27;t.</p>
+<p>This will be a significant bit of work, as it troubles some core assumptions we have about visiting every expression exactly once. I don&#x27;t think we should do it in this PR.</p>
+<p>But I also don&#x27;t think we should do this store-and-reapply-definitions thing, either, for two reasons. One is that I think it&#x27;s just generally important for correctness that we maintain the control-flow-graph abstraction and don&#x27;t work around it with tricks like this. The other is just about the tradeoff in semantics for Python code. Until/unless we get to a correct double-visit fix, I think the best tradeoff is to accept some false negatives while checking the <code>finally</code> block itself, but ensure we get the types correct after the <code>finally</code> block. In other words, for now I think we should just visit the finally block under the no-exceptions assumption.</p>
 <p>What do you think?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-05 15:00</div>
-            <div class="timeline-body"><p>Haven't fully reviewed yet, just one kind of fundamental thing that jumped out at me on first look, would like to get your thoughts on that.</p>
+            <div class="timeline-body"><p>Haven&#x27;t fully reviewed yet, just one kind of fundamental thing that jumped out at me on first look, would like to get your thoughts on that.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -171,7 +171,7 @@ reveal_type(y)
             <div class="timeline-body"><blockquote>
 <p>Should we add TODO comments for test assertions that we know should change in the future?</p>
 </blockquote>
-<p>Now that we have <code>reveal_type</code> support, I think I can actually just fix them so that they don't need to change in this PR at all. I'll split that out into a separate PR.</p>
+<p>Now that we have <code>reveal_type</code> support, I think I can actually just fix them so that they don&#x27;t need to change in this PR at all. I&#x27;ll split that out into a separate PR.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -194,14 +194,14 @@ reveal_type(y)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:895 on 2024-10-05 15:38</div>
-            <div class="timeline-body"><p>Thanks for the great example that shows the flaws in this approach! Ugh, I really thought I'd covered everything this time 🫠 This was, as I'm sure you guessed, the bit of this PR that I was least sure about.</p>
+            <div class="timeline-body"><p>Thanks for the great example that shows the flaws in this approach! Ugh, I really thought I&#x27;d covered everything this time 🫠 This was, as I&#x27;m sure you guessed, the bit of this PR that I was least sure about.</p>
 <blockquote>
-<p>But I also don't think we should do this store-and-reapply-definitions thing, either, for two reasons. One is that I think it's just generally important for correctness that we maintain the control-flow-graph abstraction and don't work around it with tricks like this. The other is just about the tradeoff in semantics for Python code. Until/unless we get to a correct double-visit fix, I think the best tradeoff is to accept some false negatives while checking the <code>finally</code> block itself, but ensure we get the types correct after the <code>finally</code> block. In other words, for now I think we should just visit the finally block under the no-exceptions assumption.</p>
+<p>But I also don&#x27;t think we should do this store-and-reapply-definitions thing, either, for two reasons. One is that I think it&#x27;s just generally important for correctness that we maintain the control-flow-graph abstraction and don&#x27;t work around it with tricks like this. The other is just about the tradeoff in semantics for Python code. Until/unless we get to a correct double-visit fix, I think the best tradeoff is to accept some false negatives while checking the <code>finally</code> block itself, but ensure we get the types correct after the <code>finally</code> block. In other words, for now I think we should just visit the finally block under the no-exceptions assumption.</p>
 <p>What do you think?</p>
 </blockquote>
 <p>I think this makes me a little sad after I spent so much time thinking about <code>finally</code> blocks 😆</p>
 <p>I think it is pretty important that we fix this eventually. In the long run, this will lead to false positives as well as false negatives. For example, when we start emitting diagnostics for unreachable code, we will emit spurious errors on the <code>if</code> branch inside the <code>finally</code> block in this snippet, as we will incorrectly infer it as being unreachable:</p>
-<pre><code class="language-py">x = 42
+<pre><code>x = 42
 
 try:
     x = could_raise_returns_int()
@@ -213,13 +213,13 @@ else:
     x = &quot;foo&quot;
 finally:
     if isinstance(x, int):
-        ...  # we'd probably detect this as unreachable
+        ...  # we&#x27;d probably detect this as unreachable
              # unless we consider the fact that we might have jumped to the `finally`
              # branch from halfway through an `except` or `else` branch
     else:
         ...
 </code></pre>
-<p>Another way I thought of trying to fix this &quot;awkwardness&quot; was to utilise the fact that we know that <code>try</code>/<code>except</code> blocks with <code>finally</code> branches desugar to nested <code>try</code>/<code>except</code> blocks. We could attempt to &quot;synthesize&quot; a nested <code>StmtTry</code> node if we see that a <code>StmtTry</code> node has a non-empty <code>finally</code> suite. (Not actually <em>create</em> a synthetic <code>StmtTry</code> node, but visit the <code>StmtTry</code> node exactly as if it were a nested <code>StmtTry</code> inside another <code>StmtTry</code>.) I actually started off trying to do that, but quickly stopped as this PR's current approach seemed like a simpler solution. (And I was also not sure how this would work with the assertions we have that you mentioned above, about only ever visiting every expression once.) Given the issue you just pointed out in your example, it seems like that probably is the only good way of doing it, though; there doesn't seem to be any way of taking shortcuts while respecting Python's semantics properly.</p>
+<p>Another way I thought of trying to fix this &quot;awkwardness&quot; was to utilise the fact that we know that <code>try</code>/<code>except</code> blocks with <code>finally</code> branches desugar to nested <code>try</code>/<code>except</code> blocks. We could attempt to &quot;synthesize&quot; a nested <code>StmtTry</code> node if we see that a <code>StmtTry</code> node has a non-empty <code>finally</code> suite. (Not actually <em>create</em> a synthetic <code>StmtTry</code> node, but visit the <code>StmtTry</code> node exactly as if it were a nested <code>StmtTry</code> inside another <code>StmtTry</code>.) I actually started off trying to do that, but quickly stopped as this PR&#x27;s current approach seemed like a simpler solution. (And I was also not sure how this would work with the assertions we have that you mentioned above, about only ever visiting every expression once.) Given the issue you just pointed out in your example, it seems like that probably is the only good way of doing it, though; there doesn&#x27;t seem to be any way of taking shortcuts while respecting Python&#x27;s semantics properly.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -228,7 +228,7 @@ finally:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:895 on 2024-10-05 16:12</div>
-            <div class="timeline-body"><p>Yeah, I think you're right that we will want to fix this.</p>
+            <div class="timeline-body"><p>Yeah, I think you&#x27;re right that we will want to fix this.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -246,7 +246,7 @@ finally:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:895 on 2024-10-05 17:42</div>
-            <div class="timeline-body"><p>I've written up your edge case in my document describing control-flow semantics for exception handlers. It's <em>very</em> specific! I believe it only applies to <code>StmtTry</code> nodes that:</p>
+            <div class="timeline-body"><p>I&#x27;ve written up your edge case in my document describing control-flow semantics for exception handlers. It&#x27;s <em>very</em> specific! I believe it only applies to <code>StmtTry</code> nodes that:</p>
 <ul>
 <li>have <code>finally</code> blocks, and either:<ul>
 <li>do not have any <code>except</code> branches, or</li>
@@ -254,7 +254,7 @@ finally:
 </ul>
 </li>
 </ul>
-<p>The specificity of the edge case doesn't mean that it's unimportant to consider, however.</p>
+<p>The specificity of the edge case doesn&#x27;t mean that it&#x27;s unimportant to consider, however.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -263,7 +263,7 @@ finally:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:895 on 2024-10-05 17:47</div>
-            <div class="timeline-body"><p>I think it also applies to try blocks with except handlers, it's just that the issue shifts to considering the possibility of an exception in the exception handler, rather than an exception in the try block?</p>
+            <div class="timeline-body"><p>I think it also applies to try blocks with except handlers, it&#x27;s just that the issue shifts to considering the possibility of an exception in the exception handler, rather than an exception in the try block?</p>
 <p>And try/finally without except handlers is not an uncommon case.</p>
 </div>
         </div>
@@ -274,7 +274,7 @@ finally:
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:895 on 2024-10-05 17:50</div>
             <div class="timeline-body"><blockquote>
-<p>I think it also applies to try blocks with except handlers, it's just that the issue shifts to considering the possibility of an exception in the exception handler, rather than an exception in the try block?</p>
+<p>I think it also applies to try blocks with except handlers, it&#x27;s just that the issue shifts to considering the possibility of an exception in the exception handler, rather than an exception in the try block?</p>
 </blockquote>
 <p>Ah, great point.</p>
 <blockquote>
@@ -285,30 +285,30 @@ finally:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-13 14:46</div>
-            <div class="timeline-body"><p>(I still have yet to address @carljm's feedback, which is going to require a somewhat significant rewrite. I just pushed some changes to rewrite the tests using <code>mdtest</code>.)</p>
+            <div class="timeline-body"><p>(I still have yet to address @carljm&#x27;s feedback, which is going to require a somewhat significant rewrite. I just pushed some changes to rewrite the tests using <code>mdtest</code>.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-13 15:55</div>
-            <div class="timeline-body"><p>We may or may not want to add a lot of the <code>finally</code>-related infrastructure back when we add accurate inference for <code>finally</code> blocks in the future, so rather than pushing to this PR branch I've created yet another new PR here: https://github.com/astral-sh/ruff/pull/13729. That's so it'll be easy to see exactly what the <code>finally</code>-related infrastructure looked like before we decided for now to assume that there are no currently-suspended exceptions in the <code>finally</code> block.</p>
-<p>TL;DR: I'm closing this for now; astral-sh/ruff#13729 is the new version that addresses @carljm's comments!</p>
+            <div class="timeline-body"><p>We may or may not want to add a lot of the <code>finally</code>-related infrastructure back when we add accurate inference for <code>finally</code> blocks in the future, so rather than pushing to this PR branch I&#x27;ve created yet another new PR here: <a href="https://github.com/astral-sh/ruff/pull/13729">astral-sh/ruff#13729</a>. That&#x27;s so it&#x27;ll be easy to see exactly what the <code>finally</code>-related infrastructure looked like before we decided for now to assume that there are no currently-suspended exceptions in the <code>finally</code> block.</p>
+<p>TL;DR: I&#x27;m closing this for now; astral-sh/ruff#13729 is the new version that addresses @carljm&#x27;s comments!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2024-10-13 15:55</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-13 15:55</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-10-13 15:55</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-10-14 18:28</div>
-            <div class="timeline-body"><p>Another thing I realized that we'll need to take into account when we do smarter handling for <code>finally</code> blocks is that if a <code>finally</code> block contains a <code>continue</code> or <code>break</code> statement, that can result in further code in the same scope seeing the results of executing a <code>finally</code> block when it was entered via exception.</p>
+            <div class="timeline-body"><p>Another thing I realized that we&#x27;ll need to take into account when we do smarter handling for <code>finally</code> blocks is that if a <code>finally</code> block contains a <code>continue</code> or <code>break</code> statement, that can result in further code in the same scope seeing the results of executing a <code>finally</code> block when it was entered via exception.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:06:51 UTC
+        Synced at 2026-01-20 19:07:13 UTC
     </footer>
 </body>
 </html>

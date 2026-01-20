@@ -24,71 +24,71 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/plredmond">@plredmond</a></div>
             <div class="timeline-body"><p>Resolves #10187</p>
-<details>
-<summary>Old PR description; accurate through commit e86dd7d; probably best to leave this fold closed</summary>
 
-<h2>Description of change</h2>
+Old PR description; accurate through commit e86dd7d; probably best to leave this fold closed
+
+Description of change
 <p>In the case of a printf-style format string with only one %-placeholder and a variable at right (e.g.  <code>&quot;%s&quot; % var</code>):</p>
 <ul>
 <li>The new behavior attempts to dereference the variable and then match on the bound expression to distinguish between a 1-tuple (fix), n-tuple (bug :bug:), or a non-tuple (fix). Dereferencing is via <code>analyze::typing::find_binding_value</code>.</li>
 <li>If the variable cannot be dereferenced, then the type-analysis routine is called to distinguish only tuple (no-fix) or non-tuple (fix). Type analysis is via <code>analyze::typing::is_tuple</code>.</li>
 <li>If any of the above fails, the rule still fires, but no fix is offered.</li>
 </ul>
-<h2>Alternatives</h2>
+Alternatives
 <ul>
 <li>If the reviewers think that singling out the 1-tuple case is too complicated, I will remove that.</li>
 <li>The ecosystem results show that no new fixes are detected. So I could probably delete all the variable dereferencing code and code that tries to generate fixes, tbh.</li>
 </ul>
-<h2>Changes to existing behavior</h2>
+Changes to existing behavior
 <p><strong>All the previous rule-firings and fixes are unchanged except for</strong> the &quot;false negatives&quot; in <code>crates/ruff_linter/resources/test/fixtures/pyupgrade/UP031_1.py</code>. Those previous &quot;false negatives&quot; are now true positives and so I moved them to <code>crates/ruff_linter/resources/test/fixtures/pyupgrade/UP031_0.py</code>.</p>
-<details>
-<summary>Existing false negatives that are now true positives</summary>
+
+Existing false negatives that are now true positives
 
 <pre><code>crates/ruff_linter/resources/test/fixtures/pyupgrade/UP031_0.py:134:1: UP031 Use format specifiers instead of percent format
     |
 133 | # UP031 (no longer false negatives)
-134 | 'Hello %s' % bar
+134 | &#x27;Hello %s&#x27; % bar
     | ^^^^^^^^^^^^^^^^ UP031
 135 |
-136 | 'Hello %s' % bar.baz
+136 | &#x27;Hello %s&#x27; % bar.baz
     |
     = help: Replace with format specifiers
 
 crates/ruff_linter/resources/test/fixtures/pyupgrade/UP031_0.py:136:1: UP031 Use format specifiers instead of percent format
     |
-134 | 'Hello %s' % bar
+134 | &#x27;Hello %s&#x27; % bar
 135 |
-136 | 'Hello %s' % bar.baz
+136 | &#x27;Hello %s&#x27; % bar.baz
     | ^^^^^^^^^^^^^^^^^^^^ UP031
 137 |
-138 | 'Hello %s' % bar['bop']
+138 | &#x27;Hello %s&#x27; % bar[&#x27;bop&#x27;]
     |
     = help: Replace with format specifiers
 
 crates/ruff_linter/resources/test/fixtures/pyupgrade/UP031_0.py:138:1: UP031 Use format specifiers instead of percent format
     |
-136 | 'Hello %s' % bar.baz
+136 | &#x27;Hello %s&#x27; % bar.baz
 137 |
-138 | 'Hello %s' % bar['bop']
+138 | &#x27;Hello %s&#x27; % bar[&#x27;bop&#x27;]
     | ^^^^^^^^^^^^^^^^^^^^^^^ UP031
     |
     = help: Replace with format specifiers
 </code></pre>
 <p>One of them newly offers a fix.</p>
 <pre><code> # UP031 (no longer false negatives)
--'Hello %s' % bar
-+'Hello {}'.format(bar)
+-&#x27;Hello %s&#x27; % bar
++&#x27;Hello {}&#x27;.format(bar)
 </code></pre>
 <p>This fix occurs because the new code dereferences <code>bar</code> to where it was defined earlier in the file as a non-tuple:</p>
-<pre><code class="language-python">bar = {&quot;bar&quot;: y}
+<pre><code>bar = {&quot;bar&quot;: y}
 </code></pre>
-<hr />
-</details>
+<hr>
 
-<h2>Behavior requiring new tests</h2>
-<p>Additionally, we now handle a few cases that we didn't previously test. These cases are when a string has a single %-placeholder and the righthand operand to the modulo operator is a variable <strong>which can be dereferenced.</strong> One of those was shown in the previous section (the &quot;dereference non-tuple&quot; case).</p>
-<details>
-<summary>New cases handled</summary>
+
+Behavior requiring new tests
+<p>Additionally, we now handle a few cases that we didn&#x27;t previously test. These cases are when a string has a single %-placeholder and the righthand operand to the modulo operator is a variable <strong>which can be dereferenced.</strong> One of those was shown in the previous section (the &quot;dereference non-tuple&quot; case).</p>
+
+New cases handled
 
 <pre><code>crates/ruff_linter/resources/test/fixtures/pyupgrade/UP031_0.py:126:1: UP031 [*] Use format specifiers instead of percent format
     |
@@ -114,413 +114,413 @@ crates/ruff_linter/resources/test/fixtures/pyupgrade/UP031_0.py:130:1: UP031 Use
 +&quot;{}&quot;.format(t1[0])
  # UP031: deref t1 to 1-tuple, offer fix
 </code></pre>
-<p>The other doesn't offer a fix because it's a bug.</p>
-<hr />
-</details>
+<p>The other doesn&#x27;t offer a fix because it&#x27;s a bug.</p>
+<hr>
 
-<hr />
-</details>
 
-<h2>Changes to existing behavior</h2>
+<hr>
+
+
+Changes to existing behavior
 <p>In the case of a string with a single %-placeholder and a single ambiguous righthand argument to the modulo operator, (e.g. <code>&quot;%s&quot; % var</code>) the rule now fires and offers a fix. We explain about this in the &quot;fix safety&quot; section of the updated documentation.</p>
-<h2>Documentation changes</h2>
+Documentation changes
 <p>I swapped the order of the &quot;known problems&quot; and the &quot;examples&quot; sections so that the examples which describe the rule are first, before the exceptions to the rule are described. I also tweaked the language to be more explicit, as I had trouble understanding the documentation at first. The &quot;known problems&quot; section is now &quot;fix safety&quot; but the content is largely similar.</p>
 <p>The diff of the documentation changes looks a little difficult unless you look at the individual commits.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-19 00:40</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+658 -0 violations, +0 -0 fixes in 9 projects; 35 projects unchanged)</p>
-<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+63 -0 violations, +0 -0 fixes)</summary>
+<a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+63 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select ALL</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/interaction/js_callbacks/customjs_for_hover.py#L37'>examples/interaction/js_callbacks/customjs_for_hover.py:37:8:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/models/trail.py#L73'>examples/models/trail.py:73:23:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/models/trail.py#L92'>examples/models/trail.py:92:23:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/server/app/server_auth/app.py#L56'>examples/server/app/server_auth/app.py:56:50:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/application/application.py#L168'>src/bokeh/application/application.py:168:32:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/client/connection.py#L355'>src/bokeh/client/connection.py:355:31:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/command/bootstrap.py#L92'>src/bokeh/command/bootstrap.py:92:13:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/command/subcommands/file_output.py#L88'>src/bokeh/command/subcommands/file_output.py:88:19:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/command/subcommands/serve.py#L487'>src/bokeh/command/subcommands/serve.py:487:19:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/command/subcommands/serve.py#L494'>src/bokeh/command/subcommands/serve.py:494:19:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/interaction/js_callbacks/customjs_for_hover.py#L37">examples/interaction/js_callbacks/customjs_for_hover.py:37:8:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/models/trail.py#L73">examples/models/trail.py:73:23:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/models/trail.py#L92">examples/models/trail.py:92:23:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/server/app/server_auth/app.py#L56">examples/server/app/server_auth/app.py:56:50:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/application/application.py#L168">src/bokeh/application/application.py:168:32:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/client/connection.py#L355">src/bokeh/client/connection.py:355:31:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/command/bootstrap.py#L92">src/bokeh/command/bootstrap.py:92:13:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/command/subcommands/file_output.py#L88">src/bokeh/command/subcommands/file_output.py:88:19:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/command/subcommands/serve.py#L487">src/bokeh/command/subcommands/serve.py:487:19:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/command/subcommands/serve.py#L494">src/bokeh/command/subcommands/serve.py:494:19:</a> UP031 Use format specifiers instead of percent format
 ... 53 additional changes omitted for project
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/demisto/content">demisto/content</a> (+326 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/demisto/content">demisto/content</a> (+326 -0 violations, +0 -0 fixes)
 <p>
 
 <pre>
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Accessdata/Integrations/Accessdata/Accessdata.py#L380'>Packs/Accessdata/Integrations/Accessdata/Accessdata.py:380:9:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/ActiveMQ/Integrations/ActiveMQ/ActiveMQ.py#L25'>Packs/ActiveMQ/Integrations/ActiveMQ/ActiveMQ.py:25:25:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/ACME/ACME.py#L176'>Packs/Ansible_Powered_Integrations/Integrations/ACME/ACME.py:176:40:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/AlibabaCloud/AlibabaCloud.py#L136'>Packs/Ansible_Powered_Integrations/Integrations/AlibabaCloud/AlibabaCloud.py:136:40:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/AzureComputeV3/AzureComputeV3.py#L136'>Packs/Ansible_Powered_Integrations/Integrations/AzureComputeV3/AzureComputeV3.py:136:40:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/AzureNetworking/AzureNetworking.py#L136'>Packs/Ansible_Powered_Integrations/Integrations/AzureNetworking/AzureNetworking.py:136:40:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/CiscoIOS/CiscoIOS.py#L181'>Packs/Ansible_Powered_Integrations/Integrations/CiscoIOS/CiscoIOS.py:181:40:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/CiscoNXOS/CiscoNXOS.py#L181'>Packs/Ansible_Powered_Integrations/Integrations/CiscoNXOS/CiscoNXOS.py:181:40:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/DNS/DNS.py#L136'>Packs/Ansible_Powered_Integrations/Integrations/DNS/DNS.py:136:40:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/HCloud/HCloud.py#L136'>Packs/Ansible_Powered_Integrations/Integrations/HCloud/HCloud.py:136:40:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/Kubernetes/Kubernetes.py#L136'>Packs/Ansible_Powered_Integrations/Integrations/Kubernetes/Kubernetes.py:136:40:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/Linux/Linux.py#L176'>Packs/Ansible_Powered_Integrations/Integrations/Linux/Linux.py:176:40:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/MicrosoftWindows/MicrosoftWindows.py#L173'>Packs/Ansible_Powered_Integrations/Integrations/MicrosoftWindows/MicrosoftWindows.py:173:40:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/OpenSSL/OpenSSL.py#L176'>Packs/Ansible_Powered_Integrations/Integrations/OpenSSL/OpenSSL.py:176:40:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/VMwareV2/VMwareV2.py#L136'>Packs/Ansible_Powered_Integrations/Integrations/VMwareV2/VMwareV2.py:136:40:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/AwakeSecurity/Integrations/AwakeSecurity/AwakeSecurity.py#L447'>Packs/AwakeSecurity/Integrations/AwakeSecurity/AwakeSecurity.py:447:5:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/BMCDiscovery/Integrations/BMCDiscovery/BMCDiscovery.py#L336'>Packs/BMCDiscovery/Integrations/BMCDiscovery/BMCDiscovery.py:336:64:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/BMCDiscovery/Integrations/BMCDiscovery/BMCDiscovery.py#L56'>Packs/BMCDiscovery/Integrations/BMCDiscovery/BMCDiscovery.py:56:21:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/BMCDiscovery/Integrations/BMCDiscovery/BMCDiscovery.py#L58'>Packs/BMCDiscovery/Integrations/BMCDiscovery/BMCDiscovery.py:58:21:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Base/Scripts/DBotFindSimilarIncidents/DBotFindSimilarIncidents.py#L386'>Packs/Base/Scripts/DBotFindSimilarIncidents/DBotFindSimilarIncidents.py:386:27:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Base/Scripts/DBotFindSimilarIncidents/DBotFindSimilarIncidents.py#L481'>Packs/Base/Scripts/DBotFindSimilarIncidents/DBotFindSimilarIncidents.py:481:41:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Base/Scripts/DBotFindSimilarIncidents/DBotFindSimilarIncidents.py#L490'>Packs/Base/Scripts/DBotFindSimilarIncidents/DBotFindSimilarIncidents.py:490:17:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Base/Scripts/DBotFindSimilarIncidents/DBotFindSimilarIncidents.py#L539'>Packs/Base/Scripts/DBotFindSimilarIncidents/DBotFindSimilarIncidents.py:539:26:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Base/Scripts/DBotFindSimilarIncidents/DBotFindSimilarIncidents.py#L588'>Packs/Base/Scripts/DBotFindSimilarIncidents/DBotFindSimilarIncidents.py:588:20:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Accessdata/Integrations/Accessdata/Accessdata.py#L380">Packs/Accessdata/Integrations/Accessdata/Accessdata.py:380:9:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/ActiveMQ/Integrations/ActiveMQ/ActiveMQ.py#L25">Packs/ActiveMQ/Integrations/ActiveMQ/ActiveMQ.py:25:25:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/ACME/ACME.py#L176">Packs/Ansible_Powered_Integrations/Integrations/ACME/ACME.py:176:40:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/AlibabaCloud/AlibabaCloud.py#L136">Packs/Ansible_Powered_Integrations/Integrations/AlibabaCloud/AlibabaCloud.py:136:40:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/AzureComputeV3/AzureComputeV3.py#L136">Packs/Ansible_Powered_Integrations/Integrations/AzureComputeV3/AzureComputeV3.py:136:40:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/AzureNetworking/AzureNetworking.py#L136">Packs/Ansible_Powered_Integrations/Integrations/AzureNetworking/AzureNetworking.py:136:40:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/CiscoIOS/CiscoIOS.py#L181">Packs/Ansible_Powered_Integrations/Integrations/CiscoIOS/CiscoIOS.py:181:40:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/CiscoNXOS/CiscoNXOS.py#L181">Packs/Ansible_Powered_Integrations/Integrations/CiscoNXOS/CiscoNXOS.py:181:40:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/DNS/DNS.py#L136">Packs/Ansible_Powered_Integrations/Integrations/DNS/DNS.py:136:40:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/HCloud/HCloud.py#L136">Packs/Ansible_Powered_Integrations/Integrations/HCloud/HCloud.py:136:40:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/Kubernetes/Kubernetes.py#L136">Packs/Ansible_Powered_Integrations/Integrations/Kubernetes/Kubernetes.py:136:40:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/Linux/Linux.py#L176">Packs/Ansible_Powered_Integrations/Integrations/Linux/Linux.py:176:40:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/MicrosoftWindows/MicrosoftWindows.py#L173">Packs/Ansible_Powered_Integrations/Integrations/MicrosoftWindows/MicrosoftWindows.py:173:40:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/OpenSSL/OpenSSL.py#L176">Packs/Ansible_Powered_Integrations/Integrations/OpenSSL/OpenSSL.py:176:40:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/VMwareV2/VMwareV2.py#L136">Packs/Ansible_Powered_Integrations/Integrations/VMwareV2/VMwareV2.py:136:40:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/AwakeSecurity/Integrations/AwakeSecurity/AwakeSecurity.py#L447">Packs/AwakeSecurity/Integrations/AwakeSecurity/AwakeSecurity.py:447:5:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/BMCDiscovery/Integrations/BMCDiscovery/BMCDiscovery.py#L336">Packs/BMCDiscovery/Integrations/BMCDiscovery/BMCDiscovery.py:336:64:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/BMCDiscovery/Integrations/BMCDiscovery/BMCDiscovery.py#L56">Packs/BMCDiscovery/Integrations/BMCDiscovery/BMCDiscovery.py:56:21:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/BMCDiscovery/Integrations/BMCDiscovery/BMCDiscovery.py#L58">Packs/BMCDiscovery/Integrations/BMCDiscovery/BMCDiscovery.py:58:21:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Base/Scripts/DBotFindSimilarIncidents/DBotFindSimilarIncidents.py#L386">Packs/Base/Scripts/DBotFindSimilarIncidents/DBotFindSimilarIncidents.py:386:27:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Base/Scripts/DBotFindSimilarIncidents/DBotFindSimilarIncidents.py#L481">Packs/Base/Scripts/DBotFindSimilarIncidents/DBotFindSimilarIncidents.py:481:41:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Base/Scripts/DBotFindSimilarIncidents/DBotFindSimilarIncidents.py#L490">Packs/Base/Scripts/DBotFindSimilarIncidents/DBotFindSimilarIncidents.py:490:17:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Base/Scripts/DBotFindSimilarIncidents/DBotFindSimilarIncidents.py#L539">Packs/Base/Scripts/DBotFindSimilarIncidents/DBotFindSimilarIncidents.py:539:26:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Base/Scripts/DBotFindSimilarIncidents/DBotFindSimilarIncidents.py#L588">Packs/Base/Scripts/DBotFindSimilarIncidents/DBotFindSimilarIncidents.py:588:20:</a> UP031 Use format specifiers instead of percent format
 ... 302 additional changes omitted for project
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/docker/docker-py">docker/docker-py</a> (+1 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/docker/docker-py">docker/docker-py</a> (+1 -0 violations, +0 -0 fixes)
 <p>
 
 <pre>
-+ <a href='https://github.com/docker/docker-py/blob/b6464dbed92b14b2c61d5ee49805fce041a3e083/docker/utils/ports.py#L41'>docker/utils/ports.py:41:22:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/docker/docker-py/blob/b6464dbed92b14b2c61d5ee49805fce041a3e083/docker/utils/ports.py#L41">docker/utils/ports.py:41:22:</a> UP031 Use format specifiers instead of percent format
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/freedomofpress/securedrop">freedomofpress/securedrop</a> (+120 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/freedomofpress/securedrop">freedomofpress/securedrop</a> (+120 -0 violations, +0 -0 fixes)
 <p>
 
 <pre>
-+ <a href='https://github.com/freedomofpress/securedrop/blob/6f7a725097fa02df01d3c8dd467a6faf40bdb3e7/securedrop/models.py#L201'>securedrop/models.py:201:16:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/freedomofpress/securedrop/blob/6f7a725097fa02df01d3c8dd467a6faf40bdb3e7/securedrop/models.py#L299'>securedrop/models.py:299:16:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/freedomofpress/securedrop/blob/6f7a725097fa02df01d3c8dd467a6faf40bdb3e7/securedrop/models.py#L94'>securedrop/models.py:94:16:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/freedomofpress/securedrop/blob/6f7a725097fa02df01d3c8dd467a6faf40bdb3e7/securedrop/pretty_bad_protocol/_logger.py#L66'>securedrop/pretty_bad_protocol/_logger.py:66:14:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/freedomofpress/securedrop/blob/6f7a725097fa02df01d3c8dd467a6faf40bdb3e7/securedrop/pretty_bad_protocol/_meta.py#L1000'>securedrop/pretty_bad_protocol/_meta.py:1000:29:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/freedomofpress/securedrop/blob/6f7a725097fa02df01d3c8dd467a6faf40bdb3e7/securedrop/pretty_bad_protocol/_meta.py#L1026'>securedrop/pretty_bad_protocol/_meta.py:1026:27:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/freedomofpress/securedrop/blob/6f7a725097fa02df01d3c8dd467a6faf40bdb3e7/securedrop/pretty_bad_protocol/_meta.py#L1034'>securedrop/pretty_bad_protocol/_meta.py:1034:23:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/freedomofpress/securedrop/blob/6f7a725097fa02df01d3c8dd467a6faf40bdb3e7/securedrop/pretty_bad_protocol/_meta.py#L1037'>securedrop/pretty_bad_protocol/_meta.py:1037:22:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/freedomofpress/securedrop/blob/6f7a725097fa02df01d3c8dd467a6faf40bdb3e7/securedrop/pretty_bad_protocol/_meta.py#L1048'>securedrop/pretty_bad_protocol/_meta.py:1048:29:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/freedomofpress/securedrop/blob/6f7a725097fa02df01d3c8dd467a6faf40bdb3e7/securedrop/pretty_bad_protocol/_meta.py#L1050'>securedrop/pretty_bad_protocol/_meta.py:1050:29:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/freedomofpress/securedrop/blob/6f7a725097fa02df01d3c8dd467a6faf40bdb3e7/securedrop/models.py#L201">securedrop/models.py:201:16:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/freedomofpress/securedrop/blob/6f7a725097fa02df01d3c8dd467a6faf40bdb3e7/securedrop/models.py#L299">securedrop/models.py:299:16:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/freedomofpress/securedrop/blob/6f7a725097fa02df01d3c8dd467a6faf40bdb3e7/securedrop/models.py#L94">securedrop/models.py:94:16:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/freedomofpress/securedrop/blob/6f7a725097fa02df01d3c8dd467a6faf40bdb3e7/securedrop/pretty_bad_protocol/_logger.py#L66">securedrop/pretty_bad_protocol/_logger.py:66:14:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/freedomofpress/securedrop/blob/6f7a725097fa02df01d3c8dd467a6faf40bdb3e7/securedrop/pretty_bad_protocol/_meta.py#L1000">securedrop/pretty_bad_protocol/_meta.py:1000:29:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/freedomofpress/securedrop/blob/6f7a725097fa02df01d3c8dd467a6faf40bdb3e7/securedrop/pretty_bad_protocol/_meta.py#L1026">securedrop/pretty_bad_protocol/_meta.py:1026:27:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/freedomofpress/securedrop/blob/6f7a725097fa02df01d3c8dd467a6faf40bdb3e7/securedrop/pretty_bad_protocol/_meta.py#L1034">securedrop/pretty_bad_protocol/_meta.py:1034:23:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/freedomofpress/securedrop/blob/6f7a725097fa02df01d3c8dd467a6faf40bdb3e7/securedrop/pretty_bad_protocol/_meta.py#L1037">securedrop/pretty_bad_protocol/_meta.py:1037:22:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/freedomofpress/securedrop/blob/6f7a725097fa02df01d3c8dd467a6faf40bdb3e7/securedrop/pretty_bad_protocol/_meta.py#L1048">securedrop/pretty_bad_protocol/_meta.py:1048:29:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/freedomofpress/securedrop/blob/6f7a725097fa02df01d3c8dd467a6faf40bdb3e7/securedrop/pretty_bad_protocol/_meta.py#L1050">securedrop/pretty_bad_protocol/_meta.py:1050:29:</a> UP031 Use format specifiers instead of percent format
 ... 110 additional changes omitted for project
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+5 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+5 -0 violations, +0 -0 fixes)
 <p>
 
 <pre>
-+ <a href='https://github.com/ibis-project/ibis/blob/88de65d986b21de97782486e2cd5285b0609c057/ibis/backends/postgres/tests/test_functions.py#L746'>ibis/backends/postgres/tests/test_functions.py:746:55:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/ibis-project/ibis/blob/88de65d986b21de97782486e2cd5285b0609c057/ibis/backends/postgres/tests/test_functions.py#L759'>ibis/backends/postgres/tests/test_functions.py:759:34:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/ibis-project/ibis/blob/88de65d986b21de97782486e2cd5285b0609c057/ibis/backends/postgres/tests/test_functions.py#L772'>ibis/backends/postgres/tests/test_functions.py:772:55:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/ibis-project/ibis/blob/88de65d986b21de97782486e2cd5285b0609c057/ibis/backends/risingwave/tests/test_functions.py#L546'>ibis/backends/risingwave/tests/test_functions.py:546:55:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/ibis-project/ibis/blob/88de65d986b21de97782486e2cd5285b0609c057/ibis/backends/risingwave/tests/test_functions.py#L561'>ibis/backends/risingwave/tests/test_functions.py:561:55:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/ibis-project/ibis/blob/88de65d986b21de97782486e2cd5285b0609c057/ibis/backends/postgres/tests/test_functions.py#L746">ibis/backends/postgres/tests/test_functions.py:746:55:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/ibis-project/ibis/blob/88de65d986b21de97782486e2cd5285b0609c057/ibis/backends/postgres/tests/test_functions.py#L759">ibis/backends/postgres/tests/test_functions.py:759:34:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/ibis-project/ibis/blob/88de65d986b21de97782486e2cd5285b0609c057/ibis/backends/postgres/tests/test_functions.py#L772">ibis/backends/postgres/tests/test_functions.py:772:55:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/ibis-project/ibis/blob/88de65d986b21de97782486e2cd5285b0609c057/ibis/backends/risingwave/tests/test_functions.py#L546">ibis/backends/risingwave/tests/test_functions.py:546:55:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/ibis-project/ibis/blob/88de65d986b21de97782486e2cd5285b0609c057/ibis/backends/risingwave/tests/test_functions.py#L561">ibis/backends/risingwave/tests/test_functions.py:561:55:</a> UP031 Use format specifiers instead of percent format
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/mlflow/mlflow">mlflow/mlflow</a> (+33 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/mlflow/mlflow">mlflow/mlflow</a> (+33 -0 violations, +0 -0 fixes)
 <p>
 
 <pre>
-+ <a href='https://github.com/mlflow/mlflow/blob/b455522cb99600c3e271972d4ca87bdb3f3c9a75/examples/pytorch/CaptumExample/Titanic_Captum_Interpret.py#L133'>examples/pytorch/CaptumExample/Titanic_Captum_Interpret.py:133:39:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/mlflow/mlflow/blob/b455522cb99600c3e271972d4ca87bdb3f3c9a75/examples/pytorch/mnist_tensorboard_artifact.py#L218'>examples/pytorch/mnist_tensorboard_artifact.py:218:9:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/mlflow/mlflow/blob/b455522cb99600c3e271972d4ca87bdb3f3c9a75/examples/pytorch/mnist_tensorboard_artifact.py#L226'>examples/pytorch/mnist_tensorboard_artifact.py:226:9:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/mlflow/mlflow/blob/b455522cb99600c3e271972d4ca87bdb3f3c9a75/examples/pytorch/CaptumExample/Titanic_Captum_Interpret.py#L133">examples/pytorch/CaptumExample/Titanic_Captum_Interpret.py:133:39:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/mlflow/mlflow/blob/b455522cb99600c3e271972d4ca87bdb3f3c9a75/examples/pytorch/mnist_tensorboard_artifact.py#L218">examples/pytorch/mnist_tensorboard_artifact.py:218:9:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/mlflow/mlflow/blob/b455522cb99600c3e271972d4ca87bdb3f3c9a75/examples/pytorch/mnist_tensorboard_artifact.py#L226">examples/pytorch/mnist_tensorboard_artifact.py:226:9:</a> UP031 Use format specifiers instead of percent format
 + examples/rapids/mlflow_project/notebooks/rapids_mlflow.ipynb:cell 13:44:18: UP031 Use format specifiers instead of percent format
 + examples/sklearn_elasticnet_wine/train.ipynb:cell 2:66:15: UP031 Use format specifiers instead of percent format
 + examples/sklearn_elasticnet_wine/train.ipynb:cell 2:67:15: UP031 Use format specifiers instead of percent format
 + examples/sklearn_elasticnet_wine/train.ipynb:cell 2:68:15: UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/mlflow/mlflow/blob/b455522cb99600c3e271972d4ca87bdb3f3c9a75/mlflow/legacy_databricks_cli/configure/provider.py#L131'>mlflow/legacy_databricks_cli/configure/provider.py:131:13:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/mlflow/mlflow/blob/b455522cb99600c3e271972d4ca87bdb3f3c9a75/mlflow/legacy_databricks_cli/configure/provider.py#L175'>mlflow/legacy_databricks_cli/configure/provider.py:175:25:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/mlflow/mlflow/blob/b455522cb99600c3e271972d4ca87bdb3f3c9a75/mlflow/projects/_project_spec.py#L111'>mlflow/projects/_project_spec.py:111:17:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/mlflow/mlflow/blob/b455522cb99600c3e271972d4ca87bdb3f3c9a75/mlflow/legacy_databricks_cli/configure/provider.py#L131">mlflow/legacy_databricks_cli/configure/provider.py:131:13:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/mlflow/mlflow/blob/b455522cb99600c3e271972d4ca87bdb3f3c9a75/mlflow/legacy_databricks_cli/configure/provider.py#L175">mlflow/legacy_databricks_cli/configure/provider.py:175:25:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/mlflow/mlflow/blob/b455522cb99600c3e271972d4ca87bdb3f3c9a75/mlflow/projects/_project_spec.py#L111">mlflow/projects/_project_spec.py:111:17:</a> UP031 Use format specifiers instead of percent format
 ... 23 additional changes omitted for project
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/python/mypy">python/mypy</a> (+82 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/python/mypy">python/mypy</a> (+82 -0 violations, +0 -0 fixes)
 <p>
 
 <pre>
-+ <a href='https://github.com/python/mypy/blob/df35dcf020b3b03a8e3280edf8ada8c6ad8e0da5/misc/dump-ast.py#L42'>misc/dump-ast.py:42:34:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/python/mypy/blob/df35dcf020b3b03a8e3280edf8ada8c6ad8e0da5/misc/gen_blog_post_html.py#L31'>misc/gen_blog_post_html.py:31:26:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/python/mypy/blob/df35dcf020b3b03a8e3280edf8ada8c6ad8e0da5/mypy/config_parser.py#L346'>mypy/config_parser.py:346:27:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/python/mypy/blob/df35dcf020b3b03a8e3280edf8ada8c6ad8e0da5/mypy/config_parser.py#L666'>mypy/config_parser.py:666:12:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/python/mypy/blob/df35dcf020b3b03a8e3280edf8ada8c6ad8e0da5/mypy/dmypy/client.py#L599'>mypy/dmypy/client.py:599:37:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/python/mypy/blob/df35dcf020b3b03a8e3280edf8ada8c6ad8e0da5/mypy/main.py#L1320'>mypy/main.py:1320:13:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/python/mypy/blob/df35dcf020b3b03a8e3280edf8ada8c6ad8e0da5/mypy/main.py#L1487'>mypy/main.py:1487:17:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/python/mypy/blob/df35dcf020b3b03a8e3280edf8ada8c6ad8e0da5/mypy/main.py#L1491'>mypy/main.py:1491:17:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/python/mypy/blob/df35dcf020b3b03a8e3280edf8ada8c6ad8e0da5/mypy/semanal.py#L2015'>mypy/semanal.py:2015:31:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/python/mypy/blob/df35dcf020b3b03a8e3280edf8ada8c6ad8e0da5/mypy/semanal.py#L2332'>mypy/semanal.py:2332:17:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/python/mypy/blob/df35dcf020b3b03a8e3280edf8ada8c6ad8e0da5/misc/dump-ast.py#L42">misc/dump-ast.py:42:34:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/python/mypy/blob/df35dcf020b3b03a8e3280edf8ada8c6ad8e0da5/misc/gen_blog_post_html.py#L31">misc/gen_blog_post_html.py:31:26:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/python/mypy/blob/df35dcf020b3b03a8e3280edf8ada8c6ad8e0da5/mypy/config_parser.py#L346">mypy/config_parser.py:346:27:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/python/mypy/blob/df35dcf020b3b03a8e3280edf8ada8c6ad8e0da5/mypy/config_parser.py#L666">mypy/config_parser.py:666:12:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/python/mypy/blob/df35dcf020b3b03a8e3280edf8ada8c6ad8e0da5/mypy/dmypy/client.py#L599">mypy/dmypy/client.py:599:37:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/python/mypy/blob/df35dcf020b3b03a8e3280edf8ada8c6ad8e0da5/mypy/main.py#L1320">mypy/main.py:1320:13:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/python/mypy/blob/df35dcf020b3b03a8e3280edf8ada8c6ad8e0da5/mypy/main.py#L1487">mypy/main.py:1487:17:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/python/mypy/blob/df35dcf020b3b03a8e3280edf8ada8c6ad8e0da5/mypy/main.py#L1491">mypy/main.py:1491:17:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/python/mypy/blob/df35dcf020b3b03a8e3280edf8ada8c6ad8e0da5/mypy/semanal.py#L2015">mypy/semanal.py:2015:31:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/python/mypy/blob/df35dcf020b3b03a8e3280edf8ada8c6ad8e0da5/mypy/semanal.py#L2332">mypy/semanal.py:2332:17:</a> UP031 Use format specifiers instead of percent format
 ... 72 additional changes omitted for project
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/scikit-build/scikit-build">scikit-build/scikit-build</a> (+4 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/scikit-build/scikit-build">scikit-build/scikit-build</a> (+4 -0 violations, +0 -0 fixes)
 <p>
 
 <pre>
-+ <a href='https://github.com/scikit-build/scikit-build/blob/c97af94e3a5d4ba2228cd5425e1290e5bb4ee30a/tests/test_hello_fortran.py#L61'>tests/test_hello_fortran.py:61:9:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/scikit-build/scikit-build/blob/c97af94e3a5d4ba2228cd5425e1290e5bb4ee30a/tests/test_hello_fortran.py#L62'>tests/test_hello_fortran.py:62:9:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/scikit-build/scikit-build/blob/c97af94e3a5d4ba2228cd5425e1290e5bb4ee30a/tests/test_issue342_cmake_osx_args_in_setup.py#L156'>tests/test_issue342_cmake_osx_args_in_setup.py:156:41:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/scikit-build/scikit-build/blob/c97af94e3a5d4ba2228cd5425e1290e5bb4ee30a/tests/test_setup.py#L349'>tests/test_setup.py:349:45:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/scikit-build/scikit-build/blob/c97af94e3a5d4ba2228cd5425e1290e5bb4ee30a/tests/test_hello_fortran.py#L61">tests/test_hello_fortran.py:61:9:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/scikit-build/scikit-build/blob/c97af94e3a5d4ba2228cd5425e1290e5bb4ee30a/tests/test_hello_fortran.py#L62">tests/test_hello_fortran.py:62:9:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/scikit-build/scikit-build/blob/c97af94e3a5d4ba2228cd5425e1290e5bb4ee30a/tests/test_issue342_cmake_osx_args_in_setup.py#L156">tests/test_issue342_cmake_osx_args_in_setup.py:156:41:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/scikit-build/scikit-build/blob/c97af94e3a5d4ba2228cd5425e1290e5bb4ee30a/tests/test_setup.py#L349">tests/test_setup.py:349:45:</a> UP031 Use format specifiers instead of percent format
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/indico/indico">indico/indico</a> (+24 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/indico/indico">indico/indico</a> (+24 -0 violations, +0 -0 fixes)
 <p>
 
 <pre>
-+ <a href='https://github.com/indico/indico/blob/fc9d975d16b02bd70a072e0396522b39999081e7/indico/cli/shell.py#L39'>indico/cli/shell.py:39:29:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/indico/indico/blob/fc9d975d16b02bd70a072e0396522b39999081e7/indico/cli/shell.py#L41'>indico/cli/shell.py:41:29:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/indico/indico/blob/fc9d975d16b02bd70a072e0396522b39999081e7/indico/cli/shell.py#L52'>indico/cli/shell.py:52:29:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/indico/indico/blob/fc9d975d16b02bd70a072e0396522b39999081e7/indico/cli/shell.py#L54'>indico/cli/shell.py:54:29:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/indico/indico/blob/fc9d975d16b02bd70a072e0396522b39999081e7/indico/core/db/sqlalchemy/custom/ip_network.py#L44'>indico/core/db/sqlalchemy/custom/ip_network.py:44:22:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/indico/indico/blob/fc9d975d16b02bd70a072e0396522b39999081e7/indico/migrations/versions/20200904_1543_f37d509e221c_add_user_profile_picture_source_column.py#L38'>indico/migrations/versions/20200904_1543_f37d509e221c_add_user_profile_picture_source_column.py:38:16:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/indico/indico/blob/fc9d975d16b02bd70a072e0396522b39999081e7/indico/modules/events/static/offline.py#L196'>indico/modules/events/static/offline.py:196:41:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/indico/indico/blob/fc9d975d16b02bd70a072e0396522b39999081e7/indico/modules/events/static/offline.py#L198'>indico/modules/events/static/offline.py:198:40:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/indico/indico/blob/fc9d975d16b02bd70a072e0396522b39999081e7/indico/modules/events/static/offline.py#L202'>indico/modules/events/static/offline.py:202:42:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/indico/indico/blob/fc9d975d16b02bd70a072e0396522b39999081e7/indico/modules/rb/api.py#L329'>indico/modules/rb/api.py:329:22:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/indico/indico/blob/fc9d975d16b02bd70a072e0396522b39999081e7/indico/cli/shell.py#L39">indico/cli/shell.py:39:29:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/indico/indico/blob/fc9d975d16b02bd70a072e0396522b39999081e7/indico/cli/shell.py#L41">indico/cli/shell.py:41:29:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/indico/indico/blob/fc9d975d16b02bd70a072e0396522b39999081e7/indico/cli/shell.py#L52">indico/cli/shell.py:52:29:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/indico/indico/blob/fc9d975d16b02bd70a072e0396522b39999081e7/indico/cli/shell.py#L54">indico/cli/shell.py:54:29:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/indico/indico/blob/fc9d975d16b02bd70a072e0396522b39999081e7/indico/core/db/sqlalchemy/custom/ip_network.py#L44">indico/core/db/sqlalchemy/custom/ip_network.py:44:22:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/indico/indico/blob/fc9d975d16b02bd70a072e0396522b39999081e7/indico/migrations/versions/20200904_1543_f37d509e221c_add_user_profile_picture_source_column.py#L38">indico/migrations/versions/20200904_1543_f37d509e221c_add_user_profile_picture_source_column.py:38:16:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/indico/indico/blob/fc9d975d16b02bd70a072e0396522b39999081e7/indico/modules/events/static/offline.py#L196">indico/modules/events/static/offline.py:196:41:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/indico/indico/blob/fc9d975d16b02bd70a072e0396522b39999081e7/indico/modules/events/static/offline.py#L198">indico/modules/events/static/offline.py:198:40:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/indico/indico/blob/fc9d975d16b02bd70a072e0396522b39999081e7/indico/modules/events/static/offline.py#L202">indico/modules/events/static/offline.py:202:42:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/indico/indico/blob/fc9d975d16b02bd70a072e0396522b39999081e7/indico/modules/rb/api.py#L329">indico/modules/rb/api.py:329:22:</a> UP031 Use format specifiers instead of percent format
 ... 14 additional changes omitted for project
 </pre>
 
 </p>
-</details>
+
 
 <p><em>... Truncated remaining completed project reports due to GitHub comment length restrictions</em></p>
-<details><summary>Changes by rule (1 rules affected)</summary>
+Changes by rule (1 rules affected)
 <p>
 
 <p>| code | total | + violation | - violation | + fix | - fix |
 | ---- | ------- | --------- | -------- | ----- | ---- |
 | UP031 | 658 | 658 | 0 | 0 | 0 |</p>
 </p>
-</details>
 
-<h3>Linter (preview)</h3>
+
+Linter (preview)
 <p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+658 -0 violations, +0 -0 fixes in 9 projects; 35 projects unchanged)</p>
-<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+63 -0 violations, +0 -0 fixes)</summary>
+<a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+63 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/interaction/js_callbacks/customjs_for_hover.py#L37'>examples/interaction/js_callbacks/customjs_for_hover.py:37:8:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/models/trail.py#L73'>examples/models/trail.py:73:23:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/models/trail.py#L92'>examples/models/trail.py:92:23:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/server/app/server_auth/app.py#L56'>examples/server/app/server_auth/app.py:56:50:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/application/application.py#L168'>src/bokeh/application/application.py:168:32:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/client/connection.py#L355'>src/bokeh/client/connection.py:355:31:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/command/bootstrap.py#L92'>src/bokeh/command/bootstrap.py:92:13:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/command/subcommands/file_output.py#L88'>src/bokeh/command/subcommands/file_output.py:88:19:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/command/subcommands/serve.py#L487'>src/bokeh/command/subcommands/serve.py:487:19:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/command/subcommands/serve.py#L494'>src/bokeh/command/subcommands/serve.py:494:19:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/interaction/js_callbacks/customjs_for_hover.py#L37">examples/interaction/js_callbacks/customjs_for_hover.py:37:8:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/models/trail.py#L73">examples/models/trail.py:73:23:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/models/trail.py#L92">examples/models/trail.py:92:23:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/server/app/server_auth/app.py#L56">examples/server/app/server_auth/app.py:56:50:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/application/application.py#L168">src/bokeh/application/application.py:168:32:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/client/connection.py#L355">src/bokeh/client/connection.py:355:31:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/command/bootstrap.py#L92">src/bokeh/command/bootstrap.py:92:13:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/command/subcommands/file_output.py#L88">src/bokeh/command/subcommands/file_output.py:88:19:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/command/subcommands/serve.py#L487">src/bokeh/command/subcommands/serve.py:487:19:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/command/subcommands/serve.py#L494">src/bokeh/command/subcommands/serve.py:494:19:</a> UP031 Use format specifiers instead of percent format
 ... 53 additional changes omitted for project
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/demisto/content">demisto/content</a> (+326 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/demisto/content">demisto/content</a> (+326 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Accessdata/Integrations/Accessdata/Accessdata.py#L380'>Packs/Accessdata/Integrations/Accessdata/Accessdata.py:380:9:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/ActiveMQ/Integrations/ActiveMQ/ActiveMQ.py#L25'>Packs/ActiveMQ/Integrations/ActiveMQ/ActiveMQ.py:25:25:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/ACME/ACME.py#L176'>Packs/Ansible_Powered_Integrations/Integrations/ACME/ACME.py:176:40:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/AlibabaCloud/AlibabaCloud.py#L136'>Packs/Ansible_Powered_Integrations/Integrations/AlibabaCloud/AlibabaCloud.py:136:40:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/AzureComputeV3/AzureComputeV3.py#L136'>Packs/Ansible_Powered_Integrations/Integrations/AzureComputeV3/AzureComputeV3.py:136:40:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/AzureNetworking/AzureNetworking.py#L136'>Packs/Ansible_Powered_Integrations/Integrations/AzureNetworking/AzureNetworking.py:136:40:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/CiscoIOS/CiscoIOS.py#L181'>Packs/Ansible_Powered_Integrations/Integrations/CiscoIOS/CiscoIOS.py:181:40:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/CiscoNXOS/CiscoNXOS.py#L181'>Packs/Ansible_Powered_Integrations/Integrations/CiscoNXOS/CiscoNXOS.py:181:40:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/DNS/DNS.py#L136'>Packs/Ansible_Powered_Integrations/Integrations/DNS/DNS.py:136:40:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/HCloud/HCloud.py#L136'>Packs/Ansible_Powered_Integrations/Integrations/HCloud/HCloud.py:136:40:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/Kubernetes/Kubernetes.py#L136'>Packs/Ansible_Powered_Integrations/Integrations/Kubernetes/Kubernetes.py:136:40:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/Linux/Linux.py#L176'>Packs/Ansible_Powered_Integrations/Integrations/Linux/Linux.py:176:40:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/MicrosoftWindows/MicrosoftWindows.py#L173'>Packs/Ansible_Powered_Integrations/Integrations/MicrosoftWindows/MicrosoftWindows.py:173:40:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/OpenSSL/OpenSSL.py#L176'>Packs/Ansible_Powered_Integrations/Integrations/OpenSSL/OpenSSL.py:176:40:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/VMwareV2/VMwareV2.py#L136'>Packs/Ansible_Powered_Integrations/Integrations/VMwareV2/VMwareV2.py:136:40:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/AwakeSecurity/Integrations/AwakeSecurity/AwakeSecurity.py#L447'>Packs/AwakeSecurity/Integrations/AwakeSecurity/AwakeSecurity.py:447:5:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/BMCDiscovery/Integrations/BMCDiscovery/BMCDiscovery.py#L336'>Packs/BMCDiscovery/Integrations/BMCDiscovery/BMCDiscovery.py:336:64:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/BMCDiscovery/Integrations/BMCDiscovery/BMCDiscovery.py#L56'>Packs/BMCDiscovery/Integrations/BMCDiscovery/BMCDiscovery.py:56:21:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/BMCDiscovery/Integrations/BMCDiscovery/BMCDiscovery.py#L58'>Packs/BMCDiscovery/Integrations/BMCDiscovery/BMCDiscovery.py:58:21:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Base/Scripts/DBotFindSimilarIncidents/DBotFindSimilarIncidents.py#L386'>Packs/Base/Scripts/DBotFindSimilarIncidents/DBotFindSimilarIncidents.py:386:27:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Base/Scripts/DBotFindSimilarIncidents/DBotFindSimilarIncidents.py#L481'>Packs/Base/Scripts/DBotFindSimilarIncidents/DBotFindSimilarIncidents.py:481:41:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Base/Scripts/DBotFindSimilarIncidents/DBotFindSimilarIncidents.py#L490'>Packs/Base/Scripts/DBotFindSimilarIncidents/DBotFindSimilarIncidents.py:490:17:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Base/Scripts/DBotFindSimilarIncidents/DBotFindSimilarIncidents.py#L539'>Packs/Base/Scripts/DBotFindSimilarIncidents/DBotFindSimilarIncidents.py:539:26:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Base/Scripts/DBotFindSimilarIncidents/DBotFindSimilarIncidents.py#L588'>Packs/Base/Scripts/DBotFindSimilarIncidents/DBotFindSimilarIncidents.py:588:20:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Accessdata/Integrations/Accessdata/Accessdata.py#L380">Packs/Accessdata/Integrations/Accessdata/Accessdata.py:380:9:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/ActiveMQ/Integrations/ActiveMQ/ActiveMQ.py#L25">Packs/ActiveMQ/Integrations/ActiveMQ/ActiveMQ.py:25:25:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/ACME/ACME.py#L176">Packs/Ansible_Powered_Integrations/Integrations/ACME/ACME.py:176:40:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/AlibabaCloud/AlibabaCloud.py#L136">Packs/Ansible_Powered_Integrations/Integrations/AlibabaCloud/AlibabaCloud.py:136:40:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/AzureComputeV3/AzureComputeV3.py#L136">Packs/Ansible_Powered_Integrations/Integrations/AzureComputeV3/AzureComputeV3.py:136:40:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/AzureNetworking/AzureNetworking.py#L136">Packs/Ansible_Powered_Integrations/Integrations/AzureNetworking/AzureNetworking.py:136:40:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/CiscoIOS/CiscoIOS.py#L181">Packs/Ansible_Powered_Integrations/Integrations/CiscoIOS/CiscoIOS.py:181:40:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/CiscoNXOS/CiscoNXOS.py#L181">Packs/Ansible_Powered_Integrations/Integrations/CiscoNXOS/CiscoNXOS.py:181:40:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/DNS/DNS.py#L136">Packs/Ansible_Powered_Integrations/Integrations/DNS/DNS.py:136:40:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/HCloud/HCloud.py#L136">Packs/Ansible_Powered_Integrations/Integrations/HCloud/HCloud.py:136:40:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/Kubernetes/Kubernetes.py#L136">Packs/Ansible_Powered_Integrations/Integrations/Kubernetes/Kubernetes.py:136:40:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/Linux/Linux.py#L176">Packs/Ansible_Powered_Integrations/Integrations/Linux/Linux.py:176:40:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/MicrosoftWindows/MicrosoftWindows.py#L173">Packs/Ansible_Powered_Integrations/Integrations/MicrosoftWindows/MicrosoftWindows.py:173:40:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/OpenSSL/OpenSSL.py#L176">Packs/Ansible_Powered_Integrations/Integrations/OpenSSL/OpenSSL.py:176:40:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Ansible_Powered_Integrations/Integrations/VMwareV2/VMwareV2.py#L136">Packs/Ansible_Powered_Integrations/Integrations/VMwareV2/VMwareV2.py:136:40:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/AwakeSecurity/Integrations/AwakeSecurity/AwakeSecurity.py#L447">Packs/AwakeSecurity/Integrations/AwakeSecurity/AwakeSecurity.py:447:5:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/BMCDiscovery/Integrations/BMCDiscovery/BMCDiscovery.py#L336">Packs/BMCDiscovery/Integrations/BMCDiscovery/BMCDiscovery.py:336:64:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/BMCDiscovery/Integrations/BMCDiscovery/BMCDiscovery.py#L56">Packs/BMCDiscovery/Integrations/BMCDiscovery/BMCDiscovery.py:56:21:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/BMCDiscovery/Integrations/BMCDiscovery/BMCDiscovery.py#L58">Packs/BMCDiscovery/Integrations/BMCDiscovery/BMCDiscovery.py:58:21:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Base/Scripts/DBotFindSimilarIncidents/DBotFindSimilarIncidents.py#L386">Packs/Base/Scripts/DBotFindSimilarIncidents/DBotFindSimilarIncidents.py:386:27:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Base/Scripts/DBotFindSimilarIncidents/DBotFindSimilarIncidents.py#L481">Packs/Base/Scripts/DBotFindSimilarIncidents/DBotFindSimilarIncidents.py:481:41:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Base/Scripts/DBotFindSimilarIncidents/DBotFindSimilarIncidents.py#L490">Packs/Base/Scripts/DBotFindSimilarIncidents/DBotFindSimilarIncidents.py:490:17:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Base/Scripts/DBotFindSimilarIncidents/DBotFindSimilarIncidents.py#L539">Packs/Base/Scripts/DBotFindSimilarIncidents/DBotFindSimilarIncidents.py:539:26:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/demisto/content/blob/6fbe2174ff85a349efc19147e44a5e7f95909482/Packs/Base/Scripts/DBotFindSimilarIncidents/DBotFindSimilarIncidents.py#L588">Packs/Base/Scripts/DBotFindSimilarIncidents/DBotFindSimilarIncidents.py:588:20:</a> UP031 Use format specifiers instead of percent format
 ... 302 additional changes omitted for project
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/docker/docker-py">docker/docker-py</a> (+1 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/docker/docker-py">docker/docker-py</a> (+1 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/docker/docker-py/blob/b6464dbed92b14b2c61d5ee49805fce041a3e083/docker/utils/ports.py#L41'>docker/utils/ports.py:41:22:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/docker/docker-py/blob/b6464dbed92b14b2c61d5ee49805fce041a3e083/docker/utils/ports.py#L41">docker/utils/ports.py:41:22:</a> UP031 Use format specifiers instead of percent format
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/freedomofpress/securedrop">freedomofpress/securedrop</a> (+120 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/freedomofpress/securedrop">freedomofpress/securedrop</a> (+120 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/freedomofpress/securedrop/blob/6f7a725097fa02df01d3c8dd467a6faf40bdb3e7/securedrop/models.py#L201'>securedrop/models.py:201:16:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/freedomofpress/securedrop/blob/6f7a725097fa02df01d3c8dd467a6faf40bdb3e7/securedrop/models.py#L299'>securedrop/models.py:299:16:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/freedomofpress/securedrop/blob/6f7a725097fa02df01d3c8dd467a6faf40bdb3e7/securedrop/models.py#L94'>securedrop/models.py:94:16:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/freedomofpress/securedrop/blob/6f7a725097fa02df01d3c8dd467a6faf40bdb3e7/securedrop/pretty_bad_protocol/_logger.py#L66'>securedrop/pretty_bad_protocol/_logger.py:66:14:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/freedomofpress/securedrop/blob/6f7a725097fa02df01d3c8dd467a6faf40bdb3e7/securedrop/pretty_bad_protocol/_meta.py#L1000'>securedrop/pretty_bad_protocol/_meta.py:1000:29:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/freedomofpress/securedrop/blob/6f7a725097fa02df01d3c8dd467a6faf40bdb3e7/securedrop/pretty_bad_protocol/_meta.py#L1026'>securedrop/pretty_bad_protocol/_meta.py:1026:27:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/freedomofpress/securedrop/blob/6f7a725097fa02df01d3c8dd467a6faf40bdb3e7/securedrop/pretty_bad_protocol/_meta.py#L1034'>securedrop/pretty_bad_protocol/_meta.py:1034:23:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/freedomofpress/securedrop/blob/6f7a725097fa02df01d3c8dd467a6faf40bdb3e7/securedrop/pretty_bad_protocol/_meta.py#L1037'>securedrop/pretty_bad_protocol/_meta.py:1037:22:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/freedomofpress/securedrop/blob/6f7a725097fa02df01d3c8dd467a6faf40bdb3e7/securedrop/pretty_bad_protocol/_meta.py#L1048'>securedrop/pretty_bad_protocol/_meta.py:1048:29:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/freedomofpress/securedrop/blob/6f7a725097fa02df01d3c8dd467a6faf40bdb3e7/securedrop/pretty_bad_protocol/_meta.py#L1050'>securedrop/pretty_bad_protocol/_meta.py:1050:29:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/freedomofpress/securedrop/blob/6f7a725097fa02df01d3c8dd467a6faf40bdb3e7/securedrop/models.py#L201">securedrop/models.py:201:16:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/freedomofpress/securedrop/blob/6f7a725097fa02df01d3c8dd467a6faf40bdb3e7/securedrop/models.py#L299">securedrop/models.py:299:16:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/freedomofpress/securedrop/blob/6f7a725097fa02df01d3c8dd467a6faf40bdb3e7/securedrop/models.py#L94">securedrop/models.py:94:16:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/freedomofpress/securedrop/blob/6f7a725097fa02df01d3c8dd467a6faf40bdb3e7/securedrop/pretty_bad_protocol/_logger.py#L66">securedrop/pretty_bad_protocol/_logger.py:66:14:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/freedomofpress/securedrop/blob/6f7a725097fa02df01d3c8dd467a6faf40bdb3e7/securedrop/pretty_bad_protocol/_meta.py#L1000">securedrop/pretty_bad_protocol/_meta.py:1000:29:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/freedomofpress/securedrop/blob/6f7a725097fa02df01d3c8dd467a6faf40bdb3e7/securedrop/pretty_bad_protocol/_meta.py#L1026">securedrop/pretty_bad_protocol/_meta.py:1026:27:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/freedomofpress/securedrop/blob/6f7a725097fa02df01d3c8dd467a6faf40bdb3e7/securedrop/pretty_bad_protocol/_meta.py#L1034">securedrop/pretty_bad_protocol/_meta.py:1034:23:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/freedomofpress/securedrop/blob/6f7a725097fa02df01d3c8dd467a6faf40bdb3e7/securedrop/pretty_bad_protocol/_meta.py#L1037">securedrop/pretty_bad_protocol/_meta.py:1037:22:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/freedomofpress/securedrop/blob/6f7a725097fa02df01d3c8dd467a6faf40bdb3e7/securedrop/pretty_bad_protocol/_meta.py#L1048">securedrop/pretty_bad_protocol/_meta.py:1048:29:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/freedomofpress/securedrop/blob/6f7a725097fa02df01d3c8dd467a6faf40bdb3e7/securedrop/pretty_bad_protocol/_meta.py#L1050">securedrop/pretty_bad_protocol/_meta.py:1050:29:</a> UP031 Use format specifiers instead of percent format
 ... 110 additional changes omitted for project
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+5 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+5 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/ibis-project/ibis/blob/88de65d986b21de97782486e2cd5285b0609c057/ibis/backends/postgres/tests/test_functions.py#L746'>ibis/backends/postgres/tests/test_functions.py:746:55:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/ibis-project/ibis/blob/88de65d986b21de97782486e2cd5285b0609c057/ibis/backends/postgres/tests/test_functions.py#L759'>ibis/backends/postgres/tests/test_functions.py:759:34:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/ibis-project/ibis/blob/88de65d986b21de97782486e2cd5285b0609c057/ibis/backends/postgres/tests/test_functions.py#L772'>ibis/backends/postgres/tests/test_functions.py:772:55:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/ibis-project/ibis/blob/88de65d986b21de97782486e2cd5285b0609c057/ibis/backends/risingwave/tests/test_functions.py#L546'>ibis/backends/risingwave/tests/test_functions.py:546:55:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/ibis-project/ibis/blob/88de65d986b21de97782486e2cd5285b0609c057/ibis/backends/risingwave/tests/test_functions.py#L561'>ibis/backends/risingwave/tests/test_functions.py:561:55:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/ibis-project/ibis/blob/88de65d986b21de97782486e2cd5285b0609c057/ibis/backends/postgres/tests/test_functions.py#L746">ibis/backends/postgres/tests/test_functions.py:746:55:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/ibis-project/ibis/blob/88de65d986b21de97782486e2cd5285b0609c057/ibis/backends/postgres/tests/test_functions.py#L759">ibis/backends/postgres/tests/test_functions.py:759:34:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/ibis-project/ibis/blob/88de65d986b21de97782486e2cd5285b0609c057/ibis/backends/postgres/tests/test_functions.py#L772">ibis/backends/postgres/tests/test_functions.py:772:55:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/ibis-project/ibis/blob/88de65d986b21de97782486e2cd5285b0609c057/ibis/backends/risingwave/tests/test_functions.py#L546">ibis/backends/risingwave/tests/test_functions.py:546:55:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/ibis-project/ibis/blob/88de65d986b21de97782486e2cd5285b0609c057/ibis/backends/risingwave/tests/test_functions.py#L561">ibis/backends/risingwave/tests/test_functions.py:561:55:</a> UP031 Use format specifiers instead of percent format
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/mlflow/mlflow">mlflow/mlflow</a> (+33 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/mlflow/mlflow">mlflow/mlflow</a> (+33 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/mlflow/mlflow/blob/b455522cb99600c3e271972d4ca87bdb3f3c9a75/examples/pytorch/CaptumExample/Titanic_Captum_Interpret.py#L133'>examples/pytorch/CaptumExample/Titanic_Captum_Interpret.py:133:39:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/mlflow/mlflow/blob/b455522cb99600c3e271972d4ca87bdb3f3c9a75/examples/pytorch/mnist_tensorboard_artifact.py#L218'>examples/pytorch/mnist_tensorboard_artifact.py:218:9:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/mlflow/mlflow/blob/b455522cb99600c3e271972d4ca87bdb3f3c9a75/examples/pytorch/mnist_tensorboard_artifact.py#L226'>examples/pytorch/mnist_tensorboard_artifact.py:226:9:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/mlflow/mlflow/blob/b455522cb99600c3e271972d4ca87bdb3f3c9a75/examples/pytorch/CaptumExample/Titanic_Captum_Interpret.py#L133">examples/pytorch/CaptumExample/Titanic_Captum_Interpret.py:133:39:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/mlflow/mlflow/blob/b455522cb99600c3e271972d4ca87bdb3f3c9a75/examples/pytorch/mnist_tensorboard_artifact.py#L218">examples/pytorch/mnist_tensorboard_artifact.py:218:9:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/mlflow/mlflow/blob/b455522cb99600c3e271972d4ca87bdb3f3c9a75/examples/pytorch/mnist_tensorboard_artifact.py#L226">examples/pytorch/mnist_tensorboard_artifact.py:226:9:</a> UP031 Use format specifiers instead of percent format
 + examples/rapids/mlflow_project/notebooks/rapids_mlflow.ipynb:cell 13:44:18: UP031 Use format specifiers instead of percent format
 + examples/sklearn_elasticnet_wine/train.ipynb:cell 2:66:15: UP031 Use format specifiers instead of percent format
 + examples/sklearn_elasticnet_wine/train.ipynb:cell 2:67:15: UP031 Use format specifiers instead of percent format
 + examples/sklearn_elasticnet_wine/train.ipynb:cell 2:68:15: UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/mlflow/mlflow/blob/b455522cb99600c3e271972d4ca87bdb3f3c9a75/mlflow/legacy_databricks_cli/configure/provider.py#L131'>mlflow/legacy_databricks_cli/configure/provider.py:131:13:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/mlflow/mlflow/blob/b455522cb99600c3e271972d4ca87bdb3f3c9a75/mlflow/legacy_databricks_cli/configure/provider.py#L175'>mlflow/legacy_databricks_cli/configure/provider.py:175:25:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/mlflow/mlflow/blob/b455522cb99600c3e271972d4ca87bdb3f3c9a75/mlflow/projects/_project_spec.py#L111'>mlflow/projects/_project_spec.py:111:17:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/mlflow/mlflow/blob/b455522cb99600c3e271972d4ca87bdb3f3c9a75/mlflow/legacy_databricks_cli/configure/provider.py#L131">mlflow/legacy_databricks_cli/configure/provider.py:131:13:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/mlflow/mlflow/blob/b455522cb99600c3e271972d4ca87bdb3f3c9a75/mlflow/legacy_databricks_cli/configure/provider.py#L175">mlflow/legacy_databricks_cli/configure/provider.py:175:25:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/mlflow/mlflow/blob/b455522cb99600c3e271972d4ca87bdb3f3c9a75/mlflow/projects/_project_spec.py#L111">mlflow/projects/_project_spec.py:111:17:</a> UP031 Use format specifiers instead of percent format
 ... 23 additional changes omitted for project
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/python/mypy">python/mypy</a> (+82 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/python/mypy">python/mypy</a> (+82 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/python/mypy/blob/df35dcf020b3b03a8e3280edf8ada8c6ad8e0da5/misc/dump-ast.py#L42'>misc/dump-ast.py:42:34:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/python/mypy/blob/df35dcf020b3b03a8e3280edf8ada8c6ad8e0da5/misc/gen_blog_post_html.py#L31'>misc/gen_blog_post_html.py:31:26:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/python/mypy/blob/df35dcf020b3b03a8e3280edf8ada8c6ad8e0da5/mypy/config_parser.py#L346'>mypy/config_parser.py:346:27:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/python/mypy/blob/df35dcf020b3b03a8e3280edf8ada8c6ad8e0da5/mypy/config_parser.py#L666'>mypy/config_parser.py:666:12:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/python/mypy/blob/df35dcf020b3b03a8e3280edf8ada8c6ad8e0da5/mypy/dmypy/client.py#L599'>mypy/dmypy/client.py:599:37:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/python/mypy/blob/df35dcf020b3b03a8e3280edf8ada8c6ad8e0da5/mypy/main.py#L1320'>mypy/main.py:1320:13:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/python/mypy/blob/df35dcf020b3b03a8e3280edf8ada8c6ad8e0da5/mypy/main.py#L1487'>mypy/main.py:1487:17:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/python/mypy/blob/df35dcf020b3b03a8e3280edf8ada8c6ad8e0da5/mypy/main.py#L1491'>mypy/main.py:1491:17:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/python/mypy/blob/df35dcf020b3b03a8e3280edf8ada8c6ad8e0da5/mypy/semanal.py#L2015'>mypy/semanal.py:2015:31:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/python/mypy/blob/df35dcf020b3b03a8e3280edf8ada8c6ad8e0da5/mypy/semanal.py#L2332'>mypy/semanal.py:2332:17:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/python/mypy/blob/df35dcf020b3b03a8e3280edf8ada8c6ad8e0da5/misc/dump-ast.py#L42">misc/dump-ast.py:42:34:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/python/mypy/blob/df35dcf020b3b03a8e3280edf8ada8c6ad8e0da5/misc/gen_blog_post_html.py#L31">misc/gen_blog_post_html.py:31:26:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/python/mypy/blob/df35dcf020b3b03a8e3280edf8ada8c6ad8e0da5/mypy/config_parser.py#L346">mypy/config_parser.py:346:27:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/python/mypy/blob/df35dcf020b3b03a8e3280edf8ada8c6ad8e0da5/mypy/config_parser.py#L666">mypy/config_parser.py:666:12:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/python/mypy/blob/df35dcf020b3b03a8e3280edf8ada8c6ad8e0da5/mypy/dmypy/client.py#L599">mypy/dmypy/client.py:599:37:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/python/mypy/blob/df35dcf020b3b03a8e3280edf8ada8c6ad8e0da5/mypy/main.py#L1320">mypy/main.py:1320:13:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/python/mypy/blob/df35dcf020b3b03a8e3280edf8ada8c6ad8e0da5/mypy/main.py#L1487">mypy/main.py:1487:17:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/python/mypy/blob/df35dcf020b3b03a8e3280edf8ada8c6ad8e0da5/mypy/main.py#L1491">mypy/main.py:1491:17:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/python/mypy/blob/df35dcf020b3b03a8e3280edf8ada8c6ad8e0da5/mypy/semanal.py#L2015">mypy/semanal.py:2015:31:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/python/mypy/blob/df35dcf020b3b03a8e3280edf8ada8c6ad8e0da5/mypy/semanal.py#L2332">mypy/semanal.py:2332:17:</a> UP031 Use format specifiers instead of percent format
 ... 72 additional changes omitted for project
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/scikit-build/scikit-build">scikit-build/scikit-build</a> (+4 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/scikit-build/scikit-build">scikit-build/scikit-build</a> (+4 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/scikit-build/scikit-build/blob/c97af94e3a5d4ba2228cd5425e1290e5bb4ee30a/tests/test_hello_fortran.py#L61'>tests/test_hello_fortran.py:61:9:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/scikit-build/scikit-build/blob/c97af94e3a5d4ba2228cd5425e1290e5bb4ee30a/tests/test_hello_fortran.py#L62'>tests/test_hello_fortran.py:62:9:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/scikit-build/scikit-build/blob/c97af94e3a5d4ba2228cd5425e1290e5bb4ee30a/tests/test_issue342_cmake_osx_args_in_setup.py#L156'>tests/test_issue342_cmake_osx_args_in_setup.py:156:41:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/scikit-build/scikit-build/blob/c97af94e3a5d4ba2228cd5425e1290e5bb4ee30a/tests/test_setup.py#L349'>tests/test_setup.py:349:45:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/scikit-build/scikit-build/blob/c97af94e3a5d4ba2228cd5425e1290e5bb4ee30a/tests/test_hello_fortran.py#L61">tests/test_hello_fortran.py:61:9:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/scikit-build/scikit-build/blob/c97af94e3a5d4ba2228cd5425e1290e5bb4ee30a/tests/test_hello_fortran.py#L62">tests/test_hello_fortran.py:62:9:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/scikit-build/scikit-build/blob/c97af94e3a5d4ba2228cd5425e1290e5bb4ee30a/tests/test_issue342_cmake_osx_args_in_setup.py#L156">tests/test_issue342_cmake_osx_args_in_setup.py:156:41:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/scikit-build/scikit-build/blob/c97af94e3a5d4ba2228cd5425e1290e5bb4ee30a/tests/test_setup.py#L349">tests/test_setup.py:349:45:</a> UP031 Use format specifiers instead of percent format
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/indico/indico">indico/indico</a> (+24 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/indico/indico">indico/indico</a> (+24 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/indico/indico/blob/fc9d975d16b02bd70a072e0396522b39999081e7/indico/cli/shell.py#L39'>indico/cli/shell.py:39:29:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/indico/indico/blob/fc9d975d16b02bd70a072e0396522b39999081e7/indico/cli/shell.py#L41'>indico/cli/shell.py:41:29:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/indico/indico/blob/fc9d975d16b02bd70a072e0396522b39999081e7/indico/cli/shell.py#L52'>indico/cli/shell.py:52:29:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/indico/indico/blob/fc9d975d16b02bd70a072e0396522b39999081e7/indico/cli/shell.py#L54'>indico/cli/shell.py:54:29:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/indico/indico/blob/fc9d975d16b02bd70a072e0396522b39999081e7/indico/core/db/sqlalchemy/custom/ip_network.py#L44'>indico/core/db/sqlalchemy/custom/ip_network.py:44:22:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/indico/indico/blob/fc9d975d16b02bd70a072e0396522b39999081e7/indico/migrations/versions/20200904_1543_f37d509e221c_add_user_profile_picture_source_column.py#L38'>indico/migrations/versions/20200904_1543_f37d509e221c_add_user_profile_picture_source_column.py:38:16:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/indico/indico/blob/fc9d975d16b02bd70a072e0396522b39999081e7/indico/modules/events/static/offline.py#L196'>indico/modules/events/static/offline.py:196:41:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/indico/indico/blob/fc9d975d16b02bd70a072e0396522b39999081e7/indico/modules/events/static/offline.py#L198'>indico/modules/events/static/offline.py:198:40:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/indico/indico/blob/fc9d975d16b02bd70a072e0396522b39999081e7/indico/modules/events/static/offline.py#L202'>indico/modules/events/static/offline.py:202:42:</a> UP031 Use format specifiers instead of percent format
-+ <a href='https://github.com/indico/indico/blob/fc9d975d16b02bd70a072e0396522b39999081e7/indico/modules/rb/api.py#L329'>indico/modules/rb/api.py:329:22:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/indico/indico/blob/fc9d975d16b02bd70a072e0396522b39999081e7/indico/cli/shell.py#L39">indico/cli/shell.py:39:29:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/indico/indico/blob/fc9d975d16b02bd70a072e0396522b39999081e7/indico/cli/shell.py#L41">indico/cli/shell.py:41:29:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/indico/indico/blob/fc9d975d16b02bd70a072e0396522b39999081e7/indico/cli/shell.py#L52">indico/cli/shell.py:52:29:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/indico/indico/blob/fc9d975d16b02bd70a072e0396522b39999081e7/indico/cli/shell.py#L54">indico/cli/shell.py:54:29:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/indico/indico/blob/fc9d975d16b02bd70a072e0396522b39999081e7/indico/core/db/sqlalchemy/custom/ip_network.py#L44">indico/core/db/sqlalchemy/custom/ip_network.py:44:22:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/indico/indico/blob/fc9d975d16b02bd70a072e0396522b39999081e7/indico/migrations/versions/20200904_1543_f37d509e221c_add_user_profile_picture_source_column.py#L38">indico/migrations/versions/20200904_1543_f37d509e221c_add_user_profile_picture_source_column.py:38:16:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/indico/indico/blob/fc9d975d16b02bd70a072e0396522b39999081e7/indico/modules/events/static/offline.py#L196">indico/modules/events/static/offline.py:196:41:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/indico/indico/blob/fc9d975d16b02bd70a072e0396522b39999081e7/indico/modules/events/static/offline.py#L198">indico/modules/events/static/offline.py:198:40:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/indico/indico/blob/fc9d975d16b02bd70a072e0396522b39999081e7/indico/modules/events/static/offline.py#L202">indico/modules/events/static/offline.py:202:42:</a> UP031 Use format specifiers instead of percent format
++ <a href="https://github.com/indico/indico/blob/fc9d975d16b02bd70a072e0396522b39999081e7/indico/modules/rb/api.py#L329">indico/modules/rb/api.py:329:22:</a> UP031 Use format specifiers instead of percent format
 ... 14 additional changes omitted for project
 </pre>
 
 </p>
-</details>
+
 
 <p><em>... Truncated remaining completed project reports due to GitHub comment length restrictions</em></p>
-<details><summary>Changes by rule (1 rules affected)</summary>
+Changes by rule (1 rules affected)
 <p>
 
 <p>| code | total | + violation | - violation | + fix | - fix |
 | ---- | ------- | --------- | -------- | ----- | ---- |
 | UP031 | 658 | 658 | 0 | 0 | 0 |</p>
 </p>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @plredmond on 2024-04-19 00:51</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/plredmond">@plredmond</a> on 2024-04-19 00:51</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/printf_string_formatting.rs</code>:337 on 2024-04-19 01:03</div>
-            <div class="timeline-body"><p>I think this will only return <code>true</code> if the value is definitively a tuple, but if the value can't be determined, it <em>could</em> still be a tuple. Imagine, e .g., a function argument with no annotation.</p>
+            <div class="timeline-body"><p>I think this will only return <code>true</code> if the value is definitively a tuple, but if the value can&#x27;t be determined, it <em>could</em> still be a tuple. Imagine, e .g., a function argument with no annotation.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -533,7 +533,7 @@ crates/ruff_linter/resources/test/fixtures/pyupgrade/UP031_0.py:130:1: UP031 Use
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/printf_string_formatting.rs</code>:323 on 2024-04-19 01:03</div>
-            <div class="timeline-body"><p>Nit: By convention I'd prefer the constant on the right-hand side of the operator. At first I misread this.</p>
+            <div class="timeline-body"><p>Nit: By convention I&#x27;d prefer the constant on the right-hand side of the operator. At first I misread this.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -542,12 +542,12 @@ crates/ruff_linter/resources/test/fixtures/pyupgrade/UP031_0.py:130:1: UP031 Use
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/printf_string_formatting.rs</code>:337 on 2024-04-19 01:04</div>
-            <div class="timeline-body"><p>In other words, couldn't the value still be a tuple, even if <code>is_tuple</code> returns <code>false</code>? I'm actually not sure why we aren't seeing more fixes in the ecosystem checks given this.</p>
+            <div class="timeline-body"><p>In other words, couldn&#x27;t the value still be a tuple, even if <code>is_tuple</code> returns <code>false</code>? I&#x27;m actually not sure why we aren&#x27;t seeing more fixes in the ecosystem checks given this.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/printf_string_formatting.rs</code>:312 on 2024-04-19 05:56</div>
-            <div class="timeline-body"><p>I probably misread this, but isn't the method always returning <code>Cow::Owned</code>?</p>
+            <div class="timeline-body"><p>I probably misread this, but isn&#x27;t the method always returning <code>Cow::Owned</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -555,7 +555,7 @@ crates/ruff_linter/resources/test/fixtures/pyupgrade/UP031_0.py:130:1: UP031 Use
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @dhruvmanila on 2024-04-19 08:15</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-19 08:15</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/plredmond">@plredmond</a> reviewed on 2024-04-19 14:13</div>
@@ -581,7 +581,7 @@ crates/ruff_linter/resources/test/fixtures/pyupgrade/UP031_0.py:130:1: UP031 Use
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/printf_string_formatting.rs</code>:312 on 2024-04-19 14:20</div>
-            <div class="timeline-body"><p>I think the suggestion is that this can be <code>Option&lt;String&gt;</code>, since you aren't using the <code>Cow::Borrowed</code> variant.</p>
+            <div class="timeline-body"><p>I think the suggestion is that this can be <code>Option&lt;String&gt;</code>, since you aren&#x27;t using the <code>Cow::Borrowed</code> variant.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -591,15 +591,15 @@ crates/ruff_linter/resources/test/fixtures/pyupgrade/UP031_0.py:130:1: UP031 Use
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/printf_string_formatting.rs</code>:337 on 2024-04-19 14:25</div>
             <div class="timeline-body"><p>Yeah, the behavior is matching my expectation.</p>
-<pre><code class="language-python">zzz = &quot;abc&quot;
-'Hello %s' % zzz
+<pre><code>zzz = &quot;abc&quot;
+&#x27;Hello %s&#x27; % zzz
 </code></pre>
 <p>Here, <code>find_binding_value</code> returns a string, so we hit line 332 and still offer a fix.</p>
 <p>For cases in which <code>find_binding_value</code> returns <code>None</code>, like:</p>
-<pre><code class="language-python">zzz = foo()
-'Hello %s' % zzz
+<pre><code>zzz = foo()
+&#x27;Hello %s&#x27; % zzz
 </code></pre>
-<p>We're also offering a fix, because <code>analyze::typing::is_tuple</code> returns <code>false</code> there (we don't know if <code>foo()</code> is or isn't a tuple).</p>
+<p>We&#x27;re also offering a fix, because <code>analyze::typing::is_tuple</code> returns <code>false</code> there (we don&#x27;t know if <code>foo()</code> is or isn&#x27;t a tuple).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -608,13 +608,13 @@ crates/ruff_linter/resources/test/fixtures/pyupgrade/UP031_0.py:130:1: UP031 Use
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/printf_string_formatting.rs</code>:337 on 2024-04-19 14:28</div>
-            <div class="timeline-body"><p>Even <code>analyze::typing::find_binding_value</code> isn't completely correct here, because there could be a conditional binding:</p>
-<pre><code class="language-python">if x &gt; 0:
+            <div class="timeline-body"><p>Even <code>analyze::typing::find_binding_value</code> isn&#x27;t completely correct here, because there could be a conditional binding:</p>
+<pre><code>if x &gt; 0:
   zzz = (1,)
 else:
   zzz = &quot;foo&quot;
 </code></pre>
-<p>So you'd need to make sure that there is exactly one binding to <code>zzz</code> in the scope.</p>
+<p>So you&#x27;d need to make sure that there is exactly one binding to <code>zzz</code> in the scope.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -641,7 +641,7 @@ else:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/plredmond">@plredmond</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/printf_string_formatting.rs</code>:337 on 2024-04-19 17:31</div>
-            <div class="timeline-body"><p>Code won't exist in the next version that I push.</p>
+            <div class="timeline-body"><p>Code won&#x27;t exist in the next version that I push.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -650,7 +650,7 @@ else:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/plredmond">@plredmond</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/printf_string_formatting.rs</code>:312 on 2024-04-19 17:31</div>
-            <div class="timeline-body"><p>Code won't exist in the next version that I push.</p>
+            <div class="timeline-body"><p>Code won&#x27;t exist in the next version that I push.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -659,21 +659,21 @@ else:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/plredmond">@plredmond</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/printf_string_formatting.rs</code>:323 on 2024-04-19 17:31</div>
-            <div class="timeline-body"><p>Code won't exist in the next version that I push.</p>
+            <div class="timeline-body"><p>Code won&#x27;t exist in the next version that I push.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[UP031] When encountering `"%s" % var` attempt to dereference `var` and offer fixes more consistently." to "[UP031] When encountering `"%s" % var` offer unsafe fix" by @plredmond on 2024-04-19 17:45</div>
+            <div class="event">Renamed from &quot;[UP031] When encountering `&quot;%s&quot; % var` attempt to dereference `var` and offer fixes more consistently.&quot; to &quot;[UP031] When encountering `&quot;%s&quot; % var` offer unsafe fix&quot; by <a href="https://github.com/plredmond">@plredmond</a> on 2024-04-19 17:45</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-04-20 01:48</div>
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @plredmond on 2024-04-22 15:40</div>
+            <div class="event">Merged by <a href="https://github.com/plredmond">@plredmond</a> on 2024-04-22 15:40</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @plredmond on 2024-04-22 15:40</div>
+            <div class="event">Closed by <a href="https://github.com/plredmond">@plredmond</a> on 2024-04-22 15:40</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-04-22 15:40</div>
@@ -682,13 +682,13 @@ else:
             <div class="timeline-header">Comment by <a href="https://github.com/ThiefMaster">@ThiefMaster</a> on 2024-05-09 21:32</div>
             <div class="timeline-body"><p>Am I the only one who does not like the fact that this even converts <code>%</code> formatting in cases where it introduces escaping of literal <code>{</code> in the format string/</p>
 <p>I mean cases like this:</p>
-<pre><code class="language-diff"> def friendly_name(cls):
--    return '{%s}' % cls.name
-+    return f'{{{cls.name}}}'
+<pre><code> def friendly_name(cls):
+-    return &#x27;{%s}&#x27; % cls.name
++    return f&#x27;{{{cls.name}}}&#x27;
 
  def get_regex(cls, **kwargs):
--    return re.compile(r'\{%s}' % re.escape(cls.name))
-+    return re.compile(rf'\{{{re.escape(cls.name)}}}')
+-    return re.compile(r&#x27;\{%s}&#x27; % re.escape(cls.name))
++    return re.compile(rf&#x27;\{{{re.escape(cls.name)}}}&#x27;)
 
 </code></pre>
 <p>IMHO this is clearly less readable than the previous version.</p>
@@ -697,7 +697,7 @@ else:
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:03:52 UTC
+        Synced at 2026-01-20 19:03:32 UTC
     </footer>
 </body>
 </html>

@@ -27,15 +27,15 @@
 <p>I want to bring up an issue again about PyTorch dependency resolution on Intel-based macOS. This follows the discussion in #9515, which I wasn’t able to reopen.</p>
 <p>I really appreciate the updates with the <code>fork-strategy</code> option and the closure of issues #8686 and #7190, but the main problem I brought up is still there: the dependency resolver enforces a single version of PyTorch across all platforms, even when conditional version constraints are specified in <code>pyproject.toml</code>.</p>
 <p>Here’s a minimal example of my configuration:</p>
-<pre><code class="language-toml">[project]  
+<pre><code>[project]  
 name = &quot;test&quot;  
 version = &quot;0.1.0&quot;  
 description = &quot;Add your description here&quot;  
 readme = &quot;README.md&quot;  
 requires-python = &quot;&gt;=3.11&quot;  
 dependencies = [  
-    &quot;torch&gt;1.13,&lt;2.3; sys_platform == 'darwin' and platform_machine == 'x86_64'&quot;,  
-    &quot;torch&gt;1.13; sys_platform != 'darwin' or platform_machine != 'x86_64'&quot;,  
+    &quot;torch&gt;1.13,&lt;2.3; sys_platform == &#x27;darwin&#x27; and platform_machine == &#x27;x86_64&#x27;&quot;,  
+    &quot;torch&gt;1.13; sys_platform != &#x27;darwin&#x27; or platform_machine != &#x27;x86_64&#x27;&quot;,  
 ]  
 
 [tool.uv]  
@@ -48,31 +48,31 @@ fork-strategy = &quot;requires-python&quot;
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-18 17:27</div>
-            <div class="timeline-body"><p>That PR is unrelated -- you're looking for https://github.com/astral-sh/uv/issues/9711 and the linked PRs. I don't know if we'll support this specific case by default though. If you want to be getting an old version of a package for a platform like Intel macOS (which is no longer supported in new PyTorch versions), you'll likely be required to opt-in in some way.</p>
+            <div class="timeline-body"><p>That PR is unrelated -- you&#x27;re looking for <a href="https://github.com/astral-sh/uv/issues/9711">astral-sh/uv#9711</a> and the linked PRs. I don&#x27;t know if we&#x27;ll support this specific case by default though. If you want to be getting an old version of a package for a platform like Intel macOS (which is no longer supported in new PyTorch versions), you&#x27;ll likely be required to opt-in in some way.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">resolver</span> added by @charliermarsh on 2024-12-18 17:27</div>
+            <div class="event">Label <span class="label">resolver</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-18 17:27</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/merajhashemi">@merajhashemi</a> on 2024-12-18 17:31</div>
-            <div class="timeline-body"><p>@konstin @charliermarsh I noticed your discussion regarding this issue in #9711. I have a suggestion that might help address the problem, although I'm not fully aware of its potential implications. Perhaps you could consider adding an option for the resolver to function similarly to the resolver in the pip interface.</p>
+            <div class="timeline-body"><p>@konstin @charliermarsh I noticed your discussion regarding this issue in #9711. I have a suggestion that might help address the problem, although I&#x27;m not fully aware of its potential implications. Perhaps you could consider adding an option for the resolver to function similarly to the resolver in the pip interface.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-18 17:34</div>
-            <div class="timeline-body"><p>It's actually plausible that your case could be supported since you're willing to define multiple version constraints.</p>
+            <div class="timeline-body"><p>It&#x27;s actually plausible that your case could be supported since you&#x27;re willing to define multiple version constraints.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-12-18 17:36</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-18 17:36</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-18 18:05</div>
-            <div class="timeline-body"><p>Can I ask why you don't do:</p>
+            <div class="timeline-body"><p>Can I ask why you don&#x27;t do:</p>
 <pre><code>dependencies = [  
-    &quot;torch&gt;1.13,&lt;2.3; sys_platform == 'darwin' and platform_machine == 'x86_64'&quot;,  
-    &quot;torch&gt;=2.3; sys_platform != 'darwin' or platform_machine != 'x86_64'&quot;,  
+    &quot;torch&gt;1.13,&lt;2.3; sys_platform == &#x27;darwin&#x27; and platform_machine == &#x27;x86_64&#x27;&quot;,  
+    &quot;torch&gt;=2.3; sys_platform != &#x27;darwin&#x27; or platform_machine != &#x27;x86_64&#x27;&quot;,  
 ]  
 </code></pre>
 </div>
@@ -80,14 +80,14 @@ fork-strategy = &quot;requires-python&quot;
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/merajhashemi">@merajhashemi</a> on 2024-12-18 20:17</div>
             <div class="timeline-body"><blockquote>
-<p>It's actually plausible that your case could be supported since you're willing to define multiple version constraints.</p>
+<p>It&#x27;s actually plausible that your case could be supported since you&#x27;re willing to define multiple version constraints.</p>
 </blockquote>
 <p>That’s true, but ideally, I’d prefer if it worked the same way as pip, where a simple <code>dependencies = [&quot;torch&gt;1.13&quot;]</code> would resolve correctly across all platforms without needing platform-specific constraints.</p>
 <blockquote>
-<p>Can I ask why you don't do:</p>
+<p>Can I ask why you don&#x27;t do:</p>
 <pre><code>dependencies = [  
-    &quot;torch&gt;1.13,&lt;2.3; sys_platform == 'darwin' and platform_machine == 'x86_64'&quot;,  
-    &quot;torch&gt;=2.3; sys_platform != 'darwin' or platform_machine != 'x86_64'&quot;,  
+    &quot;torch&gt;1.13,&lt;2.3; sys_platform == &#x27;darwin&#x27; and platform_machine == &#x27;x86_64&#x27;&quot;,  
+    &quot;torch&gt;=2.3; sys_platform != &#x27;darwin&#x27; or platform_machine != &#x27;x86_64&#x27;&quot;,  
 ]  
 </code></pre>
 </blockquote>
@@ -97,7 +97,7 @@ fork-strategy = &quot;requires-python&quot;
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-15 20:26</div>
             <div class="timeline-body"><p>I still think we can make this better, but in the next version of uv, you can use:</p>
-<pre><code class="language-toml">[project]  
+<pre><code>[project]  
 name = &quot;test&quot;  
 version = &quot;0.1.0&quot;  
 description = &quot;Add your description here&quot;  
@@ -110,18 +110,18 @@ dependencies = [
 [tool.uv]  
 fork-strategy = &quot;requires-python&quot;  
 required-environments = [
-    &quot;sys_platform == 'darwin' and platform_machine == 'x86_64'&quot;
+    &quot;sys_platform == &#x27;darwin&#x27; and platform_machine == &#x27;x86_64&#x27;&quot;
 ]
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2025-02-15 20:26</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-15 20:26</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:28:57 UTC
+        Synced at 2026-01-20 19:36:16 UTC
     </footer>
 </body>
 </html>

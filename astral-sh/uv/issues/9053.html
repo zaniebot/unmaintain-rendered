@@ -24,18 +24,18 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/liblaf">@liblaf</a></div>
             <div class="timeline-body"><p>I understand that the current behavior is <strong>NOT</strong> a bug but <strong>BY DESIGN</strong>.</p>
-<h4>Description</h4>
+Description
 <p>I am using <code>uv</code> to manage my Python project and have configured it to use a PyPI mirror for faster downloads. However, I have encountered an issue where the <code>uv.lock</code> file records the index configuration of the mirror, which is not ideal for CI/CD environments or for collaborators who do not use the same mirror.</p>
-<h4>Configuration</h4>
+Configuration
 <p>I have set up my <code>~/.config/uv/uv.toml</code> to use the PyPI mirror as follows:</p>
-<pre><code class="language-toml">index-url = &quot;https://mirrors.cernet.edu.cn/pypi/web/simple&quot;
+<pre><code>index-url = &quot;https://mirrors.cernet.edu.cn/pypi/web/simple&quot;
 
 [pip]
 index-url = &quot;https://mirrors.cernet.edu.cn/pypi/web/simple&quot;
 </code></pre>
-<h4>Problem</h4>
-<p>When <code>uv</code> generates the <code>uv.lock</code> file, it includes the mirror's URL in the <code>source</code> field for each package, as shown below:</p>
-<pre><code class="language-toml">[[package]]
+Problem
+<p>When <code>uv</code> generates the <code>uv.lock</code> file, it includes the mirror&#x27;s URL in the <code>source</code> field for each package, as shown below:</p>
+<pre><code>[[package]]
 name = &quot;attrs&quot;
 version = &quot;24.2.0&quot;
 source = { registry = &quot;https://mirrors.cernet.edu.cn/pypi/web/simple&quot; }
@@ -44,9 +44,9 @@ wheels = [
     { url = &quot;https://mirrors4.tuna.tsinghua.edu.cn/pypi/web/packages/6a/21/5b6702a7f963e95456c0de2d495f67bf5fd62840ac655dc451586d23d39a/attrs-24.2.0-py3-none-any.whl&quot;, hash = &quot;sha256:81921eb96de3191c8258c199618104dd27ac608d9366f5e35d011eae1867ede2&quot;, size = 63001 },
 ]
 </code></pre>
-<h4>Expected Behavior</h4>
+Expected Behavior
 <p>I would like the <code>uv.lock</code> file to retain the default PyPI registry URL (<code>https://pypi.org/simple</code>) instead of the mirror URL, while still allowing me to use the mirror for faster downloads. The expected <code>uv.lock</code> content should look like this:</p>
-<pre><code class="language-toml">[[package]]
+<pre><code>[[package]]
 name = &quot;attrs&quot;
 version = &quot;24.2.0&quot;
 source = { registry = &quot;https://pypi.org/simple&quot; }
@@ -55,27 +55,27 @@ wheels = [
     { url = &quot;https://files.pythonhosted.org/packages/6a/21/5b6702a7f963e95456c0de2d495f67bf5fd62840ac655dc451586d23d39a/attrs-24.2.0-py3-none-any.whl&quot;, hash = &quot;sha256:81921eb96de3191c8258c199618104dd27ac608d9366f5e35d011eae1867ede2&quot;, size = 63001 },
 ]
 </code></pre>
-<h4>Additional Information</h4>
+Additional Information
 <ul>
 <li><code>uv --version</code>: <code>uv 0.5.1 (f399a5271 2024-11-08)</code></li>
 <li>The content on the PyPI mirror is the same as the original PyPI.</li>
 </ul>
-<h4>Request</h4>
+Request
 <p>Is there a way to configure <code>uv</code> to use the PyPI mirror for faster downloads while retaining the default registry URL in the <code>uv.lock</code> file? This would be beneficial for maintaining consistency across different environments and for collaborators who may not use the same mirror.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/liblaf">@liblaf</a> on 2024-11-12 09:55</div>
             <div class="timeline-body"><p>Currently, my temporary solution is to use the following script to replace the URLs in <code>uv.lock</code> after each update (e.g., <code>uv sync</code> or <code>uv lock</code>):</p>
-<pre><code class="language-bash">sd --fixed-strings 'mirrors.cernet.edu.cn/pypi/web' 'pypi.org' uv.lock
-sd 'mirrors(4|6)?.tuna.tsinghua.edu.cn/pypi/web' 'files.pythonhosted.org' uv.lock
+<pre><code>sd --fixed-strings &#x27;mirrors.cernet.edu.cn/pypi/web&#x27; &#x27;pypi.org&#x27; uv.lock
+sd &#x27;mirrors(4|6)?.tuna.tsinghua.edu.cn/pypi/web&#x27; &#x27;files.pythonhosted.org&#x27; uv.lock
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2024-11-12 11:10</div>
             <div class="timeline-body"><p>Based on your needs, you should expect uv to search for PyPI packages from a mirrored PyPI, right?
-If I've understood your requirements correctly, this should be a better solution. There seems to be a related issue regarding this approach.</p>
+If I&#x27;ve understood your requirements correctly, this should be a better solution. There seems to be a related issue regarding this approach.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -86,9 +86,9 @@ If I've understood your requirements correctly, this should be a better solution
 </blockquote>
 <p>Yes, and uv does indeed search for packages from the mirror. However, I would like the <code>uv.lock</code> file to record the default PyPI URL (<a href="https://pypi.org">https://pypi.org</a>) instead of the mirror I am using.</p>
 <blockquote>
-<p>If I've understood your requirements correctly, this should be a better solution.</p>
+<p>If I&#x27;ve understood your requirements correctly, this should be a better solution.</p>
 </blockquote>
-<p>By &quot;this,&quot; do you mean the solution I mentioned using <code>sd</code> to replace the URLs in <code>uv.lock</code> after each update? I don't think my solution is an elegant one.</p>
+<p>By &quot;this,&quot; do you mean the solution I mentioned using <code>sd</code> to replace the URLs in <code>uv.lock</code> after each update? I don&#x27;t think my solution is an elegant one.</p>
 <blockquote>
 <p>There seems to be a related issue regarding this approach.</p>
 </blockquote>
@@ -102,10 +102,10 @@ If I've understood your requirements correctly, this should be a better solution
 <li>I want to search for packages from a PyPI mirror for faster download speeds.</li>
 <li>I wish to retain the default PyPI URL (<a href="https://pypi.org">https://pypi.org</a>) in the <code>uv.lock</code> file for consistency across different environments.</li>
 </ol>
-<p>Based on my understanding of uv's configurable options, I currently cannot achieve both of these points at the same time without introducing additional steps.</p>
+<p>Based on my understanding of uv&#x27;s configurable options, I currently cannot achieve both of these points at the same time without introducing additional steps.</p>
 <p>I would like to ask:</p>
 <ol>
-<li>Is there a way to configure uv's settings to meet both of my requirements within the existing uv framework?</li>
+<li>Is there a way to configure uv&#x27;s settings to meet both of my requirements within the existing uv framework?</li>
 <li>If not, could we implement an additional feature, such as adding a <code>mirror</code> option in <code>uv.toml</code>, to support this?</li>
 </ol>
 </div>
@@ -114,7 +114,7 @@ If I've understood your requirements correctly, this should be a better solution
             <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2024-11-12 12:49</div>
             <div class="timeline-body"><p>@liblaf
 Actually, what I mean is, based on your expectation, UV should support fetching packages from the mirrored PyPI. In other words, when the expected source is PyPI, it should look for the package in the mirrored PyPI instead.</p>
-<p>If I'm not mistaken, UV doesn't seem to have this feature yet.
+<p>If I&#x27;m not mistaken, UV doesn&#x27;t seem to have this feature yet.
 Perhaps you can open an issue requesting that project APIs support mirror PyPI?
 Or we could wait for the UV team to respond to the issue, as they will be the ones to decide whether to support this feature.</p>
 </div>
@@ -130,12 +130,12 @@ Or we could wait for the UV team to respond to the issue, as they will be the on
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @liblaf on 2024-11-12 13:09</div>
+            <div class="event">Closed by <a href="https://github.com/liblaf">@liblaf</a> on 2024-11-12 13:09</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:28:18 UTC
+        Synced at 2026-01-20 19:35:26 UTC
     </footer>
 </body>
 </html>

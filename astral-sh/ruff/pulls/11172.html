@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>This PR implements a snapshotting mechanism for <code>Database</code> and makes query cancellation a <code>Database</code> concept. The motivation for this change is the LSP where the main loop in the LSP uses <code>spawn</code> to schedule some work on its thread pool. <code>sapwn</code> requires that all arguments have a <code>'static</code> lifetime. That means passing a <code>&amp;Program</code> as we've done in the CLI main loop won't be possible.</p>
-<p>To solve this, this PR introduces a <code>program.snapshot</code> method that returns an owned but read-only database instance. The LSP can safely pass the snapshot to its worker thread because it satisfies the <code>'static</code> lifetime requirement.</p>
-<p>The main challenge of the <code>snapshot</code> function is that we don't want to create a deep-clone of the database including the <code>jars</code> state because:</p>
+            <div class="timeline-body">Summary
+<p>This PR implements a snapshotting mechanism for <code>Database</code> and makes query cancellation a <code>Database</code> concept. The motivation for this change is the LSP where the main loop in the LSP uses <code>spawn</code> to schedule some work on its thread pool. <code>sapwn</code> requires that all arguments have a <code>&#x27;static</code> lifetime. That means passing a <code>&amp;Program</code> as we&#x27;ve done in the CLI main loop won&#x27;t be possible.</p>
+<p>To solve this, this PR introduces a <code>program.snapshot</code> method that returns an owned but read-only database instance. The LSP can safely pass the snapshot to its worker thread because it satisfies the <code>&#x27;static</code> lifetime requirement.</p>
+<p>The main challenge of the <code>snapshot</code> function is that we don&#x27;t want to create a deep-clone of the database including the <code>jars</code> state because:</p>
 <ul>
 <li>a deep-clone of the caches is very expensive</li>
 <li>it would mean that caching is restricted to a single thread. However, we want to share a single cache between all threads.</li>
@@ -34,33 +34,33 @@
 <p>Getting cheap &quot;clones&quot; is achieved by wrapping the <code>jars</code> state in an <code>Arc</code>. However, this introduces a new problem. Now, mutating is expensive because <code>Arc</code>s are read-only by default. Solving this, requires introducing cancellation.</p>
 <p>The implementation makes use of the fact that mutating an <code>Arc</code> in place is possible if the <code>Arc</code> has exactly one reference. The <code>Database</code> now stores its own cancellation token and calling a mutation method on the storage (or database) automatically requests cancellation of all queries and waits until all other references to <code>jars</code> are dropped. It is then possible to safely take the mutable reference from the <code>Arc</code>.</p>
 <p>Waiting is implemented using a <a href="https://docs.rs/crossbeam/latest/crossbeam/sync/struct.WaitGroup.html"><code>WaitGroup</code></a>. The WaitGroup is stored in the <code>Jars</code> storage, and its counter is incremented whenever a <code>Snapshot</code> is created and automatically decremented when a <code>Snapshot</code> drops.</p>
-<p>The last missing piece is to ensure that queries stop &quot;soonish&quot; when cancellation is requested. This is achieved by changing the <code>db.jar()</code> method to return a <code>QueryResult</code>. It returns <code>Err(QueryError::Cancelled)</code> in case cancellation has been requested. This requires that we change the return type of each query to <code>QueryResult</code> because they won't have a result when they're cancelled.
+<p>The last missing piece is to ensure that queries stop &quot;soonish&quot; when cancellation is requested. This is achieved by changing the <code>db.jar()</code> method to return a <code>QueryResult</code>. It returns <code>Err(QueryError::Cancelled)</code> in case cancellation has been requested. This requires that we change the return type of each query to <code>QueryResult</code> because they won&#x27;t have a result when they&#x27;re cancelled.
 Checking cancellation in the <code>jars</code> method has the advantage that it is automatically tested by each query that uses caching because the method is needed to retrieve the query storage. Queries have the possibility to manually test for cancellation if needed by calling <code>db.cancelled()?</code>, but that should only be necessary for long operations that never issue a new query.</p>
-<h2>Catch unwind</h2>
+Catch unwind
 <p>An alternative to <code>QueryResult</code> is to panic with a specific error and catch that error in a catch unwind boundary. This is what salsa does. I decided to use a <code>Result</code> instead to make cancellation more explicit. I think that it is important to be aware that a request can be cancelled because it means that we need to ensure to never write &quot;partial&quot; results into the cache, and if we do, have a way to undo the change in case the query gets cancelled to leave the cache in a clean state.</p>
-<h2>Test plan</h2>
+Test plan
 <p>I ran the linter and used <code>touch</code> to trigger a re-run. This PR adds a new <code>RED_KNOT_SLOW_LINT</code> that adds an artificial slowdown to <code>lint_syntax</code> for testing cancellation.</p>
-<h2>Attribution</h2>
+Attribution
 <p>The ideas here are heavily inspired by Salsa and sometimes applied 1:1.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-28 10:58</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[red-knot] Add snapshotting mechanism" to "[red-knot] Add "cheap" `program.snapshot` " by @MichaReiser on 2024-04-29 09:21</div>
+            <div class="event">Renamed from &quot;[red-knot] Add snapshotting mechanism&quot; to &quot;[red-knot] Add &quot;cheap&quot; `program.snapshot` &quot; by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-29 09:21</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-29 09:22</div>
@@ -77,7 +77,7 @@ Checking cancellation in the <code>jars</code> method has the advantage that it 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/main.rs</code>:140 on 2024-04-29 10:24</div>
-            <div class="timeline-body"><p>@snowsignal I think the loop here is now very similar to what we have in the LSP. That's why I think that it should now be easy to implement the database into the LSP.</p>
+            <div class="timeline-body"><p>@snowsignal I think the loop here is now very similar to what we have in the LSP. That&#x27;s why I think that it should now be easy to implement the database into the LSP.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -108,16 +108,16 @@ Checking cancellation in the <code>jars</code> method has the advantage that it 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2024-04-29 10:33</div>
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-29 10:33</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @MichaReiser on 2024-04-29 11:08</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-29 11:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @snowsignal by @MichaReiser on 2024-04-29 11:08</div>
+            <div class="event">Review requested from <a href="https://github.com/snowsignal">@snowsignal</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-29 11:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @MichaReiser on 2024-04-29 11:08</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-29 11:08</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-29 11:09</div>
@@ -140,24 +140,24 @@ Checking cancellation in the <code>jars</code> method has the advantage that it 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/red_knot/src/main.rs</code>:140 on 2024-04-29 17:05</div>
-            <div class="timeline-body"><p>This does look similar! I think the main difference is that here, a response is sent back to the main loop, whereas server tasks don't (currently) communicate with the main loop. That shouldn't make things harder for the server (in fact, I think it will be even easier than what we have here), I just wanted to point that out.</p>
+            <div class="timeline-body"><p>This does look similar! I think the main difference is that here, a response is sent back to the main loop, whereas server tasks don&#x27;t (currently) communicate with the main loop. That shouldn&#x27;t make things harder for the server (in fact, I think it will be even easier than what we have here), I just wanted to point that out.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/red_knot/src/program/check.rs</code>:274 on 2024-04-29 17:18</div>
-            <div class="timeline-body"><p>Shouldn't we return <code>Err(QueryError::Cancelled)</code> immediately if we get <code>CheckFileMessage::Cancelled</code>, instead of waiting for the loop to finish?</p>
+            <div class="timeline-body"><p>Shouldn&#x27;t we return <code>Err(QueryError::Cancelled)</code> immediately if we get <code>CheckFileMessage::Cancelled</code>, instead of waiting for the loop to finish?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> approved on 2024-04-29 17:23</div>
             <div class="timeline-body"><p>Thank you for implementing this! The detailed comments you left made this pull request really easy to read, and I can see a way to integrate this with the server as-is 😄</p>
-<p>I've left a few small comments but otherwise this looks great!</p>
+<p>I&#x27;ve left a few small comments but otherwise this looks great!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-04-29 23:47</div>
             <div class="timeline-body"><p>Looks good!</p>
-<p>To be clear, the &quot;immutable snapshot&quot; means we won't be applying file changes or invalidating anything concurrently (which is great, because it will simplify invalidation a lot). But caching within e.g. <code>TypeStore</code> uses interior mutability and can still be updated in workers, because it implements its own internal locking and doesn't rely on having an exclusive reference to the db.</p>
+<p>To be clear, the &quot;immutable snapshot&quot; means we won&#x27;t be applying file changes or invalidating anything concurrently (which is great, because it will simplify invalidation a lot). But caching within e.g. <code>TypeStore</code> uses interior mutability and can still be updated in workers, because it implements its own internal locking and doesn&#x27;t rely on having an exclusive reference to the db.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -166,7 +166,7 @@ Checking cancellation in the <code>jars</code> method has the advantage that it 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/main.rs</code>:140 on 2024-04-30 06:49</div>
-            <div class="timeline-body"><p>That's true. Thanks for pointing this out. I agree, I don't think this should matter because that communication is only about how results are communicated back to the user interface. In the LSP case, that's done by sending a response and in the CLI case it's done by sending a message back to the main loop.</p>
+            <div class="timeline-body"><p>That&#x27;s true. Thanks for pointing this out. I agree, I don&#x27;t think this should matter because that communication is only about how results are communicated back to the user interface. In the LSP case, that&#x27;s done by sending a response and in the CLI case it&#x27;s done by sending a message back to the main loop.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -175,7 +175,7 @@ Checking cancellation in the <code>jars</code> method has the advantage that it 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/db.rs</code>:96 on 2024-04-30 06:55</div>
-            <div class="timeline-body"><p>Thank you, but I don't really deserve the credit because I only stole the idea from salsa :D But I agree, it's a very clever (and simple) way.</p>
+            <div class="timeline-body"><p>Thank you, but I don&#x27;t really deserve the credit because I only stole the idea from salsa :D But I agree, it&#x27;s a very clever (and simple) way.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -184,22 +184,22 @@ Checking cancellation in the <code>jars</code> method has the advantage that it 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/program/check.rs</code>:274 on 2024-04-30 06:58</div>
-            <div class="timeline-body"><p>The problem with returning immediately is that we then drop the only reference to <code>receiver</code>. That means, that any <code>sender.send(message).unwrap()</code> calls will fail in the threads checking the files. I'm not sure if there's a more idiomatic way of doing this other than waiting for all file check operations to complete to be sure there will be no more incoming messages and only then exit.</p>
+            <div class="timeline-body"><p>The problem with returning immediately is that we then drop the only reference to <code>receiver</code>. That means, that any <code>sender.send(message).unwrap()</code> calls will fail in the threads checking the files. I&#x27;m not sure if there&#x27;s a more idiomatic way of doing this other than waiting for all file check operations to complete to be sure there will be no more incoming messages and only then exit.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-30 07:00</div>
             <div class="timeline-body"><blockquote>
-<p>To be clear, the &quot;immutable snapshot&quot; means we won't be applying file changes or invalidating anything concurrently (which is great, because it will simplify invalidation a lot). But caching within e.g. TypeStore uses interior mutability and can still be updated in workers, because it implements its own internal locking and doesn't rely on having an exclusive reference to the db.</p>
+<p>To be clear, the &quot;immutable snapshot&quot; means we won&#x27;t be applying file changes or invalidating anything concurrently (which is great, because it will simplify invalidation a lot). But caching within e.g. TypeStore uses interior mutability and can still be updated in workers, because it implements its own internal locking and doesn&#x27;t rely on having an exclusive reference to the db.</p>
 </blockquote>
-<p>Yes, that's correct. The immutable snapshot still allows for caches to cache new values, but no &quot;inputs&quot; should change (which would change the result of  the analysis). Another way to think about this.</p>
+<p>Yes, that&#x27;s correct. The immutable snapshot still allows for caches to cache new values, but no &quot;inputs&quot; should change (which would change the result of  the analysis). Another way to think about this.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @MichaReiser on 2024-04-30 07:13</div>
+            <div class="event">Merged by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-30 07:13</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2024-04-30 07:13</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-30 07:13</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-04-30 07:13</div>
@@ -210,7 +210,7 @@ Checking cancellation in the <code>jars</code> method has the advantage that it 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/red_knot/src/program/check.rs</code>:274 on 2024-04-30 15:12</div>
-            <div class="timeline-body"><p>Can't we just handling that error in the threads checking the files though? Like, if <code>sender.send(message)</code> fails, we can still exit the thread gracefully instead of panicking.</p>
+            <div class="timeline-body"><p>Can&#x27;t we just handling that error in the threads checking the files though? Like, if <code>sender.send(message)</code> fails, we can still exit the thread gracefully instead of panicking.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -225,7 +225,7 @@ Checking cancellation in the <code>jars</code> method has the advantage that it 
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:04:02 UTC
+        Synced at 2026-01-20 19:03:45 UTC
     </footer>
 </body>
 </html>

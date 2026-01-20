@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/squingo44">@squingo44</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<p>Ty can't resolve custom SimpleNamespace attributes. Minimal repro:</p>
-<pre><code class="language-python">from types import SimpleNamespace
+            <div class="timeline-body">Summary
+<p>Ty can&#x27;t resolve custom SimpleNamespace attributes. Minimal repro:</p>
+<pre><code>from types import SimpleNamespace
 
 sn = SimpleNamespace(a=&quot;a&quot;)
 
@@ -42,34 +42,34 @@ a = sn.a
   |
 info: rule `unresolved-attribute` is enabled by default
 </code></pre>
-<h3>Version</h3>
+Version
 <p>0.0.1-alpha.5 (3b726d87a 2025-05-17)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Attributes of types.SimpleNamespace not resolved correctly" to "Attributes of types.SimpleNamespace not resolved" by @squingo44 on 2025-05-18 14:12</div>
+            <div class="event">Renamed from &quot;Attributes of types.SimpleNamespace not resolved correctly&quot; to &quot;Attributes of types.SimpleNamespace not resolved&quot; by <a href="https://github.com/squingo44">@squingo44</a> on 2025-05-18 14:12</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-05-18 14:12</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-18 14:12</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">attribute access</span> added by @AlexWaygood on 2025-05-18 14:12</div>
+            <div class="event">Label <span class="label">attribute access</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-18 14:12</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-18 14:15</div>
-            <div class="timeline-body"><p>It looks like we're not respecting the custom <code>__getattribute__</code> method on <code>SimpleNamespace</code> here. We already handle custom <code>__getattr__</code> methods, but apparently not <code>__getattribute__</code> methods.</p>
-<p>Mypy and pyright treat <code>__getattribute__</code> methods exactly the same way as <code>__getattr__</code> methods. That's not <em>exactly</em> faithful to the runtime semantics, but pragmatically the best thing for us to do might be just to follow their precedent here.</p>
+            <div class="timeline-body"><p>It looks like we&#x27;re not respecting the custom <code>__getattribute__</code> method on <code>SimpleNamespace</code> here. We already handle custom <code>__getattr__</code> methods, but apparently not <code>__getattribute__</code> methods.</p>
+<p>Mypy and pyright treat <code>__getattribute__</code> methods exactly the same way as <code>__getattr__</code> methods. That&#x27;s not <em>exactly</em> faithful to the runtime semantics, but pragmatically the best thing for us to do might be just to follow their precedent here.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/squingo44">@squingo44</a> on 2025-05-18 19:55</div>
-            <div class="timeline-body"><p>What's the difference in the runtime semantics?</p>
+            <div class="timeline-body"><p>What&#x27;s the difference in the runtime semantics?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-18 20:07</div>
             <div class="timeline-body"><p>Compare and contrast:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; class Foo:
+<pre><code>&gt;&gt;&gt; class Foo:
 ...     x = 42
 ...     def __getattribute__(self, attr):
 ...         return &quot;x&quot;
@@ -80,17 +80,17 @@ info: rule `unresolved-attribute` is enabled by default
 ...         return &quot;x&quot;
 ...         
 &gt;&gt;&gt; Foo().x
-'x'
+&#x27;x&#x27;
 &gt;&gt;&gt; Foo().y
-'x'
+&#x27;x&#x27;
 &gt;&gt;&gt; Bar().x
 42
 &gt;&gt;&gt; Bar().y
-'x'
+&#x27;x&#x27;
 </code></pre>
 <p>So at runtime, accessing <em>any</em> attribute on <code>Foo</code> returns the object returned by <code>__getattribute__</code>, even if it can be found at the usual locations for attribute access (class dictionaries, instance dictionaries, etc.). But for <code>Bar</code>, <code>__getattr__</code> is <em>only</em> called if the attribute cannot be found at any of the &quot;usual locations&quot; -- the method is used as a fallback rather than a total override of normal attribute lookup.</p>
 <p>These are not the semantics mypy/pyright implement -- mypy/pyright treat <code>__getattribute__</code> as if it worked exactly the same way as <code>__getattr__</code>. For example, here mypy and pyright both reveal <code>str</code> for the <code>x</code> attribute on an instance of <code>Foo</code>, even though <code>__getattribute__</code> is present and annotated as always returning an <code>int</code> (and <code>__getattribute__</code> at runtime totally overrides all the normal attribute-lookup machinery).</p>
-<pre><code class="language-py">class Foo:
+<pre><code>class Foo:
     x: str
     def __getattribute__(self, attr: str) -&gt; int:
         return 42
@@ -111,7 +111,7 @@ reveal_type(Foo().x)  # str!
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-05-19 16:00</div>
             <div class="timeline-body"><p>Note that <code>builtins.object</code> has a <code>__getattribute__</code> method in typeshed, so a naive implementation might have some interesting results. (I assume other type checkers have a special case to ignore <code>object.__getattribute__</code> in some circumstances?)</p>
-<p>A consequence of implementing the &quot;correct&quot; semantics for <code>__getattribute__</code> is that it would override access to attributes defined on base classes, so if you have a <code>__getattribute__</code>, its return type must be Any or you're violating LSP.</p>
+<p>A consequence of implementing the &quot;correct&quot; semantics for <code>__getattribute__</code> is that it would override access to attributes defined on base classes, so if you have a <code>__getattribute__</code>, its return type must be Any or you&#x27;re violating LSP.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -119,21 +119,21 @@ reveal_type(Foo().x)  # str!
             <div class="timeline-body"><blockquote>
 <p>Do we know <em>why</em> mypy/pyright depart from the runtime semantics in this way?</p>
 </blockquote>
-<p>You'd <a href="https://github.com/python/mypy/pull/2705">have to ask</a> @JelleZijlstra ;)</p>
+<p>You&#x27;d <a href="https://github.com/python/mypy/pull/2705">have to ask</a> @JelleZijlstra ;)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-19 16:07</div>
             <div class="timeline-body"><p>We discussed this in person at the sprints and we think we should just follow mypy/pyright here and treat it as if it has the same semantics as <code>__getattr__</code>. If a class looks like this:</p>
-<pre><code class="language-py">class Foo:
+<pre><code>class Foo:
     x: str
     def __getattribute__(self, attr) -&gt; int: ...
 </code></pre>
-<p>then it seems pretty obvious that they want the type checker to understand that accessing the <code>x</code> attribute on instances of <code>Foo</code> should resolve to a <code>str</code> type. There's no other reason why they would have added that annotation. Pragmatically, treating it as if it had the same semantics as <code>__getattr__</code> seems like the behaviour that's most likely to reflect the user's intent when writing the class.</p>
+<p>then it seems pretty obvious that they want the type checker to understand that accessing the <code>x</code> attribute on instances of <code>Foo</code> should resolve to a <code>str</code> type. There&#x27;s no other reason why they would have added that annotation. Pragmatically, treating it as if it had the same semantics as <code>__getattr__</code> seems like the behaviour that&#x27;s most likely to reflect the user&#x27;s intent when writing the class.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">help wanted</span> added by @AlexWaygood on 2025-05-19 16:07</div>
+            <div class="event">Label <span class="label">help wanted</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-19 16:07</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-05-19 16:08</div>
@@ -141,12 +141,12 @@ reveal_type(Foo().x)  # str!
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @sharkdp on 2025-05-26 10:59</div>
+            <div class="event">Closed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-26 10:59</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:19:55 UTC
+        Synced at 2026-01-20 19:24:34 UTC
     </footer>
 </body>
 </html>

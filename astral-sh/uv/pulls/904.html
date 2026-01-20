@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>This is a change I'm considering but not sold on. Right now, the <code>Index</code> in the resolver looks like:</p>
-<pre><code class="language-rust">/// In-memory index of package metadata.
+            <div class="timeline-body">Summary
+<p>This is a change I&#x27;m considering but not sold on. Right now, the <code>Index</code> in the resolver looks like:</p>
+<pre><code>/// In-memory index of package metadata.
 #[derive(Default)]
 pub(crate) struct Index {
     /// A map from package name to the metadata for that package and the index where the metadata
@@ -41,16 +41,16 @@ pub(crate) struct Index {
 </code></pre>
 <p>I want to change this to something that can be universally shared across resolutions... But <code>packages</code> (for example) is <em>not</em> shareable, because <code>VersionMap</code> is a function of &quot;API response + tags + Python requirement&quot;, where the latter two are parameters to the resolution.</p>
 <p>Specifically, if the user passed in <code>--python-version</code>, and we tried to reuse the stored <code>VersionMap</code> here when resolving dependencies for a source distribution build, we could end up doing the wrong thing, because the <code>VersionMap</code> would be <em>wrong</em>.</p>
-<p>So, instead, I'm proposing that we change <code>Index</code> to resolution-agnostic data, and move any resolution-specific data into other fields on the resolver. That would allow us to share <code>Index</code> across resolutions safely.</p>
-<p>The specific change here changes from <code>pub(crate) packages: OnceMap&lt;PackageName, VersionMap&gt;</code> to <code>pub(crate) packages: OnceMap&lt;PackageName, (IndexUrl, BaseUrl, SimpleMetadata)&gt;</code> -- that's static response data that doesn't rely on the resolution inputs. We then have to compute the <code>VersionMap</code> from those parameters and store it separately.</p>
-<p>The main downside here is that we now need to clone <code>SimpleMetadata</code> (since we're storing it <em>and</em> the <code>VersionMap</code>), and we need to use a separate hash map for the versions.</p>
+<p>So, instead, I&#x27;m proposing that we change <code>Index</code> to resolution-agnostic data, and move any resolution-specific data into other fields on the resolver. That would allow us to share <code>Index</code> across resolutions safely.</p>
+<p>The specific change here changes from <code>pub(crate) packages: OnceMap&lt;PackageName, VersionMap&gt;</code> to <code>pub(crate) packages: OnceMap&lt;PackageName, (IndexUrl, BaseUrl, SimpleMetadata)&gt;</code> -- that&#x27;s static response data that doesn&#x27;t rely on the resolution inputs. We then have to compute the <code>VersionMap</code> from those parameters and store it separately.</p>
+<p>The main downside here is that we now need to clone <code>SimpleMetadata</code> (since we&#x27;re storing it <em>and</em> the <code>VersionMap</code>), and we need to use a separate hash map for the versions.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-01-12 21:17</div>
+            <div class="event">Review requested from <a href="https://github.com/BurntSushi">@BurntSushi</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-12 21:17</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @konstin by @charliermarsh on 2024-01-12 21:17</div>
+            <div class="event">Review requested from <a href="https://github.com/konstin">@konstin</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-12 21:17</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-12 21:19</div>
@@ -58,16 +58,16 @@ pub(crate) struct Index {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/resolver/mod.rs</code>:836 on 2024-01-12 21:19</div>
-            <div class="timeline-body"><p>@BurntSushi - I'd love to get your opinion on this. In short, we used to store <code>VersionMap</code> in <code>self.index.packages</code>. Now, <code>self.index.packages</code> stores the <code>SimpleMetadata</code>, which is an input to <code>VersionMap</code>, and so we need to compute the version map from that data. Here, I'm basically just doing that computation lazily and storing it in a <code>self.versions</code> hash map.</p>
-<p>(The benefit here is that <code>self.index</code> becomes shareable across resolutions -- sometimes we need to perform a resolution <em>within</em> a resolution, if we're trying to build a source distribution into a built wheel. Right now, it's not totally safe to share it, because <code>self.index</code> contains structs like <code>VersionMap</code> that can vary based on some of the parameters, and we don't always pass the same parameters to that sub-resolution.)</p>
+            <div class="timeline-body"><p>@BurntSushi - I&#x27;d love to get your opinion on this. In short, we used to store <code>VersionMap</code> in <code>self.index.packages</code>. Now, <code>self.index.packages</code> stores the <code>SimpleMetadata</code>, which is an input to <code>VersionMap</code>, and so we need to compute the version map from that data. Here, I&#x27;m basically just doing that computation lazily and storing it in a <code>self.versions</code> hash map.</p>
+<p>(The benefit here is that <code>self.index</code> becomes shareable across resolutions -- sometimes we need to perform a resolution <em>within</em> a resolution, if we&#x27;re trying to build a source distribution into a built wheel. Right now, it&#x27;s not totally safe to share it, because <code>self.index</code> contains structs like <code>VersionMap</code> that can vary based on some of the parameters, and we don&#x27;t always pass the same parameters to that sub-resolution.)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> added by @charliermarsh on 2024-01-13 02:59</div>
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-13 02:59</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-resolver/src/resolver/mod.rs</code>:529 on 2024-01-14 09:37</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">                let version_entry =
+            <div class="timeline-body"><pre><code>                let version_entry =
                     self.versions
                         .entry(package_name.clone())
                         .or_insert_with(|| {
@@ -108,7 +108,7 @@ pub(crate) struct Index {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-14 15:32</div>
-            <div class="timeline-body"><p>@konstin - Another option would be: if we're using <code>--python-version</code>, explicitly create a separate index for <code>SourceBuildContext</code>. Maybe that's simpler? But it's still sort of a shame.</p>
+            <div class="timeline-body"><p>@konstin - Another option would be: if we&#x27;re using <code>--python-version</code>, explicitly create a separate index for <code>SourceBuildContext</code>. Maybe that&#x27;s simpler? But it&#x27;s still sort of a shame.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -118,7 +118,7 @@ pub(crate) struct Index {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/puffin-resolver/src/resolver/mod.rs</code>:76 on 2024-01-15 17:05</div>
-            <div class="timeline-body"><p>Wow the resolver has <em>a lot</em> of state. I realize this PR isn't adding any new state, but seeing it laid out this way makes it hit home. It makes me wonder if there are some lurking refactorings here that might simplify things.</p>
+            <div class="timeline-body"><p>Wow the resolver has <em>a lot</em> of state. I realize this PR isn&#x27;t adding any new state, but seeing it laid out this way makes it hit home. It makes me wonder if there are some lurking refactorings here that might simplify things.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -133,26 +133,26 @@ pub(crate) struct Index {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-01-15 17:16</div>
-            <div class="timeline-body"><p>At a conceptual level this makes sense to me I think. I'm unsure of the perf implications here, but it does feel to me like this is a step in the right direction (particularly from a correctness perspective).</p>
+            <div class="timeline-body"><p>At a conceptual level this makes sense to me I think. I&#x27;m unsure of the perf implications here, but it does feel to me like this is a step in the right direction (particularly from a correctness perspective).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-16 03:33</div>
-            <div class="timeline-body"><p>I rebased this, but unfortunately it's ~8-10% slower on warm resolutions (at least on <code>trio.in</code>).</p>
+            <div class="timeline-body"><p>I rebased this, but unfortunately it&#x27;s ~8-10% slower on warm resolutions (at least on <code>trio.in</code>).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-16 03:41</div>
-            <div class="timeline-body"><p>I may close this and instead change https://github.com/astral-sh/puffin/pull/906 to use separate indexes for top-level resolution vs. source distribution resolution when <code>--python-version</code> is specified.</p>
+            <div class="timeline-body"><p>I may close this and instead change <a href="https://github.com/astral-sh/puffin/pull/906">astral-sh/puffin#906</a> to use separate indexes for top-level resolution vs. source distribution resolution when <code>--python-version</code> is specified.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-01-16 05:20</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-16 05:20</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:35:09 UTC
+        Synced at 2026-01-20 19:43:11 UTC
     </footer>
 </body>
 </html>

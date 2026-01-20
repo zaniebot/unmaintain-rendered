@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a></div>
-            <div class="timeline-body"><h1>Summary</h1>
+            <div class="timeline-body">Summary
 <p>The PR under review attempts to make progress towards the age-old problem of submodule imports, specifically with regards to their treatment by the rule <a href="https://docs.astral.sh/ruff/rules/unused-import/"><code>unused-import</code> (<code>F401</code>)</a>.</p>
 <p>Some related issues:</p>
 <ul>
@@ -38,21 +38,21 @@
 <li>https://github.com/astral-sh/ruff/pull/666</li>
 </ul>
 <p>One distinguishing feature of this PR is that we have attempted to be less ambitious in the hopes that this will improve the chances of landing nonzero progress into <code>main</code>.</p>
-<h2>What the People Want</h2>
+What the People Want
 <p>Users expect to see the following behavior in these common situations:</p>
-<pre><code class="language-python"># Example 1
+<pre><code># Example 1
 import a    # ok
 import a.b  # F401: unused-import
 
 a.foo()
 </code></pre>
-<pre><code class="language-python"># Example 2
+<pre><code># Example 2
 import a    # F401: unused-import
 import a.b  # ok
 
 a.b.bar()
 </code></pre>
-<pre><code class="language-python"># Example 3
+<pre><code># Example 3
 import a    # ok
 import a.b  # ok
 
@@ -60,21 +60,21 @@ a.foo()
 a.b.bar()
 </code></pre>
 <p>The following situations are unintuitive to users, but are valid Python and we are probably forced to proceed as indicated:</p>
-<pre><code class="language-python"># Example 4
+<pre><code># Example 4
 import a.b  # ok
 
 a.foo()
 </code></pre>
-<pre><code class="language-python"># Example 5
+<pre><code># Example 5
 import a.b  # F401: unused-import
 import a.c  # ok
 
 a.x.baz()
 </code></pre>
 <p>The goal of this PR is to modify the implementation of <code>unused-import</code> to match this expectation.</p>
-<h2>Modeling the Python in Users' Brains</h2>
+Modeling the Python in Users&#x27; Brains
 <p>Given the expected behavior above, how might a typical user be modeling Python in their minds? One possibility is as follows. Upon seeing the statement:</p>
-<pre><code class="language-python">import a.b
+<pre><code>import a.b
 </code></pre>
 <p>the user thinks:</p>
 <blockquote>
@@ -85,7 +85,7 @@ a.x.baz()
 <p>[Python]: We have executed the equivalent of the statement <code>import a</code>, and, in particular, can access any top-level member of <code>a</code> made available by this import. We <em>then</em> import the submodule <code>b</code>, making possibly even more members available.</p>
 </blockquote>
 <p>Similarly, when this user sees:</p>
-<pre><code class="language-python">import a
+<pre><code>import a
 import a.b
 
 a.foo()
@@ -99,17 +99,17 @@ a.b.bar()
 <blockquote>
 <p>[Python] The first import is totally redundant and is not used. The call <code>a.foo()</code> references the symbol <code>a</code> that is being loaded in on the <em>second</em> line.</p>
 </blockquote>
-<p>These views are actually incompatible, so it is not possible to model the user's mind without running afoul of Examples 4 and 5 above.</p>
-<h2>The Worst of Both Worlds</h2>
-<p>To model both the behavior that the user expects <em>and</em> the unintuitive behavior that Python allows, we adopt an approach I'll call &quot;Thanks I Hate It (TIHI)&quot;. It is the worst of both worlds, and it alters how we think about accessing members of a module. Again we will consider the example:</p>
-<pre><code class="language-python">import a
+<p>These views are actually incompatible, so it is not possible to model the user&#x27;s mind without running afoul of Examples 4 and 5 above.</p>
+The Worst of Both Worlds
+<p>To model both the behavior that the user expects <em>and</em> the unintuitive behavior that Python allows, we adopt an approach I&#x27;ll call &quot;Thanks I Hate It (TIHI)&quot;. It is the worst of both worlds, and it alters how we think about accessing members of a module. Again we will consider the example:</p>
+<pre><code>import a
 import a.b
 
 a.foo()
 a.b.bar()
 </code></pre>
 <blockquote>
-<p>[TIHI]: Following Python, the import statements both make available the symbol <code>a</code> and all of it's top-level members. The second import statement also makes available the members of the form <code>a.b.*</code>. However, the attribute call <code>a.foo</code> will access <code>a</code> <em>via the first import statement</em> and the call <code>a.b.bar</code> will access <code>a.b</code> via the second.</p>
+<p>[TIHI]: Following Python, the import statements both make available the symbol <code>a</code> and all of it&#x27;s top-level members. The second import statement also makes available the members of the form <code>a.b.*</code>. However, the attribute call <code>a.foo</code> will access <code>a</code> <em>via the first import statement</em> and the call <code>a.b.bar</code> will access <code>a.b</code> via the second.</p>
 </blockquote>
 <p>In general the TIHI model will resolve an attribute load of the form <code>a.a1...an</code> (for a module <code>a</code>) by:</p>
 <ol>
@@ -119,328 +119,328 @@ import statements <code>import a.b1...bm</code>,</li>
 <li>Adding a reference to the binding created by the nearest
 of these.</li>
 </ol>
-<h2>What we actually do</h2>
-<p>Rather than force Ruff's semantic model to be incorrect by actually implementing TIHI, we hack TIHI into the logic of <code>unused-import</code> itself. Doing this is somewhat awkward due to the nature of the implementation of <code>unused-import</code>.</p>
+What we actually do
+<p>Rather than force Ruff&#x27;s semantic model to be incorrect by actually implementing TIHI, we hack TIHI into the logic of <code>unused-import</code> itself. Doing this is somewhat awkward due to the nature of the implementation of <code>unused-import</code>.</p>
 <p>Let me briefly review the current implementation and then explain what we do differently.</p>
-<h3>Current implementation</h3>
+Current implementation
 <p>After having the semantic model visit the entire module, we look at the current <em>live</em> import bindings that have no references. There are various other filters and logic then applied, but our essential starting bucket for this rule consists of that: bindings to import statements that are live at the end of the file and have no references.</p>
 <p>In particular, if the module consists solely of:</p>
-<pre><code class="language-python">import a
+<pre><code>import a
 import a.b
 </code></pre>
 <p>then our starting &quot;bucket&quot; where we might emit a lint does not include <code>import a</code> since the symbol <code>a</code> is shadowed by the statement <code>import a.b</code>.</p>
-<h3>This PR</h3>
+This PR
 <p>From now on we will refer to the current behavior as the &quot;stable&quot; behavior. In this PR we introduce preview behavior under very specific assumptions designed to limit the scope of this PR to handle the most common cases where users get tripped up. If any of these assumptions are not met then we revert to the stable behavior.</p>
 <p>To begin, instead of only considering import bindings that are live at the end of the module, we also consider all bindings shadowed by these. We assume that all of these bindings are also import bindings - specifically simple imports and submodule imports without aliases, not <code>from</code> imports. If not - revert to stable behavior. Next, we have to decide which of these statements have been &quot;used&quot; in the sense of the &quot;TIHI&quot; model above. So we iterate through the references to the last binding and decide which import statement is <em>intuitively</em> being referenced, according to the matching logic we described earlier.</p>
 <p>As a technical note here, a call like <code>a.b.foo()</code> will create a reference to the symbol <code>a</code> - so we will not see the full attribute access. We must therefore crawl up the AST and collect the qualified name of the attribute access. We assume that all references arise from a <code>Name</code> node or from appearance in a binding to <code>__all__</code> - if we find some other kind of reference, we revert to stable behavior.</p>
 <p>Having marked each import statement as used or unused, we collect the unused ones and then proceed as in the stable behavior.</p>
-<h2>Questions</h2>
+Questions
 <blockquote>
 <p>What if the submodule import has a side-effect and so is used? For example, if <code>a/b.py</code> contains <code>import a.x</code> but <code>a/__init__.py</code> does not. Then <code>a.x.baz</code> really <em>does</em> need <code>import a.b</code>.</p>
 </blockquote>
-<p>We already don't model side-effects, even for simple module imports like <code>import a</code>. So the user would be required to suppress the lint for such an anti-pattern.</p>
+<p>We already don&#x27;t model side-effects, even for simple module imports like <code>import a</code>. So the user would be required to suppress the lint for such an anti-pattern.</p>
 <blockquote>
-<p>Shouldn't you do ____ to avoid allocating and performance regressions?</p>
+<p>Shouldn&#x27;t you do ____ to avoid allocating and performance regressions?</p>
 </blockquote>
-<p>Maybe! The benchmarks did not show a regression, but if we want to pre-emptively do that I'm happy to. Some places where it may make sense are:</p>
+<p>Maybe! The benchmarks did not show a regression, but if we want to pre-emptively do that I&#x27;m happy to. Some places where it may make sense are:</p>
 <ul>
 <li>We currently allocate a vector of size 1 in a common situation where we &quot;bail&quot; to the stable behavior when iterating over bindings. This is to make the opaque type of various iterators the same. But we could avoid that.</li>
 <li>We could use something like <code>SmallVec</code> when collecting candidate unused import bindings shadowing a given one, since there will often not be very many</li>
 <li>We could use a bitmask to mark used bindings (for a given symbol) as long as we are only dealing with &lt; 64 of them and fallback to <code>Vec&lt;bool&gt;</code> otherwise</li>
-<li>... probably other things I'm not thinking of!</li>
+<li>... probably other things I&#x27;m not thinking of!</li>
 </ul>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @dylwil3 on 2025-09-01 20:10</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-09-01 20:10</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">preview</span> added by @dylwil3 on 2025-09-01 20:10</div>
+            <div class="event">Label <span class="label">preview</span> added by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-09-01 20:10</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-01 20:35</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+245 -0 violations, +0 -0 fixes in 30 projects; 25 projects unchanged)</p>
-<details><summary><a href="https://github.com/DisnakeDev/disnake">DisnakeDev/disnake</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<a href="https://github.com/DisnakeDev/disnake">DisnakeDev/disnake</a> (+2 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/DisnakeDev/disnake/blob/2da07c7ae1b50209cd2d5c1d52117a4f04007682/disnake/ext/commands/bot_base.py#L5'>disnake/ext/commands/bot_base.py:5:8:</a> F401 [*] `collections` imported but unused
-+ <a href='https://github.com/DisnakeDev/disnake/blob/2da07c7ae1b50209cd2d5c1d52117a4f04007682/disnake/ext/commands/cog.py#L21'>disnake/ext/commands/cog.py:21:8:</a> F401 [*] `disnake` imported but unused
++ <a href="https://github.com/DisnakeDev/disnake/blob/2da07c7ae1b50209cd2d5c1d52117a4f04007682/disnake/ext/commands/bot_base.py#L5">disnake/ext/commands/bot_base.py:5:8:</a> F401 [*] `collections` imported but unused
++ <a href="https://github.com/DisnakeDev/disnake/blob/2da07c7ae1b50209cd2d5c1d52117a4f04007682/disnake/ext/commands/cog.py#L21">disnake/ext/commands/cog.py:21:8:</a> F401 [*] `disnake` imported but unused
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/RasaHQ/rasa">RasaHQ/rasa</a> (+77 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/RasaHQ/rasa">RasaHQ/rasa</a> (+77 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/cli/data.py#L21'>rasa/cli/data.py:21:8:</a> F401 [*] `rasa.shared.utils.cli` imported but unused
-+ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/cli/data.py#L22'>rasa/cli/data.py:22:8:</a> F401 [*] `rasa.utils.common` imported but unused
-+ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/cli/data.py#L6'>rasa/cli/data.py:6:8:</a> F401 [*] `rasa.shared.core.domain` imported but unused
-+ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/cli/export.py#L11'>rasa/cli/export.py:11:8:</a> F401 [*] `rasa.utils.common` imported but unused
-+ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/cli/interactive.py#L22'>rasa/cli/interactive.py:22:8:</a> F401 [*] `rasa.utils.common` imported but unused
-+ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/cli/telemetry.py#L7'>rasa/cli/telemetry.py:7:8:</a> F401 [*] `rasa.cli.utils` imported but unused
-+ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/cli/test.py#L28'>rasa/cli/test.py:28:8:</a> F401 [*] `rasa.utils.common` imported but unused
-+ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/cli/test.py#L8'>rasa/cli/test.py:8:8:</a> F401 [*] `rasa.shared.data` imported but unused
-+ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/cli/train.py#L11'>rasa/cli/train.py:11:8:</a> F401 [*] `rasa.utils.common` imported but unused
-+ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/core/actions/action.py#L84'>rasa/core/actions/action.py:84:8:</a> F401 [*] `rasa.shared.utils.io` imported but unused
-+ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/core/brokers/broker.py#L9'>rasa/core/brokers/broker.py:9:8:</a> F401 [*] `rasa.shared.utils.io` imported but unused
-+ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/core/channels/rasa_chat.py#L8'>rasa/core/channels/rasa_chat.py:8:8:</a> F401 [*] `jwt.exceptions` imported but unused
-+ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/core/evaluation/marker_base.py#L24'>rasa/core/evaluation/marker_base.py:24:8:</a> F401 [*] `rasa.shared.nlu.constants` imported but unused
-+ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/core/evaluation/marker_base.py#L25'>rasa/core/evaluation/marker_base.py:25:8:</a> F401 [*] `rasa.shared.utils.validation` imported but unused
-+ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/core/evaluation/marker_base.py#L27'>rasa/core/evaluation/marker_base.py:27:8:</a> F401 [*] `rasa.shared.utils.common` imported but unused
++ <a href="https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/cli/data.py#L21">rasa/cli/data.py:21:8:</a> F401 [*] `rasa.shared.utils.cli` imported but unused
++ <a href="https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/cli/data.py#L22">rasa/cli/data.py:22:8:</a> F401 [*] `rasa.utils.common` imported but unused
++ <a href="https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/cli/data.py#L6">rasa/cli/data.py:6:8:</a> F401 [*] `rasa.shared.core.domain` imported but unused
++ <a href="https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/cli/export.py#L11">rasa/cli/export.py:11:8:</a> F401 [*] `rasa.utils.common` imported but unused
++ <a href="https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/cli/interactive.py#L22">rasa/cli/interactive.py:22:8:</a> F401 [*] `rasa.utils.common` imported but unused
++ <a href="https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/cli/telemetry.py#L7">rasa/cli/telemetry.py:7:8:</a> F401 [*] `rasa.cli.utils` imported but unused
++ <a href="https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/cli/test.py#L28">rasa/cli/test.py:28:8:</a> F401 [*] `rasa.utils.common` imported but unused
++ <a href="https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/cli/test.py#L8">rasa/cli/test.py:8:8:</a> F401 [*] `rasa.shared.data` imported but unused
++ <a href="https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/cli/train.py#L11">rasa/cli/train.py:11:8:</a> F401 [*] `rasa.utils.common` imported but unused
++ <a href="https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/core/actions/action.py#L84">rasa/core/actions/action.py:84:8:</a> F401 [*] `rasa.shared.utils.io` imported but unused
++ <a href="https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/core/brokers/broker.py#L9">rasa/core/brokers/broker.py:9:8:</a> F401 [*] `rasa.shared.utils.io` imported but unused
++ <a href="https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/core/channels/rasa_chat.py#L8">rasa/core/channels/rasa_chat.py:8:8:</a> F401 [*] `jwt.exceptions` imported but unused
++ <a href="https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/core/evaluation/marker_base.py#L24">rasa/core/evaluation/marker_base.py:24:8:</a> F401 [*] `rasa.shared.nlu.constants` imported but unused
++ <a href="https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/core/evaluation/marker_base.py#L25">rasa/core/evaluation/marker_base.py:25:8:</a> F401 [*] `rasa.shared.utils.validation` imported but unused
++ <a href="https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/rasa/core/evaluation/marker_base.py#L27">rasa/core/evaluation/marker_base.py:27:8:</a> F401 [*] `rasa.shared.utils.common` imported but unused
 ... 62 additional changes omitted for project
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/Snowflake-Labs/snowcli">Snowflake-Labs/snowcli</a> (+1 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/Snowflake-Labs/snowcli">Snowflake-Labs/snowcli</a> (+1 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/Snowflake-Labs/snowcli/blob/8d3b53d518e58013351fe08377b675ee80182d69/tests/test_utils.py#L22'>tests/test_utils.py:22:8:</a> F401 [*] `snowflake.cli._plugins.snowpark.models` imported but unused
++ <a href="https://github.com/Snowflake-Labs/snowcli/blob/8d3b53d518e58013351fe08377b675ee80182d69/tests/test_utils.py#L22">tests/test_utils.py:22:8:</a> F401 [*] `snowflake.cli._plugins.snowpark.models` imported but unused
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+23 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/apache/airflow">apache/airflow</a> (+23 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/apache/airflow/blob/3f2f18037b49291767707f22d573bf887f2079e9/airflow-core/src/airflow/plugins_manager.py#L22'>airflow-core/src/airflow/plugins_manager.py:22:8:</a> F401 [*] `importlib` imported but unused
-+ <a href='https://github.com/apache/airflow/blob/3f2f18037b49291767707f22d573bf887f2079e9/airflow-core/tests/unit/utils/test_log_handlers.py#L24'>airflow-core/tests/unit/utils/test_log_handlers.py:24:8:</a> F401 [*] `logging.config` imported but unused
-+ <a href='https://github.com/apache/airflow/blob/3f2f18037b49291767707f22d573bf887f2079e9/devel-common/src/sphinx_exts/docs_build/fetch_inventories.py#L19'>devel-common/src/sphinx_exts/docs_build/fetch_inventories.py:19:8:</a> F401 [*] `concurrent` imported but unused
-+ <a href='https://github.com/apache/airflow/blob/3f2f18037b49291767707f22d573bf887f2079e9/devel-common/src/tests_common/pytest_plugin.py#L2147'>devel-common/src/tests_common/pytest_plugin.py:2147:16:</a> F401 `airflow.sdk._shared.logging` imported but unused; consider using `importlib.util.find_spec` to test for availability
-+ <a href='https://github.com/apache/airflow/blob/3f2f18037b49291767707f22d573bf887f2079e9/devel-common/src/tests_common/pytest_plugin.py#L2150'>devel-common/src/tests_common/pytest_plugin.py:2150:20:</a> F401 `airflow.sdk._shared.logging` imported but unused; consider using `importlib.util.find_spec` to test for availability
-+ <a href='https://github.com/apache/airflow/blob/3f2f18037b49291767707f22d573bf887f2079e9/providers/amazon/src/airflow/providers/amazon/aws/hooks/batch_waiters.py#L36'>providers/amazon/src/airflow/providers/amazon/aws/hooks/batch_waiters.py:36:8:</a> F401 [*] `botocore.client` imported but unused
-+ <a href='https://github.com/apache/airflow/blob/3f2f18037b49291767707f22d573bf887f2079e9/providers/celery/src/airflow/providers/celery/executors/celery_executor_utils.py#L131'>providers/celery/src/airflow/providers/celery/executors/celery_executor_utils.py:131:16:</a> F401 [*] `airflow.jobs.local_task_job_runner` imported but unused
-+ <a href='https://github.com/apache/airflow/blob/3f2f18037b49291767707f22d573bf887f2079e9/providers/celery/src/airflow/providers/celery/executors/celery_executor_utils.py#L132'>providers/celery/src/airflow/providers/celery/executors/celery_executor_utils.py:132:16:</a> F401 [*] `airflow.macros` imported but unused
-+ <a href='https://github.com/apache/airflow/blob/3f2f18037b49291767707f22d573bf887f2079e9/providers/celery/src/airflow/providers/celery/executors/celery_executor_utils.py#L135'>providers/celery/src/airflow/providers/celery/executors/celery_executor_utils.py:135:16:</a> F401 `airflow.providers.standard.operators.bash` imported but unused; consider using `importlib.util.find_spec` to test for availability
-+ <a href='https://github.com/apache/airflow/blob/3f2f18037b49291767707f22d573bf887f2079e9/providers/celery/src/airflow/providers/celery/executors/celery_executor_utils.py#L136'>providers/celery/src/airflow/providers/celery/executors/celery_executor_utils.py:136:16:</a> F401 `airflow.providers.standard.operators.python` imported but unused; consider using `importlib.util.find_spec` to test for availability
++ <a href="https://github.com/apache/airflow/blob/3f2f18037b49291767707f22d573bf887f2079e9/airflow-core/src/airflow/plugins_manager.py#L22">airflow-core/src/airflow/plugins_manager.py:22:8:</a> F401 [*] `importlib` imported but unused
++ <a href="https://github.com/apache/airflow/blob/3f2f18037b49291767707f22d573bf887f2079e9/airflow-core/tests/unit/utils/test_log_handlers.py#L24">airflow-core/tests/unit/utils/test_log_handlers.py:24:8:</a> F401 [*] `logging.config` imported but unused
++ <a href="https://github.com/apache/airflow/blob/3f2f18037b49291767707f22d573bf887f2079e9/devel-common/src/sphinx_exts/docs_build/fetch_inventories.py#L19">devel-common/src/sphinx_exts/docs_build/fetch_inventories.py:19:8:</a> F401 [*] `concurrent` imported but unused
++ <a href="https://github.com/apache/airflow/blob/3f2f18037b49291767707f22d573bf887f2079e9/devel-common/src/tests_common/pytest_plugin.py#L2147">devel-common/src/tests_common/pytest_plugin.py:2147:16:</a> F401 `airflow.sdk._shared.logging` imported but unused; consider using `importlib.util.find_spec` to test for availability
++ <a href="https://github.com/apache/airflow/blob/3f2f18037b49291767707f22d573bf887f2079e9/devel-common/src/tests_common/pytest_plugin.py#L2150">devel-common/src/tests_common/pytest_plugin.py:2150:20:</a> F401 `airflow.sdk._shared.logging` imported but unused; consider using `importlib.util.find_spec` to test for availability
++ <a href="https://github.com/apache/airflow/blob/3f2f18037b49291767707f22d573bf887f2079e9/providers/amazon/src/airflow/providers/amazon/aws/hooks/batch_waiters.py#L36">providers/amazon/src/airflow/providers/amazon/aws/hooks/batch_waiters.py:36:8:</a> F401 [*] `botocore.client` imported but unused
++ <a href="https://github.com/apache/airflow/blob/3f2f18037b49291767707f22d573bf887f2079e9/providers/celery/src/airflow/providers/celery/executors/celery_executor_utils.py#L131">providers/celery/src/airflow/providers/celery/executors/celery_executor_utils.py:131:16:</a> F401 [*] `airflow.jobs.local_task_job_runner` imported but unused
++ <a href="https://github.com/apache/airflow/blob/3f2f18037b49291767707f22d573bf887f2079e9/providers/celery/src/airflow/providers/celery/executors/celery_executor_utils.py#L132">providers/celery/src/airflow/providers/celery/executors/celery_executor_utils.py:132:16:</a> F401 [*] `airflow.macros` imported but unused
++ <a href="https://github.com/apache/airflow/blob/3f2f18037b49291767707f22d573bf887f2079e9/providers/celery/src/airflow/providers/celery/executors/celery_executor_utils.py#L135">providers/celery/src/airflow/providers/celery/executors/celery_executor_utils.py:135:16:</a> F401 `airflow.providers.standard.operators.bash` imported but unused; consider using `importlib.util.find_spec` to test for availability
++ <a href="https://github.com/apache/airflow/blob/3f2f18037b49291767707f22d573bf887f2079e9/providers/celery/src/airflow/providers/celery/executors/celery_executor_utils.py#L136">providers/celery/src/airflow/providers/celery/executors/celery_executor_utils.py:136:16:</a> F401 `airflow.providers.standard.operators.python` imported but unused; consider using `importlib.util.find_spec` to test for availability
 ... 13 additional changes omitted for project
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+2 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/apache/superset">apache/superset</a> (+2 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/apache/superset/blob/77a5969dc1570d8ac3560520e05a4872e0248c37/superset/utils/logging_configurator.py#L21'>superset/utils/logging_configurator.py:21:8:</a> F401 [*] `flask.app` imported but unused
-+ <a href='https://github.com/apache/superset/blob/77a5969dc1570d8ac3560520e05a4872e0248c37/tests/integration_tests/cli_tests.py#L29'>tests/integration_tests/cli_tests.py:29:8:</a> F401 [*] `superset.cli.importexport` imported but unused
++ <a href="https://github.com/apache/superset/blob/77a5969dc1570d8ac3560520e05a4872e0248c37/superset/utils/logging_configurator.py#L21">superset/utils/logging_configurator.py:21:8:</a> F401 [*] `flask.app` imported but unused
++ <a href="https://github.com/apache/superset/blob/77a5969dc1570d8ac3560520e05a4872e0248c37/tests/integration_tests/cli_tests.py#L29">tests/integration_tests/cli_tests.py:29:8:</a> F401 [*] `superset.cli.importexport` imported but unused
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/aws/aws-sam-cli">aws/aws-sam-cli</a> (+1 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/aws/aws-sam-cli">aws/aws-sam-cli</a> (+1 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/aws/aws-sam-cli/blob/6370b15d317bbe1aec7fc12b2c38c9d0f4cea347/samcli/lib/package/s3_uploader.py#L25'>samcli/lib/package/s3_uploader.py:25:8:</a> F401 [*] `botocore` imported but unused
++ <a href="https://github.com/aws/aws-sam-cli/blob/6370b15d317bbe1aec7fc12b2c38c9d0f4cea347/samcli/lib/package/s3_uploader.py#L25">samcli/lib/package/s3_uploader.py:25:8:</a> F401 [*] `botocore` imported but unused
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/binary-husky/gpt_academic">binary-husky/gpt_academic</a> (+3 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/binary-husky/gpt_academic">binary-husky/gpt_academic</a> (+3 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/binary-husky/gpt_academic/blob/0aa0472da44edc0a888c7f83b564c6d0d1089366/crazy_functions/Multi_Agent_Legacy.py#L57'>crazy_functions/Multi_Agent_Legacy.py:57:16:</a> F401 [*] `autogen` imported but unused
-+ <a href='https://github.com/binary-husky/gpt_academic/blob/0aa0472da44edc0a888c7f83b564c6d0d1089366/request_llms/bridge_chatglm.py#L22'>request_llms/bridge_chatglm.py:22:16:</a> F401 [*] `os` imported but unused
-+ <a href='https://github.com/binary-husky/gpt_academic/blob/0aa0472da44edc0a888c7f83b564c6d0d1089366/request_llms/bridge_chatglm3.py#L22'>request_llms/bridge_chatglm3.py:22:16:</a> F401 [*] `os` imported but unused
++ <a href="https://github.com/binary-husky/gpt_academic/blob/0aa0472da44edc0a888c7f83b564c6d0d1089366/crazy_functions/Multi_Agent_Legacy.py#L57">crazy_functions/Multi_Agent_Legacy.py:57:16:</a> F401 [*] `autogen` imported but unused
++ <a href="https://github.com/binary-husky/gpt_academic/blob/0aa0472da44edc0a888c7f83b564c6d0d1089366/request_llms/bridge_chatglm.py#L22">request_llms/bridge_chatglm.py:22:16:</a> F401 [*] `os` imported but unused
++ <a href="https://github.com/binary-husky/gpt_academic/blob/0aa0472da44edc0a888c7f83b564c6d0d1089366/request_llms/bridge_chatglm3.py#L22">request_llms/bridge_chatglm3.py:22:16:</a> F401 [*] `os` imported but unused
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+4 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+4 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/credentials.py#L18'>release/credentials.py:18:8:</a> F401 [*] `boto` imported but unused
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/credentials.py#L20'>release/credentials.py:20:8:</a> F401 [*] `boto.s3.key` imported but unused
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/support/defaults.py#L87'>tests/support/defaults.py:87:12:</a> F401 [*] `bokeh.models` imported but unused
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/test_cross.py#L39'>tests/test_cross.py:39:8:</a> F401 [*] `_pytest.mark` imported but unused
++ <a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/credentials.py#L18">release/credentials.py:18:8:</a> F401 [*] `boto` imported but unused
++ <a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/credentials.py#L20">release/credentials.py:20:8:</a> F401 [*] `boto.s3.key` imported but unused
++ <a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/support/defaults.py#L87">tests/support/defaults.py:87:12:</a> F401 [*] `bokeh.models` imported but unused
++ <a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/test_cross.py#L39">tests/test_cross.py:39:8:</a> F401 [*] `_pytest.mark` imported but unused
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+3 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+3 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/ibis-project/ibis/blob/32ce93c655fffe180470ff0ce6a838a550e38a3d/ibis/backends/conftest.py#L5'>ibis/backends/conftest.py:5:8:</a> F401 `importlib.metadata` imported but unused
-+ <a href='https://github.com/ibis-project/ibis/blob/32ce93c655fffe180470ff0ce6a838a550e38a3d/ibis/backends/tests/test_dot_sql.py#L11'>ibis/backends/tests/test_dot_sql.py:11:8:</a> F401 `ibis.backends.sql.dialects` imported but unused
-+ <a href='https://github.com/ibis-project/ibis/blob/32ce93c655fffe180470ff0ce6a838a550e38a3d/ibis/expr/types/_rich.py#L12'>ibis/expr/types/_rich.py:12:8:</a> F401 `rich` imported but unused
++ <a href="https://github.com/ibis-project/ibis/blob/32ce93c655fffe180470ff0ce6a838a550e38a3d/ibis/backends/conftest.py#L5">ibis/backends/conftest.py:5:8:</a> F401 `importlib.metadata` imported but unused
++ <a href="https://github.com/ibis-project/ibis/blob/32ce93c655fffe180470ff0ce6a838a550e38a3d/ibis/backends/tests/test_dot_sql.py#L11">ibis/backends/tests/test_dot_sql.py:11:8:</a> F401 `ibis.backends.sql.dialects` imported but unused
++ <a href="https://github.com/ibis-project/ibis/blob/32ce93c655fffe180470ff0ce6a838a550e38a3d/ibis/expr/types/_rich.py#L12">ibis/expr/types/_rich.py:12:8:</a> F401 `rich` imported but unused
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/langchain-ai/langchain">langchain-ai/langchain</a> (+1 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/langchain-ai/langchain">langchain-ai/langchain</a> (+1 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/langchain-ai/langchain/blob/986302322f1077122434ff09914e8ce23e03cbc5/libs/core/tests/unit_tests/tracers/test_langchain.py#L3'>libs/core/tests/unit_tests/tracers/test_langchain.py:3:8:</a> F401 [*] `unittest` imported but unused
++ <a href="https://github.com/langchain-ai/langchain/blob/986302322f1077122434ff09914e8ce23e03cbc5/libs/core/tests/unit_tests/tracers/test_langchain.py#L3">libs/core/tests/unit_tests/tracers/test_langchain.py:3:8:</a> F401 [*] `unittest` imported but unused
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/latchbio/latch">latchbio/latch</a> (+3 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/latchbio/latch">latchbio/latch</a> (+3 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/latchbio/latch/blob/593bb5d84736212a7f1e9d26391e5530ea161887/src/latch_cli/centromere/ctx.py#L12'>src/latch_cli/centromere/ctx.py:12:8:</a> F401 [*] `paramiko.util` imported but unused
-+ <a href='https://github.com/latchbio/latch/blob/593bb5d84736212a7f1e9d26391e5530ea161887/src/latch_cli/snakemake/single_task_snakemake.py#L12'>src/latch_cli/snakemake/single_task_snakemake.py:12:8:</a> F401 [*] `snakemake.workflow` imported but unused
-+ <a href='https://github.com/latchbio/latch/blob/593bb5d84736212a7f1e9d26391e5530ea161887/src/latch_cli/snakemake/workflow.py#L27'>src/latch_cli/snakemake/workflow.py:27:8:</a> F401 [*] `snakemake` imported but unused
++ <a href="https://github.com/latchbio/latch/blob/593bb5d84736212a7f1e9d26391e5530ea161887/src/latch_cli/centromere/ctx.py#L12">src/latch_cli/centromere/ctx.py:12:8:</a> F401 [*] `paramiko.util` imported but unused
++ <a href="https://github.com/latchbio/latch/blob/593bb5d84736212a7f1e9d26391e5530ea161887/src/latch_cli/snakemake/single_task_snakemake.py#L12">src/latch_cli/snakemake/single_task_snakemake.py:12:8:</a> F401 [*] `snakemake.workflow` imported but unused
++ <a href="https://github.com/latchbio/latch/blob/593bb5d84736212a7f1e9d26391e5530ea161887/src/latch_cli/snakemake/workflow.py#L27">src/latch_cli/snakemake/workflow.py:27:8:</a> F401 [*] `snakemake` imported but unused
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/lnbits/lnbits">lnbits/lnbits</a> (+1 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/lnbits/lnbits">lnbits/lnbits</a> (+1 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/lnbits/lnbits/blob/88b01e60795c488ae9fd8c2e634f3d218b901aaa/lnbits/settings.py#L3'>lnbits/settings.py:3:8:</a> F401 [*] `importlib` imported but unused
++ <a href="https://github.com/lnbits/lnbits/blob/88b01e60795c488ae9fd8c2e634f3d218b901aaa/lnbits/settings.py#L3">lnbits/settings.py:3:8:</a> F401 [*] `importlib` imported but unused
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/mlflow/mlflow">mlflow/mlflow</a> (+52 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/mlflow/mlflow">mlflow/mlflow</a> (+52 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/mlflow/mlflow/blob/5f1428d4f36e33450f4caa3ad89b972cd6fb18a1/dev/update_ml_package_versions.py#L16'>dev/update_ml_package_versions.py:16:8:</a> F401 [*] `urllib.error` imported but unused
-+ <a href='https://github.com/mlflow/mlflow/blob/5f1428d4f36e33450f4caa3ad89b972cd6fb18a1/examples/flower_classifier/score_images_spark.py#L19'>examples/flower_classifier/score_images_spark.py:19:8:</a> F401 [*] `mlflow` imported but unused
-+ <a href='https://github.com/mlflow/mlflow/blob/5f1428d4f36e33450f4caa3ad89b972cd6fb18a1/examples/hyperparam/search_random.py#L19'>examples/hyperparam/search_random.py:19:8:</a> F401 [*] `mlflow.sklearn` imported but unused
-+ <a href='https://github.com/mlflow/mlflow/blob/5f1428d4f36e33450f4caa3ad89b972cd6fb18a1/examples/hyperparam/search_random.py#L20'>examples/hyperparam/search_random.py:20:8:</a> F401 [*] `mlflow.tracking` imported but unused
-+ <a href='https://github.com/mlflow/mlflow/blob/5f1428d4f36e33450f4caa3ad89b972cd6fb18a1/mlflow/anthropic/autolog.py#L4'>mlflow/anthropic/autolog.py:4:8:</a> F401 [*] `mlflow` imported but unused
-+ <a href='https://github.com/mlflow/mlflow/blob/5f1428d4f36e33450f4caa3ad89b972cd6fb18a1/mlflow/langchain/utils/logging.py#L282'>mlflow/langchain/utils/logging.py:282:12:</a> F401 [*] `langchain.agents.agent` imported but unused
-+ <a href='https://github.com/mlflow/mlflow/blob/5f1428d4f36e33450f4caa3ad89b972cd6fb18a1/mlflow/langchain/utils/logging.py#L283'>mlflow/langchain/utils/logging.py:283:12:</a> F401 [*] `langchain.chains.base` imported but unused
-+ <a href='https://github.com/mlflow/mlflow/blob/5f1428d4f36e33450f4caa3ad89b972cd6fb18a1/mlflow/langchain/utils/logging.py#L285'>mlflow/langchain/utils/logging.py:285:12:</a> F401 [*] `langchain.llms.huggingface_hub` imported but unused
-+ <a href='https://github.com/mlflow/mlflow/blob/5f1428d4f36e33450f4caa3ad89b972cd6fb18a1/mlflow/langchain/utils/logging.py#L286'>mlflow/langchain/utils/logging.py:286:12:</a> F401 [*] `langchain.llms.openai` imported but unused
-+ <a href='https://github.com/mlflow/mlflow/blob/5f1428d4f36e33450f4caa3ad89b972cd6fb18a1/mlflow/langchain/utils/logging.py#L77'>mlflow/langchain/utils/logging.py:77:12:</a> F401 [*] `langchain.agents` imported but unused
++ <a href="https://github.com/mlflow/mlflow/blob/5f1428d4f36e33450f4caa3ad89b972cd6fb18a1/dev/update_ml_package_versions.py#L16">dev/update_ml_package_versions.py:16:8:</a> F401 [*] `urllib.error` imported but unused
++ <a href="https://github.com/mlflow/mlflow/blob/5f1428d4f36e33450f4caa3ad89b972cd6fb18a1/examples/flower_classifier/score_images_spark.py#L19">examples/flower_classifier/score_images_spark.py:19:8:</a> F401 [*] `mlflow` imported but unused
++ <a href="https://github.com/mlflow/mlflow/blob/5f1428d4f36e33450f4caa3ad89b972cd6fb18a1/examples/hyperparam/search_random.py#L19">examples/hyperparam/search_random.py:19:8:</a> F401 [*] `mlflow.sklearn` imported but unused
++ <a href="https://github.com/mlflow/mlflow/blob/5f1428d4f36e33450f4caa3ad89b972cd6fb18a1/examples/hyperparam/search_random.py#L20">examples/hyperparam/search_random.py:20:8:</a> F401 [*] `mlflow.tracking` imported but unused
++ <a href="https://github.com/mlflow/mlflow/blob/5f1428d4f36e33450f4caa3ad89b972cd6fb18a1/mlflow/anthropic/autolog.py#L4">mlflow/anthropic/autolog.py:4:8:</a> F401 [*] `mlflow` imported but unused
++ <a href="https://github.com/mlflow/mlflow/blob/5f1428d4f36e33450f4caa3ad89b972cd6fb18a1/mlflow/langchain/utils/logging.py#L282">mlflow/langchain/utils/logging.py:282:12:</a> F401 [*] `langchain.agents.agent` imported but unused
++ <a href="https://github.com/mlflow/mlflow/blob/5f1428d4f36e33450f4caa3ad89b972cd6fb18a1/mlflow/langchain/utils/logging.py#L283">mlflow/langchain/utils/logging.py:283:12:</a> F401 [*] `langchain.chains.base` imported but unused
++ <a href="https://github.com/mlflow/mlflow/blob/5f1428d4f36e33450f4caa3ad89b972cd6fb18a1/mlflow/langchain/utils/logging.py#L285">mlflow/langchain/utils/logging.py:285:12:</a> F401 [*] `langchain.llms.huggingface_hub` imported but unused
++ <a href="https://github.com/mlflow/mlflow/blob/5f1428d4f36e33450f4caa3ad89b972cd6fb18a1/mlflow/langchain/utils/logging.py#L286">mlflow/langchain/utils/logging.py:286:12:</a> F401 [*] `langchain.llms.openai` imported but unused
++ <a href="https://github.com/mlflow/mlflow/blob/5f1428d4f36e33450f4caa3ad89b972cd6fb18a1/mlflow/langchain/utils/logging.py#L77">mlflow/langchain/utils/logging.py:77:12:</a> F401 [*] `langchain.agents` imported but unused
 ... 42 additional changes omitted for project
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+3 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+3 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/pandas-dev/pandas/blob/e4ca40511c13cf845058066ce174d4e233840d92/pandas/_libs/__init__.py#L16'>pandas/_libs/__init__.py:16:8:</a> F401 [*] `pandas._libs.pandas_parser` imported but unused; consider removing, adding to `__all__`, or using a redundant alias
-+ <a href='https://github.com/pandas-dev/pandas/blob/e4ca40511c13cf845058066ce174d4e233840d92/pandas/tests/indexes/datetimes/methods/test_to_pydatetime.py#L7'>pandas/tests/indexes/datetimes/methods/test_to_pydatetime.py:7:8:</a> F401 [*] `dateutil.tz` imported but unused
-+ <a href='https://github.com/pandas-dev/pandas/blob/e4ca40511c13cf845058066ce174d4e233840d92/pandas/tests/indexes/datetimes/test_constructors.py#L12'>pandas/tests/indexes/datetimes/test_constructors.py:12:8:</a> F401 [*] `dateutil` imported but unused
++ <a href="https://github.com/pandas-dev/pandas/blob/e4ca40511c13cf845058066ce174d4e233840d92/pandas/_libs/__init__.py#L16">pandas/_libs/__init__.py:16:8:</a> F401 [*] `pandas._libs.pandas_parser` imported but unused; consider removing, adding to `__all__`, or using a redundant alias
++ <a href="https://github.com/pandas-dev/pandas/blob/e4ca40511c13cf845058066ce174d4e233840d92/pandas/tests/indexes/datetimes/methods/test_to_pydatetime.py#L7">pandas/tests/indexes/datetimes/methods/test_to_pydatetime.py:7:8:</a> F401 [*] `dateutil.tz` imported but unused
++ <a href="https://github.com/pandas-dev/pandas/blob/e4ca40511c13cf845058066ce174d4e233840d92/pandas/tests/indexes/datetimes/test_constructors.py#L12">pandas/tests/indexes/datetimes/test_constructors.py:12:8:</a> F401 [*] `dateutil` imported but unused
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/prefecthq/prefect">prefecthq/prefect</a> (+20 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/prefecthq/prefect">prefecthq/prefect</a> (+20 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/prefecthq/prefect/blob/5d7d5eb6079b56162d99007c67fba887407d5b21/integration-tests/test_client_context_lifespan.py#L10'>integration-tests/test_client_context_lifespan.py:10:8:</a> F401 [*] `prefect` imported but unused
-+ <a href='https://github.com/prefecthq/prefect/blob/5d7d5eb6079b56162d99007c67fba887407d5b21/integration-tests/test_client_context_lifespan.py#L12'>integration-tests/test_client_context_lifespan.py:12:8:</a> F401 [*] `prefect.exceptions` imported but unused
-+ <a href='https://github.com/prefecthq/prefect/blob/5d7d5eb6079b56162d99007c67fba887407d5b21/src/integrations/prefect-aws/prefect_aws/workers/ecs_worker.py#L71'>src/integrations/prefect-aws/prefect_aws/workers/ecs_worker.py:71:8:</a> F401 [*] `anyio` imported but unused
-+ <a href='https://github.com/prefecthq/prefect/blob/5d7d5eb6079b56162d99007c67fba887407d5b21/src/integrations/prefect-dask/prefect_dask/task_runners.py#L91'>src/integrations/prefect-dask/prefect_dask/task_runners.py:91:8:</a> F401 [*] `distributed.deploy` imported but unused
-+ <a href='https://github.com/prefecthq/prefect/blob/5d7d5eb6079b56162d99007c67fba887407d5b21/src/integrations/prefect-gcp/prefect_gcp/workers/cloud_run.py#L165'>src/integrations/prefect-gcp/prefect_gcp/workers/cloud_run.py:165:8:</a> F401 [*] `anyio` imported but unused
-+ <a href='https://github.com/prefecthq/prefect/blob/5d7d5eb6079b56162d99007c67fba887407d5b21/src/integrations/prefect-kubernetes/prefect_kubernetes/worker.py#L121'>src/integrations/prefect-kubernetes/prefect_kubernetes/worker.py:121:8:</a> F401 [*] `anyio` imported but unused
-+ <a href='https://github.com/prefecthq/prefect/blob/5d7d5eb6079b56162d99007c67fba887407d5b21/src/integrations/prefect-ray/tests/test_task_runners.py#L10'>src/integrations/prefect-ray/tests/test_task_runners.py:10:8:</a> F401 [*] `ray` imported but unused
-+ <a href='https://github.com/prefecthq/prefect/blob/5d7d5eb6079b56162d99007c67fba887407d5b21/src/integrations/prefect-ray/tests/test_task_runners.py#L16'>src/integrations/prefect-ray/tests/test_task_runners.py:16:8:</a> F401 [*] `prefect.task_engine` imported but unused
-+ <a href='https://github.com/prefecthq/prefect/blob/5d7d5eb6079b56162d99007c67fba887407d5b21/src/prefect/cli/profile.py#L18'>src/prefect/cli/profile.py:18:8:</a> F401 [*] `prefect.settings.profiles` imported but unused
-+ <a href='https://github.com/prefecthq/prefect/blob/5d7d5eb6079b56162d99007c67fba887407d5b21/src/prefect/client/schemas/schedules.py#L9'>src/prefect/client/schemas/schedules.py:9:8:</a> F401 [*] `dateutil` imported but unused
++ <a href="https://github.com/prefecthq/prefect/blob/5d7d5eb6079b56162d99007c67fba887407d5b21/integration-tests/test_client_context_lifespan.py#L10">integration-tests/test_client_context_lifespan.py:10:8:</a> F401 [*] `prefect` imported but unused
++ <a href="https://github.com/prefecthq/prefect/blob/5d7d5eb6079b56162d99007c67fba887407d5b21/integration-tests/test_client_context_lifespan.py#L12">integration-tests/test_client_context_lifespan.py:12:8:</a> F401 [*] `prefect.exceptions` imported but unused
++ <a href="https://github.com/prefecthq/prefect/blob/5d7d5eb6079b56162d99007c67fba887407d5b21/src/integrations/prefect-aws/prefect_aws/workers/ecs_worker.py#L71">src/integrations/prefect-aws/prefect_aws/workers/ecs_worker.py:71:8:</a> F401 [*] `anyio` imported but unused
++ <a href="https://github.com/prefecthq/prefect/blob/5d7d5eb6079b56162d99007c67fba887407d5b21/src/integrations/prefect-dask/prefect_dask/task_runners.py#L91">src/integrations/prefect-dask/prefect_dask/task_runners.py:91:8:</a> F401 [*] `distributed.deploy` imported but unused
++ <a href="https://github.com/prefecthq/prefect/blob/5d7d5eb6079b56162d99007c67fba887407d5b21/src/integrations/prefect-gcp/prefect_gcp/workers/cloud_run.py#L165">src/integrations/prefect-gcp/prefect_gcp/workers/cloud_run.py:165:8:</a> F401 [*] `anyio` imported but unused
++ <a href="https://github.com/prefecthq/prefect/blob/5d7d5eb6079b56162d99007c67fba887407d5b21/src/integrations/prefect-kubernetes/prefect_kubernetes/worker.py#L121">src/integrations/prefect-kubernetes/prefect_kubernetes/worker.py:121:8:</a> F401 [*] `anyio` imported but unused
++ <a href="https://github.com/prefecthq/prefect/blob/5d7d5eb6079b56162d99007c67fba887407d5b21/src/integrations/prefect-ray/tests/test_task_runners.py#L10">src/integrations/prefect-ray/tests/test_task_runners.py:10:8:</a> F401 [*] `ray` imported but unused
++ <a href="https://github.com/prefecthq/prefect/blob/5d7d5eb6079b56162d99007c67fba887407d5b21/src/integrations/prefect-ray/tests/test_task_runners.py#L16">src/integrations/prefect-ray/tests/test_task_runners.py:16:8:</a> F401 [*] `prefect.task_engine` imported but unused
++ <a href="https://github.com/prefecthq/prefect/blob/5d7d5eb6079b56162d99007c67fba887407d5b21/src/prefect/cli/profile.py#L18">src/prefect/cli/profile.py:18:8:</a> F401 [*] `prefect.settings.profiles` imported but unused
++ <a href="https://github.com/prefecthq/prefect/blob/5d7d5eb6079b56162d99007c67fba887407d5b21/src/prefect/client/schemas/schedules.py#L9">src/prefect/client/schemas/schedules.py:9:8:</a> F401 [*] `dateutil` imported but unused
 ... 10 additional changes omitted for project
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/pypa/cibuildwheel">pypa/cibuildwheel</a> (+1 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/pypa/cibuildwheel">pypa/cibuildwheel</a> (+1 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/pypa/cibuildwheel/blob/7c619efba910c04005a835b110b057fc28fd6e93/cibuildwheel/__main__.py#L17'>cibuildwheel/__main__.py:17:8:</a> F401 [*] `cibuildwheel.util` imported but unused
++ <a href="https://github.com/pypa/cibuildwheel/blob/7c619efba910c04005a835b110b057fc28fd6e93/cibuildwheel/__main__.py#L17">cibuildwheel/__main__.py:17:8:</a> F401 [*] `cibuildwheel.util` imported but unused
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/pypa/pip">pypa/pip</a> (+4 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/pypa/pip">pypa/pip</a> (+4 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/pypa/pip/blob/ed055186f3a4c7713e39e40faf63c70cf8c59964/src/pip/_internal/cli/base_command.py#L6'>src/pip/_internal/cli/base_command.py:6:8:</a> F401 [*] `logging.config` imported but unused
-+ <a href='https://github.com/pypa/pip/blob/ed055186f3a4c7713e39e40faf63c70cf8c59964/src/pip/_internal/vcs/__init__.py#L5'>src/pip/_internal/vcs/__init__.py:5:8:</a> F401 `pip._internal.vcs.bazaar` imported but unused; consider removing, adding to `__all__`, or using a redundant alias
-+ <a href='https://github.com/pypa/pip/blob/ed055186f3a4c7713e39e40faf63c70cf8c59964/src/pip/_internal/vcs/__init__.py#L6'>src/pip/_internal/vcs/__init__.py:6:8:</a> F401 `pip._internal.vcs.git` imported but unused; consider removing, adding to `__all__`, or using a redundant alias
-+ <a href='https://github.com/pypa/pip/blob/ed055186f3a4c7713e39e40faf63c70cf8c59964/src/pip/_internal/vcs/__init__.py#L7'>src/pip/_internal/vcs/__init__.py:7:8:</a> F401 `pip._internal.vcs.mercurial` imported but unused; consider removing, adding to `__all__`, or using a redundant alias
++ <a href="https://github.com/pypa/pip/blob/ed055186f3a4c7713e39e40faf63c70cf8c59964/src/pip/_internal/cli/base_command.py#L6">src/pip/_internal/cli/base_command.py:6:8:</a> F401 [*] `logging.config` imported but unused
++ <a href="https://github.com/pypa/pip/blob/ed055186f3a4c7713e39e40faf63c70cf8c59964/src/pip/_internal/vcs/__init__.py#L5">src/pip/_internal/vcs/__init__.py:5:8:</a> F401 `pip._internal.vcs.bazaar` imported but unused; consider removing, adding to `__all__`, or using a redundant alias
++ <a href="https://github.com/pypa/pip/blob/ed055186f3a4c7713e39e40faf63c70cf8c59964/src/pip/_internal/vcs/__init__.py#L6">src/pip/_internal/vcs/__init__.py:6:8:</a> F401 `pip._internal.vcs.git` imported but unused; consider removing, adding to `__all__`, or using a redundant alias
++ <a href="https://github.com/pypa/pip/blob/ed055186f3a4c7713e39e40faf63c70cf8c59964/src/pip/_internal/vcs/__init__.py#L7">src/pip/_internal/vcs/__init__.py:7:8:</a> F401 `pip._internal.vcs.mercurial` imported but unused; consider removing, adding to `__all__`, or using a redundant alias
 </pre>
 
 </p>
-</details>
+
 
 <p><em>... Truncated remaining completed project reports due to GitHub comment length restrictions</em></p>
-<details><summary>Changes by rule (1 rules affected)</summary>
+Changes by rule (1 rules affected)
 <p>
 
 <p>| code | total | + violation | - violation | + fix | - fix |
 | ---- | ------- | --------- | -------- | ----- | ---- |
 | F401 | 245 | 245 | 0 | 0 | 0 |</p>
 </p>
-</details>
+
 
 </div>
         </div>
@@ -459,7 +459,7 @@ def foo():
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @dylwil3 on 2025-09-12 20:33</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-09-12 20:33</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/pyflakes/rules/unused_import.rs</code>:852 on 2025-09-12 20:38</div>
@@ -471,17 +471,17 @@ def foo():
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">great writeup</span> added by @MichaReiser on 2025-09-18 10:59</div>
+            <div class="event">Label <span class="label">great writeup</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-18 10:59</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pyflakes/rules/unused_import.rs</code>:654 on 2025-09-18 11:13</div>
-            <div class="timeline-body"><p>What's the reason for excluding aliased imports?</p>
+            <div class="timeline-body"><p>What&#x27;s the reason for excluding aliased imports?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pyflakes/rules/unused_import.rs</code>:690 on 2025-09-18 11:19</div>
             <div class="timeline-body"><p>Nit: You can avoid the temporary variable by flipping the field order</p>
-<pre><code class="language-suggestion">        Self {
+<pre><code>        Self {
             used: vec![false; unused.len()],
             bindings: unused,
         }
@@ -490,36 +490,36 @@ def foo():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pyflakes/rules/unused_import.rs</code>:680 on 2025-09-18 11:20</div>
-            <div class="timeline-body"><p>Nit: I found the name <code>unused</code> slightly mislieading. At this point, we don't know yet which bindings are or aren't used.</p>
-<pre><code class="language-suggestion">        let bindings: Vec&lt;_&gt; = scope
+            <div class="timeline-body"><p>Nit: I found the name <code>unused</code> slightly mislieading. At this point, we don&#x27;t know yet which bindings are or aren&#x27;t used.</p>
+<pre><code>        let bindings: Vec&lt;_&gt; = scope
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pyflakes/rules/unused_import.rs</code>:695 on 2025-09-18 11:22</div>
             <div class="timeline-body"><p>You explained it in the PR summary but a future reader might not have the context.</p>
-<p>It wasn't immediately clear why we need to collect all bindings and why they are shadowed and what the current binding is.</p>
-<p>I really like the example, maybe we can move the example more to the top, then explain that <code>id</code> points to the binding of <code>a</code> created by <code>import a.b.c</code> and that said import shadows the bindings introduced by <code>import a</code> and <code>import a.b</code> (which we need to check if they're used)</p>
-<p>This might also be a good place to document that, as of today (18 Sept 2025), Ruff's semantic index only creates a single binding for <code>a</code></p>
+<p>It wasn&#x27;t immediately clear why we need to collect all bindings and why they are shadowed and what the current binding is.</p>
+<p>I really like the example, maybe we can move the example more to the top, then explain that <code>id</code> points to the binding of <code>a</code> created by <code>import a.b.c</code> and that said import shadows the bindings introduced by <code>import a</code> and <code>import a.b</code> (which we need to check if they&#x27;re used)</p>
+<p>This might also be a good place to document that, as of today (18 Sept 2025), Ruff&#x27;s semantic index only creates a single binding for <code>a</code></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pyflakes/rules/unused_import.rs</code>:677 on 2025-09-18 11:25</div>
-            <div class="timeline-body"><p>Nit: I would move this definition after <code>unused_imports_from_binding</code>. <code>unused_imports_from_binding</code> seems more important (and provides way more context) to someone reading the code. The <code>MarkedBindings</code> in between is sort of distracting from the most important. (I think it's called newspaper style, obviously, something you can't do in Python)</p>
+            <div class="timeline-body"><p>Nit: I would move this definition after <code>unused_imports_from_binding</code>. <code>unused_imports_from_binding</code> seems more important (and provides way more context) to someone reading the code. The <code>MarkedBindings</code> in between is sort of distracting from the most important. (I think it&#x27;s called newspaper style, obviously, something you can&#x27;t do in Python)</p>
 <p>Obviously, this very much comes down to personal preference. So feel free to disregard.</p>
 <p>https://kentcdodds.com/blog/newspaper-code-structure</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pyflakes/rules/unused_import.rs</code>:741 on 2025-09-18 11:32</div>
-            <div class="timeline-body"><p>The <code>expect</code> message here is helpful in the sense that it makes it easier to find where the program is panicking if this condition isn't satisfied and debug symbols are off. However, it isn't very helpful for a future reader because it doesn't clarify <strong>why</strong> this invariant should hold true.</p>
+            <div class="timeline-body"><p>The <code>expect</code> message here is helpful in the sense that it makes it easier to find where the program is panicking if this condition isn&#x27;t satisfied and debug symbols are off. However, it isn&#x27;t very helpful for a future reader because it doesn&#x27;t clarify <strong>why</strong> this invariant should hold true.</p>
 <p>The rust documentation provides some guidance on how to phrase your message instead: https://doc.rust-lang.org/std/result/enum.Result.html#recommended-message-style</p>
-<p><code>bindings ith shadowed bindings that aren't imports should be skipped by </code>unused_imports_in_scope``</p>
+<p><code>bindings ith shadowed bindings that aren&#x27;t imports should be skipped by </code>unused_imports_in_scope``</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pyflakes/rules/unused_import.rs</code>:764 on 2025-09-18 11:33</div>
-            <div class="timeline-body"><p>Nit: Maybe make this a method on <code>qualified_name</code> instead, e.g. <code>name.root()</code> (and can we guarantee that it's always set)</p>
+            <div class="timeline-body"><p>Nit: Maybe make this a method on <code>qualified_name</code> instead, e.g. <code>name.root()</code> (and can we guarantee that it&#x27;s always set)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -542,54 +542,54 @@ def foo():
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pyflakes/rules/unused_import.rs</code>:879 on 2025-09-18 11:46</div>
             <div class="timeline-body"><p>Rename this to <code>bindings</code>. We iterate over all bindings, ignoring if they have been used or not</p>
 <p>This is also something that you could make a method on <code>MarkedBindings</code></p>
-<pre><code class="language-suggestion">    unused: &amp;'a [&amp;'b Binding&lt;'c&gt;],
+<pre><code>    unused: &amp;&#x27;a [&amp;&#x27;b Binding&lt;&#x27;c&gt;],
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pyflakes/rules/unused_import.rs</code>:854 on 2025-09-18 11:52</div>
-            <div class="timeline-body"><p>I'd find some documentation on how the ranking works useful.</p>
+            <div class="timeline-body"><p>I&#x27;d find some documentation on how the ranking works useful.</p>
 <p>What I understand is that it takes the common segments and counts how many common segments there are.</p>
-<p>It's not entirely clear to me why we need to include the <code>qname.segments().len()</code>.</p>
-<pre><code class="language-py">import a.b.c
+<p>It&#x27;s not entirely clear to me why we need to include the <code>qname.segments().len()</code>.</p>
+<pre><code>import a.b.c
 import a.b.d.e
 
 a.b
 </code></pre>
-<p>Is my understanding correct that this would prefer <code>a.b.d.e</code> over <code>a.b.c</code>? What's the motivation for this? Why not use the first/last?</p>
-<pre><code class="language-py">import a.b.c
+<p>Is my understanding correct that this would prefer <code>a.b.d.e</code> over <code>a.b.c</code>? What&#x27;s the motivation for this? Why not use the first/last?</p>
+<pre><code>import a.b.c
 import a.b.d.e
 
 a.b.x.f
 </code></pre>
-<p>This would return <code>(2, 3)</code> for <code>a.b.c</code> and <code>(2, 4)</code> for <code>a.b.d.e</code> where both aren't valid matches. Is this handled somewhere else?</p>
+<p>This would return <code>(2, 3)</code> for <code>a.b.c</code> and <code>(2, 4)</code> for <code>a.b.d.e</code> where both aren&#x27;t valid matches. Is this handled somewhere else?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pyflakes/rules/unused_import.rs</code>:852 on 2025-09-18 11:55</div>
-            <div class="timeline-body"><p>I don't think you need <code>'a</code> because it isn't used in the return type. Try omitting it</p>
+            <div class="timeline-body"><p>I don&#x27;t think you need <code>&#x27;a</code> because it isn&#x27;t used in the return type. Try omitting it</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pyflakes/rules/unused_import.rs</code>:889 on 2025-09-18 11:56</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">        .copied()
+            <div class="timeline-body"><pre><code>        .copied()
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pyflakes/rules/unused_import.rs</code>:657 on 2025-09-18 11:59</div>
-            <div class="timeline-body"><p>I'm not sure if it's worth it but we could consider skipping the new logic if <code>id</code> has now shadowed bindings except itself (which should allow us to skip some unnecessayr work)</p>
+            <div class="timeline-body"><p>I&#x27;m not sure if it&#x27;s worth it but we could consider skipping the new logic if <code>id</code> has now shadowed bindings except itself (which should allow us to skip some unnecessayr work)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pyflakes/rules/unused_import.rs</code>:813 on 2025-09-18 12:24</div>
-            <div class="timeline-body"><p>I assume this is the same as <code>UnqualifiedName::from_expr</code>. The main reason we don't use it here is that we first need to find the top-level expression by following all ids</p>
+            <div class="timeline-body"><p>I assume this is the same as <code>UnqualifiedName::from_expr</code>. The main reason we don&#x27;t use it here is that we first need to find the top-level expression by following all ids</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pyflakes/rules/unused_import.rs</code>:817 on 2025-09-18 12:28</div>
-            <div class="timeline-body"><p>I think one bug in the current implementation is that we iterate over all bindings, without taking into account whether they're visible at the reference's point</p>
-<pre><code class="language-py">import a
+            <div class="timeline-body"><p>I think one bug in the current implementation is that we iterate over all bindings, without taking into account whether they&#x27;re visible at the reference&#x27;s point</p>
+<pre><code>import a
 
 a.b
 
@@ -601,37 +601,37 @@ import a.b
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-09-18 12:29</div>
             <div class="timeline-body"><p>This is a masive improvement with very low overhead. Well done.</p>
-<p>I've a couple of nit comments but I also found a correctness bug that we need to look into.</p>
-<p>I haven't reviewed all tests yet.</p>
+<p>I&#x27;ve a couple of nit comments but I also found a correctness bug that we need to look into.</p>
+<p>I haven&#x27;t reviewed all tests yet.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/pyflakes/rules/unused_import.rs</code>:854 on 2025-09-19 18:31</div>
-            <div class="timeline-body"><p>I'll add some documentation, but also answer here.</p>
-<p>First, it's the opposite of what you suggest - we pick the <em>shortest</em> path that matches. So in your example</p>
-<pre><code class="language-python">import a.b.c
+            <div class="timeline-body"><p>I&#x27;ll add some documentation, but also answer here.</p>
+<p>First, it&#x27;s the opposite of what you suggest - we pick the <em>shortest</em> path that matches. So in your example</p>
+<pre><code>import a.b.c
 import a.b.d.e
 
 a.b
 </code></pre>
 <p>we would consider <code>a.b.c</code> as used, and in your next example:</p>
-<pre><code class="language-python">import a.b.c
+<pre><code>import a.b.c
 import a.b.d.e
 
 a.b.x.f
 </code></pre>
 <p>it would consider <code>a.b.c</code> as used. Also note that while it seems like...</p>
 <blockquote>
-<p>where both aren't valid matches</p>
+<p>where both aren&#x27;t valid matches</p>
 </blockquote>
 <p>these <em>are</em> all valid matches because of the strange behavior of Python imports described in the PR summary.</p>
-<p>The motivation for marking the shortest as used as opposed to last one is because otherwise you wouldn't get the correct answer even in the most common situations:</p>
-<pre><code class="language-python">import a
+<p>The motivation for marking the shortest as used as opposed to last one is because otherwise you wouldn&#x27;t get the correct answer even in the most common situations:</p>
+<pre><code>import a
 import a.b
 
 a.foo()
 </code></pre>
-<p>here both <code>a.b</code> and <code>a</code> match <code>a.foo</code> at a prefix of length <code>1</code>, so they're tied. Among those we pick the <em>shortest</em> since we want to mark <code>import a</code> as used.</p>
+<p>here both <code>a.b</code> and <code>a</code> match <code>a.foo</code> at a prefix of length <code>1</code>, so they&#x27;re tied. Among those we pick the <em>shortest</em> since we want to mark <code>import a</code> as used.</p>
 <p>Flipping the order gives a counterexample to the heuristic of choosing the <em>first</em> one, as well.</p>
 </div>
         </div>
@@ -646,12 +646,12 @@ a.foo()
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/pyflakes/rules/unused_import.rs</code>:851 on 2025-09-19 18:33</div>
             <div class="timeline-body"><p>We loop through because we may have repeated imports like</p>
-<pre><code class="language-python">import a
+<pre><code>import a
 import a
 
 a.foo()
 </code></pre>
-<p>so we have to mark all of them as used otherwise they will be left over and trigger this lint. But it's the job of <a href="https://docs.astral.sh/ruff/rules/redefined-while-unused/#redefined-while-unused-f811">redefined-while-unused (F811)</a> to catch this situation, not <code>F401</code></p>
+<p>so we have to mark all of them as used otherwise they will be left over and trigger this lint. But it&#x27;s the job of <a href="https://docs.astral.sh/ruff/rules/redefined-while-unused/#redefined-while-unused-f811">redefined-while-unused (F811)</a> to catch this situation, not <code>F401</code></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -687,13 +687,13 @@ a.foo()
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/pyflakes/rules/unused_import.rs</code>:654 on 2025-09-19 18:40</div>
-            <div class="timeline-body"><p>Just to avoid complexity - I didn't think it through very hard. It's possible we could handle them. I just worry vaguely about things like</p>
-<pre><code class="language-python">import a as b
+            <div class="timeline-body"><p>Just to avoid complexity - I didn&#x27;t think it through very hard. It&#x27;s possible we could handle them. I just worry vaguely about things like</p>
+<pre><code>import a as b
 import b
 
 b.foo()
 </code></pre>
-<p>but maybe I shouldn't.</p>
+<p>but maybe I shouldn&#x27;t.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -708,11 +708,11 @@ b.foo()
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/pyflakes/rules/unused_import.rs</code>:657 on 2025-09-19 19:35</div>
             <div class="timeline-body"><p>Added via</p>
-<pre><code class="language-rust">            if is_refined_submodule_import_match_enabled(settings)
+<pre><code>            if is_refined_submodule_import_match_enabled(settings)
                 // No need to apply refined logic if there is only a single binding
                 &amp;&amp; scope.shadowed_bindings(id).nth(1).is_some()
 </code></pre>
-<p>is there a more idomatic way to do that? (I want to check that the iterator has at least two elements, but I don't want to use, say, <code>count</code> because there's no need to keep iterating once you've found two elements).</p>
+<p>is there a more idomatic way to do that? (I want to check that the iterator has at least two elements, but I don&#x27;t want to use, say, <code>count</code> because there&#x27;s no need to keep iterating once you&#x27;ve found two elements).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -725,18 +725,18 @@ b.foo()
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/pyflakes/rules/unused_import.rs</code>:738 on 2025-09-19 19:45</div>
-            <div class="timeline-body"><p>In fact I don't <em>think</em> the <code>else</code> branch is possible... marking it as <code>unreachable</code> does not cause any tests to panic. But I couldn't find an actual justification so I took the coward's way out... I'll try to dig a little and see if it's possible</p>
+            <div class="timeline-body"><p>In fact I don&#x27;t <em>think</em> the <code>else</code> branch is possible... marking it as <code>unreachable</code> does not cause any tests to panic. But I couldn&#x27;t find an actual justification so I took the coward&#x27;s way out... I&#x27;ll try to dig a little and see if it&#x27;s possible</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/pyflakes/rules/unused_import.rs</code>:817 on 2025-09-25 20:31</div>
-            <div class="timeline-body"><p>Couldn't find a clean way to handle this &quot;correctly&quot; with the new logic, so instead I detect this situation now and revert to the stable behavior in that case. This means that we no longer give the ideal diagnostic for</p>
-<pre><code class="language-python">import a
+            <div class="timeline-body"><p>Couldn&#x27;t find a clean way to handle this &quot;correctly&quot; with the new logic, so instead I detect this situation now and revert to the stable behavior in that case. This means that we no longer give the ideal diagnostic for</p>
+<pre><code>import a
 a.foo()
 import a.b
 </code></pre>
-<p>We used to mark the last import as unused, but now there's no lint error.</p>
-<p>Note this is all related to a somewhat fishy choice of the semantic model: we copy over all references to an import binding to the <em>new</em> binding when we have a second import statement. So, in the above example, at the end of the file we think that <code>a.foo()</code> is a reference for <code>import a.b</code>, which is a bit weird. It may be worth investigating the history of that decision and whether it could be modified to make the present logic simpler. But I think that'd be out of scope for now.</p>
+<p>We used to mark the last import as unused, but now there&#x27;s no lint error.</p>
+<p>Note this is all related to a somewhat fishy choice of the semantic model: we copy over all references to an import binding to the <em>new</em> binding when we have a second import statement. So, in the above example, at the end of the file we think that <code>a.foo()</code> is a reference for <code>import a.b</code>, which is a bit weird. It may be worth investigating the history of that decision and whether it could be modified to make the present logic simpler. But I think that&#x27;d be out of scope for now.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -759,37 +759,37 @@ import a.b
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/pyflakes/rules/unused_import.rs</code>:764 on 2025-09-25 20:57</div>
             <div class="timeline-body"><blockquote>
-<p>(and can we guarantee that it's always set)</p>
+<p>(and can we guarantee that it&#x27;s always set)</p>
 </blockquote>
 <p>Can you say more about what you had in mind here?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @dylwil3 on 2025-09-25 20:57</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-09-25 20:57</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pyflakes/rules/unused_import.rs</code>:669 on 2025-09-26 09:44</div>
             <div class="timeline-body"><p>Did you break cargo fmt or does rustfmt not add spaces around operators (<code>i &gt; 0</code>)?</p>
 <p>Yeah, it looks like you broke rustfmt 😆</p>
-<p>Adding an empty line in front of the <code>matches</code> makes it recover for some lines but it still fails for the <code>matches</code> call. I'm not sure what's wrong with your match call that it breaks formatting but I suspect it might help rustfmt (and readers) if you extract parts of the if condition into standalone expressions (just a tiny bit)</p>
+<p>Adding an empty line in front of the <code>matches</code> makes it recover for some lines but it still fails for the <code>matches</code> call. I&#x27;m not sure what&#x27;s wrong with your match call that it breaks formatting but I suspect it might help rustfmt (and readers) if you extract parts of the if condition into standalone expressions (just a tiny bit)</p>
 <p>Oh, I think rustfmt struggles with the leading comments between the different expressions in the condition. Extracting some variables (or functions) is probably your best solution</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pyflakes/rules/unused_import.rs</code>:889 on 2025-09-26 09:54</div>
-            <div class="timeline-body"><p>Nit: Using <code>'b</code> and <code>'c</code> without <code>'a</code> is a bit weird. I suggest renaming them to <code>'a</code> and <code>'b</code> (a reader otherwise wonders why <code>b</code> and <code>c</code>)</p>
+            <div class="timeline-body"><p>Nit: Using <code>&#x27;b</code> and <code>&#x27;c</code> without <code>&#x27;a</code> is a bit weird. I suggest renaming them to <code>&#x27;a</code> and <code>&#x27;b</code> (a reader otherwise wonders why <code>b</code> and <code>c</code>)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pyflakes/rules/unused_import.rs</code>:764 on 2025-09-26 09:57</div>
-            <div class="timeline-body"><p>There's a hidden <code>unwrap</code> call when you access <code>segments[0]</code>. There's an implicit assumption that <code>segments</code> is never empty.</p>
+            <div class="timeline-body"><p>There&#x27;s a hidden <code>unwrap</code> call when you access <code>segments[0]</code>. There&#x27;s an implicit assumption that <code>segments</code> is never empty.</p>
 <pre><code>binding
                 .as_any_import()
                 .expect(&quot;binding to be import binding since current function called after restricting to these in `unused_imports_in_scope`&quot;)
                 .qualified_name()
                 .segments()[0];
 </code></pre>
-<p>I haven't checked all code paths but I think the assumption is true for all <code>QualifiedName</code>. If so, then having a method on <code>QualifiedName</code> that returns the first segment (and documents why doing so without checking the length of segments is okay) seems generally useful (e.g. <code>first_segment</code>, <code>root_name</code>, what not :))</p>
+<p>I haven&#x27;t checked all code paths but I think the assumption is true for all <code>QualifiedName</code>. If so, then having a method on <code>QualifiedName</code> that returns the first segment (and documents why doing so without checking the length of segments is okay) seems generally useful (e.g. <code>first_segment</code>, <code>root_name</code>, what not :))</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -804,7 +804,7 @@ import a.b
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pyflakes/snapshots/ruff_linter__rules__pyflakes__tests__f401_import_submodules_in_function_scope.snap</code>:7 on 2025-09-26 10:10</div>
-            <div class="timeline-body"><p>I found this a bit surprising but it's the same behavior as on main.</p>
+            <div class="timeline-body"><p>I found this a bit surprising but it&#x27;s the same behavior as on main.</p>
 <p>Which makes me wonder if we should have used the assertion helper that compares preview with stable behavior.</p>
 </div>
         </div>
@@ -819,9 +819,9 @@ import a.b
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/pyflakes/rules/unused_import.rs</code>:764 on 2025-09-26 13:04</div>
-            <div class="timeline-body"><p>There's one place in Ruff where it's not clear to me that this invariant is satisfied:</p>
+            <div class="timeline-body"><p>There&#x27;s one place in Ruff where it&#x27;s not clear to me that this invariant is satisfied:</p>
 <p>https://github.com/astral-sh/ruff/blob/2af8c53110227598cb4758a777667dbe18bc7f15/crates/ruff_python_ast/src/helpers.rs#L908-L918</p>
-<p>So for now I've added an explicit <code>expect</code> here, similar to what's done elsewhere like</p>
+<p>So for now I&#x27;ve added an explicit <code>expect</code> here, similar to what&#x27;s done elsewhere like</p>
 <p>https://github.com/astral-sh/ruff/blob/2af8c53110227598cb4758a777667dbe18bc7f15/crates/ruff_linter/src/rules/pyflakes/rules/unused_import.rs#L494-L498</p>
 </div>
         </div>
@@ -831,14 +831,14 @@ import a.b
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/pyflakes/snapshots/ruff_linter__rules__pyflakes__tests__f401_import_submodules_in_function_scope.snap</code>:7 on 2025-09-26 13:05</div>
-            <div class="timeline-body"><p>Right now our assertion helper only works for fixtures passed as file paths, whereas here I've written the source code inline. So for now I've lazily added comments to the fixtures indicating expected behavior 😄</p>
+            <div class="timeline-body"><p>Right now our assertion helper only works for fixtures passed as file paths, whereas here I&#x27;ve written the source code inline. So for now I&#x27;ve lazily added comments to the fixtures indicating expected behavior 😄</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @dylwil3 on 2025-09-26 13:22</div>
+            <div class="event">Merged by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-09-26 13:22</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dylwil3 on 2025-09-26 13:22</div>
+            <div class="event">Closed by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-09-26 13:22</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-09-26 13:22</div>
@@ -846,7 +846,7 @@ import a.b
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:15:28 UTC
+        Synced at 2026-01-20 19:18:15 UTC
     </footer>
 </body>
 </html>

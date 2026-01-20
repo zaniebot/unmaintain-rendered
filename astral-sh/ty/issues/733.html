@@ -24,7 +24,7 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a></div>
             <div class="timeline-body"><p>Given:</p>
-<pre><code class="language-python">import urllib.parse
+<pre><code>import urllib.parse
 
 
 def func(url: str) -&gt; str:
@@ -49,49 +49,49 @@ Found 1 diagnostic
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-07-01 00:25</div>
-            <div class="timeline-body"><p>This is at least in part an issue of <code>NamedTuple</code> support (specifically, supporting generic <code>NamedTuple</code>). <code>urlparse</code> returns a <code>ParseResult</code>, which is a generic <code>NamedTuple</code> over <code>AnyStr</code>. <a href="https://play.ty.dev/b5e779c5-b5bf-4e21-bef1-02814fcfef37">We understand</a> that we have a <code>ParsedResult</code>, and that it inherits <code>_ParsedResultBase[str]</code>, but we still think it's an iterable over <code>Unknown</code>. So this would be https://github.com/astral-sh/ty/issues/545</p>
-<p>Even then, I think step 5 of the overload evaluation algorithm should cause us to infer <code>Any</code> as the return type of the <code>urlunparse</code> call (since <code>Iterable[Unknown]</code> could materialize to match either overload), but we end up picking the first overload instead. I suspect this is due to https://github.com/astral-sh/ty/issues/669</p>
-<p>Seems useful to leave this open for now, so we actually verify that this case works correctly once we've implemented both of the above.</p>
+            <div class="timeline-body"><p>This is at least in part an issue of <code>NamedTuple</code> support (specifically, supporting generic <code>NamedTuple</code>). <code>urlparse</code> returns a <code>ParseResult</code>, which is a generic <code>NamedTuple</code> over <code>AnyStr</code>. <a href="https://play.ty.dev/b5e779c5-b5bf-4e21-bef1-02814fcfef37">We understand</a> that we have a <code>ParsedResult</code>, and that it inherits <code>_ParsedResultBase[str]</code>, but we still think it&#x27;s an iterable over <code>Unknown</code>. So this would be <a href="https://github.com/astral-sh/ty/issues/545">astral-sh/ty#545</a></p>
+<p>Even then, I think step 5 of the overload evaluation algorithm should cause us to infer <code>Any</code> as the return type of the <code>urlunparse</code> call (since <code>Iterable[Unknown]</code> could materialize to match either overload), but we end up picking the first overload instead. I suspect this is due to <a href="https://github.com/astral-sh/ty/issues/669">astral-sh/ty#669</a></p>
+<p>Seems useful to leave this open for now, so we actually verify that this case works correctly once we&#x27;ve implemented both of the above.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">feature</span> added by @carljm on 2025-07-01 00:26</div>
+            <div class="event">Label <span class="label">feature</span> added by <a href="https://github.com/carljm">@carljm</a> on 2025-07-01 00:26</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">generics</span> added by @carljm on 2025-07-01 00:26</div>
+            <div class="event">Label <span class="label">generics</span> added by <a href="https://github.com/carljm">@carljm</a> on 2025-07-01 00:26</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">feature</span> removed by @carljm on 2025-07-01 00:26</div>
+            <div class="event">Label <span class="label">feature</span> removed by <a href="https://github.com/carljm">@carljm</a> on 2025-07-01 00:26</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-13 18:18</div>
             <div class="timeline-body"><blockquote>
-<p><a href="https://play.ty.dev/b5e779c5-b5bf-4e21-bef1-02814fcfef37">We understand</a> that we have a <code>ParsedResult</code>, and that it inherits <code>_ParsedResultBase[str]</code>, but we still think it's an iterable over <code>Unknown</code>. So this would be <a href="https://github.com/astral-sh/ty/issues/545">#545</a></p>
+<p><a href="https://play.ty.dev/b5e779c5-b5bf-4e21-bef1-02814fcfef37">We understand</a> that we have a <code>ParsedResult</code>, and that it inherits <code>_ParsedResultBase[str]</code>, but we still think it&#x27;s an iterable over <code>Unknown</code>. So this would be <a href="https://github.com/astral-sh/ty/issues/545">#545</a></p>
 </blockquote>
 <p>We now have a <em>very</em> complete understanding of the MRO of <code>ParseResult</code>:</p>
-<pre><code class="language-py">import urllib.parse
+<pre><code>import urllib.parse
 
-# revealed: tuple[&lt;class 'ParseResult'&gt;, &lt;class '_ParseResultBase[str]'&gt;, &lt;class 'tuple[str, str, str, str, str, str]'&gt;, &lt;class 'Sequence[str]'&gt;, &lt;class 'Reversible[str]'&gt;, &lt;class 'Collection[str]'&gt;, &lt;class 'Iterable[str]'&gt;, &lt;class 'Container[str]'&gt;, typing.Protocol, &lt;class '_NetlocResultMixinStr'&gt;, &lt;class '_NetlocResultMixinBase[str]'&gt;, typing.Generic, &lt;class '_ResultMixinStr'&gt;, &lt;class 'object'&gt;]
+# revealed: tuple[&lt;class &#x27;ParseResult&#x27;&gt;, &lt;class &#x27;_ParseResultBase[str]&#x27;&gt;, &lt;class &#x27;tuple[str, str, str, str, str, str]&#x27;&gt;, &lt;class &#x27;Sequence[str]&#x27;&gt;, &lt;class &#x27;Reversible[str]&#x27;&gt;, &lt;class &#x27;Collection[str]&#x27;&gt;, &lt;class &#x27;Iterable[str]&#x27;&gt;, &lt;class &#x27;Container[str]&#x27;&gt;, typing.Protocol, &lt;class &#x27;_NetlocResultMixinStr&#x27;&gt;, &lt;class &#x27;_NetlocResultMixinBase[str]&#x27;&gt;, typing.Generic, &lt;class &#x27;_ResultMixinStr&#x27;&gt;, &lt;class &#x27;object&#x27;&gt;]
 reveal_type(urllib.parse.ParseResult.__mro__)
 </code></pre>
 <p>https://play.ty.dev/5403f5fe-1ed7-4ecc-8c7e-474f38d8f696</p>
-<p>Well... some of the classes there look like they're in the wrong order in that MRO, but that shouldn't matter here :P (and I think probably has the same underlying cause as https://github.com/astral-sh/ty/issues/492).</p>
-<p>Anyway, we're still incorrectly selecting the first overload here, which is still causing the false positive in the OP -- that's because even though we understand that <code>ParseResult</code> inherits from <code>Iterable[str]</code>, we still think that it's assignable to <code>Iterable[None]</code>. That should be fixed shortly when we improve our subtyping/assignability logic for protocols with method members to look at the signatures of the methods.</p>
+<p>Well... some of the classes there look like they&#x27;re in the wrong order in that MRO, but that shouldn&#x27;t matter here :P (and I think probably has the same underlying cause as <a href="https://github.com/astral-sh/ty/issues/492">astral-sh/ty#492</a>).</p>
+<p>Anyway, we&#x27;re still incorrectly selecting the first overload here, which is still causing the false positive in the OP -- that&#x27;s because even though we understand that <code>ParseResult</code> inherits from <code>Iterable[str]</code>, we still think that it&#x27;s assignable to <code>Iterable[None]</code>. That should be fixed shortly when we improve our subtyping/assignability logic for protocols with method members to look at the signatures of the methods.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2025-08-22 13:10</div>
+            <div class="event">Assigned to <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-22 13:10</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">Protocols</span> added by @AlexWaygood on 2025-08-22 13:10</div>
+            <div class="event">Label <span class="label">Protocols</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-22 13:10</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-10-08 18:37</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-08 18:37</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:14 UTC
+        Synced at 2026-01-20 19:24:57 UTC
     </footer>
 </body>
 </html>

@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>Passing a path argument doesn't respect .gitignore</h1>
+    <h1>Passing a path argument doesn&#x27;t respect .gitignore</h1>
 
     <div class="meta">
         <span class="state-icon state-closed"></span>
@@ -23,21 +23,21 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/tmccombs">@tmccombs</a></div>
-            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+            <div class="timeline-body">What version of ripgrep are you using?
 <p>ripgrep 0.8.1
 -SIMD -AVX</p>
-<h4>What operating system are you using ripgrep on?</h4>
+What operating system are you using ripgrep on?
 <p>Archlinux (4.15.3-2-ARCH), also Ubuntu 16.04</p>
-<h4>Describe your question, feature request, or bug.</h4>
+Describe your question, feature request, or bug.
 <p>If I am in a git repository and run <code>rg</code> with a directory as a PATH argument, then all files under that directory are searched, even if they would normally be ignored because of .gitignore rule. If I <code>cd</code> into the directory and run <code>rg</code> without a PATH argument, the files are excluded as I expect. changing into a subdirectory is a workaround but is sometimes less convenient than using a path argument.</p>
 <p>The man page does say</p>
 <blockquote>
 <p>Paths specified expicitly on the command line override glob and ignore rules.</p>
 </blockquote>
-<p>Which could be interpreted to mean that the if such an argument is specified, the ignore rules are ignored altogether. But that behaviour is unexpected to me, and the wording of the documentation isn't entirely clear on whether it overrides <em>all</em> rules, or only rules that specifically ignore the specified path (but not children of that path).</p>
+<p>Which could be interpreted to mean that the if such an argument is specified, the ignore rules are ignored altogether. But that behaviour is unexpected to me, and the wording of the documentation isn&#x27;t entirely clear on whether it overrides <em>all</em> rules, or only rules that specifically ignore the specified path (but not children of that path).</p>
 <p>If overriding all ignore rules is the intended behaviour there should at least be a way to turn the ignore rules back on, but <code>--ignore-vcs</code> does nothing when supplied with a PATH argument.</p>
 <p>Interestingly, if I specify a glob such as <code>-g &quot;*.c&quot;</code>, that is respected for files under the path.</p>
-<h4>Steps to reproduce:</h4>
+Steps to reproduce:
 <p>.gitignore:</p>
 <pre><code>/a/b/
 </code></pre>
@@ -52,53 +52,53 @@ a/b/test.txt
 </code></pre>
 <p>Adding <code>--ignore-vcs</code> produces the same output.</p>
 <p>In <code>a</code> directory <code>rg Sample</code> also produces no output.</p>
-<h4>If this is a bug, what is the actual behavior?</h4>
+If this is a bug, what is the actual behavior?
 <p><code>rg --debug Sample a</code></p>
 <pre><code>DEBUG/grep::search/grep/src/search.rs:195: regex ast:
 Literal {
     chars: [
-        'S',
-        'a',
-        'm',
-        'p',
-        'l',
-        'e'
+        &#x27;S&#x27;,
+        &#x27;a&#x27;,
+        &#x27;m&#x27;,
+        &#x27;p&#x27;,
+        &#x27;l&#x27;,
+        &#x27;e&#x27;
     ],
     casei: false
 }
 DEBUG/grep::literals/grep/src/literals.rs:38: literal prefixes detected: Literals { lits: [Complete(Sample)], limit_size: 250, limit_class: 10 }
-DEBUG/globset/globset/src/lib.rs:396: glob converted to regex: Glob { glob: &quot;**/.*~&quot;, re: &quot;(?-u)^(?:/?|.*/)\\..*\\~$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: false }, tokens: Tokens([RecursivePrefix, Literal('.'), ZeroOrMore, Literal('~')]) }
+DEBUG/globset/globset/src/lib.rs:396: glob converted to regex: Glob { glob: &quot;**/.*~&quot;, re: &quot;(?-u)^(?:/?|.*/)\\..*\\~$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: false }, tokens: Tokens([RecursivePrefix, Literal(&#x27;.&#x27;), ZeroOrMore, Literal(&#x27;~&#x27;)]) }
 DEBUG/globset/globset/src/lib.rs:401: built glob set; 0 literals, 0 basenames, 1 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 1 regexes
 DEBUG/globset/globset/src/lib.rs:401: built glob set; 1 literals, 0 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
 a/b/test.txt
 1:Sample text
 </code></pre>
-<h4>If this is a bug, what is the expected behavior?</h4>
+If this is a bug, what is the expected behavior?
 <p>Produced no output, since a/b/test.txt is ignored by the .gitignore file.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-22 12:00</div>
-            <div class="timeline-body"><p>OK, so this issue is really tangled and I'm going to do best untangle it. The core of the problem here is that you've seemed to derive a generic failure from a very specific one, namely, that all ignore rules are overridden for a directory that is specified on the command line. But this is not true, as you noted with the glob rules. But your glob rules and your ignore rules are different, so you haven't accounted for the fact that there may be a bug with the specific pattern in your ignore file that doesn't impact the pattern in your <code>-g</code> glob. For example, if you change your rule in your ignore file from <code>/a/b</code> to <code>*.txt</code>, then <code>rg Sample</code> behaves the same as <code>rg Sample a</code>. The heart of the matter seems to be that <code>/a/b</code> does not match <code>a/b</code> when <code>a</code> is given as an explicit path, but it does indeed seem like it should match and therefore be ignored.</p>
-<p>Note though that if you specified <code>a/b</code> on the command line, then that path shouldn't be ignored. In particular, the documentation provided by ripgrep is exactly correct:</p>
+            <div class="timeline-body"><p>OK, so this issue is really tangled and I&#x27;m going to do best untangle it. The core of the problem here is that you&#x27;ve seemed to derive a generic failure from a very specific one, namely, that all ignore rules are overridden for a directory that is specified on the command line. But this is not true, as you noted with the glob rules. But your glob rules and your ignore rules are different, so you haven&#x27;t accounted for the fact that there may be a bug with the specific pattern in your ignore file that doesn&#x27;t impact the pattern in your <code>-g</code> glob. For example, if you change your rule in your ignore file from <code>/a/b</code> to <code>*.txt</code>, then <code>rg Sample</code> behaves the same as <code>rg Sample a</code>. The heart of the matter seems to be that <code>/a/b</code> does not match <code>a/b</code> when <code>a</code> is given as an explicit path, but it does indeed seem like it should match and therefore be ignored.</p>
+<p>Note though that if you specified <code>a/b</code> on the command line, then that path shouldn&#x27;t be ignored. In particular, the documentation provided by ripgrep is exactly correct:</p>
 <blockquote>
 <p>Paths specified expicitly on the command line override glob and ignore rules.</p>
 </blockquote>
-<p>That is, if you give a path to ripgrep, then that path itself is immune to any other ignore rules inherited from the configuration, including those specified explicitly on the command line via the <code>-g</code> globs. But this says nothing about children of those paths. The ignore rules still apply to them because they weren't specified explicitly on the command line.</p>
+<p>That is, if you give a path to ripgrep, then that path itself is immune to any other ignore rules inherited from the configuration, including those specified explicitly on the command line via the <code>-g</code> globs. But this says nothing about children of those paths. The ignore rules still apply to them because they weren&#x27;t specified explicitly on the command line.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2018-02-22 12:01</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-22 12:01</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-22 12:04</div>
-            <div class="timeline-body"><p>Interestingly, <code>a/b</code> also doesn't work, but <code>**/a/b</code> behaves as expected. So hopefully there's just a bug somewhere and this can be fixed, but it requires more debugging to understand exactly what's going on.</p>
+            <div class="timeline-body"><p>Interestingly, <code>a/b</code> also doesn&#x27;t work, but <code>**/a/b</code> behaves as expected. So hopefully there&#x27;s just a bug somewhere and this can be fixed, but it requires more debugging to understand exactly what&#x27;s going on.</p>
 <p>Thanks for the bug report!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-22 12:05</div>
-            <div class="timeline-body"><p>Also, if you have suggestions on how to improve the documentation (while maintaining some level of succinctness), I'd be happy to try and fix that too, although it does seem like it might have been this bug that really threw you off. :)</p>
+            <div class="timeline-body"><p>Also, if you have suggestions on how to improve the documentation (while maintaining some level of succinctness), I&#x27;d be happy to try and fix that too, although it does seem like it might have been this bug that really threw you off. :)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -113,23 +113,23 @@ a/b/test.txt
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tmccombs">@tmccombs</a> on 2018-02-23 09:23</div>
-            <div class="timeline-body"><p>I'm not entirely sure why yet, but the problem seems to be that in<code> Ignore::matched_ignore</code>, we join the <code>path</code> with <code>self.absolute_base</code>. And in the example directory above, <code>self.absolute_base</code> is <code>&lt;repo_path&gt;/a</code> and path is <code>a/b</code>. so the joined path is <code>&lt;repo_path&gt;/a/a/b</code>, when it should be <code>&lt;repo_path&gt;/a/b</code>.</p>
+            <div class="timeline-body"><p>I&#x27;m not entirely sure why yet, but the problem seems to be that in<code> Ignore::matched_ignore</code>, we join the <code>path</code> with <code>self.absolute_base</code>. And in the example directory above, <code>self.absolute_base</code> is <code>&lt;repo_path&gt;/a</code> and path is <code>a/b</code>. so the joined path is <code>&lt;repo_path&gt;/a/a/b</code>, when it should be <code>&lt;repo_path&gt;/a/b</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tmccombs">@tmccombs</a> on 2018-02-25 07:25</div>
             <div class="timeline-body"><p>I think this might be the same as #278. Or at least caused by the same thing.</p>
-<pre><code class="language-rust">         if let Some(abs_parent_path) = self.absolute_base() {
+<pre><code>         if let Some(abs_parent_path) = self.absolute_base() {
              let path = abs_parent_path.join(path);
 </code></pre>
-<p>What's happening is when <code>add_parents</code> is called on the root ignore, the absolute base is set to the path that is passed (&lt;repo_path&gt;/a) and then that path is used as the next step. In fact the <em>only</em> top level path this actually works for is &quot;./&quot; because &quot;./&quot; joined to any path is the original path.</p>
-<p>Why is path joined to absolute_base rather than the current directory? I don't entirely understand what the purpose of absolute_base is.</p>
-<p>I'd be happy to help implement a fix for this, but I may need some help understanding what exactly absolute_base is used for and any gotchas I should watch out for.</p>
+<p>What&#x27;s happening is when <code>add_parents</code> is called on the root ignore, the absolute base is set to the path that is passed (&lt;repo_path&gt;/a) and then that path is used as the next step. In fact the <em>only</em> top level path this actually works for is &quot;./&quot; because &quot;./&quot; joined to any path is the original path.</p>
+<p>Why is path joined to absolute_base rather than the current directory? I don&#x27;t entirely understand what the purpose of absolute_base is.</p>
+<p>I&#x27;d be happy to help implement a fix for this, but I may need some help understanding what exactly absolute_base is used for and any gotchas I should watch out for.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tmccombs">@tmccombs</a> on 2018-06-12 06:11</div>
-            <div class="timeline-body"><p>https://github.com/tmccombs/ripgrep/commit/9a42a12ad108352fc41888cd874ed4f1a8bb73cb fixes this problem, but I'm not sure if it introduces another problem, like not handling symlinks properly.</p>
+            <div class="timeline-body"><p>https://github.com/tmccombs/ripgrep/commit/9a42a12ad108352fc41888cd874ed4f1a8bb73cb fixes this problem, but I&#x27;m not sure if it introduces another problem, like not handling symlinks properly.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -152,7 +152,7 @@ a/b/test.txt
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mitsuhiko">@mitsuhiko</a> on 2018-11-13 09:19</div>
-            <div class="timeline-body"><p>I am running into the same issue. Our <code>.gitignore</code> file has <code>/src/sentry/static/sentry/dist/</code> in the root and when I cd into <code>src/sentry</code> and grep for something that is also in a dist file I get what I expect. However when I'm in the root and provide <code>src/sentry</code> as path it gives me a lot of matches I want to ignore.</p>
+            <div class="timeline-body"><p>I am running into the same issue. Our <code>.gitignore</code> file has <code>/src/sentry/static/sentry/dist/</code> in the root and when I cd into <code>src/sentry</code> and grep for something that is also in a dist file I get what I expect. However when I&#x27;m in the root and provide <code>src/sentry</code> as path it gives me a lot of matches I want to ignore.</p>
 <p>The repo in question is here: https://github.com/getsentry/sentry</p>
 </div>
         </div>
@@ -164,11 +164,11 @@ a/b/test.txt
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/bodinsamuel">@bodinsamuel</a> on 2019-12-30 11:22</div>
             <div class="timeline-body"><blockquote>
-<p>Interestingly, a/b also doesn't work, but **/a/b behaves as expected</p>
+<p>Interestingly, a/b also doesn&#x27;t work, but **/a/b behaves as expected</p>
 </blockquote>
 <p>Thanks for this, it worked. Big impact in monorepo.
 Changing <strong>.gitignore</strong>: <code>packages/*/dist</code> -&gt; <code>**/dist</code> (or simply <code>dist/</code>)</p>
-<p>It's more a misunderstanding than a bug, but it clearly bothered me for month ahah</p>
+<p>It&#x27;s more a misunderstanding than a bug, but it clearly bothered me for month ahah</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -177,7 +177,7 @@ Changing <strong>.gitignore</strong>: <code>packages/*/dist</code> -&gt; <code>*
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">gitignore</span> added by @BurntSushi on 2020-05-08 11:43</div>
+            <div class="event">Label <span class="label">gitignore</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-05-08 11:43</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/leonheess">@leonheess</a> on 2022-09-02 10:44</div>
@@ -185,15 +185,15 @@ Changing <strong>.gitignore</strong>: <code>packages/*/dist</code> -&gt; <code>*
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2025-09-10 11:48</div>
+            <div class="event">Label <span class="label">rollup</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-09-10 11:48</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2025-09-20 01:08</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-09-20 01:08</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:42:28 UTC
+        Synced at 2026-01-20 18:48:05 UTC
     </footer>
 </body>
 </html>

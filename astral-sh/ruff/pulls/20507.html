@@ -23,18 +23,18 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/danparizher">@danparizher</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Fixes #15716</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-01 16:30</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
@@ -45,46 +45,46 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B023.py</code>:223 on 2025-10-01 16:39</div>
-            <div class="timeline-body"><p>I also don't think this case should trigger the rule, as mentioned on the issue too.</p>
+            <div class="timeline-body"><p>I also don&#x27;t think this case should trigger the rule, as mentioned on the issue too.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> requested changes on 2025-10-01 16:56</div>
-            <div class="timeline-body"><p>Thanks for tackling such a long-standing issue! However, I don't think this resolves the problems reported in #15716. Two of the three false positives are still present, and I don't think explicitly filtering out lambda parameters is really the right solution to that false positive either.</p>
-<p>I consider the problem in the initial report to be the &quot;leaking&quot; of the comprehension scope. <code>x</code> is not the <code>for</code> loop variable, and the <code>x</code> in the comprehension isn't actually in scope here:</p>
-<pre><code class="language-py">for _ in range(3):
+            <div class="timeline-body"><p>Thanks for tackling such a long-standing issue! However, I don&#x27;t think this resolves the problems reported in #15716. Two of the three false positives are still present, and I don&#x27;t think explicitly filtering out lambda parameters is really the right solution to that false positive either.</p>
+<p>I consider the problem in the initial report to be the &quot;leaking&quot; of the comprehension scope. <code>x</code> is not the <code>for</code> loop variable, and the <code>x</code> in the comprehension isn&#x27;t actually in scope here:</p>
+<pre><code>for _ in range(3):
     [x for x in []]
     def func():
         lambda x: x
 </code></pre>
-<pre><code class="language-pycon">&gt;&gt;&gt; [x for x in []]
+<pre><code>&gt;&gt;&gt; [x for x in []]
 []
 &gt;&gt;&gt; x
 Traceback (most recent call last):
   File &quot;&lt;python-input-1&gt;&quot;, line 1, in &lt;module&gt;
     x
-NameError: name 'x' is not defined
+NameError: name &#x27;x&#x27; is not defined
 </code></pre>
-<p>I haven't really looked closely enough at the rule to have a good suggestion for an alternative, but the idea that comes to mind from reading the comments in <code>function_uses_rule_variable</code> is that we're missing a check that the variable is actually in scope. That may not require explicit scope tracking; maybe the <code>SuspiciousVariableVisitor</code> and/or <code>AssignedNamesVisitor</code> are too eager in some way. That's what I would look into instead of tracking a separate vec of lambda parameters. This also triggers B023 currently without being a lambda:</p>
-<pre><code class="language-py">for _ in range(3):
+<p>I haven&#x27;t really looked closely enough at the rule to have a good suggestion for an alternative, but the idea that comes to mind from reading the comments in <code>function_uses_rule_variable</code> is that we&#x27;re missing a check that the variable is actually in scope. That may not require explicit scope tracking; maybe the <code>SuspiciousVariableVisitor</code> and/or <code>AssignedNamesVisitor</code> are too eager in some way. That&#x27;s what I would look into instead of tracking a separate vec of lambda parameters. This also triggers B023 currently without being a lambda:</p>
+<pre><code>for _ in range(3):
     [x for x in []]
     def func():
         def f(x): x
 </code></pre>
-<p>I didn't look as much into the other false positives, but we should try to see how we filter out the other cases (<code>min</code>, <code>max</code>, <code>sorted</code>, etc.) and see if we can apply that here too</p>
+<p>I didn&#x27;t look as much into the other false positives, but we should try to see how we filter out the other cases (<code>min</code>, <code>max</code>, <code>sorted</code>, etc.) and see if we can apply that here too</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-10-01 16:57</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-01 16:57</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @ntBre by @danparizher on 2025-10-01 21:29</div>
+            <div class="event">Review requested from <a href="https://github.com/ntBre">@ntBre</a> by <a href="https://github.com/danparizher">@danparizher</a> on 2025-10-01 21:29</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/function_uses_loop_variable.rs</code>:180 on 2025-10-08 15:48</div>
-            <div class="timeline-body"><p>Ah I didn't realize we had a list of allowed functions. I'm not totally sure we should add a special case for pandas, but we do have other pandas-specific rules so it's not without precedent.</p>
-<p>If we do add this, we should at least check that pandas has been imported. I think that's what we do in some other cases where we inspect pandas attributes. I believe as written this would allow any type with an <code>apply</code> attribute, which is a bit more permissive than necessary.</p>
-<p>Ideally we would resolve the type of the value and see that it's a pandas object with a known <code>apply</code> method.</p>
+            <div class="timeline-body"><p>Ah I didn&#x27;t realize we had a list of allowed functions. I&#x27;m not totally sure we should add a special case for pandas, but we do have other pandas-specific rules so it&#x27;s not without precedent.</p>
+<p>If we do add this, we should at least check that pandas has been imported. I think that&#x27;s what we do in some other cases where we inspect pandas attributes. I believe as written this would allow any type with an <code>apply</code> attribute, which is a bit more permissive than necessary.</p>
+<p>Ideally we would resolve the type of the value and see that it&#x27;s a pandas object with a known <code>apply</code> method.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -94,21 +94,21 @@ NameError: name 'x' is not defined
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> requested changes on 2025-10-08 15:53</div>
-            <div class="timeline-body"><p>I'm still skeptical that filtering out a list of lambda parameters is the right approach, and there's a new issue caused by the last round of changes.</p>
+            <div class="timeline-body"><p>I&#x27;m still skeptical that filtering out a list of lambda parameters is the right approach, and there&#x27;s a new issue caused by the last round of changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @ntBre by @danparizher on 2025-10-09 02:37</div>
+            <div class="event">Review requested from <a href="https://github.com/ntBre">@ntBre</a> by <a href="https://github.com/danparizher">@danparizher</a> on 2025-10-09 02:37</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/function_uses_loop_variable.rs</code>:330 on 2025-10-30 16:19</div>
-            <div class="timeline-body"><p>We definitely shouldn't run the visitor twice. The <code>seen_module</code> check is just a check of a bit flag, and the method could even be const from what I can tell (though it isn't marked as such currently), so it should be fine either to check it each time we hit <code>apply</code> or to save the result of calling it once. Either way should be much cheaper than two visits.</p>
+            <div class="timeline-body"><p>We definitely shouldn&#x27;t run the visitor twice. The <code>seen_module</code> check is just a check of a bit flag, and the method could even be const from what I can tell (though it isn&#x27;t marked as such currently), so it should be fine either to check it each time we hit <code>apply</code> or to save the result of calling it once. Either way should be much cheaper than two visits.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/function_uses_loop_variable.rs</code>:72 on 2025-10-30 16:36</div>
             <div class="timeline-body"><p>I think this check is also incorrect. Using a slight variation on one of the examples from the issue:</p>
-<pre><code class="language-py">lst = []
+<pre><code>lst = []
 for value in range(2):
     def add_one():
         def _add_one_inner():
@@ -122,7 +122,7 @@ for l in lst:
     print(l())
 </code></pre>
 <p>This <em>should</em> trigger B023 because the inner function captures the loop variable. Running this code produces:</p>
-<pre><code class="language-pycon">2
+<pre><code>2
 2
 </code></pre>
 <p>but no diagnostic is emitted on this branch.</p>
@@ -130,31 +130,31 @@ for l in lst:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> requested changes on 2025-10-30 16:42</div>
-            <div class="timeline-body"><p>I still don't think either of the function changes is the right fix. I still stand by my <a href="https://github.com/astral-sh/ruff/pull/20507#pullrequestreview-3290071170">first comment</a> saying that the leaking scope is  the real problem. Have you looked into that at all instead of trying to filter out lambda parameters and avoiding visiting nested functions?</p>
-<p>The  pandas issue seems a bit different and might be worth landing separately, at least once we avoid visiting twice as noted inline. But that will not close #15716, which is really about the scope problem above. I'm still not 100% sold on that either because the other functions we special-case here are from the standard library. It could be a slippery slope to start adding third-party functions.</p>
+            <div class="timeline-body"><p>I still don&#x27;t think either of the function changes is the right fix. I still stand by my <a href="https://github.com/astral-sh/ruff/pull/20507#pullrequestreview-3290071170">first comment</a> saying that the leaking scope is  the real problem. Have you looked into that at all instead of trying to filter out lambda parameters and avoiding visiting nested functions?</p>
+<p>The  pandas issue seems a bit different and might be worth landing separately, at least once we avoid visiting twice as noted inline. But that will not close #15716, which is really about the scope problem above. I&#x27;m still not 100% sold on that either because the other functions we special-case here are from the standard library. It could be a slippery slope to start adding third-party functions.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @ntBre by @danparizher on 2025-10-31 20:54</div>
+            <div class="event">Review requested from <a href="https://github.com/ntBre">@ntBre</a> by <a href="https://github.com/danparizher">@danparizher</a> on 2025-10-31 20:54</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-04 19:55</div>
             <div class="timeline-body"><p>@amyreese and I took another look at this today, and I think the approach here makes a bit more sense to me now. However, we were wondering if there might be another solution, potentially with a larger refactor of the rule itself. Going back to the main case from the issue:</p>
-<pre><code class="language-py">for _ in range(3):
+<pre><code>for _ in range(3):
     [x for x in []]
     def func():
         lambda x: x
 </code></pre>
-<p>the <code>x</code> in the lambda body is currently flagged as suspicious by the first visitor in the rule, the <code>SuspiciousVariablesVisitor</code>, because it's a load reference to a variable without a store reference inside the body of <code>func</code>. Then, the second visitor, <code>AssignedNamesVisitor</code> finds a <em>different</em> <code>x</code> within the loop, the target of the list comprehension.</p>
+<p>the <code>x</code> in the lambda body is currently flagged as suspicious by the first visitor in the rule, the <code>SuspiciousVariablesVisitor</code>, because it&#x27;s a load reference to a variable without a store reference inside the body of <code>func</code>. Then, the second visitor, <code>AssignedNamesVisitor</code> finds a <em>different</em> <code>x</code> within the loop, the target of the list comprehension.</p>
 <p>These two are only equal, and thus trigger the <code>reassigned_in_loop.contains</code> check, because the rule tracks all of the names as simple strings instead of preserving any scope or even range information.</p>
-<p>I guess this is similar to my first suggestion, but to me, the better fix will be something like confirming that the unmatched load reference actually loads a variable defined in the loop and accessible in the same scope as the load reference. The <code>x</code> in the comprehension here is not accessible to the lambda, and the same is true in the loop case from https://github.com/astral-sh/ruff/issues/15716#issuecomment-3304010685.</p>
+<p>I guess this is similar to my first suggestion, but to me, the better fix will be something like confirming that the unmatched load reference actually loads a variable defined in the loop and accessible in the same scope as the load reference. The <code>x</code> in the comprehension here is not accessible to the lambda, and the same is true in the loop case from <a href="https://github.com/astral-sh/ruff/issues/15716">astral-sh/ruff#15716</a>#issuecomment-3304010685.</p>
 <p>I think the test cases here are good and helpful, but I would still prefer a different, more robust implementation that fixes the underlying issue. We could also consider spinning off the pandas fix, which is pretty separate from the main issue in #15716 to me, if we want to land that earlier.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:15:55 UTC
+        Synced at 2026-01-20 19:18:50 UTC
     </footer>
 </body>
 </html>

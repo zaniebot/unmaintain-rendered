@@ -23,60 +23,53 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a></div>
-            <div class="timeline-body"><!--
-Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+            <div class="timeline-body">
 
-- Does this pull request include a summary of the change? (See below.)
-- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
-  requests.)
-- Does this pull request include references to any relevant issues?
--->
+Summary
 
-<h2>Summary</h2>
-<!-- What's the purpose of the change? What does it do, and why? -->
 
 <p>Fixes #18742</p>
-<p>Since I wasn't very clear about the actual problem in #18742, here's it re-explained:</p>
+<p>Since I wasn&#x27;t very clear about the actual problem in #18742, here&#x27;s it re-explained:</p>
 <p>When ever an f-string contains a slash, it will get re-escaped, causing quadratic slash growth depending on the depth of f-string nesting.</p>
-<p>Note: For all these examples I'll use <code>SIM201</code> since it's very easy to trigger, but this applies to any rule that uses AST-based changes and can contain f-strings.
-Note: I'm using the playground instead of the command line to get these examples, since they generate syntax errors and thus don't show the broken code.
-Note: I'm targeting python 3.12 for all of this, since all multiline-string-inside-f-string newline -&gt; <code>\n</code> conversions instantly cause a syntax error pre-3.12, and this PR does not fix that issue.</p>
+<p>Note: For all these examples I&#x27;ll use <code>SIM201</code> since it&#x27;s very easy to trigger, but this applies to any rule that uses AST-based changes and can contain f-strings.
+Note: I&#x27;m using the playground instead of the command line to get these examples, since they generate syntax errors and thus don&#x27;t show the broken code.
+Note: I&#x27;m targeting python 3.12 for all of this, since all multiline-string-inside-f-string newline -&gt; <code>\n</code> conversions instantly cause a syntax error pre-3.12, and this PR does not fix that issue.</p>
 <p><a href="https://play.ruff.rs/6189667c-b3d8-44b2-a9c9-8b4b4489d2ef">Examples in the playground</a></p>
-<pre><code class="language-py">not f&quot;{&quot;\\&quot;}&quot; == 1
+<pre><code>not f&quot;{&quot;\\&quot;}&quot; == 1
 # Fixes to
-f'{&quot;\\\\&quot;}' != 1
+f&#x27;{&quot;\\\\&quot;}&#x27; != 1
 
 not f&quot;{f&quot;{&quot;\\&quot;}&quot;}&quot; == 1
 # Fixes to
-f&quot;{f'{\&quot;\\\\\\\\\&quot;}'}&quot; != 1
+f&quot;{f&#x27;{\&quot;\\\\\\\\\&quot;}&#x27;}&quot; != 1
 
 not f&quot;{f&quot;{f&quot;{&quot;\\&quot;}&quot;}&quot;}&quot; == 1
 # Fixes to
-f&quot;{f\&quot;{f'{\\\&quot;\\\\\\\\\\\\\\\\\\\&quot;}'}\&quot;}&quot; != 1
+f&quot;{f\&quot;{f&#x27;{\\\&quot;\\\\\\\\\\\\\\\\\\\&quot;}&#x27;}\&quot;}&quot; != 1
 </code></pre>
 <p>This is where the original bug I found in #18742 came from:
 The code</p>
-<pre><code class="language-py">f&quot;{1=
+<pre><code>f&quot;{1=
 }&quot;
 </code></pre>
-<p>Because of the <code>=</code>, it gets written verbatim to the code generator's internal buffer as <code>f&quot;{1=\n}&quot;</code>, and then because of the code bug gets string encoded, leading to a buffer of <code>f&quot;{1=\\n}&quot;</code>, which is the syntax error I originally found.</p>
+<p>Because of the <code>=</code>, it gets written verbatim to the code generator&#x27;s internal buffer as <code>f&quot;{1=\n}&quot;</code>, and then because of the code bug gets string encoded, leading to a buffer of <code>f&quot;{1=\\n}&quot;</code>, which is the syntax error I originally found.</p>
 <p>The issue came from passing the generated string of the f-string node through the normal string handler. My assumption is this was to save on code duplication/having to re-do the string prefix, but it causes any backslashes inside the f-string to be double escaped.</p>
 <p>This PR fixes that by giving the f-string string parts their own specialized code for only outputting the string body without the quotes.</p>
-<p>Note: It looks like there are a couple different ways of adding the output to the buffer: <code>self.p</code>, <code>write!(self.buffer</code>, and <code>self.buffer +=</code>. I chose ones I thought might fit, but I'm not sure of the difference between all of them, or if I should have chosen differently.</p>
-<h2>Test Plan</h2>
-<!-- How was it tested? -->
+<p>Note: It looks like there are a couple different ways of adding the output to the buffer: <code>self.p</code>, <code>write!(self.buffer</code>, and <code>self.buffer +=</code>. I chose ones I thought might fit, but I&#x27;m not sure of the difference between all of them, or if I should have chosen differently.</p>
+Test Plan
+
 
 <p>Added a test to the <code>self_documenting_fstring</code> section</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-23 06:04</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
@@ -86,9 +79,9 @@ The code</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_codegen/src/generator.rs</code>:1944 on 2025-06-23 07:32</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">            ); // https://github.com/astral-sh/ruff/issues/18742
+            <div class="timeline-body"><pre><code>            ); // <a href="https://github.com/astral-sh/ruff/issues/18742">astral-sh/ruff#18742</a>
 </code></pre>
-<p><code>assert_roundtrip</code> already replaces the newlines with the platform's defualt.</p>
+<p><code>assert_roundtrip</code> already replaces the newlines with the platform&#x27;s defualt.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -97,14 +90,14 @@ The code</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on <code>crates/ruff_python_codegen/src/generator.rs</code>:1944 on 2025-06-23 08:12</div>
-            <div class="timeline-body"><p>That's what I initially started out with, but it fails with</p>
-<pre><code>thread 'generator::tests::self_documenting_fstring' panicked at crates\ruff_python_codegen\src\generator.rs:1939:9:
+            <div class="timeline-body"><p>That&#x27;s what I initially started out with, but it fails with</p>
+<pre><code>thread &#x27;generator::tests::self_documenting_fstring&#x27; panicked at crates\ruff_python_codegen\src\generator.rs:1939:9:
 assertion `left == right` failed
   left: &quot;f\&quot;{1=\n}\&quot;&quot;
  right: &quot;f\&quot;{1=\r\n}\&quot;&quot;
 </code></pre>
 <p>I also tried</p>
-<pre><code class="language-rs">        assert_eq!(
+<pre><code>        assert_eq!(
             round_trip_with(
                 &amp;Indentation::new(&quot;&quot;.to_string()),
                 LineEnding::default(),
@@ -119,8 +112,8 @@ f&quot;{1=
 }&quot;
 &quot;#
             .trim()
-            .replace('\n', LineEnding::default().as_str())
-        ); // https://github.com/astral-sh/ruff/issues/18742
+            .replace(&#x27;\n&#x27;, LineEnding::default().as_str())
+        ); // <a href="https://github.com/astral-sh/ruff/issues/18742">astral-sh/ruff#18742</a>
 </code></pre>
 <p>but that fails with the same error, and also the same thing if I remove the end <code>.replace</code></p>
 </div>
@@ -142,12 +135,12 @@ f&quot;{1=
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on <code>crates/ruff_python_codegen/src/generator.rs</code>:1944 on 2025-06-23 08:32</div>
             <div class="timeline-body"><p>I figured out part of what was going wrong, I had a bunch of duplicate tests everywhere due to coding on my phone.
-I don't think that's the case? Since in the original issue on the playground which uses CRLF endings the code was ending up as <code>\\r\\n</code></p>
+I don&#x27;t think that&#x27;s the case? Since in the original issue on the playground which uses CRLF endings the code was ending up as <code>\\r\\n</code></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_codegen/src/generator.rs</code>:1951 on 2025-06-23 08:39</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">				// https://github.com/astral-sh/ruff/issues/18742
+            <div class="timeline-body"><pre><code>				// <a href="https://github.com/astral-sh/ruff/issues/18742">astral-sh/ruff#18742</a>
         assert_eq!(
             round_trip(
                 r#&quot;
@@ -174,7 +167,7 @@ f&quot;{1=
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_codegen/src/generator.rs</code>:1944 on 2025-06-23 08:40</div>
-            <div class="timeline-body"><p>Right, the debug text preserves the line ending. Can you explain why we can't use <code>assert_round_trip!</code>?</p>
+            <div class="timeline-body"><p>Right, the debug text preserves the line ending. Can you explain why we can&#x27;t use <code>assert_round_trip!</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -183,7 +176,7 @@ f&quot;{1=
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on <code>crates/ruff_python_codegen/src/generator.rs</code>:1944 on 2025-06-23 16:54</div>
-            <div class="timeline-body"><p>I think it's because round trip has the <code>.replace('\n', LineEnding::default().as_str())</code>. On the windows machine, <code>LineEnding::default().as_str()</code> is <code>\r\n</code>, but inside multiline strings/debug f-strings the encoding of the file is used instead without normalization, so trying to normalize the right side at all will cause the tests to fail, since it needs to be the exact same line endings as source, at least inside those two elements.</p>
+            <div class="timeline-body"><p>I think it&#x27;s because round trip has the <code>.replace(&#x27;\n&#x27;, LineEnding::default().as_str())</code>. On the windows machine, <code>LineEnding::default().as_str()</code> is <code>\r\n</code>, but inside multiline strings/debug f-strings the encoding of the file is used instead without normalization, so trying to normalize the right side at all will cause the tests to fail, since it needs to be the exact same line endings as source, at least inside those two elements.</p>
 <pre><code>PS ~\Desktop\New_folder&gt;Set-Content issue.py @&quot;
 &gt;&gt; not &quot;&quot;&quot;`n&quot;&quot;&quot; == 1
 &gt;&gt; not f&quot;{1=`n}&quot; == 1
@@ -199,7 +192,7 @@ f&quot;{1=
 </code></pre>
 <pre><code>PS ~\Desktop\New_folder&gt;uvx ruff check issue.py --isolated --select SIM
 </code></pre>
-<pre><code class="language-snap">issue.py:1:1: SIM201 Use `&quot;&quot;&quot;\n&quot;&quot;&quot; != 1` instead of `not &quot;&quot;&quot;\n&quot;&quot;&quot; == 1`
+<pre><code>issue.py:1:1: SIM201 Use `&quot;&quot;&quot;\n&quot;&quot;&quot; != 1` instead of `not &quot;&quot;&quot;\n&quot;&quot;&quot; == 1`
   |
 1 | / not &quot;&quot;&quot;
 2 | | &quot;&quot;&quot; == 1
@@ -268,7 +261,7 @@ No fixes available (6 hidden fixes can be enabled with the `--unsafe-fixes` opti
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">fixes</span> added by @MichaReiser on 2025-06-25 08:04</div>
+            <div class="event">Label <span class="label">fixes</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-25 08:04</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-25 08:04</div>
@@ -276,10 +269,10 @@ No fixes available (6 hidden fixes can be enabled with the `--unsafe-fixes` opti
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @MichaReiser on 2025-06-25 08:04</div>
+            <div class="event">Merged by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-25 08:04</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2025-06-25 08:04</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-25 08:04</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-06-25 15:49</div>
@@ -287,7 +280,7 @@ No fixes available (6 hidden fixes can be enabled with the `--unsafe-fixes` opti
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:13:37 UTC
+        Synced at 2026-01-20 19:15:49 UTC
     </footer>
 </body>
 </html>

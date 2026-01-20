@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/brendan-morin">@brendan-morin</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>This bit</p>
-<pre><code class="language-python">from typing import Annotated
+<pre><code>from typing import Annotated
 
 a = {
     &quot;c&quot;: str,
@@ -43,15 +43,15 @@ F821 Undefined name `c`
   |
 </code></pre>
 <p>However, as far as I can tell this should be valid.</p>
-<h3>Version</h3>
+Version
 <p><em>No response</em></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/brendan-morin">@brendan-morin</a> on 2025-12-24 05:34</div>
-            <div class="timeline-body"><p>Some additional notes on <code>Annotated</code> for whenever this gets looked into, ruff also does not catch the following issues (from typing docs), but maybe that's more <code>ty</code>'s turf:</p>
+            <div class="timeline-body"><p>Some additional notes on <code>Annotated</code> for whenever this gets looked into, ruff also does not catch the following issues (from typing docs), but maybe that&#x27;s more <code>ty</code>&#x27;s turf:</p>
 <ul>
-<li><code>Annotated[a[&quot;c&quot;]]</code> should fail: &quot;It's an error to call <code>Annotated</code> with less than two arguments&quot;.</li>
+<li><code>Annotated[a[&quot;c&quot;]]</code> should fail: &quot;It&#x27;s an error to call <code>Annotated</code> with less than two arguments&quot;.</li>
 <li><code>Annotated[&quot;a&quot;, str]</code> should fail: &quot;The first argument to Annotated must be a valid type.</li>
 </ul>
 </div>
@@ -60,34 +60,34 @@ F821 Undefined name `c`
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-24 15:24</div>
             <div class="timeline-body"><p>Thanks for the report! <a href="https://play.ty.dev/8344dcbb-1714-4b59-b867-51604b44cc43">ty</a> is also reporting an invalid type form error on the <code>a[&quot;c&quot;]</code> subscript, though, so I think this may be intentional?</p>
 <p>I looked a bit at the <a href="https://typing.python.org/en/latest/spec/annotations.html#type-and-annotation-expressions">typing spec</a> and for any existing ty issues but someone like @AlexWaygood may know better whether this is correct.</p>
-<p>I think https://github.com/astral-sh/ruff/issues/11378 may also be related on the Ruff side.</p>
+<p>I think <a href="https://github.com/astral-sh/ruff/issues/11378">astral-sh/ruff#11378</a> may also be related on the Ruff side.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @ntBre on 2025-12-24 15:24</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-24 15:24</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-24 16:27</div>
-            <div class="timeline-body"><p>Yes, the first argument to <code>Annotated</code> is expected to be a valid &quot;annotation expression&quot; (which is a term of art described in https://typing.python.org/en/latest/spec/annotations.html#type-and-annotation-expressions). <code>a[&quot;c&quot;]</code> is not a valid annotation expression, and that's what's causing the issue here. In annotation expressions, string-literal expressions are expected to be &quot;forward references&quot; to names not-yet defined, which is why Ruff is emitting the &quot;undefined name&quot; F821 error here: there's no <code>c</code> variable defined anywhere in this module. The only place where a string literal inside an annotation expression is <em>not</em> expected to be a forward reference is if it's inside a <code>typing.Literal</code> slice: <code>typing.Literal[&quot;c&quot;]</code>, etc.</p>
+            <div class="timeline-body"><p>Yes, the first argument to <code>Annotated</code> is expected to be a valid &quot;annotation expression&quot; (which is a term of art described in https://typing.python.org/en/latest/spec/annotations.html#type-and-annotation-expressions). <code>a[&quot;c&quot;]</code> is not a valid annotation expression, and that&#x27;s what&#x27;s causing the issue here. In annotation expressions, string-literal expressions are expected to be &quot;forward references&quot; to names not-yet defined, which is why Ruff is emitting the &quot;undefined name&quot; F821 error here: there&#x27;s no <code>c</code> variable defined anywhere in this module. The only place where a string literal inside an annotation expression is <em>not</em> expected to be a forward reference is if it&#x27;s inside a <code>typing.Literal</code> slice: <code>typing.Literal[&quot;c&quot;]</code>, etc.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-24 16:28</div>
-            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/issues/11378 seems a bit different to me -- that issue is about arguably valid annotations that Ruff doesn't understand (because it doesn't have type inference). However, the annotation in this issue is invalid according to the typing spec, unfortunately.</p>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/issues/11378 seems a bit different to me -- that issue is about arguably valid annotations that Ruff doesn&#x27;t understand (because it doesn&#x27;t have type inference). However, the annotation in this issue is invalid according to the typing spec, unfortunately.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/brendan-morin">@brendan-morin</a> on 2025-12-24 20:57</div>
-            <div class="timeline-body"><p>I see what you are saying, but I'm not sure I agree that <code>a[&quot;c&quot;]</code> actually represents a string literal , and as such I don't think it need be a forward referenced. As far as <code>Annotated[]</code> is concerned, it is only receiving the resolved output of the alias <code>a[&quot;c&quot;]</code> and not the key internal to that alias itself (unless type inference skips interpretation, that I really don't know much about).</p>
+            <div class="timeline-body"><p>I see what you are saying, but I&#x27;m not sure I agree that <code>a[&quot;c&quot;]</code> actually represents a string literal , and as such I don&#x27;t think it need be a forward referenced. As far as <code>Annotated[]</code> is concerned, it is only receiving the resolved output of the alias <code>a[&quot;c&quot;]</code> and not the key internal to that alias itself (unless type inference skips interpretation, that I really don&#x27;t know much about).</p>
 <p>If invalid, this has some pretty weird implications, such as <code>Annotated[a[&quot;c&quot;], str]</code> being invalid but <code>Annotated[a.keys()[0], str]</code> being somehow more valid. Also in testing, I found that <code>Annotated[a[&quot;a&quot;], str]</code> is considered by ruff to be valid, despite being somewhat silly and just random chance that a dictionary key matches a scoped variable name that is very clearly is not actually referencing.</p>
-<p>FWIW there are no issues with python actually interpreting this, and in practice this type is &quot;load bearing&quot; in the way pydantic types tend to be so it's not just a pure hint. So we can confirm the reference method is considered valid enough to the interpreter. I'd suspect because it works we would see enough of this in the wild for it to be considered the defacto API contract that couldn't at this point be broken without a deprecation plan.</p>
-<p>Anyhow I don't have strong opinions on what it <em>should</em> be, if your interpretation is unambiguously the spec then it is what it is.</p>
+<p>FWIW there are no issues with python actually interpreting this, and in practice this type is &quot;load bearing&quot; in the way pydantic types tend to be so it&#x27;s not just a pure hint. So we can confirm the reference method is considered valid enough to the interpreter. I&#x27;d suspect because it works we would see enough of this in the wild for it to be considered the defacto API contract that couldn&#x27;t at this point be broken without a deprecation plan.</p>
+<p>Anyhow I don&#x27;t have strong opinions on what it <em>should</em> be, if your interpretation is unambiguously the spec then it is what it is.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:53:43 UTC
+        Synced at 2026-01-20 18:50:42 UTC
     </footer>
 </body>
 </html>

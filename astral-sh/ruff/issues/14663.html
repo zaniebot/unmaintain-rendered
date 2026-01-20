@@ -24,49 +24,49 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/towiat">@towiat</a></div>
             <div class="timeline-body"><p>Given the setup</p>
-<pre><code class="language-toml">[tool.ruff]
+<pre><code>[tool.ruff]
 select = [
     &quot;ANN001&quot;, # missing-type-function-argument
     &quot;ARG001&quot;, # unused-function-argument
 ]
 </code></pre>
 <p>and the function</p>
-<pre><code class="language-python">def callback(_unused, foo: str) -&gt; None:
+<pre><code>def callback(_unused, foo: str) -&gt; None:
     print(foo)
 </code></pre>
 <p>ruff (version 0.8.0) does not raise <code>ARG001</code> since the argument name <code>_unused</code> matches the <code>dummy-variable-rgx</code> pattern.</p>
-<p>It does, however, raise <code>ANN001</code> even though a type annotation for an unused argument doesn't make a lot of sense.</p>
-<p>Shouldn't the check for <code>ANN001</code> also take the <code>dummy-variable-rgx</code> pattern into account?</p>
+<p>It does, however, raise <code>ANN001</code> even though a type annotation for an unused argument doesn&#x27;t make a lot of sense.</p>
+<p>Shouldn&#x27;t the check for <code>ANN001</code> also take the <code>dummy-variable-rgx</code> pattern into account?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-29 08:24</div>
             <div class="timeline-body"><p>Thanks for opening this issue. This is an interesting question and we may have to consider this in a more complete example. E.g is <code>callback</code> overriding some method or why is the first argument unused?</p>
-<p>I agree that the type annotation seems rather useless for the <code>callback</code>'s body. However, annotating the parameter type is important to verify that the function is called with the right arguments. So there's value in having the annotation, but only if the signature can't be derived from e.g. a parent method.</p>
+<p>I agree that the type annotation seems rather useless for the <code>callback</code>&#x27;s body. However, annotating the parameter type is important to verify that the function is called with the right arguments. So there&#x27;s value in having the annotation, but only if the signature can&#x27;t be derived from e.g. a parent method.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-11-29 08:24</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-29 08:24</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/towiat">@towiat</a> on 2024-11-29 12:29</div>
-            <div class="timeline-body"><p>Thanks for looking into this. I'm also not completely sure, but here is some context:</p>
+            <div class="timeline-body"><p>Thanks for looking into this. I&#x27;m also not completely sure, but here is some context:</p>
 <p>I ran into this while writing a callback for a click option like this (snippet from the <a href="https://click.palletsprojects.com/en/stable/options/#callbacks-and-eager-options">click documentation</a>):</p>
-<pre><code class="language-python">def print_version(ctx, param, value):
+<pre><code>def print_version(ctx, param, value):
     if not value or ctx.resilient_parsing:
         return
-    click.echo('Version 1.0')
+    click.echo(&#x27;Version 1.0&#x27;)
     ctx.exit()
 
 @click.command()
-@click.option('--version', is_flag=True, callback=print_version,
+@click.option(&#x27;--version&#x27;, is_flag=True, callback=print_version,
               expose_value=False, is_eager=True)
 def hello():
-    click.echo('Hello World!')
+    click.echo(&#x27;Hello World!&#x27;)
 </code></pre>
-<p>Note that click calls the callback with positional parameters, so it doesn't care about the names.</p>
+<p>Note that click calls the callback with positional parameters, so it doesn&#x27;t care about the names.</p>
 <p>In my use case I only need the <code>value</code> argument which leaves me with the following choices to annotate the callback:</p>
-<pre><code class="language-python">def callback(ctx: click.Context, param: click.Parameter, value: str):    # raises ARG001
+<pre><code>def callback(ctx: click.Context, param: click.Parameter, value: str):    # raises ARG001
     do_something_with(value)
 
 def callback(_ctx, _param, value: str):                                  # raises ANN001
@@ -86,7 +86,7 @@ def callback(_ctx: click.Context, _param: click.Parameter, value: str):  # works
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-10 07:26</div>
             <div class="timeline-body"><p>Oh, I just realized that <code>ANN01</code> has <a href="https://docs.astral.sh/ruff/settings/#lint_flake8-annotations_suppress-dummy-args">a setting</a> that disables the ANN rules for dummy variables.</p>
-<pre><code class="language-toml">[tool.ruff.lint.flake8-annotations]
+<pre><code>[tool.ruff.lint.flake8-annotations]
 suppress-dummy-args = true
 </code></pre>
 <p>I think that should solve both your use cases.</p>
@@ -101,16 +101,16 @@ suppress-dummy-args = true
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-10 09:47</div>
-            <div class="timeline-body"><p>That's a good call out. Let me add it real quick.</p>
+            <div class="timeline-body"><p>That&#x27;s a good call out. Let me add it real quick.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2024-12-10 09:53</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-10 09:53</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:51:40 UTC
+        Synced at 2026-01-20 18:49:03 UTC
     </footer>
 </body>
 </html>

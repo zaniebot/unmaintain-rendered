@@ -25,39 +25,39 @@
             <div class="timeline-header"><a href="https://github.com/pikeas">@pikeas</a></div>
             <div class="timeline-body"><p>On rg 0.8.0 / OS X 10.12.6</p>
 <p>When using <code>rg -Tfiletype -tfiletype foo</code>, the exclude takes precedence over the include. Is this intentional behavior?</p>
-<p>My use case is a <code>.ripgreprc</code> which excludes minified files by default, which I do occasionally need to search. I can do <code>rg --type-add=minified:*.min.{css,js} -tminified --no-config foo</code> in this case, but this is pretty clunky. I would much rather do <code>rg -tminified foo</code> and have my include clobber my config file's default exclude.</p>
+<p>My use case is a <code>.ripgreprc</code> which excludes minified files by default, which I do occasionally need to search. I can do <code>rg --type-add=minified:*.min.{css,js} -tminified --no-config foo</code> in this case, but this is pretty clunky. I would much rather do <code>rg -tminified foo</code> and have my include clobber my config file&#x27;s default exclude.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-16 01:07</div>
-            <div class="timeline-body"><p>This is a limitation of ripgrep's argv parser. It is the same reason why ripgrep doesn't have traditional --include and --exclude flags for example.</p>
-<p>I would love to fix this, but I don't know the optimal route.</p>
+            <div class="timeline-body"><p>This is a limitation of ripgrep&#x27;s argv parser. It is the same reason why ripgrep doesn&#x27;t have traditional --include and --exclude flags for example.</p>
+<p>I would love to fix this, but I don&#x27;t know the optimal route.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-02-16 02:54</div>
             <div class="timeline-body"><blockquote>
-<p>It is the same reason why ripgrep doesn't have traditional --include and --exclude flags for example</p>
+<p>It is the same reason why ripgrep doesn&#x27;t have traditional --include and --exclude flags for example</p>
 </blockquote>
 <p>Could you expand on that, as it might be in my sphere of influence to change?</p>
-<p>The way I understand it, it's currently set up so that excludes <em>always</em> override includes, no? The way I imagine in the simple case is just using normal overrides in whichever flag is last &quot;wins&quot; (or overrides the prior). However, I'm assuming in ripgrep's case this is complicated by having multiple includes/excludes?</p>
+<p>The way I understand it, it&#x27;s currently set up so that excludes <em>always</em> override includes, no? The way I imagine in the simple case is just using normal overrides in whichever flag is last &quot;wins&quot; (or overrides the prior). However, I&#x27;m assuming in ripgrep&#x27;s case this is complicated by having multiple includes/excludes?</p>
 <p>i.e. what do I mean:</p>
 <pre><code>$cat ripgreprc
---type-add 'foo: *.foo' 
---type-add 'bar: *.bar'
+--type-add &#x27;foo: *.foo&#x27; 
+--type-add &#x27;bar: *.bar&#x27;
 -Tfoo
 -Tbar
 
 $ rg -tfoo
-    # should ripgrep search 'bar' files?
+    # should ripgrep search &#x27;bar&#x27; files?
 </code></pre>
-<p>In ripgrep's help message for <code>--type</code> states, <code>&quot;**Only** search files matching TYPE&quot;</code> (emphasis mine).  In which case, traditional overrides work perfectly here. However, the &quot;do what I expect not what I say&quot; in me says, &quot;I want to search everything, including 'foo' files, but I still want 'bar' files to be skipped.&quot; (more traditional <code>--include</code>/<code>--exclude</code>).</p>
-<p>Edit: So keeping the current functionality as is (perhaps just adding overrides?) seems fine, with the ability to also add more traditional include/excludes. As there may be times I <em>do</em> want to be able to say, &quot;ripgrep, ONLY search this one file type&quot; which wouldn't be possible with traditional includes/excludes. So I see them (current type system with traditional include/exclude) as not mutually exclusive ideas.</p>
+<p>In ripgrep&#x27;s help message for <code>--type</code> states, <code>&quot;**Only** search files matching TYPE&quot;</code> (emphasis mine).  In which case, traditional overrides work perfectly here. However, the &quot;do what I expect not what I say&quot; in me says, &quot;I want to search everything, including &#x27;foo&#x27; files, but I still want &#x27;bar&#x27; files to be skipped.&quot; (more traditional <code>--include</code>/<code>--exclude</code>).</p>
+<p>Edit: So keeping the current functionality as is (perhaps just adding overrides?) seems fine, with the ability to also add more traditional include/excludes. As there may be times I <em>do</em> want to be able to say, &quot;ripgrep, ONLY search this one file type&quot; which wouldn&#x27;t be possible with traditional includes/excludes. So I see them (current type system with traditional include/exclude) as not mutually exclusive ideas.</p>
 <p>From a implementation standpoint traditional include/excludes are much harder to implement than just, &quot;<code>--type</code> and <code>--type-not</code> override each other&quot; as it would have to resolve <em>only matching types</em> in an overriding fashion.</p>
-<p>If what I've said is true so far, there are a few ways I could actually tackle this on my end. The easiest would be to provide something like <code>Arg::overrides_eq_vals_with</code> which only overrides specific values with another arg provided both values match. Because clap already has all this information about what comes in what orders, it'd be quite simple to add.</p>
-<p>i.e. assume we had an argv (after config parse) that was roughly <code>$ rg --exclude=*.foo --exclude=*.bar --include=*.foo 'test'</code> After <code>overrides_eq_vals_with</code> it would become <code>$ rg --exclude=*.bar --include=*.foo 'test'</code>.</p>
-<p>The other way would involve something I've been thinking about, which is to provide companions to the validators, namely the ability to provide functions to <code>Filter/Skip</code>, <code>Map</code>, and <code>Action</code> arguments mid parse. These would do things such as do something potentially impure (<code>Action</code>), allow one to filter/skip values (<code>Filter/Skip</code> haven't decide on naming yet), or transform actual values themselves (<code>Map</code>) to be saved in the matches struct. These would all have access to the matches struct as it exists at that time, in order to perform decisions or possibly even mutate. I should say though that this method is further off and would not be available until v3 at the earliest (if ever, pending design and implementation, etc.).</p>
-<hr />
+<p>If what I&#x27;ve said is true so far, there are a few ways I could actually tackle this on my end. The easiest would be to provide something like <code>Arg::overrides_eq_vals_with</code> which only overrides specific values with another arg provided both values match. Because clap already has all this information about what comes in what orders, it&#x27;d be quite simple to add.</p>
+<p>i.e. assume we had an argv (after config parse) that was roughly <code>$ rg --exclude=*.foo --exclude=*.bar --include=*.foo &#x27;test&#x27;</code> After <code>overrides_eq_vals_with</code> it would become <code>$ rg --exclude=*.bar --include=*.foo &#x27;test&#x27;</code>.</p>
+<p>The other way would involve something I&#x27;ve been thinking about, which is to provide companions to the validators, namely the ability to provide functions to <code>Filter/Skip</code>, <code>Map</code>, and <code>Action</code> arguments mid parse. These would do things such as do something potentially impure (<code>Action</code>), allow one to filter/skip values (<code>Filter/Skip</code> haven&#x27;t decide on naming yet), or transform actual values themselves (<code>Map</code>) to be saved in the matches struct. These would all have access to the matches struct as it exists at that time, in order to perform decisions or possibly even mutate. I should say though that this method is further off and would not be available until v3 at the earliest (if ever, pending design and implementation, etc.).</p>
+<hr>
 <p>Apologies for the length! As I began typing it was mainly me talking myself through the problem at hand 😜</p>
 <p>Edit: Added some words about current <code>--type</code> vs <code>--include</code>/<code>--exclude</code></p>
 </div>
@@ -65,29 +65,29 @@ $ rg -tfoo
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-16 12:19</div>
             <div class="timeline-body"><blockquote>
-<p>However, I'm assuming in ripgrep's case this is complicated by having multiple includes/excludes?</p>
+<p>However, I&#x27;m assuming in ripgrep&#x27;s case this is complicated by having multiple includes/excludes?</p>
 </blockquote>
-<p>Exactly. Basically, you want <code>--exclude A --include B --exclude C</code> to retain its ordering in the same way that <code>-g '!A' -g B -g '!C'</code> does. This is in fact partially why the <code>-g/--glob</code> flag provides the facilities to both whitelist and blacklist (via a <code>!</code> prefix on the glob) in the same flag, because then I can easily retain the order of the flag values given.</p>
+<p>Exactly. Basically, you want <code>--exclude A --include B --exclude C</code> to retain its ordering in the same way that <code>-g &#x27;!A&#x27; -g B -g &#x27;!C&#x27;</code> does. This is in fact partially why the <code>-g/--glob</code> flag provides the facilities to both whitelist and blacklist (via a <code>!</code> prefix on the glob) in the same flag, because then I can easily retain the order of the flag values given.</p>
 <blockquote>
-<p>In ripgrep's help message for --type states, &quot;<strong>Only</strong> search files matching TYPE&quot; (emphasis mine). In which case, traditional overrides work perfectly here. However, the &quot;do what I expect not what I say&quot; in me says, &quot;I want to search everything, including 'foo' files, but I still want 'bar' files to be skipped.&quot; (more traditional --include/--exclude).</p>
+<p>In ripgrep&#x27;s help message for --type states, &quot;<strong>Only</strong> search files matching TYPE&quot; (emphasis mine). In which case, traditional overrides work perfectly here. However, the &quot;do what I expect not what I say&quot; in me says, &quot;I want to search everything, including &#x27;foo&#x27; files, but I still want &#x27;bar&#x27; files to be skipped.&quot; (more traditional --include/--exclude).</p>
 </blockquote>
-<p>I think whatever the docs say today was my attempt at documenting ripgrep's behavior, and not necessarily the ideal behavior. I'm pretty sure I was aware of this issue when I added the <code>-t/--type</code> and <code>-T/--type-not</code> flags, and it in particular manifests itself here:</p>
+<p>I think whatever the docs say today was my attempt at documenting ripgrep&#x27;s behavior, and not necessarily the ideal behavior. I&#x27;m pretty sure I was aware of this issue when I added the <code>-t/--type</code> and <code>-T/--type-not</code> flags, and it in particular manifests itself here:</p>
 <p>https://github.com/BurntSushi/ripgrep/blob/361698b90a6b31feac78ac2f16082342f750a1e1/src/args.rs#L873-L878</p>
 <p>You can see for example that we add all positive selections followed by all negative selections. This means negative selections will always override positive selections, regardless of where they come. This is likely the source of this specific bug reported. We could swap the positive/negative and that would fix this particular bug, but it would just create another one (negative overrides that came after positive overrides would not override the positives).</p>
-<p>The docs on the <code>-t/--type</code> and <code>-T/--type-not</code> flags are quite ambiguous and don't mention any precedence rules between them. I wonder if I did that on purpose. ~_~</p>
+<p>The docs on the <code>-t/--type</code> and <code>-T/--type-not</code> flags are quite ambiguous and don&#x27;t mention any precedence rules between them. I wonder if I did that on purpose. ~_~</p>
 <blockquote>
-<p>As there may be times I do want to be able to say, &quot;ripgrep, ONLY search this one file type&quot; which wouldn't be possible with traditional includes/excludes. So I see them (current type system with traditional include/exclude) as not mutually exclusive ideas.</p>
+<p>As there may be times I do want to be able to say, &quot;ripgrep, ONLY search this one file type&quot; which wouldn&#x27;t be possible with traditional includes/excludes. So I see them (current type system with traditional include/exclude) as not mutually exclusive ideas.</p>
 </blockquote>
 <p>That is interesting. I might argue that this would be better solve by dropping your default ignore rules into a <code>.ignore</code> file, and reserving the CLI for overrides.</p>
 <blockquote>
 <p>From a implementation standpoint traditional include/excludes are much harder to implement than just, &quot;--type and --type-not override each other&quot; as it would have to resolve only matching types in an overriding fashion.</p>
 </blockquote>
-<p>I'm not sure I quite grok this, but from ripgrep's perspective, basically what I'd need is the ability to couple two or more flags together, and then have a way to ask clap for the list of values given to any of those flags in the order they were received. Each value I get would then need to be tagged with its corresponding flag (whether that's an associative list or corresponding lists or whatever doesn't really matter). That would be enough information on my end to load them into globsets, which will handle the actual precedence rules.</p>
+<p>I&#x27;m not sure I quite grok this, but from ripgrep&#x27;s perspective, basically what I&#x27;d need is the ability to couple two or more flags together, and then have a way to ask clap for the list of values given to any of those flags in the order they were received. Each value I get would then need to be tagged with its corresponding flag (whether that&#x27;s an associative list or corresponding lists or whatever doesn&#x27;t really matter). That would be enough information on my end to load them into globsets, which will handle the actual precedence rules.</p>
 <blockquote>
-<p>i.e. assume we had an argv (after config parse) that was roughly $ rg --exclude=<em>.foo --exclude=</em>.bar --include=<em>.foo 'test' After overrides_eq_vals_with it would become $ rg --exclude=</em>.bar --include=*.foo 'test'.</p>
+<p>i.e. assume we had an argv (after config parse) that was roughly $ rg --exclude=<em>.foo --exclude=</em>.bar --include=<em>.foo &#x27;test&#x27; After overrides_eq_vals_with it would become $ rg --exclude=</em>.bar --include=*.foo &#x27;test&#x27;.</p>
 </blockquote>
 <blockquote>
-<p>The other way would involve something I've been thinking about, which is to provide companions to the validators, namely the ability to provide functions to Filter/Skip, Map, and Action arguments mid parse. These would do things such as do something potentially impure (Action), allow one to filter/skip values (Filter/Skip haven't decide on naming yet), or transform actual values themselves (Map) to be saved in the matches struct. These would all have access to the matches struct as it exists at that time, in order to perform decisions or possibly even mutate. I should say though that this method is further off and would not be available until v3 at the earliest (if ever, pending design and implementation, etc.).</p>
+<p>The other way would involve something I&#x27;ve been thinking about, which is to provide companions to the validators, namely the ability to provide functions to Filter/Skip, Map, and Action arguments mid parse. These would do things such as do something potentially impure (Action), allow one to filter/skip values (Filter/Skip haven&#x27;t decide on naming yet), or transform actual values themselves (Map) to be saved in the matches struct. These would all have access to the matches struct as it exists at that time, in order to perform decisions or possibly even mutate. I should say though that this method is further off and would not be available until v3 at the earliest (if ever, pending design and implementation, etc.).</p>
 </blockquote>
 <p>What do you think of my idea above in lieu of this? Is it simpler to implement? It definitely implies new API items to <code>ArgMatches</code> though.</p>
 </div>
@@ -99,8 +99,8 @@ $ rg -tfoo
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-16 12:26</div>
-            <div class="timeline-body"><p>Also, @kbknapp, I admire your zeal. :) ripgrep has had this bug since day 1 (even in the docopt days), so there is no real urgency to get this fixed, and there are usually pretty easy workarounds on the user's end although it is somewhat exacerbated by the config file feature.</p>
-<p>With enough effort, I could probably fix this on ripgrep's end with some light parsing of the argv itself. I would only need to look at flags I think. For example, given:</p>
+            <div class="timeline-body"><p>Also, @kbknapp, I admire your zeal. :) ripgrep has had this bug since day 1 (even in the docopt days), so there is no real urgency to get this fixed, and there are usually pretty easy workarounds on the user&#x27;s end although it is somewhat exacerbated by the config file feature.</p>
+<p>With enough effort, I could probably fix this on ripgrep&#x27;s end with some light parsing of the argv itself. I would only need to look at flags I think. For example, given:</p>
 <pre><code>--include A --exclude B --exclude C --include D
 </code></pre>
 <p>I could pretty easily get a list of <code>[--include, --exclude, --exclude, --include]</code> from argv itself. If I combine that with the lists that clap will give me, <code>[A, D]</code> and <code>[B, C]</code>, then it seems like it should be straight-forward to produce the desired list which is <code>[A, B, C, D]</code>. Does that make sense?</p>
@@ -108,13 +108,13 @@ $ rg -tfoo
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-02-16 21:44</div>
-            <div class="timeline-body"><p>I actually wrote up two versions of my comment above, and deleted the original because I thought the suggestion was too much work on your end (which I'm still slightly inclined to believe), but it entailed being able to query new information from clap about the position an argument came in.</p>
-<p>At first glance it appeared to me like it'd be a quick win and easy to implement this feature (include/exclude) with this new information. And since clap already knows all this info, its super simple for me to add on that side of things. It's also quite general purpose because it doesn't assume a particular use case (like <code>Arg::overrides_eq_vals_with</code> would), so I like that aspect of it. But the more I dug into it, the problem is it still requires a lot of &quot;jumping through hoops&quot; to solve the problem (on the end application side).</p>
+            <div class="timeline-body"><p>I actually wrote up two versions of my comment above, and deleted the original because I thought the suggestion was too much work on your end (which I&#x27;m still slightly inclined to believe), but it entailed being able to query new information from clap about the position an argument came in.</p>
+<p>At first glance it appeared to me like it&#x27;d be a quick win and easy to implement this feature (include/exclude) with this new information. And since clap already knows all this info, its super simple for me to add on that side of things. It&#x27;s also quite general purpose because it doesn&#x27;t assume a particular use case (like <code>Arg::overrides_eq_vals_with</code> would), so I like that aspect of it. But the more I dug into it, the problem is it still requires a lot of &quot;jumping through hoops&quot; to solve the problem (on the end application side).</p>
 <p>An example would look something like this:</p>
 <ul>
 <li>Assume after config files we have an argv something like: <code>rg --include A --exclude B --exclude C --include B</code></li>
 </ul>
-<p>Which clap reports as <code>include=[&quot;A&quot;, &quot;B&quot;], exclude=[&quot;B&quot;, &quot;C&quot;]</code>. However, from only clap's reporting it could still actually be any of these permutations (I'm using <code>i</code> for include and <code>e</code> for exclude for brevity) that was really used:</p>
+<p>Which clap reports as <code>include=[&quot;A&quot;, &quot;B&quot;], exclude=[&quot;B&quot;, &quot;C&quot;]</code>. However, from only clap&#x27;s reporting it could still actually be any of these permutations (I&#x27;m using <code>i</code> for include and <code>e</code> for exclude for brevity) that was really used:</p>
 <p>| argv | Actually Searched |
 | --- | --- |
 | <code>iA iB eB eC</code> | A |
@@ -123,9 +123,9 @@ $ rg -tfoo
 | <code>iA eB iB eC</code> | A, B |
 | <code>eB iA iB eC</code> | A, B |
 | <code>eB iA eC iB</code> | A, B |</p>
-<p>With just two overlapping values this is simple, but even so based off just what clap reports we can't actually know what the user wanted because there's two truths.</p>
+<p>With just two overlapping values this is simple, but even so based off just what clap reports we can&#x27;t actually know what the user wanted because there&#x27;s two truths.</p>
 <p>So back to including position information which would look something like this (using that original argv as an example).</p>
-<pre><code class="language-rust">matches.positions_of(&quot;include&quot;); // [1, 4]
+<pre><code>matches.positions_of(&quot;include&quot;); // [1, 4]
 matches.positions_of(&quot;exclude&quot;); // [2, 3]
 
 matches.position_of(&quot;include&quot;); // [1]
@@ -135,7 +135,7 @@ matches.values_of(&quot;include&quot;).unwrap().with_positions(); // An iterator
 matches.values_of(&quot;exclude&quot;).unwrap().with_positions(); // An iterator that provides [(2, B), (3, C)]
 </code></pre>
 <p>That could be used to get a final list for your globset via</p>
-<pre><code class="language-rust">// Collect up chained values
+<pre><code>// Collect up chained values
 let mut combined = matches.values_of(&quot;include&quot;).unwrap()
     .with_positions()
     .chain(matches.values_of(&quot;exclude&quot;).unwrap()
@@ -173,7 +173,7 @@ for (p, val) in combined.into_iter() {
 // include = [&quot;A&quot;, &quot;B&quot;]
 // exclude = [&quot;C&quot;]
 </code></pre>
-<p>I'm sure there's far more clean ways to do this (and more efficient), but this was just off the top of my head.</p>
+<p>I&#x27;m sure there&#x27;s far more clean ways to do this (and more efficient), but this was just off the top of my head.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -182,23 +182,23 @@ for (p, val) in combined.into_iter() {
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2018-02-20 12:41</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-20 12:41</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Include/exclude precedence?" to "add --include/--exclude flags, with correct precedence" by @BurntSushi on 2019-09-10 21:18</div>
+            <div class="event">Renamed from &quot;Include/exclude precedence?&quot; to &quot;add --include/--exclude flags, with correct precedence&quot; by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-09-10 21:18</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ilyagr">@ilyagr</a> on 2021-03-12 03:16</div>
-            <div class="timeline-body"><p>I think there's no need for quite so much custom argv parsing, at least not anymore. <code>clap</code> now has <a href="https://docs.rs/clap/2.33.3/clap/struct.ArgMatches.html#method.indices_of"><code>indices_of</code></a> which should do the job: it will give positions of repeated arguments ~~together with their values~~ (on second look, they would have to be manually zipped together with the values). So, it should be possible to call this for <code>--type</code> and <code>--type-not</code> (or <code>--include</code> and <code>--exclude</code>) and then merge the results in the correct order. I also found a pre-made <a href="https://docs.rs/itertools/0.10.0/itertools/trait.Itertools.html#method.kmerge_by">function</a> that would do the merging (<a href="https://docs.rs/itertools/0.10.0/itertools/fn.kmerge_by.html">see also</a>), just as @kbknapp suggested. It's in the <code>itertools</code> crate. <code>ripgrep</code> currently doesn't seem to use that crate, so perhaps it's better to re-implement the function.</p>
-<p>I think that, as this is done, <code>--type</code> should also become an alias for the corresponding <code>--glob</code>s.  This has the potential to make the <code>ignore</code> crate simpler. More importantly, it would make the mental model of how all of these flags interact simpler. I wrote more about this in my other proposal <a href="https://github.com/BurntSushi/ripgrep/issues/1808#issuecomment-794839522">of making <code>--glob</code> respect ignore files</a>. So we'd actually be merging together the values for <code>--type</code>, <code>--type-not</code>, <code>--glob</code>, and probably <code>--iglob</code> all together, keeping track of the exact order.</p>
+            <div class="timeline-body"><p>I think there&#x27;s no need for quite so much custom argv parsing, at least not anymore. <code>clap</code> now has <a href="https://docs.rs/clap/2.33.3/clap/struct.ArgMatches.html#method.indices_of"><code>indices_of</code></a> which should do the job: it will give positions of repeated arguments ~~together with their values~~ (on second look, they would have to be manually zipped together with the values). So, it should be possible to call this for <code>--type</code> and <code>--type-not</code> (or <code>--include</code> and <code>--exclude</code>) and then merge the results in the correct order. I also found a pre-made <a href="https://docs.rs/itertools/0.10.0/itertools/trait.Itertools.html#method.kmerge_by">function</a> that would do the merging (<a href="https://docs.rs/itertools/0.10.0/itertools/fn.kmerge_by.html">see also</a>), just as @kbknapp suggested. It&#x27;s in the <code>itertools</code> crate. <code>ripgrep</code> currently doesn&#x27;t seem to use that crate, so perhaps it&#x27;s better to re-implement the function.</p>
+<p>I think that, as this is done, <code>--type</code> should also become an alias for the corresponding <code>--glob</code>s.  This has the potential to make the <code>ignore</code> crate simpler. More importantly, it would make the mental model of how all of these flags interact simpler. I wrote more about this in my other proposal <a href="https://github.com/BurntSushi/ripgrep/issues/1808#issuecomment-794839522">of making <code>--glob</code> respect ignore files</a>. So we&#x27;d actually be merging together the values for <code>--type</code>, <code>--type-not</code>, <code>--glob</code>, and probably <code>--iglob</code> all together, keeping track of the exact order.</p>
 <p>I <em>think</em> that with these two proposals, the user could accomplish most things they might want to do with <code>--include</code> and <code>--exclude</code>. They would either use <code>--glob</code>/<code>--type</code>/<code>--type-not</code> or, if they <em>really</em> wanted to include something, they would add more positional arguments.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Tal500">@Tal500</a> on 2024-01-15 09:18</div>
             <div class="timeline-body"><blockquote>
-<p>I think there's no need for quite so much custom argv parsing, at least not anymore. <code>clap</code> now has <a href="https://docs.rs/clap/2.33.3/clap/struct.ArgMatches.html#method.indices_of"><code>indices_of</code></a> which should do the job: it will give positions of repeated arguments ~together with their values~ (on second look, they would have to be manually zipped together with the values). So, it should be possible to call this for <code>--type</code> and <code>--type-not</code> (or <code>--include</code> and <code>--exclude</code>) and then merge the results in the correct order. I also found a pre-made <a href="https://docs.rs/itertools/0.10.0/itertools/trait.Itertools.html#method.kmerge_by">function</a> that would do the merging (<a href="https://docs.rs/itertools/0.10.0/itertools/fn.kmerge_by.html">see also</a>), just as @kbknapp suggested. It's in the <code>itertools</code> crate. <code>ripgrep</code> currently doesn't seem to use that crate, so perhaps it's better to re-implement the function.</p>
-<p>I think that, as this is done, <code>--type</code> should also become an alias for the corresponding <code>--glob</code>s. This has the potential to make the <code>ignore</code> crate simpler. More importantly, it would make the mental model of how all of these flags interact simpler. I wrote more about this in my other proposal <a href="https://github.com/BurntSushi/ripgrep/issues/1808#issuecomment-794839522">of making <code>--glob</code> respect ignore files</a>. So we'd actually be merging together the values for <code>--type</code>, <code>--type-not</code>, <code>--glob</code>, and probably <code>--iglob</code> all together, keeping track of the exact order.</p>
+<p>I think there&#x27;s no need for quite so much custom argv parsing, at least not anymore. <code>clap</code> now has <a href="https://docs.rs/clap/2.33.3/clap/struct.ArgMatches.html#method.indices_of"><code>indices_of</code></a> which should do the job: it will give positions of repeated arguments ~together with their values~ (on second look, they would have to be manually zipped together with the values). So, it should be possible to call this for <code>--type</code> and <code>--type-not</code> (or <code>--include</code> and <code>--exclude</code>) and then merge the results in the correct order. I also found a pre-made <a href="https://docs.rs/itertools/0.10.0/itertools/trait.Itertools.html#method.kmerge_by">function</a> that would do the merging (<a href="https://docs.rs/itertools/0.10.0/itertools/fn.kmerge_by.html">see also</a>), just as @kbknapp suggested. It&#x27;s in the <code>itertools</code> crate. <code>ripgrep</code> currently doesn&#x27;t seem to use that crate, so perhaps it&#x27;s better to re-implement the function.</p>
+<p>I think that, as this is done, <code>--type</code> should also become an alias for the corresponding <code>--glob</code>s. This has the potential to make the <code>ignore</code> crate simpler. More importantly, it would make the mental model of how all of these flags interact simpler. I wrote more about this in my other proposal <a href="https://github.com/BurntSushi/ripgrep/issues/1808#issuecomment-794839522">of making <code>--glob</code> respect ignore files</a>. So we&#x27;d actually be merging together the values for <code>--type</code>, <code>--type-not</code>, <code>--glob</code>, and probably <code>--iglob</code> all together, keeping track of the exact order.</p>
 <p>I <em>think</em> that with these two proposals, the user could accomplish most things they might want to do with <code>--include</code> and <code>--exclude</code>. They would either use <code>--glob</code>/<code>--type</code>/<code>--type-not</code> or, if they <em>really</em> wanted to include something, they would add more positional arguments.</p>
 </blockquote>
 <p>Turns out that clap now was archived in Github. Any direction for now?</p>
@@ -224,14 +224,14 @@ for (p, val) in combined.into_iter() {
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-01-16 12:57</div>
             <div class="timeline-body"><p>From a narrow technical perspective, sure, it is now very easy to implement <code>--include/--exclude</code> semantics in ripgrep.</p>
-<p>But, I am currently in the (long) process of overhauling how globbing is implemented. And then I plan to move into figuring out how to make ripgrep's filtering story crisper. A sizeable fraction of extant open issues are related to filtering in one form or another. So I'd rather add these flags as part of figuring out the grander filtering story.</p>
+<p>But, I am currently in the (long) process of overhauling how globbing is implemented. And then I plan to move into figuring out how to make ripgrep&#x27;s filtering story crisper. A sizeable fraction of extant open issues are related to filtering in one form or another. So I&#x27;d rather add these flags as part of figuring out the grander filtering story.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Tal500">@Tal500</a> on 2024-01-16 13:24</div>
             <div class="timeline-body"><blockquote>
 <p>From a narrow technical perspective, sure, it is now very easy to implement <code>--include/--exclude</code> semantics in ripgrep.</p>
-<p>But, I am currently in the (long) process of overhauling how globbing is implemented. And then I plan to move into figuring out how to make ripgrep's filtering story crisper. A sizeable fraction of extant open issues are related to filtering in one form or another. So I'd rather add these flags as part of figuring out the grander filtering story.</p>
+<p>But, I am currently in the (long) process of overhauling how globbing is implemented. And then I plan to move into figuring out how to make ripgrep&#x27;s filtering story crisper. A sizeable fraction of extant open issues are related to filtering in one form or another. So I&#x27;d rather add these flags as part of figuring out the grander filtering story.</p>
 </blockquote>
 <p>thanks</p>
 </div>
@@ -243,13 +243,13 @@ for (p, val) in combined.into_iter() {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-07-17 14:08</div>
-            <div class="timeline-body"><p>@rcfox Yeah that's right. ripgrep 14 did a complete rewrite of its CLI argument parsing.</p>
+            <div class="timeline-body"><p>@rcfox Yeah that&#x27;s right. ripgrep 14 did a complete rewrite of its CLI argument parsing.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:42:27 UTC
+        Synced at 2026-01-20 18:48:05 UTC
     </footer>
 </body>
 </html>

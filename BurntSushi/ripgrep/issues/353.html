@@ -26,7 +26,7 @@
             <div class="timeline-body"><p>My shell does not support colours and consequently I set the environmental variable <code>TERM=dumb</code> to instruct programs never to colourise output.</p>
 <p>However, even when I pass <code>--color never</code> to rg, the error output includes colour escape codes as can be seen below:</p>
 <pre><code>% rg --color never -asd
-[1;31merror:[0m Found argument '[33m-d[0m' which wasn't expected, or isn't valid in this context
+[1;31merror:[0m Found argument &#x27;[33m-d[0m&#x27; which wasn&#x27;t expected, or isn&#x27;t valid in this context
 
 USAGE:
     
@@ -41,9 +41,9 @@ For more information try [32m--help[0m
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-02-09 16:44</div>
-            <div class="timeline-body"><p>@andreastt that's from <a href="https://github.com/kbknapp/clap-rs"><code>clap</code></a>s (<code>rg</code>'s CLI parser) error message, not <code>rg</code>'s.</p>
-<p>I think there's a hacky way to workaround this...but it's hacky. You'd essentially be parsing the CLI twice in the case of a <code>CLI</code> error and then double checking that <code>--color never</code>. An abbriviated version is something like:</p>
-<pre><code class="language-rust">let mut app = build_cli();
+            <div class="timeline-body"><p>@andreastt that&#x27;s from <a href="https://github.com/kbknapp/clap-rs"><code>clap</code></a>s (<code>rg</code>&#x27;s CLI parser) error message, not <code>rg</code>&#x27;s.</p>
+<p>I think there&#x27;s a hacky way to workaround this...but it&#x27;s hacky. You&#x27;d essentially be parsing the CLI twice in the case of a <code>CLI</code> error and then double checking that <code>--color never</code>. An abbriviated version is something like:</p>
+<pre><code>let mut app = build_cli();
 let args: Args = match app.get_matches_safe() {
     Err(e) =&gt; {
         if (env::args().find(|arg| arg == &quot;--color&quot;).is_some() &amp;&amp; env::arg().find(|arg| arg == &quot;never&quot;)) || env::args().find(|arg| arg == &quot;--color=never&quot;) {
@@ -54,73 +54,73 @@ let args: Args = match app.get_matches_safe() {
     Ok(m) =&gt; m.into(),
 };
 </code></pre>
-<p>There's probably a <em>far</em> better way to do all that, but I'm going a lack of sleep and 8 plane rides 😜</p>
+<p>There&#x27;s probably a <em>far</em> better way to do all that, but I&#x27;m going a lack of sleep and 8 plane rides 😜</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-09 16:49</div>
-            <div class="timeline-body"><p>@kbknapp Yeah, probably the &quot;right&quot; way here is for clap to recognize <code>TERM=dumb</code>, which should mean &quot;no colors.&quot; (It's pretty standard in my experience, and <a href="https://github.com/BurntSushi/ripgrep/blob/master/termcolor/src/lib.rs#L116"><code>termcolor</code></a> will Do The Right Thing.)</p>
+            <div class="timeline-body"><p>@kbknapp Yeah, probably the &quot;right&quot; way here is for clap to recognize <code>TERM=dumb</code>, which should mean &quot;no colors.&quot; (It&#x27;s pretty standard in my experience, and <a href="https://github.com/BurntSushi/ripgrep/blob/master/termcolor/src/lib.rs#L116"><code>termcolor</code></a> will Do The Right Thing.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-02-09 16:49</div>
-            <div class="timeline-body"><p>~~@andreastt if you wouldn't mind, could you file an issue in <code>clap</code>s repo too? This is something that I'd like to at least attempt to address on that side of things.~~ Actually if you could just post a comment in kbknapp/clap-rs#836 as a reminder to me, that's fine!</p>
+            <div class="timeline-body"><p>~~@andreastt if you wouldn&#x27;t mind, could you file an issue in <code>clap</code>s repo too? This is something that I&#x27;d like to at least attempt to address on that side of things.~~ Actually if you could just post a comment in kbknapp/clap-rs#836 as a reminder to me, that&#x27;s fine!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-02-09 16:50</div>
-            <div class="timeline-body"><p>@BurntSushi yep, once I get some time to sit down and actually implement kbknapp/clap-rs#836 that's my exact plan :wink:</p>
+            <div class="timeline-body"><p>@BurntSushi yep, once I get some time to sit down and actually implement kbknapp/clap-rs#836 that&#x27;s my exact plan :wink:</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-09 16:51</div>
-            <div class="timeline-body"><p>@kbknapp While you're at it, note that the <a href="https://github.com/softprops/atty"><code>atty</code></a> crate now supports MSYS terminals and native Windows consoles. I've wondered whether <code>termcolor</code> itself should use the <code>atty</code> crate directly.</p>
+            <div class="timeline-body"><p>@kbknapp While you&#x27;re at it, note that the <a href="https://github.com/softprops/atty"><code>atty</code></a> crate now supports MSYS terminals and native Windows consoles. I&#x27;ve wondered whether <code>termcolor</code> itself should use the <code>atty</code> crate directly.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/andreastt">@andreastt</a> on 2017-02-09 16:55</div>
-            <div class="timeline-body"><p>Filed https://github.com/kbknapp/clap-rs/issues/847 with clap.</p>
+            <div class="timeline-body"><p>Filed <a href="https://github.com/kbknapp/clap-rs/issues/847">kbknapp/clap-rs#847</a> with clap.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2017-02-18 17:39</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-18 17:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">help wanted</span> added by @BurntSushi on 2017-05-08 22:01</div>
+            <div class="event">Label <span class="label">help wanted</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-05-08 22:01</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-05-08 22:02</div>
-            <div class="timeline-body"><p>If someone wants to fix this using <a href="https://github.com/BurntSushi/ripgrep/issues/353#issuecomment-278699290">@kbknapp's hack</a>, then I'd be open to it. It might be hard to write a regression test for it though.</p>
+            <div class="timeline-body"><p>If someone wants to fix this using <a href="https://github.com/BurntSushi/ripgrep/issues/353#issuecomment-278699290">@kbknapp&#x27;s hack</a>, then I&#x27;d be open to it. It might be hard to write a regression test for it though.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/nateozem">@nateozem</a> on 2017-05-13 23:37</div>
-            <div class="timeline-body"><p>Sure, I'll take a stab at it.</p>
+            <div class="timeline-body"><p>Sure, I&#x27;ll take a stab at it.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/nateozem">@nateozem</a> on 2017-05-17 10:13</div>
-            <div class="timeline-body"><p>There's a PR for <code>clap-rs</code> to comply with terminfo when <code>TERM=dumb</code>  (https://github.com/kbknapp/clap-rs/pull/963).
+            <div class="timeline-body"><p>There&#x27;s a PR for <code>clap-rs</code> to comply with terminfo when <code>TERM=dumb</code>  (<a href="https://github.com/kbknapp/clap-rs/pull/963">kbknapp/clap-rs#963</a>).
 Anything else needs to be done? Still prefer to be colorless if <code>--color never</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-05-17 11:01</div>
-            <div class="timeline-body"><p>@nateozem Let's try to get away with <code>TERM=dumb</code> support instead of introducing a hack.</p>
+            <div class="timeline-body"><p>@nateozem Let&#x27;s try to get away with <code>TERM=dumb</code> support instead of introducing a hack.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-22 01:54</div>
-            <div class="timeline-body"><p>It looks like the clap PR was merged so I'm marking this as fixed. (You still can't use <code>--color never</code>, but <code>TERM=dumb</code> should be respected.)</p>
+            <div class="timeline-body"><p>It looks like the clap PR was merged so I&#x27;m marking this as fixed. (You still can&#x27;t use <code>--color never</code>, but <code>TERM=dumb</code> should be respected.)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2017-10-22 01:54</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-22 01:54</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:42:03 UTC
+        Synced at 2026-01-20 18:48:03 UTC
     </footer>
 </body>
 </html>

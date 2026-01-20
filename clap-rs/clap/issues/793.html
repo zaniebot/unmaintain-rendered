@@ -28,8 +28,8 @@
 <pre><code>test &lt;arg1&gt; &lt;arg2&gt;
 test sub ...
 </code></pre>
-<h3>Example</h3>
-<pre><code class="language-rust">println!(&quot;{:#?}&quot;, App::new(&quot;test&quot;)
+Example
+<pre><code>println!(&quot;{:#?}&quot;, App::new(&quot;test&quot;)
     .setting(AppSettings::SubcommandsNegateReqs)
     .arg(Arg::with_name(&quot;arg1&quot;).required(true))
     .arg(Arg::with_name(&quot;arg2&quot;).required(true))
@@ -37,7 +37,7 @@ test sub ...
     .get_matches());
 </code></pre>
 <p><code>test 1 sub</code> results in:</p>
-<pre><code class="language-js">ArgMatches {
+<pre><code>ArgMatches {
     args: {
         &quot;arg1&quot;: MatchedArg { ... &quot;1&quot; ... }
     },
@@ -48,7 +48,7 @@ test sub ...
 }
 </code></pre>
 <p>while it would be much more useful (IMHO) if it resulted in:</p>
-<pre><code class="language-js">ArgMatches {
+<pre><code>ArgMatches {
     args: {
         &quot;arg2&quot;: MatchedArg { ... &quot;1&quot; ... },
         &quot;arg1&quot;: MatchedArg { ... &quot;sub&quot; ... }
@@ -57,7 +57,7 @@ test sub ...
     ...
 }
 </code></pre>
-<p>Additionally, when the <code>suggestions</code> feature is enabled, any prefix or extended version of <code>sub</code> with at least length 2 triggers a &quot;Did you mean 'sub'?&quot; help screen. Without <code>suggestions</code>, only exact matches cause the described problem.</p>
+<p>Additionally, when the <code>suggestions</code> feature is enabled, any prefix or extended version of <code>sub</code> with at least length 2 triggers a &quot;Did you mean &#x27;sub&#x27;?&quot; help screen. Without <code>suggestions</code>, only exact matches cause the described problem.</p>
 <p>A workaround is to use <code>test -- 1 sub</code> or <code>test 1 -- sub</code>, which results in the second output.</p>
 <p>Changing the meaning of <code>SubcommandsNegateReqs</code> is of course not backwards compatible, but a new setting that prefers arguments over subcommands could be introduced.</p>
 <ul>
@@ -68,37 +68,37 @@ test sub ...
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-29 03:49</div>
-            <div class="timeline-body"><p>Thanks for the details! :smile: I'm a little confused on one point though, are you asking for when a subcommand conflicts with a required argument that the argument take precedence? Subcommands taking precedence also happens without requirements.</p>
-<pre><code class="language-rust">println!(&quot;{:#?}&quot;, App::new(&quot;test&quot;)
+            <div class="timeline-body"><p>Thanks for the details! :smile: I&#x27;m a little confused on one point though, are you asking for when a subcommand conflicts with a required argument that the argument take precedence? Subcommands taking precedence also happens without requirements.</p>
+<pre><code>println!(&quot;{:#?}&quot;, App::new(&quot;test&quot;)
     .arg(Arg::with_name(&quot;arg1&quot;))
     .arg(Arg::with_name(&quot;arg2&quot;))
     .subcommand(SubCommand::with_name(&quot;sub&quot;))
     .get_matches());
 </code></pre>
-<p>Has the same issue as what's listed above.</p>
-<p>I'd be a little leary of having args take precdence though, as there's no way to &quot;escape&quot; a subcommand, but there <em>is</em> a way to &quot;escape&quot; an argument (<code>test 1 -- sub</code> as you mentioned).</p>
+<p>Has the same issue as what&#x27;s listed above.</p>
+<p>I&#x27;d be a little leary of having args take precdence though, as there&#x27;s no way to &quot;escape&quot; a subcommand, but there <em>is</em> a way to &quot;escape&quot; an argument (<code>test 1 -- sub</code> as you mentioned).</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2016-12-29 03:49</div>
+            <div class="event">Label <span class="label">T: RFC / question</span> added by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-29 03:49</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/klemens">@klemens</a> on 2016-12-29 04:17</div>
             <div class="timeline-body"><p>You are right, <code>SubcommandsNegateReqs</code> and required arguments are not strictly necessary for reproducing the &quot;problem&quot;, but omitting them allows something like <code>test 1 2 sub</code>, which is a totally different usage.</p>
 <blockquote>
-<p>there's no way to &quot;escape&quot; a subcommand</p>
+<p>there&#x27;s no way to &quot;escape&quot; a subcommand</p>
 </blockquote>
-<p>This shouldn't be the default of course, but I think there is no other way¹ to implement my desired usage pattern:</p>
+<p>This shouldn&#x27;t be the default of course, but I think there is no other way¹ to implement my desired usage pattern:</p>
 <pre><code>app &lt;destination&gt; &lt;command&gt;
 app config ...
 </code></pre>
 <p>I first noticed the problem when I wanted to send the <code>help</code> command using my application, which instead displayed the cli help, because of the automatically added <code>help</code> subcommand.</p>
-<p>(1) There actually <em>is</em> another way: You can &quot;abuse&quot; AllowExternalSubcommands, so the first argument becomes the &quot;external subcommand&quot; if it is no internal one. However, then you can't use any advanced functionality of <code>Arg</code> and have to parse the additional arguments manually (or using a second clap <code>App</code> instance).</p>
+<p>(1) There actually <em>is</em> another way: You can &quot;abuse&quot; AllowExternalSubcommands, so the first argument becomes the &quot;external subcommand&quot; if it is no internal one. However, then you can&#x27;t use any advanced functionality of <code>Arg</code> and have to parse the additional arguments manually (or using a second clap <code>App</code> instance).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-30 21:00</div>
-            <div class="timeline-body"><p>Ah ok, I understand now! I do think this is doable, but I'm unsure of what to call this new setting. Bascially you want, &quot;If an arg is used, forget about subcommands entirely.&quot; i.e. down't allow the <code>&lt;cmd&gt; [args] &lt;cmd&gt; [args] &lt;cmd&gt;</code> format.</p>
+            <div class="timeline-body"><p>Ah ok, I understand now! I do think this is doable, but I&#x27;m unsure of what to call this new setting. Bascially you want, &quot;If an arg is used, forget about subcommands entirely.&quot; i.e. down&#x27;t allow the <code>&lt;cmd&gt; [args] &lt;cmd&gt; [args] &lt;cmd&gt;</code> format.</p>
 <p>Perhaps something like, <code>DisallowArgsBetweenSubcommands</code> or <code>ArgsNegateSubcommands</code> (preferred)</p>
 </div>
         </div>
@@ -112,45 +112,45 @@ app config ...
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">C: settings</span> added by @kbknapp on 2016-12-31 02:08</div>
+            <div class="event">Label <span class="label">C: settings</span> added by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-31 02:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">D: easy</span> added by @kbknapp on 2016-12-31 02:08</div>
+            <div class="event">Label <span class="label">D: easy</span> added by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-31 02:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">P4: nice to have</span> added by @kbknapp on 2016-12-31 02:08</div>
+            <div class="event">Label <span class="label">P4: nice to have</span> added by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-31 02:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">T: new setting</span> added by @kbknapp on 2016-12-31 02:08</div>
+            <div class="event">Label <span class="label">T: new setting</span> added by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-31 02:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">W: 2.x</span> added by @kbknapp on 2016-12-31 02:08</div>
+            <div class="event">Label <span class="label">W: 2.x</span> added by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-31 02:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">T: RFC / question</span> removed by @kbknapp on 2016-12-31 02:08</div>
+            <div class="event">Label <span class="label">T: RFC / question</span> removed by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-31 02:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "2.20.0" by @kbknapp on 2016-12-31 02:08</div>
+            <div class="event">Added to milestone &quot;2.20.0&quot; by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-31 02:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @kbknapp by @kbknapp on 2016-12-31 05:26</div>
+            <div class="event">Assigned to <a href="https://github.com/kbknapp">@kbknapp</a> by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-31 05:26</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @homu on 2016-12-31 06:15</div>
+            <div class="event">Closed by <a href="https://github.com/homu">@homu</a> on 2016-12-31 06:15</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/klemens">@klemens</a> on 2016-12-31 15:48</div>
             <div class="timeline-body"><p>Wow, thank you for the fast implementation, it works fine!</p>
-<p>Have you seen my edit about only applying this setting to positional arguments? I don't currently need it, but I think it could be useful in something like temporarily specifying a different config file or a flag like <code>-v</code> for verbosity that applies to the main command and all subcommands.</p>
+<p>Have you seen my edit about only applying this setting to positional arguments? I don&#x27;t currently need it, but I think it could be useful in something like temporarily specifying a different config file or a flag like <code>-v</code> for verbosity that applies to the main command and all subcommands.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../klemens/rconc/issues/1.html">klemens/rconc#1</a> on 2017-02-12 21:44</div>
+            <div class="event">Referenced in <a>klemens/rconc#1</a> on 2017-02-12 21:44</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:46:47 UTC
+        Synced at 2026-01-20 19:56:42 UTC
     </footer>
 </body>
 </html>

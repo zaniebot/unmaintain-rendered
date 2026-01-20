@@ -23,141 +23,141 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>When we tried to stabilise RUF027 for the 0.6 release earlier this month, the ecosystem report revealed lots of false positives along the lines of <a href="https://github.com/pytest-dev/pytest/blob/38ad84bafd18d15ceff1960d636c693560337844/src/_pytest/main.py#L1055-L1060">this</a>:</p>
-<pre><code class="language-py">        msg = (
+<pre><code>        msg = (
             &quot;module or package not found: {arg} (missing __init__.py?)&quot;
             if as_pypath
             else &quot;file or directory not found: {arg}&quot;
         )
         raise UsageError(msg.format(arg=arg))
 </code></pre>
-<p>A human can see quite clearly that this isn't meant to be an f-string, since the variable it's assigned to immediately has <code>.format()</code> called on it. Because of the indirection in the code, however, the logic for RUF027 can't see that right now, since it only checks for methods being <em>directly</em> called on strings with braces; it doesn't check for methods being called on symbols that have strings with braces as their assigned value.</p>
-<p>This PR tackles these false positives by splitting the check into two functions. If we detect that a string literal is part of a &quot;simple assignment&quot; (<code>x: str = &quot;foo&quot;</code> or <code>x = &quot;foo&quot;</code>), we defer checking whether it's an &quot;f-string with the <code>f</code>&quot; until the entire AST has been visited. This enables us to iterate through all the references to the binding and check whether any of them are used in ways that make it clear the string is intended to be a template string rather than an f-string. (For string literals that are <em>not</em> inside simple assignments, we analyze them as we did before, while we're doing our initial traversal of the AST.)</p>
-<h2>Test Plan</h2>
-<p>I added some new fixtures, but I won't consider this PR a success unless it results in some false positives going away from the ecosystem report. Otherwise, I don't think it's worth the added complexity.</p>
+<p>A human can see quite clearly that this isn&#x27;t meant to be an f-string, since the variable it&#x27;s assigned to immediately has <code>.format()</code> called on it. Because of the indirection in the code, however, the logic for RUF027 can&#x27;t see that right now, since it only checks for methods being <em>directly</em> called on strings with braces; it doesn&#x27;t check for methods being called on symbols that have strings with braces as their assigned value.</p>
+<p>This PR tackles these false positives by splitting the check into two functions. If we detect that a string literal is part of a &quot;simple assignment&quot; (<code>x: str = &quot;foo&quot;</code> or <code>x = &quot;foo&quot;</code>), we defer checking whether it&#x27;s an &quot;f-string with the <code>f</code>&quot; until the entire AST has been visited. This enables us to iterate through all the references to the binding and check whether any of them are used in ways that make it clear the string is intended to be a template string rather than an f-string. (For string literals that are <em>not</em> inside simple assignments, we analyze them as we did before, while we&#x27;re doing our initial traversal of the AST.)</p>
+Test Plan
+<p>I added some new fixtures, but I won&#x27;t consider this PR a success unless it results in some false positives going away from the ecosystem report. Otherwise, I don&#x27;t think it&#x27;s worth the added complexity.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @AlexWaygood on 2024-08-23 12:28</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-23 12:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">preview</span> added by @AlexWaygood on 2024-08-23 12:34</div>
+            <div class="event">Label <span class="label">preview</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-23 12:34</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-08-23 12:49</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+0 -20 violations, +0 -0 fixes in 6 projects; 48 projects unchanged)</p>
-<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+0 -1 violations, +0 -0 fixes)</summary>
+<a href="https://github.com/apache/airflow">apache/airflow</a> (+0 -1 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
 </p>
 <p>
 
 <pre>
-- <a href='https://github.com/apache/airflow/blob/56a3987c3fca3a574b8f1c7faa8f08de2becee60/tests/providers/docker/operators/test_docker.py#L568'>tests/providers/docker/operators/test_docker.py:568:28:</a> RUF027 Possible f-string without an `f` prefix
+- <a href="https://github.com/apache/airflow/blob/56a3987c3fca3a574b8f1c7faa8f08de2becee60/tests/providers/docker/operators/test_docker.py#L568">tests/providers/docker/operators/test_docker.py:568:28:</a> RUF027 Possible f-string without an `f` prefix
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+0 -1 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/apache/superset">apache/superset</a> (+0 -1 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
 </p>
 <p>
 
 <pre>
-- <a href='https://github.com/apache/superset/blob/07985e2f5aa165f6868abbf88594e6d75300caae/superset/db_engine_specs/base.py#L835'>superset/db_engine_specs/base.py:835:25:</a> RUF027 Possible f-string without an `f` prefix
+- <a href="https://github.com/apache/superset/blob/07985e2f5aa165f6868abbf88594e6d75300caae/superset/db_engine_specs/base.py#L835">superset/db_engine_specs/base.py:835:25:</a> RUF027 Possible f-string without an `f` prefix
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+0 -1 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+0 -1 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
 </p>
 <p>
 
 <pre>
-- <a href='https://github.com/pandas-dev/pandas/blob/13cdd115ec964f396a4c9cbf7296a0cae344c274/pandas/io/formats/format.py#L1247'>pandas/io/formats/format.py:1247:27:</a> RUF027 Possible f-string without an `f` prefix
+- <a href="https://github.com/pandas-dev/pandas/blob/13cdd115ec964f396a4c9cbf7296a0cae344c274/pandas/io/formats/format.py#L1247">pandas/io/formats/format.py:1247:27:</a> RUF027 Possible f-string without an `f` prefix
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+0 -2 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/zulip/zulip">zulip/zulip</a> (+0 -2 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
 </p>
 <p>
 
 <pre>
-- <a href='https://github.com/zulip/zulip/blob/333eedb351e195a85932c935f739a629e6dfc3d8/zerver/webhooks/librato/view.py#L129'>zerver/webhooks/librato/view.py:129:38:</a> RUF027 Possible f-string without an `f` prefix
-- <a href='https://github.com/zulip/zulip/blob/333eedb351e195a85932c935f739a629e6dfc3d8/zerver/webhooks/librato/view.py#L148'>zerver/webhooks/librato/view.py:148:13:</a> RUF027 Possible f-string without an `f` prefix
+- <a href="https://github.com/zulip/zulip/blob/333eedb351e195a85932c935f739a629e6dfc3d8/zerver/webhooks/librato/view.py#L129">zerver/webhooks/librato/view.py:129:38:</a> RUF027 Possible f-string without an `f` prefix
+- <a href="https://github.com/zulip/zulip/blob/333eedb351e195a85932c935f739a629e6dfc3d8/zerver/webhooks/librato/view.py#L148">zerver/webhooks/librato/view.py:148:13:</a> RUF027 Possible f-string without an `f` prefix
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/pytest-dev/pytest">pytest-dev/pytest</a> (+0 -4 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/pytest-dev/pytest">pytest-dev/pytest</a> (+0 -4 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
 </p>
 <p>
 
 <pre>
-- <a href='https://github.com/pytest-dev/pytest/blob/ab259a36e3359659e4568358fb0e9d43b10be5de/src/_pytest/main.py#L1056'>src/_pytest/main.py:1056:13:</a> RUF027 Possible f-string without an `f` prefix
-- <a href='https://github.com/pytest-dev/pytest/blob/ab259a36e3359659e4568358fb0e9d43b10be5de/src/_pytest/main.py#L1058'>src/_pytest/main.py:1058:18:</a> RUF027 Possible f-string without an `f` prefix
-- <a href='https://github.com/pytest-dev/pytest/blob/ab259a36e3359659e4568358fb0e9d43b10be5de/src/_pytest/main.py#L1063'>src/_pytest/main.py:1063:13:</a> RUF027 Possible f-string without an `f` prefix
-- <a href='https://github.com/pytest-dev/pytest/blob/ab259a36e3359659e4568358fb0e9d43b10be5de/src/_pytest/main.py#L1065'>src/_pytest/main.py:1065:18:</a> RUF027 Possible f-string without an `f` prefix
+- <a href="https://github.com/pytest-dev/pytest/blob/ab259a36e3359659e4568358fb0e9d43b10be5de/src/_pytest/main.py#L1056">src/_pytest/main.py:1056:13:</a> RUF027 Possible f-string without an `f` prefix
+- <a href="https://github.com/pytest-dev/pytest/blob/ab259a36e3359659e4568358fb0e9d43b10be5de/src/_pytest/main.py#L1058">src/_pytest/main.py:1058:18:</a> RUF027 Possible f-string without an `f` prefix
+- <a href="https://github.com/pytest-dev/pytest/blob/ab259a36e3359659e4568358fb0e9d43b10be5de/src/_pytest/main.py#L1063">src/_pytest/main.py:1063:13:</a> RUF027 Possible f-string without an `f` prefix
+- <a href="https://github.com/pytest-dev/pytest/blob/ab259a36e3359659e4568358fb0e9d43b10be5de/src/_pytest/main.py#L1065">src/_pytest/main.py:1065:18:</a> RUF027 Possible f-string without an `f` prefix
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/pdm-project/pdm">pdm-project/pdm</a> (+0 -11 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/pdm-project/pdm">pdm-project/pdm</a> (+0 -11 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
 </p>
 <p>
 
 <pre>
-- <a href='https://github.com/pdm-project/pdm/blob/7d52cfd1cc1d133f9fe777909db242d31daa78a3/src/pdm/pep582/sitecustomize.py#L80'>src/pdm/pep582/sitecustomize.py:80:19:</a> RUF027 Possible f-string without an `f` prefix
-- <a href='https://github.com/pdm-project/pdm/blob/7d52cfd1cc1d133f9fe777909db242d31daa78a3/src/pdm/pep582/sitecustomize.py#L81'>src/pdm/pep582/sitecustomize.py:81:23:</a> RUF027 Possible f-string without an `f` prefix
-- <a href='https://github.com/pdm-project/pdm/blob/7d52cfd1cc1d133f9fe777909db242d31daa78a3/src/pdm/pep582/sitecustomize.py#L82'>src/pdm/pep582/sitecustomize.py:82:20:</a> RUF027 Possible f-string without an `f` prefix
-- <a href='https://github.com/pdm-project/pdm/blob/7d52cfd1cc1d133f9fe777909db242d31daa78a3/src/pdm/pep582/sitecustomize.py#L83'>src/pdm/pep582/sitecustomize.py:83:20:</a> RUF027 Possible f-string without an `f` prefix
-- <a href='https://github.com/pdm-project/pdm/blob/7d52cfd1cc1d133f9fe777909db242d31daa78a3/src/pdm/pep582/sitecustomize.py#L84'>src/pdm/pep582/sitecustomize.py:84:20:</a> RUF027 Possible f-string without an `f` prefix
-- <a href='https://github.com/pdm-project/pdm/blob/7d52cfd1cc1d133f9fe777909db242d31daa78a3/src/pdm/pep582/sitecustomize.py#L86'>src/pdm/pep582/sitecustomize.py:86:17:</a> RUF027 Possible f-string without an `f` prefix
-- <a href='https://github.com/pdm-project/pdm/blob/7d52cfd1cc1d133f9fe777909db242d31daa78a3/src/pdm/pep582/sitecustomize.py#L87'>src/pdm/pep582/sitecustomize.py:87:19:</a> RUF027 Possible f-string without an `f` prefix
-- <a href='https://github.com/pdm-project/pdm/blob/7d52cfd1cc1d133f9fe777909db242d31daa78a3/src/pdm/pep582/sitecustomize.py#L88'>src/pdm/pep582/sitecustomize.py:88:20:</a> RUF027 Possible f-string without an `f` prefix
-- <a href='https://github.com/pdm-project/pdm/blob/7d52cfd1cc1d133f9fe777909db242d31daa78a3/tests/cli/test_run.py#L172'>tests/cli/test_run.py:172:22:</a> RUF027 Possible f-string without an `f` prefix
-- <a href='https://github.com/pdm-project/pdm/blob/7d52cfd1cc1d133f9fe777909db242d31daa78a3/tests/cli/test_run.py#L314'>tests/cli/test_run.py:314:22:</a> RUF027 Possible f-string without an `f` prefix
-- <a href='https://github.com/pdm-project/pdm/blob/7d52cfd1cc1d133f9fe777909db242d31daa78a3/tests/cli/test_run.py#L776'>tests/cli/test_run.py:776:41:</a> RUF027 Possible f-string without an `f` prefix
+- <a href="https://github.com/pdm-project/pdm/blob/7d52cfd1cc1d133f9fe777909db242d31daa78a3/src/pdm/pep582/sitecustomize.py#L80">src/pdm/pep582/sitecustomize.py:80:19:</a> RUF027 Possible f-string without an `f` prefix
+- <a href="https://github.com/pdm-project/pdm/blob/7d52cfd1cc1d133f9fe777909db242d31daa78a3/src/pdm/pep582/sitecustomize.py#L81">src/pdm/pep582/sitecustomize.py:81:23:</a> RUF027 Possible f-string without an `f` prefix
+- <a href="https://github.com/pdm-project/pdm/blob/7d52cfd1cc1d133f9fe777909db242d31daa78a3/src/pdm/pep582/sitecustomize.py#L82">src/pdm/pep582/sitecustomize.py:82:20:</a> RUF027 Possible f-string without an `f` prefix
+- <a href="https://github.com/pdm-project/pdm/blob/7d52cfd1cc1d133f9fe777909db242d31daa78a3/src/pdm/pep582/sitecustomize.py#L83">src/pdm/pep582/sitecustomize.py:83:20:</a> RUF027 Possible f-string without an `f` prefix
+- <a href="https://github.com/pdm-project/pdm/blob/7d52cfd1cc1d133f9fe777909db242d31daa78a3/src/pdm/pep582/sitecustomize.py#L84">src/pdm/pep582/sitecustomize.py:84:20:</a> RUF027 Possible f-string without an `f` prefix
+- <a href="https://github.com/pdm-project/pdm/blob/7d52cfd1cc1d133f9fe777909db242d31daa78a3/src/pdm/pep582/sitecustomize.py#L86">src/pdm/pep582/sitecustomize.py:86:17:</a> RUF027 Possible f-string without an `f` prefix
+- <a href="https://github.com/pdm-project/pdm/blob/7d52cfd1cc1d133f9fe777909db242d31daa78a3/src/pdm/pep582/sitecustomize.py#L87">src/pdm/pep582/sitecustomize.py:87:19:</a> RUF027 Possible f-string without an `f` prefix
+- <a href="https://github.com/pdm-project/pdm/blob/7d52cfd1cc1d133f9fe777909db242d31daa78a3/src/pdm/pep582/sitecustomize.py#L88">src/pdm/pep582/sitecustomize.py:88:20:</a> RUF027 Possible f-string without an `f` prefix
+- <a href="https://github.com/pdm-project/pdm/blob/7d52cfd1cc1d133f9fe777909db242d31daa78a3/tests/cli/test_run.py#L172">tests/cli/test_run.py:172:22:</a> RUF027 Possible f-string without an `f` prefix
+- <a href="https://github.com/pdm-project/pdm/blob/7d52cfd1cc1d133f9fe777909db242d31daa78a3/tests/cli/test_run.py#L314">tests/cli/test_run.py:314:22:</a> RUF027 Possible f-string without an `f` prefix
+- <a href="https://github.com/pdm-project/pdm/blob/7d52cfd1cc1d133f9fe777909db242d31daa78a3/tests/cli/test_run.py#L776">tests/cli/test_run.py:776:41:</a> RUF027 Possible f-string without an `f` prefix
 </pre>
 
 </p>
-</details>
-<details><summary>Changes by rule (1 rules affected)</summary>
+
+Changes by rule (1 rules affected)
 <p>
 
 <p>| code | total | + violation | - violation | + fix | - fix |
 | ---- | ------- | --------- | -------- | ----- | ---- |
 | RUF027 | 20 | 0 | 20 | 0 | 0 |</p>
 </p>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-08-23 13:21</div>
-            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+            <div class="timeline-body">
 
-<h2><a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Fruf027-3?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a></h2>
-<h3>Merging #13076 will <strong>not alter performance</strong></h3>
-<p><sub>Comparing <code>alex/ruf027-3</code> (09edde8) with <code>main</code> (a998320)</sub></p>
-<h3>Summary</h3>
+<a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Fruf027-3?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a>
+Merging #13076 will <strong>not alter performance</strong>
+<p>Comparing <code>alex/ruf027-3</code> (09edde8) with <code>main</code> (a998320)</p>
+Summary
 <p><code>✅ 32</code> untouched</p>
 </div>
         </div>
@@ -166,17 +166,17 @@
             <div class="timeline-body"><blockquote>
 <p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+0 -5 violations, +0 -0 fixes in 4 projects; 50 projects unchanged)</p>
 </blockquote>
-<p>That's 5 false positives going away, so the PR is &quot;working&quot;. I was hoping for the impact to be a little bigger, though. I suppose cases like <a href="https://github.com/pytest-dev/pytest/blob/38ad84bafd18d15ceff1960d636c693560337844/src/_pytest/main.py#L1055-L1060">this</a> aren't counted as &quot;simple assignments&quot; according to the logic I added because the r.h.s. is a conditional expression rather than just a string literal.</p>
-<p>This is slightly underwhelming, but I think it's still an improvement. I think it's probably worth the extra complexity, but not sure.</p>
+<p>That&#x27;s 5 false positives going away, so the PR is &quot;working&quot;. I was hoping for the impact to be a little bigger, though. I suppose cases like <a href="https://github.com/pytest-dev/pytest/blob/38ad84bafd18d15ceff1960d636c693560337844/src/_pytest/main.py#L1055-L1060">this</a> aren&#x27;t counted as &quot;simple assignments&quot; according to the logic I added because the r.h.s. is a conditional expression rather than just a string literal.</p>
+<p>This is slightly underwhelming, but I think it&#x27;s still an improvement. I think it&#x27;s probably worth the extra complexity, but not sure.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Converted to draft by @AlexWaygood on 2024-08-29 11:21</div>
+            <div class="event">Converted to draft by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-29 11:21</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:06:10 UTC
+        Synced at 2026-01-20 19:06:18 UTC
     </footer>
 </body>
 </html>

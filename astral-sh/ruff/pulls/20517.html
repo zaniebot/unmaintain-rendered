@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Modify the (external) signature of instance methods such that the first parameter uses <code>Self</code> unless it is explicitly annotated. This allows us to correctly type-check more code, and allows us to infer correct return types for many functions that return <code>Self</code>. For example:</p>
-<pre><code class="language-py">from pathlib import Path
+<pre><code>from pathlib import Path
 from datetime import datetime, timedelta
 
 reveal_type(Path(&quot;.config&quot;) / &quot;.ty&quot;)  # now Path, previously Unknown
@@ -33,10 +33,10 @@ reveal_type(Path(&quot;.config&quot;) / &quot;.ty&quot;)  # now Path, previously
 def _(dt: datetime, delta: timedelta):
     reveal_type(dt - delta)  # now datetime, previously Unknown
 </code></pre>
-<p>part of https://github.com/astral-sh/ty/issues/159</p>
+<p>part of <a href="https://github.com/astral-sh/ty/issues/159">astral-sh/ty#159</a></p>
 <p>Co-authored by: @Glyphack</p>
-<h2>Performance</h2>
-<p>I ran benchmarks locally on <code>attrs</code>, <code>freqtrade</code> and <code>colour</code>, the projects with the largest regressions on CodSpeed. I see much smaller effects locally, but can definitely reproduce the regression on <code>attrs</code>. From looking at the profiling results (on Codspeed), it seems that we simply do more type inference work, which seems plausible, given that we now understand much more return types (of many stdlib functions). In particular, whenever a function uses an implicit <code>self</code> and returns <code>Self</code> (without mentioning <code>Self</code> anywhere else in its signature), we will now infer the correct type, whereas we would previously return <code>Unknown</code>. This also means that we need to invoke the generics solver in more cases. Comparing half a million lines of log output on attrs, I can see that we do 5% more &quot;work&quot; (number of lines in the log), and have a lot more <code>apply_specialization</code> events (7108 vs 4304). On freqtrade, I see similar numbers for <code>apply_specialization</code> (11360 vs 5138 calls). Given these results, I'm not sure if it's generally worth doing more performance work, especially since none of the code modifications themselves seem to be likely candidates for regressions.</p>
+Performance
+<p>I ran benchmarks locally on <code>attrs</code>, <code>freqtrade</code> and <code>colour</code>, the projects with the largest regressions on CodSpeed. I see much smaller effects locally, but can definitely reproduce the regression on <code>attrs</code>. From looking at the profiling results (on Codspeed), it seems that we simply do more type inference work, which seems plausible, given that we now understand much more return types (of many stdlib functions). In particular, whenever a function uses an implicit <code>self</code> and returns <code>Self</code> (without mentioning <code>Self</code> anywhere else in its signature), we will now infer the correct type, whereas we would previously return <code>Unknown</code>. This also means that we need to invoke the generics solver in more cases. Comparing half a million lines of log output on attrs, I can see that we do 5% more &quot;work&quot; (number of lines in the log), and have a lot more <code>apply_specialization</code> events (7108 vs 4304). On freqtrade, I see similar numbers for <code>apply_specialization</code> (11360 vs 5138 calls). Given these results, I&#x27;m not sure if it&#x27;s generally worth doing more performance work, especially since none of the code modifications themselves seem to be likely candidates for regressions.</p>
 <p>| Command | Mean [ms] | Min [ms] | Max [ms] | Relative |
 |:---|---:|---:|---:|---:|
 | <code>./ty_main check /home/shark/ecosystem/attrs</code> | 92.6 ± 3.6 | 85.9 | 102.6 | 1.00 |
@@ -49,21 +49,21 @@ def _(dt: datetime, delta: timedelta):
 |:---|---:|---:|---:|---:|
 | <code>./ty_main check /home/shark/ecosystem/colour</code> | 423.9 ± 17.9 | 394.6 | 447.4 | 1.00 |
 | <code>./ty_self check /home/shark/ecosystem/colour</code> | 426.9 ± 24.9 | 373.8 | 456.6 | 1.01 ± 0.07 |</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>New Markdown tests</p>
-<h2>Ecosystem report</h2>
+Ecosystem report
 <ul>
 <li>apprise: ~300 new diagnostics related to problematic stubs in apprise :weary:</li>
 <li>attrs: a new true positive, since <a href="https://github.com/python-attrs/attrs/blob/4e2c89c82398914dbbe24fe00b03f00a8b8efe05/tests/test_make.py#L2135">this function</a> is missing a <code>@staticmethod</code>?</li>
 <li>Some legitimate true positives</li>
 <li>sympy: lots of new <code>invalid-operator</code> false positives in <a href="https://github.com/sympy/sympy/blob/cf9f4b680520821b31e2baceb4245252939306be/sympy/matrices/matrixbase.py#L3267-L3269">matrix multiplication</a> due to our limited understanding of <a href="https://github.com/sympy/sympy/blob/cf9f4b680520821b31e2baceb4245252939306be/sympy/core/decorators.py#L83-L84">generic <code>Callable[[Callable[[T1, T2], T3]], Callable[[T1, T2], T3]]</code> &quot;identity&quot; types</a> of decorators. This is not related to type-of-self.</li>
 </ul>
-<h2>Typing conformance results</h2>
+Typing conformance results
 <p>The changes are all correct, except for</p>
-<pre><code class="language-diff">+generics_self_usage.py:50:5: error[invalid-assignment] Object of type `def foo(self) -&gt; int` is not assignable to `(typing.Self, /) -&gt; int`
+<pre><code>+generics_self_usage.py:50:5: error[invalid-assignment] Object of type `def foo(self) -&gt; int` is not assignable to `(typing.Self, /) -&gt; int`
 </code></pre>
 <p>which is related to an assignability problem involving type variables on both sides:</p>
-<pre><code class="language-py">class CallableAttribute:
+<pre><code>class CallableAttribute:
     def foo(self) -&gt; int:
         return 0
 
@@ -72,17 +72,17 @@ def _(dt: datetime, delta: timedelta):
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @sharkdp on 2025-09-22 18:13</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-22 18:13</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-22 18:39</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
-<details>
-<summary>Changes were detected when running ty on typing conformance tests</summary>
+Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a>
 
-<pre><code class="language-diff">--- old-output.txt	2025-09-29 18:52:45.668425107 +0000
+Changes were detected when running ty on typing conformance tests
+
+<pre><code>--- old-output.txt	2025-09-29 18:52:45.668425107 +0000
 +++ new-output.txt	2025-09-29 18:52:49.013452786 +0000
 @@ -420,17 +420,12 @@
  generics_self_basic.py:14:9: error[type-assertion-failure] Argument does not have asserted type `Self@set_scale`
@@ -104,29 +104,29 @@ def _(dt: datetime, delta: timedelta):
  generics_self_usage.py:73:23: error[invalid-type-form] Variable of type `typing.Self` is not allowed in a type expression
  generics_self_usage.py:76:6: error[invalid-type-form] Variable of type `typing.Self` is not allowed in a type expression
 @@ -860,5 +855,5 @@
- typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
+ typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key &#x27;name&#x27; in TypedDict `Movie` constructor
  typeddicts_usage.py:28:18: error[invalid-key] Invalid key access on TypedDict `Movie`: Unknown key &quot;title&quot;
  typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions. Did you mean to use a concrete TypedDict or `collections.abc.Mapping[str, object]` instead?
 -Found 861 diagnostics
 +Found 856 diagnostics
  WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
 </code></pre>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-09-22 18:48</div>
-            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+            <div class="timeline-body">
 
-<!-- __CODSPEED_WALLTIME_PERFORMANCE_REPORT_COMMENT__ -->
 
-<h2><a href="https://codspeed.io/astral-sh/ruff/branches/david%2Fimplicit-self-signature?runnerMode=WallTime">CodSpeed WallTime Performance Report</a></h2>
-<h3>Merging #20517 will <strong>degrade performances by 14.5%</strong></h3>
-<p><sub>Comparing <code>david/implicit-self-signature</code> (3ce98ce) with <code>main</code> (1d3e4a9)</sub></p>
-<h3>Summary</h3>
+
+<a href="https://codspeed.io/astral-sh/ruff/branches/david%2Fimplicit-self-signature?runnerMode=WallTime">CodSpeed WallTime Performance Report</a>
+Merging #20517 will <strong>degrade performances by 14.5%</strong>
+<p>Comparing <code>david/implicit-self-signature</code> (3ce98ce) with <code>main</code> (1d3e4a9)</p>
+Summary
 <p><code>❌ 8 (👁 8)</code> regressions</p>
-<h3>Benchmarks breakdown</h3>
+Benchmarks breakdown
 <p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
 | --- | --------- | ----------------------- | ------------------- | ------ |
 | 👁 | <code>large[sympy]</code> | 40.2 s | 42.4 s | -5.2% |
@@ -141,17 +141,17 @@ def _(dt: datetime, delta: timedelta):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-09-22 18:48</div>
-            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+            <div class="timeline-body">
 
-<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
 
-<h2><a href="https://codspeed.io/astral-sh/ruff/branches/david%2Fimplicit-self-signature?runnerMode=Instrumentation">CodSpeed Instrumentation Performance Report</a></h2>
-<h3>Merging #20517 will <strong>degrade performances by 9.78%</strong></h3>
-<p><sub>Comparing <code>david/implicit-self-signature</code> (3ce98ce) with <code>main</code> (1d3e4a9)</sub></p>
-<h3>Summary</h3>
-<p><code>❌ 4 (👁 4)</code> regressions<br />
+
+<a href="https://codspeed.io/astral-sh/ruff/branches/david%2Fimplicit-self-signature?runnerMode=Instrumentation">CodSpeed Instrumentation Performance Report</a>
+Merging #20517 will <strong>degrade performances by 9.78%</strong>
+<p>Comparing <code>david/implicit-self-signature</code> (3ce98ce) with <code>main</code> (1d3e4a9)</p>
+Summary
+<p><code>❌ 4 (👁 4)</code> regressions<br>
 <code>✅ 39</code> untouched</p>
-<h3>Benchmarks breakdown</h3>
+Benchmarks breakdown
 <p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
 | --- | --------- | ----------------------- | ------------------- | ------ |
 | 👁 | <code>ty_check_file[incremental]</code> | 4.9 ms | 5.1 ms | -4.96% |
@@ -162,28 +162,28 @@ def _(dt: datetime, delta: timedelta):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-22 18:49</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-22 18:50</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">attrs (https://github.com/python-attrs/attrs)
+Changes were detected when running on open source projects
+
+<pre><code>attrs (https://github.com/python-attrs/attrs)
 - src/attr/_make.py:1581:5: error[invalid-assignment] Object of type `tuple[Unknown, ...]` is not assignable to `list[Attribute | Unknown]`
 + src/attr/_make.py:1581:5: error[invalid-assignment] Object of type `tuple[@Todo, ...]` is not assignable to `list[Attribute | Unknown]`
 + tests/test_make.py:2174:57: error[invalid-argument-type] Argument to function `_get_copy_kwargs` is incorrect: Expected `TestClassBuilder`, found `Literal[False]`
@@ -601,9 +601,9 @@ scikit-learn (https://github.com/scikit-learn/scikit-learn)
 + Found 1989 diagnostics
 
 apprise (https://github.com/caronc/apprise)
-+ tests/test_api.py:871:31: error[invalid-argument-type] Argument to function `schemas` is incorrect: Expected `URLBase`, found `&lt;class 'TextNotification'&gt;`
-+ tests/test_api.py:881:31: error[invalid-argument-type] Argument to function `schemas` is incorrect: Expected `URLBase`, found `&lt;class 'TextNotification'&gt;`
-+ tests/test_api.py:888:31: error[invalid-argument-type] Argument to function `schemas` is incorrect: Expected `URLBase`, found `&lt;class 'HtmlNotification'&gt;`
++ tests/test_api.py:871:31: error[invalid-argument-type] Argument to function `schemas` is incorrect: Expected `URLBase`, found `&lt;class &#x27;TextNotification&#x27;&gt;`
++ tests/test_api.py:881:31: error[invalid-argument-type] Argument to function `schemas` is incorrect: Expected `URLBase`, found `&lt;class &#x27;TextNotification&#x27;&gt;`
++ tests/test_api.py:888:31: error[invalid-argument-type] Argument to function `schemas` is incorrect: Expected `URLBase`, found `&lt;class &#x27;HtmlNotification&#x27;&gt;`
 + tests/test_api.py:898:35: error[invalid-argument-type] Argument to function `schemas` is incorrect: Expected `URLBase`, found `object`
 + tests/test_rest_plugins.py:655:20: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `str | None`
 + tests/test_rest_plugins.py:656:20: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `str | None`
@@ -732,13 +732,13 @@ https://pyright-play.net/?pyrightVersion=1.1.405&amp;code=MYGwhgzhAECCBcBYAUNN0A
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-09-23 09:55</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-23 09:55</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-23 10:00</div>
-            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+            <div class="timeline-body">
 
-<h2><code>ecosystem-analyzer</code> results</h2>
+<code>ecosystem-analyzer</code> results
 <p>| Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
 | <code>type-assertion-failure</code> | 15 | 567 | 0 |
@@ -767,10 +767,10 @@ https://pyright-play.net/?pyrightVersion=1.1.405&amp;code=MYGwhgzhAECCBcBYAUNN0A
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-09-23 12:50</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-23 12:50</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-09-23 12:50</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-23 12:50</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-09-23 12:57</div>
@@ -778,12 +778,12 @@ https://pyright-play.net/?pyrightVersion=1.1.405&amp;code=MYGwhgzhAECCBcBYAUNN0A
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/pep695_type_aliases.md</code>:328 on 2025-09-23 12:57</div>
-            <div class="timeline-body"><p>This regression is tracked in https://github.com/astral-sh/ty/issues/1157</p>
+            <div class="timeline-body"><p>This regression is tracked in <a href="https://github.com/astral-sh/ty/issues/1157">astral-sh/ty#1157</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/named_tuple.md</code>:280 on 2025-09-23 13:04</div>
-            <div class="timeline-body"><p>Hm. I looks like the https://github.com/astral-sh/ruff/pull/20328 fix doesn't work here?</p>
+            <div class="timeline-body"><p>Hm. I looks like the <a href="https://github.com/astral-sh/ruff/pull/20328">astral-sh/ruff#20328</a> fix doesn&#x27;t work here?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -796,7 +796,7 @@ https://pyright-play.net/?pyrightVersion=1.1.405&amp;code=MYGwhgzhAECCBcBYAUNN0A
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/annotations/self.md</code>:316 on 2025-09-23 13:15</div>
-            <div class="timeline-body"><p>Hmm, in a generic class <code>C[T]</code>, <code>self</code> may be also be annotated with e.g. <code>C[int]</code> (see last example in https://typing.python.org/en/latest/spec/generics.html#use-in-generic-classes). I'm not sure I understand pyright's error message here?</p>
+            <div class="timeline-body"><p>Hmm, in a generic class <code>C[T]</code>, <code>self</code> may be also be annotated with e.g. <code>C[int]</code> (see last example in https://typing.python.org/en/latest/spec/generics.html#use-in-generic-classes). I&#x27;m not sure I understand pyright&#x27;s error message here?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -806,7 +806,7 @@ https://pyright-play.net/?pyrightVersion=1.1.405&amp;code=MYGwhgzhAECCBcBYAUNN0A
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/annotations/self.md</code>:316 on 2025-09-23 14:40</div>
             <div class="timeline-body"><p>I talked with @AlexWaygood and it seems to us that we can hardly put any restrictions on the annotated type of <code>self</code>, so it may be fine to remove this TODO for now. Exceptions might be <code>self: B</code> annotation on a class <code>A</code>, where <code>B</code> is disjoint from <code>A</code>. So we could also update the TODO comment to mention this example.</p>
-<pre><code class="language-suggestion">    # TODO: Potentially emit a warning if the annotated type of `self` is disjoint from the method's class
+<pre><code>    # TODO: Potentially emit a warning if the annotated type of `self` is disjoint from the method&#x27;s class
 </code></pre>
 </div>
         </div>
@@ -829,16 +829,16 @@ https://pyright-play.net/?pyrightVersion=1.1.405&amp;code=MYGwhgzhAECCBcBYAUNN0A
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-09-24 11:32</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-24 11:32</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-09-24 11:32</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-24 11:32</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-09-24 12:02</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-24 12:02</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-09-24 12:02</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-24 12:02</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-09-24 12:02</div>
@@ -850,16 +850,16 @@ https://pyright-play.net/?pyrightVersion=1.1.405&amp;code=MYGwhgzhAECCBcBYAUNN0A
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-09-24 12:42</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-24 12:42</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-09-24 12:42</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-24 12:42</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-09-24 12:50</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-24 12:50</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-09-24 12:50</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-24 12:50</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/annotations/self.md</code>:145 on 2025-09-24 15:06</div>
@@ -882,7 +882,7 @@ https://pyright-play.net/?pyrightVersion=1.1.405&amp;code=MYGwhgzhAECCBcBYAUNN0A
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:1284 on 2025-09-24 15:28</div>
             <div class="timeline-body"><p>it looks like this was supposed to be</p>
-<pre><code class="language-suggestion">                                context
+<pre><code>                                context
                                     .variables(db)
                                     .iter()
                                     .any(|v| v.typevar(db).kind(db) == TypeVarKind::TypingSelf)
@@ -921,32 +921,32 @@ https://pyright-play.net/?pyrightVersion=1.1.405&amp;code=MYGwhgzhAECCBcBYAUNN0A
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-09-24 16:09</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-24 16:09</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-09-24 16:09</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-24 16:09</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-09-25 11:44</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-25 11:44</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-09-25 11:44</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-25 11:44</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-09-25 12:14</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-25 12:14</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-09-25 12:14</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-25 12:14</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-09-29 11:28</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-29 11:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-09-29 11:28</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-29 11:28</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:4276 on 2025-09-29 11:43</div>
-            <div class="timeline-body"><p>I am also fine with moving this down and making it a catch-all case (so we don't have to update it every time we add a <code>KnownClass</code>). Seems unlikely that new fallback classes are (ever) added. On the other hand, <em>if</em> we ever add another fallback class, it would be important to get this right. And not getting it right can lead to subtle and confusing errors.</p>
+            <div class="timeline-body"><p>I am also fine with moving this down and making it a catch-all case (so we don&#x27;t have to update it every time we add a <code>KnownClass</code>). Seems unlikely that new fallback classes are (ever) added. On the other hand, <em>if</em> we ever add another fallback class, it would be important to get this right. And not getting it right can lead to subtle and confusing errors.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -954,30 +954,30 @@ https://pyright-play.net/?pyrightVersion=1.1.405&amp;code=MYGwhgzhAECCBcBYAUNN0A
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @sharkdp on 2025-09-29 12:39</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-29 12:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @sharkdp on 2025-09-29 12:39</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-29 12:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-09-29 12:39</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-29 12:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @sharkdp on 2025-09-29 12:39</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-29 12:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @sharkdp on 2025-09-29 12:39</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-29 12:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-09-29 13:19</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-29 13:19</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-09-29 13:19</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-29 13:19</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/annotations/self.md</code>:93 on 2025-09-29 13:56</div>
-            <div class="timeline-body"><p>But we also verify the type of the first argument if <code>self</code> is passed implicitly -- for example (and I'm very happy to see that we emit a diagnostic here!):</p>
-<pre><code class="language-py">from typing import Never
+            <div class="timeline-body"><p>But we also verify the type of the first argument if <code>self</code> is passed implicitly -- for example (and I&#x27;m very happy to see that we emit a diagnostic here!):</p>
+<pre><code>from typing import Never
 
 class Foo:
     def f(self: Never) -&gt; None: ...
@@ -989,14 +989,14 @@ Foo().f()
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/annotations/self.md</code>:102 on 2025-09-29 13:59</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">If the method is a class or static method then first argument is not inferred as `Self`:
+            <div class="timeline-body"><pre><code>If the method is a class or static method then first argument is not inferred as `Self`:
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/annotations/self.md</code>:112 on 2025-09-29 13:59</div>
             <div class="timeline-body"><p>nit</p>
-<pre><code class="language-suggestion">A.a_classmethod()
+<pre><code>A.a_classmethod()
 A.a_classmethod(a)  # error: [too-many-positional-arguments]
 A.a_staticmethod(1)
 a.a_staticmethod(1)
@@ -1006,7 +1006,7 @@ A.a_staticmethod(a)  # error: [invalid-argument-type]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/annotations/self.md</code>:153 on 2025-09-29 14:00</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">reveal_type(B().name_does_not_matter())  # revealed: B
+            <div class="timeline-body"><pre><code>reveal_type(B().name_does_not_matter())  # revealed: B
 reveal_type(B().positional_only(1))  # revealed: B
 reveal_type(B().keyword_only(x=1))  # revealed: B
 </code></pre>
@@ -1020,15 +1020,15 @@ reveal_type(B().keyword_only(x=1))  # revealed: B
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/annotations/self.md</code>:364 on 2025-09-29 14:06</div>
             <div class="timeline-body"><p>I think it comes to the same thing from a soundness perspective, but a more user-friendly diagnostic might be to say</p>
-<pre><code class="language-suggestion"># error: [invalid-argument-type] &quot;Argument to bound method `bad` is incorrect: Expected `int &amp; Explicit`, found `Explicit`&quot;
+<pre><code># error: [invalid-argument-type] &quot;Argument to bound method `bad` is incorrect: Expected `int &amp; Explicit`, found `Explicit`&quot;
 </code></pre>
 <p>to make it clearer to the user that the only valid way to call the method from an instance would be on an instance some class that is <em>both</em> a subclass of <code>Explicit</code> and a subclass of <code>int</code></p>
-<p>I don't think you need to change anything here now, though you could also add a TODO -- I'll leave it up to you :-)</p>
+<p>I don&#x27;t think you need to change anything here now, though you could also add a TODO -- I&#x27;ll leave it up to you :-)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:4276 on 2025-09-29 14:14</div>
-            <div class="timeline-body"><p>I think this is fine; it's not too burdensome to have to update a few <code>match</code>es when we add <code>KnownClass</code>es (which anyway isn't very common). And we've had errors elsewhere in the past due to not having exhaustive matches, and then forgetting to update things when we add new variants</p>
+            <div class="timeline-body"><p>I think this is fine; it&#x27;s not too burdensome to have to update a few <code>match</code>es when we add <code>KnownClass</code>es (which anyway isn&#x27;t very common). And we&#x27;ve had errors elsewhere in the past due to not having exhaustive matches, and then forgetting to update things when we add new variants</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1038,12 +1038,12 @@ reveal_type(B().keyword_only(x=1))  # revealed: B
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:112 on 2025-09-29 14:27</div>
-            <div class="timeline-body"><p>(if we merge https://github.com/astral-sh/ruff/pull/20630 then this call won't be necessary, since you're only passing it to <code>bind_typevar()</code> down below)</p>
+            <div class="timeline-body"><p>(if we merge <a href="https://github.com/astral-sh/ruff/pull/20630">astral-sh/ruff#20630</a> then this call won&#x27;t be necessary, since you&#x27;re only passing it to <code>bind_typevar()</code> down below)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:113 on 2025-09-29 14:30</div>
-            <div class="timeline-body"><p>if we're looking for speedups: one micro-optimisation (that probably won't make a difference, but might be worth trying?) might be to initialise this as a <code>const</code> variable at compile time and then clone it here rather than calling <code>Name::new_static(&quot;Self&quot;)</code> every time</p>
+            <div class="timeline-body"><p>if we&#x27;re looking for speedups: one micro-optimisation (that probably won&#x27;t make a difference, but might be worth trying?) might be to initialise this as a <code>const</code> variable at compile time and then clone it here rather than calling <code>Name::new_static(&quot;Self&quot;)</code> every time</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1053,7 +1053,7 @@ reveal_type(B().keyword_only(x=1))  # revealed: B
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-09-29 14:38</div>
-            <div class="timeline-body"><p>Thank you, this looks great. I haven't analysed the ecosystem report at all, but I trust your analysis if you say it looks good!</p>
+            <div class="timeline-body"><p>Thank you, this looks great. I haven&#x27;t analysed the ecosystem report at all, but I trust your analysis if you say it looks good!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1064,7 +1064,7 @@ reveal_type(B().keyword_only(x=1))  # revealed: B
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/annotations/self.md</code>:93 on 2025-09-29 18:23</div>
             <div class="timeline-body"><p>Added this test:</p>
-<pre><code class="language-py">from typing import Never
+<pre><code>from typing import Never
 
 class Strange:
     def can_not_be_called(self: Never) -&gt; None: ...
@@ -1102,19 +1102,19 @@ Strange().can_not_be_called()
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:113 on 2025-09-29 18:50</div>
-            <div class="timeline-body"><p>We use <code>Name::new_static</code> in lots of places. I somehow can't imagine that this will help with performance, but we can try that separately, I guess.</p>
+            <div class="timeline-body"><p>We use <code>Name::new_static</code> in lots of places. I somehow can&#x27;t imagine that this will help with performance, but we can try that separately, I guess.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-29 19:07</div>
-            <div class="timeline-body"><p>The performance regressions look severe, but I am going to merge this. We can always work on performance later, and it's probably also important to keep in mind that across the <em>whole</em> ecosystem, this is more of a <a href="https://david-implicit-self-signatur.ecosystem-663.pages.dev/timing">3% slowdown</a>.</p>
+            <div class="timeline-body"><p>The performance regressions look severe, but I am going to merge this. We can always work on performance later, and it&#x27;s probably also important to keep in mind that across the <em>whole</em> ecosystem, this is more of a <a href="https://david-implicit-self-signatur.ecosystem-663.pages.dev/timing">3% slowdown</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @sharkdp on 2025-09-29 19:08</div>
+            <div class="event">Merged by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-29 19:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @sharkdp on 2025-09-29 19:08</div>
+            <div class="event">Closed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-29 19:08</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-09-29 19:08</div>
@@ -1122,7 +1122,7 @@ Strange().can_not_be_called()
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:15:55 UTC
+        Synced at 2026-01-20 19:18:51 UTC
     </footer>
 </body>
 </html>

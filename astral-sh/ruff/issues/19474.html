@@ -23,8 +23,8 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/gpshead">@gpshead</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<pre><code class="language-python">def beans_api(...) -&gt; Spam | None:
+            <div class="timeline-body">Summary
+<pre><code>def beans_api(...) -&gt; Spam | None:
     if failsafe:
         return None
 
@@ -35,25 +35,25 @@
 </code></pre>
 <p>Spot the bug.  A wise analyzer knows that no code path returned Spam despite the type annotation saying it could.  <code>ruff</code> may not always be wise enough but probably has some simple whens for this simple footgun &quot;obviously never returned anything other than literals&quot; case?  But <code>ruff+ty</code> could be wise.</p>
 <p>I can imagine cases where this might not be wanted, are they real?  or just worthy of a checking disable comment.  ex: abstract base class functions... but those are generally in the always-raises NotImplemented category where there is never a return value? a case which should not trigger this. (&quot;never returns&quot; being distinct from &quot;returns X|Y but not Z&quot;)</p>
-<p>Also filed as https://github.com/microsoft/pyright/issues/10731 - which was understandably closed - but this is a more general typing/linting boundary check that may fit a linter better than a type checker.</p>
+<p>Also filed as <a href="https://github.com/microsoft/pyright/issues/10731">microsoft/pyright#10731</a> - which was understandably closed - but this is a more general typing/linting boundary check that may fit a linter better than a type checker.</p>
 <p>planting the seed in the back of your mind.  do with it as you will. :)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-07-21 23:31</div>
-            <div class="timeline-body"><p>One specific case where I think this would result in lots of false positives is inheritance. It's common (and pretty reasonable) to have a wider return type on a method in a class hierarchy where other implementations in the hierarchy might return that other type, but this particular implementation doesn't. There's no way to avoid these false positives in general, so I think at best this is a diagnostic that would need to be restricted to free functions. (Even with a method on a final class, the method might have to conform to a base class return type that is used by the base class implementation, or by other unknown subclasses of it.)</p>
+            <div class="timeline-body"><p>One specific case where I think this would result in lots of false positives is inheritance. It&#x27;s common (and pretty reasonable) to have a wider return type on a method in a class hierarchy where other implementations in the hierarchy might return that other type, but this particular implementation doesn&#x27;t. There&#x27;s no way to avoid these false positives in general, so I think at best this is a diagnostic that would need to be restricted to free functions. (Even with a method on a final class, the method might have to conform to a base class return type that is used by the base class implementation, or by other unknown subclasses of it.)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-07-22 01:01</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-22 01:01</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> added by @ntBre on 2025-07-22 01:01</div>
+            <div class="event">Label <span class="label">needs-decision</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-22 01:01</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jlopezpena">@jlopezpena</a> on 2025-07-24 10:29</div>
             <div class="timeline-body"><p>Another common case where there would be a lot of false positives, without needing to resort to inheritance. Consider this type alias to represent the potential values of something that comes from deserialising JSON:</p>
-<pre><code class="language-python">JSONValue: TypeAlias = None | bool | int | float | str | list[JSONValue] | dict[str, JSONValue]
+<pre><code>JSONValue: TypeAlias = None | bool | int | float | str | list[JSONValue] | dict[str, JSONValue]
 JSONObject: TypeAlias = dict[str, JSONValue]
 </code></pre>
 <p>Then any custom json serialisers would complain if they cannot have every single type of value</p>
@@ -61,15 +61,15 @@ JSONObject: TypeAlias = dict[str, JSONValue]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/gpshead">@gpshead</a> on 2025-07-24 15:13</div>
-            <div class="timeline-body"><p>This might be most valuable in the <code>| None</code> case (as in the example) to ensure at least one of the non-None return types happens? There are probably other heuristics that'd have good signal to noise value.  agreed that there will always be some classes of function that do not explicitly return all of their types.  Just the fact that a TypeAlias was defined for the return type might be signal in and of itself?</p>
-<hr />
-<p>for the <em>specific</em> example I gave I thought i've seen other checkers that seek to ensure that if you have any <code>return</code> statements in a function that all exit paths have an explicit <code>return</code> along with seeking consistency between naked <code>return</code> and <code>return expression</code> within one function.  Somewhat related to https://docs.astral.sh/ruff/rules/implicit-return-value/ but going beyond that. Also including https://pylint.readthedocs.io/en/stable/user_guide/messages/refactor/inconsistent-return-statements.html but more than that, we want to flag any exit from a function that lacks an explicit return statement.</p>
+            <div class="timeline-body"><p>This might be most valuable in the <code>| None</code> case (as in the example) to ensure at least one of the non-None return types happens? There are probably other heuristics that&#x27;d have good signal to noise value.  agreed that there will always be some classes of function that do not explicitly return all of their types.  Just the fact that a TypeAlias was defined for the return type might be signal in and of itself?</p>
+<hr>
+<p>for the <em>specific</em> example I gave I thought i&#x27;ve seen other checkers that seek to ensure that if you have any <code>return</code> statements in a function that all exit paths have an explicit <code>return</code> along with seeking consistency between naked <code>return</code> and <code>return expression</code> within one function.  Somewhat related to https://docs.astral.sh/ruff/rules/implicit-return-value/ but going beyond that. Also including https://pylint.readthedocs.io/en/stable/user_guide/messages/refactor/inconsistent-return-statements.html but more than that, we want to flag any exit from a function that lacks an explicit return statement.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:53:05 UTC
+        Synced at 2026-01-20 18:50:15 UTC
     </footer>
 </body>
 </html>

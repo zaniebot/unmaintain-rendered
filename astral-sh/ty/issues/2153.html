@@ -23,14 +23,14 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Thibaulltt">@Thibaulltt</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>Here is a small example file:</p>
-<pre><code class="language-python">from dataclasses import dataclass, field, fields, MISSING
+<pre><code>from dataclasses import dataclass, field, fields, MISSING
 
 
 @dataclass
 class Foo:
-	name: str = field(default='foo')
+	name: str = field(default=&#x27;foo&#x27;)
 	value: int = field(default=23)
 
 
@@ -39,12 +39,12 @@ for field_ in fields(foo):
 	if field_.default is MISSING and field_.default_factory is MISSING:
 		raise ValueError()
 	_fdef = field_.default_factory() if field_.default is MISSING else field_.default
-	print(f'Field &lt;{field_.name}&gt; default is {_fdef!s}')
+	print(f&#x27;Field &lt;{field_.name}&gt; default is {_fdef!s}&#x27;)
 
 </code></pre>
-<p>In a <code>dataclasses.dataclass</code>, a <code>field</code>'s <code>default</code> and <code>default_factory</code> members can be one of two things: the special type <code>_MISSING_TYPE</code> (made available under the <code>MISSING</code> attribute of the module) and a defined value of type <code>Any</code> or <code>Callable</code>.</p>
-<p>From your explanation of your <a href="https://docs.astral.sh/ty/features/type-system/#intersection-types">type intersection feature</a> (very nice feature, BTW! this bug non-withstanding) it seems like I should be able to 'restrict' the type of those attributes by checking their value. Thus, I perform a check on line 12 and raise an error if they are both <code>MISSING</code>. Thus, one of them should be <code>not MISSING</code>.</p>
-<p>But here's the output of <code>ty check main.py</code> (no configuration needed):</p>
+<p>In a <code>dataclasses.dataclass</code>, a <code>field</code>&#x27;s <code>default</code> and <code>default_factory</code> members can be one of two things: the special type <code>_MISSING_TYPE</code> (made available under the <code>MISSING</code> attribute of the module) and a defined value of type <code>Any</code> or <code>Callable</code>.</p>
+<p>From your explanation of your <a href="https://docs.astral.sh/ty/features/type-system/#intersection-types">type intersection feature</a> (very nice feature, BTW! this bug non-withstanding) it seems like I should be able to &#x27;restrict&#x27; the type of those attributes by checking their value. Thus, I perform a check on line 12 and raise an error if they are both <code>MISSING</code>. Thus, one of them should be <code>not MISSING</code>.</p>
+<p>But here&#x27;s the output of <code>ty check main.py</code> (no configuration needed):</p>
 <pre><code>error[call-non-callable]: Object of type `_MISSING_TYPE` is not callable
   --&gt; main.py:14:10
    |
@@ -52,7 +52,7 @@ for field_ in fields(foo):
 13 |         raise ValueError()
 14 |     _fdef = field_.default_factory() if field_.default is MISSING else field_.default
    |             ^^^^^^^^^^^^^^^^^^^^^^^^
-15 |     print(f'Field &lt;{field_.name}&gt; default is {_fdef!s}')
+15 |     print(f&#x27;Field &lt;{field_.name}&gt; default is {_fdef!s}&#x27;)
    |
 info: Union variant `_MISSING_TYPE` is incompatible with this call site
 info: Attempted to call union type `_DefaultFactory[Any] | _MISSING_TYPE`
@@ -61,30 +61,30 @@ info: rule `call-non-callable` is enabled by default
 Found 1 diagnostic
 </code></pre>
 <p>Is this a bug, or simply a non-supported use case ? It seems your type intersection feature <em>should</em> work in this case, since <code>MISSING</code> is defined as a type*, and I explicitly check it using the <code>if &lt;var&gt; is &lt;type&gt;</code> expression.</p>
-<hr />
+<hr>
 <p>* It is actually defined as an instance of the <code>_MISSING_TYPE</code> class (see below), but changing MISSING for its actual _MISSING_TYPE type does not change the result.</p>
-<pre><code class="language-python"># A sentinel object to detect if a parameter is supplied or not.  Use
+<pre><code># A sentinel object to detect if a parameter is supplied or not.  Use
 # a class to give it a better repr.
 class _MISSING_TYPE:
     pass
 MISSING = _MISSING_TYPE()
 </code></pre>
-<h3>Version</h3>
+Version
 <p>ty 0.0.5</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">narrowing</span> added by @AlexWaygood on 2025-12-22 14:46</div>
+            <div class="event">Label <span class="label">narrowing</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-22 14:46</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-22 17:33</div>
             <div class="timeline-body"><p>Thanks for the report!</p>
-<p>The problem here is that the way you are checking both <code>field_.default</code> and <code>field_.default_factory</code> would require the type checker to track a relationship between the type of those two attributes. After the first <code>if</code> we would have to remember &quot;if <code>field_.default</code> is MISSING then <code>field_.default_factory</code> cannot be, and vice versa.&quot; This kind of implication-tracking between two different types across control flow is something that we don't do (and neither does any other type checker; pyright, mypy, and pyrefly all emit the same error on this code that we do.)</p>
-<p>Here's a version of your code that rearranges the control flow slightly so that it works in ty (and other type checkers): https://play.ty.dev/d1cf6785-8a39-481a-8337-f5b4a0da7b5f</p>
+<p>The problem here is that the way you are checking both <code>field_.default</code> and <code>field_.default_factory</code> would require the type checker to track a relationship between the type of those two attributes. After the first <code>if</code> we would have to remember &quot;if <code>field_.default</code> is MISSING then <code>field_.default_factory</code> cannot be, and vice versa.&quot; This kind of implication-tracking between two different types across control flow is something that we don&#x27;t do (and neither does any other type checker; pyright, mypy, and pyrefly all emit the same error on this code that we do.)</p>
+<p>Here&#x27;s a version of your code that rearranges the control flow slightly so that it works in ty (and other type checkers): https://play.ty.dev/d1cf6785-8a39-481a-8337-f5b4a0da7b5f</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2025-12-22 17:33</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2025-12-22 17:33</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Thibaulltt">@Thibaulltt</a> on 2025-12-22 19:18</div>
@@ -95,7 +95,7 @@ MISSING = _MISSING_TYPE()
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:21:30 UTC
+        Synced at 2026-01-20 19:26:42 UTC
     </footer>
 </body>
 </html>

@@ -23,38 +23,38 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>This is a reimplementation of https://github.com/astral-sh/ruff/pull/14116 now that Salsa <a href="https://github.com/salsa-rs/salsa/pull/615">salsa accumulators are cheaper</a> (close to &quot;free&quot; for queries without diagnostics).</p>
-<p>The main benefit of salsa accumulators is that they're an easy way to emit a diagnostic from anywhere inside a salsa query, and salsa takes care to deduplicate diagnostics if the same query is called multiple times.</p>
-<h2>Performance</h2>
-<p>This still significantly regresses the incremental performance. I created another <a href="https://github.com/salsa-rs/salsa/pull/622">salsa PR</a> to reduce the regression to 9%. I don't think we can do much better except reducing the number of inputs by using <a href="https://github.com/salsa-rs/salsa/issues/598">coarse-grained</a> salsa dependencies because:</p>
+            <div class="timeline-body">Summary
+<p>This is a reimplementation of <a href="https://github.com/astral-sh/ruff/pull/14116">astral-sh/ruff#14116</a> now that Salsa <a href="https://github.com/salsa-rs/salsa/pull/615">salsa accumulators are cheaper</a> (close to &quot;free&quot; for queries without diagnostics).</p>
+<p>The main benefit of salsa accumulators is that they&#x27;re an easy way to emit a diagnostic from anywhere inside a salsa query, and salsa takes care to deduplicate diagnostics if the same query is called multiple times.</p>
+Performance
+<p>This still significantly regresses the incremental performance. I created another <a href="https://github.com/salsa-rs/salsa/pull/622">salsa PR</a> to reduce the regression to 9%. I don&#x27;t think we can do much better except reducing the number of inputs by using <a href="https://github.com/salsa-rs/salsa/issues/598">coarse-grained</a> salsa dependencies because:</p>
 <ul>
 <li>Salsa currently tracks reads on a per &quot;field&quot; level for salsa structs. This very fine-grained tracking costs us here because the accumulator has to iterate and resolve all of them to know if they have any accumulated values. The coarse-grained salsa feature will help with this (and reduce the overhead in other places as well)</li>
 <li>We only check 4 files (plus standard library files that are all unchanged and have no diagnostics). The regression would be less proportionally if there were more files without diagnostics.</li>
 <li>The diagnostics are from the largest file and, to make it worse, from the module scope, which has the most definitions.</li>
 </ul>
-<p>Considering this, I'm still leaning towards migrating to salsa accumulators because of what they unlock: We can now emit diagnostics from any part of the code. This includes the module resolver (e.g. emit a warning if we find an invalid <code>pth</code> file?)</p>
-<h2>Other changes</h2>
-<p>This PR upgrades Salsa to a version with &quot;cheap&quot; accumulators. The new salsa version now requires that <code>Db</code> structs implement <code>Clone</code> for its parallel db support (which doesn't seem to work yet).</p>
-<h2>Test Plan</h2>
+<p>Considering this, I&#x27;m still leaning towards migrating to salsa accumulators because of what they unlock: We can now emit diagnostics from any part of the code. This includes the module resolver (e.g. emit a warning if we find an invalid <code>pth</code> file?)</p>
+Other changes
+<p>This PR upgrades Salsa to a version with &quot;cheap&quot; accumulators. The new salsa version now requires that <code>Db</code> structs implement <code>Clone</code> for its parallel db support (which doesn&#x27;t seem to work yet).</p>
+Test Plan
 <p><code>cargo test</code></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2024-12-03 17:47</div>
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-03 17:47</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-12-03 17:47</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-03 17:47</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-12-03 17:55</div>
-            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Fsalsa-accumulators">CodSpeed Performance Report</a></h2>
-<h3>Merging #14760 will <strong>degrade performances by 10.43%</strong></h3>
-<p><sub>Comparing <code>micha/salsa-accumulators</code> (35f3815) with <code>main</code> (1685d95)</sub></p>
-<h3>Summary</h3>
-<p><code>❌ 1 (👁 1)</code> regressions<br />
+            <div class="timeline-body"><a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Fsalsa-accumulators">CodSpeed Performance Report</a>
+Merging #14760 will <strong>degrade performances by 10.43%</strong>
+<p>Comparing <code>micha/salsa-accumulators</code> (35f3815) with <code>main</code> (1685d95)</p>
+Summary
+<p><code>❌ 1 (👁 1)</code> regressions<br>
 <code>✅ 31</code> untouched benchmarks</p>
-<h3>Benchmarks breakdown</h3>
+Benchmarks breakdown
 <p>|     | Benchmark | <code>main</code> | <code>micha/salsa-accumulators</code> | Change |
 | --- | --------- | ----------------------- | ------------------- | ------ |
 | 👁 | <code>red_knot_check_file[incremental]</code> | 4 ms | 4.4 ms | -10.43% |</p>
@@ -62,34 +62,34 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-12-03 18:03</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @MichaReiser on 2024-12-04 10:15</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-04 10:15</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @MichaReiser on 2024-12-04 10:15</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-04 10:15</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2024-12-04 10:15</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-04 10:15</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @MichaReiser on 2024-12-04 10:15</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-04 10:15</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/diagnostic.rs</code>:81 on 2024-12-04 11:43</div>
-            <div class="timeline-body"><p>is <code>report</code> the best verb here? It feels to me like we're adding a diagnostic to be reported later, rather than reporting it to the user immediately. Maybe this could be called <code>CompileDiagnostic::add()</code>?</p>
+            <div class="timeline-body"><p>is <code>report</code> the best verb here? It feels to me like we&#x27;re adding a diagnostic to be reported later, rather than reporting it to the user immediately. Maybe this could be called <code>CompileDiagnostic::add()</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -99,14 +99,14 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-12-04 11:47</div>
-            <div class="timeline-body"><p>The use of <code>report_</code> everywhere makes me feel like I'm reading the pyright codebase haha. But in most cases it seems like it probably is the best verb to use. Still, there's a couple of places where I think we could use some better names:</p>
+            <div class="timeline-body"><p>The use of <code>report_</code> everywhere makes me feel like I&#x27;m reading the pyright codebase haha. But in most cases it seems like it probably is the best verb to use. Still, there&#x27;s a couple of places where I think we could use some better names:</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-04 13:36</div>
-            <div class="timeline-body"><p>Hmm, I'm looking into suppressions right now, specifically how we'd recognize unused suppression comments.
+            <div class="timeline-body"><p>Hmm, I&#x27;m looking into suppressions right now, specifically how we&#x27;d recognize unused suppression comments.
 We could ignore inline and file-level suppression comments when deciding whether or not to emit a diagnostic and then filter them out as part of a post-processing step. The diagnostics would then allow us to &quot;account&quot; for the seen suppressions and list comments without any suppressions. However, this has the downside that more files have accumulated values, meaning the performance regression remains relevant for more files.</p>
-<p>Another alternative to emitting the diagnostic is to emit a <code>Suppressed</code> accumulated value. That's cheaper because it can be a more lightweight value (and suppressing a diagnostic can be used to work-around a bug in the diagnostic generation), but it has the same downside as using the diagnostic accumulator: Collecting all values requires an extra traversal</p>
+<p>Another alternative to emitting the diagnostic is to emit a <code>Suppressed</code> accumulated value. That&#x27;s cheaper because it can be a more lightweight value (and suppressing a diagnostic can be used to work-around a bug in the diagnostic generation), but it has the same downside as using the diagnostic accumulator: Collecting all values requires an extra traversal</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -124,15 +124,15 @@ We could ignore inline and file-level suppression comments when deciding whether
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/lib.rs</code>:105 on 2024-12-04 15:17</div>
-            <div class="timeline-body"><p>This could be any number of diagnostics and salsa doesn't provide a way to detect this earlier.</p>
-<p>Salsa accumulators work by traversing the entire dependency tree of a query. In our case, this is <code>check_file</code>. <code>check_file</code> can branch out into arbitrary files when resolving imports (and checking those files in turn). The only way for us to truncate this earlier is by not using accumulators because salsa doesn't know about the file boundaries.</p>
-<p>I don't think this is very terrible because the CLI uses <code>check_workspace</code> to get <em>all</em> diagnostics. The LSP uses <code>check_file</code> today but I don't think it should. The wasm playground uses <code>check_file</code>... this is probably fine</p>
+            <div class="timeline-body"><p>This could be any number of diagnostics and salsa doesn&#x27;t provide a way to detect this earlier.</p>
+<p>Salsa accumulators work by traversing the entire dependency tree of a query. In our case, this is <code>check_file</code>. <code>check_file</code> can branch out into arbitrary files when resolving imports (and checking those files in turn). The only way for us to truncate this earlier is by not using accumulators because salsa doesn&#x27;t know about the file boundaries.</p>
+<p>I don&#x27;t think this is very terrible because the CLI uses <code>check_workspace</code> to get <em>all</em> diagnostics. The LSP uses <code>check_file</code> today but I don&#x27;t think it should. The wasm playground uses <code>check_file</code>... this is probably fine</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/string_annotation.rs</code>:11 on 2024-12-04 15:32</div>
             <div class="timeline-body"><p>Minor: Something like</p>
-<pre><code class="language-suggestion">struct StringAnnotationParseError;
+<pre><code>struct StringAnnotationParseError;
 type AnnotationParseResult = Result&lt;Parsed&lt;ModExpression&gt;, StringAnnotationParseError&gt;;
 </code></pre>
 <p>would maybe make <code>match</code>es at the call sites of this function a bit easier to understand</p>
@@ -152,7 +152,7 @@ type AnnotationParseResult = Result&lt;Parsed&lt;ModExpression&gt;, StringAnnota
 <ul>
 <li>Do we really want an unstable sort here? Two different diagnostics could compare equal according to the ordering defined here if they refer to the same range, or even just the same range start.</li>
 <li>Why do we order by file and then by the path of the file? Can multiple files refer to the same path?</li>
-<li>If performance is not a major concern here, we could potentially do something like<pre><code class="language-rs">diagnostics.sort_unstable_by_key(|diagnostic| {
+<li>If performance is not a major concern here, we could potentially do something like<pre><code>diagnostics.sort_unstable_by_key(|diagnostic| {
     let file = diagnostic.file();
     let path = file.path(db).as_str();
     let range_start = diagnostic.range().unwrap_or_default().start();
@@ -172,11 +172,11 @@ type AnnotationParseResult = Result&lt;Parsed&lt;ModExpression&gt;, StringAnnota
             <div class="timeline-body"><blockquote>
 <p>Why do we order by file and then by the path of the file? Can multiple files refer to the same path?</p>
 </blockquote>
-<p>Oh, that's just wrong. The idea was to short-cut if the files are identical.</p>
+<p>Oh, that&#x27;s just wrong. The idea was to short-cut if the files are identical.</p>
 <blockquote>
 <p>Do we really want an unstable sort here? Two different diagnostics could compare equal according to the ordering defined here if they refer to the same range, or even just the same range start.</p>
 </blockquote>
-<p>I don't think it's important for us to preserve the original order if there are multiple diagnostics at the same line, for as long as the order is deterministic (Running Red Knot multiple times should give you the same result). We should probably include the rule code as well as disambiguator</p>
+<p>I don&#x27;t think it&#x27;s important for us to preserve the original order if there are multiple diagnostics at the same line, for as long as the order is deterministic (Running Red Knot multiple times should give you the same result). We should probably include the rule code as well as disambiguator</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -200,15 +200,15 @@ type AnnotationParseResult = Result&lt;Parsed&lt;ModExpression&gt;, StringAnnota
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Converted to draft by @MichaReiser on 2024-12-10 13:02</div>
+            <div class="event">Converted to draft by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-10 13:02</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2024-12-30 09:09</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-30 09:09</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:08:14 UTC
+        Synced at 2026-01-20 19:09:09 UTC
     </footer>
 </body>
 </html>

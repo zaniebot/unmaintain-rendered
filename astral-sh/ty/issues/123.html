@@ -24,7 +24,7 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a></div>
             <div class="timeline-body"><p>This code, in a stub file, results in a query cycle, with <code>ClassLiteralType::try_metaclass</code> as the cycle head:</p>
-<pre><code class="language-py">class A:
+<pre><code>class A:
     def lucky_number(self): ...
 
 class B(A):
@@ -34,47 +34,47 @@ obj = B()
 assert obj.lucky_number() == 2
 </code></pre>
 <p>The issue is that name resolution of <code>A</code> in <code>class B(A)</code> is deferred (because we are in a stub file), and the public binding of <code>A</code> has a visibility constraint of <code>obj.lucky_number() == 2</code>. Evaluating that visibility constraint requires figuring out what <code>obj.lucky_number</code> is, which means resolving the MRO of <code>B</code>, which means resolving the public binding of <code>A</code>.</p>
-<p>I'm recording this issue for future consideration, but not prioritizing it right now, since I think it's very unlikely to occur in the wild; since stub files are not executed, they are very unlikely to have assertions or conditionals based on the types they themselves define. (There may well be visibility constraints on e.g. <code>sys.version_info</code> or other simple constants, but those won't cause this kind of cycle.)</p>
+<p>I&#x27;m recording this issue for future consideration, but not prioritizing it right now, since I think it&#x27;s very unlikely to occur in the wild; since stub files are not executed, they are very unlikely to have assertions or conditionals based on the types they themselves define. (There may well be visibility constraints on e.g. <code>sys.version_info</code> or other simple constants, but those won&#x27;t cause this kind of cycle.)</p>
 <p>It may be that we find other, more compelling reasons to add fixpoint handling to <code>ClassLiteralType::try_metaclass</code>, in which case this cycle panic would go away too.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-18 19:53</div>
-            <div class="timeline-body"><p>It feels like when resolving deferred names, we really shouldn't need to take into account the possibility of the scope not completing at all. But I'm not sure how to model this exactly. Maybe by <code>OR</code>ing the visibility constraints on each binding with the negation of <code>scope_start_visibility</code>? That is, when considering the visibility of a given binding, we should eliminate from consideration those cases in which the scope-start itself is not visible.</p>
+            <div class="timeline-body"><p>It feels like when resolving deferred names, we really shouldn&#x27;t need to take into account the possibility of the scope not completing at all. But I&#x27;m not sure how to model this exactly. Maybe by <code>OR</code>ing the visibility constraints on each binding with the negation of <code>scope_start_visibility</code>? That is, when considering the visibility of a given binding, we should eliminate from consideration those cases in which the scope-start itself is not visible.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @carljm by @carljm on 2025-04-18 19:53</div>
+            <div class="event">Assigned to <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/carljm">@carljm</a> on 2025-04-18 19:53</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-18 21:25</div>
-            <div class="timeline-body"><p>I'd honestly be okay with just banning <code>assert</code> and <code>raise</code> statements in stub files if we can't be confident that we can handle them without panicking. I can't see any possible use case for having them in stub files. Do other type checkers accept them?</p>
+            <div class="timeline-body"><p>I&#x27;d honestly be okay with just banning <code>assert</code> and <code>raise</code> statements in stub files if we can&#x27;t be confident that we can handle them without panicking. I can&#x27;t see any possible use case for having them in stub files. Do other type checkers accept them?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-04-18 21:34</div>
-            <div class="timeline-body"><p>The only use case I can think of is platform asserts, like <code>assert sys.platform == &quot;win32&quot;</code> for a Windows-only stub. I feel like that's been proposed but I'm not sure any other type checker supports it.</p>
-<p>If we add that, I'd be fine with restricting them syntactically to be before any class/function definition though, which should simplify life for you.</p>
+            <div class="timeline-body"><p>The only use case I can think of is platform asserts, like <code>assert sys.platform == &quot;win32&quot;</code> for a Windows-only stub. I feel like that&#x27;s been proposed but I&#x27;m not sure any other type checker supports it.</p>
+<p>If we add that, I&#x27;d be fine with restricting them syntactically to be before any class/function definition though, which should simplify life for you.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[red-knot] possible cycle with class inheritance and visibility constraints in a stub file" to "possible cycle with class inheritance and visibility constraints in a stub file" by @MichaReiser on 2025-05-07 15:25</div>
+            <div class="event">Renamed from &quot;[red-knot] possible cycle with class inheritance and visibility constraints in a stub file&quot; to &quot;possible cycle with class inheritance and visibility constraints in a stub file&quot; by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-07 15:25</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "alpha" by @MichaReiser on 2025-05-07 15:56</div>
+            <div class="event">Added to milestone &quot;alpha&quot; by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-07 15:56</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-11 07:36</div>
-            <div class="timeline-body"><p>We no longer panic on this snippet in a stub file (https://play.ty.dev/da6d32c2-cf68-47ba-98fd-1e524e62ff42), presumably as a result of https://github.com/astral-sh/ruff/pull/17758</p>
+            <div class="timeline-body"><p>We no longer panic on this snippet in a stub file (https://play.ty.dev/da6d32c2-cf68-47ba-98fd-1e524e62ff42), presumably as a result of <a href="https://github.com/astral-sh/ruff/pull/17758">astral-sh/ruff#17758</a></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-05-11 07:36</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-11 07:36</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:19:35 UTC
+        Synced at 2026-01-20 19:24:08 UTC
     </footer>
 </body>
 </html>

@@ -25,7 +25,7 @@
             <div class="timeline-header"><a href="https://github.com/LKajan">@LKajan</a></div>
             <div class="timeline-body"><p>If folder containing braces in its name is configured to the <code>extend-exclude</code> ruff fails to run. <code>ruff .</code> produces an error:</p>
 <pre><code>ruff failed
-  Cause: error parsing glob 'C:\Users\&lt;&gt;\cookiecutter-plugin\{{cookiecutter.plugin_package}}': nested alternate groups are not allowed
+  Cause: error parsing glob &#x27;C:\Users\&lt;&gt;\cookiecutter-plugin\{{cookiecutter.plugin_package}}&#x27;: nested alternate groups are not allowed
 </code></pre>
 <p>Ruff version: 0.0.292</p>
 <p><strong>My project structure and configuration:</strong></p>
@@ -35,7 +35,7 @@
 | ├ post_gen_project.py
 ├ pyproject.toml
 </code></pre>
-<pre><code class="language-toml"># pyproject.toml
+<pre><code># pyproject.toml
 [tool.ruff]
 extend-exclude = [&quot;{{cookiecutter.plugin_package}}&quot;]
 </code></pre>
@@ -44,33 +44,33 @@ extend-exclude = [&quot;{{cookiecutter.plugin_package}}&quot;]
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-14 18:44</div>
             <div class="timeline-body"><p>These are globs, so you need to do some escaping:</p>
-<pre><code class="language-toml">[tool.ruff]
+<pre><code>[tool.ruff]
 extend-exclude = [
-  '\{\{cookiecutter.plugin_package\}\}'
+  &#x27;\{\{cookiecutter.plugin_package\}\}&#x27;
 ]
 </code></pre>
 <p>TOML requires single quotes there, I think, but I tested this myself. Let me know if it works for you!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-10-14 18:44</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-14 18:44</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">waiting-on-author</span> added by @charliermarsh on 2023-10-14 18:44</div>
+            <div class="event">Label <span class="label">waiting-on-author</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-14 18:44</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/LKajan">@LKajan</a> on 2023-10-15 10:17</div>
-            <div class="timeline-body"><p>Unfortunately escaping didn't work.
-With <code>extend-exclude = ['\{\{cookiecutter.plugin_package\}\}']</code> I'll get an error</p>
+            <div class="timeline-body"><p>Unfortunately escaping didn&#x27;t work.
+With <code>extend-exclude = [&#x27;\{\{cookiecutter.plugin_package\}\}&#x27;]</code> I&#x27;ll get an error</p>
 <pre><code>ruff failed
-  Cause: error parsing glob 'C:\{\{cookiecutter.plugin_package\}\}': nested alternate groups are not allowed
+  Cause: error parsing glob &#x27;C:\{\{cookiecutter.plugin_package\}\}&#x27;: nested alternate groups are not allowed
 </code></pre>
 <p>Please note also the path is now directly under C:\ and not in the workind directory.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/LKajan">@LKajan</a> on 2023-10-15 10:23</div>
-            <div class="timeline-body"><p>I found an issue from VS Code with the same error message: https://github.com/microsoft/vscode/issues/194701
+            <div class="timeline-body"><p>I found an issue from VS Code with the same error message: <a href="https://github.com/microsoft/vscode/issues/194701">microsoft/vscode#194701</a>
 So this might be an issue of a upstream library.</p>
 </div>
         </div>
@@ -84,8 +84,8 @@ So this might be an issue of a upstream library.</p>
             <div class="timeline-body"><blockquote>
 <p>I wonder why the escaping worked fine for me but not for you. I just want to confirm that you used single quotes in the TOML file?</p>
 </blockquote>
-<p>That's what I was wondering too. Could this be an OS dependent? And how come single quotes make the path absolute and not relative?
-<img src="https://github.com/astral-sh/ruff/assets/1225021/0ac299e6-ca2e-4155-b5b7-e07da7fa1a27" alt="image" /></p>
+<p>That&#x27;s what I was wondering too. Could this be an OS dependent? And how come single quotes make the path absolute and not relative?
+<img src="https://github.com/astral-sh/ruff/assets/1225021/0ac299e6-ca2e-4155-b5b7-e07da7fa1a27" alt="image"></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -97,7 +97,7 @@ So this might be an issue of a upstream library.</p>
             <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2023-10-16 15:33</div>
             <div class="timeline-body"><p>For meta-characters escaping in <code>glob</code> you must <a href="https://docs.python.org/3/library/glob.html#glob.escape">wrap it in brackets</a>: <code>[</code> and <code>]</code>
 I used this and got expected result:</p>
-<pre><code class="language-toml">extend-exclude = [&quot;[{][{]cookiecutter.plugin_package[}][}]&quot;]
+<pre><code>extend-exclude = [&quot;[{][{]cookiecutter.plugin_package[}][}]&quot;]
 </code></pre>
 </div>
         </div>
@@ -109,7 +109,7 @@ I used this and got expected result:</p>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/LKajan">@LKajan</a> on 2023-10-17 10:52</div>
             <div class="timeline-body"><p>Thanks @T-256 that actually worked!</p>
-<p>Should the value be escaped by user or by Ruff? If left to the user's responsibility, then at least this should be documented somehow. Either a clear instructions or at least a reference to a some rigrep/regexp documentation.</p>
+<p>Should the value be escaped by user or by Ruff? If left to the user&#x27;s responsibility, then at least this should be documented somehow. Either a clear instructions or at least a reference to a some rigrep/regexp documentation.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -127,7 +127,7 @@ I used this and got expected result:</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @LKajan on 2023-10-17 11:37</div>
+            <div class="event">Closed by <a href="https://github.com/LKajan">@LKajan</a> on 2023-10-17 11:37</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/reinout">@reinout</a> on 2024-01-19 19:44</div>
@@ -141,7 +141,7 @@ I used this and got expected result:</p>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:48:37 UTC
+        Synced at 2026-01-20 18:48:43 UTC
     </footer>
 </body>
 </html>

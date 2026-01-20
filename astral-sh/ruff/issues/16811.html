@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/amirsoroush">@amirsoroush</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>I see an inconsistent behavior in detecting <code>RUF006</code> rule.</p>
-<pre><code class="language-python">import asyncio
+<pre><code>import asyncio
 
 
 async def coro1() -&gt; None:
@@ -48,45 +48,45 @@ async def main() -&gt; None:
 asyncio.run(main())
 </code></pre>
 <p>Output for <code># 1</code> and <code># 3</code> is:</p>
-<pre><code class="language-none">Store a reference to the return value of `asyncio.create_task`
+<pre><code>Store a reference to the return value of `asyncio.create_task`
 </code></pre>
 <p>Ruff correctly detects <code># 1</code> and correctly discards <code># 2</code>(it has a reference in global). Now if Ruff decides to detect <code># 3</code> as error then <code># 4</code> should also be detected as error. There is no difference in how the returned references are stored.</p>
-<p>If Ruff detects <code># 3</code> due to the fact that <code>t2</code> is only referenced inside the contained coroutine(and creates a circular reference) then it's the same as <code># 4</code>. One of them inside a local variable and one of them inside a <code>set</code> object. In this case it should only discards <code># 4</code> if the <code>set</code> object is defined outside in a global namespace.</p>
-<p>I don't know what the correct decision is but I guess those should be treated equally.</p>
+<p>If Ruff detects <code># 3</code> due to the fact that <code>t2</code> is only referenced inside the contained coroutine(and creates a circular reference) then it&#x27;s the same as <code># 4</code>. One of them inside a local variable and one of them inside a <code>set</code> object. In this case it should only discards <code># 4</code> if the <code>set</code> object is defined outside in a global namespace.</p>
+<p>I don&#x27;t know what the correct decision is but I guess those should be treated equally.</p>
 <p>I might have missed something here, I would be grateful if you correct me. Thanks.</p>
-<h3>Version</h3>
+Version
 <p>ruff==0.10.0 (shipped with VSCode Ruff extension version 2025.18.0)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-17 19:49</div>
-            <div class="timeline-body"><p>Thanks for the report! I think this corresponds to one of the known false negative test cases added in https://github.com/astral-sh/ruff/pull/9060, but I don't see a tracking issue for it.</p>
-<p>I'm not that familiar with these <code>async</code> semantics, but I think I agree with you that ruff is correctly flagging (3), which means it should also flag (4) since these are both local variables. (<a href="https://play.ruff.rs/97411537-7fba-48a6-9777-70c1b6d6c0c2">playground link</a>)</p>
+            <div class="timeline-body"><p>Thanks for the report! I think this corresponds to one of the known false negative test cases added in <a href="https://github.com/astral-sh/ruff/pull/9060">astral-sh/ruff#9060</a>, but I don&#x27;t see a tracking issue for it.</p>
+<p>I&#x27;m not that familiar with these <code>async</code> semantics, but I think I agree with you that ruff is correctly flagging (3), which means it should also flag (4) since these are both local variables. (<a href="https://play.ruff.rs/97411537-7fba-48a6-9777-70c1b6d6c0c2">playground link</a>)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-03-17 19:49</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-17 19:49</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-17 20:12</div>
-            <div class="timeline-body"><p>I think the reason ruff doesn't dedect 4 is because s.add could await its parameter in some form or another. This seems a case where type checking can find this isse easily but we'd have to encode a long list of known methods that don't accept tasks</p>
+            <div class="timeline-body"><p>I think the reason ruff doesn&#x27;t dedect 4 is because s.add could await its parameter in some form or another. This seems a case where type checking can find this isse easily but we&#x27;d have to encode a long list of known methods that don&#x27;t accept tasks</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2025-03-17 20:12</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-17 20:12</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/amirsoroush">@amirsoroush</a> on 2025-03-17 20:28</div>
             <div class="timeline-body"><blockquote>
-<p>I think the reason ruff doesn't dedect 4 is because s.add could await its parameter in some form or another.</p>
+<p>I think the reason ruff doesn&#x27;t dedect 4 is because s.add could await its parameter in some form or another.</p>
 </blockquote>
-<p>I'm pretty sure <code>s.add</code> can't await its arguments. It's just a builtin method of set object and behave semantically like <code>list.append</code>. Whether the task is get executed immediately or not depends on the eagerness of the <a href="https://docs.python.org/3/library/asyncio-task.html#asyncio.Task">Task object</a> itself which is another story.</p>
+<p>I&#x27;m pretty sure <code>s.add</code> can&#x27;t await its arguments. It&#x27;s just a builtin method of set object and behave semantically like <code>list.append</code>. Whether the task is get executed immediately or not depends on the eagerness of the <a href="https://docs.python.org/3/library/asyncio-task.html#asyncio.Task">Task object</a> itself which is another story.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-17 21:27</div>
-            <div class="timeline-body"><p>I think @MichaReiser was referring to a more general case, where it's hard to tell the type of <code>s</code>. As a (likely silly) example,</p>
-<pre><code class="language-python">class Awaiter:
+            <div class="timeline-body"><p>I think @MichaReiser was referring to a more general case, where it&#x27;s hard to tell the type of <code>s</code>. As a (likely silly) example,</p>
+<pre><code>class Awaiter:
     async def add(self, task):
         await task
 
@@ -94,7 +94,7 @@ s = Awaiter()
 ...
 s.add(task)
 </code></pre>
-<p>ruff could currently handle specific cases like <code>set</code> if we can resolve its type within a single file, but a more general approach requires type checking (and likely multi-file analysis) to really know what <code>s.add</code> means in a given context. Otherwise we end up with the long list Micha mentioned of methods like <code>set.add</code> and <code>list.append</code>. So we'll need better type inference to handle this robustly.</p>
+<p>ruff could currently handle specific cases like <code>set</code> if we can resolve its type within a single file, but a more general approach requires type checking (and likely multi-file analysis) to really know what <code>s.add</code> means in a given context. Otherwise we end up with the long list Micha mentioned of methods like <code>set.add</code> and <code>list.append</code>. So we&#x27;ll need better type inference to handle this robustly.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -105,7 +105,7 @@ s.add(task)
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:52:24 UTC
+        Synced at 2026-01-20 18:49:41 UTC
     </footer>
 </body>
 </html>

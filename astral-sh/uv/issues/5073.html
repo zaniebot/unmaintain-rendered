@@ -24,25 +24,25 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/morotti">@morotti</a></div>
             <div class="timeline-body"><p>Hello,</p>
-<p>I'm trying the latest version of uv and I see that you added progress bars. :)</p>
+<p>I&#x27;m trying the latest version of uv and I see that you added progress bars. :)</p>
 <p>uv is downloading tensorflow at less than 1 MB/s.
 when tensorflow is the last remaining package, the speed starts increasing to a more reasonable speed of double digits MB/s.
 for reference, I have pip downloading at 400+ MB/s for tensorflow/torch (with one patch pending to merge to fix the progress bar :D ).</p>
-<p>There is a chance it's not the progress bars themselves, but the addition of progress bars made the issue visible.</p>
-<img width="528" alt="image" src="https://github.com/user-attachments/assets/e1e66915-c904-43df-a849-2c66f63c5e6e">
+<p>There is a chance it&#x27;s not the progress bars themselves, but the addition of progress bars made the issue visible.</p>
+<img alt="image" src="https://github.com/user-attachments/assets/e1e66915-c904-43df-a849-2c66f63c5e6e">
 
 <p>Looking at the output:</p>
 <ol>
-<li>I see that uv is doing 50 concurrent downloads in parallel. It's too many to the point it's counterproductive for performance.
-It will also cause issues with proxy/firewall and internal pypi servers that can't take the load and drop connections.
+<li>I see that uv is doing 50 concurrent downloads in parallel. It&#x27;s too many to the point it&#x27;s counterproductive for performance.
+It will also cause issues with proxy/firewall and internal pypi servers that can&#x27;t take the load and drop connections.
 Can I suggest to reduce that to 20 at most? It will be faster and more stable.
 As a nice side effect, it will allow the output to fit in the screen (default console is around 80 x 24 lines). The default output of 50 lines never fits in the screen ^^</li>
 </ol>
 <p>I do note that both the resolver and the download seem to use the same concurrency settings (50 by default). It might make sense for the settings to be separate, the resolver is doing small requests and is more affected by latency, the downloading is more about bandwidth.</p>
-<ol start="2">
+<ol>
 <li><p>Can you review what is the chunk size for reading from network? writing to disk?</p>
 </li>
-<li><p>The screen flashes a lot, like it's trying to rerender all the progress bars every few kB. Do you have some sort of limits on how often the bar should be refreshed?</p>
+<li><p>The screen flashes a lot, like it&#x27;s trying to rerender all the progress bars every few kB. Do you have some sort of limits on how often the bar should be refreshed?</p>
 </li>
 <li><p>Do you have some throttling or priority where it tries to download packages at the top of the list first by any chance?
 The list is sorted with bigger packages to the bottom.</p>
@@ -95,16 +95,16 @@ sys     0m50.748s
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-15 14:16</div>
-            <div class="timeline-body"><p>My guess is that you're being rate-limited or throttled somehow.</p>
+            <div class="timeline-body"><p>My guess is that you&#x27;re being rate-limited or throttled somehow.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/morotti">@morotti</a> on 2024-07-15 14:25</div>
             <div class="timeline-body"><blockquote>
-<p>My guess is that you're being rate-limited or throttled somehow.</p>
+<p>My guess is that you&#x27;re being rate-limited or throttled somehow.</p>
 </blockquote>
 <p>I am not rate limited. I can download torch at ~450 MB/s with <code>time pip download --dest /tmp/deleteme --no-cache torch </code> to an internal mirror of pypi.</p>
-<p>uv is downloading at 1 MB/s for the first 10 MB or so, then it's increasing to double digits MB/s, it's better toward the end but still below expectations. there is something wrong with uv.</p>
+<p>uv is downloading at 1 MB/s for the first 10 MB or so, then it&#x27;s increasing to double digits MB/s, it&#x27;s better toward the end but still below expectations. there is something wrong with uv.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -115,7 +115,7 @@ sys     0m50.748s
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/morotti">@morotti</a> on 2024-07-15 14:37</div>
             <div class="timeline-body"><p>installing torch alone (it requires typing-extensions too)</p>
-<p>I see the progress bar appearing with a few MB done, the download is progressing very slowly (I'd say around 1 MB/s) from 5 to 10 MB completed, then the download speed is increasing to double digits MB/s (hard to estimate on sight) until the end.</p>
+<p>I see the progress bar appearing with a few MB done, the download is progressing very slowly (I&#x27;d say around 1 MB/s) from 5 to 10 MB completed, then the download speed is increasing to double digits MB/s (hard to estimate on sight) until the end.</p>
 <pre><code>$ rm -rf /tmp/deleteme/ &amp;&amp; time uv pip install --prefix /tmp/deleteme  --no-cache torch
 
  Preparing packages... (1/2)
@@ -159,10 +159,10 @@ uv pip install --prefix /tmp/deleteme --no-cache torch  0.88s user 1.52s system 
             <div class="timeline-body"><p>Interesting...</p>
 <p>From the logs, I get both &quot;resolved&quot; and &quot;prepared&quot; logs at 19 and 20 seconds.
 You get 0.2 and 2 seconds.</p>
-<p>I think it's unexpected to say the least? why does the resolution takes this long for me? and it's so much faster for you?</p>
+<p>I think it&#x27;s unexpected to say the least? why does the resolution takes this long for me? and it&#x27;s so much faster for you?</p>
 <p>With <code>--verbose</code> flag and timestamping I get a warning <code>WARN Range requests not supported for torch-1.13.1+cu117-cp38-cp38-linux_x86_64.whl; streaming wheel</code> during the resolution phase then it takes 20 seconds to download it.
 Repeat the same logs and duration during the preparation phase (I think the prepare is the download phase).</p>
-<p>web server is artifactory behind some caching server. maybe it doesn't support range requests. is it possible <code>uv</code> hits a completely different codepath when the web server does not support range requests?</p>
+<p>web server is artifactory behind some caching server. maybe it doesn&#x27;t support range requests. is it possible <code>uv</code> hits a completely different codepath when the web server does not support range requests?</p>
 <pre><code>Jul 15 15:48:59 WARN Range requests not supported for torch-1.13.1+cu117-cp38-cp38-linux_x86_64.whl; streaming wheel
 Jul 15 15:48:59 DEBUG No cache entry for: https://mycompany.example.com/artifactory/api/pypi/pypi-mirror/torch/1.13.1+cu117/torch-1.13.1+cu117-cp38-cp38-linux_x86_64.whl#md5=f9aa82f33cd00d9d244b1fd1dd930a95
 Jul 15 15:49:19 DEBUG Adding transitive dependency for torch==1.13.1+cu117: typing-extensions*
@@ -171,27 +171,27 @@ Jul 15 15:49:19 DEBUG Adding transitive dependency for torch==1.13.1+cu117: typi
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-15 15:00</div>
-            <div class="timeline-body"><p>If you don't support range requests, we can't just download the part of the wheel we need to extract metadata so we need to download the entire thing to perform resolution. Servers that do not support range requests are expected to have significant degradation of resolver performance.</p>
+            <div class="timeline-body"><p>If you don&#x27;t support range requests, we can&#x27;t just download the part of the wheel we need to extract metadata so we need to download the entire thing to perform resolution. Servers that do not support range requests are expected to have significant degradation of resolver performance.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-15 15:00</div>
-            <div class="timeline-body"><p>That shouldn't be the problem though, since we should be caching that wheel (and we need to download it in the next step anyway).</p>
+            <div class="timeline-body"><p>That shouldn&#x27;t be the problem though, since we should be caching that wheel (and we need to download it in the next step anyway).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-15 15:01</div>
-            <div class="timeline-body"><p>(As an aside, I feel like your tone assumes we will disagree with you. I'm not here to tell you that you're wrong, and that uv is perfect! I'm just trying to get more information so we can diagnose the problem.)</p>
+            <div class="timeline-body"><p>(As an aside, I feel like your tone assumes we will disagree with you. I&#x27;m not here to tell you that you&#x27;re wrong, and that uv is perfect! I&#x27;m just trying to get more information so we can diagnose the problem.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-15 15:01</div>
-            <div class="timeline-body"><p>It does sound weird that we don't cache and use it in the subsequent step. Maybe there's a bug there if you're seeing that log twice?</p>
+            <div class="timeline-body"><p>It does sound weird that we don&#x27;t cache and use it in the subsequent step. Maybe there&#x27;s a bug there if you&#x27;re seeing that log twice?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-15 15:02</div>
-            <div class="timeline-body"><p>Even still, that doesn't explain why the download is slow.</p>
+            <div class="timeline-body"><p>Even still, that doesn&#x27;t explain why the download is slow.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -202,9 +202,9 @@ Jul 15 15:49:19 DEBUG Adding transitive dependency for torch==1.13.1+cu117: typi
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-15 15:10</div>
-            <div class="timeline-body"><p>Thanks! No problem we're happy to help out.</p>
+            <div class="timeline-body"><p>Thanks! No problem we&#x27;re happy to help out.</p>
 <p>With <code>--no-cache</code> we should use a temporary cache that is reused across the entire invocation.</p>
-<p>As Charlie noted, it is still confusing that the download is slow separately from the other problems. Maybe we don't chunk the download well when streaming the whole file? Maybe we need to try to reproduce with a registry that does not allow range requests.</p>
+<p>As Charlie noted, it is still confusing that the download is slow separately from the other problems. Maybe we don&#x27;t chunk the download well when streaming the whole file? Maybe we need to try to reproduce with a registry that does not allow range requests.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -220,7 +220,7 @@ Jul 15 15:49:19 DEBUG Adding transitive dependency for torch==1.13.1+cu117: typi
 <p>sorry, I am not able to test that for comparison, connection to pypi.org is blocked by firewall at my workplace.</p>
 <p>Trying in verbose debug with <code>UV_CONCURRENT_DOWNLOADS=1 ... --verbose --verbose</code>, still on the internal mirror.</p>
 <p>logs in the resolution phase below.
-Notice the part with no logs for 20 seconds, that must be the part where it's downloading the wheel.</p>
+Notice the part with no logs for 20 seconds, that must be the part where it&#x27;s downloading the wheel.</p>
 <p>code in or around uv_client::registry_client::read_metadata_stream?
 best guess, is it possible the code is downloading in very small chunks? could be small chunks from the network or to the disk or both?</p>
 <pre><code>Jul 15 16:21:16  uv_client::cached_client::from_path_sync path=&quot;/tmp/.tmpNJBBiq/wheels-v1/index/456aceeb8fbaf909/torch/torch-1.13.1+cu117-cp38-cp38-linux_x86_64.msgpack&quot;
@@ -249,12 +249,12 @@ Jul 15 16:21:55        uv_client::cached_client::get_serde
             <div class="timeline-body"><blockquote>
 <p>apologies if the tone came wrong, I am not a native speaker :sorry:</p>
 </blockquote>
-<p>No worries, I just want to make clear that we're on your side and want to help :)</p>
-<p>Let me take a look at the streaming code to verify (1) that the chunk size is what we expect, and (2) that we're caching the wheel in that case.</p>
+<p>No worries, I just want to make clear that we&#x27;re on your side and want to help :)</p>
+<p>Let me take a look at the streaming code to verify (1) that the chunk size is what we expect, and (2) that we&#x27;re caching the wheel in that case.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-07-15 15:39</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-15 15:39</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/morotti">@morotti</a> on 2024-07-15 16:23</div>
@@ -279,22 +279,22 @@ I am curious if you testing on a NVMe SSD with ultra fast CPU?</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-15 17:38</div>
-            <div class="timeline-body"><p>(I will trace through these, it's a little tricky because sometimes we already wrap in a buffer elsewhere.)</p>
+            <div class="timeline-body"><p>(I will trace through these, it&#x27;s a little tricky because sometimes we already wrap in a buffer elsewhere.)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "performance regression, uv downloads is horribly slow with progress bars" to "uv downloads are slow on fallback to streamed wheel downloads" by @zanieb on 2024-07-15 22:07</div>
+            <div class="event">Renamed from &quot;performance regression, uv downloads is horribly slow with progress bars&quot; to &quot;uv downloads are slow on fallback to streamed wheel downloads&quot; by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-15 22:07</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-16 01:33</div>
-            <div class="timeline-body"><p>Ok so for one, I believe we <em>are</em> downloading the wheel twice if your server doesn't support range requests, because we stream the wheel and stop as soon as we see a <code>METADATA</code> file, which is sometimes an optimization, but means we don't fully download (and cache) the wheel: https://github.com/astral-sh/uv/issues/5088.</p>
+            <div class="timeline-body"><p>Ok so for one, I believe we <em>are</em> downloading the wheel twice if your server doesn&#x27;t support range requests, because we stream the wheel and stop as soon as we see a <code>METADATA</code> file, which is sometimes an optimization, but means we don&#x27;t fully download (and cache) the wheel: <a href="https://github.com/astral-sh/uv/issues/5088">astral-sh/uv#5088</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Unassigned @charliermarsh by @charliermarsh on 2024-08-10 01:01</div>
+            <div class="event">Unassigned <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-10 01:01</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-08-10 01:01</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-10 01:01</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/fersarr">@fersarr</a> on 2024-08-22 16:52</div>
@@ -303,7 +303,7 @@ I am curious if you testing on a NVMe SSD with ultra fast CPU?</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-22 17:07</div>
-            <div class="timeline-body"><p>@fersarr It's possible this regressed with https://github.com/astral-sh/uv/pull/5089 as described in https://github.com/astral-sh/uv/issues/6104 — is that your situation?</p>
+            <div class="timeline-body"><p>@fersarr It&#x27;s possible this regressed with <a href="https://github.com/astral-sh/uv/pull/5089">astral-sh/uv#5089</a> as described in <a href="https://github.com/astral-sh/uv/issues/6104">astral-sh/uv#6104</a> — is that your situation?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -313,7 +313,7 @@ I am curious if you testing on a NVMe SSD with ultra fast CPU?</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-22 17:09</div>
-            <div class="timeline-body"><p>If anyone has an example of a wheel that was slow to download, that's mirrored from PyPI (so I can inspect it), it would be helpful.</p>
+            <div class="timeline-body"><p>If anyone has an example of a wheel that was slow to download, that&#x27;s mirrored from PyPI (so I can inspect it), it would be helpful.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -323,14 +323,14 @@ I am curious if you testing on a NVMe SSD with ultra fast CPU?</p>
 <li>the main issue, packages are downloading extremely slow, around 1 MB/s, until around 10 MB mark then the download gets faster.</li>
 </ol>
 <p>we have no clue why and not closer to a resolution or an understanding of the root cause.
-the only reason uv is not extremely slow due this bug, is because it's downloading 50 packages in parallel by default.</p>
-<ol start="2">
+the only reason uv is not extremely slow due this bug, is because it&#x27;s downloading 50 packages in parallel by default.</p>
+<ol>
 <li>secondary issue we found while debugging. all packages are downloaded twice.</li>
 </ol>
 <p>packages are downloaded a first time to identify dependencies then a second time to do the installation.
-the first download is a streamlit download which stops when it finds dependency information and does not cache. the METADATA file is always at the end of the wheel so it's counter productive.
+the first download is a streamlit download which stops when it finds dependency information and does not cache. the METADATA file is always at the end of the wheel so it&#x27;s counter productive.
 this issue was fixed the week after this ticket was opened.
-the fix was just reverted yesterday so it's back to square one https://github.com/astral-sh/uv/pull/6470</p>
+the fix was just reverted yesterday so it&#x27;s back to square one <a href="https://github.com/astral-sh/uv/pull/6470">astral-sh/uv#6470</a></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -340,7 +340,7 @@ the fix was just reverted yesterday so it's back to square one https://github.co
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jpedrick-numeus">@jpedrick-numeus</a> on 2024-09-06 14:45</div>
-            <div class="timeline-body"><p>I'm running into an issue with this as well. A package, which is around 160Mb, is hosted in a private CodeArtifact repository.</p>
+            <div class="timeline-body"><p>I&#x27;m running into an issue with this as well. A package, which is around 160Mb, is hosted in a private CodeArtifact repository.</p>
 <p>I get the following warnings for <em>every single version</em> of the package in code artifact, which means multiple gigabytes of data is downloaded, seemingly just to determine the package version?</p>
 <p>Additionally, I have the package version locked in the pyproject.toml.</p>
 <pre><code>WARN Range requests not supported for mypackage-1.7.34-py3-none-linux_x86_64.whl; streaming wheel
@@ -350,13 +350,13 @@ DEBUG No cache entry for: https://some-server.d.codeartifact.eu-west-1.amazonaws
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-06 14:51</div>
-            <div class="timeline-body"><p>@jpedrick-numeus unfortunately this is a problem with CodeArtifact — they should support the modern metadata API so we don't need to download wheels to inspect their requirements and if they don't support that they should at least support range requests so we can effectively extract the requirements.</p>
+            <div class="timeline-body"><p>@jpedrick-numeus unfortunately this is a problem with CodeArtifact — they should support the modern metadata API so we don&#x27;t need to download wheels to inspect their requirements and if they don&#x27;t support that they should at least support range requests so we can effectively extract the requirements.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jpedrick-numeus">@jpedrick-numeus</a> on 2024-09-09 12:03</div>
             <div class="timeline-body"><blockquote>
-<p>@jpedrick-numeus unfortunately this is a problem with CodeArtifact — they should support the modern metadata API so we don't need to download wheels to inspect their requirements and if they don't support that they should at least support range requests so we can effectively extract the requirements.</p>
+<p>@jpedrick-numeus unfortunately this is a problem with CodeArtifact — they should support the modern metadata API so we don&#x27;t need to download wheels to inspect their requirements and if they don&#x27;t support that they should at least support range requests so we can effectively extract the requirements.</p>
 </blockquote>
 <p>@zanieb does UV have to download every single version? I tried setting a version constraint <code>mypackage &gt; 1.7.34</code> or <code>== 1.7.34</code> and it still downloads all prior versions.</p>
 </div>
@@ -369,71 +369,71 @@ DEBUG No cache entry for: https://some-server.d.codeartifact.eu-west-1.amazonaws
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ewianda">@ewianda</a> on 2024-09-09 13:35</div>
             <div class="timeline-body"><blockquote>
-<p>That shouldn't be the problem though, since we should be caching that wheel (and we need to download it in the next step anyway).</p>
+<p>That shouldn&#x27;t be the problem though, since we should be caching that wheel (and we need to download it in the next step anyway).</p>
 </blockquote>
 <p>@charliermarsh Based on the logs and without understanding how the code works, I have observed that the full wheels for multiple versions are being downloaded during the resolution phase and, I guess, just picking one version in the next step.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-09 13:37</div>
-            <div class="timeline-body"><p>@ewianda -- That part is totally normal. If you're using a registry that doesn't implement either the latest standards <em>or</em> range requests, then we have to download a wheel in order to determine its dependencies.</p>
+            <div class="timeline-body"><p>@ewianda -- That part is totally normal. If you&#x27;re using a registry that doesn&#x27;t implement either the latest standards <em>or</em> range requests, then we have to download a wheel in order to determine its dependencies.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jpedrick-numeus">@jpedrick-numeus</a> on 2024-09-09 13:40</div>
             <div class="timeline-body"><blockquote>
-<p>@ewianda -- That part is totally normal. If you're using a registry that doesn't implement either the latest standards <em>or</em> range requests, then we have to download a wheel in order to determine its dependencies.</p>
+<p>@ewianda -- That part is totally normal. If you&#x27;re using a registry that doesn&#x27;t implement either the latest standards <em>or</em> range requests, then we have to download a wheel in order to determine its dependencies.</p>
 </blockquote>
-<p>@charliermarsh does UV have to download every version though? It's a bit unexpected since the version is right in the path:
+<p>@charliermarsh does UV have to download every version though? It&#x27;s a bit unexpected since the version is right in the path:
 <code>https://some-server.d.codeartifact.eu-west-1.amazonaws.com/pypi/python/simple/mypackage/1.7.19/mypackage-1.7.19-py3-none-linux_x86_64.whl#sha256=aaaaaa47deb6b27795f516e13431acffc1f0197cb9274a1ef7d2b6ae40zzzzz9</code></p>
 <p>It makes sense to download full packages for all valid versions, but filtering the versions should happen before downloading(I think).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-09 13:41</div>
-            <div class="timeline-body"><p>We're not requesting the <em>version</em>. We need the <em>dependencies</em> in order to compute an accurate resolution.</p>
+            <div class="timeline-body"><p>We&#x27;re not requesting the <em>version</em>. We need the <em>dependencies</em> in order to compute an accurate resolution.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-09 13:42</div>
-            <div class="timeline-body"><p>(For example, if you run with <code>--no-deps</code> or use <code>uv pip sync</code>, we'll only download the necessary wheels.)</p>
+            <div class="timeline-body"><p>(For example, if you run with <code>--no-deps</code> or use <code>uv pip sync</code>, we&#x27;ll only download the necessary wheels.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-09-09 13:44</div>
             <div class="timeline-body"><p>Does pip perform any differently here?</p>
-<p>Without access to logs it's not possible to figure out if uv is making an &quot;efficient&quot; resolution, and if not, why not. There are weaknesses in both the way uv and pip perform resolution, but they are different.</p>
+<p>Without access to logs it&#x27;s not possible to figure out if uv is making an &quot;efficient&quot; resolution, and if not, why not. There are weaknesses in both the way uv and pip perform resolution, but they are different.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jpedrick-numeus">@jpedrick-numeus</a> on 2024-09-09 13:46</div>
             <div class="timeline-body"><blockquote>
-<p>(For example, if you run with <code>--no-deps</code> or use <code>uv pip sync</code>, we'll only download the necessary wheels.)</p>
+<p>(For example, if you run with <code>--no-deps</code> or use <code>uv pip sync</code>, we&#x27;ll only download the necessary wheels.)</p>
 </blockquote>
-<p>Unfortunately, this goes a bit too far... I want <code>uv pip install</code> to look into the deps, but please check versions first. In my case this causes 4-5 Gb of downloads for a single package when uv could easily know the versions it's downloading will be filtered later.</p>
+<p>Unfortunately, this goes a bit too far... I want <code>uv pip install</code> to look into the deps, but please check versions first. In my case this causes 4-5 Gb of downloads for a single package when uv could easily know the versions it&#x27;s downloading will be filtered later.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-09 13:47</div>
-            <div class="timeline-body"><p>Candidly I think your diagnosis is not quite correct. We <em>already</em> know the versions when we request those URLs. So whatever you're seeing is something else. I can help if you share the <code>--verbose</code> logs, but otherwise I can only speculate, sorry.</p>
+            <div class="timeline-body"><p>Candidly I think your diagnosis is not quite correct. We <em>already</em> know the versions when we request those URLs. So whatever you&#x27;re seeing is something else. I can help if you share the <code>--verbose</code> logs, but otherwise I can only speculate, sorry.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-09 13:50</div>
-            <div class="timeline-body"><p>I'd love to make this better I just need a little more data.</p>
+            <div class="timeline-body"><p>I&#x27;d love to make this better I just need a little more data.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jpedrick-numeus">@jpedrick-numeus</a> on 2024-09-09 13:52</div>
             <div class="timeline-body"><blockquote>
-<p>I'd love to make this better I just need a little more data.</p>
+<p>I&#x27;d love to make this better I just need a little more data.</p>
 </blockquote>
-<p>Thanks! I'll respond with the verbose logs when I get a chance today</p>
+<p>Thanks! I&#x27;ll respond with the verbose logs when I get a chance today</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ewianda">@ewianda</a> on 2024-09-09 14:00</div>
-            <div class="timeline-body"><p>This is <a href="https://github.com/user-attachments/files/16625226/uv.log">a log</a> I generated in https://github.com/astral-sh/uv/issues/6104, Not sure if that is usefull</p>
+            <div class="timeline-body"><p>This is <a href="https://github.com/user-attachments/files/16625226/uv.log">a log</a> I generated in <a href="https://github.com/astral-sh/uv/issues/6104">astral-sh/uv#6104</a>, Not sure if that is usefull</p>
 <p>I see this</p>
 <pre><code> 28.505574s   1s  WARN uv_distribution::distribution_database Range requests unsupported when fetching metadata for pydantic-core==2.20.1; downloading wheel directly (range requests are not supported)
      31.928460s   1s  WARN uv_distribution::distribution_database Range requests unsupported when fetching metadata for grpcio-status==1.65.2; downloading wheel directly (range requests are not supported)
@@ -460,7 +460,7 @@ DEBUG No cache entry for: https://some-server.d.codeartifact.eu-west-1.amazonaws
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-09 14:09</div>
-            <div class="timeline-body"><p>So what's happening there is that we're finding that we have to try a <em>lot</em> of <code>grpcio-status</code> versions during the resolution. When that happens, we often prefetch them in bulk to speed things up. This probably <em>isn't</em> worth doing when a registry doesn't support range requests <em>or</em> <code>.metadata</code> endpoints, I bet it's more harmful than helpful, so we could try to turn it off in those cases.</p>
+            <div class="timeline-body"><p>So what&#x27;s happening there is that we&#x27;re finding that we have to try a <em>lot</em> of <code>grpcio-status</code> versions during the resolution. When that happens, we often prefetch them in bulk to speed things up. This probably <em>isn&#x27;t</em> worth doing when a registry doesn&#x27;t support range requests <em>or</em> <code>.metadata</code> endpoints, I bet it&#x27;s more harmful than helpful, so we could try to turn it off in those cases.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -470,13 +470,13 @@ DEBUG No cache entry for: https://some-server.d.codeartifact.eu-west-1.amazonaws
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-09-09 14:35</div>
-            <div class="timeline-body"><p>I've seen reported cases, on the pip side, where packages are multiple GB big and they are the cause of backtracking, so you should probably avoid prefetching whole wheels.</p>
-<p>Unless there's some way to reliably detect what size it is before downloading, as on the other size end I do notice with some wheels the the majority of the size is the metadata, so if it's only small, like 50 KiB or less, you could probably make an exception there.</p>
+            <div class="timeline-body"><p>I&#x27;ve seen reported cases, on the pip side, where packages are multiple GB big and they are the cause of backtracking, so you should probably avoid prefetching whole wheels.</p>
+<p>Unless there&#x27;s some way to reliably detect what size it is before downloading, as on the other size end I do notice with some wheels the the majority of the size is the metadata, so if it&#x27;s only small, like 50 KiB or less, you could probably make an exception there.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-09-09 23:42</div>
-            <div class="timeline-body"><p>In case others missed it, @charliermarsh already made this change https://github.com/astral-sh/uv/pull/7226 and a new uv was released https://github.com/astral-sh/uv/releases/tag/0.4.8</p>
+            <div class="timeline-body"><p>In case others missed it, @charliermarsh already made this change <a href="https://github.com/astral-sh/uv/pull/7226">astral-sh/uv#7226</a> and a new uv was released https://github.com/astral-sh/uv/releases/tag/0.4.8</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -485,7 +485,7 @@ DEBUG No cache entry for: https://some-server.d.codeartifact.eu-west-1.amazonaws
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2024-10-21 21:22</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-21 21:22</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/cameron-git">@cameron-git</a> on 2025-07-24 17:21</div>
@@ -503,7 +503,7 @@ On my 100mbit office network uv was as fast as pip.</p>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:25:36 UTC
+        Synced at 2026-01-20 19:32:01 UTC
     </footer>
 </body>
 </html>

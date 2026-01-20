@@ -23,14 +23,14 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Quasar6X">@Quasar6X</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<p>Currently when running scripts <code>uv</code> sets up an ephemeral environment with the requested dependencies. AFAIK this is means that <code>--script</code> implies <code>--isolated</code>. Unfortunatley <code>--active</code> doesn't use the activated environment in this case. This behaviour has two drawbacks.</p>
+            <div class="timeline-body">Summary
+<p>Currently when running scripts <code>uv</code> sets up an ephemeral environment with the requested dependencies. AFAIK this is means that <code>--script</code> implies <code>--isolated</code>. Unfortunatley <code>--active</code> doesn&#x27;t use the activated environment in this case. This behaviour has two drawbacks.</p>
 <ol>
 <li><code>uv</code> needs to set up a new venv and sync deps after every run</li>
 <li>IDE tools which depend on packages being on the <code>PYTHONPATH</code> cannot work inside a workspace with just scripts. This is also true for <code>uv tool run</code> if the tool uses <code>PYTHONPATH</code>.</li>
 </ol>
 <p>Example:</p>
-<pre><code class="language-python"># /// script
+<pre><code># /// script
 # requires-python = &quot;&gt;=3.13&quot;
 # dependencies = [
 #   &quot;rich~=13.9.4&quot;,
@@ -45,11 +45,11 @@ from rich import print
 if __name__ == &quot;__main__&quot;:
     print(&quot;[italic red]Hello[/italic red] World!&quot;)
 </code></pre>
-<pre><code class="language-console">$ uv run test.py
+<pre><code>$ uv run test.py
 Installed 4 packages in 7ms
 Hello World!
 </code></pre>
-<pre><code class="language-console">$ uv tool run mypy test.py
+<pre><code>$ uv tool run mypy test.py
 test.py:11: error: Cannot find implementation or library stub for module named &quot;rich&quot;  [import-not-found]
 test.py:11: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
 Found 1 error in 1 file (checked 1 source file)
@@ -57,13 +57,13 @@ Found 1 error in 1 file (checked 1 source file)
 <p>I propose two solutions:</p>
 <ol>
 <li>Make <code>uv</code> respect <code>--active</code> even when the <code>--script</code> option is specified.</li>
-<li>Add a new option like <code>--use-workspace-env</code> (I know I'm terrible at naming things) to force <code>uv</code> into using  the <code>.venv</code> in the workspace or create a new one if it doesn't exist yet.</li>
+<li>Add a new option like <code>--use-workspace-env</code> (I know I&#x27;m terrible at naming things) to force <code>uv</code> into using  the <code>.venv</code> in the workspace or create a new one if it doesn&#x27;t exist yet.</li>
 </ol>
 <p>I think that the second solution is better, because the first one requires the user to effectively run <code>uv venv &amp;&amp; source .venv/bin/activate</code> before running the script for the first time.</p>
-<p>I'm open to implementing any of the behaviors, if it is something that you see beneficial.</p>
-<h3>Example</h3>
+<p>I&#x27;m open to implementing any of the behaviors, if it is something that you see beneficial.</p>
+Example
 <p>When running <code>test.py</code> possibly containing inline script metadata or using any of the <code>--with*</code> options, then running <code>uv run --use-workspace-env</code> the workspace <code>.venv</code> would be used or a new one would be created.</p>
-<pre><code class="language-console">$ eza -aT -L1
+<pre><code>$ eza -aT -L1
 .
 └── test.py
 
@@ -79,7 +79,7 @@ $ eza -aT -L1
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @Quasar6X on 2025-02-13 09:37</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/Quasar6X">@Quasar6X</a> on 2025-02-13 09:37</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2025-02-13 10:10</div>
@@ -98,7 +98,7 @@ $ eza -aT -L1
 <li>Make <code>uv</code> respect <code>--active</code> even when the <code>--script</code> option is specified.</li>
 </ul>
 </blockquote>
-<p>There is an open PR for that: https://github.com/astral-sh/uv/pull/11433</p>
+<p>There is an open PR for that: <a href="https://github.com/astral-sh/uv/pull/11433">astral-sh/uv#11433</a></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -107,32 +107,32 @@ $ eza -aT -L1
 <p>uv needs to set up a new venv and sync deps after every run
 IDE tools which depend on packages being on the PYTHONPATH cannot work inside a workspace with just scripts. This is also true for uv tool run if the tool uses PYTHONPATH.</p>
 </blockquote>
-<p>We now support <code>uv sync --script</code> which uses a stable path within the cache -- you can configure your editor to point to that environment. It doesn't setup a new venv or sync deps after every run. (This also wasn't true before -- we resolved the dependencies then re-used a cached environment as long as the dependencies were unchanged -- but it's not super relevant.)</p>
+<p>We now support <code>uv sync --script</code> which uses a stable path within the cache -- you can configure your editor to point to that environment. It doesn&#x27;t setup a new venv or sync deps after every run. (This also wasn&#x27;t true before -- we resolved the dependencies then re-used a cached environment as long as the dependencies were unchanged -- but it&#x27;s not super relevant.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Quasar6X">@Quasar6X</a> on 2025-02-13 15:04</div>
-            <div class="timeline-body"><p>@charliermarsh Thanks for the heads up. That's cool but I consider that more of a workaround rather than an actual solution, becuase setting some arcane cache directory in my editor config feels wrong to me.</p>
-<p>I think #11433 will solve my problems. AFAIU <code>uv sync --script</code> creates a stable path per script but my usecase involves a monorepo of PEP 723 scripts, so I need them to share a single environment. Of course I need to make sure their dependencies align but that's my concern.</p>
+            <div class="timeline-body"><p>@charliermarsh Thanks for the heads up. That&#x27;s cool but I consider that more of a workaround rather than an actual solution, becuase setting some arcane cache directory in my editor config feels wrong to me.</p>
+<p>I think #11433 will solve my problems. AFAIU <code>uv sync --script</code> creates a stable path per script but my usecase involves a monorepo of PEP 723 scripts, so I need them to share a single environment. Of course I need to make sure their dependencies align but that&#x27;s my concern.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-13 15:08</div>
-            <div class="timeline-body"><p>Candidly, using a shared virtual environment across your scripts is sort of in conflict with the inherent design and intent of scripts -- scripts are intended to be isolated, and syncing multiple scripts in sequence against a single environment could easily lead to an environment that doesn't work for <em>some</em> of the scripts. It's great if <code>--active</code> works for you! But I doubt we'll build features around that intended workflow.</p>
+            <div class="timeline-body"><p>Candidly, using a shared virtual environment across your scripts is sort of in conflict with the inherent design and intent of scripts -- scripts are intended to be isolated, and syncing multiple scripts in sequence against a single environment could easily lead to an environment that doesn&#x27;t work for <em>some</em> of the scripts. It&#x27;s great if <code>--active</code> works for you! But I doubt we&#x27;ll build features around that intended workflow.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Quasar6X">@Quasar6X</a> on 2025-02-14 06:51</div>
-            <div class="timeline-body"><p>Yeah, I completley understand your take, this is a very niche and error prone use case indeed. I'm closing this issue as completed.</p>
+            <div class="timeline-body"><p>Yeah, I completley understand your take, this is a very niche and error prone use case indeed. I&#x27;m closing this issue as completed.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @Quasar6X on 2025-02-14 06:51</div>
+            <div class="event">Closed by <a href="https://github.com/Quasar6X">@Quasar6X</a> on 2025-02-14 06:51</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:29:53 UTC
+        Synced at 2026-01-20 19:37:17 UTC
     </footer>
 </body>
 </html>

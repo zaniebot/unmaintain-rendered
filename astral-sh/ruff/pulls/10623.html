@@ -23,25 +23,25 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>This PR adds implementations around the following grammar rules to support the other expression and statement parsing. This PR doesn't update the related expressions and statements as they will be done in their own PRs.</p>
+            <div class="timeline-body">Summary
+<p>This PR adds implementations around the following grammar rules to support the other expression and statement parsing. This PR doesn&#x27;t update the related expressions and statements as they will be done in their own PRs.</p>
 <ul>
 <li><code>star_expressions</code></li>
 <li><code>star_expression</code></li>
-<li><code>'*' bitwise_or</code></li>
+<li><code>&#x27;*&#x27; bitwise_or</code></li>
 </ul>
-<h3>Problem</h3>
+Problem
 <p>There are two grammar entries around star expressions:</p>
 <pre><code>star_expression:
-    | '*' bitwise_or 
+    | &#x27;*&#x27; bitwise_or 
     | expression
 
 starred_expression:
-    '*' expression
+    &#x27;*&#x27; expression
 </code></pre>
 <p>The main difference is the precedence at which the expression should be parsed if a <code>*</code> token is encountered. Currently, we parse both rules at the same precedence which makes the parser more lenient. There are various expressions and statements which uses either one of the above rules.</p>
-<h3>Solutions</h3>
-<h4>Current solution</h4>
+Solutions
+Current solution
 <p>Add the following new methods to the parser:</p>
 <ol>
 <li><code>parse_star_expression_list</code> which would be similar to <code>parse_expression_list</code> and would match the <code>star_expressions</code> grammar rule</li>
@@ -49,10 +49,10 @@ starred_expression:
 <li><code>parse_expression_with_bitwise_or_precedence</code> which would match the <code>bitwise_or</code> grammar rule</li>
 </ol>
 <p>Here, we could possibly merge the <code>parse_expression_list</code> and <code>parse_star_expression_list</code> into a single function as it only differs in the method it delegates the parsing to. The parameter could be called <code>allow_star_expression</code>. It could be confusing because even if it’s false, we would allow starred expression but at a higher binding power.</p>
-<p>This solution closely resembles the actual grammar and is easier to follow in the parser code. It doesn't require a lot of verification by the caller as the precedence parser makes sure to not allow that.</p>
-<h4>Other solution</h4>
+<p>This solution closely resembles the actual grammar and is easier to follow in the parser code. It doesn&#x27;t require a lot of verification by the caller as the precedence parser makes sure to not allow that.</p>
+Other solution
 <p>Add a new <code>verify_bitwise_or_precedence</code> method which reports an error if the grammar expected a starred expression with <code>bitwise_or</code> precedence:</p>
-<pre><code class="language-rs">pub(super) fn verify_star_expressions(
+<pre><code>pub(super) fn verify_star_expressions(
     &amp;mut self,
     expr: &amp;Expr,
     allow_named_expression: AllowNamedExpression,
@@ -89,22 +89,22 @@ starred_expression:
 }
 </code></pre>
 <p>For this solution, the parser will need to verify the precedence of a starred expression wherever grammar expected the <code>star_expressions</code>, <code>star_expression</code> or <code>star_named_expression</code> rule.</p>
-<p>We could possibly adopt this solution for better error recovery but I think for now having a strict parser is better suited because we don't really know what complete error recovery looks like.</p>
-<h3>Follow-up</h3>
-<p>There's a related follow-up issue which I'm working on and is related to starred expressions.
+<p>We could possibly adopt this solution for better error recovery but I think for now having a strict parser is better suited because we don&#x27;t really know what complete error recovery looks like.</p>
+Follow-up
+<p>There&#x27;s a related follow-up issue which I&#x27;m working on and is related to starred expressions.
 The starred expression is only allowed in certain expressions and context which the parser needs to make sure and report an error if found otherwise.</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>Tested this locally by changing various expression and statement to use these methods. As mentioned they will be in their own PR.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">parser</span> added by @dhruvmanila on 2024-03-27 08:39</div>
+            <div class="event">Label <span class="label">parser</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-03-27 08:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-03-27 08:39</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-03-27 08:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Converted to draft by @dhruvmanila on 2024-03-27 08:57</div>
+            <div class="event">Converted to draft by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-03-27 08:57</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-03-27 08:57</div>
@@ -113,25 +113,25 @@ The starred expression is only allowed in certain expressions and context which 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-03-27 08:58</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @dhruvmanila on 2024-03-27 09:01</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-03-27 09:01</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:86 on 2024-03-27 10:10</div>
-            <div class="timeline-body"><p>Nit: i find the <code>postfix</code> list a bit confusing because we aren't parsing a list (and the term is overloaded in the <code>Parser</code> context where we have <code>parse_list</code> and <code>parse_list_expression</code>) but I don't have a better name recommendation.</p>
+            <div class="timeline-body"><p>Nit: i find the <code>postfix</code> list a bit confusing because we aren&#x27;t parsing a list (and the term is overloaded in the <code>Parser</code> context where we have <code>parse_list</code> and <code>parse_list_expression</code>) but I don&#x27;t have a better name recommendation.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -140,15 +140,15 @@ The starred expression is only allowed in certain expressions and context which 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-03-29 07:47</div>
-            <div class="timeline-body"><p>For future reference, this change is going to be updated to use the &quot;other&quot; solution mentioned in the PR description. Not all will be reverted but instead of having a <code>parse_expression_with_bitwise_or_precedence</code>, we'll allow the starred expression to be parsed with the highest precedence and limit it later by checking if it's allowed as per &quot;bitwise or&quot; precedence and report an error.</p>
-<p>I don't want to add the change here as it'll require updating all of the PRs in the stack. I'll link the PR when it's opened.</p>
+            <div class="timeline-body"><p>For future reference, this change is going to be updated to use the &quot;other&quot; solution mentioned in the PR description. Not all will be reverted but instead of having a <code>parse_expression_with_bitwise_or_precedence</code>, we&#x27;ll allow the starred expression to be parsed with the highest precedence and limit it later by checking if it&#x27;s allowed as per &quot;bitwise or&quot; precedence and report an error.</p>
+<p>I don&#x27;t want to add the change here as it&#x27;ll require updating all of the PRs in the stack. I&#x27;ll link the PR when it&#x27;s opened.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @dhruvmanila on 2024-03-29 07:48</div>
+            <div class="event">Merged by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-03-29 07:48</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dhruvmanila on 2024-03-29 07:48</div>
+            <div class="event">Closed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-03-29 07:48</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-03-29 07:48</div>
@@ -156,7 +156,7 @@ The starred expression is only allowed in certain expressions and context which 
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:03:23 UTC
+        Synced at 2026-01-20 19:02:43 UTC
     </footer>
 </body>
 </html>

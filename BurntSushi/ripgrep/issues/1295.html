@@ -23,23 +23,23 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/learnbyexample">@learnbyexample</a></div>
-            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
-<pre><code class="language-bash">$ rg --version
+            <div class="timeline-body">What version of ripgrep are you using?
+<pre><code>$ rg --version
 ripgrep 11.0.1 (rev 1f1cd9b467)
 -SIMD -AVX (compiled)
 +SIMD -AVX (runtime)
 </code></pre>
-<h4>How did you install ripgrep?</h4>
+How did you install ripgrep?
 <p>Using https://github.com/BurntSushi/ripgrep/releases/download/11.0.1/ripgrep_11.0.1_amd64.deb</p>
-<h4>What operating system are you using ripgrep on?</h4>
+What operating system are you using ripgrep on?
 <p>Ubuntu 16.04.1</p>
-<h4>Describe your question, feature request, or bug.</h4>
+Describe your question, feature request, or bug.
 <p>From https://docs.rs/regex/1.1.6/regex/#syntax</p>
 <blockquote>
 <p>Note that ^ matches after new lines, even at the end of input:</p>
 </blockquote>
-<p>and I'm guessing this applies to <code>$</code> anchor as well</p>
-<pre><code class="language-bash">$ printf 'one\ntwo\nthree\n' | rg '^' -r '* '
+<p>and I&#x27;m guessing this applies to <code>$</code> anchor as well</p>
+<pre><code>$ printf &#x27;one\ntwo\nthree\n&#x27; | rg &#x27;^&#x27; -r &#x27;* &#x27;
 * one
 * 
 * two
@@ -47,7 +47,7 @@ ripgrep 11.0.1 (rev 1f1cd9b467)
 * three
 * 
 
-$ printf 'one\ntwo\nthree\n' | rg '$' -r ' ;'
+$ printf &#x27;one\ntwo\nthree\n&#x27; | rg &#x27;$&#x27; -r &#x27; ;&#x27;
 one ;
  ;
 two ;
@@ -55,28 +55,28 @@ two ;
 three ;
  ;
 </code></pre>
-<p>The above results are consistent in behavior if each input line is processed with newline intact. As a user, this is a bit unexpected as <code>printf 'one\ntwo\nthree\n' | wc -l</code> or <code>printf 'one\ntwo\nthree\n' | rg -c '^'</code> or <code>rg -c '$'</code> would give <code>3</code> as result. But the above use of line anchors with <code>-r</code> option results in 6 output lines. The use case I'm looking here is using <code>rg</code> as alternative to <code>sed</code> (search and replace only, not other features of sed)</p>
-<p>I thought using string anchors would help here, but I'm not sure how <code>\z</code> works with ripgrep:</p>
-<pre><code class="language-bash">$ printf 'one\ntwo\nthree\n' | rg '\A' -r '* '
+<p>The above results are consistent in behavior if each input line is processed with newline intact. As a user, this is a bit unexpected as <code>printf &#x27;one\ntwo\nthree\n&#x27; | wc -l</code> or <code>printf &#x27;one\ntwo\nthree\n&#x27; | rg -c &#x27;^&#x27;</code> or <code>rg -c &#x27;$&#x27;</code> would give <code>3</code> as result. But the above use of line anchors with <code>-r</code> option results in 6 output lines. The use case I&#x27;m looking here is using <code>rg</code> as alternative to <code>sed</code> (search and replace only, not other features of sed)</p>
+<p>I thought using string anchors would help here, but I&#x27;m not sure how <code>\z</code> works with ripgrep:</p>
+<pre><code>$ printf &#x27;one\ntwo\nthree\n&#x27; | rg &#x27;\A&#x27; -r &#x27;* &#x27;
 * one
 * two
 * three
 
 $ # no output
-$ printf 'one\ntwo\nthree\n' | rg '\z' -r ' ;'
+$ printf &#x27;one\ntwo\nthree\n&#x27; | rg &#x27;\z&#x27; -r &#x27; ;&#x27;
 $ # this is the workaround I was able to find
-$ printf 'one\ntwo\nthree\n' | rg -U '\n' -r ' ;'
+$ printf &#x27;one\ntwo\nthree\n&#x27; | rg -U &#x27;\n&#x27; -r &#x27; ;&#x27;
 one ;
 two ;
 three ;
 </code></pre>
 <p>Some more examples I tried with <code>\z</code> to understand how to use it, could you explain what is happening here?</p>
-<p><img src="https://user-images.githubusercontent.com/17766317/59083619-b70e5880-8915-11e9-92bd-d14c8841a291.png" alt="rg_string_anchor" /></p>
+<p><img src="https://user-images.githubusercontent.com/17766317/59083619-b70e5880-8915-11e9-92bd-d14c8841a291.png" alt="rg_string_anchor"></p>
 <p>Some examples with <code>-o</code> option:</p>
-<pre><code class="language-bash">$ printf 'one\ntwo\nthree\n' | rg -o 'e\z'
+<pre><code>$ printf &#x27;one\ntwo\nthree\n&#x27; | rg -o &#x27;e\z&#x27;
 one
 three
-$ printf 'one\ntwo\nthree' | rg -o 'e\z'
+$ printf &#x27;one\ntwo\nthree&#x27; | rg -o &#x27;e\z&#x27;
 one
 e
 </code></pre>
@@ -86,20 +86,20 @@ e
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-06-01 00:06</div>
             <div class="timeline-body"><p>So I believe this wound up being a duplicate of #1739 (or rather, it was a duplicate of the problems witnessed in your initial examples). The main problem was that while ripgrep treats a line as its content <em>without</em> the line terminator, its printer was not being careful about making the same assumption when re-running the regex engine for colors or replacements. It looks like the issues go away once the line terminator was stripped from the haystack. So I believe all your examples work more sensibly now. And in particular, it was making the output involving <code>\z</code> particularly inscrutable.</p>
 <p>But I think there are still bugs lurking with <code>\z</code> in particular. In essence, <code>\z</code> is only supposed to match at the very end of the haystack. So when searching a file, I suppose that really should be EOF. But you could also say that it should match at the end of a line. So this looks reasonable:</p>
-<pre><code>$ printf 'one\ntwo\nthree' | rg 'e\z'
+<pre><code>$ printf &#x27;one\ntwo\nthree&#x27; | rg &#x27;e\z&#x27;
 one
 three
 </code></pre>
-<p>But the fact that <code>one</code> is matched is actually an unintended consequence of the fact that <code>e</code> is searched as a literal on its own, and then a match is confirmed by searching just the bounds of the line that contains <code>e</code>. So the regex engine sees the end of the line (without the line terminator) as the end of the haystack. But, if you provide a regex that isn't susceptible to literal optimizations...</p>
-<pre><code>$ printf 'one\ntwo\nthree' | rg '\w\z'
+<p>But the fact that <code>one</code> is matched is actually an unintended consequence of the fact that <code>e</code> is searched as a literal on its own, and then a match is confirmed by searching just the bounds of the line that contains <code>e</code>. So the regex engine sees the end of the line (without the line terminator) as the end of the haystack. But, if you provide a regex that isn&#x27;t susceptible to literal optimizations...</p>
+<pre><code>$ printf &#x27;one\ntwo\nthree&#x27; | rg &#x27;\w\z&#x27;
 three
 </code></pre>
 <p>Oops. Now only <code>three</code> matches. And this kind of &quot;feels&quot; like a correct result. And indeed, if a line terminator followed <code>three</code>, then there is no match:</p>
-<pre><code>$ printf 'one\ntwo\nthree\n' | rg '\w\z'
+<pre><code>$ printf &#x27;one\ntwo\nthree\n&#x27; | rg &#x27;\w\z&#x27;
 $
 </code></pre>
-<p>But now I kind of think that's only a fluke and a result of where the roll buffer is positioned.</p>
-<p>My thinking is that I'm not sure <code>\A</code> and <code>\z</code> can be meaningfully supported... It seems doomed to sub-optimal semantics that are manifest by the specific searching strategy.</p>
+<p>But now I kind of think that&#x27;s only a fluke and a result of where the roll buffer is positioned.</p>
+<p>My thinking is that I&#x27;m not sure <code>\A</code> and <code>\z</code> can be meaningfully supported... It seems doomed to sub-optimal semantics that are manifest by the specific searching strategy.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -107,29 +107,29 @@ $
             <div class="timeline-body"><p>Thanks for the detailed response. I finally installed Rust and was able to build a local copy to test the new changes.</p>
 <p>If I may split my issue into two parts:</p>
 <ol>
-<li><code>rg '^' -r '* '</code> and <code>rg '$' -r ' ;'</code> are now working as I would expect (this was my main issue which led to the next point)</li>
+<li><code>rg &#x27;^&#x27; -r &#x27;* &#x27;</code> and <code>rg &#x27;$&#x27; -r &#x27; ;&#x27;</code> are now working as I would expect (this was my main issue which led to the next point)</li>
 <li>Use of string anchors</li>
 </ol>
-<p>I'd feel the two suggestions given below to be better than, for example, having different output for <code>rg 'e\z'</code> and <code>rg '\w\z'</code>. 'Line' can be separated by newline or NUL or CRLF. And hopefully, same behavior can be ensured when <code>-P</code> is also used (which has <code>\Z</code> as well). Given that multiline mode is disabled:</p>
+<p>I&#x27;d feel the two suggestions given below to be better than, for example, having different output for <code>rg &#x27;e\z&#x27;</code> and <code>rg &#x27;\w\z&#x27;</code>. &#x27;Line&#x27; can be separated by newline or NUL or CRLF. And hopefully, same behavior can be ensured when <code>-P</code> is also used (which has <code>\Z</code> as well). Given that multiline mode is disabled:</p>
 <ul>
 <li>Display a warning or error when string anchors <code>\A</code> and <code>\z</code> are used. Line anchors can be used instead.</li>
-<li>Make <code>\A</code> and <code>\z</code> behave exactly as line anchors. I wouldn't expect <code>\A</code> and <code>\z</code> to act on whole input content since only single 'line' mode is active.</li>
+<li>Make <code>\A</code> and <code>\z</code> behave exactly as line anchors. I wouldn&#x27;t expect <code>\A</code> and <code>\z</code> to act on whole input content since only single &#x27;line&#x27; mode is active.</li>
 </ul>
-<hr />
+<hr>
 <p>Also, I get no output for these two commands (with <strong>12.1.1</strong> and the new changes):</p>
-<pre><code class="language-bash">$ printf 'one\ntwo\nthree\n' | rg '\z'
-$ printf 'one\ntwo\nthree\n' | rg -U '\z'
+<pre><code>$ printf &#x27;one\ntwo\nthree\n&#x27; | rg &#x27;\z&#x27;
+$ printf &#x27;one\ntwo\nthree\n&#x27; | rg -U &#x27;\z&#x27;
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-06-01 12:13</div>
-            <div class="timeline-body"><p>So I think <code>rg '\z'</code> in that case not printing anything is correct. The <code>rg -U</code> case I'm less sure about. I note that if you change the input to remove the trailing line terminator, then:</p>
-<pre><code>$ printf 'one\ntwo\nthree' | rg -U '\z'
+            <div class="timeline-body"><p>So I think <code>rg &#x27;\z&#x27;</code> in that case not printing anything is correct. The <code>rg -U</code> case I&#x27;m less sure about. I note that if you change the input to remove the trailing line terminator, then:</p>
+<pre><code>$ printf &#x27;one\ntwo\nthree&#x27; | rg -U &#x27;\z&#x27;
 three
 </code></pre>
 <p>It kind of seems like if that matches, then your example should too. Interestingly, <code>pcre2grep</code> has the same behavior as ripgrep when the line terminator is present. But when you remove it...</p>
-<pre><code>$ printf 'one\ntwo\nthree' | pcre2grep -M '\z'
+<pre><code>$ printf &#x27;one\ntwo\nthree&#x27; | pcre2grep -M &#x27;\z&#x27;
 ^C
 </code></pre>
 <p>It gets stuck in what appears to be an infinite loop. Neat.</p>
@@ -137,15 +137,15 @@ three
 <p>Given that multiline mode is disabled:</p>
 <pre><code>* Display a warning or error when string anchors `\A` and `\z` are used. Line anchors can be used instead.
 
-* Make `\A` and `\z` behave exactly as line anchors. I wouldn't expect `\A` and `\z` to act on whole input content since only single 'line' mode is active.</code></pre>
+* Make `\A` and `\z` behave exactly as line anchors. I wouldn&#x27;t expect `\A` and `\z` to act on whole input content since only single &#x27;line&#x27; mode is active.</code></pre>
 </blockquote>
-<p>Yeah both of those thoughts cross my mind as well. For the default regex engine, I can do either one without much fuss I believe. But PCRE2 doesn't expose a parser over its syntax, so doing syntactically correct transformations like this is kinda hard. I suppose we could do a heuristic, but it won't be able to cover all cases. (Since <code>(?-m:$)</code> and <code>\z</code> are equivalent, for example.)</p>
+<p>Yeah both of those thoughts cross my mind as well. For the default regex engine, I can do either one without much fuss I believe. But PCRE2 doesn&#x27;t expose a parser over its syntax, so doing syntactically correct transformations like this is kinda hard. I suppose we could do a heuristic, but it won&#x27;t be able to cover all cases. (Since <code>(?-m:$)</code> and <code>\z</code> are equivalent, for example.)</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:42:55 UTC
+        Synced at 2026-01-20 18:48:08 UTC
     </footer>
 </body>
 </html>

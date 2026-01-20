@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/tronical">@tronical</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p><code>uvx ty@0.0.1a28 check</code> yields:</p>
 <pre><code>error[invalid-method-override]: Invalid override of method `set_row_data`
   --&gt; slint/models.py:90:9
@@ -42,16 +42,16 @@
 36 |     def set_row_data(self, row: int, value: T) -&gt; None:
    |         ---------------------------------------------- `Model.set_row_data` defined here
 37 |         &quot;&quot;&quot;Call this method on mutable models to change the data for the given row.
-38 |         The UI will also call this method when modifying a model's data.
+38 |         The UI will also call this method when modifying a model&#x27;s data.
    |
 info: This violates the Liskov Substitution Principle
 info: rule `invalid-method-override` is enabled by default
 
 Found 1 diagnostic
 </code></pre>
-<p>The signatures are identical, so I'm not sure what's wrong here :)</p>
+<p>The signatures are identical, so I&#x27;m not sure what&#x27;s wrong here :)</p>
 <p>For reference (with code removed):</p>
-<pre><code class="language-python">class Model[T](native.PyModelBase, Iterable[T]):
+<pre><code>class Model[T](native.PyModelBase, Iterable[T]):
    
     def set_row_data(self, row: int, value: T) -&gt; None:
    
@@ -60,22 +60,22 @@ class ListModel[T](Model[T]):
     def set_row_data(self, row: int, data: T) -&gt; None:
         ...
 </code></pre>
-<h3>Version</h3>
+Version
 <p>0.0.1a28</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-26 09:22</div>
             <div class="timeline-body"><p>Thanks for the report! The issue here is that the third parameter has a different name in the method on your subclass than it does in the method on your superclass (<code>data</code> on the subclass, <code>value</code> on the superclass). That means that you could potentially pass a <code>value=...</code> keyword argument to the method if called on an instance of the superclass, but the exact same set of arguments would fail if called on the subclass method. That violates the Liskov Substitution Principle.</p>
-<p>Apologies that our diagnostic isn't great here right now. We'd really love to tell you in the diagnostic <em>why</em> the signature of the subclass method is incompatible with the signature of the superclass method, but this is unfortunately quite a significant task that we don't expect to start until after our beta release is out</p>
+<p>Apologies that our diagnostic isn&#x27;t great here right now. We&#x27;d really love to tell you in the diagnostic <em>why</em> the signature of the subclass method is incompatible with the signature of the superclass method, but this is unfortunately quite a significant task that we don&#x27;t expect to start until after our beta release is out</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2025-11-26 09:23</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-26 09:23</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tronical">@tronical</a> on 2025-11-26 10:31</div>
-            <div class="timeline-body"><p>Oh that's awesome. I can't believe I overlooked that, but I understand that this may be difficult to fix on your side. Now I can fix the signature on our side and use the current release. Thanks a lot for the quick response and help!</p>
+            <div class="timeline-body"><p>Oh that&#x27;s awesome. I can&#x27;t believe I overlooked that, but I understand that this may be difficult to fix on your side. Now I can fix the signature on our side and use the current release. Thanks a lot for the quick response and help!</p>
 <p>(please feel free to close this issue)</p>
 </div>
         </div>
@@ -83,18 +83,18 @@ class ListModel[T](Model[T]):
             <div class="timeline-header">Comment by <a href="https://github.com/nyssance">@nyssance</a> on 2025-11-26 14:35</div>
             <div class="timeline-body"><blockquote>
 <p>Thanks for the report! The issue here is that the third parameter has a different name in the method on your subclass than it does in the method on your superclass (<code>data</code> on the subclass, <code>value</code> on the superclass). That means that you could potentially pass a <code>value=...</code> keyword argument to the method if called on an instance of the superclass, but the exact same set of arguments would fail if called on the subclass method. That violates the Liskov Substitution Principle.</p>
-<p>Apologies that our diagnostic isn't great here right now. We'd really love to tell you in the diagnostic <em>why</em> the signature of the subclass method is incompatible with the signature of the superclass method, but this is unfortunately quite a significant task that we don't expect to start until after our beta release is out</p>
+<p>Apologies that our diagnostic isn&#x27;t great here right now. We&#x27;d really love to tell you in the diagnostic <em>why</em> the signature of the subclass method is incompatible with the signature of the superclass method, but this is unfortunately quite a significant task that we don&#x27;t expect to start until after our beta release is out</p>
 </blockquote>
-<p>However, it conflicts with ruff's ARG002. If a parameter is unused, it will add an underscore prefix or directly use _, for example in a subclass method inheriting from a parent class.</p>
+<p>However, it conflicts with ruff&#x27;s ARG002. If a parameter is unused, it will add an underscore prefix or directly use _, for example in a subclass method inheriting from a parent class.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-26 14:48</div>
             <div class="timeline-body"><blockquote>
-<p>However, it conflicts with ruff's ARG002. If a parameter is unused, it will add an underscore prefix or directly use _, for example in a subclass method inheriting from a parent class.</p>
+<p>However, it conflicts with ruff&#x27;s ARG002. If a parameter is unused, it will add an underscore prefix or directly use _, for example in a subclass method inheriting from a parent class.</p>
 </blockquote>
 <p>@nyssance you can suppress this Ruff error by explicitly decorating the subclass method with <code>@override</code>: https://play.ruff.rs/694ced62-acc1-4a4a-b5d0-df9389637bd4. Ruff then knows that it should not check the method for ARG002 violations, because it knows that (1) the method is intended to override a method from a parent class, (2) that type checkers may complain if the subclass method has different parameter names to the superclass method, and (3) that the type checker will enforce that <code>@override</code> is doing correctly (see https://docs.astral.sh/ty/reference/rules/#invalid-explicit-override for the relevant ty rule).</p>
-<p>However, it doesn't look like the Ruff docs at https://docs.astral.sh/ruff/rules/unused-method-argument/#unused-method-argument-arg002 currently mention that it will ignore methods decorated with <code>@override</code>. We should fix that.</p>
+<p>However, it doesn&#x27;t look like the Ruff docs at https://docs.astral.sh/ruff/rules/unused-method-argument/#unused-method-argument-arg002 currently mention that it will ignore methods decorated with <code>@override</code>. We should fix that.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -102,20 +102,20 @@ class ListModel[T](Model[T]):
             <div class="timeline-body"><blockquote>
 <p>(please feel free to close this issue)</p>
 </blockquote>
-<p>Instead, I'm going to repurpose the issue, since we don't currently have an issue open to track improving the quality of our Liskov diagnostics, and we need one :-)</p>
+<p>Instead, I&#x27;m going to repurpose the issue, since we don&#x27;t currently have an issue open to track improving the quality of our Liskov diagnostics, and we need one :-)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "0.0.1a28 yields error about invalid method override" to "Improve Liskov diagnostics to say *why* a method override is incompatible" by @AlexWaygood on 2025-11-26 17:39</div>
+            <div class="event">Renamed from &quot;0.0.1a28 yields error about invalid method override&quot; to &quot;Improve Liskov diagnostics to say *why* a method override is incompatible&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-26 17:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> removed by @AlexWaygood on 2025-11-26 17:39</div>
+            <div class="event">Label <span class="label">question</span> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-26 17:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">diagnostics</span> added by @AlexWaygood on 2025-11-26 17:39</div>
+            <div class="event">Label <span class="label">diagnostics</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-26 17:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Stable" by @AlexWaygood on 2025-11-26 17:39</div>
+            <div class="event">Added to milestone &quot;Stable&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-26 17:39</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/pjonsson">@pjonsson</a> on 2025-12-25 13:12</div>
@@ -132,19 +132,19 @@ class ListModel[T](Model[T]):
 36 |     def set_row_data(self, row: int, value: T) -&gt; None:
    |                                      --------          `Model.set_row_data` defined here
 </code></pre>
-<p>I know that it's difficult to pinpoint the root cause in constraint-based systems, so consider whether shrinking the highlighted parts of the signature would be easy to implement and could work as a stop-gap solution.</p>
+<p>I know that it&#x27;s difficult to pinpoint the root cause in constraint-based systems, so consider whether shrinking the highlighted parts of the signature would be easy to implement and could work as a stop-gap solution.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-26 17:22</div>
-            <div class="timeline-body"><p>Just want to note that the implementation here should generalize to providing these details for any assignability check between callables, not just for Liskov override checks specifically. That is, if you try passing a callback to some function that takes one, and it's not assignable, you should get the same details explaining why as you would get for an invalid-override between those same two callables.</p>
-<p>(This may just be another way of saying that this is blocked on #163 -- and it's already marked as such.)</p>
+            <div class="timeline-body"><p>Just want to note that the implementation here should generalize to providing these details for any assignability check between callables, not just for Liskov override checks specifically. That is, if you try passing a callback to some function that takes one, and it&#x27;s not assignable, you should get the same details explaining why as you would get for an invalid-override between those same two callables.</p>
+<p>(This may just be another way of saying that this is blocked on #163 -- and it&#x27;s already marked as such.)</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:21:03 UTC
+        Synced at 2026-01-20 19:26:06 UTC
     </footer>
 </body>
 </html>

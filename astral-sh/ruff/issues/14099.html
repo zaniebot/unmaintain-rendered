@@ -26,18 +26,18 @@
             <div class="timeline-body"><p>See https://typing.readthedocs.io/en/latest/spec/distributing.html#import-conventions</p>
 <p>A normal <code>from foo import bar</code> in module <code>a</code> should not allow another module to do <code>from a import bar</code>; an explicit <code>from foo import bar as bar</code> should be required to specify a re-export.</p>
 <p>In the current typing spec, these rules are worded as applicable to all modules. Mypy does apply them in all modules, pyright applies them only in type stubs.</p>
-<p>I have a vague memory that these originated as stub-only conventions, but I haven't been able to dig up confirmation.</p>
+<p>I have a vague memory that these originated as stub-only conventions, but I haven&#x27;t been able to dig up confirmation.</p>
 <p>We need to decide if we will apply these conventions in all modules, or only in stubs, and then implement them accordingly.</p>
-<p>In particular this is problematic at the moment because we don't apply these conventions in <code>builtins.pyi</code>, meaning we understand all symbols imported into <code>builtins.pyi</code> (e.g. various <code>typing</code> module symbols) as builtin names.</p>
+<p>In particular this is problematic at the moment because we don&#x27;t apply these conventions in <code>builtins.pyi</code>, meaning we understand all symbols imported into <code>builtins.pyi</code> (e.g. various <code>typing</code> module symbols) as builtin names.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2024-11-05 00:12</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/carljm">@carljm</a> on 2024-11-05 00:12</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-05 07:54</div>
-            <div class="timeline-body"><p>As you say, it's very important that we apply these semantics in stub files.</p>
-<p>For runtime files, my instinct is to say that we should copy the runtime semantics exactly, but have an additional disabled-by-default error code (let's call it <code>no-implicit-reexport</code>) where we warn if you try to import something that's only implicitly re-exported from a module. (I actually believe that's what mypy does?) I think that should work fine for most cases — the only problem I can see is imports inside <code>if TYPE_CHECKING</code> blocks, which won't exist at runtime but which we will assume to exist if we're running without the <code>no-implicit-reexport</code> error code enabled. I'm not sure the unsoundness there is significant, though — I can't remember it ever coming up in the mypy issue tracker.</p>
+            <div class="timeline-body"><p>As you say, it&#x27;s very important that we apply these semantics in stub files.</p>
+<p>For runtime files, my instinct is to say that we should copy the runtime semantics exactly, but have an additional disabled-by-default error code (let&#x27;s call it <code>no-implicit-reexport</code>) where we warn if you try to import something that&#x27;s only implicitly re-exported from a module. (I actually believe that&#x27;s what mypy does?) I think that should work fine for most cases — the only problem I can see is imports inside <code>if TYPE_CHECKING</code> blocks, which won&#x27;t exist at runtime but which we will assume to exist if we&#x27;re running without the <code>no-implicit-reexport</code> error code enabled. I&#x27;m not sure the unsoundness there is significant, though — I can&#x27;t remember it ever coming up in the mypy issue tracker.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -48,42 +48,42 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-11-05 15:49</div>
             <div class="timeline-body"><blockquote>
-<p>For runtime files, my instinct is to say that we should copy the runtime semantics exactly, but have an additional disabled-by-default error code (let's call it no-implicit-reexport) where we warn if you try to import something that's only implicitly re-exported from a module. (I actually believe that's what mypy does?)</p>
+<p>For runtime files, my instinct is to say that we should copy the runtime semantics exactly, but have an additional disabled-by-default error code (let&#x27;s call it no-implicit-reexport) where we warn if you try to import something that&#x27;s only implicitly re-exported from a module. (I actually believe that&#x27;s what mypy does?)</p>
 </blockquote>
 <p>This makes sense to me. I definitely think that if we see an import of a not-explicitly-re-exported import, we should still infer the correct type that we are able to observe from the runtime semantics, even if we also issue a warning. I think the only difference between what you suggest here and what mypy does (according to my local testing) is that it appears to me the warning is enabled by default in mypy, not disabled by default. I get the warning without using a mypy config file or any additional CLI flags.</p>
-<p>One additional wrinkle to throw in -- I got clarification at https://github.com/microsoft/pyright/discussions/9385 that pyright makes a distinction I hadn't realized here: it only applies these import rules to non-stub modules if they are third-party modules, not first-party ones. The idea is that these conventions are how you clarify the public API of a typed library, but they don't apply within a codebase. I can see the rationale there, and I can also see how the structure of the specification suggests that: the &quot;import conventions&quot; section is within the page about distributing typed libraries. So I think I would weakly favor making the same distinction?</p>
+<p>One additional wrinkle to throw in -- I got clarification at https://github.com/microsoft/pyright/discussions/9385 that pyright makes a distinction I hadn&#x27;t realized here: it only applies these import rules to non-stub modules if they are third-party modules, not first-party ones. The idea is that these conventions are how you clarify the public API of a typed library, but they don&#x27;t apply within a codebase. I can see the rationale there, and I can also see how the structure of the specification suggests that: the &quot;import conventions&quot; section is within the page about distributing typed libraries. So I think I would weakly favor making the same distinction?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Red Knot 2024" by @carljm on 2024-11-07 15:23</div>
+            <div class="event">Added to milestone &quot;Red Knot 2024&quot; by <a href="https://github.com/carljm">@carljm</a> on 2024-11-07 15:23</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-11-09 20:31</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-09 20:31</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2024-11-09 23:42</div>
-            <div class="timeline-body"><p>Mypy's behaviour is:</p>
+            <div class="timeline-body"><p>Mypy&#x27;s behaviour is:</p>
 <ul>
 <li>Always have <code>--no-implicit-reexport</code>-like behaviour enabled for stub files (this comes from PEP 484)</li>
 <li><code>--no-implicit-reexport</code> applies to source, first party and third party, and is part of <code>--strict</code></li>
-<li>Mypy has per-module configuration options that let you silence this if you use some third party package that doesn't use <code>__all__</code> or <code>X as X</code> reexports</li>
+<li>Mypy has per-module configuration options that let you silence this if you use some third party package that doesn&#x27;t use <code>__all__</code> or <code>X as X</code> reexports</li>
 </ul>
 <p>Random thoughts:</p>
 <ul>
-<li>Agreed on never paying double jeopardy, so always infer a type when you issue a warning. mypy and pyright didn't use to do this and both had to change</li>
-<li>The check is a little pedantic in that a) when badness actually strikes later you'll usually eventually get a type check error, b) it doesn't match runtime semantics. But it's useful and I have seen it correctly flag things that would later prove to be issues or simplify weird imports (I've even seen cases where it actually lets you get rid of some of your dependency tree)</li>
-<li>Pyright's first vs third party distinction is interesting. I guess it solves the problem where a third party module doesn't want to do <code>__all__</code> or re-export (for a while pallets projects held out). With mypy, you need to add a per-module config to solve that problem.
-Edit: this isn't right, I got pyright's behaviour backwards / pyright also draws a distinction between py.typed third party and non-py.typed third party.</li>
-<li>But I think this check's &quot;preventing later badness&quot; is much more useful with third party code than with first party code, since it's much more possible to have version skew with third party code between type check time and use time. So it's useful to have a way to get the strict behaviour everywhere, as with mypy</li>
-<li>One thing not discussed is an <code>__init__.py</code> heuristic, see https://github.com/python/mypy/issues/10198. If red-knot wants to encourage this check, e.g. have it on by default for source files, I'd definitely recommend treating <code>__init__.py</code> specially (i.e. if there are zero explicit reexports in <code>__init__.py</code> treat everything as reexported). I suspect this would be enough to obviate the need for first vs third party distinction</li>
-<li>One other related behaviour to think through is whether you should fail open or closed on <code>__all__</code> patterns that red-knot doesn't recognise</li>
+<li>Agreed on never paying double jeopardy, so always infer a type when you issue a warning. mypy and pyright didn&#x27;t use to do this and both had to change</li>
+<li>The check is a little pedantic in that a) when badness actually strikes later you&#x27;ll usually eventually get a type check error, b) it doesn&#x27;t match runtime semantics. But it&#x27;s useful and I have seen it correctly flag things that would later prove to be issues or simplify weird imports (I&#x27;ve even seen cases where it actually lets you get rid of some of your dependency tree)</li>
+<li>Pyright&#x27;s first vs third party distinction is interesting. I guess it solves the problem where a third party module doesn&#x27;t want to do <code>__all__</code> or re-export (for a while pallets projects held out). With mypy, you need to add a per-module config to solve that problem.
+Edit: this isn&#x27;t right, I got pyright&#x27;s behaviour backwards / pyright also draws a distinction between py.typed third party and non-py.typed third party.</li>
+<li>But I think this check&#x27;s &quot;preventing later badness&quot; is much more useful with third party code than with first party code, since it&#x27;s much more possible to have version skew with third party code between type check time and use time. So it&#x27;s useful to have a way to get the strict behaviour everywhere, as with mypy</li>
+<li>One thing not discussed is an <code>__init__.py</code> heuristic, see <a href="https://github.com/python/mypy/issues/10198">python/mypy#10198</a>. If red-knot wants to encourage this check, e.g. have it on by default for source files, I&#x27;d definitely recommend treating <code>__init__.py</code> specially (i.e. if there are zero explicit reexports in <code>__init__.py</code> treat everything as reexported). I suspect this would be enough to obviate the need for first vs third party distinction</li>
+<li>One other related behaviour to think through is whether you should fail open or closed on <code>__all__</code> patterns that red-knot doesn&#x27;t recognise</li>
 </ul>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-11-09 23:46</div>
-            <div class="timeline-body"><p>Thanks, that's useful!</p>
-<p>One note on pyright's first vs third party distinction; I think it works in the opposite way from what you're suggesting. Pyright applies strict re-export rules to imports from third party libraries, but not to imports from your own first-party code. The idea is that this allow library authors more control over their exported api surface.</p>
+            <div class="timeline-body"><p>Thanks, that&#x27;s useful!</p>
+<p>One note on pyright&#x27;s first vs third party distinction; I think it works in the opposite way from what you&#x27;re suggesting. Pyright applies strict re-export rules to imports from third party libraries, but not to imports from your own first-party code. The idea is that this allow library authors more control over their exported api surface.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -97,27 +97,27 @@ Edit: this isn't right, I got pyright's behaviour backwards / pyright also draws
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Unassigned @charliermarsh by @charliermarsh on 2024-12-12 13:21</div>
+            <div class="event">Unassigned <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-12 13:21</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @dhruvmanila by @dhruvmanila on 2024-12-16 11:36</div>
+            <div class="event">Assigned to <a href="https://github.com/dhruvmanila">@dhruvmanila</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-12-16 11:36</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Removed from milestone "Red Knot 2024" by @carljm on 2025-01-09 17:43</div>
+            <div class="event">Removed from milestone &quot;Red Knot 2024&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-01-09 17:43</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Red Knot Q1 2025" by @carljm on 2025-01-09 17:43</div>
+            <div class="event">Added to milestone &quot;Red Knot Q1 2025&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-01-09 17:43</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dhruvmanila on 2025-02-14 09:47</div>
+            <div class="event">Closed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-14 09:47</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dhruvmanila on 2025-02-14 09:47</div>
+            <div class="event">Closed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-14 09:47</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:51:26 UTC
+        Synced at 2026-01-20 18:48:59 UTC
     </footer>
 </body>
 </html>

@@ -25,26 +25,26 @@
             <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a></div>
             <div class="timeline-body"><p>As described in astral-sh/ty#1729, we previously had a salsa cycle when inferring the signature of many function definitions.</p>
 <p>The most obvious case happened when (a) the function was decorated, (b) it had no PEP-695 type params, and (c) annotations were not always deferred (e.g. in a stub file). We currently evaluate and apply function decorators eagerly, as part of <code>infer_function_definition</code>. Applying a decorator requires knowing the signature of the function being decorated. There were two places where signature construction called <code>infer_definition_types</code> cyclically.</p>
-<p>The simpler case was that we were looking up the generic context and decorator list of the function to determine whether it has an implicit <code>self</code> parameter. Before, we used <code>infer_definition_types</code> to determine that information. But since we're in the middle of signature construction for the function, we can just thread the information through directly.</p>
-<p>The harder case is that signature construction requires knowing the inferred parameter and return type annotations. When (b) and (c) hold, those type annotations are inferred in <code>infer_function_definition</code>! (In theory, we've already finished that by the time we start applying decorators, but signature construction doesn't know that.)</p>
-<p>If annotations are deferred, the params/return annotations are inferred in <code>infer_deferred_types</code>; if there are PEP-695 type params, they're inferred in <code>infer_function_type_params</code>. Both of those are different salsa queries, and don't induce this cycle.</p>
+<p>The simpler case was that we were looking up the generic context and decorator list of the function to determine whether it has an implicit <code>self</code> parameter. Before, we used <code>infer_definition_types</code> to determine that information. But since we&#x27;re in the middle of signature construction for the function, we can just thread the information through directly.</p>
+<p>The harder case is that signature construction requires knowing the inferred parameter and return type annotations. When (b) and (c) hold, those type annotations are inferred in <code>infer_function_definition</code>! (In theory, we&#x27;ve already finished that by the time we start applying decorators, but signature construction doesn&#x27;t know that.)</p>
+<p>If annotations are deferred, the params/return annotations are inferred in <code>infer_deferred_types</code>; if there are PEP-695 type params, they&#x27;re inferred in <code>infer_function_type_params</code>. Both of those are different salsa queries, and don&#x27;t induce this cycle.</p>
 <p>So the quick fix here is to always defer inference of the function params/return, so that they are always inferred under a different salsa query.</p>
 <p>A more principled fix would be to apply decorators lazily, just like we construct signatures lazily. But that is a more invasive fix.</p>
 <p>Fixes astral-sh/ty#1729</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @dcreager on 2025-12-10 21:26</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/dcreager">@dcreager</a> on 2025-12-10 21:26</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-10 21:28</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
-<details>
-<summary>Changes were detected when running ty on typing conformance tests</summary>
+Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a>
 
-<pre><code class="language-diff">--- old-output.txt	2025-12-11 19:38:32.777561529 +0000
+Changes were detected when running ty on typing conformance tests
+
+<pre><code>--- old-output.txt	2025-12-11 19:38:32.777561529 +0000
 +++ new-output.txt	2025-12-11 19:38:36.517590503 +0000
 @@ -150,7 +150,7 @@
  callables_protocol.py:169:7: error[invalid-assignment] Object of type `def cb8_bad1(x: int) -&gt; Any` is not assignable to `Proto8`
@@ -57,20 +57,20 @@
  callables_protocol.py:284:27: error[invalid-assignment] Object of type `def cb13_no_default(path: str) -&gt; str` is not assignable to `Proto13_Default`
 
 </code></pre>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-10 21:29</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">beartype (https://github.com/beartype/beartype)
-- beartype/_util/py/utilpyweakref.py:76:27: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `type[ReferenceType[_T@ReferenceType]]`, found `&lt;class 'ReferenceType[~None]'&gt;`
+Changes were detected when running on open source projects
+
+<pre><code>beartype (https://github.com/beartype/beartype)
+- beartype/_util/py/utilpyweakref.py:76:27: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `type[ReferenceType[_T@ReferenceType]]`, found `&lt;class &#x27;ReferenceType[~None]&#x27;&gt;`
 - Found 492 diagnostics
 + Found 491 diagnostics
 
@@ -168,7 +168,7 @@ setuptools (https://github.com/pypa/setuptools)
 + Found 1288 diagnostics
 
 strawberry (https://github.com/strawberry-graphql/strawberry)
-- strawberry/types/object_type.py:137:13: error[invalid-argument-type] Argument to function `__new__` is incorrect: Argument type `T'instance@_process_type` does not satisfy upper bound `BaseException` of type variable `Self`
+- strawberry/types/object_type.py:137:13: error[invalid-argument-type] Argument to function `__new__` is incorrect: Argument type `T&#x27;instance@_process_type` does not satisfy upper bound `BaseException` of type variable `Self`
 - strawberry/types/object_type.py:137:13: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `type[InvalidSuperclassInterfaceError]`, found `T@_process_type`
 - Found 401 diagnostics
 + Found 399 diagnostics
@@ -423,12 +423,12 @@ xarray (https://github.com/pydata/xarray)
 
 ... (truncated 172 lines) ...
 </code></pre>
-</details>
 
-<details>
-<summary>Memory usage changes were detected when running on open source projects</summary>
 
-<pre><code class="language-diff">prefect (https://github.com/PrefectHQ/prefect)
+
+Memory usage changes were detected when running on open source projects
+
+<pre><code>prefect (https://github.com/PrefectHQ/prefect)
 - TOTAL MEMORY USAGE: ~725MB
 + TOTAL MEMORY USAGE: ~690MB
 -     struct metadata = ~52MB
@@ -436,7 +436,7 @@ xarray (https://github.com/pydata/xarray)
 
 
 </code></pre>
-</details>
+
 
 </div>
         </div>
@@ -446,7 +446,7 @@ xarray (https://github.com/pydata/xarray)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:2958 on 2025-12-10 21:31</div>
-            <div class="timeline-body"><p>This is where you're getting the additional (wrong) meaning of &quot;deferred&quot; by accident.</p>
+            <div class="timeline-body"><p>This is where you&#x27;re getting the additional (wrong) meaning of &quot;deferred&quot; by accident.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -460,16 +460,16 @@ xarray (https://github.com/pydata/xarray)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-12-10 21:42</div>
-            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+            <div class="timeline-body">
 
-<h2><a href="https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fbreakest-the-cycle?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a></h2>
-<h3>Merging #21906 will <strong>improve performances by 5.61%</strong></h3>
-<p><sub>Comparing <code>dcreager/breakest-the-cycle</code> (5d905fa) with <code>main</code> (d442433)</sub></p>
-<h3>Summary</h3>
-<p><code>⚡ 3</code> improvements<br />
-<code>✅ 19</code> untouched<br />
+<a href="https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fbreakest-the-cycle?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a>
+Merging #21906 will <strong>improve performances by 5.61%</strong>
+<p>Comparing <code>dcreager/breakest-the-cycle</code> (5d905fa) with <code>main</code> (d442433)</p>
+Summary
+<p><code>⚡ 3</code> improvements<br>
+<code>✅ 19</code> untouched<br>
 <code>⏩ 30</code> skipped[^skipped]</p>
-<h3>Benchmarks breakdown</h3>
+Benchmarks breakdown
 <p>|     | Mode | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
 | --- | ---- | --------- | ------ | ------ | ------ |
 | ⚡ | WallTime | <a href="https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fbreakest-the-cycle?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Asmall%5Btanjun%5D&amp;runnerMode=WallTime&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=benchmark"><code>small[tanjun]</code></a> | 2.8 s | 2.7 s | +4.39% |
@@ -485,12 +485,12 @@ xarray (https://github.com/pydata/xarray)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:518 on 2025-12-10 21:45</div>
-            <div class="timeline-body"><p>...and over here, where it's moved, we don't need to call <code>infer_definition_types</code> on the function definition, because we can grab its generic context and decorator list directly.</p>
+            <div class="timeline-body"><p>...and over here, where it&#x27;s moved, we don&#x27;t need to call <code>infer_definition_types</code> on the function definition, because we can grab its generic context and decorator list directly.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:524 on 2025-12-10 21:46</div>
-            <div class="timeline-body"><p>This <code>infer_definition_types</code> is okay to keep, since it's referring to the containing class definition, not to the function we're in the middle of inferring a signature for</p>
+            <div class="timeline-body"><p>This <code>infer_definition_types</code> is okay to keep, since it&#x27;s referring to the containing class definition, not to the function we&#x27;re in the middle of inferring a signature for</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -498,22 +498,22 @@ xarray (https://github.com/pydata/xarray)
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @dcreager on 2025-12-10 22:12</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/dcreager">@dcreager</a> on 2025-12-10 22:12</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @dcreager on 2025-12-10 22:12</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/dcreager">@dcreager</a> on 2025-12-10 22:12</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-12-10 22:12</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/dcreager">@dcreager</a> on 2025-12-10 22:12</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @dcreager on 2025-12-10 22:12</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/dcreager">@dcreager</a> on 2025-12-10 22:12</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-10 22:21</div>
-            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+            <div class="timeline-body">
 
-<h2><code>ecosystem-analyzer</code> results</h2>
+<code>ecosystem-analyzer</code> results
 <p>| Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
 | <code>invalid-argument-type</code> | 9 | 84 | 61 |
@@ -547,10 +547,10 @@ xarray (https://github.com/pydata/xarray)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @dcreager on 2025-12-11 14:50</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/dcreager">@dcreager</a> on 2025-12-11 14:50</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @dcreager on 2025-12-11 14:50</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/dcreager">@dcreager</a> on 2025-12-11 14:50</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-12-11 15:01</div>
@@ -562,27 +562,27 @@ xarray (https://github.com/pydata/xarray)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-11 18:01</div>
-            <div class="timeline-body"><p>A lot of the new diagnostics in the ecosystem report look like cases of https://github.com/astral-sh/ty/issues/1787 that are just being revealed now that we are better able to infer the signature type at all.</p>
+            <div class="timeline-body"><p>A lot of the new diagnostics in the ecosystem report look like cases of <a href="https://github.com/astral-sh/ty/issues/1787">astral-sh/ty#1787</a> that are just being revealed now that we are better able to infer the signature type at all.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-11 18:15</div>
-            <div class="timeline-body"><p>Merged in <code>main</code> to see if that'll fix the persistent API failures on the benchmark jobs. The jobs are now finishing on other PRs, but still weren't on this PR...</p>
+            <div class="timeline-body"><p>Merged in <code>main</code> to see if that&#x27;ll fix the persistent API failures on the benchmark jobs. The jobs are now finishing on other PRs, but still weren&#x27;t on this PR...</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:519 on 2025-12-11 18:24</div>
-            <div class="timeline-body"><p>It's not clear to me why we are checking whether <code>Self</code> is in the type context in order to determine whether <code>method_may_be_generic</code>? Maybe this is just a problem with the variable name?</p>
+            <div class="timeline-body"><p>It&#x27;s not clear to me why we are checking whether <code>Self</code> is in the type context in order to determine whether <code>method_may_be_generic</code>? Maybe this is just a problem with the variable name?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:532 on 2025-12-11 18:37</div>
-            <div class="timeline-body"><p>I guess this case makes sense in principle, but I'm curious how it could ever occur. How could a class def node evaluate to a <code>GenericAlias</code> type?</p>
+            <div class="timeline-body"><p>I guess this case makes sense in principle, but I&#x27;m curious how it could ever occur. How could a class def node evaluate to a <code>GenericAlias</code> type?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:564 on 2025-12-11 18:39</div>
-            <div class="timeline-body"><p>It doesn't seem like this matches what we check above, which is actually just that an explicit <code>Self</code> is in the type parameters -- we don't seem to care whether there are other type parameters. (That logic seems fine to me, it just doesn't match the text here, or the <code>method_may_be_generic</code> variable name.)</p>
+            <div class="timeline-body"><p>It doesn&#x27;t seem like this matches what we check above, which is actually just that an explicit <code>Self</code> is in the type parameters -- we don&#x27;t seem to care whether there are other type parameters. (That logic seems fine to me, it just doesn&#x27;t match the text here, or the <code>method_may_be_generic</code> variable name.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -592,10 +592,10 @@ xarray (https://github.com/pydata/xarray)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:519 on 2025-12-11 19:19</div>
-            <div class="timeline-body"><p>tbh I hadn't looked at this logic, just moved it from one file to the other! 😄</p>
-<p>I'll update the variable name and comment below.</p>
-<p>There's one thing that I thought we would want to ensure, which I'm not no longer sure about — that we should always treat an implicit <code>Self</code> parameter annotation the same as we would an explicit <code>Self</code>. The logic here (the actual logic, not the variable name/comment) breaks that [<a href="https://play.ty.dev/8e7f7c5e-a92a-4f53-b902-3ecf231c48b7">playground</a>]:</p>
-<pre><code class="language-py">class Implicit:
+            <div class="timeline-body"><p>tbh I hadn&#x27;t looked at this logic, just moved it from one file to the other! 😄</p>
+<p>I&#x27;ll update the variable name and comment below.</p>
+<p>There&#x27;s one thing that I thought we would want to ensure, which I&#x27;m not no longer sure about — that we should always treat an implicit <code>Self</code> parameter annotation the same as we would an explicit <code>Self</code>. The logic here (the actual logic, not the variable name/comment) breaks that [<a href="https://play.ty.dev/8e7f7c5e-a92a-4f53-b902-3ecf231c48b7">playground</a>]:</p>
+<pre><code>class Implicit:
     def method(self): ...
 
 class Explicit:
@@ -605,13 +605,13 @@ reveal_type(generic_context(Implicit().method))  # None
 reveal_type(generic_context(Explicit().method))  # [Self@method]
 </code></pre>
 <p>The <code>else</code> branch engages for implicit <code>Self</code>, since the method is not generic / <code>Self</code> does not appear explicitly in the parameter list. So we give the <code>self</code> param an implicit annotation of <code>Implicit</code>, not <code>Self@Implicit</code>.</p>
-<p>For the explicit case, in theory we could perform the same check: realize that there are no <em>other</em> references to <code>Self</code>, and treat that annotation as <code>Implicit</code>, without creating a typevar for it. But we don't do that right now: you typed <code>Self</code>, and so we turn that into a typevar.</p>
-<p>Anyway, I'm not suggesting we should jump through hoops to make the same simplification in the explicit case. It would be only be an optimization anyway, since it shouldn't™ be a problem to have the <code>Self</code> typevar in either case.</p>
+<p>For the explicit case, in theory we could perform the same check: realize that there are no <em>other</em> references to <code>Self</code>, and treat that annotation as <code>Implicit</code>, without creating a typevar for it. But we don&#x27;t do that right now: you typed <code>Self</code>, and so we turn that into a typevar.</p>
+<p>Anyway, I&#x27;m not suggesting we should jump through hoops to make the same simplification in the explicit case. It would be only be an optimization anyway, since it shouldn&#x27;t™ be a problem to have the <code>Self</code> typevar in either case.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:532 on 2025-12-11 19:20</div>
-            <div class="timeline-body"><p>Good catch. I'll remove it and see if anything barfs.</p>
+            <div class="timeline-body"><p>Good catch. I&#x27;ll remove it and see if anything barfs.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -624,10 +624,10 @@ reveal_type(generic_context(Explicit().method))  # [Self@method]
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @dcreager on 2025-12-11 20:00</div>
+            <div class="event">Merged by <a href="https://github.com/dcreager">@dcreager</a> on 2025-12-11 20:00</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dcreager on 2025-12-11 20:00</div>
+            <div class="event">Closed by <a href="https://github.com/dcreager">@dcreager</a> on 2025-12-11 20:00</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-12-11 20:00</div>
@@ -638,13 +638,13 @@ reveal_type(generic_context(Explicit().method))  # [Self@method]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:519 on 2025-12-11 20:01</div>
-            <div class="timeline-body"><p>Makes sense! And sorry, didn't realize when I was initially reviewing this code that it had just been moved unchanged.</p>
+            <div class="timeline-body"><p>Makes sense! And sorry, didn&#x27;t realize when I was initially reviewing this code that it had just been moved unchanged.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:17:59 UTC
+        Synced at 2026-01-20 19:21:36 UTC
     </footer>
 </body>
 </html>

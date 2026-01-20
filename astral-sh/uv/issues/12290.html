@@ -23,13 +23,13 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/relativityhd">@relativityhd</a></div>
-            <div class="timeline-body"><h3>Question</h3>
+            <div class="timeline-body">Question
 <p>Hi all,</p>
 <p>I am wondering whether my problem is expected behavior or not. I also already found a workaround.</p>
-<h2>Problem</h2>
+Problem
 <p>In one of my larger projects, I stumbled upon this weird behavior. This project uses PyTorch and some other packages depending on PyTorch. I set up uv following the PyTorch Integration guide from the uv documentation (via extras). When I run <code>uv sync --extra cpu</code> followed by <code>uv run ...</code> uv starts installing some <code>nvidia-</code> packages which should only be installed for non-cpu pytorch versions. If I run however, <code>uv run --extra cpu ...</code> everything is fine. I was able to reproduce the problem on a new project:</p>
 <p>The pyproject looks like this:</p>
-<pre><code class="language-toml">[project]
+<pre><code>[project]
 name = &quot;reproduce-torch&quot;
 version = &quot;0.1.0&quot;
 description = &quot;Add your description here&quot;
@@ -62,7 +62,7 @@ url = &quot;https://download.pytorch.org/whl/cu126&quot;
 explicit = true
 </code></pre>
 <p>Now locking and syncing with <code>uv sync --extras cpu</code> installs everything as expected (no <code>nvidia-...</code> packages):</p>
-<pre><code class="language-sh">$ uv sync --extra cpu
+<pre><code>$ uv sync --extra cpu
 Using CPython 3.13.2
 Creating virtual environment at: .venv
 Resolved 30 packages in 2ms
@@ -81,7 +81,7 @@ Installed 12 packages in 331ms
  + typing-extensions==4.12.2
 </code></pre>
 <p>A look on <code>uv tree</code> shows that <code>efficientnet-pytorch</code> depends on <code>torch</code>:</p>
-<pre><code class="language-sh">$ uv tree
+<pre><code>$ uv tree
 reproduce-torch v0.1.0
 ├── efficientnet-pytorch v0.7.1
 │   └── torch v2.6.0
@@ -120,7 +120,7 @@ reproduce-torch v0.1.0
 </code></pre>
 <p>Note that <code>torch v2.6.0+cpu (extra: cpu)</code> is missing, despite installed.</p>
 <p>Now running <code>uv run python</code> starts downloading and installing the nvidia packages, this may take a few minutes since they are quite large:</p>
-<pre><code class="language-sh"># Output while installing
+<pre><code># Output while installing
 $ uv run python
 ⠧ Preparing packages... (0/9)
 nvidia-cuda-nvrtc-cu12 ------------------------------ 955.00 KiB/22.58 MiB
@@ -133,7 +133,7 @@ nvidia-cusparse-cu12 ------------------------------ 979.56 KiB/186.88 MiB
 nvidia-cublas-cu12 ------------------------------ 1012.81 KiB/391.57 MiB
 nvidia-cudnn-cu12 ------------------------------ 979.03 KiB/697.83 MiB    
 </code></pre>
-<pre><code class="language-sh"># Output after installing
+<pre><code># Output after installing
 $ uv run python
 Installed 14 packages in 32ms
 Python 3.13.2 (main, Feb  5 2025, 19:11:32) [Clang 19.1.6 ] on linux
@@ -141,7 +141,7 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
 &gt;&gt;&gt; 
 </code></pre>
 <p>Syncing again with <code>uv sync --extra cpu</code> will uninstall the unwanted packages:</p>
-<pre><code class="language-sh">uv sync --extra cpu
+<pre><code>uv sync --extra cpu
 Resolved 30 packages in 1ms
 Uninstalled 14 packages in 26ms
  - nvidia-cublas-cu12==12.4.5.8
@@ -160,14 +160,14 @@ Uninstalled 14 packages in 26ms
  - triton==3.2.0
 </code></pre>
 <p>Running <code>uv run</code> with the cpu extra would run without installing the unwanted packages:</p>
-<pre><code class="language-sh">$ uv run --extra cpu python
+<pre><code>$ uv run --extra cpu python
 Python 3.13.2 (main, Feb  5 2025, 19:11:32) [Clang 19.1.6 ] on linux
 Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
 &gt;&gt;&gt; 
 </code></pre>
-<h2>Workaround</h2>
+Workaround
 <p>Putting the pytorch-dependend package <code>efficientnet-pytorch</code> into the <code>[project.optional-dependencies]</code> section along <code>torch</code> solves the problem:</p>
-<pre><code class="language-toml">...
+<pre><code>...
 dependencies = [&quot;numpy&gt;=2.2.4&quot;]
 
 [project.optional-dependencies]
@@ -175,30 +175,30 @@ cpu = [&quot;torch&gt;=2.2.0&quot;, &quot;efficientnet-pytorch&gt;=0.7.1&quot;]
 cuda = [&quot;torch&gt;=2.2.0&quot;, &quot;efficientnet-pytorch&gt;=0.7.1&quot;]
 ...
 </code></pre>
-<h2>Final thoughts</h2>
+Final thoughts
 <p>I am not sure whether this behavior is intended by uv. The workaround works but can be tedious for larger projects which support more than two torch-versions (e.g. we try to support systems with <code>cuda 11.8</code>, <code>cuda 12.1</code>, <code>cuda 12.4</code>, <code>cuda 12.6</code> and <code>cpu</code>) and / or many torch-dependent packages.</p>
 <p>Also, I find it a little unintuitive that <code>uv run</code> does not always automatically apply previous synced extras.</p>
 <p>I am happy about all thoughts, pot. better approaches and other input. 😄</p>
 <p>P.S. if anyone has a better title for this issue which is easier for other to find I am happy for ideas.</p>
-<h3>Platform</h3>
+Platform
 <p>Linux 5.15.167.4-microsoft-standard-WSL2 x86_64 GNU/Linux</p>
-<h3>Version</h3>
+Version
 <p>uv 0.6.7</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @relativityhd on 2025-03-18 16:36</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/relativityhd">@relativityhd</a> on 2025-03-18 16:36</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/johnpyp">@johnpyp</a> on 2025-03-24 02:47</div>
-            <div class="timeline-body"><p>Also running into this. As far as I can tell, there's no way for a user to &quot;customize&quot; their UV environment external from the source-controlled <code>uv.toml</code> file at all.</p>
-<p>Making it worse, the user can't &quot;incrementally override&quot; the <code>[tool.uv.sources]</code> configuration in a source-uncontrolled <code>uv.toml</code> (see https://github.com/astral-sh/uv/issues/6772#issue-2492799415), so they can't workaround it either.</p>
-<p>Some kind of persisted, non source controlled preference for the <code>extras</code> setting would be very helpful (an environment variable combined with something like Mise's environments could also work</p>
+            <div class="timeline-body"><p>Also running into this. As far as I can tell, there&#x27;s no way for a user to &quot;customize&quot; their UV environment external from the source-controlled <code>uv.toml</code> file at all.</p>
+<p>Making it worse, the user can&#x27;t &quot;incrementally override&quot; the <code>[tool.uv.sources]</code> configuration in a source-uncontrolled <code>uv.toml</code> (see <a href="https://github.com/astral-sh/uv/issues/6772">astral-sh/uv#6772</a>#issue-2492799415), so they can&#x27;t workaround it either.</p>
+<p>Some kind of persisted, non source controlled preference for the <code>extras</code> setting would be very helpful (an environment variable combined with something like Mise&#x27;s environments could also work</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/johnpyp">@johnpyp</a> on 2025-03-24 02:50</div>
-            <div class="timeline-body"><p>What I'm doing for now as a (unsatisfying) workaround is using <a href="https://mise.jdx.dev/environments/#environments">mise environments</a> combined with the <code>UV_NO_SYNC=true</code> environment variable.</p>
+            <div class="timeline-body"><p>What I&#x27;m doing for now as a (unsatisfying) workaround is using <a href="https://mise.jdx.dev/environments/#environments">mise environments</a> combined with the <code>UV_NO_SYNC=true</code> environment variable.</p>
 <p>In reality, I <em>do</em> want uv to do the sync before each run command, just with my saved preferences... but this is a decent approximation for now.</p>
 </div>
         </div>
@@ -211,9 +211,9 @@ cuda = [&quot;torch&gt;=2.2.0&quot;, &quot;efficientnet-pytorch&gt;=0.7.1&quot;]
 <p>You can do <code>uv run --no-sync</code> to avoid performing a sync (as noted by @johnpyp)</p>
 <p>@johnpyp</p>
 <blockquote>
-<p>Some kind of persisted, non source controlled preference for the extras setting would be very helpful (an environment variable combined with something like Mise's environments could also work</p>
+<p>Some kind of persisted, non source controlled preference for the extras setting would be very helpful (an environment variable combined with something like Mise&#x27;s environments could also work</p>
 </blockquote>
-<p>We're considering something like this. I think there's a fair amount of design work to be done though, as it introduces more abstractions and complexity.</p>
+<p>We&#x27;re considering something like this. I think there&#x27;s a fair amount of design work to be done though, as it introduces more abstractions and complexity.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -222,12 +222,12 @@ cuda = [&quot;torch&gt;=2.2.0&quot;, &quot;efficientnet-pytorch&gt;=0.7.1&quot;]
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @relativityhd on 2025-10-30 08:27</div>
+            <div class="event">Closed by <a href="https://github.com/relativityhd">@relativityhd</a> on 2025-10-30 08:27</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:30:30 UTC
+        Synced at 2026-01-20 19:37:50 UTC
     </footer>
 </body>
 </html>

@@ -23,8 +23,8 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/gjcarneiro">@gjcarneiro</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<pre><code class="language-py">def foo() -&gt; dict[str, object]:
+            <div class="timeline-body">Summary
+<pre><code>def foo() -&gt; dict[str, object]:
     retval: dict[str, str] = {&quot;foo&quot;: &quot;bar&quot;}
     return retval
 
@@ -36,18 +36,18 @@ def main() -&gt; None:
 </blockquote>
 <p>https://play.ty.dev/e9610be1-3477-4e99-9832-1da48c8f7ca4</p>
 <p>Using <code>object</code> here as a safer alternative to using <code>typing.Any</code>: &quot;Any&quot; is compatible with anything, which can be a problem if you want to catch errors.</p>
-<p>Type <code>str</code>  is a subtype of <code>object</code>, so I don't think this should be an error?</p>
-<h3>Version</h3>
+<p>Type <code>str</code>  is a subtype of <code>object</code>, so I don&#x27;t think this should be an error?</p>
+Version
 <p><code>0.0.1-alpha.22</code>
-(previous version didn't complain about this)</p>
+(previous version didn&#x27;t complain about this)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-10-10 18:17</div>
             <div class="timeline-body"><p>This is an error (and all Python type checkers agree on this) because dictionaries are invariant in their value type, not covariant. That means that while <code>str</code> is a subtype of <code>object</code>, <code>dict[str, str]</code> is not a subtype of <code>dict[str, object]</code>. The reason is that dictionaries are mutable, so <code>dict[str, object]</code> can accept any object in its <code>__setitem__</code> method, while <code>dict[str, str]</code> can accept only strings; this means <code>dict[str, str]</code> cannot be a safe substitute where <code>dict[str, object]</code> is expected.</p>
-<p>It's less of a practical issue in your particular case (a return value) because the function <code>foo</code> doesn't hold on to a reference to the dictionary after it is returned, but we can easily imagine a slightly different case where the returned value is aliased, and it would be unsound to allow this:</p>
-<pre><code class="language-py">def foo(x: dict[str, str]) -&gt; dict[str, object]:
-    return x  # this is an error, but let's pretend it wasn't
+<p>It&#x27;s less of a practical issue in your particular case (a return value) because the function <code>foo</code> doesn&#x27;t hold on to a reference to the dictionary after it is returned, but we can easily imagine a slightly different case where the returned value is aliased, and it would be unsound to allow this:</p>
+<pre><code>def foo(x: dict[str, str]) -&gt; dict[str, object]:
+    return x  # this is an error, but let&#x27;s pretend it wasn&#x27;t
 
 d: dict[str, str] = {&quot;foo&quot;: &quot;bar&quot;}
 d2 = foo(d)
@@ -57,23 +57,23 @@ d2[&quot;baz&quot;] = 1
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2025-10-10 18:17</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2025-10-10 18:17</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/gjcarneiro">@gjcarneiro</a> on 2025-10-10 18:27</div>
-            <div class="timeline-body"><p>Ah, it seems you're right, even mypy agrees it's an error.  Strange that this codebase, which used to be check by mypy, then switched to <code>ty 0.0.1-alpha.21</code>, didn't previously flag this as an error, until the upgrade to <code>ty 0.0.1-alpha.22</code>.  Thanks for checking, though!</p>
+            <div class="timeline-body"><p>Ah, it seems you&#x27;re right, even mypy agrees it&#x27;s an error.  Strange that this codebase, which used to be check by mypy, then switched to <code>ty 0.0.1-alpha.21</code>, didn&#x27;t previously flag this as an error, until the upgrade to <code>ty 0.0.1-alpha.22</code>.  Thanks for checking, though!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-10-10 18:30</div>
-            <div class="timeline-body"><p>Older ty versions didn't flag this because we inferred <code>dict[Unknown, Unknown]</code> for all dict literals, which was clearly not ideal :) and we've now fixed that.</p>
-<p>Not sure why mypy wouldn't have previously flagged it, but if you happen to figure out why, and it represents a missing feature in ty, we'd like to know about it!</p>
+            <div class="timeline-body"><p>Older ty versions didn&#x27;t flag this because we inferred <code>dict[Unknown, Unknown]</code> for all dict literals, which was clearly not ideal :) and we&#x27;ve now fixed that.</p>
+<p>Not sure why mypy wouldn&#x27;t have previously flagged it, but if you happen to figure out why, and it represents a missing feature in ty, we&#x27;d like to know about it!</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:46 UTC
+        Synced at 2026-01-20 19:25:43 UTC
     </footer>
 </body>
 </html>

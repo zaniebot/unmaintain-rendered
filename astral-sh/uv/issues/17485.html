@@ -23,25 +23,25 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/annettejanewilson">@annettejanewilson</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>When using uv with default settings to update from a JFrog Artifactory private repository, I see 401s on a cold start with no cache. I have the custom repository with a username and password specified in <code>~/.config/uv/uv.toml</code>. This is seen with commands like:</p>
 <pre><code>uv add mshell-python-core
 </code></pre>
 <p>If I retry the uv command it will always work on the second attempt.</p>
-<h3>Investigation with mitmproxy</h3>
-<p>After investigating with mitmproxy, I found that what's happening is uv fires off a bunch of concurrent requests. The first of these first batch of requests succeed, but some of them will invariably fail with 401s, which are not retried. I <em>suspect</em> that Artifactory sees it has no auth session for that user and so for every request it makes a request to an auth server, and then gets rate-limited for making too many requests against the same user. But once the first request succeeds it seems Artifactory caches the session for somewhere between 3 and 5 minutes, so all subsequent requests with the same credentials will succeed.</p>
-<h3>Workaround</h3>
-<p>It's possible to work around this by setting <code>UV_CONCURRENT_DOWNLOADS=2</code> or lower. But this does make uv noticeably slower, when it's actually possible to use much higher concurrency, <em>after</em> the first request has completed.</p>
-<p>It's also possible to work around it by first &quot;prewarming&quot; Artifactory by making any authenticated request, not necessarily with uv, and then immediately following up with a uv command.</p>
-<h3>Might not be fixable?</h3>
-<p>I am not sure if there's anything uv can really do about this. It honestly seems like Artifactory's problem, since it could report 429 to tell uv to slow down, or it could pause the concurrent requests until the first auth request succeeds or fails. I'm not sure I could think of a clean way for uv to work around this. (I can think of dirty ways, like not making concurrent password-based requests until one has succeeded; or making limited attempts to retry 401s. But I'm not sure either is justified for a niche issue.) But I wanted to at least say what happened and report my findings, as even if you choose not to change anything, others struggling with the same problem might at least stumble on the report.</p>
-<h3>Example config and request</h3>
+Investigation with mitmproxy
+<p>After investigating with mitmproxy, I found that what&#x27;s happening is uv fires off a bunch of concurrent requests. The first of these first batch of requests succeed, but some of them will invariably fail with 401s, which are not retried. I <em>suspect</em> that Artifactory sees it has no auth session for that user and so for every request it makes a request to an auth server, and then gets rate-limited for making too many requests against the same user. But once the first request succeeds it seems Artifactory caches the session for somewhere between 3 and 5 minutes, so all subsequent requests with the same credentials will succeed.</p>
+Workaround
+<p>It&#x27;s possible to work around this by setting <code>UV_CONCURRENT_DOWNLOADS=2</code> or lower. But this does make uv noticeably slower, when it&#x27;s actually possible to use much higher concurrency, <em>after</em> the first request has completed.</p>
+<p>It&#x27;s also possible to work around it by first &quot;prewarming&quot; Artifactory by making any authenticated request, not necessarily with uv, and then immediately following up with a uv command.</p>
+Might not be fixable?
+<p>I am not sure if there&#x27;s anything uv can really do about this. It honestly seems like Artifactory&#x27;s problem, since it could report 429 to tell uv to slow down, or it could pause the concurrent requests until the first auth request succeeds or fails. I&#x27;m not sure I could think of a clean way for uv to work around this. (I can think of dirty ways, like not making concurrent password-based requests until one has succeeded; or making limited attempts to retry 401s. But I&#x27;m not sure either is justified for a niche issue.) But I wanted to at least say what happened and report my findings, as even if you choose not to change anything, others struggling with the same problem might at least stumble on the report.</p>
+Example config and request
 <p>In <code>~/.config/uv/uv.toml</code>:</p>
 <pre><code>[[index]]
-name = 'artifactory'
-url = 'https://AnnetteWilson:REDACTED@artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple'
+name = &#x27;artifactory&#x27;
+url = &#x27;https://AnnetteWilson:REDACTED@artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple&#x27;
 default = true
-authenticate = 'always'
+authenticate = &#x27;always&#x27;
 </code></pre>
 <p>The command, applied to a fresh checkout and adding a package from the private repository.</p>
 <pre><code>$ uv -vv add mshell-python-core
@@ -174,7 +174,7 @@ TRACE Handling request for https://artifactory.skyscannertools.net/artifactory/a
 TRACE Request for https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/packages/packages/a8/a4/20da314d277121d6534b3a980b29035dcd51e6744bd79075a6ce8fa4eb8d/pytest-8.4.2-py3-none-any.whl is unauthenticated, checking cache
 TRACE Found cached credentials for URL https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/packages/packages/a8/a4/20da314d277121d6534b3a980b29035dcd51e6744bd79075a6ce8fa4eb8d/pytest-8.4.2-py3-none-any.whl
 TRACE Request for https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/packages/packages/a8/a4/20da314d277121d6534b3a980b29035dcd51e6744bd79075a6ce8fa4eb8d/pytest-8.4.2-py3-none-any.whl is fully authenticated
-TRACE Response from https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/packages/packages/a8/a4/20da314d277121d6534b3a980b29035dcd51e6744bd79075a6ce8fa4eb8d/pytest-8.4.2-py3-none-any.whl is storable because it has a 'public' cache-control directive
+TRACE Response from https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/packages/packages/a8/a4/20da314d277121d6534b3a980b29035dcd51e6744bd79075a6ce8fa4eb8d/pytest-8.4.2-py3-none-any.whl is storable because it has a &#x27;public&#x27; cache-control directive
 TRACE Getting metadata for pytest-8.4.2-py3-none-any.whl by range request
 TRACE Handling request for https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/packages/packages/a8/a4/20da314d277121d6534b3a980b29035dcd51e6744bd79075a6ce8fa4eb8d/pytest-8.4.2-py3-none-any.whl with authentication policy always
 TRACE Request for https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/packages/packages/a8/a4/20da314d277121d6534b3a980b29035dcd51e6744bd79075a6ce8fa4eb8d/pytest-8.4.2-py3-none-any.whl is unauthenticated, checking cache
@@ -190,7 +190,7 @@ TRACE Handling request for https://artifactory.skyscannertools.net/artifactory/a
 TRACE Request for https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/packages/packages/a8/a4/20da314d277121d6534b3a980b29035dcd51e6744bd79075a6ce8fa4eb8d/pytest-8.4.2-py3-none-any.whl is unauthenticated, checking cache
 TRACE Found cached credentials for URL https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/packages/packages/a8/a4/20da314d277121d6534b3a980b29035dcd51e6744bd79075a6ce8fa4eb8d/pytest-8.4.2-py3-none-any.whl
 TRACE Request for https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/packages/packages/a8/a4/20da314d277121d6534b3a980b29035dcd51e6744bd79075a6ce8fa4eb8d/pytest-8.4.2-py3-none-any.whl is fully authenticated
-TRACE Response from https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/packages/packages/a8/a4/20da314d277121d6534b3a980b29035dcd51e6744bd79075a6ce8fa4eb8d/pytest-8.4.2-py3-none-any.whl is storable because it has a 'public' cache-control directive
+TRACE Response from https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/packages/packages/a8/a4/20da314d277121d6534b3a980b29035dcd51e6744bd79075a6ce8fa4eb8d/pytest-8.4.2-py3-none-any.whl is storable because it has a &#x27;public&#x27; cache-control directive
 TRACE Received built distribution metadata for: pytest==8.4.2
 TRACE Updating cached credentials for https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple/uvicorn/ to Credentials(Basic { username: Username(Some(&quot;AnnetteWilson&quot;)), password: Some(****) })
 TRACE Response from https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple/uvicorn/ is storable because it has a heuristically cacheable status code 200
@@ -203,7 +203,7 @@ TRACE Handling request for https://artifactory.skyscannertools.net/artifactory/a
 TRACE Request for https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/packages/packages/85/cd/584a2ceb5532af99dd09e50919e3615ba99aa127e9850eafe5f31ddfdb9a/uvicorn-0.37.0-py3-none-any.whl is unauthenticated, checking cache
 TRACE Found cached credentials for URL https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/packages/packages/85/cd/584a2ceb5532af99dd09e50919e3615ba99aa127e9850eafe5f31ddfdb9a/uvicorn-0.37.0-py3-none-any.whl
 TRACE Request for https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/packages/packages/85/cd/584a2ceb5532af99dd09e50919e3615ba99aa127e9850eafe5f31ddfdb9a/uvicorn-0.37.0-py3-none-any.whl is fully authenticated
-TRACE Response from https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/packages/packages/85/cd/584a2ceb5532af99dd09e50919e3615ba99aa127e9850eafe5f31ddfdb9a/uvicorn-0.37.0-py3-none-any.whl is storable because it has a 'public' cache-control directive
+TRACE Response from https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/packages/packages/85/cd/584a2ceb5532af99dd09e50919e3615ba99aa127e9850eafe5f31ddfdb9a/uvicorn-0.37.0-py3-none-any.whl is storable because it has a &#x27;public&#x27; cache-control directive
 TRACE Received built distribution metadata for: uvicorn==0.37.0
 DEBUG Reverting changes to `pyproject.toml`
 DEBUG Reverting changes to `uv.lock`
@@ -220,7 +220,7 @@ TRACE Resolver derivation tree after reduction
 term fastapi-poc==0.1.0
   fastapi-poc==0.1.0 depends on fastapi[standard]&gt;=0.118.2
   no versions of fastapi[standard]&gt;=0.118.2
-  ╰─▶ Because only fastapi[standard]&lt;0.118.2 is available and your project depends on fastapi[standard]&gt;=0.118.2, we can conclude that your project's requirements are unsatisfiable.
+  ╰─▶ Because only fastapi[standard]&lt;0.118.2 is available and your project depends on fastapi[standard]&gt;=0.118.2, we can conclude that your project&#x27;s requirements are unsatisfiable.
 
       hint: An index URL (https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple) could not be queried due to a lack of valid authentication credentials (401 Unauthorized).
   help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and syncing.
@@ -228,23 +228,23 @@ DEBUG Released lock at `/Users/AnnetteWilson/scratch/test-artifactory/mshell-fas
 DEBUG Released lock at `/Users/AnnetteWilson/.cache/uv/.lock`
 </code></pre>
 <p>Despite the message, inspection of the outgoing requests reveals that the failing 401 requests have the exact same credentials as the successful 200 requests.</p>
-<h3>Platform</h3>
+Platform
 <p>Darwin 25.2.0 arm64</p>
-<h3>Version</h3>
+Version
 <p>uv 0.9.17 (Homebrew 2025-12-09)</p>
-<h3>Python version</h3>
+Python version
 <p>Python 3.13.0</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @annettejanewilson on 2026-01-15 15:28</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/annettejanewilson">@annettejanewilson</a> on 2026-01-15 15:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">great writeup</span> added by @konstin on 2026-01-15 15:47</div>
+            <div class="event">Label <span class="label">great writeup</span> added by <a href="https://github.com/konstin">@konstin</a> on 2026-01-15 15:47</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2026-01-15 16:55</div>
-            <div class="timeline-body"><p>Thank you for the detailed investigation! Could this be something specific with the auth server that's running behind it? We haven't seen this problem with other Artifactory users, so I wonder what's specific about this Artifactory deployment that causes these errors.</p>
+            <div class="timeline-body"><p>Thank you for the detailed investigation! Could this be something specific with the auth server that&#x27;s running behind it? We haven&#x27;t seen this problem with other Artifactory users, so I wonder what&#x27;s specific about this Artifactory deployment that causes these errors.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -259,13 +259,13 @@ DEBUG Released lock at `/Users/AnnetteWilson/.cache/uv/.lock`
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/annettejanewilson">@annettejanewilson</a> on 2026-01-20 09:39</div>
-            <div class="timeline-body"><p>I understand we're using artifactory's <a href="https://jfrog.com/help/r/jfrog-rest-apis/get-user-encrypted-password">get-user-encrypted-password</a> API to obtain credentials and then using those credentials. I'm not sure what's beyond that, I think it's using LDAP or something LDAP-compatible.</p>
+            <div class="timeline-body"><p>I understand we&#x27;re using artifactory&#x27;s <a href="https://jfrog.com/help/r/jfrog-rest-apis/get-user-encrypted-password">get-user-encrypted-password</a> API to obtain credentials and then using those credentials. I&#x27;m not sure what&#x27;s beyond that, I think it&#x27;s using LDAP or something LDAP-compatible.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-20 10:35:04 UTC
+        Synced at 2026-01-20 19:41:32 UTC
     </footer>
 </body>
 </html>

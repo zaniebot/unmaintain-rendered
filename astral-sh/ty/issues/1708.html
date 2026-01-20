@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>Log a warning message if we can detect that ty Python version doesn't match active environment Python version</h1>
+    <h1>Log a warning message if we can detect that ty Python version doesn&#x27;t match active environment Python version</h1>
 
     <div class="meta">
         <span class="state-icon state-open"></span>
@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/alex">@alex</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>In pyca/cryptography we have code like:</p>
-<pre><code class="language-py">if sys.version_info &gt;= (3, 11):
+<pre><code>if sys.version_info &gt;= (3, 11):
     import tomllib
 else:
     import tomli as tomllib
@@ -50,26 +50,26 @@ info:   5. /Users/alex_gaynor/projects/cryptography/vectors (editable install)
 info: make sure your Python environment is properly configured: https://docs.astral.sh/ty/modules/#python-environment
 info: rule `unresolved-import` is enabled by default
 </code></pre>
-<p>As far as I can tell what's happening is: <code>ty</code> is in a Python 3.14 venv, so <code>tomli</code> isn't installed. However, <code>ty</code> infers that it should run for Python 3.8 from my project's <code>requires-python</code>.</p>
-<p>Therefore it type-checks the <code>import tomli</code> path and is said that the package isn't installed.</p>
-<p>I'm not <em>quite</em> sure what the right behavior is, but the current behavior is perplexing and its not clear how to fix :-)</p>
-<h3>Version</h3>
+<p>As far as I can tell what&#x27;s happening is: <code>ty</code> is in a Python 3.14 venv, so <code>tomli</code> isn&#x27;t installed. However, <code>ty</code> infers that it should run for Python 3.8 from my project&#x27;s <code>requires-python</code>.</p>
+<p>Therefore it type-checks the <code>import tomli</code> path and is said that the package isn&#x27;t installed.</p>
+<p>I&#x27;m not <em>quite</em> sure what the right behavior is, but the current behavior is perplexing and its not clear how to fix :-)</p>
+Version
 <p>ty 0.0.1-alpha.29 (0c3cae494 2025-11-28)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-01 14:52</div>
-            <div class="timeline-body"><p>Often the solution to this kind of thing is to declare <code>tomli</code> as a dev-dependency, so that for type-checking it's always installed, even if it's not always installed at runtime. This is similar to the way you might specify a stubs package as a dev-dependency for type-checking purposes, even though you don't use those stubs at runtime. Mypy has this exact problem when type-checking itself, for example: https://github.com/python/mypy/blob/ad0f41eea63ef227739b66f08afbb67544597d79/test-requirements.in#L14</p>
+            <div class="timeline-body"><p>Often the solution to this kind of thing is to declare <code>tomli</code> as a dev-dependency, so that for type-checking it&#x27;s always installed, even if it&#x27;s not always installed at runtime. This is similar to the way you might specify a stubs package as a dev-dependency for type-checking purposes, even though you don&#x27;t use those stubs at runtime. Mypy has this exact problem when type-checking itself, for example: https://github.com/python/mypy/blob/ad0f41eea63ef227739b66f08afbb67544597d79/test-requirements.in#L14</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/alex">@alex</a> on 2025-12-01 14:54</div>
-            <div class="timeline-body"><p>I think in practice we don't see this issue on mypy because it uses the python interpreter's version, rather than the inferring it from pyproject.toml?</p>
+            <div class="timeline-body"><p>I think in practice we don&#x27;t see this issue on mypy because it uses the python interpreter&#x27;s version, rather than the inferring it from pyproject.toml?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-01 14:58</div>
-            <div class="timeline-body"><p>that's what mypy does by default, yes. You can specify <code>--python-version=3.14</code> manually on the command line if you want to override ty's default behaviour -- but our default assumption is different to mypy's. Our default is to assume that you would like your project to type-check on the lowest version of Python your project supports, even if you're using a newer version of Python for local development.</p>
+            <div class="timeline-body"><p>that&#x27;s what mypy does by default, yes. You can specify <code>--python-version=3.14</code> manually on the command line if you want to override ty&#x27;s default behaviour -- but our default assumption is different to mypy&#x27;s. Our default is to assume that you would like your project to type-check on the lowest version of Python your project supports, even if you&#x27;re using a newer version of Python for local development.</p>
 <p>(Note: when I mentioned mypy above, I was referring to the dependencies mypy installs in CI when it type-checks <em>itself</em>! It also has to declare <code>tomli</code> as a dev-dependency, because of similar <code>sys.version_info</code> branches in its own source code.)</p>
 </div>
         </div>
@@ -79,45 +79,45 @@ info: rule `unresolved-import` is enabled by default
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @sharkdp on 2025-12-01 18:04</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-01 18:04</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-03 12:27</div>
-            <div class="timeline-body"><p>I think everything's working as expected here, and our behaviour is pretty well documented in https://docs.astral.sh/ty/reference/configuration/#python-version IMO, so I'm going to close this. I think it's also clear to see from our existing diagnostic that we're using the <code>site-packages</code> directory from your Python 3.14 environment (it's listed as the fourth search path where we looked for the module). I acknowledge that this behaviour might seem surprising if you're used to mypy's behaviour where it defaults to the Python version of the interpreter currently being used, but I'd argue that our behaviour makes more sense <em>a priori</em> -- if my Python project supports Python 3.9, I'd always want to check that my types and syntax are valid on 3.9, even if I'm using 3.14 for local development.</p>
-<p>Attempting to figure out the Python version of the currently active environment also isn't always easy. We can do it for a virtual environment pretty well by parsing the pyvenv.cfg file, and on Unix we can look at the directory structure (we do both of these things as a fallback if <code>--python-version</code> wasn't specified on the CLI and there was no configuration in the pyproject.toml file!), but neither of those techniques work for Windows -- we might have to invoke the Python interpreter itself as a subprocess, which would be slow.</p>
+            <div class="timeline-body"><p>I think everything&#x27;s working as expected here, and our behaviour is pretty well documented in https://docs.astral.sh/ty/reference/configuration/#python-version IMO, so I&#x27;m going to close this. I think it&#x27;s also clear to see from our existing diagnostic that we&#x27;re using the <code>site-packages</code> directory from your Python 3.14 environment (it&#x27;s listed as the fourth search path where we looked for the module). I acknowledge that this behaviour might seem surprising if you&#x27;re used to mypy&#x27;s behaviour where it defaults to the Python version of the interpreter currently being used, but I&#x27;d argue that our behaviour makes more sense <em>a priori</em> -- if my Python project supports Python 3.9, I&#x27;d always want to check that my types and syntax are valid on 3.9, even if I&#x27;m using 3.14 for local development.</p>
+<p>Attempting to figure out the Python version of the currently active environment also isn&#x27;t always easy. We can do it for a virtual environment pretty well by parsing the pyvenv.cfg file, and on Unix we can look at the directory structure (we do both of these things as a fallback if <code>--python-version</code> wasn&#x27;t specified on the CLI and there was no configuration in the pyproject.toml file!), but neither of those techniques work for Windows -- we might have to invoke the Python interpreter itself as a subprocess, which would be slow.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-12-03 12:27</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-03 12:27</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-03 13:20</div>
-            <div class="timeline-body"><p>(Very happy to reopen if anybody has any specific suggestions for how to further improve our diagnostic here, but I'm struggling to see how we could in this specific case. Our diagnostic already includes a lot of information here.)</p>
+            <div class="timeline-body"><p>(Very happy to reopen if anybody has any specific suggestions for how to further improve our diagnostic here, but I&#x27;m struggling to see how we could in this specific case. Our diagnostic already includes a lot of information here.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-03 19:26</div>
-            <div class="timeline-body"><p>I think the trickiest thing here is just the fact that dependencies may vary by Python version, so there's an inherent potential mismatch whenever we type-check with a Python version that doesn't match the environment we're using. I could see a justification for logging a pre-emptive warning message (maybe only in verbose mode) if we can detect that's the case (which, as you say, we can only easily do on Unix or if we have a <code>pyvenv.cfg</code>).</p>
-<p>But beyond that, ultimately we provide the necessary tools here (via an explicit-set Python version) to do whatever you need, it's just a question of picking the right defaults, and there's no one &quot;right answer&quot; there.</p>
+            <div class="timeline-body"><p>I think the trickiest thing here is just the fact that dependencies may vary by Python version, so there&#x27;s an inherent potential mismatch whenever we type-check with a Python version that doesn&#x27;t match the environment we&#x27;re using. I could see a justification for logging a pre-emptive warning message (maybe only in verbose mode) if we can detect that&#x27;s the case (which, as you say, we can only easily do on Unix or if we have a <code>pyvenv.cfg</code>).</p>
+<p>But beyond that, ultimately we provide the necessary tools here (via an explicit-set Python version) to do whatever you need, it&#x27;s just a question of picking the right defaults, and there&#x27;s no one &quot;right answer&quot; there.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @AlexWaygood on 2025-12-03 19:27</div>
+            <div class="event">Reopened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-03 19:27</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2025-12-03 19:27</div>
+            <div class="event">Assigned to <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-03 19:27</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> removed by @AlexWaygood on 2025-12-03 19:27</div>
+            <div class="event">Label <span class="label">question</span> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-03 19:27</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">diagnostics</span> added by @AlexWaygood on 2025-12-03 19:27</div>
+            <div class="event">Label <span class="label">diagnostics</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-03 19:27</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">imports</span> added by @AlexWaygood on 2025-12-03 19:27</div>
+            <div class="event">Label <span class="label">imports</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-03 19:27</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Perplexing errors with version checks + inferred version" to "Log a warning message if we can detect that ty Python version doesn't match active environment Python version" by @carljm on 2025-12-03 19:29</div>
+            <div class="event">Renamed from &quot;Perplexing errors with version checks + inferred version&quot; to &quot;Log a warning message if we can detect that ty Python version doesn&#x27;t match active environment Python version&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-12-03 19:29</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-03 19:35</div>
@@ -126,31 +126,31 @@ info: rule `unresolved-import` is enabled by default
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-03 19:50</div>
-            <div class="timeline-body"><p>I would not want to log a warning every time ty starts up if the user is using a newer version of Python for local development than the oldest version of Python their project supports. That's pretty common and reasonable; the solution in this kind of situation is to list the problematic import as a dev-dependency so that the type checker can resolve it on all Python versions. A warning even if there are no diagnostics feels very noisy to me.</p>
-<p>I do think, however, we can note the version mismatch as a subdiagnostic when import resolution fails. And as @zanieb says, this subdiagnostic will become much more helpful if/when we're easily able to query uv about whether the dependency would be installed on other Python versions.</p>
+            <div class="timeline-body"><p>I would not want to log a warning every time ty starts up if the user is using a newer version of Python for local development than the oldest version of Python their project supports. That&#x27;s pretty common and reasonable; the solution in this kind of situation is to list the problematic import as a dev-dependency so that the type checker can resolve it on all Python versions. A warning even if there are no diagnostics feels very noisy to me.</p>
+<p>I do think, however, we can note the version mismatch as a subdiagnostic when import resolution fails. And as @zanieb says, this subdiagnostic will become much more helpful if/when we&#x27;re easily able to query uv about whether the dependency would be installed on other Python versions.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-03 19:58</div>
-            <div class="timeline-body"><p>Gah, and flipping back on this again having tried it out -- no, a subdiagnostic just won't be useful at all right now without being able to query uv, I don't think. So I guess a debug-only warning for now might be the best we can do right now?</p>
+            <div class="timeline-body"><p>Gah, and flipping back on this again having tried it out -- no, a subdiagnostic just won&#x27;t be useful at all right now without being able to query uv, I don&#x27;t think. So I guess a debug-only warning for now might be the best we can do right now?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Unassigned @AlexWaygood by @AlexWaygood on 2025-12-03 20:01</div>
+            <div class="event">Unassigned <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-03 20:01</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-03 21:08</div>
-            <div class="timeline-body"><p>I don't think we should add any non suppressable warnings for something that's a very valid use case</p>
+            <div class="timeline-body"><p>I don&#x27;t think we should add any non suppressable warnings for something that&#x27;s a very valid use case</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-03 21:49</div>
-            <div class="timeline-body"><p>I was thinking that's ok for a debug-only (verbose mode) message -- the idea is to provide information to the user that might be relevant when they are trouble shooting a problem. It's not going to be noisy in normal usage. But I don't feel strongly about it. I do think we need uv integration in order to fine-tune the message to only appear when there are actual version-dependent dependencies.</p>
+            <div class="timeline-body"><p>I was thinking that&#x27;s ok for a debug-only (verbose mode) message -- the idea is to provide information to the user that might be relevant when they are trouble shooting a problem. It&#x27;s not going to be noisy in normal usage. But I don&#x27;t feel strongly about it. I do think we need uv integration in order to fine-tune the message to only appear when there are actual version-dependent dependencies.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-03 22:10</div>
-            <div class="timeline-body"><p>I'm okay with a debug or even info level message. But it shouldn't be warn or higher</p>
+            <div class="timeline-body"><p>I&#x27;m okay with a debug or even info level message. But it shouldn&#x27;t be warn or higher</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -161,7 +161,7 @@ info: rule `unresolved-import` is enabled by default
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:21:07 UTC
+        Synced at 2026-01-20 19:26:11 UTC
     </footer>
 </body>
 </html>

@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/graipher">@graipher</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>When typing unit tests written with <code>pytest</code>, when parametrizing a fixture in the following way:</p>
-<pre><code class="language-python"># /// script
+<pre><code># /// script
 # dependencies = [
 #   &quot;pytest&quot;,
 # ]
@@ -39,7 +39,7 @@ def foo_fixture(request: pytest.FixtureRequest) -&gt; str:
     return request.param
 </code></pre>
 <p><code>ty</code> does not recognize that the <code>pytest.FixtureRequest</code> object does indeed have a <code>param</code> attribute:</p>
-<pre><code class="language-shell">uvx ty check .
+<pre><code>uvx ty check .
 error[unresolved-attribute]: Type `FixtureRequest` has no attribute `param`
   --&gt; main.py:12:12
    |
@@ -50,8 +50,8 @@ error[unresolved-attribute]: Type `FixtureRequest` has no attribute `param`
    |
 info: rule `unresolved-attribute` is enabled by default
 </code></pre>
-<p>despite the fact that <code>pytest.FixtureRequest</code> declares this attribute in it's <code>__init__</code> method:</p>
-<pre><code class="language-python">class FixtureRequest(abc.ABC):
+<p>despite the fact that <code>pytest.FixtureRequest</code> declares this attribute in it&#x27;s <code>__init__</code> method:</p>
+<pre><code>class FixtureRequest(abc.ABC):
     &quot;&quot;&quot;The type of the ``request`` fixture.
 
     A request object gives access to the requesting test context and has a
@@ -93,24 +93,24 @@ info: rule `unresolved-attribute` is enabled by default
 </code></pre>
 <p>Both <code>mypy</code> and <code>pyright</code> do not emit an error for this (<code>mypy</code> does complain about the return annotation being a <code>str</code> and <code>request.param</code> returning <code>Any</code> in strict mode, though).</p>
 <p>I guess that attributes assigned in <code>__init__</code> methods are currently not considered or that there is at least no proper resolution to which <code>__init__</code> gets called (since this is an ABC)? The comment above <code>self.param</code> may also be relevant here.</p>
-<h3>Version</h3>
+Version
 <p>ty 0.0.1-alpha.11</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "`pytest.FixtureRequest` attributes not resolved correctly" to "`pytest.FixtureRequest` `param` attribute not resolved correctly" by @graipher on 2025-06-25 05:59</div>
+            <div class="event">Renamed from &quot;`pytest.FixtureRequest` attributes not resolved correctly&quot; to &quot;`pytest.FixtureRequest` `param` attribute not resolved correctly&quot; by <a href="https://github.com/graipher">@graipher</a> on 2025-06-25 05:59</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2025-06-25 06:13</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-25 06:13</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">attribute access</span> added by @sharkdp on 2025-06-25 06:13</div>
+            <div class="event">Label <span class="label">attribute access</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-25 06:13</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-25 06:14</div>
             <div class="timeline-body"><p>Thank you very much for reporting this — and for the initial analysis.</p>
-<p>We're currently not recognizing a declaration-only annotated assignment (without a right-hand side) such as <code>self.param: Type</code> as evidence for an instance attribute:</p>
-<pre><code class="language-py">class C:
+<p>We&#x27;re currently not recognizing a declaration-only annotated assignment (without a right-hand side) such as <code>self.param: Type</code> as evidence for an instance attribute:</p>
+<pre><code>class C:
     def __init__(self):
         self.a: int
 
@@ -122,28 +122,28 @@ C().a  # unresolved-attribute
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> removed by @sharkdp on 2025-06-25 06:20</div>
+            <div class="event">Label <span class="label">bug</span> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-25 06:20</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-25 06:32</div>
             <div class="timeline-body"><p>This could probably be a good (but not too easy) task for interested contributors, with a relatively limited scope (?). Instead of only considering bindings for attribute assignments, we need to consider both bindings and declarations. Declarations are already correctly recorded in the semantic index, but in type inference, we currently only access the bindings. The patch below may be useful as a reference to see which places in the source code need to change. It switches everything from bindings-only to declarations-only (which would fix the issue here), but of course that needs to be extended to consider both.</p>
 <p>Just like when resolving references to normal variables, declarations should take precedence over bindings. That is, even if we see conflicting definitions such as <code>self.x: int</code> and <code>self.x = &quot;a string&quot;</code>, the type of the <code>x</code> attribute should just be <code>int</code>.</p>
-<details>
 
-<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/src/semantic_index.rs b/crates/ty_python_semantic/src/semantic_index.rs
+
+<pre><code>diff --git a/crates/ty_python_semantic/src/semantic_index.rs b/crates/ty_python_semantic/src/semantic_index.rs
 index d4f848e69d..9be2b157d7 100644
 --- a/crates/ty_python_semantic/src/semantic_index.rs
 +++ b/crates/ty_python_semantic/src/semantic_index.rs
-@@ -108,7 +108,7 @@ pub(crate) fn attribute_assignments&lt;'db, 's&gt;(
-     db: &amp;'db dyn Db,
-     class_body_scope: ScopeId&lt;'db&gt;,
-     name: &amp;'s str,
--) -&gt; impl Iterator&lt;Item = (BindingWithConstraintsIterator&lt;'db, 'db&gt;, FileScopeId)&gt; + use&lt;'s, 'db&gt; {
-+) -&gt; impl Iterator&lt;Item = (DeclarationsIterator&lt;'db, 'db&gt;, FileScopeId)&gt; + use&lt;'s, 'db&gt; {
+@@ -108,7 +108,7 @@ pub(crate) fn attribute_assignments&lt;&#x27;db, &#x27;s&gt;(
+     db: &amp;&#x27;db dyn Db,
+     class_body_scope: ScopeId&lt;&#x27;db&gt;,
+     name: &amp;&#x27;s str,
+-) -&gt; impl Iterator&lt;Item = (BindingWithConstraintsIterator&lt;&#x27;db, &#x27;db&gt;, FileScopeId)&gt; + use&lt;&#x27;s, &#x27;db&gt; {
++) -&gt; impl Iterator&lt;Item = (DeclarationsIterator&lt;&#x27;db, &#x27;db&gt;, FileScopeId)&gt; + use&lt;&#x27;s, &#x27;db&gt; {
      let file = class_body_scope.file(db);
      let index = semantic_index(db, file);
  
-@@ -116,7 +116,7 @@ pub(crate) fn attribute_assignments&lt;'db, 's&gt;(
+@@ -116,7 +116,7 @@ pub(crate) fn attribute_assignments&lt;&#x27;db, &#x27;s&gt;(
          let place_table = index.place_table(function_scope_id);
          let place = place_table.place_id_by_instance_attribute_name(name)?;
          let use_def = &amp;index.use_def_maps[function_scope_id];
@@ -156,7 +156,7 @@ diff --git a/crates/ty_python_semantic/src/semantic_index/use_def.rs b/crates/ty
 index 8ac7f91811..978ce2de7a 100644
 --- a/crates/ty_python_semantic/src/semantic_index/use_def.rs
 +++ b/crates/ty_python_semantic/src/semantic_index/use_def.rs
-@@ -463,10 +463,10 @@ impl&lt;'db&gt; UseDefMap&lt;'db&gt; {
+@@ -463,10 +463,10 @@ impl&lt;&#x27;db&gt; UseDefMap&lt;&#x27;db&gt; {
              .is_always_false()
      }
  
@@ -164,8 +164,8 @@ index 8ac7f91811..978ce2de7a 100644
 +    pub(crate) fn is_declaration_reachable(
          &amp;self,
          db: &amp;dyn crate::Db,
--        binding: &amp;BindingWithConstraints&lt;'_, 'db&gt;,
-+        binding: &amp;DeclarationWithConstraint&lt;'db&gt;,
+-        binding: &amp;BindingWithConstraints&lt;&#x27;_, &#x27;db&gt;,
++        binding: &amp;DeclarationWithConstraint&lt;&#x27;db&gt;,
      ) -&gt; Truthiness {
          self.reachability_constraints.evaluate(
              db,
@@ -173,7 +173,7 @@ diff --git a/crates/ty_python_semantic/src/types/class.rs b/crates/ty_python_sem
 index 3cd7bffa5b..371291a94a 100644
 --- a/crates/ty_python_semantic/src/types/class.rs
 +++ b/crates/ty_python_semantic/src/types/class.rs
-@@ -1744,10 +1744,10 @@ impl&lt;'db&gt; ClassLiteral&lt;'db&gt; {
+@@ -1744,10 +1744,10 @@ impl&lt;&#x27;db&gt; ClassLiteral&lt;&#x27;db&gt; {
                      let method = index.expect_single_definition(method_def);
                      let method_place = class_table.place_id_by_name(&amp;method_def.name).unwrap();
                      class_map
@@ -188,7 +188,7 @@ index 3cd7bffa5b..371291a94a 100644
                          })
                          .unwrap_or(Truthiness::AlwaysFalse)
                  } else {
-@@ -1762,7 +1762,7 @@ impl&lt;'db&gt; ClassLiteral&lt;'db&gt; {
+@@ -1762,7 +1762,7 @@ impl&lt;&#x27;db&gt; ClassLiteral&lt;&#x27;db&gt; {
              let mut unbound_binding = None;
  
              for attribute_assignment in attribute_assignments {
@@ -197,7 +197,7 @@ index 3cd7bffa5b..371291a94a 100644
                      // Store the implicit unbound binding here so that we can delay the
                      // computation of `unbound_reachability` to the point when we actually
                      // need it. This is an optimization for the common case where the
-@@ -1772,11 +1772,11 @@ impl&lt;'db&gt; ClassLiteral&lt;'db&gt; {
+@@ -1772,11 +1772,11 @@ impl&lt;&#x27;db&gt; ClassLiteral&lt;&#x27;db&gt; {
                      continue;
                  }
  
@@ -211,7 +211,7 @@ index 3cd7bffa5b..371291a94a 100644
                      .and(is_method_reachable)
                  {
                      Truthiness::AlwaysTrue =&gt; {
-@@ -1797,7 +1797,7 @@ impl&lt;'db&gt; ClassLiteral&lt;'db&gt; {
+@@ -1797,7 +1797,7 @@ impl&lt;&#x27;db&gt; ClassLiteral&lt;&#x27;db&gt; {
                  // TODO: this is incomplete logic since the attributes bound after termination are considered reachable.
                  let unbound_reachability = unbound_binding
                      .as_ref()
@@ -221,12 +221,12 @@ index 3cd7bffa5b..371291a94a 100644
  
                  if unbound_reachability
 </code></pre>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">good first issue</span> added by @sharkdp on 2025-06-25 06:32</div>
+            <div class="event">Label <span class="label">good first issue</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-25 06:32</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/iyakushev">@iyakushev</a> on 2025-06-25 08:38</div>
@@ -239,20 +239,20 @@ index 3cd7bffa5b..371291a94a 100644
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "`pytest.FixtureRequest` `param` attribute not resolved correctly" to "Detect declared-only instance attributes" by @sharkdp on 2025-07-02 15:30</div>
+            <div class="event">Renamed from &quot;`pytest.FixtureRequest` `param` attribute not resolved correctly&quot; to &quot;Detect declared-only instance attributes&quot; by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-02 15:30</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-07 11:07</div>
-            <div class="timeline-body"><p>fixed in https://github.com/astral-sh/ruff/pull/19048</p>
+            <div class="timeline-body"><p>fixed in <a href="https://github.com/astral-sh/ruff/pull/19048">astral-sh/ruff#19048</a></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-07-07 11:07</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-07 11:07</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:12 UTC
+        Synced at 2026-01-20 19:24:55 UTC
     </footer>
 </body>
 </html>

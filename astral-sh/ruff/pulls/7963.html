@@ -23,29 +23,23 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/bluthej">@bluthej</a></div>
-            <div class="timeline-body"><!--
-Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+            <div class="timeline-body">
 
-- Does this pull request include a summary of the change? (See below.)
-- Does this pull request include a descriptive title?
-- Does this pull request include references to any relevant issues?
--->
-
-<h2>Summary</h2>
+Summary
 <p>Refactor for isort implementation. Closes #7738.</p>
-<p>I introduced a <code>NatOrdString</code> and a <code>NatOrdStr</code> type to have a naturally ordered <code>String</code> and <code>&amp;str</code>, and I pretty much went back to the original implementation based on <code>module_key</code>, <code>member_key</code> and <code>sorted_by_cached_key</code> from itertools. I tried my best to avoid unnecessary allocations but it may have been clumsy in some places, so feedback is appreciated! I also renamed the <code>Prefix</code> enum to <code>MemberType</code> (and made some related adjustments) because I think this fits more what it is, and it's closer to the wording found in the isort documentation.</p>
+<p>I introduced a <code>NatOrdString</code> and a <code>NatOrdStr</code> type to have a naturally ordered <code>String</code> and <code>&amp;str</code>, and I pretty much went back to the original implementation based on <code>module_key</code>, <code>member_key</code> and <code>sorted_by_cached_key</code> from itertools. I tried my best to avoid unnecessary allocations but it may have been clumsy in some places, so feedback is appreciated! I also renamed the <code>Prefix</code> enum to <code>MemberType</code> (and made some related adjustments) because I think this fits more what it is, and it&#x27;s closer to the wording found in the isort documentation.</p>
 <p>I think the result is nicer to work with, and it should make implementing #1567 and the like easier :)</p>
 <p>Of course, I am very much open to any and all remarks on what I did!</p>
-<h2>Test Plan</h2>
-<!-- How was it tested? -->
+Test Plan
 
-<p>I didn't add any test, I am relying on the existing tests since this is just a refactor.</p>
+
+<p>I didn&#x27;t add any test, I am relying on the existing tests since this is just a refactor.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-10-15 11:24</div>
-            <div class="timeline-body"><h2>PR Check Results</h2>
-<h3>Ecosystem</h3>
+            <div class="timeline-body">PR Check Results
+Ecosystem
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
@@ -70,19 +64,19 @@ Thank you for contributing to Ruff! To help us out with reviewing, please consid
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/bluthej">@bluthej</a> on <code>crates/ruff_linter/src/rules/isort/sorting.rs</code>:56 on 2023-10-17 18:29</div>
             <div class="timeline-body"><p>It should be because both <code>module_key</code> and <code>member_key</code> return a tuple with first <code>maybe_lower_case_name</code> (which is <code>Some(name.to_lowercase())</code> if <code>settings.case_sensitive</code> is false, otherwise <code>None</code>) and then the module/member name.</p>
-<p>So if <code>settings.case_sensitive</code> is true, then we just compare the names using <code>natord::compare</code>, and if it's false we first compare the lowercase names with <code>natord::compare</code>, and then the actual names.</p>
-<p>I guess the question is, is comparing two strings that have been turned into lowercase with <code>natord::compare</code> the same as comparing them directly with <code>natord::compare_ignore_case</code>? I looked at the <a href="https://docs.rs/natord/latest/src/natord/lib.rs.html#142-153">source code</a> for <code>natord::compare_ignore_case</code> and they're just calling <code>to_lowercase</code> on the <code>char</code>s individually, but apart from that it seems like what I did should be equivalent.</p>
+<p>So if <code>settings.case_sensitive</code> is true, then we just compare the names using <code>natord::compare</code>, and if it&#x27;s false we first compare the lowercase names with <code>natord::compare</code>, and then the actual names.</p>
+<p>I guess the question is, is comparing two strings that have been turned into lowercase with <code>natord::compare</code> the same as comparing them directly with <code>natord::compare_ignore_case</code>? I looked at the <a href="https://docs.rs/natord/latest/src/natord/lib.rs.html#142-153">source code</a> for <code>natord::compare_ignore_case</code> and they&#x27;re just calling <code>to_lowercase</code> on the <code>char</code>s individually, but apart from that it seems like what I did should be equivalent.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/bluthej">@bluthej</a> on <code>crates/ruff_linter/src/rules/isort/sorting.rs</code>:93 on 2023-10-17 18:38</div>
             <div class="timeline-body"><p>I guess to do that we would need to use a <code>Cow</code>. What we could do is have a single <code>NatOrdStr</code> struct like this:</p>
-<pre><code class="language-rust">use std::borrow::Cow;
+<pre><code>use std::borrow::Cow;
 
-struct NatOrdStr&lt;'a&gt;(Cow&lt;'a, str&gt;);
+struct NatOrdStr&lt;&#x27;a&gt;(Cow&lt;&#x27;a, str&gt;);
 </code></pre>
 <p>whose contents are either owned or borrowed.</p>
-<p>I haven't played around with <code>Cow</code>s much, so I don't know if the overhead is low enough to make it worthwhile to avoid that allocation in case the string is already lowercase, what do you think? If you think it is I'll gladly tweak my implementation :) but in that case I think it's better to use that <code>Cow</code>-based struct everywhere rather than just for <code>maybe_lower_case_name</code>.</p>
+<p>I haven&#x27;t played around with <code>Cow</code>s much, so I don&#x27;t know if the overhead is low enough to make it worthwhile to avoid that allocation in case the string is already lowercase, what do you think? If you think it is I&#x27;ll gladly tweak my implementation :) but in that case I think it&#x27;s better to use that <code>Cow</code>-based struct everywhere rather than just for <code>maybe_lower_case_name</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -105,7 +99,7 @@ struct NatOrdStr&lt;'a&gt;(Cow&lt;'a, str&gt;);
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/bluthej">@bluthej</a> on <code>crates/ruff_linter/src/rules/isort/sorting.rs</code>:56 on 2023-10-20 19:51</div>
             <div class="timeline-body"><p>Oh I thought you were talking about the fact that there are two function calls (one case sensitive and one case insensitive).</p>
-<p>The correct natrural ordering (typically <code>module2</code> comes before <code>module10</code>) is indeed correctly captured in my refactor because I'm relying on <code>natord::compare</code> to implement the <code>Ord</code> trait for my types. Was that the question?</p>
+<p>The correct natrural ordering (typically <code>module2</code> comes before <code>module10</code>) is indeed correctly captured in my refactor because I&#x27;m relying on <code>natord::compare</code> to implement the <code>Ord</code> trait for my types. Was that the question?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -114,7 +108,7 @@ struct NatOrdStr&lt;'a&gt;(Cow&lt;'a, str&gt;);
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/isort/sorting.rs</code>:93 on 2023-10-20 20:42</div>
-            <div class="timeline-body"><p>I think it's worth it given that these are gonna lower-cased in the majority of cases.</p>
+            <div class="timeline-body"><p>I think it&#x27;s worth it given that these are gonna lower-cased in the majority of cases.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -128,7 +122,7 @@ struct NatOrdStr&lt;'a&gt;(Cow&lt;'a, str&gt;);
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-30 02:28</div>
-            <div class="timeline-body"><p>(Sorry for the delay. This is on me to review and merge, but I'd like to do further testing for correctness since it's a really important code path.)</p>
+            <div class="timeline-body"><p>(Sorry for the delay. This is on me to review and merge, but I&#x27;d like to do further testing for correctness since it&#x27;s a really important code path.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -137,26 +131,26 @@ struct NatOrdStr&lt;'a&gt;(Cow&lt;'a, str&gt;);
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">isort</span> added by @charliermarsh on 2023-10-30 04:25</div>
+            <div class="event">Label <span class="label">isort</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-30 04:25</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2023-10-30 04:37</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-30 04:37</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-10-30 04:37</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-30 04:37</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/bluthej">@bluthej</a> on 2023-10-30 07:18</div>
             <div class="timeline-body"><p>Awesome :)</p>
-<p>Absolutely no need to apologize, I totally understand and I'm very grateful that you took the time to look deeper into my proposal 🙏
-I really appreciate that and I'm super excited this got merged! 😁</p>
+<p>Absolutely no need to apologize, I totally understand and I&#x27;m very grateful that you took the time to look deeper into my proposal 🙏
+I really appreciate that and I&#x27;m super excited this got merged! 😁</p>
 <p>Now I can go back to implementing length sort ^^</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:00:49 UTC
+        Synced at 2026-01-20 18:58:17 UTC
     </footer>
 </body>
 </html>

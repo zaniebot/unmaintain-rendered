@@ -23,11 +23,11 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Glyphack">@Glyphack</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>This was found by mypy primer. The original code is in this file:
 https://github.com/caronc/apprise/blob/ce90151051f630803cba755fc9f06e16f7d8590b/apprise/plugins/email/base.py#L244</p>
-<p>I think this is a minimal reproduction. Although the <code>secure</code> attribute is defined in parent class in the original code but while playing this code fails(with defined it fails as well I just don't know why):</p>
-<pre><code class="language-py">from typing import Self
+<p>I think this is a minimal reproduction. Although the <code>secure</code> attribute is defined in parent class in the original code but while playing this code fails(with defined it fails as well I just don&#x27;t know why):</p>
+<pre><code>from typing import Self
 
 class A:
     def __init__(self: Self, secure_mode=None):
@@ -73,18 +73,18 @@ member_lookup_with_policy: PlaceAndQualifiers {
     ),
 }
 </code></pre>
-<h3>Version</h3>
+Version
 <p>9570d39f9 2025-06-23</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-06-23 07:06</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-23 07:06</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">fatal</span> added by @AlexWaygood on 2025-06-23 07:06</div>
+            <div class="event">Label <span class="label">fatal</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-23 07:06</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "too many cycle iterations in dependent attributes" to "too many cycle iterations in cyclic dependent attributes" by @Glyphack on 2025-06-23 07:06</div>
+            <div class="event">Renamed from &quot;too many cycle iterations in dependent attributes&quot; to &quot;too many cycle iterations in cyclic dependent attributes&quot; by <a href="https://github.com/Glyphack">@Glyphack</a> on 2025-06-23 07:06</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-06-23 21:06</div>
@@ -94,23 +94,23 @@ member_lookup_with_policy: PlaceAndQualifiers {
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-06-23 21:15</div>
             <div class="timeline-body"><p>And removing the ternary operator (but keeping the <code>Self</code> annotation) succeeds [<a href="https://play.ty.dev/ef637619-2d17-415d-b3f9-b870c0d38f63">playground</a>]</p>
-<p>So the cycle looks like it's because the definitions of <code>self.secure</code> and <code>self.secure_mode</code> are each guarded by an <code>if</code> statement involving the other.  Removing the ternary breaks the cycle since the definition of <code>self.secure_mode</code> is no longer guarded by a reference to <code>self.secure</code>.  I'm not sure yet why removing the <code>Self</code> annotation helps. Presumably because there's a salsa cycle handler that doesn't engage when the annotation is present?</p>
+<p>So the cycle looks like it&#x27;s because the definitions of <code>self.secure</code> and <code>self.secure_mode</code> are each guarded by an <code>if</code> statement involving the other.  Removing the ternary breaks the cycle since the definition of <code>self.secure_mode</code> is no longer guarded by a reference to <code>self.secure</code>.  I&#x27;m not sure yet why removing the <code>Self</code> annotation helps. Presumably because there&#x27;s a salsa cycle handler that doesn&#x27;t engage when the annotation is present?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-23 21:34</div>
-            <div class="timeline-body"><p>Looking at the code it makes sense to me why there's a cycle. What isn't clear to me is why the cycle doesn't converge.</p>
-<p>I presume the explicit <code>Self</code> annotation is required to repro, on main, because we haven't yet landed the implicit-Self PR, so without that annotation on main <code>self</code> would just be <code>Unknown</code>, so <code>self.secure</code> is just <code>Unknown</code> without triggering any cycle.</p>
+            <div class="timeline-body"><p>Looking at the code it makes sense to me why there&#x27;s a cycle. What isn&#x27;t clear to me is why the cycle doesn&#x27;t converge.</p>
+<p>I presume the explicit <code>Self</code> annotation is required to repro, on main, because we haven&#x27;t yet landed the implicit-Self PR, so without that annotation on main <code>self</code> would just be <code>Unknown</code>, so <code>self.secure</code> is just <code>Unknown</code> without triggering any cycle.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-24 10:41</div>
             <div class="timeline-body"><blockquote>
-<p>What isn't clear to me is why the cycle doesn't converge.</p>
+<p>What isn&#x27;t clear to me is why the cycle doesn&#x27;t converge.</p>
 </blockquote>
-<p>Hah, this is pretty interesting. It doesn't converge, and it doesn't diverge. Instead, it alternates indefinitely between <code>Unknown | Literal[True]</code> and <code>Unbound</code>.</p>
-<p>Here's an easier example that demonstrates the same issue:</p>
-<pre><code class="language-py">from typing import Literal
+<p>Hah, this is pretty interesting. It doesn&#x27;t converge, and it doesn&#x27;t diverge. Instead, it alternates indefinitely between <code>Unknown | Literal[True]</code> and <code>Unbound</code>.</p>
+<p>Here&#x27;s an easier example that demonstrates the same issue:</p>
+<pre><code>from typing import Literal
 
 class Toggle:
     def __init__(self: &quot;Toggle&quot;):
@@ -124,18 +124,18 @@ class Toggle:
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-24 11:42</div>
             <div class="timeline-body"><p>I considered a few solutions here:</p>
 <ul>
-<li>Never to treat an attribute as definitely-unbound if we see a <code>self.x = …</code> binding, even in an unreachable branch. This doesn't help here, unless we would treat that branch as reachable. Otherwise, we infer <code>Unknown</code> for the attribute, and then it alternates between <code>Unknown</code> and <code>Literal[True]</code>.</li>
+<li>Never to treat an attribute as definitely-unbound if we see a <code>self.x = …</code> binding, even in an unreachable branch. This doesn&#x27;t help here, unless we would treat that branch as reachable. Otherwise, we infer <code>Unknown</code> for the attribute, and then it alternates between <code>Unknown</code> and <code>Literal[True]</code>.</li>
 <li>To treat the truthiness of <code>Never</code> as <code>AlwaysTrue</code> instead of <code>Ambiguous</code>. This does not help and only changes with which type we enter this cycle.</li>
-<li>To special-case a value of &quot;unbound&quot; in <code>member_lookup_cycle_recover</code>, by trying to return <code>CycleRecoveryAction::Fallback(unknown)</code>. But that fallback doesn't converge either.</li>
+<li>To special-case a value of &quot;unbound&quot; in <code>member_lookup_cycle_recover</code>, by trying to return <code>CycleRecoveryAction::Fallback(unknown)</code>. But that fallback doesn&#x27;t converge either.</li>
 </ul>
-<p>It makes me think again of some kind of <code>CycleRecoveryAction::FallbackImmediate</code> that wouldn't check for convergence. But I know that this has implications for determinism.</p>
+<p>It makes me think again of some kind of <code>CycleRecoveryAction::FallbackImmediate</code> that wouldn&#x27;t check for convergence. But I know that this has implications for determinism.</p>
 <p>Another thing that came to my mind would be some kind of detection of this alternate pattern, that would allow us to fallback to some kind of &quot;union&quot; of the two alternating values. Unfortunately, there is no such union here that would make this cycle converge, at least in this <code>Toggle</code> example with the explicit <code>Literal[True]</code> annotation.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-24 11:51</div>
-            <div class="timeline-body"><p>Would it make sense to only evaluate a reachability constraint to a definite (non-ambiguous) value if all symbols are definitely bound? This could potentially solve this, but I'm not sure what the impact would be. It also doesn't seem correct in all cases?</p>
-<pre><code class="language-py">def _(flag: bool):
+            <div class="timeline-body"><p>Would it make sense to only evaluate a reachability constraint to a definite (non-ambiguous) value if all symbols are definitely bound? This could potentially solve this, but I&#x27;m not sure what the impact would be. It also doesn&#x27;t seem correct in all cases?</p>
+<pre><code>def _(flag: bool):
     if flag:
         x = True
 
@@ -147,7 +147,7 @@ class Toggle:
     
     if not x:
         # this branch, however, *is* definitely unreachable. If `x` is
-        # bound, we don't enter it, and if `x` is unbound, we also don't
+        # bound, we don&#x27;t enter it, and if `x` is unbound, we also don&#x27;t
         # enter it due to a `NameError`.
         pass
 </code></pre>
@@ -159,14 +159,14 @@ class Toggle:
 <p>Would it make sense to only evaluate a reachability constraint to a definite (non-ambiguous) value if all symbols are definitely bound?</p>
 </blockquote>
 <p>This seems the most promising to me as a general solution to this category of problem.</p>
-<p>I don't think it can ever be described as incorrect to conclude that a branch is maybe-reachable, it's just a question of precision. No other type checker attempts to detect this unreachability at all!</p>
+<p>I don&#x27;t think it can ever be described as incorrect to conclude that a branch is maybe-reachable, it&#x27;s just a question of precision. No other type checker attempts to detect this unreachability at all!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-27 07:43</div>
             <div class="timeline-body"><p>Together with Carl, we considered a few solutions to this problem.</p>
-<p>One option might be to generally disallow certain patterns (such as attribute accesses on <code>self</code> and function calls) in reachability constraints. We could detect them during semantic index building and either not record a reachability constraint at all, or just record <code>AMBIGUOUS</code>. This might be a rather simple solution to the problem here, but it's possible that similar problems would arise in loops once we implement #232. And here, the pattern-based approach would fail.</p>
-<pre><code class="language-py">while True:
+<p>One option might be to generally disallow certain patterns (such as attribute accesses on <code>self</code> and function calls) in reachability constraints. We could detect them during semantic index building and either not record a reachability constraint at all, or just record <code>AMBIGUOUS</code>. This might be a rather simple solution to the problem here, but it&#x27;s possible that similar problems would arise in loops once we implement #232. And here, the pattern-based approach would fail.</p>
+<pre><code>while True:
     if not x:
         x = True
 </code></pre>
@@ -174,11 +174,11 @@ class Toggle:
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Beta" by @carljm on 2025-06-27 14:28</div>
+            <div class="event">Added to milestone &quot;Beta&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-06-27 14:28</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Glyphack">@Glyphack</a> on 2025-07-23 15:43</div>
-            <div class="timeline-body"><p>Is this issue fixed? I can't reproduce it in <a href="https://play.ty.dev/3f79ec67-b5b0-4dd1-b215-cc4cc1dd2de0">playground</a> anymore.</p>
+            <div class="timeline-body"><p>Is this issue fixed? I can&#x27;t reproduce it in <a href="https://play.ty.dev/3f79ec67-b5b0-4dd1-b215-cc4cc1dd2de0">playground</a> anymore.</p>
 <p>Also out of curiosity I tried out <a href="https://github.com/astral-sh/ty/issues/692#issuecomment-3012051741">the first suggestion</a> in my implicit self pr. It reduced the number of cycles in this <a href="https://github.com/astral-sh/ty/issues/758">case</a>.</p>
 <p>But it caused a different kind of cycle.
 For example one case is <a href="https://github.com/pallets/werkzeug/blob/504a8c4fbda9b8b2fd09e817544ffd228f23458e/src/werkzeug/serving.py#L171">this code</a>. The type of <code>self.client_address</code> explodes into</p>
@@ -190,7 +190,7 @@ For example one case is <a href="https://github.com/pallets/werkzeug/blob/504a8c
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-07-23 15:53</div>
-            <div class="timeline-body"><p>I don't think this issue is fixed. <a href="https://github.com/astral-sh/ty/issues/692#issuecomment-2999760547">This minimized example</a> still fails. And the OP example <a href="https://play.ty.dev/557ae5e9-5c50-486a-bf5c-9a3831ea21f6">also still fails</a> if we add an extra line querying the type of <code>A().secure</code>.</p>
+            <div class="timeline-body"><p>I don&#x27;t think this issue is fixed. <a href="https://github.com/astral-sh/ty/issues/692#issuecomment-2999760547">This minimized example</a> still fails. And the OP example <a href="https://play.ty.dev/557ae5e9-5c50-486a-bf5c-9a3831ea21f6">also still fails</a> if we add an extra line querying the type of <code>A().secure</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -198,19 +198,19 @@ For example one case is <a href="https://github.com/pallets/werkzeug/blob/504a8c
             <div class="timeline-body"><blockquote>
 <p>Did I understand the suggestion here correctly? The code I implemented is <a href="https://github.com/astral-sh/ruff/pull/18473/files#diff-c340eca6210b3af8607376e62a8db4729277e27c635ea0e40c86965e933839a3R1089">here</a>. If yes then I try option 2.</p>
 </blockquote>
-<p>Yes, I think that's what we had in mind. Thank you for trying that approach.</p>
+<p>Yes, I think that&#x27;s what we had in mind. Thank you for trying that approach.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @Glyphack by @carljm on 2025-08-15 15:56</div>
+            <div class="event">Assigned to <a href="https://github.com/Glyphack">@Glyphack</a> by <a href="https://github.com/carljm">@carljm</a> on 2025-08-15 15:56</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @sharkdp on 2025-08-28 12:34</div>
+            <div class="event">Closed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-28 12:34</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:11 UTC
+        Synced at 2026-01-20 19:24:55 UTC
     </footer>
 </body>
 </html>

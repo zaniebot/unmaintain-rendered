@@ -68,32 +68,32 @@
 }
 </code></pre>
 <p>It works fine for an expression like this:</p>
-<pre><code>    'foo{0}' 'bar{1}'.format(1, 2)
+<pre><code>    &#x27;foo{0}&#x27; &#x27;bar{1}&#x27;.format(1, 2)
 </code></pre>
 <p>But the second you make it multi-line like so:</p>
-<pre><code>    'foo{0}'\n    'bar{1}'.format(1, 2)
+<pre><code>    &#x27;foo{0}&#x27;\n    &#x27;bar{1}&#x27;.format(1, 2)
 </code></pre>
 <p>The whole thing fails. Is this an error with my coding, or an error with libcst_native?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-06 22:39</div>
-            <div class="timeline-body"><p>I'm wondering if you need to dedent the code. You might be passing <code>LibCST</code> the indented expression, which would cause an error.</p>
+            <div class="timeline-body"><p>I&#x27;m wondering if you need to dedent the code. You might be passing <code>LibCST</code> the indented expression, which would cause an error.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-06 22:50</div>
-            <div class="timeline-body"><p>It looks like the issue still happens with the de-indented code: 'foo{0}'\n'bar{1}'.format(1, 2).</p>
+            <div class="timeline-body"><p>It looks like the issue still happens with the de-indented code: &#x27;foo{0}&#x27;\n&#x27;bar{1}&#x27;.format(1, 2).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-07 03:58</div>
-            <div class="timeline-body"><p>thread 'main' panicked at 'called <code>Result::unwrap()</code> on an <code>Err</code> value: ParserError(ParseError { location: ParseLoc { start_pos: LineCol { line: 2, column: 4, offset: 13 }, end_pos: LineCol { line: 2, column: 12, offset: 21 } }, expected: ExpectedSet { expected: {&quot;EOF&quot;} } }, &quot;'foo{0}'\n    'bar{1}'.format(1, 2)&quot;)', src/pyupgrade/plugins/format_specififiers.rs:57:57</p>
+            <div class="timeline-body"><p>thread &#x27;main&#x27; panicked at &#x27;called <code>Result::unwrap()</code> on an <code>Err</code> value: ParserError(ParseError { location: ParseLoc { start_pos: LineCol { line: 2, column: 4, offset: 13 }, end_pos: LineCol { line: 2, column: 12, offset: 21 } }, expected: ExpectedSet { expected: {&quot;EOF&quot;} } }, &quot;&#x27;foo{0}&#x27;\n    &#x27;bar{1}&#x27;.format(1, 2)&quot;)&#x27;, src/pyupgrade/plugins/format_specififiers.rs:57:57</p>
 <p>Looks like this is a parse error from the <code>parse_expression</code> function in libcst_native. My thoughts are we either:</p>
 <ol>
 <li>Make a custom patch in your fork</li>
 <li>Find a way to modify the string to add a <code>\</code> at the end of each line so the parser can understand it, and then remove it once we are done</li>
-<li>Don't use libcst_native ( I dont like this one because I like libcst now)</li>
+<li>Don&#x27;t use libcst_native ( I dont like this one because I like libcst now)</li>
 </ol>
 <p>Just let me know which you would like for me to pursue.</p>
 </div>
@@ -106,7 +106,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-08 23:54</div>
             <div class="timeline-body"><p>Here is the issue:
-https://github.com/Instagram/LibCST/issues/846
+<a href="https://github.com/Instagram/LibCST/issues/846">Instagram/LibCST#846</a>
 I will just make it a check for now!</p>
 </div>
         </div>
@@ -132,27 +132,27 @@ I will just make it a check for now!</p>
             <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-09 03:07</div>
             <div class="timeline-body"><p>Hey @charliermarsh I got all the positive test cases working (except for the one edge case we talked about), and all the negative cases working except one. I wanted to get your feedback before I implemented it.
 The following edge case is what causes issues:</p>
-<pre><code>'{' '0}'.format(1)
+<pre><code>&#x27;{&#x27; &#x27;0}&#x27;.format(1)
 </code></pre>
 <p>Since the format specifier is split into two different strings, it is NOT supposed to be formatted. However, both the Expr
 struct, and the tokens automatically combine this into one string. What would be the best way of detecting that this edge case is preset? Or do we want to ignore it? Since the refactoring would produce changes that could be seen as desirable:
-<img width="530" alt="Screenshot 2023-01-08 at 10 07 52 PM" src="https://user-images.githubusercontent.com/72827203/211235188-239290c0-2283-40cb-80fb-9aab0eabdcc3.png"></p>
+<img alt="Screenshot 2023-01-08 at 10 07 52 PM" src="https://user-images.githubusercontent.com/72827203/211235188-239290c0-2283-40cb-80fb-9aab0eabdcc3.png"></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-09 06:13</div>
-            <div class="timeline-body"><p>I think it's best just to ignore it (i.e., treat it as if there is no space). It strikes me as exceptionally rare, to the point that it's likely either a mistake <em>or</em> that it's not worth adding more complexity to our own implementation to handle it.</p>
+            <div class="timeline-body"><p>I think it&#x27;s best just to ignore it (i.e., treat it as if there is no space). It strikes me as exceptionally rare, to the point that it&#x27;s likely either a mistake <em>or</em> that it&#x27;s not worth adding more complexity to our own implementation to handle it.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-09 06:13</div>
-            <div class="timeline-body"><p>We could <em>probably</em> detect it by tokenizing... but it doesn't seem worth it to me.</p>
+            <div class="timeline-body"><p>We could <em>probably</em> detect it by tokenizing... but it doesn&#x27;t seem worth it to me.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-09 12:14</div>
             <div class="timeline-body"><blockquote>
-<p>I think it's best just to ignore it (i.e., treat it as if there is no space). It strikes me as exceptionally rare, to the point that it's likely either a mistake <em>or</em> that it's not worth adding more complexity to our own implementation to handle it.</p>
+<p>I think it&#x27;s best just to ignore it (i.e., treat it as if there is no space). It strikes me as exceptionally rare, to the point that it&#x27;s likely either a mistake <em>or</em> that it&#x27;s not worth adding more complexity to our own implementation to handle it.</p>
 </blockquote>
 <p>100% agree, especially since the python code will still work.</p>
 </div>
@@ -163,7 +163,7 @@ struct, and the tokens automatically combine this into one string. What would be
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @colin99d on 2023-01-09 15:59</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-09 15:59</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-10 21:35</div>
@@ -199,7 +199,7 @@ struct, and the tokens automatically combine this into one string. What would be
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyupgrade/rules/format_literals.rs</code>:85 on 2023-01-11 01:18</div>
-            <div class="timeline-body"><p>@colin99d - It turns out that we already had a utility for extracting the format positions, which uses the RustPython string parser underneath and so is very robust. Sorry that I didn't flag this earlier -- I didn't realize it could even be reused here, but it should make things more efficient too since we can do one string parse and share that &quot;summary&quot; amongst a bunch of checks.</p>
+            <div class="timeline-body"><p>@colin99d - It turns out that we already had a utility for extracting the format positions, which uses the RustPython string parser underneath and so is very robust. Sorry that I didn&#x27;t flag this earlier -- I didn&#x27;t realize it could even be reused here, but it should make things more efficient too since we can do one string parse and share that &quot;summary&quot; amongst a bunch of checks.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -223,14 +223,14 @@ struct, and the tokens automatically combine this into one string. What would be
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyupgrade/rules/format_literals.rs</code>:114 on 2023-01-11 01:20</div>
-            <div class="timeline-body"><p>Actually, I guess that wouldn't solve the <code>'{' '0}'.format(1)</code> case.</p>
+            <div class="timeline-body"><p>Actually, I guess that wouldn&#x27;t solve the <code>&#x27;{&#x27; &#x27;0}&#x27;.format(1)</code> case.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2023-01-11 01:21</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-11 01:21</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-01-11 01:21</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-11 01:21</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-11 01:50</div>
@@ -243,7 +243,7 @@ struct, and the tokens automatically combine this into one string. What would be
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:55:22 UTC
+        Synced at 2026-01-20 18:51:43 UTC
     </footer>
 </body>
 </html>

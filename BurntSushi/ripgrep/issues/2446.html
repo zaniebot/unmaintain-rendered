@@ -25,7 +25,7 @@
             <div class="timeline-header"><a href="https://github.com/orf">@orf</a></div>
             <div class="timeline-body"><p>Ripgrep is a very versatile tool, but there is one limitation that I frequently run into that I would love to be able to use Ripgrep with.</p>
 <p>Imagine you have a tool that outputs structured content in JSON:</p>
-<pre><code class="language-jsonl">{&quot;name&quot;: &quot;foo.py&quot;, &quot;text&quot;: &quot;foobar&quot;}
+<pre><code>{&quot;name&quot;: &quot;foo.py&quot;, &quot;text&quot;: &quot;foobar&quot;}
 {&quot;name&quot;: &quot;baz.py&quot;, &quot;text&quot;: &quot;baz\nsome new line here&quot;}
 </code></pre>
 <p>I would love to be able to feed this into <code>rg</code> and have it match only on the <code>text</code>  but treat it as if it had been read from a file called <code>foo.py</code>. For example</p>
@@ -33,22 +33,22 @@
 ./foo.py
 1:foobar
 </code></pre>
-<p>The use of JSON isn't the only option, using something like tar (as discussed in #1112) would work as well - it's a structured stream of &quot;file name&quot; and &quot;content&quot;:</p>
+<p>The use of JSON isn&#x27;t the only option, using something like tar (as discussed in #1112) would work as well - it&#x27;s a structured stream of &quot;file name&quot; and &quot;content&quot;:</p>
 <pre><code>$ stream_input  | convert_into_tar_stream | rg &quot;foo&quot;
 ./foo.py
 1: foobar
 </code></pre>
 <p>The reason this would be useful would be to combine it with <code>--json</code> for output:</p>
-<pre><code>$ stream_input | rg &quot;foo&quot; --structured --json | jq &quot;filter(.type = 'match') | .data.path.text&quot;
+<pre><code>$ stream_input | rg &quot;foo&quot; --structured --json | jq &quot;filter(.type = &#x27;match&#x27;) | .data.path.text&quot;
 &quot;foo.py&quot;
 </code></pre>
 <p>The <code>name</code> might not even be a full key, it could be any form of identifier. Imagine you where streaming a big set of comments from a database table and you wanted to use <code>rg</code> to match against the content but output the comment primary key if there is a match:</p>
-<pre><code>$ stream_input | rg &quot;foo&quot; --structured --json | jq &quot;filter(.type = 'match') | .data.path.text&quot;
+<pre><code>$ stream_input | rg &quot;foo&quot; --structured --json | jq &quot;filter(.type = &#x27;match&#x27;) | .data.path.text&quot;
 &quot;comment_primary_key=1234&quot;
 </code></pre>
 <p>Right now ripgrep is able to associate a key with input content if it comes from a file (or something within a compressed file), but if you are streaming data from another process via pipes it becomes impossible to keep some form of key to match to the output.</p>
 <p>You could of course spawn lots of <code>rg</code> processes with <code>parallel</code>:</p>
-<pre><code>$ stream_input | parallel 'rg &quot;foo&quot; --structured &amp;&amp; somehow echo the input ID'
+<pre><code>$ stream_input | parallel &#x27;rg &quot;foo&quot; --structured &amp;&amp; somehow echo the input ID&#x27;
 </code></pre>
 <p>But this seems inefficient especially if the inputs are of varying length, where for some the startup time of <code>rg</code> may dominate the execution time.</p>
 </div>
@@ -56,64 +56,64 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-03-09 16:35</div>
             <div class="timeline-body"><p>Thanks for the thoughtful request, but this one is very easy to say no to. It is well beyond the scope of ripgrep, as you might imagine, teaching ripgrep about the hundreds (thousands?) of different structured formats in the world is quite obviously a non-starter.</p>
-<p>ripgrep does push back against the notion of composability via shell pipelines, but this is a bridge way too far. If you want ripgrep to search only parts of a structured representation, then <em>you</em> should convert the structured representation into something that ripgrep understands. (For example, you might use <code>gron</code> for JSON.) This isn't going to get you the nicest UX because the output is invariably going to be in terms of your transformation instead of the original structured format. But improving that UX is just really well beyond the scope of ripgrep.</p>
+<p>ripgrep does push back against the notion of composability via shell pipelines, but this is a bridge way too far. If you want ripgrep to search only parts of a structured representation, then <em>you</em> should convert the structured representation into something that ripgrep understands. (For example, you might use <code>gron</code> for JSON.) This isn&#x27;t going to get you the nicest UX because the output is invariably going to be in terms of your transformation instead of the original structured format. But improving that UX is just really well beyond the scope of ripgrep.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2023-03-09 16:35</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-03-09 16:35</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2023-03-09 16:35</div>
+            <div class="event">Label <span class="label">wontfix</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-03-09 16:35</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/orf">@orf</a> on 2023-03-09 16:48</div>
-            <div class="timeline-body"><p>I totally agree that it's not a good idea to teach ripgrep about lots of structured formats but it may be OK to teach it about a single one? In this case JSON came to mind, but this would also be fixed by only teaching ripgrep about the <code>tar</code> format which may be on the cards as #1112 is still open?</p>
-<p>That would enable searching very large <code>git archive</code>'s without needing to unpack them, which is actually exactly the use case I have:</p>
+            <div class="timeline-body"><p>I totally agree that it&#x27;s not a good idea to teach ripgrep about lots of structured formats but it may be OK to teach it about a single one? In this case JSON came to mind, but this would also be fixed by only teaching ripgrep about the <code>tar</code> format which may be on the cards as #1112 is still open?</p>
+<p>That would enable searching very large <code>git archive</code>&#x27;s without needing to unpack them, which is actually exactly the use case I have:</p>
 <pre><code>$ curl -Ls https://github.com/BurntSushi/ripgrep/archive/refs/heads/master.tar.gz | tar -xOzf - | rg &quot;foobar&quot;
 foobar
 1:foobar
-    const ROOT: &amp;'static str = &quot;/home/foobar/rust/rg&quot;;
+    const ROOT: &amp;&#x27;static str = &quot;/home/foobar/rust/rg&quot;;
             &quot;combo:foobar:html,rust&quot;,
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-03-09 16:56</div>
-            <div class="timeline-body"><p>#1112 is, to me, about teaching ripgrep how to a very specific thing that is a high value add, but to otherwise do it in a way that is <em>transparent</em>. That is, it shouldn't (ideally) require any new flags. It should just be the case that passing <code>-z/--search-zip</code> will make ripgrep automatically do it. The challenge in that sort of task is not really about reading the <code>tar</code> format itself, but layering it into ripgrep's filtering rules in a way that makes sense. For example, a <code>tar</code> is often conceptually a directory tree, so it likely makes sense to actually treat it like one.</p>
-<p>The feature you're asking for here looks like it's not just about making ripgrep transparently aware of a structured format, but actively giving it options to interact with.</p>
-<p>I really do think that once you get to this point, it's time to start building your own bespoke tool. ripgrep is split up into libraries, so this is actually a conceivable (although not trivial) amount of work. You don't need to specialize in how to make the grep searching part of it fast. That's done. You &quot;just&quot; need to hook everything up. And indeed, that is likely difficult to do because there is no real high level docs for ripgrep's suite of <code>grep</code> libraries. But, if you were interested in that path, I'd be happy to help by answering questions via Discussions.</p>
+            <div class="timeline-body"><p>#1112 is, to me, about teaching ripgrep how to a very specific thing that is a high value add, but to otherwise do it in a way that is <em>transparent</em>. That is, it shouldn&#x27;t (ideally) require any new flags. It should just be the case that passing <code>-z/--search-zip</code> will make ripgrep automatically do it. The challenge in that sort of task is not really about reading the <code>tar</code> format itself, but layering it into ripgrep&#x27;s filtering rules in a way that makes sense. For example, a <code>tar</code> is often conceptually a directory tree, so it likely makes sense to actually treat it like one.</p>
+<p>The feature you&#x27;re asking for here looks like it&#x27;s not just about making ripgrep transparently aware of a structured format, but actively giving it options to interact with.</p>
+<p>I really do think that once you get to this point, it&#x27;s time to start building your own bespoke tool. ripgrep is split up into libraries, so this is actually a conceivable (although not trivial) amount of work. You don&#x27;t need to specialize in how to make the grep searching part of it fast. That&#x27;s done. You &quot;just&quot; need to hook everything up. And indeed, that is likely difficult to do because there is no real high level docs for ripgrep&#x27;s suite of <code>grep</code> libraries. But, if you were interested in that path, I&#x27;d be happy to help by answering questions via Discussions.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/orf">@orf</a> on 2023-03-09 17:12</div>
-            <div class="timeline-body"><p>I see your point and it does make sense (even if that is inconvenient for me!). Ripgrep is a fantastic tool and I'll try out creating something like <code>ripgrep-json</code> as an experiment using the library interface.</p>
+            <div class="timeline-body"><p>I see your point and it does make sense (even if that is inconvenient for me!). Ripgrep is a fantastic tool and I&#x27;ll try out creating something like <code>ripgrep-json</code> as an experiment using the library interface.</p>
 <blockquote>
-<p>The feature you're asking for here looks like it's not just about making ripgrep transparently aware of a structured format, but actively giving it options to interact with.</p>
+<p>The feature you&#x27;re asking for here looks like it&#x27;s not just about making ripgrep transparently aware of a structured format, but actively giving it options to interact with.</p>
 </blockquote>
-<p>That's not the total idea. The core of it is for ripgrep to define a way to provide a &quot;key&quot; in-line <em>somehow</em> with stdin input and to have that outputted with matches instead of just <code>-</code>. It's a specialised use case but it has come up for me a surprising number of times, and I don't imagine I'm the only one.</p>
-<p>Ripgrep doesn't need to provide options to interact with a structured format, it could just define something really simple as a best-effort. Something as simple as</p>
+<p>That&#x27;s not the total idea. The core of it is for ripgrep to define a way to provide a &quot;key&quot; in-line <em>somehow</em> with stdin input and to have that outputted with matches instead of just <code>-</code>. It&#x27;s a specialised use case but it has come up for me a surprising number of times, and I don&#x27;t imagine I&#x27;m the only one.</p>
+<p>Ripgrep doesn&#x27;t need to provide options to interact with a structured format, it could just define something really simple as a best-effort. Something as simple as</p>
 <pre><code>[KEY] [base64 encoded contents]\n
 </code></pre>
 <p>Or something like</p>
 <pre><code>[KEY] [SIZE] [contents]
 </code></pre>
 <p>Where size is the length of the content to read from stdin.</p>
-<p>I wasn't imagining something super flexible that allowed ripgrep to search arbitrary JSON, CSV or other formats via stdin, but just <em>some</em> way to nail the &quot;i have a stream that represents many files and I'd like to stream them into a ripgrep process&quot; use case without having to build out custom tooling.</p>
+<p>I wasn&#x27;t imagining something super flexible that allowed ripgrep to search arbitrary JSON, CSV or other formats via stdin, but just <em>some</em> way to nail the &quot;i have a stream that represents many files and I&#x27;d like to stream them into a ripgrep process&quot; use case without having to build out custom tooling.</p>
 <p>Then you can just say &quot;If you can massage your input into that format then great, otherwise go flex your rust muscles and do whatever you want&quot; without worrying about an explosion of &quot;please support format XYZ&quot; requests.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-03-09 17:55</div>
-            <div class="timeline-body"><p>I think it might help if you could talk about a real use case here. I think I am somewhat confused. The issue opened with running ripgrep with a bunch of new flags in a way that made it <em>look</em> like ripgrep needed to understand JSON. I now see that you're saying that's just an implementation path... but an implementation path for what? I see that you're talking about &quot;getting a key&quot; and associating things, but I don't really know how to connect the dots here.</p>
+            <div class="timeline-body"><p>I think it might help if you could talk about a real use case here. I think I am somewhat confused. The issue opened with running ripgrep with a bunch of new flags in a way that made it <em>look</em> like ripgrep needed to understand JSON. I now see that you&#x27;re saying that&#x27;s just an implementation path... but an implementation path for what? I see that you&#x27;re talking about &quot;getting a key&quot; and associating things, but I don&#x27;t really know how to connect the dots here.</p>
 <p>Also, have you looked at the <code>--pre</code> flag? Does it help your use case?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/orf">@orf</a> on 2023-03-09 20:15</div>
             <div class="timeline-body"><p>Apologies for the confusion - I was definitely mixing the potential implementation with the issue.</p>
-<h3>This specific use case</h3>
-<p>The concrete use case I have right now is running <code>ripgrep</code> over a very large number files in a large collection of git repositories. It's unfeasible to unpack each file to disk, and the use case here is grepping over them as fast as possible.</p>
-<p>Here's some bechmarks running <code>git grep</code> and <code>rg</code> over 2,644,401 files (563,469 unique blobs) to find python functions that have no arguments and are indented by 4 spaces:</p>
+This specific use case
+<p>The concrete use case I have right now is running <code>ripgrep</code> over a very large number files in a large collection of git repositories. It&#x27;s unfeasible to unpack each file to disk, and the use case here is grepping over them as fast as possible.</p>
+<p>Here&#x27;s some bechmarks running <code>git grep</code> and <code>rg</code> over 2,644,401 files (563,469 unique blobs) to find python functions that have no arguments and are indented by 4 spaces:</p>
 <pre><code>❯ time git grep --threads=1 -E &quot;^    def [a-zA-Z]+\(self\):\$&quot; b058acc0f3a51ea22d3b059120924c772c1b1bf4 | wc -l
  1263124
 
@@ -131,20 +131,20 @@ Executed in   60.04 secs    fish           external
    usr time   71.30 secs    0.10 millis   71.30 secs
    sys time   12.06 secs    1.14 millis   12.06 secs
 </code></pre>
-<p>Reading objects directly from the git object database (the cat-file portion) and piping the contents into <code>rg</code> is much, much faster than <code>git grep</code>. However we lose the ability to know <em>which</em> specific objects matched because it's all one stream.</p>
+<p>Reading objects directly from the git object database (the cat-file portion) and piping the contents into <code>rg</code> is much, much faster than <code>git grep</code>. However we lose the ability to know <em>which</em> specific objects matched because it&#x27;s all one stream.</p>
 <p>In this specific case I would like <code>rg</code> to be able to output the git object ID that matched, then &quot;do stuff&quot; with it later.</p>
-<h3>More generally</h3>
-<p>I use ripgrep a lot, it's muscle-memory bound to whenever I need to &quot;search stuff&quot;. It is fast, simple and just works. However it falls down when I need to search streams of content.</p>
+More generally
+<p>I use ripgrep a lot, it&#x27;s muscle-memory bound to whenever I need to &quot;search stuff&quot;. It is fast, simple and just works. However it falls down when I need to search streams of content.</p>
 <p>For example, imagine I have a file containing a number of tweets:</p>
-<pre><code class="language-json">{&quot;user&quot;: &quot;tom&quot;, &quot;id&quot;: &quot;1&quot;, &quot;tweet&quot;: &quot;hello\nworld!&quot;}
+<pre><code>{&quot;user&quot;: &quot;tom&quot;, &quot;id&quot;: &quot;1&quot;, &quot;tweet&quot;: &quot;hello\nworld!&quot;}
 {&quot;user&quot;: &quot;james&quot;, &quot;id&quot;: &quot;2&quot;, &quot;tweet&quot;: &quot;foobar&quot;}
 </code></pre>
-<p>I'd like to find all tweets that match the multiline expression <code>^he.*$\nworld$</code>, and I'd like to know what specific tweet ID matched.</p>
-<p>Ok, so right now I could create 1 file for each tweet ID and run <code>rg</code> over those files. The output would contain the file name, and I could say &quot;file 1 matched&quot; which means &quot;tweet ID 1 matched&quot;. But this isn't great and requires a single file per tweet.</p>
-<p>Running <code>rg</code> over the whole file isn't useful for two reasons:</p>
+<p>I&#x27;d like to find all tweets that match the multiline expression <code>^he.*$\nworld$</code>, and I&#x27;d like to know what specific tweet ID matched.</p>
+<p>Ok, so right now I could create 1 file for each tweet ID and run <code>rg</code> over those files. The output would contain the file name, and I could say &quot;file 1 matched&quot; which means &quot;tweet ID 1 matched&quot;. But this isn&#x27;t great and requires a single file per tweet.</p>
+<p>Running <code>rg</code> over the whole file isn&#x27;t useful for two reasons:</p>
 <ol>
-<li>multiline matching won't work</li>
-<li>it won't really tell me which ID matches. It would output the whole line, which I would need to re-parse to extract the tweet ID. The line could be very big and this could add overhead.</li>
+<li>multiline matching won&#x27;t work</li>
+<li>it won&#x27;t really tell me which ID matches. It would output the whole line, which I would need to re-parse to extract the tweet ID. The line could be very big and this could add overhead.</li>
 </ol>
 <p>What I would like to be able to do is quickly and simply convert this file into a format that <code>rg</code> accepts, pipe it into stdin and get back matches with a <em>given key</em>. Keeping it simple, I could pipe in:</p>
 <pre><code>1 &quot;hello\nworld!&quot;
@@ -175,12 +175,12 @@ Executed in   60.04 secs    fish           external
 }
 
 </code></pre>
-<p>Instead of the <code>path</code> being a file path, it's the first column of the input (the &quot;key&quot;). In the case above it means <code>tweet ID 1 matched</code>.</p>
+<p>Instead of the <code>path</code> being a file path, it&#x27;s the first column of the input (the &quot;key&quot;). In the case above it means <code>tweet ID 1 matched</code>.</p>
 <p>I can then quickly compose complex pipelines to search over streams:</p>
-<pre><code>cat tweets | rg -U '^he.*$\nworld$' --some-flag | jq 'select(.type = &quot;match&quot;) | .data.path.text' | parallel -I@ &quot;delete-tweet --tweet-id=@&quot;
+<pre><code>cat tweets | rg -U &#x27;^he.*$\nworld$&#x27; --some-flag | jq &#x27;select(.type = &quot;match&quot;) | .data.path.text&#x27; | parallel -I@ &quot;delete-tweet --tweet-id=@&quot;
 </code></pre>
 <p>Which would find all tweets that match the expression, extract the tweet ID from the output and then call <code>delete-tweet</code> on each ID in parallel. This is a contrived example but the general pattern comes up quite often.</p>
-<p>I hope this clarifies my use case for this feature, which I really think would be a useful addition to ripgrep and could be done in a way that doesn't add a huge maintenance burden.</p>
+<p>I hope this clarifies my use case for this feature, which I really think would be a useful addition to ripgrep and could be done in a way that doesn&#x27;t add a huge maintenance burden.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -190,39 +190,39 @@ Executed in   60.04 secs    fish           external
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/orf">@orf</a> on 2023-03-09 20:31</div>
-            <div class="timeline-body"><p>I've used <code>--pre</code> before but I'm not sure how this would help here. Please tell me if I'm wrong, but the pre-processor is called once per input file (or once for stdin), and the raw output is then searched as usual.</p>
-<p>This is a great feature, but it doesn't allow me to tell ripgrep that only a certain part of the input should be searched.</p>
+            <div class="timeline-body"><p>I&#x27;ve used <code>--pre</code> before but I&#x27;m not sure how this would help here. Please tell me if I&#x27;m wrong, but the pre-processor is called once per input file (or once for stdin), and the raw output is then searched as usual.</p>
+<p>This is a great feature, but it doesn&#x27;t allow me to tell ripgrep that only a certain part of the input should be searched.</p>
 <p>If we think about how <code>--pre</code> could be a solution it might be clearer: we could invoke the pre-processor once per input line which would let me write  a script like:</p>
-<pre><code class="language-sh">#!/bin/sh
+<pre><code>#!/bin/sh
 
-jq '.tweet' -
+jq &#x27;.tweet&#x27; -
 </code></pre>
 <p>This would extract the tweet text for each line, which <code>rg</code> would then search over and ignore any other content. This would solve part of the issue but we have lost other parts of the input - <code>rg</code> would only output the matching line number and not anything really useful.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/orf">@orf</a> on 2023-03-09 22:39</div>
-            <div class="timeline-body"><p>Perhaps some code might make this clearer. I've made this as an example, and to try using the <code>grep</code> library: https://github.com/orf/ripgrep-stream</p>
+            <div class="timeline-body"><p>Perhaps some code might make this clearer. I&#x27;ve made this as an example, and to try using the <code>grep</code> library: https://github.com/orf/ripgrep-stream</p>
 <p>If the input file contains this:</p>
 <pre><code>id_one &quot;hell! no!\nworld&quot;
 id_two &quot;hello\nworld&quot;
 id_three &quot;no hello world\nhere&quot;
 </code></pre>
 <p>Then we can run multi-line matching over each input line, and the output &quot;paths&quot; are part of the user-supplied input:</p>
-<pre><code>$ cat example_json.txt | cargo run -- '^he.*$\nworld$'
+<pre><code>$ cat example_json.txt | cargo run -- &#x27;^he.*$\nworld$&#x27;
 id_one:hell! no!
 id_one:world
 id_two:hello
 id_two:world
 </code></pre>
-<p>I'm not proposing this input format specifically - it's certainly not the most efficient format, but it's the quickest POC I could come up with.</p>
-<p>If the rationale behind this request still doesn't satisfy you then that's OK, I can have a go at building this into it's own tool. But I still think it's useful to have <em>something</em> like this available in ripgrep itself.</p>
+<p>I&#x27;m not proposing this input format specifically - it&#x27;s certainly not the most efficient format, but it&#x27;s the quickest POC I could come up with.</p>
+<p>If the rationale behind this request still doesn&#x27;t satisfy you then that&#x27;s OK, I can have a go at building this into it&#x27;s own tool. But I still think it&#x27;s useful to have <em>something</em> like this available in ripgrep itself.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:43:37 UTC
+        Synced at 2026-01-20 18:48:12 UTC
     </footer>
 </body>
 </html>

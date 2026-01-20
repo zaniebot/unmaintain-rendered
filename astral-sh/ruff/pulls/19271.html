@@ -23,13 +23,13 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/oconnor663">@oconnor663</a></div>
-            <div class="timeline-body"><p>This PR is on top of https://github.com/astral-sh/ruff/pull/19112. @MichaReiser <a href="https://github.com/astral-sh/ruff/pull/19112#pullrequestreview-3004188327">suggested</a> taking a shot at deferred walking of function bodies. This draft PR currently contains two commits. The first moves the <code>InvalidNonlocal</code> check into <code>SemanticIndexBuilder</code>. As expected, this makes one test case in <code>nonlocal.md</code> start failing, the one that relies on seeing bindings in outer scopes before checking <code>nonlocal</code> statements in inner scopes, basically this:</p>
-<pre><code class="language-py">def f():
+            <div class="timeline-body"><p>This PR is on top of <a href="https://github.com/astral-sh/ruff/pull/19112">astral-sh/ruff#19112</a>. @MichaReiser <a href="https://github.com/astral-sh/ruff/pull/19112#pullrequestreview-3004188327">suggested</a> taking a shot at deferred walking of function bodies. This draft PR currently contains two commits. The first moves the <code>InvalidNonlocal</code> check into <code>SemanticIndexBuilder</code>. As expected, this makes one test case in <code>nonlocal.md</code> start failing, the one that relies on seeing bindings in outer scopes before checking <code>nonlocal</code> statements in inner scopes, basically this:</p>
+<pre><code>def f():
     def g():
         nonlocal x  # allowed!
     x = 1
 </code></pre>
-<p>In the second commit I try to defer walking function bodies, to unbreak that test. In fact, <em>does</em> unbreak that test! Hurray! Unfortunately it breaks a ton of other tests, and I'm having trouble figuring out why, because it seems to involve some (Salsa?) machinery I haven't seen yet. Here's a minimized repro:</p>
+<p>In the second commit I try to defer walking function bodies, to unbreak that test. In fact, <em>does</em> unbreak that test! Hurray! Unfortunately it breaks a ton of other tests, and I&#x27;m having trouble figuring out why, because it seems to involve some (Salsa?) machinery I haven&#x27;t seen yet. Here&#x27;s a minimized repro:</p>
 <pre><code>$ cat test.py
 class Foo:
     pass
@@ -37,14 +37,14 @@ foo = Foo()
 $ ty check test.py
 error[panic]: Panicked at crates/ty_python_semantic/src/types.rs:156:38 when checking `/tmp/test.py`: `Failed to retrieve the inferred type for an `ast::Expr` node passed to `TypeInference::expression_type()`. The `TypeInferenceBuilder` should infer and store types for all `ast::Expr` nodes in any `TypeInference` region it analyzes.`
 info: This indicates a bug in ty.
-info: If you could open an issue at https://github.com/astral-sh/ty/issues/new?title=%5Bpanic%5D, we'd be very appreciative!
+info: If you could open an issue at https://github.com/astral-sh/ty/issues/new?title=%5Bpanic%5D, we&#x27;d be very appreciative!
 info: Platform: linux x86_64
 info: Args: [&quot;/home/jacko/astral/ruff/target-mold/debug/ty&quot;, &quot;check&quot;, &quot;test.py&quot;]
 info: run with `RUST_BACKTRACE=1` environment variable to show the full backtrace information
 info: query stacktrace:
-   0: FunctionType &lt; 'db &gt;::signature_(Id(5007))
+   0: FunctionType &lt; &#x27;db &gt;::signature_(Id(5007))
              at crates/ty_python_semantic/src/types/function.rs:595
-             cycle heads: infer_scope_types(Id(c62)) -&gt; IterationCount(0), FunctionType &lt; 'db &gt;::signature_(Id(5007)) -&gt; IterationCount(0), FunctionType &lt; 'db &gt;::signature_(Id(5000)) -&gt; IterationCount(0)
+             cycle heads: infer_scope_types(Id(c62)) -&gt; IterationCount(0), FunctionType &lt; &#x27;db &gt;::signature_(Id(5007)) -&gt; IterationCount(0), FunctionType &lt; &#x27;db &gt;::signature_(Id(5000)) -&gt; IterationCount(0)
    1: infer_expression_types(Id(1463))
              at crates/ty_python_semantic/src/types/infer.rs:235
    2: infer_definition_types(Id(11ab))
@@ -52,7 +52,7 @@ info: query stacktrace:
    3: infer_scope_types(Id(c62))
              at crates/ty_python_semantic/src/types/infer.rs:130
              cycle heads: infer_scope_types(Id(c62)) -&gt; IterationCount(0)
-   4: FunctionType &lt; 'db &gt;::signature_(Id(5000))
+   4: FunctionType &lt; &#x27;db &gt;::signature_(Id(5000))
              at crates/ty_python_semantic/src/types/function.rs:595
    5: infer_expression_types(Id(1400))
              at crates/ty_python_semantic/src/types/infer.rs:235
@@ -63,12 +63,12 @@ info: query stacktrace:
    8: check_file_impl(Id(800))
              at crates/ty_project/src/lib.rs:474
 </code></pre>
-<p>When I try to throw a lot of logging around, it seems like this is happening somewhere in the many, many built-in definitions we check implicitly. I'm hoping someone more experienced than me can take one look at this failure and intuit exactly what I broke? :sweat_smile:</p>
+<p>When I try to throw a lot of logging around, it seems like this is happening somewhere in the many, many built-in definitions we check implicitly. I&#x27;m hoping someone more experienced than me can take one look at this failure and intuit exactly what I broke? :sweat_smile:</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-07-11 00:10</div>
-            <div class="timeline-body"><p>Notably the failure here is in <code>infer.rs</code>, which I think means the <code>SemanticIndex</code> is already built, so it shouldn't be sensitive to the <em>order</em> of that build? It must mean I've started leaving something out in <a href="https://github.com/astral-sh/ruff/pull/19271/commits/3f22497bddc856c3557f66f6b1c5bd2ad65cc7ec">the second commit</a>?</p>
+            <div class="timeline-body"><p>Notably the failure here is in <code>infer.rs</code>, which I think means the <code>SemanticIndex</code> is already built, so it shouldn&#x27;t be sensitive to the <em>order</em> of that build? It must mean I&#x27;ve started leaving something out in <a href="https://github.com/astral-sh/ruff/pull/19271/commits/3f22497bddc856c3557f66f6b1c5bd2ad65cc7ec">the second commit</a>?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -77,21 +77,21 @@ info: query stacktrace:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/semantic_index/builder.rs</code>:1173 on 2025-07-11 08:16</div>
-            <div class="timeline-body"><p>I haven't fully dived into what's the issue but what I think is worth noting is that there are even some semantic index tests that are failing.</p>
-<p>What catches me as suspicious is that we don't use <code>visit_scoped_body</code> in the class body. Instead, class methods are visited as part of the enclosing module (or function) scope. However, this is problematic because the parent scope is now incorrect: It's the module scope's instead of the class scope.</p>
+            <div class="timeline-body"><p>I haven&#x27;t fully dived into what&#x27;s the issue but what I think is worth noting is that there are even some semantic index tests that are failing.</p>
+<p>What catches me as suspicious is that we don&#x27;t use <code>visit_scoped_body</code> in the class body. Instead, class methods are visited as part of the enclosing module (or function) scope. However, this is problematic because the parent scope is now incorrect: It&#x27;s the module scope&#x27;s instead of the class scope.</p>
 <p>My naive fix of using <code>visit_scoped_body</code> for the class body leads to other interesting errors and not doing so is probably semantically correct(?).</p>
-<p>If methods need to be run in the module scope, then this probably requires changing how we store <code>Scope</code>s (or at least how we compute the range for the child scopes). The current representation is a tree flattened into a <code>Vec</code>. Each <code>Scope</code> stores a <code>Range&lt;usize&gt;</code> of its descendent scopes. The range is determined by capturing the length of the scopes vector when pushing a new Scope (that's where the next child will be inserted) and <code>pop_scope</code> sets the end to the new end of <code>scopes.len()</code>.</p>
+<p>If methods need to be run in the module scope, then this probably requires changing how we store <code>Scope</code>s (or at least how we compute the range for the child scopes). The current representation is a tree flattened into a <code>Vec</code>. Each <code>Scope</code> stores a <code>Range&lt;usize&gt;</code> of its descendent scopes. The range is determined by capturing the length of the scopes vector when pushing a new Scope (that&#x27;s where the next child will be inserted) and <code>pop_scope</code> sets the end to the new end of <code>scopes.len()</code>.</p>
 <p>https://github.com/astral-sh/ruff/blob/3f22497bddc856c3557f66f6b1c5bd2ad65cc7ec/crates/ty_python_semantic/src/semantic_index/builder.rs#L287-L290</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-07-11 11:17</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-11 11:17</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-07-11 11:18</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-11 11:18</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @AlexWaygood on 2025-07-11 11:18</div>
+            <div class="event">Reopened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-11 11:18</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/oconnor663">@oconnor663</a> reviewed on 2025-07-11 16:07</div>
@@ -99,16 +99,16 @@ info: query stacktrace:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/ty_python_semantic/src/semantic_index/builder.rs</code>:1173 on 2025-07-11 16:07</div>
-            <div class="timeline-body"><p>I think you're right. Here's the example I've come up with to try to crystallize this in my head:</p>
-<pre><code class="language-py">def f():
+            <div class="timeline-body"><p>I think you&#x27;re right. Here&#x27;s the example I&#x27;ve come up with to try to crystallize this in my head:</p>
+<pre><code>def f():
     class Foo:
         y = x  # NameError
         def g():
             nonlocal x  # allowed
     x = 1
 </code></pre>
-<p>So <code>y = x</code> in the class body is evaluated &quot;eagerly&quot;, but <code>nonlocal x</code> in <code>g</code> is deferred (in some sense) to the end of <code>f</code>'s scope. However, as you point out, the scope stack at the end of <code>f</code> isn't correct for <code>g</code>; we need to put <code>Foo</code>'s class scope back on the stack when it's time to walk <code>g</code>? Something like that?</p>
-<p>I'm actually enjoying this problem, but I promise not to sink too much time into it today :sweat_smile: I'll go ahead and land the <a href="https://github.com/astral-sh/ruff/pull/19112">original PR</a> now, in any case.</p>
+<p>So <code>y = x</code> in the class body is evaluated &quot;eagerly&quot;, but <code>nonlocal x</code> in <code>g</code> is deferred (in some sense) to the end of <code>f</code>&#x27;s scope. However, as you point out, the scope stack at the end of <code>f</code> isn&#x27;t correct for <code>g</code>; we need to put <code>Foo</code>&#x27;s class scope back on the stack when it&#x27;s time to walk <code>g</code>? Something like that?</p>
+<p>I&#x27;m actually enjoying this problem, but I promise not to sink too much time into it today :sweat_smile: I&#x27;ll go ahead and land the <a href="https://github.com/astral-sh/ruff/pull/19112">original PR</a> now, in any case.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -117,7 +117,7 @@ info: query stacktrace:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/semantic_index/builder.rs</code>:1173 on 2025-07-11 16:10</div>
-            <div class="timeline-body"><p>I think there's also a chance that scopes get out of order if you have something like</p>
+            <div class="timeline-body"><p>I think there&#x27;s also a chance that scopes get out of order if you have something like</p>
 <pre><code>def foo():
 	def bar(): ...
 	
@@ -125,18 +125,18 @@ info: query stacktrace:
 	
 	def baz(): ...
 </code></pre>
-<p>I think the scopes in <code>foo</code> would be <code>Foo</code>, <code>bar</code>, <code>baz</code> but they currently are <code>bar</code>, <code>Foo</code>, <code>baz</code>. I'm not sure if we rely on the ordering anywhere when traversing the descendent or child scopes.</p>
+<p>I think the scopes in <code>foo</code> would be <code>Foo</code>, <code>bar</code>, <code>baz</code> but they currently are <code>bar</code>, <code>Foo</code>, <code>baz</code>. I&#x27;m not sure if we rely on the ordering anywhere when traversing the descendent or child scopes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/ty_python_semantic/src/semantic_index/builder.rs</code>:1173 on 2025-07-11 20:04</div>
             <div class="timeline-body"><blockquote>
-<p>I'm not sure if we rely on the ordering anywhere when traversing the descendent or child scopes.</p>
+<p>I&#x27;m not sure if we rely on the ordering anywhere when traversing the descendent or child scopes.</p>
 </blockquote>
-<p>Yes, I'm starting to suspect this (in addition to the <code>scope_stack</code>) is a problem:</p>
+<p>Yes, I&#x27;m starting to suspect this (in addition to the <code>scope_stack</code>) is a problem:</p>
 <p>https://github.com/astral-sh/ruff/blob/b5c5f710fc12b5c512a2e5351684b8ffdf33761f/crates/ty_python_semantic/src/semantic_index/builder.rs#L285-L287</p>
-<p>IIUC we assume that every scope covers a <em>range</em> of <code>FileScopeId</code>s, and for example class scopes record the end of that range at the end of the class body. If we don't walk class methods before that point, I think it screws up how attributes bound in e.g. <code>__init__</code> are associated with the class.</p>
-<p>That's enough digging for now. I think it'll be interesting to talk this over with @carljm after he gets back.</p>
+<p>IIUC we assume that every scope covers a <em>range</em> of <code>FileScopeId</code>s, and for example class scopes record the end of that range at the end of the class body. If we don&#x27;t walk class methods before that point, I think it screws up how attributes bound in e.g. <code>__init__</code> are associated with the class.</p>
+<p>That&#x27;s enough digging for now. I think it&#x27;ll be interesting to talk this over with @carljm after he gets back.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -145,16 +145,16 @@ info: query stacktrace:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-08-08 03:58</div>
-            <div class="timeline-body"><p>~~Closing in favor of https://github.com/astral-sh/ruff/pull/19820.~~ Woops I actually meant to comment the same on #19703. But I do think it makes sense to close this one too now that #19820 has avoided the need to defer function bodies.</p>
+            <div class="timeline-body"><p>~~Closing in favor of <a href="https://github.com/astral-sh/ruff/pull/19820">astral-sh/ruff#19820</a>.~~ Woops I actually meant to comment the same on #19703. But I do think it makes sense to close this one too now that #19820 has avoided the need to defer function bodies.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @oconnor663 on 2025-08-08 03:58</div>
+            <div class="event">Closed by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-08-08 03:58</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:14:09 UTC
+        Synced at 2026-01-20 19:16:30 UTC
     </footer>
 </body>
 </html>

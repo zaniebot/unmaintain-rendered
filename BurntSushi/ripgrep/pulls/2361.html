@@ -23,31 +23,31 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/nguyenvukhang">@nguyenvukhang</a></div>
-            <div class="timeline-body"><p>Bug is aptly described in https://github.com/BurntSushi/ripgrep/issues/2243.</p>
+            <div class="timeline-body"><p>Bug is aptly described in <a href="https://github.com/BurntSushi/ripgrep/issues/2243">BurntSushi/ripgrep#2243</a>.</p>
 <p>This PR aims to address this by delaying result sorting to after every match has been found.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @nguyenvukhang on 2022-11-28 07:11</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/nguyenvukhang">@nguyenvukhang</a> on 2022-11-28 07:11</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Converted to draft by @nguyenvukhang on 2022-11-28 07:11</div>
+            <div class="event">Converted to draft by <a href="https://github.com/nguyenvukhang">@nguyenvukhang</a> on 2022-11-28 07:11</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "fix: nested results sorted wrongly" to "fix: sorting nested results by system time" by @nguyenvukhang on 2022-11-28 15:34</div>
+            <div class="event">Renamed from &quot;fix: nested results sorted wrongly&quot; to &quot;fix: sorting nested results by system time&quot; by <a href="https://github.com/nguyenvukhang">@nguyenvukhang</a> on 2022-11-28 15:34</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/core/args.rs</code>:361 on 2022-11-29 19:17</div>
-            <div class="timeline-body"><p>So this isn't really <code>unzip</code>. <code>unzip</code> is <code>Vec&lt;(K, V)&gt; -&gt; (Vec&lt;K&gt;, Vec&lt;V&gt;)</code>. And functions like this shouldn't be marked as <code>#[inline]</code>: they are polymorphic so it will get inlined anyway. And even if it weren't, the perf overhead of a function call in this context is negligible.</p>
+            <div class="timeline-body"><p>So this isn&#x27;t really <code>unzip</code>. <code>unzip</code> is <code>Vec&lt;(K, V)&gt; -&gt; (Vec&lt;K&gt;, Vec&lt;V&gt;)</code>. And functions like this shouldn&#x27;t be marked as <code>#[inline]</code>: they are polymorphic so it will get inlined anyway. And even if it weren&#x27;t, the perf overhead of a function call in this context is negligible.</p>
 <p>In any case, I would get rid of this function entirely. Instead, do:</p>
-<pre><code class="language-rust">let items = match sorted.kind { ... };
+<pre><code>let items = match sorted.kind { ... };
 items.into_iter().map(|v| v.1).collect()
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/core/main.rs</code>:108 on 2022-11-29 19:19</div>
-            <div class="timeline-body"><p>This is a big no-no from what I can tell. It looks like you're <em>unconditionally</em> collecting all paths before iterating over them even if no <code>--sort</code> flag is passed. That means you're incurring the perf/memory/latency---at least in part---of sorting even when you don't need to.</p>
+            <div class="timeline-body"><p>This is a big no-no from what I can tell. It looks like you&#x27;re <em>unconditionally</em> collecting all paths before iterating over them even if no <code>--sort</code> flag is passed. That means you&#x27;re incurring the perf/memory/latency---at least in part---of sorting even when you don&#x27;t need to.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -60,9 +60,9 @@ items.into_iter().map(|v| v.1).collect()
             <div class="timeline-body"><p>Nice work but yeah, there is a fair bit of work left here. The two big items:</p>
 <ol>
 <li>It is a hard requirement that if <code>--sort</code> is not given, then there should be no additional overhead here. But in this PR, it looks like you always collect all of the paths before starting a search. Today, ripgrep will start searching well before it finishes directory traversal.</li>
-<li>There are a number of places where errors are being swallowed. We can't do that.</li>
+<li>There are a number of places where errors are being swallowed. We can&#x27;t do that.</li>
 </ol>
-<p>I'm also not sure about moving sorting to the <code>main</code> functions. I think it's probably fine, although I was trying to keep the <code>main</code> functions as simple as I could. But if we are going to deal with sorting in <code>main.rs</code>, then I think it would be nice to add a short comment in the parallel searcher stating why it doesn't handle sorting. (Because if sorting is enabled, then parallel searching is disabled in <code>args.rs</code>.)</p>
+<p>I&#x27;m also not sure about moving sorting to the <code>main</code> functions. I think it&#x27;s probably fine, although I was trying to keep the <code>main</code> functions as simple as I could. But if we are going to deal with sorting in <code>main.rs</code>, then I think it would be nice to add a short comment in the parallel searcher stating why it doesn&#x27;t handle sorting. (Because if sorting is enabled, then parallel searching is disabled in <code>args.rs</code>.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -78,10 +78,10 @@ items.into_iter().map(|v| v.1).collect()
 <li>uncollected and unconsumed iterator. (no sort)</li>
 <li>collected, sorted, and re-made into an iterator.</li>
 </ol>
-<p>I'd prefer to stick to having just one function for <code>search</code> and <code>files</code> each, though I'm not sure if that's possible.</p>
+<p>I&#x27;d prefer to stick to having just one function for <code>search</code> and <code>files</code> each, though I&#x27;m not sure if that&#x27;s possible.</p>
 <blockquote>
-<ol start="2">
-<li>There are a number of places where errors are being swallowed. We can't do that.</li>
+<ol>
+<li>There are a number of places where errors are being swallowed. We can&#x27;t do that.</li>
 </ol>
 </blockquote>
 <p>Agreed. I noticed that the previously reviewed code swallowed the <code>Result&lt;Walk&gt;</code> that <code>args.walker()?</code> emitted, and that has been fixed.</p>
@@ -103,7 +103,7 @@ items.into_iter().map(|v| v.1).collect()
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/nguyenvukhang">@nguyenvukhang</a> on <code>crates/core/main.rs</code>:108 on 2022-11-30 11:24</div>
-            <div class="timeline-body"><p>resolved by https://github.com/BurntSushi/ripgrep/pull/2361/commits/d4706913adf88cb3c6b395d0afcf493f39208169</p>
+            <div class="timeline-body"><p>resolved by <a href="https://github.com/BurntSushi/ripgrep/pull/2361">BurntSushi/ripgrep#2361</a>/commits/d4706913adf88cb3c6b395d0afcf493f39208169</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -112,11 +112,11 @@ items.into_iter().map(|v| v.1).collect()
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/nguyenvukhang">@nguyenvukhang</a> on <code>crates/core/main.rs</code>:258 on 2022-11-30 11:24</div>
-            <div class="timeline-body"><p>also resolved by https://github.com/BurntSushi/ripgrep/pull/2361/commits/d4706913adf88cb3c6b395d0afcf493f39208169</p>
+            <div class="timeline-body"><p>also resolved by <a href="https://github.com/BurntSushi/ripgrep/pull/2361">BurntSushi/ripgrep#2361</a>/commits/d4706913adf88cb3c6b395d0afcf493f39208169</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @BurntSushi by @nguyenvukhang on 2022-11-30 11:25</div>
+            <div class="event">Review requested from <a href="https://github.com/BurntSushi">@BurntSushi</a> by <a href="https://github.com/nguyenvukhang">@nguyenvukhang</a> on 2022-11-30 11:25</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2023-07-09 12:13</div>
@@ -124,11 +124,11 @@ items.into_iter().map(|v| v.1).collect()
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ignore/src/walk.rs</code>:829 on 2023-07-09 12:13</div>
-            <div class="timeline-body"><p>Why did you do this? It's a breaking API change for the <code>ignore</code> crate. Same for <code>sort_by_file_name</code> below.</p>
+            <div class="timeline-body"><p>Why did you do this? It&#x27;s a breaking API change for the <code>ignore</code> crate. Same for <code>sort_by_file_name</code> below.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2023-07-09 12:19</div>
+            <div class="event">Label <span class="label">rollup</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-07-09 12:19</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/nguyenvukhang">@nguyenvukhang</a> reviewed on 2023-07-09 13:10</div>
@@ -136,12 +136,12 @@ items.into_iter().map(|v| v.1).collect()
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/nguyenvukhang">@nguyenvukhang</a> on <code>crates/ignore/src/walk.rs</code>:829 on 2023-07-09 13:10</div>
-            <div class="timeline-body"><p>Sorry about that, this change was not necessary. It's been reverted by a8c3e89.</p>
+            <div class="timeline-body"><p>Sorry about that, this change was not necessary. It&#x27;s been reverted by a8c3e89.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-07-09 13:29</div>
-            <div class="timeline-body"><p>You're all set. I already did the fixups needed to get this PR into shape. You can see it in #2555.</p>
+            <div class="timeline-body"><p>You&#x27;re all set. I already did the fixups needed to get this PR into shape. You can see it in #2555.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -150,12 +150,12 @@ items.into_iter().map(|v| v.1).collect()
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2023-07-09 14:14</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-07-09 14:14</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:44:06 UTC
+        Synced at 2026-01-20 18:48:19 UTC
     </footer>
 </body>
 </html>

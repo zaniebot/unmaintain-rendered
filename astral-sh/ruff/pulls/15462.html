@@ -23,19 +23,13 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a></div>
-            <div class="timeline-body"><!--
-Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+            <div class="timeline-body">
 
-- Does this pull request include a summary of the change? (See below.)
-- Does this pull request include a descriptive title?
-- Does this pull request include references to any relevant issues?
--->
+Summary
 
-<h2>Summary</h2>
-<!-- What's the purpose of the change? What does it do, and why? -->
 
 <p>The initial purpose was to fix #15043, where code like this:</p>
-<pre><code class="language-python">from fastapi import FastAPI, Query
+<pre><code>from fastapi import FastAPI, Query
 
 app = FastAPI()
 
@@ -44,7 +38,7 @@ def handler(echo: str = Query(&quot;&quot;)):
     return echo
 </code></pre>
 <p>was being fixed to the invalid code below:</p>
-<pre><code class="language-python">from typing import Annotated
+<pre><code>from typing import Annotated
 from fastapi import FastAPI, Query
 
 app = FastAPI()
@@ -54,7 +48,7 @@ def handler(echo: Annotated[str, Query(&quot;&quot;)]): # changed
     return echo
 </code></pre>
 <p>As @MichaReiser pointed out, the correct fix is:</p>
-<pre><code class="language-python">from typing import Annotated
+<pre><code>from typing import Annotated
 from fastapi import FastAPI, Query
 
 app = FastAPI()
@@ -65,49 +59,49 @@ def handler(echo: Annotated[str, Query()] = &quot;&quot;): # changed
 </code></pre>
 <p>After fixing the issue for <code>Query</code>, I realized that other classes like <code>Path</code>, <code>Body</code>, <code>Cookie</code>, <code>Header</code>, <code>File</code>, and <code>Form</code> also looked susceptible to this issue. The last few commits should handle these too, which I think means this will also close #12913.</p>
 <p>I had to reorder the arguments to the <code>do_stuff</code> test case because the new fix removes some default argument values (eg for <code>Path</code>: <code>some_path_param: str = Path()</code> becomes <code>some_path_param: Annotated[str, Path()]</code>).</p>
-<p>There's also #14484 related to this rule. I'm happy to take a stab at that here or in a follow up PR too.</p>
-<h2>Test Plan</h2>
-<!-- How was it tested? -->
+<p>There&#x27;s also #14484 related to this rule. I&#x27;m happy to take a stab at that here or in a follow up PR too.</p>
+Test Plan
+
 
 <p><code>cargo test</code></p>
-<p>I also checked the fixed output with <code>uv run --with fastapi FAST002_0.py</code>, but it required making a bunch of additional changes to the test file that I wasn't sure we wanted in this PR.</p>
+<p>I also checked the fixed output with <code>uv run --with fastapi FAST002_0.py</code>, but it required making a bunch of additional changes to the test file that I wasn&#x27;t sure we wanted in this PR.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-13 22:32</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @AlexWaygood on 2025-01-14 07:49</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-14 07:49</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">fixes</span> added by @AlexWaygood on 2025-01-14 07:50</div>
+            <div class="event">Label <span class="label">fixes</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-14 07:50</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-01-14 07:51</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-14 07:51</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_dependency.rs</code>:205 on 2025-01-14 07:56</div>
-            <div class="timeline-body"><p>What's the reason for only setting <code>is_default</code> to <code>true</code> if <code>is_dep</code> is true? What if a non <code>is_dep</code> argument has a default value?</p>
-<p>If it's possible to set <code>seen_default</code> to <code>true</code> whenever there's a default value, I then suggest moving <code>seen_default</code> out of this function and simplify it to always compute it on line 115 (on the call site)</p>
+            <div class="timeline-body"><p>What&#x27;s the reason for only setting <code>is_default</code> to <code>true</code> if <code>is_dep</code> is true? What if a non <code>is_dep</code> argument has a default value?</p>
+<p>If it&#x27;s possible to set <code>seen_default</code> to <code>true</code> whenever there&#x27;s a default value, I then suggest moving <code>seen_default</code> out of this function and simplify it to always compute it on line 115 (on the call site)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_dependency.rs</code>:150 on 2025-01-14 07:57</div>
-            <div class="timeline-body"><p>Nit: It isn't very obvious what the boolean return value suggests. My first assumption would be that it returns <code>true</code> if the diagnostic was created and <code>false</code> otherwise but that's not the case. We should either consider splitting the method or at least document the return value.</p>
+            <div class="timeline-body"><p>Nit: It isn&#x27;t very obvious what the boolean return value suggests. My first assumption would be that it returns <code>true</code> if the diagnostic was created and <code>false</code> otherwise but that&#x27;s not the case. We should either consider splitting the method or at least document the return value.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_dependency.rs</code>:231 on 2025-01-14 08:02</div>
-            <div class="timeline-body"><p>I try to use <code>unwrap</code> if possible because it requires readers to think through why <code>unwrap</code> is correct to do so and it's also very easy to violate the correctness constraint when refactoring code. At least if possible without requiring too much restructuring.</p>
-<pre><code class="language-suggestion">            let content = match default_arg {
+            <div class="timeline-body"><p>I try to use <code>unwrap</code> if possible because it requires readers to think through why <code>unwrap</code> is correct to do so and it&#x27;s also very easy to violate the correctness constraint when refactoring code. At least if possible without requiring too much restructuring.</p>
+<pre><code>            let content = match default_arg {
                 Some(default_arg) if is_dep =&gt; {
                     let default_arg = default_arg.unwrap();
                     let kwarg_list = match kwarg_list {
@@ -144,14 +138,14 @@ def handler(echo: Annotated[str, Query()] = &quot;&quot;): # changed
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_dependency.rs</code>:170 on 2025-01-14 08:05</div>
-            <div class="timeline-body"><p>We'll fail to update <code>seen_default</code> if adding the import fails. That's probably fine because it's unlikely that importing the symbol will succeed for the next parameter but it might proof a footgun in the future if we happen to add other code paths that bail early.</p>
+            <div class="timeline-body"><p>We&#x27;ll fail to update <code>seen_default</code> if adding the import fails. That&#x27;s probably fine because it&#x27;s unlikely that importing the symbol will succeed for the next parameter but it might proof a footgun in the future if we happen to add other code paths that bail early.</p>
 <p>Should we move the <code>parameter_edit</code> generation out of the <code>try_set_optional_fix</code> to ensure it always runs to completion? (unless we manage to find a way to move <code>seen_default</code> out of <code>create_diagnostic</code> which would be my preferred solution)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_dependency.rs</code>:219 on 2025-01-14 08:13</div>
             <div class="timeline-body"><p>This is sort of hard to read. It would help readability to use named arguments</p>
-<pre><code class="language-suggestion">                    &quot;{parameter_name}: {binding}[{annotation}, {default}({kwarg_list})] = {default_value}&quot;,
+<pre><code>                    &quot;{parameter_name}: {binding}[{annotation}, {default}({kwarg_list})] = {default_value}&quot;,
                     parameter_name = &amp;parameter.parameter.name.id,
                     annotation = checker.locator().slice(annotation.range()),
                     metadata = checker.locator().slice(map_callable(default).range()),
@@ -166,7 +160,7 @@ def handler(echo: Annotated[str, Query()] = &quot;&quot;): # changed
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-01-14 08:14</div>
-            <div class="timeline-body"><p>Thanks. This overall looks good. I've a few nit improvements</p>
+            <div class="timeline-body"><p>Thanks. This overall looks good. I&#x27;ve a few nit improvements</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -182,7 +176,7 @@ def handler(echo: Annotated[str, Query()] = &quot;&quot;): # changed
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-01-14 12:09</div>
+            <div class="event">Review request for <a href="https://github.com/AlexWaygood">@AlexWaygood</a> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-14 12:09</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-14 12:15</div>
@@ -199,14 +193,14 @@ def handler(echo: Annotated[str, Query()] = &quot;&quot;): # changed
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_dependency.rs</code>:205 on 2025-01-14 13:29</div>
-            <div class="timeline-body"><p>Computing it at the call site is how the original code was, but I think now we need more information (both <code>is_dep &amp;&amp; default_arg.is_some()</code>) to know if the current fix will lead to a default argument. The examples I'm trying to handle here are cases like <code>some_path_param: str = Path() </code> becoming <code>some_path_param: Annotated[str, Path()]</code>, where the initial presence of a default argument, which is checkable at the call site, doesn't determine the final presence of a default. <code>is_dep</code> might be a bad name for this, at a minimum.</p>
+            <div class="timeline-body"><p>Computing it at the call site is how the original code was, but I think now we need more information (both <code>is_dep &amp;&amp; default_arg.is_some()</code>) to know if the current fix will lead to a default argument. The examples I&#x27;m trying to handle here are cases like <code>some_path_param: str = Path() </code> becoming <code>some_path_param: Annotated[str, Path()]</code>, where the initial presence of a default argument, which is checkable at the call site, doesn&#x27;t determine the final presence of a default. <code>is_dep</code> might be a bad name for this, at a minimum.</p>
 <p>Totally non-<code>is_dep</code> arguments (failing the <code>is_fastapi_dependency</code> check) are handled in the caller at 118.</p>
 <p>Does that make sense? I felt like I was over-complicating this yesterday, so the answer could definitely be &quot;no,&quot; but it still looks right to me today.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_dependency.rs</code>:150 on 2025-01-14 13:31</div>
-            <div class="timeline-body"><p>Would it be any better to use a <code>&amp;mut bool</code>? That's another option I considered, which might make it slightly more clear. I can definitely document it either way, though.</p>
+            <div class="timeline-body"><p>Would it be any better to use a <code>&amp;mut bool</code>? That&#x27;s another option I considered, which might make it slightly more clear. I can definitely document it either way, though.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -219,7 +213,7 @@ def handler(echo: Annotated[str, Query()] = &quot;&quot;): # changed
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_dependency.rs</code>:150 on 2025-01-14 13:33</div>
-            <div class="timeline-body"><p>I do prefer a return value over <code>&amp;mut</code>. Another option is to introduce a custom enum but that might over complicate things. I'm fine with just adding some documentation</p>
+            <div class="timeline-body"><p>I do prefer a return value over <code>&amp;mut</code>. Another option is to introduce a custom enum but that might over complicate things. I&#x27;m fine with just adding some documentation</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -247,8 +241,8 @@ def handler(echo: Annotated[str, Query()] = &quot;&quot;): # changed
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_dependency.rs</code>:261 on 2025-01-14 16:00</div>
-            <div class="timeline-body"><p>I don't think it's guaranteed that it's always a default when the fix failed.</p>
-<p>After your explanation about <code>seen_default,</code> I wonder if this is even needed. What I understand is that the fix introduces a new default value and if we don't fix, then there will never be a default? (or we should just use <code>parameter.default.is_some()</code> in that case.</p>
+            <div class="timeline-body"><p>I don&#x27;t think it&#x27;s guaranteed that it&#x27;s always a default when the fix failed.</p>
+<p>After your explanation about <code>seen_default,</code> I wonder if this is even needed. What I understand is that the fix introduces a new default value and if we don&#x27;t fix, then there will never be a default? (or we should just use <code>parameter.default.is_some()</code> in that case.</p>
 <p>This also makes me wonder: What happens if we change a parameter to now have a default value where it is preceded by parameters without a default value? Can we add a test for that?</p>
 </div>
         </div>
@@ -258,10 +252,10 @@ def handler(echo: Annotated[str, Query()] = &quot;&quot;): # changed
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_dependency.rs</code>:261 on 2025-01-14 16:25</div>
-            <div class="timeline-body"><p>The rule actually only triggers at all if there's a default value initially (line 112 in particular):</p>
+            <div class="timeline-body"><p>The rule actually only triggers at all if there&#x27;s a default value initially (line 112 in particular):</p>
 <p>https://github.com/astral-sh/ruff/blob/6f7a8ad560f03638a7efe59c80a29a47da16003e/crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_dependency.rs#L110-L119</p>
-<p>We just have to avoid setting <code>seen_default</code> here in case we <em>remove</em> a default. So if we tried to fix but failed, we're definitely leaving a default argument in the parameter list, if I'm understanding correctly.</p>
-<p>I'm noticing now that this <code>match!</code> is the same as the <code>if let</code> in <code>create_diagnostic</code>. I was trying to leave the general structure of the code as I found it, but some of this might be more clear without the separation into <code>create_diagnostic</code> too.</p>
+<p>We just have to avoid setting <code>seen_default</code> here in case we <em>remove</em> a default. So if we tried to fix but failed, we&#x27;re definitely leaving a default argument in the parameter list, if I&#x27;m understanding correctly.</p>
+<p>I&#x27;m noticing now that this <code>match!</code> is the same as the <code>if let</code> in <code>create_diagnostic</code>. I was trying to leave the general structure of the code as I found it, but some of this might be more clear without the separation into <code>create_diagnostic</code> too.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -272,15 +266,15 @@ def handler(echo: Annotated[str, Query()] = &quot;&quot;): # changed
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-15 08:56</div>
             <div class="timeline-body"><p>I spent some more time reading the code and I think I now have a better understanding what the fix is doing.</p>
-<p>I'd suggest the following changes:</p>
+<p>I&#x27;d suggest the following changes:</p>
 <ul>
 <li>Change <code>is_fastapi_dependency</code> to return <code>Option&lt;FastApiDependency&gt;</code> where <code>FastApiDependency</code> is an enum. This removes the need to call <code>resolve_qualified_name</code> again when creating the fix.</li>
-<li>I'd suggest moving the logic for extracting the <code>default_value</code> out of <code>create_fix</code> and move it into <code>fastapi_non_annotated_dependency</code>.</li>
+<li>I&#x27;d suggest moving the logic for extracting the <code>default_value</code> out of <code>create_fix</code> and move it into <code>fastapi_non_annotated_dependency</code>.</li>
 <li>I think we can then move the logic for <code>seen_default</code> entirely into <code>fastapi_non_annotated_dependency</code></li>
 </ul>
-<details><summary>Patch</summary>
+Patch
 
-<pre><code class="language-patch">Index: crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_dependency.rs
+<pre><code>Index: crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_dependency.rs
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 &lt;+&gt;UTF-8
@@ -384,21 +378,21 @@ diff --git a/crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_de
 +    Security,
 +}
 +
-+struct DependencyParameter&lt;'a&gt; {
-+    annotation: &amp;'a ast::Expr,
-+    default: &amp;'a ast::Expr,
++struct DependencyParameter&lt;&#x27;a&gt; {
++    annotation: &amp;&#x27;a ast::Expr,
++    default: &amp;&#x27;a ast::Expr,
 +    range: TextRange,
-+    name: &amp;'a str,
++    name: &amp;&#x27;a str,
 +    kind: FastApiDependency,
 +}
 +
-+struct DependencyCall&lt;'a&gt; {
-+    default_argument: ast::ArgOrKeyword&lt;'a&gt;,
-+    keyword_arguments: Vec&lt;&amp;'a ast::Keyword&gt;,
++struct DependencyCall&lt;&#x27;a&gt; {
++    default_argument: ast::ArgOrKeyword&lt;&#x27;a&gt;,
++    keyword_arguments: Vec&lt;&amp;&#x27;a ast::Keyword&gt;,
 +}
 +
-+impl&lt;'a&gt; DependencyCall&lt;'a&gt; {
-+    fn from_expression(expr: &amp;'a ast::Expr) -&gt; Option&lt;Self&gt; {
++impl&lt;&#x27;a&gt; DependencyCall&lt;&#x27;a&gt; {
++    fn from_expression(expr: &amp;&#x27;a ast::Expr) -&gt; Option&lt;Self&gt; {
 +        let call = expr.as_call_expr()?;
 +        let default_argument = call.arguments.find_argument(&quot;default&quot;, 0)?;
 +        let keyword_arguments = call
@@ -457,7 +451,7 @@ diff --git a/crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_de
 +        )?;
  
 -            // Refine the match from `is_fastapi_dependency` to exclude Depends
--            // and Security, which don't have the same argument structure. The
+-            // and Security, which don&#x27;t have the same argument structure. The
 -            // others need to be converted from `q: str = Query(&quot;&quot;)` to `q:
 -            // Annotated[str, Query()] = &quot;&quot;` for example, but Depends and
 -            // Security need to stay like `Annotated[str, Depends(callable)]`
@@ -474,7 +468,7 @@ diff --git a/crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_de
 +        // argument, followed by kw-only arguments
 +
 +        // Refine the match from `is_fastapi_dependency` to exclude Depends
-+        // and Security, which don't have the same argument structure. The
++        // and Security, which don&#x27;t have the same argument structure. The
 +        // others need to be converted from `q: str = Query(&quot;&quot;)` to `q:
 +        // Annotated[str, Query()] = &quot;&quot;` for example, but Depends and
 +        // Security need to stay like `Annotated[str, Depends(callable)]`
@@ -589,13 +583,13 @@ diff --git a/crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_de
      checker.diagnostics.push(diagnostic);
  
 </code></pre>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-01-15 15:54</div>
-            <div class="timeline-body"><p>Wow thanks for the patch! I think it's much easier to follow now. I applied the patch, made a few clippy fixes, and then renamed <code>is_dep</code>. <code>is_route_param</code> makes a lot more sense.</p>
+            <div class="timeline-body"><p>Wow thanks for the patch! I think it&#x27;s much easier to follow now. I applied the patch, made a few clippy fixes, and then renamed <code>is_dep</code>. <code>is_route_param</code> makes a lot more sense.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -603,10 +597,10 @@ diff --git a/crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_de
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @ntBre on 2025-01-15 18:05</div>
+            <div class="event">Merged by <a href="https://github.com/ntBre">@ntBre</a> on 2025-01-15 18:05</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ntBre on 2025-01-15 18:05</div>
+            <div class="event">Closed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-01-15 18:05</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-01-15 18:05</div>
@@ -614,7 +608,7 @@ diff --git a/crates/ruff_linter/src/rules/fastapi/rules/fastapi_non_annotated_de
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:09:07 UTC
+        Synced at 2026-01-20 19:10:21 UTC
     </footer>
 </body>
 </html>

@@ -23,23 +23,23 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/pplmx">@pplmx</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>I have a <code>pyproject.toml</code> where I configure platform-specific dependencies and source settings as follows:</p>
-<pre><code class="language-toml">[project]
+<pre><code>[project]
 name = &quot;example&quot;
 version = &quot;0.1.0&quot;
 description = &quot;Add your description here&quot;
 readme = &quot;README.md&quot;
 requires-python = &quot;&gt;=3.12&quot;
 dependencies = [
-    &quot;megatron-core ; sys_platform == 'linux'&quot;,
+    &quot;megatron-core ; sys_platform == &#x27;linux&#x27;&quot;,
 ]
 
 [tool.uv.sources]
-megatron-core = { git = &quot;https://github.com/NVIDIA/Megatron-LM&quot;, marker = &quot;sys_platform == 'linux'&quot; }
+megatron-core = { git = &quot;https://github.com/NVIDIA/Megatron-LM&quot;, marker = &quot;sys_platform == &#x27;linux&#x27;&quot; }
 </code></pre>
 <p>On Linux, everything works fine. However, on Windows, running <code>uv sync</code> throws the following error:</p>
-<pre><code class="language-log">uv sync
+<pre><code>uv sync
   × Failed to build `megatron-core @ git+https://github.com/NVIDIA/Megatron-LM`
   ├─▶ The build backend returned an error
   ╰─▶ Call to `setuptools.build_meta:__legacy__.build_wheel` failed (exit code: 1)
@@ -51,34 +51,34 @@ megatron-core = { git = &quot;https://github.com/NVIDIA/Megatron-LM&quot;, marke
 
       hint: This usually indicates a problem with the package or the build environment.
 </code></pre>
-<h3>Steps to Reproduce</h3>
-<pre><code class="language-bash"># run the following commands on Windows
+Steps to Reproduce
+<pre><code># run the following commands on Windows
 mkdir example
 uv init -p 3.12
 # copy the above pyproject.toml to this project
 uv sync
 </code></pre>
-<h3>Expected Behavior</h3>
+Expected Behavior
 <p>On non-target platforms (e.g., Windows), uv should skip parsing dependencies or sources that have platform-specific markers, thereby avoiding build errors.</p>
-<h3>FYI</h3>
-<pre><code class="language-txt">uv 0.6.8
+FYI
+<pre><code>uv 0.6.8
 Python 3.12.9
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @pplmx on 2025-03-20 08:14</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/pplmx">@pplmx</a> on 2025-03-20 08:14</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-20 13:43</div>
-            <div class="timeline-body"><p><code>uv sync</code> performs a universal resolution (see the <a href="https://docs.astral.sh/uv/concepts/resolution/#universal-resolution">docs</a>), so we need to resolve metadata for <code>megatron-core</code> even if it won't ultimately be installed.</p>
+            <div class="timeline-body"><p><code>uv sync</code> performs a universal resolution (see the <a href="https://docs.astral.sh/uv/concepts/resolution/#universal-resolution">docs</a>), so we need to resolve metadata for <code>megatron-core</code> even if it won&#x27;t ultimately be installed.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> removed by @charliermarsh on 2025-03-20 13:43</div>
+            <div class="event">Label <span class="label">enhancement</span> removed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-20 13:43</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2025-03-20 13:43</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-20 13:43</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/pplmx">@pplmx</a> on 2025-03-21 02:03</div>
@@ -87,12 +87,12 @@ Python 3.12.9
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-21 04:06</div>
-            <div class="timeline-body"><p>Normally I would recommend adding a <code>[[tool.uv.dependency-metadata]]</code> for <code>Megatron-LM</code> so that the resolver has static metadata available and doesn't need to build the project: https://docs.astral.sh/uv/concepts/resolution/#dependency-metadata. That looks difficult for <code>Megatron-LM</code> since they use dynamic metadata and it seems to vary quite a bit? Your best bet might be to lock on Linux, then use <code>--frozen</code> when installing on Windows.</p>
+            <div class="timeline-body"><p>Normally I would recommend adding a <code>[[tool.uv.dependency-metadata]]</code> for <code>Megatron-LM</code> so that the resolver has static metadata available and doesn&#x27;t need to build the project: https://docs.astral.sh/uv/concepts/resolution/#dependency-metadata. That looks difficult for <code>Megatron-LM</code> since they use dynamic metadata and it seems to vary quite a bit? Your best bet might be to lock on Linux, then use <code>--frozen</code> when installing on Windows.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/pplmx">@pplmx</a> on 2025-03-21 05:23</div>
-            <div class="timeline-body"><p>Thank you, @charliermarsh. Here's what I've tried:</p>
+            <div class="timeline-body"><p>Thank you, @charliermarsh. Here&#x27;s what I&#x27;ve tried:</p>
 <ol>
 <li>Generated <code>uv.lock</code> on Linux using the provided <code>pyproject.toml</code>.</li>
 <li>Copied <code>uv.lock</code> to Windows.</li>
@@ -110,11 +110,11 @@ Python 3.12.9
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/pplmx">@pplmx</a> on 2025-03-21 05:55</div>
-            <div class="timeline-body"><h2>Steps to Reproduce</h2>
-<pre><code class="language-bash"># On Linux
+            <div class="timeline-body">Steps to Reproduce
+<pre><code># On Linux
 mkdir example; cd example
 uv init -p 3.12
-uv add &quot;git+https://github.com/NVIDIA/Megatron-LM; sys_platform == 'linux'&quot;
+uv add &quot;git+https://github.com/NVIDIA/Megatron-LM; sys_platform == &#x27;linux&#x27;&quot;
 # show current packages
 uv tree -d2
 
@@ -133,7 +133,7 @@ uv pip list # output nothing
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-21 13:38</div>
-            <div class="timeline-body"><p><code>uv add --frozen</code> won't update the lockfile with your new dependency (and <code>uv tree --frozen</code> similarly will not update the lockfile). You need to add your dependencies up-front on the Linux machine (to workaround this specific problem).</p>
+            <div class="timeline-body"><p><code>uv add --frozen</code> won&#x27;t update the lockfile with your new dependency (and <code>uv tree --frozen</code> similarly will not update the lockfile). You need to add your dependencies up-front on the Linux machine (to workaround this specific problem).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -149,18 +149,18 @@ I understand the process now. For this case, to use <code>numpy</code> on Window
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-01 17:16</div>
-            <div class="timeline-body"><p>I don't think we'll do that. The point of uv's lockfile is that it's platform independent and the problem is rather that this package is not following best practices for declaring metadata.</p>
+            <div class="timeline-body"><p>I don&#x27;t think we&#x27;ll do that. The point of uv&#x27;s lockfile is that it&#x27;s platform independent and the problem is rather that this package is not following best practices for declaring metadata.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2025-04-01 17:16</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-01 17:16</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/pplmx">@pplmx</a> on 2025-04-03 01:54</div>
             <div class="timeline-body"><p>Thank you for your assistance.
-I'm not entirely sure what the best practices are for declaring metadata. Could you please provide some guidance?
+I&#x27;m not entirely sure what the best practices are for declaring metadata. Could you please provide some guidance?
 Additionally, how should a Linux-only package declare the correct metadata?
-Once I have this information, I'll be happy to open an issue on Megatron-LM to further discuss the topic.
+Once I have this information, I&#x27;ll be happy to open an issue on Megatron-LM to further discuss the topic.
 Thanks again!</p>
 </div>
         </div>
@@ -183,13 +183,13 @@ Thanks again!</p>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mfordiani-cosmohc">@mfordiani-cosmohc</a> on 2025-09-12 12:32</div>
             <div class="timeline-body"><p>@zanieb @charliermarsh</p>
-<p>I'm having a similar problem that imho provides a coherent use case for some kind of platform-specific exclusion of optional dependencies:</p>
+<p>I&#x27;m having a similar problem that imho provides a coherent use case for some kind of platform-specific exclusion of optional dependencies:</p>
 <ol>
 <li>I have a Python project that should be able to run on dev machines (amd64) and on NVIDIA Jetson (aarch64)</li>
 <li>Since there is no publicly available <code>tensorrt</code> wheel for Tegra / aarch64, I can only use the pre-installed <code>tensorrt</code> Python library inside the NVIDIA <code>l4t-tensorrt</code> containers</li>
 <li>So I define <code>tensorrt</code> as an <strong>OPTIONAL</strong> dependency group to be used only during development, trying to keep the version as close as possibile to what is found in the NVIDIA container</li>
 </ol>
-<pre><code class="language-toml">[project.optional-dependencies]
+<pre><code>[project.optional-dependencies]
 tensorrt = [
     &quot;tensorrt-cu12==10.8.0.43&quot;,
     &quot;tensorrt-cu12-bindings==10.8.0.43&quot;,
@@ -204,12 +204,12 @@ torch = [
     &quot;torchvision&gt;=0.22.1&quot;,
 ]
 </code></pre>
-<ol start="4">
+<ol>
 <li>And I add a <code>[tool.uv.sources]</code> block to specify the allowed platforms for <code>tensorrt</code> and relevant index</li>
 </ol>
-<pre><code class="language-toml">[tool.uv.sources]
+<pre><code>[tool.uv.sources]
 tensorrt = [
-    { index='nvidia', marker = &quot; platform_machine == 'amd64' &quot; },
+    { index=&#x27;nvidia&#x27;, marker = &quot; platform_machine == &#x27;amd64&#x27; &quot; },
 ]
 
 [[tool.uv.index]]
@@ -217,7 +217,7 @@ name = &quot;nvidia&quot;
 url = &quot;https://pypi.nvidia.com/&quot;
 explicit = true
 </code></pre>
-<p>Now, what prevents uv from understanding that it shouldn't look for a compatible <code>tensorrt</code> on an <code>aarch64</code> platform when I run <code>uv sync --extra torch</code>? I am JUST asking for <code>torch</code>, not anything else.</p>
+<p>Now, what prevents uv from understanding that it shouldn&#x27;t look for a compatible <code>tensorrt</code> on an <code>aarch64</code> platform when I run <code>uv sync --extra torch</code>? I am JUST asking for <code>torch</code>, not anything else.</p>
 <p>This behavior defeats the main point of using uv for a similar project, as I cannot sync the project with the extras I need, and then use <code>uv export</code> to generate a pinned <code>requirements.txt</code> to use in CI, which is my usual workflow.</p>
 <pre><code>RuntimeError: TensorRT does not currently build wheels for Tegra systems
 
@@ -230,7 +230,7 @@ help: `tensorrt-cu12` (v10.8.0.43) was included because `aab[tensorrt]` (v2025.1
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-12 13:13</div>
-            <div class="timeline-body"><p>You should generate the lockfile on a platform where this package is available, then you'll be able to use it on other machines.</p>
+            <div class="timeline-body"><p>You should generate the lockfile on a platform where this package is available, then you&#x27;ll be able to use it on other machines.</p>
 <p>Alternatively, you can declare static metadata for the package https://docs.astral.sh/uv/concepts/resolution/#dependency-metadata</p>
 </div>
         </div>
@@ -324,7 +324,7 @@ Description-Content-Type: text/markdown
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:30:32 UTC
+        Synced at 2026-01-20 19:37:52 UTC
     </footer>
 </body>
 </html>

@@ -27,29 +27,29 @@
 <p>My first guess would be that this strange &quot;Variable-function-definition&quot; (instead of normal method) might cause the problem.
 However, Pylance seems to have no problem with that.</p>
 <p>Background: I am using <code>pyspark</code> (through <code>databricks-connect</code> library) and found there to be some problematic type problems.</p>
-<h2>Code</h2>
-<pre><code class="language-python">from pyspark.sql import functions as F
+Code
+<pre><code>from pyspark.sql import functions as F
 
 add = F.col(&quot;a&quot;) + F.col(&quot;b&quot;)
 sub = F.col(&quot;a&quot;) - F.col(&quot;b&quot;)
 </code></pre>
-<h2>Pylance ✅</h2>
-<p><img width="754" alt="Image" src="https://github.com/user-attachments/assets/4694da92-57e6-4360-b5ca-a4e43ac65400" /></p>
-<h3>Going deeper</h3>
+Pylance ✅
+<p><img alt="Image" src="https://github.com/user-attachments/assets/4694da92-57e6-4360-b5ca-a4e43ac65400"></p>
+Going deeper
 <p>When I &quot;Go to Definition&quot; I can see some weird <code>(variable) def</code> instead of the normal <code>(method) def</code> inside the <code>Column</code> class.</p>
-<p><img width="653" alt="Image" src="https://github.com/user-attachments/assets/105e3caa-5337-4007-9a8b-0fa7a3a7e764" /></p>
-<h2>ty</h2>
-<p><img width="930" alt="Image" src="https://github.com/user-attachments/assets/ebdacbd2-5a8a-4349-9f58-071164ca2583" /></p>
+<p><img alt="Image" src="https://github.com/user-attachments/assets/105e3caa-5337-4007-9a8b-0fa7a3a7e764"></p>
+ty
+<p><img alt="Image" src="https://github.com/user-attachments/assets/ebdacbd2-5a8a-4349-9f58-071164ca2583"></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Arithmetic functions not found; class `(variable) def` not found/identified" to "Problem with implicit dunder calls for `Callable` members" by @sharkdp on 2025-05-13 09:44</div>
+            <div class="event">Renamed from &quot;Arithmetic functions not found; class `(variable) def` not found/identified&quot; to &quot;Problem with implicit dunder calls for `Callable` members&quot; by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-13 09:44</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-13 09:45</div>
             <div class="timeline-body"><p>Thank you for reporting this. This is a bug in ty.</p>
-<p>The issue here is that <code>__add__</code> is <a href="https://github.com/apache/spark/blob/7c29c664cdc9321205a98a14858aaf8daaa19db2/python/pyspark/sql/column.py#L221-L224">casted to a <code>Callable</code> type</a> and we don't properly model the treatment of that <code>Callable</code> type as a bound method. MRE:</p>
-<pre><code class="language-py">from __future__ import annotations
+<p>The issue here is that <code>__add__</code> is <a href="https://github.com/apache/spark/blob/7c29c664cdc9321205a98a14858aaf8daaa19db2/python/pyspark/sql/column.py#L221-L224">casted to a <code>Callable</code> type</a> and we don&#x27;t properly model the treatment of that <code>Callable</code> type as a bound method. MRE:</p>
+<pre><code>from __future__ import annotations
 
 from typing import reveal_type, Callable, cast
 
@@ -69,30 +69,30 @@ def _(c: Column):
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2025-05-13 09:46</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-13 09:46</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">calls</span> added by @sharkdp on 2025-05-13 09:46</div>
+            <div class="event">Label <span class="label">calls</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-13 09:46</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">attribute access</span> added by @sharkdp on 2025-05-13 09:46</div>
+            <div class="event">Label <span class="label">attribute access</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-13 09:46</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @sharkdp by @sharkdp on 2025-05-13 21:19</div>
+            <div class="event">Assigned to <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-13 21:19</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-14 13:03</div>
-            <div class="timeline-body"><p>We've been thinking a bit more about this, and it looks to us that the problem is actually not with ty, but rather with that <code>Callable</code> annotation. The TLDR is: a generic <code>Callable</code> type does not necessarily need to be a descriptor with a <code>__get__</code> method (similar to a normal function). That means that we're technically correct to not create a bound method here.</p>
-<hr />
-<p>To explain this in a bit more detail, let's create a callable that prints out its arguments:</p>
-<pre><code class="language-py">class ArgPrinter:
+            <div class="timeline-body"><p>We&#x27;ve been thinking a bit more about this, and it looks to us that the problem is actually not with ty, but rather with that <code>Callable</code> annotation. The TLDR is: a generic <code>Callable</code> type does not necessarily need to be a descriptor with a <code>__get__</code> method (similar to a normal function). That means that we&#x27;re technically correct to not create a bound method here.</p>
+<hr>
+<p>To explain this in a bit more detail, let&#x27;s create a callable that prints out its arguments:</p>
+<pre><code>class ArgPrinter:
     def __call__(self, *args):
         print(f&quot;{args=}&quot;)
 
 arg_printer = ArgPrinter()
 </code></pre>
-<p>When we call <code>arg_printer(1, &quot;a&quot;)</code>, it prints <code>args=(1, 'a')</code>. Now let's use this callable as a <code>__add__</code> method on <code>Column</code>. We add a <code>name</code> attribute to distinguish object identities:</p>
-<pre><code class="language-py">from dataclasses import dataclass
+<p>When we call <code>arg_printer(1, &quot;a&quot;)</code>, it prints <code>args=(1, &#x27;a&#x27;)</code>. Now let&#x27;s use this callable as a <code>__add__</code> method on <code>Column</code>. We add a <code>name</code> attribute to distinguish object identities:</p>
+<pre><code>from dataclasses import dataclass
 
 @dataclass
 class Column:
@@ -102,7 +102,7 @@ class Column:
 
 Column(&quot;left&quot;) + Column(&quot;right&quot;)
 </code></pre>
-<p>The last line here implicitly calls <code>__add__</code>. At runtime, this prints <code>args=(Column(name='right'),)</code>. Only the <code>Column(&quot;right&quot;)</code> object is passed as an argument(!). In general, the protocol for implicit dunder calls (using <code>__add__</code> as an example here) is as follows:</p>
+<p>The last line here implicitly calls <code>__add__</code>. At runtime, this prints <code>args=(Column(name=&#x27;right&#x27;),)</code>. Only the <code>Column(&quot;right&quot;)</code> object is passed as an argument(!). In general, the protocol for implicit dunder calls (using <code>__add__</code> as an example here) is as follows:</p>
 <ul>
 <li>Look up <code>__add__</code> in the MRO of <code>type(left)</code></li>
 <li>Check if <code>type(dunder_callable)</code> has a <code>__get__</code> method. If so, set <code>dunder_callable = type(dunder_callable).__get__(dunder_callable, left, type(left))</code>. If not, keep <code>dunder_callable</code> from above`</li>
@@ -110,10 +110,10 @@ Column(&quot;left&quot;) + Column(&quot;right&quot;)
 </ul>
 <p>For our <code>arg_printer</code> callable, there is no <code>__get__</code> method on <code>type(arg_printer) = ArgPrinter</code>, so that second step is skipped, and <code>arg_printer(right)</code> is called.</p>
 <p>So the correct way to type <code>__add__</code> here would be <code>Callable[[Column], None]</code>. And indeed, if we set</p>
-<pre><code class="language-py">    __add__: Callable[[Column], None] = arg_printer
+<pre><code>    __add__: Callable[[Column], None] = arg_printer
 </code></pre>
 <p>no error is emitted by ty (same for mypy and pyright).</p>
-<p>Now what if the callable <em>is</em> a descriptor (e.g. a function)? Let's add a <code>__get__</code> method to <code>ArgPrinter</code> that emulates the binding of the <code>self</code> argument:</p>
+<p>Now what if the callable <em>is</em> a descriptor (e.g. a function)? Let&#x27;s add a <code>__get__</code> method to <code>ArgPrinter</code> that emulates the binding of the <code>self</code> argument:</p>
 <pre><code>from functools import partial
 
 class ArgPrinter:
@@ -122,19 +122,19 @@ class ArgPrinter:
     def __get__(self, instance, owner):
         return partial(self, instance)
 </code></pre>
-<p>What this does is to return a new callable object. If that returned callable is called (in the implicit <code>__add__</code> call), it will call <code>self</code> (i.e. <code>ArgPrinter</code>'s <code>__call__</code> method), but pass <code>instance</code> as the first argument, before passing other arguments.</p>
+<p>What this does is to return a new callable object. If that returned callable is called (in the implicit <code>__add__</code> call), it will call <code>self</code> (i.e. <code>ArgPrinter</code>&#x27;s <code>__call__</code> method), but pass <code>instance</code> as the first argument, before passing other arguments.</p>
 <p>If we now repeat the <code>Column(&quot;left&quot;) + Column(&quot;right&quot;)</code> operation from above, we see that both &quot;left&quot; and &quot;right&quot; arguments are passed. <code>left</code> via the <code>instance</code> argument of the descriptor, and <code>right</code> as the actual argument to the <code>__add__</code> callable (which was returned from <code>ArgPrinter.__get__</code>).</p>
 <p>How would we type <code>__add__</code> now? There is no way to express the descriptor behavior in a <code>Callable</code> annotation. The best we could do would probably be some <code>Protocol</code> like</p>
-<pre><code class="language-py">class AddColumns(Protocol):
+<pre><code>class AddColumns(Protocol):
     # or `-&gt; Column`, for the real example
     def __call__(self, left: Column, right: Column) -&gt; None: ...
     def __get__(self, instance: Column, owner: type) -&gt; Callable[[Column], None]: ...
 </code></pre>
 <p>(to completely model the descriptor behavior, we would also add an overload for the case where <code>instance</code> is <code>None</code>, e.g. if <code>Column.__add__(left, right)</code> is called explicitly. In that case, the implementation should also just return <code>self</code> if <code>instance is None</code>. Which means that this overload should return <code>Callable[[Column, Column], None]</code>).</p>
-<hr />
-<p>Where does that leave us? <code>pyspark</code>'s annotation for <code>__add__</code> on <code>Column</code> is technically wrong. If there is nothing else we know about the type of <code>__add__</code>, we must assume that it's not a descriptor, and therefore simply call it with one argument (&quot;right&quot;). Since this is incompatible with the <code>Callable[[Column, Column], Column]</code> signature, the implicit call fails. This is where the <code>unsupported-operator</code> diagnostic comes from (we should improve that diagnostic and also show the reason why it's not supported...).</p>
+<hr>
+<p>Where does that leave us? <code>pyspark</code>&#x27;s annotation for <code>__add__</code> on <code>Column</code> is technically wrong. If there is nothing else we know about the type of <code>__add__</code>, we must assume that it&#x27;s not a descriptor, and therefore simply call it with one argument (&quot;right&quot;). Since this is incompatible with the <code>Callable[[Column, Column], Column]</code> signature, the implicit call fails. This is where the <code>unsupported-operator</code> diagnostic comes from (we should improve that diagnostic and also show the reason why it&#x27;s not supported...).</p>
 <p>Interestingly, <code>pyspark</code> seems to have changed <a href="https://github.com/apache/spark/blob/092223365928d03014db6a65cfe9c28000e3c4d1/python/pyspark/sql/column.py#L84-L88">the way they defined <code>__add__</code> on <code>Column</code></a> in more recent versions. So maybe this particular problem will eventually just go away?</p>
-<p>That said, we realize that some library authors and users might rely on an implicit function-like behavior of <code>Callable</code> types, where they act as descriptors that bind the instance argument to the first (&quot;<code>self</code>&quot;) parameter. If you or someone else sees this pattern being used somewhere else, we'd be glad to know.</p>
+<p>That said, we realize that some library authors and users might rely on an implicit function-like behavior of <code>Callable</code> types, where they act as descriptors that bind the instance argument to the first (&quot;<code>self</code>&quot;) parameter. If you or someone else sees this pattern being used somewhere else, we&#x27;d be glad to know.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -143,10 +143,10 @@ class ArgPrinter:
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> removed by @sharkdp on 2025-05-14 13:08</div>
+            <div class="event">Label <span class="label">bug</span> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-14 13:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @sharkdp on 2025-05-14 13:08</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-14 13:08</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Julian-J-S">@Julian-J-S</a> on 2025-05-14 15:17</div>
@@ -161,17 +161,17 @@ However, this was only in the 4.* branch which is still in development and will 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-14 18:07</div>
-            <div class="timeline-body"><p>Seeing that a) pyright also (sometimes) errors on this, b) the current behavior seems correct, and c) pyspark seems to have already recognized that and updated the annotation in more recent versions, I don't think there is a strong case for ty to change type checking behavior here at this point, so for now I am going to close this as &quot;not planned.&quot; I did file https://github.com/astral-sh/ty/issues/391 to capture the fact that we really want more diagnostic context for <code>unsupported-operator</code>.</p>
+            <div class="timeline-body"><p>Seeing that a) pyright also (sometimes) errors on this, b) the current behavior seems correct, and c) pyspark seems to have already recognized that and updated the annotation in more recent versions, I don&#x27;t think there is a strong case for ty to change type checking behavior here at this point, so for now I am going to close this as &quot;not planned.&quot; I did file <a href="https://github.com/astral-sh/ty/issues/391">astral-sh/ty#391</a> to capture the fact that we really want more diagnostic context for <code>unsupported-operator</code>.</p>
 <p>Thanks again for the report, and thanks @sharkdp for the thorough exploration here!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2025-05-14 18:07</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2025-05-14 18:07</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:19:49 UTC
+        Synced at 2026-01-20 19:24:26 UTC
     </footer>
 </body>
 </html>

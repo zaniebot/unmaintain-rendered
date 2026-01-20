@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Currently, we consider <code>Foo</code> and <code>Bar</code> here to be disjoint types:</p>
-<pre><code class="language-py">from typing import final, Protocol
+<pre><code>from typing import final, Protocol
 
 def coinflip() -&gt; bool:
     return False
@@ -44,37 +44,37 @@ class Bar(Protocol):
 <li>We see that the <code>x</code> attribute on <code>Foo</code> is possibly unbound, meaning that <code>Foo</code> does not satisfy the protocol <code>Bar</code>, since <code>Bar</code> mandates that an object must have a definitely bound <code>x</code> attribute in order to satisfy its interface.</li>
 </ol>
 <p>This has the unfortunate consequence that we infer the <code>hasattr()</code> check here as having a truthiness of <code>AlwaysFalse</code>; we believe that the branch is unreachable:</p>
-<pre><code class="language-py">def _(f: Foo):
+<pre><code>def _(f: Foo):
     if hasattr(f, &quot;x&quot;):
         ...
 </code></pre>
-<p>That doesn't seem desirable. This PR reworks our protocol-disjointness logic for <code>@final</code> nominal types. Under the new logic, types which have possibly unbound attributes are still not considered subtypes of protocols that mandate those attributes. But they are also not considered <em>disjoint</em> unless the necessary attributes either don't exist at all or exist on the nominal instance type with a disjoint type.</p>
+<p>That doesn&#x27;t seem desirable. This PR reworks our protocol-disjointness logic for <code>@final</code> nominal types. Under the new logic, types which have possibly unbound attributes are still not considered subtypes of protocols that mandate those attributes. But they are also not considered <em>disjoint</em> unless the necessary attributes either don&#x27;t exist at all or exist on the nominal instance type with a disjoint type.</p>
 <p>Similar changes are also made to module-literal types, function-literal types and class-literal types: it seems also undesirable for <code>hasattr()</code> checks involving these types to have an inferred visibility of <code>AlwaysFalse</code>.</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>mdtests</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-06-30 10:39</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-30 10:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-06-30 10:39</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-30 10:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-06-30 10:39</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-30 10:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-06-30 10:39</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-30 10:39</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-30 10:43</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">alerta (https://github.com/alerta/alerta)
+Changes were detected when running on open source projects
+
+<pre><code>alerta (https://github.com/alerta/alerta)
 - TOTAL MEMORY USAGE: ~117MB
 + TOTAL MEMORY USAGE: ~106MB
 
@@ -107,21 +107,21 @@ static-frame (https://github.com/static-frame/static-frame)
 +     memo fields = ~304MB
 
 </code></pre>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Converted to draft by @AlexWaygood on 2025-06-30 10:44</div>
+            <div class="event">Converted to draft by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-30 10:44</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-30 11:14</div>
             <div class="timeline-body"><blockquote>
-<pre><code class="language-diff">+ error[missing-argument] pydantic/_internal/_serializers.py:50:8: No argument provided for required parameter `self` of function `mode_is_json`
+<pre><code>+ error[missing-argument] pydantic/_internal/_serializers.py:50:8: No argument provided for required parameter `self` of function `mode_is_json`
 </code></pre>
 </blockquote>
-<p>Here's a (bizarre) minimal repro. On <code>main</code> we allow both of the <code>mode_is_json()</code> calls here. On this branch, we allow the <code>f.mode_is_json()</code> call but disallow the <code>g.mode_is_json()</code> call:</p>
-<pre><code class="language-py">from typing import Protocol, reveal_type
+<p>Here&#x27;s a (bizarre) minimal repro. On <code>main</code> we allow both of the <code>mode_is_json()</code> calls here. On this branch, we allow the <code>f.mode_is_json()</code> call but disallow the <code>g.mode_is_json()</code> call:</p>
+<pre><code>from typing import Protocol, reveal_type
 
 class SerializationInfo1(Protocol):
     def mode_is_json(self) -&gt; bool: ...
@@ -139,7 +139,7 @@ def _(f: SerializationInfo1, g: SerializationInfo2):
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-30 11:21</div>
             <div class="timeline-body"><p>Some more <code>reveal_type</code> calls:</p>
-<pre><code class="language-py">from typing_extensions import Protocol, reveal_type, TypeVar, Any, get_protocol_members
+<pre><code>from typing_extensions import Protocol, reveal_type, TypeVar, Any, get_protocol_members
 
 class SerializationInfo1(Protocol):
     def mode_is_json(self) -&gt; bool: ...
@@ -159,15 +159,15 @@ def _(f: SerializationInfo1, g: SerializationInfo2):
     # revealed: `def mode_is_json(self) -&gt; bool`
     reveal_type(g.mode_is_json)
 </code></pre>
-<p>I don't yet know why we're inferring a function-literal type for <code>g.mode_is_json</code> rather than a bound-method type like for <code>f.mode_is_json</code>. But it appears <em>related</em> to the fact that <code>object</code> has a <code>__str__</code> method (they're both treated the same if the second member is a <code>bar</code> method rather than a <code>__str__</code> method).</p>
+<p>I don&#x27;t yet know why we&#x27;re inferring a function-literal type for <code>g.mode_is_json</code> rather than a bound-method type like for <code>f.mode_is_json</code>. But it appears <em>related</em> to the fact that <code>object</code> has a <code>__str__</code> method (they&#x27;re both treated the same if the second member is a <code>bar</code> method rather than a <code>__str__</code> method).</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @AlexWaygood on 2025-07-01 11:24</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-01 11:24</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-01 11:25</div>
-            <div class="timeline-body"><p>The weirdness in the original primer output is now fixed -- there was a bug in the PR (I was using <code>.all()</code> instead of <code>.any()</code>...) that interacted with a pre-existing bug on <code>main</code> (https://github.com/astral-sh/ty/issues/737) to produce some very perplexing results -- many thanks to @sharkdp for helping me track that down!</p>
+            <div class="timeline-body"><p>The weirdness in the original primer output is now fixed -- there was a bug in the PR (I was using <code>.all()</code> instead of <code>.any()</code>...) that interacted with a pre-existing bug on <code>main</code> (<a href="https://github.com/astral-sh/ty/issues/737">astral-sh/ty#737</a>) to produce some very perplexing results -- many thanks to @sharkdp for helping me track that down!</p>
 <p>This PR is now ready for review.</p>
 </div>
         </div>
@@ -177,10 +177,10 @@ def _(f: SerializationInfo1, g: SerializationInfo2):
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @AlexWaygood on 2025-07-01 11:47</div>
+            <div class="event">Merged by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-01 11:47</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-07-01 11:47</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-01 11:47</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-07-01 11:47</div>
@@ -188,7 +188,7 @@ def _(f: SerializationInfo1, g: SerializationInfo2):
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:13:49 UTC
+        Synced at 2026-01-20 19:16:04 UTC
     </footer>
 </body>
 </html>

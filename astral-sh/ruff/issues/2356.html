@@ -24,7 +24,7 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ngnpope">@ngnpope</a></div>
             <div class="timeline-body"><p>We may have a situation where we have a callback function defined to handle exception, e.g. this generic catch-all when using a resolver from <code>aws-lambda-powertools</code>:</p>
-<pre><code class="language-python">from __future__ import annotations
+<pre><code>from __future__ import annotations
 
 from typing import Any
 
@@ -59,7 +59,7 @@ def handle_exception(exc: Exception) -&gt; Response:
     )
 </code></pre>
 <p>I get the following:</p>
-<pre><code class="language-console">❯ ruff --version
+<pre><code>❯ ruff --version
 ruff 0.0.237
 
 ❯ ruff --select G bug.py 
@@ -67,7 +67,7 @@ bug.py:28:12: G201 Logging `.exception(...)` should be used instead of `.error(.
 Found 1 error.
 </code></pre>
 <p>For context, <code>Logger.exception()</code> is defined as:</p>
-<pre><code class="language-python">class Logger(Filterer):
+<pre><code>class Logger(Filterer):
     ...
 
     def exception(self, msg, *args, exc_info=True, **kwargs):
@@ -80,10 +80,10 @@ Found 1 error.
 </code></pre>
 <p>There are two issues here:</p>
 <ol>
-<li>I'm not using <code>exc_info=True</code>, I'm explicitly passing the exception object</li>
+<li>I&#x27;m not using <code>exc_info=True</code>, I&#x27;m explicitly passing the exception object</li>
 <li>The guidance to use <code>.exception(...)</code> really only applies in an <code>except:</code> block<ul>
 <li>This is because passing <code>exc_info=True</code> calls <code>sys.exc_info()</code> under the hood</li>
-<li>And <code>sys.exc_info()</code> cannot be guaranteed to have an exception outside of <code>except:</code><pre><code class="language-console">❯ python -c 'import sys; print(sys.exc_info())'
+<li>And <code>sys.exc_info()</code> cannot be guaranteed to have an exception outside of <code>except:</code><pre><code>❯ python -c &#x27;import sys; print(sys.exc_info())&#x27;
 (None, None, None)
 </code></pre>
 </li>
@@ -91,17 +91,17 @@ Found 1 error.
 </li>
 </ol>
 <p>Given the definition of <code>.exception(...)</code>, it looks as though we ought to be able to bypass <code>G201</code> by passing <code>exc_info=exc</code> to <code>.exception(...)</code> instead of <code>.error(...)</code>, but that gives the following:</p>
-<pre><code class="language-console">❯ ruff --select G bug.py 
+<pre><code>❯ ruff --select G bug.py 
 bug.py:28:31: G202 Logging statement has redundant `exc_info`
 Found 1 error.
 </code></pre>
-<p>Which is also incorrect... It's only redundant if it is <code>exc_info=True</code>, the default value.</p>
+<p>Which is also incorrect... It&#x27;s only redundant if it is <code>exc_info=True</code>, the default value.</p>
 <p>So I believe the following should change:</p>
 <ul>
 <li>Only flag up <code>G201</code> in an <code>except:</code> block and only when <code>.error(...)</code> is passed <code>exc_info=True</code> or <code>exc_info=sys.exc_info()</code></li>
 <li>Only flag up <code>G202</code> for <code>.exception(..., exc_info=True)</code> or <code>.exception(..., exc_info=sys.exc_info())</code></li>
 <li>Consider whether <code>.exception(..., exc_info=exc)</code> should be forced back to <code>.error(..., exc_info=exc)</code> with a new rule<ul>
-<li><em>The only benefit of <code>.exception(...)</code> is to pass <code>exc_info=True</code> automatically. It's syntactic sugar.</em></li>
+<li><em>The only benefit of <code>.exception(...)</code> is to pass <code>exc_info=True</code> automatically. It&#x27;s syntactic sugar.</em></li>
 </ul>
 </li>
 </ul>
@@ -118,7 +118,7 @@ Found 1 error.
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-01-30 17:17</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-30 17:17</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ngnpope">@ngnpope</a> on 2023-01-30 17:20</div>
@@ -127,27 +127,27 @@ Found 1 error.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-30 17:21</div>
-            <div class="timeline-body"><p>The one area I'm happy to deviate from &quot;upstream&quot; is when there are clear false positives or false negatives that can improved reliably :)</p>
+            <div class="timeline-body"><p>The one area I&#x27;m happy to deviate from &quot;upstream&quot; is when there are clear false positives or false negatives that can improved reliably :)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">good first issue</span> added by @charliermarsh on 2023-01-30 18:20</div>
+            <div class="event">Label <span class="label">good first issue</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-30 18:20</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-01-30 20:30</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-30 20:30</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-30 20:31</div>
-            <div class="timeline-body"><p>I'm going to fix this quickly so that it can be included in today's release.</p>
+            <div class="timeline-body"><p>I&#x27;m going to fix this quickly so that it can be included in today&#x27;s release.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-01-30 21:32</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-30 21:32</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:46:17 UTC
+        Synced at 2026-01-20 18:48:31 UTC
     </footer>
 </body>
 </html>

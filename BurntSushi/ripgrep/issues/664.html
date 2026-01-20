@@ -26,19 +26,19 @@
             <div class="timeline-body"><p>I wonder if extended glob patterns are on the list for the future. Specifically I am referring to:</p>
 <p>Source: http://man7.org/linux/man-pages/man3/fnmatch.3.html</p>
 <blockquote>
-<p>'?(pattern-list)'
+<p>&#x27;?(pattern-list)&#x27;
 The pattern matches if zero or one occurrences of any of the
 patterns in the pattern-list match the input string.</p>
-<p>'*(pattern-list)'
+<p>&#x27;*(pattern-list)&#x27;
 The pattern matches if zero or more occurrences of any of the
 patterns in the pattern-list match the input string.</p>
-<p>'+(pattern-list)'
+<p>&#x27;+(pattern-list)&#x27;
 The pattern matches if one or more occurrences of any of the
 patterns in the pattern-list match the input string.</p>
-<p>'@(pattern-list)'
+<p>&#x27;@(pattern-list)&#x27;
 The pattern matches if exactly one occurrence of any of the
 patterns in the pattern-list match the input string.</p>
-<p>'!(pattern-list)'
+<p>&#x27;!(pattern-list)&#x27;
 The pattern matches if the input string cannot be matched with
 any of the patterns in the pattern-list.</p>
 </blockquote>
@@ -46,11 +46,11 @@ any of the patterns in the pattern-list.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Glob: support for extended glob patterns" to "Glob: support for extended fnmatch-style glob patterns" by @bpasero on 2017-11-06 10:19</div>
+            <div class="event">Renamed from &quot;Glob: support for extended glob patterns&quot; to &quot;Glob: support for extended fnmatch-style glob patterns&quot; by <a href="https://github.com/bpasero">@bpasero</a> on 2017-11-06 10:19</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-11-06 10:32</div>
-            <div class="timeline-body"><p>Could you please elaborate on your use case for these? I'm no spring chicken, and in all my years I have never seen anyone try to use these glob extensions. If it's because they don't enjoy wide support, then it seems like no big deal for ripgrep to elide them.</p>
+            <div class="timeline-body"><p>Could you please elaborate on your use case for these? I&#x27;m no spring chicken, and in all my years I have never seen anyone try to use these glob extensions. If it&#x27;s because they don&#x27;t enjoy wide support, then it seems like no big deal for ripgrep to elide them.</p>
 <p>Moreover, of the extensions proposed, negation is by far the hardest to implement.</p>
 </div>
         </div>
@@ -63,41 +63,41 @@ any of the patterns in the pattern-list.</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-11-07 13:20</div>
-            <div class="timeline-body"><p>Yeah, I mean, I hear ya, but I don't think this is going to happen. I think I <em>might</em> be able to get on board with this (sans negation) if you twisted my arm, but asking me to support negation is basically asking me to write and maintain an entirely new glob implementation.</p>
-<p>To elaborate, ripgrep's glob matcher is provided by the <a href="https://docs.rs/globset/0.2.1/globset/"><code>globset</code></a> crate, which works by translating the glob to a regular expression, and does various literal optimizations on top of that. This in particular enables the ability to compile an entire set of globs (from, say the CLI or a <code>.gitignore</code> file) into a single finite state machine and execute it over a file path once to discover every matching glob.</p>
-<p>All of the extensions you propose (again, except for negation) seem like they translate well to regular expressions, so supporting them is mostly a matter of adding support to the glob parser and the translation to regex. It will require a rewrite of the parser (the parser currently doesn't support arbitrarily nested globs), but that's as far as it goes. Negation, on the other hand, isn't supported by the regex engine at all. Not because it's impossible, but because it's hard. So to add negation, I'd need to do one of</p>
+            <div class="timeline-body"><p>Yeah, I mean, I hear ya, but I don&#x27;t think this is going to happen. I think I <em>might</em> be able to get on board with this (sans negation) if you twisted my arm, but asking me to support negation is basically asking me to write and maintain an entirely new glob implementation.</p>
+<p>To elaborate, ripgrep&#x27;s glob matcher is provided by the <a href="https://docs.rs/globset/0.2.1/globset/"><code>globset</code></a> crate, which works by translating the glob to a regular expression, and does various literal optimizations on top of that. This in particular enables the ability to compile an entire set of globs (from, say the CLI or a <code>.gitignore</code> file) into a single finite state machine and execute it over a file path once to discover every matching glob.</p>
+<p>All of the extensions you propose (again, except for negation) seem like they translate well to regular expressions, so supporting them is mostly a matter of adding support to the glob parser and the translation to regex. It will require a rewrite of the parser (the parser currently doesn&#x27;t support arbitrarily nested globs), but that&#x27;s as far as it goes. Negation, on the other hand, isn&#x27;t supported by the regex engine at all. Not because it&#x27;s impossible, but because it&#x27;s hard. So to add negation, I&#x27;d need to do one of</p>
 <ol>
 <li>Add support for negation to the regex engine</li>
 <li>Write a completely different glob matcher implementation.</li>
 <li>Find a pre-existing glob matcher implementation that supports it.</li>
 </ol>
-<p>Even if I agreed to do (1), the time scale on that is measured in <em>years</em>. (2) is something I personally won't do because that isn't how I want to spend my time. And finally, (3) (and also (2)) suffer the problem where you have one particular type of glob that can't be compiled with the rest of the globs, which will create all manner of special cases in the code. That doesn't sound like fun to maintain.</p>
+<p>Even if I agreed to do (1), the time scale on that is measured in <em>years</em>. (2) is something I personally won&#x27;t do because that isn&#x27;t how I want to spend my time. And finally, (3) (and also (2)) suffer the problem where you have one particular type of glob that can&#x27;t be compiled with the rest of the globs, which will create all manner of special cases in the code. That doesn&#x27;t sound like fun to maintain.</p>
 <p>So ya, there ya have it. You might consider that running your own glob matcher after-the-fact if a user is using an extension to be the least bad solution. :-)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/bpasero">@bpasero</a> on 2017-11-08 06:38</div>
-            <div class="timeline-body"><p>Thanks for the summary, I wasn't thinking this was an easy task, it also means a bit of work to support this in our glob implementation in VS Code ;)</p>
+            <div class="timeline-body"><p>Thanks for the summary, I wasn&#x27;t thinking this was an easy task, it also means a bit of work to support this in our glob implementation in VS Code ;)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-01-31 02:30</div>
-            <div class="timeline-body"><p>Based on my previous comment here, I'm going to close this out. While I appreciate that some folks may find these glob extensions useful, I think the bang isn't worth the buck in this instance.</p>
+            <div class="timeline-body"><p>Based on my previous comment here, I&#x27;m going to close this out. While I appreciate that some folks may find these glob extensions useful, I think the bang isn&#x27;t worth the buck in this instance.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2018-01-31 02:30</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-01-31 02:30</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2018-01-31 02:31</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-01-31 02:31</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2018-01-31 02:31</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-01-31 02:31</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:42:19 UTC
+        Synced at 2026-01-20 18:48:05 UTC
     </footer>
 </body>
 </html>

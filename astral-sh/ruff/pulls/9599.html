@@ -24,33 +24,33 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
             <div class="timeline-body"><p>Fixes #8368
-Fixes https://github.com/astral-sh/ruff/issues/9186</p>
-<h2>Summary</h2>
-<p>Arbitrary TOML strings can be provided via the command-line to override configuration options in <code>pyproject.toml</code> or <code>ruff.toml</code>. As an example: to run over typeshed and respect typeshed's <code>pyproject.toml</code>, but override a specific isort setting and enable an additional pep8-naming setting:</p>
-<pre><code>cargo run -- check ../typeshed --no-cache --config ../typeshed/pyproject.toml --config &quot;lint.isort.combine-as-imports=false&quot; --config &quot;lint.extend-select=['N801']&quot;
+Fixes <a href="https://github.com/astral-sh/ruff/issues/9186">astral-sh/ruff#9186</a></p>
+Summary
+<p>Arbitrary TOML strings can be provided via the command-line to override configuration options in <code>pyproject.toml</code> or <code>ruff.toml</code>. As an example: to run over typeshed and respect typeshed&#x27;s <code>pyproject.toml</code>, but override a specific isort setting and enable an additional pep8-naming setting:</p>
+<pre><code>cargo run -- check ../typeshed --no-cache --config ../typeshed/pyproject.toml --config &quot;lint.isort.combine-as-imports=false&quot; --config &quot;lint.extend-select=[&#x27;N801&#x27;]&quot;
 </code></pre>
 <p>This is what the error message currently looks like if you provide an invalid <code>--config</code> option:</p>
 <pre><code>&gt;cargo run -- check ../typeshed --no-cache --config foo.toml
     Finished dev [unoptimized + debuginfo] target(s) in 0.77s
      Running `target\debug\ruff.exe check ../typeshed --no-cache --config foo.toml`
-error: invalid value 'foo.toml' for '--config &lt;CONFIG_OPTION&gt;'
+error: invalid value &#x27;foo.toml&#x27; for &#x27;--config &lt;CONFIG_OPTION&gt;&#x27;
 
   tip: The `--config` flag must either be a path to a `.toml` configuation file or a TOML string providing configuration overrides
   tip: The path `foo.toml` does not exist on your filesystem
 
-For more information, try '--help'.
-error: process didn't exit successfully: `target\debug\ruff.exe check ../typeshed --no-cache --config foo.toml` (exit code: 2)
+For more information, try &#x27;--help&#x27;.
+error: process didn&#x27;t exit successfully: `target\debug\ruff.exe check ../typeshed --no-cache --config foo.toml` (exit code: 2)
 </code></pre>
-<h2>Test Plan</h2>
+Test Plan
 <p>~~So far, just manual testing. TODO: write proper tests and docs.~~</p>
 <p>Several tests added to <code>crates/ruff/tests/format.rs</code> and <code>crates/ruff/tests/lint.rs</code>. Also, extensive manual testing.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/args.rs</code>:515 on 2024-01-22 08:14</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">    /// Overrides provided via specific flags such as --line-length etc
+            <div class="timeline-body"><pre><code>    /// Overrides provided via specific flags such as --line-length etc
 </code></pre>
-<p>These aren't legacy. It's just that we don't want to expose all options via CLI</p>
+<p>These aren&#x27;t legacy. It&#x27;s just that we don&#x27;t want to expose all options via CLI</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -60,23 +60,23 @@ error: process didn't exit successfully: `target\debug\ruff.exe check ../typeshe
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/args.rs</code>:543 on 2024-01-22 08:17</div>
-            <div class="timeline-body"><p>We'll need to document the precedence of options. What binds higher: <code>--line-length</code> or <code>--config line-length</code>?</p>
+            <div class="timeline-body"><p>We&#x27;ll need to document the precedence of options. What binds higher: <code>--line-length</code> or <code>--config line-length</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/args.rs</code>:564 on 2024-01-22 08:18</div>
-            <div class="timeline-body"><p>I'm not sure if it's worth special casing here. Seems like unnecessary complexity to handle a very specific, uncommon edge case.</p>
+            <div class="timeline-body"><p>I&#x27;m not sure if it&#x27;s worth special casing here. Seems like unnecessary complexity to handle a very specific, uncommon edge case.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/args.rs</code>:744 on 2024-01-22 08:21</div>
-            <div class="timeline-body"><p>I'm conflicted if we should use the TOML terminology here or should instead say that it needs to be a config option key <code>=</code> value pairs. I at least wouldn't immediately understand what a TOML string is (<code>&quot;abcd&quot;?</code>)</p>
+            <div class="timeline-body"><p>I&#x27;m conflicted if we should use the TOML terminology here or should instead say that it needs to be a config option key <code>=</code> value pairs. I at least wouldn&#x27;t immediately understand what a TOML string is (<code>&quot;abcd&quot;?</code>)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_workspace/src/configuration.rs</code>:616 on 2024-01-22 08:23</div>
             <div class="timeline-body"><p>Nit: I think we can line these above (and avoid the <code>mut</code>)</p>
-<pre><code class="language-suggestion">						extend: extend.cloned(),
+<pre><code>						extend: extend.cloned(),
 						required_version: required_version.cloned(),
             ..config
         };
@@ -85,12 +85,12 @@ error: process didn't exit successfully: `target\debug\ruff.exe check ../typeshe
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_workspace/src/options.rs</code>:36 on 2024-01-22 08:24</div>
-            <div class="timeline-body"><p>It's probably not a huge concern because options are rarely constructed, but where do we need to clone them now (cloning is somewhat expensive because the structure contains so many allocated sub-structures)?</p>
+            <div class="timeline-body"><p>It&#x27;s probably not a huge concern because options are rarely constructed, but where do we need to clone them now (cloning is somewhat expensive because the structure contains so many allocated sub-structures)?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-01-22 08:25</div>
-            <div class="timeline-body"><p>Nice! I haven't done a full review and only skimmed through the code.</p>
+            <div class="timeline-body"><p>Nice! I haven&#x27;t done a full review and only skimmed through the code.</p>
 <p>Some CLI tests showing how overrides work for <code>check</code> and <code>format</code>, including some advanced use cases like specifying values for a table (e.g is there a way to &quot;append&quot; to <code>--per-file-ignores</code> without having to use a JSON value?) Can I do <code>--config &quot;per-file-ignores.__init__.py&quot; = [&quot;RUF100&quot;]</code>? See <code>ruff/tests/format</code> or <code>/ruff/tests/lint</code> etc for examples.</p>
 </div>
         </div>
@@ -105,8 +105,8 @@ error: process didn't exit successfully: `target\debug\ruff.exe check ../typeshe
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_workspace/src/options.rs</code>:36 on 2024-01-22 08:34</div>
-            <div class="timeline-body"><p>Yeah, I didn't like having to do this. It's because we initially use <code>clap</code> to parse <code>--config</code> arguments into variants of the <code>ConfigOption</code> enum, which is defined like this:</p>
-<pre><code class="language-rs">#[derive(Clone, Debug)]
+            <div class="timeline-body"><p>Yeah, I didn&#x27;t like having to do this. It&#x27;s because we initially use <code>clap</code> to parse <code>--config</code> arguments into variants of the <code>ConfigOption</code> enum, which is defined like this:</p>
+<pre><code>#[derive(Clone, Debug)]
 pub enum ConfigOption {
     PathToConfigFile(PathBuf),
     ConfigOverride(Box&lt;Options&gt;),
@@ -137,11 +137,11 @@ pub enum ConfigOption {
             <div class="timeline-body"><blockquote>
 <p>Do you need to mutate the <code>Options</code> value?</p>
 </blockquote>
-<p>I don't think so, no!</p>
+<p>I don&#x27;t think so, no!</p>
 <blockquote>
 <p>If not, using a <code>Rc</code> (or <code>Arc</code> if it needs to be threadsafe) might be an option which also gives you O(1) cloning</p>
 </blockquote>
-<p>I'll give that a try</p>
+<p>I&#x27;ll give that a try</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -177,12 +177,12 @@ pub enum ConfigOption {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_workspace/src/options.rs</code>:36 on 2024-01-22 13:09</div>
-            <div class="timeline-body"><p>Looks like it does need to be threadsafe, so <code>Rc</code> won't work for us here.</p>
+            <div class="timeline-body"><p>Looks like it does need to be threadsafe, so <code>Rc</code> won&#x27;t work for us here.</p>
 <p>I tried doing this:</p>
-<details>
-<summary>Diff I tried</summary>
 
-<pre><code class="language-diff">--- a/crates/ruff/src/args.rs
+Diff I tried
+
+<pre><code>--- a/crates/ruff/src/args.rs
 +++ b/crates/ruff/src/args.rs
 @@ -1,4 +1,5 @@
  use std::path::PathBuf;
@@ -222,7 +222,7 @@ index 9eb54688a..8964d999b 100644
  #[cfg_attr(feature = &quot;schemars&quot;, derive(schemars::JsonSchema))]
  pub struct Options {
 </code></pre>
-</details>
+
 
 <p>But the compiler complains at me:</p>
 <pre><code>error[E0507]: cannot move out of an `Arc`
@@ -240,7 +240,7 @@ index 9eb54688a..8964d999b 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/src/args.rs</code>:515 on 2024-01-22 13:13</div>
-            <div class="timeline-body"><p>True. In general, I'm not sure how to refer to this group of flags. On <code>main</code>, the struct providing information on the flags is called <code>CliOverrides</code>, but that's not a great name anymore now that we're introducing a separate mechanism allowing for arbitrary options to be overridden via the CLI. <code>DedicatedCliOverrideFlags</code>? Not sure...</p>
+            <div class="timeline-body"><p>True. In general, I&#x27;m not sure how to refer to this group of flags. On <code>main</code>, the struct providing information on the flags is called <code>CliOverrides</code>, but that&#x27;s not a great name anymore now that we&#x27;re introducing a separate mechanism allowing for arbitrary options to be overridden via the CLI. <code>DedicatedCliOverrideFlags</code>? Not sure...</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -251,7 +251,7 @@ index 9eb54688a..8964d999b 100644
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff/src/args.rs</code>:627 on 2024-01-22 13:50</div>
             <div class="timeline-body"><p>I would probably write this as:</p>
-<pre><code class="language-rust">if let Some(ref config_file) = new.config_file {
+<pre><code>if let Some(ref config_file) = new.config_file {
     // return error
 }
 new.config_file = Some(path);
@@ -261,11 +261,11 @@ new.config_file = Some(path);
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff/src/args.rs</code>:684 on 2024-01-22 14:27</div>
-            <div class="timeline-body"><p>rustdoc uses Markdown, so the newlines you're using here to indicate pauses/breaks/end-of-sentence will disappear when rendered. If you want to keep the newlines-as-breaks, you'll need an empty line separating them.</p>
+            <div class="timeline-body"><p>rustdoc uses Markdown, so the newlines you&#x27;re using here to indicate pauses/breaks/end-of-sentence will disappear when rendered. If you want to keep the newlines-as-breaks, you&#x27;ll need an empty line separating them.</p>
 <p>Because rustdoc also generates short previews from the first &quot;paragraph&quot; of a Markdown block, my convention for docs is to write a single short sentence (usually one line) that very tersely describes what something is or does. Then insert an empty line and add additional context as necessary.</p>
 <p>(Previews are only generated for free functions, types, macros and modules. Notably absent from that list is methods.)</p>
 <p>See for example the previews here: https://docs.rs/rkyv/0.7.43/rkyv/index.html</p>
-<p>Almost all of them are very short and easy to read. They're nicely done. The one exception is the <code>out_field</code> macro that (IMO) puts a little too much content in that first paragraph.</p>
+<p>Almost all of them are very short and easy to read. They&#x27;re nicely done. The one exception is the <code>out_field</code> macro that (IMO) puts a little too much content in that first paragraph.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -275,8 +275,8 @@ new.config_file = Some(path);
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff/src/args.rs</code>:742 on 2024-01-22 17:53</div>
-            <div class="timeline-body"><p>This is a pretty long line. Unfortunately, <code>rustfmt</code> won't wrap strings for you automatically. I'd suggest this:</p>
-<pre><code class="language-rust">&quot;The `--config` flag must either be a path to a `.toml` \
+            <div class="timeline-body"><p>This is a pretty long line. Unfortunately, <code>rustfmt</code> won&#x27;t wrap strings for you automatically. I&#x27;d suggest this:</p>
+<pre><code>&quot;The `--config` flag must either be a path to a `.toml` \
  configuration file or a TOML string providing \
  configuration overrides&quot;.into()
 </code></pre>
@@ -332,8 +332,8 @@ index 9d72c6168..4e74891a1 100644
              let mut new_error =
                  clap::Error::new(clap::error::ErrorKind::ValueValidation).with_cmd(cmd);
 </code></pre>
-<p>That way, there shouldn't be any unnecessary clones if nothing is actually cloning the <code>ConfigOption</code>. But it does still unfortunately require that <code>Options</code> implements <code>Clone</code>.</p>
-<p>I don't see a simple way of avoiding the clone here without some other kind of bigger refactoring. I can think of some reasons why the clone is probably fine:</p>
+<p>That way, there shouldn&#x27;t be any unnecessary clones if nothing is actually cloning the <code>ConfigOption</code>. But it does still unfortunately require that <code>Options</code> implements <code>Clone</code>.</p>
+<p>I don&#x27;t see a simple way of avoiding the clone here without some other kind of bigger refactoring. I can think of some reasons why the clone is probably fine:</p>
 <ul>
 <li>This only applies when options are overridden on the CLI, which is probably not the common case.</li>
 <li>An <code>Options</code> in this case likely only has one non-<code>None</code> value, and so the actual heap allocation happening here is probably pretty small.</li>
@@ -342,9 +342,9 @@ index 9d72c6168..4e74891a1 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_workspace/src/options.rs</code>:36 on 2024-01-22 18:24</div>
-            <div class="timeline-body"><p>With that said, it is unfortunate that this makes a bunch of non-<code>Clone</code> types <code>Clone</code>. That in turn will make it easier to clones to slip in in the future. But I don't see a simple way of avoiding that other than not using <code>Options</code> here. But that would require duplicating all of <code>Options</code> fields into another type (probably an enum of the options instead of a struct of the options). But then you'd have to impl <code>Clone</code> for that type, which would probably mean that you'd still need most of the added <code>Clone</code> impls in this PR.</p>
-<p>The only way I see out of this is to abstain from using clap's <code>TypedValueParser</code>, which is the actual thing requiring a <code>Clone</code> implementation here. But I'm actually not familiar enough with Clap 4 to know how to do that off-hand. I took a quick look at Clap's API, and it doesn't look like there are any escape hatches. Which to me means the only way around this is to specifically opt out from Clap's &quot;value parsing&quot; and do it as a second step after getting the parsed args from Clap. Which will be supremely annoying I suspect.</p>
-<p>The last idea is that <code>ConfigOption</code> be some kind of facsimile of the specific option being set from <code>Options</code>. Like for example, an <code>Option&lt;(String, String)&gt;</code>, with the first <code>String</code> being the key and the second <code>String</code> a value. Then only after Clap parsing would you parse that second <code>String</code> into an actual value. That would let you retain the use of Clap's value parsing machinery by side-stepping the need to involve <code>Options</code> into the trait impl. But... this is likely to prove annoying.</p>
+            <div class="timeline-body"><p>With that said, it is unfortunate that this makes a bunch of non-<code>Clone</code> types <code>Clone</code>. That in turn will make it easier to clones to slip in in the future. But I don&#x27;t see a simple way of avoiding that other than not using <code>Options</code> here. But that would require duplicating all of <code>Options</code> fields into another type (probably an enum of the options instead of a struct of the options). But then you&#x27;d have to impl <code>Clone</code> for that type, which would probably mean that you&#x27;d still need most of the added <code>Clone</code> impls in this PR.</p>
+<p>The only way I see out of this is to abstain from using clap&#x27;s <code>TypedValueParser</code>, which is the actual thing requiring a <code>Clone</code> implementation here. But I&#x27;m actually not familiar enough with Clap 4 to know how to do that off-hand. I took a quick look at Clap&#x27;s API, and it doesn&#x27;t look like there are any escape hatches. Which to me means the only way around this is to specifically opt out from Clap&#x27;s &quot;value parsing&quot; and do it as a second step after getting the parsed args from Clap. Which will be supremely annoying I suspect.</p>
+<p>The last idea is that <code>ConfigOption</code> be some kind of facsimile of the specific option being set from <code>Options</code>. Like for example, an <code>Option&lt;(String, String)&gt;</code>, with the first <code>String</code> being the key and the second <code>String</code> a value. Then only after Clap parsing would you parse that second <code>String</code> into an actual value. That would let you retain the use of Clap&#x27;s value parsing machinery by side-stepping the need to involve <code>Options</code> into the trait impl. But... this is likely to prove annoying.</p>
 <p>I think overall, on balance, doing what you did here is probably the right path even though it adds a bunch of <code>Clone</code> impls.</p>
 </div>
         </div>
@@ -360,8 +360,8 @@ index 9d72c6168..4e74891a1 100644
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/src/args.rs</code>:742 on 2024-01-23 14:22</div>
             <div class="timeline-body"><p>Thanks, I pushed your changes!</p>
-<p>I'm a bit worries about how long this error message is in general, though. It doesn't look great on narrow screens:</p>
-<p><img src="https://github.com/astral-sh/ruff/assets/66076021/f0c0a00f-6941-426a-9724-f6ee95963bb2" alt="image" /></p>
+<p>I&#x27;m a bit worries about how long this error message is in general, though. It doesn&#x27;t look great on narrow screens:</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/66076021/f0c0a00f-6941-426a-9724-f6ee95963bb2" alt="image"></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -370,8 +370,8 @@ index 9d72c6168..4e74891a1 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/src/args.rs</code>:742 on 2024-01-23 14:34</div>
-            <div class="timeline-body"><p>This is also an issue for the <code>--help</code> text, though some of ruff's existing <code>--help</code> docs are already quite long:</p>
-<p><img src="https://github.com/astral-sh/ruff/assets/66076021/6f5f37cc-bc9f-4f8d-b230-73fed0af8b2c" alt="image" /></p>
+            <div class="timeline-body"><p>This is also an issue for the <code>--help</code> text, though some of ruff&#x27;s existing <code>--help</code> docs are already quite long:</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/66076021/6f5f37cc-bc9f-4f8d-b230-73fed0af8b2c" alt="image"></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -381,9 +381,9 @@ index 9d72c6168..4e74891a1 100644
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_workspace/src/options.rs</code>:36 on 2024-01-23 14:45</div>
             <div class="timeline-body"><p>Nice, thanks @BurntSushi! I switched to using an <code>Arc</code>, as you recommended.</p>
-<p>I basically agree with everything you said above -- I tried to find a way to do it without cloning, but couldn't see a way without a large refactor of lots of other code. The fact that it's already done in various similar places also made me feel a little better about things:</p>
+<p>I basically agree with everything you said above -- I tried to find a way to do it without cloning, but couldn&#x27;t see a way without a large refactor of lots of other code. The fact that it&#x27;s already done in various similar places also made me feel a little better about things:</p>
 <p>https://github.com/astral-sh/ruff/blob/395bf3dc98a726eed64280211f06e92b3e309467/crates/ruff/src/args.rs#L666-L749</p>
-<p>I'll leave this conversation &quot;unresolved&quot;, though, in case anybody else wants to chime in on the approach here</p>
+<p>I&#x27;ll leave this conversation &quot;unresolved&quot;, though, in case anybody else wants to chime in on the approach here</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -393,10 +393,10 @@ index 9d72c6168..4e74891a1 100644
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/src/args.rs</code>:576 on 2024-01-23 17:35</div>
             <div class="timeline-body"><p>Using <code>clap</code> here means we get nicely formatted multiline error messages with the <code>tip: </code> bit at the beginning:</p>
-<p><img src="https://github.com/astral-sh/ruff/assets/66076021/9c080a05-e872-4bd0-b34b-8dbd680f33d5" alt="image" /></p>
-<p>Unfortunately, because we're using <code>clap</code> <em>after</em> the initial argument parsing here, we don't get the nice colours that we do elsewhere -- this is what it looks like when you use <code>clap</code> in the initial argument parsing:</p>
-<p><img src="https://github.com/astral-sh/ruff/assets/66076021/12e2d6b3-fbd1-498a-b322-49d8998546c4" alt="image" /></p>
-<p>I can't really see an easy solution to that</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/66076021/9c080a05-e872-4bd0-b34b-8dbd680f33d5" alt="image"></p>
+<p>Unfortunately, because we&#x27;re using <code>clap</code> <em>after</em> the initial argument parsing here, we don&#x27;t get the nice colours that we do elsewhere -- this is what it looks like when you use <code>clap</code> in the initial argument parsing:</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/66076021/12e2d6b3-fbd1-498a-b322-49d8998546c4" alt="image"></p>
+<p>I can&#x27;t really see an easy solution to that</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -414,14 +414,14 @@ index 9d72c6168..4e74891a1 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff/src/args.rs</code>:742 on 2024-01-24 14:26</div>
-            <div class="timeline-body"><p>I wonder if there's a bug somewhere related to Windows where the help generation isn't able to query the terminal size. I'd suspect the help generation would get the terminal size and then wrap the output. Let me try...</p>
-<p><img src="https://github.com/astral-sh/ruff/assets/456674/c0fc1cd1-34f9-48b5-9710-76af823d8e9e" alt="ruff-help-no-wrap" /></p>
-<p>Welp. Nope. Something else is going wrong. Or the auto-wrapping isn't enabled.</p>
+            <div class="timeline-body"><p>I wonder if there&#x27;s a bug somewhere related to Windows where the help generation isn&#x27;t able to query the terminal size. I&#x27;d suspect the help generation would get the terminal size and then wrap the output. Let me try...</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/456674/c0fc1cd1-34f9-48b5-9710-76af823d8e9e" alt="ruff-help-no-wrap"></p>
+<p>Welp. Nope. Something else is going wrong. Or the auto-wrapping isn&#x27;t enabled.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff/src/args.rs</code>:742 on 2024-01-24 14:35</div>
-            <div class="timeline-body"><p>Hopefully this should fix it: https://github.com/astral-sh/ruff/pull/9633</p>
+            <div class="timeline-body"><p>Hopefully this should fix it: <a href="https://github.com/astral-sh/ruff/pull/9633">astral-sh/ruff#9633</a></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -430,9 +430,9 @@ index 9d72c6168..4e74891a1 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/src/args.rs</code>:742 on 2024-01-24 17:01</div>
-            <div class="timeline-body"><p>#9633 fixed the wrapping for <code>--help</code>, but didn't do anything for error messages displayed by clap.</p>
+            <div class="timeline-body"><p>#9633 fixed the wrapping for <code>--help</code>, but didn&#x27;t do anything for error messages displayed by clap.</p>
 <p>We could wrap the long error message here by doing something like this:</p>
-<pre><code class="language-diff">--- a/crates/ruff/src/args.rs
+<pre><code>--- a/crates/ruff/src/args.rs
 +++ b/crates/ruff/src/args.rs
 @@ -7,6 +7,8 @@ use clap::{command, Parser};
  use path_absolutize::path_dedot;
@@ -465,7 +465,7 @@ index 9d72c6168..4e74891a1 100644
          ];
 </code></pre>
 <p>It works very nicely:</p>
-<p><img src="https://github.com/astral-sh/ruff/assets/66076021/54590bdc-c0f4-4b47-a6fc-bb01f78c0d5d" alt="image" /></p>
+<p><img src="https://github.com/astral-sh/ruff/assets/66076021/54590bdc-c0f4-4b47-a6fc-bb01f78c0d5d" alt="image"></p>
 <p>But adding two dependencies (<code>terminal_size</code> and <code>textwrap</code>) feels possibly over-the-top for such a minor feature... though, we do already have <code>terminal_size</code> as a transitive dependency following #9633!</p>
 </div>
         </div>
@@ -491,7 +491,7 @@ index 9d72c6168..4e74891a1 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff/src/args.rs</code>:742 on 2024-01-24 17:08</div>
-            <div class="timeline-body"><p>I'd say go for it and put up a PR. :-)</p>
+            <div class="timeline-body"><p>I&#x27;d say go for it and put up a PR. :-)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -501,9 +501,9 @@ index 9d72c6168..4e74891a1 100644
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/src/args.rs</code>:742 on 2024-01-24 19:48</div>
             <div class="timeline-body"><p>I cleaned up the patch for wrapping multiline error messages a little, but it still feels somewhat hacky:</p>
-<details>
 
-<pre><code class="language-diff">--- a/crates/ruff/src/args.rs
+
+<pre><code>--- a/crates/ruff/src/args.rs
 +++ b/crates/ruff/src/args.rs
 @@ -1,12 +1,14 @@
  use std::path::PathBuf;
@@ -572,7 +572,7 @@ index 9d72c6168..4e74891a1 100644
      }
  }
 
-+/// If for whatever reason we can't calculate the terminal size,
++/// If for whatever reason we can&#x27;t calculate the terminal size,
 +/// assume it has a width of 80
 +const FALLBACK_TERMINAL_SIZE: u16 = 80;
 +
@@ -627,9 +627,9 @@ index 9d72c6168..4e74891a1 100644
          );
          Err(new_error)
 </code></pre>
-</details>
 
-<p>I think I'll leave it for now, but possibly propose it as a followup after this PR is merged :)</p>
+
+<p>I think I&#x27;ll leave it for now, but possibly propose it as a followup after this PR is merged :)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -643,32 +643,32 @@ index 9d72c6168..4e74891a1 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-01-24 20:42</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-01-25 16:31</div>
-            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/AlexWaygood:arbitrary-cli-overrides">CodSpeed Performance Report</a></h2>
-<h3>Merging #9599 will <strong>not alter performance</strong></h3>
-<p><sub>Comparing <code>AlexWaygood:arbitrary-cli-overrides</code> (0f8a583) with <code>main</code> (d387d0b)</sub></p>
-<h3>Summary</h3>
+            <div class="timeline-body"><a href="https://codspeed.io/astral-sh/ruff/branches/AlexWaygood:arbitrary-cli-overrides">CodSpeed Performance Report</a>
+Merging #9599 will <strong>not alter performance</strong>
+<p>Comparing <code>AlexWaygood:arbitrary-cli-overrides</code> (0f8a583) with <code>main</code> (d387d0b)</p>
+Summary
 <p><code>✅ 30</code> untouched benchmarks</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-01-25 23:44</div>
-            <div class="timeline-body"><p>Looks like a test case that I've added will fail if I make this modification:</p>
-<pre><code class="language-diff">diff --git a/crates/ruff/tests/lint.rs b/crates/ruff/tests/lint.rs
+            <div class="timeline-body"><p>Looks like a test case that I&#x27;ve added will fail if I make this modification:</p>
+<pre><code>diff --git a/crates/ruff/tests/lint.rs b/crates/ruff/tests/lint.rs
 index 95f068b19..493641f13 100644
 --- a/crates/ruff/tests/lint.rs
 +++ b/crates/ruff/tests/lint.rs
@@ -676,38 +676,38 @@ index 95f068b19..493641f13 100644
          .arg(&quot;--config&quot;)
          .arg(&amp;ruff_toml)
          .args([&quot;--config&quot;, &quot;line-length=90&quot;])
--        .args([&quot;--config&quot;, &quot;extend-select=['E501']&quot;])
-+        .args([&quot;--config&quot;, &quot;extend-select=['E501','F481']&quot;])
+-        .args([&quot;--config&quot;, &quot;extend-select=[&#x27;E501&#x27;]&quot;])
++        .args([&quot;--config&quot;, &quot;extend-select=[&#x27;E501&#x27;,&#x27;F481&#x27;]&quot;])
          .args([&quot;--config&quot;, &quot;lint.isort.combine-as-imports = false&quot;])
          .arg(&quot;-&quot;)
          .pass_stdin(fixture), @r###&quot;
 </code></pre>
 <p>It fails to parse the TOML (possibly because <code>clap</code> thinks the comma is being used to delimit multiple <code>--config</code> values? Not sure), and gives this message:</p>
-<pre><code>error: invalid value 'extend-select=['E501','F481']' for '--config &lt;CONFIG_OPTION&gt;'
+<pre><code>error: invalid value &#x27;extend-select=[&#x27;E501&#x27;,&#x27;F481&#x27;]&#x27; for &#x27;--config &lt;CONFIG_OPTION&gt;&#x27;
 
   tip: The `--config` flag must either be a path to a `.toml` configuration file or a TOML `&lt;KEY&gt; = &lt;VALUE&gt;` pair overriding a specific config setting
-  tip: The path `extend-select=['E501','F481']` does not exist on your filesystem
+  tip: The path `extend-select=[&#x27;E501&#x27;,&#x27;F481&#x27;]` does not exist on your filesystem
 
-For more information, try '--help'.
+For more information, try &#x27;--help&#x27;.
 </code></pre>
-<p>I'm not yet sure exactly why...</p>
+<p>I&#x27;m not yet sure exactly why...</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @AlexWaygood on 2024-01-26 13:51</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-01-26 13:51</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-01-26 13:52</div>
-            <div class="timeline-body"><p>Alrighty, I've had a stab at writing docs and tests, and I think I'm pretty happy with the error messages. This should be (finally!) ready for proper review!</p>
+            <div class="timeline-body"><p>Alrighty, I&#x27;ve had a stab at writing docs and tests, and I think I&#x27;m pretty happy with the error messages. This should be (finally!) ready for proper review!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">cli</span> added by @MichaReiser on 2024-01-29 07:29</div>
+            <div class="event">Label <span class="label">cli</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-01-29 07:29</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/commands/add_noqa.rs</code>:21 on 2024-01-29 07:31</div>
             <div class="timeline-body"><p>Nit: Rename the variable to match the new type name</p>
-<pre><code class="language-suggestion">    arguments: &amp;ConfigArgs,
+<pre><code>    arguments: &amp;ConfigArgs,
 </code></pre>
 </div>
         </div>
@@ -718,19 +718,19 @@ For more information, try '--help'.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/args.rs</code>:510 on 2024-01-29 07:35</div>
-            <div class="timeline-body"><p>Nit: I don't think we ever made an explicit decision on this as a team but I prefer to avoid abbreviations (I know we use a lot in the AST, we should change this. You can't know what STMT or EXPR is without having worked with ASTs before)</p>
-<pre><code class="language-suggestion">pub struct ConfigArguments {
+            <div class="timeline-body"><p>Nit: I don&#x27;t think we ever made an explicit decision on this as a team but I prefer to avoid abbreviations (I know we use a lot in the AST, we should change this. You can&#x27;t know what STMT or EXPR is without having worked with ASTs before)</p>
+<pre><code>pub struct ConfigArguments {
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/args.rs</code>:514 on 2024-01-29 07:36</div>
-            <div class="timeline-body"><p>Nit: I'm leaning towards removing the <code>config_</code> prefix as this is already given by <code>ConfigArgs</code>: <code>config_arguments.file</code> vs <code>config_arguments.config_file</code>.</p>
+            <div class="timeline-body"><p>Nit: I&#x27;m leaning towards removing the <code>config_</code> prefix as this is already given by <code>ConfigArgs</code>: <code>config_arguments.file</code> vs <code>config_arguments.config_file</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/args.rs</code>:523 on 2024-01-29 07:37</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">    pub fn config_file(&amp;self) -&gt; Option&lt;&amp;Path&gt; {
+            <div class="timeline-body"><pre><code>    pub fn config_file(&amp;self) -&gt; Option&lt;&amp;Path&gt; {
         self.config_file.as_ref()
     }
 
@@ -740,16 +740,16 @@ For more information, try '--help'.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/args.rs</code>:538 on 2024-01-29 07:39</div>
-            <div class="timeline-body"><p>What's the reason to use <code>Options::clone</code> vs <code>options.clone</code>? I had to look up the <code>Option::clone</code> definition to understand if it implements the <code>Clone</code> trait or if it is a special static method called <code>clone</code>.</p>
+            <div class="timeline-body"><p>What&#x27;s the reason to use <code>Options::clone</code> vs <code>options.clone</code>? I had to look up the <code>Option::clone</code> definition to understand if it implements the <code>Clone</code> trait or if it is a special static method called <code>clone</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/args.rs</code>:596 on 2024-01-29 07:44</div>
-            <div class="timeline-body"><p>Can we add a comment explaining why it only applies the <code>per_flag_overrides</code> but not the manual passed config options <code>--config line-length=1</code>? I assume because they have a different precedence but it isn't immediately obvious to me when reading the code (nor explained in the struct documentation).</p>
-<p>Maybe it's better to extend the <code>ConfigArgs</code> struct or field documentations to explain in more detail what the fields are about and how they
+            <div class="timeline-body"><p>Can we add a comment explaining why it only applies the <code>per_flag_overrides</code> but not the manual passed config options <code>--config line-length=1</code>? I assume because they have a different precedence but it isn&#x27;t immediately obvious to me when reading the code (nor explained in the struct documentation).</p>
+<p>Maybe it&#x27;s better to extend the <code>ConfigArgs</code> struct or field documentations to explain in more detail what the fields are about and how they
 are scoped differently.</p>
-<p>Edit: I just saw that you apply both transformation. That's sneeky and the &quot;nesting&quot; makes spotting the precedence difficult:</p>
-<pre><code class="language-suggestion">    fn transform(&amp;self, config: Configuration) -&gt; Configuration {
+<p>Edit: I just saw that you apply both transformation. That&#x27;s sneeky and the &quot;nesting&quot; makes spotting the precedence difficult:</p>
+<pre><code>    fn transform(&amp;self, config: Configuration) -&gt; Configuration {
         let with_config_overrides = self.config_overrides.combine(config);
         self.per_flag_overrides.transform(with_config_overrides)
     }
@@ -759,7 +759,7 @@ are scoped differently.</p>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/args.rs</code>:661 on 2024-01-29 07:45</div>
             <div class="timeline-body"><p>Nit:</p>
-<pre><code class="language-suggestion">        let format_arguments = FormatArguments {
+<pre><code>        let format_arguments = FormatArguments {
 </code></pre>
 </div>
         </div>
@@ -771,7 +771,7 @@ are scoped differently.</p>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/args.rs</code>:715 on 2024-01-29 07:53</div>
             <div class="timeline-body"><p>Nit:</p>
-<pre><code class="language-suggestion">    FilePath {
+<pre><code>    FilePath {
         path: PathBuf,
         arg: Option&lt;String&gt;,
         cmd: clap::Command,
@@ -780,19 +780,19 @@ are scoped differently.</p>
 </code></pre>
 <p>To avoid repeating the <code>Config</code> from the enum name</p>
 <p>(Instead of <code>FilePath</code> maybe even just <code>Path</code>)</p>
-<p>We could even consider renaming the enum. I don't know if <code>Option</code> is terminology. If not, then I would recommend removing the <code>Option</code> postfix because it would be nice if we can use <code>Option</code> for the variant name to match the terminology in the enum documentation (Ideally we have a single terminology for a concept in code and user documentation and in code)</p>
-<pre><code class="language-rust">enum ConfigArgument {
+<p>We could even consider renaming the enum. I don&#x27;t know if <code>Option</code> is terminology. If not, then I would recommend removing the <code>Option</code> postfix because it would be nice if we can use <code>Option</code> for the variant name to match the terminology in the enum documentation (Ideally we have a single terminology for a concept in code and user documentation and in code)</p>
+<pre><code>enum ConfigArgument {
     File(PathBuf),
     Option(Arg&lt;Options&gt;)
 }
 </code></pre>
 <p>or</p>
-<pre><code class="language-rust">enum ConfigValue {
+<pre><code>enum ConfigValue {
     File(PathBuf),
     Option(Arg&lt;Options&gt;)
 }
 </code></pre>
-<p>which seems to match with Clap's <code>ValueParser</code> semantics.</p>
+<p>which seems to match with Clap&#x27;s <code>ValueParser</code> semantics.</p>
 <p>(Nit: You would need to rename <code>ConfigArguments::from_cli_options</code> to <code>ConfigArguments::from_(cli_)arguments(..)</code>)</p>
 </div>
         </div>
@@ -804,7 +804,7 @@ are scoped differently.</p>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/args.rs</code>:753 on 2024-01-29 07:56</div>
             <div class="timeline-body"><p>Non UTF8 values are okay for Paths</p>
-<pre><code class="language-suggestion">        let path_to_config_file = PathBuf::from(value);
+<pre><code>        let path_to_config_file = PathBuf::from(value);
         if path_to_config_file.exists() {
             return Ok(ConfigOption::PathToConfigFile {
                 path: path_to_config_file,
@@ -828,7 +828,7 @@ are scoped differently.</p>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/args.rs</code>:755 on 2024-01-29 08:00</div>
             <div class="timeline-body"><p>Nit: Some empty lines can help to make the early return easier to spot</p>
-<pre><code class="language-suggestion">        };
+<pre><code>        };
         
         let mut new_error = clap::Error::new(clap::error::ErrorKind::ValueValidation).with_cmd(cmd);
         if let Some(arg) = arg {
@@ -848,7 +848,7 @@ are scoped differently.</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_workspace/src/configuration.rs</code>:581 on 2024-01-29 08:09</div>
-            <div class="timeline-body"><p>What's the difference between <code>Configuration::transform</code> and <code>Configuration::combine</code>? Could we use <code>Configuration.combine</code> instead? (rather than implementing <code>Configuratin::transform</code>)?</p>
+            <div class="timeline-body"><p>What&#x27;s the difference between <code>Configuration::transform</code> and <code>Configuration::combine</code>? Could we use <code>Configuration.combine</code> instead? (rather than implementing <code>Configuratin::transform</code>)?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -858,7 +858,7 @@ are scoped differently.</p>
 <li>Explain the configuration options that can be overriden globally (they also have different semantics)</li>
 <li>Explain the <code>--config</code> option</li>
 </ol>
-<pre><code class="language-suggestion">Some configuration options can be provided or overriden via the command-line, such as those related to rule enablement and disablement, file discovery, logging level, and more:
+<pre><code>Some configuration options can be provided or overriden via the command-line, such as those related to rule enablement and disablement, file discovery, logging level, and more:
 
 ```shell
 ruff check path/to/code/ --select F401 --select F403 --quiet
@@ -866,14 +866,14 @@ ruff check path/to/code/ --select F401 --select F403 --quiet
 <p>Configuration options that do not have a dedicated flag can be set using the <code>--config</code> flag. The <code>--config</code> flag is most often
 used to point to the configuration file that you would like ruff to use,</p>
 <pre><code>
-I think it would be worth explaining in more detail how the config options are overriden. Does `--config line-length=100` override the `line-length` settings for all files or do configuration files in sub-directories have priority (because they're closer to the file)?
+I think it would be worth explaining in more detail how the config options are overriden. Does `--config line-length=100` override the `line-length` settings for all files or do configuration files in sub-directories have priority (because they&#x27;re closer to the file)?
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-01-29 08:19</div>
             <div class="timeline-body"><p>Nice work and I love the care you gave the error messages.</p>
-<p>The one thing that isn't entirely clear to m is how <code>--config option=value</code> overrides values: Does it override the option in all configuration files? Even if a directory has its own configuration file that could be considered &quot;closer&quot; to the file in question?</p>
+<p>The one thing that isn&#x27;t entirely clear to m is how <code>--config option=value</code> overrides values: Does it override the option in all configuration files? Even if a directory has its own configuration file that could be considered &quot;closer&quot; to the file in question?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -883,9 +883,9 @@ I think it would be worth explaining in more detail how the config options are o
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/src/args.rs</code>:318 on 2024-01-29 11:08</div>
             <div class="timeline-body"><p>Yeah, <code>--isolated</code> still conflicts if <code>--config</code> is a file:</p>
-<p><img src="https://github.com/astral-sh/ruff/assets/66076021/3af739ca-2ad2-4a46-87e3-b119b3e62123" alt="image" /></p>
-<p>However, we now produce this error manually in <code>ConfigArgs.from_cli_options</code>, rather than using clap's out-of-the-box mechanism. The reason is that at this stage, we don't yet know whether the <code>--config</code> flag is being used to specify a config file (which <em>does</em> conflict with <code>--isolated</code>) or whether it's being used to specify a config override (which <em>doesn't</em> conflict with <code>--isolated</code>).</p>
-<p>I'll add a clarifying comment.</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/66076021/3af739ca-2ad2-4a46-87e3-b119b3e62123" alt="image"></p>
+<p>However, we now produce this error manually in <code>ConfigArgs.from_cli_options</code>, rather than using clap&#x27;s out-of-the-box mechanism. The reason is that at this stage, we don&#x27;t yet know whether the <code>--config</code> flag is being used to specify a config file (which <em>does</em> conflict with <code>--isolated</code>) or whether it&#x27;s being used to specify a config override (which <em>doesn&#x27;t</em> conflict with <code>--isolated</code>).</p>
+<p>I&#x27;ll add a clarifying comment.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -894,8 +894,8 @@ I think it would be worth explaining in more detail how the config options are o
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/src/args.rs</code>:538 on 2024-01-29 11:15</div>
-            <div class="timeline-body"><p>The reason was that I applied a suggestion from @BurntSushi's last review, and assumed he knew best 😄</p>
-<p>I also like your suggestion slightly more, so I'll go with it.</p>
+            <div class="timeline-body"><p>The reason was that I applied a suggestion from @BurntSushi&#x27;s last review, and assumed he knew best 😄</p>
+<p>I also like your suggestion slightly more, so I&#x27;ll go with it.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -904,8 +904,8 @@ I think it would be worth explaining in more detail how the config options are o
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_workspace/src/configuration.rs</code>:581 on 2024-01-29 11:48</div>
-            <div class="timeline-body"><p>The difference is that <code>combine()</code> consumes and invalidates <code>self</code>, whereas <code>transform</code> only takes a reference to <code>self</code>. I innitially spent quite a while seeing if I could reuse and/or modify <code>Configuration::combine</code> so that it would work for our purposes here, but it's quite hard to do without a much bigger refactor, I think.</p>
-<p>In any event, I'll add a clarifying comment!</p>
+            <div class="timeline-body"><p>The difference is that <code>combine()</code> consumes and invalidates <code>self</code>, whereas <code>transform</code> only takes a reference to <code>self</code>. I innitially spent quite a while seeing if I could reuse and/or modify <code>Configuration::combine</code> so that it would work for our purposes here, but it&#x27;s quite hard to do without a much bigger refactor, I think.</p>
+<p>In any event, I&#x27;ll add a clarifying comment!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -916,15 +916,15 @@ I think it would be worth explaining in more detail how the config options are o
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/src/main.rs</code>:64 on 2024-01-29 11:59</div>
             <div class="timeline-body"><p>The issue here is that most argument-parsing-related errors are produced on this line, before we start &quot;properly&quot; running ruff itself:</p>
 <p>https://github.com/astral-sh/ruff/blob/c8074b0e181063f2f0aaf71ac01416d049c69e89/crates/ruff/src/main.rs#L47</p>
-<p>If any errors fail during clap's argument parsing there, clap immediately exits and produces a very pretty error message for the user. As an example, here's an existing error message produced by <code>clap</code> that's the same as it is on <code>main</code>:</p>
-<p><img src="https://github.com/astral-sh/ruff/assets/66076021/4dd42969-b970-4f18-b52a-065adbf7bac5" alt="image" /></p>
-<p>With the change I'm making here in <code>main.rs</code>, we allow clap to produce beautifully formatted error messages if they relate to argument parsing, even when those error messages are created manually after the initial argument-parsing stage:</p>
-<p><img src="https://github.com/astral-sh/ruff/assets/66076021/b724f3f7-fc60-48ce-be48-de7c23a2692c" alt="image" /></p>
-<p><img src="https://github.com/astral-sh/ruff/assets/66076021/ec093b45-3451-4940-8d52-8cc6dd33e0ba" alt="image" /></p>
-<p><em>Without</em> the change I'm making here to <code>main.rs</code>, here's what those two error messages would look like:</p>
-<p><img src="https://github.com/astral-sh/ruff/assets/66076021/efd7621b-e434-4fd9-87ce-95a90bd97d8c" alt="image" /></p>
-<p><img src="https://github.com/astral-sh/ruff/assets/66076021/24ea0eb7-799f-4638-90f0-c687f1f61bf1" alt="image" /></p>
-<p>It wouldn't be the end of the world, but it's not quite as pretty, not as consistent with the way ruff displays other argument-parsing-related error messages to users, and the &quot;ruff failed&quot; message makes it look like there's some kind of internal error here rather than the user passing in an incorrect argument from the CLI</p>
+<p>If any errors fail during clap&#x27;s argument parsing there, clap immediately exits and produces a very pretty error message for the user. As an example, here&#x27;s an existing error message produced by <code>clap</code> that&#x27;s the same as it is on <code>main</code>:</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/66076021/4dd42969-b970-4f18-b52a-065adbf7bac5" alt="image"></p>
+<p>With the change I&#x27;m making here in <code>main.rs</code>, we allow clap to produce beautifully formatted error messages if they relate to argument parsing, even when those error messages are created manually after the initial argument-parsing stage:</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/66076021/b724f3f7-fc60-48ce-be48-de7c23a2692c" alt="image"></p>
+<p><img src="https://github.com/astral-sh/ruff/assets/66076021/ec093b45-3451-4940-8d52-8cc6dd33e0ba" alt="image"></p>
+<p><em>Without</em> the change I&#x27;m making here to <code>main.rs</code>, here&#x27;s what those two error messages would look like:</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/66076021/efd7621b-e434-4fd9-87ce-95a90bd97d8c" alt="image"></p>
+<p><img src="https://github.com/astral-sh/ruff/assets/66076021/24ea0eb7-799f-4638-90f0-c687f1f61bf1" alt="image"></p>
+<p>It wouldn&#x27;t be the end of the world, but it&#x27;s not quite as pretty, not as consistent with the way ruff displays other argument-parsing-related error messages to users, and the &quot;ruff failed&quot; message makes it look like there&#x27;s some kind of internal error here rather than the user passing in an incorrect argument from the CLI</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -933,12 +933,12 @@ I think it would be worth explaining in more detail how the config options are o
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/src/main.rs</code>:64 on 2024-01-29 12:06</div>
-            <div class="timeline-body"><p>While I obviously can't assert the colour of the error messages in our test suite, I <em>have</em> added tests that assert that the error messages in these cases start with &quot;error: &quot; rather than &quot;ruff failed&quot; :)</p>
+            <div class="timeline-body"><p>While I obviously can&#x27;t assert the colour of the error messages in our test suite, I <em>have</em> added tests that assert that the error messages in these cases start with &quot;error: &quot; rather than &quot;ruff failed&quot; :)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/src/args.rs</code>:702 on 2024-01-29 12:07</div>
-            <div class="timeline-body"><p><code>--config &lt;option&gt;</code> always overrides <code>--config &lt;path&gt;</code>. I'll add some more docs.</p>
+            <div class="timeline-body"><p><code>--config &lt;option&gt;</code> always overrides <code>--config &lt;path&gt;</code>. I&#x27;ll add some more docs.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -951,7 +951,7 @@ I think it would be worth explaining in more detail how the config options are o
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_workspace/src/configuration.rs</code>:581 on 2024-01-29 12:42</div>
-            <div class="timeline-body"><p>You can do <code>configuration.clone().combine(...)</code>. It shouldn't be more expensive than the <code>transform</code> implementation that you have now because it clones all field values (which is what <code>configuration.clone()</code> does too.</p>
+            <div class="timeline-body"><p>You can do <code>configuration.clone().combine(...)</code>. It shouldn&#x27;t be more expensive than the <code>transform</code> implementation that you have now because it clones all field values (which is what <code>configuration.clone()</code> does too.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -969,12 +969,12 @@ I think it would be worth explaining in more detail how the config options are o
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_workspace/src/configuration.rs</code>:581 on 2024-01-29 12:43</div>
-            <div class="timeline-body"><p>oh wow, I think I really wasn't seeing the wood for the trees here. Thanks!</p>
+            <div class="timeline-body"><p>oh wow, I think I really wasn&#x27;t seeing the wood for the trees here. Thanks!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/src/args.rs</code>:713 on 2024-01-29 12:52</div>
-            <div class="timeline-body"><p>This is essentially the same issue we're discussing in https://github.com/astral-sh/ruff/pull/9599#discussion_r1469202408: we're tracking the original command and arg here so that we can use <code>clap</code> to create pretty argument-parsing-related error messages even when they occur after the initial argument-parsing phase</p>
+            <div class="timeline-body"><p>This is essentially the same issue we&#x27;re discussing in <a href="https://github.com/astral-sh/ruff/pull/9599">astral-sh/ruff#9599</a>#discussion_r1469202408: we&#x27;re tracking the original command and arg here so that we can use <code>clap</code> to create pretty argument-parsing-related error messages even when they occur after the initial argument-parsing phase</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -987,7 +987,7 @@ I think it would be worth explaining in more detail how the config options are o
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/src/main.rs</code>:64 on 2024-01-29 13:03</div>
-            <div class="timeline-body"><p>I get what you mean; I wasn't sure about this either. We're just talking about two error messages here -- while I much prefer clap's formatting for these, since they <em>are</em> to do with argument parsing, I could possibly just use <code>anyhow::Error</code> for them for now rather than <code>clap::Error</code>, and open a followup issue/PR after this PR goes in to discuss how to improve the UX for these errors.</p>
+            <div class="timeline-body"><p>I get what you mean; I wasn&#x27;t sure about this either. We&#x27;re just talking about two error messages here -- while I much prefer clap&#x27;s formatting for these, since they <em>are</em> to do with argument parsing, I could possibly just use <code>anyhow::Error</code> for them for now rather than <code>clap::Error</code>, and open a followup issue/PR after this PR goes in to discuss how to improve the UX for these errors.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -996,7 +996,7 @@ I think it would be worth explaining in more detail how the config options are o
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff/src/args.rs</code>:538 on 2024-01-29 14:34</div>
-            <div class="timeline-body"><p>I think that was a slip on my part. I probably had <code>Arc::clone</code> there and then changed it to <code>Options::clone</code>. It is I'd say weakly idiomatic to use <code>Arc::clone</code> and not <code>arc.clone()</code> though. See: https://doc.rust-lang.org/std/sync/struct.Arc.html#deref-behavior</p>
+            <div class="timeline-body"><p>I think that was a slip on my part. I probably had <code>Arc::clone</code> there and then changed it to <code>Options::clone</code>. It is I&#x27;d say weakly idiomatic to use <code>Arc::clone</code> and not <code>arc.clone()</code> though. See: https://doc.rust-lang.org/std/sync/struct.Arc.html#deref-behavior</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1005,10 +1005,10 @@ I think it would be worth explaining in more detail how the config options are o
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/src/main.rs</code>:64 on 2024-01-29 17:59</div>
-            <div class="timeline-body"><p>I switched to using <code>anyhow</code> for these two errors in 1501eeb4c0c9463056bc8cca33f1d28731034405. After this PR is merged, I'll consider opening an issue to discuss whether it's worth trying to improve the UX for those error paths, and if so, how to do so.</p>
+            <div class="timeline-body"><p>I switched to using <code>anyhow</code> for these two errors in 1501eeb4c0c9463056bc8cca33f1d28731034405. After this PR is merged, I&#x27;ll consider opening an issue to discuss whether it&#x27;s worth trying to improve the UX for those error paths, and if so, how to do so.</p>
 <p>The new errors look like this:</p>
-<p><img src="https://github.com/astral-sh/ruff/assets/66076021/9bf55e0c-f619-409f-a9fc-5e62fe941bab" alt="image" /></p>
-<p><img src="https://github.com/astral-sh/ruff/assets/66076021/90e15277-f2c7-4784-804c-63ccd83e2173" alt="image" /></p>
+<p><img src="https://github.com/astral-sh/ruff/assets/66076021/9bf55e0c-f619-409f-a9fc-5e62fe941bab" alt="image"></p>
+<p><img src="https://github.com/astral-sh/ruff/assets/66076021/90e15277-f2c7-4784-804c-63ccd83e2173" alt="image"></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1017,34 +1017,34 @@ I think it would be worth explaining in more detail how the config options are o
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-01-29 18:07</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-01-29 18:07</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @zanieb by @AlexWaygood on 2024-01-29 18:07</div>
+            <div class="event">Review requested from <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-01-29 18:07</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-01-30 06:51</div>
             <div class="timeline-body"><p>Nice work and I love the care you gave the error messages.</p>
-<p>The one thing that isn't entirely clear to m is how <code>--config option=value</code> overrides values: Does it override the option in all configuration files? Even if a directory has its own configuration file that could be considered &quot;closer&quot; to the file in question?</p>
+<p>The one thing that isn&#x27;t entirely clear to m is how <code>--config option=value</code> overrides values: Does it override the option in all configuration files? Even if a directory has its own configuration file that could be considered &quot;closer&quot; to the file in question?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-01-30 18:42</div>
             <div class="timeline-body"><blockquote>
-<p>The one thing that isn't entirely clear to m is how <code>--config option=value</code> overrides values: Does it override the option in all configuration files? Even if a directory has its own configuration file that could be considered &quot;closer&quot; to the file in question?</p>
+<p>The one thing that isn&#x27;t entirely clear to m is how <code>--config option=value</code> overrides values: Does it override the option in all configuration files? Even if a directory has its own configuration file that could be considered &quot;closer&quot; to the file in question?</p>
 </blockquote>
-<p>Yeah -- I added some docs about this in 0ccc608b6ec4886682c626bf9794d6a8d57bb358. Essentially, overriding a setting using <code>--config</code> currently works identically to an override using a dedicated flag (except that a dedicated flag always takes priority over <code>--config</code> if they're <em>both</em> specified. Lmk if you think that doesn't make sense, or if you think the docs need any additional clarity!</p>
+<p>Yeah -- I added some docs about this in 0ccc608b6ec4886682c626bf9794d6a8d57bb358. Essentially, overriding a setting using <code>--config</code> currently works identically to an override using a dedicated flag (except that a dedicated flag always takes priority over <code>--config</code> if they&#x27;re <em>both</em> specified. Lmk if you think that doesn&#x27;t make sense, or if you think the docs need any additional clarity!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-01 20:49</div>
-            <div class="timeline-body"><p>Sorry I haven't looked at this yet I've been focused on v0.2.0. I'm looking forward to reading through this once that's out.</p>
+            <div class="timeline-body"><p>Sorry I haven&#x27;t looked at this yet I&#x27;ve been focused on v0.2.0. I&#x27;m looking forward to reading through this once that&#x27;s out.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-02-01 20:55</div>
             <div class="timeline-body"><blockquote>
-<p>Sorry I haven't looked at this yet I've been focused on v0.2.0. I'm looking forward to reading through this once that's out.</p>
+<p>Sorry I haven&#x27;t looked at this yet I&#x27;ve been focused on v0.2.0. I&#x27;m looking forward to reading through this once that&#x27;s out.</p>
 </blockquote>
 <p>No worries! Yeah, I figured :)</p>
 </div>
@@ -1055,7 +1055,7 @@ I think it would be worth explaining in more detail how the config options are o
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff/src/args.rs</code>:170 on 2024-02-06 21:21</div>
-            <div class="timeline-body"><p>This is interesting, it's different than cargo's <code>--config</code> behavior. Why are we doing it this way instead of always applying in-order?</p>
+            <div class="timeline-body"><p>This is interesting, it&#x27;s different than cargo&#x27;s <code>--config</code> behavior. Why are we doing it this way instead of always applying in-order?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1064,7 +1064,7 @@ I think it would be worth explaining in more detail how the config options are o
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff/src/args.rs</code>:313 on 2024-02-06 21:24</div>
-            <div class="timeline-body"><p>Why does specifying a config file conflict with <code>--isolated</code>? Shouldn't <code>--isolated</code> just ignore any <em>discovered</em> config files? I don't see any problem with respecting config files that are explicitly passed.</p>
+            <div class="timeline-body"><p>Why does specifying a config file conflict with <code>--isolated</code>? Shouldn&#x27;t <code>--isolated</code> just ignore any <em>discovered</em> config files? I don&#x27;t see any problem with respecting config files that are explicitly passed.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1073,7 +1073,7 @@ I think it would be worth explaining in more detail how the config options are o
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/src/args.rs</code>:313 on 2024-02-06 21:31</div>
-            <div class="timeline-body"><p>I don't have a strong opinion here; this just preserves the pre-existing behaviour where it was an error to pass <code>--config &lt;config file&gt;</code> and also pass <code>--isolated</code> on the CLI. I added the comment because we now have to generate that error manually rather than using <code>clap</code> to generate it, so it's less obvious from the definitions here that this would be the case</p>
+            <div class="timeline-body"><p>I don&#x27;t have a strong opinion here; this just preserves the pre-existing behaviour where it was an error to pass <code>--config &lt;config file&gt;</code> and also pass <code>--isolated</code> on the CLI. I added the comment because we now have to generate that error manually rather than using <code>clap</code> to generate it, so it&#x27;s less obvious from the definitions here that this would be the case</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1082,9 +1082,9 @@ I think it would be worth explaining in more detail how the config options are o
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/src/args.rs</code>:170 on 2024-02-06 21:38</div>
-            <div class="timeline-body"><p>Ah, I didn't realise that was cargo's behaviour!</p>
-<p>I figured it would be easier for users to understand if overrides specified using <code>--config</code> worked as similarly as possible to the dedicated CLI flags such as <code>--line-length</code> etc — it's fewer concepts to hold in your head if they have ~basically the same rules. If cargo has different behaviour here I'm open to reconsidering this — though a lot of Python developers won't be familiar with cargo, so maybe they won't even notice the behaviour difference between our CLI and cargo!</p>
-<p>The way I have it now is probably also slightly simpler in terms of the implementation, but that's obviously very much a secondary concern to the UX :)</p>
+            <div class="timeline-body"><p>Ah, I didn&#x27;t realise that was cargo&#x27;s behaviour!</p>
+<p>I figured it would be easier for users to understand if overrides specified using <code>--config</code> worked as similarly as possible to the dedicated CLI flags such as <code>--line-length</code> etc — it&#x27;s fewer concepts to hold in your head if they have ~basically the same rules. If cargo has different behaviour here I&#x27;m open to reconsidering this — though a lot of Python developers won&#x27;t be familiar with cargo, so maybe they won&#x27;t even notice the behaviour difference between our CLI and cargo!</p>
+<p>The way I have it now is probably also slightly simpler in terms of the implementation, but that&#x27;s obviously very much a secondary concern to the UX :)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1093,7 +1093,7 @@ I think it would be worth explaining in more detail how the config options are o
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff/src/args.rs</code>:557 on 2024-02-06 21:46</div>
-            <div class="timeline-body"><p>Nit: I wouldn't include the &quot;Struct to encapsulate&quot; since that's kind of redundant</p>
+            <div class="timeline-body"><p>Nit: I wouldn&#x27;t include the &quot;Struct to encapsulate&quot; since that&#x27;s kind of redundant</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1102,7 +1102,7 @@ I think it would be worth explaining in more detail how the config options are o
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff/src/args.rs</code>:560 on 2024-02-06 21:46</div>
-            <div class="timeline-body"><p>I would also say this is implied by the datastructure and can easily become outdated, I wouldn't include it.</p>
+            <div class="timeline-body"><p>I would also say this is implied by the datastructure and can easily become outdated, I wouldn&#x27;t include it.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1116,7 +1116,7 @@ I think it would be worth explaining in more detail how the config options are o
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff/src/args.rs</code>:170 on 2024-02-06 21:47</div>
-            <div class="timeline-body"><p>I guess this makes more sense with https://github.com/astral-sh/ruff/pull/9599/files#r1480577234 where we are limiting to a single config file. If we'll support more though I think &quot;in-order&quot; is the clearest way to talk about precedence.</p>
+            <div class="timeline-body"><p>I guess this makes more sense with <a href="https://github.com/astral-sh/ruff/pull/9599">astral-sh/ruff#9599</a>/files#r1480577234 where we are limiting to a single config file. If we&#x27;ll support more though I think &quot;in-order&quot; is the clearest way to talk about precedence.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1129,7 +1129,7 @@ I think it would be worth explaining in more detail how the config options are o
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff/src/args.rs</code>:571 on 2024-02-06 21:48</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">    /// Overrides provided via dedicated flags such as `--line-length` etc.
+            <div class="timeline-body"><pre><code>    /// Overrides provided via dedicated flags such as `--line-length` etc.
 </code></pre>
 </div>
         </div>
@@ -1139,8 +1139,8 @@ I think it would be worth explaining in more detail how the config options are o
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff/src/args.rs</code>:313 on 2024-02-06 21:50</div>
-            <div class="timeline-body"><p>I don't see a reason to ban the behavior. Our config file inference is really complicated and passing in <code>--isolated</code> to disable that doesn't seem like it should prevent you from passing in a single configuration file.</p>
-<p>Curious for @charliermarsh's thoughts though because I do not have context on the origin of these options.</p>
+            <div class="timeline-body"><p>I don&#x27;t see a reason to ban the behavior. Our config file inference is really complicated and passing in <code>--isolated</code> to disable that doesn&#x27;t seem like it should prevent you from passing in a single configuration file.</p>
+<p>Curious for @charliermarsh&#x27;s thoughts though because I do not have context on the origin of these options.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1149,14 +1149,14 @@ I think it would be worth explaining in more detail how the config options are o
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff/src/args.rs</code>:615 on 2024-02-06 21:52</div>
-            <div class="timeline-body"><p>I wonder if we should use structured errors for these e.g. introduce an <code>Error</code> enum and define the messages there. I'm not sure what the current state of that is for our Ruff CLI.</p>
+            <div class="timeline-body"><p>I wonder if we should use structured errors for these e.g. introduce an <code>Error</code> enum and define the messages there. I&#x27;m not sure what the current state of that is for our Ruff CLI.</p>
 <p>cc @MichaReiser</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff/tests/format.rs</code>:104 on 2024-02-06 21:55</div>
             <div class="timeline-body"><p>I would say &quot;configuration setting&quot; instead of &quot;config setting&quot; for consistency with &quot;configuration file&quot;.</p>
-<p>I also have a minor preference for &quot;option&quot; over &quot;setting&quot;, not sure if we're consistent about that terminology in general.</p>
+<p>I also have a minor preference for &quot;option&quot; over &quot;setting&quot;, not sure if we&#x27;re consistent about that terminology in general.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1179,7 +1179,7 @@ I think it would be worth explaining in more detail how the config options are o
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff/tests/format.rs</code>:123 on 2024-02-06 21:56</div>
             <div class="timeline-body"><p>It feels weird that these are separate tips, is it feasible to combine the message into one?</p>
-<p>Similar to https://github.com/astral-sh/ruff/pull/9599/files#r1480584476 you should use &quot;configuration option&quot; consistently.</p>
+<p>Similar to <a href="https://github.com/astral-sh/ruff/pull/9599">astral-sh/ruff#9599</a>/files#r1480584476 you should use &quot;configuration option&quot; consistently.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1197,7 +1197,7 @@ I think it would be worth explaining in more detail how the config options are o
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff/tests/format.rs</code>:155 on 2024-02-06 21:59</div>
-            <div class="timeline-body"><p>This is a confusing message. Why do we have two <code>{}</code>? Shouldn't these have file paths?</p>
+            <div class="timeline-body"><p>This is a confusing message. Why do we have two <code>{}</code>? Shouldn&#x27;t these have file paths?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1225,9 +1225,9 @@ I think it would be worth explaining in more detail how the config options are o
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff/tests/lint.rs</code>:715 on 2024-02-06 22:06</div>
-            <div class="timeline-body"><p>I'd make this a little less verbose, maybe?</p>
+            <div class="timeline-body"><p>I&#x27;d make this a little less verbose, maybe?</p>
 <p>&quot;Failed to parse <code>...</code> as a configuration option&quot;</p>
-<p>Additionally, won't the TOML parse error <em>always</em> include the line that the user passed? I guess it's possible that they try to pass multiple lines but that seems very rare. Perhaps including what we tried to parse in the tip message is overkill, and it should just be &quot;It looks like an option was passed, but it was not valid TOML&quot;</p>
+<p>Additionally, won&#x27;t the TOML parse error <em>always</em> include the line that the user passed? I guess it&#x27;s possible that they try to pass multiple lines but that seems very rare. Perhaps including what we tried to parse in the tip message is overkill, and it should just be &quot;It looks like an option was passed, but it was not valid TOML&quot;</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1236,8 +1236,8 @@ I think it would be worth explaining in more detail how the config options are o
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/src/args.rs</code>:615 on 2024-02-06 22:06</div>
-            <div class="timeline-body"><p>Micha and I had a longish discussion about this in https://github.com/astral-sh/ruff/pull/9599#discussion_r1469202408. I originally used <code>clap::error::Error</code> here, for precisely this reason, but Micha successfully persuaded me that it was a bad idea to use <code>clap</code> after the initial argparsing phase :)</p>
-<p>I'd quite like to look at introducing more structured errors generally so that it's easier for us to distinguish between errors where the user input from the CLI is the problem and errors that are &quot;our fault&quot;. I think there are other places where we use <code>anyhow</code> for bubbling up CLI errors that we detect after the initial argparsing; I'd quite like to look at it holistically and defer it to a future issue/PR, if that's laright?</p>
+            <div class="timeline-body"><p>Micha and I had a longish discussion about this in <a href="https://github.com/astral-sh/ruff/pull/9599">astral-sh/ruff#9599</a>#discussion_r1469202408. I originally used <code>clap::error::Error</code> here, for precisely this reason, but Micha successfully persuaded me that it was a bad idea to use <code>clap</code> after the initial argparsing phase :)</p>
+<p>I&#x27;d quite like to look at introducing more structured errors generally so that it&#x27;s easier for us to distinguish between errors where the user input from the CLI is the problem and errors that are &quot;our fault&quot;. I think there are other places where we use <code>anyhow</code> for bubbling up CLI errors that we detect after the initial argparsing; I&#x27;d quite like to look at it holistically and defer it to a future issue/PR, if that&#x27;s laright?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1274,8 +1274,8 @@ I think it would be worth explaining in more detail how the config options are o
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/tests/format.rs</code>:155 on 2024-02-06 22:09</div>
             <div class="timeline-body"><p>The message the user sees will have file paths:</p>
-<p><img src="https://github.com/astral-sh/ruff/assets/66076021/596533bf-f91a-4c71-acd3-897171711af4" alt="image" /></p>
-<p>This test doesn't use <code>assert_cmd_snapshot</code>, because we don't know what the file paths are going to be ahead of time in this test (it uses a TempDir), and <code>assert_cmd_snapshot</code> needs a literal string to be passed in. So this is a format string that I'm using to generate the expected stderr given the path to the TempDir, and then I'm just using an <code>assert_eq</code> call lower down once I've generated the expected stderr.</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/66076021/596533bf-f91a-4c71-acd3-897171711af4" alt="image"></p>
+<p>This test doesn&#x27;t use <code>assert_cmd_snapshot</code>, because we don&#x27;t know what the file paths are going to be ahead of time in this test (it uses a TempDir), and <code>assert_cmd_snapshot</code> needs a literal string to be passed in. So this is a format string that I&#x27;m using to generate the expected stderr given the path to the TempDir, and then I&#x27;m just using an <code>assert_eq</code> call lower down once I&#x27;ve generated the expected stderr.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1284,7 +1284,7 @@ I think it would be worth explaining in more detail how the config options are o
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/src/args.rs</code>:564 on 2024-02-06 22:11</div>
-            <div class="timeline-body"><p>We could do; I think it would be feasible implementation-wise, and I don't think it would be particularly <em>confusing</em> for users to have that behaviour. Has it been asked for by users, do you know?</p>
+            <div class="timeline-body"><p>We could do; I think it would be feasible implementation-wise, and I don&#x27;t think it would be particularly <em>confusing</em> for users to have that behaviour. Has it been asked for by users, do you know?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1314,7 +1314,7 @@ I think it would be worth explaining in more detail how the config options are o
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/tests/lint.rs</code>:693 on 2024-02-06 22:13</div>
-            <div class="timeline-body"><p>I'd love to do this if possible; I'll investigate!</p>
+            <div class="timeline-body"><p>I&#x27;d love to do this if possible; I&#x27;ll investigate!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1323,7 +1323,7 @@ I think it would be worth explaining in more detail how the config options are o
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff/src/args.rs</code>:615 on 2024-02-06 22:16</div>
-            <div class="timeline-body"><p>Ah yeah I'm thinking you'd just <code>thiserror</code> but I am still an error handling noob in Rust. Definitely feel free to defer, especially if you already talked with Micha about it.</p>
+            <div class="timeline-body"><p>Ah yeah I&#x27;m thinking you&#x27;d just <code>thiserror</code> but I am still an error handling noob in Rust. Definitely feel free to defer, especially if you already talked with Micha about it.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1332,12 +1332,12 @@ I think it would be worth explaining in more detail how the config options are o
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff/tests/format.rs</code>:155 on 2024-02-06 22:18</div>
-            <div class="timeline-body"><p>Oh. I would use insta filters for this e.g. https://github.com/astral-sh/ruff/pull/9764/commits/d467bc6344b7b83546b24a4f6b576e76497afdfe (although it's kind of a pain for Windows https://github.com/astral-sh/ruff/pull/9764/commits/f46c2e4edc7861024a690c8324b07a97d5d346af)</p>
+            <div class="timeline-body"><p>Oh. I would use insta filters for this e.g. <a href="https://github.com/astral-sh/ruff/pull/9764">astral-sh/ruff#9764</a>/commits/d467bc6344b7b83546b24a4f6b576e76497afdfe (although it&#x27;s kind of a pain for Windows <a href="https://github.com/astral-sh/ruff/pull/9764">astral-sh/ruff#9764</a>/commits/f46c2e4edc7861024a690c8324b07a97d5d346af)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff/src/args.rs</code>:564 on 2024-02-06 22:21</div>
-            <div class="timeline-body"><p>I'm just thinking about the cargo implementation. I haven't heard an ask for it but I wouldn't be surprised! We can punt on it for now though we might want to be careful about precedence (i.e. as discussed in https://github.com/astral-sh/ruff/pull/9599#discussion_r1480577993) to avoid having it be a breaking change in the future.</p>
+            <div class="timeline-body"><p>I&#x27;m just thinking about the cargo implementation. I haven&#x27;t heard an ask for it but I wouldn&#x27;t be surprised! We can punt on it for now though we might want to be careful about precedence (i.e. as discussed in <a href="https://github.com/astral-sh/ruff/pull/9599">astral-sh/ruff#9599</a>#discussion_r1480577993) to avoid having it be a breaking change in the future.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1350,7 +1350,7 @@ I think it would be worth explaining in more detail how the config options are o
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/src/args.rs</code>:564 on 2024-02-06 22:23</div>
-            <div class="timeline-body"><p>Cool -- let's punt on it for now. Very much open to this if it is asked for, though!</p>
+            <div class="timeline-body"><p>Cool -- let&#x27;s punt on it for now. Very much open to this if it is asked for, though!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1378,7 +1378,7 @@ I think it would be worth explaining in more detail how the config options are o
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/tests/format.rs</code>:155 on 2024-02-06 23:29</div>
-            <div class="timeline-body"><p>Ahh makes sense, thanks! I looked for something like that in the insta_cmd docs, but obviously I didn't look thoroughly enough 😄</p>
+            <div class="timeline-body"><p>Ahh makes sense, thanks! I looked for something like that in the insta_cmd docs, but obviously I didn&#x27;t look thoroughly enough 😄</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1387,7 +1387,7 @@ I think it would be worth explaining in more detail how the config options are o
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/tests/format.rs</code>:155 on 2024-02-07 14:03</div>
-            <div class="timeline-body"><p>Fixed in https://github.com/astral-sh/ruff/pull/9599/commits/7739440e40eaebab41b3fed68a0e25b9b458777e</p>
+            <div class="timeline-body"><p>Fixed in <a href="https://github.com/astral-sh/ruff/pull/9599">astral-sh/ruff#9599</a>/commits/7739440e40eaebab41b3fed68a0e25b9b458777e</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1396,7 +1396,7 @@ I think it would be worth explaining in more detail how the config options are o
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/tests/format.rs</code>:123 on 2024-02-07 14:48</div>
-            <div class="timeline-body"><p>I had a go at combining them into a single tip in https://github.com/astral-sh/ruff/pull/9599/commits/88e7273abf26f1f38e970a058699aa293737a0a4. I also introduced some more line breaks, as I realised the error messages looked terrible if the terminal had a narrow width</p>
+            <div class="timeline-body"><p>I had a go at combining them into a single tip in <a href="https://github.com/astral-sh/ruff/pull/9599">astral-sh/ruff#9599</a>/commits/88e7273abf26f1f38e970a058699aa293737a0a4. I also introduced some more line breaks, as I realised the error messages looked terrible if the terminal had a narrow width</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1410,12 +1410,12 @@ I think it would be worth explaining in more detail how the config options are o
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-02-07 15:41</div>
-            <div class="timeline-body"><p>Thanks so much @zanieb! I think I tackled nearly all of your points, except for https://github.com/astral-sh/ruff/pull/9599#discussion_r1480557151 where we're waiting for Charlie to chime in.</p>
-<p>Some of the error messages might still be a bit verbose for your liking, but I'm not sure how to trim them down... suggestions welcome :)</p>
+            <div class="timeline-body"><p>Thanks so much @zanieb! I think I tackled nearly all of your points, except for <a href="https://github.com/astral-sh/ruff/pull/9599">astral-sh/ruff#9599</a>#discussion_r1480557151 where we&#x27;re waiting for Charlie to chime in.</p>
+<p>Some of the error messages might still be a bit verbose for your liking, but I&#x27;m not sure how to trim them down... suggestions welcome :)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @zanieb by @AlexWaygood on 2024-02-07 15:42</div>
+            <div class="event">Review requested from <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-02-07 15:42</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-02-07 17:01</div>
@@ -1423,7 +1423,7 @@ I think it would be worth explaining in more detail how the config options are o
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/tests/lint.rs</code>:715 on 2024-02-07 17:01</div>
-            <div class="timeline-body"><p>So the reason I'm specifically saying &quot;<code>ruff.toml</code> configuration option&quot; rather than just &quot;configuration option&quot; is because a <code>pyproject.toml</code> configuration option would need to be specified differently. E.g. you don't need to specify <code>--config &quot;tool.ruff.lint.extend-select = ['F841']&quot;</code> (a la <code>pyproject.toml</code>), you just need to specify <code>--config &quot;lint.extend-select = ['F841']&quot;</code> (a la <code>ruff.toml</code>)</p>
+            <div class="timeline-body"><p>So the reason I&#x27;m specifically saying &quot;<code>ruff.toml</code> configuration option&quot; rather than just &quot;configuration option&quot; is because a <code>pyproject.toml</code> configuration option would need to be specified differently. E.g. you don&#x27;t need to specify <code>--config &quot;tool.ruff.lint.extend-select = [&#x27;F841&#x27;]&quot;</code> (a la <code>pyproject.toml</code>), you just need to specify <code>--config &quot;lint.extend-select = [&#x27;F841&#x27;]&quot;</code> (a la <code>ruff.toml</code>)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1432,7 +1432,7 @@ I think it would be worth explaining in more detail how the config options are o
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/tests/format.rs</code>:183 on 2024-02-07 17:02</div>
-            <div class="timeline-body"><p>Hmm -- <em>some</em> <code>--config</code> arguments are allowed, though. It's okay to use the <code>--config</code> flag alongside <code>--isolated</code> if <code>--config</code> is being used to override a specific configuration option. It's just not okay to use <code>--config</code> alongside <code>--isolated</code> if <code>--config</code> is being used to provide a configuration file. So the value being passed to <code>--config</code> does matter here</p>
+            <div class="timeline-body"><p>Hmm -- <em>some</em> <code>--config</code> arguments are allowed, though. It&#x27;s okay to use the <code>--config</code> flag alongside <code>--isolated</code> if <code>--config</code> is being used to override a specific configuration option. It&#x27;s just not okay to use <code>--config</code> alongside <code>--isolated</code> if <code>--config</code> is being used to provide a configuration file. So the value being passed to <code>--config</code> does matter here</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1441,12 +1441,12 @@ I think it would be worth explaining in more detail how the config options are o
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/tests/format.rs</code>:104 on 2024-02-07 17:06</div>
-            <div class="timeline-body"><p>I've kept &quot;TOML&quot; in here for now, as otherwise I think it's a little confusing in some of the error messages when we immediately start talking about a &quot;TOML parse error&quot; in the following lines</p>
+            <div class="timeline-body"><p>I&#x27;ve kept &quot;TOML&quot; in here for now, as otherwise I think it&#x27;s a little confusing in some of the error messages when we immediately start talking about a &quot;TOML parse error&quot; in the following lines</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-09 14:06</div>
-            <div class="timeline-body"><p>Sorry, didn't realize this was waiting on me! I'll take a look today, then we should merge :)</p>
+            <div class="timeline-body"><p>Sorry, didn&#x27;t realize this was waiting on me! I&#x27;ll take a look today, then we should merge :)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1505,7 +1505,7 @@ I think it would be worth explaining in more detail how the config options are o
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/args.rs</code>:858 on 2024-02-09 20:31</div>
-            <div class="timeline-body"><p>A little concerning how much implicit coupling there is to Clap, but I don't have better suggestions (and at least there's test coverage, I think, such that if we upgrade Clap and the output format changes, we will know that there's a disconnect here).</p>
+            <div class="timeline-body"><p>A little concerning how much implicit coupling there is to Clap, but I don&#x27;t have better suggestions (and at least there&#x27;s test coverage, I think, such that if we upgrade Clap and the output format changes, we will know that there&#x27;s a disconnect here).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1514,7 +1514,7 @@ I think it would be worth explaining in more detail how the config options are o
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/src/args.rs</code>:858 on 2024-02-09 20:35</div>
-            <div class="timeline-body"><p>Yeah. Ideally I feel like clap would have a feature that allows long error messages to be wrapped to the terminal width, much as it does with the output of <code>--help</code>. But it doesn't seem to have that feature right now :/</p>
+            <div class="timeline-body"><p>Yeah. Ideally I feel like clap would have a feature that allows long error messages to be wrapped to the terminal width, much as it does with the output of <code>--help</code>. But it doesn&#x27;t seem to have that feature right now :/</p>
 <p>Initially I had each sentence as a separate tip, which obviated the need for this kind of hack, but Zanie (correctly!) pointed out that that looked pretty weird</p>
 </div>
         </div>
@@ -1525,7 +1525,7 @@ I think it would be worth explaining in more detail how the config options are o
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>docs/configuration.md</code>:463 on 2024-02-09 20:41</div>
             <div class="timeline-body"><p>Something like this?</p>
-<pre><code class="language-suggestion">One flag that deserves special mention is the `--config` flag.
+<pre><code>One flag that deserves special mention is the `--config` flag.
 
 ### The `--config` CLI flag
 </code></pre>
@@ -1537,7 +1537,7 @@ I think it would be worth explaining in more detail how the config options are o
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>docs/configuration.md</code>:463 on 2024-02-09 21:06</div>
-            <div class="timeline-body"><p>Yeah, or even like... &quot;For everything else, there's the <code>--config</code> flag.&quot;</p>
+            <div class="timeline-body"><p>Yeah, or even like... &quot;For everything else, there&#x27;s the <code>--config</code> flag.&quot;</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1555,12 +1555,12 @@ I think it would be worth explaining in more detail how the config options are o
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/args.rs</code>:313 on 2024-02-09 21:17</div>
-            <div class="timeline-body"><p>I'm pretty sure <code>--config</code> &quot;implies&quot; <code>--isolated</code>, in that if you use <code>--config</code>, we ignore any discovered configuration files.</p>
+            <div class="timeline-body"><p>I&#x27;m pretty sure <code>--config</code> &quot;implies&quot; <code>--isolated</code>, in that if you use <code>--config</code>, we ignore any discovered configuration files.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-02-09 21:17</div>
-            <div class="timeline-body"><p>Thanks all for the reviews! I'll land this now</p>
+            <div class="timeline-body"><p>Thanks all for the reviews! I&#x27;ll land this now</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1569,7 +1569,7 @@ I think it would be worth explaining in more detail how the config options are o
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/args.rs</code>:313 on 2024-02-09 21:18</div>
-            <div class="timeline-body"><p>I think it's fine to allow them to be used together (even if that differs from the previous conflict settings).</p>
+            <div class="timeline-body"><p>I think it&#x27;s fine to allow them to be used together (even if that differs from the previous conflict settings).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1578,8 +1578,8 @@ I think it would be worth explaining in more detail how the config options are o
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/src/args.rs</code>:313 on 2024-02-09 21:27</div>
-            <div class="timeline-body"><p>So this PR is currently going out of its way to <em>preserve</em> the behaviour on <code>main</code>, which is that <code>--config &lt;config_file&gt;</code> and <code>--isolated</code> aren't allowed to be specified simultaneously. On <code>main</code> we just use <code>clap</code> to forbid them both from being specified at once, but with this PR it ends up being a bunch of extra code to achieve that prohibition, because we <em>do</em> want to allow <code>--config &quot;&lt;setting&gt; = &lt;value&gt;&quot;</code> in combination with <code>--isolated</code>.</p>
-<p>The question is whether this PR <em>should</em> be going out of its way to preserve the behaviour on <code>main</code> (which is what it currently does), or if it would actually be <em>desirable</em> to change things so that it's now legal to specify <code>--isolated</code> in combination with <code>--config &lt;config_file&gt;</code>.</p>
+            <div class="timeline-body"><p>So this PR is currently going out of its way to <em>preserve</em> the behaviour on <code>main</code>, which is that <code>--config &lt;config_file&gt;</code> and <code>--isolated</code> aren&#x27;t allowed to be specified simultaneously. On <code>main</code> we just use <code>clap</code> to forbid them both from being specified at once, but with this PR it ends up being a bunch of extra code to achieve that prohibition, because we <em>do</em> want to allow <code>--config &quot;&lt;setting&gt; = &lt;value&gt;&quot;</code> in combination with <code>--isolated</code>.</p>
+<p>The question is whether this PR <em>should</em> be going out of its way to preserve the behaviour on <code>main</code> (which is what it currently does), or if it would actually be <em>desirable</em> to change things so that it&#x27;s now legal to specify <code>--isolated</code> in combination with <code>--config &lt;config_file&gt;</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1588,27 +1588,27 @@ I think it would be worth explaining in more detail how the config options are o
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/src/args.rs</code>:313 on 2024-02-09 21:42</div>
-            <div class="timeline-body"><p>My inclination is to keep this PR how it is, and consider any possible behaviour changes relating to this in a separate issue/PR, if at all. There's not <em>that</em> much extra code being added here to maintain the previous behaviour, and it should be pretty easy to rip it out if we <em>do</em> want to change the behaviour</p>
+            <div class="timeline-body"><p>My inclination is to keep this PR how it is, and consider any possible behaviour changes relating to this in a separate issue/PR, if at all. There&#x27;s not <em>that</em> much extra code being added here to maintain the previous behaviour, and it should be pretty easy to rip it out if we <em>do</em> want to change the behaviour</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @AlexWaygood on 2024-02-09 21:56</div>
+            <div class="event">Merged by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-02-09 21:56</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2024-02-09 21:56</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-02-09 21:56</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-02-09 21:56</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2024-02-19 03:39</div>
-            <div class="timeline-body"><p>For posterity: https://github.com/astral-sh/ruff/issues/10035</p>
+            <div class="timeline-body"><p>For posterity: <a href="https://github.com/astral-sh/ruff/issues/10035">astral-sh/ruff#10035</a></p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:02:22 UTC
+        Synced at 2026-01-20 19:00:53 UTC
     </footer>
 </body>
 </html>

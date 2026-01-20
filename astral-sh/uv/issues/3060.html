@@ -30,16 +30,16 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-16 13:13</div>
-            <div class="timeline-body"><p>This seems reasonable to me but may have some nuances. There's some relevant discussion in https://github.com/astral-sh/uv/issues/1795 where we are unclear about how to select a Python interpreter found in a virtual environment.</p>
-<p>For my own notes, we'd probably want to track this in the design at #2386</p>
+            <div class="timeline-body"><p>This seems reasonable to me but may have some nuances. There&#x27;s some relevant discussion in <a href="https://github.com/astral-sh/uv/issues/1795">astral-sh/uv#1795</a> where we are unclear about how to select a Python interpreter found in a virtual environment.</p>
+<p>For my own notes, we&#x27;d probably want to track this in the design at #2386</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-04-16 13:13</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-16 13:13</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-16 13:17</div>
-            <div class="timeline-body"><p>Yeah this seems reasonable to support. I think it should be straightforwardish? If we're passed a directory, assume it's a virtualenv, in which case the Python must be at <code>.venv/bin/python</code> or <code>.venv/Scripts/python.exe</code> depending on the platform.</p>
+            <div class="timeline-body"><p>Yeah this seems reasonable to support. I think it should be straightforwardish? If we&#x27;re passed a directory, assume it&#x27;s a virtualenv, in which case the Python must be at <code>.venv/bin/python</code> or <code>.venv/Scripts/python.exe</code> depending on the platform.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -47,13 +47,13 @@
             <div class="timeline-body"><blockquote>
 <p>This seems reasonable to me but may have some nuances.</p>
 </blockquote>
-<p>I don't think so - if the argument to <code>--python</code> is a directory, look for <code>&lt;supplied_dir&gt;/bin/python</code> (on Unix) or <code>&lt;supplied_dir&gt;/Scripts/python.exe</code> (on Windows)[^1] and use that in its place. We only do this if the user explicitly supplies <code>--python</code>, so there's no implication on the environment discovery code.</p>
-<p>#1795 is about <code>uv venv</code> - I wasn't thinking of this for <code>uv venv</code> but even so, I don't think it will make a difference. The same code still runs, we just pre-process the <code>--python</code> argument value.</p>
+<p>I don&#x27;t think so - if the argument to <code>--python</code> is a directory, look for <code>&lt;supplied_dir&gt;/bin/python</code> (on Unix) or <code>&lt;supplied_dir&gt;/Scripts/python.exe</code> (on Windows)[^1] and use that in its place. We only do this if the user explicitly supplies <code>--python</code>, so there&#x27;s no implication on the environment discovery code.</p>
+<p>#1795 is about <code>uv venv</code> - I wasn&#x27;t thinking of this for <code>uv venv</code> but even so, I don&#x27;t think it will make a difference. The same code still runs, we just pre-process the <code>--python</code> argument value.</p>
 <blockquote>
-<p>If we're passed a directory, assume it's a virtualenv, in which case the Python must be at .venv/bin/python or .venv/Scripts/python.exe depending on the platform.</p>
+<p>If we&#x27;re passed a directory, assume it&#x27;s a virtualenv, in which case the Python must be at .venv/bin/python or .venv/Scripts/python.exe depending on the platform.</p>
 </blockquote>
-<p>Yep, that's what pip does. I'm happy to try to contribute a PR if you'd like. I'm pretty new at Rust, though, so it could take me a little while to set things up. And I've no experience writing tests in Rust, so I may need some help there.</p>
-<p>[^1]: I'd actually check both, just to cover things like Cygwin.</p>
+<p>Yep, that&#x27;s what pip does. I&#x27;m happy to try to contribute a PR if you&#x27;d like. I&#x27;m pretty new at Rust, though, so it could take me a little while to set things up. And I&#x27;ve no experience writing tests in Rust, so I may need some help there.</p>
+<p>[^1]: I&#x27;d actually check both, just to cover things like Cygwin.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -63,12 +63,12 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/pfmoore">@pfmoore</a> on 2024-04-16 14:58</div>
-            <div class="timeline-body"><p>There <em>is</em> an interesting nuance here, though. <code>python -m pip install -p .venv ...</code> currently means &quot;search for a Python executable called <code>.venv</code> in <code>PATH</code>&quot;, because the path search is triggered by the lack of a separator in the value. Changing that would be a behaviour change (although I'd have trouble imagining someone calling their virtual environment <code>python.exe</code>, so it's unlikely to matter in practice).</p>
-<p>I'd propose the following behaviour:</p>
+            <div class="timeline-body"><p>There <em>is</em> an interesting nuance here, though. <code>python -m pip install -p .venv ...</code> currently means &quot;search for a Python executable called <code>.venv</code> in <code>PATH</code>&quot;, because the path search is triggered by the lack of a separator in the value. Changing that would be a behaviour change (although I&#x27;d have trouble imagining someone calling their virtual environment <code>python.exe</code>, so it&#x27;s unlikely to matter in practice).</p>
+<p>I&#x27;d propose the following behaviour:</p>
 <ol>
 <li>Check for a version number as at present.</li>
 <li>Otherwise, if the <code>--python</code> value is a path to an existing file, use that as the interpreter.</li>
-<li>If it's a directory, assume it's a venv and use the venv interpreter.</li>
+<li>If it&#x27;s a directory, assume it&#x27;s a venv and use the venv interpreter.</li>
 <li>Otherwise, if it contains a path separator, fail with an error.</li>
 <li>Finally (a filename with no path part) try a search on <code>PATH</code>.</li>
 </ol>
@@ -82,11 +82,11 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/pfmoore">@pfmoore</a> on 2024-04-16 15:28</div>
-            <div class="timeline-body"><p>I've had a go at writing a PR: https://github.com/astral-sh/uv/pull/3064 It's very basic, so feel free to ignore it if you prefer.</p>
+            <div class="timeline-body"><p>I&#x27;ve had a go at writing a PR: <a href="https://github.com/astral-sh/uv/pull/3064">astral-sh/uv#3064</a> It&#x27;s very basic, so feel free to ignore it if you prefer.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-04-16 18:39</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-16 18:39</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-25 14:35</div>
@@ -105,13 +105,13 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/pfmoore">@pfmoore</a> on 2024-04-25 15:12</div>
-            <div class="timeline-body"><p>At the end of the day, anything that isn't an executable on <code>$PATH</code> will fail with an error anyway, so this is mostly an optimisation to fail fast on things that can't possibly be the name of a Python interpreter.</p>
+            <div class="timeline-body"><p>At the end of the day, anything that isn&#x27;t an executable on <code>$PATH</code> will fail with an error anyway, so this is mostly an optimisation to fail fast on things that can&#x27;t possibly be the name of a Python interpreter.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:24:40 UTC
+        Synced at 2026-01-20 19:30:49 UTC
     </footer>
 </body>
 </html>

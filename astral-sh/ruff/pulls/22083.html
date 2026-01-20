@@ -23,42 +23,42 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>ty has good handling for handling CTRL+C during type checking. However, pressing CTRL+C is completely ignored when printing diagnostics. ty happily keeps spamming your terminal until it has printed all diagnostics (how rude of you to interrupt it while doing this important job). This can be especially frustrating if there are many diagnostics.</p>
-<p>The reason our CTRL+C handling doesn't work when printing diagnostics is that printing diagnostics happens on the main thread, which is also the one that sets the cancellation flag in the Salsa DB when we receive the CTRL+C signal. That means the CTRL+C signal is queued but processed only after printing all diagnostics.</p>
+<p>The reason our CTRL+C handling doesn&#x27;t work when printing diagnostics is that printing diagnostics happens on the main thread, which is also the one that sets the cancellation flag in the Salsa DB when we receive the CTRL+C signal. That means the CTRL+C signal is queued but processed only after printing all diagnostics.</p>
 <p>We could consider moving diagnostic printing off the main thread but I decided against this because:</p>
 <ul>
-<li>We'll need access to the only <code>&amp;mut Db</code> when we start applying fixes. That requires fixes to run on the main thread, and we also want to react to cancellation in that case.</li>
-<li>It would require us to wrap the diagnostic printing in <code>salsa::Cancelled::catch</code> which I'm not a huge fan of.</li>
+<li>We&#x27;ll need access to the only <code>&amp;mut Db</code> when we start applying fixes. That requires fixes to run on the main thread, and we also want to react to cancellation in that case.</li>
+<li>It would require us to wrap the diagnostic printing in <code>salsa::Cancelled::catch</code> which I&#x27;m not a huge fan of.</li>
 </ul>
-<p>This is why this PR introduces a new <code>CancellationToken</code> that we can use when running expensive operations on the main thread, without relying on Salsa's cancellation mechanism.</p>
-<h2>Test Plan</h2>
+<p>This is why this PR introduces a new <code>CancellationToken</code> that we can use when running expensive operations on the main thread, without relying on Salsa&#x27;s cancellation mechanism.</p>
+Test Plan
 <p>Tested that pressing Ctrl+C aborts printing diagnostics.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">cli</span> added by @MichaReiser on 2025-12-19 13:58</div>
+            <div class="event">Label <span class="label">cli</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-19 13:58</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-12-19 13:58</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-19 13:58</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-19 13:59</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a>
 <p>No changes detected when running ty on typing conformance tests ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-19 14:01</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">pydantic (https://github.com/pydantic/pydantic)
+Changes were detected when running on open source projects
+
+<pre><code>pydantic (https://github.com/pydantic/pydantic)
 - pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
 + pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
 - pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
@@ -138,19 +138,19 @@ core (https://github.com/home-assistant/core)
 
 
 </code></pre>
-</details>
+
 
 <p>No memory usage changes detected ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-19 14:16</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
@@ -165,31 +165,31 @@ core (https://github.com/home-assistant/core)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-19 14:30</div>
-            <div class="timeline-body"><p>Claude claims that ty should exit with 130 after an interrupt. I don't feel like I know enough whether it's worth the complexity or not</p>
+            <div class="timeline-body"><p>Claude claims that ty should exit with 130 after an interrupt. I don&#x27;t feel like I know enough whether it&#x27;s worth the complexity or not</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @MichaReiser on 2025-12-19 14:30</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-19 14:30</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @MichaReiser on 2025-12-19 14:30</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-19 14:30</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-12-19 14:30</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-19 14:30</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @MichaReiser on 2025-12-19 14:30</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-19 14:30</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-22 17:20</div>
-            <div class="timeline-body"><p>I feel pretty good about the approach taken in this change so I'll go ahead and merge this PR tomorrow unless someone objects</p>
+            <div class="timeline-body"><p>I feel pretty good about the approach taken in this change so I&#x27;ll go ahead and merge this PR tomorrow unless someone objects</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @MichaReiser on 2025-12-23 17:03</div>
+            <div class="event">Merged by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-23 17:03</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2025-12-23 17:03</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-23 17:03</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-12-23 17:04</div>
@@ -197,7 +197,7 @@ core (https://github.com/home-assistant/core)
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:18:15 UTC
+        Synced at 2026-01-20 19:21:57 UTC
     </footer>
 </body>
 </html>

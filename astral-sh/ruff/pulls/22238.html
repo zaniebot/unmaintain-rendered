@@ -23,54 +23,54 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/mtshiba">@mtshiba</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>Part of https://github.com/astral-sh/ty/issues/1738</p>
+            <div class="timeline-body">Summary
+<p>Part of <a href="https://github.com/astral-sh/ty/issues/1738">astral-sh/ty#1738</a></p>
 <p>This PR allows implicit (or PEP-613) union type aliases to be self-referential.
 To achieve this, two new Rust structs are added: <code>LazyUnionTypeInstance</code> and <code>ImplicitTypeAliasType</code>.
 As a result, the previous <code>UnionTypeInstance</code> is now called <code>EagerUnionTypeInstance</code>. Also, an <code>Implicit(ImplicitTypeAliasType)</code> variant is added to <code>TypeAliasType</code>.</p>
 <p>First, a union type instance is created as <code>EagerUnionTypeInstance</code>. Then, when registering a binding, it is checked whether it can be promoted to <code>LazyUnionTypeInstance</code>. The promotion criteria include whether it is a valid union type and whether it is a non-generic type (this should be relaxed in the future, but is marked as TODO for this PR).</p>
-<pre><code class="language-python">JsonValue = Union[int, float, bool, str, None, dict[str, &quot;JsonValue&quot;], list[&quot;JsonValue&quot;]]
+<pre><code>JsonValue = Union[int, float, bool, str, None, dict[str, &quot;JsonValue&quot;], list[&quot;JsonValue&quot;]]
 # ↑ Lazy      ↑ Eager                                     ↑ Lazy             ↑ Lazy
 typing.cast(Union[int, str], x)
 #             ↑ Eager
 </code></pre>
-<p><code>LazyUnionTypeInstance</code> is converted to <code>ImplicitTypeAliasType</code> in a type context. <code>ImplicitTypeAliasType</code> behaves almost identically to PEP-695 type alias (except that it doesn't have a generic context yet).
+<p><code>LazyUnionTypeInstance</code> is converted to <code>ImplicitTypeAliasType</code> in a type context. <code>ImplicitTypeAliasType</code> behaves almost identically to PEP-695 type alias (except that it doesn&#x27;t have a generic context yet).
 There are other <code>KnownInstance</code>s that can be converted to <code>ImplicitTypeAliasType</code> in a type context, but in this PR we will focus on union type instances.</p>
 <p>Also, this change means that implicit type aliases are now shown with their name rather than their expanded type.
 This is preferable, assuming there is reasonable intent behind the naming of type aliases.</p>
-<p>Fixes https://github.com/astral-sh/ty/issues/1883 (with https://github.com/astral-sh/ruff/pull/22241)
-Fixes https://github.com/astral-sh/ty/issues/1998</p>
-<h3>Performance analysis</h3>
+<p>Fixes <a href="https://github.com/astral-sh/ty/issues/1883">astral-sh/ty#1883</a> (with <a href="https://github.com/astral-sh/ruff/pull/22241">astral-sh/ruff#22241</a>)
+Fixes <a href="https://github.com/astral-sh/ty/issues/1998">astral-sh/ty#1998</a></p>
+Performance analysis
 <p>https://github.com/astral-sh/ruff/pull/22238#issuecomment-3698301314</p>
-<h3>Ecosystem analysis</h3>
+Ecosystem analysis
 <p>The new false positive errors appears to be due to astral-sh/ty#2015. Type aliases should basically behave the same as value types, but as in astral-sh/ty#2015, inconsistencies in behavior have been observed in implementations, which may also affect performance.</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>New corpus test
 mdtest updated</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @mtshiba on 2025-12-29 05:10</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-12-29 05:10</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @mtshiba on 2025-12-29 05:10</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-12-29 05:10</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-29 05:12</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
-<details>
-<summary>Changes were detected when running ty on typing conformance tests</summary>
+Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a>
 
-<pre><code class="language-diff">--- old-output.txt	2026-01-07 09:32:44.627070962 +0000
+Changes were detected when running ty on typing conformance tests
+
+<pre><code>--- old-output.txt	2026-01-07 09:32:44.627070962 +0000
 +++ new-output.txt	2026-01-07 09:32:44.967072566 +0000
 @@ -5,7 +5,7 @@
  _directives_deprecated_library.py:45:24: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `str`
  aliases_explicit.py:57:5: error[type-assertion-failure] Type `(int, str, str, /) -&gt; None` does not match asserted type `Unknown`
  aliases_explicit.py:67:9: error[not-subscriptable] Cannot subscript non-generic type
--aliases_explicit.py:68:9: error[not-subscriptable] Cannot subscript non-generic type: `&lt;class 'list[int | None]'&gt;` is already specialized
-+aliases_explicit.py:68:9: error[not-subscriptable] Cannot subscript non-generic type: `&lt;class 'list[GoodTypeAlias2]'&gt;` is already specialized
+-aliases_explicit.py:68:9: error[not-subscriptable] Cannot subscript non-generic type: `&lt;class &#x27;list[int | None]&#x27;&gt;` is already specialized
++aliases_explicit.py:68:9: error[not-subscriptable] Cannot subscript non-generic type: `&lt;class &#x27;list[GoodTypeAlias2]&#x27;&gt;` is already specialized
  aliases_explicit.py:69:29: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
  aliases_explicit.py:70:29: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
  aliases_explicit.py:71:24: error[invalid-type-arguments] Type argument for `ParamSpec` must be either a list of types, `ParamSpec`, `Concatenate`, or `...`
@@ -78,17 +78,17 @@ mdtest updated</p>
  aliases_explicit.py:102:5: error[not-subscriptable] Cannot subscript non-generic type
  aliases_implicit.py:68:5: error[type-assertion-failure] Type `(int, str, str, /) -&gt; None` does not match asserted type `Unknown`
  aliases_implicit.py:76:9: error[not-subscriptable] Cannot subscript non-generic type
--aliases_implicit.py:77:9: error[not-subscriptable] Cannot subscript non-generic type: `&lt;class 'list[int | None]'&gt;` is already specialized
-+aliases_implicit.py:77:9: error[not-subscriptable] Cannot subscript non-generic type: `&lt;class 'list[GoodTypeAlias2]'&gt;` is already specialized
+-aliases_implicit.py:77:9: error[not-subscriptable] Cannot subscript non-generic type: `&lt;class &#x27;list[int | None]&#x27;&gt;` is already specialized
++aliases_implicit.py:77:9: error[not-subscriptable] Cannot subscript non-generic type: `&lt;class &#x27;list[GoodTypeAlias2]&#x27;&gt;` is already specialized
  aliases_implicit.py:78:29: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
  aliases_implicit.py:79:29: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
  aliases_implicit.py:80:24: error[invalid-type-arguments] Type argument for `ParamSpec` must be either a list of types, `ParamSpec`, `Concatenate`, or `...`
 @@ -32,7 +32,7 @@
  aliases_newtype.py:11:8: error[invalid-argument-type] Argument is incorrect: Expected `int`, found `Literal[&quot;user&quot;]`
  aliases_newtype.py:12:14: error[invalid-assignment] Object of type `Literal[42]` is not assignable to `UserId`
- aliases_newtype.py:18:11: error[invalid-assignment] Object of type `&lt;NewType pseudo-class 'UserId'&gt;` is not assignable to `type`
--aliases_newtype.py:23:16: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Divergent, ...]`, found `&lt;NewType pseudo-class 'UserId'&gt;`
-+aliases_newtype.py:23:16: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `_ClassInfo`, found `&lt;NewType pseudo-class 'UserId'&gt;`
+ aliases_newtype.py:18:11: error[invalid-assignment] Object of type `&lt;NewType pseudo-class &#x27;UserId&#x27;&gt;` is not assignable to `type`
+-aliases_newtype.py:23:16: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Divergent, ...]`, found `&lt;NewType pseudo-class &#x27;UserId&#x27;&gt;`
++aliases_newtype.py:23:16: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `_ClassInfo`, found `&lt;NewType pseudo-class &#x27;UserId&#x27;&gt;`
  aliases_newtype.py:26:21: error[invalid-base] Cannot subclass an instance of NewType
  aliases_newtype.py:35:1: error[invalid-newtype] The name of a `NewType` (`BadName`) must match the name of the variable it is assigned to (`GoodName`)
  aliases_newtype.py:41:6: error[invalid-type-form] `GoodNewType1` is a `NewType` and cannot be specialized
@@ -133,26 +133,26 @@ mdtest updated</p>
  tuples_type_compat.py:129:13: error[type-assertion-failure] Type `tuple[int | str, int]` does not match asserted type `tuple[int | str, int | str]`
  tuples_type_compat.py:157:6: error[invalid-assignment] Object of type `tuple[Literal[1], Literal[&quot;&quot;], Literal[&quot;&quot;]]` is not assignable to `tuple[int, str]`
 @@ -1023,4 +1030,4 @@
- typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
+ typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key &#x27;name&#x27; in TypedDict `Movie` constructor
  typeddicts_usage.py:28:18: error[invalid-key] Unknown key &quot;title&quot; for TypedDict `Movie`: Unknown key &quot;title&quot;
  typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions
 -Found 1025 diagnostics
 +Found 1032 diagnostics
 
 </code></pre>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-29 07:01</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">more-itertools (https://github.com/more-itertools/more-itertools)
+Changes were detected when running on open source projects
+
+<pre><code>more-itertools (https://github.com/more-itertools/more-itertools)
 - more_itertools/recipes.py:1098:18: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `(int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], /) -&gt; int | float | complex | ... omitted 3 union elements`, found `Overload[(base: int, exp: int, mod: int) -&gt; int, (base: int, exp: Literal[0], mod: None = None) -&gt; Literal[1], (base: int, exp: Literal[1, 2, 3, 4, 5, ... omitted 20 literals], mod: None = None) -&gt; int, (base: int, exp: Literal[-1, -2, -3, -4, -5, ... omitted 15 literals], mod: None = None) -&gt; int | float, (base: int, exp: int, mod: None = None) -&gt; Any, (base: Literal[1, 2, 3, 4, 5, ... omitted 20 literals], exp: int | float, mod: None = None) -&gt; int | float, (base: Literal[-1, -2, -3, -4, -5, ... omitted 15 literals], exp: int | float, mod: None = None) -&gt; int | float | complex, (base: int | float, exp: int, mod: None = None) -&gt; int | float, (base: int | float, exp: int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], mod: None = None) -&gt; Any, (base: int | float | complex, exp: int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], mod: None = None) -&gt; int | float | complex, (base: _SupportsPow2[_E_contra@pow, _T_co@pow], exp: _E_contra@pow, mod: None = None) -&gt; _T_co@pow, (base: _SupportsPow3NoneOnly[_E_contra@pow, _T_co@pow], exp: _E_contra@pow, mod: None = None) -&gt; _T_co@pow, (base: _SupportsPow3[_E_contra@pow, _M_contra@pow, _T_co@pow], exp: _E_contra@pow, mod: _M_contra@pow) -&gt; _T_co@pow, (base: _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], exp: int | float, mod: None = None) -&gt; Any, (base: _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], exp: int | float | complex, mod: None = None) -&gt; int | float | complex]`
 + more_itertools/recipes.py:1098:18: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `(int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], /) -&gt; int | float | complex | ... omitted 3 union elements`, found `Overload[(base: int, exp: int, mod: int) -&gt; int, (base: int, exp: Literal[0], mod: None = None) -&gt; Literal[1], (base: int, exp: Literal[1, 2, 3, 4, 5, ... omitted 20 literals], mod: None = None) -&gt; int, (base: int, exp: Literal[-1, -2, -3, -4, -5, ... omitted 15 literals], mod: None = None) -&gt; int | float, (base: int, exp: int, mod: None = None) -&gt; Any, (base: Literal[1, 2, 3, 4, 5, ... omitted 20 literals], exp: int | float, mod: None = None) -&gt; int | float, (base: Literal[-1, -2, -3, -4, -5, ... omitted 15 literals], exp: int | float, mod: None = None) -&gt; int | float | complex, (base: int | float, exp: int, mod: None = None) -&gt; int | float, (base: int | float, exp: int | float | complex | _SupportsSomeKindOfPow, mod: None = None) -&gt; Any, (base: int | float | complex, exp: int | float | complex | _SupportsSomeKindOfPow, mod: None = None) -&gt; int | float | complex, (base: _SupportsPow2[_E_contra@pow, _T_co@pow], exp: _E_contra@pow, mod: None = None) -&gt; _T_co@pow, (base: _SupportsPow3NoneOnly[_E_contra@pow, _T_co@pow], exp: _E_contra@pow, mod: None = None) -&gt; _T_co@pow, (base: _SupportsPow3[_E_contra@pow, _M_contra@pow, _T_co@pow], exp: _E_contra@pow, mod: _M_contra@pow) -&gt; _T_co@pow, (base: _SupportsSomeKindOfPow, exp: int | float, mod: None = None) -&gt; Any, (base: _SupportsSomeKindOfPow, exp: int | float | complex, mod: None = None) -&gt; int | float | complex]`
 
@@ -361,16 +361,16 @@ pip (https://github.com/pypa/pip)
 
 ... (truncated 8832 lines) ...
 </code></pre>
-</details>
+
 
 <p>No memory usage changes detected ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-29 07:03</div>
-            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+            <div class="timeline-body">
 
-<h2><code>ecosystem-analyzer</code> results</h2>
+<code>ecosystem-analyzer</code> results
 <p>| Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
 | <code>invalid-key</code> | 284 | 2,279 | 0 |
@@ -399,20 +399,20 @@ pip (https://github.com/pypa/pip)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-12-29 07:06</div>
-            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+            <div class="timeline-body">
 
-<h2><a href="https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimplicit-recursive-union?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a></h2>
-<h3>Merging this PR will <strong>degrade performance by 7.42%</strong></h3>
-<p><sub>Comparing <code>mtshiba:implicit-recursive-union</code> (882c15a) with <code>main</code> (3b61da0)</sub></p>
-<h3>Summary</h3>
-<p><code>⚡ 2</code> improved benchmarks<br />
-<code>❌ 2</code> regressed benchmarks<br />
-<code>✅ 49</code> untouched benchmarks<br />
+<a href="https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimplicit-recursive-union?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a>
+Merging this PR will <strong>degrade performance by 7.42%</strong>
+<p>Comparing <code>mtshiba:implicit-recursive-union</code> (882c15a) with <code>main</code> (3b61da0)</p>
+Summary
+<p><code>⚡ 2</code> improved benchmarks<br>
+<code>❌ 2</code> regressed benchmarks<br>
+<code>✅ 49</code> untouched benchmarks<br>
 <code>🆕 1</code> new benchmark</p>
 <blockquote>
 <p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimplicit-recursive-union?utm_source=github&amp;utm_medium=comment&amp;utm_content=acknowledge">acknowledge them on CodSpeed</a>.</em></p>
 </blockquote>
-<h3>Performance Changes</h3>
+Performance Changes
 <p>|     | Mode | Benchmark | <code>BASE</code> | <code>HEAD</code> | Efficiency |
 | --- | ---- | --------- | ------ | ------ | ---------- |
 | ❌ | WallTime | <a href="https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Aimplicit-recursive-union?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Aaltair&amp;runnerMode=WallTime&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=benchmark"><code>altair</code></a> | 4.9 s | 5.2 s | -5.29% |
@@ -436,38 +436,38 @@ pyrefly does not expand both aliases whenever possible.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @mtshiba on 2026-01-05 15:09</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/mtshiba">@mtshiba</a> on 2026-01-05 15:09</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @mtshiba on 2026-01-05 15:09</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/mtshiba">@mtshiba</a> on 2026-01-05 15:09</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @mtshiba on 2026-01-05 15:09</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/mtshiba">@mtshiba</a> on 2026-01-05 15:09</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @mtshiba on 2026-01-05 15:09</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/mtshiba">@mtshiba</a> on 2026-01-05 15:09</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @mtshiba on 2026-01-05 15:09</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/mtshiba">@mtshiba</a> on 2026-01-05 15:09</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @mtshiba on 2026-01-05 15:09</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/mtshiba">@mtshiba</a> on 2026-01-05 15:09</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @Gankra by @mtshiba on 2026-01-07 09:08</div>
+            <div class="event">Review requested from <a href="https://github.com/Gankra">@Gankra</a> by <a href="https://github.com/mtshiba">@mtshiba</a> on 2026-01-07 09:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Converted to draft by @mtshiba on 2026-01-07 09:28</div>
+            <div class="event">Converted to draft by <a href="https://github.com/mtshiba">@mtshiba</a> on 2026-01-07 09:28</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-13 23:20</div>
-            <div class="timeline-body"><p>I see this was marked draft -- I'm assuming that means you don't feel it is ready for review/merge yet?</p>
+            <div class="timeline-body"><p>I see this was marked draft -- I&#x27;m assuming that means you don&#x27;t feel it is ready for review/merge yet?</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-13 23:38:07 UTC
+        Synced at 2026-01-20 19:22:18 UTC
     </footer>
 </body>
 </html>

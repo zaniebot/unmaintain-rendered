@@ -27,7 +27,7 @@
 <ul>
 <li>A minimal code snippet that reproduces the bug.</li>
 </ul>
-<pre><code class="language-commandline">uv venv .venv311
+<pre><code>uv venv .venv311
 source .venv311/Scripts/activate
 uv pip install --verbose tables==3.4.4
 uv pip install --verbose tables==3.4.4 --only-binary :all:
@@ -35,7 +35,7 @@ uv pip install --verbose tables==3.4.4 --only-binary :all:
 <ul>
 <li>output</li>
 </ul>
-<pre><code class="language-commandline">❯ uv venv .venv311
+<pre><code>❯ uv venv .venv311
 Using Python 3.11.3 interpreter at: C:\Python311\python.exe
 Creating virtualenv at: .venv311
 Activate with: source .venv311\Scripts\activate
@@ -53,10 +53,10 @@ error: Failed to download `tables==3.4.4`
   ╰─▶ Because tables==3.4.4 has no usable wheels and building from source is disabled and you require tables==3.4.4, we can conclude that the
       requirements are unsatisfiable.
 </code></pre>
-<details>
-<summary>verbose logs</summary>
 
-<pre><code class="language-commandline">C:\dev\tmp via 🐍 v3.11.3 (.venv311) took 262ms
+verbose logs
+
+<pre><code>C:\dev\tmp via 🐍 v3.11.3 (.venv311) took 262ms
 ❯ uv --version
 uv 0.2.18 (13b0beb56 2024-06-29)
 
@@ -112,13 +112,13 @@ DEBUG Searching for a compatible version of tables (==3.4.4)
   ╰─▶ Because tables==3.4.4 has no usable wheels and building from source is disabled and you require tables==3.4.4, we can conclude that the
       requirements are unsatisfiable.
 </code></pre>
-</details>
+
 
 <p>When I use a matching interpreter version (<code>3.7</code>), it fails to install a transient dependency (<code>numpy</code>), always with a <code>BufError</code>.</p>
 <ul>
 <li>output</li>
 </ul>
-<pre><code class="language-commandline">❯ uv venv .venv37 --python=/c/Python37/python.exe
+<pre><code>❯ uv venv .venv37 --python=/c/Python37/python.exe
 Using Python 3.7.9 interpreter at: C:\Python37\python.exe
 Creating virtualenv at: .venv37
 Activate with: source .venv37\Scripts\activate
@@ -137,10 +137,10 @@ error: Failed to download `numpy==1.18.0`
   Caused by: an upstream reader returned an error: unexpected BufError
   Caused by: unexpected BufError
 </code></pre>
-<details>
-<summary>verbose logs</summary>
 
-<pre><code class="language-commandline">C:\dev\tmp took 258ms
+verbose logs
+
+<pre><code>C:\dev\tmp took 258ms
 ❯ uv venv .venv37 --python=/c/Python37/python.exe
 Using Python 3.7.9 interpreter at: C:\Python37\python.exe
 Creating virtualenv at: .venv37
@@ -425,7 +425,7 @@ error: Failed to download `numpy==1.18.0`
   Caused by: an upstream reader returned an error: unexpected BufError
   Caused by: unexpected BufError
 </code></pre>
-</details>
+
 
 <p>EDIT: re-arranged the code snippets</p>
 </div>
@@ -445,47 +445,47 @@ uv installs the package without problems.</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-30 19:57</div>
-            <div class="timeline-body"><p>The root cause seems like a problem with your registry. Candidly it'll be hard to debug without having direct access to it, but I can look into the codepaths and see if we need to be adding more fallback somewhere.</p>
+            <div class="timeline-body"><p>The root cause seems like a problem with your registry. Candidly it&#x27;ll be hard to debug without having direct access to it, but I can look into the codepaths and see if we need to be adding more fallback somewhere.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/axel-kah">@axel-kah</a> on 2024-06-30 21:40</div>
             <div class="timeline-body"><p>Hm, troubleshooting artifactory, I was afraid you would say that. Well, would it help you if I could acquire a logfile from our admin for one of these attempts which error out with <code>BufError</code>?</p>
-<p>Would it be feasible to expose an environment variable which forces the fallback you have in mind? I'm just thinking out loud here. Should the investigation show that Jfrog needs to ship a bugfix, then Artifactory users could at least use uv with suboptimal performance instead of falling back to the tools it replaces.</p>
+<p>Would it be feasible to expose an environment variable which forces the fallback you have in mind? I&#x27;m just thinking out loud here. Should the investigation show that Jfrog needs to ship a bugfix, then Artifactory users could at least use uv with suboptimal performance instead of falling back to the tools it replaces.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/axel-kah">@axel-kah</a> on 2025-02-12 11:20</div>
             <div class="timeline-body"><p>Update using <code>uv 0.5.30 (ddbc6e315 2025-02-10)</code>:</p>
-<h2>python 3.11</h2>
-<pre><code class="language-bash">uv pip install --verbose tables==3.4.4
+python 3.11
+<pre><code>uv pip install --verbose tables==3.4.4
 </code></pre>
 <p>-&gt; no wheel available for 3.11, tries to build from source ✅</p>
-<pre><code class="language-bash">uv pip install --verbose tables==3.4.4 --only-binary :all:
+<pre><code>uv pip install --verbose tables==3.4.4 --only-binary :all:
 </code></pre>
-<pre><code class="language-bash">DEBUG No compatible version found for: tables
+<pre><code>DEBUG No compatible version found for: tables
   × No solution found when resolving dependencies:
   ╰─▶ Because tables==3.4.4 has no usable wheels and you require tables==3.4.4, we can conclude that your requirements are unsatisfiable.
 </code></pre>
 <p>-&gt; expected behavior ✅</p>
-<h2>python 3.7</h2>
-<pre><code class="language-bash">uv pip install --verbose tables==3.4.4
+python 3.7
+<pre><code>uv pip install --verbose tables==3.4.4
 </code></pre>
 <p>-&gt; installs wheel just fine ✅</p>
-<pre><code class="language-bash">uv pip install --verbose tables==3.4.4 --only-binary :all:
+<pre><code>uv pip install --verbose tables==3.4.4 --only-binary :all:
 </code></pre>
 <p>-&gt; installs wheel just fine ✅</p>
-<h2>Conclusion</h2>
+Conclusion
 <p>I saw a lot of bugfixes related to registry interactions since my initial report. It seems they resolved this issue 👍</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @axel-kah on 2025-02-12 11:20</div>
+            <div class="event">Closed by <a href="https://github.com/axel-kah">@axel-kah</a> on 2025-02-12 11:20</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:25:25 UTC
+        Synced at 2026-01-20 19:31:47 UTC
     </footer>
 </body>
 </html>

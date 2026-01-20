@@ -23,53 +23,53 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>This gets rid of several <code>Name</code> clones in our implementation of call-signature checking, at the cost of quite a few more lifetime annotations. There may be a simpler way of doing this, but I couldn't immediately see it... using <code>'db</code> for everything did not work.</p>
-<p>Not sure if this is the way to go, but figured I'd put it up for discussion as a proof-of-concept anyway</p>
-<h2>Test Plan</h2>
+            <div class="timeline-body">Summary
+<p>This gets rid of several <code>Name</code> clones in our implementation of call-signature checking, at the cost of quite a few more lifetime annotations. There may be a simpler way of doing this, but I couldn&#x27;t immediately see it... using <code>&#x27;db</code> for everything did not work.</p>
+<p>Not sure if this is the way to go, but figured I&#x27;d put it up for discussion as a proof-of-concept anyway</p>
+Test Plan
 <p><code>cargo test -p red_knot_python_semantic</code></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-01-07 23:54</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-07 23:54</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-01-07 23:54</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-07 23:54</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2025-01-07 23:54</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-07 23:54</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-01-07 23:54</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-07 23:54</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-08 00:00</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-01-08 00:36</div>
-            <div class="timeline-body"><p>I had also played with trying to use the <code>'db</code> lifetime for this. I think it would work if we explicitly threaded that lifetime through every reference to an AST node throughout the type inference builder (i.e. replace every <code>&amp;ast::Whatever</code> with <code>&amp;'db ast::Whatever</code> in all inference method signatures). But the reason <em>that</em> won't work is stringified annotations. Sometimes we infer types from an AST that isn't actually owned by the db at all, it's owned locally by the <code>infer_string_annotation_expression</code> method. I don't see a way around that without totally reworking how we handle stringified annotations, which is a can of worms I'd rather not reopen.</p>
+            <div class="timeline-body"><p>I had also played with trying to use the <code>&#x27;db</code> lifetime for this. I think it would work if we explicitly threaded that lifetime through every reference to an AST node throughout the type inference builder (i.e. replace every <code>&amp;ast::Whatever</code> with <code>&amp;&#x27;db ast::Whatever</code> in all inference method signatures). But the reason <em>that</em> won&#x27;t work is stringified annotations. Sometimes we infer types from an AST that isn&#x27;t actually owned by the db at all, it&#x27;s owned locally by the <code>infer_string_annotation_expression</code> method. I don&#x27;t see a way around that without totally reworking how we handle stringified annotations, which is a can of worms I&#x27;d rather not reopen.</p>
 <p>Using a distinct lifetime (as in this PR) just means that the <code>CallArguments</code>, <code>CallBinding</code>, and <code>CallOutcome</code> all ultimately borrow from the AST that the <code>CallArguments</code> were created from (or whatever lifetime the <code>CallArguments</code> borrows its keyword names from.) I <em>think</em> this should be OK; generally <code>CallBinding</code> and <code>CallOutcome</code> should be ephemeral and not need to outlive the arguments.</p>
-<p>So I'm open to this.</p>
-<p>But it does make the code harder to read. And CodSpeed doesn't suggest any detectable performance improvement. If we can't detect a performance improvement, I'm not sure it makes sense to do this? We can spend complexity for perf, but IMO we should spend that budget where it actually wins us detectable perf. We could check whether this makes a noticeable difference in local hyperfine benchmarking (rather than CodSpeed), and on larger codebases (e.g. Black)?</p>
-<p>Interested in others' thoughts.</p>
+<p>So I&#x27;m open to this.</p>
+<p>But it does make the code harder to read. And CodSpeed doesn&#x27;t suggest any detectable performance improvement. If we can&#x27;t detect a performance improvement, I&#x27;m not sure it makes sense to do this? We can spend complexity for perf, but IMO we should spend that budget where it actually wins us detectable perf. We could check whether this makes a noticeable difference in local hyperfine benchmarking (rather than CodSpeed), and on larger codebases (e.g. Black)?</p>
+<p>Interested in others&#x27; thoughts.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:244 on 2025-01-08 07:11</div>
-            <div class="timeline-body"><p>I'd use a <code>Name</code> here as constructing an error should be the exception. That allows removing the lifetime from <code>CallBindingError</code>, <code>CallBinding</code>, <code>CallDunderResult</code>, significantly reducing the size of the diff.</p>
+            <div class="timeline-body"><p>I&#x27;d use a <code>Name</code> here as constructing an error should be the exception. That allows removing the lifetime from <code>CallBindingError</code>, <code>CallBinding</code>, <code>CallDunderResult</code>, significantly reducing the size of the diff.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-08 07:15</div>
-            <div class="timeline-body"><p>I'm leaning towards not making this change because the performance impact seems minimal and the lifetime does introduce a fair amount of complexity (it also means that we'll never be able to cache call arguments but maybe that's fine).</p>
+            <div class="timeline-body"><p>I&#x27;m leaning towards not making this change because the performance impact seems minimal and the lifetime does introduce a fair amount of complexity (it also means that we&#x27;ll never be able to cache call arguments but maybe that&#x27;s fine).</p>
 <p>But we may want to undo the changes to <code>CallBindingError</code> and reevaluate the diff then.</p>
 <p>I overall suspect that the cost of checking call arguments (infering every argument type, creating the <code>CallArguments</code> struct with a vector etc simpliy outweights the cost of cloning the name (which is stack allocated for most names )</p>
 </div>
@@ -80,7 +80,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:244 on 2025-01-08 18:20</div>
-            <div class="timeline-body"><p>Nice, thanks! It's much simpler now</p>
+            <div class="timeline-body"><p>Nice, thanks! It&#x27;s much simpler now</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -89,10 +89,10 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @AlexWaygood on 2025-01-08 18:29</div>
+            <div class="event">Merged by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-08 18:29</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-01-08 18:29</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-08 18:29</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-01-08 18:29</div>
@@ -100,7 +100,7 @@
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:08:57 UTC
+        Synced at 2026-01-20 19:10:06 UTC
     </footer>
 </body>
 </html>

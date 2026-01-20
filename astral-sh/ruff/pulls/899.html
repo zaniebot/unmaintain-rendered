@@ -23,15 +23,15 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/olliemath">@olliemath</a></div>
-            <div class="timeline-body"><p>Adds checks for F522 through F525. Closes https://github.com/charliermarsh/ruff/issues/891</p>
-<p>All of the new checks return <code>None</code> if the format string is invalid (i.e. if F521 fails) - essentially I'm treating it like a syntax error and not processing further. I don't know if there's a neater way to do this, which works even if F521 is disabled.</p>
-<p>Most of the logic here is in the helper function <code>FormatSummary::try_from</code>, which extracts all the keywords and indexes from the format string. Taking into account nested format strings like &quot;{spam:{eggs}}&quot; is what makes it a bit involved, so I've added some tests.</p>
-<p>The use of <code>HashSet</code> in the summary keeps everything O(n) - for most typical python code, I'd speculate that a <code>Vec</code> would actually be quicker, however I can imagine somebody somewhere has a format function with 1000s of arguments for their own personal reasons and I wouldn't want that to come back to bite us. Use of <code>HashSet</code> means that for F524 the missing placeholders may not be returned in the order they appear in the string literal - I don't know if that's enough of a big deal to warrant implementing something more complicated.</p>
+            <div class="timeline-body"><p>Adds checks for F522 through F525. Closes <a href="https://github.com/charliermarsh/ruff/issues/891">charliermarsh/ruff#891</a></p>
+<p>All of the new checks return <code>None</code> if the format string is invalid (i.e. if F521 fails) - essentially I&#x27;m treating it like a syntax error and not processing further. I don&#x27;t know if there&#x27;s a neater way to do this, which works even if F521 is disabled.</p>
+<p>Most of the logic here is in the helper function <code>FormatSummary::try_from</code>, which extracts all the keywords and indexes from the format string. Taking into account nested format strings like &quot;{spam:{eggs}}&quot; is what makes it a bit involved, so I&#x27;ve added some tests.</p>
+<p>The use of <code>HashSet</code> in the summary keeps everything O(n) - for most typical python code, I&#x27;d speculate that a <code>Vec</code> would actually be quicker, however I can imagine somebody somewhere has a format function with 1000s of arguments for their own personal reasons and I wouldn&#x27;t want that to come back to bite us. Use of <code>HashSet</code> means that for F524 the missing placeholders may not be returned in the order they appear in the string literal - I don&#x27;t know if that&#x27;s enough of a big deal to warrant implementing something more complicated.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyflakes/checks.rs</code>:106 on 2022-11-25 01:28</div>
-            <div class="timeline-body"><p>I'd generally prefer to make <code>CheckKind::StringDotFormatExtraPositionalArguments</code> take a <code>Vec&lt;String&gt;</code>, and do the joining in <code>body</code> (rather than joining here and passing the formatted strings to <code>CheckKind::StringDotFormatExtraPositionalArguments</code>.</p>
+            <div class="timeline-body"><p>I&#x27;d generally prefer to make <code>CheckKind::StringDotFormatExtraPositionalArguments</code> take a <code>Vec&lt;String&gt;</code>, and do the joining in <code>body</code> (rather than joining here and passing the formatted strings to <code>CheckKind::StringDotFormatExtraPositionalArguments</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -47,7 +47,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyflakes/checks.rs</code>:63 on 2022-11-25 01:35</div>
             <div class="timeline-body"><p>Maybe instead we have these all take <code>FormatSummary</code>, and in the checker, we have something like:</p>
-<pre><code class="language-rust">if let Ok(summary) = FormatSummary::try_from(literal) {
+<pre><code>if let Ok(summary) = FormatSummary::try_from(literal) {
     if self.settings.enabled.contains(&amp;CheckCode::F524) {
         if let Some(check) =
             pyflakes::checks::string_dot_format_missing_argument(
@@ -65,7 +65,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/checks.rs</code>:59 on 2022-11-25 01:36</div>
-            <div class="timeline-body"><p>Can you run <code>cargo dev generate-rules-table</code>? It'll add these to the README automatically.</p>
+            <div class="timeline-body"><p>Can you run <code>cargo dev generate-rules-table</code>? It&#x27;ll add these to the README automatically.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -78,12 +78,12 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/olliemath">@olliemath</a> on <code>src/pyflakes/checks.rs</code>:106 on 2022-11-25 09:48</div>
-            <div class="timeline-body"><p>Makes sense - I'll change that</p>
+            <div class="timeline-body"><p>Makes sense - I&#x27;ll change that</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/olliemath">@olliemath</a> on <code>src/pyflakes/checks.rs</code>:125 on 2022-11-25 09:50</div>
-            <div class="timeline-body"><p>I'll spend some time over the weekend dialling in the perf aspect</p>
+            <div class="timeline-body"><p>I&#x27;ll spend some time over the weekend dialling in the perf aspect</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -98,8 +98,8 @@
             <div class="timeline-header">Review comment by <a href="https://github.com/olliemath">@olliemath</a> on <code>src/pyflakes/checks.rs</code>:63 on 2022-11-25 10:10</div>
             <div class="timeline-body"><p>Yeah, that sounds good. Gate the parsing/building and do it once.</p>
 <p>The happy path is that <code>F521</code> and some of <code>F522-F525</code> are enabled together and it will be very rare that <strong>only</strong> F521 is enabled - so a little more performant in the default case to go with something like:</p>
-<pre><code class="language-rust">match FormatSummary::try_from(literal) {
-    Err(e) =&gt; ..., // Add an F521 check if it's enabled
+<pre><code>match FormatSummary::try_from(literal) {
+    Err(e) =&gt; ..., // Add an F521 check if it&#x27;s enabled
     Ok(summary) =&gt; {
         // Call the other enabled checks using the summary
     }
@@ -108,12 +108,12 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Implement F522-F525" to "Draft: Implement F522-F525" by @olliemath on 2022-11-25 11:46</div>
+            <div class="event">Renamed from &quot;Implement F522-F525&quot; to &quot;Draft: Implement F522-F525&quot; by <a href="https://github.com/olliemath">@olliemath</a> on 2022-11-25 11:46</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/olliemath">@olliemath</a> on 2022-11-25 12:56</div>
-            <div class="timeline-body"><p>I've pulled out the construction of <code>FormatSummary</code>, so we build it at most once, and minimised the number of clones.</p>
-<p>I can't see a way to avoid cloning when building the failure messages, but that should hopefully be rare.</p>
+            <div class="timeline-body"><p>I&#x27;ve pulled out the construction of <code>FormatSummary</code>, so we build it at most once, and minimised the number of clones.</p>
+<p>I can&#x27;t see a way to avoid cloning when building the failure messages, but that should hopefully be rare.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -127,7 +127,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyflakes/format.rs</code>:32 on 2022-11-25 14:52</div>
-            <div class="timeline-body"><p>I'll likely change these to <code>FxHashSet</code> too, unless they're intentionally not using that!</p>
+            <div class="timeline-body"><p>I&#x27;ll likely change these to <code>FxHashSet</code> too, unless they&#x27;re intentionally not using that!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -145,7 +145,7 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Draft: Implement F522-F525" to "Implement F522-F525" by @olliemath on 2022-11-25 15:26</div>
+            <div class="event">Renamed from &quot;Draft: Implement F522-F525&quot; to &quot;Implement F522-F525&quot; by <a href="https://github.com/olliemath">@olliemath</a> on 2022-11-25 15:26</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/olliemath">@olliemath</a> on 2022-11-25 15:27</div>
@@ -157,7 +157,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/olliemath">@olliemath</a> on 2022-11-25 16:02</div>
-            <div class="timeline-body"><p>By the way, I've been using interactive rebase to keep my commit history tidy - it looks like your general strategy is to squash+merge? In which case in future contributions I might abandon that approach and be a bit more liberal with my commits</p>
+            <div class="timeline-body"><p>By the way, I&#x27;ve been using interactive rebase to keep my commit history tidy - it looks like your general strategy is to squash+merge? In which case in future contributions I might abandon that approach and be a bit more liberal with my commits</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -166,10 +166,10 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2022-11-25 18:14</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-25 18:14</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2022-11-25 18:14</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-25 18:14</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-25 18:14</div>
@@ -178,13 +178,13 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/olliemath">@olliemath</a> on 2022-11-25 19:07</div>
-            <div class="timeline-body"><p>Happy to help - esp as I'm super excited about using ruff myself</p>
+            <div class="timeline-body"><p>Happy to help - esp as I&#x27;m super excited about using ruff myself</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:54:59 UTC
+        Synced at 2026-01-20 18:51:31 UTC
     </footer>
 </body>
 </html>

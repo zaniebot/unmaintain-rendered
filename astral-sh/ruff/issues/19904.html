@@ -23,41 +23,41 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/waldyrious">@waldyrious</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>Currently, <a href="https://docs.astral.sh/ruff/rules/module-import-not-at-top-of-file/">E402</a> (<code>module-import-not-at-top-of-file</code>) has a few exceptions for when one might legitimately need to put some code before imports. One such exception is <code>os.environ</code> modifications, introduced in #10059 / #10066 / #12047.</p>
-<p>It's been raised in #9091 that <code>load_dotenv()</code>, which is used to load environment variables from a <code>.env</code> file, could also get a similar special case, for the same reasons as those that justify the <code>os.environ</code> exception.</p>
+<p>It&#x27;s been raised in #9091 that <code>load_dotenv()</code>, which is used to load environment variables from a <code>.env</code> file, could also get a similar special case, for the same reasons as those that justify the <code>os.environ</code> exception.</p>
 <p>This means one would then be able to do things like:</p>
-<pre><code class="language-python">from dotenv import load_dotenv
+<pre><code>from dotenv import load_dotenv
 
 load_dotenv()
 
 import foobar
 </code></pre>
-<p>...without triggering an E402 error, similar to what's <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/resources/test/fixtures/pycodestyle/E402_2.py">already the case today</a> for <code>os.environ</code>.</p>
+<p>...without triggering an E402 error, similar to what&#x27;s <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/resources/test/fixtures/pycodestyle/E402_2.py">already the case today</a> for <code>os.environ</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-14 13:24</div>
             <div class="timeline-body"><p>Thanks for opening the issue and finding all the related PRs!</p>
-<p>I'll add the <code>needs-decision</code> label to give others a chance to weigh in, but this makes sense to me. Instead of adding more special cases, we may also want to consider introducing a configuration option where users can specify their own exceptions.</p>
+<p>I&#x27;ll add the <code>needs-decision</code> label to give others a chance to weigh in, but this makes sense to me. Instead of adding more special cases, we may also want to consider introducing a configuration option where users can specify their own exceptions.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-08-14 13:24</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-14 13:24</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> added by @ntBre on 2025-08-14 13:24</div>
+            <div class="event">Label <span class="label">needs-decision</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-14 13:24</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-15 06:41</div>
-            <div class="timeline-body"><p>This does make sense to me. The only thing that seems worth balancing here is that we don't want to add every possible exception and using a noqa comment in this case seems fine to me.</p>
-<p>I could also see cases where the <code>load_dotenv</code> call doesn't have to come before any import, in which case I would want E402 to flag your example because I placed the <code>foobar</code> call accidentally after <code>load_dotenv</code>. Because of that, I don't think we should add the exception and I'd prefer a precisely placed noqa with an explanation of why <code>load_dotenv</code> needs to be loaded before <code>foobar</code> if it were my code.</p>
+            <div class="timeline-body"><p>This does make sense to me. The only thing that seems worth balancing here is that we don&#x27;t want to add every possible exception and using a noqa comment in this case seems fine to me.</p>
+<p>I could also see cases where the <code>load_dotenv</code> call doesn&#x27;t have to come before any import, in which case I would want E402 to flag your example because I placed the <code>foobar</code> call accidentally after <code>load_dotenv</code>. Because of that, I don&#x27;t think we should add the exception and I&#x27;d prefer a precisely placed noqa with an explanation of why <code>load_dotenv</code> needs to be loaded before <code>foobar</code> if it were my code.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/waldyrious">@waldyrious</a> on 2025-08-15 13:05</div>
-            <div class="timeline-body"><p>Oh, that's a good point, @MichaReiser. That is indeed the case for the particular module that I was using when I bumped into the E402 errors.</p>
-<p>However, wouldn't that argument also apply to when using <code>os.environ</code>? I wouldn't have a strong preference to add the exception if it were to open a precedent, but in this case I would argue that it makes sense to add <code>load_dotenv</code> for consistency.</p>
+            <div class="timeline-body"><p>Oh, that&#x27;s a good point, @MichaReiser. That is indeed the case for the particular module that I was using when I bumped into the E402 errors.</p>
+<p>However, wouldn&#x27;t that argument also apply to when using <code>os.environ</code>? I wouldn&#x27;t have a strong preference to add the exception if it were to open a precedent, but in this case I would argue that it makes sense to add <code>load_dotenv</code> for consistency.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -67,23 +67,23 @@ import foobar
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-15 15:55</div>
-            <div class="timeline-body"><p>Yeah, the argument with <code>os.environ</code> makes sense. Where I see the tension is in distinguishing between intentional and unintentional cases, and in the frequency of false positives.  I don't have a good answer to this, but it seems we're adding more and more exceptions where a simple noqa comment might be the perfect balance of flagging the &quot;intentional&quot; cases.</p>
+            <div class="timeline-body"><p>Yeah, the argument with <code>os.environ</code> makes sense. Where I see the tension is in distinguishing between intentional and unintentional cases, and in the frequency of false positives.  I don&#x27;t have a good answer to this, but it seems we&#x27;re adding more and more exceptions where a simple noqa comment might be the perfect balance of flagging the &quot;intentional&quot; cases.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/waldyrious">@waldyrious</a> on 2025-08-17 16:08</div>
-            <div class="timeline-body"><p>Just to reiterate my point: I wouldn't consider this an addition of a new exception, at least in semantic terms — just the generalization of an existing one. In fact. I would go as far as to propose modifying the existing <code>is_os_environ_modification</code> test in <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_python_semantic/src/analyze/imports.rs"><code>imports.rs</code></a>, instead of adding a separate one.</p>
-<p>That said, if it is decided that environment variable modifications (and, for that matter, logging setup) should not be unconditionally excepted from the imports sorting check, then I suppose the solution would entail removing the existing <code>os.environ</code> — is that a possibility that's on the table, considering that it's been already stabilized?</p>
+            <div class="timeline-body"><p>Just to reiterate my point: I wouldn&#x27;t consider this an addition of a new exception, at least in semantic terms — just the generalization of an existing one. In fact. I would go as far as to propose modifying the existing <code>is_os_environ_modification</code> test in <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_python_semantic/src/analyze/imports.rs"><code>imports.rs</code></a>, instead of adding a separate one.</p>
+<p>That said, if it is decided that environment variable modifications (and, for that matter, logging setup) should not be unconditionally excepted from the imports sorting check, then I suppose the solution would entail removing the existing <code>os.environ</code> — is that a possibility that&#x27;s on the table, considering that it&#x27;s been already stabilized?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dancollins">@dancollins</a> on 2025-08-20 00:22</div>
             <div class="timeline-body"><blockquote>
-<p>This does make sense to me. The only thing that seems worth balancing here is that we don't want to add every possible exception and using a noqa comment in this case seems fine to me.</p>
-<p>I could also see cases where the <code>load_dotenv</code> call doesn't have to come before any import, in which case I would want E402 to flag your example because I placed the <code>foobar</code> call accidentally after <code>load_dotenv</code>. Because of that, I don't think we should add the exception and I'd prefer a precisely placed noqa with an explanation of why <code>load_dotenv</code> needs to be loaded before <code>foobar</code> if it were my code.</p>
+<p>This does make sense to me. The only thing that seems worth balancing here is that we don&#x27;t want to add every possible exception and using a noqa comment in this case seems fine to me.</p>
+<p>I could also see cases where the <code>load_dotenv</code> call doesn&#x27;t have to come before any import, in which case I would want E402 to flag your example because I placed the <code>foobar</code> call accidentally after <code>load_dotenv</code>. Because of that, I don&#x27;t think we should add the exception and I&#x27;d prefer a precisely placed noqa with an explanation of why <code>load_dotenv</code> needs to be loaded before <code>foobar</code> if it were my code.</p>
 </blockquote>
-<p>This sounds reasonable, but it either doesn't work for me or I've missed what you mean. Here's some example code from my codebase:</p>
-<pre><code class="language-python">from dotenv import load_dotenv
+<p>This sounds reasonable, but it either doesn&#x27;t work for me or I&#x27;ve missed what you mean. Here&#x27;s some example code from my codebase:</p>
+<pre><code>from dotenv import load_dotenv
 
 load_dotenv()  # noqa: E402
 
@@ -92,13 +92,13 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 </code></pre>
-<p>The <code>#noqa: E402</code> isn't actually suppressing anything here, as the warnings are actually for the following lines (i.e. <code>import os</code> and <code>from contextlib import asynccontextmanager</code>). It's annoying to need to add the noqa to subsequent lines when what I want to do is tell Ruff to ignore that specific error as a result of the line <code>load_dotenv()</code>.</p>
+<p>The <code>#noqa: E402</code> isn&#x27;t actually suppressing anything here, as the warnings are actually for the following lines (i.e. <code>import os</code> and <code>from contextlib import asynccontextmanager</code>). It&#x27;s annoying to need to add the noqa to subsequent lines when what I want to do is tell Ruff to ignore that specific error as a result of the line <code>load_dotenv()</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-20 14:05</div>
             <div class="timeline-body"><p>I think something more like this would be in line with what Micha was saying:</p>
-<pre><code class="language-py">import os
+<pre><code>import os
 from contextlib import asynccontextmanager
 
 from dotenv import load_dotenv
@@ -107,18 +107,18 @@ load_dotenv()
 
 from fastapi import FastAPI  # noqa: E402
 </code></pre>
-<p>I could be missing something, but I'm assuming <code>os</code> and <code>contextlib</code> don't read anything loaded by <code>load_dotenv</code>, so something like this isolates the issue to the import that actually needs to be after <code>load_dotenv</code> and E402 can still be enforced for more imports.</p>
+<p>I could be missing something, but I&#x27;m assuming <code>os</code> and <code>contextlib</code> don&#x27;t read anything loaded by <code>load_dotenv</code>, so something like this isolates the issue to the import that actually needs to be after <code>load_dotenv</code> and E402 can still be enforced for more imports.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dancollins">@dancollins</a> on 2025-08-20 21:33</div>
-            <div class="timeline-body"><p>Yes that's a very good point - and it also helps show which modules depend on the .env along with the justification comments. Thanks! I hadn't considered just re-ordering like that :)</p>
+            <div class="timeline-body"><p>Yes that&#x27;s a very good point - and it also helps show which modules depend on the .env along with the justification comments. Thanks! I hadn&#x27;t considered just re-ordering like that :)</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:53:12 UTC
+        Synced at 2026-01-20 18:50:20 UTC
     </footer>
 </body>
 </html>

@@ -23,8 +23,8 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a></div>
-            <div class="timeline-body"><p>The following example causes the <code>ty</code> run time to grow exponentially with the number of <code>isinstance</code> checks. This is very similar to the problematic case in https://github.com/astral-sh/ruff/pull/18669, with the only difference that the attributes are actually defined, circumventing the patch in https://github.com/astral-sh/ruff/pull/18669.</p>
-<pre><code class="language-py">class C:
+            <div class="timeline-body"><p>The following example causes the <code>ty</code> run time to grow exponentially with the number of <code>isinstance</code> checks. This is very similar to the problematic case in <a href="https://github.com/astral-sh/ruff/pull/18669">astral-sh/ruff#18669</a>, with the only difference that the attributes are actually defined, circumventing the patch in <a href="https://github.com/astral-sh/ruff/pull/18669">astral-sh/ruff#18669</a>.</p>
+<pre><code>class C:
     def f(self: &quot;C&quot;):
         self.a = &quot;&quot;
         self.b = &quot;&quot;
@@ -39,11 +39,11 @@
         # [repeat &gt;10 times]
 </code></pre>
 <p>For some reason, this scales even worse than the previous example. We end up doing <code>16 × 3^N - 38</code> <code>member_lookup_with_policy</code> calls, where <code>N</code> is the number of <code>isinstance(self.b, str)</code> checks. The previous case &quot;only&quot; scaled with <code>2^N</code>.</p>
-<details>
 
-<summary>patch with a micro benchmark</summary>
 
-<pre><code class="language-diff">diff --git a/crates/ruff_benchmark/benches/ty.rs b/crates/ruff_benchmark/benches/ty.rs
+patch with a micro benchmark
+
+<pre><code>diff --git a/crates/ruff_benchmark/benches/ty.rs b/crates/ruff_benchmark/benches/ty.rs
 index 3093bd6b7a..a4d9ed2536 100644
 --- a/crates/ruff_benchmark/benches/ty.rs
 +++ b/crates/ruff_benchmark/benches/ty.rs
@@ -59,7 +59,7 @@ index 3093bd6b7a..a4d9ed2536 100644
 +    criterion.bench_function(&quot;ty_micro[complex_constrained_attributes_1]&quot;, |b| {
          b.iter_batched_ref(
              || {
-                 // This is a regression benchmark for https://github.com/astral-sh/ty/issues/627.
+                 // This is a regression benchmark for <a href="https://github.com/astral-sh/ty/issues/627">astral-sh/ty#627</a>.
 @@ -400,6 +400,48 @@ fn benchmark_many_attribute_assignments(criterion: &amp;mut Criterion) {
      });
  }
@@ -106,8 +106,8 @@ index 3093bd6b7a..a4d9ed2536 100644
 +    });
 +}
 +
- struct ProjectBenchmark&lt;'a&gt; {
-     project: InstalledProject&lt;'a&gt;,
+ struct ProjectBenchmark&lt;&#x27;a&gt; {
+     project: InstalledProject&lt;&#x27;a&gt;,
      fs: MemoryFileSystem,
 @@ -535,7 +577,8 @@ criterion_group!(
      micro,
@@ -120,15 +120,15 @@ index 3093bd6b7a..a4d9ed2536 100644
  criterion_group!(project, anyio, attrs, hydra);
  criterion_main!(check_file, micro, project);
 </code></pre>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2025-06-26 13:35</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-26 13:35</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">hang</span> added by @sharkdp on 2025-06-26 13:35</div>
+            <div class="event">Label <span class="label">hang</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-26 13:35</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-27 10:27</div>
@@ -137,12 +137,12 @@ index 3093bd6b7a..a4d9ed2536 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-01 09:59</div>
-            <div class="timeline-body"><p>It's actually relatively clear why https://github.com/astral-sh/ruff/pull/18955 fixes this. What's harder to understand is why this was a problem in the first place.</p>
+            <div class="timeline-body"><p>It&#x27;s actually relatively clear why <a href="https://github.com/astral-sh/ruff/pull/18955">astral-sh/ruff#18955</a> fixes this. What&#x27;s harder to understand is why this was a problem in the first place.</p>
 <p>Both of the attribute assignments previously acquired complex reachability constraints for an end-of-scope use (which is what we previously used for instance attributes).</p>
-<p>With the change in https://github.com/astral-sh/ruff/pull/18955, we use all reachable definitions (<code>UseDefMapBuilder::reachable_definitions</code>), where both of these attribute assignments have trivial reachability constraints of <code>ALWAYS_TRUE</code>.</p>
-<hr />
-<p>I have not attempted to do a full analysis here, but it's clear that there is some kind of combinatorial explosion here if we only look at the first few steps:</p>
-<p>Let's say we want to look up <code>self.a</code>. To do this, we look at an end-of-scope use of <code>self.a</code> in <code>f</code>. The visibility of the <code>self.a = &quot;&quot;</code> binding at this position is guarded by a reachability constraint of</p>
+<p>With the change in <a href="https://github.com/astral-sh/ruff/pull/18955">astral-sh/ruff#18955</a>, we use all reachable definitions (<code>UseDefMapBuilder::reachable_definitions</code>), where both of these attribute assignments have trivial reachability constraints of <code>ALWAYS_TRUE</code>.</p>
+<hr>
+<p>I have not attempted to do a full analysis here, but it&#x27;s clear that there is some kind of combinatorial explosion here if we only look at the first few steps:</p>
+<p>Let&#x27;s say we want to look up <code>self.a</code>. To do this, we look at an end-of-scope use of <code>self.a</code> in <code>f</code>. The visibility of the <code>self.a = &quot;&quot;</code> binding at this position is guarded by a reachability constraint of</p>
 <pre><code>~[isinstance(self.a, str)] AND ~[isinstance(self.b, str)] AND … AND ~[isinstance(self.b, str)]
 </code></pre>
 <p>While evaluating this constraint, we need to infer the types <code>self.a</code> and N occurrences of <code>self.b</code>. The use of <code>self.a</code> here has a trivial reachability constraint (and would hit a cycle). But the uses of <code>self.b</code> each have different reachability constraints (with a growing number of <code>isinstance</code> checks). So we need to evaluate O(N) other reachability constraints to solve this:</p>
@@ -155,16 +155,16 @@ index 3093bd6b7a..a4d9ed2536 100644
 ~[isinstance(self.a, str)] AND ~[isinstance(self.b, str)] AND … AND ~[isinstance(self.b, str)] 
 </code></pre>
 <p>Each of these have more uses of <code>self.a</code> and <code>self.b</code>, leading to further recursion. This expansion is eventually stopped by fixpoint iteration and salsa caching, but apparently there are many different variations of &quot;the type of <code>self.b</code> at this particular position under these particular constraints in this specific iteration of fixpoint iteration&quot;.</p>
-<p>If someone would find it valuable to track this down further, I'm happy to do it, but otherwise I would skip the full analysis for now.</p>
+<p>If someone would find it valuable to track this down further, I&#x27;m happy to do it, but otherwise I would skip the full analysis for now.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @sharkdp on 2025-07-01 12:38</div>
+            <div class="event">Closed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-01 12:38</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:12 UTC
+        Synced at 2026-01-20 19:24:56 UTC
     </footer>
 </body>
 </html>

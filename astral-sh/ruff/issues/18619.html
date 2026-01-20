@@ -23,20 +23,20 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/tleonhardt">@tleonhardt</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>Rule <a href="https://docs.astral.sh/ruff/rules/non-pep604-annotation-union/">UP007</a> which replaces <code>Union</code> type hints with <code>|</code> and <code>Optional[foo]</code> with <code>foo | None</code> crashes on all versions of Python including the latest ones under the very specific circumstance of replacing <code>Optional[typing.NamedTuple]</code> with <code>typing.NamedTuple | None</code>.</p>
 <p>The error is:</p>
-<pre><code class="language-sh">TypeError: unsupported operand type(s) for |: `function` and `NoneType`
+<pre><code>TypeError: unsupported operand type(s) for |: `function` and `NoneType`
 </code></pre>
 <p>I tested on Python 3.11, 3.13 saw identical behavior in all cases. It does work fine on 3.14 due to deferred type evaluation.</p>
-<h3>Version</h3>
+Version
 <p>ruff 0.11.13 as installed from uv</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-11 01:13</div>
             <div class="timeline-body"><p>This sounds very similar to #17711. Based on the answers there, I think this is kind of expected because <code>typing.NamedTuple</code>  is a function, not a type. It sounds like you can work around the error by adding <code>from __future__ import annotations</code>:</p>
-<pre><code class="language-shell">$ cat &lt;&lt;'EOF' | python -
+<pre><code>$ cat &lt;&lt;&#x27;EOF&#x27; | python -
 from __future__ import annotations
 
 import typing
@@ -46,8 +46,8 @@ print(&quot;okay&quot;)
 EOF
 okay
 </code></pre>
-<p>That works on Python 3.13, but I think that should be the default behavior on 3.14, so I'm surprised you ran into an issue:</p>
-<pre><code class="language-shell">$ cat &lt;&lt;'EOF' | uvx python@3.14 -
+<p>That works on Python 3.13, but I think that should be the default behavior on 3.14, so I&#x27;m surprised you ran into an issue:</p>
+<pre><code>$ cat &lt;&lt;&#x27;EOF&#x27; | uvx python@3.14 -
 import typing
 
 x: typing.NamedTuple | None
@@ -59,38 +59,38 @@ okay
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @ntBre on 2025-06-11 01:13</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-11 01:13</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "UP007 crashes with TypeError on all version of Python for Optional[typing.NamedTuple]" to "UP007 crashes with TypeError on all version of Python prior to 3.14 for Optional[typing.NamedTuple]" by @tleonhardt on 2025-06-11 01:28</div>
+            <div class="event">Renamed from &quot;UP007 crashes with TypeError on all version of Python for Optional[typing.NamedTuple]&quot; to &quot;UP007 crashes with TypeError on all version of Python prior to 3.14 for Optional[typing.NamedTuple]&quot; by <a href="https://github.com/tleonhardt">@tleonhardt</a> on 2025-06-11 01:28</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tleonhardt">@tleonhardt</a> on 2025-06-11 01:30</div>
             <div class="timeline-body"><p>@ntBre I was wrong about 3.14, sorry about that. I tested again and it works fine there.</p>
-<p>While importing from future annotations works well in the vast majority of cases, it isn't truly generically safe. There are some edge cases where it breaks things, in particular related to frozen dataclasses. For the application I am working on, attempting to use the future annotations completely breaks everything.</p>
+<p>While importing from future annotations works well in the vast majority of cases, it isn&#x27;t truly generically safe. There are some edge cases where it breaks things, in particular related to frozen dataclasses. For the application I am working on, attempting to use the future annotations completely breaks everything.</p>
 <p>Would it be within reason to mark some or all fixes for <code>UP007</code> as <strong>hidden</strong>/<strong>unsafe</strong> to signal to users there is the potential of breaking things?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-11 01:36</div>
             <div class="timeline-body"><p>Ah good to know, thanks!</p>
-<p>And interesting. We may need to call in the experts, that's about the limit of my typing advice 😄</p>
+<p>And interesting. We may need to call in the experts, that&#x27;s about the limit of my typing advice 😄</p>
 <p>cc @AlexWaygood and @Daverball</p>
 <blockquote>
 <p>Would it be within reason to mark some or all fixes for UP007 as hidden/unsafe to signal to users there is the potential of breaking things?</p>
 </blockquote>
-<p>That sounds reasonable to me. The fix is already <a href="https://docs.astral.sh/ruff/rules/non-pep604-annotation-union/#fix-safety">unsafe</a> for Python versions before 3.10 but unconditionally safe after 3.10. I'd be interested in others' thoughts on that too, though.</p>
+<p>That sounds reasonable to me. The fix is already <a href="https://docs.astral.sh/ruff/rules/non-pep604-annotation-union/#fix-safety">unsafe</a> for Python versions before 3.10 but unconditionally safe after 3.10. I&#x27;d be interested in others&#x27; thoughts on that too, though.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tleonhardt">@tleonhardt</a> on 2025-06-11 01:47</div>
             <div class="timeline-body"><p>The <a href="https://docs.astral.sh/ruff/rules/non-pep604-annotation-union/">ruff documentation for UP007</a> actually states:</p>
 <blockquote>
-<p>This rule's fix is marked as unsafe, as it may lead to runtime errors when alongside libraries that rely on runtime type annotations, like Pydantic, on Python versions prior to Python 3.10. It may also lead to runtime errors in unusual and likely incorrect type annotations where the type does not support the | operator.</p>
+<p>This rule&#x27;s fix is marked as unsafe, as it may lead to runtime errors when alongside libraries that rely on runtime type annotations, like Pydantic, on Python versions prior to Python 3.10. It may also lead to runtime errors in unusual and likely incorrect type annotations where the type does not support the | operator.</p>
 </blockquote>
 <p>However, I just verified using the latest version of <code>ruff</code> installed from the latest version of <code>uv</code> that it is treated as a safe fix.</p>
 <p>Here is the toy code I used to test:</p>
-<pre><code class="language-Python">from typing import NamedTuple, Optional
+<pre><code>from typing import NamedTuple, Optional
 
 
 def foo() -&gt; Optional[NamedTuple]:
@@ -100,7 +100,7 @@ def foo() -&gt; Optional[NamedTuple]:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-11 01:54</div>
-            <div class="timeline-body"><p>Yeah, I think the documentation is also slightly misleading here unless you read it in <em>just</em> the right way (&quot;This rule's fix is marked as unsafe, [...], on Python versions prior to Python 3.10&quot;). In the implementation it's clear that it's only unsafe before 3.10:</p>
+            <div class="timeline-body"><p>Yeah, I think the documentation is also slightly misleading here unless you read it in <em>just</em> the right way (&quot;This rule&#x27;s fix is marked as unsafe, [...], on Python versions prior to Python 3.10&quot;). In the implementation it&#x27;s clear that it&#x27;s only unsafe before 3.10:</p>
 <p>https://github.com/astral-sh/ruff/blob/a2de81cb27541b7f09d57644539cea566cc0ece1/crates/ruff_linter/src/rules/pyupgrade/rules/use_pep604_annotation.rs#L143-L147</p>
 <p>I should have included that before too.</p>
 </div>
@@ -108,7 +108,7 @@ def foo() -&gt; Optional[NamedTuple]:
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tleonhardt">@tleonhardt</a> on 2025-06-11 01:55</div>
             <div class="timeline-body"><p>Output I get from running <code>uv ruff check --no-fix</code> on above example using a Python 3.14 venv and <code>ruff</code> 0.11.13:</p>
-<pre><code class="language-sh">main.py:5:14: UP007 [*] Use `X | Y` for type annotations
+<pre><code>main.py:5:14: UP007 [*] Use `X | Y` for type annotations
   |
 5 | def foo() -&gt; Optional[NamedTuple]:
   |              ^^^^^^^^^^^^^^^^^^^^ UP007
@@ -120,32 +120,32 @@ Found 1 error.
 [*] 1 fixable with the `--fix` option.
 </code></pre>
 <p>And oops looks like I misread the documentation ;-)</p>
-<p><strong>So I guess what I'm asking is could it be marked as <code>unsafe</code> for all versions of Python prior to 3.14?</strong></p>
+<p><strong>So I guess what I&#x27;m asking is could it be marked as <code>unsafe</code> for all versions of Python prior to 3.14?</strong></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tleonhardt">@tleonhardt</a> on 2025-06-11 01:59</div>
-            <div class="timeline-body"><p>While I'm taking the time to create an issue and comment ... I really want to reach out and give my gratitude to everyone at Astral and all of the open-source developers working on both <code>uv</code> and <code>ruff</code>.</p>
+            <div class="timeline-body"><p>While I&#x27;m taking the time to create an issue and comment ... I really want to reach out and give my gratitude to everyone at Astral and all of the open-source developers working on both <code>uv</code> and <code>ruff</code>.</p>
 <p>I have found these to be ground breaking tools that have enhanced my Python workflow quite noticeably.</p>
 <p>So thanks to all of you and please keep up the great work!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-06-11 06:02</div>
-            <div class="timeline-body"><p>This is one of those cases where we can't ever be 100% sure that <code>__or__</code>/<code>__lor__</code> won't crash at runtime (except for the very specific case of an annotated assignment inside a function scope, since that expression will never be evaluated and is completely discarded by the compiler).</p>
-<p>But like everything it's a trade-off. Everything that's a real subclass of <code>type</code> and doesn't do something esoteric will work starting with 3.10.</p>
-<p><code>typing.NamedTuple</code> is not valid as a type, that's why bitwise or will not work on it. With type inference and multi-file analysis we could detect this and mark the fix as unsafe.</p>
-<p>Type checkers will complain about using <code>typing.NamedTuple</code> as a type, whether it's spelled as <code>Optional[NamedTuple]</code> or <code>NamedTuple | None</code> does not change that (unless you're using a mypy plugin that gives <code>typing.NamedTuple</code> a meaning as a type).</p>
-<p>That being said, there are still some rare valid use-cases where you have to use non-types in type annotations. <code>zope.interface</code> is a good example of this. <code>Interface</code> instances are not subclasses of <code>type</code>, they're pure <code>object</code> instances, so they're technically not valid types, however there is a mypy plugin to recognize them as such and until <code>zope.interface</code> manually added support for <code>__or__</code>/<code>__lor__</code> using bitwise or on an interface was an error, so you needed to use <code>Union</code>/<code>Optional</code>.</p>
-<p>But either way I don't think it's worth to carve out any further exceptions for this rule. People that are doing something weird can manually mark the fix as unsafe in their ruff config or disable the rule entirely. Once we have type inference and multi-file analysis we can do a better job in more of those esoteric uses, but until then I personally wouldn't change anything.</p>
+            <div class="timeline-body"><p>This is one of those cases where we can&#x27;t ever be 100% sure that <code>__or__</code>/<code>__lor__</code> won&#x27;t crash at runtime (except for the very specific case of an annotated assignment inside a function scope, since that expression will never be evaluated and is completely discarded by the compiler).</p>
+<p>But like everything it&#x27;s a trade-off. Everything that&#x27;s a real subclass of <code>type</code> and doesn&#x27;t do something esoteric will work starting with 3.10.</p>
+<p><code>typing.NamedTuple</code> is not valid as a type, that&#x27;s why bitwise or will not work on it. With type inference and multi-file analysis we could detect this and mark the fix as unsafe.</p>
+<p>Type checkers will complain about using <code>typing.NamedTuple</code> as a type, whether it&#x27;s spelled as <code>Optional[NamedTuple]</code> or <code>NamedTuple | None</code> does not change that (unless you&#x27;re using a mypy plugin that gives <code>typing.NamedTuple</code> a meaning as a type).</p>
+<p>That being said, there are still some rare valid use-cases where you have to use non-types in type annotations. <code>zope.interface</code> is a good example of this. <code>Interface</code> instances are not subclasses of <code>type</code>, they&#x27;re pure <code>object</code> instances, so they&#x27;re technically not valid types, however there is a mypy plugin to recognize them as such and until <code>zope.interface</code> manually added support for <code>__or__</code>/<code>__lor__</code> using bitwise or on an interface was an error, so you needed to use <code>Union</code>/<code>Optional</code>.</p>
+<p>But either way I don&#x27;t think it&#x27;s worth to carve out any further exceptions for this rule. People that are doing something weird can manually mark the fix as unsafe in their ruff config or disable the rule entirely. Once we have type inference and multi-file analysis we can do a better job in more of those esoteric uses, but until then I personally wouldn&#x27;t change anything.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-11 11:29</div>
             <div class="timeline-body"><blockquote>
-<p>Type checkers will complain about using <code>typing.NamedTuple</code> as a type, whether it's spelled as <code>Optional[NamedTuple]</code> or <code>NamedTuple | None</code> does not change that (unless you're using a mypy plugin that gives <code>typing.NamedTuple</code> a meaning as a type).</p>
+<p>Type checkers will complain about using <code>typing.NamedTuple</code> as a type, whether it&#x27;s spelled as <code>Optional[NamedTuple]</code> or <code>NamedTuple | None</code> does not change that (unless you&#x27;re using a mypy plugin that gives <code>typing.NamedTuple</code> a meaning as a type).</p>
 </blockquote>
-<p>Unfortunately this isn't true @Daverball: due to inaccuracies in typeshed, type checkers don't currently complain if you use <code>typing.NamedTuple</code> as a type:</p>
+<p>Unfortunately this isn&#x27;t true @Daverball: due to inaccuracies in typeshed, type checkers don&#x27;t currently complain if you use <code>typing.NamedTuple</code> as a type:</p>
 <ul>
 <li>https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=1508ed6c1e19109c32379a366788c31f</li>
 <li>https://pyright-play.net/?pythonVersion=3.12&amp;strict=true&amp;enableExperimentalFeatures=true&amp;code=JYWwDg9gTgLgBDAnmYA7A5gKEwEwKYBmcBAFAB4BcCya6AdAHICGIeOAKgK5gA2eAlFTrCgA</li>
@@ -153,28 +153,28 @@ Found 1 error.
 </ul>
 <p><a href="https://discuss.python.org/t/removing-type-checker-internals-from-typeshed/87960/4">I strongly agree that they should</a>, however. And I agree with this:</p>
 <blockquote>
-<p><code>typing.NamedTuple</code> is not valid as a type, that's why bitwise or will not work on it. With type inference and multi-file analysis we could detect this and mark the fix as unsafe.</p>
+<p><code>typing.NamedTuple</code> is not valid as a type, that&#x27;s why bitwise or will not work on it. With type inference and multi-file analysis we could detect this and mark the fix as unsafe.</p>
 </blockquote>
-<p><code>NamedTuple</code> is not a type; it's a type constructor. Using it in a type annotation doesn't make much sense IMO. But since type checkers will currently (incorrectly!) <em>not</em> complain about it being used in a type annotation, I suppose it would be reasonable to specifically detect <code>NamedTuple</code> in this Ruff rule and not emit the diagnostic. It's a somewhat unique situation.</p>
-<p>I don't think there's a need to mark the fix as unsafe for other type annotations. Situations like this are very rare, and I don't think we need to go out of our way to worry about annotations that would already be rejected by type checkers under the &quot;normal&quot; rules. The only reason why we might specifically consider carving out an exception in this case IMO is because of the current false negatives from type checkers regarding <code>NamedTuple</code>.</p>
+<p><code>NamedTuple</code> is not a type; it&#x27;s a type constructor. Using it in a type annotation doesn&#x27;t make much sense IMO. But since type checkers will currently (incorrectly!) <em>not</em> complain about it being used in a type annotation, I suppose it would be reasonable to specifically detect <code>NamedTuple</code> in this Ruff rule and not emit the diagnostic. It&#x27;s a somewhat unique situation.</p>
+<p>I don&#x27;t think there&#x27;s a need to mark the fix as unsafe for other type annotations. Situations like this are very rare, and I don&#x27;t think we need to go out of our way to worry about annotations that would already be rejected by type checkers under the &quot;normal&quot; rules. The only reason why we might specifically consider carving out an exception in this case IMO is because of the current false negatives from type checkers regarding <code>NamedTuple</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> removed by @MichaReiser on 2025-06-11 11:40</div>
+            <div class="event">Label <span class="label">question</span> removed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-11 11:40</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-06-11 11:40</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-11 11:40</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2025-06-11 11:40</div>
+            <div class="event">Label <span class="label">help wanted</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-11 11:40</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ntBre on 2025-06-30 21:22</div>
+            <div class="event">Closed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-30 21:22</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:52:51 UTC
+        Synced at 2026-01-20 18:50:03 UTC
     </footer>
 </body>
 </html>

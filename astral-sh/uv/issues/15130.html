@@ -23,28 +23,28 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sebadevo">@sebadevo</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<h1>Context</h1>
-<p>When executing the command <code>uv run</code> inside a project, the project environment will be created and updated before invoking the command (<a href="https://docs.astral.sh/uv/reference/cli/#uv-run:~:text=When%20used%20in%20a%20project%2C%20the%20project%20environment%20will%20be%20created%20and%20updated%20before%20invoking%20the%20command.">docs</a>). as per your documentation. I understand this as the equivalent of running a uv sync if it wasn't synced before.</p>
+            <div class="timeline-body">Summary
+Context
+<p>When executing the command <code>uv run</code> inside a project, the project environment will be created and updated before invoking the command (<a href="https://docs.astral.sh/uv/reference/cli/#uv-run:~:text=When%20used%20in%20a%20project%2C%20the%20project%20environment%20will%20be%20created%20and%20updated%20before%20invoking%20the%20command.">docs</a>). as per your documentation. I understand this as the equivalent of running a uv sync if it wasn&#x27;t synced before.</p>
 <p>When doing it with a packages in a workspace, you have the possibility of running the same command if you are at the root and want to execute the root project. For example:</p>
-<pre><code class="language-bash">uv init --package albatros
-uv run albatros # syncs the project because it wansn't done before
+<pre><code>uv init --package albatros
+uv run albatros # syncs the project because it wansn&#x27;t done before
 </code></pre>
 <p>When defining workspace members inside a package project (such as albatros):</p>
-<pre><code class="language-bash">uv init --package packages/bird-feeder
+<pre><code>uv init --package packages/bird-feeder
 uv init --package packages/seeds
 </code></pre>
 <p>you can then run a package by</p>
-<pre><code class="language-bash">uv sync --package seeds
+<pre><code>uv sync --package seeds
 </code></pre>
 <p>which will sync the seeds environment from its pyproject.toml and run it using</p>
-<pre><code class="language-bash">uv run seeds
+<pre><code>uv run seeds
 </code></pre>
 <p>However, seeing the <a href="https://docs.astral.sh/uv/reference/cli/#uv-run--package:~:text=default%2Dgroups.-,%2D%2Dpackage%20package,workspace%20member%20does%20not%20exist%2C%20uv%20will%20exit%20with%20an%20error.,-%2D%2Dprerelease%20prerelease">docs</a>, I would have expected to be able to directly run the command:</p>
-<pre><code class="language-bash">uv run --package seeds
+<pre><code>uv run --package seeds
 </code></pre>
-<p>which would sync the environment and run the script. But this doesn't work. Instead it returns the error:</p>
-<pre><code class="language-txt">Installed 1 package in 3ms
+<p>which would sync the environment and run the script. But this doesn&#x27;t work. Instead it returns the error:</p>
+<pre><code>Installed 1 package in 3ms
 Provide a command or script to invoke with `uv run &lt;command&gt;` or `uv run &lt;script&gt;.py`.
 
 The following commands are available in the environment:
@@ -58,37 +58,37 @@ The following commands are available in the environment:
 See `uv run --help` for more information.
 </code></pre>
 <p>Even though the command failed we can see that it still installed the environment.
-I thus assume that the error comes from --package that doesn't work well with defined scripts in the pyproject.toml.</p>
+I thus assume that the error comes from --package that doesn&#x27;t work well with defined scripts in the pyproject.toml.</p>
 <p>For example, in the albatros pyproject.toml we have the following script defined:</p>
-<pre><code class="language-toml">[project.scripts]
+<pre><code>[project.scripts]
 albatros = &quot;albatros:main&quot;
 </code></pre>
 <p>and running <code>uv run --package albatros</code> returns the same error mentionned above.</p>
-<h1>How to reproduce</h1>
-<pre><code class="language-bash">uv init --package albatros
+How to reproduce
+<pre><code>uv init --package albatros
 </code></pre>
-<pre><code class="language-bash">cd albatros
+<pre><code>cd albatros
 </code></pre>
-<pre><code class="language-bash">uv init --package packages/bird-feeder
+<pre><code>uv init --package packages/bird-feeder
 uv init --package packages/seeds
 </code></pre>
-<pre><code class="language-bash">uv run --package seeds
+<pre><code>uv run --package seeds
 </code></pre>
-<h3>Platform</h3>
+Platform
 <p>Linux 6.8.0-1029-azure x86_64 GNU/Linux</p>
-<h3>Version</h3>
+Version
 <p>uv 0.8.5</p>
-<h3>Python version</h3>
+Python version
 <p>Python 3.11.12</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @sebadevo on 2025-08-07 11:54</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/sebadevo">@sebadevo</a> on 2025-08-07 11:54</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sebadevo">@sebadevo</a> on 2025-08-07 20:48</div>
-            <div class="timeline-body"><p>I realised later on that the reason the command wasn't working is simply because it was missing the command to be executed. meaning that in the above example the fix is just to add a &quot;second&quot; seeds to the command.</p>
-<pre><code class="language-bash">uv run --package seeds seeds
+            <div class="timeline-body"><p>I realised later on that the reason the command wasn&#x27;t working is simply because it was missing the command to be executed. meaning that in the above example the fix is just to add a &quot;second&quot; seeds to the command.</p>
+<pre><code>uv run --package seeds seeds
 </code></pre>
 <p>The environment corresponding to the seeds package is first built, and then the seeds command is ran. So the initial issue I had is Solved.</p>
 <p>Do you think it would be an expected feature that if no script command is passed it would try and find a script with the same name as the environment and try to run it? Or do you want this to still continue returning an error of missing script command ?</p>
@@ -101,14 +101,14 @@ uv init --package packages/seeds
 <p>Do you think it would be an expected feature that if no script command is passed it would try and find a script with the same</p>
 </blockquote>
 <p>This is intentionally not supported today.</p>
-<p>I think it's possible we should have <code>uv run</code> execute a command with the same name as the package by default, but I'm not sure if it's worth the confusion it might add. e.g., then <code>uv run</code> might run <code>foo</code> but then should <code>uv run bar</code> run <code>foo bar</code> or <code>bar</code>? For example, the cargo ecosystem would run <code>foo bar</code>.</p>
+<p>I think it&#x27;s possible we should have <code>uv run</code> execute a command with the same name as the package by default, but I&#x27;m not sure if it&#x27;s worth the confusion it might add. e.g., then <code>uv run</code> might run <code>foo</code> but then should <code>uv run bar</code> run <code>foo bar</code> or <code>bar</code>? For example, the cargo ecosystem would run <code>foo bar</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-08-07 20:51</div>
+            <div class="event">Label <span class="label">bug</span> removed by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-07 20:51</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-08-07 20:51</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-07 20:51</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sebadevo">@sebadevo</a> on 2025-08-09 13:58</div>
@@ -117,12 +117,12 @@ uv init --package packages/seeds
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @sebadevo on 2025-08-09 13:58</div>
+            <div class="event">Closed by <a href="https://github.com/sebadevo">@sebadevo</a> on 2025-08-09 13:58</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:32:31 UTC
+        Synced at 2026-01-20 19:39:53 UTC
     </footer>
 </body>
 </html>

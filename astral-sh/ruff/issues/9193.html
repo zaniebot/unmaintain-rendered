@@ -24,7 +24,7 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/discentem">@discentem</a></div>
             <div class="timeline-body"><p>Please let me know if you need any further information. This is my first time submitting an issue and using Ruff!</p>
-<h2>Description of issue:</h2>
+Description of issue:
 <p>Ruff detects that</p>
 <pre><code>`urllib.request` imported but unused
 </code></pre>
@@ -38,9 +38,9 @@
 <pre><code>import urllib.request
 </code></pre>
 <p><strong>tl:dr</strong></p>
-<p>but I'm wondering: should Ruff be able to detect this situation and either (a) ignore <code>--fix</code> if Ruff is actually unable to fix without breaking or (b) perform the fix correctly?</p>
-<h3>A minimal code snippet that reproduces the bug.</h3>
-<pre><code class="language-python">discentem@laptop ruff_testing % python3 thing.py 
+<p>but I&#x27;m wondering: should Ruff be able to detect this situation and either (a) ignore <code>--fix</code> if Ruff is actually unable to fix without breaking or (b) perform the fix correctly?</p>
+A minimal code snippet that reproduces the bug.
+<pre><code>discentem@laptop ruff_testing % python3 thing.py 
 &lt;urllib.request.Request object at 0x1027e2490&gt;
 discentem@laptop ruff_testing % cat thing.py 
 import urllib
@@ -62,21 +62,21 @@ Traceback (most recent call last):
   File &quot;/Users/discentem/ruff_testing/thing.py&quot;, line 3, in &lt;module&gt;
     print(urllib.request.Request(&quot;https://google.com&quot;))
           ^^^^^^^^^^^^^^
-AttributeError: module 'urllib' has no attribute 'request'
+AttributeError: module &#x27;urllib&#x27; has no attribute &#x27;request&#x27;
 </code></pre>
-<h3>The command you invoked (e.g., <code>ruff /path/to/file.py --fix</code>), ideally including the <code>--isolated</code> flag.</h3>
+The command you invoked (e.g., <code>ruff /path/to/file.py --fix</code>), ideally including the <code>--isolated</code> flag.
 <p><code>ruff check . --fix</code></p>
-<h3>The current Ruff settings (any relevant sections from your <code>pyproject.toml</code>).</h3>
+The current Ruff settings (any relevant sections from your <code>pyproject.toml</code>).
 <p>n/a, there is no pyproject.toml in this minimal example</p>
-<h3>The current Ruff version (<code>ruff --version</code>).</h3>
+The current Ruff version (<code>ruff --version</code>).
 <pre><code>ruff 0.1.5
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-18 22:04</div>
-            <div class="timeline-body"><p>Submodule imports (like <code>import urllib.request</code>) are pretty tricky! They <em>tend</em> to work, but there are a few exceptions (like you're seeing here) that can only be determined via knowledge of the underlying module design (IIUC). For example, this works fine:</p>
-<pre><code class="language-python">&gt;&gt;&gt; import os
+            <div class="timeline-body"><p>Submodule imports (like <code>import urllib.request</code>) are pretty tricky! They <em>tend</em> to work, but there are a few exceptions (like you&#x27;re seeing here) that can only be determined via knowledge of the underlying module design (IIUC). For example, this works fine:</p>
+<pre><code>&gt;&gt;&gt; import os
 &gt;&gt;&gt; os.path.expanduser
 &lt;function expanduser at 0x101007490&gt;
 </code></pre>
@@ -85,23 +85,23 @@ AttributeError: module 'urllib' has no attribute 'request'
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/discentem">@discentem</a> on 2023-12-18 22:53</div>
-            <div class="timeline-body"><p>Thanks for the quick reply! Feel free to close if you want to consider this PEBKAC but if it's tenable for Ruff to handle this special-case for urllib and other stdlib modules that'd be great!</p>
+            <div class="timeline-body"><p>Thanks for the quick reply! Feel free to close if you want to consider this PEBKAC but if it&#x27;s tenable for Ruff to handle this special-case for urllib and other stdlib modules that&#x27;d be great!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-01-02 18:13</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-02 18:13</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/eli-schwartz">@eli-schwartz</a> on 2024-01-16 04:00</div>
-            <div class="timeline-body"><p>I'm not sure I understand what's tricky or an unusual approach here?</p>
+            <div class="timeline-body"><p>I&#x27;m not sure I understand what&#x27;s tricky or an unusual approach here?</p>
 <pre><code>import urllib
 from urllib import request
 
 urllib.request.Request
 </code></pre>
-<p>The issue here is that unlike os.path, you do have to load both <code>sys.modules['urllib']</code> and <code>sys.modules['urllib.request']</code> separately -- the former won't automatically import the latter.</p>
+<p>The issue here is that unlike os.path, you do have to load both <code>sys.modules[&#x27;urllib&#x27;]</code> and <code>sys.modules[&#x27;urllib.request&#x27;]</code> separately -- the former won&#x27;t automatically import the latter.</p>
 <p>Using <code>from urllib import request</code> both adds the second sys.modules entry, adding &quot;request&quot; as a property of the &quot;urllib&quot; module, and binds the &quot;request&quot; name -- which is genuinely unused.</p>
-<p>Any package with a submodule or subpackage will do this, it's not an urllib thing.</p>
+<p>Any package with a submodule or subpackage will do this, it&#x27;s not an urllib thing.</p>
 <p>You can automatically detect the overall pattern (<code>import a; from a import b; a.b.c()</code>) by assuming that <code>a.b.c</code> has a &quot;probably&quot; dependency on <code>a.b</code>, making it unsafe to remove the import:</p>
 <ul>
 <li><code>a.b</code> <em>could</em> be a submodule</li>
@@ -113,7 +113,7 @@ urllib.request.Request
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:49:17 UTC
+        Synced at 2026-01-20 18:48:48 UTC
     </footer>
 </body>
 </html>

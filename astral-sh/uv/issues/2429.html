@@ -25,24 +25,24 @@
             <div class="timeline-header"><a href="https://github.com/colesbury">@colesbury</a></div>
             <div class="timeline-body"><p>Starting with the version 3.13 alpha releases, CPython can optionally be configured to run without the global interpreter lock. This build configuration (&quot;free-threaded&quot;) is not compatible with <code>abi3</code> wheels.</p>
 <p>Additionally, the version specific wheels require the &quot;t&quot; suffix in the ABI tag. For example, <code>cp313-cp313t-manylinux_2_35_x86_64</code> (free-threaded build) instead of <code>cp313-cp313-manylinux_2_35_x86_64</code> (default 3.13 build).</p>
-<h3>Steps to reproduce issue</h3>
+Steps to reproduce issue
 <ol>
 <li>Build python from <a href="https://github.com/python/cpython">source</a> with <code>--disable-gil</code></li>
 <li><code>uv venv</code>, <code>source .venv/bin/activate</code></li>
 <li><code>uv pip install psutil</code></li>
 <li><code>python -c &quot;import psutil&quot;</code> Segmentation fault (core dumped)</li>
 </ol>
-<h3>Identifying <code>--disable-gil</code> CPython builds</h3>
+Identifying <code>--disable-gil</code> CPython builds
 <p>I think the best way is to check if <code>sysconfig.get_config_var(&quot;Py_GIL_DISABLED&quot;)</code> returns <code>True</code>.</p>
 <p><a href="https://github.com/pypa/packaging/blob/e0dda88874e73cd484b9e8464c5921a903db3cf0/src/packaging/tags.py#L138"><code>packaging.tags</code></a> instead checks for a &quot;t&quot; in <code>sys.abiflags</code>, but this is because of constraints on the public API exposed by the package. I think using <code>sysconfig</code> is likely a better option for <code>uv</code>.</p>
-<h3>See also:</h3>
+See also:
 <ul>
 <li>https://github.com/pypa/packaging/blob/e0dda88874e73cd484b9e8464c5921a903db3cf0/src/packaging/tags.py#L229-L230</li>
 </ul>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-03-13 21:00</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-13 21:00</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-13 21:00</div>
@@ -55,12 +55,12 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @konstin by @konstin on 2024-03-14 09:24</div>
+            <div class="event">Assigned to <a href="https://github.com/konstin">@konstin</a> by <a href="https://github.com/konstin">@konstin</a> on 2024-03-14 09:24</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-04-03 13:29</div>
             <div class="timeline-body"><p>@colesbury What is the canonical name for this feature, &quot;no-gil python&quot;, &quot;gil disabled&quot; or &quot;free-threaded python&quot;?</p>
-<p>As a more technical question, is psutil expected to still error when built from source with python 3.13.0a5? (I can built from main too if that's better)</p>
+<p>As a more technical question, is psutil expected to still error when built from source with python 3.13.0a5? (I can built from main too if that&#x27;s better)</p>
 <p><strong>uv</strong></p>
 <pre><code>$ uv venv -q -p python3.13 .venv3.13 --no-cache-dir &amp;&amp; uv pip install psutil --no-cache-dir &amp;&amp; .venv3.13/bin/python -c &quot;import psutil&quot;
 Resolved 1 package in 206ms
@@ -84,7 +84,7 @@ Traceback (most recent call last):
     from . import _psutil_linux as cext
 ImportError: /home/konsti/projects/uv/.venv3.13/lib/python3.13/site-packages/psutil/_psutil_linux.abi3.so: undefined symbol: _Py_atomic_add_ssize
 </code></pre>
-<p>If yes, here's a PR implementing the <code>t</code> abiflag: https://github.com/astral-sh/uv/pull/2805</p>
+<p>If yes, here&#x27;s a PR implementing the <code>t</code> abiflag: <a href="https://github.com/astral-sh/uv/pull/2805">astral-sh/uv#2805</a></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -92,7 +92,7 @@ ImportError: /home/konsti/projects/uv/.venv3.13/lib/python3.13/site-packages/psu
             <div class="timeline-body"><blockquote>
 <p>@colesbury What is the canonical name for this feature, &quot;no-gil python&quot;, &quot;gil disabled&quot; or &quot;free-threaded python&quot;?</p>
 </blockquote>
-<p>Not Sam, but as per the Steering Council decision, the canonical name is &quot;free-threaded Python&quot;: https://github.com/python/steering-council/issues/221#issuecomment-1841593283.</p>
+<p>Not Sam, but as per the Steering Council decision, the canonical name is &quot;free-threaded Python&quot;: <a href="https://github.com/python/steering-council/issues/221">python/steering-council#221</a>#issuecomment-1841593283.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -100,16 +100,16 @@ ImportError: /home/konsti/projects/uv/.venv3.13/lib/python3.13/site-packages/psu
             <div class="timeline-body"><blockquote>
 <p>As a more technical question, is psutil expected to still error when built from source with python 3.13.0a5...</p>
 </blockquote>
-<p>Oof... yeah I think that's something we need to fix either in CPython or in psutil</p>
+<p>Oof... yeah I think that&#x27;s something we need to fix either in CPython or in psutil</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @konstin on 2024-04-12 09:39</div>
+            <div class="event">Closed by <a href="https://github.com/konstin">@konstin</a> on 2024-04-12 09:39</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:24:21 UTC
+        Synced at 2026-01-20 19:30:26 UTC
     </footer>
 </body>
 </html>

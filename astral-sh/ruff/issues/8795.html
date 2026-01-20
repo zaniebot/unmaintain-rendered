@@ -23,16 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/bwildenborg">@bwildenborg</a></div>
-            <div class="timeline-body"><!--
-Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
-
-If you're filing a bug report, please consider including the following information:
-
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
-* The current Ruff settings (any relevant sections from your `pyproject.toml`).
-* The current Ruff version (`ruff --version`).
--->
+            <div class="timeline-body">
 
 <p>I am running Ruff 0.1.4 and trying to extend from a set of common ruff settings in a ruff.toml file.
 The complete ruff.toml looks like:</p>
@@ -78,16 +69,16 @@ select = [
 
 # Ignores
 ignore = [
-    &quot;ANN101&quot;,  # Don't require type annotations for self.
-    &quot;ANN102&quot;,  # Don't require type annotations for cls.
+    &quot;ANN101&quot;,  # Don&#x27;t require type annotations for self.
+    &quot;ANN102&quot;,  # Don&#x27;t require type annotations for cls.
     &quot;ANN401&quot;,  # Any is allowed.
     &quot;D418&quot;,    # overload-with-docstring; Overloads should have docstrings when they alter the API/functionality.
     &quot;FIX002&quot;,  # Allow TODO tags but no others.
     &quot;TRY003&quot;,  # Makes no sense for builtin exceptions.
-    &quot;RSE102&quot;,  # This is a stylistic choice, but the check doesn't verify the item being raised is an object preventing a function from returning an error to raise.
+    &quot;RSE102&quot;,  # This is a stylistic choice, but the check doesn&#x27;t verify the item being raised is an object preventing a function from returning an error to raise.
     &quot;PERF203&quot;, # No try...except in for loop - No clear action to take when this is flagged.
     &quot;RUF013&quot;,  # This is a very basic check prone to false positives, let pyright handle it
-    &quot;E203&quot;,    # Whitespace before ':' - Don't lint for style beyond what black cares about.
+    &quot;E203&quot;,    # Whitespace before &#x27;:&#x27; - Don&#x27;t lint for style beyond what black cares about.
     &quot;PLR0904&quot;, # Too many public methods
     &quot;PLR0911&quot;, # Too many return statements
     &quot;PLR0912&quot;, # Too many branches
@@ -97,8 +88,8 @@ ignore = [
     &quot;PLR2004&quot;, # Magic value used in comparison
     &quot;FBT003&quot;, # Boolean positional value in function call - this flags an issue twice and forces per use suppression.
     &quot;SIM108&quot;, # Use ternary; this can be good, but the check is overzealous and suggests changes that involve line breaks.
-    &quot;SIM117&quot;, # Use single with; like SIM108 this can be good, but it isn't appropriate in all contexts and could easily result in line breaks.
-    &quot;A003&quot;, # Class attribute shadowing builtin; doesn't matter for classes.
+    &quot;SIM117&quot;, # Use single with; like SIM108 this can be good, but it isn&#x27;t appropriate in all contexts and could easily result in line breaks.
+    &quot;A003&quot;, # Class attribute shadowing builtin; doesn&#x27;t matter for classes.
     &quot;PIE790&quot;, # Unnecessary &quot;...&quot; literal; conflicts with pyright for protocols. Removing ... pyright expects a return statement.
     # The settings below are suggested to be disabled when formatting with Ruff.
     &quot;W191&quot;, # tab indentation; conflicts with formatting.
@@ -202,36 +193,36 @@ extend-select = [
 
 [tool.ruff.extend-per-file-ignores]
 &quot;tests/**/*.py&quot; = [
-    &quot;PT019&quot;,   # pytest-fixture-without-paramvalue - Flags fixtures that don't return values
+    &quot;PT019&quot;,   # pytest-fixture-without-paramvalue - Flags fixtures that don&#x27;t return values
 ]
 </code></pre>
 <p>This is successfully suppressing the PT019 check, but the other per-file-ignore checks are still getting flagged (such as D100).
 If I remove the extend-per-file-ignores from the pyproject.toml, the PT019 start getting flagged in addition to the per-file-ignores from ruff.toml
 As far as I can tell, none of the per-file-ignores from ruff.toml are getting passed through.
-I've also tried switching ruff.toml's per-file-ignores to be extend-per-file-ignores (and removing those from my pyproject.toml), but those weren't honored either.</p>
+I&#x27;ve also tried switching ruff.toml&#x27;s per-file-ignores to be extend-per-file-ignores (and removing those from my pyproject.toml), but those weren&#x27;t honored either.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-20 20:39</div>
             <div class="timeline-body"><p>Hm... I tested this with a simple structure:</p>
 <p><strong>pyproject.toml</strong></p>
-<pre><code class="language-toml">[tool.ruff]
+<pre><code>[tool.ruff]
 per-file-ignores = {&quot;foo.py&quot; = [&quot;RUF001&quot;]}
 </code></pre>
 <p><strong>nested/pyproject.toml</strong></p>
-<pre><code class="language-toml">[tool.ruff]
+<pre><code>[tool.ruff]
 extend = &quot;../pyproject.toml&quot;
 extend-per-file-ignores = {&quot;foo.py&quot; = [&quot;RUF002&quot;]}
 </code></pre>
 <p><strong>nested/foo.py</strong></p>
-<pre><code class="language-python">print(&quot;Ηello, world!&quot;)  # &quot;Η&quot; is the Greek eta (`U+0397`).
+<pre><code>print(&quot;Ηello, world!&quot;)  # &quot;Η&quot; is the Greek eta (`U+0397`).
 
 
 def foo():
     &quot;&quot;&quot;A lovely docstring (with a `U+FF09` parenthesis）.&quot;&quot;&quot;
 </code></pre>
 <p><strong>from nested/</strong></p>
-<pre><code class="language-shell">ruff check . --select RUF001,RUF002
+<pre><code>ruff check . --select RUF001,RUF002
 </code></pre>
 <p>and could not reproduce your issue, both RUF001 and RUF002 are suppressed. If I copy <code>foo.py</code> to <code>bar.py</code> the errors are raised there as expected.</p>
 <p>Could you try to create a minimal reproducible example?</p>
@@ -239,8 +230,8 @@ def foo():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-20 20:44</div>
-            <div class="timeline-body"><p>Actually, if I move <code>foo.py</code> into a subdirectory and use <code>subdir/foo.py</code> as my per-file-ignore this fails as you've described.</p>
-<p>I believe the issue here is that the paths are relevant to the pyproject file they are defined in. So.. your imported pyproject file is defining per-file-ignores relative to its directory which do not match the files you are checking elsewhere. I'm not sure this should be changed.</p>
+            <div class="timeline-body"><p>Actually, if I move <code>foo.py</code> into a subdirectory and use <code>subdir/foo.py</code> as my per-file-ignore this fails as you&#x27;ve described.</p>
+<p>I believe the issue here is that the paths are relevant to the pyproject file they are defined in. So.. your imported pyproject file is defining per-file-ignores relative to its directory which do not match the files you are checking elsewhere. I&#x27;m not sure this should be changed.</p>
 <p>The bigger question here is then: Should extending a config file (via <code>extend = ...</code>) make the settings pulled from it relative to the new config file?</p>
 </div>
         </div>
@@ -254,15 +245,15 @@ def foo():
             <div class="timeline-body"><blockquote>
 <p>The bigger question here is then: Should extending a config file (via extend = ...) make the settings pulled from it relative to the new config file?</p>
 </blockquote>
-<p>Both choices can be problematic in different contexts. Using the <em>extended</em> file's directory as the base makes it useless if the extended file is, e.g., a global file that's shared between many projects (like in <code>~/ruff.toml</code>) -- but in that case, relative paths seem unusual? Using the directory of the file with the <code>extend</code> in it causes issues when you're extending a configuration in a parent directory from the project, as above.</p>
+<p>Both choices can be problematic in different contexts. Using the <em>extended</em> file&#x27;s directory as the base makes it useless if the extended file is, e.g., a global file that&#x27;s shared between many projects (like in <code>~/ruff.toml</code>) -- but in that case, relative paths seem unusual? Using the directory of the file with the <code>extend</code> in it causes issues when you&#x27;re extending a configuration in a parent directory from the project, as above.</p>
 <p>The former seems a lot more common to me, so I’d say our current behavior is preferable to making any changes here.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2023-11-21 01:35</div>
+            <div class="event">Label <span class="label">configuration</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-21 01:35</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-11-21 01:35</div>
+            <div class="event">Label <span class="label">needs-decision</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-21 01:35</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-21 01:57</div>
@@ -271,7 +262,7 @@ def foo():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/bwildenborg">@bwildenborg</a> on 2023-11-21 14:59</div>
-            <div class="timeline-body"><p>For what it's worth, the only way I could fully ignore a setting in both test files and in their accompanying <code>__init__.py</code> was to split my checks into two parts:</p>
+            <div class="timeline-body"><p>For what it&#x27;s worth, the only way I could fully ignore a setting in both test files and in their accompanying <code>__init__.py</code> was to split my checks into two parts:</p>
 <pre><code>[per-file-ignores]
 &quot;**/test_*.py&quot; = [
     &quot;B018&quot;,    # B018 - Found useless expression - necessary for testing exceptions are raised.
@@ -283,15 +274,15 @@ def foo():
 ]
 </code></pre>
 <p>The only pattern for the <code>__init__.py </code> part that worked for me was to make it relative.
-I had tried variations on <code>**/test_*/__init__.py</code> that weren't relative, but I couldn't get any to work.</p>
+I had tried variations on <code>**/test_*/__init__.py</code> that weren&#x27;t relative, but I couldn&#x27;t get any to work.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "per-file-ignores not coming in from extend" to "`per-file-ignores` paths from `extend` are relative to the extended configuration file" by @zanieb on 2023-11-27 15:53</div>
+            <div class="event">Renamed from &quot;per-file-ignores not coming in from extend&quot; to &quot;`per-file-ignores` paths from `extend` are relative to the extended configuration file&quot; by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-27 15:53</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/fpuga">@fpuga</a> on 2023-12-25 11:56</div>
-            <div class="timeline-body"><p>I'm using a similar structure</p>
+            <div class="timeline-body"><p>I&#x27;m using a similar structure</p>
 <pre><code>my_project
 | pyproject.toml
 | back/
@@ -301,14 +292,14 @@ I had tried variations on <code>**/test_*/__init__.py</code> that weren't relati
 </code></pre>
 <p>where</p>
 <p><strong>pyproject.toml</strong></p>
-<pre><code class="language-toml"># configurations personalized for this project 
+<pre><code># configurations personalized for this project 
 
 [tool.ruff]
 extend=&quot;./config/pyproject.toml&quot;
 line-length = 200
 </code></pre>
 <p><strong>config/pyproject.toml</strong></p>
-<pre><code class="language-toml"># common configurations for &quot;all&quot; projects of the team
+<pre><code># common configurations for &quot;all&quot; projects of the team
 
 [tool.ruff]
 extend=&quot;./config/pyproject.toml&quot;
@@ -366,7 +357,7 @@ line-length = 88
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:49:05 UTC
+        Synced at 2026-01-20 18:48:46 UTC
     </footer>
 </body>
 </html>

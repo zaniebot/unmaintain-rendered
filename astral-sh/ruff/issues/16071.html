@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a></div>
-            <div class="timeline-body"><h3>Description</h3>
+            <div class="timeline-body">Description
 <p>There are now 3 <code>OperatorPrecedence</code> structs in ruff</p>
 <ul>
 <li>Formatter (only the expression one, the pattern one is different)</li>
@@ -38,43 +38,43 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2025-02-10 08:56</div>
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-10 08:56</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2025-02-10 08:58</div>
+            <div class="event">Label <span class="label">help wanted</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-10 08:58</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/junhsonjb">@junhsonjb</a> on 2025-02-13 03:53</div>
             <div class="timeline-body"><p>I can take this on, I have a few questions though</p>
 <ul>
-<li>what is the <code>ExpressionRef</code> type? I'm grepping around and I only see <code>LiteralExpressionRef</code>, is that what you're referring to?</li>
-<li>when you say &quot;Expression node&quot;, are you referring to the <code>Expr</code> struct that's implemented in <code>ruff_python_linter/src/nodes.rs</code>?</li>
+<li>what is the <code>ExpressionRef</code> type? I&#x27;m grepping around and I only see <code>LiteralExpressionRef</code>, is that what you&#x27;re referring to?</li>
+<li>when you say &quot;Expression node&quot;, are you referring to the <code>Expr</code> struct that&#x27;s implemented in <code>ruff_python_linter/src/nodes.rs</code>?</li>
 </ul>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-13 08:06</div>
             <div class="timeline-body"><blockquote>
-<p>what is the ExpressionRef type? I'm g</p>
+<p>what is the ExpressionRef type? I&#x27;m g</p>
 </blockquote>
-<p>Oh, I forgot that it was renamed. It's <a href="https://github.com/astral-sh/ruff/blob/ef85c682bdd76ed63457bdfbec72e09424ac20ab/crates/ruff_python_ast/src/generated.rs#L1738"><code>ExprRef</code></a>.</p>
+<p>Oh, I forgot that it was renamed. It&#x27;s <a href="https://github.com/astral-sh/ruff/blob/ef85c682bdd76ed63457bdfbec72e09424ac20ab/crates/ruff_python_ast/src/generated.rs#L1738"><code>ExprRef</code></a>.</p>
 <blockquote>
-<p>when you say &quot;Expression node&quot;, are you referring to the Expr struct that's implemented in ruff_python_linter/src/nodes.rs?</p>
+<p>when you say &quot;Expression node&quot;, are you referring to the Expr struct that&#x27;s implemented in ruff_python_linter/src/nodes.rs?</p>
 </blockquote>
 <p>Yes, but the file is in the <code>ruff_python_ast</code> crate (<a href="https://github.com/astral-sh/ruff/blob/ef85c682bdd76ed63457bdfbec72e09424ac20ab/crates/ruff_python_ast/src/generated.rs#L271">source</a>)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-02-14 08:50</div>
-            <div class="timeline-body"><p>This needs some good design. The fix results in #15919 weren't as nice as I'd want them to be. I found no easy way to avoid parenthesizing when unnecessary:</p>
-<pre><code class="language-python">  2 ** -2  # Intended result: 0.25
-# ^^^^^^^ This doesn't need parentheses
+            <div class="timeline-body"><p>This needs some good design. The fix results in #15919 weren&#x27;t as nice as I&#x27;d want them to be. I found no easy way to avoid parenthesizing when unnecessary:</p>
+<pre><code>  2 ** -2  # Intended result: 0.25
+# ^^^^^^^ This doesn&#x27;t need parentheses
 
   -2 ** 2  # Intended result: 4
 # ^^ This does
 </code></pre>
-<p>The newest <code>OperatorPrecedence</code> accepts an expression and output the precedence of the operator that expression represents, but it doesn't consider the context.</p>
-<pre><code class="language-python"># This entire subscript resolves to the precedence of the subscript operator,
+<p>The newest <code>OperatorPrecedence</code> accepts an expression and output the precedence of the operator that expression represents, but it doesn&#x27;t consider the context.</p>
+<pre><code># This entire subscript resolves to the precedence of the subscript operator,
 # while its slice resolves to that of the unary `-`.
 lorem[-ipsum]
 
@@ -83,17 +83,17 @@ lorem[-ipsum]
 # where `-` is supposed to apply to `lorem` alone:
 (-lorem)[ipsum]  # Necessary
 
-# On the other hand, the slice expression doesn't need parenthesizing.
-# The comparison result alone isn't enough to avoid this:
+# On the other hand, the slice expression doesn&#x27;t need parenthesizing.
+# The comparison result alone isn&#x27;t enough to avoid this:
 lorem[(-ipsum)]  # Unnecessary
 </code></pre>
 <p>A more complex example:</p>
-<pre><code class="language-python">  (a + 1)(
+<pre><code>  (a + 1)(
 # ^^^^^^^ This needs extra parentheses, as binary `+` binds less tightly than `()`
       a + 1,
-#     ^^^^^ This doesn't, as it is an argument
+#     ^^^^^ This doesn&#x27;t, as it is an argument
       b := 0,
-#     ^^^^^^ This also doesn't; bare named expressions can be passed positionally.
+#     ^^^^^^ This also doesn&#x27;t; bare named expressions can be passed positionally.
       c = (d := -1)
 #         ^^^^^^^^^ But this does.
   )
@@ -102,17 +102,17 @@ lorem[(-ipsum)]  # Unnecessary
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/junhsonjb">@junhsonjb</a> on 2025-02-14 14:29</div>
-            <div class="timeline-body"><p>Just sent out a <a href="https://github.com/astral-sh/ruff/pull/16162">PR</a>. I wrote most of the code before @InSyncWithFoo's comment. It doesn't attempt to address the problems with parenthesizing yet but I think may still be a good step towards unifying the many definitions of <code>OperatorPrecedence</code> 🙂</p>
+            <div class="timeline-body"><p>Just sent out a <a href="https://github.com/astral-sh/ruff/pull/16162">PR</a>. I wrote most of the code before @InSyncWithFoo&#x27;s comment. It doesn&#x27;t attempt to address the problems with parenthesizing yet but I think may still be a good step towards unifying the many definitions of <code>OperatorPrecedence</code> 🙂</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2025-02-14 14:55</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-14 14:55</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2025-02-14 14:55</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-14 14:55</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @MichaReiser on 2025-02-14 14:55</div>
+            <div class="event">Reopened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-14 14:55</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/junhsonjb">@junhsonjb</a> on 2025-02-14 23:07</div>
@@ -122,7 +122,7 @@ lorem[(-ipsum)]  # Unnecessary
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-02-14 23:59</div>
-            <div class="timeline-body"><p>@junhsonjb The parenthesizing problem is indeed big and deserves its own PR. That said, I also don't have a good idea of what the logic should be.</p>
+            <div class="timeline-body"><p>@junhsonjb The parenthesizing problem is indeed big and deserves its own PR. That said, I also don&#x27;t have a good idea of what the logic should be.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -132,22 +132,22 @@ lorem[(-ipsum)]  # Unnecessary
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-14 13:58</div>
-            <div class="timeline-body"><p>@junhsonjb no worries. We'll take a look in the next few days. I noticed that you mentioned that you plan on doing the formatter next. For me, the formatter has the lowest priority because it has some more bespoke behavior around it and I'm not 100% if we should unify it with the other enums. Maybe start with the linter enum next?</p>
+            <div class="timeline-body"><p>@junhsonjb no worries. We&#x27;ll take a look in the next few days. I noticed that you mentioned that you plan on doing the formatter next. For me, the formatter has the lowest priority because it has some more bespoke behavior around it and I&#x27;m not 100% if we should unify it with the other enums. Maybe start with the linter enum next?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/junhsonjb">@junhsonjb</a> on 2025-03-17 13:06</div>
-            <div class="timeline-body"><p>@MichaReiser Thanks! That sounds fine about the formatter. The linter's version of the enum is the one that was moved into <code>ruff_python_ast</code> to become the general <code>OperatorPrecedence</code>. This was done in the first PR for this issue, so I think it might be safe to close this issue for now</p>
+            <div class="timeline-body"><p>@MichaReiser Thanks! That sounds fine about the formatter. The linter&#x27;s version of the enum is the one that was moved into <code>ruff_python_ast</code> to become the general <code>OperatorPrecedence</code>. This was done in the first PR for this issue, so I think it might be safe to close this issue for now</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dhruvmanila on 2025-03-21 04:10</div>
+            <div class="event">Closed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-03-21 04:10</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dhruvmanila on 2025-03-21 04:10</div>
+            <div class="event">Closed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-03-21 04:10</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @dhruvmanila on 2025-03-21 04:11</div>
+            <div class="event">Reopened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-03-21 04:11</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-03-21 04:11</div>
@@ -158,35 +158,35 @@ lorem[(-ipsum)]  # Unnecessary
             <div class="timeline-header">Comment by <a href="https://github.com/junhsonjb">@junhsonjb</a> on 2025-03-21 12:35</div>
             <div class="timeline-body"><p>Do we still want to do the formatter? Micha <a href="https://github.com/astral-sh/ruff/issues/16071#issuecomment-2724788995">mentioned</a> that we may not want to do work on the formatter:</p>
 <blockquote>
-<p>For me, the formatter has the lowest priority because it has some more bespoke behavior around it and I'm not 100% if we should unify it with the other enums. Maybe start with the linter enum next?</p>
+<p>For me, the formatter has the lowest priority because it has some more bespoke behavior around it and I&#x27;m not 100% if we should unify it with the other enums. Maybe start with the linter enum next?</p>
 </blockquote>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-21 12:47</div>
-            <div class="timeline-body"><p>@junhsonjb we can give it a try if the variants line up. We can't do it if either enum as fewer or more variants (or if they differ)</p>
+            <div class="timeline-body"><p>@junhsonjb we can give it a try if the variants line up. We can&#x27;t do it if either enum as fewer or more variants (or if they differ)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/junhsonjb">@junhsonjb</a> on 2025-03-21 13:12</div>
             <div class="timeline-body"><p><code>ruff_python_ast::OperatorPrecedence</code> has 21 variants, the one in the formatter (specifically the expression one) has 13.</p>
-<p>It may also be worth noting that the formatter's version is reversed -- the higher precedence variants are at the top, this could complicate things further.</p>
-<p>So we likely can't do it, then.</p>
+<p>It may also be worth noting that the formatter&#x27;s version is reversed -- the higher precedence variants are at the top, this could complicate things further.</p>
+<p>So we likely can&#x27;t do it, then.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-21 13:23</div>
-            <div class="timeline-body"><p>That makes sense and roughly matches what I remember when I implemented it. The formatter precedence isn't an exact match of Python's parsing precedence. It's more: Users expect expressions with these operations to be grouped together.</p>
+            <div class="timeline-body"><p>That makes sense and roughly matches what I remember when I implemented it. The formatter precedence isn&#x27;t an exact match of Python&#x27;s parsing precedence. It&#x27;s more: Users expect expressions with these operations to be grouped together.</p>
 <p>Thanks for working on this and making ruff better!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2025-03-21 13:23</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-21 13:23</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:52:11 UTC
+        Synced at 2026-01-20 18:49:29 UTC
     </footer>
 </body>
 </html>

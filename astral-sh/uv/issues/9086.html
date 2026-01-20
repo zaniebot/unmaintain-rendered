@@ -23,38 +23,29 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Karlinator">@Karlinator</a></div>
-            <div class="timeline-body"><!--
-Thank you for taking the time to report an issue! We're glad to have you involved with uv.
-
-If you're filing a bug report, please consider including the following information:
-
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
-* The current uv platform.
-* The current uv version (`uv --version`).
--->
+            <div class="timeline-body">
 
 <p>uv 0.5.1, python 3.13, Fedora 41.</p>
-<p>I'm trying to set up a project such that I can install it in three different ways:</p>
+<p>I&#x27;m trying to set up a project such that I can install it in three different ways:</p>
 <ol>
 <li>Without pytorch</li>
 <li>With pytorch without cuda support</li>
 <li>With pytorch on cuda</li>
 </ol>
-<p>I've tried roughly 5000 different things without success. Here's where I'm at now:</p>
-<pre><code class="language-toml">
+<p>I&#x27;ve tried roughly 5000 different things without success. Here&#x27;s where I&#x27;m at now:</p>
+<pre><code>
 [dependency-groups]
 torch = [
-    &quot;torch==2.5.1+cpu; extra != 'cuda'&quot;,
-    &quot;torch==2.5.1+cu124; extra == 'cuda'&quot;,
+    &quot;torch==2.5.1+cpu; extra != &#x27;cuda&#x27;&quot;,
+    &quot;torch==2.5.1+cu124; extra == &#x27;cuda&#x27;&quot;,
     &quot;sentence-transformers&gt;=3.3.0&quot;
 ]
 
 
 [tool.uv.sources]
 torch = [
-    { index = &quot;torch-gpu&quot;, marker = &quot;extra == 'cuda'&quot; },
-    { index = &quot;torch-cpu&quot;, marker = &quot;extra != 'cuda'&quot; },
+    { index = &quot;torch-gpu&quot;, marker = &quot;extra == &#x27;cuda&#x27;&quot; },
+    { index = &quot;torch-cpu&quot;, marker = &quot;extra != &#x27;cuda&#x27;&quot; },
 ]
 
 [[tool.uv.index]]
@@ -66,13 +57,13 @@ name = &quot;torch-gpu&quot;
 url = &quot;https://download.pytorch.org/whl/cu124&quot;
 explicit = true
 </code></pre>
-<p>However, the lockfile seems to have not considered the split on <code>extra</code> here, and only resolves either the cpu variant or the cuda variant (in this exact axample it's the cpu variant, but messing around with it a little you can get the cuda variant instead). So doing <code>uv sync --group torch --extra cuda</code> and <code>uv sync --group torch</code>  gives the exact same result.</p>
-<p>The first part of the lockfile looks correct (tying the specifier and index to the marker), but then it only resolves one version of torch, and that's 2.5.1+cpu with cpu wheels and missing the cuda dependencies.</p>
-<pre><code class="language-toml">[package.metadata.requires-dev]
+<p>However, the lockfile seems to have not considered the split on <code>extra</code> here, and only resolves either the cpu variant or the cuda variant (in this exact axample it&#x27;s the cpu variant, but messing around with it a little you can get the cuda variant instead). So doing <code>uv sync --group torch --extra cuda</code> and <code>uv sync --group torch</code>  gives the exact same result.</p>
+<p>The first part of the lockfile looks correct (tying the specifier and index to the marker), but then it only resolves one version of torch, and that&#x27;s 2.5.1+cpu with cpu wheels and missing the cuda dependencies.</p>
+<pre><code>[package.metadata.requires-dev]
 torch = [
     { name = &quot;sentence-transformers&quot;, specifier = &quot;&gt;=3.3.0&quot; },
-    { name = &quot;torch&quot;, marker = &quot;extra == 'cuda'&quot;, specifier = &quot;==2.5.1+cu124&quot;, index = &quot;https://download.pytorch.org/whl/cu124&quot; },
-    { name = &quot;torch&quot;, marker = &quot;extra != 'cuda'&quot;, specifier = &quot;==2.5.1+cpu&quot;, index = &quot;https://download.pytorch.org/whl/cpu&quot; },
+    { name = &quot;torch&quot;, marker = &quot;extra == &#x27;cuda&#x27;&quot;, specifier = &quot;==2.5.1+cu124&quot;, index = &quot;https://download.pytorch.org/whl/cu124&quot; },
+    { name = &quot;torch&quot;, marker = &quot;extra != &#x27;cuda&#x27;&quot;, specifier = &quot;==2.5.1+cpu&quot;, index = &quot;https://download.pytorch.org/whl/cpu&quot; },
 ]
 
 [[package]]
@@ -84,7 +75,7 @@ dependencies = [
     { name = &quot;fsspec&quot; },
     { name = &quot;jinja2&quot; },
     { name = &quot;networkx&quot; },
-    { name = &quot;setuptools&quot;, marker = &quot;python_full_version &gt;= '3.12'&quot; },
+    { name = &quot;setuptools&quot;, marker = &quot;python_full_version &gt;= &#x27;3.12&#x27;&quot; },
     { name = &quot;sympy&quot; },
     { name = &quot;typing-extensions&quot; },
 ]
@@ -96,7 +87,7 @@ wheels = [
     { url = &quot;https://download.pytorch.org/whl/cpu/torch-2.5.1%2Bcpu-cp313-cp313-linux_x86_64.whl&quot;, hash = &quot;sha256:5dbbdf83caa90d0bcaa50e4933ca424889133b35226db79000877d4ec5d9ea37&quot; },
 ]
 </code></pre>
-<p>Looking at the output of <code>uv -v lock</code>, it only looks for a compatible version of torch once, and it finds the cpu version only. It doesn't split on the &quot;extra&quot; marker to look in the separate pinned indexes.</p>
+<p>Looking at the output of <code>uv -v lock</code>, it only looks for a compatible version of torch once, and it finds the cpu version only. It doesn&#x27;t split on the &quot;extra&quot; marker to look in the separate pinned indexes.</p>
 <pre><code>DEBUG Searching for a compatible version of torch (&gt;=1.11.0)
 DEBUG Selecting: torch==2.5.1+cpu [compatible] (torch-2.5.1+cpu-cp311-cp311-linux_x86_64.whl)
 DEBUG Found stale response for: https://download.pytorch.org/whl/cpu/torch-2.5.1%2Bcpu-cp311-cp311-linux_x86_64.whl#sha256=07d7c9e069123d5af08b0cf0013d74f680b2d8be7d9e2cf561a52c90c55d9409
@@ -109,46 +100,46 @@ DEBUG Adding transitive dependency for torch==2.5.1+cpu: filelock*
 DEBUG Adding transitive dependency for torch==2.5.1+cpu: fsspec*
 DEBUG Adding transitive dependency for torch==2.5.1+cpu: jinja2*
 DEBUG Adding transitive dependency for torch==2.5.1+cpu: networkx*
-DEBUG Adding transitive dependency for torch==2.5.1+cpu: setuptools{python_full_version &gt;= '3.12'}*
-DEBUG Adding transitive dependency for torch==2.5.1+cpu: sympy{python_full_version &gt;= '3.9'}&gt;=1.13.1, &lt;1.13.1+
+DEBUG Adding transitive dependency for torch==2.5.1+cpu: setuptools{python_full_version &gt;= &#x27;3.12&#x27;}*
+DEBUG Adding transitive dependency for torch==2.5.1+cpu: sympy{python_full_version &gt;= &#x27;3.9&#x27;}&gt;=1.13.1, &lt;1.13.1+
 DEBUG Adding transitive dependency for torch==2.5.1+cpu: typing-extensions&gt;=4.8.0
 DEBUG Narrowed `requires-python` bound to: &gt;=3.11
 DEBUG Adding transitive dependency for torch==2.5.1+cpu: filelock*
 DEBUG Adding transitive dependency for torch==2.5.1+cpu: fsspec*
 DEBUG Adding transitive dependency for torch==2.5.1+cpu: jinja2*
 DEBUG Adding transitive dependency for torch==2.5.1+cpu: networkx*
-DEBUG Adding transitive dependency for torch==2.5.1+cpu: sympy{python_full_version &gt;= '3.9'}&gt;=1.13.1, &lt;1.13.1+
+DEBUG Adding transitive dependency for torch==2.5.1+cpu: sympy{python_full_version &gt;= &#x27;3.9&#x27;}&gt;=1.13.1, &lt;1.13.1+
 DEBUG Adding transitive dependency for torch==2.5.1+cpu: typing-extensions&gt;=4.8.0
-DEBUG Solving split (python_full_version &lt; '3.12') (requires-python: RequiresPython { specifiers: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: &quot;3.11&quot; }]), range: RequiresPythonRange(LowerBound(Included(&quot;3.11&quot;)), UpperBound(Excluded(&quot;3.12&quot;))
+DEBUG Solving split (python_full_version &lt; &#x27;3.12&#x27;) (requires-python: RequiresPython { specifiers: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: &quot;3.11&quot; }]), range: RequiresPythonRange(LowerBound(Included(&quot;3.11&quot;)), UpperBound(Excluded(&quot;3.12&quot;))
 ) })
 </code></pre>
-<p>I've also tried a variety of extras-based approaches. Commonly, these fail to resolve because even with the sources spec uv goes to pypi to find the metadata, or they end up in the same sitation as above that it just always resolves one or the other.</p>
-<p>Is there some way I'm supposed to do this that I haven't found, or is this not fully supported?</p>
+<p>I&#x27;ve also tried a variety of extras-based approaches. Commonly, these fail to resolve because even with the sources spec uv goes to pypi to find the metadata, or they end up in the same sitation as above that it just always resolves one or the other.</p>
+<p>Is there some way I&#x27;m supposed to do this that I haven&#x27;t found, or is this not fully supported?</p>
 <p>I know that this is pytorch being very extra, and that I can get around this by doing <code>uv pip install torch --index-url=&quot;https://downloads.pytorch.org/whl/cpu</code> and stuff, but that loses out on the benefits of the uv lockfile and all that.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-13 15:45</div>
-            <div class="timeline-body"><p>That's correct. We don't support this right now. You should follow the conflicting extras work.</p>
+            <div class="timeline-body"><p>That&#x27;s correct. We don&#x27;t support this right now. You should follow the conflicting extras work.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-13 15:45</div>
-            <div class="timeline-body"><p>See: https://github.com/astral-sh/uv/pull/8976</p>
+            <div class="timeline-body"><p>See: <a href="https://github.com/astral-sh/uv/pull/8976">astral-sh/uv#8976</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-13 15:47</div>
-            <div class="timeline-body"><p>Specifically, we don't allow you to ask for conflicting versions of a package based on the presence of an extra. In the (near) future, you can mark extras as mutually incompatible, which will let you do what you want here without trouble.</p>
+            <div class="timeline-body"><p>Specifically, we don&#x27;t allow you to ask for conflicting versions of a package based on the presence of an extra. In the (near) future, you can mark extras as mutually incompatible, which will let you do what you want here without trouble.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-13 15:47</div>
-            <div class="timeline-body"><p>The relevant issue to follow is actually here: https://github.com/astral-sh/uv/issues/6981. I'm gonna merge into that.</p>
+            <div class="timeline-body"><p>The relevant issue to follow is actually here: <a href="https://github.com/astral-sh/uv/issues/6981">astral-sh/uv#6981</a>. I&#x27;m gonna merge into that.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-11-13 15:47</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-13 15:47</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Karlinator">@Karlinator</a> on 2024-11-14 16:37</div>
@@ -157,7 +148,7 @@ DEBUG Solving split (python_full_version &lt; '3.12') (requires-python: Requires
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Karlinator">@Karlinator</a> on 2024-11-15 12:10</div>
-            <div class="timeline-body"><p>This still doesn't seem to be working fully. Using 0.5.2 I still only get one index queried. I've specified:</p>
+            <div class="timeline-body"><p>This still doesn&#x27;t seem to be working fully. Using 0.5.2 I still only get one index queried. I&#x27;ve specified:</p>
 <pre><code>[project.optional-dependencies]
 cpu = [
     &quot;torch==2.5.1+cpu&quot;,
@@ -170,8 +161,8 @@ gpu = [
 
 [tool.uv.sources]
 torch = [
-    { index = &quot;torch-cpu&quot;, marker = &quot;extra != 'gpu' and extra == 'cpu'&quot; },
-    { index = &quot;torch-gpu&quot;, marker = &quot;extra == 'gpu' and extra != 'cpu'&quot; },
+    { index = &quot;torch-cpu&quot;, marker = &quot;extra != &#x27;gpu&#x27; and extra == &#x27;cpu&#x27;&quot; },
+    { index = &quot;torch-gpu&quot;, marker = &quot;extra == &#x27;gpu&#x27; and extra != &#x27;cpu&#x27;&quot; },
 ]
 
 [[tool.uv.index]]
@@ -191,12 +182,12 @@ conflicts = [
     ],
 ]
 </code></pre>
-<p>And now it fails to resolve dependencies because it can't find <code>2.5.1+cpu</code> in the <code>https://download.pytorch.org/whl/cu124</code> index. If I remove the <code>+cpu</code> it just installs the cuda version for both <code>uv sync --extra cpu</code> and <code>uv sync --extra cpu</code>.</p>
+<p>And now it fails to resolve dependencies because it can&#x27;t find <code>2.5.1+cpu</code> in the <code>https://download.pytorch.org/whl/cu124</code> index. If I remove the <code>+cpu</code> it just installs the cuda version for both <code>uv sync --extra cpu</code> and <code>uv sync --extra cpu</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-15 13:52</div>
-            <div class="timeline-body"><p>@Karlinator -- I think there's specific work that needs to happen atop #6981 to respect extras in <code>tool.uv.sources</code> like that. I would be the natural owner for that work. I'll file an issue later today when I have some time to refresh my memory.</p>
+            <div class="timeline-body"><p>@Karlinator -- I think there&#x27;s specific work that needs to happen atop #6981 to respect extras in <code>tool.uv.sources</code> like that. I would be the natural owner for that work. I&#x27;ll file an issue later today when I have some time to refresh my memory.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -212,7 +203,7 @@ conflicts = [
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-19 19:41</div>
             <div class="timeline-body"><p>This now works in v0.5.3:</p>
-<pre><code class="language-toml">[project]
+<pre><code>[project]
 name = &quot;project&quot;
 version = &quot;0.1.0&quot;
 requires-python = &quot;&gt;=3.12.0&quot;
@@ -238,11 +229,11 @@ conflicts = [
 
 [tool.uv.sources]
 torch = [
-  { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot;, marker = &quot;platform_system != 'Darwin'&quot; },
+  { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot;, marker = &quot;platform_system != &#x27;Darwin&#x27;&quot; },
   { index = &quot;pytorch-cu124&quot;, extra = &quot;cu124&quot; },
 ]
 torchvision = [
-  { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot;, marker = &quot;platform_system != 'Darwin'&quot; },
+  { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot;, marker = &quot;platform_system != &#x27;Darwin&#x27;&quot; },
   { index = &quot;pytorch-cu124&quot;, extra = &quot;cu124&quot; },
 ]
 
@@ -262,7 +253,7 @@ explicit = true
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:28:20 UTC
+        Synced at 2026-01-20 19:35:28 UTC
     </footer>
 </body>
 </html>

@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>[red-knot] Treat empty intersection as 'object', fix intersection simplification</h1>
+    <h1>[red-knot] Treat empty intersection as &#x27;object&#x27;, fix intersection simplification</h1>
 
     <div class="meta">
         <span class="state-icon state-merged"></span>
@@ -23,14 +23,14 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <ul>
 <li>Properly treat the empty intersection as being of type <code>object</code>.</li>
 <li>Consequently, change the simplification method to explicitly add <code>Never</code> to the positive side of the intersection when collapsing a type such as <code>int &amp; str</code> to <code>Never</code>, as opposed to just clearing both the positive and the negative side.</li>
 <li>Minor code improvement in <code>bindings_ty</code>: use <code>peekable()</code> to check whether the iterator over constraints is empty, instead of handling first and subsequent elements separately.</li>
 </ul>
 <p>fixes #13870</p>
-<h2>Test Plan</h2>
+Test Plan
 <ul>
 <li>New unit tests for <code>IntersectionBuilder</code> to make sure the empty intersection represents <code>object</code>.</li>
 <li>Markdown-based regression test for the original issue in #13870</li>
@@ -38,16 +38,16 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2024-10-22 14:16</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-10-22 14:16</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @sharkdp on 2024-10-22 14:16</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-10-22 14:16</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @sharkdp on 2024-10-22 14:16</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-10-22 14:16</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2024-10-22 14:16</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-10-22 14:16</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-10-22 14:23</div>
@@ -56,7 +56,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/conditionals_nested.md</code>:25 on 2024-10-22 14:23</div>
             <div class="timeline-body"><p>Without the fix in this PR, I would previously get</p>
-<pre><code class="language-suggestion">if x != 1:
+<pre><code>if x != 1:
     reveal_type(x)  # revealed: Literal[2, 3]
     if x != 2:
         reveal_type(x)  # revealed: ~Literal[2] | Literal[3]
@@ -70,15 +70,15 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1059 on 2024-10-22 14:27</div>
-            <div class="timeline-body"><p>You might be thinking: isn't this the exact same thing as before? It's not though. We now call <code>.build()</code> for every single constraint. Before:</p>
-<pre><code class="language-rs">IntersectionBuilder::new(…)
+            <div class="timeline-body"><p>You might be thinking: isn&#x27;t this the exact same thing as before? It&#x27;s not though. We now call <code>.build()</code> for every single constraint. Before:</p>
+<pre><code>IntersectionBuilder::new(…)
   .add_positive(bindings_ty)
   .add_positive(constraint_1)
   .add_positive(constraint_2)
   .build();
 </code></pre>
 <p>After:</p>
-<pre><code class="language-rs">IntersectionBuilder::new(…)
+<pre><code>IntersectionBuilder::new(…)
   .add_positive(
     IntersectionBuilder::new(…)
       .add_positive(bindings_ty)
@@ -100,7 +100,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1059 on 2024-10-22 14:36</div>
-            <div class="timeline-body"><p>Hmm... I'm not sure repeatedly calling <code>build()</code> is optimal here. <code>IntersectionBuilder::build()</code> calls <code>InnerIntersectionBuilder::build</code>, and <code>InnerIntersectionBuilder::build</code> has these <code>shrink_to_fit()</code> calls. I think it only makes sense to do those when the intersection is &quot;finished&quot;, rather than every time we add a positive or negative element to the intersection:</p>
+            <div class="timeline-body"><p>Hmm... I&#x27;m not sure repeatedly calling <code>build()</code> is optimal here. <code>IntersectionBuilder::build()</code> calls <code>InnerIntersectionBuilder::build</code>, and <code>InnerIntersectionBuilder::build</code> has these <code>shrink_to_fit()</code> calls. I think it only makes sense to do those when the intersection is &quot;finished&quot;, rather than every time we add a positive or negative element to the intersection:</p>
 <p>https://github.com/astral-sh/ruff/blob/7dbd8f0f8e725d05cc1d15e6ef1c6cc2ed2b2090/crates/red_knot_python_semantic/src/types/builder.rs#L357-L358</p>
 <p>What if we moved the simplifications done by <code>build()</code> out into a common method that is called by <code>build</code>, <code>add_positive</code> and <code>add_negative</code>? Would that remove the need to call <code>build()</code> every time we added a new element to the intersection?</p>
 </div>
@@ -111,12 +111,12 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-10-22 14:45</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
@@ -140,17 +140,17 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:162 on 2024-10-22 16:03</div>
-            <div class="timeline-body"><p>I think the new version is nicer, thank you. Don't know if there is any performance difference, but I'm comfortable leaving that question to experimentation if/when this code is identified as a hot spot in profiling.</p>
+            <div class="timeline-body"><p>I think the new version is nicer, thank you. Don&#x27;t know if there is any performance difference, but I&#x27;m comfortable leaving that question to experimentation if/when this code is identified as a hot spot in profiling.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[red-knot] Constrained types using proper intersections" to "[red-knot] Treat empty intersection as 'object', fix intersection simplification" by @sharkdp on 2024-10-22 19:00</div>
+            <div class="event">Renamed from &quot;[red-knot] Constrained types using proper intersections&quot; to &quot;[red-knot] Treat empty intersection as &#x27;object&#x27;, fix intersection simplification&quot; by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-10-22 19:00</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @sharkdp on 2024-10-22 19:02</div>
+            <div class="event">Merged by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-10-22 19:02</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @sharkdp on 2024-10-22 19:02</div>
+            <div class="event">Closed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-10-22 19:02</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-10-22 19:02</div>
@@ -158,7 +158,7 @@
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:07:10 UTC
+        Synced at 2026-01-20 19:07:42 UTC
     </footer>
 </body>
 </html>

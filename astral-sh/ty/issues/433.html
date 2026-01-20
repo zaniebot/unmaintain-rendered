@@ -23,49 +23,49 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/lucach">@lucach</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>On the following code, ty correctly reports that the argument to function <code>f</code> is incorrect (<a href="https://play.ty.dev/a8e61631-a91e-4b20-a518-936db98fb4e1">playground</a>):</p>
-<pre><code class="language-py">class A: pass
+<pre><code>class A: pass
 B = A
 def f(b: B): pass
 f(&quot;&quot;)  # Argument to function `f` is incorrect: Expected `A`, found `Literal[&quot;&quot;]` (invalid-argument-type) [Ln 4, Col 3]
 </code></pre>
 <p>When the last two lines are moved into a separate file, and B is imported, ty no longer detects the error (<a href="https://play.ty.dev/b140e655-bd05-4de5-af85-140fca15543b">playground</a>):</p>
-<pre><code class="language-py">from main import B
+<pre><code>from main import B
 def f(b: B): pass
 f(&quot;&quot;)
 </code></pre>
-<p>In the main file, the implicit type alias <code>B</code> is correctly inferred to be <code>&lt;class 'A'&gt;</code>. But when it's imported from another module, ty infers <code>Unknown | &lt;class 'A'&gt;</code>.</p>
-<p>I'm not sure how broad the actual underlying issue is.</p>
-<h3>Version</h3>
+<p>In the main file, the implicit type alias <code>B</code> is correctly inferred to be <code>&lt;class &#x27;A&#x27;&gt;</code>. But when it&#x27;s imported from another module, ty infers <code>Unknown | &lt;class &#x27;A&#x27;&gt;</code>.</p>
+<p>I&#x27;m not sure how broad the actual underlying issue is.</p>
+Version
 <p><em>No response</em></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @sharkdp on 2025-05-17 18:37</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-17 18:37</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-17 18:52</div>
             <div class="timeline-body"><p>Thank you for your report. We know that this behavior deviates from other type checkers, but it is intentional. The rationale is explained in <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/doc/public_type_undeclared_symbols.md">this document</a> (and more information <a href="https://github.com/astral-sh/ruff/blob/b86960f18c010ef991bc91e93bcff84b44a539fd/crates/ty_python_semantic/resources/mdtest/boundness_declaredness/public.md">here</a>).</p>
 <p>The TLDR is: if you refer to a symbol from another scope, we use the &quot;public type&quot; of that symbol. For <em>undeclared</em> symbols, we union with <code>Unkown</code>. If you want to avoid this, you need to declare <code>B</code>.</p>
-<p>Declaring <code>B</code> is not straightforward in this example, because there's no way to spell out the type of <code>A</code>, which is a special singleton type that only has one inhabitant: the class A (it's possible using <code>ty_extensions.TypeOf[A]</code>, but that is not a recommended/portable solution). What you could do instead is to use a type alias (<code>type B = A</code>), which <a href="https://play.ty.dev/b08b21d2-c406-45a8-ab60-22c374e968a2">works fine</a> for this case.</p>
+<p>Declaring <code>B</code> is not straightforward in this example, because there&#x27;s no way to spell out the type of <code>A</code>, which is a special singleton type that only has one inhabitant: the class A (it&#x27;s possible using <code>ty_extensions.TypeOf[A]</code>, but that is not a recommended/portable solution). What you could do instead is to use a type alias (<code>type B = A</code>), which <a href="https://play.ty.dev/b08b21d2-c406-45a8-ab60-22c374e968a2">works fine</a> for this case.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-17 21:19</div>
-            <div class="timeline-body"><p>When we support <code>typing(_extensions).Final</code> and/or <code>typing(_extensions).TypeAlias</code>, it would also be plausible to annotate <code>B</code> using either of those symbols. (We don't support either yet, but we hopefully will soon.)</p>
+            <div class="timeline-body"><p>When we support <code>typing(_extensions).Final</code> and/or <code>typing(_extensions).TypeAlias</code>, it would also be plausible to annotate <code>B</code> using either of those symbols. (We don&#x27;t support either yet, but we hopefully will soon.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/lucach">@lucach</a> on 2025-05-19 05:53</div>
-            <div class="timeline-body"><p>Thank you for the detailed explanation. This example is actually a minimal reproduction of a concrete situation I have with a library I am maintaining. Using the <a href="https://docs.python.org/3/reference/simple_stmts.html#the-type-statement">type statement</a> would be a great solution, but that has been introduced in Python 3.12 and at least for I while I can't drop the compatibility with Python 3.10. Older Python versions generate a syntax error for that construct.</p>
+            <div class="timeline-body"><p>Thank you for the detailed explanation. This example is actually a minimal reproduction of a concrete situation I have with a library I am maintaining. Using the <a href="https://docs.python.org/3/reference/simple_stmts.html#the-type-statement">type statement</a> would be a great solution, but that has been introduced in Python 3.12 and at least for I while I can&#x27;t drop the compatibility with Python 3.10. Older Python versions generate a syntax error for that construct.</p>
 <p>I guess a reasonable solution would be using the <code>TypeAlias</code> annotation, as @AlexWaygood suggested. Looking forward to that! :-)</p>
 <p>Thanks again for the work and the replies.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/karlicoss">@karlicoss</a> on 2025-06-25 21:45</div>
-            <div class="timeline-body"><p>I have a simpler example which I didn't expect to infer <code>Unknown</code>:
+            <div class="timeline-body"><p>I have a simpler example which I didn&#x27;t expect to infer <code>Unknown</code>:
 https://play.ty.dev/d33d77c8-ff6b-48cc-8b4e-11d56133ebbb</p>
 <pre><code># main.py
 from module import number
@@ -77,19 +77,19 @@ number = 123
 <p>This results in <code>Revealed type: Unknown | Literal[123] (revealed-type) [Ln 2, Col 13]</code></p>
 <p>I read https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/doc/public_type_undeclared_symbols.md, and:</p>
 <ul>
-<li>I understand it's a deliberate choice by <code>uv</code>? Is the idea that you are meant to always declare the type for a 'public' module attribute? (this is different from mypy where it would infer <code>int</code>)</li>
-<li>Perhaps the documentation in https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/doc/public_type_undeclared_symbols.md could be updated -- from reading it I thought that the issue is more with class attributes. It's more customary to explicitly annotate class attributes rather than module attributes in my experience, although in hindsight it is kind of the same thing.</li>
-<li>Is there practical implication of having <code>Unknown | &lt;DeclaredType&gt;</code> in imported symbols if I'm not reassigning then? Everything would still be type checked correctly as if the type was just <code>&lt;DeclaredType</code>? E.g. that can often be the case in existing third party libraries which don't annotate global module attributes.</li>
+<li>I understand it&#x27;s a deliberate choice by <code>uv</code>? Is the idea that you are meant to always declare the type for a &#x27;public&#x27; module attribute? (this is different from mypy where it would infer <code>int</code>)</li>
+<li>Perhaps the documentation in https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/doc/public_type_undeclared_symbols.md could be updated -- from reading it I thought that the issue is more with class attributes. It&#x27;s more customary to explicitly annotate class attributes rather than module attributes in my experience, although in hindsight it is kind of the same thing.</li>
+<li>Is there practical implication of having <code>Unknown | &lt;DeclaredType&gt;</code> in imported symbols if I&#x27;m not reassigning then? Everything would still be type checked correctly as if the type was just <code>&lt;DeclaredType</code>? E.g. that can often be the case in existing third party libraries which don&#x27;t annotate global module attributes.</li>
 </ul>
 <p>Thanks!</p>
-<p>Possibly relevant: https://github.com/astral-sh/ty/issues/622</p>
+<p>Possibly relevant: <a href="https://github.com/astral-sh/ty/issues/622">astral-sh/ty#622</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/karlicoss">@karlicoss</a> on 2025-06-26 21:58</div>
             <div class="timeline-body"><p>Another oddity I ran into which is kinda relevant
 https://play.ty.dev/42bd249d-a02c-4190-9813-7cd09b6cd948</p>
-<pre><code class="language-python">from typing import Never, reveal_type
+<pre><code>from typing import Never, reveal_type
 
 def never() -&gt; Never:
     raise RuntimeError()
@@ -104,9 +104,9 @@ reveal_type(U.unknown_or_never)
 <pre><code>    Revealed type: `Unknown | Literal[123]` (revealed-type) [Ln 10, Col 13]
     Revealed type: `Unknown` (revealed-type) [Ln 11, Col 13]
 </code></pre>
-<p>So seems like ty thinks that <code>Unknown | Never = Unknown</code> -- I guess this makes sense from type theory perspective, but in this case it's a bit of a gotcha, perhaps.</p>
-<p>The example above is a bit contrived, but I ran into it while making <code>pytest.skip</code> function compatible with <code>ty</code>. Simplified, it's something like this:</p>
-<pre><code class="language-python">from typing import Never, reveal_type
+<p>So seems like ty thinks that <code>Unknown | Never = Unknown</code> -- I guess this makes sense from type theory perspective, but in this case it&#x27;s a bit of a gotcha, perhaps.</p>
+<p>The example above is a bit contrived, but I ran into it while making <code>pytest.skip</code> function compatible with <code>ty</code>. Simplified, it&#x27;s something like this:</p>
+<pre><code>from typing import Never, reveal_type
 
 def never() -&gt; Never:
     raise RuntimeError()
@@ -121,25 +121,25 @@ reveal_type(pytest.skip())
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-27 00:01</div>
-            <div class="timeline-body"><p>Yes, this is an intentional choice; if you don't declare a type for an attribute, we assume anything can be assigned to that attribute, so we know a &quot;lower bound&quot; for the type (what was assigned) but we don't know any upper bound (thus the union with <code>Unknown</code>). If you use that attribute in any way that doesn't work with the known lower bound, you'll still get a type error. And yes, this applies to both module and class attributes the same. If you don't want the union with <code>Unknown</code>, the fix is to annotate the attribute.</p>
+            <div class="timeline-body"><p>Yes, this is an intentional choice; if you don&#x27;t declare a type for an attribute, we assume anything can be assigned to that attribute, so we know a &quot;lower bound&quot; for the type (what was assigned) but we don&#x27;t know any upper bound (thus the union with <code>Unknown</code>). If you use that attribute in any way that doesn&#x27;t work with the known lower bound, you&#x27;ll still get a type error. And yes, this applies to both module and class attributes the same. If you don&#x27;t want the union with <code>Unknown</code>, the fix is to annotate the attribute.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-21 18:38</div>
             <div class="timeline-body"><blockquote>
-<p>When we support <code>typing(_extensions).Final</code> and/or <code>typing(_extensions).TypeAlias</code>, it would also be plausible to annotate <code>B</code> using either of those symbols. (We don't support either yet, but we hopefully will soon.)</p>
+<p>When we support <code>typing(_extensions).Final</code> and/or <code>typing(_extensions).TypeAlias</code>, it would also be plausible to annotate <code>B</code> using either of those symbols. (We don&#x27;t support either yet, but we hopefully will soon.)</p>
 </blockquote>
 <p><code>typing.Final</code> is now supported, so this can be used as a workaround until we also support <code>typing.TypeAlias</code>: The error is correctly emitted here: https://play.ty.dev/217804c3-810b-4e19-9744-ef1229d787d4</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-06 16:28</div>
-            <div class="timeline-body"><p>The original snippet in this issue no longer provokes the bug here, following the changes made in https://github.com/astral-sh/ruff/pull/20664. We're still working on <code>typing.TypeAlias</code> support, but that's tracked in https://github.com/astral-sh/ty/issues/544. So I think this can be closed now.</p>
+            <div class="timeline-body"><p>The original snippet in this issue no longer provokes the bug here, following the changes made in <a href="https://github.com/astral-sh/ruff/pull/20664">astral-sh/ruff#20664</a>. We&#x27;re still working on <code>typing.TypeAlias</code> support, but that&#x27;s tracked in <a href="https://github.com/astral-sh/ty/issues/544">astral-sh/ty#544</a>. So I think this can be closed now.</p>
 <p>Thanks for the report @lucach!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-10-06 16:28</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-06 16:28</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/lucach">@lucach</a> on 2025-10-07 13:49</div>
@@ -149,7 +149,7 @@ reveal_type(pytest.skip())
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:19:55 UTC
+        Synced at 2026-01-20 19:24:33 UTC
     </footer>
 </body>
 </html>

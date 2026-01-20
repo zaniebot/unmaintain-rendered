@@ -23,16 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MKVatinyan">@MKVatinyan</a></div>
-            <div class="timeline-body"><!--
-Thank you for taking the time to report an issue! We're glad to have you involved with uv.
-
-If you're filing a bug report, please consider including the following information:
-
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
-* The current uv platform.
-* The current uv version (`uv --version`).
--->
+            <div class="timeline-body">
 
 <ul>
 <li>uv version : uv 0.5.2 (195f4b634 2024-11-14)</li>
@@ -43,7 +34,7 @@ If you're filing a bug report, please consider including the following informati
 <li>run <code>uv init torch-uv</code></li>
 <li>add <code>torch</code>, <code>torchaudio</code> to <code>pyproject.toml</code></li>
 </ol>
-<pre><code class="language-toml">[project]
+<pre><code>[project]
 name = &quot;torch-uv&quot;
 version = &quot;0.1.0&quot;
 description = &quot;Add your description here&quot;
@@ -61,33 +52,33 @@ name = &quot;torch-cpu&quot;
 url = &quot;https://download.pytorch.org/whl/cpu&quot;
 explicit = true
 </code></pre>
-<ol start="3">
+<ol>
 <li>create <code>.venv</code> with <code>uv venv</code></li>
 <li>install project with <code>uv pip install .</code>. When i run <code>uv pip show torch</code> i get <code>Version: 2.4.1</code>. I can successfully <code>source .venv/bin/activate</code> and run <code>python</code>, import torch etc.</li>
 <li>i run <code>uv lock</code>. Here is the problem, in the lock file i have</li>
 </ol>
-<pre><code class="language-toml">[[package]]
+<pre><code>[[package]]
 name = &quot;torch&quot;
 version = &quot;2.4.1+cpu&quot;
 </code></pre>
-<ol start="6">
-<li>when i run <code>uv run python</code> i error with <code>error: Distribution </code>torch==2.4.1+cpu @ registry+https://download.pytorch.org/whl/cpu<code> can't be installed because it doesn't have a source distribution or wheel for the current platform</code></li>
+<ol>
+<li>when i run <code>uv run python</code> i error with <code>error: Distribution </code>torch==2.4.1+cpu @ registry+https://download.pytorch.org/whl/cpu<code> can&#x27;t be installed because it doesn&#x27;t have a source distribution or wheel for the current platform</code></li>
 </ol>
 <p>If repeat the same process by having only &quot;torchaudio&gt;=2.4, &lt;2.5&quot; in my dependencies, torch will be downloaded but the lock file will be correct, without the <code>+cpu</code>. Am i missing something here ?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "`uv lock` locks incorrect torch version on macOS " to "`uv lock` locks incorrect torch cpu version on macOS " by @MKVatinyan on 2024-11-18 18:14</div>
+            <div class="event">Renamed from &quot;`uv lock` locks incorrect torch version on macOS &quot; to &quot;`uv lock` locks incorrect torch cpu version on macOS &quot; by <a href="https://github.com/MKVatinyan">@MKVatinyan</a> on 2024-11-18 18:14</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-18 18:15</div>
-            <div class="timeline-body"><p>Unfortunately this is correct. Torch doesn't publish <code>+cpu</code> wheels for macOS. They expect you to just use the <code>2.4.1</code> without <code>+cpu</code>. But if you resolve against the <code>https://download.pytorch.org/whl/cpu</code> index, then it's correct to choose the <code>+cpu</code> version. It's a duplicate of #5182.</p>
+            <div class="timeline-body"><p>Unfortunately this is correct. Torch doesn&#x27;t publish <code>+cpu</code> wheels for macOS. They expect you to just use the <code>2.4.1</code> without <code>+cpu</code>. But if you resolve against the <code>https://download.pytorch.org/whl/cpu</code> index, then it&#x27;s correct to choose the <code>+cpu</code> version. It&#x27;s a duplicate of #5182.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-18 18:15</div>
             <div class="timeline-body"><p>One option:</p>
-<pre><code class="language-toml">[project]
+<pre><code>[project]
 name = &quot;torch-uv&quot;
 version = &quot;0.1.0&quot;
 description = &quot;Add your description here&quot;
@@ -98,7 +89,7 @@ dependencies = [
 ]
 
 [tool.uv.sources]
-torch = { index = &quot;torch-cpu&quot;, marker = &quot;sys_platform != 'darwin'&quot; }
+torch = { index = &quot;torch-cpu&quot;, marker = &quot;sys_platform != &#x27;darwin&#x27;&quot; }
 
 [[tool.uv.index]]
 name = &quot;torch-cpu&quot;
@@ -110,15 +101,15 @@ explicit = true
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-18 18:17</div>
             <div class="timeline-body"><p>Another:</p>
-<pre><code class="language-toml">[project]
+<pre><code>[project]
 name = &quot;torch-uv&quot;
 version = &quot;0.1.0&quot;
 description = &quot;Add your description here&quot;
 readme = &quot;README.md&quot;
 requires-python = &quot;&gt;=3.11&quot;
 dependencies = [
-    &quot;torch==2.4.1+cpu ; sys_platform != 'darwin'&quot;,
-    &quot;torch===2.4.1 ; sys_platform == 'darwin'&quot;
+    &quot;torch==2.4.1+cpu ; sys_platform != &#x27;darwin&#x27;&quot;,
+    &quot;torch===2.4.1 ; sys_platform == &#x27;darwin&#x27;&quot;
 ]
 
 [tool.uv.sources]
@@ -134,7 +125,7 @@ explicit = true
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-18 18:17</div>
             <div class="timeline-body"><p>A third:</p>
-<pre><code class="language-toml">[project]
+<pre><code>[project]
 name = &quot;torch-uv&quot;
 version = &quot;0.1.0&quot;
 description = &quot;Add your description here&quot;
@@ -142,7 +133,7 @@ readme = &quot;README.md&quot;
 requires-python = &quot;&gt;=3.11&quot;
 dependencies = [
     &quot;torch==2.4.1&quot;,
-    &quot;torch!=2.4.1+cpu ; sys_platform == 'darwin'&quot;
+    &quot;torch!=2.4.1+cpu ; sys_platform == &#x27;darwin&#x27;&quot;
 ]
 
 [tool.uv.sources]
@@ -156,7 +147,7 @@ explicit = true
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-11-18 18:17</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-18 18:17</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MKVatinyan">@MKVatinyan</a> on 2024-11-18 18:21</div>
@@ -165,16 +156,16 @@ explicit = true
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-18 18:21</div>
-            <div class="timeline-body"><p>No prob. I'm working on comprehensive docs for this now.</p>
+            <div class="timeline-body"><p>No prob. I&#x27;m working on comprehensive docs for this now.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-11-18 18:21</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-18 18:21</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:28:24 UTC
+        Synced at 2026-01-20 19:35:33 UTC
     </footer>
 </body>
 </html>

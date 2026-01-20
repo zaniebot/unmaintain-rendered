@@ -23,21 +23,21 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This PR adds a first-class API for defining registry indexes, beyond our existing <code>--index-url</code> and <code>--extra-index-url</code> setup.</p>
 <p>Specifically, you now define indexes like so in a <code>uv.toml</code> or <code>pyproject.toml</code> file:</p>
-<pre><code class="language-toml">[[tool.uv.index]]
+<pre><code>[[tool.uv.index]]
 name = &quot;pytorch&quot;
 url = &quot;https://download.pytorch.org/whl/cu121&quot;
 </code></pre>
 <p>You can also provide indexes via <code>--index</code> and <code>UV_INDEX</code>, and override the default index with <code>--default-index</code> and <code>UV_DEFAULT_INDEX</code>.</p>
-<h3>Index priority</h3>
-<p>Indexes are prioritized in the order in which they're defined, such that the first-defined index has highest priority.</p>
+Index priority
+<p>Indexes are prioritized in the order in which they&#x27;re defined, such that the first-defined index has highest priority.</p>
 <p>Indexes are also inherited from parent configuration (e.g., the user-level <code>uv.toml</code>), but are placed after any indexes in the current project, matching our semantics for other array-based configuration values.</p>
 <p>You can mix <code>--index</code> and <code>--default-index</code> with the legacy <code>--index-url</code> and <code>--extra-index-url</code> settings; the latter two are merely treated as unnamed <code>[[tool.uv.index]]</code> entries.</p>
-<h3>Index pinning</h3>
+Index pinning
 <p>If an index includes a name (which is optional), it can then be referenced via <code>tool.uv.sources</code>:</p>
-<pre><code class="language-toml">[[tool.uv.index]]
+<pre><code>[[tool.uv.index]]
 name = &quot;pytorch&quot;
 url = &quot;https://download.pytorch.org/whl/cu121&quot;
 
@@ -45,7 +45,7 @@ url = &quot;https://download.pytorch.org/whl/cu121&quot;
 torch = { index = &quot;pytorch&quot; }
 </code></pre>
 <p>If an index is marked as <code>explicit = true</code>, it can <em>only</em> be used via such references, and will never be searched implicitly:</p>
-<pre><code class="language-toml">[[tool.uv.index]]
+<pre><code>[[tool.uv.index]]
 name = &quot;pytorch&quot;
 url = &quot;https://download.pytorch.org/whl/cu121&quot;
 explicit = true
@@ -55,17 +55,17 @@ torch = { index = &quot;pytorch&quot; }
 </code></pre>
 <p>Indexes defined outside of the current project (e.g., in the user-level <code>uv.toml</code>) can <em>not</em> be explicitly selected.</p>
 <p>(As of now, we only support using a single index for a given <code>tool.uv.sources</code> definition.)</p>
-<h3>Default index</h3>
-<p>By default, we include PyPI as the default index. This remains true even if the user defines a <code>[[tool.uv.index]]</code> -- PyPI is still used as a fallback. You can mark an index as <code>default = true</code> to (1) disable the use of PyPI, and (2) bump it to the bottom of the prioritized list, such that it's used only if a package does not exist on a prior index:</p>
-<pre><code class="language-toml">[[tool.uv.index]]
+Default index
+<p>By default, we include PyPI as the default index. This remains true even if the user defines a <code>[[tool.uv.index]]</code> -- PyPI is still used as a fallback. You can mark an index as <code>default = true</code> to (1) disable the use of PyPI, and (2) bump it to the bottom of the prioritized list, such that it&#x27;s used only if a package does not exist on a prior index:</p>
+<pre><code>[[tool.uv.index]]
 name = &quot;pytorch&quot;
 url = &quot;https://download.pytorch.org/whl/cu121&quot;
 default = true
 </code></pre>
-<h3>Name reuse</h3>
+Name reuse
 <p>If a name is reused, the higher-priority index with that name is used, while the lower-priority indexes are ignored entirely.</p>
 <p>For example, given:</p>
-<pre><code class="language-toml">[[tool.uv.index]]
+<pre><code>[[tool.uv.index]]
 name = &quot;pytorch&quot;
 url = &quot;https://download.pytorch.org/whl/cu121&quot;
 
@@ -73,24 +73,24 @@ url = &quot;https://download.pytorch.org/whl/cu121&quot;
 name = &quot;pytorch&quot;
 url = &quot;https://test.pypi.org/simple&quot;
 </code></pre>
-<p>The <code>https://test.pypi.org/simple</code> index would be ignored entirely, since it's lower-priority than <code>https://download.pytorch.org/whl/cu121</code> but shares the same name.</p>
+<p>The <code>https://test.pypi.org/simple</code> index would be ignored entirely, since it&#x27;s lower-priority than <code>https://download.pytorch.org/whl/cu121</code> but shares the same name.</p>
 <p>Closes #171.</p>
-<h2>Future work</h2>
+Future work
 <ul>
 <li>Users should be able to provide authentication for named indexes via environment variables.</li>
 <li><code>uv add</code> should automatically write <code>--index</code> entries to the <code>pyproject.toml</code> file.</li>
 <li>Users should be able to provide multiple indexes for a given package, stratified by platform:</li>
 </ul>
-<pre><code class="language-toml">[tool.uv.sources]
+<pre><code>[tool.uv.sources]
 torch = [
-  { index = &quot;cpu&quot;, markers = &quot;sys_platform == 'darwin'&quot; },
-  { index = &quot;gpu&quot;, markers = &quot;sys_platform != 'darwin'&quot; },
+  { index = &quot;cpu&quot;, markers = &quot;sys_platform == &#x27;darwin&#x27;&quot; },
+  { index = &quot;gpu&quot;, markers = &quot;sys_platform != &#x27;darwin&#x27;&quot; },
 ]
 </code></pre>
 <ul>
 <li>Users should be able to specify a proxy URL for a given index, to avoid writing user-specific URLs to a lockfile:</li>
 </ul>
-<pre><code class="language-toml">[[tool.uv.index]]
+<pre><code>[[tool.uv.index]]
 name = &quot;test&quot;
 url = &quot;https://private.org/simple&quot;
 proxy = &quot;http://&lt;omitted&gt;/pypi/simple&quot;
@@ -98,11 +98,11 @@ proxy = &quot;http://&lt;omitted&gt;/pypi/simple&quot;
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-09-18 01:57</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-18 01:57</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-18 02:08</div>
-            <div class="timeline-body"><p>This still needs docs (beyond the inline documentation), but I'd like to align on the semantics described in the PR summary first.</p>
+            <div class="timeline-body"><p>This still needs docs (beyond the inline documentation), but I&#x27;d like to align on the semantics described in the PR summary first.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -115,13 +115,13 @@ proxy = &quot;http://&lt;omitted&gt;/pypi/simple&quot;
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-09-18 02:24</div>
+            <div class="event">Review requested from <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-18 02:24</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-18 03:53</div>
             <div class="timeline-body"><blockquote>
 <p>Any indexes defined via [[tool.uv.index]] take priority over any indexes defined via --index-url or --extra-index-url.</p>
-<p>(This is problematic, since as of now, there's no way to provide a [[tool.uv.index]] on the command line, so you can never override in-file configuration with command-line configuration.)</p>
+<p>(This is problematic, since as of now, there&#x27;s no way to provide a [[tool.uv.index]] on the command line, so you can never override in-file configuration with command-line configuration.)</p>
 </blockquote>
 <p>Yeah this seems wrong. Why is it this way?</p>
 <p>Do we need an explicit <code>explicit</code> tag or can we just use the presence of a name? I guess the name is useful for providing credentials externally so... I guess the explicit tag is important.</p>
@@ -135,19 +135,19 @@ proxy = &quot;http://&lt;omitted&gt;/pypi/simple&quot;
             <div class="timeline-body"><blockquote>
 <p>Yeah this seems wrong. Why is it this way?</p>
 </blockquote>
-<p>Well... we could just invert the priority, if that's what you mean (such that the new index stuff comes last, and the legacy arguments come first). Then the CLI arguments would work as expected. As-is, though, we don't have a way to differentiate between indexes passed on the command line (with <code>--index-url</code> or <code>--extra-index-url</code>) and indexes defined in a file via <code>index-url</code> and <code>extra-index-url</code>... So, like, we can't have <code>index-url</code> from the <code>uv.toml</code> be lower priority than <code>tool.uv.index</code>, but <code>--index-url</code> be higher priority. Alternatively, we could add a new command-line argument (<code>--index</code>?) for these <code>tool.uv.index</code> sources, which would also solve the problem?</p>
+<p>Well... we could just invert the priority, if that&#x27;s what you mean (such that the new index stuff comes last, and the legacy arguments come first). Then the CLI arguments would work as expected. As-is, though, we don&#x27;t have a way to differentiate between indexes passed on the command line (with <code>--index-url</code> or <code>--extra-index-url</code>) and indexes defined in a file via <code>index-url</code> and <code>extra-index-url</code>... So, like, we can&#x27;t have <code>index-url</code> from the <code>uv.toml</code> be lower priority than <code>tool.uv.index</code>, but <code>--index-url</code> be higher priority. Alternatively, we could add a new command-line argument (<code>--index</code>?) for these <code>tool.uv.index</code> sources, which would also solve the problem?</p>
 <blockquote>
 <p>Do we need an explicit explicit tag or can we just use the presence of a name? I guess the name is useful for providing credentials externally so... I guess the explicit tag is important.</p>
 </blockquote>
 <p>Yeah roughly this.</p>
 <blockquote>
-<p>Do we set the explicit tag during a uv add --index-url <url> <pkg> operation?</p>
+<p>Do we set the explicit tag during a uv add --index-url   operation?</p>
 </blockquote>
-<p>We don't as of this PR... We can though. I think we probably should? I guess by default we add the index, and make it explicit for that package? The unfortunate thing is that we need a name for the index in that case (as we discussed on Discord). Alternatively, we could just add a <code>tool.uv.index</code>, and not make it explicit.</p>
+<p>We don&#x27;t as of this PR... We can though. I think we probably should? I guess by default we add the index, and make it explicit for that package? The unfortunate thing is that we need a name for the index in that case (as we discussed on Discord). Alternatively, we could just add a <code>tool.uv.index</code>, and not make it explicit.</p>
 <blockquote>
 <p>How does index pinning work for transitive dependencies?</p>
 </blockquote>
-<p>It doesn't have any effect on transitive dependencies. I don't know that it can or should, honestly, because transitive dependencies can be required from multiple different first-party dependencies that could come from different indexes. I think this would be extremely hard to implement correctly and could lead to confusing behavior.</p>
+<p>It doesn&#x27;t have any effect on transitive dependencies. I don&#x27;t know that it can or should, honestly, because transitive dependencies can be required from multiple different first-party dependencies that could come from different indexes. I think this would be extremely hard to implement correctly and could lead to confusing behavior.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -161,7 +161,7 @@ proxy = &quot;http://&lt;omitted&gt;/pypi/simple&quot;
 <blockquote>
 <p>How does index pinning work for transitive dependencies?</p>
 </blockquote>
-<p>It doesn't have any effect on transitive dependencies. I don't know that it can or should, honestly, because transitive dependencies can be required from multiple different first-party dependencies that could come from different indexes. I think this would be extremely hard to implement correctly and could lead to confusing behavior.</p>
+<p>It doesn&#x27;t have any effect on transitive dependencies. I don&#x27;t know that it can or should, honestly, because transitive dependencies can be required from multiple different first-party dependencies that could come from different indexes. I think this would be extremely hard to implement correctly and could lead to confusing behavior.</p>
 </blockquote>
 <p>Did you consider allowing pinning packages to indexes using glob-patterns as mentioned <a href="https://github.com/astral-sh/uv/issues/171#issuecomment-2302093785">here</a>? AFAIK that is the only solution for pinning transitive dependencies that is straightforward enough but still useful for a set of real use-cases.</p>
 </div>
@@ -169,29 +169,29 @@ proxy = &quot;http://&lt;omitted&gt;/pypi/simple&quot;
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-18 14:13</div>
             <div class="timeline-body"><blockquote>
-<p>Did you consider allowing pinning packages to indexes using glob-patterns as mentioned https://github.com/astral-sh/uv/issues/171#issuecomment-2302093785? AFAIK that is the only solution for pinning transitive dependencies that is straightforward enough but still useful for a set of real use-cases.</p>
+<p>Did you consider allowing pinning packages to indexes using glob-patterns as mentioned <a href="https://github.com/astral-sh/uv/issues/171">astral-sh/uv#171</a>#issuecomment-2302093785? AFAIK that is the only solution for pinning transitive dependencies that is straightforward enough but still useful for a set of real use-cases.</p>
 </blockquote>
-<p>There's nothing stopping us from supporting that in addition to the schema described above. It strikes me as somewhat backwards but I understand why it's useful. My only concern is that we're complicating the schema and creating two ways to assign a package to an index.</p>
+<p>There&#x27;s nothing stopping us from supporting that in addition to the schema described above. It strikes me as somewhat backwards but I understand why it&#x27;s useful. My only concern is that we&#x27;re complicating the schema and creating two ways to assign a package to an index.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/corleyma">@corleyma</a> on 2024-09-20 18:41</div>
-            <div class="timeline-body"><p>@charliermarsh I know it's painful/stupid/messy, but the regex assignment is still really useful for handling transitive dependencies in corporate environments.  I don't think there are easy alternatives given the default assumption that python wants to make about indices being equivalent.</p>
+            <div class="timeline-body"><p>@charliermarsh I know it&#x27;s painful/stupid/messy, but the regex assignment is still really useful for handling transitive dependencies in corporate environments.  I don&#x27;t think there are easy alternatives given the default assumption that python wants to make about indices being equivalent.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-20 18:48</div>
-            <div class="timeline-body"><p>I wonder if we should have a separate schema for pinning transitive packages to a defined index? It could allow globs as well. I'm not sure what all the trade-offs are.</p>
+            <div class="timeline-body"><p>I wonder if we should have a separate schema for pinning transitive packages to a defined index? It could allow globs as well. I&#x27;m not sure what all the trade-offs are.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-20 19:43</div>
-            <div class="timeline-body"><p>@zanieb -- That's a good call. Instead of putting this on the index schema, we could have a separate table for assigning packages to named indexes.</p>
+            <div class="timeline-body"><p>@zanieb -- That&#x27;s a good call. Instead of putting this on the index schema, we could have a separate table for assigning packages to named indexes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-26 18:27</div>
-            <div class="timeline-body"><p>I'll probably be pushing to this branch a lot over the next few days, so you may want to unsubscribe if the notifications are annoying!</p>
+            <div class="timeline-body"><p>I&#x27;ll probably be pushing to this branch a lot over the next few days, so you may want to unsubscribe if the notifications are annoying!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -202,10 +202,10 @@ proxy = &quot;http://&lt;omitted&gt;/pypi/simple&quot;
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/j178">@j178</a> on 2024-09-27 05:05</div>
             <div class="timeline-body"><p>While playing with this, I found an issue that the lockfile is always ignored due to missing remote index:</p>
-<pre><code class="language-console">DEBUG Ignoring existing lockfile due to missing remote index: `idna` `3.4` from `https://download.pytorch.org/whl/cu121`
+<pre><code>DEBUG Ignoring existing lockfile due to missing remote index: `idna` `3.4` from `https://download.pytorch.org/whl/cu121`
 </code></pre>
 <p>A reproduction:</p>
-<pre><code class="language-console">$ cat pyproject.toml
+<pre><code>$ cat pyproject.toml
 [project]
 name = &quot;foo&quot;
 version = &quot;0.1.0&quot;
@@ -235,11 +235,11 @@ https://github.com/astral-sh/uv/blob/805f1bd6f548f142acd592e5089597b31a012a7c/cr
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @konstin by @charliermarsh on 2024-09-28 19:02</div>
+            <div class="event">Review requested from <a href="https://github.com/konstin">@konstin</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-28 19:02</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>docs/configuration/indexes.md</code>:17 on 2024-09-30 08:38</div>
-            <div class="timeline-body"><p>Nit: We now prefer PEP 691 – JSON-based Simple API for Python Package Indexes because it's better to parse json than html.</p>
+            <div class="timeline-body"><p>Nit: We now prefer PEP 691 – JSON-based Simple API for Python Package Indexes because it&#x27;s better to parse json than html.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -254,7 +254,7 @@ https://github.com/astral-sh/uv/blob/805f1bd6f548f142acd592e5089597b31a012a7c/cr
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/pypi-types/src/requirement.rs</code>:322 on 2024-09-30 08:49</div>
-            <div class="timeline-body"><p>Shouldn't this refer to an index name, rather than a URL? By defining a name, we comment on the indexes meaning and avoid repeating the URL each time.</p>
+            <div class="timeline-body"><p>Shouldn&#x27;t this refer to an index name, rather than a URL? By defining a name, we comment on the indexes meaning and avoid repeating the URL each time.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -273,7 +273,7 @@ https://github.com/astral-sh/uv/blob/805f1bd6f548f142acd592e5089597b31a012a7c/cr
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/distribution-types/src/index.rs</code>:29 on 2024-09-30 22:37</div>
             <div class="timeline-body"><p>Perhaps</p>
-<pre><code class="language-suggestion">    /// Explicit indexes will _only_ be used when explicitly requested via a `[tool.uv.sources]`
+<pre><code>    /// Explicit indexes will _only_ be used when explicitly requested via a `[tool.uv.sources]`
 </code></pre>
 </div>
         </div>
@@ -310,7 +310,7 @@ https://github.com/astral-sh/uv/blob/805f1bd6f548f142acd592e5089597b31a012a7c/cr
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/distribution-types/src/index_url.rs</code>:455 on 2024-09-30 22:52</div>
-            <div class="timeline-body"><p>I don't quite follow the &quot;pip perspective&quot; part.</p>
+            <div class="timeline-body"><p>I don&#x27;t quite follow the &quot;pip perspective&quot; part.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -319,7 +319,7 @@ https://github.com/astral-sh/uv/blob/805f1bd6f548f142acd592e5089597b31a012a7c/cr
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/index.rs</code>:73 on 2024-09-30 22:54</div>
-            <div class="timeline-body"><p>No it's a TODO. I intentionally left it in but I don't feel strongly.</p>
+            <div class="timeline-body"><p>No it&#x27;s a TODO. I intentionally left it in but I don&#x27;t feel strongly.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -337,7 +337,7 @@ https://github.com/astral-sh/uv/blob/805f1bd6f548f142acd592e5089597b31a012a7c/cr
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/index.rs</code>:117 on 2024-09-30 22:55</div>
-            <div class="timeline-body"><p>I think I just wouldn't want to detect <code>https://foo=bar.com</code> as a name <code>https://foo</code>.</p>
+            <div class="timeline-body"><p>I think I just wouldn&#x27;t want to detect <code>https://foo=bar.com</code> as a name <code>https://foo</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -373,7 +373,7 @@ https://github.com/astral-sh/uv/blob/805f1bd6f548f142acd592e5089597b31a012a7c/cr
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/lock.rs</code>:11825 on 2024-09-30 23:15</div>
-            <div class="timeline-body"><p>Just &quot;named&quot; right? There's no explicit declaration here.</p>
+            <div class="timeline-body"><p>Just &quot;named&quot; right? There&#x27;s no explicit declaration here.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -382,7 +382,7 @@ https://github.com/astral-sh/uv/blob/805f1bd6f548f142acd592e5089597b31a012a7c/cr
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/lock.rs</code>:11893 on 2024-09-30 23:15</div>
-            <div class="timeline-body"><p>Might be safer to use <code>example.com</code> or something so the test fails if it's used?</p>
+            <div class="timeline-body"><p>Might be safer to use <code>example.com</code> or something so the test fails if it&#x27;s used?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -418,7 +418,7 @@ https://github.com/astral-sh/uv/blob/805f1bd6f548f142acd592e5089597b31a012a7c/cr
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/configuration/environment.md</code>:6 on 2024-09-30 23:19</div>
-            <div class="timeline-body"><p>Can't be multiple values right? I think these might be roughly swapped but both need some work.</p>
+            <div class="timeline-body"><p>Can&#x27;t be multiple values right? I think these might be roughly swapped but both need some work.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -427,7 +427,7 @@ https://github.com/astral-sh/uv/blob/805f1bd6f548f142acd592e5089597b31a012a7c/cr
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/configuration/indexes.md</code>:5 on 2024-09-30 23:20</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">private indexes, via the `[[tool.uv.index]]` configuration option (and `--index`, the analogous
+            <div class="timeline-body"><pre><code>private indexes, via the `[[tool.uv.index]]` configuration option (and `--index`, the analogous
 </code></pre>
 </div>
         </div>
@@ -446,7 +446,7 @@ https://github.com/astral-sh/uv/blob/805f1bd6f548f142acd592e5089597b31a012a7c/cr
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/configuration/indexes.md</code>:17 on 2024-09-30 23:21</div>
-            <div class="timeline-body"><p>I'd discuss the expected format somewhere else, I think. It seems too irrelevant to most users to put here.</p>
+            <div class="timeline-body"><p>I&#x27;d discuss the expected format somewhere else, I think. It seems too irrelevant to most users to put here.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -525,7 +525,7 @@ https://github.com/astral-sh/uv/blob/805f1bd6f548f142acd592e5089597b31a012a7c/cr
             <div class="timeline-body"><blockquote>
 <p>Separately, why this limitation? What happened to being able to override a named index on a single invocation?</p>
 </blockquote>
-<p>It's an implementation detail... It probably should work, but it's hard because those get merged into settings, and we don't look in the settings when resolving explicit, named indexes (we just look in the current workspace).</p>
+<p>It&#x27;s an implementation detail... It probably should work, but it&#x27;s hard because those get merged into settings, and we don&#x27;t look in the settings when resolving explicit, named indexes (we just look in the current workspace).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -552,7 +552,7 @@ https://github.com/astral-sh/uv/blob/805f1bd6f548f142acd592e5089597b31a012a7c/cr
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pypi-types/src/requirement.rs</code>:322 on 2024-10-01 00:30</div>
-            <div class="timeline-body"><p>This is correct as a URL. This isn't the user-facing type. But the comment is wrong.</p>
+            <div class="timeline-body"><p>This is correct as a URL. This isn&#x27;t the user-facing type. But the comment is wrong.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -570,7 +570,7 @@ https://github.com/astral-sh/uv/blob/805f1bd6f548f142acd592e5089597b31a012a7c/cr
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>docs/configuration/indexes.md</code>:34 on 2024-10-01 00:40</div>
-            <div class="timeline-body"><p><code>--no-index</code> does that, but otherwise there's no such thing.</p>
+            <div class="timeline-body"><p><code>--no-index</code> does that, but otherwise there&#x27;s no such thing.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -579,7 +579,7 @@ https://github.com/astral-sh/uv/blob/805f1bd6f548f142acd592e5089597b31a012a7c/cr
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>docs/configuration/index.md</code>:8 on 2024-10-01 00:40</div>
-            <div class="timeline-body"><p>I'm not sure. To me it was similar to authentication.</p>
+            <div class="timeline-body"><p>I&#x27;m not sure. To me it was similar to authentication.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -597,7 +597,7 @@ https://github.com/astral-sh/uv/blob/805f1bd6f548f142acd592e5089597b31a012a7c/cr
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>docs/pip/compatibility.md</code>:151 on 2024-10-01 00:49</div>
-            <div class="timeline-body"><p>I could go either way. I don't mind having dedicated content here on how it differs from pip.</p>
+            <div class="timeline-body"><p>I could go either way. I don&#x27;t mind having dedicated content here on how it differs from pip.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -624,7 +624,7 @@ https://github.com/astral-sh/uv/blob/805f1bd6f548f142acd592e5089597b31a012a7c/cr
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>docs/configuration/indexes.md</code>:70 on 2024-10-01 04:31</div>
-            <div class="timeline-body"><p>I'm working on this, but it will be a separate PR.</p>
+            <div class="timeline-body"><p>I&#x27;m working on this, but it will be a separate PR.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -633,7 +633,7 @@ https://github.com/astral-sh/uv/blob/805f1bd6f548f142acd592e5089597b31a012a7c/cr
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>docs/configuration/indexes.md</code>:70 on 2024-10-01 04:44</div>
-            <div class="timeline-body"><p>I'm considering tracking the &quot;source&quot; of every index (CLI, configuration file, etc.), as field on the index type.</p>
+            <div class="timeline-body"><p>I&#x27;m considering tracking the &quot;source&quot; of every index (CLI, configuration file, etc.), as field on the index type.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -642,7 +642,7 @@ https://github.com/astral-sh/uv/blob/805f1bd6f548f142acd592e5089597b31a012a7c/cr
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/configuration/indexes.md</code>:34 on 2024-10-01 04:57</div>
-            <div class="timeline-body"><p>I think it'll be fairly common to want to disable PyPI entirely?</p>
+            <div class="timeline-body"><p>I think it&#x27;ll be fairly common to want to disable PyPI entirely?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -664,7 +664,7 @@ https://github.com/astral-sh/uv/blob/805f1bd6f548f142acd592e5089597b31a012a7c/cr
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/configuration/indexes.md</code>:34 on 2024-10-01 12:13</div>
-            <div class="timeline-body"><p>Yes, but it seems weird to need to do that. I might not want to mark my other index as a default for some reason? I don't fully understand the trade-offs. We can wait and see if it comes up, it doesn't block this pull request.</p>
+            <div class="timeline-body"><p>Yes, but it seems weird to need to do that. I might not want to mark my other index as a default for some reason? I don&#x27;t fully understand the trade-offs. We can wait and see if it comes up, it doesn&#x27;t block this pull request.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -673,18 +673,18 @@ https://github.com/astral-sh/uv/blob/805f1bd6f548f142acd592e5089597b31a012a7c/cr
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>docs/configuration/indexes.md</code>:34 on 2024-10-01 13:00</div>
-            <div class="timeline-body"><p>Yeah, I think what you're getting at here is that <code>default = true</code> does two things: (1) replaces PyPI, (2) changes priority.</p>
+            <div class="timeline-body"><p>Yeah, I think what you&#x27;re getting at here is that <code>default = true</code> does two things: (1) replaces PyPI, (2) changes priority.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/szobov">@szobov</a> on 2024-10-07 15:24</div>
             <div class="timeline-body"><p>Hey @charliermarsh
-Thanks a lot for the work you're doing to improve python's ecosystem.
-I'm very much looking forward for this feature since I'm currently blocked by it.</p>
+Thanks a lot for the work you&#x27;re doing to improve python&#x27;s ecosystem.
+I&#x27;m very much looking forward for this feature since I&#x27;m currently blocked by it.</p>
 <p>I wanted to ask what are the steps to get it merged and released and if I can somehow assist you?</p>
 <p>I tested it locally by installing <code>uv</code> from the branch and it worked smoothly :tada:</p>
-<details>
-<summary>details on the setup</summary>
+
+details on the setup
 
 <pre><code>```
 $ uv version
@@ -725,20 +725,20 @@ dependencies = [
     { name = &quot;fsspec&quot; },
     { name = &quot;jinja2&quot; },
     { name = &quot;networkx&quot; },
-    { name = &quot;nvidia-cublas-cu11&quot;, marker = &quot;platform_machine == 'x86_64' and platform_system == 'Linux'&quot; },
-    { name = &quot;nvidia-cuda-cupti-cu11&quot;, marker = &quot;platform_machine == 'x86_64' and platform_system == 'Linux'&quot; },
-    { name = &quot;nvidia-cuda-nvrtc-cu11&quot;, marker = &quot;platform_machine == 'x86_64' and platform_system == 'Linux'&quot; },
-    { name = &quot;nvidia-cuda-runtime-cu11&quot;, marker = &quot;platform_machine == 'x86_64' and platform_system == 'Linux'&quot; },
-    { name = &quot;nvidia-cudnn-cu11&quot;, marker = &quot;platform_machine == 'x86_64' and platform_system == 'Linux'&quot; },
-    { name = &quot;nvidia-cufft-cu11&quot;, marker = &quot;platform_machine == 'x86_64' and platform_system == 'Linux'&quot; },
-    { name = &quot;nvidia-curand-cu11&quot;, marker = &quot;platform_machine == 'x86_64' and platform_system == 'Linux'&quot; },
-    { name = &quot;nvidia-cusolver-cu11&quot;, marker = &quot;platform_machine == 'x86_64' and platform_system == 'Linux'&quot; },
-    { name = &quot;nvidia-cusparse-cu11&quot;, marker = &quot;platform_machine == 'x86_64' and platform_system == 'Linux'&quot; },
-    { name = &quot;nvidia-nccl-cu11&quot;, marker = &quot;platform_machine == 'x86_64' and platform_system == 'Linux'&quot; },
-    { name = &quot;nvidia-nvtx-cu11&quot;, marker = &quot;platform_machine == 'x86_64' and platform_system == 'Linux'&quot; },
+    { name = &quot;nvidia-cublas-cu11&quot;, marker = &quot;platform_machine == &#x27;x86_64&#x27; and platform_system == &#x27;Linux&#x27;&quot; },
+    { name = &quot;nvidia-cuda-cupti-cu11&quot;, marker = &quot;platform_machine == &#x27;x86_64&#x27; and platform_system == &#x27;Linux&#x27;&quot; },
+    { name = &quot;nvidia-cuda-nvrtc-cu11&quot;, marker = &quot;platform_machine == &#x27;x86_64&#x27; and platform_system == &#x27;Linux&#x27;&quot; },
+    { name = &quot;nvidia-cuda-runtime-cu11&quot;, marker = &quot;platform_machine == &#x27;x86_64&#x27; and platform_system == &#x27;Linux&#x27;&quot; },
+    { name = &quot;nvidia-cudnn-cu11&quot;, marker = &quot;platform_machine == &#x27;x86_64&#x27; and platform_system == &#x27;Linux&#x27;&quot; },
+    { name = &quot;nvidia-cufft-cu11&quot;, marker = &quot;platform_machine == &#x27;x86_64&#x27; and platform_system == &#x27;Linux&#x27;&quot; },
+    { name = &quot;nvidia-curand-cu11&quot;, marker = &quot;platform_machine == &#x27;x86_64&#x27; and platform_system == &#x27;Linux&#x27;&quot; },
+    { name = &quot;nvidia-cusolver-cu11&quot;, marker = &quot;platform_machine == &#x27;x86_64&#x27; and platform_system == &#x27;Linux&#x27;&quot; },
+    { name = &quot;nvidia-cusparse-cu11&quot;, marker = &quot;platform_machine == &#x27;x86_64&#x27; and platform_system == &#x27;Linux&#x27;&quot; },
+    { name = &quot;nvidia-nccl-cu11&quot;, marker = &quot;platform_machine == &#x27;x86_64&#x27; and platform_system == &#x27;Linux&#x27;&quot; },
+    { name = &quot;nvidia-nvtx-cu11&quot;, marker = &quot;platform_machine == &#x27;x86_64&#x27; and platform_system == &#x27;Linux&#x27;&quot; },
     { name = &quot;setuptools&quot; },
     { name = &quot;sympy&quot; },
-    { name = &quot;triton&quot;, marker = &quot;python_full_version &lt; '3.13' and platform_machine == 'x86_64' and platform_system == 'Linux'&quot; },
+    { name = &quot;triton&quot;, marker = &quot;python_full_version &lt; &#x27;3.13&#x27; and platform_machine == &#x27;x86_64&#x27; and platform_system == &#x27;Linux&#x27;&quot; },
     { name = &quot;typing-extensions&quot; },
 ]
 wheels = [
@@ -746,7 +746,7 @@ wheels = [
     { url = &quot;https://download.pytorch.org/whl/cu118/torch-2.4.0%2Bcu118-cp312-cp312-win_amd64.whl&quot;, hash = &quot;sha256:bd16a12a003fe58276d7b7394a3760d576eb8dbfb4bacea025eb52a1eaf5172b&quot; },
 ]
 ```</code></pre>
-</details>
+
 
 <p>Thanks in advance :pray:</p>
 </div>
@@ -784,14 +784,14 @@ That would help my team and me not to add a library to write/dump the data.toml 
 </blockquote>
 <p>See PRs #7746 and #7747</p>
 </blockquote>
-<p>That's awesome, thank you so much, really excited about these features 😄</p>
+<p>That&#x27;s awesome, thank you so much, really excited about these features 😄</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2024-10-15 22:24</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-15 22:24</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-10-15 22:24</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-15 22:24</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-10-15 22:24</div>
@@ -812,16 +812,16 @@ That would help my team and me not to add a library to write/dump the data.toml 
 <p>You can use an API key in the PASSWORD variable — it works for anything that supports HTTP Basic Authentication.</p>
 </blockquote>
 <p>thanks for the support!</p>
-<p>i'm trying this now and seeing issues. For context, i have a project which has one dependency from a private artifactory registry.</p>
+<p>i&#x27;m trying this now and seeing issues. For context, i have a project which has one dependency from a private artifactory registry.</p>
 <p>with or without credentials exported to the environment i see the following output:</p>
 <pre><code>uv sync
   × No solution found when resolving dependencies:
-  ╰─▶ Because my-private-package was not found in the package registry and your project depends on my-private-package&gt;=2.0.0,&lt;2.1.dev0, we can conclude that your project's requirements are unsatisfiable.
+  ╰─▶ Because my-private-package was not found in the package registry and your project depends on my-private-package&gt;=2.0.0,&lt;2.1.dev0, we can conclude that your project&#x27;s requirements are unsatisfiable.
 
-      hint: my-private-package was requested with a pre-release marker (e.g., sb-qag-sphinx&gt;=2.0.0,&lt;2.1.dev0), but pre-releases weren't enabled (try: `--prerelease=allow`)
+      hint: my-private-package was requested with a pre-release marker (e.g., sb-qag-sphinx&gt;=2.0.0,&lt;2.1.dev0), but pre-releases weren&#x27;t enabled (try: `--prerelease=allow`)
 </code></pre>
 <p>the dependencies are specified as follows:</p>
-<pre><code class="language-toml">dependencies = [
+<pre><code>dependencies = [
     &quot;my-private-package~=2.0.0&quot;,
     # ...
 ]
@@ -841,7 +841,7 @@ url = &quot;https://artifactory.mycompany.com/artifactory/api/pypi/my-private-pa
 explicit = true
 </code></pre>
 <p>with</p>
-<pre><code class="language-sh">export UV_INDEX_MYCOMPANY_PY_RELEASE_USERNAME={username}
+<pre><code>export UV_INDEX_MYCOMPANY_PY_RELEASE_USERNAME={username}
 export UV_INDEX_MYCOMPANY_PY_RELEASE_PASSWORD={artifactory token}
 </code></pre>
 </div>
@@ -857,7 +857,7 @@ export UV_INDEX_MYCOMPANY_PY_RELEASE_PASSWORD={artifactory token}
 <ul>
 <li>Users should be able to specify a proxy URL for a given index, to avoid writing user-specific URLs to a lockfile:</li>
 </ul>
-<pre><code class="language-toml">[[tool.uv.index]]
+<pre><code>[[tool.uv.index]]
 name = &quot;test&quot;
 url = &quot;https://private.org/simple&quot;
 proxy = &quot;http://&lt;omitted&gt;/pypi/simple&quot;
@@ -869,7 +869,7 @@ proxy = &quot;http://&lt;omitted&gt;/pypi/simple&quot;
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:39:38 UTC
+        Synced at 2026-01-20 19:48:19 UTC
     </footer>
 </body>
 </html>

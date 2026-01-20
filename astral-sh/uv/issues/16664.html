@@ -23,12 +23,12 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/onutc">@onutc</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p><strong>IMPORTANT: This is a major blocker for running Python through <code>uv</code> in <a href="https://github.com/openai/codex">OpenAI Codex</a> on macOS.</strong></p>
 <p>When <code>uv run</code> is executed inside a macOS sandbox (e.g., OpenAI Codex’ default seatbelt or a minimal seatbelt profile), <code>uv</code> panics in Rust while initializing SystemConfiguration’s dynamic store. The process aborts <strong>before</strong> the target command (Python) starts.</p>
 <p>I am not very knowledgeable about uv-seatbelt interaction, I have a feeling that there might be more than one issue here.</p>
-<h2>Reproduction A — inside Codex</h2>
-<p>Install codex v0.55.0, and ask it to run <code>run uv run python -c &quot;print('hello')&quot;</code></p>
+Reproduction A — inside Codex
+<p>Install codex v0.55.0, and ask it to run <code>run uv run python -c &quot;print(&#x27;hello&#x27;)&quot;</code></p>
 <pre><code>/ T R A N S C R I P T / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
 ╭────────────────────────────────────────────────╮
 │ &gt;_ OpenAI Codex (v0.55.0)                      │
@@ -46,28 +46,28 @@
   /review - review any changes and find issues
 
 
-› run uv run python -c &quot;print('hello from backend dir')&quot;
+› run uv run python -c &quot;print(&#x27;hello from backend dir&#x27;)&quot;
 
 
 • Preparing to run backend Python command
 
-$ uv run python -c &quot;print('hello')&quot;
+$ uv run python -c &quot;print(&#x27;hello&#x27;)&quot;
 
-thread 'main2' panicked at /Users/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/system-configuration-0.6.1/src/dynamic_store.rs:154:1:
+thread &#x27;main2&#x27; panicked at /Users/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/system-configuration-0.6.1/src/dynamic_store.rs:154:1:
 Attempted to create a NULL object.
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 
-thread 'main' panicked at /Users/runner/work/uv/uv/crates/uv/src/lib.rs:2409:10:
+thread &#x27;main&#x27; panicked at /Users/runner/work/uv/uv/crates/uv/src/lib.rs:2409:10:
 Tokio executor failed, was there a panic?: Any { .. }
 ✗ (101) • 133ms
 </code></pre>
-<p>Note that I cannot reproduce it in every folder. It doesn't raise an error when I open codex in /tmp directory.</p>
-<h2>Reproduction B — pure macOS seatbelt</h2>
+<p>Note that I cannot reproduce it in every folder. It doesn&#x27;t raise an error when I open codex in /tmp directory.</p>
+Reproduction B — pure macOS seatbelt
 <p>Save the following in a file repro.sh and run it:</p>
-<pre><code class="language-bash">cd /tmp &amp;&amp; mkdir uv-sandbox-test &amp;&amp; cd uv-sandbox-test
+<pre><code>cd /tmp &amp;&amp; mkdir uv-sandbox-test &amp;&amp; cd uv-sandbox-test
 
 # Sandbox profile blocking SystemConfiguration
-cat &gt; block-sysconfig.sb &lt;&lt;'EOF'
+cat &gt; block-sysconfig.sb &lt;&lt;&#x27;EOF&#x27;
 (version 1)
 (allow default)
 (deny mach-lookup (global-name &quot;com.apple.SystemConfiguration.configd&quot;))
@@ -78,7 +78,7 @@ uv init test-project
 cd test-project
 
 env RUST_BACKTRACE=full sandbox-exec -f ../block-sysconfig.sb \
-uv run python -c &quot;print('hello')&quot;
+uv run python -c &quot;print(&#x27;hello&#x27;)&quot;
 </code></pre>
 <p>I am not sure this is the EXACT same error or seatbelt configuration on Codex that causes this error, but it seems very relevant.</p>
 <p>Output:</p>
@@ -88,7 +88,7 @@ Initialized project `test-project` at `/private/tmp/test-project`
 Using CPython 3.13.7
 Creating virtual environment at: .venv
 
-thread 'main2' panicked at /Users/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/system-configuration-0.6.1/src/dynamic_store.rs:154:1:
+thread &#x27;main2&#x27; panicked at /Users/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/system-configuration-0.6.1/src/dynamic_store.rs:154:1:
 Attempted to create a NULL object.
 stack backtrace:
    0:        0x105545e44 - __mh_execute_header
@@ -114,7 +114,7 @@ stack backtrace:
   20:        0x10557d99c - __mh_execute_header
   21:        0x184a72c0c - __pthread_cond_wait
 
-thread 'main' panicked at /Users/runner/work/uv/uv/crates/uv/src/lib.rs:2409:10:
+thread &#x27;main&#x27; panicked at /Users/runner/work/uv/uv/crates/uv/src/lib.rs:2409:10:
 Tokio executor failed, was there a panic?: Any { .. }
 stack backtrace:
    0:        0x105545e44 - __mh_execute_header
@@ -132,23 +132,23 @@ stack backtrace:
   12:        0x106026538 - __mh_execute_header
   13:        0x105cbecec - __mh_execute_header
 </code></pre>
-<h1>Other issues</h1>
-<p>On Codex side: https://github.com/openai/codex/issues/1457</p>
-<h3>Platform</h3>
+Other issues
+<p>On Codex side: <a href="https://github.com/openai/codex/issues/1457">openai/codex#1457</a></p>
+Platform
 <p>macOS 15.5 arm64</p>
-<h3>Version</h3>
+Version
 <p>uv 0.9.7 (0adb44480 2025-10-30)</p>
-<h3>Python version</h3>
+Python version
 <p>Python 3.13.7</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @onutc on 2025-11-10 10:50</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/onutc">@onutc</a> on 2025-11-10 10:50</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tekumara">@tekumara</a> on 2025-11-10 11:29</div>
-            <div class="timeline-body"><p>Network related things, like reqwest, need to be able to lookup <code>com.apple.SystemConfiguration.configd</code> which you've explicitly denied in Reproduction B.</p>
-<p>For Reproduction A this looks like https://github.com/openai/codex/issues/5914 which is fixed in codex 0.56.0 see <a href="https://github.com/openai/codex/issues/5914#issuecomment-3505687500">here</a></p>
+            <div class="timeline-body"><p>Network related things, like reqwest, need to be able to lookup <code>com.apple.SystemConfiguration.configd</code> which you&#x27;ve explicitly denied in Reproduction B.</p>
+<p>For Reproduction A this looks like <a href="https://github.com/openai/codex/issues/5914">openai/codex#5914</a> which is fixed in codex 0.56.0 see <a href="https://github.com/openai/codex/issues/5914#issuecomment-3505687500">here</a></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -157,12 +157,12 @@ stack backtrace:
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @onutc on 2025-11-10 12:55</div>
+            <div class="event">Closed by <a href="https://github.com/onutc">@onutc</a> on 2025-11-10 12:55</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:33:25 UTC
+        Synced at 2026-01-20 19:40:58 UTC
     </footer>
 </body>
 </html>

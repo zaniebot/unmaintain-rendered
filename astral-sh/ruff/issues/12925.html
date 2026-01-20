@@ -25,7 +25,7 @@
             <div class="timeline-header"><a href="https://github.com/TomerBin">@TomerBin</a></div>
             <div class="timeline-body"><p>I would like to suggest that RUF029 will skip functions that are FastApi routes. In their <a href="https://fastapi.tiangolo.com/async/#very-technical-details">docs</a>, it is explicitly mentioned that sometimes routes should be declared as async function, even when not doing any asynchronous operation.
 As a first step we can introduce a new rule setting that will allow opting into this new behavior.</p>
-<p>One caveat is with FastApi dependencies that we should handle the same way but we can't since dependencies are just native functions and can't be detected in their deceleration (only in usage), but I believe that ignoring routes and keeping the current behavior for dependencies is a good step.</p>
+<p>One caveat is with FastApi dependencies that we should handle the same way but we can&#x27;t since dependencies are just native functions and can&#x27;t be detected in their deceleration (only in usage), but I believe that ignoring routes and keeping the current behavior for dependencies is a good step.</p>
 <p>If you find this reasonable, I would like to implement it 😊</p>
 </div>
         </div>
@@ -36,34 +36,34 @@ As a first step we can introduce a new rule setting that will allow opting into 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-08-16 10:24</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-16 10:24</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2024-08-16 10:24</div>
+            <div class="event">Label <span class="label">preview</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-16 10:24</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-16 12:26</div>
-            <div class="timeline-body"><p>Yeah, I'm a little wary of adding special-casing for third-party libraries to generalised rules like <code>RUF027</code> and <code>RUF029</code>, as it feels like a slippery slope. Perhaps there's a case to be made that fastAPI is popular enough to deserve special treatment, but we can't feasibly compile an exhaustive, accurate list of all third-party packages that require template strings or async functions.</p>
-<p>I'm also not sure how we'd actually address the false positive here. It would require quite sophisticated semantic analysis (including some attempt at type inference), which wouldn't necessarily be accurate without multifile analysis. IIUC, the false positive is emitted on code like this:</p>
-<pre><code class="language-py">from fastapi import FastAPI
+            <div class="timeline-body"><p>Yeah, I&#x27;m a little wary of adding special-casing for third-party libraries to generalised rules like <code>RUF027</code> and <code>RUF029</code>, as it feels like a slippery slope. Perhaps there&#x27;s a case to be made that fastAPI is popular enough to deserve special treatment, but we can&#x27;t feasibly compile an exhaustive, accurate list of all third-party packages that require template strings or async functions.</p>
+<p>I&#x27;m also not sure how we&#x27;d actually address the false positive here. It would require quite sophisticated semantic analysis (including some attempt at type inference), which wouldn&#x27;t necessarily be accurate without multifile analysis. IIUC, the false positive is emitted on code like this:</p>
+<pre><code>from fastapi import FastAPI
 
 app = FastAPI()
 
-@app.get('/')
+@app.get(&#x27;/&#x27;)
 async def read_results():  # RUF029
     return foo()
 </code></pre>
-<p>To get rid of this false positive, we'd have to:</p>
+<p>To get rid of this false positive, we&#x27;d have to:</p>
 <ul>
 <li>Check all decorators on the async function before emitting a RUF029 diagnostic</li>
-<li>For each decorator, check to see if it's a call expression where <code>func</code> is an attribute access<ul>
+<li>For each decorator, check to see if it&#x27;s a call expression where <code>func</code> is an attribute access<ul>
 <li>If so, check to see if the <code>value</code> of the <code>Attribute</code> node is a name that refers to a binding where the value of the binding is a <code>FastAPI</code> object</li>
 <li>And check to see if the <code>attr</code> of the <code>Attribute</code> node is the name of a method that we know is used to decorate fastAPI routes.</li>
-<li>If both of those are true for all decorators on the async function, don't emit RUF029</li>
+<li>If both of those are true for all decorators on the async function, don&#x27;t emit RUF029</li>
 </ul>
 </li>
 </ul>
-<p>It would be possible, but it would be complicated, and would require encoding a lot of knowledge about fastAPI internals into the rule. I'm not sure if it would be worth it, personally. Possibly the best course of action would be to add a &quot;Known limitations&quot; section to the <code>RUF029</code> docs about this, and recommend that fastAPI users disable this rule.</p>
+<p>It would be possible, but it would be complicated, and would require encoding a lot of knowledge about fastAPI internals into the rule. I&#x27;m not sure if it would be worth it, personally. Possibly the best course of action would be to add a &quot;Known limitations&quot; section to the <code>RUF029</code> docs about this, and recommend that fastAPI users disable this rule.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -76,16 +76,16 @@ async def read_results():  # RUF029
             <div class="timeline-body"><blockquote>
 <p>I think we already have an <code>is_fastapi_route_decorator</code> that is being used across various rules.</p>
 </blockquote>
-<p>Ah, nice. That resolves my concern about the added complexity. Given that we already have this logic implemented, and given that I can't really see any other way of addressing the false positive (you couldn't really add a configuration option here), I suppose we may as well use it to get rid of the false positive in RUF029, then.</p>
+<p>Ah, nice. That resolves my concern about the added complexity. Given that we already have this logic implemented, and given that I can&#x27;t really see any other way of addressing the false positive (you couldn&#x27;t really add a configuration option here), I suppose we may as well use it to get rid of the false positive in RUF029, then.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2024-08-17 14:25</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-17 14:25</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:50:53 UTC
+        Synced at 2026-01-20 18:48:56 UTC
     </footer>
 </body>
 </html>

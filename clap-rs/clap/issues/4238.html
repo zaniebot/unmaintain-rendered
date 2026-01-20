@@ -23,20 +23,20 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/jacg">@jacg</a></div>
-            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+            <div class="timeline-body">Please complete the following tasks
 <ul>
 <li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
 <li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
 </ul>
-<h3>Rust Version</h3>
+Rust Version
 <p>rustc 1.62.0 (a8314ef7d 2022-06-27)</p>
-<h3>Clap Version</h3>
+Clap Version
 <p>{ version = &quot;3.2.20&quot;, features = [&quot;derive&quot;] }</p>
-<h3>Minimal reproducible code</h3>
-<pre><code class="language-rust">use clap::Parser;
+Minimal reproducible code
+<pre><code>use clap::Parser;
 
 #[derive(clap::Parser)]
-#[clap(name = &quot;erm&quot;, about = &quot;Doesn't accept NAMED before ANONYMOUS as advertised by USAGE&quot;)]
+#[clap(name = &quot;erm&quot;, about = &quot;Doesn&#x27;t accept NAMED before ANONYMOUS as advertised by USAGE&quot;)]
 pub struct Cli {
 
     // Changing this from Vec&lt;u32&gt; to u32 makes the problem go away
@@ -58,35 +58,35 @@ enum Subcommand {
 
 fn main() {
     Cli::parse();
-    println!(&quot;All's well&quot;);
+    println!(&quot;All&#x27;s well&quot;);
 }
 
 </code></pre>
-<h3>Steps to reproduce the bug with the above code</h3>
+Steps to reproduce the bug with the above code
 <p><code>cargo run --bin erm -- --named 1 2 sub-a</code></p>
-<h3>Actual Behaviour</h3>
+Actual Behaviour
 <ol>
-<li><code>target/debug/erm 1 --named 2 sub-a</code> -&gt; All's well</li>
-<li><code>target/debug/erm --named 1 2 sub-a</code> -&gt; All's well</li>
-<li><code>cargo run --bin erm -- 1 --named 2 sub-a</code> -&gt; All's well</li>
+<li><code>target/debug/erm 1 --named 2 sub-a</code> -&gt; All&#x27;s well</li>
+<li><code>target/debug/erm --named 1 2 sub-a</code> -&gt; All&#x27;s well</li>
+<li><code>cargo run --bin erm -- 1 --named 2 sub-a</code> -&gt; All&#x27;s well</li>
 <li><code>cargo run --bin erm -- --named 1 2 sub-a</code> fails</li>
 </ol>
-<p>By 'fails' I mean that it displays the <code>clap</code> help message, because it fails to parse the command line.</p>
-<h3>Expected Behaviour</h3>
+<p>By &#x27;fails&#x27; I mean that it displays the <code>clap</code> help message, because it fails to parse the command line.</p>
+Expected Behaviour
 <p>Version 4, above, shoud behave just like versions 1-3.</p>
 <p>In other words, it should manage to parse the command line, which</p>
 <ul>
 <li>is the same as the one in version 2, but in the context of <code>cargo run</code></li>
 <li>agrees with the <code>clap</code>-generated USAGE: <code>erm --named &lt;NAMED&gt; [ANONYMOUS]... &lt;SUBCOMMAND&gt;</code></li>
 </ul>
-<h3>Additional Context</h3>
-<p>This behaviour was observed in both <code>zsh</code> and <code>bash</code>. I'm aware that <code>zsh</code> has some options which may affect how commands are parsed, but don't remember any details about this.</p>
-<h3>Debug Output</h3>
+Additional Context
+<p>This behaviour was observed in both <code>zsh</code> and <code>bash</code>. I&#x27;m aware that <code>zsh</code> has some options which may affect how commands are parsed, but don&#x27;t remember any details about this.</p>
+Debug Output
 <p><em>No response</em></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">C-bug</span> added by @jacg on 2022-09-20 12:07</div>
+            <div class="event">Label <span class="label">C-bug</span> added by <a href="https://github.com/jacg">@jacg</a> on 2022-09-20 12:07</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-09-20 16:44</div>
@@ -98,12 +98,12 @@ fn main() {
             <div class="timeline-body"><p>The reason <code>cargo run --bin erm -- --named 1 2 sub-a</code> fails is <code>2</code> and <code>sub-a</code> are being consumed into <code>anonymous</code>.  In clap 3, the derive defaults to <code>SubcommandRequiredElseHelp</code>.  Since no subcommand was found, it then shows the help.</p>
 <p>In clap 4, we are switching the derive to <code>subcommand_required(true).arg_required_else_help(true)</code> which will show the help if you just run <code>erm</code> but will then show the subcommand-required error for Case 4, making what is happening more clear.</p>
 <p>If you want the subcommand to win out over <code>anonymous</code>, you need to set <code>subcommand_precedence_over_arg </code>, like</p>
-<pre><code class="language-rust">use clap::Parser;
+<pre><code>use clap::Parser;
 
 #[derive(clap::Parser)]
 #[clap(
     name = &quot;erm&quot;,
-    about = &quot;Doesn't accept NAMED before ANONYMOUS as advertised by USAGE&quot;,
+    about = &quot;Doesn&#x27;t accept NAMED before ANONYMOUS as advertised by USAGE&quot;,
     subcommand_precedence_over_arg = true
 )]
 pub struct Cli {
@@ -126,23 +126,23 @@ enum Subcommand {
 
 fn main() {
     Cli::parse();
-    println!(&quot;All's well&quot;);
+    println!(&quot;All&#x27;s well&quot;);
 }
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-09-20 16:50</div>
-            <div class="timeline-body"><p>See also https://github.com/clap-rs/clap/issues/3721</p>
+            <div class="timeline-body"><p>See also <a href="https://github.com/clap-rs/clap/issues/3721">clap-rs/clap#3721</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-09-20 16:51</div>
-            <div class="timeline-body"><p>Looking closer at https://github.com/clap-rs/clap/issues/3721, these seem to be the same thing, closing this out in favor of the other issue.  If there is any concerns not directly related to https://github.com/clap-rs/clap/issues/3721, let us know and we can re-open.</p>
+            <div class="timeline-body"><p>Looking closer at <a href="https://github.com/clap-rs/clap/issues/3721">clap-rs/clap#3721</a>, these seem to be the same thing, closing this out in favor of the other issue.  If there is any concerns not directly related to <a href="https://github.com/clap-rs/clap/issues/3721">clap-rs/clap#3721</a>, let us know and we can re-open.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @epage on 2022-09-20 16:51</div>
+            <div class="event">Closed by <a href="https://github.com/epage">@epage</a> on 2022-09-20 16:51</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jacg">@jacg</a> on 2022-09-20 18:33</div>
@@ -153,8 +153,8 @@ fn main() {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-09-20 22:11</div>
-            <div class="timeline-body"><p>display order is meant to change the other within a group and does't affect the ordering of groups.</p>
-<p>I don't think its worth changing the default as this is the order people generally expect.  I don't see it being worth the cost to customize it (API surface, code size, etc).  It also doesn't help that I'm not sympathetic to a case where positional arguments and subcommands are being mixed; that just seems like its asking for trouble, in terms of user confusion if nothing else.</p>
+            <div class="timeline-body"><p>display order is meant to change the other within a group and does&#x27;t affect the ordering of groups.</p>
+<p>I don&#x27;t think its worth changing the default as this is the order people generally expect.  I don&#x27;t see it being worth the cost to customize it (API surface, code size, etc).  It also doesn&#x27;t help that I&#x27;m not sympathetic to a case where positional arguments and subcommands are being mixed; that just seems like its asking for trouble, in terms of user confusion if nothing else.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -168,8 +168,8 @@ fn main() {
 </ul>
 <p>?</p>
 <p>I was hoping for something like <code>prog input1 input2 input3 --out output algo</code> (which, using your <code>subcommand_precendence_over_arg</code> hint, now works). I think that is preferable to <code>prog --out output input1 input2 input3 algo</code> which (also works and) is what <code>clap</code> suggest in <code>USAGE</code>.</p>
-<p>As the input files typically number in the hundreds (and are specified with a wildcard) I'd rather avoid having to prepend each and every input with a <code>-i</code> which AFAICT would be mandatory if the inputs weren't anonymous/positional.</p>
-<p>(Apologies if this is not an appropriate place to ask this question. If so, just say so, and I'll buzz off.)</p>
+<p>As the input files typically number in the hundreds (and are specified with a wildcard) I&#x27;d rather avoid having to prepend each and every input with a <code>-i</code> which AFAICT would be mandatory if the inputs weren&#x27;t anonymous/positional.</p>
+<p>(Apologies if this is not an appropriate place to ask this question. If so, just say so, and I&#x27;ll buzz off.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -187,30 +187,30 @@ fn main() {
 <blockquote>
 <p>And why are the args coming before it?</p>
 </blockquote>
-<p>The interface that we've got used to looks something like this:</p>
+<p>The interface that we&#x27;ve got used to looks something like this:</p>
 <p><code>prog      data you want to process      --out where-result-should-be-written       processing-algorithm algo-arg1 algo-arg2</code></p>
 <p>Probably because, historically, we wanted to compare how different <code>processing-algorithm</code>s treated the same data, and hitting <code>&lt;up&gt;</code> (or <code>C-p</code> or whatever) in the shell and editing the end of the line (where the cursor is by default) was most convenient.</p>
 <blockquote>
 <p>Normally, I would all relevant arguments to come after the subcommand.</p>
 </blockquote>
-<p>In our case, these would be the args to <code>processing-algo</code>. (Admittedly, we're still running all our <code>processing-algorithm</code>s with hard-wired parameters, so none of them take any arguments, <em>yet</em> [edit: that is incorrect, there are some, I haven't used them for so long that I forgot], so maybe there's something I'm overlooking lurking in that corner. )</p>
+<p>In our case, these would be the args to <code>processing-algo</code>. (Admittedly, we&#x27;re still running all our <code>processing-algorithm</code>s with hard-wired parameters, so none of them take any arguments, <em>yet</em> [edit: that is incorrect, there are some, I haven&#x27;t used them for so long that I forgot], so maybe there&#x27;s something I&#x27;m overlooking lurking in that corner. )</p>
 <blockquote>
 <p>Any arguments that come before the subcommand are generally application-wide configuration (color and logging support, etc).</p>
 </blockquote>
-<p>As this is code for analyzing experimental data, and not your typical 'application', I guess it doesn't fit comfortably into the usual mould. Colour, logging and other typical application-config are completely irrelevant in this case.</p>
+<p>As this is code for analyzing experimental data, and not your typical &#x27;application&#x27;, I guess it doesn&#x27;t fit comfortably into the usual mould. Colour, logging and other typical application-config are completely irrelevant in this case.</p>
 <p>In an exploratory phase, the data are fairly constant: you want to see how different algos treat some representative data. So the input data are constant, and should go at the front: you want to try different algos and tweak their parameters, so those should go at the end, where they are most easily editable in the shell.</p>
-<p>Once you've discovered a good algo with a decent set of parameters, you probably want to fix those and run the process on many different sets of data. At this point the algo and its parameters feels like it should go at the front and the data at the end.</p>
+<p>Once you&#x27;ve discovered a good algo with a decent set of parameters, you probably want to fix those and run the process on many different sets of data. At this point the algo and its parameters feels like it should go at the front and the data at the end.</p>
 <p>But, as I said, this might be a misguided consequence of history and misunderstandings.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-09-22 18:18</div>
-            <div class="timeline-body"><p>Why isn't the algorithm a required option (<code>--algorithm foo</code>)?</p>
+            <div class="timeline-body"><p>Why isn&#x27;t the algorithm a required option (<code>--algorithm foo</code>)?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jacg">@jacg</a> on 2022-09-22 18:36</div>
-            <div class="timeline-body"><p>Quite possibly because I'm completely missing something.</p>
+            <div class="timeline-body"><p>Quite possibly because I&#x27;m completely missing something.</p>
 <p>For the sake of illustration imagine we have two algorithms:</p>
 <ol>
 <li><code>foo</code>, with optional arguments <code>this</code> and <code>that</code></li>
@@ -221,12 +221,12 @@ fn main() {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-09-22 18:40</div>
-            <div class="timeline-body"><p>If you do a <code>--foo</code> flag, you could put <code>--this</code> and <code>--that</code> in a group that requires <code>--foo</code>.  Unfortunately, I don't think we can setup that relationship today for <code>--algorithm foo</code>.</p>
+            <div class="timeline-body"><p>If you do a <code>--foo</code> flag, you could put <code>--this</code> and <code>--that</code> in a group that requires <code>--foo</code>.  Unfortunately, I don&#x27;t think we can setup that relationship today for <code>--algorithm foo</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jacg">@jacg</a> on 2022-09-22 18:48</div>
-            <div class="timeline-body"><p>I should mention that we've recently migrated from <code>structopt</code>. I recall that I originally had some trouble with getting groups to do what I wanted in <code>structopt</code>. Does <code>derive</code> provide the full feature set of groups?</p>
+            <div class="timeline-body"><p>I should mention that we&#x27;ve recently migrated from <code>structopt</code>. I recall that I originally had some trouble with getting groups to do what I wanted in <code>structopt</code>. Does <code>derive</code> provide the full feature set of groups?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -237,7 +237,7 @@ fn main() {
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:48:46 UTC
+        Synced at 2026-01-20 19:59:17 UTC
     </footer>
 </body>
 </html>

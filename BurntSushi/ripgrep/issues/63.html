@@ -29,10 +29,10 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-24 15:29</div>
-            <div class="timeline-body"><p>It's probably worth it. Certainly, from the description, it looks promising. (I have seen it before.)</p>
+            <div class="timeline-body"><p>It&#x27;s probably worth it. Certainly, from the description, it looks promising. (I have seen it before.)</p>
 <p>The build appears nightmarish (it requires compiling <code>llvm</code>), but I kicked one off.</p>
-<p>FWIW, if their claims of 1 GB/s are true, then that's roughly twice the speed of Rust's <em>regex</em> engine. (Of course, a huge part of a regex engine is its literal optimizations, and that often propels it to several GB/s, so if <code>icgrep</code> isn't doing that---and from their description it seems like they aren't---then they're missing a really common usage scenario.)</p>
-<p>Anyway, I'll check it out.</p>
+<p>FWIW, if their claims of 1 GB/s are true, then that&#x27;s roughly twice the speed of Rust&#x27;s <em>regex</em> engine. (Of course, a huge part of a regex engine is its literal optimizations, and that often propels it to several GB/s, so if <code>icgrep</code> isn&#x27;t doing that---and from their description it seems like they aren&#x27;t---then they&#x27;re missing a really common usage scenario.)</p>
+<p>Anyway, I&#x27;ll check it out.</p>
 <blockquote>
 <p>If parabix is proven to be a good idea, probably Rust regex can consider adopting that algorithm?</p>
 </blockquote>
@@ -42,14 +42,14 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-24 22:50</div>
-            <div class="timeline-body"><p>OK, I got <code>icgrep</code> running. Here's a good example of what I meant by missing the literal optimizations:</p>
-<pre><code>$ time rg '\w+\s+Holmes\s+\w+' OpenSubtitles2016.raw.sample.en | wc -l
+            <div class="timeline-body"><p>OK, I got <code>icgrep</code> running. Here&#x27;s a good example of what I meant by missing the literal optimizations:</p>
+<pre><code>$ time rg &#x27;\w+\s+Holmes\s+\w+&#x27; OpenSubtitles2016.raw.sample.en | wc -l
 317
 
 real    0m0.255s
 user    0m0.190s
 sys     0m0.063s
-$ time icgrep '\w+\s+Holmes\s+\w+' OpenSubtitles2016.raw.sample.en | wc -l
+$ time icgrep &#x27;\w+\s+Holmes\s+\w+&#x27; OpenSubtitles2016.raw.sample.en | wc -l
 317
 
 real    0m4.406s
@@ -57,41 +57,41 @@ user    0m4.350s
 sys     0m0.053s
 </code></pre>
 <p>If we try the <code>\p{Greek}</code> pattern, we can see where <code>icgrep</code> beats <code>ripgrep</code> (which is impressive!):</p>
-<pre><code>$ time rg '\p{Greek}' OpenSubtitles2016.raw.sample.en | wc -l
+<pre><code>$ time rg &#x27;\p{Greek}&#x27; OpenSubtitles2016.raw.sample.en | wc -l
 13426
 
 real    0m1.757s
 user    0m1.713s
 sys     0m0.043s
-$ time icgrep '\p{Greek}' OpenSubtitles2016.raw.sample.en | wc -l
+$ time icgrep &#x27;\p{Greek}&#x27; OpenSubtitles2016.raw.sample.en | wc -l
 13426
 
 real    0m1.414s
 user    0m1.320s
 sys     0m0.093s
 </code></pre>
-<p>But it doesn't get case insensitivity right:</p>
-<pre><code>$ time rg -i '\p{Greek}' OpenSubtitles2016.raw.sample.en | wc -l
+<p>But it doesn&#x27;t get case insensitivity right:</p>
+<pre><code>$ time rg -i &#x27;\p{Greek}&#x27; OpenSubtitles2016.raw.sample.en | wc -l
 13671
 
 real    0m1.838s
 user    0m1.790s
 sys     0m0.047s
-$ time icgrep -i '\p{Greek}' OpenSubtitles2016.raw.sample.en | wc -l
+$ time icgrep -i &#x27;\p{Greek}&#x27; OpenSubtitles2016.raw.sample.en | wc -l
 13426
 
 real    0m1.422s
 user    0m1.380s
 sys     0m0.040s
 </code></pre>
-<p>Also, <code>icgrep</code>'s regex engine doesn't seem to be always faster than Rust's:</p>
-<pre><code>$ time rg '\w{5}\s+\w{5}\s+\w{5}\s+\w{5}\s+\w{5}\s+\w{5}\s+\w{5}' OpenSubtitles2016.raw.sample.en | wc -l
+<p>Also, <code>icgrep</code>&#x27;s regex engine doesn&#x27;t seem to be always faster than Rust&#x27;s:</p>
+<pre><code>$ time rg &#x27;\w{5}\s+\w{5}\s+\w{5}\s+\w{5}\s+\w{5}\s+\w{5}\s+\w{5}&#x27; OpenSubtitles2016.raw.sample.en | wc -l
 13
 
 real    0m2.048s
 user    0m1.997s
 sys     0m0.050s
-$ time icgrep '\w{5}\s+\w{5}\s+\w{5}\s+\w{5}\s+\w{5}\s+\w{5}\s+\w{5}' OpenSubtitles2016.raw.sample.en | wc -l
+$ time icgrep &#x27;\w{5}\s+\w{5}\s+\w{5}\s+\w{5}\s+\w{5}\s+\w{5}\s+\w{5}&#x27; OpenSubtitles2016.raw.sample.en | wc -l
 13
 
 real    0m4.982s
@@ -99,24 +99,24 @@ user    0m4.930s
 sys     0m0.050s
 </code></pre>
 <p>And <code>icgrep</code> appears to pay a steep penalty when searching on Cyrllic. <code>ripgrep</code> slows down a bit too, but is still much faster: (It is nice to see that <code>icgrep</code> gets Unicode right!)</p>
-<pre><code>$ time rg '\w{5}\s+\w{5}\s+\w{5}\s+\w{5}\s+\w{5}\s+\w{5}\s+\w{5}' OpenSubtitles2016.raw.ru | wc -l
+<pre><code>$ time rg &#x27;\w{5}\s+\w{5}\s+\w{5}\s+\w{5}\s+\w{5}\s+\w{5}\s+\w{5}&#x27; OpenSubtitles2016.raw.ru | wc -l
 41
 
 real    0m3.419s
 user    0m3.333s
 sys     0m0.083s
-$ time icgrep '\w{5}\s+\w{5}\s+\w{5}\s+\w{5}\s+\w{5}\s+\w{5}\s+\w{5}' OpenSubtitles2016.raw.ru | wc -l
+$ time icgrep &#x27;\w{5}\s+\w{5}\s+\w{5}\s+\w{5}\s+\w{5}\s+\w{5}\s+\w{5}&#x27; OpenSubtitles2016.raw.ru | wc -l
 41
 
 real    0m9.598s
 user    0m9.517s
 sys     0m0.077s
 </code></pre>
-<p>I think I should do more investigation into <code>icgrep</code>, since it sounds like they're doing some really cool stuff. It does look like they need to handle some of the (comparatively) simpler optimizations before they can compete in more common usage scenarios.</p>
+<p>I think I should do more investigation into <code>icgrep</code>, since it sounds like they&#x27;re doing some really cool stuff. It does look like they need to handle some of the (comparatively) simpler optimizations before they can compete in more common usage scenarios.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2016-09-24 22:50</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-24 22:50</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/upsuper">@upsuper</a> on 2016-09-24 23:05</div>
@@ -137,7 +137,7 @@ sys     0m0.077s
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:41:39 UTC
+        Synced at 2026-01-20 18:48:00 UTC
     </footer>
 </body>
 </html>

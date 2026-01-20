@@ -23,31 +23,31 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/poetaman">@poetaman</a></div>
-            <div class="timeline-body"><p>Currently <code>rg --json</code> provides full text of every match in submatch array item's <code>match.text</code> field. This ticket is to request addition of <code>replace.text</code> field in submatch array items. The <code>replace.text</code> fields will only get added if user passed the replace flag <code>-r</code> and the replace string. For usual searches without replace (<code>-r</code>), replace.text will not get added &amp; the json output will be same as it is today.</p>
-<p>Motivation: This will allow using <code>rg --json</code> to become a real alternative to Vim's internal search-and-replace functionality <code>:%s/&lt;match_pattern&gt;/&lt;replace_pattern&gt;/g</code> that is based on legacy vim regex format. Given the start-end position of submatches are known, developers would just need replacement text information to delete <code>match.text</code> from text files, and replace it with <code>replace.text</code>. Given its in a clean json format, it would be easier to allow batch processing, replace an occurrence of interest, and even selectively rollback* easily. The same information can be used in other tools/scripts as well to do search-and-replace. Moreover, currently there is no way of doing this using <code>rg</code> with Vim &amp; just having it integrated as a search tool makes it less preferred over vim's built in regex engine because: users will have to learn new regex syntax that they cannot use for capture group based complex text replace. This will force a user to either learn both syntaxes (vim regex, and rust regex), or just stick with vim regex (thus limiting adoption of <code>rg</code>). Having this feature will also bring the power of pcre2 search and replace to Vim.</p>
-<p>* Selective rollback is different from undo. Undo by its very nature is LIFO, whereas selective rollback can be in any order the user wishes (without having to undo all steps after it). It's easy to build something like that in Vim with information asked in this ticket.</p>
+            <div class="timeline-body"><p>Currently <code>rg --json</code> provides full text of every match in submatch array item&#x27;s <code>match.text</code> field. This ticket is to request addition of <code>replace.text</code> field in submatch array items. The <code>replace.text</code> fields will only get added if user passed the replace flag <code>-r</code> and the replace string. For usual searches without replace (<code>-r</code>), replace.text will not get added &amp; the json output will be same as it is today.</p>
+<p>Motivation: This will allow using <code>rg --json</code> to become a real alternative to Vim&#x27;s internal search-and-replace functionality <code>:%s/&lt;match_pattern&gt;/&lt;replace_pattern&gt;/g</code> that is based on legacy vim regex format. Given the start-end position of submatches are known, developers would just need replacement text information to delete <code>match.text</code> from text files, and replace it with <code>replace.text</code>. Given its in a clean json format, it would be easier to allow batch processing, replace an occurrence of interest, and even selectively rollback* easily. The same information can be used in other tools/scripts as well to do search-and-replace. Moreover, currently there is no way of doing this using <code>rg</code> with Vim &amp; just having it integrated as a search tool makes it less preferred over vim&#x27;s built in regex engine because: users will have to learn new regex syntax that they cannot use for capture group based complex text replace. This will force a user to either learn both syntaxes (vim regex, and rust regex), or just stick with vim regex (thus limiting adoption of <code>rg</code>). Having this feature will also bring the power of pcre2 search and replace to Vim.</p>
+<p>* Selective rollback is different from undo. Undo by its very nature is LIFO, whereas selective rollback can be in any order the user wishes (without having to undo all steps after it). It&#x27;s easy to build something like that in Vim with information asked in this ticket.</p>
 <blockquote>
 <p>NOTE: If you decide to add this, then please cover those corners where entire line is a match, and no submatches are printed.</p>
 </blockquote>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Add "replace" text field in --json output that contains the result if replace were to be performed" to "Add "replace" text field in --json output that contains replace string for respective matches" by @poetaman on 2021-05-26 06:58</div>
+            <div class="event">Renamed from &quot;Add &quot;replace&quot; text field in --json output that contains the result if replace were to be performed&quot; to &quot;Add &quot;replace&quot; text field in --json output that contains replace string for respective matches&quot; by <a href="https://github.com/poetaman">@poetaman</a> on 2021-05-26 06:58</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-05-26 10:40</div>
             <div class="timeline-body"><p>Just to make sure we are in the same page here, could you give an example input with desired output?</p>
-<p>Thank you for detailed use case. It is a little hard for me to follow, since I'm perhaps not as familiar with the inner workings of vim's search and replace system. It might help to describe it from the perspective of data flow. That is, how does the data flow from ripgrep's JSON output through vim?</p>
+<p>Thank you for detailed use case. It is a little hard for me to follow, since I&#x27;m perhaps not as familiar with the inner workings of vim&#x27;s search and replace system. It might help to describe it from the perspective of data flow. That is, how does the data flow from ripgrep&#x27;s JSON output through vim?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/poetaman">@poetaman</a> on 2021-05-27 22:28</div>
-            <div class="timeline-body"><p>@BurntSushi Let's say for <code>temp.tex</code>, we match <code>\&lt;macroname&gt;{&lt;optiontext&gt;}</code> or <code>\&lt;macroname&gt;[&lt;optiontext&gt;]</code>, and want to replace it with a string <code>\macro&lt;macroname&gt;{option:&lt;optiontext&gt;}</code>. The <code>rg</code> command will look like this:</p>
+            <div class="timeline-body"><p>@BurntSushi Let&#x27;s say for <code>temp.tex</code>, we match <code>\&lt;macroname&gt;{&lt;optiontext&gt;}</code> or <code>\&lt;macroname&gt;[&lt;optiontext&gt;]</code>, and want to replace it with a string <code>\macro&lt;macroname&gt;{option:&lt;optiontext&gt;}</code>. The <code>rg</code> command will look like this:</p>
 <p>Command:</p>
-<pre><code class="language-regex">rg -N --passthrough '^.*\\(.*)\{(.*)\}.*?$|^.*\\(.*)\[(.*)\].*?$' -r '\macro$1{option:$2}' temp.tex
+<pre><code>rg -N --passthrough &#x27;^.*\\(.*)\{(.*)\}.*?$|^.*\\(.*)\[(.*)\].*?$&#x27; -r &#x27;\macro$1{option:$2}&#x27; temp.tex
 </code></pre>
 <p>Input file:</p>
-<pre><code class="language-tex">% temp.tex
+<pre><code>% temp.tex
 \documentclass{article}
 
 \usepackage{blindtext}
@@ -60,7 +60,7 @@
 \end{document}
 </code></pre>
 <p>This will produce output:</p>
-<pre><code class="language-tex">\macrodocumentclass{option:article}
+<pre><code>\macrodocumentclass{option:article}
 
 \macrousepackage{option:blindtext}
 \macrousepackage{option:fancyhdr}
@@ -75,7 +75,7 @@
 <p>As a sidenote, why does the second pattern (<code>^.*\\(.*)\[(.*)\].*?$</code>) not match \blindtext[5]?</p>
 </blockquote>
 <p>As of today if <code>--json</code> option is passed, one of the <code>&quot;type&quot;:&quot;match&quot;</code> json will look like this:</p>
-<pre><code class="language-json">{
+<pre><code>{
     &quot;type&quot;: &quot;match&quot;,
     &quot;data&quot;: {
         &quot;path&quot;: {
@@ -98,11 +98,11 @@
     }
 }
 </code></pre>
-<p>There are multiple ways in which you could decide to add replace text information. It could be either 1) in existing list  <code>data.submatches[&lt;num&gt;].match.replacetext</code> (or pick a shorter  name <code>rtext</code> or just <code>replace</code>); or 2) in a new list like <code>data.submatches[&lt;num&gt;].replace.text</code>. The advantage of former approach is three pronged: a) less text to print, b) consistency: for the case where you mention that entire line can be a match and submatches are empty, you could add replace text information in <code>data.lines.replacetext</code>, or you will have to create something like <code>data.replace.text</code>, c) fields like <code>data.submatches[&lt;num&gt;].start</code> &amp; <code>data.submatches[&lt;num&gt;].end</code> won't look orphaned from <code>data.submatches[&lt;num&gt;].match.text</code>.</p>
+<p>There are multiple ways in which you could decide to add replace text information. It could be either 1) in existing list  <code>data.submatches[&lt;num&gt;].match.replacetext</code> (or pick a shorter  name <code>rtext</code> or just <code>replace</code>); or 2) in a new list like <code>data.submatches[&lt;num&gt;].replace.text</code>. The advantage of former approach is three pronged: a) less text to print, b) consistency: for the case where you mention that entire line can be a match and submatches are empty, you could add replace text information in <code>data.lines.replacetext</code>, or you will have to create something like <code>data.replace.text</code>, c) fields like <code>data.submatches[&lt;num&gt;].start</code> &amp; <code>data.submatches[&lt;num&gt;].end</code> won&#x27;t look orphaned from <code>data.submatches[&lt;num&gt;].match.text</code>.</p>
 <ol>
 <li>json for possibility-1:</li>
 </ol>
-<pre><code class="language-json">{
+<pre><code>{
     &quot;type&quot;: &quot;match&quot;,
     &quot;data&quot;: {
         &quot;path&quot;: {
@@ -126,10 +126,10 @@
     }
 }
 </code></pre>
-<ol start="2">
-<li>json for possibility-2 (with a typo mentioned in comment https://github.com/BurntSushi/ripgrep/issues/1872#issuecomment-849994553 corrected)</li>
+<ol>
+<li>json for possibility-2 (with a typo mentioned in comment <a href="https://github.com/BurntSushi/ripgrep/issues/1872">BurntSushi/ripgrep#1872</a>#issuecomment-849994553 corrected)</li>
 </ol>
-<pre><code class="language-json">{
+<pre><code>{
     &quot;type&quot;: &quot;match&quot;,
     &quot;data&quot;: {
         &quot;path&quot;: {
@@ -155,32 +155,32 @@
     }
 }
 </code></pre>
-<hr />
-<p>Regarding flow of data from <code>rg</code> into vim: vimscript provides a functions to run external programs <code>:h system()</code>, and to parse json strings: <code>:h json_decode()</code>. Then user has a choice based on what they intend to do with the data. For the feature I intend to implement, I would use vim's inbuilt data structure called quickfixlist <code>:h quickfix.txt</code>. Its a logic-less data structure by itself, but it comes packaged with commands that make life easier to traverse the list (in our case the matches). The selective rollback, etc logic, I will code myself as there is no pre-baked function to replace bytes in a file (afaik).</p>
+<hr>
+<p>Regarding flow of data from <code>rg</code> into vim: vimscript provides a functions to run external programs <code>:h system()</code>, and to parse json strings: <code>:h json_decode()</code>. Then user has a choice based on what they intend to do with the data. For the feature I intend to implement, I would use vim&#x27;s inbuilt data structure called quickfixlist <code>:h quickfix.txt</code>. Its a logic-less data structure by itself, but it comes packaged with commands that make life easier to traverse the list (in our case the matches). The selective rollback, etc logic, I will code myself as there is no pre-baked function to replace bytes in a file (afaik).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-05-27 22:56</div>
             <div class="timeline-body"><p>The examples help a lot, thanks.</p>
-<p>With respect to <code>&quot;match&quot;: {&quot;text&quot;: &quot;...&quot;}</code>, the <code>{&quot;text&quot;: &quot;...&quot;}</code> is an <a href="https://docs.rs/grep-printer/0.1.5/grep_printer/struct.JSON.html#object-arbitrary-data">arbitrary data object</a>. The value pointed to by <code>match</code> is either valid UTF-8 and thus represented as <code>{&quot;text&quot;: &quot;...&quot;}</code>, or it is not valid UTF-8 and is thus represented as <code>{&quot;bytes&quot;: &quot;&lt;base64 of data&gt;&quot;}</code>. So having <code>&quot;match&quot;: {&quot;text&quot;: &quot;...&quot;, &quot;replacetext&quot;: &quot;...&quot;}</code> doesn't make much sense. At that level, your second option makes more sense. (I assume it is a typo that <code>replacetext</code> is present twice in your second possibility?)</p>
+<p>With respect to <code>&quot;match&quot;: {&quot;text&quot;: &quot;...&quot;}</code>, the <code>{&quot;text&quot;: &quot;...&quot;}</code> is an <a href="https://docs.rs/grep-printer/0.1.5/grep_printer/struct.JSON.html#object-arbitrary-data">arbitrary data object</a>. The value pointed to by <code>match</code> is either valid UTF-8 and thus represented as <code>{&quot;text&quot;: &quot;...&quot;}</code>, or it is not valid UTF-8 and is thus represented as <code>{&quot;bytes&quot;: &quot;&lt;base64 of data&gt;&quot;}</code>. So having <code>&quot;match&quot;: {&quot;text&quot;: &quot;...&quot;, &quot;replacetext&quot;: &quot;...&quot;}</code> doesn&#x27;t make much sense. At that level, your second option makes more sense. (I assume it is a typo that <code>replacetext</code> is present twice in your second possibility?)</p>
 <blockquote>
-<p>Regarding flow of data from rg into vim: vimscript provides a functions to run external programs :h system(), and to parse json strings: :h json_decode(). Then user has a choice based on what they intend to do with the data. For the feature I intend to implement, I would use vim's inbuilt data structure called quickfixlist :h quickfix.txt. Its a logic-less data structure by itself, but it comes packaged with commands that make life easier to traverse the list (in our case the matches). The selective rollback, etc logic, I will code myself as there is no pre-baked function to replace bytes in a file (afaik).</p>
+<p>Regarding flow of data from rg into vim: vimscript provides a functions to run external programs :h system(), and to parse json strings: :h json_decode(). Then user has a choice based on what they intend to do with the data. For the feature I intend to implement, I would use vim&#x27;s inbuilt data structure called quickfixlist :h quickfix.txt. Its a logic-less data structure by itself, but it comes packaged with commands that make life easier to traverse the list (in our case the matches). The selective rollback, etc logic, I will code myself as there is no pre-baked function to replace bytes in a file (afaik).</p>
 </blockquote>
-<p>Hmm so this wasn't quite what I was hoping for. I'm not particularly interested in Vim features. While I've used Vim for a long time, certain corners of it remain mysterious to me and I do not have the background knowledge necessary to write plugin. So talking about this in terms of Vim features doesn't aide understanding unfortunately. Let me take a guess at what I think you want to do:</p>
+<p>Hmm so this wasn&#x27;t quite what I was hoping for. I&#x27;m not particularly interested in Vim features. While I&#x27;ve used Vim for a long time, certain corners of it remain mysterious to me and I do not have the background knowledge necessary to write plugin. So talking about this in terms of Vim features doesn&#x27;t aide understanding unfortunately. Let me take a guess at what I think you want to do:</p>
 <ul>
 <li>You are adding a text replacement feature to Vim.</li>
 <li>You want to implement this with ripgrep. When text replacement is requested, you shell out to ripgrep. Since you want structured data, you use the <code>--json</code> flag.</li>
-<li>ripgrep already provides a text replacement option, so you're hoping to use that instead of re-implementing it yourself. (And re-implementing it yourself would be a fair amount of work I imagine, since I assume you'd want to use the same regex engine as ripgrep.)</li>
-<li>Thus, you accept some user input that is intended to be used with the <code>--replace</code> flag, possibly after some transformation. But as it turns out, ripgrep ignores the <code>--replace</code> flag in JSON output mode. So you'd like ripgrep to support it.</li>
-<li>ripgrep already provides the byte offsets of each match. So if it also provides the replacement for each match, then you could use those byte offsets to splice the replacement into the user's data.</li>
+<li>ripgrep already provides a text replacement option, so you&#x27;re hoping to use that instead of re-implementing it yourself. (And re-implementing it yourself would be a fair amount of work I imagine, since I assume you&#x27;d want to use the same regex engine as ripgrep.)</li>
+<li>Thus, you accept some user input that is intended to be used with the <code>--replace</code> flag, possibly after some transformation. But as it turns out, ripgrep ignores the <code>--replace</code> flag in JSON output mode. So you&#x27;d like ripgrep to support it.</li>
+<li>ripgrep already provides the byte offsets of each match. So if it also provides the replacement for each match, then you could use those byte offsets to splice the replacement into the user&#x27;s data.</li>
 <li>As far as I can tell, the <em>only</em> relevant pieces of data in the JSON output for your use case are <code>absolute_offset</code>, <code>submatches[].start</code>, <code>submatches[].end</code> and a hypothetical <code>submatches[].replacement.{text|bytes}</code>.</li>
 </ul>
-<p>If that's right, then I believe this should be doable and I agree that it sounds like a good thing to support.</p>
-<p>It might also be appropriate to provide a <code>lines_with_replacement</code> field as well, although I'm less sure about that. Probably best to punt. AIUI, that isn't something you need here.</p>
+<p>If that&#x27;s right, then I believe this should be doable and I agree that it sounds like a good thing to support.</p>
+<p>It might also be appropriate to provide a <code>lines_with_replacement</code> field as well, although I&#x27;m less sure about that. Probably best to punt. AIUI, that isn&#x27;t something you need here.</p>
 <blockquote>
 <p>As a sidenote, why does the second pattern <code>(^.*\\(.*)\[(.*)\].*?$)</code> not match \blindtext[5]?</p>
 </blockquote>
-<p>It does, but ripgrep's regex engine's capturing groups don't work in the way you're trying to use them. For the regex <code>(\w+)|(\d+)</code>, there are three capturing groups: <code>$0</code> (the whole match), <code>$1</code> (the first alternate) and <code>$2</code> (the second alternate. Only one of <code>$1</code> or <code>$2</code> will be non-empty.</p>
+<p>It does, but ripgrep&#x27;s regex engine&#x27;s capturing groups don&#x27;t work in the way you&#x27;re trying to use them. For the regex <code>(\w+)|(\d+)</code>, there are three capturing groups: <code>$0</code> (the whole match), <code>$1</code> (the first alternate) and <code>$2</code> (the second alternate. Only one of <code>$1</code> or <code>$2</code> will be non-empty.</p>
 <p>ripgrep has very limited facilities for text replacements. The <code>-r/--replace</code> flag solves the 80% use case, but it is not maximally flexible.</p>
 </div>
         </div>
@@ -190,13 +190,13 @@
 <blockquote>
 <p>(I assume it is a typo that replacetext is present twice in your second possibility?)</p>
 </blockquote>
-<p>Yep thats a typo. I have updated the comment https://github.com/BurntSushi/ripgrep/issues/1872#issuecomment-849982920</p>
+<p>Yep thats a typo. I have updated the comment <a href="https://github.com/BurntSushi/ripgrep/issues/1872">BurntSushi/ripgrep#1872</a>#issuecomment-849982920</p>
 <p>Yep your analysis is correct.</p>
 <blockquote>
 <p>(the second alternate. Only one of $1 or $2 will be non-empty. ripgrep has very limited facilities for text replacements. The -r/--replace flag solves the 80% use case, but it is not maximally flexible.</p>
 </blockquote>
 <p>What about replacement with <code>--pcre2</code> flag? Does that also have this limitation? Is there a way to do this with ripgrep without having to run the search-and-replace multiple times (with different sub patterns?)</p>
-<p>Not sure what you meant by <code>lines_with_replacement</code>, if its the entire set of lines after replacements are done, then no I won't need that. Yes the set of information you mention that I will need is correct, I don't need more information.</p>
+<p>Not sure what you meant by <code>lines_with_replacement</code>, if its the entire set of lines after replacements are done, then no I won&#x27;t need that. Yes the set of information you mention that I will need is correct, I don&#x27;t need more information.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -204,8 +204,8 @@
             <div class="timeline-body"><blockquote>
 <p>What about replacement with <code>--pcre2</code> flag? Does that also have this limitation?</p>
 </blockquote>
-<p>Yes. It's inherent to how capture groups are indexed. With that said, I am not a PCRE2 expert and PCRE2 has many options. For example, the <code>PCRE2_DUPNAMES</code> option looks applicable here, but ripgrep does not set it. For the default regex engine, this issue is related: https://github.com/rust-lang/regex/issues/492</p>
-<p>(There are competing concerns here. ripgrep's default regex engine is the main support for regexes for a full programming language. In that context, not being able to use duplicate capture group names is usually a minor annoyance. But in contexts such as yours, where your expressiveness is severely restricted, every little bit of extra juice you can squeeze out of the regex itself helps.)</p>
+<p>Yes. It&#x27;s inherent to how capture groups are indexed. With that said, I am not a PCRE2 expert and PCRE2 has many options. For example, the <code>PCRE2_DUPNAMES</code> option looks applicable here, but ripgrep does not set it. For the default regex engine, this issue is related: <a href="https://github.com/rust-lang/regex/issues/492">rust-lang/regex#492</a></p>
+<p>(There are competing concerns here. ripgrep&#x27;s default regex engine is the main support for regexes for a full programming language. In that context, not being able to use duplicate capture group names is usually a minor annoyance. But in contexts such as yours, where your expressiveness is severely restricted, every little bit of extra juice you can squeeze out of the regex itself helps.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -215,45 +215,45 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-05-28 12:38</div>
-            <div class="timeline-body"><p>@reportaman It wouldn't work. ripgrep doesn't use PCRE2's replacement routines.</p>
+            <div class="timeline-body"><p>@reportaman It wouldn&#x27;t work. ripgrep doesn&#x27;t use PCRE2&#x27;s replacement routines.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/poetaman">@poetaman</a> on 2021-05-28 16:18</div>
-            <div class="timeline-body"><p>@BurntSushi Ok sure, running batch replacement from within vim multiple times (to cover different sub pattern cases) on files of a project wouldn't hurt. If users want to do batch replacement on thousands of files they should anyway do it from command line.</p>
+            <div class="timeline-body"><p>@BurntSushi Ok sure, running batch replacement from within vim multiple times (to cover different sub pattern cases) on files of a project wouldn&#x27;t hurt. If users want to do batch replacement on thousands of files they should anyway do it from command line.</p>
 <p>I look forward to playing with the replace strings you add to <code>--json</code> printer output.</p>
-<p>Curious why that decision though? Couldn't ripgrep just link to libpcre* and use that for fallback?</p>
+<p>Curious why that decision though? Couldn&#x27;t ripgrep just link to libpcre* and use that for fallback?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2021-05-29 12:30</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-05-29 12:30</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/manikantag">@manikantag</a> on 2023-02-27 04:52</div>
             <div class="timeline-body"><p>@BurntSushi, Thanks for the excellent tool.</p>
 <p>I also need to replace matched strings in the files. Having a replacement string will make it a lot easier and most of all the replacement strings will be consistent with the ripgrep matching engine.</p>
 <p>Do you have any plans for this enhancement?</p>
-<p>Also, I'm curious that is there a specific reason you chose not to implement the file replacement functionality as, like you said, the tool is already doing 80% heavy lifting?</p>
+<p>Also, I&#x27;m curious that is there a specific reason you chose not to implement the file replacement functionality as, like you said, the tool is already doing 80% heavy lifting?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-02-27 10:45</div>
-            <div class="timeline-body"><p>@manikantag This issue isn't about replacing stuff in files. This issue is about the <code>--json</code> output. See #74.</p>
+            <div class="timeline-body"><p>@manikantag This issue isn&#x27;t about replacing stuff in files. This issue is about the <code>--json</code> output. See #74.</p>
 <blockquote>
 <p>Do you have any plans for this enhancement?</p>
 </blockquote>
-<p>What enhancement are you talking about? If you're talking about the one represented by this specific issue, then yes, it is open and marked as <code>enhancement</code>.</p>
+<p>What enhancement are you talking about? If you&#x27;re talking about the one represented by this specific issue, then yes, it is open and marked as <code>enhancement</code>.</p>
 <blockquote>
 <p>the tool is already doing 80% heavy lifting?</p>
 </blockquote>
-<p>That's not really what I said. I was alluding to the <a href="https://en.wikipedia.org/wiki/Pareto_principle">Pareto principle</a>. That is, it hits the 80% use case with <em>not much effort</em>, but going the rest of the way takes quite a bit more work and complexity. So it is the opposite of &quot;if you're already 80% of the way there, then why not just do a little bit more to get to 100%.&quot;</p>
+<p>That&#x27;s not really what I said. I was alluding to the <a href="https://en.wikipedia.org/wiki/Pareto_principle">Pareto principle</a>. That is, it hits the 80% use case with <em>not much effort</em>, but going the rest of the way takes quite a bit more work and complexity. So it is the opposite of &quot;if you&#x27;re already 80% of the way there, then why not just do a little bit more to get to 100%.&quot;</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/manikantag">@manikantag</a> on 2023-03-01 03:12</div>
             <div class="timeline-body"><p>@BurntSushi yes, I meant the JSON changes only as you clearly mention no option in ripgrep will change the actual file content (even <code>-r</code>).</p>
 <p>My thought is if the tool includes the replacement string in the JSON output, then by consuming the JSON, one can built tool to the actual file replacement.</p>
-<p>May be I'm not clear enough, but I said 80% because the tool is already giving matching file, line, column &amp; highlighting the word match too. Using the JSON output, I'm able to generate HTML markup like how vscode (or any other editor) is doing. Now with addition of replacement string in JSON output, my end objective to build 'File search &amp; replace' feature will be 100% complete.</p>
+<p>May be I&#x27;m not clear enough, but I said 80% because the tool is already giving matching file, line, column &amp; highlighting the word match too. Using the JSON output, I&#x27;m able to generate HTML markup like how vscode (or any other editor) is doing. Now with addition of replacement string in JSON output, my end objective to build &#x27;File search &amp; replace&#x27; feature will be 100% complete.</p>
 <p>I see you considered this as an enhancement. Looking forward for it. And hopefully the JSON output schema will not change in future which would break my logic.</p>
 <p>Thanks</p>
 </div>
@@ -267,18 +267,18 @@
             <div class="timeline-header">Comment by <a href="https://github.com/MagicDuck">@MagicDuck</a> on 2024-08-30 07:18</div>
             <div class="timeline-body"><p>@BurntSushi my rust skills are very tiny, but am I correct in thinking that this work would mainly involve doing the same &quot;replacer&quot; thing as in the standard printer:
 https://github.com/BurntSushi/ripgrep/blob/e0f1000df67f82ab0e735bad40e9b45b2d774ef0/crates/printer/src/standard.rs#L576
-(and all it's usages in that file)
+(and all it&#x27;s usages in that file)
 but in the json printer?
 https://github.com/BurntSushi/ripgrep/blob/e0f1000df67f82ab0e735bad40e9b45b2d774ef0/crates/printer/src/json.rs</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2025-09-20 01:08</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-09-20 01:08</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:43:22 UTC
+        Synced at 2026-01-20 18:48:11 UTC
     </footer>
 </body>
 </html>

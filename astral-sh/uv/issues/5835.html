@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/jbcpollak">@jbcpollak</a></div>
-            <div class="timeline-body"><p>The below example is with a <code>uv pip install</code> but my actual usecase is trying to compile a cross-platform requirements.txt  file using <code>uv pip compile</code> and a custom python script (from https://github.com/astral-sh/uv/issues/2679#issuecomment-2068208602) which runs the same compile three times, once for each platform, then normalizes them into a single file.</p>
+            <div class="timeline-body"><p>The below example is with a <code>uv pip install</code> but my actual usecase is trying to compile a cross-platform requirements.txt  file using <code>uv pip compile</code> and a custom python script (from <a href="https://github.com/astral-sh/uv/issues/2679">astral-sh/uv#2679</a>#issuecomment-2068208602) which runs the same compile three times, once for each platform, then normalizes them into a single file.</p>
 <p>Anyway, here is what I am experiencing:</p>
 <p>M3 Macbook Pro
 Python 3.11
@@ -41,7 +41,7 @@ unknown
   × No solution found when resolving dependencies:
   ╰─▶ Because open3d==0.18.0 has no wheels with a matching Python ABI tag and you require open3d==0.18.0, we can conclude that the requirements are unsatisfiable.
 </code></pre>
-<p>But if I don't specify the platform the install works ok:</p>
+<p>But if I don&#x27;t specify the platform the install works ok:</p>
 <pre><code>vscode ➜ /workspaces/firefly/vision (feat/tach-detection) $ uv pip install open3d==0.18.0
 Resolved 39 packages in 11ms
 ░░░░░░░░░░░░░░░░░░░░ [0/39] Installing wheels...                                                                                                                                                                                                                     warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance. If this is intentional, use `--link-mode=copy` to suppress this warning.
@@ -88,7 +88,7 @@ Installed 39 packages in 4.21s
  + werkzeug==3.0.3
  + zipp==3.19.2
 </code></pre>
-<p>Maybe I'm missing something, but I would expect the behavior to be the same regardless of the command-line switch since I'm running in a Linux container on Docker.</p>
+<p>Maybe I&#x27;m missing something, but I would expect the behavior to be the same regardless of the command-line switch since I&#x27;m running in a Linux container on Docker.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -103,36 +103,36 @@ Installed 39 packages in 4.21s
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-06 23:06</div>
-            <div class="timeline-body"><p>I've confirmed that this resolves: <code>uv pip install open3d==0.18.0 --python-platform x86_64-manylinux_2_28 --python-version 3.11</code></p>
+            <div class="timeline-body"><p>I&#x27;ve confirmed that this resolves: <code>uv pip install open3d==0.18.0 --python-platform x86_64-manylinux_2_28 --python-version 3.11</code></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-08-06 23:06</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-06 23:06</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-08-06 23:06</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-06 23:06</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-08-06 23:06</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-06 23:06</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jbcpollak">@jbcpollak</a> on 2024-08-07 00:39</div>
             <div class="timeline-body"><p>Thanks for this diagnosis.</p>
 <p>For my understanding, what is the difference between specifying the platform as just &quot;linux&quot; vs one of the manylinux options?</p>
-<p>And why does this work correctly when I don't specify a platform at all? That's the most unexpected thing to me since without specifying a platform it's already on &quot;linux&quot;</p>
+<p>And why does this work correctly when I don&#x27;t specify a platform at all? That&#x27;s the most unexpected thing to me since without specifying a platform it&#x27;s already on &quot;linux&quot;</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-07 00:47</div>
-            <div class="timeline-body"><p>Totally, happy to explain. For background (and apologies if you're already familiar), manylinux tries to capture the version of glibc installed on a given Linux machine, so <code>x86_64-manylinux_2_28</code> is saying that you need at least glibc 2.28.</p>
-<p>If you run with just <code>linux</code>, that's an alias for <code>x86_64-manylinux_2_17</code>. <code>linux</code> alone is under-specified, so we have to pick some default, and we decided to use <code>x86_64-manylinux_2_17</code> as the default. So, if you pass <code>linux</code>, you're requiring that all the things you depend on support glibc 2.17 and later.</p>
-<p>(If you run with <code>x86_64-manylinux_2_28</code>, you're raising that requirement, i.e., being more relaxed about the versions of glibc that you care about supporting.)</p>
-<p>If you omit <code>--python-platform</code> at all, then we detect your <em>current</em> Python platform and use that. My guess is that your machine has a version of glibc that's newer than 2.17, so it's inferring that it's fine for your dependencies to all require newer glibc versions too.</p>
+            <div class="timeline-body"><p>Totally, happy to explain. For background (and apologies if you&#x27;re already familiar), manylinux tries to capture the version of glibc installed on a given Linux machine, so <code>x86_64-manylinux_2_28</code> is saying that you need at least glibc 2.28.</p>
+<p>If you run with just <code>linux</code>, that&#x27;s an alias for <code>x86_64-manylinux_2_17</code>. <code>linux</code> alone is under-specified, so we have to pick some default, and we decided to use <code>x86_64-manylinux_2_17</code> as the default. So, if you pass <code>linux</code>, you&#x27;re requiring that all the things you depend on support glibc 2.17 and later.</p>
+<p>(If you run with <code>x86_64-manylinux_2_28</code>, you&#x27;re raising that requirement, i.e., being more relaxed about the versions of glibc that you care about supporting.)</p>
+<p>If you omit <code>--python-platform</code> at all, then we detect your <em>current</em> Python platform and use that. My guess is that your machine has a version of glibc that&#x27;s newer than 2.17, so it&#x27;s inferring that it&#x27;s fine for your dependencies to all require newer glibc versions too.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jbcpollak">@jbcpollak</a> on 2024-08-07 02:54</div>
-            <div class="timeline-body"><p>got it, that's very helpful, thanks.</p>
+            <div class="timeline-body"><p>got it, that&#x27;s very helpful, thanks.</p>
 <p>Is there a way to infer what the current Python platform will be when <code>--python-platform</code> is omitted?</p>
 <p>This may end up being moot since <code>--universal</code> may solve my use-case with less complexity, but it sounds like I want to replace <code>linux</code> with <code>x86_64-manylinux_2_28</code> (or <code>aarch64...</code> in my case).</p>
 </div>
@@ -143,19 +143,19 @@ Installed 39 packages in 4.21s
 <pre><code>root@2010ac4b3c01:/# ldd --version
 ldd (Ubuntu GLIBC 2.39-0ubuntu8.2) 2.39
 </code></pre>
-<p>That'll tell you the glibc version. And then you would round down -- we only support a few cutoffs:</p>
+<p>That&#x27;ll tell you the glibc version. And then you would round down -- we only support a few cutoffs:</p>
 <ul>
 <li><code>x86_64-manylinux_2_17</code></li>
 <li><code>x86_64-manylinux_2_28</code></li>
 <li><code>x86_64-manylinux_2_31</code></li>
 </ul>
-<p>I'd recommend just using <code>x86_64-manylinux_2_28</code> though. It's a common cutoff. Anything that works on <code>x86_64-manylinux_2_28</code> should also work on a machine with glibc 2.2.8 or later.</p>
+<p>I&#x27;d recommend just using <code>x86_64-manylinux_2_28</code> though. It&#x27;s a common cutoff. Anything that works on <code>x86_64-manylinux_2_28</code> should also work on a machine with glibc 2.2.8 or later.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:25:58 UTC
+        Synced at 2026-01-20 19:32:31 UTC
     </footer>
 </body>
 </html>

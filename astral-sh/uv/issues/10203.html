@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MeitarR">@MeitarR</a></div>
-            <div class="timeline-body"><h1>The problem</h1>
+            <div class="timeline-body">The problem
 <p>Currently, in order to use the feature of <code>uv</code> to fetch Python versions (<code>uv python install</code>), in internal and air-gapped networks,
 one needs to</p>
 <ol>
@@ -34,13 +34,13 @@ one needs to</p>
 <p>a process that may take hours.</p>
 <p>The big issue is that the paths of the CPython binaries are hardcoded in the binary and change almost every release of <code>uv</code>. Thus, the one who maintains the mirror must go through that process frequently, or else the feature of <code>uv python install</code> will <em>break</em> when updating the uv version locally.</p>
 <p>(see https://github.com/astral-sh/uv/commits/main/crates/uv-python/download-metadata.json for the frequency)</p>
-<h1>Suggested solution</h1>
+Suggested solution
 <p>instead of hardcoded URLs, fetch the json externally.</p>
 <p>I think that one way of solving this issue is, instead of hardcoding the list of URLs in the binary, you can fetch the list (json) <code>https://github.com/astral-sh/uv/blob/main/crates/uv-python/download-metadata.json</code> from external URL (probably from the repo), letting you update the available python binaries versions without the need to update <code>uv</code>, and let the users change the URL the binary uses to fetch the JSON (https://github.com/astral-sh/uv/blob/main/crates/uv-python/download-metadata.json), so it will work for every version of <code>uv</code>, and if you update your list, we can download and update it in the target network later without consequences.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">wish</span> added by @charliermarsh on 2024-12-28 14:48</div>
+            <div class="event">Label <span class="label">wish</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-28 14:48</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MeitarR">@MeitarR</a> on 2024-12-31 07:19</div>
@@ -51,33 +51,33 @@ one needs to</p>
             <div class="timeline-header">Comment by <a href="https://github.com/fcwys">@fcwys</a> on 2025-03-22 03:12</div>
             <div class="timeline-body"><p>I also hope to use this method. Currently, when configuring an image using python install mirror, due to the <code>python-build-standalone</code> version being updated to 20250317, the image site automatically synchronizes to the latest version. However, when installing Python using UV, the download still fails due to the 20250212 version.</p>
 <p>UV Version：uv 0.6.5 (bcbcd0a1e 2025-03-06)</p>
-<p><img src="https://github.com/user-attachments/assets/826de1e2-33f0-4345-8c62-9ad728d0ed51" alt="Image" /></p>
+<p><img src="https://github.com/user-attachments/assets/826de1e2-33f0-4345-8c62-9ad728d0ed51" alt="Image"></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Crypto-Spartan">@Crypto-Spartan</a> on 2025-03-25 01:28</div>
-            <div class="timeline-body"><p>I have the same issue as @fcwys. Internal mirror is slow to get the updated <code>python-build-standalone</code> binaries and uv fails to download the latest tag. I work in an ephemeral environment in a corporate network, so i have an install script that reinstalls everything everyday. When uv breaks like this, I straight up can't use it at all.</p>
-<p>I would love it if I could tell uv to use an older tag when downloading the python-build-standalone binaries, as sometimes we have the binaries from the <em>previous week</em>, but since uv is so picky about which tag it's downloading, it won't work.</p>
+            <div class="timeline-body"><p>I have the same issue as @fcwys. Internal mirror is slow to get the updated <code>python-build-standalone</code> binaries and uv fails to download the latest tag. I work in an ephemeral environment in a corporate network, so i have an install script that reinstalls everything everyday. When uv breaks like this, I straight up can&#x27;t use it at all.</p>
+<p>I would love it if I could tell uv to use an older tag when downloading the python-build-standalone binaries, as sometimes we have the binaries from the <em>previous week</em>, but since uv is so picky about which tag it&#x27;s downloading, it won&#x27;t work.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MeitarR">@MeitarR</a> on 2025-04-11 13:44</div>
             <div class="timeline-body"><p>After #10939 merged, this is the flow to setup and use the mirror in your network</p>
-<h3>Setup</h3>
-<h4>on the internet-accessible-computer</h4>
+Setup
+on the internet-accessible-computer
 <ol>
 <li><strong>Clone</strong> this repo</li>
 <li><strong>Download the Python binaries</strong> by running the <a href="https://github.com/astral-sh/uv/blob/main/scripts/create-python-mirror.py">create-python-mirror</a> script with the wanted parameters</li>
 <li>Transfer the mirror folder and the matching <a href="https://github.com/astral-sh/uv/blob/main/crates/uv-python/download-metadata.json">crates/uv-python/download-metadata.json</a> file to your network</li>
 </ol>
-<h4>on your network</h4>
+on your network
 <ol>
 <li>Put the content of the mirror folder on some server</li>
 <li>Filter the <code>download-metadata.json</code> file only to have the versions you downloaded (I recommend doing it with <code>jq</code> command)</li>
 <li>In the json, replace references to <code>https://github.com/astral-sh/python-build-standalone/releases/download</code> with the URL of the server you put the mirror in step 1</li>
 <li>(suggestion) Also put the final <code>download-metadata.json</code> in the same server</li>
 </ol>
-<h3>Usage for users</h3>
+Usage for users
 <ol>
 <li>fetch the modified <code>download-metadata.json</code> and save it in a known location (I recommend <code>/etc/uv/download-metadata.json</code>)</li>
 <li>Set the environment variable  <a href="https://docs.astral.sh/uv/configuration/environment/#uv_python_downloads_json_url">UV_PYTHON_DOWNLOADS_JSON_URL</a> to the location you saved the json in step 1 (recommand to add it to your .bashrc/.zshrc )</li>
@@ -87,16 +87,16 @@ one needs to</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-04-11 13:48</div>
-            <div class="timeline-body"><p>I'm going to tenatively mark this issue as resolved since you can do the above process, but we'll keep an eye out for whether this can/should be more ergonomic/automatic.</p>
+            <div class="timeline-body"><p>I&#x27;m going to tenatively mark this issue as resolved since you can do the above process, but we&#x27;ll keep an eye out for whether this can/should be more ergonomic/automatic.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @Gankra on 2025-04-11 13:48</div>
+            <div class="event">Closed by <a href="https://github.com/Gankra">@Gankra</a> on 2025-04-11 13:48</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:29:04 UTC
+        Synced at 2026-01-20 19:36:25 UTC
     </footer>
 </body>
 </html>

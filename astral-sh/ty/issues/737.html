@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>Other than <code>object</code>, all nominal instance types are disjoint from <code>None</code>. But... this is not true for instances of structural (<code>Protocol</code>) types -- and it turns out that this causes issues for our current implementation of the descriptor protocol.</p>
 <p>For example, compare and contrast the different behaviour of these two protocols. <code>SupportsFoo</code> is disjoint from <code>None</code>; <code>SupportsStr</code> is not:</p>
-<pre><code class="language-py">from typing import Protocol
+<pre><code>from typing import Protocol
 
 class SupportsFoo(Protocol):
     def foo(self) -&gt; str: ...
@@ -45,26 +45,26 @@ def f(f: SupportsFoo, s: SupportsStr):
 <p>Whether or not a type is disjoint from <code>None</code> impacts our understanding of the way the descriptor protocol is invoked when a method is accessed on that type. The type that a method is accessed on is passed to <code>FunctionType.__get__</code> when we invoke the descriptor protocol; if that type is not disjoint from <code>None</code>, we end up having to pick the first overload here, which means that the attribute access is (incorrectly!) evaluated as resolving to the original function object rather than a bound method:</p>
 <p>https://github.com/astral-sh/ruff/blob/c6fd11fe3694646c7b5667e37dfc67b114e2f50a/crates/ty_python_semantic/src/types.rs#L3526-L3575</p>
 <p>Many thanks to @sharkdp who helped me track this bug down over the last couple of days!</p>
-<h3>Version</h3>
+Version
 <p>c6fd11fe3</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-07-01 10:55</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-01 10:55</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">attribute access</span> added by @AlexWaygood on 2025-07-01 10:55</div>
+            <div class="event">Label <span class="label">attribute access</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-01 10:55</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">Protocols</span> added by @AlexWaygood on 2025-07-01 10:55</div>
+            <div class="event">Label <span class="label">Protocols</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-01 10:55</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Incorrect descriptor lookup for methods on protocols that are not disjoint from `None`" to "Incorrect descriptor lookup for methods on structural types that are not disjoint from `None`" by @AlexWaygood on 2025-07-01 15:27</div>
+            <div class="event">Renamed from &quot;Incorrect descriptor lookup for methods on protocols that are not disjoint from `None`&quot; to &quot;Incorrect descriptor lookup for methods on structural types that are not disjoint from `None`&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-01 15:27</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-01 15:28</div>
             <div class="timeline-body"><p>The bug can also be reproduced when looking up methods on other structural types that are not disjoint from <code>None</code>, e.g.</p>
-<pre><code class="language-py">from ty_extensions import AlwaysFalsy
+<pre><code>from ty_extensions import AlwaysFalsy
 
 def f(x: AlwaysFalsy):
     x.__hash__()  # error: No argument provided for required parameter `self` of function `__hash__` (missing-argument)
@@ -85,8 +85,8 @@ def f(x: AlwaysFalsy):
 <blockquote>
 <p>This can even repro with <code>None</code> itself, without any protocols involved: https://play.ty.dev/80e50768-24d9-4d36-a8dd-347a356f90a9</p>
 </blockquote>
-<p>I'm guessing I have an instance of the None issue mentioned in the previous comment because I don't think there are any protocols involved in the minimized reproducer I have:</p>
-<pre><code class="language-python">from typing import Any
+<p>I&#x27;m guessing I have an instance of the None issue mentioned in the previous comment because I don&#x27;t think there are any protocols involved in the minimized reproducer I have:</p>
+<pre><code>from typing import Any
 
 def f(g: Any) -&gt; None:
     try:
@@ -94,7 +94,7 @@ def f(g: Any) -&gt; None:
     except Exception as e:
         print(e.__cause__.__str__())
 </code></pre>
-<p>As a side note, today was my first time trying ty and it looks great, can't wait to use it for real!</p>
+<p>As a side note, today was my first time trying ty and it looks great, can&#x27;t wait to use it for real!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -105,14 +105,14 @@ def f(g: Any) -&gt; None:
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-03 11:51</div>
             <div class="timeline-body"><p>Since this bug manifests for any type <em>not disjoint</em> from <code>None</code>, it even manifests for method calls on <code>object</code> instances:</p>
-<pre><code class="language-py">def f(x: object):
+<pre><code>def f(x: object):
     x.__str__()  # error: No argument provided for required parameter `self` of function `__str__` (missing-argument)
 </code></pre>
 <p>https://play.ty.dev/bb76c82a-6a33-43ce-99dd-a4bbca762c7e</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Incorrect descriptor lookup for methods on structural types that are not disjoint from `None`" to "Incorrect descriptor lookup for methods on types that are not disjoint from `None`" by @AlexWaygood on 2025-07-03 17:47</div>
+            <div class="event">Renamed from &quot;Incorrect descriptor lookup for methods on structural types that are not disjoint from `None`&quot; to &quot;Incorrect descriptor lookup for methods on types that are not disjoint from `None`&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-03 17:47</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-05 18:36</div>
@@ -120,12 +120,12 @@ def f(g: Any) -&gt; None:
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Stable" by @carljm on 2025-11-14 15:31</div>
+            <div class="event">Added to milestone &quot;Stable&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-11-14 15:31</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:14 UTC
+        Synced at 2026-01-20 19:24:58 UTC
     </footer>
 </body>
 </html>

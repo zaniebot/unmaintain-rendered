@@ -23,16 +23,16 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This PR modifies our between-statement comment handling such that comments that are not separated by a statement by any newlines continue to be treated as leading comments on the statement, but comments that <em>are</em> separated are instead formatted as trailing comments on the preceding statement.</p>
 <p>See, e.g., the originating snippet:</p>
-<pre><code class="language-python">DEFAULT_TEMPLATE = &quot;flatpages/default.html&quot;
+<pre><code>DEFAULT_TEMPLATE = &quot;flatpages/default.html&quot;
 
 # This view is called from FlatpageFallbackMiddleware.process_response
 # when a 404 is raised, which often means CsrfViewMiddleware.process_view
 # has not been called even if CsrfViewMiddleware is installed. So we need
 # to use @csrf_protect, in case the template needs {% csrf_token %}.
-# However, we can't just wrap this view; if no matching flatpage exists,
+# However, we can&#x27;t just wrap this view; if no matching flatpage exists,
 # or a redirect is required for authentication, the 404 needs to be returned
 # without any CSRF checks. Therefore, we only
 # CSRF protect the internal implementation.
@@ -42,19 +42,19 @@ def flatpage(request, url):
     pass
 </code></pre>
 <p>Here, we need to ensure that the <code>def flatpage</code> is precede by two empty lines. However, we want those two empty lines to be enforced from the <em>end</em> of the comment block, <em>unless</em> the comments are directly atop the <code>def flatpage</code>.</p>
-<p>I played with this a bit, and I think the simplest conceptual model and implementation is to instead treat those as trailing comments on the preceding node. The main difficulty with this approach is that, in order to be fully compatible with Black, we'd sometimes need to insert newlines <em>between</em> the preceding node and its trailing comments. See, e.g.:</p>
-<pre><code class="language-python">def func():
+<p>I played with this a bit, and I think the simplest conceptual model and implementation is to instead treat those as trailing comments on the preceding node. The main difficulty with this approach is that, in order to be fully compatible with Black, we&#x27;d sometimes need to insert newlines <em>between</em> the preceding node and its trailing comments. See, e.g.:</p>
+<pre><code>def func():
     ...
 # comment
 
 x = 1
 </code></pre>
-<p>In this case, we'd need to insert two blank lines between <code>def func(): ...</code> and <code># comment</code>, but <code># comment</code> is trailing comment on <code>def func(): ...</code>. So, we'd need to take this case into account in the various nodes that <em>require</em> newlines after them: functions, classes, and imports. After some discussion, we've opted <em>not</em> to support this, and just treat these as trailing comments -- so we won't insert newlines there. This means our handling is still identical to Black's on Black-formatted code, but avoids moving such trailing comments on unformatted code.</p>
-<p>I dislike that the empty handling is so complex, and that it's split between so many different nodes, but this is really tricky. Continuing to treat these as leading comments is very difficult too, since we'd need to do similar tricks for the leading comment handling in those nodes, and influencing leading comments is even harder, since they're all formatted <em>before</em> the node itself.</p>
-<p>Closes https://github.com/astral-sh/ruff/issues/6761.</p>
-<h2>Test Plan</h2>
+<p>In this case, we&#x27;d need to insert two blank lines between <code>def func(): ...</code> and <code># comment</code>, but <code># comment</code> is trailing comment on <code>def func(): ...</code>. So, we&#x27;d need to take this case into account in the various nodes that <em>require</em> newlines after them: functions, classes, and imports. After some discussion, we&#x27;ve opted <em>not</em> to support this, and just treat these as trailing comments -- so we won&#x27;t insert newlines there. This means our handling is still identical to Black&#x27;s on Black-formatted code, but avoids moving such trailing comments on unformatted code.</p>
+<p>I dislike that the empty handling is so complex, and that it&#x27;s split between so many different nodes, but this is really tricky. Continuing to treat these as leading comments is very difficult too, since we&#x27;d need to do similar tricks for the leading comment handling in those nodes, and influencing leading comments is even harder, since they&#x27;re all formatted <em>before</em> the node itself.</p>
+<p>Closes <a href="https://github.com/astral-sh/ruff/issues/6761">astral-sh/ruff#6761</a>.</p>
+Test Plan
 <p><code>cargo test</code></p>
-<p>Surprisingly, it doesn't change the similarity at all (apart from a 0.00001 change in CPython), but I manually confirmed that it did fix the originating issue in Django.</p>
+<p>Surprisingly, it doesn&#x27;t change the similarity at all (apart from a 0.00001 change in CPython), but I manually confirmed that it did fix the originating issue in Django.</p>
 <p>Before:</p>
 <p>| project      | similarity index |
 |--------------|------------------|
@@ -90,7 +90,7 @@ x = 1
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@simple_cases__fmtpass_imports.py.snap</code>:39 on 2023-08-30 02:19</div>
             <div class="timeline-body"><p>This deviates from Black, but I feel like Black is wrong here?</p>
 <p>Given:</p>
-<pre><code class="language-python">import dataclasses
+<pre><code>import dataclasses
 # fmt: off
 import os
 # fmt: on
@@ -103,7 +103,7 @@ import os
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-08-30 02:20</div>
+            <div class="event">Label <span class="label">formatter</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-30 02:20</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-30 03:28</div>
@@ -116,8 +116,8 @@ import os
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-30 03:33</div>
-            <div class="timeline-body"><p>Here's the diff-of-diffs, of main-formatting vs. this branch on Django:</p>
-<pre><code class="language-diff">diff --git a/django/contrib/flatpages/views.py b/django/contrib/flatpages/views.py
+            <div class="timeline-body"><p>Here&#x27;s the diff-of-diffs, of main-formatting vs. this branch on Django:</p>
+<pre><code>diff --git a/django/contrib/flatpages/views.py b/django/contrib/flatpages/views.py
 index 105eb90ee4..776f1796a6 100644
 --- a/django/contrib/flatpages/views.py
 +++ b/django/contrib/flatpages/views.py
@@ -162,7 +162,7 @@ index 14adcaea88..87e1f58d1c 100644
          &quot;&quot;&quot;
          joins = [alias]
 -
-         # The transform can't be applied yet, as joins must be trimmed later.
+         # The transform can&#x27;t be applied yet, as joins must be trimmed later.
          # To avoid making every caller of this method look up transforms
          # directly, compute transforms here and create a partial that converts
 diff --git a/django/forms/formsets.py b/django/forms/formsets.py
@@ -174,7 +174,7 @@ index cc5530f1e4..549f4e8626 100644
                      continue
                  self._ordering.append((i, form.cleaned_data[ORDERING_FIELD_NAME]))
 -
-             # After we're done populating self._ordering, sort it.
+             # After we&#x27;re done populating self._ordering, sort it.
              # A sort function to order things numerically ascending, but
              # None should be sorted below anything else. Allowing None as
 diff --git a/django/forms/models.py b/django/forms/models.py
@@ -186,7 +186,7 @@ index 4db1717a61..edf8aa03fb 100644
  
          self._pk_field = pk = self.model._meta.pk
 -
-         # If a pk isn't editable, then it won't be on the form, so we need to
+         # If a pk isn&#x27;t editable, then it won&#x27;t be on the form, so we need to
          # add it here so we can tell which object is which when we get the
          # data back. Generally, pk.editable should be false, but for some
 diff --git a/django/template/smartif.py b/django/template/smartif.py
@@ -195,13 +195,13 @@ index acbd6e408e..5b15a5a476 100644
 +++ b/django/template/smartif.py
 @@ -1,8 +1,6 @@
  &quot;&quot;&quot;
- Parser and utilities for the smart 'if' tag
+ Parser and utilities for the smart &#x27;if&#x27; tag
  &quot;&quot;&quot;
 -
 -
  # Using a simple top down parser, as described here:
  #    http://effbot.org/zone/simple-top-down-parsing.htm.
- # 'led' = left denotation
+ # &#x27;led&#x27; = left denotation
 diff --git a/django/utils/timezone.py b/django/utils/timezone.py
 index 7c65a03d73..102562b254 100644
 --- a/django/utils/timezone.py
@@ -211,8 +211,8 @@ index 7c65a03d73..102562b254 100644
  # Timezone selection functions.
  
 -
- # These functions don't change os.environ['TZ'] and call time.tzset()
- # because it isn't thread safe.
+ # These functions don&#x27;t change os.environ[&#x27;TZ&#x27;] and call time.tzset()
+ # because it isn&#x27;t thread safe.
  
 diff --git a/tests/base/models.py b/tests/base/models.py
 index b179878704..70088bd96e 100644
@@ -223,7 +223,7 @@ index b179878704..70088bd96e 100644
  
 -
  # The models definitions below used to crash. Generating models dynamically
- # at runtime is a bad idea because it pollutes the app registry. This doesn't
+ # at runtime is a bad idea because it pollutes the app registry. This doesn&#x27;t
  # integrate well with the test suite but at least it prevents regressions.
 diff --git a/tests/delete_regress/tests.py b/tests/delete_regress/tests.py
 index 7aea5948f6..71e3bcb405 100644
@@ -305,7 +305,7 @@ index 2a908d900b..19bfd31890 100644
  from django.db import models
  
 -
- # Since the test database doesn't have tablespaces, it's impossible for Django
+ # Since the test database doesn&#x27;t have tablespaces, it&#x27;s impossible for Django
  # to create the tables for models where db_tablespace is set. To avoid this
  # problem, we mark the models as unmanaged, and temporarily revert them to
 diff --git a/tests/proxy_models/models.py b/tests/proxy_models/models.py
@@ -387,10 +387,10 @@ index 6979109669..0eefcafda2 100644
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @charliermarsh on 2023-08-30 03:35</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-30 03:35</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-08-30 03:35</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-30 03:35</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-30 06:22</div>
@@ -398,7 +398,7 @@ index 6979109669..0eefcafda2 100644
 <p>I spot-checked these and they all seem correct. Do empty line changes not impact the Jaccard index?</p>
 </blockquote>
 <p>They should but probably less than other changes because the diff is only a single line. Changes that affect how we split code often results in many line differences for each case which is why they are more likely to affect the jaccard index.</p>
-<p>That's why we should add a number of files that differ.</p>
+<p>That&#x27;s why we should add a number of files that differ.</p>
 <p>Edit: After rebasing on top of #7003</p>
 <p>This PR</p>
 <p>| project      | similarity index  | total files       | changed files     |
@@ -430,12 +430,12 @@ index 6979109669..0eefcafda2 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1907 on 2023-08-30 06:46</div>
-            <div class="timeline-body"><p>Can you explain what you mean by it? What's a bug? Is it a bug in the implementation? Which omission?</p>
+            <div class="timeline-body"><p>Can you explain what you mean by it? What&#x27;s a bug? Is it a bug in the implementation? Which omission?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/statement/stmt_import.rs</code>:36 on 2023-08-30 06:49</div>
-            <div class="timeline-body"><p>Can't import have up to two empty lines?</p>
+            <div class="timeline-body"><p>Can&#x27;t import have up to two empty lines?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -446,7 +446,7 @@ index 6979109669..0eefcafda2 100644
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/statement/stmt_class_def.rs</code>:141 on 2023-08-30 06:53</div>
             <div class="timeline-body"><p>NIt</p>
-<pre><code class="language-suggestion">        .fmt(f)
+<pre><code>        .fmt(f)
 </code></pre>
 </div>
         </div>
@@ -459,14 +459,14 @@ index 6979109669..0eefcafda2 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-30 13:34</div>
-            <div class="timeline-body"><p>I woke up realizing that this won't work for:</p>
-<pre><code class="language-python">import os # foo
+            <div class="timeline-body"><p>I woke up realizing that this won&#x27;t work for:</p>
+<pre><code>import os # foo
 # bar
 
 x =1
 </code></pre>
-<p>Since we'll insert the empty lines before formatting <code># foo</code>, like:</p>
-<pre><code class="language-python">import os
+<p>Since we&#x27;ll insert the empty lines before formatting <code># foo</code>, like:</p>
+<pre><code>import os
 
   # foo
 # bar
@@ -491,7 +491,7 @@ x = 1
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/comments/format.rs</code>:515 on 2023-08-30 15:43</div>
-            <div class="timeline-body"><p>Apparently that's actually fine? It doesn't panic.</p>
+            <div class="timeline-body"><p>Apparently that&#x27;s actually fine? It doesn&#x27;t panic.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -500,34 +500,34 @@ x = 1
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1907 on 2023-08-30 15:44</div>
-            <div class="timeline-body"><p>If the <em>only</em> tokens in the contents were newlines, we'd <em>never</em> set <code>max_new_lines</code> -- we'd return 0!</p>
+            <div class="timeline-body"><p>If the <em>only</em> tokens in the contents were newlines, we&#x27;d <em>never</em> set <code>max_new_lines</code> -- we&#x27;d return 0!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-30 15:46</div>
             <div class="timeline-body"><p>Alright, this is a compromise solution...</p>
 <p>We <em>do</em> insert requisite newlines after functions or classes:</p>
-<pre><code class="language-python">def func():
+<pre><code>def func():
     pass
 # this comment gets two empty lines inserted _before_ it
 
 x = 1
 </code></pre>
-<p>But we <em>don't</em> insert any newlines for imports:</p>
-<pre><code class="language-python">import x
+<p>But we <em>don&#x27;t</em> insert any newlines for imports:</p>
+<pre><code>import x
 # this comment does _not_, it stays where it is
 
 import y
 </code></pre>
-<p>This works because functions and classes can't have trailing end-of-line comments, so they don't suffer from the problem above. However, we still get improved compatibility. I think it's also a reasonable deviation: in the function and class case, the comment follows the indented body, so it's harder to argue that it's &quot;part of&quot; the function or class; for the import, it immediately follows the import, so it's reasonable to treat it as such.</p>
+<p>This works because functions and classes can&#x27;t have trailing end-of-line comments, so they don&#x27;t suffer from the problem above. However, we still get improved compatibility. I think it&#x27;s also a reasonable deviation: in the function and class case, the comment follows the indented body, so it&#x27;s harder to argue that it&#x27;s &quot;part of&quot; the function or class; for the import, it immediately follows the import, so it&#x27;s reasonable to treat it as such.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-08-30 15:47</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-30 15:47</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-30 15:49</div>
-            <div class="timeline-body"><p>@MichaReiser - We can also just remove that behavior for classes and functions. I don't feel strongly. It will reduce compatibility for unformatted code (and thus add lines back to the test snapshots), but it's not unreasonable.</p>
+            <div class="timeline-body"><p>@MichaReiser - We can also just remove that behavior for classes and functions. I don&#x27;t feel strongly. It will reduce compatibility for unformatted code (and thus add lines back to the test snapshots), but it&#x27;s not unreasonable.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -538,10 +538,10 @@ import y
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-30 15:51</div>
             <div class="timeline-body"><blockquote>
-<p>@MichaReiser - We can also just remove that behavior for classes and functions. I don't feel strongly. It will reduce compatibility for unformatted code (and thus add lines back to the test snapshots), but it's not unreasonable.</p>
+<p>@MichaReiser - We can also just remove that behavior for classes and functions. I don&#x27;t feel strongly. It will reduce compatibility for unformatted code (and thus add lines back to the test snapshots), but it&#x27;s not unreasonable.</p>
 </blockquote>
 <p>I think I would prefer that. It means fewer weird cases to reason about. Should we do it as a separate PR?</p>
-<p>I&quot;ll review the rest tomorrow. I don't feel up to it today</p>
+<p>I&quot;ll review the rest tomorrow. I don&#x27;t feel up to it today</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -551,7 +551,7 @@ import y
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-30 15:53</div>
-            <div class="timeline-body"><p>I'm very sad because it means <code>tests/snapshots/black_compatibility@simple_cases__empty_lines.py.snap</code> doesn't get deleted due to a one-line difference :sob:</p>
+            <div class="timeline-body"><p>I&#x27;m very sad because it means <code>tests/snapshots/black_compatibility@simple_cases__empty_lines.py.snap</code> doesn&#x27;t get deleted due to a one-line difference :sob:</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -560,15 +560,15 @@ import y
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@simple_cases__empty_lines.py.snap</code>:166 on 2023-08-30 15:56</div>
-            <div class="timeline-body"><p>The difference in this file is now just that we aren't adding the extra empty line before this comment (which trails a function).</p>
+            <div class="timeline-body"><p>The difference in this file is now just that we aren&#x27;t adding the extra empty line before this comment (which trails a function).</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-08-30 15:57</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-30 15:57</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/comments/format.rs</code>:515 on 2023-08-30 15:58</div>
-            <div class="timeline-body"><p>Haha. I confirmed that when <code>actual</code> is 4 and <code>self.expected</code> is 2, it doesn't panic!</p>
+            <div class="timeline-body"><p>Haha. I confirmed that when <code>actual</code> is 4 and <code>self.expected</code> is 2, it doesn&#x27;t panic!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -582,7 +582,7 @@ import y
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@simple_cases__empty_lines.py.snap</code>:166 on 2023-08-30 16:01</div>
             <div class="timeline-body"><p>This is an interesting example and is somewhat different from the example that we discussed</p>
-<pre><code class="language-python">class Test: ...
+<pre><code>class Test: ...
 # bar
 
 x =1
@@ -596,7 +596,7 @@ x =1
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@simple_cases__empty_lines.py.snap</code>:166 on 2023-08-30 16:04</div>
-            <div class="timeline-body"><p>Ah yeah, I was thinking of this as the same case throughout that discussion since my mind was focused on the implementation. This why I'm somewhat partial to inserting the newlines for these trailing comments (whether there's an existing empty line or not) on classes and functions at least.</p>
+            <div class="timeline-body"><p>Ah yeah, I was thinking of this as the same case throughout that discussion since my mind was focused on the implementation. This why I&#x27;m somewhat partial to inserting the newlines for these trailing comments (whether there&#x27;s an existing empty line or not) on classes and functions at least.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -659,7 +659,7 @@ Okay solution: Reverting to what you had.</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@simple_cases__empty_lines.py.snap</code>:166 on 2023-08-31 20:44</div>
-            <div class="timeline-body"><p>Alright, I'm reverting to what I had, but I'm going to look into a followup PR to move the comment handling into <code>suite.rs</code> and also enable the behavior we discussed here.</p>
+            <div class="timeline-body"><p>Alright, I&#x27;m reverting to what I had, but I&#x27;m going to look into a followup PR to move the comment handling into <code>suite.rs</code> and also enable the behavior we discussed here.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -667,10 +667,10 @@ Okay solution: Reverting to what you had.</p>
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2023-08-31 20:55</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-31 20:55</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-08-31 20:55</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-31 20:55</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2023-08-31 20:55</div>
@@ -687,7 +687,7 @@ Okay solution: Reverting to what you had.</p>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:59:56 UTC
+        Synced at 2026-01-20 18:56:48 UTC
     </footer>
 </body>
 </html>

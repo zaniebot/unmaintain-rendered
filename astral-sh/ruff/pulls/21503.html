@@ -23,41 +23,41 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>Get rid of the catch-all todo type from subscripting a base type we haven't implemented handling for yet in a type expression, and turn it into a diagnostic instead.</p>
+            <div class="timeline-body">Summary
+<p>Get rid of the catch-all todo type from subscripting a base type we haven&#x27;t implemented handling for yet in a type expression, and turn it into a diagnostic instead.</p>
 <p>Handle a few more cases explicitly, to avoid false positives from the above change:</p>
 <ol>
 <li>Subscripting any dynamic type (not just a todo type) in a type expression should just result in that same dynamic type. This is important for gradual guarantee, and matches other type checkers.</li>
-<li>Subscripting a generic alias may be an error or not, depending whether the specialization itself contains typevars. Don't try to handle this yet (it should be handled in a later PR for specializing generic non-PEP695 type aliases), just use a dedicated todo type for it.</li>
+<li>Subscripting a generic alias may be an error or not, depending whether the specialization itself contains typevars. Don&#x27;t try to handle this yet (it should be handled in a later PR for specializing generic non-PEP695 type aliases), just use a dedicated todo type for it.</li>
 <li>Add a temporary todo branch to avoid false positives from string PEP 613 type aliases. This can be removed in the next PR, with PEP 613 type alias support.</li>
 </ol>
-<h2>Test Plan</h2>
+Test Plan
 <p>Adjusted mdtests, ecosystem.</p>
 <p>All new diagnostics in conformance suite are supposed to be diagnostics, so this PR is a strict improvement there.</p>
-<p>New diagnostics in the ecosystem are surfacing cases where we already don't understand an annotation, but now we emit a diagnostic about it. They are mostly intentional choices. Analysis of particular cases:</p>
+<p>New diagnostics in the ecosystem are surfacing cases where we already don&#x27;t understand an annotation, but now we emit a diagnostic about it. They are mostly intentional choices. Analysis of particular cases:</p>
 <ul>
-<li><code>attrs</code>, <code>bokeh</code>, <code>django-stubs</code>, <code>dulwich</code>, <code>ibis</code>, <code>kornia</code>, <code>mitmproxy</code>, <code>mongo-python-driver</code>, <code>mypy</code>, <code>pandas</code>, <code>poetry</code>, <code>prefect</code>, <code>pydantic</code>, <code>pytest</code>, <code>scrapy</code>, <code>trio</code>, <code>werkzeug</code>, and <code>xarray</code>  are all cases where under <code>from __future__ import annotations</code> or Python 3.14 deferred-annotations semantics, we follow normal name-scoping rules, whereas some other type checkers prefer global names over local names. This means we don't like it if e.g. you have a class with a method or attribute named <code>type</code> or <code>tuple</code>, and you also try to use <code>type</code> or <code>tuple</code> in method/attribute annotations of that class. This PR isn't changing those semantics, just revealing them in more cases where previously we just silently fell back to <code>Unknown</code>. I think failing with a diagnostic (so authors can alias names as needed to avoid relying on scoping rules that differ between type checkers) is better than failing silently here.</li>
-<li><code>beartype</code> assumes we support <code>TypeForm</code> (because it only supports mypy and pyright, it uses <code>if MYPY:</code> to hide the <code>TypeForm</code> from mypy, and pyright supports <code>TypeForm</code>), and we don't yet.</li>
-<li><code>graphql-core</code> likes to use a <code>try: ... except ImportError: ...</code> pattern for importing special forms from <code>typing</code> with fallback to <code>typing_extensions</code>, instead of using <code>sys.version_info</code> checks. We don't handle this well when type checking under an older Python version (where the import from <code>typing</code> is not found); we see the imported name as of type e.g. <code>Unknown | SpecialFormType(...)</code>, and because of the union with <code>Unknown</code> we fail to handle it as the special form type. Mypy and pyright also don't seem to support this pattern. They don't complain about subscripting such special forms, but they do silently fail to treat them as the desired special form.  Again here, if we are going to fail I'd rather fail with a diagnostic rather than silently.</li>
+<li><code>attrs</code>, <code>bokeh</code>, <code>django-stubs</code>, <code>dulwich</code>, <code>ibis</code>, <code>kornia</code>, <code>mitmproxy</code>, <code>mongo-python-driver</code>, <code>mypy</code>, <code>pandas</code>, <code>poetry</code>, <code>prefect</code>, <code>pydantic</code>, <code>pytest</code>, <code>scrapy</code>, <code>trio</code>, <code>werkzeug</code>, and <code>xarray</code>  are all cases where under <code>from __future__ import annotations</code> or Python 3.14 deferred-annotations semantics, we follow normal name-scoping rules, whereas some other type checkers prefer global names over local names. This means we don&#x27;t like it if e.g. you have a class with a method or attribute named <code>type</code> or <code>tuple</code>, and you also try to use <code>type</code> or <code>tuple</code> in method/attribute annotations of that class. This PR isn&#x27;t changing those semantics, just revealing them in more cases where previously we just silently fell back to <code>Unknown</code>. I think failing with a diagnostic (so authors can alias names as needed to avoid relying on scoping rules that differ between type checkers) is better than failing silently here.</li>
+<li><code>beartype</code> assumes we support <code>TypeForm</code> (because it only supports mypy and pyright, it uses <code>if MYPY:</code> to hide the <code>TypeForm</code> from mypy, and pyright supports <code>TypeForm</code>), and we don&#x27;t yet.</li>
+<li><code>graphql-core</code> likes to use a <code>try: ... except ImportError: ...</code> pattern for importing special forms from <code>typing</code> with fallback to <code>typing_extensions</code>, instead of using <code>sys.version_info</code> checks. We don&#x27;t handle this well when type checking under an older Python version (where the import from <code>typing</code> is not found); we see the imported name as of type e.g. <code>Unknown | SpecialFormType(...)</code>, and because of the union with <code>Unknown</code> we fail to handle it as the special form type. Mypy and pyright also don&#x27;t seem to support this pattern. They don&#x27;t complain about subscripting such special forms, but they do silently fail to treat them as the desired special form.  Again here, if we are going to fail I&#x27;d rather fail with a diagnostic rather than silently.</li>
 <li><code>ibis</code> is <a href="https://github.com/ibis-project/ibis/blob/main/ibis/common/collections.py#L372">trying to use</a> <code>frozendict: type[FrozenDict]</code> as a way to create a &quot;type alias&quot; to <code>FrozenDict</code>, but this is wrong: that means <code>frozendict: type[FrozenDict[Any, Any]]</code>.</li>
-<li><code>mypy</code> has some errors due to the fact that type-checking <code>typing.pyi</code> itself (without knowing that it's the real <code>typing.pyi</code>) doesn't work very well.</li>
-<li><code>mypy-protobuf</code> imports some types from the protobufs library that end up unioned with <code>Unknown</code> for some reason, and so we don't allow explicit-specialization of them. Depending on the reason they end up unioned with <code>Unknown</code>, we might want to better support this? But it's orthogonal to this PR -- we aren't failing any worse here, just alerting the author that we didn't understand their annotation.</li>
-<li><code>pwndbg</code> has unresolved references due to star-importing from a dependency that isn't installed, and uses un-imported names like <code>Dict</code> in annotation expressions. Some of the unresolved references were hidden by https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/src/types/infer/builder.rs#L7223-L7228 when some annotations previously resolved to a Todo type that no longer do.</li>
+<li><code>mypy</code> has some errors due to the fact that type-checking <code>typing.pyi</code> itself (without knowing that it&#x27;s the real <code>typing.pyi</code>) doesn&#x27;t work very well.</li>
+<li><code>mypy-protobuf</code> imports some types from the protobufs library that end up unioned with <code>Unknown</code> for some reason, and so we don&#x27;t allow explicit-specialization of them. Depending on the reason they end up unioned with <code>Unknown</code>, we might want to better support this? But it&#x27;s orthogonal to this PR -- we aren&#x27;t failing any worse here, just alerting the author that we didn&#x27;t understand their annotation.</li>
+<li><code>pwndbg</code> has unresolved references due to star-importing from a dependency that isn&#x27;t installed, and uses un-imported names like <code>Dict</code> in annotation expressions. Some of the unresolved references were hidden by https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/src/types/infer/builder.rs#L7223-L7228 when some annotations previously resolved to a Todo type that no longer do.</li>
 </ul>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @carljm on 2025-11-17 20:08</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/carljm">@carljm</a> on 2025-11-17 20:08</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-17 20:10</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
-<details>
-<summary>Changes were detected when running ty on typing conformance tests</summary>
+Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a>
 
-<pre><code class="language-diff">--- old-output.txt	2025-11-18 18:17:10.806838177 +0000
+Changes were detected when running ty on typing conformance tests
+
+<pre><code>--- old-output.txt	2025-11-18 18:17:10.806838177 +0000
 +++ new-output.txt	2025-11-18 18:17:14.257848390 +0000
 @@ -6,22 +6,22 @@
  _directives_deprecated_library.py:45:24: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `str`
@@ -86,41 +86,41 @@
 -aliases_implicit.py:71:5: error[type-assertion-failure] Type `list[bool]` does not match asserted type `@Todo(unknown type subscript)`
 +aliases_implicit.py:70:5: error[type-assertion-failure] Type `int | str | None | list[list[int]]` does not match asserted type `int | str | None | list[@Todo(specialized generic alias in type expression)]`
 +aliases_implicit.py:71:5: error[type-assertion-failure] Type `list[bool]` does not match asserted type `@Todo(specialized generic alias in type expression)`
- aliases_implicit.py:107:9: error[invalid-type-form] Variable of type `list[Unknown | &lt;class 'int'&gt; | &lt;class 'str'&gt;]` is not allowed in a type expression
- aliases_implicit.py:108:9: error[invalid-type-form] Variable of type `tuple[tuple[&lt;class 'int'&gt;, &lt;class 'str'&gt;]]` is not allowed in a type expression
- aliases_implicit.py:109:9: error[invalid-type-form] Variable of type `list[&lt;class 'int'&gt; | Unknown]` is not allowed in a type expression
+ aliases_implicit.py:107:9: error[invalid-type-form] Variable of type `list[Unknown | &lt;class &#x27;int&#x27;&gt; | &lt;class &#x27;str&#x27;&gt;]` is not allowed in a type expression
+ aliases_implicit.py:108:9: error[invalid-type-form] Variable of type `tuple[tuple[&lt;class &#x27;int&#x27;&gt;, &lt;class &#x27;str&#x27;&gt;]]` is not allowed in a type expression
+ aliases_implicit.py:109:9: error[invalid-type-form] Variable of type `list[&lt;class &#x27;int&#x27;&gt; | Unknown]` is not allowed in a type expression
 @@ -58,6 +58,7 @@
  aliases_type_statement.py:40:22: error[invalid-type-form] List comprehensions are not allowed in type expressions
  aliases_type_statement.py:41:22: error[invalid-type-form] Dict literals are not allowed in type expressions
  aliases_type_statement.py:42:22: error[invalid-type-form] Function calls are not allowed in type expressions
-+aliases_type_statement.py:43:22: error[invalid-type-form] Invalid subscript of object of type `list[Unknown | &lt;class 'int'&gt;]` in type expression
++aliases_type_statement.py:43:22: error[invalid-type-form] Invalid subscript of object of type `list[Unknown | &lt;class &#x27;int&#x27;&gt;]` in type expression
  aliases_type_statement.py:43:28: error[invalid-type-form] Int literals are not allowed in this context in a type expression
  aliases_type_statement.py:44:22: error[invalid-type-form] `if` expressions are not allowed in type expressions
  aliases_type_statement.py:45:22: error[invalid-type-form] Variable of type `Literal[1]` is not allowed in a type expression
 @@ -76,6 +77,7 @@
- aliases_variance.py:18:24: error[non-subscriptable] Cannot subscript object of type `&lt;class 'ClassA[typing.TypeVar]'&gt;` with no `__class_getitem__` method
- aliases_variance.py:28:16: error[non-subscriptable] Cannot subscript object of type `&lt;class 'ClassA[typing.TypeVar]'&gt;` with no `__class_getitem__` method
- aliases_variance.py:44:16: error[non-subscriptable] Cannot subscript object of type `&lt;class 'ClassB[typing.TypeVar, typing.TypeVar]'&gt;` with no `__class_getitem__` method
-+annotations_forward_refs.py:47:10: error[invalid-type-form] Invalid subscript of object of type `list[Unknown | &lt;class 'int'&gt;]` in type expression
+ aliases_variance.py:18:24: error[non-subscriptable] Cannot subscript object of type `&lt;class &#x27;ClassA[typing.TypeVar]&#x27;&gt;` with no `__class_getitem__` method
+ aliases_variance.py:28:16: error[non-subscriptable] Cannot subscript object of type `&lt;class &#x27;ClassA[typing.TypeVar]&#x27;&gt;` with no `__class_getitem__` method
+ aliases_variance.py:44:16: error[non-subscriptable] Cannot subscript object of type `&lt;class &#x27;ClassB[typing.TypeVar, typing.TypeVar]&#x27;&gt;` with no `__class_getitem__` method
++annotations_forward_refs.py:47:10: error[invalid-type-form] Invalid subscript of object of type `list[Unknown | &lt;class &#x27;int&#x27;&gt;]` in type expression
  annotations_forward_refs.py:49:10: error[invalid-type-form] Variable of type `Literal[1]` is not allowed in a type expression
  annotations_forward_refs.py:54:11: error[fstring-type-annotation] Type expressions cannot use f-strings
- annotations_forward_refs.py:55:11: error[invalid-type-form] Variable of type `&lt;module 'types'&gt;` is not allowed in a type expression
+ annotations_forward_refs.py:55:11: error[invalid-type-form] Variable of type `&lt;module &#x27;types&#x27;&gt;` is not allowed in a type expression
 @@ -101,6 +103,7 @@
  annotations_typeexpr.py:91:9: error[invalid-type-form] List comprehensions are not allowed in type expressions
  annotations_typeexpr.py:92:9: error[invalid-type-form] Dict literals are not allowed in type expressions
  annotations_typeexpr.py:93:9: error[invalid-type-form] Function calls are not allowed in type expressions
-+annotations_typeexpr.py:94:9: error[invalid-type-form] Invalid subscript of object of type `list[Unknown | &lt;class 'int'&gt;]` in type expression
++annotations_typeexpr.py:94:9: error[invalid-type-form] Invalid subscript of object of type `list[Unknown | &lt;class &#x27;int&#x27;&gt;]` in type expression
  annotations_typeexpr.py:94:15: error[invalid-type-form] Int literals are not allowed in this context in a type expression
  annotations_typeexpr.py:95:9: error[invalid-type-form] `if` expressions are not allowed in type expressions
  annotations_typeexpr.py:96:9: error[invalid-type-form] Variable of type `Literal[3]` is not allowed in a type expression
 @@ -447,7 +450,7 @@
- generics_defaults_referential.py:94:1: error[type-assertion-failure] Type `@Todo(unsupported nested subscript in type[X])` does not match asserted type `&lt;class 'Bar'&gt;`
- generics_defaults_referential.py:95:1: error[type-assertion-failure] Type `@Todo(unsupported nested subscript in type[X])` does not match asserted type `&lt;class 'Bar[int, list[int]]'&gt;`
+ generics_defaults_referential.py:94:1: error[type-assertion-failure] Type `@Todo(unsupported nested subscript in type[X])` does not match asserted type `&lt;class &#x27;Bar&#x27;&gt;`
+ generics_defaults_referential.py:95:1: error[type-assertion-failure] Type `@Todo(unsupported nested subscript in type[X])` does not match asserted type `&lt;class &#x27;Bar[int, list[int]]&#x27;&gt;`
  generics_defaults_specialization.py:26:5: error[type-assertion-failure] Type `SomethingWithNoDefaults[int, str]` does not match asserted type `SomethingWithNoDefaults[int, typing.TypeVar]`
 -generics_defaults_specialization.py:27:5: error[type-assertion-failure] Type `SomethingWithNoDefaults[int, bool]` does not match asserted type `@Todo(unknown type subscript)`
 +generics_defaults_specialization.py:27:5: error[type-assertion-failure] Type `SomethingWithNoDefaults[int, bool]` does not match asserted type `@Todo(specialized generic alias in type expression)`
- generics_defaults_specialization.py:30:1: error[non-subscriptable] Cannot subscript object of type `&lt;class 'SomethingWithNoDefaults[int, typing.TypeVar]'&gt;` with no `__class_getitem__` method
- generics_defaults_specialization.py:45:1: error[type-assertion-failure] Type `@Todo(unsupported nested subscript in type[X])` does not match asserted type `&lt;class 'Bar'&gt;`
+ generics_defaults_specialization.py:30:1: error[non-subscriptable] Cannot subscript object of type `&lt;class &#x27;SomethingWithNoDefaults[int, typing.TypeVar]&#x27;&gt;` with no `__class_getitem__` method
+ generics_defaults_specialization.py:45:1: error[type-assertion-failure] Type `@Todo(unsupported nested subscript in type[X])` does not match asserted type `&lt;class &#x27;Bar&#x27;&gt;`
  generics_paramspec_basic.py:10:1: error[invalid-paramspec] The name of a `ParamSpec` (`NotIt`) must match the name of the variable it is assigned to (`WrongName`)
 @@ -593,16 +596,16 @@
  generics_typevartuple_concat.py:52:1: error[type-assertion-failure] Type `tuple[int, bool, str]` does not match asserted type `tuple[@Todo(PEP 646), ...]`
@@ -160,12 +160,12 @@
  qualifiers_annotated.py:40:17: error[invalid-type-form] List comprehensions are not allowed in type expressions
  qualifiers_annotated.py:41:17: error[invalid-type-form] Dict literals are not allowed in type expressions
  qualifiers_annotated.py:42:17: error[invalid-type-form] Function calls are not allowed in type expressions
-+qualifiers_annotated.py:43:17: error[invalid-type-form] Invalid subscript of object of type `list[Unknown | &lt;class 'int'&gt;]` in type expression
++qualifiers_annotated.py:43:17: error[invalid-type-form] Invalid subscript of object of type `list[Unknown | &lt;class &#x27;int&#x27;&gt;]` in type expression
  qualifiers_annotated.py:43:23: error[invalid-type-form] Int literals are not allowed in this context in a type expression
  qualifiers_annotated.py:44:17: error[invalid-type-form] `if` expressions are not allowed in type expressions
  qualifiers_annotated.py:45:17: error[unresolved-reference] Name `var1` used when not defined
 @@ -989,5 +993,5 @@
- typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
+ typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key &#x27;name&#x27; in TypedDict `Movie` constructor
  typeddicts_usage.py:28:18: error[invalid-key] Unknown key &quot;title&quot; for TypedDict `Movie`: Unknown key &quot;title&quot;
  typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions. Did you mean to use a concrete TypedDict or `collections.abc.Mapping[str, object]` instead?
 -Found 991 diagnostics
@@ -173,19 +173,19 @@
  WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
 
 </code></pre>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-17 20:11</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">attrs (https://github.com/python-attrs/attrs)
+Changes were detected when running on open source projects
+
+<pre><code>attrs (https://github.com/python-attrs/attrs)
 + src/attr/__init__.pyi:136:11: error[]8;;https://ty.dev/rules#invalid-type-form\invalid-type-form]8;;\] Invalid subscript of object of type `Unknown | None` in type expression
 - Found 594 diagnostics
 + Found 595 diagnostics
@@ -521,19 +521,19 @@ bokeh (https://github.com/bokeh/bokeh)
 
 ... (truncated 80 lines) ...
 </code></pre>
-</details>
+
 
 <p>No memory usage changes detected ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @carljm on 2025-11-17 20:22</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/carljm">@carljm</a> on 2025-11-17 20:22</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-17 20:28</div>
-            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+            <div class="timeline-body">
 
-<h2><code>ecosystem-analyzer</code> results</h2>
+<code>ecosystem-analyzer</code> results
 <p>| Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
 | <code>invalid-type-form</code> | 222 | 1 | 0 |
@@ -552,45 +552,45 @@ bokeh (https://github.com/bokeh/bokeh)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @carljm on 2025-11-17 20:56</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/carljm">@carljm</a> on 2025-11-17 20:56</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @carljm on 2025-11-17 20:56</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/carljm">@carljm</a> on 2025-11-17 20:56</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @carljm on 2025-11-18 00:25</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/carljm">@carljm</a> on 2025-11-18 00:25</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @carljm on 2025-11-18 00:25</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/carljm">@carljm</a> on 2025-11-18 00:25</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @carljm on 2025-11-18 02:01</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/carljm">@carljm</a> on 2025-11-18 02:01</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @carljm on 2025-11-18 02:01</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/carljm">@carljm</a> on 2025-11-18 02:01</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @carljm on 2025-11-18 02:09</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/carljm">@carljm</a> on 2025-11-18 02:09</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @carljm on 2025-11-18 02:09</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/carljm">@carljm</a> on 2025-11-18 02:09</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @carljm on 2025-11-18 02:09</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/carljm">@carljm</a> on 2025-11-18 02:09</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @carljm on 2025-11-18 02:09</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/carljm">@carljm</a> on 2025-11-18 02:09</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/annotations/invalid.md</code>:102 on 2025-11-18 16:49</div>
-            <div class="timeline-body"><p>I don't think this makes grammatical sense -- cannot subscript object of type <em>what</em>, exactly? 😄</p>
+            <div class="timeline-body"><p>I don&#x27;t think this makes grammatical sense -- cannot subscript object of type <em>what</em>, exactly? 😄</p>
 <p>Also, you can subscript <code>[1, 2, 3]</code>, right?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/annotations/literal.md</code>:333 on 2025-11-18 16:53</div>
             <div class="timeline-body"><p>that seems like a confusing diagnostic -- you <em>can</em> subscript lots of instances of <code>_SpecialForm</code> in type expressions, just not this specific instance. Maybe something like this?</p>
-<pre><code class="language-suggestion"># error: [invalid-type-form] &quot;Invalid subscript of object of type `_SpecialForm` in a type expression&quot;
+<pre><code># error: [invalid-type-form] &quot;Invalid subscript of object of type `_SpecialForm` in a type expression&quot;
 </code></pre>
 </div>
         </div>
@@ -604,7 +604,7 @@ bokeh (https://github.com/bokeh/bokeh)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/annotations/invalid.md</code>:102 on 2025-11-18 17:08</div>
-            <div class="timeline-body"><p>That's because it's a partial match on the message string, it's not the full message; I didn't feel like writing out the full types :)</p>
+            <div class="timeline-body"><p>That&#x27;s because it&#x27;s a partial match on the message string, it&#x27;s not the full message; I didn&#x27;t feel like writing out the full types :)</p>
 <p>I can include the full message, or at least enough to make it less confusing.</p>
 <blockquote>
 <p>Also, you can subscript <code>[1, 2, 3]</code>, right?</p>
@@ -622,19 +622,19 @@ bokeh (https://github.com/bokeh/bokeh)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @carljm on 2025-11-18 17:56</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/carljm">@carljm</a> on 2025-11-18 17:56</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @carljm on 2025-11-18 17:56</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/carljm">@carljm</a> on 2025-11-18 17:56</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-18 18:27</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
@@ -661,10 +661,10 @@ bokeh (https://github.com/bokeh/bokeh)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @carljm on 2025-11-18 18:43</div>
+            <div class="event">Merged by <a href="https://github.com/carljm">@carljm</a> on 2025-11-18 18:43</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2025-11-18 18:43</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2025-11-18 18:43</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-11-18 18:49</div>
@@ -672,7 +672,7 @@ bokeh (https://github.com/bokeh/bokeh)
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:17:21 UTC
+        Synced at 2026-01-20 19:20:47 UTC
     </footer>
 </body>
 </html>

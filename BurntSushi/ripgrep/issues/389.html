@@ -23,11 +23,11 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/crumblingstatue">@crumblingstatue</a></div>
-            <div class="timeline-body"><pre><code>$ echo '-2' | rg -w '\-2' # rg yields no results
-$ echo '-2' | grep -w '\-2' # grep (and git grep) matches
+            <div class="timeline-body"><pre><code>$ echo &#x27;-2&#x27; | rg -w &#x27;\-2&#x27; # rg yields no results
+$ echo &#x27;-2&#x27; | grep -w &#x27;\-2&#x27; # grep (and git grep) matches
 -2
 </code></pre>
-<p>Not sure if this is intentional or not, but it did surprise me that I didn't find what I was looking for when searching my codebase with ripgrep, and I had to resort to git-grep.</p>
+<p>Not sure if this is intentional or not, but it did surprise me that I didn&#x27;t find what I was looking for when searching my codebase with ripgrep, and I had to resort to git-grep.</p>
 <p>I used <code>-w</code> because I was specifically looking for the value <code>-2</code>, and not e.g. <code>-24</code>.</p>
 <p>Using <code>ripgrep 0.4.0</code>.</p>
 </div>
@@ -45,21 +45,21 @@ $ echo '-2' | grep -w '\-2' # grep (and git grep) matches
        and the underscore. This option has no effect if -x is also specified.
 </code></pre>
 <p>The key part is &quot;... either be <strong>at the beginning of the line</strong>, or preceded by a non-word constituent character.&quot; ripgrep currently implements the <code>-w</code> flag by translating the given <code>pattern</code> to <code>\b(?:pattern)\b</code>, but it looks like grep actually does <code>(?:^|\b)(?:pattern)(?:$|\b)</code>. I guess ripgrep should do that as well.</p>
-<p>If my hypothesis is correct, then <code>echo ' -2' | grep -w -e '-2'</code> should return nothing. This is because neither <code> </code> nor <code>-</code> match <code>\w</code>, and therefore, <code>\b</code> shouldn't match. Interestingly, it does return a match:</p>
-<pre><code>$ echo ' -2' | grep -w -e '-2'
+<p>If my hypothesis is correct, then <code>echo &#x27; -2&#x27; | grep -w -e &#x27;-2&#x27;</code> should return nothing. This is because neither <code> </code> nor <code>-</code> match <code>\w</code>, and therefore, <code>\b</code> shouldn&#x27;t match. Interestingly, it does return a match:</p>
+<pre><code>$ echo &#x27; -2&#x27; | grep -w -e &#x27;-2&#x27;
  -2
 </code></pre>
 <p>While the equivalent ripgrep command does not:</p>
-<pre><code>$ echo ' -2' | rg -e '(^|\b)-2($|\b)'
+<pre><code>$ echo &#x27; -2&#x27; | rg -e &#x27;(^|\b)-2($|\b)&#x27;
 </code></pre>
 <p>Interestingly, the same grep command does not either:</p>
-<pre><code>$ echo ' -2' | egrep -e '(^|\b)-2($|\b)'
+<pre><code>$ echo &#x27; -2&#x27; | egrep -e &#x27;(^|\b)-2($|\b)&#x27;
 </code></pre>
 <p>This has to mean that my interpretation of <code>-w</code> is wrong.</p>
-<p>Re-reading it, it now seems clearer to me that it isn't actually using word boundary assertions, since it says &quot;preceded by a non-word constituent character&quot; but doesn't say anything about the first letter of the match.</p>
+<p>Re-reading it, it now seems clearer to me that it isn&#x27;t actually using word boundary assertions, since it says &quot;preceded by a non-word constituent character&quot; but doesn&#x27;t say anything about the first letter of the match.</p>
 <p>Looking at the source of GNU grep, I spotted this:</p>
 <pre><code>  /* In the match_words and match_lines cases, we use a different pattern
-     for the DFA matcher that will quickly throw out cases that won't work.
+     for the DFA matcher that will quickly throw out cases that won&#x27;t work.
      Then if DFA succeeds we do some hairy stuff using the regex matcher
      to decide whether the match should really count. */
   if (match_words || match_lines)
@@ -73,34 +73,34 @@ $ echo '-2' | grep -w '\-2' # grep (and git grep) matches
       static char const word_beg_bk[] = &quot;\\(^\\|[^[:alnum:]_]\\)\\(&quot;;
       static char const word_end_bk[] = &quot;\\)\\([^[:alnum:]_]\\|$\\)&quot;;
 </code></pre>
-<p>Which is interesting and confirms my suspicion that <code>\b</code> isn't actually being used to implement <code>-w</code>.</p>
-<hr />
+<p>Which is interesting and confirms my suspicion that <code>\b</code> isn&#x27;t actually being used to implement <code>-w</code>.</p>
+<hr>
 <p>I will need to think on this more to figure out what to do. In the meantime, you could, depending on your use case, work-around this by:</p>
-<pre><code>$ echo ' -2' | rg -e '(^|\W)-2($|\W)'
+<pre><code>$ echo &#x27; -2&#x27; | rg -e &#x27;(^|\W)-2($|\W)&#x27;
 1: -2
 </code></pre>
-<p>(This isn't a full solution though, since your colors will be messed up by including the surrounding non-word characters.)</p>
+<p>(This isn&#x27;t a full solution though, since your colors will be messed up by including the surrounding non-word characters.)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2017-03-01 13:21</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-01 13:21</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Different word boundary behavior from grep/git-grep" to "Different -w behavior from grep/git-grep" by @crumblingstatue on 2017-03-01 13:41</div>
+            <div class="event">Renamed from &quot;Different word boundary behavior from grep/git-grep&quot; to &quot;Different -w behavior from grep/git-grep&quot; by <a href="https://github.com/crumblingstatue">@crumblingstatue</a> on 2017-03-01 13:41</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/crumblingstatue">@crumblingstatue</a> on 2017-03-01 13:54</div>
             <div class="timeline-body"><blockquote>
-<p>Re-reading it, it now seems clearer to me that it isn't actually using word boundary assertions, since it says &quot;preceded by a non-word constituent character&quot; <em>but doesn't say anything about the first letter of the match</em>.</p>
+<p>Re-reading it, it now seems clearer to me that it isn&#x27;t actually using word boundary assertions, since it says &quot;preceded by a non-word constituent character&quot; <em>but doesn&#x27;t say anything about the first letter of the match</em>.</p>
 </blockquote>
-<p>I think that's the key point. The match itself can contain both word and non-word characters. It's the surrounding context that matters. That way, you can intuitively match expressions like <code>2 - 2</code>, and it will only match that, and not e.g. <code>42 - 24</code>.</p>
+<p>I think that&#x27;s the key point. The match itself can contain both word and non-word characters. It&#x27;s the surrounding context that matters. That way, you can intuitively match expressions like <code>2 - 2</code>, and it will only match that, and not e.g. <code>42 - 24</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">libripgrep</span> added by @BurntSushi on 2017-03-12 20:53</div>
+            <div class="event">Label <span class="label">libripgrep</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-12 20:53</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "libripgrep" by @BurntSushi on 2017-03-12 20:53</div>
+            <div class="event">Added to milestone &quot;libripgrep&quot; by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-12 20:53</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-06-30 13:49</div>
@@ -108,12 +108,12 @@ $ echo '-2' | grep -w '\-2' # grep (and git grep) matches
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2018-08-20 11:10</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-20 11:10</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:42:05 UTC
+        Synced at 2026-01-20 18:48:03 UTC
     </footer>
 </body>
 </html>

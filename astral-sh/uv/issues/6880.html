@@ -25,11 +25,11 @@
             <div class="timeline-header"><a href="https://github.com/thepowerfuldeez">@thepowerfuldeez</a></div>
             <div class="timeline-body"><p>Hi! Is there functionality to ignore dependencies if they are already exist in the system python?
 I am using <code>nvcr.io/nvidia/pytorch:24.08-py3</code> docker image which has <code>pytorch==2.5.0a0+872d972e41.nv24.08</code> installed</p>
-<p>I followed guide from <a href="https://docs.astral.sh/uv/guides/integration/docker/#intermediate-layers">here</a> to enable system python via <code>UV_SYSTEM_PYTHON=1</code> and I have <code>pyproject.toml</code> that includes packages that I've put from requirements.txt and made <code>uv lock</code>.</p>
-<p>But now I see that it's been resolved with <code>torch==2.4.0</code> and when I run <code>uv sync</code> my pytorch gets downgraded to <code>2.4.0</code> which is unexpected.
+<p>I followed guide from <a href="https://docs.astral.sh/uv/guides/integration/docker/#intermediate-layers">here</a> to enable system python via <code>UV_SYSTEM_PYTHON=1</code> and I have <code>pyproject.toml</code> that includes packages that I&#x27;ve put from requirements.txt and made <code>uv lock</code>.</p>
+<p>But now I see that it&#x27;s been resolved with <code>torch==2.4.0</code> and when I run <code>uv sync</code> my pytorch gets downgraded to <code>2.4.0</code> which is unexpected.
 I have tried to manually remove all pytorch dependencies from lockfile and run <code>uv sync</code> from that state, but for some reason now it suceeds with installing only 4 of 126 packages (and they are just file packages <code>from file://...</code> defined in pyproject.toml)
-I've tried using <code>uv sync --frozen</code> <code>uv sync --locked</code> and tried creating <code>uv sync</code> with different variations but haven't suceeded yet. To be frank <code>pip install -r requirements.txt</code> would also downgrade my <code>torch</code> unless I make <code>pip freeze &gt; requirements.txt</code> and install with <code>-r --no-deps</code> but this is not favorable.</p>
-<p>I generally lack understanding of such intricacies and I've noticed that other people stumble with flash-attn installation or CUDA extensions. I wonder what's the best way to handle such conflicts?
+I&#x27;ve tried using <code>uv sync --frozen</code> <code>uv sync --locked</code> and tried creating <code>uv sync</code> with different variations but haven&#x27;t suceeded yet. To be frank <code>pip install -r requirements.txt</code> would also downgrade my <code>torch</code> unless I make <code>pip freeze &gt; requirements.txt</code> and install with <code>-r --no-deps</code> but this is not favorable.</p>
+<p>I generally lack understanding of such intricacies and I&#x27;ve noticed that other people stumble with flash-attn installation or CUDA extensions. I wonder what&#x27;s the best way to handle such conflicts?
 Thank you very much for modern replacement of pip!</p>
 </div>
         </div>
@@ -52,33 +52,33 @@ torch      ------------------------------ 33.03 MB/797.23 MB
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-01 15:54</div>
-            <div class="timeline-body"><p>This doesn't work today with <code>uv sync</code> or <code>uv lock</code> -- it won't respect existing environments. The lower-level <code>uv pip</code> APIs do, though. You can run <code>uv pip install</code> with an active virtual environment, and it will retain existing versions of PyTorch, if they're already installed.</p>
+            <div class="timeline-body"><p>This doesn&#x27;t work today with <code>uv sync</code> or <code>uv lock</code> -- it won&#x27;t respect existing environments. The lower-level <code>uv pip</code> APIs do, though. You can run <code>uv pip install</code> with an active virtual environment, and it will retain existing versions of PyTorch, if they&#x27;re already installed.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-09-01 15:54</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-01 15:54</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/thepowerfuldeez">@thepowerfuldeez</a> on 2024-09-01 17:31</div>
             <div class="timeline-body"><p>@charliermarsh how do I respect pyproject.toml and use project setup features? I thought of switching to uv as a project management tool (similar to poetry or rye if that matter). Will <code>uv pip install -r pyproject.toml</code> work?
-What's the proposed approach for project management for ML workflows? This is highly requested imo, would glad to have clear guide :)</p>
+What&#x27;s the proposed approach for project management for ML workflows? This is highly requested imo, would glad to have clear guide :)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-01 17:43</div>
-            <div class="timeline-body"><p>Yeah <code>uv pip install -r pyproject.toml</code> should work just fine. In general, our goal is for folks to use the &quot;higher-level&quot; project APIs (<code>uv lock</code>, <code>uv sync</code>, etc.). But in this case, if you're using an nvidia image that has packages pre-installed, it won't play correctly with <code>uv lock</code> and <code>uv sync</code>. So if you want to build atop that base environment, you'll need to use the &quot;lower-level&quot; <code>uv pip</code> APIs.</p>
+            <div class="timeline-body"><p>Yeah <code>uv pip install -r pyproject.toml</code> should work just fine. In general, our goal is for folks to use the &quot;higher-level&quot; project APIs (<code>uv lock</code>, <code>uv sync</code>, etc.). But in this case, if you&#x27;re using an nvidia image that has packages pre-installed, it won&#x27;t play correctly with <code>uv lock</code> and <code>uv sync</code>. So if you want to build atop that base environment, you&#x27;ll need to use the &quot;lower-level&quot; <code>uv pip</code> APIs.</p>
 <p>E.g., activate that virtual environment, then run <code>uv pip install -r pyproject.toml</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/thepowerfuldeez">@thepowerfuldeez</a> on 2024-09-03 09:16</div>
-            <div class="timeline-body"><p>@charliermarsh This doesn't work
+            <div class="timeline-body"><p>@charliermarsh This doesn&#x27;t work
 I have tried</p>
 <pre><code>&gt; uv venv --python-preference only-system --system-site-packages
 source .venv/bin/activate
 uv pip install -r pyproject.toml
 </code></pre>
-<p>It still installs torch==2.4.0 even though it's not in the dependencies of pyproject.toml</p>
+<p>It still installs torch==2.4.0 even though it&#x27;s not in the dependencies of pyproject.toml</p>
 <p>I verified that inside this venv torch is installed</p>
 </div>
         </div>
@@ -90,7 +90,7 @@ uv pip install -r pyproject.toml
 # a different version.
 override-dependencies = [&quot;torch==2.5.0a0+872d972e41.nv24.08&quot;]
 </code></pre>
-<p>but it can't be resolved</p>
+<p>but it can&#x27;t be resolved</p>
 <pre><code>× No solution found when resolving dependencies:
   ╰─▶ Because there is no version of torch==2.5.0a0+872d972e41.nv24.8 and accelerate==0.33.0 depends on torch==2.5.0a0+872d972e41.nv24.8, we can conclude that accelerate==0.33.0 cannot be used.
 </code></pre>
@@ -98,7 +98,7 @@ override-dependencies = [&quot;torch==2.5.0a0+872d972e41.nv24.08&quot;]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-03 12:46</div>
-            <div class="timeline-body"><p>@thepowerfuldeez -- If you're trying to use packages from the system Python, you'll need to use <code>uv pip install --system -r pyproject.toml</code>, and avoid creating a virtual environment at all. Can you try that?</p>
+            <div class="timeline-body"><p>@thepowerfuldeez -- If you&#x27;re trying to use packages from the system Python, you&#x27;ll need to use <code>uv pip install --system -r pyproject.toml</code>, and avoid creating a virtual environment at all. Can you try that?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -108,18 +108,18 @@ override-dependencies = [&quot;torch==2.5.0a0+872d972e41.nv24.08&quot;]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-03 14:11</div>
-            <div class="timeline-body"><p>Unfortunately yes. We'll need to think on how to solve this properly.</p>
+            <div class="timeline-body"><p>Unfortunately yes. We&#x27;ll need to think on how to solve this properly.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-03 14:12</div>
-            <div class="timeline-body"><p>I'm gonna leave the issue open but might tweak the title and add some more details on the underlying problem, if that's ok.</p>
+            <div class="timeline-body"><p>I&#x27;m gonna leave the issue open but might tweak the title and add some more details on the underlying problem, if that&#x27;s ok.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/awoimbee">@awoimbee</a> on 2024-09-04 09:41</div>
-            <div class="timeline-body"><p>I had the same issue with poetry some time ago: https://github.com/python-poetry/poetry/issues/6035 (resolved by https://github.com/python-poetry/poetry/pull/8359).</p>
-<p>Note <code>uv venv --system-site-packages</code> exists since #2101, but &quot;we won't take the system site packages into account in subsequent commands&quot;.</p>
+            <div class="timeline-body"><p>I had the same issue with poetry some time ago: <a href="https://github.com/python-poetry/poetry/issues/6035">python-poetry/poetry#6035</a> (resolved by <a href="https://github.com/python-poetry/poetry/pull/8359">python-poetry/poetry#8359</a>).</p>
+<p>Note <code>uv venv --system-site-packages</code> exists since #2101, but &quot;we won&#x27;t take the system site packages into account in subsequent commands&quot;.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -129,7 +129,7 @@ override-dependencies = [&quot;torch==2.5.0a0+872d972e41.nv24.08&quot;]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-21 23:21</div>
-            <div class="timeline-body"><p>Yeah. The system packages aren't taken into account.</p>
+            <div class="timeline-body"><p>Yeah. The system packages aren&#x27;t taken into account.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -144,12 +144,12 @@ override-dependencies = [&quot;torch==2.5.0a0+872d972e41.nv24.08&quot;]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-07 20:32</div>
-            <div class="timeline-body"><p>I think it's a bit different... We don't even provide a way for users to tell us to look at already-installed packages, much less system packages. Whereas #4466 is about respecting <code>system-site-packags</code>.</p>
+            <div class="timeline-body"><p>I think it&#x27;s a bit different... We don&#x27;t even provide a way for users to tell us to look at already-installed packages, much less system packages. Whereas #4466 is about respecting <code>system-site-packags</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-07 21:59</div>
-            <div class="timeline-body"><p>@charliermarsh Could you open an issue that describes what change would be needed for this issue? (even if it's brief)</p>
+            <div class="timeline-body"><p>@charliermarsh Could you open an issue that describes what change would be needed for this issue? (even if it&#x27;s brief)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -165,7 +165,7 @@ Something like <code>UV_SYSTEM_PYTHON=1 uv sync --respect-system-packages</code>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-09 14:56</div>
-            <div class="timeline-body"><p>Yeah we want to solve that problem, but it's not trivial.</p>
+            <div class="timeline-body"><p>Yeah we want to solve that problem, but it&#x27;s not trivial.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -175,15 +175,15 @@ Something like <code>UV_SYSTEM_PYTHON=1 uv sync --respect-system-packages</code>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/awoimbee">@awoimbee</a> on 2025-01-13 10:00</div>
-            <div class="timeline-body"><p>Just to help ppl working with containers, here's the solution I found some time ago:
+            <div class="timeline-body"><p>Just to help ppl working with containers, here&#x27;s the solution I found some time ago:
 I use use <code>FROM docker.io/pytorch/pytorch</code> and I just give the conda env to uv via <code>UV_PROJECT_ENVIRONMENT=/opt/conda</code>.
-<code>uv</code> has its venv with torch so it's happy and doesn't reinstall it.</p>
+<code>uv</code> has its venv with torch so it&#x27;s happy and doesn&#x27;t reinstall it.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:26:43 UTC
+        Synced at 2026-01-20 19:33:30 UTC
     </footer>
 </body>
 </html>

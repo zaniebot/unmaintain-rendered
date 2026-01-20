@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>Feature request: Add support for multiple required arguments, e.g. [-u <mode> <file> <mime>]</h1>
+    <h1>Feature request: Add support for multiple required arguments, e.g. [-u   ]</h1>
 
     <div class="meta">
         <span class="state-icon state-closed"></span>
@@ -24,8 +24,8 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Byron">@Byron</a></div>
             <div class="timeline-body"><p>I need to support an optional argument like the one noted in the subject, but was unable to achieve this. Apparently there is no support for multiple arguments of a single flag. <code>docopt</code> can do this though, and I believe its a useful feature to have.</p>
-<p>A workaround I tried was to use the <code>Arg::requires()</code> method to enforce flags to appear together. However, a doubly-linked requires definition doesn't seem to work. For example, in the following excerpt I want <code>-u</code> to appear with <code>-f</code> and vice-versa.</p>
-<pre><code class="language-bash">➜  google-apis-rs git:(clap) ✗ make groupsmigration1-cli-cargo ARGS=&quot;run -- archive insert groupid -h&quot;
+<p>A workaround I tried was to use the <code>Arg::requires()</code> method to enforce flags to appear together. However, a doubly-linked requires definition doesn&#x27;t seem to work. For example, in the following excerpt I want <code>-u</code> to appear with <code>-f</code> and vice-versa.</p>
+<pre><code>➜  google-apis-rs git:(clap) ✗ make groupsmigration1-cli-cargo ARGS=&quot;run -- archive insert groupid -h&quot;
 cd gen/groupsmigration1-cli &amp;&amp; cargo run -- archive insert groupid -h
      Running `target/debug/groupsmigration1 archive insert groupid -h`
 groupsmigration1-archive-insert
@@ -48,7 +48,7 @@ POSITIONAL ARGUMENTS:
     group-id    The group ID
 </code></pre>
 <p>In code, this looks like this (example is manufactured, and not actual code, might not compile)</p>
-<pre><code class="language-Rust">let mut uarg = Arg::with_name(&quot;u&quot;).required(false).takes_value(true);
+<pre><code>let mut uarg = Arg::with_name(&quot;u&quot;).required(false).takes_value(true);
 uarg = uarg.requires(&quot;file&quot;);
 farg = Arg::with_name(&quot;file&quot;)
            .short(&quot;f&quot;)
@@ -57,7 +57,7 @@ farg = Arg::with_name(&quot;file&quot;)
            .takes_value(true));
 </code></pre>
 <p>Maybe I am doing it wrong though. The code above results in runtime errors like this:</p>
-<pre><code class="language-bash">➜  google-apis-rs git:(clap) ✗ make groupsmigration1-cli-cargo ARGS=&quot;run -- archive insert groupid -u simple -f file&quot;
+<pre><code>➜  google-apis-rs git:(clap) ✗ make groupsmigration1-cli-cargo ARGS=&quot;run -- archive insert groupid -u simple -f file&quot;
 cd gen/groupsmigration1-cli &amp;&amp; cargo run -- archive insert groupid -u simple -f file
      Running `target/debug/groupsmigration1 archive insert groupid -u simple -f file`
 One or more required arguments were not supplied
@@ -70,38 +70,38 @@ Thanks for your help !</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../Byron/google-apis-rs/issues/92.html">Byron/google-apis-rs#92</a> on 2015-04-29 16:28</div>
+            <div class="event">Referenced in <a>Byron/google-apis-rs#92</a> on 2015-04-29 16:28</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-04-29 18:38</div>
-            <div class="timeline-body"><p>Ok, I'll have look at how best (most ergonomically) do this. In the mean time, the <code>requires()</code> is correct. Here's what I just tested (using <code>Arg::from_usage()</code> just for brevity)</p>
-<pre><code class="language-rust">let modes = [&quot;resumable&quot;, &quot;simple&quot;];
+            <div class="timeline-body"><p>Ok, I&#x27;ll have look at how best (most ergonomically) do this. In the mean time, the <code>requires()</code> is correct. Here&#x27;s what I just tested (using <code>Arg::from_usage()</code> just for brevity)</p>
+<pre><code>let modes = [&quot;resumable&quot;, &quot;simple&quot;];
 let _ = App::new(&quot;app&quot;)
-                  .arg(Arg::from_usage(&quot;-u [mode] 'the mode'&quot;).possible_values(&amp;modes).requires(&quot;file&quot;))
-                  .arg(Arg:from_usage(&quot;-f [file] 'the file'&quot;).requires(&quot;mode&quot;))
-                  .arg_from_usage(&quot;&lt;group-id&gt; 'the group id'&quot;)
+                  .arg(Arg::from_usage(&quot;-u [mode] &#x27;the mode&#x27;&quot;).possible_values(&amp;modes).requires(&quot;file&quot;))
+                  .arg(Arg:from_usage(&quot;-f [file] &#x27;the file&#x27;&quot;).requires(&quot;mode&quot;))
+                  .arg_from_usage(&quot;&lt;group-id&gt; &#x27;the group id&#x27;&quot;)
                   .get_matches();
 </code></pre>
 <p>This works by if the user does a <code>-f</code> they must also do <code>-u</code> and vice versa. And <code>group-id</code> is required regardless.</p>
-<p>Also, in ref to your last statement, that's exactly what I plan with #82 :+1: It does this minimally right now (i.e. based off your current usage in the example, <code>-f</code> and <code>&lt;group-id&gt;</code> are required (it doesn't list <code>-u</code> because it already matched that). Come to think of it, what does the definition of the <code>&lt;group-id&gt;</code> look like? that may be the issue you're experiencing.</p>
+<p>Also, in ref to your last statement, that&#x27;s exactly what I plan with #82 :+1: It does this minimally right now (i.e. based off your current usage in the example, <code>-f</code> and <code>&lt;group-id&gt;</code> are required (it doesn&#x27;t list <code>-u</code> because it already matched that). Come to think of it, what does the definition of the <code>&lt;group-id&gt;</code> look like? that may be the issue you&#x27;re experiencing.</p>
 <p>But I plan on making it much clearer in the very near future.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Byron">@Byron</a> on 2015-04-29 19:23</div>
             <div class="timeline-body"><p>Thanks for much for having a look ! I will try that once again, tomorrow (<a href="https://github.com/Byron/google-apis-rs/issues/81">note to self</a>). Must have been some silly mistake on my side, amplified by #82 - if it would tell you the possible values of the required flag, it would have been clear which name to put there.
-'<group-id>' is just required and has no flag. <code>takes_value(true)</code> might also be called on it - but I don't know for sure as the code that does it is <a href="https://github.com/Byron/google-apis-rs/blob/clap/src/mako/cli/lib/argparse.mako#L260">this one</a>.</p>
-<p>I will be working like a maniac until 15th of May, and am sure the few remaining kinks will be etched out  until then. Generally <code>clap</code> is great, so are the docs ... and you even do videos :) ! Well done - I'd be surprised if <code>clap</code> wouldn't become the defacto standard command-line parser for Rust.</p>
+&#x27;&#x27; is just required and has no flag. <code>takes_value(true)</code> might also be called on it - but I don&#x27;t know for sure as the code that does it is <a href="https://github.com/Byron/google-apis-rs/blob/clap/src/mako/cli/lib/argparse.mako#L260">this one</a>.</p>
+<p>I will be working like a maniac until 15th of May, and am sure the few remaining kinks will be etched out  until then. Generally <code>clap</code> is great, so are the docs ... and you even do videos :) ! Well done - I&#x27;d be surprised if <code>clap</code> wouldn&#x27;t become the defacto standard command-line parser for Rust.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">feature request</span> added by @kbknapp on 2015-04-30 01:55</div>
+            <div class="event">Label <span class="label">feature request</span> added by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-04-30 01:55</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/89.html">clap-rs/clap#89</a> on 2015-04-30 07:28</div>
+            <div class="event">Referenced in <a>clap-rs/clap#89</a> on 2015-04-30 07:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @kbknapp on 2015-04-30 15:15</div>
+            <div class="event">Closed by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-04-30 15:15</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-04-30 15:16</div>
@@ -109,27 +109,27 @@ let _ = App::new(&quot;app&quot;)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @kbknapp on 2015-04-30 15:16</div>
+            <div class="event">Reopened by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-04-30 15:16</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @kbknapp on 2015-04-30 23:41</div>
+            <div class="event">Closed by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-04-30 23:41</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2015-05-01 02:25</div>
             <div class="timeline-body"><p>This is closed with v0.7.1 on crates.io</p>
-<p>See the new docs or #89 for details on the changes - it should help out! Also, I'm quite happy with the new smarter usage strings which take the current attempted usage as a template for what's required, not just the defaults.</p>
+<p>See the new docs or #89 for details on the changes - it should help out! Also, I&#x27;m quite happy with the new smarter usage strings which take the current attempted usage as a template for what&#x27;s required, not just the defaults.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Byron">@Byron</a> on 2015-05-02 07:43</div>
             <div class="timeline-body"><p>Thank you, this defintely works now. I could also verify that <code>-r foo bar baz</code> is working similarly to <code>-r foo -r bar -r baz</code>. Good work.
-Only the smarter usage strings didn't work for me yet, I have made <a href="https://github.com/kbknapp/clap-rs/issues/96">an issue</a> to show what I mean.</p>
+Only the smarter usage strings didn&#x27;t work for me yet, I have made <a href="https://github.com/kbknapp/clap-rs/issues/96">an issue</a> to show what I mean.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:46:19 UTC
+        Synced at 2026-01-20 19:56:04 UTC
     </footer>
 </body>
 </html>

@@ -26,15 +26,15 @@
             <div class="timeline-body"><p>Users are concerned that they might accidentally publish their private package to PyPI, thereby exposing company internals and their private source code.</p>
 <p>However, for this to happen, the user needs to call <code>uv publish</code> without an index option, while having credentials for PyPI set either in environment variables (and the private index credentials not set to those env vars) or in the keyring (without scoping to a package), and that token having the project in scope.</p>
 <p>As easiest protection, we recommend <strong>never generating a PyPI token scoped to all projects</strong>, only generating one that is matched to the specific, public project: Without a matching token, no accidental publishing can happen.</p>
-<hr />
-<p>The <code>Private :: Do Not Upload</code> prevent packages from being uploaded to PyPI (https://pypi.org/classifiers/). This is unergonomic: The classifiers are a system for metadata, not for configuration, they are not part of uv's docs and it doesn't have the discoverability of regular settings.</p>
+<hr>
+<p>The <code>Private :: Do Not Upload</code> prevent packages from being uploaded to PyPI (https://pypi.org/classifiers/). This is unergonomic: The classifiers are a system for metadata, not for configuration, they are not part of uv&#x27;s docs and it doesn&#x27;t have the discoverability of regular settings.</p>
 <p>The most evident idea for solving this is <code>tool.uv.publish</code>:</p>
 <pre><code>[tool.uv]
 private = true
 </code></pre>
-<p>Unfortunately, this doesn't actually offer reliable protection: It only works when the pyproject.toml is present (we currently don't require checkouts for <code>uv publish</code>) and it doesn't work with twine or any other publishing tool.</p>
+<p>Unfortunately, this doesn&#x27;t actually offer reliable protection: It only works when the pyproject.toml is present (we currently don&#x27;t require checkouts for <code>uv publish</code>) and it doesn&#x27;t work with twine or any other publishing tool.</p>
 <p>The second idea is translating this to <code>classifiers = [&quot;Private :: Do Not Upload&quot;]</code>. Unfortunately, PEP 621 forbids this, it requires that we must not append to static parts of <code>[project]</code> when building the wheel and source dists. This is needed for the ability to read <code>pyproject.toml</code> without a build. There is an escape hatch that requires explicitly declaring specifiers as dynamic, we set the actual classifier on build depending on the value of <code>tool.uv.private</code>, i.e., if we see <code>tool.uv.private = true</code> we transform the metadata on build as if we had <code>classifiers = [&quot;Private :: Do Not Upload&quot;]</code>:</p>
-<pre><code class="language-toml">[project]
+<pre><code>[project]
 name = &quot;foo-internal&quot;
 version = &quot;0.1.0&quot;
 dynamic = [&quot;classifier&quot;]
@@ -43,31 +43,31 @@ dynamic = [&quot;classifier&quot;]
 private = true
 </code></pre>
 <p>Through <code>dynamic</code>, we are allowed to emit the following as METADATA:</p>
-<pre><code class="language-text">Metadata-Version: 2.3
+<pre><code>Metadata-Version: 2.3
 Name: foo-internal
 Version: 0.1.0
 Version: Private :: Do Not Upload
 </code></pre>
 <p>Just setting <code>classifiers = [&quot;Private :: Do Not Upload&quot;]</code> is, unlike the above, self-documenting and more concise.</p>
-<hr />
-<p>Given all that we document that you shouldn't create unscoped tokens and that you can use <code>classifiers = [&quot;Private :: Do Not Upload&quot;]</code>.</p>
+<hr>
+<p>Given all that we document that you shouldn&#x27;t create unscoped tokens and that you can use <code>classifiers = [&quot;Private :: Do Not Upload&quot;]</code>.</p>
 <p>Note that we cannot handle e.g. a GitLab repository that is set to public accidentally. It falls into the domain of registry vendors to have guardrails (e.g. private-by-default registries when the status of the source is unknown)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">documentation</span> added by @konstin on 2024-11-03 20:37</div>
+            <div class="event">Label <span class="label">documentation</span> added by <a href="https://github.com/konstin">@konstin</a> on 2024-11-03 20:37</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/johnthagen">@johnthagen</a> on 2024-11-04 00:56</div>
-            <div class="timeline-body"><p>As OP of #8214, this isn't what I was hoping for but I can understand your rationale and the constraints on <code>[project]</code> metadata mandated outside the scope of uv.</p>
+            <div class="timeline-body"><p>As OP of #8214, this isn&#x27;t what I was hoping for but I can understand your rationale and the constraints on <code>[project]</code> metadata mandated outside the scope of uv.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-11-04 01:12</div>
             <div class="timeline-body"><blockquote>
-<p>As OP of #8214, this isn't what I was hoping for but I can understand your rationale and the constraints on <code>[project]</code> metadata mandated outside the scope of uv.</p>
+<p>As OP of #8214, this isn&#x27;t what I was hoping for but I can understand your rationale and the constraints on <code>[project]</code> metadata mandated outside the scope of uv.</p>
 </blockquote>
-<p>It might be worth leaving #8214 open to explore the possibility of adding support for <code>[tool.uv] private = true</code>. While PEP 621 forbids appending to static parts of <code>[project]</code>, I wonder if <code>uv</code> can make an exception only in this situation for better alignment with user's expectations and other package managers (e.g. cargo).</p>
+<p>It might be worth leaving #8214 open to explore the possibility of adding support for <code>[tool.uv] private = true</code>. While PEP 621 forbids appending to static parts of <code>[project]</code>, I wonder if <code>uv</code> can make an exception only in this situation for better alignment with user&#x27;s expectations and other package managers (e.g. cargo).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -85,7 +85,7 @@ Version: Private :: Do Not Upload
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>docs/guides/publish.md</code>:50 on 2024-11-06 15:21</div>
-            <div class="timeline-body"><p>The trouble with placing this section is that it's a negative advice, it's about not doing something rather than doing something. Users with private packages that don't get published at all aren't likely to read through the publish guide, but I haven't found a place they would come through either.</p>
+            <div class="timeline-body"><p>The trouble with placing this section is that it&#x27;s a negative advice, it&#x27;s about not doing something rather than doing something. Users with private packages that don&#x27;t get published at all aren&#x27;t likely to read through the publish guide, but I haven&#x27;t found a place they would come through either.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -94,8 +94,8 @@ Version: Private :: Do Not Upload
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/guides/publish.md</code>:65 on 2024-11-06 15:29</div>
-            <div class="timeline-body"><p>This doesn't quite make sense in the publishing guide, which is explicitly about how to publish your package. I guess I'll move towards having a publish concept document, but in the meantime, it can live here. It's a little awkward in the middle of this workflow, maybe it should be in <code>Preparing your project for packaging</code> as a <code>!!! tip</code>?</p>
-<p>Could you add a sentence at the top of this section which explains what a private package is and why you'd want one?</p>
+            <div class="timeline-body"><p>This doesn&#x27;t quite make sense in the publishing guide, which is explicitly about how to publish your package. I guess I&#x27;ll move towards having a publish concept document, but in the meantime, it can live here. It&#x27;s a little awkward in the middle of this workflow, maybe it should be in <code>Preparing your project for packaging</code> as a <code>!!! tip</code>?</p>
+<p>Could you add a sentence at the top of this section which explains what a private package is and why you&#x27;d want one?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -104,15 +104,15 @@ Version: Private :: Do Not Upload
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>docs/guides/publish.md</code>:65 on 2024-11-06 15:55</div>
-            <div class="timeline-body"><p>i moved it up again and changed word to &quot;internal&quot;, that's self-explanatory.</p>
+            <div class="timeline-body"><p>i moved it up again and changed word to &quot;internal&quot;, that&#x27;s self-explanatory.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-11-06 15:59</div>
             <div class="timeline-body"><blockquote>
-<p>It might be worth leaving https://github.com/astral-sh/uv/issues/8214 open to explore the possibility of adding support for [tool.uv] private = true. While PEP 621 forbids appending to static parts of [project], I wonder if uv can make an exception only in this situation for better alignment with user's expectations and other package managers (e.g. cargo).</p>
+<p>It might be worth leaving <a href="https://github.com/astral-sh/uv/issues/8214">astral-sh/uv#8214</a> open to explore the possibility of adding support for [tool.uv] private = true. While PEP 621 forbids appending to static parts of [project], I wonder if uv can make an exception only in this situation for better alignment with user&#x27;s expectations and other package managers (e.g. cargo).</p>
 </blockquote>
-<p>I think it's obvious but I'll spell it out explicitly: If <code>[project] private = true</code> or something similar gets added to https://packaging.python.org/en/latest/specifications/pyproject-toml/ and/or https://packaging.python.org/en/latest/specifications/core-metadata/, I'm in favor such a PEP getting accepted and we'll support that uv (and the less ergonomic <code>Private :: Do Not Upload</code> docs). Until that however, I think we've done as much as we can on uv's side, and I consider #8214 &quot;finished&quot; in the sense that we gave solid guidance for users (this PR) and it's not blocking stabilization anymore (https://github.com/astral-sh/uv/issues/7839). If there's other things you want to see discussed around publishing and avoiding that accidents that were not covered by #8214, please feel free to open a new issue!</p>
+<p>I think it&#x27;s obvious but I&#x27;ll spell it out explicitly: If <code>[project] private = true</code> or something similar gets added to https://packaging.python.org/en/latest/specifications/pyproject-toml/ and/or https://packaging.python.org/en/latest/specifications/core-metadata/, I&#x27;m in favor such a PEP getting accepted and we&#x27;ll support that uv (and the less ergonomic <code>Private :: Do Not Upload</code> docs). Until that however, I think we&#x27;ve done as much as we can on uv&#x27;s side, and I consider #8214 &quot;finished&quot; in the sense that we gave solid guidance for users (this PR) and it&#x27;s not blocking stabilization anymore (<a href="https://github.com/astral-sh/uv/issues/7839">astral-sh/uv#7839</a>). If there&#x27;s other things you want to see discussed around publishing and avoiding that accidents that were not covered by #8214, please feel free to open a new issue!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -121,7 +121,7 @@ Version: Private :: Do Not Upload
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/guides/publish.md</code>:18 on 2024-11-06 16:01</div>
-            <div class="timeline-body"><p>Sorry but I think this still needs an explanatory sentence to start since we're currently in the middle of telling someone how to setup their project <em>to</em> be published. For example:</p>
+            <div class="timeline-body"><p>Sorry but I think this still needs an explanatory sentence to start since we&#x27;re currently in the middle of telling someone how to setup their project <em>to</em> be published. For example:</p>
 <blockquote>
 <p>If you have internal packages that you do not want to be published, you can mark them as private with a classifier:</p>
 <p>...</p>
@@ -165,13 +165,13 @@ Version: Private :: Do Not Upload
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>docs/guides/publish.md</code>:18 on 2024-11-06 16:20</div>
-            <div class="timeline-body"><p>I don't think that level of phrasing matters here</p>
+            <div class="timeline-body"><p>I don&#x27;t think that level of phrasing matters here</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-06 16:22</div>
             <div class="timeline-body"><p>I defer to @zanieb entirely on the docs. Feel free to ignore my comments on that front.</p>
-<p>IMO it's okay to leave https://github.com/astral-sh/uv/issues/8214 open. I <em>can</em> imagine other ways for us to solve this problem that don't require standards. For example, we <em>could</em> error when <code>private = false</code> is set in a <code>pyproject.toml</code> and require publishing to take place in the context of a project by default or something like that. Or, if we have our own build backend, we can write this into the distribution somewhere, and check it on <code>uv publish</code>.</p>
+<p>IMO it&#x27;s okay to leave <a href="https://github.com/astral-sh/uv/issues/8214">astral-sh/uv#8214</a> open. I <em>can</em> imagine other ways for us to solve this problem that don&#x27;t require standards. For example, we <em>could</em> error when <code>private = false</code> is set in a <code>pyproject.toml</code> and require publishing to take place in the context of a project by default or something like that. Or, if we have our own build backend, we can write this into the distribution somewhere, and check it on <code>uv publish</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -190,7 +190,7 @@ Version: Private :: Do Not Upload
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>docs/guides/publish.md</code>:18 on 2024-11-06 16:29</div>
-            <div class="timeline-body"><p>Why would a guaranteed-to-fail misconfigured publish attempt be a security concern? If you're really that scared about external sites, then you need to block pypi on a network level as some orgs do, and before that users already shouldn't run <code>uv publish</code> locally if you care about such aspects.</p>
+            <div class="timeline-body"><p>Why would a guaranteed-to-fail misconfigured publish attempt be a security concern? If you&#x27;re really that scared about external sites, then you need to block pypi on a network level as some orgs do, and before that users already shouldn&#x27;t run <code>uv publish</code> locally if you care about such aspects.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -199,7 +199,7 @@ Version: Private :: Do Not Upload
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>docs/guides/publish.md</code>:19 on 2024-11-06 16:40</div>
-            <div class="timeline-body"><p>I mean, sure, but isn't saying that you need to read the manual to your registry to operate it securely both evident and outside of the scope of uv? I don't think anyone reads the section as keeping the package private when you switch your GitLab registry setting to public. (And the registry I checked start with private by default at least for private repos and have extra steps before switching it to public).</p>
+            <div class="timeline-body"><p>I mean, sure, but isn&#x27;t saying that you need to read the manual to your registry to operate it securely both evident and outside of the scope of uv? I don&#x27;t think anyone reads the section as keeping the package private when you switch your GitLab registry setting to public. (And the registry I checked start with private by default at least for private repos and have extra steps before switching it to public).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -208,12 +208,12 @@ Version: Private :: Do Not Upload
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/guides/publish.md</code>:19 on 2024-11-06 17:34</div>
-            <div class="timeline-body"><p>I don't think we need to talk about other indexes in depth here, but if we're going to recommend something we need to be clear about the caveats Just asking for something like &quot;When not publishing to PyPI, the classifier may or may not be respected.&quot;</p>
+            <div class="timeline-body"><p>I don&#x27;t think we need to talk about other indexes in depth here, but if we&#x27;re going to recommend something we need to be clear about the caveats Just asking for something like &quot;When not publishing to PyPI, the classifier may or may not be respected.&quot;</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/guides/publish.md</code>:18 on 2024-11-06 17:37</div>
-            <div class="timeline-body"><p>I mean, the package is still being sent to the host which is contrary to the expectation of a &quot;do not upload&quot; declaration. Their are users in the issue that have brought this up repeatedly. I don't quite understand the pushback on documenting this behavior. If the behavior was more obviously aligned with the expectations, I'd feel differently.</p>
+            <div class="timeline-body"><p>I mean, the package is still being sent to the host which is contrary to the expectation of a &quot;do not upload&quot; declaration. Their are users in the issue that have brought this up repeatedly. I don&#x27;t quite understand the pushback on documenting this behavior. If the behavior was more obviously aligned with the expectations, I&#x27;d feel differently.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -235,12 +235,12 @@ Version: Private :: Do Not Upload
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/guides/publish.md</code>:28 on 2024-11-06 18:29</div>
-            <div class="timeline-body"><p>I'm sorry to continue picking at this, but I'm earnestly confused by the language here. &quot;is used against PyPI&quot; doesn't quite make sense, the classifier is sent to all indexes and only PyPI is expected to act on it right? What does it mean to configure access to the uploaded packages on an alternative registry? I thought the goal here was to avoid upload and publish entirely — I'm confused that we're talking about access controls now.</p>
+            <div class="timeline-body"><p>I&#x27;m sorry to continue picking at this, but I&#x27;m earnestly confused by the language here. &quot;is used against PyPI&quot; doesn&#x27;t quite make sense, the classifier is sent to all indexes and only PyPI is expected to act on it right? What does it mean to configure access to the uploaded packages on an alternative registry? I thought the goal here was to avoid upload and publish entirely — I&#x27;m confused that we&#x27;re talking about access controls now.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/guides/publish.md</code>:18 on 2024-11-06 18:32</div>
-            <div class="timeline-body"><p>Aren't MITM attacks a valid concern? Another concern that comes to mind for me is that you accidentally upload the package to some other index. I just want to be clear about the behavior here since this is basically a &quot;security feature&quot;.</p>
+            <div class="timeline-body"><p>Aren&#x27;t MITM attacks a valid concern? Another concern that comes to mind for me is that you accidentally upload the package to some other index. I just want to be clear about the behavior here since this is basically a &quot;security feature&quot;.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -249,7 +249,7 @@ Version: Private :: Do Not Upload
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-11-06 20:05</div>
-            <div class="timeline-body"><p>Summary of the latest changes: I've shortened the explanation of <code>classifiers = [&quot;Private :: Do Not Upload&quot;]</code>: I see this option as a defense-in-depth, not something that you can rely on for specific behavior. There's also a note that this only affects pypi: Security and privacy of the overall source code and package handling in an organization are outside of what uv can do unfortunately (we're only a client, and we for example can't even tell if the page from a registry we're uploading to is private or public), so we try not to give a wrong impression how far this classifier goes.</p>
+            <div class="timeline-body"><p>Summary of the latest changes: I&#x27;ve shortened the explanation of <code>classifiers = [&quot;Private :: Do Not Upload&quot;]</code>: I see this option as a defense-in-depth, not something that you can rely on for specific behavior. There&#x27;s also a note that this only affects pypi: Security and privacy of the overall source code and package handling in an organization are outside of what uv can do unfortunately (we&#x27;re only a client, and we for example can&#x27;t even tell if the page from a registry we&#x27;re uploading to is private or public), so we try not to give a wrong impression how far this classifier goes.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -267,14 +267,14 @@ Version: Private :: Do Not Upload
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-06 21:04</div>
-            <div class="timeline-body"><p>I am fine with further discussion on #8214, though I think we're in agreement that the clearest path forward is an improvement at the Python standards-level.</p>
+            <div class="timeline-body"><p>I am fine with further discussion on #8214, though I think we&#x27;re in agreement that the clearest path forward is an improvement at the Python standards-level.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @konstin on 2024-11-07 08:41</div>
+            <div class="event">Merged by <a href="https://github.com/konstin">@konstin</a> on 2024-11-07 08:41</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @konstin on 2024-11-07 08:41</div>
+            <div class="event">Closed by <a href="https://github.com/konstin">@konstin</a> on 2024-11-07 08:41</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-11-07 08:41</div>
@@ -282,7 +282,7 @@ Version: Private :: Do Not Upload
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:40:26 UTC
+        Synced at 2026-01-20 19:49:09 UTC
     </footer>
 </body>
 </html>

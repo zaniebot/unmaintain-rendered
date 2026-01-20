@@ -23,11 +23,11 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/joamatab">@joamatab</a></div>
-            <div class="timeline-body"><h3>Question</h3>
-<h3>Summary</h3>
+            <div class="timeline-body">Question
+Summary
 <p>We’re seeing a large “cold start” penalty on <strong>macOS</strong> when running a minimal repro via <code>make test</code>. The <strong>second</strong> run is consistently much faster. This does <strong>not</strong> reproduce on Linux, and we also don’t see it when running the same package in <strong>miniconda</strong>.</p>
 <p>I’m trying to understand what in the <code>uv</code> environment on macOS could be making the first invocation so slow (import/bytecode compilation/linking/dylib validation/indexing/quarantine, etc.).</p>
-<h3>Repro</h3>
+Repro
 <ol>
 <li><code>uv sync</code> (fresh env)</li>
 <li><code>make test</code>  ← slow on first run</li>
@@ -38,46 +38,46 @@
 <p><code>make test</code> is the smallest repro to observe the behavior.
 <code>make test2</code> is the smallest repro to observe the behavior again after it has “warmed up”.</p>
 </blockquote>
-<h3>Observed timings</h3>
-<h4>macOS</h4>
+Observed timings
+macOS
 <ul>
 <li>~50 seconds on first run</li>
 <li>~10 seconds on second run</li>
 </ul>
-<h4>Linux</h4>
+Linux
 <ul>
 <li>~10 seconds on first run</li>
 <li>~10 seconds on second run</li>
 </ul>
-<h3>Expected</h3>
+Expected
 <p>Similar cold-start behavior across platforms, or at least no ~5x penalty on the first run on macOS.</p>
-<h3>Not observed in miniconda</h3>
-<p>Running the same package in a miniconda environment does <strong>not</strong> show this large first-run penalty.<br />
+Not observed in miniconda
+<p>Running the same package in a miniconda environment does <strong>not</strong> show this large first-run penalty.<br>
 Why would the macOS + <code>uv</code> environment exhibit this, but miniconda does not?</p>
-<h3>Questions</h3>
+Questions
 <ul>
 <li>Any known macOS-specific causes for a large first-run penalty with <code>uv</code> environments?</li>
 <li>Does <code>uv</code> do anything on first execution that could trigger expensive work on macOS (e.g., bytecode compilation strategy, shared library loading/validation, codesign/quarantine checks, Spotlight/AV scanning, etc.)?</li>
 <li>Any recommended debugging steps to pinpoint where the time is going (e.g., env vars, <code>uv</code> verbosity flags, tracing tools you recommend)?</li>
 </ul>
-<h3>Environment</h3>
+Environment
 <ul>
 <li>OS: macOS (repro), Linux (no repro)</li>
 <li>Tool: uv</li>
 <li>(I can add exact <code>uv --version</code>, Python version, and machine details if needed.)</li>
 </ul>
-<h3>Platform</h3>
+Platform
 <p>Darwin 25.2.0 arm64</p>
-<h3>Version</h3>
+Version
 <p>uv 0.9.22 (82a6a66b8 2026-01-06)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @joamatab on 2026-01-09 02:16</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/joamatab">@joamatab</a> on 2026-01-09 02:16</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2026-01-09 11:05</div>
-            <div class="timeline-body"><p>You already named the two prime suspects: Bytecode compilation and gateakeeper. You can test the first one by running the installation with <code>--bytecode-compile</code>, and the second one by deactivating gatekeeper for the directory (see e.g. https://nexte.st/docs/installation/macos/#gatekeeper, don't forget to restart). 40s is a lot though, could it be there's some library donwloading large artifacts on first run or doing something similarly slow?</p>
+            <div class="timeline-body"><p>You already named the two prime suspects: Bytecode compilation and gateakeeper. You can test the first one by running the installation with <code>--bytecode-compile</code>, and the second one by deactivating gatekeeper for the directory (see e.g. https://nexte.st/docs/installation/macos/#gatekeeper, don&#x27;t forget to restart). 40s is a lot though, could it be there&#x27;s some library donwloading large artifacts on first run or doing something similarly slow?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -91,7 +91,7 @@ Why would the macOS + <code>uv</code> environment exhibit this, but miniconda do
 If there are any uv-specific tracing flags, environment variables, or recommended macOS tools you’d suggest to pinpoint where those ~50 seconds are going, I’m happy to dig deeper and report back.</p>
 <p>See table below with a simplified package</p>
 <p>Summary Table: Cold Start Test Results (macOS)</p>
-<h3>Summary Table: Cold Start Test Results (macOS)</h3>
+Summary Table: Cold Start Test Results (macOS)
 <p>| Test  | Strategy                     | 1st Run | 2nd Run | Ratio | Bytecode Pre-compiled              |
 |-------|------------------------------|---------|---------|-------|------------------------------------|
 | test  | uv sync (baseline)            | 21.66s  | 1.51s   | 14×   | No                                 |
@@ -99,19 +99,19 @@ If there are any uv-specific tracing flags, environment variables, or recommende
 | test3 | uv run compileall .venv       | 19.42s  | 0.93s   | 21×   | Yes (post-sync)                    |
 | test4 | uv sync --compile-bytecode    | 20.65s  | 1.28s   | 16×   | Yes (during sync, ~3.1s overhead)  |
 | test5 | miniconda    | 1.88s  | 1.36s   | Same  |</p>
-<hr />
+<hr>
 <p>Key Findings</p>
 <ol>
 <li>Bytecode compilation is NOT the bottleneck - Pre-compiling .pyc files (test2, test3, test4) does not reduce the first-run time. The ~20s penalty persists regardless of whether bytecode is pre-compiled.</li>
 <li>CPU time vs wall time disparity - First run shows ~2.77s user + 0.67s sys = ~3.4s CPU time, but 21.66s wall time. This ~18s gap indicates the process is waiting on something external, not doing CPU work.</li>
 <li>Second run is consistently fast - All tests show sub-2s second runs with user+sys closely matching wall time, indicating no external blocking.</li>
-<li>Something is cached at the OS/system level between runs - The &quot;warming&quot; effect persists across different bytecode strategies, suggesting it's not Python-related but macOS-specific.</li>
+<li>Something is cached at the OS/system level between runs - The &quot;warming&quot; effect persists across different bytecode strategies, suggesting it&#x27;s not Python-related but macOS-specific.</li>
 </ol>
 <p>The large wall-time vs CPU-time gap (18+ seconds of waiting) strongly suggests macOS code signing/security verification on the many native extensions (numpy, scipy, pandas, matplotlib, klayout, etc.) that gdsfactory depends on.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "first run after `uv sync` is ~5x slower in MacOs; subsequent runs fast (not reproduced on Linux / miniconda)" to "first run after `uv sync` is ~20x slower in MacOs; subsequent runs fast (not reproduced on Linux / miniconda)" by @joamatab on 2026-01-09 15:57</div>
+            <div class="event">Renamed from &quot;first run after `uv sync` is ~5x slower in MacOs; subsequent runs fast (not reproduced on Linux / miniconda)&quot; to &quot;first run after `uv sync` is ~20x slower in MacOs; subsequent runs fast (not reproduced on Linux / miniconda)&quot; by <a href="https://github.com/joamatab">@joamatab</a> on 2026-01-09 15:57</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/joamatab">@joamatab</a> on 2026-01-09 15:57</div>
@@ -125,7 +125,7 @@ If there are any uv-specific tracing flags, environment variables, or recommende
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2026-01-09 16:00</div>
-            <div class="timeline-body"><p>Is the time spent in uv or in python code? For the format, you can use <code>-vvv</code> like zanie said, for the latter, I recommend starting the code with py-spy and see what's taking so much time.</p>
+            <div class="timeline-body"><p>Is the time spent in uv or in python code? For the format, you can use <code>-vvv</code> like zanie said, for the latter, I recommend starting the code with py-spy and see what&#x27;s taking so much time.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -133,7 +133,7 @@ If there are any uv-specific tracing flags, environment variables, or recommende
             <div class="timeline-body"><blockquote>
 <p>BTW: some GDSFactory Windows users have reported similar issues and we believe is related to windows defender</p>
 </blockquote>
-<p>Are you using the Defender endpoint product on macOS? That would be a very strong candidate as well; it's common for EDRs that do file scanning to introduce significant latency/runtime costs in development tools.</p>
+<p>Are you using the Defender endpoint product on macOS? That would be a very strong candidate as well; it&#x27;s common for EDRs that do file scanning to introduce significant latency/runtime costs in development tools.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -162,17 +162,17 @@ If there are any uv-specific tracing flags, environment variables, or recommende
 <li>macOS caches the validation result per-inode</li>
 <li>Same files = same inodes = instant validation</li>
 </ul>
-<hr />
+<hr>
 <p>Test Results Summary</p>
-<h3>Scenario Comparison (macOS)</h3>
+Scenario Comparison (macOS)
 <p>| Scenario                                   | 1st Run | 2nd Run | Notes                           |
 |--------------------------------------------|---------|---------|---------------------------------|
 | uv sync (default copy mode)                | 25.4s   | 1.5s    | New inodes, cold validation     |
 | uv sync --link-mode hardlink (cold cache)  | 25.4s   | 1.5s    | Cache is cold, still slow       |
 | uv sync --link-mode hardlink (warm cache)  | 5.1s    | 1.2s    | Shares cached validation        |
 | miniconda                                  | 1.5s    | 1.1s    | Already validated               |</p>
-<hr />
-<h3>Top Slow Packages (First Load)</h3>
+<hr>
+Top Slow Packages (First Load)
 <p>| Package | Time  | Files | Notes                |
 |---------|-------|-------|----------------------|
 | scipy   | 15.3s | 114   | Largest contributor  |
@@ -181,12 +181,12 @@ If there are any uv-specific tracing flags, environment variables, or recommende
 | klayout | 3.6s  | 21    |                      |
 | PIL     | 3.1s  | 8     |                      |
 | numpy   | 2.8s  | 19    |                      |</p>
-<hr />
+<hr>
 <p>Solution</p>
 <p>Use --link-mode hardlink and keep the cache warm:</p>
-<h1>In your shell profile or before first run:</h1>
+In your shell profile or before first run:
 <p>export UV_LINK_MODE=hardlink</p>
-<h1>Or per-command:</h1>
+Or per-command:
 <p>uv sync --link-mode hardlink</p>
 <p>This ensures:</p>
 <ol>
@@ -194,7 +194,7 @@ If there are any uv-specific tracing flags, environment variables, or recommende
 <li>Once any package is validated (in cache or .venv), all hardlinked copies are instantly validated</li>
 <li>Recreating .venv reuses the cached validation</li>
 </ol>
-<hr />
+<hr>
 <p>Remaining ~5s overhead</p>
 <p>The 5.1s &quot;warm cache&quot; first run vs 1.2s second run is due to:</p>
 <ul>
@@ -205,7 +205,7 @@ If there are any uv-specific tracing flags, environment variables, or recommende
 <p>This can be reduced with uv sync --link-mode hardlink --compile-bytecode.</p>
 <p>I added this</p>
 <pre><code>test6:
-	echo 'using uv sync --link-mode hardlink (SOLUTION: shares macOS dylib validation cache)'
+	echo &#x27;using uv sync --link-mode hardlink (SOLUTION: shares macOS dylib validation cache)&#x27;
 	rm -rf build .venv
 	uv sync --link-mode hardlink
 	time uv run --no-sync python mycspdk/sample1.py
@@ -220,7 +220,7 @@ If there are any uv-specific tracing flags, environment variables, or recommende
 <p>By default, uv copies files from cache to .venv/ (new inodes)</p>
 </blockquote>
 <p>Note we use reflinks or clones, not copies. This does get a new inode though.</p>
-<p>Switching to hardlinks seems appropriate, but note you'll lose copy-on-write semantics.</p>
+<p>Switching to hardlinks seems appropriate, but note you&#x27;ll lose copy-on-write semantics.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -232,9 +232,9 @@ If there are any uv-specific tracing flags, environment variables, or recommende
 <p>You can do that by running:</p>
 <pre><code>spctl developer-mode enable-terminal
 </code></pre>
-<p>and then going to <code>System Preferences &gt; Security &amp; Privacy &gt; Privacy &gt; Developer Tools</code> and enabling whatever tools you're running your uv commands through. I <em>believe</em> that will bypass any Gatekeeper checks on things like development binaries.</p>
-<p>For example, here's what a Developer Tools configuration might look like:</p>
-<p><img width="508" height="366" alt="Image" src="https://github.com/user-attachments/assets/45793d1b-c0fe-4cc5-a195-8d417958df2b" /></p>
+<p>and then going to <code>System Preferences &gt; Security &amp; Privacy &gt; Privacy &gt; Developer Tools</code> and enabling whatever tools you&#x27;re running your uv commands through. I <em>believe</em> that will bypass any Gatekeeper checks on things like development binaries.</p>
+<p>For example, here&#x27;s what a Developer Tools configuration might look like:</p>
+<p><img alt="Image" src="https://github.com/user-attachments/assets/45793d1b-c0fe-4cc5-a195-8d417958df2b"></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -243,7 +243,7 @@ If there are any uv-specific tracing flags, environment variables, or recommende
 <p>at least I can reduce the slowdown from ~20× to ~5×.</p>
 <p>I’m still puzzled why we don’t see this behavior on Linux; it’s been an interesting issue to dig into.</p>
 <p>Hi William.</p>
-<p>I tried but didn't improve the speed, thanks for the suggestion though</p>
+<p>I tried but didn&#x27;t improve the speed, thanks for the suggestion though</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -259,13 +259,13 @@ export UV_LINK_MODE=hardlink</p>
             <div class="timeline-body"><blockquote>
 <p>I’m still puzzled why we don’t see this behavior on Linux</p>
 </blockquote>
-<p>Linux doesn't have invasive security features like this.</p>
+<p>Linux doesn&#x27;t have invasive security features like this.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:33:49 UTC
+        Synced at 2026-01-20 19:41:29 UTC
     </footer>
 </body>
 </html>

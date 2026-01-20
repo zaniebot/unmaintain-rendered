@@ -23,20 +23,20 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sveinse">@sveinse</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>I have an issue running <code>uv sync</code> for a project that have circular dependencies in its optional extras, and where the dependencies refer to GitHub sources. It fails with &quot;Requirements contain conflicting URLs for package ... in all marker environments`.</p>
 <p>What happens is that the local package <code>pkgb</code> has an optional dependency to <code>pkga</code> with GH URL. <code>pkga</code> depends on <code>pkgb</code> on GH URL.</p>
 <p>Is there a simple way to circumvent this? Preferably in the sources and not by the installing user. Because <code>uv sync</code> is checking even on &quot;extra-less&quot; installs, every user installing this package from source will be hit with this issue.</p>
-<h3>Setup</h3>
+Setup
 <p>I have setup a package <code>pkga</code> which depend on <code>pkgb @git+https://github.com/sveinse/pkgb.git</code>. See repo https://github.com/sveinse/pkga/blob/main/pyproject.toml</p>
-<pre><code class="language-toml">[project]
+<pre><code>[project]
 name = &quot;pkga&quot;
 dependencies = [
     &quot;pkgb @git+https://github.com/sveinse/pkgb.git&quot;
 ]
 </code></pre>
 <p>The <code>pkgb</code> repo depends <strong>optionally</strong> to <code>pkga @git+https://github.com/sveinse/pkga.git</code>. See https://github.com/sveinse/pkgb/blob/main/pyproject.toml</p>
-<pre><code class="language-toml">[project]
+<pre><code>[project]
 name = &quot;pkgb&quot;
 dependencies = []
 
@@ -45,7 +45,7 @@ dev = [
     &quot;pkga @git+https://github.com/sveinse/pkga.git&quot;
 ]
 </code></pre>
-<h3>Repro</h3>
+Repro
 <ol>
 <li><code>git clone https://github.com/sveinse/pkgb.git</code></li>
 <li><code>uv sync --verbose</code>. See response below</li>
@@ -96,29 +96,29 @@ error: Requirements contain conflicting URLs for package `pkgb` in all marker en
 - C:\sveinse\uv-issue\pkgb
 - git+https://github.com/sveinse/pkgb.git
 </code></pre>
-<h3>Platform</h3>
+Platform
 <p>Win 11 x86</p>
-<h3>Version</h3>
+Version
 <p>uv 0.7.13 (62ed17b23 2025-06-12)</p>
-<h3>Python version</h3>
+Python version
 <p>Python 3.13.1</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @sveinse on 2025-06-21 22:12</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/sveinse">@sveinse</a> on 2025-06-21 22:12</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-22 13:53</div>
             <div class="timeline-body"><p>Why do you have a circular dependency, should instead one of the packages be broken into two to remove the cycle?</p>
 <p>One option would be to turn <code>dev</code> from an extra into a dependency group, which is not used in dependency resolution.</p>
-<p>You can use a dependency override (https://docs.astral.sh/uv/reference/settings/#override-dependencies) to force a specific URL, such as a local file URL, but it requires an absolute path for the <code>file:///</code> URL so it's somewhat suboptimal.</p>
+<p>You can use a dependency override (https://docs.astral.sh/uv/reference/settings/#override-dependencies) to force a specific URL, such as a local file URL, but it requires an absolute path for the <code>file:///</code> URL so it&#x27;s somewhat suboptimal.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sveinse">@sveinse</a> on 2025-06-22 19:16</div>
             <div class="timeline-body"><p>These are two packages that already exists and they used to work perfectly with pip. The optional dependency that creates the circular dependency is a little used extra option for validating the module during development.</p>
-<p>It was a great hint to move the dependency into a dependency-group, because that's what it really is. However this do not work with uv. It still fails.</p>
-<pre><code class="language-toml">[dependency-groups]
+<p>It was a great hint to move the dependency into a dependency-group, because that&#x27;s what it really is. However this do not work with uv. It still fails.</p>
+<pre><code>[dependency-groups]
 update = [
    &quot;pkga @git+https://github.com/sveinse/pkga.git&quot;
 ]
@@ -126,22 +126,22 @@ update = [
 [tool.uv]
 default-groups = []
 </code></pre>
-<p>That being said, pip has also stated to fail on this circular reference, both as extra and as group. So I'm inclined to think that this use case is moot. Need to find another way to specify this auxiliary dependency without breaking pip or uv.</p>
+<p>That being said, pip has also stated to fail on this circular reference, both as extra and as group. So I&#x27;m inclined to think that this use case is moot. Need to find another way to specify this auxiliary dependency without breaking pip or uv.</p>
 <p>PS! I wonder, would this construct work without the <code>@git</code> references?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-06-22 19:39</div>
+            <div class="event">Label <span class="label">bug</span> removed by <a href="https://github.com/konstin">@konstin</a> on 2025-06-22 19:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @konstin on 2025-06-22 19:39</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/konstin">@konstin</a> on 2025-06-22 19:39</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-22 19:41</div>
             <div class="timeline-body"><blockquote>
 <p>PS! I wonder, would this construct work without the <code>@git</code> references?</p>
 </blockquote>
-<p>uv accepts dependency cycles, but it requires that for each package (on each platform), there is only URL, be a file path, git or https. With the git reference, it can't tell that the project you're currently developing locally refers to the same project as the git URL and errors.</p>
+<p>uv accepts dependency cycles, but it requires that for each package (on each platform), there is only URL, be a file path, git or https. With the git reference, it can&#x27;t tell that the project you&#x27;re currently developing locally refers to the same project as the git URL and errors.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -150,12 +150,12 @@ default-groups = []
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @konstin on 2025-06-27 09:42</div>
+            <div class="event">Closed by <a href="https://github.com/konstin">@konstin</a> on 2025-06-27 09:42</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:31:52 UTC
+        Synced at 2026-01-20 19:39:07 UTC
     </footer>
 </body>
 </html>

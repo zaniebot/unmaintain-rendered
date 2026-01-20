@@ -23,16 +23,16 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/PCSwingle">@PCSwingle</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>I stumbled upon a scenario where running <code>ruff format --check .</code> finds all files formatted (despite one file being unformatted), but deleting <code>.ruff_cache</code> and then rerunning the same command finds one file to reformat (in this case the file in question is using single quotes instead of double quotes).</p>
-<p>Unfortunately, I discovered this bug inside a docker container that I was using for a project, and it runs a lot of very gnarly scripts; long story short, I haven't been able to reproduce it yet without fully running through my project (after ~30 minutes of trying).</p>
-<p>I'm willing to figure out an easier way to reproduce it (especially because I need ruff to work! although I could just run with no-cache), but I first wanted to check to make sure this is 100% a bug before I waste my time. Is there any scenario at all where running this direct sequence of commands:</p>
+<p>Unfortunately, I discovered this bug inside a docker container that I was using for a project, and it runs a lot of very gnarly scripts; long story short, I haven&#x27;t been able to reproduce it yet without fully running through my project (after ~30 minutes of trying).</p>
+<p>I&#x27;m willing to figure out an easier way to reproduce it (especially because I need ruff to work! although I could just run with no-cache), but I first wanted to check to make sure this is 100% a bug before I waste my time. Is there any scenario at all where running this direct sequence of commands:</p>
 <pre><code>ruff format --check .
 rm -r .ruff_cache
 ruff format --check .
 </code></pre>
-<p>should produce different results on the first and third command? (I haven't tested with <code>--no-cache</code> yet, but I can if that would be helpful). I have no relevant background processes or anything modifying files in the background. This is happening on a docker image based on <code>ubuntu:latest</code> on <code>ruff 0.11.6</code> and <code>python 3.12.3</code>.</p>
-<h3>Version</h3>
+<p>should produce different results on the first and third command? (I haven&#x27;t tested with <code>--no-cache</code> yet, but I can if that would be helpful). I have no relevant background processes or anything modifying files in the background. This is happening on a docker image based on <code>ubuntu:latest</code> on <code>ruff 0.11.6</code> and <code>python 3.12.3</code>.</p>
+Version
 <p>ruff 0.11.6</p>
 </div>
         </div>
@@ -40,25 +40,25 @@ ruff format --check .
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-25 06:16</div>
             <div class="timeline-body"><p>Hi @PCSwingle</p>
 <p>No, running <code>ruff format --check</code> twice should produce the same results regardless of the precense of a cache. <code>ruff format --no-cache</code> should be equivalent to deleting the cache folder. At least, that would be the ideal state.</p>
-<p>Ruff uses a file's <code>mtime</code> to determine if a file has changed. This is a somewhat inaccurate approach because mtime's can be rounded/trimmed, meaning changing a file twice in a very short period might result in the same <code>mtime</code>, which Ruff then fails to pick up.</p>
-<p>The only solution I'm aware of that isn't prone to this issue is to request (I remember someone mentioned that it's possible to ask git for file hashes) or compute the hash for every single file and compare them. However, this is significantely slower than just comparing mtimes because it requires reading every single file.</p>
+<p>Ruff uses a file&#x27;s <code>mtime</code> to determine if a file has changed. This is a somewhat inaccurate approach because mtime&#x27;s can be rounded/trimmed, meaning changing a file twice in a very short period might result in the same <code>mtime</code>, which Ruff then fails to pick up.</p>
+<p>The only solution I&#x27;m aware of that isn&#x27;t prone to this issue is to request (I remember someone mentioned that it&#x27;s possible to ask git for file hashes) or compute the hash for every single file and compare them. However, this is significantely slower than just comparing mtimes because it requires reading every single file.</p>
 <p>Rust has a similar problem and they now introduce a new nightly feature to enable hashing over mtimes https://doc.rust-lang.org/cargo/reference/unstable.html#checksum-freshness</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-04-25 06:16</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-25 06:16</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">cli</span> added by @MichaReiser on 2025-04-25 06:16</div>
+            <div class="event">Label <span class="label">cli</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-25 06:16</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/PCSwingle">@PCSwingle</a> on 2025-04-25 18:48</div>
-            <div class="timeline-body"><p>Thank you, that makes a ton of sense! It turns out it's technically more of a problem on my end then. I was creating a tar archive and adding a file from scratch in python and sending it over to the docker container to modify the file, and python doesn't automatically set an mtime for the file in the tar archive. So the first time I modified the file, it set the mtime to epoch time 0, then I ran ruff and it saw the timestamp 0, then when I modified it again it kept the modified time as epoch time 0.</p>
-<p>Closing this as it's more my problem than ruff's problem. Thank you!</p>
+            <div class="timeline-body"><p>Thank you, that makes a ton of sense! It turns out it&#x27;s technically more of a problem on my end then. I was creating a tar archive and adding a file from scratch in python and sending it over to the docker container to modify the file, and python doesn&#x27;t automatically set an mtime for the file in the tar archive. So the first time I modified the file, it set the mtime to epoch time 0, then I ran ruff and it saw the timestamp 0, then when I modified it again it kept the modified time as epoch time 0.</p>
+<p>Closing this as it&#x27;s more my problem than ruff&#x27;s problem. Thank you!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @PCSwingle on 2025-04-25 18:48</div>
+            <div class="event">Closed by <a href="https://github.com/PCSwingle">@PCSwingle</a> on 2025-04-25 18:48</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/vadimkantorov">@vadimkantorov</a> on 2025-11-21 23:39</div>
@@ -70,7 +70,7 @@ ruff format --check .
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:52:38 UTC
+        Synced at 2026-01-20 18:49:52 UTC
     </footer>
 </body>
 </html>

@@ -25,7 +25,7 @@
             <div class="timeline-header"><a href="https://github.com/mmarras">@mmarras</a></div>
             <div class="timeline-body"><p>isort sorts imports in a way that induces ruff to flag <code>I001</code>, aka ruff and isort want to sort the imports in different ways (I suspect when module has a number in name).</p>
 <p>after running isort</p>
-<pre><code class="language-python">from basic.views import datamore_login_required
+<pre><code>from basic.views import datamore_login_required
 from geln_main import config as config_main
 from geln_olga2 import config
 from geln_olga2.models import Data
@@ -34,12 +34,12 @@ from geln_olga.views import get_histogram_data, validate_parse_sp2files
 from global_log_usage.views import create_hit
 </code></pre>
 <p>then</p>
-<pre><code class="language-sh">geln_olga2/views.py:1:1: I001 [*] Import block is un-sorted or un-formatted
+<pre><code>geln_olga2/views.py:1:1: I001 [*] Import block is un-sorted or un-formatted
 Found 1 error.
 [*] 1 potentially fixable with the --fix option.
 </code></pre>
 <p>after running ruff auto-correct (which I only apply manually to see the difference)</p>
-<pre><code class="language-python">from basic.views import datamore_login_required
+<pre><code>from basic.views import datamore_login_required
 from geln_main import config as config_main
 from geln_olga.pytools import olga
 from geln_olga.views import get_histogram_data, validate_parse_sp2files
@@ -49,7 +49,7 @@ from global_log_usage.views import create_hit
 </code></pre>
 <p>Relevant settings are:</p>
 <p>.pre-commit-config.yaml</p>
-<pre><code class="language-yaml">- repo: https://github.com/pre-commit/mirrors-isort
+<pre><code>- repo: https://github.com/pre-commit/mirrors-isort
     rev: v5.10.1
     hooks:
       - id: isort
@@ -62,7 +62,7 @@ from global_log_usage.views import create_hit
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "isort clash with ruff I001" to "isort clash with ruff I001 when module has digit" by @mmarras on 2023-07-24 21:10</div>
+            <div class="event">Renamed from &quot;isort clash with ruff I001&quot; to &quot;isort clash with ruff I001 when module has digit&quot; by <a href="https://github.com/mmarras">@mmarras</a> on 2023-07-24 21:10</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-24 21:11</div>
@@ -70,50 +70,50 @@ from global_log_usage.views import create_hit
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">isort</span> added by @charliermarsh on 2023-07-24 21:11</div>
+            <div class="event">Label <span class="label">isort</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-24 21:11</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-07-24 21:11</div>
+            <div class="event">Label <span class="label">needs-decision</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-24 21:11</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-24 21:13</div>
-            <div class="timeline-body"><p>I'm trying to understand why isort would use that ordering. It's strange because (e.g.) <code>geln_olgaZ</code> (or any letter) would cause isort to use Ruff's import ordering. So it needs to be treating numerical suffixes as lexicographically lower.</p>
+            <div class="timeline-body"><p>I&#x27;m trying to understand why isort would use that ordering. It&#x27;s strange because (e.g.) <code>geln_olgaZ</code> (or any letter) would cause isort to use Ruff&#x27;s import ordering. So it needs to be treating numerical suffixes as lexicographically lower.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-07-24 21:16</div>
-            <div class="timeline-body"><p>Related discussion at https://github.com/PyCQA/isort/issues/1732 and implementation at https://github.com/PyCQA/isort/blob/615de51b1955d0b41e45de15081e20f03b3b708d/isort/sorting.py#L111-L130</p>
+            <div class="timeline-body"><p>Related discussion at <a href="https://github.com/PyCQA/isort/issues/1732">PyCQA/isort#1732</a> and implementation at https://github.com/PyCQA/isort/blob/615de51b1955d0b41e45de15081e20f03b3b708d/isort/sorting.py#L111-L130</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-24 21:20</div>
             <div class="timeline-body"><p>Ahhh thank you, so helpful.</p>
-<p>My gut reaction is that this looks like an unintended behavior in isort... They're trying to ensure that they respect <em>this</em>:</p>
-<pre><code class="language-python">from geln_olga2.models import Data
+<p>My gut reaction is that this looks like an unintended behavior in isort... They&#x27;re trying to ensure that they respect <em>this</em>:</p>
+<pre><code>from geln_olga2.models import Data
 from geln_olga10.models import Data
 </code></pre>
-<p>But that's leading them to put numbers before non-numerical suffixes. Ruff seems to do the right thing -- it respects this:</p>
-<pre><code class="language-python">from geln_olga2.models import Data
+<p>But that&#x27;s leading them to put numbers before non-numerical suffixes. Ruff seems to do the right thing -- it respects this:</p>
+<pre><code>from geln_olga2.models import Data
 from geln_olga10.models import Data
 </code></pre>
 <p>But also this:</p>
-<pre><code class="language-python">from geln_olga.models import Data
+<pre><code>from geln_olga.models import Data
 from geln_olga2.models import Data
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-25 15:55</div>
-            <div class="timeline-body"><p>I think I'm gonna close with the understanding that we do deviate from upstream when we feel that our behavior represents a bug fix.</p>
+            <div class="timeline-body"><p>I think I&#x27;m gonna close with the understanding that we do deviate from upstream when we feel that our behavior represents a bug fix.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-07-25 15:55</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-25 15:55</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:47:46 UTC
+        Synced at 2026-01-20 18:48:39 UTC
     </footer>
 </body>
 </html>

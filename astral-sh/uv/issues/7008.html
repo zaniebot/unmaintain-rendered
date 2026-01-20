@@ -25,7 +25,7 @@
             <div class="timeline-header"><a href="https://github.com/2-5">@2-5</a></div>
             <div class="timeline-body"><p>The paths used by <code>uv</code> on Windows are not very idiomatic.</p>
 <p>Clean install:</p>
-<pre><code class="language-shell">irm https://astral.sh/uv/install.ps1 | iex
+<pre><code>irm https://astral.sh/uv/install.ps1 | iex
 uv tool install ruff
 </code></pre>
 <p>Outcome:</p>
@@ -37,8 +37,8 @@ ruff.exe    C:\Users\USER\.local\bin\ruff.exe
 # not actually installed
 uv.toml     C:\Users\USER\AppData\Roaming\uv\uv.toml
 </code></pre>
-<p><code>~/.cargo/bin</code> is not ideal, but I guess that ship has sailed since it's the Rust default.</p>
-<p>I think the tools venvs dir should be moved from <code>AppData\Roaming (%APPDATA%)</code> to <code>AppData\Local (%LOCALAPPDATA%)</code>. You're not supposed to store binaries in the <code>AppData\Roaming</code> directory, it's more of a <code>.config</code> kind of directory. Also, the tool venv from <code>AppData\Roaming</code> will use the uv cache from <code>AppData\Local</code>, this will break in a corporate setup, where the <code>AppData\Roaming</code> can &quot;roam&quot; (a sort of a network share) - you'll login into a new machine with your domain user, the <code>AppData\Roaming</code> will be copied/mounted there, but there will be no corresponding <code>uv</code> cache in the <code>AppData\Local</code> directory.</p>
+<p><code>~/.cargo/bin</code> is not ideal, but I guess that ship has sailed since it&#x27;s the Rust default.</p>
+<p>I think the tools venvs dir should be moved from <code>AppData\Roaming (%APPDATA%)</code> to <code>AppData\Local (%LOCALAPPDATA%)</code>. You&#x27;re not supposed to store binaries in the <code>AppData\Roaming</code> directory, it&#x27;s more of a <code>.config</code> kind of directory. Also, the tool venv from <code>AppData\Roaming</code> will use the uv cache from <code>AppData\Local</code>, this will break in a corporate setup, where the <code>AppData\Roaming</code> can &quot;roam&quot; (a sort of a network share) - you&#x27;ll login into a new machine with your domain user, the <code>AppData\Roaming</code> will be copied/mounted there, but there will be no corresponding <code>uv</code> cache in the <code>AppData\Local</code> directory.</p>
 <p>The <code>~/.local/bin</code> choice is terrible on Windows, it pollutes the home directory. I think it should also go in the <code>AppData\Local</code> directory.</p>
 <p>My proposal for the paths:</p>
 <pre><code>uv.exe      C:\Users\USER\.cargo\bin
@@ -58,20 +58,20 @@ uv.toml     C:\Users\USER\AppData\Roaming\uv\uv.toml
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zooba">@zooba</a> on 2024-09-04 12:37</div>
             <div class="timeline-body"><p>Recent versions of Windows have made it so dot-prefixed directories are no longer actively hostile, so the <code>.cargo</code> and <code>.local</code> are now just messy, rather than anti-user.</p>
-<p>Your understanding of how <code>AppData\Local</code> and <code>AppData\Roaming</code> are meant to work is accurate. What goes on within those (provided you follow it with a unique company/program name) is up to the project. But it is fair to assume that <code>Roaming</code> may be copied onto another machine, and so anything that is specific to the current machine (e.g. file paths) either shouldn't go in there or should be safe for transfer.</p>
-<p>With Dev Drive growing in use, you'll also definitely want a way to permanently relocate caches into a new location. Global environment variables (like pip) are fine, but perhaps you'll have a better idea (such as setting up a cache on the same drive as the install target). There's no solid convention for where to put files on a Dev Drive yet, but I'd say it's probably fine to claim <code>D:\.uv</code>. (For reference, <a href="https://devblogs.microsoft.com/visualstudio/devdrive/">intro to Dev Drive</a>[^1] and <a href="https://github.com/python/cpython/blob/main/Modules/posixmodule.c#L4835">checking if it's a Dev Drive</a>).</p>
-<p>[^1]: Wondering why the graph has a Django benchmark and not pip? The perf gain for package installation on a Dev Drive was so big it would've looked like we were lying 😉</p>
+<p>Your understanding of how <code>AppData\Local</code> and <code>AppData\Roaming</code> are meant to work is accurate. What goes on within those (provided you follow it with a unique company/program name) is up to the project. But it is fair to assume that <code>Roaming</code> may be copied onto another machine, and so anything that is specific to the current machine (e.g. file paths) either shouldn&#x27;t go in there or should be safe for transfer.</p>
+<p>With Dev Drive growing in use, you&#x27;ll also definitely want a way to permanently relocate caches into a new location. Global environment variables (like pip) are fine, but perhaps you&#x27;ll have a better idea (such as setting up a cache on the same drive as the install target). There&#x27;s no solid convention for where to put files on a Dev Drive yet, but I&#x27;d say it&#x27;s probably fine to claim <code>D:\.uv</code>. (For reference, <a href="https://devblogs.microsoft.com/visualstudio/devdrive/">intro to Dev Drive</a>[^1] and <a href="https://github.com/python/cpython/blob/main/Modules/posixmodule.c#L4835">checking if it&#x27;s a Dev Drive</a>).</p>
+<p>[^1]: Wondering why the graph has a Django benchmark and not pip? The perf gain for package installation on a Dev Drive was so big it would&#x27;ve looked like we were lying 😉</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">windows</span> added by @AlexWaygood on 2024-09-04 12:42</div>
+            <div class="event">Label <span class="label">windows</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-04 12:42</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/2-5">@2-5</a> on 2024-09-04 12:54</div>
             <div class="timeline-body"><blockquote>
 <p>setting up a cache on the same drive as the install target</p>
 </blockquote>
-<p>That's what I did, consolidated all programming tools caches (including <code>uv</code>) into one directory on the Dev Drive.</p>
+<p>That&#x27;s what I did, consolidated all programming tools caches (including <code>uv</code>) into one directory on the Dev Drive.</p>
 <pre><code>GOCACHE=D:\Cache\go\build
 GOPATH=D:\Cache\go
 NPM_CONFIG_CACHE=D:\Cache\npm
@@ -84,7 +84,7 @@ UV_TOOL_DIR=D:\Cache\uv\tool
 VCPKG_DEFAULT_BINARY_CACHE=D:\Cache\vcpkg
 YARN_GLOBAL_FOLDER=D:\Cache\yarn
 </code></pre>
-<p>Maybe Dev Drive could provide a <code>%DevDrive%</code> env var (like <code>%SystemDrive%</code>) and all tools could use that if it's set, although there is the question of what happens if you have multiple such drives.</p>
+<p>Maybe Dev Drive could provide a <code>%DevDrive%</code> env var (like <code>%SystemDrive%</code>) and all tools could use that if it&#x27;s set, although there is the question of what happens if you have multiple such drives.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -92,28 +92,28 @@ YARN_GLOBAL_FOLDER=D:\Cache\yarn
             <div class="timeline-body"><blockquote>
 <p>The ~/.local/bin choice is terrible on Windows, it pollutes the home directory</p>
 </blockquote>
-<p>This is what pipx does, which is why we're using it.</p>
-<p>Regarding Roaming, yeah that seems problematic. It was intentional to place this data in Roaming, but if it's not colocated with the cache it sounds like a problem since we link files? We also don't special-case whether or not the Python interpreter comes from the system (which would require Local) or is managed (which would be co-located in Roaming). It seems like we should move it all to Local, though it's a bummer it won't be accessible via a network share.</p>
+<p>This is what pipx does, which is why we&#x27;re using it.</p>
+<p>Regarding Roaming, yeah that seems problematic. It was intentional to place this data in Roaming, but if it&#x27;s not colocated with the cache it sounds like a problem since we link files? We also don&#x27;t special-case whether or not the Python interpreter comes from the system (which would require Local) or is managed (which would be co-located in Roaming). It seems like we should move it all to Local, though it&#x27;s a bummer it won&#x27;t be accessible via a network share.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">breaking</span> added by @zanieb on 2024-09-04 13:34</div>
+            <div class="event">Label <span class="label">breaking</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-04 13:34</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-04 13:34</div>
-            <div class="timeline-body"><p>We can probably change the directory without it being breaking, but we'll need to be careful when changing these.</p>
+            <div class="timeline-body"><p>We can probably change the directory without it being breaking, but we&#x27;ll need to be careful when changing these.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zooba">@zooba</a> on 2024-09-04 13:40</div>
             <div class="timeline-body"><blockquote>
-<p>We also don't special-case whether or not the Python interpreter comes from the system (which would require Local) or is managed (which would be co-located in Roaming). It seems like we should move it all to Local, though it's a bummer it won't be accessible via a network share.</p>
+<p>We also don&#x27;t special-case whether or not the Python interpreter comes from the system (which would require Local) or is managed (which would be co-located in Roaming). It seems like we should move it all to Local, though it&#x27;s a bummer it won&#x27;t be accessible via a network share.</p>
 </blockquote>
-<p>When we were adding the same kind of thing to Visual Studio, we basically had a &quot;roaming&quot; identifier that mapped to a &quot;local&quot; path, so if you moved machine you'd have the same identifier but the correct path (and of course for anything we auto-detected we controlled the identifier, so knew it was stable). But that may be overkill here, compared to just detecting each time.</p>
+<p>When we were adding the same kind of thing to Visual Studio, we basically had a &quot;roaming&quot; identifier that mapped to a &quot;local&quot; path, so if you moved machine you&#x27;d have the same identifier but the correct path (and of course for anything we auto-detected we controlled the identifier, so knew it was stable). But that may be overkill here, compared to just detecting each time.</p>
 <blockquote>
-<p>Maybe Dev Drive could provide a <code>%DevDrive%</code> env var (like <code>%SystemDrive%</code>) and all tools could use that if it's set, although there is the question of what happens if you have multiple such drives.</p>
+<p>Maybe Dev Drive could provide a <code>%DevDrive%</code> env var (like <code>%SystemDrive%</code>) and all tools could use that if it&#x27;s set, although there is the question of what happens if you have multiple such drives.</p>
 </blockquote>
-<p>At the OS level, that question makes the whole idea prohibitive. So the recommendation is to check each drive (or more likely, the relevant drive for whatever your context is) to see whether it's a better cache/temp location than <code>%UserProfile%</code>.</p>
+<p>At the OS level, that question makes the whole idea prohibitive. So the recommendation is to check each drive (or more likely, the relevant drive for whatever your context is) to see whether it&#x27;s a better cache/temp location than <code>%UserProfile%</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -130,7 +130,7 @@ uv.toml     C:\Users\USER\AppData\Roaming\uv\uv.toml
 </blockquote>
 <p>I partially disagree with these proposed paths. While I appreciate the effort to adopt a more idiomatic folder structure for Windows—which, unfortunately, is often overlooked—some of these paths do not actually follow Windows conventions. Specifically, when creating files or folders directly in <code>%USERPROFILE</code>. See</p>
 <blockquote>
-<p>Applications should not create files or folders [in the user's profile folder]; they should put their data under the locations referred to by <a href="https://learn.microsoft.com/en-us/dotnet/api/system.environment.specialfolder?view=net-6.0#system-environment-specialfolder-applicationdata">ApplicationData</a>.</p>
+<p>Applications should not create files or folders [in the user&#x27;s profile folder]; they should put their data under the locations referred to by <a href="https://learn.microsoft.com/en-us/dotnet/api/system.environment.specialfolder?view=net-6.0#system-environment-specialfolder-applicationdata">ApplicationData</a>.</p>
 </blockquote>
 <p>Source: https://learn.microsoft.com/en-us/dotnet/api/system.environment.specialfolder?view=net-6.0</p>
 <p>Windows provides a dedicated folder for user-installed programs: <a href="https://learn.microsoft.com/en-us/windows/win32/shell/knownfolderid"><code>FOLDERID_UserProgramFiles</code></a>. Based on this, I propose the following structure:</p>
@@ -146,27 +146,27 @@ uv.toml     C:\Users\USER\AppData\Roaming\uv\uv.toml
 </ul>
 <p>This structure would align better with Windows guidelines while keeping things organized.</p>
 <blockquote>
-<p>This (~/.local/bin) is what pipx does, which is why we're using it.</p>
+<p>This (~/.local/bin) is what pipx does, which is why we&#x27;re using it.</p>
 </blockquote>
 <p>@zanieb  One should not take the bad habits of others as an example.</p>
 <blockquote>
-<p>It seems like we should move it all to Local, though it's a bummer it won't be accessible via a network share.</p>
+<p>It seems like we should move it all to Local, though it&#x27;s a bummer it won&#x27;t be accessible via a network share.</p>
 </blockquote>
 <p>@zanieb What do you mean by &quot;accessible via a network share&quot;? The roaming profile is not accessed on-demand, but synced to the client on logon. And programs are not supposed to roam. :)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/refack">@refack</a> on 2025-06-18 21:11</div>
-            <div class="timeline-body"><p><img src="https://github.com/user-attachments/assets/836e503a-7e77-4d28-a344-d52f19b55631" alt="Image" />
+            <div class="timeline-body"><p><img src="https://github.com/user-attachments/assets/836e503a-7e77-4d28-a344-d52f19b55631" alt="Image">
 This ☝</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> added by @zanieb on 2025-06-20 13:52</div>
+            <div class="event">Label <span class="label">needs-decision</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-20 13:52</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/brettcannon">@brettcannon</a> on 2026-01-13 21:04</div>
-            <div class="timeline-body"><p>One thing that uv doesn't make easy is a way to direct it to just put everything in a Dev Drive. It seems like at minimum I want the cache directory, but what about tools (i.e. do they also use the cache and so fall under the <a href="https://docs.astral.sh/uv/reference/storage/#executable-directory:~:text=For%20optimal%20performance%2C%20the%20cache%20directory%20needs%20to%20be%20on%20the%20same%20filesystem%20as%20virtual%20environments.">&quot;same FS as virtual environments&quot; advice</a>)? Or PBS installs? I would love to have an easy way to say &quot;use this directory for whatever&quot;, or at least guidance on what you would expect to be put on the Dev Drive like what's listed at https://learn.microsoft.com/en-us/windows/dev-drive/#what-should-i-put-on-my-dev-drive .</p>
+            <div class="timeline-body"><p>One thing that uv doesn&#x27;t make easy is a way to direct it to just put everything in a Dev Drive. It seems like at minimum I want the cache directory, but what about tools (i.e. do they also use the cache and so fall under the <a href="https://docs.astral.sh/uv/reference/storage/#executable-directory:~:text=For%20optimal%20performance%2C%20the%20cache%20directory%20needs%20to%20be%20on%20the%20same%20filesystem%20as%20virtual%20environments.">&quot;same FS as virtual environments&quot; advice</a>)? Or PBS installs? I would love to have an easy way to say &quot;use this directory for whatever&quot;, or at least guidance on what you would expect to be put on the Dev Drive like what&#x27;s listed at https://learn.microsoft.com/en-us/windows/dev-drive/#what-should-i-put-on-my-dev-drive .</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -199,13 +199,13 @@ UV_TOOL_DIR=F:\Package\uv\tool
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2026-01-14 09:05</div>
-            <div class="timeline-body"><p>This problems sounds more like https://github.com/astral-sh/uv/issues/11360 or something specific to dev drives than Windows-specific paths in general (the same problem exists on Linux with multiple partitions). There's a wider problem that uv always puts cache and data in the user home, even if the project is on a different partition, where it's not clear if we should colocate other cache and data on the partition of the project.</p>
+            <div class="timeline-body"><p>This problems sounds more like <a href="https://github.com/astral-sh/uv/issues/11360">astral-sh/uv#11360</a> or something specific to dev drives than Windows-specific paths in general (the same problem exists on Linux with multiple partitions). There&#x27;s a wider problem that uv always puts cache and data in the user home, even if the project is on a different partition, where it&#x27;s not clear if we should colocate other cache and data on the partition of the project.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/refack">@refack</a> on 2026-01-15 00:38</div>
             <div class="timeline-body"><blockquote>
-<p>One thing that uv doesn't make easy is a way to direct it to just put everything in a Dev Drive.</p>
+<p>One thing that uv doesn&#x27;t make easy is a way to direct it to just put everything in a Dev Drive.</p>
 </blockquote>
 <p>☝️ also this</p>
 </div>
@@ -216,9 +216,9 @@ UV_TOOL_DIR=F:\Package\uv\tool
 <p>This problems sounds more like <a href="https://github.com/astral-sh/uv/issues/11360">#11360</a> or something specific to dev drives than Windows-specific paths in general</p>
 </blockquote>
 <p>I used to use a self-patched version of <code>uv</code> that respected XDG paths. It just worked.
-I stopped because y'all have amazing velocity, and it's hard to keep up. So now I do:</p>
-<p><img width="609" height="809" alt="Image" src="https://github.com/user-attachments/assets/18d2afac-675a-4a28-bb23-9e95c44e0ede" /></p>
-<p>But I'm sure we can all agree this smells</p>
+I stopped because y&#x27;all have amazing velocity, and it&#x27;s hard to keep up. So now I do:</p>
+<p><img alt="Image" src="https://github.com/user-attachments/assets/18d2afac-675a-4a28-bb23-9e95c44e0ede"></p>
+<p>But I&#x27;m sure we can all agree this smells</p>
 <p>P.S. <code>E:\</code> is my dev drive
 P.P.S. the forward <code>/</code> slashes in the paths are overkill, and just give me funny looking paths like <code>C:/bin/var\vods\2026-01-13_19-41-07--ffmpeg.log</code> (which work, but areyoukiddingme)</p>
 </div>
@@ -228,12 +228,12 @@ P.P.S. the forward <code>/</code> slashes in the paths are overkill, and just gi
             <div class="timeline-body"><blockquote>
 <p>This problems sounds more like <a href="https://github.com/astral-sh/uv/issues/11360">#11360</a> or something specific to dev drives than Windows-specific paths in general (the same problem exists on Linux with multiple partitions).</p>
 </blockquote>
-<p>For me, it's the lack of XDG support on Windows to make this easy. After that is the lack of guidance for Dev Drive users. Do you want a new issue for the latter?</p>
+<p>For me, it&#x27;s the lack of XDG support on Windows to make this easy. After that is the lack of guidance for Dev Drive users. Do you want a new issue for the latter?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2026-01-16 08:40</div>
-            <div class="timeline-body"><p>Yep I'd open a separate issue for dev drives, it's an issue separate from the original issue.</p>
+            <div class="timeline-body"><p>Yep I&#x27;d open a separate issue for dev drives, it&#x27;s an issue separate from the original issue.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -244,7 +244,7 @@ P.P.S. the forward <code>/</code> slashes in the paths are overkill, and just gi
     </div>
 
     <footer>
-        Synced at 2026-01-17 00:12:06 UTC
+        Synced at 2026-01-20 19:33:39 UTC
     </footer>
 </body>
 </html>

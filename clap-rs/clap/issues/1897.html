@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/alerque">@alerque</a></div>
-            <div class="timeline-body"><p>Experimenting with the current Git HEAD and using <code>#[derive(Clap)]</code>, I'm getting different results that I expect. The docs are still a bit sparse on these interfaces so there may be something in transition, but for the sake of people like me who will be trying to port from StructOpt I'm raising this issue so there are no surprises.</p>
+            <div class="timeline-body"><p>Experimenting with the current Git HEAD and using <code>#[derive(Clap)]</code>, I&#x27;m getting different results that I expect. The docs are still a bit sparse on these interfaces so there may be something in transition, but for the sake of people like me who will be trying to port from StructOpt I&#x27;m raising this issue so there are no surprises.</p>
 <p>Generating an app from a Struct works much as expected this way:</p>
-<pre><code class="language-rust">#[derive(Clap)]
+<pre><code>#[derive(Clap)]
 struct Cli {
     #[clap(short, long)]
     debug: bool,
@@ -37,7 +37,7 @@ if args.debug {}
 </code></pre>
 <p>The result is pretty staight forward. The <code>args</code> variable holds a very simple stuct with values as might be expected (Strings, bools, etc.). This works the same as in StructOpt.</p>
 <p>However as best I can make out from the docs this <em>should</em> be equivalent of this:</p>
-<pre><code class="language-rust">
+<pre><code>
 #[derive(Clap)]
 struct Cli {
     #[clap(short, long)]
@@ -49,11 +49,11 @@ let args = app.get_matches()
 
 if args.debug {} // Err!
 </code></pre>
-<p>In this scenario <code>args</code> has been made into a instance of ArgMatches. This is documented, but the results seem inconsistent. There doesn't seem to be any way to get the simpler struct with the values in place from the <code>into_app().get_matches()</code> method and there  doesn't seem to be a way to get the ArgMatches from the <code>parse()</code> method.</p>
+<p>In this scenario <code>args</code> has been made into a instance of ArgMatches. This is documented, but the results seem inconsistent. There doesn&#x27;t seem to be any way to get the simpler struct with the values in place from the <code>into_app().get_matches()</code> method and there  doesn&#x27;t seem to be a way to get the ArgMatches from the <code>parse()</code> method.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">T: bug</span> added by @alerque on 2020-05-02 22:02</div>
+            <div class="event">Label <span class="label">T: bug</span> added by <a href="https://github.com/alerque">@alerque</a> on 2020-05-02 22:02</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-05-02 23:41</div>
@@ -62,14 +62,14 @@ if args.debug {} // Err!
 <li>Given a struct (enum, collection of structs, irrelevant for the purposes of this explanation), generate a corresponding  <code>clap::App</code> (<code>IntoApp::into_app</code> in your mental model, ).</li>
 <li>Fill the struct with values taken form CL args, using the <code>App</code> as scheme (<code>App::get_matches</code> in your understanding, INCORRECT).</li>
 </ol>
-<p>Did you notice that the second step is somehow over-complicated? This is because it's not just <em>one</em> step but <em>two</em>. This is how the process looks in reality:</p>
+<p>Did you notice that the second step is somehow over-complicated? This is because it&#x27;s not just <em>one</em> step but <em>two</em>. This is how the process looks in reality:</p>
 <ol>
 <li>Given a struct (enum, collection of structs, irrelevant for the purposes of this explanation), generate a corresponding  <code>clap::App</code>. (<code>IntoApp::into_app</code>, your image is correct here).</li>
-<li>Parse the Cl args into an internal dictonary-like representation, <code>clap::ArgMatches</code>. This representation allows you for querying the desired args via <code>value_of</code> and such but all it can give you is <code>&amp;str/&amp;OsStr</code>. It has <em>zero</em> idea of what your struct looks like, in fact, it's derive-independed. (<code>App::get_matches</code> , your image is also correct here, but this is not the last step).</li>
+<li>Parse the Cl args into an internal dictonary-like representation, <code>clap::ArgMatches</code>. This representation allows you for querying the desired args via <code>value_of</code> and such but all it can give you is <code>&amp;str/&amp;OsStr</code>. It has <em>zero</em> idea of what your struct looks like, in fact, it&#x27;s derive-independed. (<code>App::get_matches</code> , your image is also correct here, but this is not the last step).</li>
 <li>Using querying methods above, along with parsers you can specify with the help of <code>#[clap(parse(...))]</code> attributes, extract the needed values in their string form and convert the strings into the desired types, populating the fields along the way. (<code>FromArgMatches::from_arg_matches</code>, the missing piece).</li>
 </ol>
 <p>To glue it all together, your code should look like:</p>
-<pre><code class="language-rust">#[derive(Clap)]
+<pre><code>#[derive(Clap)]
 struct Cli {
     #[clap(short, long)]
     debug: bool,
@@ -85,18 +85,18 @@ if args.debug {} // Ok!
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @CreepySkeleton on 2020-05-02 23:41</div>
+            <div class="event">Closed by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-05-02 23:41</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/alerque">@alerque</a> on 2020-05-03 07:27</div>
             <div class="timeline-body"><p>Thanks @CreepySkeleton! The teacher vibes are strong with you. That finally makes sense.</p>
-<p>I understand the state of documentation in Git HEAD isn't expected to be ready for the 3.0 release just yet, but for the sake of other people that will be migrating from StructOpt it might be worth going out of the way a little bit to clarify how <code>Cli::parse()</code> is equivalent to those three stages. Many places in the docs seem to suggest that <code>app.get_matches()</code> is the state people are expected to start <em>using</em> their args from and I suspect I won't be the only one surprised by this.</p>
+<p>I understand the state of documentation in Git HEAD isn&#x27;t expected to be ready for the 3.0 release just yet, but for the sake of other people that will be migrating from StructOpt it might be worth going out of the way a little bit to clarify how <code>Cli::parse()</code> is equivalent to those three stages. Many places in the docs seem to suggest that <code>app.get_matches()</code> is the state people are expected to start <em>using</em> their args from and I suspect I won&#x27;t be the only one surprised by this.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:47:39 UTC
+        Synced at 2026-01-20 19:57:47 UTC
     </footer>
 </body>
 </html>

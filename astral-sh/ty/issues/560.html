@@ -24,7 +24,7 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a></div>
             <div class="timeline-body"><p>From the typing spec: https://typing.python.org/en/latest/spec/tuples.html#type-compatibility-rules, we currently do not support this.</p>
-<pre><code class="language-py">def func(val: tuple[int] | tuple[str, str] | tuple[int, *tuple[str, ...], int]):
+<pre><code>def func(val: tuple[int] | tuple[str, str] | tuple[int, *tuple[str, ...], int]):
     if len(val) == 1:
         # Type can be narrowed to tuple[int].
         reveal_type(val)  # tuple[int]
@@ -41,14 +41,14 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">narrowing</span> added by @AlexWaygood on 2025-06-01 15:40</div>
+            <div class="event">Label <span class="label">narrowing</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-01 15:40</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Supoprt narrowing on tuple length checks" to "Support narrowing on tuple length checks" by @sharkdp on 2025-06-03 07:48</div>
+            <div class="event">Renamed from &quot;Supoprt narrowing on tuple length checks&quot; to &quot;Support narrowing on tuple length checks&quot; by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-03 07:48</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-06-17 12:16</div>
-            <div class="timeline-body"><p>After reading over #639, i had another thought about this, and with a tuple subclass that overrides the <code>__len__</code> method, isn't this unsound?</p>
+            <div class="timeline-body"><p>After reading over #639, i had another thought about this, and with a tuple subclass that overrides the <code>__len__</code> method, isn&#x27;t this unsound?</p>
 <p>From the spec</p>
 <blockquote>
 <p>The length of a tuple at runtime is immutable, so it is safe for type checkers to use length checks to narrow the type of a tuple:</p>
@@ -58,7 +58,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-17 12:28</div>
-            <div class="timeline-body"><p>We intend to emit an error on tuple subclasses that override <code>__len__</code> or <code>__bool__</code> to guard against the unsoundness here. I agree that if you don't do that but you do allow tuple subclasses in general, this narrowing would be unsound!</p>
+            <div class="timeline-body"><p>We intend to emit an error on tuple subclasses that override <code>__len__</code> or <code>__bool__</code> to guard against the unsoundness here. I agree that if you don&#x27;t do that but you do allow tuple subclasses in general, this narrowing would be unsound!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -68,20 +68,20 @@
 <li><p>For a fixed-length tuple, we synthesize a <code>__len__</code> method with a precise return type. For example, <code>tuple[int, int]</code> would have a synthesized <code>__len__</code> method that returns <code>Literal[2]</code>.</p>
 </li>
 <li><p>We add a protocol like this to the <code>ty_extensions</code> module:</p>
-<pre><code class="language-py">from typing import Sized, Protocol
+<pre><code>from typing import Sized, Protocol
 
 class ExactlySized[T: int](Sized):
     def __len__(self) -&gt; T: ...
 </code></pre>
 </li>
 <li><p>We intersect with that protocol on seeing a length check, e.g.:</p>
-<pre><code class="language-py">def f(x: object):
+<pre><code>def f(x: object):
     if len(x) == 4:
         reveal_type(x)  # revealed: ExactlySized[Literal[4]]
 </code></pre>
 </li>
 <li><p>We implement the Liskov Substitution Principle, such that this would be an error:</p>
-<pre><code class="language-py">from typing import Literal
+<pre><code>from typing import Literal
 
 class Foo:
     def __len__(self) -&gt; Literal[5]: ...
@@ -91,13 +91,13 @@ class Bar(Foo):
         return 42
 </code></pre>
 <p>and therefore (due to the synthesized <code>__len__</code> method for fixed-length tuples implemented as change (1)), this would be an error:</p>
-<pre><code class="language-py">class Foo(tuple[int, int]):
+<pre><code>class Foo(tuple[int, int]):
     def __len__(self) -&gt; int:
         return 42
 </code></pre>
 </li>
-<li><p>We implement disjointness for protocols vs nominal types (this is being done in https://github.com/astral-sh/ruff/pull/18847, but not yet for protocols with method members) so that we understand that <code>tuple[int, int]</code> is disjoint from <code>ExactlySized[Literal[4]]</code>, because its <code>__len__</code> method returns a type disjoint from the return type of <code>ExactlySized[Literal[4]].__len__</code>. This will enable narrowing such as this:</p>
-<pre><code class="language-py">def f(x: tuple[int] | tuple[int, str] | tuple[bytes, bytes, bool]):
+<li><p>We implement disjointness for protocols vs nominal types (this is being done in <a href="https://github.com/astral-sh/ruff/pull/18847">astral-sh/ruff#18847</a>, but not yet for protocols with method members) so that we understand that <code>tuple[int, int]</code> is disjoint from <code>ExactlySized[Literal[4]]</code>, because its <code>__len__</code> method returns a type disjoint from the return type of <code>ExactlySized[Literal[4]].__len__</code>. This will enable narrowing such as this:</p>
+<pre><code>def f(x: tuple[int] | tuple[int, str] | tuple[bytes, bytes, bool]):
     if len(x) == 2:
         # =&gt; (tuple[int] &amp; ExactlySized[Literal[2]]) | (tuple[int, str] &amp; ExactlySized[Literal[2]]) | (tuple[bytes, bytes, bool] &amp; ExactlySized[Literal[2]])
         # =&gt; Never | tuple[int, str] | Never
@@ -108,7 +108,7 @@ class Bar(Foo):
 </ol>
 <p>We can also synthesize precise methods for <code>__getitem__</code> and <code>__bool__</code> on non-homogeneous tuple types, so that inheriting from them is naturally also sound as a result of our Liskov implementation.</p>
 <p>Doing things in this way has the advantage that we will do narrowing for other classes that are known to have fixed lengths too, not just tuples, e.g.</p>
-<pre><code class="language-py">from typing import Literal
+<pre><code>from typing import Literal
 
 class Foo:
     def __len__(self) -&gt; Literal[3]:
@@ -126,12 +126,12 @@ def f(x: Foo | Bar):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-07-22 18:16</div>
-            <div class="timeline-body"><p>@AlexWaygood Do you think this is ready to go after https://github.com/astral-sh/ruff/pull/19289?</p>
+            <div class="timeline-body"><p>@AlexWaygood Do you think this is ready to go after <a href="https://github.com/astral-sh/ruff/pull/19289">astral-sh/ruff#19289</a>?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-22 18:40</div>
-            <div class="timeline-body"><p>not yet, we don't support protocols with method members properly yet. I'm working on that this week.</p>
+            <div class="timeline-body"><p>not yet, we don&#x27;t support protocols with method members properly yet. I&#x27;m working on that this week.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -146,14 +146,14 @@ def f(x: Foo | Bar):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/inigohidalgo">@inigohidalgo</a> on 2025-08-15 14:32</div>
-            <div class="timeline-body"><p>Some of this discussion is going over my head but I came across this issue searching for the problem I'm having and I wonder if this fix would also solve my case. If not I will open a separate issue and hide my comment.</p>
-<pre><code class="language-python">drops: list[tuple[int, int, str]] = []
+            <div class="timeline-body"><p>Some of this discussion is going over my head but I came across this issue searching for the problem I&#x27;m having and I wonder if this fix would also solve my case. If not I will open a separate issue and hide my comment.</p>
+<pre><code>drops: list[tuple[int, int, str]] = []
 drops.append((3, 4, &quot;a&quot;, &quot;a&quot;))
 </code></pre>
-<pre><code class="language-bash">&gt;&gt;&gt; uvx ty check
+<pre><code>&gt;&gt;&gt; uvx ty check
 All checks passed!
 </code></pre>
-<pre><code class="language-bash">&gt;&gt;&gt; uvx mypy src/
+<pre><code>&gt;&gt;&gt; uvx mypy src/
 src/obsidian_chunker/io/parser.py:20: error: Argument 1 to &quot;append&quot; of &quot;list&quot; has incompatible type &quot;tuple[Any, Any, Any | str, str]&quot;; expected &quot;tuple[int, int, str]&quot;  [arg-type]
 </code></pre>
 <p><code>mypy</code> raises the expected error for an incompatible <code>.append</code> but <code>ty</code> does not catch the incompatible length from the type hint.</p>
@@ -161,22 +161,22 @@ src/obsidian_chunker/io/parser.py:20: error: Argument 1 to &quot;append&quot; of
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-15 16:13</div>
-            <div class="timeline-body"><p>@inigohidalgo thanks for the report! That's unrelated to this issue, however -- see https://github.com/astral-sh/ty/issues/543 and/or https://github.com/astral-sh/ty/issues/168 and/or https://github.com/astral-sh/ty/issues/136</p>
+            <div class="timeline-body"><p>@inigohidalgo thanks for the report! That&#x27;s unrelated to this issue, however -- see <a href="https://github.com/astral-sh/ty/issues/543">astral-sh/ty#543</a> and/or <a href="https://github.com/astral-sh/ty/issues/168">astral-sh/ty#168</a> and/or <a href="https://github.com/astral-sh/ty/issues/136">astral-sh/ty#136</a></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2025-08-22 13:09</div>
+            <div class="event">Assigned to <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-22 13:09</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "GA" by @carljm on 2025-11-07 14:15</div>
+            <div class="event">Added to milestone &quot;GA&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-11-07 14:15</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @oconnor663 by @oconnor663 on 2025-11-14 15:21</div>
+            <div class="event">Assigned to <a href="https://github.com/oconnor663">@oconnor663</a> by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-11-14 15:21</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2025-12-18 12:24</div>
             <div class="timeline-body"><p>same issue for me:</p>
-<pre><code class="language-python">def foo(*parts: str | tuple[str, str] | tuple[str, str, int]) -&gt; None:
+<pre><code>def foo(*parts: str | tuple[str, str] | tuple[str, str, int]) -&gt; None:
     cmp: list[list[tuple[str, str, int]]] = []
     for part in parts:
         if isinstance(part, str):
@@ -186,19 +186,19 @@ src/obsidian_chunker/io/parser.py:20: error: Argument 1 to &quot;append&quot; of
         elif isinstance(part, tuple) and len(part) == 2:  # noqa: PLR2004
             pass
 </code></pre>
-<pre><code class="language-sh">$ ty check t.py 
+<pre><code>$ ty check t.py 
 t.py:7:25: error[invalid-argument-type] Argument to bound method `append` is incorrect: Expected `list[tuple[str, str, int]]`, found `list[tuple[str, str, int] | tuple[str, str]]`
 Found 1 diagnostic
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Unassigned @oconnor663 by @oconnor663 on 2026-01-09 15:24</div>
+            <div class="event">Unassigned <a href="https://github.com/oconnor663">@oconnor663</a> by <a href="https://github.com/oconnor663">@oconnor663</a> on 2026-01-09 15:24</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:03 UTC
+        Synced at 2026-01-20 19:24:44 UTC
     </footer>
 </body>
 </html>

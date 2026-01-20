@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/janmeier">@janmeier</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<p>I'm building an SDK, which has both a sync and an async version. Imagine something like this:</p>
-<pre><code class="language-python">class AsyncSDK:
+            <div class="timeline-body">Summary
+<p>I&#x27;m building an SDK, which has both a sync and an async version. Imagine something like this:</p>
+<pre><code>class AsyncSDK:
     async def get(self) -&gt; ReturnType:
         return ReturnType()
 
@@ -33,18 +33,18 @@ class SyncSDK:
     def get(self) -&gt; ReturnType:
         return ReturnType()
 </code></pre>
-<p>In my tests, I'm calling the SDKs conditionally, in order to test both versions:</p>
-<pre><code class="language-python">result = asyncSdk.get() if useAsync  else syncSdk.get()
+<p>In my tests, I&#x27;m calling the SDKs conditionally, in order to test both versions:</p>
+<pre><code>result = asyncSdk.get() if useAsync  else syncSdk.get()
 </code></pre>
 <p>The return type is correctly inferred as <code>CoroutineType[Any, Any, ReturnType] | ReturnType</code></p>
-<p>Now I want to unwrap the result, so I've written a small helper, which awaits if its passed a coroutine, and otherwise just returns the result:</p>
-<pre><code class="language-python">async def unwrapResult[T](maybeCoroutine: T | Coroutine[Any, Any, T]) -&gt; T:
+<p>Now I want to unwrap the result, so I&#x27;ve written a small helper, which awaits if its passed a coroutine, and otherwise just returns the result:</p>
+<pre><code>async def unwrapResult[T](maybeCoroutine: T | Coroutine[Any, Any, T]) -&gt; T:
     if inspect.iscoroutine(maybeCoroutine):
         return await maybeCoroutine
     return cast(T, maybeCoroutine)
 </code></pre>
 <p>I expect the result to be unwrapped to <code>ReturnType</code>,  but this does not happen in ty</p>
-<pre><code class="language-python">unwrappedResult = await unwrapResult(result)
+<pre><code>unwrappedResult = await unwrapResult(result)
 </code></pre>
 <p>Running <code>ty check</code> gives me</p>
 <pre><code>error[type-assertion-failure]: Argument does not have asserted type `ReturnType`
@@ -57,7 +57,7 @@ class SyncSDK:
 </code></pre>
 <p><a href="https://play.ty.dev/f7f50f56-aba8-483d-91a3-5152daa329da">Ty playground link</a>
 <a href="https://pyright-play.net/?code=GYJw9gtgBALgngBwJYDsDmUkQWEMoCGAzkQKZ4D68CpANAMK5gCuMqdAginLVAMbEYAKCw48mFERp9hQvgBtiRKACVSMZiBQAVRKQBcQqMagIlQuYpJQOROCj4BlACIBpQycJ2HUACalgKDR1AAoyeWAASigAWgA%2BVXVNHT0PTxMQJK1EjS1dGhDIiwUlKEd7Jzc0439A4Jgw0gjo%2BJzk-IMjdONM3JQ2vL1CiyFiCr8AqGYUAHcQAgQ1ImZ5GABtbQBdEIgCOAAjUkZwVnZ9KG0oAB8oY5Y2FFI1rh4bbl4tloTtasxA1CkpBkADokEQ%2BExTo8dntDncoaRIr9PL1koQZgQkPhdgcjpCHqQuj0sv0BEQGtpeDi4fj2EULGMfLUoLtUIVft4nL4ANZQAC8ZQqLlcw08jK5vIFtiFblFJmAuCmZGlPlQUA2IGYdCgADECPIyJtkRlSMtVvyvEKecD6oU-krSCq%2BMYmmQoJzHNbbfTusZpnMFjRfEsVvgBQQMViprN5otTaGQpkzTAir6vGRKNRSCF-bGgyHVrw1H0OvSgA">Pyright playground</a> (where the type is correctly narrowed):</p>
-<h3>Version</h3>
+Version
 <p>a42271626</p>
 </div>
         </div>
@@ -69,31 +69,31 @@ class SyncSDK:
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">generics</span> added by @sharkdp on 2025-10-01 08:51</div>
+            <div class="event">Label <span class="label">generics</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-01 08:51</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2025-10-01 08:55</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-01 08:55</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-01 10:42</div>
             <div class="timeline-body"><blockquote>
 <p><a href="https://github.com/AlexWaygood">@AlexWaygood</a> I think this might be related to your current changes to <code>TypeIs</code> narrowing? (at least the first diagnostic in line 18).</p>
 </blockquote>
-<p>Yes -- here's what's happening here:</p>
+<p>Yes -- here&#x27;s what&#x27;s happening here:</p>
 <ul>
 <li><code>iscoroutine</code> is <a href="https://github.com/python/typeshed/blob/6547ec10b881acac28ed000a7c2108f8de1c6a1e/stdlib/inspect.pyi#L235">annotated by typeshed</a> as returning <code>TypeIs[Coroutine[Any, Any, Any]]</code></li>
 <li>This is interpreted by ty as indicating that we should narrow the type by intersecting with <code>Top[Coroutine[Any, Any, Any]]</code> if <code>iscoroutine</code> returns <code>True</code>. <code>Top[Coroutine[Any, Any, Any]]</code> is <code>Coroutine[object, Never, object]</code> since <code>Coroutine</code> is covariant in its first parameter, contravariant in its second, and covariant in its third.</li>
 <li>In the if-True branch under the <code>iscoroutine</code> guard, we therefore narrow the type of <code>maybeCoroutine</code> to <code>(T &amp; Coroutine[object, Never, object]) | Coroutine[Any, Any, T]</code>. Calling <code>await</code> on this union leads to <code>object | T</code>, which simplifies to <code>object</code>.</li>
 </ul>
-<p>This is <a href="https://play.ty.dev/2beebf87-7451-4fd9-9e9d-8c403afb8a4f">consistent with our narrowing behaviour</a> if you do <code>isinstance(maybeCoroutine, Coroutine)</code> and makes theoretical sense: just because an object is of type <code>T</code> doesn't mean that it's <em>not</em> a coroutine -- but if it <em>is</em> a coroutine, you don't necessarily know that that coroutine returns <code>T</code> when you <code>await</code> it, so we can't verify that the <code>return await maybeCoroutine</code> call actually returns an object inhabiting <code>T</code>.</p>
-<p>I do agree that this behaviour probably seems needlessly pedantic to users, but I think if we want to fix this we should try to make sure that our behaviour remains consistent between what we do for <code>isinstance()</code> narrowing and what we do for <code>TypeIs</code> narrowing. It's even more confusing if we're inconsistent about this kind of thing.</p>
+<p>This is <a href="https://play.ty.dev/2beebf87-7451-4fd9-9e9d-8c403afb8a4f">consistent with our narrowing behaviour</a> if you do <code>isinstance(maybeCoroutine, Coroutine)</code> and makes theoretical sense: just because an object is of type <code>T</code> doesn&#x27;t mean that it&#x27;s <em>not</em> a coroutine -- but if it <em>is</em> a coroutine, you don&#x27;t necessarily know that that coroutine returns <code>T</code> when you <code>await</code> it, so we can&#x27;t verify that the <code>return await maybeCoroutine</code> call actually returns an object inhabiting <code>T</code>.</p>
+<p>I do agree that this behaviour probably seems needlessly pedantic to users, but I think if we want to fix this we should try to make sure that our behaviour remains consistent between what we do for <code>isinstance()</code> narrowing and what we do for <code>TypeIs</code> narrowing. It&#x27;s even more confusing if we&#x27;re inconsistent about this kind of thing.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/janmeier">@janmeier</a> on 2025-10-01 11:02</div>
             <div class="timeline-body"><p>Thanks for the quick responses both of you, and for the detailed explanation @AlexWaygood. Much appreciated!</p>
 <p>I do see how the implementation of <code>unwrapResult</code> cannot narrow the type of <code>maybeCoroutine</code> correctly. For the sake of example, if we constrain <code>T</code> to the a subtype of <code>ReturnType</code>, the implementation typechecks, since ty now knows that the <code>T</code> generic cannot itself be a coroutine:</p>
-<pre><code class="language-python">async def unwrapResult[T: ReturnType](maybeCoroutine: T | Coroutine[Any, Any, T]) -&gt; T:
+<pre><code>async def unwrapResult[T: ReturnType](maybeCoroutine: T | Coroutine[Any, Any, T]) -&gt; T:
     if inspect.iscoroutine(maybeCoroutine):
         return await maybeCoroutine
     return cast(T, maybeCoroutine)
@@ -103,19 +103,19 @@ class SyncSDK:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-01 16:18</div>
-            <div class="timeline-body"><p>The first diagnostic is expected behaviour -- perhaps confusing behaviour, but this is already an issue we're aware of, and everything <em>is</em> working as intended here.</p>
+            <div class="timeline-body"><p>The first diagnostic is expected behaviour -- perhaps confusing behaviour, but this is already an issue we&#x27;re aware of, and everything <em>is</em> working as intended here.</p>
 <p>The second diagnostic, as @sharkdp says, is due to our current constraint solver being too naive.</p>
-<p>So all things considered, I'll close this as a duplicate of #623</p>
+<p>So all things considered, I&#x27;ll close this as a duplicate of #623</p>
 <p>But thanks for the report!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-10-01 16:18</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-01 16:18</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:44 UTC
+        Synced at 2026-01-20 19:25:40 UTC
     </footer>
 </body>
 </html>

@@ -23,11 +23,11 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This PR introduces parallelism to the resolver. Specifically, we can perform PubGrub resolution on a separate thread, while keeping all I/O on the tokio thread. We already have the infrastructure set up for this with the channel and <code>OnceMap</code>, which makes this change relatively simple. The big change needed to make this possible is removing the lifetimes on some of the types that need to be shared between the resolver and pubgrub thread.</p>
-<p>A related PR, https://github.com/astral-sh/uv/pull/1163, found that adding <code>yield_now</code>  calls improved throughput. With optimal scheduling we might be able to get away with everything on the same thread here. However, in the ideal pipeline with perfect prefetching, the resolution and prefetching can run completely in parallel without depending on one another. While this would be very difficult to achieve, even with our current prefetching pattern we see a consistent performance improvement from parallelism.</p>
-<p>This does also require reverting a few of the changes from https://github.com/astral-sh/uv/pull/3413, but not all of them. The sharing is isolated to the resolver task.</p>
-<h2>Test Plan</h2>
+<p>A related PR, <a href="https://github.com/astral-sh/uv/pull/1163">astral-sh/uv#1163</a>, found that adding <code>yield_now</code>  calls improved throughput. With optimal scheduling we might be able to get away with everything on the same thread here. However, in the ideal pipeline with perfect prefetching, the resolution and prefetching can run completely in parallel without depending on one another. While this would be very difficult to achieve, even with our current prefetching pattern we see a consistent performance improvement from parallelism.</p>
+<p>This does also require reverting a few of the changes from <a href="https://github.com/astral-sh/uv/pull/3413">astral-sh/uv#3413</a>, but not all of them. The sharing is isolated to the resolver task.</p>
+Test Plan
 <p>On smaller tasks performance is mixed with ~2% improvements/regressions on both sides. However, on medium-large resolution tasks we see the benefits of parallelism, with improvements anywhere from 10-50%.</p>
 <pre><code>./scripts/requirements/jupyter.in
 Benchmark 1: ./target/profiling/baseline (resolve-warm)
@@ -71,7 +71,7 @@ Summary
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @ibraheemdev on 2024-05-16 16:17</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-05-16 16:17</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-16 16:21</div>
@@ -79,10 +79,10 @@ Summary
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-05-16 16:21</div>
+            <div class="event">Review requested from <a href="https://github.com/BurntSushi">@BurntSushi</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-16 16:21</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @konstin by @charliermarsh on 2024-05-16 16:21</div>
+            <div class="event">Review requested from <a href="https://github.com/konstin">@konstin</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-16 16:21</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-16 16:21</div>
@@ -90,11 +90,11 @@ Summary
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2024-05-16 16:21</div>
+            <div class="event">Label <span class="label">performance</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-16 16:21</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolver/batch_prefetch.rs</code>:6 on 2024-05-16 17:16</div>
-            <div class="timeline-body"><p>Why the switch to an unbounded channel? I'm not usually a fan of these because it prevents back-pressure. Maybe use <code>crossbeam-channel</code> instead?</p>
+            <div class="timeline-body"><p>Why the switch to an unbounded channel? I&#x27;m not usually a fan of these because it prevents back-pressure. Maybe use <code>crossbeam-channel</code> instead?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -104,12 +104,12 @@ Summary
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:196 on 2024-05-16 17:19</div>
-            <div class="timeline-body"><p>What's the thinking behind splitting this type out? Maybe some code comments would help here.</p>
+            <div class="timeline-body"><p>What&#x27;s the thinking behind splitting this type out? Maybe some code comments would help here.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:339 on 2024-05-16 17:20</div>
-            <div class="timeline-body"><p>This doesn't seem sound to me? Is there an alternative approach here that doesn't require <code>unsafe</code>? A <code>transmute</code>, in my experience, is typically quite tricky to get right. Especially when erasing away a lifetime.</p>
+            <div class="timeline-body"><p>This doesn&#x27;t seem sound to me? Is there an alternative approach here that doesn&#x27;t require <code>unsafe</code>? A <code>transmute</code>, in my experience, is typically quite tricky to get right. Especially when erasing away a lifetime.</p>
 <p>I wonder if it makes sense to first focus on removing the lifetime from <code>Solver</code>/<code>Resolver</code>. I imagine that would simplify things here.</p>
 </div>
         </div>
@@ -120,7 +120,7 @@ Summary
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:596 on 2024-05-16 17:26</div>
-            <div class="timeline-body"><p>What is the difference/relationship between this type and <code>Resolver</code> and <code>SolverState</code>? I'm bouncing between them trying to find a difference. I see <code>Resolver</code> is generic over a <code>Provider</code> where this is not. Some code comments explaining what this type is and why it exists would help I think. (I think the code comments should, at minimum, answer the question of why there is duplication here.)</p>
+            <div class="timeline-body"><p>What is the difference/relationship between this type and <code>Resolver</code> and <code>SolverState</code>? I&#x27;m bouncing between them trying to find a difference. I see <code>Resolver</code> is generic over a <code>Provider</code> where this is not. Some code comments explaining what this type is and why it exists would help I think. (I think the code comments should, at minimum, answer the question of why there is duplication here.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -130,12 +130,12 @@ Summary
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-05-16 17:34</div>
-            <div class="timeline-body"><p>This is pretty awesome. I think this largely makes sense to me overall. I am a little concerned about the switch to unbounded channels/streams though. I convinced us a while back to switch <em>from</em> unbounded channels <em>to</em> bounded channels. I believe this was my argument: https://github.com/astral-sh/uv/pull/1163#discussion_r1473155361</p>
+            <div class="timeline-body"><p>This is pretty awesome. I think this largely makes sense to me overall. I am a little concerned about the switch to unbounded channels/streams though. I convinced us a while back to switch <em>from</em> unbounded channels <em>to</em> bounded channels. I believe this was my argument: <a href="https://github.com/astral-sh/uv/pull/1163">astral-sh/uv#1163</a>#discussion_r1473155361</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:596 on 2024-05-16 17:43</div>
-            <div class="timeline-body"><p>The <code>Resolver</code> includes state that is required by the <code>fetch</code> task. Because it's also the constructor for the <code>Solver</code>, it needs to hold the solver state initially in the <code>Option&lt;SolverState&gt;</code>. In <code>resolve</code> (which consumes the <code>Resolver</code>), that state is then taken and given to the <code>Solver</code> task, which is run in the thread. This avoids cloning items that don't actually need to be shared.</p>
+            <div class="timeline-body"><p>The <code>Resolver</code> includes state that is required by the <code>fetch</code> task. Because it&#x27;s also the constructor for the <code>Solver</code>, it needs to hold the solver state initially in the <code>Option&lt;SolverState&gt;</code>. In <code>resolve</code> (which consumes the <code>Resolver</code>), that state is then taken and given to the <code>Solver</code> task, which is run in the thread. This avoids cloning items that don&#x27;t actually need to be shared.</p>
 <p>Thinking about it now.. I think the <code>Resolver</code> can just construct the <code>Solver</code> in <code>new</code>.</p>
 </div>
         </div>
@@ -145,7 +145,7 @@ Summary
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:384 on 2024-05-16 17:44</div>
-            <div class="timeline-body"><p>This is an old comment, I didn't touch any of the <code>fetch</code> code. It's referring to the channel between the prefetcher and solver, I'll update it to make it clearer.</p>
+            <div class="timeline-body"><p>This is an old comment, I didn&#x27;t touch any of the <code>fetch</code> code. It&#x27;s referring to the channel between the prefetcher and solver, I&#x27;ll update it to make it clearer.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -158,7 +158,7 @@ Summary
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:339 on 2024-05-16 17:45</div>
-            <div class="timeline-body"><p>Yeah, I initially did this just to test out the performance affects without having to make all the lifetime changes. Didn't mean for it to be merged in this state :sweat_smile:</p>
+            <div class="timeline-body"><p>Yeah, I initially did this just to test out the performance affects without having to make all the lifetime changes. Didn&#x27;t mean for it to be merged in this state :sweat_smile:</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -167,11 +167,11 @@ Summary
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv-resolver/src/resolver/batch_prefetch.rs</code>:6 on 2024-05-16 17:48</div>
-            <div class="timeline-body"><p>I can switch back to bounded channels, tokio has a <code>blocking_send</code> method. Now that things are running in parallel I don't see a huge benefit of the solver blocking on the prefetcher unless it's necessary, but I agree that having some backpressure is a good idea.</p>
+            <div class="timeline-body"><p>I can switch back to bounded channels, tokio has a <code>blocking_send</code> method. Now that things are running in parallel I don&#x27;t see a huge benefit of the solver blocking on the prefetcher unless it&#x27;s necessary, but I agree that having some backpressure is a good idea.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @BurntSushi by @ibraheemdev on 2024-05-16 19:09</div>
+            <div class="event">Review requested from <a href="https://github.com/BurntSushi">@BurntSushi</a> by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-05-16 19:09</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-17 02:05</div>
@@ -190,12 +190,12 @@ Summary
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-05-17 09:19</div>
             <div class="timeline-body"><p>Amazing work!</p>
-<p>Do you know why it gets so much faster, i.e. how the solver is blocking? I've been looking at the spans, but i don't really understand why the prefetches don't get queued anyway on main.</p>
+<p>Do you know why it gets so much faster, i.e. how the solver is blocking? I&#x27;ve been looking at the spans, but i don&#x27;t really understand why the prefetches don&#x27;t get queued anyway on main.</p>
 <p>Airflow, main vs. PR:</p>
-<p><img src="https://github.com/astral-sh/uv/assets/6826232/b7c2de41-d4e8-45e1-b323-b2a23e053b09" alt="main" /></p>
-<p><img src="https://github.com/astral-sh/uv/assets/6826232/21ab014e-bfdb-4b52-89e4-5171ddcca6f7" alt="PR" /></p>
-<hr />
-<p>Here's some perf number from my machine:</p>
+<p><img src="https://github.com/astral-sh/uv/assets/6826232/b7c2de41-d4e8-45e1-b323-b2a23e053b09" alt="main"></p>
+<p><img src="https://github.com/astral-sh/uv/assets/6826232/21ab014e-bfdb-4b52-89e4-5171ddcca6f7" alt="PR"></p>
+<hr>
+<p>Here&#x27;s some perf number from my machine:</p>
 <pre><code>jupyter:
   Time (mean ± σ):      15.9 ms ±   1.3 ms    [User: 14.1 ms, System: 21.0 ms]
   Time (mean ± σ):      15.4 ms ±   1.1 ms    [User: 14.1 ms, System: 20.1 ms]
@@ -218,12 +218,12 @@ airflow:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-interpreter/src/environment.rs</code>:19 on 2024-05-17 11:32</div>
-            <div class="timeline-body"><p>I usually use <code>Foo</code> and <code>FooInner</code> personally. I don't think I've seen <code>SharedFoo</code> much? I like adding a suffix personally. So I'd prefer <code>FooShared</code> (or whatever). But I don't have a strong opinion.</p>
+            <div class="timeline-body"><p>I usually use <code>Foo</code> and <code>FooInner</code> personally. I don&#x27;t think I&#x27;ve seen <code>SharedFoo</code> much? I like adding a suffix personally. So I&#x27;d prefer <code>FooShared</code> (or whatever). But I don&#x27;t have a strong opinion.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolver/index.rs</code>:20 on 2024-05-17 13:10</div>
-            <div class="timeline-body"><p>Since the outer type isn't <code>pub(crate)</code>, should the fields be? I think it should be okay to un-export them.</p>
+            <div class="timeline-body"><p>Since the outer type isn&#x27;t <code>pub(crate)</code>, should the fields be? I think it should be okay to un-export them.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -247,7 +247,7 @@ airflow:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-05-17 15:35</div>
-            <div class="timeline-body"><p>@konstin The elapsed user time doesn't change up, and if you look at the profile for the resolver thread you'll see a lot of time spent in pubgrub, which suggests that the prefetches may have been queued on the single-threaded version but we simply didn't have enough time to get to them, or if we did they took away from the solver. My hunch is that the solver and prefetcher were fighting for time slices.</p>
+            <div class="timeline-body"><p>@konstin The elapsed user time doesn&#x27;t change up, and if you look at the profile for the resolver thread you&#x27;ll see a lot of time spent in pubgrub, which suggests that the prefetches may have been queued on the single-threaded version but we simply didn&#x27;t have enough time to get to them, or if we did they took away from the solver. My hunch is that the solver and prefetcher were fighting for time slices.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -256,19 +256,19 @@ airflow:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv-interpreter/src/environment.rs</code>:19 on 2024-05-17 15:38</div>
-            <div class="timeline-body"><p>I sort of avoid <code>Inner</code> because it feels like a catch-all naming convention. A suffix seems slightly better for readability, I'll switch to that.</p>
+            <div class="timeline-body"><p>I sort of avoid <code>Inner</code> because it feels like a catch-all naming convention. A suffix seems slightly better for readability, I&#x27;ll switch to that.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @ibraheemdev on 2024-05-17 15:47</div>
+            <div class="event">Merged by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-05-17 15:47</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ibraheemdev on 2024-05-17 15:47</div>
+            <div class="event">Closed by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-05-17 15:47</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:37:03 UTC
+        Synced at 2026-01-20 19:45:22 UTC
     </footer>
 </body>
 </html>

@@ -23,24 +23,24 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/mallochine">@mallochine</a></div>
-            <div class="timeline-body"><p>First I'd like to say how fricking impressed I was with ripgrep, especially from the very thorough technical overview in that blog post. 'ripgrep' inspired me to spend a lot more time looking at rust -- maybe there's something there that I didn't see before.</p>
-<p>Anyway. On to the bug report. As mentioned in the blog post, &quot;git grep has a special advantage: it does not need to traverse the directory hierarchy. It can discover the set of files to search straight from its git index&quot;. Soo....the optimization is to just eliminate git grep's special advantage? Hm.</p>
-<p>As far as I can tell, this is within the scope of ripgrep's mission. After all, ripgrep is already reading from .gitignore, one of git's special files, as a <em>default</em> behavior...</p>
-<p>To bring some context into this bug, I noticed that for queries with no regex, git grep was still noticeably faster. For example: &quot;git grep asdf -- '*.json'.</p>
+            <div class="timeline-body"><p>First I&#x27;d like to say how fricking impressed I was with ripgrep, especially from the very thorough technical overview in that blog post. &#x27;ripgrep&#x27; inspired me to spend a lot more time looking at rust -- maybe there&#x27;s something there that I didn&#x27;t see before.</p>
+<p>Anyway. On to the bug report. As mentioned in the blog post, &quot;git grep has a special advantage: it does not need to traverse the directory hierarchy. It can discover the set of files to search straight from its git index&quot;. Soo....the optimization is to just eliminate git grep&#x27;s special advantage? Hm.</p>
+<p>As far as I can tell, this is within the scope of ripgrep&#x27;s mission. After all, ripgrep is already reading from .gitignore, one of git&#x27;s special files, as a <em>default</em> behavior...</p>
+<p>To bring some context into this bug, I noticed that for queries with no regex, git grep was still noticeably faster. For example: &quot;git grep asdf -- &#x27;*.json&#x27;.</p>
 <p>Anyway, cheers. ripgrep is really cool.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-04-14 00:08</div>
             <div class="timeline-body"><blockquote>
-<p>First I'd like to say how fricking impressed I was with ripgrep, especially from the very thorough technical overview in that blog post. 'ripgrep' inspired me to spend a lot more time looking at rust -- maybe there's something there that I didn't see before.</p>
+<p>First I&#x27;d like to say how fricking impressed I was with ripgrep, especially from the very thorough technical overview in that blog post. &#x27;ripgrep&#x27; inspired me to spend a lot more time looking at rust -- maybe there&#x27;s something there that I didn&#x27;t see before.</p>
 </blockquote>
 <p>&lt;3</p>
 <blockquote>
-<p>Anyway. On to the bug report. As mentioned in the blog post, &quot;git grep has a special advantage: it does not need to traverse the directory hierarchy. It can discover the set of files to search straight from its git index&quot;. Soo....the optimization is to just eliminate git grep's special advantage? Hm.</p>
+<p>Anyway. On to the bug report. As mentioned in the blog post, &quot;git grep has a special advantage: it does not need to traverse the directory hierarchy. It can discover the set of files to search straight from its git index&quot;. Soo....the optimization is to just eliminate git grep&#x27;s special advantage? Hm.</p>
 </blockquote>
 <blockquote>
-<p>As far as I can tell, this is within the scope of ripgrep's mission. After all, ripgrep is already reading from .gitignore, one of git's special files, as a default behavior...</p>
+<p>As far as I can tell, this is within the scope of ripgrep&#x27;s mission. After all, ripgrep is already reading from .gitignore, one of git&#x27;s special files, as a default behavior...</p>
 </blockquote>
 <p>That is potentially interesting, but there are problems. For example, ripgrep supports search specific <code>.ignore</code> files in addition to <code>.gitignore</code>. A <code>.ignore</code> file can whitelist things that are ignored in <code>.gitignore</code>:</p>
 <pre><code>[andrew@Cheetah ripgrep-449] echo test &gt; foo
@@ -49,17 +49,17 @@ foo
 1:test
 [andrew@Cheetah ripgrep-449] echo foo &gt; .gitignore
 [andrew@Cheetah ripgrep-449] rg test
-No files were searched, which means ripgrep probably applied a filter you didn't expect. Try running again with --debug.
-[andrew@Cheetah ripgrep-449] echo '!foo' &gt; .ignore
+No files were searched, which means ripgrep probably applied a filter you didn&#x27;t expect. Try running again with --debug.
+[andrew@Cheetah ripgrep-449] echo &#x27;!foo&#x27; &gt; .ignore
 [andrew@Cheetah ripgrep-449] rg test
 foo
 1:test
 </code></pre>
-<p>Which effectively means that even if ripgrep could read git's index, then it would still need to traverse the directory contents to look for files that have been whitelisted by other <code>.ignore</code> files.</p>
-<p>Of course, this doesn't mean the optimization is useless. I'm sure one can imagine cases where it might help. e.g., If you're searching MySQL's repo, then its <code>.gitignore</code> is huge and takes a good chunk of time to compile and match. So if we could rule that out by using git's index---even if we still have to traverse the directory and check for other <code>.ignore</code> files---there could still be a win there.</p>
-<p>With that said, that sounds like a lot of implementation complexity and I'm not quite sure it's worth it.</p>
+<p>Which effectively means that even if ripgrep could read git&#x27;s index, then it would still need to traverse the directory contents to look for files that have been whitelisted by other <code>.ignore</code> files.</p>
+<p>Of course, this doesn&#x27;t mean the optimization is useless. I&#x27;m sure one can imagine cases where it might help. e.g., If you&#x27;re searching MySQL&#x27;s repo, then its <code>.gitignore</code> is huge and takes a good chunk of time to compile and match. So if we could rule that out by using git&#x27;s index---even if we still have to traverse the directory and check for other <code>.ignore</code> files---there could still be a win there.</p>
+<p>With that said, that sounds like a lot of implementation complexity and I&#x27;m not quite sure it&#x27;s worth it.</p>
 <blockquote>
-<p>To bring some context into this bug, I noticed that for queries with no regex, git grep was still noticeably faster. For example: &quot;git grep asdf -- '*.json'.</p>
+<p>To bring some context into this bug, I noticed that for queries with no regex, git grep was still noticeably faster. For example: &quot;git grep asdf -- &#x27;*.json&#x27;.</p>
 </blockquote>
 <p>Weird. I have the opposite conclusion. This was in a checkout of Chromium (which is huge):</p>
 <pre><code>[andrew@Cheetah chromium.src] time git grep Openbox | wc -l
@@ -79,57 +79,57 @@ sys     0m2.053s
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2017-04-14 00:08</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-04-14 00:08</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mallochine">@mallochine</a> on 2017-04-14 00:34</div>
             <div class="timeline-body"><p>Oh, no, ripgrep is faster than vanilla git grep almost surely. I felt that part of the reason is that you get to specify file types to look for. ripgrep -tjson was <em>way</em> faster than just git grep</p>
-<p>To level the playing field, I wondered whether git grep had an option to search for file types. Then I found &quot;git grep asdf -- '*json'&quot;. That did the trick. git grep tiny bit faster than ripgrep. And I thought this was due to git's special advantage.</p>
+<p>To level the playing field, I wondered whether git grep had an option to search for file types. Then I found &quot;git grep asdf -- &#x27;*json&#x27;&quot;. That did the trick. git grep tiny bit faster than ripgrep. And I thought this was due to git&#x27;s special advantage.</p>
 <p>Let me just show the terminal output.</p>
-<pre><code>[main]$ time git grep '^message' -- '*.proto' | wc -l
+<pre><code>[main]$ time git grep &#x27;^message&#x27; -- &#x27;*.proto&#x27; | wc -l
 4114
-git grep '^message' -- '*.proto'  0.10s user 0.01s system 117% cpu 0.096 total
+git grep &#x27;^message&#x27; -- &#x27;*.proto&#x27;  0.10s user 0.01s system 117% cpu 0.096 total
 </code></pre>
-<pre><code>[main]$ time $HOME/bin/rg '^message' -g '*.proto' | wc -l
+<pre><code>[main]$ time $HOME/bin/rg &#x27;^message&#x27; -g &#x27;*.proto&#x27; | wc -l
 4114
-$HOME/bin/rg '^message' -g '*.proto'  0.29s user 0.27s system 369% cpu 0.150 total
+$HOME/bin/rg &#x27;^message&#x27; -g &#x27;*.proto&#x27;  0.29s user 0.27s system 369% cpu 0.150 total
 </code></pre>
-<p>To give some context, the use-case here was, say, if I wanted to search for all the protobuf messages in the repository. I ran these grep commands on my company's repo (Nutanix), which is huge. There's a couple million lines of code in there.</p>
+<p>To give some context, the use-case here was, say, if I wanted to search for all the protobuf messages in the repository. I ran these grep commands on my company&#x27;s repo (Nutanix), which is huge. There&#x27;s a couple million lines of code in there.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mallochine">@mallochine</a> on 2017-04-14 00:40</div>
             <div class="timeline-body"><p>oh...just noticed rg using a lot more system than git grep. If I level the playing field...(git grep uses 1 thread)</p>
-<pre><code>[main]$ time $HOME/bin/rg -j1 'message' -g '*.proto' | wc -l
+<pre><code>[main]$ time $HOME/bin/rg -j1 &#x27;message&#x27; -g &#x27;*.proto&#x27; | wc -l
 5794
-$HOME/bin/rg -j1 'message' -g '*.proto'  0.27s user 0.25s system 78% cpu 0.669 total
+$HOME/bin/rg -j1 &#x27;message&#x27; -g &#x27;*.proto&#x27;  0.27s user 0.25s system 78% cpu 0.669 total
 </code></pre>
-<pre><code>[main]$ time git grep --threads 1 'message' -- '*.proto' | wc -l
+<pre><code>[main]$ time git grep --threads 1 &#x27;message&#x27; -- &#x27;*.proto&#x27; | wc -l
 5794
-git grep --threads 1 'message' -- '*.proto'  0.09s user 0.02s system 113% cpu 0.097 total
+git grep --threads 1 &#x27;message&#x27; -- &#x27;*.proto&#x27;  0.09s user 0.02s system 113% cpu 0.097 total
 </code></pre>
-<p>Yep, git grep got a threads feature recently. Must have been pretty recent...didn't even had it in my old version 2.12</p>
+<p>Yep, git grep got a threads feature recently. Must have been pretty recent...didn&#x27;t even had it in my old version 2.12</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-04-14 01:31</div>
             <div class="timeline-body"><p>Yeah, that actually makes sense. If your repo is huge and has some gitignore files in it, then ripgrep is going to spend a good chunk of time handling those.</p>
 <p>Note that when I wrote the blog post, ripgrep used parallelism only for search. But now it parallelizes directory traversal itself, which permits gitignore matching to be parallelized as well. This let ripgrep recoup most of the losses it had against <code>git grep</code> (and then some, occasionally :-)).</p>
-<p>If you're interested in Rust, the parallel iterator might be interesting to you. It doesn't use any unsafe code or any mutexes and Rust's type system guarantees no data races. It also builds every <code>gitignore</code> matcher exactly once and reuses them across all threads: https://github.com/BurntSushi/ripgrep/blob/71585f6d476265338e9ee4e924b4f43b02f2d233/ignore/src/walk.rs#L839-L1272</p>
+<p>If you&#x27;re interested in Rust, the parallel iterator might be interesting to you. It doesn&#x27;t use any unsafe code or any mutexes and Rust&#x27;s type system guarantees no data races. It also builds every <code>gitignore</code> matcher exactly once and reuses them across all threads: https://github.com/BurntSushi/ripgrep/blob/71585f6d476265338e9ee4e924b4f43b02f2d233/ignore/src/walk.rs#L839-L1272</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-05-08 22:07</div>
-            <div class="timeline-body"><p>I'm going to close this. The idea is clever, and while it has the potential to make ripgrep faster in some repos, it seems like it would require a somewhat sizable addition to implementation complexity. I'd welcome folks to experiment with things here, and if a simple way to use git's index crops up (and also interacts with the rest of ripgrep's logic in a simple way, which is the harder part I think), then I'd be open to that.</p>
+            <div class="timeline-body"><p>I&#x27;m going to close this. The idea is clever, and while it has the potential to make ripgrep faster in some repos, it seems like it would require a somewhat sizable addition to implementation complexity. I&#x27;d welcome folks to experiment with things here, and if a simple way to use git&#x27;s index crops up (and also interacts with the rest of ripgrep&#x27;s logic in a simple way, which is the harder part I think), then I&#x27;d be open to that.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2017-05-08 22:07</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-05-08 22:07</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:42:09 UTC
+        Synced at 2026-01-20 18:48:04 UTC
     </footer>
 </body>
 </html>

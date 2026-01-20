@@ -23,19 +23,19 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/alerque">@alerque</a></div>
-            <div class="timeline-body"><p>I've been looking forward to dynamic completion support for a long time. I see ZSH support has landed as an unstable feature so I <a href="https://github.com/alerque/git-warp-time/compare/dynamic-completion">started playing around with a POC on a small project</a> to get an idea how it all goes together.</p>
+            <div class="timeline-body"><p>I&#x27;ve been looking forward to dynamic completion support for a long time. I see ZSH support has landed as an unstable feature so I <a href="https://github.com/alerque/git-warp-time/compare/dynamic-completion">started playing around with a POC on a small project</a> to get an idea how it all goes together.</p>
 <p>So far I have...</p>
 <ol>
 <li><p>Enabled <code>features = [ &quot;unstable-dynamic&quot; ]</code> for <em>clap_complete</em> in both my dependencies and build-dependencies.</p>
 </li>
 <li><p>Added a new subcommand to my CLI using the derive macros similar to the example in the docs:</p>
-<pre><code class="language-rust">/// Used internally by Clap to generate dynamic completions
+<pre><code>/// Used internally by Clap to generate dynamic completions
 #[command(subcommand)]
 pub _complete: Option&lt;CompleteCommand&gt;,
 </code></pre>
 </li>
-<li><p>Edited my <code>main</code> function to intercept ARG[1] being 'complete' and handle dynamic completions:</p>
-<pre><code class="language-rust">let cli = Cli::parse();
+<li><p>Edited my <code>main</code> function to intercept ARG[1] being &#x27;complete&#x27; and handle dynamic completions:</p>
+<pre><code>let cli = Cli::parse();
 if let Some(completions) = cli._complete {
     completions.complete(&amp;mut Cli::command());
 } else {
@@ -44,7 +44,7 @@ if let Some(completions) = cli._complete {
 </code></pre>
 </li>
 <li><p>Swapped out the completer on one of my <code>Arg</code>s:</p>
-<pre><code class="language-diff">/// Optional list of paths to operate on instead of default which is all files tracked by Git
+<pre><code>/// Optional list of paths to operate on instead of default which is all files tracked by Git
 -#[arg(value_hint = clap::ValueHint::FilePath)]
 +#[arg(add = ArgValueCompleter::new(|| { vec![
 +        CompletionCandidate::new(&quot;foo&quot;),
@@ -55,7 +55,7 @@ pub paths: Option&lt;Vec&lt;String&gt;&gt;,
 </li>
 </ol>
 <p>This got me as far as being abe to use <code>myapp complete --shell zsh</code> to generate a shell completion function that I could dump to a file manually that later enable dynamic completions.</p>
-<p>What I can't figure out is how to use <code>generate_to()</code> (or similar) to output the same completion file with dynamic support at build time:</p>
+<p>What I can&#x27;t figure out is how to use <code>generate_to()</code> (or similar) to output the same completion file with dynamic support at build time:</p>
 <p>https://github.com/clap-rs/clap/blob/2d8138a4716fe3b63ef32693211d4cd50531eb81/clap_complete/src/generator/mod.rs#L191</p>
 <p>Am I missing some updated way to do that, or has it just not been implemented yet?</p>
 </div>
@@ -67,17 +67,17 @@ pub paths: Option&lt;Vec&lt;String&gt;&gt;,
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-08-12 13:35</div>
-            <div class="timeline-body"><p>The registration script is tightly coupled to the completion itself and so to encourage them being kept in lock-step, we've moved away from supporting any pre-generated completion scripts to <a href="https://docs.rs/clap_complete/4.5.14/clap_complete/dynamic/shells/enum.CompleteCommand.html">generating the registration function on shell load</a>.</p>
+            <div class="timeline-body"><p>The registration script is tightly coupled to the completion itself and so to encourage them being kept in lock-step, we&#x27;ve moved away from supporting any pre-generated completion scripts to <a href="https://docs.rs/clap_complete/4.5.14/clap_complete/dynamic/shells/enum.CompleteCommand.html">generating the registration function on shell load</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">A-completion</span> added by @epage on 2024-08-12 13:38</div>
+            <div class="event">Label <span class="label">A-completion</span> added by <a href="https://github.com/epage">@epage</a> on 2024-08-12 13:38</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/alerque">@alerque</a> on 2024-08-12 13:46</div>
             <div class="timeline-body"><p>How do you expect that to work with distros? As an Arch Linux packager I know we package hundreds of CLI tools that ship with build-time generated completions. This enables the completions to work out of the box when the user installs a package.</p>
-<p>The solution you are suggesting is troublesome for two reasons: first system packages can not/should not ever touch anything in a user's home directory, so we can't modify their shell RC files. For most shells there are some default RC file locations we could modify, but adding/removing lines is problematic. It is much easier (and hence how almost all shells expect us to do it) to drop a file in a directory to be used when completing any given command.</p>
-<p>Second the solution you're suggesting would require <em>running</em> every CLI command that has completions every time a shell starts up. That's somewhat less than ideal for performance reasons.</p>
+<p>The solution you are suggesting is troublesome for two reasons: first system packages can not/should not ever touch anything in a user&#x27;s home directory, so we can&#x27;t modify their shell RC files. For most shells there are some default RC file locations we could modify, but adding/removing lines is problematic. It is much easier (and hence how almost all shells expect us to do it) to drop a file in a directory to be used when completing any given command.</p>
+<p>Second the solution you&#x27;re suggesting would require <em>running</em> every CLI command that has completions every time a shell starts up. That&#x27;s somewhat less than ideal for performance reasons.</p>
 <p>Even if pre-generated completions are a thin wrapper around setting up the dynamic completion functions, we still need something pre-generated that we can drop in a directory to inform the shell that it shipped with completion support and how to activate it.</p>
 <p><strong>Edit:</strong></p>
 <blockquote>
@@ -91,7 +91,7 @@ pub paths: Option&lt;Vec&lt;String&gt;&gt;,
             <div class="timeline-body"><blockquote>
 <p>This concern is not relevant to distro packaging:</p>
 </blockquote>
-<p>Remember that distros are not the only distribution method in the world.  A lot of times, people just download a binary from github or use third-party tools like rustup. I'm working to provide a default workflow that is resilient in less formal environments.</p>
+<p>Remember that distros are not the only distribution method in the world.  A lot of times, people just download a binary from github or use third-party tools like rustup. I&#x27;m working to provide a default workflow that is resilient in less formal environments.</p>
 <blockquote>
 <p>How do you expect that to work with distros? As an Arch Linux packager I know we package hundreds of CLI tools that ship with build-time generated completions. This enables the completions to work out of the box when the user installs a package.</p>
 </blockquote>
@@ -115,34 +115,34 @@ pub paths: Option&lt;Vec&lt;String&gt;&gt;,
             <div class="timeline-body"><blockquote>
 <p>Remember that distros are not the only distribution method in the world</p>
 </blockquote>
-<p>Of course it is not, but it is a <em>major</em> one. I'm not suggesting that completions should be exclusively optimized for pre-generated distro packaging. I am suggesting that you not architect away this possibility because it really is the may way people get completions at all for much of their systems.</p>
+<p>Of course it is not, but it is a <em>major</em> one. I&#x27;m not suggesting that completions should be exclusively optimized for pre-generated distro packaging. I am suggesting that you not architect away this possibility because it really is the may way people get completions at all for much of their systems.</p>
 <blockquote>
-<p>A lot of times, people just download a binary from github or use third-party tools like rustup. I'm working to provide a default workflow that is resilient in less formal environments.</p>
+<p>A lot of times, people just download a binary from github or use third-party tools like rustup. I&#x27;m working to provide a default workflow that is resilient in less formal environments.</p>
 </blockquote>
-<p>Sure. I'm fine with supporting that use case too, but people mostly do this with a few specialty or &quot;pet&quot; projects, not with their entire system. They do it with things that are not packaged or that update frequently and they use a lot. Almost everybody on any Linux system starts with a base set of packages and completions and customize from there.</p>
+<p>Sure. I&#x27;m fine with supporting that use case too, but people mostly do this with a few specialty or &quot;pet&quot; projects, not with their entire system. They do it with things that are not packaged or that update frequently and they use a lot. Almost everybody on any Linux system starts with a base set of packages and completions and customize from there.</p>
 <blockquote>
 <p>Either</p>
 <pre><code>* drop in your common location a file that does the `source`</code></pre>
 </blockquote>
-<p>Again, this will cause the system to have to execute hundreds of CLI tools for every shell spawned on the system. The system I'm on now currently has 481 completions.</p>
+<p>Again, this will cause the system to have to execute hundreds of CLI tools for every shell spawned on the system. The system I&#x27;m on now currently has 481 completions.</p>
 <blockquote>
 <pre><code>* As you generally version both halves together, run the tool to generate the result and save that, with it clearly documented that this is coupling the two pieces together and could run into issues if the user shadows a distribution-provided command, e.g. `cargo` from distribution vs rustup.
-  * Yes, this runs into problems with cross-compilation ([Generate shell completions as part of the build process to assist cross compilation #5562](https://github.com/clap-rs/clap/issues/5562)).</code></pre>
+  * Yes, this runs into problems with cross-compilation ([Generate shell completions as part of the build process to assist cross compilation #5562](<a href="https://github.com/clap-rs/clap/issues/5562">clap-rs/clap#5562</a>)).</code></pre>
 </blockquote>
-<p>If user's shadow anything on provided by the system, there are always going to be issues. This isn't a reason not to provide completions (or man pages).</p>
-<p>As @Flowdalic already pointed out, we don't always have access to run binaries on the architecture we're compiling for and generating packages that will be installed on, so this isn't viable for all packaging workflows.</p>
+<p>If user&#x27;s shadow anything on provided by the system, there are always going to be issues. This isn&#x27;t a reason not to provide completions (or man pages).</p>
+<p>As @Flowdalic already pointed out, we don&#x27;t always have access to run binaries on the architecture we&#x27;re compiling for and generating packages that will be installed on, so this isn&#x27;t viable for all packaging workflows.</p>
 <blockquote>
 <p>If there are ways to improve our process for the &quot;drop in the distros common location&quot;, all for improving things. This would especially be good for us to work out before stabilizing this.</p>
 </blockquote>
-<p>Why not make the build-time generated completions just a thin wrapper that bootstraps the dynamic completions? That's basically what the output of <code>myprogram completion</code> is now, with the exception that it includes some top level of static-ish completions with appropriate hooks for the dynamic bits. Either the build time generated completions definitions should continue to be as they are now with all the static parts generated, or they could be a much thinner wrapper around a purely dynamic completion system.</p>
+<p>Why not make the build-time generated completions just a thin wrapper that bootstraps the dynamic completions? That&#x27;s basically what the output of <code>myprogram completion</code> is now, with the exception that it includes some top level of static-ish completions with appropriate hooks for the dynamic bits. Either the build time generated completions definitions should continue to be as they are now with all the static parts generated, or they could be a much thinner wrapper around a purely dynamic completion system.</p>
 <blockquote>
 <p>If you mean <code>build.rs</code>, this was already problematic. It works well in some cases but in others, it requires contorting an application to gather all of the right types to make this work.</p>
 </blockquote>
-<p>Yes, I get the pain of having to gather types at build time... but that wouldn't be necessary if the build time generated completion definition was just a bootstrapping system that didn't have to understand the apps argument handling at all.</p>
+<p>Yes, I get the pain of having to gather types at build time... but that wouldn&#x27;t be necessary if the build time generated completion definition was just a bootstrapping system that didn&#x27;t have to understand the apps argument handling at all.</p>
 <blockquote>
 <p>It also requires every command to opt-in to be of use to you (#5562).</p>
 </blockquote>
-<p>I don't understand this comment at all. I have several apps with non-optional sub commands and am able to generate completions for them at build time just fine. I may be misunderstanding what you are saying here, and it may or may not be relevant to how to pre-generate completion definitions for apps that use dynamic completions.</p>
+<p>I don&#x27;t understand this comment at all. I have several apps with non-optional sub commands and am able to generate completions for them at build time just fine. I may be misunderstanding what you are saying here, and it may or may not be relevant to how to pre-generate completion definitions for apps that use dynamic completions.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -153,12 +153,12 @@ pub paths: Option&lt;Vec&lt;String&gt;&gt;,
 </blockquote>
 </blockquote>
 <blockquote>
-<p>Again, this will cause the system to have to execute hundreds of CLI tools for every shell spawned on the system. The system I'm on now currently has 481 completions.</p>
+<p>Again, this will cause the system to have to execute hundreds of CLI tools for every shell spawned on the system. The system I&#x27;m on now currently has 481 completions.</p>
 </blockquote>
-<p>In the short-term, that isn't a problem.  Not every one of those is written in Rust and not every one of those in Rust is using clap.  What would be our expected &quot;market penetration&quot; in a distribution like this 5 years down the line?  For how much we expect to have, what is the actual cost?</p>
+<p>In the short-term, that isn&#x27;t a problem.  Not every one of those is written in Rust and not every one of those in Rust is using clap.  What would be our expected &quot;market penetration&quot; in a distribution like this 5 years down the line?  For how much we expect to have, what is the actual cost?</p>
 <p>Note that I added a new registration scheme in #5671 which should allow faster registration.  There are possibilities for optimizing it further.</p>
 <blockquote>
-<p>If user's shadow anything on provided by the system, there are always going to be issues. This isn't a reason not to provide completions (or man pages).</p>
+<p>If user&#x27;s shadow anything on provided by the system, there are always going to be issues. This isn&#x27;t a reason not to provide completions (or man pages).</p>
 </blockquote>
 <p>&quot;issues&quot; is relative</p>
 <ul>
@@ -166,54 +166,54 @@ pub paths: Option&lt;Vec&lt;String&gt;&gt;,
 <li>If someone has version mismatches on completions, then they could potentially lose completion support.</li>
 </ul>
 <blockquote>
-<p>That's basically what the output of myprogram completion is now, with the exception that it includes some top level of static-ish completions with appropriate hooks for the dynamic bits. Either the build time generated completions definitions should continue to be as they are now with all the static parts generated, or they could be a much thinner wrapper around a purely dynamic completion system.</p>
+<p>That&#x27;s basically what the output of myprogram completion is now, with the exception that it includes some top level of static-ish completions with appropriate hooks for the dynamic bits. Either the build time generated completions definitions should continue to be as they are now with all the static parts generated, or they could be a much thinner wrapper around a purely dynamic completion system.</p>
 </blockquote>
-<p>I'm not too sure what you are referring to with &quot;with the exception that&quot; and its not clear to me what you are wanting from your suggestion here.</p>
+<p>I&#x27;m not too sure what you are referring to with &quot;with the exception that&quot; and its not clear to me what you are wanting from your suggestion here.</p>
 <blockquote>
 <blockquote>
-<p>It also requires every command to opt-in to be of use to you (https://github.com/clap-rs/clap/issues/5562).</p>
+<p>It also requires every command to opt-in to be of use to you (<a href="https://github.com/clap-rs/clap/issues/5562">clap-rs/clap#5562</a>).</p>
 </blockquote>
 </blockquote>
 <blockquote>
-<p>I don't understand this comment at all. I have several apps with non-optional sub commands and am able to generate completions for them at build time just fine. I may be misunderstanding what you are saying here, and it may or may not be relevant to how to pre-generate completion definitions for apps that use dynamic completions.</p>
+<p>I don&#x27;t understand this comment at all. I have several apps with non-optional sub commands and am able to generate completions for them at build time just fine. I may be misunderstanding what you are saying here, and it may or may not be relevant to how to pre-generate completion definitions for apps that use dynamic completions.</p>
 </blockquote>
-<p>That issue is about getting <code>clap</code> to help get build-time generated completions more universally adopted.  That implies there is a problem with them existing.   If a distribution expects all programs to include build-time completion generation, then you've likely already lost as most of them likely don't.  If you're fine patching it into every package, thats on you to deal with that pain.</p>
+<p>That issue is about getting <code>clap</code> to help get build-time generated completions more universally adopted.  That implies there is a problem with them existing.   If a distribution expects all programs to include build-time completion generation, then you&#x27;ve likely already lost as most of them likely don&#x27;t.  If you&#x27;re fine patching it into every package, thats on you to deal with that pain.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/alerque">@alerque</a> on 2024-08-12 21:03</div>
             <div class="timeline-body"><blockquote>
 <blockquote>
-<p>Again, this will cause the system to have to execute hundreds of CLI tools for every shell spawned on the system. The system I'm on now currently has 481 completions.</p>
+<p>Again, this will cause the system to have to execute hundreds of CLI tools for every shell spawned on the system. The system I&#x27;m on now currently has 481 completions.</p>
 </blockquote>
-<p>In the short-term, that isn't a problem. Not every one of those is written in Rust and not every one of those in Rust is using clap. What would be our expected &quot;market penetration&quot; in a distribution like this 5 years down the line? For how much we expect to have, what is the actual cost?</p>
+<p>In the short-term, that isn&#x27;t a problem. Not every one of those is written in Rust and not every one of those in Rust is using clap. What would be our expected &quot;market penetration&quot; in a distribution like this 5 years down the line? For how much we expect to have, what is the actual cost?</p>
 </blockquote>
 <p>Hold my beer.</p>
-<p>The system I'm using right now has 49 packages that</p>
+<p>The system I&#x27;m using right now has 49 packages that</p>
 <ol>
 <li>Are Rust CLI apps.</li>
 <li>Use Clap</li>
 <li>Package pre-generated completions...</li>
 <li>For ZSH...</li>
 </ol>
-<p>And I have just a fraction of the available Rust packages with pre-generated completions installed. This isn't my package testing machine, just one I use for daily work on book publishing.</p>
-<p>Do you really think it would be okay to spawn 49 (or 10? or 2?) processes for random apps I happen to have installed every time I fire up a new shell? Even if it runs in a small number of milliseconds each? I grant that if a user wants to add something to their RC files that spawn processes on every new shell that's fine. I do it myself for <code>atuin</code>, <code>starfish</code>, and <code>zoxide</code>, but those all have a legitimate reason to run on every shell invocation (and even every command in the shell).</p>
-<p>It would be totally fine for an end user to use that sort of mechanism to keep completions fresh to match their hand-installed tooling if they choose, but it's out of the question for a distro to start packaging files that couse <em>any</em> processes to run every time a shell starts up.</p>
-<p>Given the up-tick in Rust based CLIs I don't think it's unreasonable to believe than <em>now</em>, never mind in the next 5 years, tens to hundreds of thousands of users have hundreds of thousands to millions of packages installed with Clap based Rust completions pre-generated. I don't know how fast those projects would be adapting to use dynamic completions, but <strong>pushing the Clap tooling in a direction that actively makes it hard to package completion definitions in a way that works out of the box without end user modifications and without spawning a million processes on every new shell is crazy talk</strong> in my book.</p>
-<p>Maybe some other distro packagers can chime in on that, and hopefully we can work out something that is more condusive to making things work nicely out of the box for our end users. And I don't mean just one distro, this is a pretty universal issue across distros.</p>
+<p>And I have just a fraction of the available Rust packages with pre-generated completions installed. This isn&#x27;t my package testing machine, just one I use for daily work on book publishing.</p>
+<p>Do you really think it would be okay to spawn 49 (or 10? or 2?) processes for random apps I happen to have installed every time I fire up a new shell? Even if it runs in a small number of milliseconds each? I grant that if a user wants to add something to their RC files that spawn processes on every new shell that&#x27;s fine. I do it myself for <code>atuin</code>, <code>starfish</code>, and <code>zoxide</code>, but those all have a legitimate reason to run on every shell invocation (and even every command in the shell).</p>
+<p>It would be totally fine for an end user to use that sort of mechanism to keep completions fresh to match their hand-installed tooling if they choose, but it&#x27;s out of the question for a distro to start packaging files that couse <em>any</em> processes to run every time a shell starts up.</p>
+<p>Given the up-tick in Rust based CLIs I don&#x27;t think it&#x27;s unreasonable to believe than <em>now</em>, never mind in the next 5 years, tens to hundreds of thousands of users have hundreds of thousands to millions of packages installed with Clap based Rust completions pre-generated. I don&#x27;t know how fast those projects would be adapting to use dynamic completions, but <strong>pushing the Clap tooling in a direction that actively makes it hard to package completion definitions in a way that works out of the box without end user modifications and without spawning a million processes on every new shell is crazy talk</strong> in my book.</p>
+<p>Maybe some other distro packagers can chime in on that, and hopefully we can work out something that is more condusive to making things work nicely out of the box for our end users. And I don&#x27;t mean just one distro, this is a pretty universal issue across distros.</p>
 <p>Note that not every distro has the cross-compilation issue where the completions need to be generated at build-time rather than using a run time phase after build to generate completions for packaging, but with the recent proliferation of architectures in active use that is a growing problem not a reducing one.</p>
 <blockquote>
 <p>Note that I added a new registration scheme in #5671 which should allow faster registration. There are possibilities for optimizing it further.</p>
 </blockquote>
 <p>The streamlined registration avoiding the need for a dedicated subcommand that can interfere with the actual app is quite nice to see.</p>
-<p>Don't think I'm against dynamic completions here, I'm very much for them. I just want to see the bootstrapping a starter definition for them to be usable in a shell out of the box be something distros can easily achieve. This means playing by the shell's own rules on where things should be and what they should look like, at least to get the ball rolling.</p>
+<p>Don&#x27;t think I&#x27;m against dynamic completions here, I&#x27;m very much for them. I just want to see the bootstrapping a starter definition for them to be usable in a shell out of the box be something distros can easily achieve. This means playing by the shell&#x27;s own rules on where things should be and what they should look like, at least to get the ball rolling.</p>
 <blockquote>
 <blockquote>
-<p>That's basically what the output of myprogram completion is now, with the exception that it includes some top level of static-ish completions with appropriate hooks for the dynamic bits. Either the build time generated completions definitions should continue to be as they are now with all the static parts generated, or they could be a much thinner wrapper around a purely dynamic completion system.</p>
+<p>That&#x27;s basically what the output of myprogram completion is now, with the exception that it includes some top level of static-ish completions with appropriate hooks for the dynamic bits. Either the build time generated completions definitions should continue to be as they are now with all the static parts generated, or they could be a much thinner wrapper around a purely dynamic completion system.</p>
 </blockquote>
-<p>I'm not too sure what you are referring to with &quot;with the exception that&quot; and its not clear to me what you are wanting from your suggestion here.</p>
+<p>I&#x27;m not too sure what you are referring to with &quot;with the exception that&quot; and its not clear to me what you are wanting from your suggestion here.</p>
 </blockquote>
-<p>Nevermind how I said it, I was in the weeds of how different shell definitions were looking and now can't even find what I was referencing.</p>
+<p>Nevermind how I said it, I was in the weeds of how different shell definitions were looking and now can&#x27;t even find what I was referencing.</p>
 <p>What I was is this: <strong>a way to pre-generate and package completion definitions for any given app and shell</strong> such that distros can package them to just work out of the box with no user intervention and no nonsense about executing all the installed apps once each when spawning a new shell.</p>
 <p>While distros can and will hack around the run-time vs. build time issue for generating these (by using a different architecture if need be to run the package after build but before package phases to generate the definitions), with the advent of dynamic completion support I would expect this to be <em><strong>much easier</strong></em> to support being generated at build time rather than run time because it no longer needs to have all the types and such available at build time. It basically just needs the <code>$0</code> for the app name and stick that in the boilerplate that then actually loads the dynamic completions.</p>
 <blockquote>
@@ -223,16 +223,16 @@ pub paths: Option&lt;Vec&lt;String&gt;&gt;,
 </blockquote>
 </blockquote>
 <blockquote>
-<p>I don't understand this comment at all. I have several apps with non-optional sub commands and am able to generate completions for them at build time just fine. I may be misunderstanding what you are saying here, and it may or may not be relevant to how to pre-generate completion definitions for apps that use dynamic completions.</p>
+<p>I don&#x27;t understand this comment at all. I have several apps with non-optional sub commands and am able to generate completions for them at build time just fine. I may be misunderstanding what you are saying here, and it may or may not be relevant to how to pre-generate completion definitions for apps that use dynamic completions.</p>
 </blockquote>
-<p>That issue is about getting <code>clap</code> to help get build-time generated completions more universally adopted. That implies there is a problem with them existing. If a distribution expects all programs to include build-time completion generation, then you've likely already lost as most of them likely don't. If you're fine patching it into every package, thats on you to deal with that pain.</p>
+<p>That issue is about getting <code>clap</code> to help get build-time generated completions more universally adopted. That implies there is a problem with them existing. If a distribution expects all programs to include build-time completion generation, then you&#x27;ve likely already lost as most of them likely don&#x27;t. If you&#x27;re fine patching it into every package, thats on you to deal with that pain.</p>
 </blockquote>
-<p>The build-time vs. run-time issue is kind of a side problem, I think you're distracted by that. The <em>main</em> issue here is being able to pre-generate and package completion definitions at all. Having to be manually run post-build and pre-package is obnoxious but overcomable. The cross-compilation issue is a further needless encumbrance, that build-time generation fixes. The distros I've looked at all have hundreds of packages each already successfully include pre-generated definitions for Clap based Rust CLIs. Given that the initial definitions file is now even simpler and boiler-plate-ish than ever it seems counter productive to actively work away from that towards making users do stuff to their RC files that spawns processes on every shell just to get completion support.</p>
+<p>The build-time vs. run-time issue is kind of a side problem, I think you&#x27;re distracted by that. The <em>main</em> issue here is being able to pre-generate and package completion definitions at all. Having to be manually run post-build and pre-package is obnoxious but overcomable. The cross-compilation issue is a further needless encumbrance, that build-time generation fixes. The distros I&#x27;ve looked at all have hundreds of packages each already successfully include pre-generated definitions for Clap based Rust CLIs. Given that the initial definitions file is now even simpler and boiler-plate-ish than ever it seems counter productive to actively work away from that towards making users do stuff to their RC files that spawns processes on every shell just to get completion support.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Arian8j2">@Arian8j2</a> on 2024-08-16 07:24</div>
-            <div class="timeline-body"><p>If I'm not mistaken, since the completion script is not changing, you can just run complete once to generate the completion and place it in the completion folders, Is there something I'm missing?</p>
+            <div class="timeline-body"><p>If I&#x27;m not mistaken, since the completion script is not changing, you can just run complete once to generate the completion and place it in the completion folders, Is there something I&#x27;m missing?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -243,30 +243,30 @@ pub paths: Option&lt;Vec&lt;String&gt;&gt;,
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/alerque">@alerque</a> on 2024-08-16 12:00</div>
             <div class="timeline-body"><blockquote>
-<p>If I'm not mistaken, since the completion script is not changing, you can just run complete once to generate the completion and place it in the completion folders, Is there something I'm missing?</p>
+<p>If I&#x27;m not mistaken, since the completion script is not changing, you can just run complete once to generate the completion and place it in the completion folders, Is there something I&#x27;m missing?</p>
 </blockquote>
-<p>Yes, but this can only be done <em>after</em> a build and by running the generated binary. It used to be possible to generate the completions at build time (hence the command being referenced here) which makes cross compilation a lot easier (you don't have to have access to the target platform to generate completions or build twice, once just for a different architecture where you can execute the result.</p>
+<p>Yes, but this can only be done <em>after</em> a build and by running the generated binary. It used to be possible to generate the completions at build time (hence the command being referenced here) which makes cross compilation a lot easier (you don&#x27;t have to have access to the target platform to generate completions or build twice, once just for a different architecture where you can execute the result.</p>
 <p>The new completion definitions have <em>much less</em> tooling and would not need access to nearly as many internals of an app to generate completions at build time, but instead of getting easier to do it seems like the feature is being removed entirely.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-09-19 17:53</div>
             <div class="timeline-body"><p>@alerque I hope this break has been helpful for this to be a more fruitful discussion.</p>
-<p>Let's start by stepping back and discussing the concern.  Fundamentally, your concern is with how the currently recommended way of registering completion scripts will scale as this gets adopted because it requires each command at shell initialization, even if it is able to cut out very early in the command's life cycle.</p>
+<p>Let&#x27;s start by stepping back and discussing the concern.  Fundamentally, your concern is with how the currently recommended way of registering completion scripts will scale as this gets adopted because it requires each command at shell initialization, even if it is able to cut out very early in the command&#x27;s life cycle.</p>
 <p>Is that right?</p>
-<p>Your comments came across as framing this as a new problem.  From my perspective, this is an existing problem with our existing completion system.  Your proposed solution is to generate completions at build time.  We document both build time and runtime completion generation, giving users the choice in handling it.  How much people do either is likely biased towards runtime by the pain it is to generate build time completions in <code>build.rs</code> due to pulling in application source to do so.  If its runtime generated, then we're in not too different of a situation with the existing completion system as we are with the new one.</p>
-<p>Is there something I'm missing about how this isn't a new problem?   You mentioned the anecdote of seeing hundreds of clap completion files in a distribution.  What methods are being used for these?  Are they natively supported upstream, patched, or something else?</p>
-<p>When reading your comments, I feel you are failing to internalize the challenge we face in working with applications that are also installed outside of distributions. Dynamic completions cannot entirely live in Rust code as far as I've found so far.  We need a shim within the host shell to adapt to its specific needs.  There is a tight coupling between these two halves.  We cannot just punt on bumping our major version to deal with breakages as this has end-user impact and would require the application to declare an incompatibility and help the user through it.  Also,. we likely do not want to wait for major version bumps.  If we pave a path too smoothly so that application authors don't use approaches to keep these in lockstep, end-users installing through other means will be broken and them, the author, and clap maintainers will have a frustrating experience.</p>
-<p>Is there anything about that situation that doesn't make sense or that it doesn't seem important enough?</p>
+<p>Your comments came across as framing this as a new problem.  From my perspective, this is an existing problem with our existing completion system.  Your proposed solution is to generate completions at build time.  We document both build time and runtime completion generation, giving users the choice in handling it.  How much people do either is likely biased towards runtime by the pain it is to generate build time completions in <code>build.rs</code> due to pulling in application source to do so.  If its runtime generated, then we&#x27;re in not too different of a situation with the existing completion system as we are with the new one.</p>
+<p>Is there something I&#x27;m missing about how this isn&#x27;t a new problem?   You mentioned the anecdote of seeing hundreds of clap completion files in a distribution.  What methods are being used for these?  Are they natively supported upstream, patched, or something else?</p>
+<p>When reading your comments, I feel you are failing to internalize the challenge we face in working with applications that are also installed outside of distributions. Dynamic completions cannot entirely live in Rust code as far as I&#x27;ve found so far.  We need a shim within the host shell to adapt to its specific needs.  There is a tight coupling between these two halves.  We cannot just punt on bumping our major version to deal with breakages as this has end-user impact and would require the application to declare an incompatibility and help the user through it.  Also,. we likely do not want to wait for major version bumps.  If we pave a path too smoothly so that application authors don&#x27;t use approaches to keep these in lockstep, end-users installing through other means will be broken and them, the author, and clap maintainers will have a frustrating experience.</p>
+<p>Is there anything about that situation that doesn&#x27;t make sense or that it doesn&#x27;t seem important enough?</p>
 <p><strong>So we need a solution that balances distributions and other installation methods.</strong></p>
 <p>Barring that, its a question of which side do we err on.  Frankly, I would err on other installation methods.  That is the case most likely to be wrong, its the status quo, and anything more would require some kind of opt-in by the application author anyways, making it less likely to happen.  Distributions have a lot of options for how they handle this, including</p>
 <ul>
 <li>taking the performance hit</li>
 <li>Running it in a packaging hook</li>
-<li>patching in the trivial <code>build.rs</code> (granted, I'm generally against distribution patches)</li>
+<li>patching in the trivial <code>build.rs</code> (granted, I&#x27;m generally against distribution patches)</li>
 <li>using a lookup table from clap version to a registration template (since, as you said, its just substituting a couple of fields).</li>
 </ul>
-<p>For now, I'm not leaving that open for discussion by posting a prompting question because I don't want to detract from finding a solution that can handle both needs.</p>
+<p>For now, I&#x27;m not leaving that open for discussion by posting a prompting question because I don&#x27;t want to detract from finding a solution that can handle both needs.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -291,31 +291,31 @@ pub paths: Option&lt;Vec&lt;String&gt;&gt;,
             <div class="timeline-body"><blockquote>
 <p>So we need a solution that balances distributions and other installation methods.</p>
 </blockquote>
-<p>One way of solving this is adding another layer of indirection.  I don't remember which completion library I saw do this but the idea is that the user is only <code>source</code>ing for convenience and its to access a completion function that then <code>source</code>s the version-specific logic.</p>
+<p>One way of solving this is adding another layer of indirection.  I don&#x27;t remember which completion library I saw do this but the idea is that the user is only <code>source</code>ing for convenience and its to access a completion function that then <code>source</code>s the version-specific logic.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/3166.html">clap-rs/clap#3166</a> on 2024-11-05 18:58</div>
+            <div class="event">Referenced in <a>clap-rs/clap#3166</a> on 2024-11-05 18:58</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "How can `generate_to` be configured to use dynamic completions?" to "Lazy loading of dynamic completions" by @epage on 2024-12-12 19:34</div>
+            <div class="event">Renamed from &quot;How can `generate_to` be configured to use dynamic completions?&quot; to &quot;Lazy loading of dynamic completions&quot; by <a href="https://github.com/epage">@epage</a> on 2024-12-12 19:34</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/5840.html">clap-rs/clap#5840</a> on 2024-12-12 19:37</div>
+            <div class="event">Referenced in <a>clap-rs/clap#5840</a> on 2024-12-12 19:37</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../fish-shell/fish-shell/pulls/11046.html">fish-shell/fish-shell#11046</a> on 2025-01-16 00:16</div>
+            <div class="event">Referenced in <a>fish-shell/fish-shell#11046</a> on 2025-01-16 00:16</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../rust-lang/cargo/issues/14520.html">rust-lang/cargo#14520</a> on 2025-06-26 17:51</div>
+            <div class="event">Referenced in <a>rust-lang/cargo#14520</a> on 2025-06-26 17:51</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../pulls/5841.html">clap-rs/clap#5841</a> on 2025-10-27 21:08</div>
+            <div class="event">Referenced in <a>clap-rs/clap#5841</a> on 2025-10-27 21:08</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:49:26 UTC
+        Synced at 2026-01-20 20:00:17 UTC
     </footer>
 </body>
 </html>

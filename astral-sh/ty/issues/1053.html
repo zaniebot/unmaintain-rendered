@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Avasam">@Avasam</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<p>Sorry if duplicate of a more generalized issue, the error is kinda precise and I couldn't find an equivalent issue already open.</p>
+            <div class="timeline-body">Summary
+<p>Sorry if duplicate of a more generalized issue, the error is kinda precise and I couldn&#x27;t find an equivalent issue already open.</p>
 <p>Take the following MRO:</p>
-<pre><code class="language-py">from typing import reveal_type
+<pre><code>from typing import reveal_type
 from PySide6 import QtCore, QtWidgets
 
 reveal_type(QtCore)
@@ -101,41 +101,41 @@ info[revealed-type]: Revealed type
 
 Found 6 diagnostics
 </code></pre>
-<h3>Version</h3>
+Version
 <p>ty 0.0.1-alpha.18 (d697cc092 2025-08-14) AND ty 0.0.1-alpha.19 (e9cb838b3 2025-08-19)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "PySide6 modules are seen as `list[str]`" to "PySide6 modules are seen as `list[str]` since Alpha 18" by @Avasam on 2025-08-19 16:31</div>
+            <div class="event">Renamed from &quot;PySide6 modules are seen as `list[str]`&quot; to &quot;PySide6 modules are seen as `list[str]` since Alpha 18&quot; by <a href="https://github.com/Avasam">@Avasam</a> on 2025-08-19 16:31</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "PySide6 modules are seen as `list[str]` since Alpha 18" to "PySide6 modules are seen as `list[str]` since alpha.18" by @Avasam on 2025-08-19 16:31</div>
+            <div class="event">Renamed from &quot;PySide6 modules are seen as `list[str]` since Alpha 18&quot; to &quot;PySide6 modules are seen as `list[str]` since alpha.18&quot; by <a href="https://github.com/Avasam">@Avasam</a> on 2025-08-19 16:31</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">runtime semantics</span> added by @carljm on 2025-08-19 17:21</div>
+            <div class="event">Label <span class="label">runtime semantics</span> added by <a href="https://github.com/carljm">@carljm</a> on 2025-08-19 17:21</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> added by @carljm on 2025-08-19 17:22</div>
+            <div class="event">Label <span class="label">needs-decision</span> added by <a href="https://github.com/carljm">@carljm</a> on 2025-08-19 17:22</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "PySide6 modules are seen as `list[str]` since alpha.18" to "Consider giving submodules precedence over module-level `__getattr__`?" by @carljm on 2025-08-19 17:22</div>
+            <div class="event">Renamed from &quot;PySide6 modules are seen as `list[str]` since alpha.18&quot; to &quot;Consider giving submodules precedence over module-level `__getattr__`?&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-08-19 17:22</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-19 17:22</div>
             <div class="timeline-body"><p>Thanks for the report!</p>
-<p>The problem here is that PySide6 has an <code>__init__.py</code> that <a href="https://github.com/pyside/pyside-setup/blob/dev/sources/pyside6/PySide6/__init__.py.in#L122">has a module-level <code>__getattr__</code> function which is annotated to return <code>list[str]</code></a>, and it doesn't have any explicit import of its submodules. In that situation the <code>__getattr__</code> takes precedence over looking for submodules, and we model that runtime precedence accurately. (We also model accurately that if the <code>__init__.py</code> itself explicitly imports the submodule, that does take precedence over the module <code>__getattr__</code>.)</p>
+<p>The problem here is that PySide6 has an <code>__init__.py</code> that <a href="https://github.com/pyside/pyside-setup/blob/dev/sources/pyside6/PySide6/__init__.py.in#L122">has a module-level <code>__getattr__</code> function which is annotated to return <code>list[str]</code></a>, and it doesn&#x27;t have any explicit import of its submodules. In that situation the <code>__getattr__</code> takes precedence over looking for submodules, and we model that runtime precedence accurately. (We also model accurately that if the <code>__init__.py</code> itself explicitly imports the submodule, that does take precedence over the module <code>__getattr__</code>.)</p>
 <p>(We added support for module-level <code>__getattr__</code> in ty alpha.18.)</p>
-<p>Pyright and mypy both appear to model the precedence here in a way that doesn't match runtime -- they always prefer a submodule over a module <code>__getattr__</code>. This will lead them to incorrect inference in some cases, but perhaps this is an intentional divergence from the runtime semantics? I'm not sure.</p>
-<p>The reason this works at runtime for PySide6 is that their module <code>__getattr__</code> only returns for the name <code>__all__</code>, and otherwise raises <code>AttributeError</code>, causing the import system to fall back to looking for a submodule. But there's no (standardized, specified) way to annotate the <code>__getattr__</code> to tell us that it raises <code>AttributeError</code> for all but a certain set of names.</p>
+<p>Pyright and mypy both appear to model the precedence here in a way that doesn&#x27;t match runtime -- they always prefer a submodule over a module <code>__getattr__</code>. This will lead them to incorrect inference in some cases, but perhaps this is an intentional divergence from the runtime semantics? I&#x27;m not sure.</p>
+<p>The reason this works at runtime for PySide6 is that their module <code>__getattr__</code> only returns for the name <code>__all__</code>, and otherwise raises <code>AttributeError</code>, causing the import system to fall back to looking for a submodule. But there&#x27;s no (standardized, specified) way to annotate the <code>__getattr__</code> to tell us that it raises <code>AttributeError</code> for all but a certain set of names.</p>
 <p>One possible solution here would be for PySide6 to provide a top level <code>__init__.pyi</code> that would omit the <code>__getattr__</code>, since it has no value for type checkers and is just a runtime optimization for lazy <code>__all__</code>.</p>
 <p>Another possible solution would be to reach consensus (on discuss.python.org) for adding language to the typing spec establishing a semantics for <code>__getattr__</code> where the key/name argument can be annotated with a more limited union of literal string types to communicate &quot;this <code>__getattr__</code> method will raise AttributeError on any argument other than these&quot;. Then PySide6 could annotate its <code>__getattr__</code> with an argument type of <code>Literal[&quot;__all__&quot;]</code>, and we would ignore the <code>__getattr__</code> for any other name. (In fact we already implement these semantics, but neither mypy nor pyright do.) I think this is pretty reasonable: an argument annotation does communicate &quot;I will raise if you call me with an argument type outside my annotated one.&quot;</p>
-<p>I'll leave this issue open for now, to collect feedback on whether it will be important for us to follow mypy and pyright in their divergence from the runtime semantics of module-level <code>__getattr__</code>.</p>
+<p>I&#x27;ll leave this issue open for now, to collect feedback on whether it will be important for us to follow mypy and pyright in their divergence from the runtime semantics of module-level <code>__getattr__</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-08-19 19:31</div>
-            <div class="timeline-body"><p>Thanks a lot for the full analysis! I'm not too surprised the PySide6 stubs themselves are cause for issue, they have their own custom type-stubs generator, and I often had to raise issues for incorrectness in their stubs, or ask for improvements.</p>
-<p>In this case it might be a harder sell because of how both mypy an pyright, two well-established type checkers, handle their stubs. The new kid on the block (ty) is the one that doesn't work.</p>
+            <div class="timeline-body"><p>Thanks a lot for the full analysis! I&#x27;m not too surprised the PySide6 stubs themselves are cause for issue, they have their own custom type-stubs generator, and I often had to raise issues for incorrectness in their stubs, or ask for improvements.</p>
+<p>In this case it might be a harder sell because of how both mypy an pyright, two well-established type checkers, handle their stubs. The new kid on the block (ty) is the one that doesn&#x27;t work.</p>
 <p>Hopefully a consensus can be reached !</p>
 </div>
         </div>
@@ -144,13 +144,13 @@ Found 6 diagnostics
             <div class="timeline-body"><blockquote>
 <p>One possible solution here would be for PySide6 to provide a top level <code>__init__.pyi</code> that would omit the <code>__getattr__</code>, since it has no value for type checkers and is just a runtime optimization for lazy <code>__all__</code>.</p>
 </blockquote>
-<p>I think it probably doesn't need quite such an invasive solution? This would probably fix the issue, I think:</p>
-<pre><code class="language-diff">- def __getattr__(name: str) -&gt; list[str]:
+<p>I think it probably doesn&#x27;t need quite such an invasive solution? This would probably fix the issue, I think:</p>
+<pre><code>- def __getattr__(name: str) -&gt; list[str]:
 -     if name == &quot;__all__&quot;:
 -         global __all__
 -         __all__ = _find_all_qt_modules()
 -         return __all__
--     raise AttributeError(f&quot;module '{__name__}' has no attribute '{name}' :)&quot;)
+-     raise AttributeError(f&quot;module &#x27;{__name__}&#x27; has no attribute &#x27;{name}&#x27; :)&quot;)
 + TYPE_CHECKING = False
 +
 + if not TYPE_CHECKING:
@@ -159,27 +159,27 @@ Found 6 diagnostics
 +             global __all__
 +             __all__ = _find_all_qt_modules()
 +             return __all__
-+         raise AttributeError(f&quot;module '{__name__}' has no attribute '{name}' :)&quot;)
++         raise AttributeError(f&quot;module &#x27;{__name__}&#x27; has no attribute &#x27;{name}&#x27; :)&quot;)
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-10 17:17</div>
-            <div class="timeline-body"><p>I think we should just follow mypy and pyright here -- this issue isn't worth the incompatibility. The only case in which the mypy/pyright approach gives incorrect results is if someone is intentionally shadowing a submodule with a package <code>__getattr__</code>, and if there's a good use case for doing this, it doesn't seem to have come up yet.</p>
-<p>I think it makes sense to assume that an argument incompatible with the annotated parameter type of <code>__getattr__</code> will result in <code>AttributeError</code>, so I'm glad we support that -- and in an ideal world, I believe that's how this scenario should be handled. But without a clearer use case and real-world demand, I think it will be hard to convince mypy and pyright that they should also support that, and then convince real-world users of package <code>__getattr__</code> to annotate their <code>__getattr__</code> functions that way. And we have more important things to focus on.</p>
+            <div class="timeline-body"><p>I think we should just follow mypy and pyright here -- this issue isn&#x27;t worth the incompatibility. The only case in which the mypy/pyright approach gives incorrect results is if someone is intentionally shadowing a submodule with a package <code>__getattr__</code>, and if there&#x27;s a good use case for doing this, it doesn&#x27;t seem to have come up yet.</p>
+<p>I think it makes sense to assume that an argument incompatible with the annotated parameter type of <code>__getattr__</code> will result in <code>AttributeError</code>, so I&#x27;m glad we support that -- and in an ideal world, I believe that&#x27;s how this scenario should be handled. But without a clearer use case and real-world demand, I think it will be hard to convince mypy and pyright that they should also support that, and then convince real-world users of package <code>__getattr__</code> to annotate their <code>__getattr__</code> functions that way. And we have more important things to focus on.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Consider giving submodules precedence over module-level `__getattr__`?" to "Give submodules precedence over module-level `__getattr__`" by @carljm on 2025-09-10 17:17</div>
+            <div class="event">Renamed from &quot;Consider giving submodules precedence over module-level `__getattr__`?&quot; to &quot;Give submodules precedence over module-level `__getattr__`&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-09-10 17:17</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "GA" by @carljm on 2025-09-10 17:17</div>
+            <div class="event">Added to milestone &quot;GA&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-09-10 17:17</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/saucoide">@saucoide</a> on 2025-10-28 12:35</div>
             <div class="timeline-body"><p>another realworld example, in <code>anyio</code> this was recently added to handle warnings for typo</p>
 <p>https://github.com/agronholm/anyio/pull/938</p>
-<pre><code class="language-python"># __init__.py
+<pre><code># __init__.py
 # ...
 def __getattr__(attr: str) -&gt; type[BrokenWorkerInterpreter]:
     &quot;&quot;&quot;Support deprecated aliases.&quot;&quot;&quot;
@@ -187,7 +187,7 @@ def __getattr__(attr: str) -&gt; type[BrokenWorkerInterpreter]:
         import warnings
 
         warnings.warn(
-            &quot;The 'BrokenWorkerIntepreter' alias is deprecated, use 'BrokenWorkerInterpreter' instead.&quot;,
+            &quot;The &#x27;BrokenWorkerIntepreter&#x27; alias is deprecated, use &#x27;BrokenWorkerInterpreter&#x27; instead.&quot;,
             DeprecationWarning,
             stacklevel=2,
         )
@@ -196,7 +196,7 @@ def __getattr__(attr: str) -&gt; type[BrokenWorkerInterpreter]:
     raise AttributeError(f&quot;module {__name__!r} has no attribute {attr!r}&quot;)
 </code></pre>
 <p>making submodules type like a <code>BrokenWorkerInterpreter</code></p>
-<pre><code class="language-python">from anyio import to_thread
+<pre><code>from anyio import to_thread
 to_thread.current_default_thread_limiter()  # Type `type[BrokenWorkerInterpreter]` has no attribute `current_default_thread_limiter`
 </code></pre>
 </div>
@@ -204,10 +204,10 @@ to_thread.current_default_thread_limiter()  # Type `type[BrokenWorkerInterpreter
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-11-03 01:05</div>
             <div class="timeline-body"><blockquote>
-<p>But there's no (standardized, specified) way to annotate the <code>__getattr__</code> to tell us that it raises <code>AttributeError</code> for all but a certain set of names.</p>
+<p>But there&#x27;s no (standardized, specified) way to annotate the <code>__getattr__</code> to tell us that it raises <code>AttributeError</code> for all but a certain set of names.</p>
 </blockquote>
 <p>I would imagine combining <code>overload</code> and <code>Literal</code> like the following to make sense, but yeah, not supported by any type-checker that I know of:</p>
-<pre><code class="language-py">@overload
+<pre><code>@overload
 def __getattr__(name: Literal[&quot;foo&quot;]) -&gt; str: ...
 @overload
 def __getattr__(name: Literal[&quot;bar&quot;]) -&gt; int: ...
@@ -215,24 +215,24 @@ def __getattr__(name: Literal[&quot;bar&quot;]) -&gt; int: ...
 </code></pre>
 <p>if the above was accepted/standardized, you could do the following:</p>
 <p>The PySide example could be annotated using:</p>
-<pre><code class="language-py">def __getattr__(name: Literal[&quot;__all__&quot;]) -&gt; list[str]:
+<pre><code>def __getattr__(name: Literal[&quot;__all__&quot;]) -&gt; list[str]:
 </code></pre>
-<p>@saucoide 's anyio as:</p>
-<pre><code class="language-py">def __getattr__(name: Literal[&quot;BrokenWorkerIntepreter&quot;]) -&gt; type[BrokenWorkerInterpreter]:
+<p>@saucoide &#x27;s anyio as:</p>
+<pre><code>def __getattr__(name: Literal[&quot;BrokenWorkerIntepreter&quot;]) -&gt; type[BrokenWorkerInterpreter]:
 </code></pre>
-<hr />
-<p>This also wouldn't work because it should just get simplified back to the original signature (and I don't think special-casing <code>__getattr__</code> for this is a good idea):</p>
-<pre><code class="language-py">def __getattr__(name: str) -&gt; NoReturn | list[str]:
+<hr>
+<p>This also wouldn&#x27;t work because it should just get simplified back to the original signature (and I don&#x27;t think special-casing <code>__getattr__</code> for this is a good idea):</p>
+<pre><code>def __getattr__(name: str) -&gt; NoReturn | list[str]:
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2025-11-03 20:24</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2025-11-03 20:24</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:30 UTC
+        Synced at 2026-01-20 19:25:21 UTC
     </footer>
 </body>
 </html>

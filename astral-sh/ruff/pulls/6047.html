@@ -23,11 +23,11 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>This PR stores the mapping from <code>ExprName</code> node to resolved <code>BindingId</code>, which lets us skip scope lookups in <code>resolve_call_path</code>. It's enabled by #6045, since that PR ensures that when we analyze a node (and thus call <code>resolve_call_path</code>), we'll have already visited its <code>ExprName</code> elements.</p>
-<p>In more detail: imagine that we're traversing over <code>foo.bar()</code>. When we read <code>foo</code>, it will be an <code>ExprName</code>, which we'll then resolve to a binding via <code>handle_node_load</code>. With this change, we then store that binding in a map. Later, if we call <code>collect_call_path</code> on <code>foo.bar</code>, we'll identify <code>foo</code> (the &quot;head&quot; of the attribute) and grab the resolved binding in that map. <em>Almost</em> all names are now resolved in advance, though it's not a strict requirement, and some rules break that pattern (e.g., if we're analyzing arguments, and they need to inspect their annotations, which are visited in a deferred manner).</p>
-<p>This improves performance by 4-6% on the all-rules benchmark. It looks like it hurts performance (1-2% drop) in the default-rules benchmark, presumedly because those rules don't call <code>resolve_call_path</code> nearly as much, and so we're paying for these extra writes.</p>
-<p>Here's the benchmark data:</p>
+            <div class="timeline-body">Summary
+<p>This PR stores the mapping from <code>ExprName</code> node to resolved <code>BindingId</code>, which lets us skip scope lookups in <code>resolve_call_path</code>. It&#x27;s enabled by #6045, since that PR ensures that when we analyze a node (and thus call <code>resolve_call_path</code>), we&#x27;ll have already visited its <code>ExprName</code> elements.</p>
+<p>In more detail: imagine that we&#x27;re traversing over <code>foo.bar()</code>. When we read <code>foo</code>, it will be an <code>ExprName</code>, which we&#x27;ll then resolve to a binding via <code>handle_node_load</code>. With this change, we then store that binding in a map. Later, if we call <code>collect_call_path</code> on <code>foo.bar</code>, we&#x27;ll identify <code>foo</code> (the &quot;head&quot; of the attribute) and grab the resolved binding in that map. <em>Almost</em> all names are now resolved in advance, though it&#x27;s not a strict requirement, and some rules break that pattern (e.g., if we&#x27;re analyzing arguments, and they need to inspect their annotations, which are visited in a deferred manner).</p>
+<p>This improves performance by 4-6% on the all-rules benchmark. It looks like it hurts performance (1-2% drop) in the default-rules benchmark, presumedly because those rules don&#x27;t call <code>resolve_call_path</code> nearly as much, and so we&#x27;re paying for these extra writes.</p>
+<p>Here&#x27;s the benchmark data:</p>
 <pre><code>linter/default-rules/numpy/globals.py
                         time:   [67.270 µs 67.380 µs 67.489 µs]
                         thrpt:  [43.720 MiB/s 43.792 MiB/s 43.863 MiB/s]
@@ -103,33 +103,33 @@ linter/all-rules/large/dataset.py
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-07-24 22:44</div>
-            <div class="timeline-body"><h2>PR Check Results</h2>
-<h3>Ecosystem</h3>
+            <div class="timeline-body">PR Check Results
+Ecosystem
 <p>✅ ecosystem check detected no changes.</p>
-<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-07-25 00:08</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-25 00:08</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-25 01:40</div>
-            <div class="timeline-body"><p>After this, it seems like pretty much all of <code>resolve_call_path</code> is spent in the <code>extend_from_slice</code> calls... I'm trying to figure out how to avoid those allocations. We're always concatenating two call paths to create a single call path.</p>
+            <div class="timeline-body"><p>After this, it seems like pretty much all of <code>resolve_call_path</code> is spent in the <code>extend_from_slice</code> calls... I&#x27;m trying to figure out how to avoid those allocations. We&#x27;re always concatenating two call paths to create a single call path.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-25 01:43</div>
-            <div class="timeline-body"><p>For context, <code>resolve_call_path</code> is 9.3% of execution time for Airflow (all-rules), <code>extend_from_slice</code> is 4.4%. So &quot;pretty much all&quot; is an exaggeration, but it's a lot.</p>
+            <div class="timeline-body"><p>For context, <code>resolve_call_path</code> is 9.3% of execution time for Airflow (all-rules), <code>extend_from_slice</code> is 4.4%. So &quot;pretty much all&quot; is an exaggeration, but it&#x27;s a lot.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-25 01:43</div>
-            <div class="timeline-body"><p>Oh, maybe that's time spent in <code>from_unqualified_name</code> actually. I might be misreading Instruments.</p>
+            <div class="timeline-body"><p>Oh, maybe that&#x27;s time spent in <code>from_unqualified_name</code> actually. I might be misreading Instruments.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @charliermarsh on 2023-07-26 01:22</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-26 01:22</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-26 01:22</div>
@@ -137,10 +137,10 @@ linter/all-rules/large/dataset.py
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> added by @charliermarsh on 2023-07-26 01:24</div>
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-26 01:24</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2023-07-26 01:24</div>
+            <div class="event">Label <span class="label">performance</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-26 01:24</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:1550 on 2023-07-26 06:58</div>
@@ -149,7 +149,7 @@ linter/all-rules/large/dataset.py
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-07-26 07:01</div>
-            <div class="timeline-body"><p>Looks reasonable to me. What's the impact on memory consumption?</p>
+            <div class="timeline-body"><p>Looks reasonable to me. What&#x27;s the impact on memory consumption?</p>
 <p>Is there any locality involved when working with call paths? E.g. can we assume that rules mainly query call paths of the currently visited node? If so, it may be an opportunity to only store a very few nodes (in a <code>Vec</code>?) rather than all ever seen call paths.</p>
 </div>
         </div>
@@ -168,27 +168,27 @@ linter/all-rules/large/dataset.py
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-27 13:23</div>
-            <div class="timeline-body"><p>In the hyperfine benchmarks, this improves Airflow's all-rules performance by ~3.68%, with no degradation on the default ruleset.</p>
+            <div class="timeline-body"><p>In the hyperfine benchmarks, this improves Airflow&#x27;s all-rules performance by ~3.68%, with no degradation on the default ruleset.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2023-07-27 17:01</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-27 17:01</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-07-27 17:01</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-27 17:01</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2023-07-27 17:01</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-27 17:02</div>
-            <div class="timeline-body"><p>I can't figure out a reliable way to benchmark the memory consumption, because even repeated runs on main are giving me some variation in total allocations. It shouldn't be prohibitively expensive though, since we're just saving an extra u32 for every &quot;load&quot; Name node...</p>
+            <div class="timeline-body"><p>I can&#x27;t figure out a reliable way to benchmark the memory consumption, because even repeated runs on main are giving me some variation in total allocations. It shouldn&#x27;t be prohibitively expensive though, since we&#x27;re just saving an extra u32 for every &quot;load&quot; Name node...</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:59:03 UTC
+        Synced at 2026-01-20 18:55:41 UTC
     </footer>
 </body>
 </html>

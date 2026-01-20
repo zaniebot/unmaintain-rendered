@@ -23,30 +23,30 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>This is likely present for a reason that I don't understand, but this removes some special-casing, better models runtime behavior (<code>dict</code> in the MRO), and enables proper override checking. For reasons that (unfortunately) won't be clear in this PR, I believe this will also make functional TypedDict support a little simpler, since we can avoid extra TypedDict special-cases in <code>ClassMemberResult</code> and <code>InstanceMemberResult</code>.</p>
+            <div class="timeline-body">Summary
+<p>This is likely present for a reason that I don&#x27;t understand, but this removes some special-casing, better models runtime behavior (<code>dict</code> in the MRO), and enables proper override checking. For reasons that (unfortunately) won&#x27;t be clear in this PR, I believe this will also make functional TypedDict support a little simpler, since we can avoid extra TypedDict special-cases in <code>ClassMemberResult</code> and <code>InstanceMemberResult</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @charliermarsh on 2026-01-02 20:20</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2026-01-02 20:20</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-02 20:21</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a>
 <p>No changes detected when running ty on typing conformance tests ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-02 20:26</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">pydantic (https://github.com/pydantic/pydantic)
+Changes were detected when running on open source projects
+
+<pre><code>pydantic (https://github.com/pydantic/pydantic)
 - pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
 + pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
 - pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
@@ -69,7 +69,7 @@ Tanjun (https://github.com/FasterSpeeding/Tanjun)
 + tanjun/dependencies/data.py:347:12: error[invalid-return-type] Return type does not match returned value: expected `_T@cached_inject`, found `Coroutine[Any, Any, _T@cached_inject | Coroutine[Any, Any, _T@cached_inject]] | _T@cached_inject`
 
 discord.py (https://github.com/Rapptz/discord.py)
-+ discord/permissions.py:40:5: error[inconsistent-mro] Cannot create a consistent method resolution order (MRO) for class `_BasePermissionsKwargs` with bases list `[&lt;special-form 'typing.Generic[BoolOrNoneT]'&gt;, &lt;special-form 'typing.TypedDict'&gt;]`
++ discord/permissions.py:40:5: error[inconsistent-mro] Cannot create a consistent method resolution order (MRO) for class `_BasePermissionsKwargs` with bases list `[&lt;special-form &#x27;typing.Generic[BoolOrNoneT]&#x27;&gt;, &lt;special-form &#x27;typing.TypedDict&#x27;&gt;]`
 - Found 552 diagnostics
 + Found 553 diagnostics
 
@@ -117,7 +117,7 @@ core (https://github.com/home-assistant/core)
 
 
 </code></pre>
-</details>
+
 
 <p>No memory usage changes detected ✅</p>
 </div>
@@ -132,9 +132,9 @@ core (https://github.com/home-assistant/core)
             <div class="timeline-body"><blockquote>
 <p>The <code>discord.py</code> diagnostic is concerning, looking into it.</p>
 </blockquote>
-<p>It's probably an issue due to typeshed telling us that <code>dict</code> has <code>Generic</code> in its MRO, when in reality it doesn't. These crop up fairly frequently; it's a bit awkward but moving <code>Generic[]</code> to the end of the bases list almost always fixes it. (We should probably offer an autofix that does that, if we can detect that doing so would fix the <code>inconsistent-mro</code> violation.)</p>
-<p>Other type checkers do seem to issue these violations less frequently than ty (and we should look into why), but ultimately there's not much to be done about these. Typeshed <em>has</em> to pretend that <code>dict</code> has <code>Generic</code> in its MRO, and we have to believe what typeshed tells us.</p>
-<p>I'm actually more concerned about the autosplit diagnostic. I don't think overriding <code>dict.copy</code> on a <code>TypedDict</code> class should trigger an <code>invalid-method-override</code> violation. It should trigger <em>a</em> violation, but it should be a violation of a separate rule that complains about any method being defined on a <code>TypedDict</code> class, because any method on a <code>TypedDict</code> class is illegal (https://github.com/astral-sh/ty/issues/2277)</p>
+<p>It&#x27;s probably an issue due to typeshed telling us that <code>dict</code> has <code>Generic</code> in its MRO, when in reality it doesn&#x27;t. These crop up fairly frequently; it&#x27;s a bit awkward but moving <code>Generic[]</code> to the end of the bases list almost always fixes it. (We should probably offer an autofix that does that, if we can detect that doing so would fix the <code>inconsistent-mro</code> violation.)</p>
+<p>Other type checkers do seem to issue these violations less frequently than ty (and we should look into why), but ultimately there&#x27;s not much to be done about these. Typeshed <em>has</em> to pretend that <code>dict</code> has <code>Generic</code> in its MRO, and we have to believe what typeshed tells us.</p>
+<p>I&#x27;m actually more concerned about the autosplit diagnostic. I don&#x27;t think overriding <code>dict.copy</code> on a <code>TypedDict</code> class should trigger an <code>invalid-method-override</code> violation. It should trigger <em>a</em> violation, but it should be a violation of a separate rule that complains about any method being defined on a <code>TypedDict</code> class, because any method on a <code>TypedDict</code> class is illegal (<a href="https://github.com/astral-sh/ty/issues/2277">astral-sh/ty#2277</a>)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -144,13 +144,13 @@ core (https://github.com/home-assistant/core)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2026-01-02 21:02</div>
-            <div class="timeline-body"><p>@oconnor663 is part-way through https://github.com/astral-sh/ty/issues/2277 so I'll just wait for that then rebase.</p>
+            <div class="timeline-body"><p>@oconnor663 is part-way through <a href="https://github.com/astral-sh/ty/issues/2277">astral-sh/ty#2277</a> so I&#x27;ll just wait for that then rebase.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2026-01-02 21:10</div>
             <div class="timeline-body"><p>For the generic issue... would it make sense to add something like the following to <code>maybe_add_generic</code>, like we do for <code>GenericAlias</code>?</p>
-<pre><code class="language-rust">if remaining_bases.contains(&amp;Type::SpecialForm(SpecialFormType::TypedDict)) {
+<pre><code>if remaining_bases.contains(&amp;Type::SpecialForm(SpecialFormType::TypedDict)) {
     return;  // dict (from TypedDict) will bring in Generic
 }
 </code></pre>
@@ -158,14 +158,14 @@ core (https://github.com/home-assistant/core)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-02 21:18</div>
-            <div class="timeline-body"><p>I don't think so -- that doesn't look like it's what the runtime does?</p>
-<p>The issue is that if <code>dict</code> actually had the MRO typeshed says it does, then it really would cause an exception at runtime to do what discord.py is doing there. So we're accurately emulating the runtime semantics:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; from typing import Generic, TypeVar
+            <div class="timeline-body"><p>I don&#x27;t think so -- that doesn&#x27;t look like it&#x27;s what the runtime does?</p>
+<p>The issue is that if <code>dict</code> actually had the MRO typeshed says it does, then it really would cause an exception at runtime to do what discord.py is doing there. So we&#x27;re accurately emulating the runtime semantics:</p>
+<pre><code>&gt;&gt;&gt; from typing import Generic, TypeVar
 &gt;&gt;&gt; K = TypeVar(&quot;K&quot;)
 &gt;&gt;&gt; V = TypeVar(&quot;V&quot;)
 &gt;&gt;&gt; class dict(Generic[K, V]): ...
 ... 
-&gt;&gt;&gt; BoolOrNoneT = TypeVar('BoolOrNoneT', bound=bool|None)
+&gt;&gt;&gt; BoolOrNoneT = TypeVar(&#x27;BoolOrNoneT&#x27;, bound=bool|None)
 &gt;&gt;&gt; class TypedDict(dict): ...
 ... 
 &gt;&gt;&gt; class _BasePermissionsKwargs(Generic[BoolOrNoneT], TypedDict): ...
@@ -180,73 +180,73 @@ TypeError: Cannot create a consistent method resolution order (MRO) for bases Ge
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2026-01-03 05:13</div>
             <div class="timeline-body"><blockquote>
-<p>@oconnor663 is part-way through <a href="https://github.com/astral-sh/ty/issues/2277">astral-sh/ty#2277</a> so I'll just wait for that then rebase.</p>
+<p>@oconnor663 is part-way through <a href="https://github.com/astral-sh/ty/issues/2277">astral-sh/ty#2277</a> so I&#x27;ll just wait for that then rebase.</p>
 </blockquote>
 <p>https://github.com/astral-sh/ruff/pull/22351</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @charliermarsh on 2026-01-05 19:42</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2026-01-05 19:42</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @charliermarsh on 2026-01-05 19:42</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2026-01-05 19:42</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @charliermarsh on 2026-01-05 19:42</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2026-01-05 19:42</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @charliermarsh on 2026-01-05 19:42</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2026-01-05 19:42</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @charliermarsh on 2026-01-05 19:42</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2026-01-05 19:42</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2026-01-05 19:50</div>
-            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+            <div class="timeline-body">
 
-<h2><a href="https://codspeed.io/astral-sh/ruff/branches/charlie%2Ftyped-mro?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a></h2>
-<h3>Merging #22346 will <strong>not alter performance</strong></h3>
-<p><sub>Comparing <code>charlie/typed-mro</code> (44a938a) with <code>main</code> (ce059c4)</sub></p>
-<h3>Summary</h3>
-<p><code>✅ 23</code> untouched<br />
+<a href="https://codspeed.io/astral-sh/ruff/branches/charlie%2Ftyped-mro?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a>
+Merging #22346 will <strong>not alter performance</strong>
+<p>Comparing <code>charlie/typed-mro</code> (44a938a) with <code>main</code> (ce059c4)</p>
+Summary
+<p><code>✅ 23</code> untouched<br>
 <code>⏩ 30</code> skipped[^skipped]</p>
 <p>[^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, <a href="https://codspeed.io/astral-sh/ruff/branches/charlie%2Ftyped-mro?sectionId=benchmark-comparison-section-baseline-result-skipped&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=archive">click here and archive them to remove them from the performance reports</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-09 14:45</div>
-            <div class="timeline-body"><p>I do like that this emulates the runtime semantics more closely when it comes to what inheriting from <code>TypedDict</code> actually <em>does</em> at runtime (it creates a <code>dict</code> subclass!). That means that we understand the MROs of these classes better, so we're more likely to emit accurate <code>inconsistent-mro</code> and <code>metaclass-conflict</code> diagnostics. The new <code>discord.py</code> diagnostic honestly seems like a feature in this respect, to me, even though it's strictly-speaking a false positives. (It's certainly evidence that users really should always put <code>Generic[T]</code> last in the bases list, which I think is what the typing docs recommend!)</p>
+            <div class="timeline-body"><p>I do like that this emulates the runtime semantics more closely when it comes to what inheriting from <code>TypedDict</code> actually <em>does</em> at runtime (it creates a <code>dict</code> subclass!). That means that we understand the MROs of these classes better, so we&#x27;re more likely to emit accurate <code>inconsistent-mro</code> and <code>metaclass-conflict</code> diagnostics. The new <code>discord.py</code> diagnostic honestly seems like a feature in this respect, to me, even though it&#x27;s strictly-speaking a false positives. (It&#x27;s certainly evidence that users really should always put <code>Generic[T]</code> last in the bases list, which I think is what the typing docs recommend!)</p>
 <blockquote>
 <p>enables proper override checking</p>
 </blockquote>
-<p>This I'm less sure about. Attribute and method lookup on <code>TypedDict</code> types can <em>never</em> fallback to attributes/methods on <code>dict</code>; that would be unsound and would defeat the point of <code>TypedDict</code> types altogether. ISTM that this PR probably means that we'll need more special-casing, not less, in the long run, when it comes to override checks, member-lookup, etc.. We'll need to take special care to avoid the <code>dict</code> superclass when traversing the MRO and instead fallback to <code>Mapping</code> and/or <code>TypedDictFallback</code> where appropriate.</p>
-<p>I'm also pretty concerned that there still seems to be a <a href="https://codspeed.io/astral-sh/ruff/branches/charlie%2Ftyped-mro?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">4% regression on pydantic, and a 2% regression on colour-science, here</a>.</p>
-<p>I haven't taken a look at your followup PR for functional typeddicts yet, and maybe that'll make it clearer to me what the benefits of this are, but at the moment I'm a <em>little</em> hesitant about this.</p>
+<p>This I&#x27;m less sure about. Attribute and method lookup on <code>TypedDict</code> types can <em>never</em> fallback to attributes/methods on <code>dict</code>; that would be unsound and would defeat the point of <code>TypedDict</code> types altogether. ISTM that this PR probably means that we&#x27;ll need more special-casing, not less, in the long run, when it comes to override checks, member-lookup, etc.. We&#x27;ll need to take special care to avoid the <code>dict</code> superclass when traversing the MRO and instead fallback to <code>Mapping</code> and/or <code>TypedDictFallback</code> where appropriate.</p>
+<p>I&#x27;m also pretty concerned that there still seems to be a <a href="https://codspeed.io/astral-sh/ruff/branches/charlie%2Ftyped-mro?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">4% regression on pydantic, and a 2% regression on colour-science, here</a>.</p>
+<p>I haven&#x27;t taken a look at your followup PR for functional typeddicts yet, and maybe that&#x27;ll make it clearer to me what the benefits of this are, but at the moment I&#x27;m a <em>little</em> hesitant about this.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-09 14:50</div>
             <div class="timeline-body"><blockquote>
-<p>This I'm less sure about. Attribute and method lookup on <code>TypedDict</code> types can <em>never</em> fallback to attributes/methods on <code>dict</code>; that would be unsound and would defeat the point of <code>TypedDict</code> types altogether. ISTM that this PR probably means that we'll need more special-casing, not less, in the long run, when it comes to override checks. We'll need to take special care to avoid the <code>dict</code> superclass when traversing the MRO and instead fallback to <code>Mapping</code> and/or <code>TypedDictFallback</code> where appropriate.</p>
+<p>This I&#x27;m less sure about. Attribute and method lookup on <code>TypedDict</code> types can <em>never</em> fallback to attributes/methods on <code>dict</code>; that would be unsound and would defeat the point of <code>TypedDict</code> types altogether. ISTM that this PR probably means that we&#x27;ll need more special-casing, not less, in the long run, when it comes to override checks. We&#x27;ll need to take special care to avoid the <code>dict</code> superclass when traversing the MRO and instead fallback to <code>Mapping</code> and/or <code>TypedDictFallback</code> where appropriate.</p>
 </blockquote>
-<p>The &quot;weirdness&quot; of <code>ClassBase::TypedDict</code> feels like it helps us avoid bugs here on <code>main</code>, because it's very obvious that you can't grab an attribute or a method off a non-class <code>ClassBase</code> -- it forces you to treat attribute/method lookup on these <code>ClassBase</code>s differently.</p>
+<p>The &quot;weirdness&quot; of <code>ClassBase::TypedDict</code> feels like it helps us avoid bugs here on <code>main</code>, because it&#x27;s very obvious that you can&#x27;t grab an attribute or a method off a non-class <code>ClassBase</code> -- it forces you to treat attribute/method lookup on these <code>ClassBase</code>s differently.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2026-01-09 14:56</div>
-            <div class="timeline-body"><p>Okay, I can revisit later when we get to functional <code>TypedDict</code> if the value presents itself again. As an example, I believe I was able to remove all of the <code>ClassMemberResult::TypedDict</code> handling in https://github.com/astral-sh/ruff/pull/22291 so the MRO code became much simpler. I <em>think</em> it also fixed a few bugs in the functional <code>TypedDict</code> PR, but I'm struggling to remember the details so I don't need to push on it for now.</p>
+            <div class="timeline-body"><p>Okay, I can revisit later when we get to functional <code>TypedDict</code> if the value presents itself again. As an example, I believe I was able to remove all of the <code>ClassMemberResult::TypedDict</code> handling in <a href="https://github.com/astral-sh/ruff/pull/22291">astral-sh/ruff#22291</a> so the MRO code became much simpler. I <em>think</em> it also fixed a few bugs in the functional <code>TypedDict</code> PR, but I&#x27;m struggling to remember the details so I don&#x27;t need to push on it for now.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Converted to draft by @charliermarsh on 2026-01-10 18:53</div>
+            <div class="event">Converted to draft by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2026-01-10 18:53</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2026-01-15 20:32</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2026-01-15 20:32</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-15 21:00:49 UTC
+        Synced at 2026-01-20 19:22:34 UTC
     </footer>
 </body>
 </html>

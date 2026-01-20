@@ -23,13 +23,13 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a></div>
-            <div class="timeline-body"><p>LSP functionality associated with looking up a function's signature is seemingly cached based on the raw type signature of a function. This affects goto-* on keyword arguments and docstrings for signature_help (notably <em>not</em> docstrings for hovering the function name!).</p>
-<p>I'm fairly confident this is specifically a <em>caching</em> bug because the problem never appears in cursor tests, but does appear in an IDE. That is, if you check these queries in a cursor test it works perfectly, but if you try it in an IDE then all functions that share a signature (in a file?) suddenly have conflated info.</p>
-<p><img width="417" height="186" alt="Image" src="https://github.com/user-attachments/assets/171e950b-c316-434d-8f8f-95511967d7a4" /></p>
-<pre><code class="language-py">def my_func(x, y):
-    '''my cool func'''
+            <div class="timeline-body"><p>LSP functionality associated with looking up a function&#x27;s signature is seemingly cached based on the raw type signature of a function. This affects goto-* on keyword arguments and docstrings for signature_help (notably <em>not</em> docstrings for hovering the function name!).</p>
+<p>I&#x27;m fairly confident this is specifically a <em>caching</em> bug because the problem never appears in cursor tests, but does appear in an IDE. That is, if you check these queries in a cursor test it works perfectly, but if you try it in an IDE then all functions that share a signature (in a file?) suddenly have conflated info.</p>
+<p><img alt="Image" src="https://github.com/user-attachments/assets/171e950b-c316-434d-8f8f-95511967d7a4"></p>
+<pre><code>def my_func(x, y):
+    &#x27;&#x27;&#x27;my cool func&#x27;&#x27;&#x27;
 def my_other_func(x, y):
-    '''some other func'''
+    &#x27;&#x27;&#x27;some other func&#x27;&#x27;&#x27;
 
 my_func(x=0, y=1)
 my_other_func(x=0, y=1)
@@ -38,10 +38,10 @@ my_other_func(x=0, y=1)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @Gankra on 2025-08-20 23:05</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/Gankra">@Gankra</a> on 2025-08-20 23:05</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">server</span> added by @Gankra on 2025-08-20 23:05</div>
+            <div class="event">Label <span class="label">server</span> added by <a href="https://github.com/Gankra">@Gankra</a> on 2025-08-20 23:05</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-08-20 23:07</div>
@@ -50,12 +50,12 @@ my_other_func(x=0, y=1)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-21 06:22</div>
-            <div class="timeline-body"><p>This is odd. We don't do any salsa caching for hover (outside the semantic model)</p>
+            <div class="timeline-body"><p>This is odd. We don&#x27;t do any salsa caching for hover (outside the semantic model)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-21 06:24</div>
-            <div class="timeline-body"><p>I can't reproduce this in the playground or in VS Code</p>
+            <div class="timeline-body"><p>I can&#x27;t reproduce this in the playground or in VS Code</p>
 <p>Edit: I can reproduce this for signature help but not for hover:</p>
 <p>https://github.com/user-attachments/assets/ce6649c9-ca84-47ae-9cec-ede659efb908</p>
 </div>
@@ -65,7 +65,7 @@ my_other_func(x=0, y=1)
             <div class="timeline-body"><p>Okay, I think I understand where things go wrong. Not sure what the proper fix is. The issue is the <code>into_callable</code> call here:</p>
 <p>https://github.com/astral-sh/ruff/blob/4ac2b2c22283c9f8eb7f7fd945ab1c5f08098ab4/crates/ty_python_semantic/src/types/ide_support.rs#L821-L847</p>
 <p>If we change this to call <code>bindings</code> directly on the <code>func_type</code>, then the &quot;caching&quot; issue goes away:</p>
-<pre><code class="language-rust">    if func_type.into_callable(db).is_none() {
+<pre><code>    if func_type.into_callable(db).is_none() {
         // Not a callable type
         return vec![];
     }
@@ -102,18 +102,18 @@ my_other_func(x=0, y=1)
 <p>https://github.com/astral-sh/ruff/blob/d59282ebb5f5d60cda972a57d3b01fe7f1b02a29/crates/ty_ide/src/signature_help.rs#L487</p>
 <p>Which I suspect is due to the comment here:</p>
 <p>https://github.com/astral-sh/ruff/blob/ec3163781c645b2e72414e8b0c5686e815d34e0d/crates/ty_python_semantic/src/types.rs#L4536-L4549</p>
-<p>The reason we can't reproduce this in cursor tests is that it requires two queries. What I see in the IDE is that VS Code requests inlay hints for <code>my_func</code> and then <code>my_other_func</code>, so that we end up with a callable type for <code>my_func</code> first.</p>
-<p>Now, what we should fix in my view too is that we shouldn't inherit the <code>Definition</code> from the function literal for <code>CallableType</code>s.</p>
-<p>The part that I don't fully understand yet is how both <code>FunctionLiterals reduce to the same </code>CallableTypes even when their definitions are different.</p>
+<p>The reason we can&#x27;t reproduce this in cursor tests is that it requires two queries. What I see in the IDE is that VS Code requests inlay hints for <code>my_func</code> and then <code>my_other_func</code>, so that we end up with a callable type for <code>my_func</code> first.</p>
+<p>Now, what we should fix in my view too is that we shouldn&#x27;t inherit the <code>Definition</code> from the function literal for <code>CallableType</code>s.</p>
+<p>The part that I don&#x27;t fully understand yet is how both <code>FunctionLiterals reduce to the same </code>CallableTypes even when their definitions are different.</p>
 <p>I think this is where I have to bail out because of time :(</p>
 <p>@dhruvmanila you worked on callable types and overloads. Can you help us understand how definitions are propagated through here?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-08-21 08:16</div>
-            <div class="timeline-body"><p>I think I see the problem which is that the <code>CallableSignature</code> has a custom implementation of <code>PartialEq</code> that excludes the <code>Definition</code> and it's only the <code>Definition</code> that separates the two <code>CallableSignature</code>:</p>
+            <div class="timeline-body"><p>I think I see the problem which is that the <code>CallableSignature</code> has a custom implementation of <code>PartialEq</code> that excludes the <code>Definition</code> and it&#x27;s only the <code>Definition</code> that separates the two <code>CallableSignature</code>:</p>
 <p>https://github.com/astral-sh/ruff/blob/a5cbca156ccba18900f95d5597db9ed2935a31d6/crates/ty_python_semantic/src/types/signatures.rs#L973-L982</p>
-<p>This means that when <code>CallableType::new</code> is invoked on the two <code>CallableSignature</code>, the definition isn't taken into account by salsa to see whether to create a new <code>CallableType</code> or return the interned one.</p>
+<p>This means that when <code>CallableType::new</code> is invoked on the two <code>CallableSignature</code>, the definition isn&#x27;t taken into account by salsa to see whether to create a new <code>CallableType</code> or return the interned one.</p>
 <p>This is also based on the logs below:</p>
 <pre><code>2025-08-21 13:26:44.774870000 DEBUG request{id=6 method=&quot;textDocument/signatureHelp&quot;}: func_type: def my_func(x, y) -&gt; Unknown
 2025-08-21 13:26:44.775171000 DEBUG request{id=6 method=&quot;textDocument/signatureHelp&quot;}: FunctionType: FunctionLiteral(Id(2000))
@@ -136,10 +136,10 @@ my_other_func(x=0, y=1)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-21 08:42</div>
-            <div class="timeline-body"><p>@dhruvmanila and I discussed this further. We see two possible solutions but it isn't clear to us which provides the best tradeoffs. We'd appreciate some input from @carljm  or @dcreager.</p>
-<p>The main issue is that <code>CallableType</code> (an interned value) doesn't consider <code>Definition</code> in its equality. This is a big footgun that we should resolve and there are two options:</p>
+            <div class="timeline-body"><p>@dhruvmanila and I discussed this further. We see two possible solutions but it isn&#x27;t clear to us which provides the best tradeoffs. We&#x27;d appreciate some input from @carljm  or @dcreager.</p>
+<p>The main issue is that <code>CallableType</code> (an interned value) doesn&#x27;t consider <code>Definition</code> in its equality. This is a big footgun that we should resolve and there are two options:</p>
 <ol>
-<li><p>Remove <code>Definition</code> from <code>CallableType</code>: We don't need the <code>Definition</code> for typing. This has the advantage that we only have a single interned <code>CallableType</code> for all types with the same signature (where the only difference would be the <code>Definition</code>). The only challenge with this, calling <code>bindings()</code> on a <code>ClassLiteral</code> doesn't work for constructor calls. But maybe it should and <code>signature_help</code> should call <code>bindings</code> directly on the <code>function</code> type instead of going through <code>into_callable</code> that loses the <code>Definition</code></p>
+<li><p>Remove <code>Definition</code> from <code>CallableType</code>: We don&#x27;t need the <code>Definition</code> for typing. This has the advantage that we only have a single interned <code>CallableType</code> for all types with the same signature (where the only difference would be the <code>Definition</code>). The only challenge with this, calling <code>bindings()</code> on a <code>ClassLiteral</code> doesn&#x27;t work for constructor calls. But maybe it should and <code>signature_help</code> should call <code>bindings</code> directly on the <code>function</code> type instead of going through <code>into_callable</code> that loses the <code>Definition</code></p>
 </li>
 <li><p>Remove the custom <code>Eq</code> and <code>PartialEq</code> and <code>Hash</code> implementations from <code>Signature</code> so that two callable types are only equal if the definitions are the same (or Salsa will &quot;merge&quot; callable types with different definitions). Ignore the <code>Definition</code> in the <code>Signatures</code> <code>is_equivalent</code> implementation (<a href="https://github.com/astral-sh/ruff/blob/33030b34cd3266a70f0d75e83d886dd8ac0b49ed/crates/ty_python_semantic/src/types/signatures.rs#L197-L214">here</a>).</p>
 </li>
@@ -148,36 +148,36 @@ my_other_func(x=0, y=1)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-21 11:09</div>
-            <div class="timeline-body"><p>From a typing perspective, I would say it's conceptually quite weird that a <code>CallableType</code> can have a <code>Definition</code> attached to it 😄 A <code>CallableType</code> is an abstract structural type that can be inhabited by many different function objects at runtime, so it's strange for it to carry around data that points back to a specific, concrete function object as its <code>Definition</code>.</p>
-<p>However, I do see that from an LSP perspective it's quite convenient for it to &quot;hold onto&quot; the original function from which it was derived. And we also hold onto other information that's irrelevant if you're only interested in the question of the set of possible objects that could inhabit the type at runtime. For example, <code>CallableType</code>s hold onto the types of the default values of parameters -- but from a typing perspective, the types of the default values are irrelevant. The only thing that matters from a typing perspective is <em>whether</em> there is a default value for a given parameter or not.</p>
-<p>I think either approach that you outline could work here. Note that we already deliberately throw away the types of default values and the definition when we normalize <code>CallableType</code>s, in order to ensure that equivalent <code>CallableType</code>s share the same Salsa ID after normalization. (I wasn't actually aware of the custom <code>PartialEq</code> and <code>Hash</code> implementations; it's possible that https://github.com/astral-sh/ruff/pull/19615 was unnecessary since we have them.)</p>
+            <div class="timeline-body"><p>From a typing perspective, I would say it&#x27;s conceptually quite weird that a <code>CallableType</code> can have a <code>Definition</code> attached to it 😄 A <code>CallableType</code> is an abstract structural type that can be inhabited by many different function objects at runtime, so it&#x27;s strange for it to carry around data that points back to a specific, concrete function object as its <code>Definition</code>.</p>
+<p>However, I do see that from an LSP perspective it&#x27;s quite convenient for it to &quot;hold onto&quot; the original function from which it was derived. And we also hold onto other information that&#x27;s irrelevant if you&#x27;re only interested in the question of the set of possible objects that could inhabit the type at runtime. For example, <code>CallableType</code>s hold onto the types of the default values of parameters -- but from a typing perspective, the types of the default values are irrelevant. The only thing that matters from a typing perspective is <em>whether</em> there is a default value for a given parameter or not.</p>
+<p>I think either approach that you outline could work here. Note that we already deliberately throw away the types of default values and the definition when we normalize <code>CallableType</code>s, in order to ensure that equivalent <code>CallableType</code>s share the same Salsa ID after normalization. (I wasn&#x27;t actually aware of the custom <code>PartialEq</code> and <code>Hash</code> implementations; it&#x27;s possible that <a href="https://github.com/astral-sh/ruff/pull/19615">astral-sh/ruff#19615</a> was unnecessary since we have them.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-21 11:29</div>
             <div class="timeline-body"><blockquote>
-<p>(I wasn't actually aware of the custom PartialEq and Hash implementations; it's possible that https://github.com/astral-sh/ruff/pull/19615 was unnecessary since we have them.)</p>
+<p>(I wasn&#x27;t actually aware of the custom PartialEq and Hash implementations; it&#x27;s possible that <a href="https://github.com/astral-sh/ruff/pull/19615">astral-sh/ruff#19615</a> was unnecessary since we have them.)</p>
 </blockquote>
 <p>Or that your PR allows us to remove the custom equal implementation :)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-21 14:29</div>
-            <div class="timeline-body"><p>I think there's a lot going on on the LSP side here that I'm not really familiar with, but</p>
+            <div class="timeline-body"><p>I think there&#x27;s a lot going on on the LSP side here that I&#x27;m not really familiar with, but</p>
 <blockquote>
 <p>maybe it should and signature_help should call bindings directly on the function type instead of going through into_callable that loses the Definition</p>
 </blockquote>
-<p>is what sounds most right to me. I think <code>CallableType</code> shouldn't have a <code>Definition</code> at all, and the LSP should not be eager to transform a function type into a general callable type.</p>
-<p>But then, I'm probably missing some important things because I don't understand the relevance of this:</p>
+<p>is what sounds most right to me. I think <code>CallableType</code> shouldn&#x27;t have a <code>Definition</code> at all, and the LSP should not be eager to transform a function type into a general callable type.</p>
+<p>But then, I&#x27;m probably missing some important things because I don&#x27;t understand the relevance of this:</p>
 <blockquote>
-<p>The only challenge with this, calling bindings() on a ClassLiteral doesn't work for constructor calls.</p>
+<p>The only challenge with this, calling bindings() on a ClassLiteral doesn&#x27;t work for constructor calls.</p>
 </blockquote>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-21 14:54</div>
             <div class="timeline-body"><blockquote>
-<p>But then, I'm probably missing some important things because I don't understand the relevance of this:</p>
+<p>But then, I&#x27;m probably missing some important things because I don&#x27;t understand the relevance of this:</p>
 </blockquote>
 <p>The issue with calling <code>bindings</code> directly on a class literal (without going through <code>into_callable</code>) is that <code>a = Class()</code> no longer resolves to <code>Class.__init__</code>, which I assume is due to the TODO here:</p>
 <p>https://github.com/astral-sh/ruff/blob/ec3163781c645b2e72414e8b0c5686e815d34e0d/crates/ty_python_semantic/src/types.rs#L4536-L4549</p>
@@ -186,32 +186,32 @@ my_other_func(x=0, y=1)
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-08-21 15:25</div>
             <div class="timeline-body"><p>I certainly agree that it would be better if the LSP used Type-y APIs less, as it really wants to reason in terms of Definitions basically everywhere. The impression I have is that we end up using Types in more places because so much of ty_python_semantic is focused on Solve Types and ends up discarding Definition-y info that it intermediately computes while trying to solve the types -- info that the LSP is ultimately wanting in directly queryable form.</p>
-<p>So while I agree it's supremely weird to grab a definition off of a type, I think it ends up being a practical compromise for now.</p>
+<p>So while I agree it&#x27;s supremely weird to grab a definition off of a type, I think it ends up being a practical compromise for now.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-21 16:13</div>
-            <div class="timeline-body"><p>I think there's probably some truth to that, particularly for features like find-references and goto-definition? But I'm not sure that dichotomy really applies here. For hover info, we really do have to resolve types -- we have to know what the possible runtime values of the thing you are hovering are, in order to display accurate information about them. Then the question is just, once we've resolved types, how precise is the type we have, and what do we know about that type that we can display? And knowing where the inhabitant(s) of that type is/are defined is one thing we may or may not know about the type.</p>
-<p>I don't agree that it's inherently weird to pull a definition off of a type. If the type is &quot;the singleton type of the function <code>foo</code> created from a specific <code>def foo</code> statement&quot; (which is a type we have, its <code>Type::FunctionLiteral</code>), then the information we have about that type includes &quot;which <code>def foo</code> statement&quot;, and it's perfectly reasonable to be able to get a Definition from that type.</p>
-<p>If the type we have is &quot;the type of all callables that take a single parameter named <code>x</code> of type <code>int</code> and return a <code>str</code>&quot; (this is <code>Type::CallableType</code>), there are many, many possible runtime inhabitants of that type, and we have no idea where they might be defined. So it doesn't make sense for that type to store or be able to provide a <code>Definition</code>.</p>
-<p>The problem here as I see it is that the LSP is transforming a <code>FunctionLiteral</code> type (which properly knows where its defined) into a more abstract <code>CallableType</code> (which <em>shouldn't</em> have any idea where its defined), for relatively obscure reasons involving limitations in how we currently handle class constructors, and then that decision is pressing us to keep information on <code>CallableType</code> that doesn't properly belong there.</p>
+            <div class="timeline-body"><p>I think there&#x27;s probably some truth to that, particularly for features like find-references and goto-definition? But I&#x27;m not sure that dichotomy really applies here. For hover info, we really do have to resolve types -- we have to know what the possible runtime values of the thing you are hovering are, in order to display accurate information about them. Then the question is just, once we&#x27;ve resolved types, how precise is the type we have, and what do we know about that type that we can display? And knowing where the inhabitant(s) of that type is/are defined is one thing we may or may not know about the type.</p>
+<p>I don&#x27;t agree that it&#x27;s inherently weird to pull a definition off of a type. If the type is &quot;the singleton type of the function <code>foo</code> created from a specific <code>def foo</code> statement&quot; (which is a type we have, its <code>Type::FunctionLiteral</code>), then the information we have about that type includes &quot;which <code>def foo</code> statement&quot;, and it&#x27;s perfectly reasonable to be able to get a Definition from that type.</p>
+<p>If the type we have is &quot;the type of all callables that take a single parameter named <code>x</code> of type <code>int</code> and return a <code>str</code>&quot; (this is <code>Type::CallableType</code>), there are many, many possible runtime inhabitants of that type, and we have no idea where they might be defined. So it doesn&#x27;t make sense for that type to store or be able to provide a <code>Definition</code>.</p>
+<p>The problem here as I see it is that the LSP is transforming a <code>FunctionLiteral</code> type (which properly knows where its defined) into a more abstract <code>CallableType</code> (which <em>shouldn&#x27;t</em> have any idea where its defined), for relatively obscure reasons involving limitations in how we currently handle class constructors, and then that decision is pressing us to keep information on <code>CallableType</code> that doesn&#x27;t properly belong there.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-21 16:26</div>
             <div class="timeline-body"><blockquote>
-<p>The problem here as I see it is that the LSP is transforming a FunctionLiteral type (which properly knows where its defined) into a more abstract CallableType (which shouldn't have any idea where its defined), for relatively obscure reasons involving limitations in how we currently handle class constructors, and then that decision is pressing us to keep information on CallableType that doesn't properly belong there.</p>
+<p>The problem here as I see it is that the LSP is transforming a FunctionLiteral type (which properly knows where its defined) into a more abstract CallableType (which shouldn&#x27;t have any idea where its defined), for relatively obscure reasons involving limitations in how we currently handle class constructors, and then that decision is pressing us to keep information on CallableType that doesn&#x27;t properly belong there.</p>
 </blockquote>
-<p>I agree with this. I think the fix is still the best move now but I'll create a follow up issue to consider removing <code>Definition</code> from <code>CallableType</code> and move signature help to use <code>type.bindings</code> directly (and resolving the TODO)</p>
+<p>I agree with this. I think the fix is still the best move now but I&#x27;ll create a follow up issue to consider removing <code>Definition</code> from <code>CallableType</code> and move signature help to use <code>type.bindings</code> directly (and resolving the TODO)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @Gankra on 2025-08-21 20:36</div>
+            <div class="event">Closed by <a href="https://github.com/Gankra">@Gankra</a> on 2025-08-21 20:36</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:32 UTC
+        Synced at 2026-01-20 19:25:22 UTC
     </footer>
 </body>
 </html>

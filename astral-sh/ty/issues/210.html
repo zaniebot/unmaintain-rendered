@@ -24,7 +24,7 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a></div>
             <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/15676 currently has the following mdtest with incorrect results:</p>
-<pre><code class="language-py">def top_level_return(cond1: bool, cond2: bool):
+<pre><code>def top_level_return(cond1: bool, cond2: bool):
     x = 1
 
     def g():
@@ -64,14 +64,14 @@ def return_from_nested_if(cond1: bool, cond2: bool):
             x = 3
 </code></pre>
 <p>We should determine how we want to handle the assignments in this scope.</p>
-<p>One possibility (which mimics our current behavior for module-level scopes) would be to reveal <code>Literal[1, 2, 3]</code> for all three.  (This would require changes to our terminal statement support: we currently purposefully resolve the <code>x</code> use in the nested function relative to the end of <code>f</code>'s scope, but the <code>return</code> statements are preventing some of the bindings from being visible there.)</p>
+<p>One possibility (which mimics our current behavior for module-level scopes) would be to reveal <code>Literal[1, 2, 3]</code> for all three.  (This would require changes to our terminal statement support: we currently purposefully resolve the <code>x</code> use in the nested function relative to the end of <code>f</code>&#x27;s scope, but the <code>return</code> statements are preventing some of the bindings from being visible there.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-01-27 21:58</div>
-            <div class="timeline-body"><p>Just to be clear, the &quot;should reveal&quot; assertions in the example above are based on what we would currently reveal for a similarly-defined symbol in a module level scope, if we don't consider the <code>return</code> statements. That doesn't mean they represent what we <em>should</em> reveal. It's a bit tricky to say what we should reveal, because it all depends on how much analysis we attempt of where the nested scope can possibly be called from. In all three examples above, a sufficiently powerful analysis would be able to declare that <code>g</code> is never called, and doesn't escape from the local scope to be called elsewhere, so we may as well consider the body of <code>g</code> itself to be unreachable code.</p>
-<p>Barring any attempt to analyze where the nested scope can be called from, I think the starting point has to be that all definitions are visible, regardless of control flow. (This is effectively modeling that <code>g</code> could be, perhaps transitively, called from anywhere, including e.g. after <code>x = 2</code> and before <code>return</code> in the third example, meaning even <code>Literal[2]</code> should be considered a possible value. Of course we can see that in fact <code>g</code> can't be called there, but that's starting to &quot;analyze where the nested scope can be called from&quot;.)</p>
-<p>Also, for symbols in function-like scopes, if we don't see a nested scope with a <code>nonlocal</code> statement for that symbol and assignment to it, we can remove the union with <code>Unknown</code>, because nothing outside the scope can reassign the symbol, even if it is not declared.</p>
+            <div class="timeline-body"><p>Just to be clear, the &quot;should reveal&quot; assertions in the example above are based on what we would currently reveal for a similarly-defined symbol in a module level scope, if we don&#x27;t consider the <code>return</code> statements. That doesn&#x27;t mean they represent what we <em>should</em> reveal. It&#x27;s a bit tricky to say what we should reveal, because it all depends on how much analysis we attempt of where the nested scope can possibly be called from. In all three examples above, a sufficiently powerful analysis would be able to declare that <code>g</code> is never called, and doesn&#x27;t escape from the local scope to be called elsewhere, so we may as well consider the body of <code>g</code> itself to be unreachable code.</p>
+<p>Barring any attempt to analyze where the nested scope can be called from, I think the starting point has to be that all definitions are visible, regardless of control flow. (This is effectively modeling that <code>g</code> could be, perhaps transitively, called from anywhere, including e.g. after <code>x = 2</code> and before <code>return</code> in the third example, meaning even <code>Literal[2]</code> should be considered a possible value. Of course we can see that in fact <code>g</code> can&#x27;t be called there, but that&#x27;s starting to &quot;analyze where the nested scope can be called from&quot;.)</p>
+<p>Also, for symbols in function-like scopes, if we don&#x27;t see a nested scope with a <code>nonlocal</code> statement for that symbol and assignment to it, we can remove the union with <code>Unknown</code>, because nothing outside the scope can reassign the symbol, even if it is not declared.</p>
 <p>All of that is to say: we have a lot of design work to do on types for closed-over variables, and &quot;the status quo before terminal support&quot;, as documented in the tests shown above, is not a very good guide to the desired eventual behavior.</p>
 </div>
         </div>
@@ -80,18 +80,18 @@ def return_from_nested_if(cond1: bool, cond2: bool):
             <div class="timeline-body"><blockquote>
 <p>All of that is to say: we have a lot of design work to do on types for closed-over variables, and &quot;the status quo before terminal support&quot;, as documented in the tests shown above, is not a very good guide to the desired eventual behavior.</p>
 </blockquote>
-<p>I've updated the issue description to not presume what behavior we'll want to implement.</p>
+<p>I&#x27;ve updated the issue description to not presume what behavior we&#x27;ll want to implement.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-04-08 06:38</div>
-            <div class="timeline-body"><p>Just adding a note here that the changes in https://github.com/astral-sh/ruff/pull/17169 can probably be reverted after we fixed this.</p>
+            <div class="timeline-body"><p>Just adding a note here that the changes in <a href="https://github.com/astral-sh/ruff/pull/17169">astral-sh/ruff#17169</a> can probably be reverted after we fixed this.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-04-09 09:16</div>
             <div class="timeline-body"><p>I think this public-types issue does not just affect function-like scopes. One false-positive example that I see relatively often is the following:</p>
-<pre><code class="language-py">def flag() -&gt; bool:
+<pre><code>def flag() -&gt; bool:
     return True
 
 
@@ -108,7 +108,7 @@ if flag():
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[red-knot] Rethink public types of symbols in function-like scopes" to "Rethink public types of symbols in function-like scopes" by @MichaReiser on 2025-05-07 15:27</div>
+            <div class="event">Renamed from &quot;[red-knot] Rethink public types of symbols in function-like scopes&quot; to &quot;Rethink public types of symbols in function-like scopes&quot; by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-07 15:27</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-14 17:47</div>
@@ -116,12 +116,12 @@ if flag():
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Rethink public types of symbols in function-like scopes" to "Rethink public types of symbols" by @carljm on 2025-05-28 23:43</div>
+            <div class="event">Renamed from &quot;Rethink public types of symbols in function-like scopes&quot; to &quot;Rethink public types of symbols&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-05-28 23:43</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-06-10 09:48</div>
             <div class="timeline-body"><p>a more simplified example:</p>
-<pre><code class="language-py">a = 1
+<pre><code>a = 1
 
 
 def foo():
@@ -141,15 +141,15 @@ reveal_type(a)  # Unknown | Literal[1]</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @sharkdp by @carljm on 2025-06-17 16:13</div>
+            <div class="event">Assigned to <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/carljm">@carljm</a> on 2025-06-17 16:13</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @sharkdp on 2025-06-26 10:24</div>
+            <div class="event">Closed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-26 10:24</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:19:43 UTC
+        Synced at 2026-01-20 19:24:17 UTC
     </footer>
 </body>
 </html>

@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>TC004 probably shouldn't trigger on typing-modules</h1>
+    <h1>TC004 probably shouldn&#x27;t trigger on typing-modules</h1>
 
     <div class="meta">
         <span class="state-icon state-closed"></span>
@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/mikeshardmind">@mikeshardmind</a></div>
-            <div class="timeline-body"><h3>Description</h3>
+            <div class="timeline-body">Description
 <p>relevant parts of config:</p>
-<pre><code class="language-toml">[tool.ruff]
+<pre><code>[tool.ruff]
 
 line-length = 90
 target-version = &quot;py312&quot;
@@ -46,7 +46,7 @@ select = [
 typing-modules = [&quot;async_utils._typings&quot;]
 </code></pre>
 <p>contents of <code>async_utils._typings</code></p>
-<pre><code class="language-py"># License and context of encountering this issue available here
+<pre><code># License and context of encountering this issue available here
 # https://github.com/mikeshardmind/async-utils/blob/c84b9a71f8caf5a5dcfafc675eff7dec60bd4162/src/async_utils/_typings.py#L27-L44
 from __future__ import annotations
 
@@ -73,8 +73,8 @@ Error: src/async_utils/_typings.py:31:29: TC004 Move import `typing.Literal` out
 Error: src/async_utils/_typings.py:31:38: TC004 Move import `typing.Never` out of type-checking block. Import is used for more than type hinting.
 Error: src/async_utils/_typings.py:31:45: TC004 Move import `typing.Self` out of type-checking block. Import is used for more than type hinting.
 </code></pre>
-<p>Not sure there's a good way to handle this, this is intentionally slightly dynamic use, as throughout the rest of the module, use of typing is done with something like:</p>
-<pre><code class="language-py">from __future__ import annotations  # remove this on 3.14+
+<p>Not sure there&#x27;s a good way to handle this, this is intentionally slightly dynamic use, as throughout the rest of the module, use of typing is done with something like:</p>
+<pre><code>from __future__ import annotations  # remove this on 3.14+
 
 from . import _typings as t
 
@@ -82,14 +82,14 @@ def errors() -&gt; t.Never:
     ...
 </code></pre>
 <p>Which preserves runtime introspectability, but can result in typing never being imported if that introspection capability is never used.</p>
-<p>Checking that a corresponding use exists in else block here might be more trouble than it is worth, and it may be better to just exempt any file marked as part of <code>typing-modules</code> from this. For now I'm going to disable the rule.</p>
+<p>Checking that a corresponding use exists in else block here might be more trouble than it is worth, and it may be better to just exempt any file marked as part of <code>typing-modules</code> from this. For now I&#x27;m going to disable the rule.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-09 02:07</div>
             <div class="timeline-body"><p>Thanks for the report! This looks like a change/regression in 0.9.5 (possibly related to #15719?) I was having trouble reproducing it locally but realized my global ruff install was on 0.9.3 😆</p>
 <p>I can actually reproduce with just <code>--select TC004</code> and <code>--preview</code> on 0.9.5:</p>
-<pre><code class="language-shell"> cat &lt;&lt;'EOF' | uvx ruff@0.9.5 check --select TC004 --no-cache --preview --isolated -
+<pre><code> cat &lt;&lt;&#x27;EOF&#x27; | uvx ruff@0.9.5 check --select TC004 --no-cache --preview --isolated -
 from __future__ import annotations
 
 TYPE_CHECKING = False
@@ -114,14 +114,14 @@ EOF
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-02-09 02:07</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-09 02:07</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-02-09 02:07</div>
+            <div class="event">Label <span class="label">preview</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-09 02:07</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-09 12:18</div>
-            <div class="timeline-body"><p>I suppose we <em>could</em> automatically switch off this rule for all modules listed in the <code>typing-modules</code> setting. I'm not sure if that's what all users would naturally expect, though. If you find the rule otherwise useful, but you want to suppress all diagnostics from the rule in this specific file, you can do that by putting <code># ruff: noqa: TC004</code> anywhere in the file (docs at https://docs.astral.sh/ruff/linter/#error-suppression), or by using either the <a href="https://docs.astral.sh/ruff/settings/#lint_per-file-ignores"><code>per-file-ignores</code></a> setting or the <a href="https://docs.astral.sh/ruff/settings/#lint_extend-per-file-ignores"><code>extend-per-file-ignores</code></a> setting.</p>
+            <div class="timeline-body"><p>I suppose we <em>could</em> automatically switch off this rule for all modules listed in the <code>typing-modules</code> setting. I&#x27;m not sure if that&#x27;s what all users would naturally expect, though. If you find the rule otherwise useful, but you want to suppress all diagnostics from the rule in this specific file, you can do that by putting <code># ruff: noqa: TC004</code> anywhere in the file (docs at https://docs.astral.sh/ruff/linter/#error-suppression), or by using either the <a href="https://docs.astral.sh/ruff/settings/#lint_per-file-ignores"><code>per-file-ignores</code></a> setting or the <a href="https://docs.astral.sh/ruff/settings/#lint_extend-per-file-ignores"><code>extend-per-file-ignores</code></a> setting.</p>
 <p>@Daverball, what do you think of automatically switching the rule off for all files listed in the <code>typing-modules</code> setting?</p>
 </div>
         </div>
@@ -135,12 +135,12 @@ EOF
             <div class="timeline-body"><blockquote>
 <p>This is probably a dumb question but is there a specific reason why the typing module uses <code>.py</code> over <code>.pyi</code>?</p>
 </blockquote>
-<p>The idea of the typing module here is to reduce the import time of the app or library at runtime by only lazily importing the <code>typing</code> module &quot;on demand&quot;. On more recent Python versions, the typing module is actually faster to import than lots of other popular stdlib modules such as <code>inspect</code> or <code>dataclasses</code>, but it has a historical reputation as being very slow to import, so this kind of thing is reasonably common. (It's also one of the easier modules to do this kind of thing with; it's harder to use this kind of shim module to delay the import of <code>dataclasses</code>, for example.)</p>
-<p>This wouldn't work if the typing module was a <code>.pyi</code> file because <code>.pyi</code> files are never executed at runtime; they're just for type checkers. So a <code>.pyi</code> file would have no effect on the import time of the app or library.</p>
+<p>The idea of the typing module here is to reduce the import time of the app or library at runtime by only lazily importing the <code>typing</code> module &quot;on demand&quot;. On more recent Python versions, the typing module is actually faster to import than lots of other popular stdlib modules such as <code>inspect</code> or <code>dataclasses</code>, but it has a historical reputation as being very slow to import, so this kind of thing is reasonably common. (It&#x27;s also one of the easier modules to do this kind of thing with; it&#x27;s harder to use this kind of shim module to delay the import of <code>dataclasses</code>, for example.)</p>
+<p>This wouldn&#x27;t work if the typing module was a <code>.pyi</code> file because <code>.pyi</code> files are never executed at runtime; they&#x27;re just for type checkers. So a <code>.pyi</code> file would have no effect on the import time of the app or library.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> added by @AlexWaygood on 2025-02-09 12:59</div>
+            <div class="event">Label <span class="label">needs-decision</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-09 12:59</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-02-09 13:08</div>
@@ -150,27 +150,27 @@ EOF
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-02-09 13:14</div>
-            <div class="timeline-body"><p>Another solution is to disable <code>TC004</code> if there is a module-level <code>__getattr__</code> and the only runtime reference is in <code>__all__</code>, since realistically we can't know at that point if a symbol is available at runtime or not.</p>
+            <div class="timeline-body"><p>Another solution is to disable <code>TC004</code> if there is a module-level <code>__getattr__</code> and the only runtime reference is in <code>__all__</code>, since realistically we can&#x27;t know at that point if a symbol is available at runtime or not.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-09 13:15</div>
             <div class="timeline-body"><blockquote>
-<p>Another solution is to disable <code>TC004</code> if there is a module-level <code>__getattr__</code> and the only runtime reference is in <code>__all__</code>, since realistically we can't know at that point if a symbol is available at runtime or not.</p>
+<p>Another solution is to disable <code>TC004</code> if there is a module-level <code>__getattr__</code> and the only runtime reference is in <code>__all__</code>, since realistically we can&#x27;t know at that point if a symbol is available at runtime or not.</p>
 </blockquote>
 <p>Oh, that seems like a reasonable improvement to me!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> removed by @AlexWaygood on 2025-02-09 16:15</div>
+            <div class="event">Label <span class="label">needs-decision</span> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-09 16:15</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-02-09 16:27</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-09 16:27</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:52:10 UTC
+        Synced at 2026-01-20 18:49:28 UTC
     </footer>
 </body>
 </html>

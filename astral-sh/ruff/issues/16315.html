@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MarkusSintonen">@MarkusSintonen</a></div>
-            <div class="timeline-body"><h3>Description</h3>
+            <div class="timeline-body">Description
 <p>PERF401 triggers in a following case incorrectly and gives an incorrect suggestion. Making Ruff happy requires creating unnecessary temporary list. Which is not a great workaround.</p>
-<pre><code class="language-python">from collections.abc import AsyncIterator
+<pre><code>from collections.abc import AsyncIterator
 
 
 async def my_nested_aiter() -&gt; AsyncIterator[AsyncIterator[int]]:
@@ -46,7 +46,7 @@ async def test_ruff_issue():
 async def test_incorrect_ruff_suggestion():
     my_list: list[int] = []
     async for inner_aiter in my_nested_aiter():
-        # TypeError: 'async_generator' object is not iterable
+        # TypeError: &#x27;async_generator&#x27; object is not iterable
         my_list.extend(x async for x in inner_aiter)
 
 
@@ -65,13 +65,13 @@ ruff 0.9.3
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MarkusSintonen">@MarkusSintonen</a> on 2025-02-22 12:57</div>
-            <div class="timeline-body"><p>Related https://github.com/astral-sh/ruff/issues/11316#issuecomment-2114185025 but the original issue describes yet another issue with the rule as list extend does not work with async iterators</p>
+            <div class="timeline-body"><p>Related <a href="https://github.com/astral-sh/ruff/issues/11316">astral-sh/ruff#11316</a>#issuecomment-2114185025 but the original issue describes yet another issue with the rule as list extend does not work with async iterators</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-02-22 17:43</div>
             <div class="timeline-body"><p>The intended fix is probably this:</p>
-<pre><code class="language-python">my_list = [
+<pre><code>my_list = [
 	x
 	async for inner_aiter in my_nested_aiter()
 	async for x in inner_aiter
@@ -81,9 +81,9 @@ ruff 0.9.3
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-22 17:44</div>
-            <div class="timeline-body"><p>Thanks for opening the issue! I think there's a lot to consider here.</p>
+            <div class="timeline-body"><p>Thanks for opening the issue! I think there&#x27;s a lot to consider here.</p>
 <p>Just to clarify, when I run</p>
-<pre><code class="language-shell">cat &lt;&lt;'EOF' | ruff check --select PERF401 -
+<pre><code>cat &lt;&lt;&#x27;EOF&#x27; | ruff check --select PERF401 -
 from collections.abc import AsyncIterator
 
 
@@ -116,10 +116,10 @@ Found 1 error.
 </code></pre>
 <p>which I would agree could be a bit misleading.</p>
 <p>If I add the <code>--preview</code> flag, this enables an unsafe fix for the rule, which I can then enable with<code>--unsafe-fixes</code> (I also throw in <code>--diff</code> to avoid changing any files):</p>
-<pre><code class="language-shell">ruff check --select PERF401 --preview --unsafe-fixes --diff
+<pre><code>ruff check --select PERF401 --preview --unsafe-fixes --diff
 </code></pre>
 <p>This produces the diff:</p>
-<pre><code class="language-diff">@@ -11,6 +11,5 @@
+<pre><code>@@ -11,6 +11,5 @@
  async def test_ruff_issue():
      my_list: list[int] = []
      async for inner_aiter in my_nested_aiter():
@@ -132,9 +132,9 @@ Found 1 error.
 Would fix 1 error.
 </code></pre>
 <p>So I think ruff is actually giving a correct suggestion here, at least in the sense that the code still works. However, I agree that the help message, combined with the non-async <code>list.extend</code> example in the rule documentation, could easily lead you to the <code>list.extend(x async ...)</code> solution.</p>
-<p>I also assume, like you and others in the linked issue, that creating a temporary list just to use <code>extend</code> is probably a net negative, so I'm a bit skeptical that this should apply to <code>async</code> iterators at all, at least in the <code>extend</code> case.</p>
+<p>I also assume, like you and others in the linked issue, that creating a temporary list just to use <code>extend</code> is probably a net negative, so I&#x27;m a bit skeptical that this should apply to <code>async</code> iterators at all, at least in the <code>extend</code> case.</p>
 <p>Finally, in this <em>specific</em> case, but possibly not in related real-world examples, a better fix would possibly be a nested list comprehension like this:</p>
-<pre><code class="language-python">async def test_ruff_issue():
+<pre><code>async def test_ruff_issue():
     return [x async for inner_aiter in my_nested_aiter() async for x in inner_aiter]
 </code></pre>
 <p>I think that would be pretty hard to detect and suggest in the rule, though.</p>
@@ -142,10 +142,10 @@ Would fix 1 error.
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">documentation</span> added by @ntBre on 2025-02-22 17:44</div>
+            <div class="event">Label <span class="label">documentation</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-22 17:44</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-02-22 17:44</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-22 17:44</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MarkusSintonen">@MarkusSintonen</a> on 2025-02-22 18:18</div>
@@ -163,7 +163,7 @@ async for x in inner_aiter
 </blockquote>
 <p>Yes it is correct but is it really performant as the &quot;PERF&quot; rules try to do, I would bet it is not. So the usage of temporary lists is really not a great workaround and is not inline with &quot;PERF&quot; rules. As it is not performance net positive.</p>
 <blockquote>
-<p>I also assume, like you and others in the linked issue, that creating a temporary list just to use extend is probably a net negative, so I'm a bit skeptical that this should apply to async iterators at all, at least in the extend case.</p>
+<p>I also assume, like you and others in the linked issue, that creating a temporary list just to use extend is probably a net negative, so I&#x27;m a bit skeptical that this should apply to async iterators at all, at least in the extend case.</p>
 </blockquote>
 <p>I would say the PERF401 should not be applied to async iterators at all whenever it tries to suggest usage of <code>list.extend</code>. Python just does not support <code>extend</code> with async iterators. Rule is not applicable in the first place here. None of the suggestions are performance related (ugly nested comprehensions), or performance net positive (temp lists).</p>
 <p>Otherwise the rule is great so would not want to disable it. But too bad it can break so badly with async iters.</p>
@@ -172,7 +172,7 @@ async for x in inner_aiter
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Tishka17">@Tishka17</a> on 2025-11-10 18:35</div>
             <div class="timeline-body"><p>It is not also not optimal for normal generators:</p>
-<pre><code class="language-python">def foo():
+<pre><code>def foo():
     a = []
     for x in range(100):
         if x % 2 == 0:
@@ -197,7 +197,7 @@ generators are slower than normal for loop</p>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:52:15 UTC
+        Synced at 2026-01-20 18:49:33 UTC
     </footer>
 </body>
 </html>

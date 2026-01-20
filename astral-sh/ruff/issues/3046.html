@@ -23,20 +23,11 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/JoshKarpel">@JoshKarpel</a></div>
-            <div class="timeline-body"><!--
-Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
-
-If you're filing a bug report, please consider including the following information:
-
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
-* The current Ruff settings (any relevant sections from your `pyproject.toml`).
-* The current Ruff version (`ruff --version`).
--->
+            <div class="timeline-body">
 
 <p>(<code>E731</code> is &quot;do not assign a <code>lambda</code> expression, use a <code>def</code>&quot;)</p>
 <p>Consider this example where a <code>dataclass</code> has a <code>Callable</code> attribute with a default value:</p>
-<pre><code class="language-python">from collections.abc import Callable
+<pre><code>from collections.abc import Callable
 from dataclasses import dataclass
 
 @dataclass
@@ -44,13 +35,13 @@ class Foo:
     bar: Callable[[], str] = lambda: &quot;foo&quot;
 </code></pre>
 <p>Ruff identifies the class variable assignment as a violation of <code>E731</code>:</p>
-<pre><code class="language-console">$ ruff check test.py --isolated
+<pre><code>$ ruff check test.py --isolated
 test.py:7:5: E731 [*] Do not assign a `lambda` expression, use a `def`
 Found 1 error.
 [*] 1 potentially fixable with the --fix option.
 </code></pre>
 <p>But the autofix transforms it into:</p>
-<pre><code class="language-python">from dataclasses import dataclass
+<pre><code>from dataclasses import dataclass
 
 @dataclass
 class Foo:
@@ -58,9 +49,9 @@ class Foo:
         return &quot;foo&quot;
 </code></pre>
 <p>which is not equivalent.</p>
-<p>Looking at https://github.com/charliermarsh/ruff/blob/9168a12679976ece5e94dd9cf6abe3c8886e31cc/crates/ruff/src/rules/pycodestyle/rules/lambda_assignment.rs#L29-L37 it seems like the problem is that there's no check on whether it makes sense to do this transformation in the surrounding context (in this case, the autofix doesn't apply because we're in a <code>@dataclass</code> body, but maybe there are other contexts too?).</p>
+<p>Looking at https://github.com/charliermarsh/ruff/blob/9168a12679976ece5e94dd9cf6abe3c8886e31cc/crates/ruff/src/rules/pycodestyle/rules/lambda_assignment.rs#L29-L37 it seems like the problem is that there&#x27;s no check on whether it makes sense to do this transformation in the surrounding context (in this case, the autofix doesn&#x27;t apply because we&#x27;re in a <code>@dataclass</code> body, but maybe there are other contexts too?).</p>
 <p>I think the desired autofix in this case would be more like:</p>
-<pre><code class="language-python">from collections.abc import Callable
+<pre><code>from collections.abc import Callable
 from dataclasses import dataclass
 
 def bar():
@@ -70,17 +61,17 @@ def bar():
 class Foo:
     bar: Callable[[], str] = bar
 </code></pre>
-<p>but that is only correct for dataclasses because we care about the type-annotated class variable! If this wasn't a dataclass, the original autofix would be fine and produces equivalent behavior at runtime. I'd suggest that as a first pass, there's just no autofix for <code>E731</code> if it occurs in a class body, because it depends on this question of whether the type-annotated class variable needs to exist for some other code to use, which is probably impossible to determine (since it's not just <code>@dataclass</code> that might use those annotations).</p>
-<p>Happy to take a look at a fix for this issue myself, but I'm a first-time contributor so it might take some time :)</p>
+<p>but that is only correct for dataclasses because we care about the type-annotated class variable! If this wasn&#x27;t a dataclass, the original autofix would be fine and produces equivalent behavior at runtime. I&#x27;d suggest that as a first pass, there&#x27;s just no autofix for <code>E731</code> if it occurs in a class body, because it depends on this question of whether the type-annotated class variable needs to exist for some other code to use, which is probably impossible to determine (since it&#x27;s not just <code>@dataclass</code> that might use those annotations).</p>
+<p>Happy to take a look at a fix for this issue myself, but I&#x27;m a first-time contributor so it might take some time :)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-20 02:54</div>
-            <div class="timeline-body"><p>Yeah this makes sense. We could look at <code>checker.current_scope</code> to see if it's of <code>ScopeKind::Class</code>. I'll get to it eventually but you're more than welcome and I can answer questions as they come up :)</p>
+            <div class="timeline-body"><p>Yeah this makes sense. We could look at <code>checker.current_scope</code> to see if it&#x27;s of <code>ScopeKind::Class</code>. I&#x27;ll get to it eventually but you&#x27;re more than welcome and I can answer questions as they come up :)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-02-20 02:54</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-20 02:54</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/JoshKarpel">@JoshKarpel</a> on 2023-02-20 03:45</div>
@@ -88,12 +79,12 @@ class Foo:
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-02-20 17:38</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-20 17:38</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:46:35 UTC
+        Synced at 2026-01-20 18:48:33 UTC
     </footer>
 </body>
 </html>

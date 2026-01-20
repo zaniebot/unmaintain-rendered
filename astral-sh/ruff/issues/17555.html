@@ -23,8 +23,8 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/injust">@injust</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<pre><code class="language-python">from __future__ import annotations
+            <div class="timeline-body">Summary
+<pre><code>from __future__ import annotations
 
 from collections.abc import AsyncGenerator, Iterable
 from typing import TYPE_CHECKING
@@ -36,25 +36,25 @@ async def foo(bar: Iterable[int]) -&gt; AsyncGenerator[int]:
     pass
 </code></pre>
 <p>https://play.ruff.rs/5b99b487-12b4-45f7-b212-b8e5bdfc63bd</p>
-<p>The <code>from collections.abc</code> import is repeated inside and outside the <code>if TYPE_CHECKING</code> block. I expected this to trigger some combination of <a href="https://docs.astral.sh/ruff/rules/typing-only-standard-library-import/">TC003</a> and/or <a href="https://docs.astral.sh/ruff/rules/redefined-while-unused/">F811</a>, but Ruff doesn't report any errors.</p>
-<h3>Version</h3>
+<p>The <code>from collections.abc</code> import is repeated inside and outside the <code>if TYPE_CHECKING</code> block. I expected this to trigger some combination of <a href="https://docs.astral.sh/ruff/rules/typing-only-standard-library-import/">TC003</a> and/or <a href="https://docs.astral.sh/ruff/rules/redefined-while-unused/">F811</a>, but Ruff doesn&#x27;t report any errors.</p>
+Version
 <p>0.11.6</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-22 17:48</div>
-            <div class="timeline-body"><p>Thanks for the report! After looking a bit at both rules, I'm not exactly sure which rule the bug is in, but it does look like a bug to me.</p>
+            <div class="timeline-body"><p>Thanks for the report! After looking a bit at both rules, I&#x27;m not exactly sure which rule the bug is in, but it does look like a bug to me.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-04-22 17:48</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-22 17:48</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-04-22 21:11</div>
-            <div class="timeline-body"><p>This does seem like it should trigger <code>F811</code>. Triggering <code>TC003</code> doesn't really make sense to me, since the reference points to the typing only import, not the original import.</p>
-<p>I assume <code>F811</code> doesn't trigger because the second import happens inside a conditional block, which usually means that ruff can't treat the earlier binding as unused, since the conditional binding might not happen. But since <code>if TYPE_CHECKING</code> is special, it probably shouldn't be part of this exception.</p>
+            <div class="timeline-body"><p>This does seem like it should trigger <code>F811</code>. Triggering <code>TC003</code> doesn&#x27;t really make sense to me, since the reference points to the typing only import, not the original import.</p>
+<p>I assume <code>F811</code> doesn&#x27;t trigger because the second import happens inside a conditional block, which usually means that ruff can&#x27;t treat the earlier binding as unused, since the conditional binding might not happen. But since <code>if TYPE_CHECKING</code> is special, it probably shouldn&#x27;t be part of this exception.</p>
 <p>There are however more questionable permutations of the same problem:</p>
-<pre><code class="language-python">from __future__ import annotations
+<pre><code>from __future__ import annotations
 
 from collections.abc import Iterable
 from typing import TYPE_CHECKING
@@ -65,18 +65,18 @@ if TYPE_CHECKING:
 def foo(bar: Iterable[int]) -&gt; None:
     assert isinstance(bar, Iterable)
 </code></pre>
-<p>Now we have a runtime use of <code>Iterable</code>, so <code>TC004</code> will trigger, but if we change the semantics for <code>F811</code> it will also trigger. So now the two violations/fixes kind of contradict one another (although it's not that bad, since whichever order the fixes happens in, you still end up with the same result: a single import outside the type checking block).</p>
+<p>Now we have a runtime use of <code>Iterable</code>, so <code>TC004</code> will trigger, but if we change the semantics for <code>F811</code> it will also trigger. So now the two violations/fixes kind of contradict one another (although it&#x27;s not that bad, since whichever order the fixes happens in, you still end up with the same result: a single import outside the type checking block).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-04-22 21:16</div>
-            <div class="timeline-body"><p>There is however also a world, where adding a new <code>TC</code> scoped rule to catch this sort of duplicate import makes more sense, than changing the scope of existing rules. I haven't really thought through the implications of changing how <code>F811</code> interacts with redefined imports inside a <code>if TYPE_CHECKING</code> block. But I can't think of any real problems off the top of my head. There are however problems for the opposite case, where a typing only import gets shadowed by a runtime import.</p>
+            <div class="timeline-body"><p>There is however also a world, where adding a new <code>TC</code> scoped rule to catch this sort of duplicate import makes more sense, than changing the scope of existing rules. I haven&#x27;t really thought through the implications of changing how <code>F811</code> interacts with redefined imports inside a <code>if TYPE_CHECKING</code> block. But I can&#x27;t think of any real problems off the top of my head. There are however problems for the opposite case, where a typing only import gets shadowed by a runtime import.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-23 15:15</div>
-            <div class="timeline-body"><p>I don't have much to add, I think you summarized the issues and options very well!</p>
-<p>I think this is technically a duplicate of #12270, which I didn't notice before, and also related to #5952, but if anything I'd probably mark those as the duplicates in light of the additional context here.</p>
+            <div class="timeline-body"><p>I don&#x27;t have much to add, I think you summarized the issues and options very well!</p>
+<p>I think this is technically a duplicate of #12270, which I didn&#x27;t notice before, and also related to #5952, but if anything I&#x27;d probably mark those as the duplicates in light of the additional context here.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -86,16 +86,16 @@ def foo(bar: Iterable[int]) -&gt; None:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-23 15:46</div>
-            <div class="timeline-body"><p>Oh good catch, I didn't find the exact commit/PR but it looks like #5952 was fixed between 0.1.11 and 0.1.12.</p>
+            <div class="timeline-body"><p>Oh good catch, I didn&#x27;t find the exact commit/PR but it looks like #5952 was fixed between 0.1.11 and 0.1.12.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/wgmo">@wgmo</a> on 2025-06-11 15:09</div>
             <div class="timeline-body"><p>(To avoid the confusion which I just experienced reading the bottom of this comment thread, ...)</p>
 <blockquote>
-<p>Oh good catch, I didn't find the exact commit/PR but it looks like this was fixed between 0.1.11 and 0.1.12.</p>
+<p>Oh good catch, I didn&#x27;t find the exact commit/PR but it looks like this was fixed between 0.1.11 and 0.1.12.</p>
 </blockquote>
-<p>The &quot;this&quot; here isn't <em>this</em> issue #17555, it's #5952 as mentioned <a href="https://github.com/astral-sh/ruff/issues/17555#issuecomment-2824698993">here</a></p>
+<p>The &quot;this&quot; here isn&#x27;t <em>this</em> issue #17555, it&#x27;s #5952 as mentioned <a href="https://github.com/astral-sh/ruff/issues/17555#issuecomment-2824698993">here</a></p>
 <p>The problem described here, <a href="#17555">in this issue</a> is still present in ruff 0.11.13!</p>
 </div>
         </div>
@@ -105,12 +105,12 @@ def foo(bar: Iterable[int]) -&gt; None:
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Identical import inside+outside of `TYPE_CHECKING` block does not error" to "Identical import inside+outside of `TYPE_CHECKING` block does not emit `F811`" by @ntBre on 2025-12-10 17:55</div>
+            <div class="event">Renamed from &quot;Identical import inside+outside of `TYPE_CHECKING` block does not error&quot; to &quot;Identical import inside+outside of `TYPE_CHECKING` block does not emit `F811`&quot; by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-10 17:55</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:52:37 UTC
+        Synced at 2026-01-20 18:49:51 UTC
     </footer>
 </body>
 </html>

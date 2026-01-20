@@ -23,22 +23,13 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Skylion007">@Skylion007</a></div>
-            <div class="timeline-body"><!--
-Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
-
-If you're filing a bug report, please consider including the following information:
-
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
-* The current Ruff settings (any relevant sections from your `pyproject.toml`).
-* The current Ruff version (`ruff --version`).
--->
+            <div class="timeline-body">
 
 <p>I just saw another method of accessing the first element of an iterable / dictionary key that is very inefficient. Currently, this is not detected by RUF015 which we have enabled. We should expand RUF015 to cover this idiom. A minimal problematic example is found below.</p>
-<pre><code class="language-python">first_element = list(iterable).pop(0)
+<pre><code>first_element = list(iterable).pop(0)
 </code></pre>
 <p>It should be</p>
-<pre><code class="language-python">first_element = next(iter(iterable))
+<pre><code>first_element = next(iter(iterable))
 </code></pre>
 <p>which would not require iterating through the entire iterable just to retrieve the first element. Expanding the autofix to cover this would be helpful as well.</p>
 <ul>
@@ -47,13 +38,13 @@ If you're filing a bug report, please consider including the following informati
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Expand `RUF015` rule for list(iterable).pop() idiom" to "Expand `RUF015` rule for `list(iterable).pop()` idiom" by @Skylion007 on 2023-12-18 18:21</div>
+            <div class="event">Renamed from &quot;Expand `RUF015` rule for list(iterable).pop() idiom&quot; to &quot;Expand `RUF015` rule for `list(iterable).pop()` idiom&quot; by <a href="https://github.com/Skylion007">@Skylion007</a> on 2023-12-18 18:21</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-12-18 19:30</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-18 19:30</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">accepted</span> added by @charliermarsh on 2023-12-18 19:30</div>
+            <div class="event">Label <span class="label">accepted</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-18 19:30</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-18 19:30</div>
@@ -62,7 +53,7 @@ If you're filing a bug report, please consider including the following informati
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2023-12-19 13:47</div>
-            <div class="timeline-body"><pre><code class="language-py">&gt;&gt;&gt; iterable = [1,2]
+            <div class="timeline-body"><pre><code>&gt;&gt;&gt; iterable = [1,2]
 &gt;&gt;&gt; list(iterable).pop()
 2
 &gt;&gt;&gt; next(iter(iterable))
@@ -78,16 +69,16 @@ If you're filing a bug report, please consider including the following informati
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2023-12-19 16:03</div>
-            <div class="timeline-body"><p>Oh whoops. Good catch, I misremembered the default arg of pop. This still applies to <code>pop(0)</code> though. The reversed iter next isn't bad though. I wonder if a deque could be abused to grab the last element too.</p>
+            <div class="timeline-body"><p>Oh whoops. Good catch, I misremembered the default arg of pop. This still applies to <code>pop(0)</code> though. The reversed iter next isn&#x27;t bad though. I wonder if a deque could be abused to grab the last element too.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Expand `RUF015` rule for `list(iterable).pop()` idiom" to "Expand `RUF015` rule for `list(iterable).pop(0)` idiom" by @Skylion007 on 2023-12-19 16:04</div>
+            <div class="event">Renamed from &quot;Expand `RUF015` rule for `list(iterable).pop()` idiom&quot; to &quot;Expand `RUF015` rule for `list(iterable).pop(0)` idiom&quot; by <a href="https://github.com/Skylion007">@Skylion007</a> on 2023-12-19 16:04</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/UnknownPlatypus">@UnknownPlatypus</a> on 2023-12-19 17:17</div>
             <div class="timeline-body"><p>Using <code>reversed</code> instead of <code>iter</code> in the <code>.pop()</code> case is great no? (no need to <code>reversed(iter(...))</code> I think?)</p>
-<pre><code class="language-diff">-list(iterable).pop(0)
+<pre><code>-list(iterable).pop(0)
 +next(iter(iterable))
 
 -list(iterable).pop()
@@ -102,8 +93,8 @@ If you're filing a bug report, please consider including the following informati
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2023-12-19 17:35</div>
-            <div class="timeline-body"><p>~Actually, one concern if the generator is very, very long and if the iterable doesn't implement <code>__reversed__</code>, then the <code>next(reversed(iterable))</code> could take a lot of memory, right? I think~ the most efficient solution is to use reversed if it does implement this method, otherwise use <code>deque(iterable, max_len=1).pop()</code>, right? <code>reversed</code> only works on sequences not iterators so I am not sure it's a drop in replacement sadly.</p>
-<pre><code class="language-python">a = iter(range(10))
+            <div class="timeline-body"><p>~Actually, one concern if the generator is very, very long and if the iterable doesn&#x27;t implement <code>__reversed__</code>, then the <code>next(reversed(iterable))</code> could take a lot of memory, right? I think~ the most efficient solution is to use reversed if it does implement this method, otherwise use <code>deque(iterable, max_len=1).pop()</code>, right? <code>reversed</code> only works on sequences not iterators so I am not sure it&#x27;s a drop in replacement sadly.</p>
+<pre><code>a = iter(range(10))
 b = reversed(a)
 </code></pre>
 <p>will return an error.</p>
@@ -111,8 +102,8 @@ b = reversed(a)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/UnknownPlatypus">@UnknownPlatypus</a> on 2023-12-19 18:14</div>
-            <div class="timeline-body"><p>oh right, this is a tricky one. However, I'm not sure <code>deque(iterable, max_len=1).pop()</code> will actually be faster. On my machine it's actually slower. The iterable is probably evaluated entirely idk:</p>
-<pre><code class="language-python">%timeit deque(range(10000), maxlen=1).pop()
+            <div class="timeline-body"><p>oh right, this is a tricky one. However, I&#x27;m not sure <code>deque(iterable, max_len=1).pop()</code> will actually be faster. On my machine it&#x27;s actually slower. The iterable is probably evaluated entirely idk:</p>
+<pre><code>%timeit deque(range(10000), maxlen=1).pop()
 88.7 µs ± 8.44 µs per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
 %timeit list(range(10000)).pop()
 73.8 µs ± 252 ns per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
@@ -125,7 +116,7 @@ b = reversed(a)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">good first issue</span> added by @charliermarsh on 2024-02-07 22:48</div>
+            <div class="event">Label <span class="label">good first issue</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-07 22:48</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2024-02-08 09:33</div>
@@ -148,21 +139,21 @@ Going through the comments I got some idea but its not clear what is the solutio
 <p>Going through the comments I got some idea but its not clear what is the solution.</p>
 </blockquote>
 <p>So, currently the <a href="https://github.com/astral-sh/ruff/blob/4c62227da2ecbc6fe7b069b633ac3a233e9100fc/crates/ruff_linter/src/rules/ruff/rules/unnecessary_iterable_allocation_for_first_element.rs#L68-L71">implementation takes in an <code>ExprSubscript</code></a> which matches the <code>list(iterable)[0]</code> code (<a href="https://play.ruff.rs/a06b12d6-2c6c-41c1-a308-278eb3257191">AST Playground</a>). What we want is to also look for code like <code>list(iterable).pop(0)</code> which is an <code>ExprAttribute</code> (<a href="https://play.ruff.rs/262f86d3-a469-4a3a-ae42-ce6b5cdfd55b">AST Playground</a>).</p>
-<p>This will require updating the function signature to now take any <code>Expr</code> to allow for either <code>Expr::Subscript</code> or <code>Expr::Attribute</code>. You'll need to update the function body to check for the <code>.pop(0)</code> idiom along with the existing <code>[0]</code> (<code>is_head_slice</code>). Rest of the code should probably be the same.</p>
+<p>This will require updating the function signature to now take any <code>Expr</code> to allow for either <code>Expr::Subscript</code> or <code>Expr::Attribute</code>. You&#x27;ll need to update the function body to check for the <code>.pop(0)</code> idiom along with the existing <code>[0]</code> (<code>is_head_slice</code>). Rest of the code should probably be the same.</p>
 <p>The fix for this rule is already unsafe and it would help expand on the <a href="https://docs.astral.sh/ruff/rules/unnecessary-iterable-allocation-for-first-element/#fix-safety">fix safety</a> documentation of the rule with why this fix is unsafe w.r.t. the new code.</p>
-<p>Hope this helps, feel free to ask any other questions that you might have. I'll assign this issue to you but don't feel any pressure to complete this :)</p>
+<p>Hope this helps, feel free to ask any other questions that you might have. I&#x27;ll assign this issue to you but don&#x27;t feel any pressure to complete this :)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @rmad17 by @dhruvmanila on 2024-02-15 05:00</div>
+            <div class="event">Assigned to <a href="https://github.com/rmad17">@rmad17</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-02-15 05:00</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/robincaloudis">@robincaloudis</a> on 2024-02-27 22:36</div>
-            <div class="timeline-body"><p>Since there was no activity on this issue yet (followed it for the last 2 weeks), I stepped ahead and provided a fix in https://github.com/astral-sh/ruff/pull/10148. I hope I interpreted the inactivity on this ticket correctly and didn't steal someones chance. @dhruvmanila, @charliermarsh, do you mind reviewing the PR? Thanks a lot.</p>
+            <div class="timeline-body"><p>Since there was no activity on this issue yet (followed it for the last 2 weeks), I stepped ahead and provided a fix in <a href="https://github.com/astral-sh/ruff/pull/10148">astral-sh/ruff#10148</a>. I hope I interpreted the inactivity on this ticket correctly and didn&#x27;t steal someones chance. @dhruvmanila, @charliermarsh, do you mind reviewing the PR? Thanks a lot.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-02-28 00:24</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-28 00:24</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/rmad17">@rmad17</a> on 2024-02-29 02:39</div>
@@ -172,7 +163,7 @@ Going through the comments I got some idea but its not clear what is the solutio
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:49:17 UTC
+        Synced at 2026-01-20 18:48:48 UTC
     </footer>
 </body>
 </html>

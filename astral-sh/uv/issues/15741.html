@@ -23,50 +23,50 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Arcitec">@Arcitec</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<p>After a lot of painstaking tests, I can conclude that <code>uv lock</code> always loads the user's personal <code>~/.config/uv/uv.toml</code>, which means that projects <code>uv.lock</code> can become poisoned with the user's own custom PyPI mirror. Thereby generating a <code>uv.lock</code> with non-trusted URLs and package hashes.</p>
+            <div class="timeline-body">Summary
+<p>After a lot of painstaking tests, I can conclude that <code>uv lock</code> always loads the user&#x27;s personal <code>~/.config/uv/uv.toml</code>, which means that projects <code>uv.lock</code> can become poisoned with the user&#x27;s own custom PyPI mirror. Thereby generating a <code>uv.lock</code> with non-trusted URLs and package hashes.</p>
 <p>Example:</p>
 <ul>
 <li><code>~/.config/uv/uv.toml</code></li>
 </ul>
-<pre><code class="language-toml">[[index]]
+<pre><code>[[index]]
 url = &quot;https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple&quot;
 </code></pre>
 <ul>
-<li>Project's <code>pyproject.toml</code> cannot override this. <code>uv lock --show-settings</code> reveals that the custom mirror is always included.</li>
+<li>Project&#x27;s <code>pyproject.toml</code> cannot override this. <code>uv lock --show-settings</code> reveals that the custom mirror is always included.</li>
 </ul>
 <p>I have tried everything:</p>
 <ul>
 <li>Putting another <code>uv.toml</code> in the repo which forces the URL to be PyPI.</li>
 <li>Forcing URLs with <code>uv lock --upgrade --index-url &quot;https://pypi.org/simple&quot;</code> and <code>uv lock --upgrade --default-index &quot;https://pypi.org/simple&quot;</code></li>
-<li>Adding a <code>pyproject.toml</code> rule to default to PyPI (still doesn't do it):</li>
+<li>Adding a <code>pyproject.toml</code> rule to default to PyPI (still doesn&#x27;t do it):</li>
 </ul>
-<pre><code class="language-toml">[[tool.uv.index]]
+<pre><code>[[tool.uv.index]]
 name = &quot;pypi&quot;
 url = &quot;https://pypi.org/simple&quot;
 default = true
 </code></pre>
 <p>The <strong>only</strong> thing that seems to work is <code>uv lock --upgrade --no-config</code> but <a href="https://docs.astral.sh/uv/reference/cli/#uv-auth-login--no-config">according to the docs</a>, that also makes it ignore all custom config rules inside pyproject.toml, which is not what I want.</p>
-<p>What we need for safety and consistency is a way to configure <code>pyproject.toml</code> to tell it &quot;always generate uv.lock based on PyPI, not the user's local mirrors&quot;.</p>
-<h3>Example</h3>
+<p>What we need for safety and consistency is a way to configure <code>pyproject.toml</code> to tell it &quot;always generate uv.lock based on PyPI, not the user&#x27;s local mirrors&quot;.</p>
+Example
 <p><em>No response</em></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @Arcitec on 2025-09-08 18:36</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/Arcitec">@Arcitec</a> on 2025-09-08 18:36</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-09 17:55</div>
-            <div class="timeline-body"><p>We're planning to support the reverse feature: You can use PyPI URLs in the lockfile, but set a setting that instead resolves and installs with the base URL replaced on your machine. See https://github.com/astral-sh/uv/issues/6349 and https://github.com/astral-sh/uv/pull/11782. I think this broadly a duplicate of #6349 and #9056.</p>
+            <div class="timeline-body"><p>We&#x27;re planning to support the reverse feature: You can use PyPI URLs in the lockfile, but set a setting that instead resolves and installs with the base URL replaced on your machine. See <a href="https://github.com/astral-sh/uv/issues/6349">astral-sh/uv#6349</a> and <a href="https://github.com/astral-sh/uv/pull/11782">astral-sh/uv#11782</a>. I think this broadly a duplicate of #6349 and #9056.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Arcitec">@Arcitec</a> on 2025-09-09 18:01</div>
             <div class="timeline-body"><p>@konstin Thank you so much for the analysis and links to related ideas. I had a look at the linked requests.</p>
-<p>The most desirable outcome would be that <code>uv.lock</code> always uses PyPI URLs and hashes (configured via some <code>pyproject.toml</code> field to mark pypi as the &quot;ground truth&quot; that must be used for generating lockfiles), and then the user's local-machine is free to use local mirrors on their own base machine.</p>
+<p>The most desirable outcome would be that <code>uv.lock</code> always uses PyPI URLs and hashes (configured via some <code>pyproject.toml</code> field to mark pypi as the &quot;ground truth&quot; that must be used for generating lockfiles), and then the user&#x27;s local-machine is free to use local mirrors on their own base machine.</p>
 <p>It basically works like that already; users can currently override the index of the lockfile via <code>uv sync --default-index &quot;foo&quot;</code>.</p>
-<p>The only thing missing is the ability to force the <code>uv.lock</code> to ignore the user's local repos and always use the repos defined in <code>pyproject.toml</code>. It could be added with a config setting. The only thing I am unsure about is whether users should then be forced to manually define PyPI's repo in the pyproject.toml or if it should be auto-inherited via uv. I think people will want the ability to exclude PyPI entirely, so a design like this would make sense:</p>
-<pre><code class="language-toml">[tool.uv]
+<p>The only thing missing is the ability to force the <code>uv.lock</code> to ignore the user&#x27;s local repos and always use the repos defined in <code>pyproject.toml</code>. It could be added with a config setting. The only thing I am unsure about is whether users should then be forced to manually define PyPI&#x27;s repo in the pyproject.toml or if it should be auto-inherited via uv. I think people will want the ability to exclude PyPI entirely, so a design like this would make sense:</p>
+<pre><code>[tool.uv]
 strict-lockfile-indexes = true
 
 [[tool.uv.index]]
@@ -83,25 +83,25 @@ explicit = true
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Anchorfall">@Anchorfall</a> on 2025-11-24 22:36</div>
-            <div class="timeline-body"><p>@konstin Second this, it would be great if we could explicitly force uv to disregard the user's ~/.config/uv/uv.toml file, and exclusively use the indices defined in pyproject.toml when resolving dependencies.</p>
-<p>Ideally, we'd be able to configure this by changing a setting in pyproject.toml (something like the example above), as opposed to adding an argument to 'uv lock' on the command line every time.</p>
+            <div class="timeline-body"><p>@konstin Second this, it would be great if we could explicitly force uv to disregard the user&#x27;s ~/.config/uv/uv.toml file, and exclusively use the indices defined in pyproject.toml when resolving dependencies.</p>
+<p>Ideally, we&#x27;d be able to configure this by changing a setting in pyproject.toml (something like the example above), as opposed to adding an argument to &#x27;uv lock&#x27; on the command line every time.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Anchorfall">@Anchorfall</a> on 2025-11-24 22:50</div>
             <div class="timeline-body"><blockquote>
-<p><a href="https://github.com/konstin">@konstin</a> Second this, it would be great if we could explicitly force uv to disregard the user's ~/.config/uv/uv.toml file, and exclusively use the indices defined in pyproject.toml when resolving dependencies.</p>
-<p>Ideally, we'd be able to configure this by changing a setting in pyproject.toml (something like the example above), as opposed to adding an argument to 'uv lock' on the command line every time.</p>
+<p><a href="https://github.com/konstin">@konstin</a> Second this, it would be great if we could explicitly force uv to disregard the user&#x27;s ~/.config/uv/uv.toml file, and exclusively use the indices defined in pyproject.toml when resolving dependencies.</p>
+<p>Ideally, we&#x27;d be able to configure this by changing a setting in pyproject.toml (something like the example above), as opposed to adding an argument to &#x27;uv lock&#x27; on the command line every time.</p>
 </blockquote>
-<p>To provide some context, we're in a situation where uv keeps using an index that I don't want it to use, to install transitive dependencies. We don't want it to touch that index because it's inaccessible to the environment we're deploying to, and contains package versions that aren't available elsewhere.  However, the index is commonly used outside of this project, so certain team members have the 'forbidden' index listed in their uv.toml file. So whenever someone runs 'uv lock' with that index in their uv.toml, we run into this problem.</p>
-<p>The only way around this is to explicitly list out all transitive dependencies in pyproject.toml, and force them to the correct index under [tool.uv.sources]. Which works, but isn't ideal, and will only 'solve' the problem for as long as nobody adds another package and runs 'uv lock'. Either that, or we tell all team members to forever remove the forbidden index from their uv.toml files, even though it's a valid index for every other project.</p>
+<p>To provide some context, we&#x27;re in a situation where uv keeps using an index that I don&#x27;t want it to use, to install transitive dependencies. We don&#x27;t want it to touch that index because it&#x27;s inaccessible to the environment we&#x27;re deploying to, and contains package versions that aren&#x27;t available elsewhere.  However, the index is commonly used outside of this project, so certain team members have the &#x27;forbidden&#x27; index listed in their uv.toml file. So whenever someone runs &#x27;uv lock&#x27; with that index in their uv.toml, we run into this problem.</p>
+<p>The only way around this is to explicitly list out all transitive dependencies in pyproject.toml, and force them to the correct index under [tool.uv.sources]. Which works, but isn&#x27;t ideal, and will only &#x27;solve&#x27; the problem for as long as nobody adds another package and runs &#x27;uv lock&#x27;. Either that, or we tell all team members to forever remove the forbidden index from their uv.toml files, even though it&#x27;s a valid index for every other project.</p>
 <p>It would be better if we could (optionally) exert more control over which sources uv can and cannot not use, when resolving dependencies for a particular project.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:32:50 UTC
+        Synced at 2026-01-20 19:40:17 UTC
     </footer>
 </body>
 </html>

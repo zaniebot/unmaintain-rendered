@@ -25,43 +25,43 @@
             <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a></div>
             <div class="timeline-body"><p>Originally asked as a discussion question here: https://github.com/BurntSushi/ripgrep/discussions/1633</p>
 <blockquote>
-<p>I'm using the <code>grep</code> crate (AKA: libripgrep) to try and match exact byte portions of a slice. I've found that when my <code>Matcher</code> returns a match with a given range, this information is lost when it's sent over to the <code>Sink</code> as a <code>SinkMatch</code> struct.</p>
-<p>I've created a small repository to reproduce the issue. Here's the entire code: https://github.com/acheronfail/grep-sink-example/blob/master/src/main.rs. See the <a href="https://github.com/acheronfail/grep-sink-example"><code>README.md</code></a> for the output of the program.</p>
-<h2>What did I expect?</h2>
+<p>I&#x27;m using the <code>grep</code> crate (AKA: libripgrep) to try and match exact byte portions of a slice. I&#x27;ve found that when my <code>Matcher</code> returns a match with a given range, this information is lost when it&#x27;s sent over to the <code>Sink</code> as a <code>SinkMatch</code> struct.</p>
+<p>I&#x27;ve created a small repository to reproduce the issue. Here&#x27;s the entire code: https://github.com/acheronfail/grep-sink-example/blob/master/src/main.rs. See the <a href="https://github.com/acheronfail/grep-sink-example"><code>README.md</code></a> for the output of the program.</p>
+What did I expect?
 <p>That the <code>Match</code> object which returned a range of <code>2..8</code> in the haystack would translate to a <code>SinkMatch</code> with a bytes portion that maps roughly to <code>HAYSTACK[2..8]</code>.</p>
-<h2>What happens?</h2>
-<p>The <code>SinkMatch</code> struct's <code>bytes</code> field includes the entire line matched, and not the matched portion.</p>
+What happens?
+<p>The <code>SinkMatch</code> struct&#x27;s <code>bytes</code> field includes the entire line matched, and not the matched portion.</p>
 <p>Am I using this incorrectly? Should the <code>SinkMatch</code> be giving me the matched bytes, or should I be doing this via the captures trait methods instead?</p>
 </blockquote>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2020-07-03 13:28</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-07-03 13:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2020-07-03 13:28</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-07-03 13:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">libripgrep</span> added by @BurntSushi on 2020-07-03 13:28</div>
+            <div class="event">Label <span class="label">libripgrep</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-07-03 13:28</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-07-03 13:28</div>
             <div class="timeline-body"><p>Re-posting my response from: https://github.com/BurntSushi/ripgrep/discussions/1633#discussioncomment-33547</p>
-<hr />
-<p>You aren't using it incorrectly and this is indeed expected behavior, although it is perhaps a design flaw. In particular, the <code>grep-searcher</code> and <code>grep-matcher</code> architecture generally assume two things:</p>
+<hr>
+<p>You aren&#x27;t using it incorrectly and this is indeed expected behavior, although it is perhaps a design flaw. In particular, the <code>grep-searcher</code> and <code>grep-matcher</code> architecture generally assume two things:</p>
 <ol>
 <li>Detecting whether a match exists in a particular line is cheaper (possibly substantially so) than finding the exact boundary of that match.</li>
 <li>A match is generally infrequent compared to the size of the haystack.</li>
 </ol>
 <p>This is why hamfisted APIs like <a href="https://docs.rs/grep-matcher/0.1.4/grep_matcher/trait.Matcher.html#method.find_candidate_line"><code>Matcher::find_candidate_line</code></a> exist. Indeed, in the most basic grep output format (no color), you never even need the match boundaries in the first place. All you need is the line that matched.</p>
-<p>If, however, you're working on a problem in which you always find the precise match offsets up front, then the current architecture drops them on the floor, which would require you to re-run your search for each matching line. If matching lines are rare in your particular situation, then this shouldn't be a problem. If matching lines are frequent, then this could be a significant performance problem.</p>
+<p>If, however, you&#x27;re working on a problem in which you always find the precise match offsets up front, then the current architecture drops them on the floor, which would require you to re-run your search for each matching line. If matching lines are rare in your particular situation, then this shouldn&#x27;t be a problem. If matching lines are frequent, then this could be a significant performance problem.</p>
 <p>I do think the API is flexible enough where we could potentially fix this by enriching the <code>SinkMatch</code> structure, but it would require some thinking and some design work.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:43:12 UTC
+        Synced at 2026-01-20 18:48:10 UTC
     </footer>
 </body>
 </html>

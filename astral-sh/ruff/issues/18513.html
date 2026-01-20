@@ -23,22 +23,22 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/stacey-gammon">@stacey-gammon</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<h2>Background</h2>
-<p>I've encountered some potentially problematic patterns in our codebase regarding Python class and instance variable declarations. Specifically, I'm concerned about the pattern where a class-level type annotation is shadowed by an instance variable:</p>
-<pre><code class="language-python">class Foo:
+            <div class="timeline-body">Summary
+Background
+<p>I&#x27;ve encountered some potentially problematic patterns in our codebase regarding Python class and instance variable declarations. Specifically, I&#x27;m concerned about the pattern where a class-level type annotation is shadowed by an instance variable:</p>
+<pre><code>class Foo:
     bar: str  # Class-level annotation
     
     def __init__(self, bar: str):
         self.bar = bar  # Instance variable shadowing
 </code></pre>
-<h2>The Problem</h2>
+The Problem
 <p>This pattern can lead to subtle bugs and confusion:</p>
 <ol>
-<li>The class-level annotation suggests <code>bar</code> is a class variable, but it's actually used as an instance variable</li>
+<li>The class-level annotation suggests <code>bar</code> is a class variable, but it&#x27;s actually used as an instance variable</li>
 <li>Can lead to bugs if someone intends it to be instance but forgets to initialize in the init method. e.g.:</li>
 </ol>
-<pre><code class="language-python">class Foo:
+<pre><code>class Foo:
     bar: list[str] = [] 
     
     def __init__(self, bar: str):
@@ -47,20 +47,20 @@
     def add(elem: str):
        self.bar.append(elem). # oops - adding to class var not instance var!
 </code></pre>
-<h2>Current State of Guidance</h2>
-<p>There's some tension in the Python ecosystem about this pattern:</p>
+Current State of Guidance
+<p>There&#x27;s some tension in the Python ecosystem about this pattern:</p>
 <ul>
 <li><a href="https://home.robusta.dev/blog/common-python-mistakes-mixing-up-instance-and-class-members">Robusta.dev</a> explicitly calls this out as a common mistake</li>
-<li>PEP 526 seems to suggest this pattern is acceptable, showing examples like:<pre><code class="language-python">class BasicStarship:
-    captain: str = 'Picard'               # instance variable with default
+<li>PEP 526 seems to suggest this pattern is acceptable, showing examples like:<pre><code>class BasicStarship:
+    captain: str = &#x27;Picard&#x27;               # instance variable with default
     damage: int                           # instance variable without default
 </code></pre>
 </li>
 </ul>
-<p>This part of PEP 526 seems wrong because of the problem example above - if I don't override <code>self.bar = []</code> in the init method, it's a class var.</p>
-<h2>Proposed Rule</h2>
+<p>This part of PEP 526 seems wrong because of the problem example above - if I don&#x27;t override <code>self.bar = []</code> in the init method, it&#x27;s a class var.</p>
+Proposed Rule
 <p>I suggest we add a linting rule that flags instances where a class-level type annotation is shadowed by an instance variable assignment in <code>__init__</code>. The clearer pattern would be:</p>
-<pre><code class="language-python">class Foo:
+<pre><code>class Foo:
     def __init__(self, bar: str):
         self.bar: str = bar  # Type annotation at point of instance creation
 </code></pre>
@@ -72,7 +72,7 @@
 <li>typed dicts</li>
 </ul>
 <p>Those classes would probably need to be excluded.</p>
-<h2>Questions</h2>
+Questions
 <ol>
 <li>Is this even considered an anti-pattern? (unclear)</li>
 <li>Are there legitimate use cases where shadowing is actually desired?</li>
@@ -94,7 +94,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/s-banach">@s-banach</a> on 2025-06-08 14:50</div>
             <div class="timeline-body"><p>If you want to write a Protocol, declaring all the attributes at the &quot;class level&quot; is the way to do it:</p>
-<pre><code class="language-python">class Example(Protocol):
+<pre><code>class Example(Protocol):
     x: str
     y: str
     z: ClassVar[str]
@@ -102,22 +102,22 @@
     def f(self) -&gt; list[str]: ...
 </code></pre>
 <p>For me, this is the problem with existing tooling:
-I can write <code>Example.x = &quot;hello&quot;</code>, and my type checker doesn't raise an error.
+I can write <code>Example.x = &quot;hello&quot;</code>, and my type checker doesn&#x27;t raise an error.
 It should not be permissible to access an attribute at the class level if it is not declared as a <code>ClassVar</code>!</p>
 <p>For that reason, the example from PEP 526 should be considered problematic.
 (Annotating <code>captain</code> as an instance variable, but instantiating the value <code>captain = &quot;Picard&quot;</code> at the class level.)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-06-08 15:44</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-08 15:44</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> added by @ntBre on 2025-06-08 15:44</div>
+            <div class="event">Label <span class="label">needs-decision</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-08 15:44</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-10 09:27</div>
             <div class="timeline-body"><p>I think the problem with such a rule (as s-banach pointed out) is that <code>x: str</code> can be either a class or instance variable. If you want to be explicit, you have to use <code>ClassVar</code> like this, in which case PyRight will warn about the assignment to <code>self.bar</code></p>
-<pre><code class="language-py">from typing import ClassVar
+<pre><code>from typing import ClassVar
 
 class Foo:
     bar: ClassVar[list[str]]
@@ -134,7 +134,7 @@ class Foo:
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:52:49 UTC
+        Synced at 2026-01-20 18:50:02 UTC
     </footer>
 </body>
 </html>

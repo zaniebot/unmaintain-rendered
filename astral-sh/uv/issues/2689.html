@@ -23,27 +23,18 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/chainyo">@chainyo</a></div>
-            <div class="timeline-body"><!--
-Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+            <div class="timeline-body">
 
-If you're filing a bug report, please consider including the following information:
-
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
-* The current uv platform.
-* The current uv version (`uv --version`).
--->
-
-<p>Hi, thanks for this initiative, I'm impatient to have a cargo grade dev tools environment for python.</p>
-<p>This issue is related to this one I opened in <code>rye</code> initially, but in fact is totally related to the <code>uv</code> process under the hood. https://github.com/astral-sh/rye/issues/872</p>
-<p>I can install the <code>cugraph</code> library (poorly packaged but that's another subject) just fine with <code>uv</code> by doing this command in a python 3.9.18 .venv:</p>
+<p>Hi, thanks for this initiative, I&#x27;m impatient to have a cargo grade dev tools environment for python.</p>
+<p>This issue is related to this one I opened in <code>rye</code> initially, but in fact is totally related to the <code>uv</code> process under the hood. <a href="https://github.com/astral-sh/rye/issues/872">astral-sh/rye#872</a></p>
+<p>I can install the <code>cugraph</code> library (poorly packaged but that&#x27;s another subject) just fine with <code>uv</code> by doing this command in a python 3.9.18 .venv:</p>
 <p><code>uv pip install &quot;cugraph-cu12==24.02.*&quot; --extra-index-url &quot;https://pypi.nvidia.com&quot;</code></p>
 <p>Outputs:</p>
-<p><img src="https://github.com/astral-sh/uv/assets/50595514/8870ff26-3b5e-4b09-8550-b2833c59f363" alt="CleanShot 2024-03-27 at 12 11 49" /></p>
-<p>The problem arises when I'm trying to run the <code>rye sync --features gpu</code> command I get a lock file generation error.
-It might be because the <code>cugraph</code> library is using the <code>scikit-build-core</code> backend and this backend isn't handled by <code>uv</code> yet?</p>
+<p><img src="https://github.com/astral-sh/uv/assets/50595514/8870ff26-3b5e-4b09-8550-b2833c59f363" alt="CleanShot 2024-03-27 at 12 11 49"></p>
+<p>The problem arises when I&#x27;m trying to run the <code>rye sync --features gpu</code> command I get a lock file generation error.
+It might be because the <code>cugraph</code> library is using the <code>scikit-build-core</code> backend and this backend isn&#x27;t handled by <code>uv</code> yet?</p>
 <p>Here is the error I have:</p>
-<pre><code class="language-bash">rye sync --features gpu
+<pre><code>rye sync --features gpu
 Reusing already existing virtualenv
 Generating production lockfile: /home/user/foo/requirements.lock
 error: Failed to download and build: cugraph-cu12==24.2.0
@@ -55,7 +46,7 @@ error: Failed to download and build: cugraph-cu12==24.2.0
 Traceback (most recent call last):
   File &quot;&lt;string&gt;&quot;, line 14, in &lt;module&gt;
   File &quot;/home/user/.cache/uv/.tmpD0iI7V/.venv/lib/python3.10/site-packages/setuptools/build_meta.py&quot;, line 325, in get_requires_for_build_wheel
-    return self._get_build_requires(config_settings, requirements=['wheel'])
+    return self._get_build_requires(config_settings, requirements=[&#x27;wheel&#x27;])
   File &quot;/home/user/.cache/uv/.tmpD0iI7V/.venv/lib/python3.10/site-packages/setuptools/build_meta.py&quot;, line 295, in _get_build_requires
     self.run_setup()
   File &quot;/home/user/.cache/uv/.tmpD0iI7V/.venv/lib/python3.10/site-packages/setuptools/build_meta.py&quot;, line 487, in run_setup
@@ -76,7 +67,7 @@ Caused by:
 <li><code>rye pin 3.10</code></li>
 <li>Add the following to your <code>pyproject.toml</code></li>
 </ol>
-<pre><code class="language-toml">[[tool.rye.sources]]
+<pre><code>[[tool.rye.sources]]
 name = &quot;cugraph-cu12&quot;
 url = &quot;https://pypi.nvidia.com&quot;
 type = &quot;index&quot;
@@ -84,21 +75,21 @@ type = &quot;index&quot;
 [project.optional-dependencies]
 gpu = [&quot;cugraph-cu12==24.2.0&quot;]
 </code></pre>
-<ol start="4">
+<ol>
 <li><code>rye sync --features gpu</code></li>
 </ol>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/chainyo">@chainyo</a> on 2024-03-27 12:52</div>
-            <div class="timeline-body"><p>Ok after multiple tests I just found that the <code>cugraph</code> dependency wasn't available for python 3.10 on the NVIDIA index, and because of that <code>uv</code> was probably trying to build it but without success.</p>
-<p>Not sure why we get that <code>setuptools</code> warning, it's not super explicit to me, but maybe it makes sense with some package tools experience?</p>
+            <div class="timeline-body"><p>Ok after multiple tests I just found that the <code>cugraph</code> dependency wasn&#x27;t available for python 3.10 on the NVIDIA index, and because of that <code>uv</code> was probably trying to build it but without success.</p>
+<p>Not sure why we get that <code>setuptools</code> warning, it&#x27;s not super explicit to me, but maybe it makes sense with some package tools experience?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-27 14:57</div>
-            <div class="timeline-body"><p>Ah yeah -- this does look like a problem with the failed build, but I'm not sure on the source. My guess is that <code>pip</code> would also fail if you tried to install <code>cugraph-cu12==24.2.0</code> with that specific Python executable and version.</p>
-<p>I've run into this in the past when trying to build packages from source with an incompatible CUDA or cuDNN version installed, but I can't say definitively that that's the problem...</p>
+            <div class="timeline-body"><p>Ah yeah -- this does look like a problem with the failed build, but I&#x27;m not sure on the source. My guess is that <code>pip</code> would also fail if you tried to install <code>cugraph-cu12==24.2.0</code> with that specific Python executable and version.</p>
+<p>I&#x27;ve run into this in the past when trying to build packages from source with an incompatible CUDA or cuDNN version installed, but I can&#x27;t say definitively that that&#x27;s the problem...</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -107,7 +98,7 @@ gpu = [&quot;cugraph-cu12==24.2.0&quot;]
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-03-27 14:58</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-27 14:58</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/chainyo">@chainyo</a> on 2024-03-27 15:41</div>
@@ -115,12 +106,12 @@ gpu = [&quot;cugraph-cu12==24.2.0&quot;]
 <p>uv pip install &quot;cugraph-cu12==24.02.*&quot; --extra-index-url &quot;https://pypi.nvidia.com&quot;</p>
 </blockquote>
 <blockquote>
-<p>Ah yeah -- this does look like a problem with the failed build, but I'm not sure on the source. My guess is that <code>pip</code> would also fail if you tried to install <code>cugraph-cu12==24.2.0</code> with that specific Python executable and version.</p>
+<p>Ah yeah -- this does look like a problem with the failed build, but I&#x27;m not sure on the source. My guess is that <code>pip</code> would also fail if you tried to install <code>cugraph-cu12==24.2.0</code> with that specific Python executable and version.</p>
 </blockquote>
 <p>I tried both <code>uv pip</code> and <code>pip</code> and the package is found correctly with this command:</p>
 <p><code>[uv] pip install &quot;cugraph-cu12==24.02.*&quot; --extra-index-url &quot;https://pypi.nvidia.com&quot;</code></p>
-<p>Weird thing it seems that the retrieved versions were cp310 compatible while I'm in a python 3.9.18 .venv atm. I don't remember if classic pip is using the .venv python version or if it takes the global python version.</p>
-<pre><code class="language-bash">pip install &quot;cugraph-cu12==24.02.0&quot; --extra-index-url &quot;https://pypi.nvidia.com&quot;
+<p>Weird thing it seems that the retrieved versions were cp310 compatible while I&#x27;m in a python 3.9.18 .venv atm. I don&#x27;t remember if classic pip is using the .venv python version or if it takes the global python version.</p>
+<pre><code>pip install &quot;cugraph-cu12==24.02.0&quot; --extra-index-url &quot;https://pypi.nvidia.com&quot;
 Defaulting to user installation because normal site-packages is not writeable
 Looking in indexes: https://pypi.org/simple, https://pypi.nvidia.com
 Collecting cugraph-cu12==24.02.0
@@ -231,7 +222,7 @@ Collecting jinja2&gt;=2.10.3
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:24:31 UTC
+        Synced at 2026-01-20 19:30:39 UTC
     </footer>
 </body>
 </html>

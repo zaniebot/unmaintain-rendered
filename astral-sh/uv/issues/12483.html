@@ -23,15 +23,15 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/aranvir">@aranvir</a></div>
-            <div class="timeline-body"><h3>Question</h3>
-<p>Hi, this question is related to https://github.com/astral-sh/uv/issues/8341 but I couldn't find more information on it (also not in the docs).</p>
-<p>I have a bunch of gitlab package registries that I'd like to add to a project. I did it in the past with <code>uv add</code> (at least that's what pyproject.toml shows, lol) but now it's no longer working as expected. E.g., instead of adding just the package and the index reference it widely updates <code>uv.lock</code> and adds the index to many of the dependencies. On second glance, this happens because the added package depends on pydantic so now that and all of pydantics dependencies have this source index added although they don't need it.</p>
+            <div class="timeline-body">Question
+<p>Hi, this question is related to <a href="https://github.com/astral-sh/uv/issues/8341">astral-sh/uv#8341</a> but I couldn&#x27;t find more information on it (also not in the docs).</p>
+<p>I have a bunch of gitlab package registries that I&#x27;d like to add to a project. I did it in the past with <code>uv add</code> (at least that&#x27;s what pyproject.toml shows, lol) but now it&#x27;s no longer working as expected. E.g., instead of adding just the package and the index reference it widely updates <code>uv.lock</code> and adds the index to many of the dependencies. On second glance, this happens because the added package depends on pydantic so now that and all of pydantics dependencies have this source index added although they don&#x27;t need it.</p>
 <p>The command I use is <code>uv add custom-package --index &quot;http://some-token:super-secret-token@gitlab.private.lan/api/v4/projects/123/packages/pypi/simple&quot;</code></p>
 <p>I assume in practice this will work fine as uv probably falls back to the default index. Yet what I would have expected is it to just add the registry information for this package only - not for all dependencies.</p>
 <p>And lastly, when I compare it to the <a href="https://docs.astral.sh/uv/concepts/projects/dependencies/#index">docs example</a></p>
 <ul>
 <li>It does not add <code>custom-package = { index = &quot;my-index&quot;}</code>.</li>
-<li>It does not add the &quot;name&quot; field anymore to <code>[[tool.uv.index]]</code>. I'm not sure if that was always the case or is just happening now</li>
+<li>It does not add the &quot;name&quot; field anymore to <code>[[tool.uv.index]]</code>. I&#x27;m not sure if that was always the case or is just happening now</li>
 </ul>
 <p>So in summary:</p>
 <ul>
@@ -39,48 +39,48 @@
 <li>What could be a reason for it to not update pyproject.toml as described in the docs?</li>
 </ul>
 <p>Thanks!</p>
-<h3>Platform</h3>
+Platform
 <p>Windows 10</p>
-<h3>Version</h3>
+Version
 <p>uv 0.6.10 (f2a2d982b 2025-03-25)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @aranvir on 2025-03-26 11:10</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/aranvir">@aranvir</a> on 2025-03-26 11:10</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-26 16:21</div>
-            <div class="timeline-body"><p>I think the difference with the docs example is that you need to provide a name for the index? Like <code>uv add custom-package --index my_custom_index=http://some-token:super-secret-token@gitlab.private.lan/api/v4/projects/123/packages/pypi/simple</code>. Or did you already have a named index defined in the file? If the index doesn't have a name, we can't &quot;pin&quot; it like that.</p>
+            <div class="timeline-body"><p>I think the difference with the docs example is that you need to provide a name for the index? Like <code>uv add custom-package --index my_custom_index=http://some-token:super-secret-token@gitlab.private.lan/api/v4/projects/123/packages/pypi/simple</code>. Or did you already have a named index defined in the file? If the index doesn&#x27;t have a name, we can&#x27;t &quot;pin&quot; it like that.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/aranvir">@aranvir</a> on 2025-05-06 11:47</div>
             <div class="timeline-body"><p>Hi - sorry that it took me so long to come back to this. I know spent some time trying to recreate what I did and what behavior I am expecting:</p>
-<h3>Behavior</h3>
-<h4>No pyproject.toml preparation</h4>
+Behavior
+No pyproject.toml preparation
 <p>As mentioned before, if I use <code>uv add custom-package --index &quot;http://some-token:super-secret-token@gitlab.private.lan/api/v4/projects/123/packages/pypi/simple&quot;</code> it just adds a new index block but drops the token.</p>
-<pre><code class="language-toml">[[tool.uv.index]]
+<pre><code>[[tool.uv.index]]
 url = &quot;http://gitlab.private.lan/api/v4/projects/123/packages/pypi/simple&quot;
 </code></pre>
 <p>This means other users cannot use the same setup.</p>
-<h4>Adding the index manually</h4>
+Adding the index manually
 <p>Instead, I can prepare the index manually</p>
-<pre><code class="language-toml">[[tool.uv.index]]
+<pre><code>[[tool.uv.index]]
 name = &quot;some-name&quot;
 url = &quot;http://__token__:some-token@gitlab.private.lan/api/v4/projects/123/packages/pypi/simple&quot;
 </code></pre>
 <p>Then, <code>uv add custom-package</code> works fine, even without the <code>--index</code> argument.</p>
 <p>Having multiple indexes also works fine, so that solves that.</p>
-<h3>Expectation</h3>
+Expectation
 <p>The package resolution works correct and that is the important part.</p>
-<p>However, since uv is so amazing at dependency management, it might be counter-intuitive that an index with tokens is stripped of those and the user has to set up the index manually. I think it's preferred that uv stores the index url as provided by the user. I'd argue that IF a user provides the tokens then it's their intent to store them in the <code>pyproject.toml</code> for others to use. If there are security concerns of accidentally storing private tokens, maybe a flag like <code>--save-tokens</code> could be used instead to make it explicit.</p>
+<p>However, since uv is so amazing at dependency management, it might be counter-intuitive that an index with tokens is stripped of those and the user has to set up the index manually. I think it&#x27;s preferred that uv stores the index url as provided by the user. I&#x27;d argue that IF a user provides the tokens then it&#x27;s their intent to store them in the <code>pyproject.toml</code> for others to use. If there are security concerns of accidentally storing private tokens, maybe a flag like <code>--save-tokens</code> could be used instead to make it explicit.</p>
 <p>Regardless, I think it would be good to update the documentation to explain how to use uv with self-hosted package registries like gitlab :)</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:30:38 UTC
+        Synced at 2026-01-20 19:37:58 UTC
     </footer>
 </body>
 </html>

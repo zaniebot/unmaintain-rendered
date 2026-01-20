@@ -39,26 +39,26 @@ Traceback (most recent call last):
   File &quot;/Users/jaraco/draft/mod.py&quot;, line 4, in &lt;module&gt;
     class MyRequest(urllib.request.Request):
                     ^^^^^^^^^^^^^^
-AttributeError: module 'urllib' has no attribute 'request'
- draft @ sed -i -e 's/import urllib/import urllib.request/' mod.py
+AttributeError: module &#x27;urllib&#x27; has no attribute &#x27;request&#x27;
+ draft @ sed -i -e &#x27;s/import urllib/import urllib.request/&#x27; mod.py
  draft @ py -m mod &amp;&amp; echo done
 done
 </code></pre>
-<p>It's my understanding that best practice dictates the following:</p>
+<p>It&#x27;s my understanding that best practice dictates the following:</p>
 <ul>
 <li>If the top level module is used directly, it should be imported separately.</li>
 <li>All submodules referenced in the code should get explicit imports.</li>
 </ul>
 <p>So if one uses <code>os.getcwd()</code>, they should <code>import os</code>, and if they use <code>os.path.join</code>, they should <code>import os.path</code>, even if <code>import os</code> implicitly imports <code>os.path</code>.</p>
-<p>I can't currently find the reference where this question was answered by the Python Core Devs, but I do recall that it contradicted my interpretation of the documentation (which was that it's fine to let the implied import suffice in both cases).</p>
-<p>I'm not sure how tricky it could be to detect these missing imports (as a submodule name could be a separate module or could be a name programmatically added to the parent module), but I file the issue here for consideration anyway.</p>
+<p>I can&#x27;t currently find the reference where this question was answered by the Python Core Devs, but I do recall that it contradicted my interpretation of the documentation (which was that it&#x27;s fine to let the implied import suffice in both cases).</p>
+<p>I&#x27;m not sure how tricky it could be to detect these missing imports (as a submodule name could be a separate module or could be a name programmatically added to the parent module), but I file the issue here for consideration anyway.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jaraco">@jaraco</a> on 2024-03-30 19:01</div>
             <div class="timeline-body"><p>I see now my current understanding is based on a mixed opinion from core devs in a non-public chat:</p>
-<p><img src="https://github.com/astral-sh/ruff/assets/308610/f6112f9f-4d62-427a-b01f-8bff51194e70" alt="image" /></p>
-<p>There's definitely a <a href="https://stackoverflow.com/q/2724348/70170">mixed opinion in the community as well</a>, so it's not obvious that ruff could enforce one pattern or another, even with the technical challenges aside.</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/308610/f6112f9f-4d62-427a-b01f-8bff51194e70" alt="image"></p>
+<p>There&#x27;s definitely a <a href="https://stackoverflow.com/q/2724348/70170">mixed opinion in the community as well</a>, so it&#x27;s not obvious that ruff could enforce one pattern or another, even with the technical challenges aside.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -74,22 +74,22 @@ done
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-01 02:03</div>
             <div class="timeline-body"><p>Thank you for the clear issue!</p>
-<p>Some background: in Ruff's semantic model, we treat <code>import os</code> and <code>import os.path</code> as <em>roughly</em> equivalent, with a few exceptions (e.g., <code>import os; import os</code> will lead to a &quot;redefined while unused&quot; diagnostic, while <code>import os; import os.path</code> will not). So, e.g., <code>import os</code> allows you to access <code>os.getcwd() </code> or <code>os.path.join</code>. Similarly, <code>import os.path</code> allows you to access <code>os.getcwd()</code> or <code>os.path.join</code>.</p>
-<p>This matches Pyflakes' approach and tends to yield reasonable behavior <em>most of</em> the time. <code>urllib</code> is the most common exception (as seen here), and we've considered special-casing it before since it's in the standard library...</p>
-<p>I think we're unlikely to change the high-level rules around import <em>norms</em> in the near future, since it would be fairly disruptive and I don't see consensus in the community. However, I'd like to fix cases in which it's <em>actually</em> wrong (e.g., don't remove <code>from urllib import request</code> when it's necessary) once we've extended our semantic model to support analyzing these imports across files.</p>
-<p>So, for now, I'm gonna close this as &quot;working as intended&quot; and track correctness fixes in https://github.com/astral-sh/ruff/issues/9193.</p>
+<p>Some background: in Ruff&#x27;s semantic model, we treat <code>import os</code> and <code>import os.path</code> as <em>roughly</em> equivalent, with a few exceptions (e.g., <code>import os; import os</code> will lead to a &quot;redefined while unused&quot; diagnostic, while <code>import os; import os.path</code> will not). So, e.g., <code>import os</code> allows you to access <code>os.getcwd() </code> or <code>os.path.join</code>. Similarly, <code>import os.path</code> allows you to access <code>os.getcwd()</code> or <code>os.path.join</code>.</p>
+<p>This matches Pyflakes&#x27; approach and tends to yield reasonable behavior <em>most of</em> the time. <code>urllib</code> is the most common exception (as seen here), and we&#x27;ve considered special-casing it before since it&#x27;s in the standard library...</p>
+<p>I think we&#x27;re unlikely to change the high-level rules around import <em>norms</em> in the near future, since it would be fairly disruptive and I don&#x27;t see consensus in the community. However, I&#x27;d like to fix cases in which it&#x27;s <em>actually</em> wrong (e.g., don&#x27;t remove <code>from urllib import request</code> when it&#x27;s necessary) once we&#x27;ve extended our semantic model to support analyzing these imports across files.</p>
+<p>So, for now, I&#x27;m gonna close this as &quot;working as intended&quot; and track correctness fixes in <a href="https://github.com/astral-sh/ruff/issues/9193">astral-sh/ruff#9193</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-04-01 02:03</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-01 02:03</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-04-01 02:03</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-01 02:03</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:49:59 UTC
+        Synced at 2026-01-20 18:48:52 UTC
     </footer>
 </body>
 </html>

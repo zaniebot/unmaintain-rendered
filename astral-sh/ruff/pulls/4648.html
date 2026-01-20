@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>This PR removes a variety of structs that we'd defined in <code>scope.rs</code> to enable precise typing of scope fields (e.g., <code>ScopeKind::ClassDef</code> should have a name, bases, etc.). Now that we have dedicated node types for each AST node (e.g., <code>ast::StmtClassDef</code>), we can just store those directly instead.</p>
-<p>This change reduces the size of the <code>ScopeKind</code> enum from 104 bytes to 16 bytes. Unfortunately, that's a bit misleading, as I've moved the <code>globals</code> hash map off the enum and onto <code>Scope</code>, which is itself another 40 bytes -- so we're really going from 104 bytes to 56 bytes.</p>
+            <div class="timeline-body">Summary
+<p>This PR removes a variety of structs that we&#x27;d defined in <code>scope.rs</code> to enable precise typing of scope fields (e.g., <code>ScopeKind::ClassDef</code> should have a name, bases, etc.). Now that we have dedicated node types for each AST node (e.g., <code>ast::StmtClassDef</code>), we can just store those directly instead.</p>
+<p>This change reduces the size of the <code>ScopeKind</code> enum from 104 bytes to 16 bytes. Unfortunately, that&#x27;s a bit misleading, as I&#x27;ve moved the <code>globals</code> hash map off the enum and onto <code>Scope</code>, which is itself another 40 bytes -- so we&#x27;re really going from 104 bytes to 56 bytes.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -34,23 +34,23 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_semantic/src/scope.rs</code>:25 on 2023-05-25 00:35</div>
-            <div class="timeline-body"><p>I actually have a branch that removes this, but it's a little less computationally efficient. We have to store these upfront so that we can detect <code>Expr::Name</code> expressions that reference a name <em>before</em> it's bound via <code>global</code> statement -- that's a syntax error:</p>
-<pre><code class="language-py">def f():
+            <div class="timeline-body"><p>I actually have a branch that removes this, but it&#x27;s a little less computationally efficient. We have to store these upfront so that we can detect <code>Expr::Name</code> expressions that reference a name <em>before</em> it&#x27;s bound via <code>global</code> statement -- that&#x27;s a syntax error:</p>
+<pre><code>def f():
   print(a)
   global a
 </code></pre>
-<p>The way we do this today is that we iterate over the function body to find all globals when we <em>first</em> encounter the function (this isn't <em>too</em> expensive, since we only have to iterate over statements, and don't need to recurse into other functions or classes), store them on the function scope, then, as we do the standard traversal, we check each <code>Expr::Name</code> against that global list.</p>
-<p>An alternative, which wouldn't require us to store these at all, would be: (1) find all <code>global</code> statements, then (2) if we found <em>any</em> global statements, do a full, dedicated traversal of the function body up to the location of the last <code>global</code> statement, to find any names that were used &quot;too early&quot;.</p>
-<p>That is: rather than finding the globals upfront, and then checking against names as we iterate over the rest of the AST, we'd find the globals upfront, then find all names upfront too if needed. In theory, this should be slower, though in practice, it may not matter? Since the vast majority of scopes don't have globals anyway.</p>
+<p>The way we do this today is that we iterate over the function body to find all globals when we <em>first</em> encounter the function (this isn&#x27;t <em>too</em> expensive, since we only have to iterate over statements, and don&#x27;t need to recurse into other functions or classes), store them on the function scope, then, as we do the standard traversal, we check each <code>Expr::Name</code> against that global list.</p>
+<p>An alternative, which wouldn&#x27;t require us to store these at all, would be: (1) find all <code>global</code> statements, then (2) if we found <em>any</em> global statements, do a full, dedicated traversal of the function body up to the location of the last <code>global</code> statement, to find any names that were used &quot;too early&quot;.</p>
+<p>That is: rather than finding the globals upfront, and then checking against names as we iterate over the rest of the AST, we&#x27;d find the globals upfront, then find all names upfront too if needed. In theory, this should be slower, though in practice, it may not matter? Since the vast majority of scopes don&#x27;t have globals anyway.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-05-25 00:42</div>
-            <div class="timeline-body"><h2>PR Check Results</h2>
-<h3>Ecosystem</h3>
+            <div class="timeline-body">PR Check Results
+Ecosystem
 <p>✅ ecosystem check detected no changes.</p>
-<h3>Benchmark</h3>
-<h4>Linux</h4>
+Benchmark
+Linux
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 linter/all-rules/large/dataset.py          1.06     19.1±0.99ms     2.1 MB/sec    1.00     18.0±0.84ms     2.3 MB/sec
@@ -66,7 +66,7 @@ parser/numpy/ctypeslib.py                  1.00  1377.6±76.64µs    12.1 MB/sec
 parser/numpy/globals.py                    1.02    135.4±5.54µs    21.8 MB/sec    1.00    133.0±8.37µs    22.2 MB/sec
 parser/pydantic/types.py                   1.00      3.0±0.10ms     8.6 MB/sec    1.01      3.0±0.12ms     8.5 MB/sec
 </code></pre>
-<h4>Windows</h4>
+Windows
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 linter/all-rules/large/dataset.py          1.00     16.9±0.20ms     2.4 MB/sec    1.02     17.3±0.27ms     2.4 MB/sec
@@ -82,13 +82,13 @@ parser/numpy/ctypeslib.py                  1.00  1242.0±16.66µs    13.4 MB/sec
 parser/numpy/globals.py                    1.00    125.7±1.96µs    23.5 MB/sec    1.00    126.0±2.26µs    23.4 MB/sec
 parser/pydantic/types.py                   1.00      2.8±0.03ms     9.1 MB/sec    1.00      2.8±0.03ms     9.1 MB/sec
 </code></pre>
-<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/scope.rs</code>:25 on 2023-05-25 06:15</div>
-            <div class="timeline-body"><p>What's the motivation for removing it? To reduce the size of <code>Scope</code>? One thing that we could do is to store the hash map out of bounds. Meaning, we only store a <code>Option&lt;GlobalsId&gt;</code> here (4 bytes vs 48 bytes) and store the globals in a <code>Vec</code> on scopes (indexed by <code>GlobalsId</code>). This adds one additional indirection (or we can store an <code>Option&lt;Box&lt;HashMap&gt;&gt;</code>.</p>
+            <div class="timeline-body"><p>What&#x27;s the motivation for removing it? To reduce the size of <code>Scope</code>? One thing that we could do is to store the hash map out of bounds. Meaning, we only store a <code>Option&lt;GlobalsId&gt;</code> here (4 bytes vs 48 bytes) and store the globals in a <code>Vec</code> on scopes (indexed by <code>GlobalsId</code>). This adds one additional indirection (or we can store an <code>Option&lt;Box&lt;HashMap&gt;&gt;</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -111,14 +111,14 @@ https://github.com/rome/tools/blob/38104b339da8ff688f469799e1fc3f4a46f3d2ec/crat
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:1935 on 2023-05-25 06:21</div>
             <div class="timeline-body"><p>Part 1</p>
-<pre><code class="language-suggestion">            Stmt::ClassDef(class_def @ ast::StmtClassDef {
+<pre><code>            Stmt::ClassDef(class_def @ ast::StmtClassDef {
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:1963 on 2023-05-25 06:22</div>
             <div class="timeline-body"><p>Part 2</p>
-<pre><code class="language-suggestion">                self.semantic_model.push_scope(ScopeKind::Class(class_def));
+<pre><code>                self.semantic_model.push_scope(ScopeKind::Class(class_def));
 </code></pre>
 </div>
         </div>
@@ -129,7 +129,7 @@ https://github.com/rome/tools/blob/38104b339da8ff688f469799e1fc3f4a46f3d2ec/crat
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-05-25 06:25</div>
-            <div class="timeline-body"><p>I like it. I think we could improve the economics by introducing an <code>AnyFunctionDef</code> enum that abstracts away <code>Function</code> and <code>AsyncFunction</code> (still allows to retrieve it when necessary, but it doesn't seem to matter for 99% of the uses)</p>
+            <div class="timeline-body"><p>I like it. I think we could improve the economics by introducing an <code>AnyFunctionDef</code> enum that abstracts away <code>Function</code> and <code>AsyncFunction</code> (still allows to retrieve it when necessary, but it doesn&#x27;t seem to matter for 99% of the uses)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -138,7 +138,7 @@ https://github.com/rome/tools/blob/38104b339da8ff688f469799e1fc3f4a46f3d2ec/crat
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_semantic/src/scope.rs</code>:25 on 2023-05-25 15:37</div>
-            <div class="timeline-body"><p>Yeah, to reduce the size of <code>Scope</code>. That's an interesting idea, I'll try it.</p>
+            <div class="timeline-body"><p>Yeah, to reduce the size of <code>Scope</code>. That&#x27;s an interesting idea, I&#x27;ll try it.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -156,7 +156,7 @@ https://github.com/rome/tools/blob/38104b339da8ff688f469799e1fc3f4a46f3d2ec/crat
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:1901 on 2023-05-25 15:39</div>
-            <div class="timeline-body"><p>That's not CPython compatible ;)</p>
+            <div class="timeline-body"><p>That&#x27;s not CPython compatible ;)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -165,7 +165,7 @@ https://github.com/rome/tools/blob/38104b339da8ff688f469799e1fc3f4a46f3d2ec/crat
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:1935 on 2023-05-25 19:23</div>
-            <div class="timeline-body"><p>Ugh, I know, I just hated that it wasn't symmetric with the function case :sob:</p>
+            <div class="timeline-body"><p>Ugh, I know, I just hated that it wasn&#x27;t symmetric with the function case :sob:</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -196,10 +196,10 @@ https://github.com/rome/tools/blob/38104b339da8ff688f469799e1fc3f4a46f3d2ec/crat
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2023-05-25 19:31</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-25 19:31</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-05-25 19:31</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-25 19:31</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2023-05-25 19:31</div>
@@ -207,7 +207,7 @@ https://github.com/rome/tools/blob/38104b339da8ff688f469799e1fc3f4a46f3d2ec/crat
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:57:38 UTC
+        Synced at 2026-01-20 18:53:58 UTC
     </footer>
 </body>
 </html>

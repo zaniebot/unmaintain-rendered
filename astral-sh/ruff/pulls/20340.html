@@ -24,37 +24,37 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a></div>
             <div class="timeline-body"><p>Previously, <code>Type::object</code> would find the definition of the <code>object</code> class in typeshed, load that in (to produce a <code>ClassLiteral</code> and <code>ClassType</code>), and then create a <code>NominalInstance</code> of that class.</p>
-<p>It's possible that we are using a typeshed that doesn't define <code>object</code>. We will not be able to do much useful work with that kind of typeshed, but it's still a possibility that we have to support at least without panicking. Previously, we would handle this situation by falling back on <code>Unknown</code>.</p>
-<p>In most cases, that's a perfectly fine fallback! But <code>object</code> is also our top type — the type of all values. <code>Unknown</code> is <em>not</em> an acceptable stand-in for the top type.</p>
-<p>This PR adds a new <code>NominalInstance</code> variant for &quot;instances of <code>object</code>&quot;. Unlike other nominal instances, we do not need to load in <code>object</code>'s <code>ClassType</code> to instantiate this variant. We will use this new variant even when the current typeshed does not define an <code>object</code> class, ensuring that we have a fully static representation of our top type at all times.</p>
-<p>There are several operations that need access to a nominal instance's class, and for this new <code>object</code> variant we load it lazily only when it's needed. That means this operation is now fallible, since this is where the &quot;typeshed doesn't define <code>object</code>&quot; failure shows up.</p>
+<p>It&#x27;s possible that we are using a typeshed that doesn&#x27;t define <code>object</code>. We will not be able to do much useful work with that kind of typeshed, but it&#x27;s still a possibility that we have to support at least without panicking. Previously, we would handle this situation by falling back on <code>Unknown</code>.</p>
+<p>In most cases, that&#x27;s a perfectly fine fallback! But <code>object</code> is also our top type — the type of all values. <code>Unknown</code> is <em>not</em> an acceptable stand-in for the top type.</p>
+<p>This PR adds a new <code>NominalInstance</code> variant for &quot;instances of <code>object</code>&quot;. Unlike other nominal instances, we do not need to load in <code>object</code>&#x27;s <code>ClassType</code> to instantiate this variant. We will use this new variant even when the current typeshed does not define an <code>object</code> class, ensuring that we have a fully static representation of our top type at all times.</p>
+<p>There are several operations that need access to a nominal instance&#x27;s class, and for this new <code>object</code> variant we load it lazily only when it&#x27;s needed. That means this operation is now fallible, since this is where the &quot;typeshed doesn&#x27;t define <code>object</code>&quot; failure shows up.</p>
 <p>This new approach also has the benefit of avoiding some salsa cycles that were cropping up while I was debugging #20093, since the new constraint set representation was trying to instantiate <code>Type::object</code> while in the middle of processing its definition in typeshed. Cycle handling was kicking in correctly and returning the <code>Unknown</code> fallback mentioned above. But the constraint set implementation depends on <code>Type::object</code> being a distinct and fully static type, highlighting that this is a correctness fix, not just an optimization fix.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> added by @dcreager on 2025-09-10 21:19</div>
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/dcreager">@dcreager</a> on 2025-09-10 21:19</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @dcreager on 2025-09-10 21:19</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/dcreager">@dcreager</a> on 2025-09-10 21:19</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-10 22:00</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a>
 <p>No changes detected when running ty on typing conformance tests ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-10 22:03</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
+<code>mypy_primer</code> results
 <p>No ecosystem changes detected ✅</p>
-<details>
-<summary>Memory usage changes were detected when running on open source projects</summary>
 
-<pre><code class="language-diff">trio (https://github.com/python-trio/trio)
+Memory usage changes were detected when running on open source projects
+
+<pre><code>trio (https://github.com/python-trio/trio)
 -     memo metadata = ~23MB
 +     memo metadata = ~22MB
 
@@ -63,55 +63,55 @@ sphinx (https://github.com/sphinx-doc/sphinx)
 +     memo metadata = ~38MB
 
 </code></pre>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @dcreager on 2025-09-10 23:27</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/dcreager">@dcreager</a> on 2025-09-10 23:27</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-10 23:31</div>
-            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+            <div class="timeline-body">
 
-<h2><code>ecosystem-analyzer</code> results</h2>
+<code>ecosystem-analyzer</code> results
 <p>No diagnostic changes detected ✅
 <strong><a href="https://dcreager-object-variant.ecosystem-663.pages.dev/diff">Full report with detailed diff</a></strong></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @dcreager on 2025-09-10 23:40</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/dcreager">@dcreager</a> on 2025-09-10 23:40</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @dcreager on 2025-09-10 23:40</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/dcreager">@dcreager</a> on 2025-09-10 23:40</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-09-10 23:40</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/dcreager">@dcreager</a> on 2025-09-10 23:40</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @dcreager on 2025-09-10 23:40</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/dcreager">@dcreager</a> on 2025-09-10 23:40</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/instance.rs</code>:212 on 2025-09-11 00:35</div>
-            <div class="timeline-body"><p>Technically we wouldn't need to load the class from typeshed here, for <code>Object</code>? We can just directly return <code>KnownClass::Object</code>. Unless you're concerned about inconsistency if <code>object</code> is missing from typeshed? (Frankly I'd be fine if we panicked in that scenario anyway.)</p>
+            <div class="timeline-body"><p>Technically we wouldn&#x27;t need to load the class from typeshed here, for <code>Object</code>? We can just directly return <code>KnownClass::Object</code>. Unless you&#x27;re concerned about inconsistency if <code>object</code> is missing from typeshed? (Frankly I&#x27;d be fine if we panicked in that scenario anyway.)</p>
 <p>It just seems there could be some perf hiding here still, since checking whether a type is a certain known-class is a somewhat common operation.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/instance.rs</code>:191 on 2025-09-11 00:38</div>
-            <div class="timeline-body"><p>Personally I think it would be fine if we panicked if there is no <code>object</code> at all in typeshed (or alternatively, fell back to some empty <code>object</code> type defined in <code>ty_extensions</code>?) It would certainly be more convenient if this didn't have to become fallible.</p>
+            <div class="timeline-body"><p>Personally I think it would be fine if we panicked if there is no <code>object</code> at all in typeshed (or alternatively, fell back to some empty <code>object</code> type defined in <code>ty_extensions</code>?) It would certainly be more convenient if this didn&#x27;t have to become fallible.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-09-11 00:41</div>
             <div class="timeline-body"><p>Looks good to me! I note also that this brings <a href="https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fobject-variant">across-the-board 1-3% perf wins on CodSpeed</a>, strongly suggesting that this is worth doing, even just for its own sake.</p>
-<p>Wouldn't mind getting @AlexWaygood eyes on this before landing, he's done a lot of work on these class/instance representations.</p>
+<p>Wouldn&#x27;t mind getting @AlexWaygood eyes on this before landing, he&#x27;s done a lot of work on these class/instance representations.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/instance.rs</code>:28 on 2025-09-11 10:11</div>
             <div class="timeline-body"><p>nit</p>
-<pre><code class="language-suggestion">    pub(crate) const fn object() -&gt; Self {
+<pre><code>    pub(crate) const fn object() -&gt; Self {
         Type::NominalInstance(NominalInstanceType(NominalInstanceInner::Object))
     }
 
@@ -121,17 +121,17 @@ sphinx (https://github.com/sphinx-doc/sphinx)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/instance.rs</code>:191 on 2025-09-11 10:17</div>
-            <div class="timeline-body"><p>I'll co-sign this, and go further: I think I'd actually strongly prefer it if we panicked here when there was no <code>object</code> at all in typeshed. If it's a custom typeshed without <code>object</code>, I strongly suspect we'll panic in some way with a confusing error message -- and even if we don't, we won't have intuitive behaviour at all when checking any user code. Much better to panic early here with an intelligible error message than attempting to go further. Other type checkers such as mypy also crash quite early on if you omit certain fundamental types from typeshed, so we'd be far from alone in doing this. There's also an internal precedent for this in <code>TupleType::to_class_type()</code>: https://github.com/astral-sh/ruff/blob/59c8fda3f8f3bf2cc5c1ae34e7ca9dbea4d0278f/crates/ty_python_semantic/src/types/tuple.rs#L203-L207</p>
-<p>As well as that, I just don't think the idea of a &quot;nominal instance type with no class&quot; makes much conceptual sense. The thing that makes an instance type nominal is the fact that the presence of a subtyping relation between two such instances is determined based on whether there is a subclass relations between their underlying classes. I think it's much easier to understand the concept of a nominal instance type -- and therefore much less error-prone for us to work with that concept -- if we maintain the invariant that a nominal instance type must always have a class backing it (even if that class is sometimes only lazily materialized).</p>
+            <div class="timeline-body"><p>I&#x27;ll co-sign this, and go further: I think I&#x27;d actually strongly prefer it if we panicked here when there was no <code>object</code> at all in typeshed. If it&#x27;s a custom typeshed without <code>object</code>, I strongly suspect we&#x27;ll panic in some way with a confusing error message -- and even if we don&#x27;t, we won&#x27;t have intuitive behaviour at all when checking any user code. Much better to panic early here with an intelligible error message than attempting to go further. Other type checkers such as mypy also crash quite early on if you omit certain fundamental types from typeshed, so we&#x27;d be far from alone in doing this. There&#x27;s also an internal precedent for this in <code>TupleType::to_class_type()</code>: https://github.com/astral-sh/ruff/blob/59c8fda3f8f3bf2cc5c1ae34e7ca9dbea4d0278f/crates/ty_python_semantic/src/types/tuple.rs#L203-L207</p>
+<p>As well as that, I just don&#x27;t think the idea of a &quot;nominal instance type with no class&quot; makes much conceptual sense. The thing that makes an instance type nominal is the fact that the presence of a subtyping relation between two such instances is determined based on whether there is a subclass relations between their underlying classes. I think it&#x27;s much easier to understand the concept of a nominal instance type -- and therefore much less error-prone for us to work with that concept -- if we maintain the invariant that a nominal instance type must always have a class backing it (even if that class is sometimes only lazily materialized).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/instance.rs</code>:215 on 2025-09-11 10:18</div>
             <div class="timeline-body"><p>Could we rename this to:</p>
-<pre><code class="language-suggestion">    pub(super) fn has_known_class(&amp;self, db: &amp;'db dyn Db, known_class: KnownClass) -&gt; bool {
+<pre><code>    pub(super) fn has_known_class(&amp;self, db: &amp;&#x27;db dyn Db, known_class: KnownClass) -&gt; bool {
 </code></pre>
 <p>?</p>
-<p>An instance type might <em>have</em> a known class, but that's a different question to asking whether it <em>is</em> a known class</p>
+<p>An instance type might <em>have</em> a known class, but that&#x27;s a different question to asking whether it <em>is</em> a known class</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -141,17 +141,17 @@ sphinx (https://github.com/sphinx-doc/sphinx)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/instance.rs</code>:211 on 2025-09-11 10:23</div>
-            <div class="timeline-body"><p>Similar to my comment regarding <code>is_known</code>, I'd prefer it if this could be named</p>
-<pre><code class="language-suggestion">    pub(super) fn known_class(&amp;self, db: &amp;'db dyn Db) -&gt; Option&lt;KnownClass&gt; {
+            <div class="timeline-body"><p>Similar to my comment regarding <code>is_known</code>, I&#x27;d prefer it if this could be named</p>
+<pre><code>    pub(super) fn known_class(&amp;self, db: &amp;&#x27;db dyn Db) -&gt; Option&lt;KnownClass&gt; {
 </code></pre>
-<p>so that it's clear that it's the underlying class that is &quot;known&quot; rather than the <em>instance type</em>. (There could be multiple non-equivalent instance types with the same known class backing them, if that class is generic!)</p>
+<p>so that it&#x27;s clear that it&#x27;s the underlying class that is &quot;known&quot; rather than the <em>instance type</em>. (There could be multiple non-equivalent instance types with the same known class backing them, if that class is generic!)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> requested changes on 2025-09-11 10:36</div>
-            <div class="timeline-body"><p>This is excellent! I've wondered whether we should do something like this for a while. It makes total sense to special-case <code>object</code> IMO (given its unique status as the top type in Python), and it's great that the recent changes to our <code>NominalInstanceType</code> representation make this so clean.</p>
+            <div class="timeline-body"><p>This is excellent! I&#x27;ve wondered whether we should do something like this for a while. It makes total sense to special-case <code>object</code> IMO (given its unique status as the top type in Python), and it&#x27;s great that the recent changes to our <code>NominalInstanceType</code> representation make this so clean.</p>
 <p>My main point of feedback is that I somewhat strongly feel that <code>NominalInstanceType::class()</code> should continue to return <code>ClassType</code> rather than <code>Option&lt;ClassType&gt;</code> (my reasoning is laid out in an inline comment).</p>
-<p>We could possibly also make a similar change to the <code>ClassBase</code> enum: we probably don't need to eagerly materialize the <code>ClassType</code> here; we could probably add a dedicated <code>ClassBase</code> variant:</p>
+<p>We could possibly also make a similar change to the <code>ClassBase</code> enum: we probably don&#x27;t need to eagerly materialize the <code>ClassType</code> here; we could probably add a dedicated <code>ClassBase</code> variant:</p>
 <p>https://github.com/astral-sh/ruff/blob/59c8fda3f8f3bf2cc5c1ae34e7ca9dbea4d0278f/crates/ty_python_semantic/src/types/class_base.rs#L64-L70</p>
 </div>
         </div>
@@ -176,14 +176,14 @@ sphinx (https://github.com/sphinx-doc/sphinx)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/instance.rs</code>:262 on 2025-09-11 14:33</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">    pub(super) const fn is_object(self) -&gt; bool {
+            <div class="timeline-body"><pre><code>    pub(super) const fn is_object(self) -&gt; bool {
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/instance.rs</code>:368 on 2025-09-11 14:34</div>
             <div class="timeline-body"><p>we know that <code>object</code> is not generic; we can do this more cheaply:</p>
-<pre><code class="language-suggestion">            (NominalInstanceInner::Object, NominalInstanceInner::Object) =&gt; C::always_satisfiable(db),
+<pre><code>            (NominalInstanceInner::Object, NominalInstanceInner::Object) =&gt; C::always_satisfiable(db),
             (NominalInstanceInner::NonTuple(class1), NominalInstanceInner::NonTuple(class2)) =&gt; {
                 class1.is_equivalent_to_impl(db, class2, visitor)
             }
@@ -199,7 +199,7 @@ sphinx (https://github.com/sphinx-doc/sphinx)
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-11 14:57</div>
             <div class="timeline-body"><blockquote>
 <p>Memory usage changes were detected when running on open source projects</p>
-<pre><code class="language-diff">trio (https://github.com/python-trio/trio)
+<pre><code>trio (https://github.com/python-trio/trio)
 -     memo metadata = ~23MB
 +     memo metadata = ~22MB
 
@@ -249,10 +249,10 @@ sphinx (https://github.com/sphinx-doc/sphinx)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @dcreager on 2025-09-11 17:02</div>
+            <div class="event">Merged by <a href="https://github.com/dcreager">@dcreager</a> on 2025-09-11 17:02</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dcreager on 2025-09-11 17:02</div>
+            <div class="event">Closed by <a href="https://github.com/dcreager">@dcreager</a> on 2025-09-11 17:02</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-09-11 17:03</div>
@@ -260,7 +260,7 @@ sphinx (https://github.com/sphinx-doc/sphinx)
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:15:40 UTC
+        Synced at 2026-01-20 19:18:30 UTC
     </footer>
 </body>
 </html>

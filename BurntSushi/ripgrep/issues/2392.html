@@ -23,19 +23,19 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Avishayy">@Avishayy</a></div>
-            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+            <div class="timeline-body">What version of ripgrep are you using?
 <pre><code>ripgrep 13.0.0
 -SIMD -AVX (compiled)
 +SIMD +AVX (runtime)
 </code></pre>
-<h4>How did you install ripgrep?</h4>
+How did you install ripgrep?
 <p><code>brew</code></p>
-<h4>What operating system are you using ripgrep on?</h4>
+What operating system are you using ripgrep on?
 <p>macOS Ventura 13.1</p>
-<h4>Describe your bug.</h4>
-<p>I have some local backup files in my dev repo and I'd like to ignore them from all <code>rg</code> functionalities. Since they exist on my local machine I don't add them to the repo tracked .gitignore, so I configured a global gitignore but it seems to not work. https://github.com/BurntSushi/ripgrep/issues/9 seems to create support for it, but it's quite old already so perhaps it's now broken.</p>
-<h4>What are the steps to reproduce the behavior?</h4>
-<pre><code class="language-sh">$ git config core.excludesFile
+Describe your bug.
+<p>I have some local backup files in my dev repo and I&#x27;d like to ignore them from all <code>rg</code> functionalities. Since they exist on my local machine I don&#x27;t add them to the repo tracked .gitignore, so I configured a global gitignore but it seems to not work. <a href="https://github.com/BurntSushi/ripgrep/issues/9">BurntSushi/ripgrep#9</a> seems to create support for it, but it&#x27;s quite old already so perhaps it&#x27;s now broken.</p>
+What are the steps to reproduce the behavior?
+<pre><code>$ git config core.excludesFile
 ~/.gitignore
 
 $ cat ~/.gitignore
@@ -60,21 +60,21 @@ $ rg --files | rg backup
 backup
 </code></pre>
 <p>You can see that git refuses to add the file since it is ignored by the global .gitignore and then that ripgrep would only respect it if is present in the working directory.</p>
-<h4>What is the actual behavior?</h4>
+What is the actual behavior?
 <p>Patterns from global .gitignore are ignored by ripgrep</p>
-<h4>What is the expected behavior?</h4>
+What is the expected behavior?
 <p>Patterns from global .gitignore are respected by ripgrep</p>
-<h4>What do you think ripgrep should have done?</h4>
+What do you think ripgrep should have done?
 <p>Ignore the patterns present in the global .gitignore</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Avishayy">@Avishayy</a> on 2023-01-06 01:42</div>
-            <div class="timeline-body"><p>Using the following paths for the global path doesn't work either:
+            <div class="timeline-body"><p>Using the following paths for the global path doesn&#x27;t work either:
 <code>$HOME/.gitignore</code>
 <code>/Users/user/.gitignore</code>
 (but it does work for git as expected)
-So it's not an issue of not resolving the tilde or something of sorts.</p>
+So it&#x27;s not an issue of not resolving the tilde or something of sorts.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -95,12 +95,12 @@ I edited the .gitconfig file manually and written the path as a string, i.e.</p>
 <pre><code>[core]
 	excludesFile = ~/.gitignore
 </code></pre>
-<p>Makes ripgrep respect the global config as well, I'll attach a reproducer soon.</p>
+<p>Makes ripgrep respect the global config as well, I&#x27;ll attach a reproducer soon.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Avishayy">@Avishayy</a> on 2023-01-06 02:00</div>
-            <div class="timeline-body"><pre><code class="language-sh">mkdir rg_global_gitignore
+            <div class="timeline-body"><pre><code>mkdir rg_global_gitignore
 cd rg_global_gitignore
 git init
 
@@ -135,25 +135,25 @@ db_backup.sql
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2023-01-06 13:21</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-01-06 13:21</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Kentokamoto">@Kentokamoto</a> on 2023-10-11 14:43</div>
-            <div class="timeline-body"><p>I'd like to take a look into fixing this since it looks like a pretty straight forward task. From what I was able to gather, this seems to be a problem when .gitconfig files have double quotes surrounding the value for <code>excludesFile</code>. If this is a small change to the regex under <a href="https://github.com/BurntSushi/ripgrep/blob/bc5504932764d8d4735bf955f6f7e04a95f151b8/crates/ignore/src/gitignore.rs#L600">ripgrep/crates/ignore/src/gitignore.rs</a>, then we probably might be able to get away with adding the double quote character to a character set along with whitespaces. So the new regex would look like</p>
+            <div class="timeline-body"><p>I&#x27;d like to take a look into fixing this since it looks like a pretty straight forward task. From what I was able to gather, this seems to be a problem when .gitconfig files have double quotes surrounding the value for <code>excludesFile</code>. If this is a small change to the regex under <a href="https://github.com/BurntSushi/ripgrep/blob/bc5504932764d8d4735bf955f6f7e04a95f151b8/crates/ignore/src/gitignore.rs#L600">ripgrep/crates/ignore/src/gitignore.rs</a>, then we probably might be able to get away with adding the double quote character to a character set along with whitespaces. So the new regex would look like</p>
 <pre><code>r&quot;(?im)^\s*excludesfile\s*=[\x22\s]*(.+?)[\x22\s]*$&quot;gm
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2023-10-15 12:36</div>
+            <div class="event">Label <span class="label">rollup</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-10-15 12:36</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2023-11-21 04:51</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-21 04:51</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:43:36 UTC
+        Synced at 2026-01-20 18:48:12 UTC
     </footer>
 </body>
 </html>

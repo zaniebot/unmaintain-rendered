@@ -23,41 +23,34 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Glyphack">@Glyphack</a></div>
-            <div class="timeline-body"><p>Fixes: https://github.com/astral-sh/ty/issues/1173</p>
-<!--
-Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+            <div class="timeline-body"><p>Fixes: <a href="https://github.com/astral-sh/ty/issues/1173">astral-sh/ty#1173</a></p>
 
-- Does this pull request include a summary of the change? (See below.)
-- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
-  requests.)
-- Does this pull request include references to any relevant issues?
--->
 
-<h2>Summary</h2>
-<p>This PR will change the logic of binding Self type variables to bind self to the immediate function that it's used on.
+Summary
+<p>This PR will change the logic of binding Self type variables to bind self to the immediate function that it&#x27;s used on.
 Since we are binding <code>self</code> to methods and not the class itself we need to ensure that we bind self consistently.</p>
 <p>The fix is to traverse scopes containing the self and find the first function inside a class and use that function to bind the typevar for self.</p>
 <p>If no such scope is found we fallback to the normal behavior. Using Self outside of a class scope is not legal anyway.</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>Added a new mdtest.</p>
-<p>Checked the diagnostics that are not emitted anymore in <a href="https://github.com/astral-sh/ruff/pull/20366#issuecomment-3289411424">primer results</a>. It looks good altough I don't completely understand what was wrong before.</p>
+<p>Checked the diagnostics that are not emitted anymore in <a href="https://github.com/astral-sh/ruff/pull/20366#issuecomment-3289411424">primer results</a>. It looks good altough I don&#x27;t completely understand what was wrong before.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @ntBre on 2025-09-12 16:50</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-12 16:50</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Bind Self typevar to method context" to "[ty] Bind Self typevar to method context" by @Glyphack on 2025-09-12 21:25</div>
+            <div class="event">Renamed from &quot;Bind Self typevar to method context&quot; to &quot;[ty] Bind Self typevar to method context&quot; by <a href="https://github.com/Glyphack">@Glyphack</a> on 2025-09-12 21:25</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-14 10:00</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
-<details>
-<summary>Changes were detected when running ty on typing conformance tests</summary>
+Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a>
 
-<pre><code class="language-diff">--- old-output.txt	2025-09-17 08:07:59.886695268 +0000
+Changes were detected when running ty on typing conformance tests
+
+<pre><code>--- old-output.txt	2025-09-17 08:07:59.886695268 +0000
 +++ new-output.txt	2025-09-17 08:08:02.947708879 +0000
 @@ -408,13 +408,13 @@
  generics_self_advanced.py:18:1: error[type-assertion-failure] Argument does not have asserted type `ParentA`
@@ -81,19 +74,19 @@ Since we are binding <code>self</code> to methods and not the class itself we ne
  generics_self_attributes.py:29:5: error[invalid-assignment] Object of type `OrdinalLinkedList` is not assignable to attribute `next` of type `typing.Self | None`
  generics_self_attributes.py:32:5: error[invalid-assignment] Object of type `LinkedList[int]` is not assignable to attribute `next` of type `typing.Self | None`
 </code></pre>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-14 10:03</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">discord.py (https://github.com/Rapptz/discord.py)
+Changes were detected when running on open source projects
+
+<pre><code>discord.py (https://github.com/Rapptz/discord.py)
 - discord/client.py:331:27: error[invalid-argument-type] Argument to class `ConnectionState` is incorrect: Expected `Client`, found `typing.Self`
 - discord/ui/view.py:226:30: error[invalid-argument-type] Argument to class `Item` is incorrect: Expected `BaseView`, found `typing.Self`
 - discord/ui/view.py:918:81: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
@@ -138,7 +131,7 @@ CPython (Argument Clinic) (https://github.com/python/cpython)
 + Lib/test/test_typing.py:282:30: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self@test_basics`
 
 </code></pre>
-</details>
+
 No memory usage changes detected ✅
 
 </div>
@@ -149,14 +142,14 @@ No memory usage changes detected ✅
 <blockquote>
 <p>Fixing this should hopefully just require adding a check at the beginning of that function to immediately bind any Self typevar to typevar_binding_context.</p>
 </blockquote>
-<p>This means that the <code>self</code> is now bound to any typvar_binding_context that it's used. So this would be the result:</p>
-<pre><code class="language-py">class C:
+<p>This means that the <code>self</code> is now bound to any typvar_binding_context that it&#x27;s used. So this would be the result:</p>
+<pre><code>class C:
     def f(self: &quot;C&quot;):
         def b(x: Self):
             reveal_type(x)  # revealed: Self@b
 </code></pre>
 <p>I feel we should bind this to the method (so reveal <code>Self@f</code>) otherwise we emit diagnostic in the following case:</p>
-<pre><code class="language-py">from typing import Self
+<pre><code>from typing import Self
 
 class Shape:
     def nested_func(self: Self) -&gt; Self:
@@ -165,7 +158,7 @@ class Shape:
         return inner()
 </code></pre>
 <p>Or is this a separate problem with assignability of two type vars that have similar definitions?</p>
-<p>Pyright and Mypy don't report diagnostic here:</p>
+<p>Pyright and Mypy don&#x27;t report diagnostic here:</p>
 <ul>
 <li>https://pyright-play.net/?code=GYJw9gtgBALgngBwJYDsDmUkQWEMoDKApgDbABQ5AxiQIYDO9hAFrQkQFzlQ9QAmRYFBRF6MInwD6wAK4oqACnqlgHQioCUUALQA%2BdWS69j-QZhQiQCrXoOruJxyCIA3IrRKT47JZp4BiKGc3Dwk1YjIAARExCWk5KgdHY2cYGRAUKGUyJJNU9MzUS2tyIA</li>
 <li>https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=0b6c973d8370193ae52dc305e62ff5a1</li>
@@ -175,53 +168,53 @@ class Shape:
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-09-15 14:34</div>
             <div class="timeline-body"><blockquote>
-<p>This means that the <code>self</code> is now bound to any typvar_binding_context that it's used. So this would be the result:</p>
+<p>This means that the <code>self</code> is now bound to any typvar_binding_context that it&#x27;s used. So this would be the result:</p>
 </blockquote>
-<p>Ah, that's a good catch! <code>typevar_binding_context</code> will always be the innermost generic scope. I guess we want this to bind to the function scope immediately inside the innermost class scope. It should be possible to add another helper method like <code>enclosing_generic_context</code> that would walk the enclosing scopes in the same way, looking for that pattern. <a href="https://docs.rs/itertools/latest/itertools/trait.Itertools.html#method.tuple_windows"><code>Itertools::tuple_windows</code></a> will be helpful there, since it will make it easier to look at adjacent pairs of scopes to find the first occurence of <code>function, class</code>.</p>
+<p>Ah, that&#x27;s a good catch! <code>typevar_binding_context</code> will always be the innermost generic scope. I guess we want this to bind to the function scope immediately inside the innermost class scope. It should be possible to add another helper method like <code>enclosing_generic_context</code> that would walk the enclosing scopes in the same way, looking for that pattern. <a href="https://docs.rs/itertools/latest/itertools/trait.Itertools.html#method.tuple_windows"><code>Itertools::tuple_windows</code></a> will be helpful there, since it will make it easier to look at adjacent pairs of scopes to find the first occurence of <code>function, class</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @Glyphack on 2025-09-15 20:14</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/Glyphack">@Glyphack</a> on 2025-09-15 20:14</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @Glyphack on 2025-09-15 20:14</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/Glyphack">@Glyphack</a> on 2025-09-15 20:14</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @Glyphack on 2025-09-15 20:14</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/Glyphack">@Glyphack</a> on 2025-09-15 20:14</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @Glyphack on 2025-09-15 20:14</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/Glyphack">@Glyphack</a> on 2025-09-15 20:14</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @Glyphack on 2025-09-15 20:14</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/Glyphack">@Glyphack</a> on 2025-09-15 20:14</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @carljm removed by @carljm on 2025-09-15 20:37</div>
+            <div class="event">Review request for <a href="https://github.com/carljm">@carljm</a> removed by <a href="https://github.com/carljm">@carljm</a> on 2025-09-15 20:37</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/annotations/self.md</code>:240 on 2025-09-16 02:04</div>
             <div class="timeline-body"><p>nit</p>
-<pre><code class="language-suggestion">In nested functions `self` binds to the method. So in the following example the `self` in `C.b` is
+<pre><code>In nested functions `self` binds to the method. So in the following example the `self` in `C.b` is
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/annotations/self.md</code>:252 on 2025-09-16 02:05</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">Even if the `Self` annotation appears first in the nested function, it is the method that binds `Self`.
+            <div class="timeline-body"><pre><code>Even if the `Self` annotation appears first in the nested function, it is the method that binds `Self`.
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/annotations/self.md</code>:269 on 2025-09-16 02:15</div>
-            <div class="timeline-body"><p>I think this conflates <code>self</code> and <code>Self</code> a bit. You're right that a parameter named <code>self</code> doesn't cause a function to become generic, but a <code>Self</code> annotation should. So I expect you <em>would</em> get a generic context for <code>C.b</code>. And once implicit <code>Self</code> annotations land, many <code>self</code> parameters would start to yield a generic context, because of that implicit annotation. In this example, <code>C.f</code> would still not get a generic context even with implicit <code>Self</code>, because of the explicit <code>&quot;C&quot;</code> annotation.</p>
-<p>So concretely, I'd suggest adding a test for <code>generic_context(C.B)</code> as well (to make sure I'm not wrong in my analysis!) and also to put some of this detail into the description.</p>
+            <div class="timeline-body"><p>I think this conflates <code>self</code> and <code>Self</code> a bit. You&#x27;re right that a parameter named <code>self</code> doesn&#x27;t cause a function to become generic, but a <code>Self</code> annotation should. So I expect you <em>would</em> get a generic context for <code>C.b</code>. And once implicit <code>Self</code> annotations land, many <code>self</code> parameters would start to yield a generic context, because of that implicit annotation. In this example, <code>C.f</code> would still not get a generic context even with implicit <code>Self</code>, because of the explicit <code>&quot;C&quot;</code> annotation.</p>
+<p>So concretely, I&#x27;d suggest adding a test for <code>generic_context(C.B)</code> as well (to make sure I&#x27;m not wrong in my analysis!) and also to put some of this detail into the description.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:87 on 2025-09-16 02:18</div>
             <div class="timeline-body"><p>Can you add a comment explaining the need for this? Something like</p>
 <blockquote>
-<p><code>typing.Self</code> is treated like a legacy typevar, but doesn't follow the same scoping rules. It is always bound to the outermost method in the containing class.</p>
+<p><code>typing.Self</code> is treated like a legacy typevar, but doesn&#x27;t follow the same scoping rules. It is always bound to the outermost method in the containing class.</p>
 </blockquote>
 </div>
         </div>
@@ -236,13 +229,13 @@ class Shape:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/Glyphack">@Glyphack</a> on <code>crates/ty_python_semantic/resources/mdtest/annotations/self.md</code>:269 on 2025-09-16 14:15</div>
-            <div class="timeline-body"><p>I see your point. I wanted to add a case for <code>b</code> but since <code>b</code> is in <code>C.f</code> the expression <code>generic_context(C.f.b)</code> did not work. So I extract this part into it's own section with three examples:</p>
+            <div class="timeline-body"><p>I see your point. I wanted to add a case for <code>b</code> but since <code>b</code> is in <code>C.f</code> the expression <code>generic_context(C.f.b)</code> did not work. So I extract this part into it&#x27;s own section with three examples:</p>
 <ol>
 <li>Method with implicit self</li>
 <li>Method with explicit <code>Self</code> annotation</li>
 <li>Method annotated with class body</li>
 </ol>
-<p>It's not final yet but I tried to annotate methods that are not generic with the class name in <a href="https://github.com/astral-sh/ruff/pull/18007/commits/62a4954cf30cee682414ea30ce6cf3ab028d6421">here</a> (<a href="https://discord.com/channels/1039017663004942429/1414685112167305216">discussion</a>) and it yielded some performance benefit and it's in my method call PR right now.
+<p>It&#x27;s not final yet but I tried to annotate methods that are not generic with the class name in <a href="https://github.com/astral-sh/ruff/pull/18007/commits/62a4954cf30cee682414ea30ce6cf3ab028d6421">here</a> (<a href="https://discord.com/channels/1039017663004942429/1414685112167305216">discussion</a>) and it yielded some performance benefit and it&#x27;s in my method call PR right now.
 I will add test cases for 2 and 3 in this PR and leave the first one in my other PR.</p>
 </div>
         </div>
@@ -251,7 +244,7 @@ I will add test cases for 2 and 3 in this PR and leave the first one in my other
             <div class="timeline-body"><blockquote>
 <p>I see your point. I wanted to add a case for <code>b</code> but since <code>b</code> is in <code>C.f</code> the expression <code>generic_context(C.f.b)</code> did not work.</p>
 </blockquote>
-<p>Oh of course, you're right! <code>C.f.b</code> isn't a valid way to reference <code>b</code>. You could do <code>reveal_type(generic_context(b))</code> inside the definition of <code>f</code> though.</p>
+<p>Oh of course, you&#x27;re right! <code>C.f.b</code> isn&#x27;t a valid way to reference <code>b</code>. You could do <code>reveal_type(generic_context(b))</code> inside the definition of <code>f</code> though.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -264,7 +257,7 @@ I will add test cases for 2 and 3 in this PR and leave the first one in my other
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/Glyphack">@Glyphack</a> on <code>crates/ty_python_semantic/resources/mdtest/annotations/self.md</code>:269 on 2025-09-16 14:26</div>
-            <div class="timeline-body"><p>You're right I somehow didn't think of adding the line in the function 😄</p>
+            <div class="timeline-body"><p>You&#x27;re right I somehow didn&#x27;t think of adding the line in the function 😄</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -275,7 +268,7 @@ I will add test cases for 2 and 3 in this PR and leave the first one in my other
             <div class="timeline-header">Review comment by <a href="https://github.com/Glyphack">@Glyphack</a> on <code>crates/ty_python_semantic/resources/mdtest/annotations/self.md</code>:269 on 2025-09-16 15:17</div>
             <div class="timeline-body"><p>Okay I changed it a bit to only assert the generic context of the inner function here.</p>
 <p>But the result was not what I expected in the case above both <code>b</code> and <code>C.f</code> have no generic context.
-https://github.com/astral-sh/ruff/pull/20366/commits/89b4594b7873194becea0e4a3d882788b00fcfe9</p>
+<a href="https://github.com/astral-sh/ruff/pull/20366">astral-sh/ruff#20366</a>/commits/89b4594b7873194becea0e4a3d882788b00fcfe9</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -284,7 +277,7 @@ https://github.com/astral-sh/ruff/pull/20366/commits/89b4594b7873194becea0e4a3d8
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/Glyphack">@Glyphack</a> on <code>crates/ty_python_semantic/resources/mdtest/annotations/self.md</code>:269 on 2025-09-16 15:20</div>
-            <div class="timeline-body"><p>In this case we want the <code>Self</code> to bind to the method so it binds to <code>C.f</code> and not <code>b</code> as a result now <code>b</code> does not have it's generic context anymore.</p>
+            <div class="timeline-body"><p>In this case we want the <code>Self</code> to bind to the method so it binds to <code>C.f</code> and not <code>b</code> as a result now <code>b</code> does not have it&#x27;s generic context anymore.</p>
 <p>I am thinking if I make a change so we place <code>Self</code> in generic context of <code>b</code> is that desirable? <code>Self</code> is bound to <code>f</code> not <code>b</code>.
 On the other hand I am not sure current behavior is fine because no member gets the generic context now.</p>
 </div>
@@ -296,13 +289,13 @@ On the other hand I am not sure current behavior is fine because no member gets 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/annotations/self.md</code>:267 on 2025-09-17 01:47</div>
-            <div class="timeline-body"><p>Hmm, this is an interesting example. I think the current results are correct, and I don't think anything needs to change in this PR, but it affects the larger implicit <code>Self</code> work:</p>
-<p>Here, <code>Self</code> is bound to <code>f</code>, but there aren't any annotations in <code>f</code> that actually reference <code>Self</code>. So our current call binding machinery wouldn't know how to infer a specialization of <code>Self</code> when <code>f</code> is called.</p>
+            <div class="timeline-body"><p>Hmm, this is an interesting example. I think the current results are correct, and I don&#x27;t think anything needs to change in this PR, but it affects the larger implicit <code>Self</code> work:</p>
+<p>Here, <code>Self</code> is bound to <code>f</code>, but there aren&#x27;t any annotations in <code>f</code> that actually reference <code>Self</code>. So our current call binding machinery wouldn&#x27;t know how to infer a specialization of <code>Self</code> when <code>f</code> is called.</p>
 <p>I wonder if to handle this right, the implicit <code>Self</code> logic should turn this into</p>
-<pre><code class="language-py">class C:
+<pre><code>class C:
     def f(self: &quot;Self &amp; C&quot;): ...
 </code></pre>
-<p>i.e. if there's an annotation, add the <code>Self</code> typevar in an intersection with the annotation. (Intersection simplification would do the right thing if there's already an annotation of <code>Self</code>.) That would give us a typevar in the formal parameter list to match against the <code>self</code> argument that's passed in at call time.</p>
+<p>i.e. if there&#x27;s an annotation, add the <code>Self</code> typevar in an intersection with the annotation. (Intersection simplification would do the right thing if there&#x27;s already an annotation of <code>Self</code>.) That would give us a typevar in the formal parameter list to match against the <code>self</code> argument that&#x27;s passed in at call time.</p>
 <p>@carljm @AlexWaygood @sharkdp Do any of you have thoughts on this?</p>
 </div>
         </div>
@@ -316,30 +309,30 @@ On the other hand I am not sure current behavior is fine because no member gets 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/annotations/self.md</code>:267 on 2025-09-17 02:06</div>
-            <div class="timeline-body"><p>In this particular example, given no <code>Self</code> annotations in the signature of <code>f</code>, it doesn't matter if we can't infer a specialization of <code>Self</code>; there's nothing that specialization could possibly apply to. (References to <code>Self</code> inside the body of <code>f</code> won't ever be specialized anyway.)</p>
+            <div class="timeline-body"><p>In this particular example, given no <code>Self</code> annotations in the signature of <code>f</code>, it doesn&#x27;t matter if we can&#x27;t infer a specialization of <code>Self</code>; there&#x27;s nothing that specialization could possibly apply to. (References to <code>Self</code> inside the body of <code>f</code> won&#x27;t ever be specialized anyway.)</p>
 <p>I think your point would be relevant in a case like this:</p>
-<pre><code class="language-py">class C:
+<pre><code>class C:
     def f(self: &quot;C&quot;) -&gt; Self:
         return self
 </code></pre>
-<p>But I also think we don't need to care about this case. For one thing, because there is no possible valid implementation of such a function (the implementation I give here should error on the return because <code>C</code> is not assignable to <code>Self</code>). And for another thing, because both mypy and pyright agree that the signature of <code>f</code> itself is invalid: they both give errors saying you can't use <code>Self</code> in a method with an explicitly annotated <code>self</code> or <code>cls</code> argument.</p>
+<p>But I also think we don&#x27;t need to care about this case. For one thing, because there is no possible valid implementation of such a function (the implementation I give here should error on the return because <code>C</code> is not assignable to <code>Self</code>). And for another thing, because both mypy and pyright agree that the signature of <code>f</code> itself is invalid: they both give errors saying you can&#x27;t use <code>Self</code> in a method with an explicitly annotated <code>self</code> or <code>cls</code> argument.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/annotations/self.md</code>:267 on 2025-09-17 15:05</div>
             <div class="timeline-body"><blockquote>
-<p>In this particular example, given no <code>Self</code> annotations in the signature of <code>f</code>, it doesn't matter if we can't infer a specialization of <code>Self</code>; there's nothing that specialization could possibly apply to.</p>
+<p>In this particular example, given no <code>Self</code> annotations in the signature of <code>f</code>, it doesn&#x27;t matter if we can&#x27;t infer a specialization of <code>Self</code>; there&#x27;s nothing that specialization could possibly apply to.</p>
 </blockquote>
-<p>Ah yes, that's a good point. <code>Self</code> in <code>b</code> is a non-inferable typevar already, and so we're not worried about particular specializations of it; we'll verify assignability against it for all possible specializations.</p>
+<p>Ah yes, that&#x27;s a good point. <code>Self</code> in <code>b</code> is a non-inferable typevar already, and so we&#x27;re not worried about particular specializations of it; we&#x27;ll verify assignability against it for all possible specializations.</p>
 <blockquote>
-<p>References to <code>Self</code> inside the body of <code>f</code> won't ever be specialized anyway.</p>
+<p>References to <code>Self</code> inside the body of <code>f</code> won&#x27;t ever be specialized anyway.</p>
 </blockquote>
 <p>Would that change with return type inference?</p>
 <blockquote>
-<p>But I also think we don't need to care about this case.</p>
-<p>they both give errors saying you can't use <code>Self</code> in a method with an explicitly annotated <code>self</code> or <code>cls</code> argument.</p>
+<p>But I also think we don&#x27;t need to care about this case.</p>
+<p>they both give errors saying you can&#x27;t use <code>Self</code> in a method with an explicitly annotated <code>self</code> or <code>cls</code> argument.</p>
 </blockquote>
-<p>Nice, that's even mentioned in <a href="https://typing.python.org/en/latest/spec/generics.html#valid-locations-for-self">the spec</a> as an invalid use of <code>Self</code> (the <code>has_existing_self_annotation</code> example).</p>
+<p>Nice, that&#x27;s even mentioned in <a href="https://typing.python.org/en/latest/spec/generics.html#valid-locations-for-self">the spec</a> as an invalid use of <code>Self</code> (the <code>has_existing_self_annotation</code> example).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -356,7 +349,7 @@ On the other hand I am not sure current behavior is fine because no member gets 
 <p>Would that change with return type inference?</p>
 </blockquote>
 <p>Hmm, yeah, I suppose it would. So something like this:</p>
-<pre><code class="language-py">class C:
+<pre><code>class C:
     def f(self):
         def inner(x: Self) -&gt; Self:
             return x
@@ -372,7 +365,7 @@ C().f()  # should return generic `Callable[[Self], Self]` where `Self` is an inf
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/annotations/self.md</code>:267 on 2025-09-17 16:41</div>
-            <div class="timeline-body"><p>Yep, I think that's a good example. I don't think it needs to block this PR, but it will be good to keep in mind as we work on implicit <code>Self</code> and RTI</p>
+            <div class="timeline-body"><p>Yep, I think that&#x27;s a good example. I don&#x27;t think it needs to block this PR, but it will be good to keep in mind as we work on implicit <code>Self</code> and RTI</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -381,19 +374,19 @@ C().f()  # should return generic `Callable[[Self], Self]` where `Self` is an inf
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/annotations/self.md</code>:267 on 2025-09-17 17:54</div>
-            <div class="timeline-body"><p>Interestingly, in this case both pyrefly and pyright specialize <code>Self</code> eagerly and return <code>(C) -&gt; C</code>, not <code>(Self) -&gt; Self</code> (that is, the returned callable is not generic.) (Mypy doesn't do RTI.)</p>
+            <div class="timeline-body"><p>Interestingly, in this case both pyrefly and pyright specialize <code>Self</code> eagerly and return <code>(C) -&gt; C</code>, not <code>(Self) -&gt; Self</code> (that is, the returned callable is not generic.) (Mypy doesn&#x27;t do RTI.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-09-17 18:58</div>
-            <div class="timeline-body"><p>Thanks for this, @Glyphack! The discussion above doesn't block this PR, so I'm going to go ahead and merge it.</p>
+            <div class="timeline-body"><p>Thanks for this, @Glyphack! The discussion above doesn&#x27;t block this PR, so I&#x27;m going to go ahead and merge it.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @dcreager on 2025-09-17 18:58</div>
+            <div class="event">Merged by <a href="https://github.com/dcreager">@dcreager</a> on 2025-09-17 18:58</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dcreager on 2025-09-17 18:58</div>
+            <div class="event">Closed by <a href="https://github.com/dcreager">@dcreager</a> on 2025-09-17 18:58</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-09-17 19:10</div>
@@ -401,7 +394,7 @@ C().f()  # should return generic `Callable[[Self], Self]` where `Self` is an inf
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:15:42 UTC
+        Synced at 2026-01-20 19:18:34 UTC
     </footer>
 </body>
 </html>

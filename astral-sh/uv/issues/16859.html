@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/byron-hawkins">@byron-hawkins</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>This command works without the <code>--cache-dir</code> option, although here it does create a cache but then fails shortly afterward. Setting <code>UV_LINK_MODE</code> did not change anything, and symlinks are supported on the filesystem (ExFAT), with a manual test confirming that a symlink works in this directory. Having no information about which operation is not supported, there is no way to explore possible workarounds.</p>
 <pre><code>&gt; uv init --bare --cache-dir build/uv/cache -v 
 DEBUG uv 0.9.12 (0fb123336 2025-11-24)
@@ -35,19 +35,19 @@ CACHEDIR.TAG    sdists-v9
 
 build/uv/cache/sdists-v9:
 </code></pre>
-<h3>Platform</h3>
+Platform
 <p>macOS 26 arm64 (M1)</p>
-<h3>Version</h3>
+Version
 <p>0.9.12 (brew)</p>
-<h3>Python version</h3>
+Python version
 <p>3.14.0 (brew)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @byron-hawkins on 2025-11-26 12:11</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/byron-hawkins">@byron-hawkins</a> on 2025-11-26 12:11</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">error messages</span> added by @konstin on 2025-11-26 15:51</div>
+            <div class="event">Label <span class="label">error messages</span> added by <a href="https://github.com/konstin">@konstin</a> on 2025-11-26 15:51</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-11-26 15:51</div>
@@ -57,14 +57,14 @@ build/uv/cache/sdists-v9:
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/pcastellazzi">@pcastellazzi</a> on 2025-11-26 22:09</div>
             <div class="timeline-body"><p>I run <code>uv</code> with <code>dtruss</code> (<code>/Volumes/untitled/</code> is my ExFAT device).</p>
-<pre><code class="language-bash"># search for a syscall that failed with os error 45
+<pre><code># search for a syscall that failed with os error 45
 rm -rf build ; sudo dtruss -f uv init --bare --cache-dir build/uv/cache -v 2&gt;&amp;1 | grep -- &quot;= -1 45&quot;
 
 44754/0x1f7d2b:  renameatx_np(0xFFFFFFFFFFFFFFFE, &quot;/Volumes/untitled/build/uv/cache/.tmpPGgOVr\0&quot;, 0xFFFFFFFFFFFFFFFE, &quot;build/uv/cache/.lock\0&quot;, 0|0|RENAME_EXCL)              = -1 45
 </code></pre>
 <p>It looks like <code>uv</code> is renaming a file using <code>renameatx_np</code> (a system call) with the flag <code>RENAME_EXCL</code> which is not available on all filesystems (man 2 renameatx_np).</p>
 <p>Proof of concept:</p>
-<pre><code class="language-C">// clang -Wall -o poc poc.c ; ./poc
+<pre><code>// clang -Wall -o poc poc.c ; ./poc
 #include &lt;fcntl.h&gt;
 #include &lt;errno.h&gt;
 #include &lt;stdio.h&gt;
@@ -90,11 +90,11 @@ int main() {
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @EliteTK by @EliteTK on 2025-12-04 15:59</div>
+            <div class="event">Assigned to <a href="https://github.com/EliteTK">@EliteTK</a> by <a href="https://github.com/EliteTK">@EliteTK</a> on 2025-12-04 15:59</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/EliteTK">@EliteTK</a> on 2025-12-08 11:54</div>
-            <div class="timeline-body"><p>I've tracked this down to <code>tempfile::file::NamedTempFile::persist_noclobber</code> called in: https://github.com/astral-sh/uv/blob/28a8194a67726b93524e3ade42d0db884519ec73/crates/uv-fs/src/locked_file.rs#L253</p>
+            <div class="timeline-body"><p>I&#x27;ve tracked this down to <code>tempfile::file::NamedTempFile::persist_noclobber</code> called in: https://github.com/astral-sh/uv/blob/28a8194a67726b93524e3ade42d0db884519ec73/crates/uv-fs/src/locked_file.rs#L253</p>
 <p>(This is called from https://github.com/astral-sh/uv/blob/28a8194a67726b93524e3ade42d0db884519ec73/crates/uv/src/lib.rs#L1911 which calls <code>uv_cache::Cache::init</code> -&gt; <code>uv_fs::locked_file::LockedFile::acquire</code> -&gt; <code>uv_fs::locked_file::LockedFile::create</code> -&gt; <code>tempfile::file::NamedTempFile::persist_noclobber</code>)</p>
 <p>With an ExFAT disk mounted at <code>/Volumes/EXFATDISK</code> this will reproduce the error (second unwrap):</p>
 <pre><code>use tempfile::NamedTempFile;
@@ -104,9 +104,9 @@ fn main() {
     tmp.persist_noclobber(&quot;/Volumes/EXFATDISK/test&quot;).unwrap();
 }
 </code></pre>
-<p>This seems to be because <code>persist_noclobber</code> uses <code>renameat_with</code> to pass <code>RenameFlags::NOREPLACE</code> which internally uses <code>renameatx_np</code> which is not supported on all filesystems. I think <code>tempfile</code> should try (non-permanently) falling back to <code>std::fs::hard_link</code> like it does when <code>renameatx_np</code> gives <code>ENOSYS</code>. But that wouldn't fix this issue as ExFAT also doesn't support hard links.</p>
+<p>This seems to be because <code>persist_noclobber</code> uses <code>renameat_with</code> to pass <code>RenameFlags::NOREPLACE</code> which internally uses <code>renameatx_np</code> which is not supported on all filesystems. I think <code>tempfile</code> should try (non-permanently) falling back to <code>std::fs::hard_link</code> like it does when <code>renameatx_np</code> gives <code>ENOSYS</code>. But that wouldn&#x27;t fix this issue as ExFAT also doesn&#x27;t support hard links.</p>
 <p>To support ExFAT on mac for this usecase we will have to come up with some alternative approach rather than using <code>persist_noclobber</code>.</p>
-<p>Side note: I don't think this matters for this issue, but ExFAT doesn't actually support symlinks, MacOS seems to use Minshall+French symlinks for this. Not sure how that's implemented exactly - weird but cool.</p>
+<p>Side note: I don&#x27;t think this matters for this issue, but ExFAT doesn&#x27;t actually support symlinks, MacOS seems to use Minshall+French symlinks for this. Not sure how that&#x27;s implemented exactly - weird but cool.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -118,13 +118,13 @@ fn main() {
 <li>In order to avoid a race, the future lockfile must be created as a tempfile, have its permissions changed, and then be moved to its final destination. Otherwise another process could attempt to open the lockfile after it is created but before the permissions are changed.</li>
 <li>Since another process can at any point create the lockfile, the final rename must be done without overriding any existing lockfile which another process may have open. To this end, <code>renameat2</code>/<code>renameat_ex</code> need to be used.</li>
 </ul>
-<p>The permissions race isn't critical, and in the end it would just cause a uv invocation to produce a permission error. So I think a good solution would just be to loosen it. Although we can do even better: simply try with <code>persist_noclobber</code> and then fall back to the racy option. As a bonus, this won't matter on exfat anyway as it doesn't have permission bits (everything is always 0777).</p>
+<p>The permissions race isn&#x27;t critical, and in the end it would just cause a uv invocation to produce a permission error. So I think a good solution would just be to loosen it. Although we can do even better: simply try with <code>persist_noclobber</code> and then fall back to the racy option. As a bonus, this won&#x27;t matter on exfat anyway as it doesn&#x27;t have permission bits (everything is always 0777).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/pcastellazzi">@pcastellazzi</a> on 2025-12-08 22:53</div>
             <div class="timeline-body"><p>I run your example on Windows (Windows 11 Pro) and Linux (Ubuntu 24.03 LTS) and it does not fail. On the stack trace you can see it is using renameat2 and not failing. This seems to indicate the problem exists only on macos.</p>
-<pre><code class="language-bash"># exfat is the the volume location
+<pre><code># exfat is the the volume location
 rm exfat/test ; strace -e trace=file -ff -s 1024 target/debug/example
 execve(&quot;target/debug/example&quot;, [&quot;target/debug/example&quot;], 0x7fff488b3168 /* 36 vars */) = 0
 access(&quot;/etc/ld.so.preload&quot;, R_OK)      = -1 ENOENT (No such file or directory)
@@ -138,7 +138,7 @@ renameat2(AT_FDCWD, &quot;/home/ubuntu/Downloads/example/exfat/.tmpzjkFc3&quot;,
 +++ exited with 0 +++
 </code></pre>
 <p>I think a warning for that specific case should probably be enough. <code>uv</code> is doing something similar when it can change permissions.</p>
-<pre><code class="language-bash">uv init --bare --cache-dir exfat/build/uv/cache -v --python 3.14 exfat/
+<pre><code>uv init --bare --cache-dir exfat/build/uv/cache -v --python 3.14 exfat/
 DEBUG uv 0.9.16 (Homebrew 2025-12-06)
 **WARN Failed to set permissions on temporary file: Operation not permitted (os error 1)**
 DEBUG Acquired shared lock for `exfat/build/uv/cache`
@@ -149,12 +149,12 @@ DEBUG Released lock at `exfat/build/uv/cache/.lock`
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @EliteTK on 2025-12-15 14:05</div>
+            <div class="event">Closed by <a href="https://github.com/EliteTK">@EliteTK</a> on 2025-12-15 14:05</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:33:32 UTC
+        Synced at 2026-01-20 19:41:08 UTC
     </footer>
 </body>
 </html>

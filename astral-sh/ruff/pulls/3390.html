@@ -23,24 +23,24 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sciyoshi">@sciyoshi</a></div>
-            <div class="timeline-body"><p>This PR sets up an &quot;ecosystem&quot; check as an optional part of the CI step for pull requests. The primary piece of this is a new script in <code>scripts/check_ecosystem.py</code> which takes two ruff binaries as input and compares their outputs against a corpus of open-source code in parallel. I used ruff's <code>text</code> reporting format and stdlib's <code>difflib</code> (rather than JSON output and jsondiffs) to avoid adding another dependency. There is a new ecosystem-comment workflow to add a comment to the PR (see <a href="https://securitylab.github.com/research/github-actions-preventing-pwn-requests/">this link</a> which explains why it needs to be done as a new workflow for security reasons).</p>
-<p>Here's <a href="https://github.com/sciyoshi/ruff/pull/3#issuecomment-1458879463">what the comment looks like when there are changes</a>:</p>
-<p><img src="https://user-images.githubusercontent.com/39950/223554602-fb18b6d3-7c3e-4616-a4e1-c29b39d7cae0.png" alt="image" /></p>
-<p>And here's <a href="https://github.com/sciyoshi/ruff/pull/2#issuecomment-1458747197">what the comment looks like with no changes</a>:</p>
-<p><img src="https://user-images.githubusercontent.com/39950/223554712-e12c21ec-7eb3-4d77-be81-b1294edcd1be.png" alt="image" /></p>
-<p>I'm open to improvements to make this report more useful; linking to the actual versions of the respective repos might be helpful, for example.</p>
+            <div class="timeline-body"><p>This PR sets up an &quot;ecosystem&quot; check as an optional part of the CI step for pull requests. The primary piece of this is a new script in <code>scripts/check_ecosystem.py</code> which takes two ruff binaries as input and compares their outputs against a corpus of open-source code in parallel. I used ruff&#x27;s <code>text</code> reporting format and stdlib&#x27;s <code>difflib</code> (rather than JSON output and jsondiffs) to avoid adding another dependency. There is a new ecosystem-comment workflow to add a comment to the PR (see <a href="https://securitylab.github.com/research/github-actions-preventing-pwn-requests/">this link</a> which explains why it needs to be done as a new workflow for security reasons).</p>
+<p>Here&#x27;s <a href="https://github.com/sciyoshi/ruff/pull/3#issuecomment-1458879463">what the comment looks like when there are changes</a>:</p>
+<p><img src="https://user-images.githubusercontent.com/39950/223554602-fb18b6d3-7c3e-4616-a4e1-c29b39d7cae0.png" alt="image"></p>
+<p>And here&#x27;s <a href="https://github.com/sciyoshi/ruff/pull/2#issuecomment-1458747197">what the comment looks like with no changes</a>:</p>
+<p><img src="https://user-images.githubusercontent.com/39950/223554712-e12c21ec-7eb3-4d77-be81-b1294edcd1be.png" alt="image"></p>
+<p>I&#x27;m open to improvements to make this report more useful; linking to the actual versions of the respective repos might be helpful, for example.</p>
 <p>A few points:</p>
 <ul>
 <li>This runs on every PR, but not on main and not as a nightly task as suggested in the linked issue. I think running on every PR is correct because it gives direct feedback on any potential problems before merging. However, a possible later improvement would be to also run on main and compare against the latest released version. (This is what black diff-shades does).</li>
-<li>The &quot;ecosystem&quot; right now consists of zulip and bokeh (latest version of each), and uses their ruff configs. However, the most valuable way of setting this up is actually to test messy codebases that fail many checks, not ones that already use ruff, because that would be the only way to catch PRs introducing false negatives. @charliermarsh any suggestions on what to use for this purpose? Unlike other tools, ruff is fast enough that adding a few large codebases here won't make much of a difference in testing time.</li>
-<li>The base version of ruff used as a comparison is pulled from the latest artifact on the PR merge base ref (i.e. PRs to main will compare the latest version on main to the PR head after the merge commit). For PRs that don't merge cleanly, the results might be inconsistent (I haven't tested this).</li>
+<li>The &quot;ecosystem&quot; right now consists of zulip and bokeh (latest version of each), and uses their ruff configs. However, the most valuable way of setting this up is actually to test messy codebases that fail many checks, not ones that already use ruff, because that would be the only way to catch PRs introducing false negatives. @charliermarsh any suggestions on what to use for this purpose? Unlike other tools, ruff is fast enough that adding a few large codebases here won&#x27;t make much of a difference in testing time.</li>
+<li>The base version of ruff used as a comparison is pulled from the latest artifact on the PR merge base ref (i.e. PRs to main will compare the latest version on main to the PR head after the merge commit). For PRs that don&#x27;t merge cleanly, the results might be inconsistent (I haven&#x27;t tested this).</li>
 </ul>
 <p>Closes charliermarsh/ruff#2677.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-08 04:26</div>
-            <div class="timeline-body"><p>Dang, this is so cool, thank you! I'll review tomorrow and respond to the questions in the PR summary.</p>
+            <div class="timeline-body"><p>Dang, this is so cool, thank you! I&#x27;ll review tomorrow and respond to the questions in the PR summary.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -57,17 +57,17 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>scripts/check_ecosystem.py</code>:59 on 2023-03-09 00:50</div>
-            <div class="timeline-body"><p>I'm happy to amend this list after merging, but others that come to mind:</p>
+            <div class="timeline-body"><p>I&#x27;m happy to amend this list after merging, but others that come to mind:</p>
 <ul>
 <li>https://github.com/scikit-build/scikit-build/blob/main/pyproject.toml</li>
 <li>https://github.com/apache/airflow/blob/main/pyproject.toml</li>
 </ul>
-<p>Not sure what the incremental cost is for each additional repo. I guess the two costs are &quot;job time&quot; and &quot;job output&quot; -- e.g., if we make a mistake, we might see it repeated across repos. But here, I'm thinking back to projects that we've broken in the past, and that have reasonably advanced configurations.</p>
+<p>Not sure what the incremental cost is for each additional repo. I guess the two costs are &quot;job time&quot; and &quot;job output&quot; -- e.g., if we make a mistake, we might see it repeated across repos. But here, I&#x27;m thinking back to projects that we&#x27;ve broken in the past, and that have reasonably advanced configurations.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>scripts/check_ecosystem.py</code>:81 on 2023-03-09 00:52</div>
-            <div class="timeline-body"><p>If we're looking to catch false negatives, we could consider running over CPython? It's a fairly diverse codebase.</p>
+            <div class="timeline-body"><p>If we&#x27;re looking to catch false negatives, we could consider running over CPython? It&#x27;s a fairly diverse codebase.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -75,8 +75,8 @@
             <div class="timeline-body"><p>This is really impressive work and will be <em>super</em> useful for Ruff. No major comments on the code itself, just a couple questions on process (and pardon my ignorance on some of the GitOps stuff):</p>
 <ul>
 <li>If I open a PR, and <code>ecosystem</code> job completes, then I update the PR, and the <code>ecosystem</code> job runs again, does it appear as two separate comments? Or does it &quot;update&quot; the comment?</li>
-<li>How much more difficult would it to be have this run on explicit PR comment (e.g., reviewer adds <code>+ecosystem</code>, and the job kicks off)? I'm mostly thinking here about the noise involved in having the bot comment on every PR. I'm not fully decided on what's &quot;better&quot; here, but I thought I'd ask.</li>
-<li>I assume it'd be <em>possible</em> for me to run this locally prior to cutting a release, by comparing against the binary from the previous release. Any reason that wouldn't be possible with the current configuration?</li>
+<li>How much more difficult would it to be have this run on explicit PR comment (e.g., reviewer adds <code>+ecosystem</code>, and the job kicks off)? I&#x27;m mostly thinking here about the noise involved in having the bot comment on every PR. I&#x27;m not fully decided on what&#x27;s &quot;better&quot; here, but I thought I&#x27;d ask.</li>
+<li>I assume it&#x27;d be <em>possible</em> for me to run this locally prior to cutting a release, by comparing against the binary from the previous release. Any reason that wouldn&#x27;t be possible with the current configuration?</li>
 </ul>
 </div>
         </div>
@@ -89,14 +89,14 @@
 </blockquote>
 <p>The workflow will update an existing comment if it finds one.</p>
 <blockquote>
-<p>How much more difficult would it to be have this run on explicit PR comment (e.g., reviewer adds +ecosystem, and the job kicks off)? I'm mostly thinking here about the noise involved in having the bot comment on every PR. I'm not fully decided on what's &quot;better&quot; here, but I thought I'd ask.</p>
+<p>How much more difficult would it to be have this run on explicit PR comment (e.g., reviewer adds +ecosystem, and the job kicks off)? I&#x27;m mostly thinking here about the noise involved in having the bot comment on every PR. I&#x27;m not fully decided on what&#x27;s &quot;better&quot; here, but I thought I&#x27;d ask.</p>
 </blockquote>
-<p>I think this would be fairly easy, although I haven't looked into what would be needed to do it. If this is merged and it feels like the comment is too noisy on every PR, I could look at doing a followup to make it run only when pinged. It could also be changed to not post a comment at all if there are no changes, although then it might be harder to know if that workflow has broken.</p>
+<p>I think this would be fairly easy, although I haven&#x27;t looked into what would be needed to do it. If this is merged and it feels like the comment is too noisy on every PR, I could look at doing a followup to make it run only when pinged. It could also be changed to not post a comment at all if there are no changes, although then it might be harder to know if that workflow has broken.</p>
 <blockquote>
-<p>I assume it'd be possible for me to run this locally prior to cutting a release, by comparing against the binary from the previous release. Any reason that wouldn't be possible with the current configuration?</p>
+<p>I assume it&#x27;d be possible for me to run this locally prior to cutting a release, by comparing against the binary from the previous release. Any reason that wouldn&#x27;t be possible with the current configuration?</p>
 </blockquote>
-<p>Yes, definitely. The script requires Python 3.11 (for <code>asyncio.TaskGroup</code>) but otherwise has no dependencies, and clones repos to temporary directories that are cleaned up automatically so it's fairly self-contained.</p>
-<p>On a separate note, I'm not sure why the <code>ecosystem</code> check is failing on this PR with the message <code>API rate limit exceeded for installation ID 22967278</code>, but likely it's because the base branch for this PR doesn't have a built artifact that it can use for the test.</p>
+<p>Yes, definitely. The script requires Python 3.11 (for <code>asyncio.TaskGroup</code>) but otherwise has no dependencies, and clones repos to temporary directories that are cleaned up automatically so it&#x27;s fairly self-contained.</p>
+<p>On a separate note, I&#x27;m not sure why the <code>ecosystem</code> check is failing on this PR with the message <code>API rate limit exceeded for installation ID 22967278</code>, but likely it&#x27;s because the base branch for this PR doesn&#x27;t have a built artifact that it can use for the test.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -105,23 +105,23 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sciyoshi">@sciyoshi</a> on <code>scripts/check_ecosystem.py</code>:81 on 2023-03-10 00:23</div>
-            <div class="timeline-body"><p>CPython could work but it includes a lot of non-Python code, meaning it would do a bunch of extra work to download/clone files that it won't end up checking. I do like the idea of using isolated mode and setting all rules to enabled so I've made that change.</p>
+            <div class="timeline-body"><p>CPython could work but it includes a lot of non-Python code, meaning it would do a bunch of extra work to download/clone files that it won&#x27;t end up checking. I do like the idea of using isolated mode and setting all rules to enabled so I&#x27;ve made that change.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sciyoshi">@sciyoshi</a> on 2023-03-10 00:33</div>
             <div class="timeline-body"><p>Out of curiosity I ran <code>check_ecosystem.py</code> with the latest <code>main</code> vs the latest PyPI version (0.0.254). Ignoring the new rule PLC1901 and the changes to RET504 and the inclusion of <code>.pyi</code> files, here are the changes detected:</p>
-<details><summary>zulip</summary>
+zulip
 <p>
 
-<pre><code class="language-diff">+ zerver/lib/ccache.py:81:14: PLR2004 Magic value used in comparison, consider replacing -2147483648 with a constant variable
+<pre><code>+ zerver/lib/ccache.py:81:14: PLR2004 Magic value used in comparison, consider replacing -2147483648 with a constant variable
 </code></pre>
 </p>
-</details>
-<details><summary>bokeh</summary>
+
+bokeh
 <p>
 
-<pre><code class="language-diff">+ tests/unit/bokeh/models/test_ranges.py:160:37: PLR2004 Magic value used in comparison, consider replacing -1.0 with a constant variable
+<pre><code>+ tests/unit/bokeh/models/test_ranges.py:160:37: PLR2004 Magic value used in comparison, consider replacing -1.0 with a constant variable
 + tests/unit/bokeh/models/test_ranges.py:71:33: PLR2004 Magic value used in comparison, consider replacing -1.0 with a constant variable
 + tests/integration/tools/test_range_tool.py:272:36: PLR2004 Magic value used in comparison, consider replacing -0.1 with a constant variable
 + tests/unit/bokeh/test_events.py:286:24: PLR2004 Magic value used in comparison, consider replacing -2 with a constant variable
@@ -144,17 +144,17 @@
 + tests/unit/bokeh/test_events.py:110:28: PLR2004 Magic value used in comparison, consider replacing -2 with a constant variable
 </code></pre>
 </p>
-</details>
-<details><summary>scikit-build</summary>
+
+scikit-build
 <p>
 
-<pre><code class="language-diff"></code></pre>
+<pre><code></code></pre>
 </p>
-</details>
-<details><summary>airflow</summary>
+
+airflow
 <p>
 
-<pre><code class="language-diff">- tests/system/providers/amazon/aws/utils/__init__.py:256:12: PIE802 [*] Unnecessary list comprehension.
+<pre><code>- tests/system/providers/amazon/aws/utils/__init__.py:256:12: PIE802 [*] Unnecessary list comprehension.
 - dev/breeze/src/airflow_breeze/utils/selective_checks.py:270:55: PIE802 [*] Unnecessary list comprehension.
 - tests/models/test_taskinstance.py:1859:16: PIE802 [*] Unnecessary list comprehension.
 + airflow/task/task_runner/standard_task_runner.py:168:24: PLR2004 Magic value used in comparison, consider replacing -9 with a constant variable
@@ -166,30 +166,30 @@
 + tests/models/test_taskinstance.py:1859:20: PIE802 [*] Unnecessary list comprehension.
 </code></pre>
 </p>
-</details>
 
-<p>It seems like PLR2004 is now catching more cases than before (maybe when there's more than one case on a line?)</p>
+
+<p>It seems like PLR2004 is now catching more cases than before (maybe when there&#x27;s more than one case on a line?)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sciyoshi">@sciyoshi</a> on 2023-03-10 00:34</div>
-            <div class="timeline-body"><p>It also seems like some of the position reporting might have changed. I think the diff printing is a bit broken however, I'll look into that.</p>
+            <div class="timeline-body"><p>It also seems like some of the position reporting might have changed. I think the diff printing is a bit broken however, I&#x27;ll look into that.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sciyoshi">@sciyoshi</a> on 2023-03-10 00:36</div>
-            <div class="timeline-body"><p>Here's the fixed summary of the current diff:</p>
-<details><summary>zulip</summary>
+            <div class="timeline-body"><p>Here&#x27;s the fixed summary of the current diff:</p>
+zulip
 <p>
 
-<pre><code class="language-diff">+ zerver/lib/ccache.py:81:14: PLR2004 Magic value used in comparison, consider replacing -2147483648 with a constant variable
+<pre><code>+ zerver/lib/ccache.py:81:14: PLR2004 Magic value used in comparison, consider replacing -2147483648 with a constant variable
 </code></pre>
 </p>
-</details>
-<details><summary>bokeh</summary>
+
+bokeh
 <p>
 
-<pre><code class="language-diff">+ tests/integration/models/test_plot.py:161:31: PLR2004 Magic value used in comparison, consider replacing -2.3 with a constant variable
+<pre><code>+ tests/integration/models/test_plot.py:161:31: PLR2004 Magic value used in comparison, consider replacing -2.3 with a constant variable
 + tests/integration/tools/test_range_tool.py:166:36: PLR2004 Magic value used in comparison, consider replacing -0.2 with a constant variable
 + tests/integration/tools/test_range_tool.py:272:36: PLR2004 Magic value used in comparison, consider replacing -0.1 with a constant variable
 + tests/unit/bokeh/core/test_serialization.py:795:23: PLR2004 Magic value used in comparison, consider replacing -684115200000 with a constant variable
@@ -212,17 +212,17 @@
 + tests/unit/bokeh/util/test_util__serialization.py:125:69: PLR2004 Magic value used in comparison, consider replacing -2208988800000.0 with a constant variable
 </code></pre>
 </p>
-</details>
-<details><summary>scikit-build</summary>
+
+scikit-build
 <p>
 
-<pre><code class="language-diff"></code></pre>
+<pre><code></code></pre>
 </p>
-</details>
-<details><summary>airflow</summary>
+
+airflow
 <p>
 
-<pre><code class="language-diff">+ airflow/task/task_runner/standard_task_runner.py:168:24: PLR2004 Magic value used in comparison, consider replacing -9 with a constant variable
+<pre><code>+ airflow/task/task_runner/standard_task_runner.py:168:24: PLR2004 Magic value used in comparison, consider replacing -9 with a constant variable
 - dev/breeze/src/airflow_breeze/utils/selective_checks.py:270:55: PIE802 [*] Unnecessary list comprehension.
 + dev/breeze/src/airflow_breeze/utils/selective_checks.py:271:13: PIE802 [*] Unnecessary list comprehension.
 - tests/models/test_taskinstance.py:1859:16: PIE802 [*] Unnecessary list comprehension.
@@ -234,7 +234,7 @@
 + tests/triggers/test_temporal.py:61:12: PLR2004 Magic value used in comparison, consider replacing -2 with a constant variable
 </code></pre>
 </p>
-</details>
+
 
 </div>
         </div>
@@ -242,14 +242,14 @@
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-10 00:46</div>
             <div class="timeline-body"><p>These diffs are insanely useful.</p>
 <blockquote>
-<p>It seems like PLR2004 is now catching more cases than before (maybe when there's more than one case on a line?)</p>
+<p>It seems like PLR2004 is now catching more cases than before (maybe when there&#x27;s more than one case on a line?)</p>
 </blockquote>
 <p>I fixed a bug that was ignoring negated constants (like <code>-1</code>, which is a <code>UnaryOp</code>, not a <code>Constant</code>).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>scripts/check_ecosystem.py</code>:81 on 2023-03-10 00:51</div>
-            <div class="timeline-body"><p>The downside of using isolated mode is that in some cases, it will <em>avoid</em> exercising certain behaviors. For example, Airflow uses <code>namespace-packages</code>, and if we run in isolated mode, we might miss breakages to our namespace packages handling, since in isolated mode, it's effectively running with <code>namespace-packages = []</code>. I don't know how to resolve that though. I suppose we could run without <code>--isolated</code>, but with <code>--select ALL</code>?</p>
+            <div class="timeline-body"><p>The downside of using isolated mode is that in some cases, it will <em>avoid</em> exercising certain behaviors. For example, Airflow uses <code>namespace-packages</code>, and if we run in isolated mode, we might miss breakages to our namespace packages handling, since in isolated mode, it&#x27;s effectively running with <code>namespace-packages = []</code>. I don&#x27;t know how to resolve that though. I suppose we could run without <code>--isolated</code>, but with <code>--select ALL</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -257,10 +257,10 @@
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2023-03-10 22:39</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-10 22:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-03-10 22:39</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-10 22:39</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>scripts/check_ecosystem.py</code>:81 on 2023-03-10 22:41</div>
@@ -276,7 +276,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2023-03-16 21:21</div>
-            <div class="timeline-body"><p>Ha, wow, I was just thinking this would be a good idea (working in typeshed and enjoying mypy_primer), and thought I'd suggest it, and here it is, already in!</p>
+            <div class="timeline-body"><p>Ha, wow, I was just thinking this would be a good idea (working in typeshed and enjoying mypy_primer), and thought I&#x27;d suggest it, and here it is, already in!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -285,8 +285,8 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/henryiii">@henryiii</a> on <code>scripts/check_ecosystem.py</code>:59 on 2023-03-16 21:27</div>
-            <div class="timeline-body"><p>I think this would be better as a data file (yaml or toml or something), it would make it easier to maintain. The cost per repo would be very interesting, I'd be happy to add a few of the projects I work on (and also am aware of). :P Pretty sure it's low because Ruff is fast? (Usually this stops me from setting up something like this for things like pybind11 and scikit-build - though scikit-build is planned anyway).</p>
-<p>I'd also avoid showing any repos that aren't broken in the default output. I think with that you could scale up to at least a few dozen. Mypy primer does something ike 50. (Also, it hardcodes the values in just like this, and doesn't use a config file for it).</p>
+            <div class="timeline-body"><p>I think this would be better as a data file (yaml or toml or something), it would make it easier to maintain. The cost per repo would be very interesting, I&#x27;d be happy to add a few of the projects I work on (and also am aware of). :P Pretty sure it&#x27;s low because Ruff is fast? (Usually this stops me from setting up something like this for things like pybind11 and scikit-build - though scikit-build is planned anyway).</p>
+<p>I&#x27;d also avoid showing any repos that aren&#x27;t broken in the default output. I think with that you could scale up to at least a few dozen. Mypy primer does something ike 50. (Also, it hardcodes the values in just like this, and doesn&#x27;t use a config file for it).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -297,13 +297,13 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2023-03-16 21:34</div>
-            <div class="timeline-body"><p>A nice addition to check_ecosystem would be a way to run it on a single version of Ruff, maybe even selecting a single project. I'd like to verify a project passes before adding it.</p>
+            <div class="timeline-body"><p>A nice addition to check_ecosystem would be a way to run it on a single version of Ruff, maybe even selecting a single project. I&#x27;d like to verify a project passes before adding it.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2023-03-16 21:48</div>
-            <div class="timeline-body"><p>Opened one in https://github.com/charliermarsh/ruff/pull/3563.</p>
-<p>Other ideas for things I'm directly involved in:</p>
+            <div class="timeline-body"><p>Opened one in <a href="https://github.com/charliermarsh/ruff/pull/3563">charliermarsh/ruff#3563</a>.</p>
+<p>Other ideas for things I&#x27;m directly involved in:</p>
 <ul>
 <li>pypa/cibuildwheel</li>
 <li>pypa/build</li>
@@ -322,21 +322,21 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/onerandomusername">@onerandomusername</a> on 2023-03-16 21:51</div>
-            <div class="timeline-body"><p>Not sure if DisnakeDev/disnake is a good candidate but given we've found 3-4 bugs now it might be worth it (but I'll leave that up to you).</p>
-<p>We're still in the process of adding more ruff rules, if that makes a difference.</p>
+            <div class="timeline-body"><p>Not sure if DisnakeDev/disnake is a good candidate but given we&#x27;ve found 3-4 bugs now it might be worth it (but I&#x27;ll leave that up to you).</p>
+<p>We&#x27;re still in the process of adding more ruff rules, if that makes a difference.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-16 22:09</div>
-            <div class="timeline-body"><p>I'm guessing most of the cost will be in cloning... But I could be wrong purely a guess. I think we should add more repos, but run them without <code>--select ALL</code> IMO. E.g., run a subset with <code>--select ALL</code> so that we can see the &quot;impact&quot; of a new rule, but run a wider range with their own Ruff settings.</p>
+            <div class="timeline-body"><p>I&#x27;m guessing most of the cost will be in cloning... But I could be wrong purely a guess. I think we should add more repos, but run them without <code>--select ALL</code> IMO. E.g., run a subset with <code>--select ALL</code> so that we can see the &quot;impact&quot; of a new rule, but run a wider range with their own Ruff settings.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/onerandomusername">@onerandomusername</a> on 2023-03-16 22:47</div>
             <div class="timeline-body"><blockquote>
-<p>I'm guessing most of the cost will be in cloning... But I could be wrong purely a guess.</p>
+<p>I&#x27;m guessing most of the cost will be in cloning... But I could be wrong purely a guess.</p>
 </blockquote>
-<p>I'm pretty sure a shallow clone would make it checkout quite fast. I think that what diff shades (for black) does but I don't remember.</p>
+<p>I&#x27;m pretty sure a shallow clone would make it checkout quite fast. I think that what diff shades (for black) does but I don&#x27;t remember.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -347,7 +347,7 @@
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:56:32 UTC
+        Synced at 2026-01-20 18:52:39 UTC
     </footer>
 </body>
 </html>

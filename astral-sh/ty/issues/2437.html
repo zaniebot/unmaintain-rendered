@@ -23,81 +23,81 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sakgoyal">@sakgoyal</a></div>
-            <div class="timeline-body"><h3>Question</h3>
-<p>Can the type checker support introspecting the <code>struct.unpack</code> format string to infer the return type? currently it returns <code>Any</code>, but i'd like it to return a specified type if possible (when a literal string is provided).</p>
-<p>I am trying to add types to an untyped library, but it uses a lot of struct unpacking which results in a lot of manual casts or Any's everywhere.</p>
-<p>I already wrote some python code that seems to get the type at runtime. but it's just a PoC to show that it's possible to do.</p>
-<pre><code class="language-py">import re
+            <div class="timeline-body">Question
+<p>Can the type checker support introspecting the <code>struct.unpack</code> format string to infer the return type? currently it returns <code>Any</code>, but i&#x27;d like it to return a specified type if possible (when a literal string is provided).</p>
+<p>I am trying to add types to an untyped library, but it uses a lot of struct unpacking which results in a lot of manual casts or Any&#x27;s everywhere.</p>
+<p>I already wrote some python code that seems to get the type at runtime. but it&#x27;s just a PoC to show that it&#x27;s possible to do.</p>
+<pre><code>import re
 from typing import cast
 
 type TypeMap = type[int | bool | str | bytes | float]
 
-_TYPE_MAP: dict[str, TypeMap] = {c: int for c in 'bBhHiIlLqQnNP'}
-_TYPE_MAP.update(dict.fromkeys('efd', float))
-_TYPE_MAP.update(dict.fromkeys('c', bytes))
-_TYPE_MAP['?'] = bool
+_TYPE_MAP: dict[str, TypeMap] = {c: int for c in &#x27;bBhHiIlLqQnNP&#x27;}
+_TYPE_MAP.update(dict.fromkeys(&#x27;efd&#x27;, float))
+_TYPE_MAP.update(dict.fromkeys(&#x27;c&#x27;, bytes))
+_TYPE_MAP[&#x27;?&#x27;] = bool
 
 def get_unpack_type(fmt: str):
-    core = fmt.lstrip('@=&lt;&gt;!')
+    core = fmt.lstrip(&#x27;@=&lt;&gt;!&#x27;)
 
     types: list[TypeMap] = []
-    for count, tag in cast(list[tuple[str, str]], re.findall(r'(\d*)([xcbB?hHiIlLqQnNefdspP])', core)):
-        if tag == 'x':
+    for count, tag in cast(list[tuple[str, str]], re.findall(r&#x27;(\d*)([xcbB?hHiIlLqQnNefdspP])&#x27;, core)):
+        if tag == &#x27;x&#x27;:
             continue
-        if tag in 'sp':
+        if tag in &#x27;sp&#x27;:
             types.append(bytes)
         else:
             t = _TYPE_MAP.get(tag, int)
             n = int(count) if count else 1
             types.extend([t] * n)
-    if len(types) == 1 and 'x' not in core:
+    if len(types) == 1 and &#x27;x&#x27; not in core:
         return types[0]
     return tuple[tuple(types)]
 
 
-if __name__ == '__main__':
+if __name__ == &#x27;__main__&#x27;:
     test_cases = [
-        ('2xH', tuple[int]),
-        ('@i', int),
-        ('=i', int),
-        ('c3x', tuple[bytes]),
-        ('2c', tuple[bytes, bytes]),
-        ('5c', tuple[bytes, bytes, bytes, bytes, bytes]),
-        ('0s', bytes),
-        ('1s', bytes),
-        ('255s', bytes),
-        ('e', float),
-        ('2e', tuple[float, float]),
-        ('e4x', tuple[float]),
-        ('3eH', tuple[float, float, float, int]),
-        ('?x?', tuple[bool, bool]),
-        ('2?', tuple[bool, bool]),
-        ('?2xI', tuple[bool, int]),
-        ('fd4x', tuple[float, float]),
-        ('d2xH', tuple[float, int]),
-        ('2i4x2h', tuple[int, int, int, int]),
-        ('iP', tuple[int, int]),
-        ('&gt;n2xN', tuple[int, int]),
-        ('!P4x', tuple[int]),
+        (&#x27;2xH&#x27;, tuple[int]),
+        (&#x27;@i&#x27;, int),
+        (&#x27;=i&#x27;, int),
+        (&#x27;c3x&#x27;, tuple[bytes]),
+        (&#x27;2c&#x27;, tuple[bytes, bytes]),
+        (&#x27;5c&#x27;, tuple[bytes, bytes, bytes, bytes, bytes]),
+        (&#x27;0s&#x27;, bytes),
+        (&#x27;1s&#x27;, bytes),
+        (&#x27;255s&#x27;, bytes),
+        (&#x27;e&#x27;, float),
+        (&#x27;2e&#x27;, tuple[float, float]),
+        (&#x27;e4x&#x27;, tuple[float]),
+        (&#x27;3eH&#x27;, tuple[float, float, float, int]),
+        (&#x27;?x?&#x27;, tuple[bool, bool]),
+        (&#x27;2?&#x27;, tuple[bool, bool]),
+        (&#x27;?2xI&#x27;, tuple[bool, int]),
+        (&#x27;fd4x&#x27;, tuple[float, float]),
+        (&#x27;d2xH&#x27;, tuple[float, int]),
+        (&#x27;2i4x2h&#x27;, tuple[int, int, int, int]),
+        (&#x27;iP&#x27;, tuple[int, int]),
+        (&#x27;&gt;n2xN&#x27;, tuple[int, int]),
+        (&#x27;!P4x&#x27;, tuple[int]),
     ]
 
 </code></pre>
-<h3>Version</h3>
+Version
 <p><em>No response</em></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @sakgoyal on 2026-01-10 22:44</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/sakgoyal">@sakgoyal</a> on 2026-01-10 22:44</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2026-01-12 06:32</div>
-            <div class="timeline-body"><p>I don't think so, mainly because the type of <code>struct.unpack</code> in typeshed is:</p>
-<pre><code class="language-py">def unpack(format: str | bytes, buffer: ReadableBuffer, /) -&gt; tuple[Any, ...]:
+            <div class="timeline-body"><p>I don&#x27;t think so, mainly because the type of <code>struct.unpack</code> in typeshed is:</p>
+<pre><code>def unpack(format: str | bytes, buffer: ReadableBuffer, /) -&gt; tuple[Any, ...]:
 </code></pre>
 <blockquote>
-<p>I am trying to add types to an untyped library, but it uses a lot of struct unpacking which results in a lot of manual casts or Any's everywhere.</p>
+<p>I am trying to add types to an untyped library, but it uses a lot of struct unpacking which results in a lot of manual casts or Any&#x27;s everywhere.</p>
 </blockquote>
-<p>Can you provide a small example of this case? I don't see any <code>struct.unpack</code> in the provided code snippet.</p>
+<p>Can you provide a small example of this case? I don&#x27;t see any <code>struct.unpack</code> in the provided code snippet.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -106,20 +106,20 @@ if __name__ == '__main__':
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">wish</span> added by @MichaReiser on 2026-01-12 17:39</div>
+            <div class="event">Label <span class="label">wish</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-12 17:39</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-13 02:16</div>
-            <div class="timeline-body"><p>I think we could do this; it would make sense and be useful. It would involve special-casing <code>struct.unpack</code> with more specific behavior than is encoded in the typeshed stub for it. But given that no other type checker does it and it's a fairly narrow use case, it's not high on the priority list. Thanks @sakgoyal for the suggestion!</p>
+            <div class="timeline-body"><p>I think we could do this; it would make sense and be useful. It would involve special-casing <code>struct.unpack</code> with more specific behavior than is encoded in the typeshed stub for it. But given that no other type checker does it and it&#x27;s a fairly narrow use case, it&#x27;s not high on the priority list. Thanks @sakgoyal for the suggestion!</p>
 <blockquote>
 <p>Oh, is <code>get_unpack_type</code> an equivalent implementation of <code>struct.unpack</code> ?</p>
 </blockquote>
-<p>No, it's a proof of concept that it's programmatically feasible to go from a <code>struct.unpack</code> format string to the appropriate type. IOW it's the core logic we would need to implement inside ty in order to do this.</p>
+<p>No, it&#x27;s a proof of concept that it&#x27;s programmatically feasible to go from a <code>struct.unpack</code> format string to the appropriate type. IOW it&#x27;s the core logic we would need to implement inside ty in order to do this.</p>
 <p>Examples of using <code>struct.unpack</code> can be found at https://docs.python.org/3/library/struct.html#examples</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> removed by @carljm on 2026-01-13 02:16</div>
+            <div class="event">Label <span class="label">question</span> removed by <a href="https://github.com/carljm">@carljm</a> on 2026-01-13 02:16</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sakgoyal">@sakgoyal</a> on 2026-01-13 04:05</div>
@@ -132,18 +132,18 @@ if __name__ == '__main__':
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-13 04:11</div>
-            <div class="timeline-body"><p>@sakgoyal happy to look at a pull request! You'll want to look at KnownFunction for similar cases where we special case handling of a particular function.</p>
+            <div class="timeline-body"><p>@sakgoyal happy to look at a pull request! You&#x27;ll want to look at KnownFunction for similar cases where we special case handling of a particular function.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Struct unpack inference" to "`struct.unpack` inference" by @dhruvmanila on 2026-01-13 04:33</div>
+            <div class="event">Renamed from &quot;Struct unpack inference&quot; to &quot;`struct.unpack` inference&quot; by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2026-01-13 04:33</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sakgoyal">@sakgoyal</a> on 2026-01-13 06:58</div>
             <div class="timeline-body"><blockquote>
-<p>You'll want to look at KnownFunction</p>
+<p>You&#x27;ll want to look at KnownFunction</p>
 </blockquote>
-<p>I assume I have to add this case to here? I'm very new to rust so I apologize for dumb questions
+<p>I assume I have to add this case to here? I&#x27;m very new to rust so I apologize for dumb questions
 https://github.com/astral-sh/ruff/blob/99beabdde89651b72c3b297502e85c4efcf567f0/crates/ty_python_semantic/src/types/function.rs#L1353</p>
 <p>and here?
 https://github.com/astral-sh/ruff/blob/99beabdde89651b72c3b297502e85c4efcf567f0/crates/ty_python_semantic/src/types/call/bind.rs#L767</p>
@@ -168,7 +168,7 @@ do I need to build the whole thing and run it manually or are there integrated t
     </div>
 
     <footer>
-        Synced at 2026-01-13 22:27:10 UTC
+        Synced at 2026-01-20 19:27:03 UTC
     </footer>
 </body>
 </html>

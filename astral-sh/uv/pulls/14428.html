@@ -23,31 +23,31 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>We use filesystem locks in a variety of places. For example, we tend to lock a virtual environment if we're running a command that might modify it. Right now, those locks tend to be written in the same &quot;location&quot; as whatever they lock (e.g., we write a filesystem lock at <code>.venv/.lock</code>), unless we can't do that for whatever reason, in which case we write to a content-addressed path within the user's temporary directory. This causes a few problems: (1) we try to write to locations that the user may have marked as read-only (like a <code>.venv</code> with <code>uv run</code> or similar); (2) we leave <code>.lock</code> files allover user-space.</p>
+            <div class="timeline-body">Summary
+<p>We use filesystem locks in a variety of places. For example, we tend to lock a virtual environment if we&#x27;re running a command that might modify it. Right now, those locks tend to be written in the same &quot;location&quot; as whatever they lock (e.g., we write a filesystem lock at <code>.venv/.lock</code>), unless we can&#x27;t do that for whatever reason, in which case we write to a content-addressed path within the user&#x27;s temporary directory. This causes a few problems: (1) we try to write to locations that the user may have marked as read-only (like a <code>.venv</code> with <code>uv run</code> or similar); (2) we leave <code>.lock</code> files allover user-space.</p>
 <p>This PR instead moves all filesystem locks into a shared locks directory, which the user can also configure via <code>UV_LOCK_DIR</code>.</p>
 <p>This is breaking in two ways:</p>
 <ol>
-<li>If users use older uv versions with versions released after this change, the two versions won't be concurrency-safe with one another, since they'll use different locations with the locks. I think that's fine, but it is arguably breaking.</li>
-<li>If users have marked certain directories under an allowlist (e.g., allow <code>.venv</code> to be written within an otherwise read-only filesystem), they'll now need to allow writes to the lock directory. Again, I think this is fine (and an improvement), but it may cause issues for some users in specific setups.</li>
+<li>If users use older uv versions with versions released after this change, the two versions won&#x27;t be concurrency-safe with one another, since they&#x27;ll use different locations with the locks. I think that&#x27;s fine, but it is arguably breaking.</li>
+<li>If users have marked certain directories under an allowlist (e.g., allow <code>.venv</code> to be written within an otherwise read-only filesystem), they&#x27;ll now need to allow writes to the lock directory. Again, I think this is fine (and an improvement), but it may cause issues for some users in specific setups.</li>
 </ol>
 <p>(Regarding (2): such failures are now treated as non-fatal anyway.)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "v0.8.0" by @charliermarsh on 2025-07-02 20:08</div>
+            <div class="event">Added to milestone &quot;v0.8.0&quot; by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-02 20:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">breaking</span> added by @charliermarsh on 2025-07-02 20:08</div>
+            <div class="event">Label <span class="label">breaking</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-02 20:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @charliermarsh on 2025-07-02 20:54</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-02 20:54</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @oconnor663 by @charliermarsh on 2025-07-02 20:55</div>
+            <div class="event">Review requested from <a href="https://github.com/oconnor663">@oconnor663</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-02 20:55</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @zanieb by @charliermarsh on 2025-07-02 20:55</div>
+            <div class="event">Review requested from <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-02 20:55</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/oconnor663">@oconnor663</a> reviewed on 2025-07-02 21:41</div>
@@ -60,13 +60,13 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/uv-lock/src/lib.rs</code>:74 on 2025-07-02 21:45</div>
-            <div class="timeline-body"><p>Taking <code>self</code> here means that in some sense we need to reason about a <code>FilesystemLocks</code> instance that has not had <code>.init()</code> called on it. I usually prefer to move initialization logic into the constructor, so that if you have an instance, you never need to ask whether it's been initialized.</p>
+            <div class="timeline-body"><p>Taking <code>self</code> here means that in some sense we need to reason about a <code>FilesystemLocks</code> instance that has not had <code>.init()</code> called on it. I usually prefer to move initialization logic into the constructor, so that if you have an instance, you never need to ask whether it&#x27;s been initialized.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/uv-lock/src/lib.rs</code>:41 on 2025-07-02 21:54</div>
-            <div class="timeline-body"><p>Making this a <code>LazyLock</code> of <code>Result</code> makes it kind of awkward to access the value, especially because <code>io::Error</code> isn't <code>Copy</code>/<code>Clone</code>. <code>LazyLock</code> doesn't really let us initialize things fallibly, so sometimes I prefer a pattern like this:</p>
-<pre><code class="language-rust">struct Thing;
+            <div class="timeline-body"><p>Making this a <code>LazyLock</code> of <code>Result</code> makes it kind of awkward to access the value, especially because <code>io::Error</code> isn&#x27;t <code>Copy</code>/<code>Clone</code>. <code>LazyLock</code> doesn&#x27;t really let us initialize things fallibly, so sometimes I prefer a pattern like this:</p>
+<pre><code>struct Thing;
 
 impl Thing {
     fn fallible_new() -&gt; io::Result&lt;Self&gt; {
@@ -74,7 +74,7 @@ impl Thing {
     }
 }
 
-fn get_the_global_thing() -&gt; io::Result&lt;&amp;'static Thing&gt; {
+fn get_the_global_thing() -&gt; io::Result&lt;&amp;&#x27;static Thing&gt; {
     static THE_THING: OnceLock&lt;Thing&gt; = OnceLock::new();
     if let Some(thing) = THE_THING.get() {
         return Ok(thing);
@@ -82,18 +82,18 @@ fn get_the_global_thing() -&gt; io::Result&lt;&amp;'static Thing&gt; {
     // We need to initialize THE_THING.
     let new_thing = Thing::fallible_new()?;
     // Initialization succeeded, now set the OnceLock.
-    // If some other thread raced with us to set it, that's fine.
+    // If some other thread raced with us to set it, that&#x27;s fine.
     _ = THE_THING.set(new_thing);
     Ok(THE_THING.get().unwrap())
 }
 </code></pre>
-<p>(I think it's fine for two threads to race to init here, but when it's not fine you can add a second function-local <code>static INIT_MUTEX: Mutex&lt;()&gt; = Mutex::new(())</code> that you double-check-lock whenever the first <code>get</code> returns <code>None</code>.)</p>
+<p>(I think it&#x27;s fine for two threads to race to init here, but when it&#x27;s not fine you can add a second function-local <code>static INIT_MUTEX: Mutex&lt;()&gt; = Mutex::new(())</code> that you double-check-lock whenever the first <code>get</code> returns <code>None</code>.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/uv-lock/src/lib.rs</code>:62 on 2025-07-02 21:56</div>
             <div class="timeline-body"><p>Is number 3 implemented here?</p>
-<p>Also in general, how do we feel about putting lockfiles in a directory that doesn't get cleaned automatically? Are they small enough that it pretty much doesn't matter? Would we plan to add cleanup later?</p>
+<p>Also in general, how do we feel about putting lockfiles in a directory that doesn&#x27;t get cleaned automatically? Are they small enough that it pretty much doesn&#x27;t matter? Would we plan to add cleanup later?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -108,14 +108,14 @@ fn get_the_global_thing() -&gt; io::Result&lt;&amp;'static Thing&gt; {
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-lock/src/lib.rs</code>:62 on 2025-07-02 22:28</div>
             <div class="timeline-body"><p>Yes, (3) happens in <code>StateStore::from_settings</code>. This is basically just a clone of <code>InstalledTools</code> but with less functionality and a different backing directory.</p>
 <blockquote>
-<p>Also in general, how do we feel about putting lockfiles in a directory that doesn't get cleaned automatically? Are they small enough that it pretty much doesn't matter? Would we plan to add cleanup later?</p>
+<p>Also in general, how do we feel about putting lockfiles in a directory that doesn&#x27;t get cleaned automatically? Are they small enough that it pretty much doesn&#x27;t matter? Would we plan to add cleanup later?</p>
 </blockquote>
-<p>We might want to clear these out as part of <code>uv cache prune</code> or add periodic garbage collection. I think it's sort of fine for now, though.</p>
+<p>We might want to clear these out as part of <code>uv cache prune</code> or add periodic garbage collection. I think it&#x27;s sort of fine for now, though.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-lock/src/lib.rs</code>:20 on 2025-07-03 19:19</div>
-            <div class="timeline-body"><p>Hmm. I don't think so, because these paths don't have to exist?</p>
+            <div class="timeline-body"><p>Hmm. I don&#x27;t think so, because these paths don&#x27;t have to exist?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -132,7 +132,7 @@ fn get_the_global_thing() -&gt; io::Result&lt;&amp;'static Thing&gt; {
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @oconnor663 by @charliermarsh on 2025-07-03 19:42</div>
+            <div class="event">Review requested from <a href="https://github.com/oconnor663">@oconnor663</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-03 19:42</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/oconnor663">@oconnor663</a> reviewed on 2025-07-03 23:26</div>
@@ -140,26 +140,26 @@ fn get_the_global_thing() -&gt; io::Result&lt;&amp;'static Thing&gt; {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/uv-lock/src/lib.rs</code>:20 on 2025-07-03 23:26</div>
-            <div class="timeline-body"><p>Ah good point. I could imagine a routine that finds the longest path prefix that exists, canonicalizes <em>that</em>, and then appends the rest (and maybe asserts that there are no <code>.</code> or <code>..</code> components among the rest). But it's probably not worth the trouble? To care about this you'd have to like <code>mkdir foo &amp;&amp; ln -s foo bar</code> and then try to lock both <code>foo/doesnt_exist_yet</code> and <code>bar/doesnt_exist_yet</code>. You <em>could</em> but like, will anyone ever do it? Also even the &quot;perfect&quot; implementation could get confused if you raced it against that <code>ln</code> invocation.</p>
-<p>Absolutifying sounds good if it's just a one line change?</p>
+            <div class="timeline-body"><p>Ah good point. I could imagine a routine that finds the longest path prefix that exists, canonicalizes <em>that</em>, and then appends the rest (and maybe asserts that there are no <code>.</code> or <code>..</code> components among the rest). But it&#x27;s probably not worth the trouble? To care about this you&#x27;d have to like <code>mkdir foo &amp;&amp; ln -s foo bar</code> and then try to lock both <code>foo/doesnt_exist_yet</code> and <code>bar/doesnt_exist_yet</code>. You <em>could</em> but like, will anyone ever do it? Also even the &quot;perfect&quot; implementation could get confused if you raced it against that <code>ln</code> invocation.</p>
+<p>Absolutifying sounds good if it&#x27;s just a one line change?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Removed from milestone "v0.8.0" by @zanieb on 2025-07-24 21:01</div>
+            <div class="event">Removed from milestone &quot;v0.8.0&quot; by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-24 21:01</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "v0.9.0" by @zanieb on 2025-07-24 21:01</div>
+            <div class="event">Added to milestone &quot;v0.9.0&quot; by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-24 21:01</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Removed from milestone "v0.9.0" by @zanieb on 2025-10-12 21:17</div>
+            <div class="event">Removed from milestone &quot;v0.9.0&quot; by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-12 21:17</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "v0.10.0" by @zanieb on 2025-10-12 21:17</div>
+            <div class="event">Added to milestone &quot;v0.10.0&quot; by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-12 21:17</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:43:51 UTC
+        Synced at 2026-01-20 19:52:59 UTC
     </footer>
 </body>
 </html>

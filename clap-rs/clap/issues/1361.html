@@ -23,17 +23,17 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ncihnegn">@ncihnegn</a></div>
-            <div class="timeline-body"><h3>Bug or Feature Request Summary</h3>
-<p>I want to emulate archlinux pacman's style with two-level arguments.
-I don't think clap can support this yet.
+            <div class="timeline-body">Bug or Feature Request Summary
+<p>I want to emulate archlinux pacman&#x27;s style with two-level arguments.
+I don&#x27;t think clap can support this yet.
 It feels like subcommands but it is still arguments.</p>
-<h3>Expected Behavior Summary</h3>
+Expected Behavior Summary
 <p>app -h shows the first level arguments.
 app -Qh shows the second level arguments for first level argument Q.</p>
 <p>Example:
 First level: pacman -h</p>
 <blockquote>
-<p>usage:  pacman <operation> [...]
+<p>usage:  pacman  [...]
 operations:
 pacman {-h --help}
 pacman {-V --version}
@@ -48,7 +48,7 @@ pacman {-U --upgrade}  [options] &lt;file(s)&gt;</p>
 options:
 -y, --refresh        download fresh package databases from the server</p>
 </blockquote>
-<h3>Actual Behavior Summary</h3>
+Actual Behavior Summary
 <blockquote>
 <p>FLAGS:
 -h, --help       Prints help information
@@ -62,21 +62,21 @@ options:
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/1404.html">clap-rs/clap#1404</a> on 2019-02-03 20:36</div>
+            <div class="event">Referenced in <a>clap-rs/clap#1404</a> on 2019-02-03 20:36</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">C: subcommands</span> added by @CreepySkeleton on 2020-02-01 15:50</div>
+            <div class="event">Label <span class="label">C: subcommands</span> added by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-02-01 15:50</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">T: new feature</span> added by @CreepySkeleton on 2020-02-01 15:50</div>
+            <div class="event">Label <span class="label">T: new feature</span> added by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-02-01 15:50</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/NickHackman">@NickHackman</a> on 2020-04-13 23:16</div>
-            <div class="timeline-body"><p>I think this would be a cool feature to implement, if you don't mind I'd like to clarify my approach and see if that's a good one. Prior to proceeding forward. :slightly_smiling_face:</p>
+            <div class="timeline-body"><p>I think this would be a cool feature to implement, if you don&#x27;t mind I&#x27;d like to clarify my approach and see if that&#x27;s a good one. Prior to proceeding forward. :slightly_smiling_face:</p>
 <p>First problem clarification,
 The goal is to be able to have sub-commands of both <code>long</code> and <code>short</code> that are in the form of Flags and allow them to be combined with flags?</p>
-<h2>Potential Syntax</h2>
-<pre><code class="language-rust">App::new(&quot;MyApp&quot;)
+Potential Syntax
+<pre><code>App::new(&quot;MyApp&quot;)
 	.version(crate_version!())
 	.author(crate_author!())
 	.subcommand(
@@ -90,20 +90,20 @@ The goal is to be able to have sub-commands of both <code>long</code> and <code>
 // MyApp -Sy and MyApp -yS
 </code></pre>
 <p>Only downside I see is that it could allow for the top level <code>App::new</code> call to be a <code>App::new_flag</code> instead.</p>
-<h2>Approach</h2>
+Approach
 <p>Some modification of <code>App</code> would be required, specifically a way to differentiate between the standard <code>new</code> and <code>new_flag</code> (probably an <code>Enum</code> with two variants that hold the passed in values), which then can be used in the actual parsing to count it as a <code>flag</code> instead of as a sub-command.</p>
-<pre><code class="language-rust">enum AppType {
+<pre><code>enum AppType {
 	Normal(String),
 	Flag(String, String),
 }
 </code></pre>
-<p>Tell me what you guys think, if this is something that you'd want in the project at all, if my approach sounds reasonable. Feedback would be greatly appreciated :+1:</p>
+<p>Tell me what you guys think, if this is something that you&#x27;d want in the project at all, if my approach sounds reasonable. Feedback would be greatly appreciated :+1:</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-14 00:54</div>
-            <div class="timeline-body"><p>@NickHackman Nice to see you're interested! 👌  Feel free to ask for anything you need.</p>
-<p>Regarding syntax: we must support both long and short option subcommands, like <code>-Q</code> and <code>--query</code> in the first comment. I have some ideas but I'd like to hear your fresh opinion first 😉</p>
+            <div class="timeline-body"><p>@NickHackman Nice to see you&#x27;re interested! 👌  Feel free to ask for anything you need.</p>
+<p>Regarding syntax: we must support both long and short option subcommands, like <code>-Q</code> and <code>--query</code> in the first comment. I have some ideas but I&#x27;d like to hear your fresh opinion first 😉</p>
 <p>Implementation... well, it will most certainly require modifications in <code>App</code>, and it will also require modifications in the parsing process: currently almost everything that starts with <code>-</code> will be treated as option. I believe we can give you a hand on that.</p>
 </div>
         </div>
@@ -113,20 +113,20 @@ The goal is to be able to have sub-commands of both <code>long</code> and <code>
 <p>currently almost everything that starts with - will be treated as option. I believe we can give you a hand on that.</p>
 </blockquote>
 <p>Exactly, so I think the easiest solution would be...</p>
-<h2>Solution</h2>
+Solution
 <ol>
 <li>use enum mentioned above</li>
 <li>add <code>App::new_flag</code></li>
 <li>In <code>parse_short_arg</code> and <code>parse_long_arg</code> add a check for any of the <code>flag_subcommands</code> then call <code>parse_subcommand</code> instead of <code>parse_flag</code></li>
 <li>Slight modification of <code>parse_subcommand</code> to play nice with the <code>Enum</code></li>
 </ol>
-<h2>Performance</h2>
+Performance
 <ul>
 <li>In <code>parse_short_arg</code> this will not cause an issue because it fails afterwards.</li>
 <li>Could be slightly hurt in <code>parse_long_arg</code>, but by a minor amount.</li>
 </ul>
 <p>@CreepySkeleton Is that what you were thinking as well? Any advice is appreciated :slightly_smiling_face:</p>
-<p>If we're on the same page, I'll start on the implementation and open a PR in the coming days!</p>
+<p>If we&#x27;re on the same page, I&#x27;ll start on the implementation and open a PR in the coming days!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -139,7 +139,7 @@ The goal is to be able to have sub-commands of both <code>long</code> and <code>
 <li>Pass them right to constructor: <code>App::flag_subcommand(&quot;sub&quot;, Some(&quot;-S&quot;), Some(&quot;--sync&quot;))</code>. Not so handy, and have to panic if both are <code>None</code>.</li>
 <li>Another builder?</li>
 </ul>
-<p>Regarding implementation, more or less correct. I'm not really sure myself 😄</p>
+<p>Regarding implementation, more or less correct. I&#x27;m not really sure myself 😄</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -152,12 +152,12 @@ The goal is to be able to have sub-commands of both <code>long</code> and <code>
 <blockquote>
 <p>Pass them right to constructor: App::flag_subcommand(&quot;sub&quot;, Some(&quot;-S&quot;), Some(&quot;--sync&quot;)). Not so handy, and have to panic if both are None.</p>
 </blockquote>
-<p>I had a similar idea <code>App::new_flag&lt;Into&lt;String&gt;&gt;(short: char, long: S)</code>, I was thinking of using the <code>long</code> as the <code>App.name</code>, overall doesn't feel good. Mostly because <code>App</code> is also the highest level (read as not a subcommand), a constructor for essentially a subcommand doesn't feel right. Passing in <code>Options</code> always feels a little dirty. This doesn't seem like a bad idea, but feels inconsistent in regards to the rest of Clap.</p>
+<p>I had a similar idea <code>App::new_flag&lt;Into&lt;String&gt;&gt;(short: char, long: S)</code>, I was thinking of using the <code>long</code> as the <code>App.name</code>, overall doesn&#x27;t feel good. Mostly because <code>App</code> is also the highest level (read as not a subcommand), a constructor for essentially a subcommand doesn&#x27;t feel right. Passing in <code>Options</code> always feels a little dirty. This doesn&#x27;t seem like a bad idea, but feels inconsistent in regards to the rest of Clap.</p>
 <blockquote>
 <p>Another builder?</p>
 </blockquote>
-<p>I don't like this idea because it's a breaking change, but it feels the most consistent to create a <code>Subcommand</code> rather than using <code>App</code> and furthermore a <code>FlagSubcommand</code>, but this could be a lot of duplicated code, and requires a lot of changes all over.</p>
-<p>I'm still down to work on this issue, but figuring out a good way for it to mesh with the overall interface is most of the battle here.</p>
+<p>I don&#x27;t like this idea because it&#x27;s a breaking change, but it feels the most consistent to create a <code>Subcommand</code> rather than using <code>App</code> and furthermore a <code>FlagSubcommand</code>, but this could be a lot of duplicated code, and requires a lot of changes all over.</p>
+<p>I&#x27;m still down to work on this issue, but figuring out a good way for it to mesh with the overall interface is most of the battle here.</p>
 <p>I really appreciate your help and feedback, thanks 😄</p>
 </div>
         </div>
@@ -168,21 +168,21 @@ The goal is to be able to have sub-commands of both <code>long</code> and <code>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/NickHackman">@NickHackman</a> on 2020-04-18 08:32</div>
-            <div class="timeline-body"><pre><code class="language-rust">use clap::{App, Arg};
+            <div class="timeline-body"><pre><code>use clap::{App, Arg};
 
 fn main() {
     let matches = App::new(&quot;pacman&quot;)
         .subcommand(
             App::new(&quot;sync&quot;).args(&amp;[
                 Arg::with_name(&quot;search&quot;)
-                    .short('s')
+                    .short(&#x27;s&#x27;)
                     .long(&quot;search&quot;)
                     .help(&quot;search remote repositories for matching strings&quot;),
                 Arg::with_name(&quot;info&quot;)
-                    .short('i')
+                    .short(&#x27;i&#x27;)
                     .long(&quot;info&quot;)
                     .help(&quot;view package information (-ii for extended information)&quot;),
-                Arg::with_name(&quot;refresh&quot;).short('y').long(&quot;refresh&quot;).help(
+                Arg::with_name(&quot;refresh&quot;).short(&#x27;y&#x27;).long(&quot;refresh&quot;).help(
                     &quot;download fresh package databases from the server (-yy to force a refresh even if up to date)&quot;,
                 ),
             ]),
@@ -195,7 +195,7 @@ fn main() {
 }
 
 </code></pre>
-<p>Is a partial test case using <code>replace</code>, sadly I don't believe it handles the cases of <code>pacman -Sy</code> or <code>pacman -yS</code>, please correct me if I'm improperly using it in any way. Do you have any suggestions on how to handle this to keep the current Clap interface consistent? 🙂</p>
+<p>Is a partial test case using <code>replace</code>, sadly I don&#x27;t believe it handles the cases of <code>pacman -Sy</code> or <code>pacman -yS</code>, please correct me if I&#x27;m improperly using it in any way. Do you have any suggestions on how to handle this to keep the current Clap interface consistent? 🙂</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -206,10 +206,10 @@ fn main() {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-04-18 11:20</div>
-            <div class="timeline-body"><p>@pksunkara <code>pacman -yS</code> means <code>-y -S</code> (two simple flags) since <code>-y</code> is not a subcommand. Most likely, this is an error. Replace won't do here due to <code>-Sy</code> cases (subcommand chained with an option).</p>
+            <div class="timeline-body"><p>@pksunkara <code>pacman -yS</code> means <code>-y -S</code> (two simple flags) since <code>-y</code> is not a subcommand. Most likely, this is an error. Replace won&#x27;t do here due to <code>-Sy</code> cases (subcommand chained with an option).</p>
 <p>@NickHackman</p>
 <p>Regarding API: the number of possible variants is 3, so we can make something akin <code>SubCommand</code> in clap 2.x used to be:</p>
-<pre><code class="language-rust">struct FlagSubCommand {}
+<pre><code>struct FlagSubCommand {}
 
 impl FlagSubCommand {
     fn new_short(id: &amp;str, short: char) -&gt; App;
@@ -234,13 +234,13 @@ impl FlagSubCommand {
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/NickHackman">@NickHackman</a> on 2020-04-19 16:39</div>
             <div class="timeline-body"><blockquote>
-<p>pacman -yS means -y -S (two simple flags) since -y is not a subcommand. Most likely, this is an error. Replace won't do here due to -Sy cases (subcommand chained with an option).</p>
+<p>pacman -yS means -y -S (two simple flags) since -y is not a subcommand. Most likely, this is an error. Replace won&#x27;t do here due to -Sy cases (subcommand chained with an option).</p>
 </blockquote>
-<p>Actually, it propagates the <code>-y</code> down to the subcommand, this behavior definitely sounds more permissive and less performant. Clap doesn't provide this behavior (as far as I know) nor should it, it's a weird case for Command line argument parsing.</p>
+<p>Actually, it propagates the <code>-y</code> down to the subcommand, this behavior definitely sounds more permissive and less performant. Clap doesn&#x27;t provide this behavior (as far as I know) nor should it, it&#x27;s a weird case for Command line argument parsing.</p>
 <blockquote>
 <p>Regarding API: the number of possible variants is 3, so we can make something akin SubCommand in clap 2.x used to be:</p>
 </blockquote>
-<p>I like this idea. I'll work on this and have it done ~by at least next weekend~. (Setting a deadline for myself that's fairly lenient)</p>
+<p>I like this idea. I&#x27;ll work on this and have it done ~by at least next weekend~. (Setting a deadline for myself that&#x27;s fairly lenient)</p>
 <blockquote>
 <p>let me tell you a secret: like, 80 of discussions and disputes here are about &quot;how to mend in with existing interface&quot; entirely :rofl:</p>
 </blockquote>
@@ -251,30 +251,30 @@ impl FlagSubCommand {
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/rami3l">@rami3l</a> on 2020-06-10 14:54</div>
             <div class="timeline-body"><p>Just being curious, any news on this topic?</p>
-<p>I'm using <code>clap</code> to write <a href="https://github.com/rami3l/pacaptr"><code>pacaptr</code></a> (it's a Pacman syntax wrapper for other package managers), and this feature must be a great help. 🚀</p>
+<p>I&#x27;m using <code>clap</code> to write <a href="https://github.com/rami3l/pacaptr"><code>pacaptr</code></a> (it&#x27;s a Pacman syntax wrapper for other package managers), and this feature must be a great help. 🚀</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/NickHackman">@NickHackman</a> on 2020-06-10 16:25</div>
-            <div class="timeline-body"><p>Sorry, got a little sidetracked. I'll start working on this now :smile:</p>
+            <div class="timeline-body"><p>Sorry, got a little sidetracked. I&#x27;ll start working on this now :smile:</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../pulls/1974.html">clap-rs/clap#1974</a> on 2020-06-13 22:01</div>
+            <div class="event">Referenced in <a>clap-rs/clap#1974</a> on 2020-06-13 22:01</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @bors[bot] on 2020-07-18 14:28</div>
+            <div class="event">Closed by <a href="https://github.com/bors[bot]">@bors[bot]</a> on 2020-07-18 14:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../epage/clapng/issues/111.html">epage/clapng#111</a> on 2021-12-06 17:39</div>
+            <div class="event">Referenced in <a>epage/clapng#111</a> on 2021-12-06 17:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../pulls/3470.html">clap-rs/clap#3470</a> on 2022-02-14 22:26</div>
+            <div class="event">Referenced in <a>clap-rs/clap#3470</a> on 2022-02-14 22:26</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:47:13 UTC
+        Synced at 2026-01-20 19:57:16 UTC
     </footer>
 </body>
 </html>

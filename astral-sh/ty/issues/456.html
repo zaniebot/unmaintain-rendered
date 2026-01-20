@@ -24,7 +24,7 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a></div>
             <div class="timeline-body"><p>We currently narrow like this:</p>
-<pre><code class="language-py">class A[T]: ...
+<pre><code>class A[T]: ...
 
 def _(x: A[int] | int):
     if isinstance(x, A):
@@ -33,7 +33,7 @@ def _(x: A[int] | int):
         reveal_type(x)  # revealed: (A[int] &amp; ~A[Unknown]) | (int &amp; ~A[Unknown])
 </code></pre>
 <p>Ideally we would reveal:</p>
-<pre><code class="language-py">class A[T]: ...
+<pre><code>class A[T]: ...
 
 def _(x: A[int] | int):
     if isinstance(x, A):
@@ -44,17 +44,17 @@ def _(x: A[int] | int):
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-05-20 00:00</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-20 00:00</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">narrowing</span> added by @AlexWaygood on 2025-05-20 00:00</div>
+            <div class="event">Label <span class="label">narrowing</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-20 00:00</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">generics</span> added by @AlexWaygood on 2025-05-20 00:00</div>
+            <div class="event">Label <span class="label">generics</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-20 00:00</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jelle-openai">@jelle-openai</a> on 2025-05-20 00:08</div>
-            <div class="timeline-body"><p>It's perhaps debatable if you should care, but note the narrowing you propose is unsound in the positive case:</p>
+            <div class="timeline-body"><p>It&#x27;s perhaps debatable if you should care, but note the narrowing you propose is unsound in the positive case:</p>
 <pre><code>&gt;&gt;&gt; from typing import reveal_type
 &gt;&gt;&gt; 
 &gt;&gt;&gt; class A[T]: ...
@@ -63,12 +63,12 @@ def _(x: A[int] | int):
 ... 
 &gt;&gt;&gt; def _(x: A[int] | int):
 ...     if isinstance(x, A):
-...         print(&quot;it's an A&quot;)
+...         print(&quot;it&#x27;s an A&quot;)
 ...     else:
-...         print(&quot;it's an int&quot;)
+...         print(&quot;it&#x27;s an int&quot;)
 ... 
 &gt;&gt;&gt; _(Sneaky())
-it's an A
+it&#x27;s an A
 </code></pre>
 <p>The negative case narrowing is sound though. Seems like <code>A[int] &amp; ~A[Unknown]</code> should simplify to Never.</p>
 </div>
@@ -83,16 +83,16 @@ it's an A
             <div class="timeline-body"><blockquote>
 <p>Seems like <code>A[int] &amp; ~A[Unknown]</code> should simplify to Never</p>
 </blockquote>
-<p>Thinking about it more, this is incorrect. <code>A[Unknown]</code> may materialize to something like <code>A[str]</code>, which doesn't overlap with <code>A[int]</code>. I think the problem is instead that <code>A[Unknown]</code> is the wrong type to use here. After <code>isinstance(x, A)</code>, <code>x</code> should be narrowed to whatever it was before &amp; any instance of A. But the type &quot;any instance of A&quot; cannot always be expressed in the type system. For covariant types, it's <code>A[object]</code>, but for invariant types there is no static type that represents a common supertype for all instantiations of A.</p>
-<p>So the solution I'd lean towards is to add a new special internal type that represents &quot;all instances of A&quot;.</p>
+<p>Thinking about it more, this is incorrect. <code>A[Unknown]</code> may materialize to something like <code>A[str]</code>, which doesn&#x27;t overlap with <code>A[int]</code>. I think the problem is instead that <code>A[Unknown]</code> is the wrong type to use here. After <code>isinstance(x, A)</code>, <code>x</code> should be narrowed to whatever it was before &amp; any instance of A. But the type &quot;any instance of A&quot; cannot always be expressed in the type system. For covariant types, it&#x27;s <code>A[object]</code>, but for invariant types there is no static type that represents a common supertype for all instantiations of A.</p>
+<p>So the solution I&#x27;d lean towards is to add a new special internal type that represents &quot;all instances of A&quot;.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mikeshardmind">@mikeshardmind</a> on 2025-05-20 14:51</div>
             <div class="timeline-body"><blockquote>
-<p>So the solution I'd lean towards is to add a new special internal type that represents &quot;all instances of A&quot;.</p>
+<p>So the solution I&#x27;d lean towards is to add a new special internal type that represents &quot;all instances of A&quot;.</p>
 </blockquote>
-<p>~~Might be worth specifying this as a clarification to <code>TypeIs</code> as well that this must negate all possible A~~ probably can't, with how <code>TypeIs</code> is specified (which might indicate that this should be a typing type and not a typechecker internal for user expressibility), but otherwise I agree (and think it's unfortunate that <code>A</code> here automatically means <code>A[Default or Unknown]</code> rather than All possible A)</p>
+<p>~~Might be worth specifying this as a clarification to <code>TypeIs</code> as well that this must negate all possible A~~ probably can&#x27;t, with how <code>TypeIs</code> is specified (which might indicate that this should be a typing type and not a typechecker internal for user expressibility), but otherwise I agree (and think it&#x27;s unfortunate that <code>A</code> here automatically means <code>A[Default or Unknown]</code> rather than All possible A)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -105,7 +105,7 @@ it's an A
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-05-20 16:09</div>
             <div class="timeline-body"><p>What should this do?</p>
-<pre><code class="language-python">def f(x: object):
+<pre><code>def f(x: object):
     if isinstance(x, list):
        reveal_type(x[0])
        x[0] = 42
@@ -119,7 +119,7 @@ it's an A
 <p>the (fully static!) type &quot;all instances of <code>A</code>&quot;</p>
 </blockquote>
 <p>One question:</p>
-<pre><code class="language-py">class A[T: Any]: ...
+<pre><code>class A[T: Any]: ...
 
 def _(x: A[int] | int):
     if isinstance(x, A):
@@ -134,7 +134,7 @@ def _(x: A[int] | int):
 </blockquote>
 <p>I still think this probably needs to go over to a typing proposal of some sort, What should the typeshed do here? (and a few other places)</p>
 <p>https://github.com/python/typeshed/blob/6007267f68ed94a49421cff17b03e23a0177ad8c/stdlib/inspect.pyi#L234-L236</p>
-<pre><code class="language-py">def isgenerator(object: object) -&gt; TypeIs[GeneratorType[Any, Any, Any]]: ...
+<pre><code>def isgenerator(object: object) -&gt; TypeIs[GeneratorType[Any, Any, Any]]: ...
 def iscoroutine(object: object) -&gt; TypeIs[CoroutineType[Any, Any, Any]]: ...
 def isawaitable(object: object) -&gt; TypeIs[Awaitable[Any]]: ...
 </code></pre>
@@ -145,8 +145,8 @@ def isawaitable(object: object) -&gt; TypeIs[Awaitable[Any]]: ...
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-20 18:21</div>
-            <div class="timeline-body"><p>After thinking more about Jelle's latest example, I'm no longer convinced we should do this. It seems to require a more general existential type (&quot;like <code>Any</code>, but unforgiving&quot;) for the type variable to resolve to, and adding this to the type system seems like a real can of worms. It may be that the current behavior is the best we can reasonably do, even though it introduces <code>Unknown</code> and can thus result in unsoundness. (I also discussed this here at PyCon sprints with the Pyrefly team, and they also feel that using <code>Any/Unknown</code> is the best available option here.)</p>
-<p>I'm curious whether the OP here was motivated by some unpleasant typing <em>behavior</em> resulting from the complex types we currently infer, or simply by the fact that they look &quot;too complex&quot;? If it's the former, I'd like to see what we can do to address that. If it's the latter, I'd be inclined to say that we are already doing the best feasible thing here, and this is &quot;behaving as expected.&quot; I think given the use of <code>Unknown</code>, the (lack of) simplification that we currently perform is correct (and should still provide some better behavior than type checkers which don't use intersection types.)</p>
+            <div class="timeline-body"><p>After thinking more about Jelle&#x27;s latest example, I&#x27;m no longer convinced we should do this. It seems to require a more general existential type (&quot;like <code>Any</code>, but unforgiving&quot;) for the type variable to resolve to, and adding this to the type system seems like a real can of worms. It may be that the current behavior is the best we can reasonably do, even though it introduces <code>Unknown</code> and can thus result in unsoundness. (I also discussed this here at PyCon sprints with the Pyrefly team, and they also feel that using <code>Any/Unknown</code> is the best available option here.)</p>
+<p>I&#x27;m curious whether the OP here was motivated by some unpleasant typing <em>behavior</em> resulting from the complex types we currently infer, or simply by the fact that they look &quot;too complex&quot;? If it&#x27;s the former, I&#x27;d like to see what we can do to address that. If it&#x27;s the latter, I&#x27;d be inclined to say that we are already doing the best feasible thing here, and this is &quot;behaving as expected.&quot; I think given the use of <code>Unknown</code>, the (lack of) simplification that we currently perform is correct (and should still provide some better behavior than type checkers which don&#x27;t use intersection types.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -154,7 +154,7 @@ def isawaitable(object: object) -&gt; TypeIs[Awaitable[Any]]: ...
             <div class="timeline-body"><blockquote>
 <p>It seems to require a more general existential type (&quot;like Any, but unforgiving&quot;) for the type variable to resolve to</p>
 </blockquote>
-<p>I posted a suggestion for handling this over on <a href="https://discuss.python.org/t/user-expression-of-all-possible-specializations-of-the-generic-type-a/92682">discourse</a>, I think a special value that's only valid to express &quot;A[?] For <em>All</em> possible ?&quot; rather than the current state where <code>A[Any]</code> is &quot;A[?] for <em>Some</em> possible ?&quot; and is not valid for use outside of describing generics, and is not valid as a standalone type-expression or solution for a particular materialization works here.</p>
+<p>I posted a suggestion for handling this over on <a href="https://discuss.python.org/t/user-expression-of-all-possible-specializations-of-the-generic-type-a/92682">discourse</a>, I think a special value that&#x27;s only valid to express &quot;A[?] For <em>All</em> possible ?&quot; rather than the current state where <code>A[Any]</code> is &quot;A[?] for <em>Some</em> possible ?&quot; and is not valid for use outside of describing generics, and is not valid as a standalone type-expression or solution for a particular materialization works here.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -162,34 +162,34 @@ def isawaitable(object: object) -&gt; TypeIs[Awaitable[Any]]: ...
             <div class="timeline-body"><blockquote>
 <p>and is not valid for use outside of describing generics</p>
 </blockquote>
-<p>The thing that convinced me this is not a can of worms we want to tackle right now, is Jelle's last question above, which indicates (especially if you extrapolate to other operations, like pulling an element from the list) that we can't actually get away with having this &quot;existential type&quot; limited to &quot;describing generic types&quot; -- it only actually works if it's a first-class type on its own.</p>
+<p>The thing that convinced me this is not a can of worms we want to tackle right now, is Jelle&#x27;s last question above, which indicates (especially if you extrapolate to other operations, like pulling an element from the list) that we can&#x27;t actually get away with having this &quot;existential type&quot; limited to &quot;describing generic types&quot; -- it only actually works if it&#x27;s a first-class type on its own.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-05-20 18:58</div>
             <div class="timeline-body"><p>Definitely a big can of worms to add this kind of type. I think one safe answer to my previous post could be that all covariant positions have type <code>object</code> and contravariant positions have type <code>Never</code> (so e.g. <code>list.__setitem__</code> is disallowed), but that would probably cause practical problems for people doing <code>isinstance(..., list)</code> narrowing.</p>
 <p>I do think the problem in this issue is likely to come up in practical code, when people write something like this:</p>
-<pre><code class="language-python">def f(x: str | list[str]):
+<pre><code>def f(x: str | list[str]):
     if instance(x, list):
         # do list things
     else:
-        # surely it's a str now?
+        # surely it&#x27;s a str now?
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mikeshardmind">@mikeshardmind</a> on 2025-05-20 19:04</div>
             <div class="timeline-body"><blockquote>
-<p>-- it only actually works if it's a first-class type on its own.</p>
+<p>-- it only actually works if it&#x27;s a first-class type on its own.</p>
 </blockquote>
-<p>I don't really agree with this, and can already describe how it doesn't need to be. Using <code>*</code> as shorthand for it momentarily, ie. <code>A[*]</code> is all possible <code>A</code>, and <code>A[Any]</code> is some possible <code>A</code></p>
-<p>This would mean if <code>T</code> in <code>SomeGeneric[T]</code> is invariant, if you have <code>SomeGeneric[*]</code> you can do anything with it that doesn't rely on the specialization (for instance, <code>len(x)</code> is valid for a value of <code>x</code> known to be <code>list[*]</code>)</p>
-<p>(you've already worked out other parts of this, but this is simple theory, and plays nicely with the existing definitions)</p>
+<p>I don&#x27;t really agree with this, and can already describe how it doesn&#x27;t need to be. Using <code>*</code> as shorthand for it momentarily, ie. <code>A[*]</code> is all possible <code>A</code>, and <code>A[Any]</code> is some possible <code>A</code></p>
+<p>This would mean if <code>T</code> in <code>SomeGeneric[T]</code> is invariant, if you have <code>SomeGeneric[*]</code> you can do anything with it that doesn&#x27;t rely on the specialization (for instance, <code>len(x)</code> is valid for a value of <code>x</code> known to be <code>list[*]</code>)</p>
+<p>(you&#x27;ve already worked out other parts of this, but this is simple theory, and plays nicely with the existing definitions)</p>
 <p>To work out a few more</p>
 <p><code>list[Any] &amp; list[*]</code> is <code>list[Any]</code>
 <code>list[T] &amp; list[*]</code> is <code>list[T]</code>
 <code>list[T] &amp; ~list[*]</code> is <code>Never</code></p>
-<pre><code class="language-py">x: list[*]
+<pre><code>x: list[*]
 y: Any
 x.append(y)  # error, no possible materialization is consistent with all possible lists
 
@@ -201,14 +201,14 @@ y = x[0]  # infer `object` for `y` as the only possible known common for all pos
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-20 19:18</div>
-            <div class="timeline-body"><p>I was initially thinking that these conservative answers would make <code>isinstance(x, list)</code> pretty close to useless, but I guess that's only in the case when you're narrowing from <code>object</code>, or some wider type. If you're narrowing from something like <code>list[int] | int</code>, then it allows us to filter the union nicely and the result is quite usable. So maybe this approach is reasonably usable without a new first-class existential type.</p>
-<p>(FWIW, I don't think we have to reach consensus on DPO before implementing this. These things are not currently clearly specified, and it is useful for type checkers to experiment without being constrained by reaching consensus first.)</p>
-<p>@MatthewMckee4 regarding your question above, I don't think the typevar default should have any bearing here. Typevar default should only be used when instantiating an unspecialized generic type (its semantics are &quot;if the constructor call doesn't bind the typevar, assume the constructor internally defaults to some type&quot;). But this is not relevant to narrowing.</p>
+            <div class="timeline-body"><p>I was initially thinking that these conservative answers would make <code>isinstance(x, list)</code> pretty close to useless, but I guess that&#x27;s only in the case when you&#x27;re narrowing from <code>object</code>, or some wider type. If you&#x27;re narrowing from something like <code>list[int] | int</code>, then it allows us to filter the union nicely and the result is quite usable. So maybe this approach is reasonably usable without a new first-class existential type.</p>
+<p>(FWIW, I don&#x27;t think we have to reach consensus on DPO before implementing this. These things are not currently clearly specified, and it is useful for type checkers to experiment without being constrained by reaching consensus first.)</p>
+<p>@MatthewMckee4 regarding your question above, I don&#x27;t think the typevar default should have any bearing here. Typevar default should only be used when instantiating an unspecialized generic type (its semantics are &quot;if the constructor call doesn&#x27;t bind the typevar, assume the constructor internally defaults to some type&quot;). But this is not relevant to narrowing.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-05-20 20:12</div>
-            <div class="timeline-body"><pre><code class="language-py">class A[T: Any]: ...
+            <div class="timeline-body"><pre><code>class A[T: Any]: ...
 </code></pre>
 <p>This means upper bound of <code>Any</code> no?</p>
 <p>Anyway it seems like this is not very relevant after your further discussion.</p>
@@ -231,11 +231,11 @@ y = x[0]  # infer `object` for `y` as the only possible known common for all pos
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-22 22:28</div>
-            <div class="timeline-body"><p>FWIW if the lack of narrowing here is causing people problems, we could implement a stopgap where we explicitly check for a union in the outer type and explicitly filter away (by intersecting with the negation of) any specific union elements we find that would match <code>list[*]</code> (that is, any list type). (In other words if the outer type of <code>x</code> is <code>list[int] | int</code> and we are narrowing for <code>not isinstance(x, list)</code>, we'd inspect that union type and then intersect with <code>~list[int]</code>. This would be simpler to implement than the general <code>list[*]</code> solution, and would fix the inadequate narrowing. It's a bit of a departure from our ideal implementation of narrowing as purely intersection without reference to the prior type, but we already have to do this for some cases of equality narrowing (because we didn't want to implement an <code>EqualTo</code> type).</p>
+            <div class="timeline-body"><p>FWIW if the lack of narrowing here is causing people problems, we could implement a stopgap where we explicitly check for a union in the outer type and explicitly filter away (by intersecting with the negation of) any specific union elements we find that would match <code>list[*]</code> (that is, any list type). (In other words if the outer type of <code>x</code> is <code>list[int] | int</code> and we are narrowing for <code>not isinstance(x, list)</code>, we&#x27;d inspect that union type and then intersect with <code>~list[int]</code>. This would be simpler to implement than the general <code>list[*]</code> solution, and would fix the inadequate narrowing. It&#x27;s a bit of a departure from our ideal implementation of narrowing as purely intersection without reference to the prior type, but we already have to do this for some cases of equality narrowing (because we didn&#x27;t want to implement an <code>EqualTo</code> type).</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Beta" by @carljm on 2025-06-11 00:50</div>
+            <div class="event">Added to milestone &quot;Beta&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-06-11 00:50</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-01 13:50</div>
@@ -243,7 +243,7 @@ y = x[0]  # infer `object` for `y` as the only possible known common for all pos
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @JelleZijlstra by @carljm on 2025-08-22 14:03</div>
+            <div class="event">Assigned to <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> by <a href="https://github.com/carljm">@carljm</a> on 2025-08-22 14:03</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-22 14:04</div>
@@ -251,13 +251,13 @@ y = x[0]  # infer `object` for `y` as the only possible known common for all pos
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2025-09-04 22:28</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2025-09-04 22:28</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/benglewis">@benglewis</a> on 2025-09-25 15:15</div>
-            <div class="timeline-body"><p>Quick question, is it intentional behavior that this doesn't work the moment that you assign a variable?</p>
+            <div class="timeline-body"><p>Quick question, is it intentional behavior that this doesn&#x27;t work the moment that you assign a variable?</p>
 <p>e.g.</p>
-<pre><code class="language-python">def fun(a: str | Path):
+<pre><code>def fun(a: str | Path):
   a_is_path = isinstance(a, Path)
   if a_is_path:
      print(a.is_dir())
@@ -267,7 +267,7 @@ y = x[0]  # infer `object` for `y` as the only possible known common for all pos
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-25 15:20</div>
-            <div class="timeline-body"><p>It's known and expected behavior that narrowing (in general) only applies when the test is performed directly in the conditional check; it's also the same behavior as mypy and pyrefly. It looks like pyright has some additional logic to allow narrowing tests to be extracted to a variable in some cases; we could look into this, though I don't think it's top priority at the moment. I don't think there's an issue open for this; feel free to file one!</p>
+            <div class="timeline-body"><p>It&#x27;s known and expected behavior that narrowing (in general) only applies when the test is performed directly in the conditional check; it&#x27;s also the same behavior as mypy and pyrefly. It looks like pyright has some additional logic to allow narrowing tests to be extracted to a variable in some cases; we could look into this, though I don&#x27;t think it&#x27;s top priority at the moment. I don&#x27;t think there&#x27;s an issue open for this; feel free to file one!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -278,7 +278,7 @@ y = x[0]  # infer `object` for `y` as the only possible known common for all pos
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:19:56 UTC
+        Synced at 2026-01-20 19:24:35 UTC
     </footer>
 </body>
 </html>

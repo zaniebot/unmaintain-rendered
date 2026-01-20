@@ -25,12 +25,12 @@
             <div class="timeline-header"><a href="https://github.com/zaidhaan">@zaidhaan</a></div>
             <div class="timeline-body"><p>Currently, ripgrep respects <code>$HOME/.gitconfig</code> and <code>$XDG_CONFIG_HOME/git/config</code>, but not <code>.git/config</code> (the &quot;local&quot; or &quot;project&quot; config). Git makes it such that <code>.git/config</code> overrides the other two options, while still respecting the <code>./.gitignore</code>. This commit brings this functionality to ripgrep (while also cleaning a few repetitive segments of code).</p>
 <p>To demonstrate with a reproducible example (of course, be careful with overriding any files):</p>
-<pre><code class="language-sh">$ mkdir test &amp;&amp; cd test
+<pre><code>$ mkdir test &amp;&amp; cd test
 $ touch file file.customexclude file.globalignore file.pwdignore
-$ echo '*.pwdignore' &gt; .gitignore
-$ mkdir -p /tmp/tempdir &amp;&amp; echo '*.customexclude' &gt; /tmp/tempdir/.gitignore
+$ echo &#x27;*.pwdignore&#x27; &gt; .gitignore
+$ mkdir -p /tmp/tempdir &amp;&amp; echo &#x27;*.customexclude&#x27; &gt; /tmp/tempdir/.gitignore
 $ git config core.excludesfile /tmp/tempdir/.gitignore
-$ echo '*.globalignore' &gt; ~/.gitignore
+$ echo &#x27;*.globalignore&#x27; &gt; ~/.gitignore
 $ git config --global core.excludesfile ~/.gitignore
 $ git status
 ...
@@ -56,7 +56,7 @@ file.globalignore
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-02-08 15:40</div>
-            <div class="timeline-body"><p>After a quick look I don't think this is right? It appears to assume that <code>.git</code> must be in the CWD. But whether <code>.git/config</code> is used or not shouldn't depend on whether ripgrep is run at the root of the repo. It might be run above the root or even below, but in both cases, <code>.git/config</code> should be respected. This will unfortunately probably require quite a gnarly refactor that I don't think I have the bandwidth for right now.</p>
+            <div class="timeline-body"><p>After a quick look I don&#x27;t think this is right? It appears to assume that <code>.git</code> must be in the CWD. But whether <code>.git/config</code> is used or not shouldn&#x27;t depend on whether ripgrep is run at the root of the repo. It might be run above the root or even below, but in both cases, <code>.git/config</code> should be respected. This will unfortunately probably require quite a gnarly refactor that I don&#x27;t think I have the bandwidth for right now.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -64,8 +64,8 @@ file.globalignore
             <div class="timeline-body"><blockquote>
 <p>It appears to assume that .git must be in the CWD</p>
 </blockquote>
-<p>Whoops, you're right.</p>
-<pre><code class="language-sh">$ mkdir subdir &amp;&amp; cd subdir
+<p>Whoops, you&#x27;re right.</p>
+<pre><code>$ mkdir subdir &amp;&amp; cd subdir
 $ touch subfile subfile.customexclude subfile.globalignore subfile.pwdignore
 $ # only subfile and subfile.globalignore should be seen
 $ rg --files
@@ -75,20 +75,20 @@ $ rg-patched --files
 subfile
 subfile.customexclude
 </code></pre>
-<p>I'm not too familiar with the code but it would appear that in dirs.rs there's going to have to be a matcher specifically made for <code>.git/config</code>'s <code>excludesfile</code> then? Which I suppose would bring in a bit of logic (<code>parse_excludes_file</code>) into dirs.rs. After such a matcher is made that would produce a <code>Gitignore</code>, then some logic could be used to decide whether to use the <code>global_matcher</code> if the config (which would override it) already exists.</p>
-<p>Is this somewhere in the general right direction (at least with the way the code is now)? I've been working a bit on an approach like what I just described, might be able to make another commit in a bit.</p>
-<p>(This admittedly isn't that elegant since anything to do with the git dir, git config and excludesfile is done in gitignore.rs, with the apparent exception of .git/info/exclude logic which is handled in dir.rs)</p>
-<p>There's still a lot of cases I haven't explored (would global ignore be used if ~/.gitconfig exists with an excludes file, etc.), so I'll mark this PR as a draft. I'll try to see how git behaves in all cases this weekend and document it here, that way if this PR doesn't land at the very least it might help whoever ends up implementing this.</p>
+<p>I&#x27;m not too familiar with the code but it would appear that in dirs.rs there&#x27;s going to have to be a matcher specifically made for <code>.git/config</code>&#x27;s <code>excludesfile</code> then? Which I suppose would bring in a bit of logic (<code>parse_excludes_file</code>) into dirs.rs. After such a matcher is made that would produce a <code>Gitignore</code>, then some logic could be used to decide whether to use the <code>global_matcher</code> if the config (which would override it) already exists.</p>
+<p>Is this somewhere in the general right direction (at least with the way the code is now)? I&#x27;ve been working a bit on an approach like what I just described, might be able to make another commit in a bit.</p>
+<p>(This admittedly isn&#x27;t that elegant since anything to do with the git dir, git config and excludesfile is done in gitignore.rs, with the apparent exception of .git/info/exclude logic which is handled in dir.rs)</p>
+<p>There&#x27;s still a lot of cases I haven&#x27;t explored (would global ignore be used if ~/.gitconfig exists with an excludes file, etc.), so I&#x27;ll mark this PR as a draft. I&#x27;ll try to see how git behaves in all cases this weekend and document it here, that way if this PR doesn&#x27;t land at the very least it might help whoever ends up implementing this.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Converted to draft by @zaidhaan on 2023-02-10 04:35</div>
+            <div class="event">Converted to draft by <a href="https://github.com/zaidhaan">@zaidhaan</a> on 2023-02-10 04:35</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zaidhaan">@zaidhaan</a> on 2023-02-10 04:45</div>
-            <div class="timeline-body"><p>The above commit removes the incorrect CWD parsing and moves the <code>.git/config</code> excludesfile ignoring logic to <code>add_child_path</code> in dirs.rs (which looks at all the options in <code>IgnoreOptions</code>), I didn't create another <code>IgnoreOptions</code> option, but instead made it such that it respects the <code>git_exclude</code> option (which prior to this only looked at <code>.git/info/exclude</code>, but not would also look at <code>.git/config</code>s excludesfile).</p>
-<p>Haven't tested this that thoroughly, still a WIP, but so far it does work in subdirectories since it correctly identifies the git path.</p>
-<pre><code class="language-sh">$ # all the setup stuff
+            <div class="timeline-body"><p>The above commit removes the incorrect CWD parsing and moves the <code>.git/config</code> excludesfile ignoring logic to <code>add_child_path</code> in dirs.rs (which looks at all the options in <code>IgnoreOptions</code>), I didn&#x27;t create another <code>IgnoreOptions</code> option, but instead made it such that it respects the <code>git_exclude</code> option (which prior to this only looked at <code>.git/info/exclude</code>, but not would also look at <code>.git/config</code>s excludesfile).</p>
+<p>Haven&#x27;t tested this that thoroughly, still a WIP, but so far it does work in subdirectories since it correctly identifies the git path.</p>
+<pre><code>$ # all the setup stuff
 $ mkdir subdir &amp;&amp; cd subdir
 $ touch subfile subfile.customexclude subfile.globalignore subfile.pwdignore
 $ git add -A
@@ -109,17 +109,17 @@ subfile.globalignore
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-07-07 18:35</div>
-            <div class="timeline-body"><p>Thanks for the work on this, but I'm going to close it. The <code>ignore</code> crate badly needs an overhaul, and hopefully I can address this use case when I do that. But I'm not sure when it's going to happen. As of now, I can't really stomach adding more stuff like this because I can't be confident that it won't break other stuff.</p>
-<p>I've opened #2553 to track this particular use case so that it's factored into the overhaul.</p>
+            <div class="timeline-body"><p>Thanks for the work on this, but I&#x27;m going to close it. The <code>ignore</code> crate badly needs an overhaul, and hopefully I can address this use case when I do that. But I&#x27;m not sure when it&#x27;s going to happen. As of now, I can&#x27;t really stomach adding more stuff like this because I can&#x27;t be confident that it won&#x27;t break other stuff.</p>
+<p>I&#x27;ve opened #2553 to track this particular use case so that it&#x27;s factored into the overhaul.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2023-07-07 18:35</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-07-07 18:35</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:44:06 UTC
+        Synced at 2026-01-20 18:48:19 UTC
     </footer>
 </body>
 </html>

@@ -23,11 +23,11 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sontungkieu">@sontungkieu</a></div>
-            <div class="timeline-body"><h3>Question</h3>
-<h3>Description</h3>
-<p>I'm migrating an old project to <code>uv</code> for faster dependency setup, but the initial cold resolution takes around 10 minutes. This is significantly slower than expected, especially since <code>uv</code> is designed for speed. The slowdown seems tied to resolving dependencies that require an extra index URL for JAX artifacts.</p>
+            <div class="timeline-body">Question
+Description
+<p>I&#x27;m migrating an old project to <code>uv</code> for faster dependency setup, but the initial cold resolution takes around 10 minutes. This is significantly slower than expected, especially since <code>uv</code> is designed for speed. The slowdown seems tied to resolving dependencies that require an extra index URL for JAX artifacts.</p>
 <p>Without the extra index URL, resolution fails due to unavailable packages like <code>jax</code> and <code>jaxlib</code>. With it, it works but is painfully slow.</p>
-<h3>Steps to Reproduce</h3>
+Steps to Reproduce
 <ol>
 <li><p>Create a new directory and set up the following <code>pyproject.toml</code>:</p>
 <pre><code>[project]
@@ -43,7 +43,7 @@ dependencies = [
     &quot;numpy &gt;= 1.20.2,&lt;1.24.4&quot;,
     &quot;scipy &gt;= 1.6.0,&lt;1.11.1&quot;,
     &quot;absl-py &gt;= 0.12.0&quot;,
-    'gym[mujoco-py] &lt;= 0.24.1',
+    &#x27;gym[mujoco-py] &lt;= 0.24.1&#x27;,
     &quot;gdown &gt;= 3.12.2&quot;,
     &quot;tqdm &gt;= 4.60.0&quot;,
     &quot;flax &gt;= 0.3.5&quot;,
@@ -68,42 +68,42 @@ dependencies = [
 <li><p>Observe the resolution step hanging for ~10 minutes (e.g., &quot;Resolving...&quot; phase).</p>
 </li>
 </ol>
-<h3>Expected Behavior</h3>
+Expected Behavior
 <p>Dependency resolution should be fast (seconds), as advertised for <code>uv</code>.</p>
-<h3>Actual Behavior</h3>
+Actual Behavior
 <p>Cold resolution takes ~10 minutes. Subsequent <code>uv sync</code> runs are faster (cached), but the initial one is a blocker for CI/CD or new setups.</p>
-<h3>Environment</h3>
+Environment
 <ul>
 <li><code>uv</code> version: 0.8.22</li>
 <li>Python version: 3.11.13</li>
 <li>Architecture: x86_64</li>
 <li><strong>Reproducible on multiple setups:</strong> Personal machine, Kaggle notebooks, Vast.ai instances (USA, China, Norway regions) – all show ~10 min resolution time.</li>
 </ul>
-<h3>Additional Context</h3>
+Additional Context
 <ul>
 <li>This project uses older pinned versions of JAX/Flax (from ~2022), which require the Google Cloud artifact repo.</li>
 <li>No <code>uv.lock</code> file present initially (cold resolve).</li>
 <li>Tested across diverse environments (as above) to rule out local network issues, but slowdown persists.</li>
 </ul>
-<h3>Possible Workarounds</h3>
+Possible Workarounds
 <ul>
 <li>Pre-generate <code>uv.lock</code> on a faster machine/network.</li>
 <li>But this defeats the purpose of fast setup.</li>
 </ul>
 <p>Happy to provide more logs or test on a minimal repro if needed!</p>
-<h3>Platform</h3>
+Platform
 <p><em>No response</em></p>
-<h3>Version</h3>
+Version
 <p>uv 0.8.22</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @sontungkieu on 2025-10-03 07:39</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/sontungkieu">@sontungkieu</a> on 2025-10-03 07:39</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/lagamura">@lagamura</a> on 2025-10-28 13:04</div>
             <div class="timeline-body"><p>I am using the following pattern to install from <code>pypi</code> public packages and fallback to the private index for closed once:</p>
-<pre><code class="language-text">[project]
+<pre><code>[project]
 dependencies = [
 &quot;numpy&quot;,
 &quot;matplotlib&quot;,
@@ -131,14 +131,14 @@ url = &quot;&lt;private-index-url&gt;&quot;
             <div class="timeline-body"><blockquote>
 <p>Happy to provide more logs or test on a minimal repro if needed!</p>
 </blockquote>
-<p>Can you share verbose (<code>-v</code>) logs? Those should usually say what's taking a lot of time. Similarly, does it show many builds during resolution? Those usually take a long time.</p>
+<p>Can you share verbose (<code>-v</code>) logs? Those should usually say what&#x27;s taking a lot of time. Similarly, does it show many builds during resolution? Those usually take a long time.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sontungkieu">@sontungkieu</a> on 2025-11-11 08:46</div>
             <div class="timeline-body"><p>Thanks! I’ve attached verbose logs for both runs.</p>
 <p><strong>Before (slow):</strong></p>
-<pre><code class="language-bash">uv sync -v --extra-index-url https://us-python.pkg.dev/ml-oss-artifacts-published/jax/simple/ \
+<pre><code>uv sync -v --extra-index-url https://us-python.pkg.dev/ml-oss-artifacts-published/jax/simple/ \
   1&gt;uv_out.txt 2&gt;uv_err.txt
 </code></pre>
 <ul>
@@ -146,7 +146,7 @@ url = &quot;&lt;private-index-url&gt;&quot;
 <li>Logs: <a href="https://github.com/user-attachments/files/23474190/uv_err.txt">uv_err.txt</a></li>
 </ul>
 <p><strong>After applying @lagamura’s pattern (fast):</strong></p>
-<pre><code class="language-toml"># pyproject.toml
+<pre><code># pyproject.toml
 [tool.uv]
 index-strategy = &quot;unsafe-best-match&quot;
 
@@ -165,7 +165,7 @@ name = &quot;jax&quot;
 url = &quot;https://us-python.pkg.dev/ml-oss-artifacts-published/jax/simple/&quot;
 explicit = true
 </code></pre>
-<pre><code class="language-bash">uv sync -v 1&gt;uv_out_fix.txt 2&gt;uv_err_fix.txt
+<pre><code>uv sync -v 1&gt;uv_out_fix.txt 2&gt;uv_err_fix.txt
 </code></pre>
 <ul>
 <li>Output includes: <code>Resolved 144 packages in 19.04s</code></li>
@@ -186,7 +186,7 @@ WARN Range requests not supported for setuptools-80.9.0-py3-none-any.whl; stream
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:33:03 UTC
+        Synced at 2026-01-20 19:40:32 UTC
     </footer>
 </body>
 </html>

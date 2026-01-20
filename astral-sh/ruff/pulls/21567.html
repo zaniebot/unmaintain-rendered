@@ -23,13 +23,13 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/davidt">@davidt</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Resolves #18258
 See also #13410</p>
 <p>The following patterns currently are incompatible with enabling the COM812 rule:</p>
-<pre><code class="language-python">some_string = gettext(
-    'This is a long string which '
-    'is marked for internationalization'
+<pre><code>some_string = gettext(
+    &#x27;This is a long string which &#x27;
+    &#x27;is marked for internationalization&#x27;
 )
 
 some_function(
@@ -38,15 +38,15 @@ some_function(
 )
 </code></pre>
 <p>The fundamental intent for COM812 is to minimize diffs when adding additional entries to a list, dict, or function call. In the case of the above, without an option, users are limited to one of these options:</p>
-<pre><code class="language-python"># Include a trailing comma. This is ugly, and if for some reason another
+<pre><code># Include a trailing comma. This is ugly, and if for some reason another
 # sentence was added, the comma has to be removed.
 s = gettext(
-    'This is a long string '
-    'which is marked for i18n.',
+    &#x27;This is a long string &#x27;
+    &#x27;which is marked for i18n.&#x27;,
 )
 
 # Put the closing `)` on the same line. Adding another argument to this
-# requires changing the `)` to a `,`, so there's no minimization of the
+# requires changing the `)` to a `,`, so there&#x27;s no minimization of the
 # diff here either.
 some_function(
     a_long +
@@ -56,7 +56,7 @@ some_function(
 # Assigning an expression to a variable and then calling the function
 # works in some cases, but it bloats the code, and explicitly cannot
 # work in the case of `gettext` where the scanner that extracts strings
-# for the .po files doesn't know much about Python, and can only extract
+# for the .po files doesn&#x27;t know much about Python, and can only extract
 # string literals inside of the `gettext(...)` calls.
 var = (
     a_long +
@@ -65,34 +65,34 @@ var = (
 some_function(var)
 
 broken = (
-    'This string will not be properly '
-    'extracted by gettext scanners.'
+    &#x27;This string will not be properly &#x27;
+    &#x27;extracted by gettext scanners.&#x27;
 )
 s = gettext(broken)
 </code></pre>
 <p>In order to enable use of COM812 in codebases with this pattern, this change adds a new configuration key:</p>
-<pre><code class="language-toml">[lint.flake8-commas]
+<pre><code>[lint.flake8-commas]
 allow_single_arg_function_calls = true
 </code></pre>
 <p>Setting this allow the COM812 rule to flag everything it normally does, but with an exception for a function which is called with a single argument.</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>A new test case has been added which uses the existing COM81* test fixture, and the resulting snapshot has been carefully reviewed to verify correctness. One additional case has been added to that file to verify that single-element dictionaries are not affected.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> added by @ntBre on 2025-11-21 18:24</div>
+            <div class="event">Label <span class="label">needs-decision</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-21 18:24</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">configuration</span> added by @ntBre on 2025-11-21 18:26</div>
+            <div class="event">Label <span class="label">configuration</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-21 18:26</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/amyreese">@amyreese</a> on 2025-11-22 01:30</div>
-            <div class="timeline-body"><p>Are there other examples where the workaround (assigning to a variable before calling) isn't viable beyond <code>gettext()</code>? Would it be better to just have a single exception to the rule rather than adding a whole new configuration option just to allow using this rule in projects that also use gettext?</p>
+            <div class="timeline-body"><p>Are there other examples where the workaround (assigning to a variable before calling) isn&#x27;t viable beyond <code>gettext()</code>? Would it be better to just have a single exception to the rule rather than adding a whole new configuration option just to allow using this rule in projects that also use gettext?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/davidt">@davidt</a> on 2025-11-24 16:40</div>
-            <div class="timeline-body"><p>I don't know for certain, but even in the gettext case, there are multiple potential names that get scanned for (at least <code>gettext()</code> and <code>_()</code>, historically django also provided a <code>ugettext()</code>). It's not exactly a one-and-done solution.</p>
+            <div class="timeline-body"><p>I don&#x27;t know for certain, but even in the gettext case, there are multiple potential names that get scanned for (at least <code>gettext()</code> and <code>_()</code>, historically django also provided a <code>ugettext()</code>). It&#x27;s not exactly a one-and-done solution.</p>
 <p>That said, I feel like forcing people to choose between defining a variable and adding a comma is way too strong for a linter rule where the goal of the rule is to make diffs easier to review. In my experience, a single-argument function is likely to always remain a single-argument function, and optimizing for readability is much more important than optimizing for diffs.</p>
 </div>
         </div>
@@ -100,16 +100,16 @@ allow_single_arg_function_calls = true
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-24 17:23</div>
             <div class="timeline-body"><p>Thanks for looking into this.</p>
 <p>I feel like this option defeats the purpose of the rule. The purpose is to reduce the diff size and, by enabling this rule, you opt-in that this is the top priority, including single-argument function calls.</p>
-<p>I don't currently see enough demand for this configuration option and, therefore, close this PR. I'll leave the issue open so that other users can express their interest.</p>
+<p>I don&#x27;t currently see enough demand for this configuration option and, therefore, close this PR. I&#x27;ll leave the issue open so that other users can express their interest.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2025-11-24 17:23</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-24 17:23</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:17:28 UTC
+        Synced at 2026-01-20 19:20:55 UTC
     </footer>
 </body>
 </html>

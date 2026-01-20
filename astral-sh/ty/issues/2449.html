@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/adamjstewart">@adamjstewart</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>Ty appears to be hard-coded to assume that <code>cls</code> and <code>self</code> are reserved keywords for classes. However, this is not always true, for example in the following perfectly valid (albeit confusing) Python code:</p>
-<pre><code class="language-python">dict(cls=1)
+<pre><code>dict(cls=1)
 dict(self=2)
 </code></pre>
 <p><code>ty check</code> with no custom <code>pyproject.toml</code> configuration results in:</p>
@@ -69,7 +69,7 @@ info: rule `no-matching-overload` is enabled by default
 Found 2 diagnostics
 </code></pre>
 <p>For comparison, <code>mypy --strict</code> does not flag these lines of code.</p>
-<h3>Version</h3>
+Version
 <p>ty 0.0.11</p>
 </div>
         </div>
@@ -79,10 +79,10 @@ Found 2 diagnostics
 <blockquote>
 <p>Ty appears to be hard-coded to assume that <code>cls</code> and <code>self</code> are reserved keywords for classes.</p>
 </blockquote>
-<p>There's no hard-coding of this, I can assure you :-)</p>
-<p>This looks like a typeshed bug to me, not a ty bug. Passing <code>self</code> as a keyword argument into <code>dict.__init__</code> only works at runtime because <code>dict.__init__</code>'s first argument is positional-only at runtime. (It <em>cannot</em> be passed via keyword argument at runtime, therefore there's no ambiguity about which parameter <code>self=42</code> is &quot;filling&quot; -- it <em>must</em> be the <code>**kwargs</code> keyword-variadic parameter in the signature for <code>dict.__init__</code>.)</p>
+<p>There&#x27;s no hard-coding of this, I can assure you :-)</p>
+<p>This looks like a typeshed bug to me, not a ty bug. Passing <code>self</code> as a keyword argument into <code>dict.__init__</code> only works at runtime because <code>dict.__init__</code>&#x27;s first argument is positional-only at runtime. (It <em>cannot</em> be passed via keyword argument at runtime, therefore there&#x27;s no ambiguity about which parameter <code>self=42</code> is &quot;filling&quot; -- it <em>must</em> be the <code>**kwargs</code> keyword-variadic parameter in the signature for <code>dict.__init__</code>.)</p>
 <p>We can see here that <code>__init__</code> methods are not treated specially by Python at runtime; it really is illegal to pass the <code>self</code> parameter twice if the <code>self</code> parameter is not positional-only:</p>
-<pre><code class="language-pycon">Python 3.13.1 (main, Jan  3 2025, 12:04:03) [Clang 15.0.0 (clang-1500.3.9.4)] on darwin
+<pre><code>Python 3.13.1 (main, Jan  3 2025, 12:04:03) [Clang 15.0.0 (clang-1500.3.9.4)] on darwin
 Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
 &gt;&gt;&gt; class PositionalOnly:
 ...     def __init__(self, /, **kwargs): ...
@@ -97,20 +97,20 @@ Traceback (most recent call last):
   File &quot;&lt;python-input-3&gt;&quot;, line 1, in &lt;module&gt;
     PosOrKeyword(self=42)
     ~~~~~~~~~~~~^^^^^^^^^
-TypeError: PosOrKeyword.__init__() got multiple values for argument 'self'
+TypeError: PosOrKeyword.__init__() got multiple values for argument &#x27;self&#x27;
 &gt;&gt;&gt; PositionalOnly.__init__(PositionalOnly(), self=42)
 &gt;&gt;&gt; PosOrKeyword.__init__(PosOrKeyword(), self=42)
 Traceback (most recent call last):
   File &quot;&lt;python-input-5&gt;&quot;, line 1, in &lt;module&gt;
     PosOrKeyword.__init__(PosOrKeyword(), self=42)
     ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
-TypeError: PosOrKeyword.__init__() got multiple values for argument 'self'
+TypeError: PosOrKeyword.__init__() got multiple values for argument &#x27;self&#x27;
 </code></pre>
-<p>So the fix for this issue will be to make the <code>self</code> parameter positional-only in <a href="https://github.com/python/typeshed/blob/5a45a9a5bcec0c64f7fcaf3db92b9159cee05d9c/stdlib/builtins.pyi#L1178-L1205">these methods</a> upstream. If a PR doing that is accepted, we'll automatically reflect the changes in our vendored copy of typeshed's stubs after a few days. (We sync our vendored version of typeshed every two weeks.)</p>
+<p>So the fix for this issue will be to make the <code>self</code> parameter positional-only in <a href="https://github.com/python/typeshed/blob/5a45a9a5bcec0c64f7fcaf3db92b9159cee05d9c/stdlib/builtins.pyi#L1178-L1205">these methods</a> upstream. If a PR doing that is accepted, we&#x27;ll automatically reflect the changes in our vendored copy of typeshed&#x27;s stubs after a few days. (We sync our vendored version of typeshed every two weeks.)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2026-01-11 17:28</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-11 17:28</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-11 17:30</div>
@@ -118,7 +118,7 @@ TypeError: PosOrKeyword.__init__() got multiple values for argument 'self'
 <p>For comparison, <code>mypy --strict</code> does not flag these lines of code.</p>
 </blockquote>
 <p>Indeed. And it also does not emit a diagnostic on this code, even though the code fails at runtime!</p>
-<pre><code class="language-py">class Foo:
+<pre><code>class Foo:
     def __init__(self, **kwargs: object) -&gt; None: ...
 
 Foo(self=42)
@@ -128,13 +128,13 @@ Foo(self=42)
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/adamjstewart">@adamjstewart</a> on 2026-01-11 17:37</div>
             <div class="timeline-body"><blockquote>
-<p>Passing <code>self</code> as a keyword argument into <code>dict.__init__</code> only works at runtime because <code>dict.__init__</code>'s first argument is positional-only. (It cannot be passed via keyword, therefore there's no ambiguity about which parameter <code>self=42</code> is &quot;filling&quot; -- it <em>must</em> be the <code>**kwargs</code> keyword-variadic parameter in the signature for <code>dict.__init__</code>.)</p>
+<p>Passing <code>self</code> as a keyword argument into <code>dict.__init__</code> only works at runtime because <code>dict.__init__</code>&#x27;s first argument is positional-only. (It cannot be passed via keyword, therefore there&#x27;s no ambiguity about which parameter <code>self=42</code> is &quot;filling&quot; -- it <em>must</em> be the <code>**kwargs</code> keyword-variadic parameter in the signature for <code>dict.__init__</code>.)</p>
 </blockquote>
-<p>I don't fully understand this part. From what I can tell, this is valid Python code:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; dict(cls=1, self=2)
-{'cls': 1, 'self': 2}
+<p>I don&#x27;t fully understand this part. From what I can tell, this is valid Python code:</p>
+<pre><code>&gt;&gt;&gt; dict(cls=1, self=2)
+{&#x27;cls&#x27;: 1, &#x27;self&#x27;: 2}
 &gt;&gt;&gt; dict(self=1, cls=2)
-{'self': 1, 'cls': 2}
+{&#x27;self&#x27;: 1, &#x27;cls&#x27;: 2}
 </code></pre>
 </div>
         </div>
@@ -145,12 +145,12 @@ Foo(self=42)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-11 17:41</div>
-            <div class="timeline-body"><p>Yes, sorry! The first parameter in typeshed's <code>dict.__init__</code> signature is currently marked as positional-or-keyword, but it should be marked as positional-only, and that's where the bug is.</p>
+            <div class="timeline-body"><p>Yes, sorry! The first parameter in typeshed&#x27;s <code>dict.__init__</code> signature is currently marked as positional-or-keyword, but it should be marked as positional-only, and that&#x27;s where the bug is.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/adamjstewart">@adamjstewart</a> on 2026-01-11 17:44</div>
-            <div class="timeline-body"><p>Based on comments, it seems this was somewhat intentional while mypy caught up to pyright? https://github.com/python/typeshed/pull/11780</p>
+            <div class="timeline-body"><p>Based on comments, it seems this was somewhat intentional while mypy caught up to pyright? <a href="https://github.com/python/typeshed/pull/11780">python/typeshed#11780</a></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -158,36 +158,36 @@ Foo(self=42)
             <div class="timeline-body"><blockquote>
 <p>Based on comments, it seems this was somewhat intentional while mypy caught up to pyright? <a href="https://github.com/python/typeshed/pull/11780">python/typeshed#11780</a></p>
 </blockquote>
-<p>I'm confused -- I don't see any comments in that linked thread that are relevant to what we're discussing here.</p>
+<p>I&#x27;m confused -- I don&#x27;t see any comments in that linked thread that are relevant to what we&#x27;re discussing here.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/adamjstewart">@adamjstewart</a> on 2026-01-11 17:48</div>
-            <div class="timeline-body"><p>Ah, I'm talking about comments like:</p>
-<pre><code class="language-python">    @overload
+            <div class="timeline-body"><p>Ah, I&#x27;m talking about comments like:</p>
+<pre><code>    @overload
     def __init__(self: dict[str, _VT], **kwargs: _VT) -&gt; None: ...  # pyright: ignore[reportInvalidTypeVarUse]  #11780
 </code></pre>
-<p>I assume the fix you're envisioning is changing this to:</p>
-<pre><code class="language-python">    @overload
+<p>I assume the fix you&#x27;re envisioning is changing this to:</p>
+<pre><code>    @overload
     def __init__(self: dict[str, _VT], /, **kwargs: _VT) -&gt; None: ...
 </code></pre>
-<p>? And I'm also assuming that this is the reason for the pyright ignore?</p>
+<p>? And I&#x27;m also assuming that this is the reason for the pyright ignore?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-11 17:49</div>
-            <div class="timeline-body"><p>That is indeed the fix I'm envisioning, but that's not the reason for the pyright ignore</p>
+            <div class="timeline-body"><p>That is indeed the fix I&#x27;m envisioning, but that&#x27;s not the reason for the pyright ignore</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-11 17:50</div>
-            <div class="timeline-body"><p>I made a PR: https://github.com/python/typeshed/pull/15262</p>
+            <div class="timeline-body"><p>I made a PR: <a href="https://github.com/python/typeshed/pull/15262">python/typeshed#15262</a></p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:21:46 UTC
+        Synced at 2026-01-20 19:27:05 UTC
     </footer>
 </body>
 </html>

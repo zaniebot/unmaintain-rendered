@@ -23,46 +23,46 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Add support for the <code>field_specifiers</code> parameter on <code>dataclass_transform</code> decorator calls.</p>
-<p>closes https://github.com/astral-sh/ty/issues/1068</p>
-<h2>Conformance test results</h2>
+<p>closes <a href="https://github.com/astral-sh/ty/issues/1068">astral-sh/ty#1068</a></p>
+Conformance test results
 <p>All true positives :heavy_check_mark:</p>
-<h2>Ecosystem analysis</h2>
+Ecosystem analysis
 <ul>
 <li><p><code>trio</code>: this is the kind of change that I would expect from this PR. The code makes use of a dataclass <code>Outcome</code> with a <code>_unwrapped: bool = attr.ib(default=False, eq=False, init=False)</code> field that is excluded from the <code>__init__</code> signature, so we now see a bunch of constructor-call-related errors going away.</p>
 </li>
 <li><p><code>home-assistant/core</code>: They have a <code>domain: str = attr.ib(init=False, repr=False)</code> field and then use</p>
-<pre><code class="language-py">  @domain.default
+<pre><code>  @domain.default
   def _domain_default(self) -&gt; str:
       # …
 </code></pre>
-<p>This accesses the <code>default</code> attribute on <code>dataclasses.Field[…]</code> with a type of <code>default: _T | Literal[_MISSING_TYPE.MISSING]</code>, so we get those &quot;Object of type <code>_MISSING_TYPE</code> is not callable&quot; errors. I don't really understand how that is supposed to work. Even if <code>_MISSING_TYPE</code> would be absent from that union, what does this try to call? pyright also issues an error and it doesn't seem to work at runtime? So this looks like a true positive?</p>
+<p>This accesses the <code>default</code> attribute on <code>dataclasses.Field[…]</code> with a type of <code>default: _T | Literal[_MISSING_TYPE.MISSING]</code>, so we get those &quot;Object of type <code>_MISSING_TYPE</code> is not callable&quot; errors. I don&#x27;t really understand how that is supposed to work. Even if <code>_MISSING_TYPE</code> would be absent from that union, what does this try to call? pyright also issues an error and it doesn&#x27;t seem to work at runtime? So this looks like a true positive?</p>
 </li>
-<li><p><code>attrs</code>: Similar here. There are some new diagnostics on code that tries to access <code>.validator</code> on a field. This <em>does</em> work at runtime, but I'm not sure how that is supposed to type-check (without a <a href="https://github.com/python/mypy/blob/2c6c3959356674262d9b2c2dc43a33486e807a9c/mypy/plugins/attrs.py#L575-L602">custom plugin</a>). pyright errors on this as well.</p>
+<li><p><code>attrs</code>: Similar here. There are some new diagnostics on code that tries to access <code>.validator</code> on a field. This <em>does</em> work at runtime, but I&#x27;m not sure how that is supposed to type-check (without a <a href="https://github.com/python/mypy/blob/2c6c3959356674262d9b2c2dc43a33486e807a9c/mypy/plugins/attrs.py#L575-L602">custom plugin</a>). pyright errors on this as well.</p>
 </li>
-<li><p>A handful of new false positives because we don't support <code>alias</code> yet</p>
+<li><p>A handful of new false positives because we don&#x27;t support <code>alias</code> yet</p>
 </li>
 </ul>
-<h2>Test Plan</h2>
+Test Plan
 <p>Updated tests.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @sharkdp on 2025-10-15 12:03</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-15 12:03</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-15 12:05</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
-<details>
-<summary>Changes were detected when running ty on typing conformance tests</summary>
+Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a>
 
-<pre><code class="language-diff">--- old-output.txt	2025-10-16 13:58:15.685593376 +0000
+Changes were detected when running ty on typing conformance tests
+
+<pre><code>--- old-output.txt	2025-10-16 13:58:15.685593376 +0000
 +++ new-output.txt	2025-10-16 13:58:19.040608580 +0000
 @@ -1,5 +1,5 @@
- fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/ef9f932/src/function/execute.rs:402:17 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_type_statement.py`: `PEP695TypeAliasType &lt; 'db &gt;::value_type_(Id(d417)): execute: too many cycle iterations`
+ fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/ef9f932/src/function/execute.rs:402:17 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_type_statement.py`: `PEP695TypeAliasType &lt; &#x27;db &gt;::value_type_(Id(d417)): execute: too many cycle iterations`
 -fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/ef9f932/src/function/execute.rs:402:17 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_typealiastype.py`: `infer_definition_types(Id(16c43)): execute: too many cycle iterations`
 +fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/ef9f932/src/function/execute.rs:402:17 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_typealiastype.py`: `infer_definition_types(Id(17443)): execute: too many cycle iterations`
  _directives_deprecated_library.py:15:31: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
@@ -86,26 +86,26 @@
  dataclasses_transform_meta.py:73:6: error[unsupported-operator] Operator `&lt;` is not supported for types `Customer1` and `Customer1`
  dataclasses_transform_meta.py:79:6: error[unsupported-operator] Operator `&lt;` is not supported for types `Customer2` and `Customer2`
 @@ -898,5 +901,5 @@
- typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
+ typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key &#x27;name&#x27; in TypedDict `Movie` constructor
  typeddicts_usage.py:28:18: error[invalid-key] Invalid key access on TypedDict `Movie`: Unknown key &quot;title&quot;
  typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions. Did you mean to use a concrete TypedDict or `collections.abc.Mapping[str, object]` instead?
 -Found 900 diagnostics
 +Found 903 diagnostics
  WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
 </code></pre>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-15 12:06</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">attrs (https://github.com/python-attrs/attrs)
+Changes were detected when running on open source projects
+
+<pre><code>attrs (https://github.com/python-attrs/attrs)
 - tests/dataclass_transform_example.py:21:13: info[revealed-type] Revealed type: `(self: DefineConverter, with_converter: int = int) -&gt; None`
 + tests/dataclass_transform_example.py:21:13: info[revealed-type] Revealed type: `(self: DefineConverter, with_converter: int) -&gt; None`
 - tests/dataclass_transform_example.py:56:13: info[revealed-type] Revealed type: `(_a: int = Any) -&gt; None`
@@ -218,29 +218,29 @@ core (https://github.com/home-assistant/core)
 + Found 13761 diagnostics
 
 </code></pre>
-</details>
-<details>
-<summary>Memory usage changes were detected when running on open source projects</summary>
 
-<pre><code class="language-diff">prefect (https://github.com/PrefectHQ/prefect)
+
+Memory usage changes were detected when running on open source projects
+
+<pre><code>prefect (https://github.com/PrefectHQ/prefect)
 -     struct fields = ~35MB
 +     struct fields = ~36MB
 -     memo metadata = ~98MB
 +     memo metadata = ~103MB
 
 </code></pre>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-10-15 13:23</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-15 13:23</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-15 13:29</div>
-            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+            <div class="timeline-body">
 
-<h2><code>ecosystem-analyzer</code> results</h2>
+<code>ecosystem-analyzer</code> results
 <p>| Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
 | <code>invalid-argument-type</code> | 0 | 52 | 0 |
@@ -268,7 +268,7 @@ core (https://github.com/home-assistant/core)
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:4561 on 2025-10-15 14:43</div>
             <div class="timeline-body"><p>This is the key change. When we see an annotated assignment like the one for <code>id</code> in <code>C</code> …</p>
-<pre><code class="language-py">def fancy_field(*, init: bool = True, kw_only: bool = False) -&gt; Any: ...
+<pre><code>def fancy_field(*, init: bool = True, kw_only: bool = False) -&gt; Any: ...
 @dataclass_transform(field_specifiers=(fancy_field,))
 
 def fancy_model[T](cls: type[T]) -&gt; type[T]:
@@ -283,25 +283,25 @@ class Person:
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @sharkdp on 2025-10-15 14:43</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-15 14:43</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @sharkdp on 2025-10-15 14:43</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-15 14:43</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-10-15 14:43</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-15 14:43</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @sharkdp on 2025-10-15 14:43</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-15 14:43</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-15 15:15</div>
-            <div class="timeline-body"><p>Support for metaclass-based models is actually missing here (and we generally don't support baseclass-based models yet). I think it makes sense to do this <a href="https://github.com/astral-sh/ruff/pull/20896">in a second step</a>, actually.</p>
+            <div class="timeline-body"><p>Support for metaclass-based models is actually missing here (and we generally don&#x27;t support baseclass-based models yet). I think it makes sense to do this <a href="https://github.com/astral-sh/ruff/pull/20896">in a second step</a>, actually.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:632 on 2025-10-15 15:27</div>
-            <div class="timeline-body"><p>nit: it's a pre-existing issue, but most of our bitflags in this repo use bitshifts rather than octal to define the flags, which I find more readable, e.g.</p>
+            <div class="timeline-body"><p>nit: it&#x27;s a pre-existing issue, but most of our bitflags in this repo use bitshifts rather than octal to define the flags, which I find more readable, e.g.</p>
 <p>https://github.com/astral-sh/ruff/blob/98d27c412810e157f8a65ea75726d66676628225/crates/ruff_python_ast/src/nodes.rs#L812-L823</p>
 </div>
         </div>
@@ -315,16 +315,16 @@ class Person:
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Converted to draft by @sharkdp on 2025-10-15 15:43</div>
+            <div class="event">Converted to draft by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-15 15:43</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:697 on 2025-10-15 17:01</div>
-            <div class="timeline-body"><p>Why are we falling back to the Python <code>None</code> type here -- wouldn't we normally fall back to <code>Unknown</code> for this kind of thing? Seems probably worth a comment?</p>
+            <div class="timeline-body"><p>Why are we falling back to the Python <code>None</code> type here -- wouldn&#x27;t we normally fall back to <code>Unknown</code> for this kind of thing? Seems probably worth a comment?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:610 on 2025-10-15 17:08</div>
-            <div class="timeline-body"><p>I guess all these <code>.unwrap_or(None)</code> calls could also be <code>.unwrap_or_default()</code> calls, but IDK if that's actually clearer</p>
+            <div class="timeline-body"><p>I guess all these <code>.unwrap_or(None)</code> calls could also be <code>.unwrap_or_default()</code> calls, but IDK if that&#x27;s actually clearer</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -334,8 +334,8 @@ class Person:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:4550 on 2025-10-15 17:21</div>
-            <div class="timeline-body"><p>(<code>enclosing_scope.node().as_class()?</code> looks very cheap; I don't think it's any faster to explicitly check <code>enclosing_scope.kind()</code> before doing that call)</p>
-<pre><code class="language-suggestion">                let enclosing_scope = index.scope(scope.file_scope_id(db));
+            <div class="timeline-body"><p>(<code>enclosing_scope.node().as_class()?</code> looks very cheap; I don&#x27;t think it&#x27;s any faster to explicitly check <code>enclosing_scope.kind()</code> before doing that call)</p>
+<pre><code>                let enclosing_scope = index.scope(scope.file_scope_id(db));
                 let class_node = enclosing_scope.node().as_class()?;
                 let class_definition = index.expect_single_definition(class_node);
                 binding_type(db, class_definition)
@@ -349,7 +349,7 @@ class Person:
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:4561 on 2025-10-15 17:39</div>
             <div class="timeline-body"><p>nice solution!</p>
 <p>...Though I wonder what happens if you have nested classes with different dataclass_transform functions... does such a concept even make sense? It might be an interesting test, anyway... curious what other type checkers do for this kind of thing...</p>
-<pre><code class="language-py">def fancy_field(*, init: bool = True, kw_only: bool = False) -&gt; Any: ...
+<pre><code>def fancy_field(*, init: bool = True, kw_only: bool = False) -&gt; Any: ...
 
 def other_fancy_field(*, init: bool = True, kw_only: bool = False) -&gt; Any: ...
 
@@ -384,7 +384,7 @@ class Person:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:602 on 2025-10-16 10:37</div>
-            <div class="timeline-body"><p>... no, that's fine</p>
+            <div class="timeline-body"><p>... no, that&#x27;s fine</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -393,7 +393,7 @@ class Person:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types.rs</code>:697 on 2025-10-16 10:39</div>
-            <div class="timeline-body"><p>Just plain wrong. I was using <code>Type::none(db)</code> as the fallback representation for missing field specifiers on this branch initially. That's my only explanation for why I possibly wrote that ;-)</p>
+            <div class="timeline-body"><p>Just plain wrong. I was using <code>Type::none(db)</code> as the fallback representation for missing field specifiers on this branch initially. That&#x27;s my only explanation for why I possibly wrote that ;-)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -412,7 +412,7 @@ class Person:
 <li>Standard dataclasses use 1 field specifier</li>
 <li>attrs uses 2 field specifiers</li>
 <li>pydantic uses 3 field specifiers</li>
-<li>SQLAlchemy uses 9 field specifiers, but I certainly don't want to reserve space for 9 <code>Type</code>s in every type inference builder, just in case.</li>
+<li>SQLAlchemy uses 9 field specifiers, but I certainly don&#x27;t want to reserve space for 9 <code>Type</code>s in every type inference builder, just in case.</li>
 </ul>
 </div>
         </div>
@@ -426,20 +426,20 @@ class Person:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:283 on 2025-10-16 10:55</div>
-            <div class="timeline-body"><p>1, 2, or 3 all seem like reasonable choices, in that case! But I'd love for this to be captured in a comment, so other people reading through the source code don't have the same question as me ;)</p>
+            <div class="timeline-body"><p>1, 2, or 3 all seem like reasonable choices, in that case! But I&#x27;d love for this to be captured in a comment, so other people reading through the source code don&#x27;t have the same question as me ;)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-10-16 11:18</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-16 11:18</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-10-16 11:19</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-16 11:19</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-10-16 11:32</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-16 11:32</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-10-16 11:32</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-16 11:32</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-10-16 12:43</div>
@@ -452,19 +452,19 @@ class Person:
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-10-16 12:43</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-16 12:43</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-10-16 12:43</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-16 12:43</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-10-16 13:46</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-16 13:46</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-10-16 13:46</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-16 13:46</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @sharkdp on 2025-10-16 13:56</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-16 13:56</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/dataclasses/dataclass_transform.md</code>:518 on 2025-10-16 18:42</div>
@@ -473,7 +473,7 @@ class Person:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:702 on 2025-10-16 18:44</div>
-            <div class="timeline-body"><p>I am sort-of morbidly curious about what <em>does</em> happen to our inference if you try to define a dataclass, with <code>dataclasses.field</code> for one of the fields, and you're using a custom typeshed that doesn't have <code>dataclasses.field</code> in it. That might be an interesting test, but it's almost certainly not worth spending time on it right now 😄</p>
+            <div class="timeline-body"><p>I am sort-of morbidly curious about what <em>does</em> happen to our inference if you try to define a dataclass, with <code>dataclasses.field</code> for one of the fields, and you&#x27;re using a custom typeshed that doesn&#x27;t have <code>dataclasses.field</code> in it. That might be an interesting test, but it&#x27;s almost certainly not worth spending time on it right now 😄</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -482,10 +482,10 @@ class Person:
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @sharkdp on 2025-10-16 18:49</div>
+            <div class="event">Merged by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-16 18:49</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @sharkdp on 2025-10-16 18:49</div>
+            <div class="event">Closed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-16 18:49</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-10-16 18:49</div>
@@ -493,7 +493,7 @@ class Person:
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:16:27 UTC
+        Synced at 2026-01-20 19:19:34 UTC
     </footer>
 </body>
 </html>

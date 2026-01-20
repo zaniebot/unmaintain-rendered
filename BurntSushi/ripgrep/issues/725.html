@@ -25,9 +25,9 @@
             <div class="timeline-header"><a href="https://github.com/tekumara">@tekumara</a></div>
             <div class="timeline-body"><p>I found the following surprising:</p>
 <pre><code>$ echo bar &gt; bar
-$ rg -g 'foo' --files *
+$ rg -g &#x27;foo&#x27; --files *
 bar
-$ rg -g 'foo' --files bar
+$ rg -g &#x27;foo&#x27; --files bar
 bar
 </code></pre>
 <p>I was expecting the above rg commands to return nothing.</p>
@@ -48,43 +48,43 @@ foo:test
 [andrew@Cheetah ripgrep-725] grep test --include foo bar
 [andrew@Cheetah ripgrep-725]
 </code></pre>
-<p>I think my thinking here was that if you specified a file on the command line, then that meant you explicitly wanted to search it, so nothing should override it. I suppose that is perhaps not exactly true if you're globbing or getting your file list from some other process.</p>
-<p>At the very least, grep's behavior is a strong vote in favor of respecting explicit globs even on explicitly given file paths.</p>
+<p>I think my thinking here was that if you specified a file on the command line, then that meant you explicitly wanted to search it, so nothing should override it. I suppose that is perhaps not exactly true if you&#x27;re globbing or getting your file list from some other process.</p>
+<p>At the very least, grep&#x27;s behavior is a strong vote in favor of respecting explicit globs even on explicitly given file paths.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2018-01-01 01:00</div>
             <div class="timeline-body"><p>AFAIK <code>ag</code> behaves the same way as <code>rg</code> here, and i think it makes sense, personally. Glob rules in particular tend to be used for matching against multiple files, so it seems reasonable that an explicit file path (which can only ever match <em>one</em> file, and which the user has to go out of their way to provide) has precedence. It also matches the way ignore rules can be overridden, which makes sense to me too because command-line globs and ignore files are closely related functionality</p>
-<p>I can see the other side of it too but that's my intuition anyway</p>
+<p>I can see the other side of it too but that&#x27;s my intuition anyway</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-01-01 01:09</div>
-            <div class="timeline-body"><p>@okdana In the case of <code>rg -g foo bar</code> yeah I see how that makes sense. But doesn't <code>rg -g foo *</code> kind of turn you around in the other direction? And there's also <code>find ./ ... | xargs rg -g foo</code> as well.</p>
-<p>But yeah, I don't know what to do here.</p>
+            <div class="timeline-body"><p>@okdana In the case of <code>rg -g foo bar</code> yeah I see how that makes sense. But doesn&#x27;t <code>rg -g foo *</code> kind of turn you around in the other direction? And there&#x27;s also <code>find ./ ... | xargs rg -g foo</code> as well.</p>
+<p>But yeah, I don&#x27;t know what to do here.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2018-01-01 01:22</div>
             <div class="timeline-body"><blockquote>
-<p>But doesn't rg -g foo * kind of turn you around in the other direction?</p>
+<p>But doesn&#x27;t rg -g foo * kind of turn you around in the other direction?</p>
 </blockquote>
-<p>It might, if <code>rg</code> was handling the <code>*</code> — but <code>rg</code> doesn't know anything about that, it's a shell feature. By the time <code>rg</code> gets it it could have expanded to a hundred files or just one, and it has no way of telling either way.</p>
-<p>Passing <code>*</code> to a recursive search tool in the first place usually stems from a misunderstanding of how either the shell or the tool works, IMO. There are a few cases where it's useful, but 95% of the time it's redundant or even counter-productive.</p>
+<p>It might, if <code>rg</code> was handling the <code>*</code> — but <code>rg</code> doesn&#x27;t know anything about that, it&#x27;s a shell feature. By the time <code>rg</code> gets it it could have expanded to a hundred files or just one, and it has no way of telling either way.</p>
+<p>Passing <code>*</code> to a recursive search tool in the first place usually stems from a misunderstanding of how either the shell or the tool works, IMO. There are a few cases where it&#x27;s useful, but 95% of the time it&#x27;s redundant or even counter-productive.</p>
 <blockquote>
-<p>And there's also find ./ ... | xargs rg -g foo as well.</p>
+<p>And there&#x27;s also find ./ ... | xargs rg -g foo as well.</p>
 </blockquote>
-<p>I never thought about that. But i guess if you're already involving <code>find</code> there's no reason not to use its own features (which are usually more powerful than <code>rg</code>'s anyway, tbh) to include/exclude file paths.</p>
+<p>I never thought about that. But i guess if you&#x27;re already involving <code>find</code> there&#x27;s no reason not to use its own features (which are usually more powerful than <code>rg</code>&#x27;s anyway, tbh) to include/exclude file paths.</p>
 <p>🤷‍♀️</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-01-01 01:46</div>
-            <div class="timeline-body"><p>Yeah, I guess I'm inclined to say this: unless someone can come up with a compelling reason to switch today's behavior, then I'd prefer to stay with what we have today. I do somewhat consider &quot;that's what grep does&quot; to be a strong vote in favor of switching, but I'd like a little more than that.</p>
+            <div class="timeline-body"><p>Yeah, I guess I&#x27;m inclined to say this: unless someone can come up with a compelling reason to switch today&#x27;s behavior, then I&#x27;d prefer to stay with what we have today. I do somewhat consider &quot;that&#x27;s what grep does&quot; to be a strong vote in favor of switching, but I&#x27;d like a little more than that.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2018-01-01 01:46</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-01-01 01:46</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tekumara">@tekumara</a> on 2018-01-01 22:13</div>
@@ -92,12 +92,12 @@ foo:test
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2018-01-11 13:05</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-01-11 13:05</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:42:23 UTC
+        Synced at 2026-01-20 18:48:05 UTC
     </footer>
 </body>
 </html>

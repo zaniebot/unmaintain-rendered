@@ -23,17 +23,17 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/squidfunk">@squidfunk</a></div>
-            <div class="timeline-body"><p>Originally reported here: https://github.com/BurntSushi/globset/issues/8</p>
+            <div class="timeline-body"><p>Originally reported here: <a href="https://github.com/BurntSushi/globset/issues/8">BurntSushi/globset#8</a></p>
 <p>This PR fixes the linked issue. See below:</p>
-<hr />
+<hr>
 <p>The <code>Debug</code> implementation of <code>GlobSetBuilder</code> is quite noisy. For better introspectability in consuming packages, it would be perfect if one of two things could be implemented, so the <code>Debug</code> implementation can be adjusted (favorite) or is more readable:</p>
 <ol>
 <li>An <code>IntoIterator&lt;Item = &amp;Glob&gt;</code> implementation for <code>&amp;GlobSetBuilder</code>, so we can use the <code>Display</code> implementation of <code>Glob</code> where applicable. This would be a non-invasive addition, as the consumer can decide what style they want.</li>
 <li>A <code>Debug</code> implementation for <code>GlobSetBuilder</code> that does 1., i.e., prints <code>Glob</code> via <code>Display</code>.</li>
 </ol>
-<p>I'm happy to send a PR for either of which, if this is a good match.</p>
-<h3>Example</h3>
-<pre><code class="language-rust">#[cfg(test)]
+<p>I&#x27;m happy to send a PR for either of which, if this is a good match.</p>
+Example
+<pre><code>#[cfg(test)]
 mod tests {
     use globset::{Glob, GlobSetBuilder};
 
@@ -48,8 +48,8 @@ mod tests {
     }
 }
 </code></pre>
-<h3>Current Result</h3>
-<pre><code class="language-rust">GlobSetBuilder {
+Current Result
+<pre><code>GlobSetBuilder {
     pats: [
         Glob {
             glob: &quot;src/**/*.rs&quot;,
@@ -62,24 +62,24 @@ mod tests {
             tokens: Tokens(
                 [
                     Literal(
-                        's',
+                        &#x27;s&#x27;,
                     ),
                     Literal(
-                        'r',
+                        &#x27;r&#x27;,
                     ),
                     Literal(
-                        'c',
+                        &#x27;c&#x27;,
                     ),
                     RecursiveZeroOrMore,
                     ZeroOrMore,
                     Literal(
-                        '.',
+                        &#x27;.&#x27;,
                     ),
                     Literal(
-                        'r',
+                        &#x27;r&#x27;,
                     ),
                     Literal(
-                        's',
+                        &#x27;s&#x27;,
                     ),
                 ],
             ),
@@ -96,16 +96,16 @@ mod tests {
                 [
                     ZeroOrMore,
                     Literal(
-                        '.',
+                        &#x27;.&#x27;,
                     ),
                     Literal(
-                        't',
+                        &#x27;t&#x27;,
                     ),
                     Literal(
-                        'x',
+                        &#x27;x&#x27;,
                     ),
                     Literal(
-                        't',
+                        &#x27;t&#x27;,
                     ),
                 ],
             ),
@@ -121,27 +121,27 @@ mod tests {
             tokens: Tokens(
                 [
                     Literal(
-                        'd',
+                        &#x27;d&#x27;,
                     ),
                     Literal(
-                        'o',
+                        &#x27;o&#x27;,
                     ),
                     Literal(
-                        'c',
+                        &#x27;c&#x27;,
                     ),
                     Literal(
-                        's',
+                        &#x27;s&#x27;,
                     ),
                     RecursiveZeroOrMore,
                     ZeroOrMore,
                     Literal(
-                        '.',
+                        &#x27;.&#x27;,
                     ),
                     Literal(
-                        'm',
+                        &#x27;m&#x27;,
                     ),
                     Literal(
-                        'd',
+                        &#x27;d&#x27;,
                     ),
                 ],
             ),
@@ -149,8 +149,8 @@ mod tests {
     ],
 }
 </code></pre>
-<h3>Ideal Result:</h3>
-<pre><code class="language-rust">GlobSetBuilder {
+Ideal Result:
+<pre><code>GlobSetBuilder {
     pats: [
         &quot;src/**/*.rs&quot;,
         &quot;*.txt&quot;,
@@ -163,40 +163,40 @@ mod tests {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-04-09 18:55</div>
-            <div class="timeline-body"><p>Oh hmmm, I think I might have misread your original issue. I was thinking that we'd just make the <code>Debug</code> impl smaller without exposing new APIs.</p>
+            <div class="timeline-body"><p>Oh hmmm, I think I might have misread your original issue. I was thinking that we&#x27;d just make the <code>Debug</code> impl smaller without exposing new APIs.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/squidfunk">@squidfunk</a> on 2025-04-09 19:05</div>
             <div class="timeline-body"><p>No problem, so something like this maybe?</p>
-<pre><code class="language-rust">impl std::fmt::Debug for GlobSetBuilder {
-    fn fmt(&amp;self, f: &amp;mut std::fmt::Formatter&lt;'_&gt;) -&gt; std::fmt::Result {
+<pre><code>impl std::fmt::Debug for GlobSetBuilder {
+    fn fmt(&amp;self, f: &amp;mut std::fmt::Formatter&lt;&#x27;_&gt;) -&gt; std::fmt::Result {
         let pats = self.pats.iter().map(ToString::to_string).collect::&lt;Vec&lt;_&gt;&gt;();
         f.debug_struct(&quot;GlobSetBuilder&quot;).field(&quot;pats&quot;, &amp;pats).finish()
     }
 }
 </code></pre>
 <p>Output:</p>
-<pre><code class="language-rust">GlobSetBuilder {
+<pre><code>GlobSetBuilder {
     pats: [
         &quot;foo&quot;,
         &quot;bar&quot;,
     ],
 }
 </code></pre>
-<p>Or would you want to change the debug impl of <code>Glob</code>? I though that maybe that's not what you wanted, given that inspecting globs might be another use case than inspecting a glob set.</p>
+<p>Or would you want to change the debug impl of <code>Glob</code>? I though that maybe that&#x27;s not what you wanted, given that inspecting globs might be another use case than inspecting a glob set.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-04-09 19:08</div>
-            <div class="timeline-body"><p>That looks fine to me. But you'll want to branch on <code>f.alternate()</code>.</p>
+            <div class="timeline-body"><p>That looks fine to me. But you&#x27;ll want to branch on <code>f.alternate()</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/squidfunk">@squidfunk</a> on 2025-04-09 19:19</div>
             <div class="timeline-body"><p>Okay, I hope I understand you correctly:</p>
-<pre><code class="language-rust">impl std::fmt::Debug for GlobSetBuilder {
-    fn fmt(&amp;self, f: &amp;mut std::fmt::Formatter&lt;'_&gt;) -&gt; std::fmt::Result {
+<pre><code>impl std::fmt::Debug for GlobSetBuilder {
+    fn fmt(&amp;self, f: &amp;mut std::fmt::Formatter&lt;&#x27;_&gt;) -&gt; std::fmt::Result {
         if f.alternate() {
             f.debug_struct(&quot;GlobSetBuilder&quot;).field(&quot;pats&quot;, &amp;self.pats).finish()
         // Print the patterns in a way that is easy to read.
@@ -207,7 +207,7 @@ mod tests {
     }
 }
 </code></pre>
-<p>If that's fine, I can send another PR.</p>
+<p>If that&#x27;s fine, I can send another PR.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -216,12 +216,12 @@ mod tests {
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @squidfunk on 2025-04-09 19:26</div>
+            <div class="event">Closed by <a href="https://github.com/squidfunk">@squidfunk</a> on 2025-04-09 19:26</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:44:19 UTC
+        Synced at 2026-01-20 18:48:20 UTC
     </footer>
 </body>
 </html>

@@ -26,19 +26,19 @@
             <div class="timeline-body"><p>This change caused our CI to fail using <code>alpine:edge</code> image</p>
 <pre><code>web-1  | /srv/scripts/run.sh: /srv/.venv/bin/activate: line 81: OSTYPE: parameter not set
 </code></pre>
-<p><em>Originally posted by @andypost in https://github.com/astral-sh/uv/issues/10397#issuecomment-2584967660</em></p>
+<p><em>Originally posted by @andypost in <a href="https://github.com/astral-sh/uv/issues/10397">astral-sh/uv#10397</a>#issuecomment-2584967660</em></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "This change caused our CI to fail using `alpine:edge` image" to "Revised `activate` script fails on `alpine:edge`" by @charliermarsh on 2025-01-11 14:11</div>
+            <div class="event">Renamed from &quot;This change caused our CI to fail using `alpine:edge` image&quot; to &quot;Revised `activate` script fails on `alpine:edge`&quot; by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-11 14:11</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2025-01-11 14:11</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-11 14:11</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-11 16:44</div>
-            <div class="timeline-body"><p>I can't reproduce this</p>
-<pre><code class="language-Dockerfile">FROM alpine:edge
+            <div class="timeline-body"><p>I can&#x27;t reproduce this</p>
+<pre><code>FROM alpine:edge
 
 RUN apk add --update --no-cache python3
 
@@ -56,7 +56,7 @@ RUN . /venv/bin/activate
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/andypost">@andypost</a> on 2025-01-11 19:09</div>
             <div class="timeline-body"><p>@zanieb the way to reproduce is <code>set -eux</code> before activation</p>
-<pre><code class="language-Dockerfile">FROM alpine:edge
+<pre><code>FROM alpine:edge
 
 RUN apk add --update --no-cache python3
 
@@ -66,18 +66,18 @@ RUN set -eux &amp;&amp; . /venv/bin/activate
 </code></pre>
 <p>the log</p>
 <pre><code>0.710 + . /venv/bin/activate                                                                                                                                                                                                                                 
-0.712 + '[' -n  ]
-0.712 + '[' -n  ]
-0.712 + '[' -n  ]
+0.712 + &#x27;[&#x27; -n  ]
+0.712 + &#x27;[&#x27; -n  ]
+0.712 + &#x27;[&#x27; -n  ]
 0.713 + deactivate nondestructive
 0.714 + unset -f pydoc
-0.714 + '[' -n  ]
-0.714 + '[' -n  ]
+0.714 + &#x27;[&#x27; -n  ]
+0.714 + &#x27;[&#x27; -n  ]
 0.714 + hash -r
-0.714 + '[' -n  ]
+0.714 + &#x27;[&#x27; -n  ]
 0.714 + unset VIRTUAL_ENV
 0.714 + unset VIRTUAL_ENV_PROMPT
-0.714 + '[' '!' nondestructive '=' nondestructive ]
+0.714 + &#x27;[&#x27; &#x27;!&#x27; nondestructive &#x27;=&#x27; nondestructive ]
 0.715 + VIRTUAL_ENV=/venv
 0.715 /bin/sh: /venv/bin/activate: line 81: OSTYPE: parameter not set
 </code></pre>
@@ -86,10 +86,10 @@ RUN set -eux &amp;&amp; . /venv/bin/activate
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-11 19:33</div>
             <div class="timeline-body"><p>Thanks! Looks like this can be resolved with</p>
-<pre><code>RUN sed -i 's/if { \[ &quot;$OSTYPE&quot; = &quot;cygwin&quot; \] || \[ &quot;$OSTYPE&quot; = &quot;msys&quot; \]; }/if { [ &quot;${OSTYPE-}&quot; = &quot;cygwin&quot; ] || [ &quot;${OSTYPE-}&quot; = &quot;msys&quot; ]; }/' /venv/bin/activate
+<pre><code>RUN sed -i &#x27;s/if { \[ &quot;$OSTYPE&quot; = &quot;cygwin&quot; \] || \[ &quot;$OSTYPE&quot; = &quot;msys&quot; \]; }/if { [ &quot;${OSTYPE-}&quot; = &quot;cygwin&quot; ] || [ &quot;${OSTYPE-}&quot; = &quot;msys&quot; ]; }/&#x27; /venv/bin/activate
 </code></pre>
 <p>or</p>
-<pre><code class="language-diff">❯ gd
+<pre><code>❯ gd
 diff --git a/crates/uv-virtualenv/src/activator/activate b/crates/uv-virtualenv/src/activator/activate
 index 3678ee23b..f87ca81dd 100644
 --- a/crates/uv-virtualenv/src/activator/activate
@@ -97,7 +97,7 @@ index 3678ee23b..f87ca81dd 100644
 @@ -78,7 +78,7 @@ deactivate () {
  deactivate nondestructive
  
- VIRTUAL_ENV='{{ VIRTUAL_ENV_DIR }}'
+ VIRTUAL_ENV=&#x27;{{ VIRTUAL_ENV_DIR }}&#x27;
 -if { [ &quot;$OSTYPE&quot; = &quot;cygwin&quot; ] || [ &quot;$OSTYPE&quot; = &quot;msys&quot; ]; } &amp;&amp; command -v cygpath &gt; /dev/null 2&gt;&amp;1 ; then
 +if { [ &quot;${OSTYPE-}&quot; = &quot;cygwin&quot; ] || [ &quot;${OSTYPE-}&quot; = &quot;msys&quot; ]; } &amp;&amp; command -v cygpath &gt; /dev/null 2&gt;&amp;1; then
      VIRTUAL_ENV=$(cygpath -u &quot;$VIRTUAL_ENV&quot;)
@@ -107,12 +107,12 @@ index 3678ee23b..f87ca81dd 100644
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @Gankra by @Gankra on 2025-01-15 17:37</div>
+            <div class="event">Assigned to <a href="https://github.com/Gankra">@Gankra</a> by <a href="https://github.com/Gankra">@Gankra</a> on 2025-01-15 17:37</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:29:15 UTC
+        Synced at 2026-01-20 19:36:37 UTC
     </footer>
 </body>
 </html>

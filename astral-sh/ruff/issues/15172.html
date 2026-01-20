@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/injust">@injust</a></div>
-            <div class="timeline-body"><pre><code class="language-python">from __future__ import annotations
+            <div class="timeline-body"><pre><code>from __future__ import annotations
 
 from enum import Enum
 
@@ -36,18 +36,18 @@ class Foo:
 
     version: Version | None = None
 </code></pre>
-<p>Inside <code>Foo</code>, the unused <code>from packaging.version import Version</code> import is shadowed by the <code>Version</code> enum. But Ruff doesn't detect the unused import. If I remove <code>from __future__ import annotations</code>, F401 and F811 are correctly reported.</p>
+<p>Inside <code>Foo</code>, the unused <code>from packaging.version import Version</code> import is shadowed by the <code>Version</code> enum. But Ruff doesn&#x27;t detect the unused import. If I remove <code>from __future__ import annotations</code>, F401 and F811 are correctly reported.</p>
 <p>Pyflakes output:</p>
-<pre><code>test.py:5:1: 'packaging.version.Version' imported but unused
-test.py:9:5: redefinition of unused 'Version' from line 5
+<pre><code>test.py:5:1: &#x27;packaging.version.Version&#x27; imported but unused
+test.py:9:5: redefinition of unused &#x27;Version&#x27; from line 5
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-12-29 08:26</div>
-            <div class="timeline-body"><p>This is a bit of a tricky case. Technically this is ill-defined as far as type checkers are concerned, since with <code>from __future__ import annotations</code> analysis can happen out of order, so the semantics need to remain the same, no matter in which order you analyze the statements (as long as you defer lookups when you can't find something), so when the lookup for <code>Version</code> happens it might have seen <code>Version</code> in the global scope, but not the one the local scope.</p>
-<p>Ruff performs a global name lookup in deferred annotations in order to resolve that ambiguity, which is why the import doesn't get detected as unused. The safe way to write this would be:</p>
-<pre><code class="language-python">from __future__ import annotations
+            <div class="timeline-body"><p>This is a bit of a tricky case. Technically this is ill-defined as far as type checkers are concerned, since with <code>from __future__ import annotations</code> analysis can happen out of order, so the semantics need to remain the same, no matter in which order you analyze the statements (as long as you defer lookups when you can&#x27;t find something), so when the lookup for <code>Version</code> happens it might have seen <code>Version</code> in the global scope, but not the one the local scope.</p>
+<p>Ruff performs a global name lookup in deferred annotations in order to resolve that ambiguity, which is why the import doesn&#x27;t get detected as unused. The safe way to write this would be:</p>
+<pre><code>from __future__ import annotations
 
 from enum import Enum
 
@@ -66,7 +66,7 @@ class Foo:
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-12-29 09:04</div>
             <div class="timeline-body"><p>Also this matches the behavior of <code>typing.get_type_hints</code>, which will perform the lookup in the global scope before looking it up in the local scope:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; from __future__ import annotations
+<pre><code>&gt;&gt;&gt; from __future__ import annotations
 &gt;&gt;&gt; from collections.abc import Iterable                                                   
 &gt;&gt;&gt; class Foo:
 ...     class Iterable:
@@ -75,7 +75,7 @@ class Foo:
 ... 
 &gt;&gt;&gt; from typing import get_type_hints                                                      
 &gt;&gt;&gt; get_type_hints(Foo)
-{'iterable': collections.abc.Iterable | None}
+{&#x27;iterable&#x27;: collections.abc.Iterable | None}
 </code></pre>
 </div>
         </div>
@@ -85,12 +85,12 @@ class Foo:
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @injust on 2024-12-30 04:57</div>
+            <div class="event">Closed by <a href="https://github.com/injust">@injust</a> on 2024-12-30 04:57</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:51:53 UTC
+        Synced at 2026-01-20 18:49:13 UTC
     </footer>
 </body>
 </html>

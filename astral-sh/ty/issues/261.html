@@ -23,58 +23,58 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p><code>play.py</code>:</p>
-<pre><code class="language-py">from foo import bar
+<pre><code>from foo import bar
 
 # revealed on main: Never
-# revealed before `__all__` support: &lt;module 'foo.bar'&gt;
+# revealed before `__all__` support: &lt;module &#x27;foo.bar&#x27;&gt;
 reveal_type(bar)
 </code></pre>
 <p><code>foo/__init__.pyi</code>:</p>
-<pre><code class="language-py">from foo import bar
+<pre><code>from foo import bar
 
 __all__ = [&quot;bar&quot;]
 </code></pre>
 <p><code>foo/bar/__init__.pyi</code> (empty file):</p>
-<pre><code class="language-py"></code></pre>
+<pre><code></code></pre>
 <p>Running this with:</p>
-<pre><code class="language-sh">cargo run --bin ty -- check --project=/path/to/project
+<pre><code>cargo run --bin ty -- check --project=/path/to/project
 </code></pre>
-<p>This is reproduced with or without the custom typeshed that I've provided below.</p>
+<p>This is reproduced with or without the custom typeshed that I&#x27;ve provided below.</p>
 <p>Trace logs that are interesting and reveals a cycle on <code>symbol</code> query:</p>
 <pre><code>Resolving import statement from module `foo` into file `/Users/dhruv/playground/ty/isolated3/play.py`
 (query) resolve_module{name=foo}
 Resolved module `foo` to `/Users/dhruv/playground/ty/isolated3/foo/__init__.pyi`
 (query) infer_definition_types{range=48..51, file=File(System(&quot;/Users/dhruv/playground/ty/isolated3/play.py&quot;))}
-(query) member_lookup_with_policy: &lt;module 'foo'&gt;.bar
+(query) member_lookup_with_policy: &lt;module &#x27;foo&#x27;&gt;.bar
 imported_symbol: &quot;bar&quot; in /Users/dhruv/playground/ty/isolated3/foo/__init__.pyi
 (query) symbol{name=&quot;bar&quot;, file=/Users/dhruv/playground/ty/isolated3/foo/__init__.pyi}
 (query) dunder_all_names{file=System(&quot;/Users/dhruv/playground/ty/isolated3/foo/__init__.pyi&quot;)}
 (query) infer_definition_types{range=16..19, file=File(System(&quot;/Users/dhruv/playground/ty/isolated3/foo/__init__.pyi&quot;))}
-(query) member_lookup_with_policy: &lt;module 'foo'&gt;.bar
+(query) member_lookup_with_policy: &lt;module &#x27;foo&#x27;&gt;.bar
 imported_symbol: &quot;bar&quot; in /Users/dhruv/playground/ty/isolated3/foo/__init__.pyi
 (query) (CYCLE) symbol{name=&quot;bar&quot;, file=/Users/dhruv/playground/ty/isolated3/foo/__init__.pyi}
 </code></pre>
 <p>This might be related to #113.</p>
-<p>The reason this isn't occurring before <code>__all__</code> support is that the <code>bar</code> module is not being re-exported in <code>foo/__init__.pyi</code> via &quot;redundant alias&quot; but is via <code>__all__</code>. So, before <code>__all__</code> support, it wouldn't trigger the <code>infer_definition_types</code> query and fallback to using <code>Type::ModuleType.to_instance(db).member(db, name)</code> instead which would avoid the cycle.</p>
-<details><summary>Custom typeshed with only the following files:</summary>
+<p>The reason this isn&#x27;t occurring before <code>__all__</code> support is that the <code>bar</code> module is not being re-exported in <code>foo/__init__.pyi</code> via &quot;redundant alias&quot; but is via <code>__all__</code>. So, before <code>__all__</code> support, it wouldn&#x27;t trigger the <code>infer_definition_types</code> query and fallback to using <code>Type::ModuleType.to_instance(db).member(db, name)</code> instead which would avoid the cycle.</p>
+Custom typeshed with only the following files:
 <p>
 
 <p><code>stdlib/builtins.pyi</code>:</p>
-<pre><code class="language-py">class object: ...
+<pre><code>class object: ...
 class type: ...
 class int: ...
 class str: ...
 class list: ...
 </code></pre>
 <p><code>stdlib/types.pyi</code>:</p>
-<pre><code class="language-py">__all__ = [&quot;ModuleType&quot;]
+<pre><code>__all__ = [&quot;ModuleType&quot;]
 
 class ModuleType: ...
 </code></pre>
 <p><code>stdlib/typing.pyi</code>:</p>
-<pre><code class="language-py">__all__ = [&quot;reveal_type&quot;]
+<pre><code>__all__ = [&quot;reveal_type&quot;]
 
 def reveal_type[T](obj: T, /) -&gt; T: ...
 </code></pre>
@@ -84,17 +84,17 @@ types: 3.0-
 typing: 3.5-
 </code></pre>
 </p>
-</details> 
+ 
 
-<h3>Version</h3>
+Version
 <p><em>No response</em></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2025-05-08 03:29</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-05-08 03:29</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @sharkdp by @sharkdp on 2025-05-08 18:14</div>
+            <div class="event">Assigned to <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-08 18:14</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-10 12:50</div>
@@ -102,42 +102,42 @@ typing: 3.5-
 <ul>
 <li>Due to the &quot;Cycle when …&quot; title, I somehow thought that we would panic here or run into a stack overflow, but we &quot;only&quot; infer an incorrect type here. &quot;Cycle&quot; in the title refers to the fact that we encounter a fixpoint iteration cycle when resolving types here.</li>
 <li>The example <em>is</em> self-referential, because <code>foo/__init__.pyi</code> contains <code>from foo import bar</code>.</li>
-<li>It's true that a <code>infer_definition_types</code> cycle is involved in inferring the type <em>with the provided custom typeshed</em>, but this is not true for normal typeshed! ~~There is no <code>WillIterateCycle</code> salsa event and I can even remove cycle handling from <code>infer_definition_types</code>, and the answer is still <code>Never</code>.~~ That was wrong. There is still a cycle, but a different one.. on <code>symbol_by_id</code>, as the PR description mentions.</li>
-<li>This also doesn't seem <code>__all__</code> related to me, as we also infer <code>Never</code> if the <code>__all__</code> definition is removed.</li>
-<li>I'm also not sure about the &quot;revealed before <code>__all__</code> support: &lt;module 'foo.bar'&gt;&quot; comment. I also get <code>Never</code> on commit c6f4929cdc596d0b0e0018216fc29b23a8621a92, before <code>__all__</code> had been merged?</li>
+<li>It&#x27;s true that a <code>infer_definition_types</code> cycle is involved in inferring the type <em>with the provided custom typeshed</em>, but this is not true for normal typeshed! ~~There is no <code>WillIterateCycle</code> salsa event and I can even remove cycle handling from <code>infer_definition_types</code>, and the answer is still <code>Never</code>.~~ That was wrong. There is still a cycle, but a different one.. on <code>symbol_by_id</code>, as the PR description mentions.</li>
+<li>This also doesn&#x27;t seem <code>__all__</code> related to me, as we also infer <code>Never</code> if the <code>__all__</code> definition is removed.</li>
+<li>I&#x27;m also not sure about the &quot;revealed before <code>__all__</code> support: &lt;module &#x27;foo.bar&#x27;&gt;&quot; comment. I also get <code>Never</code> on commit c6f4929cdc596d0b0e0018216fc29b23a8621a92, before <code>__all__</code> had been merged?</li>
 </ul>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-10 13:12</div>
-            <div class="timeline-body"><p>I'm not really familiar with the module/import resolution part of our codebase, but it seems to me like the underlying problem here is that we need to try and resolve <code>bar</code> as a symbol before checking if <code>bar</code> is a submodule. The fact that we infer <code>Never</code> for a self referential import (in case there is no such submodule) is actually fine, I think? Consider an example like <a href="https://play.ty.dev/1dddb2eb-a4fe-471d-a2c0-0f4d587692e0">this</a>:</p>
+            <div class="timeline-body"><p>I&#x27;m not really familiar with the module/import resolution part of our codebase, but it seems to me like the underlying problem here is that we need to try and resolve <code>bar</code> as a symbol before checking if <code>bar</code> is a submodule. The fact that we infer <code>Never</code> for a self referential import (in case there is no such submodule) is actually fine, I think? Consider an example like <a href="https://play.ty.dev/1dddb2eb-a4fe-471d-a2c0-0f4d587692e0">this</a>:</p>
 <p><code>main.py</code></p>
-<pre><code class="language-py">from module import x
+<pre><code>from module import x
 
 reveal_type(x)
 </code></pre>
 <p><code>module.py</code></p>
-<pre><code class="language-py">from module import x
+<pre><code>from module import x
 </code></pre>
-<p>This will lead to an <code>ImportError</code> at runtime, so <code>Never</code> is correct in that sense? (ideally, we'd also emit a diagnostic).</p>
+<p>This will lead to an <code>ImportError</code> at runtime, so <code>Never</code> is correct in that sense? (ideally, we&#x27;d also emit a diagnostic).</p>
 <p>So maybe we need to special-case <code>Never</code> and treat it as a signal that no such symbol can be found in <code>module</code>, and fall back to <code>KnownClass::ModuleType.to_instance(db).member(db, name)</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-10 13:38</div>
-            <div class="timeline-body"><p>I posted a draft for a fix here: https://github.com/astral-sh/ruff/pull/18005. The ecosystem results look promising. Some false positives go away. There are a lot of new errors, but this can hopefully be attributed to the fact that we previously inferred (a forgiving) <code>Never</code> for a lot of things? I didn't have time to look into it yet. Will continue tomorrow.</p>
+            <div class="timeline-body"><p>I posted a draft for a fix here: <a href="https://github.com/astral-sh/ruff/pull/18005">astral-sh/ruff#18005</a>. The ecosystem results look promising. Some false positives go away. There are a lot of new errors, but this can hopefully be attributed to the fact that we previously inferred (a forgiving) <code>Never</code> for a lot of things? I didn&#x27;t have time to look into it yet. Will continue tomorrow.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">imports</span> added by @AlexWaygood on 2025-05-10 17:59</div>
+            <div class="event">Label <span class="label">imports</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-10 17:59</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @sharkdp on 2025-05-13 14:59</div>
+            <div class="event">Closed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-13 14:59</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:19:46 UTC
+        Synced at 2026-01-20 19:24:22 UTC
     </footer>
 </body>
 </html>

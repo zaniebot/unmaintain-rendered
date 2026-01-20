@@ -23,58 +23,58 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This PR adds notebook support to red knot.</p>
 <p>The way notebooks are handled in Ruff is that it parses the notebook and concatenates the content of all cells to a single string. The concatenated string is then passed to the linter or formatter. Reported diagnostics are mapped back to their origin cells by using a source map.</p>
-<p>This PR doesn't implement any of the fancy re-mapping logic but adds support for reading notebooks into a structured representation. This requires two additions:</p>
+<p>This PR doesn&#x27;t implement any of the fancy re-mapping logic but adds support for reading notebooks into a structured representation. This requires two additions:</p>
 <ul>
-<li>A new <code>System::read_to_notebook</code> method that reads a system path to a <code>Notebook</code>. The motivation for this method is that the LSP uses a structured notebook representation (slightly different from the representation used by <code>ruff_notebook</code>) that's cheaper to convert to a <code>ruff_notebook::Notebook</code> then reparsing the notebook from source.</li>
+<li>A new <code>System::read_to_notebook</code> method that reads a system path to a <code>Notebook</code>. The motivation for this method is that the LSP uses a structured notebook representation (slightly different from the representation used by <code>ruff_notebook</code>) that&#x27;s cheaper to convert to a <code>ruff_notebook::Notebook</code> then reparsing the notebook from source.</li>
 <li>I renamed <code>SourceCode</code> to <code>SourceFile</code> and changed it to use an internal enum that is either <code>Text</code> or <code>Notebook</code> to account for the fact that a file can either be a text or notebook.</li>
 </ul>
-<h2>Open questions</h2>
-<p>I'm not too happy with the name <code>SourceFile</code>. I'm open for better suggestions but I also don't want to block the PR on finding the perfect name (the query is used very sparsely and a rename is quickly done)</p>
-<h2>Cell and embedded file support</h2>
+Open questions
+<p>I&#x27;m not too happy with the name <code>SourceFile</code>. I&#x27;m open for better suggestions but I also don&#x27;t want to block the PR on finding the perfect name (the query is used very sparsely and a rename is quickly done)</p>
+Cell and embedded file support
 <p>I intentionally excluded support for cell-based queries or a design for supporting embedded files (e.g. a doctest block in a python file). I think we could support both and a way of doing it could be to:</p>
 <ul>
 <li>Make <code>SourceFile</code> a salsa tracked struct</li>
 <li>Add additional <code>Cell</code> and <code>Embedded</code> variants that either store another salsa tracked struct, or at least store the origin file id and an index to identify the cell or embed in the file.</li>
 </ul>
-<p>Methods that can operate on any source-file would be changed to accept a <code>SourceFile</code> instead of a <code>File</code> argument. However, it's unclear if we want this:</p>
+<p>Methods that can operate on any source-file would be changed to accept a <code>SourceFile</code> instead of a <code>File</code> argument. However, it&#x27;s unclear if we want this:</p>
 <ul>
-<li>The only use case for a cell-level granular query today is to format a single cell. Formatting a single cell is so fast that it doesn't justifies creating a query for it.</li>
-<li>It's unclear if we have many queries that can operate on any file content or if this is more a one-off, in which case <code>Cell</code> and <code>Embed</code> could be salsa tracked structs and we define <code>format_cell</code> and <code>parse_cell</code> etc. queries rather than having one generic <code>parse</code> query.</li>
+<li>The only use case for a cell-level granular query today is to format a single cell. Formatting a single cell is so fast that it doesn&#x27;t justifies creating a query for it.</li>
+<li>It&#x27;s unclear if we have many queries that can operate on any file content or if this is more a one-off, in which case <code>Cell</code> and <code>Embed</code> could be salsa tracked structs and we define <code>format_cell</code> and <code>parse_cell</code> etc. queries rather than having one generic <code>parse</code> query.</li>
 <li>An alternative is to introduce a new salsa tracked on top of <code>SourceFile</code> with the variants <code>File</code>, <code>Embed</code>, and <code>Cell</code>.</li>
 </ul>
-<h2>Test Plan</h2>
+Test Plan
 <p>I added a notebook file to my test folder and verified that Red Knot runs the lint rules on its content.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-07-15 15:45</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-15 15:45</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-07-15 16:03</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
-<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)
 <p>
 
 <pre><code>warning: Detected debug build without --no-cache.
 error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_outlook.ipynb:13:1:1: Expected an expression
 </code></pre>
 </p>
-</details>
 
-<h3>Formatter (preview)</h3>
+
+Formatter (preview)
 <p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
-<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)
 <p>
 <pre>ruff format --preview</pre>
 </p>
@@ -84,26 +84,26 @@ error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_outlook.i
 error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_outlook.ipynb:13:1:1: Expected an expression
 </code></pre>
 </p>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @MichaReiser on 2024-07-16 11:59</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-16 11:59</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @MichaReiser on 2024-07-16 11:59</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-16 11:59</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2024-07-16 11:59</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-16 11:59</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dhruvmanila by @MichaReiser on 2024-07-16 11:59</div>
+            <div class="event">Review requested from <a href="https://github.com/dhruvmanila">@dhruvmanila</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-16 11:59</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/source.rs</code>:22 on 2024-07-16 13:18</div>
-            <div class="timeline-body"><p>Couldn't you do this more simply with the existing API, than with the <code>try_from_extension()</code> API you're adding in this PR? If you apply the below suggestion, you won't need to make any changes to the <code>ruff_python_ast</code> crate as part of this PR.</p>
-<pre><code class="language-suggestion">        if path.extension().is_some_and(|extension| {
+            <div class="timeline-body"><p>Couldn&#x27;t you do this more simply with the existing API, than with the <code>try_from_extension()</code> API you&#x27;re adding in this PR? If you apply the below suggestion, you won&#x27;t need to make any changes to the <code>ruff_python_ast</code> crate as part of this PR.</p>
+<pre><code>        if path.extension().is_some_and(|extension| {
             PySourceType::from_extension(extension).is_ipynb()
         }) {
 </code></pre>
@@ -111,35 +111,35 @@ error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_outlook.i
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/source.rs</code>:48 on 2024-07-16 13:33</div>
-            <div class="timeline-body"><p>I'm not sure this is a particularly helpful comment. It feels slightly tautological (of course a <code>SourceFile</code> represents a &quot;source file&quot; -- but that's not so helpful if you're not sure what's meant by the phrase &quot;source file&quot; in the first place). I'm also not sure it's entirely accurate: to me, &quot;source file&quot; would imply &quot;a file that is known to contain valid Python source code&quot;. But it seems like it's possible to create a <code>ruff_db::files::File</code> instance that points to a file that doesn't contain valid Python source code, and I don't think there's anything preventing me from calling <code>source_file()</code> on that file, in which case <code>source_file</code> would return a <code>SourceFile</code> instance that doesn't contain valid Python source code. There's also no documentation anywhere indicating that this would be a misuse of the API.</p>
-<p>I'd find something like this more helpful:</p>
-<pre><code class="language-suggestion">/// Representation of the contents of the file.
+            <div class="timeline-body"><p>I&#x27;m not sure this is a particularly helpful comment. It feels slightly tautological (of course a <code>SourceFile</code> represents a &quot;source file&quot; -- but that&#x27;s not so helpful if you&#x27;re not sure what&#x27;s meant by the phrase &quot;source file&quot; in the first place). I&#x27;m also not sure it&#x27;s entirely accurate: to me, &quot;source file&quot; would imply &quot;a file that is known to contain valid Python source code&quot;. But it seems like it&#x27;s possible to create a <code>ruff_db::files::File</code> instance that points to a file that doesn&#x27;t contain valid Python source code, and I don&#x27;t think there&#x27;s anything preventing me from calling <code>source_file()</code> on that file, in which case <code>source_file</code> would return a <code>SourceFile</code> instance that doesn&#x27;t contain valid Python source code. There&#x27;s also no documentation anywhere indicating that this would be a misuse of the API.</p>
+<p>I&#x27;d find something like this more helpful:</p>
+<pre><code>/// Representation of the contents of the file.
 /// Internally, this may be stored either as raw text or as a notebook.
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-07-16 13:34</div>
-            <div class="timeline-body"><p>With the caveats that I've never used notebooks much when working with Python, and that I'm also not particularly familiar with Ruff's existing notebook support, this overall LGTM. Thanks for the detailed PR summary, it was really helpful!</p>
+            <div class="timeline-body"><p>With the caveats that I&#x27;ve never used notebooks much when working with Python, and that I&#x27;m also not particularly familiar with Ruff&#x27;s existing notebook support, this overall LGTM. Thanks for the detailed PR summary, it was really helpful!</p>
 <blockquote>
-<p>I'm not too happy with the name <code>SourceFile</code>. I'm open for better suggestions but I also don't want to block the PR on finding the perfect name (the query is used very sparsely and a rename is quickly done)</p>
+<p>I&#x27;m not too happy with the name <code>SourceFile</code>. I&#x27;m open for better suggestions but I also don&#x27;t want to block the PR on finding the perfect name (the query is used very sparsely and a rename is quickly done)</p>
 </blockquote>
-<p>This is definitely the biggest issue I have with the PR; I also don't much like <code>SourceFile</code>. Perhaps <code>FileContents</code>? I agree it doesn't need to block this PR, but I do think naming is important, or it will become harder to understand these abstractions when we come back to them later</p>
+<p>This is definitely the biggest issue I have with the PR; I also don&#x27;t much like <code>SourceFile</code>. Perhaps <code>FileContents</code>? I agree it doesn&#x27;t need to block this PR, but I do think naming is important, or it will become harder to understand these abstractions when we come back to them later</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-16 13:41</div>
             <div class="timeline-body"><blockquote>
-<p>This is definitely the biggest issue I have with the PR; I also don't much like SourceFile. Perhaps FileContents?</p>
+<p>This is definitely the biggest issue I have with the PR; I also don&#x27;t much like SourceFile. Perhaps FileContents?</p>
 </blockquote>
-<p>I strongly prefer a less generic name because I think this API shouldn't be used to read any non-Python files (or at least any non-source files). For example, if we consider using the' File' API for this in the future, we should use <code>File.read_to_string</code> to read <code>pth</code> files.</p>
-<p>Edit: I'm also open to keeping the name <code>SourceCode</code>. It just made some documentation rather awkward. Source code that's a notebook?</p>
+<p>I strongly prefer a less generic name because I think this API shouldn&#x27;t be used to read any non-Python files (or at least any non-source files). For example, if we consider using the&#x27; File&#x27; API for this in the future, we should use <code>File.read_to_string</code> to read <code>pth</code> files.</p>
+<p>Edit: I&#x27;m also open to keeping the name <code>SourceCode</code>. It just made some documentation rather awkward. Source code that&#x27;s a notebook?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-07-16 14:14</div>
             <div class="timeline-body"><blockquote>
-<p>I strongly prefer a less generic name because I think this API shouldn't be used to read any non-Python files (or at least any non-source files). For example, if we consider using the' File' API for this in the future, we should use <code>File.read_to_string</code> to read <code>pth</code> files.</p>
+<p>I strongly prefer a less generic name because I think this API shouldn&#x27;t be used to read any non-Python files (or at least any non-source files). For example, if we consider using the&#x27; File&#x27; API for this in the future, we should use <code>File.read_to_string</code> to read <code>pth</code> files.</p>
 </blockquote>
 <p>I see. This changes my understanding of that function, since:</p>
 <ul>
@@ -148,23 +148,23 @@ error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_outlook.i
 <li>The <code>source_text()</code> function was previously documented as simply being a function that simply &quot;reads the contents of a file&quot;.</li>
 </ul>
 <p>If <code>source_text()</code>/<code>source_file()</code> is only meant to be used to read files that we expect to contain Python source code, I think that should be documented better in the docstring for that function.</p>
-<p>If your concern is that <code>FileContents</code> would be too generic as a name, maybe <code>SourceFileContents</code>? I also don't mind <code>SourceCode</code> too much, even with this change! Agree it's slightly awkard, but it feels more expressive to me than <code>SourceFile</code>. Fundamentally it feels to me like this struct represents what the file <em>contains</em> rather than the file itself. You cannot retrieve the file's metadata, its path, etc., from this struct: only the contents of the file.</p>
+<p>If your concern is that <code>FileContents</code> would be too generic as a name, maybe <code>SourceFileContents</code>? I also don&#x27;t mind <code>SourceCode</code> too much, even with this change! Agree it&#x27;s slightly awkard, but it feels more expressive to me than <code>SourceFile</code>. Fundamentally it feels to me like this struct represents what the file <em>contains</em> rather than the file itself. You cannot retrieve the file&#x27;s metadata, its path, etc., from this struct: only the contents of the file.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-07-16 19:26</div>
-            <div class="timeline-body"><p>Note that we've already been using (for a few weeks) <code>source_text()</code> to read the source of a file that doesn't contain Python source code: typeshed's <code>VERSIONS</code> file: https://github.com/astral-sh/ruff/blob/9a2dafb43d36b62d45a604dea58224a0884cd6e5/crates/red_knot_module_resolver/src/typeshed/versions.rs#L72-L79</p>
+            <div class="timeline-body"><p>Note that we&#x27;ve already been using (for a few weeks) <code>source_text()</code> to read the source of a file that doesn&#x27;t contain Python source code: typeshed&#x27;s <code>VERSIONS</code> file: https://github.com/astral-sh/ruff/blob/9a2dafb43d36b62d45a604dea58224a0884cd6e5/crates/red_knot_module_resolver/src/typeshed/versions.rs#L72-L79</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-07-16 23:17</div>
             <div class="timeline-body"><p>This looks reasonable to me!</p>
-<p>I don't have strong feelings about the naming.</p>
+<p>I don&#x27;t have strong feelings about the naming.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_db/src/source.rs</code>:119 on 2024-07-17 06:08</div>
-            <div class="timeline-body"><p>Ignore if this isn't relevant but I was wondering if there's any reason for not using the <code>SourceKind</code> or borrowing the name:</p>
+            <div class="timeline-body"><p>Ignore if this isn&#x27;t relevant but I was wondering if there&#x27;s any reason for not using the <code>SourceKind</code> or borrowing the name:</p>
 <p>https://github.com/astral-sh/ruff/blob/9a2dafb43d36b62d45a604dea58224a0884cd6e5/crates/ruff_linter/src/source_kind.rs#L19-L25</p>
 </div>
         </div>
@@ -174,8 +174,8 @@ error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_outlook.i
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/source.rs</code>:119 on 2024-07-17 06:13</div>
-            <div class="timeline-body"><p>I wasn't aware of it. There are too many <code>PySourceType</code> and kind types haha.</p>
-<p>The only reason right now is that it's in <code>ruff_linter</code> and we can't provide all it's API (e.g. we don't want <code>from_path</code>)</p>
+            <div class="timeline-body"><p>I wasn&#x27;t aware of it. There are too many <code>PySourceType</code> and kind types haha.</p>
+<p>The only reason right now is that it&#x27;s in <code>ruff_linter</code> and we can&#x27;t provide all it&#x27;s API (e.g. we don&#x27;t want <code>from_path</code>)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -188,7 +188,7 @@ error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_outlook.i
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_notebook/src/notebook.rs</code>:228 on 2024-07-17 06:17</div>
-            <div class="timeline-body"><p>Technically, an empty notebook would contain at least a single empty cell. I verified that by creating an empty notebook in VS Code and Jupyter Lab. The use-case for this seems to be only when there's some error when creating a Ruff notebook in Red Knot. I think it make sense to use this representation (one empty code cell) for an empty notebook.</p>
+            <div class="timeline-body"><p>Technically, an empty notebook would contain at least a single empty cell. I verified that by creating an empty notebook in VS Code and Jupyter Lab. The use-case for this seems to be only when there&#x27;s some error when creating a Ruff notebook in Red Knot. I think it make sense to use this representation (one empty code cell) for an empty notebook.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -201,7 +201,7 @@ error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_outlook.i
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/source.rs</code>:22 on 2024-07-17 08:01</div>
-            <div class="timeline-body"><p>Yes, that would be possible. But I'm going to introduce the API anyway and I don't like the <code>PySourceType</code> default fallback.</p>
+            <div class="timeline-body"><p>Yes, that would be possible. But I&#x27;m going to introduce the API anyway and I don&#x27;t like the <code>PySourceType</code> default fallback.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -210,10 +210,10 @@ error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_outlook.i
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @MichaReiser on 2024-07-17 08:26</div>
+            <div class="event">Merged by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-17 08:26</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2024-07-17 08:26</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-17 08:26</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-07-17 08:26</div>
@@ -221,7 +221,7 @@ error: Failed to parse examples/chatgpt/gpt_actions_library/gpt_action_outlook.i
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:05:20 UTC
+        Synced at 2026-01-20 19:05:16 UTC
     </footer>
 </body>
 </html>

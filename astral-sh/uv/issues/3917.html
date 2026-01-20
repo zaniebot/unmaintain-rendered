@@ -29,8 +29,8 @@
 name = &quot;example&quot;
 version = &quot;0.1&quot;
 dependencies = [
-    &quot;dep1; platform_release &gt;= '1.0'&quot;,
-    &quot;dep2; platform_release &lt; '1.0'&quot;,
+    &quot;dep1; platform_release &gt;= &#x27;1.0&#x27;&quot;,
+    &quot;dep2; platform_release &lt; &#x27;1.0&#x27;&quot;,
 ]
 </code></pre>
 <p>uv pip wants to install dep1</p>
@@ -39,7 +39,7 @@ dependencies = [
   ╰─▶ Because dep1 was not found in the package registry and example==0.1 depends on dep1, we can conclude that example==0.1 cannot be used.
       And because only example==0.1 is available and you require example, we can conclude that the requirements are unsatisfiable.
 </code></pre>
-<p>python pip doesn't want to install either</p>
+<p>python pip doesn&#x27;t want to install either</p>
 <pre><code>$ .venv/bin/pip install -q .
 $ .venv/bin/pip list
 Package Version
@@ -56,21 +56,21 @@ pip     24.0
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/wimglenn">@wimglenn</a> on 2024-05-29 23:21</div>
-            <div class="timeline-body"><p>Hmm, I'm not 100% sure if this is well-defined even by the standards. ~I don't see anything explicitly describing the situation.~ <em>see note at bottom</em></p>
+            <div class="timeline-body"><p>Hmm, I&#x27;m not 100% sure if this is well-defined even by the standards. ~I don&#x27;t see anything explicitly describing the situation.~ <em>see note at bottom</em></p>
 <p>To reproduce it, <code>platform.release()</code> should be returning a string which can not be parsed as a valid version number. An example container which does that:</p>
-<pre><code>$ docker run --rm -it python:3.12.3-bookworm python -c 'import platform; print(platform.release())'
+<pre><code>$ docker run --rm -it python:3.12.3-bookworm python -c &#x27;import platform; print(platform.release())&#x27;
 5.10.104-linuxkit
 </code></pre>
-<p>It is quite normal for this to be a string which is not parsable as a version number, PEP508 even offers such examples (<code>3.14.1-x86_64-linode39</code>, <code>14.5.0</code>, <code>1.8.0_51</code>). It means the marker can't be evaluated:</p>
+<p>It is quite normal for this to be a string which is not parsable as a version number, PEP508 even offers such examples (<code>3.14.1-x86_64-linode39</code>, <code>14.5.0</code>, <code>1.8.0_51</code>). It means the marker can&#x27;t be evaluated:</p>
 <pre><code>$ docker run --rm -it python:3.12.3-bookworm bash
 root@60f3aae789ef:/# pip install --root-user-action=ignore -q packaging
 root@60f3aae789ef:/# python3
 Python 3.12.3 (main, May 14 2024, 05:40:55) [GCC 12.2.0] on linux
 Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
 &gt;&gt;&gt; from packaging.requirements import Requirement
-&gt;&gt;&gt; req = Requirement(&quot;dep1; platform_release &gt;= '1.0'&quot;)
+&gt;&gt;&gt; req = Requirement(&quot;dep1; platform_release &gt;= &#x27;1.0&#x27;&quot;)
 &gt;&gt;&gt; req.marker
-&lt;Marker('platform_release &gt;= &quot;1.0&quot;')&gt;
+&lt;Marker(&#x27;platform_release &gt;= &quot;1.0&quot;&#x27;)&gt;
 &gt;&gt;&gt; req.marker.evaluate()
 Traceback (most recent call last):
   File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
@@ -90,23 +90,23 @@ Traceback (most recent call last):
     version = Version(version)
               ^^^^^^^^^^^^^^^^
   File &quot;/usr/local/lib/python3.12/site-packages/packaging/version.py&quot;, line 200, in __init__
-    raise InvalidVersion(f&quot;Invalid version: '{version}'&quot;)
-packaging.version.InvalidVersion: Invalid version: '5.10.104-linuxkit'
+    raise InvalidVersion(f&quot;Invalid version: &#x27;{version}&#x27;&quot;)
+packaging.version.InvalidVersion: Invalid version: &#x27;5.10.104-linuxkit&#x27;
 </code></pre>
-<p>It would seem that pip considers such a case as evaluating False by default, by I don't know whether that is standardized or just UB. I'm not sure what uv is doing (string comparison lexicographically maybe?)</p>
+<p>It would seem that pip considers such a case as evaluating False by default, by I don&#x27;t know whether that is standardized or just UB. I&#x27;m not sure what uv is doing (string comparison lexicographically maybe?)</p>
 <p><em>edit:</em> I just found this part in <a href="https://peps.python.org/pep-0508/">PEP508</a>:</p>
 <blockquote>
 <p>Comparisons in marker expressions are typed by the comparison operator. The &lt;marker_op&gt; operators that are not in &lt;version_cmp&gt; perform the same as they do for strings in Python. The &lt;version_cmp&gt; operators use the <a href="https://peps.python.org/pep-0440/">PEP 440</a> version comparison rules when those are defined (that is when both sides have a valid version specifier). If there is no defined <a href="https://peps.python.org/pep-0440/">PEP 440</a> behaviour and the operator exists in Python, then the operator falls back to the Python behaviour.</p>
 </blockquote>
-<p>So if I'm reading that right, it looks like uv is correct and pip is incorrect.</p>
+<p>So if I&#x27;m reading that right, it looks like uv is correct and pip is incorrect.</p>
 <p>Feel free to close this issue, perhaps mentioning it in that list of known differences vs Python pip - https://github.com/astral-sh/uv/blob/main/PIP_COMPATIBILITY.md.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-05-31 10:47</div>
             <div class="timeline-body"><p>Using <code>platform_release</code> with greater/lower operators is unfortunately broken:</p>
-<p>The paragraph you quoted from PEP 508 translates into a two-step procedure: Try to parse left hand side and right hand side as PEP 440 versions. If this succeeds, apply the operator as defined by PEP 440. If either side fails to parse, compare lexicographically. That means the behaviour of <code>platform_release &lt; '1.0'</code> depends on whether <code>platform_release</code> of the host happens to be PEP 440 compatible or not, something that may even change between releases (e.g. with a pre- or post-release scheme that incompatible to PEP 440, while the regular version is compatible. The behaviour then silently switches between PEP 440 semantic comparisons and lexicographic comparisons, which can have the inverse result (e.g. <code>3.9</code> &gt; <code>3.10</code> is false by PEP 440 but true by lexicographic order). We used to have warnings for this, but i think we turned them off because they were too noisy.</p>
-<p>The pip behaviour you're observing is odd, i'd have to dig into the code again to see if that may have changed recently.</p>
+<p>The paragraph you quoted from PEP 508 translates into a two-step procedure: Try to parse left hand side and right hand side as PEP 440 versions. If this succeeds, apply the operator as defined by PEP 440. If either side fails to parse, compare lexicographically. That means the behaviour of <code>platform_release &lt; &#x27;1.0&#x27;</code> depends on whether <code>platform_release</code> of the host happens to be PEP 440 compatible or not, something that may even change between releases (e.g. with a pre- or post-release scheme that incompatible to PEP 440, while the regular version is compatible. The behaviour then silently switches between PEP 440 semantic comparisons and lexicographic comparisons, which can have the inverse result (e.g. <code>3.9</code> &gt; <code>3.10</code> is false by PEP 440 but true by lexicographic order). We used to have warnings for this, but i think we turned them off because they were too noisy.</p>
+<p>The pip behaviour you&#x27;re observing is odd, i&#x27;d have to dig into the code again to see if that may have changed recently.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -115,18 +115,18 @@ packaging.version.InvalidVersion: Invalid version: '5.10.104-linuxkit'
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-06-04 01:54</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-04 01:54</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">compatibility</span> added by @charliermarsh on 2024-06-04 01:55</div>
+            <div class="event">Label <span class="label">compatibility</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-04 01:55</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/h4l">@h4l</a> on 2025-07-30 10:53</div>
-            <div class="timeline-body"><p>@konstin @charliermarsh In case either of you are have an opinion or are interested, we're trying to get the Python implementation of PEP 508 environment marker evaluation to match the spec's behaviour. As noted here, the spec's behaviour currently uses lexicographic order to compare version strings that don't match spec's version grammar, which can produce incorrect/unintuitive results for system-provided version strings that aren't valid  python package versions.</p>
-<p>There's some discussion on whether the spec should be updated to solve this problem, or whether the <code>packaging</code> package should just be patched to match the spec as-is.</p>
-<p>(Currently the <code>packaging</code> package (and tools that use it, like pip) are (unintentionally) failing with an error when evaluating expressions with version strings that don't match the spec's version grammar, instead of doing lexicographic comparison as the spec requires.)</p>
-<p>See this comment from Brett Cannon on the <code>packaging</code> issue for this: https://github.com/pypa/packaging/issues/774#issuecomment-3120526922
-And there's a thread about it on: https://discuss.python.org/t/reconciling-packaging-module-the-dependency-specifier-specs-non-version-to-version-comparison-rules/100287</p>
+            <div class="timeline-body"><p>@konstin @charliermarsh In case either of you are have an opinion or are interested, we&#x27;re trying to get the Python implementation of PEP 508 environment marker evaluation to match the spec&#x27;s behaviour. As noted here, the spec&#x27;s behaviour currently uses lexicographic order to compare version strings that don&#x27;t match spec&#x27;s version grammar, which can produce incorrect/unintuitive results for system-provided version strings that aren&#x27;t valid  python package versions.</p>
+<p>There&#x27;s some discussion on whether the spec should be updated to solve this problem, or whether the <code>packaging</code> package should just be patched to match the spec as-is.</p>
+<p>(Currently the <code>packaging</code> package (and tools that use it, like pip) are (unintentionally) failing with an error when evaluating expressions with version strings that don&#x27;t match the spec&#x27;s version grammar, instead of doing lexicographic comparison as the spec requires.)</p>
+<p>See this comment from Brett Cannon on the <code>packaging</code> issue for this: <a href="https://github.com/pypa/packaging/issues/774">pypa/packaging#774</a>#issuecomment-3120526922
+And there&#x27;s a thread about it on: https://discuss.python.org/t/reconciling-packaging-module-the-dependency-specifier-specs-non-version-to-version-comparison-rules/100287</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -141,7 +141,7 @@ And there's a thread about it on: https://discuss.python.org/t/reconciling-packa
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-07-30 11:43</div>
-            <div class="timeline-body"><p>I think the lexicographic fallback only causes confusion, a marker should have a only a single mode in which it gets evaluated. <code>platform_release</code> and <code>platform_version</code> are confusing markers by design, as it's not clear if their contents will fit any specific format, so I advise users against using them, but I don't have a good suggestion how to deal with exiting usage.</p>
+            <div class="timeline-body"><p>I think the lexicographic fallback only causes confusion, a marker should have a only a single mode in which it gets evaluated. <code>platform_release</code> and <code>platform_version</code> are confusing markers by design, as it&#x27;s not clear if their contents will fit any specific format, so I advise users against using them, but I don&#x27;t have a good suggestion how to deal with exiting usage.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -152,7 +152,7 @@ And there's a thread about it on: https://discuss.python.org/t/reconciling-packa
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:25:04 UTC
+        Synced at 2026-01-20 19:31:18 UTC
     </footer>
 </body>
 </html>

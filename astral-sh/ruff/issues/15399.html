@@ -28,43 +28,43 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2025-01-10 13:04</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-10 13:04</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-01-10 13:04</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-10 13:04</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-10 13:07</div>
             <div class="timeline-body"><p>Hi. Thanks for opening the question.</p>
 <p>This seems to be matching the upstream behavior (more as a note to myself rather than this being a justification why):</p>
 <p>https://github.com/gforcada/flake8-builtins/blob/5484162ace8d9546513be710d70e9c148010d9cc/flake8_builtins.py#L292</p>
-<p>I'm not 100% sure if this is the right behavior or if the rule is too eager to warn. IMO, the rule should warn if your module is named <code>logging</code> because it then shadows the stdlib module. Naming it <code>utils.logging</code> seems less problematic to me. @AlexWaygood am I overlooking something?</p>
+<p>I&#x27;m not 100% sure if this is the right behavior or if the rule is too eager to warn. IMO, the rule should warn if your module is named <code>logging</code> because it then shadows the stdlib module. Naming it <code>utils.logging</code> seems less problematic to me. @AlexWaygood am I overlooking something?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mattmess1221">@mattmess1221</a> on 2025-01-10 15:12</div>
-            <div class="timeline-body"><p>I think this rule should only trigger for modules if there isn't an <code>__init__.py</code> file in the directory OR any module in the package is executable. e.g. it has a shebang or <code>if __name__ == '__main__':</code> check.</p>
+            <div class="timeline-body"><p>I think this rule should only trigger for modules if there isn&#x27;t an <code>__init__.py</code> file in the directory OR any module in the package is executable. e.g. it has a shebang or <code>if __name__ == &#x27;__main__&#x27;:</code> check.</p>
 <p>This is the only way I can see module shadowing being possible, as doing so prepends the parent directory to <code>sys.path</code>, overriding the stdlib.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-13 12:48</div>
             <div class="timeline-body"><p>I discussed this with @AlexWaygood in our 1:1 and we think that we should change the default to only flag modules that have the exact same full qualified name as a standard library module and instead, add an option to enable the more strict linting that flags modules that only have the same name.</p>
-<p>The motivation for an option is that some projects might want stricter behavior to guarantee that modules don't shadow builtins when running a module from a subdirectory (e.g. <code>cd</code> into the <code>utils</code> directory and run a script from there).</p>
+<p>The motivation for an option is that some projects might want stricter behavior to guarantee that modules don&#x27;t shadow builtins when running a module from a subdirectory (e.g. <code>cd</code> into the <code>utils</code> directory and run a script from there).</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> removed by @MichaReiser on 2025-01-13 12:48</div>
+            <div class="event">Label <span class="label">question</span> removed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-13 12:48</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2025-01-13 12:48</div>
+            <div class="event">Label <span class="label">help wanted</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-13 12:48</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-01-15 11:26</div>
-            <div class="timeline-body"><p>Somehow I can't replicate the problem.</p>
+            <div class="timeline-body"><p>Somehow I can&#x27;t replicate the problem.</p>
 <ol>
 <li><p>Library layout:</p>
-<pre><code class="language-text">.
+<pre><code>.
 ├── pyproject.toml
 └── src
     └── test
@@ -72,26 +72,26 @@
         └── utils
             └── logging.py
 </code></pre>
-<pre><code class="language-shell">$ uvx ruff check --isolated --select A005 src
+<pre><code>$ uvx ruff check --isolated --select A005 src
 All checks passed!
 </code></pre>
 </li>
 <li><p>App layout:</p>
-<pre><code class="language-text">.
+<pre><code>.
 ├── hello.py
 ├── pyproject.toml
 └── utils
     └── logging.py
 </code></pre>
-<pre><code class="language-shell">$ uvx ruff check --isolated --select A005
+<pre><code>$ uvx ruff check --isolated --select A005
 All checks passed!
 </code></pre>
 </li>
 </ol>
 <p>This is perhaps because <a href="https://github.com/astral-sh/ruff/blob/8331326cb6897ff5cbee19c12b719889f0303b3a/crates/ruff_linter/src/rules/flake8_builtins/rules/stdlib_module_shadowing.rs#L62"><code>package</code></a> is <code>None</code> is such cases.</p>
-<hr />
+<hr>
 <p>One thing to note is that <code>package</code> is always <code>Root</code> and never <code>Nested</code>, even for this <a href="https://github.com/astral-sh/ruff/blob/8331326cb6897ff5cbee19c12b719889f0303b3a/crates/ruff_linter/src/package.rs#L8-L19">straight-out-of-the-docs</a> case where <code>baz/__init__.py</code> is passed directly to Ruff:</p>
-<pre><code class="language-text">.
+<pre><code>.
 ├── README.md
 ├── pyproject.toml
 └── src
@@ -117,7 +117,7 @@ All checks passed!
             ├── __init__.py
             └── logging.py
 </code></pre>
-<pre><code class="language-bash">$ uvx ruff check --isolated --select A005 src
+<pre><code>$ uvx ruff check --isolated --select A005 src
 src/test/utils/logging.py:1:1: A005 Module `logging` shadows a Python standard-library module
 </code></pre>
 </div>
@@ -129,7 +129,7 @@ src/test/utils/logging.py:1:1: A005 Module `logging` shadows a Python standard-l
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/scott-boost">@scott-boost</a> on 2025-01-21 16:47</div>
-            <div class="timeline-body"><pre><code class="language-.">├── pyproject.toml
+            <div class="timeline-body"><pre><code>├── pyproject.toml
 └── AcmeOrg
     └── http
         ├── __init__.py
@@ -143,9 +143,9 @@ src/test/utils/logging.py:1:1: A005 Module `logging` shadows a Python standard-l
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/rh-sp">@rh-sp</a> on 2025-01-24 09:01</div>
-            <div class="timeline-body"><h3>Opinion</h3>
-<p>I think that the current rule is too strict, but &quot;only fully qualified names&quot; sounds like it could be too loose, depending on how it's interpreted. In my opinion, any root-level packages that are named the same as any stdlib root-level package should be blocked, <em>along with all their child packages.</em></p>
-<h3>Example</h3>
+            <div class="timeline-body">Opinion
+<p>I think that the current rule is too strict, but &quot;only fully qualified names&quot; sounds like it could be too loose, depending on how it&#x27;s interpreted. In my opinion, any root-level packages that are named the same as any stdlib root-level package should be blocked, <em>along with all their child packages.</em></p>
+Example
 <ul>
 <li>~~abc~~ ❌</li>
 <li>~~collections~~ ❌<ul>
@@ -163,10 +163,10 @@ src/test/utils/logging.py:1:1: A005 Module `logging` shadows a Python standard-l
 </li>
 <li>urlparse ✅</li>
 </ul>
-<h3>Reasoning</h3>
-<p>I haven't been around then, but from what I've heard, in the olden days, it wasn't well-defined what <code>import abc</code> does when in a package. Does it refer to the root-level package <code>abc</code>, or the <code>abc</code> defined at the current package level? So in that sense, for older Pythons, it made sense to flag <code>foobar.abc</code> as potentially shadowing <code>abc</code>.</p>
+Reasoning
+<p>I haven&#x27;t been around then, but from what I&#x27;ve heard, in the olden days, it wasn&#x27;t well-defined what <code>import abc</code> does when in a package. Does it refer to the root-level package <code>abc</code>, or the <code>abc</code> defined at the current package level? So in that sense, for older Pythons, it made sense to flag <code>foobar.abc</code> as potentially shadowing <code>abc</code>.</p>
 <p>However, in modern Python, this issue has been resolved. <code>import abc</code> <em>always</em> refers to the root-level package, <em>never</em> <code>foobar.abc</code> (or <code>collections.abc</code>). At the same time, <code>.abc</code> (which can stand for <code>foobar.abc</code> or <code>collections.abc</code>, depending on context) can <em>never</em> shadow <code>abc</code>. So, <code>foobar.abc</code> does not need to trigger the rule.</p>
-<p>Additionally, <code>collections.foobar</code> should <em>also</em> trigger the rule, even though the fully qualified name doesn't exist in <code>stdlib</code>. This is because if you <code>import collections.foobar</code>, while the import statement itself can only mean one thing, from what I understand in order for it to work, <code>collections</code> <em>must</em> be shadowed, so the problem is still there.</p>
+<p>Additionally, <code>collections.foobar</code> should <em>also</em> trigger the rule, even though the fully qualified name doesn&#x27;t exist in <code>stdlib</code>. This is because if you <code>import collections.foobar</code>, while the import statement itself can only mean one thing, from what I understand in order for it to work, <code>collections</code> <em>must</em> be shadowed, so the problem is still there.</p>
 <p>Hope that makes sense :)</p>
 </div>
         </div>
@@ -179,10 +179,10 @@ src/test/utils/logging.py:1:1: A005 Module `logging` shadows a Python standard-l
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @ntBre by @MichaReiser on 2025-02-04 10:35</div>
+            <div class="event">Assigned to <a href="https://github.com/ntBre">@ntBre</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-04 10:35</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ntBre on 2025-02-10 00:33</div>
+            <div class="event">Closed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-10 00:33</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dwt">@dwt</a> on 2025-02-10 07:19</div>
@@ -191,7 +191,7 @@ src/test/utils/logging.py:1:1: A005 Module `logging` shadows a Python standard-l
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/glopesdev">@glopesdev</a> on 2025-02-12 15:56</div>
-            <div class="timeline-body"><p>@ntBre We are having the opposite problem where our CI started emitting more warnings following the latest release of ruff, in places where it wasn't emitting before.</p>
+            <div class="timeline-body"><p>@ntBre We are having the opposite problem where our CI started emitting more warnings following the latest release of ruff, in places where it wasn&#x27;t emitting before.</p>
 <p>Is there documentation somewhere explaining how exactly to turn on the new &quot;default&quot; behavior?</p>
 </div>
         </div>
@@ -217,13 +217,13 @@ lint.flake8-builtins.builtins-strict-checking = false
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-12 16:13</div>
-            <div class="timeline-body"><p>There's also a related breaking change for 0.10.0 to make the new option and the other flake8-builtins options less verbose in #16092. In this case, I think the new option name will be <code>lint.flake8-builtins.strict-checking</code>, but this is not currently available in preview.</p>
+            <div class="timeline-body"><p>There&#x27;s also a related breaking change for 0.10.0 to make the new option and the other flake8-builtins options less verbose in #16092. In this case, I think the new option name will be <code>lint.flake8-builtins.strict-checking</code>, but this is not currently available in preview.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:51:58 UTC
+        Synced at 2026-01-20 18:49:16 UTC
     </footer>
 </body>
 </html>

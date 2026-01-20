@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>ArgRequiredElseHelp and SubcommandRequiredElseHelp don't result in clap::ErrorKind::HelpDisplayed</h1>
+    <h1>ArgRequiredElseHelp and SubcommandRequiredElseHelp don&#x27;t result in clap::ErrorKind::HelpDisplayed</h1>
 
     <div class="meta">
         <span class="state-icon state-closed"></span>
@@ -23,20 +23,20 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/leighmcculloch">@leighmcculloch</a></div>
-            <div class="timeline-body"><h3>Make sure you completed the following tasks</h3>
+            <div class="timeline-body">Make sure you completed the following tasks
 <ul>
 <li>[x] Searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
 <li>[x] Searched the closes issues</li>
 </ul>
-<h3>Code</h3>
+Code
 <p>This is an example with <code>AppSettings::ArgRequiredElseHelp</code>. This also occurs with <code>AppSettings::SubcommandRequiredElseHelp</code>.</p>
-<pre><code class="language-toml">[package]
+<pre><code>[package]
 name = &quot;fake&quot;
 
 [dependencies]
 clap = &quot;3.0.0-beta.1&quot;
 </code></pre>
-<pre><code class="language-rust">use clap::{Arg, App, AppSettings, Error};
+<pre><code>use clap::{Arg, App, AppSettings, Error};
 
 fn main() -&gt; Result&lt;(), Error&gt; {
     let cli = App::new(&quot;myapp&quot;)
@@ -44,7 +44,7 @@ fn main() -&gt; Result&lt;(), Error&gt; {
         .arg(
             Arg::new(&quot;info&quot;)
                 .about(&quot;Provides more info&quot;)
-                .short('i')
+                .short(&#x27;i&#x27;)
                 .long(&quot;info&quot;),
         );
     let matches = match cli.try_get_matches() {
@@ -69,43 +69,43 @@ fn main() -&gt; Result&lt;(), Error&gt; {
     return Ok(())
 }
 </code></pre>
-<h3>Steps to reproduce the issue</h3>
+Steps to reproduce the issue
 <ol>
 <li>Run <code>cargo run</code></li>
 </ol>
-<h3>Version</h3>
+Version
 <ul>
 <li><strong>Rust</strong>: <code>rustc 1.45.0-nightly (a74d1862d 2020-05-14)</code></li>
 <li><strong>Clap</strong>: <code>3.0.0-beta.1</code></li>
 </ul>
-<h3>Actual Behavior Summary</h3>
+Actual Behavior Summary
 <p>When I use <code>AppSettings::ArgRequiredElseHelp</code> or <code>AppSettings::SubcommandRequiredElseHelp</code> and do not provide an argument or subcommand the matches call returns an error of kind <code>clap::ErrorKind::MissingArgumentOrSubcommand</code> which is not documented or intuitive.</p>
 <p>It is not intuitive because the <code>ElseHelp</code> suggests the result will match that of if the help is being displayed, which would be the <code>clap::ErrorKind::HelpDisplayed</code> kind.</p>
-<p>Also, the <code>clap::ErrorKind::MissingArgumentOrSubcommand</code> error kind is treated as a failure and does not use stderr, as pointed out by @kinnison in https://github.com/rust-lang/rustup/pull/2427#issuecomment-659923231, which is inconsistent with <code>clap::ErrorKind::HelpDisplayed</code>.
+<p>Also, the <code>clap::ErrorKind::MissingArgumentOrSubcommand</code> error kind is treated as a failure and does not use stderr, as pointed out by @kinnison in <a href="https://github.com/rust-lang/rustup/pull/2427">rust-lang/rustup#2427</a>#issuecomment-659923231, which is inconsistent with <code>clap::ErrorKind::HelpDisplayed</code>.
 https://github.com/clap-rs/clap/blob/7127653b507802e005990b88341164aaf940bc14/src/errors.rs#L387-L392</p>
-<h3>Expected Behavior Summary</h3>
-<p>I think there's a few ways this might be improved.</p>
+Expected Behavior Summary
+<p>I think there&#x27;s a few ways this might be improved.</p>
 <ol>
 <li><p>Have this situation result in <code>clap::ErrorKind::HelpDisplayed</code>. This is intuitive, although maybe not as flexible.</p>
 </li>
 <li><p>Rename the error kind to <code>clap::ErrorKind::MissingArgumentOrSubcommandHelpDisplayed</code> to indicate clearly that this error is being returned to display the help, but to retain the flexibility.</p>
 </li>
-<li><p>Add docs indicating that the existing error is returned like HelpDisplayed and VersionDisplayed, so it's not a surprise when this error shows up.</p>
+<li><p>Add docs indicating that the existing error is returned like HelpDisplayed and VersionDisplayed, so it&#x27;s not a surprise when this error shows up.</p>
 </li>
 <li><p>Do 3, plus treat the error not as a failure.</p>
 </li>
 </ol>
-<h3>Additional context</h3>
-<p>This issue is related to a bug in the latest version of rustup: https://github.com/rust-lang/rustup/issues/2425. There is a fix for that bug in rustup https://github.com/rust-lang/rustup/pull/2427 but the rustup maintainers want to confirm if this is a bug in clap.</p>
+Additional context
+<p>This issue is related to a bug in the latest version of rustup: <a href="https://github.com/rust-lang/rustup/issues/2425">rust-lang/rustup#2425</a>. There is a fix for that bug in rustup <a href="https://github.com/rust-lang/rustup/pull/2427">rust-lang/rustup#2427</a> but the rustup maintainers want to confirm if this is a bug in clap.</p>
 <p>In rustup v2 of clap is being used but this issue is relevant to both v2 and v3, and looks like it has existed for about 5 years since the ElseHelp settings were added.</p>
-<h3>Debug output</h3>
+Debug output
 <p>Compile clap with <code>debug</code> feature:</p>
-<pre><code class="language-toml">[dependencies]
+<pre><code>[dependencies]
 clap = { version = &quot;*&quot;, features = [&quot;debug&quot;] }
 </code></pre>
 <p>The output may be very long, so feel free to link to a gist or attach a text file</p>
-<details>
-<summary> Debug Output </summary>
+
+ Debug Output 
 <pre>
 <code>
 
@@ -212,21 +212,21 @@ clap = { version = &quot;*&quot;, features = [&quot;debug&quot;] }
 MissingArgumentOrSubcommand</p>
 </code>
 </pre>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">T: bug</span> added by @leighmcculloch on 2020-07-18 07:30</div>
+            <div class="event">Label <span class="label">T: bug</span> added by <a href="https://github.com/leighmcculloch">@leighmcculloch</a> on 2020-07-18 07:30</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../rust-lang/rustup/pulls/2427.html">rust-lang/rustup#2427</a> on 2020-07-18 07:31</div>
+            <div class="event">Referenced in <a>rust-lang/rustup#2427</a> on 2020-07-18 07:31</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-07-18 13:16</div>
             <div class="timeline-body"><p>This one is complicated.</p>
-<p>First thing to notice: <code>HelpDisplayed</code> is <strong>past tense</strong>. The help has <em>already</em> been printed to stdout/stderr; the <code>ErrorKind</code> is just a way to notify the developer about that, not a way to give control over the process. This was quite annoying and counter-intuitive, so we changed this - 3.0 doesn't print anything preemptively, and I will rename the error kinds shortly, see #2006. Contrary, <code>MissingArgumentOrSubcommand</code> didn't do anything like that, so I guess keeping it separate from <code>HelpDisplayed</code> did make some sense.</p>
-<p>Otherwise, I see that <code>MissingArgumentOrSubcommand</code> isn't useful. Let's just use the new renamed <code>HelpDisplayed</code> and have it use stderr, too.</p>
+<p>First thing to notice: <code>HelpDisplayed</code> is <strong>past tense</strong>. The help has <em>already</em> been printed to stdout/stderr; the <code>ErrorKind</code> is just a way to notify the developer about that, not a way to give control over the process. This was quite annoying and counter-intuitive, so we changed this - 3.0 doesn&#x27;t print anything preemptively, and I will rename the error kinds shortly, see #2006. Contrary, <code>MissingArgumentOrSubcommand</code> didn&#x27;t do anything like that, so I guess keeping it separate from <code>HelpDisplayed</code> did make some sense.</p>
+<p>Otherwise, I see that <code>MissingArgumentOrSubcommand</code> isn&#x27;t useful. Let&#x27;s just use the new renamed <code>HelpDisplayed</code> and have it use stderr, too.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -240,10 +240,10 @@ MissingArgumentOrSubcommand</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "3.0" by @pksunkara on 2020-10-09 16:42</div>
+            <div class="event">Added to milestone &quot;3.0&quot; by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-10-09 16:42</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">C: errors</span> added by @pksunkara on 2020-10-09 16:43</div>
+            <div class="event">Label <span class="label">C: errors</span> added by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-10-09 16:43</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-10-10 18:58</div>
@@ -258,7 +258,7 @@ MissingArgumentOrSubcommand</p>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ldm0">@ldm0</a> on 2020-10-11 05:35</div>
             <div class="timeline-body"><blockquote>
-<p>Let's just use the new renamed HelpDisplayed and have it use stderr, too.</p>
+<p>Let&#x27;s just use the new renamed HelpDisplayed and have it use stderr, too.</p>
 </blockquote>
 <p>The <code>HelpDisplayed</code> is currently named as <code>DisplayHelp</code>. Removing <code>MissingArgumentOrSubcommand </code> and having it use stderr wouldn be strange, since calling <code>app --help</code> will emits help information in stderr.</p>
 <p>Also, the <code>MissingArgumentOrSubcommand</code> is already using stderr. I guess after the <code>HelpDisplayed</code> renaming(which is already done), there is nothing left to do?</p>
@@ -272,25 +272,25 @@ MissingArgumentOrSubcommand</p>
 <blockquote>
 <p>Also, the clap::ErrorKind::MissingArgumentOrSubcommand error kind is treated as a failure and does not use stderr, as pointed out by @kinnison in rust-lang/rustup#2427 (comment), which is inconsistent with clap::ErrorKind::HelpDisplayed</p>
 </blockquote>
-<p>We need to resolve these 2 issues. Let's create a new error <code>DisplayHelpOnMissingArgumentOrSubcommand</code> and return it if <code>ArgRequiredElseHelp</code> or <code>SubcommandRequiredElseHelp</code> is set and they are triggered. Also, let's output only this error to stdout.</p>
+<p>We need to resolve these 2 issues. Let&#x27;s create a new error <code>DisplayHelpOnMissingArgumentOrSubcommand</code> and return it if <code>ArgRequiredElseHelp</code> or <code>SubcommandRequiredElseHelp</code> is set and they are triggered. Also, let&#x27;s output only this error to stdout.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../pulls/2168.html">clap-rs/clap#2168</a> on 2020-10-11 07:19</div>
+            <div class="event">Referenced in <a>clap-rs/clap#2168</a> on 2020-10-11 07:19</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @bors[bot] on 2020-10-11 08:44</div>
+            <div class="event">Closed by <a href="https://github.com/bors[bot]">@bors[bot]</a> on 2020-10-11 08:44</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/2767.html">clap-rs/clap#2767</a> on 2021-10-04 20:01</div>
+            <div class="event">Referenced in <a>clap-rs/clap#2767</a> on 2021-10-04 20:01</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../pulls/2859.html">clap-rs/clap#2859</a> on 2021-10-12 16:17</div>
+            <div class="event">Referenced in <a>clap-rs/clap#2859</a> on 2021-10-12 16:17</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:47:42 UTC
+        Synced at 2026-01-20 19:57:51 UTC
     </footer>
 </body>
 </html>

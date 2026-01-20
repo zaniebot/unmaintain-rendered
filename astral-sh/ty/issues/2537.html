@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/randolf-scholz">@randolf-scholz</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>Consider a <code>dict[K, V]</code> like class with a get method:</p>
-<pre><code class="language-python">from typing import Any, reveal_type
+<pre><code>from typing import Any, reveal_type
 
 class Map[K, V]:
     def set(self, key: K, value: V) -&gt; None: ...
@@ -33,7 +33,7 @@ class Map[K, V]:
 
 d: Map[str, int] = Map[str, int]()
 
-# as expected, these are both `Any | None`
+# as expected, these are both `int | None`
 reveal_type(d.get(&quot;key&quot;))  # int | None  ✅️
 reveal_type(d.get(&quot;key&quot;, None))  # int | None  ✅️
 # outer context should not overrule the argument type!
@@ -42,25 +42,25 @@ result: str = reveal_type(d.get(&quot;key&quot;, None))  # int | None | str ❌�
 <p><code>d.get(&quot;key&quot;, None)</code> alone produces <code>int | None</code> as expected, but in the last case we have <code>str</code> as outer context. This gives an unsolvable situation for the type variable <code>T</code> as we would need both <code>T &lt;: str</code> and <code>T :&gt; None</code>. It seems <code>ty</code> gives priority to the outer constraint <code>T &lt;: str</code> here, which seems misguided, as it produces an illogical <code>reveal_type</code> result: <code>int | None | str</code>.</p>
 <p>But <code>d.get(&quot;key&quot;, None)</code> cannot produce a <code>str</code>!</p>
 <p>Instead, the inner constraint <code>T :&gt; None</code> should probably be prioritized in this situation.</p>
-<p>See also mirror issues in <code>mypy</code> and <code>pyrefly</code> tracker: https://github.com/python/mypy/issues/20576, https://github.com/facebook/pyrefly/issues/2136</p>
-<h3>Version</h3>
+<p>See also mirror issues in <code>mypy</code> and <code>pyrefly</code> tracker: <a href="https://github.com/python/mypy/issues/20576">python/mypy#20576</a>, <a href="https://github.com/facebook/pyrefly/issues/2136">facebook/pyrefly#2136</a></p>
+Version
 <p><em>No response</em></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-17 01:45</div>
             <div class="timeline-body"><p>Just to be clear, this is purely an issue of the diagnostic / hover / revealed type -- there is no type checking correctness issue here?</p>
-<p>I think this is a known issue with how we apply type context in generic cases. We would like to fix it, but we don't consider it super high priority since it just makes the revealed types sometimes wrongly include the context type, when there is no solution that satisfies the context type. It doesn't ever change the correctness of a program.</p>
+<p>I think this is a known issue with how we apply type context in generic cases. We would like to fix it, but we don&#x27;t consider it super high priority since it just makes the revealed types sometimes wrongly include the context type, when there is no solution that satisfies the context type. It doesn&#x27;t ever change the correctness of a program.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bidirectional inference</span> added by @carljm on 2026-01-17 01:45</div>
+            <div class="event">Label <span class="label">bidirectional inference</span> added by <a href="https://github.com/carljm">@carljm</a> on 2026-01-17 01:45</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Bad Type Variable resolution with outer context (`dict.get`)" to "Type context can be wrongly included in diagnostic type when there is no solution" by @carljm on 2026-01-17 01:45</div>
+            <div class="event">Renamed from &quot;Bad Type Variable resolution with outer context (`dict.get`)&quot; to &quot;Type context can be wrongly included in diagnostic type when there is no solution&quot; by <a href="https://github.com/carljm">@carljm</a> on 2026-01-17 01:45</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">generics</span> added by @carljm on 2026-01-17 01:45</div>
+            <div class="event">Label <span class="label">generics</span> added by <a href="https://github.com/carljm">@carljm</a> on 2026-01-17 01:45</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-17 01:46</div>
@@ -68,11 +68,11 @@ result: str = reveal_type(d.get(&quot;key&quot;, None))  # int | None | str ❌�
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">diagnostics</span> added by @carljm on 2026-01-17 01:46</div>
+            <div class="event">Label <span class="label">diagnostics</span> added by <a href="https://github.com/carljm">@carljm</a> on 2026-01-17 01:46</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/electronick1">@electronick1</a> on 2026-01-17 02:20</div>
-            <div class="timeline-body"><p>It looks like this PR https://github.com/astral-sh/ruff/pull/21267 is related, it adds context for cases when type can not be assigned.
+            <div class="timeline-body"><p>It looks like this PR <a href="https://github.com/astral-sh/ruff/pull/21267">astral-sh/ruff#21267</a> is related, it adds context for cases when type can not be assigned.
 <a href="https://github.com/astral-sh/ruff/pull/21267/files#diff-8c9ae4384d5808e43fce19d9835dd6e49048297bd4989c5379ebe0f476d34e4fR425">For example</a> in annotations.md:</p>
 <pre><code># error: [invalid-assignment] &quot;Object of type `list[int | str]` is not assignable to `list[int]`&quot;
 g: list[int] = f(&quot;a&quot;)
@@ -85,9 +85,9 @@ g: list[int] = f(&quot;a&quot;)
             <div class="timeline-body"><blockquote>
 <p><code>f(&quot;a&quot;)</code> - can not return <code>list[int | str]</code></p>
 </blockquote>
-<p>I'm not sure what you mean by that. <code>f(&quot;a&quot;)</code> can and should produce a <code>list[int | str]</code> given a type context of <code>list[int | str]</code>. In this case, the constraints are unsolvable, and our attempt to solve them produces a <code>list[int | str]</code>. I do agree that it is slightly confusing, but it is not incorrect.</p>
-<p>Ignoring the type context completely can lead to confusing diagnostics, which is why we removed that behavior in https://github.com/astral-sh/ruff/pull/21267. For example, we use the type context to avoid literal promotion</p>
-<pre><code class="language-py">from typing import Literal
+<p>I&#x27;m not sure what you mean by that. <code>f(&quot;a&quot;)</code> can and should produce a <code>list[int | str]</code> given a type context of <code>list[int | str]</code>. In this case, the constraints are unsolvable, and our attempt to solve them produces a <code>list[int | str]</code>. I do agree that it is slightly confusing, but it is not incorrect.</p>
+<p>Ignoring the type context completely can lead to confusing diagnostics, which is why we removed that behavior in <a href="https://github.com/astral-sh/ruff/pull/21267">astral-sh/ruff#21267</a>. For example, we use the type context to avoid literal promotion</p>
+<pre><code>from typing import Literal
 
 def f[T](x: T) -&gt; list[T]:
     return [x]
@@ -97,7 +97,7 @@ def f[T](x: T) -&gt; list[T]:
 x: list[Literal[&quot;hello&quot;] | bool] = [&quot;hello&quot;, 1]
 </code></pre>
 <p>Or to infer <code>TypedDict</code> types:</p>
-<pre><code class="language-py">class A(TypedDict):
+<pre><code>class A(TypedDict):
     bar: int
 
 # Option A: Object of type `list[A | int]` is not assignable to `list[A | bool]`
@@ -124,7 +124,7 @@ y: list[A | bool] = [{&quot;bar&quot;: 1}, 1]
     </div>
 
     <footer>
-        Synced at 2026-01-17 05:06:46 UTC
+        Synced at 2026-01-20 19:27:11 UTC
     </footer>
 </body>
 </html>

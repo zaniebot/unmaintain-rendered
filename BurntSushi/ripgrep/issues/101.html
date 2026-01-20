@@ -30,9 +30,9 @@
 <li>At times, open a file from the listed results at the exact line number in ${EDITOR}</li>
 </ol>
 <p>To speed this up with <code>rg</code>, I tried the below but it is inefficient as I need to run <code>rg</code> twice:</p>
-<pre><code>alias _rg    '\rg --follow --no-ignore-vcs --smart-case'
-alias rglog  '_rg --line-number \!* &gt;! ${SEARCHLOG}'
-alias rg     '_rg \!*; (rglog \!*&amp;)'
+<pre><code>alias _rg    &#x27;\rg --follow --no-ignore-vcs --smart-case&#x27;
+alias rglog  &#x27;_rg --line-number \!* &gt;! ${SEARCHLOG}&#x27;
+alias rg     &#x27;_rg \!*; (rglog \!*&amp;)&#x27;
 </code></pre>
 <p><em>PS: While working with above, I realized that <code>--line-number</code> is off by default when piping the result to a file.</em></p>
 <p>Using above, I would do</p>
@@ -40,13 +40,13 @@ alias rg     '_rg \!*; (rglog \!*&amp;)'
 </code></pre>
 <p>I would see the results in color on stdout and also get the log file <code>${SEARCHLOG}</code> saved.</p>
 <p>Then I use <a href="https://github.com/mooz/percol"><code>percol</code></a> to quickly jump to the result:</p>
-<p>Here's the alias if interested:</p>
-<pre><code>alias pagl  'cat ${SEARCHLOG} | percol --query=\!* | \\
-      (e `awk -F: '&quot;'&quot;'{ if ( $2 ) {print &quot;+&quot; $2 &quot; &quot; $1} else {print} }'&quot;'&quot;'` &amp;)'
+<p>Here&#x27;s the alias if interested:</p>
+<pre><code>alias pagl  &#x27;cat ${SEARCHLOG} | percol --query=\!* | \\
+      (e `awk -F: &#x27;&quot;&#x27;&quot;&#x27;{ if ( $2 ) {print &quot;+&quot; $2 &quot; &quot; $1} else {print} }&#x27;&quot;&#x27;&quot;&#x27;` &amp;)&#x27;
 </code></pre>
 <p><em><code>e</code> is my alias to open by default editor.</em></p>
 <p>Instead of running <code>rg</code> twice as above, I even tried the below:</p>
-<pre><code>alias rg_bad '_rg --line-number \!* |&amp; tee ${SEARCHLOG}'
+<pre><code>alias rg_bad &#x27;_rg --line-number \!* |&amp; tee ${SEARCHLOG}&#x27;
 </code></pre>
 <p>But that shows the results in black&amp;white on stdout!</p>
 <p><strong>Questions:</strong></p>
@@ -58,25 +58,25 @@ alias rg     '_rg \!*; (rglog \!*&amp;)'
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-26 17:12</div>
-            <div class="timeline-body"><p>At a high level, I think the way people usually solve this problem is by running <code>rg</code> (or whatever search tool) in your editor. I don't find myself doing that often, so I don't have any concrete tips for you.</p>
-<p>I'm unlikely to support a <code>--tee-results-file</code> option, not only because that would be a significant complication (because the flag opens the doors to &quot;well have --foo for normal operation but --tee-foo for when the --tee-results-file flag is used), but because it's a significant conflation of concerns.</p>
-<p>You might consider forcing colors to be shown (say, with the <code>--color</code> or <code>-p</code> flags) which should work with your <code>tee</code> command, and then try to extract the line number from that (but you'll need to deal with the fact that it contains ANSI escape codes).</p>
+            <div class="timeline-body"><p>At a high level, I think the way people usually solve this problem is by running <code>rg</code> (or whatever search tool) in your editor. I don&#x27;t find myself doing that often, so I don&#x27;t have any concrete tips for you.</p>
+<p>I&#x27;m unlikely to support a <code>--tee-results-file</code> option, not only because that would be a significant complication (because the flag opens the doors to &quot;well have --foo for normal operation but --tee-foo for when the --tee-results-file flag is used), but because it&#x27;s a significant conflation of concerns.</p>
+<p>You might consider forcing colors to be shown (say, with the <code>--color</code> or <code>-p</code> flags) which should work with your <code>tee</code> command, and then try to extract the line number from that (but you&#x27;ll need to deal with the fact that it contains ANSI escape codes).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kaushalmodi">@kaushalmodi</a> on 2016-09-26 18:22</div>
             <div class="timeline-body"><p>Thanks. The <code>-p</code> flag sort of helps..</p>
 <p>Before I post process the search log, I get:</p>
-<p><img src="https://cloud.githubusercontent.com/assets/3578197/18846241/fa8522e0-83f2-11e6-9679-b1dcc418d9f7.png" alt="image" /></p>
+<p><img src="https://cloud.githubusercontent.com/assets/3578197/18846241/fa8522e0-83f2-11e6-9679-b1dcc418d9f7.png" alt="image"></p>
 <p>After removing the ANSI color codes (<a href="http://unix.stackexchange.com/a/4529/57923">found this perl one-liner</a>), I get:</p>
-<p><img src="https://cloud.githubusercontent.com/assets/3578197/18846273/2583458a-83f3-11e6-8e98-06dbeed9f29a.png" alt="image" /></p>
+<p><img src="https://cloud.githubusercontent.com/assets/3578197/18846273/2583458a-83f3-11e6-8e98-06dbeed9f29a.png" alt="image"></p>
 <p>As we can see there are 2 issues here:</p>
 <ol>
-<li><p>The perl one-liner which apparently works in general for removing ANSI color codes did not do a complete cleanup in this case.. In the second picture above, <code>^O</code> escape codes are still left out. Would you have an idea why that's the case?</p>
+<li><p>The perl one-liner which apparently works in general for removing ANSI color codes did not do a complete cleanup in this case.. In the second picture above, <code>^O</code> escape codes are still left out. Would you have an idea why that&#x27;s the case?</p>
 </li>
-<li><p>The <code>tee</code>'d search log should have been in this format (below produced using <code>rg .. &gt;! foo.log</code></p>
+<li><p>The <code>tee</code>&#x27;d search log should have been in this format (below produced using <code>rg .. &gt;! foo.log</code></p>
 <pre><code>25/org-plus-contrib-20160829/org-agenda.el:4174:(defvar org-arg-loc nil) ; local variable
-25/org-plus-contrib-20160829/org-agenda.el:4248:      (org-set-local 'org-arg-loc arg)
+25/org-plus-contrib-20160829/org-agenda.el:4248:      (org-set-local &#x27;org-arg-loc arg)
 general.el:103:(defconst modi/rg-arguments
 setup-files/setup-projectile.el:109:                         modi/rg-arguments
 elisp/org-mode/lisp/org-agenda.el:4166:(defvar org-arg-loc nil) ; local variable
@@ -84,7 +84,7 @@ elisp/org-mode/lisp/org-agenda.el:4239:      (setq-local org-arg-loc arg)
 elisp/org-mode/lisp/org-agenda.el.1.bkp:4182:(defvar org-arg-loc nil) ; local variable
 elisp/org-mode/lisp/org-agenda.el.1.bkp:4256:      (setq-local org-arg-loc arg)
 </code></pre>
-<p>The output needs to be in <code>FILE:LINE:STRING</code> format as above. But it's not in the picture 1 and 2 above. That's because <code>-p</code> sets <code>--heading</code> too. But looks like there is no other option. I either have output with headings in <strong>both</strong> stdout and tee'd file or no headings in both (just <code>--color=always</code>).</p>
+<p>The output needs to be in <code>FILE:LINE:STRING</code> format as above. But it&#x27;s not in the picture 1 and 2 above. That&#x27;s because <code>-p</code> sets <code>--heading</code> too. But looks like there is no other option. I either have output with headings in <strong>both</strong> stdout and tee&#x27;d file or no headings in both (just <code>--color=always</code>).</p>
 </li>
 </ol>
 <blockquote>
@@ -92,7 +92,7 @@ elisp/org-mode/lisp/org-agenda.el.1.bkp:4256:      (setq-local org-arg-loc arg)
 </blockquote>
 <p>I do that too. But I like have this terminal based flow too.</p>
 <blockquote>
-<p>I'm unlikely to support a --tee-results-file option, not only because that would be a significant complication</p>
+<p>I&#x27;m unlikely to support a --tee-results-file option, not only because that would be a significant complication</p>
 </blockquote>
 <p>OK, that is understood. But I hope you can help me with point 1 above regarding the mysterious <code>^O</code> escape code.</p>
 </div>
@@ -119,9 +119,9 @@ Character code properties: customize what to show
   general-category: Cc (Other, Control)
 </code></pre>
 <p>So, eventually, this seems to do the trick of removing <strong>all</strong> the escape codes:</p>
-<pre><code class="language-sh">alias rg2 &quot;rg --line-number -p \!* |&amp; tee /tmp/${USER}_rg_temp.txt; \\
-           \sed -r -e 's/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g' \\
-                   -e 's/\x0F//g' /tmp/${USER}_rg_temp.txt \\
+<pre><code>alias rg2 &quot;rg --line-number -p \!* |&amp; tee /tmp/${USER}_rg_temp.txt; \\
+           \sed -r -e &#x27;s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g&#x27; \\
+                   -e &#x27;s/\x0F//g&#x27; /tmp/${USER}_rg_temp.txt \\
                 &gt;! ${SEARCHLOG}; \\
            \rm -f /tmp/${USER}_rg_temp.txt&quot;
 </code></pre>
@@ -134,29 +134,29 @@ Character code properties: customize what to show
             <div class="timeline-body"><p>Now I just need a script to convert from</p>
 <pre><code>25/org-plus-contrib-20160829/org-agenda.el
 4174:(defvar org-arg-loc nil) ; local variable
-4248:      (org-set-local 'org-arg-loc arg)
+4248:      (org-set-local &#x27;org-arg-loc arg)
 </code></pre>
 <p>to</p>
 <pre><code>25/org-plus-contrib-20160829/org-agenda.el:4174:(defvar org-arg-loc nil) ; local variable
-25/org-plus-contrib-20160829/org-agenda.el:4248:      (org-set-local 'org-arg-loc arg)
+25/org-plus-contrib-20160829/org-agenda.el:4248:      (org-set-local &#x27;org-arg-loc arg)
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-26 20:58</div>
-            <div class="timeline-body"><p>That <code>^0</code> might be a bug in the term coloring. I wonder if it's a dupe of #37. What is the output of <code>echo $TERM</code> in the same environment in which you're running <code>rg</code>?</p>
+            <div class="timeline-body"><p>That <code>^0</code> might be a bug in the term coloring. I wonder if it&#x27;s a dupe of #37. What is the output of <code>echo $TERM</code> in the same environment in which you&#x27;re running <code>rg</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kaushalmodi">@kaushalmodi</a> on 2016-09-27 01:02</div>
             <div class="timeline-body"><blockquote>
-<p>I wonder if it's a dupe of #37.</p>
+<p>I wonder if it&#x27;s a dupe of #37.</p>
 </blockquote>
 <p>It certainly looks like that.</p>
 <blockquote>
-<p>What is the output of echo $TERM in the same environment in which you're running rg?</p>
+<p>What is the output of echo $TERM in the same environment in which you&#x27;re running rg?</p>
 </blockquote>
-<p>It's <code>screen</code> for me (too?). I need to set <code>$TERM</code> to <code>screen</code> for <a href="https://github.com/tmux/tmux"><code>tmux</code></a>.</p>
+<p>It&#x27;s <code>screen</code> for me (too?). I need to set <code>$TERM</code> to <code>screen</code> for <a href="https://github.com/tmux/tmux"><code>tmux</code></a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -167,34 +167,34 @@ Character code properties: customize what to show
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kaushalmodi">@kaushalmodi</a> on 2016-09-27 01:15</div>
             <div class="timeline-body"><p>I tried that, but now I get a different extra escape code <code>^[(B</code> (after removing ANSI color codes using <a href="http://www.commandlinefu.com/commands/view/3584/remove-color-codes-special-characters-with-sed">this sed script</a>).</p>
-<p><img src="https://cloud.githubusercontent.com/assets/3578197/18857012/5478c3fc-842e-11e6-9383-9e14922bdffe.png" alt="image" /></p>
+<p><img src="https://cloud.githubusercontent.com/assets/3578197/18857012/5478c3fc-842e-11e6-9383-9e14922bdffe.png" alt="image"></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kaushalmodi">@kaushalmodi</a> on 2016-09-27 01:21</div>
-            <div class="timeline-body"><p>Here's a screencap for the same output <em>before</em> removing any ANSI color escapes.</p>
-<p><img src="https://cloud.githubusercontent.com/assets/3578197/18857124/53584460-842f-11e6-9692-874c7e9edbdb.png" alt="image" /></p>
+            <div class="timeline-body"><p>Here&#x27;s a screencap for the same output <em>before</em> removing any ANSI color escapes.</p>
+<p><img src="https://cloud.githubusercontent.com/assets/3578197/18857124/53584460-842f-11e6-9692-874c7e9edbdb.png" alt="image"></p>
 <p>It looks like in both cases <code>^O</code> or <code>^[(B</code>, those extra cases are appearing where the colored text substrings end (see below):</p>
-<p><img src="https://cloud.githubusercontent.com/assets/3578197/18857114/2ec7438a-842f-11e6-9e9a-9dfcfaf60783.png" alt="image" /></p>
+<p><img src="https://cloud.githubusercontent.com/assets/3578197/18857114/2ec7438a-842f-11e6-9e9a-9dfcfaf60783.png" alt="image"></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-29 01:13</div>
-            <div class="timeline-body"><p>I'm going to close this with the hope that #37 is a dupe. If after fixing #37 this is still a problem, we can revisit.</p>
+            <div class="timeline-body"><p>I&#x27;m going to close this with the hope that #37 is a dupe. If after fixing #37 this is still a problem, we can revisit.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2016-09-29 01:13</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-29 01:13</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kaushalmodi">@kaushalmodi</a> on 2016-12-01 17:04</div>
-            <div class="timeline-body"><p>For the sake of completeness, I now 'sort of solve' the original issue in the first post as follows</p>
+            <div class="timeline-body"><p>For the sake of completeness, I now &#x27;sort of solve&#x27; the original issue in the first post as follows</p>
 <p>rg still needs to be run twice in some cases. But atleast now I can run something like below</p>
 <blockquote>
-<p>rg_wrapper.sh --help | rg_wrapper.sh 'SOMETHING' | cat -</p>
+<p>rg_wrapper.sh --help | rg_wrapper.sh &#x27;SOMETHING&#x27; | cat -</p>
 </blockquote>
 <p>with results from that first rg_wrapper.sh saved to a <code>${SEARCHLOG}</code>.</p>
-<pre><code class="language-bash">#!/usr/bin/env bash
+<pre><code>#!/usr/bin/env bash
 # Time-stamp: &lt;2016-12-01 11:47:54 kmodi&gt;
 
 set -euo pipefail # http://redsymbol.net/articles/unofficial-bash-strict-mode
@@ -203,12 +203,12 @@ set -euo pipefail # http://redsymbol.net/articles/unofficial-bash-strict-mode
 # --follow --no-ignore-vcs --smart-case --ignore-file /home/kmodi/.ignore: No such
 # file or directory
 # Uncommenting below gives the above error
-# IFS=$'\n\t'
+# IFS=$&#x27;\n\t&#x27;
 
 # Initialize variables
 debug=0
-user_args=''
-piped_data=''
+user_args=&#x27;&#x27;
+piped_data=&#x27;&#x27;
 
 input_from_pipe_flag=0
 output_to_pipe_flag=0
@@ -238,9 +238,9 @@ then
 fi
 
 set +e # Ignore if the below which or grep results in error
-rg_in_home=$(which -a ${rg_bin} | grep -E '^/home' 2&gt;/dev/null)
+rg_in_home=$(which -a ${rg_bin} | grep -E &#x27;^/home&#x27; 2&gt;/dev/null)
 set -e
-if [[ ${rg_in_home} != &quot;&quot; ]] # If rg binary exists in a dir in user's home
+if [[ ${rg_in_home} != &quot;&quot; ]] # If rg binary exists in a dir in user&#x27;s home
 then
     rg_bin=&quot;${rg_in_home}&quot;
 fi
@@ -348,7 +348,7 @@ fi
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-12-01 17:18</div>
-            <div class="timeline-body"><p>@kaushalmodi Wow that's insane! I must confess that I don't have time to grok all of that but I'm glad you found something that sort-of works. :-)</p>
+            <div class="timeline-body"><p>@kaushalmodi Wow that&#x27;s insane! I must confess that I don&#x27;t have time to grok all of that but I&#x27;m glad you found something that sort-of works. :-)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -356,14 +356,14 @@ fi
             <div class="timeline-body"><p>The &quot;sort of works&quot; is just because I still need to run <code>rg</code> twice; once for the stdout and second time for saving to the SEARCHLOG file.</p>
 <p>That said, it now works 100% as I expected.</p>
 <p>Earlier I had:</p>
-<hr />
+<hr>
 <p><strong>BAD CODE</strong></p>
-<pre><code>alias _rg    '\rg --follow --no-ignore-vcs --smart-case'
-alias rglog  '_rg --line-number \!* &gt;! ${SEARCHLOG}'
-alias rg     '_rg \!*; (rglog \!*&amp;)'
+<pre><code>alias _rg    &#x27;\rg --follow --no-ignore-vcs --smart-case&#x27;
+alias rglog  &#x27;_rg --line-number \!* &gt;! ${SEARCHLOG}&#x27;
+alias rg     &#x27;_rg \!*; (rglog \!*&amp;)&#x27;
 </code></pre>
-<hr />
-<p>The issue was that it did not work if I did <code>rg | rg 'something'</code>. The above wrapper script is verbose because I deal with all 4 use cases: Data Read From Pipe (yes/no) x Data Output To Pipe (yes/no), while also output search results to stdout and SEARCHLOG.</p>
+<hr>
+<p>The issue was that it did not work if I did <code>rg | rg &#x27;something&#x27;</code>. The above wrapper script is verbose because I deal with all 4 use cases: Data Read From Pipe (yes/no) x Data Output To Pipe (yes/no), while also output search results to stdout and SEARCHLOG.</p>
 <pre><code>rg_wrapper.sh foo
 rg_wrapper.sh foo | cat -
 echo foo | rg_wrapper.sh
@@ -374,7 +374,7 @@ echo foo | rg_wrapper.sh | cat -
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:41:43 UTC
+        Synced at 2026-01-20 18:48:01 UTC
     </footer>
 </body>
 </html>

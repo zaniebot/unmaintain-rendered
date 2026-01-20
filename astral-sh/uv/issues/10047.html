@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>Add instructions to make a docker file that doesn't use root at runtime</h1>
+    <h1>Add instructions to make a docker file that doesn&#x27;t use root at runtime</h1>
 
     <div class="meta">
         <span class="state-icon state-open"></span>
@@ -26,8 +26,8 @@
             <div class="timeline-body"><p>I really appreciate this example:
 https://github.com/astral-sh/uv-docker-example/blob/main/Dockerfile</p>
 <p>But sometimes people need to install uv and switch to a non-root user at runtime.</p>
-<p>I could NOT get it to work.  Here's a somewhat commented out example of what I tried but not everything.  I tried installing uv to a non-root folder and giving the web user access to the cache, install directory, and virtual environment but I couldn't get ANYTHING to work.  We're talking about two determined devs collaborating for multiple hours.  Is there any way y'all could produce a version of the uv docker example that allows installation and package installation during the build but still allows another user to run the uv entrypoint?  We can't be the only people trying to do this.</p>
-<pre><code class="language-dockerfile">FROM python:3.12
+<p>I could NOT get it to work.  Here&#x27;s a somewhat commented out example of what I tried but not everything.  I tried installing uv to a non-root folder and giving the web user access to the cache, install directory, and virtual environment but I couldn&#x27;t get ANYTHING to work.  We&#x27;re talking about two determined devs collaborating for multiple hours.  Is there any way y&#x27;all could produce a version of the uv docker example that allows installation and package installation during the build but still allows another user to run the uv entrypoint?  We can&#x27;t be the only people trying to do this.</p>
+<pre><code>FROM python:3.12
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -91,7 +91,7 @@ ENV PATH=&quot;/code/.cargo/uv/:$PATH&quot;
 
 # Enable bytecode compilation
 ENV UV_COMPILE_BYTECODE=1
-# Copy from the cache instead of linking since it's a mounted volume
+# Copy from the cache instead of linking since it&#x27;s a mounted volume
 ENV UV_LINK_MODE=copy
 
 ENV DJANGO_PRODUCTION=true
@@ -131,18 +131,18 @@ ENTRYPOINT [&quot;uv&quot;, &quot;run&quot;, &quot;/code/initialize.sh&quot;]
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Add instructions to make a docker file that doesn't use root" to "Add instructions to make a docker file that doesn't use root at runtime" by @danieltalsky on 2024-12-20 03:51</div>
+            <div class="event">Renamed from &quot;Add instructions to make a docker file that doesn&#x27;t use root&quot; to &quot;Add instructions to make a docker file that doesn&#x27;t use root at runtime&quot; by <a href="https://github.com/danieltalsky">@danieltalsky</a> on 2024-12-20 03:51</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zed">@zed</a> on 2024-12-20 08:48</div>
             <div class="timeline-body"><p>you could prefix <code>RUN --mount=type=cache,target=${UV_CACHE_DIR}</code> to any command that works with <code>$UV_CACHE_DIR</code> (not just <code>uv sync</code>). For example:</p>
-<pre><code class="language-dockerfile"># workaround &quot;Permission denied (os error 13)&quot; error in
+<pre><code># workaround &quot;Permission denied (os error 13)&quot; error in
 #    &quot;RUN --mount=type=cache&quot; in `uv sync` below
 RUN --mount=type=cache,target=${UV_CACHE_DIR}                     \
     [ -d &quot;${UV_CACHE_DIR}&quot; ] &amp;&amp; chown -R &quot;${UID}:${UID}&quot; &quot;${UV_CACHE_DIR}&quot;
 </code></pre>
 <p>Then</p>
-<pre><code class="language-dockerfile"># install the project's dependencies
+<pre><code># install the project&#x27;s dependencies
 RUN --mount=type=cache,target=${UV_CACHE_DIR}                     \
     --mount=type=bind,source=uv.lock,target=uv.lock               \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
@@ -150,12 +150,12 @@ RUN --mount=type=cache,target=${UV_CACHE_DIR}                     \
 </code></pre>
 <p>succeeds.</p>
 <p>Alternatively, you could use uid:</p>
-<pre><code class="language-dockerfile">RUN --mount=type=cache,target=${UV_CACHE_DIR},uid=${UID}                     \
+<pre><code>RUN --mount=type=cache,target=${UV_CACHE_DIR},uid=${UID}                     \
 ...
 </code></pre>
 <p>no <code>chown</code> is necessary for the cache dir in this case.</p>
 <p>btw, COPY accepts --chown option too:</p>
-<pre><code class="language-dockerfile">COPY --chown=&quot;${UID}:${UID}&quot; . . 
+<pre><code>COPY --chown=&quot;${UID}:${UID}&quot; . . 
 </code></pre>
 </div>
         </div>
@@ -166,17 +166,17 @@ RUN --mount=type=cache,target=${UV_CACHE_DIR}                     \
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-21 17:08</div>
-            <div class="timeline-body"><p>@zed doesn't work here, they're just being helpful :)</p>
-<p>Yes it seems reasonable to add an example to our repositories. I'd review a contribution doing so.</p>
+            <div class="timeline-body"><p>@zed doesn&#x27;t work here, they&#x27;re just being helpful :)</p>
+<p>Yes it seems reasonable to add an example to our repositories. I&#x27;d review a contribution doing so.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">documentation</span> added by @zanieb on 2024-12-21 18:35</div>
+            <div class="event">Label <span class="label">documentation</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-21 18:35</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/scrat247">@scrat247</a> on 2025-01-02 21:25</div>
-            <div class="timeline-body"><p>We've spend some time with this as well and circumvented the problem by focussing on a system-wide install because then switching the user isn't an issue at all.</p>
-<p>Some glitch with this is that uv itself isn't available to that unprivileged user - but tbh we don't consider this an issue.</p>
+            <div class="timeline-body"><p>We&#x27;ve spend some time with this as well and circumvented the problem by focussing on a system-wide install because then switching the user isn&#x27;t an issue at all.</p>
+<p>Some glitch with this is that uv itself isn&#x27;t available to that unprivileged user - but tbh we don&#x27;t consider this an issue.</p>
 <pre><code>FROM python:3.8.3-slim
 
 # set work directory
@@ -216,13 +216,13 @@ USER &lt;USER_NAME&gt;
 #copy project
 COPY . .
 </code></pre>
-<p>Small warning: Obviously we haven't put that to production (see outdated python version),  but for our local development environments while updating the project it seems to work great so far.</p>
+<p>Small warning: Obviously we haven&#x27;t put that to production (see outdated python version),  but for our local development environments while updating the project it seems to work great so far.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:28:59 UTC
+        Synced at 2026-01-20 19:36:19 UTC
     </footer>
 </body>
 </html>

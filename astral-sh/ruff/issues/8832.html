@@ -23,12 +23,12 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ktbarrett">@ktbarrett</a></div>
-            <div class="timeline-body"><p>My project (<a href="https://github.com/cocotb/cocotb">cocotb</a>) will continue to support Python 3.6 for the foreseeable future. However ruff doesn't seem to respect this. With the following in pyporject.toml:</p>
-<pre><code class="language-toml">[project]
+            <div class="timeline-body"><p>My project (<a href="https://github.com/cocotb/cocotb">cocotb</a>) will continue to support Python 3.6 for the foreseeable future. However ruff doesn&#x27;t seem to respect this. With the following in pyporject.toml:</p>
+<pre><code>[project]
 requires-python = &quot;&gt;=3.6&quot;
 </code></pre>
 <p>And this code in my project:</p>
-<pre><code class="language-python"># On python 3.7 onwards, `dict` is guaranteed to preserve insertion order.
+<pre><code># On python 3.7 onwards, `dict` is guaranteed to preserve insertion order.
 # Since `OrderedDict` is a little slower that `dict`, we prefer the latter
 # when possible.
 if sys.version_info[:2] &gt;= (3, 7): 
@@ -38,35 +38,35 @@ else:
 
     insertion_ordered_dict = collections.OrderedDict
 </code></pre>
-<p>I get a UP036 error (<code>Version block is outdated for minimum Python version</code>) and <code>--unsafe-fixes</code> attempts to remove the version ifdef. Clearly ruff is internally bumping the version to python 3.7 and then complaining about this ifdef rather than respecting the <em>actual</em> version. I don't much care if Python 3.6 gets no official support, but this isn't a very good behavior =/</p>
+<p>I get a UP036 error (<code>Version block is outdated for minimum Python version</code>) and <code>--unsafe-fixes</code> attempts to remove the version ifdef. Clearly ruff is internally bumping the version to python 3.7 and then complaining about this ifdef rather than respecting the <em>actual</em> version. I don&#x27;t much care if Python 3.6 gets no official support, but this isn&#x27;t a very good behavior =/</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-24 15:52</div>
-            <div class="timeline-body"><p>I'm honestly not sure what the right behavior is here! It's good, at least, that these are gated behind <code>--unsafe-fixes</code>, since users are at least required to opt-in to explicit, unsafe changes. But I agree that we can do better.</p>
-<p>It would be straightforward to either (1) log a warning if you're using an unsupported <code>requires-python</code> range, or (2) throw an error. I'm not sure that we'd want to go through and audit all rules to determine whether they require Python 3.7 or above though -- I mean, we definitely <em>could</em>, I just don't know if we'd prioritize it.</p>
-<p>Any opinion on the behavior you'd <em>expect</em>, assuming Ruff doesn't support Python 3.6?</p>
+            <div class="timeline-body"><p>I&#x27;m honestly not sure what the right behavior is here! It&#x27;s good, at least, that these are gated behind <code>--unsafe-fixes</code>, since users are at least required to opt-in to explicit, unsafe changes. But I agree that we can do better.</p>
+<p>It would be straightforward to either (1) log a warning if you&#x27;re using an unsupported <code>requires-python</code> range, or (2) throw an error. I&#x27;m not sure that we&#x27;d want to go through and audit all rules to determine whether they require Python 3.7 or above though -- I mean, we definitely <em>could</em>, I just don&#x27;t know if we&#x27;d prioritize it.</p>
+<p>Any opinion on the behavior you&#x27;d <em>expect</em>, assuming Ruff doesn&#x27;t support Python 3.6?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-11-24 15:53</div>
+            <div class="event">Label <span class="label">needs-decision</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-24 15:53</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ktbarrett">@ktbarrett</a> on 2023-11-24 16:28</div>
-            <div class="timeline-body"><p>The output of ruff assuming 3.7 works as is in 3.6 for us. I'd be happy if there was at least &quot;unofficial&quot; support for 3.6. As in you can give 3.6 as the version, ruff respects it, but maybe there isn't the full range of checks there should be. This would be accompanied by a &quot;consider all fixes unsafe unless proven otherwise&quot; warning. Existing rules that are gated to version 3.7 could be brought back to 3.6 until proven otherwise by a user.</p>
-<p>Personally I don't care about anything before 3.6. The only reason I care about 3.6 is because it's the standard Python version on RHEL8, which a lot of our users are stuck on, and it's at least being unofficially supported by Red Hat. Everything before that can and should be damned.</p>
+            <div class="timeline-body"><p>The output of ruff assuming 3.7 works as is in 3.6 for us. I&#x27;d be happy if there was at least &quot;unofficial&quot; support for 3.6. As in you can give 3.6 as the version, ruff respects it, but maybe there isn&#x27;t the full range of checks there should be. This would be accompanied by a &quot;consider all fixes unsafe unless proven otherwise&quot; warning. Existing rules that are gated to version 3.7 could be brought back to 3.6 until proven otherwise by a user.</p>
+<p>Personally I don&#x27;t care about anything before 3.6. The only reason I care about 3.6 is because it&#x27;s the standard Python version on RHEL8, which a lot of our users are stuck on, and it&#x27;s at least being unofficially supported by Red Hat. Everything before that can and should be damned.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2024-08-18 04:57</div>
-            <div class="timeline-body"><p>My two cents: I don't think rules need to have consideration for EOL Python past a certain point. But <code>UP036</code> doesn't need special consideration, it should be able to just compare the number configured against the number found in code.</p>
+            <div class="timeline-body"><p>My two cents: I don&#x27;t think rules need to have consideration for EOL Python past a certain point. But <code>UP036</code> doesn&#x27;t need special consideration, it should be able to just compare the number configured against the number found in code.</p>
 <p>Giving a warning for finding a selected version outside the supported range is probably fine. It might be an &quot;annoying message&quot;, but only for users stuck in specific situations.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:49:06 UTC
+        Synced at 2026-01-20 18:48:47 UTC
     </footer>
 </body>
 </html>

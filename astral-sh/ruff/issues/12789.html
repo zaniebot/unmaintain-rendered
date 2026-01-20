@@ -24,7 +24,7 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/KangOl">@KangOl</a></div>
             <div class="timeline-body"><p>Today, I (mostly) wrote the following code:</p>
-<pre><code class="language-python">class BaseConverter:
+<pre><code>class BaseConverter:
     def to_html(self):
         return HTMLConverter()
 
@@ -42,39 +42,39 @@ def HTMLConverter(BaseConverter):
         return lxml.html.fromstring(string)
 </code></pre>
 <p>Did you spot the error? Obviously, the title of this issue is a big hint, but for the other ones, here is how to fix the code:</p>
-<pre><code class="language-diff">- def HTMLConverter(BaseConverter):
+<pre><code>- def HTMLConverter(BaseConverter):
 + class HTMLConverter(BaseConverter):
 </code></pre>
 <p>I think this kind of error can be detected by ruff, as the body of the <code>HTMLConverter</code> <em>function</em> only contains other functions and its sole argument is the name of a defined class.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2024-08-10 04:04</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-10 04:04</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2024-08-10 04:05</div>
+            <div class="event">Label <span class="label">needs-decision</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-10 04:05</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-10 04:05</div>
-            <div class="timeline-body"><p>That's funny. We could probably support functions that only contain definitions. What do you think, @AlexWaygood?</p>
+            <div class="timeline-body"><p>That&#x27;s funny. We could probably support functions that only contain definitions. What do you think, @AlexWaygood?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-10 10:37</div>
-            <div class="timeline-body"><p>Yeah, I think this is a reasonable request. I agree that a function that only contains other functions is almost certainly not what was intended, so I think it's safe to flag it 😄</p>
+            <div class="timeline-body"><p>Yeah, I think this is a reasonable request. I agree that a function that only contains other functions is almost certainly not what was intended, so I think it&#x27;s safe to flag it 😄</p>
 <blockquote>
 <p>We could probably support functions that only contain definitions.</p>
 </blockquote>
-<p>Hmm, functions that only contain class definitions aren't quite so clear cut, since they can still have side effects when they're executed:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; def foo():
+<p>Hmm, functions that only contain class definitions aren&#x27;t quite so clear cut, since they can still have side effects when they&#x27;re executed:</p>
+<pre><code>&gt;&gt;&gt; def foo():
 ...   class Bar:
-...     print('yo')
+...     print(&#x27;yo&#x27;)
 ...     
 &gt;&gt;&gt; foo()
 yo
 </code></pre>
-<p>Though I suppose even for a function that only contains function definitions (and doesn't return any of them), it's hard to say <em>for sure</em> that it didn't have any side effects, because of decorators:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; REGISTRY = []
+<p>Though I suppose even for a function that only contains function definitions (and doesn&#x27;t return any of them), it&#x27;s hard to say <em>for sure</em> that it didn&#x27;t have any side effects, because of decorators:</p>
+<pre><code>&gt;&gt;&gt; REGISTRY = []
 &gt;&gt;&gt; def foo():
 ...   @REGISTRY.append
 ...   def bar(): pass
@@ -92,18 +92,18 @@ yo
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-12 10:57</div>
-            <div class="timeline-body"><p>I think exactly what the decision should be here depends on how many false positives we'd be willing to tolerate from this rule:</p>
+            <div class="timeline-body"><p>I think exactly what the decision should be here depends on how many false positives we&#x27;d be willing to tolerate from this rule:</p>
 <ul>
 <li>If we want it to have a &quot;pyflakes level of accuracy&quot;, where the rule has close to zero false positives, then we should <em>only</em> emit a diagnostic if we see a function where the only items in the function body are function definitions, and none of the inner functions have any decorators</li>
-<li>If we're prepared to accept more false positives from the rule -- because we want it to catch more errors -- then we could also emit the diagnostic even if some of the inner functions are decorated, or if some of the inner definitions are class definitions.</li>
+<li>If we&#x27;re prepared to accept more false positives from the rule -- because we want it to catch more errors -- then we could also emit the diagnostic even if some of the inner functions are decorated, or if some of the inner definitions are class definitions.</li>
 </ul>
-<p>So while I'm supportive of adding a rule like this, I'm not 100% sure what exactly the rule should look like. @charliermarsh / @dhruvmanila -- any thoughts from you on that?</p>
+<p>So while I&#x27;m supportive of adding a rule like this, I&#x27;m not 100% sure what exactly the rule should look like. @charliermarsh / @dhruvmanila -- any thoughts from you on that?</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:50:50 UTC
+        Synced at 2026-01-20 18:48:56 UTC
     </footer>
 </body>
 </html>

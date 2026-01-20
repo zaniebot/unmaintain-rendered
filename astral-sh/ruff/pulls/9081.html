@@ -23,53 +23,53 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/akx">@akx</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This PR experiments with a new top-level command <code>ruff import-map</code> (nomenclature subject to change and discussion).</p>
-<p>Since Ruff is pretty fast at parsing Python and it already needs to figure out import maps internally (the type being aptly named <code>ImportMap</code>), I think it would be useful to be able to export those in a machine-readable format too, for instance to act as a backend for something like <a href="https://github.com/thebjorn/pydeps"><code>pydeps</code></a> – or in my case, I'd like to find names in a codebase that aren't being imported by anything else. (I tried <code>pydeps</code> and ran out of patience.)</p>
+<p>Since Ruff is pretty fast at parsing Python and it already needs to figure out import maps internally (the type being aptly named <code>ImportMap</code>), I think it would be useful to be able to export those in a machine-readable format too, for instance to act as a backend for something like <a href="https://github.com/thebjorn/pydeps"><code>pydeps</code></a> – or in my case, I&#x27;d like to find names in a codebase that aren&#x27;t being imported by anything else. (I tried <code>pydeps</code> and ran out of patience.)</p>
 <p>As you can see,</p>
 <ul>
-<li>there's a whole bunch of TODOs</li>
+<li>there&#x27;s a whole bunch of TODOs</li>
 <li>documentation is lacking</li>
 <li>the output stage just YOLO dumps serde_json</li>
 <li>the code is copy-paste-cannibalized from <code>format.rs</code> and <code>checkers/imports.rs</code></li>
-<li>I'm honestly not sure I'm using the correct abstraction level of APIs for reading the files (is there a &quot;just give me an AST&quot; API?)</li>
+<li>I&#x27;m honestly not sure I&#x27;m using the correct abstraction level of APIs for reading the files (is there a &quot;just give me an AST&quot; API?)</li>
 <li>probably other things</li>
 </ul>
-<p>but I figured I'd preferably get some code out there rather than just discussion 😁</p>
+<p>but I figured I&#x27;d preferably get some code out there rather than just discussion 😁</p>
 <p>WDYT, should I continue with this, would it be accepted in some form?</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>No good test plan yet other than trying out e.g.</p>
 <pre><code>cargo run --bin=ruff -- import-map ../home-assistant-core
 </code></pre>
-<p>to see that it doesn't explode. (It doesn't, and the current non-cached, non-parallel implementation takes about 8 seconds to suss out and JSON dump exports from about 11,000 Python files there.)</p>
+<p>to see that it doesn&#x27;t explode. (It doesn&#x27;t, and the current non-cached, non-parallel implementation takes about 8 seconds to suss out and JSON dump exports from about 11,000 Python files there.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-12-10 23:35</div>
             <div class="timeline-body"><p>Thanks for this PR.</p>
-<p>For me, the main question is whether such a command fits into the goals of Ruff, and we probably need to spend some time internally figuring this out. What's Ruff's ultimate goal? Is it to improve developer productivity? Is supporting a vast set of lint rules from the ecosystem achieving this goal? Is exporting a <code>import-map</code> command achieving this goal or is it distracting (making the tool harder to understand because the tool is more complicated?).</p>
+<p>For me, the main question is whether such a command fits into the goals of Ruff, and we probably need to spend some time internally figuring this out. What&#x27;s Ruff&#x27;s ultimate goal? Is it to improve developer productivity? Is supporting a vast set of lint rules from the ecosystem achieving this goal? Is exporting a <code>import-map</code> command achieving this goal or is it distracting (making the tool harder to understand because the tool is more complicated?).</p>
 <p>Alternatives are: Programmatic API only, standalone CLI, a subcommand to collect various project information, LSP (or any other daemon process) that can be queried, but not over the CLI, ...</p>
-<p>We haven't talked about this as a team, but to me, an import-map-specific command seems too specific for a tool with Ruff's focus. But I see value in giving users a way to use ruff (or a similar tool) to quickly extract information about their project and build some custom scripts.</p>
+<p>We haven&#x27;t talked about this as a team, but to me, an import-map-specific command seems too specific for a tool with Ruff&#x27;s focus. But I see value in giving users a way to use ruff (or a similar tool) to quickly extract information about their project and build some custom scripts.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2023-12-11 06:17</div>
-            <div class="timeline-body"><p>@MichaReiser Thanks for chiming in! I was honestly thinking the same thing, that this doesn't necessarily feel like a <code>ruff</code> (the command) thing, but it was the easiest way to get something running for now :)</p>
-<p>If overcomplicating Ruff the Command is an issue (and I can see how it can be), one option might be a separate <code>ruff-plumb</code> type CLI (and package), that, like <a href="https://stackoverflow.com/questions/6976473/what-does-the-term-porcelain-mean-in-git">Git's plumbing (c.f. porcelain)</a> would contain commands that regular users might not need that often or at all, but would benefit from Ruff's infrastructure (such as this PR does). (Alternatively, like Git does, plumbing could be invoked via <code>ruff</code> itself, but as sub-subcommands, and would be thus hidden from the top-level <code>help</code>: <code>ruff plumb import-map</code>?) Of course maintaining plumbing stuff in-tree in this repo will have their own cognitive and maintainability costs...</p>
+            <div class="timeline-body"><p>@MichaReiser Thanks for chiming in! I was honestly thinking the same thing, that this doesn&#x27;t necessarily feel like a <code>ruff</code> (the command) thing, but it was the easiest way to get something running for now :)</p>
+<p>If overcomplicating Ruff the Command is an issue (and I can see how it can be), one option might be a separate <code>ruff-plumb</code> type CLI (and package), that, like <a href="https://stackoverflow.com/questions/6976473/what-does-the-term-porcelain-mean-in-git">Git&#x27;s plumbing (c.f. porcelain)</a> would contain commands that regular users might not need that often or at all, but would benefit from Ruff&#x27;s infrastructure (such as this PR does). (Alternatively, like Git does, plumbing could be invoked via <code>ruff</code> itself, but as sub-subcommands, and would be thus hidden from the top-level <code>help</code>: <code>ruff plumb import-map</code>?) Of course maintaining plumbing stuff in-tree in this repo will have their own cognitive and maintainability costs...</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-12 18:48</div>
-            <div class="timeline-body"><p>While this is pretty cool, I think our lack of response here is an indication that we're too small of a team to expand the scope of Ruff further at this time. I worry kinds of plumbing interfaces end up being a lot of maintenance since they are closer to our internal abstractions.</p>
+            <div class="timeline-body"><p>While this is pretty cool, I think our lack of response here is an indication that we&#x27;re too small of a team to expand the scope of Ruff further at this time. I worry kinds of plumbing interfaces end up being a lot of maintenance since they are closer to our internal abstractions.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2024-03-12 18:48</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-12 18:48</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:01:47 UTC
+        Synced at 2026-01-20 18:59:55 UTC
     </footer>
 </body>
 </html>

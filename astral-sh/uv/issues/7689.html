@@ -25,7 +25,7 @@
             <div class="timeline-header"><a href="https://github.com/fyusifov">@fyusifov</a></div>
             <div class="timeline-body"><p>I am using <code>uv</code> crates to resolve dependencies from <code>pyproject.toml</code> programatically and I am periodically having issues with compatibility between <code>reqwest</code> and <code>uv</code> creates.  Last time when I had similar issue, it was recommended to pin to some commit and it worked. Now I am having different compatibility issue:</p>
 <p>These are my dependencies:</p>
-<pre><code class="language-toml">[package]
+<pre><code>[package]
 name = &quot;uv-dep-testing&quot;
 version = &quot;0.1.0&quot;
 edition = &quot;2021&quot;
@@ -58,7 +58,7 @@ reqwest-middleware = { git = &quot;https://github.com/astral-sh/reqwest-middlewa
 reqwest-retry = { git = &quot;https://github.com/astral-sh/reqwest-middleware&quot;, rev = &quot;21ceec9a5fd2e8d6f71c3ea2999078fecbd13cbe&quot;}
 </code></pre>
 <p>And this is some test code that I am using to resolve dependencies and exploring in general parsing/resolving dependencies with <code>uv</code> programatically:</p>
-<pre><code class="language-rust">use std::path::PathBuf;
+<pre><code>use std::path::PathBuf;
 
 use tokio;
 
@@ -178,10 +178,10 @@ async fn main() {
 }
 </code></pre>
 <p>If I run this code all works as expected, but if I uncomment <code>reqwest = { version = &quot;0.12&quot;, features = [&quot;json&quot;, &quot;rustls-tls&quot;] }</code> line in <code>Cargo.toml</code> above then I receive this error message:</p>
-<pre><code class="language-shell">➜  uv-dep-testing git:(master) ✗ cargo run
+<pre><code>➜  uv-dep-testing git:(master) ✗ cargo run
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.82s
      Running `target/debug/uv-dep-testing`
-thread 'main' panicked at src/main.rs:115:61:
+thread &#x27;main&#x27; panicked at src/main.rs:115:61:
 called `Result::unwrap()` on an `Err` value: Client(Error { kind: WrappedReqwestError(WrappedReqwestError(Middleware(Request failed after 3 retries
 
 Caused by:
@@ -197,13 +197,13 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-09-25 17:59</div>
             <div class="timeline-body"><p>Have you tries using the same dependency specification on <code>reqwest</code> as uv itself uses?</p>
 <p>https://github.com/astral-sh/uv/blob/f5601e261015cf18d8ea69688e4c99a0e634963a/Cargo.toml#L131</p>
-<p>It looks like there's something with TLS going on here based on your error, and your TLS features are different than what uv itself enables.</p>
+<p>It looks like there&#x27;s something with TLS going on here based on your error, and your TLS features are different than what uv itself enables.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/fyusifov">@fyusifov</a> on 2024-09-25 18:26</div>
             <div class="timeline-body"><p>Thanks @BurntSushi for prompt response. I have changed my <code>reqwest</code> dependency to be one to one like in <code>uv</code>:</p>
-<pre><code class="language-toml">reqwest = { version = &quot;0.12.7&quot;, default-features = false, features = [&quot;json&quot;, &quot;gzip&quot;, &quot;stream&quot;, &quot;rustls-tls&quot;, &quot;rustls-tls-native-roots&quot;, &quot;socks&quot;, &quot;multipart&quot;] }
+<pre><code>reqwest = { version = &quot;0.12.7&quot;, default-features = false, features = [&quot;json&quot;, &quot;gzip&quot;, &quot;stream&quot;, &quot;rustls-tls&quot;, &quot;rustls-tls-native-roots&quot;, &quot;socks&quot;, &quot;multipart&quot;] }
 </code></pre>
 <p>and indeed it fixed this issue.</p>
 <p>Could you please also let me know is there any way also remove dependency on some specific commits? This is what was recommended to do on this issue: #6185</p>
@@ -211,21 +211,21 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Periodic compatibility issues with `uv` creates and `reqwest` crate" to "Periodic compatibility issues with `uv` crates and `reqwest` crate" by @fyusifov on 2024-09-25 18:39</div>
+            <div class="event">Renamed from &quot;Periodic compatibility issues with `uv` creates and `reqwest` crate&quot; to &quot;Periodic compatibility issues with `uv` crates and `reqwest` crate&quot; by <a href="https://github.com/fyusifov">@fyusifov</a> on 2024-09-25 18:39</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-09-25 18:53</div>
-            <div class="timeline-body"><p>Using uv as a Rust library isn't really a well supported thing, and I don't think we have plans to make it well supported. The recommended way to use uv is by subprocess. So to that end, pinning to a specific commit seems pretty reasonable.</p>
-<p>As far as docs at the source code level go, what you see is what you get. You can run something like <code>cargo doc --all-features --document-private-items --workspace</code>, but I'd say our source code docs can be hit or miss.</p>
+            <div class="timeline-body"><p>Using uv as a Rust library isn&#x27;t really a well supported thing, and I don&#x27;t think we have plans to make it well supported. The recommended way to use uv is by subprocess. So to that end, pinning to a specific commit seems pretty reasonable.</p>
+<p>As far as docs at the source code level go, what you see is what you get. You can run something like <code>cargo doc --all-features --document-private-items --workspace</code>, but I&#x27;d say our source code docs can be hit or miss.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2024-09-25 18:54</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-09-25 18:54</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:27:20 UTC
+        Synced at 2026-01-20 19:34:18 UTC
     </footer>
 </body>
 </html>

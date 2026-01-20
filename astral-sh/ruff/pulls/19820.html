@@ -25,11 +25,11 @@
             <div class="timeline-header"><a href="https://github.com/oconnor663">@oconnor663</a></div>
             <div class="timeline-body"><p>This PR replaces #19703. It has two main components:</p>
 <ol>
-<li>Add free variable tracking to the <code>SemanticIndexBuilder</code>, and resolve free variables in <code>pop_scope</code>. This lets us determine which variables resolve where in the semantic index building pass, without requiring a second pass and without requiring us to defer function bodies. Previously we were doing some of this in <code>infer.rs</code> as a poor man's second pass, particularly <code>infer_nonlocal</code>, which used to flag invalid <code>nonlocal</code> statements. That's now a semantic syntax error in the builder, and <code>infer_nonlocal</code> is deleted. In my first pass at #19703 I was recording several new types of metadata in the index itself, including all nonlocal resolutions and nested references. But based on feedback from Micha and Carl, I've pared that down substantially to avoid wasting space. In this PR the only new metadata in the semantic index (specifically in the symbol tables) is <code>nested_scopes_with_bindings</code>, which should be empty for most scopes. (The new free variables collection lives in the builder and isn't persisted in the index.)</li>
+<li>Add free variable tracking to the <code>SemanticIndexBuilder</code>, and resolve free variables in <code>pop_scope</code>. This lets us determine which variables resolve where in the semantic index building pass, without requiring a second pass and without requiring us to defer function bodies. Previously we were doing some of this in <code>infer.rs</code> as a poor man&#x27;s second pass, particularly <code>infer_nonlocal</code>, which used to flag invalid <code>nonlocal</code> statements. That&#x27;s now a semantic syntax error in the builder, and <code>infer_nonlocal</code> is deleted. In my first pass at #19703 I was recording several new types of metadata in the index itself, including all nonlocal resolutions and nested references. But based on feedback from Micha and Carl, I&#x27;ve pared that down substantially to avoid wasting space. In this PR the only new metadata in the semantic index (specifically in the symbol tables) is <code>nested_scopes_with_bindings</code>, which should be empty for most scopes. (The new free variables collection lives in the builder and isn&#x27;t persisted in the index.)</li>
 <li>Now that <code>nested_scopes_with_bindings</code> is available, take advantage of it to consider all nested bindings when inferring the &quot;public&quot; type of a variable (i.e. its type as viewed from other scopes or other modules). This is done in <code>place_by_id</code>. Previously <code>infer_place_load</code> (which calls <code>place</code> -&gt; <code>place_by_id</code>) was computing a union of all the local inferred types it encountered when walking enclosing scopes, but that was missing bindings in sibling/cousin scopes. Now we see those bindings, and the union builder in <code>infer_place_load</code> is deleted.</li>
 </ol>
 <p>Examples:</p>
-<pre><code class="language-py">def _():
+<pre><code>def _():
     x = 1
     def _():
         nonlocal x
@@ -54,45 +54,45 @@ def g():
     # Now: Unknown | Literal[1, 2]
     reveal_type(y)
 </code></pre>
-<p>Now that we can see nested bindings of globals, I'm going to put up a <a href="https://github.com/astral-sh/ruff/pull/19821">follow-up PR on top of this one</a> that deletes <code>infer_global</code> and allows <code>global</code> statements that don't match an explicit symbol in the module scope. I don't know if we'll want that change, so I'm keeping it out of this PR.</p>
-<p>There's still a lot of scope walking in <code>infer.rs</code>. The type unioning is deleted from <code>infer_place_load</code>, but the scope walk is still there to find the defining scope and consider snapshots on the way. <code>add_binding</code> also still does a scope walk to find the relevant declaration. We could consider storing these resolutions in the semantic index, but even if we don't, it might be nice to define one function like <code>resolve_symbol</code> that all these callers (plus <code>ide_support.rs</code>) can use. This PR doesn't cover that.</p>
+<p>Now that we can see nested bindings of globals, I&#x27;m going to put up a <a href="https://github.com/astral-sh/ruff/pull/19821">follow-up PR on top of this one</a> that deletes <code>infer_global</code> and allows <code>global</code> statements that don&#x27;t match an explicit symbol in the module scope. I don&#x27;t know if we&#x27;ll want that change, so I&#x27;m keeping it out of this PR.</p>
+<p>There&#x27;s still a lot of scope walking in <code>infer.rs</code>. The type unioning is deleted from <code>infer_place_load</code>, but the scope walk is still there to find the defining scope and consider snapshots on the way. <code>add_binding</code> also still does a scope walk to find the relevant declaration. We could consider storing these resolutions in the semantic index, but even if we don&#x27;t, it might be nice to define one function like <code>resolve_symbol</code> that all these callers (plus <code>ide_support.rs</code>) can use. This PR doesn&#x27;t cover that.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @oconnor663 on 2025-08-08 03:40</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-08-08 03:40</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @oconnor663 on 2025-08-08 03:40</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-08-08 03:40</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @oconnor663 on 2025-08-08 03:40</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-08-08 03:40</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @oconnor663 on 2025-08-08 03:40</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-08-08 03:40</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @oconnor663 on 2025-08-08 03:40</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-08-08 03:40</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dhruvmanila by @oconnor663 on 2025-08-08 03:40</div>
+            <div class="event">Review requested from <a href="https://github.com/dhruvmanila">@dhruvmanila</a> by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-08-08 03:40</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-08 03:42</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a>
 <p>No changes detected when running ty on typing conformance tests ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-08 03:43</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">operator (https://github.com/canonical/operator)
+Changes were detected when running on open source projects
+
+<pre><code>operator (https://github.com/canonical/operator)
 - ops/lib/__init__.py:86:16: warning[possibly-unbound-attribute] Attribute `get` on type `Unknown | None` is possibly unbound
 + ops/lib/__init__.py:86:16: warning[possibly-unbound-attribute] Attribute `get` on type `Unknown | dict[Unknown, Unknown] | None` is possibly unbound
 
@@ -342,18 +342,18 @@ scikit-learn (https://github.com/scikit-learn/scikit-learn)
 
 dd-trace-py (https://github.com/DataDog/dd-trace-py)
 - ddtrace/vendor/ply/lex.py:1073:18: error[unresolved-reference] Name `token` used when not defined
-- ddtrace/vendor/ply/yacc.py:368:21: error[unresolved-attribute] Type `&lt;module 'ddtrace.vendor.ply.lex'&gt;` has no attribute `lexer`
-+ ddtrace/vendor/ply/yacc.py:368:21: warning[possibly-unbound-attribute] Attribute `lexer` on type `&lt;module 'ddtrace.vendor.ply.lex'&gt;` is possibly unbound
-- ddtrace/vendor/ply/yacc.py:601:29: error[invalid-assignment] Object of type `(Unknown &amp; ~AlwaysFalsy) | Unknown` is not assignable to attribute `lexer` on type `(Unknown &amp; ~AlwaysFalsy &amp; ~&lt;Protocol with members 'lexer'&gt;) | (YaccSymbol &amp; ~AlwaysFalsy &amp; ~&lt;Protocol with members 'lexer'&gt;)`
-+ ddtrace/vendor/ply/yacc.py:601:29: error[invalid-assignment] Object of type `(Unknown &amp; ~AlwaysFalsy) | Unknown | Lexer` is not assignable to attribute `lexer` on type `(Unknown &amp; ~AlwaysFalsy &amp; ~&lt;Protocol with members 'lexer'&gt;) | (YaccSymbol &amp; ~AlwaysFalsy &amp; ~&lt;Protocol with members 'lexer'&gt;)`
-- ddtrace/vendor/ply/yacc.py:712:21: error[unresolved-attribute] Type `&lt;module 'ddtrace.vendor.ply.lex'&gt;` has no attribute `lexer`
-+ ddtrace/vendor/ply/yacc.py:712:21: warning[possibly-unbound-attribute] Attribute `lexer` on type `&lt;module 'ddtrace.vendor.ply.lex'&gt;` is possibly unbound
-- ddtrace/vendor/ply/yacc.py:907:29: error[invalid-assignment] Object of type `(Unknown &amp; ~AlwaysFalsy) | Unknown` is not assignable to attribute `lexer` on type `(Unknown &amp; ~AlwaysFalsy &amp; ~&lt;Protocol with members 'lexer'&gt;) | (YaccSymbol &amp; ~AlwaysFalsy &amp; ~&lt;Protocol with members 'lexer'&gt;)`
-+ ddtrace/vendor/ply/yacc.py:907:29: error[invalid-assignment] Object of type `(Unknown &amp; ~AlwaysFalsy) | Unknown | Lexer` is not assignable to attribute `lexer` on type `(Unknown &amp; ~AlwaysFalsy &amp; ~&lt;Protocol with members 'lexer'&gt;) | (YaccSymbol &amp; ~AlwaysFalsy &amp; ~&lt;Protocol with members 'lexer'&gt;)`
-- ddtrace/vendor/ply/yacc.py:1018:21: error[unresolved-attribute] Type `&lt;module 'ddtrace.vendor.ply.lex'&gt;` has no attribute `lexer`
-+ ddtrace/vendor/ply/yacc.py:1018:21: warning[possibly-unbound-attribute] Attribute `lexer` on type `&lt;module 'ddtrace.vendor.ply.lex'&gt;` is possibly unbound
-- ddtrace/vendor/ply/yacc.py:1199:29: error[invalid-assignment] Object of type `(Unknown &amp; ~AlwaysFalsy) | Unknown` is not assignable to attribute `lexer` on type `(Unknown &amp; ~AlwaysFalsy &amp; ~&lt;Protocol with members 'lexer'&gt;) | (YaccSymbol &amp; ~AlwaysFalsy &amp; ~&lt;Protocol with members 'lexer'&gt;)`
-+ ddtrace/vendor/ply/yacc.py:1199:29: error[invalid-assignment] Object of type `(Unknown &amp; ~AlwaysFalsy) | Unknown | Lexer` is not assignable to attribute `lexer` on type `(Unknown &amp; ~AlwaysFalsy &amp; ~&lt;Protocol with members 'lexer'&gt;) | (YaccSymbol &amp; ~AlwaysFalsy &amp; ~&lt;Protocol with members 'lexer'&gt;)`
+- ddtrace/vendor/ply/yacc.py:368:21: error[unresolved-attribute] Type `&lt;module &#x27;ddtrace.vendor.ply.lex&#x27;&gt;` has no attribute `lexer`
++ ddtrace/vendor/ply/yacc.py:368:21: warning[possibly-unbound-attribute] Attribute `lexer` on type `&lt;module &#x27;ddtrace.vendor.ply.lex&#x27;&gt;` is possibly unbound
+- ddtrace/vendor/ply/yacc.py:601:29: error[invalid-assignment] Object of type `(Unknown &amp; ~AlwaysFalsy) | Unknown` is not assignable to attribute `lexer` on type `(Unknown &amp; ~AlwaysFalsy &amp; ~&lt;Protocol with members &#x27;lexer&#x27;&gt;) | (YaccSymbol &amp; ~AlwaysFalsy &amp; ~&lt;Protocol with members &#x27;lexer&#x27;&gt;)`
++ ddtrace/vendor/ply/yacc.py:601:29: error[invalid-assignment] Object of type `(Unknown &amp; ~AlwaysFalsy) | Unknown | Lexer` is not assignable to attribute `lexer` on type `(Unknown &amp; ~AlwaysFalsy &amp; ~&lt;Protocol with members &#x27;lexer&#x27;&gt;) | (YaccSymbol &amp; ~AlwaysFalsy &amp; ~&lt;Protocol with members &#x27;lexer&#x27;&gt;)`
+- ddtrace/vendor/ply/yacc.py:712:21: error[unresolved-attribute] Type `&lt;module &#x27;ddtrace.vendor.ply.lex&#x27;&gt;` has no attribute `lexer`
++ ddtrace/vendor/ply/yacc.py:712:21: warning[possibly-unbound-attribute] Attribute `lexer` on type `&lt;module &#x27;ddtrace.vendor.ply.lex&#x27;&gt;` is possibly unbound
+- ddtrace/vendor/ply/yacc.py:907:29: error[invalid-assignment] Object of type `(Unknown &amp; ~AlwaysFalsy) | Unknown` is not assignable to attribute `lexer` on type `(Unknown &amp; ~AlwaysFalsy &amp; ~&lt;Protocol with members &#x27;lexer&#x27;&gt;) | (YaccSymbol &amp; ~AlwaysFalsy &amp; ~&lt;Protocol with members &#x27;lexer&#x27;&gt;)`
++ ddtrace/vendor/ply/yacc.py:907:29: error[invalid-assignment] Object of type `(Unknown &amp; ~AlwaysFalsy) | Unknown | Lexer` is not assignable to attribute `lexer` on type `(Unknown &amp; ~AlwaysFalsy &amp; ~&lt;Protocol with members &#x27;lexer&#x27;&gt;) | (YaccSymbol &amp; ~AlwaysFalsy &amp; ~&lt;Protocol with members &#x27;lexer&#x27;&gt;)`
+- ddtrace/vendor/ply/yacc.py:1018:21: error[unresolved-attribute] Type `&lt;module &#x27;ddtrace.vendor.ply.lex&#x27;&gt;` has no attribute `lexer`
++ ddtrace/vendor/ply/yacc.py:1018:21: warning[possibly-unbound-attribute] Attribute `lexer` on type `&lt;module &#x27;ddtrace.vendor.ply.lex&#x27;&gt;` is possibly unbound
+- ddtrace/vendor/ply/yacc.py:1199:29: error[invalid-assignment] Object of type `(Unknown &amp; ~AlwaysFalsy) | Unknown` is not assignable to attribute `lexer` on type `(Unknown &amp; ~AlwaysFalsy &amp; ~&lt;Protocol with members &#x27;lexer&#x27;&gt;) | (YaccSymbol &amp; ~AlwaysFalsy &amp; ~&lt;Protocol with members &#x27;lexer&#x27;&gt;)`
++ ddtrace/vendor/ply/yacc.py:1199:29: error[invalid-assignment] Object of type `(Unknown &amp; ~AlwaysFalsy) | Unknown | Lexer` is not assignable to attribute `lexer` on type `(Unknown &amp; ~AlwaysFalsy &amp; ~&lt;Protocol with members &#x27;lexer&#x27;&gt;) | (YaccSymbol &amp; ~AlwaysFalsy &amp; ~&lt;Protocol with members &#x27;lexer&#x27;&gt;)`
 - tests/internal/test_forksafe.py:350:9: error[unresolved-reference] Name `service` used when not defined
 - Found 6518 diagnostics
 + Found 6516 diagnostics
@@ -460,34 +460,34 @@ scipy (https://github.com/scipy/scipy)
 + Found 6349 diagnostics
 
 </code></pre>
-</details>
-<details>
-<summary>Memory usage changes were detected when running on open source projects</summary>
 
-<pre><code class="language-diff">prefect (https://github.com/PrefectHQ/prefect)
+
+Memory usage changes were detected when running on open source projects
+
+<pre><code>prefect (https://github.com/PrefectHQ/prefect)
 -     memo fields = ~424MB
 +     memo fields = ~445MB
 
 </code></pre>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-08-08 03:50</div>
-            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+            <div class="timeline-body">
 
-<h2><a href="https://codspeed.io/astral-sh/ruff/branches/jack%2Fsemantic-index-nested-bindings?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a></h2>
-<h3>Merging #19820 will <strong>degrade performances by 7.39%</strong></h3>
-<p><sub>Comparing <code>jack/semantic-index-nested-bindings</code> (abe6a36) with <code>main</code> (3a542a8)</sub></p>
-<h3>Summary</h3>
-<p><code>⚡ 1</code> improvement<br />
-<code>❌ 1</code> regression<br />
+<a href="https://codspeed.io/astral-sh/ruff/branches/jack%2Fsemantic-index-nested-bindings?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a>
+Merging #19820 will <strong>degrade performances by 7.39%</strong>
+<p>Comparing <code>jack/semantic-index-nested-bindings</code> (abe6a36) with <code>main</code> (3a542a8)</p>
+Summary
+<p><code>⚡ 1</code> improvement<br>
+<code>❌ 1</code> regression<br>
 <code>✅ 40</code> untouched</p>
 <blockquote>
 <p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/ruff/branches/jack%2Fsemantic-index-nested-bindings?utm_source=github&amp;utm_medium=comment&amp;utm_content=acknowledge">acknowledge them on CodSpeed</a>.</em></p>
 </blockquote>
-<h3>Benchmarks breakdown</h3>
+Benchmarks breakdown
 <p>|     | Mode | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
 | --- | ---- | --------- | ------ | ------ | ------ |
 | ⚡ | Simulation | <a href="https://codspeed.io/astral-sh/ruff/branches/jack%2Fsemantic-index-nested-bindings?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Amicro%3A%3Abenchmark_many_string_assignments%3A%3Aty_micro%5Bmany_string_assignments%5D&amp;runnerMode=Instrumentation&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=benchmark"><code>ty_micro[many_string_assignments]</code></a> | 69.4 ms | 66.3 ms | +4.65% |
@@ -506,13 +506,13 @@ scipy (https://github.com/scipy/scipy)
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:205 on 2025-08-08 03:57</div>
             <div class="timeline-body"><p>This tweak is necessary to avoid crashes in cases like this:</p>
-<pre><code class="language-py">def f():
+<pre><code>def f():
     x = 1
     def g():
         nonlocal x
         x += 1
 </code></pre>
-<p>Previously we would exceed the cycle limit before we gave up on the int literal union and called <code>x</code> an <code>int</code>. This was @carljm's suggested fix.</p>
+<p>Previously we would exceed the cycle limit before we gave up on the int literal union and called <code>x</code> an <code>int</code>. This was @carljm&#x27;s suggested fix.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -521,27 +521,27 @@ scipy (https://github.com/scipy/scipy)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-08 04:03</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-08-08 08:27</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-08 08:27</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/semantic_index/builder.rs</code>:514 on 2025-08-08 08:36</div>
             <div class="timeline-body"><p>Too bad that <code>extract_if</code> requires Rust 1.88. But I think you can do this (almost, I broke some test. But something like this :)</p>
-<pre><code class="language-rust">
-// If we've popped a scope that free variables from nested (previously popped) scopes can
+<pre><code>
+// If we&#x27;ve popped a scope that free variables from nested (previously popped) scopes can
         // refer to (i.e. not a class body), try to resolve outstanding free variables.
         if kind.is_function_like() || popped_scope_id.is_global() {
             popped_free_variables.retain(|name, resolved_variables| {
@@ -565,7 +565,7 @@ scipy (https://github.com/scipy/scipy)
                             if is_global {
                                 if let Some(nonlocal_identifier) = nonlocal_identifier {
                                     // If the symbol is declared `nonlocal` in the nested scope (rather than
-                                    // just used without a local binding or declaration), then it's a syntax
+                                    // just used without a local binding or declaration), then it&#x27;s a syntax
                                     // error for it to resolve to the global scope or to a `global` statement.
                                     self.report_semantic_error(SemanticSyntaxError {
                                         kind: SemanticSyntaxErrorKind::NoBindingForNonlocal(
@@ -600,7 +600,7 @@ scipy (https://github.com/scipy/scipy)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/semantic_index/builder.rs</code>:515 on 2025-08-08 08:36</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">            let mut resolutions = Vec::new();
+            <div class="timeline-body"><pre><code>            let mut resolutions = Vec::new();
             let place_table = &amp;self.place_tables[popped_scope_id];
             for name in popped_free_variables.keys() {
                 if let Some(symbol_id) = place_table.symbol_id(name.as_str())
@@ -615,19 +615,19 @@ scipy (https://github.com/scipy/scipy)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/semantic_index/builder.rs</code>:585 on 2025-08-08 09:03</div>
-            <div class="timeline-body"><p>Would it be sufficient to store the <code>non_local_identifier_range</code> in <code>FreeVariable</code>, given that we don't use the name (we always use the symbol name instead)</p>
+            <div class="timeline-body"><p>Would it be sufficient to store the <code>non_local_identifier_range</code> in <code>FreeVariable</code>, given that we don&#x27;t use the name (we always use the symbol name instead)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/semantic_index/builder.rs</code>:606 on 2025-08-08 09:14</div>
-            <div class="timeline-body"><p>It's a bit more fragile but I'd use <code>std::mem::take</code> here to work around the borrow checker issue rather than collecting the symbols</p>
-<pre><code class="language-rust">           let popped_place_table = std::mem::take(&amp;mut self.place_tables[popped_scope_id]);
+            <div class="timeline-body"><p>It&#x27;s a bit more fragile but I&#x27;d use <code>std::mem::take</code> here to work around the borrow checker issue rather than collecting the symbols</p>
+<pre><code>           let popped_place_table = std::mem::take(&amp;mut self.place_tables[popped_scope_id]);
 
             for symbol in popped_place_table.symbols() {
                 // Collect new implicit (not `nonlocal`) free variables.
                 //
-                // NOTE: Because these variables aren't bound (won't wind up in
-                // `nested_scopes_with_bindings`) and aren't `nonlocal` (can't trigger `nonlocal`
+                // NOTE: Because these variables aren&#x27;t bound (won&#x27;t wind up in
+                // `nested_scopes_with_bindings`) and aren&#x27;t `nonlocal` (can&#x27;t trigger `nonlocal`
                 // syntax errors), collecting them currently has no effect. We could consider
                 // removing this bit and renaming `free_variables` to say `unresolved_nonlocals`?
                 if symbol.is_used()
@@ -650,7 +650,7 @@ scipy (https://github.com/scipy/scipy)
                 // Record bindings of global variables. Put these in a temporary Vec as another
                 // borrowck workaround.
                 if symbol.is_global() &amp;&amp; symbol.is_bound() {
-                    // Add this symbol to the global scope, if it isn't there already.
+                    // Add this symbol to the global scope, if it isn&#x27;t there already.
                     let global_symbol_id =
                         self.add_symbol_to_scope(symbol.name().clone(), FileScopeId::global());
                     // Update the global place table with this reference. Doing this here rather than
@@ -664,13 +664,13 @@ scipy (https://github.com/scipy/scipy)
             self.place_tables[popped_scope_id] = popped_place_table;
 
 </code></pre>
-<p>You'll need to apply the same trick to <code>parent_free_variables</code> or iterate over symbols twice</p>
+<p>You&#x27;ll need to apply the same trick to <code>parent_free_variables</code> or iterate over symbols twice</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/semantic_index/builder.rs</code>:614 on 2025-08-08 09:16</div>
-            <div class="timeline-body"><p>I don't fully understand the implications of this, but I've a very strong preference not to store anything in the semantic index for which we currently have no use for.</p>
-<p>The semantic index is already very complicated and it's not very obvious which information is used for what. That makes it non-trivial to identify unused data that could be removed. That's why I rather not add data until it's absolutely necessary because removing it later is hard (it's not like Rust tells us that it's unused)</p>
+            <div class="timeline-body"><p>I don&#x27;t fully understand the implications of this, but I&#x27;ve a very strong preference not to store anything in the semantic index for which we currently have no use for.</p>
+<p>The semantic index is already very complicated and it&#x27;s not very obvious which information is used for what. That makes it non-trivial to identify unused data that could be removed. That&#x27;s why I rather not add data until it&#x27;s absolutely necessary because removing it later is hard (it&#x27;s not like Rust tells us that it&#x27;s unused)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -678,12 +678,12 @@ scipy (https://github.com/scipy/scipy)
             <div class="timeline-body"><p>How common are these? Could we use a <code>ThinVec</code> instead?</p>
 <p>Given that we collect all entries in the builder. Could we store them in two vecs where:</p>
 <ol>
-<li>The first vec is a list of `ScopedSymbolId's with a range into the second vec</li>
+<li>The first vec is a list of `ScopedSymbolId&#x27;s with a range into the second vec</li>
 <li>The second vec stores the <code>FileScopeId</code>. All elements for the same <code>ScopeSymbolId</code> are added next to each other.</li>
 </ol>
 <p>This reduces the cost two exactly two (thin vecs?) rather than a HashMap (which is larger than a vec) with nested vecs</p>
 <p>An alternative is to use a <code>SmallVec</code> for the inner <code>Vec</code>, given that <code>FileScopeId</code> is a u32 (meaning up to 4 elements fit into an inline vec)</p>
-<p>It's hard for me to advise on the best representation without knowing more about how many elements we expect (per scope and per symbol)</p>
+<p>It&#x27;s hard for me to advise on the best representation without knowing more about how many elements we expect (per scope and per symbol)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -694,7 +694,7 @@ scipy (https://github.com/scipy/scipy)
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-08 09:24</div>
             <div class="timeline-body"><p>ty.</p>
-<p>I only reviewed the code changes. I'd like to have a better understanding of the memory regression before merging this. Is it because we now have a better understanding of the code or is it because the semantic index grows that much. If it's the latter, than I think that's more than I would expect from this change.</p>
+<p>I only reviewed the code changes. I&#x27;d like to have a better understanding of the memory regression before merging this. Is it because we now have a better understanding of the code or is it because the semantic index grows that much. If it&#x27;s the latter, than I think that&#x27;s more than I would expect from this change.</p>
 <p>Would you mind collecting and comparing the full memory report on a large repository and sharing it here.</p>
 </div>
         </div>
@@ -704,7 +704,7 @@ scipy (https://github.com/scipy/scipy)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/ty_python_semantic/src/semantic_index/builder.rs</code>:614 on 2025-08-08 13:51</div>
-            <div class="timeline-body"><p>I've opened a dummy PR for this: https://github.com/astral-sh/ruff/pull/19828</p>
+            <div class="timeline-body"><p>I&#x27;ve opened a dummy PR for this: <a href="https://github.com/astral-sh/ruff/pull/19828">astral-sh/ruff#19828</a></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -713,7 +713,7 @@ scipy (https://github.com/scipy/scipy)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/ty_python_semantic/src/semantic_index/builder.rs</code>:614 on 2025-08-08 14:17</div>
-            <div class="timeline-body"><p>These references don't get stored in the index itself, only in the builder. Does that make it better? :)</p>
+            <div class="timeline-body"><p>These references don&#x27;t get stored in the index itself, only in the builder. Does that make it better? :)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -722,12 +722,12 @@ scipy (https://github.com/scipy/scipy)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/semantic_index/builder.rs</code>:614 on 2025-08-08 14:21</div>
-            <div class="timeline-body"><p>Not necessarily. Memory access isn't cheap compared to pure computations</p>
+            <div class="timeline-body"><p>Not necessarily. Memory access isn&#x27;t cheap compared to pure computations</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/ty_python_semantic/src/semantic_index/builder.rs</code>:514 on 2025-08-08 14:22</div>
-            <div class="timeline-body"><p>I feel like I tried this a few different ways and couldn't get it to work. But you're right, it works with <code>retain</code>. Maybe I was too nervous about cloning symbols or looking them up more than once? Can't remember.</p>
+            <div class="timeline-body"><p>I feel like I tried this a few different ways and couldn&#x27;t get it to work. But you&#x27;re right, it works with <code>retain</code>. Maybe I was too nervous about cloning symbols or looking them up more than once? Can&#x27;t remember.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -736,7 +736,7 @@ scipy (https://github.com/scipy/scipy)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/ty_python_semantic/src/semantic_index/builder.rs</code>:606 on 2025-08-08 15:28</div>
-            <div class="timeline-body"><p>This is a temporary <code>Vec</code> that's empty (doesn't allocate) in scopes that don't bind a <code>global</code> variable. I think the performance and memory cost of it should be negligible. Are you sure it's worth these sorts of hijinks to avoid it? :)</p>
+            <div class="timeline-body"><p>This is a temporary <code>Vec</code> that&#x27;s empty (doesn&#x27;t allocate) in scopes that don&#x27;t bind a <code>global</code> variable. I think the performance and memory cost of it should be negligible. Are you sure it&#x27;s worth these sorts of hijinks to avoid it? :)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -749,18 +749,18 @@ scipy (https://github.com/scipy/scipy)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/semantic_index/builder.rs</code>:606 on 2025-08-08 15:32</div>
-            <div class="timeline-body"><p>I don't know. Codspeed might tell you 😆</p>
+            <div class="timeline-body"><p>I don&#x27;t know. Codspeed might tell you 😆</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/ty_python_semantic/src/semantic_index/symbol.rs</code>:165 on 2025-08-08 16:03</div>
             <div class="timeline-body"><p>The keys of this map are the IDs of symbols in this scope that have one or more bindings in nested scopes (via <code>nonlocal</code> or <code>global</code> references in those nested scopes). So for the (vast?) majority of scopes / symbol tables, this map will be empty. Most variables that do have nonlocal bindings probably only have one or two, so a <code>SmallVec</code> might be a good optimization for the inner <code>Vec</code>, but if the map is empty most of the time it also might not matter?</p>
-<p>If we're worried about the footprint of the map in the <code>SymbolTable</code> struct (that is, even when it's empty), we could consider a couple other options:</p>
+<p>If we&#x27;re worried about the footprint of the map in the <code>SymbolTable</code> struct (that is, even when it&#x27;s empty), we could consider a couple other options:</p>
 <ul>
 <li>Wrap the map inside an <code>Option&lt;Box&lt;...&gt;&gt;</code>. That keeps the space overhead down to one pointer in <code>SymbolTable</code>, at the cost of an extra allocation when we do populate the table.</li>
 <li>Get rid of the per-symbol-table maps and put a file-wide map at the top level of the <code>SemanticIndex</code> with keys like <code>(FileScopeId, ScopedSymbolId)</code>. Then to cut down on unnecessary lookups in that table, maybe allocate a bit in <code>SymbolFlags</code> called something like <code>HAS_BINDINGS_IN_NESTED_SCOPES</code>?</li>
 </ul>
-<p>But stepping back from all that, is it possible that <a href="https://github.com/astral-sh/ruff/pull/19820#issuecomment-3168443938">the memory usage stats I just posted below</a> tell us we don't need to worry about this? What else should I measure?</p>
+<p>But stepping back from all that, is it possible that <a href="https://github.com/astral-sh/ruff/pull/19820#issuecomment-3168443938">the memory usage stats I just posted below</a> tell us we don&#x27;t need to worry about this? What else should I measure?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -772,7 +772,7 @@ scipy (https://github.com/scipy/scipy)
             <div class="timeline-body"><blockquote>
 <p>Would you mind collecting and comparing the full memory report on a large repository and sharing it here.</p>
 </blockquote>
-<p>Here's the summary of running <code>ty check app</code> in my local copy of a large project, first on <code>main</code>:</p>
+<p>Here&#x27;s the summary of running <code>ty check app</code> in my local copy of a large project, first on <code>main</code>:</p>
 <pre><code>=======SALSA SUMMARY=======
 TOTAL MEMORY USAGE: 18136.92MB
     struct metadata = 856.62MB
@@ -788,46 +788,46 @@ TOTAL MEMORY USAGE: 18196.01MB
     memo metadata = 3798.75MB
     memo fields = 12567.84MB
 </code></pre>
-<p>It seems like the change is small? But I'm new to these stats, and I'm not sure I'm measuring the right thing.</p>
+<p>It seems like the change is small? But I&#x27;m new to these stats, and I&#x27;m not sure I&#x27;m measuring the right thing.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-08 16:09</div>
-            <div class="timeline-body"><p>That's good :). Can you run the full report. I'm curious which specific structs are increasing. Can you run it on prefect which shows up in the mypy primer check result</p>
+            <div class="timeline-body"><p>That&#x27;s good :). Can you run the full report. I&#x27;m curious which specific structs are increasing. Can you run it on prefect which shows up in the mypy primer check result</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/scopes/moduletype_attrs.md</code>:81 on 2025-08-08 16:11</div>
-            <div class="timeline-body"><p>This seems not-ideal, but it may not be easy to get rid of, and I guess given it results from a type error, maybe it's fine -- fix the type error and it will go away. (I assume this is coming from the fact that we infer <code>Unknown</code> from the invalid assignment below.)</p>
+            <div class="timeline-body"><p>This seems not-ideal, but it may not be easy to get rid of, and I guess given it results from a type error, maybe it&#x27;s fine -- fix the type error and it will go away. (I assume this is coming from the fact that we infer <code>Unknown</code> from the invalid assignment below.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-08-08 16:17</div>
             <div class="timeline-body"><p>Here are full reports from checking https://github.com/PrefectHQ/prefect. On our <code>main</code>:</p>
-<details>
+
 
 <pre><code>Found 6192 diagnostics
 =======SALSA STRUCTS=======
 `Definition`                                       metadata=7.42MB   fields=14.83MB  count=185421
 `Expression`                                       metadata=5.99MB   fields=6.98MB   count=124701
 `IntersectionType`                                 metadata=1.10MB   fields=2.20MB   count=19636
-`Type &lt; 'db &gt;::member_lookup_with_policy_::interned_arguments` metadata=1.46MB   fields=1.25MB   count=26111
+`Type &lt; &#x27;db &gt;::member_lookup_with_policy_::interned_arguments` metadata=1.46MB   fields=1.25MB   count=26111
 `OverloadLiteral`                                  metadata=1.23MB   fields=1.05MB   count=21963
-`Type &lt; 'db &gt;::class_member_with_policy_::interned_arguments` metadata=1.14MB   fields=0.98MB   count=20401
+`Type &lt; &#x27;db &gt;::class_member_with_policy_::interned_arguments` metadata=1.14MB   fields=0.98MB   count=20401
 `FunctionType`                                     metadata=1.59MB   fields=0.68MB   count=28385
 `File`                                             metadata=0.52MB   fields=0.52MB   count=8164
 `place_by_id::interned_arguments`                  metadata=1.26MB   fields=0.48MB   count=24145
 `ScopeId`                                          metadata=1.08MB   fields=0.46MB   count=38673
 `StringLiteralType`                                metadata=1.56MB   fields=0.45MB   count=27901
-`Type &lt; 'db &gt;::apply_specialization_::interned_arguments` metadata=0.91MB   fields=0.39MB   count=16289
-`Type &lt; 'db &gt;::try_call_dunder_get_::interned_arguments` metadata=0.45MB   fields=0.38MB   count=7993
+`Type &lt; &#x27;db &gt;::apply_specialization_::interned_arguments` metadata=0.91MB   fields=0.39MB   count=16289
+`Type &lt; &#x27;db &gt;::try_call_dunder_get_::interned_arguments` metadata=0.45MB   fields=0.38MB   count=7993
 `FunctionLiteral`                                  metadata=1.23MB   fields=0.35MB   count=22029
 `UnionType`                                        metadata=1.09MB   fields=0.31MB   count=19388
 `TupleType`                                        metadata=0.25MB   fields=0.29MB   count=4542
 `ClassLiteral`                                     metadata=0.28MB   fields=0.24MB   count=5026
 `CallableType`                                     metadata=0.14MB   fields=0.23MB   count=2580
 `Specialization`                                   metadata=0.36MB   fields=0.21MB   count=6492
-`ClassLiteral &lt; 'db &gt;::try_mro_::interned_arguments` metadata=0.48MB   fields=0.14MB   count=8644
+`ClassLiteral &lt; &#x27;db &gt;::try_mro_::interned_arguments` metadata=0.48MB   fields=0.14MB   count=8644
 `TypeVarInstance`                                  metadata=0.09MB   fields=0.13MB   count=1617
 `BoundMethodType`                                  metadata=0.25MB   fields=0.11MB   count=4484
 `GenericAlias`                                     metadata=0.31MB   fields=0.09MB   count=5550
@@ -837,7 +837,7 @@ TOTAL MEMORY USAGE: 18196.01MB
 `GenericContext`                                   metadata=0.04MB   fields=0.04MB   count=767
 `FileModule`                                       metadata=0.02MB   fields=0.04MB   count=761
 `StarImportPlaceholderPredicate`                   metadata=0.03MB   fields=0.02MB   count=1135
-`Type &lt; 'db &gt;::lookup_dunder_new_::interned_arguments` metadata=0.07MB   fields=0.02MB   count=1221
+`Type &lt; &#x27;db &gt;::lookup_dunder_new_::interned_arguments` metadata=0.07MB   fields=0.02MB   count=1221
 `PropertyInstanceType`                             metadata=0.02MB   fields=0.01MB   count=355
 `EnumLiteralType`                                  metadata=0.01MB   fields=0.01MB   count=192
 `BoundSuperType`                                   metadata=0.01MB   fields=0.00MB   count=169
@@ -864,13 +864,13 @@ TOTAL MEMORY USAGE: 18196.01MB
     metadata=35.81MB  fields=4.51MB   count=112657
 `infer_scope_types -&gt; ty_python_semantic::types::infer::ScopeInference`
     metadata=12.59MB  fields=1.16MB   count=29115
-`FunctionType &lt; 'db &gt;::signature_ -&gt; ty_python_semantic::types::signatures::CallableSignature`
+`FunctionType &lt; &#x27;db &gt;::signature_ -&gt; ty_python_semantic::types::signatures::CallableSignature`
     metadata=1.99MB   fields=0.92MB   count=11465
-`Type &lt; 'db &gt;::member_lookup_with_policy_ -&gt; ty_python_semantic::place::PlaceAndQualifiers`
+`Type &lt; &#x27;db &gt;::member_lookup_with_policy_ -&gt; ty_python_semantic::place::PlaceAndQualifiers`
     metadata=4.26MB   fields=0.84MB   count=26111
 `place_by_id -&gt; ty_python_semantic::place::PlaceAndQualifiers`
     metadata=1.64MB   fields=0.77MB   count=24145
-`Type &lt; 'db &gt;::class_member_with_policy_ -&gt; ty_python_semantic::place::PlaceAndQualifiers`
+`Type &lt; &#x27;db &gt;::class_member_with_policy_ -&gt; ty_python_semantic::place::PlaceAndQualifiers`
     metadata=4.27MB   fields=0.65MB   count=20401
 `all_narrowing_constraints_for_expression -&gt; core::option::Option&lt;std::collections::hash::map::HashMap&lt;ty_python_semantic::semantic_index::place::ScopedPlaceId, ty_python_semantic::types::Type, rustc_hash::FxBuildHasher&gt;&gt;`
     metadata=2.60MB   fields=0.65MB   count=20185
@@ -878,19 +878,19 @@ TOTAL MEMORY USAGE: 18196.01MB
     metadata=12.79MB  fields=0.56MB   count=1665
 `infer_expression_type -&gt; ty_python_semantic::types::Type`
     metadata=2.44MB   fields=0.51MB   count=32138
-`FunctionLiteral &lt; 'db &gt;::overloads_and_implementation_ -&gt; (alloc::boxed::Box&lt;[ty_python_semantic::types::function::OverloadLiteral]&gt;, core::option::Option&lt;ty_python_semantic::types::function::OverloadLiteral&gt;)`
+`FunctionLiteral &lt; &#x27;db &gt;::overloads_and_implementation_ -&gt; (alloc::boxed::Box&lt;[ty_python_semantic::types::function::OverloadLiteral]&gt;, core::option::Option&lt;ty_python_semantic::types::function::OverloadLiteral&gt;)`
     metadata=1.16MB   fields=0.43MB   count=18068
 `infer_deferred_types -&gt; ty_python_semantic::types::infer::DefinitionInference`
     metadata=1.93MB   fields=0.42MB   count=5799
-`ClassLiteral &lt; 'db &gt;::try_mro_ -&gt; core::result::Result&lt;ty_python_semantic::types::mro::Mro, ty_python_semantic::types::mro::MroError&gt;`
+`ClassLiteral &lt; &#x27;db &gt;::try_mro_ -&gt; core::result::Result&lt;ty_python_semantic::types::mro::Mro, ty_python_semantic::types::mro::MroError&gt;`
     metadata=1.64MB   fields=0.35MB   count=8644
-`Type &lt; 'db &gt;::apply_specialization_ -&gt; ty_python_semantic::types::Type`
+`Type &lt; &#x27;db &gt;::apply_specialization_ -&gt; ty_python_semantic::types::Type`
     metadata=0.92MB   fields=0.26MB   count=16289
-`ClassLiteral &lt; 'db &gt;::try_metaclass_ -&gt; core::result::Result&lt;(ty_python_semantic::types::Type, core::option::Option&lt;ty_python_semantic::types::function::DataclassTransformerParams&gt;), ty_python_semantic::types::class::MetaclassError&gt;`
+`ClassLiteral &lt; &#x27;db &gt;::try_metaclass_ -&gt; core::result::Result&lt;(ty_python_semantic::types::Type, core::option::Option&lt;ty_python_semantic::types::function::DataclassTransformerParams&gt;), ty_python_semantic::types::class::MetaclassError&gt;`
     metadata=0.97MB   fields=0.23MB   count=4895
 `suppressions -&gt; ty_python_semantic::suppression::Suppressions`
     metadata=0.10MB   fields=0.19MB   count=1500
-`Type &lt; 'db &gt;::try_call_dunder_get_ -&gt; core::option::Option&lt;(ty_python_semantic::types::Type, ty_python_semantic::types::AttributeKind)&gt;`
+`Type &lt; &#x27;db &gt;::try_call_dunder_get_ -&gt; core::option::Option&lt;(ty_python_semantic::types::Type, ty_python_semantic::types::AttributeKind)&gt;`
     metadata=4.35MB   fields=0.19MB   count=7993
 `all_negative_narrowing_constraints_for_expression -&gt; core::option::Option&lt;std::collections::hash::map::HashMap&lt;ty_python_semantic::semantic_index::place::ScopedPlaceId, ty_python_semantic::types::Type, rustc_hash::FxBuildHasher&gt;&gt;`
     metadata=0.70MB   fields=0.18MB   count=5730
@@ -898,17 +898,17 @@ TOTAL MEMORY USAGE: 18196.01MB
     metadata=0.70MB   fields=0.17MB   count=1961
 `infer_unpack_types -&gt; ty_python_semantic::types::unpacker::UnpackResult`
     metadata=0.26MB   fields=0.14MB   count=1390
-`ClassLiteral &lt; 'db &gt;::explicit_bases_ -&gt; alloc::boxed::Box&lt;[ty_python_semantic::types::Type]&gt;`
+`ClassLiteral &lt; &#x27;db &gt;::explicit_bases_ -&gt; alloc::boxed::Box&lt;[ty_python_semantic::types::Type]&gt;`
     metadata=0.37MB   fields=0.08MB   count=5013
 `place_table -&gt; alloc::sync::Arc&lt;ty_python_semantic::semantic_index::place::PlaceTable&gt;`
     metadata=0.52MB   fields=0.08MB   count=9930
-`ClassLiteral &lt; 'db &gt;::pep695_generic_context_ -&gt; core::option::Option&lt;ty_python_semantic::types::generics::GenericContext&gt;`
+`ClassLiteral &lt; &#x27;db &gt;::pep695_generic_context_ -&gt; core::option::Option&lt;ty_python_semantic::types::generics::GenericContext&gt;`
     metadata=0.36MB   fields=0.04MB   count=5013
 `use_def_map -&gt; alloc::sync::Arc&lt;ty_python_semantic::semantic_index::use_def::UseDefMap&gt;`
     metadata=0.26MB   fields=0.04MB   count=5000
-`Type &lt; 'db &gt;::lookup_dunder_new_ -&gt; core::option::Option&lt;ty_python_semantic::place::PlaceAndQualifiers&gt;`
+`Type &lt; &#x27;db &gt;::lookup_dunder_new_ -&gt; core::option::Option&lt;ty_python_semantic::place::PlaceAndQualifiers&gt;`
     metadata=0.33MB   fields=0.04MB   count=1221
-`ClassLiteral &lt; 'db &gt;::decorators_ -&gt; alloc::boxed::Box&lt;[ty_python_semantic::types::Type]&gt;`
+`ClassLiteral &lt; &#x27;db &gt;::decorators_ -&gt; alloc::boxed::Box&lt;[ty_python_semantic::types::Type]&gt;`
     metadata=0.11MB   fields=0.03MB   count=1735
 `parsed_module -&gt; ruff_db::parsed::ParsedModule`
     metadata=0.13MB   fields=0.03MB   count=1669
@@ -924,9 +924,9 @@ TOTAL MEMORY USAGE: 18196.01MB
     metadata=0.11MB   fields=0.01MB   count=1500
 `imported_modules -&gt; alloc::sync::Arc&lt;std::collections::hash::set::HashSet&lt;ty_python_semantic::module_name::ModuleName, rustc_hash::FxBuildHasher&gt;&gt;`
     metadata=0.06MB   fields=0.01MB   count=1062
-`ClassLiteral &lt; 'db &gt;::is_typed_dict_ -&gt; bool`
+`ClassLiteral &lt; &#x27;db &gt;::is_typed_dict_ -&gt; bool`
     metadata=0.47MB   fields=0.00MB   count=4968
-`ClassLiteral &lt; 'db &gt;::inheritance_cycle_ -&gt; core::option::Option&lt;ty_python_semantic::types::class::InheritanceCycle&gt;`
+`ClassLiteral &lt; &#x27;db &gt;::inheritance_cycle_ -&gt; core::option::Option&lt;ty_python_semantic::types::class::InheritanceCycle&gt;`
     metadata=0.35MB   fields=0.00MB   count=4759
 `file_to_module -&gt; core::option::Option&lt;ty_python_semantic::module_resolver::module::Module&gt;`
     metadata=0.01MB   fields=0.00MB   count=121
@@ -941,7 +941,7 @@ TOTAL MEMORY USAGE: 18196.01MB
 `dynamic_resolution_paths -&gt; alloc::vec::Vec&lt;ty_python_semantic::module_resolver::path::SearchPath&gt;`
     metadata=0.00MB   fields=0.00MB   count=1
 </code></pre>
-</details>
+
 
 <pre><code>=======SALSA SUMMARY=======
 TOTAL MEMORY USAGE: 595.05MB
@@ -951,30 +951,30 @@ TOTAL MEMORY USAGE: 595.05MB
     memo fields = 411.71MB
 </code></pre>
 <p>With this PR:</p>
-<details>
+
 
 <pre><code>Found 6194 diagnostics
 =======SALSA STRUCTS=======
 `Definition`                                       metadata=7.42MB   fields=14.83MB  count=185421
 `Expression`                                       metadata=5.99MB   fields=6.98MB   count=124701
 `IntersectionType`                                 metadata=1.12MB   fields=2.23MB   count=19921
-`Type &lt; 'db &gt;::member_lookup_with_policy_::interned_arguments` metadata=1.48MB   fields=1.27MB   count=26358
+`Type &lt; &#x27;db &gt;::member_lookup_with_policy_::interned_arguments` metadata=1.48MB   fields=1.27MB   count=26358
 `OverloadLiteral`                                  metadata=1.23MB   fields=1.05MB   count=21963
-`Type &lt; 'db &gt;::class_member_with_policy_::interned_arguments` metadata=1.16MB   fields=0.99MB   count=20646
+`Type &lt; &#x27;db &gt;::class_member_with_policy_::interned_arguments` metadata=1.16MB   fields=0.99MB   count=20646
 `FunctionType`                                     metadata=1.59MB   fields=0.68MB   count=28383
 `File`                                             metadata=0.52MB   fields=0.52MB   count=8164
 `place_by_id::interned_arguments`                  metadata=1.26MB   fields=0.49MB   count=24306
 `ScopeId`                                          metadata=1.08MB   fields=0.46MB   count=38673
 `StringLiteralType`                                metadata=1.56MB   fields=0.45MB   count=27901
-`Type &lt; 'db &gt;::apply_specialization_::interned_arguments` metadata=0.91MB   fields=0.39MB   count=16290
-`Type &lt; 'db &gt;::try_call_dunder_get_::interned_arguments` metadata=0.45MB   fields=0.38MB   count=7993
+`Type &lt; &#x27;db &gt;::apply_specialization_::interned_arguments` metadata=0.91MB   fields=0.39MB   count=16290
+`Type &lt; &#x27;db &gt;::try_call_dunder_get_::interned_arguments` metadata=0.45MB   fields=0.38MB   count=7993
 `FunctionLiteral`                                  metadata=1.23MB   fields=0.35MB   count=22029
 `UnionType`                                        metadata=1.15MB   fields=0.33MB   count=20457
 `TupleType`                                        metadata=0.25MB   fields=0.29MB   count=4541
 `ClassLiteral`                                     metadata=0.28MB   fields=0.24MB   count=5026
 `CallableType`                                     metadata=0.14MB   fields=0.23MB   count=2578
 `Specialization`                                   metadata=0.36MB   fields=0.21MB   count=6490
-`ClassLiteral &lt; 'db &gt;::try_mro_::interned_arguments` metadata=0.48MB   fields=0.14MB   count=8644
+`ClassLiteral &lt; &#x27;db &gt;::try_mro_::interned_arguments` metadata=0.48MB   fields=0.14MB   count=8644
 `TypeVarInstance`                                  metadata=0.09MB   fields=0.13MB   count=1615
 `BoundMethodType`                                  metadata=0.25MB   fields=0.11MB   count=4484
 `GenericAlias`                                     metadata=0.31MB   fields=0.09MB   count=5549
@@ -984,7 +984,7 @@ TOTAL MEMORY USAGE: 595.05MB
 `GenericContext`                                   metadata=0.04MB   fields=0.04MB   count=766
 `FileModule`                                       metadata=0.02MB   fields=0.04MB   count=761
 `StarImportPlaceholderPredicate`                   metadata=0.03MB   fields=0.02MB   count=1135
-`Type &lt; 'db &gt;::lookup_dunder_new_::interned_arguments` metadata=0.07MB   fields=0.02MB   count=1221
+`Type &lt; &#x27;db &gt;::lookup_dunder_new_::interned_arguments` metadata=0.07MB   fields=0.02MB   count=1221
 `PropertyInstanceType`                             metadata=0.02MB   fields=0.01MB   count=355
 `EnumLiteralType`                                  metadata=0.01MB   fields=0.01MB   count=192
 `BoundSuperType`                                   metadata=0.01MB   fields=0.00MB   count=169
@@ -1011,13 +1011,13 @@ TOTAL MEMORY USAGE: 595.05MB
     metadata=35.83MB  fields=4.51MB   count=112657
 `infer_scope_types -&gt; ty_python_semantic::types::infer::ScopeInference`
     metadata=12.59MB  fields=1.16MB   count=29115
-`FunctionType &lt; 'db &gt;::signature_ -&gt; ty_python_semantic::types::signatures::CallableSignature`
+`FunctionType &lt; &#x27;db &gt;::signature_ -&gt; ty_python_semantic::types::signatures::CallableSignature`
     metadata=1.99MB   fields=0.92MB   count=11466
-`Type &lt; 'db &gt;::member_lookup_with_policy_ -&gt; ty_python_semantic::place::PlaceAndQualifiers`
+`Type &lt; &#x27;db &gt;::member_lookup_with_policy_ -&gt; ty_python_semantic::place::PlaceAndQualifiers`
     metadata=4.29MB   fields=0.84MB   count=26358
 `place_by_id -&gt; ty_python_semantic::place::PlaceAndQualifiers`
     metadata=2.27MB   fields=0.78MB   count=24306
-`Type &lt; 'db &gt;::class_member_with_policy_ -&gt; ty_python_semantic::place::PlaceAndQualifiers`
+`Type &lt; &#x27;db &gt;::class_member_with_policy_ -&gt; ty_python_semantic::place::PlaceAndQualifiers`
     metadata=4.34MB   fields=0.66MB   count=20646
 `all_narrowing_constraints_for_expression -&gt; core::option::Option&lt;std::collections::hash::map::HashMap&lt;ty_python_semantic::semantic_index::place::ScopedPlaceId, ty_python_semantic::types::Type, rustc_hash::FxBuildHasher&gt;&gt;`
     metadata=2.61MB   fields=0.65MB   count=20192
@@ -1025,19 +1025,19 @@ TOTAL MEMORY USAGE: 595.05MB
     metadata=12.79MB  fields=0.56MB   count=1665
 `infer_expression_type -&gt; ty_python_semantic::types::Type`
     metadata=2.44MB   fields=0.51MB   count=32150
-`FunctionLiteral &lt; 'db &gt;::overloads_and_implementation_ -&gt; (alloc::boxed::Box&lt;[ty_python_semantic::types::function::OverloadLiteral]&gt;, core::option::Option&lt;ty_python_semantic::types::function::OverloadLiteral&gt;)`
+`FunctionLiteral &lt; &#x27;db &gt;::overloads_and_implementation_ -&gt; (alloc::boxed::Box&lt;[ty_python_semantic::types::function::OverloadLiteral]&gt;, core::option::Option&lt;ty_python_semantic::types::function::OverloadLiteral&gt;)`
     metadata=1.16MB   fields=0.43MB   count=18068
 `infer_deferred_types -&gt; ty_python_semantic::types::infer::DefinitionInference`
     metadata=1.93MB   fields=0.42MB   count=5800
-`ClassLiteral &lt; 'db &gt;::try_mro_ -&gt; core::result::Result&lt;ty_python_semantic::types::mro::Mro, ty_python_semantic::types::mro::MroError&gt;`
+`ClassLiteral &lt; &#x27;db &gt;::try_mro_ -&gt; core::result::Result&lt;ty_python_semantic::types::mro::Mro, ty_python_semantic::types::mro::MroError&gt;`
     metadata=1.64MB   fields=0.35MB   count=8644
-`Type &lt; 'db &gt;::apply_specialization_ -&gt; ty_python_semantic::types::Type`
+`Type &lt; &#x27;db &gt;::apply_specialization_ -&gt; ty_python_semantic::types::Type`
     metadata=0.92MB   fields=0.26MB   count=16290
-`ClassLiteral &lt; 'db &gt;::try_metaclass_ -&gt; core::result::Result&lt;(ty_python_semantic::types::Type, core::option::Option&lt;ty_python_semantic::types::function::DataclassTransformerParams&gt;), ty_python_semantic::types::class::MetaclassError&gt;`
+`ClassLiteral &lt; &#x27;db &gt;::try_metaclass_ -&gt; core::result::Result&lt;(ty_python_semantic::types::Type, core::option::Option&lt;ty_python_semantic::types::function::DataclassTransformerParams&gt;), ty_python_semantic::types::class::MetaclassError&gt;`
     metadata=0.97MB   fields=0.23MB   count=4895
 `suppressions -&gt; ty_python_semantic::suppression::Suppressions`
     metadata=0.10MB   fields=0.19MB   count=1500
-`Type &lt; 'db &gt;::try_call_dunder_get_ -&gt; core::option::Option&lt;(ty_python_semantic::types::Type, ty_python_semantic::types::AttributeKind)&gt;`
+`Type &lt; &#x27;db &gt;::try_call_dunder_get_ -&gt; core::option::Option&lt;(ty_python_semantic::types::Type, ty_python_semantic::types::AttributeKind)&gt;`
     metadata=4.35MB   fields=0.19MB   count=7993
 `all_negative_narrowing_constraints_for_expression -&gt; core::option::Option&lt;std::collections::hash::map::HashMap&lt;ty_python_semantic::semantic_index::place::ScopedPlaceId, ty_python_semantic::types::Type, rustc_hash::FxBuildHasher&gt;&gt;`
     metadata=0.70MB   fields=0.18MB   count=5760
@@ -1047,15 +1047,15 @@ TOTAL MEMORY USAGE: 595.05MB
     metadata=0.26MB   fields=0.14MB   count=1390
 `place_table -&gt; alloc::sync::Arc&lt;ty_python_semantic::semantic_index::place::PlaceTable&gt;`
     metadata=0.52MB   fields=0.08MB   count=10051
-`ClassLiteral &lt; 'db &gt;::explicit_bases_ -&gt; alloc::boxed::Box&lt;[ty_python_semantic::types::Type]&gt;`
+`ClassLiteral &lt; &#x27;db &gt;::explicit_bases_ -&gt; alloc::boxed::Box&lt;[ty_python_semantic::types::Type]&gt;`
     metadata=0.37MB   fields=0.08MB   count=5013
 `use_def_map -&gt; alloc::sync::Arc&lt;ty_python_semantic::semantic_index::use_def::UseDefMap&gt;`
     metadata=0.27MB   fields=0.04MB   count=5144
-`ClassLiteral &lt; 'db &gt;::pep695_generic_context_ -&gt; core::option::Option&lt;ty_python_semantic::types::generics::GenericContext&gt;`
+`ClassLiteral &lt; &#x27;db &gt;::pep695_generic_context_ -&gt; core::option::Option&lt;ty_python_semantic::types::generics::GenericContext&gt;`
     metadata=0.36MB   fields=0.04MB   count=5013
-`Type &lt; 'db &gt;::lookup_dunder_new_ -&gt; core::option::Option&lt;ty_python_semantic::place::PlaceAndQualifiers&gt;`
+`Type &lt; &#x27;db &gt;::lookup_dunder_new_ -&gt; core::option::Option&lt;ty_python_semantic::place::PlaceAndQualifiers&gt;`
     metadata=0.33MB   fields=0.04MB   count=1221
-`ClassLiteral &lt; 'db &gt;::decorators_ -&gt; alloc::boxed::Box&lt;[ty_python_semantic::types::Type]&gt;`
+`ClassLiteral &lt; &#x27;db &gt;::decorators_ -&gt; alloc::boxed::Box&lt;[ty_python_semantic::types::Type]&gt;`
     metadata=0.11MB   fields=0.03MB   count=1735
 `parsed_module -&gt; ruff_db::parsed::ParsedModule`
     metadata=0.13MB   fields=0.03MB   count=1669
@@ -1071,9 +1071,9 @@ TOTAL MEMORY USAGE: 595.05MB
     metadata=0.11MB   fields=0.01MB   count=1500
 `imported_modules -&gt; alloc::sync::Arc&lt;std::collections::hash::set::HashSet&lt;ty_python_semantic::module_name::ModuleName, rustc_hash::FxBuildHasher&gt;&gt;`
     metadata=0.06MB   fields=0.01MB   count=1062
-`ClassLiteral &lt; 'db &gt;::is_typed_dict_ -&gt; bool`
+`ClassLiteral &lt; &#x27;db &gt;::is_typed_dict_ -&gt; bool`
     metadata=0.47MB   fields=0.00MB   count=4968
-`ClassLiteral &lt; 'db &gt;::inheritance_cycle_ -&gt; core::option::Option&lt;ty_python_semantic::types::class::InheritanceCycle&gt;`
+`ClassLiteral &lt; &#x27;db &gt;::inheritance_cycle_ -&gt; core::option::Option&lt;ty_python_semantic::types::class::InheritanceCycle&gt;`
     metadata=0.35MB   fields=0.00MB   count=4759
 `file_to_module -&gt; core::option::Option&lt;ty_python_semantic::module_resolver::module::Module&gt;`
     metadata=0.01MB   fields=0.00MB   count=121
@@ -1088,7 +1088,7 @@ TOTAL MEMORY USAGE: 595.05MB
 `dynamic_resolution_paths -&gt; alloc::vec::Vec&lt;ty_python_semantic::module_resolver::path::SearchPath&gt;`
     metadata=0.00MB   fields=0.00MB   count=1
 </code></pre>
-</details>
+
 
 <pre><code>=======SALSA SUMMARY=======
 TOTAL MEMORY USAGE: 603.66MB
@@ -1111,38 +1111,38 @@ TOTAL MEMORY USAGE: 603.66MB
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/semantic_index/symbol.rs</code>:165 on 2025-08-08 16:22</div>
-            <div class="timeline-body"><p>I think we expect this map to be empty for most scopes, and when it is not empty, to have only one or two keys in it, and each key's value to likely also have only one or two entries in it. So overall, we expect this to be small. I think this means both that we could probably find a more efficient representation here, and that it may not matter much to overall memory usage in practice (as suggested by the memory usage stats). I'll defer to @MichaReiser on whether it's worth pursuing an alternative representation here. My own feeling is that the memory increase here seems minimal, and I'm more concerned about reducing the performance regression (for which I think the focus should likely be on <code>place_by_id</code>.)</p>
+            <div class="timeline-body"><p>I think we expect this map to be empty for most scopes, and when it is not empty, to have only one or two keys in it, and each key&#x27;s value to likely also have only one or two entries in it. So overall, we expect this to be small. I think this means both that we could probably find a more efficient representation here, and that it may not matter much to overall memory usage in practice (as suggested by the memory usage stats). I&#x27;ll defer to @MichaReiser on whether it&#x27;s worth pursuing an alternative representation here. My own feeling is that the memory increase here seems minimal, and I&#x27;m more concerned about reducing the performance regression (for which I think the focus should likely be on <code>place_by_id</code>.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:205 on 2025-08-08 16:27</div>
-            <div class="timeline-body"><p>I think it's not ideal that we will do 100 fixpoint iterations in a case like this before falling back, but I also think improving that is out of scope for this PR.</p>
-<p>I think the best way to improve this is actually not cycle-specific; I think we should place a much lower limit on the size of literal integer unions we are willing to explode and perform literal math on, and above that limit we just fallback to int -- and similar for operations on other literal types for which we make precise inferences. The rationale here is that we'd like to have a reasonably large limit on the size of literal unions that users can explicitly create, but it's reasonable to have a much lower limit on the size of literal unions that we implicitly create via precise type inference of operations.</p>
+            <div class="timeline-body"><p>I think it&#x27;s not ideal that we will do 100 fixpoint iterations in a case like this before falling back, but I also think improving that is out of scope for this PR.</p>
+<p>I think the best way to improve this is actually not cycle-specific; I think we should place a much lower limit on the size of literal integer unions we are willing to explode and perform literal math on, and above that limit we just fallback to int -- and similar for operations on other literal types for which we make precise inferences. The rationale here is that we&#x27;d like to have a reasonably large limit on the size of literal unions that users can explicitly create, but it&#x27;s reasonable to have a much lower limit on the size of literal unions that we implicitly create via precise type inference of operations.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/place.rs</code>:657 on 2025-08-08 16:37</div>
-            <div class="timeline-body"><p>In other places (e.g. <code>place_from_bindings_impl</code>) we currently go to a bit of trouble to avoid allocating a <code>UnionBuilder</code> in the most common case (one visible binding) where it won't be needed. We have seen in past PRs that this has noticeable performance impact, because this path is so hot.</p>
+            <div class="timeline-body"><p>In other places (e.g. <code>place_from_bindings_impl</code>) we currently go to a bit of trouble to avoid allocating a <code>UnionBuilder</code> in the most common case (one visible binding) where it won&#x27;t be needed. We have seen in past PRs that this has noticeable performance impact, because this path is so hot.</p>
 <p>I suspect that the changes in this function, rather than anything in the semantic index building, are the most likely cause of the benchmark slowdowns in this PR. I think this is supported by the CodSpeed execution profile on anyio, where the regressing functions all seem to be in type inference, not semantic index building.</p>
-<p>I think it would be worth some effort here to optimize the case where there are no nested bindings to consider. Ideally, in the no-nested-bindings scenario, this function would do exactly one hash-table lookup more than it did before this PR. (Or possibly even less than that, e.g. maybe a scope-level &quot;this scope has nested writes&quot; flag that allows us to bypass all additional work if it's not set?)</p>
-<p>We should also be able to do zero additional work here in the case where the name has a declared type in the outer scope. In that scenario we should just use the declared type and not query the nonlocal bindings at all. Currently this PR doesn't <em>use</em> the types of the nonlocal bindings in that case, but it queries them anyway. That's wasteful, and I suspect cleaning it up will address much of the regression in anyio (which appears to have <a href="https://github.com/agronholm/anyio/blob/fef093c1e33563493182b95a0c7028b86c61dd90/src/anyio/_core/_sockets.py#L180">exactly one <code>nonlocal</code> declaration</a>, but of a name which has a declared type in its enclosing scope, so shouldn't require us to do any additional work.)</p>
+<p>I think it would be worth some effort here to optimize the case where there are no nested bindings to consider. Ideally, in the no-nested-bindings scenario, this function would do exactly one hash-table lookup more than it did before this PR. (Or possibly even less than that, e.g. maybe a scope-level &quot;this scope has nested writes&quot; flag that allows us to bypass all additional work if it&#x27;s not set?)</p>
+<p>We should also be able to do zero additional work here in the case where the name has a declared type in the outer scope. In that scenario we should just use the declared type and not query the nonlocal bindings at all. Currently this PR doesn&#x27;t <em>use</em> the types of the nonlocal bindings in that case, but it queries them anyway. That&#x27;s wasteful, and I suspect cleaning it up will address much of the regression in anyio (which appears to have <a href="https://github.com/agronholm/anyio/blob/fef093c1e33563493182b95a0c7028b86c61dd90/src/anyio/_core/_sockets.py#L180">exactly one <code>nonlocal</code> declaration</a>, but of a name which has a declared type in its enclosing scope, so shouldn&#x27;t require us to do any additional work.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/place.rs</code>:797 on 2025-08-08 16:39</div>
-            <div class="timeline-body"><p>I wonder here why we aren't just adding the <code>inferred</code> type (if any) to <code>nested_bindings_union</code>, before building it?</p>
-<p>But don't pay too much attention to this comment, since I suspect this will all change anyway if we try to optimize the happy path in this function better.</p>
+            <div class="timeline-body"><p>I wonder here why we aren&#x27;t just adding the <code>inferred</code> type (if any) to <code>nested_bindings_union</code>, before building it?</p>
+<p>But don&#x27;t pay too much attention to this comment, since I suspect this will all change anyway if we try to optimize the happy path in this function better.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/semantic_index/builder.rs</code>:614 on 2025-08-08 17:03</div>
-            <div class="timeline-body"><p>I would be inclined to remove the unnecessary collection and do the rename, for now. It seems easy to reverse later if/when we have a use for the fuller data, and it just seems like a good principle (both for readability/maintainability and performance) to avoid doing unnecessary work, if it's easy not to do it.</p>
+            <div class="timeline-body"><p>I would be inclined to remove the unnecessary collection and do the rename, for now. It seems easy to reverse later if/when we have a use for the fuller data, and it just seems like a good principle (both for readability/maintainability and performance) to avoid doing unnecessary work, if it&#x27;s easy not to do it.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> requested changes on 2025-08-08 17:09</div>
-            <div class="timeline-body"><p>Thank you! I love the simplifications in type inference, and the fact that we now match mypy and pyright's inference capability in cases with nonlocal writes. The collection logic in the semantic index seems clear to me, though I do think we should streamline it to avoid doing any extra work for things we don't use.</p>
-<p>I think we do need to better understand/fix the anyio regression, and it looks like we have a 1% regression overall in the cold-check benchmark, which I believe checks a codebase that doesn't use <code>nonlocal</code>. I don't think we should pay any detectable performance penalty for this PR in code that doesn't use <code>nonlocal</code>, and I think the main focus to achieve that needs to be in better optimizing the no-nonlocal-writes path in <code>place_by_id</code>.</p>
+            <div class="timeline-body"><p>Thank you! I love the simplifications in type inference, and the fact that we now match mypy and pyright&#x27;s inference capability in cases with nonlocal writes. The collection logic in the semantic index seems clear to me, though I do think we should streamline it to avoid doing any extra work for things we don&#x27;t use.</p>
+<p>I think we do need to better understand/fix the anyio regression, and it looks like we have a 1% regression overall in the cold-check benchmark, which I believe checks a codebase that doesn&#x27;t use <code>nonlocal</code>. I don&#x27;t think we should pay any detectable performance penalty for this PR in code that doesn&#x27;t use <code>nonlocal</code>, and I think the main focus to achieve that needs to be in better optimizing the no-nonlocal-writes path in <code>place_by_id</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1151,30 +1151,30 @@ TOTAL MEMORY USAGE: 603.66MB
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:205 on 2025-08-08 17:19</div>
-            <div class="timeline-body"><p>(I filed https://github.com/astral-sh/ty/issues/957 to track this separately.)</p>
+            <div class="timeline-body"><p>(I filed <a href="https://github.com/astral-sh/ty/issues/957">astral-sh/ty#957</a> to track this separately.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-08-08 22:05</div>
-            <div class="timeline-body"><p>@carljm I'm able to reduce the 10% slowdown with https://github.com/agronholm/anyio locally (though I have to set <code>export RAYON_NUM_THREADS=1</code> to see it). When I play with making my use of <code>UnionBuilder</code> lazier, or optimizing <code>UnionBuilder</code> by <code>SmallVec</code> more internally, none of that seems to have much effect. But when I shrink <code>MAX_UNION_LITERALS</code> down to a tiny value like 10, that gets rid of almost all the slowdown without any other changes. Other than that, I haven't been able to figure out exactly where the slowdown is happening, other than that there seems to be a decent number of <code>nonlocal</code> variables in this repo. Any chance it's obvious to you?</p>
+            <div class="timeline-body"><p>@carljm I&#x27;m able to reduce the 10% slowdown with https://github.com/agronholm/anyio locally (though I have to set <code>export RAYON_NUM_THREADS=1</code> to see it). When I play with making my use of <code>UnionBuilder</code> lazier, or optimizing <code>UnionBuilder</code> by <code>SmallVec</code> more internally, none of that seems to have much effect. But when I shrink <code>MAX_UNION_LITERALS</code> down to a tiny value like 10, that gets rid of almost all the slowdown without any other changes. Other than that, I haven&#x27;t been able to figure out exactly where the slowdown is happening, other than that there seems to be a decent number of <code>nonlocal</code> variables in this repo. Any chance it&#x27;s obvious to you?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-08 22:34</div>
-            <div class="timeline-body"><p>@oconnor663 Ah, hm, I thought the repo only had one <code>nonlocal</code> because I mistakenly searched only in the source code, not in the tests. Looks like there are tons of nonlocal in the tests. But it still looks like a lot of those have declared types in the enclosing scope, which should (but doesn't currently) mean that we don't do any extra work for them in this PR.</p>
+            <div class="timeline-body"><p>@oconnor663 Ah, hm, I thought the repo only had one <code>nonlocal</code> because I mistakenly searched only in the source code, not in the tests. Looks like there are tons of nonlocal in the tests. But it still looks like a lot of those have declared types in the enclosing scope, which should (but doesn&#x27;t currently) mean that we don&#x27;t do any extra work for them in this PR.</p>
 <blockquote>
 <p>When I play with making my use of <code>UnionBuilder</code> lazier, or optimizing <code>UnionBuilder</code> by <code>SmallVec</code> more internally</p>
 </blockquote>
-<p>What about ensuring that we never query nonlocal bindings at all if the symbol has declarations in the outer scope and we aren't going to use the nonlocal bindings anyway? That seems like the highest-priority perf improvement, which we should do regardless. Have you implemented that yet? How much does that impact perf, if at all?</p>
+<p>What about ensuring that we never query nonlocal bindings at all if the symbol has declarations in the outer scope and we aren&#x27;t going to use the nonlocal bindings anyway? That seems like the highest-priority perf improvement, which we should do regardless. Have you implemented that yet? How much does that impact perf, if at all?</p>
 <blockquote>
 <p>when I shrink <code>MAX_UNION_LITERALS</code> down to a tiny value like 10, that gets rid of almost all the slowdown without any other changes</p>
 </blockquote>
-<p>Interesting! That strongly suggests that we are hitting a cycle in the nonlocal bindings where we grow a literal union on every iteration of the cycle. I did some grep-based spot-checking of the <code>nonlocal</code> uses and didn't come across any that jumped out at me, but I didn't check every <code>nonlocal</code>. I would expect to find something like a <code>nonlocal_var += ...</code> where <code>...</code> is a literal integer or literal string or literal bytestring.</p>
-<p>If this is really the only thing that fixes it, that suggests that we would need https://github.com/astral-sh/ty/issues/957 to properly reclaim this perf. But I would love to actually identify the code that is actually causing this, to make sure we aren't missing something. One way to do this could be to benchmark each test file individually, with main vs this PR, to narrow down the file in which the problem occurs. (I think this can be done non-painfully by pre-building release versions of main and this PR, and then using <code>hyperfine</code> so each test is just a single CLI command; could even script looping over all the files that contain <code>nonlocal</code> and running this benchmark command against them.) And if it's still not clear, can start removing chunks of that file and see when the discrepancy goes away.</p>
+<p>Interesting! That strongly suggests that we are hitting a cycle in the nonlocal bindings where we grow a literal union on every iteration of the cycle. I did some grep-based spot-checking of the <code>nonlocal</code> uses and didn&#x27;t come across any that jumped out at me, but I didn&#x27;t check every <code>nonlocal</code>. I would expect to find something like a <code>nonlocal_var += ...</code> where <code>...</code> is a literal integer or literal string or literal bytestring.</p>
+<p>If this is really the only thing that fixes it, that suggests that we would need <a href="https://github.com/astral-sh/ty/issues/957">astral-sh/ty#957</a> to properly reclaim this perf. But I would love to actually identify the code that is actually causing this, to make sure we aren&#x27;t missing something. One way to do this could be to benchmark each test file individually, with main vs this PR, to narrow down the file in which the problem occurs. (I think this can be done non-painfully by pre-building release versions of main and this PR, and then using <code>hyperfine</code> so each test is just a single CLI command; could even script looping over all the files that contain <code>nonlocal</code> and running this benchmark command against them.) And if it&#x27;s still not clear, can start removing chunks of that file and see when the discrepancy goes away.</p>
 <blockquote>
 <p>though I have to set <code>export RAYON_NUM_THREADS=1</code> to see it</p>
 </blockquote>
-<p>Yes, that's generally the right thing to do for reliable benchmarking (if your goal is to improve straight-line perf, not specifically to improve parallelism).</p>
+<p>Yes, that&#x27;s generally the right thing to do for reliable benchmarking (if your goal is to improve straight-line perf, not specifically to improve parallelism).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1182,35 +1182,35 @@ TOTAL MEMORY USAGE: 603.66MB
             <div class="timeline-body"><blockquote>
 <p>and it looks like we have a 1% regression overall in the cold-check benchmark</p>
 </blockquote>
-<p>I see that in the CodSpeed report, but I wonder if it's within the error bars. When I try to reproduce it locally (<code>cargo bench --bench ty cold</code> correct?), I have to close my browser and disable CPU frequency boost to get consistent results within a ~tenth of a percent, and when I do that I don't see any consistent difference between my branch and main on that specific benchmark.</p>
+<p>I see that in the CodSpeed report, but I wonder if it&#x27;s within the error bars. When I try to reproduce it locally (<code>cargo bench --bench ty cold</code> correct?), I have to close my browser and disable CPU frequency boost to get consistent results within a ~tenth of a percent, and when I do that I don&#x27;t see any consistent difference between my branch and main on that specific benchmark.</p>
 <blockquote>
-<p>What about ensuring that we never query nonlocal bindings at all if the symbol has declarations in the outer scope and we aren't going to use the nonlocal bindings anyway?</p>
+<p>What about ensuring that we never query nonlocal bindings at all if the symbol has declarations in the outer scope and we aren&#x27;t going to use the nonlocal bindings anyway?</p>
 </blockquote>
-<p>I thought I had tested this above and found it didn't help, but I tried it again just now and it does. Locally it looks like it recovers about half of the slowdown, but definitely not all of it. I'll push the change and see what happens in CodSpeed.</p>
+<p>I thought I had tested this above and found it didn&#x27;t help, but I tried it again just now and it does. Locally it looks like it recovers about half of the slowdown, but definitely not all of it. I&#x27;ll push the change and see what happens in CodSpeed.</p>
 <blockquote>
-<p>But I would love to actually identify the code that is actually causing this, to make sure we aren't missing something.</p>
+<p>But I would love to actually identify the code that is actually causing this, to make sure we aren&#x27;t missing something.</p>
 </blockquote>
-<p>Yeah I'd like to know too. I'll see if I can divide and conquer it somehow.</p>
+<p>Yeah I&#x27;d like to know too. I&#x27;ll see if I can divide and conquer it somehow.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-08 23:14</div>
             <div class="timeline-body"><blockquote>
-<p>I see that in the CodSpeed report, but I wonder if it's within the error bars. When I try to reproduce it locally (<code>cargo bench --bench ty cold</code> correct?), I have to close my browser and disable CPU frequency boost to get consistent results within a ~tenth of a percent, and when I do that I don't see any consistent difference between my branch and main on that specific benchmark.</p>
+<p>I see that in the CodSpeed report, but I wonder if it&#x27;s within the error bars. When I try to reproduce it locally (<code>cargo bench --bench ty cold</code> correct?), I have to close my browser and disable CPU frequency boost to get consistent results within a ~tenth of a percent, and when I do that I don&#x27;t see any consistent difference between my branch and main on that specific benchmark.</p>
 </blockquote>
-<p>This is an instrumented benchmark on CodSpeed, not a walltime benchmark. That means it's counting CPU instructions (and I think assigning some fixed cost estimate to syscalls?). In some ways that makes it less &quot;real-world performance&quot;, but it also generally makes it pretty consistent; I don't usually see a lot of fluctuation in those. But if it really doesn't show up locally at all, maybe that's a case where CodSpeed is misleading us a bit.</p>
+<p>This is an instrumented benchmark on CodSpeed, not a walltime benchmark. That means it&#x27;s counting CPU instructions (and I think assigning some fixed cost estimate to syscalls?). In some ways that makes it less &quot;real-world performance&quot;, but it also generally makes it pretty consistent; I don&#x27;t usually see a lot of fluctuation in those. But if it really doesn&#x27;t show up locally at all, maybe that&#x27;s a case where CodSpeed is misleading us a bit.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-08-08 23:19</div>
-            <div class="timeline-body"><p>Ah very neat. In that case I'm not sure who's right :sweat_smile:</p>
+            <div class="timeline-body"><p>Ah very neat. In that case I&#x27;m not sure who&#x27;s right :sweat_smile:</p>
 <p>The re-run speed report shows the Anyio regression at 7% now instead of 10%, so laziness did help a bit. Still digging into the specifics.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/semantic_index/symbol.rs</code>:165 on 2025-08-10 12:50</div>
-            <div class="timeline-body"><p>I don't feel strongly about it but a <code>ThinVec</code> could be a great use case because it reduces the overhead per scope from 48 bytes to 8 (if empty) and a linear scan should be cheap.</p>
-<p>Constructing such a vec based map from a real map (it's fine to use a proper map during building) should be trivial. It's only the lookup that requires a scan (but you could even consider to use a <code>ThinVec</code> during building, which might be cheaper, but I don't care much bout that)</p>
+            <div class="timeline-body"><p>I don&#x27;t feel strongly about it but a <code>ThinVec</code> could be a great use case because it reduces the overhead per scope from 48 bytes to 8 (if empty) and a linear scan should be cheap.</p>
+<p>Constructing such a vec based map from a real map (it&#x27;s fine to use a proper map during building) should be trivial. It&#x27;s only the lookup that requires a scan (but you could even consider to use a <code>ThinVec</code> during building, which might be cheaper, but I don&#x27;t care much bout that)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1233,12 +1233,12 @@ TOTAL MEMORY USAGE: 603.66MB
 <li>Invert the call graph, see if both versions have the same key performance driver</li>
 <li>Use the compare feature of firefox profiler to compare two recorded profiles</li>
 </ul>
-<p>I often find this more useful than codspeed's profile because codspeed filters and truncates the stack frames which sometimes is great but sometimes hides exactly what you're supposed to see</p>
+<p>I often find this more useful than codspeed&#x27;s profile because codspeed filters and truncates the stack frames which sometimes is great but sometimes hides exactly what you&#x27;re supposed to see</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-10 13:00</div>
-            <div class="timeline-body"><p>We have some notes in an internal Notion document here with some tips 'n' tricks for profiling and benchmarking ty locally: https://www.notion.so/astral-sh/Performance-measurements-15848797e1ca808f97c9d928e6923d03?source=copy_link</p>
+            <div class="timeline-body"><p>We have some notes in an internal Notion document here with some tips &#x27;n&#x27; tricks for profiling and benchmarking ty locally: https://www.notion.so/astral-sh/Performance-measurements-15848797e1ca808f97c9d928e6923d03?source=copy_link</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1251,7 +1251,7 @@ TOTAL MEMORY USAGE: 603.66MB
             <div class="timeline-body"><blockquote>
 <p>I would expect to find something like a <code>nonlocal_var += ...</code> where <code>...</code> is a literal integer or literal string or literal bytestring.</p>
 </blockquote>
-<p><a href="https://github.com/agronholm/anyio/blob/fef093c1e33563493182b95a0c7028b86c61dd90/src/anyio/pytest_plugin.py#L56-L60">Found it!</a> <code>_runner_leases</code> is an un-annotated <code>global</code> integer, and there's a <code>+= 1</code> on it (<code>-= 1</code> too). I think this means we understand why the performance regression is happening, and we plan on fixing it separately from this PR?</p>
+<p><a href="https://github.com/agronholm/anyio/blob/fef093c1e33563493182b95a0c7028b86c61dd90/src/anyio/pytest_plugin.py#L56-L60">Found it!</a> <code>_runner_leases</code> is an un-annotated <code>global</code> integer, and there&#x27;s a <code>+= 1</code> on it (<code>-= 1</code> too). I think this means we understand why the performance regression is happening, and we plan on fixing it separately from this PR?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1259,19 +1259,19 @@ TOTAL MEMORY USAGE: 603.66MB
             <div class="timeline-body"><blockquote>
 <p>I think this means we understand why the performance regression is happening, and we plan on fixing it separately from this PR?</p>
 </blockquote>
-<p>Yes! That means the bulk of the anyio regression is https://github.com/astral-sh/ty/issues/957. It might mean that if we land this for beta, we will also need to fix that for beta, depending on how this shows up in user codebases.</p>
-<p>I do feel there's still room to improve the performance here outside of that particular anyio issue. Currently this is showing a <a href="https://codspeed.io/astral-sh/ruff/branches/jack%2Fsemantic-index-nested-bindings?runnerMode=Instrumentation">very consistent 1-2% across-the-board regression in instrumented CodSpeed benchmarks</a>. Apparently local walltime runs aren't sensitive enough to show this, but I feel like there are still some clear things we could do to improve here. We are no longer taking on the overhead of allocating a UnionBuilder or querying nonlocal types if we won't use the nonlocal types, which is good. We are still (within the lazy closure) eagerly allocating a UnionBuilder before we even know whether there are any nonlocal bindings to consider, in any case where we would consider nonlocal bindings.</p>
-<p>I think it should be possible for this PR to show effectively zero performance impact on a codebase that doesn't use any<code>global</code> or <code>nonlocal</code> (which includes, for example, <code>tomllib</code>, the codebase we run our basic <code>ty_check[cold]</code> benchmark on), and I think that's the target we should aim for before landing this.</p>
-<p>I'm fine with setting this aside for the moment and moving on to NewType. I do consider this a worthwhile feature (it brings us to parity with mypy/pyright), but it's probably not critical for the beta. If we put it on ice for now, hopefully it doesn't accumulate too many conflicts?</p>
+<p>Yes! That means the bulk of the anyio regression is <a href="https://github.com/astral-sh/ty/issues/957">astral-sh/ty#957</a>. It might mean that if we land this for beta, we will also need to fix that for beta, depending on how this shows up in user codebases.</p>
+<p>I do feel there&#x27;s still room to improve the performance here outside of that particular anyio issue. Currently this is showing a <a href="https://codspeed.io/astral-sh/ruff/branches/jack%2Fsemantic-index-nested-bindings?runnerMode=Instrumentation">very consistent 1-2% across-the-board regression in instrumented CodSpeed benchmarks</a>. Apparently local walltime runs aren&#x27;t sensitive enough to show this, but I feel like there are still some clear things we could do to improve here. We are no longer taking on the overhead of allocating a UnionBuilder or querying nonlocal types if we won&#x27;t use the nonlocal types, which is good. We are still (within the lazy closure) eagerly allocating a UnionBuilder before we even know whether there are any nonlocal bindings to consider, in any case where we would consider nonlocal bindings.</p>
+<p>I think it should be possible for this PR to show effectively zero performance impact on a codebase that doesn&#x27;t use any<code>global</code> or <code>nonlocal</code> (which includes, for example, <code>tomllib</code>, the codebase we run our basic <code>ty_check[cold]</code> benchmark on), and I think that&#x27;s the target we should aim for before landing this.</p>
+<p>I&#x27;m fine with setting this aside for the moment and moving on to NewType. I do consider this a worthwhile feature (it brings us to parity with mypy/pyright), but it&#x27;s probably not critical for the beta. If we put it on ice for now, hopefully it doesn&#x27;t accumulate too many conflicts?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Converted to draft by @oconnor663 on 2025-08-18 14:29</div>
+            <div class="event">Converted to draft by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-08-18 14:29</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:14:56 UTC
+        Synced at 2026-01-20 19:17:32 UTC
     </footer>
 </body>
 </html>

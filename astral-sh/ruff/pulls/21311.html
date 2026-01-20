@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>[<code>flake8-annotations</code>] Don't suggest <code>NoReturn</code> for functions raising <code>NotImplementedError</code> (<code>ANN201</code>, <code>ANN202</code>, <code>ANN205</code>, <code>ANN206</code>)</h1>
+    <h1>[<code>flake8-annotations</code>] Don&#x27;t suggest <code>NoReturn</code> for functions raising <code>NotImplementedError</code> (<code>ANN201</code>, <code>ANN202</code>, <code>ANN205</code>, <code>ANN206</code>)</h1>
 
     <div class="meta">
         <span class="state-icon state-open"></span>
@@ -23,24 +23,24 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/danparizher">@danparizher</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>Fix ANN201, ANN202, ANN205, and ANN206 to not automatically suggest <code>NoReturn</code>/<code>Never</code> return type annotations for functions that raise <code>NotImplementedError</code>. These rules will still flag missing return type annotations but won't provide an auto-fix, allowing developers to manually specify the actual return type that implementations should return.</p>
+            <div class="timeline-body">Summary
+<p>Fix ANN201, ANN202, ANN205, and ANN206 to not automatically suggest <code>NoReturn</code>/<code>Never</code> return type annotations for functions that raise <code>NotImplementedError</code>. These rules will still flag missing return type annotations but won&#x27;t provide an auto-fix, allowing developers to manually specify the actual return type that implementations should return.</p>
 <p>Fixes #18886</p>
-<h2>Problem Analysis</h2>
-<p>The bug occurred because the <code>auto_return_type</code> function in <code>flake8_annotations/helpers.rs</code> detects when all control flow paths in a function raise an exception (<code>Terminal::Raise</code>) and automatically suggests <code>NoReturn</code>/<code>Never</code> as the return type. However, <code>NotImplementedError</code> is semantically different from other exceptions - it's used to indicate abstract methods that should be implemented by subclasses, not methods that truly never return.</p>
-<p>When a function raises <code>NotImplementedError</code>, it's typically an abstract method pattern where:</p>
+Problem Analysis
+<p>The bug occurred because the <code>auto_return_type</code> function in <code>flake8_annotations/helpers.rs</code> detects when all control flow paths in a function raise an exception (<code>Terminal::Raise</code>) and automatically suggests <code>NoReturn</code>/<code>Never</code> as the return type. However, <code>NotImplementedError</code> is semantically different from other exceptions - it&#x27;s used to indicate abstract methods that should be implemented by subclasses, not methods that truly never return.</p>
+<p>When a function raises <code>NotImplementedError</code>, it&#x27;s typically an abstract method pattern where:</p>
 <ul>
-<li>The base class defines the method signature but doesn't implement it</li>
+<li>The base class defines the method signature but doesn&#x27;t implement it</li>
 <li>Subclasses are expected to override the method with a proper implementation</li>
 <li>The return type should reflect what implementations will actually return, not <code>NoReturn</code></li>
 </ul>
-<p>For example, in Django's serializer pattern:</p>
-<pre><code class="language-py">class BaseSerializer:
+<p>For example, in Django&#x27;s serializer pattern:</p>
+<pre><code>class BaseSerializer:
     def to_internal_value(self, data):
-        raise NotImplementedError('`to_internal_value()` must be implemented.')
+        raise NotImplementedError(&#x27;`to_internal_value()` must be implemented.&#x27;)
 </code></pre>
 <p>This method should have a return type annotation like <code>dict</code> or <code>Any</code>, not <code>NoReturn</code>, because implementations will return actual values.</p>
-<h2>Approach</h2>
+Approach
 <p>The fix modifies the <code>auto_return_type</code> function to:</p>
 <ol>
 <li><p><strong>Added semantic analysis capability</strong>: Modified <code>auto_return_type</code> to accept a <code>SemanticModel</code> parameter, enabling it to analyze exception types in raise statements.</p>
@@ -78,28 +78,28 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-11-07 05:21</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-07 20:56</div>
-            <div class="timeline-body"><p>Could you summarize the similarities/differences from #18927? I quickly skimmed both implementations and this looks similar to the earlier PR. Has @MichaReiser's concern in https://github.com/astral-sh/ruff/pull/18927#discussion_r2166250598 been addressed?</p>
+            <div class="timeline-body"><p>Could you summarize the similarities/differences from #18927? I quickly skimmed both implementations and this looks similar to the earlier PR. Has @MichaReiser&#x27;s concern in <a href="https://github.com/astral-sh/ruff/pull/18927">astral-sh/ruff#18927</a>#discussion_r2166250598 been addressed?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-11-07 20:57</div>
+            <div class="event">Label <span class="label">fixes</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-07 20:57</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/danparizher">@danparizher</a> on 2025-11-07 23:00</div>
             <div class="timeline-body"><p>I missed that, thanks for bringing it back up. I just refactored the implementation:</p>
 <ul>
-<li>Adds a new <code>Terminal::RaiseNotImplemented</code> variant that's detected during the initial <code>Terminal::from_function()</code> traversal</li>
+<li>Adds a new <code>Terminal::RaiseNotImplemented</code> variant that&#x27;s detected during the initial <code>Terminal::from_function()</code> traversal</li>
 <li>Eliminates the need for the <code>only_raises_not_implemented_error()</code> function that was doing a second pass</li>
 <li>Updates <code>auto_return_type()</code> to check for <code>Terminal::RaiseNotImplemented</code> directly</li>
 </ul>
@@ -107,26 +107,26 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @ntBre by @amyreese on 2025-11-26 01:51</div>
+            <div class="event">Review requested from <a href="https://github.com/ntBre">@ntBre</a> by <a href="https://github.com/amyreese">@amyreese</a> on 2025-11-26 01:51</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_semantic/src/analyze/terminal.rs</code>:164 on 2025-12-01 19:16</div>
-            <div class="timeline-body"><p>I looked at the references to <code>from_body</code>, and I don't think there are any cases where a semantic model is unavailable. It's only passed as <code>None</code> in <code>sometimes_breaks</code>, but <code>sometimes_breaks</code> is only called from <code>from_body</code>, which has access to a semantic model, unless  I'm missing something.</p>
+            <div class="timeline-body"><p>I looked at the references to <code>from_body</code>, and I don&#x27;t think there are any cases where a semantic model is unavailable. It&#x27;s only passed as <code>None</code> in <code>sometimes_breaks</code>, but <code>sometimes_breaks</code> is only called from <code>from_body</code>, which has access to a semantic model, unless  I&#x27;m missing something.</p>
 <p>I also think we could use <code>has_builtin_binding</code> here.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_semantic/src/analyze/terminal.rs</code>:15 on 2025-12-01 19:19</div>
             <div class="timeline-body"><p>Did you check if all of the other uses of <code>Terminal::Raise</code> should now be something like this?</p>
-<pre><code class="language-rust">matches!(terminal, Terminal::Raise | Terminal::RaiseNotImplemented)
+<pre><code>matches!(terminal, Terminal::Raise | Terminal::RaiseNotImplemented)
 </code></pre>
-<p>It doesn't look like any other tests or ecosystem results are changing, but at least from a quick look, I would think these variants should be treated the same in some other rules. If so, it might be good to add a <code>Terminal::is_raise</code> helper method with a <code>matches!</code> like the one above.</p>
+<p>It doesn&#x27;t look like any other tests or ecosystem results are changing, but at least from a quick look, I would think these variants should be treated the same in some other rules. If so, it might be good to add a <code>Terminal::is_raise</code> helper method with a <code>matches!</code> like the one above.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_semantic/src/analyze/terminal.rs</code>:203 on 2025-12-01 19:20</div>
             <div class="timeline-body"><p>Should we combine this with the arms above?</p>
-<pre><code class="language-suggestion">            // If one of the operators is `RaiseNotImplemented`, treat it like `Raise` for combinations
+<pre><code>            // If one of the operators is `RaiseNotImplemented`, treat it like `Raise` for combinations
             (Self::Raise | Self::RaiseNotImplemented, Self::ConditionalReturn) =&gt; Self::RaiseOrReturn,
             (Self::ConditionalReturn, Self::Raise | Self::RaiseNotImplemented) =&gt; Self::RaiseOrReturn,
 </code></pre>
@@ -142,7 +142,7 @@
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:17:01 UTC
+        Synced at 2026-01-20 19:20:19 UTC
     </footer>
 </body>
 </html>

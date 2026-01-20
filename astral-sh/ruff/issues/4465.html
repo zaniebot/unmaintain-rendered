@@ -23,19 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/jamesbraza">@jamesbraza</a></div>
-            <div class="timeline-body"><!--
-Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
-
-If you're filing a bug report, please consider including the following information:
-
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
-* The current Ruff settings (any relevant sections from your `pyproject.toml`).
-* The current Ruff version (`ruff --version`).
--->
+            <div class="timeline-body">
 
 <p><code>ruff==0.0.265</code> has a false positive <code>B030</code>:</p>
-<pre><code class="language-python">def foo(msg: str, *exc_types: type[Exception]) -&gt; None:
+<pre><code>def foo(msg: str, *exc_types: type[Exception]) -&gt; None:
     try:
         raise ValueError(msg)
     except exc_types or ValueError as exc:
@@ -46,7 +37,7 @@ foo(&quot;BOOM&quot;)
 foo(&quot;BOOM2&quot;, ValueError)
 foo(&quot;BOOM3&quot;, ValueError, IndexError)
 </code></pre>
-<pre><code class="language-bash">&gt; ruff --select=B030 a.py
+<pre><code>&gt; ruff --select=B030 a.py
 a.py:4:12: B030 `except` handlers should only be exception classes or tuples of exception classes
 Found 1 error.
 </code></pre>
@@ -54,9 +45,9 @@ Found 1 error.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tjkuson">@tjkuson</a> on 2023-05-17 08:30</div>
-            <div class="timeline-body"><p>I don't think this is a false positive; binary operations shouldn't be used in <code>except</code> clauses, as, in your example, only the first exceptions (<code>exc_types</code>) will be caught.</p>
+            <div class="timeline-body"><p>I don&#x27;t think this is a false positive; binary operations shouldn&#x27;t be used in <code>except</code> clauses, as, in your example, only the first exceptions (<code>exc_types</code>) will be caught.</p>
 <p>Doing this instead passes the check and should work as you intend.</p>
-<pre><code class="language-python">def foo(msg: str, *exc_types: type[Exception]) -&gt; None:
+<pre><code>def foo(msg: str, *exc_types: type[Exception]) -&gt; None:
     try:
         raise ValueError(msg)
     except (*exc_types, ValueError) as exc:
@@ -75,17 +66,17 @@ foo(&quot;BOOM3&quot;, ValueError, IndexError)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-05-17 13:22</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-17 13:22</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2023-05-17 19:08</div>
             <div class="timeline-body"><p>Yeah thanks for asking for clarification!</p>
-<p>The <code>or ValueError</code> is a valid use case, it's basically the fallback if no <code>exc_types</code> were passed.</p>
-<details>
-<summary> Original Unclear Snippet's Extension</summary>
+<p>The <code>or ValueError</code> is a valid use case, it&#x27;s basically the fallback if no <code>exc_types</code> were passed.</p>
+
+ Original Unclear Snippet&#x27;s Extension
 
 <p>The below code (paired with the <code>foo</code> in the OP) might also help, if you want to play around with something.</p>
-<pre><code class="language-python">import pytest
+<pre><code>import pytest
 
 def foo(msg: str, *exc_types: type[Exception]) -&gt; None:
     try:
@@ -97,18 +88,18 @@ foo(&quot;BOOM&quot;)  # Rely on `or ValueError` fallback
 foo(&quot;BOOM2&quot;, ValueError)  # Manually passing
 foo(&quot;BOOM3&quot;, ValueError, IndexError)  # Manually passing multiple
 
-# Here we don't catch the ValueError as we don't include in `exc_types`
+# Here we don&#x27;t catch the ValueError as we don&#x27;t include in `exc_types`
 with pytest.raises(ValueError, match=&quot;BOOM4&quot;):
     foo(&quot;BOOM4&quot;, KeyError, IndexError)
 with pytest.raises(ValueError, match=&quot;BOOM5&quot;):
     foo(&quot;BOOM5&quot;, KeyError)
 </code></pre>
-</details>
 
-<hr />
-<p>Let's start anew with a better snippet:</p>
-<pre><code class="language-python"># I can contain 0+ Exceptions
-# When I contain 1+ Exceptions and don't include ValueError,
+
+<hr>
+<p>Let&#x27;s start anew with a better snippet:</p>
+<pre><code># I can contain 0+ Exceptions
+# When I contain 1+ Exceptions and don&#x27;t include ValueError,
 # it overrides the default behavior
 exc_types: tuple[type[Exception], ...] = ()
 
@@ -122,17 +113,17 @@ except exc_types or ValueError as exc:
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-18 00:54</div>
             <div class="timeline-body"><p>Ahhh I see! Thanks for sharing. That makes sense.</p>
-<p>I see how this could be considered a false positive, but to be honest, I think this is the rule working as intended. The pattern that's being used here, even if it has the correct runtime behavior, is confusing -- as evidence, the two readers on this issue thought the intended behavior was different from the author's intended behavior. I'd argue that it's correct for the rule to flag this case, even if the runtime behavior is correct.</p>
+<p>I see how this could be considered a false positive, but to be honest, I think this is the rule working as intended. The pattern that&#x27;s being used here, even if it has the correct runtime behavior, is confusing -- as evidence, the two readers on this issue thought the intended behavior was different from the author&#x27;s intended behavior. I&#x27;d argue that it&#x27;s correct for the rule to flag this case, even if the runtime behavior is correct.</p>
 <p>My humble suggestion would be to assign <code>exc_types or ValueError</code> to a temporary variable and match on that, which IMO is clearer.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-05-18 00:54</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-18 00:54</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:47:12 UTC
+        Synced at 2026-01-20 18:48:36 UTC
     </footer>
 </body>
 </html>

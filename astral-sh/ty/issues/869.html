@@ -23,28 +23,28 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a></div>
-            <div class="timeline-body"><p>In https://github.com/astral-sh/ruff/pull/19471 I am introducing the notion of a &quot;real module&quot; which is found by running resolution with stubs disallowed to provide more useful goto-definition results. A consequence of this is that it violates an invariant that file_to_module enforces: files and modules should be a bijection. Specifically if you pass a &quot;real module&quot; to file_to_module it will notice it's not the stub module and return None.</p>
-<p>This... <em>might</em> cause problems? I haven't seen any issue yet. @MichaReiser suggested also allowing it to return Some(module) if it's found with <code>resolve_real_module</code>.</p>
+            <div class="timeline-body"><p>In <a href="https://github.com/astral-sh/ruff/pull/19471">astral-sh/ruff#19471</a> I am introducing the notion of a &quot;real module&quot; which is found by running resolution with stubs disallowed to provide more useful goto-definition results. A consequence of this is that it violates an invariant that file_to_module enforces: files and modules should be a bijection. Specifically if you pass a &quot;real module&quot; to file_to_module it will notice it&#x27;s not the stub module and return None.</p>
+<p>This... <em>might</em> cause problems? I haven&#x27;t seen any issue yet. @MichaReiser suggested also allowing it to return Some(module) if it&#x27;s found with <code>resolve_real_module</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @Gankra on 2025-07-22 12:49</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/Gankra">@Gankra</a> on 2025-07-22 12:49</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">imports</span> added by @Gankra on 2025-07-22 12:49</div>
+            <div class="event">Label <span class="label">imports</span> added by <a href="https://github.com/Gankra">@Gankra</a> on 2025-07-22 12:49</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-22 12:56</div>
             <div class="timeline-body"><blockquote>
-<p>This... might cause problems? I haven't seen any issue yet. @MichaReiser suggested also allowing it to return Some(module) if it's found with resolve_real_module.</p>
+<p>This... might cause problems? I haven&#x27;t seen any issue yet. @MichaReiser suggested also allowing it to return Some(module) if it&#x27;s found with resolve_real_module.</p>
 </blockquote>
-<p>We might be &quot;lucky&quot; in editors because we use a different ty instance for non-project files. This might change in the future. Or I'm wrong :)</p>
-<p>Related to https://github.com/astral-sh/ty/issues/839</p>
+<p>We might be &quot;lucky&quot; in editors because we use a different ty instance for non-project files. This might change in the future. Or I&#x27;m wrong :)</p>
+<p>Related to <a href="https://github.com/astral-sh/ty/issues/839">astral-sh/ty#839</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-07-22 16:00</div>
-            <div class="timeline-body"><p>I think <code>file_to_module</code> returning <code>None</code> in this case is the right and desired behavior, and not something we need to fix? Or at least, that would be my starting assumption until we see a concrete reason it's a problem.</p>
+            <div class="timeline-body"><p>I think <code>file_to_module</code> returning <code>None</code> in this case is the right and desired behavior, and not something we need to fix? Or at least, that would be my starting assumption until we see a concrete reason it&#x27;s a problem.</p>
 <p>The contract is that <code>file_to_module</code> will give you back the module name under which this file is importable, and for a real-module shadowed by a stub, that file is not importable under any name (using the default import rules that prioritize stubs), so <code>None</code> is the right result.</p>
 <p>If we do run into the need for a <code>file_to_module</code> that works for this case, it seems like the right answer would be a separate <code>file_to_real_module</code> that implements the same bijection, but for the import configuration that ignores stubs.</p>
 </div>
@@ -54,24 +54,24 @@
             <div class="timeline-body"><blockquote>
 <p>The contract is that file_to_module will give you back the module name under which this file is importable, and for a real-module shadowed by a stub, that file is not importable under any name (using the default import rules that prioritize stubs), so None is the right result.</p>
 </blockquote>
-<p>The issue with this is that we use <code>file_to_module</code> when resolving relative imports. That means, relative imports won't work for any file where <code>file_to_module</code> returns <code>None</code>. Which is unfortunate in the LSP because you can't follow relative imports and they're all typed as <code>Unknown</code>.</p>
+<p>The issue with this is that we use <code>file_to_module</code> when resolving relative imports. That means, relative imports won&#x27;t work for any file where <code>file_to_module</code> returns <code>None</code>. Which is unfortunate in the LSP because you can&#x27;t follow relative imports and they&#x27;re all typed as <code>Unknown</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-07-22 16:50</div>
-            <div class="timeline-body"><p>What behavior do we expect from following relative imports from a &quot;real module&quot; that isn't part of the project? Should it follow the import as part of the project (i.e. go back to stubs) or should it follow the import to another &quot;real module&quot;? The answer to this would make a big difference as to how we want to adjust things here. What do other LSPs do in this scenario?</p>
+            <div class="timeline-body"><p>What behavior do we expect from following relative imports from a &quot;real module&quot; that isn&#x27;t part of the project? Should it follow the import as part of the project (i.e. go back to stubs) or should it follow the import to another &quot;real module&quot;? The answer to this would make a big difference as to how we want to adjust things here. What do other LSPs do in this scenario?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-07-22 16:58</div>
-            <div class="timeline-body"><p>If we want it to follow the import &quot;locally&quot; to another &quot;real module&quot;, then I suspect the best option will just be to implement fallback best-effort resolution of relative imports that doesn't require correct configuration of the import path -- this will help both this case and the more general case of misconfigured LSP users.</p>
+            <div class="timeline-body"><p>If we want it to follow the import &quot;locally&quot; to another &quot;real module&quot;, then I suspect the best option will just be to implement fallback best-effort resolution of relative imports that doesn&#x27;t require correct configuration of the import path -- this will help both this case and the more general case of misconfigured LSP users.</p>
 <p>But that behavior might be inconsistent, because I expect absolute imports from &quot;real modules&quot; will resolve back to stubs, not to real modules.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-22 17:43</div>
             <div class="timeline-body"><blockquote>
-<p>What behavior do we expect from following relative imports from a &quot;real module&quot; that isn't part of the project? Should it follow the import as part of the project (i.e. go back to stubs) or should it follow the import to another &quot;real module&quot;? The answer to this would make a big difference as to how we want to adjust things here. What do other LSPs do in this scenario?</p>
+<p>What behavior do we expect from following relative imports from a &quot;real module&quot; that isn&#x27;t part of the project? Should it follow the import as part of the project (i.e. go back to stubs) or should it follow the import to another &quot;real module&quot;? The answer to this would make a big difference as to how we want to adjust things here. What do other LSPs do in this scenario?</p>
 </blockquote>
 <p>Both go to definition and go to declaration would work the same as when you click on the import in a first party file. go to definition goes to the real module, go to declaration goes to the stub</p>
 </div>
@@ -90,12 +90,12 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @Gankra on 2025-09-25 01:15</div>
+            <div class="event">Closed by <a href="https://github.com/Gankra">@Gankra</a> on 2025-09-25 01:15</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:20 UTC
+        Synced at 2026-01-20 19:25:07 UTC
     </footer>
 </body>
 </html>

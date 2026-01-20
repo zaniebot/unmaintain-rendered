@@ -23,12 +23,12 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/LoicRiegel">@LoicRiegel</a></div>
-            <div class="timeline-body"><h3>Question</h3>
-<h3>Problem</h3>
+            <div class="timeline-body">Question
+Problem
 <p>I ran into this situation where I get an <code>invalid-method-override</code> error when working with PySide6 classes, caused by inconsistencies in third-party stubs.</p>
 <p>In short: I cannot write an override that is accepted against all base classes in the MRO, even though the override is runtime-correct and type-correct.</p>
 <p>Minimal example:</p>
-<pre><code class="language-py">from typing import override
+<pre><code>from typing import override
 from PySide6.QtGui import QKeyEvent
 from PySide6.QtWidgets import QTreeView
 
@@ -63,40 +63,40 @@ info: rule `invalid-method-override` is enabled by default
 Found 1 diagnostic
 </code></pre>
 <p>The reason is that PySide6 stubs define <code>keyPressEvent</code> with different parameter names in different base classes (signature is the same otherwise):</p>
-<pre><code class="language-py">QTreeView.keyPressEvent(self, event: QKeyEvent) -&gt; None: ...
+<pre><code>QTreeView.keyPressEvent(self, event: QKeyEvent) -&gt; None: ...
 QAbstractScrollArea.keyPressEvent(self, arg__1: QKeyEvent) -&gt; None: ...
 </code></pre>
-<p>So I'm stuck, because <code>ty</code> will check <code>MyTreeView</code> against all parents in the MRO chain, I'm either compatible with <code>QTreeView</code> and incompatible with <code>QAbstractScrollArea</code>, or incompatible with <code>QTreeView</code> and compatible with <code>QAbstractScrollArea</code>.</p>
+<p>So I&#x27;m stuck, because <code>ty</code> will check <code>MyTreeView</code> against all parents in the MRO chain, I&#x27;m either compatible with <code>QTreeView</code> and incompatible with <code>QAbstractScrollArea</code>, or incompatible with <code>QTreeView</code> and compatible with <code>QAbstractScrollArea</code>.</p>
 <p>Note that this happens regardless of whether <code>@typing.override</code> is present.</p>
-<h3>Comparison with mypy</h3>
+Comparison with mypy
 <p>Mypy raises no error. I think this is due to the fact that it intentionally ignores parameter names for overrides.
 https://mypy.readthedocs.io/en/stable/error_code_list.html?utm_source=chatgpt.com#check-validity-of-overrides-override</p>
-<h3>Question</h3>
-<p>Sure, one solution would be to fix the stubs upstream so they don't break LSP in the first place, but it would be nice if we could do something without this.</p>
-<p>I could add <code># ty: ignore[invalid-method-override]</code> but then I'd give up all the checks.</p>
+Question
+<p>Sure, one solution would be to fix the stubs upstream so they don&#x27;t break LSP in the first place, but it would be nice if we could do something without this.</p>
+<p>I could add <code># ty: ignore[invalid-method-override]</code> but then I&#x27;d give up all the checks.</p>
 <p>Is there a recommended approach here?</p>
 <p>For example:</p>
 <ul>
 <li>Would relaxing name-only checks (or making them optional) be acceptable in cases like this?</li>
 <li>Or is the expectation that users suppress the diagnostic when working with inconsistent third-party stubs?</li>
 </ul>
-<h3>Version</h3>
+Version
 <p>ty 0.0.1-alpha.35 (3188a56be 2025-12-16)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @LoicRiegel on 2025-12-17 14:08</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/LoicRiegel">@LoicRiegel</a> on 2025-12-17 14:08</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-17 14:20</div>
-            <div class="timeline-body"><p>Thanks for the report! I'll send this over to the ty repository :)</p>
+            <div class="timeline-body"><p>Thanks for the report! I&#x27;ll send this over to the ty repository :)</p>
 <p>(The code and PRs for ty live here, but issues are over there)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-17 14:27</div>
             <div class="timeline-body"><p>Thanks very much for the report! (And thanks @ntBre for transferring over!)</p>
-<p>I think this is a similar issue to https://github.com/astral-sh/ty/issues/2000?</p>
+<p>I think this is a similar issue to <a href="https://github.com/astral-sh/ty/issues/2000">astral-sh/ty#2000</a>?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -105,19 +105,19 @@ https://mypy.readthedocs.io/en/stable/error_code_list.html?utm_source=chatgpt.co
 <p>Hmm yes, could be duplicate. the TODOs in your comment are what we need to do to solve my problem too:</p>
 <blockquote>
 <ol>
-<li>We need to improve the error message to make clear that it's the parameter names that are the problem!</li>
+<li>We need to improve the error message to make clear that it&#x27;s the parameter names that are the problem!</li>
 <li>Ideally I think we would split errors about bad parameter names into their own, more specific error code</li>
 </ol>
 </blockquote>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2025-12-17 14:40</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-17 14:40</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:21:22 UTC
+        Synced at 2026-01-20 19:26:31 UTC
     </footer>
 </body>
 </html>

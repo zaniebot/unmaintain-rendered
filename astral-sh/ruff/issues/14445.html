@@ -23,18 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/beskep">@beskep</a></div>
-            <div class="timeline-body"><!--
-Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
-
-If you're filing a bug report, please consider including the following information:
-
-* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
-  e.g. "RUF001", "unused variable", "Jupyter notebook"
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
-* The current Ruff settings (any relevant sections from your `pyproject.toml`).
-* The current Ruff version (`ruff --version`).
--->
+            <div class="timeline-body">
 
 <ul>
 <li><p>command: <code>ruff check .\src\test.ipynb --fix --diff</code>
@@ -45,7 +34,7 @@ If you're filing a bug report, please consider including the following informati
 <li><p>pyproject.toml</p>
 </li>
 </ul>
-<pre><code class="language-toml">[project]
+<pre><code>[project]
 requires-python = &quot;&gt;=3.13&quot;
 dependencies = [&quot;ruff&gt;=0.7.4&quot;]
 
@@ -67,16 +56,16 @@ select = [&quot;W&quot;]
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @dylwil3 on 2024-11-19 02:05</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-11-19 02:05</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">notebook</span> added by @dylwil3 on 2024-11-19 02:05</div>
+            <div class="event">Label <span class="label">notebook</span> added by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-11-19 02:05</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-11-19 02:20</div>
             <div class="timeline-body"><p>Actually this bug has a wider blast radius.</p>
 <p>If you make a notebook with three cells like this:</p>
-<pre><code class="language-python">a = [1]
+<pre><code>a = [1]
 a.append(2)
 # new cell
 a.append(3)
@@ -87,18 +76,18 @@ a.append(4)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[Linter panic] when fixing W391 in Jupyter notebook" to "Fixes on Jupyter notebooks cause panics when fix replaces/deletes multiple cells" by @dylwil3 on 2024-11-19 02:21</div>
+            <div class="event">Renamed from &quot;[Linter panic] when fixing W391 in Jupyter notebook&quot; to &quot;Fixes on Jupyter notebooks cause panics when fix replaces/deletes multiple cells&quot; by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-11-19 02:21</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-11-19 03:12</div>
-            <div class="timeline-body"><p>I'm guessing that cell deletion is creating a problem when <code>update_cell_offsets</code> and <code>update_cell_contents</code> are being called.</p>
+            <div class="timeline-body"><p>I&#x27;m guessing that cell deletion is creating a problem when <code>update_cell_offsets</code> and <code>update_cell_contents</code> are being called.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-11-19 09:37</div>
             <div class="timeline-body"><p>The root cause is because the edit spans across the cell boundary which is an invariant we like to follow. In the case of <code>FURB113</code>, the diagnostics is between 3 cells and thus the edit is as well.</p>
 <p>Refer to how the cell offsets are being updated (incorrectly):</p>
-<pre><code class="language-rs">// Original cell offsets
+<pre><code>// Original cell offsets
 [crates/ruff_notebook/src/notebook.rs:229:9] &amp;self.cell_offsets = CellOffsets(
     [
         0,
@@ -140,18 +129,18 @@ a.append(4)
     ],
 )
 </code></pre>
-<p>I don't this rule existed when I implemented this.</p>
+<p>I don&#x27;t this rule existed when I implemented this.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-11-19 09:48</div>
-            <div class="timeline-body"><p>So, I think we need to consider replacement and deletion across cell boundaries. Insertion is fine because it's at an exact position which isn't going to affect this logic. There's some details on how the source markers are being used to update the cell offsets in the PR description: https://github.com/astral-sh/ruff/pull/4665.</p>
+            <div class="timeline-body"><p>So, I think we need to consider replacement and deletion across cell boundaries. Insertion is fine because it&#x27;s at an exact position which isn&#x27;t going to affect this logic. There&#x27;s some details on how the source markers are being used to update the cell offsets in the PR description: <a href="https://github.com/astral-sh/ruff/pull/4665">astral-sh/ruff#4665</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-11-19 15:13</div>
-            <div class="timeline-body"><p>Oh that's neat- and nice drawing! For deletions we could just delete the cell and adjust the cell offsets (so there will be fewer cell offsets than there used to be). What do you think?</p>
-<p>For replacements it's a little less clear what to do, since folks separate things across cells in order to control what executes when.</p>
+            <div class="timeline-body"><p>Oh that&#x27;s neat- and nice drawing! For deletions we could just delete the cell and adjust the cell offsets (so there will be fewer cell offsets than there used to be). What do you think?</p>
+<p>For replacements it&#x27;s a little less clear what to do, since folks separate things across cells in order to control what executes when.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -159,25 +148,25 @@ a.append(4)
             <div class="timeline-body"><blockquote>
 <p>For deletions we could just delete the cell and adjust the cell offsets (so there will be fewer cell offsets than there used to be). What do you think?</p>
 </blockquote>
-<p>The thing is we don't really know the kind of edit when trying to update the cell offsets. The main reason for adding the <code>SourceMap</code> abstraction is to avoid passing this information and it would also help in adding multi-language support in Ruff. So, in <code>update_cell_offsets</code> you only have access to the list of <code>SourceMarker</code> and we don't really know which two source markers makes up an edit.</p>
-<p>I think we'll need a generic solution which just looks at source markers to determine that certain cell offsets needs to be removed. I'm not exactly sure what this looks like.</p>
+<p>The thing is we don&#x27;t really know the kind of edit when trying to update the cell offsets. The main reason for adding the <code>SourceMap</code> abstraction is to avoid passing this information and it would also help in adding multi-language support in Ruff. So, in <code>update_cell_offsets</code> you only have access to the list of <code>SourceMarker</code> and we don&#x27;t really know which two source markers makes up an edit.</p>
+<p>I think we&#x27;ll need a generic solution which just looks at source markers to determine that certain cell offsets needs to be removed. I&#x27;m not exactly sure what this looks like.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-12-03 04:52</div>
             <div class="timeline-body"><blockquote>
-<p>The thing is we don't really know the kind of edit when trying to update the cell offsets.</p>
+<p>The thing is we don&#x27;t really know the kind of edit when trying to update the cell offsets.</p>
 </blockquote>
-<p>Can you say a bit more about this? It doesn't seem like the information of edit-kind is lost. If I understand correctly, the construction of the <code>SourceMap</code> maintains the invariant that there are an even number of markers. Each edit kind is recoverable by examining the pairs of markers: adjacent markers pointing to the same destination is a delation, adjacent markers pointing to different destinations is a replacement or insertion (the latter when the markers have the same source). Could we iterate through the cell offsets and determine whether they are between adjacent source markers, and, if so,  just not propagate them to the target?</p>
-<p>Is there a use for <code>SourceMap</code> instances that don't maintain this invariant of evenness?</p>
-<p>Finally - it's unclear to me how this relates to supporting other languages. Could you say more about that?</p>
+<p>Can you say a bit more about this? It doesn&#x27;t seem like the information of edit-kind is lost. If I understand correctly, the construction of the <code>SourceMap</code> maintains the invariant that there are an even number of markers. Each edit kind is recoverable by examining the pairs of markers: adjacent markers pointing to the same destination is a delation, adjacent markers pointing to different destinations is a replacement or insertion (the latter when the markers have the same source). Could we iterate through the cell offsets and determine whether they are between adjacent source markers, and, if so,  just not propagate them to the target?</p>
+<p>Is there a use for <code>SourceMap</code> instances that don&#x27;t maintain this invariant of evenness?</p>
+<p>Finally - it&#x27;s unclear to me how this relates to supporting other languages. Could you say more about that?</p>
 <p>Apologies for my confusion!</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:51:34 UTC
+        Synced at 2026-01-20 18:49:00 UTC
     </footer>
 </body>
 </html>

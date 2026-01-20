@@ -23,52 +23,52 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/mgrbyte">@mgrbyte</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<h1>UV Python SIGKILL Issue on macOS</h1>
+            <div class="timeline-body">Summary
+UV Python SIGKILL Issue on macOS
 <p><strong>Related to:</strong> #16297 (same symptoms, but root cause now identified)</p>
-<hr />
-<h2>Summary</h2>
+<hr>
+Summary
 <p>UV-managed Python interpreters are killed with SIGKILL (exit code 137) when executed via <code>uvx</code> or <code>uv tool run</code> on macOS. The issue is caused by the <code>com.apple.provenance</code> extended attribute combined with adhoc code signing, which causes macOS Gatekeeper to reject the binaries.</p>
-<h2>Environment</h2>
+Environment
 <ul>
 <li><strong>UV version:</strong> <code>0.9.7</code> (Homebrew 2025-10-30)</li>
 <li><strong>macOS version:</strong> <code>26.1</code> (Build 25B78) - macOS Sequoia</li>
 <li><strong>Gatekeeper status:</strong> Enabled (<code>spctl --status</code> returns &quot;assessments enabled&quot;)</li>
 </ul>
-<h2>Steps to Reproduce</h2>
+Steps to Reproduce
 <ol>
 <li>Install UV via Homebrew</li>
-<li>Attempt to run any tool via <code>uvx</code>:<pre><code class="language-bash">uvx dvc --version
+<li>Attempt to run any tool via <code>uvx</code>:<pre><code>uvx dvc --version
 </code></pre>
 </li>
 <li>Observe SIGKILL (exit code 137)</li>
 </ol>
-<h2>Expected Behavior</h2>
+Expected Behavior
 <p>The command should execute successfully and display the version.</p>
-<h2>Actual Behavior</h2>
+Actual Behavior
 <pre><code>error: Querying Python at `/Users/username/.local/share/uv/python/cpython-3.13.3-macos-aarch64-none/bin/python3.13` failed with exit status signal: 9 (SIGKILL)
 </code></pre>
 <p>Running with <code>--verbose</code> shows:</p>
 <pre><code>DEBUG Spawned child 56587 in process group 56126
 DEBUG Command exited with signal: Some(9)
 </code></pre>
-<h2>Root Cause Analysis</h2>
-<h3>1. UV Python binaries have <code>com.apple.provenance</code> xattr</h3>
-<pre><code class="language-bash">$ xattr ~/.local/share/uv/python/cpython-3.13.3-macos-aarch64-none/bin/python3.13
+Root Cause Analysis
+1. UV Python binaries have <code>com.apple.provenance</code> xattr
+<pre><code>$ xattr ~/.local/share/uv/python/cpython-3.13.3-macos-aarch64-none/bin/python3.13
 com.apple.provenance
 </code></pre>
-<h3>2. Binaries are adhoc-signed with no TeamIdentifier</h3>
-<pre><code class="language-bash">$ codesign -dvvv ~/.local/share/uv/python/cpython-3.13.3-macos-aarch64-none/bin/python3.13
+2. Binaries are adhoc-signed with no TeamIdentifier
+<pre><code>$ codesign -dvvv ~/.local/share/uv/python/cpython-3.13.3-macos-aarch64-none/bin/python3.13
 Signature=adhoc
 TeamIdentifier=not set
 </code></pre>
-<h3>3. Gatekeeper rejects them</h3>
-<pre><code class="language-bash">$ spctl --assess --verbose ~/.local/share/uv/python/cpython-3.13.3-macos-aarch64-none/bin/python3.13
+3. Gatekeeper rejects them
+<pre><code>$ spctl --assess --verbose ~/.local/share/uv/python/cpython-3.13.3-macos-aarch64-none/bin/python3.13
 rejected (exit code 3)
 </code></pre>
-<h3>4. Result</h3>
+4. Result
 <p>macOS kernel sends SIGKILL when attempting to execute, with <strong>no logs or error messages</strong>.</p>
-<h2>Verification Test Results</h2>
+Verification Test Results
 <p>Tested all UV-managed Python installations:</p>
 <p>| Python Version | Status | Notes |
 |---------------|--------|-------|
@@ -78,63 +78,63 @@ rejected (exit code 3)
 | 3.11.14 | ‚úÖ Working | No provenance attr |
 | 3.13.9 (Homebrew) | ‚úÖ Working | Properly signed by Apple |
 | 3.9.6 (System) | ‚úÖ Working | Properly signed by Apple |</p>
-<h2>Workaround</h2>
+Workaround
 <p><strong>Important:</strong> Simply removing the <code>com.apple.provenance</code> xattr is <strong>NOT sufficient</strong>. The binary must be re-signed.</p>
-<h3>Working Fix</h3>
+Working Fix
 <p>Re-sign all UV-managed Python binaries:</p>
-<pre><code class="language-bash"># Fix all UV Python installations
+<pre><code># Fix all UV Python installations
 find ~/.local/share/uv/python -name &quot;python*&quot; -type f -perm +111 -exec codesign --force --deep --sign - {} \;
 </code></pre>
-<h3>Why Removing xattr Alone Doesn't Work</h3>
+Why Removing xattr Alone Doesn&#x27;t Work
 <p>Testing showed that:</p>
 <ol>
 <li><code>xattr -d com.apple.provenance</code> removes the attribute</li>
-<li><strong>BUT</strong> Gatekeeper's rejection persists (likely cached)</li>
+<li><strong>BUT</strong> Gatekeeper&#x27;s rejection persists (likely cached)</li>
 <li>The xattr sometimes reappears immediately</li>
-<li>Re-signing with <code>codesign --force</code> clears Gatekeeper's cache and fixes the issue</li>
+<li>Re-signing with <code>codesign --force</code> clears Gatekeeper&#x27;s cache and fixes the issue</li>
 </ol>
-<h2>Impact</h2>
+Impact
 <ul>
 <li>‚ùå All <code>uvx</code> commands fail</li>
 <li>‚ùå All <code>uv tool run</code> commands fail</li>
 <li>‚ö†Ô∏è <code>uv tool list</code> shows warnings for every installed tool</li>
 <li>‚ùå Affects all UV-managed Python installations on macOS</li>
 </ul>
-<h2>Reproduction Rate</h2>
+Reproduction Rate
 <ul>
 <li><strong>Consistent:</strong> Every UV-managed Python binary with <code>com.apple.provenance</code> fails</li>
 <li><strong>Platform-specific:</strong> Only affects macOS (likely recent versions with stricter Gatekeeper)</li>
 <li><strong>User-specific:</strong> May vary based on macOS security settings and version</li>
 </ul>
-<h2>Possible Solutions</h2>
-<h3>Option 1: Strip provenance during installation (Recommended)</h3>
+Possible Solutions
+Option 1: Strip provenance during installation (Recommended)
 <p>Remove the <code>com.apple.provenance</code> xattr when UV downloads and extracts Python binaries, then re-sign them.</p>
-<h3>Option 2: Re-sign binaries on first use</h3>
+Option 2: Re-sign binaries on first use
 <p>Detect when Gatekeeper will reject binaries (using <code>spctl --assess</code>) and automatically re-sign before execution.</p>
-<h3>Option 3: Detect and warn</h3>
+Option 3: Detect and warn
 <p>Check for this issue on startup and provide clear error message with workaround command.</p>
-<h3>Option 4: Document the workaround</h3>
+Option 4: Document the workaround
 <p>Add to macOS installation docs until a permanent fix is available.</p>
-<h2>Additional Context</h2>
-<h3>Why No System Logs?</h3>
+Additional Context
+Why No System Logs?
 <p>Gatekeeper kills processes at the kernel level before they fully start, bypassing normal logging mechanisms. This makes the issue extremely difficult to diagnose without:</p>
 <ol>
 <li>Running with <code>--verbose</code> to see &quot;Command exited with signal: Some(9)&quot;</li>
 <li>Checking <code>spctl --assess</code> manually</li>
 <li>Inspecting extended attributes with <code>xattr</code></li>
 </ol>
-<h3>Comparison with Other Python Installations</h3>
+Comparison with Other Python Installations
 <ul>
 <li><strong>System Python</strong> (<code>/usr/bin/python3</code>): Properly signed by Apple</li>
 <li><strong>Homebrew Python</strong>: Properly signed by Apple</li>
 <li><strong>UV Python</strong>: Adhoc-signed with no TeamIdentifier</li>
 </ul>
-<h3>Related UV Docs</h3>
+Related UV Docs
 <p>UV signal handling documentation: https://docs.astral.sh/uv/concepts/projects/run/#signal-handling</p>
-<p>Note: SIGKILL is not forwarded by UV - it's sent <strong>TO</strong> the Python process by the macOS kernel via Gatekeeper.</p>
-<h2>Proposed Code Changes</h2>
-<p>In UV's Python installation code (when extracting/installing Python):</p>
-<pre><code class="language-rust">// After extracting Python binary
+<p>Note: SIGKILL is not forwarded by UV - it&#x27;s sent <strong>TO</strong> the Python process by the macOS kernel via Gatekeeper.</p>
+Proposed Code Changes
+<p>In UV&#x27;s Python installation code (when extracting/installing Python):</p>
+<pre><code>// After extracting Python binary
 if cfg!(target_os = &quot;macos&quot;) {
     // Remove com.apple.provenance xattr
     let _ = std::process::Command::new(&quot;xattr&quot;)
@@ -147,16 +147,16 @@ if cfg!(target_os = &quot;macos&quot;) {
         .output();
 }
 </code></pre>
-<h2>Timeline</h2>
+Timeline
 <ul>
 <li><strong>Jun 13, 2025:</strong> Python 3.13.3 installed via UV (affected)</li>
 <li><strong>Oct 31, 2025:</strong> Python 3.11.14 installed (not affected - no provenance)</li>
 <li><strong>Nov 13, 2025:</strong> Issue discovered, root cause identified</li>
 <li><strong>Nov 13, 2025:</strong> Workaround verified (re-signing fixes the issue)</li>
 </ul>
-<hr />
+<hr>
 <p><strong>Environment Details:</strong></p>
-<pre><code class="language-bash">$ sw_vers
+<pre><code>$ sw_vers
 ProductName:    macOS
 ProductVersion: 26.1
 BuildVersion:   25B78
@@ -167,19 +167,19 @@ uv 0.9.7 (Homebrew 2025-10-30)
 $ sysctl machdep.cpu.brand_string
 machdep.cpu.brand_string: Apple M4 Max
 </code></pre>
-<h3>Platform</h3>
+Platform
 <p>macOS 26.1</p>
-<h3>Version</h3>
+Version
 <p>uv 0.9.7 (Homebrew 2025-10-30)</p>
-<h3>Python version</h3>
+Python version
 <p>Python 3.13.3</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @mgrbyte on 2025-11-13 17:28</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/mgrbyte">@mgrbyte</a> on 2025-11-13 17:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @geofft by @geofft on 2025-11-13 18:01</div>
+            <div class="event">Assigned to <a href="https://github.com/geofft">@geofft</a> by <a href="https://github.com/geofft">@geofft</a> on 2025-11-13 18:01</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/geofft">@geofft</a> on 2025-11-13 18:02</div>
@@ -211,7 +211,7 @@ metadata that triggers macOS Gatekeeper checks).</p>
             <div class="timeline-body"><blockquote>
 <p>Does upgrading the uv managed Python 3.13 interpreter to the latest version using <code>uv python upgrade 3.13</code> resolve this issue?</p>
 </blockquote>
-<p>No, uv python upgrade 3.13 would not fix the issue. From my testing it seems the problem isn't specific to a particular Python patch version - it affects all Python builds from python-build-standalone that include
+<p>No, uv python upgrade 3.13 would not fix the issue. From my testing it seems the problem isn&#x27;t specific to a particular Python patch version - it affects all Python builds from python-build-standalone that include
 provenance attestation metadata (introduced around mid-2024).</p>
 <p>Running uv python upgrade 3.13 would:</p>
 <ol>
@@ -234,28 +234,28 @@ provenance attestation metadata (introduced around mid-2024).</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zsol">@zsol</a> on 2025-11-13 22:37</div>
-            <div class="timeline-body"><p>I can't reproduce this on macos 26.1, with 3.13.3 or 3.13.8 or 3.14.0. Can confirm the various <code>xattr</code>, <code>codesign</code>, and <code>spctl</code> commands have the same output, but:</p>
+            <div class="timeline-body"><p>I can&#x27;t reproduce this on macos 26.1, with 3.13.3 or 3.13.8 or 3.14.0. Can confirm the various <code>xattr</code>, <code>codesign</code>, and <code>spctl</code> commands have the same output, but:</p>
 <pre><code>❯ uvx -p 3.13.3 dvc --version
 3.64.0
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-mre</span> added by @zanieb on 2025-11-13 23:51</div>
+            <div class="event">Label <span class="label">needs-mre</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-13 23:51</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BryceStevenWilley">@BryceStevenWilley</a> on 2025-11-19 14:27</div>
-            <div class="timeline-body"><p>For what it's worth, I've run into this as well a few times. The python executable will start displaying the below in the morning (I guess gatekeeper must update something overnight), first time I solved by recreating the venv, and the second I found this post.</p>
+            <div class="timeline-body"><p>For what it&#x27;s worth, I&#x27;ve run into this as well a few times. The python executable will start displaying the below in the morning (I guess gatekeeper must update something overnight), first time I solved by recreating the venv, and the second I found this post.</p>
 <p>My system:</p>
 <ul>
 <li>uv: <code>uv 0.8.8 (9a54754b0 2025-08-08)</code></li>
 <li>macos: <code>System Version: macOS 15.6.1 (24G90), Kernel Version: Darwin 24.6.0</code>, <code>arm64</code></li>
 </ul>
 <p>The original error:</p>
-<pre><code class="language-bash">$ python
-... Job 1, 'python' terminated by signal SIGKILL (Forced quit)
+<pre><code>$ python
+... Job 1, &#x27;python&#x27; terminated by signal SIGKILL (Forced quit)
 </code></pre>
-<pre><code class="language-bash">$ codesign -dvvv ~/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/bin/python3.13
+<pre><code>$ codesign -dvvv ~/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/bin/python3.13
 ...
 TeamIdentifier=not set
 
@@ -273,29 +273,29 @@ $ spctl --assess --verbose ~/.local/share/uv/python/cpython-3.13.5-macos-aarch64
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kbernst30">@kbernst30</a> on 2025-12-23 17:46</div>
             <div class="timeline-body"><p>Is there any long term fix fo this instead of a workaround?
-I'm on a work-managed computer and the workaround doesn't work for me due to some IT restrictions. I have to instruct my whole team to have IT unblock them and this is not ideal.</p>
+I&#x27;m on a work-managed computer and the workaround doesn&#x27;t work for me due to some IT restrictions. I have to instruct my whole team to have IT unblock them and this is not ideal.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jr200">@jr200</a> on 2025-12-25 01:52</div>
-            <div class="timeline-body"><p>Also having this issue recently - @mgrbyte's solution worked for me.</p>
+            <div class="timeline-body"><p>Also having this issue recently - @mgrbyte&#x27;s solution worked for me.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mgrbyte">@mgrbyte</a> on 2026-01-12 10:34</div>
-            <div class="timeline-body"><p>I won't have time to investigate this again until April due to workload, but fwiw I have attached the script I use to workaround this in an automated fashion:</p>
-<pre><code class="language-bash">cat &gt; ~/.local/bin/auto-sign-uv-binaries.sh &lt;&lt; 'EOF'
+            <div class="timeline-body"><p>I won&#x27;t have time to investigate this again until April due to workload, but fwiw I have attached the script I use to workaround this in an automated fashion:</p>
+<pre><code>cat &gt; ~/.local/bin/auto-sign-uv-binaries.sh &lt;&lt; &#x27;EOF&#x27;
 #!/bin/bash
 # Auto-sign uv-managed Python binaries to prevent macOS Gatekeeper SIGKILL
 # Usage: Run this periodically via cron or launchd
 
 UV_PYTHON_DIR=&quot;$HOME/.local/share/uv/python&quot;
 
-echo &quot;[$(date '+%Y-%m-%d %H:%M:%S')] Starting Python binary signing check...&quot;
+echo &quot;[$(date &#x27;+%Y-%m-%d %H:%M:%S&#x27;)] Starting Python binary signing check...&quot;
 
 # Find all Python binaries in uv directory
 find &quot;$UV_PYTHON_DIR&quot; -type f -name &quot;python*&quot; -perm +111 2&gt;/dev/null | while read -r python_bin; do
-    # Check if it's actually a binary (not a symlink)
+    # Check if it&#x27;s actually a binary (not a symlink)
     if [ -f &quot;$python_bin&quot; ] &amp;&amp; file &quot;$python_bin&quot; | grep -q &quot;Mach-O.*executable&quot;; then
         echo &quot;  Signing: $python_bin&quot;
         codesign --force --sign - &quot;$python_bin&quot; 2&gt;&amp;1 | grep -v &quot;replacing existing signature&quot; || true
@@ -305,8 +305,8 @@ EOF
 
 chmod u+x ~/.local/bin/auto-sign-uv-binaries.sh
  
-echo &quot;[$(date '+%Y-%m-%d %H:%M:%S')] Signing check complete.&quot;
-cat &gt; ~/Library/LaunchAgents/com.mgrbyte.uv-python-signing.plist &lt;&lt; 'EOF'
+echo &quot;[$(date &#x27;+%Y-%m-%d %H:%M:%S&#x27;)] Signing check complete.&quot;
+cat &gt; ~/Library/LaunchAgents/com.mgrbyte.uv-python-signing.plist &lt;&lt; &#x27;EOF&#x27;
   &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
   &lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;
   &lt;plist version=&quot;1.0&quot;&gt;
@@ -344,16 +344,16 @@ launchctl load ~/Library/LaunchAgents/com.mgrbyte.uv-python-signing.plist
 <blockquote>
 <p>SDK Version: 26.2 (macOS Sequoia 26.2)</p>
 </blockquote>
-<pre><code class="language-text">
+<pre><code>
 I have recently updated uv:
  
 - uv version: 0.9.22
   - macOS SDK: 26.2 (Sequoia)
   - Python installs: 3.11.14, 3.12.10, 3.13.3, 3.14.0a7
   - Status: Working with the codesign workaround applied
-  - Still has com.apple.provenance attribute but re-signing cleared Gatekeeper's cache
+  - Still has com.apple.provenance attribute but re-signing cleared Gatekeeper&#x27;s cache
 </code></pre>
-<p>The fix from PR #17123 should be in uv already (merged before 0.9.22), so any new Python installs should be automatically signed.<br />
+<p>The fix from PR #17123 should be in uv already (merged before 0.9.22), so any new Python installs should be automatically signed.<br>
 I can now remove my workaround, and not my call of course, think this issue can closed.
 Thanks!</p>
 </div>
@@ -361,7 +361,7 @@ Thanks!</p>
     </div>
 
     <footer>
-        Synced at 2026-01-13 19:29:09 UTC
+        Synced at 2026-01-20 19:41:01 UTC
     </footer>
 </body>
 </html>

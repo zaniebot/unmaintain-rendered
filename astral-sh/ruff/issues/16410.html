@@ -23,19 +23,19 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/DetachHead">@DetachHead</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<pre><code class="language-py">class Foo:
+            <div class="timeline-body">Summary
+<pre><code>class Foo:
     def foo(self, __asdf: int): ... # error (correct)
 
     def __new__(self, __asdf: int): ... # no error (incorrect)
 </code></pre>
 <p>https://play.ruff.rs/52ad7e69-3721-4a1a-8ec4-fa7fa99f7282</p>
-<h3>Version</h3>
+Version
 <p>0.9.7</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2025-02-27 05:38</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-27 05:38</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-27 05:41</div>
@@ -47,41 +47,41 @@
             <div class="timeline-body"><blockquote>
 <p>It also seems like the rule only checks the first parameter: https://play.ruff.rs/8982da12-d242-4794-805c-fa13bc6531f0 which seems like a bug as well.</p>
 </blockquote>
-<p>The old special casing only worked if the first parameter was using double underscores, so any double underscores in a different position would more likely be a false positive. So I'm not convinced the other parameters should be flagged.</p>
+<p>The old special casing only worked if the first parameter was using double underscores, so any double underscores in a different position would more likely be a false positive. So I&#x27;m not convinced the other parameters should be flagged.</p>
 <p>But it might make sense to flag all the directly following parameters with double underscores if the first one contains double underscores.</p>
-<p>If agree that if we ever wanted to add an unsafe fix for this rule you'd definitely want it to rewrite <code>def (__a: int, __b: int)</code> to <code>def(a: int, b: int, /)</code>, rather than <code>def(a: int, /, __b: int)</code>.</p>
+<p>If agree that if we ever wanted to add an unsafe fix for this rule you&#x27;d definitely want it to rewrite <code>def (__a: int, __b: int)</code> to <code>def(a: int, b: int, /)</code>, rather than <code>def(a: int, /, __b: int)</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-02-27 23:59</div>
             <div class="timeline-body"><blockquote>
-<p>any double underscores in a different position would more likely be a false positive. So I'm not convinced the other parameters should be flagged.</p>
+<p>any double underscores in a different position would more likely be a false positive. So I&#x27;m not convinced the other parameters should be flagged.</p>
 </blockquote>
-<p>why's that?</p>
+<p>why&#x27;s that?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-02-28 06:54</div>
             <div class="timeline-body"><blockquote>
-<p>why's that?</p>
+<p>why&#x27;s that?</p>
 </blockquote>
-<p>Because it wouldn't have been recognized as a positional-only parameter by type checkers, so why should we tell people to turn it into one?</p>
-<p>Now of course people can make mistakes and may have intended a parameter that isn't in the first position to be positional-only and just forgot to mark the previous parameter, but it seems just as likely to me that the parameter did indeed have double underscores in the original source code. I have seen it more than once when contributing stubs.</p>
+<p>Because it wouldn&#x27;t have been recognized as a positional-only parameter by type checkers, so why should we tell people to turn it into one?</p>
+<p>Now of course people can make mistakes and may have intended a parameter that isn&#x27;t in the first position to be positional-only and just forgot to mark the previous parameter, but it seems just as likely to me that the parameter did indeed have double underscores in the original source code. I have seen it more than once when contributing stubs.</p>
 <p>You always have to balance false negatives against false positives. Is it worth it to catch a few more things only to incorrectly flag others? Maybe, maybe not. I think the rule currently strikes a good balance, apart from the false negative with <code>__new__</code> you originally reported.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-02-28 07:17</div>
-            <div class="timeline-body"><p>oh right. i didn't realize this is considered invalid:</p>
-<pre><code class="language-py">def foo(a: int, __b: str): ...
+            <div class="timeline-body"><p>oh right. i didn&#x27;t realize this is considered invalid:</p>
+<pre><code>def foo(a: int, __b: str): ...
 </code></pre>
-<p>i just assumed it meant both <code>a</code> and <code>__b</code> are considered positional-only. <a href="https://basedpyright.com/?typeCheckingMode=all&amp;reportUnusedParameter=false&amp;code=CYUwZgBGD20BQEMBcECWA7ALgGggfTwCMUBnTAJwEoUA6OoA">pyright reports an error</a> if you do this but <a href="https://mypy-play.net/?mypy=latest&amp;python=3.13&amp;flags=show-error-codes%2Cstrict%2Ccheck-untyped-defs%2Cdisallow-any-decorated%2Cdisallow-any-expr%2Cdisallow-any-explicit%2Cdisallow-any-generics%2Cdisallow-any-unimported%2Cdisallow-incomplete-defs%2Cdisallow-subclassing-any%2Cdisallow-untyped-calls%2Cdisallow-untyped-decorators%2Cdisallow-untyped-defs%2Cno-implicit-reexport%2Clocal-partial-types%2Cwarn-redundant-casts%2Cwarn-return-any%2Cwarn-unreachable%2Cwarn-unused-configs%2Cwarn-unused-ignores&amp;gist=379b0feb78c35d25776dbf9e544f46eb">mypy doesn't</a></p>
+<p>i just assumed it meant both <code>a</code> and <code>__b</code> are considered positional-only. <a href="https://basedpyright.com/?typeCheckingMode=all&amp;reportUnusedParameter=false&amp;code=CYUwZgBGD20BQEMBcECWA7ALgGggfTwCMUBnTAJwEoUA6OoA">pyright reports an error</a> if you do this but <a href="https://mypy-play.net/?mypy=latest&amp;python=3.13&amp;flags=show-error-codes%2Cstrict%2Ccheck-untyped-defs%2Cdisallow-any-decorated%2Cdisallow-any-expr%2Cdisallow-any-explicit%2Cdisallow-any-generics%2Cdisallow-any-unimported%2Cdisallow-incomplete-defs%2Cdisallow-subclassing-any%2Cdisallow-untyped-calls%2Cdisallow-untyped-decorators%2Cdisallow-untyped-defs%2Cno-implicit-reexport%2Clocal-partial-types%2Cwarn-redundant-casts%2Cwarn-return-any%2Cwarn-unreachable%2Cwarn-unused-configs%2Cwarn-unused-ignores&amp;gist=379b0feb78c35d25776dbf9e544f46eb">mypy doesn&#x27;t</a></p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:52:17 UTC
+        Synced at 2026-01-20 18:49:35 UTC
     </footer>
 </body>
 </html>

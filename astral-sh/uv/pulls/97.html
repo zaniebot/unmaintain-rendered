@@ -23,17 +23,17 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This PR enables the proof-of-concept resolver to backtrack by way of using the <code>pubgrub-rs</code> crate.</p>
-<p>Rather than using PubGrub as a <em>framework</em> (implementing the <code>DependencyProvider</code> trait, letting PubGrub call us), I've instead copied over PubGrub's primary solver hook (which is only ~100 lines or so) and modified it for our purposes (e.g., made it async).</p>
-<p>There's a lot to improve here, but it's a start that will let us understand PubGrub's appropriateness for this problem space. A few observations:</p>
+<p>Rather than using PubGrub as a <em>framework</em> (implementing the <code>DependencyProvider</code> trait, letting PubGrub call us), I&#x27;ve instead copied over PubGrub&#x27;s primary solver hook (which is only ~100 lines or so) and modified it for our purposes (e.g., made it async).</p>
+<p>There&#x27;s a lot to improve here, but it&#x27;s a start that will let us understand PubGrub&#x27;s appropriateness for this problem space. A few observations:</p>
 <ul>
-<li>In simple cases, the resolver is slower than our current (naive) resolver. I think it's just that the pipelining isn't as efficient as in the naive case, where we can just stream package and version fetches concurrently without any bottlenecks.</li>
+<li>In simple cases, the resolver is slower than our current (naive) resolver. I think it&#x27;s just that the pipelining isn&#x27;t as efficient as in the naive case, where we can just stream package and version fetches concurrently without any bottlenecks.</li>
 <li>A lot of the code here relates to bridging PubGrub with our own abstractions -- so we need a <code>PubGrubPackage</code>, a <code>PubGrubVersion</code>, etc.</li>
 </ul>
-<h2>Appendix</h2>
-<p>I've vendored the crate to enable us to make some small changes to it without maintaining a fork (for now). Specifically, I copied over <code>pubgrub-rs</code> at <code>717289be5722dd5caaa0d1f4ed13047d11a7f7fd</code>, and then made these changes, which only modify visibility and make some traits async-friendly:</p>
-<pre><code class="language-diff">diff --git a/vendor/pubgrub/src/error.rs b/vendor/pubgrub/src/error.rs
+Appendix
+<p>I&#x27;ve vendored the crate to enable us to make some small changes to it without maintaining a fork (for now). Specifically, I copied over <code>pubgrub-rs</code> at <code>717289be5722dd5caaa0d1f4ed13047d11a7f7fd</code>, and then made these changes, which only modify visibility and make some traits async-friendly:</p>
+<pre><code>diff --git a/vendor/pubgrub/src/error.rs b/vendor/pubgrub/src/error.rs
 index 0553d8d..d75f1b9 100644
 --- a/vendor/pubgrub/src/error.rs
 +++ b/vendor/pubgrub/src/error.rs
@@ -178,10 +178,10 @@ index a1fe5f9..702e7e2 100644
      /// apply the provided function to both values.
      /// If the result is None, remove that key from the merged map,
      /// otherwise add the content of the Some(_).
--    pub fn merge&lt;'a&gt;(
-+    pub(crate) fn merge&lt;'a&gt;(
-         &amp;'a mut self,
-         map_2: impl Iterator&lt;Item = (&amp;'a K, &amp;'a V)&gt;,
+-    pub fn merge&lt;&#x27;a&gt;(
++    pub(crate) fn merge&lt;&#x27;a&gt;(
+         &amp;&#x27;a mut self,
+         map_2: impl Iterator&lt;Item = (&amp;&#x27;a K, &amp;&#x27;a V)&gt;,
          f: impl Fn(&amp;V, &amp;V) -&gt; Option&lt;V&gt;,
 @@ -136,7 +136,7 @@ impl&lt;K, V&gt; Default for SmallMap&lt;K, V&gt; {
  }
@@ -201,7 +201,7 @@ index a1fe5f9..702e7e2 100644
          match self {
              Self::Empty =&gt; Map::default(),
              Self::One([(k, v)]) =&gt; {
-@@ -184,7 +184,7 @@ impl&lt;'a, K: 'a, V: 'a&gt; Iterator for IterSmallMap&lt;'a, K, V&gt; {
+@@ -184,7 +184,7 @@ impl&lt;&#x27;a, K: &#x27;a, V: &#x27;a&gt; Iterator for IterSmallMap&lt;&#x27;a, K, V&gt; {
  }
  
  impl&lt;K, V&gt; SmallMap&lt;K, V&gt; {
@@ -278,27 +278,27 @@ index 6201591..7f110b7 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/wheel_finder.rs</code>:30 on 2023-10-16 01:49</div>
-            <div class="timeline-body"><p>This is basically the previous resolver with the <code>--no-deps</code> flag set. It's used in <code>puffin sync</code>, where you have a resolved set of packages, and need to find the wheels to install. I think it's nice to keep this separate from the core resolver.</p>
+            <div class="timeline-body"><p>This is basically the previous resolver with the <code>--no-deps</code> flag set. It&#x27;s used in <code>puffin sync</code>, where you have a resolved set of packages, and need to find the wheels to install. I think it&#x27;s nice to keep this separate from the core resolver.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2023-10-16 02:05</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-16 02:05</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-10-16 02:05</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-16 02:05</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2023-10-16 02:05</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-16 02:07</div>
-            <div class="timeline-body"><p>I haven't looked at the code and only read the summary:</p>
-<p>What's the benefit of making the resolver async? I would expect that resolving is mainly CPU bound. Or is it because we intend of making network requests as part of the resolver phase?</p>
+            <div class="timeline-body"><p>I haven&#x27;t looked at the code and only read the summary:</p>
+<p>What&#x27;s the benefit of making the resolver async? I would expect that resolving is mainly CPU bound. Or is it because we intend of making network requests as part of the resolver phase?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-16 02:12</div>
-            <div class="timeline-body"><p>We need to make (a substantial number of) network requests as part of the resolver phase. We don't have access to the entire package index upfront.</p>
+            <div class="timeline-body"><p>We need to make (a substantial number of) network requests as part of the resolver phase. We don&#x27;t have access to the entire package index upfront.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -308,13 +308,13 @@ index 6201591..7f110b7 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-16 02:14</div>
-            <div class="timeline-body"><p>Sorry, &quot;Resolving is mainly I/O bound&quot; is not really true. It's I/O bound in simple cases. I assume it is CPU bound in more complex cases.</p>
+            <div class="timeline-body"><p>Sorry, &quot;Resolving is mainly I/O bound&quot; is not really true. It&#x27;s I/O bound in simple cases. I assume it is CPU bound in more complex cases.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:34:31 UTC
+        Synced at 2026-01-20 19:42:26 UTC
     </footer>
 </body>
 </html>

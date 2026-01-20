@@ -25,24 +25,24 @@
             <div class="timeline-header"><a href="https://github.com/danielgafni">@danielgafni</a></div>
             <div class="timeline-body"><p>It would be great if <code>uv</code> provided a way to export virtual environments to some formats like <code>.tar.gz</code>.</p>
 <p>This is useful when preparing environments for <a href="https://spark.apache.org/docs/latest/api/python/user_guide/python_packaging.html#using-virtualenv">PySpark</a>.</p>
-<p><a href="https://github.com/jcrist/venv-pack">venv-pack</a> is a tool which does exactly that, but it's painfully slow. I'm sure <code>uv</code> could do the same task in a fraction of what it takes for <code>venv-pack</code> :crab:</p>
+<p><a href="https://github.com/jcrist/venv-pack">venv-pack</a> is a tool which does exactly that, but it&#x27;s painfully slow. I&#x27;m sure <code>uv</code> could do the same task in a fraction of what it takes for <code>venv-pack</code> :crab:</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2024-09-06 15:40</div>
-            <div class="timeline-body"><p>That's exactly the use case that made me contribute <code>uv venv --relocatable</code> :-) all that is missing is the archival/compression which in your case is a simple <code>tar czf</code> of the finished venv.</p>
+            <div class="timeline-body"><p>That&#x27;s exactly the use case that made me contribute <code>uv venv --relocatable</code> :-) all that is missing is the archival/compression which in your case is a simple <code>tar czf</code> of the finished venv.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/danielgafni">@danielgafni</a> on 2024-09-06 18:32</div>
-            <div class="timeline-body"><p>I did notice the relocatable flag and used it. That's really nice! I guess all what's missing is a bunch of ergonomics and docs.</p>
+            <div class="timeline-body"><p>I did notice the relocatable flag and used it. That&#x27;s really nice! I guess all what&#x27;s missing is a bunch of ergonomics and docs.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/danielgafni">@danielgafni</a> on 2024-10-02 11:44</div>
             <div class="timeline-body"><p>Hey, getting back to this...
-It doesn't seem like the <code>--relocatable </code> flag is working as expected.</p>
-<pre><code class="language-shell">❯ uv venv --relocatable
+It doesn&#x27;t seem like the <code>--relocatable </code> flag is working as expected.</p>
+<pre><code>❯ uv venv --relocatable
 Using CPython 3.11.9
 Creating virtual environment at: .venv
 Activate with: source .venv/bin/activate
@@ -63,26 +63,26 @@ lrwxrwxrwx 1 dan dan    6 Oct  2 13:42 python3 -&gt; python
 lrwxrwxrwx 1 dan dan    6 Oct  2 13:42 python3.11 -&gt; python
 </code></pre>
 <p>Looks like the <code>python</code> executable is a symlink (which is not exactly relocatable).</p>
-<p>Is there anything I'm missing here?</p>
+<p>Is there anything I&#x27;m missing here?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-10-02 15:27</div>
-            <div class="timeline-body"><p>I think relocatable currently covers this use case: you rename the project folder, like if project1 is now project1.1. I don't think it does more. Without --relocatable, even that breaks (absolute paths in .venv/bin/ executable stubs break)</p>
+            <div class="timeline-body"><p>I think relocatable currently covers this use case: you rename the project folder, like if project1 is now project1.1. I don&#x27;t think it does more. Without --relocatable, even that breaks (absolute paths in .venv/bin/ executable stubs break)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-02 15:32</div>
-            <div class="timeline-body"><p>Yeah we don't support bundling the interpreter in the environment yet, but want to.</p>
+            <div class="timeline-body"><p>Yeah we don&#x27;t support bundling the interpreter in the environment yet, but want to.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2024-10-03 10:58</div>
-            <div class="timeline-body"><p>Yes, that's right, this was not part of the initial use case that drove me to add <code>--relocatable</code> -- I was happy to take the base interpreter installation for granted.</p>
+            <div class="timeline-body"><p>Yes, that&#x27;s right, this was not part of the initial use case that drove me to add <code>--relocatable</code> -- I was happy to take the base interpreter installation for granted.</p>
 <p>This works very well for distribution formats like RPM or DEB (where you can register a dependency on a base Python package) but not at all end-user/desktop installs (whereby a system-wide Python installation is not expected or even desirable).</p>
 <p>Some more thoughts on how one could solve the end-user-redistributability use case from first principles:</p>
-<p><strong>On terminology/semantics</strong>: by the time you bundle an interpreter with the virtual environment it's arguably no longer <em>'virtual'</em>. Rather what you have is a fully fledged Python installation (could indeed be one coming from <code>uv python install</code>), that you are augmenting with further packages installed <em>at system-site-packages-level</em>.</p>
-<p>So, this is mostly already achievable using stock <code>uv</code> functionality -- it's <code>uv python install</code> followed by <code>uv pip install --system</code>. The only problem here is the relocatable entrypoints. Currently the only user-facing way to generate relocatable entrypoint scripts is by using <code>uv venv --relocatable</code>... but in this case there is no venv at all! So there is no way to propagate the <code>relocatable: true</code> argument all the way down to the wheel installer.</p>
+<p><strong>On terminology/semantics</strong>: by the time you bundle an interpreter with the virtual environment it&#x27;s arguably no longer <em>&#x27;virtual&#x27;</em>. Rather what you have is a fully fledged Python installation (could indeed be one coming from <code>uv python install</code>), that you are augmenting with further packages installed <em>at system-site-packages-level</em>.</p>
+<p>So, this is mostly already achievable using stock <code>uv</code> functionality -- it&#x27;s <code>uv python install</code> followed by <code>uv pip install --system</code>. The only problem here is the relocatable entrypoints. Currently the only user-facing way to generate relocatable entrypoint scripts is by using <code>uv venv --relocatable</code>... but in this case there is no venv at all! So there is no way to propagate the <code>relocatable: true</code> argument all the way down to the wheel installer.</p>
 <p>A few options seem to naturally come out of this:</p>
 <ul>
 <li><code>uv package</code> command that does a fully opinionated one-stop-shop thing.<ul>
@@ -100,7 +100,7 @@ lrwxrwxrwx 1 dan dan    6 Oct  2 13:42 python3.11 -&gt; python
 <li>Cons: fragmented UX?</li>
 </ul>
 </li>
-<li>Deliberately ignore the 'virtual' semantics and implement a mode of <code>uv venv</code> that actually completely clones the interpreter in its entirety.<ul>
+<li>Deliberately ignore the &#x27;virtual&#x27; semantics and implement a mode of <code>uv venv</code> that actually completely clones the interpreter in its entirety.<ul>
 <li>Pros: UX remains consistent. And we maintain a decent level of low-level control for power users.</li>
 <li>Cons: can we live with this breach of semantics?</li>
 </ul>
@@ -111,9 +111,9 @@ lrwxrwxrwx 1 dan dan    6 Oct  2 13:42 python3.11 -&gt; python
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2024-10-03 22:37</div>
             <div class="timeline-body"><p>Thanks for brainstorming this @paveldikov. I think this would be a killer feature especially for offline environment deployments. I expect <code>--relocatable</code> allows one to move a venv anywhere on the file system and still function, is that correct?</p>
-<p>Symlinks are somewhat tricky on Windows since they can require elevation to make them (unlike hardlinks) which isn't usually available in enterprise environments, so hopefully <code>--relocatable</code> doesn't depend on symlinks for the Windows implementation. This would have implications for Windows because hardlinks are only valid within the same file system, unlike symlinks which can span file systems since they just point to the other file.</p>
+<p>Symlinks are somewhat tricky on Windows since they can require elevation to make them (unlike hardlinks) which isn&#x27;t usually available in enterprise environments, so hopefully <code>--relocatable</code> doesn&#x27;t depend on symlinks for the Windows implementation. This would have implications for Windows because hardlinks are only valid within the same file system, unlike symlinks which can span file systems since they just point to the other file.</p>
 <p>I think <code>--with-python</code> and <code>--with-uv</code> or <code>--with uv,python</code> or <code>--with uv --with python</code> would be awesome options to add for <code>uv venv</code> since these flags would let someone move the venv onto another computer that might not have python or uv installed at all. This is somewhat the inverse of options that <code>virtualenv</code> provides such as <code>--no-pip</code>, <code>--no-wheel</code> and <code>--no-setuptools</code>. <a href="https://virtualenv.pypa.io/en/latest/cli_interface.html">See here</a>.</p>
-<p>Maybe there could also be another flag so that one can target additional platforms that the venv should function in. By default, it targets the current platform, but it would be nice to create a venv that also grabs the wheels necessary for a different platform so that the venv could be moved there and still function. I think it would be a powerful feature, but I don't know what the API would look like, maybe <code>--platform current,win_amd64,win32,macosx_10_12_x86_64,...</code> or <code>--platform win --platform macosx</code> with <code>--platform current</code> being the implied default? If many platforms are specified, I would also expect it to apply to other options such as <code>--with-python</code> and <code>--with-uv</code> (i.e., the <code>python</code> and <code>uv</code> binaries for all specified platforms should be in the venv too).</p>
+<p>Maybe there could also be another flag so that one can target additional platforms that the venv should function in. By default, it targets the current platform, but it would be nice to create a venv that also grabs the wheels necessary for a different platform so that the venv could be moved there and still function. I think it would be a powerful feature, but I don&#x27;t know what the API would look like, maybe <code>--platform current,win_amd64,win32,macosx_10_12_x86_64,...</code> or <code>--platform win --platform macosx</code> with <code>--platform current</code> being the implied default? If many platforms are specified, I would also expect it to apply to other options such as <code>--with-python</code> and <code>--with-uv</code> (i.e., the <code>python</code> and <code>uv</code> binaries for all specified platforms should be in the venv too).</p>
 <p><code>--platform all</code> would be nice too, for a universal (and gigantic) venv. Cosmopolitan python anyone?</p>
 </div>
         </div>
@@ -124,7 +124,7 @@ lrwxrwxrwx 1 dan dan    6 Oct  2 13:42 python3.11 -&gt; python
 </blockquote>
 <p>I think it would be cool if uv just bundled the latest python interpreter inside the respective <code>uv</code> platform binary for bootstrapping purposes, but not sure how the Astral team would feel about this or if it makes sense without having the rest of the standard library.</p>
 <blockquote>
-<p>Deliberately ignore the 'virtual' semantics and implement a mode of uv venv that actually completely clones the interpreter in its entirety.</p>
+<p>Deliberately ignore the &#x27;virtual&#x27; semantics and implement a mode of uv venv that actually completely clones the interpreter in its entirety.</p>
 </blockquote>
 <p>I think this option makes the most sense to me.</p>
 </div>
@@ -134,7 +134,7 @@ lrwxrwxrwx 1 dan dan    6 Oct  2 13:42 python3.11 -&gt; python
             <div class="timeline-body"><blockquote>
 <p>downloading arbitrary Python binaries direct from GitHub is a fireable offence</p>
 </blockquote>
-<p>For what it's worth, we're maintaining those binaries — they're not arbitrary. How's uv being installed? Isn't that a binary from GitHub? Note there's a <code>UV_PYTHON_INSTALL_MIRROR</code> which allows you to download from an internal mirror of the binaries.</p>
+<p>For what it&#x27;s worth, we&#x27;re maintaining those binaries — they&#x27;re not arbitrary. How&#x27;s uv being installed? Isn&#x27;t that a binary from GitHub? Note there&#x27;s a <code>UV_PYTHON_INSTALL_MIRROR</code> which allows you to download from an internal mirror of the binaries.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -148,18 +148,18 @@ lrwxrwxrwx 1 dan dan    6 Oct  2 13:42 python3.11 -&gt; python
 <blockquote>
 <p>downloading arbitrary Python binaries direct from GitHub is a fireable offence</p>
 </blockquote>
-<p>For what it's worth, we're maintaining those binaries — they're not arbitrary. How's uv being installed? Isn't that a binary from GitHub? Note there's a <code>UV_PYTHON_INSTALL_MIRROR</code> which allows you to download from an internal mirror of the binaries.</p>
+<p>For what it&#x27;s worth, we&#x27;re maintaining those binaries — they&#x27;re not arbitrary. How&#x27;s uv being installed? Isn&#x27;t that a binary from GitHub? Note there&#x27;s a <code>UV_PYTHON_INSTALL_MIRROR</code> which allows you to download from an internal mirror of the binaries.</p>
 </blockquote>
-<p>Oh, by arbitrary I meant 'unapproved' -- no slight intended, it's just that it doesn't fall under a use case that is known and expressly permitted.</p>
-<p>It is quite common for enterprises to deploy scanning proxies of various kinds (cf. #5260) -- downloading direct from github.com or pypi.org is considered a breach of policy as you'd be bypassing said proxy. In fact in most cases you wouldn't even have direct connectivity to github.com or pypi.org as these would be blocked at firewall level.</p>
+<p>Oh, by arbitrary I meant &#x27;unapproved&#x27; -- no slight intended, it&#x27;s just that it doesn&#x27;t fall under a use case that is known and expressly permitted.</p>
+<p>It is quite common for enterprises to deploy scanning proxies of various kinds (cf. #5260) -- downloading direct from github.com or pypi.org is considered a breach of policy as you&#x27;d be bypassing said proxy. In fact in most cases you wouldn&#x27;t even have direct connectivity to github.com or pypi.org as these would be blocked at firewall level.</p>
 <p>Actually I was not aware of <code>UV_PYTHON_INSTALL_MIRROR</code> -- I am curious, is this also exposed in <code>uv.toml</code>? It does actually make a significant difference -- enterprises could use it to benefit from <code>uv python</code> in a way that still falls under existing/well-understood control implementations.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jlevy">@jlevy</a> on 2025-06-16 21:47</div>
-            <div class="timeline-body"><p>I only now saw this issue. But I looked at this a few weeks ago as I wanted to make a self-contained, relocatable install directory with a given set of dependencies. It's a bit like a uv-powered PyInstaller:</p>
+            <div class="timeline-body"><p>I only now saw this issue. But I looked at this a few weeks ago as I wanted to make a self-contained, relocatable install directory with a given set of dependencies. It&#x27;s a bit like a uv-powered PyInstaller:</p>
 <p>https://github.com/jlevy/py-app-standalone</p>
-<p>I think this covers much this use case (see the readme) so am curious if anyone tries it or finds it useful. I didn't try to handle alternate or enterprise-approved mirrors but am sure it could be adapted to support that better.</p>
+<p>I think this covers much this use case (see the readme) so am curious if anyone tries it or finds it useful. I didn&#x27;t try to handle alternate or enterprise-approved mirrors but am sure it could be adapted to support that better.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -176,7 +176,7 @@ lrwxrwxrwx 1 dan dan    6 Oct  2 13:42 python3.11 -&gt; python
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:26:48 UTC
+        Synced at 2026-01-20 19:33:36 UTC
     </footer>
 </body>
 </html>

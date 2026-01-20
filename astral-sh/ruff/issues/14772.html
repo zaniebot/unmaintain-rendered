@@ -24,7 +24,7 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dscorbett">@dscorbett</a></div>
             <div class="timeline-body"><p><a href="https://docs.astral.sh/ruff/rules/undefined-name/"><code>undefined-name</code> (F821)</a> in Ruff 0.8.1 reports a name as undefined if it is used after being deleted but the name was shadowing a builtin. In that case, the name will resolve to the builtin without a <code>NameError</code>, so the rule should not report a problem.</p>
-<pre><code class="language-console">$ cat f821_1.py
+<pre><code>$ cat f821_1.py
 print = 0
 del print
 print(1)
@@ -44,8 +44,8 @@ f821_1.py:3:1: F821 Undefined name `print`. Consider specifying `requires-python
 Found 1 error.
 </code></pre>
 <p>Specifying the target version as suggested gives a different error.</p>
-<pre><code class="language-console">$ ruff check --isolated --select F821 f821_1.py --config 'target-version = &quot;py30&quot;'
-error: invalid value 'target-version = &quot;py30&quot;' for '--config &lt;CONFIG_OPTION&gt;'
+<pre><code>$ ruff check --isolated --select F821 f821_1.py --config &#x27;target-version = &quot;py30&quot;&#x27;
+error: invalid value &#x27;target-version = &quot;py30&quot;&#x27; for &#x27;--config &lt;CONFIG_OPTION&gt;&#x27;
 
   tip: A `--config` flag must either be a path to a `.toml` configuration file
        or a TOML `&lt;KEY&gt; = &lt;VALUE&gt;` pair overriding a specific configuration
@@ -56,10 +56,10 @@ Could not parse the supplied argument as a `ruff.toml` configuration option:
 unknown variant `py30`, expected one of `py37`, `py38`, `py39`, `py310`, `py311`, `py312`, `py313`
 in `target-version`
 
-For more information, try '--help'.
+For more information, try &#x27;--help&#x27;.
 </code></pre>
 <p>That’s just a minimal example. Here is more realistic example based on <a href="https://docs.python.org/3/library/gettext.html#deferred-translations">the documentation of the <code>gettext</code> module</a>, which recommends this pattern for deferred translations.</p>
-<pre><code class="language-console">$ cat f821_2.py
+<pre><code>$ cat f821_2.py
 import gettext
 gettext.install(&quot;example&quot;)
 def _(message):
@@ -86,7 +86,7 @@ f821_2.py:8:11: F821 Undefined name `_`
 Found 1 error.
 </code></pre>
 <p>That example fails even when <code>_</code> is configured as a builtin.</p>
-<pre><code class="language-console">$ ruff check --isolated --select F821 f821_2.py --config 'builtins = [&quot;_&quot;]'
+<pre><code>$ ruff check --isolated --select F821 f821_2.py --config &#x27;builtins = [&quot;_&quot;]&#x27;
 f821_2.py:8:11: F821 Undefined name `_`
   |
 6 | del _
@@ -100,12 +100,12 @@ Found 1 error.
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2024-12-05 01:13</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-12-05 01:13</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-12-13 15:10</div>
-            <div class="timeline-body"><p>That's an interesting and subtle find! I didn't know about this special treatment of builtins. A related thing happens if you try to delete a built-in:</p>
-<pre><code class="language-console">❯ uv run --no-project python
+            <div class="timeline-body"><p>That&#x27;s an interesting and subtle find! I didn&#x27;t know about this special treatment of builtins. A related thing happens if you try to delete a built-in:</p>
+<pre><code>❯ uv run --no-project python
 Python 3.12.7 (main, Oct 16 2024, 07:12:08) [Clang 18.1.8 ] on darwin
 Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
 &gt;&gt;&gt; print
@@ -113,7 +113,7 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
 &gt;&gt;&gt; del print
 Traceback (most recent call last):
   File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
-NameError: name 'print' is not defined
+NameError: name &#x27;print&#x27; is not defined
 </code></pre>
 <p>Sort of curious...</p>
 <p>Neither <a href="https://pyright-play.net/?pythonVersion=3.12&amp;code=A4JwlgdgLgBAvDAjAKACYFMA2NSSsgD3h3GiA">pyright</a> nor <a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=892483f184ba77b480e95bd8fe9ba21b">mypy</a> seem to know about these facts either.</p>
@@ -122,25 +122,25 @@ NameError: name 'print' is not defined
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-12-13 17:50</div>
-            <div class="timeline-body"><p>Yeah, mypy and pyright both look pretty confused here :) <code>del</code> isn't very common, and even less common with a name that is also a builtin, so it probably doesn't come up often.</p>
+            <div class="timeline-body"><p>Yeah, mypy and pyright both look pretty confused here :) <code>del</code> isn&#x27;t very common, and even less common with a name that is also a builtin, so it probably doesn&#x27;t come up often.</p>
 <blockquote>
 <p>Does <code>red-knot</code> know about this <a href="https://github.com/carljm">@carljm</a> ?</p>
 </blockquote>
-<p>Red-knot doesn't understand <code>del</code> at all yet, so no :) But if we implement <code>del</code> support in the way I expect we would, I think correct handling of this should fall out naturally from our model.</p>
-<p>FWIW, in terms of what's happening at runtime, this isn't really &quot;special treatment of builtins&quot;. The <code>del</code> statement is working on a name that shadows a builtin in exactly the same way it works on any other name. The behavior falls out from the fact that builtins are a separate scope, they aren't part of the module scope; name lookups fall back to builtins if the name is not found in the module scope. And <code>del</code> only operates on the local scope. So you can't <code>del</code> a builtin if you didn't shadow it with a definition in the module scope, and if you do shadow it and then <code>del</code> that name, the <code>del</code> only removes the shadowing in the module scope, it doesn't affect builtins, so future lookups of that name will not see any definition in the module scope anymore and will fall back to builtins normally.</p>
+<p>Red-knot doesn&#x27;t understand <code>del</code> at all yet, so no :) But if we implement <code>del</code> support in the way I expect we would, I think correct handling of this should fall out naturally from our model.</p>
+<p>FWIW, in terms of what&#x27;s happening at runtime, this isn&#x27;t really &quot;special treatment of builtins&quot;. The <code>del</code> statement is working on a name that shadows a builtin in exactly the same way it works on any other name. The behavior falls out from the fact that builtins are a separate scope, they aren&#x27;t part of the module scope; name lookups fall back to builtins if the name is not found in the module scope. And <code>del</code> only operates on the local scope. So you can&#x27;t <code>del</code> a builtin if you didn&#x27;t shadow it with a definition in the module scope, and if you do shadow it and then <code>del</code> that name, the <code>del</code> only removes the shadowing in the module scope, it doesn&#x27;t affect builtins, so future lookups of that name will not see any definition in the module scope anymore and will fall back to builtins normally.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-12-13 18:54</div>
             <div class="timeline-body"><blockquote>
-<p>so it probably doesn't come up often.
-Yeah I don't think this should be a high priority to support 😄 though it sounds like you're saying it may happen automatically</p>
+<p>so it probably doesn&#x27;t come up often.
+Yeah I don&#x27;t think this should be a high priority to support 😄 though it sounds like you&#x27;re saying it may happen automatically</p>
 </blockquote>
 <blockquote>
-<p>FWIW, in terms of what's happening at runtime, this isn't really &quot;special treatment of builtins&quot;. The del statement is working on a name that shadows a builtin in exactly the same way it works on any other name.</p>
+<p>FWIW, in terms of what&#x27;s happening at runtime, this isn&#x27;t really &quot;special treatment of builtins&quot;. The del statement is working on a name that shadows a builtin in exactly the same way it works on any other name.</p>
 </blockquote>
 <p>I think what I found surprising/special is the console example I had above:</p>
-<pre><code class="language-console">❯ uv run --no-project python
+<pre><code>❯ uv run --no-project python
 Python 3.12.7 (main, Oct 16 2024, 07:12:08) [Clang 18.1.8 ] on darwin
 Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
 &gt;&gt;&gt; print
@@ -148,26 +148,26 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
 &gt;&gt;&gt; del print
 Traceback (most recent call last):
   File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
-NameError: name 'print' is not defined
+NameError: name &#x27;print&#x27; is not defined
 </code></pre>
-<p>Specifically, it's strange to me that the error it's giving me is that <code>'print' is not defined</code>. But maybe what you're saying is that NameError's form CPython have an implicit &quot;within the module scope&quot; in them.</p>
+<p>Specifically, it&#x27;s strange to me that the error it&#x27;s giving me is that <code>&#x27;print&#x27; is not defined</code>. But maybe what you&#x27;re saying is that NameError&#x27;s form CPython have an implicit &quot;within the module scope&quot; in them.</p>
 <p>Anyway this is pretty obscure, so no need to keep letting me distract you with it 😄</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-12-13 19:15</div>
             <div class="timeline-body"><blockquote>
-<p>maybe what you're saying is that NameError's form CPython have an implicit &quot;within the module scope&quot; in them.</p>
+<p>maybe what you&#x27;re saying is that NameError&#x27;s form CPython have an implicit &quot;within the module scope&quot; in them.</p>
 </blockquote>
-<p>In general, no: typically for a name <em>reference</em> you'd only get a <code>NameError</code> if we can't find the name, even after looking up in enclosing scopes / builtins (if not defined in local scope.)</p>
-<p>But for the <code>NameError</code> in <code>del</code>, yes, that's exactly right.</p>
-<p>So I think really what I'm saying is &quot;it's <code>del</code> that's weird, not builtins&quot; :)</p>
+<p>In general, no: typically for a name <em>reference</em> you&#x27;d only get a <code>NameError</code> if we can&#x27;t find the name, even after looking up in enclosing scopes / builtins (if not defined in local scope.)</p>
+<p>But for the <code>NameError</code> in <code>del</code>, yes, that&#x27;s exactly right.</p>
+<p>So I think really what I&#x27;m saying is &quot;it&#x27;s <code>del</code> that&#x27;s weird, not builtins&quot; :)</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:51:43 UTC
+        Synced at 2026-01-20 18:49:06 UTC
     </footer>
 </body>
 </html>

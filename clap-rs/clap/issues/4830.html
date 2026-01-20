@@ -23,46 +23,46 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/rbtcollins">@rbtcollins</a></div>
-            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+            <div class="timeline-body">Please complete the following tasks
 <ul>
 <li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
 <li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
 </ul>
-<h3>Clap Version</h3>
+Clap Version
 <p>3.2.23</p>
-<h3>Describe your use case</h3>
-<p>Trying to parse <code>toolchain</code> arguments for <code>rustup</code> as a custom type rather than just String. We have about 5 different sorts of toolchains that can be parsed. Official ones from channels, custom names, official-or-custom, 'none'-or-official-or-custom.</p>
-<p>When the clap value parser type (e.g. CustomToolchainNameParser) and the code querying the argument have a mismatched type, there is a silent failure (or perhaps we're misusing things?)</p>
+Describe your use case
+<p>Trying to parse <code>toolchain</code> arguments for <code>rustup</code> as a custom type rather than just String. We have about 5 different sorts of toolchains that can be parsed. Official ones from channels, custom names, official-or-custom, &#x27;none&#x27;-or-official-or-custom.</p>
+<p>When the clap value parser type (e.g. CustomToolchainNameParser) and the code querying the argument have a mismatched type, there is a silent failure (or perhaps we&#x27;re misusing things?)</p>
 <p>e.g. in the install code path I had this:</p>
 <pre><code>    if let Ok(Some(names)) = m.try_get_many::&lt;PartialToolchainDesc&gt;(&quot;toolchain&quot;) {
 </code></pre>
 <p>and the definition for install has this :</p>
 <pre><code>                        .value_parser(NonEmptyStringValueParser)
 </code></pre>
-<p>Then the type id check in <code>verify_arg_t</code> fails, but this is then caught in <code>try_get_many</code> - which I <em>think</em> we're using to handle optional values. But this is a different sort of failure - the failure is in the code that was compiled, and should be detectable at compile time.</p>
-<h3>Describe the solution you'd like</h3>
-<p>Our buggy code should fail to compile. Or perhaps we're doing things wrong and the docs should help us understand that.</p>
-<h3>Alternatives, if applicable</h3>
+<p>Then the type id check in <code>verify_arg_t</code> fails, but this is then caught in <code>try_get_many</code> - which I <em>think</em> we&#x27;re using to handle optional values. But this is a different sort of failure - the failure is in the code that was compiled, and should be detectable at compile time.</p>
+Describe the solution you&#x27;d like
+<p>Our buggy code should fail to compile. Or perhaps we&#x27;re doing things wrong and the docs should help us understand that.</p>
+Alternatives, if applicable
 <p><em>No response</em></p>
-<h3>Additional Context</h3>
+Additional Context
 <p><em>No response</em></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">C-enhancement</span> added by @rbtcollins on 2023-04-10 20:31</div>
+            <div class="event">Label <span class="label">C-enhancement</span> added by <a href="https://github.com/rbtcollins">@rbtcollins</a> on 2023-04-10 20:31</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-04-10 20:46</div>
             <div class="timeline-body"><p>Except in some specific cases (#3912, #3864), the derive API handles all of this for you at compile-time</p>
-<p>When using <code>ArgMatches::get_*</code>, we will panic at runtime.  This just requires exercising all <code>ArgMatches::get_*</code> calls in tests and you know things are valid.  You could use <code>try_get_one::&lt;CustomToolchainNameParser as TypedValueParser&gt;::Value&gt;(&quot;toolchain&quot;)</code> to help (if those were even the right types and args involved, I also don't know if you can shorten that for associated value accesses)</p>
+<p>When using <code>ArgMatches::get_*</code>, we will panic at runtime.  This just requires exercising all <code>ArgMatches::get_*</code> calls in tests and you know things are valid.  You could use <code>try_get_one::&lt;CustomToolchainNameParser as TypedValueParser&gt;::Value&gt;(&quot;toolchain&quot;)</code> to help (if those were even the right types and args involved, I also don&#x27;t know if you can shorten that for associated value accesses)</p>
 <p>Instead of either of the above, rustup is using <code>ArgMatches::try_get_*</code> and its unclear from the Issue what rustup does in the case of<a href="https://docs.rs/clap/latest/clap/parser/enum.MatchesError.html"><code>Err(MatchesError::Downcast {...} }) </code></a>.</p>
-<p>I'm not too sure what more clap can do to help in this case or how the docs could be modified to help people who have explicitly chosen to go off the beaten path and then (making assumptions here) ignoring the error we are reporting about this case.</p>
+<p>I&#x27;m not too sure what more clap can do to help in this case or how the docs could be modified to help people who have explicitly chosen to go off the beaten path and then (making assumptions here) ignoring the error we are reporting about this case.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/rbtcollins">@rbtcollins</a> on 2023-04-10 20:55</div>
-            <div class="timeline-body"><p>I'm very happy to change rustup to use clap better - its a very old codebase and we have a lot of places things could be better :).</p>
-<p>Poking at this further, I've found</p>
+            <div class="timeline-body"><p>I&#x27;m very happy to change rustup to use clap better - its a very old codebase and we have a lot of places things could be better :).</p>
+<p>Poking at this further, I&#x27;ve found</p>
 <pre><code>Mismatch between definition and access of `toolchain`. Could not downcast to rustup::toolchain::ResolvableToolchainName, need to downcast to rustup::dist::dist::PartialToolchainDesc 
 </code></pre>
 <p>happens at runtime, which is great.</p>
@@ -70,12 +70,12 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/4626.html">clap-rs/clap#4626</a> on 2023-06-15 20:25</div>
+            <div class="event">Referenced in <a>clap-rs/clap#4626</a> on 2023-06-15 20:25</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:49:03 UTC
+        Synced at 2026-01-20 19:59:44 UTC
     </footer>
 </body>
 </html>

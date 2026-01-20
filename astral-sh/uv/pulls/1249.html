@@ -35,26 +35,26 @@ you started with, but the &quot;archived&quot; version of it.</p>
 <p>In order to make all this work, we ended up needing to shave a rather
 large yak: we had to re-implement HTTP cache semantics. Previously,
 we were using the <code>http-cache-semantics</code> crate. While it does support
-Serde, it doesn't support <code>rkyv</code>. Moreover, even simple support for
-<code>rkyv</code> wouldn't be enough. What we actually want is for the HTTP cache
+Serde, it doesn&#x27;t support <code>rkyv</code>. Moreover, even simple support for
+<code>rkyv</code> wouldn&#x27;t be enough. What we actually want is for the HTTP cache
 semantics to be implemented on the <em>archived</em> type so that we can
 decide whether our cached response is stale or not without needing to
 do a full deserialization into the unarchived type. This is why, in
-this PR, you'll see <code>impl ArchivedCachePolicy { ... }</code> instead of
+this PR, you&#x27;ll see <code>impl ArchivedCachePolicy { ... }</code> instead of
 <code>impl CachePolicy { ... }</code>. (The <code>derive(rkyv::Archive)</code> macro
 automatically introduces the <code>ArchivedCachePolicy</code> type into the
 current namespace.)</p>
 <p>Unfortunately, this PR does not fully realize the dream that is
 zero-copy deserialization. Namely, while a <code>CachedClient</code> can now
 provide an <code>OwnedArchive&lt;SimpleMetadata&gt;</code>, the rest of our code
-doesn't really make use of it. Indeed, as soon as we go to build a
+doesn&#x27;t really make use of it. Indeed, as soon as we go to build a
 <code>VersionMap</code>, we eagerly convert our archived metadata into an owned
-<code>SimpleMetadata</code> via deserialization (that <em>isn't</em> zero-copy). After
+<code>SimpleMetadata</code> via deserialization (that <em>isn&#x27;t</em> zero-copy). After
 this change, a lot of the work now shifts to <code>rkyv</code> deserialization
 and <code>VersionMap</code> construction. More precisely, the main thing we drop
 here is <code>CachePolicy</code> deserialization (which is now truly zero-copy)
 and the parsing of the MessagePack format for <code>SimpleMetadata</code>. But we
-are still paying for deserialization. We're just paying for it in a
+are still paying for deserialization. We&#x27;re just paying for it in a
 different place.</p>
 <p>This PR does seem to bring a speed-up, but it is somewhat underwhelming.
 My measurements have been pretty noisy, but I get a 1.1x speedup fairly
@@ -72,7 +72,7 @@ Summary
   puffin-test pip compile --cache-dir ~/astral/tmp/cache-test ~/astral/tmp/reqs/home-assistant-reduced.in -o /dev/null ran
     1.11 ± 0.15 times faster than puffin-main pip compile --cache-dir ~/astral/tmp/cache-main ~/astral/tmp/reqs/home-assistant-reduced.in -o /dev/null
 </code></pre>
-<p>One downside is that this does increase cache size (<code>rkyv</code>'s
+<p>One downside is that this does increase cache size (<code>rkyv</code>&#x27;s
 serialization format is not as compact as MessagePack). On disk size
 increases by about 1.8x for our <code>simple-v0</code> cache.</p>
 <pre><code>$ sort-filesize cache-main
@@ -101,16 +101,16 @@ $ sort-filesize cache-test
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @charliermarsh by @BurntSushi on 2024-02-05 02:36</div>
+            <div class="event">Review requested from <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-02-05 02:36</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @konstin by @BurntSushi on 2024-02-05 02:36</div>
+            <div class="event">Review requested from <a href="https://github.com/konstin">@konstin</a> by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-02-05 02:36</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">performance</span> added by @BurntSushi on 2024-02-05 02:37</div>
+            <div class="event">Label <span class="label">performance</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-02-05 02:37</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> added by @BurntSushi on 2024-02-05 02:37</div>
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-02-05 02:37</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-client/src/cached_client.rs</code>:219 on 2024-02-05 15:15</div>
@@ -124,7 +124,7 @@ $ sort-filesize cache-test
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-05 15:21</div>
             <div class="timeline-body"><p>Do you expect some performance improvement by simply switching the caching implementation, or does switching the caching layer help reduce binary size, compile times, or cache size?</p>
-<p>I'm asking because I wonder if we should look at changing the caching separately from enabling zero copy deserialization for it as it in itself might already be a win (or it's slower than what we had before and could be the culprit why we don't see a bigger performance win)</p>
+<p>I&#x27;m asking because I wonder if we should look at changing the caching separately from enabling zero copy deserialization for it as it in itself might already be a win (or it&#x27;s slower than what we had before and could be the culprit why we don&#x27;t see a bigger performance win)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -151,7 +151,7 @@ $ sort-filesize cache-test
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-client/src/httpcache/mod.rs</code>:7 on 2024-02-05 15:25</div>
-            <div class="timeline-body"><p>How closely does the actual code and implementation match <code>http-cache-semantics</code>? My guess is that it's actually quite different.</p>
+            <div class="timeline-body"><p>How closely does the actual code and implementation match <code>http-cache-semantics</code>? My guess is that it&#x27;s actually quite different.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -170,12 +170,12 @@ $ sort-filesize cache-test
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/puffin-client/src/cached_client.rs</code>:219 on 2024-02-05 21:13</div>
-            <div class="timeline-body"><p>Oof, good catch. You're right. PyPI returns a non-304 response. Good catch.</p>
+            <div class="timeline-body"><p>Oof, good catch. You&#x27;re right. PyPI returns a non-304 response. Good catch.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/puffin-client/src/cached_client.rs</code>:219 on 2024-02-05 21:22</div>
-            <div class="timeline-body"><p>I've fixed this in the HTTP cache semantics layer by making the existence of an <code>immutable</code> directive on the response result in completing ignoring any cache-control directives on the incoming request that would otherwise force a revalidation request.</p>
+            <div class="timeline-body"><p>I&#x27;ve fixed this in the HTTP cache semantics layer by making the existence of an <code>immutable</code> directive on the response result in completing ignoring any cache-control directives on the incoming request that would otherwise force a revalidation request.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -184,7 +184,7 @@ $ sort-filesize cache-test
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/puffin-client/src/cached_client.rs</code>:463 on 2024-02-05 21:27</div>
-            <div class="timeline-body"><p>The gist of it is (it's 352 bytes now), but it's in the wrong place. Good catch. I've moved it and improved the docs. :)</p>
+            <div class="timeline-body"><p>The gist of it is (it&#x27;s 352 bytes now), but it&#x27;s in the wrong place. Good catch. I&#x27;ve moved it and improved the docs. :)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -207,13 +207,13 @@ implementation here and understanding of HTTP caching.)
 implementation, or does switching the caching layer help reduce binary size,
 compile times, or cache size?</p>
 </blockquote>
-<p>Nah. I didn't see one either in my testing. Perf remained the same.</p>
+<p>Nah. I didn&#x27;t see one either in my testing. Perf remained the same.</p>
 <p>The only real point of the custom caching semantics implementation (at least currently) is to facilitate zero-copy.</p>
 <blockquote>
-<p>I'm asking because I wonder if we should look at changing the caching
+<p>I&#x27;m asking because I wonder if we should look at changing the caching
 separately from enabling zero copy deserialization for it as it in itself
-might already be a win (or it's slower than what we had before and could be
-the culprit why we don't see a bigger performance win)</p>
+might already be a win (or it&#x27;s slower than what we had before and could be
+the culprit why we don&#x27;t see a bigger performance win)</p>
 </blockquote>
 <p>The commits are structured such that we can pretty easily measure this. <code>puffin-main</code> is current main, <code>puffin-newcache</code> is <code>main</code> with the new caching implementation and <code>puffin-zero</code> is the new caching implementation with zero-copy deserialization:</p>
 <pre><code>$ hyperfine -w5 --runs 30 \
@@ -237,15 +237,15 @@ Summary
     1.11 ± 0.15 times faster than puffin-newcache pip compile --cache-dir ~/astral/tmp/cache-newcache ~/astral/tmp/reqs/home-assistant-reduced.in -o /dev/null
     1.14 ± 0.12 times faster than puffin-main pip compile --cache-dir ~/astral/tmp/cache-main ~/astral/tmp/reqs/home-assistant-reduced.in -o /dev/null
 </code></pre>
-<p>There isn't much of a difference between <code>puffin-main</code> and <code>puffin-newcache</code> (I don't expect there to be), but <code>puffin-zero</code> is a bit faster.</p>
-<p>I don't expect the new caching semantics to make a difference because I didn't identify any obvious bugs in how <code>http-cache-semantics</code> worked for our specific use case. Like, there wasn't a case where we weren't using a cached response when we should have been.</p>
+<p>There isn&#x27;t much of a difference between <code>puffin-main</code> and <code>puffin-newcache</code> (I don&#x27;t expect there to be), but <code>puffin-zero</code> is a bit faster.</p>
+<p>I don&#x27;t expect the new caching semantics to make a difference because I didn&#x27;t identify any obvious bugs in how <code>http-cache-semantics</code> worked for our specific use case. Like, there wasn&#x27;t a case where we weren&#x27;t using a cached response when we should have been.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @BurntSushi on 2024-02-05 21:47</div>
+            <div class="event">Merged by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-02-05 21:47</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2024-02-05 21:47</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-02-05 21:47</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-02-05 21:47</div>
@@ -253,7 +253,7 @@ Summary
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:35:27 UTC
+        Synced at 2026-01-20 19:43:31 UTC
     </footer>
 </body>
 </html>

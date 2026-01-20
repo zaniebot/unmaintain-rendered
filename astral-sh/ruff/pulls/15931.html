@@ -23,24 +23,24 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This PR replaces introduces a new API, <code>Symbol::or_fall_back_to_if()</code>. The new API replaces two existing methods on <code>Symbol</code>: <code>Symbol::possibly_unbound()</code> and <code>Symbol::or_fall_back_to()</code>, as well as <code>Boundness::or()</code>.</p>
-<p>The new API allows us to elegantly chain a series of fallback symbol-lookups. It also means we're lazy by default (I realized we were eagerly executing several <code>ModuleType::to_class_literal(db).member(db, name)</code> calls which would be immediately thrown away in several situations). Lastly, it means that in some situations we construct union types where the elements are arranged in a more intuitive order than we currently have on <code>main</code>.</p>
-<h2>Test Plan</h2>
+<p>The new API allows us to elegantly chain a series of fallback symbol-lookups. It also means we&#x27;re lazy by default (I realized we were eagerly executing several <code>ModuleType::to_class_literal(db).member(db, name)</code> calls which would be immediately thrown away in several situations). Lastly, it means that in some situations we construct union types where the elements are arranged in a more intuitive order than we currently have on <code>main</code>.</p>
+Test Plan
 <p><code>cargo test -p red_knot_python_semantic</code></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-02-04 13:16</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-04 13:16</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-02-04 13:16</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-04 13:16</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2025-02-04 13:16</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-04 13:16</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-02-04 13:16</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-04 13:16</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-04 13:20</div>
@@ -82,7 +82,7 @@
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/symbol.rs</code>:71 on 2025-02-04 13:37</div>
             <div class="timeline-body"><p>The <code>Option</code> API for this would be:</p>
 <p><code>symbol.bound().filter(condition).unwrap_or_else(fallback)</code></p>
-<p>However, that doesn't work because the <code>b</code> case sometimes falls back to <code>self</code> and sometimes to the <code>fallback</code>. It still makes me wonder if we can decompose this operation.</p>
+<p>However, that doesn&#x27;t work because the <code>b</code> case sometimes falls back to <code>self</code> and sometimes to the <code>fallback</code>. It still makes me wonder if we can decompose this operation.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -92,8 +92,8 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/symbol.rs</code>:71 on 2025-02-04 13:47</div>
             <div class="timeline-body"><p>I wondered about a version of this where we kept <code>Symbol::fall_back_to()</code> and implemented <code>Symbol::fall_back_to_if()</code> as a wrapper around <code>Symbol::fall_back_to()</code>:</p>
-<pre><code class="language-rs">impl&lt;'db&gt; Symbol&lt;'db&gt; {
-    fn or_fall_back_to(self, db, &amp;'db dyn Db, fallback: Symbol&lt;'db&gt;) -&gt; Self {
+<pre><code>impl&lt;&#x27;db&gt; Symbol&lt;&#x27;db&gt; {
+    fn or_fall_back_to(self, db, &amp;&#x27;db dyn Db, fallback: Symbol&lt;&#x27;db&gt;) -&gt; Self {
         match (&amp;self, &amp;other) {
             (Symbol::Type(_, Boundness::Bound), _) | (_, Symbol::Unbound) =&gt; self,
             (Symbol::Unbound, _) =&gt; other,
@@ -106,9 +106,9 @@
 
     fn or_fall_back_to_if(
         self,
-        db: &amp;'db dyn Db,
+        db: &amp;&#x27;db dyn Db,
         condition: impl FnOnce() -&gt; bool,
-        fallback_fn: impl FnOnce() -&gt; Symbol&lt;'db&gt;,
+        fallback_fn: impl FnOnce() -&gt; Symbol&lt;&#x27;db&gt;,
     ) -&gt; Self {
         if self.possibly_unbound() &amp;&amp; condition() {
             self.or_fall_back_to(fallback_fn())
@@ -118,11 +118,11 @@
     }
 }
 </code></pre>
-<p>I don't like this much, though. The <code>self.possibly_unbound()</code> call goes through another <code>match</code> expression which is redundant. We can do it in one <code>match</code>, which I find more readable (there's less indirection). <code>Symbol::or_fall_back_to()</code> would also <em>only</em> be used by this one method (<code>Symbol::or_fall_back_to_if()</code>) if we did it like this; <code>Symbol::or_fall_back_to_if()</code> seems better for all our current use cases.</p>
+<p>I don&#x27;t like this much, though. The <code>self.possibly_unbound()</code> call goes through another <code>match</code> expression which is redundant. We can do it in one <code>match</code>, which I find more readable (there&#x27;s less indirection). <code>Symbol::or_fall_back_to()</code> would also <em>only</em> be used by this one method (<code>Symbol::or_fall_back_to_if()</code>) if we did it like this; <code>Symbol::or_fall_back_to_if()</code> seems better for all our current use cases.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[red-knot] Add `Symbol::fall_back_to_if`" to "[red-knot] Add `Symbol::or_fall_back_to_if`" by @AlexWaygood on 2025-02-04 13:58</div>
+            <div class="event">Renamed from &quot;[red-knot] Add `Symbol::fall_back_to_if`&quot; to &quot;[red-knot] Add `Symbol::or_fall_back_to_if`&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-04 13:58</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-04 15:09</div>
@@ -148,7 +148,7 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-02-05 14:48</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-05 14:48</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-02-05 14:48</div>
@@ -156,7 +156,7 @@
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:09:43 UTC
+        Synced at 2026-01-20 19:11:06 UTC
     </footer>
 </body>
 </html>

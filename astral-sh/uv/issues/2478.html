@@ -23,15 +23,15 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/brendan-morin">@brendan-morin</a></div>
-            <div class="timeline-body"><h1>Background</h1>
+            <div class="timeline-body">Background
 <p>We have some internally patched versions of some OSS packages, republished with <a href="https://packaging.python.org/en/latest/specifications/version-specifiers/#local-version-identifiers">local version identifiers</a>, and an extra index where these are hosted. We would like to specify package requirements (or constraints) so that <code>uv</code> only resolves packages with this identifier. For example, if we have an oss package <code>some_package</code> published with version <code>1.0.0</code>, we might have extra packages published that include <code>1.0.0.0+internal</code>, <code>1.0.0.1+internal</code>, etc. (so possibly multiple local versions per public version).</p>
-<h2>Details</h2>
+Details
 <p>We would like to resolve some requirement such as <code>some_package&gt;=1.0.0</code> would be respected (e.g. in the case of a third party library that is unaware of our local versions) but also include the constraint that we only resolve versions with this local version identifier. We can do direct pinning, e.g. <code>some_package==1.0.0.0+internal</code>, but ideally we would like a little more flexibility in our specification, for e.g. internal libraries that have other internal patches of OSS software as requirements.</p>
-<p>If there is some OSS version that meets the range intent but doesn't specify the local identifier, it should not be resolved as a valid version. For example, adopting a syntax like <code>some_package&gt;=1.0.0+internal</code>, could resolve to either <code>3.2.0.0+internal</code>, <code>3.2.0.1+internal</code>, or <code>4.0.0.0+internal</code>, but would not, resolve to something like <code>1.0.0</code> or <code>2.0.0</code>, or any other version without this particular internal specifier.</p>
+<p>If there is some OSS version that meets the range intent but doesn&#x27;t specify the local identifier, it should not be resolved as a valid version. For example, adopting a syntax like <code>some_package&gt;=1.0.0+internal</code>, could resolve to either <code>3.2.0.0+internal</code>, <code>3.2.0.1+internal</code>, or <code>4.0.0.0+internal</code>, but would not, resolve to something like <code>1.0.0</code> or <code>2.0.0</code>, or any other version without this particular internal specifier.</p>
 <p>As far as I know, this capability does not exist in <code>pip</code> at present and would be new functionality.</p>
-<h2>Example Scenario</h2>
-<p>Let's assume the following scenario, where we have a library <code>some_package</code> that is compatible with a <code>+internal</code> local version patch only.</p>
-<p>Let's assume the internal index for <code>some_package</code> carries the following versions:</p>
+Example Scenario
+<p>Let&#x27;s assume the following scenario, where we have a library <code>some_package</code> that is compatible with a <code>+internal</code> local version patch only.</p>
+<p>Let&#x27;s assume the internal index for <code>some_package</code> carries the following versions:</p>
 <pre><code>1.0.0.0+internal
 1.0.0.1+internal
 2.0.0.0+internal
@@ -42,7 +42,7 @@
 3.0.0
 </code></pre>
 <p>We run the following in pip:</p>
-<pre><code>pip install 'my_package&gt;=2.0.0+internal' --extra-index-url=&quot;https://internal.mycompany.com/patched-index/simple&quot;
+<pre><code>pip install &#x27;my_package&gt;=2.0.0+internal&#x27; --extra-index-url=&quot;https://internal.mycompany.com/patched-index/simple&quot;
 </code></pre>
 <p>This could result in the following erroneous resolution to a non-internal version:</p>
 <pre><code>Collecting my_package&gt;=2.0.0+internal
@@ -51,33 +51,33 @@
 <p><code>uv pip install</code> does I think a slightly better job and at least just fails early:</p>
 <pre><code>Operator &gt;= is incompatible with versions containing non-empty local segments (`+internal`)
 </code></pre>
-<h2>Possible Options</h2>
-<h3>Option 1: Break existing behavior</h3>
+Possible Options
+Option 1: Break existing behavior
 <p>The most straightforward solution could be to reinterpret the nature of these requirements specifications.</p>
-<p>Given there is an existing (if probably my great) history where local versions are basically treated as just special sub-patch versions (e.g. <code>1.0.0</code> &lt; <code>1.0.0.0+internal</code> &lt; <code>1.0.1</code>) for the purposes of dependency resolution, I don't think reinterpreting behavior of the existing requirements definition syntax of <code>+local-version</code> is the way to go here as it would likely have too many unintended consequences for people who may unwittingly rely on this.</p>
-<h3>Option 2: Local version constraints files</h3>
+<p>Given there is an existing (if probably my great) history where local versions are basically treated as just special sub-patch versions (e.g. <code>1.0.0</code> &lt; <code>1.0.0.0+internal</code> &lt; <code>1.0.1</code>) for the purposes of dependency resolution, I don&#x27;t think reinterpreting behavior of the existing requirements definition syntax of <code>+local-version</code> is the way to go here as it would likely have too many unintended consequences for people who may unwittingly rely on this.</p>
+Option 2: Local version constraints files
 <p>It would be possible to specify these as command line constraints to the installer, using format similar to constraints files</p>
 <pre><code>uv pip install -r requirements.txt --local-version-constraints local_constraints.txt
 </code></pre>
 <p>where <code>local_constraints.txt</code> could look like:</p>
 <pre><code>my_package+internal
 </code></pre>
-<p>While requiring an additional file isn't the most elegant approach, it is nice that this approach would impose no additional constraints on requirements specification syntax, and should be fully backwards compatible with current behavior. The downside with this approach is this relies on the end user to supply these constraints at install time. If there is some e.g. internal package with internal-patched requirements, there still isn't a clear mechanism for a package to specify its own constraints in this way, so every user would have to know to do this.</p>
-<h3>Option 3: Update requirements specification syntax</h3>
+<p>While requiring an additional file isn&#x27;t the most elegant approach, it is nice that this approach would impose no additional constraints on requirements specification syntax, and should be fully backwards compatible with current behavior. The downside with this approach is this relies on the end user to supply these constraints at install time. If there is some e.g. internal package with internal-patched requirements, there still isn&#x27;t a clear mechanism for a package to specify its own constraints in this way, so every user would have to know to do this.</p>
+Option 3: Update requirements specification syntax
 <p>One approach would be to incorporate the ability to interpret additional tokens in the requirements specification for this intent, and could look something like this:</p>
-<pre><code>uv pip install 'my_package&gt;=2.0.0&amp;internal'
+<pre><code>uv pip install &#x27;my_package&gt;=2.0.0&amp;internal&#x27;
 </code></pre>
 <p>This would allow new packages to specify the local version tag as an additional constraint. The coolest part about this approach is that, while this fails in <code>uv</code> today, <code>pip</code> itself <em>does not care</em> about this extra token, and will continue to resolve the package regardless. This means that we could add future-facing functionality without breaking other users ability to specify these constraints. This is also nice compared to Option 2, because it allows packages to specify these internal constraints in their own requirements and <code>pyproject.toml</code> files.</p>
-<h2>Other Considerations</h2>
+Other Considerations
 <ul>
-<li>It's possible a library could be compatible with only a local version constraint <em>up to a point</em>, after which it may work w/ OSS versions (e.g. if the required feature was eventually upstreamed). I'm not sure how the best way to handle this would be, or if this is a case worth considering.</li>
+<li>It&#x27;s possible a library could be compatible with only a local version constraint <em>up to a point</em>, after which it may work w/ OSS versions (e.g. if the required feature was eventually upstreamed). I&#x27;m not sure how the best way to handle this would be, or if this is a case worth considering.</li>
 </ul>
 <p>Overall, Option 3 seems like a pretty solid way forward to me, with possible additional integration of Option 2 as well (for when we need to install OSS packages and have them pull in internal dependencies). Would love to hear thoughts on this. Thank you.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-15 19:26</div>
-            <div class="timeline-body"><p>Lots to consider here, I'll just link some related topics to start:</p>
+            <div class="timeline-body"><p>Lots to consider here, I&#x27;ll just link some related topics to start:</p>
 <ul>
 <li>https://github.com/astral-sh/uv/issues/1855</li>
 <li>https://github.com/astral-sh/uv/issues/1497</li>
@@ -90,28 +90,28 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/econchick">@econchick</a> on 2024-04-30 19:38</div>
-            <div class="timeline-body"><p>Heya - I'm just stopping by to say that I ran into this, too. My use case looks like this:</p>
-<pre><code class="language-txt"># requirements.in
+            <div class="timeline-body"><p>Heya - I&#x27;m just stopping by to say that I ran into this, too. My use case looks like this:</p>
+<pre><code># requirements.in
 --extra-index-url https://download.pytorch.org/whl/cpu
 
-torch~=2.1 ; sys_platform == 'darwin'
-torch&gt;=2.1+cpu,&lt;3+cpu ; sys_platform == 'linux'
+torch~=2.1 ; sys_platform == &#x27;darwin&#x27;
+torch&gt;=2.1+cpu,&lt;3+cpu ; sys_platform == &#x27;linux&#x27;
 </code></pre>
 <p>Right now, <code>pip</code> and <code>pip-compile</code> both do not handle <code>torch~=2.1+cpu</code> (considers it an &quot;Invalid requirement&quot;), but they both handle explicit bounds (<code>torch&gt;=2.1+cpu,&lt;2.2+cpu</code>).</p>
 <p>In running the above:</p>
-<pre><code class="language-sh">$ uv pip compile -o requirements.txt requirements.in
-error: Couldn't parse requirement in `requirements.in` at position 112
+<pre><code>$ uv pip compile -o requirements.txt requirements.in
+error: Couldn&#x27;t parse requirement in `requirements.in` at position 112
   Caused by: Operator &gt;= is incompatible with versions containing non-empty local segments (`+cpu`)
-torch&gt;=2.1+cpu,&lt;3+cpu ; sys_platform == 'linux'
+torch&gt;=2.1+cpu,&lt;3+cpu ; sys_platform == &#x27;linux&#x27;
      ^^^^^^^^^
 </code></pre>
-<p>I checked with just <code>torch&lt;3+cpu ; sys_platform == 'linux'</code> and still the same error (thinking maybe multiple bounds didn't work, for some reason). It does work fine with hard pinning though, e.g. <code>torch==2.1.0+cpu ; sys_platform == 'linux'</code>.</p>
+<p>I checked with just <code>torch&lt;3+cpu ; sys_platform == &#x27;linux&#x27;</code> and still the same error (thinking maybe multiple bounds didn&#x27;t work, for some reason). It does work fine with hard pinning though, e.g. <code>torch==2.1.0+cpu ; sys_platform == &#x27;linux&#x27;</code>.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:24:23 UTC
+        Synced at 2026-01-20 19:30:28 UTC
     </footer>
 </body>
 </html>

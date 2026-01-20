@@ -23,22 +23,22 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ego-thales">@ego-thales</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>Hi everyone,</p>
-<h3>The problem</h3>
+The problem
 <p>When using <code>--resolution=lowest</code>, it seems that <code>uv</code> does not try to find &quot;the lowest compatible version&quot;, it simply takes the lower bound I wrote in <code>pyproject.toml</code> and uses it blindly. It leads to failure when using an incompatible python version:</p>
-<pre><code class="language-console">$ uv run --resolution=lowest -p313 pytest
+<pre><code>$ uv run --resolution=lowest -p313 pytest
 Using CPython 3.13.3
 Removed virtual environment at: .venv
 Creating virtual environment at: .venv
-error: Distribution `torch==2.3.0 @ registry+https://pypi.org/simple` can't be installed because it doesn't have a source distribution or wheel for the current platform
+error: Distribution `torch==2.3.0 @ registry+https://pypi.org/simple` can&#x27;t be installed because it doesn&#x27;t have a source distribution or wheel for the current platform
 
-hint: You're using CPython 3.13 (`cp313`), but `torch` (v2.3.0) only has wheels with the following Python ABI tag: `cp312`
+hint: You&#x27;re using CPython 3.13 (`cp313`), but `torch` (v2.3.0) only has wheels with the following Python ABI tag: `cp312`
 </code></pre>
-<h3>Expected behaviour</h3>
+Expected behaviour
 <p>I would expect <code>uv</code> to figure out by itself the lowest compatible version with my python versions.</p>
-<h3>Relevant context</h3>
-<pre><code class="language-toml"># pyproject.toml
+Relevant context
+<pre><code># pyproject.toml
 requires-python = &quot;&gt;=3.12, &lt;3.14&quot;
 dependencies = [
     &quot;torch&gt;=2.3&quot;,
@@ -51,31 +51,31 @@ dependencies = [
     &quot;typing-extensions&gt;=4.12&quot;, # torch&lt;=2.7.1
 ]
 </code></pre>
-<p>I'm not sure if this is a bug or if I missed the expected behaviour of <code>uv</code>. In the latter case, could you please help me understand what I should do?</p>
+<p>I&#x27;m not sure if this is a bug or if I missed the expected behaviour of <code>uv</code>. In the latter case, could you please help me understand what I should do?</p>
 <p>Thanks in advance!
 Élie</p>
-<h3>Platform</h3>
+Platform
 <p>Ubuntu 22.04</p>
-<h3>Version</h3>
+Version
 <p>0.8.5</p>
-<h3>Python version</h3>
+Python version
 <p>3.12/3.13</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @ego-thales on 2025-08-07 08:18</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/ego-thales">@ego-thales</a> on 2025-08-07 08:18</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "`--resolution=lowest` does not resolve?" to "`--resolution=lowest` does not fork on requires-python" by @konstin on 2025-08-07 09:52</div>
+            <div class="event">Renamed from &quot;`--resolution=lowest` does not resolve?&quot; to &quot;`--resolution=lowest` does not fork on requires-python&quot; by <a href="https://github.com/konstin">@konstin</a> on 2025-08-07 09:52</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-08-07 09:57</div>
-            <div class="timeline-body"><p>This missing inverted logic for <code>--resolution=lowest</code>: For the default resolution, when we see different <code>requires-python</code> value for versions, we split the resolution into two and would solve once for <code>&gt;=3.13</code> and once for <code>&lt;3.13,&gt;=3.12</code>, selecting two different versions and having wheel for both Python versions. We do this by selecting a <em>lower</em> torch version for <code>&lt;3.13,&gt;=3.12</code>. But we're missing the inverted lookup for <code>--resolution=lowest</code>: We already picked the lowest version, now we need to check for a <em>higher</em> torch version for <code>&gt;=3.13</code>.</p>
+            <div class="timeline-body"><p>This missing inverted logic for <code>--resolution=lowest</code>: For the default resolution, when we see different <code>requires-python</code> value for versions, we split the resolution into two and would solve once for <code>&gt;=3.13</code> and once for <code>&lt;3.13,&gt;=3.12</code>, selecting two different versions and having wheel for both Python versions. We do this by selecting a <em>lower</em> torch version for <code>&lt;3.13,&gt;=3.12</code>. But we&#x27;re missing the inverted lookup for <code>--resolution=lowest</code>: We already picked the lowest version, now we need to check for a <em>higher</em> torch version for <code>&gt;=3.13</code>.</p>
 <p>As a workaround, you can set the following:</p>
-<pre><code class="language-toml">[tool.uv]
+<pre><code>[tool.uv]
 required-environments = [
-  &quot;python_version &gt;= '3.12' and python_version &lt; '3.12'&quot;,
-  &quot;python_version &gt;= '3.13'&quot;
+  &quot;python_version &gt;= &#x27;3.12&#x27; and python_version &lt; &#x27;3.12&#x27;&quot;,
+  &quot;python_version &gt;= &#x27;3.13&#x27;&quot;
 ]
 </code></pre>
 </div>
@@ -84,11 +84,11 @@ required-environments = [
             <div class="timeline-header">Comment by <a href="https://github.com/ego-thales">@ego-thales</a> on 2025-08-08 08:01</div>
             <div class="timeline-body"><p>Thanks for your time and answer! Your workaround also works fine (without the typoed <code>3.12</code>).
 I also realized that indirect dependencies lower bound adjustments should be made in <code>constraint-dependencies</code>, not in denepdencies directly. For future reference:</p>
-<pre><code class="language-toml">[tool.uv]
+<pre><code>[tool.uv]
 # Until github.com/astral-sh/uv/issues/15125 is fixed
 required-environments = [
-  &quot;python_version &gt;= '3.12' and python_version &lt; '3.13'&quot;,
-  &quot;python_version &gt;= '3.13'&quot;
+  &quot;python_version &gt;= &#x27;3.12&#x27; and python_version &lt; &#x27;3.13&#x27;&quot;,
+  &quot;python_version &gt;= &#x27;3.13&#x27;&quot;
 ]
 # Adjust `torch` indirect dependencies lower bound for example
 constraint-dependencies = [
@@ -105,15 +105,15 @@ constraint-dependencies = [
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ego-thales on 2025-08-08 08:01</div>
+            <div class="event">Closed by <a href="https://github.com/ego-thales">@ego-thales</a> on 2025-08-08 08:01</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @ego-thales on 2025-08-08 08:34</div>
+            <div class="event">Reopened by <a href="https://github.com/ego-thales">@ego-thales</a> on 2025-08-08 08:34</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ego-thales">@ego-thales</a> on 2025-08-08 09:56</div>
             <div class="timeline-body"><p>Sorry I accidentally closed while the bug is still there, even if the workaround works.</p>
-<p>I also mentioned that there seems to be <a href="https://github.com/ThalesGroup/scio/issues/9">other issues</a> related to <code>--resolution=lowest</code>, but I'm not sure whether I should open a separate issue, or if it even is a bug or a misconfig from my part.</p>
+<p>I also mentioned that there seems to be <a href="https://github.com/ThalesGroup/scio/issues/9">other issues</a> related to <code>--resolution=lowest</code>, but I&#x27;m not sure whether I should open a separate issue, or if it even is a bug or a misconfig from my part.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -130,7 +130,7 @@ constraint-dependencies = [
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:32:31 UTC
+        Synced at 2026-01-20 19:39:53 UTC
     </footer>
 </body>
 </html>

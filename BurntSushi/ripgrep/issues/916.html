@@ -23,20 +23,20 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a></div>
-            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+            <div class="timeline-body">What version of ripgrep are you using?
 <pre><code>ripgrep 0.8.1 (rev ab64da73ab)
 -SIMD -AVX
 </code></pre>
-<h4>What operating system are you using ripgrep on?</h4>
+What operating system are you using ripgrep on?
 <pre><code>&gt; uname -s -r -v -m -p -i -o
 Linux 4.16.7-1-ARCH #1 SMP PREEMPT Wed May 2 21:12:36 UTC 2018 x86_64 unknown unknown GNU/Linux
 </code></pre>
-<h4>Describe the bug.</h4>
-<p>Even if it does not seem like a good idea in general to search the whole file system without excluding special folders like <code>/proc</code> (see also #311: <em>&quot;TL;DR is: don't search /proc&quot;</em>), I think that users will attempt to do so.</p>
-<p>We recently tracked down one specific reproducible state which causes the <code>ignore</code> crate to hang while traversing <code>/proc</code> (see https://github.com/sharkdp/fd/issues/288 for more details). The same bug can be reproduced with <code>rg --files</code>.</p>
-<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+Describe the bug.
+<p>Even if it does not seem like a good idea in general to search the whole file system without excluding special folders like <code>/proc</code> (see also #311: <em>&quot;TL;DR is: don&#x27;t search /proc&quot;</em>), I think that users will attempt to do so.</p>
+<p>We recently tracked down one specific reproducible state which causes the <code>ignore</code> crate to hang while traversing <code>/proc</code> (see <a href="https://github.com/sharkdp/fd/issues/288">sharkdp/fd#288</a> for more details). The same bug can be reproduced with <code>rg --files</code>.</p>
+If this is a bug, what are the steps to reproduce the behavior?
 <ol>
-<li><p>Make sure that there are no zombie processes on your system (<code>ps -ef | rg '&lt;defunct&gt;'</code>)</p>
+<li><p>Make sure that there are no zombie processes on your system (<code>ps -ef | rg &#x27;&lt;defunct&gt;&#x27;</code>)</p>
 </li>
 <li><p>Run <code>rg --files &gt; /dev/null 2&gt;&amp;1</code> inside <code>/proc</code>. Everything should work fine (process exits after a few seconds).</p>
 </li>
@@ -47,14 +47,14 @@ c. Run it: <code>./zombie</code></p>
 </li>
 <li><p>Run <code>rg --files &gt; /dev/null 2&gt;&amp;1</code> inside <code>/proc</code> again. This seems to hang indefinitely.</p>
 </li>
-<li><p>Get the PID of the zombie process via <code>ps -ef | rg '&lt;defunct&gt;'</code>. Call it <code>$PID</code>.</p>
+<li><p>Get the PID of the zombie process via <code>ps -ef | rg &#x27;&lt;defunct&gt;&#x27;</code>. Call it <code>$PID</code>.</p>
 </li>
 <li><p>Run <code>rg --glob &quot;\!$PID&quot; --files &gt; /dev/null 2&gt;&amp;1</code>. This should work fine, indicating that the directory traversal hangs in <code>/proc/$PID</code>.</p>
 </li>
 </ol>
-<h4>If this is a bug, what is the actual behavior?</h4>
+If this is a bug, what is the actual behavior?
 <p><code>rg --files</code> hangs indefinitely inside the <code>/proc</code> folder.</p>
-<h4>If this is a bug, what is the expected behavior?</h4>
+If this is a bug, what is the expected behavior?
 <p><code>rg --files</code> traverses the <code>/proc</code> folder in finite time.</p>
 <p>Note: <code>find</code>, for example, does not seem to have this problem and finishes in finite time even in the presence of zombie processes.</p>
 </div>
@@ -252,7 +252,7 @@ getdents(6, 0x7f303fd9f5f0, 32768)      = -1 EINVAL (Invalid argument)
 getdents(6, 0x7f303fd9f5f0, 32768)      = -1 EINVAL (Invalid argument)
 ...
 </code></pre>
-<p>In particular, <code>getdents(6, 0x7f303fd9f5f0, 32768)      = -1 EINVAL (Invalid argument)</code> is repeated in what appears to be an infinite loop. This happens even when ripgrep uses walkdir directly (forced by passing <code>-j1</code>). If I run walkdir's example program on the directory, then I see this output:</p>
+<p>In particular, <code>getdents(6, 0x7f303fd9f5f0, 32768)      = -1 EINVAL (Invalid argument)</code> is repeated in what appears to be an infinite loop. This happens even when ripgrep uses walkdir directly (forced by passing <code>-j1</code>). If I run walkdir&#x27;s example program on the directory, then I see this output:</p>
 <pre><code>/proc/29271
 /proc/29271/task
 /proc/29271/task/29271
@@ -274,10 +274,10 @@ ERROR: Invalid argument (os error 22)
 <p>Reading the man page for <code>getdents</code>, it says that <code>EINVAL</code> means &quot;Result buffer is too small.&quot;</p>
 <p>Following the strace logs, the problematic directory appears to be <code>/proc/31439/task/31439/net</code>:</p>
 <pre><code>$ ls /proc/31439/task/31439/net
-ls: reading directory '/proc/31439/task/31439/net': Invalid argument
+ls: reading directory &#x27;/proc/31439/task/31439/net&#x27;: Invalid argument
 </code></pre>
-<p>I've scoured the man pages of <code>readdir(2)</code> (Linux, no longer relevant?), <code>readdir(3)</code> (POSIX) and <code>getdents</code> (the last being the raw syscall), and I can't find <em>anything</em> that specifies the behavior of these routines when an error is returned. In particular, the fact that <code>readdir</code> can return <code>EINVAL</code> isn't apparently specified by POSIX. My guess at this particular moment in time is that the directory stream opened by <code>opendir</code> is not advanced either when this particular error occurs or when any error occurs. This explains the infinite loop, since errors that occur during directory traversal don't stop traversal.</p>
-<p>Given the lack of specification, the next best thing is to go out and look at how tools like <code>find</code> (or probably <code>fts</code>) handle this case. When <code>readdir</code> returns an error, do they give up on reading that directory immediately? Is there case analysis on the type of error where some errors result in giving up but others result in mushing on? I don't know.</p>
+<p>I&#x27;ve scoured the man pages of <code>readdir(2)</code> (Linux, no longer relevant?), <code>readdir(3)</code> (POSIX) and <code>getdents</code> (the last being the raw syscall), and I can&#x27;t find <em>anything</em> that specifies the behavior of these routines when an error is returned. In particular, the fact that <code>readdir</code> can return <code>EINVAL</code> isn&#x27;t apparently specified by POSIX. My guess at this particular moment in time is that the directory stream opened by <code>opendir</code> is not advanced either when this particular error occurs or when any error occurs. This explains the infinite loop, since errors that occur during directory traversal don&#x27;t stop traversal.</p>
+<p>Given the lack of specification, the next best thing is to go out and look at how tools like <code>find</code> (or probably <code>fts</code>) handle this case. When <code>readdir</code> returns an error, do they give up on reading that directory immediately? Is there case analysis on the type of error where some errors result in giving up but others result in mushing on? I don&#x27;t know.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -286,13 +286,13 @@ ls: reading directory '/proc/31439/task/31439/net': Invalid argument
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2018-05-10 11:35</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-05-10 11:35</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2018-05-10 15:21</div>
             <div class="timeline-body"><p>Thank you for your detailed response.</p>
 <p>I can actually reproduce this by using just <code>std::fs::read_dir</code>:</p>
-<pre><code class="language-rust">use std::env;
+<pre><code>use std::env;
 use std::io;
 use std::fs;
 use std::path::Path;
@@ -334,7 +334,7 @@ Err(Os { code: 22, kind: InvalidInput, message: &quot;Invalid argument&quot; })
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2018-05-10 15:24</div>
-            <div class="timeline-body"><p>Oh, I just found this: https://github.com/BurntSushi/walkdir/issues/98</p>
+            <div class="timeline-body"><p>Oh, I just found this: <a href="https://github.com/BurntSushi/walkdir/issues/98">BurntSushi/walkdir#98</a></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -346,10 +346,10 @@ Err(Os { code: 22, kind: InvalidInput, message: &quot;Invalid argument&quot; })
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2018-05-10 17:37</div>
             <div class="timeline-body"><p>So I did some more debugging and I believe I found the cause of this.</p>
 <p>When called on <code>/proc/$ZOMBIE_PID/net</code>, the <code>readdir_r</code> function</p>
-<pre><code class="language-c">int readdir_r(DIR *dirp, struct dirent *entry, struct dirent **result);
+<pre><code>int readdir_r(DIR *dirp, struct dirent *entry, struct dirent **result);
 </code></pre>
 <p>returns error code <code>22</code> (as we have seen above) and, <strong>at the same time</strong>, returns <code>NULL</code> in <code>*result</code>, signalling the end of the directory stream. If I am reading the code in the standard library correctly, this case can not be handled properly at the moment.</p>
-<pre><code class="language-rust">loop {
+<pre><code>loop {
     if readdir64_r(self.dirp.0, &amp;mut ret.entry, &amp;mut entry_ptr) != 0 {
         return Some(Err(Error::last_os_error()))
     }
@@ -373,21 +373,21 @@ Err(Os { code: 22, kind: InvalidInput, message: &quot;Invalid argument&quot; })
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2018-05-10 18:27</div>
-            <div class="timeline-body"><p>Reported here: https://github.com/rust-lang/rust/issues/50619</p>
+            <div class="timeline-body"><p>Reported here: <a href="https://github.com/rust-lang/rust/issues/50619">rust-lang/rust#50619</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-22 00:12</div>
-            <div class="timeline-body"><p>This should be fixed in the next stable release (1.29.0). I've confirmed that it is fixed in the current beta of 1.29.0, but is still present in Rust 1.28.0.</p>
+            <div class="timeline-body"><p>This should be fixed in the next stable release (1.29.0). I&#x27;ve confirmed that it is fixed in the current beta of 1.29.0, but is still present in Rust 1.28.0.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2019-01-27 18:15</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-01-27 18:15</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:42:32 UTC
+        Synced at 2026-01-20 18:48:06 UTC
     </footer>
 </body>
 </html>

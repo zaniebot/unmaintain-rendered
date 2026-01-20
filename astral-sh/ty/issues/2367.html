@@ -23,11 +23,11 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/scosman">@scosman</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<p>The latest release has regressed exhaustive enum checking. In V0.0.8 it would know the <code>case _:</code> statement was unreachable, and not complain. However, in v0.0.9 it complains, even though it's unreachable.</p>
-<p>I use this pattern to ensure all enum cases are covered. Complaining if it's reachable is the goal: type checker forces me to handle new enum values in the match statement.</p>
-<h2>Minimal Repo</h2>
-<pre><code class="language-python">from enum import Enum
+            <div class="timeline-body">Summary
+<p>The latest release has regressed exhaustive enum checking. In V0.0.8 it would know the <code>case _:</code> statement was unreachable, and not complain. However, in v0.0.9 it complains, even though it&#x27;s unreachable.</p>
+<p>I use this pattern to ensure all enum cases are covered. Complaining if it&#x27;s reachable is the goal: type checker forces me to handle new enum values in the match statement.</p>
+Minimal Repo
+<pre><code>from enum import Enum
 from typing import NoReturn
 
 from pydantic import BaseModel, Field
@@ -68,8 +68,8 @@ def isA(item: TestClass | None) -&gt; bool:
             # Also reproduces with assert_never
 
 </code></pre>
-<h2>V0.0.9 Behaviour</h2>
-<p>Complains about the typing, even though it's unreachable (exhaustive enum check above).</p>
+V0.0.9 Behaviour
+<p>Complains about the typing, even though it&#x27;s unreachable (exhaustive enum check above).</p>
 <pre><code>39 |             raise_exhaustive_enum_error(val)
    |                                         ^^^ Expected `Never`, found `TestEnum | Unknown`
 </code></pre>
@@ -79,9 +79,9 @@ def isA(item: TestClass | None) -&gt; bool:
    |                          |
    |                          Inferred type of argument is `TestEnum`
 </code></pre>
-<h2>V0.0.8 Behaviour</h2>
+V0.0.8 Behaviour
 <p><code>All checks passed!</code></p>
-<h3>Version</h3>
+Version
 <p>0.0.9</p>
 </div>
         </div>
@@ -99,7 +99,7 @@ Date:   Mon Dec 29 22:19:28 2025 -0500
     
     If we match on an `TestEnum | None`, then when adding a case like
     `~Literal[TestEnum.FOO]` (i.e., after `if value == TestEnum.FOO:
-    return`), we'd distribute `Literal[TestEnum.BAR]` on the entire builder,
+    return`), we&#x27;d distribute `Literal[TestEnum.BAR]` on the entire builder,
     creating `None &amp; Literal[TestEnum.BAR]` which simplified to `Never`.
     Instead, we should only expand to the remaining members for pieces of
     the intersection that contain the enum.
@@ -108,14 +108,14 @@ Date:   Mon Dec 29 22:19:28 2025 -0500
     ~Literal[TestEnum.BAR]` correctly simplifies to `None` instead of
     `Never`.
     
-    Closes https://github.com/astral-sh/ty/issues/2260.
+    Closes <a href="https://github.com/astral-sh/ty/issues/2260">astral-sh/ty#2260</a>.
 
  .../resources/mdtest/conditional/match.md          | 49 +++++++++++++++++
  crates/ty_python_semantic/src/types/builder.rs     | 63 ++++++++++++++++------
  2 files changed, 96 insertions(+), 16 deletions(-)
 </code></pre>
-<p>...and, now that I look at your code more closely, I think that this is a desirable change. You haven't annotated the <code>_value</code> attribute on your <code>TestClass</code> class, so the inferred public type of this attribute is not <code>TestEnum</code>, it is <code>TestEnum | Unknown</code>. The error on your code goes away if you change your <code>TestClass</code> to either this:</p>
-<pre><code class="language-py">class TestClass(BaseModel):
+<p>...and, now that I look at your code more closely, I think that this is a desirable change. You haven&#x27;t annotated the <code>_value</code> attribute on your <code>TestClass</code> class, so the inferred public type of this attribute is not <code>TestEnum</code>, it is <code>TestEnum | Unknown</code>. The error on your code goes away if you change your <code>TestClass</code> to either this:</p>
+<pre><code>class TestClass(BaseModel):
     def __init__(self, value: TestEnum):
         self._value: TestEnum = value
 
@@ -124,7 +124,7 @@ Date:   Mon Dec 29 22:19:28 2025 -0500
     )
 </code></pre>
 <p>or this:</p>
-<pre><code class="language-py">class TestClass(BaseModel):
+<pre><code>class TestClass(BaseModel):
     _value: TestEnum
 
     def __init__(self, value: TestEnum):
@@ -134,16 +134,16 @@ Date:   Mon Dec 29 22:19:28 2025 -0500
         description=&quot;A field.&quot;,
     )
 </code></pre>
-<p>You can see my explanation in https://github.com/astral-sh/ty/issues/2370 for why we infer the type as <code>TestEnum | Unknown</code> without the annotation. We plan to make this configurable in the future and possibly change the default; see #1240 for that.</p>
+<p>You can see my explanation in <a href="https://github.com/astral-sh/ty/issues/2370">astral-sh/ty#2370</a> for why we infer the type as <code>TestEnum | Unknown</code> without the annotation. We plan to make this configurable in the future and possibly change the default; see #1240 for that.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2026-01-06 21:10</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-06 21:10</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:21:42 UTC
+        Synced at 2026-01-20 19:26:58 UTC
     </footer>
 </body>
 </html>

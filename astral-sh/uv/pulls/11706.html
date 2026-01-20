@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>Don't panic on Ctrl-C in confirm prompt</h1>
+    <h1>Don&#x27;t panic on Ctrl-C in confirm prompt</h1>
 
     <div class="meta">
         <span class="state-icon state-merged"></span>
@@ -23,21 +23,15 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ericmarkmartin">@ericmarkmartin</a></div>
-            <div class="timeline-body"><!--
-Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+            <div class="timeline-body">
 
-- Does this pull request include a summary of the change? (See below.)
-- Does this pull request include a descriptive title?
-- Does this pull request include references to any relevant issues?
--->
+Summary
 
-<h2>Summary</h2>
-<!-- What's the purpose of the change? What does it do, and why? -->
 
 <p>Resolves #11704</p>
 <p>Propagate errors from <code>uv_console::confirm</code> up instead of <code>unwrap</code>ping them, causing panics.</p>
-<h2>Test Plan</h2>
-<!-- How was it tested? -->
+Test Plan
+
 
 <p>Regression testing the bug is very difficult, as the behavior of <code>confirm</code> changes based on whether <code>uv</code> is talking to a <code>tty</code>. We can trick it using ptys, but the best rust pty crate I could find only provides blocking reads of the spawned child, which is insufficient to write the regression test.</p>
 </div>
@@ -45,7 +39,7 @@ Thank you for contributing to uv! To help us out with reviewing, please consider
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ericmarkmartin">@ericmarkmartin</a> on 2025-02-22 08:04</div>
             <div class="timeline-body"><p>Took a brief stab at testing, but failed. Not sure how to test the behavior when we need the subprocess to be interactive in order to see the confirmation prompt. For reference, this is what I attempted to no avail (the snapshot looks like what happens if you answer the confirmation prompt with no).</p>
-<pre><code class="language-rust">#[test]
+<pre><code>#[test]
 fn ctrl_c_install_confirmation_prompt() -&gt; Result&lt;()&gt; {
     let context = TestContext::new(&quot;3.12&quot;);
 
@@ -70,16 +64,16 @@ fn ctrl_c_install_confirmation_prompt() -&gt; Result&lt;()&gt; {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ericmarkmartin">@ericmarkmartin</a> reviewed on 2025-02-23 05:34</div>
-            <div class="timeline-body"><p>I've added a test that seems to work using pty, which I get out of wezterm's pty implementation. One thing to note is that the read out of the pty is non-blocking so if our confirmation prompt changes and becomes smaller, the test will hang, which isn't great. Still thinking of ways to fix that.</p>
+            <div class="timeline-body"><p>I&#x27;ve added a test that seems to work using pty, which I get out of wezterm&#x27;s pty implementation. One thing to note is that the read out of the pty is non-blocking so if our confirmation prompt changes and becomes smaller, the test will hang, which isn&#x27;t great. Still thinking of ways to fix that.</p>
 <p>Part of making the test workable was a drive-by change so that the confirmation prompt respects the global color setting</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Converted to draft by @ericmarkmartin on 2025-02-24 03:29</div>
+            <div class="event">Converted to draft by <a href="https://github.com/ericmarkmartin">@ericmarkmartin</a> on 2025-02-24 03:29</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ericmarkmartin">@ericmarkmartin</a> on 2025-02-24 03:36</div>
-            <div class="timeline-body"><p>Apparently the fix doesn't work on windows, so converting back to draft while I workshop a bit</p>
+            <div class="timeline-body"><p>Apparently the fix doesn&#x27;t work on windows, so converting back to draft while I workshop a bit</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -102,39 +96,39 @@ fn ctrl_c_install_confirmation_prompt() -&gt; Result&lt;()&gt; {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ericmarkmartin">@ericmarkmartin</a> on 2025-02-26 05:20</div>
-            <div class="timeline-body"><p>Ah okay, that makes sense. I've rolled back the signal handling changes because it requires some changes to the console crate's windows implementation, which I'll try to PR separately but it probably shouldn't block this.</p>
-<p>Do you have thoughts on adding back the test with the pseudoterminal? My inclination is that it's not worth it given it's proclivity to hanging</p>
+            <div class="timeline-body"><p>Ah okay, that makes sense. I&#x27;ve rolled back the signal handling changes because it requires some changes to the console crate&#x27;s windows implementation, which I&#x27;ll try to PR separately but it probably shouldn&#x27;t block this.</p>
+<p>Do you have thoughts on adding back the test with the pseudoterminal? My inclination is that it&#x27;s not worth it given it&#x27;s proclivity to hanging</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ericmarkmartin">@ericmarkmartin</a> on 2025-02-26 06:34</div>
             <div class="timeline-body"><blockquote>
-<p>which I'll try to PR separately</p>
+<p>which I&#x27;ll try to PR separately</p>
 </blockquote>
-<p>see https://github.com/console-rs/console/pull/235</p>
+<p>see <a href="https://github.com/console-rs/console/pull/235">console-rs/console#235</a></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @ericmarkmartin on 2025-02-26 06:36</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/ericmarkmartin">@ericmarkmartin</a> on 2025-02-26 06:36</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-26 09:52</div>
             <div class="timeline-body"><p>Thanks for making the upstream PR!</p>
-<p>I think it is fine this way, it's clear the panic cannot occur anymore given that the <code>unwrap()</code> is gone.</p>
-<p>I've changed the error handling in <code>uv/src/lib.rs</code> to forward the <code>io::Error</code> if one occurs.</p>
+<p>I think it is fine this way, it&#x27;s clear the panic cannot occur anymore given that the <code>unwrap()</code> is gone.</p>
+<p>I&#x27;ve changed the error handling in <code>uv/src/lib.rs</code> to forward the <code>io::Error</code> if one occurs.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-02-26 09:52</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/konstin">@konstin</a> on 2025-02-26 09:52</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "handle Ctrl-C explicitly in confirm prompt" to "Don't panic on Ctrl-C in confirm prompt" by @konstin on 2025-02-26 10:09</div>
+            <div class="event">Renamed from &quot;handle Ctrl-C explicitly in confirm prompt&quot; to &quot;Don&#x27;t panic on Ctrl-C in confirm prompt&quot; by <a href="https://github.com/konstin">@konstin</a> on 2025-02-26 10:09</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @konstin on 2025-02-26 10:10</div>
+            <div class="event">Merged by <a href="https://github.com/konstin">@konstin</a> on 2025-02-26 10:10</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @konstin on 2025-02-26 10:10</div>
+            <div class="event">Closed by <a href="https://github.com/konstin">@konstin</a> on 2025-02-26 10:10</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-02-27 02:33</div>
@@ -142,7 +136,7 @@ fn ctrl_c_install_confirmation_prompt() -&gt; Result&lt;()&gt; {
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:42:07 UTC
+        Synced at 2026-01-20 19:50:59 UTC
     </footer>
 </body>
 </html>

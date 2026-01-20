@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dimaqq">@dimaqq</a></div>
-            <div class="timeline-body"><h3>Question</h3>
-<p>We've got some code that has to support both pydantic 1 and 2 for historical reasons.</p>
+            <div class="timeline-body">Question
+<p>We&#x27;ve got some code that has to support both pydantic 1 and 2 for historical reasons.</p>
 <p>It looks like this:</p>
-<pre><code class="language-py">PYDANTIC_IS_V1 = int(pydantic.version.VERSION.split(&quot;.&quot;)[0]) &lt; 2
+<pre><code>PYDANTIC_IS_V1 = int(pydantic.version.VERSION.split(&quot;.&quot;)[0]) &lt; 2
 if PYDANTIC_IS_V1:
     class DatabagModel(BaseModel):  # type: ignore
         ...
@@ -35,29 +35,29 @@ else:
         ...
 </code></pre>
 <p>Attempting to use this model is rejected by <code>ty</code>:</p>
-<pre><code class="language-py">warning[unsupported-base]: Unsupported class base with type `&lt;class 'DatabagModel'&gt; | &lt;class 'DatabagModel'&gt;`
+<pre><code>warning[unsupported-base]: Unsupported class base with type `&lt;class &#x27;DatabagModel&#x27;&gt; | &lt;class &#x27;DatabagModel&#x27;&gt;`
    --&gt; lib/charms/traefik_k8s/v2/ingress.py:238:30
     |
 238 | class IngressRequirerAppData(DatabagModel):
     |                              ^^^^^^^^^^^^
 </code></pre>
-<h3>Version</h3>
+Version
 <p>ty 0.0.1-alpha.7 (afb20f6fe 2025-05-26)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @dimaqq on 2025-05-28 05:55</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/dimaqq">@dimaqq</a> on 2025-05-28 05:55</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">set-theoretic types</span> added by @sharkdp on 2025-05-28 06:47</div>
+            <div class="event">Label <span class="label">set-theoretic types</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-28 06:47</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-28 06:53</div>
             <div class="timeline-body"><p>Thank you for reporting this.</p>
-<p>We currently do not support union types as class bases. It is possible that we will support that at some point, but it's probably not a high-priority feature.</p>
+<p>We currently do not support union types as class bases. It is possible that we will support that at some point, but it&#x27;s probably not a high-priority feature.</p>
 <p>As a work-around, is there a way in which you could make <code>PYDANTIC_IS_V1</code> a statically known constant (by making that version check easier to understand)? I understand that you probably have no control over <code>pydantic.version.VERSION</code>, but if we can infer the type of <code>PYDANTIC_IS_V1</code> to be <code>Literal[True]</code> or <code>Literal[False]</code>, we should be able to understand that <code>DatabagModel</code> is just a single class type. For example:</p>
 <p>https://play.ty.dev/503b8c67-a294-4c25-a1bb-463eb7e4d0bf</p>
-<pre><code class="language-py">VERSION = (2, 1, 3)
+<pre><code>VERSION = (2, 1, 3)
 
 PYDANTIC_IS_V1 = VERSION[0] &lt; 1
 
@@ -76,7 +76,7 @@ class IngressRequirerAppData(DatabagModel):
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-28 07:01</div>
             <div class="timeline-body"><p>Could another alternative be to gate individual members by the pydantic version check instead of the entire class?</p>
-<pre><code class="language-py">PYDANTIC_IS_V1 = int(pydantic.version.VERSION.split(&quot;.&quot;)[0]) &lt; 2
+<pre><code>PYDANTIC_IS_V1 = int(pydantic.version.VERSION.split(&quot;.&quot;)[0]) &lt; 2
 class DatabagModel(BaseModel):  # type: ignore
 	if PYDANTIC_IS_V1:
         ...
@@ -88,31 +88,31 @@ class DatabagModel(BaseModel):  # type: ignore
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-28 07:12</div>
             <div class="timeline-body"><p>Wondering if we could make things like this easier by providing extended type inference for patterns that would appear in such version checks. For example, if <code>VERSION</code> is a literal string (&quot;2.11.5&quot;), like in this case, we could potentially infer a &quot;LiteralList&quot; type for <code>VERSION.split(&quot;.&quot;)</code>. Something like <code>LiteralList[Literal[&quot;2&quot;], Literal[&quot;11&quot;], Literal[&quot;5&quot;]]</code>. From there, we could support index-access with literal integers on those <code>LiteralList</code> types, so <code>VERSION.split(&quot;.&quot;)[0]</code> would become <code>Literal[&quot;2&quot;]</code>. And finally, we would also have to support <code>int(…)</code> calls for literal strings. None of which sounds completely unreasonable, especially if we want to introduce a <code>LiteralList</code> type for other reasons as well.</p>
-<p>~~Another thing that came to my mind was to add type inference for <code>hasattr</code>. We already support narrowing for <code>hasattr</code>, and it should be easy to also infer <code>Literal[True] / Literal[False] / bool</code> for <code>hasattr</code> calls, depending on whether the attribute is bound, unbound, or possibly-bound. This way, users could detect library versions by checking for attributes that are only available in one version: <code>PYDANTIC_IS_V1 = not hasattr(pydantic, &quot;some_api_only_available_in_v2&quot;)</code>.~~ (Edit: this seems like a bad idea, see https://github.com/astral-sh/ruff/pull/18348#issuecomment-2915390051)</p>
+<p>~~Another thing that came to my mind was to add type inference for <code>hasattr</code>. We already support narrowing for <code>hasattr</code>, and it should be easy to also infer <code>Literal[True] / Literal[False] / bool</code> for <code>hasattr</code> calls, depending on whether the attribute is bound, unbound, or possibly-bound. This way, users could detect library versions by checking for attributes that are only available in one version: <code>PYDANTIC_IS_V1 = not hasattr(pydantic, &quot;some_api_only_available_in_v2&quot;)</code>.~~ (Edit: this seems like a bad idea, see <a href="https://github.com/astral-sh/ruff/pull/18348">astral-sh/ruff#18348</a>#issuecomment-2915390051)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-28 17:53</div>
             <div class="timeline-body"><p>@dimaqq Are you currently successfully type-checking this code with another type checker? On a simple version of this code, it seems like both <a href="https://pyright-play.net/?strict=true&amp;code=CYUwZgBA5iAuD6AjA9sgNgCgJQQLQD4IV0AuCAOkoCgqAFATQBEBBAOQBUBJAYXk4GV4ANQCMEALzQ4SVJiw0AlpAYsOPPoNEkqEXRADGaAIYBnExEZHYRxEagBZZKDTa9bitRBoTIV3sOm5pbWtg5OXn7uHuQ0AWYQnAB2UABOIGYASiAAjgCuCmkpzAAOxcFGGOWhjs5YkRDFgUA">pyright</a> and <a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=e236a8d967a0597f88d84dee4788e83d">mypy</a> also fail (although they error on the repeat definition of a same-named class in the same scope, rather than on inheriting from a union.)</p>
-<p>It does seem like some extended inference for <code>.split</code> on a <code>LiteralString</code> could help here. A simpler workaround that could work with ty today would be to use string indexing instead (<code>VERSION[0] == &quot;1&quot;</code>), though that's obviously less robust than using <code>.split</code> and <code>int()</code>.</p>
+<p>It does seem like some extended inference for <code>.split</code> on a <code>LiteralString</code> could help here. A simpler workaround that could work with ty today would be to use string indexing instead (<code>VERSION[0] == &quot;1&quot;</code>), though that&#x27;s obviously less robust than using <code>.split</code> and <code>int()</code>.</p>
 <p>The other issue here is that <code>pydantic.version.VERSION</code> is not annotated, so we actually infer <code>Unknown | Literal[&quot;2.11.5&quot;]</code> for it, which would break all of these solutions. Ideally pydantic would annotate it at least as <code>: Final</code>, which should cause us to remove the <code>Unknown |</code> (once we support <code>Final</code>).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dimaqq">@dimaqq</a> on 2025-06-05 05:53</div>
-            <div class="timeline-body"><p>That's good question as I was running on ty on someone else's codebase.</p>
+            <div class="timeline-body"><p>That&#x27;s good question as I was running on ty on someone else&#x27;s codebase.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Z post-stable" by @carljm on 2025-11-14 14:37</div>
+            <div class="event">Added to milestone &quot;Z post-stable&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-11-14 14:37</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Removed from milestone "Z post-stable" by @carljm on 2025-11-18 16:10</div>
+            <div class="event">Removed from milestone &quot;Z post-stable&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-11-18 16:10</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:01 UTC
+        Synced at 2026-01-20 19:24:40 UTC
     </footer>
 </body>
 </html>

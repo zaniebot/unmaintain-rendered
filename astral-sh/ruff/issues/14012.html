@@ -23,11 +23,11 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><p>As spotted by @MichaReiser in https://github.com/astral-sh/ruff/pull/13992#pullrequestreview-2404711897, red-knot does not currently emit diagnostics if you attempt to iterate over an object that might be iterable, but also might not. For example, we should emit diagnostics on all of the following snippets, but currently do not:</p>
-<h3>Union where one element has no <code>__iter__</code> method:</h3>
-<details>
+            <div class="timeline-body"><p>As spotted by @MichaReiser in <a href="https://github.com/astral-sh/ruff/pull/13992">astral-sh/ruff#13992</a>#pullrequestreview-2404711897, red-knot does not currently emit diagnostics if you attempt to iterate over an object that might be iterable, but also might not. For example, we should emit diagnostics on all of the following snippets, but currently do not:</p>
+Union where one element has no <code>__iter__</code> method:
 
-<pre><code class="language-py">class TestIter:
+
+<pre><code>class TestIter:
     def __next__(self) -&gt; int:
         return 42
 
@@ -38,15 +38,15 @@ class Test:
 def coinflip() -&gt; bool:
     return True
 
-for x in Test() if coinflip() else 42:  # should trigger a diagnostic, we don't currently
+for x in Test() if coinflip() else 42:  # should trigger a diagnostic, we don&#x27;t currently
     pass
 </code></pre>
-</details>
 
-<h3>Union type as <em>iterable</em> where one union element has invalid <code>__iter__</code> method</h3>
-<details>
 
-<pre><code class="language-py">class TestIter:
+Union type as <em>iterable</em> where one union element has invalid <code>__iter__</code> method
+
+
+<pre><code>class TestIter:
     def __next__(self) -&gt; int:
         return 42
 
@@ -61,15 +61,15 @@ class Test2:
 def coinflip() -&gt; bool:
     return True
 
-for x in Test() if coinflip() else Test2():  # should trigger a diagnostic, we don't currently
+for x in Test() if coinflip() else Test2():  # should trigger a diagnostic, we don&#x27;t currently
     pass
 </code></pre>
-</details>
 
-<h3>Union type as <em>iterator</em> where one union element has no <code>__next__</code> method</h3>
-<details>
 
-<pre><code class="language-py">class TestIter:
+Union type as <em>iterator</em> where one union element has no <code>__next__</code> method
+
+
+<pre><code>class TestIter:
     def __next__(self) -&gt; int:
         return 42
 
@@ -77,17 +77,17 @@ class Test:
     def __iter__(self) -&gt; TestIter | int:
         return TestIter()
 
-for x in Test():  # should trigger a diagnostic, we don't currently
+for x in Test():  # should trigger a diagnostic, we don&#x27;t currently
     pass
 </code></pre>
-</details>
 
-<p>These are surprisingly hard to fix with our current architecture! I spent several hours yesterday attempting to fix them, and my conclusion is that while it is <em>possible</em> to fix them with our current design, it's messy and complicated enough that we should pursue some refactors first.</p>
-<p>One of the issues is the design of our <code>CallOutcome</code> enum, which is returned from <code>Type::call</code>. <code>Type::iterate()</code> calls <code>CallOutcome::return_ty</code> to determine what the iterable's <code>__iter__</code> and the iterator's <code>__next__</code> methods return. <code>CallOutcome::return_ty</code> is supposed to help abstract over the fact that the type you're trying to &quot;call&quot; might not be callable (and this includes <code>Type::Unbound</code>): it returns <code>None</code> if this is the case, or <code>Some(ty)</code> if the type you're trying to call is callable. If the type you're trying to call is a union between callable and not-callable types, however, <code>Some(ty)</code> is returned; there's no signal to the caller of <code>CallOutcome::return_ty</code> that the call could fail if the runtime type of the variable is a member of one of the union elements that was not callable.</p>
+
+<p>These are surprisingly hard to fix with our current architecture! I spent several hours yesterday attempting to fix them, and my conclusion is that while it is <em>possible</em> to fix them with our current design, it&#x27;s messy and complicated enough that we should pursue some refactors first.</p>
+<p>One of the issues is the design of our <code>CallOutcome</code> enum, which is returned from <code>Type::call</code>. <code>Type::iterate()</code> calls <code>CallOutcome::return_ty</code> to determine what the iterable&#x27;s <code>__iter__</code> and the iterator&#x27;s <code>__next__</code> methods return. <code>CallOutcome::return_ty</code> is supposed to help abstract over the fact that the type you&#x27;re trying to &quot;call&quot; might not be callable (and this includes <code>Type::Unbound</code>): it returns <code>None</code> if this is the case, or <code>Some(ty)</code> if the type you&#x27;re trying to call is callable. If the type you&#x27;re trying to call is a union between callable and not-callable types, however, <code>Some(ty)</code> is returned; there&#x27;s no signal to the caller of <code>CallOutcome::return_ty</code> that the call could fail if the runtime type of the variable is a member of one of the union elements that was not callable.</p>
 <p>https://github.com/astral-sh/ruff/blob/76e4277696e8b34b771d554f8f0d07054d413289/crates/red_knot_python_semantic/src/types.rs#L1424-L1450</p>
 <p>(This is precisely the situation we need to detect in the above snippets. If <code>__iter__</code> might be callable, but also might not, then the variable might be iterable, but also might not, which means that we need to emit a diagnostic saying that the code trying to iterate over the maybe-iterable variable is potentially unsafe.)</p>
-<p>It seemed like calling <code>CallOutcome::return_ty</code> is not the solution to this problem, so I explored other solutions that instead directly pattern matched on the possible variants of <code>CallOutcome</code>. This is possible, but messy and hard. For a start, <code>CallOutcome</code> has a dedicated variant just for <code>reveal_type</code>, which means that if you're matching over the possible variants of <code>CallOutcome</code>, you are forced to explicitly consider whether a type should be revealed by red-knot in cases like these:</p>
-<pre><code class="language-py">from typing_extensions import reveal_type
+<p>It seemed like calling <code>CallOutcome::return_ty</code> is not the solution to this problem, so I explored other solutions that instead directly pattern matched on the possible variants of <code>CallOutcome</code>. This is possible, but messy and hard. For a start, <code>CallOutcome</code> has a dedicated variant just for <code>reveal_type</code>, which means that if you&#x27;re matching over the possible variants of <code>CallOutcome</code>, you are forced to explicitly consider whether a type should be revealed by red-knot in cases like these:</p>
+<pre><code>from typing_extensions import reveal_type
 
 class Foo:
     __iter__ = reveal_type
@@ -105,16 +105,16 @@ class Baz:
 for var2 in Baz(): ...  # should this... cause us to reveal a type?!
                         # (`__next__` is &quot;called&quot; on the iterator as part of the `for` loop!)
 </code></pre>
-<p>I suppose from a purist perspective, this <em>is</em> something we should explicitly consider, but it doesn't... feel like a useful use of my time (and adds extra complexity) to explicitly consider it!</p>
-<p>Another issue with attempting to explicitly match over the possible variants of a <code>CallOutcome</code> instance is that <code>CallOutcome::Union</code> is a recursive variant, meaning you have to write a recursive function just to match over it -- e.g. here's a function I wrote for a partial solution that fixes the first two false-negatives above but not the third one:</p>
-<details>
-<summary>Annoyingly complicated recursive function matching on `CallOutcome` variants</summary>
+<p>I suppose from a purist perspective, this <em>is</em> something we should explicitly consider, but it doesn&#x27;t... feel like a useful use of my time (and adds extra complexity) to explicitly consider it!</p>
+<p>Another issue with attempting to explicitly match over the possible variants of a <code>CallOutcome</code> instance is that <code>CallOutcome::Union</code> is a recursive variant, meaning you have to write a recursive function just to match over it -- e.g. here&#x27;s a function I wrote for a partial solution that fixes the first two false-negatives above but not the third one:</p>
 
-<pre><code class="language-rs">fn call_dunder_next_on_iterator&lt;'db&gt;(
-    db: &amp;'db dyn Db,
-    dunder_iter_outcome: &amp;CallOutcome&lt;'db&gt;,
-    original_iterable: Type&lt;'db&gt;,
-) -&gt; IterationOutcome&lt;'db&gt; {
+Annoyingly complicated recursive function matching on `CallOutcome` variants
+
+<pre><code>fn call_dunder_next_on_iterator&lt;&#x27;db&gt;(
+    db: &amp;&#x27;db dyn Db,
+    dunder_iter_outcome: &amp;CallOutcome&lt;&#x27;db&gt;,
+    original_iterable: Type&lt;&#x27;db&gt;,
+) -&gt; IterationOutcome&lt;&#x27;db&gt; {
     match dunder_iter_outcome {
         CallOutcome::Callable {
             return_ty: iterator_ty,
@@ -161,17 +161,17 @@ for var2 in Baz(): ...  # should this... cause us to reveal a type?!
     }
 }
 </code></pre>
-</details>
+
 
 <p>I think there are ways to avoid making <code>CallOutcome::Union</code> non-recursive, and that we should pursue them.</p>
-<p>All told, I think we should not attempt to fix these bugs for now until we've improved our code structure. A lot of this will look pretty different after @sharkdp's work to remove <code>Type::Unbound</code> in https://github.com/astral-sh/ruff/pull/13980, so I don't plan on looking into this anymore until that's landed.</p>
+<p>All told, I think we should not attempt to fix these bugs for now until we&#x27;ve improved our code structure. A lot of this will look pretty different after @sharkdp&#x27;s work to remove <code>Type::Unbound</code> in <a href="https://github.com/astral-sh/ruff/pull/13980">astral-sh/ruff#13980</a>, so I don&#x27;t plan on looking into this anymore until that&#x27;s landed.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2024-10-31 11:23</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-31 11:23</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-10-31 11:23</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-31 11:23</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-31 12:49</div>
@@ -194,12 +194,12 @@ for var2 in Baz(): ...  # should this... cause us to reveal a type?!
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-02-20 12:50</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-20 12:50</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:51:24 UTC
+        Synced at 2026-01-20 18:48:59 UTC
     </footer>
 </body>
 </html>

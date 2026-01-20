@@ -23,74 +23,74 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/nico">@nico</a></div>
-            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+            <div class="timeline-body">What version of ripgrep are you using?
 <p>ripgrep 11.0.2 (rev 3de31f7527)</p>
-<h4>How did you install ripgrep?</h4>
+How did you install ripgrep?
 <p>Binary off github.</p>
-<h4>What operating system are you using ripgrep on?</h4>
+What operating system are you using ripgrep on?
 <p>Windows 10.</p>
-<h4>Describe your question, feature request, or bug.</h4>
-<p>I've been trying to find where some program stores some setting. To do this, I set the setting to &quot;someuniquestring&quot; and then ran <code>rg someuniquestring likelydirectory</code>.</p>
-<p>The search came back empty -- but it was because the string was stored UTF-16 encoded in some binary file. I didn't think of that for a few minutes, even though this is common on Windows.</p>
-<p>It'd be nice if ripgrep had a way to search for the UTF-16 encoding of an ascii string, either behind a flag, or maybe even by default (maybe only when running on Windows because UTF-16 is so common here).</p>
-<p>If this sounds like something you'd accept, I could try to write a patch.</p>
+Describe your question, feature request, or bug.
+<p>I&#x27;ve been trying to find where some program stores some setting. To do this, I set the setting to &quot;someuniquestring&quot; and then ran <code>rg someuniquestring likelydirectory</code>.</p>
+<p>The search came back empty -- but it was because the string was stored UTF-16 encoded in some binary file. I didn&#x27;t think of that for a few minutes, even though this is common on Windows.</p>
+<p>It&#x27;d be nice if ripgrep had a way to search for the UTF-16 encoding of an ascii string, either behind a flag, or maybe even by default (maybe only when running on Windows because UTF-16 is so common here).</p>
+<p>If this sounds like something you&#x27;d accept, I could try to write a patch.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2019-11-10 08:10</div>
-            <div class="timeline-body"><p>I guess you can't use <code>-E</code> here because the file is not actually UTF-16, just the sub-string is?</p>
-<p>If that's so, i think the work-around on UNIX systems would be something like this:</p>
+            <div class="timeline-body"><p>I guess you can&#x27;t use <code>-E</code> here because the file is not actually UTF-16, just the sub-string is?</p>
+<p>If that&#x27;s so, i think the work-around on UNIX systems would be something like this:</p>
 <pre><code>printf %s someuniquestring | iconv -t utf-16be | rg -af-
 </code></pre>
-<p>(You wouldn't be able to do <code>rg -a &quot;$( iconv ... )&quot;</code> because you can't pass <code>NUL</code> bytes in argument lists on UNIX)</p>
+<p>(You wouldn&#x27;t be able to do <code>rg -a &quot;$( iconv ... )&quot;</code> because you can&#x27;t pass <code>NUL</code> bytes in argument lists on UNIX)</p>
 <p>Not sure if <code>iconv</code> is available for Windows, but maybe something to consider for now</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-11-10 12:28</div>
             <div class="timeline-body"><blockquote>
-<p>It'd be nice if ripgrep had a way to search for the UTF-16 encoding of an ascii string, either behind a flag, or maybe even by default (maybe only when running on Windows because UTF-16 is so common here).</p>
+<p>It&#x27;d be nice if ripgrep had a way to search for the UTF-16 encoding of an ascii string, either behind a flag, or maybe even by default (maybe only when running on Windows because UTF-16 is so common here).</p>
 </blockquote>
 <p>ripgrep <em>should</em> already handle the common case already. If ripgrep sees a UTF-16 BOM at the beginning of a file, then it will automatically transcode the contents of the file to UTF-8, which should allow your search to succeed.</p>
-<p>If your case is a &quot;mostly ASCII/UTF-8/binary file, with some parts in UTF-16&quot; then I'd say that's pretty uncommon. In that case, I imagine you could still try <code>rg foo -E utf-16</code>. Otherwise, I think @okdana's example is probably the right path to go.</p>
-<p>In general, I don't think ripgrep can solve the issue of mixed encodings for you automatically.</p>
+<p>If your case is a &quot;mostly ASCII/UTF-8/binary file, with some parts in UTF-16&quot; then I&#x27;d say that&#x27;s pretty uncommon. In that case, I imagine you could still try <code>rg foo -E utf-16</code>. Otherwise, I think @okdana&#x27;s example is probably the right path to go.</p>
+<p>In general, I don&#x27;t think ripgrep can solve the issue of mixed encodings for you automatically.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2019-11-10 12:28</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-11-10 12:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2019-11-10 12:29</div>
+            <div class="event">Label <span class="label">wontfix</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-11-10 12:29</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/nico">@nico</a> on 2019-11-10 12:51</div>
-            <div class="timeline-body"><p>The data is somewhere in a binary file, not in a text file with a BOM. This is pretty common on Windows (for example, Compound File Binary Format [1], PDB files, .res files, etc). These files won't decode as UTF-16, so I don't think <code>-E</code> helps.</p>
-<p>Sure, it's possible to do this. Windows has neither printf nor iconv preinstalled, and one has to think to do it, but just manually putting 0 bytes in the search string isn't that hard to do manually either. But it's also easy to implement.</p>
-<p>If Windows isn't a priority, that's certainly understandable.</p>
+            <div class="timeline-body"><p>The data is somewhere in a binary file, not in a text file with a BOM. This is pretty common on Windows (for example, Compound File Binary Format [1], PDB files, .res files, etc). These files won&#x27;t decode as UTF-16, so I don&#x27;t think <code>-E</code> helps.</p>
+<p>Sure, it&#x27;s possible to do this. Windows has neither printf nor iconv preinstalled, and one has to think to do it, but just manually putting 0 bytes in the search string isn&#x27;t that hard to do manually either. But it&#x27;s also easy to implement.</p>
+<p>If Windows isn&#x27;t a priority, that&#x27;s certainly understandable.</p>
 <p>1:https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-cfb/53989ce4-7b05-4f8d-829b-d08d6148375b?redirectedfrom=MSDN</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-11-10 13:58</div>
             <div class="timeline-body"><blockquote>
-<p>These files won't decode as UTF-16, so I don't think -E helps.</p>
+<p>These files won&#x27;t decode as UTF-16, so I don&#x27;t think -E helps.</p>
 </blockquote>
 <p>Have you tried it?</p>
 <blockquote>
-<p>If Windows isn't a priority, that's certainly understandable.</p>
+<p>If Windows isn&#x27;t a priority, that&#x27;s certainly understandable.</p>
 </blockquote>
-<p>There are several aspects of ripgrep that make it clear that Windows <em>is</em> a priority. Otherwise, I wouldn't have spent the considerable effort required to get colors working correctly, supporting UTF-16 automatically and making sure everything single PR passes Windows CI builds before coming in.</p>
+<p>There are several aspects of ripgrep that make it clear that Windows <em>is</em> a priority. Otherwise, I wouldn&#x27;t have spent the considerable effort required to get colors working correctly, supporting UTF-16 automatically and making sure everything single PR passes Windows CI builds before coming in.</p>
 <blockquote>
-<p>But it's also easy to implement.</p>
+<p>But it&#x27;s also easy to implement.</p>
 </blockquote>
-<p>It's only easy to implement when you're searching for a simple fixed string literal. In the general case---for an arbitrary regex---it is not easy to implement, and this is one of the reasons why this feature doesn't exist. Moreover, it wouldn't be turned on by default automatically in <em>any</em> situation, since the only thing it would be good for is a mixed encoding use case. It would <em>also</em> mean that any corresponding ASCII results would not be found, so you'd wind up trading one problem for another.</p>
-<p>No matter which way you slice it, if you need to search mixed encoding files, then you'll need to take some kind of action to make the search behave as you want.</p>
+<p>It&#x27;s only easy to implement when you&#x27;re searching for a simple fixed string literal. In the general case---for an arbitrary regex---it is not easy to implement, and this is one of the reasons why this feature doesn&#x27;t exist. Moreover, it wouldn&#x27;t be turned on by default automatically in <em>any</em> situation, since the only thing it would be good for is a mixed encoding use case. It would <em>also</em> mean that any corresponding ASCII results would not be found, so you&#x27;d wind up trading one problem for another.</p>
+<p>No matter which way you slice it, if you need to search mixed encoding files, then you&#x27;ll need to take some kind of action to make the search behave as you want.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:43:03 UTC
+        Synced at 2026-01-20 18:48:09 UTC
     </footer>
 </body>
 </html>

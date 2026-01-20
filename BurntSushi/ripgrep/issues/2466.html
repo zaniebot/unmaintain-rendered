@@ -24,15 +24,15 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/nyurik">@nyurik</a></div>
             <div class="timeline-body"><p>ripgrep user may often forget to use the <code>-F</code> / <code>--fixed-strings</code> param when searching for literal strings. As the result, user is often given this type of an error without additional help:</p>
-<pre><code>❯ rg 'aa('
+<pre><code>❯ rg &#x27;aa(&#x27;
 regex parse error:
     aa(
       ^
 error: unclosed group
 </code></pre>
-<h2>Proposal</h2>
+Proposal
 <p>In the spirit of other Rust tools (and the Rust compiler itself), add a <code>help</code> message:</p>
-<pre><code>❯ rg 'aa('
+<pre><code>❯ rg &#x27;aa(&#x27;
 regex parse error:
     aa(
       ^
@@ -50,15 +50,15 @@ help: use `-F` to search for literal strings
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-03-21 00:54</div>
-            <div class="timeline-body"><p>A hacky way to do this is to just look for <code>regex parse error</code> in the error string, and if it exists, add the help message. But the problem there is that the help message suggesting <code>-F</code> isn't appropriate for every parse error. So instead, you'd only want to emit it for specific parse errors. You could technically keep doing substring searches, but I think that's not so great, especially when <a href="https://docs.rs/regex-syntax/latest/regex_syntax/ast/enum.ErrorKind.html"><code>regex-syntax</code> exposes rich structured error information</a>. The problem is refactoring code to bubble that information up.</p>
-<p>I <em>think</em> this sort of help message is probably a good idea, but yeah, the code refactoring might be pretty gnarly here unfortunately. ripgrep isn't really setup for sophisticated context sensitive error reporting. The Rust compiler is extremely sophisticated on this front and the only way something like that happens is with huge amounts of effort. I'm not sure I have that capacity.</p>
+            <div class="timeline-body"><p>A hacky way to do this is to just look for <code>regex parse error</code> in the error string, and if it exists, add the help message. But the problem there is that the help message suggesting <code>-F</code> isn&#x27;t appropriate for every parse error. So instead, you&#x27;d only want to emit it for specific parse errors. You could technically keep doing substring searches, but I think that&#x27;s not so great, especially when <a href="https://docs.rs/regex-syntax/latest/regex_syntax/ast/enum.ErrorKind.html"><code>regex-syntax</code> exposes rich structured error information</a>. The problem is refactoring code to bubble that information up.</p>
+<p>I <em>think</em> this sort of help message is probably a good idea, but yeah, the code refactoring might be pretty gnarly here unfortunately. ripgrep isn&#x27;t really setup for sophisticated context sensitive error reporting. The Rust compiler is extremely sophisticated on this front and the only way something like that happens is with huge amounts of effort. I&#x27;m not sure I have that capacity.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2023-03-21 00:55</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-03-21 00:55</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2023-03-21 00:55</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-03-21 00:55</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/nyurik">@nyurik</a> on 2023-03-21 01:26</div>
@@ -77,56 +77,56 @@ help: use `-F` to search for literal strings
 <p>A relevant suggestion (possibly as a separate issue) - if nothing is found, suggest to use <code>-u</code> and <code>-uu</code> to include more files?</p>
 </blockquote>
 <p>Definitely cannot do that. &quot;nothing is found&quot; is a standard result, and ripgrep absolutely should not emit warnings when it happens.</p>
-<p>A better thing might be when ripgrep <em>doesn't search anything</em> as a result of ignore rules. ripgrep has that already: https://github.com/BurntSushi/ripgrep/blob/595e7845b87c1b9e6cfd4f1c23b3910dca3e15f0/crates/core/main.rs#L205-L211</p>
+<p>A better thing might be when ripgrep <em>doesn&#x27;t search anything</em> as a result of ignore rules. ripgrep has that already: https://github.com/BurntSushi/ripgrep/blob/595e7845b87c1b9e6cfd4f1c23b3910dca3e15f0/crates/core/main.rs#L205-L211</p>
 <blockquote>
 <p>Without the above, I feel the ripgrep barrier of entry would stay relatively high</p>
 </blockquote>
-<p>Not sure about that. I agree a note like this helps, but I'm not sure it really moves the needle. If you have a hard time using ripgrep without knowledge of <code>-F</code>, my guess is that you're still going to have a hard time using it even knowing about <code>-F</code>. <code>-F</code> makes one particular (albeit common) case a bit more convenient. But anywho, this is a difficult point to argue.</p>
+<p>Not sure about that. I agree a note like this helps, but I&#x27;m not sure it really moves the needle. If you have a hard time using ripgrep without knowledge of <code>-F</code>, my guess is that you&#x27;re still going to have a hard time using it even knowing about <code>-F</code>. <code>-F</code> makes one particular (albeit common) case a bit more convenient. But anywho, this is a difficult point to argue.</p>
 <p>The common options section in the guide probably would have saved you some trouble: https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md#common-options</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/nyurik">@nyurik</a> on 2023-03-21 01:55</div>
-            <div class="timeline-body"><p>Thanks, didn't know about the &quot;nothing found&quot; - seems like a good solution.  For the regex and similar, what do you think about my idea above - introducing a standard &quot;help wrapper&quot; error - something that any system can wrap existing error in, and add some help context?  This way it can be relatively easy to add the help messages to any existing code</p>
+            <div class="timeline-body"><p>Thanks, didn&#x27;t know about the &quot;nothing found&quot; - seems like a good solution.  For the regex and similar, what do you think about my idea above - introducing a standard &quot;help wrapper&quot; error - something that any system can wrap existing error in, and add some help context?  This way it can be relatively easy to add the help messages to any existing code</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-03-21 02:02</div>
-            <div class="timeline-body"><p>I think that's what I talked about above? I'm not a fan of just slapping notes on to error messages when the notes don't apply. That's a cure that's worse than the disease I think.</p>
+            <div class="timeline-body"><p>I think that&#x27;s what I talked about above? I&#x27;m not a fan of just slapping notes on to error messages when the notes don&#x27;t apply. That&#x27;s a cure that&#x27;s worse than the disease I think.</p>
 <p>Basically, if you get an error message like this</p>
-<pre><code>$ rg '\p{Foo}'
+<pre><code>$ rg &#x27;\p{Foo}&#x27;
 regex parse error:
     \p{Foo}
     ^^^^^^^
 error: Unicode property not found
 </code></pre>
 <p>then it should <em>not</em> include advice to use the <code>-F</code> flag, because that will do nothing to solve this problem.</p>
-<p>I do not agree with just listing out all possible flags that might help. Again, I see it as a cure that's worse than the disease.</p>
+<p>I do not agree with just listing out all possible flags that might help. Again, I see it as a cure that&#x27;s worse than the disease.</p>
 <p>I cannot tell you exactly how to do this in the code without actually going exploring myself and feeling out the best way.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> removed by @BurntSushi on 2023-11-22 21:32</div>
+            <div class="event">Label <span class="label">enhancement</span> removed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-22 21:32</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> removed by @BurntSushi on 2023-11-22 21:32</div>
+            <div class="event">Label <span class="label">question</span> removed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-22 21:32</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2023-11-22 21:32</div>
+            <div class="event">Label <span class="label">wontfix</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-22 21:32</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-22 21:34</div>
-            <div class="timeline-body"><p>I've given this some thought and I think I'm going to pass on this. I do agree that there is room for improving error messages here, but I do not want to indiscriminately add extra help messages to error messages unless there is a high likelihood that they'll be helpful. For this particular case, I do not think suggesting <code>-F/--fixed-strings</code> for all regex parse errors has a high enough likelihood to be helpful to clear my threshold. To me, this means we would need to do some extra work to scrutinize the actual parse error and figure out what sorts of flags might help the user.</p>
-<p>I generally agree this might be a good direction to head in, but I do think it is a fair amount of work and it isn't really something I want to invest in right now.</p>
+            <div class="timeline-body"><p>I&#x27;ve given this some thought and I think I&#x27;m going to pass on this. I do agree that there is room for improving error messages here, but I do not want to indiscriminately add extra help messages to error messages unless there is a high likelihood that they&#x27;ll be helpful. For this particular case, I do not think suggesting <code>-F/--fixed-strings</code> for all regex parse errors has a high enough likelihood to be helpful to clear my threshold. To me, this means we would need to do some extra work to scrutinize the actual parse error and figure out what sorts of flags might help the user.</p>
+<p>I generally agree this might be a good direction to head in, but I do think it is a fair amount of work and it isn&#x27;t really something I want to invest in right now.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2023-11-22 21:34</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-22 21:34</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:43:38 UTC
+        Synced at 2026-01-20 18:48:12 UTC
     </footer>
 </body>
 </html>

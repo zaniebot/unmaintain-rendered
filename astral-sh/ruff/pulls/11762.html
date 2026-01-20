@@ -23,23 +23,23 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Add support for walrus expressions, both in expression type inference and in symbol definition type inference.</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>Added test.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2024-06-05 20:38</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/carljm">@carljm</a> on 2024-06-05 20:38</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @carljm on 2024-06-05 20:38</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/carljm">@carljm</a> on 2024-06-05 20:38</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @carljm on 2024-06-05 20:38</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/carljm">@carljm</a> on 2024-06-05 20:38</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[red-knot] suppport walrus expressions in type inference" to "[red-knot] support walrus expressions in type inference" by @carljm on 2024-06-05 20:41</div>
+            <div class="event">Renamed from &quot;[red-knot] suppport walrus expressions in type inference&quot; to &quot;[red-knot] support walrus expressions in type inference&quot; by <a href="https://github.com/carljm">@carljm</a> on 2024-06-05 20:41</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/semantic.rs</code>:260 on 2024-06-05 20:48</div>
@@ -52,12 +52,12 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-06-05 20:52</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
@@ -77,7 +77,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/semantic/types/infer.rs</code>:182 on 2024-06-05 20:56</div>
-            <div class="timeline-body"><p>Just realized this comment is wrong/unnecessary, because unpacking assignment can't actually be used in a walrus expression.</p>
+            <div class="timeline-body"><p>Just realized this comment is wrong/unnecessary, because unpacking assignment can&#x27;t actually be used in a walrus expression.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -103,11 +103,11 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/semantic.rs</code>:260 on 2024-06-05 21:06</div>
             <div class="timeline-body"><p>Thinking of the walrus-created variable as unused is consistent with our current behaviour, though: it appears we flag <code>x</code> in the following snippet as unused in e.g. our <code>F841</code> lint rule:</p>
-<pre><code class="language-py">def foo():
+<pre><code>def foo():
     return (x := 1) + 2
 </code></pre>
 <p>And that sorta makes sense, since you can just write that more simply without the walrus as</p>
-<pre><code class="language-py">def foo():
+<pre><code>def foo():
     return 1 + 2
 </code></pre>
 <p>So I think I retract my argument. It only makes sense to think of walrus-defined variables as being &quot;used&quot; if they are <em>additionally</em> used <em>outside</em> of the immediate expression in which they are defined.</p>
@@ -123,15 +123,15 @@
             <div class="timeline-body"><blockquote>
 <p>Right, but in e.g. x = (y := 1) + 2, you could argue that y is being defined (assigned to 1) and then immediately used (added to 2) in the same breath?</p>
 </blockquote>
-<p>Aha! Yes, that's an interesting point. You could look at it that way, but this is not really the way Python looks at it, in terms of the AST (there is no <code>Name</code> node for <code>y</code> with context <code>Load</code> here) or in terms of the compiled bytecode (there is no <code>LOAD_FAST/LOAD_NAME</code> of <code>y</code> here).</p>
-<p>For basically exactly the same reasons, it is not the simplest way for us to look at it, either. There is no &quot;use&quot; of <code>y</code> here because there is no need for us to look up <code>y</code> and resolve reachable definition(s) for it: we know that definition would always resolve to this very walrus expression, and when doing type inference we always already have the type of that expression in hand! So it's much simpler to look at it as simply &quot;the type of the walrus expression is the type of its right-hand side, and as a side effect it also defines a name.&quot; This is how CPython handles it (except in terms of value, not type, of course), and how we handle it in this PR, and it doesn't require treating the walrus expression as a &quot;use&quot; of its target name. You could think of it instead as we are only &quot;using&quot; the right-hand-side expression, and also storing it off to a name as a side effect, but not &quot;using&quot; the name here.</p>
+<p>Aha! Yes, that&#x27;s an interesting point. You could look at it that way, but this is not really the way Python looks at it, in terms of the AST (there is no <code>Name</code> node for <code>y</code> with context <code>Load</code> here) or in terms of the compiled bytecode (there is no <code>LOAD_FAST/LOAD_NAME</code> of <code>y</code> here).</p>
+<p>For basically exactly the same reasons, it is not the simplest way for us to look at it, either. There is no &quot;use&quot; of <code>y</code> here because there is no need for us to look up <code>y</code> and resolve reachable definition(s) for it: we know that definition would always resolve to this very walrus expression, and when doing type inference we always already have the type of that expression in hand! So it&#x27;s much simpler to look at it as simply &quot;the type of the walrus expression is the type of its right-hand side, and as a side effect it also defines a name.&quot; This is how CPython handles it (except in terms of value, not type, of course), and how we handle it in this PR, and it doesn&#x27;t require treating the walrus expression as a &quot;use&quot; of its target name. You could think of it instead as we are only &quot;using&quot; the right-hand-side expression, and also storing it off to a name as a side effect, but not &quot;using&quot; the name here.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @carljm on 2024-06-05 21:13</div>
+            <div class="event">Merged by <a href="https://github.com/carljm">@carljm</a> on 2024-06-05 21:13</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2024-06-05 21:13</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2024-06-05 21:13</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-06-05 21:13</div>
@@ -139,7 +139,7 @@
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:04:41 UTC
+        Synced at 2026-01-20 19:04:29 UTC
     </footer>
 </body>
 </html>

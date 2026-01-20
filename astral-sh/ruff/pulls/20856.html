@@ -23,20 +23,13 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Glyphack">@Glyphack</a></div>
-            <div class="timeline-body"><!--
-Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+            <div class="timeline-body">
 
-- Does this pull request include a summary of the change? (See below.)
-- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
-  requests.)
-- Does this pull request include references to any relevant issues?
--->
-
-<h2>Summary</h2>
-<p>Fix https://github.com/astral-sh/ty/issues/664</p>
+Summary
+<p>Fix <a href="https://github.com/astral-sh/ty/issues/664">astral-sh/ty#664</a></p>
 <p>This PR adds support for storing attributes in comprehension scopes (any eager scope.)</p>
 <p>For example in the following code we infer type of <code>z</code> correctly:</p>
-<pre><code class="language-py">class C:
+<pre><code>class C:
     def __init__(self):
         [None for self.z in range(1)]
 reveal_type(C().z) # previously [unresolved-attribute] but now shows Unknown | int
@@ -44,7 +37,7 @@ reveal_type(C().z) # previously [unresolved-attribute] but now shows Unknown | i
 <p>The fix works by adjusting the following logics:</p>
 <p>To identify if an attriute is an assignment to self or cls we need to check the scope is a method. To allow comprehension scopes here we skip any eager scope in the check.
 Also at this stage the code checks if self or the first method argument is shadowed by another binding that eager scope to prevent this:</p>
-<pre><code class="language-py">class D:
+<pre><code>class D:
     g: int
 
 class C:
@@ -54,8 +47,8 @@ reveal_type(C().g) # [unresolved-attribute]
 </code></pre>
 <p>When determining scopes that attributes might be defined after collecting all the methods of the class the code also returns any decendant scope that is eager and only has eager parents until the method scope.</p>
 <p>When checking reachability of a attribute definition if the attribute is defined in an eager scope we use the reachability of the first non eager scope which must be a method. This allows attributes to be marked as reachable and be seen.</p>
-<p>There are also which I didn't add support for:</p>
-<pre><code class="language-py">class C:
+<p>There are also which I didn&#x27;t add support for:</p>
+<pre><code>class C:
     def __init__(self):
         def f():
             [None for self.z in range(1)]
@@ -64,36 +57,36 @@ reveal_type(C().g) # [unresolved-attribute]
 reveal_type(C().z) # [unresolved-attribute]
 </code></pre>
 <p>In the above example we will not even return the comprehension scope as an attribute scope because there is a non eager scope (<code>f</code> function) between the comprehension and the <code>__init__</code> method</p>
-<!-- What's the purpose of the change? What does it do, and why? -->
 
-<h2>Test Plan</h2>
-<!-- How was it tested? -->
+
+Test Plan
+
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Skip eagerly evaluated scopes for attribute storing" to "[ty] Skip eagerly evaluated scopes for attribute storing" by @Glyphack on 2025-10-14 07:01</div>
+            <div class="event">Renamed from &quot;Skip eagerly evaluated scopes for attribute storing&quot; to &quot;[ty] Skip eagerly evaluated scopes for attribute storing&quot; by <a href="https://github.com/Glyphack">@Glyphack</a> on 2025-10-14 07:01</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-10-14 07:09</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-14 07:09</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-15 19:02</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a>
 <p>No changes detected when running ty on typing conformance tests ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-15 19:03</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">attrs (https://github.com/python-attrs/attrs)
+Changes were detected when running on open source projects
+
+<pre><code>attrs (https://github.com/python-attrs/attrs)
 - tests/test_hooks.py:154:48: error[missing-argument] No argument provided for required parameter `y`
 - tests/test_next_gen.py:142:14: error[unresolved-attribute] Object of type `dataclasses.Field` has no attribute `validator`
 - tests/test_next_gen.py:380:14: error[unresolved-attribute] Object of type `dataclasses.Field` has no attribute `validator`
@@ -101,7 +94,7 @@ reveal_type(C().z) # [unresolved-attribute]
 + Found 581 diagnostics
 
 </code></pre>
-</details>
+
 No memory usage changes detected ✅
 
 </div>
@@ -113,53 +106,53 @@ No memory usage changes detected ✅
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/Glyphack">@Glyphack</a> on <code>crates/ty_python_semantic/src/semantic_index/builder.rs</code>:191 on 2025-10-15 19:34</div>
             <div class="timeline-body"><p>This function is also used at https://github.com/Glyphack/ruff/blob/8d53802bc7e9566a9087fd3e3a460345e40a7e6d/crates/ty_python_semantic/src/semantic_index/builder.rs#L1681 and I think this new behavior should be there as well.
-I'm not happy with the name though, this now returns either method or an eager child scope of the class.</p>
+I&#x27;m not happy with the name though, this now returns either method or an eager child scope of the class.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @Glyphack on 2025-10-15 19:37</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/Glyphack">@Glyphack</a> on 2025-10-15 19:37</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @Glyphack on 2025-10-15 19:37</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/Glyphack">@Glyphack</a> on 2025-10-15 19:37</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @Glyphack on 2025-10-15 19:37</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/Glyphack">@Glyphack</a> on 2025-10-15 19:37</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @Glyphack on 2025-10-15 19:37</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/Glyphack">@Glyphack</a> on 2025-10-15 19:37</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @Glyphack on 2025-10-15 19:37</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/Glyphack">@Glyphack</a> on 2025-10-15 19:37</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Glyphack">@Glyphack</a> on 2025-10-15 19:39</div>
-            <div class="timeline-body"><p>There is no ecosystem change detected by mypy primer? With the amount of custom logic added I expected to have more effect. Do you think I should simplify the logic even more since there's not much impact?</p>
-<p>Other solution could be only support children eager scopes and don't go into decendants. This would turn a lot of loops into if statements.</p>
+            <div class="timeline-body"><p>There is no ecosystem change detected by mypy primer? With the amount of custom logic added I expected to have more effect. Do you think I should simplify the logic even more since there&#x27;s not much impact?</p>
+<p>Other solution could be only support children eager scopes and don&#x27;t go into decendants. This would turn a lot of loops into if statements.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-16 08:15</div>
             <div class="timeline-body"><blockquote>
-<p>There is no ecosystem change detected by mypy primer? With the amount of custom logic added I expected to have more effect. Do you think I should simplify the logic even more since there's not much impact?</p>
+<p>There is no ecosystem change detected by mypy primer? With the amount of custom logic added I expected to have more effect. Do you think I should simplify the logic even more since there&#x27;s not much impact?</p>
 </blockquote>
 <p>I would expect the impact to be bigger when combined with type-of-<code>self</code>-in-method bodies, no? Maybe we could test that opening a draft PR that merges both. Not strictly necessary though.</p>
 <blockquote>
-<p>Other solution could be only support children eager scopes and don't go into decendants. This would turn a lot of loops into if statements.</p>
+<p>Other solution could be only support children eager scopes and don&#x27;t go into decendants. This would turn a lot of loops into if statements.</p>
 </blockquote>
-<p>I don't really see a reason not to support that if you already implemented it correctly.</p>
+<p>I don&#x27;t really see a reason not to support that if you already implemented it correctly.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-16 08:16</div>
-            <div class="timeline-body"><p>Thank you for working on this? Could you please also add some tests with generic methods like described <a href="https://github.com/astral-sh/ty/issues/664#issuecomment-3380666555">here</a>? I'd like to see that we correctly skip the type params scope when detecting methods in classes.</p>
+            <div class="timeline-body"><p>Thank you for working on this? Could you please also add some tests with generic methods like described <a href="https://github.com/astral-sh/ty/issues/664#issuecomment-3380666555">here</a>? I&#x27;d like to see that we correctly skip the type params scope when detecting methods in classes.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-10-16 08:59</div>
+            <div class="event">Review request for <a href="https://github.com/AlexWaygood">@AlexWaygood</a> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-16 08:59</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Glyphack">@Glyphack</a> on 2025-10-16 15:10</div>
-            <div class="timeline-body"><p>Thanks. I didn't think of the impact there, I was still hoping to reduce the false positives like <a href="https://play.ty.dev/5f89a8f7-2d3e-456e-82e5-c6be2c9fbe62">this</a>. So let's keep the current implementation.</p>
+            <div class="timeline-body"><p>Thanks. I didn&#x27;t think of the impact there, I was still hoping to reduce the false positives like <a href="https://play.ty.dev/5f89a8f7-2d3e-456e-82e5-c6be2c9fbe62">this</a>. So let&#x27;s keep the current implementation.</p>
 <p>I went over the tests again added more examples of what is supported.</p>
 </div>
         </div>
@@ -167,11 +160,11 @@ I'm not happy with the name though, this now returns either method or an eager c
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-22 15:00</div>
             <div class="timeline-body"><p>I merged this branch into the type-of-self PR and compared it with the type-of-self PR alone. This seems to remove 4 diagnostics from the ecosystem:</p>
 <p>type-of-self:</p>
-<p><img width="547" height="73" alt="image" src="https://github.com/user-attachments/assets/09926e07-ce6e-46c2-877c-5deee16b2242" /></p>
+<p><img alt="image" src="https://github.com/user-attachments/assets/09926e07-ce6e-46c2-877c-5deee16b2242"></p>
 <p>type-of-self + this:</p>
-<p><img width="536" height="72" alt="image" src="https://github.com/user-attachments/assets/dd1bda6a-4a84-4e70-8ca6-016a3144418d" /></p>
-<p>I did this to evaluate whether I need to prioritize this, or if it can land separately afterwards. After seeing these results, I'm going with the latter.</p>
-<p>But we'll come back to this eventually.</p>
+<p><img alt="image" src="https://github.com/user-attachments/assets/dd1bda6a-4a84-4e70-8ca6-016a3144418d"></p>
+<p>I did this to evaluate whether I need to prioritize this, or if it can land separately afterwards. After seeing these results, I&#x27;m going with the latter.</p>
+<p>But we&#x27;ll come back to this eventually.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -181,27 +174,27 @@ I'm not happy with the name though, this now returns either method or an eager c
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/attributes.md</code>:454 on 2025-11-06 15:14</div>
-            <div class="timeline-body"><p>It's not totally clear to me if this is the right behavior or not. We can't guarantee that these attributes will ever be initialized. We can definitely say that they <em>might</em> be.</p>
+            <div class="timeline-body"><p>It&#x27;s not totally clear to me if this is the right behavior or not. We can&#x27;t guarantee that these attributes will ever be initialized. We can definitely say that they <em>might</em> be.</p>
 <p>For reference, this behavior <a href="https://pyright-play.net/?pyrightVersion=1.1.405&amp;strict=true&amp;code=GYJw9gtgBALgngBwJYDsDmUkQWEMogCmAboQIYA2A%2BvAoQFD0DGFZAzm1AMIBc9UAqABNCwKFSqokMCQAo2hCsACUfQeuGiowWav4aDAYiiEQ4EDygBtAK4oibMBVJCAtGRgwQSAEY2YhAC6%2BgbqVgB0kdq4UApK4WSYKNYAjIHBIRoiYmi6aqHqxqbmlrb2hI7OhG4eXr7%2BQZkFEVHAMXHA4T5JqemMBbnKjESklDSIhLJcuglDI%2BTUtJPTyl1zJAvjdFMzTMpAA">matches pyright</a>. <a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=fe330769b4d8a148d2c801648eca02fb">Mypy</a> finds both attributes and gives them type <code>Any</code>. <a href="https://pyrefly.org/sandbox/?project=N4IgZglgNgpgziAXKOBDAdgEwEYHsAeAdAA4CeS4ATrgLYAEALqcROgOZ0Q3G6UN2UYANxiooAfSbEYAHXRyAxlFRw4dAMKI5dHXUwwwdceNYQGxgBRwYUMAEot6Xc70G6YCw%2B0ufAYjowlNSUiHQA2gCu6IJwuFAimAC0qAwMlBDYEQwwALrePs5hhMXuvHTWtoSonE5hAIw5efJOBfqGbJ6OBS7%2BgcGhkdHwcQnJqemZ2U3dhcWEpZTlNmCE2DXhDU35Lh12cnKCImKSzDAW6p5Ve0NHElJnF3ar14eid6fnlwrXIAA0IFloHASORECB-ABVBjQMykdxRBTQ3DoOD7LBuMC8GgpcToCI0bCBCz4UKsBh2OiJAB85TSXV0ggYEUoTjAMhAADl8YSQnRgPgAL7suR-EBkQRgKCkQgMWhQCj%2BAAKpAlUvKGBwBDoCmRkDYzJSEGRhDk-gAyjAYHQABapYhwRAAekd4oMUsIvDYjpg6EdmFwCjgjp16D1BqRvoWdFQQlQ0FQ2Fg2t1EH1lENyLouGIEeBcjIDGtyMSIkocCNTgAvHR2QBmQh1ABMwvQIAF-1QiIgIgAYtAYBQ0Fg8EQyG2gA">Pyrefly</a> finds both attributes and gives them type <code>int</code>. No type checker attempts to distinguish these cases based on trying to determine whether the nested function is ever called; this is quite complex to do in general and I doubt we should attempt it either.</p>
-<p>Overall I think the current behavior in this PR is fine and this case is probably rare (and it doesn't show up in the ecosystem report.) I don't think we need TODOs to revisit it; we'll revisit it only if there are real user reports.</p>
+<p>Overall I think the current behavior in this PR is fine and this case is probably rare (and it doesn&#x27;t show up in the ecosystem report.) I don&#x27;t think we need TODOs to revisit it; we&#x27;ll revisit it only if there are real user reports.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/attributes.md</code>:452 on 2025-11-06 15:17</div>
-            <div class="timeline-body"><p>I don't think we need a TODO specifically here, because I don't think we will ever attempt to distinguish <code>f()</code> / <code>self.a</code> from <code>g()</code> / <code>self.b</code> here, based on call-graph analysis.</p>
-<pre><code class="language-suggestion"></code></pre>
+            <div class="timeline-body"><p>I don&#x27;t think we need a TODO specifically here, because I don&#x27;t think we will ever attempt to distinguish <code>f()</code> / <code>self.a</code> from <code>g()</code> / <code>self.b</code> here, based on call-graph analysis.</p>
+<pre><code></code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/semantic_index/builder.rs</code>:192 on 2025-11-06 15:31</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">    /// Returns the scope ID of the current scope if the current scope
+            <div class="timeline-body"><pre><code>    /// Returns the scope ID of the current scope if the current scope
     /// is a method inside a class body or an eagerly executed scope inside a method.
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/semantic_index.rs</code>:1231 on 2025-11-06 15:42</div>
-            <div class="timeline-body"><p>It's not clear to me that this test and the below test couldn't be equally effective as mdtests (and/or aren't already effectively duplicated by mdtests in this PR.) But these seem harder to maintain. Do you feel like they are important?</p>
+            <div class="timeline-body"><p>It&#x27;s not clear to me that this test and the below test couldn&#x27;t be equally effective as mdtests (and/or aren&#x27;t already effectively duplicated by mdtests in this PR.) But these seem harder to maintain. Do you feel like they are important?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -215,7 +208,7 @@ I'm not happy with the name though, this now returns either method or an eager c
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/Glyphack">@Glyphack</a> on <code>crates/ty_python_semantic/src/semantic_index.rs</code>:1231 on 2025-11-07 06:57</div>
             <div class="timeline-body"><p>Applied.
-I had to change <code>semantic_index.rs</code> to track attributes and adjust the reachability analysis in <code>class.rs</code>. During development I used this test to ensure the <code>semantic_index</code> logic was working fine and then updated the other file at that point I didn't know how to validate it with an mdtest. So now that we have the full implementation we can get rid of this.</p>
+I had to change <code>semantic_index.rs</code> to track attributes and adjust the reachability analysis in <code>class.rs</code>. During development I used this test to ensure the <code>semantic_index</code> logic was working fine and then updated the other file at that point I didn&#x27;t know how to validate it with an mdtest. So now that we have the full implementation we can get rid of this.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -224,14 +217,14 @@ I had to change <code>semantic_index.rs</code> to track attributes and adjust th
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/Glyphack">@Glyphack</a> on <code>crates/ty_python_semantic/resources/mdtest/attributes.md</code>:454 on 2025-11-07 07:05</div>
-            <div class="timeline-body"><p>I haven't worked with call graph analysis and didn't think about it's complexity. If an issue was reported for this I would follow it up.</p>
+            <div class="timeline-body"><p>I haven&#x27;t worked with call graph analysis and didn&#x27;t think about it&#x27;s complexity. If an issue was reported for this I would follow it up.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @carljm on 2025-11-11 22:45</div>
+            <div class="event">Merged by <a href="https://github.com/carljm">@carljm</a> on 2025-11-11 22:45</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2025-11-11 22:45</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2025-11-11 22:45</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-11 22:45</div>
@@ -241,7 +234,7 @@ I had to change <code>semantic_index.rs</code> to track attributes and adjust th
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:16:24 UTC
+        Synced at 2026-01-20 19:19:30 UTC
     </footer>
 </body>
 </html>

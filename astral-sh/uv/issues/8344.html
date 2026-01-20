@@ -39,7 +39,7 @@ requires-python = &quot;&gt;=3.10&quot;
 <pre><code>uv add torch torchvision torchaudio --default-index https://download.pytorch.org/whl/cu118
 </code></pre>
 <p>leads to the error:</p>
-<pre><code>error: Distribution `torchaudio==2.0.0 @ registry+https://download.pytorch.org/whl/cu118` can't be installed because it doesn't have a source distribution or wheel for the current platform
+<pre><code>error: Distribution `torchaudio==2.0.0 @ registry+https://download.pytorch.org/whl/cu118` can&#x27;t be installed because it doesn&#x27;t have a source distribution or wheel for the current platform
 </code></pre>
 <p>Alternatively using pip:</p>
 <pre><code>uv pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
@@ -63,7 +63,7 @@ requires-python = &quot;&gt;=3.10&quot;
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-18 18:11</div>
-            <div class="timeline-body"><p>The hint at the end looks like a red herring. I guess the PyTorch index is (for some reason) returning a 403 for packages that aren't found, which seems wrong to me, but that's a PyTorch bug:</p>
+            <div class="timeline-body"><p>The hint at the end looks like a red herring. I guess the PyTorch index is (for some reason) returning a 403 for packages that aren&#x27;t found, which seems wrong to me, but that&#x27;s a PyTorch bug:</p>
 <pre><code>❯ curl https://download.pytorch.org/whl/cu118/wheel
 &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
 &lt;Error&gt;&lt;Code&gt;AccessDenied&lt;/Code&gt;&lt;Message&gt;Access Denied&lt;/Message&gt;&lt;RequestId&gt;2KHYSPNC38BWED53&lt;/RequestId&gt;&lt;HostId&gt;ZeNiFBKyzFyAMNNKZisld1Oxq9ZnHyJ9oOroNvEfZKp6iibw+ma7UpFTmg5Fs5EFZ//XafwMZ3k=&lt;/HostId&gt;&lt;/Error&gt;%
@@ -81,7 +81,7 @@ Can uv deal with the incorrectly returned 403 anyway?</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Leon0402">@Leon0402</a> on 2024-10-18 19:19</div>
-            <div class="timeline-body"><p>@charliermarsh  My bad, actually doesn't work.</p>
+            <div class="timeline-body"><p>@charliermarsh  My bad, actually doesn&#x27;t work.</p>
 <pre><code>uv pip install torch==2.0.0+cu118 torchvision==0.15.0+cu118 torchaudio==2.0.0+cu118 --index-url https://download.pytorch.org/whl/cu118
 </code></pre>
 <p>Same error as before.</p>
@@ -90,24 +90,24 @@ Can uv deal with the incorrectly returned 403 anyway?</p>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2024-10-18 19:44</div>
             <div class="timeline-body"><blockquote>
-<p>@charliermarsh My bad, actually doesn't work.</p>
+<p>@charliermarsh My bad, actually doesn&#x27;t work.</p>
 <pre><code>uv pip install torch==2.0.0+cu118 torchvision==0.15.0+cu118 torchaudio==2.0.0+cu118 --index-url https://download.pytorch.org/whl/cu118
 </code></pre>
 <p>Same error as before.</p>
 </blockquote>
 <p>@Leon0402  Use <code>--extra-index-url</code> instead of <code>--index-url</code></p>
-<pre><code class="language-bash">uv pip install torch==2.0.0+cu118 torchvision==0.15.0+cu118 torchaudio==2.0.0+cu118 --extra-index-url https://download.pytorch.org/whl/cu118
+<pre><code>uv pip install torch==2.0.0+cu118 torchvision==0.15.0+cu118 torchaudio==2.0.0+cu118 --extra-index-url https://download.pytorch.org/whl/cu118
 </code></pre>
-<p>There are actually differences between uv and pip in terms of index resolution. I think the problem here. It's not a bug, but they're just not exactly the same.
+<p>There are actually differences between uv and pip in terms of index resolution. I think the problem here. It&#x27;s not a bug, but they&#x27;re just not exactly the same.
 https://docs.astral.sh/uv/pip/compatibility/#packages-that-exist-on-multiple-indexes</p>
 <p>Edit:
-It doesn't seem to work, it's not very stable.</p>
+It doesn&#x27;t seem to work, it&#x27;s not very stable.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Leon0402">@Leon0402</a> on 2024-10-21 09:29</div>
             <div class="timeline-body"><p>@FishAlchemist It seems to generally work quite well when manually editing the toml file. Here is a version that works for me for instance:</p>
-<pre><code class="language-toml">[project]
+<pre><code>[project]
 name = &quot;name&quot;
 version = &quot;0.1.0&quot;
 description = &quot;Add your description here&quot;
@@ -127,19 +127,19 @@ name = &quot;pytorch&quot;
 url = &quot;https://download.pytorch.org/whl/cu118&quot;
 explicit = true
 </code></pre>
-<p>Related to https://github.com/astral-sh/uv/issues/8341 I think. Probably the CLI tools need a little bit more work and then UV could have some special documentation for torch. I know that torch always is a great source of confusion, because getting it right with cuda is not easy (and probably also not possible right now in the most generic way).
+<p>Related to <a href="https://github.com/astral-sh/uv/issues/8341">astral-sh/uv#8341</a> I think. Probably the CLI tools need a little bit more work and then UV could have some special documentation for torch. I know that torch always is a great source of confusion, because getting it right with cuda is not easy (and probably also not possible right now in the most generic way).
 I have not yet tested how well this approach works in transitive setups though (where a dependency specifies torch, but we need to overwrite it with a specific cuda version) or in a more generic way (where different people need different cuda versions).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2024-10-21 09:40</div>
-            <div class="timeline-body"><p>@Leon0402 There is a PR (https://github.com/astral-sh/uv/pull/6523) document about installing PyTorch for UV.
+            <div class="timeline-body"><p>@Leon0402 There is a PR (<a href="https://github.com/astral-sh/uv/pull/6523">astral-sh/uv#6523</a>) document about installing PyTorch for UV.
 Perhaps you could also participate in the discussion and share your insights. Considering the complexities of PyTorch, additional perspectives would be beneficial for refining the documentation.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Leon0402">@Leon0402</a> on 2024-10-21 09:54</div>
-            <div class="timeline-body"><p>@FishAlchemist Love it! I'll have a look later.</p>
+            <div class="timeline-body"><p>@FishAlchemist Love it! I&#x27;ll have a look later.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -157,13 +157,13 @@ os.environ[&quot;OMP_NUM_THREADS&quot;] = &quot;1&quot;
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-12-27 14:07</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-27 14:07</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-12-27 14:07</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-27 14:07</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-12-27 14:07</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-27 14:07</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MalteEbner">@MalteEbner</a> on 2025-01-29 18:16</div>
@@ -189,7 +189,7 @@ os.environ[&quot;OMP_NUM_THREADS&quot;] = &quot;1&quot;
       `torch` (v1.12.0+cu113) with the following Python ABI tags: `cp37m`,
       `cp38`, `cp39`, `cp310`
 </code></pre>
-<p>Note that both hints are confusing and don't help debugging the problem.
+<p>Note that both hints are confusing and don&#x27;t help debugging the problem.
 The second one is even misleading, as the command is run on python <code>Python 3.10.13</code></p>
 <p>Using exactly the same command, but without the <code>uv</code> at the beginning succeeds.</p>
 <p>Using <code>uv 0.2.25</code> encounters the same error, but only prints the first part of the error message, not the 2 additional sections.</p>
@@ -198,7 +198,7 @@ The second one is even misleading, as the command is run on python <code>Python 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-29 18:23</div>
-            <div class="timeline-body"><p>If you're seeing those hints, then uv is definitely using Python 3.11. How are you determining that it's using Python 3.10?</p>
+            <div class="timeline-body"><p>If you&#x27;re seeing those hints, then uv is definitely using Python 3.11. How are you determining that it&#x27;s using Python 3.10?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -213,7 +213,7 @@ The second one is even misleading, as the command is run on python <code>Python 
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MalteEbner">@MalteEbner</a> on 2025-01-30 07:47</div>
             <div class="timeline-body"><blockquote>
-<p>If you're seeing those hints, then uv is definitely using Python 3.11. How are you determining that it's using Python 3.10?</p>
+<p>If you&#x27;re seeing those hints, then uv is definitely using Python 3.11. How are you determining that it&#x27;s using Python 3.10?</p>
 </blockquote>
 <p>I am running <code>python --version</code> directly before the uv command.</p>
 <p>I am running it in GitHub CI inside a freshly created venv created with uv that is then populated with some packages. This steps then overwrites some of the packages to other versions. The full commands of this step are:</p>
@@ -260,24 +260,24 @@ Python 3.10.13
 Error: Process completed with exit code 1.
 </code></pre>
 <p>The reported available packages are correct, see the torch wheels at https://download.pytorch.org/whl/torch/</p>
-<p><img src="https://github.com/user-attachments/assets/7eac1bac-85df-4d9d-8a57-cf0072e81ed9" alt="Image" /></p>
+<p><img src="https://github.com/user-attachments/assets/7eac1bac-85df-4d9d-8a57-cf0072e81ed9" alt="Image"></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-30 13:55</div>
-            <div class="timeline-body"><p>Have you tried <code>uv pip install --python 3.10 ...</code>? It's not necessarily the case that the <code>python</code> that you get from <code>python --version</code> is the exact same Python that uv would use.</p>
+            <div class="timeline-body"><p>Have you tried <code>uv pip install --python 3.10 ...</code>? It&#x27;s not necessarily the case that the <code>python</code> that you get from <code>python --version</code> is the exact same Python that uv would use.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MalteEbner">@MalteEbner</a> on 2025-01-31 09:25</div>
             <div class="timeline-body"><blockquote>
-<p>Have you tried <code>uv pip install --python 3.10 ...</code>? It's not necessarily the case that the <code>python</code> that you get from <code>python --version</code> is the exact same Python that uv would use.</p>
+<p>Have you tried <code>uv pip install --python 3.10 ...</code>? It&#x27;s not necessarily the case that the <code>python</code> that you get from <code>python --version</code> is the exact same Python that uv would use.</p>
 </blockquote>
 <p>I tried <code>which python &amp;&amp; uv pip install --python 3.10 &quot;torch==1.12.0+cu113&quot; &quot;torchvision==0.13.0+cu113&quot; &quot;pytorch-lightning==1.9.5&quot; --extra-index-url https://download.pytorch.org/whl/cu113</code>
 and got</p>
 <pre><code>/datasets/actions-runner/core_gpu_runner_03/hostedtoolcache/Python/3.10.13/x64/bin/python
 error: Failed to inspect Python interpreter from search path at `/usr/bin/python`
-  Caused by: Can't use Python at `/usr/bin/python`
+  Caused by: Can&#x27;t use Python at `/usr/bin/python`
   Caused by: Python executable does not support `-I` flag. Please use Python 3.8 or newer.
 </code></pre>
 </div>
@@ -289,14 +289,14 @@ error: Failed to inspect Python interpreter from search path at `/usr/bin/python
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-31 14:52</div>
-            <div class="timeline-body"><p>And just to clarify, since I asked for the verbose logs before already, that's</p>
+            <div class="timeline-body"><p>And just to clarify, since I asked for the verbose logs before already, that&#x27;s</p>
 <pre><code>uv pip install --verbose --python 3.10 &quot;torch==1.12.0+cu113&quot; &quot;torchvision==0.13.0+cu113&quot; &quot;pytorch-lightning==1.9.5&quot; --extra-index-url https://download.pytorch.org/whl/cu113
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-31 14:53</div>
-            <div class="timeline-body"><p>If this is in GitHub Actions, it'd also be really helpful to share the code / a run in a public repository so we can debug what's going on.</p>
+            <div class="timeline-body"><p>If this is in GitHub Actions, it&#x27;d also be really helpful to share the code / a run in a public repository so we can debug what&#x27;s going on.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -342,14 +342,14 @@ DEBUG Ignoring Python interpreter at `/bin/python3`: system interpreter not expl
 DEBUG Failed to inspect Python interpreter from search path at `/bin/python` 
 DEBUG Skipping bad interpreter at /bin/python from search path: Python executable does not support `-I` flag. Please use Python 3.8 or newer.
 error: Failed to inspect Python interpreter from search path at `/usr/bin/python`
-  Caused by: Can't use Python at `/usr/bin/python`
+  Caused by: Can&#x27;t use Python at `/usr/bin/python`
   Caused by: Python executable does not support `-I` flag. Please use Python 3.8 or newer.
 </code></pre>
 <p>This helped find out the error: When creating the <code>.venv</code> with uv, it did not take the python version installed by the GitHub action (3.10), but a newer version found on the system (3.11).
 I fixed this by not installing python via GitHub action at all, but by specifying the version when calling <code>uv venv .venv</code>. See the update:</p>
-<p><img src="https://github.com/user-attachments/assets/b444b947-f8b5-4376-ada5-0db929548513" alt="Image" /></p>
+<p><img src="https://github.com/user-attachments/assets/b444b947-f8b5-4376-ada5-0db929548513" alt="Image"></p>
 <blockquote>
-<p>If this is in GitHub Actions, it'd also be really helpful to share the code / a run in a public repository so we can debug what's going on.</p>
+<p>If this is in GitHub Actions, it&#x27;d also be really helpful to share the code / a run in a public repository so we can debug what&#x27;s going on.</p>
 </blockquote>
 <p>This is a GitHub action on a custom self-hosted GitHub runner that is inside a docker container.</p>
 </div>
@@ -362,7 +362,7 @@ I fixed this by not installing python via GitHub action at all, but by specifyin
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:27:48 UTC
+        Synced at 2026-01-20 19:34:53 UTC
     </footer>
 </body>
 </html>

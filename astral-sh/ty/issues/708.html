@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Matt-Ord">@Matt-Ord</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>Loving the progress on ty
 Just thought I would flag this issue I was having when type checking conditional imports, which fails on Implicit shadowing of class <code>SymmetricalLogScale</code>. Is there another way do this that would be allowed under ty rules?</p>
-<pre><code class="language-py">from __future__ import annotations
+<pre><code>from __future__ import annotations
 
 from typing import TYPE_CHECKING, Literal
 
@@ -52,7 +52,7 @@ def get_scale_with_lim(
     lim: tuple[float, float],
 ) -&gt; ScaleBase:
     if LinearScale is None or LogScale is None or SymmetricalLogScale is None:
-        msg = &quot;Matplotlib is not installed. Please install it with the 'plot' extra.&quot;
+        msg = &quot;Matplotlib is not installed. Please install it with the &#x27;plot&#x27; extra.&quot;
         raise ImportError(msg)
     match scale:
         case &quot;linear&quot;:
@@ -73,11 +73,11 @@ def get_scale_with_lim(
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-26 09:26</div>
             <div class="timeline-body"><p>Thank you for reporting this.</p>
-<p>We treat an import as both a declaration and a binding. So if <code>SymmetricalLogScale</code> is successfully imported, it's declared as <code>&lt;class 'SymmetricalLogScale'&gt;</code>. Since we (currently) do not statically determine if that <code>except ImportError</code> branch will be executed or not, we also see the <code>SymmetricalLogScale = None</code> binding and that leads to the error.</p>
-<p>I'm not sure if that's the best idea here, but one way that you could make this work would be to guard the <code>… = (None, None, None)</code> binding with <code>if not TYPE_CHECKING:</code>. This way, <code>SymmetricalLogScale</code> will either have type <code>&lt;class 'SymmetricalLogScale'&gt;</code> (if <code>matplotlib</code> is available), or type <code>Unknown</code>  (if <code>matplotlib</code> is not available). <code>Unknown</code> is a dynamic type that should not cause any downstream type errors.</p>
+<p>We treat an import as both a declaration and a binding. So if <code>SymmetricalLogScale</code> is successfully imported, it&#x27;s declared as <code>&lt;class &#x27;SymmetricalLogScale&#x27;&gt;</code>. Since we (currently) do not statically determine if that <code>except ImportError</code> branch will be executed or not, we also see the <code>SymmetricalLogScale = None</code> binding and that leads to the error.</p>
+<p>I&#x27;m not sure if that&#x27;s the best idea here, but one way that you could make this work would be to guard the <code>… = (None, None, None)</code> binding with <code>if not TYPE_CHECKING:</code>. This way, <code>SymmetricalLogScale</code> will either have type <code>&lt;class &#x27;SymmetricalLogScale&#x27;&gt;</code> (if <code>matplotlib</code> is available), or type <code>Unknown</code>  (if <code>matplotlib</code> is not available). <code>Unknown</code> is a dynamic type that should not cause any downstream type errors.</p>
 <p>Playground example: https://play.ty.dev/86568c8a-0c3e-4d51-acbd-22b28a1608d1 (try removing the <code>optional_library.py</code> tab. The only thing that will change is the inferred type for <code>SomeClass</code>)</p>
 <p>--</p>
-<p>I think it's plausible that we could improve our understanding here for simple <code>try: …; except ImportError: …</code> patterns. In that case, we could mark the <code>try</code> and the <code>except</code> branch as mutually exclusive (only one of them is statically reachable, depending on the success of the import). The type of the imported symbol would then either be the imported type or <code>None</code>, and no diagnostic would be emitted.</p>
+<p>I think it&#x27;s plausible that we could improve our understanding here for simple <code>try: …; except ImportError: …</code> patterns. In that case, we could mark the <code>try</code> and the <code>except</code> branch as mutually exclusive (only one of them is statically reachable, depending on the success of the import). The type of the imported symbol would then either be the imported type or <code>None</code>, and no diagnostic would be emitted.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -91,21 +91,21 @@ def get_scale_with_lim(
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">imports</span> added by @AlexWaygood on 2025-10-06 16:14</div>
+            <div class="event">Label <span class="label">imports</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-06 16:14</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">typing semantics</span> added by @AlexWaygood on 2025-10-06 16:15</div>
+            <div class="event">Label <span class="label">typing semantics</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-06 16:15</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-14 15:24</div>
             <div class="timeline-body"><p>Although it looks a bit silly, the easiest workaround for this today is to change this:</p>
-<pre><code class="language-py">try:
+<pre><code>try:
     from module import C
 except ImportError:
     C = None
 </code></pre>
 <p>to this:</p>
-<pre><code class="language-py">try:
+<pre><code>try:
     from module import C
 except ImportError:
     C: None = None
@@ -115,12 +115,12 @@ except ImportError:
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Stable" by @carljm on 2025-11-14 15:24</div>
+            <div class="event">Added to milestone &quot;Stable&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-11-14 15:24</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:12 UTC
+        Synced at 2026-01-20 19:24:56 UTC
     </footer>
 </body>
 </html>

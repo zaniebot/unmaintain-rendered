@@ -29,7 +29,7 @@ I just found that there are cases where the blind exception is not being caught.
 <li>A minimal code snippet that reproduces the bug.
 After allowing the <code>BLE001</code> rule, in order not to allow blind exception, the linter allow such a code:</li>
 </ul>
-<pre><code class="language-py">        try:
+<pre><code>        try:
             do_something(&quot;something&quot;)
         except Exception: # This blind exception should not be allowed
             logger.error(&quot;Error during forwarding&quot;, exc_info=True) # Changing this line would change the linter result
@@ -37,7 +37,7 @@ After allowing the <code>BLE001</code> rule, in order not to allow blind excepti
 <ul>
 <li>The current Ruff settings (any relevant sections from your <code>pyproject.toml</code>).</li>
 </ul>
-<pre><code class="language-py">target-version = &quot;py39&quot;
+<pre><code>target-version = &quot;py39&quot;
 
 select = [&quot;E&quot;, &quot;W&quot;, &quot;F&quot;, &quot;B&quot;,
           &quot;C4&quot;, &quot;T10&quot;, &quot;PIE&quot;, &quot;T20&quot;,
@@ -53,8 +53,8 @@ ignore = [&quot;E501&quot;, &quot;RUF012&quot;, &quot;S108&quot;]
 line-length = 120
 
 [tool.ruff.extend-per-file-ignores]
-&quot;tests/*.py&quot; = ['S101', 'SLF001', 'PLR2004', 'PLR0913']
-&quot;*factory.py&quot; = ['S106']
+&quot;tests/*.py&quot; = [&#x27;S101&#x27;, &#x27;SLF001&#x27;, &#x27;PLR2004&#x27;, &#x27;PLR0913&#x27;]
+&quot;*factory.py&quot; = [&#x27;S106&#x27;]
 </code></pre>
 <ul>
 <li>The current Ruff version (<code>ruff --version</code>)
@@ -64,7 +64,7 @@ ruff 0.0.280</li>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-08 18:48</div>
-            <div class="timeline-body"><p>I believe this was changed intentionally to support catching + logging &quot;blind&quot; exceptions, which I think is a reasonable pattern (https://github.com/astral-sh/ruff/issues/2212).</p>
+            <div class="timeline-body"><p>I believe this was changed intentionally to support catching + logging &quot;blind&quot; exceptions, which I think is a reasonable pattern (<a href="https://github.com/astral-sh/ruff/issues/2212">astral-sh/ruff#2212</a>).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -73,7 +73,7 @@ ruff 0.0.280</li>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-08-08 20:53</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-08 20:53</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/eslamodeh">@eslamodeh</a> on 2023-08-09 13:53</div>
@@ -84,8 +84,8 @@ ruff 0.0.280</li>
             <div class="timeline-header">Comment by <a href="https://github.com/aiven-anton">@aiven-anton</a> on 2024-02-29 14:23</div>
             <div class="timeline-body"><p>@charliermarsh In applications where solid error handling is important, this aspect of the BLE rule is actually a limitation.</p>
 <p>In such applications, you typically want to have <em>one single place</em> in the application, at its entry-point/main loop where bare <code>Exception</code> is dealt with. In any other places, nested within the application, having a <code>except Exception:</code> reduces the chances of achieving appropriate behavior during situations like falling over due to limited memory.</p>
-<p>If there's a single top-level try-block handling <code>Exception</code>, it is feasible to ensure the application is not attempting to handle fatal exceptions like <code>MemoryError</code>:</p>
-<pre><code class="language-python">def main():
+<p>If there&#x27;s a single top-level try-block handling <code>Exception</code>, it is feasible to ensure the application is not attempting to handle fatal exceptions like <code>MemoryError</code>:</p>
+<pre><code>def main():
     app = App()
     while True:
         try:
@@ -96,7 +96,7 @@ ruff 0.0.280</li>
             logger.error(&quot;A non-fatal unhandled exception occurred in the application, logging and continuing&quot;, exc_info=True)            
 </code></pre>
 <p>Now if deep within the application code is added that catches <code>Exception</code> broadly, like so:</p>
-<pre><code class="language-python">def send_request():
+<pre><code>def send_request():
     try:
         response = http.request()
     except Exception:
@@ -104,14 +104,14 @@ ruff 0.0.280</li>
 </code></pre>
 <p>... this yields the hard work invested into having a solid entry-point error handling moot. If a <code>MemoryError</code> occurs in the above code, chances are the application would have no chance at all to print something that hints at the problem being a memory error.</p>
 <p>Phrased another way: <em>I want to be able to strictly enforce always falling over for fatal exceptions</em>, and never having intermediate handling of them.</p>
-<p>(I'm sure I've read a statement by Guido many years ago, saying it never makes sense to catch <code>MemoryError</code>, with essentially the same justification as explained here. I've since tried to find and reference that quote many times, without success, so it might just be my memory playing tricks ...)</p>
-<p>With this use case in mind, do you think it's strong enough to justify introducing a configuration parameter to control the strictness of <code>BLE001</code>? (Or perhaps it should be a separate code, but that's details that can be discussed later).</p>
+<p>(I&#x27;m sure I&#x27;ve read a statement by Guido many years ago, saying it never makes sense to catch <code>MemoryError</code>, with essentially the same justification as explained here. I&#x27;ve since tried to find and reference that quote many times, without success, so it might just be my memory playing tricks ...)</p>
+<p>With this use case in mind, do you think it&#x27;s strong enough to justify introducing a configuration parameter to control the strictness of <code>BLE001</code>? (Or perhaps it should be a separate code, but that&#x27;s details that can be discussed later).</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:47:55 UTC
+        Synced at 2026-01-20 18:48:40 UTC
     </footer>
 </body>
 </html>

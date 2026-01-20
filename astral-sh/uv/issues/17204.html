@@ -23,17 +23,17 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/frankjoey2048">@frankjoey2048</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Add an option (e.g., <code>--no-http2</code> flag or <code>UV_NO_HTTP2</code> environment variable) to disable HTTP/2 multiplexing and force uv to use separate TCP connections for concurrent downloads.</p>
-<h2>Motivation</h2>
-<p>I'm using an <strong>aggregated proxy port</strong> that combines multiple upstream proxy servers to achieve bandwidth aggregation. The proxy distributes different TCP connections across different upstream servers, effectively multiplying the available bandwidth.</p>
+Motivation
+<p>I&#x27;m using an <strong>aggregated proxy port</strong> that combines multiple upstream proxy servers to achieve bandwidth aggregation. The proxy distributes different TCP connections across different upstream servers, effectively multiplying the available bandwidth.</p>
 <p>However, since uv uses HTTP/2 with connection multiplexing (enabled in PR #8049), all concurrent downloads to the same host (e.g., <code>files.pythonhosted.org</code>) are sent over a <strong>single TCP connection</strong>. This means:</p>
 <ul>
 <li>Even with <code>UV_CONCURRENT_DOWNLOADS=50</code>, all requests to PyPI go through one connection</li>
 <li>The aggregated proxy sees only one connection and routes all traffic through a single upstream server</li>
 <li><strong>Bandwidth aggregation becomes impossible</strong> - I can only use the bandwidth of one upstream server instead of the combined bandwidth of all servers</li>
 </ul>
-<h2>Use Case</h2>
+Use Case
 <pre><code>                                    ┌─── Upstream Proxy 1 (100 Mbps)
                                     │
 User ──► Aggregated Proxy Port ─────┼─── Upstream Proxy 2 (100 Mbps)
@@ -42,7 +42,7 @@ User ──► Aggregated Proxy Port ─────┼─── Upstream Proxy 
 </code></pre>
 <p><strong>Expected behavior:</strong> With 3 concurrent downloads, the proxy distributes them to 3 upstream servers → ~300 Mbps total bandwidth</p>
 <p><strong>Actual behavior:</strong> HTTP/2 multiplexes all downloads into 1 TCP connection → only ~100 Mbps (single upstream server)</p>
-<h2>Proposed Solution</h2>
+Proposed Solution
 <p>Add one of the following options:</p>
 <ol>
 <li><code>--no-http2</code> / <code>UV_NO_HTTP2=1</code> - Disable HTTP/2, force HTTP/1.1</li>
@@ -50,43 +50,43 @@ User ──► Aggregated Proxy Port ─────┼─── Upstream Proxy 
 <li><code>--connections-per-host &lt;N&gt;</code> / <code>UV_CONNECTIONS_PER_HOST=&lt;N&gt;</code> - Control max connections per host</li>
 </ol>
 <p>Option 1 is probably the simplest to implement since reqwest already supports this via <code>.http1_only()</code> on the client builder.</p>
-<h2>Evidence: Aggregated Proxy Works Fine with Other Tools</h2>
-<p>To confirm the issue is with uv's HTTP/2 multiplexing (not my proxy setup), I tested downloading large models from Hugging Face using tools that create multiple TCP connections. <strong>The bandwidth aggregation works perfectly</strong> - I can see traffic being distributed across all upstream proxies and achieving the expected combined bandwidth.</p>
+Evidence: Aggregated Proxy Works Fine with Other Tools
+<p>To confirm the issue is with uv&#x27;s HTTP/2 multiplexing (not my proxy setup), I tested downloading large models from Hugging Face using tools that create multiple TCP connections. <strong>The bandwidth aggregation works perfectly</strong> - I can see traffic being distributed across all upstream proxies and achieving the expected combined bandwidth.</p>
 <p>This proves:</p>
 <ul>
 <li>My aggregated proxy setup is working correctly</li>
 <li>The issue is specifically that uv multiplexes all requests into a single TCP connection</li>
 </ul>
-<h2>Workaround</h2>
+Workaround
 <p>Currently there is no workaround. The HTTP/2 and connection pooling behavior is hardcoded.</p>
-<h2>Additional Context</h2>
+Additional Context
 <ul>
 <li>Related code: <code>pool_max_idle_per_host(20)</code> in client initialization</li>
 <li>HTTP/2 was enabled in #8049</li>
 <li>This affects users who rely on multi-path/multi-connection network setups for bandwidth aggregation (common in regions with limited single-connection bandwidth)</li>
 </ul>
-<h3>Example</h3>
+Example
 <p><em>No response</em></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @frankjoey2048 on 2025-12-21 09:47</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/frankjoey2048">@frankjoey2048</a> on 2025-12-21 09:47</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/woodruffw">@woodruffw</a> on 2025-12-26 15:52</div>
-            <div class="timeline-body"><p>Triage: Yeah, I believe <code>reqwest</code>'s <a href="https://docs.rs/reqwest/latest/reqwest/struct.ClientBuilder.html#method.http1_only"><code>http1_only</code></a> API would do the trick here.</p>
-<p>There's also <a href="https://docs.rs/reqwest/latest/reqwest/struct.RequestBuilder.html#method.version"><code>RequestBuilder::version</code></a>, but I think that can be overridden by ALPN. Ref: https://github.com/seanmonstar/reqwest/issues/2343</p>
+            <div class="timeline-body"><p>Triage: Yeah, I believe <code>reqwest</code>&#x27;s <a href="https://docs.rs/reqwest/latest/reqwest/struct.ClientBuilder.html#method.http1_only"><code>http1_only</code></a> API would do the trick here.</p>
+<p>There&#x27;s also <a href="https://docs.rs/reqwest/latest/reqwest/struct.RequestBuilder.html#method.version"><code>RequestBuilder::version</code></a>, but I think that can be overridden by ALPN. Ref: <a href="https://github.com/seanmonstar/reqwest/issues/2343">seanmonstar/reqwest#2343</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2026-01-05 18:58</div>
-            <div class="timeline-body"><p>I'm not sure if we want to support this in uv beyond the system configuration that reqwest supports, aggregated proxy ports are very rare and, HTTP/2 is widely supported and the current behavior is otherwise that of the HTTP standard.</p>
+            <div class="timeline-body"><p>I&#x27;m not sure if we want to support this in uv beyond the system configuration that reqwest supports, aggregated proxy ports are very rare and, HTTP/2 is widely supported and the current behavior is otherwise that of the HTTP standard.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:33:43 UTC
+        Synced at 2026-01-20 19:41:22 UTC
     </footer>
 </body>
 </html>

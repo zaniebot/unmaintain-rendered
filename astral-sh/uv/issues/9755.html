@@ -28,12 +28,12 @@
 <li>it removed all my transitive dev dependencies when run from the root directory</li>
 <li>when run within a sub-package, it removed dependencies (required and dev) for all other packages!</li>
 </ol>
-<p>Overall, it's confusing that the behavior of <code>uv sync</code> changes depending on where you run it from within a workspace that just has one shared environment.</p>
-<p>Without <code>--all-packages</code>, <code>uv sync</code> seems to behave as though the virtual environment belongs only to whichever package you're currently in—which would make sense in non-workspace mode, where each package has its own environment. But in a workspace, the environment is shared between all members, so it feels odd for each member to trample on this shared resource by default.</p>
-<details><summary>Some specific repros</summary>
+<p>Overall, it&#x27;s confusing that the behavior of <code>uv sync</code> changes depending on where you run it from within a workspace that just has one shared environment.</p>
+<p>Without <code>--all-packages</code>, <code>uv sync</code> seems to behave as though the virtual environment belongs only to whichever package you&#x27;re currently in—which would make sense in non-workspace mode, where each package has its own environment. But in a workspace, the environment is shared between all members, so it feels odd for each member to trample on this shared resource by default.</p>
+Some specific repros
 
 <p>You can recreate these with https://github.com/gjoseph92/uv-monorepro</p>
-<p>The transitive dev dependencies aren't available in the base workspace (I'd expect <code>py-spy</code> and <code>pip</code> to be here):</p>
+<p>The transitive dev dependencies aren&#x27;t available in the base workspace (I&#x27;d expect <code>py-spy</code> and <code>pip</code> to be here):</p>
 <pre><code>uv-monorepro main*​(uv-monorepro) ❯ uv tree
 Resolved 15 packages in 2ms
 uv-monorepro v0.1.0
@@ -55,7 +55,7 @@ uv-monorepro v0.1.0
 uv-monorepro main*​(uv-monorepro) ❯ which pip   
 pip not found
 </code></pre>
-<p>If I go into a subpackage, <code>uv sync</code> uninstalls the <em>required</em> dependency (<code>cowsay</code>) of my other subpackage (because it's not a dependency of this subpackage):</p>
+<p>If I go into a subpackage, <code>uv sync</code> uninstalls the <em>required</em> dependency (<code>cowsay</code>) of my other subpackage (because it&#x27;s not a dependency of this subpackage):</p>
 <pre><code>uv-monorepro main*​(uv-monorepro) ❯ cd packages/thing2
 uv-monorepro/packages/thing2 main*​(uv-monorepro) ❯ uv sync
 Resolved 15 packages in 2ms
@@ -109,46 +109,46 @@ Installed 2 packages in 8ms
 uv-monorepro main*​(uv-monorepro) ❯ which pip
 /Users/gjoseph/scratch/uv-monorepro/.venv/bin/pip
 </code></pre>
-</details>
 
-<p>I couldn't find other issues requesting this, but apologies if this is a dupe. Maybe somewhat related to https://github.com/astral-sh/uv/issues/9261?</p>
+
+<p>I couldn&#x27;t find other issues requesting this, but apologies if this is a dupe. Maybe somewhat related to <a href="https://github.com/astral-sh/uv/issues/9261">astral-sh/uv#9261</a>?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-10 00:25</div>
-            <div class="timeline-body"><p>I think we're somewhat unlikely to change this... I hear your confusion but it may just be a learning curve that comes from working with the workspace concept? Cargo, for example, behaves the same way: the workspace root is a member, just like any other, and by default <code>cargo run</code> uses the current directory which can be overridden with <code>-p</code>.</p>
+            <div class="timeline-body"><p>I think we&#x27;re somewhat unlikely to change this... I hear your confusion but it may just be a learning curve that comes from working with the workspace concept? Cargo, for example, behaves the same way: the workspace root is a member, just like any other, and by default <code>cargo run</code> uses the current directory which can be overridden with <code>-p</code>.</p>
 <p>In our case, <code>uv sync</code> always does a strict sync. You can use <code>uv sync --inexact</code> if you only want to make the minimal changes necessary to include all dependencies for the current workspace member. (<code>uv run</code> uses these &quot;inexact&quot; semantics by default.)</p>
 <blockquote>
 <p>But in a workspace, the environment is shared between all members, so it feels odd for each member to trample on this shared resource by default.</p>
 </blockquote>
-<p>Well... I think this isn't quite true. You can have members within a workspace that don't depend on any other members. Those members should declare all the direct dependencies that they need. In that case, running <code>uv sync</code> and removing dependencies of <em>other</em> members is totally right.</p>
+<p>Well... I think this isn&#x27;t quite true. You can have members within a workspace that don&#x27;t depend on any other members. Those members should declare all the direct dependencies that they need. In that case, running <code>uv sync</code> and removing dependencies of <em>other</em> members is totally right.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-12-10 13:29</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-10 13:29</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2025-01-07 19:23</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-07 19:23</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2025-01-07 19:23</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-07 19:23</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntjess">@ntjess</a> on 2025-06-29 13:21</div>
             <div class="timeline-body"><p>@charliermarsh would you consider supporting a pyproject configuration option like:</p>
-<pre><code class="language-toml">[tool.uv]
+<pre><code>[tool.uv]
 sync-all-packages = true
 </code></pre>
 <p>in the monorepo root so that workspaces which <em>do</em> share the same environment can enable this behavior?</p>
 <p>Use case: allow multiple devs using the same code base to experience the same CLI behavior running <code>uv sync</code> without needing to add bash scripts/etc to the repo</p>
-<p>Apologies if this is already possible -- I checked the <a href="https://docs.astral.sh/uv/reference/settings">docs</a> for configurations and didn't come across it. Also happy to open a new issue if it's preferable</p>
-<p>Edit: just came across #5737 which looks like a similar request so I'll subscribe to that issue instead 🙂</p>
+<p>Apologies if this is already possible -- I checked the <a href="https://docs.astral.sh/uv/reference/settings">docs</a> for configurations and didn&#x27;t come across it. Also happy to open a new issue if it&#x27;s preferable</p>
+<p>Edit: just came across #5737 which looks like a similar request so I&#x27;ll subscribe to that issue instead 🙂</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:28:48 UTC
+        Synced at 2026-01-20 19:36:04 UTC
     </footer>
 </body>
 </html>

@@ -23,13 +23,13 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ben-xD">@ben-xD</a></div>
-            <div class="timeline-body"><p>Thanks for the detailed docker docs! I'm trying to use uv in docker compose for local development. Trying to bind mount my application code <strong>and</strong> an anonymous volume for <code>app/.venv</code>. This is similar to the approach shown in <a href="https://docs.astral.sh/uv/guides/integration/docker/#mounting-the-project-with-docker-run">docs with <code>docker run</code></a> which aims to avoid overwriting host vs docker container venv files, and keep them separate.</p>
+            <div class="timeline-body"><p>Thanks for the detailed docker docs! I&#x27;m trying to use uv in docker compose for local development. Trying to bind mount my application code <strong>and</strong> an anonymous volume for <code>app/.venv</code>. This is similar to the approach shown in <a href="https://docs.astral.sh/uv/guides/integration/docker/#mounting-the-project-with-docker-run">docs with <code>docker run</code></a> which aims to avoid overwriting host vs docker container venv files, and keep them separate.</p>
 <p>Sadly, <code>uv sync</code> inside the container errors with:</p>
-<pre><code class="language-bash">error: Project virtual environment directory /app/.venv cannot be used because it is not a compatible environment but cannot be recreated because it is not a virtual environment
+<pre><code>error: Project virtual environment directory /app/.venv cannot be used because it is not a compatible environment but cannot be recreated because it is not a virtual environment
 </code></pre>
-<p>This might be because uv tries to replace the <code>.venv</code> folder, but it can't since it's a volume?</p>
-<h2>Docker compose settings</h2>
-<pre><code class="language-yaml">services:
+<p>This might be because uv tries to replace the <code>.venv</code> folder, but it can&#x27;t since it&#x27;s a volume?</p>
+Docker compose settings
+<pre><code>services:
   reproduce:
     build:
       context: .
@@ -39,12 +39,12 @@
       - ./:/app
       - /app/.venv
 </code></pre>
-<h2>Details</h2>
+Details
 <ul>
 <li>version: uv 0.5.4</li>
 <li>OS: debian 12</li>
 </ul>
-<h2>Reproducible setup</h2>
+Reproducible setup
 <ul>
 <li><code>git clone git@github.com:ben-xD/reproduce-uv-docker-compose-error.git</code></li>
 <li><code>docker-compose up -d</code></li>
@@ -54,7 +54,7 @@
 </ul>
 <pre><code>error: Project virtual environment directory `/app/.venv` cannot be used because it is not a compatible environment but cannot be recreated because it is not a virtual environment
 </code></pre>
-<h2>Following documentation's docker run</h2>
+Following documentation&#x27;s docker run
 <p>I also tried following the docs, by running:</p>
 <pre><code>docker run -it --rm --volume .:/app --volume /app/.venv uv-reproduce-error-reproduce bash
 </code></pre>
@@ -70,8 +70,8 @@ error: Project virtual environment directory `/app/.venv` cannot be used because
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ben-xD">@ben-xD</a> on 2024-11-25 17:12</div>
-            <div class="timeline-body"><p>The <a href="https://docs.astral.sh/uv/guides/integration/docker/#configuring-watch-with-docker-compose">docker compose watch feature</a> isn't ideal though because it the python dependencies are redownloaded whenever the image needs to be rebuild - it doesn't cache <code>.venv</code>, just ignores it.</p>
-<p>I also can't enter the container shell to run commands interactively (it really helps experimenting with container/linux tools used in CI quickly). Also, the sync is 1 way: i cant make changes inside the container.</p>
+            <div class="timeline-body"><p>The <a href="https://docs.astral.sh/uv/guides/integration/docker/#configuring-watch-with-docker-compose">docker compose watch feature</a> isn&#x27;t ideal though because it the python dependencies are redownloaded whenever the image needs to be rebuild - it doesn&#x27;t cache <code>.venv</code>, just ignores it.</p>
+<p>I also can&#x27;t enter the container shell to run commands interactively (it really helps experimenting with container/linux tools used in CI quickly). Also, the sync is 1 way: i cant make changes inside the container.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -87,9 +87,9 @@ uv::venv::creation
   `-&gt; failed to remove directory `/app/.venv`: Resource busy (os error 16)
 </code></pre>
 <blockquote>
-<p>the python dependencies are redownloaded whenever the image needs to be rebuild - it doesn't cache .venv, just ignores it.</p>
+<p>the python dependencies are redownloaded whenever the image needs to be rebuild - it doesn&#x27;t cache .venv, just ignores it.</p>
 </blockquote>
-<p>Perhaps you're looking to use a <a href="https://github.com/astral-sh/uv-docker-example/blob/a14ebc89e3a5e5b33131284968d8969ae054ed0d/Dockerfile#L13-L23">cache mount</a> to store dependency downloads?</p>
+<p>Perhaps you&#x27;re looking to use a <a href="https://github.com/astral-sh/uv-docker-example/blob/a14ebc89e3a5e5b33131284968d8969ae054ed0d/Dockerfile#L13-L23">cache mount</a> to store dependency downloads?</p>
 <blockquote>
 <p>Also, the sync is 1 way: i cant make changes inside the container.</p>
 </blockquote>
@@ -98,17 +98,17 @@ uv::venv::creation
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ben-xD">@ben-xD</a> on 2024-11-25 18:32</div>
-            <div class="timeline-body"><p>Thanks for your reply! Yes it makes sense that it doesn't yet work but I can't find another way of isolating the 2 python environments (docker/linux vs. host/macOS) to avoid needing to download/reinstall everything when switching between testing my python app in my docker and host environments. I can't &quot;exclude&quot; the <code>.env</code>.</p>
-<p>I don't think cache mount would work since I want to update the cache whilst inside the container like with <code>docker exec -it $container_name bash</code>? Cache mounts are for build time?</p>
+            <div class="timeline-body"><p>Thanks for your reply! Yes it makes sense that it doesn&#x27;t yet work but I can&#x27;t find another way of isolating the 2 python environments (docker/linux vs. host/macOS) to avoid needing to download/reinstall everything when switching between testing my python app in my docker and host environments. I can&#x27;t &quot;exclude&quot; the <code>.env</code>.</p>
+<p>I don&#x27;t think cache mount would work since I want to update the cache whilst inside the container like with <code>docker exec -it $container_name bash</code>? Cache mounts are for build time?</p>
 <blockquote>
 <p>Here the idea is that you would be able to modify the pyproject.toml with uv add and have it reflected inside and outside of the container?</p>
 </blockquote>
-<p>The 2 way sync is not super important tbh. But yea, it would be ideal if <code>uv add</code> updates the lock file, and that's synced to my host file. system. But definitely syncing from host to linux. It would be nice if <code>uv sync</code> just downloads the package that was missing.</p>
+<p>The 2 way sync is not super important tbh. But yea, it would be ideal if <code>uv add</code> updates the lock file, and that&#x27;s synced to my host file. system. But definitely syncing from host to linux. It would be nice if <code>uv sync</code> just downloads the package that was missing.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-25 18:36</div>
-            <div class="timeline-body"><p>Okay confusing, we <em>do</em> ignore empty directories but it's different in this case? Presumably because it's a mounted volume? If I run <code>uv venv</code> twice, we create it:</p>
+            <div class="timeline-body"><p>Okay confusing, we <em>do</em> ignore empty directories but it&#x27;s different in this case? Presumably because it&#x27;s a mounted volume? If I run <code>uv venv</code> twice, we create it:</p>
 <pre><code>root@8ceb311d28c1:/app# uv venv -v
 DEBUG uv 0.5.4
 DEBUG Found project root: `/app`
@@ -145,23 +145,23 @@ DEBUG Ignoring empty directory
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-25 18:44</div>
             <div class="timeline-body"><blockquote>
-<p>I don't think cache mount would work since I want to update the cache whilst inside the container like with docker exec -it $container_name bash? Cache mounts are for build time?</p>
+<p>I don&#x27;t think cache mount would work since I want to update the cache whilst inside the container like with docker exec -it $container_name bash? Cache mounts are for build time?</p>
 </blockquote>
-<p>I see. I was responding specifically to &quot;whenever the image needs to be rebuild&quot; — you could also mount the cache at runtime — though I'm not sure it'd be safe to concurrent access since we can't lock files across the host and container.</p>
+<p>I see. I was responding specifically to &quot;whenever the image needs to be rebuild&quot; — you could also mount the cache at runtime — though I&#x27;m not sure it&#x27;d be safe to concurrent access since we can&#x27;t lock files across the host and container.</p>
 <blockquote>
-<p>But yea, it would be ideal if uv add updates the lock file, and that's synced to my host file. system.</p>
+<p>But yea, it would be ideal if uv add updates the lock file, and that&#x27;s synced to my host file. system.</p>
 </blockquote>
 <p>This sort of works, but Docker syncs the the virtual environment back to the host and breaks things. It seems feasible with some work.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-25 19:03</div>
-            <div class="timeline-body"><p>I'm not sure what the best next step here is. Perhaps you can use <code>UV_PROJECT_ENVIRONMENT</code> to try to move the virtual environment outside of the project directory while in the container to avoid collisions.</p>
+            <div class="timeline-body"><p>I&#x27;m not sure what the best next step here is. Perhaps you can use <code>UV_PROJECT_ENVIRONMENT</code> to try to move the virtual environment outside of the project directory while in the container to avoid collisions.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ben-xD">@ben-xD</a> on 2024-11-25 19:46</div>
-            <div class="timeline-body"><p>That's great! Thanks a lot! I was trying to use <code>VIRTUAL_ENV</code> but that was being ignored.</p>
+            <div class="timeline-body"><p>That&#x27;s great! Thanks a lot! I was trying to use <code>VIRTUAL_ENV</code> but that was being ignored.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -170,7 +170,7 @@ DEBUG Ignoring empty directory
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">great writeup</span> added by @zanieb on 2024-11-26 17:51</div>
+            <div class="event">Label <span class="label">great writeup</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-26 17:51</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/leorochael">@leorochael</a> on 2025-05-22 11:57</div>
@@ -180,11 +180,11 @@ DEBUG Ignoring empty directory
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ben-xD">@ben-xD</a> on 2025-05-22 14:38</div>
-            <div class="timeline-body"><p>Not sure why I didn't see this, but yes that solves my problem. Thank you!</p>
+            <div class="timeline-body"><p>Not sure why I didn&#x27;t see this, but yes that solves my problem. Thank you!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ben-xD on 2025-05-22 14:38</div>
+            <div class="event">Closed by <a href="https://github.com/ben-xD">@ben-xD</a> on 2025-05-22 14:38</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mayrop">@mayrop</a> on 2025-07-22 20:42</div>
@@ -194,13 +194,13 @@ DEBUG Ignoring empty directory
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ben-xD">@ben-xD</a> on 2025-07-23 09:53</div>
             <div class="timeline-body"><p>My issue was solved by a PR linked above</p>
-<p>Now, I don't even use docker for my project, much simpler!</p>
+<p>Now, I don&#x27;t even use docker for my project, much simpler!</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:28:33 UTC
+        Synced at 2026-01-20 19:35:45 UTC
     </footer>
 </body>
 </html>

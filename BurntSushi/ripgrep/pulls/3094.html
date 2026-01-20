@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/fspv">@fspv</a></div>
-            <div class="timeline-body"><p>Fixes https://github.com/BurntSushi/ripgrep/issues/3076</p>
-<p>When we have matches on adjacent lines using multiline searcher we group them together before passing them to the sink. This behaviour allows replacement logic to work correctly, when we try to replace &quot;\n&quot; with something else (see https://github.com/BurntSushi/ripgrep/issues/1311 for more details).</p>
+            <div class="timeline-body"><p>Fixes <a href="https://github.com/BurntSushi/ripgrep/issues/3076">BurntSushi/ripgrep#3076</a></p>
+<p>When we have matches on adjacent lines using multiline searcher we group them together before passing them to the sink. This behaviour allows replacement logic to work correctly, when we try to replace &quot;\n&quot; with something else (see <a href="https://github.com/BurntSushi/ripgrep/issues/1311">BurntSushi/ripgrep#1311</a> for more details).</p>
 <p>However, this also means that the <code>--max-count</code> option is not respected when grouping matches together, because max count is only enforced in a sink. And if we have multiple matches on adjacent lines they will be passed to the sink together, potentially going over the limit.</p>
-<p>This PR fixes that by also calculating the number of matches in the searcher itself and breaking early in case max count is reached during the search. This way we make sure we don't overcount the matches.</p>
+<p>This PR fixes that by also calculating the number of matches in the searcher itself and breaking early in case max count is reached during the search. This way we make sure we don&#x27;t overcount the matches.</p>
 <pre><code>$ cat file
 line 2
 line 3 x
@@ -41,9 +41,9 @@ rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1280: hyperlink format: 
 rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:174: using 1 thread(s)
 rg: DEBUG|ignore::gitignore|crates/ignore/src/gitignore.rs:393: opened gitignore file: /home/spv/.gitignore_global
 rg: DEBUG|globset|crates/globset/src/lib.rs:448: glob converted to regex: Glob { glob: &quot;**/.aider*&quot;, re: &quot;(?-u)^(?:/?|.*/)\\.aider[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: tr
-ue, backslash_escape: true, empty_alternates: false }, tokens: Tokens([RecursivePrefix, Literal('.'), Literal('a'), Literal('i'), Literal('d'), Literal('e'), Literal('r'), ZeroOrMore]) }
+ue, backslash_escape: true, empty_alternates: false }, tokens: Tokens([RecursivePrefix, Literal(&#x27;.&#x27;), Literal(&#x27;a&#x27;), Literal(&#x27;i&#x27;), Literal(&#x27;d&#x27;), Literal(&#x27;e&#x27;), Literal(&#x27;r&#x27;), ZeroOrMore]) }
 rg: DEBUG|globset|crates/globset/src/lib.rs:448: glob converted to regex: Glob { glob: &quot;**/.claude*&quot;, re: &quot;(?-u)^(?:/?|.*/)\\.claude[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator:
-true, backslash_escape: true, empty_alternates: false }, tokens: Tokens([RecursivePrefix, Literal('.'), Literal('c'), Literal('l'), Literal('a'), Literal('u'), Literal('d'), Literal('e'), ZeroOrMore]) }
+true, backslash_escape: true, empty_alternates: false }, tokens: Tokens([RecursivePrefix, Literal(&#x27;.&#x27;), Literal(&#x27;c&#x27;), Literal(&#x27;l&#x27;), Literal(&#x27;a&#x27;), Literal(&#x27;u&#x27;), Literal(&#x27;d&#x27;), Literal(&#x27;e&#x27;), ZeroOrMore]) }
 rg: DEBUG|globset|crates/globset/src/lib.rs:453: built glob set; 0 literals, 8 basenames, 4 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 2 regexes
 rg: TRACE|grep_regex::matcher|/home/spv/git/github.com/fspv/ripgrep/crates/regex/src/matcher.rs:66: final regex: &quot;(?:line 2\nline 3)&quot;
 rg: TRACE|grep_regex::literal|crates/regex/src/literal.rs:59: skipping inner literal extraction, no line terminator is set
@@ -67,13 +67,13 @@ rg: TRACE|grep_searcher::searcher|/home/spv/git/github.com/fspv/ripgrep/crates/s
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/fspv">@fspv</a> on 2025-08-10 08:48</div>
-            <div class="timeline-body"><p>Hey @BurntSushi. Just getting back to this, don't want to waste the effort. Any chance you can take a look at this? (see more context in https://github.com/BurntSushi/ripgrep/issues/3076)</p>
+            <div class="timeline-body"><p>Hey @BurntSushi. Just getting back to this, don&#x27;t want to waste the effort. Any chance you can take a look at this? (see more context in <a href="https://github.com/BurntSushi/ripgrep/issues/3076">BurntSushi/ripgrep#3076</a>)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-09-07 16:35</div>
             <div class="timeline-body"><p>Thank you for working on this! Unfortunately, this is a rather difficult bug to fix. Even if #1311 were reverted, then using a pattern like <code>line 2\nline 3|x\nline 2\n</code> will still given an unexpected result:</p>
-<pre><code class="language-rust">    #[test]
+<pre><code>    #[test]
     fn max_matches_multi_line4() {
         let matcher =
             RegexMatcher::new(r&quot;line 2\nline 3|x\nline 2\n&quot;).unwrap();
@@ -116,28 +116,28 @@ line 2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 </code></pre>
 <p>It provokes the same sort of underlying problem. Indeed, this test fails with this PR too.</p>
-<p>I'm going to try and think more about this problem. I wonder if perhaps #1311 needs to be fixed in a different way.</p>
+<p>I&#x27;m going to try and think more about this problem. I wonder if perhaps #1311 needs to be fixed in a different way.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2025-09-07 16:35</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-09-07 16:35</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-09-07 17:53</div>
-            <div class="timeline-body"><p>I think your instinct to put this in the <code>Searcher</code> is probably correct. I don't really see how this can be fixed in the printer easily. The problem is that the <code>SinkMatch</code> passed to the printer is fundamentally violating some implicit contracts here. e.g., That every match found in <code>SinkMatch::buffer</code> is a valid match that should be printed and handled. When multi-line mode is disabled, this is fine, because <code>--max-count</code> is specifically defined to be at the granularity of a <em>line</em>. But with multi-line mode, a single match can extend over multiple lines and that should only be counted once.</p>
-<p>The other source of tension here is that the <code>Searcher</code> tries very hard to avoid not only finding literally every match (since one line may contain multiple matches and the most basic functionality of a grep does not require finding all matches on each line, just that a line matches <em>somewhere</em>, once or more) but also to avoid finding the starting position of a match if it isn't needed (because doing so is extra work). This is why a lot of stuff is pushed down in the printer and the <em>printer</em> decides if all of the matches need to be found, not the searcher. But in order to implement <code>--max-count</code> when matches can span multiple lines, the searcher does need to find all matches.</p>
+            <div class="timeline-body"><p>I think your instinct to put this in the <code>Searcher</code> is probably correct. I don&#x27;t really see how this can be fixed in the printer easily. The problem is that the <code>SinkMatch</code> passed to the printer is fundamentally violating some implicit contracts here. e.g., That every match found in <code>SinkMatch::buffer</code> is a valid match that should be printed and handled. When multi-line mode is disabled, this is fine, because <code>--max-count</code> is specifically defined to be at the granularity of a <em>line</em>. But with multi-line mode, a single match can extend over multiple lines and that should only be counted once.</p>
+<p>The other source of tension here is that the <code>Searcher</code> tries very hard to avoid not only finding literally every match (since one line may contain multiple matches and the most basic functionality of a grep does not require finding all matches on each line, just that a line matches <em>somewhere</em>, once or more) but also to avoid finding the starting position of a match if it isn&#x27;t needed (because doing so is extra work). This is why a lot of stuff is pushed down in the printer and the <em>printer</em> decides if all of the matches need to be found, not the searcher. But in order to implement <code>--max-count</code> when matches can span multiple lines, the searcher does need to find all matches.</p>
 <p>I think in the multi-line case this is okay...</p>
-<p>But it is not ideal to have a <code>max_matches</code> option on both the printer and the searcher. So I'm going to look into adding it to the searcher and removing it from the printer. And also having it only work for multi-line searches is very weird.</p>
-<p>If anyone ever wonders why &quot;just split logic out into their own crates&quot; is hard, this is yet another example of it. I clearly fucked up the abstraction boundaries, and because there's a semver boundary at those abstraction boundaries, introducing coupling or tweaking those boundaries is annoyingly difficult.</p>
+<p>But it is not ideal to have a <code>max_matches</code> option on both the printer and the searcher. So I&#x27;m going to look into adding it to the searcher and removing it from the printer. And also having it only work for multi-line searches is very weird.</p>
+<p>If anyone ever wonders why &quot;just split logic out into their own crates&quot; is hard, this is yet another example of it. I clearly fucked up the abstraction boundaries, and because there&#x27;s a semver boundary at those abstraction boundaries, introducing coupling or tweaking those boundaries is annoyingly difficult.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2025-09-18 19:09</div>
+            <div class="event">Label <span class="label">rollup</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-09-18 19:09</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:44:21 UTC
+        Synced at 2026-01-20 18:48:20 UTC
     </footer>
 </body>
 </html>

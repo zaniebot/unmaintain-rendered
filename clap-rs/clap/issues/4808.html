@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>TypedValueParser cannot return single Vec<String></h1>
+    <h1>TypedValueParser cannot return single Vec</h1>
 
     <div class="meta">
         <span class="state-icon state-closed"></span>
@@ -23,21 +23,21 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/LegionMammal978">@LegionMammal978</a></div>
-            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+            <div class="timeline-body">Please complete the following tasks
 <ul>
 <li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
 <li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
 </ul>
-<h3>Rust Version</h3>
+Rust Version
 <p>rustc 1.68.2 (9eb3afe9e 2023-03-27)</p>
-<h3>Clap Version</h3>
+Clap Version
 <p>4.2.0</p>
-<h3>Minimal reproducible code</h3>
-<pre><code class="language-rust">use clap::{builder::ValueParser, ArgAction, Parser};
+Minimal reproducible code
+<pre><code>use clap::{builder::ValueParser, ArgAction, Parser};
 use std::convert::Infallible;
 
 fn my_parser(arg: &amp;str) -&gt; Result&lt;Vec&lt;String&gt;, Infallible&gt; {
-    Ok(arg.split(',').map(str::to_string).collect())
+    Ok(arg.split(&#x27;,&#x27;).map(str::to_string).collect())
 }
 
 #[derive(Parser)]
@@ -56,17 +56,17 @@ fn main() {
     println!(&quot;{:?}&quot;, args.values);
 }
 </code></pre>
-<h3>Steps to reproduce the bug with the above code</h3>
+Steps to reproduce the bug with the above code
 <p><code>cargo run</code></p>
-<h3>Actual Behaviour</h3>
-<pre><code>thread 'main' panicked at 'Mismatch between definition and access of `values`. Could not downcast to alloc::string::String, need to downcast to alloc::vec::Vec&lt;alloc::string::String&gt;
-', src/main.rs:16:13
+Actual Behaviour
+<pre><code>thread &#x27;main&#x27; panicked at &#x27;Mismatch between definition and access of `values`. Could not downcast to alloc::string::String, need to downcast to alloc::vec::Vec&lt;alloc::string::String&gt;
+&#x27;, src/main.rs:16:13
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 </code></pre>
-<h3>Expected Behaviour</h3>
+Expected Behaviour
 <pre><code>[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]
 </code></pre>
-<h3>Additional Context</h3>
+Additional Context
 <p>According to the <a href="https://docs.rs/clap/4.2.0/clap/_derive/index.html#arg-types">Derive Reference</a>:</p>
 <blockquote>
 <p><code>clap</code> assumes some intent based on the type used:</p>
@@ -79,8 +79,8 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 <li>For custom type behavior, you can override the implied attributes/settings and/or set additional ones</li>
 </ul>
 </blockquote>
-<p>This suggests that if I override <code>action</code> and <code>required</code>, then my <code>TypedValueParser</code> can return a <code>Vec&lt;T&gt;</code> just like any other <code>T</code>. However, this always produces an error, since <code>clap_derive</code> <a href="https://github.com/clap-rs/clap/blob/v4.2.0/clap_derive/src/derives/args.rs#L691-L697">unconditionally uses <code>get_many</code></a> for <code>Vec&lt;T&gt;</code> fields, regardless of what attributes I set. So far, I've been able to work around it by having my <code>TypedValueParser</code> return a <code>Box&lt;[T]&gt;</code>, but this is less than ideal.</p>
-<h3>Debug Output</h3>
+<p>This suggests that if I override <code>action</code> and <code>required</code>, then my <code>TypedValueParser</code> can return a <code>Vec&lt;T&gt;</code> just like any other <code>T</code>. However, this always produces an error, since <code>clap_derive</code> <a href="https://github.com/clap-rs/clap/blob/v4.2.0/clap_derive/src/derives/args.rs#L691-L697">unconditionally uses <code>get_many</code></a> for <code>Vec&lt;T&gt;</code> fields, regardless of what attributes I set. So far, I&#x27;ve been able to work around it by having my <code>TypedValueParser</code> return a <code>Box&lt;[T]&gt;</code>, but this is less than ideal.</p>
+Debug Output
 <pre><code>[clap_builder::builder::command] 	Command::_do_parse
 [clap_builder::builder::command] 	Command::_build: name=&quot;example&quot;
 [clap_builder::builder::command] 	Command::_propagate:example
@@ -93,13 +93,13 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 [clap_builder::builder::debug_asserts] 	Arg::_debug_asserts:help
 [clap_builder::builder::debug_asserts] 	Command::_verify_positionals
 [clap_builder::parser::parser] 	Parser::get_matches_with
-[clap_builder::parser::parser] 	Parser::get_matches_with: Begin parsing '&quot;--values=a,b,c&quot;'
+[clap_builder::parser::parser] 	Parser::get_matches_with: Begin parsing &#x27;&quot;--values=a,b,c&quot;&#x27;
 [clap_builder::parser::parser] 	Parser::possible_subcommand: arg=Ok(&quot;--values=a,b,c&quot;)
 [clap_builder::parser::parser] 	Parser::get_matches_with: sc=None
 [clap_builder::parser::parser] 	Parser::parse_long_arg
-[clap_builder::parser::parser] 	Parser::parse_long_arg: Does it contain '='...
-[clap_builder::parser::parser] 	Parser::parse_long_arg: Found valid arg or flag '--values &lt;VALUES&gt;'
-[clap_builder::parser::parser] 	Parser::parse_long_arg(&quot;values&quot;): Found an arg with value 'Some(&quot;a,b,c&quot;)'
+[clap_builder::parser::parser] 	Parser::parse_long_arg: Does it contain &#x27;=&#x27;...
+[clap_builder::parser::parser] 	Parser::parse_long_arg: Found valid arg or flag &#x27;--values &lt;VALUES&gt;&#x27;
+[clap_builder::parser::parser] 	Parser::parse_long_arg(&quot;values&quot;): Found an arg with value &#x27;Some(&quot;a,b,c&quot;)&#x27;
 [clap_builder::parser::parser] 	Parser::parse_opt_value; arg=values, val=Some(&quot;a,b,c&quot;), has_eq=true
 [clap_builder::parser::parser] 	Parser::parse_opt_value; arg.settings=ArgFlags(REQUIRED)
 [clap_builder::parser::parser] 	Parser::parse_opt_value; Checking for val...
@@ -117,11 +117,11 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 [clap_builder::parser::parser] 	Parser::get_matches_with: After parse_long_arg ValuesDone
 [clap_builder::parser::parser] 	Parser::add_defaults
 [clap_builder::parser::parser] 	Parser::add_defaults:iter:values:
-[clap_builder::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
-[clap_builder::parser::parser] 	Parser::add_default_value:iter:values: doesn't have default vals
+[clap_builder::parser::parser] 	Parser::add_default_value: doesn&#x27;t have conditional defaults
+[clap_builder::parser::parser] 	Parser::add_default_value:iter:values: doesn&#x27;t have default vals
 [clap_builder::parser::parser] 	Parser::add_defaults:iter:help:
-[clap_builder::parser::parser] 	Parser::add_default_value: doesn't have conditional defaults
-[clap_builder::parser::parser] 	Parser::add_default_value:iter:help: doesn't have default vals
+[clap_builder::parser::parser] 	Parser::add_default_value: doesn&#x27;t have conditional defaults
+[clap_builder::parser::parser] 	Parser::add_default_value:iter:help: doesn&#x27;t have default vals
 [clap_builder::parser::validator] 	Validator::validate
 [clap_builder::builder::command] 	Command::groups_for_arg: id=&quot;values&quot;
 [clap_builder::parser::validator] 	Conflicts::gather_direct_conflicts id=&quot;values&quot;, conflicts=[]
@@ -138,26 +138,26 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 [clap_builder::parser::validator] 	Validator::gather_requires:iter:&quot;Args&quot;:group
 [clap_builder::parser::validator] 	Validator::validate_required: is_exclusive_present=false
 [clap_builder::parser::arg_matcher] 	ArgMatcher::get_global_values: global_arg_vec=[]
-thread 'main' panicked at 'Mismatch between definition and access of `values`. Could not downcast to alloc::string::String, need to downcast to alloc::vec::Vec&lt;alloc::string::String&gt;
-', src/main.rs:16:13
+thread &#x27;main&#x27; panicked at &#x27;Mismatch between definition and access of `values`. Could not downcast to alloc::string::String, need to downcast to alloc::vec::Vec&lt;alloc::string::String&gt;
+&#x27;, src/main.rs:16:13
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">C-bug</span> added by @LegionMammal978 on 2023-03-29 13:06</div>
+            <div class="event">Label <span class="label">C-bug</span> added by <a href="https://github.com/LegionMammal978">@LegionMammal978</a> on 2023-03-29 13:06</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-03-29 13:16</div>
             <div class="timeline-body"><blockquote>
-<p>This suggests that if I override action and required, then my TypedValueParser can return a Vec<T> just like any other T. However, this always produces an error, since clap_derive <a href="https://github.com/clap-rs/clap/blob/v4.2.0/clap_derive/src/derives/args.rs#L691-L697">unconditionally uses get_many</a> for Vec<T> fields, regardless of what attributes I set. So far, I've been able to work around it by having my TypedValueParser return a Box&lt;[T]&gt;, but this is less than ideal.</p>
+<p>This suggests that if I override action and required, then my TypedValueParser can return a Vec just like any other T. However, this always produces an error, since clap_derive <a href="https://github.com/clap-rs/clap/blob/v4.2.0/clap_derive/src/derives/args.rs#L691-L697">unconditionally uses get_many</a> for Vec fields, regardless of what attributes I set. So far, I&#x27;ve been able to work around it by having my TypedValueParser return a Box&lt;[T]&gt;, but this is less than ideal.</p>
 </blockquote>
-<p>The problem is we do not know what accessor to use, so we do a hard coded lookup based on the type's name.  You can work around this by referring to the type by something other than <code>Vec</code>, like <code>std::vec::Vec</code>.  We have #4626 for exploring how to improve this.</p>
+<p>The problem is we do not know what accessor to use, so we do a hard coded lookup based on the type&#x27;s name.  You can work around this by referring to the type by something other than <code>Vec</code>, like <code>std::vec::Vec</code>.  We have #4626 for exploring how to improve this.</p>
 <p>Closing in favor of #4626</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @epage on 2023-03-29 13:16</div>
+            <div class="event">Closed by <a href="https://github.com/epage">@epage</a> on 2023-03-29 13:16</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/LegionMammal978">@LegionMammal978</a> on 2023-03-29 13:20</div>
@@ -177,7 +177,7 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:49:02 UTC
+        Synced at 2026-01-20 19:59:42 UTC
     </footer>
 </body>
 </html>

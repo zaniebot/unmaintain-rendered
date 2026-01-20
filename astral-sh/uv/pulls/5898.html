@@ -23,42 +23,42 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This PR rewrites the <code>MarkerTree</code> type to use algebraic decision diagrams (ADD). This has many benefits:</p>
 <ul>
-<li>The diagram is canonical for a given marker function. It is impossible to create two functionally equivalent marker trees that don't refer to the same underlying ADD. This also means that any trivially true or unsatisfiable markers are represented by the same constants.</li>
+<li>The diagram is canonical for a given marker function. It is impossible to create two functionally equivalent marker trees that don&#x27;t refer to the same underlying ADD. This also means that any trivially true or unsatisfiable markers are represented by the same constants.</li>
 <li>The diagram can handle complex operations (conjunction/disjunction) in polynomial time, as well as constant-time negation.</li>
 <li>The diagram can be converted to a simplified DNF form for user-facing output.</li>
 </ul>
-<p>The new representation gives us a lot more confidence in our marker operations and simplification, which is proving to be very important (see https://github.com/astral-sh/uv/pull/5733 and https://github.com/astral-sh/uv/pull/5163).</p>
-<p>Unfortunately, it is not easy to split this PR into multiple commits because it is a large rewrite of the <code>marker</code> module. I'd suggest reading through the <code>marker/algebra.rs</code>, <code>marker/simplify.rs</code>, and <code>marker/tree.rs</code> files for the new implementation, as well as the updated snapshots to verify how the new simplification rules work in practice. However, a few other things were changed:</p>
+<p>The new representation gives us a lot more confidence in our marker operations and simplification, which is proving to be very important (see <a href="https://github.com/astral-sh/uv/pull/5733">astral-sh/uv#5733</a> and <a href="https://github.com/astral-sh/uv/pull/5163">astral-sh/uv#5163</a>).</p>
+<p>Unfortunately, it is not easy to split this PR into multiple commits because it is a large rewrite of the <code>marker</code> module. I&#x27;d suggest reading through the <code>marker/algebra.rs</code>, <code>marker/simplify.rs</code>, and <code>marker/tree.rs</code> files for the new implementation, as well as the updated snapshots to verify how the new simplification rules work in practice. However, a few other things were changed:</p>
 <ul>
-<li><a href="https://github.com/astral-sh/uv/blob/ibraheem/canonical-markers/crates/pep508-rs/src/marker/algebra.rs#L522">We now use release-only comparisons for <code>python_full_version</code>, where we previously only did for <code>python_version</code></a>. I'm unsure how marker operations should work in the presence of pre-release versions if we decide that this is incorrect.</li>
-<li><a href="https://github.com/astral-sh/uv/blob/ibraheem/canonical-markers/crates/pep508-rs/src/marker/parse.rs#L502">Meaningless marker expressions are now ignored</a>. This means that a marker such as <code>'x' == 'x'</code> will always evaluate to <code>true</code> (as if the expression did not exist), whereas we previously treated this as always <code>false</code>. It's negation however, remains <code>false</code>.</li>
-<li><a href="https://github.com/astral-sh/uv/blob/ibraheem/canonical-markers/crates/pep508-rs/src/marker/tree.rs#L1329">Unsatisfiable markers are written as <code>python_version &lt; '0'</code></a>.</li>
-<li>The <code>PubGrubSpecifier</code> type has been moved to the new <code>uv-pubgrub</code> crate, shared by <code>pep508-rs</code> and <code>uv-resolver</code>. <code>pep508-rs</code> also depends on the <code>pubgrub</code> crate for the <code>Range</code> type, we probably want to move <code>pubgrub::Range</code> into a separate crate to break this, but I don't think that should block this PR (cc @konstin).</li>
+<li><a href="https://github.com/astral-sh/uv/blob/ibraheem/canonical-markers/crates/pep508-rs/src/marker/algebra.rs#L522">We now use release-only comparisons for <code>python_full_version</code>, where we previously only did for <code>python_version</code></a>. I&#x27;m unsure how marker operations should work in the presence of pre-release versions if we decide that this is incorrect.</li>
+<li><a href="https://github.com/astral-sh/uv/blob/ibraheem/canonical-markers/crates/pep508-rs/src/marker/parse.rs#L502">Meaningless marker expressions are now ignored</a>. This means that a marker such as <code>&#x27;x&#x27; == &#x27;x&#x27;</code> will always evaluate to <code>true</code> (as if the expression did not exist), whereas we previously treated this as always <code>false</code>. It&#x27;s negation however, remains <code>false</code>.</li>
+<li><a href="https://github.com/astral-sh/uv/blob/ibraheem/canonical-markers/crates/pep508-rs/src/marker/tree.rs#L1329">Unsatisfiable markers are written as <code>python_version &lt; &#x27;0&#x27;</code></a>.</li>
+<li>The <code>PubGrubSpecifier</code> type has been moved to the new <code>uv-pubgrub</code> crate, shared by <code>pep508-rs</code> and <code>uv-resolver</code>. <code>pep508-rs</code> also depends on the <code>pubgrub</code> crate for the <code>Range</code> type, we probably want to move <code>pubgrub::Range</code> into a separate crate to break this, but I don&#x27;t think that should block this PR (cc @konstin).</li>
 </ul>
 <p>There is still some remaining work here that I decided to leave for now  for the sake of unblocking some of the related work on the resolver.</p>
 <ul>
 <li>We still use <code>Option&lt;MarkerTree&gt;</code> throughout uv, which is unnecessary now that <code>MarkerTree::TRUE</code> is canonical.</li>
-<li>The <code>MarkerTree</code> type is now interned globally and can potentially implement <code>Copy</code>. However, it's unclear if we want to add more information to marker trees that would make it <code>!Copy</code>. For example, we may wish to attach extra and requires-python environment information to avoid simplifying after construction.</li>
-<li>We don't currently combine <code>python_full_version</code> and <code>python_version</code> markers.</li>
+<li>The <code>MarkerTree</code> type is now interned globally and can potentially implement <code>Copy</code>. However, it&#x27;s unclear if we want to add more information to marker trees that would make it <code>!Copy</code>. For example, we may wish to attach extra and requires-python environment information to avoid simplifying after construction.</li>
+<li>We don&#x27;t currently combine <code>python_full_version</code> and <code>python_version</code> markers.</li>
 <li>I also have not spent too much time investigating performance and there is probably some low-hanging fruit. Many of the test cases I did run actually saw large performance improvements due to the markers being simplified internally, reducing the stress on the old <code>normalize</code> routine, especially for the extremely large markers seen in <code>transformers</code> and other projects.</li>
 </ul>
-<p>Resolves https://github.com/astral-sh/uv/issues/5660, https://github.com/astral-sh/uv/issues/5179.</p>
+<p>Resolves <a href="https://github.com/astral-sh/uv/issues/5660">astral-sh/uv#5660</a>, <a href="https://github.com/astral-sh/uv/issues/5179">astral-sh/uv#5179</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">lock</span> added by @ibraheemdev on 2024-08-07 23:55</div>
+            <div class="event">Label <span class="label">lock</span> added by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-08-07 23:55</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @BurntSushi by @ibraheemdev on 2024-08-07 23:55</div>
+            <div class="event">Review requested from <a href="https://github.com/BurntSushi">@BurntSushi</a> by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-08-07 23:55</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @charliermarsh by @ibraheemdev on 2024-08-07 23:55</div>
+            <div class="event">Review requested from <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-08-07 23:55</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @konstin by @ibraheemdev on 2024-08-07 23:55</div>
+            <div class="event">Review requested from <a href="https://github.com/konstin">@konstin</a> by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-08-07 23:55</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pep508-rs/Cargo.toml</code>:43 on 2024-08-08 16:30</div>
@@ -72,12 +72,12 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:17 on 2024-08-08 16:50</div>
-            <div class="timeline-body"><p>How come this isn't <code>(!= 'Linux') -&gt; FALSE</code> and <code>(== 'Linux') -&gt; TRUE</code>? Why the inequalities?</p>
+            <div class="timeline-body"><p>How come this isn&#x27;t <code>(!= &#x27;Linux&#x27;) -&gt; FALSE</code> and <code>(== &#x27;Linux&#x27;) -&gt; TRUE</code>? Why the inequalities?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:17 on 2024-08-08 16:51</div>
-            <div class="timeline-body"><p>If I had to guess, I'd say it's because the inequalities are more general and easier to merge with other expressions?</p>
+            <div class="timeline-body"><p>If I had to guess, I&#x27;d say it&#x27;s because the inequalities are more general and easier to merge with other expressions?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -87,7 +87,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:121 on 2024-08-08 17:11</div>
-            <div class="timeline-body"><p>I haven't read through the full API yet, but my initial reaction here would be to note that this panics if <code>children</code> has no nodes.</p>
+            <div class="timeline-body"><p>I haven&#x27;t read through the full API yet, but my initial reaction here would be to note that this panics if <code>children</code> has no nodes.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -117,7 +117,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:559 on 2024-08-08 17:37</div>
-            <div class="timeline-body"><p>I had some trouble grok'ing this routine. The <code>map2</code> name I think also confused me a bit. Perhaps expand the comment here some?</p>
+            <div class="timeline-body"><p>I had some trouble grok&#x27;ing this routine. The <code>map2</code> name I think also confused me a bit. Perhaps expand the comment here some?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -132,8 +132,8 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-08-08 18:06</div>
-            <div class="timeline-body"><p>This PR is next-level awesome. Solves a <em>huge</em> problem we've been having with marker expressions and solves it well.</p>
-<p>What do you think about making <code>MarkerTree::and</code> and <code>MarkerTree::or</code> smart constructors instead of routines that mutate trees in place? Or perhaps that's for another PR, in order to keep the amount of code changed outside of <code>pep508_rs</code> smaller.</p>
+            <div class="timeline-body"><p>This PR is next-level awesome. Solves a <em>huge</em> problem we&#x27;ve been having with marker expressions and solves it well.</p>
+<p>What do you think about making <code>MarkerTree::and</code> and <code>MarkerTree::or</code> smart constructors instead of routines that mutate trees in place? Or perhaps that&#x27;s for another PR, in order to keep the amount of code changed outside of <code>pep508_rs</code> smaller.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -142,7 +142,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:17 on 2024-08-08 19:23</div>
-            <div class="timeline-body"><p>Yes, exactly. Even if we did merge the two <code>FALSE</code> children, we would have to represent the <code>!= 'Linux'</code> as <code>(&lt; 'Linux') or (&gt; 'Linux')</code> with pubgrub ranges. We could merge them to reduce the size of the tree, but for now this is simpler.</p>
+            <div class="timeline-body"><p>Yes, exactly. Even if we did merge the two <code>FALSE</code> children, we would have to represent the <code>!= &#x27;Linux&#x27;</code> as <code>(&lt; &#x27;Linux&#x27;) or (&gt; &#x27;Linux&#x27;)</code> with pubgrub ranges. We could merge them to reduce the size of the tree, but for now this is simpler.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -193,14 +193,14 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-08-08 19:45</div>
             <div class="timeline-body"><blockquote>
-<p>What do you think about making <code>MarkerTree::and</code> and <code>MarkerTree::or</code> smart constructors instead of routines that mutate trees in place? Or perhaps that's for another PR, in order to keep the amount of code changed outside of pep508_rs smaller.</p>
+<p>What do you think about making <code>MarkerTree::and</code> and <code>MarkerTree::or</code> smart constructors instead of routines that mutate trees in place? Or perhaps that&#x27;s for another PR, in order to keep the amount of code changed outside of pep508_rs smaller.</p>
 </blockquote>
 <p>Yes, I also want to remove uses of <code>Option&lt;MarkerTree&gt;</code> now that <code>MarkerTree::TRUE</code> exists. Will do in a follow-up PR.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sid-kap">@sid-kap</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:24 on 2024-08-09 02:29</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">//! - Isomorphic nodes are merged.
+            <div class="timeline-body"><pre><code>//! - Isomorphic nodes are merged.
 </code></pre>
 </div>
         </div>
@@ -210,7 +210,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:86 on 2024-08-09 10:25</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">    /// Note that that `OR` is implemented in terms of `AND`.
+            <div class="timeline-body"><pre><code>    /// Note that that `OR` is implemented in terms of `AND`.
 </code></pre>
 </div>
         </div>
@@ -241,7 +241,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:522 on 2024-08-09 11:21</div>
-            <div class="timeline-body"><p>For <code>python_version</code> doesn't get prerelease versions (we copied that from pip) <code>python_full_version</code> is a todo though</p>
+            <div class="timeline-body"><p>For <code>python_version</code> doesn&#x27;t get prerelease versions (we copied that from pip) <code>python_full_version</code> is a todo though</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -271,7 +271,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/pep508-rs/src/marker/simplify.rs</code>:177 on 2024-08-09 11:57</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">/// Note: This function has quadratic time complexity. However, it is not applied on every marker
+            <div class="timeline-body"><pre><code>/// Note: This function has quadratic time complexity. However, it is not applied on every marker
 </code></pre>
 </div>
         </div>
@@ -293,7 +293,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/lock.rs</code>:87 on 2024-08-09 12:31</div>
             <div class="timeline-body"><p>What is the difference between fresh and from lock? We always know the current requires-python in the resolver (we determine it on fork construction), so marker construction should already have this information.</p>
-<p>Also note that requires-python is the bound for the entire lockfile, but individual forks can have stricter bounds, e.g. say overall is <code>&gt;=3.7</code>, but there's one fork <code>&gt;=3.7,&lt;3.8</code> and one fork <code>&gt;=3.8</code></p>
+<p>Also note that requires-python is the bound for the entire lockfile, but individual forks can have stricter bounds, e.g. say overall is <code>&gt;=3.7</code>, but there&#x27;s one fork <code>&gt;=3.7,&lt;3.8</code> and one fork <code>&gt;=3.8</code></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -312,7 +312,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:493 on 2024-08-09 12:43</div>
-            <div class="timeline-body"><p>I'd use more pragmatic terms than the literature, like <code>true_</code> and <code>false_</code>. Related, could you link the literature you used in a top level doc comment?</p>
+            <div class="timeline-body"><p>I&#x27;d use more pragmatic terms than the literature, like <code>true_</code> and <code>false_</code>. Related, could you link the literature you used in a top level doc comment?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -326,7 +326,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-requirements/src/source_tree.rs</code>:110 on 2024-08-09 12:53</div>
-            <div class="timeline-body"><p>I think <code>!marker.is_true()</code> does not imply <code>marker.is_false()</code>. I do like the succinctness of the method names, but they do suggest a mutual exclusivity that isn't there. Perhaps <code>is_always_true</code> and <code>is_always_false</code> are better names? Not sure.</p>
+            <div class="timeline-body"><p>I think <code>!marker.is_true()</code> does not imply <code>marker.is_false()</code>. I do like the succinctness of the method names, but they do suggest a mutual exclusivity that isn&#x27;t there. Perhaps <code>is_always_true</code> and <code>is_always_false</code> are better names? Not sure.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -344,7 +344,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:593 on 2024-08-09 15:12</div>
-            <div class="timeline-body"><p>No, but it's possible that we may want to reuse this for other operations in the future (such as <code>XOR</code> or <code>IFF</code>).</p>
+            <div class="timeline-body"><p>No, but it&#x27;s possible that we may want to reuse this for other operations in the future (such as <code>XOR</code> or <code>IFF</code>).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -362,7 +362,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:281 on 2024-08-09 15:14</div>
-            <div class="timeline-body"><p>This is used for extras which are always represented as boolean variables.  For example, <code>extra == 'foo'</code> and <code>extra == 'bar'</code> creates two separate variables in the tree, as they are unrelated.</p>
+            <div class="timeline-body"><p>This is used for extras which are always represented as boolean variables.  For example, <code>extra == &#x27;foo&#x27;</code> and <code>extra == &#x27;bar&#x27;</code> creates two separate variables in the tree, as they are unrelated.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -399,7 +399,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv/tests/pip_compile.rs</code>:6474 on 2024-08-09 15:20</div>
-            <div class="timeline-body"><p>It is the ordering of the markers flowing down yeah. In this case the original expression would have been <code>(python_version &lt;= '3.11' and sys_platform == 'win32') or python_version &gt; '3.11</code> before simplifying, which is why the order appears reversed despite <code>python_version</code> being the highest order variable.</p>
+            <div class="timeline-body"><p>It is the ordering of the markers flowing down yeah. In this case the original expression would have been <code>(python_version &lt;= &#x27;3.11&#x27; and sys_platform == &#x27;win32&#x27;) or python_version &gt; &#x27;3.11</code> before simplifying, which is why the order appears reversed despite <code>python_version</code> being the highest order variable.</p>
 <p>I guess we could sort these the same way we used to?</p>
 </div>
         </div>
@@ -446,14 +446,14 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv/tests/pip_compile.rs</code>:6474 on 2024-08-09 16:30</div>
-            <div class="timeline-body"><p>That should never happen. The decision diagram is canonical for any functionally equivalent marker and the simplification routine is deterministic. All sorting could do is give us a <em>different</em> canonical output for a given marker, but it shouldn't affect whether or not it is canonical.</p>
+            <div class="timeline-body"><p>That should never happen. The decision diagram is canonical for any functionally equivalent marker and the simplification routine is deterministic. All sorting could do is give us a <em>different</em> canonical output for a given marker, but it shouldn&#x27;t affect whether or not it is canonical.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @ibraheemdev on 2024-08-09 17:40</div>
+            <div class="event">Merged by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-08-09 17:40</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ibraheemdev on 2024-08-09 17:40</div>
+            <div class="event">Closed by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-08-09 17:40</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-08-09 17:40</div>
@@ -462,14 +462,14 @@
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-10 04:01</div>
             <div class="timeline-body"><p>Amazing work.</p>
 <blockquote>
-<p>We don't currently combine python_full_version and python_version markers.</p>
+<p>We don&#x27;t currently combine python_full_version and python_version markers.</p>
 </blockquote>
-<p>Does this mean we no longer compute unions, etc., to combine <code>or</code> markers of versions? (Or we don't combine <code>python_version</code> with <code>python_full_version</code>?)</p>
+<p>Does this mean we no longer compute unions, etc., to combine <code>or</code> markers of versions? (Or we don&#x27;t combine <code>python_version</code> with <code>python_full_version</code>?)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-08-10 04:02</div>
-            <div class="timeline-body"><p>We compute unions of <code>python_version</code> and <code>python_full_version</code> independently, but we don't combine them.</p>
+            <div class="timeline-body"><p>We compute unions of <code>python_version</code> and <code>python_full_version</code> independently, but we don&#x27;t combine them.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -480,7 +480,7 @@
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:38:44 UTC
+        Synced at 2026-01-20 19:47:14 UTC
     </footer>
 </body>
 </html>

@@ -23,34 +23,34 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/NMertsch">@NMertsch</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<p>I'd like to have the following:</p>
+            <div class="timeline-body">Summary
+<p>I&#x27;d like to have the following:</p>
 <ol>
 <li>External dependencies are not built, unless explicitly allowed with <code>no-binary-package</code> (basically: I want to install wheels, not sdists)</li>
 <li><code>uv sync</code> can create/update the venv</li>
 <li><code>uv build</code> can package my package (e.g. for <code>uv publish</code>)</li>
 </ol>
-<p>However, that's not possible with packages (<code>uv init --package</code>):</p>
+<p>However, that&#x27;s not possible with packages (<code>uv init --package</code>):</p>
 <ol>
 <li><code>no-build = true</code> correctly prevents sdist installs, but then</li>
 <li><code>uv sync</code> only works after also configuring <code>no-binary-package = [&quot;my-package&quot;]</code></li>
 <li><code>uv build</code> <a href="https://github.com/astral-sh/uv/issues/17416#issuecomment-3739349716">only works with the <code>uv_build</code> backend</a>. I have to remove <code>no-build = true</code> to make it work with other backends.</li>
 </ol>
 <p>I think points 2 and 3 should work out of the box.</p>
-<h3>How to reproduce</h3>
-<pre><code class="language-bash"># create new package
+How to reproduce
+<pre><code># create new package
 uv init --package --build-backend setuptools my-package
 cd my-package
 
 # set `no-build = true`
-echo '[tool.uv]' &gt;&gt; pyproject.toml
-echo 'no-build = true' &gt;&gt; pyproject.toml
+echo &#x27;[tool.uv]&#x27; &gt;&gt; pyproject.toml
+echo &#x27;no-build = true&#x27; &gt;&gt; pyproject.toml
 
 # interact with the package
-uv sync  # error: Distribution `my-package==0.1.0 @ editable+.` can't be installed because it is marked as `--no-build` but has no binary distribution
+uv sync  # error: Distribution `my-package==0.1.0 @ editable+.` can&#x27;t be installed because it is marked as `--no-build` but has no binary distribution
 
 # explicitly allow uv to build my own package
-echo 'no-binary-package = [&quot;my-package&quot;]' &gt;&gt; pyproject.toml
+echo &#x27;no-binary-package = [&quot;my-package&quot;]&#x27; &gt;&gt; pyproject.toml
 
 # interact with the package
 uv sync  # works
@@ -61,7 +61,7 @@ uv build  # Failed to build, Building source distributions is disabled
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @NMertsch on 2026-01-12 13:43</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/NMertsch">@NMertsch</a> on 2026-01-12 13:43</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-12 15:09</div>
@@ -73,21 +73,21 @@ uv build  # Failed to build, Building source distributions is disabled
             <div class="timeline-body"><blockquote>
 <p>Can you explain (3)? Why does setuptools fail?</p>
 </blockquote>
-<p>I don't think setuptools fails. To me, &quot;Building source distributions is disabled&quot; implies that uv didn't invoke setuptools at all due to <code>no-build = true</code>.</p>
+<p>I don&#x27;t think setuptools fails. To me, &quot;Building source distributions is disabled&quot; implies that uv didn&#x27;t invoke setuptools at all due to <code>no-build = true</code>.</p>
 <p>But when running <code>uv init --package my-package</code> (without <code>--build-backend setuptools</code>), <code>uv build</code> works just fine.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-12 15:58</div>
-            <div class="timeline-body"><p>I'm confused that you said</p>
+            <div class="timeline-body"><p>I&#x27;m confused that you said</p>
 <blockquote>
-<p>uv build doesn't work at all for setuptools projects</p>
+<p>uv build doesn&#x27;t work at all for setuptools projects</p>
 </blockquote>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-12 15:59</div>
-            <div class="timeline-body"><p>You're saying it works for the <code>uv_build</code> backend but not any other ones?</p>
+            <div class="timeline-body"><p>You&#x27;re saying it works for the <code>uv_build</code> backend but not any other ones?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -97,15 +97,15 @@ uv build  # Failed to build, Building source distributions is disabled
 <li><code>uv build</code> with backend <code>setuptools</code> works, unless <code>no-build = true</code>.</li>
 <li><code>uv build</code> with backend <code>uv_build</code> works, independently of <code>no-build = true</code>.</li>
 </ul>
-<p>I didn't test other backends. Give me a few minutes to try them all.</p>
+<p>I didn&#x27;t test other backends. Give me a few minutes to try them all.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/NMertsch">@NMertsch</a> on 2026-01-12 16:11</div>
             <div class="timeline-body"><p>I now tried steps from the original post on all supported build backends.</p>
 <ul>
-<li><code>uv sync</code> behavior doesn't depend on the build backend. It always fails with <code>no-build = true</code> and always works without it.</li>
-<li><code>uv build</code> with <code>-no-build = true</code> only works for <code>--build-backend uv</code> and fails for all other backends (hatch, flit, pdm, poetry, scikit, setuptools; I skipped maturin because I don't have Rust installed). The error message is always the same: &quot;Building source distributions is disabled&quot;.</li>
+<li><code>uv sync</code> behavior doesn&#x27;t depend on the build backend. It always fails with <code>no-build = true</code> and always works without it.</li>
+<li><code>uv build</code> with <code>-no-build = true</code> only works for <code>--build-backend uv</code> and fails for all other backends (hatch, flit, pdm, poetry, scikit, setuptools; I skipped maturin because I don&#x27;t have Rust installed). The error message is always the same: &quot;Building source distributions is disabled&quot;.</li>
 </ul>
 <p>(Updated the original post: setuptools -&gt; all backends besides uv_build)</p>
 </div>
@@ -113,7 +113,7 @@ uv build  # Failed to build, Building source distributions is disabled
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/CHC383">@CHC383</a> on 2026-01-16 02:16</div>
             <div class="timeline-body"><p>I have a similar case</p>
-<pre><code class="language-toml"># pyproject.toml
+<pre><code># pyproject.toml
 [build-system]
 requires = [ &quot;uv_build&gt;=0.9.26&quot; ]
 build-backend = &quot;uv_build&quot;
@@ -123,23 +123,23 @@ no-build = true
 no-binary-package = [ &quot;my-project&quot; ]
 </code></pre>
 <p><code>uv build --sdist</code> failed because <code>Building source distributions is disabled</code>.</p>
-<p>Basically I want to disable building external dependencies but not my own project, and the workaround <code>no-binary-package</code> doesn't work in this case. I think this behavior was raised in https://github.com/astral-sh/uv/issues/12607 but that issue was buried :disappointed:</p>
+<p>Basically I want to disable building external dependencies but not my own project, and the workaround <code>no-binary-package</code> doesn&#x27;t work in this case. I think this behavior was raised in <a href="https://github.com/astral-sh/uv/issues/12607">astral-sh/uv#12607</a> but that issue was buried :disappointed:</p>
 <p>@NMertsch I wonder how</p>
 <blockquote>
 <p><code>uv build</code> with <code>-no-build = true</code> only works for <code>--build-backend uv</code></p>
 </blockquote>
-<p>as it doesn't work with the config above.</p>
+<p>as it doesn&#x27;t work with the config above.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/bluetech">@bluetech</a> on 2026-01-20 08:52</div>
-            <div class="timeline-body"><p>I have a workspace with many packages using <code>uv_build</code> and I tried to set <code>no-build = true</code> in the root pyproject.toml for security reasons. I get the &quot;can't be installed because [...] has no binary distribution&quot; error. Does it make sense to have editable installs in particular excluded from the <code>no-build</code> check?</p>
+            <div class="timeline-body"><p>I have a workspace with many packages using <code>uv_build</code> and I tried to set <code>no-build = true</code> in the root pyproject.toml for security reasons. I get the &quot;can&#x27;t be installed because [...] has no binary distribution&quot; error. Does it make sense to have editable installs in particular excluded from the <code>no-build</code> check?</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-20 09:33:20 UTC
+        Synced at 2026-01-20 19:41:31 UTC
     </footer>
 </body>
 </html>

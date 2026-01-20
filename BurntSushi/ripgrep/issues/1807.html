@@ -23,42 +23,42 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/minad">@minad</a></div>
-            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+            <div class="timeline-body">What version of ripgrep are you using?
 <p>ripgrep 0.10.0
 -SIMD -AVX (compiled)
 +SIMD +AVX (runtime)</p>
-<h4>How did you install ripgrep?</h4>
+How did you install ripgrep?
 <p>apt-get on Debian buster</p>
-<h4>What operating system are you using ripgrep on?</h4>
+What operating system are you using ripgrep on?
 <p>Debian buster on x86_65, Linux 5.4.88</p>
-<h4>Describe your bug.</h4>
+Describe your bug.
 <p>Give a high level description of the bug.</p>
-<h4>What are the steps to reproduce the behavior?</h4>
+What are the steps to reproduce the behavior?
 <ul>
 <li>Running <code>rg -j 1 . -e test | sort | uniq | wc</code> always yields the same number of results</li>
 <li>In contrast, running <code>rg -j 2 . -e test | sort | uniq | wc</code> yields a different number each time</li>
 </ul>
 <p>(big corpus)</p>
-<h4>What is the actual behavior?</h4>
+What is the actual behavior?
 <p>Non deterministic number of matches</p>
-<h4>What is the expected behavior?</h4>
+What is the expected behavior?
 <p>Non deterministic ordering of matches, but deterministic number of matches, no matches should be lost</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-02-26 16:40</div>
-            <div class="timeline-body"><p>This isn't actionable without a reproduction. Please find a way to reproduce the problem on a corpus we both have access to.</p>
-<p>Also, your version of ripgrep is almost 2.5 years old. I don't provide support for anything other than the most recent version. So you might try the most recent version of ripgrep, although I'm not aware of any changes between the 0.10.0 and 12.1 releases that would impact this particular sort of issue.</p>
+            <div class="timeline-body"><p>This isn&#x27;t actionable without a reproduction. Please find a way to reproduce the problem on a corpus we both have access to.</p>
+<p>Also, your version of ripgrep is almost 2.5 years old. I don&#x27;t provide support for anything other than the most recent version. So you might try the most recent version of ripgrep, although I&#x27;m not aware of any changes between the 0.10.0 and 12.1 releases that would impact this particular sort of issue.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/minad">@minad</a> on 2021-02-26 16:43</div>
-            <div class="timeline-body"><p>That's understandable. I see if I can test an updated version. However given that you are not aware of any changes which would affect that I wonder if something like this has been observed before? I mean this looks like a serious threading issue. It could also be a bug on some other layer, kernel, fs or memory problems.</p>
+            <div class="timeline-body"><p>That&#x27;s understandable. I see if I can test an updated version. However given that you are not aware of any changes which would affect that I wonder if something like this has been observed before? I mean this looks like a serious threading issue. It could also be a bug on some other layer, kernel, fs or memory problems.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-02-26 16:53</div>
-            <div class="timeline-body"><p>It could be a threading issue. Dunno. Or a problem with the parallel file searcher terminating too early. The easiest thing is to try a newer version. If it's fixed, well, then nothing more to do. If not, then yeah, I'll need a repro to do anything about it.</p>
+            <div class="timeline-body"><p>It could be a threading issue. Dunno. Or a problem with the parallel file searcher terminating too early. The easiest thing is to try a newer version. If it&#x27;s fixed, well, then nothing more to do. If not, then yeah, I&#x27;ll need a repro to do anything about it.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -81,34 +81,34 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-02-26 19:42</div>
-            <div class="timeline-body"><p>No, ripgrep's parallelism only happens at the granularity of files. Parallelism does not exist within a file.</p>
+            <div class="timeline-body"><p>No, ripgrep&#x27;s parallelism only happens at the granularity of files. Parallelism does not exist within a file.</p>
 <p>With that said, binary detection is a bit subtle and can change based on the method of searching. For example, ripgrep can search using standard <code>read</code> syscalls or via memory maps, and the binary detection between them differs. However, when doing recursive search, ripgrep should always use standard <code>read</code> syscalls.</p>
-<p>Binary detection shouldn't be impacted by parallelism.</p>
+<p>Binary detection shouldn&#x27;t be impacted by parallelism.</p>
 <p>If you pass <code>--binary --no-mmap</code> to ripgrep, then it should behave like grep. It should also rule out memory maps being responsible for different binary detection algorithms being employed.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/minad">@minad</a> on 2021-02-26 20:16</div>
-            <div class="timeline-body"><p>I don't have <code>--binary</code> since my version is too old I guess. With <code>--text</code> I get deterministic results with <code>-j&lt;n&gt;</code> for different <code>n</code>. Using <code>--mmap</code> or <code>--no-mmap</code> does not make a difference. The problem in any case seems to be the binary detection. But I wonder how this can be broken, if as you say, parallelism is done at file granularity.</p>
+            <div class="timeline-body"><p>I don&#x27;t have <code>--binary</code> since my version is too old I guess. With <code>--text</code> I get deterministic results with <code>-j&lt;n&gt;</code> for different <code>n</code>. Using <code>--mmap</code> or <code>--no-mmap</code> does not make a difference. The problem in any case seems to be the binary detection. But I wonder how this can be broken, if as you say, parallelism is done at file granularity.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-02-26 21:04</div>
-            <div class="timeline-body"><p>Ah I see. Yeah I can't think of anything that would explain what you're
+            <div class="timeline-body"><p>Ah I see. Yeah I can&#x27;t think of anything that would explain what you&#x27;re
 seeing. But my mental model of a 2.5 year old ripgrep is pretty weak. I
 think at this point I have to insist that you try the latest release. It
 should be easy to do and not require any compilation.</p>
 <p>On Fri, Feb 26, 2021, 15:16 Daniel Mendler <a href="mailto:notifications@github.com">notifications@github.com</a> wrote:</p>
 <blockquote>
-<p>I don't have --binary since my version is too old I guess. With --text I
-get deterministic results with -j<n> for different n. Using --mmap or
+<p>I don&#x27;t have --binary since my version is too old I guess. With --text I
+get deterministic results with -j for different n. Using --mmap or
 --no-mmap does not make a difference. The problem in any case seems to be
 the binary detection. But I wonder how this can be broken, if as you say,
 parallelism is done at file granularity.</p>
 <p>—
 You are receiving this because you commented.
 Reply to this email directly, view it on GitHub
-<a href="https://github.com/BurntSushi/ripgrep/issues/1807#issuecomment-786871678">https://github.com/BurntSushi/ripgrep/issues/1807#issuecomment-786871678</a>,
+<a href="https://github.com/BurntSushi/ripgrep/issues/1807#issuecomment-786871678">BurntSushi/ripgrep#1807</a>,
 or unsubscribe
 <a href="https://github.com/notifications/unsubscribe-auth/AADPPYQPAE5PNUVLMKXWMJTTA76TVANCNFSM4YIXV3RQ">https://github.com/notifications/unsubscribe-auth/AADPPYQPAE5PNUVLMKXWMJTTA76TVANCNFSM4YIXV3RQ</a>
 .</p>
@@ -121,12 +121,12 @@ or unsubscribe
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2021-06-01 00:17</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-06-01 00:17</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:43:18 UTC
+        Synced at 2026-01-20 18:48:11 UTC
     </footer>
 </body>
 </html>

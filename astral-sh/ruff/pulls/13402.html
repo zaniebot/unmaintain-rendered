@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This PR adds an experimental Ruff subcommand to generate dependency graphs based on module resolution.</p>
 <p>A few highlights:</p>
 <ul>
@@ -31,38 +31,38 @@
 <li>Like Pants, we also provide an option to identify imports from string literals (<code>--detect-string-imports</code>).</li>
 <li>Users can also provide additional dependency data via the <code>include-dependencies</code> key under <code>[tool.ruff.import-map]</code>. This map uses file paths as keys, and lists of strings as values. Those strings can be file paths or globs.</li>
 </ul>
-<p>The dependency resolution uses the red-knot module resolver which is intended to be fully spec compliant, so it's also a chance to expose the module resolver in a real-world setting.</p>
+<p>The dependency resolution uses the red-knot module resolver which is intended to be fully spec compliant, so it&#x27;s also a chance to expose the module resolver in a real-world setting.</p>
 <p>The CLI is, e.g., <code>ruff graph build ../autobot</code>, which will output a JSON map from file to files it depends on for the <code>autobot</code> project.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @charliermarsh on 2024-09-18 23:46</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-18 23:46</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2024-09-18 23:46</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-18 23:46</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @charliermarsh on 2024-09-18 23:46</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-18 23:46</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-09-19 00:45</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_graph/src/collector.rs</code>:67 on 2024-09-19 02:24</div>
             <div class="timeline-body"><p>An empty string is also not a valid module name. You could fix that by doing something like this?</p>
-<pre><code class="language-diff">diff --git a/crates/red_knot_python_semantic/src/module_name.rs b/crates/red_knot_python_semantic/src/module_name.rs
+<pre><code>diff --git a/crates/red_knot_python_semantic/src/module_name.rs b/crates/red_knot_python_semantic/src/module_name.rs
 index 885c6adf9..3bce5b2ec 100644
 --- a/crates/red_knot_python_semantic/src/module_name.rs
 +++ b/crates/red_knot_python_semantic/src/module_name.rs
@@ -72,7 +72,7 @@ index 885c6adf9..3bce5b2ec 100644
      #[must_use]
 -    fn is_valid_name(name: &amp;str) -&gt; bool {
 +    pub fn is_valid_name(name: &amp;str) -&gt; bool {
-         !name.is_empty() &amp;&amp; name.split('.').all(is_identifier)
+         !name.is_empty() &amp;&amp; name.split(&#x27;.&#x27;).all(is_identifier)
      }
  
 diff --git a/crates/ruff_graph/src/collector.rs b/crates/ruff_graph/src/collector.rs
@@ -90,11 +90,11 @@ index 9b8c6108a..687fd7c20 100644
  
  /// Collect all imports for a given Python file.
  #[derive(Default, Debug)]
-@@ -64,7 +64,7 @@ impl&lt;'ast&gt; SourceOrderVisitor&lt;'ast&gt; for Collector&lt;'ast&gt; {
+@@ -64,7 +64,7 @@ impl&lt;&#x27;ast&gt; SourceOrderVisitor&lt;&#x27;ast&gt; for Collector&lt;&#x27;ast&gt; {
                  // Determine whether the string literal &quot;looks like&quot; an import statement: contains
                  // a dot, and consists solely of valid Python identifiers.
                  let value = value.to_str();
--                if value.split('.').all(is_identifier) {
+-                if value.split(&#x27;.&#x27;).all(is_identifier) {
 +                if ModuleName::is_valid_name(value) {
                      let qualified_name = QualifiedName::from_dotted_name(value);
                      self.imports.push(CollectedImport::Import(qualified_name));
@@ -118,20 +118,20 @@ index 9b8c6108a..687fd7c20 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/args.rs</code>:137 on 2024-09-19 06:17</div>
-            <div class="timeline-body"><p>I'm leaning toward introducing a more general <code>analyze</code> subcommand and make <code>graph</code> or <code>module-graph</code> a subcommand of that so that we can introduce more analysis in the future without &quot;polluting&quot; the root commands.</p>
+            <div class="timeline-body"><p>I&#x27;m leaning toward introducing a more general <code>analyze</code> subcommand and make <code>graph</code> or <code>module-graph</code> a subcommand of that so that we can introduce more analysis in the future without &quot;polluting&quot; the root commands.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/commands/graph.rs</code>:23 on 2024-09-19 06:18</div>
-            <div class="timeline-body"><p>Too bad that red knot doesn't support exclude/include configurations yet because you would then get all of this for free (lazy file discovery)</p>
+            <div class="timeline-body"><p>Too bad that red knot doesn&#x27;t support exclude/include configurations yet because you would then get all of this for free (lazy file discovery)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/commands/graph.rs</code>:50 on 2024-09-19 06:24</div>
-            <div class="timeline-body"><p>What's the motivation for creating a new db for each source root?</p>
+            <div class="timeline-body"><p>What&#x27;s the motivation for creating a new db for each source root?</p>
 <p>The caching is local to each database, and creating a new database for each package means that we trade less congestion with reduced cache efficiency. This might be fine if the resolved modules in each package root are distinct but I suspect that the files contain cross-package imports and many stdlib imports that now need to resolved multiple times.</p>
 <p>The recommended way to parallelism in Salsa is to implement a <code>snapshot</code> method for your <code>Database</code> that creates a shallow clone:</p>
-<pre><code class="language-rust">    #[must_use]
+<pre><code>    #[must_use]
     pub fn snapshot(&amp;self) -&gt; Self {
         Self {
             workspace: self.workspace,
@@ -143,7 +143,7 @@ index 9b8c6108a..687fd7c20 100644
 </code></pre>
 <p>https://github.com/astral-sh/ruff/blob/ecab04e33851b26cf2e8376be46ca01ce40185e6/crates/red_knot_workspace/src/db.rs#L82-L90</p>
 <p>And you can then create a unique database handle for each task:</p>
-<pre><code class="language-rust">        let files = WorkspaceFiles::new(db, self);
+<pre><code>        let files = WorkspaceFiles::new(db, self);
         let result = Arc::new(std::sync::Mutex::new(Vec::new()));
         let inner_result = Arc::clone(&amp;result);
 
@@ -169,29 +169,29 @@ index 9b8c6108a..687fd7c20 100644
         Arc::into_inner(result).unwrap().into_inner().unwrap()
 </code></pre>
 <p>https://github.com/astral-sh/ruff/blob/599103c933e129c6ec9be533c2c563721a58f3bb/crates/red_knot_workspace/src/workspace.rs#L206-L220</p>
-<p>Edit: I see below that you already did this. I'm still curious for why we need multiple Dbs. I think what we do here is too granular. At least if I remember how package roots works correctly. I think it doesn't just generate a db for the top-level packages but also for all sub packages. That means that we have two database for <code>a.b.c</code>: one for package <code>a</code> and another for <code>b</code> if <code>c</code> is a module and <code>a</code> and <code>a.b</code> are packages. The result is that we double-resolve modules for <code>a.b</code>, depending on whether they come from the <code>a</code> or <code>a.b.</code> database.</p>
-<p>I also worry that relative imports don't work due to that because I think we might baile out at the <code>src_root</code>.</p>
-<p>Can't we generate a single database or a database for each common ancestor of the packages (which ideally is the src directory)?</p>
+<p>Edit: I see below that you already did this. I&#x27;m still curious for why we need multiple Dbs. I think what we do here is too granular. At least if I remember how package roots works correctly. I think it doesn&#x27;t just generate a db for the top-level packages but also for all sub packages. That means that we have two database for <code>a.b.c</code>: one for package <code>a</code> and another for <code>b</code> if <code>c</code> is a module and <code>a</code> and <code>a.b</code> are packages. The result is that we double-resolve modules for <code>a.b</code>, depending on whether they come from the <code>a</code> or <code>a.b.</code> database.</p>
+<p>I also worry that relative imports don&#x27;t work due to that because I think we might baile out at the <code>src_root</code>.</p>
+<p>Can&#x27;t we generate a single database or a database for each common ancestor of the packages (which ideally is the src directory)?</p>
 <p>If not, can we add some package paths to <code>SearchPathSettings::extra_paths</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/system/os.rs</code>:24 on 2024-09-19 06:26</div>
-            <div class="timeline-body"><p>This shouldn't require clone</p>
-<pre><code class="language-suggestion">#[derive(Default, Debug)]
+            <div class="timeline-body"><p>This shouldn&#x27;t require clone</p>
+<pre><code>#[derive(Default, Debug)]
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_graph/src/collector.rs</code>:67 on 2024-09-19 06:28</div>
-            <div class="timeline-body"><p>My preference here is to simply call <code>ModuleName::new</code> and return the module name instead of the <code>QualifiedName</code>. It's not a valid module name if <code>ModuleName::new</code> returns <code>None</code>, otherwise it's a legal python module name.</p>
+            <div class="timeline-body"><p>My preference here is to simply call <code>ModuleName::new</code> and return the module name instead of the <code>QualifiedName</code>. It&#x27;s not a valid module name if <code>ModuleName::new</code> returns <code>None</code>, otherwise it&#x27;s a legal python module name.</p>
 <p>This also avoids exposing any internal <code>ModuleName</code> methods.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_graph/src/lib.rs</code>:88 on 2024-09-19 06:31</div>
-            <div class="timeline-body"><p>Since you're already using Salsa:</p>
-<pre><code class="language-rust">let file = system_path_to_file(db, path)?;
+            <div class="timeline-body"><p>Since you&#x27;re already using Salsa:</p>
+<pre><code>let file = system_path_to_file(db, path)?;
 let parsed = parsed_module(db, file);
 </code></pre>
 <p>It could help to reduce some IO operations (at the cost that the source code is now cached)</p>
@@ -205,7 +205,7 @@ let parsed = parsed_module(db, file);
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_graph/src/resolver.rs</code>:14 on 2024-09-19 06:34</div>
             <div class="timeline-body"><p>Nit: The convention is that <code>db</code> comes first</p>
-<pre><code class="language-suggestion">    pub(crate) fn new(db: &amp;'ast ModuleDb, module_path: Option&lt;&amp;'ast [String]&gt;) -&gt; Self {
+<pre><code>    pub(crate) fn new(db: &amp;&#x27;ast ModuleDb, module_path: Option&lt;&amp;&#x27;ast [String]&gt;) -&gt; Self {
         Self { module_path, db }
     }
 </code></pre>
@@ -213,7 +213,7 @@ let parsed = parsed_module(db, file);
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_graph/src/resolver.rs</code>:9 on 2024-09-19 06:34</div>
-            <div class="timeline-body"><p>Nit: the use of the <code>ast</code> lifetime for <code>db</code> is somewhat confusing. Maybe just use <code>'a</code>.</p>
+            <div class="timeline-body"><p>Nit: the use of the <code>ast</code> lifetime for <code>db</code> is somewhat confusing. Maybe just use <code>&#x27;a</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -228,7 +228,7 @@ let parsed = parsed_module(db, file);
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_workspace/src/settings.rs</code>:20 on 2024-09-19 06:36</div>
-            <div class="timeline-body"><p>What's the reason for making <code>Settings</code> clone?</p>
+            <div class="timeline-body"><p>What&#x27;s the reason for making <code>Settings</code> clone?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -244,13 +244,13 @@ let parsed = parsed_module(db, file);
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_graph/src/resolver.rs</code>:9 on 2024-09-19 06:48</div>
-            <div class="timeline-body"><p>I should have brought this up before. Using the salsa queries directly is something we want to red-knot's core (ideally the fact that we use salsa should be mostly hidden). Could you have a look if you can use <code>SemanticModel</code> model here which we consider to be public api</p>
+            <div class="timeline-body"><p>I should have brought this up before. Using the salsa queries directly is something we want to red-knot&#x27;s core (ideally the fact that we use salsa should be mostly hidden). Could you have a look if you can use <code>SemanticModel</code> model here which we consider to be public api</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-19 06:49</div>
             <div class="timeline-body"><p>Overall looks good.</p>
-<p>I think we're creating too many Db instances which will hurt performance and I would recommend to use <code>ModuleName</code> and <code>SystemPath</code> over <code>QualifiedName</code> and <code>Path</code>  to avoid conversions at the leaf.</p>
+<p>I think we&#x27;re creating too many Db instances which will hurt performance and I would recommend to use <code>ModuleName</code> and <code>SystemPath</code> over <code>QualifiedName</code> and <code>Path</code>  to avoid conversions at the leaf.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -259,7 +259,7 @@ let parsed = parsed_module(db, file);
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/commands/graph.rs</code>:82 on 2024-09-19 06:50</div>
-            <div class="timeline-body"><p>It's a bit unfortunate that we need to clone this for every path.</p>
+            <div class="timeline-body"><p>It&#x27;s a bit unfortunate that we need to clone this for every path.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -271,8 +271,8 @@ let parsed = parsed_module(db, file);
             <div class="timeline-body"><blockquote>
 <p>If not, can we add some package paths to <code>SearchPathSettings::extra_paths</code>?</p>
 </blockquote>
-<p>This isn't really &quot;correct&quot; since <code>extra_paths</code> take priority over even the stdlib search path in module resolution. But maybe it'll produce the right answer in most cases.</p>
-<p>In the real world, if you have multiple independent first-party packages in a workspace (which may or may not depend on each other), you're likely to have them all editably installed into a venv, and red-knot would statically discover all the first-party packages by reading the <code>pth</code> files in the <code>site-packages</code> directory and add them as search paths that way. But maybe that approach doesn't work here.</p>
+<p>This isn&#x27;t really &quot;correct&quot; since <code>extra_paths</code> take priority over even the stdlib search path in module resolution. But maybe it&#x27;ll produce the right answer in most cases.</p>
+<p>In the real world, if you have multiple independent first-party packages in a workspace (which may or may not depend on each other), you&#x27;re likely to have them all editably installed into a venv, and red-knot would statically discover all the first-party packages by reading the <code>pth</code> files in the <code>site-packages</code> directory and add them as search paths that way. But maybe that approach doesn&#x27;t work here.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -290,8 +290,8 @@ let parsed = parsed_module(db, file);
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/commands/graph.rs</code>:50 on 2024-09-19 15:28</div>
-            <div class="timeline-body"><p>The source roots here are actually just the root folders. So, like, in Django, it's just a small set of top-level folders:</p>
-<pre><code class="language-python">[&quot;/Users/crmarsh/workspace/django&quot;, &quot;/Users/crmarsh/workspace/django/tests&quot;, &quot;/Users/crmarsh/workspace/django/tests/admin_scripts/custom_templates&quot;, &quot;/Users/crmarsh/workspace/django/tests/admin_scripts/custom_templates/project_template&quot;, &quot;/Users/crmarsh/workspace/django/tests/i18n/sampleproject&quot;, &quot;/Users/crmarsh/workspace/django/tests/migrations/faulty_migrations/namespace&quot;, &quot;/Users/crmarsh/workspace/django/tests/migrations/test_fake_initial_case_insensitive&quot;]
+            <div class="timeline-body"><p>The source roots here are actually just the root folders. So, like, in Django, it&#x27;s just a small set of top-level folders:</p>
+<pre><code>[&quot;/Users/crmarsh/workspace/django&quot;, &quot;/Users/crmarsh/workspace/django/tests&quot;, &quot;/Users/crmarsh/workspace/django/tests/admin_scripts/custom_templates&quot;, &quot;/Users/crmarsh/workspace/django/tests/admin_scripts/custom_templates/project_template&quot;, &quot;/Users/crmarsh/workspace/django/tests/i18n/sampleproject&quot;, &quot;/Users/crmarsh/workspace/django/tests/migrations/faulty_migrations/namespace&quot;, &quot;/Users/crmarsh/workspace/django/tests/migrations/test_fake_initial_case_insensitive&quot;]
 </code></pre>
 </div>
         </div>
@@ -301,7 +301,7 @@ let parsed = parsed_module(db, file);
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/commands/graph.rs</code>:50 on 2024-09-19 15:29</div>
-            <div class="timeline-body"><p>We could use a single database with extra paths -- that's actually the way I did it initially, though Alex said it's not the intended use-case. The downside, I think, is that it would allow those source roots to import files across one another. Maybe that's correct though! I can change it.</p>
+            <div class="timeline-body"><p>We could use a single database with extra paths -- that&#x27;s actually the way I did it initially, though Alex said it&#x27;s not the intended use-case. The downside, I think, is that it would allow those source roots to import files across one another. Maybe that&#x27;s correct though! I can change it.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -310,7 +310,7 @@ let parsed = parsed_module(db, file);
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/commands/graph.rs</code>:82 on 2024-09-19 15:29</div>
-            <div class="timeline-body"><p>We're only cloning the return value though, which should be unique for every path.</p>
+            <div class="timeline-body"><p>We&#x27;re only cloning the return value though, which should be unique for every path.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -322,13 +322,13 @@ let parsed = parsed_module(db, file);
             <div class="timeline-body"><blockquote>
 <p>The source roots here are actually just the root folders.</p>
 </blockquote>
-<p>Possibly I'm still misunderstanding, but if everything's importable from the workspace root, doesn't that imply you can resolve all modules and submodules relative to a single search path, <code>src_root</code>, which would point to the workspace root?</p>
+<p>Possibly I&#x27;m still misunderstanding, but if everything&#x27;s importable from the workspace root, doesn&#x27;t that imply you can resolve all modules and submodules relative to a single search path, <code>src_root</code>, which would point to the workspace root?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/commands/graph.rs</code>:50 on 2024-09-19 15:59</div>
-            <div class="timeline-body"><p>Alex is obviously the authority when it comes to search paths and I'm probably wrong haha :laughing:</p>
-<p>The intended setup is to use a single database for an application (except VS code where you can have multiple workspaces). That gives the best cache reuse. If that's possible, great. If we aren't hitting any perf issues, that's great too.</p>
+            <div class="timeline-body"><p>Alex is obviously the authority when it comes to search paths and I&#x27;m probably wrong haha :laughing:</p>
+<p>The intended setup is to use a single database for an application (except VS code where you can have multiple workspaces). That gives the best cache reuse. If that&#x27;s possible, great. If we aren&#x27;t hitting any perf issues, that&#x27;s great too.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -341,11 +341,11 @@ let parsed = parsed_module(db, file);
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff/src/commands/graph.rs</code>:50 on 2024-09-19 22:27</div>
-            <div class="timeline-body"><p>Looking at the roots for Django that were listed, I think those are all independent roots (as in, they aren't all importable from a single source root), but they can import each other. So I think it would be more efficient to use a single db, by using multiple you are likely repeating work. It's true that the red-knot resolver (because it was built around the more restrictive assumptions of PEP 561 for Python type checkers, rather than a generic &quot;ordered <code>sys.path</code>&quot; abstraction) doesn't obviously accommodate this use case, but I think extra-paths is a totally fine way to handle it, and better than multiple databases. (In fact I think this is pretty much the sort of use-case extra-paths exists to handle.)</p>
+            <div class="timeline-body"><p>Looking at the roots for Django that were listed, I think those are all independent roots (as in, they aren&#x27;t all importable from a single source root), but they can import each other. So I think it would be more efficient to use a single db, by using multiple you are likely repeating work. It&#x27;s true that the red-knot resolver (because it was built around the more restrictive assumptions of PEP 561 for Python type checkers, rather than a generic &quot;ordered <code>sys.path</code>&quot; abstraction) doesn&#x27;t obviously accommodate this use case, but I think extra-paths is a totally fine way to handle it, and better than multiple databases. (In fact I think this is pretty much the sort of use-case extra-paths exists to handle.)</p>
 <blockquote>
-<p>This isn't really &quot;correct&quot; since <code>extra_paths</code> take priority over even the stdlib search path in module resolution.</p>
+<p>This isn&#x27;t really &quot;correct&quot; since <code>extra_paths</code> take priority over even the stdlib search path in module resolution.</p>
 </blockquote>
-<p>I don't understand this comment: all first-party paths (both the main source root and the extra paths) should always take priority over the stdlib in module resolution. According to PEP 561 order, the first two items in the resolution order are extra paths and then the first-party root. So if you have multiple &quot;first party roots&quot;, given that they have to go in <em>some</em> resolution order, I don't see how any incorrectness is introduced by putting N-1 of them as extra paths, and whichever one you want last as the main first-party root.</p>
+<p>I don&#x27;t understand this comment: all first-party paths (both the main source root and the extra paths) should always take priority over the stdlib in module resolution. According to PEP 561 order, the first two items in the resolution order are extra paths and then the first-party root. So if you have multiple &quot;first party roots&quot;, given that they have to go in <em>some</em> resolution order, I don&#x27;t see how any incorrectness is introduced by putting N-1 of them as extra paths, and whichever one you want last as the main first-party root.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -356,11 +356,11 @@ let parsed = parsed_module(db, file);
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/src/commands/graph.rs</code>:50 on 2024-09-19 22:31</div>
             <div class="timeline-body"><blockquote>
 <blockquote>
-<p>This isn't really &quot;correct&quot; since <code>extra_paths</code> take priority over even the stdlib search path in module resolution.</p>
+<p>This isn&#x27;t really &quot;correct&quot; since <code>extra_paths</code> take priority over even the stdlib search path in module resolution.</p>
 </blockquote>
-<p>I don't understand this comment: all first-party paths (both the main source root and the extra paths) should always take priority over the stdlib in module resolution.</p>
+<p>I don&#x27;t understand this comment: all first-party paths (both the main source root and the extra paths) should always take priority over the stdlib in module resolution.</p>
 </blockquote>
-<p>Ugh, you're quite right. Blame it on the holiday haze... yeah, using <code>extra_paths</code> should be fine then, in that case. Sorry for causing unnecessary work @charliermarsh :(</p>
+<p>Ugh, you&#x27;re quite right. Blame it on the holiday haze... yeah, using <code>extra_paths</code> should be fine then, in that case. Sorry for causing unnecessary work @charliermarsh :(</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -370,15 +370,15 @@ let parsed = parsed_module(db, file);
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff/src/commands/graph.rs</code>:50 on 2024-09-19 22:32</div>
             <div class="timeline-body"><blockquote>
-<p>In the real world, if you have multiple independent first-party packages in a workspace (which may or may not depend on each other), you're likely to have them all editably installed into a venv, and red-knot would statically discover all the first-party packages by reading the <code>pth</code> files in the <code>site-packages</code> directory and add them as search paths that way. But maybe that approach doesn't work here.</p>
+<p>In the real world, if you have multiple independent first-party packages in a workspace (which may or may not depend on each other), you&#x27;re likely to have them all editably installed into a venv, and red-knot would statically discover all the first-party packages by reading the <code>pth</code> files in the <code>site-packages</code> directory and add them as search paths that way. But maybe that approach doesn&#x27;t work here.</p>
 </blockquote>
-<p>In many real-world cases (including Django), you'll have little sub-trees of Python code that aren't packaged at all or installed via Python packaging tools, but still end up on the runtime <code>sys.path</code> in some more bespoke way. That's the sort of scenario <code>extra-paths</code> is supposed to be for.</p>
+<p>In many real-world cases (including Django), you&#x27;ll have little sub-trees of Python code that aren&#x27;t packaged at all or installed via Python packaging tools, but still end up on the runtime <code>sys.path</code> in some more bespoke way. That&#x27;s the sort of scenario <code>extra-paths</code> is supposed to be for.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff/src/commands/analyze_graph.rs</code>:43 on 2024-09-19 22:46</div>
-            <div class="timeline-body"><p>This logic (determining a package root for an arbitrary file by walking up the tree looking for <code>__init__.py</code>) is part of Ruff so it must be fairly battle-tested, but I'm a little surprised if it doesn't often fail on big internal codebases. In my experience, &quot;accidental namespace packages&quot; (because someone just forgot an <code>__init__.py</code>, and imports worked anyway) are pretty common. Maybe a lot of people use linters (like Ruff, perhaps!) that prevent this?</p>
-<p>Because of that, I tend to be more on the side of, if you're going to be doing multi-file analysis, you should explicitly configure the package root(s), rather than trying to discover files and packages automatically, which is easily broken by namespace packages and therefore requires explicitly configuring namespace packages.</p>
+            <div class="timeline-body"><p>This logic (determining a package root for an arbitrary file by walking up the tree looking for <code>__init__.py</code>) is part of Ruff so it must be fairly battle-tested, but I&#x27;m a little surprised if it doesn&#x27;t often fail on big internal codebases. In my experience, &quot;accidental namespace packages&quot; (because someone just forgot an <code>__init__.py</code>, and imports worked anyway) are pretty common. Maybe a lot of people use linters (like Ruff, perhaps!) that prevent this?</p>
+<p>Because of that, I tend to be more on the side of, if you&#x27;re going to be doing multi-file analysis, you should explicitly configure the package root(s), rather than trying to discover files and packages automatically, which is easily broken by namespace packages and therefore requires explicitly configuring namespace packages.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -393,15 +393,15 @@ let parsed = parsed_module(db, file);
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_graph/src/collector.rs</code>:61 on 2024-09-19 23:01</div>
-            <div class="timeline-body"><p>If I'm reading <code>to_module_path</code> correctly, I think for an <code>__init__.py</code> module, <code>self.module_path</code> will be e.g. <code>['foo', 'bar', '__init__']</code> -- that is, it will include <code>__init__</code> as a final component?</p>
-<p>That's necessary for this logic to be correct, since the meaning of a relative import is one level different in <code>foo/bar/__init__.py</code> vs in <code>foo/bar.py</code>.</p>
+            <div class="timeline-body"><p>If I&#x27;m reading <code>to_module_path</code> correctly, I think for an <code>__init__.py</code> module, <code>self.module_path</code> will be e.g. <code>[&#x27;foo&#x27;, &#x27;bar&#x27;, &#x27;__init__&#x27;]</code> -- that is, it will include <code>__init__</code> as a final component?</p>
+<p>That&#x27;s necessary for this logic to be correct, since the meaning of a relative import is one level different in <code>foo/bar/__init__.py</code> vs in <code>foo/bar.py</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_graph/src/collector.rs</code>:92 on 2024-09-19 23:04</div>
-            <div class="timeline-body"><p>This is more aggressive than I realized -- we don't even look for calls to <code>__import__</code> or <code>importlib.import_module</code>, we just look for any string that might be a module path.</p>
+            <div class="timeline-body"><p>This is more aggressive than I realized -- we don&#x27;t even look for calls to <code>__import__</code> or <code>importlib.import_module</code>, we just look for any string that might be a module path.</p>
 <p>It seems like this could easily be fooled by cases where an import-path constant is defined in one file (like a Django settings file) but the string is imported and then used in a dynamic import in a different module.</p>
-<p>But if it's good enough to match existing tools on the codebases we care about, great!</p>
+<p>But if it&#x27;s good enough to match existing tools on the codebases we care about, great!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -416,7 +416,7 @@ let parsed = parsed_module(db, file);
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/commands/analyze_graph.rs</code>:89 on 2024-09-20 00:05</div>
             <div class="timeline-body"><p>I think it will pick up anything in the default <code>include</code>:</p>
-<pre><code class="language-rust">pub(crate) static INCLUDE: &amp;[FilePattern] = &amp;[
+<pre><code>pub(crate) static INCLUDE: &amp;[FilePattern] = &amp;[
     FilePattern::Builtin(&quot;*.py&quot;),
     FilePattern::Builtin(&quot;*.pyi&quot;),
     FilePattern::Builtin(&quot;*.ipynb&quot;),
@@ -444,10 +444,10 @@ let parsed = parsed_module(db, file);
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2024-09-20 01:06</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-20 01:06</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-09-20 01:06</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-20 01:06</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-09-20 01:06</div>
@@ -455,7 +455,7 @@ let parsed = parsed_module(db, file);
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:06:35 UTC
+        Synced at 2026-01-20 19:06:50 UTC
     </footer>
 </body>
 </html>

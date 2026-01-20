@@ -23,74 +23,74 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Bradleywboggs">@Bradleywboggs</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>UV-installed Python versions exhibit critical rounding precision issues when running x86_64 containers under ARM64 emulation (Docker with Rosetta on Apple Silicon). The issue does not occur on native x86_64 or ARM64 systems.</p>
 <p><strong>Key Finding</strong>: <code>round(1.125, 2)</code> returns <code>1.0</code> instead of expected <code>1.12</code></p>
-<h3>Environment</h3>
+Environment
 <ul>
 <li><strong>Host</strong>: Apple Silicon Mac (ARM64) + Docker Desktop + Rosetta 2</li>
 <li><strong>Affected</strong>: x86_64 UV containers under emulation</li>
 <li><strong>Unaffected</strong>: Native x86_64/ARM64 systems, standard Python containers</li>
 <li><strong>Tested</strong>: Python 3.8 through 3.14rc2</li>
 </ul>
-<h3>Reproduction</h3>
+Reproduction
 <p><strong>Quick test</strong> (fails with UV managed python, passes with system Python):</p>
-<pre><code class="language-bash">#### UV managed Python - FAILS
+<pre><code>#### UV managed Python - FAILS
 docker run --platform linux/amd64 --rm ghcr.io/astral-sh/uv:python3.13-bookworm \
   uv run --managed-python python -c &quot;print(round(1.125, 2))&quot;
 Downloading cpython-3.13.7-linux-x86_64-gnu (download) (30.8MiB)
  Downloading cpython-3.13.7-linux-x86_64-gnu (download)
 1.0
 </code></pre>
-<pre><code class="language-bash">#### System Python - WORKS  
+<pre><code>#### System Python - WORKS  
 docker run --platform linux/amd64 --rm ghcr.io/astral-sh/uv:python3.13-bookworm \
   python -c &quot;print(round(1.125, 2))&quot;
 1.12
 </code></pre>
-<h3>Test Results</h3>
+Test Results
 <p>| Platform | Python Source | All Versions (3.8-3.14rc2) | <code>round(1.125, 2)</code> | Status |
 |----------|---------------|----------------------------|-------------------|--------|
 | x86_64 (emulated) | UV-installed | ❌ All affected | <code>1.0</code> | BROKEN |
 | x86_64 (emulated) | Standard | ✅ All working | <code>1.12</code> | WORKS |
 | x86_64 (native) | UV-installed | ✅ All working | <code>1.12</code> | WORKS |
 | ARM64 (native) | UV-installed | ✅ All working | <code>1.12</code> | WORKS |</p>
-<h3>Impact</h3>
+Impact
 <ul>
 <li><strong>Scope</strong>: Development environments using x86_64 containers on Apple Silicon</li>
 <li><strong>Affected Operations</strong>: Mathematical calculations, financial computations, any precision-dependent code</li>
 <li><strong>Production Risk</strong>: None (issue limited to emulation environments)</li>
 </ul>
-<h3>Workarounds</h3>
+Workarounds
 <ul>
 <li>Use ARM64-native UV containers on Apple Silicon</li>
 <li>Use standard Python images for x86_64 compatibility testing</li>
 <li>Issue does not affect production deployments on native x86_64</li>
 </ul>
-<h3>Analysis</h3>
-<p>Appears to be an emulation compatibility issue where UV's optimized x86_64 Python binaries don't interact correctly with ARM64-to-x86_64 emulation layers, specifically affecting floating-point operations.</p>
-<h3>Platform</h3>
+Analysis
+<p>Appears to be an emulation compatibility issue where UV&#x27;s optimized x86_64 Python binaries don&#x27;t interact correctly with ARM64-to-x86_64 emulation layers, specifically affecting floating-point operations.</p>
+Platform
 <p>macOS 15.6: M1 Pro emulating x86_64</p>
-<h3>Version</h3>
+Version
 <p>uv 0.8.15</p>
-<h3>Python versions</h3>
+Python versions
 <p>3.8 - 3.14rc2</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @Bradleywboggs on 2025-09-04 22:18</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/Bradleywboggs">@Bradleywboggs</a> on 2025-09-04 22:18</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-04 22:56</div>
-            <div class="timeline-body"><p>A couple things I'm confused by</p>
+            <div class="timeline-body"><p>A couple things I&#x27;m confused by</p>
 <ol>
-<li><code>ghcr.io/astral-sh/uv:python3.9-bookworm</code> this image has Debian's Python pre-installed, not uv's</li>
+<li><code>ghcr.io/astral-sh/uv:python3.9-bookworm</code> this image has Debian&#x27;s Python pre-installed, not uv&#x27;s</li>
 <li>The reproduction you shared does not reproduce:</li>
 </ol>
 <pre><code>❯ docker run --platform linux/amd64 --rm ghcr.io/astral-sh/uv:python3.9-bookworm \
   python -c &quot;print(round(1.125, 2))&quot;
 1.12
 </code></pre>
-<p>Even if you use uv's Python?</p>
+<p>Even if you use uv&#x27;s Python?</p>
 <pre><code>❯ docker run --platform linux/amd64 --rm ghcr.io/astral-sh/uv:python3.9-bookworm uv run --managed-python python -c &quot;print(round(1.125, 2))&quot;
 Downloading cpython-3.13.7-linux-x86_64-gnu (download) (30.8MiB)
  Downloading cpython-3.13.7-linux-x86_64-gnu (download)
@@ -99,11 +99,11 @@ Downloading cpython-3.13.7-linux-x86_64-gnu (download) (30.8MiB)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-mre</span> added by @zanieb on 2025-09-04 22:58</div>
+            <div class="event">Label <span class="label">needs-mre</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-04 22:58</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-04 23:07</div>
-            <div class="timeline-body"><p>For context, I'm on an M3 MacBook Pro</p>
+            <div class="timeline-body"><p>For context, I&#x27;m on an M3 MacBook Pro</p>
 <pre><code>❯ uname -rsm
 Darwin 23.6.0 arm64
 ❯ docker version
@@ -124,7 +124,7 @@ Commit: 2b5dd5f580d80a3d2494b7b40dde2ef46813cfc5 (v1.10.3)
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Bradleywboggs">@Bradleywboggs</a> on 2025-09-04 23:52</div>
             <div class="timeline-body"><blockquote>
-<p>For context, I'm on an M3 MacBook Pro</p>
+<p>For context, I&#x27;m on an M3 MacBook Pro</p>
 <pre><code>❯ uname -rsm
 Darwin 23.6.0 arm64
 ❯ docker version
@@ -141,10 +141,10 @@ Version: 1.10.3 (1100300)
 Commit: 2b5dd5f580d80a3d2494b7b40dde2ef46813cfc5 (v1.10.3)
 </code></pre>
 </blockquote>
-<p>Interesting! I'll go back and investigate further and make updates to the issue or close it.</p>
-<h3>UPDATE</h3>
+<p>Interesting! I&#x27;ll go back and investigate further and make updates to the issue or close it.</p>
+UPDATE
 <p>Thanks for pointing out the discrepancy.
-I've updated the steps for reproducing. I do indeed get the behavior only when running with the <strong>uv managed</strong> python installation.  That  got lost in my final edits of my notes.</p>
+I&#x27;ve updated the steps for reproducing. I do indeed get the behavior only when running with the <strong>uv managed</strong> python installation.  That  got lost in my final edits of my notes.</p>
 <pre><code>λ&gt;  uname -rsm
 Darwin 24.6.0 arm64
 
@@ -181,7 +181,7 @@ Server: Docker Desktop 4.38.0 (181591)
 <ul>
 <li>Docker Desktop vs OrbStack</li>
 <li>Darwin 24.6.0  vs Darwin 23.6.0</li>
-<li>M1 Pro vs M3 chips (That shouldn't affect emulation, though. The Rosetta versions are the same, I think?)</li>
+<li>M1 Pro vs M3 chips (That shouldn&#x27;t affect emulation, though. The Rosetta versions are the same, I think?)</li>
 </ul>
 </div>
         </div>
@@ -192,7 +192,7 @@ Server: Docker Desktop 4.38.0 (181591)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zsol">@zsol</a> on 2025-09-05 08:28</div>
-            <div class="timeline-body"><p>This doesn't reproduce for me either (I'm not using rosetta for emulation):</p>
+            <div class="timeline-body"><p>This doesn&#x27;t reproduce for me either (I&#x27;m not using rosetta for emulation):</p>
 <pre><code>❯ docker version
 Client:
  Version:           28.3.3
@@ -236,8 +236,8 @@ Downloading cpython-3.13.7-linux-x86_64-gnu (download) (30.8MiB)
             <div class="timeline-body"><blockquote>
 <p>This looks like a bug in OrbStack or some other part of the emulation to me, have you tried the latest OrbStack version? If it works on the native platform, the uv-provided binary should be fine and the problem is in the emulation layer.</p>
 </blockquote>
-<p>It's strange to me that the system provided Python consistently works when emulating, though. There seems to be something in how the uv managed binary is being compiled to trigger the issue (at least on my machine)</p>
-<p>I'm not using orb stack. But I can give it a try.</p>
+<p>It&#x27;s strange to me that the system provided Python consistently works when emulating, though. There seems to be something in how the uv managed binary is being compiled to trigger the issue (at least on my machine)</p>
+<p>I&#x27;m not using orb stack. But I can give it a try.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -245,7 +245,7 @@ Downloading cpython-3.13.7-linux-x86_64-gnu (download) (30.8MiB)
             <div class="timeline-body"><blockquote>
 <p>This looks like a bug in OrbStack</p>
 </blockquote>
-<p>I'm using OrbStack, they are using Docker Desktop.</p>
+<p>I&#x27;m using OrbStack, they are using Docker Desktop.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -255,15 +255,15 @@ Downloading cpython-3.13.7-linux-x86_64-gnu (download) (30.8MiB)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-05 13:21</div>
-            <div class="timeline-body"><p>@zsol what's doing the x86-64 emulation in your setup?</p>
+            <div class="timeline-body"><p>@zsol what&#x27;s doing the x86-64 emulation in your setup?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/szicari-streambit">@szicari-streambit</a> on 2025-09-05 14:13</div>
-            <div class="timeline-body"><p>For what it's worth, I experience the same issue on an M1 Mac with vanilla Docker Desktop installed.</p>
-<pre><code class="language-shell">docker run --platform linux/amd64 --rm ghcr.io/astral-sh/uv:python3.13-bookworm \
+            <div class="timeline-body"><p>For what it&#x27;s worth, I experience the same issue on an M1 Mac with vanilla Docker Desktop installed.</p>
+<pre><code>docker run --platform linux/amd64 --rm ghcr.io/astral-sh/uv:python3.13-bookworm \
  uv run --managed-python python -c &quot;print(round(1.125, 2))&quot;
-Unable to find image 'ghcr.io/astral-sh/uv:python3.13-bookworm' locally
+Unable to find image &#x27;ghcr.io/astral-sh/uv:python3.13-bookworm&#x27; locally
 python3.13-bookworm: Pulling from astral-sh/uv
 f014853ae203: Pull complete 
 6d6401b7636b: Pull complete 
@@ -284,7 +284,7 @@ Downloading cpython-3.13.7-linux-x86_64-gnu (download) (30.8MiB)
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/szicari-streambit">@szicari-streambit</a> on 2025-09-05 14:46</div>
             <div class="timeline-body"><p>Further research yielded that switching from the Apple virtualization framework to Qemu resulted in &quot;correct&quot; behavior.</p>
-<pre><code class="language-shell">docker run --platform linux/amd64 --rm ghcr.io/astral-sh/uv:python3.13-bookworm \
+<pre><code>docker run --platform linux/amd64 --rm ghcr.io/astral-sh/uv:python3.13-bookworm \
  uv run --managed-python python -c &quot;print(round(1.125, 2))&quot;
 Downloading cpython-3.13.7-linux-x86_64-gnu (download) (30.8MiB)
  Downloading cpython-3.13.7-linux-x86_64-gnu (download)
@@ -295,8 +295,8 @@ Downloading cpython-3.13.7-linux-x86_64-gnu (download) (30.8MiB)
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Bradleywboggs">@Bradleywboggs</a> on 2025-09-05 14:51</div>
             <div class="timeline-body"><p>Also, simply disabling Rosetta produced correct results, too.</p>
-<p><img width="802" height="400" alt="Image" src="https://github.com/user-attachments/assets/559e6f06-7c0f-4da0-a497-0c8990b27f0e" /></p>
-<pre><code class="language-bash">λ&gt; docker run --platform linux/amd64 --rm ghcr.io/astral-sh/uv:python3.13-bookworm \
+<p><img alt="Image" src="https://github.com/user-attachments/assets/559e6f06-7c0f-4da0-a497-0c8990b27f0e"></p>
+<pre><code>λ&gt; docker run --platform linux/amd64 --rm ghcr.io/astral-sh/uv:python3.13-bookworm \
  uv run --managed-python python -c &quot;print(round(1.125, 2))&quot;
 Downloading cpython-3.13.7-linux-x86_64-gnu (download) (30.8MiB)
  Downloading cpython-3.13.7-linux-x86_64-gnu (download)
@@ -307,22 +307,22 @@ Downloading cpython-3.13.7-linux-x86_64-gnu (download) (30.8MiB)
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Bradleywboggs">@Bradleywboggs</a> on 2025-09-05 14:55</div>
             <div class="timeline-body"><p>It appears this is a problem with Rosetta in other contexts as well:
-<a href="https://github.com/oven-sh/bun/issues/19677">https://github.com/oven-sh/bun/issues/19677</a></p>
-<p>I'm going to close the issue, since it doesn't appear to be a <code>uv</code> problem.</p>
+<a href="https://github.com/oven-sh/bun/issues/19677">oven-sh/bun#19677</a></p>
+<p>I&#x27;m going to close the issue, since it doesn&#x27;t appear to be a <code>uv</code> problem.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @Bradleywboggs on 2025-09-05 14:55</div>
+            <div class="event">Closed by <a href="https://github.com/Bradleywboggs">@Bradleywboggs</a> on 2025-09-05 14:55</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-05 15:02</div>
-            <div class="timeline-body"><p>For future reference, it looks like Apple has fixed this per https://github.com/oven-sh/bun/issues/19677#issuecomment-3114724055 but it may not have released yet.</p>
+            <div class="timeline-body"><p>For future reference, it looks like Apple has fixed this per <a href="https://github.com/oven-sh/bun/issues/19677">oven-sh/bun#19677</a>#issuecomment-3114724055 but it may not have released yet.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:32:49 UTC
+        Synced at 2026-01-20 19:40:15 UTC
     </footer>
 </body>
 </html>

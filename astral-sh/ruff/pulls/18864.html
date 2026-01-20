@@ -23,13 +23,13 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This PR makes a number of improvements to our disjointness handling for instance types and <code>type[]</code> types:</p>
 <ul>
-<li><p>The calculation of whether two nominal instance types are disjoint is moved from the somewhat-awkardly-named <code>NominalInstanceType::is_disjoint_from_nominal_instance_of_class</code> function to a new <code>ClassLiteral::could_coexist_in_mro_with()</code> method. This reflects the fact that the relation between <em>types</em> (the disjointness relation) is derived from a relation between <em>runtime class objects</em> (MRO compatibility). It also allows us to reuse the method for determining disjointness between two <code>SubclassOfType</code>s. Prior to now, that wouldn't have been helpful, but with the other improvements in this PR (see below), it <em>is</em> helpful.</p>
+<li><p>The calculation of whether two nominal instance types are disjoint is moved from the somewhat-awkardly-named <code>NominalInstanceType::is_disjoint_from_nominal_instance_of_class</code> function to a new <code>ClassLiteral::could_coexist_in_mro_with()</code> method. This reflects the fact that the relation between <em>types</em> (the disjointness relation) is derived from a relation between <em>runtime class objects</em> (MRO compatibility). It also allows us to reuse the method for determining disjointness between two <code>SubclassOfType</code>s. Prior to now, that wouldn&#x27;t have been helpful, but with the other improvements in this PR (see below), it <em>is</em> helpful.</p>
 </li>
-<li><p>Following https://github.com/astral-sh/ruff/pull/15129, we have understood that classes like this raise <code>TypeError</code> at runtime, and have emitted errors if we see such class definitions in first-party code:</p>
-<pre><code class="language-py">class A:
+<li><p>Following <a href="https://github.com/astral-sh/ruff/pull/15129">astral-sh/ruff#15129</a>, we have understood that classes like this raise <code>TypeError</code> at runtime, and have emitted errors if we see such class definitions in first-party code:</p>
+<pre><code>class A:
     __slots__ = &quot;a&quot;,
 
 class B:
@@ -37,10 +37,10 @@ class B:
 
 class C(A, B): ...
 </code></pre>
-<p>However, we haven't understood that this also makes the types <code>A</code> and <code>B</code> disjoint: the intersection <code>A &amp; B</code> simplifies to <code>Never</code>, since <code>A</code> and <code>B</code> can never both exist in any single MRO! This PR generalizes and incorporates our understanding of <code>__slots__</code> so that we now recognize any class with a non-empty <code>__slots__</code> definition as being a &quot;solid base&quot;. If there are two solid bases <code>A</code> and <code>B</code>, and <code>A</code> is not a subclass of <code>B</code> and <code>B</code> is not a subclass of <code>A</code>, <code>A</code> and <code>B</code> will be disjoint. Similarly, if <code>A</code> has a subclass <code>C</code> and <code>B</code> has a subclass <code>D</code>, <code>C</code> and <code>D</code> will be disjoint because they have disjoint solid bases in their respective MROs.</p>
+<p>However, we haven&#x27;t understood that this also makes the types <code>A</code> and <code>B</code> disjoint: the intersection <code>A &amp; B</code> simplifies to <code>Never</code>, since <code>A</code> and <code>B</code> can never both exist in any single MRO! This PR generalizes and incorporates our understanding of <code>__slots__</code> so that we now recognize any class with a non-empty <code>__slots__</code> definition as being a &quot;solid base&quot;. If there are two solid bases <code>A</code> and <code>B</code>, and <code>A</code> is not a subclass of <code>B</code> and <code>B</code> is not a subclass of <code>A</code>, <code>A</code> and <code>B</code> will be disjoint. Similarly, if <code>A</code> has a subclass <code>C</code> and <code>B</code> has a subclass <code>D</code>, <code>C</code> and <code>D</code> will be disjoint because they have disjoint solid bases in their respective MROs.</p>
 </li>
-<li><p>Two bugs are also fixed in our handling of <code>__slots__</code>. One long-standing one is that we used to think that this class definition raised <code>TypeError</code>; this PR teaches ty that it doesn't:</p>
-<pre><code class="language-py">class A:
+<li><p>Two bugs are also fixed in our handling of <code>__slots__</code>. One long-standing one is that we used to think that this class definition raised <code>TypeError</code>; this PR teaches ty that it doesn&#x27;t:</p>
+<pre><code>class A:
     __slots__ = &quot;a&quot;,
 
 class B(A):
@@ -48,7 +48,7 @@ class B(A):
 
 class C(B, A): ...
 </code></pre>
-<p>Another one was only introduced recently: see https://github.com/astral-sh/ruff/pull/18864#discussion_r2161608672</p>
+<p>Another one was only introduced recently: see <a href="https://github.com/astral-sh/ruff/pull/18864">astral-sh/ruff#18864</a>#discussion_r2161608672</p>
 </li>
 <li><p>In addition to understanding that classes with non-empty <code>__slots__</code> definitions are solid bases, this PR also adds an understanding to ty that certain builtin classes are also solid bases due to the special way that they are implemented in C. This is done via a <code>KnownClass::is_solid_base</code> method.</p>
 </li>
@@ -59,7 +59,7 @@ class C(B, A): ...
 </ul>
 </li>
 </ul>
-<h2>Test Plan</h2>
+Test Plan
 <ul>
 <li>Mdtests</li>
 <li><code>QUICKCHECK_TESTS=100000 cargo test --release -p ty_python_semantic -- --ignored types::property_tests::stable</code></li>
@@ -68,20 +68,20 @@ class C(B, A): ...
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "alex/disjointness" to "[ty] Improve handling of disjointness for `NominalInstanceType`s and `SubclassOfType`s" by @AlexWaygood on 2025-06-22 18:20</div>
+            <div class="event">Renamed from &quot;alex/disjointness&quot; to &quot;[ty] Improve handling of disjointness for `NominalInstanceType`s and `SubclassOfType`s&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-22 18:20</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-06-22 18:20</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-22 18:20</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-22 18:22</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">parso (https://github.com/davidhalter/parso)
+Changes were detected when running on open source projects
+
+<pre><code>parso (https://github.com/davidhalter/parso)
 - error[incompatible-slots] parso/python/tree.py:169:23: Class base has incompatible `__slots__`
 - error[incompatible-slots] parso/python/tree.py:169:34: Class base has incompatible `__slots__`
 - Found 79 diagnostics
@@ -354,7 +354,7 @@ sympy (https://github.com/sympy/sympy)
 + Found 17915 diagnostics
 
 </code></pre>
-</details>
+
 
 </div>
         </div>
@@ -362,8 +362,8 @@ sympy (https://github.com/sympy/sympy)
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:3364 on 2025-06-23 13:13</div>
             <div class="timeline-body"><p>This branch looks a little different to how it does on <code>main</code>:</p>
 <p>https://github.com/astral-sh/ruff/blob/b64307f65ef9fc5029ecd8b22f51adae18eaaed9/crates/ty_python_semantic/src/types/slots.rs#L37-L43</p>
-<p>The reason for the change is to fix a regression from https://github.com/astral-sh/ruff/pull/18600 where we started incorrectly reporting that classes like this would raise <code>TypeError</code> because the tuples are &quot;not empty&quot;:</p>
-<pre><code class="language-py">class Foo:
+<p>The reason for the change is to fix a regression from <a href="https://github.com/astral-sh/ruff/pull/18600">astral-sh/ruff#18600</a> where we started incorrectly reporting that classes like this would raise <code>TypeError</code> because the tuples are &quot;not empty&quot;:</p>
+<pre><code>class Foo:
     __slots__: tuple[str, ...] = ()
 
 class Bar:
@@ -371,13 +371,13 @@ class Bar:
 
 class Baz(Foo, Bar): ...
 </code></pre>
-<p>See https://github.com/astral-sh/ruff/pull/18600#issuecomment-2996375418</p>
+<p>See <a href="https://github.com/astral-sh/ruff/pull/18600">astral-sh/ruff#18600</a>#issuecomment-2996375418</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/diagnostic.rs</code>:369 on 2025-06-23 13:15</div>
-            <div class="timeline-body"><p>I renamed the diagnostic from <code>INCOMPATIBLE_SLOTS</code> to <code>INSTANCE_LAYOUT_CONFLICT</code> because we now detect all of these with the same rule (it doesn't make sense to split them up into different rules IMO):</p>
-<pre><code class="language-py">class A:
+            <div class="timeline-body"><p>I renamed the diagnostic from <code>INCOMPATIBLE_SLOTS</code> to <code>INSTANCE_LAYOUT_CONFLICT</code> because we now detect all of these with the same rule (it doesn&#x27;t make sense to split them up into different rules IMO):</p>
+<pre><code>class A:
     __slots__ = &quot;a&quot;,
 
 class B:
@@ -387,7 +387,7 @@ class C(A, B): ...  # error: [instance-layout-conflict]
 class D(A, int): ...  # error: [instance-layout-conflict]
 class E(str, int): ...  # error: [instance-layout-conflict]
 </code></pre>
-<p>The first is due to &quot;incompatible slots&quot;; the second has something to do with <code>__slots__</code> but it's not really accurate to describe the issue as &quot;incompatible slots&quot;; the third has nothing to do with slots -- <code>str</code> and <code>int</code> don't define <code>__slots__</code>, but are considered solid bases anyway for other reasons.</p>
+<p>The first is due to &quot;incompatible slots&quot;; the second has something to do with <code>__slots__</code> but it&#x27;s not really accurate to describe the issue as &quot;incompatible slots&quot;; the third has nothing to do with slots -- <code>str</code> and <code>int</code> don&#x27;t define <code>__slots__</code>, but are considered solid bases anyway for other reasons.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -400,10 +400,10 @@ class E(str, int): ...  # error: [instance-layout-conflict]
 <ul>
 <li>Lots of <code>incompatible-slots</code> false positives going away!</li>
 <li>In general we see fewer long/complicated intersection types, and fewer <code>@Todo</code> types, which probably makes for a better user experience overall.</li>
-<li>A lot of new diagnostics on <code>kornia</code>. These mostly seem to be because we now understand <code>int</code> and <code>float</code> as being disjoint types, meaning that <code>(JustInt | JustFloat) &amp; ~JustFloat</code> (for example) simplifies to <code>JustInt</code> rather than <code>JustInt &amp; ~JustFloat</code>. Attribute access on intersections with negative contributions <a href="https://play.ty.dev/8187dac0-ee85-4f6e-a0ef-14c6863e6905">gives you a <code>@Todo</code> type currently</a>, so the additional simplifications we're now able to do gives you a stricter type-checking experience. An example of where this kind of narrowing happens in <code>kornia</code> is <a href="https://github.com/kornia/kornia/blob/a63f4f0f44da0b89b276cbc81ea467ec181d5ca2/kornia/enhance/adjust.py#L37-L49">here</a>. The type annotation <code>Union[Tensor, float]</code> is transformed by us to the type <code>JustFloat | JustInt | Unknown</code> due to a combination of the <code>float</code>/<code>int</code> special case and the fact that we apparently can't resolve the <code>Tensor</code> type. Then the first <code>isinstance()</code> call causes the type to be intersected with <code>~JustFloat</code>, so the type of <code>Factor</code> in the <code>elif isinstance(factor, Tensor):</code> branch is <code>JustInt | (Unknown &amp; ~JustFloat)</code></li>
+<li>A lot of new diagnostics on <code>kornia</code>. These mostly seem to be because we now understand <code>int</code> and <code>float</code> as being disjoint types, meaning that <code>(JustInt | JustFloat) &amp; ~JustFloat</code> (for example) simplifies to <code>JustInt</code> rather than <code>JustInt &amp; ~JustFloat</code>. Attribute access on intersections with negative contributions <a href="https://play.ty.dev/8187dac0-ee85-4f6e-a0ef-14c6863e6905">gives you a <code>@Todo</code> type currently</a>, so the additional simplifications we&#x27;re now able to do gives you a stricter type-checking experience. An example of where this kind of narrowing happens in <code>kornia</code> is <a href="https://github.com/kornia/kornia/blob/a63f4f0f44da0b89b276cbc81ea467ec181d5ca2/kornia/enhance/adjust.py#L37-L49">here</a>. The type annotation <code>Union[Tensor, float]</code> is transformed by us to the type <code>JustFloat | JustInt | Unknown</code> due to a combination of the <code>float</code>/<code>int</code> special case and the fact that we apparently can&#x27;t resolve the <code>Tensor</code> type. Then the first <code>isinstance()</code> call causes the type to be intersected with <code>~JustFloat</code>, so the type of <code>Factor</code> in the <code>elif isinstance(factor, Tensor):</code> branch is <code>JustInt | (Unknown &amp; ~JustFloat)</code></li>
 </ul>
 <p>In general, I think this is all positive. Though the <code>kornia</code> issue makes me wonder if we should intersect with <code>Unknown</code> if we see an <code>isinstance()</code> call where the second argument is of type <code>Unknown</code>, e.g.:</p>
-<pre><code class="language-py">from c_extension import SomethingUnresolved
+<pre><code>from c_extension import SomethingUnresolved
 
 class Foo: ...
 
@@ -414,24 +414,24 @@ def f(x: Foo | SomethingUnresolved):
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @AlexWaygood on 2025-06-23 13:40</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-23 13:40</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-06-23 13:40</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-23 13:40</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-06-23 13:40</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-23 13:40</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-06-23 13:40</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-23 13:40</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2025-06-23 13:40</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-23 13:40</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-23 13:43</div>
             <div class="timeline-body"><p>Some screenshots of what the <code>instance-layout-conflict</code> diagnostics look like on this branch:</p>
-<p><img src="https://github.com/user-attachments/assets/f8201079-0ad7-4694-8938-483fa346020e" alt="image" /></p>
+<p><img src="https://github.com/user-attachments/assets/f8201079-0ad7-4694-8938-483fa346020e" alt="image"></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -439,12 +439,12 @@ def f(x: Foo | SomethingUnresolved):
             <div class="timeline-body"><blockquote>
 <p>we should intersect with <code>Unknown</code> if we see an <code>isinstance()</code> call where the second argument is of type <code>Unknown</code></p>
 </blockquote>
-<p>Yes, I think we should -- it's clearly a violation of the gradual guarantee not to do so.</p>
+<p>Yes, I think we should -- it&#x27;s clearly a violation of the gradual guarantee not to do so.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/narrow/conditionals/elif_else.md</code>:54 on 2025-06-23 16:49</div>
-            <div class="timeline-body"><p>I wonder whether it doesn't serve the purpose of this test better to use custom types <code>A</code> and <code>B</code> and still be able to observe that the effect of narrowing here is the type <code>A &amp; ~B</code>, rather than hiding that fact with the use of types that we now understand as disjoint</p>
+            <div class="timeline-body"><p>I wonder whether it doesn&#x27;t serve the purpose of this test better to use custom types <code>A</code> and <code>B</code> and still be able to observe that the effect of narrowing here is the type <code>A &amp; ~B</code>, rather than hiding that fact with the use of types that we now understand as disjoint</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -454,7 +454,7 @@ def f(x: Foo | SomethingUnresolved):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/slots.md</code>:155 on 2025-06-23 16:52</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">Certain classes implemented in C extensions are also considered &quot;solid bases&quot; in the same way as
+            <div class="timeline-body"><pre><code>Certain classes implemented in C extensions are also considered &quot;solid bases&quot; in the same way as
 </code></pre>
 </div>
         </div>
@@ -464,44 +464,44 @@ def f(x: Foo | SomethingUnresolved):
 <blockquote>
 <p>we should intersect with <code>Unknown</code> if we see an <code>isinstance()</code> call where the second argument is of type <code>Unknown</code></p>
 </blockquote>
-<p>Yes, I think we should -- it's clearly a violation of the gradual guarantee not to do so.</p>
+<p>Yes, I think we should -- it&#x27;s clearly a violation of the gradual guarantee not to do so.</p>
 </blockquote>
 <p>See #18900</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-06-23 17:26</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-23 17:26</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @AlexWaygood on 2025-06-23 17:26</div>
+            <div class="event">Reopened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-23 17:26</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-23 17:32</div>
-            <div class="timeline-body"><p>I never heard the term solid base before and searching for it on google also doesn't give any good results. Is there another term we could use or can we explain the term or link to some reference documentation (or hint that it is explained in the rule's documentation)</p>
+            <div class="timeline-body"><p>I never heard the term solid base before and searching for it on google also doesn&#x27;t give any good results. Is there another term we could use or can we explain the term or link to some reference documentation (or hint that it is explained in the rule&#x27;s documentation)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/diagnostic.rs</code>:368 on 2025-06-23 19:56</div>
             <div class="timeline-body"><p>Proposed edit to avoid the term &quot;solid base&quot; in user-facing documentation:</p>
-<pre><code class="language-suggestion">    /// Additionally, this check is not exhaustive: many C extensions (including several in
+<pre><code>    /// Additionally, this check is not exhaustive: many C extensions (including several in
     /// the standard library) define classes whose instances have an extended memory
-    /// layout, and thus can't be multiply-inherited with other such classes.
-    /// Since we don't currently represent this fact in stub files, having a full knowledge
+    /// layout, and thus can&#x27;t be multiply-inherited with other such classes.
+    /// Since we don&#x27;t currently represent this fact in stub files, having a full knowledge
     /// of these classes would be impossible; ty only hard-codes a number of known cases.
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/diagnostic.rs</code>:369 on 2025-06-23 19:58</div>
-            <div class="timeline-body"><p>FWIW, ultimately it's all the same issue -- classes whose instances have an extended memory layout beyond just the core object metadata and a dictionary of attributes. <code>__slots__</code> is just a Python-facing way to opt into the same internal &quot;slots&quot; system that C-extension classes can opt into directly.</p>
+            <div class="timeline-body"><p>FWIW, ultimately it&#x27;s all the same issue -- classes whose instances have an extended memory layout beyond just the core object metadata and a dictionary of attributes. <code>__slots__</code> is just a Python-facing way to opt into the same internal &quot;slots&quot; system that C-extension classes can opt into directly.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/slots.md</code>:158 on 2025-06-23 20:00</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">Certain classes implemented in C extensions also have an extended instance memory layout, in the
+            <div class="timeline-body"><pre><code>Certain classes implemented in C extensions also have an extended instance memory layout, in the
 same way as classes that define non-empty `__slots__`. (CPython internally calls all such classes
 with a unique instance memory layout &quot;solid bases&quot;, and we also borrow this term.) There is currently
-no generalized way for ty to detect such a C-extension class, as the information isn't present in type
+no generalized way for ty to detect such a C-extension class, as the information isn&#x27;t present in type
 stubs, but ty special-cases certain builtin classes:
 
 </code></pre>
@@ -509,25 +509,25 @@ stubs, but ty special-cases certain builtin classes:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/slots.md_-_`__slots__`_-_Built-ins_with_impli…_(8170194eb9ad3094).snap</code>:57 on 2025-06-23 20:03</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">info: Two classes with incompatible instance memory layouts cannot coexist in a class's MRO
+            <div class="timeline-body"><pre><code>info: Two classes with incompatible instance memory layouts cannot coexist in a class&#x27;s MRO
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/slots.md_-_`__slots__`_-_Built-ins_with_impli…_(8170194eb9ad3094).snap</code>:62 on 2025-06-23 20:03</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">  |     --- `int` is a C extension type with a distinct instance memory layout
+            <div class="timeline-body"><pre><code>  |     --- `int` is a C extension type with a distinct instance memory layout
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/slots.md_-_`__slots__`_-_Built-ins_with_impli…_(8170194eb9ad3094).snap</code>:92 on 2025-06-23 20:04</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">   |     - `B` has a distinct instance memory layout because it defines non-empty `__slots__`
+            <div class="timeline-body"><pre><code>   |     - `B` has a distinct instance memory layout because it defines non-empty `__slots__`
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:2204 on 2025-06-23 20:07</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">/// CPython internally considers a class a &quot;solid base&quot; if it has an atypical instance memory layout,
+            <div class="timeline-body"><pre><code>/// CPython internally considers a class a &quot;solid base&quot; if it has an atypical instance memory layout,
 /// with additional memory &quot;slots&quot; for each instance, besides the default object metadata and an
 /// attribute dictionary. A &quot;solid base&quot; can be a class defined in a C extension which defines C-level
 /// instance slots, or a Python class that defines non-empty `__slots__`.
@@ -538,7 +538,7 @@ stubs, but ty special-cases certain builtin classes:
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:472 on 2025-06-23 20:17</div>
             <div class="timeline-body"><p>All tests pass if I replace this line with <code>solid_base_1 != solid_base_2</code>.</p>
 <p>I think that means we are missing a test for a case like this:</p>
-<pre><code class="language-py">&gt;&gt;&gt; class A:
+<pre><code>&gt;&gt;&gt; class A:
 ...     __slots__ = (&quot;a&quot;,)
 ...
 &gt;&gt;&gt; class B(A):
@@ -554,18 +554,18 @@ stubs, but ty special-cases certain builtin classes:
 ...     pass
 ...
 &gt;&gt;&gt; F.__mro__
-(&lt;class '__main__.F'&gt;, &lt;class '__main__.C'&gt;, &lt;class '__main__.B'&gt;, &lt;class '__main__.D'&gt;, &lt;class '__main__.A'&gt;, &lt;class 'object'&gt;)
+(&lt;class &#x27;__main__.F&#x27;&gt;, &lt;class &#x27;__main__.C&#x27;&gt;, &lt;class &#x27;__main__.B&#x27;&gt;, &lt;class &#x27;__main__.D&#x27;&gt;, &lt;class &#x27;__main__.A&#x27;&gt;, &lt;class &#x27;object&#x27;&gt;)
 &gt;&gt;&gt; C.__mro__
-(&lt;class '__main__.C'&gt;, &lt;class '__main__.B'&gt;, &lt;class '__main__.A'&gt;, &lt;class 'object'&gt;)
+(&lt;class &#x27;__main__.C&#x27;&gt;, &lt;class &#x27;__main__.B&#x27;&gt;, &lt;class &#x27;__main__.A&#x27;&gt;, &lt;class &#x27;object&#x27;&gt;)
 &gt;&gt;&gt; D.__mro__
-(&lt;class '__main__.D'&gt;, &lt;class '__main__.A'&gt;, &lt;class 'object'&gt;)
+(&lt;class &#x27;__main__.D&#x27;&gt;, &lt;class &#x27;__main__.A&#x27;&gt;, &lt;class &#x27;object&#x27;&gt;)
 </code></pre>
 <p>In this case <code>C</code> and <code>D</code> have different solid bases (<code>A</code> vs <code>B</code>), but they can still be multiply inherited because <code>B</code> inherits <code>A</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/diagnostic.rs</code>:375 on 2025-06-23 20:22</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">    /// Classes that have &quot;dynamic&quot; definitions of `__slots__` (definitions do not consist
+            <div class="timeline-body"><pre><code>    /// Classes that have &quot;dynamic&quot; definitions of `__slots__` (definitions do not consist
     /// of string literals, or tuples of string literals) are not currently recognized by ty as
     /// having a distinct instance layout.
 </code></pre>
@@ -574,13 +574,13 @@ stubs, but ty special-cases certain builtin classes:
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/diagnostic.rs</code>:1908 on 2025-06-23 20:24</div>
             <div class="timeline-body"><p>May as well match the diagnostic code here, considering its also shorter:</p>
-<pre><code class="language-suggestion">pub(crate) fn report_instance_layout_conflict(
+<pre><code>pub(crate) fn report_instance_layout_conflict(
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/diagnostic.rs</code>:1925 on 2025-06-23 20:25</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">        builder.into_diagnostic(&quot;Class will raise `TypeError` at runtime due to incompatible bases&quot;);
+            <div class="timeline-body"><pre><code>        builder.into_diagnostic(&quot;Class will raise `TypeError` at runtime due to incompatible bases&quot;);
 </code></pre>
 </div>
         </div>
@@ -592,7 +592,7 @@ stubs, but ty special-cases certain builtin classes:
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-23 20:35</div>
             <div class="timeline-body"><blockquote>
-<p>I never heard the term solid base before and searching for it on google also doesn't give any good results. Is there another term we could use or can we explain the term or link to some reference documentation (or hint that it is explained in the rule's documentation)</p>
+<p>I never heard the term solid base before and searching for it on google also doesn&#x27;t give any good results. Is there another term we could use or can we explain the term or link to some reference documentation (or hint that it is explained in the rule&#x27;s documentation)</p>
 </blockquote>
 <p>AFAIK the term is only used internally in the CPython code base, not in user-facing docs or error messages. I think we should follow a similar pattern. The term (and concept) are useful in implementing the semantics, and the alternatives are more verbose, so we should go ahead and use the term internally (with a clear definition in a doc comment, which I elaborate on in a review comment above), but avoid the term in user-facing documentation or diagnostics (which I also addressed in review comments above.)</p>
 </div>
@@ -612,18 +612,18 @@ stubs, but ty special-cases certain builtin classes:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/diagnostic.rs</code>:368 on 2025-06-23 21:00</div>
-            <div class="timeline-body"><p>This is better than what I have, thanks! I'll apply a variant of it.</p>
-<p>I'm not sure that talking about an &quot;extended memory layout&quot; is <em>significantly</em> more user-friendly than talking about a &quot;solid base&quot;, though. I think few Python users think deeply about how their instances are laid out in memory; sort of the point of the language is that you shouldn't have to care most of the time. <em>I</em> certainly don't think about this kind of thing most of the time when I'm writing Python.</p>
-<p>The fundamental problem is that this is really a place where CPython leaks implementation details to end users and doesn't really document it properly anywhere. (If only we had a CPython core developer or two around here who could engage upstream and push for improvements there, right?! 😆)</p>
+            <div class="timeline-body"><p>This is better than what I have, thanks! I&#x27;ll apply a variant of it.</p>
+<p>I&#x27;m not sure that talking about an &quot;extended memory layout&quot; is <em>significantly</em> more user-friendly than talking about a &quot;solid base&quot;, though. I think few Python users think deeply about how their instances are laid out in memory; sort of the point of the language is that you shouldn&#x27;t have to care most of the time. <em>I</em> certainly don&#x27;t think about this kind of thing most of the time when I&#x27;m writing Python.</p>
+<p>The fundamental problem is that this is really a place where CPython leaks implementation details to end users and doesn&#x27;t really document it properly anywhere. (If only we had a CPython core developer or two around here who could engage upstream and push for improvements there, right?! 😆)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-23 21:10</div>
             <div class="timeline-body"><blockquote>
-<p>I never heard the term solid base before and searching for it on google also doesn't give any good results. Is there another term we could use or can we explain the term or link to some reference documentation (or hint that it is explained in the rule's documentation)</p>
+<p>I never heard the term solid base before and searching for it on google also doesn&#x27;t give any good results. Is there another term we could use or can we explain the term or link to some reference documentation (or hint that it is explained in the rule&#x27;s documentation)</p>
 </blockquote>
-<p>Yeah, this stuff is really badly documented unfortunately. It's also an important part of Python's semantics (builtin types are common!), though, so I do think it's important that we emulate the semantics... I'll try to improve the docs along the lines of @carljm's suggestions.</p>
-<p>I think the best explanation I've found of the semantics might be this stack overflow answer: https://stackoverflow.com/a/48136198/13990016</p>
+<p>Yeah, this stuff is really badly documented unfortunately. It&#x27;s also an important part of Python&#x27;s semantics (builtin types are common!), though, so I do think it&#x27;s important that we emulate the semantics... I&#x27;ll try to improve the docs along the lines of @carljm&#x27;s suggestions.</p>
+<p>I think the best explanation I&#x27;ve found of the semantics might be this stack overflow answer: https://stackoverflow.com/a/48136198/13990016</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -633,15 +633,15 @@ stubs, but ty special-cases certain builtin classes:
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/diagnostic.rs</code>:368 on 2025-06-23 21:53</div>
             <div class="timeline-body"><blockquote>
-<p>The fundamental problem is that this is really a place where CPython leaks implementation details to end users and doesn't really document it properly anywhere.</p>
+<p>The fundamental problem is that this is really a place where CPython leaks implementation details to end users and doesn&#x27;t really document it properly anywhere.</p>
 </blockquote>
 <p>I agree with this.</p>
 <blockquote>
-<p>I'm not sure that talking about an &quot;extended memory layout&quot; is <em>significantly</em> more user-friendly than talking about a &quot;solid base&quot;, though.</p>
+<p>I&#x27;m not sure that talking about an &quot;extended memory layout&quot; is <em>significantly</em> more user-friendly than talking about a &quot;solid base&quot;, though.</p>
 </blockquote>
-<p>But I don't agree with this. I think talking about memory layouts <em>is</em> significantly better.</p>
-<p>For those users who don't understand or care to think about the underlying implementation details, I'll grant that both terms are equally gobbledygook that they'll just have to take our word for. I'm not sure we can do much better than that, for this category of user, given the &quot;fundamental problem&quot; you mentioned.</p>
-<p>But there are a significant number of Python users who <em>do</em> have systems programming experience (Micha, for example :) ), or are interested in learning about underlying Python implementation details, and making our diagnostics useful to those users matters as well. And for those users (assuming they haven't worked in the CPython codebase specifically), talking about &quot;solid bases&quot; will still be gobbledygook that doesn't even give useful Google search results, whereas talking about incompatible memory layouts will make sense and give them a good hook for googling and further exploration of the problem.</p>
+<p>But I don&#x27;t agree with this. I think talking about memory layouts <em>is</em> significantly better.</p>
+<p>For those users who don&#x27;t understand or care to think about the underlying implementation details, I&#x27;ll grant that both terms are equally gobbledygook that they&#x27;ll just have to take our word for. I&#x27;m not sure we can do much better than that, for this category of user, given the &quot;fundamental problem&quot; you mentioned.</p>
+<p>But there are a significant number of Python users who <em>do</em> have systems programming experience (Micha, for example :) ), or are interested in learning about underlying Python implementation details, and making our diagnostics useful to those users matters as well. And for those users (assuming they haven&#x27;t worked in the CPython codebase specifically), talking about &quot;solid bases&quot; will still be gobbledygook that doesn&#x27;t even give useful Google search results, whereas talking about incompatible memory layouts will make sense and give them a good hook for googling and further exploration of the problem.</p>
 <p>Also, the diagnostic itself is called <code>[instance-layout-conflict]</code>, so we may as well stick to a single way of describing it.</p>
 </div>
         </div>
@@ -651,28 +651,28 @@ stubs, but ty special-cases certain builtin classes:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/diagnostic.rs</code>:368 on 2025-06-23 22:09</div>
-            <div class="timeline-body"><p>Right, I agree that your wording is better here, for all the reasons you mentioned! I just wish we didn't have to talk about &quot;solid bases&quot; <em>or</em> &quot;extended memory layouts&quot; since, if this type checker is successful, my experience from triaging mypy issues suggests we'll have lots of users who are new to programming in general :-)</p>
+            <div class="timeline-body"><p>Right, I agree that your wording is better here, for all the reasons you mentioned! I just wish we didn&#x27;t have to talk about &quot;solid bases&quot; <em>or</em> &quot;extended memory layouts&quot; since, if this type checker is successful, my experience from triaging mypy issues suggests we&#x27;ll have lots of users who are new to programming in general :-)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-06-24 11:43</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-24 11:43</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-06-24 11:49</div>
-            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+            <div class="timeline-body">
 
-<!-- __CODSPEED_WALLTIME_PERFORMANCE_REPORT_COMMENT__ -->
 
-<h2><a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Fdisjointness?runnerMode=WallTime">CodSpeed WallTime Performance Report</a></h2>
-<h3>Merging #18864 will <strong>degrade performances by 4.79%</strong></h3>
-<p><sub>Comparing <code>alex/disjointness</code> (6aad76f) with <code>main</code> (e44c489)</sub></p>
-<h3>Summary</h3>
-<p><code>❌ 1</code> regressions<br />
+
+<a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Fdisjointness?runnerMode=WallTime">CodSpeed WallTime Performance Report</a>
+Merging #18864 will <strong>degrade performances by 4.79%</strong>
+<p>Comparing <code>alex/disjointness</code> (6aad76f) with <code>main</code> (e44c489)</p>
+Summary
+<p><code>❌ 1</code> regressions<br>
 <code>✅ 7</code> untouched benchmarks</p>
 <blockquote>
 <p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Fdisjointness?runnerMode=WallTime">acknowledge them on CodSpeed</a>.</em></p>
 </blockquote>
-<h3>Benchmarks breakdown</h3>
+Benchmarks breakdown
 <p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
 | --- | --------- | ----------------------- | ------------------- | ------ |
 | ❌ | <code>medium[pandas]</code> | 32.3 s | 33.9 s | -4.79% |</p>
@@ -684,7 +684,7 @@ stubs, but ty special-cases certain builtin classes:
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @sharkdp removed by @sharkdp on 2025-06-24 14:55</div>
+            <div class="event">Review request for <a href="https://github.com/sharkdp">@sharkdp</a> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-24 14:55</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-24 15:41</div>
@@ -693,18 +693,18 @@ stubs, but ty special-cases certain builtin classes:
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:472 on 2025-06-24 15:41</div>
             <div class="timeline-body"><p>We actually already had a test like that. The reason why it passed even with your edit is that there was an (unnecessary) check immediately above this that returned <code>true</code> if <code>self.is_subclass_of(other)</code> or <code>other.is_subclass_of(self)</code> returned <code>true</code>.</p>
-<p>I added your test anyway in https://github.com/astral-sh/ruff/pull/18864/commits/2a8e9854c6749547bed7d4e6b7d4162a7b3e3010 (as it's more complex than mine, and more test coverage is good!) and removed the unnecessary check immediately above this. That also seems to have had the happy side effect of producing a decent speedup when typechecking pydantic...!</p>
+<p>I added your test anyway in <a href="https://github.com/astral-sh/ruff/pull/18864">astral-sh/ruff#18864</a>/commits/2a8e9854c6749547bed7d4e6b7d4162a7b3e3010 (as it&#x27;s more complex than mine, and more test coverage is good!) and removed the unnecessary check immediately above this. That also seems to have had the happy side effect of producing a decent speedup when typechecking pydantic...!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/instance_layout_conf…_-_Tests_for_ty's_`inst…_-_Built-ins_with_impli…_(f5857d64ce69ca1d).snap</code>:59 on 2025-06-24 19:56</div>
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/instance_layout_conf…_-_Tests_for_ty&#x27;s_`inst…_-_Built-ins_with_impli…_(f5857d64ce69ca1d).snap</code>:59 on 2025-06-24 19:56</div>
             <div class="timeline-body"><p>is this better than the shorter &quot;... if their instances have incompatible memory layouts&quot;?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-06-24 20:00</div>
             <div class="timeline-body"><p>Nice!</p>
-<p>There's still an open comment about a rephrasing away from &quot;solid base&quot; in a code comment, but I don't think this is necessary, it's OK if we refer to solid bases in code.</p>
+<p>There&#x27;s still an open comment about a rephrasing away from &quot;solid base&quot; in a code comment, but I don&#x27;t think this is necessary, it&#x27;s OK if we refer to solid bases in code.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -712,8 +712,8 @@ stubs, but ty special-cases certain builtin classes:
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/instance_layout_conf…_-_Tests_for_ty's_`inst…_-_Built-ins_with_impli…_(f5857d64ce69ca1d).snap</code>:59 on 2025-06-24 20:05</div>
-            <div class="timeline-body"><p>that's better, thanks!</p>
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/instance_layout_conf…_-_Tests_for_ty&#x27;s_`inst…_-_Built-ins_with_impli…_(f5857d64ce69ca1d).snap</code>:59 on 2025-06-24 20:05</div>
+            <div class="timeline-body"><p>that&#x27;s better, thanks!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -732,14 +732,14 @@ stubs, but ty special-cases certain builtin classes:
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-24 20:25</div>
             <div class="timeline-body"><p>For posterity, this is what the final version of these diagnostics looks like:</p>
-<p><img src="https://github.com/user-attachments/assets/8db65252-6e1d-4727-b500-2824d58c6da4" alt="image" /></p>
+<p><img src="https://github.com/user-attachments/assets/8db65252-6e1d-4727-b500-2824d58c6da4" alt="image"></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @AlexWaygood on 2025-06-24 20:27</div>
+            <div class="event">Merged by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-24 20:27</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-06-24 20:27</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-24 20:27</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-06-24 20:27</div>
@@ -747,7 +747,7 @@ stubs, but ty special-cases certain builtin classes:
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:13:36 UTC
+        Synced at 2026-01-20 19:15:47 UTC
     </footer>
 </body>
 </html>

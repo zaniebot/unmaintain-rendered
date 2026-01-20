@@ -23,25 +23,25 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/cwiede">@cwiede</a></div>
-            <div class="timeline-body"><h3>Question</h3>
+            <div class="timeline-body">Question
 <p>Hi,</p>
 <p>I have a project which (transitively) depends on PySide6. Since the aarch64 build of PySide6 depends on manylinux_2_39 which is not satisfied for our use case, we decided to build our own wheels for the use case. I want to use <code>uv lock</code> to generate a lock file suitable for all the platforms (i.e. windows/amd64, linux/x86_64, linux/aarch64). Therefore I use</p>
 <pre><code>environments = [
-    &quot;sys_platform == 'win32' and implementation_name == 'cpython' and platform_machine == 'AMD64'&quot;,
-    &quot;sys_platform == 'linux' and implementation_name == 'cpython' and (platform_machine == 'x86_64' or platform_machine == 'aarch64')&quot;
+    &quot;sys_platform == &#x27;win32&#x27; and implementation_name == &#x27;cpython&#x27; and platform_machine == &#x27;AMD64&#x27;&quot;,
+    &quot;sys_platform == &#x27;linux&#x27; and implementation_name == &#x27;cpython&#x27; and (platform_machine == &#x27;x86_64&#x27; or platform_machine == &#x27;aarch64&#x27;)&quot;
 ]
 </code></pre>
-<p>and I also played around with required-environments instead. Unfortunately, there seems to be no way to specify the python-platform (e.g. <code>aarch64-manylinux_2_35</code>) in these definitions, or at least I didn't find one.</p>
-<p>The problem I'm facing is that I can't convince uv to use our self-build wheel for the linux aarch64 platform and the pypi wheels for all other platforms. I have tried to play around with</p>
+<p>and I also played around with required-environments instead. Unfortunately, there seems to be no way to specify the python-platform (e.g. <code>aarch64-manylinux_2_35</code>) in these definitions, or at least I didn&#x27;t find one.</p>
+<p>The problem I&#x27;m facing is that I can&#x27;t convince uv to use our self-build wheel for the linux aarch64 platform and the pypi wheels for all other platforms. I have tried to play around with</p>
 <ul>
 <li>index-strategy = &quot;unsafe-best-match&quot; (but it seems to either use pypi or the local wheel)</li>
 <li>required-environments</li>
-<li>platform-specific indices with marker = &quot;platform_machine == 'aarch64'&quot;:</li>
+<li>platform-specific indices with marker = &quot;platform_machine == &#x27;aarch64&#x27;&quot;:</li>
 </ul>
 <pre><code>[tool.uv.sources]
 pyside6 = [
-    {index = &quot;nexus&quot;, marker = &quot;platform_machine == 'AMD64'&quot;},
-    {index = &quot;flat-pyside6&quot;, marker = &quot;platform_machine == 'aarch64'&quot;},
+    {index = &quot;nexus&quot;, marker = &quot;platform_machine == &#x27;AMD64&#x27;&quot;},
+    {index = &quot;flat-pyside6&quot;, marker = &quot;platform_machine == &#x27;aarch64&#x27;&quot;},
 ]
 
 [[tool.uv.index]]
@@ -50,20 +50,20 @@ url=&quot;./path/to/pyside6-aarch64&quot;
 </code></pre>
 <p>Are there any workarounds or suggestions for this use case?</p>
 <p>Thanks!</p>
-<h3>Platform</h3>
+Platform
 <p>windows/amd64, linux/x86_64, linux/aarch64</p>
-<h3>Version</h3>
+Version
 <p>uv 0.8.4</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @cwiede on 2025-08-04 11:11</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/cwiede">@cwiede</a> on 2025-08-04 11:11</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-08-04 11:38</div>
             <div class="timeline-body"><p>Does adding <code>format = &quot;flat&quot;</code> help? The following works for me if I place <code>numpy-2.3.2-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl</code> in the current directory.</p>
 <p>Another option to consider is to vendor all wheels for the version you need and only use the flat index for PySide6 (or publishing your custom built wheel to nexus), this avoids having the divergent index declaration.</p>
-<pre><code class="language-toml">[project]
+<pre><code>[project]
 name = &quot;debug&quot;
 version = &quot;0.0.1&quot;
 requires-python = &quot;==3.13.*&quot;
@@ -71,8 +71,8 @@ dependencies = [&quot;numpy&quot;]
 
 [tool.uv.sources]
 numpy = [
-  { index = &quot;flat&quot;, marker = &quot;platform_machine == 'x86_64'&quot; },
-  { index = &quot;pypi&quot;, marker = &quot;platform_machine != 'x86_64'&quot; },
+  { index = &quot;flat&quot;, marker = &quot;platform_machine == &#x27;x86_64&#x27;&quot; },
+  { index = &quot;pypi&quot;, marker = &quot;platform_machine != &#x27;x86_64&#x27;&quot; },
 ]
 
 [[tool.uv.index]]
@@ -85,12 +85,12 @@ name = &quot;pypi&quot;
 url = &quot;https://pypi.org/simple&quot;
 publish-url = &quot;https://upload.pypi.org/legacy/&quot;
 </code></pre>
-<pre><code class="language-toml">version = 1
+<pre><code>version = 1
 revision = 3
 requires-python = &quot;==3.13.*&quot;
 resolution-markers = [
-    &quot;platform_machine == 'x86_64'&quot;,
-    &quot;platform_machine != 'x86_64'&quot;,
+    &quot;platform_machine == &#x27;x86_64&#x27;&quot;,
+    &quot;platform_machine != &#x27;x86_64&#x27;&quot;,
 ]
 
 [[package]]
@@ -98,14 +98,14 @@ name = &quot;debug&quot;
 version = &quot;0.0.1&quot;
 source = { virtual = &quot;.&quot; }
 dependencies = [
-    { name = &quot;numpy&quot;, version = &quot;2.3.2&quot;, source = { registry = &quot;https://pypi.org/simple&quot; }, marker = &quot;platform_machine != 'x86_64'&quot; },
-    { name = &quot;numpy&quot;, version = &quot;2.3.2&quot;, source = { registry = &quot;.&quot; }, marker = &quot;platform_machine == 'x86_64'&quot; },
+    { name = &quot;numpy&quot;, version = &quot;2.3.2&quot;, source = { registry = &quot;https://pypi.org/simple&quot; }, marker = &quot;platform_machine != &#x27;x86_64&#x27;&quot; },
+    { name = &quot;numpy&quot;, version = &quot;2.3.2&quot;, source = { registry = &quot;.&quot; }, marker = &quot;platform_machine == &#x27;x86_64&#x27;&quot; },
 ]
 
 [package.metadata]
 requires-dist = [
-    { name = &quot;numpy&quot;, marker = &quot;platform_machine != 'x86_64'&quot;, index = &quot;https://pypi.org/simple&quot; },
-    { name = &quot;numpy&quot;, marker = &quot;platform_machine == 'x86_64'&quot;, index = &quot;file:///home/konsti/projects/uv/debug&quot; },
+    { name = &quot;numpy&quot;, marker = &quot;platform_machine != &#x27;x86_64&#x27;&quot;, index = &quot;https://pypi.org/simple&quot; },
+    { name = &quot;numpy&quot;, marker = &quot;platform_machine == &#x27;x86_64&#x27;&quot;, index = &quot;file:///home/konsti/projects/uv/debug&quot; },
 ]
 
 [[package]]
@@ -113,7 +113,7 @@ name = &quot;numpy&quot;
 version = &quot;2.3.2&quot;
 source = { registry = &quot;https://pypi.org/simple&quot; }
 resolution-markers = [
-    &quot;platform_machine != 'x86_64'&quot;,
+    &quot;platform_machine != &#x27;x86_64&#x27;&quot;,
 ]
 sdist = { url = &quot;https://files.pythonhosted.org/packages/37/7d/3fec4199c5ffb892bed55cff901e4f39a58c81df9c44c280499e92cad264/numpy-2.3.2.tar.gz&quot;, hash = &quot;sha256:e0486a11ec30cdecb53f184d496d1c6a20786c81e55e41640270130056f8ee48&quot;, size = 20489306, upload-time = &quot;2025-07-24T21:32:07.553Z&quot; }
 wheels = [
@@ -146,7 +146,7 @@ name = &quot;numpy&quot;
 version = &quot;2.3.2&quot;
 source = { registry = &quot;.&quot; }
 resolution-markers = [
-    &quot;platform_machine == 'x86_64'&quot;,
+    &quot;platform_machine == &#x27;x86_64&#x27;&quot;,
 ]
 wheels = [
     { path = &quot;numpy-2.3.2-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl&quot; },
@@ -161,23 +161,23 @@ wheels = [
 <p>I also played around to select a wheel explicitely with the <code>path</code> setting in [tool.uv.sources] instead of a flat index, and this seems to be the way to go at the moment (even though a flat relative index would be less redundant). I.e.:</p>
 <pre><code>[tool.uv.sources]
 pyside6 = [
-    {path = &quot;./PySide6-6.8.3-cp39-abi3-manylinux_2_31_aarch64.whl&quot;, marker = &quot;platform_machine == 'aarch64'&quot;},
-    {index = &quot;nexus&quot;, marker = &quot;platform_machine != 'aarch64'&quot;},
+    {path = &quot;./PySide6-6.8.3-cp39-abi3-manylinux_2_31_aarch64.whl&quot;, marker = &quot;platform_machine == &#x27;aarch64&#x27;&quot;},
+    {index = &quot;nexus&quot;, marker = &quot;platform_machine != &#x27;aarch64&#x27;&quot;},
 ]
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Wheel for one platform from a local dir, other platforms from index" to "Relative indexes are stored as absolute in the lockfile" by @konstin on 2025-08-04 13:08</div>
+            <div class="event">Renamed from &quot;Wheel for one platform from a local dir, other platforms from index&quot; to &quot;Relative indexes are stored as absolute in the lockfile&quot; by <a href="https://github.com/konstin">@konstin</a> on 2025-08-04 13:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> removed by @konstin on 2025-08-04 13:09</div>
+            <div class="event">Label <span class="label">question</span> removed by <a href="https://github.com/konstin">@konstin</a> on 2025-08-04 13:09</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-08-04 13:09</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/konstin">@konstin</a> on 2025-08-04 13:09</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">good first issue</span> added by @konstin on 2025-08-04 18:03</div>
+            <div class="event">Label <span class="label">good first issue</span> added by <a href="https://github.com/konstin">@konstin</a> on 2025-08-04 18:03</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-08-04 18:05</div>
@@ -185,17 +185,17 @@ pyside6 = [
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @jtfmumm by @jtfmumm on 2025-08-08 12:28</div>
+            <div class="event">Assigned to <a href="https://github.com/jtfmumm">@jtfmumm</a> by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-08-08 12:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Unassigned @jtfmumm by @konstin on 2025-09-12 13:38</div>
+            <div class="event">Unassigned <a href="https://github.com/jtfmumm">@jtfmumm</a> by <a href="https://github.com/konstin">@konstin</a> on 2025-09-12 13:38</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @konstin by @konstin on 2025-09-25 13:40</div>
+            <div class="event">Assigned to <a href="https://github.com/konstin">@konstin</a> by <a href="https://github.com/konstin">@konstin</a> on 2025-09-25 13:40</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/peterchristofferholm">@peterchristofferholm</a> on 2026-01-06 15:16</div>
-            <div class="timeline-body"><p>Ran into this as well. I'm using a relative path to a local wheelhouse in my pyproject.toml, but the lockfile still ends up with the absolute path resolved at generation time. When running <code>uv sync --locked</code> in Docker (where the wheelhouse is mounted at a different absolute path), it fails with &quot;mismatched requirements&quot; even though the packages and versions are identical. I can see that there is a practically complete PR waiting to get merged, any progress on getting that in?</p>
+            <div class="timeline-body"><p>Ran into this as well. I&#x27;m using a relative path to a local wheelhouse in my pyproject.toml, but the lockfile still ends up with the absolute path resolved at generation time. When running <code>uv sync --locked</code> in Docker (where the wheelhouse is mounted at a different absolute path), it fails with &quot;mismatched requirements&quot; even though the packages and versions are identical. I can see that there is a practically complete PR waiting to get merged, any progress on getting that in?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -204,30 +204,30 @@ pyside6 = [
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Unassigned @konstin by @konstin on 2026-01-07 08:39</div>
+            <div class="event">Unassigned <a href="https://github.com/konstin">@konstin</a> by <a href="https://github.com/konstin">@konstin</a> on 2026-01-07 08:39</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2026-01-07 08:39</div>
-            <div class="timeline-body"><p>I'm not currently working on this.</p>
+            <div class="timeline-body"><p>I&#x27;m not currently working on this.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/nooscraft">@nooscraft</a> on 2026-01-07 10:21</div>
             <div class="timeline-body"><blockquote>
-<p>I'm not currently working on this.</p>
+<p>I&#x27;m not currently working on this.</p>
 </blockquote>
 <p>What about the PR?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2026-01-07 10:40</div>
-            <div class="timeline-body"><p>That's stuck on https://github.com/astral-sh/uv/pull/15870/changes#r2514491656, the logic seems to be having some issues. It's not something where we can use an approximate logic, we need to make sure all cases across operating systems.</p>
+            <div class="timeline-body"><p>That&#x27;s stuck on <a href="https://github.com/astral-sh/uv/pull/15870">astral-sh/uv#15870</a>/changes#r2514491656, the logic seems to be having some issues. It&#x27;s not something where we can use an approximate logic, we need to make sure all cases across operating systems.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:32:28 UTC
+        Synced at 2026-01-20 19:39:49 UTC
     </footer>
 </body>
 </html>

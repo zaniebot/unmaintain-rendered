@@ -23,65 +23,65 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sinon">@sinon</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>Resolves: https://github.com/astral-sh/ty/issues/860</p>
+            <div class="timeline-body">Summary
+<p>Resolves: <a href="https://github.com/astral-sh/ty/issues/860">astral-sh/ty#860</a></p>
 <p>Typeshed defines <code>__file__</code> as <code>str | None</code> but when <code>ty</code> has successfully imported a module we can assumed the modules <code>__file__</code> is str.</p>
-<p>This is already the case for the <code>__file__</code> of the local/current file: https://github.com/astral-sh/ruff/pull/18071</p>
+<p>This is already the case for the <code>__file__</code> of the local/current file: <a href="https://github.com/astral-sh/ruff/pull/18071">astral-sh/ruff#18071</a></p>
 <p>This expands to handle cases like <code>from mod.a import __file__ as path_of_a</code></p>
 <p>Notes:
 This feels like this logic should ideally be centralized and have the current file and imported files operate in the same way (i.e they all pre-populate a set of known symbol overrides) as currently there is overrides for current file and imported files spread across a few parts of <code>place.rs</code> but felt like that refactoring is beyond my current experience with the codebase so simple fix only 😆</p>
-<h2>Test Plan</h2>
-<!-- How was it tested? -->
+Test Plan
+
 
 <p>Added new mdtest, not sure if there is an existing test file which this can be merged into instead</p>
-<h3>Tasks</h3>
+Tasks
 <ul>
 <li>~Failing mdtest which indicates the <code>__file__</code> == <code>str</code> might not hold up on stubs, need to look into this further and see if this needs to expand the handling.~</li>
 <li>~Another failing test for the case where a module overrides <code>__file__</code> (setting to <code>None</code> in the tests case) which the current is ignoring~</li>
-<li>Should we care about <code>sys</code> and other similar statically linked std library modules that won't have <code>__file__</code>? pyrefly and pyright both reveal <code>str</code> in this case even though it will be an error at runtime, so probably fine</li>
+<li>Should we care about <code>sys</code> and other similar statically linked std library modules that won&#x27;t have <code>__file__</code>? pyrefly and pyright both reveal <code>str</code> in this case even though it will be an error at runtime, so probably fine</li>
 </ul>
-<h2>Ecosystem review</h2>
+Ecosystem review
 <p>A bigger impact than I was expecting though most look good ~though <code>prefect</code> stands out as a bit different to the rest.~</p>
 <ul>
 <li><code>no-matching-overload</code> - look good these are cases like the original bug where a <code>__file__</code> was getting passed into <code>dirname</code> and other similar overloadded methods which did not expect to ever receive a <code>None</code>.</li>
-<li><code>invalid-argument-type</code> - similarly these look generally correct, mainly cases where a method was expecting something pathlike and didn't want the <code>| None</code></li>
+<li><code>invalid-argument-type</code> - similarly these look generally correct, mainly cases where a method was expecting something pathlike and didn&#x27;t want the <code>| None</code></li>
 <li><code>possibly-missing-attribute</code> on string method calls (<code>split</code>, <code>strip</code>, <code>rstrip</code>, etc.)  - generally looks good, these are cases where <code>string</code> methods were unhappy with being called with <code>str | None</code> but are now working.</li>
-<li><code>jax</code> has a few that don't appear to match the above cases but looks more like a non-determinism case</li>
+<li><code>jax</code> has a few that don&#x27;t appear to match the above cases but looks more like a non-determinism case</li>
 <li>~<code>prefect</code> the cases that stand out as potentially problematic are the new <code>invalid-await</code>~ <code>invalid-await</code> cases have went after now respecting the override definition</li>
-<li><a href="https://github.com/mesonbuild/meson/blob/4a9075b863c7a5002e51a129a4efa7281aafa0b2/mesonbuild/minstall.py#L25-L30"><code>mesonbuild</code></a> ~case is interesting as the <code>except ImportError</code> isn't experienced by <code>ty</code> but only when <code>mesonbuild</code> is run on windows. Not sure it's a case to handle in <code>ty</code> though 🤔 as the cases where libraries are writing code in expectation that the import succeeds is much more common.~ Resolved by respecting the explicit definition</li>
+<li><a href="https://github.com/mesonbuild/meson/blob/4a9075b863c7a5002e51a129a4efa7281aafa0b2/mesonbuild/minstall.py#L25-L30"><code>mesonbuild</code></a> ~case is interesting as the <code>except ImportError</code> isn&#x27;t experienced by <code>ty</code> but only when <code>mesonbuild</code> is run on windows. Not sure it&#x27;s a case to handle in <code>ty</code> though 🤔 as the cases where libraries are writing code in expectation that the import succeeds is much more common.~ Resolved by respecting the explicit definition</li>
 <li>New diagnostic on <a href="https://github.com/scikit-learn/scikit-learn/blob/fafe37e414cf22448e861371c537fa2c476639b7/sklearn/utils/_testing.py#L936">scikit-learn</a> but I am not seeing the connection in the code to <code>__file__</code> 🤔 Ah so I think this is because of a [no-matching-overload] going away at https://github.com/scikit-learn/scikit-learn/blob/fafe37e414cf22448e861371c537fa2c476639b7/sklearn/utils/_testing.py#L926 which means <code>kwargs</code> is getting a narrower type definition.</li>
 </ul>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @sinon on 2026-01-01 20:21</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/sinon">@sinon</a> on 2026-01-01 20:21</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @sinon on 2026-01-01 20:21</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/sinon">@sinon</a> on 2026-01-01 20:21</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @sinon on 2026-01-01 20:21</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/sinon">@sinon</a> on 2026-01-01 20:21</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @sinon on 2026-01-01 20:21</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/sinon">@sinon</a> on 2026-01-01 20:21</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-01 20:23</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2><a href="https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance/">Typing conformance results</a></h2>
+<a href="https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance/">Typing conformance results</a>
 <p>No changes detected ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-01 20:24</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">pip (https://github.com/pypa/pip)
+Changes were detected when running on open source projects
+
+<pre><code>pip (https://github.com/pypa/pip)
 - src/pip/_internal/build_env.py:70:27: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | PathLike[str]`, found `str | None`
 - src/pip/_internal/utils/virtualenv.py:87:36: error[no-matching-overload] No overload of function `abspath` matches arguments
 - Found 590 diagnostics
@@ -368,19 +368,19 @@ scipy (https://github.com/scipy/scipy)
 
 
 </code></pre>
-</details>
+
 
 <p>No memory usage changes detected ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Converted to draft by @sinon on 2026-01-01 20:25</div>
+            <div class="event">Converted to draft by <a href="https://github.com/sinon">@sinon</a> on 2026-01-01 20:25</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @ntBre on 2026-01-01 20:32</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2026-01-01 20:32</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @MichaReiser on 2026-01-05 09:59</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-05 09:59</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-05 10:03</div>
@@ -389,9 +389,9 @@ scipy (https://github.com/scipy/scipy)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-05 10:04</div>
-            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+            <div class="timeline-body">
 
-<h2><code>ecosystem-analyzer</code> results</h2>
+<code>ecosystem-analyzer</code> results
 <p>| Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
 | <code>no-matching-overload</code> | 0 | 56 | 0 |
@@ -409,7 +409,7 @@ scipy (https://github.com/scipy/scipy)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @sinon on 2026-01-05 20:47</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/sinon">@sinon</a> on 2026-01-05 20:47</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sinon">@sinon</a> on 2026-01-06 10:21</div>
@@ -417,13 +417,13 @@ scipy (https://github.com/scipy/scipy)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[ty] Override `__file__` to str on imported modules" to "[ty] Override `__file__` to str when applicable on imported modules" by @sinon on 2026-01-08 15:14</div>
+            <div class="event">Renamed from &quot;[ty] Override `__file__` to str on imported modules&quot; to &quot;[ty] Override `__file__` to str when applicable on imported modules&quot; by <a href="https://github.com/sinon">@sinon</a> on 2026-01-08 15:14</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/place.rs</code>:1087 on 2026-01-14 12:38</div>
             <div class="timeline-body"><p>This comment is <em>nearly</em> accurate!</p>
 <p>The way it works at runtime is that a pure-Python non-namespace-package module will always have <code>__file__</code> set to a string; a namespace-package module will always have <code>__file__</code> set to <code>None</code>, and a C extension might not have it set at all:</p>
-<pre><code class="language-pycon">% uv pip install google-cloud-ndb           
+<pre><code>% uv pip install google-cloud-ndb           
 Using Python 3.13.8 environment at: test-env
 Resolved 22 packages in 647ms
 Prepared 9 packages in 1.07s
@@ -461,10 +461,10 @@ True
 Traceback (most recent call last):
   File &quot;&lt;python-input-3&gt;&quot;, line 1, in &lt;module&gt;
     itertools.__file__
-AttributeError: module 'itertools' has no attribute '__file__'. Did you mean: '__name__'?
+AttributeError: module &#x27;itertools&#x27; has no attribute &#x27;__file__&#x27;. Did you mean: &#x27;__name__&#x27;?
 </code></pre>
-<p>It looks to me like your code is correct for the namespace package case, because you only apply the special case here if <code>module.file(db)</code> is <code>Some()</code>, and <code>module.file(db)</code> will only be <code>None</code> if it's a namespace package. But the comment here needs to be revised, and you could also consider adding an explicit test for the namespace-package case. (Namespace packages are pure-Python packages that have no <code>__init__.py(i)</code> file in them -- they are <em>just</em> directories that contain other Python modules/packages.)</p>
-<p>We could also possibly get rid of the exemption for stubs that you have here? The rationale for treating stubs separately is that they might represent C extensions, and C extensions won't necessarily set <code>__file__</code>. But that doesn't affect the <em>type</em> of the <code>__file__</code> member, it just affects whether the module <em>has</em> the <code>__file__</code> member to begin with. We could consider emitting a <code>possibly-unresolved-attribute</code> warning about that, but I think it would probably be too noisy: just because a module is represented by a stub file doesn't mean that it <em>definitely</em> is a C extension, it just <em>could</em> be a C extension.</p>
+<p>It looks to me like your code is correct for the namespace package case, because you only apply the special case here if <code>module.file(db)</code> is <code>Some()</code>, and <code>module.file(db)</code> will only be <code>None</code> if it&#x27;s a namespace package. But the comment here needs to be revised, and you could also consider adding an explicit test for the namespace-package case. (Namespace packages are pure-Python packages that have no <code>__init__.py(i)</code> file in them -- they are <em>just</em> directories that contain other Python modules/packages.)</p>
+<p>We could also possibly get rid of the exemption for stubs that you have here? The rationale for treating stubs separately is that they might represent C extensions, and C extensions won&#x27;t necessarily set <code>__file__</code>. But that doesn&#x27;t affect the <em>type</em> of the <code>__file__</code> member, it just affects whether the module <em>has</em> the <code>__file__</code> member to begin with. We could consider emitting a <code>possibly-unresolved-attribute</code> warning about that, but I think it would probably be too noisy: just because a module is represented by a stub file doesn&#x27;t mean that it <em>definitely</em> is a C extension, it just <em>could</em> be a C extension.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -479,7 +479,7 @@ AttributeError: module 'itertools' has no attribute '__file__'. Did you mean: '_
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2026-01-14 12:41</div>
+            <div class="event">Assigned to <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-14 12:41</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sinon">@sinon</a> reviewed on 2026-01-14 13:38</div>
@@ -508,7 +508,7 @@ AttributeError: module 'itertools' has no attribute '__file__'. Did you mean: '_
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sinon">@sinon</a> on <code>crates/ty_python_semantic/resources/mdtest/scopes/moduletype_attrs.md</code>:102 on 2026-01-14 20:13</div>
-            <div class="timeline-body"><p>@AlexWaygood I opted to remove this comment as I think it's wrong? This isn't importing a stub and checking it's <code>__file__</code> it's doing it on the stdlib <code>typing</code> module. Further down this file there is some stub files mocked.</p>
+            <div class="timeline-body"><p>@AlexWaygood I opted to remove this comment as I think it&#x27;s wrong? This isn&#x27;t importing a stub and checking it&#x27;s <code>__file__</code> it&#x27;s doing it on the stdlib <code>typing</code> module. Further down this file there is some stub files mocked.</p>
 <p>Hopefully the new md tests for <code>__file__</code> cover this, let me know if I should expand this test with some.</p>
 </div>
         </div>
@@ -528,7 +528,7 @@ AttributeError: module 'itertools' has no attribute '__file__'. Did you mean: '_
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/import/dunder_file_attribute.md</code>:63 on 2026-01-14 21:23</div>
-            <div class="timeline-body"><p>Ah -- no, <em>namespace</em> packages do have <code>__file__</code>, but <code>__file__</code> is set to <code>None</code> for namespace packages. So I guess your logic in <code>crates/ty_python_semantic/src/place.rs</code> isn't <em>quite</em> right. It's C extensions that don't necessarily have <code>__file__</code> set at all -- but we don't have a great way of knowing whether a module is a C extension or not right now.</p>
+            <div class="timeline-body"><p>Ah -- no, <em>namespace</em> packages do have <code>__file__</code>, but <code>__file__</code> is set to <code>None</code> for namespace packages. So I guess your logic in <code>crates/ty_python_semantic/src/place.rs</code> isn&#x27;t <em>quite</em> right. It&#x27;s C extensions that don&#x27;t necessarily have <code>__file__</code> set at all -- but we don&#x27;t have a great way of knowing whether a module is a C extension or not right now.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -537,11 +537,11 @@ AttributeError: module 'itertools' has no attribute '__file__'. Did you mean: '_
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/scopes/moduletype_attrs.md</code>:102 on 2026-01-14 21:24</div>
-            <div class="timeline-body"><p>I think we <em>could</em> keep <em>some</em> version of the comment that states that for a stub file, we don't know whether it's a C extension or pure-Python module, and if it's a C extension then <code>__file__</code> might be unset entirely? But yes, I agree that the current version of the comment is more confusing than helpful</p>
+            <div class="timeline-body"><p>I think we <em>could</em> keep <em>some</em> version of the comment that states that for a stub file, we don&#x27;t know whether it&#x27;s a C extension or pure-Python module, and if it&#x27;s a C extension then <code>__file__</code> might be unset entirely? But yes, I agree that the current version of the comment is more confusing than helpful</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @carljm removed by @carljm on 2026-01-15 00:23</div>
+            <div class="event">Review request for <a href="https://github.com/carljm">@carljm</a> removed by <a href="https://github.com/carljm">@carljm</a> on 2026-01-15 00:23</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-15 16:38</div>
@@ -549,7 +549,7 @@ AttributeError: module 'itertools' has no attribute '__file__'. Did you mean: '_
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/import/dunder_file_attribute.md</code>:63 on 2026-01-15 16:38</div>
-            <div class="timeline-body"><p>Looking at this more deeply, it seems we don't understand any <code>types.ModuleType</code> attributes as being available on namespace packages right now! Which is something we should fix, but not in this PR. So I'll adjust the comments in this PR and land it.</p>
+            <div class="timeline-body"><p>Looking at this more deeply, it seems we don&#x27;t understand any <code>types.ModuleType</code> attributes as being available on namespace packages right now! Which is something we should fix, but not in this PR. So I&#x27;ll adjust the comments in this PR and land it.</p>
 <p>Thank you!!</p>
 </div>
         </div>
@@ -558,10 +558,10 @@ AttributeError: module 'itertools' has no attribute '__file__'. Did you mean: '_
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @AlexWaygood on 2026-01-15 17:08</div>
+            <div class="event">Merged by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-15 17:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2026-01-15 17:08</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-15 17:08</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sinon">@sinon</a> reviewed on 2026-01-15 17:38</div>
@@ -586,7 +586,7 @@ AttributeError: module 'itertools' has no attribute '__file__'. Did you mean: '_
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/import/dunder_file_attribute.md</code>:63 on 2026-01-15 17:47</div>
-            <div class="timeline-body"><p>Oh, sorry, I'm about to make a PR to fix this up 😶 I should have said!!</p>
+            <div class="timeline-body"><p>Oh, sorry, I&#x27;m about to make a PR to fix this up 😶 I should have said!!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -595,7 +595,7 @@ AttributeError: module 'itertools' has no attribute '__file__'. Did you mean: '_
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/import/dunder_file_attribute.md</code>:63 on 2026-01-15 18:14</div>
-            <div class="timeline-body"><p>PR: https://github.com/astral-sh/ruff/pull/22606</p>
+            <div class="timeline-body"><p>PR: <a href="https://github.com/astral-sh/ruff/pull/22606">astral-sh/ruff#22606</a></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -610,7 +610,7 @@ AttributeError: module 'itertools' has no attribute '__file__'. Did you mean: '_
     </div>
 
     <footer>
-        Synced at 2026-01-15 18:52:21 UTC
+        Synced at 2026-01-20 19:22:32 UTC
     </footer>
 </body>
 </html>

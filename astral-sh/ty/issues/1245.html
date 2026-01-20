@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/kirigami-alex">@kirigami-alex</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>The documented example from Web3.py (<a href="https://web3py.readthedocs.io/en/stable/providers.html#web3.providers.rpc.AsyncHTTPProvider">link</a>) which looks like this:</p>
-<pre><code class="language-py">from aiohttp import ClientSession
+<pre><code>from aiohttp import ClientSession
 from web3 import AsyncWeb3, AsyncHTTPProvider
 
 async def bug():
@@ -42,23 +42,23 @@ async def bug():
  9 |     custom_session = ClientSession()
 10 |     await w3.provider.cache_async_session(custom_session) # This method is an async method so it needs to be handled accordingly
    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-11 |     # when you're finished, disconnect:
+11 |     # when you&#x27;re finished, disconnect:
 12 |     w3.provider.disconnect()
    |
 info: rule `unresolved-attribute` is enabled by default
 </code></pre>
-<h3>Version</h3>
+Version
 <p>ty 0.0.1-alpha.21</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "This Example from Web3.py Throws an Error with Ty" to "Inheritance Issue From Web3.py" by @kirigami-alex on 2025-09-24 13:18</div>
+            <div class="event">Renamed from &quot;This Example from Web3.py Throws an Error with Ty&quot; to &quot;Inheritance Issue From Web3.py&quot; by <a href="https://github.com/kirigami-alex">@kirigami-alex</a> on 2025-09-24 13:18</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-24 14:58</div>
             <div class="timeline-body"><p>Thanks for the report!</p>
-<p>I think this is an issue with web3's type annotations, that you'll need to report to the web3 library. Mypy and pyright both report the same issue (note that I had to add a <code>-&gt; None</code> annotation to your function to reproduce the issue with mypy, since mypy by default does not type-check the bodies of functions without type annotations):</p>
-<pre><code class="language-sh">~/dev % cat foo.py                          
+<p>I think this is an issue with web3&#x27;s type annotations, that you&#x27;ll need to report to the web3 library. Mypy and pyright both report the same issue (note that I had to add a <code>-&gt; None</code> annotation to your function to reproduce the issue with mypy, since mypy by default does not type-check the bodies of functions without type annotations):</p>
+<pre><code>~/dev % cat foo.py                          
 from aiohttp import ClientSession
 from web3 import AsyncWeb3, AsyncHTTPProvider
 
@@ -81,8 +81,8 @@ Found 3 errors in 1 file (checked 1 source file)
   /Users/alexw/dev/foo.py:8:5 - error: Result of async function call is not used; use &quot;await&quot; or assign result to variable (reportUnusedCoroutine)
 3 errors, 0 warnings, 0 informations
 </code></pre>
-<p>If we look at the web3 library, we can see that the <code>AsyncWeb3.provider</code> property is annotated as returning an instance of <a href="https://github.com/ethereum/web3.py/blob/a1c2e83a523c8da07939aeafffd12ba98531d3be/web3/main.py#L488-L490"><code>AsyncBaseProvider</code></a>, but <code>AsyncBaseProvider</code> doesn't have a <code>cache_async_session</code> attribute or method (<a href="https://github.com/ethereum/web3.py/blob/a1c2e83a523c8da07939aeafffd12ba98531d3be/web3/providers/async_base.py#L73-L182">source</a>). The <code>AsyncHTTPProvider</code> subclass of <code>AsyncBaseProvider</code> <em>does</em> have <a href="https://github.com/ethereum/web3.py/blob/a1c2e83a523c8da07939aeafffd12ba98531d3be/web3/providers/rpc/async_rpc.py#L84-L87">a <code>cache_async_session</code> method</a>, but ty hasn't been given enough information from web3's type annotations to know that <code>w3.provider</code> is an instance of <code>AsyncHTTPProvider</code> rather than an instance of <code>AsyncBaseProvider</code> here. To fix this, the web3 maintainers might consider making the <code>AsyncWeb3</code> class generic -- possibly something like this might fix things, but I haven't tested it:</p>
-<pre><code class="language-diff">diff --git a/web3/main.py b/web3/main.py
+<p>If we look at the web3 library, we can see that the <code>AsyncWeb3.provider</code> property is annotated as returning an instance of <a href="https://github.com/ethereum/web3.py/blob/a1c2e83a523c8da07939aeafffd12ba98531d3be/web3/main.py#L488-L490"><code>AsyncBaseProvider</code></a>, but <code>AsyncBaseProvider</code> doesn&#x27;t have a <code>cache_async_session</code> attribute or method (<a href="https://github.com/ethereum/web3.py/blob/a1c2e83a523c8da07939aeafffd12ba98531d3be/web3/providers/async_base.py#L73-L182">source</a>). The <code>AsyncHTTPProvider</code> subclass of <code>AsyncBaseProvider</code> <em>does</em> have <a href="https://github.com/ethereum/web3.py/blob/a1c2e83a523c8da07939aeafffd12ba98531d3be/web3/providers/rpc/async_rpc.py#L84-L87">a <code>cache_async_session</code> method</a>, but ty hasn&#x27;t been given enough information from web3&#x27;s type annotations to know that <code>w3.provider</code> is an instance of <code>AsyncHTTPProvider</code> rather than an instance of <code>AsyncBaseProvider</code> here. To fix this, the web3 maintainers might consider making the <code>AsyncWeb3</code> class generic -- possibly something like this might fix things, but I haven&#x27;t tested it:</p>
+<pre><code>diff --git a/web3/main.py b/web3/main.py
 index b388f95b..35286871 100644
 --- a/web3/main.py
 +++ b/web3/main.py
@@ -135,12 +135,12 @@ index b388f95b..35286871 100644
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-09-24 14:58</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-24 14:58</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:41 UTC
+        Synced at 2026-01-20 19:25:36 UTC
     </footer>
 </body>
 </html>

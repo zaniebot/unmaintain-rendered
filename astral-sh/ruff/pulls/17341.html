@@ -23,81 +23,81 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a></div>
-            <div class="timeline-body"><p>This PR is meant to address some of @MichaReiser's feedback in #17318.</p>
+            <div class="timeline-body"><p>This PR is meant to address some of @MichaReiser&#x27;s feedback in #17318.</p>
 <p>Micha and I spoke offline a bit about this, I ended up taking this approach:</p>
 <ul>
 <li>Rename <code>LintReporter</code> to <code>LintDiagnosticGuard</code>.</li>
 <li>Rename <code>LintReporterBuilder</code> to <code>LintDiagnosticGuardBuilder</code>.</li>
 <li>Make <code>LintDiagnosticGuard</code> impl <code>Deref</code> and <code>DerefMut</code> for <code>Diagnostic</code>. (This removes an <em>apparent</em> layer of indirection in caller code.)</li>
 <li>Require a <code>TextRange</code> to construct a <code>LintDiagnosticGuardBuilder</code>.</li>
-<li>Make suppression checks eager instead of lazy. Now they're done when <code>LintDiagnosticGuardBuilder</code> is constructed instead of when <code>LintDiagnosticGuard</code> is dropped.</li>
-<li>Making a <code>LintDiagnosticGuard</code> will build a <code>Diagnostic</code> <em>with</em> a primary annotation containing a <code>Span</code> derived from the aforementioned <code>TextRange</code>. But it <em>won't</em> have a message attached to it.</li>
+<li>Make suppression checks eager instead of lazy. Now they&#x27;re done when <code>LintDiagnosticGuardBuilder</code> is constructed instead of when <code>LintDiagnosticGuard</code> is dropped.</li>
+<li>Making a <code>LintDiagnosticGuard</code> will build a <code>Diagnostic</code> <em>with</em> a primary annotation containing a <code>Span</code> derived from the aforementioned <code>TextRange</code>. But it <em>won&#x27;t</em> have a message attached to it.</li>
 <li>Expose a <code>LintDiagnosticGuard::set_primary_message</code> routine for a special access way to set a message on the aforementioned primary annotation in-place.</li>
 </ul>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @BurntSushi on 2025-04-10 19:27</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-04-10 19:27</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-10 19:29</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
+<code>mypy_primer</code> results
 <p>No ecosystem changes detected ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-04-10 20:41</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-10 20:41</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">diagnostics</span> added by @AlexWaygood on 2025-04-10 20:41</div>
+            <div class="event">Label <span class="label">diagnostics</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-10 20:41</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-11 07:20</div>
             <div class="timeline-body"><p>Thanks for putting this PR up before my PTO and giving me a chance to provide feedback.</p>
-<p>Reading through your changes, I now share your concern that eagerly providing the message might result in unnecessary work that your previous API allowed to skip. You work around this by adding an <code>IntoDiagnosticMessage</code> trait (we may still want that to avoid allocations, but let's ignore this for now ;)).</p>
+<p>Reading through your changes, I now share your concern that eagerly providing the message might result in unnecessary work that your previous API allowed to skip. You work around this by adding an <code>IntoDiagnosticMessage</code> trait (we may still want that to avoid allocations, but let&#x27;s ignore this for now ;)).</p>
 <p>What do you think of the following which is something between the two solutions with slightly different naming:</p>
 <ul>
 <li><code>report_lint</code> only requires the lint metadata (or id?) and a text range (we take the file from <code>InferContext</code>). It returns an <code>Option&lt;Builder&gt;</code>.</li>
-<li>The <code>Builder</code> (we can also name it <code>Reporter</code>) has a <code>diagnostic</code> method (I don't like the name, maybe you have ideas for a better name) that takes a message and returns a <code>DiagnosticGuard</code> (or <code>DiagnosticFlushGuard</code>, <code>DiagnosticSubmitGuard</code>...)</li>
+<li>The <code>Builder</code> (we can also name it <code>Reporter</code>) has a <code>diagnostic</code> method (I don&#x27;t like the name, maybe you have ideas for a better name) that takes a message and returns a <code>DiagnosticGuard</code> (or <code>DiagnosticFlushGuard</code>, <code>DiagnosticSubmitGuard</code>...)</li>
 <li><code>DiagnosticGuard</code> implements <code>Deref</code>, <code>DerefMut</code> and has a <code>DiagnosticGuard::into_inner</code> method in case someone wants to get the diagnostic out (e.g. to make it a sub-diagnostic of another diagnostic).</li>
-<li><code>DiagnosticGuard</code> implements <code>Drop</code> to submit the <code>Diagnostic</code> once it's fully built.</li>
+<li><code>DiagnosticGuard</code> implements <code>Drop</code> to submit the <code>Diagnostic</code> once it&#x27;s fully built.</li>
 </ul>
 <p>The reasons I prefer this approach are:</p>
 <ul>
-<li>It's unclear to me if deciding what diagnostic message to use is something that's always known upfront or requires a fair bit of computation. For example, a rule might have a generic message but we may be able to use a more specific message if we can identify that X, Y, and Z are true (which are non trivial to compute)</li>
+<li>It&#x27;s unclear to me if deciding what diagnostic message to use is something that&#x27;s always known upfront or requires a fair bit of computation. For example, a rule might have a generic message but we may be able to use a more specific message if we can identify that X, Y, and Z are true (which are non trivial to compute)</li>
 <li>The <code>Guard</code> naming mitigates most of my concerns around the <code>Builder</code>/<code>Reporter</code> split. The name makes it clear that its only responsibility is to flush the diagnostic once it goes out of scope.</li>
 </ul>
-<p>Wdyt? We can also do another quick VC if you'd find that helpful.</p>
+<p>Wdyt? We can also do another quick VC if you&#x27;d find that helpful.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @BurntSushi on 2025-04-11 15:18</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-04-11 15:18</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @BurntSushi on 2025-04-11 15:18</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-04-11 15:18</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @BurntSushi on 2025-04-11 15:18</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-04-11 15:18</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @BurntSushi on 2025-04-11 15:18</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-04-11 15:18</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @BurntSushi on 2025-04-11 15:18</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-04-11 15:18</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @dcreager removed by @BurntSushi on 2025-04-11 15:19</div>
+            <div class="event">Review request for <a href="https://github.com/dcreager">@dcreager</a> removed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-04-11 15:19</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @carljm removed by @BurntSushi on 2025-04-11 15:19</div>
+            <div class="event">Review request for <a href="https://github.com/carljm">@carljm</a> removed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-04-11 15:19</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @sharkdp removed by @BurntSushi on 2025-04-11 15:19</div>
+            <div class="event">Review request for <a href="https://github.com/sharkdp">@sharkdp</a> removed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-04-11 15:19</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @AlexWaygood removed by @BurntSushi on 2025-04-11 15:19</div>
+            <div class="event">Review request for <a href="https://github.com/AlexWaygood">@AlexWaygood</a> removed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-04-11 15:19</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-04-11 15:27</div>
@@ -107,8 +107,8 @@
 <li>~~Rename <code>LintReporterBuilder</code> to <code>LintDiagnosticGuardBuilder</code>.~~</li>
 <li>~~Make <code>LintDiagnosticGuard</code> impl <code>Deref</code> and <code>DerefMut</code> for <code>Diagnostic</code>. (This removes an <em>apparent</em> layer of indirection in caller code.)~~</li>
 <li>~~Require a <code>TextRange</code> to construct a <code>LintDiagnosticGuardBuilder</code>.~~</li>
-<li>~~Make suppression checks eager instead of lazy. Now they're done when <code>LintDiagnosticGuardBuilder</code> is constructed instead of when <code>LintDiagnosticGuard</code> is dropped.~~</li>
-<li>~~Making a <code>LintDiagnosticGuard</code> will build a <code>Diagnostic</code> <em>with</em> a primary annotation containing a <code>Span</code> derived from the aforementioned <code>TextRange</code>. But it <em>won't</em> have a message attached to it.~~</li>
+<li>~~Make suppression checks eager instead of lazy. Now they&#x27;re done when <code>LintDiagnosticGuardBuilder</code> is constructed instead of when <code>LintDiagnosticGuard</code> is dropped.~~</li>
+<li>~~Making a <code>LintDiagnosticGuard</code> will build a <code>Diagnostic</code> <em>with</em> a primary annotation containing a <code>Span</code> derived from the aforementioned <code>TextRange</code>. But it <em>won&#x27;t</em> have a message attached to it.~~</li>
 <li>~~Expose a <code>LintDiagnosticGuard::set_primary_message</code> routine for a special access way to set a message on the aforementioned primary annotation in-place.~~</li>
 </ul>
 <p>(I copied this to my initial PR message above instead.)</p>
@@ -116,7 +116,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:1259 on 2025-04-11 15:44</div>
-            <div class="timeline-body"><p>Nit: I don't think this is a huge concern but it's not very clear to readers to what the string passed to <code>build</code> corresponds to. What would you think of <code>with_message</code>. I dislike that doesn't fit well into the builder pattern and I might also be overindexing here. Definetely not important and something that we can change very easily later.</p>
+            <div class="timeline-body"><p>Nit: I don&#x27;t think this is a huge concern but it&#x27;s not very clear to readers to what the string passed to <code>build</code> corresponds to. What would you think of <code>with_message</code>. I dislike that doesn&#x27;t fit well into the builder pattern and I might also be overindexing here. Definetely not important and something that we can change very easily later.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -126,7 +126,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/context.rs</code>:223 on 2025-04-11 15:47</div>
-            <div class="timeline-body"><p>Can you give an example of one such condition? I'm not aware of a requirement that requires omitting diagnostics in drop.  I'm leaning towards removing that part of the comment for now because it was more confusing than enlightening to me.</p>
+            <div class="timeline-body"><p>Can you give an example of one such condition? I&#x27;m not aware of a requirement that requires omitting diagnostics in drop.  I&#x27;m leaning towards removing that part of the comment for now because it was more confusing than enlightening to me.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -136,7 +136,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/mod.rs</code>:817 on 2025-04-11 15:54</div>
-            <div class="timeline-body"><p>I don't know the answer to this. You probalby know better. Should this be a generic implementation over <code>ToString</code> or does it not matter because the two are roughly equivalent anyway?</p>
+            <div class="timeline-body"><p>I don&#x27;t know the answer to this. You probalby know better. Should this be a generic implementation over <code>ToString</code> or does it not matter because the two are roughly equivalent anyway?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -150,13 +150,13 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:1259 on 2025-04-11 16:13</div>
-            <div class="timeline-body"><p>Hmmm. I'm not a huge fan of <code>with_message</code> either.</p>
+            <div class="timeline-body"><p>Hmmm. I&#x27;m not a huge fan of <code>with_message</code> either.</p>
 <p>What about <code>to_diagnostic</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_python_semantic/src/types/context.rs</code>:102 on 2025-04-11 16:15</div>
-            <div class="timeline-body"><p>Yeah I flubbed this. Thanks. Fixed. It's referring to the message passed to <code>build()</code>.</p>
+            <div class="timeline-body"><p>Yeah I flubbed this. Thanks. Fixed. It&#x27;s referring to the message passed to <code>build()</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -166,7 +166,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:1259 on 2025-04-11 16:16</div>
             <div class="timeline-body"><p>I went with <code>to_diagnostic</code>.</p>
-<p>Still not a huge fan of that either, but I think it's better than <code>build()</code>.</p>
+<p>Still not a huge fan of that either, but I think it&#x27;s better than <code>build()</code>.</p>
 <p>Happy to change this to something else later.</p>
 </div>
         </div>
@@ -176,9 +176,9 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_python_semantic/src/types/context.rs</code>:223 on 2025-04-11 16:17</div>
-            <div class="timeline-body"><p>Oh I'm not aware of any either. This is just my semver API brain writing down possible eventualities. But like hypothetically, maybe we want suppressions to work on non-primary spans for example. IDK.</p>
-<p>I tried to head off the confusion here by saying that there aren't any such cases happening now.</p>
-<p>But maybe this is just overwrought... Fair enough. I'll remove it.</p>
+            <div class="timeline-body"><p>Oh I&#x27;m not aware of any either. This is just my semver API brain writing down possible eventualities. But like hypothetically, maybe we want suppressions to work on non-primary spans for example. IDK.</p>
+<p>I tried to head off the confusion here by saying that there aren&#x27;t any such cases happening now.</p>
+<p>But maybe this is just overwrought... Fair enough. I&#x27;ll remove it.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -191,15 +191,15 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_db/src/diagnostic/mod.rs</code>:817 on 2025-04-11 16:24</div>
-            <div class="timeline-body"><p>This is a good question. <code>ToString</code> does indeed work here. And you're right, they are effectively equivalent because of the blanket impl for <code>ToString</code>. For our specific circumstance, I cannot think of a benefit or a cost to use one over the other. So I'd just assume stick to <code>std::fmt::Display</code>. It's technically a little more flexible, but I don't think it really matters.</p>
-<p>For a library crate, you'd definitely want to use <code>std::fmt::Display</code> here though. Because that will work in even core-only environments that don't have <code>ToString</code> or a <code>String</code> or even a concept of a heap. But we don't care about that here.</p>
+            <div class="timeline-body"><p>This is a good question. <code>ToString</code> does indeed work here. And you&#x27;re right, they are effectively equivalent because of the blanket impl for <code>ToString</code>. For our specific circumstance, I cannot think of a benefit or a cost to use one over the other. So I&#x27;d just assume stick to <code>std::fmt::Display</code>. It&#x27;s technically a little more flexible, but I don&#x27;t think it really matters.</p>
+<p>For a library crate, you&#x27;d definitely want to use <code>std::fmt::Display</code> here though. Because that will work in even core-only environments that don&#x27;t have <code>ToString</code> or a <code>String</code> or even a concept of a heap. But we don&#x27;t care about that here.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @BurntSushi on 2025-04-11 16:36</div>
+            <div class="event">Merged by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-04-11 16:36</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2025-04-11 16:36</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-04-11 16:36</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-04-11 16:36</div>
@@ -207,7 +207,7 @@
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:11:29 UTC
+        Synced at 2026-01-20 19:13:13 UTC
     </footer>
 </body>
 </html>

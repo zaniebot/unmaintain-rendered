@@ -23,29 +23,29 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/kreathon">@kreathon</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>Due to the interest in https://github.com/astral-sh/ruff/issues/16864 in the rules I proposed in https://github.com/miketheman/flake8-sqlalchemy/issues/54 (but were never implemented), I created this draft to add the first <code>SQLAlchemy</code> rule.</p>
+            <div class="timeline-body">Summary
+<p>Due to the interest in <a href="https://github.com/astral-sh/ruff/issues/16864">astral-sh/ruff#16864</a> in the rules I proposed in <a href="https://github.com/miketheman/flake8-sqlalchemy/issues/54">miketheman/flake8-sqlalchemy#54</a> (but were never implemented), I created this draft to add the first <code>SQLAlchemy</code> rule.</p>
 <p>See changes in <code>crates/ruff_linter/src/rules/sqlalchemy/rules/missing_mapped_type_annotation.rs</code> for the motivation of this rule.</p>
-<h2>Implementation and Limitations</h2>
+Implementation and Limitations
 <p>Currently, it supports most commonly used column mappings (<code>mapped_column</code>, <code>relationship</code>, ...), but still lacking support for e.g. <a href="https://github.com/miketheman/flake8-sqlalchemy/issues/54"><code>composite</code></a>.</p>
 <p>Auto fixes might be possible in some cases, but can be tricky because it would require an understanding of  <a href="https://docs.sqlalchemy.org/en/20/orm/declarative_tables.html#customizing-the-type-map"><code>type_annotation_map</code></a>.</p>
-<h2>Test Plan</h2>
+Test Plan
 <p><code>SA001.py</code> snapshot test was added.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> added by @MichaReiser on 2025-05-13 09:16</div>
+            <div class="event">Label <span class="label">needs-decision</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-13 09:16</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-05-13 09:16</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-13 09:16</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kreathon">@kreathon</a> on 2025-05-13 10:00</div>
             <div class="timeline-body"><p>Here is a little bit more background:</p>
-<h3>Docs</h3>
+Docs
 <blockquote>
 <p>The <a href="https://docs.sqlalchemy.org/en/20/orm/mapping_api.html#sqlalchemy.orm.mapped_column">mapped_column()</a> construct in modern Python is normally augmented by the use of <a href="https://peps.python.org/pep-0484/">PEP 484</a> Python type annotations, where it is capable of deriving its column-configuration information from type annotations associated with the attribute as declared in the Declarative mapped class. These type annotations, if used, must be present within a special SQLAlchemy type called <a href="https://docs.sqlalchemy.org/en/20/orm/internals.html#sqlalchemy.orm.Mapped">Mapped</a>, which is a generic type that indicates a specific Python type within it.</p>
-<p>-- <cite>https://docs.sqlalchemy.org/en/20/orm/declarative_tables.html#orm-annotated-declarative-automated-mapping-with-type-annotations</cite></p>
+<p>-- https://docs.sqlalchemy.org/en/20/orm/declarative_tables.html#orm-annotated-declarative-automated-mapping-with-type-annotations</p>
 </blockquote>
 <p>Both forms are used in the examples ( tagged as <code>Annotated Example</code> and <code>Non-Annotated Example</code>).</p>
 <p>The <code>Non-Annotated</code> form is also a natural migration step to SQLAlchemy 2.0:</p>
@@ -53,24 +53,24 @@
 <p>Users of 1.x SQLAlchemy will note the use of the <a href="https://docs.sqlalchemy.org/en/20/orm/mapping_api.html#sqlalchemy.orm.mapped_column">mapped_column()</a> construct, which is new as of the SQLAlchemy 2.0 series. This ORM-specific construct is intended first and foremost to be a drop-in replacement for the use of <a href="https://docs.sqlalchemy.org/en/20/core/metadata.html#sqlalchemy.schema.Column">Column</a> within Declarative mappings only, adding new ORM-specific convenience features such as the ability to establish <a href="https://docs.sqlalchemy.org/en/20/orm/mapping_api.html#sqlalchemy.orm.mapped_column.params.deferred">mapped_column.deferred</a> within the construct, and most importantly to indicate to typing tools such as <a href="https://mypy.readthedocs.io/en/stable/">Mypy</a> and <a href="https://github.com/microsoft/pylance-release">Pylance</a> an accurate representation of how the attribute will behave at runtime at both the class level as well as the instance level. As will be seen in the following sections, it’s also at the forefront of a new annotation-driven configuration style introduced in SQLAlchemy 2.0.</p>
 </blockquote>
 <blockquote>
-<p>-- <cite>https://docs.sqlalchemy.org/en/20/orm/declarative_tables.html#orm-annotated-declarative-automated-mapping-with-type-annotations</cite></p>
+<p>-- https://docs.sqlalchemy.org/en/20/orm/declarative_tables.html#orm-annotated-declarative-automated-mapping-with-type-annotations</p>
 </blockquote>
-<h3>Personal Background</h3>
+Personal Background
 <p>In a codebase I am working with, in some places the annotations were missing (for whatever reason). We were not aware that these columns were treated as <code>Any</code> causing some bugs in the past.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-05-14 06:07</div>
-            <div class="timeline-body"><p>I'd suggest collecting all the SQAlchemy 2.0 specific rules into the <code>SA2</code> prefix, so making this <code>SA201</code> rather than <code>SA001</code>. That way we leave the door open to put generally useful rules into <code>SA0</code> and legacy rules into <code>SA1</code>, making it easier to read through the rules once there are more of them.</p>
+            <div class="timeline-body"><p>I&#x27;d suggest collecting all the SQAlchemy 2.0 specific rules into the <code>SA2</code> prefix, so making this <code>SA201</code> rather than <code>SA001</code>. That way we leave the door open to put generally useful rules into <code>SA0</code> and legacy rules into <code>SA1</code>, making it easier to read through the rules once there are more of them.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[`sqlalchemy`] Implement first SQLAlchemy rule (`SA001`)" to "[`sqlalchemy`] Implement first SQLAlchemy rule (`SA201`)" by @kreathon on 2025-05-15 16:34</div>
+            <div class="event">Renamed from &quot;[`sqlalchemy`] Implement first SQLAlchemy rule (`SA001`)&quot; to &quot;[`sqlalchemy`] Implement first SQLAlchemy rule (`SA201`)&quot; by <a href="https://github.com/kreathon">@kreathon</a> on 2025-05-15 16:34</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:12:31 UTC
+        Synced at 2026-01-20 19:14:27 UTC
     </footer>
 </body>
 </html>

@@ -23,39 +23,39 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/erikvanoosten">@erikvanoosten</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>The Docker integration documentation suggests to use a multi stage docker process, where we copy the python installation from the first image into the final image. See https://docs.astral.sh/uv/guides/integration/docker/#non-editable-installs</p>
-<p>However, this process does not work when there is a dependency on a binary library. In my tests with <code>bookworm-slim</code>, these <code>so</code> files land in <code>/usr/lib/aarch64-linux-gnu</code> (which also contains a ton of other files). Since they don't land in the directory given by <code>UV_PYTHON_INSTALL_DIR</code>, they won't be copied into the final image.</p>
+<p>However, this process does not work when there is a dependency on a binary library. In my tests with <code>bookworm-slim</code>, these <code>so</code> files land in <code>/usr/lib/aarch64-linux-gnu</code> (which also contains a ton of other files). Since they don&#x27;t land in the directory given by <code>UV_PYTHON_INSTALL_DIR</code>, they won&#x27;t be copied into the final image.</p>
 <p>For example, the python <code>shapely</code> package depends on the <code>geos</code> library. Even though <code>UV_PYTHON_INSTALL_DIR</code> is set to <code>/python</code>, that library is downloaded/created in the first stage as file <code>/usr/lib/aarch64-linux-gnu/libgeos_c.so</code>.</p>
-<h3>Minimized example application</h3>
+Minimized example application
 <p>The following ZIP file contains a minimal project that demonstrates the issue.</p>
 <p><a href="https://github.com/user-attachments/files/23230070/example-app.zip">example-app.zip</a></p>
 <p>After unzipping: build and run the multi-stage project:</p>
-<pre><code class="language-shell">uv lock
+<pre><code>uv lock
 docker build --tag example-app:multi .
 docker run --rm -ti example-app:multi
 </code></pre>
 <p>Results in:</p>
-<pre><code>OSError: Could not find lib geos_c or load any of its variants ['libgeos_c.so.1', 'libgeos_c.so'].
+<pre><code>OSError: Could not find lib geos_c or load any of its variants [&#x27;libgeos_c.so.1&#x27;, &#x27;libgeos_c.so&#x27;].
 </code></pre>
 <p>Build and run the single-stage project:</p>
-<pre><code class="language-shell">uv lock
+<pre><code>uv lock
 docker build -f Dockerfile-single-stage --tag example-app:single .
 docker run --rm -ti example-app:single
 </code></pre>
 <p>Results in:</p>
 <pre><code>PI is roughly 3.1365484905459398 
 </code></pre>
-<h3>Platform</h3>
+Platform
 <p>macOS 15 host, colima, debian (bookworm-slim) docker images</p>
-<h3>Version</h3>
+Version
 <p>uv 0.8.17</p>
-<h3>Python version</h3>
+Python version
 <p>Python 3.11.13</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @erikvanoosten on 2025-10-30 09:28</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/erikvanoosten">@erikvanoosten</a> on 2025-10-30 09:28</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/erikvanoosten">@erikvanoosten</a> on 2025-10-30 13:17</div>
@@ -77,16 +77,16 @@ RUN cp /usr/lib/*/libgeos* /python/*/lib/
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-11-01 03:41</div>
-            <div class="timeline-body"><p>Are these system libraries installed via <code>apt</code>, or some other mechanism? In case its a system library I'd typically suggest reinstall your system libraries (usually without dev headers) on your final stage rather than copying so files as links could easily get broken and cause unintended side-effects.</p>
+            <div class="timeline-body"><p>Are these system libraries installed via <code>apt</code>, or some other mechanism? In case its a system library I&#x27;d typically suggest reinstall your system libraries (usually without dev headers) on your final stage rather than copying so files as links could easily get broken and cause unintended side-effects.</p>
 <p>To expand, if these .so files are not packaged by a python wheel (e.g. shapely), you would still need to install them yourself. Wheels can decide to package these for you using tools like <a href="https://github.com/pypa/auditwheel">auditwheel</a>, but may not do so possibly due to license restrictions or other limitations.</p>
-<p><code>UV_PYTHON_INSTALL_DIR</code> does not dictate where system libraries are installed, but if a wheel does package so files, they'll be in the expected site-packages location in most cases.</p>
+<p><code>UV_PYTHON_INSTALL_DIR</code> does not dictate where system libraries are installed, but if a wheel does package so files, they&#x27;ll be in the expected site-packages location in most cases.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> removed by @samypr100 on 2025-11-01 03:41</div>
+            <div class="event">Label <span class="label">bug</span> removed by <a href="https://github.com/samypr100">@samypr100</a> on 2025-11-01 03:41</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">external</span> added by @samypr100 on 2025-11-01 03:41</div>
+            <div class="event">Label <span class="label">external</span> added by <a href="https://github.com/samypr100">@samypr100</a> on 2025-11-01 03:41</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/erikvanoosten">@erikvanoosten</a> on 2025-11-01 09:17</div>
@@ -101,9 +101,9 @@ RUN cp /usr/lib/*/libgeos* /python/*/lib/
 </blockquote>
 <p>I understand. But they <em>could</em> be installed in UV_PYTHON_INSTALL_DIR/*/lib (where * is the name of the specific python version), at least this is true for cpython.</p>
 <blockquote>
-<p>I'd typically suggest reinstall your system libraries... on your final stage</p>
+<p>I&#x27;d typically suggest reinstall your system libraries... on your final stage</p>
 </blockquote>
-<p>I was hoping we'd not have to pollute the final stage with transient apt files. But I guess this is the best solution.</p>
+<p>I was hoping we&#x27;d not have to pollute the final stage with transient apt files. But I guess this is the best solution.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -112,8 +112,8 @@ RUN cp /usr/lib/*/libgeos* /python/*/lib/
 <p>As far as I can tell the lib_geos library somehow comes with the shapely package.</p>
 </blockquote>
 <p>I see, in that case it would be great if you could share more about your build process instead to understand why its failing and how we can help more efficiently. A minimal reproducible example would be great.</p>
-<p>I tried a quick check and I see no problems with installing shapely and it does seem to package it's own .so files and runs correctly.</p>
-<pre><code class="language-console">$ docker run -it --rm --name build-test ghcr.io/astral-sh/uv:python3.14-trixie bash -c 'cd /root &amp;&amp; uv init &amp;&amp; uv add shapely &amp;&amp; find .venv -iname libgeos* &amp;&amp; uv run python -c &quot;import shapely; print(shapely.__version__)&quot;'
+<p>I tried a quick check and I see no problems with installing shapely and it does seem to package it&#x27;s own .so files and runs correctly.</p>
+<pre><code>$ docker run -it --rm --name build-test ghcr.io/astral-sh/uv:python3.14-trixie bash -c &#x27;cd /root &amp;&amp; uv init &amp;&amp; uv add shapely &amp;&amp; find .venv -iname libgeos* &amp;&amp; uv run python -c &quot;import shapely; print(shapely.__version__)&quot;&#x27;
 Initialized project `root`
 Using CPython 3.14.0 interpreter at: /usr/local/bin/python3.14
 Creating virtual environment at: .venv
@@ -129,10 +129,10 @@ Installed 2 packages in 45ms
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">external</span> removed by @samypr100 on 2025-11-01 18:37</div>
+            <div class="event">Label <span class="label">external</span> removed by <a href="https://github.com/samypr100">@samypr100</a> on 2025-11-01 18:37</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-mre</span> added by @samypr100 on 2025-11-01 18:37</div>
+            <div class="event">Label <span class="label">needs-mre</span> added by <a href="https://github.com/samypr100">@samypr100</a> on 2025-11-01 18:37</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/erikvanoosten">@erikvanoosten</a> on 2025-11-01 18:40</div>
@@ -150,7 +150,7 @@ Installed 2 packages in 45ms
 </blockquote>
 <p>I added one to the description of this issue.</p>
 </blockquote>
-<p>Thanks, I can't reproduce <code>OSError: Could not find lib geos_c or load any of its variants ['libgeos_c.so.1', 'libgeos_c.so'].</code> from the attached example either.</p>
+<p>Thanks, I can&#x27;t reproduce <code>OSError: Could not find lib geos_c or load any of its variants [&#x27;libgeos_c.so.1&#x27;, &#x27;libgeos_c.so&#x27;].</code> from the attached example either.</p>
 <p>I see libgeos is correctly added.</p>
 <pre><code>$ ls -la /app/.venv/lib/python3.11/site-packages/shapely.libs/*
 -rwxr-xr-x 1 root root 5315353 Nov  1 19:10 /app/.venv/lib/python3.11/site-packages/shapely.libs/libgeos-3ef06f11.so.3.13.1
@@ -175,12 +175,12 @@ drwxr-xr-x  2 root root 4096 Nov  1 19:10 shapely.libs
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-11-01 19:30</div>
-            <div class="timeline-body"><p>I also removed <code>RUN apt update &amp;&amp; apt install -y libgeos-dev build-essential</code> as it shouldn't be needed, and the application still ran sucessfully.</p>
+            <div class="timeline-body"><p>I also removed <code>RUN apt update &amp;&amp; apt install -y libgeos-dev build-essential</code> as it shouldn&#x27;t be needed, and the application still ran sucessfully.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/erikvanoosten">@erikvanoosten</a> on 2025-11-03 08:11</div>
-            <div class="timeline-body"><p>With shapely 2.1.2 everything is okay indeed! My apologies, I didn't test the minimizer properly.</p>
+            <div class="timeline-body"><p>With shapely 2.1.2 everything is okay indeed! My apologies, I didn&#x27;t test the minimizer properly.</p>
 <p>The application that the example-app minimizer is based on, uses shapely 1.8.5. Changing <code>pyproject.toml</code> as follows:</p>
 <pre><code>dependencies = [
     &quot;shapely==1.8.5&quot;, # &lt;-- add version
@@ -197,12 +197,12 @@ drwxr-xr-x  2 root root 4096 Nov  1 19:10 shapely.libs
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @erikvanoosten on 2025-11-03 12:18</div>
+            <div class="event">Closed by <a href="https://github.com/erikvanoosten">@erikvanoosten</a> on 2025-11-03 12:18</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:33:19 UTC
+        Synced at 2026-01-20 19:40:51 UTC
     </footer>
 </body>
 </html>

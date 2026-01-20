@@ -23,13 +23,13 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/loribonna">@loribonna</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<h1>Summary</h1>
+            <div class="timeline-body">Summary
+Summary
 <p>Add a lint rule that flags variables bound via <code>with … as var</code> (or <code>async with … as var</code>) when they are used <em>after</em> the context manager has exited.</p>
-<h1>Motivation</h1>
+Motivation
 <p>Context-manager variables (e.g., DB sessions, file handles) are only valid inside the <code>with</code> block. Using them afterward is a common source of subtle bugs (for example, SQLAlchemy async sessions silently closing and leaking connections).</p>
 <p>Example:</p>
-<pre><code class="language-python">async with get_session() as session:
+<pre><code>async with get_session() as session:
     await session.execute(...)
 
 await session.execute(...)  # ❌ should be flagged — session is closed here
@@ -39,10 +39,10 @@ await session.execute(...)  # ❌ should be flagged — session is closed here
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-10-30 13:35</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-30 13:35</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> added by @ntBre on 2025-10-30 13:35</div>
+            <div class="event">Label <span class="label">needs-decision</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-30 13:35</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-10 17:54</div>
@@ -69,33 +69,33 @@ await session.execute(...)  # ❌ should be flagged — session is closed here
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/loribonna">@loribonna</a> on 2025-11-11 09:14</div>
-            <div class="timeline-body"><p>Thanks @AlexWaygood I was not aware of this use. However, wouldn't it make more sense to put the assert inside the context?</p>
-<p>I still think it's weird to create and initialize a variable with the <code>with</code> clause and use it outside, it makes code error prone with very hard to debug errors.</p>
+            <div class="timeline-body"><p>Thanks @AlexWaygood I was not aware of this use. However, wouldn&#x27;t it make more sense to put the assert inside the context?</p>
+<p>I still think it&#x27;s weird to create and initialize a variable with the <code>with</code> clause and use it outside, it makes code error prone with very hard to debug errors.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-11 09:24</div>
             <div class="timeline-body"><blockquote>
-<p>However, wouldn't it make more sense to put the assert inside the context?</p>
+<p>However, wouldn&#x27;t it make more sense to put the assert inside the context?</p>
 </blockquote>
-<p>No — you generally want to make a <code>self.assertRaises</code> or <code>pytest.raises</code> block as small as possible, ideally holding only a single statement. Otherwise, you can't be sure that the asserted exception is being raised in the place you expected and for the reason you expected. Ruff already has other lints to stop you from doing this, such as https://docs.astral.sh/ruff/rules/pytest-raises-with-multiple-statements/.</p>
+<p>No — you generally want to make a <code>self.assertRaises</code> or <code>pytest.raises</code> block as small as possible, ideally holding only a single statement. Otherwise, you can&#x27;t be sure that the asserted exception is being raised in the place you expected and for the reason you expected. Ruff already has other lints to stop you from doing this, such as https://docs.astral.sh/ruff/rules/pytest-raises-with-multiple-statements/.</p>
 <blockquote>
-<p>I still think it's weird to create and initialize a variable with the with clause and use it outside, it makes code error prone with very hard to debug errors.</p>
+<p>I still think it&#x27;s weird to create and initialize a variable with the with clause and use it outside, it makes code error prone with very hard to debug errors.</p>
 </blockquote>
-<p>I agree that you should be careful and deliberate about doing this, but I'm not sure I see a way to establish a general rule here, since there are certainly cases where this pattern is essential. Possibly we could create a rule that special-cases certain specific, known context managers where we know this pattern will lead to bugs?</p>
+<p>I agree that you should be careful and deliberate about doing this, but I&#x27;m not sure I see a way to establish a general rule here, since there are certainly cases where this pattern is essential. Possibly we could create a rule that special-cases certain specific, known context managers where we know this pattern will lead to bugs?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/loribonna">@loribonna</a> on 2025-11-11 10:00</div>
             <div class="timeline-body"><blockquote>
-<p>No — you generally want to make a <code>self.assertRaises</code> or <code>pytest.raises</code> block as small as possible, ideally holding only a single statement. Otherwise, you can't be sure that the asserted exception is being raised in the place you expected and for the reason you expected. Ruff already has other lints to stop you from doing this, such as https://docs.astral.sh/ruff/rules/pytest-raises-with-multiple-statements/.</p>
+<p>No — you generally want to make a <code>self.assertRaises</code> or <code>pytest.raises</code> block as small as possible, ideally holding only a single statement. Otherwise, you can&#x27;t be sure that the asserted exception is being raised in the place you expected and for the reason you expected. Ruff already has other lints to stop you from doing this, such as https://docs.astral.sh/ruff/rules/pytest-raises-with-multiple-statements/.</p>
 </blockquote>
 <p>I see, yeah it makes sense.</p>
 <blockquote>
 <p>Possibly we could create a rule that special-cases certain specific, known context managers where we know this pattern will lead to bugs?</p>
 </blockquote>
 <p>That would be great but I think most times you are dealing with custom context managers, like for my example of getting a session from the DB.</p>
-<p>I'd really like if python allowed me declare or mark a variable as &quot;scoped&quot; to enforce this kind of rules!</p>
+<p>I&#x27;d really like if python allowed me declare or mark a variable as &quot;scoped&quot; to enforce this kind of rules!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -105,14 +105,14 @@ await session.execute(...)  # ❌ should be flagged — session is closed here
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/amyreese">@amyreese</a> on 2025-11-11 16:33</div>
-            <div class="timeline-body"><p>I'm kind of -0 on this being a useful rule. Whether or not the variable declared in the context manager is &quot;valid&quot; outside the context manager is entirely dependent on what you're doing and what you're using as a context manager. I've seen/written multiple systems where it's extremely handy to capture a &quot;result&quot; value for use outside of the with context. Eg, things like success/failure indicators, or timing instrumentation, as well as the aforementioned testing harnesses. Anything where you want implicit actions to happen at both enter/exit of the context, and to capture some state for use afterwards, without needing to intentionally declare a variable before the context.</p>
+            <div class="timeline-body"><p>I&#x27;m kind of -0 on this being a useful rule. Whether or not the variable declared in the context manager is &quot;valid&quot; outside the context manager is entirely dependent on what you&#x27;re doing and what you&#x27;re using as a context manager. I&#x27;ve seen/written multiple systems where it&#x27;s extremely handy to capture a &quot;result&quot; value for use outside of the with context. Eg, things like success/failure indicators, or timing instrumentation, as well as the aforementioned testing harnesses. Anything where you want implicit actions to happen at both enter/exit of the context, and to capture some state for use afterwards, without needing to intentionally declare a variable before the context.</p>
 <p>If we could tag rules as &quot;pedantic&quot;, I would absolutely put this in that category, and I would probably have it disabled on my own projects.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/loribonna">@loribonna</a> on 2025-11-12 09:58</div>
             <div class="timeline-body"><p>I think the fact that context managers give this much flexibility is not inherently a good thing and should be used with consideration, similarly to type hints for variables.</p>
-<p>Even from the python's docs the <code>with</code> statement is usually described as something to contain the execution of some code without affecting the code outside, so in my mind it makes more sense to consider:</p>
+<p>Even from the python&#x27;s docs the <code>with</code> statement is usually described as something to contain the execution of some code without affecting the code outside, so in my mind it makes more sense to consider:</p>
 <ul>
 <li><code>__enter__</code>: initialize stuff that you need inside the body</li>
 <li>`<strong>exit</strong>: restore the execution as it was before the context and perform cleanups</li>
@@ -124,7 +124,7 @@ await session.execute(...)  # ❌ should be flagged — session is closed here
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:53:31 UTC
+        Synced at 2026-01-20 18:50:35 UTC
     </footer>
 </body>
 </html>

@@ -31,8 +31,8 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/matthewlloyd">@matthewlloyd</a> on 2023-02-22 19:05</div>
-            <div class="timeline-body"><p>Is this code Unicode-safe? Rust strings behave in unexpected ways when there are Unicode characters, and there are in fact a few whitespace characters that are non-ASCII (e.g. '\u{A0}').</p>
-<p>For example, if Unicode characters are present, the byte count does not equal the character count, so <code>line.chars().count() != line.len()</code> and <code>if whitespace_count == line.len()</code> will break. I'm not sure whether <code>Location.column</code> is a byte or character offset, but that could potentially be an issue also.</p>
+            <div class="timeline-body"><p>Is this code Unicode-safe? Rust strings behave in unexpected ways when there are Unicode characters, and there are in fact a few whitespace characters that are non-ASCII (e.g. &#x27;\u{A0}&#x27;).</p>
+<p>For example, if Unicode characters are present, the byte count does not equal the character count, so <code>line.chars().count() != line.len()</code> and <code>if whitespace_count == line.len()</code> will break. I&#x27;m not sure whether <code>Location.column</code> is a byte or character offset, but that could potentially be an issue also.</p>
 <pre><code>    let whitespace_count = line.chars().rev().take_while(|c| c.is_whitespace()).count();
     if whitespace_count &gt; 0 {
         let start = Location::new(lineno + 1, line.len() - whitespace_count);
@@ -40,7 +40,7 @@
 
         if whitespace_count == line.len() {
 </code></pre>
-<p>May be worth adding some tests with UTF-8 encoded (as that's Python's default encoding) lines with some whitespace and non-whitespace Unicode characters to do some TDD and make sure everything works as expected.</p>
+<p>May be worth adding some tests with UTF-8 encoded (as that&#x27;s Python&#x27;s default encoding) lines with some whitespace and non-whitespace Unicode characters to do some TDD and make sure everything works as expected.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -68,7 +68,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/checkers/physical_lines.rs</code>:158 on 2023-02-22 19:48</div>
-            <div class="timeline-body"><p>For consistency, let's define these up by <code>fix_shebang_whitespace</code> using the same pattern.</p>
+            <div class="timeline-body"><p>For consistency, let&#x27;s define these up by <code>fix_shebang_whitespace</code> using the same pattern.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -85,28 +85,28 @@
             <div class="timeline-body"><blockquote>
 <p>Is this code Unicode-safe?</p>
 </blockquote>
-<p>It appears that characters such as <code>\uA0</code> are not <a href="https://docs.python.org/3/reference/lexical_analysis.html#whitespace-between-tokens">valid whitespace</a>. So, although they can be used in literals, a line such as <code>print('foo')\uA0</code> isn't valid python syntax in the first place.</p>
+<p>It appears that characters such as <code>\uA0</code> are not <a href="https://docs.python.org/3/reference/lexical_analysis.html#whitespace-between-tokens">valid whitespace</a>. So, although they can be used in literals, a line such as <code>print(&#x27;foo&#x27;)\uA0</code> isn&#x27;t valid python syntax in the first place.</p>
 <p>This does however raise an interesting point; it appears that <code>pycodestyle</code> also checks this lint based on &quot;physical lines,&quot; so perhaps questionably will flag whitespace at the end of a given line in a multiline literal. Worse still, as written, this PR will flag a line of a multline literal ending with an <code>\uA0</code> whereas pycodestyle will not. Perhaps for feature parity I should restrict the check to just those characters from <code>pycodestyle</code> rather than the more extensive <code>is_whitespace</code> list?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-23 01:55</div>
-            <div class="timeline-body"><p>Yeah I did read that source and asked myself the same question. I was originally going to comment that this shouldn't be done on physical lines for that very reason RE multiline strings, but then saw that pycodestyle was using physical lines so I just ignored it. (FWIW we <em>could</em> omit lines that are included in multiline strings -- we'd probably want to track those lines on <code>Indexer</code>, similar to how we track commented-out lines, then omit lines here that are &quot;string lines&quot;. But I don't think it's a blocker to merging this.) I do think it makes sense to mimic their exact logic for trailing spaces though, if you're up for it. I doubt it matters much in practice, but it's good to be consistent where we can.</p>
+            <div class="timeline-body"><p>Yeah I did read that source and asked myself the same question. I was originally going to comment that this shouldn&#x27;t be done on physical lines for that very reason RE multiline strings, but then saw that pycodestyle was using physical lines so I just ignored it. (FWIW we <em>could</em> omit lines that are included in multiline strings -- we&#x27;d probably want to track those lines on <code>Indexer</code>, similar to how we track commented-out lines, then omit lines here that are &quot;string lines&quot;. But I don&#x27;t think it&#x27;s a blocker to merging this.) I do think it makes sense to mimic their exact logic for trailing spaces though, if you&#x27;re up for it. I doubt it matters much in practice, but it&#x27;s good to be consistent where we can.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/matthewlloyd">@matthewlloyd</a> on 2023-02-23 02:08</div>
             <div class="timeline-body"><blockquote>
-<p>It appears that characters such as <code>\uA0</code> are not <a href="https://docs.python.org/3/reference/lexical_analysis.html#whitespace-between-tokens">valid whitespace</a>. So, although they can be used in literals, a line such as <code>print('foo')\uA0</code> isn't valid python syntax in the first place.</p>
+<p>It appears that characters such as <code>\uA0</code> are not <a href="https://docs.python.org/3/reference/lexical_analysis.html#whitespace-between-tokens">valid whitespace</a>. So, although they can be used in literals, a line such as <code>print(&#x27;foo&#x27;)\uA0</code> isn&#x27;t valid python syntax in the first place.</p>
 </blockquote>
-<p>Aha, good to know! For what it's worth, <code>crates/ruff/src/ast/whitespace.rs</code> also uses Rust's broader notion of whitespace i.e. <code>char::is_whitespace</code>, so consistency within Ruff would argue in favor of continuing to use <code>is_whitespace</code> here. (Perhaps we should fix that and use Python's notion of whitespace e.g. by checking the CPython source since docs are sometimes incorrect?)</p>
+<p>Aha, good to know! For what it&#x27;s worth, <code>crates/ruff/src/ast/whitespace.rs</code> also uses Rust&#x27;s broader notion of whitespace i.e. <code>char::is_whitespace</code>, so consistency within Ruff would argue in favor of continuing to use <code>is_whitespace</code> here. (Perhaps we should fix that and use Python&#x27;s notion of whitespace e.g. by checking the CPython source since docs are sometimes incorrect?)</p>
 <p>Another consideration in favor of continuing to use <code>is_whitespace</code> in this specific check is that while Python may treat <code>\uA0</code> as non-whitespace therefore making it a syntax error at the end of a line, in practice, we would probably still want to autofix and trim it away if a user accidentally inserts it (or some other invisible whitespace non-space char!).</p>
-<p>I can't imagine <code>\uA0</code> needing to appear at the ends of lines particularly often, and while there are perhaps specific circumstances where that might be useful, e.g. in i18n multiline strings, I would guess that's a rare case compared to accidentally pressing some combination of keys that inserts &quot;&lt;whitespace block&gt;&quot;...</p>
+<p>I can&#x27;t imagine <code>\uA0</code> needing to appear at the ends of lines particularly often, and while there are perhaps specific circumstances where that might be useful, e.g. in i18n multiline strings, I would guess that&#x27;s a rare case compared to accidentally pressing some combination of keys that inserts &quot;&lt;whitespace block&gt;&quot;...</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-23 02:10</div>
-            <div class="timeline-body"><p>Yeah that's a good argument in favor of keeping it as-is. Honestly I could go either way -- I'll defer to the author in this case @mknaw, totally up to you.</p>
+            <div class="timeline-body"><p>Yeah that&#x27;s a good argument in favor of keeping it as-is. Honestly I could go either way -- I&#x27;ll defer to the author in this case @mknaw, totally up to you.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -115,10 +115,10 @@
 <p>CPython source</p>
 </blockquote>
 <p>https://github.com/python/cpython/blob/main/Parser/tokenizer.c#L1597</p>
-<pre><code class="language-python">    /* Skip spaces */
+<pre><code>    /* Skip spaces */
     do {
         c = tok_nextc(tok);
-    } while (c == ' ' || c == '\t' || c == '\014');
+    } while (c == &#x27; &#x27; || c == &#x27;\t&#x27; || c == &#x27;\014&#x27;);
 </code></pre>
 <p>\014 is Control-L (formfeed).</p>
 </div>
@@ -134,15 +134,15 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2023-02-24 00:04</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-24 00:04</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-02-24 00:04</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-24 00:04</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:56:21 UTC
+        Synced at 2026-01-20 18:52:27 UTC
     </footer>
 </body>
 </html>

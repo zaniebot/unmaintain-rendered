@@ -24,7 +24,7 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/oconnor663">@oconnor663</a></div>
             <div class="timeline-body"><p>https://play.ty.dev/9040c09e-01bb-4866-b4b5-9f5d49ea31d2</p>
-<pre><code class="language-py">def f():
+<pre><code>def f():
     x = 1
     def g():
         x: int
@@ -48,18 +48,18 @@ Traceback (most recent call last):
   File &quot;/tmp/test.py&quot;, line 7, in h
     y = x
         ^
-NameError: cannot access free variable 'x' where it is not associated with a value in enclosing scope
+NameError: cannot access free variable &#x27;x&#x27; where it is not associated with a value in enclosing scope
 </code></pre>
 <pre><code>$ uvx ty check test.py
 All checks passed!
 </code></pre>
-<p><code>ty</code> currently skips over <code>x: int</code> in <code>g</code> and decides to load <code>x = 1</code> from <code>f</code>. My theory is that the comment here is correct, but the treatment of <code>.is_bound()</code> here isn't doing what the comment says it's doing: https://github.com/astral-sh/ruff/blob/1eff0300d3784d116a19909bf0c1a493de2aea61/crates/ty_python_semantic/src/types/infer.rs#L5935-L5950</p>
+<p><code>ty</code> currently skips over <code>x: int</code> in <code>g</code> and decides to load <code>x = 1</code> from <code>f</code>. My theory is that the comment here is correct, but the treatment of <code>.is_bound()</code> here isn&#x27;t doing what the comment says it&#x27;s doing: https://github.com/astral-sh/ruff/blob/1eff0300d3784d116a19909bf0c1a493de2aea61/crates/ty_python_semantic/src/types/infer.rs#L5935-L5950</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-07-09 17:47</div>
-            <div class="timeline-body"><p>Here's another kind of related case:</p>
-<pre><code class="language-py">x: int = 1
+            <div class="timeline-body"><p>Here&#x27;s another kind of related case:</p>
+<pre><code>x: int = 1
 def f():
     x: str = &quot;hello&quot;
     def g():
@@ -90,15 +90,15 @@ info: rule `invalid-assignment` is enabled by default
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-07-09 17:48</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-09 17:48</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">runtime semantics</span> added by @AlexWaygood on 2025-07-09 17:48</div>
+            <div class="event">Label <span class="label">runtime semantics</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-09 17:48</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-07-11 20:59</div>
             <div class="timeline-body"><p>Ok the first case is trickier than I thought, because you might have something like this:</p>
-<pre><code class="language-python">def f():
+<pre><code>def f():
     x: int
     def g1():
         return x
@@ -109,8 +109,8 @@ info: rule `invalid-assignment` is enabled by default
     g1()
 f()
 </code></pre>
-<p>This isn't a name error, because <code>g2</code> is called before <code>g1</code>. To avoid a false positive here, we'd need to track that <code>x</code> is <code>nonlocal</code> in a <em>sibling</em> inner scope (and possibly ask whether a binding is made in that scope). It looks like Pyright does do that analysis today, but afaik Ty doesn't. So I don't think it's necessarily a bug that the first case above isn't an error. However, it <em>is</em> a bug that the reported type is wrong:</p>
-<pre><code class="language-py">x: int = 1
+<p>This isn&#x27;t a name error, because <code>g2</code> is called before <code>g1</code>. To avoid a false positive here, we&#x27;d need to track that <code>x</code> is <code>nonlocal</code> in a <em>sibling</em> inner scope (and possibly ask whether a binding is made in that scope). It looks like Pyright does do that analysis today, but afaik Ty doesn&#x27;t. So I don&#x27;t think it&#x27;s necessarily a bug that the first case above isn&#x27;t an error. However, it <em>is</em> a bug that the reported type is wrong:</p>
+<pre><code>x: int = 1
 def f():
     x: str
     def g():
@@ -121,7 +121,7 @@ def f():
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-07-14 15:11</div>
             <div class="timeline-body"><p>Fixing the second bug is uncovering a third semi-related false positive in current <code>main</code>:</p>
-<pre><code class="language-py">def f():
+<pre><code>def f():
     global x
     x = 5
 def g():
@@ -141,13 +141,13 @@ def g():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-07-16 15:47</div>
-            <div class="timeline-body"><p>Note that we still don't check whether variables in enclosing scopes are ever <em>bound</em>, e.g.:</p>
-<pre><code class="language-py">x: int
+            <div class="timeline-body"><p>Note that we still don&#x27;t check whether variables in enclosing scopes are ever <em>bound</em>, e.g.:</p>
+<pre><code>x: int
 def f():
-    y = x  # Ty doesn't lint here.
+    y = x  # Ty doesn&#x27;t lint here.
 </code></pre>
-<p>So for that reason, the first example at the top of this issue still doesn't lint. But now that https://github.com/astral-sh/ruff/pull/19336 is in, it is looking at the right variable, and we can see that by adding type declarations:</p>
-<pre><code class="language-py">x = &quot;hello&quot;
+<p>So for that reason, the first example at the top of this issue still doesn&#x27;t lint. But now that <a href="https://github.com/astral-sh/ruff/pull/19336">astral-sh/ruff#19336</a> is in, it is looking at the right variable, and we can see that by adding type declarations:</p>
+<pre><code>x = &quot;hello&quot;
 def f():
     x: int
     def g():
@@ -156,12 +156,12 @@ def f():
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @oconnor663 on 2025-07-16 15:47</div>
+            <div class="event">Closed by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-07-16 15:47</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:17 UTC
+        Synced at 2026-01-20 19:25:02 UTC
     </footer>
 </body>
 </html>

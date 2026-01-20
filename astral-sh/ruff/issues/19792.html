@@ -23,37 +23,37 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>The fix for <a href="https://docs.astral.sh/ruff/rules/f-string/#f-string-up032">f-string (UP032)</a> will fail if the braces (<code>{</code> and <code>}</code>) are created via escapes instead of literal characters: <a href="https://play.ruff.rs/2a2c4778-a9ff-4499-b9cf-b89c38a25d4b">Example</a></p>
-<pre><code class="language-powershell">PS ~&gt;echo '&quot;\x7btest\x7d&quot;.format(test=1)' | uvx ruff check --select UP032 --fix -
+<pre><code>PS ~&gt;echo &#x27;&quot;\x7btest\x7d&quot;.format(test=1)&#x27; | uvx ruff check --select UP032 --fix -
 &quot;\x7btest\x7d&quot;
 Found 1 error (1 fixed, 0 remaining).
 </code></pre>
 <p>This does work properly with <code>.format</code> and could be fixed the same way as the non-cursed version:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; &quot;\x7btest\x7d&quot;.format(test=1)
-'1'
+<pre><code>&gt;&gt;&gt; &quot;\x7btest\x7d&quot;.format(test=1)
+&#x27;1&#x27;
 &gt;&gt;&gt; f&quot;{1}&quot;
-'1'
+&#x27;1&#x27;
 </code></pre>
 <p>This also applies to all the other ways of writing <code>{</code> and <code>}</code> non-literally (<code>\x</code>, <code>\u</code>, <code>\U</code>, <code>\N</code>)</p>
-<h3>Version</h3>
+Version
 <p>ruff 0.12.7 (c5ac99889 2025-07-29)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-08-06 20:33</div>
             <div class="timeline-body"><p>This same thing also applies to <a href="https://docs.astral.sh/ruff/rules/printf-string-formatting/#printf-string-formatting-up031">printf-string-formatting (UP031)</a> example <a href="https://play.ruff.rs/d6f0f412-a887-482b-a337-3a52a10472a1">playground</a></p>
-<pre><code class="language-powershell">PS ~&gt;echo '&quot;\x25s&quot; % 1' | uvx ruff check --select UP031 --fix --unsafe-fixes -
+<pre><code>PS ~&gt;echo &#x27;&quot;\x25s&quot; % 1&#x27; | uvx ruff check --select UP031 --fix --unsafe-fixes -
 &quot;\x25s&quot;.format(1)
 Found 1 error (1 fixed, 0 remaining).
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-08-07 11:54</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-07 11:54</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-08-07 11:54</div>
+            <div class="event">Label <span class="label">fixes</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-07 11:54</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/IDrokin117">@IDrokin117</a> on 2025-08-08 12:27</div>
@@ -61,13 +61,13 @@ Found 1 error (1 fixed, 0 remaining).
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @IDrokin117 by @ntBre on 2025-08-08 16:22</div>
+            <div class="event">Assigned to <a href="https://github.com/IDrokin117">@IDrokin117</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-08 16:22</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/IDrokin117">@IDrokin117</a> on 2025-08-09 19:45</div>
-            <div class="timeline-body"><h1>Investigation results</h1>
-<h2>Context</h2>
-<p>It looks like it's tough to deal with Unicode escape sequences in both cases for now. But before short explanation how it works:</p>
+            <div class="timeline-body">Investigation results
+Context
+<p>It looks like it&#x27;s tough to deal with Unicode escape sequences in both cases for now. But before short explanation how it works:</p>
 <ol>
 <li>The string parsed into <code>FormatPart</code> by <code>FormatString</code> <a href="https://github.com/astral-sh/ruff/blob/0.12.7/crates/ruff_linter/src/rules/pyupgrade/rules/f_strings.rs#L273">here</a>. For example:</li>
 </ol>
@@ -78,7 +78,7 @@ Found 1 error (1 fixed, 0 remaining).
 <p>The problem in the issue occurred due to 1) iterated through <a href="https://github.com/astral-sh/ruff/blob/0.12.7/crates/ruff_linter/src/rules/pyupgrade/rules/f_strings.rs#L246">raw contents</a>(not parsed) 2) unicode sequences treated as literals</p>
 <pre><code>print(&quot;\x7btest\x7d {test}&quot;.format(test=1)) # -&gt; [Literal(&quot;\\x7btest\\x7d &quot;), Field { field_name: &quot;test&quot;, conversion_spec: None, format_spec: &quot;&quot; }]
 </code></pre>
-<h2>Question</h2>
+Question
 <p>Are Unicode escape sequences should be decoded and replaced? I mean</p>
 <pre><code>&quot;\x7btest\x7d&quot;.format(test=1)
 </code></pre>
@@ -89,23 +89,23 @@ Found 1 error (1 fixed, 0 remaining).
 <pre><code>&quot;\x7b1\x7d&quot; # (2)
 </code></pre>
 <p>I think the second one is correct, because that was the intention.</p>
-<h2>First case</h2>
-<p>Back to the first (1) case. It is possible to solve the problem by iterating through parsed content instead of raw (e.g. parse whole expression <code>&quot;\x7btest\x7d {test}&quot;</code> -&gt; <code>&quot;{test} {test}&quot;</code>). It is already implemented func <a href="https://github.com/astral-sh/ruff/blob/8230b79829db0148afeefa634f3dde00b3a52410/crates/ruff_python_parser/src/lib.rs#L139"><code>parse_expression</code></a>. But it means other escape sequences will parse as well (e.g. <code>&quot;\N{snowman} \x7btest\x7d {test}&quot;</code> -&gt; &quot;☃ {test} {test}&quot;). In my view, the rule shouldn't substitute Unicode sequences with literal characters in the source code.</p>
-<h2>Second case</h2>
+First case
+<p>Back to the first (1) case. It is possible to solve the problem by iterating through parsed content instead of raw (e.g. parse whole expression <code>&quot;\x7btest\x7d {test}&quot;</code> -&gt; <code>&quot;{test} {test}&quot;</code>). It is already implemented func <a href="https://github.com/astral-sh/ruff/blob/8230b79829db0148afeefa634f3dde00b3a52410/crates/ruff_python_parser/src/lib.rs#L139"><code>parse_expression</code></a>. But it means other escape sequences will parse as well (e.g. <code>&quot;\N{snowman} \x7btest\x7d {test}&quot;</code> -&gt; &quot;☃ {test} {test}&quot;). In my view, the rule shouldn&#x27;t substitute Unicode sequences with literal characters in the source code.</p>
+Second case
 <p>The second option (2) requires handling Unicode sequences in <code>FormatString</code>. This will force a fully/partial rework of <code>FormatString</code>. We need to at least parse or check Unicode sequence brackets and retain them for substitution.</p>
-<h1>Conclusion</h1>
-<p>To resolve this issue, we need to identify Unicode sequence brackets when parsing source content into FormatPart objects and classify them as Field rather than Literal. The possible solutions require a decision, so I'm asking more experienced contributors for help. There may already be a sophisticated solution in the repository.</p>
+Conclusion
+<p>To resolve this issue, we need to identify Unicode sequence brackets when parsing source content into FormatPart objects and classify them as Field rather than Literal. The possible solutions require a decision, so I&#x27;m asking more experienced contributors for help. There may already be a sophisticated solution in the repository.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-08-09 21:10</div>
-            <div class="timeline-body"><p>Sadly keeping the escapes as escapes for <code>.format</code> -&gt; f-string won't work, since f-strings only work with literal <code>{}</code>s:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; &quot;\x7btest\x7d&quot;.format(test=1)
-'1'
+            <div class="timeline-body"><p>Sadly keeping the escapes as escapes for <code>.format</code> -&gt; f-string won&#x27;t work, since f-strings only work with literal <code>{}</code>s:</p>
+<pre><code>&gt;&gt;&gt; &quot;\x7btest\x7d&quot;.format(test=1)
+&#x27;1&#x27;
 &gt;&gt;&gt; f&quot;{1}&quot; # works
-'1'
+&#x27;1&#x27;
 &gt;&gt;&gt; f&quot;\x7b1\x7d&quot; # doesnt work
-'{1}'
+&#x27;{1}&#x27;
 </code></pre>
 </div>
         </div>
@@ -118,22 +118,22 @@ Found 1 error (1 fixed, 0 remaining).
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-11 19:56</div>
             <div class="timeline-body"><p>Thank you for looking into this!</p>
 <p>I actually misinterpreted the initial report. I thought the rule knew that the escapes were braces and was still trying to perform the substitution, but the <code>test</code> in the input string is actually irrelevant. UP032 still flags this <a href="https://play.ruff.rs/2fb58f99-8885-4a19-b83a-81012d750265">case</a>:</p>
-<pre><code class="language-py">&quot;\x7b\x7d&quot;.format(test=1)
+<pre><code>&quot;\x7b\x7d&quot;.format(test=1)
 </code></pre>
-<p>and just drops the <code>format</code> call. I think that would be another way around this: don't offer a fix if there's a mismatch between the number of placeholders and arguments to <code>format</code>. That kind of seems like a bug in its own right anyway.</p>
+<p>and just drops the <code>format</code> call. I think that would be another way around this: don&#x27;t offer a fix if there&#x27;s a mismatch between the number of placeholders and arguments to <code>format</code>. That kind of seems like a bug in its own right anyway.</p>
 <p>It would be cool to replace the escapes with real braces, but I think it would be totally fine just to avoid offering an incorrect fix. I expect this kind of thing to be rare anyway.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-11 20:04</div>
-            <div class="timeline-body"><p>Even more directly, UP032 flags this case: <code>&quot;&quot;.format(test=1)</code>, definitely showing that it's not interpreting the escapes as I thought.</p>
-<p>Hmm, another interesting data point is that we do flag F524 in the <a href="https://play.ruff.rs/07806812-ce88-4760-a13f-151a78bbee83">playground</a> case I linked above. So we may be able to look at its implementation if we do want to replace the braces. I don't immediately see the difference between the two because they both use <code>FormatString::from_str</code>, but I guess there's something different in there.</p>
+            <div class="timeline-body"><p>Even more directly, UP032 flags this case: <code>&quot;&quot;.format(test=1)</code>, definitely showing that it&#x27;s not interpreting the escapes as I thought.</p>
+<p>Hmm, another interesting data point is that we do flag F524 in the <a href="https://play.ruff.rs/07806812-ce88-4760-a13f-151a78bbee83">playground</a> case I linked above. So we may be able to look at its implementation if we do want to replace the braces. I don&#x27;t immediately see the difference between the two because they both use <code>FormatString::from_str</code>, but I guess there&#x27;s something different in there.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:53:11 UTC
+        Synced at 2026-01-20 18:50:19 UTC
     </footer>
 </body>
 </html>

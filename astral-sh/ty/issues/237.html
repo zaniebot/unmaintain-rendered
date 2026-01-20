@@ -25,28 +25,28 @@
             <div class="timeline-header"><a href="https://github.com/cake-monotone">@cake-monotone</a></div>
             <div class="timeline-body"><p>As <code>Type::Tuple</code> is becoming more actively used in implementations, I think we should implement Homogeneous Tuples before the refactoring cost becomes too high.</p>
 <p>I’m considering an implementation like the following using an enum:</p>
-<details>
-<summary>Implementation blueprint (Outdated) </summary>
 
-<pre><code class="language-rs">#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
-pub enum TupleType&lt;'db&gt; {
-    Heterogeneous(HeterogeneousTupleType&lt;'db&gt;),
-    Homogeneous(HomogeneousTupleType&lt;'db&gt;),
+Implementation blueprint (Outdated) 
+
+<pre><code>#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
+pub enum TupleType&lt;&#x27;db&gt; {
+    Heterogeneous(HeterogeneousTupleType&lt;&#x27;db&gt;),
+    Homogeneous(HomogeneousTupleType&lt;&#x27;db&gt;),
 }
 
 #[salsa::interned]
-pub struct HeterogeneousTupleType&lt;'db&gt; {
-    elements: Box&lt;[Type&lt;'db&gt;]&gt;,
+pub struct HeterogeneousTupleType&lt;&#x27;db&gt; {
+    elements: Box&lt;[Type&lt;&#x27;db&gt;]&gt;,
 }
 
 #[salsa::interned]
-pub struct HomogeneousTupleType&lt;'db&gt; {
-    element: Type&lt;'db&gt;,
+pub struct HomogeneousTupleType&lt;&#x27;db&gt; {
+    element: Type&lt;&#x27;db&gt;,
 }
 </code></pre>
-</details>
 
-<h2>Expected Issues</h2>
+
+Expected Issues
 <p>Currently, it seems that there is no way to assign a homogeneous tuple type in the tests.</p>
 <p>Do you have any suggestions for a proper way to handle this? Or should we wait for another feature to be merged first?</p>
 </div>
@@ -54,14 +54,14 @@ pub struct HomogeneousTupleType&lt;'db&gt; {
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-21 11:22</div>
             <div class="timeline-body"><p>Thanks for opening this issue!</p>
-<p>I think homogenous tuples will require much less special-casing from us than heterogenous tuples (thankfully!). Whereas heterogenous tuples need to be extensively special-cased in red-knot, homogenous tuples are pretty similar to most other generic sequence types -- I think we should simply be able to fallback to <a href="https://github.com/astral-sh/ruff/blob/f3612c271714c18ab9a4c2d3976b12c85bb37653/crates/red_knot_vendored/vendor/typeshed/stdlib/builtins.pyi#L949-L973">typeshed's annotations for <code>tuple</code></a> for most simple operations.</p>
-<p>We don't yet have any representation of generic types in red-knot at all, however. This is a large outstanding task, and something that I know @carljm plans to work on soon. I think we should probably hold off on implementing anything to do with homogenous tuples until we have an initial implementation of generic types.</p>
+<p>I think homogenous tuples will require much less special-casing from us than heterogenous tuples (thankfully!). Whereas heterogenous tuples need to be extensively special-cased in red-knot, homogenous tuples are pretty similar to most other generic sequence types -- I think we should simply be able to fallback to <a href="https://github.com/astral-sh/ruff/blob/f3612c271714c18ab9a4c2d3976b12c85bb37653/crates/red_knot_vendored/vendor/typeshed/stdlib/builtins.pyi#L949-L973">typeshed&#x27;s annotations for <code>tuple</code></a> for most simple operations.</p>
+<p>We don&#x27;t yet have any representation of generic types in red-knot at all, however. This is a large outstanding task, and something that I know @carljm plans to work on soon. I think we should probably hold off on implementing anything to do with homogenous tuples until we have an initial implementation of generic types.</p>
 <p>We will of course have to have <em>some</em> special handling of homogenous tuples in due course:</p>
 <ul>
-<li>We need to understand where heterogenous tuples are and aren't subtypes of homogenous tuples</li>
-<li>We'll need to understand somewhat terrifying types such as <code>tuple[int, *tuple[str, ...], bytes]</code> which combine heterogenous and homogenous tuples.</li>
+<li>We need to understand where heterogenous tuples are and aren&#x27;t subtypes of homogenous tuples</li>
+<li>We&#x27;ll need to understand somewhat terrifying types such as <code>tuple[int, *tuple[str, ...], bytes]</code> which combine heterogenous and homogenous tuples.</li>
 </ul>
-<p>But I still expect it to be much more limited than the special casing we've already implemented for heterogenous tuples. And it will possibly be implemented in a completely different way.</p>
+<p>But I still expect it to be much more limited than the special casing we&#x27;ve already implemented for heterogenous tuples. And it will possibly be implemented in a completely different way.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -75,43 +75,43 @@ pub struct HomogeneousTupleType&lt;'db&gt; {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-21 11:36</div>
-            <div class="timeline-body"><p>We'll also need to make sure we understand that <code>tuple[str, *tuple[int, ...]]</code> and <code>tuple[str, typing.Unpack[tuple[int, ...]]]</code> are the same type.</p>
+            <div class="timeline-body"><p>We&#x27;ll also need to make sure we understand that <code>tuple[str, *tuple[int, ...]]</code> and <code>tuple[str, typing.Unpack[tuple[int, ...]]]</code> are the same type.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-21 12:44</div>
             <div class="timeline-body"><p>Nit:</p>
-<pre><code class="language-diff"> #[salsa::interned]
- pub struct HomogeneousTupleType&lt;'db&gt; {
--     element: Box&lt;Type&lt;'db&gt;&gt;,
-+     element: Type&lt;'db&gt;,
+<pre><code> #[salsa::interned]
+ pub struct HomogeneousTupleType&lt;&#x27;db&gt; {
+-     element: Box&lt;Type&lt;&#x27;db&gt;&gt;,
++     element: Type&lt;&#x27;db&gt;,
  }
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-10-21 18:03</div>
-            <div class="timeline-body"><p>It may be that the existing <code>Type::Tuple</code> should be renamed to make it more clear that it represents only heterogeneous tuple types, but I'm hesitant to spend too much time on renamings until we see the full shape of our tuple support.</p>
+            <div class="timeline-body"><p>It may be that the existing <code>Type::Tuple</code> should be renamed to make it more clear that it represents only heterogeneous tuple types, but I&#x27;m hesitant to spend too much time on renamings until we see the full shape of our tuple support.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-11-07 16:54</div>
-            <div class="timeline-body"><p>depends on https://github.com/astral-sh/ty/issues/230</p>
+            <div class="timeline-body"><p>depends on <a href="https://github.com/astral-sh/ty/issues/230">astral-sh/ty#230</a></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[red-knot] Implement Homogeneous Tuple Type" to "Implement Homogeneous Tuple Type" by @MichaReiser on 2025-05-07 15:27</div>
+            <div class="event">Renamed from &quot;[red-knot] Implement Homogeneous Tuple Type&quot; to &quot;Implement Homogeneous Tuple Type&quot; by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-07 15:27</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">generics</span> added by @AlexWaygood on 2025-05-10 20:01</div>
+            <div class="event">Label <span class="label">generics</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-10 20:01</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-05-13 02:02</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-13 02:02</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:19:45 UTC
+        Synced at 2026-01-20 19:24:20 UTC
     </footer>
 </body>
 </html>

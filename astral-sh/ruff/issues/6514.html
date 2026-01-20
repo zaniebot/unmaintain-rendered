@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>[Proposal] Mirror isort's float-to-top feature to autofix simple cases of E402</h1>
+    <h1>[Proposal] Mirror isort&#x27;s float-to-top feature to autofix simple cases of E402</h1>
 
     <div class="meta">
         <span class="state-icon state-open"></span>
@@ -23,11 +23,11 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/SummerStorm">@SummerStorm</a></div>
-            <div class="timeline-body"><h3>Minimal reproducible example</h3>
+            <div class="timeline-body">Minimal reproducible example
 <pre><code>a = 1
 import os 
 </code></pre>
-<h3>Ruff output and Ruff version</h3>
+Ruff output and Ruff version
 <pre><code>$ ruff -V &amp;&amp; ruff -v --ignore F401 --diff E402_violation.py
 ruff 0.0.283
 [2023-08-11][15:48:25][ruff_cli::resolve][DEBUG] Using Ruff default settings
@@ -35,7 +35,7 @@ ruff 0.0.283
 [2023-08-11][15:48:25][ruff_cli::diagnostics][DEBUG] Checking: /tmp/E402_violation.py
 [2023-08-11][15:48:25][ruff_cli::commands::run][DEBUG] Checked 1 files in: 930.5µs
 </code></pre>
-<h3><code>isort</code> output (and expected Ruff output)</h3>
+<code>isort</code> output (and expected Ruff output)
 <pre><code>$ isort --float-to-top -diff E402_violation.py
 import os
 
@@ -52,14 +52,14 @@ sys.path.append(some_module_path)
 import some_module
 </code></pre>
 <pre><code>import os
-os.environ['LIB_CAN_THROW_ERROR_ON_IMPORT'] = 2
+os.environ[&#x27;LIB_CAN_THROW_ERROR_ON_IMPORT&#x27;] = 2
 import lib
-os.environ['LIB_CAN_THROW_ERROR_ON_IMPORT'] = 0 
+os.environ[&#x27;LIB_CAN_THROW_ERROR_ON_IMPORT&#x27;] = 0 
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">autofix</span> added by @charliermarsh on 2023-08-14 21:32</div>
+            <div class="event">Label <span class="label">autofix</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-14 21:32</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-14 21:33</div>
@@ -95,17 +95,17 @@ I keep using isort just for that.</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/PeterJCLaw">@PeterJCLaw</a> on 2025-11-03 20:54</div>
-            <div class="timeline-body"><p>I've been looking at what's needed for this, mostly so far just familiarising myself with the <code>isort</code> equivalent code in <code>ruff</code>. I'd be up for trying to put together a PR if we can agree a spec.</p>
+            <div class="timeline-body"><p>I&#x27;ve been looking at what&#x27;s needed for this, mostly so far just familiarising myself with the <code>isort</code> equivalent code in <code>ruff</code>. I&#x27;d be up for trying to put together a PR if we can agree a spec.</p>
 <p>Some questions:</p>
 <ol>
-<li>how closely do we want to match <code>isort</code>'s <code>float-to-top</code> behaviour? Specifically: do we want to try to match things like <code># isort:skip</code>, or are we happy with a first pass which doesn't? (I don't know how hard/easy that would be to support, just looking to set scope boundaries)</li>
-<li>is there a good forum to get feedback on a proposed algorithm? I have some thoughts, though I'm fairly new to Rust so I a) don't have a good feel for what'd make good idiomatic Rust and b) would like to get some feedback on whether we want a &quot;big&quot; refactor here vs perhaps trying to do a smaller change (trade-off might be that future work is a little harder).</li>
+<li>how closely do we want to match <code>isort</code>&#x27;s <code>float-to-top</code> behaviour? Specifically: do we want to try to match things like <code># isort:skip</code>, or are we happy with a first pass which doesn&#x27;t? (I don&#x27;t know how hard/easy that would be to support, just looking to set scope boundaries)</li>
+<li>is there a good forum to get feedback on a proposed algorithm? I have some thoughts, though I&#x27;m fairly new to Rust so I a) don&#x27;t have a good feel for what&#x27;d make good idiomatic Rust and b) would like to get some feedback on whether we want a &quot;big&quot; refactor here vs perhaps trying to do a smaller change (trade-off might be that future work is a little harder).</li>
 </ol>
 <p>As food for thought on the latter, I see broadly these options :</p>
 <ul>
-<li>rework just <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/rules/isort/rules/organize_imports.rs#L85"><code>organize_imports</code></a> and its caller so the loop currently in <code>check_imports</code> is pushed downwards, enabling all the work of pulling the imports to the top of the file (as well as all the general detection logic, fixing, etc.); this feels to me like it could make that function quite busy, which might be fine if more of it can be factored to utils (haven't looked hard at that yet)</li>
-<li>a bit more refactoring to a <code>Block</code> which separates out the list-of-statements-in-the-block (which ends up determining what <code>TextRange</code> is highlighted/replaced) from the list-of-imports-to-format, possibly making it a bit more mutable along the way (I haven't yet fully worked out the lifetime/scope of the <code>Block</code> instances, so not sure if this would have more side-effects)</li>
-<li>passing both the current <code>Block</code> and the list of all of them to <code>organize_imports</code>, with a flag for whether or not we're operating on the first one; I don't like this approach though as the coupling between the behaviours in the caller and the callee feel a bit &quot;just so&quot; and thus potentially brittle</li>
+<li>rework just <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/rules/isort/rules/organize_imports.rs#L85"><code>organize_imports</code></a> and its caller so the loop currently in <code>check_imports</code> is pushed downwards, enabling all the work of pulling the imports to the top of the file (as well as all the general detection logic, fixing, etc.); this feels to me like it could make that function quite busy, which might be fine if more of it can be factored to utils (haven&#x27;t looked hard at that yet)</li>
+<li>a bit more refactoring to a <code>Block</code> which separates out the list-of-statements-in-the-block (which ends up determining what <code>TextRange</code> is highlighted/replaced) from the list-of-imports-to-format, possibly making it a bit more mutable along the way (I haven&#x27;t yet fully worked out the lifetime/scope of the <code>Block</code> instances, so not sure if this would have more side-effects)</li>
+<li>passing both the current <code>Block</code> and the list of all of them to <code>organize_imports</code>, with a flag for whether or not we&#x27;re operating on the first one; I don&#x27;t like this approach though as the coupling between the behaviours in the caller and the callee feel a bit &quot;just so&quot; and thus potentially brittle</li>
 </ul>
 </div>
         </div>
@@ -113,14 +113,14 @@ I keep using isort just for that.</p>
             <div class="timeline-header">Comment by <a href="https://github.com/PeterJCLaw">@PeterJCLaw</a> on 2025-11-09 12:37</div>
             <div class="timeline-body"><blockquote>
 <ol>
-<li>how closely do we want to match <code>isort</code>'s <code>float-to-top</code> behaviour? Specifically: do we want to try to match things like <code># isort:skip</code>, or are we happy with a first pass which doesn't? (I don't know how hard/easy that would be to support, just looking to set scope boundaries)</li>
+<li>how closely do we want to match <code>isort</code>&#x27;s <code>float-to-top</code> behaviour? Specifically: do we want to try to match things like <code># isort:skip</code>, or are we happy with a first pass which doesn&#x27;t? (I don&#x27;t know how hard/easy that would be to support, just looking to set scope boundaries)</li>
 </ol>
 </blockquote>
-<p>Realised that this is already supported (at least <a href="https://docs.astral.sh/ruff/linter/#action-comments">according to the docs</a>), which I should have found sooner. So I think it'd just be a case of understanding how that works and is still respected.</p>
+<p>Realised that this is already supported (at least <a href="https://docs.astral.sh/ruff/linter/#action-comments">according to the docs</a>), which I should have found sooner. So I think it&#x27;d just be a case of understanding how that works and is still respected.</p>
 <p>I did however think of another question around how we want these fixes to be applied:</p>
-<ol start="3">
-<li>should this fix be considered <a href="https://docs.astral.sh/ruff/linter/#fix-safety">&quot;safe&quot;</a> or not? My reading of the docs is that since this could more easily change the semantics around imports (for exactly the reasons described in the original post), it ought to be an unsafe fix. However if we're relying on the <code>float-to-top</code> config being present, that's arguably the user explicitly asking for it -- could we consider that as equivalent to configuring this fix as being &quot;safe&quot; just as the config for other unsafe fixes can be overridden?
-If we do want to consider this aspect of the fixer for <code>I001</code> unsafe (even when explicitly enabled), that <em>may</em> affect how we build it so I'd be interested to get opinions on it sooner.</li>
+<ol>
+<li>should this fix be considered <a href="https://docs.astral.sh/ruff/linter/#fix-safety">&quot;safe&quot;</a> or not? My reading of the docs is that since this could more easily change the semantics around imports (for exactly the reasons described in the original post), it ought to be an unsafe fix. However if we&#x27;re relying on the <code>float-to-top</code> config being present, that&#x27;s arguably the user explicitly asking for it -- could we consider that as equivalent to configuring this fix as being &quot;safe&quot; just as the config for other unsafe fixes can be overridden?
+If we do want to consider this aspect of the fixer for <code>I001</code> unsafe (even when explicitly enabled), that <em>may</em> affect how we build it so I&#x27;d be interested to get opinions on it sooner.</li>
 </ol>
 </div>
         </div>
@@ -137,7 +137,7 @@ If we do want to consider this aspect of the fixer for <code>I001</code> unsafe 
 <p>Hrm, possibly. Two questions though:</p>
 <ul>
 <li>how would that interact with running the <code>isort</code> logic if the user has enabled it (i.e: how do we ensure that the move-to-top stuff happens before the other formatting, avoiding the need to double-run)</li>
-<li>would it still be possible to enable the fix if the user wants to enable <code>isort</code>'s <code>float-to-top</code> option, or would we just not support that option?</li>
+<li>would it still be possible to enable the fix if the user wants to enable <code>isort</code>&#x27;s <code>float-to-top</code> option, or would we just not support that option?</li>
 </ul>
 </div>
         </div>
@@ -151,10 +151,10 @@ If we do want to consider this aspect of the fixer for <code>I001</code> unsafe 
 <p>Ruff applies fixes in a loop until they stabilize, so enabling I001 and E402 should handle this automatically, I think.</p>
 <blockquote>
 <ul>
-<li>would it still be possible to enable the fix if the user wants to enable <code>isort</code>'s <code>float-to-top</code> option, or would we just not support that option?</li>
+<li>would it still be possible to enable the fix if the user wants to enable <code>isort</code>&#x27;s <code>float-to-top</code> option, or would we just not support that option?</li>
 </ul>
 </blockquote>
-<p>I was thinking we wouldn't add a new configuration option, you would just select E402 and accept its unsafe fix, if you want this behavior.</p>
+<p>I was thinking we wouldn&#x27;t add a new configuration option, you would just select E402 and accept its unsafe fix, if you want this behavior.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -164,30 +164,30 @@ If we do want to consider this aspect of the fixer for <code>I001</code> unsafe 
 </blockquote>
 <p>Ah interesting.</p>
 <blockquote>
-<p>I was thinking we wouldn't add a new configuration option, you would just select E402 and accept its unsafe fix, if you want this behavior.</p>
+<p>I was thinking we wouldn&#x27;t add a new configuration option, you would just select E402 and accept its unsafe fix, if you want this behavior.</p>
 </blockquote>
-<p>I guess that could work. There is the small issue of whether people have used <code># noqa: E402</code> vs <code># isort: skip</code> around the imports they don't want to be moved, but that wouldn't be too hard for them to change.</p>
-<p>The other consideration here is the organise-imports logic in editors -- I personally (and suspect others too) would want the float-to-top behaviour to happen when running that editor command. It looks like <code>organize_imports_edit</code> has a list of rules which it aims to fix though, so hooking that up shouldn't be too hard ... as long as that'd still obey people's choice of whether or not E402 should be being fixed or not (in general).</p>
-<p>Thanks, I'll have a look at this as an option and see if I can work out what the various UX options/trade-offs are.</p>
+<p>I guess that could work. There is the small issue of whether people have used <code># noqa: E402</code> vs <code># isort: skip</code> around the imports they don&#x27;t want to be moved, but that wouldn&#x27;t be too hard for them to change.</p>
+<p>The other consideration here is the organise-imports logic in editors -- I personally (and suspect others too) would want the float-to-top behaviour to happen when running that editor command. It looks like <code>organize_imports_edit</code> has a list of rules which it aims to fix though, so hooking that up shouldn&#x27;t be too hard ... as long as that&#x27;d still obey people&#x27;s choice of whether or not E402 should be being fixed or not (in general).</p>
+<p>Thanks, I&#x27;ll have a look at this as an option and see if I can work out what the various UX options/trade-offs are.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/PeterJCLaw">@PeterJCLaw</a> on 2025-12-26 19:07</div>
-            <div class="timeline-body"><p>I've had a go at this and got something which seems to work: https://github.com/astral-sh/ruff/pull/22212. Still work-in-progress, but would be good to get a directional sense check before I get too far down the road of adding tests etc.</p>
+            <div class="timeline-body"><p>I&#x27;ve had a go at this and got something which seems to work: <a href="https://github.com/astral-sh/ruff/pull/22212">astral-sh/ruff#22212</a>. Still work-in-progress, but would be good to get a directional sense check before I get too far down the road of adding tests etc.</p>
 <blockquote>
-<p>I was thinking we wouldn't add a new configuration option, you would just select E402 and accept its unsafe fix, if you want this behavior.</p>
+<p>I was thinking we wouldn&#x27;t add a new configuration option, you would just select E402 and accept its unsafe fix, if you want this behavior.</p>
 </blockquote>
 <p>This works nicely, thanks for suggesting.</p>
 <blockquote>
-<p>The other consideration here is the organise-imports logic in editors -- I personally (and suspect others too) would want the float-to-top behaviour to happen when running that editor command. It looks like <code>organize_imports_edit</code> has a list of rules which it aims to fix though, so hooking that up shouldn't be too hard ... as long as that'd still obey people's choice of whether or not E402 should be being fixed or not (in general).</p>
+<p>The other consideration here is the organise-imports logic in editors -- I personally (and suspect others too) would want the float-to-top behaviour to happen when running that editor command. It looks like <code>organize_imports_edit</code> has a list of rules which it aims to fix though, so hooking that up shouldn&#x27;t be too hard ... as long as that&#x27;d still obey people&#x27;s choice of whether or not E402 should be being fixed or not (in general).</p>
 </blockquote>
-<p>I've got this connected up and it seems to work like we'd hope. If a project has selected E402's fix as &quot;safe&quot; then it gets applied, otherwise it doesn't.</p>
+<p>I&#x27;ve got this connected up and it seems to work like we&#x27;d hope. If a project has selected E402&#x27;s fix as &quot;safe&quot; then it gets applied, otherwise it doesn&#x27;t.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:47:58 UTC
+        Synced at 2026-01-20 18:48:40 UTC
     </footer>
 </body>
 </html>

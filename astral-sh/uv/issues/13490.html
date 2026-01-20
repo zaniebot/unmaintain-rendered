@@ -23,45 +23,45 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/eegli">@eegli</a></div>
-            <div class="timeline-body"><h3>Update</h3>
+            <div class="timeline-body">Update
 <p>The issue has been pinpointed; <a href="https://github.com/astral-sh/uv/issues/13490#issuecomment-2889718521">see this comment</a>.</p>
-<h3>Summary</h3>
+Summary
 <p>We are in a corporate scenario where we want to <strong>always</strong> use our private index and &quot;disable&quot; fetching from PyPi. According to <a href="https://docs.astral.sh/uv/configuration/indexes/#defining-an-index">the docs</a>, this can be done via the <code>default = true</code> entry.</p>
 <p>Our only index specified in pyproject.toml:</p>
-<pre><code class="language-toml">[[tool.uv.index]]
+<pre><code>[[tool.uv.index]]
 name = &quot;company-virtual&quot;
 url = &quot;https://europe-west6-python.pkg.dev/xxx/simple&quot;
 default = true # note this!
 </code></pre>
-<p>To demonstrate the issue, let's assume we only have a single dependency <strong>that is not available on our index</strong>:</p>
-<pre><code class="language-toml">[dependency-groups]
+<p>To demonstrate the issue, let&#x27;s assume we only have a single dependency <strong>that is not available on our index</strong>:</p>
+<pre><code>[dependency-groups]
 dev = [
     &quot;ruff&gt;=0.11.2&quot;,
 ]
 </code></pre>
 <p>Running <code>uv sync --refresh --reinstall --no-cache</code> will actually fetch <code>ruff</code> from PyPi, see the lockfile:</p>
-<pre><code class="language-toml">[[package]]
+<pre><code>[[package]]
 name = &quot;ruff&quot;
 version = &quot;0.11.10&quot;
 source = { registry = &quot;https://pypi.org/simple&quot; }
 </code></pre>
 <p>However, specifying the default index via the cli fails <strong>as expected</strong>:</p>
-<pre><code class="language-sh">just uv sync --refresh --default-index company-virtual
+<pre><code>just uv sync --refresh --default-index company-virtual
 &gt; uv sync --refresh --default-index company-virtual
-  × No solution found when resolving dependencies for split (python_full_version &gt;= '3.11'):
+  × No solution found when resolving dependencies for split (python_full_version &gt;= &#x27;3.11&#x27;):
   ╰─▶ Because ruff was not found in the package registry ...
 </code></pre>
 <p>Let me know if you need more info! Thanks</p>
-<h3>Platform</h3>
+Platform
 <p>Windows 11 (MINGW64_NT-10.0-22631 3.3.6-bec3d608-341.x86_64 x86_64 Msys)</p>
-<h3>Version</h3>
+Version
 <p>uv 0.7.3 (3c413f74b 2025-05-07)</p>
-<h3>Python version</h3>
+Python version
 <p>3.11</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @eegli on 2025-05-16 13:55</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/eegli">@eegli</a> on 2025-05-16 13:55</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-16 13:59</div>
@@ -69,10 +69,10 @@ source = { registry = &quot;https://pypi.org/simple&quot; }
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-05-16 13:59</div>
+            <div class="event">Label <span class="label">bug</span> removed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-16 13:59</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2025-05-16 13:59</div>
+            <div class="event">Label <span class="label">needs-mre</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-16 13:59</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/eegli">@eegli</a> on 2025-05-16 15:11</div>
@@ -82,7 +82,7 @@ source = { registry = &quot;https://pypi.org/simple&quot; }
 <li>one that is a PyPi mirror (second entry with <code>default = true</code>)</li>
 <li>another one for internal packages (first entry)</li>
 </ol>
-<pre><code class="language-toml">[[tool.uv.index]]
+<pre><code>[[tool.uv.index]]
 # Internal company packages
 name = &quot;company-virtual&quot;
 url = &quot;https://europe-west6-python.pkg.dev/xxx-virtual-repo/simple&quot;
@@ -94,44 +94,44 @@ url = &quot;https://europe-west6-python.pkg.dev/xxx-remote-repo/simple&quot;
 default = true
 </code></pre>
 <p>We want/need to use the <code>company-remote</code> as a default index and <code>company-virtual</code> for the internal packages as an extra index.</p>
-<h2>Setup and commands</h2>
+Setup and commands
 <p>Given <strong>no lockfile</strong> and the two indexes from above for all commands:</p>
 <ol>
 <li>This does not work</li>
 </ol>
-<pre><code class="language-sh">uv sync --all-packages --refresh --no-cache
+<pre><code>uv sync --all-packages --refresh --no-cache
 </code></pre>
 <blockquote>
 <p>× No solution found when resolving dependencies:
-╰─▶ Because &lt;internal-package&gt; was not found in the package registry...  we can conclude that your workspace's requirements are unsatisfiable.</p>
+╰─▶ Because &lt;internal-package&gt; was not found in the package registry...  we can conclude that your workspace&#x27;s requirements are unsatisfiable.</p>
 </blockquote>
-<ol start="2">
+<ol>
 <li>With the <strong>exact same pyproject file</strong>, specifying the <strong>default index and additional index from the command line</strong>, it works!</li>
 </ol>
-<pre><code class="language-sh">uv sync --all-packages --refresh --no-cache \
+<pre><code>uv sync --all-packages --refresh --no-cache \
     --default-index company-remote=https://europe-west6-python.pkg.dev/xxx-remote-repo/simple \
     --index company-virtual=https://europe-west6-python.pkg.dev/xxx-virtual-repo/simple
 </code></pre>
-<ol start="3">
+<ol>
 <li>When doing step 2 with env variables instead (UV_DEFAULT_INDEX and UV_INDEX), syncing works, too!</li>
 </ol>
 <p>To give some context:</p>
 <ul>
-<li>We're using workspaces with around 5 members</li>
+<li>We&#x27;re using workspaces with around 5 members</li>
 <li>Credentials are correct - otherwise, the second command above would not work</li>
 <li>Credentials are injected via env variables from a justfile</li>
 </ul>
 <p>Let me know if I can provide anything else. And thank you for the amazing work!</p>
-<h2>Additional info</h2>
+Additional info
 <p>Edit - The following info might be helpful:</p>
 <p><strong>In the second (and third) scenario</strong> where everything works, the lockfile correctly pins the index, even for non-internal packages (this is what we want):</p>
-<pre><code class="language-toml">[[package]]
+<pre><code>[[package]]
 name = &quot;aiohttp&quot;
 version = &quot;3.11.18&quot;
 source = { registry = &quot;https://europe-west6-python.pkg.dev/xxx-remote-repo/simple&quot; }
 </code></pre>
 <p><strong>In the first scenario</strong>, when running with <code>--verbose</code>, some packages seem to be requested from PyPi?</p>
-<pre><code class="language-sh">DEBUG No cache entry for: https://pypi.org/simple/cffi/
+<pre><code>DEBUG No cache entry for: https://pypi.org/simple/cffi/
 DEBUG No cache entry for: https://pypi.org/simple/pywin32/
 DEBUG No cache entry for: https://pypi.org/simple/python-dateutil/
 DEBUG No cache entry for: https://pypi.org/simple/typing-extensions/
@@ -142,9 +142,9 @@ DEBUG No cache entry for: https://pypi.org/simple/pycodestyle/
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/eegli">@eegli</a> on 2025-05-18 13:57</div>
-            <div class="timeline-body"><p>Here is a more stripped down configuration that replicates the problem, which exists for both adding and syncing deps. For now, let's ignore the index with the private packages.</p>
+            <div class="timeline-body"><p>Here is a more stripped down configuration that replicates the problem, which exists for both adding and syncing deps. For now, let&#x27;s ignore the index with the private packages.</p>
 <p><strong>pyproject.toml</strong></p>
-<pre><code class="language-toml">[project]
+<pre><code>[project]
 name = &quot;company-name&quot;
 author = &quot;authors&quot;
 version = &quot;0.0.0&quot;
@@ -164,37 +164,37 @@ default = true
 <p>By default, uv includes the Python Package Index (PyPI) as the &quot;default&quot; index, i.e., the index used when a package is not found on any other index. To exclude PyPI from the list of indexes, set default = true on another index entry (or use the --default-index command-line option):</p>
 </blockquote>
 <p><strong>Actual</strong>: Only when the default index is specified via CLI flags or env variables, resulting in each package being explicitly associated with an index, the custom default index is actually picked up. If a <code>default = true</code> index is specified in pyproject.toml, uv still falls back to PyPi.</p>
-<h3><code>uv add</code> (pyproject index)</h3>
+<code>uv add</code> (pyproject index)
 <ul>
 <li><code>uv add polars --no-cache --refresh</code>
 👉🏾 <strong>uv uses the PyPi index, even with a custom default index defined</strong> ❌</li>
 </ul>
-<pre><code class="language-toml"># results in uv.lock
+<pre><code># results in uv.lock
 [[package]]
 name = &quot;polars&quot;
 version = &quot;1.29.0&quot;
 source = { registry = &quot;https://pypi.org/simple&quot; }
 </code></pre>
-<h3><code>uv add</code> (CLI/env index)</h3>
+<code>uv add</code> (CLI/env index)
 <ul>
 <li><code>uv add polars --no-cache --refresh --index company-remote=https://europe-west6-python.pkg.dev/xxx-remote-repo/simple</code></li>
 <li><code>UV_DEFAULT_INDEX=company-remote=https://europe-west6-python.pkg.dev/xxx-remote-repo/simple uv add polars --no-cache --refresh</code>
 👉🏾 <strong>uv uses the correct index in both scenarios</strong> ✅</li>
 </ul>
-<pre><code class="language-toml"># results in uv.lock
+<pre><code># results in uv.lock
 [[package]]
 name = &quot;polars&quot;
 version = &quot;1.29.0&quot;
 source = { registry = &quot;https://europe-west6-python.pkg.dev/xxx-remote-repo/simple&quot; }
 </code></pre>
 <p>This will add this entry to pyproject.toml:</p>
-<pre><code class="language-toml">[tool.uv.sources]
+<pre><code>[tool.uv.sources]
 polars = { index = &quot;company-remote&quot; }
 </code></pre>
 <p>After which the first command, of course, works too.</p>
-<h3><code>uv sync</code> (pyproject index)</h3>
+<code>uv sync</code> (pyproject index)
 <p>The problem is similar when syncing an environment. Assume we have the same pyproject as before but now with polars already specified:</p>
-<pre><code class="language-toml">dependencies = [
+<pre><code>dependencies = [
     &quot;polars&gt;=1.29.0&quot;,
 ]
 </code></pre>
@@ -202,7 +202,7 @@ polars = { index = &quot;company-remote&quot; }
 <li><code>just uv sync --no-cache --refresh</code>
 👉🏾The resolution again falls back to the PyPi</li>
 </ul>
-<pre><code class="language-toml"># results in uv.lock
+<pre><code># results in uv.lock
 [[package]]
 name = &quot;polars&quot;
 version = &quot;1.29.0&quot;
@@ -212,8 +212,8 @@ source = { registry = &quot;https://pypi.org/simple&quot; }
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-18 14:38</div>
-            <div class="timeline-body"><p>Unfortunately, I can't reproduce that. I ran <code>uv init foo</code>, then edited the <code>pyproject.toml</code> to:</p>
-<pre><code class="language-toml">[project]
+            <div class="timeline-body"><p>Unfortunately, I can&#x27;t reproduce that. I ran <code>uv init foo</code>, then edited the <code>pyproject.toml</code> to:</p>
+<pre><code>[project]
 name = &quot;company-name&quot;
 author = &quot;authors&quot;
 version = &quot;0.0.0&quot;
@@ -228,7 +228,7 @@ url = &quot;https://test.pypi.org/simple&quot;
 default = true
 </code></pre>
 <p>Then ran <code>uv add iniconfig</code>, and the <code>uv.lock</code> contains:</p>
-<pre><code class="language-toml">version = 1
+<pre><code>version = 1
 revision = 2
 requires-python = &quot;==3.10.*&quot;
 
@@ -256,16 +256,16 @@ wheels = [
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/eegli">@eegli</a> on 2025-05-18 15:40</div>
-            <div class="timeline-body"><p>I also cannot reproduce the issue outside of our corporate setup using test.pypi.org. Let's close the issue, could be that there are other factors involved outside of uv's control, such as our internal HTTP proxy. For now, we'll be using env variables for explicit resolution - it all works with those in our case.</p>
+            <div class="timeline-body"><p>I also cannot reproduce the issue outside of our corporate setup using test.pypi.org. Let&#x27;s close the issue, could be that there are other factors involved outside of uv&#x27;s control, such as our internal HTTP proxy. For now, we&#x27;ll be using env variables for explicit resolution - it all works with those in our case.</p>
 <p>Thanks a lot for looking into it!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @eegli on 2025-05-18 15:40</div>
+            <div class="event">Closed by <a href="https://github.com/eegli">@eegli</a> on 2025-05-18 15:40</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-18 17:21</div>
-            <div class="timeline-body"><p>I don't <em>think</em> I'd expect it to manifest this way, but some indexes will automatically redirect to PyPI if you provide invalid credentials or similar. That <em>could</em> be what's going on here?</p>
+            <div class="timeline-body"><p>I don&#x27;t <em>think</em> I&#x27;d expect it to manifest this way, but some indexes will automatically redirect to PyPI if you provide invalid credentials or similar. That <em>could</em> be what&#x27;s going on here?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -276,7 +276,7 @@ wheels = [
 DEBUG No cache entry for: https://pypi.org/simple/polars/</p>
 </blockquote>
 <p>However, I noticed that if I <em>move</em> the index from pyproject to <code>uv.toml</code>, <strong>it is picked up correctly</strong>:</p>
-<pre><code class="language-toml"># pyproject
+<pre><code># pyproject
 [project]
 name = &quot;temp&quot;
 version = &quot;0.0.0&quot;
@@ -285,7 +285,7 @@ readme = &quot;README.md&quot;
 requires-python = &quot;&gt;=3.13&quot;
 dependencies = [&quot;polars&gt;=1.29.0&quot;]
 </code></pre>
-<pre><code class="language-toml"># uv.toml
+<pre><code># uv.toml
 [[index]]
 # Upstream repo: PyPI
 name = &quot;company-remote&quot;
@@ -293,7 +293,7 @@ url = &quot;https://europe-west6-python.pkg.dev/xxx-remote-repo/simple&quot;
 default = true
 </code></pre>
 <p>Runinng <code>just uv sync --refresh --no-cache --verbose</code> <strong>works</strong> and results in the lockfile:</p>
-<pre><code class="language-toml">[[package]]
+<pre><code>[[package]]
 name = &quot;polars&quot;
 version = &quot;1.29.0&quot;
 source = { registry = &quot;https://europe-west6-python.pkg.dev/xxx-remote-repo/simple&quot; }
@@ -306,16 +306,16 @@ DEBUG No cache entry for: https://europe-west6-python.pkg.dev/xxx-remote-repo/si
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @eegli on 2025-05-19 05:29</div>
+            <div class="event">Reopened by <a href="https://github.com/eegli">@eegli</a> on 2025-05-19 05:29</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/eegli">@eegli</a> on 2025-05-19 06:01</div>
-            <div class="timeline-body"><p>The issue has now been identified. In all previous examples, I've had a minimal <code>uv.toml</code> config file for my user:</p>
-<pre><code class="language-toml">native-tls = true
+            <div class="timeline-body"><p>The issue has now been identified. In all previous examples, I&#x27;ve had a minimal <code>uv.toml</code> config file for my user:</p>
+<pre><code>native-tls = true
 </code></pre>
 <p>It appears that the <strong>sheer presence of a user</strong> <code>uv.toml</code> config - <strong>even if empty</strong> - results in the PyPi being included as the default index.</p>
 <p>Getting rid of the config file (<code>unset UV_CONFIG_FILE</code>) and relying solely on the following pyproject config:</p>
-<pre><code class="language-toml">[project]
+<pre><code>[project]
 name = &quot;temp&quot;
 version = &quot;0.0.0&quot;
 description = &quot;Add your description here&quot;
@@ -330,35 +330,35 @@ url = &quot;https://europe-west6-python.pkg.dev/xxx-remote-repo/simple&quot;
 default = true
 </code></pre>
 <p>Runinng <code>uv sync --refresh --no-cache --verbose</code> <strong>works</strong> and results in the lockfile:</p>
-<pre><code class="language-toml">[[package]]
+<pre><code>[[package]]
 name = &quot;polars&quot;
 version = &quot;1.29.0&quot;
 source = { registry = &quot;https://europe-west6-python.pkg.dev/xxx-remote-repo/simple&quot; }
 </code></pre>
 <p>Demo repo to reproduce: <a href="https://github.com/eegli/uv-issue-13490">eegli/uv-issue-13490</a>.</p>
-<h3>Details</h3>
+Details
 <p>While the default configuration file resolution order works for most entries (they default to some nullish value), it is problematic for <code>ResolverInstallerOptions.index</code> because it defines PyPi as a default:
 https://github.com/astral-sh/uv/blob/6afb11ccf639523b3cdba085d3315815ccacd182/crates/uv-settings/src/settings.rs#L411
 Upon merging the configuration in
 https://github.com/astral-sh/uv/blob/6afb11ccf639523b3cdba085d3315815ccacd182/crates/uv/src/lib.rs#L122
 PyPi is therefore always included when any <code>uv.toml</code> is present. My expectation is that this implicit default is not included if another default index is specified explicitly.</p>
-<p>As much as I'd love to provide a fix, I don't have the capacity right now to familiarize myself with the source.</p>
+<p>As much as I&#x27;d love to provide a fix, I don&#x27;t have the capacity right now to familiarize myself with the source.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "uv does not respect pyproject.toml default index" to "presence of `uv.toml` implicitly overrides default index in `pyproject.toml`" by @eegli on 2025-05-19 06:03</div>
+            <div class="event">Renamed from &quot;uv does not respect pyproject.toml default index&quot; to &quot;presence of `uv.toml` implicitly overrides default index in `pyproject.toml`&quot; by <a href="https://github.com/eegli">@eegli</a> on 2025-05-19 06:03</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "presence of `uv.toml` implicitly overrides default index in `pyproject.toml`" to "Presence of `uv.toml` implicitly overrides default index in `pyproject.toml`" by @eegli on 2025-05-19 06:38</div>
+            <div class="event">Renamed from &quot;presence of `uv.toml` implicitly overrides default index in `pyproject.toml`&quot; to &quot;Presence of `uv.toml` implicitly overrides default index in `pyproject.toml`&quot; by <a href="https://github.com/eegli">@eegli</a> on 2025-05-19 06:38</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Presence of `uv.toml` implicitly overrides default index in `pyproject.toml`" to "Presence of `UV_CONFIG_FILE` implicitly adds default index" by @konstin on 2025-05-19 07:42</div>
+            <div class="event">Renamed from &quot;Presence of `uv.toml` implicitly overrides default index in `pyproject.toml`&quot; to &quot;Presence of `UV_CONFIG_FILE` implicitly adds default index&quot; by <a href="https://github.com/konstin">@konstin</a> on 2025-05-19 07:42</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-mre</span> removed by @konstin on 2025-05-19 07:42</div>
+            <div class="event">Label <span class="label">needs-mre</span> removed by <a href="https://github.com/konstin">@konstin</a> on 2025-05-19 07:42</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-05-19 07:42</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/konstin">@konstin</a> on 2025-05-19 07:42</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-19 07:44</div>
@@ -371,7 +371,7 @@ PyPi is therefore always included when any <code>uv.toml</code> is present. My e
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @jtfmumm by @jtfmumm on 2025-05-19 09:25</div>
+            <div class="event">Assigned to <a href="https://github.com/jtfmumm">@jtfmumm</a> by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-05-19 09:25</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/eegli">@eegli</a> on 2025-05-31 15:38</div>
@@ -386,15 +386,15 @@ PyPi is therefore always included when any <code>uv.toml</code> is present. My e
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @eegli on 2025-05-31 15:38</div>
+            <div class="event">Closed by <a href="https://github.com/eegli">@eegli</a> on 2025-05-31 15:38</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Unassigned @jtfmumm by @jtfmumm on 2025-06-20 09:10</div>
+            <div class="event">Unassigned <a href="https://github.com/jtfmumm">@jtfmumm</a> by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-06-20 09:10</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:31:22 UTC
+        Synced at 2026-01-20 19:38:40 UTC
     </footer>
 </body>
 </html>

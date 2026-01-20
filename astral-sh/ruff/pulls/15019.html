@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Rendered version of the test suite including a proper introduction to the topic / motivation: <a href="https://github.com/astral-sh/ruff/blob/david/statically-known-branches-2/crates/red_knot_python_semantic/resources/mdtest/statically_known_branches.md"><strong>click</strong></a>.</p>
 <p>This changeset adds support for precise type-inference and boundness-handling of definitions inside control-flow branches with statically-known conditions, i.e. test-expressions whose truthiness we can unambiguously infer as <em>always false</em> or <em>always true</em>. In code:</p>
-<pre><code class="language-py">x = 1
+<pre><code>x = 1
 
 if &quot;z&quot; in &quot;haystack&quot;:  # Literal[False]
     x = 2
@@ -34,18 +34,18 @@ if &quot;z&quot; in &quot;haystack&quot;:  # Literal[False]
 reveal_type(x)  # revealed: Literal[1]
 </code></pre>
 <p>and:</p>
-<pre><code class="language-py">x = 1
+<pre><code>x = 1
 
 if &quot;y&quot; in &quot;haystack&quot;:  # Literal[True]
     x = 2
 
 reveal_type(x)  # revealed: Literal[2]
 </code></pre>
-<h2>Implementation</h2>
-<h3>Visibility constraints, truthiness, negation</h3>
+Implementation
+Visibility constraints, truthiness, negation
 <p>One option to implement this would have been to add special handling for a limited set of test-expressions in semantic index-building. We would then analyze expressions like <code>sys.version_info &gt;= (x, y)</code>, <code>typing.TYPE_CHECKING</code>, <code>True</code> and <code>False</code> without any type inference and consequently close down (or unconditionally open) branches whose truthiness we can analyze in this way. This would simplify the implementation, but is much less general than the approach taken here.</p>
 <p>Instead, we collect all necessary information during semantic index building, and then re-analyze the control flow during type-checking. The way this works is by recording so-called visibility constraints for each binding and declaration. Note that these constraints are in some sense similar to narrowing constraints, but also work quite differently and are applied at different points in control flow. Consider the following example first. Note how visibility constraints can apply to bindings outside of the if-statement:</p>
-<pre><code class="language-py">x = 1  # visibility constraint: ~test
+<pre><code>x = 1  # visibility constraint: ~test
 if test:
     x = 2  # visibility constraint: test
 
@@ -60,9 +60,9 @@ use(y)
 | always false      | always true | <code>Literal[1]</code>    | unbound          |
 | ambigous          | ambigous | <code>Literal[1, 2]</code> | possibly unbound |
 | always true       | always false | <code>Literal[2]</code>    | bound            |</p>
-<h3>Sequential constraints</h3>
-<p>Next, let's consider a sequence of multiple control flow elements:</p>
-<pre><code class="language-py">x = 0
+Sequential constraints
+<p>Next, let&#x27;s consider a sequence of multiple control flow elements:</p>
+<pre><code>x = 0
 
 if test1:  
     x = 1
@@ -72,7 +72,7 @@ if test2:
 </code></pre>
 <p>The binding <code>x = 2</code> is easy to analyze. Its visibility correponds to the truthiness of <code>test2</code>. For the <code>x = 1</code> binding, things are a bit more interesting. It is always visible if <code>test1</code> is always-true <em>AND</em> <code>test2</code> is always-false. It is never visible if <code>test1</code> is always-false <em>OR</em> <code>test2</code> is always-true. Note the asymmetry in the logical operators here. We introduce a new constraint <a href="https://en.wikipedia.org/wiki/Three-valued_logic#Kleene_and_Priest_logics"><code>KleeneAnd(a, b)</code></a>, which is always-true if both <code>a</code> and <code>b</code> are always-true, always-false if either <code>a</code> or <code>b</code> are always-false, and ambiguous otherwise. Then we can formulate the constraint for the <code>x = 1</code> binding as <code>KleeneAnd(test1, ~test2)</code>.</p>
 <p>The <code>x = 0</code> binding can be handled similarly, with the difference that both <code>test1</code> and <code>test2</code> are negated:</p>
-<pre><code class="language-py">x = 0  # KleeneAnd(~test1, ~test2)
+<pre><code>x = 0  # KleeneAnd(~test1, ~test2)
 
 if test1:  
     x = 1  # KleeneAnd(test1, ~test2)
@@ -80,9 +80,9 @@ if test1:
 if test2:
     x = 2  # test2
 </code></pre>
-<h3>Merged (or parallel) constraints</h3>
-<p>Finally, let's consider this example of &quot;parallel&quot; control flow (where we have omitted the test condition for the outer control flow element, as it would only complicate the discussion; instead of <code>if &lt;…&gt;</code> you can also consider any other control-flow splitting element where we have no static analysis of which branch is taken)</p>
-<pre><code class="language-py">x = 0
+Merged (or parallel) constraints
+<p>Finally, let&#x27;s consider this example of &quot;parallel&quot; control flow (where we have omitted the test condition for the outer control flow element, as it would only complicate the discussion; instead of <code>if &lt;…&gt;</code> you can also consider any other control-flow splitting element where we have no static analysis of which branch is taken)</p>
+<pre><code>x = 0
 
 if &lt;…&gt;:
     if test1:
@@ -94,7 +94,7 @@ else:
 use(x)
 </code></pre>
 <p>At the usage of <code>x</code>, i.e. after the control flow has been merged again, the visibility of the <code>x = 0</code> binding behaves as follows: the binding is always visible if <code>test1</code> is always-false <em>OR</em> <code>test2</code> is always-false; and it is never visible if <code>test1</code> is always-true <em>AND</em> <code>test2</code> is always-true. Again, note the asymmetry. We introduce a new constraint <a href="https://en.wikipedia.org/wiki/Three-valued_logic#Kleene_and_Priest_logics"><code>KleeneOr(a, b)</code></a> which is always-true if <code>a</code> is always-true OR <code>b</code> is always true; and always-false if <code>a</code> is always-false AND <code>b</code> is always-false. This allows us to annotate the bindings with the following constraints:</p>
-<pre><code class="language-py">x = 0  # KleeneOr(~test1, ~test2)
+<pre><code>x = 0  # KleeneOr(~test1, ~test2)
 
 if &lt;…&gt;:
     if test1:
@@ -105,10 +105,10 @@ else:
 
 use(x)
 </code></pre>
-<h3>Properties</h3>
+Properties
 <p>We note that <code>KleeneAnd</code> and <code>KleeneOr</code> have the property that <code>KleeneOr(~a, ~b) = ~KleeneAnd(a, b)</code>. This means we can, in principle, get rid of either of these two to simplify the representation.</p>
 <p>However, we already apply negative constraints <code>~test1</code> and <code>~test2</code> to the &quot;branches not taken&quot; in the example above. This means that the tree-representation <code>KleeneOr(~test1, ~test2)</code> is much cheaper/shallower than basically creating <code>~KleeneAnd(~(~test1), ~(~test2))</code>. Similarly, if we wanted to get rid of <code>KleeneAnd</code>, we would also have to create additional nodes. So for performance reasons, there is a certain &quot;duplication&quot; in the code between those two constraint types.</p>
-<h2>Other</h2>
+Other
 <p>This branch also includes:</p>
 <ul>
 <li><code>sys.platform</code> support</li>
@@ -117,18 +117,18 @@ use(x)
 </ul>
 <p>closes #12700
 closes #15034</p>
-<h2>Performance</h2>
-<h3><code>tomllib</code>, -7%, needs to resolve one additional module (sys)</h3>
+Performance
+<code>tomllib</code>, -7%, needs to resolve one additional module (sys)
 <p>| Command | Mean [ms] | Min [ms] | Max [ms] | Relative |
 |:---|---:|---:|---:|---:|
 | <code>./red_knot_main --project /home/shark/tomllib</code> | 22.2 ± 1.3 | 19.1 | 25.6 | 1.00 |
 | <code>./red_knot_feature --project /home/shark/tomllib</code> | 23.8 ± 1.6 | 20.8 | 28.6 | 1.07 ± 0.09 |</p>
-<h3><code>black</code>, -6%</h3>
+<code>black</code>, -6%
 <p>| Command | Mean [ms] | Min [ms] | Max [ms] | Relative |
 |:---|---:|---:|---:|---:|
 | <code>./red_knot_main --project /home/shark/black</code> | 129.3 ± 5.1 | 119.0 | 137.8 | 1.00 |
 | <code>./red_knot_feature --project /home/shark/black</code> | 136.5 ± 6.8 | 123.8 | 147.5 | 1.06 ± 0.07 |</p>
-<h2>Test Plan</h2>
+Test Plan
 <ul>
 <li>New Markdown tests for the main feature in <code>statically-known-branches.md</code></li>
 <li>New Markdown tests for <code>sys.platform</code></li>
@@ -137,17 +137,17 @@ closes #15034</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2024-12-16 12:33</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-12-16 12:33</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-12-17 09:39</div>
-            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/david%2Fstatically-known-branches-2">CodSpeed Performance Report</a></h2>
-<h3>Merging #15019 will <strong>degrade performances by 17.15%</strong></h3>
-<p><sub>Comparing <code>david/statically-known-branches-2</code> (95d079c) with <code>main</code> (d3f51cf)</sub></p>
-<h3>Summary</h3>
-<p><code>❌ 1 (👁 1)</code> regressions<br />
+            <div class="timeline-body"><a href="https://codspeed.io/astral-sh/ruff/branches/david%2Fstatically-known-branches-2">CodSpeed Performance Report</a>
+Merging #15019 will <strong>degrade performances by 17.15%</strong>
+<p>Comparing <code>david/statically-known-branches-2</code> (95d079c) with <code>main</code> (d3f51cf)</p>
+Summary
+<p><code>❌ 1 (👁 1)</code> regressions<br>
 <code>✅ 31</code> untouched benchmarks</p>
-<h3>Benchmarks breakdown</h3>
+Benchmarks breakdown
 <p>|     | Benchmark | <code>main</code> | <code>david/statically-known-branches-2</code> | Change |
 | --- | --------- | ----------------------- | ------------------- | ------ |
 | 👁 | <code>red_knot_check_file[cold]</code> | 69.5 ms | 83.9 ms | -17.15% |</p>
@@ -155,17 +155,17 @@ closes #15034</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-12-17 19:46</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">great writeup</span> added by @AlexWaygood on 2024-12-18 18:42</div>
+            <div class="event">Label <span class="label">great writeup</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-12-18 18:42</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/statically_known_branches.md</code>:838 on 2024-12-18 20:04</div>
@@ -175,12 +175,12 @@ closes #15034</p>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/statically_known_branches.md</code>:1 on 2024-12-18 20:14</div>
             <div class="timeline-body"><p>These tests are so fantastic and exhaustive that I hesitate to suggest any addition, but it does strike me that we thoroughly test our control-flow support, but not so much our recognition of expression truthiness when determining statically known branches. I think these tests could (almost?) all be made to pass if we just did simple pattern-recognition of <code>True</code>, <code>False</code>, the <code>sys</code> cases, and maybe a few cases involving immediate literals.</p>
-<p>Maybe would be worth adding at least one test explicitly showing that if we have e.g. a custom class with <code>def __bool__(self) -&gt; Literal[True]: ...</code>, even imported from a different file, an instance of that class still counts as a statically-known test condition. This shows that we use the full power of type inference, we don't just match on a few hard-coded cases.</p>
+<p>Maybe would be worth adding at least one test explicitly showing that if we have e.g. a custom class with <code>def __bool__(self) -&gt; Literal[True]: ...</code>, even imported from a different file, an instance of that class still counts as a statically-known test condition. This shows that we use the full power of type inference, we don&#x27;t just match on a few hard-coded cases.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:334 on 2024-12-18 20:32</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">        self.current_use_def_map_mut().record_constraint(negated)
+            <div class="timeline-body"><pre><code>        self.current_use_def_map_mut().record_constraint(negated)
 </code></pre>
 </div>
         </div>
@@ -191,7 +191,7 @@ closes #15034</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:29 on 2024-12-18 20:42</div>
-            <div class="timeline-body"><p>The intent of the previous design was that the <code>ScopedConstraintId</code> would stay local to <code>UseDefMap[Builder]</code>, not be exposed outside it, since we have so many ID kinds already (<code>Constraint&lt;'db&gt;</code> is also an ID!), and it's supposed to just be an index into the internal IndexVec. It may be that's not feasible with the APIs we need, I haven't fully processed all that yet; just dropping this thought here so I don't forget it.</p>
+            <div class="timeline-body"><p>The intent of the previous design was that the <code>ScopedConstraintId</code> would stay local to <code>UseDefMap[Builder]</code>, not be exposed outside it, since we have so many ID kinds already (<code>Constraint&lt;&#x27;db&gt;</code> is also an ID!), and it&#x27;s supposed to just be an index into the internal IndexVec. It may be that&#x27;s not feasible with the APIs we need, I haven&#x27;t fully processed all that yet; just dropping this thought here so I don&#x27;t forget it.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -206,21 +206,21 @@ closes #15034</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/visibility_constraints.rs</code>:69 on 2024-12-18 22:03</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">        &amp;self,
+            <div class="timeline-body"><pre><code>        &amp;self,
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/visibility_constraints.rs</code>:78 on 2024-12-18 22:03</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">        &amp;self,
+            <div class="timeline-body"><pre><code>        &amp;self,
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/visibility_constraints.rs</code>:26 on 2024-12-18 22:14</div>
             <div class="timeline-body"><p>It would be interesting to see the performance impact if we made a <code>VisibilityConstraint</code> a tracked struct, and analyzing it a query.</p>
-<p>It would increase our ingredient count, which would probably hurt incremental performance, but it would mean we don't have to repeatedly re-analyze the same binary expression tree, which I assume is most of what causes the exponential behavior analyzing Black (I'm judging here from the fact that getting truthiness of the leaf nodes is already Salsa-cached, and you only enforce max recursion depth on analysis.) There's a fair amount of work happening in <code>analyze{_impl,_single}</code> even in the case where all the <code>infer_expression_types</code> are already cached, and we may currently repeat that work many times for the same constraints.</p>
-<p>Not sure if I would prioritize this experiment before or after experimenting with the impact of using a TDD, though. Seeing that the recursion depth is applied only to evaluation (and thus reducing evaluation cost is what's needed to address the Black regression) also makes me optimistic about the impact of a representation that is better simplified and more efficient to evaluate.</p>
+<p>It would increase our ingredient count, which would probably hurt incremental performance, but it would mean we don&#x27;t have to repeatedly re-analyze the same binary expression tree, which I assume is most of what causes the exponential behavior analyzing Black (I&#x27;m judging here from the fact that getting truthiness of the leaf nodes is already Salsa-cached, and you only enforce max recursion depth on analysis.) There&#x27;s a fair amount of work happening in <code>analyze{_impl,_single}</code> even in the case where all the <code>infer_expression_types</code> are already cached, and we may currently repeat that work many times for the same constraints.</p>
+<p>Not sure if I would prioritize this experiment before or after experimenting with the impact of using a TDD, though. Seeing that the recursion depth is applied only to evaluation (and thus reducing evaluation cost is what&#x27;s needed to address the Black regression) also makes me optimistic about the impact of a representation that is better simplified and more efficient to evaluate.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -232,7 +232,7 @@ closes #15034</p>
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def/symbol_state.rs</code>:121 on 2024-12-18 22:37</div>
             <div class="timeline-body"><p>Two naming nits here: one is consistency on &quot;Constraint&quot; vs &quot;Constraints&quot;, and the other is consistency on binding vs declaration vs definition (where &quot;definition&quot; encompasses both binding and declaration).</p>
 <p>Narrowing constraints apply only to bindings, not declarations. Visibility constraints apply to both.</p>
-<pre><code class="language-suggestion">type VisibilityConstraintsPerDefinition = SmallVec&lt;InlineVisibilityConstraintsArray&gt;;
+<pre><code>type VisibilityConstraintsPerDefinition = SmallVec&lt;InlineVisibilityConstraintsArray&gt;;
 </code></pre>
 </div>
         </div>
@@ -243,14 +243,14 @@ closes #15034</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def/symbol_state.rs</code>:249 on 2024-12-18 22:59</div>
-            <div class="timeline-body"><p>really very nitpicky: let's keep consistent usage of defined vs bound vs declared:</p>
-<pre><code class="language-suggestion">    pub(super) fn undefined(undefined_visibility: ScopedVisibilityConstraintId) -&gt; Self {
+            <div class="timeline-body"><p>really very nitpicky: let&#x27;s keep consistent usage of defined vs bound vs declared:</p>
+<pre><code>    pub(super) fn undefined(undefined_visibility: ScopedVisibilityConstraintId) -&gt; Self {
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def/symbol_state.rs</code>:279 on 2024-12-18 23:06</div>
-            <div class="timeline-body"><p>So I take it this is an optimization for the case where we've passed through a conditional branch point and re-merged control flow, and there were no definitions/declarations in either conditional branch? So this just restores the prior visibility state and avoids having extraneous merged visibility constraints on all our definitions that ultimately will have no effect?</p>
+            <div class="timeline-body"><p>So I take it this is an optimization for the case where we&#x27;ve passed through a conditional branch point and re-merged control flow, and there were no definitions/declarations in either conditional branch? So this just restores the prior visibility state and avoids having extraneous merged visibility constraints on all our definitions that ultimately will have no effect?</p>
 <p>Is it the case that if we had perfect simplification of the binary expression trees, this optimization would be unnecessary?</p>
 </div>
         </div>
@@ -266,7 +266,7 @@ closes #15034</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def/symbol_state.rs</code>:511 on 2024-12-18 23:21</div>
-            <div class="timeline-body"><p>I'm not sure why this needs to be added here rather than added at the use-def map level</p>
+            <div class="timeline-body"><p>I&#x27;m not sure why this needs to be added here rather than added at the use-def map level</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -276,8 +276,8 @@ closes #15034</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:331 on 2024-12-18 23:26</div>
-            <div class="timeline-body"><p>Why does the inner iterator need these references? It doesn't seem to use them in its own <code>next</code> method, that I could see.</p>
-<p>I see they are used in type inference, but they will be the same for every <code>BindingWithConstraints</code>; couldn't they could be accessed directly off the <code>BindingWithConstraintsIterator</code> as attributes (or directly off the use-def map?), rather than making every <code>BindingWithConstraints</code> two words larger?</p>
+            <div class="timeline-body"><p>Why does the inner iterator need these references? It doesn&#x27;t seem to use them in its own <code>next</code> method, that I could see.</p>
+<p>I see they are used in type inference, but they will be the same for every <code>BindingWithConstraints</code>; couldn&#x27;t they could be accessed directly off the <code>BindingWithConstraintsIterator</code> as attributes (or directly off the use-def map?), rather than making every <code>BindingWithConstraints</code> two words larger?</p>
 <p>Or alternatively, not sure if <code>BindingWithConstraintsIterator::next</code> could itself encapsulate more of the logic that is currently in <code>bindings_ty</code>, and not require direct access to these IndexVecs in type inference. (Hmm, maybe this last is not a good idea, if it means that iterating over <code>BindingWithConstraintsIterator</code> would then require a db and doing type inference of visibility constraints.)</p>
 </div>
         </div>
@@ -298,14 +298,14 @@ closes #15034</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:457 on 2024-12-18 23:35</div>
-            <div class="timeline-body"><p>Hmm, not sure what to best call this. I don't like using &quot;unbound&quot; because that implies its specific to bindings, not declarations, which is not true. But <code>undefined_visibility</code> reads a little oddly. We could literally just call it <code>scope_start_visibility</code>?</p>
-<pre><code class="language-suggestion">    unbound_visibility: ScopedVisibilityConstraintId,
+            <div class="timeline-body"><p>Hmm, not sure what to best call this. I don&#x27;t like using &quot;unbound&quot; because that implies its specific to bindings, not declarations, which is not true. But <code>undefined_visibility</code> reads a little oddly. We could literally just call it <code>scope_start_visibility</code>?</p>
+<pre><code>    unbound_visibility: ScopedVisibilityConstraintId,
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/visibility_constraints.rs</code>:18 on 2024-12-18 23:41</div>
-            <div class="timeline-body"><p>This could hold a <code>Constraint&lt;'db&gt;</code> instead of a <code>ScopedConstraintId</code>? Both are just <code>u32</code> IDs, but it would remove one lookup (and the need for access to <code>AllConstraints</code>) when analyzing, and it might remove the need for the awkward <code>(constraint_id, constraint)</code> return type stuff in semantic index builder?</p>
+            <div class="timeline-body"><p>This could hold a <code>Constraint&lt;&#x27;db&gt;</code> instead of a <code>ScopedConstraintId</code>? Both are just <code>u32</code> IDs, but it would remove one lookup (and the need for access to <code>AllConstraints</code>) when analyzing, and it might remove the need for the awkward <code>(constraint_id, constraint)</code> return type stuff in semantic index builder?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -315,12 +315,12 @@ closes #15034</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:1408 on 2024-12-18 23:54</div>
-            <div class="timeline-body"><p>I'm guessing addressing the TODOs in the tests would involve adding an additional negated visibility constraint somewhere in here? Is it worth a TODO here as well, if there's any useful context you can record about how to do it / why it's hard?</p>
+            <div class="timeline-body"><p>I&#x27;m guessing addressing the TODOs in the tests would involve adding an additional negated visibility constraint somewhere in here? Is it worth a TODO here as well, if there&#x27;s any useful context you can record about how to do it / why it&#x27;s hard?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:360 on 2024-12-18 23:56</div>
-            <div class="timeline-body"><p>It would be possible, in the case where <code>constraint</code> is a <code>VisibleIf</code> constraint, to avoid the wrapping with <code>VisibleIfNot</code> and instead just record a <code>VisibleIf</code> around a new <code>Constraint</code> that's a copy of <code>constraint</code> with the sign flag flipped. Not sure if this would be a net win due to less deep visibility constraint trees, or a loss due to more Constraint ingredients.</p>
+            <div class="timeline-body"><p>It would be possible, in the case where <code>constraint</code> is a <code>VisibleIf</code> constraint, to avoid the wrapping with <code>VisibleIfNot</code> and instead just record a <code>VisibleIf</code> around a new <code>Constraint</code> that&#x27;s a copy of <code>constraint</code> with the sign flag flipped. Not sure if this would be a net win due to less deep visibility constraint trees, or a loss due to more Constraint ingredients.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -330,7 +330,7 @@ closes #15034</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:96 on 2024-12-19 00:01</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">                // Symbol is possibly undeclared and definitely bound
+            <div class="timeline-body"><pre><code>                // Symbol is possibly undeclared and definitely bound
 </code></pre>
 </div>
         </div>
@@ -341,9 +341,9 @@ closes #15034</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:109 on 2024-12-19 00:06</div>
-            <div class="timeline-body"><p>This comment wasn't previously a TODO, and I don't think it should be a TODO. The relevant comment here is</p>
+            <div class="timeline-body"><p>This comment wasn&#x27;t previously a TODO, and I don&#x27;t think it should be a TODO. The relevant comment here is</p>
 <blockquote>
-<p>Intentionally ignore conflicting declared types; that's not our problem, it's the problem of the module we are importing from.</p>
+<p>Intentionally ignore conflicting declared types; that&#x27;s not our problem, it&#x27;s the problem of the module we are importing from.</p>
 </blockquote>
 </div>
         </div>
@@ -359,7 +359,7 @@ closes #15034</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:272 on 2024-12-19 00:21</div>
-            <div class="timeline-body"><p>It seems like we shouldn't have to collect these into a vec? Can we make it a lazy map all the way through to the final union?</p>
+            <div class="timeline-body"><p>It seems like we shouldn&#x27;t have to collect these into a vec? Can we make it a lazy map all the way through to the final union?</p>
 <p>If not, then using a smallvec here might win back noticeable perf, since usually there should be few visible bindings.</p>
 </div>
         </div>
@@ -371,7 +371,7 @@ closes #15034</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:347 on 2024-12-19 00:26</div>
-            <div class="timeline-body"><p>Hmm, I see that by using <code>Symbol</code> here, which includes &quot;Boundness&quot;, we give up on distinguishing boundness (applies to bindings) from declaredness (applies to declarations). Maybe that's fine as temporary state in this PR, something to consider as follow up, along with the whole issue of declaredness vs boundness.</p>
+            <div class="timeline-body"><p>Hmm, I see that by using <code>Symbol</code> here, which includes &quot;Boundness&quot;, we give up on distinguishing boundness (applies to bindings) from declaredness (applies to declarations). Maybe that&#x27;s fine as temporary state in this PR, something to consider as follow up, along with the whole issue of declaredness vs boundness.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -386,7 +386,7 @@ closes #15034</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-19 00:33</div>
-            <div class="timeline-body"><p>This is really superb!! Very happy with how it turned out. (Modulo the arbitrary recursion limit, but I'm hopeful we'll be able to bump that up.)</p>
+            <div class="timeline-body"><p>This is really superb!! Very happy with how it turned out. (Modulo the arbitrary recursion limit, but I&#x27;m hopeful we&#x27;ll be able to bump that up.)</p>
 <p>Probably more review than you were looking for at this stage, sorry. Just not sure where to draw the line, once I got started :)</p>
 </div>
         </div>
@@ -405,7 +405,7 @@ closes #15034</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/visibility_constraints.rs</code>:224 on 2024-12-19 09:58</div>
-            <div class="timeline-body"><p>I thought about it. The way we construct the <code>And</code> constraints right now, this can never happen. But we should probably add the other path as well, in order not to confuse readers. It's not like that would be much slower, if at all (with branch prediction).</p>
+            <div class="timeline-body"><p>I thought about it. The way we construct the <code>And</code> constraints right now, this can never happen. But we should probably add the other path as well, in order not to confuse readers. It&#x27;s not like that would be much slower, if at all (with branch prediction).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -417,12 +417,12 @@ closes #15034</p>
             <div class="timeline-body"><blockquote>
 <p>Two naming nits here: one is consistency on &quot;Constraint&quot; vs &quot;Constraints&quot;,</p>
 </blockquote>
-<p>I chose <code>Constraint</code> (singular) deliberately. There is just one visibility constraint per definition. It can be a more complex constraint like <code>a AND b</code>, but it's always just one <code>VisibilityConstraint</code>. This is different from narrowing constraints, where we can have a whole set of constraints (one <code>Constraints</code> bitset) per definition.</p>
+<p>I chose <code>Constraint</code> (singular) deliberately. There is just one visibility constraint per definition. It can be a more complex constraint like <code>a AND b</code>, but it&#x27;s always just one <code>VisibilityConstraint</code>. This is different from narrowing constraints, where we can have a whole set of constraints (one <code>Constraints</code> bitset) per definition.</p>
 <p>I guess you could argue that the tree of visibility constraints also includes multiple constraints, but then we should rename <code>VisibilityConstraint</code> to <code>VisibilityConstraints</code>, which seems a bit weird to me.</p>
 <blockquote>
 <p>and the other is consistency on binding vs declaration vs definition (where &quot;definition&quot; encompasses both binding and declaration).</p>
 </blockquote>
-<p>I didn't do that because we would then have <code>ConstraintsPerBinding</code> and <code>VisibilityConstraintPerDefinition</code> in <code>SymbolBindings</code>. I also thought about changing both to <code>XyzPerDefinition</code>, but then the (already quite hard to understand) <code>SymbolBindings</code> struct becomes less readable, as it has a <code>live_bindings</code> field, not a <code>live_definitions</code> field.</p>
+<p>I didn&#x27;t do that because we would then have <code>ConstraintsPerBinding</code> and <code>VisibilityConstraintPerDefinition</code> in <code>SymbolBindings</code>. I also thought about changing both to <code>XyzPerDefinition</code>, but then the (already quite hard to understand) <code>SymbolBindings</code> struct becomes less readable, as it has a <code>live_bindings</code> field, not a <code>live_definitions</code> field.</p>
 <p>I went with a different solution now and simply introduced the same type with two different names:</p>
 <pre><code>type VisibilityConstraintPerDeclaration = SmallVec&lt;InlineVisibilityConstraintsArray&gt;;
 type VisibilityConstraintPerBinding = SmallVec&lt;InlineVisibilityConstraintsArray&gt;;
@@ -437,13 +437,13 @@ type VisibilityConstraintPerBinding = SmallVec&lt;InlineVisibilityConstraintsArr
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:331 on 2024-12-19 12:30</div>
             <div class="timeline-body"><blockquote>
-<p>I see they are used in type inference, but they will be the same for every <code>BindingWithConstraints</code>; couldn't they could be accessed directly off the <code>BindingWithConstraintsIterator</code> as attributes (or directly off the use-def map?), rather than making every <code>BindingWithConstraints</code> two words larger?</p>
+<p>I see they are used in type inference, but they will be the same for every <code>BindingWithConstraints</code>; couldn&#x27;t they could be accessed directly off the <code>BindingWithConstraintsIterator</code> as attributes (or directly off the use-def map?), rather than making every <code>BindingWithConstraints</code> two words larger?</p>
 </blockquote>
-<p>Yes — thanks! I was about to clean this all up (it was in this state from a previous iteration), but I'm not sure if I would have spotted this. Changed it now.</p>
+<p>Yes — thanks! I was about to clean this all up (it was in this state from a previous iteration), but I&#x27;m not sure if I would have spotted this. Changed it now.</p>
 <blockquote>
 <p>Or alternatively, not sure if <code>BindingWithConstraintsIterator::next</code> could itself encapsulate more of the logic that is currently in <code>bindings_ty</code>, and not require direct access to these IndexVecs in type inference. (Hmm, maybe this last is not a good idea, if it means that iterating over <code>BindingWithConstraintsIterator</code> would then require a db and doing type inference of visibility constraints.)</p>
 </blockquote>
-<p>I think this might be similar to what I had in my first iteration. I basically had <code>VisibilityConstraintRef</code>erences and they would be transformed into <code>VisibilityConstraint</code>s in the <code>next</code> method. The <code>VisibilityConstraint</code>s then didn't contain any references to the <code>IndexMap</code> anymore, but this required the tree nodes to be boxed, which was far too slow.</p>
+<p>I think this might be similar to what I had in my first iteration. I basically had <code>VisibilityConstraintRef</code>erences and they would be transformed into <code>VisibilityConstraint</code>s in the <code>next</code> method. The <code>VisibilityConstraint</code>s then didn&#x27;t contain any references to the <code>IndexMap</code> anymore, but this required the tree nodes to be boxed, which was far too slow.</p>
 <p>Let me know if you had something else in mind.</p>
 </div>
         </div>
@@ -461,7 +461,7 @@ type VisibilityConstraintPerBinding = SmallVec&lt;InlineVisibilityConstraintsArr
             <div class="timeline-body"><blockquote>
 <p>But <code>undefined_visibility</code> reads a little oddly</p>
 </blockquote>
-<p>Glad we agree. That's what I had before, but it sounded too much like a &quot;visibility that is undefined&quot;.</p>
+<p>Glad we agree. That&#x27;s what I had before, but it sounded too much like a &quot;visibility that is undefined&quot;.</p>
 <blockquote>
 <p>We could literally just call it <code>scope_start_visibility</code>?</p>
 </blockquote>
@@ -478,7 +478,7 @@ type VisibilityConstraintPerBinding = SmallVec&lt;InlineVisibilityConstraintsArr
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:1441 on 2024-12-19 13:00</div>
-            <div class="timeline-body"><p>I'd rather not say how long it took me to get <code>ast::Expr::BoolOp</code> part below right :smile:. There might be a simpler formulation of this with less snapshotting and resetting, but I need a break from these ~20 lines of code.</p>
+            <div class="timeline-body"><p>I&#x27;d rather not say how long it took me to get <code>ast::Expr::BoolOp</code> part below right :smile:. There might be a simpler formulation of this with less snapshotting and resetting, but I need a break from these ~20 lines of code.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -505,7 +505,7 @@ type VisibilityConstraintPerBinding = SmallVec&lt;InlineVisibilityConstraintsArr
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/statically_known_branches.md</code>:1 on 2024-12-19 14:16</div>
-            <div class="timeline-body"><p>Yes, good suggestion — thanks! see https://github.com/astral-sh/ruff/pull/15019/commits/c2efc77ded24997c602c97ad3bc372615281b2c2</p>
+            <div class="timeline-body"><p>Yes, good suggestion — thanks! see <a href="https://github.com/astral-sh/ruff/pull/15019">astral-sh/ruff#15019</a>/commits/c2efc77ded24997c602c97ad3bc372615281b2c2</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -518,7 +518,7 @@ type VisibilityConstraintPerBinding = SmallVec&lt;InlineVisibilityConstraintsArr
 <p>Is it the case that if we had perfect simplification of the binary expression trees, this optimization would be unnecessary?</p>
 </blockquote>
 <p>Hm... maybe? Consider this example:</p>
-<pre><code class="language-py">y = 1
+<pre><code>y = 1
 
 if test1:
     pass
@@ -532,7 +532,7 @@ use(y)
 </code></pre>
 <p>If we had binary logic, that condition would always be true. But since we have ternary logic, that is not the case. If both <code>test1</code> and <code>test2</code> are ambiguous, then the constraint evaluates to ambiguous as well.</p>
 <p>The problem is that we also need information about mutual exclusivity. <code>test1</code> can be of ambiguous static truthiness, but the pair <code>(test1, ~test1)</code> can be either <code>(true, false)</code> or <code>(false, true)</code>.</p>
-<p>So if we somehow go outside the bounds of ternary logic and add this information (maybe using the <code>is_positive</code> flag), it might be possible. But staying within the realms of ternary logic, we can't even simplify <code>test1 OR ~test</code> to always-true¹. &quot;Kleene logic has no tautologies&quot;.</p>
+<p>So if we somehow go outside the bounds of ternary logic and add this information (maybe using the <code>is_positive</code> flag), it might be possible. But staying within the realms of ternary logic, we can&#x27;t even simplify <code>test1 OR ~test</code> to always-true¹. &quot;Kleene logic has no tautologies&quot;.</p>
 <p>¹ To be clear, this <em>is</em> a simplification that we already perform. But nothing more advanced.</p>
 </div>
         </div>
@@ -574,7 +574,7 @@ use(y)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:272 on 2024-12-19 15:43</div>
-            <div class="timeline-body"><p>It improved performance by a tiny bit (&lt;1%). And it's also a bit more readable, thanks.</p>
+            <div class="timeline-body"><p>It improved performance by a tiny bit (&lt;1%). And it&#x27;s also a bit more readable, thanks.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -583,7 +583,7 @@ use(y)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:97 on 2024-12-19 15:53</div>
-            <div class="timeline-body"><p>It seems we don't have any test coverage for this. I'll note it down as a follow-up task. Changed to return a union in both cases for now.</p>
+            <div class="timeline-body"><p>It seems we don&#x27;t have any test coverage for this. I&#x27;ll note it down as a follow-up task. Changed to return a union in both cases for now.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -596,13 +596,13 @@ use(y)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @sharkdp on 2024-12-19 16:00</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-12-19 16:00</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @sharkdp on 2024-12-19 16:00</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-12-19 16:00</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2024-12-19 16:00</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-12-19 16:00</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-12-19 16:15</div>
@@ -615,7 +615,7 @@ use(y)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/visibility_constraints.rs</code>:298 on 2024-12-19 16:27</div>
-            <div class="timeline-body"><p>Referencing a previous review comment by @MichaReiser: https://github.com/astral-sh/ruff/pull/14759#discussion_r1881630989</p>
+            <div class="timeline-body"><p>Referencing a previous review comment by @MichaReiser: <a href="https://github.com/astral-sh/ruff/pull/14759">astral-sh/ruff#14759</a>#discussion_r1881630989</p>
 <p>This is probably still relevant here.</p>
 </div>
         </div>
@@ -629,7 +629,7 @@ use(y)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/statically_known_branches.md</code>:253 on 2024-12-19 16:35</div>
-            <div class="timeline-body"><p>Referencing a review comment by @AlexWaygood here: https://github.com/astral-sh/ruff/pull/14759#discussion_r1882429730</p>
+            <div class="timeline-body"><p>Referencing a review comment by @AlexWaygood here: <a href="https://github.com/astral-sh/ruff/pull/14759">astral-sh/ruff#14759</a>#discussion_r1882429730</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -645,12 +645,12 @@ use(y)
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/python_platform.rs</code>:16 on 2024-12-19 16:37</div>
             <div class="timeline-body"><p>interesting -- do pyright/mypy allow arbitrary strings for their equivalent setting?</p>
 <p>Obviously mypy will <em>default</em> to whatever <code>sys.platform</code> is in Python at runtime, which could be any arbitrary string (within certain limits)...</p>
-<p>The reason I'm not a <em>massive</em> fan of this is it seems like it would be really easy to make a typo in a config file like <code>python-platform = &quot;linus&quot;</code> and then get really weird (and hard-to-debug) type-checking results. See also our existing linter checks that try to catch bugs in this genre:</p>
+<p>The reason I&#x27;m not a <em>massive</em> fan of this is it seems like it would be really easy to make a typo in a config file like <code>python-platform = &quot;linus&quot;</code> and then get really weird (and hard-to-debug) type-checking results. See also our existing linter checks that try to catch bugs in this genre:</p>
 <ul>
 <li>https://docs.astral.sh/ruff/rules/unrecognized-platform-name/</li>
 <li>https://docs.astral.sh/ruff/rules/unrecognized-platform-check/</li>
 </ul>
-<p>It just seems like a shame not to have <em>any</em> validation here... but there are obviously <em>many</em> different values that <code>sys.platform</code> could be at runtime, so I'm not sure what the best solution is...</p>
+<p>It just seems like a shame not to have <em>any</em> validation here... but there are obviously <em>many</em> different values that <code>sys.platform</code> could be at runtime, so I&#x27;m not sure what the best solution is...</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -659,12 +659,12 @@ use(y)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:29 on 2024-12-19 16:38</div>
-            <div class="timeline-body"><p>We don't need to export <code>ScopedConstraintId</code> anymore here.</p>
+            <div class="timeline-body"><p>We don&#x27;t need to export <code>ScopedConstraintId</code> anymore here.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/statically_known_branches.md</code>:253 on 2024-12-19 16:38</div>
-            <div class="timeline-body"><p>I know what you mean. I worry that writing the tests like this makes them a little prone to future breakage as well, though, since at some point we'll start emitting errors on functions like this that are annotated as returning <code>bool</code> but <em>really</em> return <code>None</code></p>
+            <div class="timeline-body"><p>I know what you mean. I worry that writing the tests like this makes them a little prone to future breakage as well, though, since at some point we&#x27;ll start emitting errors on functions like this that are annotated as returning <code>bool</code> but <em>really</em> return <code>None</code></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -683,7 +683,7 @@ use(y)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:519 on 2024-12-19 16:46</div>
-            <div class="timeline-body"><p>nit: would it be better to have this method as a manual implementation of <code>Default::default</code>? It might lead to a slightly smaller diff in this PR (you wouldn't have to update uses of <code>UseDefMapBuilder::deafult()</code> to <code>UseDefMapBuilder::new()</code>), and implementing <code>Default</code> obviously has several other advantages</p>
+            <div class="timeline-body"><p>nit: would it be better to have this method as a manual implementation of <code>Default::default</code>? It might lead to a slightly smaller diff in this PR (you wouldn&#x27;t have to update uses of <code>UseDefMapBuilder::deafult()</code> to <code>UseDefMapBuilder::new()</code>), and implementing <code>Default</code> obviously has several other advantages</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -697,8 +697,8 @@ use(y)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:616 on 2024-12-19 16:55</div>
-            <div class="timeline-body"><p>I believe this is equivalent, and it's a bit simpler? (All tests pass, anyway!)</p>
-<pre><code class="language-suggestion">        // Loop terminates when we reach a symbol not present in snapshot
+            <div class="timeline-body"><p>I believe this is equivalent, and it&#x27;s a bit simpler? (All tests pass, anyway!)</p>
+<pre><code>        // Loop terminates when we reach a symbol not present in snapshot
         // (means we keep visibility constraints)
         for (current, snapshot) in self.symbol_states.iter_mut().zip(snapshot.symbol_states) {
             current.simplify_visibility_constraints(snapshot);
@@ -709,7 +709,7 @@ use(y)
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:559 on 2024-12-19 16:56</div>
             <div class="timeline-body"><p>we can avoid the <code>len()</code> call in release builds:</p>
-<pre><code class="language-suggestion">        debug_assert!(self.symbol_states.len() &gt;= snapshot.symbol_states.len());
+<pre><code>        debug_assert!(self.symbol_states.len() &gt;= snapshot.symbol_states.len());
 </code></pre>
 </div>
         </div>
@@ -719,42 +719,42 @@ use(y)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/statically_known_branches.md</code>:253 on 2024-12-19 16:57</div>
-            <div class="timeline-body"><p>Yeah I don't think we have to enforce a single style here, we can use our judgment about what is nicer in each specific case. There is some inherent value in variety, in that it gives us better incidental test coverage of different areas of inference.</p>
+            <div class="timeline-body"><p>Yeah I don&#x27;t think we have to enforce a single style here, we can use our judgment about what is nicer in each specific case. There is some inherent value in variety, in that it gives us better incidental test coverage of different areas of inference.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def/symbol_state.rs</code>:247 on 2024-12-19 17:01</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">        debug_assert_ne!(binding_id, ScopedDefinitionId::UNBOUND);
+            <div class="timeline-body"><pre><code>        debug_assert_ne!(binding_id, ScopedDefinitionId::UNBOUND);
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:82 on 2024-12-19 17:09</div>
-            <div class="timeline-body"><p>it looks like this is a pre-existing issue, but it seems odd to me that the <code>declarations_ty</code> function returns a <code>Symbol</code> rather than a <code>Type</code>, and that the variable here is called <code>declared_ty</code> when it's a <code>Symbol</code>. Anyway, feel free to ignore this comment for now!</p>
+            <div class="timeline-body"><p>it looks like this is a pre-existing issue, but it seems odd to me that the <code>declarations_ty</code> function returns a <code>Symbol</code> rather than a <code>Type</code>, and that the variable here is called <code>declared_ty</code> when it&#x27;s a <code>Symbol</code>. Anyway, feel free to ignore this comment for now!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:143 on 2024-12-19 17:17</div>
-            <div class="timeline-body"><p>What if it's a random user-defined module called <code>sys</code>? Do we have tests for that?</p>
-<p>What you have here <em>might</em> actually be okay for <code>sys</code> specifically, because of the fact that certain core stdlib modules can't be overridden by first-party or third-party modules (Python's import machinery <em>always</em> gives priority to the stdlib for these modules), and <code>sys</code> is one of them. But we should at least add a comment to this branch, if that's the reason why we're not checking the search path of this module.</p>
+            <div class="timeline-body"><p>What if it&#x27;s a random user-defined module called <code>sys</code>? Do we have tests for that?</p>
+<p>What you have here <em>might</em> actually be okay for <code>sys</code> specifically, because of the fact that certain core stdlib modules can&#x27;t be overridden by first-party or third-party modules (Python&#x27;s import machinery <em>always</em> gives priority to the stdlib for these modules), and <code>sys</code> is one of them. But we should at least add a comment to this branch, if that&#x27;s the reason why we&#x27;re not checking the search path of this module.</p>
 <p>I think the first branch of this function is definitely incorrect, actually, now that I look at it again: <code>typing</code> is <em>not</em> one of the modules that is immune from being overridden by first-party code. So we need to check that <code>module.search_path().is_standard_library()</code> in the first branch of this function before applying the special-casing for <code>typing.TYPE_CHECKING</code></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:388 on 2024-12-19 17:23</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">            for other in std::iter::once(second).chain(types) {
+            <div class="timeline-body"><pre><code>            for other in std::iter::once(second).chain(types) {
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:411 on 2024-12-19 17:23</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">                std::iter::once(first).chain(conflicting).collect(),
+            <div class="timeline-body"><pre><code>                std::iter::once(first).chain(conflicting).collect(),
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:6350 on 2024-12-19 17:27</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">            .find_map(|b| b.binding)
+            <div class="timeline-body"><pre><code>            .find_map(|b| b.binding)
 </code></pre>
 </div>
         </div>
@@ -770,7 +770,7 @@ use(y)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/TomerBin">@TomerBin</a> on 2024-12-19 18:23</div>
-            <div class="timeline-body"><p>Not a reviewer, just wanted to say that's the most beautiful tests I've ever seen 😍</p>
+            <div class="timeline-body"><p>Not a reviewer, just wanted to say that&#x27;s the most beautiful tests I&#x27;ve ever seen 😍</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -783,7 +783,7 @@ use(y)
 <p>interesting -- do pyright/mypy allow arbitrary strings for their equivalent setting?</p>
 </blockquote>
 <p>Yes, <code>mypy</code> allows arbitrary strings for its <code>--platform</code> option and also uses these user-provided strings in <code>sys.platform</code> checks.</p>
-<p>Pyright only allows the strings &quot;Darwin, Linux, or Windows&quot;, which seems too restrictive. I don't like that the identifiers deviate from the actual runtime values of <code>sys.platform</code>.</p>
+<p>Pyright only allows the strings &quot;Darwin, Linux, or Windows&quot;, which seems too restrictive. I don&#x27;t like that the identifiers deviate from the actual runtime values of <code>sys.platform</code>.</p>
 <p>/cc @MichaReiser</p>
 </div>
         </div>
@@ -802,12 +802,12 @@ use(y)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:143 on 2024-12-19 19:33</div>
-            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/15071 should help with this -- you'll be able to just do <code>file_to_module(db, scope.file(db)).is_some_and(|module| module.is_known(KnownModule::Sys))</code> if it is merged</p>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/15071 should help with this -- you&#x27;ll be able to just do <code>file_to_module(db, scope.file(db)).is_some_and(|module| module.is_known(KnownModule::Sys))</code> if it is merged</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:95 on 2024-12-19 21:33</div>
-            <div class="timeline-body"><p>We discussed that we'll revert this for now with a TODO</p>
+            <div class="timeline-body"><p>We discussed that we&#x27;ll revert this for now with a TODO</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -830,9 +830,9 @@ use(y)
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/statically_known_branches.md</code>:253 on 2024-12-20 00:41</div>
             <div class="timeline-body"><blockquote>
-<p>at some point we'll start emitting errors on functions like this that are annotated as returning <code>bool</code> but <em>really</em> return <code>None</code></p>
+<p>at some point we&#x27;ll start emitting errors on functions like this that are annotated as returning <code>bool</code> but <em>really</em> return <code>None</code></p>
 </blockquote>
-<p>I agree that's a concern; it might be better to actually include a <code>return True</code>. Of course, then that's also vulnerable to a (less certain) potential future where we do some inlining / return type inference of small functions and would infer that it always returns True.</p>
+<p>I agree that&#x27;s a concern; it might be better to actually include a <code>return True</code>. Of course, then that&#x27;s also vulnerable to a (less certain) potential future where we do some inlining / return type inference of small functions and would infer that it always returns True.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -842,7 +842,7 @@ use(y)
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def/symbol_state.rs</code>:121 on 2024-12-20 00:51</div>
             <div class="timeline-body"><p>Ah, I had missed the singular/plural difference! I agree that &quot;a visibility constraint can be a tree of visibility constraints&quot; is not a good reason to use plural here.</p>
-<p>I think your two-identical-types solution here is fine, but I also think that since we've already lost direct parallel with <code>ConstraintsPerBinding</code>, it would be fine to lose parallel here as well, and have <code>ConstraintsPerBinding</code> and <code>VisibilityConstraintsPerDefinition</code>. This also represents a real difference in how they are used.</p>
+<p>I think your two-identical-types solution here is fine, but I also think that since we&#x27;ve already lost direct parallel with <code>ConstraintsPerBinding</code>, it would be fine to lose parallel here as well, and have <code>ConstraintsPerBinding</code> and <code>VisibilityConstraintsPerDefinition</code>. This also represents a real difference in how they are used.</p>
 <p>Mostly I think it would be good in your documentation pass to add some comments on these types; right now the only comment says &quot;similar to above but for visibility constraints&quot;, when actually there are key differences from above.</p>
 </div>
         </div>
@@ -852,9 +852,9 @@ use(y)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def/symbol_state.rs</code>:279 on 2024-12-20 02:45</div>
-            <div class="timeline-body"><p>Ok, so I spent some more time thinking about this and reading up on boolean logic, and I think I pointed us in the wrong direction by suggesting three-value logic for this problem. Or not necessarily the <em>wrong</em> direction, as the problem can be solved that way (and you've done that), but not the optimal direction.</p>
-<p>This problem is better solved by a regular binary decision diagram, where we first build the full BDD, then in type inference we <a href="https://docs.rs/oxidd/latest/oxidd/trait.BooleanFunctionQuant.html#method.restrict">restrict</a> it by providing values for the variables (test conditions) that have static truthiness, and then visibility is determined by <a href="https://docs.rs/oxidd/latest/oxidd/trait.BooleanFunction.html#method.satisfiable">satisfiability</a> of the restricted function (where the only remaining variables in the restricted function would be the test conditions that have ambiguous truthiness). Building a reduced ordered BDD will automatically perform the kinds of simplifications we've discussed here; e.g. I've verified that using OxiDD, building a BDD for the function <code>test1 OR (~test1 AND test2) OR (~test1 AND ~test2)</code> does immediately simplify to just TRUE. (There are several BDD libraries for Rust; not sure if OxiDD is the best, it's just the one I've been playing with.)</p>
-<p>So I'm feeling increasingly confident that BDDs will be the path to our desired performance characteristics here. I think we should still go ahead and land this and consider BDD as a further optimization exploration, as we discussed today.</p>
+            <div class="timeline-body"><p>Ok, so I spent some more time thinking about this and reading up on boolean logic, and I think I pointed us in the wrong direction by suggesting three-value logic for this problem. Or not necessarily the <em>wrong</em> direction, as the problem can be solved that way (and you&#x27;ve done that), but not the optimal direction.</p>
+<p>This problem is better solved by a regular binary decision diagram, where we first build the full BDD, then in type inference we <a href="https://docs.rs/oxidd/latest/oxidd/trait.BooleanFunctionQuant.html#method.restrict">restrict</a> it by providing values for the variables (test conditions) that have static truthiness, and then visibility is determined by <a href="https://docs.rs/oxidd/latest/oxidd/trait.BooleanFunction.html#method.satisfiable">satisfiability</a> of the restricted function (where the only remaining variables in the restricted function would be the test conditions that have ambiguous truthiness). Building a reduced ordered BDD will automatically perform the kinds of simplifications we&#x27;ve discussed here; e.g. I&#x27;ve verified that using OxiDD, building a BDD for the function <code>test1 OR (~test1 AND test2) OR (~test1 AND ~test2)</code> does immediately simplify to just TRUE. (There are several BDD libraries for Rust; not sure if OxiDD is the best, it&#x27;s just the one I&#x27;ve been playing with.)</p>
+<p>So I&#x27;m feeling increasingly confident that BDDs will be the path to our desired performance characteristics here. I think we should still go ahead and land this and consider BDD as a further optimization exploration, as we discussed today.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -863,7 +863,7 @@ use(y)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/python_platform.rs</code>:16 on 2024-12-20 08:15</div>
-            <div class="timeline-body"><p>I don't mind using the <code>sys.platform</code> names directly. They're a bit more cryptic but they are also used in environment markers https://peps.python.org/pep-0496/</p>
+            <div class="timeline-body"><p>I don&#x27;t mind using the <code>sys.platform</code> names directly. They&#x27;re a bit more cryptic but they are also used in environment markers https://peps.python.org/pep-0496/</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -877,7 +877,7 @@ use(y)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:305 on 2024-12-20 08:22</div>
-            <div class="timeline-body"><p>It might be worth to add some documentation. E.g. to me it's unclear what the difference between <code>add_constraint</code> and <code>record_constraint</code> is. When should I use which?</p>
+            <div class="timeline-body"><p>It might be worth to add some documentation. E.g. to me it&#x27;s unclear what the difference between <code>add_constraint</code> and <code>record_constraint</code> is. When should I use which?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -891,17 +891,17 @@ use(y)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:1 on 2024-12-20 08:26</div>
-            <div class="timeline-body"><p>Can you review the module documentation for outdated documentation (if you haven't already done so)?</p>
+            <div class="timeline-body"><p>Can you review the module documentation for outdated documentation (if you haven&#x27;t already done so)?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:559 on 2024-12-20 08:28</div>
-            <div class="timeline-body"><p>I'm fairly confident that rust/llvm can remove the <code>len</code> call in release builds</p>
+            <div class="timeline-body"><p>I&#x27;m fairly confident that rust/llvm can remove the <code>len</code> call in release builds</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def/symbol_state.rs</code>:62 on 2024-12-20 08:29</div>
-            <div class="timeline-body"><p>Could you add some documentation for what <code>UNBOUND</code> is used and why it's okay to use 0?</p>
+            <div class="timeline-body"><p>Could you add some documentation for what <code>UNBOUND</code> is used and why it&#x27;s okay to use 0?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -915,11 +915,11 @@ use(y)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/visibility_constraints.rs</code>:298 on 2024-12-20 08:42</div>
-            <div class="timeline-body"><p>That might be, but the problem is that <code>evaluate</code> isn't a salsa query, nor is the code calling into <code>evaluate.</code> The problem is, to some extent, pre-existing because <code>symbol_id</code> already depends on the <code>UseDefMap</code>, that's why I think we can tackle it as a follow-up (but we definitely should):</p>
-<p>The flow I'm concerned about is:</p>
+            <div class="timeline-body"><p>That might be, but the problem is that <code>evaluate</code> isn&#x27;t a salsa query, nor is the code calling into <code>evaluate.</code> The problem is, to some extent, pre-existing because <code>symbol_id</code> already depends on the <code>UseDefMap</code>, that&#x27;s why I think we can tackle it as a follow-up (but we definitely should):</p>
+<p>The flow I&#x27;m concerned about is:</p>
 <ul>
 <li><code>Type::member</code> calls <code>types::symbol</code> which is not a salsa query (nor is <code>Type::member</code>)</li>
-<li><code>symbol</code> calls <code>types::symbol_by_id</code> which resolves the use def map (so it's a pre-existing issue!)</li>
+<li><code>symbol</code> calls <code>types::symbol_by_id</code> which resolves the use def map (so it&#x27;s a pre-existing issue!)</li>
 <li><code>symbol_by_id</code> calls into <code>declarations_ty</code> which calls <code>evaluate</code> and depends on the AST</li>
 </ul>
 <p>There are other examples for the same flow which, I think are all cross-module:</p>
@@ -956,7 +956,7 @@ use(y)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:1 on 2024-12-20 08:46</div>
-            <div class="timeline-body"><p>Yes — sorry. See the other review comment about this and my open &quot;Documentation&quot; TODO in the description. I'll definitely add this.</p>
+            <div class="timeline-body"><p>Yes — sorry. See the other review comment about this and my open &quot;Documentation&quot; TODO in the description. I&#x27;ll definitely add this.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -965,7 +965,7 @@ use(y)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:360 on 2024-12-20 08:50</div>
-            <div class="timeline-body"><p>Right, the duplication also bothered me a bit. I'll leave it as is for now, given that we might revisit performance later anyway.</p>
+            <div class="timeline-body"><p>Right, the duplication also bothered me a bit. I&#x27;ll leave it as is for now, given that we might revisit performance later anyway.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -974,9 +974,9 @@ use(y)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:342 on 2024-12-20 09:05</div>
-            <div class="timeline-body"><p>We discussed this separately. The short summary is that we can't add this assertions, as there can be situations in which we call <code>declarations_ty</code> (or <code>bindings_ty</code>?) in type inference of unreachable code, where this assertion is not fulfilled.</p>
+            <div class="timeline-body"><p>We discussed this separately. The short summary is that we can&#x27;t add this assertions, as there can be situations in which we call <code>declarations_ty</code> (or <code>bindings_ty</code>?) in type inference of unreachable code, where this assertion is not fulfilled.</p>
 <p>The longer explanation is this: in an example like</p>
-<pre><code class="language-py">(x := 0) and (x := 1) and (x := &quot;foo&quot;)
+<pre><code>(x := 0) and (x := 1) and (x := &quot;foo&quot;)
 </code></pre>
 <ul>
 <li>when we infer types for that named expression <code>x := &quot;foo&quot;</code>, we call <code>declarations_ty</code> to make sure that we can assign <code>&quot;foo&quot;</code> to the declared type of <code>x</code>.</li>
@@ -995,7 +995,7 @@ use(y)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:559 on 2024-12-20 09:07</div>
-            <div class="timeline-body"><p>I was about to comment the same thing, but I guess Alex' version is more readable anyway :smile:</p>
+            <div class="timeline-body"><p>I was about to comment the same thing, but I guess Alex&#x27; version is more readable anyway :smile:</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1013,7 +1013,7 @@ use(y)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/visibility_constraints.rs</code>:26 on 2024-12-20 10:40</div>
-            <div class="timeline-body"><p>I started the experiment here, but gave up after ~1.5 hours with a lot of lifetime errors still to be resolved: https://github.com/astral-sh/ruff/pull/15079</p>
+            <div class="timeline-body"><p>I started the experiment here, but gave up after ~1.5 hours with a lot of lifetime errors still to be resolved: <a href="https://github.com/astral-sh/ruff/pull/15079">astral-sh/ruff#15079</a></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1037,7 +1037,7 @@ use(y)
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-12-20 15:24</div>
             <div class="timeline-body"><p>I did the following benchmark to see how to set the recursion limit (where <code>red_knot_xy</code> has a <code>MAX_RECURSION_DEPTH</code> of <code>xy</code>):</p>
-<pre><code class="language-bash">hyperfine \                                                                                          
+<pre><code>hyperfine \                                                                                          
   --warmup=20 \
   --shell=none \
   --ignore-failure \
@@ -1045,10 +1045,10 @@ use(y)
   -L limit 0,8,16,24,32,48,64,no_limit \
   &quot;./red_knot_{limit} --project path/to/black&quot;
 </code></pre>
-<p>See the results below. There are two things to notice: there is no significant change in performance when going from zero (i.e. no static visibility analysis at all!) all the way up to a limit of ~32. After that, there is a jump of the runtime by a factor of five. I'll set the limit to 24 for now.</p>
-<p><img src="https://github.com/user-attachments/assets/3c0692c9-23a7-4fd7-af6b-4b130981f26e" alt="benchmark" /></p>
+<p>See the results below. There are two things to notice: there is no significant change in performance when going from zero (i.e. no static visibility analysis at all!) all the way up to a limit of ~32. After that, there is a jump of the runtime by a factor of five. I&#x27;ll set the limit to 24 for now.</p>
+<p><img src="https://github.com/user-attachments/assets/3c0692c9-23a7-4fd7-af6b-4b130981f26e" alt="benchmark"></p>
 <p>Zoomed in on the runtimes up to a limit of 32:</p>
-<p><img src="https://github.com/user-attachments/assets/8faf3f7c-4439-4e08-9630-5b6f272db9c5" alt="image" /></p>
+<p><img src="https://github.com/user-attachments/assets/8faf3f7c-4439-4e08-9630-5b6f272db9c5" alt="image"></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1057,7 +1057,7 @@ use(y)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/statically_known_branches.md</code>:1500 on 2024-12-20 15:32</div>
-            <div class="timeline-body"><p>I wanted to format this in a nicer way, but black wouldn't let me.</p>
+            <div class="timeline-body"><p>I wanted to format this in a nicer way, but black wouldn&#x27;t let me.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1075,7 +1075,7 @@ use(y)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/visibility_constraints.rs</code>:123 on 2024-12-20 16:05</div>
-            <div class="timeline-body"><p>I need to look at this section again. I'm not sure if that makes sense. Or if there is another way to solve this without explicit ambiguity constraints.</p>
+            <div class="timeline-body"><p>I need to look at this section again. I&#x27;m not sure if that makes sense. Or if there is another way to solve this without explicit ambiguity constraints.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1084,7 +1084,7 @@ use(y)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/visibility_constraints.rs</code>:26 on 2024-12-20 17:44</div>
-            <div class="timeline-body"><p>Oof. Yeah I don't think we should spend more time on this now, since I think it would may become irrelevant if we switch to a BDD representation of the constraint tree.</p>
+            <div class="timeline-body"><p>Oof. Yeah I don&#x27;t think we should spend more time on this now, since I think it would may become irrelevant if we switch to a BDD representation of the constraint tree.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1104,19 +1104,19 @@ use(y)
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:280 on 2024-12-20 18:01</div>
             <div class="timeline-body"><p>Is this accurate?</p>
-<pre><code class="language-suggestion">    /// Array of [`Definition`] in this scope. Only the first entry should be `None`;
+<pre><code>    /// Array of [`Definition`] in this scope. Only the first entry should be `None`;
     /// this represents the implicit &quot;unbound&quot; definition of every symbol.
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:275 on 2024-12-20 18:10</div>
-            <div class="timeline-body"><p>I think this type no longer needs to be <code>pub(crate)</code>, it's only used in this file.</p>
+            <div class="timeline-body"><p>I think this type no longer needs to be <code>pub(crate)</code>, it&#x27;s only used in this file.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:422 on 2024-12-20 18:19</div>
-            <div class="timeline-body"><p>Similar to a question in my last review, why is it that we need each individual <code>BindingWithConstraints</code> to carry a reference to the <code>VisibilityConstraints</code>, which is shared data for all bindings in the scope? Why can't the <code>BindingWithConstraintsIterator</code> carry a single reference? It seems everywhere we use this in type inference, we have the iterator available. Is there a lifetimes problem?</p>
+            <div class="timeline-body"><p>Similar to a question in my last review, why is it that we need each individual <code>BindingWithConstraints</code> to carry a reference to the <code>VisibilityConstraints</code>, which is shared data for all bindings in the scope? Why can&#x27;t the <code>BindingWithConstraintsIterator</code> carry a single reference? It seems everywhere we use this in type inference, we have the iterator available. Is there a lifetimes problem?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1126,18 +1126,18 @@ use(y)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:583 on 2024-12-20 18:23</div>
-            <div class="timeline-body"><p>At a high level, it would be nice if we could simplify these APIs and avoid exposing the use-def map's internal IndexVec IDs to the semantic index builder. But I realize that you didn't add these for no good reason, it's because you needed them to get the semantics right (it looks like in particular for the BoolOp case.) I don't think we should spend more time right now trying to see if we can simplify this, just maybe something to keep in mind in future if/when we revisit this code.</p>
+            <div class="timeline-body"><p>At a high level, it would be nice if we could simplify these APIs and avoid exposing the use-def map&#x27;s internal IndexVec IDs to the semantic index builder. But I realize that you didn&#x27;t add these for no good reason, it&#x27;s because you needed them to get the semantics right (it looks like in particular for the BoolOp case.) I don&#x27;t think we should spend more time right now trying to see if we can simplify this, just maybe something to keep in mind in future if/when we revisit this code.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def/symbol_state.rs</code>:273 on 2024-12-20 18:25</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">    /// Add given visibility constraint to all live definitions.
+            <div class="timeline-body"><pre><code>    /// Add given visibility constraint to all live definitions.
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/visibility_constraints.rs</code>:123 on 2024-12-20 18:38</div>
-            <div class="timeline-body"><p>I think it makes sense? On a statically-analyzable branch, we have to add <code>test</code> visibility to the branch path and <code>~test</code> visibility to the not-branch path. <code>VisibilityConstraint::Ambiguous</code> is just a shortcut to do the same thing in the case where there is no <code>test</code> expression we plan to analyze for truthiness later. It's &quot;the same thing&quot; because <code>ambiguous</code> and <code>~ambiguous</code> are indistinguishable; we can just add <code>VisibilityConstraint::Ambiguous</code> to both paths.</p>
+            <div class="timeline-body"><p>I think it makes sense? On a statically-analyzable branch, we have to add <code>test</code> visibility to the branch path and <code>~test</code> visibility to the not-branch path. <code>VisibilityConstraint::Ambiguous</code> is just a shortcut to do the same thing in the case where there is no <code>test</code> expression we plan to analyze for truthiness later. It&#x27;s &quot;the same thing&quot; because <code>ambiguous</code> and <code>~ambiguous</code> are indistinguishable; we can just add <code>VisibilityConstraint::Ambiguous</code> to both paths.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1168,7 +1168,7 @@ use(y)
             <div class="timeline-body"><blockquote>
 <p>Python automatically converts an expression of any type to bool in a boolean context</p>
 </blockquote>
-<p>Right. I was wondering whether or not I should bring it up and decided to keep it simple, because I didn't want to talk too much about types in the use-def-map module. But it's better to be precise, rather than concise. Changed now.</p>
+<p>Right. I was wondering whether or not I should bring it up and decided to keep it simple, because I didn&#x27;t want to talk too much about types in the use-def-map module. But it&#x27;s better to be precise, rather than concise. Changed now.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1190,10 +1190,10 @@ use(y)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @sharkdp on 2024-12-21 10:33</div>
+            <div class="event">Merged by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-12-21 10:33</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @sharkdp on 2024-12-21 10:33</div>
+            <div class="event">Closed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-12-21 10:33</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-12-21 10:33</div>
@@ -1206,7 +1206,7 @@ use(y)
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:08:33 UTC
+        Synced at 2026-01-20 19:09:33 UTC
     </footer>
 </body>
 </html>

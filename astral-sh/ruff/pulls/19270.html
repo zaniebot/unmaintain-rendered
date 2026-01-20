@@ -23,50 +23,50 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>See https://github.com/astral-sh/ruff/pull/19133#discussion_r2198413586 for recent discussion. This PR moves to using structs for the types in our JSON output format instead of the <code>json!</code> macro.</p>
-<p>I didn't rename any of the <code>message</code> references because that should be handled when rebasing #19133 onto this.</p>
+            <div class="timeline-body">Summary
+<p>See <a href="https://github.com/astral-sh/ruff/pull/19133">astral-sh/ruff#19133</a>#discussion_r2198413586 for recent discussion. This PR moves to using structs for the types in our JSON output format instead of the <code>json!</code> macro.</p>
+<p>I didn&#x27;t rename any of the <code>message</code> references because that should be handled when rebasing #19133 onto this.</p>
 <p>My plan for handling the <code>preview</code> behavior with the new diagnostics is to use a wrapper enum. Something like:</p>
-<pre><code class="language-rust">#[derive(Serialize)]
+<pre><code>#[derive(Serialize)]
 #[serde(untagged)]
-pub(crate) enum JsonDiagnostic&lt;'a&gt; {
-    Old(OldJsonDiagnostic&lt;'a&gt;),
+pub(crate) enum JsonDiagnostic&lt;&#x27;a&gt; {
+    Old(OldJsonDiagnostic&lt;&#x27;a&gt;),
 }
 
 #[derive(Serialize)]
-pub(crate) struct OldJsonDiagnostic&lt;'a&gt; {
+pub(crate) struct OldJsonDiagnostic&lt;&#x27;a&gt; {
     // ...
 }
 </code></pre>
-<p>Initially I thought I could use a <code>&amp;dyn Serialize</code> for the affected fields, but I see that <code>Serialize</code> isn't dyn-compatible in testing this now.</p>
-<h2>Test Plan</h2>
+<p>Initially I thought I could use a <code>&amp;dyn Serialize</code> for the affected fields, but I see that <code>Serialize</code> isn&#x27;t dyn-compatible in testing this now.</p>
+Test Plan
 <p>Existing tests. One quirk of the new types is that their fields are in alphabetical order. I guess <code>json!</code> sorts the fields alphabetically? The tests were failing before I sorted the struct fields.</p>
-<h2>Other formats</h2>
+Other formats
 <p>It looks like the <code>rdjson</code>, <code>sarif</code>, and <code>gitlab</code> formats also use <code>json!</code>, so if we decide to merge this, I can do something similar for those before moving them to the new diagnostic format.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-10 22:58</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @ntBre on 2025-07-10 22:59</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-10 22:59</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-07-10 22:59</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-10 22:59</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> added by @ntBre on 2025-07-10 23:00</div>
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-10 23:00</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">diagnostics</span> added by @ntBre on 2025-07-10 23:00</div>
+            <div class="event">Label <span class="label">diagnostics</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-10 23:00</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-11 07:18</div>
@@ -74,8 +74,8 @@ pub(crate) struct OldJsonDiagnostic&lt;'a&gt; {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/message/json.rs</code>:111 on 2025-07-11 07:18</div>
-            <div class="timeline-body"><p>I'm leaning towards reverting the last commit. The old implementation carefully avoided allocating a new vector for the edits. I also don't think that changing this is necessary for making this more typed. We can just replace the</p>
-<pre><code class="language-rust">           let value = json!({
+            <div class="timeline-body"><p>I&#x27;m leaning towards reverting the last commit. The old implementation carefully avoided allocating a new vector for the edits. I also don&#x27;t think that changing this is necessary for making this more typed. We can just replace the</p>
+<pre><code>           let value = json!({
                 &quot;content&quot;: edit.content().unwrap_or_default(),
                 &quot;location&quot;: location_to_json(location),
                 &quot;end_location&quot;: location_to_json(end_location)
@@ -85,28 +85,28 @@ pub(crate) struct OldJsonDiagnostic&lt;'a&gt; {
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @ntBre on 2025-07-11 12:54</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-11 12:54</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @ntBre on 2025-07-11 12:54</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-11 12:54</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @ntBre on 2025-07-11 12:54</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-11 12:54</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @ntBre on 2025-07-11 12:54</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-11 12:54</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @dcreager removed by @ntBre on 2025-07-11 12:54</div>
+            <div class="event">Review request for <a href="https://github.com/dcreager">@dcreager</a> removed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-11 12:54</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @carljm removed by @ntBre on 2025-07-11 12:54</div>
+            <div class="event">Review request for <a href="https://github.com/carljm">@carljm</a> removed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-11 12:54</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @sharkdp removed by @ntBre on 2025-07-11 12:54</div>
+            <div class="event">Review request for <a href="https://github.com/sharkdp">@sharkdp</a> removed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-11 12:54</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @AlexWaygood removed by @ntBre on 2025-07-11 12:54</div>
+            <div class="event">Review request for <a href="https://github.com/AlexWaygood">@AlexWaygood</a> removed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-11 12:54</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-11 12:55</div>
@@ -122,10 +122,10 @@ pub(crate) struct OldJsonDiagnostic&lt;'a&gt; {
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @ntBre on 2025-07-11 13:37</div>
+            <div class="event">Merged by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-11 13:37</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ntBre on 2025-07-11 13:37</div>
+            <div class="event">Closed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-11 13:37</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-07-11 13:37</div>
@@ -133,7 +133,7 @@ pub(crate) struct OldJsonDiagnostic&lt;'a&gt; {
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:14:08 UTC
+        Synced at 2026-01-20 19:16:29 UTC
     </footer>
 </body>
 </html>

@@ -23,16 +23,16 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/robsdedude">@robsdedude</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>The generated fix for <code>RUF033</code> would cause a syntax error for named expressions as parameter defaults.</p>
-<pre><code class="language-python">from dataclasses import InitVar, dataclass
+<pre><code>from dataclasses import InitVar, dataclass
 @dataclass
 class Foo:
     def __post_init__(self, bar: int = (x := 1)) -&gt; None:
         pass
 </code></pre>
 <p>would be turned into</p>
-<pre><code class="language-python">from dataclasses import InitVar, dataclass
+<pre><code>from dataclasses import InitVar, dataclass
 @dataclass
 class Foo:
     x: InitVar[int] = x := 1
@@ -40,45 +40,45 @@ class Foo:
         pass
 </code></pre>
 <p>instead of the syntactically correct</p>
-<pre><code class="language-python"># ...
+<pre><code># ...
 x: InitVar[int] = (x := 1)
 # ...
 </code></pre>
-<h2>Test Plan</h2>
+Test Plan
 <p>Test reproducer (plus some extra tests) have been added to the test suite.</p>
-<h2>Related</h2>
-<p>Fixes: https://github.com/astral-sh/ruff/issues/18950</p>
+Related
+<p>Fixes: <a href="https://github.com/astral-sh/ruff/issues/18950">astral-sh/ruff#18950</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-03 07:49</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @robsdedude on 2025-07-03 08:26</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/robsdedude">@robsdedude</a> on 2025-07-03 08:26</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-07-04 20:05</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-04 20:05</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-07-04 20:05</div>
+            <div class="event">Label <span class="label">fixes</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-04 20:05</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/post_init_default.rs</code>:157 on 2025-07-04 20:13</div>
-            <div class="timeline-body"><p>This check looks kind of convoluted and unnecessary to me. I don't think the <code>ParameterWithDefault</code> AST node is likely to change. That's basically what it's checking right?</p>
+            <div class="timeline-body"><p>This check looks kind of convoluted and unnecessary to me. I don&#x27;t think the <code>ParameterWithDefault</code> AST node is likely to change. That&#x27;s basically what it&#x27;s checking right?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/post_init_default.rs</code>:164 on 2025-07-04 20:19</div>
-            <div class="timeline-body"><p>I don't think we need to switch all the way to using the code generator here. Can't we just check if the expression <code>is_expr_named</code> and add parens if so? Or I think we could even check the <code>parenthesized_range</code> and preserve the parens it came with.</p>
-<p>It's nice to prefer range replacements because the generator strips out any comments, as well as being much more verbose.</p>
+            <div class="timeline-body"><p>I don&#x27;t think we need to switch all the way to using the code generator here. Can&#x27;t we just check if the expression <code>is_expr_named</code> and add parens if so? Or I think we could even check the <code>parenthesized_range</code> and preserve the parens it came with.</p>
+<p>It&#x27;s nice to prefer range replacements because the generator strips out any comments, as well as being much more verbose.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -92,13 +92,13 @@ x: InitVar[int] = (x := 1)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/robsdedude">@robsdedude</a> on <code>crates/ruff_linter/src/rules/ruff/rules/post_init_default.rs</code>:157 on 2025-07-04 22:43</div>
-            <div class="timeline-body"><p>Yes. In particular it's asserting that no other syntactic element is added after the parameter's default value to make sure that the following deletion does not accidentally end up deleting something else but the default value.</p>
-<p>I obviously can't give you an example of what such an element would look like because I don't have a crystal ~~ball~~ <em>snake</em>, but think of type hints that have been added and would've made a similar assumption invalid: if anything follows after a parameter name, it's its default value.</p>
+            <div class="timeline-body"><p>Yes. In particular it&#x27;s asserting that no other syntactic element is added after the parameter&#x27;s default value to make sure that the following deletion does not accidentally end up deleting something else but the default value.</p>
+<p>I obviously can&#x27;t give you an example of what such an element would look like because I don&#x27;t have a crystal ~~ball~~ <em>snake</em>, but think of type hints that have been added and would&#x27;ve made a similar assumption invalid: if anything follows after a parameter name, it&#x27;s its default value.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/post_init_default.rs</code>:157 on 2025-07-09 18:53</div>
-            <div class="timeline-body"><p>I still think this is an overly defensive check and not <em>really</em> related to the issue at hand. I imagine it would be pretty clear that we should re-evaluate any use of <code>ParameterWithDefault</code> if the Python grammar changes, so I'd rather not clutter the rule implementation.</p>
+            <div class="timeline-body"><p>I still think this is an overly defensive check and not <em>really</em> related to the issue at hand. I imagine it would be pretty clear that we should re-evaluate any use of <code>ParameterWithDefault</code> if the Python grammar changes, so I&#x27;d rather not clutter the rule implementation.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -111,11 +111,11 @@ x: InitVar[int] = (x := 1)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/robsdedude">@robsdedude</a> on <code>crates/ruff_linter/src/rules/ruff/rules/post_init_default.rs</code>:164 on 2025-07-22 17:59</div>
-            <div class="timeline-body"><p>I managed to rewrite it using <code>parenthesized_range</code>. It's passing the same tests. But if feels crazy fragile. Looking at the code I cannot convince myself of its correctness and that I haven't missed any edge case. I don't feel comfortable with my name being attached to that code. Sorry.</p>
+            <div class="timeline-body"><p>I managed to rewrite it using <code>parenthesized_range</code>. It&#x27;s passing the same tests. But if feels crazy fragile. Looking at the code I cannot convince myself of its correctness and that I haven&#x27;t missed any edge case. I don&#x27;t feel comfortable with my name being attached to that code. Sorry.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @robsdedude on 2025-07-22 17:59</div>
+            <div class="event">Closed by <a href="https://github.com/robsdedude">@robsdedude</a> on 2025-07-22 17:59</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-22 18:07</div>
@@ -123,17 +123,17 @@ x: InitVar[int] = (x := 1)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/post_init_default.rs</code>:164 on 2025-07-22 18:07</div>
-            <div class="timeline-body"><p>If you feel that strongly about it, we can keep the old implementation. I don't really see how it's more fragile, and we have similar checks in other rules, but this was only a slight preference on my part, not a blocker. I'd much rather fix the bug and give you credit for your work here. I'll approve and merge this if you want to revert/drop the last commit and reopen the PR.</p>
+            <div class="timeline-body"><p>If you feel that strongly about it, we can keep the old implementation. I don&#x27;t really see how it&#x27;s more fragile, and we have similar checks in other rules, but this was only a slight preference on my part, not a blocker. I&#x27;d much rather fix the bug and give you credit for your work here. I&#x27;ll approve and merge this if you want to revert/drop the last commit and reopen the PR.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/robsdedude">@robsdedude</a> on <code>crates/ruff_linter/src/rules/ruff/rules/post_init_default.rs</code>:164 on 2025-07-23 07:36</div>
-            <div class="timeline-body"><p>Where I think this is fragile: if the Syntax ever changes, string replacements like these bake in too many assumptions. That's how this bug happened in the first place: a new syntax construct (walrus operator) was introduced and the replacement logic wasn't up to the task.</p>
+            <div class="timeline-body"><p>Where I think this is fragile: if the Syntax ever changes, string replacements like these bake in too many assumptions. That&#x27;s how this bug happened in the first place: a new syntax construct (walrus operator) was introduced and the replacement logic wasn&#x27;t up to the task.</p>
 <p>Moreover, <code>parenthesized_range</code> calls <code>parentheses_iterator</code>, which in turn is documented with</p>
-<pre><code class="language-rust">/// Returns an iterator over the ranges of the optional parentheses surrounding an expression.
+<pre><code>/// Returns an iterator over the ranges of the optional parentheses surrounding an expression.
 </code></pre>
-<p>Yeah no... these parens are surely not optional :grimacing: It's quite unfortunate, I find, that the AST does not always include the parens where they're necessary in the expression's range. But neither does Python's own <code>ast</code> module :shrug:</p>
-<p>I slept a night over it and I'll re-open the PR. If not, I would've given you permission to take my code and commit it under your name. So regardless of how this ends <em>some</em> fix can be merged.</p>
+<p>Yeah no... these parens are surely not optional :grimacing: It&#x27;s quite unfortunate, I find, that the AST does not always include the parens where they&#x27;re necessary in the expression&#x27;s range. But neither does Python&#x27;s own <code>ast</code> module :shrug:</p>
+<p>I slept a night over it and I&#x27;ll re-open the PR. If not, I would&#x27;ve given you permission to take my code and commit it under your name. So regardless of how this ends <em>some</em> fix can be merged.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -141,7 +141,7 @@ x: InitVar[int] = (x := 1)
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @robsdedude on 2025-07-23 07:37</div>
+            <div class="event">Reopened by <a href="https://github.com/robsdedude">@robsdedude</a> on 2025-07-23 07:37</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-23 14:33</div>
@@ -150,19 +150,19 @@ x: InitVar[int] = (x := 1)
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/post_init_default.rs</code>:164 on 2025-07-23 14:33</div>
             <div class="timeline-body"><blockquote>
-<p>Where I think this is fragile: if the Syntax ever changes, string replacements like these bake in too many assumptions. That's how this bug happened in the first place: a new syntax construct (walrus operator) was introduced and the replacement logic wasn't up to the task.</p>
+<p>Where I think this is fragile: if the Syntax ever changes, string replacements like these bake in too many assumptions. That&#x27;s how this bug happened in the first place: a new syntax construct (walrus operator) was introduced and the replacement logic wasn&#x27;t up to the task.</p>
 </blockquote>
-<p>Ahh, I see where you're coming from. I think that explains the other assertion too. I guess I wasn't really thinking about it in the same way since the walrus operator and Python 3.8 predate Ruff by ~3 years. So it wasn't so much that something new came out and broke us, just that the initial rule implementation didn't account for everything that already existed.</p>
+<p>Ahh, I see where you&#x27;re coming from. I think that explains the other assertion too. I guess I wasn&#x27;t really thinking about it in the same way since the walrus operator and Python 3.8 predate Ruff by ~3 years. So it wasn&#x27;t so much that something new came out and broke us, just that the initial rule implementation didn&#x27;t account for everything that already existed.</p>
 <blockquote>
 <p>Yeah no... these parens are surely not optional</p>
 </blockquote>
 <p>I can also see what you mean here, but I always read this as referring to a Rust <code>Option</code>, like the return type of <code>parenthesized_range</code>, as in the expression may or may not have parentheses rather than may or may not require parentheses.</p>
-<p>Anyway, I'm happy with either implementation. I'll give this another quick review now.</p>
+<p>Anyway, I&#x27;m happy with either implementation. I&#x27;ll give this another quick review now.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/ruff/RUF033.py</code>:116 on 2025-07-23 14:35</div>
-            <div class="timeline-body"><p>Can we use a different name here? It's funny, but I think we try to avoid this kind of thing.</p>
+            <div class="timeline-body"><p>Can we use a different name here? It&#x27;s funny, but I think we try to avoid this kind of thing.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -172,14 +172,14 @@ x: InitVar[int] = (x := 1)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-07-24 13:06</div>
-            <div class="timeline-body"><p>Thank you! I'll merge after the patch release finishes.</p>
+            <div class="timeline-body"><p>Thank you! I&#x27;ll merge after the patch release finishes.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @ntBre on 2025-07-24 13:45</div>
+            <div class="event">Merged by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-24 13:45</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ntBre on 2025-07-24 13:45</div>
+            <div class="event">Closed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-24 13:45</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-07-24 14:44</div>
@@ -187,7 +187,7 @@ x: InitVar[int] = (x := 1)
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:13:55 UTC
+        Synced at 2026-01-20 19:16:12 UTC
     </footer>
 </body>
 </html>

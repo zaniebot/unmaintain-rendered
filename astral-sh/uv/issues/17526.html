@@ -24,11 +24,11 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/woodruffw">@woodruffw</a></div>
             <div class="timeline-body"><p>This is a breakout from #17426, since we need to obtain clarity/consensus on an approach here.</p>
-<p>TL;DR: URLs don't necessarily have a clear filename suffix. When this happens, uv doesn't have a filename to use for the URL's content, which could be either a sdist or a wheel. Consequently, the URL is rejected.</p>
+<p>TL;DR: URLs don&#x27;t necessarily have a clear filename suffix. When this happens, uv doesn&#x27;t have a filename to use for the URL&#x27;s content, which could be either a sdist or a wheel. Consequently, the URL is rejected.</p>
 <p>One thing we could do (for a subset of scenarios) is to honor the <code>Content-Disposition</code> header, which <em>can</em> include a <code>filename</code> field.</p>
 <p>pip appears to do this, and gives it precedence over any inferred filename:</p>
 <p>https://github.com/pypa/pip/blob/545eda389c41478e2f99d23212254d757d8c2cef/src/pip/_internal/network/download.py#L105-L117</p>
-<p>Some things we need clarity on (these may already have answers, I just haven't collected the information together):</p>
+<p>Some things we need clarity on (these may already have answers, I just haven&#x27;t collected the information together):</p>
 <ol>
 <li>How does this interact with other PEP 508 (and non-standard) distribution name/filename specification mechanisms for URLs?</li>
 <li>There are other <code>Content-Distribution</code> mechanisms for specifying filenames, e.g. <code>filename*</code>. We should see if pip handles these, if they do the precedence between them correctly, etc.</li>
@@ -36,19 +36,19 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> added by @woodruffw on 2026-01-16 16:16</div>
+            <div class="event">Label <span class="label">needs-decision</span> added by <a href="https://github.com/woodruffw">@woodruffw</a> on 2026-01-16 16:16</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2026-01-16 17:53</div>
-            <div class="timeline-body"><p>FYI, I'm following this discussion, if you think this puts pip out of standards compliance I will take a look. Although this is hairy enough I'm not likely going to change the behavior beyond logging a warning when content disposition does not match with the actual filename.</p>
+            <div class="timeline-body"><p>FYI, I&#x27;m following this discussion, if you think this puts pip out of standards compliance I will take a look. Although this is hairy enough I&#x27;m not likely going to change the behavior beyond logging a warning when content disposition does not match with the actual filename.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/woodruffw">@woodruffw</a> on 2026-01-16 18:22</div>
             <div class="timeline-body"><blockquote>
-<p>if you think this puts pip out of standards compliance I will take a look. Although this is hairy enough I'm not likely going to change the behavior beyond logging a warning when content disposition does not match with the actual filename.</p>
+<p>if you think this puts pip out of standards compliance I will take a look. Although this is hairy enough I&#x27;m not likely going to change the behavior beyond logging a warning when content disposition does not match with the actual filename.</p>
 </blockquote>
-<p>I tried digging into this and found it pretty complicated/confusing 😅. Here's my attempt to tie it together:</p>
+<p>I tried digging into this and found it pretty complicated/confusing 😅. Here&#x27;s my attempt to tie it together:</p>
 <p>From the living copy of PEP 440:</p>
 <blockquote>
 <p>Direct references
@@ -72,25 +72,25 @@ Some automated tools may permit the use of a direct reference as an alternative 
 <p>So, to summarize:</p>
 <ul>
 <li>Direct references are <code>specifier @ url</code>. Typical targets (i.e. the content behind the URL) are sdists and wheels, but PEP 440 explicitly carves out URLs and targets as tool-specific.</li>
-<li>PEP 508 gives an example of a URL-based lookup that <em>isn't</em> a source distribution, since it doesn't use the PEP 625 sdist filename format. This would fall under what both uv and pip would call &quot;source archive&quot; support, which is tool-specific behavior. In practice, that generally means (to my understanding) that both pip and uv try to use the target as a source tree or similar.</li>
-<li>PEP 625 says that sdists are always of the form <code>{name}-{version}.tar.gz</code>, so I <em>think</em> a target URL that has <code>https://example/.../{name}-{version}.tar.gz</code> would be correctly treated as a source distribution (and validated as such) rather than a &quot;source archive&quot;. Similarly, I think it's correct to treat <code>filename</code> in <code>Content-Disposition</code> as providing the filename for this validation purpose.</li>
+<li>PEP 508 gives an example of a URL-based lookup that <em>isn&#x27;t</em> a source distribution, since it doesn&#x27;t use the PEP 625 sdist filename format. This would fall under what both uv and pip would call &quot;source archive&quot; support, which is tool-specific behavior. In practice, that generally means (to my understanding) that both pip and uv try to use the target as a source tree or similar.</li>
+<li>PEP 625 says that sdists are always of the form <code>{name}-{version}.tar.gz</code>, so I <em>think</em> a target URL that has <code>https://example/.../{name}-{version}.tar.gz</code> would be correctly treated as a source distribution (and validated as such) rather than a &quot;source archive&quot;. Similarly, I think it&#x27;s correct to treat <code>filename</code> in <code>Content-Disposition</code> as providing the filename for this validation purpose.</li>
 </ul>
-<p>TL;DR: I'm pretty sure pip is compliant here, at least insofar as the specs are (1) not super prescriptive, and (2) leave a lot of this open to tool-specific behavior anyways. uv is <em>also</em> compliant w/r/t the specs, but <em>could</em> be more compatible with pip by doing the same <code>Content-Disposition</code> handling.</p>
-<p>(I feel medium-low confidence on the analysis above; I'd appreciate someone pointing out places I've gotten it wrong!)</p>
+<p>TL;DR: I&#x27;m pretty sure pip is compliant here, at least insofar as the specs are (1) not super prescriptive, and (2) leave a lot of this open to tool-specific behavior anyways. uv is <em>also</em> compliant w/r/t the specs, but <em>could</em> be more compatible with pip by doing the same <code>Content-Disposition</code> handling.</p>
+<p>(I feel medium-low confidence on the analysis above; I&#x27;d appreciate someone pointing out places I&#x27;ve gotten it wrong!)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">compatibility</span> added by @zanieb on 2026-01-16 18:24</div>
+            <div class="event">Label <span class="label">compatibility</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-16 18:24</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2026-01-19 11:53</div>
-            <div class="timeline-body"><p>uv depends on the filename in the URL in some locations such as <code>uv.lock</code> parsing, reading <code>Content-Disposition</code> requires bigger changes than allowing more URLs, since we need to ensure that the archive type doesn't change. I'm assuming that URLs that don't have a source distribution filename in their URL will return source archives rather than source distributions, or at least I haven't seen a production service that returns valid source distributions on opauqe URLs.</p>
+            <div class="timeline-body"><p>uv depends on the filename in the URL in some locations such as <code>uv.lock</code> parsing, reading <code>Content-Disposition</code> requires bigger changes than allowing more URLs, since we need to ensure that the archive type doesn&#x27;t change. I&#x27;m assuming that URLs that don&#x27;t have a source distribution filename in their URL will return source archives rather than source distributions, or at least I haven&#x27;t seen a production service that returns valid source distributions on opauqe URLs.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-19 12:24:14 UTC
+        Synced at 2026-01-20 19:41:33 UTC
     </footer>
 </body>
 </html>

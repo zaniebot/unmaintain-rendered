@@ -23,26 +23,17 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/bepuca">@bepuca</a></div>
-            <div class="timeline-body"><!--
-Thank you for taking the time to report an issue! We're glad to have you involved with uv.
-
-If you're filing a bug report, please consider including the following information:
-
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
-* The current uv platform.
-* The current uv version (`uv --version`).
--->
+            <div class="timeline-body">
 
 <p>The situation is a bit special: I usually work on <a href="https://code.visualstudio.com/docs/devcontainers/containers">devcontainers</a>. Sadly, there are still many packages that do not have support for ARM architecture. Thus, many times I end up within a Docker container running rosetta since my Mac is sillicon.</p>
-<h2>Minimal Example</h2>
-<pre><code class="language-Dockerfile"># devcontainer/Dockerfile
+Minimal Example
+<pre><code># devcontainer/Dockerfile
 FROM --platform=linux/amd64 mcr.microsoft.com/devcontainers/base:jammy
 
 # Install uv
 COPY --from=ghcr.io/astral-sh/uv:0.4.29 /uv /uvx /bin/
 </code></pre>
-<pre><code class="language-json">// devcontainer/devcontainer.json
+<pre><code>// devcontainer/devcontainer.json
 {
     &quot;name&quot;: &quot;minimal&quot;,
     &quot;build&quot;: { &quot;dockerfile&quot;: &quot;Dockerfile&quot; },
@@ -62,7 +53,7 @@ COPY --from=ghcr.io/astral-sh/uv:0.4.29 /uv /uvx /bin/
 </ul>
 <p>Then, open the command palette of VSCode (if not directly prompted) and &quot;reopen in container&quot;.</p>
 <p>Once it builds, if I go to the terminal and run:</p>
-<pre><code class="language-shell">$uv python list
+<pre><code>$uv python list
 
 cpython-3.13.0+freethreaded-linux-aarch64-gnu    &lt;download available&gt;
 cpython-3.12.7-linux-aarch64-gnu                 &lt;download available&gt;
@@ -80,7 +71,7 @@ pypy-3.8.16-linux-aarch64-gnu                    &lt;download available&gt;
 pypy-3.7.13-linux-aarch64-gnu                    &lt;download available&gt;
 </code></pre>
 <p>As we can see, it finds the AMD arch python that comes pre-installed but everything else it offers is ARM. Thus, nothing works because it crashes when trying to use any of these pythons because they have the wrong architecture. For reference, this is the error:</p>
-<pre><code class="language-shell">$uv sync
+<pre><code>$uv sync
 
 error: Failed to query Python interpreter at `/home/vscode/.local/share/uv/python/cpython-3.11.10-linux-aarch64-gnu/bin/python3.11`
   Caused by: No such file or directory (os error 2)
@@ -89,11 +80,11 @@ error: Failed to query Python interpreter at `/home/vscode/.local/share/uv/pytho
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-11-01 13:31</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-01 13:31</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-01 13:40</div>
-            <div class="timeline-body"><p>Can you share verbose logs for <code>uv sync</code>? It's not clear to me why we're trying to query that specific interpreter.</p>
+            <div class="timeline-body"><p>Can you share verbose logs for <code>uv sync</code>? It&#x27;s not clear to me why we&#x27;re trying to query that specific interpreter.</p>
 <p>Does <code>uv sync -p cpython-3.11.10-linux-x86_64-gnu</code> work?</p>
 </div>
         </div>
@@ -101,7 +92,7 @@ error: Failed to query Python interpreter at `/home/vscode/.local/share/uv/pytho
             <div class="timeline-header">Comment by <a href="https://github.com/bepuca">@bepuca</a> on 2024-11-01 16:52</div>
             <div class="timeline-body"><p>[Edited as some cache was causing less logs than expected]</p>
 <p>The logs with verbose (if I understand correctly how to get them):</p>
-<pre><code class="language-shell">$ uv sync -v
+<pre><code>$ uv sync -v
 
 DEBUG uv 0.4.29
 DEBUG Found project root: `/workspaces/minimal`
@@ -125,7 +116,7 @@ error: Failed to query Python interpreter at `/home/vscode/.local/share/uv/pytho
   Caused by: No such file or directory (os error 2)
 </code></pre>
 <p>And running the command you suggest:</p>
-<pre><code class="language-shell">$ uv sync -p cpython-3.11.10-linux-x86_64-gnu -v
+<pre><code>$ uv sync -p cpython-3.11.10-linux-x86_64-gnu -v
 
 DEBUG uv 0.4.29
 DEBUG Found project root: `/workspaces/minimal`
@@ -165,11 +156,11 @@ Audited in 0.03ms
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-01 23:27</div>
-            <div class="timeline-body"><p>I think it's a bug, in that when we fill the platform information at</p>
+            <div class="timeline-body"><p>I think it&#x27;s a bug, in that when we fill the platform information at</p>
 <p>https://github.com/astral-sh/uv/blob/893257bb0b2a0df4196410f279d5a837effafee0/crates/uv-python/src/downloads.rs#L192-L194</p>
 <p>and</p>
 <p>https://github.com/astral-sh/uv/blob/2b0e16cb75911bc291c92f7186512223c2d2d899/crates/uv-python/src/platform.rs#L76-L78</p>
-<p>we think it's <code>aarch64</code> instead of <code>x86_64</code>. I'm not really sure why yet.</p>
+<p>we think it&#x27;s <code>aarch64</code> instead of <code>x86_64</code>. I&#x27;m not really sure why yet.</p>
 <p>You could put that full version tag in a <code>UV_PYTHON</code> environment variable and we should respect it.</p>
 </div>
         </div>
@@ -177,22 +168,22 @@ Audited in 0.03ms
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-01 23:31</div>
             <div class="timeline-body"><p>Are you copying uv from the right image? I wonder if you need the <code>--platform</code> flag there? You can also specify the SHA.</p>
 <p>https://github.com/astral-sh/uv/pkgs/container/uv/298017082?tag=latest</p>
-<img width="830" alt="Screenshot 2024-11-01 at 6 30 24 PM" src="https://github.com/user-attachments/assets/b7a578e2-af18-4226-afa1-b9c81f61de98">
+<img alt="Screenshot 2024-11-01 at 6 30 24 PM" src="https://github.com/user-attachments/assets/b7a578e2-af18-4226-afa1-b9c81f61de98">
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-11-02 01:42</div>
-            <div class="timeline-body"><p>Agreed with @zanieb. Usually you'd pass <code>--platform</code> to your <code>docker buildx build --platform=linux/amd64 -t foo-linux-amd64 /path/to/context</code> to resolve this as it will then pick the right manifest entry.</p>
+            <div class="timeline-body"><p>Agreed with @zanieb. Usually you&#x27;d pass <code>--platform</code> to your <code>docker buildx build --platform=linux/amd64 -t foo-linux-amd64 /path/to/context</code> to resolve this as it will then pick the right manifest entry.</p>
 <p>That would allow you to cleanup the <code>Dockerfile</code></p>
-<pre><code class="language-dockerfile"># devcontainer/Dockerfile
+<pre><code># devcontainer/Dockerfile
 FROM mcr.microsoft.com/devcontainers/base:jammy
 
 # Install uv
 COPY --from=ghcr.io/astral-sh/uv:0.4.29 /uv /uvx /bin/
 </code></pre>
 <p>Alternatively would be using raw sha</p>
-<pre><code class="language-dockerfile"># devcontainer/Dockerfile
+<pre><code># devcontainer/Dockerfile
 FROM --platform=linux/amd64 mcr.microsoft.com/devcontainers/base:jammy
 
 # Install uv
@@ -203,21 +194,21 @@ COPY --from=ghcr.io/astral-sh/uv:0.4.29@sha256:c17127bc372350d61bae20be54c85540a
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-11-02 01:47</div>
             <div class="timeline-body"><p>On VSCode, you may be able to do this by leveraging devcontainers extension <a href="https://containers.dev/implementors/json_reference/#image-specific">build.options</a> setting. e.g.</p>
-<pre><code class="language-json">    &quot;build&quot;: { 
+<pre><code>    &quot;build&quot;: { 
         ...
         &quot;options&quot;: [
             &quot;--platform=linux/amd64&quot;
         ]
     },
 </code></pre>
-<p>Alternatively, you could also try the approach shown in https://github.com/astral-sh/uv/issues/8737</p>
+<p>Alternatively, you could also try the approach shown in <a href="https://github.com/astral-sh/uv/issues/8737">astral-sh/uv#8737</a></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2024-11-02 02:21</div>
+            <div class="event">Label <span class="label">bug</span> removed by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-02 02:21</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-11-02 02:21</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-02 02:21</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-02 02:22</div>
@@ -230,12 +221,12 @@ COPY --from=ghcr.io/astral-sh/uv:0.4.29@sha256:c17127bc372350d61bae20be54c85540a
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2024-11-02 15:48</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-02 15:48</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:28:04 UTC
+        Synced at 2026-01-20 19:35:11 UTC
     </footer>
 </body>
 </html>

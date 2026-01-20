@@ -23,18 +23,18 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/IliasAarab">@IliasAarab</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p><strong>Issue Description: Module Not Reloading in REPL After Source Code Modification</strong></p>
 <p><strong>Setup:</strong></p>
 <ol>
 <li><p><strong>Project Initialization:</strong></p>
-<pre><code class="language-bash">mkdir myprj
+<pre><code>mkdir myprj
 cd myprj
 uv init --lib
 </code></pre>
 </li>
 <li><p><strong>Create <code>hello</code> Function:</strong></p>
-<pre><code class="language-bash">cat src/myprj/__init__.py
+<pre><code>cat src/myprj/__init__.py
 def hello() -&gt; str:
     return &quot;Hello from myprj!&quot;
 </code></pre>
@@ -43,34 +43,34 @@ def hello() -&gt; str:
 <p><strong>Reproduction Steps:</strong></p>
 <ol>
 <li><p><strong>Start REPL Session:</strong></p>
-<pre><code class="language-bash">uv run python
+<pre><code>uv run python
 </code></pre>
 <p><strong>REPL Interaction:</strong></p>
-<pre><code class="language-python">&gt;&gt;&gt; from myprj import hello
+<pre><code>&gt;&gt;&gt; from myprj import hello
 &gt;&gt;&gt; hello()
-'Hello from myprj!'
+&#x27;Hello from myprj!&#x27;
 </code></pre>
 </li>
 <li><p><strong>Modify <code>hello</code> Function:</strong></p>
 <p>Update <code>src/myprj/__init__.py</code>:</p>
-<pre><code class="language-python">def hello() -&gt; str:
+<pre><code>def hello() -&gt; str:
     return &quot;Bye from myprj!&quot;
 </code></pre>
 </li>
 <li><p><strong>Test Modification in Existing REPL Session:</strong></p>
-<pre><code class="language-python">&gt;&gt;&gt; from myprj import hello
+<pre><code>&gt;&gt;&gt; from myprj import hello
 &gt;&gt;&gt; hello()
-'Hello from myprj!'
+&#x27;Hello from myprj!&#x27;
 </code></pre>
-<p><em>Expected Output:</em> <code>'Bye from myprj!'</code></p>
+<p><em>Expected Output:</em> <code>&#x27;Bye from myprj!&#x27;</code></p>
 </li>
 <li><p><strong>Test Modification in New REPL Session:</strong></p>
 <p>Restart the REPL:</p>
-<pre><code class="language-bash">uv run python
+<pre><code>uv run python
 </code></pre>
-<pre><code class="language-python">&gt;&gt;&gt; from myprj import hello
+<pre><code>&gt;&gt;&gt; from myprj import hello
 &gt;&gt;&gt; hello()
-'Bye from myprj!'
+&#x27;Bye from myprj!&#x27;
 </code></pre>
 </li>
 </ol>
@@ -78,16 +78,16 @@ def hello() -&gt; str:
 <p>After modifying the <code>hello()</code> function in the source code, the changes are not reflected in the existing REPL session. The REPL continues to use the previous version of the function. Only by restarting the REPL do the changes take effect.</p>
 <p><strong>Expected Behavior:</strong></p>
 <p>Modifications to the source code should be recognized in the current REPL session without requiring a restart.</p>
-<h3>Platform</h3>
+Platform
 <p>MINGW64_NT-10.0-22621 3.4.10-bc1f6498.x86_64 x86_64 Msys</p>
-<h3>Version</h3>
+Version
 <p>uv 0.6.5</p>
-<h3>Python version</h3>
+Python version
 <p>3.12.9</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @IliasAarab on 2025-03-21 17:11</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/IliasAarab">@IliasAarab</a> on 2025-03-21 17:11</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-21 17:18</div>
@@ -96,21 +96,21 @@ def hello() -&gt; str:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Michallote">@Michallote</a> on 2025-03-21 17:28</div>
-            <div class="timeline-body"><p>Yes. This is expected behavior in Python and is due to how Python's import system and module caching mechanism work by design.</p>
-<h2>Why This Happens:</h2>
+            <div class="timeline-body"><p>Yes. This is expected behavior in Python and is due to how Python&#x27;s import system and module caching mechanism work by design.</p>
+Why This Happens:
 <p>When you import a module in Python, it gets loaded and cached in the sys.modules dictionary. Any subsequent imports in the same session do not reload the source code—they simply return the already-loaded module from sys.modules. This is done for performance and consistency, avoiding unnecessary disk I/O and ensuring that all parts of a program refer to the same module instance.</p>
 <p>In your example:</p>
-<pre><code class="language-python">&gt;&gt;&gt; from myprj import hello
+<pre><code>&gt;&gt;&gt; from myprj import hello
 &gt;&gt;&gt; hello()
-'Hello from myprj!'
+&#x27;Hello from myprj!&#x27;
 </code></pre>
 <p>Python compiles and loads myprj, then caches it. When you later modify <code>src/myprj/__init__.py</code>, that change is not detected or reloaded automatically. So:</p>
-<pre><code class="language-python">&gt;&gt;&gt; from myprj import hello  # This just reuses the already-loaded module
+<pre><code>&gt;&gt;&gt; from myprj import hello  # This just reuses the already-loaded module
 &gt;&gt;&gt; hello()
-'Hello from myprj!'
+&#x27;Hello from myprj!&#x27;
 </code></pre>
 <p>The function still returns the old value because Python has no built-in way to detect file changes and reload them automatically in the REPL or during execution.</p>
-<h2>Why the Core Architecture Works This Way:</h2>
+Why the Core Architecture Works This Way:
 <p>This design is intentional and serves several purposes:</p>
 <ul>
 <li><p>Efficiency: Importing from disk is relatively expensive. Caching modules improves runtime speed, especially in large applications with many imports.</p>
@@ -120,14 +120,14 @@ def hello() -&gt; str:
 <li><p>Simplicity: The import system maintains a simple, predictable behavior. If dynamic reloading were automatic, it would add significant complexity and potential for subtle bugs.</p>
 </li>
 </ul>
-<h2>What to Do Instead</h2>
+What to Do Instead
 <p>If you want changes to reflect in the same REPL session, you can explicitly reload the module using importlib.reload:</p>
 <p>import importlib
 import myprj
 importlib.reload(myprj)</p>
 <p>Then call myprj.hello() again to see the updated output.</p>
 <p>Summary</p>
-<p>This behavior is not a bug—it's the result of Python’s deliberate design around module imports and caching. For interactive development, tools like importlib.reload or frameworks like IPython (with %autoreload) help bridge the gap between static imports and dynamic iteration. As suggested by @zanieb</p>
+<p>This behavior is not a bug—it&#x27;s the result of Python’s deliberate design around module imports and caching. For interactive development, tools like importlib.reload or frameworks like IPython (with %autoreload) help bridge the gap between static imports and dynamic iteration. As suggested by @zanieb</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -136,12 +136,12 @@ importlib.reload(myprj)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @IliasAarab on 2025-03-21 17:57</div>
+            <div class="event">Closed by <a href="https://github.com/IliasAarab">@IliasAarab</a> on 2025-03-21 17:57</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:30:34 UTC
+        Synced at 2026-01-20 19:37:54 UTC
     </footer>
 </body>
 </html>

@@ -23,23 +23,12 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/KennethEnevoldsen">@KennethEnevoldsen</a></div>
-            <div class="timeline-body"><!--
-Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
-
-If you're filing a bug report, please consider including the following information:
-
-* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
-  e.g. "RUF001", "unused variable", "Jupyter notebook"
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
-* The current Ruff settings (any relevant sections from your `pyproject.toml`).
-* The current Ruff version (`ruff --version`).
--->
+            <div class="timeline-body">
 
 <p>A typical error I (and colleagues) run into is as follows:</p>
 <pre><code>mylist = [&quot;a&quot;, &quot;b&quot; &quot;c&quot;] 
 # results in:
-mylist # ['a', 'bc']
+mylist # [&#x27;a&#x27;, &#x27;bc&#x27;]
 
 # as opposed to the intended [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;] 
 </code></pre>
@@ -49,7 +38,7 @@ mylist # ['a', 'bc']
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Detect and prevent implicit split concetatenations e.g. lists" to "Detect and prevent implicit string concetatenations e.g. lists" by @KennethEnevoldsen on 2024-08-21 12:01</div>
+            <div class="event">Renamed from &quot;Detect and prevent implicit split concetatenations e.g. lists&quot; to &quot;Detect and prevent implicit string concetatenations e.g. lists&quot; by <a href="https://github.com/KennethEnevoldsen">@KennethEnevoldsen</a> on 2024-08-21 12:01</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-21 12:08</div>
@@ -83,14 +72,14 @@ mylist # ['a', 'bc']
 <blockquote>
 <p>ISC001 would suggest (according to the documentation and notably in autofixes). That it should be:</p>
 </blockquote>
-<p>Thank's. That's helpful. This is related to #13014 Overall it seems that there could be an addition of one more implicit string concatenation rule that detects suspicious usages (vs denying it for stylistic reasons). Although it isn't clear to me how to solve the overlap with ISC001, and ISC002</p>
+<p>Thank&#x27;s. That&#x27;s helpful. This is related to #13014 Overall it seems that there could be an addition of one more implicit string concatenation rule that detects suspicious usages (vs denying it for stylistic reasons). Although it isn&#x27;t clear to me how to solve the overlap with ISC001, and ISC002</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-08-21 12:27</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-21 12:27</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> added by @MichaReiser on 2024-08-21 12:27</div>
+            <div class="event">Label <span class="label">needs-decision</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-21 12:27</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/KennethEnevoldsen">@KennethEnevoldsen</a> on 2024-08-21 14:28</div>
@@ -101,18 +90,18 @@ mylist # ['a', 'bc']
 <blockquote>
 <p>vs denying it for stylistic reasons</p>
 </blockquote>
-<p>I wouldn't call denying a pattern that often carries bugs a stylistic reason - the discussion around the pep acknowledged this as well, with the reason for not removing it mainly concerning backward compatibility. A choice that I fully understand, but where it is hard to remove it is easy to prevent using linters.</p>
+<p>I wouldn&#x27;t call denying a pattern that often carries bugs a stylistic reason - the discussion around the pep acknowledged this as well, with the reason for not removing it mainly concerning backward compatibility. A choice that I fully understand, but where it is hard to remove it is easy to prevent using linters.</p>
 <blockquote>
-<p>Although it isn't clear to me how to solve the overlap with ISC001, and ISC002</p>
+<p>Although it isn&#x27;t clear to me how to solve the overlap with ISC001, and ISC002</p>
 </blockquote>
 <p>I do think the change is inherently incompatible. ISC002 and ISC003 prefer implicit concatenation over explicit concatenation (ISC001 is fully compatible at least during linting). Where I would argue anytime you see a string concatenation in a list, set, etc. (<code>[&quot;a&quot;, &quot;b&quot; &quot;c&quot;]</code>) it is much more likely to be a bug than an intended string concatenation.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-21 14:42</div>
-            <div class="timeline-body"><p>The exact autofix behaviour you want from ISC001 here likely depends on whether the single-line implicit concatenation was introduced by a human or by an autoformatter. If the implicitly concatenated string was added by a human, then it's almost certainly a mistake, and the human likely meant to put a comma in between the two strings (as you say @KennethEnevoldsen). But if it was inserted by an autoformatter, it was probably previously a multiline implicitly concatenated string that the autoformatter realised was needleslly spread out over multiple lines; in that case, the proper autofix is to merge the two strings, as <code>ISC001</code> currently does.</p>
-<p>Ideally we'd just fix Black and the Ruff formatter so that they never create single-line implicitly concatenated strings in the first place. But the <code>ISC001</code> rule (originally as a flake8 plugin) was originally created to address an issue where Black would often undesirably collapse multiline implicitly concatenated strings into single-line implicitly concatenated strings. So that's probably the motivation for the current autofix behaviour.</p>
-<p>Unfortunately it's not really possible for a linter rule to know whether the implicit concatenation was introduced by a human or an autoformatter...!</p>
+            <div class="timeline-body"><p>The exact autofix behaviour you want from ISC001 here likely depends on whether the single-line implicit concatenation was introduced by a human or by an autoformatter. If the implicitly concatenated string was added by a human, then it&#x27;s almost certainly a mistake, and the human likely meant to put a comma in between the two strings (as you say @KennethEnevoldsen). But if it was inserted by an autoformatter, it was probably previously a multiline implicitly concatenated string that the autoformatter realised was needleslly spread out over multiple lines; in that case, the proper autofix is to merge the two strings, as <code>ISC001</code> currently does.</p>
+<p>Ideally we&#x27;d just fix Black and the Ruff formatter so that they never create single-line implicitly concatenated strings in the first place. But the <code>ISC001</code> rule (originally as a flake8 plugin) was originally created to address an issue where Black would often undesirably collapse multiline implicitly concatenated strings into single-line implicitly concatenated strings. So that&#x27;s probably the motivation for the current autofix behaviour.</p>
+<p>Unfortunately it&#x27;s not really possible for a linter rule to know whether the implicit concatenation was introduced by a human or an autoformatter...!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -120,14 +109,14 @@ mylist # ['a', 'bc']
             <div class="timeline-body"><p>Thanks for the clarification @AlexWaygood, this gives a lot of context to the current formulation of <code>ISC001</code>. From the warning it also seems to conflict with the ruff formatter:</p>
 <pre><code>warning: The following rules may cause conflicts when used with the formatter: `ISC001`.
 </code></pre>
-<p>Just to be clear, I don't believe the auto fix behavior <code>[&quot;a&quot;, &quot;b&quot; &quot;c&quot;] -&gt; [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]</code> should be implemented.</p>
+<p>Just to be clear, I don&#x27;t believe the auto fix behavior <code>[&quot;a&quot;, &quot;b&quot; &quot;c&quot;] -&gt; [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]</code> should be implemented.</p>
 <p>I (and I imagine others as well) would prefer a set of rules with simply raise a linting error on implicit string concatenation (not only in a single line). This resolves the conflict with the formatter (as far as I understand) and makes parsing simpler. Naturally, it would be optional and incompatible with ISC003.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-21 15:40</div>
-            <div class="timeline-body"><p>So, I <em>think</em> you can already get what you're asking for @KennethEnevoldsen using this configuration:</p>
-<pre><code class="language-toml">[tool.ruff.lint]
+            <div class="timeline-body"><p>So, I <em>think</em> you can already get what you&#x27;re asking for @KennethEnevoldsen using this configuration:</p>
+<pre><code>[tool.ruff.lint]
 extend-select = [&quot;ISC&quot;]
 unfixable = [&quot;ISC001&quot;]
 
@@ -143,34 +132,34 @@ allow-multiline = false
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Detect and prevent implicit string concetatenations e.g. lists" to "Detect and prevent implicit string concatenations e.g. lists" by @AlexWaygood on 2024-08-22 07:14</div>
+            <div class="event">Renamed from &quot;Detect and prevent implicit string concetatenations e.g. lists&quot; to &quot;Detect and prevent implicit string concatenations e.g. lists&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-22 07:14</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/KennethEnevoldsen">@KennethEnevoldsen</a> on 2024-08-22 08:35</div>
-            <div class="timeline-body"><p>Thanks, @AlexWaygood that does indeed resolve the issue (couldn't find a case where it failed). I should have noticed that sooner. I went through the documentation to check if this might be a chance to improve the documentation, but there is nothing that I would change as is.</p>
+            <div class="timeline-body"><p>Thanks, @AlexWaygood that does indeed resolve the issue (couldn&#x27;t find a case where it failed). I should have noticed that sooner. I went through the documentation to check if this might be a chance to improve the documentation, but there is nothing that I would change as is.</p>
 <p>I will close this issue for now. Thanks, @AlexWaygood and @MichaReiser for the help.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @KennethEnevoldsen on 2024-08-22 08:35</div>
+            <div class="event">Closed by <a href="https://github.com/KennethEnevoldsen">@KennethEnevoldsen</a> on 2024-08-22 08:35</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/hugovk">@hugovk</a> on 2024-08-22 08:47</div>
             <div class="timeline-body"><blockquote>
-<p>Ideally we'd just fix Black and the Ruff formatter so that they never create single-line implicitly concatenated strings in the first place. But the <code>ISC001</code> rule (originally as a flake8 plugin) was originally created to address an issue where Black would often undesirably collapse multiline implicitly concatenated strings into single-line implicitly concatenated strings.</p>
+<p>Ideally we&#x27;d just fix Black and the Ruff formatter so that they never create single-line implicitly concatenated strings in the first place. But the <code>ISC001</code> rule (originally as a flake8 plugin) was originally created to address an issue where Black would often undesirably collapse multiline implicitly concatenated strings into single-line implicitly concatenated strings.</p>
 </blockquote>
-<p>Black has a fix in preview mode to prevent some of the ISC-related issues, but it's not been ready for the past couple of annual style releases. See https://github.com/psf/black/issues/2188.</p>
+<p>Black has a fix in preview mode to prevent some of the ISC-related issues, but it&#x27;s not been ready for the past couple of annual style releases. See <a href="https://github.com/psf/black/issues/2188">psf/black#2188</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-22 08:57</div>
-            <div class="timeline-body"><p>@hugovk we plan on implementing a simpler solution that we feel more confident in stabilizing (the mentioned black preview style has been in preview for a long term). See https://github.com/astral-sh/ruff/issues/9457</p>
+            <div class="timeline-body"><p>@hugovk we plan on implementing a simpler solution that we feel more confident in stabilizing (the mentioned black preview style has been in preview for a long term). See <a href="https://github.com/astral-sh/ruff/issues/9457">astral-sh/ruff#9457</a></p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:50:57 UTC
+        Synced at 2026-01-20 18:48:57 UTC
     </footer>
 </body>
 </html>

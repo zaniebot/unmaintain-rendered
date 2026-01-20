@@ -23,40 +23,40 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/fasterthanlime">@fasterthanlime</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>@charliermarsh has long suspected local builds could be made faster by disabling things like: tikv-jemalloc/mimalloc, zlibng etc.</p>
-<p>I'm going through the cargo dep tree looking at things that can be disabled locally.</p>
-<h2>Methodology:</h2>
+<p>I&#x27;m going through the cargo dep tree looking at things that can be disabled locally.</p>
+Methodology:
 <p><code>production</code> cargo flag enables all the production stuff (good allocators, fast compression libs, etc.)</p>
 <p>I measure fresh <code>cargo check</code> runs, like so:</p>
-<pre><code class="language-shell">rm -rf /tmp/timings; CARGO_TARGET_DIR=/tmp/timings cargo check -F production-memory-allocator --timings
+<pre><code>rm -rf /tmp/timings; CARGO_TARGET_DIR=/tmp/timings cargo check -F production-memory-allocator --timings
 </code></pre>
 <p>Varying the <code>-F</code> to enable/disable the features</p>
-<h2>FAQ</h2>
+FAQ
 <p>Q: Why only check <code>check</code>?</p>
 <p>A: The benefits will trickle down to other subcommands (including test/nextest etc.) — check/clippy are super common while iterating. We can do larger checks near the end.</p>
 <p>Q: Why only check cold builds?</p>
-<p>A: Warm builds depend on a lot on which part of the code is touched — I'll optimize typical interactions later on.</p>
+<p>A: Warm builds depend on a lot on which part of the code is touched — I&#x27;ll optimize typical interactions later on.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Converted to draft by @fasterthanlime on 2024-09-04 09:31</div>
+            <div class="event">Converted to draft by <a href="https://github.com/fasterthanlime">@fasterthanlime</a> on 2024-09-04 09:31</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/fasterthanlime">@fasterthanlime</a> on 2024-09-04 09:48</div>
-            <div class="timeline-body"><h2>Round 1: allocator</h2>
+            <div class="timeline-body">Round 1: allocator
 <p>I introduced the <code>uv-production-memory-allocator</code> crate, which conditionally pulls in mimalloc (on Windows) and jemalloc (on other platforms, except OpenBSD). The extra crate works around limitations from cargo.</p>
-<h3>Before: 430 units, total time 26.6s</h3>
-<p><img src="https://github.com/user-attachments/assets/996b4160-236d-4607-90ec-c47aaf30b65b" alt="CleanShot 2024-09-04 at 11 46 59@2x" /></p>
-<h3>After: 425 units, total time 21s</h3>
-<p><img src="https://github.com/user-attachments/assets/cd568175-f468-45c7-aa4a-e2adedfcb2d1" alt="CleanShot 2024-09-04 at 11 48 24@2x" /></p>
+Before: 430 units, total time 26.6s
+<p><img src="https://github.com/user-attachments/assets/996b4160-236d-4607-90ec-c47aaf30b65b" alt="CleanShot 2024-09-04 at 11 46 59@2x"></p>
+After: 425 units, total time 21s
+<p><img src="https://github.com/user-attachments/assets/cd568175-f468-45c7-aa4a-e2adedfcb2d1" alt="CleanShot 2024-09-04 at 11 48 24@2x"></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/fasterthanlime">@fasterthanlime</a> on 2024-09-04 09:56</div>
-            <div class="timeline-body"><h2>Round 2: miette's <code>fancy-no-backtrace</code></h2>
+            <div class="timeline-body">Round 2: miette&#x27;s <code>fancy-no-backtrace</code>
 <p>Getting rid of these:</p>
-<pre><code class="language-shell">❯ cargo tree -p backtrace-ext
+<pre><code>❯ cargo tree -p backtrace-ext
 backtrace-ext v0.2.1
 └── backtrace v0.3.73
     ├── addr2line v0.22.0
@@ -85,34 +85,34 @@ backtrace-ext v0.2.1
         │       └── uv v0.4.4 (/Users/amos/bearcove/uv/crates/uv)
 (cut)
 </code></pre>
-<h3>Before: 425 units, total time 21s</h3>
+Before: 425 units, total time 21s
 <p>(See round 1)</p>
-<h3>After: 415 units, total time 20.1s</h3>
-<p><img src="https://github.com/user-attachments/assets/45594e46-daa0-45e2-a9c3-149f21beb6c2" alt="CleanShot 2024-09-04 at 11 56 18@2x" /></p>
+After: 415 units, total time 20.1s
+<p><img src="https://github.com/user-attachments/assets/45594e46-daa0-45e2-a9c3-149f21beb6c2" alt="CleanShot 2024-09-04 at 11 56 18@2x"></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-05 00:31</div>
-            <div class="timeline-body"><p>Part of https://github.com/astral-sh/uv/issues/5711</p>
+            <div class="timeline-body"><p>Part of <a href="https://github.com/astral-sh/uv/issues/5711">astral-sh/uv#5711</a></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @fasterthanlime on 2024-09-06 17:19</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/fasterthanlime">@fasterthanlime</a> on 2024-09-06 17:19</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-09-06 17:34</div>
-            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/uv/branches/bearcove:fewer-deps">CodSpeed Performance Report</a></h2>
-<h3>Merging #7000 will <strong>not alter performance</strong></h3>
-<p><sub>Comparing <code>bearcove:fewer-deps</code> (e89f275) with <code>main</code> (a541d6c)</sub></p>
-<h3>Summary</h3>
+            <div class="timeline-body"><a href="https://codspeed.io/astral-sh/uv/branches/bearcove:fewer-deps">CodSpeed Performance Report</a>
+Merging #7000 will <strong>not alter performance</strong>
+<p>Comparing <code>bearcove:fewer-deps</code> (e89f275) with <code>main</code> (a541d6c)</p>
+Summary
 <p><code>✅ 14</code> untouched benchmarks</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @konstin by @zanieb on 2024-09-07 15:34</div>
+            <div class="event">Review requested from <a href="https://github.com/konstin">@konstin</a> by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-07 15:34</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @BurntSushi by @zanieb on 2024-09-07 15:34</div>
+            <div class="event">Review requested from <a href="https://github.com/BurntSushi">@BurntSushi</a> by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-07 15:34</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-09 14:24</div>
@@ -120,7 +120,7 @@ backtrace-ext v0.2.1
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/Cargo.toml</code>:107 on 2024-09-09 14:24</div>
-            <div class="timeline-body"><p>I think we should keep <code>self-update</code> separate, since re-distributors will likely want to run with <code>--features production</code>, but <em>won't</em> want to enable <code>self-update</code>. <code>self-update</code> is only applicable when you install via our dedicated installers, not via <code>brew</code>, etc.</p>
+            <div class="timeline-body"><p>I think we should keep <code>self-update</code> separate, since re-distributors will likely want to run with <code>--features production</code>, but <em>won&#x27;t</em> want to enable <code>self-update</code>. <code>self-update</code> is only applicable when you install via our dedicated installers, not via <code>brew</code>, etc.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -134,7 +134,7 @@ backtrace-ext v0.2.1
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>.github/workflows/build-binaries.yml</code>:124 on 2024-09-09 14:59</div>
-            <div class="timeline-body"><p>I think this and the reference on line 82 also need <code>self-update</code>, unless I'm misreading.</p>
+            <div class="timeline-body"><p>I think this and the reference on line 82 also need <code>self-update</code>, unless I&#x27;m misreading.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -172,10 +172,10 @@ backtrace-ext v0.2.1
 <p>I think this PR probably exacerbates that, because building local binaries for performance improvements will now also require, I believe, <code>--features production</code>. And I think this will likely be critical given what is being swapped out here (since things like <code>zlibng</code> and jemalloc are used specifically for perf reasons).</p>
 <p>But the build improvements here are considerable. However...</p>
 <blockquote>
-<p>Warm builds depend on a lot on which part of the code is touched — I'll optimize typical interactions later on.</p>
+<p>Warm builds depend on a lot on which part of the code is touched — I&#x27;ll optimize typical interactions later on.</p>
 </blockquote>
-<p>If the improvement here is ~23% on cold builds, do we have a sense of what kind of improvement we get on warm builds? My feeling is that for this class of improvement, the warm builds probably matter a lot more than cold builds. And for the dependencies removed here, I wouldn't expect them to be getting rebuilt all of the time. So I'd be curious if this change improves warm build times to the point of being worth the potential footgun here.</p>
-<p>Separately, it's probably worth trying to find a different way of avoiding this footgun so that we can more confidently introduce a divergence between &quot;dev builds&quot; and &quot;profiling builds&quot; and &quot;release builds.&quot;</p>
+<p>If the improvement here is ~23% on cold builds, do we have a sense of what kind of improvement we get on warm builds? My feeling is that for this class of improvement, the warm builds probably matter a lot more than cold builds. And for the dependencies removed here, I wouldn&#x27;t expect them to be getting rebuilt all of the time. So I&#x27;d be curious if this change improves warm build times to the point of being worth the potential footgun here.</p>
+<p>Separately, it&#x27;s probably worth trying to find a different way of avoiding this footgun so that we can more confidently introduce a divergence between &quot;dev builds&quot; and &quot;profiling builds&quot; and &quot;release builds.&quot;</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -197,13 +197,13 @@ backtrace-ext v0.2.1
 <li>Most work on uv is focused on correctness and/or adding features (as opposed to performance optimizations)</li>
 <li>Switching decompression backends / memory allocators is not a threat to correctness (since any deviation in behavior besides performance would be immediately spotted and reported as a bug to the respective maintainers)</li>
 </ul>
-<p>Even if y'all decide you do not want to go down that road, there's something to salvage in that PR imho: the whole &quot;shim crate to let cargo pick the dependencies/feature flags we want depending on the target platform&quot; thing (and deduplicating the allocator setup between uv &amp; uv-dev).</p>
+<p>Even if y&#x27;all decide you do not want to go down that road, there&#x27;s something to salvage in that PR imho: the whole &quot;shim crate to let cargo pick the dependencies/feature flags we want depending on the target platform&quot; thing (and deduplicating the allocator setup between uv &amp; uv-dev).</p>
 <blockquote>
 <p>do we have a sense of what kind of improvement we get on warm builds?</p>
 </blockquote>
-<p>We don't! I guess let's measure that before deciding the fate of this PR first?</p>
-<p>My experience in speeding up builds is that cargo rebuilds a lot more than it should, a lot more often than it should. And even when it <em>doesn't</em> build something, just having a large dependency graph involves a lot of, well, fetching, hashing, etc. — as you're well aware, uv does that too!</p>
-<p>I'll report back with data on incremental builds (including switching between check/clippy/build/running tests — some of which I suspect trashes the target dir and causes cargo to rebuild too much) but am already mentally prepared into salvaging this PR into a &quot;mostly cleanups&quot; one as I may have underestimated just how much of astral's work focuses on performance alone.</p>
+<p>We don&#x27;t! I guess let&#x27;s measure that before deciding the fate of this PR first?</p>
+<p>My experience in speeding up builds is that cargo rebuilds a lot more than it should, a lot more often than it should. And even when it <em>doesn&#x27;t</em> build something, just having a large dependency graph involves a lot of, well, fetching, hashing, etc. — as you&#x27;re well aware, uv does that too!</p>
+<p>I&#x27;ll report back with data on incremental builds (including switching between check/clippy/build/running tests — some of which I suspect trashes the target dir and causes cargo to rebuild too much) but am already mentally prepared into salvaging this PR into a &quot;mostly cleanups&quot; one as I may have underestimated just how much of astral&#x27;s work focuses on performance alone.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -211,18 +211,18 @@ backtrace-ext v0.2.1
             <div class="timeline-body"><blockquote>
 <p>Most work on uv is focused on correctness and/or adding features (as opposed to performance optimizations)</p>
 </blockquote>
-<p>I think it comes in waves. I haven't done any perf work in a while since my focus has been on the functionality/correctness of the multi-platform resolver. But I have done a lot of perf work in the past and hope to do more in the future.</p>
+<p>I think it comes in waves. I haven&#x27;t done any perf work in a while since my focus has been on the functionality/correctness of the multi-platform resolver. But I have done a lot of perf work in the past and hope to do more in the future.</p>
 <p>The cleanups/refactoring makes sense.</p>
 <p>And looking at the impact on &quot;warm&quot; builds makes sense too. I know for me at least, I do a lot of work in <code>uv-resolver</code>. And I think the <code>pep508_rs</code> crate has seen a bit of activity lately because of markers. So those might be useful to test, speaking selfishly.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Remove/disable deps in dev" to "Clean up "performance allocators" and "performance flate2" backends" by @fasterthanlime on 2024-09-23 14:27</div>
+            <div class="event">Renamed from &quot;Remove/disable deps in dev&quot; to &quot;Clean up &quot;performance allocators&quot; and &quot;performance flate2&quot; backends&quot; by <a href="https://github.com/fasterthanlime">@fasterthanlime</a> on 2024-09-23 14:27</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/fasterthanlime">@fasterthanlime</a> on 2024-09-23 15:12</div>
-            <div class="timeline-body"><p>This PR is now more about &quot;simplifying the logic to pull in performance allocators/flate2 backends&quot; (it still removes the 'backtrace' feature of miette), and less about removing dependencies by default.</p>
-<p>The <code>performance</code> feature is now enabled by default, I suppose someone working on correctness only could use <code>--no-default-features</code> and get the perf improvements I originally had in mind, but as per the comments here: no defaults are changed, the packaging folks (Linux distros etc.) don't have to be notified, there shouldn't be any breaking change here, just fewer Cargo.toml magicks duplicated across uv and uv-dev.</p>
+            <div class="timeline-body"><p>This PR is now more about &quot;simplifying the logic to pull in performance allocators/flate2 backends&quot; (it still removes the &#x27;backtrace&#x27; feature of miette), and less about removing dependencies by default.</p>
+<p>The <code>performance</code> feature is now enabled by default, I suppose someone working on correctness only could use <code>--no-default-features</code> and get the perf improvements I originally had in mind, but as per the comments here: no defaults are changed, the packaging folks (Linux distros etc.) don&#x27;t have to be notified, there shouldn&#x27;t be any breaking change here, just fewer Cargo.toml magicks duplicated across uv and uv-dev.</p>
 <p>cc @BurntSushi for a second review</p>
 </div>
         </div>
@@ -242,12 +242,12 @@ backtrace-ext v0.2.1
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @konstin on 2024-09-25 15:41</div>
+            <div class="event">Closed by <a href="https://github.com/konstin">@konstin</a> on 2024-09-25 15:41</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:39:23 UTC
+        Synced at 2026-01-20 19:48:02 UTC
     </footer>
 </body>
 </html>

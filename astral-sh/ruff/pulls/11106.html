@@ -23,20 +23,20 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This PR adds a new <code>db.symbol_table(file_id)</code> method that allows querying the symbol table for a file (that gets cached).</p>
-<h2>Test Plan</h2>
+Test Plan
 <p><code>cargo build</code></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2024-04-23 16:11</div>
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-23 16:11</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @MichaReiser on 2024-04-23 16:11</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-23 16:11</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Cache symbol tables" to "red-knot: Cache symbol tables" by @MichaReiser on 2024-04-23 16:12</div>
+            <div class="event">Renamed from &quot;Cache symbol tables&quot; to &quot;red-knot: Cache symbol tables&quot; by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-23 16:12</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/red_knot/src/symbols.rs</code>:27 on 2024-04-23 16:13</div>
@@ -53,27 +53,27 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/symbols.rs</code>:27 on 2024-04-23 16:16</div>
-            <div class="timeline-body"><p>No, that's not it :sweat_smile: . It's a jar in which you store your salsa... And each jar contains multiple ingredients.</p>
+            <div class="timeline-body"><p>No, that&#x27;s not it :sweat_smile: . It&#x27;s a jar in which you store your salsa... And each jar contains multiple ingredients.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/symbols.rs</code>:30 on 2024-04-23 16:59</div>
-            <div class="timeline-body"><p>This is a bit tricky. It's much more efficient to build symbol tables and collect definitions in one AST pass rather than two. Also in order to use the collected defs, the caller needs to already have a reference to the AST in their scope, so it's not even possible for this method to return the defs.</p>
+            <div class="timeline-body"><p>This is a bit tricky. It&#x27;s much more efficient to build symbol tables and collect definitions in one AST pass rather than two. Also in order to use the collected defs, the caller needs to already have a reference to the AST in their scope, so it&#x27;s not even possible for this method to return the defs.</p>
 <p>I think there are two use cases for symbol tables:</p>
 <ol>
-<li>We already have cached types for a module, and we need the cached symbol table just because the types are indexed by symbol ID, and we need the symbol table to look them up. In this use case, there's no possibility that we need to build the symbol table or call <code>parse</code>.</li>
-<li>We don't have cached types for a module, they have been invalidated. In this case the symbol table alone is no use; we will need the AST and the definitions in order to re-evaluate types for the module. We have to re-walk the AST anyway to collect symbol defs, and re-building the symbol table along the way is probably no more work than reusing one (and it's a lot simpler for the visitor to not have to implement both &quot;reuse&quot; and &quot;build&quot;.)</li>
+<li>We already have cached types for a module, and we need the cached symbol table just because the types are indexed by symbol ID, and we need the symbol table to look them up. In this use case, there&#x27;s no possibility that we need to build the symbol table or call <code>parse</code>.</li>
+<li>We don&#x27;t have cached types for a module, they have been invalidated. In this case the symbol table alone is no use; we will need the AST and the definitions in order to re-evaluate types for the module. We have to re-walk the AST anyway to collect symbol defs, and re-building the symbol table along the way is probably no more work than reusing one (and it&#x27;s a lot simpler for the visitor to not have to implement both &quot;reuse&quot; and &quot;build&quot;.)</li>
 </ol>
-<p>I think this db API (&quot;get me a symbol table if you have one, or transparently build one otherwise&quot;) doesn't fit either of these use cases.</p>
+<p>I think this db API (&quot;get me a symbol table if you have one, or transparently build one otherwise&quot;) doesn&#x27;t fit either of these use cases.</p>
 <p>Maybe it will make more sense to only cache the symbol table as part of &quot;symbol table + associated types&quot;, never on its own?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/db.rs</code>:46 on 2024-04-23 17:04</div>
-            <div class="timeline-body"><p>Here we call the same thing both &quot;a symbols table&quot; and &quot;symbol tables&quot; in a single line of code, where I'd been calling it just &quot;a symbol table&quot; :)</p>
-<p>I think frequently &quot;a symbol table&quot; is used to refer to the symbols in a single scope, so a module would be considered to have a tree of &quot;symbol tables&quot;. So perhaps we should change naming to call the per-module thing <code>SymbolTables</code> instead, that might be most consistent with common usage. But I think it's also fine to call it <code>SymbolTable</code>, as I had done.</p>
-<p>I've never seen it called a &quot;symbols table&quot;.</p>
-<p>In any case, we should decide whether a module has &quot;a symbol table&quot; or &quot;symbol tables&quot; (I'm fine with either one) or a &quot;symbols table&quot; (I'm opposed to this one), and be consistent with our naming everywhere.</p>
+            <div class="timeline-body"><p>Here we call the same thing both &quot;a symbols table&quot; and &quot;symbol tables&quot; in a single line of code, where I&#x27;d been calling it just &quot;a symbol table&quot; :)</p>
+<p>I think frequently &quot;a symbol table&quot; is used to refer to the symbols in a single scope, so a module would be considered to have a tree of &quot;symbol tables&quot;. So perhaps we should change naming to call the per-module thing <code>SymbolTables</code> instead, that might be most consistent with common usage. But I think it&#x27;s also fine to call it <code>SymbolTable</code>, as I had done.</p>
+<p>I&#x27;ve never seen it called a &quot;symbols table&quot;.</p>
+<p>In any case, we should decide whether a module has &quot;a symbol table&quot; or &quot;symbol tables&quot; (I&#x27;m fine with either one) or a &quot;symbols table&quot; (I&#x27;m opposed to this one), and be consistent with our naming everywhere.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -86,21 +86,21 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/db.rs</code>:46 on 2024-04-23 17:55</div>
-            <div class="timeline-body"><p>(Oh, actually the name <code>symbol_tables</code> for this field makes perfect sense either way, as it's storing symbol tables for multiple modules.)</p>
+            <div class="timeline-body"><p>(Oh, actually the name <code>symbol_tables</code> for this field makes perfect sense either way, as it&#x27;s storing symbol tables for multiple modules.)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dhruvmanila by @MichaReiser on 2024-04-24 02:01</div>
+            <div class="event">Review requested from <a href="https://github.com/dhruvmanila">@dhruvmanila</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-24 02:01</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-24 07:39</div>
-            <div class="timeline-body"><p>I'll update this PR to cache <code>Symbols</code> once @carljm's PR that removes the lifetime from it is merged.</p>
+            <div class="timeline-body"><p>I&#x27;ll update this PR to cache <code>Symbols</code> once @carljm&#x27;s PR that removes the lifetime from it is merged.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/symbols.rs</code>:482 on 2024-04-24 16:19</div>
             <div class="timeline-body"><p>nit</p>
-<pre><code class="language-suggestion">pub struct SymbolTableStorage(KeyValueCache&lt;FileId, Arc&lt;SymbolTable&gt;&gt;);
+<pre><code>pub struct SymbolTableStorage(KeyValueCache&lt;FileId, Arc&lt;SymbolTable&gt;&gt;);
 </code></pre>
 </div>
         </div>
@@ -110,20 +110,20 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-24 16:31</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @MichaReiser on 2024-04-24 17:06</div>
+            <div class="event">Merged by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-24 17:06</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2024-04-24 17:06</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-24 17:06</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-04-24 17:06</div>
@@ -131,7 +131,7 @@
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:03:57 UTC
+        Synced at 2026-01-20 19:03:38 UTC
     </footer>
 </body>
 </html>

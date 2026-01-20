@@ -23,33 +23,33 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/aldanor">@aldanor</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>(Related PR: #13438 - would be nice to have it merged as well since it touches on the same globwalker code)</p>
-<p>There's a few issues with <code>cache-key</code> globs, which this PR attempts to address:</p>
+<p>There&#x27;s a few issues with <code>cache-key</code> globs, which this PR attempts to address:</p>
 <ul>
 <li>As of the current state, parent or absolute paths are not allowed, which is not obvious and is not documented. E.g., cache-key paths of the form <code>{file = &quot;../dep/**&quot;}</code> will be essentially ignored.</li>
-<li>Absolute glob patterns also don't work (funnily enough, there's logic in <code>globwalk</code> itself that attempts to address it in <a href="https://github.com/Gilnaa/globwalk/blob/8973fa2bc560be54c91448131238fa50d56ee121/src/lib.rs#L415"><code>globwalk::glob_builder()</code></a>, which serves as inspiration to some parts of this PR).</li>
+<li>Absolute glob patterns also don&#x27;t work (funnily enough, there&#x27;s logic in <code>globwalk</code> itself that attempts to address it in <a href="https://github.com/Gilnaa/globwalk/blob/8973fa2bc560be54c91448131238fa50d56ee121/src/lib.rs#L415"><code>globwalk::glob_builder()</code></a>, which serves as inspiration to some parts of this PR).</li>
 <li>The reason for parent paths being ignored is the way globwalker is currently being triggered in <code>uv-cache-info</code>: the base directory is being walked over completely and each entry is then being matched to one of the provided match patterns.</li>
 <li>This may also end up being very inefficient if you have a huge root folder with thousands of files: if your match patterns are <code>a/b/*.rs</code> and <code>a/c/*.py</code> then instead of walking over the root directory, you can just walk over <code>a/b</code> and <code>a/c</code> and match the relevant patterns there.</li>
 <li>Why supporting parent paths may be important to the point of being a blocker: in large codebases with python projects depending on other local non-python projects (e.g. rust crates), cache-keys can be very useful to track dependency on the source code of the latter (e.g. <code>cache-keys = [{ file = &quot;../../crates/some-dep/**&quot; }]</code>.</li>
-<li>TLDR: parent/absolute cache-key globs don't work, glob walk can be slow.</li>
+<li>TLDR: parent/absolute cache-key globs don&#x27;t work, glob walk can be slow.</li>
 </ul>
-<h2>Solution</h2>
+Solution
 <ul>
 <li>In this PR, user-provided glob patterns are first clustered (LCP-style) into pattern groups with longest common path prefix; each of these groups can then be walked over separately.</li>
-<li>Pattern groups do not overlap, so we would never walk over the same directory twice (unless there's symlinks pointing to same folders).</li>
-<li>Paths are not canonicalized nor virtually normalized (which is impossible on Unix without FS access), so the method is symlink-safe (i.e. we don't treat <code>a/b/..</code> as <code>a</code>) and should work fine with #13438.</li>
+<li>Pattern groups do not overlap, so we would never walk over the same directory twice (unless there&#x27;s symlinks pointing to same folders).</li>
+<li>Paths are not canonicalized nor virtually normalized (which is impossible on Unix without FS access), so the method is symlink-safe (i.e. we don&#x27;t treat <code>a/b/..</code> as <code>a</code>) and should work fine with #13438.</li>
 <li>Because of LCP logic, the minimal amount of directory space will be traversed to cover all patterns.</li>
 <li>Absolute glob patterns will now work.</li>
 <li>Parent-relative glob patterns will now work.</li>
 <li>Glob walking will be more efficient in some cases.</li>
 </ul>
-<h2>Possible improvements</h2>
+Possible improvements
 <ul>
-<li>Efficiency can be further greatly improved if we limit max depth for globwalk. Currently, a simple &quot;.toml&quot; will deep-traverse the whole folder. Essentially, max depth can be always set to either N or infinity. If a pattern at a pivot node contains <code>**</code>, we collect all children nodes from the subtree into the same group and don't limit max depth; otherwise, we set max depth to the length of the glob pattern. This wouldn't change correctness though and can we done separately if needed.</li>
+<li>Efficiency can be further greatly improved if we limit max depth for globwalk. Currently, a simple &quot;.toml&quot; will deep-traverse the whole folder. Essentially, max depth can be always set to either N or infinity. If a pattern at a pivot node contains <code>**</code>, we collect all children nodes from the subtree into the same group and don&#x27;t limit max depth; otherwise, we set max depth to the length of the glob pattern. This wouldn&#x27;t change correctness though and can we done separately if needed.</li>
 <li>If this is considered important enough, docs can be updated to indicate that parent and absolute globs are supported (and symlinks are resolved, if the relevant PR is algo merged in).</li>
 </ul>
-<h2>Test Plan</h2>
+Test Plan
 <ul>
 <li>Glob splitting and clustering tests are included in the PR.</li>
 <li>Relative and absolute glob cache-keys were tested in an actual codebase.</li>
@@ -57,7 +57,7 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @BurntSushi by @konstin on 2025-05-15 14:08</div>
+            <div class="event">Review requested from <a href="https://github.com/BurntSushi">@BurntSushi</a> by <a href="https://github.com/konstin">@konstin</a> on 2025-05-15 14:08</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-cache-info/src/glob.rs</code>:39 on 2025-05-15 17:57</div>
@@ -66,47 +66,47 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-cache-info/src/glob.rs</code>:11 on 2025-05-15 18:00</div>
-            <div class="timeline-body"><p>I think this needs to check for <code>[</code> and <code>]</code> too. I think <a href="https://docs.rs/globset/latest/src/globset/lib.rs.html#944-961">that's it</a>.</p>
+            <div class="timeline-body"><p>I think this needs to check for <code>[</code> and <code>]</code> too. I think <a href="https://docs.rs/globset/latest/src/globset/lib.rs.html#944-961">that&#x27;s it</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-cache-info/src/glob.rs</code>:14 on 2025-05-15 18:04</div>
-            <div class="timeline-body"><p>Can you document the contract for this function? In particular, I think it is necessary that this always return true if the given part returns something different if it's interpreted as a glob versus if it was interpreted as a literal. But that it can also return true in cases even when the result is identical. That is, this routine allows false positives but not false negatives.</p>
-<p>I think this is how it's used too. That is, if you interpret a path component as a glob when it isn't, then I think the worst thing that happens is that you traverse more of the directory tree? (i.e., You lose on perf but not correctness.)</p>
-<p>I'm thinking about components like <code>foo{bar</code> or <code>foo[bar</code>.</p>
+            <div class="timeline-body"><p>Can you document the contract for this function? In particular, I think it is necessary that this always return true if the given part returns something different if it&#x27;s interpreted as a glob versus if it was interpreted as a literal. But that it can also return true in cases even when the result is identical. That is, this routine allows false positives but not false negatives.</p>
+<p>I think this is how it&#x27;s used too. That is, if you interpret a path component as a glob when it isn&#x27;t, then I think the worst thing that happens is that you traverse more of the directory tree? (i.e., You lose on perf but not correctness.)</p>
+<p>I&#x27;m thinking about components like <code>foo{bar</code> or <code>foo[bar</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-cache-info/src/glob.rs</code>:25 on 2025-05-15 18:06</div>
-            <div class="timeline-body"><p>This might be vestigial? It's pushed to below, but then appears unused.</p>
+            <div class="timeline-body"><p>This might be vestigial? It&#x27;s pushed to below, but then appears unused.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-cache-info/src/glob.rs</code>:25 on 2025-05-15 18:08</div>
             <div class="timeline-body"><p>I do wonder if this code can be simplified by doing <code>let mut current = &amp;mut glob.base;</code>. And then in the loop below:</p>
-<pre><code class="language-rust">if !globbing &amp;&amp; is_glob_like(part) {
+<pre><code>if !globbing &amp;&amp; is_glob_like(part) {
     current = &amp;mut glob.pattern;
 }
 </code></pre>
 <p>Then you can just do <code>current.push(last);</code> in both places and avoid the extra case analysis on <code>globbing</code>.</p>
-<p>(I'm wondering if this is what you had and it didn't work for some reason.)</p>
+<p>(I&#x27;m wondering if this is what you had and it didn&#x27;t work for some reason.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-05-15 18:13</div>
-            <div class="timeline-body"><p>I started reviewing this, but realized that before I got too much into the weeds, it would be good to check the motivation first: do you have any benchmarks for this? The more realistic, the better. I do grant that there is likely some improvement here, but it's important to contextualize it with 1) how common that case is and 2) if the improvement is worth the extra implementation cost here.</p>
+            <div class="timeline-body"><p>I started reviewing this, but realized that before I got too much into the weeds, it would be good to check the motivation first: do you have any benchmarks for this? The more realistic, the better. I do grant that there is likely some improvement here, but it&#x27;s important to contextualize it with 1) how common that case is and 2) if the improvement is worth the extra implementation cost here.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/aldanor">@aldanor</a> on 2025-05-15 18:47</div>
             <div class="timeline-body"><blockquote>
-<p>I started reviewing this, but realized that before I got too much into the weeds, it would be good to check the motivation first: do you have any benchmarks for this? The more realistic, the better. I do grant that there is likely some improvement here, but it's important to contextualize it with 1) how common that case is and 2) if the improvement is worth the extra implementation cost here.</p>
+<p>I started reviewing this, but realized that before I got too much into the weeds, it would be good to check the motivation first: do you have any benchmarks for this? The more realistic, the better. I do grant that there is likely some improvement here, but it&#x27;s important to contextualize it with 1) how common that case is and 2) if the improvement is worth the extra implementation cost here.</p>
 </blockquote>
 <p>@BurntSushi - thanks again for taking a look.</p>
 <p>I think PR title/description might be a bit confusing - sorry about that and let me try to explain:</p>
 <ul>
 <li>The main point (and the blocker we are currently facing in a production codebase) is being able to use relative/parent paths in cache-key globs, to define dependencies on local folders that are not descendants of the current python project.</li>
-<li>The way globwalk is currently being used, it's being called with project directory as the base, and simply traverses all of it. Of course, this will not catch any entries outside of CWD.</li>
+<li>The way globwalk is currently being used, it&#x27;s being called with project directory as the base, and simply traverses all of it. Of course, this will not catch any entries outside of CWD.</li>
 <li>In order to cover patterns that may contain (or start with) <code>..</code>, we would have to:<ol>
 <li>do multiple globwalks</li>
 <li>figure out which base directories to use for those globwalks</li>
@@ -127,7 +127,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/aldanor">@aldanor</a> on <code>crates/uv-cache-info/src/glob.rs</code>:25 on 2025-05-15 19:05</div>
-            <div class="timeline-body"><p>Good catch, this is a leftover from a previous version that wasn't cleaned up after a refactor.</p>
+            <div class="timeline-body"><p>Good catch, this is a leftover from a previous version that wasn&#x27;t cleaned up after a refactor.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -136,7 +136,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/aldanor">@aldanor</a> on <code>crates/uv-cache-info/src/glob.rs</code>:39 on 2025-05-15 19:09</div>
-            <div class="timeline-body"><p>Don't think it would work, because inside this scope we need <code>last</code> to be <code>Component</code>.</p>
+            <div class="timeline-body"><p>Don&#x27;t think it would work, because inside this scope we need <code>last</code> to be <code>Component</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -159,7 +159,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-15 19:23</div>
-            <div class="timeline-body"><p>The PR looks great algorithmically, but I'm wondering if we can have less of that complexity in uv itself? We would be adding a custom trie having to maintain and explain it for something that's not a core algorithm, are there maybe off the shelve components we could use? Could these optimizations be implemented in one of the ecosystem globbing/walkdir crates which use?</p>
+            <div class="timeline-body"><p>The PR looks great algorithmically, but I&#x27;m wondering if we can have less of that complexity in uv itself? We would be adding a custom trie having to maintain and explain it for something that&#x27;s not a core algorithm, are there maybe off the shelve components we could use? Could these optimizations be implemented in one of the ecosystem globbing/walkdir crates which use?</p>
 <p>Can you describe how the real-world project looks like that motivated these changes, and how uv is currently failing on it?</p>
 </div>
         </div>
@@ -169,24 +169,24 @@
 <blockquote>
 <p>Can you describe how the real-world project looks like that motivated these changes, and how uv is currently failing on it?</p>
 </blockquote>
-<p>As mentioned above, we're currently facing a pretty heavy blocker because of the lack of relative/parent glob support in a big production codebase, where we have lots of pyo3/maturin python packages that depend on both pure-rust crates and/or static content that may affect the builds. In order to track freshness, we'd like to use relative globs like</p>
-<pre><code class="language-toml">[tool.uv]
+<p>As mentioned above, we&#x27;re currently facing a pretty heavy blocker because of the lack of relative/parent glob support in a big production codebase, where we have lots of pyo3/maturin python packages that depend on both pure-rust crates and/or static content that may affect the builds. In order to track freshness, we&#x27;d like to use relative globs like</p>
+<pre><code>[tool.uv]
 cache-keys = [
     { file = &quot;../../crates/foo/**&quot; },
     { file = &quot;../some/files/**.txt&quot; },
 ]
 </code></pre>
-<p>which uv currently doesn't support because of the way globwalk is being used.</p>
+<p>which uv currently doesn&#x27;t support because of the way globwalk is being used.</p>
 <blockquote>
-<p>I'm wondering if we can have less of that complexity in uv itself? We would be adding a custom trie having to maintain and explain it for something that's not a core algorithm, are there maybe off the shelve components we could use? Could these optimizations be implemented in one of the ecosystem globbing/walkdir crates which use?</p>
+<p>I&#x27;m wondering if we can have less of that complexity in uv itself? We would be adding a custom trie having to maintain and explain it for something that&#x27;s not a core algorithm, are there maybe off the shelve components we could use? Could these optimizations be implemented in one of the ecosystem globbing/walkdir crates which use?</p>
 </blockquote>
-<p>I couldn't find any glob-specific LCPs/tries... there's some generic trie crates but that sounds like an overkill and they provide too much functionality for what's needed here (also LCP grouping here is a bit special to globs - i.e. handling normal/non-normal edges differently).</p>
+<p>I couldn&#x27;t find any glob-specific LCPs/tries... there&#x27;s some generic trie crates but that sounds like an overkill and they provide too much functionality for what&#x27;s needed here (also LCP grouping here is a bit special to globs - i.e. handling normal/non-normal edges differently).</p>
 <p>Technically, it could be either</p>
 <ul>
-<li>slammed into the globwalk crate itself, although it wouldn't be my preference since (a) it would change its core logic in an incompatible way and/or complicate its api and (b) it's marked by author as 'in perpetual maintenance, use other crates'.</li>
+<li>slammed into the globwalk crate itself, although it wouldn&#x27;t be my preference since (a) it would change its core logic in an incompatible way and/or complicate its api and (b) it&#x27;s marked by author as &#x27;in perpetual maintenance, use other crates&#x27;.</li>
 <li>made into a globwalk2 crate with default support for trie-based glob clustering, base dir inference, relative/absolute globs, max depth limiting, skipping irrelevant dirs, etc... although then it would have to copy/paste lots of code from walkdir/ignore to be self-sufficient.</li>
 <li>a separate crate that takes (base, patterns) and returns vec&lt;(base, patterns)&gt;.</li>
-<li>integrated into <code>ignore</code> crate?.. but it's used by ripgrep, plus globs outside of base dirs don't really match what it's doing.</li>
+<li>integrated into <code>ignore</code> crate?.. but it&#x27;s used by ripgrep, plus globs outside of base dirs don&#x27;t really match what it&#x27;s doing.</li>
 </ul>
 <p>I guess one of the latter is doable and I can take on that but is quite a lot more work, and if you have a strong preference to not have this code inside uv, wonder if it makes sense to get this merged into uv first to unblock and pull it out next? Btw globwalk is currently only being used in uv-workspace and uv-cache-info.</p>
 </div>
@@ -195,26 +195,26 @@ cache-keys = [
             <div class="timeline-header">Comment by <a href="https://github.com/aldanor">@aldanor</a> on 2025-05-27 15:29</div>
             <div class="timeline-body"><p>Hey folks - I went with the 3rd option above and took some time to clean it up, add tests, fix edge cases and make it into a standalone crate (which may perhaps be useful to the general public since it fixes most reported globwalk issues, errors and performance problems).</p>
 <p>Would that be acceptable here? (cc @konstin) If yes, I can open a separate PR replacing globwalk. Feature-wise, I think it covers all the bases except ignore files (e.g. .gitignore), is it needed as of right now? (in which case I can try to quickly add it as well)</p>
-<p>@BurntSushi would really appreciate if you could take a brief look, because it basically joins two crates of your authorship, in a somewhat obscure way 🙂 https://github.com/aldanor/multiglob/pull/1</p>
+<p>@BurntSushi would really appreciate if you could take a brief look, because it basically joins two crates of your authorship, in a somewhat obscure way 🙂 <a href="https://github.com/aldanor/multiglob/pull/1">aldanor/multiglob#1</a></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @konstin by @zanieb on 2025-05-28 18:32</div>
+            <div class="event">Assigned to <a href="https://github.com/konstin">@konstin</a> by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-28 18:32</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-02 11:07</div>
-            <div class="timeline-body"><p>My main concern is that we want the same glob implementation across uv; this is already non-ideal as we're using both <code>glob</code> and <code>globset</code>, but we shouldn't add yet another implementation, rather reduce the differences. Specifically, have you seen the <code>uv-globfilter</code> crate? It implements optimizations very similar to the ones you describe.</p>
-<p>I'm not sure if we want parent references and absolute paths for globs. Projects are usually intended to be self-contained so they can be built into source dists and wheels, and this breaks this isolation.</p>
+            <div class="timeline-body"><p>My main concern is that we want the same glob implementation across uv; this is already non-ideal as we&#x27;re using both <code>glob</code> and <code>globset</code>, but we shouldn&#x27;t add yet another implementation, rather reduce the differences. Specifically, have you seen the <code>uv-globfilter</code> crate? It implements optimizations very similar to the ones you describe.</p>
+<p>I&#x27;m not sure if we want parent references and absolute paths for globs. Projects are usually intended to be self-contained so they can be built into source dists and wheels, and this breaks this isolation.</p>
 <p>For Rust projects specifically, have you seen https://github.com/PyO3/maturin-import-hook?</p>
 <blockquote>
-<p>As mentioned above, we're currently facing a pretty heavy blocker because of the lack of relative/parent glob support in a big production codebase, where we have lots of pyo3/maturin python packages that depend on both pure-rust crates and/or static content that may affect the builds. In order to track freshness, we'd like to use relative globs like</p>
-<pre><code class="language-toml">[tool.uv]
+<p>As mentioned above, we&#x27;re currently facing a pretty heavy blocker because of the lack of relative/parent glob support in a big production codebase, where we have lots of pyo3/maturin python packages that depend on both pure-rust crates and/or static content that may affect the builds. In order to track freshness, we&#x27;d like to use relative globs like</p>
+<pre><code>[tool.uv]
 cache-keys = [
     { file = &quot;../../crates/foo/**&quot; },
     { file = &quot;../some/files/**.txt&quot; },
 ]
 </code></pre>
-<p>which uv currently doesn't support because of the way globwalk is being used.</p>
+<p>which uv currently doesn&#x27;t support because of the way globwalk is being used.</p>
 </blockquote>
 <p>Is the blocker specifically that the lack relative references requires manual rebuilds, or is there also a performance problem?</p>
 </div>
@@ -227,29 +227,29 @@ cache-keys = [
 <p>Is the blocker specifically that the lack relative references requires manual rebuilds, or is there also a performance problem?</p>
 </blockquote>
 <p>Primarily the lack of relative references. In large codebases I think disallowing relative references in cache keys is a restriction way too harsh.</p>
-<p>Performance-wise - it's just if you allow relative/absolute references and you have multiple base folders, so if you have 10 glob patterns and if you don't want to kick off 10 full glob walks, you might have to think of how to do it efficiently, see similar problems in e.g. https://github.com/Gilnaa/globwalk/issues/29, https://github.com/Gilnaa/globwalk/pull/31, etc). These problems are addressed in uv-globfilter but will pop back up if you allow multiple bases / rel paths.</p>
+<p>Performance-wise - it&#x27;s just if you allow relative/absolute references and you have multiple base folders, so if you have 10 glob patterns and if you don&#x27;t want to kick off 10 full glob walks, you might have to think of how to do it efficiently, see similar problems in e.g. <a href="https://github.com/Gilnaa/globwalk/issues/29">Gilnaa/globwalk#29</a>, <a href="https://github.com/Gilnaa/globwalk/pull/31">Gilnaa/globwalk#31</a>, etc). These problems are addressed in uv-globfilter but will pop back up if you allow multiple bases / rel paths.</p>
 </li>
 <li><blockquote>
 <p>Specifically, have you seen the uv-globfilter crate? It implements optimizations very similar to the ones you describe.</p>
 </blockquote>
-<p>Yea, I've seen it; it's somewhat close but would not work out of the box with relative paths because again, essentially there will be many overlapping bases.</p>
+<p>Yea, I&#x27;ve seen it; it&#x27;s somewhat close but would not work out of the box with relative paths because again, essentially there will be many overlapping bases.</p>
 </li>
 <li><blockquote>
 <p>For Rust projects specifically, have you seen https://github.com/PyO3/maturin-import-hook?</p>
 </blockquote>
-<p>Yea I'm aware of that, but doesn't quite suit our use case (&gt; 100 crates, many dozen pyo3 projects, cross compilation required, not for 'local development'). We are looking for a clean way for uv to figure when particular packages need to get rebuilt if their dependencies changes (whether rust dependencies of pyo3 crates like <code>../dep-1/**</code> or static files like protobuf schemas).</p>
+<p>Yea I&#x27;m aware of that, but doesn&#x27;t quite suit our use case (&gt; 100 crates, many dozen pyo3 projects, cross compilation required, not for &#x27;local development&#x27;). We are looking for a clean way for uv to figure when particular packages need to get rebuilt if their dependencies changes (whether rust dependencies of pyo3 crates like <code>../dep-1/**</code> or static files like protobuf schemas).</p>
 </li>
 <li><blockquote>
-<p>as we're using both glob and globset</p>
+<p>as we&#x27;re using both glob and globset</p>
 </blockquote>
 </li>
 <li><blockquote>
-<p>I'm wondering if we can have less of that complexity in uv itself</p>
+<p>I&#x27;m wondering if we can have less of that complexity in uv itself</p>
 </blockquote>
-<p>The initial reason I spent considerable amount of time pulling it into a separate crate (multiglob) was you suggesting uv shouldn't have this complexity internally :) Given that there's no working options supporting relpaths neither in uv nor in crates.io, I went with a new standalone crate which should now be pretty well tested; it's based on walkdir+globset, somewhat similar to uv-globfilter (but can be further aligned to uv-globfilter behaviour if need be, if there's any particular points).</p>
+<p>The initial reason I spent considerable amount of time pulling it into a separate crate (multiglob) was you suggesting uv shouldn&#x27;t have this complexity internally :) Given that there&#x27;s no working options supporting relpaths neither in uv nor in crates.io, I went with a new standalone crate which should now be pretty well tested; it&#x27;s based on walkdir+globset, somewhat similar to uv-globfilter (but can be further aligned to uv-globfilter behaviour if need be, if there&#x27;s any particular points).</p>
 </li>
 <li><blockquote>
-<p>this is already non-ideal as we're using both glob and globset, but we shouldn't add yet another implementation, rather reduce the differences</p>
+<p>this is already non-ideal as we&#x27;re using both glob and globset, but we shouldn&#x27;t add yet another implementation, rather reduce the differences</p>
 </blockquote>
 <p>The suggestion here is to remove one dependency (globwalk) and replace it with another (multiglob) which is also based on walkdir+globset.</p>
 </li>
@@ -259,7 +259,7 @@ cache-keys = [
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-cache-info/src/glob.rs</code>:72 on 2025-06-03 12:26</div>
-            <div class="timeline-body"><p>It looks like this <code>Trie</code> implementation makes pretty heavy use of recursion. And the call depth is in turn proportional to the length of data controlled by end users. That's generally something I think we should try to avoid. Although, in this case, paths are likely limited in length in most cases to a point where the call depth isn't going to get deep enough to overflow the stack. But I'm a little uneasy about relying on such things since that's more of a platform restriction as opposed to something we check and enforce ourselves.</p>
+            <div class="timeline-body"><p>It looks like this <code>Trie</code> implementation makes pretty heavy use of recursion. And the call depth is in turn proportional to the length of data controlled by end users. That&#x27;s generally something I think we should try to avoid. Although, in this case, paths are likely limited in length in most cases to a point where the call depth isn&#x27;t going to get deep enough to overflow the stack. But I&#x27;m a little uneasy about relying on such things since that&#x27;s more of a platform restriction as opposed to something we check and enforce ourselves.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -274,8 +274,8 @@ cache-keys = [
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/aldanor">@aldanor</a> on <code>crates/uv-cache-info/src/glob.rs</code>:72 on 2025-06-04 20:12</div>
             <div class="timeline-body"><p>https://github.com/aldanor/multiglob/pull/1/commits/bbd43be1c63e7c31d78dbad49b01b11d415a9b7c</p>
-<p>(fixed in that <a href="https://github.com/aldanor/multiglob/pull/1">PR</a> because there's some edge cases fixed there and lots of tests, including multi-platform ones)</p>
-<p>// Apologies for all the confusion, I decided to pull it out into a standalone crate after @konstin asked if we can have less complexity in uv itself; but this also allowed to thoroughly go through all the multi-platform edge cases and write tons of tests. If uv requires this crate under its control I'm ok with passing ownership or whatever else you guys want (although it may be pretty useful for general public).</p>
+<p>(fixed in that <a href="https://github.com/aldanor/multiglob/pull/1">PR</a> because there&#x27;s some edge cases fixed there and lots of tests, including multi-platform ones)</p>
+<p>// Apologies for all the confusion, I decided to pull it out into a standalone crate after @konstin asked if we can have less complexity in uv itself; but this also allowed to thoroughly go through all the multi-platform edge cases and write tons of tests. If uv requires this crate under its control I&#x27;m ok with passing ownership or whatever else you guys want (although it may be pretty useful for general public).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -297,8 +297,8 @@ cache-keys = [
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-cache-info/src/glob.rs</code>:72 on 2025-06-05 12:30</div>
-            <div class="timeline-body"><p>Personally, I'd rather the small targeted change you have in this PR. Maintaining a whole other crate for this is a lot to ask.</p>
-<p>I'm not keen on depending on a crate made <em>just</em> so that the code doesn't live in uv proper. Its long term maintenance story isn't clear to me. I can't speak for @konstin, but &quot;off the shelf components&quot; to me means <em>existing</em> components. Sorry about the confusion here.</p>
+            <div class="timeline-body"><p>Personally, I&#x27;d rather the small targeted change you have in this PR. Maintaining a whole other crate for this is a lot to ask.</p>
+<p>I&#x27;m not keen on depending on a crate made <em>just</em> so that the code doesn&#x27;t live in uv proper. Its long term maintenance story isn&#x27;t clear to me. I can&#x27;t speak for @konstin, but &quot;off the shelf components&quot; to me means <em>existing</em> components. Sorry about the confusion here.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -307,7 +307,7 @@ cache-keys = [
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-cache-info/src/glob.rs</code>:72 on 2025-06-05 12:40</div>
-            <div class="timeline-body"><p>I'm different to @BurntSushi here for maintainability, he has more experience with glob implementations than me</p>
+            <div class="timeline-body"><p>I&#x27;m different to @BurntSushi here for maintainability, he has more experience with glob implementations than me</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -316,28 +316,28 @@ cache-keys = [
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-cache-info/src/glob.rs</code>:317 on 2025-07-10 22:18</div>
-            <div class="timeline-body"><p>Can you add them in this PR? I'd rather own this very small amount of logic than depend on an entirely new crate personally.</p>
+            <div class="timeline-body"><p>Can you add them in this PR? I&#x27;d rather own this very small amount of logic than depend on an entirely new crate personally.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-07-10 22:39</div>
-            <div class="timeline-body"><p>I'm personally in favor of bringing this in without adding a dependency on a new crate. I think I grok the main logic here decently enough and the trie here looks pretty simple. Are you okay with that @konstin?</p>
+            <div class="timeline-body"><p>I&#x27;m personally in favor of bringing this in without adding a dependency on a new crate. I think I grok the main logic here decently enough and the trie here looks pretty simple. Are you okay with that @konstin?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-07-10 23:59</div>
-            <div class="timeline-body"><p>@aldanor Is there anything that your <code>multiglob</code> PR does that isn't addressed by the smaller code change here?</p>
+            <div class="timeline-body"><p>@aldanor Is there anything that your <code>multiglob</code> PR does that isn&#x27;t addressed by the smaller code change here?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/aldanor">@aldanor</a> on 2025-07-11 00:13</div>
             <div class="timeline-body"><blockquote>
-<p>@aldanor Is there anything that your <code>multiglob</code> PR does that isn't addressed by the smaller code change here?</p>
+<p>@aldanor Is there anything that your <code>multiglob</code> PR does that isn&#x27;t addressed by the smaller code change here?</p>
 </blockquote>
-<p>@BurntSushi I think it would be pretty close to being identical, except in multiglob there's no recursion (that you mentioned above in a comment), a few parts are cleaned up and lots more tests for the whole thing. But functionally, from uv's standpoint, there's not going to be much of a difference I guess. There may appear to be lots of code in multiglob PR because it has to replicate all the outer walkdir API plus there's tests boilerplate.</p>
+<p>@BurntSushi I think it would be pretty close to being identical, except in multiglob there&#x27;s no recursion (that you mentioned above in a comment), a few parts are cleaned up and lots more tests for the whole thing. But functionally, from uv&#x27;s standpoint, there&#x27;s not going to be much of a difference I guess. There may appear to be lots of code in multiglob PR because it has to replicate all the outer walkdir API plus there&#x27;s tests boilerplate.</p>
 <p>If this PR is looking more or less ok, my personal suggestion would be to:</p>
 <ul>
-<li>try to get this pr over the line (unless there's any other feedback?), it's more self-contained</li>
+<li>try to get this pr over the line (unless there&#x27;s any other feedback?), it&#x27;s more self-contained</li>
 <li>I should probably just publish multiglob separately, may be useful to other people in the ecosystem? (as an alternative to globwalk)</li>
 <li>if you guys ever feel like switching off from globwalk that would be always doable</li>
 </ul>
@@ -358,10 +358,10 @@ cache-keys = [
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @zanieb on 2025-07-11 15:01</div>
+            <div class="event">Merged by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-11 15:01</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2025-07-11 15:01</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-11 15:01</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/aldanor">@aldanor</a> on 2025-07-11 15:35</div>
@@ -371,7 +371,7 @@ cache-keys = [
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:43:11 UTC
+        Synced at 2026-01-20 19:52:11 UTC
     </footer>
 </body>
 </html>

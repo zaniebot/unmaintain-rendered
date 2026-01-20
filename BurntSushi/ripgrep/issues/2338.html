@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>Can't use .ignore to unignore subpaths ignored in .gitignore</h1>
+    <h1>Can&#x27;t use .ignore to unignore subpaths ignored in .gitignore</h1>
 
     <div class="meta">
         <span class="state-icon state-closed"></span>
@@ -23,29 +23,29 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/RedBeard0531">@RedBeard0531</a></div>
-            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+            <div class="timeline-body">What version of ripgrep are you using?
 <pre><code>&gt; rg --version
 ripgrep 13.0.0
 -SIMD -AVX (compiled)
 +SIMD +AVX (runtime)
 </code></pre>
-<p>But I think this is a &quot;forever&quot; bug since I remember running into it when rg was first released, but didn't file a bug at the time.</p>
-<h4>How did you install ripgrep?</h4>
+<p>But I think this is a &quot;forever&quot; bug since I remember running into it when rg was first released, but didn&#x27;t file a bug at the time.</p>
+How did you install ripgrep?
 <p>Installed from Arch linux repos</p>
-<h4>What operating system are you using ripgrep on?</h4>
+What operating system are you using ripgrep on?
 <p>Linux</p>
-<h4>Describe your bug.</h4>
-<p><code>rg</code> (and other tools using the <code>ignore</code> crate like <code>fd</code>) don't look in un-ignored subpaths in <code>.ignore</code> (eg <code>!/path/subpath</code>) if a parent path is ignored by <code>.gitignore</code> (eg <code>/path</code>).</p>
+Describe your bug.
+<p><code>rg</code> (and other tools using the <code>ignore</code> crate like <code>fd</code>) don&#x27;t look in un-ignored subpaths in <code>.ignore</code> (eg <code>!/path/subpath</code>) if a parent path is ignored by <code>.gitignore</code> (eg <code>/path</code>).</p>
 <p>Usecase: build directory is in .gitignore. A subpath of the build directory contains generated source files. I would like <code>rg</code> (and similar tools) to consider the generated source files, but not other build artifacts.</p>
-<h4>What are the steps to reproduce the behavior?</h4>
-<pre><code class="language-sh">git init # otherwise .gitignore is ignored
-echo '/dir' &gt; .gitignore
-echo '!/dir/sub/' &gt; .ignore
+What are the steps to reproduce the behavior?
+<pre><code>git init # otherwise .gitignore is ignored
+echo &#x27;/dir&#x27; &gt; .gitignore
+echo &#x27;!/dir/sub/&#x27; &gt; .ignore
 mkdir -p dir/sub
 echo foo &gt; dir/sub/blah
 rg foo --debug
 </code></pre>
-<h4>What is the actual behavior?</h4>
+What is the actual behavior?
 <p>No files are examined.</p>
 <pre><code>&gt; rg foo --debug
 DEBUG|grep_regex::literal|crates/regex/src/literal.rs:58: literal prefixes detected: Literals { lits: [Complete(foo)], limit_size: 250, limit_class: 10 }
@@ -68,37 +68,37 @@ DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basen
 DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
 DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
 DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
-No files were searched, which means ripgrep probably applied a filter you didn't expect.
+No files were searched, which means ripgrep probably applied a filter you didn&#x27;t expect.
 Running with --debug will show why files are being skipped.
 </code></pre>
-<h4>What is the expected behavior?</h4>
+What is the expected behavior?
 <p>It should have looked in <code>dir/sub/blah</code>. Note that putting <code>!/dir</code> in <code>.ignore</code> <em>does</em> work in this case, but for the real codebase I <em>do</em> want the equivalent of <code>dir</code> to be ignored except for a few selected paths.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-10-24 12:01</div>
-            <div class="timeline-body"><p>Yeah this has been reported before, although finding the issues for it is actually a little challenging. #1050 looks pretty close to this, so I'll mark this as a duplicate.</p>
-<p>I'm not sure this will ever get fixed. The operational model here is that ripgrep doesn't descend into directories that have been ignored. This lets ripgrep skip over entire parts of the tree. Imagine a very large <code>build</code> directory for example (or something else), and ripgrep slowing way down even though it has been marked as ignored. That would be very surprising behavior. Therefore, the only real way to fix this sort of issue, as far as I can tell, is to do analysis on the globs and only descend into such directories if it's <em>possible</em> for some other whitelist rule to unignored a subpath. That feels like a very tricky analysis to do correctly.</p>
-<p>The other reason why I'm not sure this will ever be fixed is that it's often possible to re-write your ignore rules to work-around this issue. For example, you could ignore <code>/dir/*</code> and then whitelist <code>!/dir/sub</code>. That doesn't necessarily work so nicely in all such instances of this bug, but it might work for you.</p>
+            <div class="timeline-body"><p>Yeah this has been reported before, although finding the issues for it is actually a little challenging. #1050 looks pretty close to this, so I&#x27;ll mark this as a duplicate.</p>
+<p>I&#x27;m not sure this will ever get fixed. The operational model here is that ripgrep doesn&#x27;t descend into directories that have been ignored. This lets ripgrep skip over entire parts of the tree. Imagine a very large <code>build</code> directory for example (or something else), and ripgrep slowing way down even though it has been marked as ignored. That would be very surprising behavior. Therefore, the only real way to fix this sort of issue, as far as I can tell, is to do analysis on the globs and only descend into such directories if it&#x27;s <em>possible</em> for some other whitelist rule to unignored a subpath. That feels like a very tricky analysis to do correctly.</p>
+<p>The other reason why I&#x27;m not sure this will ever be fixed is that it&#x27;s often possible to re-write your ignore rules to work-around this issue. For example, you could ignore <code>/dir/*</code> and then whitelist <code>!/dir/sub</code>. That doesn&#x27;t necessarily work so nicely in all such instances of this bug, but it might work for you.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2022-10-24 12:01</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-10-24 12:01</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">duplicate</span> added by @BurntSushi on 2022-10-24 12:01</div>
+            <div class="event">Label <span class="label">duplicate</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-10-24 12:01</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/RedBeard0531">@RedBeard0531</a> on 2022-10-24 13:24</div>
-            <div class="timeline-body"><p>That case is a bit different, or at least harder to handle efficiently, because both paths were globs, so it isn't statically clear what path is being unignored. In the case where a <em>specific</em> path is unignored, it should be possible to treat that effectively as an additional &quot;root&quot; path for scanning as long as it appears to be a subdirectory of an exiting root path. (I'm using &quot;root&quot; in the sense of gc roots, as in where you start your traversal. I don't know what you call that concept internally.) So in this case, <code>rg foo</code> could be treated as an equivalent of <code>rg foo . ./dir/sub</code>. This means that you <em>don't</em> actually need to descend or look at <code>./dir</code>'s files at all and can just skip directly to <code>./dir/sub</code> (along with everything else in <code>./</code> that isn't ignored of course).</p>
-<p>I was able to work around it but it ends up being a bit gross. It basically requires a 3-step dance in the <code>.ignore</code> file: 1) <code>!/path</code> to unignore the dir, 2) <code>/path/*</code> to reignore everything inside, 3) <code>!/path/want</code> to re-unignore the stuff I don't want ignored. I assume I would need to do that for each intermediate subdirectory in if I wanted to unignore <code>/path/to/something/deep</code>, which gets even grosser (although I didn't test because the files/dirs I want to unignore were only 1 layer deep). Also I assume that it would be even slower than a &quot;direct&quot; unignored path, because now you need to expand and glob-match each directory, even though you know where you need to look.</p>
+            <div class="timeline-body"><p>That case is a bit different, or at least harder to handle efficiently, because both paths were globs, so it isn&#x27;t statically clear what path is being unignored. In the case where a <em>specific</em> path is unignored, it should be possible to treat that effectively as an additional &quot;root&quot; path for scanning as long as it appears to be a subdirectory of an exiting root path. (I&#x27;m using &quot;root&quot; in the sense of gc roots, as in where you start your traversal. I don&#x27;t know what you call that concept internally.) So in this case, <code>rg foo</code> could be treated as an equivalent of <code>rg foo . ./dir/sub</code>. This means that you <em>don&#x27;t</em> actually need to descend or look at <code>./dir</code>&#x27;s files at all and can just skip directly to <code>./dir/sub</code> (along with everything else in <code>./</code> that isn&#x27;t ignored of course).</p>
+<p>I was able to work around it but it ends up being a bit gross. It basically requires a 3-step dance in the <code>.ignore</code> file: 1) <code>!/path</code> to unignore the dir, 2) <code>/path/*</code> to reignore everything inside, 3) <code>!/path/want</code> to re-unignore the stuff I don&#x27;t want ignored. I assume I would need to do that for each intermediate subdirectory in if I wanted to unignore <code>/path/to/something/deep</code>, which gets even grosser (although I didn&#x27;t test because the files/dirs I want to unignore were only 1 layer deep). Also I assume that it would be even slower than a &quot;direct&quot; unignored path, because now you need to expand and glob-match each directory, even though you know where you need to look.</p>
 <p>Of course, since there <em>is</em> a workaround, I can understand you not wanting to invest effort to make this case work well.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:43:35 UTC
+        Synced at 2026-01-20 18:48:12 UTC
     </footer>
 </body>
 </html>

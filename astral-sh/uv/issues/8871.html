@@ -27,10 +27,10 @@
 <p>Today we had (first time for many months!) first case where the dependencies resolved by <code>uv</code> in this way produced a <code>pip check</code> conflicting set of dependencies.</p>
 <p>This was done with <code>71f9d2b</code> commit of <code>https://github.com/apache/airflow</code> repo - and it might change soon dependinng on the released dependencies but this was reproducible at 6 Nov 2024 11pm GMT (in case you have way to get state of the <code>pip</code> repo at a given moment in time.</p>
 <p>The way how to reproduce it is to run this is airflow main repo (and it was done using an  earlier installed airflow (python 3.9) taken from one of the previous installations</p>
-<pre><code>uv pip install --upgrade --resolution highest --editable '.[devel-ci]' --editable ./providers --editable ./task_sdk
+<pre><code>uv pip install --upgrade --resolution highest --editable &#x27;.[devel-ci]&#x27; --editable ./providers --editable ./task_sdk
 </code></pre>
 <p>This resulted in:</p>
-<pre><code>0.603 + uv pip install --python /usr/local/bin/python --upgrade --resolution highest --editable '.[devel-ci]' --editable ./providers --editable ./task_sdk
+<pre><code>0.603 + uv pip install --python /usr/local/bin/python --upgrade --resolution highest --editable &#x27;.[devel-ci]&#x27; --editable ./providers --editable ./task_sdk
 0.643 Using Python 3.9.20 environment at /usr/local
 75.59 Resolved 650 packages in 1m 14s
 85.70 Prepared 41 packages in 10.09s
@@ -120,23 +120,14 @@
 <pre><code>86.86 Checking packaging tools for system Python installation: /usr/local/bin/python
 86.86
 86.92
-86.92 Running 'pip check'
+86.92 Running &#x27;pip check&#x27;
 86.92
 89.11 opentelemetry-exporter-otlp-proto-common 1.27.0 has requirement opentelemetry-proto==1.27.0, but you have opentelemetry-proto 1.15.0.
 </code></pre>
 <p>Apparently <code>uv</code> resolving downgraded a number of opentelemetry-exporter dependencies from 1.27.0 to 1.15.0 for no apparent reason.</p>
 <p>Whe I repeated the same but adding <code>opentelemetry-proto&gt;=1.27.0</code> to the <code>uv pip install</code> command, the resolution resolved all those opentelemetry-exporter dependencies to 1.27.0 and <code>pip check</code> stopped complaining.</p>
-<p>Pretty weird and migh be difficult to fully reproduce from a clean state, but this was reproducible and failed other's development environments today as well. I workaround it for now by adding the <code>opentelemetry-proto&gt;=1.27.0</code> to our eager-upgrade command but maybe from the description it will be pretty obvious for you what could have happened.</p>
-<!--
-Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+<p>Pretty weird and migh be difficult to fully reproduce from a clean state, but this was reproducible and failed other&#x27;s development environments today as well. I workaround it for now by adding the <code>opentelemetry-proto&gt;=1.27.0</code> to our eager-upgrade command but maybe from the description it will be pretty obvious for you what could have happened.</p>
 
-If you're filing a bug report, please consider including the following information:
-
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
-* The current uv platform.
-* The current uv version (`uv --version`).
--->
 
 </div>
         </div>
@@ -152,15 +143,15 @@ If you're filing a bug report, please consider including the following informati
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-07 00:21</div>
-            <div class="timeline-body"><p>Thanks! I can take a look but note that a bunch of dependencies <em>did</em> upgrade, so it's possible that some upgrade introduced an upper-bound constraint elsewhere that led the resolver to &quot;need&quot; to downgrade others.</p>
+            <div class="timeline-body"><p>Thanks! I can take a look but note that a bunch of dependencies <em>did</em> upgrade, so it&#x27;s possible that some upgrade introduced an upper-bound constraint elsewhere that led the resolver to &quot;need&quot; to downgrade others.</p>
 <p>Separately, where is <code>opentelemetry-exporter-otlp-proto-common</code>? Is that installed in a prior step?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-11-07 00:30</div>
             <div class="timeline-body"><p>Yeah, so first thing is that two <code>pip install</code> commands are not guaranteed to produce a consistent install, a simple of example of this is if say <code>B</code> requires <code>A&gt;1</code> and you run <code>pip install B</code> followed by <code>pip install A==1.0</code> you end up with an inconsistent environment. This is as true of the <code>uv pip</code> interface as it is of the <code>pip</code> interface.</p>
-<p>I would reccomend to install into an existing environment where you don't want packages to regress and also install additional packages, while keeping a consistent environment, is to do something like this:</p>
-<pre><code>$ uv pip freeze | sed 's/==/&gt;=/g' | cat requirements.txt - | uv pip compile - -o output.txt  --upgrade
+<p>I would reccomend to install into an existing environment where you don&#x27;t want packages to regress and also install additional packages, while keeping a consistent environment, is to do something like this:</p>
+<pre><code>$ uv pip freeze | sed &#x27;s/==/&gt;=/g&#x27; | cat requirements.txt - | uv pip compile - -o output.txt  --upgrade
 $ uv pip install -r output.txt
 </code></pre>
 <p>There are options on <code>freeze</code> and <code>compile</code> you may need to play around with to fit your use case.</p>
@@ -171,7 +162,7 @@ $ uv pip install -r output.txt
             <div class="timeline-body"><blockquote>
 <p>Separately, where is opentelemetry-exporter-otlp-proto-common? Is that installed in a prior step?</p>
 </blockquote>
-<p>Yes. It has been installed in one of the previous successful resolutions (that's why it is difficult to reproduce ) - because in Airflow we use the &quot;previously successfuly tested&quot; set of dependencies from the last &quot;green&quot; main build as a starting point for the upgrade. In this case the &quot;starting&quot; point of installed dependencies were build in this action run:</p>
+<p>Yes. It has been installed in one of the previous successful resolutions (that&#x27;s why it is difficult to reproduce ) - because in Airflow we use the &quot;previously successfuly tested&quot; set of dependencies from the last &quot;green&quot; main build as a starting point for the upgrade. In this case the &quot;starting&quot; point of installed dependencies were build in this action run:</p>
 <blockquote>
 <p>https://github.com/apache/airflow/actions/runs/11704598329</p>
 </blockquote>
@@ -181,7 +172,7 @@ $ uv pip install -r output.txt
 docker run -it ghcr.io/apache/airflow/main/ci/python3.9:f05716bb0b92f180a40150bef8c2cbab153dd361 bash
 </code></pre>
 <p>That should get you inside of the <code>airflow</code> image used and then likely (I am not at intel machine right now) - running the command above should reproduce the issue:</p>
-<pre><code>uv pip install --python /usr/local/bin/python --upgrade --resolution highest --editable '.[devel-ci]' --editable ./providers --editable ./task_sdk
+<pre><code>uv pip install --python /usr/local/bin/python --upgrade --resolution highest --editable &#x27;.[devel-ci]&#x27; --editable ./providers --editable ./task_sdk
 </code></pre>
 <p>@notatallshaw</p>
 <blockquote>
@@ -190,9 +181,9 @@ docker run -it ghcr.io/apache/airflow/main/ci/python3.9:f05716bb0b92f180a40150be
 <p>Yeah. I absolutely get it but the problem is that:</p>
 <p>a) this resolution resulted in a set of dependencies that <code>pip check</code> considered invalid (they were in fact invalid)
 b) when I added <code>opentelemetry-proto&gt;=1.27.0</code>, the opentelmetry dependencies were not downgraded AND the produced resoultion was &quot;valid&quot; according to the pip check.</p>
-<p>So I don't mind to have different resolutions - but this time it caused <strong>invalid</strong> resolution not only different. And that is problematic.</p>
+<p>So I don&#x27;t mind to have different resolutions - but this time it caused <strong>invalid</strong> resolution not only different. And that is problematic.</p>
 <p>Also, when I tried to apply workaround with <code>opentelemetry-proto&gt;=1.27.0</code> even stranger thing happened.
-https://github.com/apache/airflow/pull/43768#issuecomment-2461071604</p>
+<a href="https://github.com/apache/airflow/pull/43768">apache/airflow#43768</a>#issuecomment-2461071604</p>
 <p>Apparently when I tried to install airflow in non-editable mode trying to install provider packages (rather than their dependencies) build locally and <code>opentelemetry-proto&gt;=1.27.0</code> - for some strange reason, uv attempted (and failed) to download some very, very old <code>apache-beam=2.0.0</code> which is REALLY strange as just adding <code>opentelemetry-proto&gt;=1.27.0</code> should not have caused to attempt apache-beam to be downgraded, especially that a moment ago <code>apache-beam==2.60.0</code> was perfectly fine and resolved correctly.</p>
 </div>
         </div>
@@ -200,8 +191,8 @@ https://github.com/apache/airflow/pull/43768#issuecomment-2461071604</p>
             <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2024-11-07 00:48</div>
             <div class="timeline-body"><p>Also @notatallshaw</p>
 <blockquote>
-<p>I would reccomend to install into an existing environment where you don't want packages to regress and also install additional packages, while keeping a consistent environment, is to do something like this:</p>
-<p>$ uv pip freeze | sed 's/==/&gt;=/g' | cat requirements.txt - | uv pip compile - -o output.txt<br />
+<p>I would reccomend to install into an existing environment where you don&#x27;t want packages to regress and also install additional packages, while keeping a consistent environment, is to do something like this:</p>
+<p>$ uv pip freeze | sed &#x27;s/==/&gt;=/g&#x27; | cat requirements.txt - | uv pip compile - -o output.txt<br>
 $ uv pip install -r output.txt</p>
 </blockquote>
 <p>This is precisely what we do not want to do. that command that we are running, is not to keep consistent environment, it is used to find the <strong>new</strong> best resolution taking into account all the packages that were released since last time we resolved the dependencies. Basically &quot;find me the consistent set of dependencies for <code>.[devel-ci]</code> that <code>highest resolution</code> provides&quot;.</p>
@@ -213,15 +204,15 @@ $ uv pip install -r output.txt</p>
             <div class="timeline-body"><blockquote>
 <p>this resolution resulted in a set of dependencies that pip check considered invalid (they were in fact invalid)</p>
 </blockquote>
-<p>But isn't in invalid taking into account a package that was already installed in the virtual environment <em>but not part of the resolution</em>? The second <code>uv pip install</code> doesn't know anything about <code>opentelemetry-exporter-otlp-proto-common</code> or its constraints, right? (Neither would <code>pip install</code>.)</p>
+<p>But isn&#x27;t in invalid taking into account a package that was already installed in the virtual environment <em>but not part of the resolution</em>? The second <code>uv pip install</code> doesn&#x27;t know anything about <code>opentelemetry-exporter-otlp-proto-common</code> or its constraints, right? (Neither would <code>pip install</code>.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-11-07 00:51</div>
             <div class="timeline-body"><blockquote>
-<p>So I don't mind to have different resolutions - but this time it caused <strong>invalid</strong> resolution not only different. And that is problematic.</p>
+<p>So I don&#x27;t mind to have different resolutions - but this time it caused <strong>invalid</strong> resolution not only different. And that is problematic.</p>
 </blockquote>
-<p>That's what I'm saying, two <code>pip install</code> commands can produce an invalid resolution. It doesn't matter if you use uv or pip, there is always chance of this outcome.</p>
+<p>That&#x27;s what I&#x27;m saying, two <code>pip install</code> commands can produce an invalid resolution. It doesn&#x27;t matter if you use uv or pip, there is always chance of this outcome.</p>
 <blockquote>
 <p>This is precisely what we do not want to do. that command that we are running, is not to keep consistent environment, it is used to find the <strong>new</strong> best resolution taking into account all the packages that were released since last time we resolved the dependencies.</p>
 </blockquote>
@@ -236,10 +227,10 @@ $ uv pip install -r output.txt</p>
 <p>Ah . I see - interesting - I did not notice the sed command replacing <code>==</code> with <code>&gt;=</code>.... But this is not exactly what I want. Sometimes I want the packages to regress. For example it might be that a new version of a package is relased that has &lt; limit on a version of another package I already have installed - and maybe few others as well (for example when that package has a bug discovered that caused few maintainers to limit it) - in this case (and it happened in the past) - I want the new resolution to (possibly) downgreade that package and upgrade the others.</p>
 <p>And .... so far it worked. But for some reason it caused this invalid resolution.</p>
 <blockquote>
-<p>That's what I'm saying, two pip install commands can produce an invalid resolution. It doesn't matter if you use uv or pip, there is always chance of this outcome.</p>
+<p>That&#x27;s what I&#x27;m saying, two pip install commands can produce an invalid resolution. It doesn&#x27;t matter if you use uv or pip, there is always chance of this outcome.</p>
 </blockquote>
 <p>Aha.. Yeah. Actually, that made me think... I think you are likely right and I start seeing scenario when that could have happened - probably when one of the new packages stops having another package as dependency then probably that could have caused that dependency to be &quot;left over&quot; by the resolution and cause the conflict.</p>
-<p>Thanks! that gave me a clue. I have to look a bit deeper, but I think I know the scenario and indeed it is likely not a bug in uv. Sorry @charliermarsh -&gt; I will take a deeper look and report back here later (it's after midnight for me)</p>
+<p>Thanks! that gave me a clue. I have to look a bit deeper, but I think I know the scenario and indeed it is likely not a bug in uv. Sorry @charliermarsh -&gt; I will take a deeper look and report back here later (it&#x27;s after midnight for me)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -248,13 +239,13 @@ $ uv pip install -r output.txt</p>
 <p>Ah . I see - interesting - I did not notice the sed command replacing <code>==</code> with <code>&gt;=</code>.... But this is not exactly what I want. Sometimes I want the packages to regress.</p>
 </blockquote>
 <p>Well you could do:</p>
-<pre><code>$ uv pip freeze | cut -d'=' -f1 | cat requirements.txt - | uv pip compile - -o output.txt  --upgrade
+<pre><code>$ uv pip freeze | cut -d&#x27;=&#x27; -f1 | cat requirements.txt - | uv pip compile - -o output.txt  --upgrade
 $ uv pip install -r output.txt
 </code></pre>
 <blockquote>
 <p>And .... so far it worked. But for some reason it caused this invalid resolution.</p>
 </blockquote>
-<p>I really think it's just about luck, most the time it will work fine, and then a new dependency is created and it just happens the resolution hits something surprising and becomes invalid.</p>
+<p>I really think it&#x27;s just about luck, most the time it will work fine, and then a new dependency is created and it just happens the resolution hits something surprising and becomes invalid.</p>
 <blockquote>
 <p>Aha.. Yeah. Actually, that made me think... I think you are likely right and I start seeing scenario when that could have happened - probably when one of the new packages stops having another package as dependency then probably that could have caused that dependency to be &quot;left over&quot; by the resolution and cause the conflict.</p>
 </blockquote>
@@ -266,35 +257,35 @@ $ uv pip install -r output.txt
             <div class="timeline-body"><p>Oh yeah.</p>
 <p>I do not know <em>why</em> opentelemetry has been downgraded (though it is secondary), but I know how the conflict happened.</p>
 <p>This is because caching is hard (and especially cache invalidation),</p>
-<p>The opentelemetry-<em>-http and -grpc 1.27 had opentelemetry-</em>-common 1.27 as dependency, BUT http/gprpc 1.15 DID NOT... This means that when everything from opentelemetry has been downgraded, the common one was not even considered for 1.15 as dependency so it has not been downgraded together - it's cached version from previous resolution was simply not considered in the final reslution.</p>
+<p>The opentelemetry-<em>-http and -grpc 1.27 had opentelemetry-</em>-common 1.27 as dependency, BUT http/gprpc 1.15 DID NOT... This means that when everything from opentelemetry has been downgraded, the common one was not even considered for 1.15 as dependency so it has not been downgraded together - it&#x27;s cached version from previous resolution was simply not considered in the final reslution.</p>
 <p>That is very interesting one. And likely I can solve it by <strong>just</strong> avoiding to use the cached version from last run - which I can easily do by increasing the build epoch in the dockerfile.</p>
 <p>Thanks. I see that it is NOT uv issue @charliermarsh, so unless you would like to handle a case that <code>uv</code> should h</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2024-11-07 01:25</div>
-            <div class="timeline-body"><p>Closing. Thanks for the discussion. It's been very helpful to get to the root of the problem.</p>
+            <div class="timeline-body"><p>Closing. Thanks for the discussion. It&#x27;s been very helpful to get to the root of the problem.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @potiuk on 2024-11-07 01:25</div>
+            <div class="event">Closed by <a href="https://github.com/potiuk">@potiuk</a> on 2024-11-07 01:25</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-11-07 01:32</div>
-            <div class="timeline-body"><p>Btw, taking a step back, I think you could produce sufficent constraints with just running <code>uv pip compile</code> commands, I don't think you need to base your new resolution on a previous install any more, <code>uv pip compile</code> is very powerful, especially with <code>--universal</code> options and others.</p>
+            <div class="timeline-body"><p>Btw, taking a step back, I think you could produce sufficent constraints with just running <code>uv pip compile</code> commands, I don&#x27;t think you need to base your new resolution on a previous install any more, <code>uv pip compile</code> is very powerful, especially with <code>--universal</code> options and others.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2024-11-07 01:57</div>
             <div class="timeline-body"><blockquote>
-<p>Btw, taking a step back, I think you could produce sufficent constraints with just running uv pip compile commands, I don't think you need to base your new resolution on a previous install any more, uv pip compile is very powerful, especially with --universal options and others.</p>
+<p>Btw, taking a step back, I think you could produce sufficent constraints with just running uv pip compile commands, I don&#x27;t think you need to base your new resolution on a previous install any more, uv pip compile is very powerful, especially with --universal options and others.</p>
 </blockquote>
 <p>Not really - because we are doing it in Docker container, and we do not want to have cache of UV when we are doing it on the server. For airflow, UV cache for all our dependencies increases the size of our image by 2GB (~ 100%) - so we really do not want to keep cache there. While <code>uv</code> resolution is way faster than <code>pip</code>, without the cache and starting from 0, such resolution will take minutes (mostly because downloading and building some packages takes time not the resolution itself). But when when we base it on installed airflow, it takes seconds, because we usually only download and install those packages that have been upgraded. Maybe we can revisit that at some point in time and do benchmarking - but just compiling and installing gssapi (which almost never change) takes more than 2 minutes, similarly krb5- by having those dependencies installed - serving effectively as both - installed packages and cache - we save precious minutes of build time in our CI.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2024-11-07 02:08</div>
-            <div class="timeline-body"><p>BTW. Confrmed locally https://github.com/apache/airflow/pull/43770 - bumping the EPOCH (i.e. cleaning the cache) solved the problem for me.</p>
+            <div class="timeline-body"><p>BTW. Confrmed locally <a href="https://github.com/apache/airflow/pull/43770">apache/airflow#43770</a> - bumping the EPOCH (i.e. cleaning the cache) solved the problem for me.</p>
 <blockquote>
 <p>There are 2 hard problems in computer science: cache invalidation, naming things, and off-by-1 errors.</p>
 </blockquote>
@@ -309,29 +300,29 @@ $ uv pip install -r output.txt
 <blockquote>
 <p>While uv resolution is way faster than pip, without the cache and starting from 0, such resolution will take minutes (mostly because downloading and building some packages takes time not the resolution itself).</p>
 </blockquote>
-<p>I think you'll find even with <code>--no-cache</code> that <code>uv pip compile</code> takes seconds, even with <code>--universal</code> which will resolve every version of Python simultaneously.</p>
+<p>I think you&#x27;ll find even with <code>--no-cache</code> that <code>uv pip compile</code> takes seconds, even with <code>--universal</code> which will resolve every version of Python simultaneously.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-07 03:10</div>
-            <div class="timeline-body"><p>I don't know the details of your Docker setup, but in case you don't know, you could use a <a href="https://docs.astral.sh/uv/guides/integration/docker/#caching">cache mount</a></p>
+            <div class="timeline-body"><p>I don&#x27;t know the details of your Docker setup, but in case you don&#x27;t know, you could use a <a href="https://docs.astral.sh/uv/guides/integration/docker/#caching">cache mount</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2024-11-07 09:55</div>
             <div class="timeline-body"><blockquote>
-<p>I don't know the details of your Docker setup, but in case you don't know, you could use a <a href="https://docs.astral.sh/uv/guides/integration/docker/#caching">cache mount</a></p>
+<p>I don&#x27;t know the details of your Docker setup, but in case you don&#x27;t know, you could use a <a href="https://docs.astral.sh/uv/guides/integration/docker/#caching">cache mount</a></p>
 </blockquote>
-<p>We can't unfortunately, because this is docker container built on Github Runner in CI - so we have no cache mount available between builds. We could potentially use cache of github Runners to store the cached volume mount - but this cache in itself is limited to 10GB for everything and we would run out of it very quickly with different branches we have.</p>
-<p>We are planning to explore using artifacts for this cache - that woudl also help us with simplifying our workflows - https://github.com/apache/airflow/issues/43268 - but this will be pretty complex to implement and so far i found that using installed packaged from the &quot;branch tip&quot; of airflow (with disabled PIP or UV caching) and storing this as a single layer in our image with incrementally adding new layer with new packages, provides the best balance between the image size and time of buiilds.</p>
+<p>We can&#x27;t unfortunately, because this is docker container built on Github Runner in CI - so we have no cache mount available between builds. We could potentially use cache of github Runners to store the cached volume mount - but this cache in itself is limited to 10GB for everything and we would run out of it very quickly with different branches we have.</p>
+<p>We are planning to explore using artifacts for this cache - that woudl also help us with simplifying our workflows - <a href="https://github.com/apache/airflow/issues/43268">apache/airflow#43268</a> - but this will be pretty complex to implement and so far i found that using installed packaged from the &quot;branch tip&quot; of airflow (with disabled PIP or UV caching) and storing this as a single layer in our image with incrementally adding new layer with new packages, provides the best balance between the image size and time of buiilds.</p>
 <p>Note also that those images are pulled locally when you want to replicate CI development environment - because building those image takes also at least 5-10 minutes we optimize that by using github registry cache when we rebuild the images locally - which saves up to 5-8 minutes every time you build such image.</p>
-<p>So it's not <strong>that</strong> straightforward. But there is a way to simplify it in the future and maybe indeed use a bit more of the cache that UV provides.</p>
+<p>So it&#x27;s not <strong>that</strong> straightforward. But there is a way to simplify it in the future and maybe indeed use a bit more of the cache that UV provides.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:28:10 UTC
+        Synced at 2026-01-20 19:35:17 UTC
     </footer>
 </body>
 </html>

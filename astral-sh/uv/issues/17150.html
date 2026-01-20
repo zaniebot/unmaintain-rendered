@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/EliteTK">@EliteTK</a></div>
-            <div class="timeline-body"><h3>Issue</h3>
+            <div class="timeline-body">Issue
 <p><a href="https://github.com/astral-sh/uv/tree/66f7093ad2f1b0fd34b59d486c3c0ac57fc0e781">Currently</a> the function <code>as_io_error</code> is implemented for:</p>
 <ul>
 <li><a href="https://github.com/astral-sh/uv/blob/66f7093ad2f1b0fd34b59d486c3c0ac57fc0e781/crates/uv-fs/src/locked_file.rs#L78-L88"><code>uv_fs::locked_file::LockedFileError</code></a></li>
@@ -39,7 +39,7 @@
 <p><code>TomlCredentialError::as_io_error</code> is used in two places:</p>
 <p><a href="https://github.com/astral-sh/uv/blob/66f7093ad2f1b0fd34b59d486c3c0ac57fc0e781/crates/uv-auth/src/middleware.rs#L80-L109">https://github.com/astral-sh/uv/blob/66f7093ad2f1b0fd34b59d486c3c0ac57fc0e781/crates/uv-auth/src/middleware.rs#L80-L109</a></p>
 <p><a href="https://github.com/astral-sh/uv/blob/66f7093ad2f1b0fd34b59d486c3c0ac57fc0e781/crates/uv-auth/src/store.rs#L31-L53">https://github.com/astral-sh/uv/blob/66f7093ad2f1b0fd34b59d486c3c0ac57fc0e781/crates/uv-auth/src/store.rs#L31-L53</a></p>
-<p>In both cases <code>as_io_error</code> is being used to check for <code>ErrorKind::NotFound</code>. This will assume that the credential store itself was not found. But any io operation performed while locking the lockfile or reading the credential store which triggers an error of that sort would lead down this path. While it might make sense to coalesce the errors in the case of errors coming from <code>TextCredentialStore::from_file</code>, errors from <code>LockedFile::acquire</code> probably aren't relevant here.</p>
+<p>In both cases <code>as_io_error</code> is being used to check for <code>ErrorKind::NotFound</code>. This will assume that the credential store itself was not found. But any io operation performed while locking the lockfile or reading the credential store which triggers an error of that sort would lead down this path. While it might make sense to coalesce the errors in the case of errors coming from <code>TextCredentialStore::from_file</code>, errors from <code>LockedFile::acquire</code> probably aren&#x27;t relevant here.</p>
 <p>There are 5 uses for <code>uv_tool::Error::as_io_error</code>:</p>
 <ul>
 <li><a href="https://github.com/astral-sh/uv/blob/66f7093ad2f1b0fd34b59d486c3c0ac57fc0e781/crates/uv/src/commands/tool/install.rs#L406">https://github.com/astral-sh/uv/blob/66f7093ad2f1b0fd34b59d486c3c0ac57fc0e781/crates/uv/src/commands/tool/install.rs#L406</a></li>
@@ -49,36 +49,36 @@
 <li><a href="https://github.com/astral-sh/uv/blob/66f7093ad2f1b0fd34b59d486c3c0ac57fc0e781/crates/uv/src/commands/tool/uninstall.rs#L119">https://github.com/astral-sh/uv/blob/66f7093ad2f1b0fd34b59d486c3c0ac57fc0e781/crates/uv/src/commands/tool/uninstall.rs#L119</a></li>
 </ul>
 <p>All are using it to check for <code>ErrorKind::NotFound</code> and all exhibit similar issues.</p>
-<h3>Proposal</h3>
+Proposal
 <ul>
 <li>Consider removing implementations of <code>as_io_error</code></li>
 <li>For cases where a number of different enum variants may contribute to &quot;this operation failed because of X underlying cause&quot; (like maybe for <code>uv_tool::Error</code>) an explicit predicate function (e.g. maybe <code>::Io</code> and <code>::VirtualEnvError</code>).</li>
 <li>For other cases, the relevant case should be checked explicitly.</li>
-<li><code>Io(#[from] io::Error)</code> variants should be checked to ensure that they aren't used in situations where errors unrelated to each other are merged and then checked against an <code>ErrorKind</code> which could cause confusing error messages.</li>
+<li><code>Io(#[from] io::Error)</code> variants should be checked to ensure that they aren&#x27;t used in situations where errors unrelated to each other are merged and then checked against an <code>ErrorKind</code> which could cause confusing error messages.</li>
 </ul>
-<h3>Example</h3>
+Example
 <p>This would avoid buggy error reporting behaviour and make it easier to reason about the code.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @EliteTK on 2025-12-16 15:48</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/EliteTK">@EliteTK</a> on 2025-12-16 15:48</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> added by @EliteTK on 2025-12-16 15:48</div>
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/EliteTK">@EliteTK</a> on 2025-12-16 15:48</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">error messages</span> added by @EliteTK on 2025-12-16 15:48</div>
+            <div class="event">Label <span class="label">error messages</span> added by <a href="https://github.com/EliteTK">@EliteTK</a> on 2025-12-16 15:48</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-12-16 15:59</div>
-            <div class="timeline-body"><p>I'm very much in favor of replacing <code>as_io_error</code> with properly typed checks.</p>
-<p>I'd implement it so that <code>TomlCredentialError</code> should have a dedicated <code>NotFound</code> variant, so what callee can decide what is a not found error at call time. We likely want to replace some <code>Io(#[from] io::Error)</code> with <code>Io(#[source] io::Error)</code> to get more explicit checking.</p>
+            <div class="timeline-body"><p>I&#x27;m very much in favor of replacing <code>as_io_error</code> with properly typed checks.</p>
+<p>I&#x27;d implement it so that <code>TomlCredentialError</code> should have a dedicated <code>NotFound</code> variant, so what callee can decide what is a not found error at call time. We likely want to replace some <code>Io(#[from] io::Error)</code> with <code>Io(#[source] io::Error)</code> to get more explicit checking.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:33:41 UTC
+        Synced at 2026-01-20 19:41:19 UTC
     </footer>
 </body>
 </html>

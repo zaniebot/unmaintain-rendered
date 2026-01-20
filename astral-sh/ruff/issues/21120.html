@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/extrange">@extrange</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>For the following example in Python 3.14:</p>
-<pre><code class="language-python">from typing import TYPE_CHECKING
+<pre><code>from typing import TYPE_CHECKING
 from uuid import UUID
 
 from sqlalchemy import ForeignKey, Uuid
@@ -47,7 +47,7 @@ class Message(Base):
     user: Mapped[&quot;User&quot;] = relationship(back_populates=&quot;messages&quot;, init=False)
 </code></pre>
 <p>The suggestion is to remove the quotes around <code>&quot;User&quot;</code>:</p>
-<pre><code class="language-sh">UP037 [*] Remove quotes from type annotation
+<pre><code>UP037 [*] Remove quotes from type annotation
   --&gt; src/app/db/schema/message.py:18:18
    |
 16 |     content: Mapped[str]
@@ -57,7 +57,7 @@ class Message(Base):
    |
 help: Remove quotes
 </code></pre>
-<p>However doing so results in <code>NameError: name 'User' is not defined</code> at runtime. Perhaps annotations within the <code>Mapped</code> class should be excluded from this rule?</p>
+<p>However doing so results in <code>NameError: name &#x27;User&#x27; is not defined</code> at runtime. Perhaps annotations within the <code>Mapped</code> class should be excluded from this rule?</p>
 <p>Ruff <code>0.14.1</code></p>
 </div>
         </div>
@@ -67,11 +67,11 @@ help: Remove quotes
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-10-29 14:58</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-29 14:58</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-10-30 01:50</div>
-            <div class="timeline-body"><p>Hmm... this seems very related to some of the discussion in here https://github.com/python/cpython/issues/130881, but I will have to read it over carefully, especially since that issue was apparently resolved.</p>
+            <div class="timeline-body"><p>Hmm... this seems very related to some of the discussion in here <a href="https://github.com/python/cpython/issues/130881">python/cpython#130881</a>, but I will have to read it over carefully, especially since that issue was apparently resolved.</p>
 <p>In general it seems that the assumption that &quot;most people will not do things with annotations that will reveal the difference between 3.14 default behavior and <code>from __future__ import annotations</code>&quot; is correct. Unfortunately, the assumption that &quot;also no one will use third-party libraries that do these things&quot; is wrong.</p>
 </div>
         </div>
@@ -85,21 +85,21 @@ help: Remove quotes
             <div class="timeline-body"><blockquote>
 <p>this will happen no sooner than the first release after Python 3.13 reaches its end-of-life, but the community may decide to wait longer.</p>
 </blockquote>
-<p>EOL for 3.13 is end of 2029, so unfortunately I don't think we can wait it out 😄</p>
+<p>EOL for 3.13 is end of 2029, so unfortunately I don&#x27;t think we can wait it out 😄</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-10-31 12:13</div>
-            <div class="timeline-body"><p>This is loosely related to a long standing issue I have been meaning to fix and the main reason why I haven't turned on the <code>TC</code> rules yet in ruff. <code>flake8-type-checking</code> has built in special casing for SQLAlchemy that works around this issue.</p>
-<p>The main issue with SQLAlchemy's <code>Mapped</code> is, that it's using some magic to resolve forward references to other models, since it's quite common for models to reference one another which quickly leads to circularity issues if you were to actually import the model at runtime in both modules, but other than models all symbols in the annotation need to be available at runtime. So it's this weird mixed case where we can treat the symbols as neither runtime required nor purely typing related. This will need a new execution state in the semantic model I've been calling &quot;runtime ambiguous&quot; where neither the rules that want to add, nor the ones that want to remove quotes trigger (and also no moving around of imports in or out of type checking blocks).</p>
-<hr />
-<p>That being said, I believe this could be considered a UX bug in SQLAlchemy's Python 3.14 support. I believe they should be relying on new <code>annotationlib</code> functionality in 3.14, namely the <a href="https://docs.python.org/3/library/annotationlib.html#annotationlib.Format.FORWARDREF"><code>FORWARDREF</code></a> mode for <code>get_annotations</code>, so unresolvable symbols are replaced by a <code>ForwardRef</code>, rather than throwing a <code>NameError</code>. That way they can apply the same partial analysis of the annotations they are already doing, and only later replacing the forward references with the actual models, once they've been mapped. Rather than force people to explicitly quote forward references to models.</p>
-<p>Arguably it's still valid for <code>UP037</code> to trigger for quoted runtime ambiguous annotations if they're deferred, so adding &quot;runtime ambiguous&quot; would not actually solve this issue, although I think the more pragmatic stance would be to allow quoted annotations in &quot;runtime ambiguous&quot; expressions, since how the annotations get accessed are highly dependent on the library that's being used, so we can't assume that the quotes are actually redundant.</p>
+            <div class="timeline-body"><p>This is loosely related to a long standing issue I have been meaning to fix and the main reason why I haven&#x27;t turned on the <code>TC</code> rules yet in ruff. <code>flake8-type-checking</code> has built in special casing for SQLAlchemy that works around this issue.</p>
+<p>The main issue with SQLAlchemy&#x27;s <code>Mapped</code> is, that it&#x27;s using some magic to resolve forward references to other models, since it&#x27;s quite common for models to reference one another which quickly leads to circularity issues if you were to actually import the model at runtime in both modules, but other than models all symbols in the annotation need to be available at runtime. So it&#x27;s this weird mixed case where we can treat the symbols as neither runtime required nor purely typing related. This will need a new execution state in the semantic model I&#x27;ve been calling &quot;runtime ambiguous&quot; where neither the rules that want to add, nor the ones that want to remove quotes trigger (and also no moving around of imports in or out of type checking blocks).</p>
+<hr>
+<p>That being said, I believe this could be considered a UX bug in SQLAlchemy&#x27;s Python 3.14 support. I believe they should be relying on new <code>annotationlib</code> functionality in 3.14, namely the <a href="https://docs.python.org/3/library/annotationlib.html#annotationlib.Format.FORWARDREF"><code>FORWARDREF</code></a> mode for <code>get_annotations</code>, so unresolvable symbols are replaced by a <code>ForwardRef</code>, rather than throwing a <code>NameError</code>. That way they can apply the same partial analysis of the annotations they are already doing, and only later replacing the forward references with the actual models, once they&#x27;ve been mapped. Rather than force people to explicitly quote forward references to models.</p>
+<p>Arguably it&#x27;s still valid for <code>UP037</code> to trigger for quoted runtime ambiguous annotations if they&#x27;re deferred, so adding &quot;runtime ambiguous&quot; would not actually solve this issue, although I think the more pragmatic stance would be to allow quoted annotations in &quot;runtime ambiguous&quot; expressions, since how the annotations get accessed are highly dependent on the library that&#x27;s being used, so we can&#x27;t assume that the quotes are actually redundant.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-10-31 12:21</div>
-            <div class="timeline-body"><p>Looking more closely at the changes SQLAlchemy made in preparation for 3.14 I believe that's already what they're doing, so technically the above code should work on 3.14 with the latest version of SQLAlchemy.</p>
+            <div class="timeline-body"><p>Looking more closely at the changes SQLAlchemy made in preparation for 3.14 I believe that&#x27;s already what they&#x27;re doing, so technically the above code should work on 3.14 with the latest version of SQLAlchemy.</p>
 <p>@extrange Which version of SQLAlchemy are you using?</p>
 </div>
         </div>
@@ -109,19 +109,19 @@ help: Remove quotes
 <blockquote>
 <p>@extrange Which version of SQLAlchemy are you using?</p>
 </blockquote>
-<p>Even better: could you provide an MRE? I wasn't able to easily reconstruct one from the code snippet you provided.</p>
+<p>Even better: could you provide an MRE? I wasn&#x27;t able to easily reconstruct one from the code snippet you provided.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-10-31 12:31</div>
-            <div class="timeline-body"><p>For additional context: SQLAlchemy 2.0.41 is the oldest version which appears to have support for PEP-649 in 3.14, although it's probably been refined in the three follow-up releases. So I'd definitely suggest testing this code with 2.0.44</p>
+            <div class="timeline-body"><p>For additional context: SQLAlchemy 2.0.41 is the oldest version which appears to have support for PEP-649 in 3.14, although it&#x27;s probably been refined in the three follow-up releases. So I&#x27;d definitely suggest testing this code with 2.0.44</p>
 <p>If this still happens on 2.0.44 I would consider opening a bug report in the SQLAlchemy repository, since they clearly want this to work in 3.14, without you having to add quotes to your annotations.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-10-31 12:58</div>
-            <div class="timeline-body"><p>Ok I was able to <em>almost</em> reproduce the issue with some help from Claude to mock up the contents of <code>user</code>, <code>base</code>, etc. (So apologies if there's some kind of slop in there - I'm not super familiar with <code>sqlalchemy</code>).</p>
-<pre><code class="language-console">❯ tree
+            <div class="timeline-body"><p>Ok I was able to <em>almost</em> reproduce the issue with some help from Claude to mock up the contents of <code>user</code>, <code>base</code>, etc. (So apologies if there&#x27;s some kind of slop in there - I&#x27;m not super familiar with <code>sqlalchemy</code>).</p>
+<pre><code>❯ tree
 .
 ├── pyproject.toml
 ├── README.md
@@ -146,14 +146,14 @@ app v0.1.0
     └── typing-extensions v4.15.0
 </code></pre>
 <p>with contents:</p>
-<pre><code class="language-python"># src/app/db/schema/base.py
+<pre><code># src/app/db/schema/base.py
 from sqlalchemy.orm import DeclarativeBase, MappedAsDataclass
 
 
 class Base(MappedAsDataclass, DeclarativeBase):
     pass
 </code></pre>
-<pre><code class="language-python"># src/app/db/schema/user.py
+<pre><code># src/app/db/schema/user.py
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import TYPE_CHECKING
 from .base import Base
@@ -171,7 +171,7 @@ class User(Base):
     )
 </code></pre>
 <p>but I had to change <code>message.py</code> like this:</p>
-<pre><code class="language-diff">--- a.py	2025-10-31 09:35:10
+<pre><code>--- a.py	2025-10-31 09:35:10
 +++ src/app/db/schema/message.py	2025-10-31 09:39:14
 @@ -13,8 +13,9 @@
  class Message(Base):
@@ -187,7 +187,7 @@ class User(Base):
 +    user: Mapped[User] = relationship(back_populates=&quot;messages&quot;)
 </code></pre>
 <p>This runs without error. Removing the quotes gives:</p>
-<pre><code class="language-console">❯ echo 'from app.db.schema.message import Message' | uv run python3.14 -
+<pre><code>❯ echo &#x27;from app.db.schema.message import Message&#x27; | uv run python3.14 -
 Traceback (most recent call last):
   File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
   File &quot;/Users/dmbp/Documents/dev/app/src/app/db/schema/message.py&quot;, line 13, in &lt;module&gt;
@@ -222,14 +222,14 @@ Traceback (most recent call last):
   File &quot;/Users/dmbp/Documents/dev/app/src/app/db/schema/message.py&quot;, line 21, in __annotate__
     user: Mapped[User] = relationship(back_populates=&quot;messages&quot;)
                  ^^^^
-NameError: name 'User' is not defined
+NameError: name &#x27;User&#x27; is not defined
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-10-31 13:57</div>
-            <div class="timeline-body"><p>@dylwil3 That does seem like a bug to me in SQLAlchemy's PEP-649 support, yes. It looks like they directly access <code>__annotations__</code> which causes <code>__annotate__</code> to execute with the default behavior, instead of in <code>FORWARDREF</code> mode, which is what I assume they actually would want to do here.</p>
-<p>It looks like this specifically happens in the dataclass transforms path, does this also happen if you don't use <code>MappedAsDataclass</code>? Maybe they just haven't discovered and safe-guarded all the paths yet that directly access <code>__annotations__</code>. In previous versions accessing <code>__annotations__</code> can't fail, since it's compiled in, rather than computed and reifed at runtime</p>
+            <div class="timeline-body"><p>@dylwil3 That does seem like a bug to me in SQLAlchemy&#x27;s PEP-649 support, yes. It looks like they directly access <code>__annotations__</code> which causes <code>__annotate__</code> to execute with the default behavior, instead of in <code>FORWARDREF</code> mode, which is what I assume they actually would want to do here.</p>
+<p>It looks like this specifically happens in the dataclass transforms path, does this also happen if you don&#x27;t use <code>MappedAsDataclass</code>? Maybe they just haven&#x27;t discovered and safe-guarded all the paths yet that directly access <code>__annotations__</code>. In previous versions accessing <code>__annotations__</code> can&#x27;t fail, since it&#x27;s compiled in, rather than computed and reifed at runtime</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -241,9 +241,9 @@ NameError: name 'User' is not defined
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zzzeek">@zzzeek</a> on 2025-10-31 23:08</div>
             <div class="timeline-body"><blockquote>
-<p>Maybe they just haven't discovered and safe-guarded all the paths yet that directly access <code>__annotations__</code>.</p>
+<p>Maybe they just haven&#x27;t discovered and safe-guarded all the paths yet that directly access <code>__annotations__</code>.</p>
 </blockquote>
-<p>that is what happened here, this was a case specific to dataclasses.   upstream issue is https://github.com/sqlalchemy/sqlalchemy/issues/12952 which is fixed for release 2.0.45</p>
+<p>that is what happened here, this was a case specific to dataclasses.   upstream issue is <a href="https://github.com/sqlalchemy/sqlalchemy/issues/12952">sqlalchemy/sqlalchemy#12952</a> which is fixed for release 2.0.45</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -253,7 +253,7 @@ NameError: name 'User' is not defined
 <p>If I remove <code>MappedAsDataclass</code> then it runs with or without quotes. I started a <a href="https://github.com/sqlalchemy/sqlalchemy/discussions/12951">discussion</a> upstream.</p>
 </blockquote>
 <p><code>example.py</code>:</p>
-<pre><code class="language-python"># /// script
+<pre><code># /// script
 # requires-python = &quot;~=3.14.0&quot;
 # dependencies = [
 #   &quot;sqlalchemy==2.0.44&quot;
@@ -291,16 +291,16 @@ class Message(Base):
 print(&quot;ok&quot;)
 
 </code></pre>
-<pre><code class="language-sh">❯ uv run example.py
+<pre><code>❯ uv run example.py
 ok
 </code></pre>
 <p>For Python 3.13, UP037 does not suggest unsafe fixes:</p>
-<pre><code class="language-sh">❯ echo $(ruff --version) $(python --version) &amp;&amp; ruff check --select UP037 example.py 
+<pre><code>❯ echo $(ruff --version) $(python --version) &amp;&amp; ruff check --select UP037 example.py 
 ruff 0.14.3 Python 3.13.8
 All checks passed!
 </code></pre>
 <p>However for 3.14:</p>
-<pre><code class="language-sh">❯ echo $(ruff --version) $(python --version) &amp;&amp; ruff check --select UP037 example.py 
+<pre><code>❯ echo $(ruff --version) $(python --version) &amp;&amp; ruff check --select UP037 example.py 
 ruff 0.14.3 Python 3.14.0
 UP037 [*] Remove quotes from type annotation
   --&gt; example.py:30:18
@@ -315,18 +315,18 @@ Found 1 error.
 [*] 1 fixable with the `--fix` option.
 </code></pre>
 <p>Applying the suggested fix gives:</p>
-<pre><code class="language-sh">❯ uv run example.py
+<pre><code>❯ uv run example.py
 # truncated
   File &quot;example.py&quot;, line 33, in __annotate__
     user: Mapped[User] = relationship(back_populates=&quot;messages&quot;, init=False)
                  ^^^^
-NameError: name 'User' is not defined
+NameError: name &#x27;User&#x27; is not defined
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zzzeek">@zzzeek</a> on 2025-11-01 05:09</div>
-            <div class="timeline-body"><p>i can't comment on what uv is doing however the current main/rel_2_0 branch of SQLAlchemy passes with the above test case as long as you run python 3.14.   on python 3.13, you get the NameError which is expected because the script lacks <code>from __future__ import annotations</code>.</p>
+            <div class="timeline-body"><p>i can&#x27;t comment on what uv is doing however the current main/rel_2_0 branch of SQLAlchemy passes with the above test case as long as you run python 3.14.   on python 3.13, you get the NameError which is expected because the script lacks <code>from __future__ import annotations</code>.</p>
 <pre><code>[classic@framework sqlalchemy:rel_2_0]$ ~/.venv313/bin/python test3.py 
 Traceback (most recent call last):
   File &quot;/home/classic/dev/sqlalchemy/test3.py&quot;, line 29, in &lt;module&gt;
@@ -336,7 +336,7 @@ Traceback (most recent call last):
   File &quot;/home/classic/dev/sqlalchemy/test3.py&quot;, line 33, in Message
     user: Mapped[User] = relationship(back_populates=&quot;messages&quot;, init=False)
                  ^^^^
-NameError: name 'User' is not defined. Did you mean: 'user'?
+NameError: name &#x27;User&#x27; is not defined. Did you mean: &#x27;user&#x27;?
 [classic@framework sqlalchemy:rel_2_0]$ ~/.venv314/bin/python test3.py 
 ok
 
@@ -349,12 +349,12 @@ ok
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dylwil3 on 2025-11-01 12:05</div>
+            <div class="event">Closed by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-11-01 12:05</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:53:31 UTC
+        Synced at 2026-01-20 18:50:34 UTC
     </footer>
 </body>
 </html>

@@ -23,50 +23,41 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/WouterJTB">@WouterJTB</a></div>
-            <div class="timeline-body"><!--
-Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+            <div class="timeline-body">
 
-If you're filing a bug report, please consider including the following information:
-
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
-* The current uv platform.
-* The current uv version (`uv --version`).
--->
-
-<h1>Problem</h1>
-<p>I'd like to be able to do the following:</p>
-<pre><code class="language-bash">export UV_ENV_FILE=./.env
+Problem
+<p>I&#x27;d like to be able to do the following:</p>
+<pre><code>export UV_ENV_FILE=./.env
 uv run &lt;something&gt;
 cd &lt;new repo without .env file&gt;
 uv run &lt;something&gt;
 </code></pre>
 <p>or even better, add <code>export UV_ENV_FILE=./.env</code> to my <code>.bash_profile</code></p>
-<p>Currently, uv will throw an error if <code>UV_ENV_FILE</code> doesn't point to a valid file:</p>
+<p>Currently, uv will throw an error if <code>UV_ENV_FILE</code> doesn&#x27;t point to a valid file:</p>
 <pre><code>error: No environment file found at: `./.env`
 </code></pre>
-<h1>Proposed solution</h1>
+Proposed solution
 <p>Add a config option/env var to proceed on missing env file, e.g. proceed with <code>uv run</code> (and throw a warning instead) if <code>UV_WARN_ON_MISSING_ENV_FILE=1</code>.</p>
-<p>Alternatively, maybe there's a solution where a missing env-file is only an error if it's passed with the <code>--env-file</code> flag, and a warning if it's set with the <code>UV_ENV_FILE</code> var.</p>
+<p>Alternatively, maybe there&#x27;s a solution where a missing env-file is only an error if it&#x27;s passed with the <code>--env-file</code> flag, and a warning if it&#x27;s set with the <code>UV_ENV_FILE</code> var.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/pszpetkowski">@pszpetkowski</a> on 2024-11-20 23:40</div>
-            <div class="timeline-body"><p>I've stumbled upon a similar problem. Imo it would be great to just have a flag (or even default behavior) to read <code>.env</code> in the project directory if such file exists.</p>
+            <div class="timeline-body"><p>I&#x27;ve stumbled upon a similar problem. Imo it would be great to just have a flag (or even default behavior) to read <code>.env</code> in the project directory if such file exists.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2024-11-22 03:15</div>
+            <div class="event">Label <span class="label">needs-decision</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-22 03:15</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-22 03:15</div>
-            <div class="timeline-body"><p>What's the use-case that you're trying to accomplish? You want <code>.env</code> to be read always, and ignore errors if it doesn't exist?</p>
+            <div class="timeline-body"><p>What&#x27;s the use-case that you&#x27;re trying to accomplish? You want <code>.env</code> to be read always, and ignore errors if it doesn&#x27;t exist?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/WouterJTB">@WouterJTB</a> on 2024-11-22 07:12</div>
-            <div class="timeline-body"><p>Essentially, yes. There's generally some env vars that I source centrally (i.e. artifactory/docker login credentials), and some that I have in a .env file in the repo (i.e. db connection strings, mlflow tracking uri etc.), I can't really store them centrally because the apps/libs generally look for specific var names to find and connect to the resources.</p>
-<p>I'd like to be able to configure uv to use my repo scoped .env files (if found) by default, without breaking my development workflow if I switch to another repo.</p>
+            <div class="timeline-body"><p>Essentially, yes. There&#x27;s generally some env vars that I source centrally (i.e. artifactory/docker login credentials), and some that I have in a .env file in the repo (i.e. db connection strings, mlflow tracking uri etc.), I can&#x27;t really store them centrally because the apps/libs generally look for specific var names to find and connect to the resources.</p>
+<p>I&#x27;d like to be able to configure uv to use my repo scoped .env files (if found) by default, without breaking my development workflow if I switch to another repo.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -79,14 +70,14 @@ uv run &lt;something&gt;
 <li><strong>Project B</strong> does not require any environment variables.</li>
 </ul>
 <p>Without additional config I have to explicitly specify an environment file for <strong>Project A</strong>:</p>
-<pre><code class="language-bash">uv run --env-file .env cmd
+<pre><code>uv run --env-file .env cmd
 </code></pre>
 <p>And the following for <strong>Project B</strong>:</p>
-<pre><code class="language-bash">uv run cmd
+<pre><code>uv run cmd
 </code></pre>
 <p>The above limits my ability to provide common Dockerfile for <strong>Project A</strong> and <strong>Project B</strong> and other tooling utilities.</p>
-<p>Fortunately, I am able to provide <code>UV_ENV_FILE</code> which I actually store defined in the <code>.zshrc</code>. And all would be fine if not for the <strong>Project B</strong> which doesn't need any environment variables and doesn't have the <code>.env</code> file. Obviously, that explodes and the workaround I use is to simply create empty <code>.env</code> file but that's somewhat cumbersome and adds another step after cloning the repository.</p>
-<h3>Proposed Solution</h3>
+<p>Fortunately, I am able to provide <code>UV_ENV_FILE</code> which I actually store defined in the <code>.zshrc</code>. And all would be fine if not for the <strong>Project B</strong> which doesn&#x27;t need any environment variables and doesn&#x27;t have the <code>.env</code> file. Obviously, that explodes and the workaround I use is to simply create empty <code>.env</code> file but that&#x27;s somewhat cumbersome and adds another step after cloning the repository.</p>
+Proposed Solution
 <p>Enhance uv to automatically detect and load a <code>.env</code> file during uv run execution if:</p>
 <ul>
 <li>The <code>.env</code> file exists in the project directory.</li>
@@ -97,8 +88,8 @@ uv run &lt;something&gt;
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/fernandogrd">@fernandogrd</a> on 2025-06-20 16:42</div>
-            <div class="timeline-body"><p>I'm using this wrapper in fish for now to implement this behavior.</p>
-<pre><code class="language-fish">function _uv_auto_env --wraps uv
+            <div class="timeline-body"><p>I&#x27;m using this wrapper in fish for now to implement this behavior.</p>
+<pre><code>function _uv_auto_env --wraps uv
     if test -f .env
         set --export UV_ENV_FILE .env
     else
@@ -117,7 +108,7 @@ functions -c _uv_auto_env uvx
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:28:26 UTC
+        Synced at 2026-01-20 19:35:37 UTC
     </footer>
 </body>
 </html>

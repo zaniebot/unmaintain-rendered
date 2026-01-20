@@ -26,7 +26,7 @@
             <div class="timeline-body"><p>As of recently, we are using uv to generate lowest-direct dependencies in airflow. We do it at scale (we generate separate lowest-direct dependencies for every provider we have - we have 90 of them. And it works very well, or rather worked very well till 0.2.5.  Something changed in 0.2.6 that causes uv to stop respecting at least some limits specified to be installed and attempt to install much lower versions of dependencies than the limits are.</p>
 <p>An example of this can be seen here https://github.com/apache/airflow/actions/runs/9417755856/job/25943952035?pr=40110#step:7:43011</p>
 <p>Due to amount of logs to be processed by github actions UI, it needs a bit of patience to see it, but generally speaking it boils down to this error (when uv 0.2.6+ is used (same behaviour is with latest 0.2.9 and versions between):</p>
-<pre><code>uv pip install --python /usr/local/bin/python --resolution lowest-direct --upgrade --editable '.[google]'
+<pre><code>uv pip install --python /usr/local/bin/python --resolution lowest-direct --upgrade --editable &#x27;.[google]&#x27;
 
 error: Failed to download and build `pandas==0.1`
   Caused by: Failed to build: `pandas==0.1`
@@ -37,7 +37,7 @@ error: Failed to download and build `pandas==0.1`
 Traceback (most recent call last):
   File &quot;&lt;string&gt;&quot;, line 14, in &lt;module&gt;
   File &quot;/tmp/.tmpSYnKSk/.tmpJOVZVf/.venv/lib/python3.8/site-packages/setuptools/build_meta.py&quot;, line 325, in get_requires_for_build_wheel
-    return self._get_build_requires(config_settings, requirements=['wheel'])
+    return self._get_build_requires(config_settings, requirements=[&#x27;wheel&#x27;])
   File &quot;/tmp/.tmpSYnKSk/.tmpJOVZVf/.venv/lib/python3.8/site-packages/setuptools/build_meta.py&quot;, line 295, in _get_build_requires
     self.run_setup()
   File &quot;/tmp/.tmpSYnKSk/.tmpJOVZVf/.venv/lib/python3.8/site-packages/setuptools/build_meta.py&quot;, line 487, in run_setup
@@ -45,7 +45,7 @@ Traceback (most recent call last):
   File &quot;/tmp/.tmpSYnKSk/.tmpJOVZVf/.venv/lib/python3.8/site-packages/setuptools/build_meta.py&quot;, line 311, in run_setup
     exec(code, locals())
   File &quot;&lt;string&gt;&quot;, line 5, in &lt;module&gt;
-ModuleNotFoundError: No module named 'numpy'
+ModuleNotFoundError: No module named &#x27;numpy&#x27;
 </code></pre>
 <p>This works perfectly fine</p>
 <p>The thing is that it seems that uv <code>0.2.5</code> - works correctly. For Python 3.8 it will do this and this is pretty much expected.</p>
@@ -53,19 +53,19 @@ ModuleNotFoundError: No module named 'numpy'
  + pandas==1.5.3
 </code></pre>
 <p>The problem might be connecte with the way how our (<strong>dynamic</strong> !) dependencies specify this for google <code>extra</code>
-https://github.com/apache/airflow/blob/main/generated/provider_dependencies.json#L638  - it's dynamically generated from that .json file by our hatch_build.py hook but it boils down to</p>
+https://github.com/apache/airflow/blob/main/generated/provider_dependencies.json#L638  - it&#x27;s dynamically generated from that .json file by our hatch_build.py hook but it boils down to</p>
 <pre><code>pandas&gt;=1.5.3,&lt;2.2;python_version&lt;&quot;3.12&quot;
 pandas&gt;=2.1.1,&lt;2.2;python_version&gt;=&quot;3.12&quot;
 </code></pre>
 <p>So - as expected - uv should not even attempt  to try to build pandas 0.1 because for Python 3.8 it is &gt;=1.5.3.</p>
-<p>It's relatively easy to reproduce using Airflow CI dev tooling/image (due to the nature of our project - 790 dependencies using Breeze dev tooling and CI image built automatically is the easiest way to reproduce the same environment our CI has):</p>
+<p>It&#x27;s relatively easy to reproduce using Airflow CI dev tooling/image (due to the nature of our project - 790 dependencies using Breeze dev tooling and CI image built automatically is the easiest way to reproduce the same environment our CI has):</p>
 <ol>
 <li>checkout airflow</li>
 <li>install breeze <code>pipx install -e ./dev/breeze</code></li>
 <li>build CI image with eager upgrade to latest dependencies (`breeze ci-image build --upgrade-to-newer-dependencies)</li>
 <li>enter the image <code>breeze shell</code></li>
 <li>install the right version of uv: <code>pip install uv==0.2.6</code> or <code>pip install uv==0.2.5</code></li>
-<li>run &quot;lowest-direct&quot; dependency resolution: <code>uv pip install --python /usr/local/bin/python --resolution lowest-direct --upgrade --editable '.[google]'</code></li>
+<li>run &quot;lowest-direct&quot; dependency resolution: <code>uv pip install --python /usr/local/bin/python --resolution lowest-direct --upgrade --editable &#x27;.[google]&#x27;</code></li>
 </ol>
 <ul>
 <li>In case of uv 0.2.5 or below it will nicely downgrade dependencies to lowest direct as expected.</li>
@@ -82,16 +82,7 @@ pandas&gt;=2.1.1,&lt;2.2;python_version&gt;=&quot;3.12&quot;
     Caused by: Build backend failed to determine extra requires with `build_wheel()` with exit status: 1
 </code></pre>
 <p>That suggests tha indeed the conditional python_version is the one causing uv to do way more backtracking that it should.</p>
-<!--
-Thank you for taking the time to report an issue! We're glad to have you involved with uv.
 
-If you're filing a bug report, please consider including the following information:
-
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
-* The current uv platform.
-* The current uv version (`uv --version`).
--->
 
 </div>
         </div>
@@ -116,10 +107,10 @@ If you're filing a bug report, please consider including the following informati
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-06-07 20:01</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-07 20:01</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-06-07 20:01</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-07 20:01</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-07 20:40</div>
@@ -133,19 +124,19 @@ If you're filing a bug report, please consider including the following informati
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-07 21:15</div>
-            <div class="timeline-body"><p>The solver actually gets to the right solution. It's the pre-fetch that fails. It's very complex... We hit:</p>
+            <div class="timeline-body"><p>The solver actually gets to the right solution. It&#x27;s the pre-fetch that fails. It&#x27;s very complex... We hit:</p>
 <pre><code>Adding transitive dependency for pandas-gbq==0.7.0: pandas*
 </code></pre>
 <p>And then we attempt to prefetch pandas:</p>
 <pre><code>Searching for prefetch metadata for: pandas (*)
 </code></pre>
-<p>And because it's a direct dependency, we choose the lowest-compatible version.</p>
-<p>At this point, we know that <code>pandas{python_version &lt; '3.12'} (&gt;=1.5.3, &lt;2.2.0)</code> is a constraint, but we don't know that the <em>base</em> package is a constraint, because we don't see that until we visit <code>pandas{python_version &lt; '3.12'} (&gt;=1.5.3, &lt;2.2.0)</code>.</p>
+<p>And because it&#x27;s a direct dependency, we choose the lowest-compatible version.</p>
+<p>At this point, we know that <code>pandas{python_version &lt; &#x27;3.12&#x27;} (&gt;=1.5.3, &lt;2.2.0)</code> is a constraint, but we don&#x27;t know that the <em>base</em> package is a constraint, because we don&#x27;t see that until we visit <code>pandas{python_version &lt; &#x27;3.12&#x27;} (&gt;=1.5.3, &lt;2.2.0)</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-07 21:21</div>
-            <div class="timeline-body"><p>I know one way to fix this (add non-marker versions eagerly), but it will make https://github.com/astral-sh/uv/issues/4125 harder. So I need to look at these holistically.</p>
+            <div class="timeline-body"><p>I know one way to fix this (add non-marker versions eagerly), but it will make <a href="https://github.com/astral-sh/uv/issues/4125">astral-sh/uv#4125</a> harder. So I need to look at these holistically.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -154,7 +145,7 @@ If you're filing a bug report, please consider including the following informati
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-06-07 22:05</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-07 22:05</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2024-06-08 12:46</div>
@@ -164,7 +155,7 @@ If you're filing a bug report, please consider including the following informati
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:25:13 UTC
+        Synced at 2026-01-20 19:31:30 UTC
     </footer>
 </body>
 </html>

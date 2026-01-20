@@ -24,20 +24,20 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sciyoshi">@sciyoshi</a></div>
             <div class="timeline-body"><p>This is a followup to #2361. The isort check still had an issue in a rather specific case: files with a multiline import, indented with tabs, and not containing any indented blocks.</p>
-<p>The root cause is this: <a href="https://github.com/charliermarsh/ruff/blob/ad8693e3deddbd8e178546dad7be5759ebf1a095/src/source_code/stylist.rs#L163-L172"><code>Stylist</code>'s indentation detection</a> works by finding <code>Indent</code> tokens to determine the type of indentation used by a file. This works for indented code blocks (loops/classes/functions/etc) but does not work for multiline values, so falls back to 4 spaces if the file doesn't contain code blocks.</p>
+<p>The root cause is this: <a href="https://github.com/charliermarsh/ruff/blob/ad8693e3deddbd8e178546dad7be5759ebf1a095/src/source_code/stylist.rs#L163-L172"><code>Stylist</code>&#x27;s indentation detection</a> works by finding <code>Indent</code> tokens to determine the type of indentation used by a file. This works for indented code blocks (loops/classes/functions/etc) but does not work for multiline values, so falls back to 4 spaces if the file doesn&#x27;t contain code blocks.</p>
 <p>I considered a few possible solutions:</p>
 <ol>
-<li>Fix <code>detect_indentation</code> to avoid tokenizing and instead use some other heuristic to determine indentation. This would have the benefit of working in other places where this is potentially an issue, but would still fail if the file doesn't contain any indentation at all, and would need to fall back to option 2 anyways.</li>
-<li>Add an option for specifying the default indentation in Ruff's config. I think this would confusing, since it wouldn't affect the detection behavior and only operate as a fallback, has no other current application and would probably end up being overloaded for other things.</li>
-<li>Relax the isort check by comparing the expected and actual code's lexed tokens. This would require an additional lexing step.</li>
+<li>Fix <code>detect_indentation</code> to avoid tokenizing and instead use some other heuristic to determine indentation. This would have the benefit of working in other places where this is potentially an issue, but would still fail if the file doesn&#x27;t contain any indentation at all, and would need to fall back to option 2 anyways.</li>
+<li>Add an option for specifying the default indentation in Ruff&#x27;s config. I think this would confusing, since it wouldn&#x27;t affect the detection behavior and only operate as a fallback, has no other current application and would probably end up being overloaded for other things.</li>
+<li>Relax the isort check by comparing the expected and actual code&#x27;s lexed tokens. This would require an additional lexing step.</li>
 <li>Relax the isort check by comparing the expected and actual code modulo whitespace at the start of lines.</li>
 </ol>
-<p>This PR does approach 4, which in addition to being the simplest option, has the (expected, although I didn't benchmark) added benefit of improved performance, since the check no longer needs to do two allocations for the two <code>dedent</code> calls. I also believe that the check is still correct enough for all practical purposes.</p>
+<p>This PR does approach 4, which in addition to being the simplest option, has the (expected, although I didn&#x27;t benchmark) added benefit of improved performance, since the check no longer needs to do two allocations for the two <code>dedent</code> calls. I also believe that the check is still correct enough for all practical purposes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sciyoshi">@sciyoshi</a> on <code>src/rules/isort/rules/organize_imports.rs</code>:49 on 2023-01-31 02:49</div>
-            <div class="timeline-body"><p>This helper might be useful elsewhere, although I wasn't sure what the best place for it would be.</p>
+            <div class="timeline-body"><p>This helper might be useful elsewhere, although I wasn&#x27;t sure what the best place for it would be.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -46,7 +46,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sciyoshi">@sciyoshi</a> on 2023-01-31 02:56</div>
-            <div class="timeline-body"><p>A contrived example of code that will now pass the isort check but didn't before:</p>
+            <div class="timeline-body"><p>A contrived example of code that will now pass the isort check but didn&#x27;t before:</p>
 <pre><code>from module import (
  a,
   b,
@@ -58,10 +58,10 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @charliermarsh by @charliermarsh on 2023-01-31 03:02</div>
+            <div class="event">Review requested from <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-31 03:02</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">isort</span> added by @charliermarsh on 2023-01-31 03:02</div>
+            <div class="event">Label <span class="label">isort</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-31 03:02</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-31 03:20</div>
@@ -69,12 +69,12 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/isort/rules/organize_imports.rs</code>:116 on 2023-01-31 03:20</div>
-            <div class="timeline-body"><p>(IIRC, we used to compare <code>indent(&amp;expected, indentation)</code> to <code>actual</code>, but <code>indent</code> and <code>dedent</code> don't respect <code>stylist.line_ending</code>, and so files with CLRF newlines would always fail the comparison.)</p>
+            <div class="timeline-body"><p>(IIRC, we used to compare <code>indent(&amp;expected, indentation)</code> to <code>actual</code>, but <code>indent</code> and <code>dedent</code> don&#x27;t respect <code>stylist.line_ending</code>, and so files with CLRF newlines would always fail the comparison.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-31 03:22</div>
-            <div class="timeline-body"><p>I agree with the reasoning you've prevented here. In theory, could we also check if <code>actual</code> has <em>consistent</em> indentation? (Assuming that, if the indentation is inconsistent, it should always be replaced?)</p>
+            <div class="timeline-body"><p>I agree with the reasoning you&#x27;ve prevented here. In theory, could we also check if <code>actual</code> has <em>consistent</em> indentation? (Assuming that, if the indentation is inconsistent, it should always be replaced?)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -82,24 +82,24 @@
             <div class="timeline-body"><blockquote>
 <p>In theory, could we also check if <code>actual</code> has <em>consistent</em> indentation?</p>
 </blockquote>
-<p>If I'm understanding correctly, yes - definitely possible. <a href="https://github.com/sciyoshi/ruff/compare/isort-tabs...sciyoshi:ruff:isort-consistent-indent">Here's a change that implements that</a> - although it does require the <code>dedent</code> call and performs allocations for getting prefixes (although there's probably a zero-allocation way to do that.) I'm not convinced it's necessary, but I can definitely include that in this PR if you'd like.</p>
+<p>If I&#x27;m understanding correctly, yes - definitely possible. <a href="https://github.com/sciyoshi/ruff/compare/isort-tabs...sciyoshi:ruff:isort-consistent-indent">Here&#x27;s a change that implements that</a> - although it does require the <code>dedent</code> call and performs allocations for getting prefixes (although there&#x27;s probably a zero-allocation way to do that.) I&#x27;m not convinced it&#x27;s necessary, but I can definitely include that in this PR if you&#x27;d like.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2023-01-31 12:18</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-31 12:18</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-01-31 12:18</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-31 12:18</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-31 12:19</div>
-            <div class="timeline-body"><p>Let's run with this. Thank you for fixing.</p>
-<p>As another optional tweak to the heuristic: could we <em>only</em> ignore whitespace if we can't infer any indentation? That is, if we're falling back to the default?</p>
+            <div class="timeline-body"><p>Let&#x27;s run with this. Thank you for fixing.</p>
+<p>As another optional tweak to the heuristic: could we <em>only</em> ignore whitespace if we can&#x27;t infer any indentation? That is, if we&#x27;re falling back to the default?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sciyoshi">@sciyoshi</a> on 2023-01-31 20:37</div>
-            <div class="timeline-body"><p>@charliermarsh thanks! And yes, that's possible as well. You can see <a href="https://github.com/charliermarsh/ruff/compare/main...sciyoshi:isort-detection-failed-fallback">the changes for that here</a> - I can open a PR if you think that's a worthwhile improvement.</p>
+            <div class="timeline-body"><p>@charliermarsh thanks! And yes, that&#x27;s possible as well. You can see <a href="https://github.com/charliermarsh/ruff/compare/main...sciyoshi:isort-detection-failed-fallback">the changes for that here</a> - I can open a PR if you think that&#x27;s a worthwhile improvement.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -108,7 +108,7 @@
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:55:55 UTC
+        Synced at 2026-01-20 18:52:02 UTC
     </footer>
 </body>
 </html>

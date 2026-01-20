@@ -24,9 +24,9 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/andersk">@andersk</a></div>
             <div class="timeline-body"><p>I tried to write an autofixer for SIM102 (<code>NestedIfStatements</code>) using LibCST to preserve comments. But I ran into two issues that potentially point to general problems with the with the <code>SourceCodeLocator</code> API and/or the <code>Fix::replacement</code> API. So I’m opening this draft to discuss what the plan should be.</p>
-<hr />
+<hr>
 <p>Firstly, if the input <code>if</code> statement is indented, the output <code>if</code> body will be misindented:</p>
-<pre><code class="language-diff"> while 1:
+<pre><code> while 1:
      while 2:
 -        if 3:
 -            if 4:
@@ -35,14 +35,14 @@
 +    5
 </code></pre>
 <p>In this case, <code>SourceCodeLocator::slice_source_code_range</code> fails to strip the indentation from the second and following lines:</p>
-<pre><code class="language-python">if 3:
+<pre><code>if 3:
             if 4:
                 5
 </code></pre>
 <p>and <code>Fix::replacement</code> fails to add that indentation.</p>
-<hr />
+<hr>
 <p>Secondly, if the input <code>if</code> statement is actually an <code>elif</code>, the fix fails:</p>
-<pre><code class="language-python">while 1:
+<pre><code>while 1:
     while 2:
         if 3:
             4
@@ -51,7 +51,7 @@
                 7
 </code></pre>
 <p>In this case, <code>SourceCodeLocator::slice_source_code_range</code> returns this invalid Python that LibCST can’t parse:</p>
-<pre><code class="language-python">elif 5:
+<pre><code>elif 5:
             if 6:
                 7
 </code></pre>
@@ -59,21 +59,21 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-06 15:21</div>
-            <div class="timeline-body"><p>The latter issue came up in a slightly different form here: https://github.com/charliermarsh/ruff/pull/1694.</p>
+            <div class="timeline-body"><p>The latter issue came up in a slightly different form here: <a href="https://github.com/charliermarsh/ruff/pull/1694">charliermarsh/ruff#1694</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-17 13:10</div>
-            <div class="timeline-body"><p>@andersk - Ok if I poke around at this branch? Gonna see if I can come up with some helpers for the issues you're describing.</p>
+            <div class="timeline-body"><p>@andersk - Ok if I poke around at this branch? Gonna see if I can come up with some helpers for the issues you&#x27;re describing.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-17 21:51</div>
-            <div class="timeline-body"><p>@andersk - Ok, I think this works? We do skip a few cases: (1) if there are any comments <em>between</em> the two <code>if</code> statements, those get destroyed in the fix, so we avoid applying the patch in that case (we <em>do</em> preserve comments in the nested <code>if</code> body, so that's fine); and (2) if the resulting statement is too long, we avoid applying it.</p>
+            <div class="timeline-body"><p>@andersk - Ok, I think this works? We do skip a few cases: (1) if there are any comments <em>between</em> the two <code>if</code> statements, those get destroyed in the fix, so we avoid applying the patch in that case (we <em>do</em> preserve comments in the nested <code>if</code> body, so that&#x27;s fine); and (2) if the resulting statement is too long, we avoid applying it.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @charliermarsh on 2023-01-17 21:51</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-17 21:51</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-17 21:51</div>
@@ -87,14 +87,14 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/andersk">@andersk</a> on <code>src/rules/flake8_simplify/rules/fix_if.rs</code>:64 on 2023-01-17 22:40</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">    // Parse the CST.
+            <div class="timeline-body"><pre><code>    // Parse the CST.
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/andersk">@andersk</a> on <code>src/rules/flake8_simplify/rules/fix_if.rs</code>:58 on 2023-01-17 22:47</div>
             <div class="timeline-body"><p>This has various failure modes.</p>
-<pre><code class="language-python">while True:
+<pre><code>while True:
     if True:
         if True:
             &quot;&quot;&quot;this
@@ -117,7 +117,7 @@ is valid&quot;&quot;&quot;
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/flake8_simplify/rules/fix_if.rs</code>:58 on 2023-01-17 23:14</div>
-            <div class="timeline-body"><p>Right, ok, good call. I believe I can fix this by leveraging LibCST's <code>indentation</code> field.</p>
+            <div class="timeline-body"><p>Right, ok, good call. I believe I can fix this by leveraging LibCST&#x27;s <code>indentation</code> field.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -132,7 +132,7 @@ is valid&quot;&quot;&quot;
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/flake8_simplify/rules/fix_if.rs</code>:58 on 2023-01-18 04:28</div>
             <div class="timeline-body"><p>Alright, I think the new version works, but it requires a bunch of trickery.</p>
 <p>If the statement is indented, we embed it in a dummy function, like:</p>
-<pre><code class="language-py">def f():
+<pre><code>def f():
   if ...
 </code></pre>
 <p>Then, at the end, we stripe the function. I <em>think</em> this is the most robust way to preserve indentation. It lets us avoid having to do any indentation or dedentation ourselves (but keeps the source code valid for LibCST).</p>
@@ -146,13 +146,13 @@ is valid&quot;&quot;&quot;
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Broken autofixer for SIM102 (NestedIfStatements)" to "Autofix SIM102 (NestedIfStatements)" by @andersk on 2023-01-18 08:11</div>
+            <div class="event">Renamed from &quot;Broken autofixer for SIM102 (NestedIfStatements)&quot; to &quot;Autofix SIM102 (NestedIfStatements)&quot; by <a href="https://github.com/andersk">@andersk</a> on 2023-01-18 08:11</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2023-01-18 12:37</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-18 12:37</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-01-18 12:37</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-18 12:37</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2023-01-18 14:08</div>
@@ -160,7 +160,7 @@ is valid&quot;&quot;&quot;
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:55:24 UTC
+        Synced at 2026-01-20 18:51:45 UTC
     </footer>
 </body>
 </html>

@@ -23,34 +23,34 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/jessegrosjean">@jessegrosjean</a></div>
-            <div class="timeline-body"><p>This is more of a learning question for me, if there's a better place for me to ask please point me in that direction.</p>
-<p>Ripgrep's parallel walk code is documented to be non-ideal and maybe in need of an eventual rewrite. I've recently been trying to understand Tokio/futures and am wondering if they would provide a better foundation for implementing a parallel walk?</p>
+            <div class="timeline-body"><p>This is more of a learning question for me, if there&#x27;s a better place for me to ask please point me in that direction.</p>
+<p>Ripgrep&#x27;s parallel walk code is documented to be non-ideal and maybe in need of an eventual rewrite. I&#x27;ve recently been trying to understand Tokio/futures and am wondering if they would provide a better foundation for implementing a parallel walk?</p>
 <p>If I understand things correctly the potential benefits would be:</p>
 <ol>
-<li>Get to replace ripgrep's work stealing and thread management with a standardized framework.</li>
-<li>Potential speed up because ripgrep threads won't get blocked waiting to read directories and files. They can instead spend all time just searching.</li>
+<li>Get to replace ripgrep&#x27;s work stealing and thread management with a standardized framework.</li>
+<li>Potential speed up because ripgrep threads won&#x27;t get blocked waiting to read directories and files. They can instead spend all time just searching.</li>
 </ol>
-<p>But in practice I'm not really sure that it would help. When I profile ripgrep it's already using almost all cpu cores... so I &quot;think&quot; that means it's not getting stuck blocking on io very often. Also I wonder if a thread doesn't get blocked on io then I think what it would do is go request more io while waiting for that other io to complete... so end result would maybe be that ripgrep would just try to open a bunch more files at the same time? Which doesn't seem good.</p>
-<p>Any thoughts and comments appreciated. Would Tokio help ripgrep's parallel implementation or not?</p>
+<p>But in practice I&#x27;m not really sure that it would help. When I profile ripgrep it&#x27;s already using almost all cpu cores... so I &quot;think&quot; that means it&#x27;s not getting stuck blocking on io very often. Also I wonder if a thread doesn&#x27;t get blocked on io then I think what it would do is go request more io while waiting for that other io to complete... so end result would maybe be that ripgrep would just try to open a bunch more files at the same time? Which doesn&#x27;t seem good.</p>
+<p>Any thoughts and comments appreciated. Would Tokio help ripgrep&#x27;s parallel implementation or not?</p>
 <p>Thanks,
 Jesse</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Would tokio/futures help?" to "Would tokio/futures help parallel walk code?" by @jessegrosjean on 2018-12-07 20:48</div>
+            <div class="event">Renamed from &quot;Would tokio/futures help?&quot; to &quot;Would tokio/futures help parallel walk code?&quot; by <a href="https://github.com/jessegrosjean">@jessegrosjean</a> on 2018-12-07 20:48</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-12-07 21:14</div>
-            <div class="timeline-body"><p>No, I don't think so. Async I/O doesn't usually translate well to disk I/O, since the underlying implementations don't tend to implement blocking/polling semantics. That is, AFAIK, you can't ask to read or write to a file such that if it would &quot;block&quot; on hardware, then have the call should return immediately and let you listen to future events using something like <code>epoll</code> on Linux. In most async I/O systems I know of, file I/O is typically implemented via a separate worker pool dedicated for handling blocking I/O operations, <a href="https://docs.rs/tokio-fs/0.1.4/tokio_fs/">including tokio</a>. To a first approximation, &quot;async I/O&quot; means &quot;async network I/O.&quot; This is a common source of confusion. :-)</p>
-<p>It is possible that something designed around futures would be useful though, since futures aren't tied to any specific I/O model. With that said, it seems like an abstraction that is probably unnecessary. I think the future path forward for the parallel recursive directory iterator is to try and use something like <a href="https://docs.rs/rayon">rayon</a> until it either works well or we convince ourselves that it isn't appropriate.</p>
+            <div class="timeline-body"><p>No, I don&#x27;t think so. Async I/O doesn&#x27;t usually translate well to disk I/O, since the underlying implementations don&#x27;t tend to implement blocking/polling semantics. That is, AFAIK, you can&#x27;t ask to read or write to a file such that if it would &quot;block&quot; on hardware, then have the call should return immediately and let you listen to future events using something like <code>epoll</code> on Linux. In most async I/O systems I know of, file I/O is typically implemented via a separate worker pool dedicated for handling blocking I/O operations, <a href="https://docs.rs/tokio-fs/0.1.4/tokio_fs/">including tokio</a>. To a first approximation, &quot;async I/O&quot; means &quot;async network I/O.&quot; This is a common source of confusion. :-)</p>
+<p>It is possible that something designed around futures would be useful though, since futures aren&#x27;t tied to any specific I/O model. With that said, it seems like an abstraction that is probably unnecessary. I think the future path forward for the parallel recursive directory iterator is to try and use something like <a href="https://docs.rs/rayon">rayon</a> until it either works well or we convince ourselves that it isn&#x27;t appropriate.</p>
 <blockquote>
-<p>Get to replace ripgrep's work stealing and thread management with a standardized framework.</p>
+<p>Get to replace ripgrep&#x27;s work stealing and thread management with a standardized framework.</p>
 </blockquote>
-<p>FWIW, in general, I do not think this is an unmitigated benefit. In order for me to be convinced to use a framework, I'd want some super compelling benefits that the framework itself brings in exchange for increasing the complexity budget of the code (by stacking more abstractions). Even if tokio worked like you hope in this scenario and was faster, if it was only faster by a near imperceptible amount, then I'd be very strongly opposed to bringing it in just for that.</p>
+<p>FWIW, in general, I do not think this is an unmitigated benefit. In order for me to be convinced to use a framework, I&#x27;d want some super compelling benefits that the framework itself brings in exchange for increasing the complexity budget of the code (by stacking more abstractions). Even if tokio worked like you hope in this scenario and was faster, if it was only faster by a near imperceptible amount, then I&#x27;d be very strongly opposed to bringing it in just for that.</p>
 <blockquote>
-<p>Potential speed up because ripgrep threads won't get blocked waiting to read directories and files. They can instead spend all time just searching.</p>
+<p>Potential speed up because ripgrep threads won&#x27;t get blocked waiting to read directories and files. They can instead spend all time just searching.</p>
 </blockquote>
-<p>This is just fundamentally impossible, AFAIK, in the context of Mac/Windows/Linux. One possible tweak in this space, if you are actually running into I/O problems, is to add more threads with the <code>-j</code> flag. With that said, my guess is that most uses of ripgrep are run on directories that are in the I/O cache, so it's plausible that not only is the directory tree metadata in cache, but potentially the contents of all files searched are also in cache. At that point, you start running into performance issues like, &quot;I ran too many syscalls per file&quot; or &quot;I'm copying the file path N times&quot; and so on.</p>
+<p>This is just fundamentally impossible, AFAIK, in the context of Mac/Windows/Linux. One possible tweak in this space, if you are actually running into I/O problems, is to add more threads with the <code>-j</code> flag. With that said, my guess is that most uses of ripgrep are run on directories that are in the I/O cache, so it&#x27;s plausible that not only is the directory tree metadata in cache, but potentially the contents of all files searched are also in cache. At that point, you start running into performance issues like, &quot;I ran too many syscalls per file&quot; or &quot;I&#x27;m copying the file path N times&quot; and so on.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -59,12 +59,12 @@ Jesse</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @jessegrosjean on 2018-12-07 21:36</div>
+            <div class="event">Closed by <a href="https://github.com/jessegrosjean">@jessegrosjean</a> on 2018-12-07 21:36</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:42:46 UTC
+        Synced at 2026-01-20 18:48:07 UTC
     </footer>
 </body>
 </html>

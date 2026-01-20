@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>uv build: build with a tmp dir means files outside python project can't be used for build script</h1>
+    <h1>uv build: build with a tmp dir means files outside python project can&#x27;t be used for build script</h1>
 
     <div class="meta">
         <span class="state-icon state-closed"></span>
@@ -23,30 +23,21 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/BaxHugh">@BaxHugh</a></div>
-            <div class="timeline-body"><!--
-Thank you for taking the time to report an issue! We're glad to have you involved with uv.
-
-If you're filing a bug report, please consider including the following information:
-
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
-* The current uv platform.
-* The current uv version (`uv --version`).
--->
+            <div class="timeline-body">
 
 <p>My specific problem is that Maturin projects in a uv workspace where <code>build.rs</code> requires other files outside of the python subproject (but inside the uv workspace / monorepo) (i.e. protobuf files / .cargo/config.toml) cannot be built properly with <code>uv build</code>.</p>
 <p>Here is a minimal example, described here, and attached as a zip file.
-TLDR: this project contains a protos directory in the monorepo, that a package in the mono repo uses in the build.rs script. a .cargo/config.toml is also required. The problem, is that these files don't get copied to the uv cache temp directory which uv build creates and uses to compile the wheel (I assume because they are outside the directory containing the package's pyproject.toml).</p>
-<h3>Zip of the example</h3>
+TLDR: this project contains a protos directory in the monorepo, that a package in the mono repo uses in the build.rs script. a .cargo/config.toml is also required. The problem, is that these files don&#x27;t get copied to the uv cache temp directory which uv build creates and uses to compile the wheel (I assume because they are outside the directory containing the package&#x27;s pyproject.toml).</p>
+Zip of the example
 <p><a href="https://github.com/user-attachments/files/17718488/uv-build-debugging.zip">uv-build-debugging.zip</a></p>
-<h2>Monorepo project structure</h2>
+Monorepo project structure
 <p>Note: Files needed to build the my_pyo3_project package directory:</p>
 <ul>
 <li>The <code>proto</code> directory at the monorepo root is needed to build the package.</li>
 <li><code>.cargo/config.toml</code> contains env vars to tell the <code>build.rs</code> script where to find the proto files.</li>
 </ul>
-<h3>File tree and explanations</h3>
-<pre><code class="language-sh">├── Cargo.toml              # Cargo workspace defined
+File tree and explanations
+<pre><code>├── Cargo.toml              # Cargo workspace defined
 ├── .cargo/config.toml      # Env vars required for the build.rs script to find the proto files
 ├── packages
 │   └── my_pyo3_project     # The directory containing the mixed Rust/Python project using PyO3 &amp; maturin
@@ -69,36 +60,36 @@ TLDR: this project contains a protos directory in the monorepo, that a package i
 </code></pre>
 <p><strong>Content of <code>.cargo/config.toml</code></strong>
 Note: the path is relative to the directory</p>
-<pre><code class="language-toml">[env]
+<pre><code>[env]
 MYPACKAGEAPIS = { value = &quot;proto/mypackageapis&quot;, relative = true }
 </code></pre>
-<h2>Building the project's package:</h2>
+Building the project&#x27;s package:
 <p><strong>Prerequisites</strong>
-Need to have protoc installed (can't be installed with pip install sadly)</p>
+Need to have protoc installed (can&#x27;t be installed with pip install sadly)</p>
 <p><strong>Commands expected to work:</strong></p>
-<pre><code class="language-sh">uv build --package my_pyo3_project
+<pre><code>uv build --package my_pyo3_project
 </code></pre>
-<pre><code class="language-sh">uv build --all-packages
+<pre><code>uv build --all-packages
 </code></pre>
-<h3>The issue causing the build to fail</h3>
-<p>uv build, copies the package's directory to a tmp cache directory, but it doesn't copy the <code>.cargo/config.toml</code> or the <code>proto</code> directory to the cache directory. This causes the build.rs script to fail when it tries to find the proto files (<code>error: environment variable 'MYPACKAGEAPIS' not defined at compile time</code>).
+The issue causing the build to fail
+<p>uv build, copies the package&#x27;s directory to a tmp cache directory, but it doesn&#x27;t copy the <code>.cargo/config.toml</code> or the <code>proto</code> directory to the cache directory. This causes the build.rs script to fail when it tries to find the proto files (<code>error: environment variable &#x27;MYPACKAGEAPIS&#x27; not defined at compile time</code>).
 i.e. running the following command while the above build command is running shows:</p>
-<pre><code class="language-sh">ls -A ~/.cache/uv/sdists-v6/.tmp*/my_pyo3_project-0.1.0:
+<pre><code>ls -A ~/.cache/uv/sdists-v6/.tmp*/my_pyo3_project-0.1.0:
 </code></pre>
 <p><code>build.rs  Cargo.lock  Cargo.toml  my_pyo3_project  PKG-INFO  pyproject.toml  src  target  tests</code>
-i.e. this doesn't contain <code>.cargo</code> or <code>proto</code> directories.</p>
+i.e. this doesn&#x27;t contain <code>.cargo</code> or <code>proto</code> directories.</p>
 <p>Note: if the <code>.cargo</code> was copied, then the build.rs script would still fail, since the path to the proto files is relative to the monorepo root,
-and within the cache build directory, those files don't exist.
-If .cargo/config.toml was evaluated at it's original location, then the absolute path of the proto path env var would point to the developer's source directory, the build would pass, but then the build wouldn't be isolated from the source directory.</p>
-<h2>Current workaround</h2>
+and within the cache build directory, those files don&#x27;t exist.
+If .cargo/config.toml was evaluated at it&#x27;s original location, then the absolute path of the proto path env var would point to the developer&#x27;s source directory, the build would pass, but then the build wouldn&#x27;t be isolated from the source directory.</p>
+Current workaround
 <p>The workaround is to <code>export MYPACKAGEAPIS=$PWD/proto/mypackageapis</code> before running the uv build command, so that the build.rs script uses the dev source.
 Or have this in a .env file and source that before calling <code>uv build</code>.</p>
-<h2>Other ideal workarounds</h2>
+Other ideal workarounds
 <p>Run uv build in the dev directory, i.e., not in a cache temp, or temp directory, such that all the files are available and the file environment is the same as with cargo build.
 <strong>I have not worked out if this is supported</strong></p>
-<h2>Possible solutions</h2>
+Possible solutions
 <p>In the uv config, there could be additional fields to specify files that need to be copied to the tmp directory on build. i.e.</p>
-<pre><code class="language-toml">[tool.uv]
+<pre><code>[tool.uv]
 build-include = [&quot;.cargo/config.toml&quot;, &quot;proto&quot;].
 </code></pre>
 </div>
@@ -106,7 +97,7 @@ build-include = [&quot;.cargo/config.toml&quot;, &quot;proto&quot;].
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BaxHugh">@BaxHugh</a> on 2024-11-12 11:12</div>
             <div class="timeline-body"><p>UPDATE:
-I'm using this command (run from the monorepo root)</p>
+I&#x27;m using this command (run from the monorepo root)</p>
 <pre><code>uv run --env-file .env.uv.build uv build --all-packages
 </code></pre>
 <p>with .env.uv.build defining:</p>
@@ -122,57 +113,57 @@ I'm using this command (run from the monorepo root)</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-11-12 11:42</div>
-            <div class="timeline-body"><p>I'll give this a more detailed read later; what i can say already: it's maturin's reponsibility which files get included (https://www.maturin.rs/config). You can also try <code>python -m build</code> to see if this is something specific to uv or a general build thing.</p>
+            <div class="timeline-body"><p>I&#x27;ll give this a more detailed read later; what i can say already: it&#x27;s maturin&#x27;s reponsibility which files get included (https://www.maturin.rs/config). You can also try <code>python -m build</code> to see if this is something specific to uv or a general build thing.</p>
 <p>In Python, there is a split build setup: You start with a source tree (everything next to pyproject.toml on disk) which gets turned into a source distribution (<code>.tar.gz</code>). This source distribution needs to contain all files to build, because you need to be able to unpack that archive on a different machine, and build a wheel (<code>.whl</code>) from it.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BaxHugh">@BaxHugh</a> on 2024-11-12 15:12</div>
-            <div class="timeline-body"><p>Note: in part of my original comment, I got confused about build-requires vs development dependencies. I've removed that part of the comment and updated the zip file to have the correct build-requires</p>
+            <div class="timeline-body"><p>Note: in part of my original comment, I got confused about build-requires vs development dependencies. I&#x27;ve removed that part of the comment and updated the zip file to have the correct build-requires</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BaxHugh">@BaxHugh</a> on 2024-11-12 15:14</div>
-            <div class="timeline-body"><p>Thanks @konstin. That could be a lead. So ultimately, it looks like my problem is that the build depends on files above and outside the pyproject.toml's directory, i.e. <code>&lt;MEMBER_PACKAGE_ROOT&gt;/../../proto</code> so that doesn't make it into the sdist?
+            <div class="timeline-body"><p>Thanks @konstin. That could be a lead. So ultimately, it looks like my problem is that the build depends on files above and outside the pyproject.toml&#x27;s directory, i.e. <code>&lt;MEMBER_PACKAGE_ROOT&gt;/../../proto</code> so that doesn&#x27;t make it into the sdist?
 But when compiling with cargo, the paths are relative to the original cargo files.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BaxHugh">@BaxHugh</a> on 2024-11-12 15:30</div>
             <div class="timeline-body"><p>Thanks again for your help @konstin. I tried updating the include tool.maturin.include to include the proto dir.</p>
-<p>Initially: include ../../proto, however Maturin doesn't like that:
+<p>Initially: include ../../proto, however Maturin doesn&#x27;t like that:
 <code>Caused by: paths in archives must not have </code>..<code> when setting path for ...</code></p>
-<p>So I've made symbolic links in the member package directory  <code>(proto -&gt; ../../proto)</code> and <code>(.cargo -&gt; ../../.cargo)</code>  and this works now that maturin includes them in the sdist</p>
+<p>So I&#x27;ve made symbolic links in the member package directory  <code>(proto -&gt; ../../proto)</code> and <code>(.cargo -&gt; ../../.cargo)</code>  and this works now that maturin includes them in the sdist</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BaxHugh">@BaxHugh</a> on 2024-11-12 15:33</div>
             <div class="timeline-body"><p>So I think the issue itself is closed, however would it be worth considering the ability to build in place as an option?
-i.e., if making symbolic links to shared source directories outside of the python project's directory is not an option, then being able to build in place could work?
-I don't know enough really to suggest yes or no, my experience of building in place, is just running <code>maturin build</code> in the directory and things work.</p>
+i.e., if making symbolic links to shared source directories outside of the python project&#x27;s directory is not an option, then being able to build in place could work?
+I don&#x27;t know enough really to suggest yes or no, my experience of building in place, is just running <code>maturin build</code> in the directory and things work.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-11-13 12:32</div>
-            <div class="timeline-body"><p>Rust is bit of a special case: Cargo has its own assumptions about workspace structure and packaging that don't mix well with python's assumptions, e.g., maturin often needs to package multiple rust crates into a single python source distribution since they are part of a workspace and python packages are built in isolation. This unfortunately can lead to confusing errors like the one you had.</p>
-<p>In python, we need to support source distributions, which are by design isolated, so building in place would mean breaking source distributions. If it was possible, i'd rather make <code>maturin build</code> behave more isolated and more like source distributions.</p>
+            <div class="timeline-body"><p>Rust is bit of a special case: Cargo has its own assumptions about workspace structure and packaging that don&#x27;t mix well with python&#x27;s assumptions, e.g., maturin often needs to package multiple rust crates into a single python source distribution since they are part of a workspace and python packages are built in isolation. This unfortunately can lead to confusing errors like the one you had.</p>
+<p>In python, we need to support source distributions, which are by design isolated, so building in place would mean breaking source distributions. If it was possible, i&#x27;d rather make <code>maturin build</code> behave more isolated and more like source distributions.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @konstin on 2024-11-13 12:32</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/konstin">@konstin</a> on 2024-11-13 12:32</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BaxHugh">@BaxHugh</a> on 2024-11-13 12:37</div>
-            <div class="timeline-body"><p>Thanks @konstin. Yes, that makes sense. Like you say, since it's maturin bringing cargo / rust to a python domain, and this is inherent to python building, it makes sense for this to be solved within maturin.</p>
+            <div class="timeline-body"><p>Thanks @konstin. Yes, that makes sense. Like you say, since it&#x27;s maturin bringing cargo / rust to a python domain, and this is inherent to python building, it makes sense for this to be solved within maturin.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-12-26 16:58</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-26 16:58</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:28:17 UTC
+        Synced at 2026-01-20 19:35:25 UTC
     </footer>
 </body>
 </html>

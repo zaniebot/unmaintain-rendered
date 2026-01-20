@@ -23,8 +23,8 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/janosh">@janosh</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<pre><code class="language-python"># ty-pandas-attrs.py
+            <div class="timeline-body">Summary
+<pre><code># ty-pandas-attrs.py
 import pandas as pd
 
 df = pd.DataFrame({&quot;A&quot;: [1, 2, 3], &quot;B&quot;: [4, 5, 6]})
@@ -34,14 +34,14 @@ df.attrs.update(name=&quot;dummy&quot;, foo=&quot;bar&quot;) # &lt;-- type error
 <blockquote>
 <p>Argument to bound method <code>update</code> is incorrect: Expected <code>Mapping[str, Any]</code>, found <code>dict[Hashable, Any]</code>tyinvalid-argument-type</p>
 </blockquote>
-<h3>Expected Behavior</h3>
+Expected Behavior
 <p>changing to</p>
-<pre><code class="language-diff">- df.attrs.update(name=&quot;dummy&quot;, foo=&quot;bar&quot;)
+<pre><code>- df.attrs.update(name=&quot;dummy&quot;, foo=&quot;bar&quot;)
 + df.attrs.update({&quot;name&quot;: &quot;dummy&quot;, &quot;foo&quot;: &quot;bar&quot;})
 </code></pre>
-<p>resolves the type error. both work at run time and i'd expect both to type check fine</p>
-<p>first reported in https://github.com/pandas-dev/pandas/issues/62140</p>
-<h3>Version</h3>
+<p>resolves the type error. both work at run time and i&#x27;d expect both to type check fine</p>
+<p>first reported in <a href="https://github.com/pandas-dev/pandas/issues/62140">pandas-dev/pandas#62140</a></p>
+Version
 <p>ty 0.0.1-alpha.18 (d697cc092 2025-08-14)</p>
 </div>
         </div>
@@ -49,23 +49,23 @@ df.attrs.update(name=&quot;dummy&quot;, foo=&quot;bar&quot;) # &lt;-- type error
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-19 16:43</div>
             <div class="timeline-body"><p>Thank your for the (very nicely minimized) report!</p>
 <p>Pandas <a href="https://github.com/pandas-dev/pandas/blob/main/pandas/core/generic.py#L317">types <code>DataFrame::attrs</code> as <code>dict[Hashable, Any]</code></a>. The typeshed definition for <code>MutableMapping::update</code> (inherited by <code>dict</code>) has <a href="https://github.com/python/typeshed/blob/main/stdlib/typing.pyi#L810">one overload</a> that accepts <code>**kwargs</code>, and that overload requires that <code>self</code> be of type <code>Mapping[str, _VT]</code> -- that is, its keys must be strings. A <code>dict</code> with key type <code>Hashable</code> is not assignable to a <code>Mapping</code> with key type <code>str</code>, so this overload fails to match the call.</p>
-<p>It feels like the type of <code>self</code> on that <code>**kwargs</code> overload for <code>update</code> could be less strict somehow, but it's not clear exactly how. It does need to be a mapping for which strings are valid keys; it doesn't need to be a mapping whose keys are <em>all</em> strings. The underlying issue here is that in this particular case we'd prefer the key type to behave contravariantly, but dictionaries (and mutable mappings generally) are invariant in their key type (which is required for their soundness generally, but not in a way that impacts this particular example.)</p>
+<p>It feels like the type of <code>self</code> on that <code>**kwargs</code> overload for <code>update</code> could be less strict somehow, but it&#x27;s not clear exactly how. It does need to be a mapping for which strings are valid keys; it doesn&#x27;t need to be a mapping whose keys are <em>all</em> strings. The underlying issue here is that in this particular case we&#x27;d prefer the key type to behave contravariantly, but dictionaries (and mutable mappings generally) are invariant in their key type (which is required for their soundness generally, but not in a way that impacts this particular example.)</p>
 <p>So ultimately I think this type error is correct, given the type system specification and the type information currently provided by pandas and the standard library. (Of course, it can still be a false positive relative to runtime behavior, but the fix for that will need to be in the type spec, or in typeshed, or in pandas / pandas-stubs, not just in ty.) Mypy and pyright both also give versions of exactly the same error on the same code snippet.</p>
 <p>Off the top of my head I am not sure exactly what would be a good fix here; it may be something worth raising as a question in the Typing section of discuss.python.org. If in practice dataframe attrs all have string keys, then tightening the type annotation on <code>DataFrame::attrs</code> to <code>dict[str, Any]</code> would be the simplest fix.</p>
-<p>Closing this as I don't think this is actionable for ty, but we will certainly update if there's a broader consensus of type checkers that this case should be handled differently somehow.</p>
+<p>Closing this as I don&#x27;t think this is actionable for ty, but we will certainly update if there&#x27;s a broader consensus of type checkers that this case should be handled differently somehow.</p>
 <p>Thanks again for the great report!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2025-08-19 16:43</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2025-08-19 16:43</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-19 16:53</div>
             <div class="timeline-body"><blockquote>
-<p>It feels like the type of <code>self</code> on that <code>**kwargs</code> overload for <code>update</code> could be less strict somehow, but it's not clear exactly how. It does need to be a mapping for which strings are valid keys; it doesn't need to be a mapping whose keys are <em>all</em> strings.</p>
+<p>It feels like the type of <code>self</code> on that <code>**kwargs</code> overload for <code>update</code> could be less strict somehow, but it&#x27;s not clear exactly how. It does need to be a mapping for which strings are valid keys; it doesn&#x27;t need to be a mapping whose keys are <em>all</em> strings.</p>
 </blockquote>
 <p>hmmm, this patch makes our error go away? I can see about making a typeshed PR</p>
-<pre><code class="language-diff">diff --git a/crates/ty_vendored/vendor/typeshed/stdlib/typing.pyi b/crates/ty_vendored/vendor/typeshed/stdlib/typing.pyi
+<pre><code>diff --git a/crates/ty_vendored/vendor/typeshed/stdlib/typing.pyi b/crates/ty_vendored/vendor/typeshed/stdlib/typing.pyi
 index 90743a7cc3..f926428414 100644
 --- a/crates/ty_vendored/vendor/typeshed/stdlib/typing.pyi
 +++ b/crates/ty_vendored/vendor/typeshed/stdlib/typing.pyi
@@ -90,13 +90,13 @@ index 90743a7cc3..f926428414 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-19 17:17</div>
-            <div class="timeline-body"><p>hmm, it's not quite so simple. The ty error only goes away if I make that change because we're missing some protocol features; mypy still doesn't like the code in the original snippet even with that change to typeshed. The reason is that even <code>SupportsKeysAndGetItem</code> is invariant in its first type parameter. ~~(I'm not totally sure it needs to be, though?)~~ Edit, yeah, it obviously does need to be.</p>
+            <div class="timeline-body"><p>hmm, it&#x27;s not quite so simple. The ty error only goes away if I make that change because we&#x27;re missing some protocol features; mypy still doesn&#x27;t like the code in the original snippet even with that change to typeshed. The reason is that even <code>SupportsKeysAndGetItem</code> is invariant in its first type parameter. ~~(I&#x27;m not totally sure it needs to be, though?)~~ Edit, yeah, it obviously does need to be.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-19 17:23</div>
             <div class="timeline-body"><p><em>this</em> seems to make even mypy happy with the original snippet, however: at last, a protocol with a contravariant parameter for the key type!</p>
-<pre><code class="language-diff">diff --git a/crates/ty_vendored/vendor/typeshed/stdlib/typing.pyi b/crates/ty_vendored/vendor/typeshed/stdlib/typing.pyi
+<pre><code>diff --git a/crates/ty_vendored/vendor/typeshed/stdlib/typing.pyi b/crates/ty_vendored/vendor/typeshed/stdlib/typing.pyi
 index 90743a7cc3..10ed9dc525 100644
 --- a/crates/ty_vendored/vendor/typeshed/stdlib/typing.pyi
 +++ b/crates/ty_vendored/vendor/typeshed/stdlib/typing.pyi
@@ -130,12 +130,12 @@ index 90743a7cc3..10ed9dc525 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-19 17:45</div>
-            <div class="timeline-body"><p>The stubs were actually changed very recently in typeshed here (I merged the change during pycon only a few months ago!) https://github.com/python/typeshed/pull/14099</p>
+            <div class="timeline-body"><p>The stubs were actually changed very recently in typeshed here (I merged the change during pycon only a few months ago!) <a href="https://github.com/python/typeshed/pull/14099">python/typeshed#14099</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-19 17:52</div>
-            <div class="timeline-body"><p>trying out a typeshed change here: https://github.com/python/typeshed/pull/14593</p>
+            <div class="timeline-body"><p>trying out a typeshed change here: <a href="https://github.com/python/typeshed/pull/14593">python/typeshed#14593</a></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -143,18 +143,18 @@ index 90743a7cc3..10ed9dc525 100644
             <div class="timeline-body"><blockquote>
 <p>trying out a typeshed change here: <a href="https://github.com/python/typeshed/pull/14593">python/typeshed#14593</a></p>
 </blockquote>
-<p>Now merged -- thanks for the report @janosh! We'll pick up the change in our next automated typeshed sync.</p>
+<p>Now merged -- thanks for the report @janosh! We&#x27;ll pick up the change in our next automated typeshed sync.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/janosh">@janosh</a> on 2025-08-20 12:55</div>
-            <div class="timeline-body"><p>@AlexWaygood wonderful, thanks for the quick fix! really enjoying <code>ty</code>. i've been hoping astral does a type checker for well over a year and it definitely delivers :)</p>
+            <div class="timeline-body"><p>@AlexWaygood wonderful, thanks for the quick fix! really enjoying <code>ty</code>. i&#x27;ve been hoping astral does a type checker for well over a year and it definitely delivers :)</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:30 UTC
+        Synced at 2026-01-20 19:25:20 UTC
     </footer>
 </body>
 </html>

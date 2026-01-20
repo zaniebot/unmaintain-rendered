@@ -23,36 +23,36 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dd-ssc">@dd-ssc</a></div>
-            <div class="timeline-body"><h2>TL;DR</h2>
-<p>We managed to make some progress in getting authentication for private gitlab.com package registries to work with <code>keyring</code> and a forked, heavily modified 1Password backend, but now we're stuck and confused about the weird urls <code>uv</code> is requesting credentials for: It seems as if <code>uv</code> &quot;mixes&quot; index urls and package names.</p>
-<h2>The Problem</h2>
+            <div class="timeline-body">TL;DR
+<p>We managed to make some progress in getting authentication for private gitlab.com package registries to work with <code>keyring</code> and a forked, heavily modified 1Password backend, but now we&#x27;re stuck and confused about the weird urls <code>uv</code> is requesting credentials for: It seems as if <code>uv</code> &quot;mixes&quot; index urls and package names.</p>
+The Problem
 <p>Creating a venv for a project with one dependency on a package from a private gitlab package registry works ✅.
 Creating a venv for a project with two dependencies on packages from two private gitlab package registries fails ❌.</p>
 <p><code>pyproject.toml</code>:</p>
 <pre><code>[project]
 dependencies   = [
-    'uv-mre-01-dep-01',
-    'uv-mre-01-dep-02'
+    &#x27;uv-mre-01-dep-01&#x27;,
+    &#x27;uv-mre-01-dep-02&#x27;
 ]
-description        = 'A uv python project with two dependencies from private package registries.'
-name               = 'uv-mre-01-project-02-01'
-requires-python    = '&gt;=3.10'
-version            = '0.0.0'
+description        = &#x27;A uv python project with two dependencies from private package registries.&#x27;
+name               = &#x27;uv-mre-01-project-02-01&#x27;
+requires-python    = &#x27;&gt;=3.10&#x27;
+version            = &#x27;0.0.0&#x27;
 
 [tool.uv]
-keyring-provider   = 'subprocess'
+keyring-provider   = &#x27;subprocess&#x27;
 
 [[tool.uv.index]]
-name = 'gitlab_examples_uv_uv-mre-01-dep-01'
-url  = 'https://dummy@gitlab.com/api/v4/projects/67672163/packages/pypi/simple'
+name = &#x27;gitlab_examples_uv_uv-mre-01-dep-01&#x27;
+url  = &#x27;https://dummy@gitlab.com/api/v4/projects/67672163/packages/pypi/simple&#x27;
 
 [[tool.uv.index]]
-name = 'gitlab_examples_uv_uv-mre-01-dep-02'
-url  = 'https://dummy@gitlab.com/api/v4/projects/67685669/packages/pypi/simple'
+name = &#x27;gitlab_examples_uv_uv-mre-01-dep-02&#x27;
+url  = &#x27;https://dummy@gitlab.com/api/v4/projects/67685669/packages/pypi/simple&#x27;
 
 [tool.uv.sources]
-uv-mre-01-dep-01   = { index = 'gitlab_examples_uv_uv-mre-01-dep-01' }
-uv-mre-01-dep-02   = { index = 'gitlab_examples_uv_uv-mre-01-dep-02' }
+uv-mre-01-dep-01   = { index = &#x27;gitlab_examples_uv_uv-mre-01-dep-01&#x27; }
+uv-mre-01-dep-02   = { index = &#x27;gitlab_examples_uv_uv-mre-01-dep-02&#x27; }
 </code></pre>
 <p>Log output, reduced to what matters:</p>
 <pre><code>$ uv sync --verbose
@@ -63,17 +63,17 @@ DEBUG Found credentials in keyring for https://gitlab.com/api/v4/projects/676721
     ...
 DEBUG Skipping keyring lookup for https://pypi.org/simple/uv-mre-01-dep-02/ with no username
   × No solution found when resolving dependencies:
-  ╰─▶ Because uv-mre-01-dep-02 was not found in the package registry and your project depends on uv-mre-01-dep-02, we can conclude that your project's
+  ╰─▶ Because uv-mre-01-dep-02 was not found in the package registry and your project depends on uv-mre-01-dep-02, we can conclude that your project&#x27;s
       requirements are unsatisfiable.
 </code></pre>
 <ul>
 <li><code>https://gitlab.com/api/v4/projects/67672163/packages/pypi/simple</code> is the url <em>for the first dependency</em>.</li>
 <li><code>uv-mre-01-dep-02</code> is the name of the package <em>of the second dependency</em>.</li>
 </ul>
-<p>We have worked around a number of obstacles - but <code>uv</code> never seems to query credentials for the url of the second dependency / index and we don't see a way to work around that 😞.</p>
+<p>We have worked around a number of obstacles - but <code>uv</code> never seems to query credentials for the url of the second dependency / index and we don&#x27;t see a way to work around that 😞.</p>
 <p>Possibly related: <a href="https://github.com/astral-sh/uv/issues/11017">11017</a></p>
-<details>
-  <summary>Full log output</summary>
+
+  Full log output
 
 <p>My username on my local dev machine is of no concern, so replacing references to my home folder by <code>${HOME}</code>.</p>
 <pre><code>$ uv sync --verbose
@@ -132,11 +132,11 @@ DEBUG No compatible version found for: uv-mre-01-project-02-01
 DEBUG Found not-modified response for: https://gitlab.com/api/v4/projects/67672163/packages/pypi/simple/pyyaml/
 DEBUG Found fresh response for: https://files.pythonhosted.org/packages/9b/95/a3fac87cb7158e231b5a6012e438c647e1a87f09f8e0d123acec8ab8bf71/PyYAML-6.0.2-cp310-cp310-macosx_10_9_x86_64.whl.metadata
 × No solution found when resolving dependencies:
-╰─▶ Because uv-mre-01-dep-02 was not found in the package registry and your project depends on uv-mre-01-dep-02, we can conclude that your project's
+╰─▶ Because uv-mre-01-dep-02 was not found in the package registry and your project depends on uv-mre-01-dep-02, we can conclude that your project&#x27;s
     requirements are unsatisfiable.</code></pre>
-</details>
 
-<h2>Basic Information</h2>
+
+Basic Information
 <pre><code>$ uv --version
 uv 0.6.4 (Homebrew 2025-03-03)
 
@@ -145,24 +145,24 @@ ProductName:		macOS
 ProductVersion:		14.7.1
 BuildVersion:		23H222
 </code></pre>
-<h2>Minimal reproducible example (MRE)</h2>
+Minimal reproducible example (MRE)
 <p>We have created several projects / repositories to facilitate reproducing issues:</p>
 <ol>
 <li>A public <a href="https://github.com/DesmoDyne/uv-mre-01"><code>uv-mre-01</code> Github repo</a> with multiple sample uv python projects that use dependencies from private GitLab package registries; the project that reproduces this issue is <a href="https://github.com/DesmoDyne/uv-mre-01?tab=readme-ov-file#project-0201">Project 02/01</a>.</li>
 <li>Two GitLab repos that provide dummy python packages via their private package registries. These repos must obviously be private, so not even posting any links here; their python packages are accessible to the GitHub project - assuming authentication works. They are called <code>uv-mre-01-dep-01</code> and <code>uv-mre-01-dep-02</code>.</li>
 </ol>
-<details>
-  <summary>Notes</summary>
+
+  Notes
 
 <ul>
 <li>The MRE is actually not strictly <em>minimal</em>; there is smoke test and some more projects that reproduce problems we have run into that are beyond the scope of this issues. However, authentication for private package registries might be a bigger issue, so setting up a solid test bench might prove helpful mid-term.</li>
-<li>More, similar test/client or dependency projects might be needed in the future. Both the GitHub and the GitLab sample repos were therefore created in a mostly automated fashion to easily add more MREs as the need arises.</details>
+<li>More, similar test/client or dependency projects might be needed in the future. Both the GitHub and the GitLab sample repos were therefore created in a mostly automated fashion to easily add more MREs as the need arises.
 
 </li>
 </ul>
 <p>A quick shell script to set up things to reproduce the issue (for copy &amp; paste):</p>
 <p>UPDATE: This has been made simpler by means of an insecure keyring backend, see <a href="https://github.com/astral-sh/uv/issues/12004#issuecomment-2746364629">commment below</a>.</p>
-<pre><code class="language-shell">mkdir -p ~/Temp/uv_issue_12004 &amp;&amp; cd $_
+<pre><code>mkdir -p ~/Temp/uv_issue_12004 &amp;&amp; cd $_
 git clone --quiet https://github.com/DesmoDyne/keyrings.onepassword
 uv tool install keyring --with-editable ~/Temp/uv_issue_12004/keyrings.onepassword)
 git clone --quiet https://github.com/DesmoDyne/uv-mre-01
@@ -172,38 +172,38 @@ git clone --quiet https://github.com/DesmoDyne/uv-mre-01
 <p>This obviously modifies an existing <code>keyring</code> tool installation, which can be undone using</p>
 <pre><code>(cd &quot;$(uv tool dir)/keyring&quot; &amp;&amp; uv pip uninstall annotated-types keyrings.onepassword markdown-it-py mdurl onepassword-sdk pydantic pydantic-core pygments rich typing-extensions)
 </code></pre>
-<p><a href="https://docs.astral.sh/uv/pip/packages/#uninstalling-a-package"><code>uv pip uninstall</code></a> doesn't seem to support uninstalling a package <em>and all its dependencies</em>, so need to list them all.</p>
+<p><a href="https://docs.astral.sh/uv/pip/packages/#uninstalling-a-package"><code>uv pip uninstall</code></a> doesn&#x27;t seem to support uninstalling a package <em>and all its dependencies</em>, so need to list them all.</p>
 <p>Optionally, run the &quot;smoke test&quot;:</p>
-<pre><code class="language-shell">(cd uv-mre-01/project-00-01 &amp;&amp; uv sync --verbose)
+<pre><code>(cd uv-mre-01/project-00-01 &amp;&amp; uv sync --verbose)
   ...
 </code></pre>
 <p>and create the venv for a project with only one dependency:</p>
-<pre><code class="language-shell">(cd uv-mre-01/project-01-02 &amp;&amp; uv sync --verbose)
+<pre><code>(cd uv-mre-01/project-01-02 &amp;&amp; uv sync --verbose)
   ...
 </code></pre>
-<h2>The Keyring 1Password backend</h2>
+The Keyring 1Password backend
 <p>This is beyond the scope of the uv project, but some wider context might be helpful.</p>
-<details>
-  <summary>Details</summary>
 
-<p>We tried to use <a href="https://github.com/jaraco/keyring">Keyring</a> with the 1Password third party backend mentioned on the keyring page - <a href="https://github.com/falling-springs/onepassword-keyring"><code>onepassword-keyring</code></a> - but that implementation was apparently never meant for anything more than personal use by its author. It is currently dysfunctional - it never returns any credentials, but only a <code>[use 'op item get &lt;item ID&gt; --reveal' to reveal]</code> message - unless its source code is monkey-patched.</p>
+  Details
+
+<p>We tried to use <a href="https://github.com/jaraco/keyring">Keyring</a> with the 1Password third party backend mentioned on the keyring page - <a href="https://github.com/falling-springs/onepassword-keyring"><code>onepassword-keyring</code></a> - but that implementation was apparently never meant for anything more than personal use by its author. It is currently dysfunctional - it never returns any credentials, but only a <code>[use &#x27;op item get &lt;item ID&gt; --reveal&#x27; to reveal]</code> message - unless its source code is monkey-patched.</p>
 <p>There are <a href="https://github.com/falling-springs/onepassword-keyring/forks">two public forks</a>, one of which <a href="https://github.com/rdhyee/onepassword-keyring/commit/b9190a47810e070b72bba55bc25b944f8b03c61a">fixed the problem mentioned</a>, but never published that fix as a package.</p>
-<p>The alternative we are currently using is <a href="https://github.com/risqcapital/keyrings.onepassword"><code>keyrings.onepassword</code></a>; we forked that project and added some logging to a file: <code>keyring</code> and its backends communicate over <code>stdout</code>, so can't just use <code>print(...)</code> for logging.</p>
+<p>The alternative we are currently using is <a href="https://github.com/risqcapital/keyrings.onepassword"><code>keyrings.onepassword</code></a>; we forked that project and added some logging to a file: <code>keyring</code> and its backends communicate over <code>stdout</code>, so can&#x27;t just use <code>print(...)</code> for logging.</p>
 <p>As <code>uv</code> works with <em>index urls</em>, but 1Password works with <em>vault items</em>, we also added a rudimentary map to translate the former to the latter.</p>
 <p>Finally, to reduce the effort to reproduce this issue to the least amount possible, we removed the need to install the 1Password application, the 1Password CLI, set up any items in any 1Password vaults or pass any environment variables.</p>
 <p>This is just an awful hack. But maybe it helps us to fix this issue.</p>
 <p>See <a href="https://github.com/DesmoDyne/keyrings.onepassword">https://github.com/DesmoDyne/keyrings.onepassword</a> for details.</p>
-</details>
 
-<h2>Further questions and concerns</h2>
+
+Further questions and concerns
 <ol>
-<li><p>Why does <code>uv</code> append any package name to the index url configured in <code>pyproject.toml</code> at all ? We've been using package registry urls ending in <code>.../simple</code> for many years (but then - we always had our packages on gitlab.com 🤷🏻‍♂️) - which is also really similar to the <a href="https://packaging.python.org/en/latest/specifications/simple-repository-api/#base-html-api">PyPI base url</a> <code>https://pypi.org/simple/</code>; possibly related: <a href="https://github.com/astral-sh/uv/issues/11236">11236</a>.</p>
+<li><p>Why does <code>uv</code> append any package name to the index url configured in <code>pyproject.toml</code> at all ? We&#x27;ve been using package registry urls ending in <code>.../simple</code> for many years (but then - we always had our packages on gitlab.com 🤷🏻‍♂️) - which is also really similar to the <a href="https://packaging.python.org/en/latest/specifications/simple-repository-api/#base-html-api">PyPI base url</a> <code>https://pypi.org/simple/</code>; possibly related: <a href="https://github.com/astral-sh/uv/issues/11236">11236</a>.</p>
 </li>
 <li><p>Why is there a query for <code>https://pypi.org/simple/uv-mre-01-dep-02/</code> ? The <a href="https://docs.astral.sh/uv/concepts/projects/dependencies/#index">Index docs</a> say</p>
 <blockquote>
 <p>Using an <code>index</code> source pins a package to the given index — it will not be downloaded from other indexes.</p>
 </blockquote>
-<p>but from our observations, this doesn't seem true 🤷🏻‍♂️ We also tried adding <code>explicit = true</code> to the <code>[[tool.uv.index]]</code> sections, taken from <a href="https://docs.astral.sh/uv/configuration/indexes/#pinning-a-package-to-an-index">Pinning a package to an index</a>, but that doesn't seem to do anything 🤷🏻‍♂️🤷🏻‍♂️🤷🏻‍♂️</p>
+<p>but from our observations, this doesn&#x27;t seem true 🤷🏻‍♂️ We also tried adding <code>explicit = true</code> to the <code>[[tool.uv.index]]</code> sections, taken from <a href="https://docs.astral.sh/uv/configuration/indexes/#pinning-a-package-to-an-index">Pinning a package to an index</a>, but that doesn&#x27;t seem to do anything 🤷🏻‍♂️🤷🏻‍♂️🤷🏻‍♂️</p>
 </li>
 <li><p>Does the query for <code>https://pypi.org/simple/uv-mre-01-dep-02/</code> mean that a package with the same name is installed from PyPI - instead of from our own package registry - if authentication fails ?</p>
 </li>
@@ -216,7 +216,7 @@ git clone --quiet https://github.com/DesmoDyne/uv-mre-01
             <div class="timeline-header">Comment by <a href="https://github.com/dd-ssc">@dd-ssc</a> on 2025-03-09 20:34</div>
             <div class="timeline-body"><p>I just updated to latest uv version <code>0.6.5</code> and re-ran the test case.</p>
 <p>The behavior is different now. This looks like a second bug.</p>
-<p>The <a href="https://github.com/astral-sh/uv/releases/tag/0.6.5">release notes</a> don't sound like anything related was changed, so I downgraded back to <code>0.6.4</code>: No change.</p>
+<p>The <a href="https://github.com/astral-sh/uv/releases/tag/0.6.5">release notes</a> don&#x27;t sound like anything related was changed, so I downgraded back to <code>0.6.4</code>: No change.</p>
 <p>Log output, reduced to what matters:</p>
 <pre><code>$ uv sync --verbose
 DEBUG uv 0.6.5 (Homebrew 2025-03-06)
@@ -228,15 +228,15 @@ DEBUG Found credentials in keyring for https://gitlab.com/api/v4/projects/676721
 DEBUG Skipping keyring lookup for https://pypi.org/simple/uv-mre-01-dep-02/ with no username
  ...
   × No solution found when resolving dependencies:
-  ╰─▶ Because uv-mre-01-dep-02 was not found in the package registry and your project depends on uv-mre-01-dep-02, we can conclude that your project's
+  ╰─▶ Because uv-mre-01-dep-02 was not found in the package registry and your project depends on uv-mre-01-dep-02, we can conclude that your project&#x27;s
       requirements are unsatisfiable.
 </code></pre>
-<p>It's somewhat hard to spot, but <code>uv</code> now queries credentials for the url for the first dependency with the name of the package of the <em>first</em> dependency appended - as opposed to the name of the package of the <em>second</em> dependency appended as before.</p>
+<p>It&#x27;s somewhat hard to spot, but <code>uv</code> now queries credentials for the url for the first dependency with the name of the package of the <em>first</em> dependency appended - as opposed to the name of the package of the <em>second</em> dependency appended as before.</p>
 <p>Possibly, the order in which credentials are queried simply is random 🤷🏻‍♂️.</p>
 <p><strong>Problem is that <code>uv</code> never queries any credentials for the second dependency.</strong></p>
 <p>We were in the process of butchering our <a href="https://github.com/DesmoDyne/keyrings.onepassword">custom dev keyring backend</a> even further and ignore the part of first the url (up to <code>simple</code>) entirely and return credentials based on only the appended package name - which is complete nonsense, but at least would get us unblocked - but if <code>uv</code> never asks for all the credentials it needs, we seem stuck completely 😞.</p>
-<details>
-  <summary>Full log output</summary>
+
+  Full log output
 
 <p>As always, replacing references to my home folder by <code>${HOME}</code>.</p>
 <pre><code>$ (cd uv-mre-01/project-02-01 &amp;&amp; uv sync --verbose)
@@ -246,7 +246,7 @@ DEBUG No workspace root found, using project root
 DEBUG Acquired lock for `${HOME}/Temp/uv_issue_12004/uv-mre-01/project-02-01`
 DEBUG Using Python request `&gt;=3.10` from `requires-python` metadata
 DEBUG Checking for Python environment at `.venv`
-DEBUG The virtual environment's Python version satisfies `&gt;=3.10`
+DEBUG The virtual environment&#x27;s Python version satisfies `&gt;=3.10`
 DEBUG Released lock at `/var/folders/8t/d1l9tygj3ld643r89wpr3yl80000gn/T/uv-83739995d1612acb.lock`
 DEBUG Using request timeout of 30s
 DEBUG Found static `pyproject.toml` for: uv-mre-01-project-02-01 @ file://${HOME}/Temp/uv_issue_12004/uv-mre-01/project-02-01
@@ -288,42 +288,42 @@ DEBUG Recording unit propagation conflict of uv-mre-01-dep-02 from incompatibili
 DEBUG Searching for a compatible version of uv-mre-01-project-02-01 @ file://${HOME}/Temp/uv_issue_12004/uv-mre-01/project-02-01 (&lt;0.0.0 | &gt;0.0.0)
 DEBUG No compatible version found for: uv-mre-01-project-02-01
 × No solution found when resolving dependencies:
-╰─▶ Because uv-mre-01-dep-02 was not found in the package registry and your project depends on uv-mre-01-dep-02, we can conclude that your project's
+╰─▶ Because uv-mre-01-dep-02 was not found in the package registry and your project depends on uv-mre-01-dep-02, we can conclude that your project&#x27;s
     requirements are unsatisfiable.</code></pre>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-09 21:59</div>
             <div class="timeline-body"><p>Can you share your <code>uv.lock</code> file too?</p>
-<p>Not sure if this is relevant yet, still trying to sort out what's going on, but I think GitLab has a setting which forwards to PyPI on unauthenticated requests? Is that on for your repository? It's possible that's where the PyPI request comes from?</p>
+<p>Not sure if this is relevant yet, still trying to sort out what&#x27;s going on, but I think GitLab has a setting which forwards to PyPI on unauthenticated requests? Is that on for your repository? It&#x27;s possible that&#x27;s where the PyPI request comes from?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @zanieb by @zanieb on 2025-03-09 21:59</div>
+            <div class="event">Assigned to <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-09 21:59</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dd-ssc">@dd-ssc</a> on 2025-03-10 07:32</div>
             <div class="timeline-body"><blockquote>
 <p>Can you share your uv.lock file too?</p>
 </blockquote>
-<p>I'd be happy to do so, but there is no <code>uv.lock</code>; <code>uv</code> doesn't seem to get to the point where it writes that file 🤷🏻‍♂️</p>
+<p>I&#x27;d be happy to do so, but there is no <code>uv.lock</code>; <code>uv</code> doesn&#x27;t seem to get to the point where it writes that file 🤷🏻‍♂️</p>
 <blockquote>
 <p>I think GitLab has a setting which forwards to PyPI on unauthenticated requests ?</p>
 </blockquote>
-<p>Wow! That is <em>something</em>. Here we are, looking at <code>uv</code> doing funny stuff - while in fact, it's actually GitLab doing funny stuff 🤪</p>
+<p>Wow! That is <em>something</em>. Here we are, looking at <code>uv</code> doing funny stuff - while in fact, it&#x27;s actually GitLab doing funny stuff 🤪</p>
 <p><em>Why on earth would they do that ?!?</em></p>
-<p>Can't really think of a situation where that would be needed or useful, but it seems to open all kinds of security holes ?!?
+<p>Can&#x27;t really think of a situation where that would be needed or useful, but it seems to open all kinds of security holes ?!?
 Well, at least they clearly document it: <a href="https://docs.gitlab.com/user/packages/package_registry/supported_functionality/#forwarding-requests">Forwarding requests</a>; they even do so twice: <a href="https://docs.gitlab.com/user/packages/pypi_repository/#package-request-forwarding-security-notice">Package request forwarding security notice</a>.</p>
-<p>We're on gitlab.com, so we don't have Admin privileges.</p>
+<p>We&#x27;re on gitlab.com, so we don&#x27;t have Admin privileges.</p>
 <p>For anyone in the same boat: The <em>Packages and Registries</em> section of the group settings looks like this:</p>
-<p><img src="https://github.com/user-attachments/assets/95ed8fc8-c1cb-43ce-bf32-d14bd1330796" alt="Screenshot Chrome gitlab-groups-settings-packages-and-registries" /></p>
+<p><img src="https://github.com/user-attachments/assets/95ed8fc8-c1cb-43ce-bf32-d14bd1330796" alt="Screenshot Chrome gitlab-groups-settings-packages-and-registries"></p>
 <p>The <em>What are the risks?</em> link leads to the <em>Forwarding requests</em> section above.</p>
 <p>By default, <em>Package forwarding</em> is enabled for both npm and PyPI packages.</p>
 <p>Disabling both (npm packages are obviously not part of the picture, but the issue is the same); also verified the setting for all subgroups (which is what the <em>Enforce PyPI setting for all subgroups</em> presumably does).</p>
 <p>Unfortunately, the result seems the same:</p>
-<pre><code class="language-shell">$ (cd uv-mre-01/project-02-01 &amp;&amp; uv sync --verbose)
+<pre><code>$ (cd uv-mre-01/project-02-01 &amp;&amp; uv sync --verbose)
 DEBUG uv 0.6.5 (Homebrew 2025-03-06)
  ...
 DEBUG Checking keyring for credentials for dummy@https://gitlab.com/api/v4/projects/67672163/packages/pypi/simple/uv-mre-01-dep-01/
@@ -333,13 +333,13 @@ DEBUG Found credentials in keyring for https://gitlab.com/api/v4/projects/676721
 DEBUG Skipping keyring lookup for https://pypi.org/simple/uv-mre-01-dep-02/ with no username
  ...
   × No solution found when resolving dependencies:
-  ╰─▶ Because uv-mre-01-dep-02 was not found in the package registry and your project depends on uv-mre-01-dep-02, we can conclude that your project's
+  ╰─▶ Because uv-mre-01-dep-02 was not found in the package registry and your project depends on uv-mre-01-dep-02, we can conclude that your project&#x27;s
       requirements are unsatisfiable.
 </code></pre>
-<p>That's <code>uv-mre-01-dep-01</code> in the first two lines of log output and <code>uv-mre-01-dep-02</code> in the third one. We are logging any <code>uv</code> queries for credentials in our Keyring backend and we never see any queries for <code>uv-mre-01-dep-02</code> there. (UPDATE: We actually do, see <a href="https://github.com/astral-sh/uv/issues/12004#issuecomment-2709768394">next comment</a>).</p>
-<p>Just speculating here, but maybe the <code>Skipping keyring lookup ...</code> line happens because <code>uv</code> doesn't query credentials for all private package registries, but tries <code>pypi.org</code> directly ?!?</p>
-<details>
-  <summary>Full log output</summary>
+<p>That&#x27;s <code>uv-mre-01-dep-01</code> in the first two lines of log output and <code>uv-mre-01-dep-02</code> in the third one. We are logging any <code>uv</code> queries for credentials in our Keyring backend and we never see any queries for <code>uv-mre-01-dep-02</code> there. (UPDATE: We actually do, see <a href="https://github.com/astral-sh/uv/issues/12004#issuecomment-2709768394">next comment</a>).</p>
+<p>Just speculating here, but maybe the <code>Skipping keyring lookup ...</code> line happens because <code>uv</code> doesn&#x27;t query credentials for all private package registries, but tries <code>pypi.org</code> directly ?!?</p>
+
+  Full log output
 
 <pre><code>$ (cd uv-mre-01/project-02-01 &amp;&amp; uv sync --verbose)
 DEBUG uv 0.6.5 (Homebrew 2025-03-06)
@@ -348,7 +348,7 @@ DEBUG No workspace root found, using project root
 DEBUG Acquired lock for `${HOME}/Temp/uv_issue_12004/uv-mre-01/project-02-01`
 DEBUG Using Python request `&gt;=3.10` from `requires-python` metadata
 DEBUG Checking for Python environment at `.venv`
-DEBUG The virtual environment's Python version satisfies `&gt;=3.10`
+DEBUG The virtual environment&#x27;s Python version satisfies `&gt;=3.10`
 DEBUG Released lock at `/var/folders/8t/d1l9tygj3ld643r89wpr3yl80000gn/T/uv-83739995d1612acb.lock`
 DEBUG Using request timeout of 30s
 DEBUG Found static `pyproject.toml` for: uv-mre-01-project-02-01 @ file://${HOME}/Temp/uv_issue_12004/uv-mre-01/project-02-01
@@ -395,11 +395,11 @@ DEBUG Sending revalidation request for: https://pypi.org/simple/pyyaml/
 DEBUG Found not-modified response for: https://pypi.org/simple/pyyaml/
 DEBUG Found fresh response for: https://files.pythonhosted.org/packages/9b/95/a3fac87cb7158e231b5a6012e438c647e1a87f09f8e0d123acec8ab8bf71/PyYAML-6.0.2-cp310-cp310-macosx_10_9_x86_64.whl.metadata
 × No solution found when resolving dependencies:
-╰─▶ Because uv-mre-01-dep-02 was not found in the package registry and your project depends on uv-mre-01-dep-02, we can conclude that your project's
+╰─▶ Because uv-mre-01-dep-02 was not found in the package registry and your project depends on uv-mre-01-dep-02, we can conclude that your project&#x27;s
     requirements are unsatisfiable.</code></pre>
-</details>
 
-<p>Also, I ran the same command with <code>RUST_LOG=trace</code> and now I'm getting log output (with <code>INFO</code> level 🤨) saying something about <code>uv-mre-01-dep-02 * is forbidden</code> that does not come up when running with <code>--verbose</code> only:</p>
+
+<p>Also, I ran the same command with <code>RUST_LOG=trace</code> and now I&#x27;m getting log output (with <code>INFO</code> level 🤨) saying something about <code>uv-mre-01-dep-02 * is forbidden</code> that does not come up when running with <code>--verbose</code> only:</p>
 <pre><code>$ (cd uv-mre-01/project-02-01 &amp;&amp; RUST_LOG=trace uv sync --verbose)
     ...
 INFO Start conflict resolution because incompat satisfied:
@@ -412,8 +412,8 @@ INFO prior cause: uv-mre-01-project-02-01 * is forbidden
 INFO prior cause: root ==0a0.dev0 is forbidden
     ...
 </code></pre>
-<details>
-  <summary>Full log output</summary>
+
+  Full log output
 
 <pre><code>$ (cd uv-mre-01/project-02-01 &amp;&amp; RUST_LOG=trace uv sync --verbose)
 DEBUG uv 0.6.5 (Homebrew 2025-03-06)
@@ -424,7 +424,7 @@ DEBUG Acquired lock for `${HOME}/Temp/uv_issue_12004/uv-mre-01/project-02-01`
 DEBUG Using Python request `&gt;=3.10` from `requires-python` metadata
 DEBUG Checking for Python environment at `.venv`
 TRACE Cached interpreter info for Python 3.13.2, skipping probing: .venv/bin/python3
-DEBUG The virtual environment's Python version satisfies `&gt;=3.10`
+DEBUG The virtual environment&#x27;s Python version satisfies `&gt;=3.10`
 DEBUG Released lock at `/var/folders/8t/d1l9tygj3ld643r89wpr3yl80000gn/T/uv-83739995d1612acb.lock`
 TRACE Caching credentials for https://dummy@gitlab.com/api/v4/projects/67685669/packages/pypi/simple
 TRACE Caching credentials for https://dummy@gitlab.com/api/v4/projects/67685669/packages/pypi
@@ -465,9 +465,9 @@ TRACE No password in cache for URL https://gitlab.com/api/v4/projects/67672163/p
 DEBUG No netrc file found
 DEBUG Checking keyring for credentials for dummy@https://gitlab.com/api/v4/projects/67672163/packages/pypi/simple/uv-mre-01-dep-02/
 TRACE Checking keyring for URL https://gitlab.com/api/v4/projects/67672163/packages/pypi/simple/uv-mre-01-dep-02/
-TRACE Cached request https://gitlab.com/api/v4/projects/67672163/packages/pypi/simple/uv-mre-01-dep-01/ is storable because this is a shared cache and its response has a 'private' cache-control directive
+TRACE Cached request https://gitlab.com/api/v4/projects/67672163/packages/pypi/simple/uv-mre-01-dep-01/ is storable because this is a shared cache and its response has a &#x27;private&#x27; cache-control directive
 TRACE Freshness lifetime found via cache-control max age setting: 0ns
-TRACE Cached request https://gitlab.com/api/v4/projects/67672163/packages/pypi/simple/uv-mre-01-dep-01/ has a cached response that does not permit staleness because the response has a 'must-revalidate' cache-control directive set
+TRACE Cached request https://gitlab.com/api/v4/projects/67672163/packages/pypi/simple/uv-mre-01-dep-01/ has a cached response that does not permit staleness because the response has a &#x27;must-revalidate&#x27; cache-control directive set
 TRACE Request https://gitlab.com/api/v4/projects/67672163/packages/pypi/simple/uv-mre-01-dep-01/ does not have a fresh cache because its age is 1237 seconds, it is greater than the freshness lifetime of 0 seconds and stale cached responses are not allowed
 DEBUG Found stale response for: https://gitlab.com/api/v4/projects/67672163/packages/pypi/simple/uv-mre-01-dep-01/
 DEBUG Sending revalidation request for: https://gitlab.com/api/v4/projects/67672163/packages/pypi/simple/uv-mre-01-dep-01/
@@ -475,9 +475,9 @@ TRACE Handling request for https://dummy@gitlab.com/api/v4/projects/67672163/pac
 TRACE Request for https://dummy@gitlab.com/api/v4/projects/67672163/packages/pypi/simple/uv-mre-01-dep-01/ is missing a password, looking for credentials
 TRACE No password in cache for realm dummy@https://gitlab.com
 TRACE No password in cache for URL https://gitlab.com/api/v4/projects/67672163/packages/pypi/simple/uv-mre-01-dep-01/
-TRACE Cached request https://gitlab.com/api/v4/projects/67672163/packages/pypi/simple/uv-mre-01-dep-01/ is storable because this is a shared cache and its response has a 'private' cache-control directive
+TRACE Cached request https://gitlab.com/api/v4/projects/67672163/packages/pypi/simple/uv-mre-01-dep-01/ is storable because this is a shared cache and its response has a &#x27;private&#x27; cache-control directive
 TRACE Freshness lifetime found via cache-control max age setting: 0ns
-TRACE Cached request https://gitlab.com/api/v4/projects/67672163/packages/pypi/simple/uv-mre-01-dep-01/ has a cached response that does not permit staleness because the response has a 'must-revalidate' cache-control directive set
+TRACE Cached request https://gitlab.com/api/v4/projects/67672163/packages/pypi/simple/uv-mre-01-dep-01/ has a cached response that does not permit staleness because the response has a &#x27;must-revalidate&#x27; cache-control directive set
 TRACE Request https://gitlab.com/api/v4/projects/67672163/packages/pypi/simple/uv-mre-01-dep-01/ does not have a fresh cache because its age is 1237 seconds, it is greater than the freshness lifetime of 0 seconds and stale cached responses are not allowed
 DEBUG Found stale response for: https://gitlab.com/api/v4/projects/67672163/packages/pypi/simple/uv-mre-01-dep-01/
 DEBUG Sending revalidation request for: https://gitlab.com/api/v4/projects/67672163/packages/pypi/simple/uv-mre-01-dep-01/
@@ -886,7 +886,7 @@ TRACE transition_after; stream=StreamId(3); state=State { inner: Closed(EndStrea
 TRACE Updating cached credentials for https://gitlab.com/api/v4/projects/67672163/packages/pypi/simple/uv-mre-01-dep-01/ to Credentials { username: Username(Some(&quot;dummy&quot;)), password: Some(&quot;gldt-yshnTacpy6SChzkU9k7f&quot;) }
 TRACE Resource is modified because status is 200 and not 304
 DEBUG Found modified response for: https://gitlab.com/api/v4/projects/67672163/packages/pypi/simple/uv-mre-01-dep-01/
-TRACE Cached request https://gitlab.com/api/v4/projects/67672163/packages/pypi/simple/uv-mre-01-dep-01/ is storable because this is a shared cache and its response has a 'private' cache-control directive
+TRACE Cached request https://gitlab.com/api/v4/projects/67672163/packages/pypi/simple/uv-mre-01-dep-01/ is storable because this is a shared cache and its response has a &#x27;private&#x27; cache-control directive
 TRACE release_capacity; size=300
 TRACE release_connection_capacity; size=300, connection in_flight_data=300
 TRACE release_capacity; size=0
@@ -975,7 +975,7 @@ TRACE transition_after; stream=StreamId(5); state=State { inner: Closed(EndStrea
 TRACE Updating cached credentials for https://gitlab.com/api/v4/projects/67672163/packages/pypi/simple/uv-mre-01-dep-01/ to Credentials { username: Username(Some(&quot;dummy&quot;)), password: Some(&quot;gldt-yshnTacpy6SChzkU9k7f&quot;) }
 TRACE Resource is modified because status is 200 and not 304
 DEBUG Found modified response for: https://gitlab.com/api/v4/projects/67672163/packages/pypi/simple/uv-mre-01-dep-01/
-TRACE Cached request https://gitlab.com/api/v4/projects/67672163/packages/pypi/simple/uv-mre-01-dep-01/ is storable because this is a shared cache and its response has a 'private' cache-control directive
+TRACE Cached request https://gitlab.com/api/v4/projects/67672163/packages/pypi/simple/uv-mre-01-dep-01/ is storable because this is a shared cache and its response has a &#x27;private&#x27; cache-control directive
 TRACE release_capacity; size=15
 TRACE release_connection_capacity; size=15, connection in_flight_data=305
 TRACE release_capacity; size=290
@@ -997,9 +997,9 @@ TRACE Returning candidate for package uv-mre-01-dep-01 with range * after 1 step
 DEBUG Selecting: uv-mre-01-dep-01==0.0.0 [compatible] (uv_mre_01_dep_01-0.0.0.tar.gz)
 TRACE Checking lock for `${HOME}/.cache/uv/sdists-v8/index/6eabf549aed348ec/uv-mre-01-dep-01/0.0.0` at `${HOME}/.cache/uv/sdists-v8/index/6eabf549aed348ec/uv-mre-01-dep-01/0.0.0/.lock`
 DEBUG Acquired lock for `${HOME}/.cache/uv/sdists-v8/index/6eabf549aed348ec/uv-mre-01-dep-01/0.0.0`
-TRACE Cached request https://gitlab.com/api/v4/projects/67672163/packages/pypi/files/613e63a34f4680f53ba6cf12da6e4f850c3deacf4f7492757f70beda199a651d/uv_mre_01_dep_01-0.0.0.tar.gz#sha256=613e63a34f4680f53ba6cf12da6e4f850c3deacf4f7492757f70beda199a651d is storable because this is a shared cache and its response has a 'private' cache-control directive
+TRACE Cached request https://gitlab.com/api/v4/projects/67672163/packages/pypi/files/613e63a34f4680f53ba6cf12da6e4f850c3deacf4f7492757f70beda199a651d/uv_mre_01_dep_01-0.0.0.tar.gz#sha256=613e63a34f4680f53ba6cf12da6e4f850c3deacf4f7492757f70beda199a651d is storable because this is a shared cache and its response has a &#x27;private&#x27; cache-control directive
 TRACE Freshness lifetime found via cache-control max age setting: 0ns
-TRACE Cached request https://gitlab.com/api/v4/projects/67672163/packages/pypi/files/613e63a34f4680f53ba6cf12da6e4f850c3deacf4f7492757f70beda199a651d/uv_mre_01_dep_01-0.0.0.tar.gz#sha256=613e63a34f4680f53ba6cf12da6e4f850c3deacf4f7492757f70beda199a651d has a cached response that does not permit staleness because the response has a 'must-revalidate' cache-control directive set
+TRACE Cached request https://gitlab.com/api/v4/projects/67672163/packages/pypi/files/613e63a34f4680f53ba6cf12da6e4f850c3deacf4f7492757f70beda199a651d/uv_mre_01_dep_01-0.0.0.tar.gz#sha256=613e63a34f4680f53ba6cf12da6e4f850c3deacf4f7492757f70beda199a651d has a cached response that does not permit staleness because the response has a &#x27;must-revalidate&#x27; cache-control directive set
 TRACE Request https://gitlab.com/api/v4/projects/67672163/packages/pypi/files/613e63a34f4680f53ba6cf12da6e4f850c3deacf4f7492757f70beda199a651d/uv_mre_01_dep_01-0.0.0.tar.gz#sha256=613e63a34f4680f53ba6cf12da6e4f850c3deacf4f7492757f70beda199a651d does not have a fresh cache because its age is 1238 seconds, it is greater than the freshness lifetime of 0 seconds and stale cached responses are not allowed
 DEBUG Found stale response for: https://gitlab.com/api/v4/projects/67672163/packages/pypi/files/613e63a34f4680f53ba6cf12da6e4f850c3deacf4f7492757f70beda199a651d/uv_mre_01_dep_01-0.0.0.tar.gz#sha256=613e63a34f4680f53ba6cf12da6e4f850c3deacf4f7492757f70beda199a651d
 DEBUG Sending revalidation request for: https://gitlab.com/api/v4/projects/67672163/packages/pypi/files/613e63a34f4680f53ba6cf12da6e4f850c3deacf4f7492757f70beda199a651d/uv_mre_01_dep_01-0.0.0.tar.gz#sha256=613e63a34f4680f53ba6cf12da6e4f850c3deacf4f7492757f70beda199a651d
@@ -1462,7 +1462,7 @@ DEBUG send frame=Headers { stream_id: StreamId(13), flags: (0x5: END_HEADERS | E
 TRACE schedule_pending_open
 TRACE queued_data_frame=false
 TRACE flushing buffer
-TRACE Cached request https://gitlab.com/api/v4/projects/67672163/packages/pypi/simple/pyyaml/ is storable because its response has a 'public' cache-control directive
+TRACE Cached request https://gitlab.com/api/v4/projects/67672163/packages/pypi/simple/pyyaml/ is storable because its response has a &#x27;public&#x27; cache-control directive
 TRACE Freshness lifetime found via cache-control max age setting: 600s
 TRACE Cached request https://gitlab.com/api/v4/projects/67672163/packages/pypi/simple/pyyaml/ has a cached response that does not allow staleness
 TRACE Request https://gitlab.com/api/v4/projects/67672163/packages/pypi/simple/pyyaml/ does not have a fresh cache because its age is 39678 seconds, it is greater than the freshness lifetime of 600 seconds and stale cached responses are not allowed
@@ -1765,7 +1765,7 @@ TRACE poll
 TRACE poll_complete
 TRACE schedule_pending_open
 TRACE flushing buffer
-TRACE Cached request https://pypi.org/simple/pyyaml/ is storable because its response has a 'public' cache-control directive
+TRACE Cached request https://pypi.org/simple/pyyaml/ is storable because its response has a &#x27;public&#x27; cache-control directive
 TRACE Freshness lifetime found via cache-control max age setting: 600s
 TRACE Cached request https://pypi.org/simple/pyyaml/ has a cached response that does not allow staleness
 TRACE Request https://pypi.org/simple/pyyaml/ does not have a fresh cache because its age is 1238 seconds, it is greater than the freshness lifetime of 600 seconds and stale cached responses are not allowed
@@ -1847,7 +1847,7 @@ TRACE Received package metadata for: pyyaml
 TRACE Selecting candidate for pyyaml with range * with 30 remote versions
 TRACE Found candidate for package pyyaml with range * after 1 steps: 6.0.2 version
 TRACE Returning candidate for package pyyaml with range * after 1 steps
-TRACE Cached request https://files.pythonhosted.org/packages/9b/95/a3fac87cb7158e231b5a6012e438c647e1a87f09f8e0d123acec8ab8bf71/PyYAML-6.0.2-cp310-cp310-macosx_10_9_x86_64.whl.metadata is storable because its response has a 'public' cache-control directive
+TRACE Cached request https://files.pythonhosted.org/packages/9b/95/a3fac87cb7158e231b5a6012e438c647e1a87f09f8e0d123acec8ab8bf71/PyYAML-6.0.2-cp310-cp310-macosx_10_9_x86_64.whl.metadata is storable because its response has a &#x27;public&#x27; cache-control directive
 TRACE Freshness lifetime found via cache-control max age setting: 365000000s
 DEBUG Found fresh response for: https://files.pythonhosted.org/packages/9b/95/a3fac87cb7158e231b5a6012e438c647e1a87f09f8e0d123acec8ab8bf71/PyYAML-6.0.2-cp310-cp310-macosx_10_9_x86_64.whl.metadata
 TRACE Received built distribution metadata for: pyyaml==6.0.2
@@ -1864,27 +1864,27 @@ term uv-mre-01-project-02-01==0.0.0
 uv-mre-01-project-02-01==0.0.0 depends on uv-mre-01-dep-02*
 uv-mre-01-dep-02 not found in the package registry
 × No solution found when resolving dependencies:
-╰─▶ Because uv-mre-01-dep-02 was not found in the package registry and your project depends on uv-mre-01-dep-02, we can conclude that your project's
+╰─▶ Because uv-mre-01-dep-02 was not found in the package registry and your project depends on uv-mre-01-dep-02, we can conclude that your project&#x27;s
     requirements are unsatisfiable.
 TRACE Streams::recv_eof
 TRACE Streams::recv_eof</code></pre>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dd-ssc">@dd-ssc</a> on 2025-03-10 08:22</div>
-            <div class="timeline-body"><p>OK, so we've run this a couple of times and we can report the following:</p>
-<p>The behavior how <code>uv</code> queries credentials doesn't seem deterministic.</p>
+            <div class="timeline-body"><p>OK, so we&#x27;ve run this a couple of times and we can report the following:</p>
+<p>The behavior how <code>uv</code> queries credentials doesn&#x27;t seem deterministic.</p>
 <p>As mentioned earlier, we log the package registry urls in our Keyring backend and we see two cases of urls coming in:</p>
 <ol>
 <li><code>https://gitlab.com/api/v4/projects/67672163/packages/pypi/simple/uv-mre-01-dep-01/</code>:
-that's the url (up to <code>simple/</code>) for the first dependency with the package name of the <em>first</em> dependency appended</li>
+that&#x27;s the url (up to <code>simple/</code>) for the first dependency with the package name of the <em>first</em> dependency appended</li>
 <li><code>https://gitlab.com/api/v4/projects/67672163/packages/pypi/simple/uv-mre-01-dep-02/</code>:
-that's the url (up to <code>simple/</code>) for the first dependency with the package name of the <em>second</em> dependency appended</li>
+that&#x27;s the url (up to <code>simple/</code>) for the first dependency with the package name of the <em>second</em> dependency appended</li>
 </ol>
-<p>There doesn't seem to be a way to trigger one behavior or the other: Running the same command repeatedly; sometimes it's this, sometimes it's that.</p>
-<p>We never see a query for the url of the second dependency, i.e. something with <code>67685669</code> in it instead of <code>67672163</code> (that's the GitLab project ID by the way).</p>
+<p>There doesn&#x27;t seem to be a way to trigger one behavior or the other: Running the same command repeatedly; sometimes it&#x27;s this, sometimes it&#x27;s that.</p>
+<p>We never see a query for the url of the second dependency, i.e. something with <code>67685669</code> in it instead of <code>67672163</code> (that&#x27;s the GitLab project ID by the way).</p>
 <p>Speculation: The order of the dependencies that <code>uv</code> tries to acquire credentials for is random 🤷🏻‍♂️.</p>
 <p>Our observations suggest that there are two bugs:</p>
 <ol>
@@ -1896,36 +1896,36 @@ that's the url (up to <code>simple/</code>) for the first dependency with the pa
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-20 22:21</div>
-            <div class="timeline-body"><p>Regarding (1), that's really weird behavior. I'm not sure why that would happen — I can try to reproduce.</p>
+            <div class="timeline-body"><p>Regarding (1), that&#x27;s really weird behavior. I&#x27;m not sure why that would happen — I can try to reproduce.</p>
 <p>Regarding (2), I think from</p>
 <blockquote>
 <p>TRACE Request for https://dummy@gitlab.com/api/v4/projects/67672163/packages/pypi/files/613e63a34f4680f53ba6cf12da6e4f850c3deacf4f7492757f70beda199a651d/uv_mre_01_dep_01-0.0.0.tar.gz#sha256=613e63a34f4680f53ba6cf12da6e4f850c3deacf4f7492757f70beda199a651d failed with 401 Unauthorized, checking for credentials
 TRACE Found cached credentials for realm dummy@https://gitlab.com</p>
 </blockquote>
-<p>what's happening is implemented here</p>
+<p>what&#x27;s happening is implemented here</p>
 <p>https://github.com/astral-sh/uv/blob/37c25f2a9da329a4870167c778f0403e9e12bbc9/crates/uv-auth/src/middleware.rs#L431-L439</p>
-<p>You could confirm by using a different username. We should do https://github.com/astral-sh/uv/issues/4583 to resolve this, and fetch credentials for each username / index URL combination instead of username / realm.</p>
+<p>You could confirm by using a different username. We should do <a href="https://github.com/astral-sh/uv/issues/4583">astral-sh/uv#4583</a> to resolve this, and fetch credentials for each username / index URL combination instead of username / realm.</p>
 <p>For the last note, #4056 is relevant.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-20 22:24</div>
             <div class="timeline-body"><p>Could you try updating your indexes to be explicit?</p>
-<pre><code class="language-toml">[[tool.uv.index]]
-name = 'gitlab_examples_uv_uv-mre-01-dep-01'
-url  = 'https://dummy@gitlab.com/api/v4/projects/67672163/packages/pypi/simple'
+<pre><code>[[tool.uv.index]]
+name = &#x27;gitlab_examples_uv_uv-mre-01-dep-01&#x27;
+url  = &#x27;https://dummy@gitlab.com/api/v4/projects/67672163/packages/pypi/simple&#x27;
 explicit = true
 
 [[tool.uv.index]]
-name = 'gitlab_examples_uv_uv-mre-01-dep-02'
-url  = 'https://dummy@gitlab.com/api/v4/projects/67685669/packages/pypi/simple'
+name = &#x27;gitlab_examples_uv_uv-mre-01-dep-02&#x27;
+url  = &#x27;https://dummy@gitlab.com/api/v4/projects/67685669/packages/pypi/simple&#x27;
 explicit = true
 </code></pre>
-<p>It'd still be a bug to be ignoring sources, but this should make the index priority very clear.</p>
+<p>It&#x27;d still be a bug to be ignoring sources, but this should make the index priority very clear.</p>
 <blockquote>
-<p>Also, I ran the same command with RUST_LOG=trace and now I'm getting log output (with INFO level 🤨) saying something about uv-mre-01-dep-02 * is forbidden that does not come up when running with --verbose only:</p>
+<p>Also, I ran the same command with RUST_LOG=trace and now I&#x27;m getting log output (with INFO level 🤨) saying something about uv-mre-01-dep-02 * is forbidden that does not come up when running with --verbose only:</p>
 </blockquote>
-<p><code>RUST_LOG=trace</code> sets the log level for child dependencies too — those logs are from PubGrub. <code>-v</code> only controls uv's log level.</p>
+<p><code>RUST_LOG=trace</code> sets the log level for child dependencies too — those logs are from PubGrub. <code>-v</code> only controls uv&#x27;s log level.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1936,11 +1936,11 @@ I changed the two usernames <code>dummy</code> to <code>username_uv-mre-01-dep-0
 I re-ran all sample projects and updated the sample log output.
 (Referencing the posts in here when committing those changes, so GitHub should auto-link those somewhere in here...)</p>
 <p>The good new first: Creating a venv works now 👍</p>
-<p>However, <code>uv</code> still seems inconsistent in what kind of package registry urls it queries credentials for - but now in a different way than <a href="https://github.com/astral-sh/uv/issues/12004#issuecomment-2709768394">reported above</a>; can't say if this behavior is new, but I don't think I ever observed it in the past:</p>
+<p>However, <code>uv</code> still seems inconsistent in what kind of package registry urls it queries credentials for - but now in a different way than <a href="https://github.com/astral-sh/uv/issues/12004#issuecomment-2709768394">reported above</a>; can&#x27;t say if this behavior is new, but I don&#x27;t think I ever observed it in the past:</p>
 <p>Before, it was e.g. <code>https://gitlab.com/api/v4/projects/67672163/packages/pypi/simple/</code> with <code>uv-mre-01-dep-01/</code> or
 <code>uv-mre-01-dep-02/</code> appended, see <a href="https://github.com/astral-sh/uv/issues/12004#issuecomment-2709768394">my earlier comment</a> and the log output in this comment below.</p>
-<p>Now, I'm <em>sometimes</em> getting the same as before, but at other times, I get full urls to a file, e.g. <code>https://gitlab.com/api/v4/projects/67672163/packages/pypi/files/613e63a34f4680f53ba6cf12da6e4f850c3deacf4f7492757f70beda199a651d/uv_mre_01_dep_01-0.0.0.tar.gz</code>.</p>
-<p>In fact, I seem to be getting different behavior while I'm re-running things to produce log output for this post:</p>
+<p>Now, I&#x27;m <em>sometimes</em> getting the same as before, but at other times, I get full urls to a file, e.g. <code>https://gitlab.com/api/v4/projects/67672163/packages/pypi/files/613e63a34f4680f53ba6cf12da6e4f850c3deacf4f7492757f70beda199a651d/uv_mre_01_dep_01-0.0.0.tar.gz</code>.</p>
+<p>In fact, I seem to be getting different behavior while I&#x27;m re-running things to produce log output for this post:</p>
 <p>First behavior in <em>Full log output</em>, second behavior in <em>Full TRACE log output</em>. Reproducing it here unchanged.</p>
 <pre><code>$ (cd project-02-01 &amp;&amp; rm -fr .venv &amp;&amp; uv sync --verbose)
     ...
@@ -1964,8 +1964,8 @@ Installed 11 packages in 23ms
 + uv-mre-01-dep-01==0.0.0
 + uv-mre-01-dep-02==0.0.0
 </code></pre>
-<details>
-  <summary>Full log output</summary>
+
+  Full log output
 
 <pre><code>$ (cd project-02-01 &amp;&amp; rm -fr .venv &amp;&amp; uv sync --verbose)
 DEBUG uv 0.6.9 (Homebrew 2025-03-20)
@@ -2002,7 +2002,7 @@ DEBUG Found modified response for: https://gitlab.com/api/v4/projects/67672163/p
 DEBUG Searching for a compatible version of uv-mre-01-dep-01 (*)
 DEBUG Selecting: uv-mre-01-dep-01==0.0.0 [compatible] (uv_mre_01_dep_01-0.0.0.tar.gz)
 DEBUG Acquired lock for `&lt;path to home folder&gt;/.cache/uv/sdists-v9/index/6eabf549aed348ec/uv-mre-01-dep-01/0.0.0`
-WARN Cached request doesn't match current request for: https://gitlab.com/api/v4/projects/67672163/packages/pypi/files/613e63a34f4680f53ba6cf12da6e4f850c3deacf4f7492757f70beda199a651d/uv_mre_01_dep_01-0.0.0.tar.gz#sha256=613e63a34f4680f53ba6cf12da6e4f850c3deacf4f7492757f70beda199a651d
+WARN Cached request doesn&#x27;t match current request for: https://gitlab.com/api/v4/projects/67672163/packages/pypi/files/613e63a34f4680f53ba6cf12da6e4f850c3deacf4f7492757f70beda199a651d/uv_mre_01_dep_01-0.0.0.tar.gz#sha256=613e63a34f4680f53ba6cf12da6e4f850c3deacf4f7492757f70beda199a651d
 DEBUG Downloading source distribution: uv-mre-01-dep-01==0.0.0
 DEBUG Found static `pyproject.toml` for: uv-mre-01-dep-01==0.0.0
 DEBUG Released lock at `&lt;path to home folder&gt;/.cache/uv/sdists-v9/index/6eabf549aed348ec/uv-mre-01-dep-01/0.0.0/.lock`
@@ -2062,22 +2062,22 @@ DEBUG Found not-modified response for: https://pypi.org/simple/click/
 DEBUG Searching for a compatible version of click (&gt;=8.0.0)
 DEBUG Selecting: click==8.1.8 [compatible] (click-8.1.8-py3-none-any.whl)
 DEBUG Found fresh response for: https://files.pythonhosted.org/packages/7e/d4/7ebdbd03970677812aac39c869717059dbb71a4cfc033ca6e5221787892c/click-8.1.8-py3-none-any.whl.metadata
-DEBUG Adding transitive dependency for click==8.1.8: colorama{sys_platform == 'win32'}*
+DEBUG Adding transitive dependency for click==8.1.8: colorama{sys_platform == &#x27;win32&#x27;}*
 DEBUG Searching for a compatible version of rich (&gt;=10.11.0)
 DEBUG Selecting: rich==13.9.4 [compatible] (rich-13.9.4-py3-none-any.whl)
 DEBUG Adding transitive dependency for rich==13.9.4: markdown-it-py&gt;=2.2.0
 DEBUG Adding transitive dependency for rich==13.9.4: pygments&gt;=2.13.0, &lt;3.0.0
-DEBUG Adding transitive dependency for rich==13.9.4: typing-extensions{python_full_version &lt; '3.11'}&gt;=4.0.0, &lt;5.0
+DEBUG Adding transitive dependency for rich==13.9.4: typing-extensions{python_full_version &lt; &#x27;3.11&#x27;}&gt;=4.0.0, &lt;5.0
 DEBUG Searching for a compatible version of shellingham (&gt;=1.3.0)
 DEBUG Selecting: shellingham==1.5.4 [compatible] (shellingham-1.5.4-py2.py3-none-any.whl)
 DEBUG Searching for a compatible version of typing-extensions (&gt;=3.7.4.3)
 DEBUG Selecting: typing-extensions==4.12.2 [compatible] (typing_extensions-4.12.2-py3-none-any.whl)
-DEBUG Searching for a compatible version of typing-extensions{python_full_version &lt; '3.11'} (&gt;=4.0.0, &lt;5.0)
+DEBUG Searching for a compatible version of typing-extensions{python_full_version &lt; &#x27;3.11&#x27;} (&gt;=4.0.0, &lt;5.0)
 DEBUG No cache entry for: https://gitlab.com/api/v4/projects/67672163/packages/pypi/simple/colorama/
 DEBUG Selecting: typing-extensions==4.12.2 [compatible] (typing_extensions-4.12.2-py3-none-any.whl)
 DEBUG Adding transitive dependency for typing-extensions==4.12.2: typing-extensions==4.12.2
-DEBUG Adding transitive dependency for typing-extensions==4.12.2: typing-extensions{python_full_version &lt; '3.11'}==4.12.2
-DEBUG Searching for a compatible version of typing-extensions{python_full_version &lt; '3.11'} (==4.12.2)
+DEBUG Adding transitive dependency for typing-extensions==4.12.2: typing-extensions{python_full_version &lt; &#x27;3.11&#x27;}==4.12.2
+DEBUG Searching for a compatible version of typing-extensions{python_full_version &lt; &#x27;3.11&#x27;} (==4.12.2)
 DEBUG Selecting: typing-extensions==4.12.2 [compatible] (typing_extensions-4.12.2-py3-none-any.whl)
 DEBUG No cache entry for: https://gitlab.com/api/v4/projects/67672163/packages/pypi/simple/markdown-it-py/
 DEBUG No cache entry for: https://gitlab.com/api/v4/projects/67672163/packages/pypi/simple/pygments/
@@ -2087,14 +2087,14 @@ DEBUG No cache entry for: https://gitlab.com/api/v4/projects/67685669/packages/p
 DEBUG Found stale response for: https://pypi.org/simple/colorama/
 DEBUG Sending revalidation request for: https://pypi.org/simple/colorama/
 DEBUG Found not-modified response for: https://pypi.org/simple/colorama/
-DEBUG Searching for a compatible version of colorama{sys_platform == 'win32'} (*)
+DEBUG Searching for a compatible version of colorama{sys_platform == &#x27;win32&#x27;} (*)
 DEBUG Selecting: colorama==0.4.6 [compatible] (colorama-0.4.6-py2.py3-none-any.whl)
 DEBUG Adding transitive dependency for colorama==0.4.6: colorama==0.4.6
-DEBUG Adding transitive dependency for colorama==0.4.6: colorama{sys_platform == 'win32'}==0.4.6
+DEBUG Adding transitive dependency for colorama==0.4.6: colorama{sys_platform == &#x27;win32&#x27;}==0.4.6
 DEBUG Searching for a compatible version of colorama (==0.4.6)
 DEBUG Selecting: colorama==0.4.6 [compatible] (colorama-0.4.6-py2.py3-none-any.whl)
 DEBUG Found fresh response for: https://files.pythonhosted.org/packages/d1/d6/3965ed04c63042e047cb6a3e6ed1a63a35087b6a609aa3a15ed8ac56c221/colorama-0.4.6-py2.py3-none-any.whl.metadata
-DEBUG Searching for a compatible version of colorama{sys_platform == 'win32'} (==0.4.6)
+DEBUG Searching for a compatible version of colorama{sys_platform == &#x27;win32&#x27;} (==0.4.6)
 DEBUG Selecting: colorama==0.4.6 [compatible] (colorama-0.4.6-py2.py3-none-any.whl)
 DEBUG Found stale response for: https://pypi.org/simple/pygments/
 DEBUG Sending revalidation request for: https://pypi.org/simple/pygments/
@@ -2134,8 +2134,8 @@ DEBUG Registry requirement already cached: pygments==2.19.1
 DEBUG Registry requirement already cached: mdurl==0.1.2
 DEBUG Acquired lock for `&lt;path to home folder&gt;/.cache/uv/sdists-v9/index/6eabf549aed348ec/uv-mre-01-dep-01/0.0.0`
 DEBUG Acquired lock for `&lt;path to home folder&gt;/.cache/uv/sdists-v9/index/bc6a622b32966239/uv-mre-01-dep-02/0.0.0`
-WARN Cached request doesn't match current request for: https://gitlab.com/api/v4/projects/67672163/packages/pypi/files/613e63a34f4680f53ba6cf12da6e4f850c3deacf4f7492757f70beda199a651d/uv_mre_01_dep_01-0.0.0.tar.gz
-WARN Cached request doesn't match current request for: https://gitlab.com/api/v4/projects/67685669/packages/pypi/files/092c2620f60e53cdd2431735c4fb0593ffc187b8a19599af09e8817d03cd94d1/uv_mre_01_dep_02-0.0.0.tar.gz
+WARN Cached request doesn&#x27;t match current request for: https://gitlab.com/api/v4/projects/67672163/packages/pypi/files/613e63a34f4680f53ba6cf12da6e4f850c3deacf4f7492757f70beda199a651d/uv_mre_01_dep_01-0.0.0.tar.gz
+WARN Cached request doesn&#x27;t match current request for: https://gitlab.com/api/v4/projects/67685669/packages/pypi/files/092c2620f60e53cdd2431735c4fb0593ffc187b8a19599af09e8817d03cd94d1/uv_mre_01_dep_02-0.0.0.tar.gz
 DEBUG Downloading source distribution: uv-mre-01-dep-01==0.0.0
   Building uv-mre-01-dep-01==0.0.0
 DEBUG Building: uv-mre-01-dep-01==0.0.0
@@ -2182,10 +2182,10 @@ DEBUG writing requirements to uv_mre_01_dep_01.egg-info/requires.txt
 DEBUG writing requirements to uv_mre_01_dep_02.egg-info/requires.txt
 DEBUG writing top-level names to uv_mre_01_dep_01.egg-info/top_level.txt
 DEBUG writing top-level names to uv_mre_01_dep_02.egg-info/top_level.txt
-DEBUG reading manifest file 'uv_mre_01_dep_02.egg-info/SOURCES.txt'
-DEBUG reading manifest file 'uv_mre_01_dep_01.egg-info/SOURCES.txt'
-DEBUG writing manifest file 'uv_mre_01_dep_02.egg-info/SOURCES.txt'
-DEBUG writing manifest file 'uv_mre_01_dep_01.egg-info/SOURCES.txt'
+DEBUG reading manifest file &#x27;uv_mre_01_dep_02.egg-info/SOURCES.txt&#x27;
+DEBUG reading manifest file &#x27;uv_mre_01_dep_01.egg-info/SOURCES.txt&#x27;
+DEBUG writing manifest file &#x27;uv_mre_01_dep_02.egg-info/SOURCES.txt&#x27;
+DEBUG writing manifest file &#x27;uv_mre_01_dep_01.egg-info/SOURCES.txt&#x27;
 DEBUG Calling `setuptools.build_meta:__legacy__.build_wheel(&quot;&lt;path to home folder&gt;/.cache/uv/builds-v0/.tmpeYMOV2&quot;, {}, None)`
 DEBUG Calling `setuptools.build_meta:__legacy__.build_wheel(&quot;&lt;path to home folder&gt;/.cache/uv/builds-v0/.tmpN32wVE&quot;, {}, None)`
 DEBUG running bdist_wheel
@@ -2208,10 +2208,10 @@ DEBUG writing requirements to uv_mre_01_dep_01.egg-info/requires.txt
 DEBUG writing top-level names to uv_mre_01_dep_01.egg-info/top_level.txt
 DEBUG writing requirements to uv_mre_01_dep_02.egg-info/requires.txt
 DEBUG writing top-level names to uv_mre_01_dep_02.egg-info/top_level.txt
-DEBUG reading manifest file 'uv_mre_01_dep_01.egg-info/SOURCES.txt'
-DEBUG reading manifest file 'uv_mre_01_dep_02.egg-info/SOURCES.txt'
-DEBUG writing manifest file 'uv_mre_01_dep_01.egg-info/SOURCES.txt'
-DEBUG writing manifest file 'uv_mre_01_dep_02.egg-info/SOURCES.txt'
+DEBUG reading manifest file &#x27;uv_mre_01_dep_01.egg-info/SOURCES.txt&#x27;
+DEBUG reading manifest file &#x27;uv_mre_01_dep_02.egg-info/SOURCES.txt&#x27;
+DEBUG writing manifest file &#x27;uv_mre_01_dep_01.egg-info/SOURCES.txt&#x27;
+DEBUG writing manifest file &#x27;uv_mre_01_dep_02.egg-info/SOURCES.txt&#x27;
 DEBUG installing to build/bdist.macosx-14.0-x86_64/wheel
 DEBUG running install
 DEBUG installing to build/bdist.macosx-14.0-x86_64/wheel
@@ -2232,19 +2232,19 @@ DEBUG running install_scripts
 DEBUG running install_scripts
 DEBUG creating build/bdist.macosx-14.0-x86_64/wheel/uv_mre_01_dep_01-0.0.0.dist-info/WHEEL
 DEBUG creating build/bdist.macosx-14.0-x86_64/wheel/uv_mre_01_dep_02-0.0.0.dist-info/WHEEL
-DEBUG creating '&lt;path to home folder&gt;/.cache/uv/builds-v0/.tmpeYMOV2/.tmp-fx48_xde/uv_mre_01_dep_01-0.0.0-py3-none-any.whl' and adding 'build/bdist.macosx-14.0-x86_64/wheel' to it
-DEBUG creating '&lt;path to home folder&gt;/.cache/uv/builds-v0/.tmpN32wVE/.tmp-_753jd4j/uv_mre_01_dep_02-0.0.0-py3-none-any.whl' and adding 'build/bdist.macosx-14.0-x86_64/wheel' to it
-DEBUG adding 'uv_mre_01_dep_01/__init__.py'
-DEBUG adding 'uv_mre_01_dep_02/__init__.py'
-DEBUG adding 'uv_mre_01_dep_01-0.0.0.dist-info/METADATA'
-DEBUG adding 'uv_mre_01_dep_01-0.0.0.dist-info/WHEEL'
-DEBUG adding 'uv_mre_01_dep_02-0.0.0.dist-info/METADATA'
-DEBUG adding 'uv_mre_01_dep_01-0.0.0.dist-info/top_level.txt'
-DEBUG adding 'uv_mre_01_dep_02-0.0.0.dist-info/WHEEL'
-DEBUG adding 'uv_mre_01_dep_01-0.0.0.dist-info/RECORD'
+DEBUG creating &#x27;&lt;path to home folder&gt;/.cache/uv/builds-v0/.tmpeYMOV2/.tmp-fx48_xde/uv_mre_01_dep_01-0.0.0-py3-none-any.whl&#x27; and adding &#x27;build/bdist.macosx-14.0-x86_64/wheel&#x27; to it
+DEBUG creating &#x27;&lt;path to home folder&gt;/.cache/uv/builds-v0/.tmpN32wVE/.tmp-_753jd4j/uv_mre_01_dep_02-0.0.0-py3-none-any.whl&#x27; and adding &#x27;build/bdist.macosx-14.0-x86_64/wheel&#x27; to it
+DEBUG adding &#x27;uv_mre_01_dep_01/__init__.py&#x27;
+DEBUG adding &#x27;uv_mre_01_dep_02/__init__.py&#x27;
+DEBUG adding &#x27;uv_mre_01_dep_01-0.0.0.dist-info/METADATA&#x27;
+DEBUG adding &#x27;uv_mre_01_dep_01-0.0.0.dist-info/WHEEL&#x27;
+DEBUG adding &#x27;uv_mre_01_dep_02-0.0.0.dist-info/METADATA&#x27;
+DEBUG adding &#x27;uv_mre_01_dep_01-0.0.0.dist-info/top_level.txt&#x27;
+DEBUG adding &#x27;uv_mre_01_dep_02-0.0.0.dist-info/WHEEL&#x27;
+DEBUG adding &#x27;uv_mre_01_dep_01-0.0.0.dist-info/RECORD&#x27;
 DEBUG removing build/bdist.macosx-14.0-x86_64/wheel
-DEBUG adding 'uv_mre_01_dep_02-0.0.0.dist-info/top_level.txt'
-DEBUG adding 'uv_mre_01_dep_02-0.0.0.dist-info/RECORD'
+DEBUG adding &#x27;uv_mre_01_dep_02-0.0.0.dist-info/top_level.txt&#x27;
+DEBUG adding &#x27;uv_mre_01_dep_02-0.0.0.dist-info/RECORD&#x27;
 DEBUG removing build/bdist.macosx-14.0-x86_64/wheel
 DEBUG Finished building: uv-mre-01-dep-02==0.0.0
       Built uv-mre-01-dep-02==0.0.0
@@ -2265,10 +2265,10 @@ Installed 11 packages in 23ms
 + typing-extensions==4.12.2
 + uv-mre-01-dep-01==0.0.0
 + uv-mre-01-dep-02==0.0.0</code></pre>
-</details>
 
-<details>
-  <summary>Full TRACE log output</summary>
+
+
+  Full TRACE log output
 
 <pre><code>$ (cd project-02-01 &amp;&amp; rm -fr .venv &amp;&amp; RUST_LOG=trace uv sync --verbose)
 DEBUG uv 0.6.9 (Homebrew 2025-03-20)
@@ -2327,9 +2327,9 @@ TRACE Checking lock for `&lt;path to home folder&gt;/.cache/uv/sdists-v9/index/6
 DEBUG Acquired lock for `&lt;path to home folder&gt;/.cache/uv/sdists-v9/index/6eabf549aed348ec/uv-mre-01-dep-01/0.0.0`
 TRACE Checking lock for `&lt;path to home folder&gt;/.cache/uv/sdists-v9/index/bc6a622b32966239/uv-mre-01-dep-02/0.0.0` at `&lt;path to home folder&gt;/.cache/uv/sdists-v9/index/bc6a622b32966239/uv-mre-01-dep-02/0.0.0/.lock`
 DEBUG Acquired lock for `&lt;path to home folder&gt;/.cache/uv/sdists-v9/index/bc6a622b32966239/uv-mre-01-dep-02/0.0.0`
-TRACE Cached request https://gitlab.com/api/v4/projects/67685669/packages/pypi/files/092c2620f60e53cdd2431735c4fb0593ffc187b8a19599af09e8817d03cd94d1/uv_mre_01_dep_02-0.0.0.tar.gz is storable because this is a shared cache and its response has a 'private' cache-control directive
+TRACE Cached request https://gitlab.com/api/v4/projects/67685669/packages/pypi/files/092c2620f60e53cdd2431735c4fb0593ffc187b8a19599af09e8817d03cd94d1/uv_mre_01_dep_02-0.0.0.tar.gz is storable because this is a shared cache and its response has a &#x27;private&#x27; cache-control directive
 TRACE Freshness lifetime found via cache-control max age setting: 0ns
-TRACE Cached request https://gitlab.com/api/v4/projects/67685669/packages/pypi/files/092c2620f60e53cdd2431735c4fb0593ffc187b8a19599af09e8817d03cd94d1/uv_mre_01_dep_02-0.0.0.tar.gz has a cached response that does not permit staleness because the response has a 'must-revalidate' cache-control directive set
+TRACE Cached request https://gitlab.com/api/v4/projects/67685669/packages/pypi/files/092c2620f60e53cdd2431735c4fb0593ffc187b8a19599af09e8817d03cd94d1/uv_mre_01_dep_02-0.0.0.tar.gz has a cached response that does not permit staleness because the response has a &#x27;must-revalidate&#x27; cache-control directive set
 TRACE Request https://gitlab.com/api/v4/projects/67685669/packages/pypi/files/092c2620f60e53cdd2431735c4fb0593ffc187b8a19599af09e8817d03cd94d1/uv_mre_01_dep_02-0.0.0.tar.gz does not have a fresh cache because its age is 1520 seconds, it is greater than the freshness lifetime of 0 seconds and stale cached responses are not allowed
 DEBUG Found stale response for: https://gitlab.com/api/v4/projects/67685669/packages/pypi/files/092c2620f60e53cdd2431735c4fb0593ffc187b8a19599af09e8817d03cd94d1/uv_mre_01_dep_02-0.0.0.tar.gz
 DEBUG Sending revalidation request for: https://gitlab.com/api/v4/projects/67685669/packages/pypi/files/092c2620f60e53cdd2431735c4fb0593ffc187b8a19599af09e8817d03cd94d1/uv_mre_01_dep_02-0.0.0.tar.gz
@@ -2341,9 +2341,9 @@ TRACE Attempting partially authenticated request for https://username_uv-mre-01-
 TRACE checkout waiting for idle connection: (&quot;https&quot;, gitlab.com)
 DEBUG starting new connection: https://gitlab.com/
 TRACE Http::connect; scheme=Some(&quot;https&quot;), host=Some(&quot;gitlab.com&quot;), port=None
-TRACE Cached request https://gitlab.com/api/v4/projects/67672163/packages/pypi/files/613e63a34f4680f53ba6cf12da6e4f850c3deacf4f7492757f70beda199a651d/uv_mre_01_dep_01-0.0.0.tar.gz is storable because this is a shared cache and its response has a 'private' cache-control directive
+TRACE Cached request https://gitlab.com/api/v4/projects/67672163/packages/pypi/files/613e63a34f4680f53ba6cf12da6e4f850c3deacf4f7492757f70beda199a651d/uv_mre_01_dep_01-0.0.0.tar.gz is storable because this is a shared cache and its response has a &#x27;private&#x27; cache-control directive
 TRACE Freshness lifetime found via cache-control max age setting: 0ns
-TRACE Cached request https://gitlab.com/api/v4/projects/67672163/packages/pypi/files/613e63a34f4680f53ba6cf12da6e4f850c3deacf4f7492757f70beda199a651d/uv_mre_01_dep_01-0.0.0.tar.gz has a cached response that does not permit staleness because the response has a 'must-revalidate' cache-control directive set
+TRACE Cached request https://gitlab.com/api/v4/projects/67672163/packages/pypi/files/613e63a34f4680f53ba6cf12da6e4f850c3deacf4f7492757f70beda199a651d/uv_mre_01_dep_01-0.0.0.tar.gz has a cached response that does not permit staleness because the response has a &#x27;must-revalidate&#x27; cache-control directive set
 TRACE Request https://gitlab.com/api/v4/projects/67672163/packages/pypi/files/613e63a34f4680f53ba6cf12da6e4f850c3deacf4f7492757f70beda199a651d/uv_mre_01_dep_01-0.0.0.tar.gz does not have a fresh cache because its age is 1520 seconds, it is greater than the freshness lifetime of 0 seconds and stale cached responses are not allowed
 DEBUG Found stale response for: https://gitlab.com/api/v4/projects/67672163/packages/pypi/files/613e63a34f4680f53ba6cf12da6e4f850c3deacf4f7492757f70beda199a651d/uv_mre_01_dep_01-0.0.0.tar.gz
 DEBUG Sending revalidation request for: https://gitlab.com/api/v4/projects/67672163/packages/pypi/files/613e63a34f4680f53ba6cf12da6e4f850c3deacf4f7492757f70beda199a651d/uv_mre_01_dep_01-0.0.0.tar.gz
@@ -2918,7 +2918,7 @@ Installed 11 packages in 21ms
 + uv-mre-01-dep-01==0.0.0
 + uv-mre-01-dep-02==0.0.0
 TRACE Streams::recv_eof</code></pre>
-</details>
+
 
 </div>
         </div>
@@ -2948,8 +2948,8 @@ Installed 11 packages in 19ms
  + uv-mre-01-dep-01==0.0.0
  + uv-mre-01-dep-02==0.0.0
 </code></pre>
-<details>
-  <summary>Full log output</summary>
+
+  Full log output
 
 <pre><code>$ (cd project-02-01 &amp;&amp; rm -fr .venv &amp;&amp; uv sync --verbose)
 DEBUG uv 0.6.9 (Homebrew 2025-03-20)
@@ -3010,7 +3010,7 @@ Installed 11 packages in 19ms
 + typing-extensions==4.12.2
 + uv-mre-01-dep-01==0.0.0
 + uv-mre-01-dep-02==0.0.0</code></pre>
-</details>
+
 
 <p>Also, the full log output seems significantly shorter 🤷🏻‍♂️.</p>
 </div>
@@ -3019,25 +3019,25 @@ Installed 11 packages in 19ms
             <div class="timeline-header">Comment by <a href="https://github.com/dd-ssc">@dd-ssc</a> on 2025-03-23 18:52</div>
             <div class="timeline-body"><p>We have created an <a href="https://github.com/DesmoDyne/keyring-insecure-backend">insecure keyring backend</a> to help fixing <code>uv</code> authentication issues and <a href="https://pypi.org/project/keyring-insecure-backend">uploaded it to PyPI</a>.</p>
 <p>Install <code>keyring</code> and the backend:</p>
-<pre><code class="language-shell">uv tool install keyring --with keyring-insecure-backend
+<pre><code>uv tool install keyring --with keyring-insecure-backend
 </code></pre>
 <p>This still modifies an existing keyring tool installation, but undoing that is now also simpler:</p>
 <pre><code>(cd &quot;$(uv tool dir)/keyring&quot; &amp;&amp; uv pip uninstall keyring-insecure-backend
 </code></pre>
 <p>Create an environment to reproduce the issues reported here:</p>
-<pre><code class="language-shell">mkdir -p ~/Temp/uv_issue_12004 &amp;&amp; cd $_
+<pre><code>mkdir -p ~/Temp/uv_issue_12004 &amp;&amp; cd $_
 git clone --quiet https://github.com/DesmoDyne/uv-mre-01
 (cd uv-mre-01/project-02-01 &amp;&amp; uv sync --verbose)
   ...
 </code></pre>
 <p>The backend logs the urls <code>uv</code> queries credentials for; if any are missing, they can be added to the <code>.json</code> file the backend uses to store credentials.</p>
-<p>Our GitHub / PyPI / Python packaging skills are inadequate, so the files involved most likely do not get installed to the appropriate locations; if anyone does in fact use this, I'm happy to help with any problems.</p>
+<p>Our GitHub / PyPI / Python packaging skills are inadequate, so the files involved most likely do not get installed to the appropriate locations; if anyone does in fact use this, I&#x27;m happy to help with any problems.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dd-ssc">@dd-ssc</a> on 2025-03-23 18:56</div>
             <div class="timeline-body"><blockquote>
-<p>Regarding (1), that's really weird behavior. I'm not sure why that would happen — I can try to reproduce.</p>
+<p>Regarding (1), that&#x27;s really weird behavior. I&#x27;m not sure why that would happen — I can try to reproduce.</p>
 </blockquote>
 <p>Maybe because the usernames were the same (<code>dummy</code>) for both dependencies ?
 That mixup seems to have gone away since I changed those 🤷🏻‍♂️
@@ -3046,14 +3046,14 @@ Time allowing, I can revert that change and see if the mixup comes back.</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-04-02 11:24</div>
-            <div class="timeline-body"><p>I'm trying to reproduce the issues you're seeing here. Following your instructions (and using <code>dummy</code> as the username for both), I haven't yet seen the mixed and matched URLs you describe (using the latest uv). I've tried multiple runs on both macOS and in a Docker container with Ubuntu 24.04. Would it be possible to create a Docker version that would make this easier to reproduce?</p>
-<p>Or was I misinterpreting your comment <a href="https://github.com/astral-sh/uv/issues/12004#issuecomment-2746349599">here</a>? I took &quot;I'm sometimes getting the same as before&quot; to mean you were still sometimes seeing the mixed and matched URLs, even with the latest uv.</p>
+            <div class="timeline-body"><p>I&#x27;m trying to reproduce the issues you&#x27;re seeing here. Following your instructions (and using <code>dummy</code> as the username for both), I haven&#x27;t yet seen the mixed and matched URLs you describe (using the latest uv). I&#x27;ve tried multiple runs on both macOS and in a Docker container with Ubuntu 24.04. Would it be possible to create a Docker version that would make this easier to reproduce?</p>
+<p>Or was I misinterpreting your comment <a href="https://github.com/astral-sh/uv/issues/12004#issuecomment-2746349599">here</a>? I took &quot;I&#x27;m sometimes getting the same as before&quot; to mean you were still sometimes seeing the mixed and matched URLs, even with the latest uv.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:30:17 UTC
+        Synced at 2026-01-20 19:37:39 UTC
     </footer>
 </body>
 </html>

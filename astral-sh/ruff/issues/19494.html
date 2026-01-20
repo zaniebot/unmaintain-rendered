@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/jamesbraza">@jamesbraza</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>The below Python code with Python 3.13.5 and <code>tenacity==9.1.2</code>:</p>
-<pre><code class="language-python">import random
+<pre><code>import random
 
 from tenacity import Retrying, retry_if_exception_type, stop_after_attempt
 
@@ -42,23 +42,23 @@ def try_lottery() -&gt; float:
 <p>The presence of the <code>return 1e6</code> activates <code>RET503</code> for beyond the <code>for</code> loop. However, the code after the <code>for</code> loop is not actually reachable, due to the internal implementation details of <code>tenacity.Retrying</code>.</p>
 <p>This is a deep <code>RET503</code> false positive that I am not sure Ruff can do anything about, but I figured I would report nonetheless.</p>
 <p>Note, this would apply to both <code>tenacity.Retrying</code> and <code>tenacity.AsyncRetrying</code>.</p>
-<h3>Version</h3>
+Version
 <p>0.12.4 (ee2759b36 2025-07-17)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-22 23:08</div>
-            <div class="timeline-body"><p>Thanks for the report! That does seem tricky to do much about, even with type inference. I took a look at <a href="https://github.com/jd/tenacity/blob/eed7d785e667df145c0e3eeddff59af64e4e860d/tenacity/__init__.py#L436"><code>Retrying.__iter__</code> </a> and it just returns a <code>typing.Generator</code>, which I don't think says anything about its length (assuming that an empty iterable is the only way this function can return implicitly). The only other workarounds I can think of would be adding a special case or a config option.</p>
-<p>On the other hand, we don't currently inspect the body of the loop at all:</p>
+            <div class="timeline-body"><p>Thanks for the report! That does seem tricky to do much about, even with type inference. I took a look at <a href="https://github.com/jd/tenacity/blob/eed7d785e667df145c0e3eeddff59af64e4e860d/tenacity/__init__.py#L436"><code>Retrying.__iter__</code> </a> and it just returns a <code>typing.Generator</code>, which I don&#x27;t think says anything about its length (assuming that an empty iterable is the only way this function can return implicitly). The only other workarounds I can think of would be adding a special case or a config option.</p>
+<p>On the other hand, we don&#x27;t currently inspect the body of the loop at all:</p>
 <p>https://github.com/astral-sh/ruff/blob/dc10ab81bd85b8af49ee2fe8ed4a6f767d37d6e0/crates/ruff_linter/src/rules/flake8_return/rules/function.rs#L505-L511</p>
-<p>We could possibly err more on the side of false negatives if we assume that the loop is entered. Without the loop, your example doesn't trigger RET503:  https://play.ruff.rs/19c58c03-7ccf-4e1c-8b48-8a6275d35469.</p>
+<p>We could possibly err more on the side of false negatives if we assume that the loop is entered. Without the loop, your example doesn&#x27;t trigger RET503:  https://play.ruff.rs/19c58c03-7ccf-4e1c-8b48-8a6275d35469.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-07-22 23:08</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-22 23:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> added by @ntBre on 2025-07-22 23:08</div>
+            <div class="event">Label <span class="label">needs-decision</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-22 23:08</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-23 06:44</div>
@@ -73,27 +73,27 @@ def try_lottery() -&gt; float:
                 return 1e6
             raise RuntimeError(&quot;The lottery was not won.&quot;)
 </code></pre>
-<p>which isn't such an uncommon error that someone forgets to handle the case where <code>items</code> is empty.</p>
-<p>I don't think there's anything Ruff can reasonably do here other than special casing which I'm not convinced is worth it here (we would need to detect that it iterates over a <code>Retrying</code> and all code is within the <code>with attempt</code> block. There's also the case where it throws an exception not handled by the attempt, but that's explicitly handled with a try...catch, in which case ret would apply again.</p>
+<p>which isn&#x27;t such an uncommon error that someone forgets to handle the case where <code>items</code> is empty.</p>
+<p>I don&#x27;t think there&#x27;s anything Ruff can reasonably do here other than special casing which I&#x27;m not convinced is worth it here (we would need to detect that it iterates over a <code>Retrying</code> and all code is within the <code>with attempt</code> block. There&#x27;s also the case where it throws an exception not handled by the attempt, but that&#x27;s explicitly handled with a try...catch, in which case ret would apply again.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-23 12:26</div>
-            <div class="timeline-body"><p>I didn't have anything concrete in mind, it was just a half-baked idea after seeing the implementation. I agree with your assessment.</p>
+            <div class="timeline-body"><p>I didn&#x27;t have anything concrete in mind, it was just a half-baked idea after seeing the implementation. I agree with your assessment.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-24 10:05</div>
-            <div class="timeline-body"><p>I'll close this as out of scope for ruff at the moment and I want to keep the issue tracker actionable. We might revisit this once ruff uses ty's semantic model.</p>
+            <div class="timeline-body"><p>I&#x27;ll close this as out of scope for ruff at the moment and I want to keep the issue tracker actionable. We might revisit this once ruff uses ty&#x27;s semantic model.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2025-07-24 10:05</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-24 10:05</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:53:05 UTC
+        Synced at 2026-01-20 18:50:15 UTC
     </footer>
 </body>
 </html>

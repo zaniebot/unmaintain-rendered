@@ -23,23 +23,23 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/NiklasRosenstein">@NiklasRosenstein</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<p>I'm building a ZIP for an AWS Lambda using <code>uv pip install</code> on a Mac, so I pass the <code>--python-platform</code> option. Since I didn't know which <code>manylinux</code> variant to pick exactly, I went with <code>x86_64-manylinux2014</code>. Here I discovered that Uv tries to use the latest Numpy version (<code>2.3.3</code>) but doesn't find a binary distribution and instead compiles it on the host, resulting in Darwin-binaries in what is supposed to be a Linux distribution of the project.</p>
+            <div class="timeline-body">Summary
+<p>I&#x27;m building a ZIP for an AWS Lambda using <code>uv pip install</code> on a Mac, so I pass the <code>--python-platform</code> option. Since I didn&#x27;t know which <code>manylinux</code> variant to pick exactly, I went with <code>x86_64-manylinux2014</code>. Here I discovered that Uv tries to use the latest Numpy version (<code>2.3.3</code>) but doesn&#x27;t find a binary distribution and instead compiles it on the host, resulting in Darwin-binaries in what is supposed to be a Linux distribution of the project.</p>
 <p>This can be reproduced with</p>
-<pre><code class="language-console">$ uv pip install --no-config --exact --managed-python --target packages --python 3.12 --python-platform x86_64-manylinux2014 -- numpy
+<pre><code>$ uv pip install --no-config --exact --managed-python --target packages --python 3.12 --python-platform x86_64-manylinux2014 -- numpy
 Using CPython 3.12.11 interpreter at: .venv/bin/python3
 Resolved 1 package in 13ms
    Building numpy==2.3.3
 ⠋ Preparing packages... (0/1)                                                                                                                         
 </code></pre>
-<p>And once it's done you're left with no Linux binaries at all:</p>
-<pre><code class="language-console">$ tree packages/ | grep linux
+<p>And once it&#x27;s done you&#x27;re left with no Linux binaries at all:</p>
+<pre><code>$ tree packages/ | grep linux
 $ tree packages/ | grep darwin | head -n2
 │   │   ├── _multiarray_tests.cpython-312-darwin.so
 │   │   ├── _multiarray_umath.cpython-312-darwin.so
 </code></pre>
 <p>It can be fixed with using <code>--only-binary numpy</code>:</p>
-<pre><code class="language-console">$ uv pip install --no-config --exact --managed-python --target test-build --python 3.12 --python-platform x86_64-manylinux2014 --only-binary numpy -- numpy
+<pre><code>$ uv pip install --no-config --exact --managed-python --target test-build --python 3.12 --python-platform x86_64-manylinux2014 --only-binary numpy -- numpy
 Using CPython 3.12.11 interpreter at: .venv/bin/python3
 Resolved 1 package in 10ms
 Uninstalled 1 package in 135ms
@@ -52,40 +52,40 @@ $ tree test-build/ | grep linux | head -n2
 </code></pre>
 <p>It seems adding <code>--no-build</code> works as well (which would be preferable in my case since I would like to avoid having to ever trial&amp;error which packages to specify <code>--only-binary</code> for), but then it fails on my actual use case, which is calling <code>uv pip install --no-build -- ./</code>, as it refuses to also build the local project.</p>
 <p>It seems like a mistake for Uv to be building Numpy from source on the current host if the host does not match the desired <code>--python-platform</code> and it cannot guarantee that the result will be cross-compiled to the correct platform. I think Uv should raise an error here, and maybe have an option to fall back to an older version for which there are binaries.</p>
-<h3>Platform</h3>
+Platform
 <p>Darwin Kernel Version 24.6.0: Mon Jul 14 11:30:40 PDT 2025; root:xnu-11417.140.69~1/RELEASE_ARM64_T6041 arm64</p>
-<h3>Version</h3>
+Version
 <p>0.8.16</p>
-<h3>Python version</h3>
+Python version
 <p>3.12.11</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @NiklasRosenstein on 2025-09-24 18:43</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/NiklasRosenstein">@NiklasRosenstein</a> on 2025-09-24 18:43</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">great writeup</span> added by @konstin on 2025-09-26 13:53</div>
+            <div class="event">Label <span class="label">great writeup</span> added by <a href="https://github.com/konstin">@konstin</a> on 2025-09-26 13:53</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-26 14:05</div>
             <div class="timeline-body"><p>Thanks for the detailed report!</p>
 <p>For your cases <code>--no-build</code> is the correct choice to prevent building a package for the wrong platform.</p>
-<p>It's possible to cross compile, for example cargo can made to cross compile with <code>CARGO_BUILD_TARGET</code>, so we probably don't want to make <code>--no-build</code> the default with <code>--python-platform</code>. We do however need to catch the case where the build got us an incompatible wheel, error and hint about <code>--no-build</code>.</p>
+<p>It&#x27;s possible to cross compile, for example cargo can made to cross compile with <code>CARGO_BUILD_TARGET</code>, so we probably don&#x27;t want to make <code>--no-build</code> the default with <code>--python-platform</code>. We do however need to catch the case where the build got us an incompatible wheel, error and hint about <code>--no-build</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">error messages</span> added by @konstin on 2025-09-26 14:05</div>
+            <div class="event">Label <span class="label">error messages</span> added by <a href="https://github.com/konstin">@konstin</a> on 2025-09-26 14:05</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Uv builds source package on host when resolution for alternate platform cannot find a binary" to "`--python-platform` can install source build for host instead of target" by @konstin on 2025-09-26 14:07</div>
+            <div class="event">Renamed from &quot;Uv builds source package on host when resolution for alternate platform cannot find a binary&quot; to &quot;`--python-platform` can install source build for host instead of target&quot; by <a href="https://github.com/konstin">@konstin</a> on 2025-09-26 14:07</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @konstin on 2025-12-05 15:04</div>
+            <div class="event">Closed by <a href="https://github.com/konstin">@konstin</a> on 2025-12-05 15:04</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:33:00 UTC
+        Synced at 2026-01-20 19:40:28 UTC
     </footer>
 </body>
 </html>

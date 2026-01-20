@@ -24,11 +24,11 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a></div>
             <div class="timeline-body"><p>Currently, <code>uv add foo</code> adds <code>&quot;foo&quot;</code> as a requirement with no version constraint. Should it instead perform a resolution and require <code>&quot;foo&gt;X&quot;</code>?</p>
-<p>There's a lot of resistance against upper bounds so we probably don't want to add them by default (though I don't have much context about this problem myself), but lower bounds are reasonable to include.</p>
+<p>There&#x27;s a lot of resistance against upper bounds so we probably don&#x27;t want to add them by default (though I don&#x27;t have much context about this problem myself), but lower bounds are reasonable to include.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">preview</span> added by @ibraheemdev on 2024-07-18 04:01</div>
+            <div class="event">Label <span class="label">preview</span> added by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-07-18 04:01</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-18 04:02</div>
@@ -37,14 +37,14 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/baggiponte">@baggiponte</a> on 2024-07-18 12:33</div>
-            <div class="timeline-body"><p>Most package managers add lower bounds (though I don't know how they select the version to solve for). I was bitten by this today because in CI I cannot use uv lockfiles and I resorted to export with <code>--resolution=lowest-direct</code> and a version 0.1.0 of some library was installed (lol).</p>
-<p>My 2 cents: no upper boundaries. Python is not JS: we don't have peer dependencies. Distributing a library with <code>&lt;=</code> can have unintended consequences. I always cite these <a href="https://iscinumpy.dev/post/bound-version-constraints/">two</a> <a href="https://iscinumpy.dev/post/poetry-versions/">articles</a> since the author probably needs no introduction.</p>
+            <div class="timeline-body"><p>Most package managers add lower bounds (though I don&#x27;t know how they select the version to solve for). I was bitten by this today because in CI I cannot use uv lockfiles and I resorted to export with <code>--resolution=lowest-direct</code> and a version 0.1.0 of some library was installed (lol).</p>
+<p>My 2 cents: no upper boundaries. Python is not JS: we don&#x27;t have peer dependencies. Distributing a library with <code>&lt;=</code> can have unintended consequences. I always cite these <a href="https://iscinumpy.dev/post/bound-version-constraints/">two</a> <a href="https://iscinumpy.dev/post/poetry-versions/">articles</a> since the author probably needs no introduction.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-18 14:34</div>
-            <div class="timeline-body"><p>We've already had extensive discussion on upper bounds and feel similarly.</p>
-<p>We also added a warning for missing lower bounds with that resolution mode in #2797 / https://github.com/astral-sh/uv/pull/5142</p>
+            <div class="timeline-body"><p>We&#x27;ve already had extensive discussion on upper bounds and feel similarly.</p>
+<p>We also added a warning for missing lower bounds with that resolution mode in #2797 / <a href="https://github.com/astral-sh/uv/pull/5142">astral-sh/uv#5142</a></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -54,16 +54,16 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/nathanjmcdougall">@nathanjmcdougall</a> on 2024-07-19 02:43</div>
-            <div class="timeline-body"><p>Adding a lower bound carries the implication that the codebase isn't compatible with earlier versions. If we resolve to the latest version of the package, this ends up being a quite strict assumption and can force a dependent installing your package to upgrade unnecessarily. This might be desirable initially until the codebase has actually been tested on older versions of packages; but it is arguably too cautious, especially when using <code>uv add</code> on mature packages which are relatively feature complete.</p>
+            <div class="timeline-body"><p>Adding a lower bound carries the implication that the codebase isn&#x27;t compatible with earlier versions. If we resolve to the latest version of the package, this ends up being a quite strict assumption and can force a dependent installing your package to upgrade unnecessarily. This might be desirable initially until the codebase has actually been tested on older versions of packages; but it is arguably too cautious, especially when using <code>uv add</code> on mature packages which are relatively feature complete.</p>
 <p>On the other hand, if a user starts by adding a single dependency (e.g. <code>uv add numpy</code>) then the minimum compatible version will often be a very old release indeed. If this is used as a lower bound, it could be misleading, since it would imply the package has been tested/confirmed to work correctly down to that lower bound. It also becomes subject to the arbitrariness of the order in which the user adds dependencies one-by-one.</p>
 <p>Personally, I think using the version we resolve to is more sensible. Perhaps only include the Major.Minor parts of a SemVer version.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-07-19 07:52</div>
-            <div class="timeline-body"><p>I've been thinking that as a follow-up to adding a lower bounds with <code>uv add</code>, we could have a script that bisects lower bounds for you:</p>
+            <div class="timeline-body"><p>I&#x27;ve been thinking that as a follow-up to adding a lower bounds with <code>uv add</code>, we could have a script that bisects lower bounds for you:</p>
 <p>Say you added <code>numpy</code>, which defaults to <code>numpy&gt;=2.0.0</code>, and then run <code>uv losen-bounds --lower numpy &quot;python -m pytest&quot;</code>.</p>
-<p>From the resolution, we know that there is a <code>&gt;=1.25.0</code> from another dependency (this feature is more important when we don't have that lower bound, but i need to bound my example to not be too big to write out). numpy then has the following versions remaining:</p>
+<p>From the resolution, we know that there is a <code>&gt;=1.25.0</code> from another dependency (this feature is more important when we don&#x27;t have that lower bound, but i need to bound my example to not be too big to write out). numpy then has the following versions remaining:</p>
 <p>2.0.0 2.0.0rc2 2.0.0rc1 2.0.0b1 1.26.4 1.26.3 1.26.2 1.26.1 1.26.0 1.26.0rc1 1.26.0b1 1.25.2 1.25.1 1.25.0</p>
 <p>We remove prerelease versions since they are not selected:</p>
 <p>2.0.0 1.26.4 1.26.3 1.26.2 1.26.1 1.26.0 1.25.2 1.25.1 1.25.0</p>
@@ -71,10 +71,10 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-07-22 23:14</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-22 23:14</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-07-23 02:45</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-23 02:45</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-23 02:45</div>
@@ -88,7 +88,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-24 14:27</div>
-            <div class="timeline-body"><p>I wouldn't be hurt if we dropped this from the release-ready milestone.</p>
+            <div class="timeline-body"><p>I wouldn&#x27;t be hurt if we dropped this from the release-ready milestone.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -97,18 +97,18 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-08-01 17:06</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-01 17:06</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-08-01 17:42</div>
-            <div class="timeline-body"><p>I'm a bit late to the conversation, but one heuristic you might find as a helpful fallback if users of projects have not setup or do not use pytest, is if the dependency provides wheels, what's the earliest version of the dependency that has compatible wheels with some version of Python that matches those wheels.</p>
+            <div class="timeline-body"><p>I&#x27;m a bit late to the conversation, but one heuristic you might find as a helpful fallback if users of projects have not setup or do not use pytest, is if the dependency provides wheels, what&#x27;s the earliest version of the dependency that has compatible wheels with some version of Python that matches those wheels.</p>
 <p>E.g. For numpy if your project is <code>Python-Requires &gt;= 3.9</code>  you might be able to determine that <code>numpy &gt;= 1.19.3</code></p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:25:39 UTC
+        Synced at 2026-01-20 19:32:04 UTC
     </footer>
 </body>
 </html>

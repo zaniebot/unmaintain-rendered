@@ -23,18 +23,18 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/soemre">@soemre</a></div>
-            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+            <div class="timeline-body">Please complete the following tasks
 <ul>
 <li>[x] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
 <li>[x] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
 </ul>
-<h3>Rust Version</h3>
+Rust Version
 <p>rustc 1.86.0 (05f9846f8 2025-03-31)</p>
-<h3>Clap Version</h3>
+Clap Version
 <p>4.5.37</p>
-<h3>Minimal reproducible code</h3>
-<h1>Case 1</h1>
-<pre><code class="language-rust">use clap::{Args, Parser, Subcommand, arg, command};
+Minimal reproducible code
+Case 1
+<pre><code>use clap::{Args, Parser, Subcommand, arg, command};
 
 #[derive(Parser)]
 struct Cli {
@@ -72,8 +72,8 @@ fn main() {
     println!(&quot;not failed&quot;)
 }
 </code></pre>
-<h1>Case 2</h1>
-<pre><code class="language-rust">use clap::{Args, Parser, Subcommand, arg, command};
+Case 2
+<pre><code>use clap::{Args, Parser, Subcommand, arg, command};
 
 #[derive(Parser)]
 struct Cli {
@@ -117,24 +117,24 @@ fn main() {
     println!(&quot;not failed&quot;)
 }
 </code></pre>
-<h3>Steps to reproduce the bug with the above code</h3>
+Steps to reproduce the bug with the above code
 <p>Try <code>cargo r -- foo</code> and <code>cargo r -- foo -b</code></p>
-<h3>Actual Behaviour</h3>
+Actual Behaviour
 <p>In <strong>Case 1</strong>, when a struct has multiple fields marked with <code>#[arg(from_global)]</code> and those fields refer to the same argument name, the program enters a state where it continuously throws errors.</p>
 <p>The same issue occurs in <strong>Case 2</strong>, where one of the <code>from_global</code> fields is nested under a parent field marked with <code>#[command(flatten)]</code>.</p>
-<p>This error happens regardless of whether the argument is provided. In fact, the argument doesn't even need to be supplied at all.</p>
-<h3>Expected Behaviour</h3>
-<p>Failing in <strong>Case 1</strong> makes sense however, I think it <em>shouldn't have compiled in the first place</em>.<br />
+<p>This error happens regardless of whether the argument is provided. In fact, the argument doesn&#x27;t even need to be supplied at all.</p>
+Expected Behaviour
+<p>Failing in <strong>Case 1</strong> makes sense however, I think it <em>shouldn&#x27;t have compiled in the first place</em>.<br>
 But the real issue, in my opinion, is <strong>Case 2</strong>.</p>
-<p>First of all, <strong>Case 2</strong> becomes quite <em>hard to debug</em> as the codebase grows.<br />
-Beyond that, I believe it breaks the ergonomic expectations of <code>#[command(flatten)]</code>.<br />
-I use <code>flatten</code> to isolate specific routine data and build functions that only deal with that.<br />
+<p>First of all, <strong>Case 2</strong> becomes quite <em>hard to debug</em> as the codebase grows.<br>
+Beyond that, I believe it breaks the ergonomic expectations of <code>#[command(flatten)]</code>.<br>
+I use <code>flatten</code> to isolate specific routine data and build functions that only deal with that.<br>
 There are cases where both the parent and child structs need access to global arguments; for example, when both should respect flags like <code>verbose</code> or <code>fail_after</code>.</p>
-<p>That said, I think this weird error state should definitely be fixed.<br />
-As for <code>#[command(flatten)]</code>, maybe the current behavior is intentional but if so, it's not what I'd expect.</p>
-<h3>Additional Context</h3>
-<p>The only solution I’ve found is to avoid using <code>from_global</code> in the parent struct when <code>flatten</code>ed children contain fields with the same <code>from_global</code> arguments. Instead, I access the global arguments through the children's fields.</p>
-<h3>Debug Output</h3>
+<p>That said, I think this weird error state should definitely be fixed.<br>
+As for <code>#[command(flatten)]</code>, maybe the current behavior is intentional but if so, it&#x27;s not what I&#x27;d expect.</p>
+Additional Context
+<p>The only solution I’ve found is to avoid using <code>from_global</code> in the parent struct when <code>flatten</code>ed children contain fields with the same <code>from_global</code> arguments. Instead, I access the global arguments through the children&#x27;s fields.</p>
+Debug Output
 <p><strong>Output of <code>cargo r -- foo -b</code>:</strong></p>
 <pre><code>    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.01s
      Running `target/debug/clap-tst foo -b`
@@ -153,7 +153,7 @@ As for <code>#[command(flatten)]</code>, maybe the current behavior is intention
 [clap_builder::builder::debug_asserts]Command::_verify_positionals
 [clap_builder::parser::parser]Parser::get_matches_with
 [clap_builder::parser::parser]Parser::parse
-[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;foo&quot;'
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing &#x27;&quot;foo&quot;&#x27;
 [clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;foo&quot;)
 [clap_builder::parser::parser]Parser::get_matches_with: sc=Some(&quot;foo&quot;)
 [clap_builder::parser::parser]Parser::parse_subcommand
@@ -175,10 +175,10 @@ As for <code>#[command(flatten)]</code>, maybe the current behavior is intention
 [clap_builder::parser::parser]Parser::parse_subcommand: About to parse sc=foo
 [clap_builder::parser::parser]Parser::get_matches_with
 [clap_builder::parser::parser]Parser::parse
-[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;-b&quot;'
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing &#x27;&quot;-b&quot;&#x27;
 [clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;-b&quot;)
 [clap_builder::parser::parser]Parser::get_matches_with: sc=None
-[clap_builder::parser::parser]Parser::parse_short_arg: short_arg=ShortFlags { inner: &quot;b&quot;, utf8_prefix: CharIndices { front_offset: 0, iter: Chars(['b']) }, invalid_suffix: None }
+[clap_builder::parser::parser]Parser::parse_short_arg: short_arg=ShortFlags { inner: &quot;b&quot;, utf8_prefix: CharIndices { front_offset: 0, iter: Chars([&#x27;b&#x27;]) }, invalid_suffix: None }
 [clap_builder::parser::parser]Parser::parse_short_arg:iter:b
 [clap_builder::parser::parser]Parser::parse_short_arg:iter:b: Found valid opt or flag
 [clap_builder::parser::parser]Parser::react action=SetTrue, identifier=Some(Short), source=CommandLine
@@ -191,12 +191,12 @@ As for <code>#[command(flatten)]</code>, maybe the current behavior is intention
 [clap_builder::parser::parser]Parser::get_matches_with: After parse_short_arg ValuesDone
 [clap_builder::parser::parser]Parser::add_defaults
 [clap_builder::parser::parser]Parser::add_defaults:iter:bar:
-[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value: doesn&#x27;t have conditional defaults
 [clap_builder::parser::parser]Parser::add_default_value:iter:bar: has default vals
 [clap_builder::parser::parser]Parser::add_default_value:iter:bar: was used
 [clap_builder::parser::parser]Parser::add_defaults:iter:help:
-[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
-[clap_builder::parser::parser]Parser::add_default_value:iter:help: doesn't have default vals
+[clap_builder::parser::parser]Parser::add_default_value: doesn&#x27;t have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:help: doesn&#x27;t have default vals
 [clap_builder::parser::validator]Validator::validate
 [clap_builder::builder::command]Command::groups_for_arg: id=&quot;bar&quot;
 [clap_builder::parser::validator]Conflicts::gather_direct_conflicts id=&quot;bar&quot;, conflicts=[]
@@ -211,16 +211,16 @@ As for <code>#[command(flatten)]</code>, maybe the current behavior is intention
 [clap_builder::parser::validator]Validator::validate_required: is_exclusive_present=false
 [clap_builder::parser::parser]Parser::add_defaults
 [clap_builder::parser::parser]Parser::add_defaults:iter:bar:
-[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value: doesn&#x27;t have conditional defaults
 [clap_builder::parser::parser]Parser::add_default_value:iter:bar: has default vals
-[clap_builder::parser::parser]Parser::add_default_value:iter:bar: wasn't used
+[clap_builder::parser::parser]Parser::add_default_value:iter:bar: wasn&#x27;t used
 [clap_builder::parser::parser]Parser::react action=SetTrue, identifier=None, source=DefaultValue
 [clap_builder::parser::arg_matcher]ArgMatcher::start_custom_arg: id=&quot;bar&quot;, source=DefaultValue
 [clap_builder::parser::parser]Parser::push_arg_values: [&quot;false&quot;]
 [clap_builder::parser::parser]Parser::add_single_val_to_arg: cur_idx:=1
 [clap_builder::parser::parser]Parser::add_defaults:iter:help:
-[clap_builder::parser::parser]Parser::add_default_value: doesn't have conditional defaults
-[clap_builder::parser::parser]Parser::add_default_value:iter:help: doesn't have default vals
+[clap_builder::parser::parser]Parser::add_default_value: doesn&#x27;t have conditional defaults
+[clap_builder::parser::parser]Parser::add_default_value:iter:help: doesn&#x27;t have default vals
 [clap_builder::parser::validator]Validator::validate
 [clap_builder::parser::validator]Validator::validate_conflicts
 [clap_builder::parser::validator]Validator::validate_exclusive
@@ -263,33 +263,33 @@ error: The following required argument was not provided: bar
 
 Usage: clap-tst [OPTIONS] &lt;COMMAND&gt;
 
-For more information, try '--help'.
+For more information, try &#x27;--help&#x27;.
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">C-bug</span> added by @soemre on 2025-05-04 22:34</div>
+            <div class="event">Label <span class="label">C-bug</span> added by <a href="https://github.com/soemre">@soemre</a> on 2025-05-04 22:34</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2025-05-05 18:50</div>
+            <div class="event">Label <span class="label">A-derive</span> added by <a href="https://github.com/epage">@epage</a> on 2025-05-05 18:50</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "`#[command(flatten)]` inevitably breaks `#[arg(from_global)]`" to "Multiple `from_global` withi" by @epage on 2025-05-05 19:00</div>
+            <div class="event">Renamed from &quot;`#[command(flatten)]` inevitably breaks `#[arg(from_global)]`&quot; to &quot;Multiple `from_global` withi&quot; by <a href="https://github.com/epage">@epage</a> on 2025-05-05 19:00</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Multiple `from_global` withi" to "Multiple `from_global` within a `Command` causes "required argument" error with `clap_derive`" by @epage on 2025-05-05 19:00</div>
+            <div class="event">Renamed from &quot;Multiple `from_global` withi&quot; to &quot;Multiple `from_global` within a `Command` causes &quot;required argument&quot; error with `clap_derive`&quot; by <a href="https://github.com/epage">@epage</a> on 2025-05-05 19:00</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-05-05 19:02</div>
             <div class="timeline-body"><p>The problem comes from clap removing the values from <code>ArgMatches</code>, instead of clone, to remove &quot;unnecessary allocations&quot;. See #3742.</p>
-<p>We could turn that first case into a compile errors but couldn't do it for the second.</p>
+<p>We could turn that first case into a compile errors but couldn&#x27;t do it for the second.</p>
 <p>As for doing any kind of detection to decide between remove vs get would be tricky to get the heuristics right.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:49:33 UTC
+        Synced at 2026-01-20 20:00:29 UTC
     </footer>
 </body>
 </html>

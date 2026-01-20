@@ -23,33 +23,33 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Skylion007">@Skylion007</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<p>Ruff triggers bad preview behavior of C409. This behavior we chose not to enable because of issue: https://github.com/astral-sh/ruff/issues/12912 . This is definitely a false positive in this case and should not be reported here as it does lead to a significant performance regression. See this issue for discussion: https://github.com/pytorch/pytorch/pull/148412</p>
+            <div class="timeline-body">Summary
+<p>Ruff triggers bad preview behavior of C409. This behavior we chose not to enable because of issue: <a href="https://github.com/astral-sh/ruff/issues/12912">astral-sh/ruff#12912</a> . This is definitely a false positive in this case and should not be reported here as it does lead to a significant performance regression. See this issue for discussion: <a href="https://github.com/pytorch/pytorch/pull/148412">pytorch/pytorch#148412</a></p>
 <p>Ruff playground for the rule here</p>
 <p>https://play.ruff.rs/898a116a-2d60-4afc-b081-a83f5ea72bf8</p>
 <p>cc @jansel for finding and flagging this issue</p>
 <p>At worst, it should simplify to tuple(range(10)) instead of a useless x for x in range generator</p>
-<h3>Version</h3>
+Version
 <p><em>No response</em></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "C416 triggers leads to C409 bad preview behavior - false positive" to "`C416` triggers leads to `C409` bad preview behavior - false positive" by @Skylion007 on 2025-03-04 15:29</div>
+            <div class="event">Renamed from &quot;C416 triggers leads to C409 bad preview behavior - false positive&quot; to &quot;`C416` triggers leads to `C409` bad preview behavior - false positive&quot; by <a href="https://github.com/Skylion007">@Skylion007</a> on 2025-03-04 15:29</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-03-04 18:39</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-04 18:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-03-04 18:42</div>
+            <div class="event">Label <span class="label">preview</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-04 18:42</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-04 18:53</div>
             <div class="timeline-body"><p>Ah, without preview and accepting autofixes in the playground the code goes through these iterations:</p>
-<pre><code class="language-python">tuple([x for x in range(10)])  # initial case, C416
+<pre><code>tuple([x for x in range(10)])  # initial case, C416
 </code></pre>
-<pre><code class="language-python">tuple(list(range(10)))  # after one fix, C414
+<pre><code>tuple(list(range(10)))  # after one fix, C414
 </code></pre>
-<pre><code class="language-python">tuple(range(10))  # after two fixes, no error
+<pre><code>tuple(range(10))  # after two fixes, no error
 </code></pre>
 <p>but with <code>preview = true</code>, C409 is also flagged and accepting that autofix leads to the problematic generator version.</p>
 <p>Based on the name <a href="https://docs.astral.sh/ruff/rules/unnecessary-literal-within-tuple-call/#unnecessary-literal-within-tuple-call-c409"><code>unnecessary-literal-within-tuple-call</code></a>, I think it might make sense if C409 were restricted to actual literals, not to comprehensions, which are covered by C416.</p>
@@ -57,33 +57,33 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-04 19:02</div>
-            <div class="timeline-body"><p>Oh I see that's the preview part of the rule now. I think I'm confused here. Is this different from #12912? I think you just want the non-preview behavior (or a way to turn it off on preview), and that seems to be the topic of discussion there. But I could be missing something.</p>
+            <div class="timeline-body"><p>Oh I see that&#x27;s the preview part of the rule now. I think I&#x27;m confused here. Is this different from #12912? I think you just want the non-preview behavior (or a way to turn it off on preview), and that seems to be the topic of discussion there. But I could be missing something.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2025-03-06 14:37</div>
-            <div class="timeline-body"><p>@ntbre this works for the case where the generator is trivial and come from ranges, but it's still actually slower when a list comprehension is transformed to a generator that cannot be further simplified. See the PyTorch issue and relevant playground for more complicated examples that won't be simplified.</p>
+            <div class="timeline-body"><p>@ntbre this works for the case where the generator is trivial and come from ranges, but it&#x27;s still actually slower when a list comprehension is transformed to a generator that cannot be further simplified. See the PyTorch issue and relevant playground for more complicated examples that won&#x27;t be simplified.</p>
 <p>The range thing I provided was just an example, but it still breaks down if the range if filtered at all or chained etc.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-07 09:54</div>
-            <div class="timeline-body"><p>I'm sorry, but I'm struggling to follow this issue.</p>
+            <div class="timeline-body"><p>I&#x27;m sorry, but I&#x27;m struggling to follow this issue.</p>
 <p>Checking the following file with flake8 (<code>uvx --with flake8-comprehensions flake8 comprehension.py</code>)</p>
-<pre><code class="language-py">tuple([x for x in range(10)])
+<pre><code>tuple([x for x in range(10)])
 </code></pre>
 <p>gives me</p>
 <pre><code>comprehension.py:2:7: C416 Unnecessary list comprehension - rewrite using list().
 </code></pre>
 <p>Which is the same as what you get with Ruff.</p>
-<p>I do understand that C416 and C409 overlap and that the fix suggested by C409 is suboptimal, but that's covered in its own issue.</p>
-<p>So is the question to change the C416 rule or is it only about that C416 and C409 don't play nicely together right now but that would be fixed by reverting the preview behavior changes in C409 (or making it its own rule)</p>
+<p>I do understand that C416 and C409 overlap and that the fix suggested by C409 is suboptimal, but that&#x27;s covered in its own issue.</p>
+<p>So is the question to change the C416 rule or is it only about that C416 and C409 don&#x27;t play nicely together right now but that would be fixed by reverting the preview behavior changes in C409 (or making it its own rule)</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:52:19 UTC
+        Synced at 2026-01-20 18:49:36 UTC
     </footer>
 </body>
 </html>

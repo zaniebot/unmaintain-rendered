@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/elazarl">@elazarl</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<p>When building a docker image, we often rely on <code>uv</code>'s great caching features.</p>
+            <div class="timeline-body">Summary
+<p>When building a docker image, we often rely on <code>uv</code>&#x27;s great caching features.</p>
 <p>Doing something along the lines of</p>
-<pre><code class="language-Dockerfile">FROM  ghcr.io/astral-sh/uv:debian
+<pre><code>FROM  ghcr.io/astral-sh/uv:debian
 
 RUN &lt;&lt;EOT
 
@@ -51,12 +51,12 @@ EOT
 <p>I expect that the last layer would only contain the <code>requests</code> package in cache, and the <code>kubernetes</code> package would be taken from the previous layer.</p>
 <p>This is since when attempting to install <code>kubernetes</code> again, <code>uv</code> updates the <code>ctime</code> in cache.</p>
 <p>Can I prevent it from changing existing cache items? So that docker would only grab new packages?</p>
-<h3>Example</h3>
+Example
 <p><em>No response</em></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @elazarl on 2025-09-11 09:51</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/elazarl">@elazarl</a> on 2025-09-11 09:51</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/elazarl">@elazarl</a> on 2025-09-11 10:02</div>
@@ -66,20 +66,20 @@ cp -r `uv cache dir` $C
 uv pip install --cache-dir $C kubernetes
 rsync -avc $C/ `uv cache dir`/
 </code></pre>
-<p>Assuming COW filesystem the initial copy isn't aweful, and docker seems to only take the new files.</p>
+<p>Assuming COW filesystem the initial copy isn&#x27;t aweful, and docker seems to only take the new files.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-11 17:05</div>
-            <div class="timeline-body"><p>Hm I guess the ctime changes because the number of hardlinks changes? Why's that a problem?</p>
+            <div class="timeline-body"><p>Hm I guess the ctime changes because the number of hardlinks changes? Why&#x27;s that a problem?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/elazarl">@elazarl</a> on 2025-09-11 18:22</div>
             <div class="timeline-body"><blockquote>
-<p>Hm I guess the ctime changes because the number of hardlinks changes? Why's that a problem?</p>
+<p>Hm I guess the ctime changes because the number of hardlinks changes? Why&#x27;s that a problem?</p>
 </blockquote>
-<p>TBH I'm not quite sure. I'll show you the steps I took to recreate the problem</p>
+<p>TBH I&#x27;m not quite sure. I&#x27;ll show you the steps I took to recreate the problem</p>
 <pre><code>❯ bat uv.Dockerfile
 ───────┬─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
        │ File: uv.Dockerfile
@@ -133,7 +133,7 @@ root@0a2701e6aca1:/# du -sh `uv cache dir`
 root@0a2701e6aca1:/#
 </code></pre>
 <p>In another shell</p>
-<pre><code>$ docker container inspect `docker container ps -l -q`|jq -r '.[]|.GraphDriver.Data.LowerDir'|tr : \\n|xargs -I@ sudo du -sh @
+<pre><code>$ docker container inspect `docker container ps -l -q`|jq -r &#x27;.[]|.GraphDriver.Data.LowerDir&#x27;|tr : \\n|xargs -I@ sudo du -sh @
 4.0K    /data/docker/overlay2/95af2a7d2bcd4fe15c77252e4e94b71d1e12bde924ffd15b5db19167dfe39b5b-init/diff
 28M     /data/docker/overlay2/lfhobfke608dzz9fwdswayqym/diff
 29M     /data/docker/overlay2/cb4v72ruwtpk98s422nfmmcas/diff
@@ -175,13 +175,13 @@ Change: 2025-09-11 09:46:48.229429913 +0000
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-12 10:47</div>
-            <div class="timeline-body"><p>I see, thanks. Maybe you want to change to <code>UV_LINK_MODE=copy</code>? I'd also recommend using a cache mount for the uv cache? Did you see our section on this in the documentation?</p>
+            <div class="timeline-body"><p>I see, thanks. Maybe you want to change to <code>UV_LINK_MODE=copy</code>? I&#x27;d also recommend using a cache mount for the uv cache? Did you see our section on this in the documentation?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/elazarl">@elazarl</a> on 2025-09-12 14:08</div>
             <div class="timeline-body"><blockquote>
-<p>I see, thanks. Maybe you want to change to <code>UV_LINK_MODE=copy</code>? I'd also recommend using a cache mount for the uv cache? Did you see our section on this in the documentation?</p>
+<p>I see, thanks. Maybe you want to change to <code>UV_LINK_MODE=copy</code>? I&#x27;d also recommend using a cache mount for the uv cache? Did you see our section on this in the documentation?</p>
 </blockquote>
 <p>I tried the <code>UV_LINK_MODE=link</code> and it seems like a good workaround.</p>
 <p>( <em>edit:</em> wrong conclusion)</p>
@@ -189,19 +189,19 @@ Change: 2025-09-11 09:46:48.229429913 +0000
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/elazarl">@elazarl</a> on 2025-09-12 14:09</div>
-            <div class="timeline-body"><p>(The <code>copy</code> mode defeats the purpose of the optimization, as I don't want docker images to contain two copies of the same packages.)</p>
+            <div class="timeline-body"><p>(The <code>copy</code> mode defeats the purpose of the optimization, as I don&#x27;t want docker images to contain two copies of the same packages.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/eabase">@eabase</a> on 2025-09-14 13:27</div>
-            <div class="timeline-body"><p>Because windows doesn't have a 1:1 mapping of <code>ctime</code>, <code>atime</code>, and <code>mtime</code>. They've been broken and confused for decades. So don't expect <em>any</em>time to match between docker/WSL distros and any normal nix ones.</p>
-<p>Hee-ell, Windows still can't even sort file times correctly in their own File Explorer!</p>
+            <div class="timeline-body"><p>Because windows doesn&#x27;t have a 1:1 mapping of <code>ctime</code>, <code>atime</code>, and <code>mtime</code>. They&#x27;ve been broken and confused for decades. So don&#x27;t expect <em>any</em>time to match between docker/WSL distros and any normal nix ones.</p>
+<p>Hee-ell, Windows still can&#x27;t even sort file times correctly in their own File Explorer!</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:32:52 UTC
+        Synced at 2026-01-20 19:40:19 UTC
     </footer>
 </body>
 </html>

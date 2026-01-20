@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/oconnor663">@oconnor663</a></div>
-            <div class="timeline-body"><p>This is very similar to the locking added for <code>uv sync</code>, <code>uv add</code>, and <code>uv remove</code> in https://github.com/astral-sh/uv/pull/13869. Improving our (f)locking in general is tracked in
-https://github.com/astral-sh/uv/issues/13883.</p>
-<p>This is a minimal change that un-breaks parallel invocations of <code>uv run</code>. It's too easy to confuse locking as in &quot;lockfile generation&quot; and locking as in &quot;file locking to prevent race conditions&quot;, so we probably need a broader overhaul of how these things are named. It's also too easy to miss a callsite here, or to accidentally retain one of these locks across <code>run_to_completion</code>, so ideally we could move this file locking down to a lower-level function that's shared by all these callers, possibly <code>pip::operations::install</code>. I want to get this minimal change through testing and review before I tackle either of those.</p>
-<p>Here's a repro of the current race condition in <code>uv run</code>, which this PR fixes. Add a bunch of dependencies to provoke it, as suggested in #12751:</p>
+            <div class="timeline-body"><p>This is very similar to the locking added for <code>uv sync</code>, <code>uv add</code>, and <code>uv remove</code> in <a href="https://github.com/astral-sh/uv/pull/13869">astral-sh/uv#13869</a>. Improving our (f)locking in general is tracked in
+<a href="https://github.com/astral-sh/uv/issues/13883">astral-sh/uv#13883</a>.</p>
+<p>This is a minimal change that un-breaks parallel invocations of <code>uv run</code>. It&#x27;s too easy to confuse locking as in &quot;lockfile generation&quot; and locking as in &quot;file locking to prevent race conditions&quot;, so we probably need a broader overhaul of how these things are named. It&#x27;s also too easy to miss a callsite here, or to accidentally retain one of these locks across <code>run_to_completion</code>, so ideally we could move this file locking down to a lower-level function that&#x27;s shared by all these callers, possibly <code>pip::operations::install</code>. I want to get this minimal change through testing and review before I tackle either of those.</p>
+<p>Here&#x27;s a repro of the current race condition in <code>uv run</code>, which this PR fixes. Add a bunch of dependencies to provoke it, as suggested in #12751:</p>
 <pre><code>$ cd `mktemp -d`
 $ uv init --package --name scratch
 Initialized project `scratch`
@@ -51,17 +51,17 @@ $ rm -r .venv &amp;&amp; for i in `seq 100` ; do ~/uv/target/fast-build/uv run -
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @zanieb by @oconnor663 on 2025-06-20 14:07</div>
+            <div class="event">Review requested from <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-06-20 14:07</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @konstin by @oconnor663 on 2025-06-20 14:07</div>
+            <div class="event">Review requested from <a href="https://github.com/konstin">@konstin</a> by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-06-20 14:07</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @zanieb by @zanieb on 2025-06-20 14:08</div>
+            <div class="event">Assigned to <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-20 14:08</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-06-20 15:22</div>
-            <div class="timeline-body"><p>I wonder if this is a flake? Reruning it. (Edit: Yep: https://github.com/astral-sh/uv/issues/14160.)</p>
+            <div class="timeline-body"><p>I wonder if this is a flake? Reruning it. (Edit: Yep: <a href="https://github.com/astral-sh/uv/issues/14160">astral-sh/uv#14160</a>.)</p>
 <pre><code>    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Snapshot Summary ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     Snapshot: run_groups_requires_python-4
     Source: crates/uv/tests/it/run.rs:4690
@@ -125,7 +125,7 @@ $ for i in `seq 10` ; do
 done
 [...job output, no errors...]
 </code></pre>
-<hr />
+<hr>
 <p>And now the locked case:</p>
 <pre><code>$ uv init --script myscript.py
 Initialized script at `myscript.py`
@@ -156,32 +156,32 @@ done
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @oconnor663 on 2025-06-20 20:34</div>
+            <div class="event">Merged by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-06-20 20:34</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @oconnor663 on 2025-06-20 20:34</div>
+            <div class="event">Closed by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-06-20 20:34</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-06-20 20:34</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-20 20:38</div>
-            <div class="timeline-body"><p>As a minor note, I'd title this to be user-facing so it makes sense in the changelog</p>
-<p>What's the actual user-facing change? &quot;Lock the Python environment during updates in <code>uv run</code>&quot;? or &quot;Prevent concurrent changes to the environment during <code>uv run</code>&quot;?</p>
+            <div class="timeline-body"><p>As a minor note, I&#x27;d title this to be user-facing so it makes sense in the changelog</p>
+<p>What&#x27;s the actual user-facing change? &quot;Lock the Python environment during updates in <code>uv run</code>&quot;? or &quot;Prevent concurrent changes to the environment during <code>uv run</code>&quot;?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-06-20 20:43</div>
-            <div class="timeline-body"><p>Got it. Yes, I'd go with either of your descriptions above, or maybe &quot;lock the virtual environment when <code>uv run</code> does an implicit sync, to prevent concurrent modifications&quot;.</p>
+            <div class="timeline-body"><p>Got it. Yes, I&#x27;d go with either of your descriptions above, or maybe &quot;lock the virtual environment when <code>uv run</code> does an implicit sync, to prevent concurrent modifications&quot;.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "(f)lock during `uv run`" to "Prevent concurrent updates of the environment in `uv run`" by @zanieb on 2025-06-21 01:11</div>
+            <div class="event">Renamed from &quot;(f)lock during `uv run`&quot; to &quot;Prevent concurrent updates of the environment in `uv run`&quot; by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-21 01:11</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:43:39 UTC
+        Synced at 2026-01-20 19:52:45 UTC
     </footer>
 </body>
 </html>

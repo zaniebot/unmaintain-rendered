@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>This PR fixes the issue pointed out by @JelleZijlstra in https://github.com/astral-sh/ruff/pull/17101#issuecomment-2777480204. Namely, I conflated two very different errors from CPython:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; def m[T](x: (yield from 1)): ...
+            <div class="timeline-body">Summary
+<p>This PR fixes the issue pointed out by @JelleZijlstra in <a href="https://github.com/astral-sh/ruff/pull/17101">astral-sh/ruff#17101</a>#issuecomment-2777480204. Namely, I conflated two very different errors from CPython:</p>
+<pre><code>&gt;&gt;&gt; def m[T](x: (yield from 1)): ...
   File &quot;&lt;python-input-310&gt;&quot;, line 1
     def m[T](x: (yield from 1)): ...
                  ^^^^^^^^^^^^
@@ -34,31 +34,31 @@ SyntaxError: yield expression cannot be used within the definition of a generic
   File &quot;&lt;python-input-311&gt;&quot;, line 1
     def m(x: (yield from 1)): ...
               ^^^^^^^^^^^^
-SyntaxError: 'yield from' outside function
+SyntaxError: &#x27;yield from&#x27; outside function
 &gt;&gt;&gt; def outer():
 ...     def m(x: (yield from 1)): ...
 ...
 &gt;&gt;&gt;
 </code></pre>
 <p>I thought the second error was the same as the first, but <code>yield</code> (and <code>yield from</code>) is actually valid in this position when inside a function scope. The same is true for base classes, as pointed out in the original comment.</p>
-<p>We don't currently raise an error for <code>yield</code> outside of a function, but that should be handled separately.</p>
+<p>We don&#x27;t currently raise an error for <code>yield</code> outside of a function, but that should be handled separately.</p>
 <p>On the upside, this had the benefit of removing the <code>InvalidExpressionPosition::BaseClass</code> variant, the <code>InvalidExpressionPosition::TypeAnnotation</code> variant, and the <code>allow_named_expr</code> field from the visitor because they were all no longer used.</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>Updated inline tests.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-04-04 13:50</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-04 13:50</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-04-04 13:50</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-04 13:50</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dhruvmanila by @ntBre on 2025-04-04 13:50</div>
+            <div class="event">Review requested from <a href="https://github.com/dhruvmanila">@dhruvmanila</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-04 13:50</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on <code>crates/ruff_python_parser/resources/inline/err/invalid_annotation_function.py</code>:4 on 2025-04-04 13:53</div>
-            <div class="timeline-body"><p>These ones should perhaps stay as errors. They are a syntax error in Python 3.14 (and under <code>from __future__ import annotations</code>). They're legal otherwise in older versions, but yielding in an annotation is a very questionable idea and it will be a SyntaxError in the future, so it would make sense for Ruff to error about it.</p>
+            <div class="timeline-body"><p>These ones should perhaps stay as errors. They are a syntax error in Python 3.14 (and under <code>from __future__ import annotations</code>). They&#x27;re legal otherwise in older versions, but yielding in an annotation is a very questionable idea and it will be a SyntaxError in the future, so it would make sense for Ruff to error about it.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -71,9 +71,9 @@ SyntaxError: 'yield from' outside function
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/resources/inline/err/invalid_annotation_function.py</code>:4 on 2025-04-04 14:00</div>
-            <div class="timeline-body"><p>Oh, interesting. We can check the version before emitting these errors, but I don't think we have any others that depend on <code>from __future__ import annotations</code> yet. It does seem easiest just to make this an error on any version in that case. Thanks!</p>
+            <div class="timeline-body"><p>Oh, interesting. We can check the version before emitting these errors, but I don&#x27;t think we have any others that depend on <code>from __future__ import annotations</code> yet. It does seem easiest just to make this an error on any version in that case. Thanks!</p>
 <p>And it looks like my error message was very similar to CPython in that case too:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; from __future__ import annotations
+<pre><code>&gt;&gt;&gt; from __future__ import annotations
 &gt;&gt;&gt; def i(x: (yield 1)): ...
   File &quot;&lt;python-input-1&gt;&quot;, line 1
     def i(x: (yield 1)): ...
@@ -84,16 +84,16 @@ SyntaxError: yield expression cannot be used within an annotation
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-04 14:00</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
@@ -114,7 +114,7 @@ SyntaxError: yield expression cannot be used within an annotation
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/resources/inline/err/invalid_annotation_function.py</code>:4 on 2025-04-04 14:03</div>
             <div class="timeline-body"><p>Oh is this the same for named expressions too? I had already skipped those in the initial PR because they were allowed in 3.13:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; def i(x: (x:=1)): ...
+<pre><code>&gt;&gt;&gt; def i(x: (x:=1)): ...
 ...
 &gt;&gt;&gt; from __future__ import annotations
 &gt;&gt;&gt; def i(x: (x:=1)): ...
@@ -160,15 +160,15 @@ SyntaxError: named expression cannot be used within an annotation
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:210 on 2025-04-04 16:02</div>
             <div class="timeline-body"><p>I think base classes still allow this, at least with future annotations:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; from __future__ import annotations
+<pre><code>&gt;&gt;&gt; from __future__ import annotations
 &gt;&gt;&gt; class F(y := list): ...
 ... def f[T]():
 ...     class G((yield 1)): ...
 ...     class H((yield from 1)): ...
 ...
 </code></pre>
-<p>Although I'm now realizing that this applies to other annotations not considered in this PR:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; def f():
+<p>Although I&#x27;m now realizing that this applies to other annotations not considered in this PR:</p>
+<pre><code>&gt;&gt;&gt; def f():
 ...     x: (yield 1)
 ...
 &gt;&gt;&gt; from __future__ import annotations
@@ -184,21 +184,21 @@ SyntaxError: yield expression cannot be used within an annotation
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @ntBre on 2025-04-04 17:48</div>
+            <div class="event">Merged by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-04 17:48</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ntBre on 2025-04-04 17:48</div>
+            <div class="event">Closed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-04 17:48</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-04-04 17:48</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-04-04 17:48</div>
+            <div class="event">Label <span class="label">preview</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-04 17:48</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:11:16 UTC
+        Synced at 2026-01-20 19:12:57 UTC
     </footer>
 </body>
 </html>

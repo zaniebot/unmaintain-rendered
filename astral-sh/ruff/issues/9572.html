@@ -26,43 +26,43 @@
             <div class="timeline-body"><p>Hi all!</p>
 <p>While updating from Ruff 0.1.11 to 0.1.13 I found a small bug in the newly created rule <code>PLC2801</code>.</p>
 <p>I had the code:</p>
-<pre><code class="language-py">a = 2
+<pre><code>a = 2
 b = -a.__sub__(1)
 # b == -1
 </code></pre>
 <p>With the auto linter Ruff fixed this to:</p>
-<pre><code class="language-py">a = 2
+<pre><code>a = 2
 b = -a - 1
 # b == -3
 </code></pre>
 <p>The order of operations is changed, to fix this Ruff needs to add some parenthesis (<code>b = -(a-1)</code>).</p>
-<p>I have no experience with Rust, so I am not able to help, but I wanted to let you know of the issue. Thank you for making Rust! It's an absolutely amazing tool!!</p>
+<p>I have no experience with Rust, so I am not able to help, but I wanted to let you know of the issue. Thank you for making Rust! It&#x27;s an absolutely amazing tool!!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Bug in PLC2801" to "Bug in order of operations (PLC2801)" by @RubenVanEldik on 2024-01-18 09:27</div>
+            <div class="event">Renamed from &quot;Bug in PLC2801&quot; to &quot;Bug in order of operations (PLC2801)&quot; by <a href="https://github.com/RubenVanEldik">@RubenVanEldik</a> on 2024-01-18 09:27</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-18 13:39</div>
-            <div class="timeline-body"><p>Oh thank you, that's a great catch!</p>
+            <div class="timeline-body"><p>Oh thank you, that&#x27;s a great catch!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-01-18 13:39</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-18 13:39</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-01-18 13:53</div>
-            <div class="timeline-body"><p>Does the fix also fix dunder calls in binarh expressions like <code>a * 5.__add__(3)</code>? If so, we'll need to add parentheses there too to preserve the correct operator precedence</p>
+            <div class="timeline-body"><p>Does the fix also fix dunder calls in binarh expressions like <code>a * 5.__add__(3)</code>? If so, we&#x27;ll need to add parentheses there too to preserve the correct operator precedence</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/RubenVanEldik">@RubenVanEldik</a> on 2024-01-18 15:56</div>
             <div class="timeline-body"><p>This code:</p>
-<pre><code class="language-py">    a = 1
+<pre><code>    a = 1
     2 * a.__add__(3)
 </code></pre>
 <p>Does get linted to:</p>
-<pre><code class="language-py">    a = 1
+<pre><code>    a = 1
     2 * a + 3
 </code></pre>
 <p>So parenthesis are indeed required. However, the parentheses are, of course, not always required. As <code>2 + a.__mul__(3)</code> is correctly linted to <code>2 + a * 3</code>.</p>
@@ -70,12 +70,12 @@ b = -a - 1
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/RubenVanEldik">@RubenVanEldik</a> on 2024-01-18 16:01</div>
-            <div class="timeline-body"><p>I have no clue how Ruff works under the hood, but if you add the parentheses around everything, they will get removed by another Ruff rule when it's only that expression. Because Ruff lints <code>a = (2 * b)</code> to <code>a = 2 * b</code>. So adding parentheses will only affect lines with multiple operators</p>
+            <div class="timeline-body"><p>I have no clue how Ruff works under the hood, but if you add the parentheses around everything, they will get removed by another Ruff rule when it&#x27;s only that expression. Because Ruff lints <code>a = (2 * b)</code> to <code>a = 2 * b</code>. So adding parentheses will only affect lines with multiple operators</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-01-18 16:08</div>
-            <div class="timeline-body"><p>Thanks @RubenVanEldik Yeah,  we might even need to add parentheses around <code>b + a.__mul__(c)</code> if we want to mark the fix as safe for the case where <code>__mul__</code> and <code>__add__</code> are overridden in a way that doesn't follow normal operator semantics :(</p>
+            <div class="timeline-body"><p>Thanks @RubenVanEldik Yeah,  we might even need to add parentheses around <code>b + a.__mul__(c)</code> if we want to mark the fix as safe for the case where <code>__mul__</code> and <code>__add__</code> are overridden in a way that doesn&#x27;t follow normal operator semantics :(</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -85,14 +85,14 @@ b = -a - 1
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/RubenVanEldik">@RubenVanEldik</a> on 2024-01-19 07:11</div>
-            <div class="timeline-body"><p>@MichaReiser, I'm not entirely sure, but I don't think you can override the operator precedence. Something like <code>b + a.__mul__(c).__add__(d).__mul__(e)</code> Can always be correctly rewritten by replacing the dunder calls from the left and adding brackets around each dunder call: <code>b + (((a * c) + d) * e)</code>. I think the main challenge would be not adding unnecessary parentheses, for example, this example is also correct as `b + (a * c + d) * e.</p>
-<p>Not adding unnecessary parentheses would be nice, but not a necessity, I think. Also, because sometimes it's good to add parentheses, even though they are not strictly necessary, just to add clarity to operator precedence.</p>
+            <div class="timeline-body"><p>@MichaReiser, I&#x27;m not entirely sure, but I don&#x27;t think you can override the operator precedence. Something like <code>b + a.__mul__(c).__add__(d).__mul__(e)</code> Can always be correctly rewritten by replacing the dunder calls from the left and adding brackets around each dunder call: <code>b + (((a * c) + d) * e)</code>. I think the main challenge would be not adding unnecessary parentheses, for example, this example is also correct as `b + (a * c + d) * e.</p>
+<p>Not adding unnecessary parentheses would be nice, but not a necessity, I think. Also, because sometimes it&#x27;s good to add parentheses, even though they are not strictly necessary, just to add clarity to operator precedence.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-01-19 09:13</div>
             <div class="timeline-body"><p>While i agree that this assumption that <code>b + a.__mul__(c).__add__(d).__mul__(e)</code> equals <code>b + (((a * c) + d) * e)</code> <em>should</em> hold, it unfortunately does not in the general case</p>
-<pre><code class="language-python">class A:
+<pre><code>class A:
     def __radd__(self, other):
         return other + 1
 
@@ -109,7 +109,7 @@ print(int(1) + A())
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/diceroll123">@diceroll123</a> on 2024-01-19 09:28</div>
-            <div class="timeline-body"><p>It's easy to autofix when the unary is not surrounded by parentheses, since we can just use the operand value as the TextRange start, but autofixing it for something like <code>-(-a).__sub__(1)</code> is where my skill issues with Ruff start to show. 🤔</p>
+            <div class="timeline-body"><p>It&#x27;s easy to autofix when the unary is not surrounded by parentheses, since we can just use the operand value as the TextRange start, but autofixing it for something like <code>-(-a).__sub__(1)</code> is where my skill issues with Ruff start to show. 🤔</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -118,12 +118,12 @@ print(int(1) + A())
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2024-03-04 10:25</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-04 10:25</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:49:27 UTC
+        Synced at 2026-01-20 18:48:49 UTC
     </footer>
 </body>
 </html>

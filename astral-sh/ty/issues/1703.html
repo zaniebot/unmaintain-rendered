@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>typevar solver can't solve a generic union</h1>
+    <h1>typevar solver can&#x27;t solve a generic union</h1>
 
     <div class="meta">
         <span class="state-icon state-open"></span>
@@ -23,18 +23,18 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/suleymanozkeskin">@suleymanozkeskin</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<h1>Summary</h1>
+            <div class="timeline-body">Summary
+Summary
 <p>Incomplete type narrowing with <code>TypeIs</code> on generic types after early return</p>
-<h2>Description</h2>
+Description
 <p>Type narrowing fails for <strong>generic types</strong> when using a <code>TypeIs</code> type guard with an early return pattern. Pyright correctly narrows the type in this scenario, but <code>ty</code> does not. The issue does <strong>not</strong> occur with simple (non-generic) classes.</p>
-<h2>Minimal Reproducible Example</h2>
-<pre><code class="language-python"># exp.py
+Minimal Reproducible Example
+<pre><code># exp.py
 from typing import Union, Generic, TypeVar
 from typing_extensions import TypeIs
 
-T = TypeVar('T', covariant=True)
-E = TypeVar('E', covariant=True)
+T = TypeVar(&#x27;T&#x27;, covariant=True)
+E = TypeVar(&#x27;E&#x27;, covariant=True)
 
 
 class Ok(Generic[T]):
@@ -88,10 +88,10 @@ def use_some_function():
     okay = result.ok_value  # &lt;- ty reports warning here
     print(okay)
 </code></pre>
-<h2>Expected Behavior</h2>
+Expected Behavior
 <p>After the <code>if is_err(result): return None</code> check, <code>result</code> should be narrowed to <code>Ok[int]</code>, making <code>result.ok_value</code> valid without warnings.</p>
-<h2>Actual Behavior</h2>
-<pre><code class="language-bash">uv run ty check exp.py
+Actual Behavior
+<pre><code>uv run ty check exp.py
 warning[possibly-missing-attribute]: Attribute `ok_value` may be missing on object of type `(Ok[int] &amp; ~Err[Unknown]) | (Err[Exception] &amp; ~Err[Unknown])`
   --&gt; exp.py:57:12
    |
@@ -103,13 +103,13 @@ warning[possibly-missing-attribute]: Attribute `ok_value` may be missing on obje
    |
 info: rule `possibly-missing-attribute` is enabled by default
 </code></pre>
-<h2>Comparison with Pyright</h2>
+Comparison with Pyright
 <p>Pyright correctly handles this pattern with 0 errors, 0 warnings for both generic and non-generic types.</p>
 <ul>
 <li>Simple classes with <code>TypeIs</code>: Works correctly in both <code>ty</code> and Pyright</li>
 <li>Generic classes with <code>TypeIs</code>: Fails in <code>ty</code>, works in Pyright</li>
 </ul>
-<h2>Notes</h2>
+Notes
 <ul>
 <li>Pattern matching (<code>match</code>/<code>case</code>) works correctly in both type checkers, even with generics</li>
 <li>The issue specifically occurs when combining:<ol>
@@ -120,22 +120,22 @@ info: rule `possibly-missing-attribute` is enabled by default
 </li>
 <li>Type narrowing appears to be incomplete when the type guard eliminates one branch of a generic union</li>
 </ul>
-<h2>Environment</h2>
+Environment
 <ul>
 <li><code>ty</code> version: 0.0.1a29</li>
 <li>Python version: 3.13</li>
 </ul>
-<h3>Version</h3>
+Version
 <p>0.0.1a29</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-02 01:56</div>
-            <div class="timeline-body"><p>Thanks for the report! This looks like a bug indeed. I think it is a limitation of our current typevar solver; it isn't able to match the generic union parameter type against the union argument and solve both typevars. <a href="https://play.ty.dev/32048e84-3f13-4553-aac7-5d51daccaaa2">This simplified example</a> (without <code>TypeIs</code>, and also without the generic implicit alias, to clarify that's not part of the problem either) shows the root cause:</p>
-<pre><code class="language-py">from typing import Union, Generic, TypeVar
+            <div class="timeline-body"><p>Thanks for the report! This looks like a bug indeed. I think it is a limitation of our current typevar solver; it isn&#x27;t able to match the generic union parameter type against the union argument and solve both typevars. <a href="https://play.ty.dev/32048e84-3f13-4553-aac7-5d51daccaaa2">This simplified example</a> (without <code>TypeIs</code>, and also without the generic implicit alias, to clarify that&#x27;s not part of the problem either) shows the root cause:</p>
+<pre><code>from typing import Union, Generic, TypeVar
 
-T = TypeVar('T', covariant=True)
-E = TypeVar('E', covariant=True)
+T = TypeVar(&#x27;T&#x27;, covariant=True)
+E = TypeVar(&#x27;E&#x27;, covariant=True)
 
 
 class Ok(Generic[T]):
@@ -174,30 +174,30 @@ def f(result: Union[Ok[int], Err[Exception]]):
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">generics</span> added by @carljm on 2025-12-02 01:58</div>
+            <div class="event">Label <span class="label">generics</span> added by <a href="https://github.com/carljm">@carljm</a> on 2025-12-02 01:58</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Beta" by @carljm on 2025-12-02 01:59</div>
+            <div class="event">Added to milestone &quot;Beta&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-12-02 01:59</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "limited type narrowing" to "typevar solver can't solve a generic union" by @carljm on 2025-12-02 02:03</div>
+            <div class="event">Renamed from &quot;limited type narrowing&quot; to &quot;typevar solver can&#x27;t solve a generic union&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-12-02 02:03</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Removed from milestone "Beta" by @carljm on 2025-12-05 00:40</div>
+            <div class="event">Removed from milestone &quot;Beta&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-12-05 00:40</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-05 00:40</div>
+            <div class="event">Added to milestone &quot;Stable&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-12-05 00:40</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @suleymanozkeskin on 2025-12-05 20:09</div>
+            <div class="event">Closed by <a href="https://github.com/suleymanozkeskin">@suleymanozkeskin</a> on 2025-12-05 20:09</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @AlexWaygood on 2025-12-05 20:11</div>
+            <div class="event">Reopened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-05 20:11</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:21:07 UTC
+        Synced at 2026-01-20 19:26:11 UTC
     </footer>
 </body>
 </html>

@@ -23,15 +23,15 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/midopa">@midopa</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>Hi all,</p>
-<p>A container is failing to start because uv tries to reinstall the deps, specifically for private packages. And I don't pass in private repo tokens to the container runtime env vars because those shouldn't be needed. My project's Docker setup is such that if deps or the lock file changes, a new image should be built (and the tokens are provided as secrets during the build).</p>
-<p>It turns out uv considers the lock file invalid. I see this when I run 'uv -v tree' with the image:</p>
+<p>A container is failing to start because uv tries to reinstall the deps, specifically for private packages. And I don&#x27;t pass in private repo tokens to the container runtime env vars because those shouldn&#x27;t be needed. My project&#x27;s Docker setup is such that if deps or the lock file changes, a new image should be built (and the tokens are provided as secrets during the build).</p>
+<p>It turns out uv considers the lock file invalid. I see this when I run &#x27;uv -v tree&#x27; with the image:</p>
 <blockquote>
 <p>DEBUG Ignoring existing lockfile due to mismatched requirements for: <code>my-obfuscated-project==0.1.0</code></p>
 </blockquote>
-<p>The debug logs after that include the requested and existing dependencies. I copied each, formatted, and did a diff. These are the only lines that differ (red is from 'requested' and green is from 'existing'):</p>
-<pre><code class="language-diff">    }, Requirement { name: PackageName(&quot;my-private-package&quot;), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: EqualStar, version: &quot;1&quot;
+<p>The debug logs after that include the requested and existing dependencies. I copied each, formatted, and did a diff. These are the only lines that differ (red is from &#x27;requested&#x27; and green is from &#x27;existing&#x27;):</p>
+<pre><code>    }, Requirement { name: PackageName(&quot;my-private-package&quot;), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: EqualStar, version: &quot;1&quot;
                 }
 -           ]), index: Some(IndexMetadata { url: Url(VerbatimUrl { url: DisplaySafeUrl { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;my-aws-project.d.codeartifact.us-east-1.amazonaws.com&quot;)), port: None, path: &quot;/pypi/pypi/simple/&quot;, query: None, fragment: None
 +           ]), index: Some(IndexMetadata { url: Url(VerbatimUrl { url: DisplaySafeUrl { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;my-aws-project.d.codeartifact.us-east-1.amazonaws.com&quot;)), port: None, path: &quot;/pypi/pypi/simple&quot;, query: None, fragment: None
@@ -42,36 +42,36 @@
     },
 </code></pre>
 <p>Specifically:</p>
-<pre><code class="language-diff">- path: &quot;/pypi/pypi/simple/&quot;
+<pre><code>- path: &quot;/pypi/pypi/simple/&quot;
 + path: &quot;/pypi/pypi/simple&quot;
 </code></pre>
-<p>It seems like something in uv is adding a trailing slash and considering that to be enough to invalidate the entire lock file and venv. While it makes sense to compare the lock file, a change like this is trivial and should be ignored. Ideally the trailing slash wouldn't be added at all and the lock file remains consistent across uv versions, but minor deltas like this will always happen (even if uv were to hit 1.x and consider itself 'stable').</p>
+<p>It seems like something in uv is adding a trailing slash and considering that to be enough to invalidate the entire lock file and venv. While it makes sense to compare the lock file, a change like this is trivial and should be ignored. Ideally the trailing slash wouldn&#x27;t be added at all and the lock file remains consistent across uv versions, but minor deltas like this will always happen (even if uv were to hit 1.x and consider itself &#x27;stable&#x27;).</p>
 <p>I have a uv.lock file generated from 0.7.14.
 In the Docker image, uv is at 0.7.16.
 I tested 0.7.14 and 0.7.15 in the Docker image and they work fine, so the regression happened in 0.7.16.</p>
-<h3>Platform</h3>
+Platform
 <p>macOS Sequoia 15.5 (Darwin 24.5.0 arm64)</p>
-<h3>Version</h3>
+Version
 <p>0.7.14 and 0.7.16</p>
-<h3>Python version</h3>
+Python version
 <p>3.10.18</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @midopa on 2025-06-29 06:11</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/midopa">@midopa</a> on 2025-06-29 06:11</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-29 13:00</div>
-            <div class="timeline-body"><p>I'll look at this, I thought we intentionally added logic to consider these equivalent (i.e., it's not intentional that these are considered invalid).</p>
+            <div class="timeline-body"><p>I&#x27;ll look at this, I thought we intentionally added logic to consider these equivalent (i.e., it&#x27;s not intentional that these are considered invalid).</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-06-29 13:03</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-29 13:03</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-29 13:07</div>
             <div class="timeline-body"><p>Do you have something like this in your <code>pyproject.toml</code>? Like an explicit index definition of PyPI, with the trailing slash? (If not, can you include your <code>pyproject.toml</code> or a minimal subset of it?)</p>
-<pre><code class="language-toml">[project]
+<pre><code>[project]
 name = &quot;foo&quot;
 version = &quot;0.1.0&quot;
 description = &quot;Add your description here&quot;
@@ -92,12 +92,12 @@ anyio = { index = &quot;pypi&quot; }
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BjoernPetersen">@BjoernPetersen</a> on 2025-06-29 13:22</div>
-            <div class="timeline-body"><p>I'm not sure whether the issue I'm encountering is the same, but it seems related to me.</p>
+            <div class="timeline-body"><p>I&#x27;m not sure whether the issue I&#x27;m encountering is the same, but it seems related to me.</p>
 <p>Starting with uv 0.7.16, <code>uv sync --locked</code> fails with this error message:</p>
 <pre><code>error: The lockfile at `uv.lock` needs to be updated, but `--locked` was provided. To update the lockfile, run `uv lock`.
 </code></pre>
 <p>Even deleting the uv.lock file and running <code>uv lock</code> to create a fresh lockfile, <code>uv lock --check</code> will give the above error message.</p>
-<hr />
+<hr>
 <p>I do have an explicit index definition in my <code>pyproject.toml</code>, and the error occurs whether I add a trailing slash to its URL or not. The issue only occurs in projects with this explicit index configuration.</p>
 <pre><code>[[tool.uv.index]]
 name = &quot;internal&quot;
@@ -113,7 +113,7 @@ explicit = true
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-29 13:23</div>
-            <div class="timeline-body"><p>I think https://github.com/astral-sh/uv/pull/14346 should fix this but it'd be helpful to have a minimal reproducible <code>pyproject.toml</code> if you can share one.</p>
+            <div class="timeline-body"><p>I think <a href="https://github.com/astral-sh/uv/pull/14346">astral-sh/uv#14346</a> should fix this but it&#x27;d be helpful to have a minimal reproducible <code>pyproject.toml</code> if you can share one.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -122,19 +122,19 @@ explicit = true
 <p>So it occurs regardless of whether you delete the lockfile or not and regardless of whether you add a trailing slash to the URL or not?</p>
 </blockquote>
 <p>Yes. Even a fresh lockfile created by uv 0.7.16 fails its lockfile check for me.</p>
-<hr />
-<p>I tinkered a bit just now and realized that adding <code>/simple</code> or <code>/simple/</code> to the URL fixes it. I guess I should've done that anyway, so I'll do that everywhere now. Still, the uv patch release broke previously working behavior.</p>
+<hr>
+<p>I tinkered a bit just now and realized that adding <code>/simple</code> or <code>/simple/</code> to the URL fixes it. I guess I should&#x27;ve done that anyway, so I&#x27;ll do that everywhere now. Still, the uv patch release broke previously working behavior.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-29 13:35</div>
-            <div class="timeline-body"><p>Okay, thanks. I don't fully understand your comment and it'd be super helpful to see an example, but yes, this is a bug and is marked as such.</p>
+            <div class="timeline-body"><p>Okay, thanks. I don&#x27;t fully understand your comment and it&#x27;d be super helpful to see an example, but yes, this is a bug and is marked as such.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BjoernPetersen">@BjoernPetersen</a> on 2025-06-29 13:50</div>
-            <div class="timeline-body"><p>Sorry for the confusion. It's kind of hard to create a minimal reproducible pyproject.toml because it would require access to the internal pypi registry. It would look kind of like this:</p>
-<pre><code class="language-toml">[project]
+            <div class="timeline-body"><p>Sorry for the confusion. It&#x27;s kind of hard to create a minimal reproducible pyproject.toml because it would require access to the internal pypi registry. It would look kind of like this:</p>
+<pre><code>[project]
 requires-python = &quot;==3.13.*&quot;
 name = &quot;example-project&quot;
 version = &quot;1.0.0&quot;
@@ -152,26 +152,26 @@ explicit = true
 [tool.uv.sources]
 internal-package = { index = &quot;internal&quot; }
 </code></pre>
-<hr />
-<p>Focussing on the index configuration, I've tried a few variants with uv 0.7.16. For each of these, I've deleted the lockfile, ran <code>uv lock</code> and then checked using <code>uv lock --check</code>:</p>
-<h3>Working Examples</h3>
-<pre><code class="language-toml">[[tool.uv.index]]
+<hr>
+<p>Focussing on the index configuration, I&#x27;ve tried a few variants with uv 0.7.16. For each of these, I&#x27;ve deleted the lockfile, ran <code>uv lock</code> and then checked using <code>uv lock --check</code>:</p>
+Working Examples
+<pre><code>[[tool.uv.index]]
 name = &quot;internal&quot;
 url = &quot;https://pypi.example.com/simple&quot;
 explicit = true
 </code></pre>
-<pre><code class="language-toml">[[tool.uv.index]]
+<pre><code>[[tool.uv.index]]
 name = &quot;internal&quot;
 url = &quot;https://pypi.example.com/simple/&quot;
 explicit = true
 </code></pre>
-<h3>Broken Examples</h3>
-<pre><code class="language-toml">[[tool.uv.index]]
+Broken Examples
+<pre><code>[[tool.uv.index]]
 name = &quot;internal&quot;
 url = &quot;https://pypi.example.com/&quot;
 explicit = true
 </code></pre>
-<pre><code class="language-toml">[[tool.uv.index]]
+<pre><code>[[tool.uv.index]]
 name = &quot;internal&quot;
 url = &quot;https://pypi.example.com&quot;
 explicit = true
@@ -181,9 +181,9 @@ explicit = true
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/midopa">@midopa</a> on 2025-06-29 13:56</div>
             <div class="timeline-body"><p>In my case, my pyproject.toml distills down to this:</p>
-<pre><code class="language-toml">[project]
-name = 'my-project'
-version = '0.1.0'
+<pre><code>[project]
+name = &#x27;my-project&#x27;
+version = &#x27;0.1.0&#x27;
 requires-python = &quot;~=3.10.0&quot;
 
 dependencies = [
@@ -202,13 +202,13 @@ url = &quot;https://pypi.org/simple/&quot;
 name = &quot;codeartifact&quot;
 url = &quot;https://my-aws-project.d.codeartifact.us-east-1.amazonaws.com/pypi/pypi/simple/&quot;
 </code></pre>
-<p>I set it up this way bc I want uv to use the main public index for public packages (for now) and only use the private one when it's explicitly told to do so for certain packages.</p>
+<p>I set it up this way bc I want uv to use the main public index for public packages (for now) and only use the private one when it&#x27;s explicitly told to do so for certain packages.</p>
 <p>When I remove the trailing slash on the codeartifact index, update my local lock file, and rebuild, uv 0.7.16 is happy again inside the container.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-29 13:58</div>
-            <div class="timeline-body"><p>Thank you both. I expect the change I merged to fix the cases with trailing slashes on the index URLs. In @BjoernPetersen case, I'm less certain because I wouldn't have expected the absence or presence of <code>/simple</code> to matter...</p>
+            <div class="timeline-body"><p>Thank you both. I expect the change I merged to fix the cases with trailing slashes on the index URLs. In @BjoernPetersen case, I&#x27;m less certain because I wouldn&#x27;t have expected the absence or presence of <code>/simple</code> to matter...</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -223,16 +223,16 @@ url = &quot;https://my-aws-project.d.codeartifact.us-east-1.amazonaws.com/pypi/p
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BjoernPetersen">@BjoernPetersen</a> on 2025-06-29 14:49</div>
-            <div class="timeline-body"><p>The behavior for my issue didn't change with 0.7.17. <code>uv lock --check</code> still complains if I leave off the <code>/simple</code> URL path.</p>
+            <div class="timeline-body"><p>The behavior for my issue didn&#x27;t change with 0.7.17. <code>uv lock --check</code> still complains if I leave off the <code>/simple</code> URL path.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-29 15:05</div>
-            <div class="timeline-body"><p>I've reproduced, looking into that next</p>
+            <div class="timeline-body"><p>I&#x27;ve reproduced, looking into that next</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2025-06-29 19:24</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-29 19:24</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-29 19:24</div>
@@ -247,7 +247,7 @@ url = &quot;https://my-aws-project.d.codeartifact.us-east-1.amazonaws.com/pypi/p
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:31:57 UTC
+        Synced at 2026-01-20 19:39:13 UTC
     </footer>
 </body>
 </html>

@@ -23,17 +23,17 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/qtfkwk">@qtfkwk</a></div>
-            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+            <div class="timeline-body">Please complete the following tasks
 <ul>
 <li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
 <li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
 </ul>
-<h3>Rust Version</h3>
+Rust Version
 <p>rustc 1.78.0 (9b00956e5 2024-04-29)</p>
-<h3>Clap Version</h3>
+Clap Version
 <p>4.5.6</p>
-<h3>Minimal reproducible code</h3>
-<pre><code class="language-rust">use clap::Parser;
+Minimal reproducible code
+<pre><code>use clap::Parser;
 
 #[derive(Parser)]
 struct Cli {
@@ -47,8 +47,8 @@ fn main() {
     println!(&quot;{:#?}&quot;, cli.args);
 }
 </code></pre>
-<h3>Steps to reproduce the bug with the above code</h3>
-<pre><code class="language-bash">cargo new clap-num-args-issue
+Steps to reproduce the bug with the above code
+<pre><code>cargo new clap-num-args-issue
 cd clap-num-args-issue
 cargo add clap -F derive
 cat &lt;&lt;EOF &gt;src/main.rs
@@ -72,20 +72,20 @@ cargo run -- asdf blah # good: prints &quot;[\n    \&quot;asdf\&quot;,\n    \&qu
 cargo run -- asdf blah spam # good: prints &quot;[\n    \&quot;asdf\&quot;,\n    \&quot;blah\&quot;,\n    \&quot;spam\&quot;,\n]\n&quot;
 </code></pre>
 <p>Error when running <code>cargo run -- asdf</code>:</p>
-<pre><code class="language-text">error: 2 more values required by '[ARG] [ARG]...'; only 1 was provided
+<pre><code>error: 2 more values required by &#x27;[ARG] [ARG]...&#x27;; only 1 was provided
 </code></pre>
-<p>Shouldn't it say either of the following?</p>
+<p>Shouldn&#x27;t it say either of the following?</p>
 <ol>
-<li><code>error: 1 more value required by '[ARG] [ARG]...'; only 1 was provided</code></li>
-<li><code>error: 2 values required by '[ARG] [ARG]...'; only 1 was provided</code> (my personal preference is for this one)</li>
+<li><code>error: 1 more value required by &#x27;[ARG] [ARG]...&#x27;; only 1 was provided</code></li>
+<li><code>error: 2 values required by &#x27;[ARG] [ARG]...&#x27;; only 1 was provided</code> (my personal preference is for this one)</li>
 </ol>
-<h3>Actual Behaviour</h3>
+Actual Behaviour
 <p>There are 2 issues:</p>
 <ol>
 <li>With num_args set to <code>2..</code> and user gives 0, it does <strong>not</strong> produce an error as it should because the minimum number of args is 2</li>
 <li>If the user gives 1 arg, it errors, but the message says it needs &quot;2 <em>more</em> args&quot; which is wrong; it needs a minimum of 2 args and 1 was given, so it needs 1 more arg not 2</li>
 </ol>
-<h3>Expected Behaviour</h3>
+Expected Behaviour
 <ol>
 <li>With num_args set to <code>2..</code> and user gives 0, it should produce an error saying that it requires 2 args and 0 were given</li>
 <li>If the user gives 1 arg, it should say it requires 2 args and 1 was given<ul>
@@ -93,19 +93,19 @@ cargo run -- asdf blah spam # good: prints &quot;[\n    \&quot;asdf\&quot;,\n   
 </ul>
 </li>
 </ol>
-<h3>Additional Context</h3>
+Additional Context
 <ol>
 <li><p>Unsure root cause on this one... a quick search did not find it... but I imagine that somewhere it tests the len against the num_args range (?)</p>
 </li>
 <li><p>https://github.com/clap-rs/clap/blob/2f645d3e81c783a4e76ad17f1ccf283a58b75660/clap_builder/src/error/format.rs#L340:</p>
 <p>should be:</p>
-<pre><code class="language-rust">&quot;{}{min_values}{} values required by '{}{invalid_arg}{}'; only {}{actual_num_values}{}{were_provided}&quot;,
+<pre><code>&quot;{}{min_values}{} values required by &#x27;{}{invalid_arg}{}&#x27;; only {}{actual_num_values}{}{were_provided}&quot;,
 </code></pre>
 <p><em>remove the word &quot;more&quot;</em></p>
 </li>
 </ol>
-<h3>Debug Output</h3>
-<pre><code class="language-text">$ cargo run -- asdf
+Debug Output
+<pre><code>$ cargo run -- asdf
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.02s
      Running `target/debug/clap-num-args-issue asdf`
 [clap_builder::builder::command]Command::_do_parse
@@ -120,7 +120,7 @@ cargo run -- asdf blah spam # good: prints &quot;[\n    \&quot;asdf\&quot;,\n   
 [clap_builder::builder::debug_asserts]Arg::_debug_asserts:help
 [clap_builder::builder::debug_asserts]Command::_verify_positionals
 [clap_builder::parser::parser]Parser::get_matches_with
-[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing '&quot;asdf&quot;'
+[clap_builder::parser::parser]Parser::get_matches_with: Begin parsing &#x27;&quot;asdf&quot;&#x27;
 [clap_builder::parser::parser]Parser::possible_subcommand: arg=Ok(&quot;asdf&quot;)
 [clap_builder::parser::parser]Parser::get_matches_with: sc=None
 [clap_builder::parser::parser]Parser::get_matches_with: Positional counter...1
@@ -143,16 +143,16 @@ cargo run -- asdf blah spam # good: prints &quot;[\n    \&quot;asdf\&quot;,\n   
 [clap_builder::builder::command]Auto
 [clap_builder::builder::command]Command::color: Color setting...
 [clap_builder::builder::command]Auto
-error: 2 more values required by '[ARG] [ARG]...'; only 1 was provided
+error: 2 more values required by &#x27;[ARG] [ARG]...&#x27;; only 1 was provided
 
 Usage: clap-num-args-issue [ARG] [ARG]...
 
-For more information, try '--help'.
+For more information, try &#x27;--help&#x27;.
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">C-bug</span> added by @qtfkwk on 2024-06-10 12:46</div>
+            <div class="event">Label <span class="label">C-bug</span> added by <a href="https://github.com/qtfkwk">@qtfkwk</a> on 2024-06-10 12:46</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-06-10 13:59</div>
@@ -167,8 +167,8 @@ For more information, try '--help'.
 <blockquote>
 <p>Specifies the number of arguments parsed per occurrence</p>
 </blockquote>
-<p>This isn't as obvious for positionals but for options, the behavior is more clear.</p>
-<pre><code class="language-rust">use clap::Parser;
+<p>This isn&#x27;t as obvious for positionals but for options, the behavior is more clear.</p>
+<pre><code>use clap::Parser;
 
 #[derive(Parser)]
 struct Cli {
@@ -182,7 +182,7 @@ fn main() {
     println!(&quot;{:#?}&quot;, cli.args);
 }
 </code></pre>
-<pre><code class="language-console">$ # good: 2+ values
+<pre><code>$ # good: 2+ values
 $ cmd --args asdf blah
 $ # good: 2+ values
 $ cmd --args asdf blah spam
@@ -196,7 +196,7 @@ $ # good:  no occurrences
 $ cmd
 </code></pre>
 <p>What you are looking for is <code>required = true</code>.  You also likely want to set <code>action = ArgAction::Set</code> because a <code>Vec</code> is automatically an <code>Append</code>, see https://docs.rs/clap/latest/clap/_derive/index.html#arg-types</p>
-<pre><code class="language-rust">use clap::Parser;
+<pre><code>use clap::Parser;
 use clap::builder::ArgAction;
 
 #[derive(Parser)]
@@ -214,10 +214,10 @@ fn main() {
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../pulls/5527.html">clap-rs/clap#5527</a> on 2024-06-10 14:17</div>
+            <div class="event">Referenced in <a>clap-rs/clap#5527</a> on 2024-06-10 14:17</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @epage on 2024-06-10 14:24</div>
+            <div class="event">Closed by <a href="https://github.com/epage">@epage</a> on 2024-06-10 14:24</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/qtfkwk">@qtfkwk</a> on 2024-06-12 13:45</div>
@@ -225,15 +225,15 @@ fn main() {
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/5581.html">clap-rs/clap#5581</a> on 2024-07-15 14:45</div>
+            <div class="event">Referenced in <a>clap-rs/clap#5581</a> on 2024-07-15 14:45</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/5948.html">clap-rs/clap#5948</a> on 2025-03-13 18:51</div>
+            <div class="event">Referenced in <a>clap-rs/clap#5948</a> on 2025-03-13 18:51</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:49:22 UTC
+        Synced at 2026-01-20 20:00:11 UTC
     </footer>
 </body>
 </html>

@@ -23,92 +23,92 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/JWLee89">@JWLee89</a></div>
-            <div class="timeline-body"><h2>Related Issue</h2>
+            <div class="timeline-body">Related Issue
 <p>https://github.com/astral-sh/uv/issues/11796</p>
-<h2>Summary</h2>
+Summary
 <ol>
 <li>Add meaningful message when user invokes uv with <code>run python&lt;valid-python-version&gt;</code>.</li>
 </ol>
 <p>✅ &quot;python&quot;, &quot;python3&quot;, &quot;python3.9&quot;, &quot;python4&quot;, &quot;python3.10&quot;, &quot;python3.13.3&quot;, &quot;python39&quot; (yes, python39 might still be released in 100 years 😆 )
 ❌ &quot;python3abc&quot;, &quot;python3.12b3&quot;, &quot;&quot;, &quot;python-foo&quot;</p>
-<ol start="2">
-<li>Contextual information added depending on whether the command was run inside of a <code>uv project</code> or not. See: https://github.com/astral-sh/uv/pull/12201/files#diff-423c3a82aab6dba4068dd7675391fc9328a66682131dbf2043e7847ab4ba8661R1092</li>
+<ol>
+<li>Contextual information added depending on whether the command was run inside of a <code>uv project</code> or not. See: <a href="https://github.com/astral-sh/uv/pull/12201">astral-sh/uv#12201</a>/files#diff-423c3a82aab6dba4068dd7675391fc9328a66682131dbf2043e7847ab4ba8661R1092</li>
 </ol>
-<h2>Automated Tests</h2>
+Automated Tests
 <ol>
 <li>Added unit test for new functions created for parsing and validating python executable entered by user</li>
 <li>TODO: Once specs are finalized through discussions in PR, will create integration tests if necessary</li>
 </ol>
-<h2>Need to Discuss</h2>
+Need to Discuss
 <ol>
 <li>Invoking python via its patch version - E.g. <code>python3.11.9</code> is invalid. However, uv supports <code>uv run -p 3.11.9 python</code>, which is why when we do the following:</li>
 </ol>
-<pre><code class="language-python">uv run python3.11.9
+<pre><code>uv run python3.11.9
 </code></pre>
 <p>We will get the following error:</p>
-<pre><code class="language-shell">error: Failed to spawn: `python3.11.9`
+<pre><code>error: Failed to spawn: `python3.11.9`
   Caused by: `python3.11.9` not available in the environment, which uses python `3.11.9`. Did you mean to search for a Python 3.11.9 environment with `uv run -p 3.11.9 python`?
 </code></pre>
 <p>Is this okay? If not, we need to define the specs in the PR here.</p>
-<ol start="2">
+<ol>
 <li>Supported python executable specs are defined as:</li>
 </ol>
 <ul>
 <li>is stable version</li>
 <li>is not <code>post</code> version</li>
 </ul>
-<p>See:https://github.com/astral-sh/uv/pull/12201/files#diff-423c3a82aab6dba4068dd7675391fc9328a66682131dbf2043e7847ab4ba8661R1572-R1574</p>
+<p>See:<a href="https://github.com/astral-sh/uv/pull/12201">astral-sh/uv#12201</a>/files#diff-423c3a82aab6dba4068dd7675391fc9328a66682131dbf2043e7847ab4ba8661R1572-R1574</p>
 <p>Would this be okay?
 We can change the specs if needed. Lets discuss.</p>
-<h2>Manual Test</h2>
-<h3>Case 1: run outside of project</h3>
+Manual Test
+Case 1: run outside of project
 <ol>
 <li>Case where no project is created. Look for a python executable version that is not available in my local machine (in my case, it was <code>python3.9</code>)</li>
 <li>Run <code>cargo run -- run python3.9.3</code></li>
 </ol>
-<pre><code class="language-Shell">error: Failed to spawn: `python3.9.3`
+<pre><code>error: Failed to spawn: `python3.9.3`
   Caused by: `python3.9.3` not available in the environment, which uses python `3.11.9`. Did you mean to search for a Python 3.9.3 environment with `uv run -p 3.9.3 python`?
 </code></pre>
-<ol start="5">
+<ol>
 <li>Run <code>cargo run -- run python3.9</code></li>
 </ol>
-<pre><code class="language-shell">error: Failed to spawn: `python3.9`
+<pre><code>error: Failed to spawn: `python3.9`
   Caused by: `python3.9` not available in the environment, which uses python `3.11.9`. Did you mean to search for a Python 3.9 environment with `uv run -p 3.9 python`?
 </code></pre>
-<ol start="6">
+<ol>
 <li>Run <code>cargo run -- run python3.11</code></li>
 </ol>
-<pre><code class="language-Shell">Running `target/debug/uv run python3.11`
+<pre><code>Running `target/debug/uv run python3.11`
 Python 3.11.9 (main, Apr  2 2024, 08:25:04) [Clang 15.0.0 (clang-1500.3.9.4)] on darwin
 Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
 </code></pre>
-<ol start="7">
+<ol>
 <li>Run <code>cargo run -- run python3.11.9</code></li>
 </ol>
-<pre><code class="language-Shell"> Running `target/debug/uv run python3.11.9`
+<pre><code> Running `target/debug/uv run python3.11.9`
 error: Failed to spawn: `python3.11.9`
   Caused by: `python3.11.9` not available in the environment, which uses python `3.11.9`. Did you mean to search for a Python 3.11.9 environment with `uv run -p 3.11.9 python`?
 </code></pre>
 <p><strong>IMPORTANT</strong>: Is this acceptable? Invoking python by its patch version is not supported, so this is the expected behavior, but we need to discuss whether this behavior is acceptable.</p>
-<h3>Case 2: run inside of project</h3>
+Case 2: run inside of project
 <p>Create project using <code>uv init example-app</code></p>
 <ol>
 <li><code>uv run python3.13</code></li>
 </ol>
-<pre><code class="language-shell">error: Failed to spawn: `python3.13`
+<pre><code>error: Failed to spawn: `python3.13`
   Caused by: `python3.13` not available in the project environment, which uses python `3.12.5`. Did you mean to change the environment to Python 3.13 with `uv run -p 3.13 python`?
 </code></pre>
-<ol start="2">
+<ol>
 <li><code>uv run python3</code></li>
 </ol>
-<pre><code class="language-shell">uv run python3
+<pre><code>uv run python3
 Python 3.12.5 (main, Aug  6 2024, 19:08:49) [Clang 15.0.0 (clang-1500.3.9.4)] on darwin
 Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @zanieb by @charliermarsh on 2025-03-16 17:40</div>
+            <div class="event">Assigned to <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-16 17:40</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-16 15:36</div>
@@ -130,10 +130,10 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">error messages</span> added by @zanieb on 2025-04-16 15:40</div>
+            <div class="event">Label <span class="label">error messages</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-16 15:40</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @jtfmumm by @jtfmumm on 2025-04-16 15:45</div>
+            <div class="event">Assigned to <a href="https://github.com/jtfmumm">@jtfmumm</a> by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-04-16 15:45</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-04-16 16:00</div>
@@ -146,7 +146,7 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/src/commands/project/run.rs</code>:1628 on 2025-04-16 16:04</div>
-            <div class="timeline-body"><p>Since this is likely a typo and we probably don't have to worry about the distant future at the moment, should we detect cases over 37 and treat them as typos? Not necessary for this PR though</p>
+            <div class="timeline-body"><p>Since this is likely a typo and we probably don&#x27;t have to worry about the distant future at the moment, should we detect cases over 37 and treat them as typos? Not necessary for this PR though</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -159,23 +159,23 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/run.rs</code>:1585 on 2025-04-16 16:06</div>
-            <div class="timeline-body"><p>Worth noting this isn't sufficient for Windows, where you'll have a <code>.exe</code> suffix (though versioned executables are not common there)</p>
+            <div class="timeline-body"><p>Worth noting this isn&#x27;t sufficient for Windows, where you&#x27;ll have a <code>.exe</code> suffix (though versioned executables are not common there)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/JWLee89">@JWLee89</a> on <code>crates/uv/src/commands/project/run.rs</code>:1585 on 2025-04-19 06:40</div>
             <div class="timeline-body"><p>@zanieb</p>
 <p>Thank you for the followup!</p>
-<h2>Windows handling logic</h2>
-<p>Good point! I don't a windows machine available to me right now, but my guess is that the access pattern for invoking python will be something like the following:</p>
-<pre><code class="language-Shell"># versioned executable
+Windows handling logic
+<p>Good point! I don&#x27;t a windows machine available to me right now, but my guess is that the access pattern for invoking python will be something like the following:</p>
+<pre><code># versioned executable
 python3.11.exe
 # General 
 python.exe
 </code></pre>
 <p>Would this be correct?</p>
-<p>A simple approach could be also stripping suffix <code>.exe</code>. I don't think we should introduce complexity by checking whether the host is running windows unless this contextual information is already available without extra compute somewhere else.</p>
-<h2>Additional Possible Cases for Windows.</h2>
+<p>A simple approach could be also stripping suffix <code>.exe</code>. I don&#x27;t think we should introduce complexity by checking whether the host is running windows unless this contextual information is already available without extra compute somewhere else.</p>
+Additional Possible Cases for Windows.
 <p>From some quick ChatGPT search, I found the following:</p>
 <p>|   Command   |                                Notes                               |
 |:-----------:|:------------------------------------------------------------------:|
@@ -185,7 +185,7 @@ python.exe
 | py -X.Y     | e.g., py -3.10 to launch a specific version via Python launcher.   |
 | pythonw.exe | Launches Python without a console window (GUI apps).               |</p>
 <p>Out of these items above, do we need to support the py launcher (E.g. <code>py</code>)? Just wanted to be sure :)</p>
-<h2>Edge cases</h2>
+Edge cases
 <p>After thinking I just realized that people might invoke python using the following paths:</p>
 <pre><code># absolute path
 /usr/bin/python3
@@ -207,7 +207,7 @@ python.exe
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/JWLee89">@JWLee89</a> on <code>crates/uv/src/commands/project/run.rs</code>:1110 on 2025-04-19 06:53</div>
-            <div class="timeline-body"><p>Applied: https://github.com/astral-sh/uv/pull/12201/commits/e4a2fa1c1335af89e960036526d8456baef25fd9</p>
+            <div class="timeline-body"><p>Applied: <a href="https://github.com/astral-sh/uv/pull/12201">astral-sh/uv#12201</a>/commits/e4a2fa1c1335af89e960036526d8456baef25fd9</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -227,7 +227,7 @@ python.exe
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/JWLee89">@JWLee89</a> on <code>crates/uv/src/commands/project/run.rs</code>:1110 on 2025-04-20 07:31</div>
-            <div class="timeline-body"><p>Applied: https://github.com/astral-sh/uv/pull/12201/commits/0cb2d5e35dddaabf6eef93410643bbc58e8098fd</p>
+            <div class="timeline-body"><p>Applied: <a href="https://github.com/astral-sh/uv/pull/12201">astral-sh/uv#12201</a>/commits/0cb2d5e35dddaabf6eef93410643bbc58e8098fd</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -236,7 +236,7 @@ python.exe
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/JWLee89">@JWLee89</a> on <code>crates/uv/src/commands/project/run.rs</code>:1585 on 2025-04-20 13:21</div>
-            <div class="timeline-body"><p>Applied here: https://github.com/astral-sh/uv/pull/12201/commits/e6a801d0fe3deb62318b1e5aed5a18a3e350517b</p>
+            <div class="timeline-body"><p>Applied here: <a href="https://github.com/astral-sh/uv/pull/12201">astral-sh/uv#12201</a>/commits/e6a801d0fe3deb62318b1e5aed5a18a3e350517b</p>
 <p>Specs include:</p>
 <ul>
 <li>strip <code>.exe</code> suffix</li>
@@ -247,21 +247,21 @@ python.exe
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @zanieb by @JWLee89 on 2025-04-20 13:21</div>
+            <div class="event">Review requested from <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/JWLee89">@JWLee89</a> on 2025-04-20 13:21</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @jtfmumm by @JWLee89 on 2025-04-20 13:21</div>
+            <div class="event">Review requested from <a href="https://github.com/jtfmumm">@jtfmumm</a> by <a href="https://github.com/JWLee89">@JWLee89</a> on 2025-04-20 13:21</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Issue-11796: Provide more descriptive message for uv run pythonx.xx" to "Provide more descriptive message for uv run pythonx.xx" by @konstin on 2025-04-24 13:17</div>
+            <div class="event">Renamed from &quot;Issue-11796: Provide more descriptive message for uv run pythonx.xx&quot; to &quot;Provide more descriptive message for uv run pythonx.xx&quot; by <a href="https://github.com/konstin">@konstin</a> on 2025-04-24 13:17</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Provide more descriptive message for uv run pythonx.xx" to "More descriptive error message for `uv run pythonx.xx`" by @konstin on 2025-04-24 13:18</div>
+            <div class="event">Renamed from &quot;Provide more descriptive message for uv run pythonx.xx&quot; to &quot;More descriptive error message for `uv run pythonx.xx`&quot; by <a href="https://github.com/konstin">@konstin</a> on 2025-04-24 13:18</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-04-24 16:15</div>
             <div class="timeline-body"><p>I pushed some snapshot (integration) tests for a handful of cases.</p>
-<p>I think we might want to update the error messages for <code>uv run pythonX.X.X</code> (the case you called out in your description). At least when it matches the patch version in use, it's a bit confusing. Though it's nice to have the rest of the message when it's not matched. But it seems like an opportunity to indicate that this is not expected usage. The first snapshot test I added captures this behavior.</p>
+<p>I think we might want to update the error messages for <code>uv run pythonX.X.X</code> (the case you called out in your description). At least when it matches the patch version in use, it&#x27;s a bit confusing. Though it&#x27;s nice to have the rest of the message when it&#x27;s not matched. But it seems like an opportunity to indicate that this is not expected usage. The first snapshot test I added captures this behavior.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -272,27 +272,27 @@ python.exe
 <p>Thank you so much for adding the snapshot (integration) tests! 🙇
 I will keep this in mind when working on future PRs to add integration tests when necessary.</p>
 <blockquote>
-<p>I think we might want to update the error messages for <code>uv run pythonX.X.X</code> (the case you called out in your description). At least when it matches the patch version in use, it's a bit confusing. Though it's nice to have the rest of the message when it's not matched. But it seems like an opportunity to indicate that this is not expected usage. The first snapshot test I added captures this behavior.</p>
+<p>I think we might want to update the error messages for <code>uv run pythonX.X.X</code> (the case you called out in your description). At least when it matches the patch version in use, it&#x27;s a bit confusing. Though it&#x27;s nice to have the rest of the message when it&#x27;s not matched. But it seems like an opportunity to indicate that this is not expected usage. The first snapshot test I added captures this behavior.</p>
 </blockquote>
 <p>I absolutely agree and thank you for bringing this up!
-Applied: https://github.com/astral-sh/uv/pull/12201/commits/99765005f3ef2e5e4da44a83a300980bdcd49b42</p>
+Applied: <a href="https://github.com/astral-sh/uv/pull/12201">astral-sh/uv#12201</a>/commits/99765005f3ef2e5e4da44a83a300980bdcd49b42</p>
 <p>I should have clarified about this point properly in this PR.
 In my environment, I reproduced it with the following command:</p>
-<pre><code class="language-bash">uv run python3.13.2
+<pre><code>uv run python3.13.2
 </code></pre>
 <p>Results:</p>
-<pre><code class="language-bash">`python3.13.2` not available in the virtual environment, which uses python `3.13.2`. Did you mean to search for a Python 3.13.2 environment with `uv run -p 3.13.2 python`?
+<pre><code>`python3.13.2` not available in the virtual environment, which uses python `3.13.2`. Did you mean to search for a Python 3.13.2 environment with `uv run -p 3.13.2 python`?
 </code></pre>
-<h2>Description of update</h2>
+Description of update
 <p>When users specify up to the patch version:</p>
-<pre><code class="language-bash">uv run python3.3.3
+<pre><code>uv run python3.3.3
 </code></pre>
 <p>I updated so that if users specify up to the patch version. E.g. <code>python3.12.x</code>, we get a error message that tells users to either use <code>uv run -p</code> or use <code>uv run</code> without the patch version (see below).</p>
-<pre><code class="language-bash">error: Failed to spawn: `python3.3.3`
+<pre><code>error: Failed to spawn: `python3.3.3`
   Caused by: Please omit patch version. Try: `uv run python3.3`. Did you mean to search for a Python 3.3.3 environment with `uv run -p 3.3.3 python`?
 </code></pre>
 <p>However, if we omit patch version, we will get the following (same behavior as before):</p>
-<pre><code class="language-bash">error: Failed to spawn: `python3.3`
+<pre><code>error: Failed to spawn: `python3.3`
   Caused by: `3.3` not available in the virtual environment, which uses python `3.13.2`. Did you mean to search for a Python 3.3 environment with `uv run -p 3.3 python`?
 </code></pre>
 <p><strong>Note</strong>: message is subject to discussion and I think after iterating together, we can come up with the finalized message soon :).
@@ -318,13 +318,13 @@ No rush: just a gentle followup (I know that you are both very busy).</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-06-09 11:50</div>
-            <div class="timeline-body"><p>Hi @JWLee89. Thanks for your patience on this PR. We still need to make a decision on the messaging. I'll follow up with you.</p>
+            <div class="timeline-body"><p>Hi @JWLee89. Thanks for your patience on this PR. We still need to make a decision on the messaging. I&#x27;ll follow up with you.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/JWLee89">@JWLee89</a> on 2025-06-10 06:34</div>
             <div class="timeline-body"><blockquote>
-<p>Hi @JWLee89. Thanks for your patience on this PR. We still need to make a decision on the messaging. I'll follow up with you.</p>
+<p>Hi @JWLee89. Thanks for your patience on this PR. We still need to make a decision on the messaging. I&#x27;ll follow up with you.</p>
 </blockquote>
 <p>Hi @jtfmumm ,</p>
 <p>Thank you for the update! 👍</p>
@@ -341,7 +341,7 @@ No need to respond right away, I know that you both are very busy 😄 .</p>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:42:26 UTC
+        Synced at 2026-01-20 19:51:19 UTC
     </footer>
 </body>
 </html>

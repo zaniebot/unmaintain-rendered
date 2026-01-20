@@ -23,34 +23,34 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/gofri">@gofri</a></div>
-            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+            <div class="timeline-body">What version of ripgrep are you using?
 <p>13.0.0</p>
-<h4>How did you install ripgrep?</h4>
+How did you install ripgrep?
 <p>brew</p>
-<h4>What operating system are you using ripgrep on?</h4>
+What operating system are you using ripgrep on?
 <p>MacOS M1</p>
-<h4>Describe your bug.</h4>
+Describe your bug.
 <p>When providing multiple patterns via either <code>-e</code> or <code>-f</code>,
 specified flags affect all following patterns.</p>
-<h4>What are the steps to reproduce the behavior?</h4>
-<pre><code class="language-$">Text
+What are the steps to reproduce the behavior?
+<pre><code>Text
 </code></pre>
-<h4>What is the actual behavior?</h4>
+What is the actual behavior?
 <p>rg respect the case-insensitive flag <code>(?i)</code> from the first pattern in the second pattern as well.</p>
-<pre><code class="language-$">DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+<pre><code>DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
 Text
 </code></pre>
 <p>Same goes for:
-<code>echo 'MyText' | rg -f &lt;(printf '(?i)notintext\ntext')</code></p>
-<h4>What is the expected behavior?</h4>
+<code>echo &#x27;MyText&#x27; | rg -f &lt;(printf &#x27;(?i)notintext\ntext&#x27;)</code></p>
+What is the expected behavior?
 <p>Empty result (the case-insensitive flag should not affect the second pattern).</p>
-<h4>What do you think ripgrep should have done?</h4>
+What do you think ripgrep should have done?
 <p>Treat each pattern independently.
-Specifically, for these pattern, I'd expect the merged pattern to be:
-<code>'(?:(?i)notintext')|(?:'text')</code>
+Specifically, for these pattern, I&#x27;d expect the merged pattern to be:
+<code>&#x27;(?:(?i)notintext&#x27;)|(?:&#x27;text&#x27;)</code>
 rather than:
-<code>'(?i)notintext'|'text'</code></p>
-<h4>Side notes:</h4>
+<code>&#x27;(?i)notintext&#x27;|&#x27;text&#x27;</code></p>
+Side notes:
 <ol>
 <li>Works as expected if I manually wrap each pattern as <code>(?:PATTERN)</code></li>
 <li>Works as expected if I replace the first pattern with <code>(?i:notintext)</code></li>
@@ -62,11 +62,11 @@ rather than:
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-03-29 15:11</div>
             <div class="timeline-body"><p>Yeah so you are indeed correct that ripgrep just does a simple join with <code>|</code> as the delimiter: https://github.com/BurntSushi/ripgrep/blob/041544853c86dde91c49983e5ddd0aa799bd2831/crates/core/args.rs#L703</p>
 <p>ripgrep could make the situation much better by wrapping each pattern in a <code>(?:&lt;pattern&gt;)</code>. It would resolve your specific problem for example. And this would be easy to do I think. And it would work for PCRE2. So we should do that.</p>
-<p>But it doesn't quite make things completely independent. Because you could still do things like <code>-e foo)(?i)bar(</code> to sneakily insert a <code>(?i)</code> (for example). Fixing <em>that</em> probably requires trying to parse each pattern individually and ensuring each pattern is itself valid. A little more work, but not a huge deal to do. However, that won't work for PCRE2 unless you go and actually try to compile every pattern individually. (Because PCRE2 doesn't expose its own parser.) That is potentially a lot more work. Another possibility is to just write a simple little mini parser that just makes sure parentheses are balanced. I think you'd just have to account for escapes and character classes, which should be... somewhat simple?</p>
+<p>But it doesn&#x27;t quite make things completely independent. Because you could still do things like <code>-e foo)(?i)bar(</code> to sneakily insert a <code>(?i)</code> (for example). Fixing <em>that</em> probably requires trying to parse each pattern individually and ensuring each pattern is itself valid. A little more work, but not a huge deal to do. However, that won&#x27;t work for PCRE2 unless you go and actually try to compile every pattern individually. (Because PCRE2 doesn&#x27;t expose its own parser.) That is potentially a lot more work. Another possibility is to just write a simple little mini parser that just makes sure parentheses are balanced. I think you&#x27;d just have to account for escapes and character classes, which should be... somewhat simple?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2023-03-29 15:11</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-03-29 15:11</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/gofri">@gofri</a> on 2023-04-11 10:01</div>
@@ -87,24 +87,24 @@ p.s.2. The code for the kind/error is trivial so I left it out for this comment.
         if escape {
             // escape takes precedence over all states; render the current char literal
             escape = false;
-        } else if c == '\\' {
+        } else if c == &#x27;\\&#x27; {
             // escape takes precedence over all states; move to escape state
             escape = true;
         } else if square_depth &gt; 0 {
             // character classes take precedence over round brackets
             match c {
-                '[' =&gt; square_depth += 1,
-                ']' =&gt; square_depth -= 1,
+                &#x27;[&#x27; =&gt; square_depth += 1,
+                &#x27;]&#x27; =&gt; square_depth -= 1,
                 _ =&gt; {} // any char is literal inside character classes (balance-wise)
             }
-        } else if round_depth &gt; 0 &amp;&amp; c == ')' {
+        } else if round_depth &gt; 0 &amp;&amp; c == &#x27;)&#x27; {
             // only acconut for round bracket closures for balance correctness
             round_depth -= 1;
         } else {
             // the ground state: move to a higher state or ignore
             match c {
-                '(' =&gt; round_depth += 1,
-                '[' =&gt; square_depth += 1,
+                &#x27;(&#x27; =&gt; round_depth += 1,
+                &#x27;[&#x27; =&gt; square_depth += 1,
                 _ =&gt; {} // ignore literal chars and bracket closers
             };
         }
@@ -145,44 +145,44 @@ fn join_patterns_safely(patterns: &amp;[String]) -&gt; Result&lt;String, Balance
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-04-11 11:10</div>
-            <div class="timeline-body"><p>Thanks for the effort! Unfortunately, it's just not <em>quite</em> right. It doesn't account for the fact that <code>[[]</code> and <code>[\[]</code> are equivalent, for example. Honestly, there's probably other stuff. And especially so for PCRE2, which has a fair bit more syntax than the default engine.</p>
-<p>After thinking on it some more, I think for now, I'd rather just add the <code>(?:&lt;pattern&gt;)</code> wrapping and call that good enough. If folks end up running into problems there, then we can re-evaluate later. But I might just end up marking it as <code>wontfix</code>.</p>
-<p>Also, one small note: the perf for something like a routine for what you wrote is basically insignificant. Consider how much work a regex engine needs to do to compile a regex into a matcher. It's <em>a lot</em> more work than a simple parser like that. :-)</p>
+            <div class="timeline-body"><p>Thanks for the effort! Unfortunately, it&#x27;s just not <em>quite</em> right. It doesn&#x27;t account for the fact that <code>[[]</code> and <code>[\[]</code> are equivalent, for example. Honestly, there&#x27;s probably other stuff. And especially so for PCRE2, which has a fair bit more syntax than the default engine.</p>
+<p>After thinking on it some more, I think for now, I&#x27;d rather just add the <code>(?:&lt;pattern&gt;)</code> wrapping and call that good enough. If folks end up running into problems there, then we can re-evaluate later. But I might just end up marking it as <code>wontfix</code>.</p>
+<p>Also, one small note: the perf for something like a routine for what you wrote is basically insignificant. Consider how much work a regex engine needs to do to compile a regex into a matcher. It&#x27;s <em>a lot</em> more work than a simple parser like that. :-)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/gofri">@gofri</a> on 2023-04-11 11:36</div>
             <div class="timeline-body"><p>Thanks for the quick response!</p>
 <blockquote>
-<p>It doesn't account for the fact that [[] and [[] are equivalent, for example.</p>
+<p>It doesn&#x27;t account for the fact that [[] and [[] are equivalent, for example.</p>
 </blockquote>
 <p>I actually tested for unescaped brackets inside char-class and got a parse error:</p>
-<pre><code>echo '\[' | rg '[[]'
+<pre><code>echo &#x27;\[&#x27; | rg &#x27;[[]&#x27;
 regex parse error:
     [[]
      ^^
 error: unclosed character class
 </code></pre>
 <p>But I tested now with <code>--engine pcre2</code> and it does work there, as you said.</p>
-<p>I looked for other cases in PCRE2 now and didn't find a particular problem.
-Specifically, since names can't include curly/round brackets, we can ignore <code>&lt;&gt;</code> because it's within the constraints (i.e. an invalid pattern can't lead to a valid combined pattern).</p>
-<p>I feel you on going with the <code>(?:&lt;pattern&gt;)</code> wrapping, but I think that fixing the <code>[[]</code> issue shouldn't be too hard at this point.
-So, let me know if you'd consider merging it if I fixed that part (or otherwise, if you can think of other uncovered cases that I missed, and I'll just quit the attempt anyway)</p>
+<p>I looked for other cases in PCRE2 now and didn&#x27;t find a particular problem.
+Specifically, since names can&#x27;t include curly/round brackets, we can ignore <code>&lt;&gt;</code> because it&#x27;s within the constraints (i.e. an invalid pattern can&#x27;t lead to a valid combined pattern).</p>
+<p>I feel you on going with the <code>(?:&lt;pattern&gt;)</code> wrapping, but I think that fixing the <code>[[]</code> issue shouldn&#x27;t be too hard at this point.
+So, let me know if you&#x27;d consider merging it if I fixed that part (or otherwise, if you can think of other uncovered cases that I missed, and I&#x27;ll just quit the attempt anyway)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-04-11 11:42</div>
             <div class="timeline-body"><p>Whoops, I meant that <code>[]]</code> and <code>[\]]</code> are equivalent.</p>
-<p>For now, I'd rather go with the <code>(?:pattern)</code> approach and just stop there. It's simple and fixes the most pressing problem.</p>
+<p>For now, I&#x27;d rather go with the <code>(?:pattern)</code> approach and just stop there. It&#x27;s simple and fixes the most pressing problem.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2023-07-08 22:52</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-07-08 22:52</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:43:39 UTC
+        Synced at 2026-01-20 18:48:13 UTC
     </footer>
 </body>
 </html>

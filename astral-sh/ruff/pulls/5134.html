@@ -23,35 +23,35 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>In #5074, we introduced an abstraction to support local symbol renames (&quot;local&quot; here refers to &quot;within a module&quot;). However, that abstraction didn't support <code>global</code> and <code>nonlocal</code> symbols. This PR extends it to those cases.</p>
+            <div class="timeline-body">Summary
+<p>In #5074, we introduced an abstraction to support local symbol renames (&quot;local&quot; here refers to &quot;within a module&quot;). However, that abstraction didn&#x27;t support <code>global</code> and <code>nonlocal</code> symbols. This PR extends it to those cases.</p>
 <p>Broadly, there are considerations.</p>
-<p>First, if we're renaming a symbol in a scope in which it is declared <code>global</code> or <code>nonlocal</code>. For example, given:</p>
-<pre><code class="language-python">x = 1
+<p>First, if we&#x27;re renaming a symbol in a scope in which it is declared <code>global</code> or <code>nonlocal</code>. For example, given:</p>
+<pre><code>x = 1
 
 def foo():
     global x
 </code></pre>
-<p>Then when renaming <code>x</code> in <code>foo</code>, we need to detect that it's <code>global</code> and instead perform the rename starting from the module scope.</p>
+<p>Then when renaming <code>x</code> in <code>foo</code>, we need to detect that it&#x27;s <code>global</code> and instead perform the rename starting from the module scope.</p>
 <p>Second, when renaming a symbol, we need to determine the scopes in which it is declared <code>global</code> or <code>nonlocal</code>. This is effectively the inverse of the above: when renaming <code>x</code> in the module scope, we need to detect that we should <em>also</em> rename <code>x</code> in <code>foo</code>.</p>
 <p>To support these cases, the renaming algorithm was adjusted as follows:</p>
 <ul>
 <li>When we start a rename in a scope, determine whether the symbol is declared <code>global</code> or <code>nonlocal</code> by looking for a <code>global</code> or <code>nonlocal</code> binding. If it is, start the rename in the defining scope. (This requires storing the defining scope on the <code>nonlocal</code> binding, which is new.)</li>
 <li>We then perform the rename in the defining scope.</li>
-<li>We then check whether the symbol was declared as <code>global</code> or <code>nonlocal</code> in any scopes, and perform the rename in those scopes too. (Thankfully, this doesn't need to be done recursively.)</li>
+<li>We then check whether the symbol was declared as <code>global</code> or <code>nonlocal</code> in any scopes, and perform the rename in those scopes too. (Thankfully, this doesn&#x27;t need to be done recursively.)</li>
 </ul>
 <p>Closes #5092.</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>Added some additional snapshot tests.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-06-16 02:42</div>
-            <div class="timeline-body"><h2>PR Check Results</h2>
-<h3>Ecosystem</h3>
+            <div class="timeline-body">PR Check Results
+Ecosystem
 <p>✅ ecosystem check detected no changes.</p>
-<h3>Benchmark</h3>
-<h4>Linux</h4>
+Benchmark
+Linux
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 formatter/large/dataset.py                 1.00      6.9±0.02ms     5.9 MB/sec    1.01      6.9±0.02ms     5.9 MB/sec
@@ -67,7 +67,7 @@ linter/default-rules/numpy/ctypeslib.py    1.00   1501.6±4.21µs    11.1 MB/sec
 linter/default-rules/numpy/globals.py      1.00    163.3±0.16µs    18.1 MB/sec    1.02    165.7±0.62µs    17.8 MB/sec
 linter/default-rules/pydantic/types.py     1.00      3.3±0.01ms     7.8 MB/sec    1.02      3.3±0.02ms     7.7 MB/sec
 </code></pre>
-<h4>Windows</h4>
+Windows
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 formatter/large/dataset.py                 1.02      9.7±0.34ms     4.2 MB/sec    1.00      9.5±0.32ms     4.3 MB/sec
@@ -83,18 +83,18 @@ linter/default-rules/numpy/ctypeslib.py    1.01      2.2±0.09ms     7.7 MB/sec 
 linter/default-rules/numpy/globals.py      1.00   244.4±13.45µs    12.1 MB/sec    1.04   253.0±14.06µs    11.7 MB/sec
 linter/default-rules/pydantic/types.py     1.01      4.6±0.19ms     5.5 MB/sec    1.00      4.6±0.16ms     5.5 MB/sec
 </code></pre>
-<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @konstin by @charliermarsh on 2023-06-16 02:59</div>
+            <div class="event">Review requested from <a href="https://github.com/konstin">@konstin</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-16 02:59</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-06-16 11:03</div>
             <div class="timeline-body"><p>Code looks good as far as i can judge</p>
-<p>I found a fun new error while trying out semantics: <code>SyntaxError: name 'y' is used prior to global declaration</code></p>
-<pre><code class="language-python">y = 1
+<p>I found a fun new error while trying out semantics: <code>SyntaxError: name &#x27;y&#x27; is used prior to global declaration</code></p>
+<pre><code>y = 1
 def c():
     y = 2
     print(y)
@@ -104,10 +104,10 @@ def c():
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2023-06-16 14:35</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-16 14:35</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-06-16 14:35</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-16 14:35</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2023-06-16 14:35</div>
@@ -115,7 +115,7 @@ def c():
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:58:08 UTC
+        Synced at 2026-01-20 18:54:34 UTC
     </footer>
 </body>
 </html>

@@ -23,32 +23,32 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Instead of using junctions, we can just write files that contain (as the file contents) the target path. This requires a little more finesse in that, as readers, we need to know where to expect these. But it also means we get to avoid junctions, which have led to a variety of confusing behaviors. Further, <code>replace_symlink</code> should now be on atomic on Windows.</p>
 <p>Closes #11263.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">no-build</span> added by @charliermarsh on 2025-02-06 01:09</div>
+            <div class="event">Label <span class="label">no-build</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-06 01:09</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2025-02-06 02:01</div>
+            <div class="event">Review requested from <a href="https://github.com/BurntSushi">@BurntSushi</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-06 02:01</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @konstin by @charliermarsh on 2025-02-06 02:01</div>
+            <div class="event">Review requested from <a href="https://github.com/konstin">@konstin</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-06 02:01</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">windows</span> added by @charliermarsh on 2025-02-06 02:02</div>
+            <div class="event">Label <span class="label">windows</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-06 02:02</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @charliermarsh on 2025-02-06 02:02</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-06 02:02</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @zanieb by @charliermarsh on 2025-02-06 02:18</div>
+            <div class="event">Review requested from <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-06 02:18</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-06 02:20</div>
-            <div class="timeline-body"><p>We might be able to remove some of the extra <code>flock</code> usages we have on Windows after this, but I want to test and evaluate that separately. The proximate motivation here is that Ofek / Datadog are seeing a really strange behavior in their Windows container whereby we had a junction that... didn't point to anything? Like, it's not that the target was gone, the target was <em>empty</em>.</p>
+            <div class="timeline-body"><p>We might be able to remove some of the extra <code>flock</code> usages we have on Windows after this, but I want to test and evaluate that separately. The proximate motivation here is that Ofek / Datadog are seeing a really strange behavior in their Windows container whereby we had a junction that... didn&#x27;t point to anything? Like, it&#x27;s not that the target was gone, the target was <em>empty</em>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -82,23 +82,23 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-cache/src/lib.rs</code>:371 on 2025-02-06 13:12</div>
             <div class="timeline-body"><p>And here.</p>
-<p>Although I guess we weren't emitting logs before. I wonder if it might help debugging if something goes wrong here.</p>
+<p>Although I guess we weren&#x27;t emitting logs before. I wonder if it might help debugging if something goes wrong here.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-fs/src/lib.rs</code>:61 on 2025-02-06 13:20</div>
-            <div class="timeline-body"><p>Oh, okay, now that I know what you are doing here, I think I can suggest something more bullet proof that isn't too much work. Basically, on Windows, file paths are just arbitrary sequences of <code>u16</code> (with some restrictions), just like on Unix, file paths are just arbitrary sequences of <code>u8</code>. So the way to avoid the lossy conversion here is to just store the <code>u16</code> sequence. You can get the raw <code>u16</code> sequence from this API in std: https://doc.rust-lang.org/std/os/windows/ffi/trait.OsStrExt.html</p>
+            <div class="timeline-body"><p>Oh, okay, now that I know what you are doing here, I think I can suggest something more bullet proof that isn&#x27;t too much work. Basically, on Windows, file paths are just arbitrary sequences of <code>u16</code> (with some restrictions), just like on Unix, file paths are just arbitrary sequences of <code>u8</code>. So the way to avoid the lossy conversion here is to just store the <code>u16</code> sequence. You can get the raw <code>u16</code> sequence from this API in std: https://doc.rust-lang.org/std/os/windows/ffi/trait.OsStrExt.html</p>
 <p>Once you have a <code>Vec&lt;u16&gt;</code> build in memory, create a <code>Vec&lt;u8&gt;</code> with twice the length and then use <code>byteorder</code> to (safely) write the <code>&amp;[u16]</code> into a <code>&amp;mut [u8]</code>: https://docs.rs/byteorder/latest/byteorder/trait.ByteOrder.html#tymethod.write_u16_into</p>
 <p>Then save <em>that</em> to the file.</p>
 <p>To go in the other direction, use <a href="https://docs.rs/byteorder/latest/byteorder/trait.ByteOrder.html#tymethod.read_u16_into"><code>ByteOrder::read_u16_into</code></a> and <a href="https://doc.rust-lang.org/std/os/windows/ffi/trait.OsStringExt.html"><code>std::os::windows::ffi::OsStringExt</code></a>.</p>
-<p>When using <code>byteorder</code>, I'd suggest picking a specific byteorder (<code>byteorder::BigEndian</code>) and always using it. Regardless of the endianness of the host platform. That way, the file format is portable.</p>
+<p>When using <code>byteorder</code>, I&#x27;d suggest picking a specific byteorder (<code>byteorder::BigEndian</code>) and always using it. Regardless of the endianness of the host platform. That way, the file format is portable.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-02-06 13:22</div>
-            <div class="timeline-body"><p>Rolling your own symlinks because Windows-native symlinks are so bad... It's just crazy enough to work! Haha.</p>
+            <div class="timeline-body"><p>Rolling your own symlinks because Windows-native symlinks are so bad... It&#x27;s just crazy enough to work! Haha.</p>
 <p>I made a suggestion about how to avoid the lossy call here. Sorry about being unclear last night.</p>
-<p>I also wonder if perhaps we can emit some more logs in places, but I defer to you on that. I don't have a ton of context on this area of the code.</p>
+<p>I also wonder if perhaps we can emit some more logs in places, but I defer to you on that. I don&#x27;t have a ton of context on this area of the code.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -111,7 +111,7 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @Gankra by @charliermarsh on 2025-02-06 17:14</div>
+            <div class="event">Review requested from <a href="https://github.com/Gankra">@Gankra</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-06 17:14</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-02-06 17:19</div>
@@ -124,18 +124,18 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-07 02:35</div>
-            <div class="timeline-body"><p>Ok, I simplified things a bit (I think). Instead of &quot;generically&quot; using these routines to read and write symlinks, they're now methods on the cache specifically framed at writing links to archive entries and reading links to archive entries.</p>
+            <div class="timeline-body"><p>Ok, I simplified things a bit (I think). Instead of &quot;generically&quot; using these routines to read and write symlinks, they&#x27;re now methods on the cache specifically framed at writing links to archive entries and reading links to archive entries.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2025-02-07 02:35</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-07 02:35</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @charliermarsh on 2025-02-07 02:35</div>
+            <div class="event">Reopened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-07 02:35</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-07 02:37</div>
-            <div class="timeline-body"><p>(I didn't mean to close, accidental click.)</p>
+            <div class="timeline-body"><p>(I didn&#x27;t mean to close, accidental click.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -144,13 +144,13 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "v0.6.0" by @charliermarsh on 2025-02-07 02:56</div>
+            <div class="event">Added to milestone &quot;v0.6.0&quot; by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-07 02:56</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2025-02-08 00:13</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-08 00:13</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2025-02-08 00:13</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-08 00:13</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-02-08 00:13</div>
@@ -158,7 +158,7 @@
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:41:52 UTC
+        Synced at 2026-01-20 19:50:44 UTC
     </footer>
 </body>
 </html>

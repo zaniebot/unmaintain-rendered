@@ -23,14 +23,14 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Black supports for layouts when it comes to breaking binary expressions:</p>
-<pre><code class="language-rust">#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+<pre><code>#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 enum BinaryLayout {
     /// Put each operand on their own line if either side expands
     Default,
 
-    /// Try to expand the left to make it fit. Add parentheses if the left or right don't fit.
+    /// Try to expand the left to make it fit. Add parentheses if the left or right don&#x27;t fit.
     ///
     ///```python
     /// [
@@ -40,7 +40,7 @@ enum BinaryLayout {
     ///```
     ExpandLeft,
 
-    /// Try to expand the right to make it fix. Add parentheses if the left or right don't fit.
+    /// Try to expand the right to make it fix. Add parentheses if the left or right don&#x27;t fit.
     ///
     /// ```python
     /// a &amp; [
@@ -72,16 +72,16 @@ enum BinaryLayout {
 <p>Our current implementation only handles <code>ExpandRight</code> and <code>Default</code> correctly. <code>ExpandLeft</code> turns out to be surprisingly hard. This PR adds a new <code>BestFittingMode</code> parameter to <code>BestFitting</code> to support <code>ExpandLeft</code>.</p>
 <p>There are 3 variants that <code>ExpandLeft</code> must support:</p>
 <p><strong>Variant 1</strong>: Everything fits on the line (easy)</p>
-<pre><code class="language-python">[a, b] + c
+<pre><code>[a, b] + c
 </code></pre>
-<p><strong>Variant 2</strong>: Left breaks, but right fits on the line. Doesn't need parentheses</p>
-<pre><code class="language-python">[
+<p><strong>Variant 2</strong>: Left breaks, but right fits on the line. Doesn&#x27;t need parentheses</p>
+<pre><code>[
 	a,
 	b
 ] + c
 </code></pre>
-<p><strong>Variant 3</strong>: The left breaks, but there's still not enough space for the right hand side. Parenthesize the whole expression:</p>
-<pre><code class="language-python">(
+<p><strong>Variant 3</strong>: The left breaks, but there&#x27;s still not enough space for the right hand side. Parenthesize the whole expression:</p>
+<pre><code>(
 	[
 		a, 
 		b
@@ -103,15 +103,15 @@ enum BinaryLayout {
 ])
 </code></pre>
 <p>The fundamental problem is that the outer group, which adds the parentheses, always breaks if the left side breaks. That means, we end up with</p>
-<pre><code class="language-python">(
+<pre><code>(
 	[
 		a,
 		b
 	] + c
 )
 </code></pre>
-<p>which is not what we want (we only want parentheses if the right side doesn't fit).</p>
-<p>Okay, so nesting groups don't work because of the outer parentheses. Sequencing groups doesn't work because it results in a right-to-left breaking which is the opposite of what we want.</p>
+<p>which is not what we want (we only want parentheses if the right side doesn&#x27;t fit).</p>
+<p>Okay, so nesting groups don&#x27;t work because of the outer parentheses. Sequencing groups doesn&#x27;t work because it results in a right-to-left breaking which is the opposite of what we want.</p>
 <p>Could we use best fitting? Almost!</p>
 <pre><code>best_fitting![
 	// All flat
@@ -134,12 +134,12 @@ enum BinaryLayout {
 <p>I hope I managed to write this up correctly. The problem is that the printer never reaches the 3rd variant because the second variant always fits:</p>
 <ul>
 <li>The <code>group(&amp;left).should_expand(true)</code> changes the group so that all <code>soft_line_breaks</code> are turned into hard line breaks. This is necessary because we want to test if the content fits if we break after the <code>[</code>.</li>
-<li>Now, the whole idea of <code>best_fitting</code> is that you can pretend that some content fits on the line when it actually does not. The way this works is that the printer <strong>only</strong> tests if all the content of the variant <strong>up to</strong> the first line break fits on the line (we insert that line break by using <code>should_expand(true))</code>. The printer doesn't care whether the rest <code>a\n, b\n ] + c</code> all fits on (multiple?) lines.</li>
+<li>Now, the whole idea of <code>best_fitting</code> is that you can pretend that some content fits on the line when it actually does not. The way this works is that the printer <strong>only</strong> tests if all the content of the variant <strong>up to</strong> the first line break fits on the line (we insert that line break by using <code>should_expand(true))</code>. The printer doesn&#x27;t care whether the rest <code>a\n, b\n ] + c</code> all fits on (multiple?) lines.</li>
 </ul>
-<p>Why does breaking right work but not breaking the left? The difference is that we can make the decision whether to parenthesis the expression based on the left expression. We can't do this for breaking left because the decision whether to insert parentheses or not would depend on a lookahead: will the right side break. We simply don't know this yet when printing the parentheses (it would work for the right parentheses but not for the left and indent).</p>
-<p>What we kind of want here is to tell the printer: Look, what comes here may or may not fit on a single line but we don't care. Simply test that what comes <strong>after</strong> fits on a line.</p>
+<p>Why does breaking right work but not breaking the left? The difference is that we can make the decision whether to parenthesis the expression based on the left expression. We can&#x27;t do this for breaking left because the decision whether to insert parentheses or not would depend on a lookahead: will the right side break. We simply don&#x27;t know this yet when printing the parentheses (it would work for the right parentheses but not for the left and indent).</p>
+<p>What we kind of want here is to tell the printer: Look, what comes here may or may not fit on a single line but we don&#x27;t care. Simply test that what comes <strong>after</strong> fits on a line.</p>
 <p>This PR adds a new <code>BestFittingMode</code> that has a new <code>AllLines</code> option that gives us the desired behavior of testing all content and not just up to the first line break.</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>I added a new example to  <code>BestFitting::with_mode</code></p>
 </div>
         </div>
@@ -148,11 +148,11 @@ enum BinaryLayout {
             <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
 <ul>
 <li>main<ul>
-<li><strong>PR #5184</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/5184" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a>  👈<ul>
-<li><strong>PR #5205</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/5205" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a><ul>
-<li><strong>PR #4985</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/4985" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a><ul>
-<li><strong>PR #5207</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/5207" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a><ul>
-<li><strong>PR #4986</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/4986" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #5184</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/5184"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite"></a>  👈<ul>
+<li><strong>PR #5205</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/5205"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite"></a><ul>
+<li><strong>PR #4985</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/4985"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite"></a><ul>
+<li><strong>PR #5207</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/5207"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite"></a><ul>
+<li><strong>PR #4986</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/4986"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite"></a></li>
 </ul>
 </li>
 </ul>
@@ -168,21 +168,21 @@ enum BinaryLayout {
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @konstin by @MichaReiser on 2023-06-19 15:53</div>
+            <div class="event">Review requested from <a href="https://github.com/konstin">@konstin</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-06-19 15:53</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2023-06-19 15:53</div>
+            <div class="event">Label <span class="label">formatter</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-06-19 15:53</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Add BeestFittingMode" to "Add BestFittingMode" by @MichaReiser on 2023-06-19 15:56</div>
+            <div class="event">Renamed from &quot;Add BeestFittingMode&quot; to &quot;Add BestFittingMode&quot; by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-06-19 15:56</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-06-19 16:04</div>
-            <div class="timeline-body"><h2>PR Check Results</h2>
-<h3>Ecosystem</h3>
+            <div class="timeline-body">PR Check Results
+Ecosystem
 <p>✅ ecosystem check detected no changes.</p>
-<h3>Benchmark</h3>
-<h4>Linux</h4>
+Benchmark
+Linux
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 formatter/large/dataset.py                 1.00      7.6±0.01ms     5.3 MB/sec    1.00      7.6±0.01ms     5.4 MB/sec
@@ -198,7 +198,7 @@ linter/default-rules/numpy/ctypeslib.py    1.00   1747.5±6.62µs     9.5 MB/sec
 linter/default-rules/numpy/globals.py      1.00    199.8±0.47µs    14.8 MB/sec    1.02    204.7±6.16µs    14.4 MB/sec
 linter/default-rules/pydantic/types.py     1.00      3.7±0.01ms     7.0 MB/sec    1.03      3.8±0.01ms     6.8 MB/sec
 </code></pre>
-<h4>Windows</h4>
+Windows
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 formatter/large/dataset.py                 1.00      7.7±0.12ms     5.3 MB/sec    1.05      8.1±0.07ms     5.0 MB/sec
@@ -214,12 +214,12 @@ linter/default-rules/numpy/ctypeslib.py    1.00  1746.5±34.44µs     9.5 MB/sec
 linter/default-rules/numpy/globals.py      1.00    202.4±4.58µs    14.6 MB/sec    1.00    202.0±5.22µs    14.6 MB/sec
 linter/default-rules/pydantic/types.py     1.00      3.7±0.04ms     6.9 MB/sec    1.04      3.8±0.06ms     6.6 MB/sec
 </code></pre>
-<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @MichaReiser on 2023-06-19 16:06</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-06-19 16:06</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-06-20 15:58</div>
@@ -231,10 +231,10 @@ linter/default-rules/pydantic/types.py     1.00      3.7±0.04ms     6.9 MB/sec 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @MichaReiser on 2023-06-20 16:16</div>
+            <div class="event">Merged by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-06-20 16:16</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2023-06-20 16:16</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-06-20 16:16</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2023-06-20 16:16</div>
@@ -247,7 +247,7 @@ linter/default-rules/pydantic/types.py     1.00      3.7±0.04ms     6.9 MB/sec 
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:58:12 UTC
+        Synced at 2026-01-20 18:54:38 UTC
     </footer>
 </body>
 </html>

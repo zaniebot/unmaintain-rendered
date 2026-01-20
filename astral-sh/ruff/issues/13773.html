@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a></div>
-            <div class="timeline-body"><p>As https://github.com/astral-sh/ruff/pull/13316 is merged, there are some follow-up work that needs to be done. The following is a list in the order of priority where the highest priority work is on the top:</p>
+            <div class="timeline-body"><p>As <a href="https://github.com/astral-sh/ruff/pull/13316">astral-sh/ruff#13316</a> is merged, there are some follow-up work that needs to be done. The following is a list in the order of priority where the highest priority work is on the top:</p>
 <ul>
-<li>[x] Avoiding duplicate diagnostics. Considering <code>(a, b) = (1, 2)</code>, as the inference runs for each symbol, if there are any diagnostics that's raised during that part (like &quot;too many values to unpack&quot;), then there will be multiple diagnostics added to the builder one for each symbol. Refer https://github.com/astral-sh/ruff/pull/13316#discussion_r1800219731</li>
-<li>[x] Use the unpacking logic in other places where it's relevant like<ul>
+<li>[x] Avoiding duplicate diagnostics. Considering <code>(a, b) = (1, 2)</code>, as the inference runs for each symbol, if there are any diagnostics that&#x27;s raised during that part (like &quot;too many values to unpack&quot;), then there will be multiple diagnostics added to the builder one for each symbol. Refer <a href="https://github.com/astral-sh/ruff/pull/13316">astral-sh/ruff#13316</a>#discussion_r1800219731</li>
+<li>[x] Use the unpacking logic in other places where it&#x27;s relevant like<ul>
 <li>[x] <code>for</code> loops e.g., <code>for (x, y) in ((1, 2), (3, 4)): ...</code> (#15058)</li>
 <li>[x] <code>with</code> statements e.g., <code>with (item1, item2) as (x, y): ...</code></li>
 <li>[x] Comprehensions e.g., <code>[_ for (x, y) in [(1, 2), (3, 4)]]</code></li>
@@ -37,43 +37,43 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @dhruvmanila on 2024-10-16 10:16</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-10-16 10:16</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @dhruvmanila by @dhruvmanila on 2024-10-24 03:34</div>
+            <div class="event">Assigned to <a href="https://github.com/dhruvmanila">@dhruvmanila</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-10-24 03:34</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Red Knot 2024" by @carljm on 2024-11-07 15:17</div>
+            <div class="event">Added to milestone &quot;Red Knot 2024&quot; by <a href="https://github.com/carljm">@carljm</a> on 2024-11-07 15:17</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Follow-up from unpacked tuple assignment work" to "[red-knot] Follow-up from unpacked tuple assignment work" by @carljm on 2024-11-07 15:34</div>
+            <div class="event">Renamed from &quot;Follow-up from unpacked tuple assignment work&quot; to &quot;[red-knot] Follow-up from unpacked tuple assignment work&quot; by <a href="https://github.com/carljm">@carljm</a> on 2024-11-07 15:34</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-11-18 05:10</div>
-            <div class="timeline-body"><p>Regarding &quot;Use the unpacking logic in other places where it's relevant like&quot; task, I think the challenge here would be to implement the logic to &quot;combine&quot; union types into a single type. For example, in a <code>for</code> loop like:</p>
-<pre><code class="language-py">for (x, y) in ((1, 2), (3, 4), (5, 6)): ...
+            <div class="timeline-body"><p>Regarding &quot;Use the unpacking logic in other places where it&#x27;s relevant like&quot; task, I think the challenge here would be to implement the logic to &quot;combine&quot; union types into a single type. For example, in a <code>for</code> loop like:</p>
+<pre><code>for (x, y) in ((1, 2), (3, 4), (5, 6)): ...
 </code></pre>
 <p>The inferred type for the iterable would be:</p>
-<pre><code class="language-py">tuple[Literal[1], Literal[2]] | tuple[Literal[3], Literal[4]] | tuple[Literal[5], Literal[6]]
+<pre><code>tuple[Literal[1], Literal[2]] | tuple[Literal[3], Literal[4]] | tuple[Literal[5], Literal[6]]
 </code></pre>
 <p>But, we should combine it to:</p>
-<pre><code class="language-py">tuple[int, int]
+<pre><code>tuple[int, int]
 # or
 tuple[Literal[1, 3, 5], Literal[2, 4, 6]]
 </code></pre>
 <p>Or, another example where the types are &quot;mixed&quot;:</p>
-<pre><code class="language-py">for (x, y) in ((1, 2), (&quot;a&quot;, &quot;b&quot;)): ...
+<pre><code>for (x, y) in ((1, 2), (&quot;a&quot;, &quot;b&quot;)): ...
 </code></pre>
 <p>We should combine it to:</p>
-<pre><code class="language-py">tuple[int | str, int | str]
+<pre><code>tuple[int | str, int | str]
 # or
 tuple[Literal[1, &quot;a&quot;], Literal[2, &quot;b&quot;]]
 </code></pre>
 <p>Another example:</p>
-<pre><code class="language-py">for (x, y) in ((1, 2), (&quot;a&quot;, 3)): ...
+<pre><code>for (x, y) in ((1, 2), (&quot;a&quot;, 3)): ...
 </code></pre>
 <p>where,</p>
-<pre><code class="language-py">tuple[int | str, int]
+<pre><code>tuple[int | str, int]
 # or
 tuple[Literal[1, &quot;a&quot;], Literal[2, 3]]
 </code></pre>
@@ -81,31 +81,31 @@ tuple[Literal[1, &quot;a&quot;], Literal[2, 3]]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-12-17 10:07</div>
-            <div class="timeline-body"><p>Actually, my previous comment isn't exactly correct. We actually need to add support for union types when unpacking rather than combining the types.</p>
+            <div class="timeline-body"><p>Actually, my previous comment isn&#x27;t exactly correct. We actually need to add support for union types when unpacking rather than combining the types.</p>
 <p>For example, if the type is <code>tuple[int, str] | list[int]</code> and the target has two elements <code>(a, b)</code>, then the type of <code>a</code> will be a union of the first tuple type (<code>int</code>) and the iterable type of the list (<code>int</code>) which should be <code>int</code>. And, similarly the type of <code>b</code> would be a union of the second tuple type (<code>str</code>) and the iterable type of the list (<code>int</code>) which would be <code>int | str</code>.</p>
 <p>cc @carljm as we talked about this in our 1:1 yesterday.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Removed from milestone "Red Knot 2024" by @carljm on 2025-01-09 17:43</div>
+            <div class="event">Removed from milestone &quot;Red Knot 2024&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-01-09 17:43</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-02-24 19:28</div>
-            <div class="timeline-body"><p>@dhruvmanila What's the status here? I think I recall from a past conversation that you had planned to close this issue and create dedicated new issues for future follow-up on the remaining not-completed items?</p>
+            <div class="timeline-body"><p>@dhruvmanila What&#x27;s the status here? I think I recall from a past conversation that you had planned to close this issue and create dedicated new issues for future follow-up on the remaining not-completed items?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-25 10:37</div>
-            <div class="timeline-body"><p>Thanks for the reminder. I've extracted the remaining entries from the checklist into their own sub-issues. I'll close this now.</p>
+            <div class="timeline-body"><p>Thanks for the reminder. I&#x27;ve extracted the remaining entries from the checklist into their own sub-issues. I&#x27;ll close this now.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dhruvmanila on 2025-02-25 10:37</div>
+            <div class="event">Closed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-25 10:37</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:51:17 UTC
+        Synced at 2026-01-20 18:48:59 UTC
     </footer>
 </body>
 </html>

@@ -23,69 +23,69 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Infer a type of <code>Self</code> for unannotated <code>self</code> parameters in methods of classes.</p>
-<p>part of https://github.com/astral-sh/ty/issues/159</p>
-<p>closes https://github.com/astral-sh/ty/issues/1081</p>
-<h2>Conformance tests changes</h2>
-<pre><code class="language-diff">+enums_member_values.py:85:9: error[invalid-assignment] Object of type `int` is not assignable to attribute `_value_` of type `str`
+<p>part of <a href="https://github.com/astral-sh/ty/issues/159">astral-sh/ty#159</a></p>
+<p>closes <a href="https://github.com/astral-sh/ty/issues/1081">astral-sh/ty#1081</a></p>
+Conformance tests changes
+<pre><code>+enums_member_values.py:85:9: error[invalid-assignment] Object of type `int` is not assignable to attribute `_value_` of type `str`
 </code></pre>
 <p>A true positive :heavy_check_mark:</p>
-<pre><code class="language-diff">-generics_self_advanced.py:35:9: error[type-assertion-failure] Argument does not have asserted type `Self@method2`
+<pre><code>-generics_self_advanced.py:35:9: error[type-assertion-failure] Argument does not have asserted type `Self@method2`
 -generics_self_basic.py:14:9: error[type-assertion-failure] Argument does not have asserted type `Self@set_scale
 </code></pre>
 <p>Two false positives going away :heavy_check_mark:</p>
-<pre><code class="language-diff">+generics_syntax_infer_variance.py:82:9: error[invalid-assignment] Cannot assign to final attribute `x` on type `Self@__init__`
+<pre><code>+generics_syntax_infer_variance.py:82:9: error[invalid-assignment] Cannot assign to final attribute `x` on type `Self@__init__`
 </code></pre>
-<p>This looks like a true positive to me, even if it's not marked with <code># E</code> :heavy_check_mark:</p>
-<pre><code class="language-diff">+protocols_explicit.py:56:9: error[invalid-assignment] Object of type `tuple[int, int, str]` is not assignable to attribute `rgb` of type `tuple[int, int, int]`
+<p>This looks like a true positive to me, even if it&#x27;s not marked with <code># E</code> :heavy_check_mark:</p>
+<pre><code>+protocols_explicit.py:56:9: error[invalid-assignment] Object of type `tuple[int, int, str]` is not assignable to attribute `rgb` of type `tuple[int, int, int]`
 </code></pre>
 <p>True positive :heavy_check_mark:</p>
 <pre><code>+protocols_explicit.py:85:9: error[invalid-attribute-access] Cannot assign to ClassVar `cm1` from an instance of type `Self@__init__`
 </code></pre>
-<p>This looks like a true positive to me, even if it's not marked with <code># E</code>. But this is consistent with our understanding of <code>ClassVar</code>, I think. :heavy_check_mark:</p>
-<pre><code class="language-py">+qualifiers_final_annotation.py:52:9: error[invalid-assignment] Cannot assign to final attribute `ID4` on type `Self@__init__`
+<p>This looks like a true positive to me, even if it&#x27;s not marked with <code># E</code>. But this is consistent with our understanding of <code>ClassVar</code>, I think. :heavy_check_mark:</p>
+<pre><code>+qualifiers_final_annotation.py:52:9: error[invalid-assignment] Cannot assign to final attribute `ID4` on type `Self@__init__`
 +qualifiers_final_annotation.py:65:9: error[invalid-assignment] Cannot assign to final attribute `ID7` on type `Self@method1`
 </code></pre>
 <p>New true positives :heavy_check_mark:</p>
-<pre><code class="language-py">+qualifiers_final_annotation.py:52:9: error[invalid-assignment] Cannot assign to final attribute `ID4` on type `Self@__init__`
+<pre><code>+qualifiers_final_annotation.py:52:9: error[invalid-assignment] Cannot assign to final attribute `ID4` on type `Self@__init__`
 +qualifiers_final_annotation.py:57:13: error[invalid-assignment] Cannot assign to final attribute `ID6` on type `Self@__init__`
 +qualifiers_final_annotation.py:59:13: error[invalid-assignment] Cannot assign to final attribute `ID6` on type `Self@__init__`
 </code></pre>
-<p>This is a new false positive, but that's a pre-existing issue on main (if you annotate with <code>Self</code>): https://play.ty.dev/3ee1c56d-7e13-43bb-811a-7a81e236e6ab  :x: =&gt; reported as https://github.com/astral-sh/ty/issues/1409</p>
-<h2>Ecosystem</h2>
+<p>This is a new false positive, but that&#x27;s a pre-existing issue on main (if you annotate with <code>Self</code>): https://play.ty.dev/3ee1c56d-7e13-43bb-811a-7a81e236e6ab  :x: =&gt; reported as <a href="https://github.com/astral-sh/ty/issues/1409">astral-sh/ty#1409</a></p>
+Ecosystem
 <ul>
 <li>There are 5931 new <code>unresolved-attribute</code> and 3292 new <code>possibly-missing-attribute</code> attribute errors, way too many to look at all of them. I randomly sampled 15 of these errors and found:<ul>
-<li>13 instances where there was simply no such attribute that we could plausibly see. Sometimes <a href="https://github.com/internetarchive/openlibrary/blob/8644d886c6579a5f49faadc4cd1ba9992e603d7e/openlibrary/plugins/openlibrary/tests/test_listapi.py#L33">I didn't find it anywhere</a>. Sometimes it was set externally on the object. Sometimes there was some <a href="https://github.com/pypa/setuptools/blob/a49f6b927d83b97630b4fb030de8035ed32436fd/setuptools/wheel.py#L88-L94"><code>setattr</code> dynamicness going on</a>. I would consider all of them to be true positives.</li>
-<li>1 instance where <a href="https://github.com/sympy/sympy/blob/9e87b44fd43572b9c4cc95ec569a2f4b81d56499/sympy/tensor/array/array_comprehension.py#L45C1-L45C36">attribute was set on <code>obj</code> in <code>__new__</code></a>, which we don't support yet</li>
+<li>13 instances where there was simply no such attribute that we could plausibly see. Sometimes <a href="https://github.com/internetarchive/openlibrary/blob/8644d886c6579a5f49faadc4cd1ba9992e603d7e/openlibrary/plugins/openlibrary/tests/test_listapi.py#L33">I didn&#x27;t find it anywhere</a>. Sometimes it was set externally on the object. Sometimes there was some <a href="https://github.com/pypa/setuptools/blob/a49f6b927d83b97630b4fb030de8035ed32436fd/setuptools/wheel.py#L88-L94"><code>setattr</code> dynamicness going on</a>. I would consider all of them to be true positives.</li>
+<li>1 instance where <a href="https://github.com/sympy/sympy/blob/9e87b44fd43572b9c4cc95ec569a2f4b81d56499/sympy/tensor/array/array_comprehension.py#L45C1-L45C36">attribute was set on <code>obj</code> in <code>__new__</code></a>, which we don&#x27;t support yet</li>
 <li>1 instance <a href="https://github.com/spack/spack/blob/e250ec0fc81130b708a8abe1894f0cc926880210/lib/spack/spack/vendor/pyrsistent/_pdeque.py#L48C5-L48C14">where the attribute was defined via <code>__slots__</code>
 </a></li>
 </ul>
 </li>
-<li>I see 44 instances <a href="https://github.com/astral-sh/ty/issues/1409">of the false positive above</a> with <code>Final</code> instance attributes being set in <code>__init__</code>. I don't think this should block this PR.</li>
+<li>I see 44 instances <a href="https://github.com/astral-sh/ty/issues/1409">of the false positive above</a> with <code>Final</code> instance attributes being set in <code>__init__</code>. I don&#x27;t think this should block this PR.</li>
 </ul>
-<h2>Test Plan</h2>
+Test Plan
 <p>New Markdown tests.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @sharkdp on 2025-10-16 14:30</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-16 14:30</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-10-16 14:40</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-16 14:40</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-16 14:41</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
-<details>
-<summary>Changes were detected when running ty on typing conformance tests</summary>
+Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a>
 
-<pre><code class="language-diff">--- old-output.txt	2025-10-23 07:17:38.427123571 +0000
+Changes were detected when running ty on typing conformance tests
+
+<pre><code>--- old-output.txt	2025-10-23 07:17:38.427123571 +0000
 +++ new-output.txt	2025-10-23 07:17:41.924130267 +0000
 @@ -1,5 +1,5 @@
- fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/ef9f932/src/function/execute.rs:402:17 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_type_statement.py`: `PEP695TypeAliasType &lt; 'db &gt;::value_type_(Id(d817)): execute: too many cycle iterations`
+ fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/ef9f932/src/function/execute.rs:402:17 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_type_statement.py`: `PEP695TypeAliasType &lt; &#x27;db &gt;::value_type_(Id(d817)): execute: too many cycle iterations`
 -fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/ef9f932/src/function/execute.rs:402:17 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_typealiastype.py`: `infer_definition_types(Id(17c43)): execute: too many cycle iterations`
 +fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/ef9f932/src/function/execute.rs:402:17 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_typealiastype.py`: `infer_definition_types(Id(18043)): execute: too many cycle iterations`
  _directives_deprecated_library.py:15:31: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
@@ -142,17 +142,17 @@
 +qualifiers_final_annotation.py:59:13: error[invalid-assignment] Cannot assign to final attribute `ID6` on type `Self@__init__`
 +qualifiers_final_annotation.py:65:9: error[invalid-assignment] Cannot assign to final attribute `ID7` on type `Self@method1`
  qualifiers_final_annotation.py:71:1: error[invalid-assignment] Reassignment of `Final` symbol `RATE` is not allowed: Symbol later reassigned here
- qualifiers_final_annotation.py:81:1: error[invalid-assignment] Cannot assign to final attribute `DEFAULT_ID` on type `&lt;class 'ClassB'&gt;`
+ qualifiers_final_annotation.py:81:1: error[invalid-assignment] Cannot assign to final attribute `DEFAULT_ID` on type `&lt;class &#x27;ClassB&#x27;&gt;`
  qualifiers_final_annotation.py:118:9: error[invalid-type-form] Type qualifier `typing.Final` is not allowed in type expressions (only in annotation expressions)
 @@ -915,5 +922,5 @@
- typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
+ typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key &#x27;name&#x27; in TypedDict `Movie` constructor
  typeddicts_usage.py:28:18: error[invalid-key] Invalid key access on TypedDict `Movie`: Unknown key &quot;title&quot;
  typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions. Did you mean to use a concrete TypedDict or `collections.abc.Mapping[str, object]` instead?
 -Found 917 diagnostics
 +Found 924 diagnostics
  WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
 </code></pre>
-</details>
+
 
 </div>
         </div>
@@ -167,9 +167,9 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-16 14:46</div>
-            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+            <div class="timeline-body">
 
-<h2><code>ecosystem-analyzer</code> results</h2>
+<code>ecosystem-analyzer</code> results
 <p>| Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
 | <code>unresolved-attribute</code> | 5,931 | 0 | 0 |
@@ -209,30 +209,30 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-16 14:55</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-10-16 14:55</div>
-            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+            <div class="timeline-body">
 
-<h2><a href="https://codspeed.io/astral-sh/ruff/branches/david%2Ftype-of-self-in-methods-integration?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a></h2>
-<h3>Merging #20922 will <strong>degrade performances by 16.56%</strong></h3>
-<p><sub>Comparing <code>david/type-of-self-in-methods-integration</code> (0c3d16a) with <code>main</code> (6c18f18)</sub></p>
-<h3>Summary</h3>
-<p><code>❌ 7 (👁 7)</code> regressions<br />
+<a href="https://codspeed.io/astral-sh/ruff/branches/david%2Ftype-of-self-in-methods-integration?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a>
+Merging #20922 will <strong>degrade performances by 16.56%</strong>
+<p>Comparing <code>david/type-of-self-in-methods-integration</code> (0c3d16a) with <code>main</code> (6c18f18)</p>
+Summary
+<p><code>❌ 7 (👁 7)</code> regressions<br>
 <code>✅ 44</code> untouched</p>
-<h3>Benchmarks breakdown</h3>
+Benchmarks breakdown
 <p>|     | Mode | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
 | --- | ---- | --------- | ------ | ------ | ------ |
 | 👁 | Simulation | <a href="https://codspeed.io/astral-sh/ruff/branches/david%2Ftype-of-self-in-methods-integration?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Aproject%3A%3Aanyio%3A%3Aproject%3A%3Aanyio&amp;runnerMode=Instrumentation&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=benchmark"><code>anyio</code></a> | 825.7 ms | 926.1 ms | -10.84% |
@@ -245,20 +245,20 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-10-22 12:31</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-22 12:31</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-10-22 12:31</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-22 12:31</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-22 12:34</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">zipp (https://github.com/jaraco/zipp)
+Changes were detected when running on open source projects
+
+<pre><code>zipp (https://github.com/jaraco/zipp)
 + zipp/__init__.py:94:16: error[unresolved-attribute] Object of type `Self@__getstate__` has no attribute `_saved___init__`
 + zipp/__init__.py:94:43: error[unresolved-attribute] Object of type `Self@__getstate__` has no attribute `_saved___init__`
 + zipp/__init__.py:436:16: error[no-matching-overload] No overload of bound method `format` matches arguments
@@ -318,7 +318,7 @@ attrs (https://github.com/python-attrs/attrs)
 + tests/test_cmp.py:495:18: warning[possibly-missing-attribute] Attribute `__gt__` may be missing on object of type `Unknown | type`
 + tests/test_cmp.py:503:18: warning[possibly-missing-attribute] Attribute `__ge__` may be missing on object of type `Unknown | type`
 + tests/test_make.py:2174:24: warning[possibly-missing-attribute] Attribute `__qualname__` may be missing on object of type `Unknown | ((...) -&gt; Unknown)`
-+ tests/test_slots.py:985:24: error[unresolved-attribute] Object of type `&lt;super: &lt;class 'B'&gt;, B&gt;` has no attribute `__getattr__`
++ tests/test_slots.py:985:24: error[unresolved-attribute] Object of type `&lt;super: &lt;class &#x27;B&#x27;&gt;, B&gt;` has no attribute `__getattr__`
 - Found 561 diagnostics
 + Found 584 diagnostics
 
@@ -572,10 +572,10 @@ spack (https://github.com/spack/spack)
 + lib/spack/spack/mirrors/mirror.py:263:45: error[invalid-argument-type] Argument to bound method `_update_connection_dict` is incorrect: Expected `dict[Unknown, Unknown]`, found `@Todo | str`
 + lib/spack/spack/multimethod.py:137:42: error[unresolved-attribute] Object of type `Self@__call__` has no attribute `__name__`
 + lib/spack/spack/multimethod.py:149:13: error[unresolved-attribute] Object of type `Self@__call__` has no attribute `__name__`
-+ lib/spack/spack/package_base.py:253:33: error[unresolved-attribute] Object of type `(Self@__init__ &amp; &lt;Protocol with members 'executables'&gt; &amp; ~&lt;Protocol with members 'libraries'&gt;) | (Self@__init__ &amp; &lt;Protocol with members 'libraries'&gt; &amp; ~&lt;Protocol with members 'executables'&gt;)` has no attribute `namespace`
-+ lib/spack/spack/package_base.py:253:55: error[unresolved-attribute] Object of type `(Self@__init__ &amp; &lt;Protocol with members 'executables'&gt; &amp; ~&lt;Protocol with members 'libraries'&gt;) | (Self@__init__ &amp; &lt;Protocol with members 'libraries'&gt; &amp; ~&lt;Protocol with members 'executables'&gt;)` has no attribute `name`
-+ lib/spack/spack/package_base.py:266:48: error[unresolved-attribute] Object of type `(Self@__init__ &amp; &lt;Protocol with members 'executables'&gt; &amp; ~&lt;Protocol with members 'libraries'&gt; &amp; ~&lt;Protocol with members 'determine_version'&gt;) | (Self@__init__ &amp; &lt;Protocol with members 'libraries'&gt; &amp; ~&lt;Protocol with members 'executables'&gt; &amp; ~&lt;Protocol with members 'determine_version'&gt;)` has no attribute `name`
-+ lib/spack/spack/package_base.py:266:58: error[unresolved-attribute] Object of type `(Self@__init__ &amp; &lt;Protocol with members 'executables'&gt; &amp; ~&lt;Protocol with members 'libraries'&gt; &amp; ~&lt;Protocol with members 'determine_version'&gt;) | (Self@__init__ &amp; &lt;Protocol with members 'libraries'&gt; &amp; ~&lt;Protocol with members 'executables'&gt; &amp; ~&lt;Protocol with members 'determine_version'&gt;)` has no attribute `namespace`
++ lib/spack/spack/package_base.py:253:33: error[unresolved-attribute] Object of type `(Self@__init__ &amp; &lt;Protocol with members &#x27;executables&#x27;&gt; &amp; ~&lt;Protocol with members &#x27;libraries&#x27;&gt;) | (Self@__init__ &amp; &lt;Protocol with members &#x27;libraries&#x27;&gt; &amp; ~&lt;Protocol with members &#x27;executables&#x27;&gt;)` has no attribute `namespace`
++ lib/spack/spack/package_base.py:253:55: error[unresolved-attribute] Object of type `(Self@__init__ &amp; &lt;Protocol with members &#x27;executables&#x27;&gt; &amp; ~&lt;Protocol with members &#x27;libraries&#x27;&gt;) | (Self@__init__ &amp; &lt;Protocol with members &#x27;libraries&#x27;&gt; &amp; ~&lt;Protocol with members &#x27;executables&#x27;&gt;)` has no attribute `name`
++ lib/spack/spack/package_base.py:266:48: error[unresolved-attribute] Object of type `(Self@__init__ &amp; &lt;Protocol with members &#x27;executables&#x27;&gt; &amp; ~&lt;Protocol with members &#x27;libraries&#x27;&gt; &amp; ~&lt;Protocol with members &#x27;determine_version&#x27;&gt;) | (Self@__init__ &amp; &lt;Protocol with members &#x27;libraries&#x27;&gt; &amp; ~&lt;Protocol with members &#x27;executables&#x27;&gt; &amp; ~&lt;Protocol with members &#x27;determine_version&#x27;&gt;)` has no attribute `name`
++ lib/spack/spack/package_base.py:266:58: error[unresolved-attribute] Object of type `(Self@__init__ &amp; &lt;Protocol with members &#x27;executables&#x27;&gt; &amp; ~&lt;Protocol with members &#x27;libraries&#x27;&gt; &amp; ~&lt;Protocol with members &#x27;determine_version&#x27;&gt;) | (Self@__init__ &amp; &lt;Protocol with members &#x27;libraries&#x27;&gt; &amp; ~&lt;Protocol with members &#x27;executables&#x27;&gt; &amp; ~&lt;Protocol with members &#x27;determine_version&#x27;&gt;)` has no attribute `namespace`
 + lib/spack/spack/package_base.py:347:16: error[unresolved-attribute] Object of type `Self@view_source` has no attribute `spec`
 + lib/spack/spack/package_base.py:353:45: error[unresolved-attribute] Object of type `Self@view_destination` has no attribute `spec`
 + lib/spack/spack/package_base.py:380:46: error[unresolved-attribute] Object of type `Self@add_files_to_view` has no attribute `spec`
@@ -762,7 +762,7 @@ spack (https://github.com/spack/spack)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/type_qualifiers/final.md</code>:92 on 2025-10-22 14:58</div>
-            <div class="timeline-body"><p>This (and below) was really only &quot;working&quot; because we didn't infer a type of <code>self</code>, not because we ever added support for this. As far as I remember, no other type checker supports this either and we decided at the time that it was not important to implement.</p>
+            <div class="timeline-body"><p>This (and below) was really only &quot;working&quot; because we didn&#x27;t infer a type of <code>self</code>, not because we ever added support for this. As far as I remember, no other type checker supports this either and we decided at the time that it was not important to implement.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -771,24 +771,24 @@ spack (https://github.com/spack/spack)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>python/py-fuzzer/fuzz.py</code>:142 on 2025-10-22 14:59</div>
-            <div class="timeline-body"><p>Let's go!</p>
+            <div class="timeline-body"><p>Let&#x27;s go!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @sharkdp on 2025-10-22 15:47</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-22 15:47</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @sharkdp on 2025-10-22 15:47</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-22 15:47</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @sharkdp on 2025-10-22 15:47</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-22 15:47</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @sharkdp on 2025-10-22 15:47</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-22 15:47</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:209 on 2025-10-22 16:25</div>
-            <div class="timeline-body"><p>Just curious, what's the reason for reducing the count here?</p>
+            <div class="timeline-body"><p>Just curious, what&#x27;s the reason for reducing the count here?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -798,14 +798,14 @@ spack (https://github.com/spack/spack)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:2553 on 2025-10-22 16:29</div>
-            <div class="timeline-body"><p>I'm not sure if this is still the case or if I remember it incorrectly.</p>
-<p>For generic classes, isn't there a nested scope for the generic between the class and its members?</p>
+            <div class="timeline-body"><p>I&#x27;m not sure if this is still the case or if I remember it incorrectly.</p>
+<p>For generic classes, isn&#x27;t there a nested scope for the generic between the class and its members?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:2553 on 2025-10-22 16:30</div>
-            <div class="timeline-body"><p>Nit: I'd find an explicit return here easier to read</p>
-<pre><code class="language-suggestion">        if !parent_scope.kind().is_class() {
+            <div class="timeline-body"><p>Nit: I&#x27;d find an explicit return here easier to read</p>
+<pre><code>        if !parent_scope.kind().is_class() {
         	return;
       	}
 </code></pre>
@@ -818,7 +818,7 @@ spack (https://github.com/spack/spack)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:2582 on 2025-10-22 16:34</div>
-            <div class="timeline-body"><p>Nit: Not sure if it's worth it but we already check that the parent is a class on the line above. Could we infer the type directly instead of walking the ancestor chain again?</p>
+            <div class="timeline-body"><p>Nit: Not sure if it&#x27;s worth it but we already check that the parent is a class on the line above. Could we infer the type directly instead of walking the ancestor chain again?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -828,7 +828,7 @@ spack (https://github.com/spack/spack)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:2553 on 2025-10-22 17:25</div>
-            <div class="timeline-body"><p>I think it's the other way around — the generic scope contains the class scope, which then contains the class members</p>
+            <div class="timeline-body"><p>I think it&#x27;s the other way around — the generic scope contains the class scope, which then contains the class members</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -838,13 +838,13 @@ spack (https://github.com/spack/spack)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:2570 on 2025-10-22 17:31</div>
-            <div class="timeline-body"><p>Or alternatively, can we pass the parameter index into <code>infer_parameter_definition</code>, and only call this method for the first parameter? Then we don't have to look up by name, and we don't have to verify that what we found was parameter 0.</p>
+            <div class="timeline-body"><p>Or alternatively, can we pass the parameter index into <code>infer_parameter_definition</code>, and only call this method for the first parameter? Then we don&#x27;t have to look up by name, and we don&#x27;t have to verify that what we found was parameter 0.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:2582 on 2025-10-22 17:36</div>
-            <div class="timeline-body"><p>Or rather, the check above will only pass when the function containing this parameter is an immediate child of a class. It won't work for nested functions. <em>Explicit</em> <code>Self</code> is allowed in a nested function (<a href="https://typing.python.org/en/latest/spec/generics.html#valid-locations-for-self">spec</a>, <code>HasNestedFunction.foo.nested</code>). But is <em>implicit</em> <code>Self</code> allowed there? i.e., should this work?</p>
-<pre><code class="language-py">class C:
+            <div class="timeline-body"><p>Or rather, the check above will only pass when the function containing this parameter is an immediate child of a class. It won&#x27;t work for nested functions. <em>Explicit</em> <code>Self</code> is allowed in a nested function (<a href="https://typing.python.org/en/latest/spec/generics.html#valid-locations-for-self">spec</a>, <code>HasNestedFunction.foo.nested</code>). But is <em>implicit</em> <code>Self</code> allowed there? i.e., should this work?</p>
+<pre><code>class C:
     def f(self):
         def nested(self):
             reveal_type(self)  # revealed: Self@C
@@ -858,7 +858,7 @@ spack (https://github.com/spack/spack)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:2553 on 2025-10-22 17:50</div>
-            <div class="timeline-body"><p>Yes, but this is still a good catch. Because there can be a generic scope between class body and function body if the <em>method</em> itself is generic. We made that error in a few other places, and I thought I had them all in my mind (and we're fixing them in https://github.com/astral-sh/ruff/pull/20856), but didn't remember that we introduce this error again here.</p>
+            <div class="timeline-body"><p>Yes, but this is still a good catch. Because there can be a generic scope between class body and function body if the <em>method</em> itself is generic. We made that error in a few other places, and I thought I had them all in my mind (and we&#x27;re fixing them in <a href="https://github.com/astral-sh/ruff/pull/20856">astral-sh/ruff#20856</a>), but didn&#x27;t remember that we introduce this error again here.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -874,7 +874,7 @@ spack (https://github.com/spack/spack)
             <div class="timeline-body"><blockquote>
 <p>can we pass the parameter index into infer_parameter_definition</p>
 </blockquote>
-<p>I see no way of doing that, unfortunately. The AST doesn't store the index of the parameter.</p>
+<p>I see no way of doing that, unfortunately. The AST doesn&#x27;t store the index of the parameter.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -883,7 +883,7 @@ spack (https://github.com/spack/spack)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:209 on 2025-10-23 06:55</div>
-            <div class="timeline-body"><p>Sorry, this was discussed on the original PR. It was necessary to prevent ecosystem panics. The true fix for this is https://github.com/astral-sh/ty/issues/957.</p>
+            <div class="timeline-body"><p>Sorry, this was discussed on the original PR. It was necessary to prevent ecosystem panics. The true fix for this is <a href="https://github.com/astral-sh/ty/issues/957">astral-sh/ty#957</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -896,16 +896,16 @@ spack (https://github.com/spack/spack)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-10-23 07:08</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-23 07:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-10-23 07:08</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-23 07:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @sharkdp on 2025-10-23 07:34</div>
+            <div class="event">Merged by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-23 07:34</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @sharkdp on 2025-10-23 07:34</div>
+            <div class="event">Closed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-23 07:34</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-10-23 07:34</div>
@@ -916,13 +916,13 @@ spack (https://github.com/spack/spack)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:2570 on 2025-10-23 13:14</div>
-            <div class="timeline-body"><p>It looks like <a href="https://doc.rust-lang.org/std/primitive.slice.html#method.element_offset"><code>element_offset</code></a> is <a href="https://github.com/rust-lang/rust/issues/126769#issuecomment-3418757954">stabilizing soon</a> — so in some number of months we'll be able to get the parameter index from the function's parameter slice without threading it through explicitly!</p>
+            <div class="timeline-body"><p>It looks like <a href="https://doc.rust-lang.org/std/primitive.slice.html#method.element_offset"><code>element_offset</code></a> is <a href="https://github.com/rust-lang/rust/issues/126769#issuecomment-3418757954">stabilizing soon</a> — so in some number of months we&#x27;ll be able to get the parameter index from the function&#x27;s parameter slice without threading it through explicitly!</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:16:29 UTC
+        Synced at 2026-01-20 19:19:37 UTC
     </footer>
 </body>
 </html>

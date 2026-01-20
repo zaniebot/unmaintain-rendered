@@ -23,15 +23,15 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/davfsa">@davfsa</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This is a bit of a followup to #5904, which I did without properly testing this idea, as I expected it to provide way worst results than it seems to have done.</p>
-<p>Apart from LTO, I also wanted to test setting <code>opt-level</code> to optimize for size (<code>&quot;s&quot;</code>). It wasn't the first test I did because I expected LTO to be more of an overall gain, but optimizing for size, not so much. It has still yielded good results in the limited speed testing I have done (which I was afraid it would not do), and wanted to share these here.</p>
-<p>The main idea behind these PRs is to slowdown the need for PyPI size increases https://github.com/pypi/support/issues/4260 and overall just being more efficient where possible :)</p>
+<p>Apart from LTO, I also wanted to test setting <code>opt-level</code> to optimize for size (<code>&quot;s&quot;</code>). It wasn&#x27;t the first test I did because I expected LTO to be more of an overall gain, but optimizing for size, not so much. It has still yielded good results in the limited speed testing I have done (which I was afraid it would not do), and wanted to share these here.</p>
+<p>The main idea behind these PRs is to slowdown the need for PyPI size increases <a href="https://github.com/pypi/support/issues/4260">pypi/support#4260</a> and overall just being more efficient where possible :)</p>
 <p>Marking it as a draft for now to enable discussion (as it seems like this is a hot topic from what I have seen in the ruff repo and #5904).</p>
-<h2>Test Plan</h2>
-<details>
+Test Plan
 
-<summary>Expand</summary>
+
+Expand
 
 <p>Git commit for each of the executables:</p>
 <ul>
@@ -45,8 +45,8 @@
 Memory: 32GB @ 3200 MT/s
 Uname: Linux galaxy 6.6.44-1-MANJARO #1 SMP PREEMPT_DYNAMIC Sat Aug  3 10:09:33 UTC 2024 x86_64 GNU/Linux
 </code></pre>
-<hr />
-<h3>Binary Size</h3>
+<hr>
+Binary Size
 <p>Command run: <code>cargo build --release</code> and then getting the binaries from <code>targets/release/uv</code></p>
 <ul>
 <li>uv-lto: 25M</li>
@@ -54,9 +54,9 @@ Uname: Linux galaxy 6.6.44-1-MANJARO #1 SMP PREEMPT_DYNAMIC Sat Aug  3 10:09:33 
 <li>uv-size-no-lto: 22M</li>
 <li>uv-size: 17M</li>
 </ul>
-<h4>Conclusion</h4>
+Conclusion
 <p>Drastic improvement in size by enabling both LTO and optimizing for size!</p>
-<h3>Wheel Size</h3>
+Wheel Size
 <p>Command run: <code>uvx maturin build --release</code> and then getting the wheels from <code>targets/wheels/uv-0.2.34-py3-none-linux_x86_64.whl</code></p>
 <ul>
 <li>uv-lto: 11M</li>
@@ -64,10 +64,10 @@ Uname: Linux galaxy 6.6.44-1-MANJARO #1 SMP PREEMPT_DYNAMIC Sat Aug  3 10:09:33 
 <li>uv-size-no-lto: 8.7M</li>
 <li>uv-size: 7.4M</li>
 </ul>
-<h4>Conclusion</h4>
+Conclusion
 <p>Drastic improvement in size by enabling both LTO and optimizing for wheel size too!</p>
-<hr />
-<h3>Executable Speed</h3>
+<hr>
+Executable Speed
 <p>uv-lto:</p>
 <pre><code>$ ~/coding/uv/uv-lto run resolver --uv-pip --benchmark resolve-warm --benchmark resolve-cold ../requirements/trio.in
 warning: `uv run` is experimental and may change without warning
@@ -112,14 +112,14 @@ Benchmark 1: uv pip (resolve-cold)
   Time (mean ± σ):     377.8 ms ±  24.5 ms    [User: 113.7 ms, System: 74.5 ms]
   Range (min … max):   346.7 ms … 406.1 ms    10 runs
 </code></pre>
-<h4>Result</h4>
-<p>I am not entirely sure why <code>uv-lto</code> is slighly slower than <code>uv-main</code> even tho benchmarks say otherwise (re-ran the benchmark multiple times), but will leave it to codespeed to determine that by properly running the benchmarks. What I was aiming to prove with these benchmarks is that optimizing for speed doesn't actually slow down uv that much, mostly in what I would call an &quot;acceptable&quot; manner, considering how fast uv is already.</p>
-<hr />
-<h3>Build times</h3>
-<p>Massive thanks to @T-256 for bringing up https://github.com/astral-sh/ruff/issues/9224. After reading through it and its sub-links, this <a href="https://github.com/astral-sh/ruff/issues/9224#issuecomment-1866415345">comment by zanieb</a> really made me realize that maybe ensuring build times are not too drastic is something worth ensuring, as to not make it harder for developers getting into the needy giddy of optimizing (and as I have also found out, lol)</p>
+Result
+<p>I am not entirely sure why <code>uv-lto</code> is slighly slower than <code>uv-main</code> even tho benchmarks say otherwise (re-ran the benchmark multiple times), but will leave it to codespeed to determine that by properly running the benchmarks. What I was aiming to prove with these benchmarks is that optimizing for speed doesn&#x27;t actually slow down uv that much, mostly in what I would call an &quot;acceptable&quot; manner, considering how fast uv is already.</p>
+<hr>
+Build times
+<p>Massive thanks to @T-256 for bringing up <a href="https://github.com/astral-sh/ruff/issues/9224">astral-sh/ruff#9224</a>. After reading through it and its sub-links, this <a href="https://github.com/astral-sh/ruff/issues/9224#issuecomment-1866415345">comment by zanieb</a> really made me realize that maybe ensuring build times are not too drastic is something worth ensuring, as to not make it harder for developers getting into the needy giddy of optimizing (and as I have also found out, lol)</p>
 <p>Numbers are taken directly from the &quot;finished&quot; message using <code>cargo build --release</code>.</p>
 <p><strong>They are not real benchmarks, they are single runs, and must be taken with a grain of salt, but give good indications of what is going on</strong></p>
-<h4>Cold run (after <code>cargo clean</code>)</h4>
+Cold run (after <code>cargo clean</code>)
 <ul>
 <li>uv-lto: 3m 41s</li>
 <li>uv-main: 1m 32s</li>
@@ -127,14 +127,14 @@ Benchmark 1: uv pip (resolve-cold)
 <li>uv-size: 2m 14s</li>
 </ul>
 <p>Conclusions: Slight improvement in build times compared to LTO builds, but still half a minute slower than what it was before enabling LTO</p>
-<h4>Warm run</h4>
-<p><em>Didn't really have any good ideas on what a warm run would look like, so I havent run these. If anybody knows a good way to do this, please do let me know and I will run them</em></p>
-</details>
+Warm run
+<p><em>Didn&#x27;t really have any good ideas on what a warm run would look like, so I havent run these. If anybody knows a good way to do this, please do let me know and I will run them</em></p>
+
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Converted to draft by @davfsa on 2024-08-08 14:10</div>
+            <div class="event">Converted to draft by <a href="https://github.com/davfsa">@davfsa</a> on 2024-08-08 14:10</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-08-08 14:11</div>
@@ -146,18 +146,18 @@ Benchmark 1: uv pip (resolve-cold)
             <div class="timeline-body"><blockquote>
 <p>Is lto = &quot;thin&quot; an option by the way, where does it land w.r.t time and size?</p>
 </blockquote>
-<p>Didn't test it, only now realized that <code>profile.dist</code> (for <code>cargo dist</code> builds) seems to run with it. Will post the results when I can!</p>
+<p>Didn&#x27;t test it, only now realized that <code>profile.dist</code> (for <code>cargo dist</code> builds) seems to run with it. Will post the results when I can!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-08-08 14:20</div>
-            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/uv/branches/davfsa:task/optimize-for-size">CodSpeed Performance Report</a></h2>
-<h3>Merging #5909 will <strong>improve performances by 15.12%</strong></h3>
-<p><sub>Comparing <code>davfsa:task/optimize-for-size</code> (54d259b) with <code>main</code> (2822dde)</sub></p>
-<h3>Summary</h3>
+            <div class="timeline-body"><a href="https://codspeed.io/astral-sh/uv/branches/davfsa:task/optimize-for-size">CodSpeed Performance Report</a>
+Merging #5909 will <strong>improve performances by 15.12%</strong>
+<p>Comparing <code>davfsa:task/optimize-for-size</code> (54d259b) with <code>main</code> (2822dde)</p>
+Summary
 <p><code>⚡ 2</code> improvements
 <code>✅ 12</code> untouched benchmarks</p>
-<h3>Benchmarks breakdown</h3>
+Benchmarks breakdown
 <p>|     | Benchmark | <code>main</code> | <code>davfsa:task/optimize-for-size</code> | Change |
 | --- | --------- | ----------------------- | ------------------- | ------ |
 | ⚡ | <code>wheelname_tag_compatibility[flyte-long-compatible]</code> | 2 µs | 1.8 µs | +11.47% |
@@ -166,7 +166,7 @@ Benchmark 1: uv pip (resolve-cold)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/davfsa">@davfsa</a> on 2024-08-08 14:25</div>
-            <div class="timeline-body"><p>@bluss Didn't fully test the speed of using <code>lto = &quot;thin&quot;</code>, but just after a normal build and seeing the size of the executable size, I dont think it would be much better performance wise nor even worth testing:</p>
+            <div class="timeline-body"><p>@bluss Didn&#x27;t fully test the speed of using <code>lto = &quot;thin&quot;</code>, but just after a normal build and seeing the size of the executable size, I dont think it would be much better performance wise nor even worth testing:</p>
 <p>Binary size: 31MB
 Wheel size (py3-none-linux_x86_64):  13MB</p>
 </div>
@@ -174,7 +174,7 @@ Wheel size (py3-none-linux_x86_64):  13MB</p>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-08-08 14:33</div>
             <div class="timeline-body"><p>I would be somewhat skeptical of using <code>z</code> because of its possible impacts on runtime perf. IIRC, it disables auto-vectorization.</p>
-<p>IMO, if we're looking to decrease binary size, we should be chasing other avenues first. Like changes to the code itself that decrease bloat. We have barely done any of that, and I expect there are probably a lot of low hanging fruits.</p>
+<p>IMO, if we&#x27;re looking to decrease binary size, we should be chasing other avenues first. Like changes to the code itself that decrease bloat. We have barely done any of that, and I expect there are probably a lot of low hanging fruits.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -184,7 +184,7 @@ Wheel size (py3-none-linux_x86_64):  13MB</p>
 </blockquote>
 <p>Quick look at https://doc.rust-lang.org/cargo/reference/profiles.html#opt-level does mention that it will also disable loop vectorization. I will try <code>&quot;s&quot;</code> instead and see the size/performance hits (my mind instantly went to &quot;z&quot;, because it is what I have used in other projects)</p>
 <blockquote>
-<p>IMO, if we're looking to decrease binary size, we should be chasing other avenues first. Like changes to the code itself that decrease bloat. We have barely done any of that, and I expect there are probably a lot of low hanging fruits.</p>
+<p>IMO, if we&#x27;re looking to decrease binary size, we should be chasing other avenues first. Like changes to the code itself that decrease bloat. We have barely done any of that, and I expect there are probably a lot of low hanging fruits.</p>
 </blockquote>
 <p>I am not too familiar with UVs code, but if there is anywhere you think I should be looking in particular, let me know and will explore in that direction!</p>
 </div>
@@ -199,7 +199,7 @@ Wheel size (py3-none-linux_x86_64):  13MB</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-08-08 14:40</div>
-            <div class="timeline-body"><p>The other dimension to look at are dependencies. We are not especially conservative with bringing in new dependencies. I wouldn't be surprised if there were some we could pluck out, either with a little extra code on our part or just different feature configurations.</p>
+            <div class="timeline-body"><p>The other dimension to look at are dependencies. We are not especially conservative with bringing in new dependencies. I wouldn&#x27;t be surprised if there were some we could pluck out, either with a little extra code on our part or just different feature configurations.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -213,7 +213,7 @@ Wheel size (py3-none-linux_x86_64):  13MB</p>
 <p>I will try &quot;s&quot; instead and see the size/performance hits</p>
 </blockquote>
 <p>It seems to be mostly on par to using <code>z</code> (+1MB binary size only, which I think its acceptable). Will update this PR and the description.</p>
-<hr />
+<hr>
 <p>Thanks @BurntSushi for all the helpful information, will look into it!</p>
 </div>
         </div>
@@ -229,24 +229,24 @@ Wheel size (py3-none-linux_x86_64):  13MB</p>
 <p>So I guess its a good thing to enable by default and it makes sense that the benchmarks do not report any slowdowns (the speedups are interesting tho).</p>
 <p>Think this is fine to set a ready for merge!</p>
 <p>reference: https://docs.rust-embedded.org/book/unsorted/speed-vs-size.html#optimize-for-speed</p>
-<hr />
+<hr>
 <p>On another note, the point raised by BurntSushi regarding build times i found to be quite important, so might have a look tomorrow and open another pr/issue if i find anything interesting to share :)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @davfsa on 2024-08-08 17:27</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/davfsa">@davfsa</a> on 2024-08-08 17:27</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-08-08 17:31</div>
-            <div class="timeline-body"><p>Our CI benchmarks don't have the best coverage at the moment. We'll want to run some of the hyperfine benchmarks locally to test the effects of this. My prior here is that we should have our <code>opt-level = 3</code>. We <em>want</em> aggressive inlining and vectorization.</p>
+            <div class="timeline-body"><p>Our CI benchmarks don&#x27;t have the best coverage at the moment. We&#x27;ll want to run some of the hyperfine benchmarks locally to test the effects of this. My prior here is that we should have our <code>opt-level = 3</code>. We <em>want</em> aggressive inlining and vectorization.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/davfsa">@davfsa</a> on 2024-08-08 17:41</div>
             <div class="timeline-body"><blockquote>
-<p>Our CI benchmarks don't have the best coverage at the moment. We'll want to run some of the hyperfine benchmarks locally to test the effects of this.</p>
+<p>Our CI benchmarks don&#x27;t have the best coverage at the moment. We&#x27;ll want to run some of the hyperfine benchmarks locally to test the effects of this.</p>
 </blockquote>
-<p>Would be happy to do so. The benchmarks I attached to the description of the issue seem to indicate no drastic slowdowns, but if you indicate which benchmarks I should perform, I'll perform them and post my findings here.</p>
+<p>Would be happy to do so. The benchmarks I attached to the description of the issue seem to indicate no drastic slowdowns, but if you indicate which benchmarks I should perform, I&#x27;ll perform them and post my findings here.</p>
 <blockquote>
 <p>My prior here is that we should have our opt-level = 3. We want aggressive inlining and vectorization.</p>
 </blockquote>
@@ -269,16 +269,16 @@ Wheel size (py3-none-linux_x86_64):  13MB</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-28 00:46</div>
-            <div class="timeline-body"><p>I'm going to close this for now since we're not actively exploring it.</p>
+            <div class="timeline-body"><p>I&#x27;m going to close this for now since we&#x27;re not actively exploring it.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2025-04-28 00:46</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-28 00:46</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:38:45 UTC
+        Synced at 2026-01-20 19:47:15 UTC
     </footer>
 </body>
 </html>

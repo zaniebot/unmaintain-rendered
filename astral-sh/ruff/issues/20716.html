@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ShaiAvr">@ShaiAvr</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<p>I use the <code>astropy</code> library, which defines a <code>Quantity</code> object that represents a value with units. According to their <a href="https://docs.astropy.org/en/latest/units/type_hints.html">docs</a>, I can also annotate variables to indicate that they're quantities and specify their units or physical type:</p>
-<pre><code class="language-python"># foo.py
+            <div class="timeline-body">Summary
+<p>I use the <code>astropy</code> library, which defines a <code>Quantity</code> object that represents a value with units. According to their <a href="https://docs.astropy.org/en/latest/units/type_hints.html">docs</a>, I can also annotate variables to indicate that they&#x27;re quantities and specify their units or physical type:</p>
+<pre><code># foo.py
 from __future__ import annotations
 
 import astropy.units as u
@@ -35,23 +35,23 @@ x: u.Quantity[u.km] = 5 * u.km  # Annotate variable with unit of kilometers
 y: u.Quantity[&quot;length&quot;] = 300 * u.m
 print(x + y)  # Results in 5.3 km
 </code></pre>
-<p>The second form is more natural in my opinion, since it doesn't restrict me to a specific unit, and clearly indicates that the variable <code>y</code> represents distance and any units of distance (For example: meters, kilometers, parsecs, etc) are valid. However, <code>ruff</code> isn't happy about this code. With the default configuration (no <code>pyproject.toml</code> involved), running <code>ruff check foo.py</code> results in <code>F821</code> error since the name <code>length</code> is undefined. If I enable the <code>UP</code> rules by running <code>ruff check --extend-select UP foo.py</code>, I also get <code>UP037</code> warning since I have <code>from __future__ import annotations</code>, so <code>ruff</code> wants me to remove the quotes, and it's wrong since <code>&quot;length&quot;</code> is a literal string.</p>
+<p>The second form is more natural in my opinion, since it doesn&#x27;t restrict me to a specific unit, and clearly indicates that the variable <code>y</code> represents distance and any units of distance (For example: meters, kilometers, parsecs, etc) are valid. However, <code>ruff</code> isn&#x27;t happy about this code. With the default configuration (no <code>pyproject.toml</code> involved), running <code>ruff check foo.py</code> results in <code>F821</code> error since the name <code>length</code> is undefined. If I enable the <code>UP</code> rules by running <code>ruff check --extend-select UP foo.py</code>, I also get <code>UP037</code> warning since I have <code>from __future__ import annotations</code>, so <code>ruff</code> wants me to remove the quotes, and it&#x27;s wrong since <code>&quot;length&quot;</code> is a literal string.</p>
 <p>These errors indicate that <code>ruff</code> believes that every parameter inside a type annotation should be a valid type, which is the usual way we annotate: <code>list[int]</code>, <code>Iterable[str]</code>, so these errors would have made sense on things like <code>list</code> or <code>Iterable</code>. However, in this case, <code>Quantity</code> expects to receive a string parameter, and the annotations in my example are completely valid.</p>
-<p>I don't think <code>ruff</code> should assume that arguments of type annotations should always be types. Third-party classes may accept literal strings as annotations like here, and <code>ruff</code> incorrectly flags that as an error.</p>
-<h3>Version</h3>
+<p>I don&#x27;t think <code>ruff</code> should assume that arguments of type annotations should always be types. Third-party classes may accept literal strings as annotations like here, and <code>ruff</code> incorrectly flags that as an error.</p>
+Version
 <p>ruff 0.13.3</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-06 13:45</div>
-            <div class="timeline-body"><p>Thanks for the report! This reminds me of some related issues around <code>Literal</code> aliasing (https://github.com/astral-sh/ruff/issues/17931, https://github.com/astral-sh/ruff/issues/6014). It looks like <code>Quantity.__class_getitem__</code> <a href="https://github.com/astropy/astropy/blob/c9fe89a65ea9cb75eb00a40dc5bd4895f40af54b/astropy/units/quantity.py#L410">returns a <code>typing.Annotated</code></a>. Ruff recognizes the <code>Annotated</code> form, so this also seems to be a type inference issue.</p>
+            <div class="timeline-body"><p>Thanks for the report! This reminds me of some related issues around <code>Literal</code> aliasing (<a href="https://github.com/astral-sh/ruff/issues/17931">astral-sh/ruff#17931</a>, <a href="https://github.com/astral-sh/ruff/issues/6014">astral-sh/ruff#6014</a>). It looks like <code>Quantity.__class_getitem__</code> <a href="https://github.com/astropy/astropy/blob/c9fe89a65ea9cb75eb00a40dc5bd4895f40af54b/astropy/units/quantity.py#L410">returns a <code>typing.Annotated</code></a>. Ruff recognizes the <code>Annotated</code> form, so this also seems to be a type inference issue.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-10-06 13:45</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-06 13:45</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">type-inference</span> added by @ntBre on 2025-10-06 13:45</div>
+            <div class="event">Label <span class="label">type-inference</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-06 13:45</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tbekalarek-wrmnd">@tbekalarek-wrmnd</a> on 2025-12-10 11:19</div>
@@ -67,7 +67,7 @@ class MyModel:
 <p>But when I run Ruff with <code>UP037</code> + autofix, it automatically removes the quotes and rewrites it as</p>
 <pre><code>store: Annotated[MyModelStore, StrawberryPrivate()]
 </code></pre>
-<p>which then raises <code>NameError: name 'MyModelStore' is not defined</code> at runtime because the class is defined later (or lazily imported).</p>
+<p>which then raises <code>NameError: name &#x27;MyModelStore&#x27; is not defined</code> at runtime because the class is defined later (or lazily imported).</p>
 <p>I currently have to use a dummy alias purely to force Ruff to leave the forward reference quoted:</p>
 <pre><code>MyModelStoreRef = Annotated[&quot;MyModelStore&quot;, StrawberryPrivate()]
 
@@ -80,13 +80,13 @@ class MyModel:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-10 15:52</div>
-            <div class="timeline-body"><p>@tbekalarek-wrmnd That sounds like a different issue to me since your example uses <code>typing.Annotated</code>, not an alias that Ruff can't resolve. I think you may want to use <a href="https://docs.astral.sh/ruff/settings/#lint_flake8-type-checking_runtime-evaluated-decorators">runtime-evaluated-decorators</a> to mark classes decorated with  <code>strawberry.type</code> as needing their annotations at runtime. Note that I also had to add <code>import strawberry</code>, but configuring this setting silences UP037 here: https://play.ruff.rs/bb8ee1c6-b59b-4064-86e9-0c5a08a3ac2b</p>
+            <div class="timeline-body"><p>@tbekalarek-wrmnd That sounds like a different issue to me since your example uses <code>typing.Annotated</code>, not an alias that Ruff can&#x27;t resolve. I think you may want to use <a href="https://docs.astral.sh/ruff/settings/#lint_flake8-type-checking_runtime-evaluated-decorators">runtime-evaluated-decorators</a> to mark classes decorated with  <code>strawberry.type</code> as needing their annotations at runtime. Note that I also had to add <code>import strawberry</code>, but configuring this setting silences UP037 here: https://play.ruff.rs/bb8ee1c6-b59b-4064-86e9-0c5a08a3ac2b</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:53:25 UTC
+        Synced at 2026-01-20 18:50:29 UTC
     </footer>
 </body>
 </html>

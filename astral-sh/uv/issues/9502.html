@@ -24,7 +24,7 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/eginhard">@eginhard</a></div>
             <div class="timeline-body"><p>On Ubuntu with uv 0.5.5 with the following <code>pyproject.toml</code>, adapted from https://docs.astral.sh/uv/guides/integration/pytorch/#configuring-accelerators-with-optional-dependencies (torchvision removed for simplicity and minimum Pytorch version lowered):</p>
-<pre><code class="language-toml">[project]
+<pre><code>[project]
 name = &quot;project&quot;
 version = &quot;0.1.0&quot;
 requires-python = &quot;&gt;=3.12.0&quot;
@@ -48,7 +48,7 @@ conflicts = [
 
 [tool.uv.sources]
 torch = [
-  { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot;, marker = &quot;platform_system != 'Darwin'&quot; },
+  { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot;, marker = &quot;platform_system != &#x27;Darwin&#x27;&quot; },
   { index = &quot;pytorch-cu124&quot;, extra = &quot;cu124&quot; },
 ]
 
@@ -62,41 +62,41 @@ name = &quot;pytorch-cu124&quot;
 url = &quot;https://download.pytorch.org/whl/cu124&quot;
 explicit = true
 </code></pre>
-<p>My goal is to test specific CPU Pytorch versions in CI and I'm not sure which of the below commands should work. The following works, but counter-intuitively installs the GPU version:</p>
-<pre><code class="language-bash">$ uv run --extra cpu --with torch==2.2.2 python -c &quot;import torch; print(torch.__version__)&quot;
+<p>My goal is to test specific CPU Pytorch versions in CI and I&#x27;m not sure which of the below commands should work. The following works, but counter-intuitively installs the GPU version:</p>
+<pre><code>$ uv run --extra cpu --with torch==2.2.2 python -c &quot;import torch; print(torch.__version__)&quot;
 2.2.2+cu121
 </code></pre>
-<p>This doesn't work:</p>
-<pre><code class="language-bash">$ uv run --extra cpu --with torch==2.2.2+cpu python -c &quot;import torch; print(torch.__version__)&quot;
+<p>This doesn&#x27;t work:</p>
+<pre><code>$ uv run --extra cpu --with torch==2.2.2+cpu python -c &quot;import torch; print(torch.__version__)&quot;
   × No solution found when resolving `--with` dependencies:
   ╰─▶ Because there is no version of torch==2.2.2+cpu and you require torch==2.2.2+cpu, we
       can conclude that your requirements are unsatisfiable.
 </code></pre>
 <p>This fails when there is no lockfile present yet:</p>
-<pre><code class="language-bash">$ uv run --with torch==2.2.2 --index https://download.pytorch.org/whl/cpu python -c &quot;import torch; print(torch.__version__)&quot;
+<pre><code>$ uv run --with torch==2.2.2 --index https://download.pytorch.org/whl/cpu python -c &quot;import torch; print(torch.__version__)&quot;
 error: Found duplicate package `torch==2.5.1+cpu @ registry+https://download.pytorch.org/whl/cpu`
 </code></pre>
 <p>But it works if I sync first:</p>
-<pre><code class="language-bash">$ uv sync
+<pre><code>$ uv sync
 $ uv run --with torch==2.2.2 --index https://download.pytorch.org/whl/cpu python -c &quot;import torch; print(torch.__version__)&quot;
 2.2.2+cpu
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-11-29 16:35</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-29 16:35</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-29 17:27</div>
-            <div class="timeline-body"><p>Hmm... Yeah I think <code>--with</code> isn't quite what you want here... <code>--with</code> is typically for overlaying additional dependencies, rather than applying further constraints to the project.</p>
-<p>I'm tempted to say that the &quot;right&quot; way to do this is to add a <code>tool.uv.constraint-dependencies</code> to your <code>pyproject.toml</code> within the CI job itself, then run <code>uv run</code>...</p>
+            <div class="timeline-body"><p>Hmm... Yeah I think <code>--with</code> isn&#x27;t quite what you want here... <code>--with</code> is typically for overlaying additional dependencies, rather than applying further constraints to the project.</p>
+<p>I&#x27;m tempted to say that the &quot;right&quot; way to do this is to add a <code>tool.uv.constraint-dependencies</code> to your <code>pyproject.toml</code> within the CI job itself, then run <code>uv run</code>...</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/eginhard">@eginhard</a> on 2024-11-29 18:26</div>
-            <div class="timeline-body"><p>Oh, I see, that makes sense. There doesn't seem to be a way to set this directly from the command line? <code>--constraint/UV_CONSTRAINT</code> only seem to be available for <code>uv pip compile/sync</code>.</p>
+            <div class="timeline-body"><p>Oh, I see, that makes sense. There doesn&#x27;t seem to be a way to set this directly from the command line? <code>--constraint/UV_CONSTRAINT</code> only seem to be available for <code>uv pip compile/sync</code>.</p>
 <p>Otherwise the following works as well to not have to edit the <code>pyproject.toml</code>:</p>
-<pre><code class="language-bash">echo &quot;torch==2.2.2&quot; &gt; constraints.txt
+<pre><code>echo &quot;torch==2.2.2&quot; &gt; constraints.txt
 uv pip compile pyproject.toml --constraints constraints.txt --extra cpu &gt; requirements.txt
 uv pip sync requirements.txt --index https://download.pytorch.org/whl/cpu --index-strategy unsafe-best-match
 </code></pre>
@@ -108,12 +108,12 @@ uv pip sync requirements.txt --index https://download.pytorch.org/whl/cpu --inde
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-12-27 13:58</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-27 13:58</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:28:37 UTC
+        Synced at 2026-01-20 19:35:50 UTC
     </footer>
 </body>
 </html>

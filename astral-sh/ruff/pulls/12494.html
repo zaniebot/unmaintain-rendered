@@ -23,44 +23,44 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>This PR more-or-less completely rewrites the <code>path.rs</code> submodule in the redknot module resolver, addressing @carljm's comments in https://github.com/astral-sh/ruff/pull/12141#discussion_r1667010245 and https://github.com/astral-sh/ruff/pull/12141#discussion_r1667031874. The external API exposed to other submodules in the module resolver is almost entirely unchanged, however.</p>
+            <div class="timeline-body">Summary
+<p>This PR more-or-less completely rewrites the <code>path.rs</code> submodule in the redknot module resolver, addressing @carljm&#x27;s comments in <a href="https://github.com/astral-sh/ruff/pull/12141">astral-sh/ruff#12141</a>#discussion_r1667010245 and <a href="https://github.com/astral-sh/ruff/pull/12141">astral-sh/ruff#12141</a>#discussion_r1667031874. The external API exposed to other submodules in the module resolver is almost entirely unchanged, however.</p>
 <p>Some of the major changes made include:</p>
 <ul>
-<li>There's no longer two enums, one representing owned module paths and one representing borrowed module paths. Instead, there's a single <code>ModulePath</code> type.</li>
-<li>The <code>ModuleSearchPath</code> type in <code>path.rs</code> (renamed to <code>SearchPath</code>) no longer dereferences to <code>ModulePath</code>. Instead, it's a fully distinct type that only implements the methods that make sense on a search path.</li>
+<li>There&#x27;s no longer two enums, one representing owned module paths and one representing borrowed module paths. Instead, there&#x27;s a single <code>ModulePath</code> type.</li>
+<li>The <code>ModuleSearchPath</code> type in <code>path.rs</code> (renamed to <code>SearchPath</code>) no longer dereferences to <code>ModulePath</code>. Instead, it&#x27;s a fully distinct type that only implements the methods that make sense on a search path.</li>
 <li>Custom stdlib paths and vendored stdlib paths are now represented as two different variants. A custom stdlib path is in many ways more similar to a site-packages path than it is to a vendored stdlib path. Treating them as two separate variants cleans up the code a bunch, and allows us to remove any usage of the <code>FilePath</code> enum from <code>path.rs</code>.</li>
 <li><code>ModulePath</code>s now always remember the search path from which they were derived, and are always represented internally as a <code>{search_path, relative_path}</code> struct.</li>
 </ul>
-<h2>Test Plan</h2>
+Test Plan
 <p><code>cargo test -p red_knot_module_resolver</code></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-07-24 16:34</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-07-24 16:34</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @AlexWaygood on 2024-07-24 16:34</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-07-24 16:34</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-07-24 16:34</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-07-24 16:34</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-07-24 16:48</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-07-24 18:59</div>
-            <div class="timeline-body"><p>I like the direction this is going but still think it's more complicated than it needs to be and the <code>'static</code> lifetime is very clever, but too clever in my view (it's hard to understand).</p>
-<p>I think <code>ModuleSearchPath</code> could be a simple struct that doesn't use any generics</p>
-<pre><code class="language-rust">#[derive(Clone, Debug, Eq, PartialEq)]
+            <div class="timeline-body"><p>I like the direction this is going but still think it&#x27;s more complicated than it needs to be and the <code>&#x27;static</code> lifetime is very clever, but too clever in my view (it&#x27;s hard to understand).</p>
+<p>I think <code>ModuleSearchPath</code> could be a simple struct that doesn&#x27;t use any generics</p>
+<pre><code>#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ModuleSearchPath {
 	kind: ModuleSearchPathKind,
 	path: Utf8PathBuf
@@ -84,7 +84,7 @@ pub enum ModuleSearchPathKind {
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_module_resolver/src/path.rs</code>:912 on 2024-07-24 19:01</div>
             <div class="timeline-body"><p>Nit</p>
-<pre><code class="language-suggestion">        match &amp;self.0 {
+<pre><code>        match &amp;self.0 {
             ModuleSearchPathInner::StandardLibraryVendored(path) =&gt; Some(&amp;*path.0),
             ModuleSearchPathInner::Extra(_) |
             ModuleSearchPathInner::FirstParty(_) |
@@ -107,7 +107,7 @@ pub enum ModuleSearchPathKind {
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_module_resolver/src/path.rs</code>:899 on 2024-07-24 19:01</div>
             <div class="timeline-body"><p>Nit</p>
-<pre><code class="language-suggestion">        match &amp;self.0 {
+<pre><code>        match &amp;self.0 {
             ModuleSearchPathInner::Extra(path) |
             ModuleSearchPathInner::FirstParty(path) |
             ModuleSearchPathInner::StandardLibraryCustom(path) |
@@ -121,7 +121,7 @@ pub enum ModuleSearchPathKind {
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-07-25 03:19</div>
             <div class="timeline-body"><p>This looks really good to me, as far as the type changes for module and search paths! Thanks for doing this refactor.</p>
-<p>I don't have a strong opinion either way about the static lifetime thing, so I'll leave this for Micha to approve when he's happy with it.</p>
+<p>I don&#x27;t have a strong opinion either way about the static lifetime thing, so I&#x27;ll leave this for Micha to approve when he&#x27;s happy with it.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -131,18 +131,18 @@ pub enum ModuleSearchPathKind {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-07-25 10:16</div>
-            <div class="timeline-body"><p>I pushed a commit simplifying the situation with the <code>'static</code> lifetimes. Methods that mutate internal state are now always available on <code>ModulePath</code>, even if the lifetime is not <code>'static</code>; copy-on-write semantics are now just an implementation detail of the internal structure of <code>ModulePath</code>. (This shouldn't result in any extra allocation.)</p>
+            <div class="timeline-body"><p>I pushed a commit simplifying the situation with the <code>&#x27;static</code> lifetimes. Methods that mutate internal state are now always available on <code>ModulePath</code>, even if the lifetime is not <code>&#x27;static</code>; copy-on-write semantics are now just an implementation detail of the internal structure of <code>ModulePath</code>. (This shouldn&#x27;t result in any extra allocation.)</p>
 <blockquote>
 <p>Using a <code>Utf8PathBuf</code> for both vendored and system paths removes the generic aspect and should be sufficient because we can use the <code>kind</code> to determine whether we should construct <code> vendored</code> or <code>system</code> path.</p>
 <p>Decoupling the <code>Path</code> and <code>Kind</code> has the added benefit that we can remove the matching on <code>kind</code> for most mutation methods <strong>unless</strong> the logic depends on the kind.</p>
 </blockquote>
-<p>It sounds like I'm in the minority here, but I prefer wrapping the data inside the enum that determines the kind of path we're dealing with. I think it leaves less room for error: it forces you to consider what kind of variant you're dealing with before you're allowed to access the underlying data and manipulate it. Otherwise it feels too easy to me to forget to write a method that manipulates the data and forgets to consider the kind. I agree the way I currently have it is more verbose, but I feel like it leaves less room for error.</p>
+<p>It sounds like I&#x27;m in the minority here, but I prefer wrapping the data inside the enum that determines the kind of path we&#x27;re dealing with. I think it leaves less room for error: it forces you to consider what kind of variant you&#x27;re dealing with before you&#x27;re allowed to access the underlying data and manipulate it. Otherwise it feels too easy to me to forget to write a method that manipulates the data and forgets to consider the kind. I agree the way I currently have it is more verbose, but I feel like it leaves less room for error.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-07-25 10:21</div>
             <div class="timeline-body"><blockquote>
-<p>that doesn't use any generics</p>
+<p>that doesn&#x27;t use any generics</p>
 </blockquote>
 <p>Rather than having generic <code>ModulePathData</code> and <code>SearchPathData</code> structs, I considered having separate <code>SystemModulePathData</code>, <code>VendoredModulePathData</code>, <code>SystemSearchPathData</code> and <code>VendoredSearchPathData</code> structs. It would be a bit less DRY, but it would avoid having to use the complex generic parameters and trait bounds. Would you consider that an improvement?</p>
 </div>
@@ -152,7 +152,7 @@ pub enum ModuleSearchPathKind {
             <div class="timeline-body"><blockquote>
 <p>Rather than having generic ModulePathData and SearchPathData structs, I considered having separate SystemModulePathData, VendoredModulePathData, SystemSearchPathData and VendoredSearchPathData structs. It would be a bit less DRY, but it would avoid having to use the complex generic parameters and trait bounds. Would you consider that an improvement?</p>
 </blockquote>
-<p>I don't think I fully understand the change but I have some reservations about the <code>Data</code> structs. I do find that they introduce a lot of boilerplate and indirection, which makes it more difficult to understand the essence of the code (I actually think that it overoptimizes on isolation). To me it would also be unclear how it would allow you to separate <code>path</code> and <code>kind</code>, which both Carl and I think would simplify many mapping/mutation methods.</p>
+<p>I don&#x27;t think I fully understand the change but I have some reservations about the <code>Data</code> structs. I do find that they introduce a lot of boilerplate and indirection, which makes it more difficult to understand the essence of the code (I actually think that it overoptimizes on isolation). To me it would also be unclear how it would allow you to separate <code>path</code> and <code>kind</code>, which both Carl and I think would simplify many mapping/mutation methods.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -160,29 +160,29 @@ pub enum ModuleSearchPathKind {
             <div class="timeline-body"><blockquote>
 <p>To me it would also be unclear how it would allow you to separate <code>path</code> and <code>kind</code>, which both Carl and I think would simplify many mapping/mutation methods.</p>
 </blockquote>
-<p>Yeah, it wouldn't separate <code>path</code> and <code>kind</code>. As I said in https://github.com/astral-sh/ruff/pull/12494#issuecomment-2249979713, I agree that that would be a simplification but I have reservations about making that change.</p>
+<p>Yeah, it wouldn&#x27;t separate <code>path</code> and <code>kind</code>. As I said in <a href="https://github.com/astral-sh/ruff/pull/12494">astral-sh/ruff#12494</a>#issuecomment-2249979713, I agree that that would be a simplification but I have reservations about making that change.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-07-25 11:12</div>
-            <div class="timeline-body"><p>Getting rid of the generics did simplify the code a fair bit, so I've pushed that change. The PR now doesn't use generics at all: <code>SystemModulePathData</code> and <code>VendoredModulePathData</code> are just two separate structs, rather than there being a single, generic <code>ModulePathData</code> struct.</p>
+            <div class="timeline-body"><p>Getting rid of the generics did simplify the code a fair bit, so I&#x27;ve pushed that change. The PR now doesn&#x27;t use generics at all: <code>SystemModulePathData</code> and <code>VendoredModulePathData</code> are just two separate structs, rather than there being a single, generic <code>ModulePathData</code> struct.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-25 11:38</div>
             <div class="timeline-body"><p>I kind of disagree. More code tends to be more bugs.</p>
-<p>Considering that we're already storing the search path as an explicit field, why not store the <code>ModuleSearchPath</code> on <code>ModulePath</code>? You then can keep the explicit enum that forces checking that it the right variant when <em>dereferencing</em> the search path, but all operations on the relative path don't need to deal with the kind, unless they have to.</p>
-<p>Why do I feel strongly about this. There are so many <code>Data</code> and module structs involved that I find it hard to understand what's going on and how they related to each other. Reducing the types will make it easier to understand the code.</p>
+<p>Considering that we&#x27;re already storing the search path as an explicit field, why not store the <code>ModuleSearchPath</code> on <code>ModulePath</code>? You then can keep the explicit enum that forces checking that it the right variant when <em>dereferencing</em> the search path, but all operations on the relative path don&#x27;t need to deal with the kind, unless they have to.</p>
+<p>Why do I feel strongly about this. There are so many <code>Data</code> and module structs involved that I find it hard to understand what&#x27;s going on and how they related to each other. Reducing the types will make it easier to understand the code.</p>
 <p>I do think that it will allow you to reduce the code significantly (which is a main motivation for this refactor in the first place!)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-07-25 11:50</div>
             <div class="timeline-body"><blockquote>
-<p>Considering that we're already storing the search path as an explicit field, why not store the <code>ModuleSearchPath</code> on <code>ModulePath</code>? You then can keep the explicit enum that forces checking that it the right variant when <em>dereferencing</em> the search path, but all operations on the relative path don't need to deal with the kind, unless they have to.</p>
+<p>Considering that we&#x27;re already storing the search path as an explicit field, why not store the <code>ModuleSearchPath</code> on <code>ModulePath</code>? You then can keep the explicit enum that forces checking that it the right variant when <em>dereferencing</em> the search path, but all operations on the relative path don&#x27;t need to deal with the kind, unless they have to.</p>
 </blockquote>
-<p>Just to make sure I understand correctly: you're proposing something like this? I'm happy to try that out, if so:</p>
-<pre><code class="language-rs">enum SearchPath {
+<p>Just to make sure I understand correctly: you&#x27;re proposing something like this? I&#x27;m happy to try that out, if so:</p>
+<pre><code>enum SearchPath {
     Extra(Arc&lt;SystemPathBuf&gt;),
     FirstParty(Arc&lt;SystemPathBuf&gt;),
     StandardLibraryCustom(Arc&lt;SystemPathBuf&gt;),
@@ -191,18 +191,18 @@ pub enum ModuleSearchPathKind {
     Editable(Arc&lt;SystemPathBuf&gt;),
 }
 
-struct ModulePath&lt;'a&gt; {
+struct ModulePath&lt;&#x27;a&gt; {
     search_path: SearchPath,
-    relative_path: Cow&lt;'a, Utf8Path&gt;
+    relative_path: Cow&lt;&#x27;a, Utf8Path&gt;
 }
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-25 11:59</div>
-            <div class="timeline-body"><p>Yes, that's what I'm thinking. Although I think we don't have to use a <code>Cow</code> for <code>relative_path</code> and can instead change <code>with_pyi_extension</code> to return <code>Self</code> and <code>with_pyi_extension</code> return a <code>Result&lt;Self, Self&gt;</code> and instead mutate the path in place.</p>
+            <div class="timeline-body"><p>Yes, that&#x27;s what I&#x27;m thinking. Although I think we don&#x27;t have to use a <code>Cow</code> for <code>relative_path</code> and can instead change <code>with_pyi_extension</code> to return <code>Self</code> and <code>with_pyi_extension</code> return a <code>Result&lt;Self, Self&gt;</code> and instead mutate the path in place.</p>
 <p>The place I would like to get is that for example for:</p>
-<pre><code class="language-rust">    #[must_use]
+<pre><code>    #[must_use]
     pub(crate) fn is_directory(&amp;self, resolver: &amp;ResolverState) -&gt; bool {
         match &amp;self.0 {
             ModulePathInner::Extra(path) =&gt; {
@@ -244,8 +244,8 @@ struct ModulePath&lt;'a&gt; {
 </code></pre>
 <p>I as a reader find it extremely difficult to spot the difference between the branches. I have to read trough the entire cod and compare the code for each branch only to see, ah, most of them are the same.</p>
 <p>This method is similar</p>
-<pre><code class="language-rust">    #[must_use]
-    pub(crate) fn to_module_path(&amp;self) -&gt; ModulePath&lt;'static&gt; {
+<pre><code>    #[must_use]
+    pub(crate) fn to_module_path(&amp;self) -&gt; ModulePath&lt;&#x27;static&gt; {
         match &amp;self.0 {
             ModuleSearchPathInner::Extra(search_path) =&gt; {
                 ModulePath::extra(SystemModulePathData::from_search_path(search_path.clone()))
@@ -275,16 +275,16 @@ struct ModulePath&lt;'a&gt; {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-07-25 12:00</div>
-            <div class="timeline-body"><p>Alright, I'll try making that change</p>
+            <div class="timeline-body"><p>Alright, I&#x27;ll try making that change</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-07-25 12:32</div>
             <div class="timeline-body"><blockquote>
-<p>I think we don't have to use a <code>Cow</code> for <code>relative_path</code></p>
+<p>I think we don&#x27;t have to use a <code>Cow</code> for <code>relative_path</code></p>
 </blockquote>
-<p>I got rid of the <code>Cow</code>. It means we have to do an otherwise-unnecessary allocation in <code>relativize_path()</code>, but other than that the code is unchanged -- so you're probably right that it wasn't worth the added complexity. And <code>relativize_path()</code> is only used in <code>resolver::file_to_module</code>, which is only used in <code>resolver::path_to_module</code>, which is currently unused.</p>
-<p>I'm looking at your larger suggested change now.</p>
+<p>I got rid of the <code>Cow</code>. It means we have to do an otherwise-unnecessary allocation in <code>relativize_path()</code>, but other than that the code is unchanged -- so you&#x27;re probably right that it wasn&#x27;t worth the added complexity. And <code>relativize_path()</code> is only used in <code>resolver::file_to_module</code>, which is only used in <code>resolver::path_to_module</code>, which is currently unused.</p>
+<p>I&#x27;m looking at your larger suggested change now.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -294,11 +294,11 @@ struct ModulePath&lt;'a&gt; {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-07-25 16:23</div>
-            <div class="timeline-body"><p>I pushed the refactor. It made the code around 200 lines shorter and I don't think it makes the code significantly more bug-prone. Thanks for pushing me on this :-)</p>
+            <div class="timeline-body"><p>I pushed the refactor. It made the code around 200 lines shorter and I don&#x27;t think it makes the code significantly more bug-prone. Thanks for pushing me on this :-)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-07-25 16:23</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-07-25 16:23</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_module_resolver/src/path.rs</code>:61 on 2024-07-25 16:27</div>
@@ -307,7 +307,7 @@ struct ModulePath&lt;'a&gt; {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_module_resolver/src/path.rs</code>:73 on 2024-07-25 16:29</div>
-            <div class="timeline-body"><p>I don't think it's worth changing the design because of it. But the fact that the <code>ModulePath</code> is constructed out of the search path and a relative path requires that calling <code>is_directory</code> always allocates a new path (hidden behind <code>join</code>)</p>
+            <div class="timeline-body"><p>I don&#x27;t think it&#x27;s worth changing the design because of it. But the fact that the <code>ModulePath</code> is constructed out of the search path and a relative path requires that calling <code>is_directory</code> always allocates a new path (hidden behind <code>join</code>)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -317,7 +317,7 @@ struct ModulePath&lt;'a&gt; {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_module_resolver/src/path.rs</code>:259 on 2024-07-25 16:31</div>
-            <div class="timeline-body"><p>It's slightly surprising that <code>Eq</code> allocates. I think you could optimize this by doing</p>
+            <div class="timeline-body"><p>It&#x27;s slightly surprising that <code>Eq</code> allocates. I think you could optimize this by doing</p>
 <pre><code>if let Some(rest) = other.split_prefix(self.search_path) {
     rest == &amp;self.relative_path
 } else {
@@ -330,7 +330,7 @@ struct ModulePath&lt;'a&gt; {
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_module_resolver/src/path.rs</code>:507 on 2024-07-25 16:33</div>
             <div class="timeline-body"><p>I think it would be possible to merge some of these branches</p>
-<pre><code class="language-suggestion">        match (&amp;*self.0, path) {
+<pre><code>        match (&amp;*self.0, path) {
             (SearchPathInner::Extra(search_path), FilePath::System(absolute_path)) | (SearchPathInner::FirstParty(search_path), FilePath::System(absolute_path)) =&gt; absolute_path
                 .strip_prefix(search_path)
                 .ok()
@@ -346,7 +346,7 @@ struct ModulePath&lt;'a&gt; {
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_module_resolver/src/path.rs</code>:576 on 2024-07-25 16:33</div>
             <div class="timeline-body"><p>We should return a <code>&amp;SystemPath</code> and <code>&amp;VendoredPath</code> instead of the <code>buf</code> version</p>
-<pre><code class="language-suggestion">    pub(crate) fn as_system_path_buf(&amp;self) -&gt; Option&lt;&amp;SystemPath&gt; {
+<pre><code>    pub(crate) fn as_system_path_buf(&amp;self) -&gt; Option&lt;&amp;SystemPath&gt; {
         match &amp;*self.0 {
             SearchPathInner::Extra(path)
             | SearchPathInner::FirstParty(path)
@@ -386,7 +386,7 @@ struct ModulePath&lt;'a&gt; {
             <div class="timeline-body"><blockquote>
 <p>We should return a <code>&amp;SystemPath</code> and <code>&amp;VendoredPath</code> instead of the <code>buf</code> version</p>
 </blockquote>
-<p>I don't mind making the change, but what's the advantage?</p>
+<p>I don&#x27;t mind making the change, but what&#x27;s the advantage?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -395,7 +395,7 @@ struct ModulePath&lt;'a&gt; {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_module_resolver/src/path.rs</code>:73 on 2024-07-25 17:42</div>
-            <div class="timeline-body"><p>I suppose we could store module paths as a <code>{search_path, absolute_path}</code> struct rather than a <code>{search_path, relative_path}</code> struct. But then we'd probably have to think about encoding the type in the <code>absolute_path</code> part of the struct again...</p>
+            <div class="timeline-body"><p>I suppose we could store module paths as a <code>{search_path, absolute_path}</code> struct rather than a <code>{search_path, relative_path}</code> struct. But then we&#x27;d probably have to think about encoding the type in the <code>absolute_path</code> part of the struct again...</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -405,17 +405,17 @@ struct ModulePath&lt;'a&gt; {
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_module_resolver/src/path.rs</code>:507 on 2024-07-25 18:04</div>
             <div class="timeline-body"><p>Could do, but Clippy complains about ^that because it thinks I should use</p>
-<pre><code class="language-rs">(
+<pre><code>(
     SearchPathInner::Extra(search_path) | SearchPath::FirstParty(search_path),
     FilePath::System(absolute_path)
 )
 </code></pre>
 <p>instead of</p>
-<pre><code class="language-rs">    (SearchPathInner::Extra(search_path), FilePath::System(absolute_path))
+<pre><code>    (SearchPathInner::Extra(search_path), FilePath::System(absolute_path))
     | (SearchPathInner::FirstParty(search_path), FilePath::System(absolute_path))
 </code></pre>
-<p>The version of the match statement as a whole that merges the branches and that Clippy is happy with looks like this, which... seems kinda horrible to me (though it's admittedly less repetitive):</p>
-<pre><code class="language-rs">match (&amp;*self.0, path) {
+<p>The version of the match statement as a whole that merges the branches and that Clippy is happy with looks like this, which... seems kinda horrible to me (though it&#x27;s admittedly less repetitive):</p>
+<pre><code>match (&amp;*self.0, path) {
 	(
 	    SearchPathInner::Extra(search_path)
 	    | SearchPathInner::FirstParty(search_path)
@@ -463,10 +463,10 @@ struct ModulePath&lt;'a&gt; {
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @AlexWaygood on 2024-07-25 18:29</div>
+            <div class="event">Merged by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-07-25 18:29</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2024-07-25 18:29</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-07-25 18:29</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-07-25 18:29</div>
@@ -477,7 +477,7 @@ struct ModulePath&lt;'a&gt; {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_module_resolver/src/path.rs</code>:576 on 2024-07-25 18:44</div>
-            <div class="timeline-body"><p>It's the same as <code>&amp;str</code> and <code>String</code>. It's preferred to take or return a <code>&amp;str</code> because it is the more generic type. I think might even avoid an extra dereference because a <code>&amp;SystemPathBuf</code> is a reference to a <code>SystemPathBuf</code> and you then need to dereference the value. <code>&amp;SystemPath</code> is directly the reference to the value.</p>
+            <div class="timeline-body"><p>It&#x27;s the same as <code>&amp;str</code> and <code>String</code>. It&#x27;s preferred to take or return a <code>&amp;str</code> because it is the more generic type. I think might even avoid an extra dereference because a <code>&amp;SystemPathBuf</code> is a reference to a <code>SystemPathBuf</code> and you then need to dereference the value. <code>&amp;SystemPath</code> is directly the reference to the value.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -492,7 +492,7 @@ struct ModulePath&lt;'a&gt; {
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:05:29 UTC
+        Synced at 2026-01-20 19:05:27 UTC
     </footer>
 </body>
 </html>

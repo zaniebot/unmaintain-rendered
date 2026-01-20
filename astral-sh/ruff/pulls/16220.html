@@ -23,57 +23,57 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>This is part of the preparation for detecting syntax errors in the parser from https://github.com/astral-sh/ruff/pull/16090/. As suggested in <a href="https://github.com/astral-sh/ruff/pull/16090/#discussion_r1953084509">this comment</a>, I started working on a <code>ParseOptions</code> struct that could be stored in the parser. For this initial refactor, I only made it hold the existing <code>Mode</code> option, but for syntax errors, we will also need it to have a <code>PythonVersion</code>. For that use case, I'm picturing something like a <code>ParseOptions::with_python_version</code> method, so you can extend the current calls to something like</p>
-<pre><code class="language-rust">ParseOptions::from(mode).with_python_version(settings.target_version)
+            <div class="timeline-body">Summary
+<p>This is part of the preparation for detecting syntax errors in the parser from <a href="https://github.com/astral-sh/ruff/pull/16090">astral-sh/ruff#16090</a>/. As suggested in <a href="https://github.com/astral-sh/ruff/pull/16090/#discussion_r1953084509">this comment</a>, I started working on a <code>ParseOptions</code> struct that could be stored in the parser. For this initial refactor, I only made it hold the existing <code>Mode</code> option, but for syntax errors, we will also need it to have a <code>PythonVersion</code>. For that use case, I&#x27;m picturing something like a <code>ParseOptions::with_python_version</code> method, so you can extend the current calls to something like</p>
+<pre><code>ParseOptions::from(mode).with_python_version(settings.target_version)
 </code></pre>
 <p>But I thought it was worth adding <code>ParseOptions</code> alone without changing any other behavior first.</p>
 <p>Most of the diff is just updating call sites taking <code>Mode</code> to take <code>ParseOptions::from(Mode)</code> or those taking <code>PySourceType</code>s to take <code>ParseOptions::from(PySourceType)</code>. The interesting changes are in the new <code>parser/options.rs</code> file and smaller parts of <code>parser/mod.rs</code> and <code>ruff_python_parser/src/lib.rs</code>.</p>
-<details>
-<summary>Outdated implementation details for future reference</summary>
+
+Outdated implementation details for future reference
 
 <p>NOTE: as the <code>details</code> summary says, this does <em>not</em> correspond to the current implementation, which preserves the original signature of <code>parse_unchecked_source</code> and uses a much simpler representation of <code>ParseOptions</code>. This is preserved just for historical purposes.</p>
 <p>The <code>ParserOptions</code> implementation is complicated a bit by wanting to preserve the <code>SAFETY</code> comment in <code>parse_unchecked_source</code>:</p>
 <p>https://github.com/astral-sh/ruff/blob/b5cd4f2f70408b8ba2ebd32e554d0fef2472e9c2/crates/ruff_python_parser/src/lib.rs#L289-L295</p>
 <p>The only way I could see to enforce this while passing a <code>ParserOptions</code> instead of a <code>PySourceType</code> was by adding a generic type state to <code>ParserOptions</code>, so that <code>parse_unchecked_source</code> would take a <code>ParserOptions&lt;KnownSource&gt;</code> constructed by <code>ParserOptions::from_source_type</code>, as opposed to the <code>ParserOptions&lt;UnknownSource&gt;</code> produced by <code>ParserOptions::from_mode</code>.</p>
-<p>On top of that, I didn't want to propagate the generics from <code>ParserOptions</code> to all uses of <code>Parser</code>, so there's another indirection through the <code>AsParserOptions</code> trait, which is used by <code>Parser</code> to hold a <code>Box&lt;dyn AsParserOptions&gt;</code> instead of a <code>ParserOptions&lt;S: SourceType&gt;</code>.</p>
+<p>On top of that, I didn&#x27;t want to propagate the generics from <code>ParserOptions</code> to all uses of <code>Parser</code>, so there&#x27;s another indirection through the <code>AsParserOptions</code> trait, which is used by <code>Parser</code> to hold a <code>Box&lt;dyn AsParserOptions&gt;</code> instead of a <code>ParserOptions&lt;S: SourceType&gt;</code>.</p>
 <p>Finally, other public functions in the parser crate could be updated to take <code>ParserOptions</code> if we want, but <code>parse_unchecked_source</code> is the variant that ruff and red-knot call where I want to integrate the syntax error checks, so it was my main priority.</p>
-</details>
 
-<h2>Test Plan</h2>
+
+Test Plan
 <p>Existing tests, this should not change any behavior.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> added by @ntBre on 2025-02-17 22:25</div>
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-17 22:25</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @ntBre on 2025-02-17 22:25</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-17 22:25</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-02-17 22:25</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-17 22:25</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @ntBre on 2025-02-17 22:25</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-17 22:25</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @ntBre on 2025-02-17 22:25</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-17 22:25</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dhruvmanila by @ntBre on 2025-02-17 22:25</div>
+            <div class="event">Review requested from <a href="https://github.com/dhruvmanila">@dhruvmanila</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-17 22:25</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-17 22:35</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
@@ -83,7 +83,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/parser/options.rs</code>:42 on 2025-02-17 22:37</div>
-            <div class="timeline-body"><p>This obviously doesn't need to be <code>pub(crate)</code>, I must have missed it when extracting the module. I'll fix this locally but hold off on pushing just to save some CI time.</p>
+            <div class="timeline-body"><p>This obviously doesn&#x27;t need to be <code>pub(crate)</code>, I must have missed it when extracting the module. I&#x27;ll fix this locally but hold off on pushing just to save some CI time.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -91,46 +91,46 @@
             <div class="timeline-body"><blockquote>
 <p>The only way I could see to enforce this while passing a <code>ParserOptions</code> instead of a <code>PySourceType</code> was by adding a generic type state to <code>ParserOptions</code>, so that <code>parse_unchecked_source</code> would take a <code>ParserOptions&lt;KnownSource&gt;</code> constructed by <code>ParserOptions::from_source_type</code>, as opposed to the <code>ParserOptions&lt;UnknownSource&gt;</code> produced by <code>ParserOptions::from_mode</code>.</p>
 </blockquote>
-<p>What's the motivation for changing the function signature for <code>parse_unchecked_source</code>? I think we should keep it as is and accept <code>PySourceType</code> which is then internally converted into a <code>ParserOptions</code>. This way we can maintain the invariant that <code>PySourceType</code> always parses into a <code>ModModule</code>. This will then avoid the need for <code>KnownSource</code>.</p>
-<hr />
-<p>I've some additional thoughts that are related to this:</p>
+<p>What&#x27;s the motivation for changing the function signature for <code>parse_unchecked_source</code>? I think we should keep it as is and accept <code>PySourceType</code> which is then internally converted into a <code>ParserOptions</code>. This way we can maintain the invariant that <code>PySourceType</code> always parses into a <code>ModModule</code>. This will then avoid the need for <code>KnownSource</code>.</p>
+<hr>
+<p>I&#x27;ve some additional thoughts that are related to this:</p>
 <ul>
-<li>I'm wondering if we should abstract away the <code>Mode</code> parameter i.e., replace <code>mode: Mode</code> with <code>options: ParserOptions</code> in <code>parse</code> and <code>parse_unchecked</code> functions</li>
-<li>We could possibly remove <code>Mode::Ipython</code> and use <code>PySourceType::Ipynb</code> instead because the <code>ParserOptions</code> will contain it and it seems a bit redundant that both <code>Mode</code> and <code>PySourceType</code>, which the parser and lexer have access to, contains an indicator that we're in a notebook context.</li>
-<li>I think we should also pass the options to the <code>Lexer</code>. I don't think the <code>TokenSource</code> needs any info from it but even if it did, it can just ask the lexer.</li>
+<li>I&#x27;m wondering if we should abstract away the <code>Mode</code> parameter i.e., replace <code>mode: Mode</code> with <code>options: ParserOptions</code> in <code>parse</code> and <code>parse_unchecked</code> functions</li>
+<li>We could possibly remove <code>Mode::Ipython</code> and use <code>PySourceType::Ipynb</code> instead because the <code>ParserOptions</code> will contain it and it seems a bit redundant that both <code>Mode</code> and <code>PySourceType</code>, which the parser and lexer have access to, contains an indicator that we&#x27;re in a notebook context.</li>
+<li>I think we should also pass the options to the <code>Lexer</code>. I don&#x27;t think the <code>TokenSource</code> needs any info from it but even if it did, it can just ask the lexer.</li>
 </ul>
 <p>Curious to hear @MichaReiser thoughts on this.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/mod.rs</code>:64 on 2025-02-18 07:57</div>
-            <div class="timeline-body"><p>Nit: I'd add the <code>options</code> last because the <code>start_offset</code> seems more important (given that the signature is called <code>new_starts_at</code>). The other reason is that the <code>options</code> are &quot;optional&quot; (We would assign <code>ParserOptions::default</code> if Rust ever gets default parameters)</p>
+            <div class="timeline-body"><p>Nit: I&#x27;d add the <code>options</code> last because the <code>start_offset</code> seems more important (given that the signature is called <code>new_starts_at</code>). The other reason is that the <code>options</code> are &quot;optional&quot; (We would assign <code>ParserOptions::default</code> if Rust ever gets default parameters)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/mod.rs</code>:74 on 2025-02-18 07:59</div>
-            <div class="timeline-body"><p>What's the reason for boxing the options? I don't think the size of <code>Parser</code> matters much -- we only create very few instances -- but we'll access the values rather frequently.</p>
-<p>Oh, I see. It's because you store a <code>AsParserOptions</code> trait. What's the motivation for having a trait... I think I need to take a closer look at <code>ParserOptions</code></p>
+            <div class="timeline-body"><p>What&#x27;s the reason for boxing the options? I don&#x27;t think the size of <code>Parser</code> matters much -- we only create very few instances -- but we&#x27;ll access the values rather frequently.</p>
+<p>Oh, I see. It&#x27;s because you store a <code>AsParserOptions</code> trait. What&#x27;s the motivation for having a trait... I think I need to take a closer look at <code>ParserOptions</code></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-18 08:03</div>
-            <div class="timeline-body"><p>I agree with @dhruvmanila that I wouldn't make <code>ParserOptions</code> generic or add <code>ParserOptions</code> to <code>parse_unchecked_source</code>. It unnecessarily complicates things internally.</p>
-<p>We could consider adding a <code>ParseSourceOptions</code> struct which is <code>ParserOptions</code> with the source type prop omitted, but I'm not sure if it's worth exposing the options on <code>parse_unchecked_source</code>. Instead, advanced use cases should use <code>pare_unchecked</code> and then <code>map/unwrap</code> on the call site.</p>
+            <div class="timeline-body"><p>I agree with @dhruvmanila that I wouldn&#x27;t make <code>ParserOptions</code> generic or add <code>ParserOptions</code> to <code>parse_unchecked_source</code>. It unnecessarily complicates things internally.</p>
+<p>We could consider adding a <code>ParseSourceOptions</code> struct which is <code>ParserOptions</code> with the source type prop omitted, but I&#x27;m not sure if it&#x27;s worth exposing the options on <code>parse_unchecked_source</code>. Instead, advanced use cases should use <code>pare_unchecked</code> and then <code>map/unwrap</code> on the call site.</p>
 <p>I think it could make sense to expose the <code>ParserOptions</code> to the <code>Lexer</code>, or at least a subset of the options but I think this is something we can tackle separately.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-18 11:40</div>
-            <div class="timeline-body"><p>I'll leave this one to Micha/Dhruv :-)</p>
+            <div class="timeline-body"><p>I&#x27;ll leave this one to Micha/Dhruv :-)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-02-18 11:40</div>
+            <div class="event">Review request for <a href="https://github.com/AlexWaygood">@AlexWaygood</a> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-18 11:40</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-18 13:47</div>
-            <div class="timeline-body"><p>The motivation for changing the signature of <code>parse_unchecked_source</code> in particular is that it's called by <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/linter.rs#L495">ruff</a> and by <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_db/src/parsed.rs#L40">red-knot</a> where I wanted to inject the Python version for syntax error detection. I wanted to avoid moving the <code>unwrap</code> call and accompanying <code>SAFETY</code> comments to those call sites, but that could certainly be preferable to the complication of the generics here.</p>
+            <div class="timeline-body"><p>The motivation for changing the signature of <code>parse_unchecked_source</code> in particular is that it&#x27;s called by <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/linter.rs#L495">ruff</a> and by <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_db/src/parsed.rs#L40">red-knot</a> where I wanted to inject the Python version for syntax error detection. I wanted to avoid moving the <code>unwrap</code> call and accompanying <code>SAFETY</code> comments to those call sites, but that could certainly be preferable to the complication of the generics here.</p>
 <p>And the <code>Box&lt;dyn AsParserOptions&gt;</code> follows from that to erase the generic on <code>ParserOptions</code> to avoid making every <code>Parser</code> a <code>Parser&lt;T&gt;</code>. That would obviously go away if <code>ParserOptions</code> were not generic.</p>
 </div>
         </div>
@@ -141,18 +141,18 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-18 20:23</div>
-            <div class="timeline-body"><p>I've reverted the generic stuff and put <code>source_type</code> back in <code>parse_unchecked_source</code>. I can just change ruff and red-knot to call and unwrap <code>parse_unchecked</code> when I actually integrate the syntax error checks.</p>
+            <div class="timeline-body"><p>I&#x27;ve reverted the generic stuff and put <code>source_type</code> back in <code>parse_unchecked_source</code>. I can just change ruff and red-knot to call and unwrap <code>parse_unchecked</code> when I actually integrate the syntax error checks.</p>
 <p>I also changed <code>parse</code> and <code>parse_unchecked</code> to take <code>ParserOptions</code> instead of <code>Mode</code>, as  suggested. That will work nicely with the point above.</p>
 <blockquote>
 <p>We could possibly remove Mode::Ipython and use PySourceType::Ipynb instead because the ParserOptions will contain it and it seems a bit redundant that both Mode and PySourceType, which the parser and
-lexer have access to, contains an indicator that we're in a notebook context.</p>
+lexer have access to, contains an indicator that we&#x27;re in a notebook context.</p>
 </blockquote>
-<p>I looked into this briefly, but I don't think the lexer currently has access to a <code>PySourceType</code>, so this might make more sense to combine with passing other options to the lexer too.</p>
+<p>I looked into this briefly, but I don&#x27;t think the lexer currently has access to a <code>PySourceType</code>, so this might make more sense to combine with passing other options to the lexer too.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/mod.rs</code>:517 on 2025-02-18 20:25</div>
-            <div class="timeline-body"><p>I'd prefer <code>ParseOptions</code> over <code>ParserOptions</code> to align it with <code>FormatOptions</code> and because its the options passed to the <code>parse_*</code> methods (the parser is an internal abstraction)</p>
+            <div class="timeline-body"><p>I&#x27;d prefer <code>ParseOptions</code> over <code>ParserOptions</code> to align it with <code>FormatOptions</code> and because its the options passed to the <code>parse_*</code> methods (the parser is an internal abstraction)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -166,7 +166,7 @@ lexer have access to, contains an indicator that we're in a notebook context.</p
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/src/comments/mod.rs</code>:533 on 2025-02-18 20:31</div>
-            <div class="timeline-body"><p>Okay, I was thinking about that too. Should I implement <code>From&lt;Mode&gt; for ParseOptions</code> too? I guess I was thinking we might have multiple <code>from_*</code> methods, but I'm realizing now that they won't actually conflict with each other.</p>
+            <div class="timeline-body"><p>Okay, I was thinking about that too. Should I implement <code>From&lt;Mode&gt; for ParseOptions</code> too? I guess I was thinking we might have multiple <code>from_*</code> methods, but I&#x27;m realizing now that they won&#x27;t actually conflict with each other.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -184,7 +184,7 @@ lexer have access to, contains an indicator that we're in a notebook context.</p
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/mod.rs</code>:533 on 2025-02-18 20:39</div>
-            <div class="timeline-body"><p>I have a love-hate relationship with <code>From</code> and I've been very inconsistent in the past with having explicit <code>from_</code> methods vs <code>From</code> implementations...</p>
+            <div class="timeline-body"><p>I have a love-hate relationship with <code>From</code> and I&#x27;ve been very inconsistent in the past with having explicit <code>from_</code> methods vs <code>From</code> implementations...</p>
 <p>I do like that <code>from_mode</code> is explicit but it also is a bit verbose... 🤷</p>
 </div>
         </div>
@@ -194,7 +194,7 @@ lexer have access to, contains an indicator that we're in a notebook context.</p
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/src/comments/mod.rs</code>:533 on 2025-02-18 21:10</div>
-            <div class="timeline-body"><p>I know what you mean. I already switched to <code>From</code> immediately after commenting, but I'm happy to go back to the explicit versions if you and/or Dhruv prefer. I think I tend toward <code>from_</code> methods usually, so I can really go either way.</p>
+            <div class="timeline-body"><p>I know what you mean. I already switched to <code>From</code> immediately after commenting, but I&#x27;m happy to go back to the explicit versions if you and/or Dhruv prefer. I think I tend toward <code>from_</code> methods usually, so I can really go either way.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -217,12 +217,12 @@ lexer have access to, contains an indicator that we're in a notebook context.</p
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-02-19 05:19</div>
-            <div class="timeline-body"><p>LGTM! I'd recommend updating the PR description to reflect the current state of the PR for future readers. We can keep the &quot;Details&quot; content as a collapsed section for historical purposes.</p>
+            <div class="timeline-body"><p>LGTM! I&#x27;d recommend updating the PR description to reflect the current state of the PR for future readers. We can keep the &quot;Details&quot; content as a collapsed section for historical purposes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/options.rs</code>:8 on 2025-02-19 05:20</div>
-            <div class="timeline-body"><p>nit: I think I'd remove this from public docs as it's mainly an implementation detail</p>
+            <div class="timeline-body"><p>nit: I think I&#x27;d remove this from public docs as it&#x27;s mainly an implementation detail</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -230,7 +230,7 @@ lexer have access to, contains an indicator that we're in a notebook context.</p
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">parser</span> added by @dhruvmanila on 2025-02-19 05:21</div>
+            <div class="event">Label <span class="label">parser</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-19 05:21</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/parser/options.rs</code>:8 on 2025-02-19 12:46</div>
@@ -242,10 +242,10 @@ lexer have access to, contains an indicator that we're in a notebook context.</p
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @ntBre on 2025-02-19 15:50</div>
+            <div class="event">Merged by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-19 15:50</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ntBre on 2025-02-19 15:50</div>
+            <div class="event">Closed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-19 15:50</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-02-19 15:50</div>
@@ -258,7 +258,7 @@ lexer have access to, contains an indicator that we're in a notebook context.</p
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:10:08 UTC
+        Synced at 2026-01-20 19:11:33 UTC
     </footer>
 </body>
 </html>

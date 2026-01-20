@@ -23,19 +23,19 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/c-blake">@c-blake</a></div>
-            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+            <div class="timeline-body">What version of ripgrep are you using?
 <p>ripgrep 0.8.1
 -SIMD -AVX</p>
-<h4>How did you install ripgrep?</h4>
+How did you install ripgrep?
 <p>emerge sys-apps/ripgrep</p>
-<h4>What operating system are you using ripgrep on?</h4>
+What operating system are you using ripgrep on?
 <p>Gentoo linux (kernel 4.17.5); Rust version 1.27.0, but none of these questions should be relevant to this feature suggestion/request.</p>
-<h4>Describe your question, feature request, or bug.</h4>
+Describe your question, feature request, or bug.
 <p>In a recursive searching problem setting, one often has many types of (usually binary) files one would like to search through the &quot;decoded&quot; text of.  Here decoding is something that may even be idiosyncratic to a specific user on a specific system. For example, these may not only be compressed files - other encodings are possible/common such as PDF files where a text layer is extractable via a program like <code>pdftotext</code> in the poppler package or <code>mutool draw</code> or some similar tool.</p>
 <p><code>ripgrep</code> already does a better job than most greps here, but it could be much better.  Besides an ever growing/ultimately unknowable set of desired encodings/translations, file name extensions are not the most reliable way to detect file types.  The <code>file</code> program or its <code>libmagic</code> are more complete, but is quite slow and even it may omit classes of file a user wants to use.  Further, the transformation that counts as decoding could be idiosyncratic.  I give a concrete example with unidiffs below.</p>
 <p>In light of both of the above considerations, the most flexible/robust approach is akin to what <code>less</code> does with its <code>LESSOPEN</code> environment variable - allow a user specified program to both classify and decode files that <code>ripgrep</code> cannot.  The dowside of this relative to the current <code>ripgrep</code> filename extension oriented approach is a &quot;double or triple <code>exec</code>&quot; cost, but there are many upsides -- total generality, no shared library dependencies and so on.  { Many might not even pay attention to these extra fork/exec costs.  For example, many programs use <code>system(3)</code> rather than fork and exec which already incurs an extra <code>exec</code>.  These days <code>gunzip</code> is even a shell script wrapper causing an extra exec of /bin/sh.  But in a recursive grep context the costs surely add up. }</p>
 <p>To be concrete consider something like this script which a hypothetical new <code>GREP_OPEN</code> or <code>RIPGREP_OPEN</code> variable could point to:</p>
-<pre><code class="language-sh">#!/bin/sh
+<pre><code>#!/bin/sh
 case &quot;$RIPGREP_INPUT&quot; in
   *.gz) exec gzip -dc ;;                      # input name not needed for gzip..
   *.pdf) exec pdftotext &quot;$RIPGREP_INPUT&quot; - ;; #..but MIGHT be. So, ripgrep exports it
@@ -43,14 +43,14 @@ case &quot;$RIPGREP_INPUT&quot; in
 esac
 </code></pre>
 <p>Another possibility using <code>file</code> is:</p>
-<pre><code class="language-sh">#!/bin/sh
+<pre><code>#!/bin/sh
 case &quot;$(file -)&quot; in
   *unified diff output*) exec strip-unidiff-context ;;
   *.zs) exec pzstd -cdqp8 ;;
 esac
 </code></pre>
-<p>where this second example assumes a few things - namely, <code>ripgrep</code> sets up stdin for the forked child and <code>file -</code> will do an <code>lseek</code> backward <em>post classification</em> so that <code>pzstd</code> sees the <em>full</em> input.   Also, it assumes a <code>pzstd</code> program is installed and some script/sed script/whatever program to, just as an example, strip the context from a unidiff so that <code>ripgrep</code> <em>only searches through actually changing</em> text.  Note as part of this example that people often don't just name unified diff output <code>foo.patch</code>, but sometimes <code>foo.diff</code> or other things.  The file type is almost always recognized from contents not filename extension.  The regular <code>file</code> does not do the seek, by the way, but a trivial backward compatible patch repairs that situation:</p>
-<pre><code class="language-patch">diff -ruw file-5.32/src/file.c file-5.32-cb/src/file.c
+<p>where this second example assumes a few things - namely, <code>ripgrep</code> sets up stdin for the forked child and <code>file -</code> will do an <code>lseek</code> backward <em>post classification</em> so that <code>pzstd</code> sees the <em>full</em> input.   Also, it assumes a <code>pzstd</code> program is installed and some script/sed script/whatever program to, just as an example, strip the context from a unidiff so that <code>ripgrep</code> <em>only searches through actually changing</em> text.  Note as part of this example that people often don&#x27;t just name unified diff output <code>foo.patch</code>, but sometimes <code>foo.diff</code> or other things.  The file type is almost always recognized from contents not filename extension.  The regular <code>file</code> does not do the seek, by the way, but a trivial backward compatible patch repairs that situation:</p>
+<pre><code>diff -ruw file-5.32/src/file.c file-5.32-cb/src/file.c
 --- file-5.32/src/file.c        2018-04-05 12:47:37.522707019 -0400
 +++ file-5.32-cb/src/file.c     2018-04-05 12:49:45.406702873 -0400
 @@ -518,6 +518,9 @@
@@ -65,38 +65,38 @@ esac
                 return 1;
 </code></pre>
 <p>The <code>/bin/sh-case-file</code> approach can be a little slow mostly because file takes like 1 ms per file which can be a lot if files are small and IO is fast.  I personally have a little statically linked C program I used for this which looks at magic numbers and re-exec appropriate decoder/transformers all with more like 50 microsecond overhead (plus decoding/transforming time, of course).  Of course, you also want all your decoding C programs to be statically linked for minimum overhead.  In point of fact, a static C dispatcher + static decoder are already much lower overhead than the overhead from the current likely deployment of <code>ripgrep</code> doing filename extension dispatcher -&gt; dynamically linked decoders.</p>
-<p>Anyway, the actual work to implement this in <code>ripgrep</code> is probably quite minor and the result is something much more general/powerful than the statically encoded list of filename extensions.  I have a personally patched GNU grep that does this and it is very useful to search through PDF collections of papers in various subdirectories and so on, just as one example use case.  I'm sure there are many more -- limited only by one's imagination, and the diversity/entropy of one's collections of files. :-)</p>
+<p>Anyway, the actual work to implement this in <code>ripgrep</code> is probably quite minor and the result is something much more general/powerful than the statically encoded list of filename extensions.  I have a personally patched GNU grep that does this and it is very useful to search through PDF collections of papers in various subdirectories and so on, just as one example use case.  I&#x27;m sure there are many more -- limited only by one&#x27;s imagination, and the diversity/entropy of one&#x27;s collections of files. :-)</p>
 <p>It might be nice as an optimization to allow the &quot;binary file&quot; detection to trigger use of <code>RIPGREP_OPEN</code> so that it is only invoked when actually needed, although that would block the use case of transforming ordinary text files such as the unidiff patch file example.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-07-12 16:05</div>
             <div class="timeline-body"><p>This is an interesting request! Thanks for the detailed description!</p>
-<p>I can definitely see how this could come in handy, and given its generality, I think I'd be comfortable with something like this in ripgrep. If someone wanted to add this, I'd be happy to work through most of the details in a PR.</p>
+<p>I can definitely see how this could come in handy, and given its generality, I think I&#x27;d be comfortable with something like this in ripgrep. If someone wanted to add this, I&#x27;d be happy to work through most of the details in a PR.</p>
 <p>I do have a few constraints/concerns:</p>
 <ul>
-<li>Whatever path this takes, the implementation must be simple. I don't see any reason why this shouldn't be simple, particularly given the fact that ripgrep is already shelling out to programs such as gzip.</li>
+<li>Whatever path this takes, the implementation must be simple. I don&#x27;t see any reason why this shouldn&#x27;t be simple, particularly given the fact that ripgrep is already shelling out to programs such as gzip.</li>
 <li>The stdin handling looks a little tricky, but seems doable?</li>
-<li>I think I'd prefer to leave binary file detection out of this. In particular, binary detection happens <em>during</em> search because it cannot happen any other way. That means binary detection could get tripped if the last byte in a file is <code>NUL</code>, which would then divert it to the <code>RIPGREP_OPEN</code> handler, and then you wind up with all sorts of strange things such as potentially printing results twice.</li>
-<li>I'd rather that this functionality be introduced via a command line flag, e.g., <code>--open-with</code>, such that we can leave <code>RIPGREP_CONFIG_PATH</code> as the only ripgrep-specific environment variable that impacts its execution.</li>
-<li>Finally, if this doesn't work out for whatever reason in ripgrep proper, libripgrep will be a thing soon, and someone could just write their own program with whatever semantics they desire.</li>
+<li>I think I&#x27;d prefer to leave binary file detection out of this. In particular, binary detection happens <em>during</em> search because it cannot happen any other way. That means binary detection could get tripped if the last byte in a file is <code>NUL</code>, which would then divert it to the <code>RIPGREP_OPEN</code> handler, and then you wind up with all sorts of strange things such as potentially printing results twice.</li>
+<li>I&#x27;d rather that this functionality be introduced via a command line flag, e.g., <code>--open-with</code>, such that we can leave <code>RIPGREP_CONFIG_PATH</code> as the only ripgrep-specific environment variable that impacts its execution.</li>
+<li>Finally, if this doesn&#x27;t work out for whatever reason in ripgrep proper, libripgrep will be a thing soon, and someone could just write their own program with whatever semantics they desire.</li>
 </ul>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2018-07-12 16:05</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-07-12 16:05</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2018-07-12 16:05</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-07-12 16:05</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/c-blake">@c-blake</a> on 2018-07-12 16:39</div>
             <div class="timeline-body"><p>Totally fair point, binary detection-wise.  Oh well.  :-)</p>
 <p>Environment variable vs. command option for activation and various namings are certainly just a matter of taste.  Exporting a (local to/interpreted by all children) environment variable like <code>RIPGREP_INPUT</code> or <code>RIPGREP_INPUT_FILE</code> or <code>RIPGREP_INPUT_PATH</code> or whatever for the input file is quite helpful for inflexible decoder programs that want a path (like my <code>pdftotext</code> example).  It is possible to pass that data other ways like with a magic token like <code>&quot;%s&quot;</code> or <code>&quot;%path&quot;</code> or <code>&quot;%input%&quot;</code> or something in the argument to <code>--open-with</code> that gets a pathname.</p>
-<p>An environment variable for the child is a simpler interface (IMO).  What I do with my little static C preprocessor is optionally take the name of an environment variable which is then the name of the input file.  So, all you need is a <code>getenv(argv[that]</code>).  This is a nice protocol in that the little static preprocessor program/script can be used by callers other than <code>ripgrep</code> while preserving the &quot;optionality&quot; of any pathname at all.  It's rare that names are required and file descriptors are less race condition prone.  I.e., once <code>ripgrep</code> has opened the file, it can (if doing preprocessing) fork/hand it off to the decoder and even if it is deleted by some parallel 'rm' there is no race.</p>
+<p>An environment variable for the child is a simpler interface (IMO).  What I do with my little static C preprocessor is optionally take the name of an environment variable which is then the name of the input file.  So, all you need is a <code>getenv(argv[that]</code>).  This is a nice protocol in that the little static preprocessor program/script can be used by callers other than <code>ripgrep</code> while preserving the &quot;optionality&quot; of any pathname at all.  It&#x27;s rare that names are required and file descriptors are less race condition prone.  I.e., once <code>ripgrep</code> has opened the file, it can (if doing preprocessing) fork/hand it off to the decoder and even if it is deleted by some parallel &#x27;rm&#x27; there is no race.</p>
 <p>Also, to not mandate an extra <code>/bin/sh</code> <code>exec</code>, the argument to <code>--open-with</code> (or maybe <code>--preprocessor</code>?) should be split/tokenized by <code>ripgrep</code> and <code>vfork</code> &amp; <code>exec</code> should be used directly.</p>
 <p>The process creation/file descriptor handling I use in C is:</p>
-<pre><code class="language-C">int fds[2];
+<pre><code>int fds[2];
 if (pipe (fds) == -1) die (&quot;cannot create a pipe&quot;);
 switch (pid = vfork ()) { /* vfork much faster but MUST exec|_exit */
   case 0:             /* child */
@@ -118,20 +118,20 @@ switch (pid = vfork ()) { /* vfork much faster but MUST exec|_exit */
     die (&quot;cannot vfork&quot;);
 }
 </code></pre>
-<p>The only &quot;out of band&quot; set up for that is that <code>desc</code> is the previously opened file descriptor (a local variable) and <code>preproc</code> char *[] is set up at program start-up based on iff <code>--preproc</code> was given.  This snippet just replaces <code>desc</code> with a handle to the child's output.  <code>vfork</code> really is faster in a 1000s of files problem setting (just less kernel work to do with shared libs/etc.), but you can time such differences and swap in/out easily enough.</p>
-<p>Beyond this you just need the option parsing and reaping the children the same way as however the current <code>gzip</code> stuff works.  I haven't read to see if you check <code>WIFEXITED</code> vs <code>WIFSIGNALED</code> or what you do with sessions/process groups and so on, but whatever it is you do (or <em>need to do</em>) with <code>gzip</code> will be the same.</p>
+<p>The only &quot;out of band&quot; set up for that is that <code>desc</code> is the previously opened file descriptor (a local variable) and <code>preproc</code> char *[] is set up at program start-up based on iff <code>--preproc</code> was given.  This snippet just replaces <code>desc</code> with a handle to the child&#x27;s output.  <code>vfork</code> really is faster in a 1000s of files problem setting (just less kernel work to do with shared libs/etc.), but you can time such differences and swap in/out easily enough.</p>
+<p>Beyond this you just need the option parsing and reaping the children the same way as however the current <code>gzip</code> stuff works.  I haven&#x27;t read to see if you check <code>WIFEXITED</code> vs <code>WIFSIGNALED</code> or what you do with sessions/process groups and so on, but whatever it is you do (or <em>need to do</em>) with <code>gzip</code> will be the same.</p>
 <p>In truth, I know very little Rust and I only just discovered <code>ripgrep</code> today or I would just do a PR myself.  It really should be simpler <em>in toto</em> than the current <code>-z</code> stuff, which I guess you may or may not want to retain for backward compatibility.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-07-12 16:49</div>
-            <div class="timeline-body"><p>I'm trying to follow everything you're saying, but you appear to be very deep in the weeds. :-) Which is a good thing, but it's hard for me to follow. In particular, talking about <code>fork</code> specifically is very Unix specific, and ripgrep needs to work on Windows, so it might be better to just think about this at a bit of a higher level. I'll just say more about what I'm thinking, particularly with respect to the interface that ripgrep makes available:</p>
+            <div class="timeline-body"><p>I&#x27;m trying to follow everything you&#x27;re saying, but you appear to be very deep in the weeds. :-) Which is a good thing, but it&#x27;s hard for me to follow. In particular, talking about <code>fork</code> specifically is very Unix specific, and ripgrep needs to work on Windows, so it might be better to just think about this at a bit of a higher level. I&#x27;ll just say more about what I&#x27;m thinking, particularly with respect to the interface that ripgrep makes available:</p>
 <ul>
 <li>ripgrep adds a new flag, <code>--open-with</code>.</li>
 <li>This new flag specifies an executable name.</li>
 <li>When this flag is given, ripgrep calls this executable with either 0 or 1 arguments. When given 0 arguments, ripgrep will pipe its stdin contents to the child process. When given 1 argument, it will be a file path. In both cases, ripgrep will read stdout from the given executable instead of reading the file directly.</li>
 </ul>
-<p>That's it. No parsing of shell commands. No environment variables.</p>
+<p>That&#x27;s it. No parsing of shell commands. No environment variables.</p>
 <blockquote>
 <p>which I guess you may or may not want to retain for backward compatibility</p>
 </blockquote>
@@ -141,43 +141,43 @@ switch (pid = vfork ()) { /* vfork much faster but MUST exec|_exit */
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/c-blake">@c-blake</a> on 2018-07-12 17:11</div>
             <div class="timeline-body"><p>Ah.  Sorry.  I never program on Windows, but I wanted to be specific about file descriptor operations since you seemed concerned about that complexity.</p>
-<p>The problem with your third bullet is that the preprocessor is what classifies the file and dispatches.  Hence the child knows whether the decoder program needs or does not need a pathname.  So, <code>ripgrep</code> will never know that.  We want <code>ripgrep</code> to always invoke the preprocessor the same way.  It's just sometimes the decoder will actually need that pathname information, but most of the time it will not.  <code>pdftotext</code> is the only example I've found so far where I've needed it.  It may never need it in many user's environments/use cases.  So, it seemed nice to me to not burden such users with even knowing about it which is sort of how that environment variable to pass that info approach works.  It's also nice to have a simpler protocol, though. :-)</p>
-<p>If you want to simplify that protocol then it wouldn't be so bad to always just pass one argument, the path.  Many users would probably use that argument -- racing unnecessarily (though the <code>readdir</code> -&gt; <code>open</code> race will <em>always</em> be there) or using it to dispatch off of filename extensions instead of, say, magic numbers.  Its presence would not block better usages as long as stdin is still set up for the child, though.  So, I'm fine with just always exec [ DISPATCHERDECODER, PATH ].</p>
-<p>And, yeah, <code>-z</code> will always be one-<code>exec</code> faster than a dispatching-decoder preprocessor.  So, that's a valid optimization.  (I was personally rather amazed to discover <code>gunzip</code> is a shell wrapper these days instead of a hard/symbolic link, though I imagine that came from difficulty in determining the name under which a program was invoked - but these are <em>other</em> weeds.  Sorry.).</p>
+<p>The problem with your third bullet is that the preprocessor is what classifies the file and dispatches.  Hence the child knows whether the decoder program needs or does not need a pathname.  So, <code>ripgrep</code> will never know that.  We want <code>ripgrep</code> to always invoke the preprocessor the same way.  It&#x27;s just sometimes the decoder will actually need that pathname information, but most of the time it will not.  <code>pdftotext</code> is the only example I&#x27;ve found so far where I&#x27;ve needed it.  It may never need it in many user&#x27;s environments/use cases.  So, it seemed nice to me to not burden such users with even knowing about it which is sort of how that environment variable to pass that info approach works.  It&#x27;s also nice to have a simpler protocol, though. :-)</p>
+<p>If you want to simplify that protocol then it wouldn&#x27;t be so bad to always just pass one argument, the path.  Many users would probably use that argument -- racing unnecessarily (though the <code>readdir</code> -&gt; <code>open</code> race will <em>always</em> be there) or using it to dispatch off of filename extensions instead of, say, magic numbers.  Its presence would not block better usages as long as stdin is still set up for the child, though.  So, I&#x27;m fine with just always exec [ DISPATCHERDECODER, PATH ].</p>
+<p>And, yeah, <code>-z</code> will always be one-<code>exec</code> faster than a dispatching-decoder preprocessor.  So, that&#x27;s a valid optimization.  (I was personally rather amazed to discover <code>gunzip</code> is a shell wrapper these days instead of a hard/symbolic link, though I imagine that came from difficulty in determining the name under which a program was invoked - but these are <em>other</em> weeds.  Sorry.).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/c-blake">@c-blake</a> on 2018-07-12 17:16</div>
-            <div class="timeline-body"><p>I don't know about Rust interfaces for spawning kids, but from a &quot;less-Unixy&quot; point of view, what you need is to either A) regular-mode: open a file (regular mode) or B) preprocess mode: open a pipe to a child, with the child's stdin connected to a file and the child's stdout the replacement for the file you would have used in A).  That really shouldn't be hard.</p>
+            <div class="timeline-body"><p>I don&#x27;t know about Rust interfaces for spawning kids, but from a &quot;less-Unixy&quot; point of view, what you need is to either A) regular-mode: open a file (regular mode) or B) preprocess mode: open a pipe to a child, with the child&#x27;s stdin connected to a file and the child&#x27;s stdout the replacement for the file you would have used in A).  That really shouldn&#x27;t be hard.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-07-12 17:31</div>
-            <div class="timeline-body"><p>@c-blake Yeah Rust's standard library has a decent high level cross platform API for that sort of stuff.</p>
-<p>I'm honestly not that worried about the extra forks here, nor am I worried about the racing. I am more than OK with saying that if you need to care about those sorts of things, then you should just go out and write your own program, which will be a feasible thing Real Soon Now. :-)</p>
+            <div class="timeline-body"><p>@c-blake Yeah Rust&#x27;s standard library has a decent high level cross platform API for that sort of stuff.</p>
+<p>I&#x27;m honestly not that worried about the extra forks here, nor am I worried about the racing. I am more than OK with saying that if you need to care about those sorts of things, then you should just go out and write your own program, which will be a feasible thing Real Soon Now. :-)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/c-blake">@c-blake</a> on 2018-07-12 17:35</div>
-            <div class="timeline-body"><p>Looking at your <code>ripgrep</code> code for <code>let cmd = process::Command::new(decompression_cmd.cmd)</code>, it looks like you can just do some <code>.stdin()</code> clause on your <code>process::Command::new()</code>, passing it maybe an open file object or a path.  You actually could do that instead of the <code>.arg(path)</code> for all the decompressors you currently support..and probably all in the future, too.  I think the original <code>uncompress</code> set the &quot;tone&quot; for decoders accepting stdin.  Like I said, it's pretty rare the path is actually needed.</p>
+            <div class="timeline-body"><p>Looking at your <code>ripgrep</code> code for <code>let cmd = process::Command::new(decompression_cmd.cmd)</code>, it looks like you can just do some <code>.stdin()</code> clause on your <code>process::Command::new()</code>, passing it maybe an open file object or a path.  You actually could do that instead of the <code>.arg(path)</code> for all the decompressors you currently support..and probably all in the future, too.  I think the original <code>uncompress</code> set the &quot;tone&quot; for decoders accepting stdin.  Like I said, it&#x27;s pretty rare the path is actually needed.</p>
 <p>Whether you want to pretty-ify/generalize your Rust code for shelling out to either a decompressor or a general decoder..Well, that is another question.  Compared to just adding a new command option and some new code to handle it, that is a bigger change..probably one best left to the primary author. (Or author of a whole new program using <code>libripgrep</code>.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-07-12 17:52</div>
-            <div class="timeline-body"><p>@c-blake Understood. If and when I get to refactoring that code, I'll see about adding this functionality. But I have no idea when that will happen.</p>
+            <div class="timeline-body"><p>@c-blake Understood. If and when I get to refactoring that code, I&#x27;ll see about adding this functionality. But I have no idea when that will happen.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/c-blake">@c-blake</a> on 2018-07-12 18:01</div>
-            <div class="timeline-body"><p>Ok.  That's totally fair.  If and when I learn enough Rust to do a good PR, I'll just add a new CLI option, always both pass the 1 path arg to the kid <em>and</em> attach <code>stdin</code>, and add in some new <code>process::Command::new(decoder_cmd)</code> without new internal abstractions/re-factoring.  It seems like we've converged on that as a spec.</p>
+            <div class="timeline-body"><p>Ok.  That&#x27;s totally fair.  If and when I learn enough Rust to do a good PR, I&#x27;ll just add a new CLI option, always both pass the 1 path arg to the kid <em>and</em> attach <code>stdin</code>, and add in some new <code>process::Command::new(decoder_cmd)</code> without new internal abstractions/re-factoring.  It seems like we&#x27;ve converged on that as a spec.</p>
 <p>But someone (anyone?) else might well get to it first.  I bet the simple version of this is like a 15 minute job for experienced Rustaceans..or at least less than the time to read this thread, most likely.  Maybe more with proper testing.  :-)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/phiresky">@phiresky</a> on 2018-07-13 15:54</div>
             <div class="timeline-body"><p>I was just looking for a way to get <code>pdfgrep</code> to not be extremely slow (due to the text extraction), and I realized that getting ripgrep to handle arbitrarly preprocessed input would be the best solution.</p>
-<p>The only problem I can think of is printing the page numbers: pdfgrep prints them the same as <code>grep</code> would line numbers, but for searching we probably don't want to dump all text in a page into a single line. Doing this correctly / generically would need something like sourcemaps, but even without this the feature would be very useful.</p>
+<p>The only problem I can think of is printing the page numbers: pdfgrep prints them the same as <code>grep</code> would line numbers, but for searching we probably don&#x27;t want to dump all text in a page into a single line. Doing this correctly / generically would need something like sourcemaps, but even without this the feature would be very useful.</p>
 <p>Searching a whole directory structure of pdf files (esp. lecture slides) is something I do all the time, and it would be great if ripgrep would support this :). Any kind of delay from executing processes is irrelevant here, since just parsing the pdf usually already takes 300ms+.</p>
 </div>
         </div>
@@ -187,12 +187,12 @@ switch (pid = vfork ()) { /* vfork much faster but MUST exec|_exit */
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2018-07-21 21:25</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-07-21 21:25</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:42:36 UTC
+        Synced at 2026-01-20 18:48:06 UTC
     </footer>
 </body>
 </html>

@@ -25,14 +25,14 @@
             <div class="timeline-header"><a href="https://github.com/mjpieters">@mjpieters</a></div>
             <div class="timeline-body"><p>GitHub attestation signing uses the GitHub action ID token to retrieve an ephemeral code signing certificate from Fulcio, and store the signature in the Rekor transparency log.</p>
 <p>Once an image has been successfully signed, you should be able to verify the signature with:</p>
-<pre><code class="language-sh">gh attestation verify --owner astral-uv oci://ghcr.io/astral-sh/uv:latest
+<pre><code>gh attestation verify --owner astral-uv oci://ghcr.io/astral-sh/uv:latest
 </code></pre>
 <p>Closes #8670</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mjpieters">@mjpieters</a> on 2024-10-29 20:44</div>
-            <div class="timeline-body"><p>A word of warning: I am not 100% certain I fully understand everything that the <code>build-docker.yml</code> pipeline does. I'd appreciate some feedback on how the digest of the final <code>docker-republish</code> image manifest is shared with the signing step, for example.</p>
+            <div class="timeline-body"><p>A word of warning: I am not 100% certain I fully understand everything that the <code>build-docker.yml</code> pipeline does. I&#x27;d appreciate some feedback on how the digest of the final <code>docker-republish</code> image manifest is shared with the signing step, for example.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -42,7 +42,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>.github/workflows/build-docker.yml</code>:337 on 2024-10-29 23:24</div>
-            <div class="timeline-body"><p>What does this last sentence mean? I don't quite follow.</p>
+            <div class="timeline-body"><p>What does this last sentence mean? I don&#x27;t quite follow.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -56,7 +56,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>.github/workflows/build-docker.yml</code>:351 on 2024-10-29 23:26</div>
             <div class="timeline-body"><p>Do we need to sign again here? Is it correct to sign twice?</p>
-<p>ref https://github.com/astral-sh/uv/pull/8685/files#diff-1d203d2dfb96ccf94b5e0961c7954e3bde73b4539ade27ccc301613e368b944fR274-R276</p>
+<p>ref <a href="https://github.com/astral-sh/uv/pull/8685">astral-sh/uv#8685</a>/files#diff-1d203d2dfb96ccf94b5e0961c7954e3bde73b4539ade27ccc301613e368b944fR274-R276</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -74,7 +74,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>.github/workflows/build-docker.yml</code>:337 on 2024-10-30 01:05</div>
-            <div class="timeline-body"><p>Might be useful to explain, in a separate step, what the command does (e.g. outputs) and clarify that the issue is that <code>docker buildx imagetools create</code> doesn't return a list of updated digests.</p>
+            <div class="timeline-body"><p>Might be useful to explain, in a separate step, what the command does (e.g. outputs) and clarify that the issue is that <code>docker buildx imagetools create</code> doesn&#x27;t return a list of updated digests.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -93,9 +93,9 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/mjpieters">@mjpieters</a> on <code>.github/workflows/build-docker.yml</code>:369 on 2024-10-30 09:40</div>
             <div class="timeline-body"><p>I was specifically avoiding a separate step, because that would pose a security risk.</p>
-<p>In theory, given enough time, a docker image tag could have been moved from one digest to another. A signature on a manifest from a trusted entity has enormous value, and if an attacker found a way to <em>very quickly</em> move the tag to a digest of their choice, before the signing step was being executed, they could steal that signature. This is why it is a reasonably big deal that <code>imagetools create</code> doesn't output the digest in a machine-readable form the moment it creates the manifest. However, since <code>imagetools inspect</code> is run within the same step, it is being executed against the same docker installation which already has the tag and manifest locally cached and so changing the tag would require the attacker to have access to the runner while this step is being executed.</p>
-<p>If we move this part to a new step, then you introduce many more opportunities for the tag to be moved; there is a time gap, the job is likely to be handled by a different runner which will have to fetch the digest from the container registry, etc. This greatly increases the attack surface to get that tag moved to a different digest. <strong>I really don't want to increase the attack surface here</strong>.</p>
-<p>I'll see about updating the comments here to make this clearer.</p>
+<p>In theory, given enough time, a docker image tag could have been moved from one digest to another. A signature on a manifest from a trusted entity has enormous value, and if an attacker found a way to <em>very quickly</em> move the tag to a digest of their choice, before the signing step was being executed, they could steal that signature. This is why it is a reasonably big deal that <code>imagetools create</code> doesn&#x27;t output the digest in a machine-readable form the moment it creates the manifest. However, since <code>imagetools inspect</code> is run within the same step, it is being executed against the same docker installation which already has the tag and manifest locally cached and so changing the tag would require the attacker to have access to the runner while this step is being executed.</p>
+<p>If we move this part to a new step, then you introduce many more opportunities for the tag to be moved; there is a time gap, the job is likely to be handled by a different runner which will have to fetch the digest from the container registry, etc. This greatly increases the attack surface to get that tag moved to a different digest. <strong>I really don&#x27;t want to increase the attack surface here</strong>.</p>
+<p>I&#x27;ll see about updating the comments here to make this clearer.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -114,7 +114,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/mjpieters">@mjpieters</a> on <code>.github/workflows/build-docker.yml</code>:337 on 2024-10-30 10:20</div>
-            <div class="timeline-body"><p>I've expanded the comment, explaining why it is being done in the same step, what the digest is needed for and what each command does.</p>
+            <div class="timeline-body"><p>I&#x27;ve expanded the comment, explaining why it is being done in the same step, what the digest is needed for and what each command does.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -126,7 +126,7 @@
             <div class="timeline-body"><blockquote>
 <p>the job is likely to be handled by a different runner which will have to fetch the digest from the container registry</p>
 </blockquote>
-<p>Thanks for the explanation. In this particular case steps are still guaranteed to be executed within the same runner vm and job executor, hence separating into a separate step is still worthwhile for readability. It doesn't give us much of a difference in terms of security in this case and more importantly it does not increase the attack surface. We'd honestly have bigger issues to worry about if we can have an attacker inject themselves into the runner vm and process executing the steps. I think we can reconsider this once <code>imagetools create</code> has a mechanism to return the digests.</p>
+<p>Thanks for the explanation. In this particular case steps are still guaranteed to be executed within the same runner vm and job executor, hence separating into a separate step is still worthwhile for readability. It doesn&#x27;t give us much of a difference in terms of security in this case and more importantly it does not increase the attack surface. We&#x27;d honestly have bigger issues to worry about if we can have an attacker inject themselves into the runner vm and process executing the steps. I think we can reconsider this once <code>imagetools create</code> has a mechanism to return the digests.</p>
 <blockquote>
 <p>Within the same step, we can count on the local docker cache of the tag not having changed.</p>
 </blockquote>
@@ -142,7 +142,7 @@
             <div class="timeline-body"><blockquote>
 <p>In this particular case steps are still guaranteed to be executed within the same runner vm and job executor</p>
 </blockquote>
-<p>🤦 Of course they are, duh. Yeah, you are correct, and I'll make this a separate step. I was overthinking this.</p>
+<p>🤦 Of course they are, duh. Yeah, you are correct, and I&#x27;ll make this a separate step. I was overthinking this.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -165,7 +165,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-10-30 12:51</div>
-            <div class="timeline-body"><p>Note, I'm running a release job on my fork with <a href="https://github.com/astral-sh/uv/pull/8685/commits/9b162d3e3cdf2b0fd86a2fcc668cf88d36461f9a">these changes (9b162d)</a> as I'd like to see it working E2E</p>
+            <div class="timeline-body"><p>Note, I&#x27;m running a release job on my fork with <a href="https://github.com/astral-sh/uv/pull/8685/commits/9b162d3e3cdf2b0fd86a2fcc668cf88d36461f9a">these changes (9b162d)</a> as I&#x27;d like to see it working E2E</p>
 <p>https://github.com/samypr100/uv/actions/runs/11593512252</p>
 </div>
         </div>
@@ -173,10 +173,10 @@
             <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-10-30 13:09</div>
             <div class="timeline-body"><p>@mjpieters</p>
 <blockquote>
-<p>Note, I'm running a release job on my fork with <a href="https://github.com/astral-sh/uv/pull/8685/commits/9b162d3e3cdf2b0fd86a2fcc668cf88d36461f9a">these changes (9b162d)</a> as I'd like to see it working E2E</p>
+<p>Note, I&#x27;m running a release job on my fork with <a href="https://github.com/astral-sh/uv/pull/8685/commits/9b162d3e3cdf2b0fd86a2fcc668cf88d36461f9a">these changes (9b162d)</a> as I&#x27;d like to see it working E2E</p>
 <p>https://github.com/samypr100/uv/actions/runs/11593512252</p>
 </blockquote>
-<p>@mjpieters signed images are here https://github.com/samypr100/uv/pkgs/container/uv in case you'd like to verify the signatures are working as expected</p>
+<p>@mjpieters signed images are here https://github.com/samypr100/uv/pkgs/container/uv in case you&#x27;d like to verify the signatures are working as expected</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -184,15 +184,15 @@
             <div class="timeline-body"><blockquote>
 <p>@mjpieters</p>
 <blockquote>
-<p>Note, I'm running a release job on my fork with <a href="https://github.com/astral-sh/uv/pull/8685/commits/9b162d3e3cdf2b0fd86a2fcc668cf88d36461f9a">these changes (9b162d)</a> as I'd like to see it working E2E
+<p>Note, I&#x27;m running a release job on my fork with <a href="https://github.com/astral-sh/uv/pull/8685/commits/9b162d3e3cdf2b0fd86a2fcc668cf88d36461f9a">these changes (9b162d)</a> as I&#x27;d like to see it working E2E
 https://github.com/samypr100/uv/actions/runs/11593512252</p>
 </blockquote>
-<p>@mjpieters signed images are here https://github.com/samypr100/uv/pkgs/container/uv in case you'd like to verify the signatures are working as expected</p>
+<p>@mjpieters signed images are here https://github.com/samypr100/uv/pkgs/container/uv in case you&#x27;d like to verify the signatures are working as expected</p>
 </blockquote>
-<p>Excellent! I was working my way through understanding cargo dist in my own fork to try this out but hadn't gotten as far as actually seeing the workflow complete.</p>
+<p>Excellent! I was working my way through understanding cargo dist in my own fork to try this out but hadn&#x27;t gotten as far as actually seeing the workflow complete.</p>
 <p>The first thing I notice is that the the .sig files are now obscuring the actual docker images on that page, which is a bummer.</p>
 <p>The signatures are valid however!</p>
-<pre><code>% cosign verify ghcr.io/samypr100/uv:latest --certificate-identity-regexp='.*' --certificate-oidc-issuer-regexp='.*' --output-file /tmp/samypr100-uv-verify.json
+<pre><code>% cosign verify ghcr.io/samypr100/uv:latest --certificate-identity-regexp=&#x27;.*&#x27; --certificate-oidc-issuer-regexp=&#x27;.*&#x27; --output-file /tmp/samypr100-uv-verify.json
 
 Verification for ghcr.io/samypr100/uv:latest --
 The following checks were performed on each of these signatures:
@@ -200,56 +200,56 @@ The following checks were performed on each of these signatures:
   - Existence of the claims in the transparency log was verified offline
   - The code-signing certificate was verified using trusted certificate authority certificates
 
-% jq -r '.[].optional.Subject' /tmp/samypr100-uv-verify.json
+% jq -r &#x27;.[].optional.Subject&#x27; /tmp/samypr100-uv-verify.json
 https://github.com/samypr100/uv/.github/workflows/build-docker.yml@refs/heads/docker-test
 https://github.com/samypr100/uv/.github/workflows/build-docker.yml@refs/heads/docker-test
 https://github.com/samypr100/uv/.github/workflows/build-docker.yml@refs/heads/docker-test
 </code></pre>
-<p>I'll have to see what can be done about those signature files in the registry.</p>
+<p>I&#x27;ll have to see what can be done about those signature files in the registry.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mjpieters">@mjpieters</a> on 2024-10-30 15:42</div>
-            <div class="timeline-body"><p>So cosign pushes the signature as a new 'container' to the registry, tagged with <code>sha256-$DIGEST.sig</code>, with the signature contained in the manifest (see https://hackmd.io/@maelvls/how-cosign-uses-registries-to-store-signatures for an overview). It's these tags that are shown at the top of the page by ghcr.io, because it only ever shows the latest tags that have been pushed. The GH packages API and UI (which include the ghcr container registry) is very very sparse and doesn't offer any control over this.</p>
-<p>I've looked at a number of other projects that use cosign to sign their containers (of which there are a very large number), and all the ones I looked at so far show these tags at the top. E.g. the Dependabot update bundler (a Github project!) <a href="https://github.com/dependabot/dependabot-core/pkgs/container/dependabot-updater-bundler">has signature tags at the top</a>. You see this on other registries too, e.g. the <a href="https://github.com/dependabot/dependabot-core/pkgs/container/dependabot-updater-bundler">boxyhq jackson container on the docker hub</a>.</p>
+            <div class="timeline-body"><p>So cosign pushes the signature as a new &#x27;container&#x27; to the registry, tagged with <code>sha256-$DIGEST.sig</code>, with the signature contained in the manifest (see https://hackmd.io/@maelvls/how-cosign-uses-registries-to-store-signatures for an overview). It&#x27;s these tags that are shown at the top of the page by ghcr.io, because it only ever shows the latest tags that have been pushed. The GH packages API and UI (which include the ghcr container registry) is very very sparse and doesn&#x27;t offer any control over this.</p>
+<p>I&#x27;ve looked at a number of other projects that use cosign to sign their containers (of which there are a very large number), and all the ones I looked at so far show these tags at the top. E.g. the Dependabot update bundler (a Github project!) <a href="https://github.com/dependabot/dependabot-core/pkgs/container/dependabot-updater-bundler">has signature tags at the top</a>. You see this on other registries too, e.g. the <a href="https://github.com/dependabot/dependabot-core/pkgs/container/dependabot-updater-bundler">boxyhq jackson container on the docker hub</a>.</p>
 <p>I see but a few options here:</p>
 <ul>
 <li>Accept that the signature tags are going to be pushed last and end up on top.</li>
 <li>Experiment with the Github <a href="https://docs.github.com/en/rest/packages/packages?apiVersion=2022-11-28">packages API</a> to delete and then restore specific tags, to see if that puts them back at the top again.</li>
-<li>Tag the containers after signing. Build and push the images, store the digests, sign the digests, then handle the version and 'latest' tags afterwards.</li>
-<li>Tell cosign to <a href="https://docs.sigstore.dev/cosign/system_config/registry_support/#specifying-registry">push signatures to a separate registry</a>. This would complicate verification of the images, I don't quite know how that'd work.</li>
+<li>Tag the containers after signing. Build and push the images, store the digests, sign the digests, then handle the version and &#x27;latest&#x27; tags afterwards.</li>
+<li>Tell cosign to <a href="https://docs.sigstore.dev/cosign/system_config/registry_support/#specifying-registry">push signatures to a separate registry</a>. This would complicate verification of the images, I don&#x27;t quite know how that&#x27;d work.</li>
 <li>Decline this PR and forgo the security of having signed containers (which would be a huge pity, security is important, especially in supply-chain tools like uv).</li>
 </ul>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-30 15:53</div>
-            <div class="timeline-body"><p>We're already pushing the <code>latest</code> tag separately for this reason, can we push the signature before that final image tag?</p>
+            <div class="timeline-body"><p>We&#x27;re already pushing the <code>latest</code> tag separately for this reason, can we push the signature before that final image tag?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mjpieters">@mjpieters</a> on 2024-10-30 16:30</div>
             <div class="timeline-body"><blockquote>
-<p>We're already pushing the <code>latest</code> tag separately for this reason, can we push the signature before that final image tag?</p>
+<p>We&#x27;re already pushing the <code>latest</code> tag separately for this reason, can we push the signature before that final image tag?</p>
 </blockquote>
-<p>You push not only a tag, but a manifest as well. You'd have to separate the two steps; push the manifest without tags and then tag the digest of the manifest afterwards. It could be that you can retag the same digest; I'll try this out in my own fork registry.</p>
+<p>You push not only a tag, but a manifest as well. You&#x27;d have to separate the two steps; push the manifest without tags and then tag the digest of the manifest afterwards. It could be that you can retag the same digest; I&#x27;ll try this out in my own fork registry.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-10-30 17:25</div>
             <div class="timeline-body"><blockquote>
 <blockquote>
-<p>We're already pushing the <code>latest</code> tag separately for this reason, can we push the signature before that final image tag?</p>
+<p>We&#x27;re already pushing the <code>latest</code> tag separately for this reason, can we push the signature before that final image tag?</p>
 </blockquote>
-<p>You push not only a tag, but a manifest as well. You'd have to separate the two steps; push the manifest without tags and then tag the digest of the manifest afterwards. It could be that you can retag the same digest; I'll try this out in my own fork registry.</p>
+<p>You push not only a tag, but a manifest as well. You&#x27;d have to separate the two steps; push the manifest without tags and then tag the digest of the manifest afterwards. It could be that you can retag the same digest; I&#x27;ll try this out in my own fork registry.</p>
 </blockquote>
-<p>I think the main issue here is how GH ranks packages and gives no control over the ordering to orgs/users of what's displayed, so we have to rely on these ordering hacks related to publishing.</p>
+<p>I think the main issue here is how GH ranks packages and gives no control over the ordering to orgs/users of what&#x27;s displayed, so we have to rely on these ordering hacks related to publishing.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mjpieters">@mjpieters</a> on 2024-10-30 17:30</div>
             <div class="timeline-body"><blockquote>
-<p>I think the main issue here is how GH ranks packages and gives no control over the ordering to orgs/users of what's displayed, so we have to rely on these ordering hacks related to publishing.</p>
+<p>I think the main issue here is how GH ranks packages and gives no control over the ordering to orgs/users of what&#x27;s displayed, so we have to rely on these ordering hacks related to publishing.</p>
 </blockquote>
 <p>and from my experiments it is clear that it is order that the manifest were pushed to the registry that is used to list them. I tried deleting then restoring, and retagging (moving tags to another manifest then back again to the right manifest), and nothing shifts the signature from the top.</p>
 <p>So the only thing that would work is to build and  <em>not</em> push, sign (and let cosign push the signature manifest), and only then push the actual image manifest.</p>
@@ -257,12 +257,12 @@ https://github.com/samypr100/uv/.github/workflows/build-docker.yml@refs/heads/do
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mjpieters">@mjpieters</a> on 2024-10-30 18:03</div>
-            <div class="timeline-body"><p>I've tried to use the <code>load: true</code> option for <code>docker/build-push-action</code> to delay pushing, but that trips over docker/buildx#59. I don't quite see how to create a multi-arch container image and <em>not</em> push this to the registry, my docker fu is failing me at the moment, sorry, I don't fully understand what a multi-arch build does and how it could be executed in separate steps. I'll have to drop investigating this, I fear.</p>
+            <div class="timeline-body"><p>I&#x27;ve tried to use the <code>load: true</code> option for <code>docker/build-push-action</code> to delay pushing, but that trips over docker/buildx#59. I don&#x27;t quite see how to create a multi-arch container image and <em>not</em> push this to the registry, my docker fu is failing me at the moment, sorry, I don&#x27;t fully understand what a multi-arch build does and how it could be executed in separate steps. I&#x27;ll have to drop investigating this, I fear.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mjpieters">@mjpieters</a> on 2024-10-30 18:07</div>
-            <div class="timeline-body"><p>If I find time to pick this up again, there is an excellent overview of why you can't use the docker/build-push-action action to separate building and pushing at https://github.com/NASA-PDS/devops/issues/78#issuecomment-2430132011, which points to containerd as the way forward, but... that's not yet an official option.</p>
+            <div class="timeline-body"><p>If I find time to pick this up again, there is an excellent overview of why you can&#x27;t use the docker/build-push-action action to separate building and pushing at <a href="https://github.com/NASA-PDS/devops/issues/78">NASA-PDS/devops#78</a>#issuecomment-2430132011, which points to containerd as the way forward, but... that&#x27;s not yet an official option.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -272,28 +272,28 @@ https://github.com/samypr100/uv/.github/workflows/build-docker.yml@refs/heads/do
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mjpieters">@mjpieters</a> on 2024-11-06 11:07</div>
-            <div class="timeline-body"><p>To be clear: this PR is ready in every other way. If not being able to pin the current base release container to the top is an issue, then please close this as I don't think we can practically do that <em>and</em> provide signed containers.</p>
+            <div class="timeline-body"><p>To be clear: this PR is ready in every other way. If not being able to pin the current base release container to the top is an issue, then please close this as I don&#x27;t think we can practically do that <em>and</em> provide signed containers.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-06 16:27</div>
-            <div class="timeline-body"><p>I'm not sure how to balance the trade-offs with the regression, it seems pretty confusing to users to not see the actual image tag they'd use.</p>
+            <div class="timeline-body"><p>I&#x27;m not sure how to balance the trade-offs with the regression, it seems pretty confusing to users to not see the actual image tag they&#x27;d use.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-11-06 17:28</div>
             <div class="timeline-body"><p>@mjpieters Is it possible to push the signatures (.sig files) elsewhere, e.g. different package? Maybe I missed if this was discussed.</p>
-<p>Given the GH limitations, that's probably the next step to explore?</p>
+<p>Given the GH limitations, that&#x27;s probably the next step to explore?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mjpieters">@mjpieters</a> on 2024-11-14 09:56</div>
             <div class="timeline-body"><blockquote>
 <p>@mjpieters Is it possible to push the signatures (.sig files) elsewhere, e.g. different package? Maybe I missed if this was discussed.</p>
-<p>Given the GH limitations, that's probably the next step to explore?</p>
+<p>Given the GH limitations, that&#x27;s probably the next step to explore?</p>
 </blockquote>
-<p>Yes, it is technically possible to push them to a different registry, see the <a href="https://docs.sigstore.dev/cosign/system_config/registry_support/#specifying-registry">cosign documentation</a>. <strong>However</strong> I don't recommend doing this without first verifying that you can still verify the signature. I fear that the <code>cosign verify</code> tool won't be able to find the signature data when you do this and I don't know if or how you can then verify container integrity and provenance.</p>
-<p>I do not currently have the time to test this option; you'd have to pull my PR into a fork repository, add the <code>COSIGN_REPOSITORY</code> environment variable to the signing steps pointing to a registry the github runner can access (this may require that the step is given a <a href="https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry#authenticating-to-the-container-registry">personal access token with container write permissions</a>, although it <a href="https://docs.github.com/en/packages/learn-github-packages/configuring-a-packages-access-control-and-visibility#ensuring-workflow-access-to-your-package">may be possible to grant write permissions across repos in the same organisation</a>), and then trying to verify the resulting container with <code>cosign verify ghcr.io/$FORK_OWNER/uv:latest --certificate-identity-regexp='.*' --certificate-oidc-issuer-regexp='.*'</code>. Perhaps that succeeds anyway, which would be very welcome news indeed.</p>
+<p>Yes, it is technically possible to push them to a different registry, see the <a href="https://docs.sigstore.dev/cosign/system_config/registry_support/#specifying-registry">cosign documentation</a>. <strong>However</strong> I don&#x27;t recommend doing this without first verifying that you can still verify the signature. I fear that the <code>cosign verify</code> tool won&#x27;t be able to find the signature data when you do this and I don&#x27;t know if or how you can then verify container integrity and provenance.</p>
+<p>I do not currently have the time to test this option; you&#x27;d have to pull my PR into a fork repository, add the <code>COSIGN_REPOSITORY</code> environment variable to the signing steps pointing to a registry the github runner can access (this may require that the step is given a <a href="https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry#authenticating-to-the-container-registry">personal access token with container write permissions</a>, although it <a href="https://docs.github.com/en/packages/learn-github-packages/configuring-a-packages-access-control-and-visibility#ensuring-workflow-access-to-your-package">may be possible to grant write permissions across repos in the same organisation</a>), and then trying to verify the resulting container with <code>cosign verify ghcr.io/$FORK_OWNER/uv:latest --certificate-identity-regexp=&#x27;.*&#x27; --certificate-oidc-issuer-regexp=&#x27;.*&#x27;</code>. Perhaps that succeeds anyway, which would be very welcome news indeed.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -301,21 +301,21 @@ https://github.com/samypr100/uv/.github/workflows/build-docker.yml@refs/heads/do
             <div class="timeline-body"><blockquote>
 <blockquote>
 <p>@mjpieters Is it possible to push the signatures (.sig files) elsewhere, e.g. different package? Maybe I missed if this was discussed.
-Given the GH limitations, that's probably the next step to explore?</p>
+Given the GH limitations, that&#x27;s probably the next step to explore?</p>
 </blockquote>
-<p>Yes, it is technically possible to push them to a different registry, see the <a href="https://docs.sigstore.dev/cosign/system_config/registry_support/#specifying-registry">cosign documentation</a>. <strong>However</strong> I don't recommend doing this without first verifying that you can still verify the signature. I fear that the <code>cosign verify</code> tool won't be able to find the signature data when you do this and I don't know if or how you can then verify container integrity and provenance.</p>
-<p>I do not currently have the time to test this option; you'd have to pull my PR into a fork repository, add the <code>COSIGN_REPOSITORY</code> environment variable to the signing steps pointing to a registry the github runner can access (this may require that the step is given a <a href="https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry#authenticating-to-the-container-registry">personal access token with container write permissions</a>, although it <a href="https://docs.github.com/en/packages/learn-github-packages/configuring-a-packages-access-control-and-visibility#ensuring-workflow-access-to-your-package">may be possible to grant write permissions across repos in the same organisation</a>), and then trying to verify the resulting container with <code>cosign verify ghcr.io/$FORK_OWNER/uv:latest --certificate-identity-regexp='.*' --certificate-oidc-issuer-regexp='.*'</code>. Perhaps that succeeds anyway, which would be very welcome news indeed.</p>
+<p>Yes, it is technically possible to push them to a different registry, see the <a href="https://docs.sigstore.dev/cosign/system_config/registry_support/#specifying-registry">cosign documentation</a>. <strong>However</strong> I don&#x27;t recommend doing this without first verifying that you can still verify the signature. I fear that the <code>cosign verify</code> tool won&#x27;t be able to find the signature data when you do this and I don&#x27;t know if or how you can then verify container integrity and provenance.</p>
+<p>I do not currently have the time to test this option; you&#x27;d have to pull my PR into a fork repository, add the <code>COSIGN_REPOSITORY</code> environment variable to the signing steps pointing to a registry the github runner can access (this may require that the step is given a <a href="https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry#authenticating-to-the-container-registry">personal access token with container write permissions</a>, although it <a href="https://docs.github.com/en/packages/learn-github-packages/configuring-a-packages-access-control-and-visibility#ensuring-workflow-access-to-your-package">may be possible to grant write permissions across repos in the same organisation</a>), and then trying to verify the resulting container with <code>cosign verify ghcr.io/$FORK_OWNER/uv:latest --certificate-identity-regexp=&#x27;.*&#x27; --certificate-oidc-issuer-regexp=&#x27;.*&#x27;</code>. Perhaps that succeeds anyway, which would be very welcome news indeed.</p>
 </blockquote>
 <p>Thanks for the details, I will try take a look at some point. I assume this approach would introduce a new package (registry) called <code>uv-cosign</code> which would have to get publicly exposed next to <code>uv</code> and documented.</p>
-<p>I also wonder, are there other projects that you know of that use ghcr.io + cosign? I'd like to see if this is a common issue and if there's other known workarounds that we may be missing when using cosign. I'll take a look as well.</p>
+<p>I also wonder, are there other projects that you know of that use ghcr.io + cosign? I&#x27;d like to see if this is a common issue and if there&#x27;s other known workarounds that we may be missing when using cosign. I&#x27;ll take a look as well.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mjpieters">@mjpieters</a> on 2024-11-21 20:30</div>
             <div class="timeline-body"><blockquote>
-<p>I also wonder, are there other projects that you know of that use ghcr.io + cosign? I'd like to see if this is a common issue and if there's other known workarounds that we may be missing when using cosign. I'll take a look as well.</p>
+<p>I also wonder, are there other projects that you know of that use ghcr.io + cosign? I&#x27;d like to see if this is a common issue and if there&#x27;s other known workarounds that we may be missing when using cosign. I&#x27;ll take a look as well.</p>
 </blockquote>
-<p>I looked, but all those that I found put their signatures straight into the GitHub container registry by their containers (and don't try and control what's that top listed entry).</p>
+<p>I looked, but all those that I found put their signatures straight into the GitHub container registry by their containers (and don&#x27;t try and control what&#x27;s that top listed entry).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -327,9 +327,9 @@ Given the GH limitations, that's probably the next step to explore?</p>
 <p>or you can download the attestation with <code>gh attestation download</code> and then use the resulting blob file to verify the manifest for an image (bit more involved as this requires downloading the blob <em>and</em> the image manifest, here using <a href="https://github.com/regclient/regclient/blob/main/docs/regctl.md"><code>regctl</code></a>):</p>
 <pre><code>gh attestation download --owner astral-sh oci://ghcr.io/astral-sh/uv:latest
 regctl manifest get ghcr.io/astral-sh/astral-sh:latest --format raw-body &gt; manifest.json
-cosign verify-blob-attestation --bundle &quot;sha256:$(sha256sum manifest.json | awk '{ print $1 }').jsonl&quot; --new-bundle-format --certificate-identity-regexp='^https://github\.com/astral-sh/uv/\.github/workflows/.*' --certificate-oidc-issuer=https://token.actions.githubusercontent.com manifest.json
+cosign verify-blob-attestation --bundle &quot;sha256:$(sha256sum manifest.json | awk &#x27;{ print $1 }&#x27;).jsonl&quot; --new-bundle-format --certificate-identity-regexp=&#x27;^https://github\.com/astral-sh/uv/\.github/workflows/.*&#x27; --certificate-oidc-issuer=https://token.actions.githubusercontent.com manifest.json
 </code></pre>
-<p>I'll have to re-tool this PR to use the https://github.com/actions/attest-build-provenance action for this.</p>
+<p>I&#x27;ll have to re-tool this PR to use the https://github.com/actions/attest-build-provenance action for this.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -342,10 +342,10 @@ cosign verify-blob-attestation --bundle &quot;sha256:$(sha256sum manifest.json |
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @zanieb by @mjpieters on 2025-01-30 17:11</div>
+            <div class="event">Review requested from <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/mjpieters">@mjpieters</a> on 2025-01-30 17:11</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @samypr100 by @mjpieters on 2025-01-30 17:11</div>
+            <div class="event">Review requested from <a href="https://github.com/samypr100">@samypr100</a> by <a href="https://github.com/mjpieters">@mjpieters</a> on 2025-01-30 17:11</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-01-30 17:56</div>
@@ -354,21 +354,21 @@ cosign verify-blob-attestation --bundle &quot;sha256:$(sha256sum manifest.json |
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>.github/workflows/build-docker.yml</code>:285 on 2025-01-31 03:48</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">          subject-name: ${{ env.UV_BASE_IMG }}
+            <div class="timeline-body"><pre><code>          subject-name: ${{ env.UV_BASE_IMG }}
 </code></pre>
 <p>small nit</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>.github/workflows/build-docker.yml</code>:374 on 2025-01-31 03:49</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">          subject-name: ${{ env.UV_BASE_IMG }}
+            <div class="timeline-body"><pre><code>          subject-name: ${{ env.UV_BASE_IMG }}
 </code></pre>
 <p>small nit</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>.github/workflows/build-docker.yml</code>:43 on 2025-01-31 04:09</div>
-            <div class="timeline-body"><p>Note, I think there's 3 other places in this file missing this conditional (if we're in favor of adding it)</p>
+            <div class="timeline-body"><p>Note, I think there&#x27;s 3 other places in this file missing this conditional (if we&#x27;re in favor of adding it)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -381,7 +381,7 @@ cosign verify-blob-attestation --bundle &quot;sha256:$(sha256sum manifest.json |
 <p>I tried it on a test run here https://github.com/samypr100/uv/actions/runs/13066181068</p>
 <p>Which did keep the package versions tags intact https://github.com/samypr100/uv/pkgs/container/uv</p>
 <p>Verifications also work!</p>
-<pre><code class="language-shell">$ gh attestation verify --owner samypr100 oci://ghcr.io/samypr100/uv:latest                          [23:14:17]
+<pre><code>$ gh attestation verify --owner samypr100 oci://ghcr.io/samypr100/uv:latest                          [23:14:17]
 Loaded digest sha256:ebd769519134c730eb1af61ddd06a8f5629f5082d0c2d8f02a6d577fe4b2a9dc for oci://ghcr.io/samypr100/uv:latest
 Loaded 1 attestation from GitHub API
 ✓ Verification succeeded!
@@ -423,7 +423,7 @@ samypr100/uv  https://slsa.dev/provenance/v1  .github/workflows/build-docker.yml
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/mjpieters">@mjpieters</a> on <code>.github/workflows/build-docker.yml</code>:43 on 2025-01-31 10:06</div>
-            <div class="timeline-body"><p>I didn't think there was any point as those 3 all are part of jobs that only run on release.</p>
+            <div class="timeline-body"><p>I didn&#x27;t think there was any point as those 3 all are part of jobs that only run on release.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -431,23 +431,23 @@ samypr100/uv  https://slsa.dev/provenance/v1  .github/workflows/build-docker.yml
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @samypr100 by @mjpieters on 2025-01-31 12:47</div>
+            <div class="event">Review requested from <a href="https://github.com/samypr100">@samypr100</a> by <a href="https://github.com/mjpieters">@mjpieters</a> on 2025-01-31 12:47</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-01-31 14:59</div>
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">releases</span> added by @zanieb on 2025-01-31 14:59</div>
+            <div class="event">Label <span class="label">releases</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-31 14:59</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">security</span> added by @zanieb on 2025-01-31 14:59</div>
+            <div class="event">Label <span class="label">security</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-31 14:59</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @zanieb on 2025-01-31 15:00</div>
+            <div class="event">Merged by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-31 15:00</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2025-01-31 15:00</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-31 15:00</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-31 15:01</div>
@@ -455,7 +455,7 @@ samypr100/uv  https://slsa.dev/provenance/v1  .github/workflows/build-docker.yml
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Sign docker images using cosign" to "Sign docker images using github attestations" by @mjpieters on 2025-01-31 15:01</div>
+            <div class="event">Renamed from &quot;Sign docker images using cosign&quot; to &quot;Sign docker images using github attestations&quot; by <a href="https://github.com/mjpieters">@mjpieters</a> on 2025-01-31 15:01</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-01-31 15:54</div>
@@ -465,7 +465,7 @@ samypr100/uv  https://slsa.dev/provenance/v1  .github/workflows/build-docker.yml
             <div class="timeline-body"><blockquote>
 <p>Would you mind following with a brief guide on how to verify images in https://docs.astral.sh/uv/guides/integration/docker/ ?</p>
 </blockquote>
-<p>I'll see what I can do!</p>
+<p>I&#x27;ll see what I can do!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -476,7 +476,7 @@ samypr100/uv  https://slsa.dev/provenance/v1  .github/workflows/build-docker.yml
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:40:24 UTC
+        Synced at 2026-01-20 19:49:06 UTC
     </footer>
 </body>
 </html>

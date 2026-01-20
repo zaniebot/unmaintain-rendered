@@ -43,26 +43,26 @@
 <li>[ ] match-statement narrowing forms (individual TODOs in code, could break these out)</li>
 <li>[ ] TypeIs and TypeGuard special forms</li>
 </ul>
-<p>This is not an exhaustive list of what we'll eventually want to support, it's just a starter list of some useful ones that aren't currently blocked by other type system features that aren't implemented yet.</p>
+<p>This is not an exhaustive list of what we&#x27;ll eventually want to support, it&#x27;s just a starter list of some useful ones that aren&#x27;t currently blocked by other type system features that aren&#x27;t implemented yet.</p>
 <p>(Supporting narrowing on <code>x.attr</code> or <code>x[sub]</code> expression forms is out of scope for this issue.)</p>
 <p>Implementation for these lives in <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>.</p>
-<p>These cases we may want eventually, but we are deferring for now (please <em>don't</em> add support for these right now):</p>
+<p>These cases we may want eventually, but we are deferring for now (please <em>don&#x27;t</em> add support for these right now):</p>
 <ul>
-<li>[ ] x == None (not sound for most x, don't want to do it unless driven by real use cases)</li>
+<li>[ ] x == None (not sound for most x, don&#x27;t want to do it unless driven by real use cases)</li>
 <li>[ ] x == T (where T is any literal type) -- not sound for most x; need real use cases (maybe TypedDicts are a use case?)</li>
 <li>[ ] x != T (where T is any literal type) -- use cases not clear yet; could result in complex-but-useless intersections</li>
 </ul>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2024-10-09 19:30</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/carljm">@carljm</a> on 2024-10-09 19:30</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">help wanted</span> added by @carljm on 2024-10-09 19:32</div>
+            <div class="event">Label <span class="label">help wanted</span> added by <a href="https://github.com/carljm">@carljm</a> on 2024-10-09 19:32</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-10-09 21:35</div>
-            <div class="timeline-body"><p>https://github.com/microsoft/pyright/blob/main/docs/type-concepts-advanced.md#type-guards is pyright's documentation on supported narrowing forms.</p>
+            <div class="timeline-body"><p>https://github.com/microsoft/pyright/blob/main/docs/type-concepts-advanced.md#type-guards is pyright&#x27;s documentation on supported narrowing forms.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -84,23 +84,23 @@
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-10-25 17:48</div>
             <div class="timeline-body"><p>Some predicates narrow based on characteristics of an object that could be transient for mutable objects.</p>
 <p>For example, <code>if x:</code> means that <code>x</code> must be truthy. This means that if <code>x</code> is typed as <code>None</code>, or <code>Literal[False]</code> or <code>Literal[0]</code>, we can narrow its type to <code>Never</code>, since those types represent known immutable objects that are never truthy and never can be. If <code>x</code> is typed as a union including any of those types, we can safely eliminate them from the union. And it will be important that we can do this. But we cannot generally assume that this narrowing means <code>x</code> will remain truthy. If <code>x</code> is a list, it could be truthy one moment, and the next moment (after a <code>.clear()</code> call), it no longer is.</p>
-<p>It is not correct to represent the narrowing effect of <code>if x == 1:</code> as an intersection with <code>Literal[1]</code>, because any type in Python can write an <code>__eq__</code> method that compares equal to the integer <code>1</code>. So <code>x == 1</code> does not imply that <code>x</code> must actually be of type <code>Literal[1]</code>. Even if <code>x</code> were previously typed as <code>int</code>, it could be an instance of a subclass of <code>int</code> that compares equal to <code>1</code>; that's not <code>Literal[1]</code>. And similar to truthiness, we can't try to preserve our knowledge that <code>x == 1</code> for arbitrary <code>x</code> type, because <code>x</code> could be mutable, and its equality to <code>1</code> could change any time after the narrowing, without us being aware of it. But there are some types that we know represent objects that can never become equal to <code>1</code>: for instance <code>None</code>, or any other literal type that isn't <code>Literal[1]</code>. It will be important that we can narrow away these types.</p>
+<p>It is not correct to represent the narrowing effect of <code>if x == 1:</code> as an intersection with <code>Literal[1]</code>, because any type in Python can write an <code>__eq__</code> method that compares equal to the integer <code>1</code>. So <code>x == 1</code> does not imply that <code>x</code> must actually be of type <code>Literal[1]</code>. Even if <code>x</code> were previously typed as <code>int</code>, it could be an instance of a subclass of <code>int</code> that compares equal to <code>1</code>; that&#x27;s not <code>Literal[1]</code>. And similar to truthiness, we can&#x27;t try to preserve our knowledge that <code>x == 1</code> for arbitrary <code>x</code> type, because <code>x</code> could be mutable, and its equality to <code>1</code> could change any time after the narrowing, without us being aware of it. But there are some types that we know represent objects that can never become equal to <code>1</code>: for instance <code>None</code>, or any other literal type that isn&#x27;t <code>Literal[1]</code>. It will be important that we can narrow away these types.</p>
 <p>To sum this up with examples, this is the behavior I think we will want:</p>
-<pre><code class="language-py">x: int | None
+<pre><code>x: int | None
 if x:
     # this could also be `int &amp; ~Literal[0]`?
     reveal_type(x)  # revealed: int
 else:
-    # we can't narrow `int` down to `Literal[0]` because of subclasses
+    # we can&#x27;t narrow `int` down to `Literal[0]` because of subclasses
     reveal_type(x)  # revealed: int | None
 </code></pre>
-<pre><code class="language-py">x: Literal[0, 1, 2]
+<pre><code>x: Literal[0, 1, 2]
 if x:
     reveal_type(x)  # revealed: Literal[1, 2]
 else:
     reveal_type(x)  # revealed: Literal[0]
 </code></pre>
-<pre><code class="language-py">x: int
+<pre><code>x: int
 if x == 1:
     # not safe to narrow to `Literal[1]`, could be a subclass of `int` with custom `__eq__`
     reveal_type(x)  # revealed: int
@@ -108,21 +108,21 @@ else:
     # could be `int &amp; ~Literal[1]`
     reveal_type(x)  # revealed: int
 </code></pre>
-<pre><code class="language-py">x: Literal[1, 2, 3]
+<pre><code>x: Literal[1, 2, 3]
 if x == 1:
     reveal_type(x)  # revealed: Literal[1]
 else:
     reveal_type(x)  # revealed: Literal[2, 3]
 </code></pre>
 <p>One way to approach this, which is tempting in its generality (and previously tempted me), is to define new <code>Type</code> variants such as <code>Truthy</code> and <code>EqualTo(T)</code>, and then return these types as the constraints on x from <code>x</code> or <code>x == 1</code>. Then we can handle these types in intersection simplification, where e.g. <code>Truthy</code> would be disjoint with <code>None</code> and <code>Literal[False]</code> and some other types, and <code>EqualTo[Literal[1]]</code> would be disjoint from all other literals.</p>
-<p>The downsides of this approach are two-fold. One is that we then have to handle these types in all type operations, increasing the size of the matrix for binary operations especially, even though it's not clear that these types have expressive utility outside of narrowing.</p>
-<p>The bigger problem is that these types represent possibly-transient characteristics, as discussed above. A particular <code>list[int]</code> may be truthy one moment, and then after a <code>.clear()</code> call, it is no longer truthy. This means that really the <em>only</em> safe use of these types is to immediately eliminate union elements that we know must always be disjoint with them; otherwise we should simply discard them. For example, after <code>x == 1</code> where <code>x</code> is <code>int</code>, not only can we not narrow <code>x</code> to <code>Literal[1]</code>, we shouldn't even keep its type as <code>int &amp; EqualTo(Literal[1])</code>, because it may be that some subsequent method call on <code>x</code> makes it no longer <code>EqualTo(Literal[1])</code> at all. In the same way, <code>l.clear()</code> would invalidate an intersection like <code>list[int] &amp; Truthy</code>.</p>
+<p>The downsides of this approach are two-fold. One is that we then have to handle these types in all type operations, increasing the size of the matrix for binary operations especially, even though it&#x27;s not clear that these types have expressive utility outside of narrowing.</p>
+<p>The bigger problem is that these types represent possibly-transient characteristics, as discussed above. A particular <code>list[int]</code> may be truthy one moment, and then after a <code>.clear()</code> call, it is no longer truthy. This means that really the <em>only</em> safe use of these types is to immediately eliminate union elements that we know must always be disjoint with them; otherwise we should simply discard them. For example, after <code>x == 1</code> where <code>x</code> is <code>int</code>, not only can we not narrow <code>x</code> to <code>Literal[1]</code>, we shouldn&#x27;t even keep its type as <code>int &amp; EqualTo(Literal[1])</code>, because it may be that some subsequent method call on <code>x</code> makes it no longer <code>EqualTo(Literal[1])</code> at all. In the same way, <code>l.clear()</code> would invalidate an intersection like <code>list[int] &amp; Truthy</code>.</p>
 <p>I think this is sufficient reason to discard having types like <code>EqualTo</code> or <code>Truthy</code>.</p>
 <p>I think the key observation here is that, since there are a limited set of types where we know all inhabitants are immutable with respect to equality and truthiness (all literal and singleton types), the narrowing we can apply in these cases is only a <em>negative</em> intersection to eliminate some of these literal types, never an intersection with a positive type. If the narrowing is represented as an intersection with some constraint type (as we currently represent it), the constraint type must be a negation type (an intersection with only negative elements in it.)</p>
-<p>This is easy for <code>if x:</code>: it can be safely represented as an intersection with <code>~Literal[0] &amp; ~Literal[False] &amp; ~Literal[&quot;&quot;] &amp; ~None</code>. But this approach doesn't work for narrowing <code>if not x:</code> or <code>if x == 1:</code>, because the set of all known-never-to-be-falsy types is too large to represent directly (it includes all literal types that are not <code>0/False/&quot;&quot;/None</code>), and similarly the set of all known-not-to-equal-1 types is very large (all literal types that are not <code>Literal[1]</code>).</p>
-<p>We could inspect the current type of <code>x</code> in <code>if x == 1:</code> while inferring narrowing constraints, and just build a negative intersection containing only the <em>relevant</em> types from the too-large-to-represent set of negative constraints. That is, if <code>x</code> is <code>Literal[1, 2, 3]</code> and we have <code>if x == Literal[1]:</code>, in theory we'd want to intersect <code>x</code> with the too-large-to-represent type &quot;all literal types that are not <code>Literal[1]</code>&quot;, but in practice we could intersect it simply with <code>~Literal[2] &amp; ~Literal[3]</code> and get the same result. This muddies the boundaries between inferring a constraint and applying it. But this may be a totally fine pragmatic approach.</p>
-<p>A variant of this could be to have constraints no longer be represented simply as a <code>Type</code> to intersect with, but as a new enum that might be just a <code>Type</code> to intersect with, or might be something like <code>EliminateNotEqualTo[Literal[1]]</code> or <code>EliminateNonTruthy</code>, and then we'd apply those constraints later, in type inference, when we already have the type of <code>x</code> in hand. The actual application would look similar to what we'd do in the previous paragraph, we just wouldn't do it eagerly when inferring the constraint itself, so as to keep &quot;inference of constraints from a test expression&quot; and &quot;application of constraints to a type&quot; more cleanly separated. <code>Type</code> could even gain dedicated methods like <code>exclude_never_equal_to(Type)</code> and <code>exclude_always_truthy</code> to handle intersecting a type with these too-large-to-represent negations.</p>
-<p>One practical reason to prefer the latter (placing this logic in <code>Type</code> instead of directly inside constraint inference) is that there are other places we may want to narrow a type in this way, where we aren't using definitions and constraints. One such case is https://github.com/astral-sh/ruff/issues/13632</p>
+<p>This is easy for <code>if x:</code>: it can be safely represented as an intersection with <code>~Literal[0] &amp; ~Literal[False] &amp; ~Literal[&quot;&quot;] &amp; ~None</code>. But this approach doesn&#x27;t work for narrowing <code>if not x:</code> or <code>if x == 1:</code>, because the set of all known-never-to-be-falsy types is too large to represent directly (it includes all literal types that are not <code>0/False/&quot;&quot;/None</code>), and similarly the set of all known-not-to-equal-1 types is very large (all literal types that are not <code>Literal[1]</code>).</p>
+<p>We could inspect the current type of <code>x</code> in <code>if x == 1:</code> while inferring narrowing constraints, and just build a negative intersection containing only the <em>relevant</em> types from the too-large-to-represent set of negative constraints. That is, if <code>x</code> is <code>Literal[1, 2, 3]</code> and we have <code>if x == Literal[1]:</code>, in theory we&#x27;d want to intersect <code>x</code> with the too-large-to-represent type &quot;all literal types that are not <code>Literal[1]</code>&quot;, but in practice we could intersect it simply with <code>~Literal[2] &amp; ~Literal[3]</code> and get the same result. This muddies the boundaries between inferring a constraint and applying it. But this may be a totally fine pragmatic approach.</p>
+<p>A variant of this could be to have constraints no longer be represented simply as a <code>Type</code> to intersect with, but as a new enum that might be just a <code>Type</code> to intersect with, or might be something like <code>EliminateNotEqualTo[Literal[1]]</code> or <code>EliminateNonTruthy</code>, and then we&#x27;d apply those constraints later, in type inference, when we already have the type of <code>x</code> in hand. The actual application would look similar to what we&#x27;d do in the previous paragraph, we just wouldn&#x27;t do it eagerly when inferring the constraint itself, so as to keep &quot;inference of constraints from a test expression&quot; and &quot;application of constraints to a type&quot; more cleanly separated. <code>Type</code> could even gain dedicated methods like <code>exclude_never_equal_to(Type)</code> and <code>exclude_always_truthy</code> to handle intersecting a type with these too-large-to-represent negations.</p>
+<p>One practical reason to prefer the latter (placing this logic in <code>Type</code> instead of directly inside constraint inference) is that there are other places we may want to narrow a type in this way, where we aren&#x27;t using definitions and constraints. One such case is <a href="https://github.com/astral-sh/ruff/issues/13632">astral-sh/ruff#13632</a></p>
 <p>EDIT for posterity: in the end in #14687 we did decide to add <code>Type::AlwaysTruthy</code> and <code>Type::AlwaysFalsy</code>, but with a narrower definition. These types are only inhabited by objects which are always guaranteed to return <code>LiteralTrue]</code> or <code>Literal[False]</code> from <code>__bool__</code>, never by objects which may return different values at different times. That addresses the unsoundness issues discussed above. We can only ever intersect with these types as a negated type; so e.g. <code>if x</code> intersects with <code>~AlwaysFalsy</code>, allowing us to eliminate known-always-falsy types (e.g. <code>Literal[False]</code> or <code>Literal[0]</code> or an instance of a class with <code>def __bool__(self) -&gt; Literal[False]</code>) from the type of <code>x</code>.</p>
 </div>
         </div>
@@ -139,14 +139,14 @@ else:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-11-04 21:30</div>
-            <div class="timeline-body"><p>Yeah, I was thinking of <code>TypeIs</code> and <code>TypeGuard</code> as a separate feature, but it doesn't hurt to list it here.</p>
-<p>I don't think it is blocked on generics. These are just special forms, which use bracket syntax, but they don't require user-defined generic classes or functions.</p>
+            <div class="timeline-body"><p>Yeah, I was thinking of <code>TypeIs</code> and <code>TypeGuard</code> as a separate feature, but it doesn&#x27;t hurt to list it here.</p>
+<p>I don&#x27;t think it is blocked on generics. These are just special forms, which use bracket syntax, but they don&#x27;t require user-defined generic classes or functions.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-11-28 00:05</div>
             <div class="timeline-body"><p>Another possible narrowing pattern:</p>
-<pre><code class="language-python">a: LiteralString
+<pre><code>a: LiteralString
 
 if a == &quot;foo&quot;:
 	reveal_type(a)  # revealed: Literal[&quot;foo&quot;]
@@ -155,34 +155,34 @@ if a == &quot;foo&quot;:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-04-02 00:04</div>
-            <div class="timeline-body"><p>I'm looking at <code>evaluate_expr_compare</code> now, and in the <code>ast::Expr::Name</code> arm the <code>CmpOp</code> types left are <code>Lt</code>, <code>LtE</code>, <code>Gt</code>, <code>GtE</code>. Are these arms that we intend to cover? It seems like we probably cannot very easily implement any narrowing for these. @carljm</p>
+            <div class="timeline-body"><p>I&#x27;m looking at <code>evaluate_expr_compare</code> now, and in the <code>ast::Expr::Name</code> arm the <code>CmpOp</code> types left are <code>Lt</code>, <code>LtE</code>, <code>Gt</code>, <code>GtE</code>. Are these arms that we intend to cover? It seems like we probably cannot very easily implement any narrowing for these. @carljm</p>
 <p>https://github.com/astral-sh/ruff/blob/eb3e1763096bd85b37f1609b6baf1e10694143cf/crates/red_knot_python_semantic/src/types/narrow.rs#L416-L418</p>
 <p>Edit: From https://github.com/microsoft/pyright/blob/main/docs/type-concepts-advanced.md#type-guards pyright supports <code>len(x) &lt; L</code> where x is a tuple. I suppose i can add this?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-02 00:09</div>
-            <div class="timeline-body"><p>Sure, adding the length narrowing on tuples would be fine, though I think relatively low priority. I agree that otherwise there's probably no narrowing we can do on less-than or greater-than compares.</p>
-<p>One kind of narrowing not mentioned here (could create a new issue for it) that would have significant impact on false positives would be narrowing on assert statements. This doesn't involve narrowing on any new kinds of test expressions, it just means adding a narrowing constraint in <code>SemanticIndexBuilder</code> when we hit an <code>assert</code> statement.</p>
+            <div class="timeline-body"><p>Sure, adding the length narrowing on tuples would be fine, though I think relatively low priority. I agree that otherwise there&#x27;s probably no narrowing we can do on less-than or greater-than compares.</p>
+<p>One kind of narrowing not mentioned here (could create a new issue for it) that would have significant impact on false positives would be narrowing on assert statements. This doesn&#x27;t involve narrowing on any new kinds of test expressions, it just means adding a narrowing constraint in <code>SemanticIndexBuilder</code> when we hit an <code>assert</code> statement.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-04-02 00:12</div>
-            <div class="timeline-body"><p>Cool, sounds good, I'm up for that</p>
+            <div class="timeline-body"><p>Cool, sounds good, I&#x27;m up for that</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-02 00:15</div>
-            <div class="timeline-body"><p>I'm going to go ahead and close this issue, we've done most of the things listed here, and I think there's limited value at this point in having a blanket tracking issue for narrowing. We can create new issues as we decide to prioritize new kinds of narrowing.</p>
+            <div class="timeline-body"><p>I&#x27;m going to go ahead and close this issue, we&#x27;ve done most of the things listed here, and I think there&#x27;s limited value at this point in having a blanket tracking issue for narrowing. We can create new issues as we decide to prioritize new kinds of narrowing.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2025-04-02 00:15</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2025-04-02 00:15</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:51:14 UTC
+        Synced at 2026-01-20 18:48:58 UTC
     </footer>
 </body>
 </html>

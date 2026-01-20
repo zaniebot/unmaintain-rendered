@@ -24,55 +24,55 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/jack-mcivor">@jack-mcivor</a></div>
             <div class="timeline-body"><p>I think this could catch real issues in code - for example, this currently does not error (ty v0.0.11), but is a runtime error:</p>
-<pre><code class="language-python">from typing import Sequence
+<pre><code>from typing import Sequence
 
 def foo() -&gt; Sequence[int]:  # &lt;- the annotation here can be narrower - should be `tuple[Literal[5], Literal[6]]`
     return (5, 6)
 foo()[2]  # bad - no ty error!
 </code></pre>
 <p>This variable annotation should also be made narrower. The difference here is that ty seems to ignore the annotation, so there is an error</p>
-<pre><code class="language-python">a: Sequence[int] = (5, 6)  # &lt;- the annotation here can be narrower (and afaict unused by ty anyway)
+<pre><code>a: Sequence[int] = (5, 6)  # &lt;- the annotation here can be narrower (and afaict unused by ty anyway)
 a[2]  # good - &quot;error[index-out-of-bounds]: Index 2 is out of bounds for tuple `tuple[Literal[5], Literal[6]]` with length 2&quot;
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">wish</span> added by @carljm on 2026-01-12 21:39</div>
+            <div class="event">Label <span class="label">wish</span> added by <a href="https://github.com/carljm">@carljm</a> on 2026-01-12 21:39</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-12 21:40</div>
             <div class="timeline-body"><p>Hi, thanks for the suggestion!</p>
-<p>I think &quot;warn when an annotation should be narrower&quot; would likely result in a lot of noisy false positives (depending on how &quot;should&quot; is defined, which isn't specified here but is really the crux of the proposal). Many annotations in real-world typed code <em>could</em> be narrower than they are, but there are often good reasons why they shouldn't be narrower. It may be that <code>foo()</code> is a method and subclasses should be allowed to return some other sequence of integers. Or it is planned to make the method more complex in the future, so the return type shouldn't make promises to callers that may be broken in future. Or the more precise annotation would be a mutable type, and it's desirable to prevent mutation. I suspect that once these types of cases are all eliminated, what's left is a rule that only applies to a few toy examples (how common is a standalone function that always returns exactly the same tuple?)</p>
-<p>We can leave this open as a place to collect concrete cases where something like this could be useful, but I don't think it will be a priority in the short term, since this is something that no current type checker attempts to do.</p>
-<p>In #136 we plan to change shortly to start preferring annotated types over inferred types in annotated assignments. That will make the second example behave more like the first. If that isn't desired, the workaround would be to separate the annotation from the the assignment, e.g.</p>
-<pre><code class="language-py">a: Sequence[int]
+<p>I think &quot;warn when an annotation should be narrower&quot; would likely result in a lot of noisy false positives (depending on how &quot;should&quot; is defined, which isn&#x27;t specified here but is really the crux of the proposal). Many annotations in real-world typed code <em>could</em> be narrower than they are, but there are often good reasons why they shouldn&#x27;t be narrower. It may be that <code>foo()</code> is a method and subclasses should be allowed to return some other sequence of integers. Or it is planned to make the method more complex in the future, so the return type shouldn&#x27;t make promises to callers that may be broken in future. Or the more precise annotation would be a mutable type, and it&#x27;s desirable to prevent mutation. I suspect that once these types of cases are all eliminated, what&#x27;s left is a rule that only applies to a few toy examples (how common is a standalone function that always returns exactly the same tuple?)</p>
+<p>We can leave this open as a place to collect concrete cases where something like this could be useful, but I don&#x27;t think it will be a priority in the short term, since this is something that no current type checker attempts to do.</p>
+<p>In #136 we plan to change shortly to start preferring annotated types over inferred types in annotated assignments. That will make the second example behave more like the first. If that isn&#x27;t desired, the workaround would be to separate the annotation from the the assignment, e.g.</p>
+<pre><code>a: Sequence[int]
 a = (5, 6)
 </code></pre>
 <p>Which will result in an inferred type of <code>tuple[Literal[5], Literal[6]]</code> instead of <code>Sequence[int]</code> for <code>a</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">lint</span> added by @AlexWaygood on 2026-01-12 21:41</div>
+            <div class="event">Label <span class="label">lint</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-12 21:41</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jack-mcivor">@jack-mcivor</a> on 2026-01-14 14:56</div>
             <div class="timeline-body"><p>Thanks for the response. I thought about this, and I agree with your perspectives.</p>
-<p>I also tried to find some cases in real code where this would be useful, but didn't find anything very compelling. There were a number of places that <code>Mapping</code> could be converted to <code>dict</code> - but I can see the Mapping type has been chosen to ban mutation (just like you mentioned). There were a few cases of <code>tuple[T, ...] -&gt; tuple[T, T]</code> or similar, but I don't think it's a big value add.</p>
-<p>One interesting case is suggesting <code>NewType</code>s instead of type aliases (or simple unaliased types like <code>int</code> or <code>MyClass</code>). I don't see an easy way to make this into a tool though, and your many of your points would stand here too.</p>
+<p>I also tried to find some cases in real code where this would be useful, but didn&#x27;t find anything very compelling. There were a number of places that <code>Mapping</code> could be converted to <code>dict</code> - but I can see the Mapping type has been chosen to ban mutation (just like you mentioned). There were a few cases of <code>tuple[T, ...] -&gt; tuple[T, T]</code> or similar, but I don&#x27;t think it&#x27;s a big value add.</p>
+<p>One interesting case is suggesting <code>NewType</code>s instead of type aliases (or simple unaliased types like <code>int</code> or <code>MyClass</code>). I don&#x27;t see an easy way to make this into a tool though, and your many of your points would stand here too.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-14 16:14</div>
-            <div class="timeline-body"><p>Thanks for following up! Since it seems we don't really have a compelling case for this, I think I'll close it as &quot;not planned&quot; for now -- we can reopen if stronger arguments for it arrive.</p>
+            <div class="timeline-body"><p>Thanks for following up! Since it seems we don&#x27;t really have a compelling case for this, I think I&#x27;ll close it as &quot;not planned&quot; for now -- we can reopen if stronger arguments for it arrive.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2026-01-14 16:14</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2026-01-14 16:14</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-14 16:42:20 UTC
+        Synced at 2026-01-20 19:27:06 UTC
     </footer>
 </body>
 </html>

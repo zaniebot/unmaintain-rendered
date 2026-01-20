@@ -23,11 +23,11 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This PR adds type inference for basic <code>for</code> loop variables to red-knot.</p>
 <p>Inferring the type of a loop var involves either the new-style iteration protocol (which invokes <code>__iter__</code> to get an iterator, and then <code>__next__</code> on that iterator), or the old-style iteration protocol (which passes incrementally larger <code>int</code>s to a <code>__getitem__</code> method). If <code>__iter__</code> is defined on the class, <code>__iter__</code> always takes precedence, even if <code>__iter__</code> is e.g. set to <code>None</code>: this is a technique that can be used to make classes that define <code>__getitem__</code> not-iterable.</p>
-<p>Whichever protocol is used to make a class's instances iterable, the dunder methods are always looked up on the <em>class</em> of an instance rather than the instance itself. I.e., the interpreter won't consider <code>foo</code> in this snippet to be iterable, because <code>__iter__</code> only exists on the instance, not the class:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; class Foo: ...
+<p>Whichever protocol is used to make a class&#x27;s instances iterable, the dunder methods are always looked up on the <em>class</em> of an instance rather than the instance itself. I.e., the interpreter won&#x27;t consider <code>foo</code> in this snippet to be iterable, because <code>__iter__</code> only exists on the instance, not the class:</p>
+<pre><code>&gt;&gt;&gt; class Foo: ...
 ... 
 &gt;&gt;&gt; foo = Foo()
 &gt;&gt;&gt; foo.__iter__ = lambda: iter(range(42))
@@ -38,30 +38,30 @@
 ... 
 Traceback (most recent call last):
   File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
-TypeError: 'Foo' object is not iterable
+TypeError: &#x27;Foo&#x27; object is not iterable
 </code></pre>
 <p>To emulate this runtime behaviour, I added a <code>Type::to_type_of_class</code> method that allows us to go from a type representing <code>&lt;instance of int&gt;</code> to a type representing <code>&lt;the int class itself&gt;</code>.</p>
-<h2>Test Plan</h2>
+Test Plan
 <p><code>cargo test</code></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-09-01 15:39</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-01 15:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @AlexWaygood on 2024-09-01 15:39</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-01 15:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-09-01 15:39</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-01 15:39</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-09-01 15:53</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
@@ -72,21 +72,21 @@ TypeError: 'Foo' object is not iterable
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:385 on 2024-09-01 18:18</div>
             <div class="timeline-body"><p>These would be a bit more ergonomic if <code>Type::member</code> accepted <code>&amp;str</code> rather than <code>ast::name::Name</code>. Any reason not to do something like this?</p>
-<details>
-<summary>Proposed diff</summary>
 
-<pre><code class="language-diff">--- a/crates/red_knot_python_semantic/src/types.rs
+Proposed diff
+
+<pre><code>--- a/crates/red_knot_python_semantic/src/types.rs
 +++ b/crates/red_knot_python_semantic/src/types.rs
-@@ -290,7 +290,7 @@ impl&lt;'db&gt; Type&lt;'db&gt; {
+@@ -290,7 +290,7 @@ impl&lt;&#x27;db&gt; Type&lt;&#x27;db&gt; {
      /// us to explicitly consider whether to handle an error or propagate
      /// it up the call stack.
      #[must_use]
--    pub fn member(&amp;self, db: &amp;'db dyn Db, name: &amp;ast::name::Name) -&gt; Type&lt;'db&gt; {
-+    pub fn member(&amp;self, db: &amp;'db dyn Db, name: &amp;str) -&gt; Type&lt;'db&gt; {
+-    pub fn member(&amp;self, db: &amp;&#x27;db dyn Db, name: &amp;ast::name::Name) -&gt; Type&lt;&#x27;db&gt; {
++    pub fn member(&amp;self, db: &amp;&#x27;db dyn Db, name: &amp;str) -&gt; Type&lt;&#x27;db&gt; {
          match self {
              Type::Any =&gt; Type::Any,
              Type::Never =&gt; {
-@@ -382,12 +382,10 @@ impl&lt;'db&gt; Type&lt;'db&gt; {
+@@ -382,12 +382,10 @@ impl&lt;&#x27;db&gt; Type&lt;&#x27;db&gt; {
          // `self` represents the type of the iterable;
          // `__iter__` and `__next__` are both looked up on the class of the iterable:
          let type_of_class = self.to_type_of_class(db);
@@ -100,8 +100,8 @@ TypeError: 'Foo' object is not iterable
 +            let dunder_next_method = iterator_ty.to_type_of_class(db).member(db, &quot;__next__&quot;);
              return dunder_next_method.call(db);
          }
-         // Although it's not considered great practice,
-@@ -396,8 +394,7 @@ impl&lt;'db&gt; Type&lt;'db&gt; {
+         // Although it&#x27;s not considered great practice,
+@@ -396,8 +394,7 @@ impl&lt;&#x27;db&gt; Type&lt;&#x27;db&gt; {
          //
          // TODO this is only valid if the `__getitem__` method is annotated as
          // accepting `int` or `SupportsIndex`
@@ -111,32 +111,32 @@ TypeError: 'Foo' object is not iterable
          dunder_get_item_method.call(db)
      }
  
-@@ -516,7 +513,7 @@ impl&lt;'db&gt; ClassType&lt;'db&gt; {
+@@ -516,7 +513,7 @@ impl&lt;&#x27;db&gt; ClassType&lt;&#x27;db&gt; {
      /// Returns the class member of this class named `name`.
      ///
      /// The member resolves to a member of the class itself or any of its bases.
--    pub fn class_member(self, db: &amp;'db dyn Db, name: &amp;ast::name::Name) -&gt; Type&lt;'db&gt; {
-+    pub fn class_member(self, db: &amp;'db dyn Db, name: &amp;str) -&gt; Type&lt;'db&gt; {
+-    pub fn class_member(self, db: &amp;&#x27;db dyn Db, name: &amp;ast::name::Name) -&gt; Type&lt;&#x27;db&gt; {
++    pub fn class_member(self, db: &amp;&#x27;db dyn Db, name: &amp;str) -&gt; Type&lt;&#x27;db&gt; {
          let member = self.own_class_member(db, name);
          if !member.is_unbound() {
              return member;
-@@ -526,12 +523,12 @@ impl&lt;'db&gt; ClassType&lt;'db&gt; {
+@@ -526,12 +523,12 @@ impl&lt;&#x27;db&gt; ClassType&lt;&#x27;db&gt; {
      }
  
      /// Returns the inferred type of the class member named `name`.
--    pub fn own_class_member(self, db: &amp;'db dyn Db, name: &amp;ast::name::Name) -&gt; Type&lt;'db&gt; {
-+    pub fn own_class_member(self, db: &amp;'db dyn Db, name: &amp;str) -&gt; Type&lt;'db&gt; {
+-    pub fn own_class_member(self, db: &amp;&#x27;db dyn Db, name: &amp;ast::name::Name) -&gt; Type&lt;&#x27;db&gt; {
++    pub fn own_class_member(self, db: &amp;&#x27;db dyn Db, name: &amp;str) -&gt; Type&lt;&#x27;db&gt; {
          let scope = self.body_scope(db);
          symbol_ty_by_name(db, scope, name)
      }
  
--    pub fn inherited_class_member(self, db: &amp;'db dyn Db, name: &amp;ast::name::Name) -&gt; Type&lt;'db&gt; {
-+    pub fn inherited_class_member(self, db: &amp;'db dyn Db, name: &amp;str) -&gt; Type&lt;'db&gt; {
+-    pub fn inherited_class_member(self, db: &amp;&#x27;db dyn Db, name: &amp;ast::name::Name) -&gt; Type&lt;&#x27;db&gt; {
++    pub fn inherited_class_member(self, db: &amp;&#x27;db dyn Db, name: &amp;str) -&gt; Type&lt;&#x27;db&gt; {
          for base in self.bases(db) {
              let member = base.member(db, name);
              if !member.is_unbound() {
 </code></pre>
-</details>
+
 
 </div>
         </div>
@@ -160,32 +160,32 @@ TypeError: 'Foo' object is not iterable
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/core_stdlib_modules.rs</code>:1 on 2024-09-02 11:00</div>
-            <div class="timeline-body"><p>Nit: I would just name this <code>stdlib</code>. Considering that it doesn't expose any <code>modules</code>, just methods to work with <code>stdlib</code>.</p>
+            <div class="timeline-body"><p>Nit: I would just name this <code>stdlib</code>. Considering that it doesn&#x27;t expose any <code>modules</code>, just methods to work with <code>stdlib</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/core_stdlib_modules.rs</code>:32 on 2024-09-02 11:01</div>
-            <div class="timeline-body"><p>It's probably unrelated to this PR but I still wonder if it is worth having this as a salsa tracked considering that both <code>resolve_module</code> and <code>global_scope</code> are salsa ingredients.</p>
+            <div class="timeline-body"><p>It&#x27;s probably unrelated to this PR but I still wonder if it is worth having this as a salsa tracked considering that both <code>resolve_module</code> and <code>global_scope</code> are salsa ingredients.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:80 on 2024-09-02 11:03</div>
-            <div class="timeline-body"><p>I would remove this comment. It's unclear to a reader what they should do about it.</p>
+            <div class="timeline-body"><p>I would remove this comment. It&#x27;s unclear to a reader what they should do about it.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:82 on 2024-09-02 11:03</div>
-            <div class="timeline-body"><p>I find it surprising that this enum isn't part of <code>stdlib</code>, especially considering that they have the same variants.</p>
+            <div class="timeline-body"><p>I find it surprising that this enum isn&#x27;t part of <code>stdlib</code>, especially considering that they have the same variants.</p>
 <p>Nit: I would rename this to <code>Stdlib</code></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:97 on 2024-09-02 11:05</div>
-            <div class="timeline-body"><p>I'm inclined to inreverse the <code>CoreStdlibModule</code> -&gt; <code>*_scope</code> dependency:</p>
+            <div class="timeline-body"><p>I&#x27;m inclined to inreverse the <code>CoreStdlibModule</code> -&gt; <code>*_scope</code> dependency:</p>
 <ul>
 <li>add a <code>module_name</code> method</li>
 </ul>
-<pre><code class="language-suggestion">    let types_file = resolve_module(db, self.module_name())?.file();
+<pre><code>    let types_file = resolve_module(db, self.module_name())?.file();
     Some(global_scope(db, types_file))
 </code></pre>
 </div>
@@ -198,12 +198,12 @@ TypeError: 'Foo' object is not iterable
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:424 on 2024-09-02 11:08</div>
             <div class="timeline-body"><p>Nit. Maybe add some blank lines to make it clearer that <code>__getitem__</code> is a separate lookup logic. Or use <code>if...else</code></p>
-<pre><code class="language-suggestion">        if dunder_iter_method.is_bound() {
+<pre><code>        if dunder_iter_method.is_bound() {
             let iterator_ty = dunder_iter_method.call(db)?;
             let dunder_next_method = iterator_ty.to_type_of_class(db).member(db, &quot;__next__&quot;);
             dunder_next_method.call(db);
         } else {
-	        // Although it's not considered great practice,
+	        // Although it&#x27;s not considered great practice,
 	        // classes that define `__getitem__` are also iterable,
 	        // even if they do not define `__iter__`.
 	        //
@@ -248,7 +248,7 @@ TypeError: 'Foo' object is not iterable
             <div class="timeline-body"><blockquote>
 <p>Nit: I would rename this to <code>Stdlib</code></p>
 </blockquote>
-<p>Well, it's not the intention that this would be an exhuastive enumeration of all stdlib modules, though -- just ones that contain core definitions for fundamental or builtin types, that we'll likely need to examine frequently during semantic analysis</p>
+<p>Well, it&#x27;s not the intention that this would be an exhuastive enumeration of all stdlib modules, though -- just ones that contain core definitions for fundamental or builtin types, that we&#x27;ll likely need to examine frequently during semantic analysis</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -257,7 +257,7 @@ TypeError: 'Foo' object is not iterable
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:82 on 2024-09-02 12:01</div>
-            <div class="timeline-body"><p>Yeah I assumed so. But it's still all the methods we need from stdlib ;) It's just that for most modules we won't have any special handling.</p>
+            <div class="timeline-body"><p>Yeah I assumed so. But it&#x27;s still all the methods we need from stdlib ;) It&#x27;s just that for most modules we won&#x27;t have any special handling.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -269,10 +269,10 @@ TypeError: 'Foo' object is not iterable
             <div class="timeline-body"><blockquote>
 <p>Would this logic change once we have proper <code>Protocol</code> support?</p>
 </blockquote>
-<p>I don't think so. It will become more useful when we have proper <code>Protocol</code> support, because most <code>__iter__</code> methods in Python are annotated as returning <code>Iterator[...]</code>, and <code>Iterator</code> is a protocol that desugars to &quot;an instance of some class that has <code>__iter__</code> and <code>__next__</code> methods&quot;. So currently this logic does not recognise most Python iterators as actually being Python iterators, but it will do once we add <code>Protocol</code> support.</p>
-<p>Once we have <code>Protocol</code> support, it's true that we <em>could</em> &quot;simplify&quot; this logic by simply saying &quot;anything that's a subtype of <code>Iterable[object]</code> counts as an iterable&quot;, and use that to determine whether something is iterable or not. I prefer my current logic, though, because:</p>
+<p>I don&#x27;t think so. It will become more useful when we have proper <code>Protocol</code> support, because most <code>__iter__</code> methods in Python are annotated as returning <code>Iterator[...]</code>, and <code>Iterator</code> is a protocol that desugars to &quot;an instance of some class that has <code>__iter__</code> and <code>__next__</code> methods&quot;. So currently this logic does not recognise most Python iterators as actually being Python iterators, but it will do once we add <code>Protocol</code> support.</p>
+<p>Once we have <code>Protocol</code> support, it&#x27;s true that we <em>could</em> &quot;simplify&quot; this logic by simply saying &quot;anything that&#x27;s a subtype of <code>Iterable[object]</code> counts as an iterable&quot;, and use that to determine whether something is iterable or not. I prefer my current logic, though, because:</p>
 <ul>
-<li>the <code>Iterator</code> protocol states that an iterator has to have <code>__next__</code> and <code>__iter__</code>, but this isn't actually required by the language semantics. It's considered good coding style for all iterators to also be iterable (have an <code>__iter__</code> method) but the language only requires them to have a <code>__next__</code> method.</li>
+<li>the <code>Iterator</code> protocol states that an iterator has to have <code>__next__</code> and <code>__iter__</code>, but this isn&#x27;t actually required by the language semantics. It&#x27;s considered good coding style for all iterators to also be iterable (have an <code>__iter__</code> method) but the language only requires them to have a <code>__next__</code> method.</li>
 <li>Only considering subtypes of <code>Iterable[object]</code> to be iterable ignores the fact that classes that use the old-style iteration protocol (using <code>__getitem__</code>) are also considered iterable by the language</li>
 </ul>
 </div>
@@ -287,14 +287,14 @@ TypeError: 'Foo' object is not iterable
 <p>Or use <code>if...else</code></p>
 </blockquote>
 <p>I tried that first, but Clippy insisted that I put the <code>__getitem__</code> logic before the <code>__iter__</code> logic:</p>
-<pre><code class="language-rs">if dunder_iter_method.is_unbound() {
+<pre><code>if dunder_iter_method.is_unbound() {
     &lt;__getitem__ logic&gt;
 } else {
     &lt;__iter__ logic&gt;
 }
 </code></pre>
-<p>That seems very wrong to me, because the <code>__getitem__</code> logic is a fallback if the object doesn't have an <code>__iter__</code> method; the <code>__iter__</code> logic should definitely come first. We don't have an <code>is_bound()</code> method (only an <code>is_unbound()</code> method), and I'm not sure we should add one because we don't have a <code>Type::Bound</code> variant, only a <code>Type::Unbound</code> variant.</p>
-<p>I'll add some more blank lines to make it clearer.</p>
+<p>That seems very wrong to me, because the <code>__getitem__</code> logic is a fallback if the object doesn&#x27;t have an <code>__iter__</code> method; the <code>__iter__</code> logic should definitely come first. We don&#x27;t have an <code>is_bound()</code> method (only an <code>is_unbound()</code> method), and I&#x27;m not sure we should add one because we don&#x27;t have a <code>Type::Bound</code> variant, only a <code>Type::Unbound</code> variant.</p>
+<p>I&#x27;ll add some more blank lines to make it clearer.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -303,7 +303,7 @@ TypeError: 'Foo' object is not iterable
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:457 on 2024-09-02 12:09</div>
-            <div class="timeline-body"><p>It's very hard to find a good name here... I initially had <code>to_type()</code>, but then I realised that would end up as <code>Type::to_type</code>, which is awful 😆</p>
+            <div class="timeline-body"><p>It&#x27;s very hard to find a good name here... I initially had <code>to_type()</code>, but then I realised that would end up as <code>Type::to_type</code>, which is awful 😆</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -312,8 +312,8 @@ TypeError: 'Foo' object is not iterable
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/core_stdlib_modules.rs</code>:32 on 2024-09-02 13:08</div>
-            <div class="timeline-body"><p>It's possible to get rid of this and the other two as standalone functions, and just have the <code>Stdlib</code> enum:</p>
-<pre><code class="language-rs">/// Enumeration of various core stdlib modules
+            <div class="timeline-body"><p>It&#x27;s possible to get rid of this and the other two as standalone functions, and just have the <code>Stdlib</code> enum:</p>
+<pre><code>/// Enumeration of various core stdlib modules
 /// which we need frequent access to during semantic analysis
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub(crate) enum Stdlib {
@@ -323,7 +323,7 @@ pub(crate) enum Stdlib {
 }
 
 impl Stdlib {
-    pub(crate) fn module_name(self) -&gt; &amp;'static str {
+    pub(crate) fn module_name(self) -&gt; &amp;&#x27;static str {
         match self {
             Self::Builtins =&gt; &quot;builtins&quot;,
             Self::Types =&gt; &quot;types&quot;,
@@ -333,19 +333,19 @@ impl Stdlib {
 
     /// Retrieve the global scope of the given module.
     ///
-    /// Returns `None` if the given module isn't available for some reason.
-    pub(crate) fn global_scope(self, db: &amp;dyn Db) -&gt; Option&lt;ScopeId&lt;'_&gt;&gt; {
+    /// Returns `None` if the given module isn&#x27;t available for some reason.
+    pub(crate) fn global_scope(self, db: &amp;dyn Db) -&gt; Option&lt;ScopeId&lt;&#x27;_&gt;&gt; {
         let module_name = self.module_name();
         let module_name = ModuleName::new_static(module_name)
-            .unwrap_or_else(|| panic!(&quot;Expected '{module_name}' to be a valid module name&quot;));
+            .unwrap_or_else(|| panic!(&quot;Expected &#x27;{module_name}&#x27; to be a valid module name&quot;));
         let builtins_file = resolve_module(db, module_name)?.file();
         Some(global_scope(db, builtins_file))
     }
 
     /// Look up a symbol in the global scope of the given module.
     ///
-    /// Returns `Unbound` if the given module isn't available for some reason.
-    pub(crate) fn global_symbol&lt;'db&gt;(self, db: &amp;'db dyn Db, name: &amp;str) -&gt; Type&lt;'db&gt; {
+    /// Returns `Unbound` if the given module isn&#x27;t available for some reason.
+    pub(crate) fn global_symbol&lt;&#x27;db&gt;(self, db: &amp;&#x27;db dyn Db, name: &amp;str) -&gt; Type&lt;&#x27;db&gt; {
         self.global_scope(db)
             .map(|globals| symbol_ty_by_name(db, globals, name))
             .unwrap_or(Type::Unbound)
@@ -353,7 +353,7 @@ impl Stdlib {
 }
 </code></pre>
 <p>All uses of <code>builtins_symbol_ty_by_name()</code> would be replaced with <code>Stdlib::Builtins.global_symbol()</code>.</p>
-<p>I like that design more in lots of ways, but it's also a much bigger diff, and it means that the function to get the builtins scope can't be Salsa-tracked. Overall I'm definitely open to it but I'd rather do it as a followup, as I'm uncertain what impact it would have on performance.</p>
+<p>I like that design more in lots of ways, but it&#x27;s also a much bigger diff, and it means that the function to get the builtins scope can&#x27;t be Salsa-tracked. Overall I&#x27;m definitely open to it but I&#x27;d rather do it as a followup, as I&#x27;m uncertain what impact it would have on performance.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -362,7 +362,7 @@ impl Stdlib {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:457 on 2024-09-02 13:14</div>
-            <div class="timeline-body"><p>I prefer my existing name here, I think it's marginally less confusing. But neither is great and I don't have a very strong opinion.</p>
+            <div class="timeline-body"><p>I prefer my existing name here, I think it&#x27;s marginally less confusing. But neither is great and I don&#x27;t have a very strong opinion.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -371,7 +371,7 @@ impl Stdlib {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:468 on 2024-09-02 13:15</div>
-            <div class="timeline-body"><p>Could do. It depends on whether we want to keep <code>builtins_symbol_ty_by_name()</code> at all (https://github.com/astral-sh/ruff/pull/13195/files#r1740903151)</p>
+            <div class="timeline-body"><p>Could do. It depends on whether we want to keep <code>builtins_symbol_ty_by_name()</code> at all (<a href="https://github.com/astral-sh/ruff/pull/13195">astral-sh/ruff#13195</a>/files#r1740903151)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -380,7 +380,7 @@ impl Stdlib {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:97 on 2024-09-02 13:23</div>
-            <div class="timeline-body"><p>I think this would mean that getting the scope of <code>builtins</code>, <code>types</code>, etc. could not be Salsa-tracked. I'm open to trying that out but would rather do it in a separate PR so we can look at how it affects performance.</p>
+            <div class="timeline-body"><p>I think this would mean that getting the scope of <code>builtins</code>, <code>types</code>, etc. could not be Salsa-tracked. I&#x27;m open to trying that out but would rather do it in a separate PR so we can look at how it affects performance.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -394,26 +394,26 @@ impl Stdlib {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/core_stdlib_modules.rs</code>:32 on 2024-09-03 20:42</div>
-            <div class="timeline-body"><p>I think it's probably not worth having these as tracked functions, but fine if you'd rather we do it in a separate PR.</p>
+            <div class="timeline-body"><p>I think it&#x27;s probably not worth having these as tracked functions, but fine if you&#x27;d rather we do it in a separate PR.</p>
 <p>Regarding naming, a few thoughts:</p>
 <ol>
-<li><p>I don't think we should have a method <code>global_symbol</code> that returns a <code>Type</code>, not a <code>Symbol</code>; it should be <code>global_symbol_ty</code> instead.</p>
+<li><p>I don&#x27;t think we should have a method <code>global_symbol</code> that returns a <code>Type</code>, not a <code>Symbol</code>; it should be <code>global_symbol_ty</code> instead.</p>
 </li>
-<li><p>I'm happy to get rid of the <code>_by_name</code> suffix and instead rename e.g. <code>symbol_ty</code> to <code>symbol_ty_by_id</code> -- by name is the common case and can get the shorter name.</p>
+<li><p>I&#x27;m happy to get rid of the <code>_by_name</code> suffix and instead rename e.g. <code>symbol_ty</code> to <code>symbol_ty_by_id</code> -- by name is the common case and can get the shorter name.</p>
 </li>
-<li><p>I don't have strong feelings either way about <code>Stdlib::Builtins.global_symbol_ty</code> vs <code>builtins_symbol_ty</code>, but I think I mildly prefer the latter. It's less &quot;clean&quot; in a namespacing sense, but we aren't going to hardcode queries to very many stdlib modules, and <code>builtins_symbol_ty</code> is both easier to type and easier to read than <code>Stdlib::Builtins.global_symbol_ty</code>, with all its punctuation.</p>
+<li><p>I don&#x27;t have strong feelings either way about <code>Stdlib::Builtins.global_symbol_ty</code> vs <code>builtins_symbol_ty</code>, but I think I mildly prefer the latter. It&#x27;s less &quot;clean&quot; in a namespacing sense, but we aren&#x27;t going to hardcode queries to very many stdlib modules, and <code>builtins_symbol_ty</code> is both easier to type and easier to read than <code>Stdlib::Builtins.global_symbol_ty</code>, with all its punctuation.</p>
 </li>
 </ol>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:457 on 2024-09-03 20:46</div>
-            <div class="timeline-body"><p>I prefer <code>to_class_type</code>; I'm unable to detect any clarity improvement in <code>to_type_of_class</code>. An alternative would be <code>to_meta_type</code>, but I don't think that's better than <code>to_class_type</code>.</p>
+            <div class="timeline-body"><p>I prefer <code>to_class_type</code>; I&#x27;m unable to detect any clarity improvement in <code>to_type_of_class</code>. An alternative would be <code>to_meta_type</code>, but I don&#x27;t think that&#x27;s better than <code>to_class_type</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/core_stdlib_modules.rs</code>:32 on 2024-09-03 20:48</div>
-            <div class="timeline-body"><p>(I also prefer <code>Stdlib</code> over <code>CoreStdlibModule</code>, but that preference is weaker if we provide helper functions like <code>builtins_symbol_ty</code> and don't have to use this enum name everywhere.)</p>
+            <div class="timeline-body"><p>(I also prefer <code>Stdlib</code> over <code>CoreStdlibModule</code>, but that preference is weaker if we provide helper functions like <code>builtins_symbol_ty</code> and don&#x27;t have to use this enum name everywhere.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -432,7 +432,7 @@ impl Stdlib {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:457 on 2024-09-03 20:55</div>
-            <div class="timeline-body"><p>Oh I actually like <code>to_meta_type</code> quite a lot! I think it's much clearer that you might not end up with a <code>Type::Class</code> variant or <code>ClassType</code> instance at the end of it. Mind if I go with that?</p>
+            <div class="timeline-body"><p>Oh I actually like <code>to_meta_type</code> quite a lot! I think it&#x27;s much clearer that you might not end up with a <code>Type::Class</code> variant or <code>ClassType</code> instance at the end of it. Mind if I go with that?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -450,12 +450,12 @@ impl Stdlib {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/stdlib.rs</code>:52 on 2024-09-04 04:39</div>
-            <div class="timeline-body"><p>small nit: as per https://doc.rust-lang.org/stable/std/error/index.html#common-message-styles, I guess this should be <code>'builtins' should be a valid module name</code> and similar suggestion for other <code>expect</code> messages</p>
+            <div class="timeline-body"><p>small nit: as per https://doc.rust-lang.org/stable/std/error/index.html#common-message-styles, I guess this should be <code>&#x27;builtins&#x27; should be a valid module name</code> and similar suggestion for other <code>expect</code> messages</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/stdlib.rs</code>:52 on 2024-09-04 09:12</div>
-            <div class="timeline-body"><p>Oh, thanks for linking to that, I hadn't read that page before! These docs might be interesting for @carljm as well</p>
+            <div class="timeline-body"><p>Oh, thanks for linking to that, I hadn&#x27;t read that page before! These docs might be interesting for @carljm as well</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -468,14 +468,14 @@ impl Stdlib {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/core_stdlib_modules.rs</code>:32 on 2024-09-04 09:43</div>
-            <div class="timeline-body"><p>Well, it will definitely be a simplification, so if you both think it's probably not worth it for these to be Salsa-tracked, I'll defer to you! 🤞 that it doesn't lead to Codspeed complaining 😆</p>
+            <div class="timeline-body"><p>Well, it will definitely be a simplification, so if you both think it&#x27;s probably not worth it for these to be Salsa-tracked, I&#x27;ll defer to you! 🤞 that it doesn&#x27;t lead to Codspeed complaining 😆</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @AlexWaygood on 2024-09-04 10:19</div>
+            <div class="event">Merged by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-04 10:19</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2024-09-04 10:19</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-04 10:19</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-09-04 10:19</div>
@@ -483,7 +483,7 @@ impl Stdlib {
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:06:19 UTC
+        Synced at 2026-01-20 19:06:29 UTC
     </footer>
 </body>
 </html>

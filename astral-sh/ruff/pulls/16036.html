@@ -23,79 +23,79 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/mishamsk">@mishamsk</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This is at best a band-aid solution for astral-sh/ruff#15963 . See my first comment below for discussion.</p>
 <p>As of time of writing:</p>
 <ul>
-<li>Fixes unbound class attribute access. Doesn't return a bound symbol anymore and thus causes a <code>[unresolved-attribute]</code> diagnostic</li>
+<li>Fixes unbound class attribute access. Doesn&#x27;t return a bound symbol anymore and thus causes a <code>[unresolved-attribute]</code> diagnostic</li>
 <li>Intentionally as a separate commit:<ul>
 <li>Changes<code>Type::ClassLiteral</code> representation to <code>type[ClassName]</code> matching mypy (this was already the case for <code>Type::SubclassOf</code>)</li>
 <li>Changes representation of a union of 2+ types to <code>types.UnionType[TypeOne, TypeTwo, ...]</code> also matching mypy</li>
 </ul>
 </li>
 </ul>
-<p>I didn't not add a separate new lint, despite the issue description. I am not sure why <code>[unresolved-attribute]</code> is not appropriate. Unbound attributes indeed do not exist at runtime, so the language seems perfectly appropriate.</p>
-<h2>Test Plan</h2>
+<p>I didn&#x27;t not add a separate new lint, despite the issue description. I am not sure why <code>[unresolved-attribute]</code> is not appropriate. Unbound attributes indeed do not exist at runtime, so the language seems perfectly appropriate.</p>
+Test Plan
 <p>cargo nextest run -p red_knot_python_semantic --no-fail-fast</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-02-08 05:00</div>
             <div class="timeline-body"><p>@sharkdp first, sorry for taking so long, I got distracted by work ;-)</p>
-<p>second, sorry for a long read for such a small thing. However, since we can't just talk it over - I'll dump why I think it is a band aid and PR marked as draft.</p>
+<p>second, sorry for a long read for such a small thing. However, since we can&#x27;t just talk it over - I&#x27;ll dump why I think it is a band aid and PR marked as draft.</p>
 <p>Disclaimer: by no means I am implying there is anything wrong with knot code. I totally understand that you are moving crazy fast and this is one huge undertaking, so I totally get it when something is not &quot;perfect&quot; or a temporary solution.</p>
-<p>The reason it took me multiple hours to understand what's happening is that I got confused by the fact that knot uses a notion of &quot;Symbol&quot; for both real symbols and unbound declarations, which are not symbols at runtime. They only end up in annotations:</p>
+<p>The reason it took me multiple hours to understand what&#x27;s happening is that I got confused by the fact that knot uses a notion of &quot;Symbol&quot; for both real symbols and unbound declarations, which are not symbols at runtime. They only end up in annotations:</p>
 <pre><code>In [1]: class C:
    ...:     not_a_symbol: int
    ...:
 
 In [2]: dir(C)
 Out[2]:
-['__annotations__',
- '__class__',
- '__delattr__',
- '__dict__',
- '__dir__',
- '__doc__',
- '__eq__',
- '__format__',
- '__ge__',
- '__getattribute__',
- '__getstate__',
- '__gt__',
- '__hash__',
- '__init__',
- '__init_subclass__',
- '__le__',
- '__lt__',
- '__module__',
- '__ne__',
- '__new__',
- '__reduce__',
- '__reduce_ex__',
- '__repr__',
- '__setattr__',
- '__sizeof__',
- '__str__',
- '__subclasshook__',
- '__weakref__']
+[&#x27;__annotations__&#x27;,
+ &#x27;__class__&#x27;,
+ &#x27;__delattr__&#x27;,
+ &#x27;__dict__&#x27;,
+ &#x27;__dir__&#x27;,
+ &#x27;__doc__&#x27;,
+ &#x27;__eq__&#x27;,
+ &#x27;__format__&#x27;,
+ &#x27;__ge__&#x27;,
+ &#x27;__getattribute__&#x27;,
+ &#x27;__getstate__&#x27;,
+ &#x27;__gt__&#x27;,
+ &#x27;__hash__&#x27;,
+ &#x27;__init__&#x27;,
+ &#x27;__init_subclass__&#x27;,
+ &#x27;__le__&#x27;,
+ &#x27;__lt__&#x27;,
+ &#x27;__module__&#x27;,
+ &#x27;__ne__&#x27;,
+ &#x27;__new__&#x27;,
+ &#x27;__reduce__&#x27;,
+ &#x27;__reduce_ex__&#x27;,
+ &#x27;__repr__&#x27;,
+ &#x27;__setattr__&#x27;,
+ &#x27;__sizeof__&#x27;,
+ &#x27;__str__&#x27;,
+ &#x27;__subclasshook__&#x27;,
+ &#x27;__weakref__&#x27;]
 
 In [3]: C.__annotations__
-Out[3]: {'not_a_symbol': int}
+Out[3]: {&#x27;not_a_symbol&#x27;: int}
 </code></pre>
-<p>Even though I quickly found the passage rgd <code>Declaration</code> that is used for both types of statements, the fact that they both create a symbol wasn't readily apparent.</p>
+<p>Even though I quickly found the passage rgd <code>Declaration</code> that is used for both types of statements, the fact that they both create a symbol wasn&#x27;t readily apparent.</p>
 <p>Further, confusing the matter was the fact that <code>red_knot_python_semantic::symbol::Symbol</code> (not entirely helpfully matching the <code>red_knot_python_semantic::semantic_index::symbol::Symbol</code>) returns the enum <code>Boundness</code> for both types of &quot;symbols&quot;. So pure (unbound) declarations will be <code>Symbol::Type(ty, Boundness::Bound)</code>.</p>
-<h2>Ideas</h2>
-<h3>Symbol::Type</h3>
+Ideas
+Symbol::Type
 <p>Tbh and imho symbols and declarations should be split. At least in this context. But I felt like doing so would cause too many changes in too many places. Something I would only do if you confirm such an idea. There are multiple ways this can be done:</p>
 <ul>
 <li>Very invasive - create something separate from symbols for declarations and match them to bindings / use sites when necessary. Probably too much of a change and disruption</li>
 <li>Extend <code>Boundness</code> and add two more values: <code>Declared</code> and <code>PossiblyDeclared</code></li>
-<li>In the same vain - extend <code>Symbol::Type</code> tuple by adding some enum with the sub-kind of the symbol. This won't solve the confusing &quot;Boundness::Bound unbound declared symbol&quot; thing though</li>
+<li>In the same vain - extend <code>Symbol::Type</code> tuple by adding some enum with the sub-kind of the symbol. This won&#x27;t solve the confusing &quot;Boundness::Bound unbound declared symbol&quot; thing though</li>
 <li>Maybe there is even better way</li>
 </ul>
-<h3>Split <code>symbol</code> function</h3>
-<p><code>red_knot_python_semantic::types::symbol</code> function is used in multiple places to get the symbol type &amp; boundness. But not all of them, e.g. <code>Class::own_instance_member</code> does it's own but similar thing. In the same vain, it was confusing me a bit. I'd split it or at least extract a more narrower common part out of it.</p>
+Split <code>symbol</code> function
+<p><code>red_knot_python_semantic::types::symbol</code> function is used in multiple places to get the symbol type &amp; boundness. But not all of them, e.g. <code>Class::own_instance_member</code> does it&#x27;s own but similar thing. In the same vain, it was confusing me a bit. I&#x27;d split it or at least extract a more narrower common part out of it.</p>
 <p>E.g. why would we need to check for <code>TYPE_CHECKING</code> on every invocation, if the only place where it may be triggered from is <code>known_module_symbol</code> (which calls <code>symbol</code> through <code>global_symbol</code>) and inversely why looking up from <code>global_symbol</code> would need to check for dunder <code>__slots__</code>.</p>
 <p>Again, really sorry for a long dump, especially if there are very good reasons for all of this that I just failed to identify.</p>
 </div>
@@ -103,15 +103,15 @@ Out[3]: {'not_a_symbol': int}
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-02-08 05:09</div>
             <div class="timeline-body"><p>well. here is one false-positive from this change: https://github.com/astral-sh/ruff/actions/runs/13212332102/job/36887424507?pr=16036#step:7:94</p>
-<p>ClassVar in stubs/ABCs needs to be handled as bound... I'll look into it later</p>
+<p>ClassVar in stubs/ABCs needs to be handled as bound... I&#x27;ll look into it later</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-02-08 11:03</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-08 11:03</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-02-10 14:56</div>
-            <div class="timeline-body"><p>As mentioned on Discord, I'll split my reply into a few comments</p>
+            <div class="timeline-body"><p>As mentioned on Discord, I&#x27;ll split my reply into a few comments</p>
 <blockquote>
 <ul>
 <li>Intentionally as a separate commit:<ul>
@@ -121,26 +121,26 @@ Out[3]: {'not_a_symbol': int}
 </li>
 </ul>
 </blockquote>
-<p>Commenting on this first. This should definitely be discussed elsewhere (ideally as a ticket first), but I don't think that we want either of these changes.</p>
-<p>Unlike mypy, we deliberately distinguish <code>Literal[C]</code> from <code>type[C]</code>, as they denote different types. We don't know yet if we really want to use <code>Literal[C]</code> as the spelling of that type, but I don't think we want to mix up <code>Literal[C]</code> and <code>type[C]</code>.</p>
+<p>Commenting on this first. This should definitely be discussed elsewhere (ideally as a ticket first), but I don&#x27;t think that we want either of these changes.</p>
+<p>Unlike mypy, we deliberately distinguish <code>Literal[C]</code> from <code>type[C]</code>, as they denote different types. We don&#x27;t know yet if we really want to use <code>Literal[C]</code> as the spelling of that type, but I don&#x27;t think we want to mix up <code>Literal[C]</code> and <code>type[C]</code>.</p>
 <p>The difference between the two is:</p>
 <ul>
 <li><code>Literal[C]</code> is the type of the class object <code>C</code>, for a <code>class C: …</code>. It is a singleton type with one single inhabitant: the class object <code>C</code>.</li>
 <li><code>type[C]</code> is the type of all class objects <code>S</code>, where <code>S</code> is a subclass of <code>C</code>, or <code>C</code> itself.</li>
 </ul>
 <p>More concretely, both <code>C</code> and <code>D</code> are of type <code>type[C]</code>, but only <code>C</code> is of type <code>Literal[C]</code>:</p>
-<pre><code class="language-py">class C: ...
+<pre><code>class C: ...
 class D(C): ...
 </code></pre>
-<p>The union-type representation change would be more stylistic, but I don't see any argument for choosing <code>types.UnionType[TypeOne, TypeTwo]</code> over <code>TypeOne | TypeTwo</code>?</p>
+<p>The union-type representation change would be more stylistic, but I don&#x27;t see any argument for choosing <code>types.UnionType[TypeOne, TypeTwo]</code> over <code>TypeOne | TypeTwo</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-02-10 15:20</div>
             <div class="timeline-body"><blockquote>
-<p>but I don't think that we want either of these changes</p>
+<p>but I don&#x27;t think that we want either of these changes</p>
 </blockquote>
-<p>Yeah, that's why put them in a separate commit. I had a hunch ;-) I just saw comments like &quot;we want to improve the message&quot;. I'll drop this commit, no prob.</p>
+<p>Yeah, that&#x27;s why put them in a separate commit. I had a hunch ;-) I just saw comments like &quot;we want to improve the message&quot;. I&#x27;ll drop this commit, no prob.</p>
 <blockquote>
 <p>The difference between the two</p>
 </blockquote>
@@ -151,7 +151,7 @@ class D(C): ...
 <pre><code>Class `A` has no attribute `non_existent`
 </code></pre>
 <blockquote>
-<p>The union-type representation change would be more stylistic, but I don't see any argument for choosing types.UnionType[TypeOne, TypeTwo] over TypeOne | TypeTwo?</p>
+<p>The union-type representation change would be more stylistic, but I don&#x27;t see any argument for choosing types.UnionType[TypeOne, TypeTwo] over TypeOne | TypeTwo?</p>
 </blockquote>
 <p>same here. I went &quot;conventional&quot; way (mypy). If you keep <code>Literal</code>, it would be <code>Literal[TypeOne, TypeTwo]</code> I guess</p>
 </div>
@@ -166,7 +166,7 @@ class D(C): ...
 </blockquote>
 <p>I should have described this better in the TODO comment:</p>
 <p>https://github.com/astral-sh/ruff/blob/f7819e553f0dbb22afcf31ea77938d529fe52818/crates/red_knot_python_semantic/resources/mdtest/attributes.md?plain=1#L53-L56</p>
-<p>I didn't specifically want to talk about the <code>Literal[C]</code> part here, but I agree that this could <em>also</em> be improved. I was rather thinking about the following: This specific diagnostic here is raised if someone tries to access a <em>pure instance variable</em> on the class object (not for a non-existent attribute). So I was thinking of giving them a hint and explaining that in more detail: &quot;The attribute <code>inferred_from_value</code> can only be accessed on instances of class <code>C</code>, but not on the class object itself.&quot;</p>
+<p>I didn&#x27;t specifically want to talk about the <code>Literal[C]</code> part here, but I agree that this could <em>also</em> be improved. I was rather thinking about the following: This specific diagnostic here is raised if someone tries to access a <em>pure instance variable</em> on the class object (not for a non-existent attribute). So I was thinking of giving them a hint and explaining that in more detail: &quot;The attribute <code>inferred_from_value</code> can only be accessed on instances of class <code>C</code>, but not on the class object itself.&quot;</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -175,34 +175,34 @@ class D(C): ...
 <p>Disclaimer: by no means I am implying there is anything wrong with knot code. I totally understand that you are moving crazy fast and this is one huge undertaking, so I totally get it when something is not &quot;perfect&quot; or a temporary solution.</p>
 </blockquote>
 <blockquote>
-<p>The reason it took me multiple hours to understand what's happening is that I got confused by the fact that knot uses a notion of &quot;Symbol&quot; for both real symbols and unbound declarations, which are not symbols at runtime. They only end up in annotations:</p>
+<p>The reason it took me multiple hours to understand what&#x27;s happening is that I got confused by the fact that knot uses a notion of &quot;Symbol&quot; for both real symbols and unbound declarations, which are not symbols at runtime. They only end up in annotations:</p>
 </blockquote>
 <blockquote>
 <p>Further, confusing the matter was the fact that <code>red_knot_python_semantic::symbol::Symbol</code> (not entirely helpfully matching the <code>red_knot_python_semantic::semantic_index::symbol::Symbol</code>) returns the enum <code>Boundness</code> for both types of &quot;symbols&quot;. So pure (unbound) declarations will be <code>Symbol::Type(ty, Boundness::Bound)</code>.</p>
 </blockquote>
 <blockquote>
-<p>Even though I quickly found the passage rgd <code>Declaration</code> that is used for both types of statements, the fact that they both create a symbol wasn't readily apparent.</p>
+<p>Even though I quickly found the passage rgd <code>Declaration</code> that is used for both types of statements, the fact that they both create a symbol wasn&#x27;t readily apparent.</p>
 </blockquote>
-<p>It's completely fine to call this out. We know that the <code>Symbol</code> API can be improved, and we had a long discussion about the name — and we are aware that the clash with the term &quot;symbol&quot; in the semantic index builder is unfortunate. We also know that our handling of &quot;boundness&quot; and &quot;declaredness&quot; needs to be improved. For more details, see <a href="https://github.com/astral-sh/ty/issues/229">this issue</a> and the explanations and comments in (this test suite](https://github.com/astral-sh/ruff/blob/main/crates/red_knot_python_semantic/resources/mdtest/boundness_declaredness/public.md).</p>
+<p>It&#x27;s completely fine to call this out. We know that the <code>Symbol</code> API can be improved, and we had a long discussion about the name — and we are aware that the clash with the term &quot;symbol&quot; in the semantic index builder is unfortunate. We also know that our handling of &quot;boundness&quot; and &quot;declaredness&quot; needs to be improved. For more details, see <a href="https://github.com/astral-sh/ty/issues/229">this issue</a> and the explanations and comments in (this test suite](https://github.com/astral-sh/ruff/blob/main/crates/red_knot_python_semantic/resources/mdtest/boundness_declaredness/public.md).</p>
 <p>That said, I would appreciate if we could move this discussion into a new ticket, to discuss it separately from the change in question here.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-02-10 19:24</div>
-            <div class="timeline-body"><p>I now had a more detailed look at the ideas you proposed and they do look very interesting to me. They definitely go in the right direction. What I would prefer is if we could decouple any refactoring from this functional change here. Your &quot;bandaid&quot; solution doesn't look too bad to me, given our current API restrictions.</p>
+            <div class="timeline-body"><p>I now had a more detailed look at the ideas you proposed and they do look very interesting to me. They definitely go in the right direction. What I would prefer is if we could decouple any refactoring from this functional change here. Your &quot;bandaid&quot; solution doesn&#x27;t look too bad to me, given our current API restrictions.</p>
 <p>It would be great if you could remove the second commit from this branch, then we could focus on the functional change here and try to understand the errors in stub files better.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-02-11 00:21</div>
-            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+            <div class="timeline-body">
 
-<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
 
-<h2><a href="https://codspeed.io/astral-sh/ruff/branches/mishamsk%3A15963-fix-diagnostic-for-pure-instance-variables-access-from-class">CodSpeed Performance Report</a></h2>
-<h3>Merging astral-sh/ruff#16036 will <strong>not alter performance</strong></h3>
-<p><sub>Comparing <code>mishamsk:15963-fix-diagnostic-for-pure-instance-variables-access-from-class</code> (005fd6d) with <code>main</code> (e7a6c19)</sub></p>
-<h3>Summary</h3>
+
+<a href="https://codspeed.io/astral-sh/ruff/branches/mishamsk%3A15963-fix-diagnostic-for-pure-instance-variables-access-from-class">CodSpeed Performance Report</a>
+Merging astral-sh/ruff#16036 will <strong>not alter performance</strong>
+<p>Comparing <code>mishamsk:15963-fix-diagnostic-for-pure-instance-variables-access-from-class</code> (005fd6d) with <code>main</code> (e7a6c19)</p>
+Summary
 <p><code>✅ 32</code> untouched benchmarks</p>
 </div>
         </div>
@@ -217,28 +217,28 @@ class D(C): ...
 </ul>
 </li>
 </ul>
-<p>Am I right, that you also want me to create a separate diagnostic for this specific access patter with the message you suggested? Didn't have time for this yet.</p>
-<p>Also, I didn't do extensive validation that ABC's are properly caught in all possible scenarios. But at least based on two tests they do.</p>
+<p>Am I right, that you also want me to create a separate diagnostic for this specific access patter with the message you suggested? Didn&#x27;t have time for this yet.</p>
+<p>Also, I didn&#x27;t do extensive validation that ABC&#x27;s are properly caught in all possible scenarios. But at least based on two tests they do.</p>
 <p>Now back to the general design. Or should I move this to astral-sh/ty#229?</p>
 <p>I saw astral-sh/ty#229 and related comments, but not https://github.com/astral-sh/ruff/blob/main/crates/red_knot_python_semantic/resources/mdtest/boundness_declaredness/public.md - thanks for the link. I think the table is awesome, it literally suggest the perfect way to model this.</p>
-<p>I'd refactor symbol to:</p>
-<pre><code class="language-rust">#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub(crate) enum BindingStatus&lt;'db&gt; {
-    Bound(Type&lt;'db&gt;),
-    PossiblyUnbound(Type&lt;'db&gt;),
+<p>I&#x27;d refactor symbol to:</p>
+<pre><code>#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) enum BindingStatus&lt;&#x27;db&gt; {
+    Bound(Type&lt;&#x27;db&gt;),
+    PossiblyUnbound(Type&lt;&#x27;db&gt;),
     Unbound,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub(crate) enum DeclarationStatus&lt;'db&gt; {
-    Declared(TypeAndQualifiers&lt;'db&gt;),
-    PossiblyDeclared(TypeAndQualifiers&lt;'db&gt;),
+pub(crate) enum DeclarationStatus&lt;&#x27;db&gt; {
+    Declared(TypeAndQualifiers&lt;&#x27;db&gt;),
+    PossiblyDeclared(TypeAndQualifiers&lt;&#x27;db&gt;),
     Undeclared,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub(crate) enum Symbol&lt;'db&gt; {
-    Known(BindingStatus&lt;'db&gt;, DeclarationStatus&lt;'db&gt;),
+pub(crate) enum Symbol&lt;&#x27;db&gt; {
+    Known(BindingStatus&lt;&#x27;db&gt;, DeclarationStatus&lt;&#x27;db&gt;),
     /// Or Make Symbol a tuple since Unknown == BindingStatus::Unbound &amp; DeclarationStatus::Undeclared
     Unknown,
 }
@@ -252,14 +252,14 @@ pub(crate) enum Symbol&lt;'db&gt; {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4185 on 2025-02-11 13:25</div>
-            <div class="timeline-body"><p>Instead of designing a special case for stubs and abstract base classes, shouldn't we design a special case for <code>ClassVar</code>s? The false positive you were getting from stubs was that <code>Literal[timezone]</code> has no attribute <code>utc</code>. But <code>utc</code> is explicitly <a href="https://github.com/python/typeshed/blob/24c78b9e0dff457275092025a14387dac206f5d6/stdlib/datetime.pyi#L29">annotated as a <code>ClassVar</code></a>.</p>
+            <div class="timeline-body"><p>Instead of designing a special case for stubs and abstract base classes, shouldn&#x27;t we design a special case for <code>ClassVar</code>s? The false positive you were getting from stubs was that <code>Literal[timezone]</code> has no attribute <code>utc</code>. But <code>utc</code> is explicitly <a href="https://github.com/python/typeshed/blob/24c78b9e0dff457275092025a14387dac206f5d6/stdlib/datetime.pyi#L29">annotated as a <code>ClassVar</code></a>.</p>
 <p>The idea of <a href="https://github.com/astral-sh/ruff/issues/15963">the ticket</a> was to detect class-object access to <em>instance variables</em>. If we see a <code>utc: ClassVar[…]</code> annotation (in a stub or not), we should treat that as a pure class variable instead and <em>allow</em> access on class objects.</p>
 <p>It would be great if we would not have to special-case stubs and ABCs.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4185 on 2025-02-13 04:45</div>
-            <div class="timeline-body"><p>sorry. got carried away I guess... this is fixed. I'll list the full list of changes in a new thread below</p>
+            <div class="timeline-body"><p>sorry. got carried away I guess... this is fixed. I&#x27;ll list the full list of changes in a new thread below</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -278,38 +278,38 @@ pub(crate) enum Symbol&lt;'db&gt; {
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @mishamsk on 2025-02-13 04:56</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-02-13 04:56</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @mishamsk on 2025-02-13 04:56</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-02-13 04:56</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @mishamsk on 2025-02-13 04:56</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-02-13 04:56</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @mishamsk on 2025-02-13 04:56</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-02-13 04:56</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4160 on 2025-02-13 11:45</div>
-            <div class="timeline-body"><p>unfortunately Salsa-tracked methods with lots of parameters are not very performant. Ideally we'd find a way to reduce the number of parameters here. Doing something like this might help cut down the performance regression:</p>
-<pre><code class="language-diff">diff --git a/crates/red_knot_python_semantic/src/types.rs b/crates/red_knot_python_semantic/src/types.rs
+            <div class="timeline-body"><p>unfortunately Salsa-tracked methods with lots of parameters are not very performant. Ideally we&#x27;d find a way to reduce the number of parameters here. Doing something like this might help cut down the performance regression:</p>
+<pre><code>diff --git a/crates/red_knot_python_semantic/src/types.rs b/crates/red_knot_python_semantic/src/types.rs
 index 7f9179aab..5be0c6535 100644
 --- a/crates/red_knot_python_semantic/src/types.rs
 +++ b/crates/red_knot_python_semantic/src/types.rs
-@@ -4155,7 +4155,6 @@ impl&lt;'db&gt; Class&lt;'db&gt; {
-         fn class_symbol_by_id&lt;'db&gt;(
-             db: &amp;'db dyn Db,
-             scope: ScopeId&lt;'db&gt;,
+@@ -4155,7 +4155,6 @@ impl&lt;&#x27;db&gt; Class&lt;&#x27;db&gt; {
+         fn class_symbol_by_id&lt;&#x27;db&gt;(
+             db: &amp;&#x27;db dyn Db,
+             scope: ScopeId&lt;&#x27;db&gt;,
 -            is_dunder_slots: bool,
              symbol_id: ScopedSymbolId,
-         ) -&gt; Symbol&lt;'db&gt; {
+         ) -&gt; Symbol&lt;&#x27;db&gt; {
              let use_def = use_def_map(db, scope);
-@@ -4217,6 +4216,13 @@ impl&lt;'db&gt; Class&lt;'db&gt; {
+@@ -4217,6 +4216,13 @@ impl&lt;&#x27;db&gt; Class&lt;&#x27;db&gt; {
                      }
                      // Symbol is undeclared, return the union of `Unknown` with the inferred type
                      Ok(SymbolAndQualifiers(Symbol::Unbound, _)) =&gt; {
 +                        let table = symbol_table(db, scope);
-+                        // `__slots__` is a symbol with special behavior in Python's runtime. It can be
++                        // `__slots__` is a symbol with special behavior in Python&#x27;s runtime. It can be
 +                        // modified externally, but those changes do not take effect. We therefore issue
 +                        // a diagnostic if we see it being modified externally. In type inference, we
 +                        // can assign a &quot;narrow&quot; type to it even if it is not *declared*. This means, we
@@ -318,13 +318,13 @@ index 7f9179aab..5be0c6535 100644
                          widen_type_for_undeclared_public_symbol(db, inferred, is_dunder_slots)
                      }
                  },
-@@ -4224,20 +4230,10 @@ impl&lt;'db&gt; Class&lt;'db&gt; {
+@@ -4224,20 +4230,10 @@ impl&lt;&#x27;db&gt; Class&lt;&#x27;db&gt; {
          }
  
          let body_scope = self.body_scope(db);
 -        let table = symbol_table(db, body_scope);
 -
--        // `__slots__` is a symbol with special behavior in Python's runtime. It can be
+-        // `__slots__` is a symbol with special behavior in Python&#x27;s runtime. It can be
 -        // modified externally, but those changes do not take effect. We therefore issue
 -        // a diagnostic if we see it being modified externally. In type inference, we
 -        // can assign a &quot;narrow&quot; type to it even if it is not *declared*. This means, we
@@ -346,52 +346,52 @@ index 7f9179aab..5be0c6535 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4180 on 2025-02-13 11:47</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">                            Symbol::bound(declared_ty)
+            <div class="timeline-body"><pre><code>                            Symbol::bound(declared_ty)
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4177 on 2025-02-13 11:47</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">                            // if the symbol is possibly unbound. This requires a bit of
+            <div class="timeline-body"><pre><code>                            // if the symbol is possibly unbound. This requires a bit of
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4189 on 2025-02-13 11:48</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">                            Symbol::bound(declared_ty.inner_type())
+            <div class="timeline-body"><pre><code>                            Symbol::bound(declared_ty.inner_type())
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4209 on 2025-02-13 11:48</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">                        UnionType::from_elements(db, [inferred_ty, declared_ty]),
+            <div class="timeline-body"><pre><code>                        UnionType::from_elements(db, [inferred_ty, declared_ty]),
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4216 on 2025-02-13 11:48</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">                        Symbol::bound(ty.inner_type())
+            <div class="timeline-body"><pre><code>                        Symbol::bound(ty.inner_type())
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3464 on 2025-02-13 12:01</div>
             <div class="timeline-body"><p>nit: this could be a bit shorter</p>
-<pre><code class="language-suggestion">                                &quot;Attribute `{}` can only be accessed on instances of type `{}`, not on the class object itself.&quot;,
+<pre><code>                                &quot;Attribute `{}` can only be accessed on instances of type `{}`, not on the class object itself.&quot;,
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3523 on 2025-02-13 12:03</div>
             <div class="timeline-body"><p>I think we can omit the word &quot;pure&quot; here -- assigning to <em>any</em> instance attribute from the class object is illegal</p>
-<pre><code class="language-suggestion">                                &quot;Cannot assign to instance attribute `{attr}` from the class object `{ty}`&quot;,
+<pre><code>                                &quot;Cannot assign to instance attribute `{attr}` from the class object `{ty}`&quot;,
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3726 on 2025-02-13 12:08</div>
-            <div class="timeline-body"><p>This logic doesn't look correct to me. This means that the error message now says &quot;it can only be accessed on instances&quot; for <em>all</em> invalid attribute accesses on class objects, even when there isn't a corresponding instance attribute. E.g. if I run red-knot on this file with your branch:</p>
-<pre><code class="language-py">class Foo: ...
+            <div class="timeline-body"><p>This logic doesn&#x27;t look correct to me. This means that the error message now says &quot;it can only be accessed on instances&quot; for <em>all</em> invalid attribute accesses on class objects, even when there isn&#x27;t a corresponding instance attribute. E.g. if I run red-knot on this file with your branch:</p>
+<pre><code>class Foo: ...
 
 print(Foo.bar)
 </code></pre>
@@ -405,12 +405,12 @@ print(Foo.bar)
   |       ^^^^^^^ The attribute `bar` can only be accessed on instances of type `Literal[Foo]`, but not on the class object itself.
   |
 </code></pre>
-<p>But that message is inaccurate, because we'd also complain about accessing the attribute <code>bar</code> on instances of <code>Foo</code>. <code>Foo</code> doesn't have a ClassVar attribute <code>bar</code> <em>or</em> an instance attribute <code>bar</code></p>
+<p>But that message is inaccurate, because we&#x27;d also complain about accessing the attribute <code>bar</code> on instances of <code>Foo</code>. <code>Foo</code> doesn&#x27;t have a ClassVar attribute <code>bar</code> <em>or</em> an instance attribute <code>bar</code></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-13 12:08</div>
-            <div class="timeline-body"><p>Nice! I haven't done a full review, but I spotted a few things looking over quickly</p>
+            <div class="timeline-body"><p>Nice! I haven&#x27;t done a full review, but I spotted a few things looking over quickly</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -419,8 +419,8 @@ print(Foo.bar)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4160 on 2025-02-13 12:19</div>
-            <div class="timeline-body"><p>thanks. tbh I am not sure there is a point in query at all. My first version didn't have a query, and the codsped showed the same hit to performance. I intentionally matched the existing <code>symbol</code> function and it's internal query syntax to simplify merging/unifying them later.</p>
-<p>I can apply your suggestion, but I'd just drop query. LMK</p>
+            <div class="timeline-body"><p>thanks. tbh I am not sure there is a point in query at all. My first version didn&#x27;t have a query, and the codsped showed the same hit to performance. I intentionally matched the existing <code>symbol</code> function and it&#x27;s internal query syntax to simplify merging/unifying them later.</p>
+<p>I can apply your suggestion, but I&#x27;d just drop query. LMK</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -431,7 +431,7 @@ print(Foo.bar)
             <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3523 on 2025-02-13 12:23</div>
             <div class="timeline-body"><p>THe word &quot;pure&quot; comes from @sharkdp and afaik the intended target of this PR/issue.</p>
 <p>Do you mean that in red_knot you want to restrict this as well:</p>
-<pre><code class="language-python">class C:
+<pre><code>class C:
     attr: str = &quot;class_value&quot;
 
     def __init__(self):
@@ -439,7 +439,7 @@ print(Foo.bar)
 
 C.attr = &quot;other class value&quot;
 </code></pre>
-<p>if so, I think it is a deviation from what the issue said, so want to double-check that's the intent here.</p>
+<p>if so, I think it is a deviation from what the issue said, so want to double-check that&#x27;s the intent here.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -460,7 +460,7 @@ C.attr = &quot;other class value&quot;
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3726 on 2025-02-13 12:27</div>
-            <div class="timeline-body"><p>The idea was to get a nice helpful message in a common case of accidentally trying to assign existing instance var via class. But you are right, I didn't think about entirely non-existent attrs.</p>
+            <div class="timeline-body"><p>The idea was to get a nice helpful message in a common case of accidentally trying to assign existing instance var via class. But you are right, I didn&#x27;t think about entirely non-existent attrs.</p>
 <p>I suggest to simplify/unify the message with the Instance arm above. To make a nice message that will distinguish this two cases would lead to doing a second symbol search through instances, probably unreasonable overhead.</p>
 <p>@sharkdp are you ok with that?</p>
 </div>
@@ -480,7 +480,7 @@ C.attr = &quot;other class value&quot;
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3726 on 2025-02-13 12:30</div>
-            <div class="timeline-body"><p>Helpful error messages are important when it comes to creating a tool that users enjoy running on their code! And performance doesn't matter quite so much in this specific location. Here we already know we're about to emit a diagnostic, so we only pay the cost of doing something slow here if there's a typing error in the user's code. That's hopefully pretty rare; most of the time most users' code won't have typing errors in it.</p>
+            <div class="timeline-body"><p>Helpful error messages are important when it comes to creating a tool that users enjoy running on their code! And performance doesn&#x27;t matter quite so much in this specific location. Here we already know we&#x27;re about to emit a diagnostic, so we only pay the cost of doing something slow here if there&#x27;s a typing error in the user&#x27;s code. That&#x27;s hopefully pretty rare; most of the time most users&#x27; code won&#x27;t have typing errors in it.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -497,7 +497,7 @@ C.attr = &quot;other class value&quot;
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4160 on 2025-02-13 12:40</div>
-            <div class="timeline-body"><p>I don't think we can drop the query. The query is necessary for better incremental computation because <code>symbol_from_declarations</code> calls into the visibility constraint evaluation that calls <code>node_ref</code> on some nodes that don't necessarily belong to the same module as the module calling <code>Type::member</code>.</p>
+            <div class="timeline-body"><p>I don&#x27;t think we can drop the query. The query is necessary for better incremental computation because <code>symbol_from_declarations</code> calls into the visibility constraint evaluation that calls <code>node_ref</code> on some nodes that don&#x27;t necessarily belong to the same module as the module calling <code>Type::member</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -513,7 +513,7 @@ C.attr = &quot;other class value&quot;
             <div class="timeline-body"><blockquote>
 <p>tbh I am not sure there is a point in query at all.</p>
 </blockquote>
-<p>I'm not totally sure TBH. It's important to use queries when we have code that might be &quot;reaching across the module boundary&quot; -- this helps make sure that red-knot is incremental in its type-checking, and only recomputes the things it absolutely needs to when something changes in a file. I'm not confident on whether that applies here or not. @MichaReiser is our expert on these matters.</p>
+<p>I&#x27;m not totally sure TBH. It&#x27;s important to use queries when we have code that might be &quot;reaching across the module boundary&quot; -- this helps make sure that red-knot is incremental in its type-checking, and only recomputes the things it absolutely needs to when something changes in a file. I&#x27;m not confident on whether that applies here or not. @MichaReiser is our expert on these matters.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -532,7 +532,7 @@ C.attr = &quot;other class value&quot;
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4160 on 2025-02-13 15:02</div>
             <div class="timeline-body"><p>@MichaReiser thanks, very helpful explanation. I think I now understand how you choose where to use query. At least the case of cross-boundary vs. same-file analysis.</p>
-<p>I'll apply the suggested change here, but just FYI - <code>own_instance_member</code> should be changed too. Going back to my initial suggestion to refactor the symbol business (most recent <a href="https://github.com/astral-sh/ruff/pull/16036#issuecomment-2649552081">comment here</a>). Not as part of this PR, but I'd be happy to do that if the team allows.</p>
+<p>I&#x27;ll apply the suggested change here, but just FYI - <code>own_instance_member</code> should be changed too. Going back to my initial suggestion to refactor the symbol business (most recent <a href="https://github.com/astral-sh/ruff/pull/16036#issuecomment-2649552081">comment here</a>). Not as part of this PR, but I&#x27;d be happy to do that if the team allows.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -541,7 +541,7 @@ C.attr = &quot;other class value&quot;
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4180 on 2025-02-13 15:03</div>
-            <div class="timeline-body"><p>ah. that's new API if I am not mistaken. Thanks for the tip</p>
+            <div class="timeline-body"><p>ah. that&#x27;s new API if I am not mistaken. Thanks for the tip</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -550,18 +550,18 @@ C.attr = &quot;other class value&quot;
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3726 on 2025-02-13 15:04</div>
-            <div class="timeline-body"><p>ok. we'll do later today</p>
+            <div class="timeline-body"><p>ok. we&#x27;ll do later today</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/attributes.md</code>:594 on 2025-02-13 22:16</div>
-            <div class="timeline-body"><pre><code class="language-suggestion"># and the assignment is properly attributed to the class method.
+            <div class="timeline-body"><pre><code># and the assignment is properly attributed to the class method.
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4160 on 2025-02-13 22:52</div>
-            <div class="timeline-body"><p>Great catch on <code>own_instance_member</code> needing to be a query as well, that looks right to me. (I'm also happy for you to work on improving our handling of &quot;boundness&quot; vs &quot;declaredness&quot;, I think there are some issues there.)</p>
+            <div class="timeline-body"><p>Great catch on <code>own_instance_member</code> needing to be a query as well, that looks right to me. (I&#x27;m also happy for you to work on improving our handling of &quot;boundness&quot; vs &quot;declaredness&quot;, I think there are some issues there.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -572,7 +572,7 @@ C.attr = &quot;other class value&quot;
             <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3523 on 2025-02-13 22:58</div>
             <div class="timeline-body"><p>@AlexWaygood I applied naming changes per your suggestions.</p>
 <p>I did not implement the new case:</p>
-<pre><code class="language-python">class C:
+<pre><code>class C:
     attr: str = &quot;class_value&quot;
 
     def __init__(self):
@@ -583,26 +583,26 @@ C.attr = &quot;other class value&quot;
 <p>for two reasons:</p>
 <ul>
 <li>outside of the scope of original issue</li>
-<li>more importantly: this would need changing member or onw_class_member API to return qualifiers. I think this will collide with what @sharkdp is doing with descriptors now. It would be much easier to add this one last case to tests &amp; emit diagnostic when API's are changed</li>
+<li>more importantly: this would need changing member or onw_class_member API to return qualifiers. I think this will collide with what @sharkdp is doing with descriptors now. It would be much easier to add this one last case to tests &amp; emit diagnostic when API&#x27;s are changed</li>
 </ul>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/attributes.md</code>:54 on 2025-02-13 23:04</div>
             <div class="timeline-body"><p>Since we are talking about the instance type, I think it would be less confusing if this error message used the instance type name (aka just the class name):</p>
-<pre><code class="language-suggestion"># error: [unresolved-attribute] &quot;Attribute `inferred_from_value` can only be accessed on instances of type `C`, not on the class object itself.&quot;
+<pre><code># error: [unresolved-attribute] &quot;Attribute `inferred_from_value` can only be accessed on instances of type `C`, not on the class object itself.&quot;
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/expression/attribute.md</code>:32 on 2025-02-13 23:05</div>
-            <div class="timeline-body"><p>This error message change looks like a regression that should be reversed. The new error message is misleading because it implies that accessing <code>non_existent</code> on the instance type would work, when it would not, because the attribute doesn't exist at all. (I think maybe this is also discussed in another comment thread below?)</p>
+            <div class="timeline-body"><p>This error message change looks like a regression that should be reversed. The new error message is misleading because it implies that accessing <code>non_existent</code> on the instance type would work, when it would not, because the attribute doesn&#x27;t exist at all. (I think maybe this is also discussed in another comment thread below?)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4155 on 2025-02-13 23:09</div>
-            <div class="timeline-body"><p>How different is this from <code>symbol_by_id</code>? It looks like a lot of it is copy-pasted. I'm a bit hesitant to copy-paste such a significant chunk of code, with known TODOs and all. (I realize <code>own_instance_member</code> also implements its own lookup logic, but I think that logic is much more significantly different from <code>symbol_by_id</code>.</p>
-<p>For context, <code>symbol_by_id</code> used to be a standalone function before it was moved inside <code>symbol</code>. And it already has multiple arguments, so already pays the cost of Salsa argument interning. I don't see much reason not to move it back outside of <code>symbol</code>, and add an argument to it would allow it to serve this use case, too. Or an interesting alternative approach would be to have it return a <code>SymbolAndQualifiers</code> which might allow the logic here to be implemented externally?</p>
+            <div class="timeline-body"><p>How different is this from <code>symbol_by_id</code>? It looks like a lot of it is copy-pasted. I&#x27;m a bit hesitant to copy-paste such a significant chunk of code, with known TODOs and all. (I realize <code>own_instance_member</code> also implements its own lookup logic, but I think that logic is much more significantly different from <code>symbol_by_id</code>.</p>
+<p>For context, <code>symbol_by_id</code> used to be a standalone function before it was moved inside <code>symbol</code>. And it already has multiple arguments, so already pays the cost of Salsa argument interning. I don&#x27;t see much reason not to move it back outside of <code>symbol</code>, and add an argument to it would allow it to serve this use case, too. Or an interesting alternative approach would be to have it return a <code>SymbolAndQualifiers</code> which might allow the logic here to be implemented externally?</p>
 <p>At the very least, it would be easier to review and understand the differences in behavior!</p>
 </div>
         </div>
@@ -634,7 +634,7 @@ C.attr = &quot;other class value&quot;
             <div class="timeline-body"><blockquote>
 <p>Yes. We should allow instance attributes like that to be <em>accessed</em> from the class object but not to be <em>assigned</em> on the class object. On the class object, they should be readable but not writable</p>
 </blockquote>
-<p>What's the rationale for this? It's legal at runtime, both pyright and mypy allow it, I'm not sure I see why it must be disallowed.</p>
+<p>What&#x27;s the rationale for this? It&#x27;s legal at runtime, both pyright and mypy allow it, I&#x27;m not sure I see why it must be disallowed.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -661,7 +661,7 @@ C.attr = &quot;other class value&quot;
             <div class="timeline-body"><blockquote>
 <p>I suspect the performance regression on the incremental benchmark here is not avoidable. We just need more cached query results now that we distinguish more ways to resolve symbols, and more cached query results means more re-validation cost in Salsa.</p>
 </blockquote>
-<p>Note that we haven't got up to date benchmark numbers on this PR right now, as the assertion in the benchmark regarding the number of diagnostics has been failing for the last few commits, so codspeed has not been running</p>
+<p>Note that we haven&#x27;t got up to date benchmark numbers on this PR right now, as the assertion in the benchmark regarding the number of diagnostics has been failing for the last few commits, so codspeed has not been running</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -669,7 +669,7 @@ C.attr = &quot;other class value&quot;
             <div class="timeline-body"><blockquote>
 <p>I suspect the performance regression on the incremental benchmark here is not avoidable. We just need more cached query results now that we distinguish more ways to resolve symbols, and more cached query results means more re-validation cost in Salsa.</p>
 </blockquote>
-<p>I'm also questioning this conclusion -- I think if we were able to make <code>symbol</code> return a <code>SymbolAndQualifiers</code> and that were enough to let us check for classvars externally, that might help address the perf impact here, since it would mean we could do this without increasing the number of cached memos (instead we'd just be slightly increasing the data stored in each one, which is not as expensive in Salsa incremental re-validation).</p>
+<p>I&#x27;m also questioning this conclusion -- I think if we were able to make <code>symbol</code> return a <code>SymbolAndQualifiers</code> and that were enough to let us check for classvars externally, that might help address the perf impact here, since it would mean we could do this without increasing the number of cached memos (instead we&#x27;d just be slightly increasing the data stored in each one, which is not as expensive in Salsa incremental re-validation).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -678,7 +678,7 @@ C.attr = &quot;other class value&quot;
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/red_knot_python_semantic/resources/mdtest/attributes.md</code>:54 on 2025-02-14 11:05</div>
-            <div class="timeline-body"><p>@carljm I totally agree. But this is a shared display logic. I originally included another change in this PR related to displaying classes &amp; unions, which touched a lot of mdtest, but reverted it per @sharkdp request. Now I am hesitant to include anything like that in this PR. I doubt that special-casing for this single instance would be welcomed either =&gt; I'd rather leave message improvements to another PR and look at them more holistically</p>
+            <div class="timeline-body"><p>@carljm I totally agree. But this is a shared display logic. I originally included another change in this PR related to displaying classes &amp; unions, which touched a lot of mdtest, but reverted it per @sharkdp request. Now I am hesitant to include anything like that in this PR. I doubt that special-casing for this single instance would be welcomed either =&gt; I&#x27;d rather leave message improvements to another PR and look at them more holistically</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -696,7 +696,7 @@ C.attr = &quot;other class value&quot;
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3523 on 2025-02-14 11:08</div>
-            <div class="timeline-body"><p>btw. I didn't argue with @AlexWaygood but I am with @carljm - IMHO there is no reason to forbid that. It was not and is not apparent to me</p>
+            <div class="timeline-body"><p>btw. I didn&#x27;t argue with @AlexWaygood but I am with @carljm - IMHO there is no reason to forbid that. It was not and is not apparent to me</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -706,9 +706,9 @@ C.attr = &quot;other class value&quot;
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3523 on 2025-02-14 13:13</div>
             <div class="timeline-body"><blockquote>
-<p>What's the rationale for this? It's legal at runtime, both pyright and mypy allow it, I'm not sure I see why it must be disallowed.</p>
+<p>What&#x27;s the rationale for this? It&#x27;s legal at runtime, both pyright and mypy allow it, I&#x27;m not sure I see why it must be disallowed.</p>
 </blockquote>
-<p>It's something I'd want a type checker to flag if I'm running a type checker on my Python code. Sure, it's legal at runtime, but it seems like it's probably a user mistake to me if the variable has been explicitly declared as an instance attribute but it's being modified on the class object rather than an instance. Having said all this, your pushback makes me think that the error should probably be disabled by default, since you're right that it isn't really <em>unsafe</em> for an instance attribute with a class-level default to be assigned on the class object.</p>
+<p>It&#x27;s something I&#x27;d want a type checker to flag if I&#x27;m running a type checker on my Python code. Sure, it&#x27;s legal at runtime, but it seems like it&#x27;s probably a user mistake to me if the variable has been explicitly declared as an instance attribute but it&#x27;s being modified on the class object rather than an instance. Having said all this, your pushback makes me think that the error should probably be disabled by default, since you&#x27;re right that it isn&#x27;t really <em>unsafe</em> for an instance attribute with a class-level default to be assigned on the class object.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -718,7 +718,7 @@ C.attr = &quot;other class value&quot;
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3523 on 2025-02-14 13:56</div>
             <div class="timeline-body"><p>As of current PR it will not emit a diagnostic. Do you suggest adding a configuration and implement it under a flag? Seems like a reasonable compromise.</p>
-<p>I haven't researched knot configuration capabilities yet. Maybe a follow up?</p>
+<p>I haven&#x27;t researched knot configuration capabilities yet. Maybe a follow up?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -727,12 +727,12 @@ C.attr = &quot;other class value&quot;
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3523 on 2025-02-14 13:58</div>
-            <div class="timeline-body"><p>@mishamsk you don't need to worry about it for now: it's not implemented on <code>main</code>, and it shouldn't be implemented as part of this PR :-) I was just responding to @carljm's (very reasonable) question about my earlier assertion. It could absolutely be a followup, but first we need to reach agreement on whether it's something we do indeed want ;-) and it might not be a priority for us to implement in any case</p>
+            <div class="timeline-body"><p>@mishamsk you don&#x27;t need to worry about it for now: it&#x27;s not implemented on <code>main</code>, and it shouldn&#x27;t be implemented as part of this PR :-) I was just responding to @carljm&#x27;s (very reasonable) question about my earlier assertion. It could absolutely be a followup, but first we need to reach agreement on whether it&#x27;s something we do indeed want ;-) and it might not be a priority for us to implement in any case</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-14 15:00</div>
-            <div class="timeline-body"><p>I haven't reviewed this PR yet because there are already a lot of folks involved. Feel free to ping me if or when a review from my side would be good.</p>
+            <div class="timeline-body"><p>I haven&#x27;t reviewed this PR yet because there are already a lot of folks involved. Feel free to ping me if or when a review from my side would be good.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -745,20 +745,20 @@ C.attr = &quot;other class value&quot;
 <p>but reverted it per @sharkdp request.</p>
 </blockquote>
 <p>This previous change affected how we displayed class literal types in general (<code>type[C]</code> instead of <code>Literal[C]</code>), and I pushed back against this change.</p>
-<p>But here, we don't want to change how class literal types are displayed, we rather want some some special handling that turns the <code>Type::ClassLiteral(class)</code> type into a <code>Type::Instance(class)</code> type before displaying. I am not sure if that is an easy change, though, since we might also need to handle unions etc.?</p>
+<p>But here, we don&#x27;t want to change how class literal types are displayed, we rather want some some special handling that turns the <code>Type::ClassLiteral(class)</code> type into a <code>Type::Instance(class)</code> type before displaying. I am not sure if that is an easy change, though, since we might also need to handle unions etc.?</p>
 <p>If it turns out to be more complicated, we could also work around this for now by rephrasing that sentence a bit, e.g. &quot;can only be accessed on instances, not on the class object <code>Literal[C]</code> itself.&quot;?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/attributes.md</code>:54 on 2025-02-14 22:46</div>
             <div class="timeline-body"><p>Tweaking the wording of a single diagnostic message, which is newly introduced in this PR, is quite different from wholesale changes to the display of some kinds of types. I am suggesting the former, not the latter.</p>
-<p>I think the change I suggested is pretty easy to implement (and doesn't even require a general type transform using <code>to_instance()</code>) because it is already the case that we only emit this specialized diagnostic if the receiver type is exactly a <code>ClassLiteral</code> or <code>SubclassOf</code> type (not e.g. a union). So we have access to the <code>class</code> and could just use its name.</p>
-<p>But that said, I like @sharkdp 's suggestion even better, to just reword the message so we mention the actual type where we are discussing &quot;the class object itself&quot; rather than where we are discussing instances. This rewording makes sense, because it is the class type, not the instance type, that we have at hand. It's also the way the &quot;assignment&quot; version of this same diagnostic is already worded.</p>
+<p>I think the change I suggested is pretty easy to implement (and doesn&#x27;t even require a general type transform using <code>to_instance()</code>) because it is already the case that we only emit this specialized diagnostic if the receiver type is exactly a <code>ClassLiteral</code> or <code>SubclassOf</code> type (not e.g. a union). So we have access to the <code>class</code> and could just use its name.</p>
+<p>But that said, I like @sharkdp &#x27;s suggestion even better, to just reword the message so we mention the actual type where we are discussing &quot;the class object itself&quot; rather than where we are discussing instances. This rewording makes sense, because it is the class type, not the instance type, that we have at hand. It&#x27;s also the way the &quot;assignment&quot; version of this same diagnostic is already worded.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4155 on 2025-02-14 22:48</div>
-            <div class="timeline-body"><p>Yes, I think it would make sense to pursue that refactor in this PR; I don't think there is any particular urgency to quickly land a copy-paste version of the functionality. I think it's safe to interpret the thumbs-ups above as team agreement :)</p>
+            <div class="timeline-body"><p>Yes, I think it would make sense to pursue that refactor in this PR; I don&#x27;t think there is any particular urgency to quickly land a copy-paste version of the functionality. I think it&#x27;s safe to interpret the thumbs-ups above as team agreement :)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -780,11 +780,11 @@ C.attr = &quot;other class value&quot;
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4155 on 2025-02-14 23:02</div>
-            <div class="timeline-body"><p>Ok. I have a short holiday this weekend, we'll get back to it Monday</p>
+            <div class="timeline-body"><p>Ok. I have a short holiday this weekend, we&#x27;ll get back to it Monday</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[red-knot] Add diagnostic for class-object access to pure instance variables and class literal repr in diagnostics" to "[red-knot] Add diagnostic for class-object access to pure instance variables" by @AlexWaygood on 2025-02-16 11:14</div>
+            <div class="event">Renamed from &quot;[red-knot] Add diagnostic for class-object access to pure instance variables and class literal repr in diagnostics&quot; to &quot;[red-knot] Add diagnostic for class-object access to pure instance variables&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-16 11:14</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/mishamsk">@mishamsk</a> reviewed on 2025-02-19 01:59</div>
@@ -819,9 +819,9 @@ C.attr = &quot;other class value&quot;
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4155 on 2025-02-19 04:13</div>
-            <div class="timeline-body"><p>@carljm I spent some time today, trying to find a suitable unification between 3 different symbol search queries, and haven't landed on a design yet. I am not sure it makes sense, but I'll do another pass tomorrow before a final verdict.</p>
-<p>One issue with keeping this refractor and #16172 in scope of this PR is that main is moving forward quite fast. E.g. some of the code I've used moved to symbol.rs mod as a private function after #16152 and the symbol implementation itself was changed.</p>
-<p>Not sure how many other conflicting PRs are in the pipe, I'll do my best to quickly create my version of refactoring in hopes that no new divergence occurs.</p>
+            <div class="timeline-body"><p>@carljm I spent some time today, trying to find a suitable unification between 3 different symbol search queries, and haven&#x27;t landed on a design yet. I am not sure it makes sense, but I&#x27;ll do another pass tomorrow before a final verdict.</p>
+<p>One issue with keeping this refractor and #16172 in scope of this PR is that main is moving forward quite fast. E.g. some of the code I&#x27;ve used moved to symbol.rs mod as a private function after #16152 and the symbol implementation itself was changed.</p>
+<p>Not sure how many other conflicting PRs are in the pipe, I&#x27;ll do my best to quickly create my version of refactoring in hopes that no new divergence occurs.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -830,9 +830,9 @@ C.attr = &quot;other class value&quot;
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4155 on 2025-02-19 22:31</div>
-            <div class="timeline-body"><p>Oh I don't think #16172 needs to be handled in this PR, sorry if I mis-communicated there. It's a pre-existing problem, and I filed it as an issue specifically because I don't think it needs to be fixed in this PR.</p>
-<p>It's true that main can move fast and sometimes we have to handle conflicts in a PR, sometimes multiple times; it's something we've all had to do.</p>
-<p>I'm not sure what you're referring to when you say &quot;unification between 3 different symbol search queries&quot; -- I thought I was only suggesting unification of two (the new class-symbol one you've added here, and the main <code>symbol_by_id</code> used for public types in general). Those are the two that look mostly like copy-paste of each other. I called out <code>own_instance_member</code> above as being quite different from those two, and thus <em>not</em> likely a candidate for unification, certainly not in this PR.</p>
+            <div class="timeline-body"><p>Oh I don&#x27;t think #16172 needs to be handled in this PR, sorry if I mis-communicated there. It&#x27;s a pre-existing problem, and I filed it as an issue specifically because I don&#x27;t think it needs to be fixed in this PR.</p>
+<p>It&#x27;s true that main can move fast and sometimes we have to handle conflicts in a PR, sometimes multiple times; it&#x27;s something we&#x27;ve all had to do.</p>
+<p>I&#x27;m not sure what you&#x27;re referring to when you say &quot;unification between 3 different symbol search queries&quot; -- I thought I was only suggesting unification of two (the new class-symbol one you&#x27;ve added here, and the main <code>symbol_by_id</code> used for public types in general). Those are the two that look mostly like copy-paste of each other. I called out <code>own_instance_member</code> above as being quite different from those two, and thus <em>not</em> likely a candidate for unification, certainly not in this PR.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -841,7 +841,7 @@ C.attr = &quot;other class value&quot;
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4155 on 2025-02-21 03:51</div>
-            <div class="timeline-body"><p>@carljm I've unified the two queries. And then made <code>symbol_by_id</code> a regular function in a separate commit (easy to revert) after reading #16268 and given that <code>symbol_by_id</code> now had to return a bigger structure and thus query performance would be reduced.</p>
+            <div class="timeline-body"><p>@carljm I&#x27;ve unified the two queries. And then made <code>symbol_by_id</code> a regular function in a separate commit (easy to revert) after reading #16268 and given that <code>symbol_by_id</code> now had to return a bigger structure and thus query performance would be reduced.</p>
 <p>tbh. it feels a bit wrong and suboptimal due to the whole Boundness not always meaning boundness. But since redesigning of this is out of scope and you asked me to unify the two logics - I did what I think is the best intermediary solutions.</p>
 <p>If you think it looks good, I would re-request review from the wider group</p>
 </div>
@@ -849,11 +849,11 @@ C.attr = &quot;other class value&quot;
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/symbol.rs</code>:213 on 2025-02-21 17:55</div>
             <div class="timeline-body"><p>I see what you mean about how this is sub-optimal until we make <code>Symbol</code> reflect both boundness and declaredness separately; ideally we would not have to re-query bindings here, but would have all the necessary information in <code>Symbol</code>.</p>
-<p>I'm open to any of several options here:</p>
+<p>I&#x27;m open to any of several options here:</p>
 <ol>
 <li>Add a TODO comment here (basically reflecting the above paragraph), go ahead and land this, and then pursue clarification of boundness vs declaredness as a separate PR.</li>
 <li>Leave this PR on ice for now, go work on boundness vs declaredness, then come back to this after that is landed. This is perhaps the &quot;cleanest&quot; option, but it definitely does risk more rebase-conflicts in this PR.</li>
-<li>Do it all in this PR. (I think this is my least favorite option, as it risks really metastasizing this PR with too many concerns. But I'm not closed to it.)</li>
+<li>Do it all in this PR. (I think this is my least favorite option, as it risks really metastasizing this PR with too many concerns. But I&#x27;m not closed to it.)</li>
 </ol>
 <p>Which option do you prefer?</p>
 </div>
@@ -862,7 +862,7 @@ C.attr = &quot;other class value&quot;
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3666 on 2025-02-21 18:12</div>
             <div class="timeline-body"><p>I think we could even be a little stricter here and mark this branch <code>unreachable!</code>? Because <code>type[Any]</code> has all attributes, so we can never get <code>Unbound</code> back from getting a member off it.</p>
 <p>The main advantage would be that in some sense neither <code>true</code> nor <code>false</code> seems right here, so it might make the code a bit clearer, and it would mean we fail fast if we violate this invariant. The disadvantage would be that if we somehow ship a very subtle violation of the invariant, it could cause a panic for a user.</p>
-<p>I don't feel strongly about using <code>unreachable!</code>, open to whatever you prefer. But if we don't use <code>unreachable!</code>, I feel like <code>true</code> makes slightly more sense here than <code>false</code>, since <code>Any</code> also has all members.</p>
+<p>I don&#x27;t feel strongly about using <code>unreachable!</code>, open to whatever you prefer. But if we don&#x27;t use <code>unreachable!</code>, I feel like <code>true</code> makes slightly more sense here than <code>false</code>, since <code>Any</code> also has all members.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -877,8 +877,8 @@ C.attr = &quot;other class value&quot;
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/symbol.rs</code>:410 on 2025-02-21 18:37</div>
-            <div class="timeline-body"><p>It looks like we lost the <code>#[salsa::tracked]</code> annotation on this function. It's possible that we don't need it; we should see what the benchmarks say. If it is still a win to track this function, it also requires adding some trait derives on <code>Symbol</code> and <code>SymbolAndQualifiers</code>:</p>
-<pre><code class="language-diff">diff --git a/crates/red_knot_python_semantic/src/symbol.rs b/crates/red_knot_python_semantic/src/symbol.rs
+            <div class="timeline-body"><p>It looks like we lost the <code>#[salsa::tracked]</code> annotation on this function. It&#x27;s possible that we don&#x27;t need it; we should see what the benchmarks say. If it is still a win to track this function, it also requires adding some trait derives on <code>Symbol</code> and <code>SymbolAndQualifiers</code>:</p>
+<pre><code>diff --git a/crates/red_knot_python_semantic/src/symbol.rs b/crates/red_knot_python_semantic/src/symbol.rs
 index 63fd67203..d141c230a 100644
 --- a/crates/red_knot_python_semantic/src/symbol.rs
 +++ b/crates/red_knot_python_semantic/src/symbol.rs
@@ -888,34 +888,34 @@ index 63fd67203..d141c230a 100644
  /// ```
 -#[derive(Debug, Clone, PartialEq, Eq)]
 +#[derive(Debug, Clone, PartialEq, Eq, salsa::Update)]
- pub(crate) enum Symbol&lt;'db&gt; {
-     Type(Type&lt;'db&gt;, Boundness),
+ pub(crate) enum Symbol&lt;&#x27;db&gt; {
+     Type(Type&lt;&#x27;db&gt;, Boundness),
      Unbound,
-@@ -365,7 +365,7 @@ pub(crate) type SymbolFromDeclarationsResult&lt;'db&gt; =
+@@ -365,7 +365,7 @@ pub(crate) type SymbolFromDeclarationsResult&lt;&#x27;db&gt; =
  /// that this comes with a [`CLASS_VAR`] type qualifier.
  ///
  /// [`CLASS_VAR`]: crate::types::TypeQualifiers::CLASS_VAR
 -#[derive(Debug)]
 +#[derive(Clone, Debug, Eq, PartialEq, salsa::Update)]
- pub(crate) struct SymbolAndQualifiers&lt;'db&gt;(pub(crate) Symbol&lt;'db&gt;, pub(crate) TypeQualifiers);
+ pub(crate) struct SymbolAndQualifiers&lt;&#x27;db&gt;(pub(crate) Symbol&lt;&#x27;db&gt;, pub(crate) TypeQualifiers);
 
- impl SymbolAndQualifiers&lt;'_&gt; {
-@@ -395,6 +395,7 @@ impl&lt;'db&gt; From&lt;Symbol&lt;'db&gt;&gt; for SymbolAndQualifiers&lt;'db&gt; {
+ impl SymbolAndQualifiers&lt;&#x27;_&gt; {
+@@ -395,6 +395,7 @@ impl&lt;&#x27;db&gt; From&lt;Symbol&lt;&#x27;db&gt;&gt; for SymbolAndQualifiers&lt;&#x27;db&gt; {
      }
  }
 
 +#[salsa::tracked]
- fn symbol_by_id&lt;'db&gt;(
-     db: &amp;'db dyn Db,
-     scope: ScopeId&lt;'db&gt;,
+ fn symbol_by_id&lt;&#x27;db&gt;(
+     db: &amp;&#x27;db dyn Db,
+     scope: ScopeId&lt;&#x27;db&gt;,
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/symbol.rs</code>:187 on 2025-02-21 18:45</div>
-            <div class="timeline-body"><p>We aren't getting any benchmark updates on this PR; the benchmark is failing to run because our assertion of the diagnostic output no longer matches. It looks like there is one new false positive on the line <code>TOMLDecodeError.__module__ = __name__</code>, where we think <code>__module__</code> is an instance attribute and therefore can't be set on the class. The attribute is defined in typeshed in <code>builtins.pyi</code> (on <code>object</code>) as just <code>__module__: str</code>. It seems to me like this should probably be defined in typeshed as a <code>ClassVar</code>? But maybe in a stub file we just need to consider all annotated assignments as &quot;bound&quot; even if they aren't (because the RHS is typically omitted in a stub file)? (This would dovetail with https://github.com/astral-sh/ruff/issues/16264 which is the same thing, but at module level instead of in class bodies; maybe we should just do it everywhere). Curious what you think about this, @AlexWaygood.</p>
-<p>I'm OK with adding this false positive to the benchmark expected output for now and dealing with it as a separate follow-up. Here's the diff needed to get the benchmark running again (you can test locally with <code>cargo bench --bench red_knot</code>):</p>
-<pre><code class="language-diff">diff --git a/crates/ruff_benchmark/benches/red_knot.rs b/crates/ruff_benchmark/benches/red_knot.rs
+            <div class="timeline-body"><p>We aren&#x27;t getting any benchmark updates on this PR; the benchmark is failing to run because our assertion of the diagnostic output no longer matches. It looks like there is one new false positive on the line <code>TOMLDecodeError.__module__ = __name__</code>, where we think <code>__module__</code> is an instance attribute and therefore can&#x27;t be set on the class. The attribute is defined in typeshed in <code>builtins.pyi</code> (on <code>object</code>) as just <code>__module__: str</code>. It seems to me like this should probably be defined in typeshed as a <code>ClassVar</code>? But maybe in a stub file we just need to consider all annotated assignments as &quot;bound&quot; even if they aren&#x27;t (because the RHS is typically omitted in a stub file)? (This would dovetail with <a href="https://github.com/astral-sh/ruff/issues/16264">astral-sh/ruff#16264</a> which is the same thing, but at module level instead of in class bodies; maybe we should just do it everywhere). Curious what you think about this, @AlexWaygood.</p>
+<p>I&#x27;m OK with adding this false positive to the benchmark expected output for now and dealing with it as a separate follow-up. Here&#x27;s the diff needed to get the benchmark running again (you can test locally with <code>cargo bench --bench red_knot</code>):</p>
+<pre><code>diff --git a/crates/ruff_benchmark/benches/red_knot.rs b/crates/ruff_benchmark/benches/red_knot.rs
 index 11ec12577..beed5bd96 100644
 --- a/crates/ruff_benchmark/benches/red_knot.rs
 +++ b/crates/ruff_benchmark/benches/red_knot.rs
@@ -938,7 +938,7 @@ index 11ec12577..beed5bd96 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-21 18:46</div>
-            <div class="timeline-body"><p>This looks pretty good to me! I see your point about how it's sub-optimal until we address bound vs declared in <code>Symbol</code>, left an inline comment about that.</p>
+            <div class="timeline-body"><p>This looks pretty good to me! I see your point about how it&#x27;s sub-optimal until we address bound vs declared in <code>Symbol</code>, left an inline comment about that.</p>
 <p>I think we need to get the benchmark running so we can see the perf impact of this, and evaluate the impact of tracking or not tracking <code>symbol_by_id</code>. But otherwise this looks good.</p>
 <p>Sorry about the rebase conflicts; this was a particularly fast-moving week! Thanks for working on this!</p>
 </div>
@@ -975,10 +975,10 @@ index 11ec12577..beed5bd96 100644
             <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/red_knot_python_semantic/src/symbol.rs</code>:187 on 2025-02-21 20:08</div>
             <div class="timeline-body"><p>@carljm ran benches locally.</p>
 <p>current version (no query):
-<img src="https://github.com/user-attachments/assets/5edfdd9f-56e5-476b-a047-6cd53e073ff9" alt="CleanShot 2025-02-21 at 15 07 45@2x" /></p>
+<img src="https://github.com/user-attachments/assets/5edfdd9f-56e5-476b-a047-6cd53e073ff9" alt="CleanShot 2025-02-21 at 15 07 45@2x"></p>
 <p>With query:
-<img src="https://github.com/user-attachments/assets/5e66eb2c-7805-4df6-abfd-535256f46078" alt="CleanShot 2025-02-21 at 15 07 01@2x" /></p>
-<p>so I'll push non-query version as it seems either the same or slightly faster</p>
+<img src="https://github.com/user-attachments/assets/5e66eb2c-7805-4df6-abfd-535256f46078" alt="CleanShot 2025-02-21 at 15 07 01@2x"></p>
+<p>so I&#x27;ll push non-query version as it seems either the same or slightly faster</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -996,7 +996,7 @@ index 11ec12577..beed5bd96 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/symbol.rs</code>:187 on 2025-02-21 20:28</div>
-            <div class="timeline-body"><p>That seems fine to me. I think this is safe to do now that we have https://github.com/astral-sh/ruff/pull/16268. @MichaReiser do you have any reason that we should keep <code>symbol_by_id</code> tracked, if it doesn't seem to be a perf win to track it?</p>
+            <div class="timeline-body"><p>That seems fine to me. I think this is safe to do now that we have <a href="https://github.com/astral-sh/ruff/pull/16268">astral-sh/ruff#16268</a>. @MichaReiser do you have any reason that we should keep <code>symbol_by_id</code> tracked, if it doesn&#x27;t seem to be a perf win to track it?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1005,18 +1005,18 @@ index 11ec12577..beed5bd96 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-21 20:39</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-02-21 20:46</div>
-            <div class="timeline-body"><p><a href="https://codspeed.io/astral-sh/ruff/branches/mishamsk%3A15963-fix-diagnostic-for-pure-instance-variables-access-from-class">CodSpeed</a> says this is a 1% cold and 3% incremental regression. That's improved from 5.5% incremental regression in the prior version. I think the current regression is acceptable and within the reasonable range for the added functionality here. It may be that we get some improvement from resolving the TODO around re-resolving bindings.</p>
+            <div class="timeline-body"><p><a href="https://codspeed.io/astral-sh/ruff/branches/mishamsk%3A15963-fix-diagnostic-for-pure-instance-variables-access-from-class">CodSpeed</a> says this is a 1% cold and 3% incremental regression. That&#x27;s improved from 5.5% incremental regression in the prior version. I think the current regression is acceptable and within the reasonable range for the added functionality here. It may be that we get some improvement from resolving the TODO around re-resolving bindings.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1025,7 +1025,7 @@ index 11ec12577..beed5bd96 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/symbol.rs</code>:187 on 2025-02-21 20:49</div>
-            <div class="timeline-body"><p>I believe Micha experimented with removing the <code>#[tracked]</code> attribute on <code>symbol_by_id</code> in #16268, but Codspeed indicated that incremental performance was still much better if it was <code>#[tracked]</code>. Take a look at the individual commits in that PR and https://github.com/astral-sh/ruff/pull/16268#issuecomment-2672155862</p>
+            <div class="timeline-body"><p>I believe Micha experimented with removing the <code>#[tracked]</code> attribute on <code>symbol_by_id</code> in #16268, but Codspeed indicated that incremental performance was still much better if it was <code>#[tracked]</code>. Take a look at the individual commits in that PR and <a href="https://github.com/astral-sh/ruff/pull/16268">astral-sh/ruff#16268</a>#issuecomment-2672155862</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1035,12 +1035,12 @@ index 11ec12577..beed5bd96 100644
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/symbol.rs</code>:187 on 2025-02-21 20:52</div>
             <div class="timeline-body"><p>Hmm, it may be worth actually pushing up a commit that re-adds this and see what CodSpeed says (vs local run of the benchmark).</p>
-<p>But it's also possible that perf characteristics have changed since Micha's experiment, due to other changes (or the changes in this PR.)</p>
+<p>But it&#x27;s also possible that perf characteristics have changed since Micha&#x27;s experiment, due to other changes (or the changes in this PR.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/red_knot_python_semantic/src/symbol.rs</code>:187 on 2025-02-21 21:14</div>
-            <div class="timeline-body"><p>you got it. just pushed. let's see what we get</p>
+            <div class="timeline-body"><p>you got it. just pushed. let&#x27;s see what we get</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1053,7 +1053,7 @@ index 11ec12577..beed5bd96 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/red_knot_python_semantic/src/symbol.rs</code>:187 on 2025-02-21 21:20</div>
-            <div class="timeline-body"><p>technically slightly faster, although I'd say these number are probably well within margin of error. I'll keep the commit and wait for a final verdict from @MichaReiser</p>
+            <div class="timeline-body"><p>technically slightly faster, although I&#x27;d say these number are probably well within margin of error. I&#x27;ll keep the commit and wait for a final verdict from @MichaReiser</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1062,7 +1062,7 @@ index 11ec12577..beed5bd96 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/symbol.rs</code>:187 on 2025-02-21 21:20</div>
-            <div class="timeline-body"><p>It looks like re-adding it <em>might</em> have reduced the perf regression on the incremental benchmark from 3% to 2%? (Though that's in the zone where it could just be noise!)</p>
+            <div class="timeline-body"><p>It looks like re-adding it <em>might</em> have reduced the perf regression on the incremental benchmark from 3% to 2%? (Though that&#x27;s in the zone where it could just be noise!)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1089,7 +1089,7 @@ index 11ec12577..beed5bd96 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/symbol.rs</code>:438 on 2025-02-24 12:58</div>
-            <div class="timeline-body"><p>What happened to the <code>is_final</code> check here? Maybe we don't have any tests for this, but I think we currently handled <code>Final</code> symbols correctly, by not unioning with <code>Unknown</code>, because they can not be assigned to from a different scope.</p>
+            <div class="timeline-body"><p>What happened to the <code>is_final</code> check here? Maybe we don&#x27;t have any tests for this, but I think we currently handled <code>Final</code> symbols correctly, by not unioning with <code>Unknown</code>, because they can not be assigned to from a different scope.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1099,7 +1099,7 @@ index 11ec12577..beed5bd96 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/attributes.md</code>:99 on 2025-02-24 13:18</div>
-            <div class="timeline-body"><p>same here, it would be good to keep some version of this comment even if it's no longer a TODO</p>
+            <div class="timeline-body"><p>same here, it would be good to keep some version of this comment even if it&#x27;s no longer a TODO</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1110,20 +1110,20 @@ index 11ec12577..beed5bd96 100644
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/expression/attribute.md</code>:32 on 2025-02-24 13:18</div>
             <div class="timeline-body"><p>spurious change here. Best to leave this file alone</p>
-<pre><code class="language-suggestion">    # error: [unresolved-attribute] &quot;Type `Literal[A]` has no attribute `non_existent`&quot;
+<pre><code>    # error: [unresolved-attribute] &quot;Type `Literal[A]` has no attribute `non_existent`&quot;
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3712 on 2025-02-24 13:20</div>
-            <div class="timeline-body"><p>there's a <code>let db = self.db();</code> assignment a few lines higher so that this method doesn't have to have lots of verbose <code>self.db()</code> calls everywhere</p>
-<pre><code class="language-suggestion">                        !class.instance_member(db, attr).0.is_unbound()
+            <div class="timeline-body"><p>there&#x27;s a <code>let db = self.db();</code> assignment a few lines higher so that this method doesn&#x27;t have to have lots of verbose <code>self.db()</code> calls everywhere</p>
+<pre><code>                        !class.instance_member(db, attr).0.is_unbound()
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3717 on 2025-02-24 13:20</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">                                !class.instance_member(db, attr).0.is_unbound()
+            <div class="timeline-body"><pre><code>                                !class.instance_member(db, attr).0.is_unbound()
 </code></pre>
 </div>
         </div>
@@ -1131,17 +1131,17 @@ index 11ec12577..beed5bd96 100644
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3719 on 2025-02-24 13:24</div>
             <div class="timeline-body"><p>a couple of nits:</p>
 <ul>
-<li>Lookup on a dynamic type won't always return a bound symbol -- e.g. <code>tuple[Any, Any]</code> is a dynamic type, but looking up the attribute &quot;foo&quot; on <code>tuple[Any, Any]</code> won't return a bound symbol. This is specifically true for dynamic <code>SubclassOf</code> types, but not true in general for <em>all</em> dynamic types.</li>
-<li>It won't necessarily return a bound symbol of the same <em>type</em>. That might be what we have right now, but in the long term, for example, <code>str &amp; Any</code> might be a better answer for the type of the <code>__module__</code> attribute on an object with type <code>type[Any]</code>.</li>
+<li>Lookup on a dynamic type won&#x27;t always return a bound symbol -- e.g. <code>tuple[Any, Any]</code> is a dynamic type, but looking up the attribute &quot;foo&quot; on <code>tuple[Any, Any]</code> won&#x27;t return a bound symbol. This is specifically true for dynamic <code>SubclassOf</code> types, but not true in general for <em>all</em> dynamic types.</li>
+<li>It won&#x27;t necessarily return a bound symbol of the same <em>type</em>. That might be what we have right now, but in the long term, for example, <code>str &amp; Any</code> might be a better answer for the type of the <code>__module__</code> attribute on an object with type <code>type[Any]</code>.</li>
 </ul>
-<pre><code class="language-suggestion">                            ClassBase::Dynamic(_) =&gt; unreachable!(&quot;Attribute lookup on a dynamic `SubclassOf` type should always return a bound symbol&quot;),
+<pre><code>                            ClassBase::Dynamic(_) =&gt; unreachable!(&quot;Attribute lookup on a dynamic `SubclassOf` type should always return a bound symbol&quot;),
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3734 on 2025-02-24 13:25</div>
             <div class="timeline-body"><p>some overindentation here</p>
-<pre><code class="language-suggestion">                        &amp;UNRESOLVED_ATTRIBUTE,
+<pre><code>                        &amp;UNRESOLVED_ATTRIBUTE,
                         attribute,
                         format_args!(
                             &quot;Attribute `{}` can only be accessed on instances, not on the class object `{}` itself.&quot;,
@@ -1155,14 +1155,14 @@ index 11ec12577..beed5bd96 100644
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3741 on 2025-02-24 13:25</div>
             <div class="timeline-body"><p>spurious change</p>
-<pre><code class="language-suggestion">                            value_type.display(db),
+<pre><code>                            value_type.display(db),
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3788 on 2025-02-24 13:26</div>
             <div class="timeline-body"><p>some underindentation here</p>
-<pre><code class="language-suggestion">                                &amp;INVALID_ATTRIBUTE_ACCESS,
+<pre><code>                                &amp;INVALID_ATTRIBUTE_ACCESS,
                                 attribute,
                                 format_args!(
                                     &quot;Cannot assign to ClassVar `{attr}` from an instance of type `{ty}`&quot;,
@@ -1174,7 +1174,7 @@ index 11ec12577..beed5bd96 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3802 on 2025-02-24 13:27</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">                                        ClassBase::Dynamic(_) =&gt; unreachable!(&quot;Attribute lookup on a dynamic `SubclassOf` type should always return a bound symbol&quot;),
+            <div class="timeline-body"><pre><code>                                        ClassBase::Dynamic(_) =&gt; unreachable!(&quot;Attribute lookup on a dynamic `SubclassOf` type should always return a bound symbol&quot;),
 </code></pre>
 </div>
         </div>
@@ -1203,7 +1203,7 @@ index 11ec12577..beed5bd96 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/red_knot_python_semantic/src/symbol.rs</code>:438 on 2025-02-24 14:05</div>
-            <div class="timeline-body"><p>@sharkdp I removed it because it didn't make sense. It was impossible for final qualifier to be set in the branch where it was used</p>
+            <div class="timeline-body"><p>@sharkdp I removed it because it didn&#x27;t make sense. It was impossible for final qualifier to be set in the branch where it was used</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1212,7 +1212,7 @@ index 11ec12577..beed5bd96 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/symbol.rs</code>:438 on 2025-02-24 14:05</div>
-            <div class="timeline-body"><p>I think it's okay to remove this for now. I am struggling to write a meaningful test for this. Let's just re-introduce this when we support final. I'm also removing the <code>SymbolAndQualifiers::is_final</code> method in the meantime.</p>
+            <div class="timeline-body"><p>I think it&#x27;s okay to remove this for now. I am struggling to write a meaningful test for this. Let&#x27;s just re-introduce this when we support final. I&#x27;m also removing the <code>SymbolAndQualifiers::is_final</code> method in the meantime.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1229,10 +1229,10 @@ index 11ec12577..beed5bd96 100644
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @sharkdp on 2025-02-24 14:17</div>
+            <div class="event">Merged by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-02-24 14:17</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @sharkdp on 2025-02-24 14:17</div>
+            <div class="event">Closed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-02-24 14:17</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-02-24 17:35</div>
@@ -1245,7 +1245,7 @@ index 11ec12577..beed5bd96 100644
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:09:51 UTC
+        Synced at 2026-01-20 19:11:15 UTC
     </footer>
 </body>
 </html>

@@ -23,16 +23,16 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/mqudsi">@mqudsi</a></div>
-            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+            <div class="timeline-body">What version of ripgrep are you using?
 <p>ripgrep 0.10.0
 -SIMD -AVX (compiled)
 +SIMD +AVX (runtime)</p>
-<h4>How did you install ripgrep?</h4>
+How did you install ripgrep?
 <p><code>cargo</code></p>
-<h4>What operating system are you using ripgrep on?</h4>
+What operating system are you using ripgrep on?
 <p>FreeBSD 12</p>
-<h4>Describe your question, feature request, or bug.</h4>
-<p>Thanks for adding multiline support to <code>rg</code>. I could very well be missing something, but I can't seem to find how to trigger proper single-line support. Even with <code>(?s)</code>, <code>$</code> always matches the end of a line, instead of the end of the document.</p>
+Describe your question, feature request, or bug.
+<p>Thanks for adding multiline support to <code>rg</code>. I could very well be missing something, but I can&#x27;t seem to find how to trigger proper single-line support. Even with <code>(?s)</code>, <code>$</code> always matches the end of a line, instead of the end of the document.</p>
 <p>Context: I would like to find trailing blank lines in a document.</p>
 </div>
         </div>
@@ -48,10 +48,10 @@
 hello2
 </code></pre>
 <p>command executed:</p>
-<pre><code>rg -U --multiline-dotall 'hello\d$'
+<pre><code>rg -U --multiline-dotall &#x27;hello\d$&#x27;
 </code></pre>
 <p>also</p>
-<pre><code>rg -U --multiline-dotall '(?s)hello\d$'
+<pre><code>rg -U --multiline-dotall &#x27;(?s)hello\d$&#x27;
 </code></pre>
 <p>output:</p>
 <pre><code>foo.txt
@@ -71,10 +71,10 @@ hello2
 <blockquote>
 <p>Some platforms use <code>(?s)</code> to also mean that <code>^</code> and <code>$</code> match the start and end of the input, respectively</p>
 </blockquote>
-<p>Can you show an example of said platform? The <code>s</code> flag means that <code>.</code> matches any character, including <code>\n</code>. It has nothing to do with the meaning of <code>^</code> or <code>$</code>. I'm not aware of any regex engine that supports the <code>s</code> flag with a different meaning off the top of my head.</p>
-<p>To clarify, <code>^</code> and <code>$</code> typically only match the start or end of input. Many regex engines support a <em>multi line</em> flag, <code>m</code>, which modifies their behavior to <em>additionally</em> match at the beginning or end of lines, respectively. This multi line flag is <em>orthogonal</em> to ripgrep's feature known as &quot;multi line search.&quot;</p>
+<p>Can you show an example of said platform? The <code>s</code> flag means that <code>.</code> matches any character, including <code>\n</code>. It has nothing to do with the meaning of <code>^</code> or <code>$</code>. I&#x27;m not aware of any regex engine that supports the <code>s</code> flag with a different meaning off the top of my head.</p>
+<p>To clarify, <code>^</code> and <code>$</code> typically only match the start or end of input. Many regex engines support a <em>multi line</em> flag, <code>m</code>, which modifies their behavior to <em>additionally</em> match at the beginning or end of lines, respectively. This multi line flag is <em>orthogonal</em> to ripgrep&#x27;s feature known as &quot;multi line search.&quot;</p>
 <p>ripgrep always enables the <code>m</code> flag by default because it is a line oriented searcher, and therefore, it makes sense for <code>^</code>/<code>$</code> to operate in line oriented mode. This is true even when <code>-U/--multiline</code> is given, for consistency. However, you can disable the multi-line flag like anything else, e.g.,</p>
-<pre><code>$ rg -U '(?-m)hello\d$'
+<pre><code>$ rg -U &#x27;(?-m)hello\d$&#x27;
 $
 </code></pre>
 <p>However, while this does not produced your desired output, it is actually the expected and correct output for this particular case. In particular, here are the binary contents of the file I created based on your input:</p>
@@ -82,12 +82,12 @@ $
 00000000: 6865 6c6c 6f31 0a68 656c 6c6f 320a       hello1.hello2.
 </code></pre>
 <p>In this case, my editor added a trailing new line to the end of the file. If I remove that trailing new line, then I get the desired output:</p>
-<pre><code>$ rg -U '(?-m)hello\d$'
+<pre><code>$ rg -U &#x27;(?-m)hello\d$&#x27;
 foo.txt
 2:hello2
 </code></pre>
 <p>Alternatively, modify your regex to handle the optional trailing new line:</p>
-<pre><code>$ rg -U '(?-m)hello\d\n?$'
+<pre><code>$ rg -U &#x27;(?-m)hello\d\n?$&#x27;
 foo.txt
 2:hello2
 </code></pre>
@@ -96,7 +96,7 @@ foo.txt
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mqudsi">@mqudsi</a> on 2018-12-30 15:53</div>
             <div class="timeline-body"><p>Thanks for the response. Fwiw, the trailing new line was not supposed to be there, it must have been an artifact of the copy-and-paste, perhaps on my end.</p>
-<p>From what I recall, at least Tcl uses <code>(?s)</code> to imply no multiline. I didn't realize that <code>rg</code>'s own default multiline behavior was implemented as a regex mode, I was under the impression it simply handled each line as a separate input before passing it along to the engine. The <code>(?-m)</code> does indeed do the job quite handily.</p>
+<p>From what I recall, at least Tcl uses <code>(?s)</code> to imply no multiline. I didn&#x27;t realize that <code>rg</code>&#x27;s own default multiline behavior was implemented as a regex mode, I was under the impression it simply handled each line as a separate input before passing it along to the engine. The <code>(?-m)</code> does indeed do the job quite handily.</p>
 <p>However I do wonder if it is worth either making it easier to access or at least documenting it in the <code>--multiline</code>/<code>-U</code> section of the help, or am I just seeing things through a very narrow perspective at the moment?</p>
 </div>
         </div>
@@ -104,27 +104,27 @@ foo.txt
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-12-30 16:16</div>
             <div class="timeline-body"><p>This page suggests that Tcl uses the same meaning for <code>s</code> and <code>m</code> as everything else: https://www.regular-expressions.info/tcl.html</p>
 <blockquote>
-<p>I didn't realize that rg's own default multiline behavior was implemented as a regex mode, I was under the impression it simply handled each line as a separate input before passing it along to the engine.</p>
+<p>I didn&#x27;t realize that rg&#x27;s own default multiline behavior was implemented as a regex mode, I was under the impression it simply handled each line as a separate input before passing it along to the engine.</p>
 </blockquote>
-<p>I'm not sure how to untangle this, so I'm just going to throw a bunch of facts at you. :-)</p>
+<p>I&#x27;m not sure how to untangle this, so I&#x27;m just going to throw a bunch of facts at you. :-)</p>
 <ul>
 <li>The regular expression engine supports a number of flags, e.g., <code>i</code> for case insensitive matching, <code>s</code> for causing <code>.</code> to match <code>\n</code> in addition to every other character, <code>m</code> to cause <code>^</code>/<code>$</code> to match at the start/end of lines, and more.</li>
 <li>The special switches <code>\A</code> and <code>\z</code> match the beginning and end of the input and their behavior is never modified by any flags.</li>
 <li>ripgrep sets <a href="https://github.com/BurntSushi/ripgrep/blob/17ef4c40f32af337c1b10c1a9fdd1df4241391b3/src/args.rs#L583-L588">many of these flags</a> for you. Some are &quot;sane&quot; defaults (e.g., enabling the <code>m</code> flag) while others are inferred from command line flags.</li>
 <li>In all cases, any regular expression flag can be overridden inside the pattern itself. e.g., <code>(?s).(?-s).</code> will match any character (including a new line) followed by any character (excluding a new line). Another way of writing the same regex: <code>(?s:.).</code>. If <code>--multiline-dotall</code> is enabled, then your pattern needs to be inverted to have the same behavior, e.g., <code>.(?-s:.)</code>.</li>
 <li>ripgrep searches <strong>as if</strong> reading one line at a time by default. While ripgrep can fall back to &quot;read each line, and then match the given regex on each line,&quot; this is actually quite slow. ripgrep has other means of searching in line oriented mode that is faster, but requires some assumptions. <a href="https://blog.burntsushi.net/ripgrep/#anatomy-of-a-grep">Please consider reading this section in my blog post on ripgrep.</a></li>
-<li>ripgrep supports a multi-line search mode. This has <em>nothing</em> to do with the regex engine's &quot;multi line&quot; flag. Multi-line search changes how ripgrep searches for matches. Instead of searching as if reading one line at a time, ripgrep will search as reading one entire file at a time. The point of this is to enable matches that span multiple lines. In this case, ripgrep never reads one line at a time because it's incompatible with searching the entire file.</li>
+<li>ripgrep supports a multi-line search mode. This has <em>nothing</em> to do with the regex engine&#x27;s &quot;multi line&quot; flag. Multi-line search changes how ripgrep searches for matches. Instead of searching as if reading one line at a time, ripgrep will search as reading one entire file at a time. The point of this is to enable matches that span multiple lines. In this case, ripgrep never reads one line at a time because it&#x27;s incompatible with searching the entire file.</li>
 </ul>
-<p>If you can think of better generic docs for the <code>-U/--multiline</code> flag, then that would be great. But I don't think it's worth specifically calling out the <code>m</code> flag. It is working exactly as it's intended to work. I don't think there are any gotchas here, other than <a href="https://docs.rs/regex/1.1.0/regex/#grouping-and-flags">reading the docs for regex flags</a>.</p>
+<p>If you can think of better generic docs for the <code>-U/--multiline</code> flag, then that would be great. But I don&#x27;t think it&#x27;s worth specifically calling out the <code>m</code> flag. It is working exactly as it&#x27;s intended to work. I don&#x27;t think there are any gotchas here, other than <a href="https://docs.rs/regex/1.1.0/regex/#grouping-and-flags">reading the docs for regex flags</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mqudsi">@mqudsi</a> on 2018-12-30 23:45</div>
-            <div class="timeline-body"><p>Thanks for the explanation. I was confused by the two different &quot;multi line modes&quot; and had assumed that <code>rg</code> <em>previously</em> used to split the input into lines without using the regex multiline mode option and now added support for reversing that. It's why it didn't occur to me to modify <code>(?m)</code> or <code>(?-m)</code> because I assumed switching between <code>rg</code> and <code>rg -U</code> did just that (enabled the <em>regex</em> multiline mode).</p>
+            <div class="timeline-body"><p>Thanks for the explanation. I was confused by the two different &quot;multi line modes&quot; and had assumed that <code>rg</code> <em>previously</em> used to split the input into lines without using the regex multiline mode option and now added support for reversing that. It&#x27;s why it didn&#x27;t occur to me to modify <code>(?m)</code> or <code>(?-m)</code> because I assumed switching between <code>rg</code> and <code>rg -U</code> did just that (enabled the <em>regex</em> multiline mode).</p>
 <blockquote>
 <p>This page suggests that Tcl uses the same meaning for s and m as everything else: https://www.regular-expressions.info/tcl.html</p>
 </blockquote>
-<p>For what it's worth, my reading of the same page you linked to suggests differently. In particular:</p>
+<p>For what it&#x27;s worth, my reading of the same page you linked to suggests differently. In particular:</p>
 <blockquote>
 <p><code>(?s)</code> selects &quot;non-newline-sensitive matching&quot;, which is the default.  The &quot;s&quot; stands for &quot;single line&quot;.  In this mode, the dot and negated character classes match all characters, including newlines.  <strong>The caret and dollar match only at the very start and end of the subject string.</strong></p>
 </blockquote>
@@ -132,22 +132,22 @@ foo.txt
 <blockquote>
 <p><code>(?s)</code> for &quot;single line mode&quot; makes the dot match all characters, including line breaks. Not supported by Ruby or JavaScript. In Tcl, <code>(?s)</code> also makes the caret and dollar match at the start and end of the string only.</p>
 </blockquote>
-<p>Not that any of this matters, it's an intellectual sidebar at best.</p>
+<p>Not that any of this matters, it&#x27;s an intellectual sidebar at best.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-12-31 01:06</div>
-            <div class="timeline-body"><p>OK, yes, the <a href="https://www.tcl.tk/man/tcl8.4/TclCmd/re_syntax.htm#M59">official Tcl docs</a> add a bit more clarity, and in particular, in the &quot;matching&quot; section near the bottom. It seems that <code>s</code> is equivalent <code>sm</code> in ripgrep, where as <code>p</code> is equivalent to <code>s</code> and <code>m</code> is equivalent to <code>m-s</code>. Interesting history lesson. To validate my own sanity, I confirmed that both PCRE and <a href="https://perldoc.perl.org/perlre.html#Modifiers">Perl</a> behave as ripgrep does. I <em>think</em> Spencer's regex engine inside of Tcl pre-dated Perl's, so I wonder who was responsible for opting for the conceptually simpler model of making <code>m</code> and <code>s</code> orthogonal flags.</p>
+            <div class="timeline-body"><p>OK, yes, the <a href="https://www.tcl.tk/man/tcl8.4/TclCmd/re_syntax.htm#M59">official Tcl docs</a> add a bit more clarity, and in particular, in the &quot;matching&quot; section near the bottom. It seems that <code>s</code> is equivalent <code>sm</code> in ripgrep, where as <code>p</code> is equivalent to <code>s</code> and <code>m</code> is equivalent to <code>m-s</code>. Interesting history lesson. To validate my own sanity, I confirmed that both PCRE and <a href="https://perldoc.perl.org/perlre.html#Modifiers">Perl</a> behave as ripgrep does. I <em>think</em> Spencer&#x27;s regex engine inside of Tcl pre-dated Perl&#x27;s, so I wonder who was responsible for opting for the conceptually simpler model of making <code>m</code> and <code>s</code> orthogonal flags.</p>
 <p>I am going to close this since I think everything is working as it should.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2018-12-31 01:06</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-12-31 01:06</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:42:47 UTC
+        Synced at 2026-01-20 18:48:07 UTC
     </footer>
 </body>
 </html>

@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a></div>
-            <div class="timeline-body"><p>Currently, we don't emit any diagnostics here.</p>
-<p>I believe these should be unsupported operator errors, that we don't emit</p>
-<pre><code class="language-py">class A:
+            <div class="timeline-body"><p>Currently, we don&#x27;t emit any diagnostics here.</p>
+<p>I believe these should be unsupported operator errors, that we don&#x27;t emit</p>
+<pre><code>class A:
     __eq__ = None
 
 
@@ -44,23 +44,23 @@ reveal_type(B() == &quot;a&quot;) # revealed: bool
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">help wanted</span> added by @carljm on 2025-08-05 02:20</div>
+            <div class="event">Label <span class="label">help wanted</span> added by <a href="https://github.com/carljm">@carljm</a> on 2025-08-05 02:20</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-09 02:12</div>
-            <div class="timeline-body"><p>Hmm, looking at this again, I think there should be Liskov violations on <code>__eq__ = None</code> and <code>def __eq__(...</code> lines, and I'm not sure we should emit unsupported operator errors. <code>object</code> has <code>def __eq__(self, value: object, /) -&gt; bool: ...</code>, so we should assume all objects support that much, and error on any attempt to define a class that does not.</p>
-<p>(We do now emit a Liskov violation on the method override in <code>B</code>; we don't yet on <code>__eq__ = None</code> in <code>A</code>, but I think that's just a known limitation in our current Liskov checks?)</p>
-<p>Closing this, but also pinging @AlexWaygood to check if I'm off-base here :)</p>
+            <div class="timeline-body"><p>Hmm, looking at this again, I think there should be Liskov violations on <code>__eq__ = None</code> and <code>def __eq__(...</code> lines, and I&#x27;m not sure we should emit unsupported operator errors. <code>object</code> has <code>def __eq__(self, value: object, /) -&gt; bool: ...</code>, so we should assume all objects support that much, and error on any attempt to define a class that does not.</p>
+<p>(We do now emit a Liskov violation on the method override in <code>B</code>; we don&#x27;t yet on <code>__eq__ = None</code> in <code>A</code>, but I think that&#x27;s just a known limitation in our current Liskov checks?)</p>
+<p>Closing this, but also pinging @AlexWaygood to check if I&#x27;m off-base here :)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2026-01-09 02:12</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2026-01-09 02:12</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-09 13:43</div>
-            <div class="timeline-body"><p>I think there's still more to do here aside from the missing part of our Liskov implementation (which is tracked in https://github.com/astral-sh/ty/issues/2156). Consider this example: https://play.ty.dev/94ac813c-4047-4e9f-b559-e00bd31a4247. Even once we've fully implemented the Liskov Substitution Principle, the user won't get any diagnostics about the Liskov violation in the <code>Foo</code> class, because it's from a third-party package, and third-party packages aren't checked for typing violations. But we have more than enough information to warn the user nonetheless that the <code>==</code> operation will fail, and it behooves us in general to emulate the semantics at runtime, and the interpreter at runtime will actually try to call the <code>__eq__</code> attribute on the <code>Foo</code> class. So I think that ideally we would emit a diagnostic at the location of the <code>==</code> operation as well as at the location of the <code>__eq__</code> definition.</p>
-<p>And we don't seem to do call-signature checking of <code>__eq__</code> methods at all at the moment? We emit a Liskov diagnostic here, but no <code>unsupported-operator</code> diagnostic at the location of the <code>==</code> operation itself.</p>
-<pre><code class="language-py">from dataclasses import dataclass
+            <div class="timeline-body"><p>I think there&#x27;s still more to do here aside from the missing part of our Liskov implementation (which is tracked in <a href="https://github.com/astral-sh/ty/issues/2156">astral-sh/ty#2156</a>). Consider this example: https://play.ty.dev/94ac813c-4047-4e9f-b559-e00bd31a4247. Even once we&#x27;ve fully implemented the Liskov Substitution Principle, the user won&#x27;t get any diagnostics about the Liskov violation in the <code>Foo</code> class, because it&#x27;s from a third-party package, and third-party packages aren&#x27;t checked for typing violations. But we have more than enough information to warn the user nonetheless that the <code>==</code> operation will fail, and it behooves us in general to emulate the semantics at runtime, and the interpreter at runtime will actually try to call the <code>__eq__</code> attribute on the <code>Foo</code> class. So I think that ideally we would emit a diagnostic at the location of the <code>==</code> operation as well as at the location of the <code>__eq__</code> definition.</p>
+<p>And we don&#x27;t seem to do call-signature checking of <code>__eq__</code> methods at all at the moment? We emit a Liskov diagnostic here, but no <code>unsupported-operator</code> diagnostic at the location of the <code>==</code> operation itself.</p>
+<pre><code>from dataclasses import dataclass
 
 @dataclass
 class Foo:
@@ -73,8 +73,8 @@ class Bar: ...
 
 Foo(42) == Bar()
 </code></pre>
-<p>That's inconsistent with how we treat all other implicit dunder calls, where we would generally check the call signature entirely independently to any concern about whether the Liskov principle had been violated:</p>
-<pre><code class="language-py">from typing import Sequence
+<p>That&#x27;s inconsistent with how we treat all other implicit dunder calls, where we would generally check the call signature entirely independently to any concern about whether the Liskov principle had been violated:</p>
+<pre><code>from typing import Sequence
 
 class Foo(Sequence[int]):
     # invalid-method-override emitted here
@@ -87,18 +87,18 @@ Foo()[42]
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @AlexWaygood on 2026-01-09 13:43</div>
+            <div class="event">Reopened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-09 13:43</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Improve unsupported operator diagnostics" to "No call signature checking for implicit calls to `__eq__` or `__ne__` methods" by @AlexWaygood on 2026-01-09 13:44</div>
+            <div class="event">Renamed from &quot;Improve unsupported operator diagnostics&quot; to &quot;No call signature checking for implicit calls to `__eq__` or `__ne__` methods&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-09 13:44</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Stable" by @carljm on 2026-01-09 19:22</div>
+            <div class="event">Added to milestone &quot;Stable&quot; by <a href="https://github.com/carljm">@carljm</a> on 2026-01-09 19:22</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:23 UTC
+        Synced at 2026-01-20 19:25:11 UTC
     </footer>
 </body>
 </html>

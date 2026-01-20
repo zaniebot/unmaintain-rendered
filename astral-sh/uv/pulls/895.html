@@ -23,21 +23,21 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a></div>
-            <div class="timeline-body"><p>Closes https://github.com/astral-sh/puffin/issues/846</p>
-<p>Spawns a single Python process per source distribution build instead of one per build backend hook we call. The Python process is a custom script providing PEP 517 / 660 build hook RPC. We use simple newline terminated messages to communicate between the parent Rust process and the child Python process. Since standard out is reserved for this communication, we redirect all output from the build backend during hook calls into a separate temporary file. The file path is sent from the Python daemon to the Rust parent so it can recover the hook's output for display on failure.</p>
-<p>There's a great deal of complexity in this implementation which mostly arises from:</p>
+            <div class="timeline-body"><p>Closes <a href="https://github.com/astral-sh/puffin/issues/846">astral-sh/puffin#846</a></p>
+<p>Spawns a single Python process per source distribution build instead of one per build backend hook we call. The Python process is a custom script providing PEP 517 / 660 build hook RPC. We use simple newline terminated messages to communicate between the parent Rust process and the child Python process. Since standard out is reserved for this communication, we redirect all output from the build backend during hook calls into a separate temporary file. The file path is sent from the Python daemon to the Rust parent so it can recover the hook&#x27;s output for display on failure.</p>
+<p>There&#x27;s a great deal of complexity in this implementation which mostly arises from:</p>
 <ul>
 <li>Proper management the daemon process on the Rust side, e.g. non-blocking and no zombie processes</li>
 <li>Redirection of file streams, error capturing, and reloading of modules on the Python side</li>
 </ul>
-<p>The goal here is to improve performance by avoiding the 10ms overhead of invoking a Python process on each hook call. When running a daemon, we only pay the 10ms overhead cost once and subsequent hook calls should have &lt;1ms of overhead. However, we can only use a daemon for a single build since it needs to be running in the correct virtual environment. Consequently, we only make 2-3 hook calls per daemon so there's a small limit to the total reduction in overhead we can see in practice. We could explore passing the virtual environment via RPC and &quot;hot loading&quot; it per build; then we could re-use the daemon for many more builds and hook calls.</p>
-<p>Additionally, https://github.com/astral-sh/puffin/issues/846 notes that build backend imports are slow. Without a daemon, we must pay the cost of importing the build backend on each hook call. The initial daemon implementation cached imports to reduce this overhead as much as possible. However, since we add packages to the build environment <em>after</em> the daemon is started it is actually <em>not</em> safe to cache imports. In practice, the daemon needed to <em>force</em> all modules to be reloaded on each hook call for builds to succeed. Perhaps we could limit the effect of this by adding a special command to reset modules and only do so after the parent changes the build environment. Regardless, this adds significant complexity to the implementation and may be brittle in the real world.</p>
-<p>Rough benchmarks e.g. running <code>pip sync</code> with <code>flask==3.0.0</code> and the <code>--no-binary</code> flag (#956) to force source distribution builds show no clear improvement. Of course, we could spend time optimizing the Rust side of this implementation (the Python side is already relatively optimized) but I'm not sure if it's worth going deeper into at this time.</p>
+<p>The goal here is to improve performance by avoiding the 10ms overhead of invoking a Python process on each hook call. When running a daemon, we only pay the 10ms overhead cost once and subsequent hook calls should have &lt;1ms of overhead. However, we can only use a daemon for a single build since it needs to be running in the correct virtual environment. Consequently, we only make 2-3 hook calls per daemon so there&#x27;s a small limit to the total reduction in overhead we can see in practice. We could explore passing the virtual environment via RPC and &quot;hot loading&quot; it per build; then we could re-use the daemon for many more builds and hook calls.</p>
+<p>Additionally, <a href="https://github.com/astral-sh/puffin/issues/846">astral-sh/puffin#846</a> notes that build backend imports are slow. Without a daemon, we must pay the cost of importing the build backend on each hook call. The initial daemon implementation cached imports to reduce this overhead as much as possible. However, since we add packages to the build environment <em>after</em> the daemon is started it is actually <em>not</em> safe to cache imports. In practice, the daemon needed to <em>force</em> all modules to be reloaded on each hook call for builds to succeed. Perhaps we could limit the effect of this by adding a special command to reset modules and only do so after the parent changes the build environment. Regardless, this adds significant complexity to the implementation and may be brittle in the real world.</p>
+<p>Rough benchmarks e.g. running <code>pip sync</code> with <code>flask==3.0.0</code> and the <code>--no-binary</code> flag (#956) to force source distribution builds show no clear improvement. Of course, we could spend time optimizing the Rust side of this implementation (the Python side is already relatively optimized) but I&#x27;m not sure if it&#x27;s worth going deeper into at this time.</p>
 <p>In implementing this, there are <em>some</em> gains beyond performance. For example, we now have much more detailed error types for failures in hooks.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Initial commit of daemon for running Python build hooks" to "Use daemon to run Python build hooks" by @zanieb on 2024-01-12 04:31</div>
+            <div class="event">Renamed from &quot;Initial commit of daemon for running Python build hooks&quot; to &quot;Use daemon to run Python build hooks&quot; by <a href="https://github.com/zanieb">@zanieb</a> on 2024-01-12 04:31</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-01-17 20:07</div>
@@ -55,8 +55,8 @@
 <pre><code>$ hyperfine --min-runs 20 \
     --command-name branch \
     --command-name baseline \
-    './target/release/branch pip install flask==3.0.0 --no-binary --reinstall --no-cache' \
-    './target/release/baseline pip install flask==3.0.0 --no-binary --reinstall --no-cache'
+    &#x27;./target/release/branch pip install flask==3.0.0 --no-binary --reinstall --no-cache&#x27; \
+    &#x27;./target/release/baseline pip install flask==3.0.0 --no-binary --reinstall --no-cache&#x27;
 
 
 Benchmark 1: branch
@@ -67,7 +67,7 @@ Benchmark 2: baseline
   Time (mean ± σ):      3.895 s ±  0.637 s    [User: 3.822 s, System: 1.948 s]
   Range (min … max):    3.586 s …  6.389 s    20 runs
  
-  Warning: Statistical outliers were detected. Consider re-running this benchmark on a quiet system without any interferences from other programs. It might help to use the '--warmup' or '--prepare' options.
+  Warning: Statistical outliers were detected. Consider re-running this benchmark on a quiet system without any interferences from other programs. It might help to use the &#x27;--warmup&#x27; or &#x27;--prepare&#x27; options.
  
 Summary
   branch ran
@@ -77,8 +77,8 @@ Summary
 <pre><code>$ hyperfine --min-runs 20 \
     --command-name branch \
     --command-name baseline \
-    './target/release/branch pip install a-614d801c==1.0.0 --extra-index-url https://test.pypi.org/simple/ --no-binary --reinstall --no-cache' \
-    './target/release/baseline pip install a-614d801c==1.0.0 --extra-index-url https://test.pypi.org/simple/ --no-binary --reinstall --no-cache'
+    &#x27;./target/release/branch pip install a-614d801c==1.0.0 --extra-index-url https://test.pypi.org/simple/ --no-binary --reinstall --no-cache&#x27; \
+    &#x27;./target/release/baseline pip install a-614d801c==1.0.0 --extra-index-url https://test.pypi.org/simple/ --no-binary --reinstall --no-cache&#x27;
 
 Benchmark 1: branch
   Time (mean ± σ):      5.218 s ±  0.229 s    [User: 4.849 s, System: 1.871 s]
@@ -95,7 +95,7 @@ Summary
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2024-01-19 17:24</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2024-01-19 17:24</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/puffin-build/src/daemon.rs</code>:96 on 2024-01-29 19:55</div>
@@ -104,7 +104,7 @@ Summary
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/puffin-build/src/daemon.rs</code>:13 on 2024-01-29 19:58</div>
-            <div class="timeline-body"><p>Separate from the question of whether to merge imports together, I would at least say it's very common to group imports: std, then external crates and finally crate internal. But I think std is mixed with external crates above, and crate internal imports are mixed with other external crate imports here.</p>
+            <div class="timeline-body"><p>Separate from the question of whether to merge imports together, I would at least say it&#x27;s very common to group imports: std, then external crates and finally crate internal. But I think std is mixed with external crates above, and crate internal imports are mixed with other external crate imports here.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -129,7 +129,7 @@ Summary
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:35:08 UTC
+        Synced at 2026-01-20 19:43:10 UTC
     </footer>
 </body>
 </html>

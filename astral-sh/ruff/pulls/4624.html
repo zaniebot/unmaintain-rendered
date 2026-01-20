@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>I included the rule name in the <code>Message</code> <code>Ord</code> implementation to fix non-deterministic ordering of messages in the CLI output (which messed up my diffs when comparing the diagnostics before/after) in #3931. This regressed performance significantly for two reasons:</p>
 <ol>
 <li>We need to compare the name</li>
@@ -33,40 +33,40 @@
 <ol>
 <li>Using <code>sort()</code> instead of <code>sort_unstable()</code> because we care about stable order.</li>
 <li>Remove <code>rule</code> from the comparison key because, in my view, a rule should never emit two diagnostics at the exact same location. We can include <code>kind.name</code> which is significantly cheaper, but using stable sorting and removing the rule name proved to be fastest</li>
-<li>Compare the file and add a fast path to <code>SourceFile</code> that returns <code>Ordering::Equal</code> if the files point to the same address. I'm very surprised that Rust doesn't implement this optimisation by default for Arcs. They have such a fast path for the <code>PartialEq</code> implementation.</li>
+<li>Compare the file and add a fast path to <code>SourceFile</code> that returns <code>Ordering::Equal</code> if the files point to the same address. I&#x27;m very surprised that Rust doesn&#x27;t implement this optimisation by default for Arcs. They have such a fast path for the <code>PartialEq</code> implementation.</li>
 </ol>
 <p>Fixes #4606</p>
-<h2>Test Plan</h2>
-<p>The performance is now roughly the same as before #3931, even though we've added new rules since.</p>
+Test Plan
+<p>The performance is now roughly the same as before #3931, even though we&#x27;ve added new rules since.</p>
 <blockquote>
 <p><em>Note</em>: Measured with release builds that include debug information (for profiling). The release builds should be slightly faster.</p>
 </blockquote>
-<h3>Before #3931(using <code>sort_unstable</code>)</h3>
-<pre><b>Benchmark 1</b>: ./target/release-debug/ruff --no-cache -e  --select=ALL ./crates/ruff/resources/test/cpython/
-  Time (<span style="color:#26A269"><b>mean</b></span> ± <span style="color:#26A269">σ</span>):     <span style="color:#26A269"><b>712.1 ms</b></span> ± <span style="color:#26A269"> 19.9 ms</span>    [User: <span style="color:#12488B">7890.2 ms</span>, System: <span style="color:#12488B">222.2 ms</span>]
-  Range (<span style="color:#2AA1B3">min</span> … <span style="color:#A347BA">max</span>):   <span style="color:#2AA1B3">688.7 ms</span> … <span style="color:#A347BA">749.0 ms</span>    10 runs
+Before #3931(using <code>sort_unstable</code>)
+<pre>Benchmark 1: ./target/release-debug/ruff --no-cache -e  --select=ALL ./crates/ruff/resources/test/cpython/
+  Time (<span>mean</span> ± <span>σ</span>):     <span>712.1 ms</span> ± <span> 19.9 ms</span>    [User: <span>7890.2 ms</span>, System: <span>222.2 ms</span>]
+  Range (<span>min</span> … <span>max</span>):   <span>688.7 ms</span> … <span>749.0 ms</span>    10 runs
 </pre>
 
-<h3>Before #3931 patched using <code>sort</code></h3>
-<pre><b>Benchmark 1</b>: ./target/release-debug/ruff --no-cache -e  --select=ALL ./crates/ruff/resources/test/cpython/
-  Time (<span style="color:#26A269"><b>mean</b></span> ± <span style="color:#26A269">σ</span>):     <span style="color:#26A269"><b>725.6 ms</b></span> ± <span style="color:#26A269"> 17.8 ms</span>    [User: <span style="color:#12488B">7948.2 ms</span>, System: <span style="color:#12488B">227.7 ms</span>]
-  Range (<span style="color:#2AA1B3">min</span> … <span style="color:#A347BA">max</span>):   <span style="color:#2AA1B3">708.6 ms</span> … <span style="color:#A347BA">760.5 ms</span>    10 runs
+Before #3931 patched using <code>sort</code>
+<pre>Benchmark 1: ./target/release-debug/ruff --no-cache -e  --select=ALL ./crates/ruff/resources/test/cpython/
+  Time (<span>mean</span> ± <span>σ</span>):     <span>725.6 ms</span> ± <span> 17.8 ms</span>    [User: <span>7948.2 ms</span>, System: <span>227.7 ms</span>]
+  Range (<span>min</span> … <span>max</span>):   <span>708.6 ms</span> … <span>760.5 ms</span>    10 runs
 </pre>
 
-<h3>Main</h3>
-<pre><b>Benchmark 1</b>: ./target/release-debug/ruff --no-cache -e  --select=ALL ./crates/ruff/resources/test/cpython/
-  Time (<span style="color:#26A269"><b>mean</b></span> ± <span style="color:#26A269">σ</span>):     <span style="color:#26A269"><b> 1.638 s</b></span> ± <span style="color:#26A269"> 0.024 s</span>    [User: <span style="color:#12488B">8.997 s</span>, System: <span style="color:#12488B">0.238 s</span>]
-  Range (<span style="color:#2AA1B3">min</span> … <span style="color:#A347BA">max</span>):   <span style="color:#2AA1B3"> 1.605 s</span> … <span style="color:#A347BA"> 1.676 s</span>    10 runs
+Main
+<pre>Benchmark 1: ./target/release-debug/ruff --no-cache -e  --select=ALL ./crates/ruff/resources/test/cpython/
+  Time (<span>mean</span> ± <span>σ</span>):     <span> 1.638 s</span> ± <span> 0.024 s</span>    [User: <span>8.997 s</span>, System: <span>0.238 s</span>]
+  Range (<span>min</span> … <span>max</span>):   <span> 1.605 s</span> … <span> 1.676 s</span>    10 runs
 </pre>
 
-<h3>Now</h3>
-<pre><b>Benchmark 1</b>: ./target/release-debug/ruff --no-cache -e  --select=ALL ./crates/ruff/resources/test/cpython/
-  Time (<span style="color:#26A269"><b>mean</b></span> ± <span style="color:#26A269">σ</span>):     <span style="color:#26A269"><b>734.9 ms</b></span> ± <span style="color:#26A269"> 10.0 ms</span>    [User: <span style="color:#12488B">8133.6 ms</span>, System: <span style="color:#12488B">211.3 ms</span>]
-  Range (<span style="color:#2AA1B3">min</span> … <span style="color:#A347BA">max</span>):   <span style="color:#2AA1B3">720.9 ms</span> … <span style="color:#A347BA">752.5 ms</span>    10 runs
+Now
+<pre>Benchmark 1: ./target/release-debug/ruff --no-cache -e  --select=ALL ./crates/ruff/resources/test/cpython/
+  Time (<span>mean</span> ± <span>σ</span>):     <span>734.9 ms</span> ± <span> 10.0 ms</span>    [User: <span>8133.6 ms</span>, System: <span>211.3 ms</span>]
+  Range (<span>min</span> … <span>max</span>):   <span>720.9 ms</span> … <span>752.5 ms</span>    10 runs
 </pre>
 
-<h2>Alternatives</h2>
-<p>Ideally, we wouldn't even sort the <code>Message</code>s when passing <code>--silent</code>. I considered moving the logic into the <code>Printer,</code> but it only gets passed a read-only slice. We could consider changing the slice to be mutable, but that feels odd.</p>
+Alternatives
+<p>Ideally, we wouldn&#x27;t even sort the <code>Message</code>s when passing <code>--silent</code>. I considered moving the logic into the <code>Printer,</code> but it only gets passed a read-only slice. We could consider changing the slice to be mutable, but that feels odd.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -74,7 +74,7 @@
             <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
 <ul>
 <li>main<ul>
-<li><strong>PR #4624</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/4624" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a>  👈</li>
+<li><strong>PR #4624</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/4624"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite"></a>  👈</li>
 </ul>
 </li>
 </ul>
@@ -83,11 +83,11 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-05-24 11:30</div>
-            <div class="timeline-body"><h2>PR Check Results</h2>
-<h3>Ecosystem</h3>
+            <div class="timeline-body">PR Check Results
+Ecosystem
 <p>✅ ecosystem check detected no changes.</p>
-<h3>Benchmark</h3>
-<h4>Linux</h4>
+Benchmark
+Linux
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 linter/all-rules/large/dataset.py          1.00     14.1±0.05ms     2.9 MB/sec    1.00     14.0±0.04ms     2.9 MB/sec
@@ -103,7 +103,7 @@ parser/numpy/ctypeslib.py                  1.00   1031.4±0.43µs    16.1 MB/sec
 parser/numpy/globals.py                    1.01    105.7±0.49µs    27.9 MB/sec    1.00    105.1±0.28µs    28.1 MB/sec
 parser/pydantic/types.py                   1.00      2.3±0.01ms    11.3 MB/sec    1.00      2.2±0.00ms    11.4 MB/sec
 </code></pre>
-<h4>Windows</h4>
+Windows
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 linter/all-rules/large/dataset.py          1.00     21.0±0.47ms  1988.4 KB/sec    1.00     20.9±0.34ms  1997.0 KB/sec
@@ -119,12 +119,12 @@ parser/numpy/ctypeslib.py                  1.00  1590.2±52.04µs    10.5 MB/sec
 parser/numpy/globals.py                    1.01    161.7±5.18µs    18.2 MB/sec    1.00    160.8±5.01µs    18.3 MB/sec
 parser/pydantic/types.py                   1.01      3.6±0.08ms     7.1 MB/sec    1.00      3.5±0.06ms     7.2 MB/sec
 </code></pre>
-<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Improve message sorting performance" to "Improve `Message` sorting performance" by @MichaReiser on 2023-05-24 11:36</div>
+            <div class="event">Renamed from &quot;Improve message sorting performance&quot; to &quot;Improve `Message` sorting performance&quot; by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-05-24 11:36</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-05-24 11:52</div>
@@ -136,10 +136,10 @@ parser/pydantic/types.py                   1.01      3.6±0.08ms     7.1 MB/sec 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @MichaReiser on 2023-05-24 14:34</div>
+            <div class="event">Merged by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-05-24 14:34</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2023-05-24 14:34</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-05-24 14:34</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2023-05-24 14:34</div>
@@ -147,7 +147,7 @@ parser/pydantic/types.py                   1.01      3.6±0.08ms     7.1 MB/sec 
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:57:35 UTC
+        Synced at 2026-01-20 18:53:55 UTC
     </footer>
 </body>
 </html>

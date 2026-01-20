@@ -23,23 +23,23 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/jbarnoud">@jbarnoud</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>My configuration contains <code>target-version</code> in a file referred to behind an <code>extend</code>, but it is not respected.</p>
 <p>My projects contains a <code>ruff.toml</code> provided by a template that contains the <code>target-version</code> among other things, and a <code>.ruff.toml</code> with the configuration specific to the project which extends the <code>ruff.toml</code>. The <code>target-version</code> in <code>ruff.toml</code> is not respected and ruff falls back to the version in the <code>pyproject.toml</code>.</p>
 <p>A similar issue was described in #20090, however, this issue was closed in favor of #8795 that focusses <code>per-ignore-file</code>.</p>
 <p>I can reproduce the problem with a project containing a <code>ruff.toml</code>, a <code>.ruff.toml</code>, a <code>main.py</code>, and a <code>pyproject.toml</code>:</p>
-<pre><code class="language-yaml"># ruff.toml
+<pre><code># ruff.toml
 target-version = &quot;py310&quot;
 </code></pre>
-<pre><code class="language-yaml"># .ruff.toml
+<pre><code># .ruff.toml
 extend = &quot;ruff.toml&quot;
 </code></pre>
-<pre><code class="language-python"># main.py
+<pre><code># main.py
 from typing import TypeAlias
 
 A: TypeAlias = str | int
 </code></pre>
-<pre><code class="language-yaml"># pyproject.toml
+<pre><code># pyproject.toml
 [project]
 name = &quot;repro-ruff&quot;
 version = &quot;0.1.0&quot;
@@ -89,7 +89,7 @@ No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option
 </code></pre>
 <p>I traced part of the execution and figured out that, in the failing case, <a href="https://github.com/astral-sh/ruff/blob/0138cd238a8669d53c325eb7ca19155946dfa665/crates/ruff_workspace/src/resolver.rs#L335"><code>ruff_workspace::resolver::resolve_configuration</code></a> calls <a href="https://github.com/astral-sh/ruff/blob/0138cd238a8669d53c325eb7ca19155946dfa665/crates/ruff_workspace/src/pyproject.rs#L138"><code>ruff_workspace::pyproject::load_options</code></a> for <code>.ruff.toml</code> with <code>version_strategy</code> set to <code>TargetVersionStrategy::RequiresPythonFallback</code>. Because the file does not define <code>target-version</code>, the function <a href="https://github.com/astral-sh/ruff/blob/0138cd238a8669d53c325eb7ca19155946dfa665/crates/ruff_workspace/src/pyproject.rs#L161">emits the log</a> that says &quot;No <code>target-version</code> found in <code>ruff.toml</code>&quot; (which is misleading as the function is reading <code>.ruff.toml</code> and not <code>ruff.toml</code>) and <a href="https://github.com/astral-sh/ruff/blob/0138cd238a8669d53c325eb7ca19155946dfa665/crates/ruff_workspace/src/pyproject.rs#L176">sets the target version to the fallback</a>. <code>resolve_configuration</code> then calls <code>load_options</code> on <code>ruff.toml</code> and correctly reads the target version. Finally, <code>resolve_configuration</code> converts the <code>Options</code> instances it got from <code>load_options</code> into <code>Configuration</code> instances and <a href="https://github.com/astral-sh/ruff/blob/0138cd238a8669d53c325eb7ca19155946dfa665/crates/ruff_workspace/src/resolver.rs#L375">merges them</a> by calling <a href="https://github.com/astral-sh/ruff/blob/0138cd238a8669d53c325eb7ca19155946dfa665/crates/ruff_workspace/src/configuration.rs#L588"><code>Configuration::combine</code></a>. The <code>target_version</code> field of <code>Configuration</code> is an <code>Option&lt;str&gt;</code> and <code>combine</code> calls <code>Option::or</code> on them. Because the <code>Configuration</code> read from <code>.ruff.toml</code> has the target version sets to the fallback version, we get <code>Some(fallback_version).or(Some(version_read_in_the_other_file))</code> and ruff keeps the fallback version.</p>
 <p>When passing the <code>--config</code> argument, <code>.ruff.toml</code> is read with <code>version_strategy</code> set to <code>TargetVersionStrategy::UseDefault</code>. When <code>load_options</code> does not find a target version in the file, <a href="https://github.com/astral-sh/ruff/blob/a722df6a7309c6de2eaac1ba55abe8e741ea7e17/crates/ruff_workspace/src/pyproject.rs#L163">it keeps the <code>targer_version</code> attribute set to <code>None</code></a> so the <code>combine</code> later works as expected.</p>
-<h3>Version</h3>
+Version
 <p>ruff 0.14.9 and 1b44d7e2a7eb80cf22dd2e2612c1c6fc8756369c</p>
 </div>
         </div>
@@ -97,8 +97,8 @@ No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-12 20:38</div>
             <div class="timeline-body"><p>Thank you for the great writeup!</p>
 <p>This does sound like a bug to me, and I think your diagnosis of the cause is correct too.</p>
-<p>cc @dylwil3, I <em>think</em> this is related to the changes in https://github.com/astral-sh/ruff/pull/16319 because the example works as expected before Ruff 0.11:</p>
-<pre><code class="language-shell">❯ uvx ruff@0.10.0 check --no-cache --select UP040
+<p>cc @dylwil3, I <em>think</em> this is related to the changes in <a href="https://github.com/astral-sh/ruff/pull/16319">astral-sh/ruff#16319</a> because the example works as expected before Ruff 0.11:</p>
+<pre><code>❯ uvx ruff@0.10.0 check --no-cache --select UP040
 All checks passed!
 
 ❯ uvx ruff@0.11.0 check --no-cache --select UP040 --output-format concise
@@ -108,10 +108,10 @@ Found 1 error.
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-12-12 20:38</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-12 20:38</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">configuration</span> added by @ntBre on 2025-12-12 20:38</div>
+            <div class="event">Label <span class="label">configuration</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-12 20:38</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/denyszhak">@denyszhak</a> on 2025-12-14 19:45</div>
@@ -121,7 +121,7 @@ Found 1 error.
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:53:41 UTC
+        Synced at 2026-01-20 18:50:41 UTC
     </footer>
 </body>
 </html>

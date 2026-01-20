@@ -23,29 +23,29 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/oconnor663">@oconnor663</a></div>
-            <div class="timeline-body"><p>This is a hypothetical bug without an observed smoking gun. (I've only been able to <a href="https://github.com/astral-sh/uv/issues/14171#issuecomment-3014580701">trigger it artificially</a>, not with e.g. a real connection reset on the real network.) Here's some code that might be vulnerable to skipping an IO error, depending on how exactly that error is wrapped: https://github.com/astral-sh/uv/blob/87e9ccfb92e2761433bebddbdd68895de0e20abd/crates/uv-client/src/base_client.rs#L898-L908</p>
-<p>The reason this is vulnerable is because of a bad/unexpected interaction between <code>thiserror</code>'s <code>#[error(transparent)]</code> marker and a <code>downcast</code> loop that walks the <code>.source()</code> chain. <a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2024&amp;gist=be02dbdc58332cea46ab7b93157036fc">Here's a Playground demo.</a> The <code>io::Error</code> is skipped in that case, because <code>transparent</code> <em>forwards</em> the <code>.source()</code> call to the wrapped error (which returns <code>None</code> in that demo, but it's a problem either way) rather than returning the wrapped error itself. This is <a href="https://docs.rs/thiserror/latest/thiserror/#details">documented behavior</a>, though those docs don't discuss the interaction with <code>downcast</code>.</p>
+            <div class="timeline-body"><p>This is a hypothetical bug without an observed smoking gun. (I&#x27;ve only been able to <a href="https://github.com/astral-sh/uv/issues/14171#issuecomment-3014580701">trigger it artificially</a>, not with e.g. a real connection reset on the real network.) Here&#x27;s some code that might be vulnerable to skipping an IO error, depending on how exactly that error is wrapped: https://github.com/astral-sh/uv/blob/87e9ccfb92e2761433bebddbdd68895de0e20abd/crates/uv-client/src/base_client.rs#L898-L908</p>
+<p>The reason this is vulnerable is because of a bad/unexpected interaction between <code>thiserror</code>&#x27;s <code>#[error(transparent)]</code> marker and a <code>downcast</code> loop that walks the <code>.source()</code> chain. <a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2024&amp;gist=be02dbdc58332cea46ab7b93157036fc">Here&#x27;s a Playground demo.</a> The <code>io::Error</code> is skipped in that case, because <code>transparent</code> <em>forwards</em> the <code>.source()</code> call to the wrapped error (which returns <code>None</code> in that demo, but it&#x27;s a problem either way) rather than returning the wrapped error itself. This is <a href="https://docs.rs/thiserror/latest/thiserror/#details">documented behavior</a>, though those docs don&#x27;t discuss the interaction with <code>downcast</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @oconnor663 on 2025-07-02 16:53</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-07-02 16:53</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-07-02 16:53</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-02 16:53</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-02 16:54</div>
-            <div class="timeline-body"><p>I have a change that I'll at least put up for review. We might decide against it.</p>
+            <div class="timeline-body"><p>I have a change that I&#x27;ll at least put up for review. We might decide against it.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-07-02 17:01</div>
-            <div class="timeline-body"><p>The important question is: Does reqwest actually ever gives a plain IO error, or does it return an <code>io::Error</code> with <code>ErrorKind::Custom</code> with a nested reqwest error that nests an io error? Ideally, we'd have an option in thiserror to get not the error chain without transparent, though that may not be possible with the trait casting restrictions (we could do our custom derive to replace thiseorr, but that would still clash with using anyhow/miette on the top elvels). I'd be cautious about changing our error chains too much without a strong motivation.</p>
+            <div class="timeline-body"><p>The important question is: Does reqwest actually ever gives a plain IO error, or does it return an <code>io::Error</code> with <code>ErrorKind::Custom</code> with a nested reqwest error that nests an io error? Ideally, we&#x27;d have an option in thiserror to get not the error chain without transparent, though that may not be possible with the trait casting restrictions (we could do our custom derive to replace thiseorr, but that would still clash with using anyhow/miette on the top elvels). I&#x27;d be cautious about changing our error chains too much without a strong motivation.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-02 17:03</div>
-            <div class="timeline-body"><p>Couldn't reqwest return basically any of our own variants, which in turn could use a transparent IO error that we'd then miss? Like, don't we often see these as &quot;extraction errors&quot;, which is our own variant?</p>
+            <div class="timeline-body"><p>Couldn&#x27;t reqwest return basically any of our own variants, which in turn could use a transparent IO error that we&#x27;d then miss? Like, don&#x27;t we often see these as &quot;extraction errors&quot;, which is our own variant?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -55,17 +55,17 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-07-03 22:13</div>
-            <div class="timeline-body"><p>https://github.com/astral-sh/uv/actions/runs/16060816582/job/45326189810 includes the added logging from https://github.com/astral-sh/uv/pull/14378 but does not indicate that it retried. Does that make it the smoking gun for this issue?</p>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/actions/runs/16060816582/job/45326189810 includes the added logging from <a href="https://github.com/astral-sh/uv/pull/14378">astral-sh/uv#14378</a> but does not indicate that it retried. Does that make it the smoking gun for this issue?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-03 23:18</div>
-            <div class="timeline-body"><p>I'm going to get rid of the transparent variants in <code>uv-extract</code>, let's start there.</p>
+            <div class="timeline-body"><p>I&#x27;m going to get rid of the transparent variants in <code>uv-extract</code>, let&#x27;s start there.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-07-04 09:17</div>
-            <div class="timeline-body"><p>Here's the debug representation of an error if a sever the network connection mid-download:</p>
+            <div class="timeline-body"><p>Here&#x27;s the debug representation of an error if a sever the network connection mid-download:</p>
 <pre><code>[crates/uv/src/commands/python/install.rs:658:13] &amp;err = ExtractError(
     &quot;cpython-3.14.0b3-20250702-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz&quot;,
     Io(
@@ -132,7 +132,7 @@ DEBUG Released lock at `/home/konsti/.local/share/uv/python/.lock`
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2025-08-02 15:32</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-02 15:32</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-02 15:32</div>
@@ -142,7 +142,7 @@ DEBUG Released lock at `/home/konsti/.local/share/uv/python/.lock`
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:32:00 UTC
+        Synced at 2026-01-20 19:39:17 UTC
     </footer>
 </body>
 </html>

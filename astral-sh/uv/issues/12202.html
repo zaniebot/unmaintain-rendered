@@ -23,17 +23,17 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/mwaskom">@mwaskom</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>Starting with uv 0.5.5, <code>uv run</code> will compile bytecode files on every invocation when <code>UV_COMPILE_BYTECODE=1</code> is set:</p>
 <pre><code>$ uv init
 Initialized project `pyc-woe`
-$ UV_COMPILE_BYTECODE=1 uv run python -c ''
+$ UV_COMPILE_BYTECODE=1 uv run python -c &#x27;&#x27;
 Using CPython 3.13.0
 Creating virtual environment at: .venv
 Bytecode compiled 1 file in 39ms
-$ UV_COMPILE_BYTECODE=1 uv run python -c ''
+$ UV_COMPILE_BYTECODE=1 uv run python -c &#x27;&#x27;
 Bytecode compiled 1 file in 36ms
-$ UV_COMPILE_BYTECODE=1 uv run python -c ''
+$ UV_COMPILE_BYTECODE=1 uv run python -c &#x27;&#x27;
 Bytecode compiled 1 file in 35ms```
 </code></pre>
 <p>While not shown here, <em>all</em> packages in the venv get their bytecode recompiled, so this can add a lot of latency for large environments.</p>
@@ -41,18 +41,18 @@ Bytecode compiled 1 file in 35ms```
 <blockquote>
 <p>Equivalent to the --compile-bytecode command-line argument. If set, uv will compile Python source files to bytecode after installation</p>
 </blockquote>
-<p>Instead, it seems to be effectively setting &quot;ignore the pyc cache and recompile on every invocation of <code>uv run</code>&quot;. Maybe that's expected on your end, but we found it very surprising.</p>
-<p>Note that this behavior was introduced in 0.5.5. I'm guessing it's a result of <a href="https://github.com/astral-sh/uv/pull/9378">this PR</a>.</p>
-<h3>Platform</h3>
+<p>Instead, it seems to be effectively setting &quot;ignore the pyc cache and recompile on every invocation of <code>uv run</code>&quot;. Maybe that&#x27;s expected on your end, but we found it very surprising.</p>
+<p>Note that this behavior was introduced in 0.5.5. I&#x27;m guessing it&#x27;s a result of <a href="https://github.com/astral-sh/uv/pull/9378">this PR</a>.</p>
+Platform
 <p>Linux 5.15.0-101.103.2.1.el9uek.x86_64 x86_64 GNU/Linux</p>
-<h3>Version</h3>
+Version
 <p>uv 0.6.6 (as mentioned, the behavior was introduced in 0.5.5)</p>
-<h3>Python version</h3>
-<p>Python 3.9.18 when making the repro, but it's not Python version dependent</p>
+Python version
+<p>Python 3.9.18 when making the repro, but it&#x27;s not Python version dependent</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @mwaskom on 2025-03-16 15:42</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/mwaskom">@mwaskom</a> on 2025-03-16 15:42</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-16 22:24</div>
@@ -61,15 +61,15 @@ Bytecode compiled 1 file in 35ms```
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-17 01:47</div>
-            <div class="timeline-body"><p>We do recompile the entire environment, as opposed to only compiling newly-installed packages. However, IIUC, it's not quite correct to say that the behavior is &quot;ignore the pyc cache and recompile on every invocation of uv run&quot;, since bytecode compilation only <em>actually</em> runs if a file's timestamp or size changes. (See, e.g., https://docs.python.org/3/library/py_compile.html#py_compile.PycInvalidationMode.)</p>
+            <div class="timeline-body"><p>We do recompile the entire environment, as opposed to only compiling newly-installed packages. However, IIUC, it&#x27;s not quite correct to say that the behavior is &quot;ignore the pyc cache and recompile on every invocation of uv run&quot;, since bytecode compilation only <em>actually</em> runs if a file&#x27;s timestamp or size changes. (See, e.g., https://docs.python.org/3/library/py_compile.html#py_compile.PycInvalidationMode.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mwaskom">@mwaskom</a> on 2025-03-17 12:45</div>
             <div class="timeline-body"><blockquote>
-<p>However, IIUC, it's not quite correct to say that the behavior is &quot;ignore the pyc cache and recompile on every invocation of uv run&quot;, since bytecode compilation only actually runs if a file's timestamp or size changes.</p>
+<p>However, IIUC, it&#x27;s not quite correct to say that the behavior is &quot;ignore the pyc cache and recompile on every invocation of uv run&quot;, since bytecode compilation only actually runs if a file&#x27;s timestamp or size changes.</p>
 </blockquote>
-<p>What's causing the timestamp or size to change here? E.g. if I expand my environment a little bit</p>
+<p>What&#x27;s causing the timestamp or size to change here? E.g. if I expand my environment a little bit</p>
 <pre><code>$ uv pip install fastapi[standard]
 Resolved 34 packages in 155ms
 Prepared 34 packages in 172ms
@@ -77,23 +77,23 @@ Installed 34 packages in 19ms
  ...
 </code></pre>
 <p>Then it sure looks like the entire site-packages is getting recompiled on every <code>uv run</code>:</p>
-<pre><code>$ UV_COMPILE_BYTECODE=1 uv run python -c ''
+<pre><code>$ UV_COMPILE_BYTECODE=1 uv run python -c &#x27;&#x27;
 Bytecode compiled 1178 files in 522ms
-$ UV_COMPILE_BYTECODE=1 uv run python -c ''
+$ UV_COMPILE_BYTECODE=1 uv run python -c &#x27;&#x27;
 Bytecode compiled 1178 files in 40ms
-$ UV_COMPILE_BYTECODE=1 uv run python -c ''
+$ UV_COMPILE_BYTECODE=1 uv run python -c &#x27;&#x27;
 Bytecode compiled 1178 files in 44ms
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-17 12:46</div>
-            <div class="timeline-body"><p>Look at the difference in time though? 522ms to 40ms. The subsequent runs short-circuit (on a per-file basis) if the timestamp hasn't changed. This is a feature that's built-in to CPython's bytecode compiler, not uv.</p>
+            <div class="timeline-body"><p>Look at the difference in time though? 522ms to 40ms. The subsequent runs short-circuit (on a per-file basis) if the timestamp hasn&#x27;t changed. This is a feature that&#x27;s built-in to CPython&#x27;s bytecode compiler, not uv.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mwaskom">@mwaskom</a> on 2025-03-17 12:52</div>
-            <div class="timeline-body"><p>40 ms of extra latency for each <code>uv run</code> is still not ideal though? And that's just for one requested package + its dependencies. Copying this log from one of our users:</p>
+            <div class="timeline-body"><p>40 ms of extra latency for each <code>uv run</code> is still not ideal though? And that&#x27;s just for one requested package + its dependencies. Copying this log from one of our users:</p>
 <pre><code>root@modal:/code/crafty$ UV_COMPILE_BYTECODE=1 uv run python -c &quot;&quot;
 Bytecode compiled 11165 files in 9.90s
 root@modal:/code/crafty$ UV_COMPILE_BYTECODE=1 uv run python -c &quot;&quot;
@@ -103,14 +103,14 @@ Bytecode compiled 11165 files in 1.76s
 root@modal:/code/crafty$ UV_COMPILE_BYTECODE=1 uv run python -c &quot;&quot;
 Bytecode compiled 11165 files in 1.75s
 </code></pre>
-<p>So, OK fair enough that it's not <em>ignoring</em> the cache, but the point remains that it's a surprising and harmful behavior.</p>
-<p>(I guess a separate issue is whether the log should say &quot;Bytecode compiled n files&quot; if that's not what it's actually doing).</p>
+<p>So, OK fair enough that it&#x27;s not <em>ignoring</em> the cache, but the point remains that it&#x27;s a surprising and harmful behavior.</p>
+<p>(I guess a separate issue is whether the log should say &quot;Bytecode compiled n files&quot; if that&#x27;s not what it&#x27;s actually doing).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-17 13:00</div>
             <div class="timeline-body"><p>Why not enable bytecode compilation at install time, then, rather than globally?</p>
-<p>(I'm not sure that there are other great options here. E.g., if we <em>didn't</em> re-check the bytecode compilation in <code>uv run</code> even when enabled, then <code>uv run --compile-bytecode python -c &quot;&quot;</code> <em>wouldn't</em> compile bytecode at all. IIRC it actually worked that way in the past and we (justifiably) received issues.)</p>
+<p>(I&#x27;m not sure that there are other great options here. E.g., if we <em>didn&#x27;t</em> re-check the bytecode compilation in <code>uv run</code> even when enabled, then <code>uv run --compile-bytecode python -c &quot;&quot;</code> <em>wouldn&#x27;t</em> compile bytecode at all. IIRC it actually worked that way in the past and we (justifiably) received issues.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -118,30 +118,30 @@ Bytecode compiled 11165 files in 1.75s
             <div class="timeline-body"><blockquote>
 <p>Why not enable bytecode compilation at install time, then, rather than globally?</p>
 </blockquote>
-<p>We enable it globally because uv's default behavior w/r/t not compiling during the install is very harmful for containerized workflows. We are trying to help disarm this footgun for our users. And there is not always a clear &quot;install time&quot; distinction from the platform's perspective. Still, we will need to work on that if this is expected behavior for uv, because this outcome is probably worse.</p>
-<p>FWIW, I am not a sophisticated user of uv (just passing on issues are users are having with it), but I don't think I really understand the rationale here. My mental model is that <code>uv run</code> can install/update packages on each invocation. <em>If it does that</em>, than I would expect it to also recompile bytecode. (It still feels like it should only scan the new packages, but maybe that's not possible, I don't know.) The surprising behavior here is forcing bytecode compilation (or at least a scan of the pyc cache or something) even though nothing about the environment has changed and nothing needed to be installed. Maybe that's the wrong model though.</p>
+<p>We enable it globally because uv&#x27;s default behavior w/r/t not compiling during the install is very harmful for containerized workflows. We are trying to help disarm this footgun for our users. And there is not always a clear &quot;install time&quot; distinction from the platform&#x27;s perspective. Still, we will need to work on that if this is expected behavior for uv, because this outcome is probably worse.</p>
+<p>FWIW, I am not a sophisticated user of uv (just passing on issues are users are having with it), but I don&#x27;t think I really understand the rationale here. My mental model is that <code>uv run</code> can install/update packages on each invocation. <em>If it does that</em>, than I would expect it to also recompile bytecode. (It still feels like it should only scan the new packages, but maybe that&#x27;s not possible, I don&#x27;t know.) The surprising behavior here is forcing bytecode compilation (or at least a scan of the pyc cache or something) even though nothing about the environment has changed and nothing needed to be installed. Maybe that&#x27;s the wrong model though.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mwaskom">@mwaskom</a> on 2025-03-17 13:15</div>
             <div class="timeline-body"><blockquote>
-<p>then uv run --compile-bytecode python -c &quot;&quot; wouldn't compile bytecode at all</p>
+<p>then uv run --compile-bytecode python -c &quot;&quot; wouldn&#x27;t compile bytecode at all</p>
 </blockquote>
-<p>Do you mean that Python itself won't invalidate the pyc cache / write new pyc files when the program executes? Or just that uv won't do &quot;just in time&quot; pre-compilation in this case?</p>
-<p>It's not obvious to me that pre-compilation is very meaningful in the <code>uv run</code> context, since there's no separation from the user's perspective between &quot;install time&quot; and &quot;run time&quot; there. But again, I haven't thought much about exactly what happens when you <code>uv run</code>.</p>
+<p>Do you mean that Python itself won&#x27;t invalidate the pyc cache / write new pyc files when the program executes? Or just that uv won&#x27;t do &quot;just in time&quot; pre-compilation in this case?</p>
+<p>It&#x27;s not obvious to me that pre-compilation is very meaningful in the <code>uv run</code> context, since there&#x27;s no separation from the user&#x27;s perspective between &quot;install time&quot; and &quot;run time&quot; there. But again, I haven&#x27;t thought much about exactly what happens when you <code>uv run</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-17 13:27</div>
             <div class="timeline-body"><blockquote>
-<p>We enable it globally because uv's default behavior w/r/t not compiling during the install is very harmful for containerized workflows.</p>
+<p>We enable it globally because uv&#x27;s default behavior w/r/t not compiling during the install is very harmful for containerized workflows.</p>
 </blockquote>
 <p>That makes sense. We typically recommend setting this in (e.g.) the install commands within the Dockerfile.</p>
 <blockquote>
-<p>Do you mean that Python itself won't invalidate the pyc cache / write new pyc files when the program executes? Or just that uv won't do &quot;just in time&quot; pre-compilation in this case?</p>
+<p>Do you mean that Python itself won&#x27;t invalidate the pyc cache / write new pyc files when the program executes? Or just that uv won&#x27;t do &quot;just in time&quot; pre-compilation in this case?</p>
 </blockquote>
 <p>The latter.</p>
-<p>This is good feedback, we'll think on it, thanks for engaging. We should consider skipping bytecode compilation in <code>uv run</code> if no packages are installed. I just know we've received issues about that in the past, which I believe prompted this change. The other option is to change the bytecode compilation model more broadly to only compile newly-installed packages. \cc @konstin</p>
+<p>This is good feedback, we&#x27;ll think on it, thanks for engaging. We should consider skipping bytecode compilation in <code>uv run</code> if no packages are installed. I just know we&#x27;ve received issues about that in the past, which I believe prompted this change. The other option is to change the bytecode compilation model more broadly to only compile newly-installed packages. \cc @konstin</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -150,7 +150,7 @@ Bytecode compiled 11165 files in 1.75s
 <p>That makes sense. We typically recommend setting this in (e.g.) the install commands within the Dockerfile.</p>
 </blockquote>
 <p>Yeah, everything would be easier if we could assume users would carefully read all the documentation for their tools :)</p>
-<p>In our case (providing a platform for containerized applications), users can experience significantly degraded performance if they don't realize that <code>uv pip install</code> behaves very differently from <code>pip install</code> in this respect. And it's very hard for users to correctly attribute slow container startup to the true cause; they just assume our system is not performant. So we have opted to be conservative and set the provided environment variable, since it's always the desired behavior at install time, and we did not expect that there would be any runtime consequences.</p>
+<p>In our case (providing a platform for containerized applications), users can experience significantly degraded performance if they don&#x27;t realize that <code>uv pip install</code> behaves very differently from <code>pip install</code> in this respect. And it&#x27;s very hard for users to correctly attribute slow container startup to the true cause; they just assume our system is not performant. So we have opted to be conservative and set the provided environment variable, since it&#x27;s always the desired behavior at install time, and we did not expect that there would be any runtime consequences.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -163,9 +163,9 @@ Bytecode compiled 11165 files in 1.75s
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/cjw296">@cjw296</a> on 2025-03-26 16:57</div>
-            <div class="timeline-body"><p>I came across this issue precisely because it appears that, in a docker-based project, <code>uv</code> is doing a bunch of work when I use <code>uv run</code> that it shouldn't :-/</p>
-<p>Here's my <code>Dockerfile</code>, cribbed from https://github.com/astral-sh/uv-docker-example/blob/main/Dockerfile:</p>
-<pre><code class="language-Dockerfile"># Use a Python image with uv pre-installed
+            <div class="timeline-body"><p>I came across this issue precisely because it appears that, in a docker-based project, <code>uv</code> is doing a bunch of work when I use <code>uv run</code> that it shouldn&#x27;t :-/</p>
+<p>Here&#x27;s my <code>Dockerfile</code>, cribbed from https://github.com/astral-sh/uv-docker-example/blob/main/Dockerfile:</p>
+<pre><code># Use a Python image with uv pre-installed
 FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim
 
 # Install the project into `/app`
@@ -174,10 +174,10 @@ WORKDIR /app
 # Enable bytecode compilation
 ENV UV_COMPILE_BYTECODE=1
 
-# Copy from the cache instead of linking since it's a mounted volume
+# Copy from the cache instead of linking since it&#x27;s a mounted volume
 ENV UV_LINK_MODE=copy
 
-# Install the project's dependencies using the lockfile and settings
+# Install the project&#x27;s dependencies using the lockfile and settings
 RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
@@ -190,7 +190,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 ENTRYPOINT [&quot;uv&quot;, &quot;run&quot;, &quot;client.py&quot;]
 </code></pre>
 <p>But then:</p>
-<pre><code class="language-bash">$ docker build -t ddns:dev .
+<pre><code>$ docker build -t ddns:dev .
 ...
 $ docker run ddns:dev --help
 Bytecode compiled 78 files in 24ms
@@ -201,17 +201,17 @@ Bytecode compiled 78 files in 24ms
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-01 19:26</div>
-            <div class="timeline-body"><p>@cjw296 <code>uv run --no-sync</code> would work (there's also the <code>UV_NO_SYNC</code> environment variable)</p>
+            <div class="timeline-body"><p>@cjw296 <code>uv run --no-sync</code> would work (there&#x27;s also the <code>UV_NO_SYNC</code> environment variable)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/cjw296">@cjw296</a> on 2025-04-01 21:32</div>
-            <div class="timeline-body"><p>Slightly surprising that &quot;no sync&quot; isn't the default...</p>
+            <div class="timeline-body"><p>Slightly surprising that &quot;no sync&quot; isn&#x27;t the default...</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-01 21:36</div>
-            <div class="timeline-body"><p><code>uv run</code> ensures changes you've made to the project are reflected in the environment. We've optimized for the development experience here, as it's much easier to toggle the setting once in a deployment context than manually ensure the project is synced on every <code>run</code> invocation while developing.</p>
+            <div class="timeline-body"><p><code>uv run</code> ensures changes you&#x27;ve made to the project are reflected in the environment. We&#x27;ve optimized for the development experience here, as it&#x27;s much easier to toggle the setting once in a deployment context than manually ensure the project is synced on every <code>run</code> invocation while developing.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -222,7 +222,7 @@ Bytecode compiled 78 files in 24ms
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/cjw296">@cjw296</a> on 2025-04-03 07:55</div>
             <div class="timeline-body"><p>Okay, so the end of my Dockerfile now looks like:</p>
-<pre><code class="language-Dockerfile">COPY . /app
+<pre><code>COPY . /app
 RUN --mount=type=cache,target=/root/.cache/uv uv sync --frozen --no-dev
 
 ENV UV_NO_SYNC=true
@@ -234,23 +234,23 @@ ENTRYPOINT [&quot;uv&quot;, &quot;run&quot;, &quot;client.py&quot;]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-03 13:12</div>
-            <div class="timeline-body"><p>We don't use <code>uv run</code> there, so I don't think it's applicable. Perhaps we could add a note in a comment though?</p>
+            <div class="timeline-body"><p>We don&#x27;t use <code>uv run</code> there, so I don&#x27;t think it&#x27;s applicable. Perhaps we could add a note in a comment though?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/cjw296">@cjw296</a> on 2025-04-03 13:43</div>
-            <div class="timeline-body"><p>Not sure if there's a better place to discuss this, but yeah, I;m curious why that Dockerfile, which is presented as a &quot;best practice&quot; for uv docker stuff, blanks out the entrypoint and then specifies a command, rather than leaving <code>uv</code> as a entrypoint and then having <code>[&quot;run&quot;, &quot;fastapi&quot;, ...]</code> as the command?</p>
+            <div class="timeline-body"><p>Not sure if there&#x27;s a better place to discuss this, but yeah, I;m curious why that Dockerfile, which is presented as a &quot;best practice&quot; for uv docker stuff, blanks out the entrypoint and then specifies a command, rather than leaving <code>uv</code> as a entrypoint and then having <code>[&quot;run&quot;, &quot;fastapi&quot;, ...]</code> as the command?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-03 13:50</div>
-            <div class="timeline-body"><p>Yeah I would rather not keep going here, as it's pretty unrelated to the issue but... the file is intended to demonstrate deploying an application — there's no reason to invoke uv, it just adds a layer of indirection. The process tree is simpler if it's omitted.</p>
+            <div class="timeline-body"><p>Yeah I would rather not keep going here, as it&#x27;s pretty unrelated to the issue but... the file is intended to demonstrate deploying an application — there&#x27;s no reason to invoke uv, it just adds a layer of indirection. The process tree is simpler if it&#x27;s omitted.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:30:27 UTC
+        Synced at 2026-01-20 19:37:47 UTC
     </footer>
 </body>
 </html>

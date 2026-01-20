@@ -23,11 +23,11 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><p>In #12858, I proposed stabilising <code>non-augmented-assignment</code> (<code>PLR6104</code>). However, this was reverted in https://github.com/astral-sh/ruff/pull/12884 after concerns were raised that the rule too often gives recommendations that would cause developers to make unsafe changes to their code. This issue is to discuss if there are any ways of improving the rule's heuristics to reduce this problem.</p>
-<hr />
-<p>In https://github.com/astral-sh/ruff/pull/12858#issuecomment-2287060832, @kdebrab wrote:</p>
+            <div class="timeline-body"><p>In #12858, I proposed stabilising <code>non-augmented-assignment</code> (<code>PLR6104</code>). However, this was reverted in <a href="https://github.com/astral-sh/ruff/pull/12884">astral-sh/ruff#12884</a> after concerns were raised that the rule too often gives recommendations that would cause developers to make unsafe changes to their code. This issue is to discuss if there are any ways of improving the rule&#x27;s heuristics to reduce this problem.</p>
+<hr>
+<p>In <a href="https://github.com/astral-sh/ruff/pull/12858">astral-sh/ruff#12858</a>#issuecomment-2287060832, @kdebrab wrote:</p>
 <blockquote>
-<p>@AlexWaygood I'm a bit concerned about this rule, because there are quite some cases where the application would unintentionally introduce nasty and hard-to-find bugs, in particular when it is applied on input arguments of a function. I'm afraid one could sometimes not be aware that applying the fix causes bugs for these cases. It is especially prevalent for data science libraries when working with numpy arrays or pandas Series / DataFrames, but it could also happen in case the argument is a dictionary or list. In my view, these are false positives which could and should be avoided by not applying the rule on variables that are function arguments.</p>
+<p>@AlexWaygood I&#x27;m a bit concerned about this rule, because there are quite some cases where the application would unintentionally introduce nasty and hard-to-find bugs, in particular when it is applied on input arguments of a function. I&#x27;m afraid one could sometimes not be aware that applying the fix causes bugs for these cases. It is especially prevalent for data science libraries when working with numpy arrays or pandas Series / DataFrames, but it could also happen in case the argument is a dictionary or list. In my view, these are false positives which could and should be avoided by not applying the rule on variables that are function arguments.</p>
 <p>Skimming through the examples above from the ecosystem, I found 10 such cases where applying the fix would lead to (not always evident) bugs:</p>
 <p><a href="https://github.com/PlasmaPy/PlasmaPy">PlasmaPy/PlasmaPy</a></p>
 <ul>
@@ -47,10 +47,10 @@
 </ul>
 <p>Would it be possible to somehow avoid raising PLR6104 for variables that are function arguments?</p>
 </blockquote>
-<p>I agree that changing code from <code>x = x + y</code> to <code>x += y</code> is often an unsafe change if <code>x</code> is a mutable object like a list or array. It's even something that the rule itself is already partly aware of: the autofix for the rule is marked as unsafe unless we're able to trivially infer that <code>x</code> is an instance of an immutable type such as <code>int</code> or <code>str</code>.</p>
-<p>Unfortunately, detecting in general whether an object is an instance of a mutable type is a hard problem without generalised type inference (which we won't have for a long time). So the question becomes: without that capability, how can we reduce unsafe recommendations from this rule? One option would be to make the rule much more conservative. We could match our current behaviour when it comes to deciding whether the autofix is safe or not: we could <em>only</em> emit a diagnostic if the object in question can be trivially inferred to be an instance of an immutable type. Another option would be to apply some kind of heuristic like @kdebrab suggests: we could only emit the diagnostic on variables that are local to a function, since local variables are likely to have shorter lifetimes, so mutating them is less likely to be unsafe even if they are instances of mutable types.</p>
-<p>I think applying a heuristic would be likely to reduce the false positives, but I'm not a massive fan of the idea, as it would be unlikely to get rid of false positives completely, it would also increase false negatives, and it might be hard for users to understand the logic we're applying. Applying augmented assignment operators to variables bound via function parameters is perfectly safe and idiomatic <em>if</em> you know that the function is only going to ever be passed instances of immutable types. For example, here's a function <a href="https://github.com/python/cpython/blob/fe3e623562fb058ef7b8fd6d90ac5098a3b05816/Lib/_pylong.py#L422-L449">from the standard library's <code>_pylong.py</code> module</a> that seems quite idiomatic to me:</p>
-<pre><code class="language-py">def _div2n1n(a, b, n):
+<p>I agree that changing code from <code>x = x + y</code> to <code>x += y</code> is often an unsafe change if <code>x</code> is a mutable object like a list or array. It&#x27;s even something that the rule itself is already partly aware of: the autofix for the rule is marked as unsafe unless we&#x27;re able to trivially infer that <code>x</code> is an instance of an immutable type such as <code>int</code> or <code>str</code>.</p>
+<p>Unfortunately, detecting in general whether an object is an instance of a mutable type is a hard problem without generalised type inference (which we won&#x27;t have for a long time). So the question becomes: without that capability, how can we reduce unsafe recommendations from this rule? One option would be to make the rule much more conservative. We could match our current behaviour when it comes to deciding whether the autofix is safe or not: we could <em>only</em> emit a diagnostic if the object in question can be trivially inferred to be an instance of an immutable type. Another option would be to apply some kind of heuristic like @kdebrab suggests: we could only emit the diagnostic on variables that are local to a function, since local variables are likely to have shorter lifetimes, so mutating them is less likely to be unsafe even if they are instances of mutable types.</p>
+<p>I think applying a heuristic would be likely to reduce the false positives, but I&#x27;m not a massive fan of the idea, as it would be unlikely to get rid of false positives completely, it would also increase false negatives, and it might be hard for users to understand the logic we&#x27;re applying. Applying augmented assignment operators to variables bound via function parameters is perfectly safe and idiomatic <em>if</em> you know that the function is only going to ever be passed instances of immutable types. For example, here&#x27;s a function <a href="https://github.com/python/cpython/blob/fe3e623562fb058ef7b8fd6d90ac5098a3b05816/Lib/_pylong.py#L422-L449">from the standard library&#x27;s <code>_pylong.py</code> module</a> that seems quite idiomatic to me:</p>
+<pre><code>def _div2n1n(a, b, n):
     &quot;&quot;&quot;Divide a 2n-bit nonnegative integer a by an n-bit positive integer
     b, using a recursive divide-and-conquer algorithm.
 
@@ -79,20 +79,20 @@
         r &gt;&gt;= 1
     return q1 &lt;&lt; half_n | q2, r
 </code></pre>
-<p>I'm very interested in hearing whether any members of the Ruff community have any other ideas about how we could reduce false positives in a principled way here, or what they think of the ideas I posted above!</p>
+<p>I&#x27;m very interested in hearing whether any members of the Ruff community have any other ideas about how we could reduce false positives in a principled way here, or what they think of the ideas I posted above!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @AlexWaygood on 2024-08-14 10:30</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-14 10:30</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">help wanted</span> added by @AlexWaygood on 2024-08-14 10:30</div>
+            <div class="event">Label <span class="label">help wanted</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-14 10:30</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "`non-augmented-assignment`: Can we reduce the number of unsafe recommendations from this rule?" to "`non-augmented-assignment` (`PLR1604`): Can we reduce the number of unsafe recommendations from this rule?" by @AlexWaygood on 2024-08-14 10:30</div>
+            <div class="event">Renamed from &quot;`non-augmented-assignment`: Can we reduce the number of unsafe recommendations from this rule?&quot; to &quot;`non-augmented-assignment` (`PLR1604`): Can we reduce the number of unsafe recommendations from this rule?&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-14 10:30</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "`non-augmented-assignment` (`PLR1604`): Can we reduce the number of unsafe recommendations from this rule?" to "`non-augmented-assignment` (`PLR6104`): Can we reduce the number of unsafe recommendations from this rule?" by @AlexWaygood on 2024-08-14 10:31</div>
+            <div class="event">Renamed from &quot;`non-augmented-assignment` (`PLR1604`): Can we reduce the number of unsafe recommendations from this rule?&quot; to &quot;`non-augmented-assignment` (`PLR6104`): Can we reduce the number of unsafe recommendations from this rule?&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-14 10:31</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/VascoSch92">@VascoSch92</a> on 2025-02-07 15:31</div>
@@ -101,13 +101,13 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-07 16:28</div>
-            <div class="timeline-body"><p>This still seems relevant because <code>PLR6104</code> hasn't been stabilized (it's still a preview rule)</p>
+            <div class="timeline-body"><p>This still seems relevant because <code>PLR6104</code> hasn&#x27;t been stabilized (it&#x27;s still a preview rule)</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:50:52 UTC
+        Synced at 2026-01-20 18:48:56 UTC
     </footer>
 </body>
 </html>

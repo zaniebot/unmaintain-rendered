@@ -29,13 +29,13 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "feat: U013 Rewrite TypedDict Assign" to "Implement U013: Unnecessary TypedDict syntactic form" by @martinlehoux on 2022-11-13 21:32</div>
+            <div class="event">Renamed from &quot;feat: U013 Rewrite TypedDict Assign&quot; to &quot;Implement U013: Unnecessary TypedDict syntactic form&quot; by <a href="https://github.com/martinlehoux">@martinlehoux</a> on 2022-11-13 21:32</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/martinlehoux">@martinlehoux</a> on 2022-11-13 21:34</div>
-            <div class="timeline-body"><p>@charliermarsh I think I'm almost done here, might be interesting to have your feedback.</p>
+            <div class="timeline-body"><p>@charliermarsh I think I&#x27;m almost done here, might be interesting to have your feedback.</p>
 <p>I also have to implement: Do not convert when keys are not valid identifiers
-// MyType9 = TypedDict('MyType9', {'in': int, 'x-y': int})</p>
+// MyType9 = TypedDict(&#x27;MyType9&#x27;, {&#x27;in&#x27;: int, &#x27;x-y&#x27;: int})</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -62,7 +62,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyupgrade/plugins/unnecessary_typed_dict_syntactic_form.rs</code>:27 on 2022-11-15 21:27</div>
             <div class="timeline-body"><p>I think you can avoid some clones by returning references here:</p>
-<pre><code class="language-rust">--- a/src/pyupgrade/plugins/unnecessary_typed_dict_syntactic_form.rs
+<pre><code>--- a/src/pyupgrade/plugins/unnecessary_typed_dict_syntactic_form.rs
 +++ b/src/pyupgrade/plugins/unnecessary_typed_dict_syntactic_form.rs
 @@ -10,10 +10,10 @@ use crate::{
  };
@@ -72,10 +72,10 @@
 -    targets: &amp;[Expr],
 -    value: &amp;Expr,
 -) -&gt; Option&lt;(String, Vec&lt;Expr&gt;, Vec&lt;Keyword&gt;)&gt; {
-+fn match_typed_dict_assign&lt;'a&gt;(
-+    targets: &amp;'a [Expr],
-+    value: &amp;'a Expr,
-+) -&gt; Option&lt;(&amp;'a str, &amp;'a [Expr], &amp;'a [Keyword])&gt; {
++fn match_typed_dict_assign&lt;&#x27;a&gt;(
++    targets: &amp;&#x27;a [Expr],
++    value: &amp;&#x27;a Expr,
++) -&gt; Option&lt;(&amp;&#x27;a str, &amp;&#x27;a [Expr], &amp;&#x27;a [Keyword])&gt; {
      if let Some(target) = targets.get(0) {
          if let ExprKind::Name { id: class_name, .. } = &amp;target.node {
              if let ExprKind::Call {
@@ -115,7 +115,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyupgrade/plugins/unnecessary_typed_dict_syntactic_form.rs</code>:190 on 2022-11-15 21:29</div>
             <div class="timeline-body"><p>I think it would be clearer to have <code>try_to_fix</code> return <code>Result&lt;Fix&gt;</code>, then do something like:</p>
-<pre><code class="language-rust">match try_to_fix(stmt, &amp;class_name, &amp;args, &amp;keywords) {
+<pre><code>match try_to_fix(stmt, &amp;class_name, &amp;args, &amp;keywords) {
     Ok(fix) =&gt; {
         check.amend(fix)
     }
@@ -124,18 +124,18 @@
     }
 }
 </code></pre>
-<p>That also removes the dependency on <code>check</code> in <code>try_to_fix</code>, <em>and</em> we'd no longer be silently dropping the error.</p>
+<p>That also removes the dependency on <code>check</code> in <code>try_to_fix</code>, <em>and</em> we&#x27;d no longer be silently dropping the error.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyupgrade/plugins/unnecessary_typed_dict_syntactic_form.rs</code>:148 on 2022-11-15 21:31</div>
-            <div class="timeline-body"><p>Can we pull this assignment into a separate series of <code>if</code> statements, or return a tuple from these branches? I think it'd be a bit clearer than using this branch to assign to <code>total</code> as a side-effect.</p>
+            <div class="timeline-body"><p>Can we pull this assignment into a separate series of <code>if</code> statements, or return a tuple from these branches? I think it&#x27;d be a bit clearer than using this branch to assign to <code>total</code> as a side-effect.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyupgrade/plugins/unnecessary_typed_dict_syntactic_form.rs</code>:160 on 2022-11-15 21:34</div>
             <div class="timeline-body"><p>Can we add a comment noting that the following is illegal?</p>
-<pre><code class="language-py">MyType = TypedDict('MyType', {'a': int, 'b': str}, a=int, b=str)
+<pre><code>MyType = TypedDict(&#x27;MyType&#x27;, {&#x27;a&#x27;: int, &#x27;b&#x27;: str}, a=int, b=str)
 </code></pre>
 </div>
         </div>
@@ -149,7 +149,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/martinlehoux">@martinlehoux</a> on <code>src/pyupgrade/plugins/unnecessary_typed_dict_syntactic_form.rs</code>:190 on 2022-11-16 08:24</div>
-            <div class="timeline-body"><p>Ok, I guess I didn't really know how ruff would handle errors like that</p>
+            <div class="timeline-body"><p>Ok, I guess I didn&#x27;t really know how ruff would handle errors like that</p>
 <p>What does <code>error!(...)</code> do?</p>
 </div>
         </div>
@@ -159,12 +159,12 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/martinlehoux">@martinlehoux</a> on <code>src/pyupgrade/plugins/unnecessary_typed_dict_syntactic_form.rs</code>:148 on 2022-11-16 08:26</div>
-            <div class="timeline-body"><p>Yes you're right I didn't think of tuples. I think I did this to avoid double checking conditions</p>
+            <div class="timeline-body"><p>Yes you&#x27;re right I didn&#x27;t think of tuples. I think I did this to avoid double checking conditions</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyupgrade/plugins/unnecessary_typed_dict_syntactic_form.rs</code>:190 on 2022-11-16 17:03</div>
-            <div class="timeline-body"><p><code>error!(...)</code> is just a logging macro -- so it doesn't return anything, it just logs that at &quot;error&quot; level.</p>
+            <div class="timeline-body"><p><code>error!(...)</code> is just a logging macro -- so it doesn&#x27;t return anything, it just logs that at &quot;error&quot; level.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -182,16 +182,16 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-17 16:50</div>
-            <div class="timeline-body"><p>Let's put <code>IDENTIFIER_REGEX</code> in... <code>src/python/identifiers.rs</code> for now.</p>
-<p>I think we should <em>just</em> do that validation when we run the check, and in the fix, <em>assume</em> that each string is a valid identifier. That's generally the pattern we've followed elsewhere: the check is responsible for all validation, and then the fix can make assumptions about the input. Does that make sense?</p>
+            <div class="timeline-body"><p>Let&#x27;s put <code>IDENTIFIER_REGEX</code> in... <code>src/python/identifiers.rs</code> for now.</p>
+<p>I think we should <em>just</em> do that validation when we run the check, and in the fix, <em>assume</em> that each string is a valid identifier. That&#x27;s generally the pattern we&#x27;ve followed elsewhere: the check is responsible for all validation, and then the fix can make assumptions about the input. Does that make sense?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @martinlehoux on 2022-11-18 08:18</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/martinlehoux">@martinlehoux</a> on 2022-11-18 08:18</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/martinlehoux">@martinlehoux</a> on 2022-11-18 08:18</div>
-            <div class="timeline-body"><p>I think this one is OK now. I guess I'll be quicker to do <code>NamedTuple</code> with this experience</p>
+            <div class="timeline-body"><p>I think this one is OK now. I guess I&#x27;ll be quicker to do <code>NamedTuple</code> with this experience</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -205,19 +205,19 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-18 14:55</div>
-            <div class="timeline-body"><p>Great! I'll try to get this merged today.</p>
+            <div class="timeline-body"><p>Great! I&#x27;ll try to get this merged today.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2022-11-18 17:10</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-18 17:10</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2022-11-18 17:10</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-18 17:10</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:54:53 UTC
+        Synced at 2026-01-20 18:51:27 UTC
     </footer>
 </body>
 </html>

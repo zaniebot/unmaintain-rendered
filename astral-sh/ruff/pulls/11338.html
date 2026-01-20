@@ -29,31 +29,31 @@
 <li>Salsa query arguments need to be ingredients. That means we can no longer pass arbitrary arguments to queries.</li>
 <li>Salsa limits invalidation if the result of a query compares equal to the value it returned previously. We need to remodel our query return values to make best use of that and avoid that e.g. all types invalidate on a single whitespace change (the thing we return from types should be location-independent</li>
 </ol>
-<p>I'll go through the important data models jar by jar.</p>
-<h2>Source</h2>
-<p>The source jar gives access to files, the text of a file, and a file's AST.</p>
+<p>I&#x27;ll go through the important data models jar by jar.</p>
+Source
+<p>The source jar gives access to files, the text of a file, and a file&#x27;s AST.</p>
 <p><strong>File</strong></p>
 <p>https://github.com/astral-sh/ruff/blob/946493cc301c6a5cee8389bcbdb141bcfbeaba4a/crates/red_knot/src/salsa_db/source.rs#L31-L44</p>
-<p>The file stores the basic metadata about a file but doesn't store the file's content. This is mainly because of persistent caching. Restoring the database from disk requires that we restore all files. If the source is stored on the file, we would have to read the content of every file, and that would be very expensive (we want the source validation to happen lazily). That's why the file only stores basic metadata.</p>
-<p>Note: We may decide long-term to have a configuration option that allows users to select if they want to use <code>mtime</code> or the file's has for change detection. In that case, I think we would have a <code>source: Option&lt;String&gt;</code> on file so that the <code>source_text</code> query avoids re-reading the file from disk.</p>
-<p>Files are salsa inputs. Salsa doesn't know how to compute files. Instead, we need to tell salsa which files exist and when they change. That's why files are resolved using <code>db.file(path)</code> where we perform our own mapping from <code>Path -&gt; File</code> (Salsa inputs have no identity other than their instance).</p>
+<p>The file stores the basic metadata about a file but doesn&#x27;t store the file&#x27;s content. This is mainly because of persistent caching. Restoring the database from disk requires that we restore all files. If the source is stored on the file, we would have to read the content of every file, and that would be very expensive (we want the source validation to happen lazily). That&#x27;s why the file only stores basic metadata.</p>
+<p>Note: We may decide long-term to have a configuration option that allows users to select if they want to use <code>mtime</code> or the file&#x27;s has for change detection. In that case, I think we would have a <code>source: Option&lt;String&gt;</code> on file so that the <code>source_text</code> query avoids re-reading the file from disk.</p>
+<p>Files are salsa inputs. Salsa doesn&#x27;t know how to compute files. Instead, we need to tell salsa which files exist and when they change. That&#x27;s why files are resolved using <code>db.file(path)</code> where we perform our own mapping from <code>Path -&gt; File</code> (Salsa inputs have no identity other than their instance).</p>
 <p><strong><code>SourceText</code></strong></p>
-<p>The <code>source_text(file: File) -&gt; SourceText</code> query allows retrieving a file's source text. The source text isn't very exciting. It just stores the file's content.</p>
+<p>The <code>source_text(file: File) -&gt; SourceText</code> query allows retrieving a file&#x27;s source text. The source text isn&#x27;t very exciting. It just stores the file&#x27;s content.</p>
 <p>https://github.com/astral-sh/ruff/blob/946493cc301c6a5cee8389bcbdb141bcfbeaba4a/crates/red_knot/src/salsa_db/source.rs#L163-L167</p>
 <p>Some notes about the implementation:</p>
 <ul>
-<li>The query calls <code>file.revision()</code> (equal to the file's <code>mtime</code>) to inform Salsa that the query should rerun whenever the file is modified. It actually doesn't need the value.</li>
-<li>It might happen that the file has been deleted between calling <code>db.file(path)</code> and <code>source_text(db, file)</code>. In that case, we just assume that the file is empty. That's the best we can do without dealing with awkward results in all caller paths.</li>
+<li>The query calls <code>file.revision()</code> (equal to the file&#x27;s <code>mtime</code>) to inform Salsa that the query should rerun whenever the file is modified. It actually doesn&#x27;t need the value.</li>
+<li>It might happen that the file has been deleted between calling <code>db.file(path)</code> and <code>source_text(db, file)</code>. In that case, we just assume that the file is empty. That&#x27;s the best we can do without dealing with awkward results in all caller paths.</li>
 </ul>
 <p><strong><code>parse</code></strong></p>
 <p>https://github.com/astral-sh/ruff/blob/946493cc301c6a5cee8389bcbdb141bcfbeaba4a/crates/red_knot/src/salsa_db/source.rs#L175-L183</p>
-<p>The <code>parse</code> query is almost boring. It retrieves the file text and calls the parser. We opt out of Salsa's <code>eq</code> optimization because the parse tree is guaranteed to change whenever the source text changes (and our AST doesn't implement <code>Eq</code> because of floats).</p>
-<h2>Semantic</h2>
+<p>The <code>parse</code> query is almost boring. It retrieves the file text and calls the parser. We opt out of Salsa&#x27;s <code>eq</code> optimization because the parse tree is guaranteed to change whenever the source text changes (and our AST doesn&#x27;t implement <code>Eq</code> because of floats).</p>
+Semantic
 <p>This is where it gets interesting.</p>
 <p><strong><code>AstIds</code></strong></p>
 <p>https://github.com/astral-sh/ruff/blob/176267f00b0162dee7545dea4ad14daf24f4897d/crates/red_knot/src/salsa_db/semantic/ast_ids.rs#L18-L24</p>
 <p><code>AstIds</code> are a location-independent representation that allows mapping from <code>Id -&gt; AstNode</code> and from <code>AstNode -&gt; Id</code>. The implementation tries to assign stable IDs by first giving IDs to the module-level statements and expressions, and only then traversing into the function or class level.</p>
-<pre><code class="language-python">a = 10 # statement-id: 0
+<pre><code>a = 10 # statement-id: 0
 
 def test(a): # statement-id: 1
 	if a: # statement-id: 4
@@ -64,79 +64,79 @@ print(a) # statement-id: 2
 class Test: # statement-id: 3
 	pass # statement-id: 6
 </code></pre>
-<p>This way, IDs of top level statements remain unchanged when only making changes to a function's body. Having stable top-level IDs is important because they are referred to from other modules.</p>
-<h3>symbols, cfg</h3>
+<p>This way, IDs of top level statements remain unchanged when only making changes to a function&#x27;s body. Having stable top-level IDs is important because they are referred to from other modules.</p>
+symbols, cfg
 <p><strong><code>semantic_index</code></strong></p>
 <p>https://github.com/astral-sh/ruff/blob/176267f00b0162dee7545dea4ad14daf24f4897d/crates/red_knot/src/salsa_db/semantic.rs#L103-L123</p>
-<p>The <code>semantic_index</code> query computes a single file's symbol table and control flow graph. It shouldn't be used directly because the <code>semantic_index</code> changes every time the AST changes.</p>
+<p>The <code>semantic_index</code> query computes a single file&#x27;s symbol table and control flow graph. It shouldn&#x27;t be used directly because the <code>semantic_index</code> changes every time the AST changes.</p>
 <p><strong><code>symbol_table</code></strong></p>
 <p>https://github.com/astral-sh/ruff/blob/176267f00b0162dee7545dea4ad14daf24f4897d/crates/red_knot/src/salsa_db/semantic/symbol_table.rs#L21-L25</p>
-<p>The query itself just calls into <code>semantic_index</code>. The trick here is that the symbol table itself doesn't contain any data that references the AST. Instead, all data uses <code>AstIds</code>. What this query enables is that Salsa can avoid running queries that depend on the <code>symbol_table</code> if the constructed symbol table hasn't changed. For example, a comment only change doesn't invalidate the symbol table.</p>
+<p>The query itself just calls into <code>semantic_index</code>. The trick here is that the symbol table itself doesn&#x27;t contain any data that references the AST. Instead, all data uses <code>AstIds</code>. What this query enables is that Salsa can avoid running queries that depend on the <code>symbol_table</code> if the constructed symbol table hasn&#x27;t changed. For example, a comment only change doesn&#x27;t invalidate the symbol table.</p>
 <p><strong><code>flow_graph</code></strong></p>
 <p>https://github.com/astral-sh/ruff/blob/176267f00b0162dee7545dea4ad14daf24f4897d/crates/red_knot/src/salsa_db/semantic/flow_graph.rs#L12-L17</p>
 <p>We apply the same trick for the control flow graph</p>
-<h3>Typing</h3>
+Typing
 <p><strong><code>typing_scopes</code></strong></p>
-<p>Typing is where the code changes the most. The existing implementation does type inference per expression. I don't think that <code>type_inference</code> per expression will be fast in Salsa because storing a query result has some overhead. Salsa is also limited to at most <code>u32</code> results per query. I think large projects could reach that limit, especially when the server runs for a long time.</p>
-<p>That's why this PR changes inference to happen per <code>TypingScope</code> instead. For now, a typing scope is either a <code>Module</code>, <code>Function</code>, or <code>Class</code>. So this PR infers all types per module, class, or function (but the module doesn't traverse into function or class bodies).</p>
-<p>The reason why we don't perform type inference on a module scope is to get more fine-grained dependency tracking across files. The type checking of a dependency must only be rerun if the types of the scope where the symbol is defined depend on changes. If the types remain unchanged (for example because the public interface isn't changing), then type checking doesn't need to re-run.</p>
+<p>Typing is where the code changes the most. The existing implementation does type inference per expression. I don&#x27;t think that <code>type_inference</code> per expression will be fast in Salsa because storing a query result has some overhead. Salsa is also limited to at most <code>u32</code> results per query. I think large projects could reach that limit, especially when the server runs for a long time.</p>
+<p>That&#x27;s why this PR changes inference to happen per <code>TypingScope</code> instead. For now, a typing scope is either a <code>Module</code>, <code>Function</code>, or <code>Class</code>. So this PR infers all types per module, class, or function (but the module doesn&#x27;t traverse into function or class bodies).</p>
+<p>The reason why we don&#x27;t perform type inference on a module scope is to get more fine-grained dependency tracking across files. The type checking of a dependency must only be rerun if the types of the scope where the symbol is defined depend on changes. If the types remain unchanged (for example because the public interface isn&#x27;t changing), then type checking doesn&#x27;t need to re-run.</p>
 <p>The first step to make this possible is to create a <code>FunctionTypingScope</code> and <code>ClassTypingScope</code>s for every <code>Function</code> and <code>Class</code> in the file and store them in Salsa to use them as query arguments.</p>
 <p>https://github.com/astral-sh/ruff/blob/176267f00b0162dee7545dea4ad14daf24f4897d/crates/red_knot/src/salsa_db/semantic/types.rs#L26-L40</p>
 <p><strong><code>infer_*_body</code></strong></p>
 <p>The other important queries are <code>infer_module_body</code>, <code>infer_function_body</code>, and <code>infer_class_body</code>. They perform type inference for a single module, function or class, but without traversing into nested classes or functions.</p>
 <p>https://github.com/astral-sh/ruff/blob/176267f00b0162dee7545dea4ad14daf24f4897d/crates/red_knot/src/salsa_db/semantic/types/infer.rs#L39-L64</p>
-<p>Doing type-checking per block introduces some complexity. Mainly that getting the type data for a <code>TypeId</code> not just requires knowing the file from which the data needs to be read, but also from which typing scope. There's even an extra complexity. There are cases where we want to to resolve the type for a <code>type_id</code>. But we may only just be building up that typing table. I solved this by introducing <code>TypingContext</code> and passing that to <code>TypeId::ty</code>. The <code>TypingContext</code> can have an override so that queries for a specific typing-scope are directly resolved without calling into the database.</p>
+<p>Doing type-checking per block introduces some complexity. Mainly that getting the type data for a <code>TypeId</code> not just requires knowing the file from which the data needs to be read, but also from which typing scope. There&#x27;s even an extra complexity. There are cases where we want to to resolve the type for a <code>type_id</code>. But we may only just be building up that typing table. I solved this by introducing <code>TypingContext</code> and passing that to <code>TypeId::ty</code>. The <code>TypingContext</code> can have an override so that queries for a specific typing-scope are directly resolved without calling into the database.</p>
 <p>https://github.com/astral-sh/ruff/blob/176267f00b0162dee7545dea4ad14daf24f4897d/crates/red_knot/src/salsa_db/semantic/types.rs#L527-L556</p>
 <p><strong>Public API</strong></p>
 <p>The public API for types should be limited to:</p>
 <p>https://github.com/astral-sh/ruff/blob/176267f00b0162dee7545dea4ad14daf24f4897d/crates/red_knot/src/salsa_db/semantic/types/infer.rs#L24-L29</p>
 <p>https://github.com/astral-sh/ruff/blob/176267f00b0162dee7545dea4ad14daf24f4897d/crates/red_knot/src/salsa_db/semantic.rs#L79-L101</p>
-<h3>Module Resolver</h3>
+Module Resolver
 <p>The module resolver remains mostly unchanged, although I did some renaming.</p>
 <p><strong><code>Module</code></strong></p>
 <p>I think the naming could be better. <code>Module</code> is mainly a <code>ModuleName</code> but interned into salsa so that it can be used as a query argument.</p>
 <p>https://github.com/astral-sh/ruff/blob/4c7033700dd3f7c954254de5f1c980a860c7e079/crates/red_knot/src/salsa_db/semantic/module.rs#L13-L17</p>
-<p>I didn't want to intern <code>ModuleName</code> directly because I think there are places where we want to use it without the need for having it in Salsa. But maybe that's the wrong call and we should just intern <code>ModuleName</code> directly.</p>
+<p>I didn&#x27;t want to intern <code>ModuleName</code> directly because I think there are places where we want to use it without the need for having it in Salsa. But maybe that&#x27;s the wrong call and we should just intern <code>ModuleName</code> directly.</p>
 <p><strong><code>resolve_module</code></strong></p>
 <p>The main query remains <code>resolve_module</code></p>
 <p>https://github.com/astral-sh/ruff/blob/4c7033700dd3f7c954254de5f1c980a860c7e079/crates/red_knot/src/salsa_db/semantic/module.rs#L193-L214</p>
-<p>What changed is that it now accepts a <code>Module</code> and returns an <code>Option&lt;ResolvedModule&gt;</code>. Again, I'm open to suggestion for better naming. The idea is that a <code>ResolvedModule</code> represents to what a module name resolves. I'm consider renaming it to <code>ResolvedModulePath</code> because I think that's really what it is.</p>
+<p>What changed is that it now accepts a <code>Module</code> and returns an <code>Option&lt;ResolvedModule&gt;</code>. Again, I&#x27;m open to suggestion for better naming. The idea is that a <code>ResolvedModule</code> represents to what a module name resolves. I&#x27;m consider renaming it to <code>ResolvedModulePath</code> because I think that&#x27;s really what it is.</p>
 <p>I think the implementation became much simpler because the module resolver now uses <code>File</code> and <code>File::exists</code> internally. This has the advantage that Salsa will automatically invalidate the <code>resolve_module</code> result if a relevant file gets added or removed.</p>
 <p><strong><code>file_to_module</code></strong></p>
 <p>https://github.com/astral-sh/ruff/blob/4c7033700dd3f7c954254de5f1c980a860c7e079/crates/red_knot/src/salsa_db/semantic/module.rs#L228</p>
 <p>Resolves a <code>file</code> to a <code>Option&lt;ResolvedModule&gt;</code> if it is a module and to <code>None</code> otherwise. This is mostly unchanged.</p>
 <p><strong><code>module_search_paths</code> and <code>set_module_search_paths</code></strong></p>
 <p>https://github.com/astral-sh/ruff/blob/4c7033700dd3f7c954254de5f1c980a860c7e079/crates/red_knot/src/salsa_db/semantic/module.rs#L178-L185</p>
-<p>These queries shouldn't exist long term but it was a &quot;quick&quot; way to allow setting the module search paths without supporting settings. I'll adapt this to @AlexWaygood's most recent changes by having a <code>set_module_resolver_settings</code> short term (that has fields for the different lookup paths). The long term goal is that the module resolver queries the settings and constructs the search paths from the settings (it probably should remain a query)</p>
+<p>These queries shouldn&#x27;t exist long term but it was a &quot;quick&quot; way to allow setting the module search paths without supporting settings. I&#x27;ll adapt this to @AlexWaygood&#x27;s most recent changes by having a <code>set_module_resolver_settings</code> short term (that has fields for the different lookup paths). The long term goal is that the module resolver queries the settings and constructs the search paths from the settings (it probably should remain a query)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-05-08 14:09</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2024-05-28 08:03</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-05-28 08:03</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @MichaReiser on 2024-05-28 08:27</div>
+            <div class="event">Reopened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-05-28 08:27</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-05-28 08:31</div>
-            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/red-knot-salsa">CodSpeed Performance Report</a></h2>
-<h3>Merging #11338 will <strong>not alter performance</strong></h3>
-<p><sub>Comparing <code>red-knot-salsa</code> (06ee178) with <code>main</code> (2e0a975)</sub></p>
-<h3>Summary</h3>
+            <div class="timeline-body"><a href="https://codspeed.io/astral-sh/ruff/branches/red-knot-salsa">CodSpeed Performance Report</a>
+Merging #11338 will <strong>not alter performance</strong>
+<p>Comparing <code>red-knot-salsa</code> (06ee178) with <code>main</code> (2e0a975)</p>
+Summary
 <p><code>✅ 30</code> untouched benchmarks</p>
 </div>
         </div>
@@ -146,13 +146,13 @@ class Test: # statement-id: 3
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/salsa_db/semantic/module.rs</code>:20 on 2024-05-31 13:28</div>
-            <div class="timeline-body"><p>@AlexWaygood this is where I'm currently landing on a Salsa design for a module resolver. I think it would simplify a lot for you because you no longer need to think about invalidation, Salsa will take care of that for you. The only thing necessary for this to work is that you use <code>db.file(path).exists()</code> to test if a file exists.</p>
-<p>But check out <code>resolve_module</code>, it's now almost empty!</p>
+            <div class="timeline-body"><p>@AlexWaygood this is where I&#x27;m currently landing on a Salsa design for a module resolver. I think it would simplify a lot for you because you no longer need to think about invalidation, Salsa will take care of that for you. The only thing necessary for this to work is that you use <code>db.file(path).exists()</code> to test if a file exists.</p>
+<p>But check out <code>resolve_module</code>, it&#x27;s now almost empty!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/salsa_db/semantic/module.rs</code>:221 on 2024-05-31 13:30</div>
-            <div class="timeline-body"><p>It's a bit weird that <code>path_to_module</code> converts the path to a <code>file</code> as the very first thing only so that <code>file_to_module</code> then reads the path. However, for <code>file_to_module</code> to be a salsa query, it can only accept an ingredient as an argument and <code>file</code> is an ingredient but <code>path</code> isn't.</p>
+            <div class="timeline-body"><p>It&#x27;s a bit weird that <code>path_to_module</code> converts the path to a <code>file</code> as the very first thing only so that <code>file_to_module</code> then reads the path. However, for <code>file_to_module</code> to be a salsa query, it can only accept an ingredient as an argument and <code>file</code> is an ingredient but <code>path</code> isn&#x27;t.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -169,13 +169,13 @@ class Test: # statement-id: 3
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Restore Salsa DB for exploring Salsa further" to "Salsa based red-knot prototype" by @MichaReiser on 2024-06-07 15:48</div>
+            <div class="event">Renamed from &quot;Restore Salsa DB for exploring Salsa further&quot; to &quot;Salsa based red-knot prototype&quot; by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-07 15:48</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-07 19:17</div>
-            <div class="timeline-body"><p>There's one limitation with the current model where the invalidation isn't as good as it could be and it is due to the fact that we build the entire symbol table at once (we don't have to and we could refactor that later).</p>
-<p>Let's say we start with</p>
-<pre><code class="language-python"># main.py
+            <div class="timeline-body"><p>There&#x27;s one limitation with the current model where the invalidation isn&#x27;t as good as it could be and it is due to the fact that we build the entire symbol table at once (we don&#x27;t have to and we could refactor that later).</p>
+<p>Let&#x27;s say we start with</p>
+<pre><code># main.py
 import foo;
 
 x = foo.x
@@ -194,35 +194,35 @@ def foo():
 <li>...</li>
 </ul>
 <p>When we now change the content of <code>foo</code> to</p>
-<pre><code class="language-py">x = 10
+<pre><code>x = 10
 
 def foo(): 
 	y = 10
 </code></pre>
-<p>What I expected is that the type inference for <code>main</code> wouldn't re-run because the module-level types of <code>foo</code> remain unchanged. However, that's not the case. The reason is that <code>foo.x</code> resolved the symbol table of <code>foo.py</code> and the symbol table has changed because we introduced <code>y</code> in the scope of <code>foo</code>.  We have the same problem when a flag of an enclosing symbol changes. For example if the body of <code>foo.foo</code> is changed to <code>y = x</code>. The symbol table of that module changes because <code>x</code> now has the flag <code>used</code>.</p>
+<p>What I expected is that the type inference for <code>main</code> wouldn&#x27;t re-run because the module-level types of <code>foo</code> remain unchanged. However, that&#x27;s not the case. The reason is that <code>foo.x</code> resolved the symbol table of <code>foo.py</code> and the symbol table has changed because we introduced <code>y</code> in the scope of <code>foo</code>.  We have the same problem when a flag of an enclosing symbol changes. For example if the body of <code>foo.foo</code> is changed to <code>y = x</code>. The symbol table of that module changes because <code>x</code> now has the flag <code>used</code>.</p>
 <p>We can avoid this by also building the symbol table per scope rather than once globally. Or have a query that reduces the global symbol table to just the global symbols. I do think something like that would be nice to have more fine granular invalidations.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-06-07 19:37</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-07 19:37</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>Cargo.toml</code>:7 on 2024-06-07 19:44</div>
-            <div class="timeline-body"><p>Why are we dropping our rust version in this PR? Did you add a dependency here that doesn't work with 1.74?</p>
+            <div class="timeline-body"><p>Why are we dropping our rust version in this PR? Did you add a dependency here that doesn&#x27;t work with 1.74?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/Cargo.toml</code>:34 on 2024-06-07 19:45</div>
-            <div class="timeline-body"><p>Does this incorporate any of Niko's newest work on &quot;v3&quot; yet? Or are those changes we'll have to adapt to yet in the future?</p>
+            <div class="timeline-body"><p>Does this incorporate any of Niko&#x27;s newest work on &quot;v3&quot; yet? Or are those changes we&#x27;ll have to adapt to yet in the future?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-06-07 21:58</div>
             <div class="timeline-body"><p>This is a great write-up, thanks for taking the time! A few thoughts from the write-up, before I dive into the code:</p>
 <ol>
-<li>One caveat with building symbol tables per-scope is that the contents of nested functions can affect the symbol table of the enclosing function. (If a nested function uses <code>nonlocal x</code> and assigns to <code>x</code>, the symbol kind for <code>x</code> may change based on the knowledge that a nested function might assign to it.) So we can build symbol tables separately for module scope, class scope, and function scope -- but building a function symbol table needs to build all enclosed symbol tables (which may involve N nested class and function scopes, to arbitrary depth.) I think in practice this is still fine, though, and worth doing the split. Nesting isn't that common, and by definition the symbols inside a function scope aren't ones that another module can depend on, anyway.</li>
-<li>My initial feeling is that what you are calling <code>Module</code> maybe should be called <code>ModuleName</code>, and what you are calling <code>ResolvedModule</code> maybe should be called <code>Module</code>. But I'm not totally sure until I look closer at the code.</li>
-<li>I think if we are doing type inference per-scope rather than per-expression that will probably also recommend changes to how type inference works in the first place. We can probably just walk the AST for the scope, assigning types to expressions as we go, and similarly tracking narrowed local types for local symbols as we go. This will mean we don't even need <code>FlowGraph</code> anymore (a lot of the concepts developed in building it will still carry over, it will just be resolved eagerly instead.)</li>
+<li>One caveat with building symbol tables per-scope is that the contents of nested functions can affect the symbol table of the enclosing function. (If a nested function uses <code>nonlocal x</code> and assigns to <code>x</code>, the symbol kind for <code>x</code> may change based on the knowledge that a nested function might assign to it.) So we can build symbol tables separately for module scope, class scope, and function scope -- but building a function symbol table needs to build all enclosed symbol tables (which may involve N nested class and function scopes, to arbitrary depth.) I think in practice this is still fine, though, and worth doing the split. Nesting isn&#x27;t that common, and by definition the symbols inside a function scope aren&#x27;t ones that another module can depend on, anyway.</li>
+<li>My initial feeling is that what you are calling <code>Module</code> maybe should be called <code>ModuleName</code>, and what you are calling <code>ResolvedModule</code> maybe should be called <code>Module</code>. But I&#x27;m not totally sure until I look closer at the code.</li>
+<li>I think if we are doing type inference per-scope rather than per-expression that will probably also recommend changes to how type inference works in the first place. We can probably just walk the AST for the scope, assigning types to expressions as we go, and similarly tracking narrowed local types for local symbols as we go. This will mean we don&#x27;t even need <code>FlowGraph</code> anymore (a lot of the concepts developed in building it will still carry over, it will just be resolved eagerly instead.)</li>
 </ol>
 </div>
         </div>
@@ -231,14 +231,14 @@ def foo():
             <div class="timeline-body"><blockquote>
 <p>One caveat with building symbol tables per-scope is that the contents of nested functions can affect the symbol table of the enclosing function.</p>
 </blockquote>
-<p>The part that's unclear to me is how we would compute flags like <code>USED</code> when building the symbol table lazily per scope, because a symbol might be used in a child scope. But we also have the option to build the entire symbol table at once and then split it per scope (similar to the trick with <code>SymbolIndex</code>, build it once, then have sub-queries that only return a slice of that.</p>
+<p>The part that&#x27;s unclear to me is how we would compute flags like <code>USED</code> when building the symbol table lazily per scope, because a symbol might be used in a child scope. But we also have the option to build the entire symbol table at once and then split it per scope (similar to the trick with <code>SymbolIndex</code>, build it once, then have sub-queries that only return a slice of that.</p>
 <blockquote>
-<p>My initial feeling is that what you are calling Module maybe should be called ModuleName, and what you are calling ResolvedModule maybe should be called Module. But I'm not totally sure until I look closer at the code.</p>
+<p>My initial feeling is that what you are calling Module maybe should be called ModuleName, and what you are calling ResolvedModule maybe should be called Module. But I&#x27;m not totally sure until I look closer at the code.</p>
 </blockquote>
-<p>Yeah, but that would require that <code>ModuleName</code> becomes a sala ingredient. It might be fine but it makes <code>ModuleName</code> a bit more awkward to use. But if we keep <code>ModuleName</code> a regular struct, than what would you call the module thing that we pass to <code>resolve_module</code>?  I might be overthinking this because we can make the argument to <code>resolve_module</code> private and only expose a <code>resolve_module(db: &amp;dyn Db, name: &amp;str)</code> function that internally converts the <code>&amp;str</code> to that <code>Module</code> thing and we can then keep our existing terminology. Maybe that's for the best (it also hides complexity).</p>
-<p>My thinking why I called the <code>Module { name: ModuleName }</code> a module is that I don't think that the existence of the file on the disk makes a module. When we have <code>import foo</code>, then there's an import of the <code>foo</code> module, regardless if that module exists or not. That's why I think that a module's identity is really defined by its name.</p>
+<p>Yeah, but that would require that <code>ModuleName</code> becomes a sala ingredient. It might be fine but it makes <code>ModuleName</code> a bit more awkward to use. But if we keep <code>ModuleName</code> a regular struct, than what would you call the module thing that we pass to <code>resolve_module</code>?  I might be overthinking this because we can make the argument to <code>resolve_module</code> private and only expose a <code>resolve_module(db: &amp;dyn Db, name: &amp;str)</code> function that internally converts the <code>&amp;str</code> to that <code>Module</code> thing and we can then keep our existing terminology. Maybe that&#x27;s for the best (it also hides complexity).</p>
+<p>My thinking why I called the <code>Module { name: ModuleName }</code> a module is that I don&#x27;t think that the existence of the file on the disk makes a module. When we have <code>import foo</code>, then there&#x27;s an import of the <code>foo</code> module, regardless if that module exists or not. That&#x27;s why I think that a module&#x27;s identity is really defined by its name.</p>
 <blockquote>
-<p>We can probably just walk the AST for the scope, assigning types to expressions as we go, and similarly tracking narrowed local types for local symbols as we go. This will mean we don't even need FlowGraph anymore (a lot of the concepts developed in building it will still carry over, it will just be resolved eagerly instead.)</p>
+<p>We can probably just walk the AST for the scope, assigning types to expressions as we go, and similarly tracking narrowed local types for local symbols as we go. This will mean we don&#x27;t even need FlowGraph anymore (a lot of the concepts developed in building it will still carry over, it will just be resolved eagerly instead.)</p>
 </blockquote>
 <p>This is what the new implementation does. But I must say, it would make me sad to see your CFG go away.  I think it could be useful for other things than just typing, like an unreachable rule.</p>
 </div>
@@ -246,21 +246,21 @@ def foo():
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-06-08 16:21</div>
             <div class="timeline-body"><blockquote>
-<p>The part that's unclear to me is how we would compute flags like USED when building the symbol table lazily per scope, because a symbol might be used in a child scope.</p>
+<p>The part that&#x27;s unclear to me is how we would compute flags like USED when building the symbol table lazily per scope, because a symbol might be used in a child scope.</p>
 </blockquote>
-<p>The <code>USED</code> flag only means &quot;used in current scope&quot;, so it's not an issue. The only analysis that crosses scopes is the one Patrick was working on, and that's the case I discussed in my comment; but it only applies to nested scopes within function scopes, so handling a function scope and all it's nested scopes together is one way to handle it; module scopes and class scopes not nested in functions can be fully independent.</p>
+<p>The <code>USED</code> flag only means &quot;used in current scope&quot;, so it&#x27;s not an issue. The only analysis that crosses scopes is the one Patrick was working on, and that&#x27;s the case I discussed in my comment; but it only applies to nested scopes within function scopes, so handling a function scope and all it&#x27;s nested scopes together is one way to handle it; module scopes and class scopes not nested in functions can be fully independent.</p>
 <blockquote>
 <p>build it once, then have sub-queries that only return a slice of that.</p>
 </blockquote>
 <p>This could work, too.</p>
 <blockquote>
-<p>When we have import foo, then there's an import of the foo module, regardless if that module exists or not. That's why I think that a module's identity is really defined by its name.</p>
+<p>When we have import foo, then there&#x27;s an import of the foo module, regardless if that module exists or not. That&#x27;s why I think that a module&#x27;s identity is really defined by its name.</p>
 </blockquote>
-<p>This is a good point. I think it's a solid enough reason for the current naming. We will need to be able to track dependencies on nonexistent modules.</p>
+<p>This is a good point. I think it&#x27;s a solid enough reason for the current naming. We will need to be able to track dependencies on nonexistent modules.</p>
 <blockquote>
 <p>This is what the new implementation does.</p>
 </blockquote>
-<p>&quot;tracking narrowed local types for local symbols as we go&quot; is the part that would specifically replace the CFG; I don't think the implementation here does that yet.</p>
+<p>&quot;tracking narrowed local types for local symbols as we go&quot; is the part that would specifically replace the CFG; I don&#x27;t think the implementation here does that yet.</p>
 <blockquote>
 <p>it would make me sad to see your CFG go away. I think it could be useful for other things than just typing, like an unreachable rule.</p>
 </blockquote>
@@ -270,7 +270,7 @@ def foo():
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/Cargo.toml</code>:43 on 2024-06-10 10:47</div>
             <div class="timeline-body"><p>nit ;)</p>
-<pre><code class="language-suggestion"></code></pre>
+<pre><code></code></pre>
 </div>
         </div>
         <div class="timeline-entry">
@@ -286,7 +286,7 @@ def foo():
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/salsa_db/semantic.rs</code>:117 on 2024-06-10 11:04</div>
             <div class="timeline-body"><p>Maybe this should go into a <code>new</code> associated method for <code>SemanticIndexer</code> (or an implementation of the <code>Default</code> trait)?</p>
-<pre><code class="language-rs">impl SemanticIndexer {
+<pre><code>impl SemanticIndexer {
     fn new(db: &amp;dyn Db, file: File) -&gt; Self {
         Self {
             db,
@@ -311,12 +311,12 @@ def foo():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/salsa_db/source.rs</code>:29 on 2024-06-10 12:26</div>
-            <div class="timeline-body"><p>I'm not sure whether this deserves to be a custom enum, or whether we should just use a <code>bool</code>. An argument in favour of it being a <code>bool</code> is that really the only thing we care about is whether the file exists or not, and I think a <code>exists: bool</code> field in the <code>File</code> struct would be more expressive of that. (&quot;Status&quot; could mean a lot of other things apart from whether it exists or not.) An argument in favour of it being a custom enum is that <code>self.set_status(db).to(FileStatus::Exists)</code> is probably more readable than <code>self.set_exists(db).to(true)</code></p>
+            <div class="timeline-body"><p>I&#x27;m not sure whether this deserves to be a custom enum, or whether we should just use a <code>bool</code>. An argument in favour of it being a <code>bool</code> is that really the only thing we care about is whether the file exists or not, and I think a <code>exists: bool</code> field in the <code>File</code> struct would be more expressive of that. (&quot;Status&quot; could mean a lot of other things apart from whether it exists or not.) An argument in favour of it being a custom enum is that <code>self.set_status(db).to(FileStatus::Exists)</code> is probably more readable than <code>self.set_exists(db).to(true)</code></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/salsa_db/source.rs</code>:36 on 2024-06-10 12:28</div>
-            <div class="timeline-body"><p>What do we need to know the permissions of the file for? If we don't have permissions to read it, maybe we should just mark it as not existing -- for our purposes, they probably come to the same thing?</p>
+            <div class="timeline-body"><p>What do we need to know the permissions of the file for? If we don&#x27;t have permissions to read it, maybe we should just mark it as not existing -- for our purposes, they probably come to the same thing?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -326,7 +326,7 @@ def foo():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/salsa_db/source.rs</code>:146 on 2024-06-10 12:47</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">                let (last_modified, permissions, file_status) = if let Ok(metadata) = metadata {
+            <div class="timeline-body"><pre><code>                let (last_modified, permissions, file_status) = if let Ok(metadata) = metadata {
                     if metadata.is_file() {
                         let last_modified = FileTime::from_last_modification_time(&amp;metadata);
                         #[cfg(unix)]
@@ -358,7 +358,7 @@ def foo():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/salsa_db/semantic/types/infer.rs</code>:121 on 2024-06-10 12:49</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">        TypeInferenceBuilder {
+            <div class="timeline-body"><pre><code>        TypeInferenceBuilder {
             db,
             typing_scope: scope,
             file,
@@ -381,21 +381,21 @@ def foo():
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/salsa_db/semantic/symbol_table.rs</code>:395 on 2024-06-10 14:02</div>
             <div class="timeline-body"><p>I think if we derived <code>Default</code> on the <code>SymbolTable</code> struct, this could just be</p>
-<pre><code class="language-suggestion">        let mut table = SymbolTable::default();
+<pre><code>        let mut table = SymbolTable::default();
 </code></pre>
 <p>right?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/salsa_db/semantic/flow_graph.rs</code>:150 on 2024-06-10 14:11</div>
-            <div class="timeline-body"><p>I <em>think</em> this shouldn't be necessary since the function's <code>pub</code>?</p>
-<pre><code class="language-suggestion"></code></pre>
+            <div class="timeline-body"><p>I <em>think</em> this shouldn&#x27;t be necessary since the function&#x27;s <code>pub</code>?</p>
+<pre><code></code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/salsa_db/semantic/ast_ids.rs</code>:64 on 2024-06-10 14:17</div>
-            <div class="timeline-body"><p>I think these <code>#[allow(unused)]</code> shouldn't be needed because they're <code>pub</code></p>
-<pre><code class="language-suggestion">    pub fn functions(&amp;self) -&gt; impl Iterator&lt;Item = (FunctionId, &amp;StmtFunctionDef)&gt; {
+            <div class="timeline-body"><p>I think these <code>#[allow(unused)]</code> shouldn&#x27;t be needed because they&#x27;re <code>pub</code></p>
+<pre><code>    pub fn functions(&amp;self) -&gt; impl Iterator&lt;Item = (FunctionId, &amp;StmtFunctionDef)&gt; {
         self.statements
             .iter_enumerated()
             .filter_map(|(index, stmt)| Some((FunctionId(index), stmt.as_function_def_stmt()?)))
@@ -411,22 +411,22 @@ def foo():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-06-10 14:32</div>
-            <div class="timeline-body"><p>Thanks for the great PR writeup. Overall this looks good to me, though it looks like it's missing some of my recent changes to <code>module.rs</code>.</p>
-<p>I left a bunch of comments below, mostly pretty minor. I think many of them may also apply to the existing red-knot codebase -- I wouldn't yet consider myself an expert in the crate overall -- so please feel free to ignore any that you don't feel are useful. I think @carljm will probably be a much better reviewer for this in general :/</p>
+            <div class="timeline-body"><p>Thanks for the great PR writeup. Overall this looks good to me, though it looks like it&#x27;s missing some of my recent changes to <code>module.rs</code>.</p>
+<p>I left a bunch of comments below, mostly pretty minor. I think many of them may also apply to the existing red-knot codebase -- I wouldn&#x27;t yet consider myself an expert in the crate overall -- so please feel free to ignore any that you don&#x27;t feel are useful. I think @carljm will probably be a much better reviewer for this in general :/</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-06-10 14:40</div>
             <div class="timeline-body"><blockquote>
-<h3>Module Resolver</h3>
+Module Resolver
 <p>The module resolver remains mostly unchanged, although I did some renaming.</p>
 <p><strong><code>Module</code></strong></p>
 <blockquote>
-<p>My initial feeling is that what you are calling Module maybe should be called ModuleName, and what you are calling ResolvedModule maybe should be called Module. But I'm not totally sure until I look closer at the code.</p>
+<p>My initial feeling is that what you are calling Module maybe should be called ModuleName, and what you are calling ResolvedModule maybe should be called Module. But I&#x27;m not totally sure until I look closer at the code.</p>
 </blockquote>
-<p>Yeah, but that would require that <code>ModuleName</code> becomes a sala ingredient. It might be fine but it makes <code>ModuleName</code> a bit more awkward to use. But if we keep <code>ModuleName</code> a regular struct, than what would you call the module thing that we pass to <code>resolve_module</code>? I might be overthinking this because we can make the argument to <code>resolve_module</code> private and only expose a <code>resolve_module(db: &amp;dyn Db, name: &amp;str)</code> function that internally converts the <code>&amp;str</code> to that <code>Module</code> thing and we can then keep our existing terminology. Maybe that's for the best (it also hides complexity).</p>
+<p>Yeah, but that would require that <code>ModuleName</code> becomes a sala ingredient. It might be fine but it makes <code>ModuleName</code> a bit more awkward to use. But if we keep <code>ModuleName</code> a regular struct, than what would you call the module thing that we pass to <code>resolve_module</code>? I might be overthinking this because we can make the argument to <code>resolve_module</code> private and only expose a <code>resolve_module(db: &amp;dyn Db, name: &amp;str)</code> function that internally converts the <code>&amp;str</code> to that <code>Module</code> thing and we can then keep our existing terminology. Maybe that&#x27;s for the best (it also hides complexity).</p>
 </blockquote>
-<p>I wonder if what's currently called <code>Module</code> could be renamed to <code>ModuleRequest</code>. The user &quot;requests&quot; a module (and the request is represented with a <code>ModuleRequest</code> instance) by importing a module with a certain <code>ModuleName</code>, but they might not actually get a module back, because the module might not actually exist. Unlike the <code>Module</code> type on the <code>main</code> branch, your <code>Module</code> type in <code>crates/red_knot/src/salsa_db/semantic/module.rs</code> doesn't really feel like a <em>Module</em> to me, as you can't query any information about the module directly from the type -- you have to resolve it first, and it feels like the module object is the thing you get given at the end of the resolution process.</p>
+<p>I wonder if what&#x27;s currently called <code>Module</code> could be renamed to <code>ModuleRequest</code>. The user &quot;requests&quot; a module (and the request is represented with a <code>ModuleRequest</code> instance) by importing a module with a certain <code>ModuleName</code>, but they might not actually get a module back, because the module might not actually exist. Unlike the <code>Module</code> type on the <code>main</code> branch, your <code>Module</code> type in <code>crates/red_knot/src/salsa_db/semantic/module.rs</code> doesn&#x27;t really feel like a <em>Module</em> to me, as you can&#x27;t query any information about the module directly from the type -- you have to resolve it first, and it feels like the module object is the thing you get given at the end of the resolution process.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -435,7 +435,7 @@ def foo():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/salsa_db/semantic.rs</code>:43 on 2024-06-10 14:48</div>
-            <div class="timeline-body"><p>Oh yeah, this is a prototype. I'll write documentation before pulling this into the &quot;real&quot; version.</p>
+            <div class="timeline-body"><p>Oh yeah, this is a prototype. I&#x27;ll write documentation before pulling this into the &quot;real&quot; version.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -444,7 +444,7 @@ def foo():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/salsa_db/source.rs</code>:22 on 2024-06-10 14:49</div>
-            <div class="timeline-body"><p>No, this was mainly to explore how and if we could support file revisions e.g. based on a file's hash rather than the last modified timestamp. But this isn't used right now.</p>
+            <div class="timeline-body"><p>No, this was mainly to explore how and if we could support file revisions e.g. based on a file&#x27;s hash rather than the last modified timestamp. But this isn&#x27;t used right now.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -453,7 +453,7 @@ def foo():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/salsa_db/source.rs</code>:43 on 2024-06-10 14:50</div>
-            <div class="timeline-body"><p>Yeah, I used <code>_count</code> but the salsa generated macro code than uses <code>_count</code> and genrates a <code>__count</code> field name that generates another clippy warning. So it's the allow unused or that other warning :D</p>
+            <div class="timeline-body"><p>Yeah, I used <code>_count</code> but the salsa generated macro code than uses <code>_count</code> and genrates a <code>__count</code> field name that generates another clippy warning. So it&#x27;s the allow unused or that other warning :D</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -471,12 +471,12 @@ def foo():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/salsa_db/semantic/ast_ids.rs</code>:35 on 2024-06-10 14:52</div>
-            <div class="timeline-body"><p>I haven't, and i wasn't aware of that data structure. I prefer our implementation because we use an <code>IndexVec</code> for statements and <code>expressions</code> where a lookup is just an array offset whereas <code>BiMap</code> would require a hash map lookup.</p>
+            <div class="timeline-body"><p>I haven&#x27;t, and i wasn&#x27;t aware of that data structure. I prefer our implementation because we use an <code>IndexVec</code> for statements and <code>expressions</code> where a lookup is just an array offset whereas <code>BiMap</code> would require a hash map lookup.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-10 14:54</div>
-            <div class="timeline-body"><p>Thanks @AlexWaygood for the feedback. I don't plan to incorporate any of the code changes into this PR because I don't plan on merging. I'll incorporate your changes when working on the specific areas before pulling them into ruff.</p>
+            <div class="timeline-body"><p>Thanks @AlexWaygood for the feedback. I don&#x27;t plan to incorporate any of the code changes into this PR because I don&#x27;t plan on merging. I&#x27;ll incorporate your changes when working on the specific areas before pulling them into ruff.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -486,7 +486,7 @@ def foo():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/salsa_db/lint.rs</code>:59 on 2024-06-10 15:32</div>
-            <div class="timeline-body"><p>I'm not sure why we would bother with a simplified semantic model (unless it's extremely simple). It seems better to just give the rules that need semantic information access to the full semantic model, and avoid inconsistency.</p>
+            <div class="timeline-body"><p>I&#x27;m not sure why we would bother with a simplified semantic model (unless it&#x27;s extremely simple). It seems better to just give the rules that need semantic information access to the full semantic model, and avoid inconsistency.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -502,7 +502,7 @@ def foo():
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/salsa_db/semantic.rs</code>:503 on 2024-06-10 15:46</div>
             <div class="timeline-body"><p>How is this better than implementing <code>visit_expr</code> and just not calling walk on anything from there?</p>
-<p>I'm asking because a) I think maybe dependencies should be collected in semantic indexing, and b) I don't think semantic indexing should use SourceOrderVisitor.</p>
+<p>I&#x27;m asking because a) I think maybe dependencies should be collected in semantic indexing, and b) I don&#x27;t think semantic indexing should use SourceOrderVisitor.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -522,7 +522,7 @@ def foo():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/salsa_db/semantic/ast_ids.rs</code>:346 on 2024-06-10 16:53</div>
-            <div class="timeline-body"><p>Not clear on the meaning of the initial underscore here. Doesn't the lack of <code>pub</code> sufficiently indicate the field is private?</p>
+            <div class="timeline-body"><p>Not clear on the meaning of the initial underscore here. Doesn&#x27;t the lack of <code>pub</code> sufficiently indicate the field is private?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -532,13 +532,13 @@ def foo():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/salsa_db/semantic/flow_graph.rs</code>:63 on 2024-06-10 16:59</div>
-            <div class="timeline-body"><p>Does this need to be <code>pub</code>? We're clearly using it below in <code>reachable_definitions</code>, not sure we'll need it anywhere else.</p>
+            <div class="timeline-body"><p>Does this need to be <code>pub</code>? We&#x27;re clearly using it below in <code>reachable_definitions</code>, not sure we&#x27;ll need it anywhere else.</p>
 <p>Is the unused lint about the pub?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/salsa_db/semantic/symbol_table.rs</code>:395 on 2024-06-10 17:08</div>
-            <div class="timeline-body"><p>I intentionally avoided that, IIRC, because I don't want it to be possible (and especially not easy!) to create a SymbolTable without the root scope.</p>
+            <div class="timeline-body"><p>I intentionally avoided that, IIRC, because I don&#x27;t want it to be possible (and especially not easy!) to create a SymbolTable without the root scope.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -553,13 +553,13 @@ def foo():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/salsa_db/semantic/types.rs</code>:125 on 2024-06-10 17:26</div>
-            <div class="timeline-body"><p>I'm not sure about this logic; feels more convoluted than it should be (and without spending more time on it, I'm having trouble evaluating whether it's correct or not). On a shallow level I think the cause is that we should be able to trivially build a 1:1 mapping direct from ScopeId to TypingScope; maybe if we created TypingScope in semantic indexing?</p>
-<p>But I think the root cause is that it's not really clear why we have both Scope/ScopeId and TypingScope at all. They represent the same thing and should have a 1:1 relationship with each other: a scope is a scope. Scopes in the symbol table already know if they are module or function or class scopes. So why should <code>TypingScope</code> even exist separately from a symbol table scope?</p>
+            <div class="timeline-body"><p>I&#x27;m not sure about this logic; feels more convoluted than it should be (and without spending more time on it, I&#x27;m having trouble evaluating whether it&#x27;s correct or not). On a shallow level I think the cause is that we should be able to trivially build a 1:1 mapping direct from ScopeId to TypingScope; maybe if we created TypingScope in semantic indexing?</p>
+<p>But I think the root cause is that it&#x27;s not really clear why we have both Scope/ScopeId and TypingScope at all. They represent the same thing and should have a 1:1 relationship with each other: a scope is a scope. Scopes in the symbol table already know if they are module or function or class scopes. So why should <code>TypingScope</code> even exist separately from a symbol table scope?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/salsa_db/semantic/types.rs</code>:112 on 2024-06-10 21:22</div>
-            <div class="timeline-body"><p>The awkward naming here is kind of another indication that we have too many things named &quot;scope&quot; -- &quot;symbol scope&quot; isn't really a sensible name, but it's needed to distinguish from typing scope. Why are they two separate things that we have to map between?</p>
+            <div class="timeline-body"><p>The awkward naming here is kind of another indication that we have too many things named &quot;scope&quot; -- &quot;symbol scope&quot; isn&#x27;t really a sensible name, but it&#x27;s needed to distinguish from typing scope. Why are they two separate things that we have to map between?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -569,27 +569,27 @@ def foo():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/salsa_db/semantic/types.rs</code>:579 on 2024-06-10 21:26</div>
-            <div class="timeline-body"><p>We do need a place to add this deduplication (as well as the flattening/simplification that I already added in PRs since you translated this to Salsa); it's not clear to me where in this structure that should happen.</p>
+            <div class="timeline-body"><p>We do need a place to add this deduplication (as well as the flattening/simplification that I already added in PRs since you translated this to Salsa); it&#x27;s not clear to me where in this structure that should happen.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/salsa_db/semantic/types.rs</code>:647 on 2024-06-10 21:31</div>
-            <div class="timeline-body"><p>I'm not sure what a <code>DefinitionType</code> is supposed to represent that is different from a <code>Type</code>, or why it needs to exist at all. It seems like all it does is intern unions? (And with narrowing it will probably have to intern intersections, too.) But <code>infer_definitions</code> already has a <code>TypeInference</code> -- why can't it do the interning itself?</p>
+            <div class="timeline-body"><p>I&#x27;m not sure what a <code>DefinitionType</code> is supposed to represent that is different from a <code>Type</code>, or why it needs to exist at all. It seems like all it does is intern unions? (And with narrowing it will probably have to intern intersections, too.) But <code>infer_definitions</code> already has a <code>TypeInference</code> -- why can&#x27;t it do the interning itself?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/salsa_db/semantic/types/infer.rs</code>:89 on 2024-06-10 21:57</div>
-            <div class="timeline-body"><p>The location of this comment seems odd; it's not clear what code it is referring to.</p>
+            <div class="timeline-body"><p>The location of this comment seems odd; it&#x27;s not clear what code it is referring to.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/salsa_db/semantic/types/infer.rs</code>:161 on 2024-06-10 23:56</div>
-            <div class="timeline-body"><p>It's strange to me that we build definitions in SemanticIndexer, but now we're rebuilding definitions from scratch here as well. This seems like duplication we probably don't want.</p>
+            <div class="timeline-body"><p>It&#x27;s strange to me that we build definitions in SemanticIndexer, but now we&#x27;re rebuilding definitions from scratch here as well. This seems like duplication we probably don&#x27;t want.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-06-11 00:08</div>
-            <div class="timeline-body"><p>I looked over all the code. This was a lot of work to translate all this, thanks for doing this! I don't see anything here that I think can't work in the new approach. I think overall on the semantic side this PR now has kind of a mish-mash of the old approach  (per expression laziness) and the new approach (per scope typing) that is probably more complex and less efficient than we could achieve, so I expect that over the next few weeks we'll want to re-work and simplify a fair bit of it. But it makes sense to land something <em>working</em> with Salsa and iterate from there.</p>
+            <div class="timeline-body"><p>I looked over all the code. This was a lot of work to translate all this, thanks for doing this! I don&#x27;t see anything here that I think can&#x27;t work in the new approach. I think overall on the semantic side this PR now has kind of a mish-mash of the old approach  (per expression laziness) and the new approach (per scope typing) that is probably more complex and less efficient than we could achieve, so I expect that over the next few weeks we&#x27;ll want to re-work and simplify a fair bit of it. But it makes sense to land something <em>working</em> with Salsa and iterate from there.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -598,7 +598,7 @@ def foo():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/Cargo.toml</code>:34 on 2024-06-11 05:40</div>
-            <div class="timeline-body"><p>Not yet, v3 is only a PR at this point. I scanned through the code and v3 is fairly close to v2022, so we're using that for now. But yes, we'll probably have to adapt some code.</p>
+            <div class="timeline-body"><p>Not yet, v3 is only a PR at this point. I scanned through the code and v3 is fairly close to v2022, so we&#x27;re using that for now. But yes, we&#x27;ll probably have to adapt some code.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -607,7 +607,7 @@ def foo():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/salsa_db.rs</code>:60 on 2024-06-11 05:43</div>
-            <div class="timeline-body"><p>It's possible to create multiple snapshots of the database that then each can run in isolation (they still share the underlying caches). This is useful when using salsa in a multithreaded context.</p>
+            <div class="timeline-body"><p>It&#x27;s possible to create multiple snapshots of the database that then each can run in isolation (they still share the underlying caches). This is useful when using salsa in a multithreaded context.</p>
 <p>Now, Salsa cancels any pending snapshots (other threads) when you want to make changes to it. The way this works is that each query tests if cancellation was requested and if so, it panics with a specific error. The <code>WillCheckCancellation</code> indicates that Salsa now tests cancellation.</p>
 <p>I removed the log because it is very noisy. I think I often saw 2-3 of these logs per query. Maybe something that can be optimized later to reduce it to just one. Removing it made the log a bit more dense and easier to read thorough</p>
 </div>
@@ -618,7 +618,7 @@ def foo():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/salsa_db/lint.rs</code>:59 on 2024-06-11 05:45</div>
-            <div class="timeline-body"><p>Neither do I but it probably also depends on what we refer to as the semantic model. Is it any information that isn't part of the AST? If so, maybe exposing the parent expression or statement is something that we can support even for syntax rules. But yeah, I don't know if it's worth it. I think this is a comment copied from the existing  implementation.</p>
+            <div class="timeline-body"><p>Neither do I but it probably also depends on what we refer to as the semantic model. Is it any information that isn&#x27;t part of the AST? If so, maybe exposing the parent expression or statement is something that we can support even for syntax rules. But yeah, I don&#x27;t know if it&#x27;s worth it. I think this is a comment copied from the existing  implementation.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -627,7 +627,7 @@ def foo():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/salsa_db/semantic.rs</code>:92 on 2024-06-11 05:45</div>
-            <div class="timeline-body"><p>Probably. <code>ty</code> is somewhat common in the Rust ecosystem and has the advantage that it isn't a keyword (it also works for variables).</p>
+            <div class="timeline-body"><p>Probably. <code>ty</code> is somewhat common in the Rust ecosystem and has the advantage that it isn&#x27;t a keyword (it also works for variables).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -636,7 +636,7 @@ def foo():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/salsa_db/semantic.rs</code>:105 on 2024-06-11 05:46</div>
-            <div class="timeline-body"><p>The trick here is the <code>return_ref</code> in the attribute. The actual query then returns a <code>&amp;'db SemanticIndex</code>. Salsa uses some unsafe code to achieve this.</p>
+            <div class="timeline-body"><p>The trick here is the <code>return_ref</code> in the attribute. The actual query then returns a <code>&amp;&#x27;db SemanticIndex</code>. Salsa uses some unsafe code to achieve this.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -646,13 +646,13 @@ def foo():
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/salsa_db/semantic.rs</code>:503 on 2024-06-11 05:49</div>
             <div class="timeline-body"><p><code>visit_expr</code> is probably easier.</p>
-<p>I think I just mainly restored this from the old salsa branch. I haven't thought much about how to handle dependencies. I should probably have marked this with a TODO. We can build it as part of the symbol table. My only concern is that it's important that extracting the dependencies is as cheap as possible, because we need the information early on to schedule checking of dependent files</p>
+<p>I think I just mainly restored this from the old salsa branch. I haven&#x27;t thought much about how to handle dependencies. I should probably have marked this with a TODO. We can build it as part of the symbol table. My only concern is that it&#x27;s important that extracting the dependencies is as cheap as possible, because we need the information early on to schedule checking of dependent files</p>
 <p>An other option would be to build it as part of the <code>ast_ids</code> pass</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/salsa_db/semantic.rs</code>:487 on 2024-06-11 05:52</div>
-            <div class="timeline-body"><p>I resolve this in favor of https://github.com/astral-sh/ruff/pull/11338#discussion_r1633473881</p>
+            <div class="timeline-body"><p>I resolve this in favor of <a href="https://github.com/astral-sh/ruff/pull/11338">astral-sh/ruff#11338</a>#discussion_r1633473881</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -665,7 +665,7 @@ def foo():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/salsa_db/semantic.rs</code>:577 on 2024-06-11 05:54</div>
-            <div class="timeline-body"><p>To me these are kind of the least important types because it's mainly just boilerplate to make Salsa happy. However, I also expect that we'll probably have a <code>db</code> module in every Salsa-enabled crate rather than smashing all of this together into a single file. The way it is in this PR is just for fast prototyping.</p>
+            <div class="timeline-body"><p>To me these are kind of the least important types because it&#x27;s mainly just boilerplate to make Salsa happy. However, I also expect that we&#x27;ll probably have a <code>db</code> module in every Salsa-enabled crate rather than smashing all of this together into a single file. The way it is in this PR is just for fast prototyping.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -674,7 +674,7 @@ def foo():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/salsa_db/semantic.rs</code>:574 on 2024-06-11 05:56</div>
-            <div class="timeline-body"><p>The <code>Jar</code> definition lists all Salsa queries and ingredients (Salsa inputs, interned structs, or tracked structs). The way I think about it. Everything that's stored in Salsa, whether it is the cached results of a query, or some data structure that gets interned / stored in salsa.</p>
+            <div class="timeline-body"><p>The <code>Jar</code> definition lists all Salsa queries and ingredients (Salsa inputs, interned structs, or tracked structs). The way I think about it. Everything that&#x27;s stored in Salsa, whether it is the cached results of a query, or some data structure that gets interned / stored in salsa.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -683,7 +683,7 @@ def foo():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/salsa_db/semantic/ast_ids.rs</code>:346 on 2024-06-11 05:58</div>
-            <div class="timeline-body"><p>The <code>_</code> isn't about visibility as it is in Python (and pre-Typescript JS), but that the field is never read. Without the <code>_</code>, clippy complains that the field is only written to but never read. Removing the field would be incorrect because the whole trick relies on the fact that <code>Parsed</code> outlives the node. Adding the <code>_</code> makes clippy shut up, because it indicates that this is an intentional &quot;unused&quot;</p>
+            <div class="timeline-body"><p>The <code>_</code> isn&#x27;t about visibility as it is in Python (and pre-Typescript JS), but that the field is never read. Without the <code>_</code>, clippy complains that the field is only written to but never read. Removing the field would be incorrect because the whole trick relies on the fact that <code>Parsed</code> outlives the node. Adding the <code>_</code> makes clippy shut up, because it indicates that this is an intentional &quot;unused&quot;</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -692,8 +692,8 @@ def foo():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/salsa_db/semantic/ast_ids.rs</code>:406 on 2024-06-11 06:00</div>
-            <div class="timeline-body"><p>Because <code>Send</code> and <code>Sync</code> are <code>unsafe</code> traits. Rust normally implements these traits automatically for you if all the fields of your struct are <code>Send</code> or <code>Sync</code>. However, Rust can't do that for raw pointers, because it don't know what the guarantees are about the pointer.</p>
-<p>In our case, <code>Send</code> and <code>Sync</code> is safe because we never mutate the pointer nor the data they're referencing (our data structure is similar to an <code>Arc</code>)</p>
+            <div class="timeline-body"><p>Because <code>Send</code> and <code>Sync</code> are <code>unsafe</code> traits. Rust normally implements these traits automatically for you if all the fields of your struct are <code>Send</code> or <code>Sync</code>. However, Rust can&#x27;t do that for raw pointers, because it don&#x27;t know what the guarantees are about the pointer.</p>
+<p>In our case, <code>Send</code> and <code>Sync</code> is safe because we never mutate the pointer nor the data they&#x27;re referencing (our data structure is similar to an <code>Arc</code>)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -702,7 +702,7 @@ def foo():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/salsa_db/semantic/flow_graph.rs</code>:63 on 2024-06-11 06:01</div>
-            <div class="timeline-body"><p>I don't know. I didn't spend much time thinking about visibility. I plan to do this when working on the &quot;proper&quot; Salsa migration.</p>
+            <div class="timeline-body"><p>I don&#x27;t know. I didn&#x27;t spend much time thinking about visibility. I plan to do this when working on the &quot;proper&quot; Salsa migration.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -716,8 +716,8 @@ def foo():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/salsa_db/semantic/types.rs</code>:125 on 2024-06-11 06:07</div>
-            <div class="timeline-body"><p>What I understood is that we don't have a 1:1 mapping in case of lambda expressions and comprehensions. That's one reason why they're different.</p>
-<p>The other reason is that salsa queries can only take Salsa ingredients (something stored in Salsa) as arguments, our <code>ScopeId</code>s aren't ingredient because they're created by pushing a value in an <code>IndexVec</code> which is more efficient than using a salsa interned struct which is always backed by a hash map.</p>
+            <div class="timeline-body"><p>What I understood is that we don&#x27;t have a 1:1 mapping in case of lambda expressions and comprehensions. That&#x27;s one reason why they&#x27;re different.</p>
+<p>The other reason is that salsa queries can only take Salsa ingredients (something stored in Salsa) as arguments, our <code>ScopeId</code>s aren&#x27;t ingredient because they&#x27;re created by pushing a value in an <code>IndexVec</code> which is more efficient than using a salsa interned struct which is always backed by a hash map.</p>
 <p>I think it would make sense to use the same scope structure if we decide to build the symbol table per scope as well. Before then, I think it makes sense to keep them separate.</p>
 </div>
         </div>
@@ -727,7 +727,7 @@ def foo():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/salsa_db/semantic/types.rs</code>:112 on 2024-06-11 06:07</div>
-            <div class="timeline-body"><p>I resolve this in favor of https://github.com/astral-sh/ruff/pull/11338#discussion_r1633601373</p>
+            <div class="timeline-body"><p>I resolve this in favor of <a href="https://github.com/astral-sh/ruff/pull/11338">astral-sh/ruff#11338</a>#discussion_r1633601373</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -740,7 +740,7 @@ def foo():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/salsa_db/semantic/types.rs</code>:579 on 2024-06-11 06:08</div>
-            <div class="timeline-body"><p>Yeah, agree. I think we probably want to have methods on the <code>TypeInferenceBuilder</code> because we only need to e.g. track the reverse map of already created unions back to their type ids during construction but we won't need it once type inference is complete (and we won't create any new types)</p>
+            <div class="timeline-body"><p>Yeah, agree. I think we probably want to have methods on the <code>TypeInferenceBuilder</code> because we only need to e.g. track the reverse map of already created unions back to their type ids during construction but we won&#x27;t need it once type inference is complete (and we won&#x27;t create any new types)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -749,9 +749,9 @@ def foo():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/salsa_db/semantic/types.rs</code>:647 on 2024-06-11 06:12</div>
-            <div class="timeline-body"><p>The enum is a lifetime hack. <code>infer_definition</code> takes <code>&amp;self</code> as argument, so it can't intern a new union type.</p>
+            <div class="timeline-body"><p>The enum is a lifetime hack. <code>infer_definition</code> takes <code>&amp;self</code> as argument, so it can&#x27;t intern a new union type.</p>
 <p>The fact that it is a readonly reference is important in <code>finish</code> where we iterate over <code>self.symbol_table</code>.</p>
-<pre><code class="language-rust">        for symbol in self.symbol_table.symbol_ids_for_scope(self.enclosing_scope) {
+<pre><code>        for symbol in self.symbol_table.symbol_ids_for_scope(self.enclosing_scope) {
             let definition_type = self.typing_context().infer_definitions(
                 symbol_table
                     .definitions(symbol)
@@ -763,7 +763,7 @@ def foo():
             public_symbol_types.insert(symbol, definition_type.into_type(&amp;mut self.result));
         }
 </code></pre>
-<p>Taking a &amp;mut wouldn't compile because Rust couldn't prove that the <code>symbol_table</code> doesn't get mutated (a method taking <code>&amp;mut self</code> can mutate any field). By explicitly passing <code>&amp;mut self.result</code> in <code>into_type</code> Rust can prove that <code>self.symbol_table</code> is never borrowed mutably</p>
+<p>Taking a &amp;mut wouldn&#x27;t compile because Rust couldn&#x27;t prove that the <code>symbol_table</code> doesn&#x27;t get mutated (a method taking <code>&amp;mut self</code> can mutate any field). By explicitly passing <code>&amp;mut self.result</code> in <code>into_type</code> Rust can prove that <code>self.symbol_table</code> is never borrowed mutably</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -772,8 +772,8 @@ def foo():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/salsa_db/semantic/types/infer.rs</code>:161 on 2024-06-11 06:15</div>
-            <div class="timeline-body"><p>Is your concern just about the <code>ImportDefinition</code> creation that is used as key? Because there's a difference. We associate a definition with its type.</p>
-<p>I don't think we can avoid this much without having a way to iterate over the AST and definitions at the same time. It may be nice to have a helper that, given a <code>StmtImport</code> generates the <code>ImportDefinition</code>s with their metadata that could be reused across the two implementations.</p>
+            <div class="timeline-body"><p>Is your concern just about the <code>ImportDefinition</code> creation that is used as key? Because there&#x27;s a difference. We associate a definition with its type.</p>
+<p>I don&#x27;t think we can avoid this much without having a way to iterate over the AST and definitions at the same time. It may be nice to have a helper that, given a <code>StmtImport</code> generates the <code>ImportDefinition</code>s with their metadata that could be reused across the two implementations.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -782,11 +782,11 @@ def foo():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/salsa_db/semantic/symbol_table.rs</code>:395 on 2024-06-11 07:05</div>
-            <div class="timeline-body"><p>I see! That wasn't obvious to me here; maybe we could think about how to make that clearer so we don't have contributors coming along and proposing the &quot;obvious&quot; refactor ;)</p>
+            <div class="timeline-body"><p>I see! That wasn&#x27;t obvious to me here; maybe we could think about how to make that clearer so we don&#x27;t have contributors coming along and proposing the &quot;obvious&quot; refactor ;)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2024-06-18 12:04</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-18 12:04</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-08-12 07:53</div>
@@ -794,7 +794,7 @@ def foo():
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:04:15 UTC
+        Synced at 2026-01-20 19:04:00 UTC
     </footer>
 </body>
 </html>

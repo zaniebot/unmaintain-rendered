@@ -37,7 +37,7 @@ Available versions: 5.15.2
 <p>On windows <code>uv lock</code> wants to use 5.15.15, which is not available so I get a lock file that does not work on Windows. <code>uv add</code> fails with similar logic:</p>
 <pre><code>&gt; uv add pyqt5-qt5            
 Resolved 2 packages in 762ms
-error: distribution pyqt5-qt5==5.15.15 @ registry+https://pypi.org/simple can't be installed because it doesn't have a source distribution or wheel for the current platform
+error: distribution pyqt5-qt5==5.15.15 @ registry+https://pypi.org/simple can&#x27;t be installed because it doesn&#x27;t have a source distribution or wheel for the current platform
 </code></pre>
 <p>Are there any way to specify a platform requirement for package selection for <code>uv lock</code> and <code>uv add</code>?</p>
 <p>For now I use <code>uv pip compile</code> and <code>uv pip sync</code>.</p>
@@ -45,38 +45,38 @@ error: distribution pyqt5-qt5==5.15.15 @ registry+https://pypi.org/simple can't 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2024-10-27 07:55</div>
-            <div class="timeline-body"><p>If you don't mind relying on different versions across platforms, you can actually use PEP 508's Environment Markers.
+            <div class="timeline-body"><p>If you don&#x27;t mind relying on different versions across platforms, you can actually use PEP 508&#x27;s Environment Markers.
 https://docs.astral.sh/uv/concepts/dependencies/#dependency-specifiers-pep-508</p>
 <p>You can modify the pyproject.toml file like this, or include Environment Markers when using <code>uv add</code>.</p>
-<pre><code class="language-toml">dependencies = [
-    &quot;pyqt5-qt5==5.15.15 ; platform_system != 'Windows'&quot;,
-    &quot;pyqt5-qt5==5.15.2 ; platform_system == 'Windows'&quot;,
+<pre><code>dependencies = [
+    &quot;pyqt5-qt5==5.15.15 ; platform_system != &#x27;Windows&#x27;&quot;,
+    &quot;pyqt5-qt5==5.15.2 ; platform_system == &#x27;Windows&#x27;&quot;,
 ]
 </code></pre>
 <p>Or do you think UV should use a version that is compatible across all platforms(Windows、Linux、Macos)?</p>
 <p>Edit:
-However, if your sole requirement is Windows compatibility and there's no need for cross-platform functionality, following @bluss's approach(https://github.com/astral-sh/uv/issues/8603#issuecomment-2439899569) would suffice.</p>
+However, if your sole requirement is Windows compatibility and there&#x27;s no need for cross-platform functionality, following @bluss&#x27;s approach(<a href="https://github.com/astral-sh/uv/issues/8603">astral-sh/uv#8603</a>#issuecomment-2439899569) would suffice.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-10-27 08:06</div>
-            <div class="timeline-body"><p>That package version has the case that 'pyqt5-qt5' has both no windows wheels and no sdist, so it can't be built from source either. A windows-only resolution of the project generates a lockfile with no artifacts at all (no sdist and no wheels)</p>
+            <div class="timeline-body"><p>That package version has the case that &#x27;pyqt5-qt5&#x27; has both no windows wheels and no sdist, so it can&#x27;t be built from source either. A windows-only resolution of the project generates a lockfile with no artifacts at all (no sdist and no wheels)</p>
 <p>Forcing only locking for windows looks like this configuration pyproject.toml - but as said, it does not help.</p>
 <pre><code>[tool.uv]
-environments = [&quot;platform_system == 'Windows'&quot;]
+environments = [&quot;platform_system == &#x27;Windows&#x27;&quot;]
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-27 18:56</div>
-            <div class="timeline-body"><p>This is tracked in https://github.com/astral-sh/uv/issues/5182. I wrote a long explanation of it here: https://github.com/astral-sh/uv/issues/8536#issuecomment-2436123242. But in this case, the above solutions are correct: you can either tell the resolver to only solve for Windows, or you can tell the resolver to use different versions on Windows or non-Windows.</p>
+            <div class="timeline-body"><p>This is tracked in <a href="https://github.com/astral-sh/uv/issues/5182">astral-sh/uv#5182</a>. I wrote a long explanation of it here: <a href="https://github.com/astral-sh/uv/issues/8536">astral-sh/uv#8536</a>#issuecomment-2436123242. But in this case, the above solutions are correct: you can either tell the resolver to only solve for Windows, or you can tell the resolver to use different versions on Windows or non-Windows.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-10-27 18:56</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-27 18:56</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-10-27 18:56</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-27 18:56</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-27 18:56</div>
@@ -85,13 +85,13 @@ environments = [&quot;platform_system == 'Windows'&quot;]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-10-27 19:01</div>
-            <div class="timeline-body"><p>I was probably going out on a confusing tangent: but my comment does not have a solution. Instead with <code>environments</code> the experience for the user is the same. It ends up in a scenario where uv could throw a warning or error - the package has no installable artifacts in the lockfile, so uv knows that resolution is 'bad'.  (Do you see what I mean - no sdist and no wheels at all in the lockfile for that package?)</p>
+            <div class="timeline-body"><p>I was probably going out on a confusing tangent: but my comment does not have a solution. Instead with <code>environments</code> the experience for the user is the same. It ends up in a scenario where uv could throw a warning or error - the package has no installable artifacts in the lockfile, so uv knows that resolution is &#x27;bad&#x27;.  (Do you see what I mean - no sdist and no wheels at all in the lockfile for that package?)</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:27:59 UTC
+        Synced at 2026-01-20 19:35:05 UTC
     </footer>
 </body>
 </html>

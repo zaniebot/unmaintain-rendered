@@ -23,25 +23,25 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Detect async comprehensions nested in sync comprehensions in async functions before Python 3.11, when this was <a href="https://github.com/python/cpython/issues/77527">changed</a>.</p>
-<p>The actual logic of this rule is very straightforward, but properly tracking the async scopes took a bit of work. An alternative to the current approach is to offload the <code>in_async_context</code> check into the <code>SemanticSyntaxContext</code> trait, but that actually required much more extensive changes to the <code>TestContext</code> and also to ruff's semantic model, as you can see in the changes up to 31554b473507034735bd410760fde6341d54a050. This version has the benefit of mostly centralizing the state tracking in <code>SemanticSyntaxChecker</code>, although there was some subtlety around deferred function body traversal that made the changes to <code>Checker</code> more intrusive too (hence the new linter test).</p>
-<p>The <code>Checkpoint</code> struct/system is obviously overkill for now since it's only tracking a single <code>bool</code>, but I thought it might be more useful later.</p>
-<h2>Test Plan</h2>
+<p>The actual logic of this rule is very straightforward, but properly tracking the async scopes took a bit of work. An alternative to the current approach is to offload the <code>in_async_context</code> check into the <code>SemanticSyntaxContext</code> trait, but that actually required much more extensive changes to the <code>TestContext</code> and also to ruff&#x27;s semantic model, as you can see in the changes up to 31554b473507034735bd410760fde6341d54a050. This version has the benefit of mostly centralizing the state tracking in <code>SemanticSyntaxChecker</code>, although there was some subtlety around deferred function body traversal that made the changes to <code>Checker</code> more intrusive too (hence the new linter test).</p>
+<p>The <code>Checkpoint</code> struct/system is obviously overkill for now since it&#x27;s only tracking a single <code>bool</code>, but I thought it might be more useful later.</p>
+Test Plan
 <p>New inline tests and a new linter integration test.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-04-03 14:21</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-03 14:21</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-04-03 14:21</div>
+            <div class="event">Label <span class="label">preview</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-03 14:21</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-04-03 14:21</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-03 14:21</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dhruvmanila by @ntBre on 2025-04-03 14:21</div>
+            <div class="event">Review requested from <a href="https://github.com/dhruvmanila">@dhruvmanila</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-03 14:21</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:338 on 2025-04-03 16:27</div>
@@ -50,10 +50,10 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:50 on 2025-04-03 16:31</div>
-            <div class="timeline-body"><p>I wonder if we could avoid having to store the checkpoints inside and instead move it to the stack by changing <code>SemanticSyntaxChecker::enter_stmt</code> to return a state which the caller needs to pass to <code>exit_stmt</code> (consumes the state, the state can't be created externally).</p>
+            <div class="timeline-body"><p>I wonder if we could avoid having to store the checkpoints inside and instead move it to the stack by changing <code>SemanticSyntaxChecker::enter_stmt</code> to return a state which the caller needs to pass to <code>exit_stmt</code> (consumes the state, the state can&#x27;t be created externally).</p>
 <p>The checker would always store the current state and <code>enter_stmt</code> would return the <em>previous</em> state from <code>enter_stmt</code> (but update its internal state). The <code>exit_stmt</code> call (or expression) then restores the internal state.</p>
 <p>The downside of this is that it requires some more bookkeeping at the call site, but it seems fairly reasonable.</p>
-<p>This approach would mirror the Checker's approach with updating <code>SemanticModelFlags</code>, where it updates the flags before walking the children and then restores the flags once it's done.</p>
+<p>This approach would mirror the Checker&#x27;s approach with updating <code>SemanticModelFlags</code>, where it updates the flags before walking the children and then restores the flags once it&#x27;s done.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -68,7 +68,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-04-03 16:42</div>
-            <div class="timeline-body"><p>Do you think it would simplify the implementation if we only tracked whether we're in a sync comprehension rather than tracking if we're in an async context? That seems easier than correctly tracking if we're also in an async function. It has the downside that we might emit one extra diagnostic if someone uses an async comprehension in a sync function, but I'd expect this to be rare. On the other hand, it doesn't add that much complexity. It's just a bit tricky to get the handling right when to unset the <code>async</code> flag. Do you know if it's necessary to unset the flag in a sync context manager (in an async function)?</p>
+            <div class="timeline-body"><p>Do you think it would simplify the implementation if we only tracked whether we&#x27;re in a sync comprehension rather than tracking if we&#x27;re in an async context? That seems easier than correctly tracking if we&#x27;re also in an async function. It has the downside that we might emit one extra diagnostic if someone uses an async comprehension in a sync function, but I&#x27;d expect this to be rare. On the other hand, it doesn&#x27;t add that much complexity. It&#x27;s just a bit tricky to get the handling right when to unset the <code>async</code> flag. Do you know if it&#x27;s necessary to unset the flag in a sync context manager (in an async function)?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -86,7 +86,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:50 on 2025-04-03 16:57</div>
-            <div class="timeline-body"><p>If you decide to keep the stack solution, we should then change the implementation to only snapshot and restore when necessary. For example, it isn't necessary to store the snapshot for most expressions because the state won't be changed (and, therefore, there isn't anything to restore either).</p>
+            <div class="timeline-body"><p>If you decide to keep the stack solution, we should then change the implementation to only snapshot and restore when necessary. For example, it isn&#x27;t necessary to store the snapshot for most expressions because the state won&#x27;t be changed (and, therefore, there isn&#x27;t anything to restore either).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -95,8 +95,8 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:477 on 2025-04-03 17:05</div>
-            <div class="timeline-body"><p>Oh good catch. It looks like <code>class</code> and <code>lambda</code> do cause problems even inside of an outer <code>async</code> function, but <code>with</code> doesn't seem to add a sync scope:</p>
-<pre><code class="language-pycon">Python 3.13.2 (main, Feb  5 2025, 08:05:21) [GCC 14.2.1 20250128] on linux
+            <div class="timeline-body"><p>Oh good catch. It looks like <code>class</code> and <code>lambda</code> do cause problems even inside of an outer <code>async</code> function, but <code>with</code> doesn&#x27;t seem to add a sync scope:</p>
+<pre><code>Python 3.13.2 (main, Feb  5 2025, 08:05:21) [GCC 14.2.1 20250128] on linux
 Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
 &gt;&gt;&gt; async def foo(): lambda: [_ async for n in range(3)]
   File &quot;&lt;python-input-4&gt;&quot;, line 1
@@ -117,7 +117,7 @@ SyntaxError: asynchronous comprehension outside of an asynchronous function
 &gt;&gt;&gt;
 </code></pre>
 <p>However, these are both still errors on 3.13, so this might be a separate, version-independent rule.</p>
-<p>This is making me think we should go back to the trait implementation and defer to the full visitor's scope-based implementation. Or at least try tracking nested scopes here.</p>
+<p>This is making me think we should go back to the trait implementation and defer to the full visitor&#x27;s scope-based implementation. Or at least try tracking nested scopes here.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -133,12 +133,12 @@ SyntaxError: asynchronous comprehension outside of an asynchronous function
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-03 17:26</div>
             <div class="timeline-body"><blockquote>
-<p>Do you think it would simplify the implementation if we only tracked whether we're in a sync comprehension rather than tracking if we're in an async context? That seems easier than correctly tracking if we're also in an async function. It has the downside that we might emit one extra diagnostic if someone uses an async comprehension in a sync function, but I'd expect this to be rare. On the other hand, it doesn't add that much complexity. It's just a bit tricky to get the handling right when to unset the <code>async</code> flag. Do you know if it's necessary to unset the flag in a sync context manager (in an async function)?</p>
+<p>Do you think it would simplify the implementation if we only tracked whether we&#x27;re in a sync comprehension rather than tracking if we&#x27;re in an async context? That seems easier than correctly tracking if we&#x27;re also in an async function. It has the downside that we might emit one extra diagnostic if someone uses an async comprehension in a sync function, but I&#x27;d expect this to be rare. On the other hand, it doesn&#x27;t add that much complexity. It&#x27;s just a bit tricky to get the handling right when to unset the <code>async</code> flag. Do you know if it&#x27;s necessary to unset the flag in a sync context manager (in an async function)?</p>
 </blockquote>
-<p>This sounded very promising at first, but I think we would still need the checkpoints, and it would only remove the function-specific code, which I don't think adds that much &quot;complexity&quot; per se, like you said. Although I guess we could avoid statement checkpoints and <code>exit_stmt</code> entirely since everything else is an expression.</p>
+<p>This sounded very promising at first, but I think we would still need the checkpoints, and it would only remove the function-specific code, which I don&#x27;t think adds that much &quot;complexity&quot; per se, like you said. Although I guess we could avoid statement checkpoints and <code>exit_stmt</code> entirely since everything else is an expression.</p>
 <p>On the other hand, it sounds like PLE1142 should also be a syntax error and needs even more careful scope tracking, so it might be worth setting up for that here.</p>
-<p>I'll work on your suggestions about removing the checkpoint stack and see how it looks after that.</p>
-<p>As I said in a reply above, we could also give the trait approach another try. That just gets annoying for inline testing. It requires a lot of new test code, and that test code doesn't really guarantee anything about the actual users. However, that's also somewhat the case here because of the tricky enter/exit calls in <code>Checker</code>.</p>
+<p>I&#x27;ll work on your suggestions about removing the checkpoint stack and see how it looks after that.</p>
+<p>As I said in a reply above, we could also give the trait approach another try. That just gets annoying for inline testing. It requires a lot of new test code, and that test code doesn&#x27;t really guarantee anything about the actual users. However, that&#x27;s also somewhat the case here because of the tricky enter/exit calls in <code>Checker</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -147,32 +147,32 @@ SyntaxError: asynchronous comprehension outside of an asynchronous function
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:50 on 2025-04-03 18:05</div>
-            <div class="timeline-body"><p>Good idea, it really wasn't bad to plumb this through at the call sites.</p>
+            <div class="timeline-body"><p>Good idea, it really wasn&#x27;t bad to plumb this through at the call sites.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-03 18:19</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-03 19:50</div>
-            <div class="timeline-body"><p>The ecosystem check is showing a false positive in a notebook cell, which I think should have an implicit async scope. It's probably also picking up a default python version since it mentions 3.9.</p>
+            <div class="timeline-body"><p>The ecosystem check is showing a false positive in a notebook cell, which I think should have an implicit async scope. It&#x27;s probably also picking up a default python version since it mentions 3.9.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:24 on 2025-04-03 21:10</div>
-            <div class="timeline-body"><p>We could potentially include a <a href="https://docs.rs/drop_bomb/latest/drop_bomb/"><code>DebugDropBomb</code></a> to make sure that the consumer of the enter API don't forgot to call the <code>exit_stmt</code> / <code>exit_expr</code> methods which will defuse the bomb.</p>
+            <div class="timeline-body"><p>We could potentially include a <a href="https://docs.rs/drop_bomb/latest/drop_bomb/"><code>DebugDropBomb</code></a> to make sure that the consumer of the enter API don&#x27;t forgot to call the <code>exit_stmt</code> / <code>exit_expr</code> methods which will defuse the bomb.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -181,8 +181,8 @@ SyntaxError: asynchronous comprehension outside of an asynchronous function
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:606 on 2025-04-04 06:49</div>
-            <div class="timeline-body"><p>I don't understand the reasoning for skipping function definitions here. Won't this result in stale <code>in_async_context</code> flags because we don't update the state until after we visited the entire body?</p>
-<p>If there's a need for deferred visiting, then I'd prefer to have a <code>enter_deferred_stmt</code> or, better, move the necessary checks into <code>exit_stmt</code> and also pass the statement and context because <code>exit</code> is exactly the hook called <strong>after</strong> visiting the node's children</p>
+            <div class="timeline-body"><p>I don&#x27;t understand the reasoning for skipping function definitions here. Won&#x27;t this result in stale <code>in_async_context</code> flags because we don&#x27;t update the state until after we visited the entire body?</p>
+<p>If there&#x27;s a need for deferred visiting, then I&#x27;d prefer to have a <code>enter_deferred_stmt</code> or, better, move the necessary checks into <code>exit_stmt</code> and also pass the statement and context because <code>exit</code> is exactly the hook called <strong>after</strong> visiting the node&#x27;s children</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -195,19 +195,19 @@ SyntaxError: asynchronous comprehension outside of an asynchronous function
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:606 on 2025-04-04 12:17</div>
-            <div class="timeline-body"><p>I think I might be missing something here, but my reasoning for this was that the <code>ast::Checker</code> doesn't actually visit the body of the function until <code>visit_deferred_function</code>:</p>
+            <div class="timeline-body"><p>I think I might be missing something here, but my reasoning for this was that the <code>ast::Checker</code> doesn&#x27;t actually visit the body of the function until <code>visit_deferred_function</code>:</p>
 <p>https://github.com/astral-sh/ruff/blob/5cee34674472b976998ee79683f08dcd2fde090a/crates/ruff_linter/src/checkers/ast/mod.rs#L2588-L2591</p>
 <p>Before I added this logic, the function body was being visited twice by the <code>SemanticSyntaxChecker</code> but only once by the <code>ast::Checker</code> and this integration test was failing even though the inline version passed:</p>
-<pre><code class="language-python">async def test(): return [[x async for x in elements(n)] async for n in range(3)]
+<pre><code>async def test(): return [[x async for x in elements(n)] async for n in range(3)]
 </code></pre>
 <p>which pointed to an issue in the visit order because the test visitor is much simpler:</p>
-<pre><code class="language-rust">    fn visit_stmt(&amp;mut self, stmt: &amp;'_ Stmt) {
+<pre><code>    fn visit_stmt(&amp;mut self, stmt: &amp;&#x27;_ Stmt) {
         let checkpoint = self.checker.enter_stmt(stmt, &amp;self.context);
         ruff_python_ast::visitor::walk_stmt(self, stmt);
         self.checker.exit_stmt(checkpoint);
     }
 </code></pre>
-<p>Again I might be misunderstanding, but I don't think an <code>enter_deferred_stmt</code> helps here because we still need this logic in <code>visit_stmt</code> itself to avoid duplicating the visit. Unless you mean hiding this logic inside of <code>SemanticSyntaxChecker::enter_stmt</code>. I guess that could work if I also update the test visitor to defer function bodies like the real <code>ast::Checker</code>.</p>
+<p>Again I might be misunderstanding, but I don&#x27;t think an <code>enter_deferred_stmt</code> helps here because we still need this logic in <code>visit_stmt</code> itself to avoid duplicating the visit. Unless you mean hiding this logic inside of <code>SemanticSyntaxChecker::enter_stmt</code>. I guess that could work if I also update the test visitor to defer function bodies like the real <code>ast::Checker</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -221,7 +221,7 @@ SyntaxError: asynchronous comprehension outside of an asynchronous function
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:606 on 2025-04-04 14:29</div>
-            <div class="timeline-body"><p>Oh I see. This seems fragile. I wouldn't be aware of this out-of-order visiting when working on the <code>SemanticSyntaxChecker</code>. We should at least document the constraints in which the <code>enter</code> methods are called. I assumed it would be in semantic visiting order but it seems its in semantic visiting order except for functions which may be deferred (or not, depending on the caller)</p>
+            <div class="timeline-body"><p>Oh I see. This seems fragile. I wouldn&#x27;t be aware of this out-of-order visiting when working on the <code>SemanticSyntaxChecker</code>. We should at least document the constraints in which the <code>enter</code> methods are called. I assumed it would be in semantic visiting order but it seems its in semantic visiting order except for functions which may be deferred (or not, depending on the caller)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -234,14 +234,14 @@ SyntaxError: asynchronous comprehension outside of an asynchronous function
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:606 on 2025-04-04 17:46</div>
-            <div class="timeline-body"><p>Yes, very fragile. I was so confused when the integration test was failing but the inline test was fine, until I realized the function bodies were deferred. I'll work on expanding the docs for this.</p>
+            <div class="timeline-body"><p>Yes, very fragile. I was so confused when the integration test was failing but the inline test was fine, until I realized the function bodies were deferred. I&#x27;ll work on expanding the docs for this.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-07 12:46</div>
             <div class="timeline-body"><p>I made a few improvements here:</p>
 <ul>
-<li>documented when <code>enter_stmt</code> should be called. I didn't add anything for <code>enter_expr</code> because it doesn't have any of these fragile cases yet</li>
+<li>documented when <code>enter_stmt</code> should be called. I didn&#x27;t add anything for <code>enter_expr</code> because it doesn&#x27;t have any of these fragile cases yet</li>
 <li>added <code>#[must_use]</code> to both <code>enter_</code> methods to require using the returned <code>Checkpoint</code>. We could add some kind of drop bomb if we want to be even more sure</li>
 <li>add a <code>PySourceType</code> argument to <code>SemanticSyntaxChecker::new</code> to avoid notebook false positives (the top level scope should allow async code in notebooks)</li>
 </ul>
@@ -281,7 +281,7 @@ SyntaxError: asynchronous comprehension outside of an asynchronous function
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/tests/lint.rs</code>:5569 on 2025-04-08 06:54</div>
-            <div class="timeline-body"><p>It's not quiet clear to me why we need those cli tests. Could some of those tests be parser tests instead? The parser tests already support <code># parse_options: {&quot;target-version&quot;: &quot;3.7&quot;}</code></p>
+            <div class="timeline-body"><p>It&#x27;s not quiet clear to me why we need those cli tests. Could some of those tests be parser tests instead? The parser tests already support <code># parse_options: {&quot;target-version&quot;: &quot;3.7&quot;}</code></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -291,7 +291,7 @@ SyntaxError: asynchronous comprehension outside of an asynchronous function
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/tests/lint.rs</code>:5569 on 2025-04-08 12:24</div>
-            <div class="timeline-body"><p>We probably don't need <em>all</em> of these, but the third and fourth helped to detect bugs in the <code>enter/exit</code> pairs and the deferred function body traversal. The first two are probably less valuable, if you want me to trim it down a bit.</p>
+            <div class="timeline-body"><p>We probably don&#x27;t need <em>all</em> of these, but the third and fourth helped to detect bugs in the <code>enter/exit</code> pairs and the deferred function body traversal. The first two are probably less valuable, if you want me to trim it down a bit.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -304,13 +304,13 @@ SyntaxError: asynchronous comprehension outside of an asynchronous function
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/tests/lint.rs</code>:5569 on 2025-04-08 12:27</div>
-            <div class="timeline-body"><p>It would be great if we could narrow them down and maybe document why it's important that they're CLI tests.</p>
-<p>An alternative would be to implement them as custom tests in <code>ruff_linter</code> (that instantiate checker). Maybe there's something you can reuse from the linter test infra?</p>
+            <div class="timeline-body"><p>It would be great if we could narrow them down and maybe document why it&#x27;s important that they&#x27;re CLI tests.</p>
+<p>An alternative would be to implement them as custom tests in <code>ruff_linter</code> (that instantiate checker). Maybe there&#x27;s something you can reuse from the linter test infra?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/tests/lint.rs</code>:5569 on 2025-04-08 15:21</div>
-            <div class="timeline-body"><p>I adapted the <code>pyflakes</code> test runner (as suggested on Discord) and moved all of the CLI tests to <code>ruff_linter</code>. They're just in the top-level <code>linter::tests</code> module for now, but I'm happy to move them around if there's a better place. I also considered nesting them under <code>rules/syntax_errors</code>, for example.</p>
+            <div class="timeline-body"><p>I adapted the <code>pyflakes</code> test runner (as suggested on Discord) and moved all of the CLI tests to <code>ruff_linter</code>. They&#x27;re just in the top-level <code>linter::tests</code> module for now, but I&#x27;m happy to move them around if there&#x27;s a better place. I also considered nesting them under <code>rules/syntax_errors</code>, for example.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -332,14 +332,14 @@ SyntaxError: asynchronous comprehension outside of an asynchronous function
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/tests/lint.rs</code>:5569 on 2025-04-08 16:18</div>
-            <div class="timeline-body"><p>Sounds good, thanks! I'll merge then</p>
+            <div class="timeline-body"><p>Sounds good, thanks! I&#x27;ll merge then</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @ntBre on 2025-04-08 16:50</div>
+            <div class="event">Merged by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-08 16:50</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ntBre on 2025-04-08 16:50</div>
+            <div class="event">Closed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-08 16:50</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-04-08 16:50</div>
@@ -347,7 +347,7 @@ SyntaxError: asynchronous comprehension outside of an asynchronous function
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:11:14 UTC
+        Synced at 2026-01-20 19:12:55 UTC
     </footer>
 </body>
 </html>

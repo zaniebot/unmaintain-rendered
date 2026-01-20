@@ -23,31 +23,31 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>For a type alias like the one below, where <code>UnknownClass</code> is something with a dynamic type, we previously lost track of the fact that this dynamic type was explicitly specialized <em>with a type variable</em>. If that alias is then later explicitly specialized itself (<code>MyAlias[int]</code>), we would miscount the number of legacy type variables and emit a <code>invalid-type-arguments</code> diagnostic (<a href="https://play.ty.dev/886ae6cc-86c3-4304-a365-510d29211f85">playground</a>).</p>
-<pre><code class="language-py">T = TypeVar(&quot;T&quot;)
+<pre><code>T = TypeVar(&quot;T&quot;)
 
 MyAlias: TypeAlias = UnknownClass[T] | None
 </code></pre>
-<p>The solution implemented here is not pretty, but we can hopefully get rid of it via https://github.com/astral-sh/ty/issues/1711. Also, once we properly support <code>ParamSpec</code> and <code>Concatenate</code>, we should be able to remove some of this code.</p>
-<p>This addresses many of the <code>invalid-type-arguments</code> false-positives in https://github.com/astral-sh/ty/issues/1685. With this change, there are still some diagnostics of this type left. Instead of implementing even more (rather sophisticated) workarounds for these cases as well, it might be much easier to wait for full <code>ParamSpec</code>/<code>Concatenate</code> support and then try again.</p>
-<p>A disadvantage of this implementation is that we lose track of some <code>@Todo</code> types and replace them with <code>Unknown</code>. We could spend more effort and try to preserve them, but I'm unsure if this is the best use of our time right now.</p>
-<h2>Test Plan</h2>
+<p>The solution implemented here is not pretty, but we can hopefully get rid of it via <a href="https://github.com/astral-sh/ty/issues/1711">astral-sh/ty#1711</a>. Also, once we properly support <code>ParamSpec</code> and <code>Concatenate</code>, we should be able to remove some of this code.</p>
+<p>This addresses many of the <code>invalid-type-arguments</code> false-positives in <a href="https://github.com/astral-sh/ty/issues/1685">astral-sh/ty#1685</a>. With this change, there are still some diagnostics of this type left. Instead of implementing even more (rather sophisticated) workarounds for these cases as well, it might be much easier to wait for full <code>ParamSpec</code>/<code>Concatenate</code> support and then try again.</p>
+<p>A disadvantage of this implementation is that we lose track of some <code>@Todo</code> types and replace them with <code>Unknown</code>. We could spend more effort and try to preserve them, but I&#x27;m unsure if this is the best use of our time right now.</p>
+Test Plan
 <p>New Markdown tests.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @sharkdp on 2025-12-01 14:24</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-01 14:24</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-01 14:26</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
-<details>
-<summary>Changes were detected when running ty on typing conformance tests</summary>
+Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a>
 
-<pre><code class="language-diff">--- old-output.txt	2025-12-03 08:27:30.384262987 +0000
+Changes were detected when running ty on typing conformance tests
+
+<pre><code>--- old-output.txt	2025-12-03 08:27:30.384262987 +0000
 +++ new-output.txt	2025-12-03 08:27:34.022271510 +0000
 @@ -4,25 +4,21 @@
  _directives_deprecated_library.py:41:25: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int | float`
@@ -75,8 +75,8 @@ MyAlias: TypeAlias = UnknownClass[T] | None
  aliases_implicit.py:79:29: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
 -aliases_implicit.py:80:29: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
  aliases_implicit.py:81:25: error[invalid-type-arguments] Type `str` is not assignable to upper bound `int | float` of type variable `TFloat@GoodTypeAlias12`
- aliases_implicit.py:107:9: error[invalid-type-form] Variable of type `list[Unknown | &lt;class 'int'&gt; | &lt;class 'str'&gt;]` is not allowed in a type expression
- aliases_implicit.py:108:9: error[invalid-type-form] Variable of type `tuple[tuple[&lt;class 'int'&gt;, &lt;class 'str'&gt;]]` is not allowed in a type expression
+ aliases_implicit.py:107:9: error[invalid-type-form] Variable of type `list[Unknown | &lt;class &#x27;int&#x27;&gt; | &lt;class &#x27;str&#x27;&gt;]` is not allowed in a type expression
+ aliases_implicit.py:108:9: error[invalid-type-form] Variable of type `tuple[tuple[&lt;class &#x27;int&#x27;&gt;, &lt;class &#x27;str&#x27;&gt;]]` is not allowed in a type expression
 @@ -141,10 +137,6 @@
  callables_annotation.py:58:5: error[invalid-type-form] Special form `typing.Callable` expected exactly two arguments (parameter types and return type)
  callables_annotation.py:58:14: error[invalid-type-form] The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
@@ -89,28 +89,28 @@ MyAlias: TypeAlias = UnknownClass[T] | None
  callables_kwargs.py:32:9: error[type-assertion-failure] Type `str` does not match asserted type `@Todo(`Unpack[]` special form)`
  callables_kwargs.py:35:5: error[type-assertion-failure] Type `str` does not match asserted type `@Todo(`Unpack[]` special form)`
 @@ -1028,4 +1020,4 @@
- typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
+ typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key &#x27;name&#x27; in TypedDict `Movie` constructor
  typeddicts_usage.py:28:18: error[invalid-key] Unknown key &quot;title&quot; for TypedDict `Movie`: Unknown key &quot;title&quot;
  typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions
 -Found 1030 diagnostics
 +Found 1022 diagnostics
 
 </code></pre>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-01 14:28</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">beartype (https://github.com/beartype/beartype)
-- beartype/claw/_package/clawpkgtrie.py:66:29: warning[unsupported-base] Unsupported class base with type `&lt;class 'dict[str, PackagesTrieBlacklist]'&gt; | &lt;class 'dict[str, Divergent]'&gt;`
-- beartype/claw/_package/clawpkgtrie.py:247:29: warning[unsupported-base] Unsupported class base with type `&lt;class 'dict[str, PackagesTrieWhitelist]'&gt; | &lt;class 'dict[str, Divergent]'&gt;`
+Changes were detected when running on open source projects
+
+<pre><code>beartype (https://github.com/beartype/beartype)
+- beartype/claw/_package/clawpkgtrie.py:66:29: warning[unsupported-base] Unsupported class base with type `&lt;class &#x27;dict[str, PackagesTrieBlacklist]&#x27;&gt; | &lt;class &#x27;dict[str, Divergent]&#x27;&gt;`
+- beartype/claw/_package/clawpkgtrie.py:247:29: warning[unsupported-base] Unsupported class base with type `&lt;class &#x27;dict[str, PackagesTrieWhitelist]&#x27;&gt; | &lt;class &#x27;dict[str, Divergent]&#x27;&gt;`
 - Found 494 diagnostics
 + Found 492 diagnostics
 
@@ -313,7 +313,7 @@ prefect (https://github.com/PrefectHQ/prefect)
 + Found 3375 diagnostics
 
 scikit-build-core (https://github.com/scikit-build/scikit-build-core)
-+ src/scikit_build_core/_logging.py:153:13: warning[unsupported-base] Unsupported class base with type `&lt;class 'Mapping[str, Style]'&gt; | &lt;class 'Mapping[str, Divergent]'&gt;`
++ src/scikit_build_core/_logging.py:153:13: warning[unsupported-base] Unsupported class base with type `&lt;class &#x27;Mapping[str, Style]&#x27;&gt; | &lt;class &#x27;Mapping[str, Divergent]&#x27;&gt;`
 - Found 41 diagnostics
 + Found 42 diagnostics
 
@@ -330,8 +330,8 @@ altair (https://github.com/vega/altair)
 + altair/utils/_transformed_data.py:119:10: error[invalid-context-manager] Object of type `PluginEnabler[Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
 - altair/utils/save.py:283:14: error[invalid-context-manager] Object of type `PluginEnabler[(...) -&gt; Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
 + altair/utils/save.py:283:14: error[invalid-context-manager] Object of type `PluginEnabler[Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
-+ altair/vegalite/v6/schema/channels.py:22003:35: error[unsupported-operator] Operator `|` is unsupported between objects of type `&lt;class 'str'&gt;` and `&lt;class 'Detail'&gt;`
-+ altair/vegalite/v6/schema/channels.py:22519:22: error[unsupported-operator] Operator `|` is unsupported between objects of type `&lt;class 'str'&gt;` and `&lt;class 'Detail'&gt;`
++ altair/vegalite/v6/schema/channels.py:22003:35: error[unsupported-operator] Operator `|` is unsupported between objects of type `&lt;class &#x27;str&#x27;&gt;` and `&lt;class &#x27;Detail&#x27;&gt;`
++ altair/vegalite/v6/schema/channels.py:22519:22: error[unsupported-operator] Operator `|` is unsupported between objects of type `&lt;class &#x27;str&#x27;&gt;` and `&lt;class &#x27;Detail&#x27;&gt;`
 - tests/test_jupyter_chart.py:52:10: error[invalid-context-manager] Object of type `PluginEnabler[(...) -&gt; Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
 + tests/test_jupyter_chart.py:52:10: error[invalid-context-manager] Object of type `PluginEnabler[Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
 - tests/test_jupyter_chart.py:78:10: error[invalid-context-manager] Object of type `PluginEnabler[(...) -&gt; Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
@@ -513,19 +513,19 @@ scipy-stubs (https://github.com/scipy/scipy-stubs)
 
 ... (truncated 918 lines) ...
 </code></pre>
-</details>
+
 
 <p>No memory usage changes detected ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-12-02 11:53</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-02 11:53</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-02 12:02</div>
-            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+            <div class="timeline-body">
 
-<h2><code>ecosystem-analyzer</code> results</h2>
+<code>ecosystem-analyzer</code> results
 <p>| Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
 | <code>invalid-type-arguments</code> | 0 | 416 | 19 |
@@ -543,46 +543,46 @@ scipy-stubs (https://github.com/scipy/scipy-stubs)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-12-02 13:53</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-02 13:53</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-12-02 13:53</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-02 13:53</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[ty] Support generic type aliases involving unknown generic classes" to "[ty] Support typevar-specialized dynamic types in generic type aliases" by @sharkdp on 2025-12-02 13:53</div>
+            <div class="event">Renamed from &quot;[ty] Support generic type aliases involving unknown generic classes&quot; to &quot;[ty] Support typevar-specialized dynamic types in generic type aliases&quot; by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-02 13:53</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-12-02 15:15</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-02 15:15</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-12-02 15:15</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-02 15:15</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-12-02 16:27</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-02 16:27</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-12-02 16:28</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-02 16:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @sharkdp on 2025-12-02 16:40</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-02 16:40</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @sharkdp on 2025-12-02 16:40</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-02 16:40</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-12-02 16:40</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-02 16:40</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @sharkdp on 2025-12-02 16:40</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-02 16:40</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-03 02:46</div>
-            <div class="timeline-body"><p>The conformance suite results here look fine. Most of the changes are around <code>ParamSpec</code>, in the direction of issuing fewer diagnostics on our failure to understand them, which makes sense since they are currently a Todo type so end up being a case of &quot;explicitly specializing a dynamic type&quot;. In some cases we stop erroring on lines we should error on, but we were previously erroring for the wrong reason, so that's still good.</p>
+            <div class="timeline-body"><p>The conformance suite results here look fine. Most of the changes are around <code>ParamSpec</code>, in the direction of issuing fewer diagnostics on our failure to understand them, which makes sense since they are currently a Todo type so end up being a case of &quot;explicitly specializing a dynamic type&quot;. In some cases we stop erroring on lines we should error on, but we were previously erroring for the wrong reason, so that&#x27;s still good.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/pep613_type_aliases.md</code>:238 on 2025-12-03 02:52</div>
-            <div class="timeline-body"><p>What's our barrier to getting these three TODOs right? I guess it's just that we currently don't support generics at all on &quot;manual&quot; PEP 695 type aliases?</p>
+            <div class="timeline-body"><p>What&#x27;s our barrier to getting these three TODOs right? I guess it&#x27;s just that we currently don&#x27;t support generics at all on &quot;manual&quot; PEP 695 type aliases?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -612,7 +612,7 @@ scipy-stubs (https://github.com/scipy/scipy-stubs)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/pep613_type_aliases.md</code>:238 on 2025-12-03 08:21</div>
-            <div class="timeline-body"><p>Yes, exactly. I considered this to be a (maybe lower-priority?) task separate from the generic implicit/PEP613 type alias work. I opened https://github.com/astral-sh/ty/issues/1737.</p>
+            <div class="timeline-body"><p>Yes, exactly. I considered this to be a (maybe lower-priority?) task separate from the generic implicit/PEP613 type alias work. I opened <a href="https://github.com/astral-sh/ty/issues/1737">astral-sh/ty#1737</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -640,16 +640,16 @@ scipy-stubs (https://github.com/scipy/scipy-stubs)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-12-03 08:28</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-03 08:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-12-03 08:28</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-03 08:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @sharkdp on 2025-12-03 09:00</div>
+            <div class="event">Merged by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-03 09:00</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @sharkdp on 2025-12-03 09:00</div>
+            <div class="event">Closed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-03 09:00</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-12-03 09:00</div>
@@ -657,7 +657,7 @@ scipy-stubs (https://github.com/scipy/scipy-stubs)
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:17:42 UTC
+        Synced at 2026-01-20 19:21:14 UTC
     </footer>
 </body>
 </html>

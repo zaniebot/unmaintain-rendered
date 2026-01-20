@@ -23,21 +23,21 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/skshetry">@skshetry</a></div>
-            <div class="timeline-body"><pre><code class="language-bash">cd &quot;$(mktemp -d)&quot;
+            <div class="timeline-body"><pre><code>cd &quot;$(mktemp -d)&quot;
 uv venv -p 3.12 --seed
 uv pip install typer spacy --no-cache --verbose
 </code></pre>
 <p>There are wheels available for spacy for Python 3.12, but <code>uv</code> chooses to install older versions for some reason.</p>
 <p>Please check <a href="https://github.com/astral-sh/uv/files/15275296/uv-pip-install.txt">uv-pip-install.txt</a>.</p>
 <p><code>pip</code> can install it without any issues:</p>
-<pre><code class="language-bash">cd &quot;$(mktemp -d)&quot;
+<pre><code>cd &quot;$(mktemp -d)&quot;
 uv venv -p 3.12 --seed
 .venv/bin/pip install typer spacy
 </code></pre>
-<details><summary>Details</summary>
+Details
 <p>
 
-<pre><code class="language-console">Using Python 3.12.3 interpreter at: /usr/bin/python3.12
+<pre><code>Using Python 3.12.3 interpreter at: /usr/bin/python3.12
 Creating virtualenv at: .venv
  + pip==24.0
 Activate with: source .venv/bin/activate
@@ -162,25 +162,25 @@ Installing collected packages: cymem, wasabi, urllib3, typing-extensions, tqdm, 
 Successfully installed MarkupSafe-2.1.5 annotated-types-0.6.0 blis-0.7.11 catalogue-2.0.10 certifi-2024.2.2 charset-normalizer-3.3.2 click-8.1.7 cloudpathlib-0.16.0 confection-0.1.4 cymem-2.0.8 idna-3.7 jinja2-3.1.4 langcodes-3.4.0 language-data-1.2.0 marisa-trie-1.1.1 murmurhash-1.0.10 numpy-1.26.4 packaging-24.0 preshed-3.0.9 pydantic-2.7.1 pydantic-core-2.18.2 requests-2.31.0 setuptools-69.5.1 smart-open-6.4.0 spacy-3.7.4 spacy-legacy-3.0.12 spacy-loggers-1.0.5 srsly-2.4.8 thinc-8.2.3 tqdm-4.66.4 typer-0.9.4 typing-extensions-4.11.0 urllib3-2.2.1 wasabi-1.1.2 weasel-0.3.4
 </code></pre>
 </p>
-</details> 
+ 
 
 <p>The above logs are from Archlinux, but I have same issues on macOS as well.</p>
-<pre><code class="language-console">$ uv --version
+<pre><code>$ uv --version
 uv 0.1.42 (367958e6b 2024-05-08)
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-10 13:15</div>
-            <div class="timeline-body"><p>Spacy puts an upper-bound on Typer. So we try to pin <code>typer==0.12.3</code>, then end up backtracking to older and older versions of Spacy, and ultimately try to build some package that isn't building on your machine. I think you should either invert the order of the dependencies to hint to uv that we should try Spacy first, or add clearer bounds to the specifiers.</p>
+            <div class="timeline-body"><p>Spacy puts an upper-bound on Typer. So we try to pin <code>typer==0.12.3</code>, then end up backtracking to older and older versions of Spacy, and ultimately try to build some package that isn&#x27;t building on your machine. I think you should either invert the order of the dependencies to hint to uv that we should try Spacy first, or add clearer bounds to the specifiers.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-05-10 13:15</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-10 13:15</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/skshetry">@skshetry</a> on 2024-05-10 13:29</div>
-            <div class="timeline-body"><p>This was just a minimal example that I could reproduce the issue with. In reality, I have a project that has indirect dependencies with both <code>typer</code> and <code>spacy</code>, and I don't have control over the ordering.</p>
+            <div class="timeline-body"><p>This was just a minimal example that I could reproduce the issue with. In reality, I have a project that has indirect dependencies with both <code>typer</code> and <code>spacy</code>, and I don&#x27;t have control over the ordering.</p>
 <p>One of my <em>indirect</em> dependencies requires <code>typer&gt;=0.4.1</code>, and I have an extra dependency that indirectly requires <code>spacy&lt;4</code>. So I guess, <code>typer</code> is always going to come before spacy(?).</p>
 </div>
         </div>
@@ -191,13 +191,13 @@ uv 0.1.42 (367958e6b 2024-05-08)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/skshetry">@skshetry</a> on 2024-05-10 13:41</div>
-            <div class="timeline-body"><p>Unfortunately, <code>spacy</code> is not a direct dependency of the project. Given the dependency (<code>fastai</code>) has left it unpinned, we'd have to do the same for maximum compatibility with the Python ecosystem.
+            <div class="timeline-body"><p>Unfortunately, <code>spacy</code> is not a direct dependency of the project. Given the dependency (<code>fastai</code>) has left it unpinned, we&#x27;d have to do the same for maximum compatibility with the Python ecosystem.
 Otherwise, we may end up getting conflicts at some point when it changes the requirements.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-10 13:45</div>
-            <div class="timeline-body"><p>I don't see an issue with adding a <em>lower</em> bound. Upper bounds are far more likely to cause problems (as you're seeing here), but is your project really compatible with all versions of <code>spacy</code>?</p>
+            <div class="timeline-body"><p>I don&#x27;t see an issue with adding a <em>lower</em> bound. Upper bounds are far more likely to cause problems (as you&#x27;re seeing here), but is your project really compatible with all versions of <code>spacy</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -206,26 +206,26 @@ Otherwise, we may end up getting conflicts at some point when it changes the req
 <p>but is your project really compatible with all versions of <code>spacy</code>?</p>
 </blockquote>
 <p>To be honest, we are not even using it (it comes with the package 😄).
-But as a library maintainer, I don't want to set lower bounds for transitive dependencies. It's too much of an effort, and for maximum compatibility, ideally I'd have to choose multiple versions of <code>spacy</code> for different Python versions.</p>
-<p>Although this is a valid resolution, I'd consider this a bug. Python packages don't set upper bounds for Python versions so the older packages may be incompatible with newer Python versions. Similarly, it's not uncommon for packages to overlook version pinning, that are fixed in subsequent releases.</p>
+But as a library maintainer, I don&#x27;t want to set lower bounds for transitive dependencies. It&#x27;s too much of an effort, and for maximum compatibility, ideally I&#x27;d have to choose multiple versions of <code>spacy</code> for different Python versions.</p>
+<p>Although this is a valid resolution, I&#x27;d consider this a bug. Python packages don&#x27;t set upper bounds for Python versions so the older packages may be incompatible with newer Python versions. Similarly, it&#x27;s not uncommon for packages to overlook version pinning, that are fixed in subsequent releases.</p>
 <p>Overall, newer versions tend to work better than the older ones.
-It'd be great if it could prefer newer or latest releases rather than the older ones.</p>
+It&#x27;d be great if it could prefer newer or latest releases rather than the older ones.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-05-10 17:09</div>
             <div class="timeline-body"><blockquote>
 <p>Overall, newer versions tend to work better than the older ones.
-It'd be great if it could prefer newer or latest releases rather than the older ones.</p>
+It&#x27;d be great if it could prefer newer or latest releases rather than the older ones.</p>
 </blockquote>
-<p>But when you have two packages A and B, and the newest version of A isn't compatible with the newest version of B, you <em>must</em> backtrack on one of them. There is no universal way of telling whether it is going to be better for A or B to be backtracked on, and your resolution algorithm and it's current state may determine for you which one will be backtracked on.</p>
-<p>Pip does the same and runs into similiar problems, although in different cases as it's resolution algorithm picks different paths to uv, and tends to be a little bit more flexible about not having to exhaust all older versions due to some implementation details. But it definetly still happens with pip.</p>
+<p>But when you have two packages A and B, and the newest version of A isn&#x27;t compatible with the newest version of B, you <em>must</em> backtrack on one of them. There is no universal way of telling whether it is going to be better for A or B to be backtracked on, and your resolution algorithm and it&#x27;s current state may determine for you which one will be backtracked on.</p>
+<p>Pip does the same and runs into similiar problems, although in different cases as it&#x27;s resolution algorithm picks different paths to uv, and tends to be a little bit more flexible about not having to exhaust all older versions due to some implementation details. But it definetly still happens with pip.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-05-10 17:11</div>
             <div class="timeline-body"><blockquote>
-<p>But as a library maintainer, I don't want to set lower bounds for transitive dependencies. It's too much of an effort, and for maximum compatibility, ideally I'd have to choose multiple versions of <code>spacy</code> for different Python versions.</p>
+<p>But as a library maintainer, I don&#x27;t want to set lower bounds for transitive dependencies. It&#x27;s too much of an effort, and for maximum compatibility, ideally I&#x27;d have to choose multiple versions of <code>spacy</code> for different Python versions.</p>
 </blockquote>
 <p>One solution is to use and recommend a constraint file then, this way you specify bounds on certain packages without forcing consumers to use those bounds.</p>
 <p>Apache-airflow does this to specify all the dependencies and transitive dependencies that were tested against when a particular version was released.</p>
@@ -234,7 +234,7 @@ It'd be great if it could prefer newer or latest releases rather than the older 
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/nathanjmcdougall">@nathanjmcdougall</a> on 2024-06-11 03:34</div>
             <div class="timeline-body"><blockquote>
-<p>But when you have two packages A and B, and the newest version of A isn't compatible with the newest version of B, you <em>must</em> backtrack on one of them. There is no universal way of telling whether it is going to be better for A or B to be backtracked on, and your resolution algorithm and it's current state may determine for you which one will be backtracked on.</p>
+<p>But when you have two packages A and B, and the newest version of A isn&#x27;t compatible with the newest version of B, you <em>must</em> backtrack on one of them. There is no universal way of telling whether it is going to be better for A or B to be backtracked on, and your resolution algorithm and it&#x27;s current state may determine for you which one will be backtracked on.</p>
 </blockquote>
 <p>If A is a direct dependency and B is a transitive dependency then I wonder whether it will nearly always be better to backtrack on B. Just a thought.</p>
 </div>
@@ -245,12 +245,12 @@ It'd be great if it could prefer newer or latest releases rather than the older 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2024-10-21 21:30</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-21 21:30</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:24:52 UTC
+        Synced at 2026-01-20 19:31:04 UTC
     </footer>
 </body>
 </html>

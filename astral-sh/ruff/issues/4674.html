@@ -23,19 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/jamesbraza">@jamesbraza</a></div>
-            <div class="timeline-body"><!--
-Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+            <div class="timeline-body">
 
-If you're filing a bug report, please consider including the following information:
-
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
-* The current Ruff settings (any relevant sections from your `pyproject.toml`).
-* The current Ruff version (`ruff --version`).
--->
-
-<p>In today's version of monorepo hurdles, here is a minimal repro repo with <code>ruff=0.0.267</code> and <code>numpy==1.24.3</code> installed:</p>
-<pre><code class="language-none">.
+<p>In today&#x27;s version of monorepo hurdles, here is a minimal repro repo with <code>ruff=0.0.267</code> and <code>numpy==1.24.3</code> installed:</p>
+<pre><code>.
 ├── folder_1
 │   └── module.py
 ├── folder_2
@@ -44,7 +35,7 @@ If you're filing a bug report, please consider including the following informati
 │   └── ruff.toml
 └── pyproject.toml
 </code></pre>
-<pre><code class="language-toml"># pyroject.toml
+<pre><code># pyroject.toml
 
 [tool.ruff]
 
@@ -54,17 +45,17 @@ ignore = [
     &quot;INP001&quot;,
 ]
 </code></pre>
-<pre><code class="language-toml"># ruff.toml
+<pre><code># ruff.toml
 </code></pre>
-<pre><code class="language-python">&quot;&quot;&quot;folder_1/module.py.&quot;&quot;&quot;
+<pre><code>&quot;&quot;&quot;folder_1/module.py.&quot;&quot;&quot;
 
 SOME_OTHER_MODULE_IMPORT = 0
 </code></pre>
-<pre><code class="language-python">&quot;&quot;&quot;folder_2/module.py.&quot;&quot;&quot;
+<pre><code>&quot;&quot;&quot;folder_2/module.py.&quot;&quot;&quot;
 
 SOME_SAME_MODULE_IMPORT = 0
 </code></pre>
-<pre><code class="language-python">&quot;&quot;&quot;folder_2/main.py.&quot;&quot;&quot;
+<pre><code>&quot;&quot;&quot;folder_2/main.py.&quot;&quot;&quot;
 
 import time  # noqa: F401
 
@@ -74,21 +65,21 @@ from folder_1.module import SOME_OTHER_MODULE_IMPORT  # noqa: F401
 from folder_2.module import SOME_SAME_MODULE_IMPORT  # noqa: F401
 </code></pre>
 <p>All is well, <code>ruff</code> reports no issues from the repo root:</p>
-<pre><code class="language-none">repo &gt; ruff .
+<pre><code>repo &gt; ruff .
 </code></pre>
-<h3>Issue</h3>
+Issue
 <p>Now, changing <code>ruff.toml</code> to be:</p>
-<pre><code class="language-toml"># ruff.toml
+<pre><code># ruff.toml
 
 extend = &quot;../pyproject.toml&quot;
 </code></pre>
 <p>Suddenly we get:</p>
-<pre><code class="language-none">repo &gt; ruff .
+<pre><code>repo &gt; ruff .
 folder_2/main.py:3:1: I001 [*] Import block is un-sorted or un-formatted
 Found 1 error.
 [*] 1 potentially fixable with the --fix option.
 </code></pre>
-<p>So, what's the issue about?</p>
+<p>So, what&#x27;s the issue about?</p>
 <ul>
 <li>With sub-config <code>ruff.toml</code> without<code>extend</code>: <code>ruff</code> from root correctly infers <code>folder_1</code> as 1st party</li>
 <li>With subconfig <code>ruff.toml</code> using <code>extend</code>: <code>ruff</code> from root now infers <code>folder_1</code> as 3rd party</li>
@@ -97,7 +88,7 @@ Found 1 error.
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "`isort`'s forgetting 1st party when extending in sub-configs" to "`isort` forgetting 1st party when extending in sub-configs" by @jamesbraza on 2023-05-26 22:55</div>
+            <div class="event">Renamed from &quot;`isort`&#x27;s forgetting 1st party when extending in sub-configs&quot; to &quot;`isort` forgetting 1st party when extending in sub-configs&quot; by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2023-05-26 22:55</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-26 23:45</div>
@@ -106,32 +97,32 @@ Found 1 error.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2023-05-26 23:52</div>
-            <div class="timeline-body"><p>Yeah one can add them, just for a minimal repro it wasn't necessary.</p>
-<p>Having an <code>__init__.py</code> in <code>folder_1</code> will not change how <code>ruff</code>'s <code>isort</code> sees <code>folder_1</code> as 1st --&gt; 3rd party.</p>
+            <div class="timeline-body"><p>Yeah one can add them, just for a minimal repro it wasn&#x27;t necessary.</p>
+<p>Having an <code>__init__.py</code> in <code>folder_1</code> will not change how <code>ruff</code>&#x27;s <code>isort</code> sees <code>folder_1</code> as 1st --&gt; 3rd party.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2023-05-27 00:06</div>
-            <div class="timeline-body"><p>The issue here comes from <code>ruff</code>'s automatic inference of 1st vs 3rd party changing with sub-configs.</p>
-<p>If you hardcode <code>known-first-party</code> in the top-level config and use <code>extend</code> in the sub-config (thus defeating <code>ruff</code>'s inference), this issue goes away.</p>
+            <div class="timeline-body"><p>The issue here comes from <code>ruff</code>&#x27;s automatic inference of 1st vs 3rd party changing with sub-configs.</p>
+<p>If you hardcode <code>known-first-party</code> in the top-level config and use <code>extend</code> in the sub-config (thus defeating <code>ruff</code>&#x27;s inference), this issue goes away.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-27 00:32</div>
-            <div class="timeline-body"><p>If you add <code>select = [&quot;I&quot;]</code> to your empty <code>ruff.toml</code>, I believe you see the same behavior regardless of the <code>extend</code>. In the first example provided, the <code>I</code> rules aren't actually enabled for <code>folder_2</code>.</p>
+            <div class="timeline-body"><p>If you add <code>select = [&quot;I&quot;]</code> to your empty <code>ruff.toml</code>, I believe you see the same behavior regardless of the <code>extend</code>. In the first example provided, the <code>I</code> rules aren&#x27;t actually enabled for <code>folder_2</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-27 00:33</div>
-            <div class="timeline-body"><p>(There may actually be an issue here, I'm just trying to pinpoint a faithful reproduction so we can discuss it properly, sorry, not intending to nitpick.)</p>
+            <div class="timeline-body"><p>(There may actually be an issue here, I&#x27;m just trying to pinpoint a faithful reproduction so we can discuss it properly, sorry, not intending to nitpick.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2023-05-27 00:44</div>
-            <div class="timeline-body"><p>Yeah no offense taken!  And you're right about having <code>select</code> in the sub-config.</p>
-<hr />
-<h3>Better Repro</h3>
-<pre><code class="language-toml"># pyroject.toml
+            <div class="timeline-body"><p>Yeah no offense taken!  And you&#x27;re right about having <code>select</code> in the sub-config.</p>
+<hr>
+Better Repro
+<pre><code># pyroject.toml
 
 [tool.ruff]
 
@@ -139,54 +130,54 @@ select = [&quot;I&quot;]
 </code></pre>
 <p>Without the sub-config, <code>ruff</code> has no complaints.</p>
 <p>Then, adding in the sub-config:</p>
-<pre><code class="language-toml"># ruff.toml
+<pre><code># ruff.toml
 
 select = [&quot;I&quot;]
 </code></pre>
-<p>Now, <code>ruff</code> changes its opinions on 1st vs 3rd party on <code>folder_2/main.py</code>'s import from <code>folder_1</code>.</p>
-<p>Turns out it wasn't the <code>extend</code>, but actually <code>I</code> being selected in the sub-config, that caused <code>ruff</code> to change its opinions.</p>
+<p>Now, <code>ruff</code> changes its opinions on 1st vs 3rd party on <code>folder_2/main.py</code>&#x27;s import from <code>folder_1</code>.</p>
+<p>Turns out it wasn&#x27;t the <code>extend</code>, but actually <code>I</code> being selected in the sub-config, that caused <code>ruff</code> to change its opinions.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "`isort` forgetting 1st party when extending in sub-configs" to "`isort` forgetting 1st party below sub-config" by @jamesbraza on 2023-05-27 02:11</div>
+            <div class="event">Renamed from &quot;`isort` forgetting 1st party when extending in sub-configs&quot; to &quot;`isort` forgetting 1st party below sub-config&quot; by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2023-05-27 02:11</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-27 02:59</div>
             <div class="timeline-body"><p>So, if you omit the <code>src</code> field (which is what we use to do first-party eligibility checks), then we use the &quot;project root&quot;, which is <em>generally</em> determined by finding the <code>pyproject.toml</code> or <code>ruff.toml</code> file. This applies regardless of whether you use <code>extend</code>.</p>
 <p>You can fix it in one of two ways. First, by explicitly setting the <code>src</code> in the root directory:</p>
-<pre><code class="language-toml"># pyproject.toml
+<pre><code># pyproject.toml
 
 [tool.ruff]
 # Explicitly set the source to the current directory.
-# When other configurations `extend` this one, they'll
+# When other configurations `extend` this one, they&#x27;ll
 # use _this_ directory as `src`.
 src = [&quot;.&quot;]
 </code></pre>
-<pre><code class="language-toml"># ruff.toml
+<pre><code># ruff.toml
 
 extend = &quot;../pyproject.toml&quot;
 </code></pre>
 <p>Second, by explicitly setting the <code>src</code> in the subdirectory:</p>
-<pre><code class="language-toml"># ruff.toml
+<pre><code># ruff.toml
 
 extend = &quot;../pyproject.toml&quot;
 src = [&quot;../&quot;]
 </code></pre>
-<p>Either of these works as expected. (If you run with <code>--verbose</code>, Ruff will also tell you <em>why</em> it's resolving modules as first- or third-party, which can help with debugging.)</p>
-<p>I can see why the current behavior might be confusing as seen above, but alternative designs are confusing in other ways. E.g., you could be using <code>extend</code> with some shared configuration that doesn't even live in the project hierarchy. In that case, it would be weird to consider that folder the &quot;project root&quot;.</p>
+<p>Either of these works as expected. (If you run with <code>--verbose</code>, Ruff will also tell you <em>why</em> it&#x27;s resolving modules as first- or third-party, which can help with debugging.)</p>
+<p>I can see why the current behavior might be confusing as seen above, but alternative designs are confusing in other ways. E.g., you could be using <code>extend</code> with some shared configuration that doesn&#x27;t even live in the project hierarchy. In that case, it would be weird to consider that folder the &quot;project root&quot;.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2023-05-27 04:18</div>
-            <div class="timeline-body"><p>Okay I follow what you're saying, thank you!</p>
+            <div class="timeline-body"><p>Okay I follow what you&#x27;re saying, thank you!</p>
 <blockquote>
-<p>E.g., you could be using extend with some shared configuration that doesn't even live in the project hierarchy. In that case, it would be weird to consider that folder the &quot;project root&quot;.</p>
+<p>E.g., you could be using extend with some shared configuration that doesn&#x27;t even live in the project hierarchy. In that case, it would be weird to consider that folder the &quot;project root&quot;.</p>
 </blockquote>
-<p>This makes sense.  And I guess <code>isort</code> doesn't hit this case because it doesn't support sub-configs (as far as I know).</p>
-<hr />
+<p>This makes sense.  And I guess <code>isort</code> doesn&#x27;t hit this case because it doesn&#x27;t support sub-configs (as far as I know).</p>
+<hr>
 <p>Here are a few possible resolutions:</p>
 <ul>
-<li>Documenting <code>src</code> field in <code>isort</code>'s settings page for <a href="https://beta.ruff.rs/docs/settings/#known-first-party"><code>known-first-party</code></a> and <a href="https://beta.ruff.rs/docs/settings/#known-third-party"><code>known-third-party</code></a><ul>
+<li>Documenting <code>src</code> field in <code>isort</code>&#x27;s settings page for <a href="https://beta.ruff.rs/docs/settings/#known-first-party"><code>known-first-party</code></a> and <a href="https://beta.ruff.rs/docs/settings/#known-third-party"><code>known-third-party</code></a><ul>
 <li>Bonus points: documenting discerning logic for 1st party vs 3rd party vs local</li>
 </ul>
 </li>
@@ -194,25 +185,25 @@ src = [&quot;../&quot;]
 <li>Just close this out 🤷‍♂️</li>
 </ul>
 <p>Regardless, at least I have a working solution, so thanks!</p>
-<hr />
-<p>Per <code>--verbose</code>, I didn't know that, it's helpful.  One comment is, it only shows up if one includes <code>--no-cache</code>:</p>
-<pre><code class="language-none">repo &gt; ruff --no-cache --verbose .
+<hr>
+<p>Per <code>--verbose</code>, I didn&#x27;t know that, it&#x27;s helpful.  One comment is, it only shows up if one includes <code>--no-cache</code>:</p>
+<pre><code>repo &gt; ruff --no-cache --verbose .
 ...
-[2023-05-26][20:51:46][ruff::rules::isort::categorize][DEBUG] Categorized 'time' as Known(StandardLibrary) (KnownStandardLibrary)
-[2023-05-26][20:51:46][ruff::rules::isort::categorize][DEBUG] Categorized 'numpy' as Known(ThirdParty) (NoMatch)
-[2023-05-26][20:51:46][ruff::rules::isort::categorize][DEBUG] Categorized 'folder_2.module' as Known(FirstParty) (SamePackage)
-[2023-05-26][20:51:46][ruff::rules::isort::categorize][DEBUG] Categorized 'folder_1.module' as Known(ThirdParty) (NoMatch)
+[2023-05-26][20:51:46][ruff::rules::isort::categorize][DEBUG] Categorized &#x27;time&#x27; as Known(StandardLibrary) (KnownStandardLibrary)
+[2023-05-26][20:51:46][ruff::rules::isort::categorize][DEBUG] Categorized &#x27;numpy&#x27; as Known(ThirdParty) (NoMatch)
+[2023-05-26][20:51:46][ruff::rules::isort::categorize][DEBUG] Categorized &#x27;folder_2.module&#x27; as Known(FirstParty) (SamePackage)
+[2023-05-26][20:51:46][ruff::rules::isort::categorize][DEBUG] Categorized &#x27;folder_1.module&#x27; as Known(ThirdParty) (NoMatch)
 ...
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-27 19:19</div>
-            <div class="timeline-body"><p>Totally, I'll try to clarify this a bit in the docs.</p>
+            <div class="timeline-body"><p>Totally, I&#x27;ll try to clarify this a bit in the docs.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-05-27 19:19</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-27 19:19</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2023-05-27 19:50</div>
@@ -220,12 +211,12 @@ src = [&quot;../&quot;]
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-05-29 02:50</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-29 02:50</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:47:18 UTC
+        Synced at 2026-01-20 18:48:36 UTC
     </footer>
 </body>
 </html>

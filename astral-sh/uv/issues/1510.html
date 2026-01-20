@@ -23,8 +23,8 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/henryiii">@henryiii</a></div>
-            <div class="timeline-body"><p>I'm curious if replacing <code>pypa/build</code> is something being considered. It would be a good idea, I think, to avoid implementing <code>pip wheel</code>, and instead focus on build. I think most of the components are already here - the ability to make temporary virtual environments is the key one. In fact, the ability to build (<code>pip install .</code> though config-settings are missing #1460) is here too. The procedure is simple, though you do need a Python interpreter to call the PEP 517 hooks, it's mostly making a venv, adding packagers, running a hook if it exists and adding those packages, then calling the build backend hook. There are a total of 5 hooks (wheel, sdist, requires for wheel and sdist, and a metadata hook). You can look at pypa/build, there's not that much code there, really. I'd be able to help a bit if needed.</p>
-<p>The other direction would also be very, very interesting - build uses <code>venv</code> by default, but it can switch to <code>virtualenv</code> if that's installed. Is there a plan to provide a Python API for <code>uv virtualenv</code>? Then build could just switch to <code>uv</code> if that was installed, getting a speedup (I expect). Same would be true for all the other tooling built on <code>venv</code> and <code>virtualenv</code>, like nox, tox, hatch, pdm, etc., I expect.</p>
+            <div class="timeline-body"><p>I&#x27;m curious if replacing <code>pypa/build</code> is something being considered. It would be a good idea, I think, to avoid implementing <code>pip wheel</code>, and instead focus on build. I think most of the components are already here - the ability to make temporary virtual environments is the key one. In fact, the ability to build (<code>pip install .</code> though config-settings are missing #1460) is here too. The procedure is simple, though you do need a Python interpreter to call the PEP 517 hooks, it&#x27;s mostly making a venv, adding packagers, running a hook if it exists and adding those packages, then calling the build backend hook. There are a total of 5 hooks (wheel, sdist, requires for wheel and sdist, and a metadata hook). You can look at pypa/build, there&#x27;s not that much code there, really. I&#x27;d be able to help a bit if needed.</p>
+<p>The other direction would also be very, very interesting - build uses <code>venv</code> by default, but it can switch to <code>virtualenv</code> if that&#x27;s installed. Is there a plan to provide a Python API for <code>uv virtualenv</code>? Then build could just switch to <code>uv</code> if that was installed, getting a speedup (I expect). Same would be true for all the other tooling built on <code>venv</code> and <code>virtualenv</code>, like nox, tox, hatch, pdm, etc., I expect.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -32,39 +32,39 @@
             <div class="timeline-body"><blockquote>
 <p>Is there a plan to provide a Python API for <code>uv virtualenv</code>? Then build could just switch to <code>uv</code> if that was installed, getting a speedup (I expect). Same would be true for all the other tooling built on <code>venv</code> and <code>virtualenv</code>, like nox, tox, hatch, pdm, etc., I expect.</p>
 </blockquote>
-<p>Correct me if I'm wrong but I think those tools only interact with <code>venv</code> and <code>virtualenv</code> through the CLI, so <code>uv venv</code> could already be a drop-in replacement if it covers the same functionality.</p>
+<p>Correct me if I&#x27;m wrong but I think those tools only interact with <code>venv</code> and <code>virtualenv</code> through the CLI, so <code>uv venv</code> could already be a drop-in replacement if it covers the same functionality.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-16 16:51</div>
-            <div class="timeline-body"><p>We're already a build frontend, I think. We do all of this to build source distributions for users. We don't expose it as a top-level command, but it would make a lot of sense to do so.</p>
-<p>Just for fun, there's also this #895</p>
+            <div class="timeline-body"><p>We&#x27;re already a build frontend, I think. We do all of this to build source distributions for users. We don&#x27;t expose it as a top-level command, but it would make a lot of sense to do so.</p>
+<p>Just for fun, there&#x27;s also this #895</p>
 <p>Regarding a Python API — probably not anytime soon since it introduces more complexity around backwards compatibility.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-02-16 16:56</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-16 16:56</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">project-management</span> added by @zanieb on 2024-02-16 16:56</div>
+            <div class="event">Label <span class="label">project-management</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-16 16:56</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Build replacement?" to "Expose build frontend (`pypa/build` replacement)" by @zanieb on 2024-02-16 16:56</div>
+            <div class="event">Renamed from &quot;Build replacement?&quot; to &quot;Expose build frontend (`pypa/build` replacement)&quot; by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-16 16:56</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-02-16 22:02</div>
             <div class="timeline-body"><p>virtualenv has a very, very simple Python interface based on the CLI:</p>
-<pre><code class="language-python">cmd = [str(path), '--no-setuptools', '--no-wheel', '--activators', '']
+<pre><code>cmd = [str(path), &#x27;--no-setuptools&#x27;, &#x27;--no-wheel&#x27;, &#x27;--activators&#x27;, &#x27;&#x27;]
 result = virtualenv.cli_run(cmd, setup_logging=False)
 executable = str(result.creator.exe)
 script_dir = str(result.creator.script_dir)
 </code></pre>
-<p>I think the main reason it exists to skip the python process startup cost, which uv already skips. The only thing you'd need, actually, is a structured output option (say json?) that describes what it just created, then <code>uv</code> would be usable by build. That option could remove the pretty output and add structured output (replacing setup_logging=False).</p>
+<p>I think the main reason it exists to skip the python process startup cost, which uv already skips. The only thing you&#x27;d need, actually, is a structured output option (say json?) that describes what it just created, then <code>uv</code> would be usable by build. That option could remove the pretty output and add structured output (replacing setup_logging=False).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-02-19 16:26</div>
-            <div class="timeline-body"><p>What about the CLI? Here's how build works, and I'd recommend the same thing for <code>uv build</code> unless there's a good reason to do something different (build intentionally deviates from pip where a clear improvement could be made, so doing the same thing to build is valid!)</p>
+            <div class="timeline-body"><p>What about the CLI? Here&#x27;s how build works, and I&#x27;d recommend the same thing for <code>uv build</code> unless there&#x27;s a good reason to do something different (build intentionally deviates from pip where a clear improvement could be made, so doing the same thing to build is valid!)</p>
 <ul>
 <li><code>build</code> by default builds the current folder, and makes an SDist, then <strong>builds the wheel from the SDist</strong>. This helps catch broken SDists and has caught quite a few of them in practice.</li>
 <li><code>build --sdist</code> only builds an SDist</li>
@@ -79,26 +79,26 @@ script_dir = str(result.creator.script_dir)
 <li><code>--skip-dependency-check, -x</code>: Avoids checking the dependencies if building without isolation. This is the reverse of pip, which requires a flag to do the check.[^1]</li>
 <li><code>--config-setting KEY[=VALUE], -C KEY[=VALUE]</code>: This is similar to pip, though they add an <code>s</code> to the long form (and the long form is ugly due to the double equals sign - the short form is better all around). <code>build</code> also allows empty settings (no <code>=VALUE</code>), while pip does not. I think all other inconsistencies have been removed by pip adopting our additions. Passing the same key more than once creates a list.</li>
 </ul>
-<p>[^1]: I'm torn on this one. I like build's method, and pip would have followed build if it weren't for backward compatibility (they shortly did try, but back compat required it change to opt-in). But I also constantly have to argue with distributors explaining that it's valid to pass this flag if you have Python redistributions (like <code>cmake</code>, <code>ninja</code>, <code>patchelf</code>, etc) that aren't required outside of PyPI. A list of deps to ignore would really help, IMO.</p>
+<p>[^1]: I&#x27;m torn on this one. I like build&#x27;s method, and pip would have followed build if it weren&#x27;t for backward compatibility (they shortly did try, but back compat required it change to opt-in). But I also constantly have to argue with distributors explaining that it&#x27;s valid to pass this flag if you have Python redistributions (like <code>cmake</code>, <code>ninja</code>, <code>patchelf</code>, etc) that aren&#x27;t required outside of PyPI. A list of deps to ignore would really help, IMO.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-19 17:07</div>
-            <div class="timeline-body"><p>Thanks for pushing this forward Henry. That makes sense to me, roughly. Personally, I'd be happy to review an experimental addition of this interface. We'll need to talk as a team though to figure out where this fits on our roadmap.</p>
+            <div class="timeline-body"><p>Thanks for pushing this forward Henry. That makes sense to me, roughly. Personally, I&#x27;d be happy to review an experimental addition of this interface. We&#x27;ll need to talk as a team though to figure out where this fits on our roadmap.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-02-22 11:09</div>
-            <div class="timeline-body"><p>We have <code>cargo run --bin uv-dev -- build</code> (https://github.com/astral-sh/uv/blob/2586f655bbf650a9797c8f88b6d9066eefe7a3dc/crates/uv-dev/src/build.rs) where we can experiment with the CLI. I'm somewhat hesitant to expose this now before we know how this fits into the bigger picture, we might want to have higher level command (let's say <code>prepare-venv</code> for docker, <code>publish</code> for libraries)</p>
+            <div class="timeline-body"><p>We have <code>cargo run --bin uv-dev -- build</code> (https://github.com/astral-sh/uv/blob/2586f655bbf650a9797c8f88b6d9066eefe7a3dc/crates/uv-dev/src/build.rs) where we can experiment with the CLI. I&#x27;m somewhat hesitant to expose this now before we know how this fits into the bigger picture, we might want to have higher level command (let&#x27;s say <code>prepare-venv</code> for docker, <code>publish</code> for libraries)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-02-22 15:34</div>
-            <div class="timeline-body"><p>The nice thing about &quot;build&quot; is it could be just like &quot;pip&quot;, a copy of the PyPA tool that everyone is already familiar with. And it's nicely low level, rather than a higher level concept like &quot;publish&quot;. But the name is pretty general.</p>
-<p>I assume there should be a way to build SDists in the future too? Also, I'd not use <code>-w, --wheels</code> as that's too close to <code>--wheel</code> from <code>build</code> (which I'd assume you'd want, see description above). Build calls this <code>--outdir, -o</code>. I'm not sure you want to expose <code>-e, --editable</code>; editable wheels are supposed to be transient and not exposed to the user / stored. We thought long and hard about build's CLI.</p>
-<p>It's great that it can take SDists, but I'd name the positional parameter &quot;SOURCE&quot; since if you are building an SDist, it doesn't make sense, and even building a wheel, I think SOURCE would be fine for and SDist, but also include pointing at a source.</p>
-<p>Also, I'd recommend emulating build's output, which is excellent and a good balance of detail vs. noise.</p>
-<p>FYI, uv-dev builds builds's wheel in 571ms.</p>
+            <div class="timeline-body"><p>The nice thing about &quot;build&quot; is it could be just like &quot;pip&quot;, a copy of the PyPA tool that everyone is already familiar with. And it&#x27;s nicely low level, rather than a higher level concept like &quot;publish&quot;. But the name is pretty general.</p>
+<p>I assume there should be a way to build SDists in the future too? Also, I&#x27;d not use <code>-w, --wheels</code> as that&#x27;s too close to <code>--wheel</code> from <code>build</code> (which I&#x27;d assume you&#x27;d want, see description above). Build calls this <code>--outdir, -o</code>. I&#x27;m not sure you want to expose <code>-e, --editable</code>; editable wheels are supposed to be transient and not exposed to the user / stored. We thought long and hard about build&#x27;s CLI.</p>
+<p>It&#x27;s great that it can take SDists, but I&#x27;d name the positional parameter &quot;SOURCE&quot; since if you are building an SDist, it doesn&#x27;t make sense, and even building a wheel, I think SOURCE would be fine for and SDist, but also include pointing at a source.</p>
+<p>Also, I&#x27;d recommend emulating build&#x27;s output, which is excellent and a good balance of detail vs. noise.</p>
+<p>FYI, uv-dev builds builds&#x27;s wheel in 571ms.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -113,39 +113,39 @@ script_dir = str(result.creator.script_dir)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-29 04:12</div>
-            <div class="timeline-body"><p>I think this is a duplicate of #920 — it's the same idea of exposing our PEP 517 build frontend, the name of the command is up for consideration still.</p>
+            <div class="timeline-body"><p>I think this is a duplicate of #920 — it&#x27;s the same idea of exposing our PEP 517 build frontend, the name of the command is up for consideration still.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/WillDuke">@WillDuke</a> on 2024-03-10 15:28</div>
-            <div class="timeline-body"><p>Echoing an earlier comment, the output from <code>pypa/build</code> is so good that I often install it just to debug failures in commands like <code>pip install -e .</code>. <code>build</code> will often provide an actionable error message (or other output) when the original command failed due to something inscrutable. It's so useful that I consider it a major feature of the tool.</p>
+            <div class="timeline-body"><p>Echoing an earlier comment, the output from <code>pypa/build</code> is so good that I often install it just to debug failures in commands like <code>pip install -e .</code>. <code>build</code> will often provide an actionable error message (or other output) when the original command failed due to something inscrutable. It&#x27;s so useful that I consider it a major feature of the tool.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/chadrik">@chadrik</a> on 2024-08-27 22:45</div>
-            <div class="timeline-body"><p>What I'd like to see from <code>uv build</code> is recursively building all packages in nested workspaces.  I see a lot of potential in workspaces for bulk operations, but right now they're quite limited.</p>
+            <div class="timeline-body"><p>What I&#x27;d like to see from <code>uv build</code> is recursively building all packages in nested workspaces.  I see a lot of potential in workspaces for bulk operations, but right now they&#x27;re quite limited.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Expose build frontend (`pypa/build` replacement)" to "Expose `uv build` build frontend (`pypa/build` replacement)" by @zanieb on 2024-08-28 12:35</div>
+            <div class="event">Renamed from &quot;Expose build frontend (`pypa/build` replacement)&quot; to &quot;Expose `uv build` build frontend (`pypa/build` replacement)&quot; by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-28 12:35</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-28 12:35</div>
-            <div class="timeline-body"><p>Modifying the title to help with search as we're getting other requests.</p>
+            <div class="timeline-body"><p>Modifying the title to help with search as we&#x27;re getting other requests.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/alex">@alex</a> on 2024-08-30 15:29</div>
-            <div class="timeline-body"><p>One thing that'd be incredibly useful, which pypa/build does not currently support, is being able to turn an sdist into a wheel. Were <code>uv</code> to support that, we'd pretty much immediately switch to it I think.</p>
+            <div class="timeline-body"><p>One thing that&#x27;d be incredibly useful, which pypa/build does not currently support, is being able to turn an sdist into a wheel. Were <code>uv</code> to support that, we&#x27;d pretty much immediately switch to it I think.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astrojuanlu">@astrojuanlu</a> on 2024-08-30 16:25</div>
-            <div class="timeline-body"><p>TIL https://github.com/pypa/build/issues/311</p>
+            <div class="timeline-body"><p>TIL <a href="https://github.com/pypa/build/issues/311">pypa/build#311</a></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-08-31 16:47</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-31 16:47</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-31 17:30</div>
@@ -154,12 +154,12 @@ script_dir = str(result.creator.script_dir)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-31 17:43</div>
-            <div class="timeline-body"><p>It's good motivation to add support for streaming the build output though. Feels essential!</p>
+            <div class="timeline-body"><p>It&#x27;s good motivation to add support for streaming the build output though. Feels essential!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-31 23:56</div>
-            <div class="timeline-body"><p>Ok, I have the build output working in https://github.com/astral-sh/uv/pull/6903, but unsure whether to show it by default or only with <code>--verbose</code>.</p>
+            <div class="timeline-body"><p>Ok, I have the build output working in <a href="https://github.com/astral-sh/uv/pull/6903">astral-sh/uv#6903</a>, but unsure whether to show it by default or only with <code>--verbose</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -169,11 +169,11 @@ script_dir = str(result.creator.script_dir)
 wrote:</p>
 <blockquote>
 <p>Ok, I have the build output working in #6903
-<a href="https://github.com/astral-sh/uv/pull/6903">https://github.com/astral-sh/uv/pull/6903</a>, but unsure whether to show
+<a href="https://github.com/astral-sh/uv/pull/6903">astral-sh/uv#6903</a>, but unsure whether to show
 it by default or only with --verbose.</p>
 <p>—
 Reply to this email directly, view it on GitHub
-<a href="https://github.com/astral-sh/uv/issues/1510#issuecomment-2323075334">https://github.com/astral-sh/uv/issues/1510#issuecomment-2323075334</a>, or
+<a href="https://github.com/astral-sh/uv/issues/1510#issuecomment-2323075334">astral-sh/uv#1510</a>, or
 unsubscribe
 <a href="https://github.com/notifications/unsubscribe-auth/AAAAGBEN3SRA2NZFPNZOELLZUJJ2RAVCNFSM6AAAAABDMJW74SVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZDGMRTGA3TKMZTGQ">https://github.com/notifications/unsubscribe-auth/AAAAGBEN3SRA2NZFPNZOELLZUJJ2RAVCNFSM6AAAAABDMJW74SVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZDGMRTGA3TKMZTGQ</a>
 .
@@ -186,19 +186,19 @@ All that is necessary for evil to succeed is for good people to do nothing.</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-01 16:59</div>
-            <div class="timeline-body"><p>Have that part working here: https://github.com/astral-sh/uv/pull/6912</p>
+            <div class="timeline-body"><p>Have that part working here: <a href="https://github.com/astral-sh/uv/pull/6912">astral-sh/uv#6912</a></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-09-04 15:23</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-04 15:23</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-09-04 15:23</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-04 15:23</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:23:36 UTC
+        Synced at 2026-01-20 19:29:32 UTC
     </footer>
 </body>
 </html>

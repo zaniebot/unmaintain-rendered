@@ -24,7 +24,7 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a></div>
             <div class="timeline-body"><p>Consider the following innocent-looking example (<a href="https://play.ty.dev/c7337e08-b762-456f-a988-91812a6e296e">playground</a>):</p>
-<pre><code class="language-python">class StrConverter[T](Protocol):
+<pre><code>class StrConverter[T](Protocol):
     def convert(self, original: T, /) -&gt; str: ...
 
 class NumberToStrConverter(StrConverter[int], StrConverter[float]):
@@ -32,52 +32,52 @@ class NumberToStrConverter(StrConverter[int], StrConverter[float]):
         return str(original)
 </code></pre>
 <p>It appears that ty considers <code>StrConverter[int]</code> and <code>StrConverter[float]</code> to be two different bases. This is incorrect; at runtime, the two specializations are considered the same base class, having the same <a href="https://docs.python.org/3/library/typing.html#typing.get_origin"><code>origin</code></a>, and so the class definition fails:</p>
-<pre><code class="language-text">TypeError: duplicate base class StrConverter
+<pre><code>TypeError: duplicate base class StrConverter
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-05-23 02:17</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-23 02:17</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">runtime semantics</span> added by @AlexWaygood on 2025-05-23 02:17</div>
+            <div class="event">Label <span class="label">runtime semantics</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-23 02:17</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-23 23:09</div>
             <div class="timeline-body"><p>The same underlying issue can also cause us to infer invalid MROs in some situations, where the same underlying class appears twice with two different specialisations:</p>
-<pre><code class="language-py">class Foo[T]: ...
+<pre><code>class Foo[T]: ...
 class Bar(Foo[int]): ...
 class Baz(Foo[str]): ...
 class Spam(Bar, Baz): ...
-reveal_type(Spam.__mro__)  # tuple[&lt;class 'Spam'&gt;, &lt;class 'Bar'&gt;, &lt;class 'Foo[int]'&gt;, &lt;class 'Baz'&gt;, &lt;class 'Foo[str]'&gt;, typing.Generic, &lt;class 'object'&gt;]`
+reveal_type(Spam.__mro__)  # tuple[&lt;class &#x27;Spam&#x27;&gt;, &lt;class &#x27;Bar&#x27;&gt;, &lt;class &#x27;Foo[int]&#x27;&gt;, &lt;class &#x27;Baz&#x27;&gt;, &lt;class &#x27;Foo[str]&#x27;&gt;, typing.Generic, &lt;class &#x27;object&#x27;&gt;]`
 </code></pre>
 <p>That should never happen.</p>
-<p>@dcreager, this makes me think that we probably shouldn't be sending specialised class objects into the <code>c3_merge</code> function -- I think we should probably be sending class literals into it, which is what happens at runtime. How about this for an alternative to what we're currently doing:</p>
+<p>@dcreager, this makes me think that we probably shouldn&#x27;t be sending specialised class objects into the <code>c3_merge</code> function -- I think we should probably be sending class literals into it, which is what happens at runtime. How about this for an alternative to what we&#x27;re currently doing:</p>
 <ol>
-<li>The <code>Mro</code> struct holds a list of class-literals that are always unspecialised, and this unspecialised MRO is what's returned by <code>Class::try_mro</code>.</li>
+<li>The <code>Mro</code> struct holds a list of class-literals that are always unspecialised, and this unspecialised MRO is what&#x27;s returned by <code>Class::try_mro</code>.</li>
 <li>But <code>MroIterator</code> lazily specialises each MRO entry as it yields them one-by-one, ensuring that <code>Class::iter_mro</code> always yields an MRO in which all entries are specialised.</li>
 </ol>
 <p>Does that sound like a plausible approach?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">generics</span> added by @AlexWaygood on 2025-05-23 23:19</div>
+            <div class="event">Label <span class="label">generics</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-23 23:19</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-05-24 13:51</div>
             <div class="timeline-body"><blockquote>
 <p>The same underlying issue can also cause us to infer invalid MROs in some situations, where the same underlying class appears twice with two different specialisations:</p>
-<pre><code class="language-py">class Foo[T]: ...
+<pre><code>class Foo[T]: ...
 class Bar(Foo[int]): ...
 class Baz(Foo[str]): ...
 class Spam(Bar, Baz): ...
-reveal_type(Spam.__mro__)  # tuple[&lt;class 'Spam'&gt;, &lt;class 'Bar'&gt;, &lt;class 'Foo[int]'&gt;, &lt;class 'Baz'&gt;, &lt;class 'Foo[str]'&gt;, typing.Generic, &lt;class 'object'&gt;]`
+reveal_type(Spam.__mro__)  # tuple[&lt;class &#x27;Spam&#x27;&gt;, &lt;class &#x27;Bar&#x27;&gt;, &lt;class &#x27;Foo[int]&#x27;&gt;, &lt;class &#x27;Baz&#x27;&gt;, &lt;class &#x27;Foo[str]&#x27;&gt;, typing.Generic, &lt;class &#x27;object&#x27;&gt;]`
 </code></pre>
 <p>That should never happen.</p>
 </blockquote>
 <p>What is the correct MRO in this case? If <code>Foo</code> should only appear once (since c3-merge operates on unspecialized class literals), and we want to include specializations in the MROs that we produce, which specialization should we use?</p>
 <p>Or put differently, what should the following reveal?</p>
-<pre><code class="language-py">class Foo[T]:
+<pre><code>class Foo[T]:
     def method(self) -&gt; T: ...
 
 class Bar(Foo[int]): ...
@@ -92,7 +92,7 @@ reveal_type(Spam.method)
             <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-05-24 17:54</div>
             <div class="timeline-body"><p><code>Spam</code> inherits from both <code>Foo[int]</code> and <code>Foo[str]</code>, so its <code>method</code> would have the type of <code>(self: Self) -&gt; int &amp; str</code> (or <code>((self: Self) -&gt; int) &amp; ((self: Self) -&gt; str)</code>) where <code>Self</code> is a subtype of <code>Foo[int] &amp; Foo[str]</code>.</p>
 <p>The runtime MRO is <code>(Spam, Bar, Baz, Foo, Generic, object)</code>, so the revealed MRO should look like this:</p>
-<pre><code class="language-python">tuple[&lt;class 'Spam'&gt;, &lt;class 'Bar'&gt;, &lt;class 'Baz'&gt;, &lt;class 'Foo[int] &amp; Foo[str]'&gt;, typing.Generic, &lt;class 'object'&gt;]
+<pre><code>tuple[&lt;class &#x27;Spam&#x27;&gt;, &lt;class &#x27;Bar&#x27;&gt;, &lt;class &#x27;Baz&#x27;&gt;, &lt;class &#x27;Foo[int] &amp; Foo[str]&#x27;&gt;, typing.Generic, &lt;class &#x27;object&#x27;&gt;]
 </code></pre>
 </div>
         </div>
@@ -101,21 +101,21 @@ reveal_type(Spam.method)
             <div class="timeline-body"><p>Pyright considers <code>Spam</code> invalid; it says <code>Foo[str]</code> and <code>Foo[int]</code> are incompatible bases.</p>
 <p>Mypy is fine with this code in a way that looks unsound; it seems to do something similar to what we currently do (at least, it infers the type of an attribute typed as the generic typevar as whichever <code>Foo</code> specialization would come first in the MRO).</p>
 <p>If the &quot;duplicate but differently specialized&quot; base classes are direct bases instead, as in the OP example, then both mypy and pyright error (which makes sense, since that version is an error at runtime.)</p>
-<p>I think @InSyncWithFoo's answer is probably the right one if we want to support the indirect version, but I also think supporting this is not high priority.</p>
+<p>I think @InSyncWithFoo&#x27;s answer is probably the right one if we want to support the indirect version, but I also think supporting this is not high priority.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-27 18:54</div>
-            <div class="timeline-body"><p>I lean towards doing what pyright does and saying that it's invalid to have two specialisations of the same class in any MRO. I don't see a use case for it, and I think it could produce surprising behaviour if the inferred specialisation for a method on that base ends up simplifying to <code>Never</code> due to disjoint types intersecting with each other.</p>
+            <div class="timeline-body"><p>I lean towards doing what pyright does and saying that it&#x27;s invalid to have two specialisations of the same class in any MRO. I don&#x27;t see a use case for it, and I think it could produce surprising behaviour if the inferred specialisation for a method on that base ends up simplifying to <code>Never</code> due to disjoint types intersecting with each other.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Stable" by @carljm on 2025-11-13 06:58</div>
+            <div class="event">Added to milestone &quot;Stable&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-11-13 06:58</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:19:59 UTC
+        Synced at 2026-01-20 19:24:37 UTC
     </footer>
 </body>
 </html>

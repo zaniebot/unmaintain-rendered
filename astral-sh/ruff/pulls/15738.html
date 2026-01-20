@@ -23,8 +23,8 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>Our union builder currently has a problem due to a bad interaction of several features we've implemented:</p>
+            <div class="timeline-body">Summary
+<p>Our union builder currently has a problem due to a bad interaction of several features we&#x27;ve implemented:</p>
 <ul>
 <li>The union builder understands that <code>bool ≡ Literal[True, False]</code> (and therefore that for any <code>T</code>, <code>bool | T ≡ Literal[True, False] | T</code>; therefore, whenever it sees <code>Literal[True, False]</code> in a union, it eagerly simplifies this union to the simpler type <code>bool</code>.</li>
 <li>The union builder also understands that adding <code>U</code> to the union <code>S | T</code> is a no-op if <code>U</code> is a subtype of either <code>S</code> or <code>T</code></li>
@@ -32,7 +32,7 @@
 <li>The union builder understands that <code>Literal[Falsy]</code> is a subtype of <code>AlwaysFalsy</code> and <code>~AlwaysTruthy</code></li>
 <li>The union builder understands that <code>bool</code> is neither a subtype of <code>AlwaysTruthy</code> nor a subtype of <code>AlwaysFalsy</code></li>
 </ul>
-<p>Putting all these features together means that the union builder can produce different unions depending on the order in which elements are inserted into the union. Consider a union consisting of <code>Literal[True]</code>, <code>Literal[False]</code> and <code>AlwaysTruthy</code>. If they're inserted in that order, then the unions is built like this:</p>
+<p>Putting all these features together means that the union builder can produce different unions depending on the order in which elements are inserted into the union. Consider a union consisting of <code>Literal[True]</code>, <code>Literal[False]</code> and <code>AlwaysTruthy</code>. If they&#x27;re inserted in that order, then the unions is built like this:</p>
 <pre><code>(1) `Literal[True]`
 (2) add `Literal[False]` to the union:
     -&gt; `Literal[True] | Literal[False]`
@@ -42,7 +42,7 @@
 
 Final union: `bool | AlwaysTruthy`
 </code></pre>
-<p>But if they're inserted in a slightly different order, a different union is constructed entirely, which red-knot is not capable of understanding to be equivalent to the one above:</p>
+<p>But if they&#x27;re inserted in a slightly different order, a different union is constructed entirely, which red-knot is not capable of understanding to be equivalent to the one above:</p>
 <pre><code>(1) `Literal[False]
 (2) add `AlwaysTruthy` to the union
     -&gt; `Literal[False] | AlwaysTruthy`
@@ -62,8 +62,8 @@ Final union: `Literal[False] | AlwaysTruthy`
 </ul>
 <p>This PR refactors the union builder to ensure that unions are <em>never</em> constructed that contain <code>bool</code> as an element; instead, <code>bool</code> is always decomposed to <code>Literal[True, False]</code>. The same is done for our intersection builder. Doing this makes it much easier to ensure that unions such as the ones above always have the same set of elements no matter which order they are inserted into the union; a lot of complexity is removed from <code>builder.rs</code> in this PR. However, it has the (significant) drawback that in various type-relational methods such as <code>Type::is_equivalent_to()</code>, <code>Type::is_subtype_of()</code> and <code>Type::is_assignable_to()</code>, we have to remember to normalize <code>bool</code> into <code>Literal[True, False]</code> before comparing the type with any other type, since the other type might be a union, and we must ensure that <code>Literal[True, False]</code> is understood to be equivalent to <code>bool</code>.</p>
 <p>Since it would be confusing for users if <code>bool</code> was displayed as <code>Literal[True, False]</code>, some logic is added to <code>Type::display</code> so that <code>Literal[True, False]</code> is replaced with <code>bool</code> in unions before unions are printed to the terminal in diagnostics.</p>
-<p>This PR fixes https://github.com/astral-sh/ty/issues/216, and allows us to promote two flaky property tests to stable. However, it currently shows up as having a 1% performance regression on both red-knot benchmarks on codspeed: https://codspeed.io/astral-sh/ruff/branches/alex%2Ftruthy-unions-5.</p>
-<h2>What about literal strings?</h2>
+<p>This PR fixes <a href="https://github.com/astral-sh/ty/issues/216">astral-sh/ty#216</a>, and allows us to promote two flaky property tests to stable. However, it currently shows up as having a 1% performance regression on both red-knot benchmarks on codspeed: https://codspeed.io/astral-sh/ruff/branches/alex%2Ftruthy-unions-5.</p>
+What about literal strings?
 <p>As well as the above invariants for unions containing <code>AlwaysTruthy/AlwaysFalsy</code> and <code>bool</code>, there are also equivalences for <code>LiteralString</code> that we do not yet understand. The fact that we do not understand these is at least partly responsible for the flakiness of several other property tests that are not marked as stable:</p>
 <ul>
 <li><code>AlwaysTruthy | LiteralString ≡ AlwaysTruthy | Literal[&quot;&quot;]</code></li>
@@ -71,8 +71,8 @@ Final union: `Literal[False] | AlwaysTruthy`
 <li><code>~AlwaysTruthy | LiteralString ≡ ~AlwaysTruthy | Literal[&quot;&quot;]</code></li>
 <li><code>~AlwaysFalsy | LiteralString ≡ ~AlwaysFalsy | LiteralString &amp; ~Literal[&quot;&quot;]</code></li>
 </ul>
-<p>I'm not sure if this problem is solvable in the same way without adding a new <code>Type::TruthyLiteralString</code> variant. Anyway, this PR does not attempt to solve this problem. Instead, some failing tests are added with a TODO.</p>
-<h2>Test Plan</h2>
+<p>I&#x27;m not sure if this problem is solvable in the same way without adding a new <code>Type::TruthyLiteralString</code> variant. Anyway, this PR does not attempt to solve this problem. Instead, some failing tests are added with a TODO.</p>
+Test Plan
 <ul>
 <li>New mdtests added that fail on <code>main</code></li>
 <li><code>QUICKCHECK_TESTS=1000000 cargo test --release -p red_knot_python_semantic -- --ignored types::property_tests::stable</code></li>
@@ -82,7 +82,7 @@ Final union: `Literal[False] | AlwaysTruthy`
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-01-25 13:10</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-25 13:10</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-25 13:13</div>
@@ -90,25 +90,25 @@ Final union: `Literal[False] | AlwaysTruthy`
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4674 on 2025-01-25 13:13</div>
-            <div class="timeline-body"><p>hmm, this doesn't yet handle unions inside tuples inside tuples...</p>
+            <div class="timeline-body"><p>hmm, this doesn&#x27;t yet handle unions inside tuples inside tuples...</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-25 16:00</div>
-            <div class="timeline-body"><p>There's actually two distinct changes here; I'll split this PR into two</p>
+            <div class="timeline-body"><p>There&#x27;s actually two distinct changes here; I&#x27;ll split this PR into two</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @AlexWaygood on 2025-01-25 17:21</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-25 17:21</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-01-25 17:21</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-25 17:21</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2025-01-25 17:21</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-25 17:21</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-01-25 17:21</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-25 17:21</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-25 17:23</div>
@@ -116,7 +116,7 @@ Final union: `Literal[False] | AlwaysTruthy`
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/exception/control_flow.md</code>:458 on 2025-01-25 17:23</div>
-            <div class="timeline-body"><p>The order here changes because I'm using <code>swap_remove</code> in <code>Type::display</code> to ensure that <code>Literal[True, False]</code> is displayed as <code>bool</code> to users. But maybe it's okay to use <code>remove()</code> in <code>Type::display()</code> rather than <code>swap_remove</code>? <code>remove()</code> is <code>O(n)</code> rather than <code>O(1)</code>, but displaying a type shouldn't really be performance-sensitive: it's usually only done as part of printing a diagnostic to the terminal</p>
+            <div class="timeline-body"><p>The order here changes because I&#x27;m using <code>swap_remove</code> in <code>Type::display</code> to ensure that <code>Literal[True, False]</code> is displayed as <code>bool</code> to users. But maybe it&#x27;s okay to use <code>remove()</code> in <code>Type::display()</code> rather than <code>swap_remove</code>? <code>remove()</code> is <code>O(n)</code> rather than <code>O(1)</code>, but displaying a type shouldn&#x27;t really be performance-sensitive: it&#x27;s usually only done as part of printing a diagnostic to the terminal</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -125,7 +125,7 @@ Final union: `Literal[False] | AlwaysTruthy`
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/tuples.md</code>:76 on 2025-01-25 17:25</div>
-            <div class="timeline-body"><p>I changed this because it doesn't look like we've implemented comparisons between unions inside tuples yet, and <code>bool</code> is now internally represented as a union, which meant that many <code>reveal_type</code> assertions in this test became TODOs rather than <code>bool</code>s. Testing whether we knew how to compare a <code>bool</code> with a <code>bool</code> didn't seem to me to be the point of the test.</p>
+            <div class="timeline-body"><p>I changed this because it doesn&#x27;t look like we&#x27;ve implemented comparisons between unions inside tuples yet, and <code>bool</code> is now internally represented as a union, which meant that many <code>reveal_type</code> assertions in this test became TODOs rather than <code>bool</code>s. Testing whether we knew how to compare a <code>bool</code> with a <code>bool</code> didn&#x27;t seem to me to be the point of the test.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -142,42 +142,42 @@ Final union: `Literal[False] | AlwaysTruthy`
             <div class="timeline-body"><blockquote>
 <p>it has the (significant) drawback that in various type-relational methods such as <code>Type::is_equivalent_to()</code>, <code>Type::is_subtype_of()</code> and <code>Type::is_assignable_to()</code>, we have to remember to normalize <code>bool</code> into <code>Literal[True, False]</code> before comparing the type with any other type, since the other type might be a union, and we must ensure that <code>Literal[True, False]</code> is understood to be equivalent to <code>bool</code>.</p>
 </blockquote>
-<p>One solution to this might be to add a <code>NormalizedType</code> newtype, which you <em>have</em> to convert a <code>Type</code> into before you can use any of these methods. Then we wouldn't have to remember to normalize types inside these methods (or inside the union and intersection builders!) -- we would know that the type was already normalized due to a <code>NormalizedType</code> instance being passed rather than a <code>Type</code>.</p>
-<pre><code class="language-rs">#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub struct NormalizedType&lt;'db&gt;(Type&lt;'db&gt;);
+<p>One solution to this might be to add a <code>NormalizedType</code> newtype, which you <em>have</em> to convert a <code>Type</code> into before you can use any of these methods. Then we wouldn&#x27;t have to remember to normalize types inside these methods (or inside the union and intersection builders!) -- we would know that the type was already normalized due to a <code>NormalizedType</code> instance being passed rather than a <code>Type</code>.</p>
+<pre><code>#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub struct NormalizedType&lt;&#x27;db&gt;(Type&lt;&#x27;db&gt;);
 
-impl&lt;'db&gt; NormalizedType&lt;'db&gt; {
+impl&lt;&#x27;db&gt; NormalizedType&lt;&#x27;db&gt; {
     /// Return true if this type is a [subtype of] type `target`.
-    pub(crate) fn is_subtype_of(self, db: &amp;'db dyn Db, target: Self) -&gt; bool {}
+    pub(crate) fn is_subtype_of(self, db: &amp;&#x27;db dyn Db, target: Self) -&gt; bool {}
 
     /// Return true if this type is [assignable to] type `target`.
-    pub(crate) fn is_assignable_to(self, db: &amp;'db dyn Db, target: Self) -&gt; bool {}
+    pub(crate) fn is_assignable_to(self, db: &amp;&#x27;db dyn Db, target: Self) -&gt; bool {}
 
     /// Return true if this type is [equivalent to] type `other`.
-    pub(crate) fn is_equivalent_to(self, db: &amp;'db dyn Db, other: Self) -&gt; bool {}
+    pub(crate) fn is_equivalent_to(self, db: &amp;&#x27;db dyn Db, other: Self) -&gt; bool {}
 
     /// Returns true if this type and `other` are gradual equivalent.
-    pub(crate) fn is_gradual_equivalent_to(self, db: &amp;'db dyn Db, other: Self) -&gt; bool {}
+    pub(crate) fn is_gradual_equivalent_to(self, db: &amp;&#x27;db dyn Db, other: Self) -&gt; bool {}
 
     /// Return true if this type and `other` have no common elements.
-    pub(crate) fn is_disjoint_from(self, db: &amp;'db dyn Db, other: Self) -&gt; bool {}
+    pub(crate) fn is_disjoint_from(self, db: &amp;&#x27;db dyn Db, other: Self) -&gt; bool {}
 }
 
-impl&lt;'db&gt; Deref for NormalizedType&lt;'db&gt; {
-    type Target = Type&lt;'db&gt;;
+impl&lt;&#x27;db&gt; Deref for NormalizedType&lt;&#x27;db&gt; {
+    type Target = Type&lt;&#x27;db&gt;;
 
     fn deref(&amp;self) -&gt; &amp;Self::Target {
         &amp;self.0
     }
 }
 
-impl&lt;'db&gt; From&lt;NormalizedType&lt;'db&gt;&gt; for Type&lt;'db&gt; {
-    fn from(value: NormalizedType&lt;'db&gt;) -&gt; Self {
+impl&lt;&#x27;db&gt; From&lt;NormalizedType&lt;&#x27;db&gt;&gt; for Type&lt;&#x27;db&gt; {
+    fn from(value: NormalizedType&lt;&#x27;db&gt;) -&gt; Self {
         value.0
     }
 }
 </code></pre>
-<p>This is quite attractive in some ways. It would be a very big change to make, though, and it would make our API more awkward to use in several places. I'm not sure it would be worth it.</p>
+<p>This is quite attractive in some ways. It would be a very big change to make, though, and it would make our API more awkward to use in several places. I&#x27;m not sure it would be worth it.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -186,7 +186,7 @@ impl&lt;'db&gt; From&lt;NormalizedType&lt;'db&gt;&gt; for Type&lt;'db&gt; {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:995 on 2025-01-27 08:07</div>
-            <div class="timeline-body"><p>Can you say more why this is necessary? And maybe add a comment (unless I'm missing something obvious)?</p>
+            <div class="timeline-body"><p>Can you say more why this is necessary? And maybe add a comment (unless I&#x27;m missing something obvious)?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -205,7 +205,7 @@ impl&lt;'db&gt; From&lt;NormalizedType&lt;'db&gt;&gt; for Type&lt;'db&gt; {
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:995 on 2025-01-27 11:21</div>
             <div class="timeline-body"><p>Thanks!</p>
-<p>I still don't understand why it's correct though? There are types which are supertypes of <code>bool</code>, but not of <code>int</code>. <code>bool | None</code> or <code>~Literal[2]</code>, for example. So why is it correct to replace the <code>bool &lt;: target</code> check with a <code>int &lt;: target</code> check? Because all special cases have been handled above?</p>
+<p>I still don&#x27;t understand why it&#x27;s correct though? There are types which are supertypes of <code>bool</code>, but not of <code>int</code>. <code>bool | None</code> or <code>~Literal[2]</code>, for example. So why is it correct to replace the <code>bool &lt;: target</code> check with a <code>int &lt;: target</code> check? Because all special cases have been handled above?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -215,14 +215,14 @@ impl&lt;'db&gt; From&lt;NormalizedType&lt;'db&gt;&gt; for Type&lt;'db&gt; {
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:995 on 2025-01-27 11:54</div>
             <div class="timeline-body"><blockquote>
-<p>I still don't understand why it's correct though?</p>
+<p>I still don&#x27;t understand why it&#x27;s correct though?</p>
 </blockquote>
 <p>It might not be -- I <em>have</em> been known to make mistakes 😜</p>
 <blockquote>
 <p>There are types which are supertypes of <code>bool</code>, but not of <code>int</code>. <code>bool | None</code> or <code>~Literal[2]</code>, for example. So why is it correct to replace the <code>bool &lt;: target</code> check with a <code>int &lt;: target</code> check? Because all special cases have been handled above?</p>
 </blockquote>
 <p>Yeah, I <em>think</em> our set-theoretic types such as unions and intersections should be handled in the branches above? I just added more test cases demonstrating this.</p>
-<p>(I <em>will</em> add a comment to the code reflecting this conversation, but first I'm experimenting with alternative ways of structuring the code that might make this clearer in the first place!)</p>
+<p>(I <em>will</em> add a comment to the code reflecting this conversation, but first I&#x27;m experimenting with alternative ways of structuring the code that might make this clearer in the first place!)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -231,13 +231,13 @@ impl&lt;'db&gt; From&lt;NormalizedType&lt;'db&gt;&gt; for Type&lt;'db&gt; {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:995 on 2025-01-27 18:25</div>
-            <div class="timeline-body"><p>(https://github.com/astral-sh/ruff/pull/15773 is the &quot;alternative way of structuring the code&quot;, for anybody else reading this thread)</p>
+            <div class="timeline-body"><p>(<a href="https://github.com/astral-sh/ruff/pull/15773">astral-sh/ruff#15773</a> is the &quot;alternative way of structuring the code&quot;, for anybody else reading this thread)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-28 00:48</div>
-            <div class="timeline-body"><p>I think I suggested normalizing <code>bool</code> to <code>Literal[True, False]</code>, and I appreciate you exploring what that would look like! But having seen what it would look like, it doesn't feel to me like the right direction.</p>
-<p>The cases where this simplification applies are very narrow: unions of <code>bool</code> (or an enum, in future -- I'm going to call these sealed types) with a larger type that only partially overlaps with <code>bool</code> (or the enum). Since <code>bool</code> and enums are both very narrow types, with a small/fixed set of singleton inhabitants, there are very few larger types that will partially overlap. Some types (<code>int</code> or <code>object</code>) will fully overlap (they are super-types), but I think in fact <code>AlwaysTruthy</code> and <code>AlwaysFalsy</code> are the only partially overlapping types?</p>
+            <div class="timeline-body"><p>I think I suggested normalizing <code>bool</code> to <code>Literal[True, False]</code>, and I appreciate you exploring what that would look like! But having seen what it would look like, it doesn&#x27;t feel to me like the right direction.</p>
+<p>The cases where this simplification applies are very narrow: unions of <code>bool</code> (or an enum, in future -- I&#x27;m going to call these sealed types) with a larger type that only partially overlaps with <code>bool</code> (or the enum). Since <code>bool</code> and enums are both very narrow types, with a small/fixed set of singleton inhabitants, there are very few larger types that will partially overlap. Some types (<code>int</code> or <code>object</code>) will fully overlap (they are super-types), but I think in fact <code>AlwaysTruthy</code> and <code>AlwaysFalsy</code> are the only partially overlapping types?</p>
 <p>So while decomposing is attractive in its conceptual simplicity (and in its code simplicity!), it means lots of operations on bools in unions become more expensive, because we have to check against two types instead of one (and this will be even worse with enums, possibly making the approach not even workable for them at all.) And then in the effort to limit some of that inefficiency (by decomposing only in unions/intersections), we lose a fair bit of the conceptual and code simplicity. So we are kind of letting the tail wag the dog, by paying extra perf cost for all uses of <code>bool</code> intersections, in order to support the less-common case where <code>Always{Truthy,Falsy}</code> is also in that union.</p>
 <p>I think we do want to normalize these cases (by which I mean, where a sealed type partially overlaps with another type in a union) such that we decompose the sealed type and eliminate the overlap (that is, <code>AlwaysFalse | Literal[True]</code> instead of <code>AlwaysFalse | bool</code>). This seems better than trying to encode the equivalence in <code>is_equivalent_to</code>.</p>
 <p>But given that the cases where this applies are so narrow, and we already compare every new union element to every existing union element, I think we can do this as (yet another) special case in <code>UnionBuilder</code>, and that will perform better than always decomposing.</p>
@@ -250,18 +250,18 @@ impl&lt;'db&gt; From&lt;NormalizedType&lt;'db&gt;&gt; for Type&lt;'db&gt; {
             <div class="timeline-body"><blockquote>
 <p>WDYT?</p>
 </blockquote>
-<p>I think this could work! I tried something like what you outline above initially, and struggled to get it to work, but I think at that stage I still didn't understand the full extent of the problem here. Revisiting it might yield different results now that I am Older and Wiser.</p>
+<p>I think this could work! I tried something like what you outline above initially, and struggled to get it to work, but I think at that stage I still didn&#x27;t understand the full extent of the problem here. Revisiting it might yield different results now that I am Older and Wiser.</p>
 <blockquote>
 <p>I think we do want to normalize these cases (by which I mean, where a sealed type partially overlaps with another type in a union) such that we decompose the sealed type and eliminate the overlap (that is, <code>AlwaysFalse | Literal[True]</code> instead of <code>AlwaysFalse | bool</code>). This seems better than trying to encode the equivalence in <code>is_equivalent_to</code>.</p>
 </blockquote>
-<p>I agree that we need some kind of normalization here rather than attempting some ugly (and expensive) special casing in <code>is_equivalent_to</code>. And intuitively, normalizing the union elements so that they do not overlap feels like the better way to go. But in practice, I wonder if normalizing to <code>AlwaysFalsy | bool</code> might actually be better. If we normalize to <code>AlwaysFalsy | Literal[True]</code>, we won't naturally understand <code>bool</code> as being a subtype of this type; we'd still have to decompose <code>bool</code> to <code>Literal[True, False]</code> in <code>is_subtype_of</code> and <code>is_assignable_to</code>. If we normalize to <code>AlwaysFalsy | bool</code>, however, I think it's possible that no special handling will be necessary in those methods.</p>
+<p>I agree that we need some kind of normalization here rather than attempting some ugly (and expensive) special casing in <code>is_equivalent_to</code>. And intuitively, normalizing the union elements so that they do not overlap feels like the better way to go. But in practice, I wonder if normalizing to <code>AlwaysFalsy | bool</code> might actually be better. If we normalize to <code>AlwaysFalsy | Literal[True]</code>, we won&#x27;t naturally understand <code>bool</code> as being a subtype of this type; we&#x27;d still have to decompose <code>bool</code> to <code>Literal[True, False]</code> in <code>is_subtype_of</code> and <code>is_assignable_to</code>. If we normalize to <code>AlwaysFalsy | bool</code>, however, I think it&#x27;s possible that no special handling will be necessary in those methods.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-01-28 14:39</div>
-            <div class="timeline-body"><p>I think there might be a more general problem here where we should understand the equivalence <code>P | Q = (P &amp; ~Q) | Q</code> and <code>P | Q = P | (Q &amp; ~P)</code>. We currently don't.</p>
-<p>I understand that there is a desire to always find a canonical representation, but I'm afraid this might be too much to ask for in a set-theoretic type system? Enforcing non-overlapping union elements can be achieved, but there are many ways to do that — the two variants <code>(P &amp; ~Q) | Q</code> and <code>P | (Q &amp; ~P)</code> are just two extreme cases where the entire overlap is either moved to the right or to the left. And if more than two types are involved, there's a combinatorial explosion of possibilities.</p>
-<p>It is obviously desirable to have a &quot;simple&quot; and unique representation when we present types to users, at least in common cases. But as a general property, I'm not sure if that is achievable.</p>
+            <div class="timeline-body"><p>I think there might be a more general problem here where we should understand the equivalence <code>P | Q = (P &amp; ~Q) | Q</code> and <code>P | Q = P | (Q &amp; ~P)</code>. We currently don&#x27;t.</p>
+<p>I understand that there is a desire to always find a canonical representation, but I&#x27;m afraid this might be too much to ask for in a set-theoretic type system? Enforcing non-overlapping union elements can be achieved, but there are many ways to do that — the two variants <code>(P &amp; ~Q) | Q</code> and <code>P | (Q &amp; ~P)</code> are just two extreme cases where the entire overlap is either moved to the right or to the left. And if more than two types are involved, there&#x27;s a combinatorial explosion of possibilities.</p>
+<p>It is obviously desirable to have a &quot;simple&quot; and unique representation when we present types to users, at least in common cases. But as a general property, I&#x27;m not sure if that is achievable.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -269,39 +269,39 @@ impl&lt;'db&gt; From&lt;NormalizedType&lt;'db&gt;&gt; for Type&lt;'db&gt; {
             <div class="timeline-body"><blockquote>
 <p>I understand that there is a desire to always find a canonical representation,</p>
 </blockquote>
-<p>We've had some PRs that move us in this direction, but I think this is the key question we need to answer — do we want <code>Type</code> to have a normal form?  (presumably DNF given its current shape)</p>
+<p>We&#x27;ve had some PRs that move us in this direction, but I think this is the key question we need to answer — do we want <code>Type</code> to have a normal form?  (presumably DNF given its current shape)</p>
 <blockquote>
-<p>And if more than two types are involved, there's a combinatorial explosion of possibilities.</p>
-<p>It is obviously desirable to have a &quot;simple&quot; and unique representation when we present types to users, at least in common cases. But as a general property, I'm not sure if that is achievable.</p>
+<p>And if more than two types are involved, there&#x27;s a combinatorial explosion of possibilities.</p>
+<p>It is obviously desirable to have a &quot;simple&quot; and unique representation when we present types to users, at least in common cases. But as a general property, I&#x27;m not sure if that is achievable.</p>
 </blockquote>
 <p>...because if so, you would typically avoid that combinatorial explosion by ensuring that the primitives in the normal form are all disjoint.</p>
-<p>In this case, it's <code>AlwaysTruthy</code> / <code>AlwaysFalsy</code> which most obviously violates that disjointness.  So they could not be primitives (i.e. variants in the <code>Type</code> enum), and would either be a property that types can have (implemented as an <code>is_always_truthy</code> method), or syntactic sugar for some type that is in normal form.  (e.g. an <code>always_falsy</code> constructor that would desugar into something like <code>Union[False, 0, &quot;&quot;, some protocol involving __bool__, ...]</code>)</p>
+<p>In this case, it&#x27;s <code>AlwaysTruthy</code> / <code>AlwaysFalsy</code> which most obviously violates that disjointness.  So they could not be primitives (i.e. variants in the <code>Type</code> enum), and would either be a property that types can have (implemented as an <code>is_always_truthy</code> method), or syntactic sugar for some type that is in normal form.  (e.g. an <code>always_falsy</code> constructor that would desugar into something like <code>Union[False, 0, &quot;&quot;, some protocol involving __bool__, ...]</code>)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-01-28 16:53</div>
             <div class="timeline-body"><blockquote>
 <p>...because if so, you would typically avoid that combinatorial explosion by ensuring that the primitives in the normal form are all disjoint.</p>
-<p>In this case, it's <code>AlwaysTruthy</code> / <code>AlwaysFalsy</code> which most obviously violates that disjointness. So they could not be primitives (i.e. variants in the <code>Type</code> enum), and would either be a property that types can have (implemented as an <code>is_always_truthy</code> method), or syntactic sugar for some type that is in normal form. (e.g. an <code>always_falsy</code> constructor that would desugar into something like <code>Union[False, 0, &quot;&quot;, some protocol involving __bool__, ...]</code>)</p>
+<p>In this case, it&#x27;s <code>AlwaysTruthy</code> / <code>AlwaysFalsy</code> which most obviously violates that disjointness. So they could not be primitives (i.e. variants in the <code>Type</code> enum), and would either be a property that types can have (implemented as an <code>is_always_truthy</code> method), or syntactic sugar for some type that is in normal form. (e.g. an <code>always_falsy</code> constructor that would desugar into something like <code>Union[False, 0, &quot;&quot;, some protocol involving __bool__, ...]</code>)</p>
 </blockquote>
 <p>I was mostly thinking about non-primitives, such as unrelated classes</p>
-<pre><code class="language-py">class C1: ...
+<pre><code>class C1: ...
 class C2: ...
 ...
 class Cn: ...
 </code></pre>
-<p>How would you bring the union <code>C1 | C2 | … | Cn</code> into some canonical form (that avoids overlaps)? We could try something like <code>C1 | C2 &amp; ~C1 | C3 &amp; ~C1 &amp; ~C2 | …</code>, but that depends on insertion order and doesn't look like it would be very useful to work with(?). A symmetric version would probably involve having O(n²) entries (<code>C1 &amp; ~C2 &amp; … &amp; ~Cn | ~C1 &amp; C2 &amp; ~C3 &amp; … &amp; ~Cn | … | ~C1 &amp; … &amp; ~Cn-1 &amp; Cn)</code>).</p>
+<p>How would you bring the union <code>C1 | C2 | … | Cn</code> into some canonical form (that avoids overlaps)? We could try something like <code>C1 | C2 &amp; ~C1 | C3 &amp; ~C1 &amp; ~C2 | …</code>, but that depends on insertion order and doesn&#x27;t look like it would be very useful to work with(?). A symmetric version would probably involve having O(n²) entries (<code>C1 &amp; ~C2 &amp; … &amp; ~Cn | ~C1 &amp; C2 &amp; ~C3 &amp; … &amp; ~Cn | … | ~C1 &amp; … &amp; ~Cn-1 &amp; Cn)</code>).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-01-28 17:17</div>
             <div class="timeline-body"><p>Yes, (one) problem with trying to avoid all overlaps is that a typical nominal instance type (perhaps the most common type) is not disjoint from another unrelated one, thanks to subclassing and multiple inheritance. So avoiding all overlaps in unions seems impractical.</p>
-<p>I agree that I'm not sure it's feasible in general to have a single normalized representation of every type. (It is important that we maintain DNF in the sense that we always normalize to a union of intersections, never a more complex tree of unions and intersections. But that doesn't necessarily imply a fully normalized form in terms of the possible combinations of elements.)</p>
-<p>My suggestion above was much more narrow and targeted: that we'd avoid overlaps <em>with sealed types</em> and prefer decomposing the sealed type instead. I think this is more tractable. But Alex makes a good point that this might be the wrong direction; perhaps we should prefer the overlap and use the full sealed type whenever it is correct to do so.</p>
+<p>I agree that I&#x27;m not sure it&#x27;s feasible in general to have a single normalized representation of every type. (It is important that we maintain DNF in the sense that we always normalize to a union of intersections, never a more complex tree of unions and intersections. But that doesn&#x27;t necessarily imply a fully normalized form in terms of the possible combinations of elements.)</p>
+<p>My suggestion above was much more narrow and targeted: that we&#x27;d avoid overlaps <em>with sealed types</em> and prefer decomposing the sealed type instead. I think this is more tractable. But Alex makes a good point that this might be the wrong direction; perhaps we should prefer the overlap and use the full sealed type whenever it is correct to do so.</p>
 <blockquote>
-<p>I think there might be a more general problem here where we should understand the equivalence <code>P | Q = (P &amp; ~Q) | Q</code> and <code>P | Q = P | (Q &amp; ~P)</code>. We currently don't.</p>
+<p>I think there might be a more general problem here where we should understand the equivalence <code>P | Q = (P &amp; ~Q) | Q</code> and <code>P | Q = P | (Q &amp; ~P)</code>. We currently don&#x27;t.</p>
 </blockquote>
-<p>To me this looks like a case where we'd ideally prefer to achieve this understanding via an eager simplification of <code>(P &amp; ~Q) | Q</code> to <code>P | Q</code> (which again means we are preferring the overlap, not preferring to avoid the overlap.)</p>
+<p>To me this looks like a case where we&#x27;d ideally prefer to achieve this understanding via an eager simplification of <code>(P &amp; ~Q) | Q</code> to <code>P | Q</code> (which again means we are preferring the overlap, not preferring to avoid the overlap.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -319,16 +319,16 @@ class Cn: ...
             <div class="timeline-body"><blockquote>
 <p>Just checking in. Is this something that we still plan on merging/changing in the future?</p>
 </blockquote>
-<p>I've deprioritised this issue for now as it's not urgent, but it's still something we'll need to fix at some point, and I still think something like this could be a viable fix. I'd rather not close this just yet.</p>
+<p>I&#x27;ve deprioritised this issue for now as it&#x27;s not urgent, but it&#x27;s still something we&#x27;ll need to fix at some point, and I still think something like this could be a viable fix. I&#x27;d rather not close this just yet.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[red-knot] Decompose `bool` to `Literal[True, False]` in unions and intersections" to "[ty] Decompose `bool` to `Literal[True, False]` in unions and intersections" by @AlexWaygood on 2026-01-14 18:09</div>
+            <div class="event">Renamed from &quot;[red-knot] Decompose `bool` to `Literal[True, False]` in unions and intersections&quot; to &quot;[ty] Decompose `bool` to `Literal[True, False]` in unions and intersections&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-14 18:09</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-14 18:38:33 UTC
+        Synced at 2026-01-20 19:10:50 UTC
     </footer>
 </body>
 </html>

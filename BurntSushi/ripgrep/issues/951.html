@@ -23,46 +23,46 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/alphapapa">@alphapapa</a></div>
-            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+            <div class="timeline-body">What version of ripgrep are you using?
 <p>ripgrep 0.8.1 (rev c8e9f25b85)
 -SIMD -AVX</p>
-<h4>How did you install ripgrep?</h4>
+How did you install ripgrep?
 <p>Debian package downloaded from link in readme.</p>
-<h4>What operating system are you using ripgrep on?</h4>
+What operating system are you using ripgrep on?
 <p>Ubuntu 14.04
 Emacs 26.1</p>
-<h4>Describe your question, feature request, or bug.</h4>
+Describe your question, feature request, or bug.
 <p><code>rg</code> does not seem to work properly with regard to pipes.</p>
 <p><code>grep</code> works:</p>
-<pre><code class="language-el">(let ((default-directory &quot;~/src/emacs/emacs&quot;))
+<pre><code>(let ((default-directory &quot;~/src/emacs/emacs&quot;))
   (setq argh (make-process :name &quot;grep&quot;
                            :command (list &quot;rgrep&quot; &quot;TODO&quot;)
-                           :connection-type 'pipe
+                           :connection-type &#x27;pipe
                            :buffer (get-buffer-create &quot;*grep*&quot;))))
 (with-current-buffer (process-buffer argh)
   (length (buffer-string))) ;; =&gt; 114100
 (process-status argh) ;; =&gt; exit
 </code></pre>
 <p><code>rg</code> does not:</p>
-<pre><code class="language-el">(let ((default-directory &quot;~/src/emacs/emacs&quot;))
+<pre><code>(let ((default-directory &quot;~/src/emacs/emacs&quot;))
   (setq argh (make-process :name &quot;rg&quot;
                            :command (list &quot;rg&quot; &quot;TODO&quot;)
-                           :connection-type 'pipe
+                           :connection-type &#x27;pipe
                            :buffer (get-buffer-create &quot;*rg*&quot;))))
 (with-current-buffer (process-buffer argh)
   (length (buffer-string))) ;; =&gt; 0
 (process-status argh) ;; =&gt; run
 </code></pre>
 <p>The process is still running:</p>
-<pre><code class="language-sh">$ pgrep -a rg
+<pre><code>$ pgrep -a rg
 31513 /usr/bin/rg TODO
 </code></pre>
 <p>However, if I use the <code>pty</code> type, it works:</p>
-<pre><code class="language-el">(let ((default-directory &quot;~/src/emacs/emacs&quot;))
+<pre><code>(let ((default-directory &quot;~/src/emacs/emacs&quot;))
   (setq argh (make-process :name &quot;rg&quot;
                            :command (list &quot;rg&quot;
                                           &quot;TODO&quot;)
-                           :connection-type 'pty
+                           :connection-type &#x27;pty
                            :buffer (get-buffer-create &quot;*rg*&quot;))))
 (with-current-buffer (process-buffer argh)
   (length (buffer-string))) ;; =&gt; 96824
@@ -74,14 +74,14 @@ Emacs 26.1</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-06-16 10:31</div>
-            <div class="timeline-body"><p>Sorry, but this bug report isn't something I can understand. Please reproduce the problem outside emacs. Another problem with this bug report is that I have no idea what it is you are trying to do. Another problem is that you say that grep works, but you actually seem to be invoking something else, namely, <code>rgrep</code>. I don't know what that is.</p>
+            <div class="timeline-body"><p>Sorry, but this bug report isn&#x27;t something I can understand. Please reproduce the problem outside emacs. Another problem with this bug report is that I have no idea what it is you are trying to do. Another problem is that you say that grep works, but you actually seem to be invoking something else, namely, <code>rgrep</code>. I don&#x27;t know what that is.</p>
 <p>The typical root cause of this sort of behavior is that ripgrep is blocking on stdin because it thinks you want to search stdin. Namely, when no paths are given to ripgrep, then it must guess at what you want. If it looks like there is something on stdin, then it will search stdin. Otherwise, it searches the current working directory.</p>
 <p>Often, the simplest work around is too just be explicit. e.g., <code>rg TODO -</code> for searching stdin or <code>rg TODO ./</code> for searching the current working directory.</p>
-<p>ag should not be used as a model of correctness. It has so many bugs that it sometimes only does the &quot;right&quot; thing accidentally. With that said, it would be interesting to compare the stdin checking code in both tools, but I'm in mobile.</p>
+<p>ag should not be used as a model of correctness. It has so many bugs that it sometimes only does the &quot;right&quot; thing accidentally. With that said, it would be interesting to compare the stdin checking code in both tools, but I&#x27;m in mobile.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2018-06-17 00:19</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-06-17 00:19</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/alphapapa">@alphapapa</a> on 2018-06-17 01:07</div>
@@ -89,27 +89,27 @@ Emacs 26.1</p>
 <blockquote>
 <p>Often, the simplest work around is too just be explicit. e.g., rg TODO - for searching stdin or rg TODO ./ for searching the current working directory.</p>
 </blockquote>
-<p>Thanks, you're right that the problem was that the directory to search was unspecified.  This works:</p>
-<pre><code class="language-el">(let ((default-directory &quot;~/src/emacs/emacs&quot;))
+<p>Thanks, you&#x27;re right that the problem was that the directory to search was unspecified.  This works:</p>
+<pre><code>(let ((default-directory &quot;~/src/emacs/emacs&quot;))
   (setq argh (make-process :name &quot;rg&quot;
                            :command (list &quot;rg&quot; &quot;TODO&quot; &quot;.&quot;)  ; &lt;- &quot;.&quot; specified the current directory
-                           :connection-type 'pipe  ; &lt;- using a pipe instead of a pty
+                           :connection-type &#x27;pipe  ; &lt;- using a pipe instead of a pty
                            :buffer (get-buffer-create &quot;*rg*&quot;))))
 (with-current-buffer (process-buffer argh)
   (length (buffer-string)))  ;; =&gt; 210825
 (process-status argh)  ;; =&gt; exit
 </code></pre>
 <blockquote>
-<p>Sorry, but this bug report isn't something I can understand. Please reproduce the problem outside emacs.</p>
+<p>Sorry, but this bug report isn&#x27;t something I can understand. Please reproduce the problem outside emacs.</p>
 </blockquote>
-<p>This is difficult (for me, at least) because the problem seems to be at a deeper level than, e.g. calling <code>rg</code> from a shell, and I'm not an expert in how Unix processes work.</p>
+<p>This is difficult (for me, at least) because the problem seems to be at a deeper level than, e.g. calling <code>rg</code> from a shell, and I&#x27;m not an expert in how Unix processes work.</p>
 <blockquote>
 <p>The typical root cause of this sort of behavior is that ripgrep is blocking on stdin because it thinks you want to search stdin. Namely, when no paths are given to ripgrep, then it must guess at what you want. If it looks like there is something on stdin, then it will search stdin. Otherwise, it searches the current working directory.</p>
 </blockquote>
-<p>Yes, it seems that, basically, when <code>rg</code> thinks it's outputting to a pipe, and there is no specified directory to search, it doesn't do any searching (calling with <code>--debug</code> does give debug output, but no searching happens, and the program blocks).</p>
-<p>However, <code>grep</code> doesn't work this way: when it's called with output to a pipe but no data on STDIN, it searches for files, just as it does when called with output to a tty.</p>
-<p>Maybe this is the intended behavior, that when <code>rg</code> is called with STDOUT going to a pipe, it expects to search STDIN rather than files.  However, I'm not sure if this is documented, e.g.:</p>
-<pre><code class="language-sh">rg --help
+<p>Yes, it seems that, basically, when <code>rg</code> thinks it&#x27;s outputting to a pipe, and there is no specified directory to search, it doesn&#x27;t do any searching (calling with <code>--debug</code> does give debug output, but no searching happens, and the program blocks).</p>
+<p>However, <code>grep</code> doesn&#x27;t work this way: when it&#x27;s called with output to a pipe but no data on STDIN, it searches for files, just as it does when called with output to a tty.</p>
+<p>Maybe this is the intended behavior, that when <code>rg</code> is called with STDOUT going to a pipe, it expects to search STDIN rather than files.  However, I&#x27;m not sure if this is documented, e.g.:</p>
+<pre><code>rg --help
 ...
     rg [OPTIONS] PATTERN [PATH ...]
     rg [OPTIONS] [-e PATTERN ...] [-f FILE ...] [PATH ...]
@@ -123,14 +123,14 @@ Emacs 26.1</p>
 </code></pre>
 <p>So I guess that either this needs to be documented clearly, or the behavior needs to be improved to search for files unless data is received on STDIN.  For parity with <code>grep</code>, I suppose the latter is better.</p>
 <blockquote>
-<p>ag should not be used as a model of correctness. It has so many bugs that it sometimes only does the &quot;right&quot; thing accidentally. With that said, it would be interesting to compare the stdin checking code in both tools, but I'm in mobile.</p>
+<p>ag should not be used as a model of correctness. It has so many bugs that it sometimes only does the &quot;right&quot; thing accidentally. With that said, it would be interesting to compare the stdin checking code in both tools, but I&#x27;m in mobile.</p>
 </blockquote>
-<p>Indeed, I looked at <code>ag</code>'s code and repo, and it definitely has some issues regarding option handling.</p>
+<p>Indeed, I looked at <code>ag</code>&#x27;s code and repo, and it definitely has some issues regarding option handling.</p>
 <blockquote>
-<p>Another problem is that you say that grep works, but you actually seem to be invoking something else, namely, rgrep. I don't know what that is.</p>
+<p>Another problem is that you say that grep works, but you actually seem to be invoking something else, namely, rgrep. I don&#x27;t know what that is.</p>
 </blockquote>
-<p><code>rgrep</code> is a standard alias for <code>grep -r</code>.  On Debian, it's part of the <code>grep</code> package:</p>
-<pre><code class="language-sh">$ cat /usr/bin/rgrep
+<p><code>rgrep</code> is a standard alias for <code>grep -r</code>.  On Debian, it&#x27;s part of the <code>grep</code> package:</p>
+<pre><code>$ cat /usr/bin/rgrep
 #!/bin/sh                                                                                                                                                                                                                                           
                                                                                                                                                                                                                                                     
 exec grep -r &quot;$@&quot;
@@ -140,7 +140,7 @@ exec grep -r &quot;$@&quot;
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-06-17 01:31</div>
-            <div class="timeline-body"><p>The fact that <code>rgrep</code> is aliased to <code>grep -r</code> explains the mystery. ripgrep has no <code>-r</code> flag because recursive search is the default, but ripgrep should also support searching stdin when available without the user needing to specify <code>-</code>. Thus, ripgrep must guess at what you want. <code>grep -r</code> does not do any such thing, because <code>-r</code> always makes it do recursive search. It ignores what's on stdin. Example:</p>
+            <div class="timeline-body"><p>The fact that <code>rgrep</code> is aliased to <code>grep -r</code> explains the mystery. ripgrep has no <code>-r</code> flag because recursive search is the default, but ripgrep should also support searching stdin when available without the user needing to specify <code>-</code>. Thus, ripgrep must guess at what you want. <code>grep -r</code> does not do any such thing, because <code>-r</code> always makes it do recursive search. It ignores what&#x27;s on stdin. Example:</p>
 <pre><code>$ grep -Hr a /tmp/elsewhere
 /tmp/elsewhere:a
 $ grep -Hr a ./in-current-dir
@@ -151,43 +151,43 @@ $ cat /tmp/elsewhere | grep -Hr a
 in-current-dir:a
 </code></pre>
 <p>Thus, there is no such thing as &quot;parity&quot; in this case. <strong>This is one of the fundamental differences between ripgrep and grep.</strong></p>
-<p>Note that I still don't know what it is you're trying to achieve. Why are you connecting a pipe to your process when you don't want to send anything on stdin?</p>
+<p>Note that I still don&#x27;t know what it is you&#x27;re trying to achieve. Why are you connecting a pipe to your process when you don&#x27;t want to send anything on stdin?</p>
 <blockquote>
-<p>This is difficult (for me, at least) because the problem seems to be at a deeper level than, e.g. calling rg from a shell, and I'm not an expert in how Unix processes work.</p>
+<p>This is difficult (for me, at least) because the problem seems to be at a deeper level than, e.g. calling rg from a shell, and I&#x27;m not an expert in how Unix processes work.</p>
 </blockquote>
 <p>When no file paths are given to ripgrep, it uses a heuristic to decide what to do. Namely, ripgrep will block to search on stdin when no paths are given <strong>and</strong> stdin is not a tty <strong>and</strong> stdin is either a file or a fifo. In all other cases, it searches the current working directory. When you connect a pipe to it, my guess is that ripgrep probably sees that as a fifo and blocks.</p>
 <blockquote>
-<p>Indeed, I looked at ag's code and repo, and it definitely has some issues regarding option handling.</p>
+<p>Indeed, I looked at ag&#x27;s code and repo, and it definitely has some issues regarding option handling.</p>
 </blockquote>
-<p>The only difference that I can see between ag and ripgrep on this particular issue is that ripgrep checks if stdin is a tty or not. If it's a tty, then it always does recursive search. The corollary to that is that the only way for ripgrep to search stdin is if its stdin is <em>not</em> a tty. ag has no such check. All it does is check if stdin is a file or a fifo (which ripgrep also does):</p>
-<pre><code class="language-c">    rv = fstat(fileno(stdin), &amp;statbuf);
+<p>The only difference that I can see between ag and ripgrep on this particular issue is that ripgrep checks if stdin is a tty or not. If it&#x27;s a tty, then it always does recursive search. The corollary to that is that the only way for ripgrep to search stdin is if its stdin is <em>not</em> a tty. ag has no such check. All it does is check if stdin is a file or a fifo (which ripgrep also does):</p>
+<pre><code>    rv = fstat(fileno(stdin), &amp;statbuf);
     if (rv == 0) {
         if (S_ISFIFO(statbuf.st_mode) || S_ISREG(statbuf.st_mode)) {
             opts.search_stream = 1;
         }
     }
 </code></pre>
-<p>That ag doesn't block is actually interesting, because in order for ripgrep to search stdin, it must detect stdin as either a file or a fifo. That should cause ag to also attempt to search stdin. So probably something else is going on, but diving into emacs is beyond the scope of what I'm willing to debug.</p>
+<p>That ag doesn&#x27;t block is actually interesting, because in order for ripgrep to search stdin, it must detect stdin as either a file or a fifo. That should cause ag to also attempt to search stdin. So probably something else is going on, but diving into emacs is beyond the scope of what I&#x27;m willing to debug.</p>
 <blockquote>
 <p>So I guess that either this needs to be documented clearly</p>
 </blockquote>
-<p>It might be worth a mention in the docs, but ripgrep's default behavior is pretty much what you'd expect it to do. If you don't give it a path, then it searches CWD, unless you're piping something into it, in which case, it searches that data instead.</p>
+<p>It might be worth a mention in the docs, but ripgrep&#x27;s default behavior is pretty much what you&#x27;d expect it to do. If you don&#x27;t give it a path, then it searches CWD, unless you&#x27;re piping something into it, in which case, it searches that data instead.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">doc</span> added by @BurntSushi on 2018-06-17 01:31</div>
+            <div class="event">Label <span class="label">doc</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-06-17 01:31</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/alphapapa">@alphapapa</a> on 2018-06-17 01:57</div>
             <div class="timeline-body"><p>Thanks, I understand better now.  I think it was actually an accident that I originally ran <code>rgrep</code> in that example rather than <code>grep</code>--I think I was trying to turn <code>rg</code> into <code>grep</code> and I overlooked the <code>r</code> at the beginning of the word.  Silly mistakes...  :/</p>
 <blockquote>
-<p>Note that I still don't know what it is you're trying to achieve. Why are you connecting a pipe to your process when you don't want to send anything on stdin?</p>
+<p>Note that I still don&#x27;t know what it is you&#x27;re trying to achieve. Why are you connecting a pipe to your process when you don&#x27;t want to send anything on stdin?</p>
 </blockquote>
-<p>Because Emacs' process code works much better when it uses a pipe rather than emulating a tty.  Chris Wellons explains the details in his blog: http://nullprogram.com/blog/2018/01/17/  It's very interesting how he used DTrace to figure out what was going on between <code>curl</code> and Emacs.</p>
+<p>Because Emacs&#x27; process code works much better when it uses a pipe rather than emulating a tty.  Chris Wellons explains the details in his blog: http://nullprogram.com/blog/2018/01/17/  It&#x27;s very interesting how he used DTrace to figure out what was going on between <code>curl</code> and Emacs.</p>
 <blockquote>
-<p>It might be worth a mention in the docs, but ripgrep's default behavior is pretty much what you'd expect it to do. If you don't give it a path, then it searches CWD, unless you're piping something into it, in which case, it searches that data instead.</p>
+<p>It might be worth a mention in the docs, but ripgrep&#x27;s default behavior is pretty much what you&#x27;d expect it to do. If you don&#x27;t give it a path, then it searches CWD, unless you&#x27;re piping something into it, in which case, it searches that data instead.</p>
 </blockquote>
-<p>In this case, the problem was indeed that I misunderstood <code>rg</code>'s behavior and expectation of receiving data on STDIN.  It would be very helpful if this were explained in the docs.  As a first step, may I suggest changing the command examples to:</p>
+<p>In this case, the problem was indeed that I misunderstood <code>rg</code>&#x27;s behavior and expectation of receiving data on STDIN.  It would be very helpful if this were explained in the docs.  As a first step, may I suggest changing the command examples to:</p>
 <pre><code>    rg [OPTIONS] PATTERN [PATH ...]
     rg [OPTIONS] [-e PATTERN ...] [-f FILE ...] [PATH ...]
     rg [OPTIONS] --files [PATH ...]
@@ -204,23 +204,23 @@ in-current-dir:a
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2018-07-22 13:39</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-07-22 13:39</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jtrakk">@jtrakk</a> on 2021-01-12 21:37</div>
-            <div class="timeline-body"><p>I am not sure but https://github.com/cosmicexplorer/helm-rg/issues/29 might be related since it involves emacs hanging when calling rg. TBH I didn't really understand the resolution here but posting the link in case some future reader finds it helpful.</p>
+            <div class="timeline-body"><p>I am not sure but <a href="https://github.com/cosmicexplorer/helm-rg/issues/29">cosmicexplorer/helm-rg#29</a> might be related since it involves emacs hanging when calling rg. TBH I didn&#x27;t really understand the resolution here but posting the link in case some future reader finds it helpful.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jwbargsten">@jwbargsten</a> on 2021-10-05 06:06</div>
-            <div class="timeline-body"><p>So, after the jump to ripgrep 13, also neovim's <code>jobstart()</code> started to hang when calling ripgrep. I found a solution and I leave this comment for other people to &quot;connect the dots&quot;. As the doc suggests, supply a path as last argument to ripgrep:</p>
+            <div class="timeline-body"><p>So, after the jump to ripgrep 13, also neovim&#x27;s <code>jobstart()</code> started to hang when calling ripgrep. I found a solution and I leave this comment for other people to &quot;connect the dots&quot;. As the doc suggests, supply a path as last argument to ripgrep:</p>
 <pre><code>rg [OPTIONS] PATTERN [PATH ...]
 # or if you want to start in the current dir:
 rg [OPTIONS] PATTERN ./
 </code></pre>
 <p>This is also very well documented in the manpage/documentation of ripgrep:</p>
 <blockquote>
-<p>ripgrep will automatically detect if stdin exists and search stdin for a regex pattern, e.g. ls | rg foo. In some environments, stdin may exist when it shouldn't. To turn off stdin detection explicitly specify the directory to search, e.g. rg foo ./.</p>
+<p>ripgrep will automatically detect if stdin exists and search stdin for a regex pattern, e.g. ls | rg foo. In some environments, stdin may exist when it shouldn&#x27;t. To turn off stdin detection explicitly specify the directory to search, e.g. rg foo ./.</p>
 </blockquote>
 <p>In most cases it should be therefore sufficient to add a <code>./</code> as last paramenter</p>
 <p>This has also been suggested at <a href="https://vi.stackexchange.com/questions/25025/neovim-jobstart-not-receiving-stdout-sometimes-if-async-i-think">vi.stackexchange.com</a></p>
@@ -228,13 +228,13 @@ rg [OPTIONS] PATTERN ./
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-10-05 12:38</div>
-            <div class="timeline-body"><p>Aye. See also: https://github.com/BurntSushi/ripgrep/issues/1892</p>
+            <div class="timeline-body"><p>Aye. See also: <a href="https://github.com/BurntSushi/ripgrep/issues/1892">BurntSushi/ripgrep#1892</a></p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:42:34 UTC
+        Synced at 2026-01-20 18:48:06 UTC
     </footer>
 </body>
 </html>

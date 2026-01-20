@@ -26,7 +26,7 @@
             <div class="timeline-body"><p>Importing the same top-level module through two submodule imports, one at runtime and one in a type-checking block, results in <code>TCH004</code> false positives.
 This is certainly more of an edge case, seems like it could be related to #60 :thinking:</p>
 <p>Code:</p>
-<pre><code class="language-py">from __future__ import annotations
+<pre><code>from __future__ import annotations
 
 from typing import TYPE_CHECKING
 import importlib.util
@@ -39,32 +39,32 @@ def from_spec(spec: importlib.machinery.ModuleSpec):
     return importlib.util.module_from_spec(spec)
 </code></pre>
 <p>Running <code>ruff check --isolated --select TCH test.py</code> (v0.0.260) produces the following error:</p>
-<pre><code class="language-py">test.py:7:12: TCH004 Move import `importlib.machinery` out of type-checking block. Import is used for more than type hinting.
+<pre><code>test.py:7:12: TCH004 Move import `importlib.machinery` out of type-checking block. Import is used for more than type hinting.
 </code></pre>
-<p>I don't know a whole lot about ruff's internals, but my assumption is that the <code>importlib.machinery</code> import in the type-checking block overwrites the <code>importlib</code> binding, and the <code>importlib.util.module_from_spec</code> call later resolves to that.</p>
+<p>I don&#x27;t know a whole lot about ruff&#x27;s internals, but my assumption is that the <code>importlib.machinery</code> import in the type-checking block overwrites the <code>importlib</code> binding, and the <code>importlib.util.module_from_spec</code> call later resolves to that.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-30 18:12</div>
-            <div class="timeline-body"><p>Hmm, what's happening here is that both submodule imports resolve to <code>importlib</code>, since submodule imports can resolve to an import of the parent -- e.g., this works:</p>
-<pre><code class="language-py">&gt;&gt;&gt; import urllib.request
+            <div class="timeline-body"><p>Hmm, what&#x27;s happening here is that both submodule imports resolve to <code>importlib</code>, since submodule imports can resolve to an import of the parent -- e.g., this works:</p>
+<pre><code>&gt;&gt;&gt; import urllib.request
 &gt;&gt;&gt; urllib.response
-&lt;module 'urllib.response' from '/usr/local/Cellar/python@3.11/3.11.0/Frameworks/Python.framework/Versions/3.11/lib/python3.11/urllib/response.py'&gt;
+&lt;module &#x27;urllib.response&#x27; from &#x27;/usr/local/Cellar/python@3.11/3.11.0/Frameworks/Python.framework/Versions/3.11/lib/python3.11/urllib/response.py&#x27;&gt;
 </code></pre>
-<p>(I'm probably getting a bunch of terminology wrong, but in short, like Pyflakes, we tend to treat <code>import importlib.util</code> as identical to <code>import importlib</code>, which seems to be incorrect here.)</p>
+<p>(I&#x27;m probably getting a bunch of terminology wrong, but in short, like Pyflakes, we tend to treat <code>import importlib.util</code> as identical to <code>import importlib</code>, which seems to be incorrect here.)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-03-30 18:47</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-30 18:47</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-30 18:47</div>
-            <div class="timeline-body"><p>I'm not 100% sure how to fix in a general way but I agree that it's a bug here.</p>
+            <div class="timeline-body"><p>I&#x27;m not 100% sure how to fix in a general way but I agree that it&#x27;s a bug here.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/shiftinv">@shiftinv</a> on 2023-03-30 20:22</div>
-            <div class="timeline-body"><p>Yeah, it's a bit of a weird bug. Treating <code>import a.b.c</code> like <code>import a</code> is completely fair for a linter, imo - with possible import side effects it's probably better to be  lenient with these things.</p>
+            <div class="timeline-body"><p>Yeah, it&#x27;s a bit of a weird bug. Treating <code>import a.b.c</code> like <code>import a</code> is completely fair for a linter, imo - with possible import side effects it&#x27;s probably better to be  lenient with these things.</p>
 <p>The original issue can be solved easily by just moving the <code>importlib.machinery</code> import, though I suppose at that point one could argue that it should emit a <code>TCH003</code> (<code>Move standard library import {} into a type-checking block</code>).</p>
 <p>In the end it depends on how &quot;using an import&quot; is defined (e.g. does <code>a.b.func()</code> use <code>a.b</code> or <code>a</code>?) - at least in the general case, the current behavior is a good compromise, now that I think about it.
 The alternative, which is being more strict about submodule imports, might end up creating a lot more different false positives, so... not sure.</p>
@@ -72,8 +72,8 @@ The alternative, which is being more strict about submodule imports, might end u
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2023-06-11 19:40</div>
-            <div class="timeline-body"><p>Similar issue here with Python 3.9 and opencv-python, which just added a <code>typing</code> module (not released to pypi yet). But since it's not picked up by PyInstaller (yet), I wrapped the import in a <code>TYPE_CHECKING</code> check:</p>
-<pre><code class="language-py">from __future__ import annotations
+            <div class="timeline-body"><p>Similar issue here with Python 3.9 and opencv-python, which just added a <code>typing</code> module (not released to pypi yet). But since it&#x27;s not picked up by PyInstaller (yet), I wrapped the import in a <code>TYPE_CHECKING</code> check:</p>
+<pre><code>from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
@@ -84,13 +84,13 @@ def is_blank(image: cv2.typing.MatLike):
     # do stuff here
     pass
 </code></pre>
-<p>Note that at runtime (normal python runtime outside of PyInstaller), the typing module exists, but is empty (https://github.com/opencv/opencv/issues/23782). So I know that this import is only used as type-hint otherwise <code>cv2.typing.MatLike</code> would fail.</p>
+<p>Note that at runtime (normal python runtime outside of PyInstaller), the typing module exists, but is empty (<a href="https://github.com/opencv/opencv/issues/23782">opencv/opencv#23782</a>). So I know that this import is only used as type-hint otherwise <code>cv2.typing.MatLike</code> would fail.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dimbleby">@dimbleby</a> on 2023-08-29 13:06</div>
             <div class="timeline-body"><p>Another example that shows up pretty often is with types from <code>collections.abc</code> eg:</p>
-<pre><code class="language-python">  from typing import TYPE_CHECKING
+<pre><code>  from typing import TYPE_CHECKING
 
   if TYPE_CHECKING:
      from collections.abc import Iterable
@@ -110,15 +110,15 @@ def is_blank(image: cv2.typing.MatLike):
   File &quot;/Users/crmarsh/workspace/ruff/foo.py&quot;, line 6, in &lt;module&gt;
     def fun() -&gt; Iterable[int]:
                  ^^^^^^^^
-NameError: name 'Iterable' is not defined
+NameError: name &#x27;Iterable&#x27; is not defined
 </code></pre>
-<p>Python evaluates types in function annotations at runtime as they're added to <code>__annotations__</code>. If you add <code>from __future__ import annotations</code>, Ruff will do the right thing. In a future version, we may add the ability to automatically quote those annotations (<code>&quot;Iterable[int]&quot;</code>) as part of the rule.</p>
+<p>Python evaluates types in function annotations at runtime as they&#x27;re added to <code>__annotations__</code>. If you add <code>from __future__ import annotations</code>, Ruff will do the right thing. In a future version, we may add the ability to automatically quote those annotations (<code>&quot;Iterable[int]&quot;</code>) as part of the rule.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:46:55 UTC
+        Synced at 2026-01-20 18:48:35 UTC
     </footer>
 </body>
 </html>

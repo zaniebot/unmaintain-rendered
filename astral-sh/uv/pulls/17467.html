@@ -23,20 +23,20 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/woodruffw">@woodruffw</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>This adds a deprecation warning for source distributions that don't follow the PEP 625 filename scheme, which requires a <code>.tar.gz</code> suffix. I've also updated the docs with a warning about behavior + deprecation notice.</p>
+            <div class="timeline-body">Summary
+<p>This adds a deprecation warning for source distributions that don&#x27;t follow the PEP 625 filename scheme, which requires a <code>.tar.gz</code> suffix. I&#x27;ve also updated the docs with a warning about behavior + deprecation notice.</p>
 <p>Towards #16911.</p>
-<h2>Test Plan</h2>
-<p>The only functional change here is a user-level warning. I'll bump the snapshots that change.</p>
+Test Plan
+<p>The only functional change here is a user-level warning. I&#x27;ll bump the snapshots that change.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @woodruffw by @woodruffw on 2026-01-14 15:58</div>
+            <div class="event">Assigned to <a href="https://github.com/woodruffw">@woodruffw</a> by <a href="https://github.com/woodruffw">@woodruffw</a> on 2026-01-14 15:58</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/woodruffw">@woodruffw</a> on 2026-01-14 16:20</div>
-            <div class="timeline-body"><p>Noting: I put this warning at the sdist filename parsing layer to start, but that's going to be <em>way</em> too noisy since it'll ding on every legacy sdist on PyPI (and there are a lot of them in the tail of popular projects). I think the better place to put this is in the installation planner, and limit it to just to-be-fetched remote dists.</p>
-<p>Edit: more precisely, <code>build_wheel</code> seems like the right place, since it's where we actually use a given selected sdist and materialize it into a wheel.</p>
+            <div class="timeline-body"><p>Noting: I put this warning at the sdist filename parsing layer to start, but that&#x27;s going to be <em>way</em> too noisy since it&#x27;ll ding on every legacy sdist on PyPI (and there are a lot of them in the tail of popular projects). I think the better place to put this is in the installation planner, and limit it to just to-be-fetched remote dists.</p>
+<p>Edit: more precisely, <code>build_wheel</code> seems like the right place, since it&#x27;s where we actually use a given selected sdist and materialize it into a wheel.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -46,16 +46,16 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/woodruffw">@woodruffw</a> on 2026-01-14 17:06</div>
-            <div class="timeline-body"><p>I have it in <code>build_wheel</code> locally ATM, just waiting for tests for complete. Does that seem like a reasonable place to you? My intuition is that that's a good place in terms of balancing noise/actionability (and making it clear that this specific deprecation is about sdists), but I could move it to the unpacking or lockfile layers if you think that makes more sense!</p>
+            <div class="timeline-body"><p>I have it in <code>build_wheel</code> locally ATM, just waiting for tests for complete. Does that seem like a reasonable place to you? My intuition is that that&#x27;s a good place in terms of balancing noise/actionability (and making it clear that this specific deprecation is about sdists), but I could move it to the unpacking or lockfile layers if you think that makes more sense!</p>
 <blockquote>
 <p>where we could also do this for xz/lzma wheels</p>
 </blockquote>
-<p>Oh, I didn't realize we actually allowed wheels to also be xz/lzma 😅 -- I was looking at <code>WheelFilename</code> and could only find <code>.whl</code>, which should always imply ZIP unless we're doing something more nuanced under the hood?</p>
+<p>Oh, I didn&#x27;t realize we actually allowed wheels to also be xz/lzma 😅 -- I was looking at <code>WheelFilename</code> and could only find <code>.whl</code>, which should always imply ZIP unless we&#x27;re doing something more nuanced under the hood?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2026-01-14 17:54</div>
-            <div class="timeline-body"><p>zips can use a number of compression options, such as stored (no compression), DEFLATE (the default) but also LZMA. There's a list unter &quot;Compression method&quot; in https://users.cs.jmu.edu/buchhofp/forensics/formats/pkzip.html. There's nothing that says what kind of zips the wheel are, but generally, they are either DEFLATE (basically all published zips) or stored (e.g. for editables).</p>
+            <div class="timeline-body"><p>zips can use a number of compression options, such as stored (no compression), DEFLATE (the default) but also LZMA. There&#x27;s a list unter &quot;Compression method&quot; in https://users.cs.jmu.edu/buchhofp/forensics/formats/pkzip.html. There&#x27;s nothing that says what kind of zips the wheel are, but generally, they are either DEFLATE (basically all published zips) or stored (e.g. for editables).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -74,13 +74,13 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-distribution/src/distribution_database.rs</code>:390 on 2026-01-14 18:07</div>
             <div class="timeline-body"><p>This needs to include the dist name, I think?</p>
-<p>I'd say something like &quot;<code>{dist}</code> is not a standards-compliant source distribution: expected extension <code>{}</code> but found <code>{}</code>. A future version of uv will reject source distributions that do not match the specification defined in PEP 625.&quot;</p>
+<p>I&#x27;d say something like &quot;<code>{dist}</code> is not a standards-compliant source distribution: expected extension <code>{}</code> but found <code>{}</code>. A future version of uv will reject source distributions that do not match the specification defined in PEP 625.&quot;</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/woodruffw">@woodruffw</a> on 2026-01-14 18:19</div>
             <div class="timeline-body"><blockquote>
-<p>zips can use a number of compression options, such as stored (no compression), DEFLATE (the default) but also LZMA. There's a list unter &quot;Compression method&quot; in <a href="https://users.cs.jmu.edu/buchhofp/forensics/formats/pkzip.html">users.cs.jmu.edu/buchhofp/forensics/formats/pkzip.html</a>. There's nothing that says what kind of zips the wheel are, but generally, they are either DEFLATE (basically all published zips) or stored (e.g. for editables).</p>
+<p>zips can use a number of compression options, such as stored (no compression), DEFLATE (the default) but also LZMA. There&#x27;s a list unter &quot;Compression method&quot; in <a href="https://users.cs.jmu.edu/buchhofp/forensics/formats/pkzip.html">users.cs.jmu.edu/buchhofp/forensics/formats/pkzip.html</a>. There&#x27;s nothing that says what kind of zips the wheel are, but generally, they are either DEFLATE (basically all published zips) or stored (e.g. for editables).</p>
 </blockquote>
 <p>Ah yeah, sorry -- I misunderstood you to be saying that <code>.whl</code> could sometimes by a <code>.tar.xz</code>, not a ZIP with a different interior compression for a specific entry.</p>
 <p>So, there are two distinct things we want to warn on/deprecate:</p>
@@ -93,11 +93,11 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2026-01-14 18:26</div>
-            <div class="timeline-body"><p>(1) is definitely a good unit to merge on it's own. I'm mainly bringing up (2) cause we also need it to remove the xz/lzma dependencies.</p>
+            <div class="timeline-body"><p>(1) is definitely a good unit to merge on it&#x27;s own. I&#x27;m mainly bringing up (2) cause we also need it to remove the xz/lzma dependencies.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @woodruffw on 2026-01-15 00:11</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/woodruffw">@woodruffw</a> on 2026-01-15 00:11</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2026-01-15 02:34</div>
@@ -105,13 +105,13 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/lock.rs</code>:12672 on 2026-01-15 02:34</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">    warning: workspace @ https://github.com/user-attachments/files/16592193/workspace.zip is not a standards-compliant source distribution: expected '.tar.gz' but found '.zip'. A future version of uv will reject source distributions that do not match the specification defined in PEP 625
+            <div class="timeline-body"><pre><code>    warning: workspace @ https://github.com/user-attachments/files/16592193/workspace.zip is not a standards-compliant source distribution: expected &#x27;.tar.gz&#x27; but found &#x27;.zip&#x27;. A future version of uv will reject source distributions that do not match the specification defined in PEP 625
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/sync.rs</code>:9578 on 2026-01-15 02:35</div>
-            <div class="timeline-body"><p><code>wsgiref==0.1.2</code> doesn't seem quite right here. I think we need the filename too?</p>
+            <div class="timeline-body"><p><code>wsgiref==0.1.2</code> doesn&#x27;t seem quite right here. I think we need the filename too?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -133,8 +133,8 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv/tests/it/sync.rs</code>:9578 on 2026-01-15 02:41</div>
-            <div class="timeline-body"><p>I was thinking about that, and I think the filename might not be super useful information to a user who sees this: the average sdist consumer is <em>probably</em> getting one via an index resolution, so showing them <code>wsgiref-0.1.2.zip</code> isn't going to mean much to them (whereas <code>wsgiref==0.1.2</code> at least tells them that it's a post-resolution candidate, so they could change it by updating their constraints).</p>
-<p>But I'm speculating, if you think the filename is helpful here I'll change!</p>
+            <div class="timeline-body"><p>I was thinking about that, and I think the filename might not be super useful information to a user who sees this: the average sdist consumer is <em>probably</em> getting one via an index resolution, so showing them <code>wsgiref-0.1.2.zip</code> isn&#x27;t going to mean much to them (whereas <code>wsgiref==0.1.2</code> at least tells them that it&#x27;s a post-resolution candidate, so they could change it by updating their constraints).</p>
+<p>But I&#x27;m speculating, if you think the filename is helpful here I&#x27;ll change!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -144,7 +144,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/sync.rs</code>:9578 on 2026-01-15 02:52</div>
             <div class="timeline-body"><p>I think we need the filename since the rest of the error is focused on it, I would maybe say <code>{filename} ({package}=={version}) is not ...</code>?</p>
-<p>Unless you want to change the error in the case where the user has not requested a file directly, which may be better. In that case, I think we'd change the whole error message to be something like</p>
+<p>Unless you want to change the error in the case where the user has not requested a file directly, which may be better. In that case, I think we&#x27;d change the whole error message to be something like</p>
 <blockquote>
 <p>{package}=={version} uses a legacy source distribution format (<code>.zip</code>) that is not compliant with the specification in PEP 625. A future version of uv will .... Consider upgrading to a newer version of {package}</p>
 </blockquote>
@@ -157,7 +157,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/sync.rs</code>:9578 on 2026-01-15 02:53</div>
-            <div class="timeline-body"><p>Also, I didn't realize there were packages on the index that were using the legacy format. We might want to drop support for that <em>later</em> / separately. We might also want to ignore them during resolution but allow opt-in during a transition period? Lots to consider there.</p>
+            <div class="timeline-body"><p>Also, I didn&#x27;t realize there were packages on the index that were using the legacy format. We might want to drop support for that <em>later</em> / separately. We might also want to ignore them during resolution but allow opt-in during a transition period? Lots to consider there.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -169,12 +169,12 @@
             <div class="timeline-body"><blockquote>
 <p>I think we need the filename since the rest of the error is focused on it, I would maybe say <code>{filename} ({package}=={version}) is not ...</code>?</p>
 </blockquote>
-<p>Ah yeah, that's a good point. I'll add the filename.</p>
-<p>I'm inclined to keep it as a single warning for both direct and indirect resolved candidates, since I think in both cases it's not super directly actionable. Although now that I say that I guess it <em>is</em> actionable when the user does e.g. a GitHub zipball, so maybe that deserves a discrete warning. I'll look at that tomorrow.</p>
+<p>Ah yeah, that&#x27;s a good point. I&#x27;ll add the filename.</p>
+<p>I&#x27;m inclined to keep it as a single warning for both direct and indirect resolved candidates, since I think in both cases it&#x27;s not super directly actionable. Although now that I say that I guess it <em>is</em> actionable when the user does e.g. a GitHub zipball, so maybe that deserves a discrete warning. I&#x27;ll look at that tomorrow.</p>
 <blockquote>
-<p>Also, I didn't realize there were packages on the index that were using the legacy format. We might want to drop support for that <em>later</em> / separately. We might also want to ignore them during resolution but allow opt-in during a transition period? Lots to consider there.</p>
+<p>Also, I didn&#x27;t realize there were packages on the index that were using the legacy format. We might want to drop support for that <em>later</em> / separately. We might also want to ignore them during resolution but allow opt-in during a transition period? Lots to consider there.</p>
 </blockquote>
-<p>Yeah, there's lots of potential nuance. The &quot;good&quot; news is that the legacy sdists on the index <em>should</em> generally be pretty old (as in 2016 or earlier), meaning that they shouldn't be selected as candidates super often. <code>wsgiref==0.1.2</code> is from 2006, for example -- I'm actually shocked that installs at all 😅</p>
+<p>Yeah, there&#x27;s lots of potential nuance. The &quot;good&quot; news is that the legacy sdists on the index <em>should</em> generally be pretty old (as in 2016 or earlier), meaning that they shouldn&#x27;t be selected as candidates super often. <code>wsgiref==0.1.2</code> is from 2006, for example -- I&#x27;m actually shocked that installs at all 😅</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -189,7 +189,7 @@
     </div>
 
     <footer>
-        Synced at 2026-01-15 03:44:37 UTC
+        Synced at 2026-01-20 19:55:14 UTC
     </footer>
 </body>
 </html>

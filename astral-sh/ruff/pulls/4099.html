@@ -23,27 +23,27 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>While converting from a list comprehension to a generator expression, the square brackets are not preserved as that are only present on a list comprehension.</p>
-<p>We'll convert the brackets into a paren node and add it at the <em>end</em> and <em>start</em> of the left and right parens respectively.</p>
+<p>We&#x27;ll convert the brackets into a paren node and add it at the <em>end</em> and <em>start</em> of the left and right parens respectively.</p>
 <p>fixes: #4094</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-04-25 19:26</div>
-            <div class="timeline-body"><p>Hmm, wait this doesn't look correct (missing the initial insta snapshot).</p>
+            <div class="timeline-body"><p>Hmm, wait this doesn&#x27;t look correct (missing the initial insta snapshot).</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Converted to draft by @dhruvmanila on 2023-04-25 19:26</div>
+            <div class="event">Converted to draft by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-04-25 19:26</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-04-25 19:36</div>
-            <div class="timeline-body"><h2>PR Check Results</h2>
-<h3>Ecosystem</h3>
+            <div class="timeline-body">PR Check Results
+Ecosystem
 <p>✅ ecosystem check detected no changes.</p>
-<h3>Benchmark</h3>
-<h4>Linux</h4>
+Benchmark
+Linux
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 linter/all-rules/large/dataset.py          1.00     14.1±0.05ms     2.9 MB/sec    1.00     14.1±0.07ms     2.9 MB/sec
@@ -59,7 +59,7 @@ parser/numpy/ctypeslib.py                  1.00   1056.0±0.63µs    15.8 MB/sec
 parser/numpy/globals.py                    1.01    107.1±0.65µs    27.6 MB/sec    1.00    106.4±0.34µs    27.7 MB/sec
 parser/pydantic/types.py                   1.00      2.3±0.00ms    11.1 MB/sec    1.00      2.3±0.00ms    11.1 MB/sec
 </code></pre>
-<h4>Windows</h4>
+Windows
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 linter/all-rules/large/dataset.py          1.01     18.0±0.32ms     2.3 MB/sec    1.00     17.8±0.42ms     2.3 MB/sec
@@ -75,7 +75,7 @@ parser/numpy/ctypeslib.py                  1.00  1309.1±44.54µs    12.7 MB/sec
 parser/numpy/globals.py                    1.03    137.6±8.45µs    21.4 MB/sec    1.00    134.2±4.65µs    22.0 MB/sec
 parser/pydantic/types.py                   1.00      2.9±0.08ms     8.7 MB/sec    1.01      3.0±0.10ms     8.6 MB/sec
 </code></pre>
-<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
 
 </div>
         </div>
@@ -83,12 +83,12 @@ parser/pydantic/types.py                   1.00      2.9±0.08ms     8.7 MB/sec 
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-04-26 14:30</div>
             <div class="timeline-body"><p><em><strong>Context:</strong></em></p>
 <blockquote>
-<p>Ok, so it seems like we're not copying over the <code>lbracket</code> and <code>rbracket</code> fields from the <code>ListComp</code> node. Now, this is a challenge as we need to convert it into a <code>GeneratorExp</code> which only has the <code>lpar</code> and <code>rpar</code> fields. We'll need to pick the required parts from the Bracket nodes into the Parenthesis nodes.</p>
+<p>Ok, so it seems like we&#x27;re not copying over the <code>lbracket</code> and <code>rbracket</code> fields from the <code>ListComp</code> node. Now, this is a challenge as we need to convert it into a <code>GeneratorExp</code> which only has the <code>lpar</code> and <code>rpar</code> fields. We&#x27;ll need to pick the required parts from the Bracket nodes into the Parenthesis nodes.</p>
 </blockquote>
 <p>This seems a bit difficult but here are some of my ideas:</p>
 <ol>
-<li><p>Convert the <code>lbracket</code> and <code>rbracket</code> nodes into <code>LeftParen</code> and <code>RightParen</code>, then append and prepend it respectively to the generator's <code>lpar</code> and <code>rpar</code> vectors. This means that there will an <a href="https://beta.ruff.rs/docs/rules/#pyupgrade-up">extraneous parenthesis</a> added. <strong>(Currently implemented)</strong></p>
-<pre><code class="language-python">any(
+<li><p>Convert the <code>lbracket</code> and <code>rbracket</code> nodes into <code>LeftParen</code> and <code>RightParen</code>, then append and prepend it respectively to the generator&#x27;s <code>lpar</code> and <code>rpar</code> vectors. This means that there will an <a href="https://beta.ruff.rs/docs/rules/#pyupgrade-up">extraneous parenthesis</a> added. <strong>(Currently implemented)</strong></p>
+<pre><code>any(
     [
     	i for i in range(10)  # comment
     ]
@@ -102,8 +102,8 @@ any(
 )
 </code></pre>
 </li>
-<li><p>Copy the <code>rbracket</code> into the <code>whitespace_after_arg</code> as that's where it belongs and then append <em>only</em> the comment part from the <code>Comma</code> node as it is currently done so. If comma is not present, then the same comment belongs to <code>whitespace_after_arg</code> which means that the comment from <code>rbracket</code> will be prepended to it instead. This will be a special case as it'll handle only this specific issue and ignore the comment from <code>lbracket</code>, if any.</p>
-<pre><code class="language-python">any(
+<li><p>Copy the <code>rbracket</code> into the <code>whitespace_after_arg</code> as that&#x27;s where it belongs and then append <em>only</em> the comment part from the <code>Comma</code> node as it is currently done so. If comma is not present, then the same comment belongs to <code>whitespace_after_arg</code> which means that the comment from <code>rbracket</code> will be prepended to it instead. This will be a special case as it&#x27;ll handle only this specific issue and ignore the comment from <code>lbracket</code>, if any.</p>
+<pre><code>any(
     [
     	i for i in range(10)  # rbracket comment
     ]  # whitespace_after_arg comment (comma is absent)
@@ -121,17 +121,17 @@ any(
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-29 03:28</div>
-            <div class="timeline-body"><p>I've read this a few times and keep finding myself undecided. I think adding extra parentheses is undesirable, so I'm leaning towards Option 2. What I don't fully understand is the role on the comma in that logic -- how does it differ when the comment is present vs. absent?</p>
+            <div class="timeline-body"><p>I&#x27;ve read this a few times and keep finding myself undecided. I think adding extra parentheses is undesirable, so I&#x27;m leaning towards Option 2. What I don&#x27;t fully understand is the role on the comma in that logic -- how does it differ when the comment is present vs. absent?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-04-30 11:20</div>
             <div class="timeline-body"><blockquote>
-<p>What I don't fully understand is the role on the comma in that logic -- how does it differ when the comment is present vs. absent?</p>
+<p>What I don&#x27;t fully understand is the role on the comma in that logic -- how does it differ when the comment is present vs. absent?</p>
 </blockquote>
-<p>Ok, so the <code>Arg</code> node contains the <code>comma</code> field which is optional and then there's <code>whitespace_after_arg</code> as well. If the argument is not followed by the comma then the comment will be in <code>whitespace_after_arg</code> node otherwise it'll be in the <code>comma</code> node.</p>
+<p>Ok, so the <code>Arg</code> node contains the <code>comma</code> field which is optional and then there&#x27;s <code>whitespace_after_arg</code> as well. If the argument is not followed by the comma then the comment will be in <code>whitespace_after_arg</code> node otherwise it&#x27;ll be in the <code>comma</code> node.</p>
 <p>https://github.com/Instagram/LibCST/blob/889ce56b0fcb9724ef980c7f2305d04f6bb7cd34/native/libcst/src/nodes/expression.rs#L321-L332</p>
-<pre><code class="language-python">all(
+<pre><code>all(
     [x.id for x in bar],  # comment
 )
 
@@ -141,14 +141,14 @@ all(
 	[x.id for x in bar]
 )
 </code></pre>
-<p>The issue we're facing is that the comment is in the <code>rbracket</code> node of <code>ListComp</code> node which, along with <code>lbracket</code> is being ignored (no brackets in generator expressions).</p>
+<p>The issue we&#x27;re facing is that the comment is in the <code>rbracket</code> node of <code>ListComp</code> node which, along with <code>lbracket</code> is being ignored (no brackets in generator expressions).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-05-01 09:44</div>
-            <div class="timeline-body"><p>I'm unfamiliar with LibCST, and I've failed to find a clear definition of how libCST decides to attach trivia (to which node/property). So what I'm saying here may not make sense in the context of LibCST.</p>
-<p>I prefer your second option, and you're algorithm for copying the trivia makes sense to me. Do we need some logic for copying any trivia attached to the opening bracket too? What if it is a standalone comprehension or will this never trigger C419?</p>
-<pre><code class="language-python">[
+            <div class="timeline-body"><p>I&#x27;m unfamiliar with LibCST, and I&#x27;ve failed to find a clear definition of how libCST decides to attach trivia (to which node/property). So what I&#x27;m saying here may not make sense in the context of LibCST.</p>
+<p>I prefer your second option, and you&#x27;re algorithm for copying the trivia makes sense to me. Do we need some logic for copying any trivia attached to the opening bracket too? What if it is a standalone comprehension or will this never trigger C419?</p>
+<pre><code>[
 		i for i in range(10)  # comment
 ]
 </code></pre>
@@ -159,8 +159,8 @@ all(
             <div class="timeline-body"><blockquote>
 <p>Do we need some logic for copying any trivia attached to the opening bracket too?</p>
 </blockquote>
-<p>I believe we should but I don't see any use case for having a comment on the opening bracket (correct me if I'm wrong):</p>
-<pre><code class="language-python">any(
+<p>I believe we should but I don&#x27;t see any use case for having a comment on the opening bracket (correct me if I&#x27;m wrong):</p>
+<pre><code>any(
 	[  # where would this comment be used?
 		i.id for i in range(5)
 	]
@@ -173,7 +173,7 @@ any(
 </code></pre>
 <p>In case we want to support it, I believe it should be <em>added</em> or <em>appended</em> to the generator expression node as shown above.</p>
 <p>And, in the worst case, if there are comments in all three places:</p>
-<pre><code class="language-python">any(
+<pre><code>any(
 	[  # rbracket comment
 		i.id for i in range(5)  # comprehension comment
 	]  # lbracket comment
@@ -183,8 +183,8 @@ any(
 	i.id for i in range(5)  # comprehension comment  # lbracket comment  # rbracket comment
 )
 </code></pre>
-<p>One more thing to note is that <code>black</code> formats the way shown below. Note that there's no comment at the opening bracket, if there was, then <code>black</code> wouldn't format it.</p>
-<pre><code class="language-python">any(
+<p>One more thing to note is that <code>black</code> formats the way shown below. Note that there&#x27;s no comment at the opening bracket, if there was, then <code>black</code> wouldn&#x27;t format it.</p>
+<pre><code>any(
     [
         i.id for i in range(5)  # comprehension comment
     ]  # lbracket comment
@@ -195,7 +195,7 @@ any([i.id for i in range(5)])  # comprehension comment  # lbracket comment
 <blockquote>
 <p>What if it is a standalone comprehension or will this never trigger C419?</p>
 </blockquote>
-<p>This won't be triggered for standalone comprehensions. The rule is only for <code>any</code> and <code>all</code> function calls with one argument.</p>
+<p>This won&#x27;t be triggered for standalone comprehensions. The rule is only for <code>any</code> and <code>all</code> function calls with one argument.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -205,7 +205,7 @@ any([i.id for i in range(5)])  # comprehension comment  # lbracket comment
 </blockquote>
 <p>My take is that ruff should never remove any comments and we can either not provide a fix in that case or implement the proper placement.</p>
 <blockquote>
-<pre><code class="language-python">any(
+<pre><code>any(
   [  # rbracket comment
       i.id for i in range(5)  # comprehension comment
   ]  # lbracket comment
@@ -216,13 +216,13 @@ any(
 )
 </code></pre>
 </blockquote>
-<p>I would prefer writing the <code>rbracket_comment</code> before the <code>lbracket_comment</code> to ensure comments maintain the same sequence as they had in the source document. This is important because the comment explanations may depend on their ordering. Or is that what you're suggesting but you mixed up <code>rbracket</code> and <code>lbracket</code> in the source example?</p>
+<p>I would prefer writing the <code>rbracket_comment</code> before the <code>lbracket_comment</code> to ensure comments maintain the same sequence as they had in the source document. This is important because the comment explanations may depend on their ordering. Or is that what you&#x27;re suggesting but you mixed up <code>rbracket</code> and <code>lbracket</code> in the source example?</p>
 <p>What do you think of attaching the <code># bracket comment</code> to the whole comprehension expression?</p>
-<pre><code class="language-python"># rbracket comment
+<pre><code># rbracket comment
 i.id for i in range(5)  # comprehension comment
 </code></pre>
 <p>Are there any more edge cases, for example, when <code>[</code> or <code>]</code> has any leading comments:</p>
-<pre><code class="language-py">&gt; any(
+<pre><code>&gt; any(
 &gt; 	# lbracket leading
 &gt; 	[  # lbracket trailing
 &gt; 		i.id for i in range(5)  # comprehension comment
@@ -236,21 +236,21 @@ i.id for i in range(5)  # comprehension comment
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-05-01 13:54</div>
             <div class="timeline-body"><p>Um wait, I think I switched the <code>lbracket</code> and <code>rbracket</code> notations in the code. Another mistake I made was that the &quot;comprehension comment&quot; belongs to <code>rbracket</code> node while the &quot;lbracket comment&quot; (which should be &quot;rbracket comment&quot;) belongs to <code>rpar</code> node (which is copied correctly).</p>
-<p>So, <code>lbracket</code> contains the comment occurring <em>after</em> the token while <code>rbracket</code> contains the comment occurring <em>before</em> the token and it's the same for parenthesis.</p>
-<hr />
+<p>So, <code>lbracket</code> contains the comment occurring <em>after</em> the token while <code>rbracket</code> contains the comment occurring <em>before</em> the token and it&#x27;s the same for parenthesis.</p>
+<hr>
 <blockquote>
 <p>My take is that ruff should never remove any comments and we can either not provide a fix in that case or implement the proper placement.</p>
 </blockquote>
-<p>I agree on that. The problem is stemming from the fact that we're <em>removing</em> the tokens (left and right brackets) which means that whatever trivia belonged to that token is being removed as well.</p>
+<p>I agree on that. The problem is stemming from the fact that we&#x27;re <em>removing</em> the tokens (left and right brackets) which means that whatever trivia belonged to that token is being removed as well.</p>
 <blockquote>
-<p>I would prefer writing the <code>rbracket_comment</code> before the <code>lbracket_comment</code> to ensure comments maintain the same sequence as they had in the source document. This is important because the comment explanations may depend on their ordering. Or is that what you're suggesting but you mixed up <code>rbracket</code> and <code>lbracket</code> in the source example?</p>
+<p>I would prefer writing the <code>rbracket_comment</code> before the <code>lbracket_comment</code> to ensure comments maintain the same sequence as they had in the source document. This is important because the comment explanations may depend on their ordering. Or is that what you&#x27;re suggesting but you mixed up <code>rbracket</code> and <code>lbracket</code> in the source example?</p>
 </blockquote>
-<p>My first thought was that order wouldn't matter as both would belong to the same line but I can understand your point of view.</p>
+<p>My first thought was that order wouldn&#x27;t matter as both would belong to the same line but I can understand your point of view.</p>
 <blockquote>
 <p>What do you think of attaching the <code># bracket comment</code> to the whole comprehension expression?</p>
 </blockquote>
-<p>Oh wait! This suggestion led me to another idea (thanks!): So, there's another node in <code>libCST</code> which is <a href="https://github.com/Instagram/LibCST/blob/889ce56b0fcb9724ef980c7f2305d04f6bb7cd34/native/libcst/src/nodes/whitespace.rs#L84-L91"><code>EmptyNode</code></a> and this can be used to have a line with <em>only</em> a comment in it along with the correct indentation. I haven't looked as to how to implement it, but this is what would happen:</p>
-<pre><code class="language-python">any(
+<p>Oh wait! This suggestion led me to another idea (thanks!): So, there&#x27;s another node in <code>libCST</code> which is <a href="https://github.com/Instagram/LibCST/blob/889ce56b0fcb9724ef980c7f2305d04f6bb7cd34/native/libcst/src/nodes/whitespace.rs#L84-L91"><code>EmptyNode</code></a> and this can be used to have a line with <em>only</em> a comment in it along with the correct indentation. I haven&#x27;t looked as to how to implement it, but this is what would happen:</p>
+<pre><code>any(
     [  # lbracket comment
         i.bit_count() for i in range(5)  # rbracket comment
     ]  # rpar comment
@@ -265,13 +265,13 @@ any(
 <ol>
 <li>The &quot;lbracket comment&quot; will be an <code>EmptyNode</code> which will be added to <code>whitespace_before_args</code>.</li>
 <li>The &quot;rbracket comment&quot; will be added to <code>whitespace_after_args</code></li>
-<li>Similarly, the &quot;rpar comment&quot; will be either be added or appended to <code>whitespace_after_args</code> depending on (2). Or do we want to keep this in it's own line?</li>
+<li>Similarly, the &quot;rpar comment&quot; will be either be added or appended to <code>whitespace_after_args</code> depending on (2). Or do we want to keep this in it&#x27;s own line?</li>
 </ol>
 <p>What do you think?</p>
 <blockquote>
 <p>Or is this not an issue because of how libCST represents comments?</p>
 </blockquote>
-<p>This won't be an issue as those belong with the parenthesis which are copied correctly over to the generator expression <strong>(line 1162, 1163)</strong>:</p>
+<p>This won&#x27;t be an issue as those belong with the parenthesis which are copied correctly over to the generator expression <strong>(line 1162, 1163)</strong>:</p>
 <p>https://github.com/charliermarsh/ruff/blob/814731364afa995ae4a65da5e0dd85791a64b4c2/crates/ruff/src/rules/flake8_comprehensions/fixes.rs#L1159-L1164</p>
 </div>
         </div>
@@ -280,32 +280,32 @@ any(
             <div class="timeline-body"><blockquote>
 <p>My take is that ruff should never remove any comments and we can either not provide a fix in that case or implement the proper placement.</p>
 </blockquote>
-<p>Unfortunately we do remove comments in some situations. Ruff's comment-handling for autofixes is &quot;best effort&quot; right now. In some cases, with complex expressions, we <em>do</em> skip the autofix entirely if comments are present, but it's done on a case-by-case basis.</p>
+<p>Unfortunately we do remove comments in some situations. Ruff&#x27;s comment-handling for autofixes is &quot;best effort&quot; right now. In some cases, with complex expressions, we <em>do</em> skip the autofix entirely if comments are present, but it&#x27;s done on a case-by-case basis.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-05-02 07:28</div>
-            <div class="timeline-body"><p>@dhruvmanila I'm really impressed by how carefully and thoughtfully you exercise the comment placement! It's a joy to read your explanations.</p>
+            <div class="timeline-body"><p>@dhruvmanila I&#x27;m really impressed by how carefully and thoughtfully you exercise the comment placement! It&#x27;s a joy to read your explanations.</p>
 <blockquote>
 <p>What do you think?</p>
 </blockquote>
-<p>I love it. That would match my expectations. I also thought about whether we want to keep the <code>#rpar comment</code> on its own line if the source contains a newline between the comprehension's end and the <code>]</code> but I don't think that's necessary because the newline is only present because of the <code>(...)</code> wrapping of the comprehension.</p>
+<p>I love it. That would match my expectations. I also thought about whether we want to keep the <code>#rpar comment</code> on its own line if the source contains a newline between the comprehension&#x27;s end and the <code>]</code> but I don&#x27;t think that&#x27;s necessary because the newline is only present because of the <code>(...)</code> wrapping of the comprehension.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-05-02 16:02</div>
             <div class="timeline-body"><blockquote>
-<p>@dhruvmanila I'm really impressed by how carefully and thoughtfully you exercise the comment placement! It's a joy to read your explanations.</p>
+<p>@dhruvmanila I&#x27;m really impressed by how carefully and thoughtfully you exercise the comment placement! It&#x27;s a joy to read your explanations.</p>
 </blockquote>
 <p>Thanks a lot for those kind words! I really appreciate it and also inspired by your detailed explanations :)</p>
 <blockquote>
-<p>I love it. That would match my expectations. I also thought about whether we want to keep the <code>#rpar comment</code> on its own line if the source contains a newline between the comprehension's end and the <code>]</code> but I don't think that's necessary because the newline is only present because of the <code>(...)</code> wrapping of the comprehension.</p>
+<p>I love it. That would match my expectations. I also thought about whether we want to keep the <code>#rpar comment</code> on its own line if the source contains a newline between the comprehension&#x27;s end and the <code>]</code> but I don&#x27;t think that&#x27;s necessary because the newline is only present because of the <code>(...)</code> wrapping of the comprehension.</p>
 </blockquote>
-<p>Got it. I'll try to finish this by tonight.</p>
+<p>Got it. I&#x27;ll try to finish this by tonight.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @dhruvmanila on 2023-05-06 10:33</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-05-06 10:33</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/flake8_comprehensions/fixes.rs</code>:1168 on 2023-05-08 12:06</div>
@@ -319,24 +319,24 @@ any(
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-08 18:58</div>
-            <div class="timeline-body"><p>Doesn't need to block the merge here, but do we need to apply similar treatment to any of the other comprehension-transform rules?</p>
+            <div class="timeline-body"><p>Doesn&#x27;t need to block the merge here, but do we need to apply similar treatment to any of the other comprehension-transform rules?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-05-08 23:28</div>
             <div class="timeline-body"><blockquote>
-<p>Doesn't need to block the merge here, but do we need to apply similar treatment to any of the other comprehension-transform rules?</p>
+<p>Doesn&#x27;t need to block the merge here, but do we need to apply similar treatment to any of the other comprehension-transform rules?</p>
 </blockquote>
-<p>I had the same thought, let me check. In general wherever the parenthesis or brackets are being dropped, that's where this problem will occur.</p>
+<p>I had the same thought, let me check. In general wherever the parenthesis or brackets are being dropped, that&#x27;s where this problem will occur.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-05-08 23:45</div>
-            <div class="timeline-body"><p>I've provided a few examples but there will be a few more. As mentioned that whenever the parenthesis or brackets are being dropped, that's where this will happen. It seems to be happening in most of comprehension fixes.</p>
+            <div class="timeline-body"><p>I&#x27;ve provided a few examples but there will be a few more. As mentioned that whenever the parenthesis or brackets are being dropped, that&#x27;s where this will happen. It seems to be happening in most of comprehension fixes.</p>
 <p>I believe we should have a generalized way of resolving this.</p>
-<hr />
-<h2>C404</h2>
-<pre><code class="language-python">dict(
+<hr>
+C404
+<pre><code>dict(
     # first comment
     [
         # second comment
@@ -351,16 +351,16 @@ any(
         for i in range(3)
 }
 </code></pre>
-<h2>C405</h2>
-<pre><code class="language-python">set(
+C405
+<pre><code>set(
     # some comment
     (1, 2)
 )
 
 {1, 2}
 </code></pre>
-<h2>C406</h2>
-<pre><code class="language-python">dict(
+C406
+<pre><code>dict(
     # first comment
     [
         # second comment
@@ -373,24 +373,24 @@ any(
     1: 2
 }
 </code></pre>
-<h2>C409</h2>
-<pre><code class="language-python">tuple(
+C409
+<pre><code>tuple(
     # some comment
     [1, 2, 3, 4]
 )
 
 (1, 2, 3, 4)
 </code></pre>
-<h2>C410</h2>
-<pre><code class="language-python">list(
+C410
+<pre><code>list(
     # some comment
     [1, 2, 3, 4]
 )
 
 [1, 2, 3, 4]
 </code></pre>
-<h2>C411</h2>
-<pre><code class="language-python">list(
+C411
+<pre><code>list(
     # comment
     [i * i for i in x]
 )
@@ -400,10 +400,10 @@ any(
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @MichaReiser on 2023-05-09 06:43</div>
+            <div class="event">Merged by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-05-09 06:43</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2023-05-09 06:43</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-05-09 06:43</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2023-05-13 16:39</div>
@@ -411,7 +411,7 @@ any(
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:57:09 UTC
+        Synced at 2026-01-20 18:53:23 UTC
     </footer>
 </body>
 </html>

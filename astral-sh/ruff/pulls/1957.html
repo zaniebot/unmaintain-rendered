@@ -24,25 +24,25 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/akx">@akx</a></div>
             <div class="timeline-body"><p>This PR adds a new check that turns expressions such as <code>[1, 2, 3] + foo</code> into <code>[1, 2, 3, *foo]</code>, since the latter is easier to read and faster:</p>
-<pre><code>~ $ python3.11 -m timeit -s 'b = [6, 5, 4]' '[1, 2, 3] + b'
+<pre><code>~ $ python3.11 -m timeit -s &#x27;b = [6, 5, 4]&#x27; &#x27;[1, 2, 3] + b&#x27;
 5000000 loops, best of 5: 81.4 nsec per loop
-~ $ python3.11 -m timeit -s 'b = [6, 5, 4]' '[1, 2, 3, *b]'
+~ $ python3.11 -m timeit -s &#x27;b = [6, 5, 4]&#x27; &#x27;[1, 2, 3, *b]&#x27;
 5000000 loops, best of 5: 66.2 nsec per loop
 </code></pre>
-<p>However there's a couple of gotchas:</p>
+<p>However there&#x27;s a couple of gotchas:</p>
 <ul>
-<li>This felt like a <code>simplify</code> rule, so I borrowed an unused <code>SIM</code> code even if the upstream <code>flake8-simplify</code> doesn't do this transform. If it should be assigned some other code, let me know 😄</li>
-<li><strong>More importantly</strong> this transform could be unsafe if the other operand of the <code>+</code> operation has overridden <code>__add__</code> to do something else. What's the <code>ruff</code> policy around potentially unsafe operations? (I think some of the suggestions other ported rules give could be semantically different from the original code, but I'm not sure.)</li>
-<li>I'm not a very established Rustacean, so there's no doubt my code isn't quite idiomatic. (For instance, is there a neater way to write that four-way <code>match</code> statement?)</li>
+<li>This felt like a <code>simplify</code> rule, so I borrowed an unused <code>SIM</code> code even if the upstream <code>flake8-simplify</code> doesn&#x27;t do this transform. If it should be assigned some other code, let me know 😄</li>
+<li><strong>More importantly</strong> this transform could be unsafe if the other operand of the <code>+</code> operation has overridden <code>__add__</code> to do something else. What&#x27;s the <code>ruff</code> policy around potentially unsafe operations? (I think some of the suggestions other ported rules give could be semantically different from the original code, but I&#x27;m not sure.)</li>
+<li>I&#x27;m not a very established Rustacean, so there&#x27;s no doubt my code isn&#x27;t quite idiomatic. (For instance, is there a neater way to write that four-way <code>match</code> statement?)</li>
 </ul>
 <p>Thanks for <code>ruff</code>, by the way! :)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-18 16:05</div>
-            <div class="timeline-body"><p>Thank you for this contribution! It looks great. I'll look to add comments soon.</p>
-<p>The main thing I'm trying to decide is whether this should be in <code>SIM</code>, or <code>RUF</code>. I'm not sure yet. Historically, we've avoided adding checks to the &quot;ported&quot; plugins even if they make sense to include conceptually, instead opting to put novel rules in <code>RUF</code>. The thinking is that the use of <code>SIM</code> is mostly about compatibility -- it lets users that are already using flake8-simplify adopt Ruff and enable <code>SIM</code> without any additional work. (The other argument would be that enabling <code>SIM</code> is a sign that you want simplification checks, which I may not be explaining well, but is subtly different.) So in that light, it'd be surprising if you enabled <code>SIM</code> and saw new checks that didn't exist &quot;upstream&quot;.</p>
-<p>In the future (not certain when), we'll likely recategorize the rules under more meaningful categories (like <code>complexity</code> -- see the initial proposal in #1774), while retaining this compatibility layer (so the <code>flake8-simplify</code> checks would continue to exist under <code>flake8-simplify</code> in some form, but also as part of a broader <code>complexity</code> category). At that point, the above issue wouldn't matter much, since anyone that enables the <code>complexity</code> category would get this rule regardless.</p>
+            <div class="timeline-body"><p>Thank you for this contribution! It looks great. I&#x27;ll look to add comments soon.</p>
+<p>The main thing I&#x27;m trying to decide is whether this should be in <code>SIM</code>, or <code>RUF</code>. I&#x27;m not sure yet. Historically, we&#x27;ve avoided adding checks to the &quot;ported&quot; plugins even if they make sense to include conceptually, instead opting to put novel rules in <code>RUF</code>. The thinking is that the use of <code>SIM</code> is mostly about compatibility -- it lets users that are already using flake8-simplify adopt Ruff and enable <code>SIM</code> without any additional work. (The other argument would be that enabling <code>SIM</code> is a sign that you want simplification checks, which I may not be explaining well, but is subtly different.) So in that light, it&#x27;d be surprising if you enabled <code>SIM</code> and saw new checks that didn&#x27;t exist &quot;upstream&quot;.</p>
+<p>In the future (not certain when), we&#x27;ll likely recategorize the rules under more meaningful categories (like <code>complexity</code> -- see the initial proposal in #1774), while retaining this compatibility layer (so the <code>flake8-simplify</code> checks would continue to exist under <code>flake8-simplify</code> in some form, but also as part of a broader <code>complexity</code> category). At that point, the above issue wouldn&#x27;t matter much, since anyone that enables the <code>complexity</code> category would get this rule regardless.</p>
 <p>My gut is to keep this in <code>RUF</code>, or perhaps even introduce a new category along the lines of &quot;experimental&quot; or &quot;nursery&quot; (#1774) for now.</p>
 <p>What do you think? Would love to hear your reactions.</p>
 </div>
@@ -50,15 +50,15 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2023-01-18 17:25</div>
             <div class="timeline-body"><p>Hi @charliermarsh, thanks for the kind words!</p>
-<p>I'm absolutely more than fine moving this to <code>RUF</code>, or even some sort of <code>RUX</code> (for eXperimental or, um, possiblyXunsafe) category; I felt a bit bad shoving this under <code>flake8-simplify</code>'s namespace to begin with anyway.</p>
-<p>Beyond the categorization effort in #1774, maybe it might be worth it to be able to mark checks (like this) separately as <code>unsafe</code> or <code>aggressive</code> because you'll have to think a bit before blindly applying the suggestion  – e.g. you'd have to opt-in to <code>--fix-aggressive</code>?</p>
+<p>I&#x27;m absolutely more than fine moving this to <code>RUF</code>, or even some sort of <code>RUX</code> (for eXperimental or, um, possiblyXunsafe) category; I felt a bit bad shoving this under <code>flake8-simplify</code>&#x27;s namespace to begin with anyway.</p>
+<p>Beyond the categorization effort in #1774, maybe it might be worth it to be able to mark checks (like this) separately as <code>unsafe</code> or <code>aggressive</code> because you&#x27;ll have to think a bit before blindly applying the suggestion  – e.g. you&#x27;d have to opt-in to <code>--fix-aggressive</code>?</p>
 <p>As an aside, I fixed the <code>cargo fmt</code> issue that appeared in the checks (and added it as a pre-commit check in #1968...)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/andersk">@andersk</a> on 2023-01-18 18:18</div>
             <div class="timeline-body"><blockquote>
-<p>Beyond the categorization effort in https://github.com/charliermarsh/ruff/issues/1774, maybe it might be worth it to be able to mark checks (like this) separately as <code>unsafe</code> or <code>aggressive</code> because you'll have to think a bit before blindly applying the suggestion – e.g. you'd have to opt-in to <code>--fix-aggressive</code>?</p>
+<p>Beyond the categorization effort in <a href="https://github.com/charliermarsh/ruff/issues/1774">charliermarsh/ruff#1774</a>, maybe it might be worth it to be able to mark checks (like this) separately as <code>unsafe</code> or <code>aggressive</code> because you&#x27;ll have to think a bit before blindly applying the suggestion – e.g. you&#x27;d have to opt-in to <code>--fix-aggressive</code>?</p>
 </blockquote>
 <p>Some prior art, if only for the amusement value: <a href="https://users.rust-lang.org/t/cargo-clippy-fix-doesnt-fix-anything/68453"><code>__CARGO_FIX_YOLO=1</code></a></p>
 </div>
@@ -66,26 +66,26 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-18 18:21</div>
             <div class="timeline-body"><blockquote>
-<p>Beyond the categorization effort in https://github.com/charliermarsh/ruff/issues/1774, maybe it might be worth it to be able to mark checks (like this) separately as unsafe or aggressive because you'll have to think a bit before blindly applying the suggestion – e.g. you'd have to opt-in to --fix-aggressive?</p>
+<p>Beyond the categorization effort in <a href="https://github.com/charliermarsh/ruff/issues/1774">charliermarsh/ruff#1774</a>, maybe it might be worth it to be able to mark checks (like this) separately as unsafe or aggressive because you&#x27;ll have to think a bit before blindly applying the suggestion – e.g. you&#x27;d have to opt-in to --fix-aggressive?</p>
 </blockquote>
-<p>One way we could model this is that we could omit this from the <code>fixable</code> list by default. (We already support turning autofix on and off on a per-rule basis: https://github.com/charliermarsh/ruff#unfixable.) Right now, <code>fixable</code>, by default, includes every rule. But we could instead start to omit some rules from <code>fixable</code>, and thus require users to opt-in explicitly. I'm not sure how we'd message this to users though.</p>
+<p>One way we could model this is that we could omit this from the <code>fixable</code> list by default. (We already support turning autofix on and off on a per-rule basis: https://github.com/charliermarsh/ruff#unfixable.) Right now, <code>fixable</code>, by default, includes every rule. But we could instead start to omit some rules from <code>fixable</code>, and thus require users to opt-in explicitly. I&#x27;m not sure how we&#x27;d message this to users though.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/bluetech">@bluetech</a> on 2023-01-18 19:22</div>
-            <div class="timeline-body"><p>From @andersk's link I saw that rustc/clippy assigns &quot;applicability&quot; to suggestions: https://doc.rust-lang.org/stable/nightly-rustc/rustc_errors/enum.Applicability.html</p>
+            <div class="timeline-body"><p>From @andersk&#x27;s link I saw that rustc/clippy assigns &quot;applicability&quot; to suggestions: https://doc.rust-lang.org/stable/nightly-rustc/rustc_errors/enum.Applicability.html</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-18 19:36</div>
-            <div class="timeline-body"><p>@akx - Let's go ahead and move this under <code>RUF</code> for now.</p>
+            <div class="timeline-body"><p>@akx - Let&#x27;s go ahead and move this under <code>RUF</code> for now.</p>
 <p>@bluetech - Applicability looks nice and is something we should support (defined at the Rule level, configurable at the command-line and in <code>pyproject.toml</code>).</p>
-<p>\cc @not-my-profile who's probably interested in that too.</p>
+<p>\cc @not-my-profile who&#x27;s probably interested in that too.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2023-01-19 09:34</div>
-            <div class="timeline-body"><p>@charliermarsh Moved to RUF005. I also added a commented-out &quot;failing test&quot; in the fixture – chained concatenations aren't handled gracefully at all at present, but I suppose that could be improved later :)</p>
+            <div class="timeline-body"><p>@charliermarsh Moved to RUF005. I also added a commented-out &quot;failing test&quot; in the fixture – chained concatenations aren&#x27;t handled gracefully at all at present, but I suppose that could be improved later :)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -95,11 +95,11 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-19 15:37</div>
-            <div class="timeline-body"><p>Great, I'll look to get this merged today!</p>
+            <div class="timeline-body"><p>Great, I&#x27;ll look to get this merged today!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Add new potentially unsafe "unpack instead of concatenating" check" to "Add RUF005 "unpack instead of concatenating" check" by @akx on 2023-01-19 15:52</div>
+            <div class="event">Renamed from &quot;Add new potentially unsafe &quot;unpack instead of concatenating&quot; check&quot; to &quot;Add RUF005 &quot;unpack instead of concatenating&quot; check&quot; by <a href="https://github.com/akx">@akx</a> on 2023-01-19 15:52</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/violations.rs</code>:3232 on 2023-01-19 16:46</div>
@@ -113,7 +113,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/ruff/rules/unpack_instead_of_concatenating_to_collection_literal.rs</code>:58 on 2023-01-19 16:56</div>
-            <div class="timeline-body"><p>It'd be nice if we could thread through the <code>level</code> argument here to <code>generator.unparse_expr</code>. That would enable use to maintain the parens around the tuple, by incrementing the <code>level</code> a bit.</p>
+            <div class="timeline-body"><p>It&#x27;d be nice if we could thread through the <code>level</code> argument here to <code>generator.unparse_expr</code>. That would enable use to maintain the parens around the tuple, by incrementing the <code>level</code> a bit.</p>
 <p>Alternatively, maybe we can just manually add the parens here?</p>
 <p>(Specifically, I think <code>Consider </code>7, 8, 9, *bar<code> instead of concatenation</code> would be clearer as <code>Consider </code>(7, 8, 9, *bar)<code> instead of concatenation</code>.)</p>
 </div>
@@ -121,7 +121,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>resources/test/fixtures/ruff/RUF005.py</code>:7 on 2023-01-19 16:57</div>
             <div class="timeline-body"><p>I think we should resolve this prior to merging.</p>
-<p>Maybe we avoid applying this if one of the expressions is itself a BinOp? So we'd flag <code>Consider </code>['a', 'b', 'c', <em>eggs]<code> instead of concatenation</code> but not <code>Consider </code></em>['a', 'b', 'c'] + eggs, 'yes', 'no', 'pants'<code> instead of concatenation</code>.</p>
+<p>Maybe we avoid applying this if one of the expressions is itself a BinOp? So we&#x27;d flag <code>Consider </code>[&#x27;a&#x27;, &#x27;b&#x27;, &#x27;c&#x27;, <em>eggs]<code> instead of concatenation</code> but not <code>Consider </code></em>[&#x27;a&#x27;, &#x27;b&#x27;, &#x27;c&#x27;] + eggs, &#x27;yes&#x27;, &#x27;no&#x27;, &#x27;pants&#x27;<code> instead of concatenation</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -139,7 +139,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/akx">@akx</a> on <code>src/rules/ruff/rules/unpack_instead_of_concatenating_to_collection_literal.rs</code>:58 on 2023-01-19 19:01</div>
-            <div class="timeline-body"><p>I opted for just wrapping the <code>new_expr</code> in parens. Wasn't quite sure how to use <code>level</code> since it's, well, undocumented...</p>
+            <div class="timeline-body"><p>I opted for just wrapping the <code>new_expr</code> in parens. Wasn&#x27;t quite sure how to use <code>level</code> since it&#x27;s, well, undocumented...</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -159,7 +159,7 @@
             <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2023-01-19 19:02</div>
             <div class="timeline-body"><p>@charliermarsh Thanks for the review!</p>
 <p>I think this looks pretty good now:</p>
-<pre><code class="language-diff"> class Fun:
+<pre><code> class Fun:
      words = (&quot;how&quot;, &quot;fun!&quot;)
 
      def yay(self):
@@ -185,7 +185,7 @@
 +excitement = (&quot;we all think&quot;, *Fun().yay())
 +astonishment = (&quot;we all feel&quot;, *Fun.words)
  
--chain = ['a', 'b', 'c'] + eggs + list(('yes', 'no', 'pants') + zoob)
+-chain = [&#x27;a&#x27;, &#x27;b&#x27;, &#x27;c&#x27;] + eggs + list((&#x27;yes&#x27;, &#x27;no&#x27;, &#x27;pants&#x27;) + zoob)
 +chain = [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, *eggs, *list((&quot;yes&quot;, &quot;no&quot;, &quot;pants&quot;, *zoob))]
 </code></pre>
 </div>
@@ -193,29 +193,29 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/rhkleijn">@rhkleijn</a> on 2023-01-19 19:49</div>
             <div class="timeline-body"><p>An interesting edge case to test would be empty tuples. Does it handle the following correctly?</p>
-<pre><code class="language-python">baz = () + zoob
+<pre><code>baz = () + zoob
 </code></pre>
 <p>Unpacking as <code>(*zoob)</code> would be invalid here, I guess. It would need a trailing comma <code>(*zoob,)</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2023-01-19 20:20</div>
-            <div class="timeline-body"><p>@rhkleijn I'm a bit surprised myself, but it does the right thing!</p>
-<pre><code class="language-diff">-baz = () + zoob
+            <div class="timeline-body"><p>@rhkleijn I&#x27;m a bit surprised myself, but it does the right thing!</p>
+<pre><code>-baz = () + zoob
 +baz = (*zoob,)
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-19 22:35</div>
-            <div class="timeline-body"><p>@akx - How would you feel if I subsequently turned off autofix (by default) on this rule for now, instead requiring it to be opt-in (via the <code>fixable</code> setting in <code>pyproject.toml</code>)? I'm not completely decided either way, but I wanted to run it by you before I made that change.</p>
+            <div class="timeline-body"><p>@akx - How would you feel if I subsequently turned off autofix (by default) on this rule for now, instead requiring it to be opt-in (via the <code>fixable</code> setting in <code>pyproject.toml</code>)? I&#x27;m not completely decided either way, but I wanted to run it by you before I made that change.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2023-01-19 22:38</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-19 22:38</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-01-19 22:38</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-19 22:38</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-19 22:38</div>
@@ -230,7 +230,7 @@
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:55:36 UTC
+        Synced at 2026-01-20 18:51:51 UTC
     </footer>
 </body>
 </html>

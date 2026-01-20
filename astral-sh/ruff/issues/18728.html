@@ -23,32 +23,30 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Avasam">@Avasam</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<p>pywin32 has a ton of imports that are not top-level. A lot of those are known to have side-effects (yeah ik, that's a bad pattern, but it's also one of the oldest library out there, not much I can do about it nowadays :P ). Others are just known to be heavy imports. I can't just blindly move everything to a top-level (currently ~400 hits) without heavy scrutiny of what every import does and their context. Even then I'd still end up with tons of <code>noqa</code>.</p>
-<p>But I still think I can get value out of <code>import-outside-top-level (PLC0415)</code> even in legacy projects, for example I wouldn't have any issue just moving all stdlib to top-level.</p>
+            <div class="timeline-body">Summary
+<p>pywin32 has a ton of imports that are not top-level. A lot of those are known to have side-effects (yeah ik, that&#x27;s a bad pattern, but it&#x27;s also one of the oldest library out there, not much I can do about it nowadays :P ). Others are just known to be heavy imports. I can&#x27;t just blindly move everything to a top-level (currently ~400 hits) without heavy scrutiny of what every import does and their context. Even then I&#x27;d still end up with tons of <code>noqa</code>.</p>
+<p>But I still think I can get value out of <code>import-outside-top-level (PLC0415)</code> even in legacy projects, for example I wouldn&#x27;t have any issue just moving all stdlib to top-level.</p>
 <p>Rather than making that super specific request, I think it can be generalized to work with https://docs.astral.sh/ruff/settings/#lint_isort_sections which would allow users to get <code>import-outside-top-level (PLC0415)</code> to work for their specific needs. (for example if an import should <em>always</em> be delayed, it can be in its own section to be ignored by <code>PLC0415</code>)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-17 17:44</div>
-            <div class="timeline-body"><p>That's an interesting suggestion. Do you think that would be preferable to a more specific config option like <code>allowed-local-imports</code>? If I'm following, it sounds like it would end up being more configuration to define the sections and then add imports to them.</p>
+            <div class="timeline-body"><p>That&#x27;s an interesting suggestion. Do you think that would be preferable to a more specific config option like <code>allowed-local-imports</code>? If I&#x27;m following, it sounds like it would end up being more configuration to define the sections and then add imports to them.</p>
 <p>I could definitely see having some configuration here, in any case. The rule docs mention that there are valid cases for module-level imports, so it makes sense to me to have an escape hatch other than noqa for those valid cases.</p>
 <p>We also have <a href="https://docs.astral.sh/ruff/rules/banned-module-level-imports/#banned-module-level-imports-tid253">banned-module-level-imports (TID253)</a> for imports that should always be delayed. PLC0415 already respects this list, so this would be a new option for rules that are only sometimes allowed to be local.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">configuration</span> added by @ntBre on 2025-06-17 17:44</div>
+            <div class="event">Label <span class="label">configuration</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-17 17:44</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> added by @ntBre on 2025-06-17 17:44</div>
+            <div class="event">Label <span class="label">needs-decision</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-17 17:44</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-06-17 17:58</div>
-            <div class="timeline-body"><p><code>allowed-local-imports</code> would work for my needs, I think I'd basically copy the list I already have of known side-effect modules for pycln https://github.com/mhammond/pywin32/blob/main/pycln.toml and add any &quot;heavy&quot; or &quot;optional&quot; module as necessary.</p>
-<details>
-<summary>List of current 30 local modules in pywin32, deduplicated</summary
+            <div class="timeline-body"><p><code>allowed-local-imports</code> would work for my needs, I think I&#x27;d basically copy the list I already have of known side-effect modules for pycln https://github.com/mhammond/pywin32/blob/main/pycln.toml and add any &quot;heavy&quot; or &quot;optional&quot; module as necessary.</p>
 
-<pre><code class="language-py">import argparse
+List of current 30 local modules in pywin32, deduplicated<code>import argparse
 import document_object
 import getopt
 import importlib.machinery
@@ -79,13 +77,13 @@ import win32ui
 import winerror
 import winreg
 </code></pre>
-</details>
+
 
 <blockquote>
 <p>We also have <a href="https://docs.astral.sh/ruff/rules/banned-module-level-imports/#banned-module-level-imports-tid253">banned-module-level-imports (TID253)</a> for imports that should always be delayed. PLC0415 already respects this list</p>
 </blockquote>
-<p>Nice, I didn't know. Not a use-case for me, just an example I thought of the top of my head to justify adding configs to <code>PLC0415</code>. Maybe the <code>PLC0415</code> doc page should link to <a href="https://docs.astral.sh/ruff/settings/#lint_flake8-tidy-imports_banned-module-level-imports">banned-module-level-imports</a> if it's affected by it? (looks like a simple documentation PR to add an Options section, I can take care of that).</p>
-<hr />
+<p>Nice, I didn&#x27;t know. Not a use-case for me, just an example I thought of the top of my head to justify adding configs to <code>PLC0415</code>. Maybe the <code>PLC0415</code> doc page should link to <a href="https://docs.astral.sh/ruff/settings/#lint_flake8-tidy-imports_banned-module-level-imports">banned-module-level-imports</a> if it&#x27;s affected by it? (looks like a simple documentation PR to add an Options section, I can take care of that).</p>
+<hr>
 <p>So anything in <code>banned-module-level-imports</code> <em>has</em> to be local
 Anything not in either  <code>banned-module-level-imports</code> or <code>allowed-local-imports</code> <em>has</em> to be top-level
 Anything in <code>allowed-local-imports</code> but not in <code>banned-module-level-imports</code> could be either.</p>
@@ -100,24 +98,24 @@ Anything not in either banned-module-level-imports or allowed-local-imports has 
 Anything in allowed-local-imports but not in banned-module-level-imports could be either.</p>
 </blockquote>
 <p>The logic/interaction of the settings does look a little frightening when you put it that way! I think that covers all of the cases, though.</p>
-<p>I'm curious if anyone else has other ideas here too.</p>
+<p>I&#x27;m curious if anyone else has other ideas here too.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-18 08:29</div>
             <div class="timeline-body"><p>It seems the main culprit here are imports with side effects. Would it make more sense to have a setting that allows marking imports that have side effects rather than having so many global/local settings?</p>
-<p>Marking an import (or module) as having side effect would mean that ruff shouldn't move that import, ever.</p>
+<p>Marking an import (or module) as having side effect would mean that ruff shouldn&#x27;t move that import, ever.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-06-18 15:25</div>
-            <div class="timeline-body"><p>I think that completely independent of this request, having a way to identify side-effect imports would be beneficial (for <a href="https://docs.astral.sh/ruff/rules/unused-import/#unused-import-f401">unused-import (F401)</a> and maybe other rules as well?). Whether that's done through a manual list for now, or with more automated detection later with ty (https://github.com/astral-sh/ruff/issues/8149). Also see discussion in https://github.com/astral-sh/ruff/issues/6601 which seems very related in its needs.</p>
+            <div class="timeline-body"><p>I think that completely independent of this request, having a way to identify side-effect imports would be beneficial (for <a href="https://docs.astral.sh/ruff/rules/unused-import/#unused-import-f401">unused-import (F401)</a> and maybe other rules as well?). Whether that&#x27;s done through a manual list for now, or with more automated detection later with ty (<a href="https://github.com/astral-sh/ruff/issues/8149">astral-sh/ruff#8149</a>). Also see discussion in <a href="https://github.com/astral-sh/ruff/issues/6601">astral-sh/ruff#6601</a> which seems very related in its needs.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:52:53 UTC
+        Synced at 2026-01-20 18:50:05 UTC
     </footer>
 </body>
 </html>

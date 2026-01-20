@@ -24,11 +24,11 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/JimDabell">@JimDabell</a></div>
             <div class="timeline-body"><p>If my project has a module called <code>foo</code> and a section in <code>pyproject.toml</code> with:</p>
-<pre><code class="language-toml">[project.scripts]
+<pre><code>[project.scripts]
 foo = &quot;foo.cli:app&quot;
 </code></pre>
 <p>…then it’s not possible to call the script with <code>uv run foo</code>:</p>
-<pre><code class="language-python">Traceback (most recent call last):
+<pre><code>Traceback (most recent call last):
   File &quot;&lt;frozen runpy&gt;&quot;, line 198, in _run_module_as_main
   File &quot;&lt;frozen runpy&gt;&quot;, line 88, in _run_code
   File &quot;/app/foo/__main__.py&quot;, line 3, in &lt;module&gt;
@@ -36,7 +36,7 @@ foo = &quot;foo.cli:app&quot;
 ImportError: attempted relative import with no known parent package
 </code></pre>
 <p>However if I rename the script from <code>foo</code> to <code>bar</code>, it works:</p>
-<pre><code class="language-toml">[project.scripts]
+<pre><code>[project.scripts]
 bar = &quot;foo.cli:app&quot;
 </code></pre>
 <p>If I try to run the module with <code>uv run --module foo</code>, this also works.</p>
@@ -46,14 +46,14 @@ bar = &quot;foo.cli:app&quot;
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/raqbit">@raqbit</a> on 2024-12-03 10:56</div>
-            <div class="timeline-body"><p>I've created a reproduction repo here: https://github.com/raqbit/uv-scripts-repro/</p>
+            <div class="timeline-body"><p>I&#x27;ve created a reproduction repo here: https://github.com/raqbit/uv-scripts-repro/</p>
 <p>The <code>run_all.sh</code> script attempts to run the project in three ways:</p>
 <ul>
 <li>Using <code>python -m foo</code></li>
 <li>Using <code>./.venv/bin/foo</code></li>
 <li>Using <code>uv run foo</code></li>
 </ul>
-<p>Only the last case fails, probably because it's running the <code>__main__</code> file (and not as a module), and not the script installed in <code>./.venv/bin</code>.</p>
+<p>Only the last case fails, probably because it&#x27;s running the <code>__main__</code> file (and not as a module), and not the script installed in <code>./.venv/bin</code>.</p>
 <p>Tested with <code>uv 0.5.5</code></p>
 </div>
         </div>
@@ -61,19 +61,19 @@ bar = &quot;foo.cli:app&quot;
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-03 15:21</div>
             <div class="timeline-body"><p>Thanks for the reproduction!</p>
 <p>The problem is https://github.com/astral-sh/uv/blob/02c105c3cbc53e291632dc43dbef8777410656c8/crates/uv/src/commands/project/run.rs#L1414-L1415</p>
-<p>We shouldn't do that logic if the given command exists in the <code>bin</code> directory.</p>
+<p>We shouldn&#x27;t do that logic if the given command exists in the <code>bin</code> directory.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-12-03 15:21</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-03 15:21</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-03 15:35</div>
-            <div class="timeline-body"><p>This is sort of a pain because we resolve the <code>RunCommand</code> <em>before</em> we've discovered the Python environment. We'll need to move some things around.</p>
+            <div class="timeline-body"><p>This is sort of a pain because we resolve the <code>RunCommand</code> <em>before</em> we&#x27;ve discovered the Python environment. We&#x27;ll need to move some things around.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">help wanted</span> added by @zanieb on 2024-12-03 15:35</div>
+            <div class="event">Label <span class="label">help wanted</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-03 15:35</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/2022tgoel">@2022tgoel</a> on 2024-12-07 17:13</div>
@@ -84,8 +84,8 @@ Do you think a reasonable solution would be to instead of returning a <code>Pyth
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-07 18:25</div>
-            <div class="timeline-body"><p>So.. it looks like we call <code>RunCommand::from_args</code> early so that we can read (and apply) settings from PEP 723 scripts. We need to preserve that, so it's mostly a matter of refactoring the types in a nice way to represent the deferred resolution of some commands.</p>
-<p>I'd maybe introduce a new type that we resolve earlier then cast to <code>RunCommand</code> in the <code>run</code> implementation once we have information about the available entry points, e.g. (with some made up names):</p>
+            <div class="timeline-body"><p>So.. it looks like we call <code>RunCommand::from_args</code> early so that we can read (and apply) settings from PEP 723 scripts. We need to preserve that, so it&#x27;s mostly a matter of refactoring the types in a nice way to represent the deferred resolution of some commands.</p>
+<p>I&#x27;d maybe introduce a new type that we resolve earlier then cast to <code>RunCommand</code> in the <code>run</code> implementation once we have information about the available entry points, e.g. (with some made up names):</p>
 <pre><code>enum RunTarget {
     Resolved(ResolvedRunTarget)
     Unresolved(UnresolvedRunTarget)
@@ -101,25 +101,25 @@ struct UnresolvedRunTarget {
 
 impl From&lt;RunTarget&gt; for RunCommand { ... }
 </code></pre>
-<p>I think this roughly matches your suggestion with <code>Undetermined</code>, just with more types? This is the sort of thing that I'd have to play with concretely to find the right pattern for though.</p>
+<p>I think this roughly matches your suggestion with <code>Undetermined</code>, just with more types? This is the sort of thing that I&#x27;d have to play with concretely to find the right pattern for though.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/2022tgoel">@2022tgoel</a> on 2024-12-08 16:02</div>
             <div class="timeline-body"><p>Hi,
-I liked your idea, so I implemented something along those lines in https://github.com/astral-sh/uv/pull/9722. Could you take a look at this? Thanks.</p>
+I liked your idea, so I implemented something along those lines in <a href="https://github.com/astral-sh/uv/pull/9722">astral-sh/uv#9722</a>. Could you take a look at this? Thanks.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2025-02-12 18:08</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-12 18:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2025-02-12 18:08</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-12 18:08</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:28:22 UTC
+        Synced at 2026-01-20 19:35:31 UTC
     </footer>
 </body>
 </html>

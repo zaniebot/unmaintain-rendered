@@ -23,15 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Glyphack">@Glyphack</a></div>
-            <div class="timeline-body"><!--
-Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+            <div class="timeline-body">
 
-- Does this pull request include a summary of the change? (See below.)
-- Does this pull request include a descriptive title?
-- Does this pull request include references to any relevant issues?
--->
-
-<h2>Summary</h2>
+Summary
 <p>part of: #15655</p>
 <p>I tried generating the source order function using code generation. I tried a simple approach, but it is not enough to generate all of them this way.</p>
 <p>There is one good thing, that most of the implementations are fine with this. We only have a few that are not. So one benefit of this PR could be it eliminates a lot of the code, hence changing the AST structure will only leave a few places to be fixed.</p>
@@ -39,42 +33,42 @@ Thank you for contributing to Ruff! To help us out with reviewing, please consid
 <p>Initially I didn’t want to repeat the field names. But I found two things:</p>
 <ul>
 <li><code>ExprIf</code> statement unlike other statements does not have the fields defined in source order. This and also some fields do not need to be included in the visit. So we just need a way to determine order, and determine presence.</li>
-<li>Relying on the fields sounds more complicated to me. Maybe another solution is to add a new attribute <code>order</code> to each field? I'm open to suggestions.
-But anyway, except for the <code>ExprIf</code> we don't need to write the field names in order. Just knowing what fields must be visited are enough.</li>
+<li>Relying on the fields sounds more complicated to me. Maybe another solution is to add a new attribute <code>order</code> to each field? I&#x27;m open to suggestions.
+But anyway, except for the <code>ExprIf</code> we don&#x27;t need to write the field names in order. Just knowing what fields must be visited are enough.</li>
 </ul>
 <p>Some nodes had a more complex visitor:</p>
 <p><code>ExprCompare</code> required zipping two fields.</p>
 <p><code>ExprBoolOp</code> required a match over the fields.</p>
 <p><code>FstringValue</code> required a match, I created a new walk_ function that does the match. and used it in code generation. I don’t think this provides real value. Because I mostly moved the code from one file to another. I was tried it as an option. I prefer to leave it in the code as before.</p>
 <p>Some visitors visit a slice of items. Others visit a single element. I put a check on this in code generation to see if the field requires a for loop or not. I think better approach is to have a consistent style. So we can by default loop over any field that is a sequence.</p>
-<p>For field types <code>StringLiteralValue</code> and <code>BytesLiteralValue</code> the types are not a sequence in toml definition. But they implement <code>iter</code> so they are iterated over. So the code generation does not properly identify this. So in the code I'm checking for their types.</p>
-<h2>Test Plan</h2>
+<p>For field types <code>StringLiteralValue</code> and <code>BytesLiteralValue</code> the types are not a sequence in toml definition. But they implement <code>iter</code> so they are iterated over. So the code generation does not properly identify this. So in the code I&#x27;m checking for their types.</p>
+Test Plan
 <p>All the tests should pass without any changes.
-I checked the generated code to make sure it's the same as old code. I'm not sure if there's a test for the source order visitor.</p>
-<!-- How was it tested? -->
+I checked the generated code to make sure it&#x27;s the same as old code. I&#x27;m not sure if there&#x27;s a test for the source order visitor.</p>
+
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> added by @AlexWaygood on 2025-04-03 15:12</div>
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-03 15:12</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Glyphack">@Glyphack</a> on 2025-04-03 15:43</div>
-            <div class="timeline-body"><p>Hey @dcreager what do you think about this? there is some work left but I'll finish them. Just sending it now to get feedback.</p>
+            <div class="timeline-body"><p>Hey @dcreager what do you think about this? there is some work left but I&#x27;ll finish them. Just sending it now to get feedback.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-03 15:49</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
@@ -87,21 +81,21 @@ I checked the generated code to make sure it's the same as old code. I'm not sur
 <ul>
 <li><p><code>ExprIf</code> statement unlike other statements does not have the fields defined in source order. This and also some fields do not need to be included in the visit. So we just need a way to determine order, and determine presence.</p>
 </li>
-<li><p>Relying on the fields sounds more complicated to me. Maybe another solution is to add a new attribute <code>order</code> to each field? I'm open to suggestions.
-But anyway, except for the <code>ExprIf</code> we don't need to write the field names in order. Just knowing what fields must be visited are enough.</p>
+<li><p>Relying on the fields sounds more complicated to me. Maybe another solution is to add a new attribute <code>order</code> to each field? I&#x27;m open to suggestions.
+But anyway, except for the <code>ExprIf</code> we don&#x27;t need to write the field names in order. Just knowing what fields must be visited are enough.</p>
 </li>
 </ul>
 </blockquote>
-<p>I think it's worth finding a way to not have so much repetition between the field list and this new <code>source_order</code> field. Most types want to include all fields in the source order walk, in the same order they appear in the field list. So that should be the default, if <code>source_order</code> is missing.</p>
+<p>I think it&#x27;s worth finding a way to not have so much repetition between the field list and this new <code>source_order</code> field. Most types want to include all fields in the source order walk, in the same order they appear in the field list. So that should be the default, if <code>source_order</code> is missing.</p>
 <p>For types that need special handling (like <code>ExprBoolOp</code>) you could instead have <code>custom_source_order = true</code>.</p>
-<p>For fields that shouldn't be included in the walk, you could have a field-level <code>skip_source_order = true</code>.</p>
-<p>And for the types whose fields aren't in order, can we just reorder the field list to be in source order? Is there anything else that depends on the current field ordering for e.g. <code>ExprIf</code>? If so (and therefore we can't reorder), then you could have <code>custom_source_order = [&quot;field&quot;, &quot;list&quot;]</code>.  (Or maybe a different name if you don't want to conflict with the first option mentioned above)</p>
+<p>For fields that shouldn&#x27;t be included in the walk, you could have a field-level <code>skip_source_order = true</code>.</p>
+<p>And for the types whose fields aren&#x27;t in order, can we just reorder the field list to be in source order? Is there anything else that depends on the current field ordering for e.g. <code>ExprIf</code>? If so (and therefore we can&#x27;t reorder), then you could have <code>custom_source_order = [&quot;field&quot;, &quot;list&quot;]</code>.  (Or maybe a different name if you don&#x27;t want to conflict with the first option mentioned above)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-03 16:59</div>
-            <div class="timeline-body"><p>I like the idea of <code>custom_source_order = true</code>. I think it's fine to hand write the visitor for the few nodes that have fields that need to be skipped or require visiting in a custom ordering.</p>
-<p>The main purpose of the source code generators is to avoid boilerplate. Our goal isn't to write a full meta programming language :)</p>
+            <div class="timeline-body"><p>I like the idea of <code>custom_source_order = true</code>. I think it&#x27;s fine to hand write the visitor for the few nodes that have fields that need to be skipped or require visiting in a custom ordering.</p>
+<p>The main purpose of the source code generators is to avoid boilerplate. Our goal isn&#x27;t to write a full meta programming language :)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -109,17 +103,17 @@ But anyway, except for the <code>ExprIf</code> we don't need to write the field 
             <div class="timeline-body"><p>Thanks for the ideas, I added <code>skip_source_order</code> for fields &amp; <code>custom_source_order</code> for nodes. The toml looks less messy now.</p>
 <p>I documented the new fields and source order generation.</p>
 <p>For <code>ExprIf</code> I updated the field order. The snapshots required an update so I updated them.</p>
-<p>(Sorry for the long delay I'll keep it shorter for next round)</p>
+<p>(Sorry for the long delay I&#x27;ll keep it shorter for next round)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @Glyphack on 2025-04-08 20:28</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/Glyphack">@Glyphack</a> on 2025-04-08 20:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @Glyphack on 2025-04-08 20:28</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/Glyphack">@Glyphack</a> on 2025-04-08 20:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dhruvmanila by @Glyphack on 2025-04-08 20:28</div>
+            <div class="event">Review requested from <a href="https://github.com/dhruvmanila">@dhruvmanila</a> by <a href="https://github.com/Glyphack">@Glyphack</a> on 2025-04-08 20:28</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/ast.toml</code>:212 on 2025-04-09 06:06</div>
@@ -128,7 +122,7 @@ But anyway, except for the <code>ExprIf</code> we don't need to write the field 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/ast.toml</code>:206 on 2025-04-09 06:07</div>
-            <div class="timeline-body"><p>I'd be inclined to name the field <code>skip_visit</code> so that it can be shared between source order and the semantic order visitor. Or are there cases where we want to skip a field only in one but not the other (but maybe that's reason enough to hand write the visitor)</p>
+            <div class="timeline-body"><p>I&#x27;d be inclined to name the field <code>skip_visit</code> so that it can be shared between source order and the semantic order visitor. Or are there cases where we want to skip a field only in one but not the other (but maybe that&#x27;s reason enough to hand write the visitor)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -138,36 +132,36 @@ But anyway, except for the <code>ExprIf</code> we don't need to write the field 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/ast.toml</code>:353 on 2025-04-09 06:09</div>
-            <div class="timeline-body"><p>I'd prefer to keep the field order as is because it represents the semantic order of the fields and instead override the order with <code>source_order</code>. This should also reduce the size of this diff</p>
+            <div class="timeline-body"><p>I&#x27;d prefer to keep the field order as is because it represents the semantic order of the fields and instead override the order with <code>source_order</code>. This should also reduce the size of this diff</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/ast.toml</code>:490 on 2025-04-09 06:10</div>
-            <div class="timeline-body"><p>I'd be fine to teach the script to skip <code>ExprContext</code> and <code>Name</code> by default.</p>
+            <div class="timeline-body"><p>I&#x27;d be fine to teach the script to skip <code>ExprContext</code> and <code>Name</code> by default.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/visitor/source_order.rs</code>:579 on 2025-04-09 06:12</div>
-            <div class="timeline-body"><p>I'd prefer not to make changes to the source order visitor as part of this PR because changes to the visitor may break existing code (the code here should call <code>enter_node</code> and <code>exit_node</code> for every visited node and visitors that override those methods may now behave differently because they see additional nodes).</p>
+            <div class="timeline-body"><p>I&#x27;d prefer not to make changes to the source order visitor as part of this PR because changes to the visitor may break existing code (the code here should call <code>enter_node</code> and <code>exit_node</code> for every visited node and visitors that override those methods may now behave differently because they see additional nodes).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2025-04-09 06:14</div>
-            <div class="timeline-body"><p>Nice. This overall looks good to me. I've a few smaller inline suggestions.</p>
+            <div class="timeline-body"><p>Nice. This overall looks good to me. I&#x27;ve a few smaller inline suggestions.</p>
 <p>I think we should revert the AST field order changes and the changes to the <code>SourceOrderVisitor</code>. This PR should exclusively be around replacing the existing code without changing any semantics (or how structs are laid out in memory).</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @Glyphack on 2025-04-09 17:12</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/Glyphack">@Glyphack</a> on 2025-04-09 17:12</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @Glyphack on 2025-04-09 17:12</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/Glyphack">@Glyphack</a> on 2025-04-09 17:12</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @Glyphack on 2025-04-09 17:12</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/Glyphack">@Glyphack</a> on 2025-04-09 17:12</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @Glyphack on 2025-04-09 17:12</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/Glyphack">@Glyphack</a> on 2025-04-09 17:12</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Glyphack">@Glyphack</a> reviewed on 2025-04-09 17:13</div>
@@ -179,7 +173,7 @@ But anyway, except for the <code>ExprIf</code> we don't need to write the field 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @sharkdp removed by @sharkdp on 2025-04-09 17:13</div>
+            <div class="event">Review request for <a href="https://github.com/sharkdp">@sharkdp</a> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-04-09 17:13</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Glyphack">@Glyphack</a> reviewed on 2025-04-09 17:14</div>
@@ -187,7 +181,7 @@ But anyway, except for the <code>ExprIf</code> we don't need to write the field 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/Glyphack">@Glyphack</a> on <code>crates/ruff_python_ast/ast.toml</code>:490 on 2025-04-09 17:14</div>
-            <div class="timeline-body"><p>I agree. After these only <code>IpyEscapeKind</code> and <code>Number</code> was remaining. I felt it's good to move those types to code to, so I removed the <code>skip_visit</code>. What do you think? I'm okay with adding it back.</p>
+            <div class="timeline-body"><p>I agree. After these only <code>IpyEscapeKind</code> and <code>Number</code> was remaining. I felt it&#x27;s good to move those types to code to, so I removed the <code>skip_visit</code>. What do you think? I&#x27;m okay with adding it back.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -200,23 +194,23 @@ But anyway, except for the <code>ExprIf</code> we don't need to write the field 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @carljm removed by @AlexWaygood on 2025-04-09 17:15</div>
+            <div class="event">Review request for <a href="https://github.com/carljm">@carljm</a> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-09 17:15</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-04-09 17:15</div>
+            <div class="event">Review request for <a href="https://github.com/AlexWaygood">@AlexWaygood</a> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-09 17:15</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @dcreager removed by @AlexWaygood on 2025-04-09 17:15</div>
+            <div class="event">Review request for <a href="https://github.com/dcreager">@dcreager</a> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-09 17:15</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/ast.toml</code>:92 on 2025-04-10 09:25</div>
-            <div class="timeline-body"><p>What's the meaning of <code>in_annotation</code>. Could we add some documentation for it.</p>
+            <div class="timeline-body"><p>What&#x27;s the meaning of <code>in_annotation</code>. Could we add some documentation for it.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/generate.py</code>:798 on 2025-04-10 09:27</div>
-            <div class="timeline-body"><p>Could we change this to only include the exceptions. Most names can be derived directly from the type's name by converting to snake case.</p>
-<p>It would also be nice if there's a way to specify those names without having to touch the generator script.</p>
+            <div class="timeline-body"><p>Could we change this to only include the exceptions. Most names can be derived directly from the type&#x27;s name by converting to snake case.</p>
+<p>It would also be nice if there&#x27;s a way to specify those names without having to touch the generator script.</p>
 <p>This also makes me wonder. Is this, sort of, the inverse of <code>skip_source_order</code> because we need an entry for every type except the types in <code>skip_source_order</code>. Could we use this in some way to simplify the configuration/ make it easier to extend in the future.</p>
 </div>
         </div>
@@ -231,31 +225,31 @@ But anyway, except for the <code>ExprIf</code> we don't need to write the field 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_python_ast/generate.py</code>:798 on 2025-04-10 13:17</div>
-            <div class="timeline-body"><p>First off, this mapping is proportional to the number of types that fields can have, not proportional to the number of fields themselves or syntax nodes, so it's less worrisome to spell out all of the options. We already do that, for instance, in the definition of <code>SourceOrderVisitor</code>, since we have to explicitly list all of the <code>visit_[foo]</code> methods that a consumer might want to implement.</p>
-<p>That said, I agree with Micha's suggestion to make this mapping only include the exceptions if possible.</p>
-<hr />
-<p>There's also another option, which I don't know yet if I <em>like</em>. But I want to write it up to see what I feel about it.</p>
+            <div class="timeline-body"><p>First off, this mapping is proportional to the number of types that fields can have, not proportional to the number of fields themselves or syntax nodes, so it&#x27;s less worrisome to spell out all of the options. We already do that, for instance, in the definition of <code>SourceOrderVisitor</code>, since we have to explicitly list all of the <code>visit_[foo]</code> methods that a consumer might want to implement.</p>
+<p>That said, I agree with Micha&#x27;s suggestion to make this mapping only include the exceptions if possible.</p>
+<hr>
+<p>There&#x27;s also another option, which I don&#x27;t know yet if I <em>like</em>. But I want to write it up to see what I feel about it.</p>
 <p>You could also do this with a trait over in <code>source_order.rs</code>, that is implemented for each possible field type, and encodes how to turn that into a method call on the visitor. So something like:</p>
-<pre><code class="language-rust">trait FieldVisitor {
-    fn visit&lt;'a, V: SourceOrderVisitor&lt;'a&gt;&gt;(&amp;'a self, visitor: &amp;mut V);
+<pre><code>trait FieldVisitor {
+    fn visit&lt;&#x27;a, V: SourceOrderVisitor&lt;&#x27;a&gt;&gt;(&amp;&#x27;a self, visitor: &amp;mut V);
 }
 
 impl FieldVisitor for Decorator {
-    fn visit&lt;'a, V: SourceOrderVisitor&lt;'a&gt;&gt;(&amp;'a self, visitor: &amp;mut V) {
+    fn visit&lt;&#x27;a, V: SourceOrderVisitor&lt;&#x27;a&gt;&gt;(&amp;&#x27;a self, visitor: &amp;mut V) {
         visitor.visit_decorator(self);
     }
 }
 
 /* and so on */
 </code></pre>
-<p>Things I don't like about this suggestion:</p>
+<p>Things I don&#x27;t like about this suggestion:</p>
 <ul>
-<li>More verbose than the mapping you've defined in the generator script.</li>
+<li>More verbose than the mapping you&#x27;ve defined in the generator script.</li>
 </ul>
 <p>Things I do like:</p>
 <ul>
 <li>Less verbose in the for-loop in the generator script (see below).</li>
-<li>&quot;How to visit each field&quot; is defined right next to the <code>SourceOrderVisitor</code> trait itself, making it less likely they'll get out of sync.</li>
+<li>&quot;How to visit each field&quot; is defined right next to the <code>SourceOrderVisitor</code> trait itself, making it less likely they&#x27;ll get out of sync.</li>
 <li>Only have to touch this trait and its impls when you add a new field <em>type</em>, not when you add a new syntax node or field.</li>
 <li>I personally find it a bit easier to understand, since you can see the Rust code directly. And the logic becomes very straightforward: for each field, we call its <code>FieldVisitor::visit</code> method.</li>
 </ul>
@@ -264,8 +258,8 @@ impl FieldVisitor for Decorator {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_python_ast/generate.py</code>:836 on 2025-04-10 13:19</div>
-            <div class="timeline-body"><p>The trait would let you get rid of all of this logic (except for <code>is_annotation</code>, I think, since that's overriding how an <code>Expr</code> is visited):</p>
-<pre><code class="language-suggestion">                if field.is_annotation:
+            <div class="timeline-body"><p>The trait would let you get rid of all of this logic (except for <code>is_annotation</code>, I think, since that&#x27;s overriding how an <code>Expr</code> is visited):</p>
+<pre><code>                if field.is_annotation:
                     body += f&quot;&quot;&quot;
                             visitor.visit_annotation({field.name});
                       &quot;&quot;&quot;
@@ -287,9 +281,9 @@ impl FieldVisitor for Decorator {
             <div class="timeline-body"><blockquote>
 <p>What do others think?</p>
 </blockquote>
-<p>That's an interesting trick.</p>
+<p>That&#x27;s an interesting trick.</p>
 <p>Would the trait implementations be code-gened or hand written?</p>
-<p>This is interesting. What I dislike about it is that it adds &quot;accidental&quot; complexity. It's something that's only necessary because we codegen the visitor.</p>
+<p>This is interesting. What I dislike about it is that it adds &quot;accidental&quot; complexity. It&#x27;s something that&#x27;s only necessary because we codegen the visitor.</p>
 <p>I think I have a slight preference to keep the complexity in <code>generate.py</code> over spilling it into the generated nodes (and increase comp time a little)</p>
 <p>I do like the things that you call out as positives :)</p>
 </div>
@@ -301,7 +295,7 @@ impl FieldVisitor for Decorator {
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/Glyphack">@Glyphack</a> on <code>crates/ruff_python_ast/ast.toml</code>:92 on 2025-04-10 17:55</div>
             <div class="timeline-body"><p>Right, I forgot about this one. This is only needed to determine the visitor function. For other expressions we use <code>visit_expr</code> but for annotations we have <code>visit_annotation</code>.
-This could go to the generate script as well since we don't have a lot of annotations and it's not gonna change probably. WDYT?</p>
+This could go to the generate script as well since we don&#x27;t have a lot of annotations and it&#x27;s not gonna change probably. WDYT?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -320,7 +314,7 @@ This could go to the generate script as well since we don't have a lot of annota
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/Glyphack">@Glyphack</a> on <code>crates/ruff_python_ast/generate.py</code>:798 on 2025-04-10 18:17</div>
             <div class="timeline-body"><p>I like this idea too. One other thing that made the visitors hard without touching the code here was that some visit a slice of that type(like <code>visit_decorators</code>) and some visit a singular type.</p>
-<p>I'm probably wrong but I feel this change is overall useful even if there was no code generation.
+<p>I&#x27;m probably wrong but I feel this change is overall useful even if there was no code generation.
 But the diff will probably be huge for this one. I can do another PR and see how does the code end up if we apply this change.</p>
 <p>My reply to first comment starts here:</p>
 <blockquote>
@@ -328,16 +322,16 @@ But the diff will probably be huge for this one. I can do another PR and see how
 </blockquote>
 <p>@MichaReiser are you suggesting to generate the visitor name from the field name?
 And for field types that are not straightforward have this table, so we remove most of the entries in the table.
-Sorry I didn't get what does it have to do with <code>skip_source_order</code>.</p>
+Sorry I didn&#x27;t get what does it have to do with <code>skip_source_order</code>.</p>
 <p>I initially created the table for visitors that visit a sequence. I wanted to mark what visitors require a for loop.
-Although for some like <code>visit_decorators</code> you can infer it's visiting a seq by the &quot;s&quot; at the end for <code>alias</code> it's not the case.</p>
-<p>I'm thinking about this idea, to determine the visitor name:</p>
+Although for some like <code>visit_decorators</code> you can infer it&#x27;s visiting a seq by the &quot;s&quot; at the end for <code>alias</code> it&#x27;s not the case.</p>
+<p>I&#x27;m thinking about this idea, to determine the visitor name:</p>
 <ol>
 <li>Lookup the table (for exceptional cases)</li>
 <li>Convert the name to snake_case and build the visitor</li>
-<li>Infer if it's visiting sequence by the <code>s</code> in the end</li>
+<li>Infer if it&#x27;s visiting sequence by the <code>s</code> in the end</li>
 </ol>
-<p>Hopefully the point 3 can be gone after I send a refactor either just making it consistent or applying Douglas's suggestion.</p>
+<p>Hopefully the point 3 can be gone after I send a refactor either just making it consistent or applying Douglas&#x27;s suggestion.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -369,7 +363,7 @@ Although for some like <code>visit_decorators</code> you can infer it's visiting
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/generate.py</code>:798 on 2025-04-11 11:49</div>
-            <div class="timeline-body"><p>Having said that. I think I'm also fine landing this PR as is and creating a separate PR to simplify this <code>type_to_visitor_function</code>. I let you and @dcreager decide on what you prefer. @dcreager can you go ahead and merge this PR if you're happy with it because I'll be out next week.</p>
+            <div class="timeline-body"><p>Having said that. I think I&#x27;m also fine landing this PR as is and creating a separate PR to simplify this <code>type_to_visitor_function</code>. I let you and @dcreager decide on what you prefer. @dcreager can you go ahead and merge this PR if you&#x27;re happy with it because I&#x27;ll be out next week.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -398,18 +392,18 @@ Although for some like <code>visit_decorators</code> you can infer it's visiting
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/ast.toml</code>:92 on 2025-04-11 12:52</div>
-            <div class="timeline-body"><p>My preference is to preserve the behavior from the hand written visitor and to change the visiting (if that's indeed the case) in a separate PR</p>
+            <div class="timeline-body"><p>My preference is to preserve the behavior from the hand written visitor and to change the visiting (if that&#x27;s indeed the case) in a separate PR</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_python_ast/generate.py</code>:798 on 2025-04-15 13:47</div>
-            <div class="timeline-body"><p>I'm not a fan of inferring behavior from the presence of an <code>s</code> at the end of the name — that's seem too magical for what we're trying to accomplish here.  If that's what we would have to do to avoid the table, I'd rather keep the table.</p>
+            <div class="timeline-body"><p>I&#x27;m not a fan of inferring behavior from the presence of an <code>s</code> at the end of the name — that&#x27;s seem too magical for what we&#x27;re trying to accomplish here.  If that&#x27;s what we would have to do to avoid the table, I&#x27;d rather keep the table.</p>
 <p>:+1: to landing this as-is and iterating on possible changes in later PRs</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_python_parser/tests/snapshots/valid_syntax@ambiguous_lpar_with_items_if_expr.py.snap</code>:4 on 2025-04-15 13:49</div>
-            <div class="timeline-body"><p>Do we know where these edits to the snapshot files are coming from? They don't look relevant to the changes you've made to the generation script</p>
+            <div class="timeline-body"><p>Do we know where these edits to the snapshot files are coming from? They don&#x27;t look relevant to the changes you&#x27;ve made to the generation script</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -422,7 +416,7 @@ Although for some like <code>visit_decorators</code> you can infer it's visiting
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/Glyphack">@Glyphack</a> on <code>crates/ruff_python_parser/tests/snapshots/valid_syntax@ambiguous_lpar_with_items_if_expr.py.snap</code>:4 on 2025-04-15 15:54</div>
-            <div class="timeline-body"><p>This is happening depending on what version of cargo-insta you have locally when running the tests(more context https://github.com/mitsuhiko/insta/issues/676). I'll go ahead and revert back to keep it tidy.</p>
+            <div class="timeline-body"><p>This is happening depending on what version of cargo-insta you have locally when running the tests(more context <a href="https://github.com/mitsuhiko/insta/issues/676">mitsuhiko/insta#676</a>). I&#x27;ll go ahead and revert back to keep it tidy.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -431,7 +425,7 @@ Although for some like <code>visit_decorators</code> you can infer it's visiting
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/Glyphack">@Glyphack</a> on <code>crates/ruff_python_parser/tests/snapshots/valid_syntax@nested_async_comprehension_py310.py.snap</code>:10 on 2025-04-15 15:57</div>
-            <div class="timeline-body"><p>This shouldn't happen? checking..</p>
+            <div class="timeline-body"><p>This shouldn&#x27;t happen? checking..</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -450,10 +444,10 @@ Although for some like <code>visit_decorators</code> you can infer it's visiting
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @dcreager on 2025-04-17 12:59</div>
+            <div class="event">Merged by <a href="https://github.com/dcreager">@dcreager</a> on 2025-04-17 12:59</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dcreager on 2025-04-17 12:59</div>
+            <div class="event">Closed by <a href="https://github.com/dcreager">@dcreager</a> on 2025-04-17 12:59</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-04-20 13:03</div>
@@ -461,7 +455,7 @@ Although for some like <code>visit_decorators</code> you can infer it's visiting
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:11:15 UTC
+        Synced at 2026-01-20 19:12:56 UTC
     </footer>
 </body>
 </html>

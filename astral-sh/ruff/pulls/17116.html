@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>[red-knot] Don't infer Todo for quite so many tuple type expressions</h1>
+    <h1>[red-knot] Don&#x27;t infer Todo for quite so many tuple type expressions</h1>
 
     <div class="meta">
         <span class="state-icon state-merged"></span>
@@ -23,66 +23,66 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>I noticed we were inferring <code>Todo</code> as the declared type for annotations such as <code>x: tuple[list[int], list[int]]</code>. This PR reworks our annotation parsing so that we instead infer <code>tuple[Todo, Todo]</code> for this annotation, which is quite a bit more precise.</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>Existing mdtest updated.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-04-01 12:13</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-01 12:13</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-04-01 12:13</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-01 12:13</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-04-01 12:13</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-01 12:13</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-04-01 12:13</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-01 12:13</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-01 12:15</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">black (https://github.com/psf/black)
+Changes were detected when running on open source projects
+
+<pre><code>black (https://github.com/psf/black)
 + error[lint:invalid-return-type] /tmp/mypy_primer/projects/black/src/blib2to3/pgen2/pgen.py:187:16: Object of type `tuple[dict, None | Unknown]` is not assignable to return type `tuple[@Todo(generics), str]`
 - Found 211 diagnostics
 + Found 212 diagnostics
 
 </code></pre>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-01 12:20</div>
             <div class="timeline-body"><p>link to the primer hit: https://github.com/psf/black/blob/2c135edf3732a8efcc89450446fcaa7589e2a1c8/src/blib2to3/pgen2/pgen.py#L164-L187</p>
-<p>I think it's probably a false positive, but a single false positive is probably worth it here IMO. This gives us better understanding for a lot of <code>tuple</code> annotations that we were giving up on parsing before.</p>
+<p>I think it&#x27;s probably a false positive, but a single false positive is probably worth it here IMO. This gives us better understanding for a lot of <code>tuple</code> annotations that we were giving up on parsing before.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> approved on 2025-04-01 14:39</div>
             <div class="timeline-body"><blockquote>
-<p>I think it's probably a false positive, but a single false positive is probably worth it here IMO. This gives us better understanding for a lot of <code>tuple</code> annotations that we were giving up on parsing before.</p>
+<p>I think it&#x27;s probably a false positive, but a single false positive is probably worth it here IMO. This gives us better understanding for a lot of <code>tuple</code> annotations that we were giving up on parsing before.</p>
 </blockquote>
-<p>There's an assert at the end of that function that should narrow away the <code>None</code> from the second element of the return tuple. If it's quick to figure out why that's happening, I think it would be worth tackling here. But if it's unrelated to the tuple change (i.e. do we also not narrow <code>None | Unknown</code> to <code>Unknown</code> correctly on its own?) then I agree that the one false positive is worth it here.</p>
+<p>There&#x27;s an assert at the end of that function that should narrow away the <code>None</code> from the second element of the return tuple. If it&#x27;s quick to figure out why that&#x27;s happening, I think it would be worth tackling here. But if it&#x27;s unrelated to the tuple change (i.e. do we also not narrow <code>None | Unknown</code> to <code>Unknown</code> correctly on its own?) then I agree that the one false positive is worth it here.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-01 14:43</div>
-            <div class="timeline-body"><p>Ah, we don't do type narrowing for <code>assert</code> statements yet! So that explains it.</p>
+            <div class="timeline-body"><p>Ah, we don&#x27;t do type narrowing for <code>assert</code> statements yet! So that explains it.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @AlexWaygood on 2025-04-01 14:44</div>
+            <div class="event">Merged by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-01 14:44</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-04-01 14:44</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-01 14:44</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-04-01 14:44</div>
@@ -90,7 +90,7 @@
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:11:09 UTC
+        Synced at 2026-01-20 19:12:48 UTC
     </footer>
 </body>
 </html>

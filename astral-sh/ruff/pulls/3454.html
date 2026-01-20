@@ -23,27 +23,27 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a></div>
-            <div class="timeline-body"><h1>Summary</h1>
-<p>We need to support CR line endings (as opposed to LF and CRLF line endings, which are already supported). They're rare, but they do appear in Python code, and we tend to panic on any file that uses them.</p>
-<p>Our <code>Locator</code> abstraction now supports CR line endings. However, Rust's <code>str#lines</code> implementation does <em>not</em>.</p>
+            <div class="timeline-body">Summary
+<p>We need to support CR line endings (as opposed to LF and CRLF line endings, which are already supported). They&#x27;re rare, but they do appear in Python code, and we tend to panic on any file that uses them.</p>
+<p>Our <code>Locator</code> abstraction now supports CR line endings. However, Rust&#x27;s <code>str#lines</code> implementation does <em>not</em>.</p>
 <p>This PR adds a <code>UniversalNewlineIterator</code> implementation that respects all of CR, LF, and CRLF line endings, and plugs it into most of the <code>.lines()</code> call sites.</p>
-<p>As an alternative design, it could be nice if we could leverage <code>Locator</code> for this. We've already computed all of the line endings, so we could probably iterate much more efficiently?</p>
-<h1>Test Plan</h1>
+<p>As an alternative design, it could be nice if we could leverage <code>Locator</code> for this. We&#x27;ve already computed all of the line endings, so we could probably iterate much more efficiently?</p>
+Test Plan
 <p>Largely relying on automated testing, however, also ran over some known failure cases, like #3404.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @charliermarsh on 2023-03-12 04:40</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-12 04:40</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-03-12 04:41</div>
             <div class="timeline-body"><p>✅ ecosystem check detected no changes.</p>
-<!-- thollander/actions-comment-pull-request "ecosystem-results" -->
+
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-03-12 04:45</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-12 04:45</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-12 04:46</div>
@@ -51,7 +51,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/whitespace.rs</code>:87 on 2023-03-12 04:46</div>
-            <div class="timeline-body"><p>I have a feeling that I'm breaking some idioms <em>and</em> that this code could be far more efficient, so feel free to give it a harsh review if it deserves one :)</p>
+            <div class="timeline-body"><p>I have a feeling that I&#x27;m breaking some idioms <em>and</em> that this code could be far more efficient, so feel free to give it a harsh review if it deserves one :)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -76,40 +76,40 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/whitespace.rs</code>:87 on 2023-03-12 12:18</div>
-            <div class="timeline-body"><p>I tried it myself and haven't been able to come up with something much more concise. It's surprisingly complicated</p>
+            <div class="timeline-body"><p>I tried it myself and haven&#x27;t been able to come up with something much more concise. It&#x27;s surprisingly complicated</p>
 <p>This implementation mutates the underlying string slices rather than tracking start and end positions explicitly (similar to <code>Vec::IntoIter</code> that tracks the start and end pointer). I would need to do some profiling to understand if it is faster than using explicit <code>start</code> and <code>end</code> positions. It might not, because writing a string slice is two words (pointer, length).</p>
-<pre><code class="language-rust">/// Like `str#lines`, but accommodates LF, CRLF, and CR line endings,
+<pre><code>/// Like `str#lines`, but accommodates LF, CRLF, and CR line endings,
 /// the latter of which are not supported by `str#lines`.
-pub struct UniversalNewlineIterator&lt;'a&gt; {
-    text: &amp;'a str,
+pub struct UniversalNewlineIterator&lt;&#x27;a&gt; {
+    text: &amp;&#x27;a str,
 }
 
-impl&lt;'a&gt; UniversalNewlineIterator&lt;'a&gt; {
-    pub fn from(text: &amp;'a str) -&gt; UniversalNewlineIterator&lt;'a&gt; {
+impl&lt;&#x27;a&gt; UniversalNewlineIterator&lt;&#x27;a&gt; {
+    pub fn from(text: &amp;&#x27;a str) -&gt; UniversalNewlineIterator&lt;&#x27;a&gt; {
         UniversalNewlineIterator { text }
     }
 }
 
-impl&lt;'a&gt; Iterator for UniversalNewlineIterator&lt;'a&gt; {
-    type Item = &amp;'a str;
+impl&lt;&#x27;a&gt; Iterator for UniversalNewlineIterator&lt;&#x27;a&gt; {
+    type Item = &amp;&#x27;a str;
 
     #[inline]
-    fn next(&amp;mut self) -&gt; Option&lt;&amp;'a str&gt; {
+    fn next(&amp;mut self) -&gt; Option&lt;&amp;&#x27;a str&gt; {
         if self.text.is_empty() {
             return None;
         }
 
-        let line = match self.text.find(['\n', '\r']) {
+        let line = match self.text.find([&#x27;\n&#x27;, &#x27;\r&#x27;]) {
             // Not the last line
             Some(line_end) =&gt; {
                 let (line, remainder) = self.text.split_at(line_end);
 
                 self.text = match remainder.as_bytes()[0] {
                     // Explicit branch for `\n` as this is the most likely path
-                    b'\n' =&gt; &amp;remainder[1..],
-                    // '\r\n'
-                    b'\r' if remainder.as_bytes().get(1) == Some(&amp;b'\n') =&gt; &amp;remainder[2..],
-                    // '\r'
+                    b&#x27;\n&#x27; =&gt; &amp;remainder[1..],
+                    // &#x27;\r\n&#x27;
+                    b&#x27;\r&#x27; if remainder.as_bytes().get(1) == Some(&amp;b&#x27;\n&#x27;) =&gt; &amp;remainder[2..],
+                    // &#x27;\r&#x27;
                     _ =&gt; &amp;remainder[1..],
                 };
 
@@ -123,7 +123,7 @@ impl&lt;'a&gt; Iterator for UniversalNewlineIterator&lt;'a&gt; {
     }
 }
 
-impl&lt;'a&gt; DoubleEndedIterator for UniversalNewlineIterator&lt;'_&gt; {
+impl&lt;&#x27;a&gt; DoubleEndedIterator for UniversalNewlineIterator&lt;&#x27;_&gt; {
     #[inline]
     fn next_back(&amp;mut self) -&gt; Option&lt;Self::Item&gt; {
         if self.text.is_empty() {
@@ -134,14 +134,14 @@ impl&lt;'a&gt; DoubleEndedIterator for UniversalNewlineIterator&lt;'_&gt; {
 
         // Trim any trailing newlines.
         self.text = match self.text.as_bytes()[len - 1] {
-            b'\n' if len &gt; 1 &amp;&amp; self.text.as_bytes()[len - 2] == b'\r' =&gt; &amp;self.text[..len - 2],
-            b'\n' | b'\r' =&gt; &amp;self.text[..len - 1],
+            b&#x27;\n&#x27; if len &gt; 1 &amp;&amp; self.text.as_bytes()[len - 2] == b&#x27;\r&#x27; =&gt; &amp;self.text[..len - 2],
+            b&#x27;\n&#x27; | b&#x27;\r&#x27; =&gt; &amp;self.text[..len - 1],
             _ =&gt; &amp;self.text,
         };
 
         // Find the end of the previous line. The previous line is the text up to, but not including the new line character
-        let line = match self.text.rfind(['\n', '\r']) {
-            // '\n' or '\r' or '\r\n'
+        let line = match self.text.rfind([&#x27;\n&#x27;, &#x27;\r&#x27;]) {
+            // &#x27;\n&#x27; or &#x27;\r&#x27; or &#x27;\r\n&#x27;
             Some(line_end) =&gt; {
                 let (remainder, line) = self.text.split_at(line_end + 1);
                 self.text = remainder;
@@ -156,7 +156,7 @@ impl&lt;'a&gt; DoubleEndedIterator for UniversalNewlineIterator&lt;'_&gt; {
     }
 }
 
-impl FusedIterator for UniversalNewlineIterator&lt;'_&gt; {}
+impl FusedIterator for UniversalNewlineIterator&lt;&#x27;_&gt; {}
 
 #[cfg(test)]
 mod tests {
@@ -212,16 +212,16 @@ mod tests {
 </code></pre>
 <p>I also added a few more tests.</p>
 <p>This is a more &quot;traditional&quot; implementation that uses start and end offsets (similar to how <code>SplitIterator</code> works)</p>
-<pre><code class="language-rust">/// Like `str#lines`, but accommodates LF, CRLF, and CR line endings,
+<pre><code>/// Like `str#lines`, but accommodates LF, CRLF, and CR line endings,
 /// the latter of which are not supported by `str#lines`.
-pub struct UniversalNewlineIterator&lt;'a&gt; {
-    text: &amp;'a str,
+pub struct UniversalNewlineIterator&lt;&#x27;a&gt; {
+    text: &amp;&#x27;a str,
     start_offset: usize,
     end_offset: usize,
 }
 
-impl&lt;'a&gt; UniversalNewlineIterator&lt;'a&gt; {
-    pub fn from(text: &amp;'a str) -&gt; UniversalNewlineIterator&lt;'a&gt; {
+impl&lt;&#x27;a&gt; UniversalNewlineIterator&lt;&#x27;a&gt; {
+    pub fn from(text: &amp;&#x27;a str) -&gt; UniversalNewlineIterator&lt;&#x27;a&gt; {
         UniversalNewlineIterator {
             text,
             start_offset: 0,
@@ -229,33 +229,33 @@ impl&lt;'a&gt; UniversalNewlineIterator&lt;'a&gt; {
         }
     }
 
-    fn as_str(&amp;self) -&gt; &amp;'a str {
-        // SAFETY: It's guaranteed that start and end offsets are always positioned at character boundaries.
+    fn as_str(&amp;self) -&gt; &amp;&#x27;a str {
+        // SAFETY: It&#x27;s guaranteed that start and end offsets are always positioned at character boundaries.
         unsafe { &amp;self.text.get_unchecked(self.start_offset..self.end_offset) }
     }
 }
 
-impl&lt;'a&gt; Iterator for UniversalNewlineIterator&lt;'a&gt; {
-    type Item = &amp;'a str;
+impl&lt;&#x27;a&gt; Iterator for UniversalNewlineIterator&lt;&#x27;a&gt; {
+    type Item = &amp;&#x27;a str;
 
     #[inline]
-    fn next(&amp;mut self) -&gt; Option&lt;&amp;'a str&gt; {
+    fn next(&amp;mut self) -&gt; Option&lt;&amp;&#x27;a str&gt; {
         let text = self.as_str();
 
         if text.is_empty() {
             return None;
         }
 
-        let line = match text.find(['\n', '\r']) {
+        let line = match text.find([&#x27;\n&#x27;, &#x27;\r&#x27;]) {
             // Not the last line
             Some(line_end) =&gt; {
                 self.start_offset += line_end
                     + match text.as_bytes()[line_end] {
                         // Explicit branch for `\n` as this is the most likely path
-                        b'\n' =&gt; 1,
-                        // '\r\n'
-                        b'\r' if text.as_bytes().get(line_end + 1) == Some(&amp;b'\n') =&gt; 2,
-                        // '\r'
+                        b&#x27;\n&#x27; =&gt; 1,
+                        // &#x27;\r\n&#x27;
+                        b&#x27;\r&#x27; if text.as_bytes().get(line_end + 1) == Some(&amp;b&#x27;\n&#x27;) =&gt; 2,
+                        // &#x27;\r&#x27;
                         _ =&gt; 1,
                     };
 
@@ -272,7 +272,7 @@ impl&lt;'a&gt; Iterator for UniversalNewlineIterator&lt;'a&gt; {
     }
 }
 
-impl&lt;'a&gt; DoubleEndedIterator for UniversalNewlineIterator&lt;'_&gt; {
+impl&lt;&#x27;a&gt; DoubleEndedIterator for UniversalNewlineIterator&lt;&#x27;_&gt; {
     #[inline]
     fn next_back(&amp;mut self) -&gt; Option&lt;Self::Item&gt; {
         let mut text = self.as_str();
@@ -285,14 +285,14 @@ impl&lt;'a&gt; DoubleEndedIterator for UniversalNewlineIterator&lt;'_&gt; {
 
         // Trim any trailing newlines.
         text = match text.as_bytes()[len - 1] {
-            b'\n' if len &gt; 1 &amp;&amp; text.as_bytes()[len - 2] == b'\r' =&gt; &amp;text[..len - 2],
-            b'\n' | b'\r' =&gt; &amp;text[..len - 1],
+            b&#x27;\n&#x27; if len &gt; 1 &amp;&amp; text.as_bytes()[len - 2] == b&#x27;\r&#x27; =&gt; &amp;text[..len - 2],
+            b&#x27;\n&#x27; | b&#x27;\r&#x27; =&gt; &amp;text[..len - 1],
             _ =&gt; &amp;text,
         };
 
         // Find the end of the previous line. The previous line is the text up to, but not including the new line character
-        let line = match text.rfind(['\n', '\r']) {
-            // '\n' or '\r' or '\r\n'
+        let line = match text.rfind([&#x27;\n&#x27;, &#x27;\r&#x27;]) {
+            // &#x27;\n&#x27; or &#x27;\r&#x27; or &#x27;\r\n&#x27;
             Some(newline_pos) =&gt; {
                 let line_start = newline_pos + 1;
                 let line = &amp;text[line_start..];
@@ -311,7 +311,7 @@ impl&lt;'a&gt; DoubleEndedIterator for UniversalNewlineIterator&lt;'_&gt; {
     }
 }
 
-impl FusedIterator for UniversalNewlineIterator&lt;'_&gt; {}
+impl FusedIterator for UniversalNewlineIterator&lt;&#x27;_&gt; {}
 </code></pre>
 </div>
         </div>
@@ -328,7 +328,7 @@ impl FusedIterator for UniversalNewlineIterator&lt;'_&gt; {}
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pydocstyle/rules/sections.rs</code>:926 on 2023-03-12 12:25</div>
             <div class="timeline-body"><p>Nit: this can be implemented without the need for <code>collect</code></p>
-<pre><code class="language-rust">    let mut lines = NewlineWithTrailingNewline::from(&amp;adjusted_following_lines);
+<pre><code>    let mut lines = NewlineWithTrailingNewline::from(&amp;adjusted_following_lines);
 
     if let Some(mut current_line) = lines.next() {
         for next_line in lines {
@@ -337,16 +337,16 @@ impl FusedIterator for UniversalNewlineIterator&lt;'_&gt; {}
                 &amp;&amp; (whitespace::leading_space(next_line).len() &gt; current_leading_space.len())
                 &amp;&amp; !next_line.trim().is_empty()
             {
-                let parameters = if let Some(semi_index) = current_line.find(':') {
+                let parameters = if let Some(semi_index) = current_line.find(&#x27;:&#x27;) {
                     // If the parameter has a type annotation, exclude it.
                     &amp;current_line[..semi_index]
                 } else {
-                    // Otherwise, it's just a list of parameters on the current line.
+                    // Otherwise, it&#x27;s just a list of parameters on the current line.
                     current_line.trim()
                 };
                 // Notably, NumPy lets you put multiple parameters of the same type on the same
                 // line.
-                for parameter in parameters.split(',') {
+                for parameter in parameters.split(&#x27;,&#x27;) {
                     docstring_args.insert(parameter.trim());
                 }
             }
@@ -360,9 +360,9 @@ impl FusedIterator for UniversalNewlineIterator&lt;'_&gt; {}
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-03-12 12:30</div>
-            <div class="timeline-body"><p>There's an issue with the iterator implementation that it allows <code>next_back</code> and <code>next</code> to pass each other, which isn't allowed according to the Iterator protocol. Other than that, looks good to me (I proposed an alternative and suggested some more tests but it leads to about the same amount of code)</p>
+            <div class="timeline-body"><p>There&#x27;s an issue with the iterator implementation that it allows <code>next_back</code> and <code>next</code> to pass each other, which isn&#x27;t allowed according to the Iterator protocol. Other than that, looks good to me (I proposed an alternative and suggested some more tests but it leads to about the same amount of code)</p>
 <p>It would be good to add a few tests we knew were failing before to verify that the new logic handles <code>\r</code> correctly.</p>
-<p>I'm undecided if we should create an extension trait to implement <code>universal_lines</code> on <code>&amp;str</code>. It could help discoverability (over <code>UniversalNewlinesIterator::from(str)</code>.</p>
+<p>I&#x27;m undecided if we should create an extension trait to implement <code>universal_lines</code> on <code>&amp;str</code>. It could help discoverability (over <code>UniversalNewlinesIterator::from(str)</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -371,7 +371,7 @@ impl FusedIterator for UniversalNewlineIterator&lt;'_&gt; {}
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/whitespace.rs</code>:132 on 2023-03-12 12:37</div>
-            <div class="timeline-body"><p>Let's override <code>last</code> so that it calls into <code>next_back</code></p>
+            <div class="timeline-body"><p>Let&#x27;s override <code>last</code> so that it calls into <code>next_back</code></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -381,7 +381,7 @@ impl FusedIterator for UniversalNewlineIterator&lt;'_&gt; {}
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/whitespace.rs</code>:68 on 2023-03-12 12:41</div>
             <div class="timeline-body"><p>Nit: This can be written as</p>
-<pre><code class="language-rust">self.underlying.next().or_else(|| self.trailing.take())
+<pre><code>self.underlying.next().or_else(|| self.trailing.take())
 </code></pre>
 </div>
         </div>
@@ -391,7 +391,7 @@ impl FusedIterator for UniversalNewlineIterator&lt;'_&gt; {}
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/whitespace.rs</code>:41 on 2023-03-12 12:42</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">/// Like [`UniversalNewlineIterator`], but includes a trailing newline as an empty line.
+            <div class="timeline-body"><pre><code>/// Like [`UniversalNewlineIterator`], but includes a trailing newline as an empty line.
 </code></pre>
 </div>
         </div>
@@ -401,7 +401,7 @@ impl FusedIterator for UniversalNewlineIterator&lt;'_&gt; {}
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/whitespace.rs</code>:76 on 2023-03-12 12:42</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">/// Like [`str::lines`], but accommodates LF, CRLF, and CR line endings,
+            <div class="timeline-body"><pre><code>/// Like [`str::lines`], but accommodates LF, CRLF, and CR line endings,
 </code></pre>
 </div>
         </div>
@@ -411,7 +411,7 @@ impl FusedIterator for UniversalNewlineIterator&lt;'_&gt; {}
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/Cargo.toml</code>:28 on 2023-03-12 18:35</div>
-            <div class="timeline-body"><p>Sorry, I should've documented this. I think it's an issue with how I added the <code>serde</code> feature in RustPython. It looks like it doesn't have the <code>derive</code> feature enabled. So we need to use &quot;our&quot; <code>serde</code>, which <em>does</em> have <code>derive</code>, in order for it to compile. (This is based on cursory guess, I didn't look deeply, but I'll create an issue and document.)</p>
+            <div class="timeline-body"><p>Sorry, I should&#x27;ve documented this. I think it&#x27;s an issue with how I added the <code>serde</code> feature in RustPython. It looks like it doesn&#x27;t have the <code>derive</code> feature enabled. So we need to use &quot;our&quot; <code>serde</code>, which <em>does</em> have <code>derive</code>, in order for it to compile. (This is based on cursory guess, I didn&#x27;t look deeply, but I&#x27;ll create an issue and document.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -420,7 +420,7 @@ impl FusedIterator for UniversalNewlineIterator&lt;'_&gt; {}
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/whitespace.rs</code>:87 on 2023-03-13 03:16</div>
-            <div class="timeline-body"><p>I took the first suggestion, since the latter requires <code>unsafe</code>, and it'd be our only unsafe block right now.</p>
+            <div class="timeline-body"><p>I took the first suggestion, since the latter requires <code>unsafe</code>, and it&#x27;d be our only unsafe block right now.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -429,7 +429,7 @@ impl FusedIterator for UniversalNewlineIterator&lt;'_&gt; {}
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/whitespace.rs</code>:87 on 2023-03-13 03:16</div>
-            <div class="timeline-body"><p>(I did some cursory benchmarking, and what you had here minorly outperformed the current version in the PR -- but I'd need to run an actual microbenchmark.)</p>
+            <div class="timeline-body"><p>(I did some cursory benchmarking, and what you had here minorly outperformed the current version in the PR -- but I&#x27;d need to run an actual microbenchmark.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -442,10 +442,10 @@ impl FusedIterator for UniversalNewlineIterator&lt;'_&gt; {}
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2023-03-13 04:01</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-13 04:01</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-03-13 04:01</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-13 04:01</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2023-03-13 04:01</div>
@@ -453,7 +453,7 @@ impl FusedIterator for UniversalNewlineIterator&lt;'_&gt; {}
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:56:35 UTC
+        Synced at 2026-01-20 18:52:42 UTC
     </footer>
 </body>
 </html>

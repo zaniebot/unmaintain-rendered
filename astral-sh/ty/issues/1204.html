@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/gerlero">@gerlero</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>When using <code>Mapping.register(...)</code> to register a virtual subclass, <code>ty</code> reports an <code>unresolved-attribute</code> error on <code>register</code>.</p>
 <p><strong>Code to reproduce:</strong></p>
-<pre><code class="language-python">from collections.abc import Mapping
+<pre><code>from collections.abc import Mapping
 
 class MyClass:
     pass
@@ -34,7 +34,7 @@ class MyClass:
 Mapping.register(MyClass)
 </code></pre>
 <p><strong>Error output:</strong></p>
-<pre><code>error[unresolved-attribute]: Type `&lt;class 'Mapping'&gt;` has no attribute `register`
+<pre><code>error[unresolved-attribute]: Type `&lt;class &#x27;Mapping&#x27;&gt;` has no attribute `register`
  --&gt; test.py:6:1
   |
 4 |     pass
@@ -46,7 +46,7 @@ info: rule `unresolved-attribute` is enabled by default
 </code></pre>
 <p><strong>Notes:</strong></p>
 <p>This suggests to me that <code>ty</code> isn’t accounting for the fact that <code>collections.abc</code> classes are subclasses of <code>ABC</code>.</p>
-<h3>Version</h3>
+Version
 <p>ty 0.0.1-alpha.20</p>
 </div>
         </div>
@@ -67,15 +67,15 @@ info: rule `unresolved-attribute` is enabled by default
 <p>This seems like an issue <a href="https://github.com/AlexWaygood">@AlexWaygood</a> might have additional context on?</p>
 </blockquote>
 <p>I think the special-casing mypy does is that mypy is aware that all protocols implicitly have <code>_ProtocolMeta</code> as their metaclass, and <code>_ProtocolMeta</code> is a subclass of <code>ABCMeta</code>. This means that any class that has <code>Protocol</code> in its MRO has <code>_ProtocolMeta</code> as its metaclass, and therefore has a <code>register</code> method available on the class:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; from typing import Protocol
+<pre><code>&gt;&gt;&gt; from typing import Protocol
 &gt;&gt;&gt; type(Protocol)
-&lt;class 'typing._ProtocolMeta'&gt;
+&lt;class &#x27;typing._ProtocolMeta&#x27;&gt;
 &gt;&gt;&gt; _.__mro__
-(&lt;class 'typing._ProtocolMeta'&gt;, &lt;class 'abc.ABCMeta'&gt;, &lt;class 'type'&gt;, &lt;class 'object'&gt;)
+(&lt;class &#x27;typing._ProtocolMeta&#x27;&gt;, &lt;class &#x27;abc.ABCMeta&#x27;&gt;, &lt;class &#x27;type&#x27;&gt;, &lt;class &#x27;object&#x27;&gt;)
 &gt;&gt;&gt; Protocol.register
-&lt;bound method ABCMeta.register of &lt;class 'typing.Protocol'&gt;&gt;
+&lt;bound method ABCMeta.register of &lt;class &#x27;typing.Protocol&#x27;&gt;&gt;
 </code></pre>
-<p>We should probably implement similar special casing, since it's certainly true that a protocol class (or a subclass of a protocol class) does not need to explicitly declare <code>metaclass=ABCMeta</code> in order for it to have a <code>register</code> method available on the class. Once we implement this special casing, we will recognise <code>Mapping.register()</code> as existing, since -- according to typeshed -- <code>Mapping</code> has <code>Protocol</code> in its MRO.</p>
+<p>We should probably implement similar special casing, since it&#x27;s certainly true that a protocol class (or a subclass of a protocol class) does not need to explicitly declare <code>metaclass=ABCMeta</code> in order for it to have a <code>register</code> method available on the class. Once we implement this special casing, we will recognise <code>Mapping.register()</code> as existing, since -- according to typeshed -- <code>Mapping</code> has <code>Protocol</code> in its MRO.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -88,19 +88,19 @@ info: rule `unresolved-attribute` is enabled by default
             <div class="timeline-body"><blockquote>
 <p>Right, so the special-casing comes back to typeshed defining <code>Protocol</code> itself as just <code>Protocol: _SpecialForm</code>, and giving no details about what <code>Protocol</code> actually looks like at runtime. So type-checkers need to replicate via hard-coding all the relevant runtime effects of inheriting <code>Protocol</code>. Thanks!</p>
 </blockquote>
-<p>Indeed! Which is one of those things that I'd theoretically be very open to changing in typeshed, but which in practice I suspect would be pretty hard to change because of the fact that most type checkers (including us) now have hard-coded logic for recognising <code>Protocol</code> with its current typeshed definition :/</p>
+<p>Indeed! Which is one of those things that I&#x27;d theoretically be very open to changing in typeshed, but which in practice I suspect would be pretty hard to change because of the fact that most type checkers (including us) now have hard-coded logic for recognising <code>Protocol</code> with its current typeshed definition :/</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">Protocols</span> added by @AlexWaygood on 2025-09-22 12:50</div>
+            <div class="event">Label <span class="label">Protocols</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-22 12:50</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Stable" by @carljm on 2026-01-09 00:56</div>
+            <div class="event">Added to milestone &quot;Stable&quot; by <a href="https://github.com/carljm">@carljm</a> on 2026-01-09 00:56</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:39 UTC
+        Synced at 2026-01-20 19:25:32 UTC
     </footer>
 </body>
 </html>

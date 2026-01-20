@@ -23,35 +23,35 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>I initially was just going to silence redundant-cast from Unknown to Unknown (or Any to Any), since we keep seeing this crop up as a false positive, and it trivially violates the gradual guarantee to error on this.</p>
 <p>But then I realized that the gradual-guarantee argument, and the entire theoretical basis for this change, applies to <em>any</em> non-fully-static type.</p>
 <p>So I think we should just not issue this diagnostic at all, unless the casted type is fully static.</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>Adjusted/added mdtests.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @carljm on 2025-05-12 23:09</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/carljm">@carljm</a> on 2025-05-12 23:09</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @carljm on 2025-05-12 23:09</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/carljm">@carljm</a> on 2025-05-12 23:09</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @carljm on 2025-05-12 23:09</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/carljm">@carljm</a> on 2025-05-12 23:09</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @carljm on 2025-05-12 23:09</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/carljm">@carljm</a> on 2025-05-12 23:09</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-12 23:13</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">pytest-robotframework (https://github.com/detachhead/pytest-robotframework)
+Changes were detected when running on open source projects
+
+<pre><code>pytest-robotframework (https://github.com/detachhead/pytest-robotframework)
 - warning[redundant-cast] pytest_robotframework/_internal/pytest/plugin.py:193:9: Value is already of type `Unknown`
 - warning[redundant-cast] pytest_robotframework/_internal/pytest/plugin.py:571:16: Value is already of type `Unknown`
 - warning[redundant-cast] pytest_robotframework/_internal/robot/listeners_and_suite_visitors.py:151:40: Value is already of type `Unknown`
@@ -461,7 +461,7 @@ scipy (https://github.com/scipy/scipy)
 + Found 7731 diagnostics
 
 </code></pre>
-</details>
+
 
 </div>
         </div>
@@ -470,22 +470,22 @@ scipy (https://github.com/scipy/scipy)
             <div class="timeline-body"><blockquote>
 <p>But then I realized that the gradual-guarantee argument, and the entire theoretical basis for this change, applies to <em>any</em> non-fully-static type.</p>
 </blockquote>
-<p>I feel like the situation for type-checker directives is a bit of a special case? If I'm a user and I do a big refactor and I accidentally end up with something like</p>
-<pre><code class="language-py">def f(x: tuple[Any, ...]):
+<p>I feel like the situation for type-checker directives is a bit of a special case? If I&#x27;m a user and I do a big refactor and I accidentally end up with something like</p>
+<pre><code>def f(x: tuple[Any, ...]):
     # several hundred lines of code
     y = cast(tuple[Any, ...], x)
 </code></pre>
-<p>I'd <em>definitely</em> want a warning from my type checker telling me that I can remove the <code>cast()</code> call now. That's both because it's good to use <code>cast()</code> as little as possible from a type-safety perspective (it's unsound!), and because having unnecessary type-checker directives like this clutters the codebase and makes it harder to navigate the core logic of the code</p>
+<p>I&#x27;d <em>definitely</em> want a warning from my type checker telling me that I can remove the <code>cast()</code> call now. That&#x27;s both because it&#x27;s good to use <code>cast()</code> as little as possible from a type-safety perspective (it&#x27;s unsound!), and because having unnecessary type-checker directives like this clutters the codebase and makes it harder to navigate the core logic of the code</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-12 23:17</div>
-            <div class="timeline-body"><p>The vast majority of the false positives in the primer diff seem related to <code>Unknown</code>. I think I'd prefer to limit the special cases to types that (recursively) contain <code>Unknown</code> or <code>Todo</code>, not other gradual types.</p>
+            <div class="timeline-body"><p>The vast majority of the false positives in the primer diff seem related to <code>Unknown</code>. I think I&#x27;d prefer to limit the special cases to types that (recursively) contain <code>Unknown</code> or <code>Todo</code>, not other gradual types.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-12 23:52</div>
-            <div class="timeline-body"><p>Hmm. I don't like introducing behavior distinctions between <code>Any</code> and <code>Unknown</code>...</p>
+            <div class="timeline-body"><p>Hmm. I don&#x27;t like introducing behavior distinctions between <code>Any</code> and <code>Unknown</code>...</p>
 <p>Also that would mean recursively walking the types twice, or else introducing a new <code>contains_unknown_or_todo</code> set of methods that we have to implement for a bunch of types.</p>
 </div>
         </div>
@@ -496,34 +496,34 @@ scipy (https://github.com/scipy/scipy)
 </blockquote>
 <p>nah, we could change the existing <code>contains_todo</code> method to be a generic <code>any_over_type</code> method, similar to this one here for walking AST trees: https://github.com/astral-sh/ruff/blob/41fa082414c7277082d7e19b307baea0a4771d4c/crates/ruff_python_ast/src/helpers.rs#L129-L131</p>
 <p>and then we could change the call site so that it becomes something like</p>
-<pre><code class="language-rs">ty.any_over_type(|atom| matches!(atom, Type::Dynamic(DynamicType::Todo | DynamicType::Unknown))
+<pre><code>ty.any_over_type(|atom| matches!(atom, Type::Dynamic(DynamicType::Todo | DynamicType::Unknown))
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-12 23:58</div>
             <div class="timeline-body"><blockquote>
-<p>Hmm. I don't like introducing behavior distinctions between <code>Any</code> and <code>Unknown</code>...</p>
+<p>Hmm. I don&#x27;t like introducing behavior distinctions between <code>Any</code> and <code>Unknown</code>...</p>
 </blockquote>
-<p>I do agree that this isn't great. I think the <em>best</em> fix for the underlying issue here would be to figure out why we're inferring <code>Unknown</code> for various things where we probably shouldn't be inferring <code>Unknown</code>, and add explicit <code>Todo</code> branches for those missing features instead. This has the added benefit that it records explicitly in our codebase what our missing features are.</p>
+<p>I do agree that this isn&#x27;t great. I think the <em>best</em> fix for the underlying issue here would be to figure out why we&#x27;re inferring <code>Unknown</code> for various things where we probably shouldn&#x27;t be inferring <code>Unknown</code>, and add explicit <code>Todo</code> branches for those missing features instead. This has the added benefit that it records explicitly in our codebase what our missing features are.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-13 00:16</div>
             <div class="timeline-body"><blockquote>
-<p>figure out why we're inferring <code>Unknown</code> for various things where we probably shouldn't be inferring <code>Unknown</code></p>
+<p>figure out why we&#x27;re inferring <code>Unknown</code> for various things where we probably shouldn&#x27;t be inferring <code>Unknown</code></p>
 </blockquote>
-<p>Of course that's great as far as it goes, but I don't think it's a solution to this issue. There will always be reasons for things to be inferred as <code>Unknown</code> that are out of our control (e.g. a dependency isn't found), and I don't think we should be emitting this as a cascading diagnostic in those cases -- it really is a problematic violation of the gradual guarantee, IMO, that won't go away no matter how many specific cases of lacking inference we fix.</p>
+<p>Of course that&#x27;s great as far as it goes, but I don&#x27;t think it&#x27;s a solution to this issue. There will always be reasons for things to be inferred as <code>Unknown</code> that are out of our control (e.g. a dependency isn&#x27;t found), and I don&#x27;t think we should be emitting this as a cascading diagnostic in those cases -- it really is a problematic violation of the gradual guarantee, IMO, that won&#x27;t go away no matter how many specific cases of lacking inference we fix.</p>
 <p>I agree that it seems like less of an issue with <code>Any</code>, so maybe handling them differently here is OK.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-05-15 02:38</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-15 02:38</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:12:31 UTC
+        Synced at 2026-01-20 19:14:26 UTC
     </footer>
 </body>
 </html>

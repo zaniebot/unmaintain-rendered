@@ -32,16 +32,16 @@
     |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ ISC001
 136 |         )
 </code></pre>
-<p>Of course, those string literals can't be combined because of the join.</p>
-<p><em>Originally posted by @VeckoTheGecko in https://github.com/astral-sh/ruff/issues/8272#issuecomment-2290988399</em></p>
+<p>Of course, those string literals can&#x27;t be combined because of the join.</p>
+<p><em>Originally posted by @VeckoTheGecko in <a href="https://github.com/astral-sh/ruff/issues/8272">astral-sh/ruff#8272</a>#issuecomment-2290988399</em></p>
 <p>Very basic example:</p>
-<pre><code class="language-python">ValueError(&quot;Dataset {dataset!r} not found. Available datasets are: &quot; &quot;, &quot;.join(example_data_files.keys()))
+<pre><code>ValueError(&quot;Dataset {dataset!r} not found. Available datasets are: &quot; &quot;, &quot;.join(example_data_files.keys()))
 </code></pre>
-<p>Flags ISC001 but there's no implicit string concatenation because a comma separates the strings (<a href="https://play.ruff.rs/d7a58ca4-23ab-4fff-a69c-105eabd02f2d">playground</a>).</p>
+<p>Flags ISC001 but there&#x27;s no implicit string concatenation because a comma separates the strings (<a href="https://play.ruff.rs/d7a58ca4-23ab-4fff-a69c-105eabd02f2d">playground</a>).</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-08-15 09:53</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-15 09:53</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/VeckoTheGecko">@VeckoTheGecko</a> on 2024-08-15 09:54</div>
@@ -52,49 +52,49 @@ ruff 0.5.6
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> removed by @MichaReiser on 2024-08-15 09:55</div>
+            <div class="event">Label <span class="label">bug</span> removed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-15 09:55</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-15 09:58</div>
-            <div class="timeline-body"><p>@VeckoTheGecko the rule seems correct to me. At least, I don't think your code produces what you want.</p>
+            <div class="timeline-body"><p>@VeckoTheGecko the rule seems correct to me. At least, I don&#x27;t think your code produces what you want.</p>
 <p>Here a more simple example:</p>
-<pre><code class="language-python">&gt;&gt;&gt; &quot;Dataset not found. Available datasets are: &quot; &quot;, &quot;.join([&quot;a&quot;, &quot;b&quot;, &quot;c&quot;])
-'aDataset not found. Available datasets are: , bDataset not found. Available datasets are: , c'
+<pre><code>&gt;&gt;&gt; &quot;Dataset not found. Available datasets are: &quot; &quot;, &quot;.join([&quot;a&quot;, &quot;b&quot;, &quot;c&quot;])
+&#x27;aDataset not found. Available datasets are: , bDataset not found. Available datasets are: , c&#x27;
 </code></pre>
-<p>I don't think that's what you want.</p>
+<p>I don&#x27;t think that&#x27;s what you want.</p>
 <p>The problem is that the <code>,</code> is inside of a string. That means, your code contains two strings that are implicitly concatenated.:</p>
-<pre><code class="language-python">f&quot;Dataset {dataset!r} not found. Available datasets are: &quot; &quot;, &quot;.join(example_data_files.keys())
+<pre><code>f&quot;Dataset {dataset!r} not found. Available datasets are: &quot; &quot;, &quot;.join(example_data_files.keys())
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ ^^^^
 string 1                                                   string 2
 </code></pre>
 <p>You probably want:</p>
-<pre><code class="language-python">f&quot;Dataset not found. Available datasets are: '{&quot;, &quot;.join([&quot;a&quot;, &quot;b&quot;, &quot;c&quot;])}'&quot;
+<pre><code>f&quot;Dataset not found. Available datasets are: &#x27;{&quot;, &quot;.join([&quot;a&quot;, &quot;b&quot;, &quot;c&quot;])}&#x27;&quot;
 </code></pre>
 <p>(Only works with Python 3.12 or newer)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-15 09:59</div>
-            <div class="timeline-body"><p>I agree with @MichaReiser; I think Ruff is accurately flagging here that your code isn't doing quite what you thought it did. Another thing that also demonstrates that Ruff's interpretation of the code here is correct is that CPython eagerly merges the two adjacent strings when parsing the AST -- the <code>.join()</code> call is a method called on the merged string formed by the implicit concatenation:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; import ast
-&gt;&gt;&gt; source = '''ValueError(&quot;Dataset {dataset!r} not found. Available datasets are: &quot; &quot;, &quot;.join(example_data_files.keys()))'''
+            <div class="timeline-body"><p>I agree with @MichaReiser; I think Ruff is accurately flagging here that your code isn&#x27;t doing quite what you thought it did. Another thing that also demonstrates that Ruff&#x27;s interpretation of the code here is correct is that CPython eagerly merges the two adjacent strings when parsing the AST -- the <code>.join()</code> call is a method called on the merged string formed by the implicit concatenation:</p>
+<pre><code>&gt;&gt;&gt; import ast
+&gt;&gt;&gt; source = &#x27;&#x27;&#x27;ValueError(&quot;Dataset {dataset!r} not found. Available datasets are: &quot; &quot;, &quot;.join(example_data_files.keys()))&#x27;&#x27;&#x27;
 &gt;&gt;&gt; print(ast.dump(ast.parse(source), indent=2))
 Module(
   body=[
     Expr(
       value=Call(
-        func=Name(id='ValueError', ctx=Load()),
+        func=Name(id=&#x27;ValueError&#x27;, ctx=Load()),
         args=[
           Call(
             func=Attribute(
-              value=Constant(value='Dataset {dataset!r} not found. Available datasets are: , '),
-              attr='join',
+              value=Constant(value=&#x27;Dataset {dataset!r} not found. Available datasets are: , &#x27;),
+              attr=&#x27;join&#x27;,
               ctx=Load()),
             args=[
               Call(
                 func=Attribute(
-                  value=Name(id='example_data_files', ctx=Load()),
-                  attr='keys',
+                  value=Name(id=&#x27;example_data_files&#x27;, ctx=Load()),
+                  attr=&#x27;keys&#x27;,
                   ctx=Load()),
                 args=[],
                 keywords=[])],
@@ -106,11 +106,11 @@ Module(
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/VeckoTheGecko">@VeckoTheGecko</a> on 2024-08-15 10:07</div>
-            <div class="timeline-body"><p>Yes, it's a bug on my end. Thanks for the reply, didn't know implicit concatenation worked like that. Need to be a bit more careful with my multiline implicit concats</p>
+            <div class="timeline-body"><p>Yes, it&#x27;s a bug on my end. Thanks for the reply, didn&#x27;t know implicit concatenation worked like that. Need to be a bit more careful with my multiline implicit concats</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2024-08-15 10:07</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-15 10:07</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/steve-mavens">@steve-mavens</a> on 2024-08-15 11:31</div>
@@ -120,7 +120,7 @@ Module(
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:50:52 UTC
+        Synced at 2026-01-20 18:48:56 UTC
     </footer>
 </body>
 </html>

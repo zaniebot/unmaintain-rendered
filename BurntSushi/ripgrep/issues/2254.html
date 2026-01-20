@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MrDrMcCoy">@MrDrMcCoy</a></div>
-            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+            <div class="timeline-body">What version of ripgrep are you using?
 <p>Git master (2022/06/06), unsuccessful build.</p>
-<h4>How did you install ripgrep?</h4>
+How did you install ripgrep?
 <p>In an <code>alpine:edge</code> Docker container, I run:</p>
 <pre><code>apk --no-cache add build-base git rustup
 rustup-init -vy --target x86_64-unknown-linux-musl
@@ -33,40 +33,40 @@ git clone --depth=1 https://github.com/BurntSushi/ripgrep.git /build/ripgrep
 cd /build/ripgrep
 export CFLAGS=&quot;-static -fPIC -Os&quot;
 export CXXFLAGS=&quot;${CFLAGS} -static-libstdc++&quot;
-export LDFLAGS='-static -pthread'
+export LDFLAGS=&#x27;-static -pthread&#x27;
 export PATH=&quot;${PATH}:${HOME}/.cargo/bin&quot;
-export RUSTFLAGS='-C target-feature=+crt-static'
+export RUSTFLAGS=&#x27;-C target-feature=+crt-static&#x27;
 export RUST_BACKTRACE=&quot;full&quot;
-cargo build --release --target 'x86_64-unknown-linux-musl' --features 'pcre2'
+cargo build --release --target &#x27;x86_64-unknown-linux-musl&#x27; --features &#x27;pcre2&#x27;
 </code></pre>
-<h4>What operating system are you using ripgrep on?</h4>
+What operating system are you using ripgrep on?
 <p>Alpine Linux edge, x86_64.</p>
-<h4>Describe your bug.</h4>
+Describe your bug.
 <p>When attempting to compile ripgrep statically using the above commands, the build fails with the following message in the stack trace:</p>
-<pre><code>  /usr/lib/gcc/x86_64-alpine-linux-musl/11.2.1/../../../../x86_64-alpine-linux-musl/bin/ld: /usr/lib/gcc/x86_64-alpine-linux-musl/11.2.1/crtbeginT.o: relocation R_X86_64_32 against hidden symbol `__TMC_END__' can not be used when making a shared object
+<pre><code>  /usr/lib/gcc/x86_64-alpine-linux-musl/11.2.1/../../../../x86_64-alpine-linux-musl/bin/ld: /usr/lib/gcc/x86_64-alpine-linux-musl/11.2.1/crtbeginT.o: relocation R_X86_64_32 against hidden symbol `__TMC_END__&#x27; can not be used when making a shared object
   /usr/lib/gcc/x86_64-alpine-linux-musl/11.2.1/../../../../x86_64-alpine-linux-musl/bin/ld: failed to set dynamic section sizes: bad value
   collect2: error: ld returned 1 exit status
   make: *** [Makefile:387: lib/libjemalloc.so.2] Error 1
   make: *** Waiting for unfinished jobs....
-  thread 'main' panicked at 'command did not execute successfully: &quot;make&quot; &quot;srcroot=../jemalloc/&quot; &quot;-j&quot; &quot;12&quot;
-  expected success, got: exit status: 2', /root/.cargo/registry/src/github.com-1ecc6299db9ec823/jemalloc-sys-0.3.2/build.rs:392:9
+  thread &#x27;main&#x27; panicked at &#x27;command did not execute successfully: &quot;make&quot; &quot;srcroot=../jemalloc/&quot; &quot;-j&quot; &quot;12&quot;
+  expected success, got: exit status: 2&#x27;, /root/.cargo/registry/src/github.com-1ecc6299db9ec823/jemalloc-sys-0.3.2/build.rs:392:9
 </code></pre>
-<p>If the above steps are taken without the <code>RUSTFLAGS='-C target-feature=+crt-static'</code> variable, cargo builds a dynamic binary linked against musl.</p>
-<h4>What is the expected behavior?</h4>
+<p>If the above steps are taken without the <code>RUSTFLAGS=&#x27;-C target-feature=+crt-static&#x27;</code> variable, cargo builds a dynamic binary linked against musl.</p>
+What is the expected behavior?
 <p>Build should render static binary. Are there any tricks I can use to get this to compile statically on Alpine?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-07-07 00:19</div>
-            <div class="timeline-body"><p>I don't know anything about Alpine, sorry. Have you tried building a static binary in the same way that CI does it?</p>
-<p>Also, your error is in jemalloc, so this doesn't look like a ripgrep issue. You might consider patching out jemalloc from ripgrep and try building that.</p>
+            <div class="timeline-body"><p>I don&#x27;t know anything about Alpine, sorry. Have you tried building a static binary in the same way that CI does it?</p>
+<p>Also, your error is in jemalloc, so this doesn&#x27;t look like a ripgrep issue. You might consider patching out jemalloc from ripgrep and try building that.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/KEINOS">@KEINOS</a> on 2023-10-26 04:40</div>
             <div class="timeline-body"><p>@MrDrMcCoy</p>
 <p>How about specifying larger page size as &quot;16&quot; (2**16 = 64k) and set <code>PCRE2_SYS_STATIC</code> as &quot;0&quot; to use system <code>libpcre2</code>?</p>
-<pre><code class="language-diff">  apk --no-cache add build-base git rustup
+<pre><code>  apk --no-cache add build-base git rustup
   rustup-init -vy --target x86_64-unknown-linux-musl
   git clone --depth=1 https://github.com/BurntSushi/ripgrep.git /build/ripgrep
   cd /build/ripgrep
@@ -74,14 +74,14 @@ cargo build --release --target 'x86_64-unknown-linux-musl' --features 'pcre2'
 + export PCRE2_SYS_STATIC=0
   export CFLAGS=&quot;-static -fPIC -Os&quot;
   export CXXFLAGS=&quot;${CFLAGS} -static-libstdc++&quot;
-  export LDFLAGS='-static -pthread'
+  export LDFLAGS=&#x27;-static -pthread&#x27;
   export PATH=&quot;${PATH}:${HOME}/.cargo/bin&quot;
-  export RUSTFLAGS='-C target-feature=+crt-static'
+  export RUSTFLAGS=&#x27;-C target-feature=+crt-static&#x27;
   export RUST_BACKTRACE=&quot;full&quot;
-  cargo build --release --target 'x86_64-unknown-linux-musl' --features 'pcre2'
+  cargo build --release --target &#x27;x86_64-unknown-linux-musl&#x27; --features &#x27;pcre2&#x27;
 </code></pre>
 <p>Here is my Dockerfile that successfully runs <code>ripgrep</code> using multistage build. Which the built binary must be static.</p>
-<pre><code class="language-Dockerfile"># -----------------------------------------------------------------------------
+<pre><code># -----------------------------------------------------------------------------
 #  First stage (build)
 # -----------------------------------------------------------------------------
 FROM rust:alpine AS rg-build
@@ -107,9 +107,9 @@ ENV \
     # Static flags
     CFLAGS=&quot;-static -fPIC -Os&quot; \
     CXXFLAGS=&quot;${CFLAGS} -static-libstdc++&quot; \
-    LDFLAGS='-static -pthread' \
+    LDFLAGS=&#x27;-static -pthread&#x27; \
     PATH=&quot;${PATH}:${HOME}/.cargo/bin&quot; \
-    RUSTFLAGS='-C target-feature=+crt-static' \
+    RUSTFLAGS=&#x27;-C target-feature=+crt-static&#x27; \
     RUST_BACKTRACE=&quot;full&quot;
 
 # Build
@@ -117,7 +117,7 @@ RUN \
     git clone --depth=1 https://github.com/BurntSushi/ripgrep.git &amp;&amp; \
     cd ripgrep &amp;&amp; \
     cargo build --release \
-        --target 'x86_64-unknown-linux-musl' --features 'pcre2' &amp;&amp; \
+        --target &#x27;x86_64-unknown-linux-musl&#x27; --features &#x27;pcre2&#x27; &amp;&amp; \
     # Smoke test
     /root/ripgrep/target/x86_64-unknown-linux-musl/release/rg --version
 
@@ -152,19 +152,19 @@ RUN rg --version
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-24 19:20</div>
-            <div class="timeline-body"><p>I'm going to close this because I don't think there is anything actionable here on my end.</p>
+            <div class="timeline-body"><p>I&#x27;m going to close this because I don&#x27;t think there is anything actionable here on my end.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2023-11-24 19:20</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-24 19:20</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2023-11-24 19:21</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-24 19:21</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:43:34 UTC
+        Synced at 2026-01-20 18:48:12 UTC
     </footer>
 </body>
 </html>

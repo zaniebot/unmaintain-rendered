@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>Combining <code>ArgAction::Count</code> and <code>TypedValueParser::map</code> doesn't seem to work.</h1>
+    <h1>Combining <code>ArgAction::Count</code> and <code>TypedValueParser::map</code> doesn&#x27;t seem to work.</h1>
 
     <div class="meta">
         <span class="state-icon state-open"></span>
@@ -23,23 +23,23 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/mkrasnitski">@mkrasnitski</a></div>
-            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+            <div class="timeline-body">Please complete the following tasks
 <ul>
 <li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
 <li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
 </ul>
-<h3>Rust Version</h3>
+Rust Version
 <p>rustc 1.82.0 (f6e511eec 2024-10-15)</p>
-<h3>Clap Version</h3>
+Clap Version
 <p>4.5.19</p>
-<h3>Minimal reproducible code</h3>
-<pre><code class="language-rust">use clap::{ArgAction, Parser};
+Minimal reproducible code
+<pre><code>use clap::{ArgAction, Parser};
 use clap::builder::TypedValueParser;
 
 #[derive(Parser)]
 struct Config {
     #[clap(
-        short = 'c',
+        short = &#x27;c&#x27;,
         action = ArgAction::Count, 
         value_parser = clap::value_parser!(u8).map(CleanLevel::from_val)
     )]
@@ -68,20 +68,20 @@ fn main() {
 }
 </code></pre>
 <p>playground: https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2021&amp;gist=ba6ae5eae9e9514d276dc40d5479cf5e</p>
-<h3>Steps to reproduce the bug with the above code</h3>
+Steps to reproduce the bug with the above code
 <p><code>cargo run</code></p>
-<h3>Actual Behaviour</h3>
+Actual Behaviour
 <p>At runtime, clap panics with the following message:</p>
-<pre><code>thread 'main' panicked at /playground/.cargo/registry/src/index.crates.io-6f17d22bba15001f/clap_builder-4.5.19/src/builder/debug_asserts.rs:696:9:
-assertion `left == right` failed: Argument `clean`'s selected action Count contradicts `value_parser` (ValueParser::other(core::option::Option&lt;playground::CleanLevel&gt;))
+<pre><code>thread &#x27;main&#x27; panicked at /playground/.cargo/registry/src/index.crates.io-6f17d22bba15001f/clap_builder-4.5.19/src/builder/debug_asserts.rs:696:9:
+assertion `left == right` failed: Argument `clean`&#x27;s selected action Count contradicts `value_parser` (ValueParser::other(core::option::Option&lt;playground::CleanLevel&gt;))
   left: u8
  right: core::option::Option&lt;playground::CleanLevel&gt;
 </code></pre>
-<h3>Expected Behaviour</h3>
-<p>I would expect that the value parser is called to produce a <code>u8</code> and then <code>CleanLevel::from_val</code> is called on the parsed value to map to an <code>Option&lt;CleanLevel&gt;</code>. It seems the sequence of events in parsing is somehow wrong, or maybe I'm misunderstanding how <code>MapValueParser</code> works.</p>
-<h3>Additional Context</h3>
+Expected Behaviour
+<p>I would expect that the value parser is called to produce a <code>u8</code> and then <code>CleanLevel::from_val</code> is called on the parsed value to map to an <code>Option&lt;CleanLevel&gt;</code>. It seems the sequence of events in parsing is somehow wrong, or maybe I&#x27;m misunderstanding how <code>MapValueParser</code> works.</p>
+Additional Context
 <p>The alternative solution is to make use of an intermediate struct and a method on that struct, like so:</p>
-<pre><code class="language-rust">use clap::{ArgAction, Args, Parser};
+<pre><code>use clap::{ArgAction, Args, Parser};
 
 #[derive(Parser)]
 struct Config {
@@ -91,7 +91,7 @@ struct Config {
 
 #[derive(Args, Clone)]
 struct Clean {
-    #[clap(short = 'c', action = ArgAction::Count)]
+    #[clap(short = &#x27;c&#x27;, action = ArgAction::Count)]
     count: u8
 }
 
@@ -116,20 +116,20 @@ fn main() {
 }
 </code></pre>
 <p>However, this introduces extra clutter and indirection. It would be great to avoid using an intermediate representation.</p>
-<h3>Debug Output</h3>
+Debug Output
 <p><em>No response</em></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">C-bug</span> added by @mkrasnitski on 2024-11-02 07:45</div>
+            <div class="event">Label <span class="label">C-bug</span> added by <a href="https://github.com/mkrasnitski">@mkrasnitski</a> on 2024-11-02 07:45</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-11-04 15:35</div>
-            <div class="timeline-body"><p>When you pass <code>clap::value_parser!(u8).map(CleanLevel::from_val</code> to clap, you are passing in an adapter from an <code>OsStr</code> to a <code>CleanLevel</code>.  The intermediate <code>u8</code> is transient and never shared with clap and  clap doesn't know how to increment <code>CleanLevel</code>.</p>
-<p>For this to work, we'd need to do one of the following</p>
+            <div class="timeline-body"><p>When you pass <code>clap::value_parser!(u8).map(CleanLevel::from_val</code> to clap, you are passing in an adapter from an <code>OsStr</code> to a <code>CleanLevel</code>.  The intermediate <code>u8</code> is transient and never shared with clap and  clap doesn&#x27;t know how to increment <code>CleanLevel</code>.</p>
+<p>For this to work, we&#x27;d need to do one of the following</p>
 <ul>
 <li>Have a derive-specific adapter (we had this with clap v3 and that was what value_parser was working to replace)</li>
-<li>We build into the concept of our value parser the ability to increment, with it erroring by default.  However, this is a fairly specialized operation and doesn't scale to other needs</li>
+<li>We build into the concept of our value parser the ability to increment, with it erroring by default.  However, this is a fairly specialized operation and doesn&#x27;t scale to other needs</li>
 <li>We allow value parsers to mutate the collection the value gets stored into, either appending or incrementing as needed.  This would be a major re-work and would require some very careful <code>dyn</code> trait design to allow all of the interactions to play  out.</li>
 </ul>
 <p>As for workarounds...</p>
@@ -140,11 +140,11 @@ fn main() {
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mkrasnitski">@mkrasnitski</a> on 2024-11-04 17:52</div>
             <div class="timeline-body"><blockquote>
-<p>The intermediate <code>u8</code> is transient and never shared with clap and clap doesn't know how to increment <code>CleanLevel</code>.</p>
+<p>The intermediate <code>u8</code> is transient and never shared with clap and clap doesn&#x27;t know how to increment <code>CleanLevel</code>.</p>
 </blockquote>
 <p>This seems solvable by introducing a trait called something like <code>Counter</code>, with an <code>increment</code> method, like you mentioned. In the case of <code>CleanLevel</code>, the state machine implements a kind of saturating addition, and auto-implementing this functionality would be hard via <code>#[derive(Counter)]</code>, but a manual implementation would work fine. Default implementations for integers and potentially one for <code>Option&lt;T&gt;</code> (<code>0 =&gt; None</code>) would work well IMO.</p>
 <blockquote>
-<p>However, this is a fairly specialized operation and doesn't scale to other needs</p>
+<p>However, this is a fairly specialized operation and doesn&#x27;t scale to other needs</p>
 </blockquote>
 <p>Could you elaborate on this point? Yes, likely this new trait would be closely coupled to <code>ArgAction::Count</code>, but that could be made clear with a good name. Arguably this is a relatively simple generalization to make to allow using arbitrary types as counters, enabling better state machines while staying pretty self-contained.</p>
 </div>
@@ -152,9 +152,9 @@ fn main() {
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-11-04 18:01</div>
             <div class="timeline-body"><blockquote>
-<p>This seems solvable by introducing a trait called something like Counter, with an increment method, like you mentioned. In the case of CleanLevel, the state machine implements a kind of saturating addition, and auto-implementing this functionality would be hard via #[derive(Counter)], but a manual implementation would work fine. Default implementations for integers and potentially one for Option<T> (0 =&gt; None) would work well IMO.</p>
+<p>This seems solvable by introducing a trait called something like Counter, with an increment method, like you mentioned. In the case of CleanLevel, the state machine implements a kind of saturating addition, and auto-implementing this functionality would be hard via #[derive(Counter)], but a manual implementation would work fine. Default implementations for integers and potentially one for Option (0 =&gt; None) would work well IMO.</p>
 </blockquote>
-<p>We are effectively operating on a <code>Box&lt;Any&gt;</code> for the intermediate state due to the dynamic nature of clap.  We can't easily access a trait like <code>Counter</code>.</p>
+<p>We are effectively operating on a <code>Box&lt;Any&gt;</code> for the intermediate state due to the dynamic nature of clap.  We can&#x27;t easily access a trait like <code>Counter</code>.</p>
 <blockquote>
 <p>Could you elaborate on this point? Yes, likely this new trait would be closely coupled to ArgAction::Count, but that could be made clear with a good name. Arguably this is a relatively simple generalization to make to allow using arbitrary types as counters, enabling better state machines while staying pretty self-contained.</p>
 </blockquote>
@@ -164,7 +164,7 @@ fn main() {
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:49:29 UTC
+        Synced at 2026-01-20 20:00:22 UTC
     </footer>
 </body>
 </html>

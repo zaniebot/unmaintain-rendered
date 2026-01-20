@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>Consider the following snippet:</p>
-<pre><code class="language-py">from typing import TypeVar
+<pre><code>from typing import TypeVar
 
 _T = TypeVar(&quot;_T&quot;)
 
@@ -33,7 +33,7 @@ def f(self, x: _T) -&gt; _T:
     return x
 </code></pre>
 <p>If you save it to a <code>foo.py</code> file, running <code>uvx ruff check foo.py --select=&quot;UP047,UP049,PYI018,F401&quot; --fix --unsafe-fixes --target-version=py313 --diff</code> produces this output, which is great:</p>
-<pre><code class="language-diff">--- foo.py
+<pre><code>--- foo.py
 +++ foo.py
 @@ -1,6 +1,4 @@
 -from typing import TypeVar
@@ -45,7 +45,7 @@ def f(self, x: _T) -&gt; _T:
      return x
 </code></pre>
 <p>And if you run a type checker on the autofixed file, the type checker is happy. If you save it to a <code>foo.pyi</code> file, however (notice the change in file extension), the same command produces this output:</p>
-<pre><code class="language-diff">--- foo.pyi
+<pre><code>--- foo.pyi
 +++ foo.pyi
 @@ -2,5 +2,5 @@
  
@@ -55,23 +55,23 @@ def f(self, x: _T) -&gt; _T:
 +def f[T](self, x: _T) -&gt; _T:
      return x
 </code></pre>
-<p>And if you accept that autofix, mypy (for example) will correctly start complaining, because the function's annotations reference a type variable (<code>_T</code>) that is not declared in the function's type parameters:</p>
+<p>And if you accept that autofix, mypy (for example) will correctly start complaining, because the function&#x27;s annotations reference a type variable (<code>_T</code>) that is not declared in the function&#x27;s type parameters:</p>
 <pre><code>foo.pyi:5: error: All type parameters should be declared (&quot;_T&quot; not declared)  [valid-type]
 </code></pre>
-<h3>Version</h3>
+Version
 <p><em>No response</em></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-10-20 18:53</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-20 18:53</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">fixes</span> added by @AlexWaygood on 2025-10-20 18:53</div>
+            <div class="event">Label <span class="label">fixes</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-20 18:53</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-20 20:03</div>
             <div class="timeline-body"><p>Interesting. This looks like a bug in UP049. UP047 applies first resulting in:</p>
-<pre><code class="language-py">from typing import TypeVar
+<pre><code>from typing import TypeVar
 
 _T = TypeVar(&quot;_T&quot;)
 
@@ -101,41 +101,41 @@ help: Rename type parameter to remove leading underscores
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-10-21 04:36</div>
             <div class="timeline-body"><p>The bad fix also reproduces on <code>.py</code> files with <code>from __future__ import annotations</code> and on Python 3.14+. The semantic model will not see that the annotation <code>_T</code> is a reference to the binding created by the type variable in this situation.</p>
-<p>But I'm a little confused why that is happening, because I thought we would have visited the forward references by the time we did this renaming... Maybe we don't add them as references properly? Feels somewhat related to #20747 except that the rule is already a &quot;deferred&quot; rule.</p>
+<p>But I&#x27;m a little confused why that is happening, because I thought we would have visited the forward references by the time we did this renaming... Maybe we don&#x27;t add them as references properly? Feels somewhat related to #20747 except that the rule is already a &quot;deferred&quot; rule.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-23 13:26</div>
             <div class="timeline-body"><p>If I remember correctly, Ruff in some places emulates the (cursed! bad!) behaviour of <code>typing.get_type_hints</code> at runtime[^1], where global-scope names are preferred over local names when resolving stringified annotations:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; from typing import get_type_hints
+<pre><code>&gt;&gt;&gt; from typing import get_type_hints
 &gt;&gt;&gt; X = int
 &gt;&gt;&gt; class Foo:
 ...     X = str
 ...     y: X
 ...     
 &gt;&gt;&gt; get_type_hints(Foo)
-{'y': &lt;class 'str'&gt;}
+{&#x27;y&#x27;: &lt;class &#x27;str&#x27;&gt;}
 &gt;&gt;&gt; from __future__ import annotations
 &gt;&gt;&gt; class Foo:
 ...     X = str
 ...     y: X
 ...     
 &gt;&gt;&gt; get_type_hints(Foo)
-{'y': &lt;class 'int'&gt;}
+{&#x27;y&#x27;: &lt;class &#x27;int&#x27;&gt;}
 </code></pre>
 <p>But even at runtime, <code>get_type_hints</code> has been taught[^2] to prefer local type-parameter scopes over global scopes when resolving stringified annotations:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; from __future__ import annotations
+<pre><code>&gt;&gt;&gt; from __future__ import annotations
 &gt;&gt;&gt; from typing import get_type_hints
 &gt;&gt;&gt; X = int
 &gt;&gt;&gt; class Foo[X]:
 ...     y: X
 ...     
 &gt;&gt;&gt; get_type_hints(Foo)
-{'y': X}
+{&#x27;y&#x27;: X}
 </code></pre>
-<p>So, even if we accept the (questionable) premise that it's correct for Ruff to emulate <code>typing.get_type_hints</code> here, it doesn't even seem to be doing that <em>entirely</em> right currently.</p>
-<p>[^1]: Everybody agrees that this is terrible but unfortunately it's very hard to change without breaking backwards compatibility
-[^2]: Please don't look at the terrible hacks I had to add to typing.py in the Python stdlib to get this to work!!!</p>
+<p>So, even if we accept the (questionable) premise that it&#x27;s correct for Ruff to emulate <code>typing.get_type_hints</code> here, it doesn&#x27;t even seem to be doing that <em>entirely</em> right currently.</p>
+<p>[^1]: Everybody agrees that this is terrible but unfortunately it&#x27;s very hard to change without breaking backwards compatibility
+[^2]: Please don&#x27;t look at the terrible hacks I had to add to typing.py in the Python stdlib to get this to work!!!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -148,15 +148,15 @@ help: Rename type parameter to remove leading underscores
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-10-27 15:05</div>
-            <div class="timeline-body"><p>@danparizher Can you walk me through how you arrived at that conclusion? I can't seem to justify what you're saying here. There is a comment in the code for <code>visit_deferred_string_type_definitions()</code> that is vaguely related to what you're saying, here:</p>
+            <div class="timeline-body"><p>@danparizher Can you walk me through how you arrived at that conclusion? I can&#x27;t seem to justify what you&#x27;re saying here. There is a comment in the code for <code>visit_deferred_string_type_definitions()</code> that is vaguely related to what you&#x27;re saying, here:</p>
 <p>https://github.com/astral-sh/ruff/blob/db0e921db1466f8d23e28c27eaba19983a4367f0/crates/ruff_linter/src/checkers/ast/mod.rs#L2957-L2964</p>
-<p>but it is only relevant if there are <em>nested</em> string annotations, like <code>&quot;list['str']&quot;</code>. (And in any case I think the point of clearing the cache is to address that concern anyway?)</p>
-<p>I think what's happening is that we are not properly handling references to the PEP695-style generic parameter when it is shadowing a type-variable assignment.</p>
-<p>It's a little tricky to inspect the semantic model in action, but if you add some print-debugging then you can verify the following:</p>
+<p>but it is only relevant if there are <em>nested</em> string annotations, like <code>&quot;list[&#x27;str&#x27;]&quot;</code>. (And in any case I think the point of clearing the cache is to address that concern anyway?)</p>
+<p>I think what&#x27;s happening is that we are not properly handling references to the PEP695-style generic parameter when it is shadowing a type-variable assignment.</p>
+<p>It&#x27;s a little tricky to inspect the semantic model in action, but if you add some print-debugging then you can verify the following:</p>
 <ul>
 <li>For the snippet</li>
 </ul>
-<pre><code class="language-python">from __future__ import annotations
+<pre><code>from __future__ import annotations
 from typing import TypeVar
 
 _T = TypeVar(&quot;_T&quot;)
@@ -168,7 +168,7 @@ def f(self, x: _T) -&gt; _T:
 <ul>
 <li>For the snippet</li>
 </ul>
-<pre><code class="language-python">from __future__ import annotations
+<pre><code>from __future__ import annotations
 
 def f[_T](self, x: _T) -&gt; _T:
     return x
@@ -177,7 +177,7 @@ def f[_T](self, x: _T) -&gt; _T:
 <ul>
 <li>For the snippet</li>
 </ul>
-<pre><code class="language-python">from __future__ import annotations
+<pre><code>from __future__ import annotations
 from typing import TypeVar
 
 _T = TypeVar(&quot;_T&quot;)
@@ -193,23 +193,23 @@ def f[_T](self, x: _T) -&gt; _T:
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @dylwil3 by @dylwil3 on 2025-10-27 15:05</div>
+            <div class="event">Assigned to <a href="https://github.com/dylwil3">@dylwil3</a> by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-10-27 15:05</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/danparizher">@danparizher</a> on 2025-10-27 22:00</div>
-            <div class="timeline-body"><p>Ah I didn't catch that detail, thank you for the pushback!</p>
+            <div class="timeline-body"><p>Ah I didn&#x27;t catch that detail, thank you for the pushback!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Enabling UP047 and UP049 simultaneously on a `.pyi` file leads to fixes introducing breaking changes" to "Enabling UP047 and UP049 simultaneously with `--target-version=py314`, `from __future__ import annotations`, or in a `.pyi` file " by @AlexWaygood on 2026-01-06 15:28</div>
+            <div class="event">Renamed from &quot;Enabling UP047 and UP049 simultaneously on a `.pyi` file leads to fixes introducing breaking changes&quot; to &quot;Enabling UP047 and UP049 simultaneously with `--target-version=py314`, `from __future__ import annotations`, or in a `.pyi` file &quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-06 15:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Enabling UP047 and UP049 simultaneously with `--target-version=py314`, `from __future__ import annotations`, or in a `.pyi` file " to "Enabling UP047 and UP049 simultaneously leads to fixes introducing breaking changes with `--target-version=py314`, `from __future__ import annotations`, or on a `.pyi` file " by @AlexWaygood on 2026-01-06 15:28</div>
+            <div class="event">Renamed from &quot;Enabling UP047 and UP049 simultaneously with `--target-version=py314`, `from __future__ import annotations`, or in a `.pyi` file &quot; to &quot;Enabling UP047 and UP049 simultaneously leads to fixes introducing breaking changes with `--target-version=py314`, `from __future__ import annotations`, or on a `.pyi` file &quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-06 15:28</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:53:29 UTC
+        Synced at 2026-01-20 18:50:33 UTC
     </footer>
 </body>
 </html>

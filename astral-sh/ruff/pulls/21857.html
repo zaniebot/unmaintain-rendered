@@ -23,46 +23,46 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>This fixes https://github.com/astral-sh/ty/issues/1736 where recursive generic protocols with growing specializations caused a stack overflow.</p>
+            <div class="timeline-body">Summary
+<p>This fixes <a href="https://github.com/astral-sh/ty/issues/1736">astral-sh/ty#1736</a> where recursive generic protocols with growing specializations caused a stack overflow.</p>
 <p>The issue occurred with protocols like:</p>
-<pre><code class="language-python">class C[T](Protocol):
-    a: 'C[set[T]]'
+<pre><code>class C[T](Protocol):
+    a: &#x27;C[set[T]]&#x27;
 </code></pre>
-<p>When checking <code>C[set[int]]</code> against <code>C[Unknown]</code>, member <code>a</code> requires checking <code>C[set[set[int]]]</code>, which requires <code>C[set[set[set[int]]]]</code>, etc. Each level has different type specializations, so the existing cycle detection (using full types as cache keys) didn't catch the infinite recursion.</p>
-<p>The fix introduces <code>TypeRelationKey</code>, an enum that can be either a full <code>Type</code> or a <code>ClassLiteral</code> (protocol class without specialization). For protocol-to-protocol comparisons, we use <code>ClassLiteral</code> keys, which detects when we're comparing the same protocol class regardless of specialization. When a cycle is detected, we return the fallback value (assume compatible) to safely terminate the recursion.</p>
-<p>In theory this could mean some false positives in cycle detection, but I haven't been able to come up with a practical example where this would be a problem. We'll see how the ecosystem tests feel about it.</p>
-<h2>Test Plan</h2>
+<p>When checking <code>C[set[int]]</code> against <code>C[Unknown]</code>, member <code>a</code> requires checking <code>C[set[set[int]]]</code>, which requires <code>C[set[set[set[int]]]]</code>, etc. Each level has different type specializations, so the existing cycle detection (using full types as cache keys) didn&#x27;t catch the infinite recursion.</p>
+<p>The fix introduces <code>TypeRelationKey</code>, an enum that can be either a full <code>Type</code> or a <code>ClassLiteral</code> (protocol class without specialization). For protocol-to-protocol comparisons, we use <code>ClassLiteral</code> keys, which detects when we&#x27;re comparing the same protocol class regardless of specialization. When a cycle is detected, we return the fallback value (assume compatible) to safely terminate the recursion.</p>
+<p>In theory this could mean some false positives in cycle detection, but I haven&#x27;t been able to come up with a practical example where this would be a problem. We&#x27;ll see how the ecosystem tests feel about it.</p>
+Test Plan
 <p>Added mdtest.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @carljm on 2025-12-09 02:41</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/carljm">@carljm</a> on 2025-12-09 02:41</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-09 02:43</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a>
 <p>No changes detected when running ty on typing conformance tests ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-09 02:44</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">python-chess (https://github.com/niklasf/python-chess)
+Changes were detected when running on open source projects
+
+<pre><code>python-chess (https://github.com/niklasf/python-chess)
 + chess/engine.py:908:39: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 - Found 12 diagnostics
 + Found 13 diagnostics
 
 beartype (https://github.com/beartype/beartype)
-+ beartype/claw/_package/clawpkgtrie.py:66:29: warning[unsupported-base] Unsupported class base with type `&lt;class 'dict[str, PackagesTrieBlacklist]'&gt; | &lt;class 'dict[str, Divergent]'&gt;`
-+ beartype/claw/_package/clawpkgtrie.py:247:29: warning[unsupported-base] Unsupported class base with type `&lt;class 'dict[str, PackagesTrieWhitelist]'&gt; | &lt;class 'dict[str, Divergent]'&gt;`
++ beartype/claw/_package/clawpkgtrie.py:66:29: warning[unsupported-base] Unsupported class base with type `&lt;class &#x27;dict[str, PackagesTrieBlacklist]&#x27;&gt; | &lt;class &#x27;dict[str, Divergent]&#x27;&gt;`
++ beartype/claw/_package/clawpkgtrie.py:247:29: warning[unsupported-base] Unsupported class base with type `&lt;class &#x27;dict[str, PackagesTrieWhitelist]&#x27;&gt; | &lt;class &#x27;dict[str, Divergent]&#x27;&gt;`
 - Found 492 diagnostics
 + Found 494 diagnostics
 
@@ -172,19 +172,19 @@ pydantic (https://github.com/pydantic/pydantic)
 
 
 </code></pre>
-</details>
+
 
 <p>No memory usage changes detected ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @carljm on 2025-12-09 02:48</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/carljm">@carljm</a> on 2025-12-09 02:48</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-09 02:58</div>
-            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+            <div class="timeline-body">
 
-<h2><code>ecosystem-analyzer</code> results</h2>
+<code>ecosystem-analyzer</code> results
 <p>| Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
 | <code>invalid-argument-type</code> | 3 | 5 | 4 |
@@ -199,16 +199,16 @@ pydantic (https://github.com/pydantic/pydantic)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-09 03:05</div>
-            <div class="timeline-body"><p>Closing in favor of https://github.com/astral-sh/ruff/pull/21858 -- this has too much ecosystem impact.</p>
+            <div class="timeline-body"><p>Closing in favor of <a href="https://github.com/astral-sh/ruff/pull/21858">astral-sh/ruff#21858</a> -- this has too much ecosystem impact.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2025-12-09 03:05</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2025-12-09 03:05</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:17:56 UTC
+        Synced at 2026-01-20 19:21:31 UTC
     </footer>
 </body>
 </html>

@@ -23,8 +23,8 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/timotheecour">@timotheecour</a></div>
-            <div class="timeline-body"><p>even though ripgrep is line oriented and full multiline search is sadly out of question (after reading https://github.com/BurntSushi/ripgrep/issues/176), supporting simple cases would be very useful, eg:</p>
-<h2>full description</h2>
+            <div class="timeline-body"><p>even though ripgrep is line oriented and full multiline search is sadly out of question (after reading <a href="https://github.com/BurntSushi/ripgrep/issues/176">BurntSushi/ripgrep#176</a>), supporting simple cases would be very useful, eg:</p>
+full description
 <ul>
 <li><code>--multiline=[unordered|ordered] --window_size=N [--pattern $regex_i ...]</code></li>
 </ul>
@@ -41,15 +41,15 @@
 </ul>
 <p><code>--window_size=N</code> represents the context to search for the K matches. When unspecified, N defaults to infinity (ie all patterns must occur in <code>file</code> from <code>line</code> to <code>end of file</code></p>
 <p>When only a single pattern is used, it has same behavior as standard <code>rg</code></p>
-<h2>Examples</h2>
+Examples
 <p><code>foo.d</code>:</p>
-<pre><code class="language-d">// first line
+<pre><code>// first line
 auto getFoo(string[] bar){
   // some comment
   return bar.sort.uniq;
 }
 </code></pre>
-<pre><code class="language-bash">$ rg --multiline=ordered --window_size=3 --pattern `string[]` --pattern `sort\b`
+<pre><code>$ rg --multiline=ordered --window_size=3 --pattern `string[]` --pattern `sort\b`
 foo.d:2:auto getFoo(string[] bar){
 foo.d:4%return bar.sort.uniq;
 
@@ -57,10 +57,10 @@ $ rg --multiline=ordered --window_size=2 --pattern `string[]` --pattern `sort\b`
 # no match, `foo.d:4` is beyond `foo.d:[2...2+window_size)
 
 $ rg --multiline=ordered --window_size=3 --pattern `sort\b` --pattern `string[]`
-# no match, the first pattern matches at `foo.d:4` and we can't find the 2nd pattern in `foo.d:[4...4+3)`
+# no match, the first pattern matches at `foo.d:4` and we can&#x27;t find the 2nd pattern in `foo.d:[4...4+3)`
 
 $ rg --multiline=unordered --window_size=3 --pattern `sort\b` --pattern `string[]`
-# now there's a match since we provided `unordered`
+# now there&#x27;s a match since we provided `unordered`
 foo.d:2:auto getFoo(string[] bar){
 foo.d:4%return bar.sort.uniq;
 </code></pre>
@@ -68,12 +68,12 @@ foo.d:4%return bar.sort.uniq;
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-12 15:28</div>
-            <div class="timeline-body"><p>I don't understand the feature request. I don't know what <code>window_size</code> means and I don't know what <code>--multiline</code> does and I don't know the difference between <code>unordered</code> and <code>ordered</code>. It sounds like you have a lot of context in your head that you need to put into writing as a specification.</p>
+            <div class="timeline-body"><p>I don&#x27;t understand the feature request. I don&#x27;t know what <code>window_size</code> means and I don&#x27;t know what <code>--multiline</code> does and I don&#x27;t know the difference between <code>unordered</code> and <code>ordered</code>. It sounds like you have a lot of context in your head that you need to put into writing as a specification.</p>
 <p>Tip: consider reusing the <code>-A</code>/<code>-B</code>/<code>-C</code> flags.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2017-02-12 15:28</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-12 15:28</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-12 15:31</div>
@@ -84,7 +84,7 @@ foo.d:4%return bar.sort.uniq;
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/timotheecour">@timotheecour</a> on 2017-02-13 00:51</div>
             <div class="timeline-body"><ul>
-<li><p>@BurntSushi I've rewritten the proposal, let me know what you think!
+<li><p>@BurntSushi I&#x27;ve rewritten the proposal, let me know what you think!
 This would be super useful as a generic advanced code search among other things. Happy to discuss implementation details if needed</p>
 </li>
 <li><blockquote>
@@ -92,16 +92,16 @@ This would be super useful as a generic advanced code search among other things.
 </blockquote>
 </li>
 </ul>
-<p>yes, that's the case</p>
+<p>yes, that&#x27;s the case</p>
 <ul>
-<li>To implement this (efficiently) using an external tool built on top of (lib)ripgrep, here's what i currently have to emulate a multiline search:</li>
+<li>To implement this (efficiently) using an external tool built on top of (lib)ripgrep, here&#x27;s what i currently have to emulate a multiline search:</li>
 </ul>
-<pre><code>rg --multiline=unordered --window_size=4 --pattern 'green' --pattern '\?old'
-rg --column --no-heading -A 4 '((green)|(\?old))' --replace '@P1{{$2}P2{$3}}@'
+<pre><code>rg --multiline=unordered --window_size=4 --pattern &#x27;green&#x27; --pattern &#x27;\?old&#x27;
+rg --column --no-heading -A 4 &#x27;((green)|(\?old))&#x27; --replace &#x27;@P1{{$2}P2{$3}}@&#x27;
 </code></pre>
-<p>and then parse output looking for <code>@P1{{...}}@</code>, deducing each match from the regex expansions. That's of course no fun and super brittle.</p>
+<p>and then parse output looking for <code>@P1{{...}}@</code>, deducing each match from the regex expansions. That&#x27;s of course no fun and super brittle.</p>
 <ul>
-<li>Could we for starters have a machine output (https://github.com/BurntSushi/ripgrep/issues/359) that tells us each match with no information loss for a disjunctive regex of the form <code>(pattern1|pattern2|...)</code>
+<li>Could we for starters have a machine output (<a href="https://github.com/BurntSushi/ripgrep/issues/359">BurntSushi/ripgrep#359</a>) that tells us each match with no information loss for a disjunctive regex of the form <code>(pattern1|pattern2|...)</code>
 <code>file:offset:length:regex_index</code>
 with <code>regex_index</code> indicating which pattern got matched (eg: 0 for green, 1 for <code>?old</code> in this example) and how many bytes the corresponding match is</li>
 </ul>
@@ -110,17 +110,17 @@ with <code>regex_index</code> indicating which pattern got matched (eg: 0 for gr
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-18 17:49</div>
             <div class="timeline-body"><p>Parseable output is here: #244 --- Having that return the index of the regex that matched is not going to happen, since, in the current implementation, that would have a big performance hit.</p>
-<p>Overall, I find the feature proposed here to be way too complicated. It doesn't reuse existing flags (like <code>-A/-B/-C</code>) to search contexts and instead invents a new &quot;window size&quot; concept. The <code>--multiline=ordered|unordered</code> modes don't really make sense to me and seem very unintuitive.</p>
+<p>Overall, I find the feature proposed here to be way too complicated. It doesn&#x27;t reuse existing flags (like <code>-A/-B/-C</code>) to search contexts and instead invents a new &quot;window size&quot; concept. The <code>--multiline=ordered|unordered</code> modes don&#x27;t really make sense to me and seem very unintuitive.</p>
 <p>Your needs would be better met by writing code.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2017-02-18 17:49</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-18 17:49</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:42:03 UTC
+        Synced at 2026-01-20 18:48:03 UTC
     </footer>
 </body>
 </html>

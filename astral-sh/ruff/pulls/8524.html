@@ -23,20 +23,20 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This commit adds some additional error checking to the parser such that assignments that are invalid syntax are rejected. This covers the obvious cases like <code>5 = 3</code> and some not so obvious cases like <code>x + y = 42</code>.</p>
-<p>This does add an additional recursive call to the parser for the cases handling assignments. I had initially been concerned about doing this, but <code>set_context</code> is already doing recursion during assignments, so I didn't feel as though this was changing any fundamental performance characteristics of the parser. (Also, in practice, I would expect any such recursion here to be quite shallow since the recursion is done on the target of an assignment. Such things are rarely nested much in practice.)</p>
+<p>This does add an additional recursive call to the parser for the cases handling assignments. I had initially been concerned about doing this, but <code>set_context</code> is already doing recursion during assignments, so I didn&#x27;t feel as though this was changing any fundamental performance characteristics of the parser. (Also, in practice, I would expect any such recursion here to be quite shallow since the recursion is done on the target of an assignment. Such things are rarely nested much in practice.)</p>
 <p>Fixes #6895</p>
-<h2>Test Plan</h2>
-<p>I've added unit tests covering every case that is detected as invalid on an <code>Expr</code>.</p>
+Test Plan
+<p>I&#x27;ve added unit tests covering every case that is detected as invalid on an <code>Expr</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @charliermarsh by @BurntSushi on 2023-11-06 19:15</div>
+            <div class="event">Review requested from <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-06 19:15</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_parser/src/invalid.rs</code>:102 on 2023-11-06 19:31</div>
-            <div class="timeline-body"><p>I think it's safe to return an error here too.</p>
+            <div class="timeline-body"><p>I think it&#x27;s safe to return an error here too.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -46,8 +46,8 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_parser/src/invalid.rs</code>:44 on 2023-11-06 19:37</div>
-            <div class="timeline-body"><p>I played around with it a bit locally because I wasn't sure -- but it looks like these can all just be <code>Result&lt;(), LexicalError&gt;</code> without the <code>LalrpopError</code> wrapper, if you do something like this:</p>
-<pre><code class="language-diff">diff --git a/crates/ruff_python_parser/src/invalid.rs b/crates/ruff_python_parser/src/invalid.rs
+            <div class="timeline-body"><p>I played around with it a bit locally because I wasn&#x27;t sure -- but it looks like these can all just be <code>Result&lt;(), LexicalError&gt;</code> without the <code>LalrpopError</code> wrapper, if you do something like this:</p>
+<pre><code>diff --git a/crates/ruff_python_parser/src/invalid.rs b/crates/ruff_python_parser/src/invalid.rs
 index 99dfc0140..0f53cc144 100644
 --- a/crates/ruff_python_parser/src/invalid.rs
 +++ b/crates/ruff_python_parser/src/invalid.rs
@@ -97,7 +97,7 @@ index 99dfc0140..0f53cc144 100644
 +        Starred(ref e) =&gt; assignment_target(&amp;e.value),
 +        List(ref e) =&gt; assignment_targets(&amp;e.elts),
 +        Tuple(ref e) =&gt; assignment_targets(&amp;e.elts),
-         // Subscript is recursive and can be invalid, but aren't syntax errors.
+         // Subscript is recursive and can be invalid, but aren&#x27;t syntax errors.
          // For example, `5[1] = 42` is a type error.
 -        Subscript(_) =&gt; {}
 +        Subscript(_) =&gt; Ok(()),
@@ -110,8 +110,8 @@ index 99dfc0140..0f53cc144 100644
          // These are always valid as assignment targets.
 -        Name(_) =&gt; {}
 +        Name(_) =&gt; Ok(()),
-         // This isn't in the Python grammar but is Jupyter notebook specific.
-         // It seems like this should be an error, but I'm not certain about it
+         // This isn&#x27;t in the Python grammar but is Jupyter notebook specific.
+         // It seems like this should be an error, but I&#x27;m not certain about it
          // at atime of writing. So we allow it. ---AG
 -        IpyEscapeCommand(_) =&gt; {}
 +        IpyEscapeCommand(_) =&gt; Ok(()),
@@ -123,7 +123,7 @@ index 99dfc0140..0f53cc144 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_parser/src/invalid.rs</code>:44 on 2023-11-06 19:39</div>
-            <div class="timeline-body"><p>Can I ask why you do <code>match *target</code> and then <code>BoolOp(ref e)</code>, instead of <code>match target</code> and <code>BoolOp(e)</code>? I'm curious :)</p>
+            <div class="timeline-body"><p>Can I ask why you do <code>match *target</code> and then <code>BoolOp(ref e)</code>, instead of <code>match target</code> and <code>BoolOp(e)</code>? I&#x27;m curious :)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -132,12 +132,12 @@ index 99dfc0140..0f53cc144 100644
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-11-06 19:40</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-06 19:40</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_python_parser/src/invalid.rs</code>:44 on 2023-11-06 19:57</div>
             <div class="timeline-body"><p>Yes! I had written Rust for years before &quot;<a href="https://rust-lang.github.io/rfcs/2005-match-ergonomics.html">match ergonomics</a>&quot; landed. That RFC essentially absolved you of needing to worry about using <code>ref</code> or <code>ref mut</code> or whatever. But I had always found the <code>ref</code> and <code>ref mut</code> bindings to be helpful for knowing when something was borrowed versus when ownership had been transferred.</p>
-<p>It's a small matter overall. Do you want me to drop the <code>ref</code>? (I wonder if there is a Clippy lint for it.)</p>
+<p>It&#x27;s a small matter overall. Do you want me to drop the <code>ref</code>? (I wonder if there is a Clippy lint for it.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -151,12 +151,12 @@ index 99dfc0140..0f53cc144 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-06 19:58</div>
-            <div class="timeline-body"><p>@charliermarsh Can you check out the two commits I've just pushed? In particular, the stricter parser caused two tests to fail. I think my changes to those tests are correct, but I'd like to be cautious here!</p>
+            <div class="timeline-body"><p>@charliermarsh Can you check out the two commits I&#x27;ve just pushed? In particular, the stricter parser caused two tests to fail. I think my changes to those tests are correct, but I&#x27;d like to be cautious here!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_parser/src/invalid.rs</code>:44 on 2023-11-06 19:58</div>
-            <div class="timeline-body"><p>No I don't mind it, I was just curious why, but that makes sense. Unless I really can't help it, I try to avoid asking for changes like this that we can't enforce automatically via tooling.</p>
+            <div class="timeline-body"><p>No I don&#x27;t mind it, I was just curious why, but that makes sense. Unless I really can&#x27;t help it, I try to avoid asking for changes like this that we can&#x27;t enforce automatically via tooling.</p>
 <p>(Relatedly we often talk about how we want the box match thing from nightly.)</p>
 </div>
         </div>
@@ -171,7 +171,7 @@ index 99dfc0140..0f53cc144 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-06 20:01</div>
-            <div class="timeline-body"><p>@BurntSushi - Those both look correct to me. I actually don't fully understand why <code>app_label=\&quot;core\&quot;, model=\&quot;user\&quot;&quot;,</code> was previously marked as valid code, what was the &quot;target&quot; and the &quot;value&quot;?</p>
+            <div class="timeline-body"><p>@BurntSushi - Those both look correct to me. I actually don&#x27;t fully understand why <code>app_label=\&quot;core\&quot;, model=\&quot;user\&quot;&quot;,</code> was previously marked as valid code, what was the &quot;target&quot; and the &quot;value&quot;?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -179,7 +179,7 @@ index 99dfc0140..0f53cc144 100644
             <div class="timeline-body"><blockquote>
 <p>was previously marked as valid code, what was the &quot;target&quot; and the &quot;value&quot;?</p>
 </blockquote>
-<p>For <code>x=&quot;a&quot;, y=&quot;b&quot;</code>, it looks like it parsed as two targets, <code>x</code> and <code>(&quot;a&quot;, y)</code> with a <em>single</em> value of <code>b</code>. It's not totally clear to me how it gets that particular parse. That first equals sign, I'd imagine, would inhibit picking up the second target.</p>
+<p>For <code>x=&quot;a&quot;, y=&quot;b&quot;</code>, it looks like it parsed as two targets, <code>x</code> and <code>(&quot;a&quot;, y)</code> with a <em>single</em> value of <code>b</code>. It&#x27;s not totally clear to me how it gets that particular parse. That first equals sign, I&#x27;d imagine, would inhibit picking up the second target.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -187,7 +187,7 @@ index 99dfc0140..0f53cc144 100644
             <div class="timeline-body"><blockquote>
 <p>(Relatedly we often talk about how we want the box match thing from nightly.)</p>
 </blockquote>
-<p>Yeah, that one has been unstable since the beginning sadly. I don't think think it's landing any time soon unfortunately. :-(</p>
+<p>Yeah, that one has been unstable since the beginning sadly. I don&#x27;t think think it&#x27;s landing any time soon unfortunately. :-(</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -196,7 +196,7 @@ index 99dfc0140..0f53cc144 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-06 20:06</div>
-            <div class="timeline-body"><p>Ahh ok, so it's like <code>x = (&quot;a&quot;, y) = &quot;b&quot;</code>. Makes sense-ish.</p>
+            <div class="timeline-body"><p>Ahh ok, so it&#x27;s like <code>x = (&quot;a&quot;, y) = &quot;b&quot;</code>. Makes sense-ish.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -210,152 +210,152 @@ index 99dfc0140..0f53cc144 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-11-06 20:11</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+0 -27 violations, +0 -0 fixes in 41 projects)</p>
-<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+0 -8 violations, +0 -0 fixes)</summary>
+<a href="https://github.com/apache/airflow">apache/airflow</a> (+0 -8 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --select ALL</pre>
 </p>
 <p>
 
 <pre>
-- <a href='https://github.com/apache/airflow/blob/59b32dc0a0bcdffd124b82d92428f334646cd8cd/airflow/config_templates/default_webserver_config.py#L84'>airflow/config_templates/default_webserver_config.py:84:1:</a> ERA001 Found commented-out code
-- <a href='https://github.com/apache/airflow/blob/59b32dc0a0bcdffd124b82d92428f334646cd8cd/airflow/example_dags/tutorial.py#L63'>airflow/example_dags/tutorial.py:63:9:</a> ERA001 Found commented-out code
-- <a href='https://github.com/apache/airflow/blob/59b32dc0a0bcdffd124b82d92428f334646cd8cd/airflow/serialization/serialized_objects.py#L1195'>airflow/serialization/serialized_objects.py:1195:13:</a> ERA001 Found commented-out code
-- <a href='https://github.com/apache/airflow/blob/59b32dc0a0bcdffd124b82d92428f334646cd8cd/airflow/serialization/serialized_objects.py#L1211'>airflow/serialization/serialized_objects.py:1211:13:</a> ERA001 Found commented-out code
-- <a href='https://github.com/apache/airflow/blob/59b32dc0a0bcdffd124b82d92428f334646cd8cd/airflow/settings.py#L633'>airflow/settings.py:633:1:</a> ERA001 Found commented-out code
-- <a href='https://github.com/apache/airflow/blob/59b32dc0a0bcdffd124b82d92428f334646cd8cd/airflow/utils/log/secrets_masker.py#L174'>airflow/utils/log/secrets_masker.py:174:13:</a> ERA001 Found commented-out code
-- <a href='https://github.com/apache/airflow/blob/59b32dc0a0bcdffd124b82d92428f334646cd8cd/tests/system/providers/amazon/aws/example_eks_templated.py#L45'>tests/system/providers/amazon/aws/example_eks_templated.py:45:1:</a> ERA001 Found commented-out code
-- <a href='https://github.com/apache/airflow/blob/59b32dc0a0bcdffd124b82d92428f334646cd8cd/tests/system/providers/amazon/aws/example_eks_templated.py#L49'>tests/system/providers/amazon/aws/example_eks_templated.py:49:1:</a> ERA001 Found commented-out code
+- <a href="https://github.com/apache/airflow/blob/59b32dc0a0bcdffd124b82d92428f334646cd8cd/airflow/config_templates/default_webserver_config.py#L84">airflow/config_templates/default_webserver_config.py:84:1:</a> ERA001 Found commented-out code
+- <a href="https://github.com/apache/airflow/blob/59b32dc0a0bcdffd124b82d92428f334646cd8cd/airflow/example_dags/tutorial.py#L63">airflow/example_dags/tutorial.py:63:9:</a> ERA001 Found commented-out code
+- <a href="https://github.com/apache/airflow/blob/59b32dc0a0bcdffd124b82d92428f334646cd8cd/airflow/serialization/serialized_objects.py#L1195">airflow/serialization/serialized_objects.py:1195:13:</a> ERA001 Found commented-out code
+- <a href="https://github.com/apache/airflow/blob/59b32dc0a0bcdffd124b82d92428f334646cd8cd/airflow/serialization/serialized_objects.py#L1211">airflow/serialization/serialized_objects.py:1211:13:</a> ERA001 Found commented-out code
+- <a href="https://github.com/apache/airflow/blob/59b32dc0a0bcdffd124b82d92428f334646cd8cd/airflow/settings.py#L633">airflow/settings.py:633:1:</a> ERA001 Found commented-out code
+- <a href="https://github.com/apache/airflow/blob/59b32dc0a0bcdffd124b82d92428f334646cd8cd/airflow/utils/log/secrets_masker.py#L174">airflow/utils/log/secrets_masker.py:174:13:</a> ERA001 Found commented-out code
+- <a href="https://github.com/apache/airflow/blob/59b32dc0a0bcdffd124b82d92428f334646cd8cd/tests/system/providers/amazon/aws/example_eks_templated.py#L45">tests/system/providers/amazon/aws/example_eks_templated.py:45:1:</a> ERA001 Found commented-out code
+- <a href="https://github.com/apache/airflow/blob/59b32dc0a0bcdffd124b82d92428f334646cd8cd/tests/system/providers/amazon/aws/example_eks_templated.py#L49">tests/system/providers/amazon/aws/example_eks_templated.py:49:1:</a> ERA001 Found commented-out code
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+0 -6 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+0 -6 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --select ALL</pre>
 </p>
 <p>
 
 <pre>
-- <a href='https://github.com/bokeh/bokeh/blob/eeafcf1f0fadfcb6ad111612b669c3fc2692b21f/examples/integration/layout/plot_fixed_frame_size.py#L40'>examples/integration/layout/plot_fixed_frame_size.py:40:1:</a> ERA001 Found commented-out code
-- <a href='https://github.com/bokeh/bokeh/blob/eeafcf1f0fadfcb6ad111612b669c3fc2692b21f/tests/integration/widgets/tables/test_source_updates.py#L114'>tests/integration/widgets/tables/test_source_updates.py:114:9:</a> ERA001 Found commented-out code
-- <a href='https://github.com/bokeh/bokeh/blob/eeafcf1f0fadfcb6ad111612b669c3fc2692b21f/tests/integration/widgets/tables/test_source_updates.py#L167'>tests/integration/widgets/tables/test_source_updates.py:167:9:</a> ERA001 Found commented-out code
-- <a href='https://github.com/bokeh/bokeh/blob/eeafcf1f0fadfcb6ad111612b669c3fc2692b21f/tests/integration/widgets/tables/test_source_updates.py#L221'>tests/integration/widgets/tables/test_source_updates.py:221:9:</a> ERA001 Found commented-out code
-- <a href='https://github.com/bokeh/bokeh/blob/eeafcf1f0fadfcb6ad111612b669c3fc2692b21f/tests/integration/widgets/tables/test_source_updates.py#L269'>tests/integration/widgets/tables/test_source_updates.py:269:9:</a> ERA001 Found commented-out code
-- <a href='https://github.com/bokeh/bokeh/blob/eeafcf1f0fadfcb6ad111612b669c3fc2692b21f/tests/unit/bokeh/plotting/test__renderer.py#L125'>tests/unit/bokeh/plotting/test__renderer.py:125:1:</a> ERA001 Found commented-out code
+- <a href="https://github.com/bokeh/bokeh/blob/eeafcf1f0fadfcb6ad111612b669c3fc2692b21f/examples/integration/layout/plot_fixed_frame_size.py#L40">examples/integration/layout/plot_fixed_frame_size.py:40:1:</a> ERA001 Found commented-out code
+- <a href="https://github.com/bokeh/bokeh/blob/eeafcf1f0fadfcb6ad111612b669c3fc2692b21f/tests/integration/widgets/tables/test_source_updates.py#L114">tests/integration/widgets/tables/test_source_updates.py:114:9:</a> ERA001 Found commented-out code
+- <a href="https://github.com/bokeh/bokeh/blob/eeafcf1f0fadfcb6ad111612b669c3fc2692b21f/tests/integration/widgets/tables/test_source_updates.py#L167">tests/integration/widgets/tables/test_source_updates.py:167:9:</a> ERA001 Found commented-out code
+- <a href="https://github.com/bokeh/bokeh/blob/eeafcf1f0fadfcb6ad111612b669c3fc2692b21f/tests/integration/widgets/tables/test_source_updates.py#L221">tests/integration/widgets/tables/test_source_updates.py:221:9:</a> ERA001 Found commented-out code
+- <a href="https://github.com/bokeh/bokeh/blob/eeafcf1f0fadfcb6ad111612b669c3fc2692b21f/tests/integration/widgets/tables/test_source_updates.py#L269">tests/integration/widgets/tables/test_source_updates.py:269:9:</a> ERA001 Found commented-out code
+- <a href="https://github.com/bokeh/bokeh/blob/eeafcf1f0fadfcb6ad111612b669c3fc2692b21f/tests/unit/bokeh/plotting/test__renderer.py#L125">tests/unit/bokeh/plotting/test__renderer.py:125:1:</a> ERA001 Found commented-out code
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+0 -13 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/zulip/zulip">zulip/zulip</a> (+0 -13 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --select ALL</pre>
 </p>
 <p>
 
 <pre>
-- <a href='https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/data_import/slack.py#L581'>zerver/data_import/slack.py:581:13:</a> ERA001 Found commented-out code
-- <a href='https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/lib/digest.py#L89'>zerver/lib/digest.py:89:1:</a> ERA001 Found commented-out code
-- <a href='https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/lib/display_recipient.py#L106'>zerver/lib/display_recipient.py:106:5:</a> ERA001 Found commented-out code
-- <a href='https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/lib/email_notifications.py#L309'>zerver/lib/email_notifications.py:309:5:</a> ERA001 Found commented-out code
-- <a href='https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/lib/email_notifications.py#L317'>zerver/lib/email_notifications.py:317:5:</a> ERA001 Found commented-out code
-- <a href='https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/lib/email_notifications.py#L321'>zerver/lib/email_notifications.py:321:5:</a> ERA001 Found commented-out code
-- <a href='https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/middleware.py#L152'>zerver/middleware.py:152:13:</a> ERA001 Found commented-out code
-- <a href='https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/middleware.py#L175'>zerver/middleware.py:175:13:</a> ERA001 Found commented-out code
-- <a href='https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/tests/test_events.py#L548'>zerver/tests/test_events.py:548:13:</a> ERA001 Found commented-out code
-- <a href='https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/tests/test_events.py#L550'>zerver/tests/test_events.py:550:13:</a> ERA001 Found commented-out code
-- <a href='https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/tests/test_events.py#L556'>zerver/tests/test_events.py:556:17:</a> ERA001 Found commented-out code
-- <a href='https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/tests/test_events.py#L727'>zerver/tests/test_events.py:727:9:</a> ERA001 Found commented-out code
-- <a href='https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zproject/prod_settings_template.py#L264'>zproject/prod_settings_template.py:264:1:</a> ERA001 Found commented-out code
+- <a href="https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/data_import/slack.py#L581">zerver/data_import/slack.py:581:13:</a> ERA001 Found commented-out code
+- <a href="https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/lib/digest.py#L89">zerver/lib/digest.py:89:1:</a> ERA001 Found commented-out code
+- <a href="https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/lib/display_recipient.py#L106">zerver/lib/display_recipient.py:106:5:</a> ERA001 Found commented-out code
+- <a href="https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/lib/email_notifications.py#L309">zerver/lib/email_notifications.py:309:5:</a> ERA001 Found commented-out code
+- <a href="https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/lib/email_notifications.py#L317">zerver/lib/email_notifications.py:317:5:</a> ERA001 Found commented-out code
+- <a href="https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/lib/email_notifications.py#L321">zerver/lib/email_notifications.py:321:5:</a> ERA001 Found commented-out code
+- <a href="https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/middleware.py#L152">zerver/middleware.py:152:13:</a> ERA001 Found commented-out code
+- <a href="https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/middleware.py#L175">zerver/middleware.py:175:13:</a> ERA001 Found commented-out code
+- <a href="https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/tests/test_events.py#L548">zerver/tests/test_events.py:548:13:</a> ERA001 Found commented-out code
+- <a href="https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/tests/test_events.py#L550">zerver/tests/test_events.py:550:13:</a> ERA001 Found commented-out code
+- <a href="https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/tests/test_events.py#L556">zerver/tests/test_events.py:556:17:</a> ERA001 Found commented-out code
+- <a href="https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/tests/test_events.py#L727">zerver/tests/test_events.py:727:9:</a> ERA001 Found commented-out code
+- <a href="https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zproject/prod_settings_template.py#L264">zproject/prod_settings_template.py:264:1:</a> ERA001 Found commented-out code
 </pre>
 
 </p>
-</details>
-<details><summary>Changes by rule (1 rules affected)</summary>
+
+Changes by rule (1 rules affected)
 <p>
 
 <p>| code | total | + violation | - violation | + fix | - fix |
 | ---- | ------- | --------- | -------- | ----- | ---- |
 | ERA001 | 27 | 0 | 27 | 0 | 0 |</p>
 </p>
-</details>
 
-<h3>Linter (preview)</h3>
+
+Linter (preview)
 <p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+0 -25 violations, +0 -0 fixes in 41 projects)</p>
-<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+0 -6 violations, +0 -0 fixes)</summary>
+<a href="https://github.com/apache/airflow">apache/airflow</a> (+0 -6 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --select ALL --preview</pre>
 </p>
 <p>
 
 <pre>
-- <a href='https://github.com/apache/airflow/blob/59b32dc0a0bcdffd124b82d92428f334646cd8cd/airflow/config_templates/default_webserver_config.py#L84'>airflow/config_templates/default_webserver_config.py:84:1:</a> ERA001 Found commented-out code
-- <a href='https://github.com/apache/airflow/blob/59b32dc0a0bcdffd124b82d92428f334646cd8cd/airflow/example_dags/tutorial.py#L63'>airflow/example_dags/tutorial.py:63:9:</a> ERA001 Found commented-out code
-- <a href='https://github.com/apache/airflow/blob/59b32dc0a0bcdffd124b82d92428f334646cd8cd/airflow/settings.py#L633'>airflow/settings.py:633:1:</a> ERA001 Found commented-out code
-- <a href='https://github.com/apache/airflow/blob/59b32dc0a0bcdffd124b82d92428f334646cd8cd/airflow/utils/log/secrets_masker.py#L174'>airflow/utils/log/secrets_masker.py:174:13:</a> ERA001 Found commented-out code
-- <a href='https://github.com/apache/airflow/blob/59b32dc0a0bcdffd124b82d92428f334646cd8cd/tests/system/providers/amazon/aws/example_eks_templated.py#L45'>tests/system/providers/amazon/aws/example_eks_templated.py:45:1:</a> ERA001 Found commented-out code
-- <a href='https://github.com/apache/airflow/blob/59b32dc0a0bcdffd124b82d92428f334646cd8cd/tests/system/providers/amazon/aws/example_eks_templated.py#L49'>tests/system/providers/amazon/aws/example_eks_templated.py:49:1:</a> ERA001 Found commented-out code
+- <a href="https://github.com/apache/airflow/blob/59b32dc0a0bcdffd124b82d92428f334646cd8cd/airflow/config_templates/default_webserver_config.py#L84">airflow/config_templates/default_webserver_config.py:84:1:</a> ERA001 Found commented-out code
+- <a href="https://github.com/apache/airflow/blob/59b32dc0a0bcdffd124b82d92428f334646cd8cd/airflow/example_dags/tutorial.py#L63">airflow/example_dags/tutorial.py:63:9:</a> ERA001 Found commented-out code
+- <a href="https://github.com/apache/airflow/blob/59b32dc0a0bcdffd124b82d92428f334646cd8cd/airflow/settings.py#L633">airflow/settings.py:633:1:</a> ERA001 Found commented-out code
+- <a href="https://github.com/apache/airflow/blob/59b32dc0a0bcdffd124b82d92428f334646cd8cd/airflow/utils/log/secrets_masker.py#L174">airflow/utils/log/secrets_masker.py:174:13:</a> ERA001 Found commented-out code
+- <a href="https://github.com/apache/airflow/blob/59b32dc0a0bcdffd124b82d92428f334646cd8cd/tests/system/providers/amazon/aws/example_eks_templated.py#L45">tests/system/providers/amazon/aws/example_eks_templated.py:45:1:</a> ERA001 Found commented-out code
+- <a href="https://github.com/apache/airflow/blob/59b32dc0a0bcdffd124b82d92428f334646cd8cd/tests/system/providers/amazon/aws/example_eks_templated.py#L49">tests/system/providers/amazon/aws/example_eks_templated.py:49:1:</a> ERA001 Found commented-out code
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+0 -6 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+0 -6 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --select ALL --preview</pre>
 </p>
 <p>
 
 <pre>
-- <a href='https://github.com/bokeh/bokeh/blob/eeafcf1f0fadfcb6ad111612b669c3fc2692b21f/examples/integration/layout/plot_fixed_frame_size.py#L40'>examples/integration/layout/plot_fixed_frame_size.py:40:1:</a> ERA001 Found commented-out code
-- <a href='https://github.com/bokeh/bokeh/blob/eeafcf1f0fadfcb6ad111612b669c3fc2692b21f/tests/integration/widgets/tables/test_source_updates.py#L114'>tests/integration/widgets/tables/test_source_updates.py:114:9:</a> ERA001 Found commented-out code
-- <a href='https://github.com/bokeh/bokeh/blob/eeafcf1f0fadfcb6ad111612b669c3fc2692b21f/tests/integration/widgets/tables/test_source_updates.py#L167'>tests/integration/widgets/tables/test_source_updates.py:167:9:</a> ERA001 Found commented-out code
-- <a href='https://github.com/bokeh/bokeh/blob/eeafcf1f0fadfcb6ad111612b669c3fc2692b21f/tests/integration/widgets/tables/test_source_updates.py#L221'>tests/integration/widgets/tables/test_source_updates.py:221:9:</a> ERA001 Found commented-out code
-- <a href='https://github.com/bokeh/bokeh/blob/eeafcf1f0fadfcb6ad111612b669c3fc2692b21f/tests/integration/widgets/tables/test_source_updates.py#L269'>tests/integration/widgets/tables/test_source_updates.py:269:9:</a> ERA001 Found commented-out code
-- <a href='https://github.com/bokeh/bokeh/blob/eeafcf1f0fadfcb6ad111612b669c3fc2692b21f/tests/unit/bokeh/plotting/test__renderer.py#L125'>tests/unit/bokeh/plotting/test__renderer.py:125:1:</a> ERA001 Found commented-out code
+- <a href="https://github.com/bokeh/bokeh/blob/eeafcf1f0fadfcb6ad111612b669c3fc2692b21f/examples/integration/layout/plot_fixed_frame_size.py#L40">examples/integration/layout/plot_fixed_frame_size.py:40:1:</a> ERA001 Found commented-out code
+- <a href="https://github.com/bokeh/bokeh/blob/eeafcf1f0fadfcb6ad111612b669c3fc2692b21f/tests/integration/widgets/tables/test_source_updates.py#L114">tests/integration/widgets/tables/test_source_updates.py:114:9:</a> ERA001 Found commented-out code
+- <a href="https://github.com/bokeh/bokeh/blob/eeafcf1f0fadfcb6ad111612b669c3fc2692b21f/tests/integration/widgets/tables/test_source_updates.py#L167">tests/integration/widgets/tables/test_source_updates.py:167:9:</a> ERA001 Found commented-out code
+- <a href="https://github.com/bokeh/bokeh/blob/eeafcf1f0fadfcb6ad111612b669c3fc2692b21f/tests/integration/widgets/tables/test_source_updates.py#L221">tests/integration/widgets/tables/test_source_updates.py:221:9:</a> ERA001 Found commented-out code
+- <a href="https://github.com/bokeh/bokeh/blob/eeafcf1f0fadfcb6ad111612b669c3fc2692b21f/tests/integration/widgets/tables/test_source_updates.py#L269">tests/integration/widgets/tables/test_source_updates.py:269:9:</a> ERA001 Found commented-out code
+- <a href="https://github.com/bokeh/bokeh/blob/eeafcf1f0fadfcb6ad111612b669c3fc2692b21f/tests/unit/bokeh/plotting/test__renderer.py#L125">tests/unit/bokeh/plotting/test__renderer.py:125:1:</a> ERA001 Found commented-out code
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+0 -13 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/zulip/zulip">zulip/zulip</a> (+0 -13 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --select ALL --preview</pre>
 </p>
 <p>
 
 <pre>
-- <a href='https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/data_import/slack.py#L581'>zerver/data_import/slack.py:581:13:</a> ERA001 Found commented-out code
-- <a href='https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/lib/digest.py#L89'>zerver/lib/digest.py:89:1:</a> ERA001 Found commented-out code
-- <a href='https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/lib/display_recipient.py#L106'>zerver/lib/display_recipient.py:106:5:</a> ERA001 Found commented-out code
-- <a href='https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/lib/email_notifications.py#L309'>zerver/lib/email_notifications.py:309:5:</a> ERA001 Found commented-out code
-- <a href='https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/lib/email_notifications.py#L317'>zerver/lib/email_notifications.py:317:5:</a> ERA001 Found commented-out code
-- <a href='https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/lib/email_notifications.py#L321'>zerver/lib/email_notifications.py:321:5:</a> ERA001 Found commented-out code
-- <a href='https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/middleware.py#L152'>zerver/middleware.py:152:13:</a> ERA001 Found commented-out code
-- <a href='https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/middleware.py#L175'>zerver/middleware.py:175:13:</a> ERA001 Found commented-out code
-- <a href='https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/tests/test_events.py#L548'>zerver/tests/test_events.py:548:13:</a> ERA001 Found commented-out code
-- <a href='https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/tests/test_events.py#L550'>zerver/tests/test_events.py:550:13:</a> ERA001 Found commented-out code
-- <a href='https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/tests/test_events.py#L556'>zerver/tests/test_events.py:556:17:</a> ERA001 Found commented-out code
-- <a href='https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/tests/test_events.py#L727'>zerver/tests/test_events.py:727:9:</a> ERA001 Found commented-out code
-- <a href='https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zproject/prod_settings_template.py#L264'>zproject/prod_settings_template.py:264:1:</a> ERA001 Found commented-out code
+- <a href="https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/data_import/slack.py#L581">zerver/data_import/slack.py:581:13:</a> ERA001 Found commented-out code
+- <a href="https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/lib/digest.py#L89">zerver/lib/digest.py:89:1:</a> ERA001 Found commented-out code
+- <a href="https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/lib/display_recipient.py#L106">zerver/lib/display_recipient.py:106:5:</a> ERA001 Found commented-out code
+- <a href="https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/lib/email_notifications.py#L309">zerver/lib/email_notifications.py:309:5:</a> ERA001 Found commented-out code
+- <a href="https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/lib/email_notifications.py#L317">zerver/lib/email_notifications.py:317:5:</a> ERA001 Found commented-out code
+- <a href="https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/lib/email_notifications.py#L321">zerver/lib/email_notifications.py:321:5:</a> ERA001 Found commented-out code
+- <a href="https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/middleware.py#L152">zerver/middleware.py:152:13:</a> ERA001 Found commented-out code
+- <a href="https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/middleware.py#L175">zerver/middleware.py:175:13:</a> ERA001 Found commented-out code
+- <a href="https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/tests/test_events.py#L548">zerver/tests/test_events.py:548:13:</a> ERA001 Found commented-out code
+- <a href="https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/tests/test_events.py#L550">zerver/tests/test_events.py:550:13:</a> ERA001 Found commented-out code
+- <a href="https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/tests/test_events.py#L556">zerver/tests/test_events.py:556:17:</a> ERA001 Found commented-out code
+- <a href="https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zerver/tests/test_events.py#L727">zerver/tests/test_events.py:727:9:</a> ERA001 Found commented-out code
+- <a href="https://github.com/zulip/zulip/blob/b59e90d100cc09e195b56ae185fcfa78c209a16f/zproject/prod_settings_template.py#L264">zproject/prod_settings_template.py:264:1:</a> ERA001 Found commented-out code
 </pre>
 
 </p>
-</details>
-<details><summary>Changes by rule (1 rules affected)</summary>
+
+Changes by rule (1 rules affected)
 <p>
 
 <p>| code | total | + violation | - violation | + fix | - fix |
 | ---- | ------- | --------- | -------- | ----- | ---- |
 | ERA001 | 25 | 0 | 25 | 0 | 0 |</p>
 </p>
-</details>
 
-<h3>Formatter (stable)</h3>
+
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
@@ -375,10 +375,10 @@ index 99dfc0140..0f53cc144 100644
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @BurntSushi on 2023-11-07 12:16</div>
+            <div class="event">Merged by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-07 12:16</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2023-11-07 12:16</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-07 12:16</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2023-11-07 12:16</div>
@@ -386,7 +386,7 @@ index 99dfc0140..0f53cc144 100644
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:01:19 UTC
+        Synced at 2026-01-20 18:59:09 UTC
     </footer>
 </body>
 </html>

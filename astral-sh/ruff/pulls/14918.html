@@ -23,44 +23,44 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>There's a functional change here, and a few cosmetic changes.</p>
-<p>The functional change is that we currently consider <code>Literal[str]</code> to be disjoint from <code>type[Any]</code>. But they're not disjoint: <code>Any</code> here could be materialized as <code>str</code> or <code>object</code>; in those materializations, the two types would clearly overlap, and therefore <code>type[Any]</code> overlaps with <code>Literal[str]</code>. This PR fixes our logic in <code>Type::is_disjoint_from</code> to reflect that.</p>
+            <div class="timeline-body">Summary
+<p>There&#x27;s a functional change here, and a few cosmetic changes.</p>
+<p>The functional change is that we currently consider <code>Literal[str]</code> to be disjoint from <code>type[Any]</code>. But they&#x27;re not disjoint: <code>Any</code> here could be materialized as <code>str</code> or <code>object</code>; in those materializations, the two types would clearly overlap, and therefore <code>type[Any]</code> overlaps with <code>Literal[str]</code>. This PR fixes our logic in <code>Type::is_disjoint_from</code> to reflect that.</p>
 <p>Also included in this PR are cosmetic changes to <code>Type::is_subtype_of</code>. The main reason for these changes is that currently we have <code>Type::SubclassOf(target_class))</code> branches in <code>match</code> statements where the <code>target_class</code> variable actually has type <code>ClassBase</code> rather than <code>Class</code>; this is quite confusing. A secondary reason for these changes is that it should be impossible for us to encounter <code>Type::SubclassOf(SubclassOfType { base })</code> instances in this <code>match</code> statement where <code>base</code> is not a <code>ClassBase::Class()</code> variant, since all other <code>ClassBase::Class()</code> variants are not fully static exit, and therefore we immediately early in <code>is_subtype_of()</code> here if we encounter one of them:</p>
 <p>https://github.com/astral-sh/ruff/blob/6e11086c981f0ffb179fdaa78fa0837aa0283cda/crates/red_knot_python_semantic/src/types.rs#L607-L612</p>
-<p>The changes to <code>Type::is_subtype_of()</code> clarify that we shouldn't be dealing with any other <code>ClassBase::Class()</code> variants in this <code>match</code> statement; we should therefore be using <code>Class::is_subclass_of()</code> rather than <code>Class:is_subclass_of_base()</code>.</p>
-<p>As a result of the above changes, <code>Class::is_subclass_of_base()</code> actually becomes unused, so this PR removes it as well. I think this is probably also for the best: a <code>ClassBase</code> and a <code>Class</code> are two different things, and it feels like it blurs the two concepts to have a method that asks whether a class is a &quot;subclass of&quot; a <code>ClassBase</code>. If we need to ask this question again in the future, it's not that much more verbose to just do <code>class.mro(db).contains(&amp;base)</code>.</p>
-<h2>Test Plan</h2>
+<p>The changes to <code>Type::is_subtype_of()</code> clarify that we shouldn&#x27;t be dealing with any other <code>ClassBase::Class()</code> variants in this <code>match</code> statement; we should therefore be using <code>Class::is_subclass_of()</code> rather than <code>Class:is_subclass_of_base()</code>.</p>
+<p>As a result of the above changes, <code>Class::is_subclass_of_base()</code> actually becomes unused, so this PR removes it as well. I think this is probably also for the best: a <code>ClassBase</code> and a <code>Class</code> are two different things, and it feels like it blurs the two concepts to have a method that asks whether a class is a &quot;subclass of&quot; a <code>ClassBase</code>. If we need to ask this question again in the future, it&#x27;s not that much more verbose to just do <code>class.mro(db).contains(&amp;base)</code>.</p>
+Test Plan
 <p><code>cargo test -p red_knot_python_semantic</code>. The new test case for the <code>is_not_disjoint_from</code> test is the only one added in this PR that fails on <code>main</code>, but the other added test cases seem useful anyway.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-12-11 14:21</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-12-11 14:21</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @AlexWaygood on 2024-12-11 14:21</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-12-11 14:21</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-12-11 14:21</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-12-11 14:21</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2024-12-11 14:21</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-12-11 14:21</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-12-11 14:31</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:670 on 2024-12-11 16:52</div>
-            <div class="timeline-body"><p>Took me a bit to realize that we don't need to handle <code>SubclassOf(object)</code> here (like the previous code did), because <code>Instance(type)</code> is equivalent to <code>SubclassOf(object)</code>, and we check equivalence first in <code>is_subtype_of</code>. Might be worth a comment, because (taken on its own) this case now appears incomplete.</p>
-<p>TBH I think all these type-algebra methods would be easier to read if every case were commented with a Python-type-syntax example of what the case is checking, but that's out of scope for this PR.</p>
+            <div class="timeline-body"><p>Took me a bit to realize that we don&#x27;t need to handle <code>SubclassOf(object)</code> here (like the previous code did), because <code>Instance(type)</code> is equivalent to <code>SubclassOf(object)</code>, and we check equivalence first in <code>is_subtype_of</code>. Might be worth a comment, because (taken on its own) this case now appears incomplete.</p>
+<p>TBH I think all these type-algebra methods would be easier to read if every case were commented with a Python-type-syntax example of what the case is checking, but that&#x27;s out of scope for this PR.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -85,12 +85,12 @@
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:670 on 2024-12-11 17:54</div>
             <div class="timeline-body"><p>Uhhh I actually think this branch is still wrong and no tests fail if I delete it entirely. But I think we do need something here.</p>
 <p><code>Instance(enum.EnumMeta)</code> should be a subtype of <code>type[object]</code> but not a subtype of <code>type[type]</code>. Because instances of <code>enum.EnumMeta</code> (example: the class <code>enum.Enum</code>) are subclasses of <code>object</code> but not subclasses of <code>type</code>.</p>
-<p>I think I've spent too many hours thinking about <code>type[]</code> now because my head's spinning and I can't figure out what logic I need to add to make sure that that works as expected 🙃</p>
+<p>I think I&#x27;ve spent too many hours thinking about <code>type[]</code> now because my head&#x27;s spinning and I can&#x27;t figure out what logic I need to add to make sure that that works as expected 🙃</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-12-11 20:26</div>
-            <div class="timeline-body"><p>Okay... I tried to add some more comments to the function... and ended up writing https://github.com/astral-sh/ruff/pull/14924... which I will have to finish tomorrow...</p>
+            <div class="timeline-body"><p>Okay... I tried to add some more comments to the function... and ended up writing <a href="https://github.com/astral-sh/ruff/pull/14924">astral-sh/ruff#14924</a>... which I will have to finish tomorrow...</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -108,15 +108,15 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-12-11 20:59</div>
-            <div class="timeline-body"><p>I think tomorrow I'll rip out the <code>is_subtype_of</code> parts of this so it only deals with <code>is_disjoint_from</code>. And I'll continue work on https://github.com/astral-sh/ruff/pull/14924, which deals with the <code>is_subtype_of</code> questions in a more comprehensive way.</p>
+            <div class="timeline-body"><p>I think tomorrow I&#x27;ll rip out the <code>is_subtype_of</code> parts of this so it only deals with <code>is_disjoint_from</code>. And I&#x27;ll continue work on <a href="https://github.com/astral-sh/ruff/pull/14924">astral-sh/ruff#14924</a>, which deals with the <code>is_subtype_of</code> questions in a more comprehensive way.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-12-11 21:04</div>
             <div class="timeline-body"><blockquote>
-<p>I think tomorrow I'll rip out the <code>is_subtype_of</code> parts of this so it only deals with <code>is_disjoint_from</code>. And I'll continue work on https://github.com/astral-sh/ruff/pull/14924, which deals with the <code>is_subtype_of</code> questions in a more comprehensive way.</p>
+<p>I think tomorrow I&#x27;ll rip out the <code>is_subtype_of</code> parts of this so it only deals with <code>is_disjoint_from</code>. And I&#x27;ll continue work on <a href="https://github.com/astral-sh/ruff/pull/14924">astral-sh/ruff#14924</a>, which deals with the <code>is_subtype_of</code> questions in a more comprehensive way.</p>
 </blockquote>
-<p>Sounds fine, though I also think it would be fine if this PR at least removes the <code>is_subtype_of</code> case that we know is wrong and doesn't fail any tests if removed, since we've established that much here. Just makes the follow up PR on is_subtype_of that much easier to review.</p>
+<p>Sounds fine, though I also think it would be fine if this PR at least removes the <code>is_subtype_of</code> case that we know is wrong and doesn&#x27;t fail any tests if removed, since we&#x27;ve established that much here. Just makes the follow up PR on is_subtype_of that much easier to review.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -125,14 +125,14 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[red-knot] Fixup a few edge cases regarding `type[Any]`" to "[red-knot] Fixup a few edge cases regarding `type[]`" by @AlexWaygood on 2024-12-12 14:29</div>
+            <div class="event">Renamed from &quot;[red-knot] Fixup a few edge cases regarding `type[Any]`&quot; to &quot;[red-knot] Fixup a few edge cases regarding `type[]`&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-12-12 14:29</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @AlexWaygood on 2024-12-12 14:32</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-12-12 14:32</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3059 on 2024-12-12 15:53</div>
-            <div class="timeline-body"><p>minor nit, but it doesn't seem necessary to explode this onto multiple lines? Is rustfmt doing that because the trailing comma was added?</p>
+            <div class="timeline-body"><p>minor nit, but it doesn&#x27;t seem necessary to explode this onto multiple lines? Is rustfmt doing that because the trailing comma was added?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -159,10 +159,10 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @AlexWaygood on 2024-12-12 16:53</div>
+            <div class="event">Merged by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-12-12 16:53</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2024-12-12 16:53</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-12-12 16:53</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-12-12 16:53</div>
@@ -170,7 +170,7 @@
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:08:25 UTC
+        Synced at 2026-01-20 19:09:23 UTC
     </footer>
 </body>
 </html>

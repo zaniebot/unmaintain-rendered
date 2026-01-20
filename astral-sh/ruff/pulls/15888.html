@@ -24,23 +24,23 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
             <div class="timeline-body"><p>(This PR is stacked on top of #15885; review that first.)</p>
-<h2>Summary</h2>
+Summary
 <p>The logic <code>PYI019</code> uses to detect TypeVars that could be replaced with <code>Self</code> is flawed in several significant ways:</p>
 <ul>
-<li><p>The rule only looks at methods that have return-type annotations, but there are lots of methods that don't have return-type annotations that could still have their custom TypeVars replaced with <code>Self</code>.</p>
+<li><p>The rule only looks at methods that have return-type annotations, but there are lots of methods that don&#x27;t have return-type annotations that could still have their custom TypeVars replaced with <code>Self</code>.</p>
 </li>
-<li><p>The rule assumes that if the first parameter has the same annotation as the return-type annotation in an instance method, the method will be using a TypeVar in its annotations. This heuristic is surprisingly accurate, but it's still a somewhat unprincipled heuristic. It means that the rule flags code like this as &quot;using TypeVars that could be replaced with <code>Self</code>, when that's not true at all:</p>
-<pre><code class="language-py">class _NotATypeVar: ...
+<li><p>The rule assumes that if the first parameter has the same annotation as the return-type annotation in an instance method, the method will be using a TypeVar in its annotations. This heuristic is surprisingly accurate, but it&#x27;s still a somewhat unprincipled heuristic. It means that the rule flags code like this as &quot;using TypeVars that could be replaced with <code>Self</code>, when that&#x27;s not true at all:</p>
+<pre><code>class _NotATypeVar: ...
 
 class Foo:
     def m(self: _NotATypeVar) -&gt; _NotATypeVar: ...  # PYI019 flagged here
 </code></pre>
-<p>Following @InSyncWithFoo's excellent work in https://github.com/astral-sh/ruff/pull/15821 to move this rule to be a bindings-based rule, there's now no longer any need to use heuristics like this; we can do much better.</p>
+<p>Following @InSyncWithFoo&#x27;s excellent work in <a href="https://github.com/astral-sh/ruff/pull/15821">astral-sh/ruff#15821</a> to move this rule to be a bindings-based rule, there&#x27;s now no longer any need to use heuristics like this; we can do much better.</p>
 </li>
 </ul>
 <p>Unfortunately, fixing these issues expands the scope of the rule (it will start flagging methods that it did not previously flag). This PR therefore applies these fixes only if preview mode is enabled. Otherwise, we continue to use the old heuristics that we always have.</p>
-<p>Because the rule in preview mode can now apply to methods that do not have return-type annotations, we can no longer use the range of the return-type annotation as the range of the diagnostic. This PR therefore also changes the behaviour in preview mode so that we use the range of the &quot;function header&quot; for the diagnostic range (starting from the end of the function name, and ending either at the return-type annotation end (if there is a return-type annotation) or at the end of the function's parameters.</p>
-<h2>Test Plan</h2>
+<p>Because the rule in preview mode can now apply to methods that do not have return-type annotations, we can no longer use the range of the return-type annotation as the range of the diagnostic. This PR therefore also changes the behaviour in preview mode so that we use the range of the &quot;function header&quot; for the diagnostic range (starting from the end of the function name, and ending either at the return-type annotation end (if there is a return-type annotation) or at the end of the function&#x27;s parameters.</p>
+Test Plan
 <ul>
 <li>New snippets added to existing fixtures</li>
 <li>A new snapshot has been added to show what the behaviour is when the rule runs on <code>.py</code> files with preview mode enabled. (We already have a snapshot for <code>.pyi</code> files with stable mode, <code>.py</code> files with stable mode, and <code>.pyi</code> files with preview mode.)</li>
@@ -48,135 +48,135 @@ class Foo:
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @AlexWaygood on 2025-02-02 22:51</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-02 22:51</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">preview</span> added by @AlexWaygood on 2025-02-02 22:51</div>
+            <div class="event">Label <span class="label">preview</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-02 22:51</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-02 22:58</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+30 -0 violations, +0 -0 fixes in 7 projects; 48 projects unchanged)</p>
-<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<a href="https://github.com/apache/superset">apache/superset</a> (+1 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/apache/superset/blob/9e5876dc1739dfca5c5ffd87719cb71bb2e20b91/superset/sql/parse.py#L167'>superset/sql/parse.py:167:21:</a> PYI019 Use `Self` instead of custom TypeVar `TBaseSQLStatement`
++ <a href="https://github.com/apache/superset/blob/9e5876dc1739dfca5c5ffd87719cb71bb2e20b91/superset/sql/parse.py#L167">superset/sql/parse.py:167:21:</a> PYI019 Use `Self` instead of custom TypeVar `TBaseSQLStatement`
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+1 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+1 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/pandas-dev/pandas/blob/a68048ea026f09fc56e1a9963c489ff0beaae651/pandas/_libs/tslibs/timedeltas.pyi#L97'>pandas/_libs/tslibs/timedeltas.pyi:97:16:</a> PYI019 Use `Self` instead of custom TypeVar `_S`
++ <a href="https://github.com/pandas-dev/pandas/blob/a68048ea026f09fc56e1a9963c489ff0beaae651/pandas/_libs/tslibs/timedeltas.pyi#L97">pandas/_libs/tslibs/timedeltas.pyi:97:16:</a> PYI019 Use `Self` instead of custom TypeVar `_S`
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/python/typeshed">python/typeshed</a> (+13 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/python/typeshed">python/typeshed</a> (+13 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select E,F,FA,I,PYI,RUF,UP,W</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/python/typeshed/blob/aac4394eb29d86797628b57d6f01f5e17f5ff83f/stdlib/_typeshed/__init__.pyi#L328'>stdlib/_typeshed/__init__.pyi:328:16:</a> PYI019 Use `Self` instead of custom TypeVar `Self`
-+ <a href='https://github.com/python/typeshed/blob/aac4394eb29d86797628b57d6f01f5e17f5ff83f/stdlib/_typeshed/__init__.pyi#L330'>stdlib/_typeshed/__init__.pyi:330:24:</a> PYI019 Use `Self` instead of custom TypeVar `Self`
-+ <a href='https://github.com/python/typeshed/blob/aac4394eb29d86797628b57d6f01f5e17f5ff83f/stdlib/typing.pyi#L960'>stdlib/typing.pyi:960:15:</a> PYI019 [*] Use `Self` instead of custom TypeVar `_T`
-+ <a href='https://github.com/python/typeshed/blob/aac4394eb29d86797628b57d6f01f5e17f5ff83f/stdlib/typing_extensions.pyi#L239'>stdlib/typing_extensions.pyi:239:15:</a> PYI019 Use `Self` instead of custom TypeVar `_T`
-+ <a href='https://github.com/python/typeshed/blob/aac4394eb29d86797628b57d6f01f5e17f5ff83f/stubs/PyYAML/yaml/representer.pyi#L28'>stubs/PyYAML/yaml/representer.pyi:28:24:</a> PYI019 [*] Use `Self` instead of custom TypeVar `_R`
-+ <a href='https://github.com/python/typeshed/blob/aac4394eb29d86797628b57d6f01f5e17f5ff83f/stubs/PyYAML/yaml/representer.pyi#L30'>stubs/PyYAML/yaml/representer.pyi:30:30:</a> PYI019 [*] Use `Self` instead of custom TypeVar `_R`
-+ <a href='https://github.com/python/typeshed/blob/aac4394eb29d86797628b57d6f01f5e17f5ff83f/stubs/protobuf/google/protobuf/internal/containers.pyi#L36'>stubs/protobuf/google/protobuf/internal/containers.pyi:36:18:</a> PYI019 [*] Use `Self` instead of custom TypeVar `_M`
-+ <a href='https://github.com/python/typeshed/blob/aac4394eb29d86797628b57d6f01f5e17f5ff83f/stubs/protobuf/google/protobuf/internal/containers.pyi#L52'>stubs/protobuf/google/protobuf/internal/containers.pyi:52:18:</a> PYI019 [*] Use `Self` instead of custom TypeVar `_M`
-+ <a href='https://github.com/python/typeshed/blob/aac4394eb29d86797628b57d6f01f5e17f5ff83f/stubs/protobuf/google/protobuf/internal/containers.pyi#L76'>stubs/protobuf/google/protobuf/internal/containers.pyi:76:18:</a> PYI019 [*] Use `Self` instead of custom TypeVar `_M`
-+ <a href='https://github.com/python/typeshed/blob/aac4394eb29d86797628b57d6f01f5e17f5ff83f/stubs/protobuf/google/protobuf/internal/containers.pyi#L99'>stubs/protobuf/google/protobuf/internal/containers.pyi:99:18:</a> PYI019 [*] Use `Self` instead of custom TypeVar `_M`
-+ <a href='https://github.com/python/typeshed/blob/aac4394eb29d86797628b57d6f01f5e17f5ff83f/stubs/protobuf/google/protobuf/message.pyi#L30'>stubs/protobuf/google/protobuf/message.pyi:30:21:</a> PYI019 [*] Use `Self` instead of custom TypeVar `_M`
-+ <a href='https://github.com/python/typeshed/blob/aac4394eb29d86797628b57d6f01f5e17f5ff83f/stubs/protobuf/google/protobuf/message.pyi#L31'>stubs/protobuf/google/protobuf/message.pyi:31:23:</a> PYI019 [*] Use `Self` instead of custom TypeVar `_M`
-+ <a href='https://github.com/python/typeshed/blob/aac4394eb29d86797628b57d6f01f5e17f5ff83f/stubs/protobuf/google/protobuf/message.pyi#L34'>stubs/protobuf/google/protobuf/message.pyi:34:19:</a> PYI019 [*] Use `Self` instead of custom TypeVar `_M`
++ <a href="https://github.com/python/typeshed/blob/aac4394eb29d86797628b57d6f01f5e17f5ff83f/stdlib/_typeshed/__init__.pyi#L328">stdlib/_typeshed/__init__.pyi:328:16:</a> PYI019 Use `Self` instead of custom TypeVar `Self`
++ <a href="https://github.com/python/typeshed/blob/aac4394eb29d86797628b57d6f01f5e17f5ff83f/stdlib/_typeshed/__init__.pyi#L330">stdlib/_typeshed/__init__.pyi:330:24:</a> PYI019 Use `Self` instead of custom TypeVar `Self`
++ <a href="https://github.com/python/typeshed/blob/aac4394eb29d86797628b57d6f01f5e17f5ff83f/stdlib/typing.pyi#L960">stdlib/typing.pyi:960:15:</a> PYI019 [*] Use `Self` instead of custom TypeVar `_T`
++ <a href="https://github.com/python/typeshed/blob/aac4394eb29d86797628b57d6f01f5e17f5ff83f/stdlib/typing_extensions.pyi#L239">stdlib/typing_extensions.pyi:239:15:</a> PYI019 Use `Self` instead of custom TypeVar `_T`
++ <a href="https://github.com/python/typeshed/blob/aac4394eb29d86797628b57d6f01f5e17f5ff83f/stubs/PyYAML/yaml/representer.pyi#L28">stubs/PyYAML/yaml/representer.pyi:28:24:</a> PYI019 [*] Use `Self` instead of custom TypeVar `_R`
++ <a href="https://github.com/python/typeshed/blob/aac4394eb29d86797628b57d6f01f5e17f5ff83f/stubs/PyYAML/yaml/representer.pyi#L30">stubs/PyYAML/yaml/representer.pyi:30:30:</a> PYI019 [*] Use `Self` instead of custom TypeVar `_R`
++ <a href="https://github.com/python/typeshed/blob/aac4394eb29d86797628b57d6f01f5e17f5ff83f/stubs/protobuf/google/protobuf/internal/containers.pyi#L36">stubs/protobuf/google/protobuf/internal/containers.pyi:36:18:</a> PYI019 [*] Use `Self` instead of custom TypeVar `_M`
++ <a href="https://github.com/python/typeshed/blob/aac4394eb29d86797628b57d6f01f5e17f5ff83f/stubs/protobuf/google/protobuf/internal/containers.pyi#L52">stubs/protobuf/google/protobuf/internal/containers.pyi:52:18:</a> PYI019 [*] Use `Self` instead of custom TypeVar `_M`
++ <a href="https://github.com/python/typeshed/blob/aac4394eb29d86797628b57d6f01f5e17f5ff83f/stubs/protobuf/google/protobuf/internal/containers.pyi#L76">stubs/protobuf/google/protobuf/internal/containers.pyi:76:18:</a> PYI019 [*] Use `Self` instead of custom TypeVar `_M`
++ <a href="https://github.com/python/typeshed/blob/aac4394eb29d86797628b57d6f01f5e17f5ff83f/stubs/protobuf/google/protobuf/internal/containers.pyi#L99">stubs/protobuf/google/protobuf/internal/containers.pyi:99:18:</a> PYI019 [*] Use `Self` instead of custom TypeVar `_M`
++ <a href="https://github.com/python/typeshed/blob/aac4394eb29d86797628b57d6f01f5e17f5ff83f/stubs/protobuf/google/protobuf/message.pyi#L30">stubs/protobuf/google/protobuf/message.pyi:30:21:</a> PYI019 [*] Use `Self` instead of custom TypeVar `_M`
++ <a href="https://github.com/python/typeshed/blob/aac4394eb29d86797628b57d6f01f5e17f5ff83f/stubs/protobuf/google/protobuf/message.pyi#L31">stubs/protobuf/google/protobuf/message.pyi:31:23:</a> PYI019 [*] Use `Self` instead of custom TypeVar `_M`
++ <a href="https://github.com/python/typeshed/blob/aac4394eb29d86797628b57d6f01f5e17f5ff83f/stubs/protobuf/google/protobuf/message.pyi#L34">stubs/protobuf/google/protobuf/message.pyi:34:19:</a> PYI019 [*] Use `Self` instead of custom TypeVar `_M`
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/rotki/rotki">rotki/rotki</a> (+10 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/rotki/rotki">rotki/rotki</a> (+10 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/rotki/rotki/blob/7273a75e2e848662f8b1d75cdbc3446234414137/rotkehlchen/db/filtering.py#L1138'>rotkehlchen/db/filtering.py:1138:13:</a> PYI019 Use `Self` instead of custom TypeVar `T_EthSTakingFilterQ`
-+ <a href='https://github.com/rotki/rotki/blob/7273a75e2e848662f8b1d75cdbc3446234414137/rotkehlchen/db/filtering.py#L373'>rotkehlchen/db/filtering.py:373:15:</a> PYI019 Use `Self` instead of custom TypeVar `T_FilterQ`
-+ <a href='https://github.com/rotki/rotki/blob/7273a75e2e848662f8b1d75cdbc3446234414137/rotkehlchen/db/filtering.py#L866'>rotkehlchen/db/filtering.py:866:13:</a> PYI019 Use `Self` instead of custom TypeVar `T_HistoryBaseEntryFilterQ`
-+ <a href='https://github.com/rotki/rotki/blob/7273a75e2e848662f8b1d75cdbc3446234414137/rotkehlchen/history/events/structures/base.py#L372'>rotkehlchen/history/events/structures/base.py:372:39:</a> PYI019 Use `Self` instead of custom TypeVar `T`
-+ <a href='https://github.com/rotki/rotki/blob/7273a75e2e848662f8b1d75cdbc3446234414137/rotkehlchen/utils/mixins/enums.py#L101'>rotkehlchen/utils/mixins/enums.py:101:20:</a> PYI019 Use `Self` instead of custom TypeVar `S`
-+ <a href='https://github.com/rotki/rotki/blob/7273a75e2e848662f8b1d75cdbc3446234414137/rotkehlchen/utils/mixins/enums.py#L126'>rotkehlchen/utils/mixins/enums.py:126:20:</a> PYI019 Use `Self` instead of custom TypeVar `S`
-+ <a href='https://github.com/rotki/rotki/blob/7273a75e2e848662f8b1d75cdbc3446234414137/rotkehlchen/utils/mixins/enums.py#L12'>rotkehlchen/utils/mixins/enums.py:12:16:</a> PYI019 Use `Self` instead of custom TypeVar `T`
-+ <a href='https://github.com/rotki/rotki/blob/7273a75e2e848662f8b1d75cdbc3446234414137/rotkehlchen/utils/mixins/enums.py#L151'>rotkehlchen/utils/mixins/enums.py:151:28:</a> PYI019 Use `Self` instead of custom TypeVar `D`
-+ <a href='https://github.com/rotki/rotki/blob/7273a75e2e848662f8b1d75cdbc3446234414137/rotkehlchen/utils/mixins/enums.py#L172'>rotkehlchen/utils/mixins/enums.py:172:28:</a> PYI019 Use `Self` instead of custom TypeVar `D`
-+ <a href='https://github.com/rotki/rotki/blob/7273a75e2e848662f8b1d75cdbc3446234414137/rotkehlchen/utils/mixins/enums.py#L77'>rotkehlchen/utils/mixins/enums.py:77:20:</a> PYI019 Use `Self` instead of custom TypeVar `S`
++ <a href="https://github.com/rotki/rotki/blob/7273a75e2e848662f8b1d75cdbc3446234414137/rotkehlchen/db/filtering.py#L1138">rotkehlchen/db/filtering.py:1138:13:</a> PYI019 Use `Self` instead of custom TypeVar `T_EthSTakingFilterQ`
++ <a href="https://github.com/rotki/rotki/blob/7273a75e2e848662f8b1d75cdbc3446234414137/rotkehlchen/db/filtering.py#L373">rotkehlchen/db/filtering.py:373:15:</a> PYI019 Use `Self` instead of custom TypeVar `T_FilterQ`
++ <a href="https://github.com/rotki/rotki/blob/7273a75e2e848662f8b1d75cdbc3446234414137/rotkehlchen/db/filtering.py#L866">rotkehlchen/db/filtering.py:866:13:</a> PYI019 Use `Self` instead of custom TypeVar `T_HistoryBaseEntryFilterQ`
++ <a href="https://github.com/rotki/rotki/blob/7273a75e2e848662f8b1d75cdbc3446234414137/rotkehlchen/history/events/structures/base.py#L372">rotkehlchen/history/events/structures/base.py:372:39:</a> PYI019 Use `Self` instead of custom TypeVar `T`
++ <a href="https://github.com/rotki/rotki/blob/7273a75e2e848662f8b1d75cdbc3446234414137/rotkehlchen/utils/mixins/enums.py#L101">rotkehlchen/utils/mixins/enums.py:101:20:</a> PYI019 Use `Self` instead of custom TypeVar `S`
++ <a href="https://github.com/rotki/rotki/blob/7273a75e2e848662f8b1d75cdbc3446234414137/rotkehlchen/utils/mixins/enums.py#L126">rotkehlchen/utils/mixins/enums.py:126:20:</a> PYI019 Use `Self` instead of custom TypeVar `S`
++ <a href="https://github.com/rotki/rotki/blob/7273a75e2e848662f8b1d75cdbc3446234414137/rotkehlchen/utils/mixins/enums.py#L12">rotkehlchen/utils/mixins/enums.py:12:16:</a> PYI019 Use `Self` instead of custom TypeVar `T`
++ <a href="https://github.com/rotki/rotki/blob/7273a75e2e848662f8b1d75cdbc3446234414137/rotkehlchen/utils/mixins/enums.py#L151">rotkehlchen/utils/mixins/enums.py:151:28:</a> PYI019 Use `Self` instead of custom TypeVar `D`
++ <a href="https://github.com/rotki/rotki/blob/7273a75e2e848662f8b1d75cdbc3446234414137/rotkehlchen/utils/mixins/enums.py#L172">rotkehlchen/utils/mixins/enums.py:172:28:</a> PYI019 Use `Self` instead of custom TypeVar `D`
++ <a href="https://github.com/rotki/rotki/blob/7273a75e2e848662f8b1d75cdbc3446234414137/rotkehlchen/utils/mixins/enums.py#L77">rotkehlchen/utils/mixins/enums.py:77:20:</a> PYI019 Use `Self` instead of custom TypeVar `S`
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+2 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/zulip/zulip">zulip/zulip</a> (+2 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/zulip/zulip/blob/42bc59b8027a074b31054f5fc0f1e6440fdd5252/zerver/data_import/slack.py#L109'>zerver/data_import/slack.py:109:18:</a> PYI019 Use `Self` instead of custom TypeVar `SlackBotEmailT`
-+ <a href='https://github.com/zulip/zulip/blob/42bc59b8027a074b31054f5fc0f1e6440fdd5252/zerver/lib/thumbnail.py#L55'>zerver/lib/thumbnail.py:55:20:</a> PYI019 Use `Self` instead of custom TypeVar `T`
++ <a href="https://github.com/zulip/zulip/blob/42bc59b8027a074b31054f5fc0f1e6440fdd5252/zerver/data_import/slack.py#L109">zerver/data_import/slack.py:109:18:</a> PYI019 Use `Self` instead of custom TypeVar `SlackBotEmailT`
++ <a href="https://github.com/zulip/zulip/blob/42bc59b8027a074b31054f5fc0f1e6440fdd5252/zerver/lib/thumbnail.py#L55">zerver/lib/thumbnail.py:55:20:</a> PYI019 Use `Self` instead of custom TypeVar `T`
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/python-trio/trio">python-trio/trio</a> (+1 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/python-trio/trio">python-trio/trio</a> (+1 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/python-trio/trio/blob/d39444a9abddd745c99f5fcc85be3e350dc8b27b/src/trio/testing/_fake_net.py#L103'>src/trio/testing/_fake_net.py:103:29:</a> PYI019 Use `Self` instead of custom TypeVar `T_UDPEndpoint`
++ <a href="https://github.com/python-trio/trio/blob/d39444a9abddd745c99f5fcc85be3e350dc8b27b/src/trio/testing/_fake_net.py#L103">src/trio/testing/_fake_net.py:103:29:</a> PYI019 Use `Self` instead of custom TypeVar `T_UDPEndpoint`
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/astropy/astropy">astropy/astropy</a> (+2 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/astropy/astropy">astropy/astropy</a> (+2 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/astropy/astropy/blob/d81c3f9b4cbc4d71ff3bf00a079b574c21aa8b22/astropy/cosmology/_src/core.py#L485'>astropy/cosmology/_src/core.py:485:26:</a> PYI019 Use `Self` instead of custom TypeVar `_FlatCosmoT`
-+ <a href='https://github.com/astropy/astropy/blob/d81c3f9b4cbc4d71ff3bf00a079b574c21aa8b22/astropy/cosmology/_src/flrw/base.py#L1705'>astropy/cosmology/_src/flrw/base.py:1705:16:</a> PYI019 Use `Self` instead of custom TypeVar `_FlatFLRWMixinT`
++ <a href="https://github.com/astropy/astropy/blob/d81c3f9b4cbc4d71ff3bf00a079b574c21aa8b22/astropy/cosmology/_src/core.py#L485">astropy/cosmology/_src/core.py:485:26:</a> PYI019 Use `Self` instead of custom TypeVar `_FlatCosmoT`
++ <a href="https://github.com/astropy/astropy/blob/d81c3f9b4cbc4d71ff3bf00a079b574c21aa8b22/astropy/cosmology/_src/flrw/base.py#L1705">astropy/cosmology/_src/flrw/base.py:1705:16:</a> PYI019 Use `Self` instead of custom TypeVar `_FlatFLRWMixinT`
 </pre>
 
 </p>
-</details>
-<details><summary>Changes by rule (1 rules affected)</summary>
+
+Changes by rule (1 rules affected)
 <p>
 
 <p>| code | total | + violation | - violation | + fix | - fix |
 | ---- | ------- | --------- | -------- | ----- | ---- |
 | PYI019 | 30 | 30 | 0 | 0 | 0 |</p>
 </p>
-</details>
+
 
 </div>
         </div>
@@ -208,10 +208,10 @@ class Foo:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/custom_type_var_for_self.rs</code>:150 on 2025-02-03 15:13</div>
-            <div class="timeline-body"><p>This one will be hard to find because it won't show up when searching for <code>preview.is_enabled</code> or <code>preview.is_disabled</code> (which I normally use).</p>
+            <div class="timeline-body"><p>This one will be hard to find because it won&#x27;t show up when searching for <code>preview.is_enabled</code> or <code>preview.is_disabled</code> (which I normally use).</p>
 <p>It makes me wonder if we should start doing something similar to the formatter where we have a <code>preview.rs</code> file and each preview feature defines a <code>is_feature_name_enabled(&amp;settings)</code>. It makes it very easy to see all current preview behaviors and promoting it is as easy as removing the function -&gt; Rust will tell you exactly where you have to make changes.</p>
-<p>However, this will likely mean that you'd have to change this match to inline the preview check into the match arms. Although I'd kind of prefer this anyway because it reduces the number of lines that need changing when promoting the feature (the match header remains unchanged).</p>
-<pre><code class="language-rust">match (function_kind, returns.as_deref() {
+<p>However, this will likely mean that you&#x27;d have to change this match to inline the preview check into the match arms. Although I&#x27;d kind of prefer this anyway because it reduces the number of lines that need changing when promoting the feature (the match header remains unchanged).</p>
+<pre><code>match (function_kind, returns.as_deref() {
 	(FunctionType::Function | FunctionType::StaticMethod, _) =&gt; return None,
 	(FunctionType::ClassMethod, returns) =&gt; {
 		if is_more_precise_custom_type_var_for_self_enabled(settings) {
@@ -224,7 +224,7 @@ class Foo:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/custom_type_var_for_self.rs</code>:606 on 2025-02-03 15:21</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">```suggestion
+            <div class="timeline-body"><pre><code>```suggestion
     if let [sole_typevar] == parameters.as_slice() {
         return (sole_typevar.range() == custom_typevar.range())
             .then(|| Edit::range_deletion(type_params.range));
@@ -243,14 +243,14 @@ class Foo:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/custom_type_var_for_self.rs</code>:150 on 2025-02-03 15:40</div>
-            <div class="timeline-body"><p>I've switched to use <code>preview.is_enabled()</code>. It's not pretty... but I'm consoling myself that we'll be able to get rid of it soonish 😆</p>
+            <div class="timeline-body"><p>I&#x27;ve switched to use <code>preview.is_enabled()</code>. It&#x27;s not pretty... but I&#x27;m consoling myself that we&#x27;ll be able to get rid of it soonish 😆</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @AlexWaygood on 2025-02-03 15:45</div>
+            <div class="event">Merged by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-03 15:45</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-02-03 15:45</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-03 15:45</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-02-03 15:45</div>
@@ -261,7 +261,7 @@ class Foo:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/custom_type_var_for_self.rs</code>:150 on 2025-02-03 15:46</div>
-            <div class="timeline-body"><p>Oh no, I hoped you start using the preview feature functions... I'll think of you when I have to promote the behavior change 🤣</p>
+            <div class="timeline-body"><p>Oh no, I hoped you start using the preview feature functions... I&#x27;ll think of you when I have to promote the behavior change 🤣</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -276,7 +276,7 @@ class Foo:
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:09:41 UTC
+        Synced at 2026-01-20 19:11:02 UTC
     </footer>
 </body>
 </html>

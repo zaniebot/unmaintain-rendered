@@ -23,32 +23,32 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dscorbett">@dscorbett</a></div>
-            <div class="timeline-body"><h3>Description</h3>
+            <div class="timeline-body">Description
 <p>The fix for <a href="https://docs.astral.sh/ruff/rules/unnecessary-collection-call/">unnecessary-collection-call (C408)</a> changes the program’s behavior when a <code>dict</code> call’s keyword argument’s runtime name does not equal the name as it appears in the source code. This happens when the name in the source code isn’t normalized in NFKC.</p>
-<pre><code class="language-console">$ cat &gt;c408.py &lt;&lt;'# EOF'
+<pre><code>$ cat &gt;c408.py &lt;&lt;&#x27;# EOF&#x27;
 print(dict(ℼ=3.14))
 # EOF
 
 $ python c408.py
-{'π': 3.14}
+{&#x27;π&#x27;: 3.14}
 
 $ ruff --isolated check --select C408 c408.py --unsafe-fixes --fix
 Found 1 error (1 fixed, 0 remaining).
 
 $ python c408.py
-{'ℼ': 3.14}
+{&#x27;ℼ&#x27;: 3.14}
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-02-18 16:54</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-18 16:54</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-02-18 16:54</div>
+            <div class="event">Label <span class="label">fixes</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-18 16:54</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-18 16:59</div>
-            <div class="timeline-body"><p>I took a brief look at the code <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/rules/flake8_comprehensions/fixes.rs#L217">here</a> and didn't immediately see anything weird going on with Unicode stuff. I wonder if something could be going wrong with the libcst codegen around here?</p>
+            <div class="timeline-body"><p>I took a brief look at the code <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/rules/flake8_comprehensions/fixes.rs#L217">here</a> and didn&#x27;t immediately see anything weird going on with Unicode stuff. I wonder if something could be going wrong with the libcst codegen around here?</p>
 <p>https://github.com/astral-sh/ruff/blob/0868e73d2c720839dfe7cc519335eed893bea534/crates/ruff_linter/src/rules/flake8_comprehensions/fixes.rs#L286-L291</p>
 <p>This feels like it could be a more general issue than just this rule.</p>
 </div>
@@ -56,12 +56,12 @@ $ python c408.py
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jelle-openai">@jelle-openai</a> on 2025-02-18 17:43</div>
             <div class="timeline-body"><p>I believe the issue here is that Python NFKC-normalizes identifiers, but not string literals. In the original <code>dict(ℼ=3.14)</code>, <code>ℼ</code> is an identifier so it gets normalized:</p>
-<pre><code>&gt;&gt;&gt; unicodedata.normalize('NFKC', 'ℼ')
-'π'
+<pre><code>&gt;&gt;&gt; unicodedata.normalize(&#x27;NFKC&#x27;, &#x27;ℼ&#x27;)
+&#x27;π&#x27;
 </code></pre>
-<p>But Ruff turns this into <code>{'ℼ': 3.14}</code>, which is not an identifier and doesn't get normalized.</p>
+<p>But Ruff turns this into <code>{&#x27;ℼ&#x27;: 3.14}</code>, which is not an identifier and doesn&#x27;t get normalized.</p>
 <p>The fix would be to NFKC-normalize any identifiers that the C408 autofix turns into string literals.</p>
-<p>This issue could also appear in other fixes if they turn identifiers into string literals, but that's not going to be very common.</p>
+<p>This issue could also appear in other fixes if they turn identifiers into string literals, but that&#x27;s not going to be very common.</p>
 <p>Perhaps Ruff should also have a rule against identifiers that are not NFKC-normalized.</p>
 </div>
         </div>
@@ -72,9 +72,9 @@ $ python c408.py
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-19 11:31</div>
-            <div class="timeline-body"><p>We emulate Python's NFKC normalisation for identifiers in the lexer here:</p>
+            <div class="timeline-body"><p>We emulate Python&#x27;s NFKC normalisation for identifiers in the lexer here:</p>
 <p>https://github.com/astral-sh/ruff/blob/e84985e9b3d101d5bd0b4b475855f9e5ccc0a007/crates/ruff_python_parser/src/lexer.rs#L639-L655</p>
-<p>We've had issues in the past when fixes use <code>libcst</code> due to the fact that <code>libcst</code> uses a different parser, and does <em>not</em> do the same NFKC normalisation of identifiers. This looks like it stems from the same issue</p>
+<p>We&#x27;ve had issues in the past when fixes use <code>libcst</code> due to the fact that <code>libcst</code> uses a different parser, and does <em>not</em> do the same NFKC normalisation of identifiers. This looks like it stems from the same issue</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -82,13 +82,13 @@ $ python c408.py
             <div class="timeline-body"><blockquote>
 <p>Perhaps Ruff should also have a rule against identifiers that are not NFKC-normalized.</p>
 </blockquote>
-<p>It actually surprises me that we don't already! Considering that we already have <code>RUF001</code>, <code>RUF002</code> and <code>RUF003</code></p>
+<p>It actually surprises me that we don&#x27;t already! Considering that we already have <code>RUF001</code>, <code>RUF002</code> and <code>RUF003</code></p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:52:13 UTC
+        Synced at 2026-01-20 18:49:32 UTC
     </footer>
 </body>
 </html>

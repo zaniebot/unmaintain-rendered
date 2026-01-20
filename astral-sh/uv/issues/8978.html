@@ -23,24 +23,24 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ryanhiebert">@ryanhiebert</a></div>
-            <div class="timeline-body"><p>I'm authoring a python library package (<a href="https://github.com/aldjemy/aldjemy">Aldjemy</a>), and I'm running into a problem that I think I've seen before (with Poetry) that makes me think that I'm probably not using <code>uv</code> correctly, but I'm not really sure what is and is not intended.</p>
+            <div class="timeline-body"><p>I&#x27;m authoring a python library package (<a href="https://github.com/aldjemy/aldjemy">Aldjemy</a>), and I&#x27;m running into a problem that I think I&#x27;ve seen before (with Poetry) that makes me think that I&#x27;m probably not using <code>uv</code> correctly, but I&#x27;m not really sure what is and is not intended.</p>
 <p>When I do <code>uv sync --upgrade</code>, it always installs Django 4.2. If I attempt to force it to use Django 5.1.3, I get the following message:</p>
 <pre><code>  × No solution found when resolving dependencies:
   ╰─▶ Because the requested Python version (&gt;=3.9) does not satisfy Python&gt;=3.10 and django==5.1.3 depends on Python&gt;=3.10, we can conclude that django==5.1.3
       cannot be used.
-      And because your project depends on django==5.1.3, we can conclude that your project's requirements are unsatisfiable.
+      And because your project depends on django==5.1.3, we can conclude that your project&#x27;s requirements are unsatisfiable.
 
       hint: The `requires-python` value (&gt;=3.9) includes Python versions that are not supported by your dependencies (e.g., django==5.1.3 only supports
       &gt;=3.10). Consider using a more restrictive `requires-python` value (like &gt;=3.10).
 </code></pre>
-<p>It's clear to me that this is treating the Python dependency differently from other dependencies. Instead of ensuring that my package requires 3.9+, which I'd expect to cause problems attempting to install in a lower version of Python but not a higher version, it's making sure that all my dependencies, transitively add <em>no further restriction</em> to my acceptable Python versions.</p>
-<p>Right at this moment I'm not imaginative enough to figure out why someone would want this behavior, but I'm pretty sure it's not the behavior I should be wanting. Is there a better way to do what I'm trying to do? Is <code>uv sync</code> the wrong tool? (I like that it will quickly create and manage the venv for me). Is this the wrong way to specify minimum versions for libraries?</p>
+<p>It&#x27;s clear to me that this is treating the Python dependency differently from other dependencies. Instead of ensuring that my package requires 3.9+, which I&#x27;d expect to cause problems attempting to install in a lower version of Python but not a higher version, it&#x27;s making sure that all my dependencies, transitively add <em>no further restriction</em> to my acceptable Python versions.</p>
+<p>Right at this moment I&#x27;m not imaginative enough to figure out why someone would want this behavior, but I&#x27;m pretty sure it&#x27;s not the behavior I should be wanting. Is there a better way to do what I&#x27;m trying to do? Is <code>uv sync</code> the wrong tool? (I like that it will quickly create and manage the venv for me). Is this the wrong way to specify minimum versions for libraries?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2024-11-10 02:14</div>
-            <div class="timeline-body"><p>I think it's because UV is looking for a compatible version. If you want to use <code>Django &gt;= 5.0</code>, the minimum required Python version would be <code>Python 3.10</code>.
-Moreover, the project series' features, such as uv lock and uv sync, aim to generate universal or cross-platform lockfiles. As a result, based on your dependency requirements, it cannot find a Django version compatible with <code>Python 3.9</code>.
+            <div class="timeline-body"><p>I think it&#x27;s because UV is looking for a compatible version. If you want to use <code>Django &gt;= 5.0</code>, the minimum required Python version would be <code>Python 3.10</code>.
+Moreover, the project series&#x27; features, such as uv lock and uv sync, aim to generate universal or cross-platform lockfiles. As a result, based on your dependency requirements, it cannot find a Django version compatible with <code>Python 3.9</code>.
 https://docs.astral.sh/uv/concepts/projects</p>
 </div>
         </div>
@@ -48,26 +48,26 @@ https://docs.astral.sh/uv/concepts/projects</p>
             <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2024-11-10 02:29</div>
             <div class="timeline-body"><p>Therefore, if you have a dependency on Python 3.9, you can only choose to rely on versions of Django below 5.0, or have Python 3.9 and Python 3.10 rely on different versions of Django.</p>
 <p>Examples of dependencies on different versions:</p>
-<pre><code class="language-toml">requires-python = &quot;&gt;=3.9&quot;
+<pre><code>requires-python = &quot;&gt;=3.9&quot;
 dependencies = [
   &quot;SQLAlchemy&gt;=1.4,&lt;2&quot;,
-  &quot;Django&gt;=5.0 ; python_version &gt;= '3.10'&quot;,
-  &quot;Django&lt;5.0 ; python_version &lt; '3.10'&quot;
+  &quot;Django&gt;=5.0 ; python_version &gt;= &#x27;3.10&#x27;&quot;,
+  &quot;Django&lt;5.0 ; python_version &lt; &#x27;3.10&#x27;&quot;
 ]
 </code></pre>
 <p>Edit:
 Are you looking for UV to automatically generate support for using Django 4.2.16 with Python 3.9, and Django 5.1.3 with Python 3.10 or higher?
-Currently, UV's lock file, without Environment Markers, will search for the single compatible version that meets the current requirements. Therefore, if you don't use PEP 508 Environment Markers, it won't be able to meet your needs.</p>
+Currently, UV&#x27;s lock file, without Environment Markers, will search for the single compatible version that meets the current requirements. Therefore, if you don&#x27;t use PEP 508 Environment Markers, it won&#x27;t be able to meet your needs.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ryanhiebert">@ryanhiebert</a> on 2024-11-10 10:42</div>
-            <div class="timeline-body"><p>Your example would have encoded too much restriction. However, with that hint I was able to find this solution that tells the resolver that it'll need to look for multiple versions of Django depending on the Python version, without adding addition restrictions for my library's consumers.</p>
+            <div class="timeline-body"><p>Your example would have encoded too much restriction. However, with that hint I was able to find this solution that tells the resolver that it&#x27;ll need to look for multiple versions of Django depending on the Python version, without adding addition restrictions for my library&#x27;s consumers.</p>
 <pre><code>requires-python = &quot;&gt;=3.9&quot;
 dependencies = [
   &quot;SQLAlchemy&gt;=1.4&quot;,
-  &quot;Django&gt;=4.2 ; python_version &gt;= '3.9'&quot;,
-  &quot;Django&gt;=5.0 ; python_version &gt;= '3.10'&quot;,
+  &quot;Django&gt;=4.2 ; python_version &gt;= &#x27;3.9&#x27;&quot;,
+  &quot;Django&gt;=5.0 ; python_version &gt;= &#x27;3.10&#x27;&quot;,
 ]
 </code></pre>
 <blockquote>
@@ -75,19 +75,19 @@ dependencies = [
 </blockquote>
 <p>Yes, this would be great.</p>
 <blockquote>
-<p>Currently, UV's lock file, without Environment Markers, will search for the single compatible version</p>
+<p>Currently, UV&#x27;s lock file, without Environment Markers, will search for the single compatible version</p>
 </blockquote>
-<p>Thank you for explaining that. I think I can work with this limitation of the resolver, although I'd be very happy to see this limitation lifted.</p>
+<p>Thank you for explaining that. I think I can work with this limitation of the resolver, although I&#x27;d be very happy to see this limitation lifted.</p>
 <p>I found these other issues and pull requests that seem related to this, for anyone else that stumbles across this issue and wants to see what happens: #8492, #7190, #8686</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ryanhiebert on 2024-11-10 10:44</div>
+            <div class="event">Closed by <a href="https://github.com/ryanhiebert">@ryanhiebert</a> on 2024-11-10 10:44</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:28:15 UTC
+        Synced at 2026-01-20 19:35:23 UTC
     </footer>
 </body>
 </html>

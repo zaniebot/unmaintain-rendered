@@ -24,9 +24,9 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/fosskers">@fosskers</a></div>
             <div class="timeline-body"><p>This issue is related to the following discussion: https://github.com/clap-rs/clap/discussions/2192 . The original issue is explained it detail there. I was asked to open an issue, since there may be a UI/UX change that can be made. Below is runnable code that demonstrates the problem.</p>
-<h3>Code and Behaviour</h3>
+Code and Behaviour
 <p>This first example shows the original form of the code.</p>
-<pre><code class="language-rust">use clap::Clap;
+<pre><code>use clap::Clap;
 
 #[derive(Clap, Debug)]
 struct Args {
@@ -55,15 +55,15 @@ FLAGS:
 </code></pre>
 <p>If we try to set <code>--clean</code> multiple times, we get an error as expected:</p>
 <pre><code>&gt; cargo run -- -cc
-error: The argument '--clean' was provided more than once, but cannot be used multiple times
+error: The argument &#x27;--clean&#x27; was provided more than once, but cannot be used multiple times
 
 USAGE:
     clap-ma [FLAGS]
 
 For more information try --help
 </code></pre>
-<p>Now let's set <code>multiple_occurrences = true</code>:</p>
-<pre><code class="language-rust">use clap::Clap;
+<p>Now let&#x27;s set <code>multiple_occurrences = true</code>:</p>
+<pre><code>use clap::Clap;
 
 #[derive(Clap, Debug)]
 struct Args {
@@ -78,7 +78,7 @@ fn main() {
     println!(&quot;{:#?}&quot;, args);
 }
 </code></pre>
-<p>This compiles fine, but help output doesn't change. <code>-c</code> can be passed more than once, but since the field is a single <code>bool</code>, nothing really changes. You might think that setting the field instead to <code>u8</code> or <code>Vec&lt;bool&gt;</code> would then represent the <em>count</em> of the appearances of the flag, but doing so instead turns it into an arg-accepting &quot;option&quot;:</p>
+<p>This compiles fine, but help output doesn&#x27;t change. <code>-c</code> can be passed more than once, but since the field is a single <code>bool</code>, nothing really changes. You might think that setting the field instead to <code>u8</code> or <code>Vec&lt;bool&gt;</code> would then represent the <em>count</em> of the appearances of the flag, but doing so instead turns it into an arg-accepting &quot;option&quot;:</p>
 <pre><code>&gt; cargo run -- -h
 clap-ma 
 
@@ -92,14 +92,14 @@ FLAGS:
 OPTIONS:
     -c, --clean &lt;clean&gt;...    Some cleaning operation
 colin@yumi ~/c/r/clap-ma (master)&gt; cargo run -- -c
-error: The argument '--clean &lt;clean&gt;...' requires a value but none was supplied
+error: The argument &#x27;--clean &lt;clean&gt;...&#x27; requires a value but none was supplied
 
 USAGE:
     clap-ma --clean &lt;clean&gt;...
 
 For more information try --help
 </code></pre>
-<h3>Steps to reproduce the issue</h3>
+Steps to reproduce the issue
 <ol>
 <li>Run the first example with <code>cargo run -- -h</code></li>
 <li>See the expected output: <code>--clean</code> is a &quot;flag&quot;.</li>
@@ -108,21 +108,21 @@ For more information try --help
 <li>Change the field type to a non-bool.</li>
 <li>Notice that <code>--clean</code> becomes an arg-accepting &quot;option&quot;.</li>
 </ol>
-<h3>Version</h3>
+Version
 <ul>
 <li><strong>Rust</strong>: <code>rustc 1.47.0 (18bf6b4f0 2020-10-07)</code></li>
 <li><strong>Clap</strong>: <code>3.0.0-beta.2</code></li>
 </ul>
-<h3>Actual Behavior Summary</h3>
+Actual Behavior Summary
 <p><em>See the above.</em></p>
 <p>I am attempting to represent flags that can appear multiple times in my <a href="https://github.com/fosskers/aura/issues/657">port of the Aura project</a> to Rust, but I wish to do so via the auto-derived <code>Clap</code> trait, which is much cleaner than handwriting the <code>App</code> and <code>Arg</code>s.</p>
-<h3>Debug output</h3>
+Debug output
 <p>The following shows <code>multiple_occurrences = true</code>, but the field is a single <code>bool</code>:</p>
-<details>
-<summary> Debug Output </summary>
+
+ Debug Output 
 <pre>
 <code>
-> cargo run -- -cc
+&gt; cargo run -- -cc
    Compiling clap v3.0.0-beta.2
    Compiling clap-ma v0.1.0 (/home/colin/code/rust/clap-ma)
     Finished dev [unoptimized + debuginfo] target(s) in 5.85s
@@ -141,14 +141,14 @@ For more information try --help
 [         clap::parse::parser] 	Parser::get_matches_with
 [         clap::parse::parser] 	Parser::_build
 [         clap::parse::parser] 	Parser::_verify_positionals
-[         clap::parse::parser] 	Parser::get_matches_with: Begin parsing '"-cc"' ([45, 99, 99])
-[         clap::parse::parser] 	Parser::is_new_arg: "-cc":NotFound
+[         clap::parse::parser] 	Parser::get_matches_with: Begin parsing &#x27;&quot;-cc&quot;&#x27; ([45, 99, 99])
+[         clap::parse::parser] 	Parser::is_new_arg: &quot;-cc&quot;:NotFound
 [         clap::parse::parser] 	Parser::is_new_arg: arg_allows_tac=false
 [         clap::parse::parser] 	Parser::is_new_arg: - found
 [         clap::parse::parser] 	Parser::is_new_arg: starts_new_arg=true
-[         clap::parse::parser] 	Parser::possible_subcommand: arg="-cc"
+[         clap::parse::parser] 	Parser::possible_subcommand: arg=&quot;-cc&quot;
 [         clap::parse::parser] 	Parser::get_matches_with: possible_sc=false, sc=None
-[         clap::parse::parser] 	Parser::parse_short_arg: full_arg="-cc"
+[         clap::parse::parser] 	Parser::parse_short_arg: full_arg=&quot;-cc&quot;
 [         clap::parse::parser] 	Parser::parse_short_arg:iter:c
 [         clap::parse::parser] 	Parser::parse_short_arg:iter:c: Found valid opt or flag
 [         clap::parse::parser] 	Parser::check_for_help_and_version_char
@@ -188,27 +188,27 @@ For more information try --help
 [      clap::parse::validator] 	Validator::validate_matched_args
 [      clap::parse::validator] 	Validator::validate_matched_args:iter:clean: vals=[]
 [      clap::parse::validator] 	Validator::validate_arg_num_vals
-[      clap::parse::validator] 	Validator::validate_arg_values: arg="clean"
-[      clap::parse::validator] 	Validator::validate_arg_requires:"clean"
-[      clap::parse::validator] 	Validator::validate_arg_num_occurs: "clean"=2
+[      clap::parse::validator] 	Validator::validate_arg_values: arg=&quot;clean&quot;
+[      clap::parse::validator] 	Validator::validate_arg_requires:&quot;clean&quot;
+[      clap::parse::validator] 	Validator::validate_arg_num_occurs: &quot;clean&quot;=2
 [    clap::parse::arg_matcher] 	ArgMatcher::get_global_values: global_arg_vec=[]
 Args {
     clean: true,
 }
 </code>
 </pre>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">T: bug</span> added by @fosskers on 2020-10-31 18:38</div>
+            <div class="event">Label <span class="label">T: bug</span> added by <a href="https://github.com/fosskers">@fosskers</a> on 2020-10-31 18:38</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">C: derive macros</span> added by @pksunkara on 2020-10-31 20:41</div>
+            <div class="event">Label <span class="label">C: derive macros</span> added by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-10-31 20:41</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "3.0" by @pksunkara on 2020-10-31 20:41</div>
+            <div class="event">Added to milestone &quot;3.0&quot; by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-10-31 20:41</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/fosskers">@fosskers</a> on 2020-11-20 03:35</div>
@@ -217,7 +217,7 @@ Args {
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../fosskers/aura/pulls/671.html">fosskers/aura#671</a> on 2020-11-20 16:40</div>
+            <div class="event">Referenced in <a>fosskers/aura#671</a> on 2020-11-20 16:40</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-05-26 10:37</div>
@@ -226,9 +226,9 @@ Args {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-07-20 17:18</div>
-            <div class="timeline-body"><p>I'd propose we &quot;won't fix&quot; this and instead point people to <code>#[clap(..., parse(from_occurrences))]</code></p>
-<p>Currently, we don't special case any compound <code>bool</code> types.</p>
-<p>I'm trying to understand why/when someone would want one compared to <code>from_occurrences</code>:</p>
+            <div class="timeline-body"><p>I&#x27;d propose we &quot;won&#x27;t fix&quot; this and instead point people to <code>#[clap(..., parse(from_occurrences))]</code></p>
+<p>Currently, we don&#x27;t special case any compound <code>bool</code> types.</p>
+<p>I&#x27;m trying to understand why/when someone would want one compared to <code>from_occurrences</code>:</p>
 <ul>
 <li><code>Option&lt;bool&gt;</code> is redundant: we already know whether the flag is present or not, based on bool</li>
 <li><code>Vec&lt;bool&gt;</code> will just be a variable number of <code>true</code>, only useful for the count.</li>
@@ -237,15 +237,15 @@ Args {
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @fosskers on 2021-10-21 21:05</div>
+            <div class="event">Closed by <a href="https://github.com/fosskers">@fosskers</a> on 2021-10-21 21:05</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../pulls/2993.html">clap-rs/clap#2993</a> on 2021-11-05 14:24</div>
+            <div class="event">Referenced in <a>clap-rs/clap#2993</a> on 2021-11-05 14:24</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:47:47 UTC
+        Synced at 2026-01-20 19:57:56 UTC
     </footer>
 </body>
 </html>

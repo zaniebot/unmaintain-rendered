@@ -23,32 +23,32 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This PR changes the package file discovery from being done eagerly when loading the workspace to lazily when the files are first needed (e.g. because <code>workspace.check</code> is called).</p>
-<p>Implementing lazy discovery is a bit tricky because we don't want to throw away all discovered files when a new file watch event comes in. Instead,
+<p>Implementing lazy discovery is a bit tricky because we don&#x27;t want to throw away all discovered files when a new file watch event comes in. Instead,
 we want to update the workspace files in-place and tell Salsa that the files have changed.</p>
-<p>This PR uses an approach that uses internal mutability to achieve this while guaranteeing that the package files from one salsa revision don't compare equal to the same files in the next salsa revision (unless they are 100% equal).</p>
-<h2>Test Plan</h2>
+<p>This PR uses an approach that uses internal mutability to achieve this while guaranteeing that the package files from one salsa revision don&#x27;t compare equal to the same files in the next salsa revision (unless they are 100% equal).</p>
+Test Plan
 <p>Updated integration tests.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @MichaReiser on 2024-07-22 13:12</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-22 13:12</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2024-07-22 13:12</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-22 13:12</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-07-22 13:13</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-22 13:13</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-07-22 13:32</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
@@ -59,12 +59,12 @@ we want to update the workspace files in-place and tell Salsa that the files hav
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/workspace.rs</code>:245 on 2024-07-22 22:10</div>
-            <div class="timeline-body"><p>I don't understand what it means for <code>Package</code> to be a Salsa input, but the impl of <code>Package</code> to be <code>[salsa::tracked]</code>.</p>
+            <div class="timeline-body"><p>I don&#x27;t understand what it means for <code>Package</code> to be a Salsa input, but the impl of <code>Package</code> to be <code>[salsa::tracked]</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/workspace/files.rs</code>:113 on 2024-07-22 22:37</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">/// whenever the files are changed. The revision ensures that salsa's comparison of the
+            <div class="timeline-body"><pre><code>/// whenever the files are changed. The revision ensures that salsa&#x27;s comparison of the
 </code></pre>
 </div>
         </div>
@@ -72,7 +72,7 @@ we want to update the workspace files in-place and tell Salsa that the files hav
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/workspace/files.rs</code>:19 on 2024-07-22 23:04</div>
             <div class="timeline-body"><p>Can we make this comment clearer and more concrete? I think I understand it now, after poring over this PR for a while, but without having taken that time I think I would be scared by this comment but confused about how to actually follow it correctly.</p>
 <p>I think that the practical upshot is that changes to <code>PackageFiles</code> (and the <code>IndexedFiles</code> that it references via its <code>State</code>) must only be made via <code>IndexedFilesMut</code>, which takes care to go through <code>Package::set_file_set</code> (the Salsa setter) to update to a new <code>PackageFiles</code> with updated revision, so that Salsa knows about the change.</p>
-<pre><code class="language-suggestion">/// without triggering a new salsa revision. This is safe because the initial indexing happens on first access,
+<pre><code>/// without triggering a new salsa revision. This is safe because the initial indexing happens on first access,
 /// so no query can be depending on the contents of the indexed files before that. All subsequent mutations to
 /// the indexed files must go through `IndexedFilesMut`, which uses the Salsa setter `package.set_file_set` to
 /// ensure that Salsa always knows when the set of indexed files have changed.
@@ -81,7 +81,7 @@ we want to update the workspace files in-place and tell Salsa that the files hav
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-07-22 23:06</div>
-            <div class="timeline-body"><p>Nice! This is definitely subtle; I spent a while trying to understand all the different things named <code>*Files</code> and how they relate: <code>PackageFiles</code>, <code>IndexedFiles</code>, <code>LazyFiles</code>, and just <code>Files</code> -- and that's not even considering the <code>Files</code> struct over in <code>ruff_db</code>. I do wonder if there might be some naming that would make it clearer (particularly <code>Files</code> seems like it would be a core data structure given its name, but really it's just an ephemeral wrapper around a <code>MutexGuard</code> to allow updating it), but I didn't come up with any proposals that seemed like a clear improvement.</p>
+            <div class="timeline-body"><p>Nice! This is definitely subtle; I spent a while trying to understand all the different things named <code>*Files</code> and how they relate: <code>PackageFiles</code>, <code>IndexedFiles</code>, <code>LazyFiles</code>, and just <code>Files</code> -- and that&#x27;s not even considering the <code>Files</code> struct over in <code>ruff_db</code>. I do wonder if there might be some naming that would make it clearer (particularly <code>Files</code> seems like it would be a core data structure given its name, but really it&#x27;s just an ephemeral wrapper around a <code>MutexGuard</code> to allow updating it), but I didn&#x27;t come up with any proposals that seemed like a clear improvement.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -90,7 +90,7 @@ we want to update the workspace files in-place and tell Salsa that the files hav
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/db.rs</code>:25 on 2024-07-23 06:20</div>
-            <div class="timeline-body"><p>It's salsa's notation for a query that's defined as a method.</p>
+            <div class="timeline-body"><p>It&#x27;s salsa&#x27;s notation for a query that&#x27;s defined as a method.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -99,27 +99,27 @@ we want to update the workspace files in-place and tell Salsa that the files hav
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/workspace.rs</code>:245 on 2024-07-23 06:20</div>
-            <div class="timeline-body"><p>It doesn't do anything to the impl itself but it allows methods that are marked as <code>salsa::tracked</code> -&gt; methods can be queries.</p>
+            <div class="timeline-body"><p>It doesn&#x27;t do anything to the impl itself but it allows methods that are marked as <code>salsa::tracked</code> -&gt; methods can be queries.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @MichaReiser on 2024-07-23 08:47</div>
+            <div class="event">Merged by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-23 08:47</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2024-07-23 08:47</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-23 08:47</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-07-23 08:47</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-07-23 08:48</div>
-            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/lazy-files">CodSpeed Performance Report</a></h2>
-<h3>Merging #12452 will <strong>improve performances by 4.26%</strong></h3>
-<p><sub>Comparing <code>lazy-files</code> (f530e33) with <code>lazy-files</code> (e36aaf3)</sub></p>
-<h3>Summary</h3>
+            <div class="timeline-body"><a href="https://codspeed.io/astral-sh/ruff/branches/lazy-files">CodSpeed Performance Report</a>
+Merging #12452 will <strong>improve performances by 4.26%</strong>
+<p>Comparing <code>lazy-files</code> (f530e33) with <code>lazy-files</code> (e36aaf3)</p>
+Summary
 <p><code>⚡ 1</code> improvements
 <code>✅ 32</code> untouched benchmarks</p>
-<h3>Benchmarks breakdown</h3>
+Benchmarks breakdown
 <p>|     | Benchmark | <code>lazy-files</code> | <code>lazy-files</code> | Change |
 | --- | --------- | ----------------------- | ------------------- | ------ |
 | ⚡ | <code>lexer[numpy/globals.py]</code> | 30.4 µs | 29.2 µs | +4.26% |</p>
@@ -128,7 +128,7 @@ we want to update the workspace files in-place and tell Salsa that the files hav
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:05:28 UTC
+        Synced at 2026-01-20 19:05:25 UTC
     </footer>
 </body>
 </html>

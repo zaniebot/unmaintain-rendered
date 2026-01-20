@@ -28,32 +28,32 @@ program for every input file that is searched. Instead of searching the
 file directly, ripgrep will instead search the stdout contents of the
 program.</p>
 <p>Closes #978, Closes #981</p>
-<p>This PR is based off of @c-blake's work in #981. See <a href="https://github.com/BurntSushi/ripgrep/pull/981#issuecomment-406821212">this comment</a> for a description of the differences.</p>
+<p>This PR is based off of @c-blake&#x27;s work in #981. See <a href="https://github.com/BurntSushi/ripgrep/pull/981#issuecomment-406821212">this comment</a> for a description of the differences.</p>
 <p>cc @okdana</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/c-blake">@c-blake</a> on 2018-07-21 21:01</div>
-            <div class="timeline-body"><p>Replying to the differences comment here.  I've been testing this as my primary grep ever since I posted my pull request.  I haven't run into many issues.</p>
-<p>For ripgrep's <code>stdin</code> you don't really want/need a preprocessor.  There's only one of them.  You can probably just insert any preprocessing stage you want in the pipeline before ripgrep in that case, but yeah it should be noted.</p>
+            <div class="timeline-body"><p>Replying to the differences comment here.  I&#x27;ve been testing this as my primary grep ever since I posted my pull request.  I haven&#x27;t run into many issues.</p>
+<p>For ripgrep&#x27;s <code>stdin</code> you don&#x27;t really want/need a preprocessor.  There&#x27;s only one of them.  You can probably just insert any preprocessing stage you want in the pipeline before ripgrep in that case, but yeah it should be noted.</p>
 <p>In my testing the preprocessor could read stdin already.  So, I left that attach-y code in but commented out.</p>
-<p>There is one gotcha with regard to <code>stderr</code>/preprocessor log message handling - and this goes for the decompressor, too.  If the decompressor or preprocessor fills up the <code>stderr</code> pipe buffer to the point where a write blocks then ripgrep hangs forever.  On Linux this is about 64KB of writes.  That is more of a gotcha with some chatty programs like pdftotext that might spit out gobs of &quot;warnings&quot; but not really fail than for programs like decompressors, but other OSes might have smaller buffers.  What I do is just redirect <code>stderr</code> in my preprocessor to keep ripgrep's buffer from ever getting anything.  It might also make sense to just never read stderr or send it to oblivion and have preprocessors send them to a file first if user's want to keep them.</p>
+<p>There is one gotcha with regard to <code>stderr</code>/preprocessor log message handling - and this goes for the decompressor, too.  If the decompressor or preprocessor fills up the <code>stderr</code> pipe buffer to the point where a write blocks then ripgrep hangs forever.  On Linux this is about 64KB of writes.  That is more of a gotcha with some chatty programs like pdftotext that might spit out gobs of &quot;warnings&quot; but not really fail than for programs like decompressors, but other OSes might have smaller buffers.  What I do is just redirect <code>stderr</code> in my preprocessor to keep ripgrep&#x27;s buffer from ever getting anything.  It might also make sense to just never read stderr or send it to oblivion and have preprocessors send them to a file first if user&#x27;s want to keep them.</p>
 <p>I knew that man page formatting was a disaster.  I figured it would be easy to fix if you liked this.  Thanks!</p>
-<p>I think just a long <code>--pre</code> is reasonable.  If you wanted, we could also do <code>--input-preproc</code> with <code>-I</code> as a short spelling.  Most of the obvious names are already taken like, --[fF]ilter and so on.  Like 34 of the 52 characters are taken already.  If someone has a script wrapper that turns it on, and then wants to turn it off on their typed command line they would only have to add <code>-I=</code>, but two more letters without a shift key feels about the same.  Anyway, just a long option seems fine if the long option is fairly short like <code>--pre</code>.  I'm mostly just happy you're cool with this new feature, and I won't have to maintain some patch forever or write my own with some hypothetical libripgrep.</p>
-<p>User-specified commands/programs fail to be found/installed all the time.  Somebody in Rust-land should do a better job with that someday, but I don't think we need to here.  Anyway, I like all your changes.  No real pushback from me.</p>
+<p>I think just a long <code>--pre</code> is reasonable.  If you wanted, we could also do <code>--input-preproc</code> with <code>-I</code> as a short spelling.  Most of the obvious names are already taken like, --[fF]ilter and so on.  Like 34 of the 52 characters are taken already.  If someone has a script wrapper that turns it on, and then wants to turn it off on their typed command line they would only have to add <code>-I=</code>, but two more letters without a shift key feels about the same.  Anyway, just a long option seems fine if the long option is fairly short like <code>--pre</code>.  I&#x27;m mostly just happy you&#x27;re cool with this new feature, and I won&#x27;t have to maintain some patch forever or write my own with some hypothetical libripgrep.</p>
+<p>User-specified commands/programs fail to be found/installed all the time.  Somebody in Rust-land should do a better job with that someday, but I don&#x27;t think we need to here.  Anyway, I like all your changes.  No real pushback from me.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-07-21 21:25</div>
             <div class="timeline-body"><p>@c-blake Excellent, thanks for the feedback! Your note about stderr and deadlock is a good reminder, thank you. I filed #990 for that, and hopefully we can pick a forward course.</p>
-<p>Otherwise, I'm glad you're happy with <code>--pre</code>, so let's run with that!</p>
+<p>Otherwise, I&#x27;m glad you&#x27;re happy with <code>--pre</code>, so let&#x27;s run with that!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @BurntSushi on 2018-07-21 21:25</div>
+            <div class="event">Merged by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-07-21 21:25</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2018-07-21 21:25</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-07-21 21:25</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2018-07-21 21:25</div>
@@ -63,17 +63,17 @@ program.</p>
             <div class="timeline-body"><blockquote>
 <p>In my testing the preprocessor could read stdin already.</p>
 </blockquote>
-<p>This is very weird. The first thing I tried was actually your example script in the <code>--help</code> docs, and it hung when attempting to search a file that was neither a PDF nor compressed. Namely, this caused it to hit the fallback <code>cat</code> case, which just blocked on stdin. This seemed to make sense from my reading of the code as well, since ripgrep didn't have anything on stdin, so reading from it isn't going to get you anywhere, and it certainly won't contain the contents of the file being searched.</p>
+<p>This is very weird. The first thing I tried was actually your example script in the <code>--help</code> docs, and it hung when attempting to search a file that was neither a PDF nor compressed. Namely, this caused it to hit the fallback <code>cat</code> case, which just blocked on stdin. This seemed to make sense from my reading of the code as well, since ripgrep didn&#x27;t have anything on stdin, so reading from it isn&#x27;t going to get you anywhere, and it certainly won&#x27;t contain the contents of the file being searched.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/c-blake">@c-blake</a> on 2018-07-21 21:30</div>
-            <div class="timeline-body"><p>Oops.  Yeah, you probably want to put the filename after &quot;cat&quot;.  You don't for some things like gunzip where if you give it a filename it will replace your compressed file with a decompressed version.</p>
+            <div class="timeline-body"><p>Oops.  Yeah, you probably want to put the filename after &quot;cat&quot;.  You don&#x27;t for some things like gunzip where if you give it a filename it will replace your compressed file with a decompressed version.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/c-blake">@c-blake</a> on 2018-07-21 21:43</div>
-            <div class="timeline-body"><p>Oh, and of course, I would prefer it if we did attach each new input file to the <code>stdin</code> of the preprocessor.  I just didn't get that far, but that kind of redundancy (both <code>stdin</code> and a filename) would be better, IMO.  I could swear I tested that and it was working, but maybe I'm misremembering.  It's been a while.</p>
+            <div class="timeline-body"><p>Oh, and of course, I would prefer it if we did attach each new input file to the <code>stdin</code> of the preprocessor.  I just didn&#x27;t get that far, but that kind of redundancy (both <code>stdin</code> and a filename) would be better, IMO.  I could swear I tested that and it was working, but maybe I&#x27;m misremembering.  It&#x27;s been a while.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -84,7 +84,7 @@ program.</p>
     </div>
 
     <footer>
-        Synced at 2026-01-12 18:28:03 UTC
+        Synced at 2026-01-20 18:48:17 UTC
     </footer>
 </body>
 </html>

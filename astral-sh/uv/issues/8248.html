@@ -25,13 +25,13 @@
             <div class="timeline-header"><a href="https://github.com/AndreuCodina">@AndreuCodina</a></div>
             <div class="timeline-body"><p>The documentation (https://docs.astral.sh/uv/configuration/files/) says: &quot;Settings provided via environment variables take precedence over persistent configuration, and settings provided via the command line take precedence over both&quot;.</p>
 <p>I use a private registry (Azure DevOps), and to develop locally, pyproject.toml uses keyring authentication:</p>
-<pre><code class="language-toml">[tool.uv]
+<pre><code>[tool.uv]
 keyring-provider = &quot;subprocess&quot;
 extra-index-url = [
     &quot;https://VssSessionToken@pkgs.dev.azure.com/mycompany/_packaging/MyFeed/pypi/simple/&quot;,
 ]
 </code></pre>
-<p>But when I create a Dockerfile and disable that configuration with environment variables to use the token, then it can't get the package from the private registry:</p>
+<p>But when I create a Dockerfile and disable that configuration with environment variables to use the token, then it can&#x27;t get the package from the private registry:</p>
 <pre><code>FROM python:3.12-slim-bookworm
 
 ARG UV_COMPILE_BYTECODE=1
@@ -48,44 +48,44 @@ RUN uv sync --frozen --no-dev
 
 CMD [&quot;uv&quot;, &quot;run&quot;, &quot;--frozen&quot;, &quot;--no-dev&quot;, &quot;poe&quot;, &quot;start&quot;]
 </code></pre>
-<pre><code class="language-bash">docker build \
+<pre><code>docker build \
     --tag my-image:1.0.0 \
     --build-arg UV_EXTRA_INDEX_URL=https://token@pkgs.dev.azure.com/mycompany/_packaging/MyFeed/pypi/simple/ \
     .
 </code></pre>
 <p>Error: <code>Caused by: Failed to fetch wheel: my-private-package</code></p>
-<p><strong>But</strong> if I remove <code>extra-index-url</code> from pyproject.toml and build the Dockerfile, then it can get the package. In fact, it works even if I don't remove <code>keyring-provider</code>.</p>
+<p><strong>But</strong> if I remove <code>extra-index-url</code> from pyproject.toml and build the Dockerfile, then it can get the package. In fact, it works even if I don&#x27;t remove <code>keyring-provider</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-16 12:26</div>
-            <div class="timeline-body"><p>I don't think that <code>UV_EXTRA_INDEX_URL=https://token@pkgs.dev.azure.com/mycompany/_packaging/MyFeed/pypi/simple/ </code> is having an effect in your example. Don't you need to declare it as an environment variable, not just a build argument? Like:</p>
+            <div class="timeline-body"><p>I don&#x27;t think that <code>UV_EXTRA_INDEX_URL=https://token@pkgs.dev.azure.com/mycompany/_packaging/MyFeed/pypi/simple/ </code> is having an effect in your example. Don&#x27;t you need to declare it as an environment variable, not just a build argument? Like:</p>
 <pre><code>ARG UV_EXTRA_INDEX_URL
 ENV UV_EXTRA_INDEX_URL=${UV_EXTRA_INDEX_URL}
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-10-16 12:26</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-16 12:26</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-10-16 12:46</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-16 12:46</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AndreuCodina">@AndreuCodina</a> on 2024-10-16 12:50</div>
             <div class="timeline-body"><blockquote>
-<p>I don't think that <code>UV_EXTRA_INDEX_URL=https://token@pkgs.dev.azure.com/mycompany/_packaging/MyFeed/pypi/simple/ </code> is having an effect in your example. Don't you need to declare it as an environment variable, not just a build argument? Like:</p>
+<p>I don&#x27;t think that <code>UV_EXTRA_INDEX_URL=https://token@pkgs.dev.azure.com/mycompany/_packaging/MyFeed/pypi/simple/ </code> is having an effect in your example. Don&#x27;t you need to declare it as an environment variable, not just a build argument? Like:</p>
 <pre><code>ARG UV_EXTRA_INDEX_URL
 ENV UV_EXTRA_INDEX_URL=${UV_EXTRA_INDEX_URL}
 </code></pre>
 </blockquote>
 <p>ARG is like an environment variable, but for the build stage.</p>
-<p>Anyway, I've tried 2 approaches with the same result I describe:</p>
+<p>Anyway, I&#x27;ve tried 2 approaches with the same result I describe:</p>
 <ul>
 <li>Your comment.</li>
 <li>uv sync --frozen --no-dev --extra-index-url $UV_EXTRA_INDEX_URL</li>
 </ul>
-<p>Unless I remove the pyproject.toml configuration, I can't download the package.</p>
+<p>Unless I remove the pyproject.toml configuration, I can&#x27;t download the package.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -93,7 +93,7 @@ ENV UV_EXTRA_INDEX_URL=${UV_EXTRA_INDEX_URL}
             <div class="timeline-body"><blockquote>
 <p>ARG is like an environment variable, but for the build stage.</p>
 </blockquote>
-<p>Sort of... But it won't be picked up by <code>uv sync</code> unless you do something like <code>uv sync --frozen --no-dev --extra-index-url $UV_EXTRA_INDEX_URL</code>. So the initial example wasn't quite right.</p>
+<p>Sort of... But it won&#x27;t be picked up by <code>uv sync</code> unless you do something like <code>uv sync --frozen --no-dev --extra-index-url $UV_EXTRA_INDEX_URL</code>. So the initial example wasn&#x27;t quite right.</p>
 <p>If you add <code>--show-settings</code> to the end of the <code>uv sync</code> command, what does the output show?</p>
 </div>
         </div>
@@ -103,7 +103,7 @@ ENV UV_EXTRA_INDEX_URL=${UV_EXTRA_INDEX_URL}
 <blockquote>
 <p>ARG is like an environment variable, but for the build stage.</p>
 </blockquote>
-<p>Sort of... But it won't be picked up by <code>uv sync</code> unless you do something like <code>uv sync --frozen --no-dev --extra-index-url $UV_EXTRA_INDEX_URL</code>. So the initial example wasn't quite right.</p>
+<p>Sort of... But it won&#x27;t be picked up by <code>uv sync</code> unless you do something like <code>uv sync --frozen --no-dev --extra-index-url $UV_EXTRA_INDEX_URL</code>. So the initial example wasn&#x27;t quite right.</p>
 <p>If you add <code>--show-settings</code> to the end of the <code>uv sync</code> command, what does the output show?</p>
 </blockquote>
 <p>With the <code>ENV</code> added:</p>
@@ -237,7 +237,7 @@ no_build: None,
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-16 13:47</div>
-            <div class="timeline-body"><p>Can you include the <code>--verbose</code> logs then so we can see what's happening with the index?</p>
+            <div class="timeline-body"><p>Can you include the <code>--verbose</code> logs then so we can see what&#x27;s happening with the index?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -429,24 +429,24 @@ Caused by: HTTP status client error (401 Unauthorized) for url (https://pkgs.dev
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-16 13:56</div>
-            <div class="timeline-body"><p>We might be &quot;preferring&quot; the auth in the <code>pyproject.toml</code>. That at least would be a bug. I'll take a look.</p>
+            <div class="timeline-body"><p>We might be &quot;preferring&quot; the auth in the <code>pyproject.toml</code>. That at least would be a bug. I&#x27;ll take a look.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-16 14:02</div>
-            <div class="timeline-body"><p>I think this could plausibly be fixed by https://github.com/astral-sh/uv/pull/8256.</p>
+            <div class="timeline-body"><p>I think this could plausibly be fixed by <a href="https://github.com/astral-sh/uv/pull/8256">astral-sh/uv#8256</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-10-16 15:52</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-16 15:52</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-10-16 15:52</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-16 15:52</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:27:45 UTC
+        Synced at 2026-01-20 19:34:49 UTC
     </footer>
 </body>
 </html>

@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/kwaegel">@kwaegel</a></div>
-            <div class="timeline-body"><p>I'm having trouble getting installing Python builds (and tools) into a directory shared by multiple users, due to a single-user owned <code>.lock</code> file created in <code>UV_PYTHON_INSTALL_DIR</code>. I'm not sure if what I am attempting is reasonable or not, but at the moment I can't tell if this is a bug or intended behaviour.</p>
+            <div class="timeline-body"><p>I&#x27;m having trouble getting installing Python builds (and tools) into a directory shared by multiple users, due to a single-user owned <code>.lock</code> file created in <code>UV_PYTHON_INSTALL_DIR</code>. I&#x27;m not sure if what I am attempting is reasonable or not, but at the moment I can&#x27;t tell if this is a bug or intended behaviour.</p>
 <p>My setup is roughly following the suggestion from <a href="https://github.com/astral-sh/uv/issues/6067">this prior issue</a>.</p>
-<p>Background: I'm trying to create a Dockerfile that's used in a CI environment. The Dockerfile itself runs all the setup commands as <code>root</code>, but the Jenkins bot uses the user <code>ubuntu</code>. I'm attempting to install everything in a shared directory <code>/opt/uv/*</code>, allowing either user to invoke <code>uv python install ...</code> or <code>uv tool install ...</code> commands.</p>
+<p>Background: I&#x27;m trying to create a Dockerfile that&#x27;s used in a CI environment. The Dockerfile itself runs all the setup commands as <code>root</code>, but the Jenkins bot uses the user <code>ubuntu</code>. I&#x27;m attempting to install everything in a shared directory <code>/opt/uv/*</code>, allowing either user to invoke <code>uv python install ...</code> or <code>uv tool install ...</code> commands.</p>
 <p>Minimal Dockerfile replicating this issue:</p>
 <pre><code>FROM ubuntu:24.04 AS build
 COPY --from=ghcr.io/astral-sh/uv:0.4.20 /uv /bin/uv
@@ -41,7 +41,7 @@ RUN uv python install 3.11
 #9 ERROR: process &quot;/bin/sh -c uv python install 3.11&quot; did not complete successfully: exit code: 2
 </code></pre>
 <p>The situation for installing tools is analogous , with an owned <code>.lock</code> file created in <code>UV_TOOL_DIR</code>.</p>
-<p>My current somewhat awkward workaround is to set the <code>setgid</code> bit on the shared folder and add <code>umask 002</code> before each command, which makes the <code>.lock</code> file writable by all group members. The downside is that it's easy to forget to include the umask prefix on every command that needs it.</p>
+<p>My current somewhat awkward workaround is to set the <code>setgid</code> bit on the shared folder and add <code>umask 002</code> before each command, which makes the <code>.lock</code> file writable by all group members. The downside is that it&#x27;s easy to forget to include the umask prefix on every command that needs it.</p>
 <pre><code>FROM ubuntu:24.04 AS build
 COPY --from=ghcr.io/astral-sh/uv:0.4.20 /uv /bin/uv
 ENV UV_PYTHON_INSTALL_DIR=&quot;/opt/uv/python&quot;
@@ -55,46 +55,46 @@ RUN umask 002 &amp;&amp; uv python install 3.11
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-10-09 04:01</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-09 04:01</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-09 04:01</div>
-            <div class="timeline-body"><p>Interesting. I'm not sure what we can do to fix this, but it seems worth trying to.</p>
+            <div class="timeline-body"><p>Interesting. I&#x27;m not sure what we can do to fix this, but it seems worth trying to.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">great writeup</span> added by @zanieb on 2024-10-09 04:02</div>
+            <div class="event">Label <span class="label">great writeup</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-09 04:02</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kwaegel">@kwaegel</a> on 2024-10-09 04:17</div>
-            <div class="timeline-body"><p>I'm not entirely sure what the <code>.lock</code> file is used for, but I had initially assumed it would work something like:</p>
+            <div class="timeline-body"><p>I&#x27;m not entirely sure what the <code>.lock</code> file is used for, but I had initially assumed it would work something like:</p>
 <ul>
 <li>Create the lock file to get exclusive access to the python (or tools) directory.</li>
 <li>Preform any add/remove operations.</li>
 <li>Remove the lock file.</li>
 </ul>
-<p>The lock file persisting between write operations is one thing that confuses me, so maybe it's doing more than I had assumed?</p>
+<p>The lock file persisting between write operations is one thing that confuses me, so maybe it&#x27;s doing more than I had assumed?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-09 14:03</div>
-            <div class="timeline-body"><p>Oh it shouldn't persist across operations, afaik. Yes it's a file used for exclusive access, e.g.,</p>
+            <div class="timeline-body"><p>Oh it shouldn&#x27;t persist across operations, afaik. Yes it&#x27;s a file used for exclusive access, e.g.,</p>
 <p>https://github.com/astral-sh/uv/blob/f0659e76cf215480d30d554118961c7c59ab3e2b/crates/uv-tool/src/lib.rs#L142-L145</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-09 14:49</div>
-            <div class="timeline-body"><p>I think It might need to persist across operations... Can a lock holder <em>know</em> that's safe to delete? Other processes may be waiting for it.</p>
+            <div class="timeline-body"><p>I think It might need to persist across operations... Can a lock holder <em>know</em> that&#x27;s safe to delete? Other processes may be waiting for it.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-09 16:02</div>
-            <div class="timeline-body"><p>Yeah I think you're right. Do we need to create the file with different permissions when we're in a globally writable directory?</p>
+            <div class="timeline-body"><p>Yeah I think you&#x27;re right. Do we need to create the file with different permissions when we&#x27;re in a globally writable directory?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kwaegel">@kwaegel</a> on 2024-10-09 17:25</div>
-            <div class="timeline-body"><p>I'm curious why it would need to persist across operations. Wouldn't most operations be a lock/write/unlock cycle? If that was the case, the lock would only ever be created and removed by the same user. That might only be true for adding Python versions, though. Removing versions might be more problematic, but that's not something my CI images need to deal with.</p>
+            <div class="timeline-body"><p>I&#x27;m curious why it would need to persist across operations. Wouldn&#x27;t most operations be a lock/write/unlock cycle? If that was the case, the lock would only ever be created and removed by the same user. That might only be true for adding Python versions, though. Removing versions might be more problematic, but that&#x27;s not something my CI images need to deal with.</p>
 <p>Another consequence of the current state is that <code>uv python install x.y.z</code> fails even if x.y.z is installed, since it tries to acquire the lock before checking for an existing instillation. I can do a manual workaround like below, but it feels like this should be automatic (pyenv uses a <code>--skip-existing</code> flag for similar behaviour).</p>
 <pre><code>uv python find $(PYTHON_VERSION) || uv python install $(PYTHON_VERSION)
 </code></pre>
@@ -102,22 +102,22 @@ RUN umask 002 &amp;&amp; uv python install 3.11
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-09 17:33</div>
-            <div class="timeline-body"><p>The purpose of the lock is to prevent shared modification of a virtual environment across two concurrent processes. I don't think the writer can remove it after unlock -- what if another writer is waiting to access it? I actually have no idea what happens in that case.</p>
+            <div class="timeline-body"><p>The purpose of the lock is to prevent shared modification of a virtual environment across two concurrent processes. I don&#x27;t think the writer can remove it after unlock -- what if another writer is waiting to access it? I actually have no idea what happens in that case.</p>
 <p>Should we just be writing it with more open permissions?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kwaegel">@kwaegel</a> on 2024-10-09 17:42</div>
-            <div class="timeline-body"><p>For my purposes, open permissions (when globally writable, or when the setgid bit is enabled) would resolve the issue, since I'm doing multi-user but not concurrent writes, but I'm not sure if that's safe in the general case.</p>
+            <div class="timeline-body"><p>For my purposes, open permissions (when globally writable, or when the setgid bit is enabled) would resolve the issue, since I&#x27;m doing multi-user but not concurrent writes, but I&#x27;m not sure if that&#x27;s safe in the general case.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/akmalsoliev">@akmalsoliev</a> on 2024-11-10 23:00</div>
             <div class="timeline-body"><p>Hello, are there any updates on this issue?
-I'm more running into an issue of inability to <code>uv pip install</code> inside of an Airflow with a nested venv, since I don't want to dump everything onto a system.
+I&#x27;m more running into an issue of inability to <code>uv pip install</code> inside of an Airflow with a nested venv, since I don&#x27;t want to dump everything onto a system.
 This works perfectly fine on macOS, but fails on Linux.
 NOTE: Airflow python version matches sub-venv one.</p>
-<pre><code class="language-dockerfile">FROM apache/airflow:2.10.3-python3.11
+<pre><code>FROM apache/airflow:2.10.3-python3.11
 
 USER airflow
 
@@ -134,15 +134,15 @@ RUN uv pip install --no-cache-dir -r ./requirements.txt
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-01-06 18:41</div>
-            <div class="timeline-body"><p>Have folks tried setting <code>umask</code> yourself outside of uv? Does that work? If it does, then I kinda feel like that's the most appropriate solution here. Because you're fundamentally working in a shared environment, and it seems sensible to set a <code>umask</code> that supports that environment. (This doesn't address the &quot;I want to run multiple <code>uv</code> processes simultaneously on the same environment&quot; use case, but rather, &quot;I want to run multiple serial <code>uv</code> processes under different Unix users on the same environment.&quot;)</p>
-<p>(Also, to address some confusion around the lock file above, there are many different implementations of a &quot;lock file.&quot; The simplest is using the existence of a file itself as the lock itself. But unlocking might not always work, leading to &quot;user, please delete lock file or remove enitre environment&quot; style of messages. Beyond that, there are a variety of advisory locking schemes available on Unix systems that don't use the <em>existence</em> of files themselves as the implementation of locking. Instead, operating system manages locking/unlocking as a special primitive, and this in turn means unlocking always succeeds even when the process terminates unceremoniously. We use the style of advisory locks called BSD flocks.)</p>
+            <div class="timeline-body"><p>Have folks tried setting <code>umask</code> yourself outside of uv? Does that work? If it does, then I kinda feel like that&#x27;s the most appropriate solution here. Because you&#x27;re fundamentally working in a shared environment, and it seems sensible to set a <code>umask</code> that supports that environment. (This doesn&#x27;t address the &quot;I want to run multiple <code>uv</code> processes simultaneously on the same environment&quot; use case, but rather, &quot;I want to run multiple serial <code>uv</code> processes under different Unix users on the same environment.&quot;)</p>
+<p>(Also, to address some confusion around the lock file above, there are many different implementations of a &quot;lock file.&quot; The simplest is using the existence of a file itself as the lock itself. But unlocking might not always work, leading to &quot;user, please delete lock file or remove enitre environment&quot; style of messages. Beyond that, there are a variety of advisory locking schemes available on Unix systems that don&#x27;t use the <em>existence</em> of files themselves as the implementation of locking. Instead, operating system manages locking/unlocking as a special primitive, and this in turn means unlocking always succeeds even when the process terminates unceremoniously. We use the style of advisory locks called BSD flocks.)</p>
 <p>EDIT: I see that <code>umask</code> is mentioned in the OP. Whoops, sorry about that, I missed it. While awkward, I feel like that might be right solution here?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kwaegel">@kwaegel</a> on 2025-01-06 18:53</div>
-            <div class="timeline-body"><p>I have and it works (I mentioned a <code>setgid</code> + <code>umask</code> workaround in my original bug report), but it tends to be a bit brittle (I have to remember to prepend it to every relevant command) and mildly surprising (it's not required for <a href="https://pipx.pypa.io/stable/installation/#-global-argument">pipx install --global ...</a> commands).</p>
-<p>I'd also call it a bit obscure...but that might reflect more on my experience with Linux administration than the command itself.</p>
+            <div class="timeline-body"><p>I have and it works (I mentioned a <code>setgid</code> + <code>umask</code> workaround in my original bug report), but it tends to be a bit brittle (I have to remember to prepend it to every relevant command) and mildly surprising (it&#x27;s not required for <a href="https://pipx.pypa.io/stable/installation/#-global-argument">pipx install --global ...</a> commands).</p>
+<p>I&#x27;d also call it a bit obscure...but that might reflect more on my experience with Linux administration than the command itself.</p>
 <p>If this does end up being the recommended solution, could we put it in the docs somewhere? Either the <a href="https://docs.astral.sh/uv/guides/integration/docker/">Docker integration</a> section or some more general &quot;multi-user configuration&quot; section would be helpful.</p>
 <p>(Automatic handling or sort of <code>--global</code> flag would be ideal, but a documented workaround is fine if the implementation would be problematic.)</p>
 </div>
@@ -178,7 +178,7 @@ Error: building at STEP &quot;RUN uv python install 3.11&quot;: while running ru
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:27:34 UTC
+        Synced at 2026-01-20 19:34:36 UTC
     </footer>
 </body>
 </html>

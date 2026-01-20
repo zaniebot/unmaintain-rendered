@@ -23,16 +23,16 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ethack">@ethack</a></div>
-            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
-<pre><code class="language-bash">rg --version
+            <div class="timeline-body">What version of ripgrep are you using?
+<pre><code>rg --version
 ripgrep 12.1.1
 -SIMD -AVX (compiled)
 +SIMD +AVX (runtime)
 </code></pre>
-<h4>How did you install ripgrep?</h4>
+How did you install ripgrep?
 <pre><code>apt-get -y install ripgrep
 </code></pre>
-<h4>What operating system are you using ripgrep on?</h4>
+What operating system are you using ripgrep on?
 <p>Ripgrep is inside a docker container.
 Host: Pop!_OS 20.04 (Ubuntu 20.04 variant)
 Container: Ubuntu 21.04 Hirsute
@@ -40,7 +40,7 @@ Kernel:</p>
 <pre><code>uname -mr
 5.11.0-7614-generic x86_64
 </code></pre>
-<h4>Describe your bug.</h4>
+Describe your bug.
 <p>This may be a duplicate or related to #1760. I am getting much slower execution time when using word boundaries <code>\b</code> in a regex. The search performance is:</p>
 <ul>
 <li>Fast with a <code>\b</code> search pattern.</li>
@@ -48,7 +48,7 @@ Kernel:</p>
 <li>Fast with a <code>\b</code> search pattern plus an additional pattern when <code>--no-unicode</code> is used.</li>
 <li>Fast with a <code>\b</code> search pattern plus an additional pattern on a differently formatted file (TSV vs JSON).</li>
 </ul>
-<h4>What are the steps to reproduce the behavior?</h4>
+What are the steps to reproduce the behavior?
 <p>Here are the two files which can be used to reproduce the issue.
 <a href="https://github.com/BurntSushi/ripgrep/files/6408803/conn.json.log">conn.json.log</a>
 <a href="https://github.com/BurntSushi/ripgrep/files/6408805/conn.tsv.log">conn.tsv.log</a></p>
@@ -64,31 +64,31 @@ du -h conn.json.log
 wc -l conn.json.log
 455536 conn.json.log
 </code></pre>
-<p>The <code>time</code> command differences are very small with the files I uploaded, but I'll also provide <a href="https://github.com/sharkdp/hyperfine">hyperfine</a> output for both the full logs and the ones I uploaded.</p>
-<h4>What is the actual behavior?</h4>
+<p>The <code>time</code> command differences are very small with the files I uploaded, but I&#x27;ll also provide <a href="https://github.com/sharkdp/hyperfine">hyperfine</a> output for both the full logs and the ones I uploaded.</p>
+What is the actual behavior?
 <p>The following timings are on the larger logs.</p>
 <p>When I use a regex for an IP address, the search time is very small (&lt;1s).</p>
-<pre><code>$ time rg -e '\b10\.55\.182\.100\b' conn.json.log &gt;/dev/null
-rg -e '\b10\.55\.182\.100\b' conn.json.log &gt; /dev/null  0.73s user 0.16s system 381% cpu 0.231 total
+<pre><code>$ time rg -e &#x27;\b10\.55\.182\.100\b&#x27; conn.json.log &gt;/dev/null
+rg -e &#x27;\b10\.55\.182\.100\b&#x27; conn.json.log &gt; /dev/null  0.73s user 0.16s system 381% cpu 0.231 total
 </code></pre>
 <p>When I add an additional regex, the search time is long (&gt;30sec).</p>
-<pre><code>$ time rg -e '^#' -e '\b10\.55\.182\.100\b' conn.json.log &gt;/dev/null
-rg -e '^#' -e '\b10\.55\.182\.100\b' conn.json.log &gt; /dev/null  151.99s user 1.41s system 401% cpu 38.231 total
+<pre><code>$ time rg -e &#x27;^#&#x27; -e &#x27;\b10\.55\.182\.100\b&#x27; conn.json.log &gt;/dev/null
+rg -e &#x27;^#&#x27; -e &#x27;\b10\.55\.182\.100\b&#x27; conn.json.log &gt; /dev/null  151.99s user 1.41s system 401% cpu 38.231 total
 </code></pre>
 <p>If I add <code>--no-unicode</code>, the search time drops back down (&lt;1s).</p>
-<pre><code>$ time rg --no-unicode -e '^#' -e '\b10\.55\.182\.100\b' conn.json.log &gt;/dev/null
-rg --no-unicode -e '^#' -e '\b10\.55\.182\.100\b' conn.json.log &gt; /dev/null  0.28s user 0.01s system 98% cpu 0.300 total
+<pre><code>$ time rg --no-unicode -e &#x27;^#&#x27; -e &#x27;\b10\.55\.182\.100\b&#x27; conn.json.log &gt;/dev/null
+rg --no-unicode -e &#x27;^#&#x27; -e &#x27;\b10\.55\.182\.100\b&#x27; conn.json.log &gt; /dev/null  0.28s user 0.01s system 98% cpu 0.300 total
 </code></pre>
-<p>This next part puzzles me even more. Recall that the TSV file was used to generate the JSON file. I know these aren't the same and are quite different file sizes. But it's not like a bunch of non-ASCII characters got added to one file and not the other. If I run the command from the JSON file that caused the long search time on the TSV, the search time is short (&lt;1s).</p>
-<pre><code>$ time rg -e '^#' -e '\b10\.55\.182\.100\b' conn.tsv.log &gt;/dev/null
-rg -e '^#' -e '\b10\.55\.182\.100\b' conn.tsv.log &gt; /dev/null  0.12s user 0.01s system 99% cpu 0.131 total
+<p>This next part puzzles me even more. Recall that the TSV file was used to generate the JSON file. I know these aren&#x27;t the same and are quite different file sizes. But it&#x27;s not like a bunch of non-ASCII characters got added to one file and not the other. If I run the command from the JSON file that caused the long search time on the TSV, the search time is short (&lt;1s).</p>
+<pre><code>$ time rg -e &#x27;^#&#x27; -e &#x27;\b10\.55\.182\.100\b&#x27; conn.tsv.log &gt;/dev/null
+rg -e &#x27;^#&#x27; -e &#x27;\b10\.55\.182\.100\b&#x27; conn.tsv.log &gt; /dev/null  0.12s user 0.01s system 99% cpu 0.131 total
 </code></pre>
 <p>Here are hyperfine results that compare the last three commands, along with using <code>--no-unicode</code> on the TSV file for good measure.</p>
 <pre><code>$ hyperfine -w 1 -i \
-  -n tsv-unicode &quot;rg -e '^#' -e '\b10\.55\.182\.100\b' conn.tsv.log&quot; \
-  -n tsv-no-unicode &quot;rg --no-unicode -e '^#' -e '\b10\.55\.182\.100\b' conn.tsv.log&quot; \
-  -n json-unicode &quot;rg -e '^#' -e '\b10\.55\.182\.100\b' conn.json.log&quot; \
-  -n json-no-unicode &quot;rg --no-unicode -e '^#' -e '\b10\.55\.182\.100\b' conn.json.log&quot;
+  -n tsv-unicode &quot;rg -e &#x27;^#&#x27; -e &#x27;\b10\.55\.182\.100\b&#x27; conn.tsv.log&quot; \
+  -n tsv-no-unicode &quot;rg --no-unicode -e &#x27;^#&#x27; -e &#x27;\b10\.55\.182\.100\b&#x27; conn.tsv.log&quot; \
+  -n json-unicode &quot;rg -e &#x27;^#&#x27; -e &#x27;\b10\.55\.182\.100\b&#x27; conn.json.log&quot; \
+  -n json-no-unicode &quot;rg --no-unicode -e &#x27;^#&#x27; -e &#x27;\b10\.55\.182\.100\b&#x27; conn.json.log&quot;
 
 Benchmark #1: tsv-unicode
   Time (mean ± σ):     150.1 ms ±   7.5 ms    [User: 531.0 ms, System: 54.8 ms]
@@ -107,16 +107,16 @@ Benchmark #4: json-no-unicode
   Range (min … max):   462.8 ms … 531.0 ms    10 runs
  
 Summary
-  'tsv-unicode' ran
-    1.04 ± 0.08 times faster than 'tsv-no-unicode'
-    3.39 ± 0.22 times faster than 'json-no-unicode'
-  312.32 ± 17.55 times faster than 'json-unicode'
+  &#x27;tsv-unicode&#x27; ran
+    1.04 ± 0.08 times faster than &#x27;tsv-no-unicode&#x27;
+    3.39 ± 0.22 times faster than &#x27;json-no-unicode&#x27;
+  312.32 ± 17.55 times faster than &#x27;json-unicode&#x27;
 </code></pre>
 <p>And here are hyperfine results with nearly the same commands on the smaller files provided, just to show that the same differences can be seen.</p>
 <pre><code>$ hyperfine -w 1 \
-  -n rg-tsv &quot;rg -e '^#' -e '\b10\.55\.182\.100\b' conn.tsv.log | wc -l&quot; \
-  -n rg-json &quot;rg -e '^#' -e '\b10\.55\.182\.100\b' conn.json.log | wc -l&quot; \
-  -n rg-json-no-unicode &quot;rg --no-unicode -e '^#' -e '\b10\.55\.182\.100\b' conn.json.log | wc -l&quot;
+  -n rg-tsv &quot;rg -e &#x27;^#&#x27; -e &#x27;\b10\.55\.182\.100\b&#x27; conn.tsv.log | wc -l&quot; \
+  -n rg-json &quot;rg -e &#x27;^#&#x27; -e &#x27;\b10\.55\.182\.100\b&#x27; conn.json.log | wc -l&quot; \
+  -n rg-json-no-unicode &quot;rg --no-unicode -e &#x27;^#&#x27; -e &#x27;\b10\.55\.182\.100\b&#x27; conn.json.log | wc -l&quot;
 
 Benchmark #1: rg-tsv
   Time (mean ± σ):       5.0 ms ±   2.0 ms    [User: 4.0 ms, System: 1.7 ms]
@@ -135,47 +135,47 @@ Benchmark #3: rg-json-no-unicode
   Warning: Command took less than 5 ms to complete. Results might be inaccurate.
  
 Summary
-  'rg-tsv' ran
-    1.20 ± 0.63 times faster than 'rg-json-no-unicode'
-   11.89 ± 4.76 times faster than 'rg-json'
+  &#x27;rg-tsv&#x27; ran
+    1.20 ± 0.63 times faster than &#x27;rg-json-no-unicode&#x27;
+   11.89 ± 4.76 times faster than &#x27;rg-json&#x27;
 </code></pre>
 <p>Here are several debug outputs.</p>
 <p>Fast (one search pattern):</p>
-<pre><code>$ rg --debug  -e '\b10\.55\.182\.100\b' conn.json.log &gt;/dev/null         
+<pre><code>$ rg --debug  -e &#x27;\b10\.55\.182\.100\b&#x27; conn.json.log &gt;/dev/null         
 DEBUG|grep_regex::literal|/usr/share/cargo/registry/ripgrep-12.1.1/debian/cargo_registry/grep-regex-0.1.8/src/literal.rs:180: required literal found: &quot;10.55.182.100&quot;
 DEBUG|grep_regex::matcher|/usr/share/cargo/registry/ripgrep-12.1.1/debian/cargo_registry/grep-regex-0.1.8/src/matcher.rs:50: extracted fast line regex: (?-u:10\x2e55\x2e182\x2e100)
 DEBUG|globset|/usr/share/cargo/registry/ripgrep-12.1.1/debian/cargo_registry/globset-0.4.5/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
 </code></pre>
 <p>Slow (two search patterns):</p>
-<pre><code>$ rg --debug -e '^#' -e '\b10\.55\.182\.100\b' conn.json.log &gt;/dev/null
+<pre><code>$ rg --debug -e &#x27;^#&#x27; -e &#x27;\b10\.55\.182\.100\b&#x27; conn.json.log &gt;/dev/null
 DEBUG|globset|/usr/share/cargo/registry/ripgrep-12.1.1/debian/cargo_registry/globset-0.4.5/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
 </code></pre>
 <p>Fast (two search patterns, --no-unicode):</p>
-<pre><code>$ rg --debug --no-unicode -e '^#' -e '\b10\.55\.182\.100\b' conn.json.log &gt;/dev/null
+<pre><code>$ rg --debug --no-unicode -e &#x27;^#&#x27; -e &#x27;\b10\.55\.182\.100\b&#x27; conn.json.log &gt;/dev/null
 DEBUG|globset|/usr/share/cargo/registry/ripgrep-12.1.1/debian/cargo_registry/globset-0.4.5/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
 </code></pre>
 <p>Fast (two search patterns, TSV):</p>
-<pre><code>$ rg --debug -e '^#' -e '\b10\.55\.182\.100\b' conn.tsv.log &gt;/dev/null             
+<pre><code>$ rg --debug -e &#x27;^#&#x27; -e &#x27;\b10\.55\.182\.100\b&#x27; conn.tsv.log &gt;/dev/null             
 DEBUG|globset|/usr/share/cargo/registry/ripgrep-12.1.1/debian/cargo_registry/globset-0.4.5/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
 </code></pre>
 <p>Fast (two search patterns, no word boundaries):</p>
-<pre><code>$ rg --debug -e '^#' -e '10\.55\.182\.100' conn.json.log &gt;/dev/null
+<pre><code>$ rg --debug -e &#x27;^#&#x27; -e &#x27;10\.55\.182\.100&#x27; conn.json.log &gt;/dev/null
 DEBUG|globset|/usr/share/cargo/registry/ripgrep-12.1.1/debian/cargo_registry/globset-0.4.5/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
 </code></pre>
-<h4>What is the expected behavior?</h4>
-<p>Ideally, I'd like the slow search to take roughly the same time as the other fast searches.</p>
-<p>I understand from #1760 that word boundaries with Unicode is a slow process. But if that's the case here, I wonder why the same search on a different file can be so much faster?</p>
+What is the expected behavior?
+<p>Ideally, I&#x27;d like the slow search to take roughly the same time as the other fast searches.</p>
+<p>I understand from #1760 that word boundaries with Unicode is a slow process. But if that&#x27;s the case here, I wonder why the same search on a different file can be so much faster?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2021-05-01 11:45</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-05-01 11:45</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-05-01 11:53</div>
-            <div class="timeline-body"><p>This is the definition of a perfect bug report. Thank you so much. And thank you for reporting it. This was indeed quite a subtle performance bug in the regex engine. The actual fix is here: https://github.com/rust-lang/regex/pull/768</p>
-<p>The higher level view is that there is a space (and also time) saving optimization in the faster lazy DFA engine that groups together bytes into equivalence classes that can't otherwise discriminate between a match and a non-match. That was actually correct here, but the grouping didn't account for bytes that cause the DFA to quit early. In particular, your JSON file has many <code>{</code> (that's <code>0x7B</code>) bytes. It's very close to the upper end of the ASCII range, which increases its likelihood of getting lumped together with bytes outside of the ASCII range. And indeed, that's exactly what happened here. The regex engine was continually running the lazy DFA, seeing a <code>{</code>, stopping incorrectly and then falling back to a slower NFA engine.</p>
+            <div class="timeline-body"><p>This is the definition of a perfect bug report. Thank you so much. And thank you for reporting it. This was indeed quite a subtle performance bug in the regex engine. The actual fix is here: <a href="https://github.com/rust-lang/regex/pull/768">rust-lang/regex#768</a></p>
+<p>The higher level view is that there is a space (and also time) saving optimization in the faster lazy DFA engine that groups together bytes into equivalence classes that can&#x27;t otherwise discriminate between a match and a non-match. That was actually correct here, but the grouping didn&#x27;t account for bytes that cause the DFA to quit early. In particular, your JSON file has many <code>{</code> (that&#x27;s <code>0x7B</code>) bytes. It&#x27;s very close to the upper end of the ASCII range, which increases its likelihood of getting lumped together with bytes outside of the ASCII range. And indeed, that&#x27;s exactly what happened here. The regex engine was continually running the lazy DFA, seeing a <code>{</code>, stopping incorrectly and then falling back to a slower NFA engine.</p>
 <p>The fix for this was to simply mark the ASCII range as distinct from the non-ASCII range when constructing the equivalence class boundaries (if a Unicode word boundary is seen).</p>
-<p>Another interesting way to look at this, is if you try adding the <code>\{\}$</code> regex to your search. That will incidentally result in a set of equivalence classes where brackets aren't seen as non-ASCII, and thus, the search runs quickly.</p>
+<p>Another interesting way to look at this, is if you try adding the <code>\{\}$</code> regex to your search. That will incidentally result in a set of equivalence classes where brackets aren&#x27;t seen as non-ASCII, and thus, the search runs quickly.</p>
 <p>Thanks again for the great bug report!</p>
 </div>
         </div>
@@ -187,7 +187,7 @@ DEBUG|globset|/usr/share/cargo/registry/ripgrep-12.1.1/debian/cargo_registry/glo
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:43:21 UTC
+        Synced at 2026-01-20 18:48:11 UTC
     </footer>
 </body>
 </html>

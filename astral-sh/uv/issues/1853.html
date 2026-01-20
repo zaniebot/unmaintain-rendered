@@ -23,21 +23,12 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/SnoopJ">@SnoopJ</a></div>
-            <div class="timeline-body"><!--
-Thank you for taking the time to report an issue! We're glad to have you involved with uv.
-
-If you're filing a bug report, please consider including the following information:
-
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
-* The current uv platform.
-* The current uv version (`uv --version`).
--->
+            <div class="timeline-body">
 
 <p>Platform: Ubuntu 22.04
 <code>uv</code> version: 0.1.6 (da3a7ec8)</p>
 <p>When checking that #1781 resolves the problem with cloning a private repository (and it does seem to), I encountered a new (to me) problem with resolving a <code>git</code> requirement declared in <code>setup.cfg</code>. Installing the requirement given in <code>setup.cfg</code> directly in the <code>pip install</code> invocation does succeed, so it seems likely this is a problem with understanding the project metadata.</p>
-<h2>Reproduction</h2>
+Reproduction
 <p>Run <code>uv pip install &quot;acmelib @ /path/to/acmelib_repo&quot;</code> to install a package on the local filesystem that declares a <code>git+ssh://</code> dependency in <code>setup.cfg</code> against a private GitHub repository.</p>
 <p>Sharing below the best reproduction details that I can, with some of the names changed to sanitize the private stuff.</p>
 <pre><code>$ uv venv
@@ -80,21 +71,21 @@ Installed 42 packages in 378ms
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-22 04:13</div>
-            <div class="timeline-body"><p>If I'm reading the trace correctly, I believe this is by design and indicated by the error message itself -- we require that all direct URL dependencies are declared as direct, and not transitive dependencies. If you install as an editable install, we'll pick them up as expected.</p>
+            <div class="timeline-body"><p>If I&#x27;m reading the trace correctly, I believe this is by design and indicated by the error message itself -- we require that all direct URL dependencies are declared as direct, and not transitive dependencies. If you install as an editable install, we&#x27;ll pick them up as expected.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-02-22 04:15</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-22 04:15</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/SnoopJ">@SnoopJ</a> on 2024-02-22 04:26</div>
-            <div class="timeline-body"><p>Ah, maybe I've misunderstood <code>uv</code> as being more drop-in here than I'd thought. This is basically a show-stopper for my own org's interest in using the tool since we have enough such dependencies that declaring them in the same invocation is not going to happen. I would have found it helpful if the error message was more clearly telling me <em>&quot;<code>uv</code> doesn't support that by choice&quot;</em>.</p>
-<p>Adding <code>--editable</code> to my invocation (and reworking the requirement to drop the <code>acmelib @</code> prelude) does pick up these requirements correctly, so I believe you're right, there is no bug here, just a surprising (to me) design.</p>
+            <div class="timeline-body"><p>Ah, maybe I&#x27;ve misunderstood <code>uv</code> as being more drop-in here than I&#x27;d thought. This is basically a show-stopper for my own org&#x27;s interest in using the tool since we have enough such dependencies that declaring them in the same invocation is not going to happen. I would have found it helpful if the error message was more clearly telling me <em>&quot;<code>uv</code> doesn&#x27;t support that by choice&quot;</em>.</p>
+<p>Adding <code>--editable</code> to my invocation (and reworking the requirement to drop the <code>acmelib @</code> prelude) does pick up these requirements correctly, so I believe you&#x27;re right, there is no bug here, just a surprising (to me) design.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-22 04:28</div>
-            <div class="timeline-body"><p>We made this as a safety choice, but perhaps we can reconsider or allow opt-in to the relaxed behavior. Generally you'd put them all in a requirements file then install from there so you don't need to list them all in each invocation.</p>
+            <div class="timeline-body"><p>We made this as a safety choice, but perhaps we can reconsider or allow opt-in to the relaxed behavior. Generally you&#x27;d put them all in a requirements file then install from there so you don&#x27;t need to list them all in each invocation.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -107,52 +98,52 @@ Installed 42 packages in 378ms
             <div class="timeline-body"><blockquote>
 <p>I also consider it a correctness issue. Imagine you declare a direct dependency on Flask at 3.0.0, but then some other package deep in the tree declares a direct URL dependency on some other Flask, that also resolves to a version called 3.0.0. What happens?</p>
 </blockquote>
-<p>My naive expectation would have been that there's some sort of first-past-the-post behavior there, but a quick check against what <code>pip</code> does suggests that this isn't the case, and the VCS requirement wins over the &quot;plain&quot; one. That makes some sense to me inasmuch as some dependency of mine may want <code>flask==3.0.0</code>, but maybe I want to install <code>flask==3.0.0+snoopj.fix</code> that has some patch I've applied, but which still satisfies their declared dependency. I'm sure someone with more archaeological knowledge of <code>pip</code> would have more insight on that behavior.</p>
-<p>It seems that if <code>pip</code> is presented with two conflicting VCS requirements, it throws a <code>ResolutionImpossible</code> and brings the issue to the user's attention, which seems reasonable to me.</p>
+<p>My naive expectation would have been that there&#x27;s some sort of first-past-the-post behavior there, but a quick check against what <code>pip</code> does suggests that this isn&#x27;t the case, and the VCS requirement wins over the &quot;plain&quot; one. That makes some sense to me inasmuch as some dependency of mine may want <code>flask==3.0.0</code>, but maybe I want to install <code>flask==3.0.0+snoopj.fix</code> that has some patch I&#x27;ve applied, but which still satisfies their declared dependency. I&#x27;m sure someone with more archaeological knowledge of <code>pip</code> would have more insight on that behavior.</p>
+<p>It seems that if <code>pip</code> is presented with two conflicting VCS requirements, it throws a <code>ResolutionImpossible</code> and brings the issue to the user&#x27;s attention, which seems reasonable to me.</p>
 <blockquote>
-<p>Generally you'd put them all in a requirements file then install from there so you don't need to list them all in each invocation.</p>
+<p>Generally you&#x27;d put them all in a requirements file then install from there so you don&#x27;t need to list them all in each invocation.</p>
 </blockquote>
-<p>The project I have been most interested in pointing <code>uv</code> at (which has created most of my filed issues in one way or another) does actually have a requirements workflow, but it isn't really load-bearing in this way yet. That might end up being okay since my interest is less in <code>uv pip install</code> than in <code>uv pip compile</code> <em>anyway</em>, but I'm still assessing where the sharp edges of that speculative workflow are going to be once the &quot;just bugs&quot; stuff is sorted out.</p>
-<p>As a user, I'd say that if <code>uv</code> has a different philosophy from <code>pip</code> about whether &quot;transitive&quot; (in the sense of <em>&quot;it's in the project metadata&quot;</em> as distinguished from <em>&quot;my project depends on something else that has a VCS dep&quot;</em>) dependencies of this sort are allowed, it's definitely something I would want flagged to me as a fundamentally different behavior.</p>
+<p>The project I have been most interested in pointing <code>uv</code> at (which has created most of my filed issues in one way or another) does actually have a requirements workflow, but it isn&#x27;t really load-bearing in this way yet. That might end up being okay since my interest is less in <code>uv pip install</code> than in <code>uv pip compile</code> <em>anyway</em>, but I&#x27;m still assessing where the sharp edges of that speculative workflow are going to be once the &quot;just bugs&quot; stuff is sorted out.</p>
+<p>As a user, I&#x27;d say that if <code>uv</code> has a different philosophy from <code>pip</code> about whether &quot;transitive&quot; (in the sense of <em>&quot;it&#x27;s in the project metadata&quot;</em> as distinguished from <em>&quot;my project depends on something else that has a VCS dep&quot;</em>) dependencies of this sort are allowed, it&#x27;s definitely something I would want flagged to me as a fundamentally different behavior.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/pablodz">@pablodz</a> on 2024-02-26 16:16</div>
             <div class="timeline-body"><p>The current workaround will be using a old version of uv?</p>
 <p>This version is working</p>
-<pre><code>curl --proto '=https' --tlsv1.2 -LsSf https://github.com/astral-sh/uv/releases/download/0.1.5/uv-installer.sh | sh
+<pre><code>curl --proto &#x27;=https&#x27; --tlsv1.2 -LsSf https://github.com/astral-sh/uv/releases/download/0.1.5/uv-installer.sh | sh
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-26 19:00</div>
-            <div class="timeline-body"><p>Re-reading, I think <code>uv pip install &quot;acmelib @ /path/to/acmelib_repo&quot;</code> <em>should</em> allow URL requirements that are defined in <code>acmelib</code>, and I'd consider this a limitation in the current implementation. What we <em>don't</em> allow is if <code>acmelib</code> were itself a package hosted at a remote URL.</p>
+            <div class="timeline-body"><p>Re-reading, I think <code>uv pip install &quot;acmelib @ /path/to/acmelib_repo&quot;</code> <em>should</em> allow URL requirements that are defined in <code>acmelib</code>, and I&#x27;d consider this a limitation in the current implementation. What we <em>don&#x27;t</em> allow is if <code>acmelib</code> were itself a package hosted at a remote URL.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-03-26 03:07</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-26 03:07</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2024-03-26 03:07</div>
+            <div class="event">Label <span class="label">question</span> removed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-26 03:07</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-03-26 03:07</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-26 03:07</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-26 03:08</div>
-            <div class="timeline-body"><p>This will have the same fix as https://github.com/astral-sh/uv/issues/2643.</p>
+            <div class="timeline-body"><p>This will have the same fix as <a href="https://github.com/astral-sh/uv/issues/2643">astral-sh/uv#2643</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-03-27 22:17</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-27 22:17</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-03-27 22:17</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-27 22:17</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:23:56 UTC
+        Synced at 2026-01-20 19:29:54 UTC
     </footer>
 </body>
 </html>

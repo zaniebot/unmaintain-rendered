@@ -24,7 +24,7 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/jamesbraza">@jamesbraza</a></div>
             <div class="timeline-body"><p>I am using <code>ruff==0.0.285</code> on the below code:</p>
-<pre><code class="language-python">class Foo:
+<pre><code>class Foo:
     def __eq__(self, other: object) -&gt; bool:
         if not isinstance(other, type(self)):
             raise NotImplemented  # Erroneous code, and ruff autofix can be considered erroneous too
@@ -32,7 +32,7 @@
 </code></pre>
 <p><code>F901</code> (<a href="https://beta.ruff.rs/docs/rules/raise-not-implemented/"><code>raise-not-implemented</code></a>) autofixes line 4 to <code>raise NotImplementedError</code>.</p>
 <p>However, this is actually undesirable in this case, because the correct fix is actually <code>return NotImplemented</code>.</p>
-<pre><code class="language-python">class Foo:
+<pre><code>class Foo:
     def __eq__(self, other: object) -&gt; bool:
         if not isinstance(other, type(self)):
             return NotImplemented  # Now this is correct
@@ -43,11 +43,11 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-18 03:30</div>
-            <div class="timeline-body"><p>Could we not detect and suggest <code>return NotImplemented</code> when inside of a supported method? FWIW, I also think this is perfectly fine as a suggested fix (which will be opt-in once we respect those on the CLI), since it's likely to be correct in the vast majority of cases.</p>
+            <div class="timeline-body"><p>Could we not detect and suggest <code>return NotImplemented</code> when inside of a supported method? FWIW, I also think this is perfectly fine as a suggested fix (which will be opt-in once we respect those on the CLI), since it&#x27;s likely to be correct in the vast majority of cases.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">waiting-on-author</span> added by @charliermarsh on 2023-08-18 03:30</div>
+            <div class="event">Label <span class="label">waiting-on-author</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-18 03:30</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2023-08-18 04:39</div>
@@ -55,13 +55,13 @@
 <p>Could we not detect and suggest return NotImplemented when inside of a supported method?</p>
 </blockquote>
 <p>Yeah that sounds great! 👍</p>
-<p>Would you repurpose <code>F901</code>/<code>raise-not-implemented</code> to handle that?  I am not sure how close <code>ruff</code> stays to the original <code>flake8</code> rules' intent, or would you make a new <code>RUF</code> rule for it?</p>
+<p>Would you repurpose <code>F901</code>/<code>raise-not-implemented</code> to handle that?  I am not sure how close <code>ruff</code> stays to the original <code>flake8</code> rules&#x27; intent, or would you make a new <code>RUF</code> rule for it?</p>
 <p>Also, what is CLI0?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-18 04:41</div>
-            <div class="timeline-body"><p>Hmm -- maybe we'd avoid raising F901 in such cases, and we could add a new rule in <code>RUF</code> to detect this alternate case (though open to alternatives, it's late and that's just the first idea that popped into my head).</p>
+            <div class="timeline-body"><p>Hmm -- maybe we&#x27;d avoid raising F901 in such cases, and we could add a new rule in <code>RUF</code> to detect this alternate case (though open to alternatives, it&#x27;s late and that&#x27;s just the first idea that popped into my head).</p>
 <blockquote>
 <p>Also, what is CLI0?</p>
 </blockquote>
@@ -69,13 +69,13 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">waiting-on-author</span> removed by @charliermarsh on 2023-08-18 04:41</div>
+            <div class="event">Label <span class="label">waiting-on-author</span> removed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-18 04:41</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-08-18 04:41</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-18 04:41</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-08-18 04:41</div>
+            <div class="event">Label <span class="label">needs-decision</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-18 04:41</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2023-08-18 04:59</div>
@@ -89,10 +89,10 @@
 </ol>
 <p>I would lean towards making an autofix for point 4 because:</p>
 <ul>
-<li>We know we're inside an <code>object</code> comparison method</li>
-<li>Developer didn't specify a message</li>
+<li>We know we&#x27;re inside an <code>object</code> comparison method</li>
+<li>Developer didn&#x27;t specify a message</li>
 </ul>
-<p>So it's safe to assume <code>return NotImplemented</code> was desired.</p>
+<p>So it&#x27;s safe to assume <code>return NotImplemented</code> was desired.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -103,27 +103,27 @@
 </blockquote>
 <p>to something along the lines of</p>
 <blockquote>
-<p>raise NotImplemented should either be raise NotImplementedError or return NotImplemented (if you're overloading binary special methods)</p>
+<p>raise NotImplemented should either be raise NotImplementedError or return NotImplemented (if you&#x27;re overloading binary special methods)</p>
 </blockquote>
 <p>The phrase <em>binary special methods</em> was taken from the <a href="https://docs.python.org/3/library/constants.html#NotImplemented">Python documentation of <code>NotImplemented</code></a>.</p>
-<p>This will make Ruff's F901 slightly deviate from the original pyflakes8 specification. I personally find no problem with that because I think this is a strict enhancement, but it would be a project policy decision.</p>
+<p>This will make Ruff&#x27;s F901 slightly deviate from the original pyflakes8 specification. I personally find no problem with that because I think this is a strict enhancement, but it would be a project policy decision.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/calliecameron">@calliecameron</a> on 2025-09-06 13:59</div>
-            <div class="timeline-body"><p>It might also be useful to detect <code>raise NotImplementedError</code> inside binary special methods - although this is allowed if the method hasn't been implemented yet, I've come across code where it's used accidentally in place of <code>return NotImplemented</code>.</p>
-<p>I.e. add another rule that only allows <code>raise NotImplementedError</code> inside binary special methods if it's the only line in the method?</p>
+            <div class="timeline-body"><p>It might also be useful to detect <code>raise NotImplementedError</code> inside binary special methods - although this is allowed if the method hasn&#x27;t been implemented yet, I&#x27;ve come across code where it&#x27;s used accidentally in place of <code>return NotImplemented</code>.</p>
+<p>I.e. add another rule that only allows <code>raise NotImplementedError</code> inside binary special methods if it&#x27;s the only line in the method?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/calliecameron">@calliecameron</a> on 2025-09-06 19:53</div>
-            <div class="timeline-body"><p>Actually, maybe the rule should detect <code>raise NotImplementedError</code> in <em>any</em> non-abstract method, since the only(?) uses of it are in abstract methods or to temporarily mark methods that will be implemented later - and a warning ensures these won't be forgotten. Thoughts?</p>
+            <div class="timeline-body"><p>Actually, maybe the rule should detect <code>raise NotImplementedError</code> in <em>any</em> non-abstract method, since the only(?) uses of it are in abstract methods or to temporarily mark methods that will be implemented later - and a warning ensures these won&#x27;t be forgotten. Thoughts?</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:48:02 UTC
+        Synced at 2026-01-20 18:48:40 UTC
     </footer>
 </body>
 </html>

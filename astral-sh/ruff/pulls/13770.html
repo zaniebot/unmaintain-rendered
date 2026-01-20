@@ -23,15 +23,15 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This PR updates the language server to avoid indexing the workspace for single-file mode.</p>
-<p><strong>What's a single-file mode?</strong></p>
-<p>When a user opens the file directly in an editor, and not the folder that represents the workspace, the editor usually can't determine the workspace root. This means that during initializing the server, the <code>workspaceFolders</code> field will be empty / nil.</p>
+<p><strong>What&#x27;s a single-file mode?</strong></p>
+<p>When a user opens the file directly in an editor, and not the folder that represents the workspace, the editor usually can&#x27;t determine the workspace root. This means that during initializing the server, the <code>workspaceFolders</code> field will be empty / nil.</p>
 <p>Now, in this case, the server defaults to using the current working directory which is a reasonable default assuming that the directory would point to the one where this open file is present. This would allow the server to index the directory itself for any config file, if present.</p>
-<p>It turns out that in VS Code the current working directory in the above scenario is the system root directory <code>/</code> and so the server will try to index the entire root directory which would take a lot of time. This is the issue as described in https://github.com/astral-sh/ruff-vscode/issues/627. To reproduce, refer https://github.com/astral-sh/ruff-vscode/issues/627#issuecomment-2401440767.</p>
-<p>This PR updates the indexer to avoid traversing the workspace to read any config file that might be present. The first commit (https://github.com/astral-sh/ruff/pull/13770/commits/8dd2a31eef668b10b003f37fc646ca3a61f7193f) refactors the initialization and introduces two structs <code>Workspaces</code> and <code>Workspace</code>. The latter struct includes a field to determine whether it's the default workspace. The second commit (https://github.com/astral-sh/ruff/pull/13770/commits/61fc39bdb6dd0da7d594a9d2755a353eceb3a771) utilizes this field to avoid traversing.</p>
+<p>It turns out that in VS Code the current working directory in the above scenario is the system root directory <code>/</code> and so the server will try to index the entire root directory which would take a lot of time. This is the issue as described in <a href="https://github.com/astral-sh/ruff-vscode/issues/627">astral-sh/ruff-vscode#627</a>. To reproduce, refer <a href="https://github.com/astral-sh/ruff-vscode/issues/627">astral-sh/ruff-vscode#627</a>#issuecomment-2401440767.</p>
+<p>This PR updates the indexer to avoid traversing the workspace to read any config file that might be present. The first commit (<a href="https://github.com/astral-sh/ruff/pull/13770">astral-sh/ruff#13770</a>/commits/8dd2a31eef668b10b003f37fc646ca3a61f7193f) refactors the initialization and introduces two structs <code>Workspaces</code> and <code>Workspace</code>. The latter struct includes a field to determine whether it&#x27;s the default workspace. The second commit (<a href="https://github.com/astral-sh/ruff/pull/13770">astral-sh/ruff#13770</a>/commits/61fc39bdb6dd0da7d594a9d2755a353eceb3a771) utilizes this field to avoid traversing.</p>
 <p>Closes: #11366</p>
-<h2>Editor behavior</h2>
+Editor behavior
 <p>This is to document the behavior as seen in different editors. The test scenario used has the following directory tree structure:</p>
 <pre><code>.
 ├── nested
@@ -41,14 +41,14 @@
 </code></pre>
 <p>where, the contents of the files are:</p>
 <p><strong>test.py</strong></p>
-<pre><code class="language-py">import os
+<pre><code>import os
 </code></pre>
 <p><strong>nested/nested.py</strong></p>
-<pre><code class="language-py">import os
+<pre><code>import os
 import math
 </code></pre>
 <p><strong>nested/pyproject.toml</strong></p>
-<pre><code class="language-toml">[tool.ruff.lint]
+<pre><code>[tool.ruff.lint]
 select = [&quot;I&quot;]
 </code></pre>
 <p>Steps:</p>
@@ -58,19 +58,19 @@ select = [&quot;I&quot;]
 <li>Open <code>nested/nested.py</code> in the same editor instance</li>
 <li>This file would raise only <code>I001</code> if the <code>nested/pyproject.toml</code> was indexed</li>
 </ol>
-<h3>VS Code</h3>
+VS Code
 <p>When (1) is done from above, the current working directory is <code>/</code> which means the server will try to index the entire system to build up the settings index. This will include the <code>nested/pyproject.toml</code> file as well. This leads to bad user experience because the user would need to wait for minutes for the server to finish indexing.</p>
-<p>This PR avoids that by not traversing the workspace directory in single-file mode. But, in VS Code, this means that per (4), the file wouldn't raise <code>I001</code> but only raise two <code>F401</code> violations because the <code>nested/pyproject.toml</code> was never resolved.</p>
+<p>This PR avoids that by not traversing the workspace directory in single-file mode. But, in VS Code, this means that per (4), the file wouldn&#x27;t raise <code>I001</code> but only raise two <code>F401</code> violations because the <code>nested/pyproject.toml</code> was never resolved.</p>
 <p>One solution here would be to fix this in the extension itself where we would detect this scenario and pass in the workspace directory that is the one containing this open file in (1) above.</p>
-<h3>Neovim</h3>
+Neovim
 <p><strong>tl;dr</strong> it works as expected because the client considers the presence of certain files (depending on the server) as the root of the workspace. For Ruff, they are <code>pyproject.toml</code>, <code>ruff.toml</code>, and <code>.ruff.toml</code>. This means that the client notifies us as the user moves between single-file mode and workspace mode.</p>
 <p>https://github.com/astral-sh/ruff/pull/13770#issuecomment-2416608055</p>
-<h3>Helix</h3>
-<p>Same as Neovim, additional context in https://github.com/astral-sh/ruff/pull/13770#issuecomment-2417362097</p>
-<h3>Sublime Text</h3>
+Helix
+<p>Same as Neovim, additional context in <a href="https://github.com/astral-sh/ruff/pull/13770">astral-sh/ruff#13770</a>#issuecomment-2417362097</p>
+Sublime Text
 <p><strong>tl;dr</strong> It works similar to VS Code except that the current working directory of the current process is different and thus the config file is never read. So, the behavior remains unchanged with this PR.</p>
 <p>https://github.com/astral-sh/ruff/pull/13770#issuecomment-2417362097</p>
-<h3>Zed</h3>
+Zed
 <p>Zed seems to be starting a separate language server instance for each file when the editor is running in a single-file mode even though all files have been opened in a single editor instance.</p>
 <p>(Separated the logs into sections separated by a single blank line indicating 3 different server instances that the editor started for 3 files.)</p>
 <pre><code>   0.000053375s  INFO main ruff_server::server: No workspace settings found for file:///Users/dhruv/projects/ruff-temp, using default settings
@@ -88,58 +88,58 @@ select = [&quot;I&quot;]
    0.011428958s DEBUG ruff:main ruff_server::resolve: Included path via `include`: /Users/dhruv/projects/ruff-temp/nested/other.py
    0.011893792s  INFO ruff:main ruff_server::server: Configuration file watcher successfully registered
 </code></pre>
-<h2>Test Plan</h2>
+Test Plan
 <p>When using the <code>ruff</code> server from this PR, we see that the server starts quickly as seen in the logs. Next, when I switch to the release binary, it starts indexing the root directory.</p>
 <p>For more details, refer to the &quot;Editor Behavior&quot; section above.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">server</span> added by @dhruvmanila on 2024-10-16 09:11</div>
+            <div class="event">Label <span class="label">server</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-10-16 09:11</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @dhruvmanila on 2024-10-16 09:45</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-10-16 09:45</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-10-16 09:45</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-10-16 09:45</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-10-16 09:49</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session/index/ruff_settings.rs</code>:114 on 2024-10-16 10:48</div>
-            <div class="timeline-body"><p>Nit: What interests me is why we're skipping the root itself if it is the default workspace. I think that would also make the comment easier to understand if it explains why we sometimes skip the root vs when we consider it.</p>
+            <div class="timeline-body"><p>Nit: What interests me is why we&#x27;re skipping the root itself if it is the default workspace. I think that would also make the comment easier to understand if it explains why we sometimes skip the root vs when we consider it.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-16 10:50</div>
             <div class="timeline-body"><p>The new structs are great!</p>
-<p>I'm not entirely sure that I understand the full extent of the change. Why are we skipping the current directory if it is the default workspace? Doesnt' that have an impact for non vs code users? Would you mind explaining in more detail how this works in today and how it affects different editors?</p>
+<p>I&#x27;m not entirely sure that I understand the full extent of the change. Why are we skipping the current directory if it is the default workspace? Doesnt&#x27; that have an impact for non vs code users? Would you mind explaining in more detail how this works in today and how it affects different editors?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-10-16 11:59</div>
             <div class="timeline-body"><blockquote>
-<p>I'm not entirely sure that I understand the full extent of the change. Why are we skipping the current directory if it is the default workspace?</p>
+<p>I&#x27;m not entirely sure that I understand the full extent of the change. Why are we skipping the current directory if it is the default workspace?</p>
 </blockquote>
-<p>We will consider any config file that's present in the current directory but not the ones that are present in any <em>nested</em> directories.</p>
-<p>The client didn't provide any workspace during initialization therefore we use the current working directory as the default workspace.</p>
+<p>We will consider any config file that&#x27;s present in the current directory but not the ones that are present in any <em>nested</em> directories.</p>
+<p>The client didn&#x27;t provide any workspace during initialization therefore we use the current working directory as the default workspace.</p>
 <blockquote>
-<p>Doesnt' that have an impact for non vs code users? Would you mind explaining in more detail how this works in today and how it affects different editors?</p>
+<p>Doesnt&#x27; that have an impact for non vs code users? Would you mind explaining in more detail how this works in today and how it affects different editors?</p>
 </blockquote>
-<p>For VS Code, if the user opened only a single file in the editor then there won't be any workspace visible in the sidebar. The user can't open any files that are inside any of the nested directories. Here, the limitation would be that if there is any config file present in the directory containing the open file, that won't be considered. This is because the current working directory of the editor process is the system root directory.</p>
-<p>For Neovim, if the user opened a single file directly via <code>nvim test.py</code>, then the client will try to find the root directory for it by looking for any of the relevant files like <code>pyproject.toml</code>, etc. For example, for <code>ruff</code> this is described at https://github.com/neovim/nvim-lspconfig/blob/541f3a2781de481bb84883889e4d9f0904250a56/lua/lspconfig/configs/ruff.lua#L3-L7. Now, if those files aren't present then the <code>workspaceFolders</code> will be empty during initialization where the server will assume the current working directory. In this case, the path would be same as that of the nvim process. The neat thing here is that if the user opened a file which is nested in the workspace and that workspace contains the root file, the Neovim client will send a request to add a new workspace folder that's pointing to the directory containing this new file. So, those settings will be considered by the server because they've been indexed.</p>
+<p>For VS Code, if the user opened only a single file in the editor then there won&#x27;t be any workspace visible in the sidebar. The user can&#x27;t open any files that are inside any of the nested directories. Here, the limitation would be that if there is any config file present in the directory containing the open file, that won&#x27;t be considered. This is because the current working directory of the editor process is the system root directory.</p>
+<p>For Neovim, if the user opened a single file directly via <code>nvim test.py</code>, then the client will try to find the root directory for it by looking for any of the relevant files like <code>pyproject.toml</code>, etc. For example, for <code>ruff</code> this is described at https://github.com/neovim/nvim-lspconfig/blob/541f3a2781de481bb84883889e4d9f0904250a56/lua/lspconfig/configs/ruff.lua#L3-L7. Now, if those files aren&#x27;t present then the <code>workspaceFolders</code> will be empty during initialization where the server will assume the current working directory. In this case, the path would be same as that of the nvim process. The neat thing here is that if the user opened a file which is nested in the workspace and that workspace contains the root file, the Neovim client will send a request to add a new workspace folder that&#x27;s pointing to the directory containing this new file. So, those settings will be considered by the server because they&#x27;ve been indexed.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -172,28 +172,28 @@ select = [&quot;I&quot;]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-16 14:17</div>
-            <div class="timeline-body"><p>Okay I think I understand now what's happening but the code in <code>RuffSettingsIndex::new</code> with the early return and the <code>skip</code> doesn't make it obvious what's happening.</p>
-<p>I suggest that we add more extensive documentation why we don't skip the workspace directory if it is the default (because it won't take the recursive path).</p>
+            <div class="timeline-body"><p>Okay I think I understand now what&#x27;s happening but the code in <code>RuffSettingsIndex::new</code> with the early return and the <code>skip</code> doesn&#x27;t make it obvious what&#x27;s happening.</p>
+<p>I suggest that we add more extensive documentation why we don&#x27;t skip the workspace directory if it is the default (because it won&#x27;t take the recursive path).</p>
 <p>We should also add a comment to the early return for the default workspace explaining why we exit early.</p>
-<p>I'm still somewhat uncertain about the change itself because it means that we won't find any nested configurations for editors that don't pass a workspace root by default. The way I remember it is that VS Code is the exception and most other editors don't provide a workspace root. That would mean that this change is a breaking change for all those users, because their setup only continues to work if the ruff setting is in the workspace root (root of the cwd)</p>
+<p>I&#x27;m still somewhat uncertain about the change itself because it means that we won&#x27;t find any nested configurations for editors that don&#x27;t pass a workspace root by default. The way I remember it is that VS Code is the exception and most other editors don&#x27;t provide a workspace root. That would mean that this change is a breaking change for all those users, because their setup only continues to work if the ruff setting is in the workspace root (root of the cwd)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-10-16 15:18</div>
             <div class="timeline-body"><blockquote>
-<p>I'm still somewhat uncertain about the change itself because it means that we won't find any nested configurations for editors that don't pass a workspace root by default. The way I remember it is that VS Code is the exception and most other editors don't provide a workspace root. That would mean that this change is a breaking change for all those users, because their setup only continues to work if the ruff setting is in the workspace root (root of the cwd)</p>
+<p>I&#x27;m still somewhat uncertain about the change itself because it means that we won&#x27;t find any nested configurations for editors that don&#x27;t pass a workspace root by default. The way I remember it is that VS Code is the exception and most other editors don&#x27;t provide a workspace root. That would mean that this change is a breaking change for all those users, because their setup only continues to work if the ruff setting is in the workspace root (root of the cwd)</p>
 </blockquote>
 <p>Neovim provides workspace root, it uses files like <code>pyproject.toml</code>, <code>ruff.toml</code>, and <code>.ruff.toml</code> to find it. I can look into what other editors are doing.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-10-16 16:39</div>
-            <div class="timeline-body"><p>Sublime Text using the LSP implementation as https://github.com/sublimelsp/LSP provides the workspace folders during initialization. It seems to be similar to VS Code minus the multi-root workspace support. When I open a folder in the editor, it passes it as the workspace folder but if I just open a single file, then it doesn't provide any folder. But, unlike VS Code, the <code>std::env::current_dir</code> for Sublime Text when a single file is opened returns <code>/Applications/Sublime Text.app/Contents/MacOS</code> for me:</p>
+            <div class="timeline-body"><p>Sublime Text using the LSP implementation as https://github.com/sublimelsp/LSP provides the workspace folders during initialization. It seems to be similar to VS Code minus the multi-root workspace support. When I open a folder in the editor, it passes it as the workspace folder but if I just open a single file, then it doesn&#x27;t provide any folder. But, unlike VS Code, the <code>std::env::current_dir</code> for Sublime Text when a single file is opened returns <code>/Applications/Sublime Text.app/Contents/MacOS</code> for me:</p>
 <pre><code>   0.000099083s  INFO main ruff_server::server: No workspace(s) were provided during initialization. Using the current working directory as a default workspace...
    0.009809375s  INFO main ruff_server::session::index: Registering workspace: /Applications/Sublime Text.app/Contents/MacOS
 </code></pre>
-<p>The conclusion is that it wouldn't be a breaking change in Sublime Text because it already behaves correctly and the server does unnecessary work by indexing.</p>
-<hr />
+<p>The conclusion is that it wouldn&#x27;t be a breaking change in Sublime Text because it already behaves correctly and the server does unnecessary work by indexing.</p>
+<hr>
 <p>Helix also behaves in a similar manner as Neovim as it determines the workspace root based on certain set of files: https://github.com/helix-editor/helix/blob/d1b8129491124ce6068e95ccc58a7fefb1c9db45/languages.toml#L861. And, it also sends a request when a nested folder is opened with a root file in it which Helix would consider as a workspace folder (similar to Neovim):</p>
 <pre><code>2024-10-16T22:07:44.889 helix_lsp::transport [INFO] ruff -&gt; {&quot;jsonrpc&quot;:&quot;2.0&quot;,&quot;method&quot;:&quot;workspace/didChangeWorkspaceFolders&quot;,&quot;params&quot;:{&quot;event&quot;:{&quot;added&quot;:[{&quot;name&quot;:&quot;nested&quot;,&quot;uri&quot;:&quot;file:///Users/dhruv/projects/ruff-temp/nested&quot;}],&quot;removed&quot;:[]}}}
 </code></pre>
@@ -201,16 +201,16 @@ select = [&quot;I&quot;]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-10-17 05:56</div>
-            <div class="timeline-body"><p>Thanks for testing this. The case I'm concerned about is https://github.com/astral-sh/ruff/pull/10398 but what I understand from your comments is that neovim handles this correctly because it sets the cwd to the file's parent directory.</p>
+            <div class="timeline-body"><p>Thanks for testing this. The case I&#x27;m concerned about is <a href="https://github.com/astral-sh/ruff/pull/10398">astral-sh/ruff#10398</a> but what I understand from your comments is that neovim handles this correctly because it sets the cwd to the file&#x27;s parent directory.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-10-17 08:44</div>
             <div class="timeline-body"><blockquote>
-<p>Thanks for testing this. The case I'm concerned about is #10398 but what I understand from your comments is that neovim handles this correctly because it sets the cwd to the file's parent directory.</p>
+<p>Thanks for testing this. The case I&#x27;m concerned about is #10398 but what I understand from your comments is that neovim handles this correctly because it sets the cwd to the file&#x27;s parent directory.</p>
 </blockquote>
-<p>That issue seems unrelated to what's being changed here. Can you explain more on what your concern is about?</p>
-<p>Regardless, I'll update the <code>RuffSettingsIndex::new</code> to be more clearer in what's happening using comments and possible code.</p>
+<p>That issue seems unrelated to what&#x27;s being changed here. Can you explain more on what your concern is about?</p>
+<p>Regardless, I&#x27;ll update the <code>RuffSettingsIndex::new</code> to be more clearer in what&#x27;s happening using comments and possible code.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -219,26 +219,26 @@ select = [&quot;I&quot;]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/server.rs</code>:496 on 2024-10-17 08:46</div>
-            <div class="timeline-body"><p>I've also changed this from <code>warn</code> to <code>info</code>. I don't think it's a warning i.e., not something that the user should be concerned of.</p>
+            <div class="timeline-body"><p>I&#x27;ve also changed this from <code>warn</code> to <code>info</code>. I don&#x27;t think it&#x27;s a warning i.e., not something that the user should be concerned of.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-17 09:02</div>
-            <div class="timeline-body"><p>Isn't it related because it introduced the fallback to the current working directory if no workspace path was provided and this PR changes the behavior for this exact use case?</p>
+            <div class="timeline-body"><p>Isn&#x27;t it related because it introduced the fallback to the current working directory if no workspace path was provided and this PR changes the behavior for this exact use case?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-10-17 09:08</div>
             <div class="timeline-body"><blockquote>
-<p>Isn't it related because it introduced the fallback to the current working directory if no workspace path was provided and this PR changes the behavior for this exact use case?</p>
+<p>Isn&#x27;t it related because it introduced the fallback to the current working directory if no workspace path was provided and this PR changes the behavior for this exact use case?</p>
 </blockquote>
 <p>Yes.</p>
-<p>So, for Neovim specifically, it might not pass a working directory which means that the server should be running in single-file mode where we don't need to traverse the current directory (the behavior as is in this PR). If a user opened any file that's nested inside the current directory and if it contained a config file, then Neovim will make sure to inform the server about it by adding a new workspace folder using <a href="https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#workspace_didChangeWorkspaceFolders"><code>DidChangeWorkspaceFolders</code></a> notification.</p>
+<p>So, for Neovim specifically, it might not pass a working directory which means that the server should be running in single-file mode where we don&#x27;t need to traverse the current directory (the behavior as is in this PR). If a user opened any file that&#x27;s nested inside the current directory and if it contained a config file, then Neovim will make sure to inform the server about it by adding a new workspace folder using <a href="https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#workspace_didChangeWorkspaceFolders"><code>DidChangeWorkspaceFolders</code></a> notification.</p>
 <p>What this means is that the server is doing extra work for single-file mode without this PR.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Avoid indexing the workspace for single-file support" to "Avoid indexing the workspace for single-file mode" by @dhruvmanila on 2024-10-17 09:16</div>
+            <div class="event">Renamed from &quot;Avoid indexing the workspace for single-file support&quot; to &quot;Avoid indexing the workspace for single-file mode&quot; by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-10-17 09:16</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-10-17 14:50</div>
@@ -246,10 +246,10 @@ select = [&quot;I&quot;]
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @dhruvmanila on 2024-10-18 05:21</div>
+            <div class="event">Merged by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-10-18 05:21</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dhruvmanila on 2024-10-18 05:21</div>
+            <div class="event">Closed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-10-18 05:21</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-10-18 05:21</div>
@@ -257,7 +257,7 @@ select = [&quot;I&quot;]
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:07:01 UTC
+        Synced at 2026-01-20 19:07:28 UTC
     </footer>
 </body>
 </html>

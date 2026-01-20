@@ -24,11 +24,11 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a></div>
             <div class="timeline-body"><p>Literal promotion currently recurses down into types to also promote nested types. When doing type inference for generic container literals, this makes sense for unions:</p>
-<pre><code class="language-py">x = 1 if flag else &quot;a&quot;
+<pre><code>x = 1 if flag else &quot;a&quot;
 xs = [x]  # list[Unknown | int | str]
 </code></pre>
 <p>But it seems wrong to descend into generic types (and possibly other <code>Type</code> variants)? For example:</p>
-<pre><code class="language-py">class Invariant[T]:
+<pre><code>class Invariant[T]:
     x: T
 
     def __init__(self, value: T):
@@ -37,24 +37,24 @@ xs = [x]  # list[Unknown | int | str]
 def _(a: Invariant[Literal[1]]):
     xs = [a]  # list[Unknown | Invariant[int]]
 </code></pre>
-<p>Shouldn't we infer <code>list[Unknown | Invariant[Literal[1]]]</code> here?</p>
+<p>Shouldn&#x27;t we infer <code>list[Unknown | Invariant[Literal[1]]]</code> here?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bidirectional inference</span> added by @sharkdp on 2025-09-30 14:12</div>
+            <div class="event">Label <span class="label">bidirectional inference</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-30 14:12</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-30 14:19</div>
-            <div class="timeline-body"><p>Yeah, it's unsound to promote invariant generics like that. It's only sound to promote a subtype to its supertype, but <code>Invariant[Literal[1]]</code> is not a subtype of <code>Invariant[int]</code>. This is definitely a bug.</p>
+            <div class="timeline-body"><p>Yeah, it&#x27;s unsound to promote invariant generics like that. It&#x27;s only sound to promote a subtype to its supertype, but <code>Invariant[Literal[1]]</code> is not a subtype of <code>Invariant[int]</code>. This is definitely a bug.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-09-30 14:19</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-30 14:19</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-09-30 16:02</div>
             <div class="timeline-body"><p>I thought this would be an issue with generic constructors as well, but it seems like we ensure the argument is assignable to the promoted type:</p>
-<pre><code class="language-py">from typing import Literal
+<pre><code>from typing import Literal
 
 class Invariant[T]:
     x: T
@@ -65,52 +65,52 @@ class Invariant[T]:
 def _(a: Invariant[Literal[1]]):
     x = Invariant(a) # error: [invalid-argument-type] Expected `Invariant[int]`, found `Invariant[Literal[1]]` 
 </code></pre>
-<p>Also note that because we eagerly promote generic constructors, it's not possible to create an instance of <code>Invariant[Literal[1]]</code> except with type-casting (not that this makes the recursive promotion any more sound).</p>
+<p>Also note that because we eagerly promote generic constructors, it&#x27;s not possible to create an instance of <code>Invariant[Literal[1]]</code> except with type-casting (not that this makes the recursive promotion any more sound).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-30 17:08</div>
             <div class="timeline-body"><blockquote>
-<p>Also note that because we eagerly promote generic constructors, it's not possible to create an instance of <code>Invariant[Literal[1]]</code> except with type-casting (not that this makes the recursive promotion any more sound).</p>
+<p>Also note that because we eagerly promote generic constructors, it&#x27;s not possible to create an instance of <code>Invariant[Literal[1]]</code> except with type-casting (not that this makes the recursive promotion any more sound).</p>
 </blockquote>
 <p>Right, my example looked at lot easier in the beginning, until I noticed that as well 😄. I still wanted to open this discussion, because we (I) might want to use your literal promotion operation for other things as well.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-10-14 21:17</div>
-            <div class="timeline-body"><p>I wonder if the literal promotion should recurse at all. If we eagerly promote literals for generic constructors, collection types, and tuples*, we should only need to promote once at the top-level of each of those expression sites. I don't think there are really any other cases where we need to perform literal promotion.</p>
-<p>*We don't currently perform literal promotion for tuples, so this would be a major change, but it seems more consistent overall.</p>
+            <div class="timeline-body"><p>I wonder if the literal promotion should recurse at all. If we eagerly promote literals for generic constructors, collection types, and tuples*, we should only need to promote once at the top-level of each of those expression sites. I don&#x27;t think there are really any other cases where we need to perform literal promotion.</p>
+<p>*We don&#x27;t currently perform literal promotion for tuples, so this would be a major change, but it seems more consistent overall.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-14 21:43</div>
             <div class="timeline-body"><blockquote>
-<p>We don't currently perform literal promotion for tuples, so this would be a major change</p>
+<p>We don&#x27;t currently perform literal promotion for tuples, so this would be a major change</p>
 </blockquote>
 <p>This would break quite a lot of things, unfortunately! If we infer <code>(3, 7)</code> as <code>tuple[int, int]</code> rather than <code>tuple[Literal[3], Literal[7]]</code>, we will infer <code>sys.version_info &gt;= (3, 7)</code> as <code>bool</code> rather than a <code>Literal</code> type, regardless of what Python version the user has configured. That in turn will cause us to start treating all definitions inside <code>sys.version_info</code> branches in typeshed (there are <em>many</em>) as being possibly unbound regardless of the Python version the user has configured</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-14 21:57</div>
-            <div class="timeline-body"><p>In general, as I think I've mentioned before, I'm not sure we should be doing Literal promotion at all in covariant or bivariant contexts, unless the user has explicitly requested Literal promotion using the declared type annotation. &quot;Overly precise&quot; Literal types only really cause ergonomic issues for invariant generics, and maybe contravariant generics, because it's easy to upcast a covariant or bivariant generic type to a less precise supertype. So I'd say what we currently do for <code>tuple</code> is desirable, and that we should try to do similar things for other covariant containers such as <code>frozenset</code></p>
+            <div class="timeline-body"><p>In general, as I think I&#x27;ve mentioned before, I&#x27;m not sure we should be doing Literal promotion at all in covariant or bivariant contexts, unless the user has explicitly requested Literal promotion using the declared type annotation. &quot;Overly precise&quot; Literal types only really cause ergonomic issues for invariant generics, and maybe contravariant generics, because it&#x27;s easy to upcast a covariant or bivariant generic type to a less precise supertype. So I&#x27;d say what we currently do for <code>tuple</code> is desirable, and that we should try to do similar things for other covariant containers such as <code>frozenset</code></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @ibraheemdev by @ibraheemdev on 2025-10-17 14:39</div>
+            <div class="event">Assigned to <a href="https://github.com/ibraheemdev">@ibraheemdev</a> by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-10-17 14:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Beta" by @ibraheemdev on 2025-10-17 14:40</div>
+            <div class="event">Added to milestone &quot;Beta&quot; by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-10-17 14:40</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bidirectional inference</span> removed by @ibraheemdev on 2025-10-24 20:16</div>
+            <div class="event">Label <span class="label">bidirectional inference</span> removed by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-10-24 20:16</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @sharkdp on 2025-10-31 16:48</div>
+            <div class="event">Closed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-31 16:48</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:43 UTC
+        Synced at 2026-01-20 19:25:39 UTC
     </footer>
 </body>
 </html>

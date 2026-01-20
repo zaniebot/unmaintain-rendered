@@ -24,14 +24,14 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/adampauls">@adampauls</a></div>
             <div class="timeline-body"><p>AFAIK, there is no reason to limit RUF008 to just dataclasses -- mutable defaults have the same problems for regular classes.</p>
-<p>Partially addresses https://github.com/charliermarsh/ruff/issues/4053 and broken out from https://github.com/charliermarsh/ruff/pull/4096.</p>
+<p>Partially addresses <a href="https://github.com/charliermarsh/ruff/issues/4053">charliermarsh/ruff#4053</a> and broken out from <a href="https://github.com/charliermarsh/ruff/pull/4096">charliermarsh/ruff#4096</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-05-12 16:24</div>
-            <div class="timeline-body"><h2>PR Check Results</h2>
-<h3>Benchmark</h3>
-<h4>Linux</h4>
+            <div class="timeline-body">PR Check Results
+Benchmark
+Linux
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 formatter/large/dataset.py                 1.00      5.6±0.02ms     7.3 MB/sec    1.01      5.6±0.02ms     7.2 MB/sec
@@ -47,7 +47,7 @@ linter/default-rules/numpy/ctypeslib.py    1.00   1467.8±1.84µs    11.3 MB/sec
 linter/default-rules/numpy/globals.py      1.00    162.5±0.21µs    18.2 MB/sec    1.00    162.1±0.49µs    18.2 MB/sec
 linter/default-rules/pydantic/types.py     1.00      3.0±0.00ms     8.4 MB/sec    1.00      3.0±0.01ms     8.4 MB/sec
 </code></pre>
-<h4>Windows</h4>
+Windows
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 formatter/large/dataset.py                 1.00      6.2±0.07ms     6.5 MB/sec    1.00      6.3±0.14ms     6.5 MB/sec
@@ -63,14 +63,14 @@ linter/default-rules/numpy/ctypeslib.py    1.00  1577.1±22.59µs    10.6 MB/sec
 linter/default-rules/numpy/globals.py      1.00    176.1±4.41µs    16.8 MB/sec    1.01    177.4±4.65µs    16.6 MB/sec
 linter/default-rules/pydantic/types.py     1.00      3.4±0.05ms     7.6 MB/sec    1.00      3.4±0.08ms     7.6 MB/sec
 </code></pre>
-<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-05-12 21:50</div>
-            <div class="timeline-body"><p>With dataclasses, it is not apparent that a value will be shared across all of the instances. However, that is a special case. For class attributes, it is normal for a value to be shared across all of the instances. That's often the <em>reason</em> that you would use a class attribute instead of assigning the value in <code>__init__</code>. For example, one of the few cases where I use class attributes is for tracking instances of the class or to implement a cache for all instances:</p>
-<pre><code class="language-python">class Foo:
+            <div class="timeline-body"><p>With dataclasses, it is not apparent that a value will be shared across all of the instances. However, that is a special case. For class attributes, it is normal for a value to be shared across all of the instances. That&#x27;s often the <em>reason</em> that you would use a class attribute instead of assigning the value in <code>__init__</code>. For example, one of the few cases where I use class attributes is for tracking instances of the class or to implement a cache for all instances:</p>
+<pre><code>class Foo:
     _instances = []
     
     def __init__(self):
@@ -96,12 +96,12 @@ class Bar:
 <p>shared data can have possibly surprising effects with involving <a href="https://docs.python.org/3/glossary.html#term-mutable">mutable</a> objects such as lists and dictionaries. For example, the tricks list in the following code should not be used as a class variable because just a single list would be shared by all Dog instances:</p>
 </blockquote>
 <p>but the suggestion here should be to use an instance variable not a global variable.</p>
-<p>If you're interested in adding a rule for this, please consider make it a separate rule as is quite distinct from the dataclass case.</p>
+<p>If you&#x27;re interested in adding a rule for this, please consider make it a separate rule as is quite distinct from the dataclass case.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/adampauls">@adampauls</a> on 2023-05-12 23:37</div>
-            <div class="timeline-body"><p>My understanding was that <code>ClassVar</code> exists precisely to precisely to <a href="https://peps.python.org/pep-0526/#class-and-instance-variable-annotations">address the confusion</a> between class and instance variables. It's true that if you enable RUF008 but are not in a codebase with type hints, you might have a bad time, but that seems okay to me?</p>
+            <div class="timeline-body"><p>My understanding was that <code>ClassVar</code> exists precisely to precisely to <a href="https://peps.python.org/pep-0526/#class-and-instance-variable-annotations">address the confusion</a> between class and instance variables. It&#x27;s true that if you enable RUF008 but are not in a codebase with type hints, you might have a bad time, but that seems okay to me?</p>
 <blockquote>
 <p>This is only unclear when using dataclasses because the class attributes are being used to magically define instance construction.</p>
 </blockquote>
@@ -139,8 +139,8 @@ DFoo(x=7)
 &gt;&gt;&gt; f.x
 6
 </code></pre>
-<p>I think the reason that the original rule was written for dataclasses is that people do not commonly use attribute declarations outside of dataclasses, but I think that's more &quot;cultural&quot; than anything. You're probably right that outside of dataclasses, there's a pretty good chance that if have a <code>x: int = 5</code>, you are probably using it as a class variable, even though if is in fact just as much an instance variable as a class variable.</p>
-<p>I think it's okay to have this rule and have people use <code>ClassVar</code> to declare when they are doing that, but I'm happy to be overruled and make this a separate rule.</p>
+<p>I think the reason that the original rule was written for dataclasses is that people do not commonly use attribute declarations outside of dataclasses, but I think that&#x27;s more &quot;cultural&quot; than anything. You&#x27;re probably right that outside of dataclasses, there&#x27;s a pretty good chance that if have a <code>x: int = 5</code>, you are probably using it as a class variable, even though if is in fact just as much an instance variable as a class variable.</p>
+<p>I think it&#x27;s okay to have this rule and have people use <code>ClassVar</code> to declare when they are doing that, but I&#x27;m happy to be overruled and make this a separate rule.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -156,9 +156,9 @@ DFoo(x=7)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/adampauls">@adampauls</a> on 2023-05-13 17:44</div>
-            <div class="timeline-body"><p>@madkinsz I think you are saying that class attributes &quot;should&quot; only be used as instance variables for dataclasses and as class variables for non-dataclasses, even though in fact, class attributes are (very confusingly!) always both in either case. You may or may not be right that the Python community does that in practice. I'll just note that RUF008 already explicitly exempts ClassVars from the mutability check, indicating that at <code>ruff</code> does not currently take the position that ClassVars are so rare for dataclasses. I think, culturally, the type of people who use <code>ruff</code> to catch bugs will be okay annotated class variables on non-dataclasses with <code>ClassVar[Any]</code> if they have to.</p>
-<p>I'll also just say that this whole class/instance variable thing is even worse than you think! An expanded example from PEP 526:</p>
-<pre><code class="language-python">    class Starship:
+            <div class="timeline-body"><p>@madkinsz I think you are saying that class attributes &quot;should&quot; only be used as instance variables for dataclasses and as class variables for non-dataclasses, even though in fact, class attributes are (very confusingly!) always both in either case. You may or may not be right that the Python community does that in practice. I&#x27;ll just note that RUF008 already explicitly exempts ClassVars from the mutability check, indicating that at <code>ruff</code> does not currently take the position that ClassVars are so rare for dataclasses. I think, culturally, the type of people who use <code>ruff</code> to catch bugs will be okay annotated class variables on non-dataclasses with <code>ClassVar[Any]</code> if they have to.</p>
+<p>I&#x27;ll also just say that this whole class/instance variable thing is even worse than you think! An expanded example from PEP 526:</p>
+<pre><code>    class Starship:
         captain: str = &quot;Picard&quot;
         damage: int
         stats: ClassVar[dict[str, int]] = {}
@@ -180,36 +180,36 @@ DFoo(x=7)
     Starship.stats = {}  # This is OK
     enterprise_d.stats[&quot;foo&quot;] = 1  # this is okay for pyright and only mutates the new instance variable on enterprise_d
     enterprise_c.stats[&quot;bar&quot;] = 2  # this is okay for pyright, but mutates the class variable
-    print(Starship.stats)  # prints {'bar': 2}
+    print(Starship.stats)  # prints {&#x27;bar&#x27;: 2}
 </code></pre>
-<p>Even <code>pyright</code> can't save us from the madness! I know this example doesn't exactly help my case, since this PR would not catch any of the confusing behavior in this example. At the same time, this behavior is even more confusing if you don't declare <code>stats</code> to be a <code>ClassVar</code>.</p>
+<p>Even <code>pyright</code> can&#x27;t save us from the madness! I know this example doesn&#x27;t exactly help my case, since this PR would not catch any of the confusing behavior in this example. At the same time, this behavior is even more confusing if you don&#x27;t declare <code>stats</code> to be a <code>ClassVar</code>.</p>
 <p>My point is just that the behavior here is all very confusing and I think it is nice to be able to say that mutable non-<code>ClassVar </code>class attributes should just never be used, hence the new RUF008. Happy to break it out into two rules if @charliermarsh prefers though.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-15 18:52</div>
-            <div class="timeline-body"><p>Hey sorry -- I know I'm being looked to for an opinion here, it's on my TODO list!</p>
+            <div class="timeline-body"><p>Hey sorry -- I know I&#x27;m being looked to for an opinion here, it&#x27;s on my TODO list!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-24 03:16</div>
             <div class="timeline-body"><p>Okay, sorry, I finally got time to read through this in detail -- thank you both for the thoughtful analysis above.</p>
-<p>I tend to agree with @madkinsz that dataclasses are materially different from other classes, and that if we do pursue these, they should be implemented as separate rules. However, I'm not yet convinced that we <em>should</em> add those separate rules in the first place. Using mutable class attributes is a common and reasonable convention in Python.</p>
-<p>The furthest I'd go, I think, is to flag mutable class attributes that <em>aren't</em> annotated with <code>ClassVar</code> (and exempt dataclasses from this check, since they should be enforced with the existing rules, and we'd like to avoid duplicate diagnostics). I know that <code>ClassVar</code> actually connotes something slightly different (&quot;This shouldn't be assigned on individual instances&quot;, whereas here we're treating it as &quot;This is known to be mutable and shared across classes&quot; -- you could imagine a hypothetical situation in which someone wants a mutable class attribute, like a shared <code>dict</code>, but also wants to allow individual instances to override with their own <code>dict</code>; but that strikes me as an odd pattern, and this is a linter, we can be opinionated about the patterns that we flag and don't).</p>
+<p>I tend to agree with @madkinsz that dataclasses are materially different from other classes, and that if we do pursue these, they should be implemented as separate rules. However, I&#x27;m not yet convinced that we <em>should</em> add those separate rules in the first place. Using mutable class attributes is a common and reasonable convention in Python.</p>
+<p>The furthest I&#x27;d go, I think, is to flag mutable class attributes that <em>aren&#x27;t</em> annotated with <code>ClassVar</code> (and exempt dataclasses from this check, since they should be enforced with the existing rules, and we&#x27;d like to avoid duplicate diagnostics). I know that <code>ClassVar</code> actually connotes something slightly different (&quot;This shouldn&#x27;t be assigned on individual instances&quot;, whereas here we&#x27;re treating it as &quot;This is known to be mutable and shared across classes&quot; -- you could imagine a hypothetical situation in which someone wants a mutable class attribute, like a shared <code>dict</code>, but also wants to allow individual instances to override with their own <code>dict</code>; but that strikes me as an odd pattern, and this is a linter, we can be opinionated about the patterns that we flag and don&#x27;t).</p>
 <p>Does that seem useful to folks? Too limited to be useful?</p>
-<p>Either way, before merging, I'd want to see what violations that rule surfaces on the ecosystem CI check or on a broader set of repos (\cc @konstin), which is really something we should be doing for all novel Ruff rules anyway.</p>
+<p>Either way, before merging, I&#x27;d want to see what violations that rule surfaces on the ecosystem CI check or on a broader set of repos (\cc @konstin), which is really something we should be doing for all novel Ruff rules anyway.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/adampauls">@adampauls</a> on 2023-05-25 15:43</div>
             <div class="timeline-body"><blockquote>
-<p>The furthest I'd go, I think, is to flag mutable class attributes that aren't annotated with ClassVar</p>
+<p>The furthest I&#x27;d go, I think, is to flag mutable class attributes that aren&#x27;t annotated with ClassVar</p>
 </blockquote>
-<p>RUF008 already excludes attributes that are annotated with ClassVar, so I think this PR already does what you want, except that it doesn't split out a different error for non-dataclasses. Totally happy to do that. Or am I misunderstanding and there's some other difference in behavior you're suggesting?</p>
+<p>RUF008 already excludes attributes that are annotated with ClassVar, so I think this PR already does what you want, except that it doesn&#x27;t split out a different error for non-dataclasses. Totally happy to do that. Or am I misunderstanding and there&#x27;s some other difference in behavior you&#x27;re suggesting?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Expand RUF008 to all classes" to "Expand RUF008 to all classes, but to a new code (RUF011)" by @adampauls on 2023-05-28 07:19</div>
+            <div class="event">Renamed from &quot;Expand RUF008 to all classes&quot; to &quot;Expand RUF008 to all classes, but to a new code (RUF011)&quot; by <a href="https://github.com/adampauls">@adampauls</a> on 2023-05-28 07:19</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/adampauls">@adampauls</a> on 2023-05-28 07:19</div>
@@ -218,9 +218,9 @@ DFoo(x=7)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-05-28 17:20</div>
-            <div class="timeline-body"><p>To better understand the impact of this change, i ran RUF011 against the scraped ecosystem dataset: https://gist.github.com/konstin/7391392ca16747031aa1b0c314568f21. Naturally, there's a lot of noise there (e.g. i've seen some migration files being flagged).</p>
+            <div class="timeline-body"><p>To better understand the impact of this change, i ran RUF011 against the scraped ecosystem dataset: https://gist.github.com/konstin/7391392ca16747031aa1b0c314568f21. Naturally, there&#x27;s a lot of noise there (e.g. i&#x27;ve seen some migration files being flagged).</p>
 <p>Background: The dataset includes 3408 github projects using ruff from <a href="https://github.com/akx/ruff-usage-aggregate/blob/4adc8337aeb1e6da3570cfbb6d2581800ff73084/data/known-github-tomls-clean.jsonl">akx/ruff-usage-aggregate</a>, 1174 contain at least one RUF011 violations. I ran the analysis with <code>scripts/ecosystem_all_check.sh check --select RUF011</code> and collected the results with <code>rg &quot;: RUF011&quot; target/ecosystem_all_results/*.stdout.txt &gt; target/RUF011.txt</code>. The repositories use the default branch of each repository as of 2023-05-24.</p>
-<p>The normal ecosystem ci should create a more concise report for a small number of handpicked projects, but i think it's currently skipped as cargo test is failing.</p>
+<p>The normal ecosystem ci should create a more concise report for a small number of handpicked projects, but i think it&#x27;s currently skipped as cargo test is failing.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -240,17 +240,17 @@ DFoo(x=7)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-09 15:32</div>
-            <div class="timeline-body"><p>@adampauls - It's on my list to revisit today. Sorry for the delay.</p>
+            <div class="timeline-body"><p>@adampauls - It&#x27;s on my list to revisit today. Sorry for the delay.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Expand RUF008 to all classes, but to a new code (RUF011)" to "Expand RUF008 to all classes, but to a new code (RUF012)" by @adampauls on 2023-06-11 23:03</div>
+            <div class="event">Renamed from &quot;Expand RUF008 to all classes, but to a new code (RUF011)&quot; to &quot;Expand RUF008 to all classes, but to a new code (RUF012)&quot; by <a href="https://github.com/adampauls">@adampauls</a> on 2023-06-11 23:03</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2023-06-12 16:54</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-12 16:54</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-06-12 16:54</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-12 16:54</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-06-12 16:55</div>
@@ -260,7 +260,7 @@ DFoo(x=7)
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:57:23 UTC
+        Synced at 2026-01-20 18:53:40 UTC
     </footer>
 </body>
 </html>

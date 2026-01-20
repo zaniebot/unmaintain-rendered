@@ -23,32 +23,32 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/jannisko">@jannisko</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Allow using http(s) urls for constraints and requirements files handed to the CLI, by handling paths starting with <code>http://</code> or <code>https://</code> differently. This allows commands for such as: <code>uv pip install -c https://raw.githubusercontent.com/apache/airflow/constraints-2.8.1/constraints-3.8.txt requests</code>.</p>
 <p>closes #1332</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>Testing install using a <code>constraints.txt</code> file hosted on github in the airflow repository:
 https://github.com/jannisko/uv/blob/fbdc2eba8e5e8fb4160baae495daff8fb48df13f/crates/uv/tests/pip_install.rs#L1440-L1484</p>
-<h2>Advice Needed</h2>
+Advice Needed
 <ul>
 <li>filesystem/http dispatch is implemented at a relatively low level (at <code>crates/uv-fs/src/lib.rs#read_to_string</code>). Should I change some naming here so it is obvious that the function is able to dispatch?</li>
 <li>I kept the CLI argument for -c and -r as a PathBuf, even though now it is technically either a path or a url. We could either keep this as is for now, or implement a new enum for this case? The enum could then handle dispatch to files/http.</li>
-<li>Using another abstraction layer like https://docs.rs/object_store/latest/object_store/ for the files/urls/[s3] could work as well, though I ran into a bug during testing which I couldn't debug</li>
+<li>Using another abstraction layer like https://docs.rs/object_store/latest/object_store/ for the files/urls/[s3] could work as well, though I ran into a bug during testing which I couldn&#x27;t debug</li>
 </ul>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @charliermarsh by @charliermarsh on 2024-02-29 14:58</div>
+            <div class="event">Review requested from <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-29 14:58</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-02-29 14:58</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-29 14:58</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2024-02-29 14:58</div>
+            <div class="event">Label <span class="label">configuration</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-29 14:58</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-29 14:59</div>
-            <div class="timeline-body"><p>Thanks! I've been conflicted on whether to support this but ultimately it does seem reasonable.</p>
+            <div class="timeline-body"><p>Thanks! I&#x27;ve been conflicted on whether to support this but ultimately it does seem reasonable.</p>
 <blockquote>
 <p>For now, only manually tested. I need advice on how to test this feature. Is a test using a permalink to a GitHub repo considered stable enough for this case or do we need a temp http server for tests?</p>
 </blockquote>
@@ -68,7 +68,7 @@ https://github.com/jannisko/uv/blob/fbdc2eba8e5e8fb4160baae495daff8fb48df13f/cra
 </code></pre>
 <pre><code>$ cargo run -- pip install -r http://localhost:8000/inner/requirements.txt
     Finished dev [unoptimized + debuginfo] target(s) in 0.19s
-     Running `target/debug/uv pip install -r 'http://localhost:8000/inner/requirements.txt'`
+     Running `target/debug/uv pip install -r &#x27;http://localhost:8000/inner/requirements.txt&#x27;`
 Resolved 6 packages in 614ms
 Downloaded 1 package in 2.56s
 Installed 6 packages in 30ms
@@ -82,17 +82,17 @@ Installed 6 packages in 30ms
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "support remote http[s] constraint.txt files (#1332)" to "support remote http[s] constraints/requirements/overrides.txt files (#1332)" by @jannisko on 2024-03-01 16:33</div>
+            <div class="event">Renamed from &quot;support remote http[s] constraint.txt files (#1332)&quot; to &quot;support remote http[s] constraints/requirements/overrides.txt files (#1332)&quot; by <a href="https://github.com/jannisko">@jannisko</a> on 2024-03-01 16:33</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-01 18:13</div>
-            <div class="timeline-body"><p>Okay cool, thank you! Acknowledging that it's now blocked on me reviewing.</p>
+            <div class="timeline-body"><p>Okay cool, thank you! Acknowledging that it&#x27;s now blocked on me reviewing.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2024-03-02 08:35</div>
             <div class="timeline-body"><p>Just to add to the weight here: This is also <a href="https://airflow.apache.org/docs/apache-airflow/stable/installation/installing-from-pypi.html">Highly used feature in apache-airflow</a> - if users of airflow would like to use the recommended installation option - they cannot use it directly now with uv - they need to download the constraints first.</p>
-<p>This caused a small hicc-up in our CI images in Airflow (as I did not notice that remove constraints installation was not working with uv. I fix it in https://github.com/apache/airflow/pull/37845 (and generally downloading constraints to CI image is a good idea) - but users trying to do reproducible installation of Airlfow should be able to use the URL, so big cheering on that one :).</p>
+<p>This caused a small hicc-up in our CI images in Airflow (as I did not notice that remove constraints installation was not working with uv. I fix it in <a href="https://github.com/apache/airflow/pull/37845">apache/airflow#37845</a> (and generally downloading constraints to CI image is a good idea) - but users trying to do reproducible installation of Airlfow should be able to use the URL, so big cheering on that one :).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -103,7 +103,7 @@ Installed 6 packages in 30ms
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-fs/src/lib.rs</code>:76 on 2024-03-02 22:20</div>
             <div class="timeline-body"><p>I think I would prefer to add dedicated methods for this in <code>requirements-txt</code>, for two reasons:</p>
 <ol>
-<li>I don't think we want to allow users to provide <code>pyproject.toml</code> files as URLs for now. I'd just prefer to limit it to requirements files since no tool supports remote <code>pyproject.toml</code> (and, in practice, we're actually supposed to <em>build the project</em> when we're given a <code>pyproject.toml</code>, so this wouldn't work correctly in all cases).</li>
+<li>I don&#x27;t think we want to allow users to provide <code>pyproject.toml</code> files as URLs for now. I&#x27;d just prefer to limit it to requirements files since no tool supports remote <code>pyproject.toml</code> (and, in practice, we&#x27;re actually supposed to <em>build the project</em> when we&#x27;re given a <code>pyproject.toml</code>, so this wouldn&#x27;t work correctly in all cases).</li>
 <li>Adding <code>reqwest</code> as a dep to <code>uv-fs</code> feels heavy since this crate is supposed to be lightweight.</li>
 </ol>
 </div>
@@ -123,7 +123,7 @@ Installed 6 packages in 30ms
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/requirements-txt/src/lib.rs</code>:327 on 2024-03-02 22:23</div>
-            <div class="timeline-body"><p>On the question of using <code>Path</code>: Part of me feels like we should be using <code>VerbatimUrl</code> for this (used elsewhere in this crate). <code>VerbatimUrl</code> can represent both URLs and paths, but it preserves the user-provided representation, which we leverage to ensure that we <em>don't</em> expand environment variables (like secrets) when we write results back out to <code>requirements.txt</code>. I think we would need a <code>join</code> method on it, which would perhaps be somewhat awkward... But would you mind giving it a try, and seeing if it fits? Alternatively, we can punt it to another PR -- I would be open to merging without it.</p>
+            <div class="timeline-body"><p>On the question of using <code>Path</code>: Part of me feels like we should be using <code>VerbatimUrl</code> for this (used elsewhere in this crate). <code>VerbatimUrl</code> can represent both URLs and paths, but it preserves the user-provided representation, which we leverage to ensure that we <em>don&#x27;t</em> expand environment variables (like secrets) when we write results back out to <code>requirements.txt</code>. I think we would need a <code>join</code> method on it, which would perhaps be somewhat awkward... But would you mind giving it a try, and seeing if it fits? Alternatively, we can punt it to another PR -- I would be open to merging without it.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -139,7 +139,7 @@ Installed 6 packages in 30ms
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/jannisko">@jannisko</a> on <code>crates/uv-fs/src/lib.rs</code>:76 on 2024-03-04 12:09</div>
-            <div class="timeline-body"><p>Very fair point. Didn't even realize <code>read_to_string</code> is only called in <code>RequirementsTxt::parse</code> and for parsing <code>RequirementsSource::PyprojectToml</code>. So this change should be easy to isolate to <code>RequirementsTxt</code> 👍</p>
+            <div class="timeline-body"><p>Very fair point. Didn&#x27;t even realize <code>read_to_string</code> is only called in <code>RequirementsTxt::parse</code> and for parsing <code>RequirementsSource::PyprojectToml</code>. So this change should be easy to isolate to <code>RequirementsTxt</code> 👍</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -152,7 +152,7 @@ Installed 6 packages in 30ms
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/jannisko">@jannisko</a> on <code>crates/requirements-txt/src/lib.rs</code>:392 on 2024-03-04 12:23</div>
-            <div class="timeline-body"><p>Yup works really well from my testing. It is basically handled like a relative path starting with the <code>http:</code> directory. The only sketchy thing I could find for now is that it doesn't survive a round trip through <code>.components()</code>:
+            <div class="timeline-body"><p>Yup works really well from my testing. It is basically handled like a relative path starting with the <code>http:</code> directory. The only sketchy thing I could find for now is that it doesn&#x27;t survive a round trip through <code>.components()</code>:
 <code>PathBuf::from_iter(PathBuf::from_str(&quot;http://test/abc.txt&quot;).unwrap().components())</code> = <code>http:/test/abc.txt</code> (one <code>/</code> missing).</p>
 </div>
         </div>
@@ -162,7 +162,7 @@ Installed 6 packages in 30ms
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/jannisko">@jannisko</a> on <code>crates/requirements-txt/src/lib.rs</code>:327 on 2024-03-04 12:26</div>
-            <div class="timeline-body"><p>I'd like to give it a try in a separate PR!</p>
+            <div class="timeline-body"><p>I&#x27;d like to give it a try in a separate PR!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -183,7 +183,7 @@ error: Unsupported requirement in http://localhost:8000/requirements.txt at posi
 no auth header received
 ^^
 </code></pre>
-<p>I'll try to figure out how to mirror pips behavior, and take a look at the <code>RegistryClient</code> as well.</p>
+<p>I&#x27;ll try to figure out how to mirror pips behavior, and take a look at the <code>RegistryClient</code> as well.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -197,11 +197,11 @@ no auth header received
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jannisko">@jannisko</a> on 2024-03-05 13:08</div>
-            <div class="timeline-body"><p>@charliermarsh I moved the http handling into <code>requirements-txt</code> and I'm handing the <code>RegistryClient</code> over in there now too. Let me know what you think!</p>
+            <div class="timeline-body"><p>@charliermarsh I moved the http handling into <code>requirements-txt</code> and I&#x27;m handing the <code>RegistryClient</code> over in there now too. Let me know what you think!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @charliermarsh by @charliermarsh on 2024-03-05 23:13</div>
+            <div class="event">Review requested from <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-05 23:13</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-03-06 03:58</div>
@@ -210,17 +210,17 @@ no auth header received
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-06 04:00</div>
-            <div class="timeline-body"><p>@jannisko -- I mostly made cosmetic changes, but I did make one behavioral change, which is that I removed <code>dialoguer</code>. I'd like to see if this comes up in practice for users before adding support for interactively prompting credentials -- it adds complexity, and it's also yet another dependency in our tree. If we need to restore, we'll always have it here in the Git history.</p>
+            <div class="timeline-body"><p>@jannisko -- I mostly made cosmetic changes, but I did make one behavioral change, which is that I removed <code>dialoguer</code>. I&#x27;d like to see if this comes up in practice for users before adding support for interactively prompting credentials -- it adds complexity, and it&#x27;s also yet another dependency in our tree. If we need to restore, we&#x27;ll always have it here in the Git history.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "support remote http[s] constraints/requirements/overrides.txt files (#1332)" to "Support remote `https://` requirements files (#1332)" by @charliermarsh on 2024-03-06 04:03</div>
+            <div class="event">Renamed from &quot;support remote http[s] constraints/requirements/overrides.txt files (#1332)&quot; to &quot;Support remote `https://` requirements files (#1332)&quot; by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-06 04:03</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2024-03-06 04:18</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-06 04:18</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-03-06 04:18</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-06 04:18</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jannisko">@jannisko</a> on 2024-03-06 06:47</div>
@@ -230,7 +230,7 @@ no auth header received
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:35:51 UTC
+        Synced at 2026-01-20 19:44:00 UTC
     </footer>
 </body>
 </html>

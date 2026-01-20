@@ -23,45 +23,45 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a></div>
-            <div class="timeline-body"><p>This is happening because the checker is analyzing the string <em>inside</em> the annotation (three strings inside <code>Literal</code>). The ranges aren't correct in that case. We need to find a holistic solution to this because it's happening to <em>all</em> rules working on strings.</p>
-<p>For example, here <code>UP025</code> is triggered for the <code>u'\\n'</code> which is inside the string type annotation.</p>
+            <div class="timeline-body"><p>This is happening because the checker is analyzing the string <em>inside</em> the annotation (three strings inside <code>Literal</code>). The ranges aren&#x27;t correct in that case. We need to find a holistic solution to this because it&#x27;s happening to <em>all</em> rules working on strings.</p>
+<p>For example, here <code>UP025</code> is triggered for the <code>u&#x27;\\n&#x27;</code> which is inside the string type annotation.</p>
 <pre><code>/Users/dhruv/playground/ruff/src/UP025.py:1:12: UP025 [*] Remove unicode literals from strings
   |
-1 | NEWLINE_SEQUENCE: &quot;te.Literal[u'\\n', '\\r\\n', '\\r']&quot; = &quot;\n&quot;
+1 | NEWLINE_SEQUENCE: &quot;te.Literal[u&#x27;\\n&#x27;, &#x27;\\r\\n&#x27;, &#x27;\\r&#x27;]&quot; = &quot;\n&quot;
   |            ^^^^^ UP025
   |
   = help: Remove unicode prefix
 
 ℹ Safe fix
-1   |-NEWLINE_SEQUENCE: &quot;te.Literal[u'\\n', '\\r\\n', '\\r']&quot; = &quot;\n&quot;
-  1 |+NEWLINE_SEQENCE: &quot;te.Literal[u'\\n', '\\r\\n', '\\r']&quot; = &quot;\n&quot;
+1   |-NEWLINE_SEQUENCE: &quot;te.Literal[u&#x27;\\n&#x27;, &#x27;\\r\\n&#x27;, &#x27;\\r&#x27;]&quot; = &quot;\n&quot;
+  1 |+NEWLINE_SEQENCE: &quot;te.Literal[u&#x27;\\n&#x27;, &#x27;\\r\\n&#x27;, &#x27;\\r&#x27;]&quot; = &quot;\n&quot;
 
 Found 1 error.
 [*] 1 fixable with the --fix option.
 </code></pre>
 <p>We could potentially fix the range for the rules to be useful in the context of type annotation or ignore them completely. Nevertheless, we should completely avoid rules which might update the quotes because otherwise we need the context of the quote which contains the actual type annotation.</p>
-<p><em>Originally posted by @dhruvmanila in https://github.com/astral-sh/ruff/issues/10546#issuecomment-2016886953</em></p>
+<p><em>Originally posted by @dhruvmanila in <a href="https://github.com/astral-sh/ruff/issues/10546">astral-sh/ruff#10546</a>#issuecomment-2016886953</em></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2024-03-25 18:33</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-03-25 18:33</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">linter</span> added by @dhruvmanila on 2024-03-25 18:33</div>
+            <div class="event">Label <span class="label">linter</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-03-25 18:33</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-10 09:42</div>
             <div class="timeline-body"><p>Hey @RaulWCosta, sorry for the late reply but yeah it is available.</p>
-<p>I think the first step would be to fix the range. I was able to find out the root cause of the problem and it's here:</p>
+<p>I think the first step would be to fix the range. I was able to find out the root cause of the problem and it&#x27;s here:</p>
 <p>https://github.com/astral-sh/ruff/blob/de46a36bbcdc1df4a56fc486ae5c7bcf2c4bbba0/crates/ruff_python_parser/src/typing.rs#L39-L42</p>
-<p>The example mentioned in the PR description contains escaped characters which makes this a complex annotation. This means that <code>parse_type_annotation</code> takes the <code>else</code> path which parses it as an expression and then relocates the parsed expression and any of it's child expressions to the <em>same</em> range. This is where the bug is. The <a href="https://github.com/astral-sh/ruff/blob/de46a36bbcdc1df4a56fc486ae5c7bcf2c4bbba0/crates/ruff_python_ast/src/relocate.rs">relocation logic</a> isn't correct as it doesn't relocate any of the sub-expressions relative to the root expression. cc @charliermarsh I think there was some discussion around this logic.</p>
+<p>The example mentioned in the PR description contains escaped characters which makes this a complex annotation. This means that <code>parse_type_annotation</code> takes the <code>else</code> path which parses it as an expression and then relocates the parsed expression and any of it&#x27;s child expressions to the <em>same</em> range. This is where the bug is. The <a href="https://github.com/astral-sh/ruff/blob/de46a36bbcdc1df4a56fc486ae5c7bcf2c4bbba0/crates/ruff_python_ast/src/relocate.rs">relocation logic</a> isn&#x27;t correct as it doesn&#x27;t relocate any of the sub-expressions relative to the root expression. cc @charliermarsh I think there was some discussion around this logic.</p>
 <p>For example,</p>
-<pre><code class="language-py">import typing as t
+<pre><code>import typing as t
 
-NEWLINE_SEQUENCE: &quot;t.Literal[u'\\n', '\\r\\n', '\\r']&quot; = &quot;\n&quot;
+NEWLINE_SEQUENCE: &quot;t.Literal[u&#x27;\\n&#x27;, &#x27;\\r\\n&#x27;, &#x27;\\r&#x27;]&quot; = &quot;\n&quot;
 </code></pre>
 <p>Along with the following patch to print the AST:</p>
-<pre><code class="language-diff">diff --git a/crates/ruff_python_parser/src/typing.rs b/crates/ruff_python_parser/src/typing.rs
+<pre><code>diff --git a/crates/ruff_python_parser/src/typing.rs b/crates/ruff_python_parser/src/typing.rs
 index 18efe4041..09507977c 100644
 --- a/crates/ruff_python_parser/src/typing.rs
 +++ b/crates/ruff_python_parser/src/typing.rs
@@ -76,8 +76,8 @@ index 18efe4041..09507977c 100644
      }
  }
 </code></pre>
-<p>We can see that the relocated ranges aren't correct as they're set to the same range regardless of the position of the node:</p>
-<pre><code class="language-diff">diff --git a/a.txt b/b.txt
+<p>We can see that the relocated ranges aren&#x27;t correct as they&#x27;re set to the same range regardless of the position of the node:</p>
+<pre><code>diff --git a/a.txt b/b.txt
 index bb13b780d..26b45c862 100644
 --- a/a.txt
 +++ b/b.txt
@@ -136,23 +136,23 @@ index bb13b780d..26b45c862 100644
 <li>Is it ok to highlight this violation? If not, skip this rule through <code>checker.semantic().in_type_definition()</code> check. For example, https://github.com/astral-sh/ruff/blob/de46a36bbcdc1df4a56fc486ae5c7bcf2c4bbba0/crates/ruff_linter/src/rules/flake8_type_checking/rules/runtime_string_union.rs#L55-L58</li>
 <li>Is it safe to fix this violation? If not, avoid creating the fix for it. For example, https://github.com/astral-sh/ruff/blob/de46a36bbcdc1df4a56fc486ae5c7bcf2c4bbba0/crates/ruff_linter/src/rules/pyupgrade/rules/use_pep604_annotation.rs#L68-L79</li>
 </ol>
-<p>That said, I don't think any of the violations that diagnosis string <strong>quotes</strong> should be highlighted or fixed as it requires context of the surrounding quote of the annotation itself.</p>
+<p>That said, I don&#x27;t think any of the violations that diagnosis string <strong>quotes</strong> should be highlighted or fixed as it requires context of the surrounding quote of the annotation itself.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-15 14:17</div>
-            <div class="timeline-body"><p>Thanks for the update! I'll assign the issue to you but do not feel any pressure to complete it :)</p>
+            <div class="timeline-body"><p>Thanks for the update! I&#x27;ll assign the issue to you but do not feel any pressure to complete it :)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @RaulWCosta by @dhruvmanila on 2024-04-15 14:17</div>
+            <div class="event">Assigned to <a href="https://github.com/RaulWCosta">@RaulWCosta</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-15 14:17</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Unassigned @RaulWCosta by @RaulWCosta on 2024-04-26 20:01</div>
+            <div class="event">Unassigned <a href="https://github.com/RaulWCosta">@RaulWCosta</a> by <a href="https://github.com/RaulWCosta">@RaulWCosta</a> on 2024-04-26 20:01</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/RaulWCosta">@RaulWCosta</a> on 2024-04-26 20:02</div>
-            <div class="timeline-body"><p>Hey @dhruvmanila, thank you for the clear explanation, but I believe I won't have time to do the fix</p>
+            <div class="timeline-body"><p>Hey @dhruvmanila, thank you for the clear explanation, but I believe I won&#x27;t have time to do the fix</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -161,20 +161,20 @@ index bb13b780d..26b45c862 100644
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">linter</span> removed by @dhruvmanila on 2024-08-05 10:52</div>
+            <div class="event">Label <span class="label">linter</span> removed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-08-05 10:52</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">help wanted</span> added by @dhruvmanila on 2024-08-05 10:52</div>
+            <div class="event">Label <span class="label">help wanted</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-08-05 10:52</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-08-05 10:54</div>
-            <div class="timeline-body"><p>We'd appreciate any contributions here. Refer to the issue description to understand what's happening and <a href="https://github.com/astral-sh/ruff/issues/10586#issuecomment-2047045527">this comment</a> on the root cause analysis and pointers on how to resolve it. Feel free to ping me for any questions.</p>
+            <div class="timeline-body"><p>We&#x27;d appreciate any contributions here. Refer to the issue description to understand what&#x27;s happening and <a href="https://github.com/astral-sh/ruff/issues/10586#issuecomment-2047045527">this comment</a> on the root cause analysis and pointers on how to resolve it. Feel free to ping me for any questions.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:49:56 UTC
+        Synced at 2026-01-20 18:48:51 UTC
     </footer>
 </body>
 </html>

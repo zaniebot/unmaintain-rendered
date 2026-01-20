@@ -23,16 +23,16 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>This is an attempt to https://github.com/astral-sh/puffin/pull/1163 by removing the <code>WaitMap</code> and gaining more granular control over the values that we hold over <code>await</code> boundaries.</p>
+            <div class="timeline-body">Summary
+<p>This is an attempt to <a href="https://github.com/astral-sh/puffin/pull/1163">astral-sh/puffin#1163</a> by removing the <code>WaitMap</code> and gaining more granular control over the values that we hold over <code>await</code> boundaries.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @konstin by @charliermarsh on 2024-01-30 05:02</div>
+            <div class="event">Review requested from <a href="https://github.com/konstin">@konstin</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-30 05:02</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-30 05:02</div>
-            <div class="timeline-body"><p>@konstin - I haven't done any benchmarking, but this does consistently not-deadlock for me.</p>
+            <div class="timeline-body"><p>@konstin - I haven&#x27;t done any benchmarking, but this does consistently not-deadlock for me.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -51,7 +51,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-resolver/src/resolver/mod.rs</code>:409 on 2024-01-30 11:35</div>
-            <div class="timeline-body"><p>I'd add here that we specifically need this because the channel is sync</p>
+            <div class="timeline-body"><p>I&#x27;d add here that we specifically need this because the channel is sync</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -59,8 +59,8 @@
             <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
 <ul>
 <li><code>main</code><ul>
-<li><strong>PR #1183</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/puffin/1183?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>  👈<ul>
-<li><strong>PR #1163</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/puffin/1163?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #1183</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/puffin/1183?utm_source=stack-comment-icon"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite"></a>  👈<ul>
+<li><strong>PR #1163</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/puffin/1163?utm_source=stack-comment-icon"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite"></a></li>
 </ul>
 </li>
 </ul>
@@ -81,12 +81,12 @@
 <p>Locking behaviour: May deadlock if called when holding any sort of reference into the map.</p>
 </blockquote>
 <p>This assumes we never actually call this function from two threads at the same time. This is the same call that <code>WaitMap</code> previously deadlocked in.</p>
-<p>If we know that the map will stay on the main thread anyway, we can use <code>Cell&lt;FxHashMap&lt;K, V&gt;&gt;</code> instead of <code>DashMap</code>. If we want share the index between threads (i don't know that - it depends on how we want to structure our async code) we'll need something like <code>RwLock&lt;FxHashMap&lt;K, V&gt;&gt;</code>. <code>DashMap</code> is a <code>Box&lt;[RwLock&lt;HashMap&lt;K, V, S&gt;&gt;]&gt;</code> internally (https://docs.rs/dashmap/latest/src/dashmap/lib.rs.html#88-92) and our lock times are minimal, so i expect no perf difference. <code>DashMap</code> is missing a <code>get_or_insert() -&gt; bool</code>, an &quot;atomic&quot; compare-and-swap option, that both we and <code>WaitMap</code> would need to be correct.</p>
+<p>If we know that the map will stay on the main thread anyway, we can use <code>Cell&lt;FxHashMap&lt;K, V&gt;&gt;</code> instead of <code>DashMap</code>. If we want share the index between threads (i don&#x27;t know that - it depends on how we want to structure our async code) we&#x27;ll need something like <code>RwLock&lt;FxHashMap&lt;K, V&gt;&gt;</code>. <code>DashMap</code> is a <code>Box&lt;[RwLock&lt;HashMap&lt;K, V, S&gt;&gt;]&gt;</code> internally (https://docs.rs/dashmap/latest/src/dashmap/lib.rs.html#88-92) and our lock times are minimal, so i expect no perf difference. <code>DashMap</code> is missing a <code>get_or_insert() -&gt; bool</code>, an &quot;atomic&quot; compare-and-swap option, that both we and <code>WaitMap</code> would need to be correct.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/once-map/src/lib.rs</code>:39 on 2024-01-30 11:55</div>
-            <div class="timeline-body"><p>Should we also yield here? Notifying is surprisingly sync, so the subscribers won't get notified immediately until the next yielding of the task that called done. (This would make the function async, but i think it's correct that all operations on the <code>OnceMap</code> should be async)</p>
+            <div class="timeline-body"><p>Should we also yield here? Notifying is surprisingly sync, so the subscribers won&#x27;t get notified immediately until the next yielding of the task that called done. (This would make the function async, but i think it&#x27;s correct that all operations on the <code>OnceMap</code> should be async)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -96,7 +96,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/once-map/src/lib.rs</code>:29 on 2024-01-30 13:11</div>
-            <div class="timeline-body"><p>I don't think the warning is about calling <code>entry</code> from two different threads simultaneously. That's normal and should be fine, otherwise it'd be a pretty poor concurrent hashmap. The warning is, AIUI, about calling <code>entry</code> (or <code>get</code>) while you have a reference to a previous call in hand in the same thread. When multiple threads are calling it, one will (hopefully) eventually make progress, drop the reference and unblock the other thread. But if you do <code>let entry = self.items.entry(foo);</code> and then <code>self.items.get(foo)</code> while <code>entry</code> is still alive, then that <code>get</code> call seems likely to block waiting for <code>entry</code> to drop. Which, of course, will never happen because the thread is blocked on <code>get</code>.</p>
+            <div class="timeline-body"><p>I don&#x27;t think the warning is about calling <code>entry</code> from two different threads simultaneously. That&#x27;s normal and should be fine, otherwise it&#x27;d be a pretty poor concurrent hashmap. The warning is, AIUI, about calling <code>entry</code> (or <code>get</code>) while you have a reference to a previous call in hand in the same thread. When multiple threads are calling it, one will (hopefully) eventually make progress, drop the reference and unblock the other thread. But if you do <code>let entry = self.items.entry(foo);</code> and then <code>self.items.get(foo)</code> while <code>entry</code> is still alive, then that <code>get</code> call seems likely to block waiting for <code>entry</code> to drop. Which, of course, will never happen because the thread is blocked on <code>get</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -106,20 +106,20 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/once-map/src/lib.rs</code>:40 on 2024-01-30 13:12</div>
-            <div class="timeline-body"><p>I'd probably rename this to <code>register</code> and drop the existing <code>register</code> function. Unless you want the convenience of passing a borrow as a key to this map. (But <code>register_owned</code> surfaces the costs better IMO.)</p>
+            <div class="timeline-body"><p>I&#x27;d probably rename this to <code>register</code> and drop the existing <code>register</code> function. Unless you want the convenience of passing a borrow as a key to this map. (But <code>register_owned</code> surfaces the costs better IMO.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/once-map/src/lib.rs</code>:39 on 2024-01-30 13:21</div>
             <div class="timeline-body"><blockquote>
-<p>Notifying is surprisingly sync, so the subscribers won't get notified immediately until the next yielding of the task that called done.</p>
+<p>Notifying is surprisingly sync, so the subscribers won&#x27;t get notified immediately until the next yielding of the task that called done.</p>
 </blockquote>
-<p>Hmmm. Are you sure? We're using the multi-threaded runtime for tokio right? If so, AIUI, other waiters could be notified and acting on it before <code>notify.notify_waiters()</code> even finishes.</p>
+<p>Hmmm. Are you sure? We&#x27;re using the multi-threaded runtime for tokio right? If so, AIUI, other waiters could be notified and acting on it before <code>notify.notify_waiters()</code> even finishes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/once-map/src/lib.rs</code>:66 on 2024-01-30 13:23</div>
-            <div class="timeline-body"><p>I would be tempted to change the signature to <code>Result&lt;Option&lt;Arc&lt;V&gt;&gt;, Error&gt;</code> instead. And then callers can <code>unwrap()</code> the <code>Ok</code> case if they know it's already been inserted.</p>
+            <div class="timeline-body"><p>I would be tempted to change the signature to <code>Result&lt;Option&lt;Arc&lt;V&gt;&gt;, Error&gt;</code> instead. And then callers can <code>unwrap()</code> the <code>Ok</code> case if they know it&#x27;s already been inserted.</p>
 <p>Or is there a non-bug situation where <code>Error::NotRegistered</code> would be returned?</p>
 </div>
         </div>
@@ -140,7 +140,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/once-map/src/lib.rs</code>:114 on 2024-01-30 13:26</div>
-            <div class="timeline-body"><p>Is this still used? Do we need cancellation? (I would naively assume &quot;yes,&quot; but I'm not 100% sure.)</p>
+            <div class="timeline-body"><p>Is this still used? Do we need cancellation? (I would naively assume &quot;yes,&quot; but I&#x27;m not 100% sure.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -154,12 +154,12 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/once-map/src/lib.rs</code>:39 on 2024-01-30 13:36</div>
-            <div class="timeline-body"><p>Yep that's correct, but our receivers are all on the some thread atm as far as i can see.</p>
+            <div class="timeline-body"><p>Yep that&#x27;s correct, but our receivers are all on the some thread atm as far as i can see.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/once-map/src/lib.rs</code>:53 on 2024-01-30 13:41</div>
-            <div class="timeline-body"><p>If there is a task waiting on some request but there is no task providing it (because we're done, we're dropping the once map), this sounds like a bug.</p>
+            <div class="timeline-body"><p>If there is a task waiting on some request but there is no task providing it (because we&#x27;re done, we&#x27;re dropping the once map), this sounds like a bug.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -172,7 +172,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/once-map/src/lib.rs</code>:29 on 2024-01-30 13:42</div>
-            <div class="timeline-body"><p>Thanks for clarifying, this makes much more sense! I was indeed assuming that dashmap was behaving rather poorly, but this makes more sense and works for us if we don't have any await points while we hold the entry.</p>
+            <div class="timeline-body"><p>Thanks for clarifying, this makes much more sense! I was indeed assuming that dashmap was behaving rather poorly, but this makes more sense and works for us if we don&#x27;t have any await points while we hold the entry.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -195,7 +195,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/once-map/src/lib.rs</code>:29 on 2024-01-30 14:00</div>
-            <div class="timeline-body"><p>@konstin - I spent a while investigating that, and trying to make changes to the resolver to solve it, but I ultimately couldn't figure out where it might be.</p>
+            <div class="timeline-body"><p>@konstin - I spent a while investigating that, and trying to make changes to the resolver to solve it, but I ultimately couldn&#x27;t figure out where it might be.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -205,7 +205,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/once-map/src/lib.rs</code>:53 on 2024-01-30 14:14</div>
             <div class="timeline-body"><p>Oh! I see now. Yes. On <code>Drop</code> of the <code>OnceMap</code>.</p>
-<p>I agree it might be a bug... but I could also see that maybe it isn't? Maybe the caller has finished what they needed and didn't need to wait for everything to finish. And it is perhaps hard to distinguish between &quot;there is no task providing it&quot; and &quot;there is a task providing it, but it hasn't done so yet.&quot; I defer to y'all here because I don't have enough context on how this is used. But I absolutely agree that if you can assert that any <code>Waiting</code> values are a bug, then it might be nice to assert it on <code>Drop</code>. (Although note that a panic during <code>Drop</code> is an instant abort.)</p>
+<p>I agree it might be a bug... but I could also see that maybe it isn&#x27;t? Maybe the caller has finished what they needed and didn&#x27;t need to wait for everything to finish. And it is perhaps hard to distinguish between &quot;there is no task providing it&quot; and &quot;there is a task providing it, but it hasn&#x27;t done so yet.&quot; I defer to y&#x27;all here because I don&#x27;t have enough context on how this is used. But I absolutely agree that if you can assert that any <code>Waiting</code> values are a bug, then it might be nice to assert it on <code>Drop</code>. (Although note that a panic during <code>Drop</code> is an instant abort.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -214,12 +214,12 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/once-map/src/lib.rs</code>:29 on 2024-01-30 14:15</div>
-            <div class="timeline-body"><p>I also briefly looked at <code>waitmap</code>'s implementation and nothing jumped out at me immediately.</p>
+            <div class="timeline-body"><p>I also briefly looked at <code>waitmap</code>&#x27;s implementation and nothing jumped out at me immediately.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/once-map/src/lib.rs</code>:30 on 2024-01-30 15:21</div>
-            <div class="timeline-body"><p>This could return some <code>Handle</code> object that we could use to enforce the invariant, right? e.g. <code>done</code> would consume a handle which would have a reference to the key instead and we'd be able to check if the handle was not used on drop.</p>
+            <div class="timeline-body"><p>This could return some <code>Handle</code> object that we could use to enforce the invariant, right? e.g. <code>done</code> would consume a handle which would have a reference to the key instead and we&#x27;d be able to check if the handle was not used on drop.</p>
 <blockquote>
 <p>If this method returns <code>true</code>, you need to start a job and call [<code>OnceMap::done</code>] eventually
 or other tasks will hang.</p>
@@ -250,7 +250,7 @@ or other tasks will hang.</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/once-map/src/lib.rs</code>:39 on 2024-01-30 16:42</div>
-            <div class="timeline-body"><p>In https://github.com/astral-sh/puffin/pull/1163 i got a speedup from 30ms to 20ms for warm cache jupyter by inserting one <code>tokio::task::yield_now().await</code>, now i'm motivated to avoid these kinds of bottlenecks.</p>
+            <div class="timeline-body"><p>In <a href="https://github.com/astral-sh/puffin/pull/1163">astral-sh/puffin#1163</a> i got a speedup from 30ms to 20ms for warm cache jupyter by inserting one <code>tokio::task::yield_now().await</code>, now i&#x27;m motivated to avoid these kinds of bottlenecks.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -263,10 +263,10 @@ or other tasks will hang.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2024-01-30 20:25</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-30 20:25</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-01-30 20:25</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-30 20:25</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-01-30 20:25</div>
@@ -274,7 +274,7 @@ or other tasks will hang.</p>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:35:24 UTC
+        Synced at 2026-01-20 19:43:28 UTC
     </footer>
 </body>
 </html>

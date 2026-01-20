@@ -23,19 +23,19 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sinon">@sinon</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<h4>Problem</h4>
+            <div class="timeline-body">Summary
+Problem
 <p>When investigating adopting <code>ty</code> in an existing codebase which is currently checked by <code>mypy</code> and <code>pyright</code>. I get following odd case where an sttribute defined in <code>__init__</code> has the expected type but when this attribute is then accessed in a method it gains an <code>| Unknown</code> which then seems to trigger <code>missing-argument</code> error as it seems to get confused about whether the <code>self</code> is present.</p>
-<h5>Expected Behavior</h5>
+Expected Behavior
 <p><code>self._jwk_client</code> should have type <code>PyJWKClient</code> in both <code>__init__</code> and <code>_get_signing_key</code>.</p>
-<h5>Actual Behavior</h5>
+Actual Behavior
 <ul>
 <li>In <code>__init__</code>: type is correctly <code>PyJWKClient</code></li>
 <li>In <code>_get_signing_key</code>: type becomes <code>Unknown | PyJWKClient</code></li>
 <li>This causes spurious <code>missing-argument</code> errors</li>
 </ul>
-<h4>MRE</h4>
-<pre><code class="language-toml">[project]
+MRE
+<pre><code>[project]
 name = &quot;mre-pyjwt&quot;
 version = &quot;0.1.0&quot;
 description = &quot;MRE for ty issue&quot;
@@ -43,7 +43,7 @@ readme = &quot;README.md&quot;
 requires-python = &quot;&gt;=3.11&quot;
 dependencies = [  &quot;pyjwt[crypto]&gt;=2.10.0&quot;,]
 </code></pre>
-<pre><code class="language-py">from typing import reveal_type
+<pre><code>from typing import reveal_type
 
 import jwt
 
@@ -65,16 +65,16 @@ class JWTVerifier:
         self._jwk_client.get_signing_key(kid) # error[missing-argument] No argument provided for required parameter `kid` of function `get_signing_key`
         return self._jwk_client.get_signing_key(kid=kid) # error[missing-argument] No argument provided for required parameter `self` of function `get_signing_key`
 </code></pre>
-<h3>Expected Behavior</h3>
+Expected Behavior
 <p><code>self._jwk_client</code> should have type <code>PyJWKClient</code> in both <code>__init__</code> and <code>_get_signing_key</code>.</p>
-<h3>Actual Behavior</h3>
+Actual Behavior
 <ul>
 <li>In <code>__init__</code>: type is correctly <code>PyJWKClient</code></li>
 <li>In <code>_get_signing_key</code>: type becomes <code>Unknown | PyJWKClient</code></li>
 <li>This causes spurious <code>missing-argument</code> errors</li>
 </ul>
-<p>It's present in all versions from 0.0.1-alpha.24 onwards, where the <code>self._jwk_client</code> goes from being <code>Unknown</code> / <code>Unknown</code> to <code>PyJWKClient</code> / <code>PyJWKClient | Unknown</code></p>
-<pre><code class="language-sh">➜ uv tool run ty@0.0.1-alpha.23 check . --output-format concise
+<p>It&#x27;s present in all versions from 0.0.1-alpha.24 onwards, where the <code>self._jwk_client</code> goes from being <code>Unknown</code> / <code>Unknown</code> to <code>PyJWKClient</code> / <code>PyJWKClient | Unknown</code></p>
+<pre><code>➜ uv tool run ty@0.0.1-alpha.23 check . --output-format concise
 main.py:15:21: info[revealed-type] Revealed type: `Unknown`
 main.py:19:21: info[revealed-type] Revealed type: `Unknown`
 Found 2 diagnostics
@@ -86,30 +86,30 @@ main.py:20:9: error[missing-argument] No argument provided for required paramete
 main.py:21:16: error[missing-argument] No argument provided for required parameter `self` of function `get_signing_key`
 Found 4 diagnostics
 </code></pre>
-<p>I assume this isn't strictly related to the upstream library specifically as <code>ty</code> is correctly detecting the <code>PyJWKClient</code> in the <code>__init__</code> 🤔 (my naive attempts to reproduce in ty playground without pyjwk did fail that but that is potentially a skill issue on my part)</p>
-<p>Please let me know if I can provide any further details to help debug, apologies if this has already been reported searching on <code>missing-argument</code> didn't turn up anything that quite fit.</p>
-<h3>Version</h3>
+<p>I assume this isn&#x27;t strictly related to the upstream library specifically as <code>ty</code> is correctly detecting the <code>PyJWKClient</code> in the <code>__init__</code> 🤔 (my naive attempts to reproduce in ty playground without pyjwk did fail that but that is potentially a skill issue on my part)</p>
+<p>Please let me know if I can provide any further details to help debug, apologies if this has already been reported searching on <code>missing-argument</code> didn&#x27;t turn up anything that quite fit.</p>
+Version
 <p>0.0.1-alpha.24-28</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-11-26 12:09</div>
             <div class="timeline-body"><p>Thank you for reporting this.</p>
-<p><em>Within</em> <code>__init__</code>, you see the locally narrowed type of <code>PyJWKClient</code>. But since <code>_jwk_client</code> is not annotated, it might be externally mutated (I guess we could consider making exceptions for &quot;private&quot; attributes?). This is why we union with <code>Unknown</code> for the type of the attribute when accessed in other methods (see https://github.com/astral-sh/ty/issues/1515#issuecomment-3512306787 for a more detailed explanation).</p>
+<p><em>Within</em> <code>__init__</code>, you see the locally narrowed type of <code>PyJWKClient</code>. But since <code>_jwk_client</code> is not annotated, it might be externally mutated (I guess we could consider making exceptions for &quot;private&quot; attributes?). This is why we union with <code>Unknown</code> for the type of the attribute when accessed in other methods (see <a href="https://github.com/astral-sh/ty/issues/1515">astral-sh/ty#1515</a>#issuecomment-3512306787 for a more detailed explanation).</p>
 <p>You can either annotate <code>_jwk_client: jwt.PyJWKClient</code> on the class body, or annotate the attribute assignment (<code>self._jwk_client: jwt.PyJWKClient = jwt.PyJWKClient(…)</code>) to fix this.</p>
-<p>See https://github.com/astral-sh/ty/issues/1515 for a similar discussion.</p>
+<p>See <a href="https://github.com/astral-sh/ty/issues/1515">astral-sh/ty#1515</a> for a similar discussion.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @sharkdp on 2025-11-26 12:09</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-11-26 12:09</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">attribute access</span> added by @sharkdp on 2025-11-26 12:09</div>
+            <div class="event">Label <span class="label">attribute access</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-11-26 12:09</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sinon">@sinon</a> on 2025-11-26 12:20</div>
             <div class="timeline-body"><p>I had tried specifying the type explicitly (even adding a cast) but still get the same errors</p>
-<pre><code class="language-py">class JWTVerifier:
+<pre><code>class JWTVerifier:
     def __init__(
         self,
         *,
@@ -128,7 +128,7 @@ Found 4 diagnostics
         return self.jwk_client.get_signing_key(kid=kid)  # error[missing-argument] No argument provided for required parameter `self` of function `get_signing_key`
 </code></pre>
 <p>or</p>
-<pre><code class="language-py">class JWTVerifier:
+<pre><code>class JWTVerifier:
     def __init__(
         self,
         *,
@@ -161,11 +161,11 @@ Found 4 diagnostics
 <p>We thus infer <code>jwks_client.get_signing_key</code> as a union of the bound method and the plain function:</p>
 <pre><code>(bound method PyJWKClient.get_signing_key(kid: str) -&gt; PyJWK) | (def get_signing_key(self, kid: str) -&gt; PyJWK)
 </code></pre>
-<p>So I think this is actually a bug in ty, see https://github.com/astral-sh/ty/issues/350.</p>
+<p>So I think this is actually a bug in ty, see <a href="https://github.com/astral-sh/ty/issues/350">astral-sh/ty#350</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @sharkdp on 2025-11-26 14:25</div>
+            <div class="event">Closed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-11-26 14:25</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sinon">@sinon</a> on 2025-11-26 14:35</div>
@@ -183,7 +183,7 @@ Found 4 diagnostics
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:21:03 UTC
+        Synced at 2026-01-20 19:26:06 UTC
     </footer>
 </body>
 </html>

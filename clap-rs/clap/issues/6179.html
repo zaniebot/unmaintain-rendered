@@ -23,18 +23,18 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/calebkiage">@calebkiage</a></div>
-            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+            <div class="timeline-body">Please complete the following tasks
 <ul>
 <li>[x] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
 <li>[x] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
 </ul>
-<h3>Clap Version</h3>
+Clap Version
 <p>4.5.17</p>
-<h3>Describe your use case</h3>
-<p>I have an application that builds a CLI and uses defer for some sub-commands that are expensive to construct. The first phase of the application loads a data structure with shared configs and computations that will be used to construct the sub-commands. Currently, it's not possible to use defer with the shared state since defer needs a function pointer. Loading the shared state can be expensive and I would like to do it once.</p>
-<h3>Describe the solution you'd like</h3>
+Describe your use case
+<p>I have an application that builds a CLI and uses defer for some sub-commands that are expensive to construct. The first phase of the application loads a data structure with shared configs and computations that will be used to construct the sub-commands. Currently, it&#x27;s not possible to use defer with the shared state since defer needs a function pointer. Loading the shared state can be expensive and I would like to do it once.</p>
+Describe the solution you&#x27;d like
 <p>Allowing code like the following will be great since it allows having the option to share preloaded data in the defer call.</p>
-<pre><code class="language-rust">let shared_state = ['a', 'b', 'c']; // Can be expensive e.g. loaded from network. might also be used in the command handling section
+<pre><code>let shared_state = [&#x27;a&#x27;, &#x27;b&#x27;, &#x27;c&#x27;]; // Can be expensive e.g. loaded from network. might also be used in the command handling section
 
 let mut root = Command::new(&quot;test&quot;).defer(move |cmd| {
     for c in shared_state {
@@ -42,73 +42,73 @@ let mut root = Command::new(&quot;test&quot;).defer(move |cmd| {
     }
 });
 </code></pre>
-<h3>Alternatives, if applicable</h3>
+Alternatives, if applicable
 <p>We could also load all the data in the closure to avoid captures and also load the same data again elsewhere to use it, but it would be inefficient.</p>
-<h3>Additional Context</h3>
+Additional Context
 <p><em>No response</em></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">C-enhancement</span> added by @calebkiage on 2025-11-08 19:09</div>
+            <div class="event">Label <span class="label">C-enhancement</span> added by <a href="https://github.com/calebkiage">@calebkiage</a> on 2025-11-08 19:09</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">S-triage</span> added by @calebkiage on 2025-11-08 19:09</div>
+            <div class="event">Label <span class="label">S-triage</span> added by <a href="https://github.com/calebkiage">@calebkiage</a> on 2025-11-08 19:09</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../pulls/6180.html">clap-rs/clap#6180</a> on 2025-11-08 19:11</div>
+            <div class="event">Referenced in <a>clap-rs/clap#6180</a> on 2025-11-08 19:11</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-11-10 14:58</div>
             <div class="timeline-body"><p><code>Command::defer</code> was primarily created for derives though most work to use it is deferred to clap v5.</p>
-<p>The proposed solution here (and written out in #6180) doesn't seem like it would help accomplish the specified goal of</p>
+<p>The proposed solution here (and written out in #6180) doesn&#x27;t seem like it would help accomplish the specified goal of</p>
 <blockquote>
 <p>allows having the option to share preloaded data</p>
 </blockquote>
 <p><code>Command</code> has no lifetimes and by extension  the closure cannot have any lifetimes so #6180 requires everything to be moved into the closure, removing the ability to share state.</p>
 <p>It would also be helpful to get into the use case more.  Why are you using <code>Command::defer</code> (as in what performance impact did you observe), what are the requirements behind this shared state (e.g. could a <code>OnceLock</code> be used?), etc.</p>
-<p>Note that #6180 doesn't just allow creation of stateful deferreds but also changes behavior for <code>Command::defer</code> to make multiple calls additive which is not discussed here and is a breaking change.</p>
+<p>Note that #6180 doesn&#x27;t just allow creation of stateful deferreds but also changes behavior for <code>Command::defer</code> to make multiple calls additive which is not discussed here and is a breaking change.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/calebkiage">@calebkiage</a> on 2025-11-10 17:43</div>
             <div class="timeline-body"><blockquote>
-<p>Command has no lifetimes and by extension the closure cannot have any lifetimes so https://github.com/clap-rs/clap/pull/6180 requires everything to be moved into the closure, removing the ability to share state.</p>
+<p>Command has no lifetimes and by extension the closure cannot have any lifetimes so <a href="https://github.com/clap-rs/clap/pull/6180">clap-rs/clap#6180</a> requires everything to be moved into the closure, removing the ability to share state.</p>
 </blockquote>
-<p>The solution allows sharing state if you use an Arc and clone it. I didn't want to add lifetimes to the Command object since that would be a big change and unlikely to be merged.</p>
+<p>The solution allows sharing state if you use an Arc and clone it. I didn&#x27;t want to add lifetimes to the Command object since that would be a big change and unlikely to be merged.</p>
 <blockquote>
 <p>Why are you using Command::defer (as in what performance impact did you observe)</p>
 </blockquote>
-<p>I'm creating a CLI tool that takes an OpenAPI document, indexes the paths in a database and generates a CLI over the endpoints. Think of the Github CLI, but can work with any indexed API from the same tool. I'm using the <a href="https://github.com/microsoftgraph/msgraph-metadata/blob/04e061aae911c49242ecba96a5368bf35763b321/openapi/v1.0/openapi.yaml">Microsoft Graph API</a> for performance testing since it has over 10k endpoints.</p>
-<p>I've had multiple iterations of the tool, because the naive implementation where I built up the full command tree and made a Command object was noticeably slow. It would load data that was never used when running the CLI. The process of building up the data structure needed to create the Command objects is also slow since it involves a mix of loading endpoint segment associations from the DB and deserializing endpoint details from the OpenAPI document (for help and parameter information). I haven't explored using a OnceLock. I'll look into it.</p>
-<p>What the current iteration does is build a different version of the CLI based on the passed in arguments. i.e. say I have an endpoint like <code>GET /users/{id}/documents/{id}/edits</code> and the user passed in the <code>-h</code> arg. I'll only create a Command with a <code>users</code> root command and <code>documents</code> subcommand. The CLI won't have the <code>edits</code> subcommand since it's not needed. This is fast but means I have to duplicate some of the logic clap is meant to handle with defer. I would have loved to use defer for all the commands to only load commands when needed. However, it being a function pointer means I can't share the db object or the configuration object and want to avoid creating it every time or deserializing the OpenAPI document for each call to defer.</p>
+<p>I&#x27;m creating a CLI tool that takes an OpenAPI document, indexes the paths in a database and generates a CLI over the endpoints. Think of the Github CLI, but can work with any indexed API from the same tool. I&#x27;m using the <a href="https://github.com/microsoftgraph/msgraph-metadata/blob/04e061aae911c49242ecba96a5368bf35763b321/openapi/v1.0/openapi.yaml">Microsoft Graph API</a> for performance testing since it has over 10k endpoints.</p>
+<p>I&#x27;ve had multiple iterations of the tool, because the naive implementation where I built up the full command tree and made a Command object was noticeably slow. It would load data that was never used when running the CLI. The process of building up the data structure needed to create the Command objects is also slow since it involves a mix of loading endpoint segment associations from the DB and deserializing endpoint details from the OpenAPI document (for help and parameter information). I haven&#x27;t explored using a OnceLock. I&#x27;ll look into it.</p>
+<p>What the current iteration does is build a different version of the CLI based on the passed in arguments. i.e. say I have an endpoint like <code>GET /users/{id}/documents/{id}/edits</code> and the user passed in the <code>-h</code> arg. I&#x27;ll only create a Command with a <code>users</code> root command and <code>documents</code> subcommand. The CLI won&#x27;t have the <code>edits</code> subcommand since it&#x27;s not needed. This is fast but means I have to duplicate some of the logic clap is meant to handle with defer. I would have loved to use defer for all the commands to only load commands when needed. However, it being a function pointer means I can&#x27;t share the db object or the configuration object and want to avoid creating it every time or deserializing the OpenAPI document for each call to defer.</p>
 <p>This solution gives me what I need to get started on that.</p>
-<p>I can remove the chaining. I just thought that it's more intuitive that replacing the existing function silently.</p>
+<p>I can remove the chaining. I just thought that it&#x27;s more intuitive that replacing the existing function silently.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">S-triage</span> removed by @epage on 2025-11-10 21:09</div>
+            <div class="event">Label <span class="label">S-triage</span> removed by <a href="https://github.com/epage">@epage</a> on 2025-11-10 21:09</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">S-waiting-on-decision</span> added by @epage on 2025-11-10 21:09</div>
+            <div class="event">Label <span class="label">S-waiting-on-decision</span> added by <a href="https://github.com/epage">@epage</a> on 2025-11-10 21:09</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-11-10 21:09</div>
-            <div class="timeline-body"><p>I'll have to think on this more.</p>
+            <div class="timeline-body"><p>I&#x27;ll have to think on this more.</p>
 <blockquote>
-<p>I can remove the chaining. I just thought that it's more intuitive that replacing the existing function silently.</p>
+<p>I can remove the chaining. I just thought that it&#x27;s more intuitive that replacing the existing function silently.</p>
 </blockquote>
-<p>Clap has a mixture of replacing and appending arguments and it is a big of a mess.  I'm tempted to make it consistent to only have replace.</p>
+<p>Clap has a mixture of replacing and appending arguments and it is a big of a mess.  I&#x27;m tempted to make it consistent to only have replace.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/calebkiage">@calebkiage</a> on 2025-11-16 15:59</div>
-            <div class="timeline-body"><p>Ok, I'll close the PR for now to reduce the number of open PRs.</p>
+            <div class="timeline-body"><p>Ok, I&#x27;ll close the PR for now to reduce the number of open PRs.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:49:40 UTC
+        Synced at 2026-01-20 20:00:39 UTC
     </footer>
 </body>
 </html>

@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>JUnit output can be rejected by Jenkins's junit test reporter when there are no lint errors</h1>
+    <h1>JUnit output can be rejected by Jenkins&#x27;s junit test reporter when there are no lint errors</h1>
 
     <div class="meta">
         <span class="state-icon state-closed"></span>
@@ -23,24 +23,24 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/cjfuller">@cjfuller</a></div>
-            <div class="timeline-body"><p>I'm running <code>ruff . --format junit</code> to lint a codebase on jenkins.</p>
+            <div class="timeline-body"><p>I&#x27;m running <code>ruff . --format junit</code> to lint a codebase on jenkins.</p>
 <p>When there are no issues, this produces the following (currently running 0.0.260 on jenkins, but the output is the same locally with 0.0.267):</p>
 <pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
 &lt;testsuites name=&quot;ruff&quot; tests=&quot;0&quot; failures=&quot;0&quot; errors=&quot;0&quot;&gt;
 &lt;/testsuites&gt;
 </code></pre>
-<p>Jenkins errors on this output with &quot;None of the test reports contained any result,&quot; I believe because it doesn't have any <code>&lt;testcase&gt;</code> items in the suite, and I have it set to fail on empty test reports (which I don't want to change because I don't want our CI checks to start silently passing if we introduce a bug in the CI scripts that causes tests not to run).</p>
+<p>Jenkins errors on this output with &quot;None of the test reports contained any result,&quot; I believe because it doesn&#x27;t have any <code>&lt;testcase&gt;</code> items in the suite, and I have it set to fail on empty test reports (which I don&#x27;t want to change because I don&#x27;t want our CI checks to start silently passing if we introduce a bug in the CI scripts that causes tests not to run).</p>
 <p>Semantically it also seems like when lint passes, there should be a passing testcase in here?</p>
-<p>I'm able to hack around this if I run this command on Jenkins:</p>
-<pre><code class="language-bash">ruff . --format junit | sed -e \
-    's/&lt;testsuites name=&quot;ruff&quot; tests=&quot;0&quot; failures=&quot;0&quot; errors=&quot;0&quot;&gt;/&lt;testsuites name=&quot;ruff&quot; tests=&quot;1&quot; failures=&quot;0&quot; errors=&quot;0&quot;&gt;&lt;testcase classname=&quot;ruff&quot; name=&quot;Lint&quot; time=&quot;0&quot;&gt;&lt;\/testcase&gt;/' \
+<p>I&#x27;m able to hack around this if I run this command on Jenkins:</p>
+<pre><code>ruff . --format junit | sed -e \
+    &#x27;s/&lt;testsuites name=&quot;ruff&quot; tests=&quot;0&quot; failures=&quot;0&quot; errors=&quot;0&quot;&gt;/&lt;testsuites name=&quot;ruff&quot; tests=&quot;1&quot; failures=&quot;0&quot; errors=&quot;0&quot;&gt;&lt;testcase classname=&quot;ruff&quot; name=&quot;Lint&quot; time=&quot;0&quot;&gt;&lt;\/testcase&gt;/&#x27; \
     &gt; $WORKSPACE/build/test-reports/TEST-ruff.xml
 </code></pre>
-<p>so this isn't a huge problem, but it would be great if ruff included a passing testcase in the output when lint passes.</p>
+<p>so this isn&#x27;t a huge problem, but it would be great if ruff included a passing testcase in the output when lint passes.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-05-18 17:35</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-18 17:35</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-18 17:35</div>
@@ -54,8 +54,8 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-18 17:44</div>
-            <div class="timeline-body"><p>I'm trying to find examples of how other tools handle this. It seems like the ESLint JUnit reporter outputs an empty suite too:</p>
-<pre><code class="language-xml">&lt;testsuites name=&quot;eslint tests&quot;&gt;
+            <div class="timeline-body"><p>I&#x27;m trying to find examples of how other tools handle this. It seems like the ESLint JUnit reporter outputs an empty suite too:</p>
+<pre><code>&lt;testsuites name=&quot;eslint tests&quot;&gt;
 &lt;/testsuites&gt;
 </code></pre>
 </div>
@@ -63,7 +63,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-18 17:45</div>
             <div class="timeline-body"><p>It looks like this other ESLint JUnit reporter adds an empty test on success, one per file:</p>
-<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
 &lt;testsuites&gt;
 &lt;testsuite package=&quot;org.eslint&quot; time=&quot;0&quot; tests=&quot;1&quot; errors=&quot;0&quot; name=&quot;/Users/crmarsh/workspace/test-eslint/baz.js&quot;&gt;
 &lt;testcase time=&quot;0&quot; name=&quot;/Users/crmarsh/workspace/test-eslint/baz.js&quot; classname=&quot;/Users/crmarsh/workspace/test-eslint/baz&quot; /&gt;
@@ -82,7 +82,7 @@
             <div class="timeline-body"><blockquote>
 <p>Does the <a href="https://www.jenkins.io/doc/pipeline/steps/junit/">allowEmptyResults</a> option have any impact on this?</p>
 </blockquote>
-<p>~I have not tried (since the job is actively being used right now by other people, and thus I shipped my temporary fix) but my understanding is that turning on <code>allowEmptyResults</code> would fix it, but at the risk of bugs in the jenkins scripts that cause our tests not to run looking like passed runs.~ Edit: just confirmed in an isolated environment that, yes, <code>allowEmptyResults</code> does cause jenkins to accept ruff's output (though I would still rather not use it).</p>
+<p>~I have not tried (since the job is actively being used right now by other people, and thus I shipped my temporary fix) but my understanding is that turning on <code>allowEmptyResults</code> would fix it, but at the risk of bugs in the jenkins scripts that cause our tests not to run looking like passed runs.~ Edit: just confirmed in an isolated environment that, yes, <code>allowEmptyResults</code> does cause jenkins to accept ruff&#x27;s output (though I would still rather not use it).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -90,7 +90,7 @@
             <div class="timeline-body"><blockquote>
 <p>But will it create a lot of noise in the Jenkins output, to have one result per file?</p>
 </blockquote>
-<p>This doesn't bother me particularly since for us ruff runs in its own pipeline stage and thus reports separately from everything else, but I could see it mattering to others.</p>
+<p>This doesn&#x27;t bother me particularly since for us ruff runs in its own pipeline stage and thus reports separately from everything else, but I could see it mattering to others.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -107,12 +107,12 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-05-20 03:38</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-20 03:38</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:47:13 UTC
+        Synced at 2026-01-20 18:48:36 UTC
     </footer>
 </body>
 </html>

@@ -23,12 +23,12 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/SquidDev">@SquidDev</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<p>In an attempt to improve CI speeds, I've recently switched my workplaces self-hosted CI runners to use a persistent uv cache. This cache is <em>shared</em> across runners, to avoid wasting disk space — as <a href="https://docs.astral.sh/uv/concepts/cache/#cache-safety">noted in the documentation</a>, this should (and does!) work fine.</p>
-<p>However, I've noticed some inefficiencies when building editable installs with native code (e.g. with maturin). <code>uv</code> acquires a lock on <code>$UV_CACHE_DIR/sdists-v9/editable/$CACHE_KEY</code> before starting a build. This means if two CI runners attempt to build the same package, one runner must wait for the other to finish building, before it builds itself.</p>
-<p>This probably makes sense for pure-Python projects (where the build is cheap and reusable). However, because these packages use native code, we can't restore from the cache (see https://github.com/astral-sh/uv/issues/11390), so this feels doubly wasteful!</p>
-<p>I wonder if it would be possible to reduce the scope of the lock, so that it's only acquired when the build finishes (and we write back the result to the cache), rather than the complete duration of the build?</p>
-<h2>Reproduction steps</h2>
+            <div class="timeline-body">Summary
+<p>In an attempt to improve CI speeds, I&#x27;ve recently switched my workplaces self-hosted CI runners to use a persistent uv cache. This cache is <em>shared</em> across runners, to avoid wasting disk space — as <a href="https://docs.astral.sh/uv/concepts/cache/#cache-safety">noted in the documentation</a>, this should (and does!) work fine.</p>
+<p>However, I&#x27;ve noticed some inefficiencies when building editable installs with native code (e.g. with maturin). <code>uv</code> acquires a lock on <code>$UV_CACHE_DIR/sdists-v9/editable/$CACHE_KEY</code> before starting a build. This means if two CI runners attempt to build the same package, one runner must wait for the other to finish building, before it builds itself.</p>
+<p>This probably makes sense for pure-Python projects (where the build is cheap and reusable). However, because these packages use native code, we can&#x27;t restore from the cache (see <a href="https://github.com/astral-sh/uv/issues/11390">astral-sh/uv#11390</a>), so this feels doubly wasteful!</p>
+<p>I wonder if it would be possible to reduce the scope of the lock, so that it&#x27;s only acquired when the build finishes (and we write back the result to the cache), rather than the complete duration of the build?</p>
+Reproduction steps
 <p>Create a project with the following layout (<a href="https://github.com/user-attachments/files/21856281/uv_build.zip">premade one here</a>)</p>
 <pre><code>├── build.py
 ├── pyproject.toml
@@ -37,7 +37,7 @@
 │       └── __init__.py
 </code></pre>
 <p>Where <code>pyproject.toml</code> contains</p>
-<pre><code class="language-toml">[project]
+<pre><code>[project]
 name = &quot;uv-demo&quot;
 version = &quot;0.1.0&quot;
 requires-python = &quot;&gt;=3.8&quot;
@@ -51,7 +51,7 @@ build-backend = &quot;hatchling.build&quot;
 path = &quot;build.py&quot;
 </code></pre>
 <p>and <code>build.py</code> just ensures the build takes some time:</p>
-<pre><code class="language-python">import time
+<pre><code>import time
 from hatchling.builders.hooks.plugin.interface import BuildHookInterface
 
 class CustomBuildHook(BuildHookInterface):
@@ -81,19 +81,19 @@ Installed 1 package in 0.92ms
  + uv-demo==0.1.0 (from file:///src)
 DEBUG Released lock at `/src/.venv/.lock`
 </code></pre>
-<h3>Platform</h3>
+Platform
 <p>Linux 6.6.87.2-microsoft-standard-WSL2 x86_64 GNU/Linux, Ubuntu 24.04.3</p>
-<h3>Version</h3>
+Version
 <p>uv 0.8.12</p>
-<h3>Python version</h3>
+Python version
 <p>Python 3.12.3</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @SquidDev on 2025-08-19 13:15</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/SquidDev">@SquidDev</a> on 2025-08-19 13:15</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">performance</span> added by @zanieb on 2025-08-19 13:47</div>
+            <div class="event">Label <span class="label">performance</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-19 13:47</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-20 14:01</div>
@@ -102,14 +102,14 @@ DEBUG Released lock at `/src/.venv/.lock`
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/SquidDev">@SquidDev</a> on 2025-08-21 09:43</div>
-            <div class="timeline-body"><p>Oh, to clarify, the reproduction steps in the original issue are not especially representative! In practice, we're just using normal GHA self-hosted runners. So each build gets its own checkout of the repository, it's just the checkout is mounted in its build container at the same path, and so shares a cache key. So I don't <em>think</em> the issues with setuptools (<a href="https://github.com/astral-sh/uv/blob/8d6ea3f2ea3255acdd91f7b618014aef95f7b393/crates/uv-build-frontend/src/lib.rs#L481-L485">assuming you're referring to this?</a>, which huh TIL — that's nasty!) matter here, as the source tree isn't shared.</p>
-<p>That all said, I realise this setup is a bit niche, and honestly mostly exists to work around other limitations with caching (#11390 and #11455/#15224). I'd originally opened this in the hopes it might be a simple fix, but looking through <code>uv_distribution::source</code>, I'm less sure that's the case — happy if you want to close as wontfix!</p>
+            <div class="timeline-body"><p>Oh, to clarify, the reproduction steps in the original issue are not especially representative! In practice, we&#x27;re just using normal GHA self-hosted runners. So each build gets its own checkout of the repository, it&#x27;s just the checkout is mounted in its build container at the same path, and so shares a cache key. So I don&#x27;t <em>think</em> the issues with setuptools (<a href="https://github.com/astral-sh/uv/blob/8d6ea3f2ea3255acdd91f7b618014aef95f7b393/crates/uv-build-frontend/src/lib.rs#L481-L485">assuming you&#x27;re referring to this?</a>, which huh TIL — that&#x27;s nasty!) matter here, as the source tree isn&#x27;t shared.</p>
+<p>That all said, I realise this setup is a bit niche, and honestly mostly exists to work around other limitations with caching (#11390 and #11455/#15224). I&#x27;d originally opened this in the hopes it might be a simple fix, but looking through <code>uv_distribution::source</code>, I&#x27;m less sure that&#x27;s the case — happy if you want to close as wontfix!</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:32:39 UTC
+        Synced at 2026-01-20 19:40:04 UTC
     </footer>
 </body>
 </html>

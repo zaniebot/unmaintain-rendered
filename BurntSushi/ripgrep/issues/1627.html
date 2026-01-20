@@ -23,58 +23,58 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/acheronfail">@acheronfail</a></div>
-            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+            <div class="timeline-body">What version of ripgrep are you using?
 <pre><code>ripgrep 12.1.1
 -SIMD -AVX (compiled)
 +SIMD +AVX (runtime)
 </code></pre>
-<h4>How did you install ripgrep?</h4>
+How did you install ripgrep?
 <pre><code>cargo install ripgrep
 </code></pre>
-<h4>What operating system are you using ripgrep on?</h4>
-<pre><code class="language-bash"># Arch Linux
+What operating system are you using ripgrep on?
+<pre><code># Arch Linux
 Linux 5.4.43-1-lts x86_64 GNU/Linux
 </code></pre>
-<h4>Describe your bug.</h4>
-<p>When using the <code>--json</code> flag, the <code>absolute_offset</code> provided by <code>rg</code> doesn't take into account Byte Order Marks of the file's encoding.</p>
-<h4>What are the steps to reproduce the behavior?</h4>
+Describe your bug.
+<p>When using the <code>--json</code> flag, the <code>absolute_offset</code> provided by <code>rg</code> doesn&#x27;t take into account Byte Order Marks of the file&#x27;s encoding.</p>
+What are the steps to reproduce the behavior?
 <p>Running this:</p>
-<pre><code class="language-bash">printf &quot;\xFF\xFE\x16\x04&quot; &gt; utf16le.txt
+<pre><code>printf &quot;\xFF\xFE\x16\x04&quot; &gt; utf16le.txt
 rg . ./utf16le.txt --json
 </code></pre>
 <p>Produces the following output:</p>
-<pre><code class="language-txt">{&quot;type&quot;:&quot;begin&quot;,&quot;data&quot;:{&quot;path&quot;:{&quot;text&quot;:&quot;./utf16le.txt&quot;}}}
+<pre><code>{&quot;type&quot;:&quot;begin&quot;,&quot;data&quot;:{&quot;path&quot;:{&quot;text&quot;:&quot;./utf16le.txt&quot;}}}
 {&quot;type&quot;:&quot;match&quot;,&quot;data&quot;:{&quot;path&quot;:{&quot;text&quot;:&quot;./utf16le.txt&quot;},&quot;lines&quot;:{&quot;text&quot;:&quot;Ж&quot;},&quot;line_number&quot;:1,&quot;absolute_offset&quot;:0,&quot;submatches&quot;:[{&quot;match&quot;:{&quot;text&quot;:&quot;Ж&quot;},&quot;start&quot;:0,&quot;end&quot;:2}]}}
 {&quot;type&quot;:&quot;end&quot;,&quot;data&quot;:{&quot;path&quot;:{&quot;text&quot;:&quot;./utf16le.txt&quot;},&quot;binary_offset&quot;:null,&quot;stats&quot;:{&quot;elapsed&quot;:{&quot;secs&quot;:0,&quot;nanos&quot;:24618,&quot;human&quot;:&quot;0.000025s&quot;},&quot;searches&quot;:1,&quot;searches_with_match&quot;:1,&quot;bytes_searched&quot;:2,&quot;bytes_printed&quot;:231,&quot;matched_lines&quot;:1,&quot;matches&quot;:1}}}
 {&quot;data&quot;:{&quot;elapsed_total&quot;:{&quot;human&quot;:&quot;0.001884s&quot;,&quot;nanos&quot;:1884139,&quot;secs&quot;:0},&quot;stats&quot;:{&quot;bytes_printed&quot;:231,&quot;bytes_searched&quot;:2,&quot;elapsed&quot;:{&quot;human&quot;:&quot;0.000025s&quot;,&quot;nanos&quot;:24618,&quot;secs&quot;:0},&quot;matched_lines&quot;:1,&quot;matches&quot;:1,&quot;searches&quot;:1,&quot;searches_with_match&quot;:1}},&quot;type&quot;:&quot;summary&quot;}
 </code></pre>
 <p>As you can see the match object here:</p>
-<pre><code class="language-txt">{&quot;type&quot;:&quot;match&quot;,&quot;data&quot;:{&quot;path&quot;:{&quot;text&quot;:&quot;./utf16le.txt&quot;},&quot;lines&quot;:{&quot;text&quot;:&quot;Ж&quot;},&quot;line_number&quot;:1,&quot;absolute_offset&quot;:0,&quot;submatches&quot;:[{&quot;match&quot;:{&quot;text&quot;:&quot;Ж&quot;},&quot;start&quot;:0,&quot;end&quot;:2}]}}
+<pre><code>{&quot;type&quot;:&quot;match&quot;,&quot;data&quot;:{&quot;path&quot;:{&quot;text&quot;:&quot;./utf16le.txt&quot;},&quot;lines&quot;:{&quot;text&quot;:&quot;Ж&quot;},&quot;line_number&quot;:1,&quot;absolute_offset&quot;:0,&quot;submatches&quot;:[{&quot;match&quot;:{&quot;text&quot;:&quot;Ж&quot;},&quot;start&quot;:0,&quot;end&quot;:2}]}}
 </code></pre>
 <p>Provides an <code>absolute_offset</code> of <code>0</code>. If we read the range of bytes reported, we get this:</p>
-<pre><code class="language-bash"># cut's index starts at 1
+<pre><code># cut&#x27;s index starts at 1
 cut -zb 1-3 ./utf16le.txt | xxd
 </code></pre>
 <p>We get the UTF16LE BOM, <em>not</em> the matched portion that <code>rg</code> found:</p>
-<pre><code class="language-bash"># Note that the trailing `00` is outputted by `cut`
+<pre><code># Note that the trailing `00` is outputted by `cut`
 00000000: fffe 00                                  ...
 </code></pre>
-<h4>What is the expected behavior?</h4>
-<p>I'm not sure if this is the expected behaviour or not, but I expected that the range provided by <code>rg</code> would map to the precise location of the matched bytes inside the file.</p>
+What is the expected behavior?
+<p>I&#x27;m not sure if this is the expected behaviour or not, but I expected that the range provided by <code>rg</code> would map to the precise location of the matched bytes inside the file.</p>
 <p>If this is not the case, is there a way we can somehow surface this information? :thinking:</p>
-<p>I'm making an <a href="https://github.com/acheronfail/repgrep">interactive replacement tool for ripgrep</a>, and right now I have to detect the presence of BOMs myself and increase the <code>absolute_offset</code> accordingly.</p>
+<p>I&#x27;m making an <a href="https://github.com/acheronfail/repgrep">interactive replacement tool for ripgrep</a>, and right now I have to detect the presence of BOMs myself and increase the <code>absolute_offset</code> accordingly.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/acheronfail">@acheronfail</a> on 2020-06-25 03:12</div>
-            <div class="timeline-body"><p>Another thing that's similar to this that when no encoding is passed to <code>rg</code> (it defaults to <code>auto</code>) there's no way to know from the <code>--json</code> output what encoding <code>rg</code> used when matching the file. (My tool can just read the args passed to <code>rg</code> when the encoding is passed.)</p>
+            <div class="timeline-body"><p>Another thing that&#x27;s similar to this that when no encoding is passed to <code>rg</code> (it defaults to <code>auto</code>) there&#x27;s no way to know from the <code>--json</code> output what encoding <code>rg</code> used when matching the file. (My tool can just read the args passed to <code>rg</code> when the encoding is passed.)</p>
 <p>Right now my tool uses <code>chardet</code> and attempts to guess the encoding when it reads the files, but it would be nice if the <code>begin</code> JSON message was able to output the encoding that <code>rg</code> tried when it read the file. :slightly_smiling_face:</p>
-<p>(I know that <code>rg</code> itself is guessing the encoding, so it's not perfect. But this would mean that my tool uses the same encoding that <code>rg</code> itself used.)</p>
+<p>(I know that <code>rg</code> itself is guessing the encoding, so it&#x27;s not perfect. But this would mean that my tool uses the same encoding that <code>rg</code> itself used.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-06-25 13:05</div>
-            <div class="timeline-body"><p>I'm afraid that <code>absolute_offset</code> is perhaps not as useful as I had hoped it would be when I added it. The BOM is really the least of your worries here, since you can at least look for it and deal with in a pretty simple way. The real problem is that the absolute offset is only computed based on the UTF-8 data that the searcher actually sees. If the original file is UTF-16, then the offsets will be completely off. Observe:</p>
+            <div class="timeline-body"><p>I&#x27;m afraid that <code>absolute_offset</code> is perhaps not as useful as I had hoped it would be when I added it. The BOM is really the least of your worries here, since you can at least look for it and deal with in a pretty simple way. The real problem is that the absolute offset is only computed based on the UTF-8 data that the searcher actually sees. If the original file is UTF-16, then the offsets will be completely off. Observe:</p>
 <pre><code>$ cat utf8
 a
 b
@@ -92,31 +92,31 @@ $ rg c utf16le --json
 {&quot;data&quot;:{&quot;elapsed_total&quot;:{&quot;human&quot;:&quot;0.003218s&quot;,&quot;nanos&quot;:3218044,&quot;secs&quot;:0},&quot;stats&quot;:{&quot;bytes_printed&quot;:219,&quot;bytes_searched&quot;:6,&quot;elapsed&quot;:{&quot;human&quot;:&quot;0.000065s&quot;,&quot;nanos&quot;:64999,&quot;secs&quot;:0},&quot;matched_lines&quot;:1,&quot;matches&quot;:1,&quot;searches&quot;:1,&quot;searches_with_match&quot;:1}},&quot;type&quot;:&quot;summary&quot;}
 </code></pre>
 <p>The <code>c</code> match is reported in a line starting at absolute offset <code>4</code>, but its actual position in the original source file is thrown off by both the BOM and the fact that ASCII codepoints are encoded with two bytes each in UTF-16. There is no simple way to map the offsets reported by ripgrep back to offsets in the original file without re-computing them yourself.</p>
-<p>It's unfortunate, but I don't see a simple way to solve this. This is probably a victim of de-coupling. The layer in ripgrep that handles transcoding has zero knowledge of the layer that handles searching and dealing with offsets.</p>
+<p>It&#x27;s unfortunate, but I don&#x27;t see a simple way to solve this. This is probably a victim of de-coupling. The layer in ripgrep that handles transcoding has zero knowledge of the layer that handles searching and dealing with offsets.</p>
 <blockquote>
-<p>Another thing that's similar to this that when no encoding is passed to <code>rg</code> (it defaults to <code>auto</code>) there's no way to know from the <code>--json</code> output what encoding <code>rg</code> used when matching the file. (My tool can just read the args passed to <code>rg</code> when the encoding is passed.)</p>
+<p>Another thing that&#x27;s similar to this that when no encoding is passed to <code>rg</code> (it defaults to <code>auto</code>) there&#x27;s no way to know from the <code>--json</code> output what encoding <code>rg</code> used when matching the file. (My tool can just read the args passed to <code>rg</code> when the encoding is passed.)</p>
 </blockquote>
 <p>This might be plausible to do, and then you could at least do offset translation at that point. It would be work, but it would be possible. However, I think this is a separate issue and probably requires some careful planning. Would you mind creating a new issue? It would help very much if you could write as much detail as possible about your use case.</p>
 <blockquote>
-<p>(I know that <code>rg</code> itself is guessing the encoding, so it's not perfect. But this would mean that my tool uses the same encoding that <code>rg</code> itself used.)</p>
+<p>(I know that <code>rg</code> itself is guessing the encoding, so it&#x27;s not perfect. But this would mean that my tool uses the same encoding that <code>rg</code> itself used.)</p>
 </blockquote>
 <p>It is not actually guessing the encoding. The only &quot;sniffing&quot; it does is BOM detection. BOMs are purportedly very strong indicators of the encoding in the file. If no BOM is present and no explicit encoding is provided by the end user, then ripgrep will always assume an ASCII-compatible (and UTF-8 by convention) encoding. This works decently well for latin-1 for example.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2020-06-25 13:09</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-06-25 13:09</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/acheronfail">@acheronfail</a> on 2020-06-25 21:58</div>
             <div class="timeline-body"><blockquote>
 <p>The real problem is that the absolute offset is only computed based on the UTF-8 data that the searcher actually sees. If the original file is UTF-16, then the offsets will be completely off</p>
 </blockquote>
-<p>Ah, I'd written some simple tests that only dealt with a single special character that itself took up two bytes in UTF8 as well, so this part slipped by me.</p>
+<p>Ah, I&#x27;d written some simple tests that only dealt with a single special character that itself took up two bytes in UTF8 as well, so this part slipped by me.</p>
 <blockquote>
 <p>There is no simple way to map the offsets reported by ripgrep back to offsets in the original file without re-computing them yourself.</p>
 </blockquote>
 <blockquote>
-<p>It's unfortunate, but I don't see a simple way to solve this. This is probably a victim of de-coupling. The layer in ripgrep that handles transcoding has zero knowledge of the layer that handles searching and dealing with offsets.</p>
+<p>It&#x27;s unfortunate, but I don&#x27;t see a simple way to solve this. This is probably a victim of de-coupling. The layer in ripgrep that handles transcoding has zero knowledge of the layer that handles searching and dealing with offsets.</p>
 </blockquote>
 <p>I guess the simplest way for me to get this working in a somewhat reliable manner, would be to trust the <code>line_number</code> reported by ripgrep and when reading the file start there and look for the match myself?</p>
 <blockquote>
@@ -130,23 +130,23 @@ $ rg c utf16le --json
             <div class="timeline-body"><blockquote>
 <p>I guess the simplest way for me to get this working in a somewhat reliable manner, would be to trust the <code>line_number</code> reported by ripgrep and when reading the file start there and look for the match myself?</p>
 </blockquote>
-<p>Probably, assuming you're using the same regex engine (which might either be Rust's regex engine or PCRE2).</p>
-<p>I'm going to close this given the presence of #1629. I don't think there is much that can be done here unfortunately. Or at least, fixing it would require some rather large implementation work that I'm not particularly keen on doing or supporting.</p>
+<p>Probably, assuming you&#x27;re using the same regex engine (which might either be Rust&#x27;s regex engine or PCRE2).</p>
+<p>I&#x27;m going to close this given the presence of #1629. I don&#x27;t think there is much that can be done here unfortunately. Or at least, fixing it would require some rather large implementation work that I&#x27;m not particularly keen on doing or supporting.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2020-06-25 22:58</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-06-25 22:58</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> removed by @BurntSushi on 2020-06-25 22:58</div>
+            <div class="event">Label <span class="label">question</span> removed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-06-25 22:58</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2020-06-25 22:58</div>
+            <div class="event">Label <span class="label">wontfix</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-06-25 22:58</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:43:12 UTC
+        Synced at 2026-01-20 18:48:10 UTC
     </footer>
 </body>
 </html>

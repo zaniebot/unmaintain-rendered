@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>[Derive] <code>#[doc = macro_name!()]</code> doesn't play well with doc comments</h1>
+    <h1>[Derive] <code>#[doc = macro_name!()]</code> doesn&#x27;t play well with doc comments</h1>
 
     <div class="meta">
         <span class="state-icon state-open"></span>
@@ -23,17 +23,17 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/rami3l">@rami3l</a></div>
-            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+            <div class="timeline-body">Please complete the following tasks
 <ul>
 <li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
 <li>[X] I have searched the existing issues</li>
 </ul>
-<h3>Rust Version</h3>
+Rust Version
 <p>1.54.0</p>
-<h3>Clap Version</h3>
+Clap Version
 <p>master</p>
-<h3>Minimal reproducible code</h3>
-<pre><code class="language-rust">#[test]
+Minimal reproducible code
+<pre><code>#[test]
 fn doc_comments_raw_macro() {
     macro_rules! doc_lorem_ipsum {
         () =&gt; {
@@ -57,11 +57,11 @@ fn doc_comments_raw_macro() {
     assert!(help.contains(&quot;Fooify a bar and a baz&quot;));
 }
 </code></pre>
-<h3>Steps to reproduce the bug with the above code</h3>
+Steps to reproduce the bug with the above code
 <p>Run the test above.</p>
-<h3>Actual Behaviour</h3>
+Actual Behaviour
 <p>Assertions fail with no comments help message detected:</p>
-<pre><code class="language-yaml">%%% LONG_HELP %%%:=====
+<pre><code>%%% LONG_HELP %%%:=====
 clap_derive 
 
 USAGE:
@@ -79,9 +79,9 @@ FLAGS:
 
 =====
 </code></pre>
-<h3>Expected Behaviour</h3>
+Expected Behaviour
 <p>Assertions pass with all help messages specified by the macro call.</p>
-<pre><code class="language-yaml">%%% LONG_HELP %%%:=====
+<pre><code>%%% LONG_HELP %%%:=====
 clap_derive 
 &lt;- We should see some help messages here...
 
@@ -100,14 +100,14 @@ FLAGS:
 
 =====
 </code></pre>
-<h3>Additional Context</h3>
+Additional Context
 <p><em>No response</em></p>
-<h3>Debug Output</h3>
+Debug Output
 <p><em>No response</em></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">T: bug</span> added by @rami3l on 2021-07-29 19:22</div>
+            <div class="event">Label <span class="label">T: bug</span> added by <a href="https://github.com/rami3l">@rami3l</a> on 2021-07-29 19:22</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/rami3l">@rami3l</a> on 2021-07-29 20:47</div>
@@ -117,13 +117,13 @@ FLAGS:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-07-29 21:12</div>
-            <div class="timeline-body"><p>I went down a different rabbit hole, in hopes that bumping MSRV and maybe proc macro deps might be of assistance.  I'm guessing not but at least we have https://github.com/clap-rs/clap/pull/2640</p>
-<p>I'll look into that part.  Part of the problem is we do post-processing on the doc comment to better format it.  iirc we have a verbatim flag which could work with it.  I'll dig a little into these parts.</p>
+            <div class="timeline-body"><p>I went down a different rabbit hole, in hopes that bumping MSRV and maybe proc macro deps might be of assistance.  I&#x27;m guessing not but at least we have <a href="https://github.com/clap-rs/clap/pull/2640">clap-rs/clap#2640</a></p>
+<p>I&#x27;ll look into that part.  Part of the problem is we do post-processing on the doc comment to better format it.  iirc we have a verbatim flag which could work with it.  I&#x27;ll dig a little into these parts.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-07-29 21:17</div>
-            <div class="timeline-body"><p>From https://github.com/rust-lang/rust/pull/83366</p>
+            <div class="timeline-body"><p>From <a href="https://github.com/rust-lang/rust/pull/83366">rust-lang/rust#83366</a></p>
 <blockquote>
 <p>Expansion of macro expressions in &quot;inert&quot; attributes occurs after decorators have executed, analogously to macro expressions appearing in the function body or other parts of decorator input.</p>
 <p>There is currently no way for decorators to accept macros in key-value position if macro expansion must be performed before the decorator executes (if the macro can simply be copied into the output for later expansion, that can work).</p>
@@ -139,29 +139,29 @@ FLAGS:
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/rami3l">@rami3l</a> on 2021-07-29 21:49</div>
             <div class="timeline-body"><p>@epage Yeah, I saw that post-processing part.</p>
-<p>Before, with only doc literals, it's reasonable to do this in the derive macro. However, when the doc macros come into play, it seems impossible (at least to both of us) to keep it this way: the call site has to be changed.</p>
-<p>But don't worry, once the macro call has been transferred to the call side, we should be able to use something like the <a href="https://github.com/dtolnay/tt-call"><code>tt_call</code></a> hack to perform comptime preprocessing. (I used it in my own app <a href="https://github.com/rami3l/pacaptr/blob/f4c8ca74ca2010f5f31cafb451f15bd05df63fd7/src/pm/mod.rs#L184"><code>pacaptr</code></a> and it works, although it's rather hard to get right.)</p>
-<p>It's true that <code>const fn</code> might be another possibility. It's however also quite complicated to operate on <code>&amp;str</code> these days with only <code>const fn</code>... :(</p>
-<p>Of course, we have to be very careful about <code>clap</code>'s dependencies... But in the worst case, we can at least move the preprocessing part to runtime.</p>
+<p>Before, with only doc literals, it&#x27;s reasonable to do this in the derive macro. However, when the doc macros come into play, it seems impossible (at least to both of us) to keep it this way: the call site has to be changed.</p>
+<p>But don&#x27;t worry, once the macro call has been transferred to the call side, we should be able to use something like the <a href="https://github.com/dtolnay/tt-call"><code>tt_call</code></a> hack to perform comptime preprocessing. (I used it in my own app <a href="https://github.com/rami3l/pacaptr/blob/f4c8ca74ca2010f5f31cafb451f15bd05df63fd7/src/pm/mod.rs#L184"><code>pacaptr</code></a> and it works, although it&#x27;s rather hard to get right.)</p>
+<p>It&#x27;s true that <code>const fn</code> might be another possibility. It&#x27;s however also quite complicated to operate on <code>&amp;str</code> these days with only <code>const fn</code>... :(</p>
+<p>Of course, we have to be very careful about <code>clap</code>&#x27;s dependencies... But in the worst case, we can at least move the preprocessing part to runtime.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/rami3l">@rami3l</a> on 2021-07-29 23:57</div>
-            <div class="timeline-body"><p>@epage Wait a second, does https://github.com/rust-lang/rust/pull/87264 include the eager expansion that we want? If so, we can wait for it!</p>
+            <div class="timeline-body"><p>@epage Wait a second, does <a href="https://github.com/rust-lang/rust/pull/87264">rust-lang/rust#87264</a> include the eager expansion that we want? If so, we can wait for it!</p>
 <p>(And in that case I know exactly which function should be modified!)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">C: derive macros</span> added by @pksunkara on 2021-07-30 07:34</div>
+            <div class="event">Label <span class="label">C: derive macros</span> added by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-07-30 07:34</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">D: hard</span> added by @pksunkara on 2021-07-30 07:34</div>
+            <div class="event">Label <span class="label">D: hard</span> added by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-07-30 07:34</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../ajeetdsouza/zoxide/issues/256.html">ajeetdsouza/zoxide#256</a> on 2021-08-26 20:22</div>
+            <div class="event">Referenced in <a>ajeetdsouza/zoxide#256</a> on 2021-08-26 20:22</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../epage/clapng/issues/194.html">epage/clapng#194</a> on 2021-12-06 21:18</div>
+            <div class="event">Referenced in <a>epage/clapng#194</a> on 2021-12-06 21:18</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/brunoczim">@brunoczim</a> on 2022-01-19 13:51</div>
@@ -171,17 +171,17 @@ FLAGS:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/rami3l">@rami3l</a> on 2022-01-19 16:29</div>
-            <div class="timeline-body"><p>@brunoczim Since https://github.com/rust-lang/rust/pull/87264 has already landed with <code>expand_expr</code>, I think I can take a look.</p>
-<p>... But don't expect that to be available in <code>clap</code> soon... We have to wait for https://github.com/rust-lang/rust/issues/90765 and there's still an MSRV to be bumped :(</p>
+            <div class="timeline-body"><p>@brunoczim Since <a href="https://github.com/rust-lang/rust/pull/87264">rust-lang/rust#87264</a> has already landed with <code>expand_expr</code>, I think I can take a look.</p>
+<p>... But don&#x27;t expect that to be available in <code>clap</code> soon... We have to wait for <a href="https://github.com/rust-lang/rust/issues/90765">rust-lang/rust#90765</a> and there&#x27;s still an MSRV to be bumped :(</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/brunoczim">@brunoczim</a> on 2022-01-19 20:06</div>
-            <div class="timeline-body"><p>I'd appreciate it, thanks!</p>
+            <div class="timeline-body"><p>I&#x27;d appreciate it, thanks!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/6158.html">clap-rs/clap#6158</a> on 2025-10-30 18:21</div>
+            <div class="event">Referenced in <a>clap-rs/clap#6158</a> on 2025-10-30 18:21</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2025-10-30 18:23</div>
@@ -190,13 +190,13 @@ FLAGS:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/rami3l">@rami3l</a> on 2025-11-01 12:06</div>
-            <div class="timeline-body"><p>@epage Indeed, we'd need those for this to work as well, thanks for looking into it again! So my above analysis was not entirely correct...</p>
+            <div class="timeline-body"><p>@epage Indeed, we&#x27;d need those for this to work as well, thanks for looking into it again! So my above analysis was not entirely correct...</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:47:59 UTC
+        Synced at 2026-01-20 19:58:12 UTC
     </footer>
 </body>
 </html>

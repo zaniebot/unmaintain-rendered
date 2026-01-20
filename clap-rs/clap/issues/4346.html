@@ -30,37 +30,37 @@
 USAGE:
     my-cli my-subcommand &lt;my-positional&gt; --my-arg &lt;my-arg-value&gt;
 </code></pre>
-<p>i'm fine with that usage error, and we have docs that indicate putting the positional before the args, but it's confusing that the help message usage doesn't match the usage in the help output.</p>
+<p>i&#x27;m fine with that usage error, and we have docs that indicate putting the positional before the args, but it&#x27;s confusing that the help message usage doesn&#x27;t match the usage in the help output.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../apollographql/rover/issues/1365.html">apollographql/rover#1365</a> on 2022-10-04 14:50</div>
+            <div class="event">Referenced in <a>apollographql/rover#1365</a> on 2022-10-04 14:50</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-10-04 15:15</div>
             <div class="timeline-body"><p>Generally, positionals can go before or after flags.  The ordering of the usage is dependent on several factors, but is fine as long as its legal.</p>
-<p>And without a minimal reproduction case, there isn't much we can act on from this issue.  Please update the issue following ou help template (e.g. <a href="https://github.com/clap-rs/clap/issues/4339">this issue</a>) so we have enough details to act appropriately to the issue.</p>
+<p>And without a minimal reproduction case, there isn&#x27;t much we can act on from this issue.  Please update the issue following ou help template (e.g. <a href="https://github.com/clap-rs/clap/issues/4339">this issue</a>) so we have enough details to act appropriately to the issue.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">S-triage</span> added by @epage on 2022-10-04 15:15</div>
+            <div class="event">Label <span class="label">S-triage</span> added by <a href="https://github.com/epage">@epage</a> on 2022-10-04 15:15</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "incorrect ordering of help output" to "[needs repro] potentially misleading ordering of usage in help output" by @EverlastingBugstopper on 2022-10-04 16:03</div>
+            <div class="event">Renamed from &quot;incorrect ordering of help output&quot; to &quot;[needs repro] potentially misleading ordering of usage in help output&quot; by <a href="https://github.com/EverlastingBugstopper">@EverlastingBugstopper</a> on 2022-10-04 16:03</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/EverlastingBugstopper">@EverlastingBugstopper</a> on 2022-10-04 16:05</div>
             <div class="timeline-body"><blockquote>
 <p>Generally, positionals can go before or after flags. The ordering of the usage is dependent on several factors, but is fine as long as its legal.</p>
 </blockquote>
-<p>That was my understanding as well. The issue referencing this was opened here: https://github.com/apollographql/rover/issues/1365.</p>
-<p>I'm working on a minimal reproduction, thanks for the kind nudge in that direction, I'll post back soon.</p>
+<p>That was my understanding as well. The issue referencing this was opened here: <a href="https://github.com/apollographql/rover/issues/1365">apollographql/rover#1365</a>.</p>
+<p>I&#x27;m working on a minimal reproduction, thanks for the kind nudge in that direction, I&#x27;ll post back soon.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-10-04 16:16</div>
             <div class="timeline-body"><p>Looking at the introspect command</p>
-<pre><code class="language-rust">#[derive(Debug, Serialize, Deserialize, Parser)]
+<pre><code>#[derive(Debug, Serialize, Deserialize, Parser)]
 pub struct IntrospectOpts {
     /// The endpoint of the subgraph to introspect
     #[serde(skip_serializing)]
@@ -72,7 +72,7 @@ pub struct IntrospectOpts {
 
     // The `name` here is for the help text and error messages, to print like
     // --header &lt;key:value&gt; rather than the plural field name --header &lt;headers&gt;
-    #[clap(name=&quot;key:value&quot;, multiple=true, long=&quot;header&quot;, short='H', parse(try_from_str = parse_header))]
+    #[clap(name=&quot;key:value&quot;, multiple=true, long=&quot;header&quot;, short=&#x27;H&#x27;, parse(try_from_str = parse_header))]
     #[serde(skip_serializing)]
     pub headers: Option&lt;Vec&lt;(String, String)&gt;&gt;,
 
@@ -84,7 +84,7 @@ pub struct IntrospectOpts {
 <p><code>--headers</code> is defined as <code>multiple</code>.  That is an alias for <code>multiple_occurrences</code> (already on via the derive) and <code>multiple_values</code></p>
 <p>From the <a href="https://docs.rs/clap/3.2.22/clap/builder/struct.Arg.html#method.multiple_values">multiple_values docs</a></p>
 <blockquote>
-<h1>WARNING:</h1>
+WARNING:
 <p>Setting multiple_values for an argument that takes a value, but with no other details can be dangerous in some circumstances. Because multiple values are allowed, --option val1 val2 val3 is perfectly valid. Be careful when designing a CLI where positional arguments are also expected as clap will continue parsing values until one of the following happens:</p>
 </blockquote>
 <p>In general, we recommend using multiple occurrences and/or value delimiters.  Multiple values only work in CLIs under very specific circumstances.</p>
@@ -93,7 +93,7 @@ pub struct IntrospectOpts {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-10-04 16:18</div>
-            <div class="timeline-body"><p>Another workaround in the future is we are considering allowing developers to hint to clap which values are valid and which aren't to know when to stop parsing.  See https://github.com/clap-rs/clap/issues/4283</p>
+            <div class="timeline-body"><p>Another workaround in the future is we are considering allowing developers to hint to clap which values are valid and which aren&#x27;t to know when to stop parsing.  See <a href="https://github.com/clap-rs/clap/issues/4283">clap-rs/clap#4283</a></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -106,7 +106,7 @@ pub struct IntrospectOpts {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/EverlastingBugstopper">@EverlastingBugstopper</a> on 2022-10-06 18:17</div>
-            <div class="timeline-body"><p>I'm also not sure what you mean by <code>#[clap(override_usage = &quot;&quot;)]</code> - what would I be overriding in this case?</p>
+            <div class="timeline-body"><p>I&#x27;m also not sure what you mean by <code>#[clap(override_usage = &quot;&quot;)]</code> - what would I be overriding in this case?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -116,27 +116,27 @@ pub struct IntrospectOpts {
 </blockquote>
 <p><code>--headers &quot;x-header-one: one-value, x-header-two: two-value&quot;</code> is one occurrence of the option.  <code>--headers &quot;x-header-one: one-value&quot; --headers &quot;x-header-two: two-value&quot;</code> is multiple occurrences of <code>headers</code></p>
 <blockquote>
-<p>I'm also not sure what you mean by #[clap(override_usage = &quot;&quot;)] - what would I be overriding in this case?</p>
+<p>I&#x27;m also not sure what you mean by #[clap(override_usage = &quot;&quot;)] - what would I be overriding in this case?</p>
 </blockquote>
 <p>The &quot;USAGE&quot; in help / error.  For example, <code>#[clap(override_usage = &quot;my-cli my-subcommand &lt;my-positional&gt; [FLAGS] [OPTIONS]&quot;)]</code></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/EverlastingBugstopper">@EverlastingBugstopper</a> on 2022-10-06 19:44</div>
-            <div class="timeline-body"><p>Oh I see. So I think that I only want multiple occurrences enabled. Right now I've set &quot;multiple&quot; on that field, which enables BOTH multiple occurrences AND multiple values. If I remove the multiple=true, and just leave it as an <code>Option&lt;Vec&lt;(String, String)&gt;&gt;</code> it should automatically derive multiple occurrences, which is what I want here.</p>
+            <div class="timeline-body"><p>Oh I see. So I think that I only want multiple occurrences enabled. Right now I&#x27;ve set &quot;multiple&quot; on that field, which enables BOTH multiple occurrences AND multiple values. If I remove the multiple=true, and just leave it as an <code>Option&lt;Vec&lt;(String, String)&gt;&gt;</code> it should automatically derive multiple occurrences, which is what I want here.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../apollographql/rover/pulls/1369.html">apollographql/rover#1369</a> on 2022-10-06 21:19</div>
+            <div class="event">Referenced in <a>apollographql/rover#1369</a> on 2022-10-06 21:19</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">A-help</span> added by @epage on 2022-11-08 04:49</div>
+            <div class="event">Label <span class="label">A-help</span> added by <a href="https://github.com/epage">@epage</a> on 2022-11-08 04:49</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">S-triage</span> removed by @epage on 2022-11-08 04:49</div>
+            <div class="event">Label <span class="label">S-triage</span> removed by <a href="https://github.com/epage">@epage</a> on 2022-11-08 04:49</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">S-wont-fix</span> added by @epage on 2022-11-08 04:49</div>
+            <div class="event">Label <span class="label">S-wont-fix</span> added by <a href="https://github.com/epage">@epage</a> on 2022-11-08 04:49</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-11-08 04:51</div>
@@ -145,7 +145,7 @@ pub struct IntrospectOpts {
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @epage on 2022-11-08 04:51</div>
+            <div class="event">Closed by <a href="https://github.com/epage">@epage</a> on 2022-11-08 04:51</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/EverlastingBugstopper">@EverlastingBugstopper</a> on 2022-11-08 16:13</div>
@@ -155,7 +155,7 @@ pub struct IntrospectOpts {
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:48:49 UTC
+        Synced at 2026-01-20 19:59:22 UTC
     </footer>
 </body>
 </html>

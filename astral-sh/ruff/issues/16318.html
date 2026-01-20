@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dscorbett">@dscorbett</a></div>
-            <div class="timeline-body"><h3>Description</h3>
+            <div class="timeline-body">Description
 <p>Ruff 0.9.7 does not normalize all newlines (<code>&quot;\n&quot;</code>, <code>&quot;\r&quot;</code>, <code>&quot;\r\n&quot;</code>) to line feeds (<code>&quot;\n&quot;</code>) within multiline strings, as Python does, which causes errors in rules that check the length or contents of string literals, including:</p>
 <ul>
 <li><a href="https://docs.astral.sh/ruff/rules/strip-with-multi-characters/"><code>strip-with-multi-characters</code> (B005)</a></li>
@@ -36,7 +36,7 @@
 <li><a href="https://docs.astral.sh/ruff/rules/duplicate-literal-member/"><code>duplicate-literal-member</code> (PYI062)</a></li>
 <li><a href="https://docs.astral.sh/ruff/rules/split-static-string/"><code>split-static-string</code> (SIM905)</a></li>
 </ul>
-<pre><code class="language-console">$ printf 'from enum import Enum
+<pre><code>$ printf &#x27;from enum import Enum
 from typing import Literal
 
 # False negatives without fixes:
@@ -55,7 +55,7 @@ print(len(set(&quot;&quot;&quot; \t\n\r\v\f&quot;&quot;&quot;)))  # FURB156
 
 print(&quot;True positive with wrong fix:&quot;)
 print(len(&quot;a\\nb\\nc&quot;.split(&quot;&quot;&quot;\r&quot;&quot;&quot;)))  # SIM905
-' | tee newlines.py.bak &gt;newlines.py
+&#x27; | tee newlines.py.bak &gt;newlines.py
 
 $ python newlines.py
 False positive with wrong fix:
@@ -73,7 +73,7 @@ True positive with wrong fix:
 1
 </code></pre>
 <p>Those rules should behave as follows, simulated by normalizing all the newlines to line feeds before running Ruff.</p>
-<pre><code class="language-console">$ tr '\r' '\n' &lt;newlines.py.bak &gt;line_feeds.py
+<pre><code>$ tr &#x27;\r&#x27; &#x27;\n&#x27; &lt;newlines.py.bak &gt;line_feeds.py
 
 $ ruff --isolated check --preview --select B005,B033,F601,FURB156,PIE796,PLE1132,PLE1310,PYI062,SIM905 line_feeds.py --fix --show-fixes --output-format grouped
 line_feeds.py:
@@ -100,7 +100,7 @@ $ python line_feeds.py | grep -v wrong
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-02-22 18:33</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-22 18:33</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/yahayaohinoyi">@yahayaohinoyi</a> on 2025-02-23 03:53</div>
@@ -113,17 +113,17 @@ $ python line_feeds.py | grep -v wrong
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @yahayaohinoyi by @ntBre on 2025-02-23 03:54</div>
+            <div class="event">Assigned to <a href="https://github.com/yahayaohinoyi">@yahayaohinoyi</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-23 03:54</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/yahayaohinoyi">@yahayaohinoyi</a> on 2025-02-23 22:26</div>
             <div class="timeline-body"><p>I need some help understanding the problem statement here;</p>
 <ul>
-<li>&quot;\r&quot;.strip(&quot;&quot;&quot;\n\r&quot;&quot;&quot;)  -&gt; ruff should complain about this since \n\r are separate characters (<strong>this makes sense to me</strong>. If we convert all \r \rn to \n, doens't that contradict in some way?)</li>
+<li>&quot;\r&quot;.strip(&quot;&quot;&quot;\n\r&quot;&quot;&quot;)  -&gt; ruff should complain about this since \n\r are separate characters (<strong>this makes sense to me</strong>. If we convert all \r \rn to \n, doens&#x27;t that contradict in some way?)</li>
 <li>&quot;dict(**{&quot;&quot;&quot;\n&quot;&quot;&quot;: 1, &quot;&quot;&quot;\r&quot;&quot;&quot;: 2})&quot; -&gt; I might be missing something here but <code>why do we want ruff to flag this on F601</code>?</li>
 <li>same as; <code>class E(Enum):  # PIE796   A = &quot;&quot;&quot;\n&quot;&quot;&quot;   B = &quot;&quot;&quot;\r&quot;&quot;&quot;  </code></li>
 </ul>
-<p>My main confusion here is if we normalize newline characters, then &quot;\r&quot;.strip(&quot;&quot;&quot;\n\r&quot;&quot;&quot;) shouldn't be a false negative and should be just fine?</p>
+<p>My main confusion here is if we normalize newline characters, then &quot;\r&quot;.strip(&quot;&quot;&quot;\n\r&quot;&quot;&quot;) shouldn&#x27;t be a false negative and should be just fine?</p>
 <p>Looking forward to your reply :) @dscorbett</p>
 </div>
         </div>
@@ -134,16 +134,16 @@ $ python line_feeds.py | grep -v wrong
 <pre><code>&quot;\\r&quot;.strip(&quot;&quot;&quot;\n\r&quot;&quot;&quot;)
 </code></pre>
 <p>is a snippet of a string in shell syntax which printf converts to this Python code:</p>
-<pre><code class="language-python">&quot;\r&quot;.strip(&quot;&quot;&quot;
+<pre><code>&quot;\r&quot;.strip(&quot;&quot;&quot;
 
 &quot;&quot;&quot;)
 </code></pre>
 <p>That Python code has two characters in the second string literal: a line feed followed by a carriage return. (The distinction between line feeds and carriage returns is lost on a web page, which is why I showed how to create the code using printf on the command line.)</p>
 <p>Ruff treats that code like:</p>
-<pre><code class="language-python">&quot;\r&quot;.strip(&quot;\n\r&quot;)
+<pre><code>&quot;\r&quot;.strip(&quot;\n\r&quot;)
 </code></pre>
 <p>However, Python normalizes all newlines to line feeds, so the code is actually equivalent to:</p>
-<pre><code class="language-python">&quot;\r&quot;.strip(&quot;\n\n&quot;)
+<pre><code>&quot;\r&quot;.strip(&quot;\n\n&quot;)
 </code></pre>
 <p>So, in fact, the <code>strip</code> argument contains duplicate line feeds, so it is appropriate for <a href="https://docs.astral.sh/ruff/rules/strip-with-multi-characters/">strip-with-multi-characters (B005)</a> and <a href="https://docs.astral.sh/ruff/rules/bad-str-strip-call/">bad-str-strip-call (PLE1310)</a> to report it. Similarly, the F601 and PIE796 examples are false negatives because Ruff thinks the strings are not equal, but they are actually equal. All of my examples are like that: each rule checks whether two strings are equal, but whenever there is a literal carriage return in the Python file, the rule wrongly treats it like a carriage return.</p>
 <p>The solution is probably to fix the tokenizer or something fundamental like that. The solution is not to fix each rule individually.</p>
@@ -152,30 +152,30 @@ $ python line_feeds.py | grep -v wrong
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-24 00:05</div>
             <div class="timeline-body"><p>Thanks @dscorbett for the clarification, and sorry @yahayaohinoyi, I should have noticed how complicated this was earlier. It does sound to me like this will require a low-level change to our tokenizer and/or parser, and then the rules will hopefully just work properly.</p>
-<p>@yahayaohinoyi I can leave you assigned to this if you're interested in looking into it at that level, but don't feel any pressure to. This might be the kind of thing we need to look into internally.</p>
+<p>@yahayaohinoyi I can leave you assigned to this if you&#x27;re interested in looking into it at that level, but don&#x27;t feel any pressure to. This might be the kind of thing we need to look into internally.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-24 08:31</div>
-            <div class="timeline-body"><p>I don't think updating the tokenizer is the right solution here. I'll need to spend some time here (although not a high priority right now) as to what needs to be done but it does seem that the CPython parser <em>is</em> normalizing the newlines to line feeds so it might require updating the parser:</p>
+            <div class="timeline-body"><p>I don&#x27;t think updating the tokenizer is the right solution here. I&#x27;ll need to spend some time here (although not a high priority right now) as to what needs to be done but it does seem that the CPython parser <em>is</em> normalizing the newlines to line feeds so it might require updating the parser:</p>
 <p><strong>Source:</strong></p>
-<pre><code class="language-console">$ bat -A parser/_.py
+<pre><code>$ bat -A parser/_.py
          File: parser/_.py
      1 ~ &quot;\r&quot;.strip(&quot;&quot;&quot;␍␊
      2 ~ ␊
      3 ~ ␍␍&quot;&quot;&quot;)
 </code></pre>
 <p><strong>CPython tokenizer and parser output:</strong></p>
-<pre><code class="language-console">$ python -m tokenize parser/_.py                  
-0,0-0,0:            ENCODING       'utf-8'        
-1,0-1,4:            STRING         '&quot;\\r&quot;'        
-1,4-1,5:            OP             '.'            
-1,5-1,10:           NAME           'strip'        
-1,10-1,11:          OP             '('            
-1,11-3,5:           STRING         '&quot;&quot;&quot;\r\n\n\r\r&quot;&quot;&quot;'
-3,5-3,6:            OP             ')'            
-3,6-3,7:            NEWLINE        ''             
-4,0-4,0:            ENDMARKER      ''          
+<pre><code>$ python -m tokenize parser/_.py                  
+0,0-0,0:            ENCODING       &#x27;utf-8&#x27;        
+1,0-1,4:            STRING         &#x27;&quot;\\r&quot;&#x27;        
+1,4-1,5:            OP             &#x27;.&#x27;            
+1,5-1,10:           NAME           &#x27;strip&#x27;        
+1,10-1,11:          OP             &#x27;(&#x27;            
+1,11-3,5:           STRING         &#x27;&quot;&quot;&quot;\r\n\n\r\r&quot;&quot;&quot;&#x27;
+3,5-3,6:            OP             &#x27;)&#x27;            
+3,6-3,7:            NEWLINE        &#x27;&#x27;             
+4,0-4,0:            ENDMARKER      &#x27;&#x27;          
 
 $ python -m ast parser/_.py     
 Module(
@@ -183,11 +183,11 @@ Module(
       Expr(
          value=Call(
             func=Attribute(
-               value=Constant(value='\r'),
-               attr='strip',
+               value=Constant(value=&#x27;\r&#x27;),
+               attr=&#x27;strip&#x27;,
                ctx=Load()),
             args=[
-               Constant(value='\n\n\n\n')],
+               Constant(value=&#x27;\n\n\n\n&#x27;)],
             keywords=[]))],
    type_ignores=[])
 </code></pre>
@@ -197,15 +197,15 @@ Module(
             <div class="timeline-header">Comment by <a href="https://github.com/yahayaohinoyi">@yahayaohinoyi</a> on 2025-02-24 11:12</div>
             <div class="timeline-body"><blockquote>
 <p>Thanks @dscorbett for the clarification, and sorry @yahayaohinoyi, I should have noticed how complicated this was earlier. It does sound to me like this will require a low-level change to our tokenizer and/or parser, and then the rules will hopefully just work properly.</p>
-<p>@yahayaohinoyi I can leave you assigned to this if you're interested in looking into it at that level, but don't feel any pressure to. This might be the kind of thing we need to look into internally.</p>
+<p>@yahayaohinoyi I can leave you assigned to this if you&#x27;re interested in looking into it at that level, but don&#x27;t feel any pressure to. This might be the kind of thing we need to look into internally.</p>
 </blockquote>
-<p>Thanks. No pressure. I'd update with anything useful I find</p>
+<p>Thanks. No pressure. I&#x27;d update with anything useful I find</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:52:15 UTC
+        Synced at 2026-01-20 18:49:33 UTC
     </footer>
 </body>
 </html>

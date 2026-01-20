@@ -26,7 +26,7 @@
             <div class="timeline-body"><p>In #2976 I made some changes that led to regressions:</p>
 <ul>
 <li>We stopped tracking URLs that we had not seen credentials for in the cache<ul>
-<li>This means the cache no longer returns a value to indicate we've seen a realm before</li>
+<li>This means the cache no longer returns a value to indicate we&#x27;ve seen a realm before</li>
 </ul>
 </li>
 <li>We stopped seeding the cache with URLs<ul>
@@ -45,15 +45,15 @@
 <li>URL, cached URL must be a prefix of the request URL</li>
 <li>Realm, exact match required</li>
 </ul>
-<p>When we don't have URL-level credentials cached, we attempt the request without authentication first. On failure, we'll search for realm-level credentials or fetch credentials from external services. This avoids providing credentials to new URLs unless we know we need them.</p>
-<p>Closes https://github.com/astral-sh/uv/issues/3123</p>
+<p>When we don&#x27;t have URL-level credentials cached, we attempt the request without authentication first. On failure, we&#x27;ll search for realm-level credentials or fetch credentials from external services. This avoids providing credentials to new URLs unless we know we need them.</p>
+<p>Closes <a href="https://github.com/astral-sh/uv/issues/3123">astral-sh/uv#3123</a></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-04-18 22:42</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-18 22:42</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "zb/auth 401" to "Fix authentication for URLs with a shared realm" by @zanieb on 2024-04-18 22:43</div>
+            <div class="event">Renamed from &quot;zb/auth 401&quot; to &quot;Fix authentication for URLs with a shared realm&quot; by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-18 22:43</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-18 22:47</div>
@@ -61,7 +61,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/cache.rs</code>:13 on 2024-04-18 22:47</div>
-            <div class="timeline-body"><p>This doesn't seem ideal, we need to scan all of the authenticated URLs on each request? I presume we could make this a <code>BTreeSet</code> and use <code>Range</code> to help search?</p>
+            <div class="timeline-body"><p>This doesn&#x27;t seem ideal, we need to scan all of the authenticated URLs on each request? I presume we could make this a <code>BTreeSet</code> and use <code>Range</code> to help search?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -84,8 +84,8 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/middleware.rs</code>:110 on 2024-04-18 22:59</div>
-            <div class="timeline-body"><p>I believe this matches pip's behavior. We can't <em>know</em> if we're supposed to send authentication for a URL unless it fails. For example, if you try to install two GitHub projects one private and one public, we can attach authentication from the private project to the public project which will fail.</p>
-<p>See https://github.com/astral-sh/uv/issues/3123#issuecomment-2064706021</p>
+            <div class="timeline-body"><p>I believe this matches pip&#x27;s behavior. We can&#x27;t <em>know</em> if we&#x27;re supposed to send authentication for a URL unless it fails. For example, if you try to install two GitHub projects one private and one public, we can attach authentication from the private project to the public project which will fail.</p>
+<p>See <a href="https://github.com/astral-sh/uv/issues/3123">astral-sh/uv#3123</a>#issuecomment-2064706021</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -128,7 +128,7 @@
             <div class="timeline-body"><p>What would happen if I made a request to:</p>
 <p><code>https://index.org/simple/botocore/?format=v4+application/json</code></p>
 <p>And it hits the netrc to grab the credentials. Then we cache the credentials under <code>https://index.org/simple/botocore/?format=v4+application/json</code>.</p>
-<p>That path then returns a relative URL to an artifact, like <code>https://index.org/artifacts/foo-123.whl</code>. How would that latter URL get authenticated, since it wouldn't match here? Would we fetch the auth again? Would it go through the realm cache?</p>
+<p>That path then returns a relative URL to an artifact, like <code>https://index.org/artifacts/foo-123.whl</code>. How would that latter URL get authenticated, since it wouldn&#x27;t match here? Would we fetch the auth again? Would it go through the realm cache?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -146,9 +146,9 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/cache.rs</code>:65 on 2024-04-18 23:28</div>
-            <div class="timeline-body"><p>We'd cache under <code>https://index.org/simple/botocore/</code> — we strip the query string when writing to the cache. But yeah the artifact would have to fall back to the realm cache since it's not a prefix.</p>
+            <div class="timeline-body"><p>We&#x27;d cache under <code>https://index.org/simple/botocore/</code> — we strip the query string when writing to the cache. But yeah the artifact would have to fall back to the realm cache since it&#x27;s not a prefix.</p>
 <p>The reason we use a prefix is a part of the RFC for caching credentials as well as a heuristic, e.g. credentials for <code>https://index.org/simple/botocore/</code> should be valid for <code>https://index.org/simple/botocore/foo/bar</code>.</p>
-<p>The string representation of the URL is cached on the type so it's not expensive. It seems like the simplest way to check for a prefix-match. I could investigate further though?</p>
+<p>The string representation of the URL is cached on the type so it&#x27;s not expensive. It seems like the simplest way to check for a prefix-match. I could investigate further though?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -157,7 +157,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/middleware.rs</code>:144 on 2024-04-18 23:30</div>
-            <div class="timeline-body"><p>Yeah we know that authentication is needed so we don't need to &quot;try&quot; the request first. We could check for cached URL-level credentials first, that seems more &quot;correct&quot; but I feel like it'd be surprising to have the same username for multiple URLs in the same realm.</p>
+            <div class="timeline-body"><p>Yeah we know that authentication is needed so we don&#x27;t need to &quot;try&quot; the request first. We could check for cached URL-level credentials first, that seems more &quot;correct&quot; but I feel like it&#x27;d be surprising to have the same username for multiple URLs in the same realm.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -193,7 +193,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-auth/src/middleware.rs</code>:110 on 2024-04-18 23:35</div>
-            <div class="timeline-body"><p>Wouldn't the prefix-based URL matching avoid us failing on the two-GitHubs case though?</p>
+            <div class="timeline-body"><p>Wouldn&#x27;t the prefix-based URL matching avoid us failing on the two-GitHubs case though?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -210,7 +210,7 @@ uv-auth middleware::tests::test_credentials_in_url_mixed_authentication_in_realm
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/middleware.rs</code>:110 on 2024-04-19 17:23</div>
-            <div class="timeline-body"><p>I'm sorry, I don't understand this comment.</p>
+            <div class="timeline-body"><p>I&#x27;m sorry, I don&#x27;t understand this comment.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -228,7 +228,7 @@ uv-auth middleware::tests::test_credentials_in_url_mixed_authentication_in_realm
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-auth/src/middleware.rs</code>:110 on 2024-04-19 17:26</div>
-            <div class="timeline-body"><p>In the &quot;two GitHubs&quot; case, what is an example of the two URLs and the credentials that would be attached to them by the user? Like, the URL for the private project won't be a prefix of the public project, right? So we wouldn't try to reuse the credentials anyway...?</p>
+            <div class="timeline-body"><p>In the &quot;two GitHubs&quot; case, what is an example of the two URLs and the credentials that would be attached to them by the user? Like, the URL for the private project won&#x27;t be a prefix of the public project, right? So we wouldn&#x27;t try to reuse the credentials anyway...?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -237,7 +237,7 @@ uv-auth middleware::tests::test_credentials_in_url_mixed_authentication_in_realm
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/middleware.rs</code>:196 on 2024-04-19 17:27</div>
-            <div class="timeline-body"><p>If you have <code>example.com/foo</code> and it provides a link to <code>example.com/bar</code> we will not match in the URL-level cache and must attempt an unauthorized request first because <code>bar</code> may not need credentials and could fail if provided. On failure, we'll find credentials in the realm-level cache and try them.</p>
+            <div class="timeline-body"><p>If you have <code>example.com/foo</code> and it provides a link to <code>example.com/bar</code> we will not match in the URL-level cache and must attempt an unauthorized request first because <code>bar</code> may not need credentials and could fail if provided. On failure, we&#x27;ll find credentials in the realm-level cache and try them.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -246,7 +246,7 @@ uv-auth middleware::tests::test_credentials_in_url_mixed_authentication_in_realm
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/cache.rs</code>:13 on 2024-04-19 17:27</div>
-            <div class="timeline-body"><p>Yeah maybe. I'm questioning complexity vs performance here.</p>
+            <div class="timeline-body"><p>Yeah maybe. I&#x27;m questioning complexity vs performance here.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -256,11 +256,11 @@ uv-auth middleware::tests::test_credentials_in_url_mixed_authentication_in_realm
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/middleware.rs</code>:110 on 2024-04-19 18:00</div>
             <div class="timeline-body"><p>So.. if we make an authenticated request we will not perform a retry. The second request is only made if we failed to find cached credentials for the prefix. This ensures that we only make a request with cached realm-level credentials if necessary.</p>
-<p>Let's say we see <code>github.com/private</code>, we'll cache credentials at the realm and URL-level for this.
+<p>Let&#x27;s say we see <code>github.com/private</code>, we&#x27;ll cache credentials at the realm and URL-level for this.
 Subsequent requests to <code>github.com/private/foo</code> will use the cached URL-level credentials, yay we avoided sending a bad request to realize we needed credentials.
-If a subsequent request to <code>github.com/private/bar</code> fails, we won't perform a second request.</p>
-<p>Now if we see <code>github.com/other-private</code>, we'll have a URL cache miss. We don't know it's private so we attempt a request. This request fails so we try the cached credentials for the realm — these work yay.</p>
-<p>Now we see <code>github.com/public</code>. We'll have a URL cache miss but the request just succeeds — yay.</p>
+If a subsequent request to <code>github.com/private/bar</code> fails, we won&#x27;t perform a second request.</p>
+<p>Now if we see <code>github.com/other-private</code>, we&#x27;ll have a URL cache miss. We don&#x27;t know it&#x27;s private so we attempt a request. This request fails so we try the cached credentials for the realm — these work yay.</p>
+<p>Now we see <code>github.com/public</code>. We&#x27;ll have a URL cache miss but the request just succeeds — yay.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -292,7 +292,7 @@ If a subsequent request to <code>github.com/private/bar</code> fails, we won't p
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @zanieb on 2024-04-19 19:51</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-19 19:51</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-19 20:42</div>
@@ -300,7 +300,7 @@ If a subsequent request to <code>github.com/private/bar</code> fails, we won't p
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/pip_install.rs</code>:1337 on 2024-04-19 20:42</div>
-            <div class="timeline-body"><p>As far as I can tell, these don't fail on main but seem nice to have regardless.</p>
+            <div class="timeline-body"><p>As far as I can tell, these don&#x27;t fail on main but seem nice to have regardless.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -309,22 +309,22 @@ If a subsequent request to <code>github.com/private/bar</code> fails, we won't p
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/middleware.rs</code>:150 on 2024-04-19 20:54</div>
-            <div class="timeline-body"><p>I considered not caching in this case to reduce the size of the cache, but it's kind of confusing behavior and we use a trie to ensure cache performance is reasonable with many URLs.</p>
+            <div class="timeline-body"><p>I considered not caching in this case to reduce the size of the cache, but it&#x27;s kind of confusing behavior and we use a trie to ensure cache performance is reasonable with many URLs.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @charliermarsh by @zanieb on 2024-04-22 15:57</div>
+            <div class="event">Review requested from <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-22 15:57</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-auth/src/cache.rs</code>:14 on 2024-04-22 16:51</div>
             <div class="timeline-body"><p>I realize this was previously using a <code>Mutex</code>, but have you considered using <code>RwLock</code> for both of these? It looks the <code>get_*</code> methods below are read-only and <em>could</em> be executed in parallel with other read-only calls.</p>
-<p>I don't have a good sense of the read/write workload here so I don't know if this will be an overall benefit, but it looks like it fits here.</p>
+<p>I don&#x27;t have a good sense of the read/write workload here so I don&#x27;t know if this will be an overall benefit, but it looks like it fits here.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-auth/src/middleware.rs</code>:260 on 2024-04-22 17:04</div>
-            <div class="timeline-body"><p>Maybe more of a personal preference thing, but I find long if blocks trailed by a short/trivial else block to be more difficult to read. I'm more of a fan of using early returns to simplify (which are used above here). So in this case, maybe:</p>
-<pre><code class="language-rust">if !matches!(
+            <div class="timeline-body"><p>Maybe more of a personal preference thing, but I find long if blocks trailed by a short/trivial else block to be more difficult to read. I&#x27;m more of a fan of using early returns to simplify (which are used above here). So in this case, maybe:</p>
+<pre><code>if !matches!(
     response.status(),
     StatusCode::FORBIDDEN | StatusCode::NOT_FOUND | StatusCode::UNAUTHORIZED
 ) {
@@ -337,14 +337,14 @@ trace!(
 );
 // and so on...
 </code></pre>
-<p>Basically the idea is that when you're reading the code in a linear fashion, you can check the condition, note the early return and then move on. But with the code written this way, you kinda have to keep the condition in mind as you go on, and then we you get to the <code>else</code>, I find I usually have to go back up to remind myself of what the condition is.</p>
+<p>Basically the idea is that when you&#x27;re reading the code in a linear fashion, you can check the condition, note the early return and then move on. But with the code written this way, you kinda have to keep the condition in mind as you go on, and then we you get to the <code>else</code>, I find I usually have to go back up to remind myself of what the condition is.</p>
 <p>The other upshot of this is that you get less nesting.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-auth/src/middleware.rs</code>:292 on 2024-04-22 17:05</div>
-            <div class="timeline-body"><p>Continuing on my early return crusade, I'd write this as:</p>
-<pre><code class="language-rust">let Some(credentials) = credentials else {
+            <div class="timeline-body"><p>Continuing on my early return crusade, I&#x27;d write this as:</p>
+<pre><code>let Some(credentials) = credentials else {
     return next.run(request, extensions).await;
 };
 let url = request.url().clone();
@@ -368,7 +368,7 @@ let url = request.url().clone();
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/cache.rs</code>:14 on 2024-04-22 17:11</div>
-            <div class="timeline-body"><p>Thanks! I'd happily explore this in a follow-up to avoid increasing scope here.</p>
+            <div class="timeline-body"><p>Thanks! I&#x27;d happily explore this in a follow-up to avoid increasing scope here.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -390,10 +390,10 @@ let url = request.url().clone();
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @zanieb on 2024-04-22 18:06</div>
+            <div class="event">Merged by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-22 18:06</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2024-04-22 18:06</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-22 18:06</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-04-22 18:06</div>
@@ -401,7 +401,7 @@ let url = request.url().clone();
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:36:40 UTC
+        Synced at 2026-01-20 19:44:57 UTC
     </footer>
 </body>
 </html>

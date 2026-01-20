@@ -33,21 +33,21 @@ echo &quot;haystack needle&quot; | rg -q --files-without-match needle # returned
 <pre><code>echo &quot;haystack ......&quot; | rg -q --files-without-match needle # returns 0 ✅
 echo &quot;haystack needle&quot; | rg -q --files-without-match needle # returns 1 ✅
 </code></pre>
-<p>Fix: Don't let quiet mode override FilesWithoutMatch summary kind.</p>
+<p>Fix: Don&#x27;t let quiet mode override FilesWithoutMatch summary kind.</p>
 <p>One line change in hiargs.rs printer logic.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-08-20 00:56</div>
-            <div class="timeline-body"><p>This change is bunk unfortunately. ripgrep's test suite doesn't check that <code>-q --files-without-match</code> emits nothing on stdout, but this patch makes it... not be quiet any more.</p>
-<p>The problem is that the summary printer doesn't distinguish &quot;quiet&quot; mode with &quot;quiet inverted match&quot; mode. This is an API design bug in ripgrep's internal libraries. Sigh.</p>
+            <div class="timeline-body"><p>This change is bunk unfortunately. ripgrep&#x27;s test suite doesn&#x27;t check that <code>-q --files-without-match</code> emits nothing on stdout, but this patch makes it... not be quiet any more.</p>
+<p>The problem is that the summary printer doesn&#x27;t distinguish &quot;quiet&quot; mode with &quot;quiet inverted match&quot; mode. This is an API design bug in ripgrep&#x27;s internal libraries. Sigh.</p>
 <p>Nice find though.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-08-20 00:56</div>
             <div class="timeline-body"><p>Specifically, with this PR, this test fails:</p>
-<pre><code>// See: https://github.com/BurntSushi/ripgrep/issues/3108
+<pre><code>// See: <a href="https://github.com/BurntSushi/ripgrep/issues/3108">BurntSushi/ripgrep#3108</a>
 rgtest!(r3108_files_without_match_quiet_exit, |dir: Dir, _: TestCommand| {
     dir.create(&quot;yes-match&quot;, &quot;abc&quot;);
     dir.create(&quot;non-match&quot;, &quot;xyz&quot;);
@@ -96,7 +96,7 @@ failures:
 
 ---- regression::r3108_files_without_match_quiet_exit stdout ----
 
-thread 'regression::r3108_files_without_match_quiet_exit' (1875804) panicked at tests/regression.rs:1530:5:
+thread &#x27;regression::r3108_files_without_match_quiet_exit&#x27; (1875804) panicked at tests/regression.rs:1530:5:
 
 printed outputs differ!
 
@@ -115,19 +115,19 @@ non-match
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2025-08-20 00:56</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-08-20 00:56</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-08-20 01:00</div>
             <div class="timeline-body"><p>This part in the code is the problem:</p>
 <p>https://github.com/BurntSushi/ripgrep.git/blob/119a58a400ea948c2d2b0cd4ec58361e74478641/crates/printer/src/summary.rs#L506-L511</p>
-<p>For <code>SummaryKind::PathWithoutMatch</code>, the case of whether a match has occurred or not is correctly inverted. But for <code>SummaryKind::Quiet</code>, the printer doesn't know we want to invert the match.</p>
+<p>For <code>SummaryKind::PathWithoutMatch</code>, the case of whether a match has occurred or not is correctly inverted. But for <code>SummaryKind::Quiet</code>, the printer doesn&#x27;t know we want to invert the match.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:44:22 UTC
+        Synced at 2026-01-20 18:48:20 UTC
     </footer>
 </body>
 </html>

@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/lukesandberg">@lukesandberg</a></div>
-            <div class="timeline-body"><h4>Describe your feature request</h4>
+            <div class="timeline-body">Describe your feature request
 <p>When walking a directory tree to find files to match a glob, it would be useful to know that we do not need to recurse on a given directory.</p>
 <pre><code>project
    src
@@ -33,25 +33,25 @@
 </code></pre>
 <p>so if someone specifies <code>src/**/*.js</code> we know no file under <code>node_modules</code> will ever match.</p>
 <p>similarly for slightly more complex patterns like <code>{src,lib,test}/**/*.js</code></p>
-<p><code>globset</code> is super fast of course, but the issue here is avoiding the filesystem operations of traversing the subdirectories, and in my specific usecase we are also setting up file watchers for directories that match the pattern.   Thus it would be very useful to have a 'negative prefix match' like <code>can_skip_directory</code> where if i pass it <code>node_modules/</code> it would return <code>true</code> for either of the above patterns.</p>
+<p><code>globset</code> is super fast of course, but the issue here is avoiding the filesystem operations of traversing the subdirectories, and in my specific usecase we are also setting up file watchers for directories that match the pattern.   Thus it would be very useful to have a &#x27;negative prefix match&#x27; like <code>can_skip_directory</code> where if i pass it <code>node_modules/</code> it would return <code>true</code> for either of the above patterns.</p>
 <p>For simple rooted patterns this is easy to land, but of course we could be dealing with other kinds of patterns:</p>
-<p><code>*.js</code> wouldn't match any file in a subdirectory so <code>can_skip_directory</code> should always return true for a pattern like that.</p>
-<p><code>*/*/*.js</code> wouldn't match anything 3 or more levels deep.</p>
-<h3>Implementation</h3>
-<p>This is actually tricky.<br />
-For the special cased 'literal' implementations in globset, this is straightforward (e.g. a <code>MatchStrategy::Suffix</code> would always return <code>false</code> from <code>can_skip_directory</code>).  However, the real implementation issue is the regex engine.</p>
-<p>For the various automata implementations it seems like it should be possible to simply ask the NFA 'were there any active states when the input was exhausted?' but i don't see a straightforward way to do this with the exposed APIs (is this possible with the <code>search_slots</code> api? it is unclear).</p>
-<p>Perhaps there is a way to modify the generated patterns or automata with extra 'terminal' states to support this?</p>
-<p>Perhaps we could consider this as a kind of a 'streaming match' where we are only providing part of the input and asking if there is any suffix that could lead to a match?</p>
-<h3>Uses</h3>
+<p><code>*.js</code> wouldn&#x27;t match any file in a subdirectory so <code>can_skip_directory</code> should always return true for a pattern like that.</p>
+<p><code>*/*/*.js</code> wouldn&#x27;t match anything 3 or more levels deep.</p>
+Implementation
+<p>This is actually tricky.<br>
+For the special cased &#x27;literal&#x27; implementations in globset, this is straightforward (e.g. a <code>MatchStrategy::Suffix</code> would always return <code>false</code> from <code>can_skip_directory</code>).  However, the real implementation issue is the regex engine.</p>
+<p>For the various automata implementations it seems like it should be possible to simply ask the NFA &#x27;were there any active states when the input was exhausted?&#x27; but i don&#x27;t see a straightforward way to do this with the exposed APIs (is this possible with the <code>search_slots</code> api? it is unclear).</p>
+<p>Perhaps there is a way to modify the generated patterns or automata with extra &#x27;terminal&#x27; states to support this?</p>
+<p>Perhaps we could consider this as a kind of a &#x27;streaming match&#x27; where we are only providing part of the input and asking if there is any suffix that could lead to a match?</p>
+Uses
 <p>Would this be useful for <code>ripgrep</code> itself? it appears not since ripgrep just uses globs to skip certain files whereas we are using them to select files to watch.</p>
-<h3>Alternatives</h3>
+Alternatives
 <p>I did implement a version of this with my own Thompson style NFA implementation, but the regex/globset crates are <em>much</em> more mature and so it makes more sense for this functionality to live upstream. Thanks!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/lukesandberg">@lukesandberg</a> on 2025-05-15 17:02</div>
-            <div class="timeline-body"><p>I spent a while looking at the <code>PikeVm</code> implementation and I don't think it is reasonable to really implement this at that level since it would require threading new APIs through the whole stack.</p>
+            <div class="timeline-body"><p>I spent a while looking at the <code>PikeVm</code> implementation and I don&#x27;t think it is reasonable to really implement this at that level since it would require threading new APIs through the whole stack.</p>
 <p>Adding some kind of additional <code>wildcard_suffix</code> bit to the <code>Input</code> type is perhaps plausible where if we exhaust the input and the bit is set we could always match if that is set..., but again very invasive.</p>
 <p>So perhaps the better idea is to change regex construction, taking my examples from above:</p>
 <ul>
@@ -77,22 +77,22 @@ literal separators <code>/</code> would induce an optional match <code>(?:../)?<
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-05-15 17:08</div>
-            <div class="timeline-body"><p>I think I am probably pretty unlikely to accept big changes to <code>globset</code> at this point. My plan (for a few years now, with middling progress) is to revisit it from first principles. That doesn't help you much. But realistically speaking, I'm not going to have the bandwidth to review a change like this. So you're probably better off forking for now and going your own way.</p>
+            <div class="timeline-body"><p>I think I am probably pretty unlikely to accept big changes to <code>globset</code> at this point. My plan (for a few years now, with middling progress) is to revisit it from first principles. That doesn&#x27;t help you much. But realistically speaking, I&#x27;m not going to have the bandwidth to review a change like this. So you&#x27;re probably better off forking for now and going your own way.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/lukesandberg">@lukesandberg</a> on 2025-05-15 21:35</div>
-            <div class="timeline-body"><p>Thanks for the feedback, a bit disappointing of course but I appreciate the clarity.  I do believe my implementation will not be very large (~600 locs with tests if that makes a difference), but I also understand the hesitation to support a feature you don't have a usecase for.</p>
+            <div class="timeline-body"><p>Thanks for the feedback, a bit disappointing of course but I appreciate the clarity.  I do believe my implementation will not be very large (~600 locs with tests if that makes a difference), but I also understand the hesitation to support a feature you don&#x27;t have a usecase for.</p>
 <p>I am curious what issues you see in the current implementation that you hope to address?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @lukesandberg on 2025-05-16 01:53</div>
+            <div class="event">Closed by <a href="https://github.com/lukesandberg">@lukesandberg</a> on 2025-05-16 01:53</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:43:55 UTC
+        Synced at 2026-01-20 18:48:14 UTC
     </footer>
 </body>
 </html>

@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a></div>
-            <div class="timeline-body"><p>Currently red-knot does &quot;inside-out&quot; type inference. The type of an expression is inferred by inferring types for all sub-expressions, bottom-up, and using those to infer a type for the outer expression. A given expression's type is independent of the expression or statement it is part of; it depends only on the expression itself (and of course on name resolution.)</p>
-<p>As we implement more complex type system features, such as generics, we will likely find that in some cases we need to go &quot;outside-in&quot;, using the outer type context, or expected type, to guide type inference of an expression. In the literature, this is called &quot;bidirectional type inference&quot;, where the inside-out inference is often called <code>infer</code> and the outside-in one called <code>check</code>. (Here's a <a href="https://www.reddit.com/r/ProgrammingLanguages/comments/v3z7r8/comment/ib2r6uf/">good short summary</a>.)</p>
-<p>Here's one <a href="https://discuss.python.org/t/pep-747-typeexpr-type-hint-for-a-type-expression/55984/67">example case</a> where we might use type context with generics:</p>
-<pre><code class="language-py">def f[T](x: T) -&gt; list[T]:
+            <div class="timeline-body"><p>Currently red-knot does &quot;inside-out&quot; type inference. The type of an expression is inferred by inferring types for all sub-expressions, bottom-up, and using those to infer a type for the outer expression. A given expression&#x27;s type is independent of the expression or statement it is part of; it depends only on the expression itself (and of course on name resolution.)</p>
+<p>As we implement more complex type system features, such as generics, we will likely find that in some cases we need to go &quot;outside-in&quot;, using the outer type context, or expected type, to guide type inference of an expression. In the literature, this is called &quot;bidirectional type inference&quot;, where the inside-out inference is often called <code>infer</code> and the outside-in one called <code>check</code>. (Here&#x27;s a <a href="https://www.reddit.com/r/ProgrammingLanguages/comments/v3z7r8/comment/ib2r6uf/">good short summary</a>.)</p>
+<p>Here&#x27;s one <a href="https://discuss.python.org/t/pep-747-typeexpr-type-hint-for-a-type-expression/55984/67">example case</a> where we might use type context with generics:</p>
+<pre><code>def f[T](x: T) -&gt; list[T]:
     return [x]
 
 v: list[int] = f(True)
@@ -34,7 +34,7 @@ v: list[int] = f(True)
 <p>If we did purely inside-out inference, we would likely infer the type of the <code>f(True)</code> call as <code>list[Literal[True]]</code>, or maybe <code>list[bool]</code> if we widen literal types, and then issue an error when we try to assign it to <code>list[int]</code> (<code>list[T]</code> is invariant in <code>T</code>, so <code>list[bool]</code> is not assignable to <code>list[int]</code>, even though <code>bool</code> is a subtype of <code>int</code>.)</p>
 <p>But type context can help us in this case to decide to instead widen the inferred type of the generic function call to <code>list[int]</code> and thus permit the assignment. The type context allows us to pick &quot;correctly&quot; among the various more-or-less-precise (but all correct) inferred types for <code>f(True)</code>.</p>
 <p>Another example is this one, with <code>TypedDict</code>:</p>
-<pre><code class="language-py">from typing import TypedDict
+<pre><code>from typing import TypedDict
 
 class TD(TypedDict):
     x: int
@@ -43,10 +43,10 @@ v1: TD = {&quot;x&quot;: 1}
 v2: dict[str, int] = {&quot;x&quot;: 1}
 </code></pre>
 <p>Both of these assignments should be valid, but if we were to infer the RHS purely inside-out, there are a variety of possible types we might legitimately infer for it. Type context can help us decide that we should infer the type <code>TD</code> (or at least something assignable to it) in the first case, and we should infer <code>dict[str, int]</code> in the second case.</p>
-<p>I'm not sure that we strictly <em>need</em> type context for the latter case; I think in some cases sufficiently precise types can avoid the need. For instance, we could infer the dictionary literal <code>{&quot;x&quot;: 1}</code> as a dedicated immutable dict-literal type (internal-only, not representable in annotations), with knowledge of precisely which keys it has and their types, which could then soundly be assignable to both <code>dict[str, int]</code> and <code>TD</code>. But it is probably not feasible to add such precise types for all scenarios where we would otherwise need bidirectional checking.</p>
-<p>The first scenario, with invariant generics, is more difficult to handle well without bidirectional checking. Even if we infer the expression <code>[x]</code> as having type <code>list[Unknown | T]</code> (since it isn't annotated), this would then be assignable to <code>list[T]</code> (thanks to gradual typing), and we would still end up with a return type of e.g. <code>list[Literal[True]]</code> or <code>list[bool]</code>, which would not be assignable to <code>list[int]</code>.</p>
+<p>I&#x27;m not sure that we strictly <em>need</em> type context for the latter case; I think in some cases sufficiently precise types can avoid the need. For instance, we could infer the dictionary literal <code>{&quot;x&quot;: 1}</code> as a dedicated immutable dict-literal type (internal-only, not representable in annotations), with knowledge of precisely which keys it has and their types, which could then soundly be assignable to both <code>dict[str, int]</code> and <code>TD</code>. But it is probably not feasible to add such precise types for all scenarios where we would otherwise need bidirectional checking.</p>
+<p>The first scenario, with invariant generics, is more difficult to handle well without bidirectional checking. Even if we infer the expression <code>[x]</code> as having type <code>list[Unknown | T]</code> (since it isn&#x27;t annotated), this would then be assignable to <code>list[T]</code> (thanks to gradual typing), and we would still end up with a return type of e.g. <code>list[Literal[True]]</code> or <code>list[bool]</code>, which would not be assignable to <code>list[int]</code>.</p>
 <p>Bidirectional checking does introduce a lot of questions about how far type context can &quot;stretch&quot;, and if it can operate retroactively. For example:</p>
-<pre><code class="language-py">def f[T](x: T) -&gt; list[T]:
+<pre><code>def f[T](x: T) -&gt; list[T]:
     return [x]
 
 v = f(True)
@@ -55,7 +55,7 @@ def g(x: list[int]): ...
 
 g(v)
 </code></pre>
-<p>With <code>v</code> un-annotated, does the fact that it is later passed to <code>g</code>, which expects <code>list[int]</code>, affect our earlier inference of <code>f(True)</code>? (I think we probably don't want to go there.)</p>
+<p>With <code>v</code> un-annotated, does the fact that it is later passed to <code>g</code>, which expects <code>list[int]</code>, affect our earlier inference of <code>f(True)</code>? (I think we probably don&#x27;t want to go there.)</p>
 <p>Cases like this become a lot nicer if we could avoid bidirectional checking and instead find a way to represent the precise type of <code>f(True)</code> that is assignable to all of <code>list[int]</code>, <code>list[bool]</code>, etc. But this seems difficult or impossible to achieve with invariant generics.</p>
 <p>This issue is a place to collect examples of where we will need bidirectional inference, and discuss how to approach it.</p>
 </div>
@@ -69,13 +69,13 @@ g(v)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[red-knot] type context (bidirectional checking)" to "type context (bidirectional checking)" by @MichaReiser on 2025-05-07 15:26</div>
+            <div class="event">Renamed from &quot;[red-knot] type context (bidirectional checking)&quot; to &quot;type context (bidirectional checking)&quot; by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-07 15:26</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bidirectional inference</span> added by @AlexWaygood on 2025-05-11 10:59</div>
+            <div class="event">Label <span class="label">bidirectional inference</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-11 10:59</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Beta" by @carljm on 2025-08-15 01:49</div>
+            <div class="event">Added to milestone &quot;Beta&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-08-15 01:49</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-15 14:41</div>
@@ -87,12 +87,12 @@ g(v)
             <div class="timeline-body"><p>With PEP 728 as a tool, I think you can get close to achieving correct TypedDict inference without bidirectional inference. The key is that TypedDicts with extra items can be assignable to <code>dict[]</code>: https://peps.python.org/pep-0728/#interaction-with-dict-str-vt .</p>
 <p>The idea then is that for a dictionary literal of the form <code>{&quot;k1&quot;: T1, &quot;k2&quot;: T2, ...}</code>, you infer a TypedDict type with items <code>&quot;k1&quot;: NotRequired[T1 | Unknown], &quot;k2&quot;: NotRequired[T2 | Unknown], ...</code> and <code>extra_items</code> of type Unknown. This type is assignable to <code>dict[str, T1 | T2]</code> and to many compatible TypedDict types.</p>
 <p>There are (at least) two problems though: the type is not assignable to a TypedDict type that has k1 or k2 as required items, and it does not allow rejecting assignments with extra keys that are not in the assignment target TypedDict. Both of these problems can perhaps be solved with an internal flag that tracks which items are definitely present in a literal.</p>
-<p>The appeal of this approach is that it doesn't rely on local context, which prevents some common causes of user confusion (e.g., <code>return {...}</code> is allowed by a type checker but <code>m = {...}; return m</code> is not).</p>
+<p>The appeal of this approach is that it doesn&#x27;t rely on local context, which prevents some common causes of user confusion (e.g., <code>return {...}</code> is allowed by a type checker but <code>m = {...}; return m</code> is not).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-08-17 21:11</div>
-            <div class="timeline-body"><p>Actually it's even more complicated, since the same dict literal might get mutated between the time it's created and the time it's assigned to a TypedDict type. I think there are ways around that (basically, treating operations that mutate the dict as assigning a new value to the variable), but it's going to get very complicated.</p>
+            <div class="timeline-body"><p>Actually it&#x27;s even more complicated, since the same dict literal might get mutated between the time it&#x27;s created and the time it&#x27;s assigned to a TypedDict type. I think there are ways around that (basically, treating operations that mutate the dict as assigning a new value to the variable), but it&#x27;s going to get very complicated.</p>
 <p>Scenarios like this (where <code>TD1</code> and <code>TD2</code> are distinct TypedDicts, both of which the dict literal is compatible with):</p>
 <pre><code>d = {&quot;a&quot;: 1}
 td1: TD1 = d
@@ -103,13 +103,13 @@ td2: TD2 = d  # this should be rejected, since the two types may allow different
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-18 18:30</div>
             <div class="timeline-body"><blockquote>
-<p>the same dict literal might get mutated between the time it's created and the time it's assigned to a TypedDict type. I think there are ways around that (basically, treating operations that mutate the dict as assigning a new value to the variable), but it's going to get very complicated.</p>
+<p>the same dict literal might get mutated between the time it&#x27;s created and the time it&#x27;s assigned to a TypedDict type. I think there are ways around that (basically, treating operations that mutate the dict as assigning a new value to the variable), but it&#x27;s going to get very complicated.</p>
 </blockquote>
 <p>Yes, this is roughly analogous to the case with un-annotated generic literals, where I would like to infer <code>l = []</code> as <code>list[Unknown]</code>, and then as <code>list[Unknown | Literal[1]]</code> after <code>l.append(1)</code>, etc. I think this gives good results, but also requires every mutating operation to be treated as a narrowing, which might not be feasible.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> added by @carljm on 2025-08-18 18:30</div>
+            <div class="event">Label <span class="label">needs-decision</span> added by <a href="https://github.com/carljm">@carljm</a> on 2025-08-18 18:30</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-08-18 18:51</div>
@@ -125,7 +125,7 @@ g(lst)  # boom
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-18 18:59</div>
-            <div class="timeline-body"><p>Yeah, we've discussed that previously as well (can't find the issue right now), I just forgot it in the short summary here.</p>
+            <div class="timeline-body"><p>Yeah, we&#x27;ve discussed that previously as well (can&#x27;t find the issue right now), I just forgot it in the short summary here.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -134,23 +134,23 @@ g(lst)  # boom
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> removed by @carljm on 2025-08-22 14:26</div>
+            <div class="event">Label <span class="label">needs-decision</span> removed by <a href="https://github.com/carljm">@carljm</a> on 2025-08-22 14:26</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @ibraheemdev by @carljm on 2025-08-22 14:57</div>
+            <div class="event">Assigned to <a href="https://github.com/ibraheemdev">@ibraheemdev</a> by <a href="https://github.com/carljm">@carljm</a> on 2025-08-22 14:57</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-10-17 03:17</div>
-            <div class="timeline-body"><p>I'm going to go ahead and close this issue since the bulk of the work here is done. The remaining work is tracked under the <a href="https://github.com/astral-sh/ty/issues?q=state%3Aopen%20label%3A%22bidirectional%20inference%22">bidirectional-inference tag</a>.</p>
+            <div class="timeline-body"><p>I&#x27;m going to go ahead and close this issue since the bulk of the work here is done. The remaining work is tracked under the <a href="https://github.com/astral-sh/ty/issues?q=state%3Aopen%20label%3A%22bidirectional%20inference%22">bidirectional-inference tag</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ibraheemdev on 2025-10-17 03:17</div>
+            <div class="event">Closed by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-10-17 03:17</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:19:39 UTC
+        Synced at 2026-01-20 19:24:13 UTC
     </footer>
 </body>
 </html>

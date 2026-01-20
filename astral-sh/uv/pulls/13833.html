@@ -23,20 +23,20 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a></div>
-            <div class="timeline-body"><p>Unlike regular packages, specifying all <code>__init__.py</code> directories for a namespace package would be very verbose There is e.g. https://github.com/python-poetry/poetry/tree/main/src/poetry, which has 18 modules, or https://github.com/googleapis/api-common-protos which is inconsistently nested. For both the Google Cloud SDK, there are both packages with a single module and those with complex structures, with many having multiple modules due to versioning through <code>&lt;module&gt;_v1</code> versioning. The Azure SDK seems to use one module per package (it's not explicitly documented but seems to follow from the process in https://azure.github.io/azure-sdk/python_design.html#azure-sdk-distribution-packages and https://github.com/Azure/azure-sdk-for-python/blob/ccb0e03a3de748f3aabf44be94776ba37e55791f/doc/dev/packaging.md).</p>
-<p>For simplicity with complex projects, we add a <code>namespace = true</code> switch which disabled checking for an <code>__init__.py</code>. We only check that there's no <code>&lt;module_root&gt;/&lt;module_name&gt;/__init__.py</code> and otherwise add the whole <code>&lt;module_root&gt;/&lt;module_name&gt;</code> folder. This comes at the cost of <code>namespace = true</code> effectively creating an opt-out from our usual checks that allows creating an almost entirely arbitrary package.</p>
+            <div class="timeline-body"><p>Unlike regular packages, specifying all <code>__init__.py</code> directories for a namespace package would be very verbose There is e.g. https://github.com/python-poetry/poetry/tree/main/src/poetry, which has 18 modules, or https://github.com/googleapis/api-common-protos which is inconsistently nested. For both the Google Cloud SDK, there are both packages with a single module and those with complex structures, with many having multiple modules due to versioning through <code>&lt;module&gt;_v1</code> versioning. The Azure SDK seems to use one module per package (it&#x27;s not explicitly documented but seems to follow from the process in https://azure.github.io/azure-sdk/python_design.html#azure-sdk-distribution-packages and https://github.com/Azure/azure-sdk-for-python/blob/ccb0e03a3de748f3aabf44be94776ba37e55791f/doc/dev/packaging.md).</p>
+<p>For simplicity with complex projects, we add a <code>namespace = true</code> switch which disabled checking for an <code>__init__.py</code>. We only check that there&#x27;s no <code>&lt;module_root&gt;/&lt;module_name&gt;/__init__.py</code> and otherwise add the whole <code>&lt;module_root&gt;/&lt;module_name&gt;</code> folder. This comes at the cost of <code>namespace = true</code> effectively creating an opt-out from our usual checks that allows creating an almost entirely arbitrary package.</p>
 <p>For simple projects with only a single module, the module name can be dotted to point to the target module, so the build still gets checked:</p>
-<pre><code class="language-toml">[tool.uv.build-backend]
+<pre><code>[tool.uv.build-backend]
 module-name = &quot;poetry.core&quot;
 </code></pre>
-<h2>Alternatives</h2>
-<h3>Declare all packages</h3>
+Alternatives
+Declare all packages
 <p>We could make <code>module-name</code> a list and allow or require declaring all packages:</p>
-<pre><code class="language-toml">[tool.uv.build-backend]
+<pre><code>[tool.uv.build-backend]
 module-name = [&quot;cloud_sdk.service.storage&quot;, &quot;cloud_sdk.service.storage_v1&quot;, &quot;cloud_sdk.billing.storage&quot;]
 </code></pre>
 <p>Or for Poetry:</p>
-<pre><code class="language-toml">[tool.uv.build-backend]
+<pre><code>[tool.uv.build-backend]
 module-name = [
     &quot;poetry.config&quot;,
     &quot;poetry.console&quot;,
@@ -58,41 +58,41 @@ module-name = [
     &quot;poetry.version&quot;
 ]
 </code></pre>
-<h3>Support multiple namespaces</h3>
+Support multiple namespaces
 <p>We could also allow namespace packages with multiple root level module:</p>
-<pre><code class="language-toml">[tool.uv.build-backend]
+<pre><code>[tool.uv.build-backend]
 module-name = [&quot;cloud_sdk.my_ext&quot;, &quot;local_sdk.my_ext&quot;]
 </code></pre>
 <p>For lack of use cases, we delegate this to creating a workspace with one package per module.</p>
-<h2>Implementation</h2>
-<p>Due to the more complex options for the module name, I'm moving verification on deserialization later, dropping the source span we'd get from serde. We also don't show similarly named directories anymore.</p>
+Implementation
+<p>Due to the more complex options for the module name, I&#x27;m moving verification on deserialization later, dropping the source span we&#x27;d get from serde. We also don&#x27;t show similarly named directories anymore.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2025-06-04 13:25</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/konstin">@konstin</a> on 2025-06-04 13:25</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">preview</span> added by @konstin on 2025-06-04 13:25</div>
+            <div class="event">Label <span class="label">preview</span> added by <a href="https://github.com/konstin">@konstin</a> on 2025-06-04 13:25</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-04 14:15</div>
-            <div class="timeline-body"><p>I sort of like the idea of allowing people to enumerate all the expected members if <code>namespace = true</code> can be dangerous. I wonder if we should require it to start? I don't feel strongly though.</p>
+            <div class="timeline-body"><p>I sort of like the idea of allowing people to enumerate all the expected members if <code>namespace = true</code> can be dangerous. I wonder if we should require it to start? I don&#x27;t feel strongly though.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-05 18:35</div>
-            <div class="timeline-body"><p>From checking projects that use namespaces, no other build backend requires enumerating your modules, they allow pointing to the root and include whatever directory you've given, and I don't want to make the migration harder. I'm fine doing this more lenient approach for namespace packages particularly since you already opt-in to less coherence by using a namespace. I haven't done exhaustive testing, but with the validation we're performing for <code>tool.uv.build-backend.module-name</code> with a dotted path, I think we're already stricter and catch more problems than the other popular build backends.</p>
+            <div class="timeline-body"><p>From checking projects that use namespaces, no other build backend requires enumerating your modules, they allow pointing to the root and include whatever directory you&#x27;ve given, and I don&#x27;t want to make the migration harder. I&#x27;m fine doing this more lenient approach for namespace packages particularly since you already opt-in to less coherence by using a namespace. I haven&#x27;t done exhaustive testing, but with the validation we&#x27;re performing for <code>tool.uv.build-backend.module-name</code> with a dotted path, I think we&#x27;re already stricter and catch more problems than the other popular build backends.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @konstin on 2025-06-05 18:35</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/konstin">@konstin</a> on 2025-06-05 18:35</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @BurntSushi by @konstin on 2025-06-05 18:35</div>
+            <div class="event">Review requested from <a href="https://github.com/BurntSushi">@BurntSushi</a> by <a href="https://github.com/konstin">@konstin</a> on 2025-06-05 18:35</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-build-backend/src/settings.rs</code>:93 on 2025-06-06 16:17</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">    /// Use this option when the namespace package contains multiple root `__init__.py`, for namespace
+            <div class="timeline-body"><pre><code>    /// Use this option when the namespace package contains multiple root `__init__.py`, for namespace
 </code></pre>
 </div>
         </div>
@@ -100,22 +100,22 @@ module-name = [&quot;cloud_sdk.my_ext&quot;, &quot;local_sdk.my_ext&quot;]
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-build-backend/src/settings.rs</code>:136 on 2025-06-06 16:20</div>
             <div class="timeline-body"><p>So, this makes sense to me:</p>
 <blockquote>
-<p>I'm fine doing this more lenient approach for namespace packages particularly since you already opt-in to less coherence by using a namespace.</p>
+<p>I&#x27;m fine doing this more lenient approach for namespace packages particularly since you already opt-in to less coherence by using a namespace.</p>
 </blockquote>
-<p>But one thing I'm a little iffy on here is coupling the notion of &quot;this is a namespace package&quot; and &quot;we will disable most coherence checks.&quot; What if someone doesn't want to disable those coherent checks and list out the modules explicitly? I'm not necessarily asking for that to be available in this PR, but rather, is there a plausible path to that?</p>
-<p>Maybe we'd keep this setup as-is, and you'd need to opt into a <code>coherent-checks = false</code> option to list out the modules? Or if a list is provided, then the coherent checks are automatically re-enabled?</p>
+<p>But one thing I&#x27;m a little iffy on here is coupling the notion of &quot;this is a namespace package&quot; and &quot;we will disable most coherence checks.&quot; What if someone doesn&#x27;t want to disable those coherent checks and list out the modules explicitly? I&#x27;m not necessarily asking for that to be available in this PR, but rather, is there a plausible path to that?</p>
+<p>Maybe we&#x27;d keep this setup as-is, and you&#x27;d need to opt into a <code>coherent-checks = false</code> option to list out the modules? Or if a list is provided, then the coherent checks are automatically re-enabled?</p>
 <p>So I think maybe this is all fine, but I just wanted to poke about this to check if this path was considered.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>docs/concepts/build-backend.md</code>:66 on 2025-06-06 16:21</div>
-            <div class="timeline-body"><p>Is it feasible to give an example of something that will be accepted here that normally wouldn't be? Reading this with my beginner eyes on (as if I didn't just read this PR), I become immediately curious what kinds of checks have been disabled on me. :-) Should I be concerned? What if I want those checks enabled?</p>
+            <div class="timeline-body"><p>Is it feasible to give an example of something that will be accepted here that normally wouldn&#x27;t be? Reading this with my beginner eyes on (as if I didn&#x27;t just read this PR), I become immediately curious what kinds of checks have been disabled on me. :-) Should I be concerned? What if I want those checks enabled?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2025-06-06 16:25</div>
-            <div class="timeline-body"><p>LGTM. I have some concerns mostly around the UX here. Specifically, I think the docs could be beefed up. And I'm unsure of the implications of coupling &quot;declaration of this package as a namespace package&quot; and &quot;coherence checks are disabled.&quot;</p>
-<p>My initial reaction matched @zanieb's here, but I'm swayed by your follow-up in terms of being more lenient (to make migration less painful and since this is what other build backends already do).</p>
+            <div class="timeline-body"><p>LGTM. I have some concerns mostly around the UX here. Specifically, I think the docs could be beefed up. And I&#x27;m unsure of the implications of coupling &quot;declaration of this package as a namespace package&quot; and &quot;coherence checks are disabled.&quot;</p>
+<p>My initial reaction matched @zanieb&#x27;s here, but I&#x27;m swayed by your follow-up in terms of being more lenient (to make migration less painful and since this is what other build backends already do).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -124,7 +124,7 @@ module-name = [&quot;cloud_sdk.my_ext&quot;, &quot;local_sdk.my_ext&quot;]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-build-backend/src/settings.rs</code>:136 on 2025-06-11 18:38</div>
-            <div class="timeline-body"><p>I've improved the framing. The coherence checks I'm mentioning here are really just two things: Validating that the <code>module-name</code> matches our expectations for either either stubs or regular package, and checking that <code>__init__.py[i]</code> are absent above and present inside the root module. Both of those aren't super elaborate, but also something that other build backends usually don't do. With <code>namespace = true</code>, we turn those two checks off, so you can have arbitrary namespace structures. Setuptools, hatchling and poetry all support these kind of packages by default by having <code>include</code> declarations, we make this opt-in with <code>namespace = true</code>, and support a smaller, better checked subset suitable for many cases without it instead.</p>
+            <div class="timeline-body"><p>I&#x27;ve improved the framing. The coherence checks I&#x27;m mentioning here are really just two things: Validating that the <code>module-name</code> matches our expectations for either either stubs or regular package, and checking that <code>__init__.py[i]</code> are absent above and present inside the root module. Both of those aren&#x27;t super elaborate, but also something that other build backends usually don&#x27;t do. With <code>namespace = true</code>, we turn those two checks off, so you can have arbitrary namespace structures. Setuptools, hatchling and poetry all support these kind of packages by default by having <code>include</code> declarations, we make this opt-in with <code>namespace = true</code>, and support a smaller, better checked subset suitable for many cases without it instead.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -133,14 +133,14 @@ module-name = [&quot;cloud_sdk.my_ext&quot;, &quot;local_sdk.my_ext&quot;]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>docs/concepts/build-backend.md</code>:66 on 2025-06-11 18:55</div>
-            <div class="timeline-body"><p>I've put a comparison into the reference docs. I don't want to go deep on <code>namespace = true</code> in the concept docs since I don't want to encourage complex namespaces.</p>
+            <div class="timeline-body"><p>I&#x27;ve put a comparison into the reference docs. I don&#x27;t want to go deep on <code>namespace = true</code> in the concept docs since I don&#x27;t want to encourage complex namespaces.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @konstin on 2025-06-12 17:23</div>
+            <div class="event">Merged by <a href="https://github.com/konstin">@konstin</a> on 2025-06-12 17:23</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @konstin on 2025-06-12 17:23</div>
+            <div class="event">Closed by <a href="https://github.com/konstin">@konstin</a> on 2025-06-12 17:23</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-06-12 17:23</div>
@@ -153,7 +153,7 @@ module-name = [&quot;cloud_sdk.my_ext&quot;, &quot;local_sdk.my_ext&quot;]
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:43:26 UTC
+        Synced at 2026-01-20 19:52:29 UTC
     </footer>
 </body>
 </html>

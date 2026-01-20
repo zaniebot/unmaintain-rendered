@@ -34,10 +34,10 @@ ruff check --isolated --select INP001 .
 <pre><code>ruff check --isolated --select INP001 --extend-per-file-ignores &quot;**/scripts/*:INP001&quot; .
 </code></pre>
 <p>notice it takes about two seconds. Interestingly, when configured there is no slowdown:</p>
-<pre><code class="language-toml">[tool.ruff.per-file-ignores]
+<pre><code>[tool.ruff.per-file-ignores]
 &quot;**/scripts/*&quot; = [&quot;INP001&quot;]
 </code></pre>
-<p>You might think, then, that perhaps the shells are globbing themselves but I've tried in <code>bash</code> and <code>nushell</code> with the proper single quotes/escaping mechanisms to no avail. Also interesting and inexplicable, the slowdown is not happening on Windows' <code>cmd</code> shell.</p>
+<p>You might think, then, that perhaps the shells are globbing themselves but I&#x27;ve tried in <code>bash</code> and <code>nushell</code> with the proper single quotes/escaping mechanisms to no avail. Also interesting and inexplicable, the slowdown is not happening on Windows&#x27; <code>cmd</code> shell.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -54,7 +54,7 @@ ruff check --isolated --select INP001 .
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2023-11-12 03:05</div>
-            <div class="timeline-body"><p>Actually, it's possible this bug is not just on Windows but rather the file system in the <code>python</code> Docker image was too small to tell. Then again, that doesn't explain the lack of the slowdown in command prompt. Anyway… this is all the information I have</p>
+            <div class="timeline-body"><p>Actually, it&#x27;s possible this bug is not just on Windows but rather the file system in the <code>python</code> Docker image was too small to tell. Then again, that doesn&#x27;t explain the lack of the slowdown in command prompt. Anyway… this is all the information I have</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -76,14 +76,14 @@ ruff check --isolated --select INP001 .
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2023-11-12 20:30</div>
+            <div class="event">Label <span class="label">performance</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-12 20:30</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-13 13:17</div>
-            <div class="timeline-body"><p>I can't reproduce this on my Linux machine. Nothing really stands out to me as a possible culprit. Some ideas:</p>
+            <div class="timeline-body"><p>I can&#x27;t reproduce this on my Linux machine. Nothing really stands out to me as a possible culprit. Some ideas:</p>
 <ul>
-<li>Can you say more precisely in what environment (or environments) you're seeing a slow-down? Are you in a cygwin or MSYS environment for example?</li>
-<li>Failing all else, some printf debugging might help here. I'm still getting familiar with the Ruff code, but printing out all of the files that it's traversing might reveal something.</li>
+<li>Can you say more precisely in what environment (or environments) you&#x27;re seeing a slow-down? Are you in a cygwin or MSYS environment for example?</li>
+<li>Failing all else, some printf debugging might help here. I&#x27;m still getting familiar with the Ruff code, but printing out all of the files that it&#x27;s traversing might reveal something.</li>
 </ul>
 </div>
         </div>
@@ -106,20 +106,20 @@ Unaffected: cmd</p>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2023-11-14 18:20</div>
             <div class="timeline-body"><p>Update: a Windows expert from work inspected traces from my machine and figured out the issue. It spends a significant amount of time in <code>.ruff_cache</code>.</p>
-<p><img src="https://github.com/astral-sh/ruff/assets/9677399/165ce33e-c308-4456-b20e-5149842fde60" alt="image" /></p>
-<p>The <code>--no-cache</code> flag had no effect, only wiping that directory of &gt;30k files worked. We both don't know why this issue did not present for me in command prompt but if this is accurate then somehow caching is not working when running in command prompt.</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/9677399/165ce33e-c308-4456-b20e-5149842fde60" alt="image"></p>
+<p>The <code>--no-cache</code> flag had no effect, only wiping that directory of &gt;30k files worked. We both don&#x27;t know why this issue did not present for me in command prompt but if this is accurate then somehow caching is not working when running in command prompt.</p>
 <p>Do either of you know of a situation in the code where the flag would trigger cache reads whereas file-based config does not? I think that should be explored since there seems to be a real issue.</p>
 <p>Edit: or more likely, perhaps there is logic that differs based on the process shell name and globbing somehow triggers different logic in command prompt</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-14 18:22</div>
-            <div class="timeline-body"><p>Is it that it's <em>indexing</em> and traversing the cache to find Python files, instead of ignoring it? Or it's actually reading the cache contents?</p>
+            <div class="timeline-body"><p>Is it that it&#x27;s <em>indexing</em> and traversing the cache to find Python files, instead of ignoring it? Or it&#x27;s actually reading the cache contents?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2023-11-14 18:26</div>
-            <div class="timeline-body"><p>We don't know.</p>
+            <div class="timeline-body"><p>We don&#x27;t know.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -130,7 +130,7 @@ Unaffected: cmd</p>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2023-11-14 18:33</div>
             <div class="timeline-body"><p>Actually I discovered something else looking at the traces myself:</p>
-<p><img src="https://github.com/astral-sh/ruff/assets/9677399/ca89d883-8c60-4858-9a05-1110efc18a15" alt="image" /></p>
+<p><img src="https://github.com/astral-sh/ruff/assets/9677399/ca89d883-8c60-4858-9a05-1110efc18a15" alt="image"></p>
 <p>The beginning <code>**/</code> completely destroys what should be ignored and even <code>.git</code> is being entered. This is the fundamental issue.</p>
 </div>
         </div>
@@ -148,17 +148,17 @@ Unaffected: cmd</p>
             <div class="timeline-body"><blockquote>
 <p>on command line this does not happen in cmd/command prompt which indicates that some conditional logic is happening based on the process name</p>
 </blockquote>
-<p>It could also be that <code>cmd.exe</code> is mangling the glob somehow such that it isn't applied.</p>
+<p>It could also be that <code>cmd.exe</code> is mangling the glob somehow such that it isn&#x27;t applied.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2023-11-16 23:54</div>
-            <div class="timeline-body"><p>Have you been able to find out where in the code this is happening? I want to provide default ignores for the new <code>hatch fmt</code> command but I don't want to release until this is fixed because one of the patterns uses a leading <code>**/</code>.</p>
+            <div class="timeline-body"><p>Have you been able to find out where in the code this is happening? I want to provide default ignores for the new <code>hatch fmt</code> command but I don&#x27;t want to release until this is fixed because one of the patterns uses a leading <code>**/</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-17 01:11</div>
-            <div class="timeline-body"><p>I'm not personally investigating this, no. I can't reproduce the problem on my end unfortunately. I'm somewhat new to Ruff myself and don't understand its filtering logic yet, but I would wonder whether the leading <code>**/</code> is correct here. To me, that is explicitly telling Ruff to descend into every directory. But my mental model of what ought to happen here isn't completely clear.</p>
+            <div class="timeline-body"><p>I&#x27;m not personally investigating this, no. I can&#x27;t reproduce the problem on my end unfortunately. I&#x27;m somewhat new to Ruff myself and don&#x27;t understand its filtering logic yet, but I would wonder whether the leading <code>**/</code> is correct here. To me, that is explicitly telling Ruff to descend into every directory. But my mental model of what ought to happen here isn&#x27;t completely clear.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -183,18 +183,18 @@ Unaffected: cmd</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-17 02:06</div>
-            <div class="timeline-body"><p>I'm wondering if we should just allow <code>per-file-ignores</code> to function like <code>excludes</code>, whereby we match individual basenames against the entire path (so the stars could just be omitted).</p>
+            <div class="timeline-body"><p>I&#x27;m wondering if we should just allow <code>per-file-ignores</code> to function like <code>excludes</code>, whereby we match individual basenames against the entire path (so the stars could just be omitted).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2023-11-17 02:13</div>
-            <div class="timeline-body"><p>Up to you. That would solve my particular use case but I don't think it's a great idea to reduce functionality just to fix a bug.</p>
+            <div class="timeline-body"><p>Up to you. That would solve my particular use case but I don&#x27;t think it&#x27;s a great idea to reduce functionality just to fix a bug.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:48:59 UTC
+        Synced at 2026-01-20 18:48:45 UTC
     </footer>
 </body>
 </html>

@@ -23,12 +23,12 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<p>We've been seeing strange diagnostics like <a href="https://github.com/astral-sh/ruff/pull/20603#issuecomment-3345317444">this</a> in ecosystem reports for bokeh, and they're starting to show up <a href="https://github.com/astral-sh/ruff/pull/20368#issuecomment-3368395654">more</a> as we add more functionality to ty:</p>
+            <div class="timeline-body">Summary
+<p>We&#x27;ve been seeing strange diagnostics like <a href="https://github.com/astral-sh/ruff/pull/20603#issuecomment-3345317444">this</a> in ecosystem reports for bokeh, and they&#x27;re starting to show up <a href="https://github.com/astral-sh/ruff/pull/20368#issuecomment-3368395654">more</a> as we add more functionality to ty:</p>
 <pre><code>src/bokeh/model/model.py:496:16: error[invalid-return-type] Return type does not match returned value: expected `set[src.bokeh.model.model.Model]`, found `set[src.bokeh.model.model.Model]`
 </code></pre>
 <p>A <a href="https://play.ty.dev/da6dbbed-748c-44bd-8f35-b2e34145b212">minimal repro</a> of this issue looks something like the following:</p>
-<pre><code class="language-md">
+<pre><code>
 `package/__init__.py`:
 
 ```py
@@ -63,18 +63,18 @@ def get_MyClass() -&gt; MyClass:
 <li>Understands the <code>get_MyClass</code> function as <em>actually</em> returning an instance of <code>MyClass</code> from <code>foo.pyi</code></li>
 </ol>
 <p>I propose that we fix this by adding handling to make two nominal-instance types equivalent to each other if the two types come from modules that have the same fully qualified module names and come from the same search path.</p>
-<h3>Version</h3>
+Version
 <p><em>No response</em></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-10-04 16:54</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-04 16:54</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">typing semantics</span> added by @AlexWaygood on 2025-10-04 16:54</div>
+            <div class="event">Label <span class="label">typing semantics</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-04 16:54</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">stubs</span> added by @AlexWaygood on 2025-10-04 16:54</div>
+            <div class="event">Label <span class="label">stubs</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-04 16:54</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-10-06 15:29</div>
@@ -82,12 +82,12 @@ def get_MyClass() -&gt; MyClass:
 <p>I propose that we fix this by adding handling to make two nominal-instance types equivalent to each other if the two types come from modules that have the same fully qualified module names and come from the same search path.</p>
 </blockquote>
 <p>I think this will have unexpected consequences for examples like this:</p>
-<pre><code class="language-py">if FOO:
+<pre><code>if FOO:
     class C: ...
 else:
     class C: ...
 </code></pre>
-<p>I think the case in the OP is quite tricky to handle correctly, as it's essentially another case of type-checking &quot;unreachable&quot; code.</p>
+<p>I think the case in the OP is quite tricky to handle correctly, as it&#x27;s essentially another case of type-checking &quot;unreachable&quot; code.</p>
 <p>How do other type-checkers handle this case?</p>
 </div>
         </div>
@@ -110,32 +110,32 @@ else:
     |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     |
 </code></pre>
-<p>Pyrefly at least gestures at the fact that the two classes have different line numbers, but still doesn't mention the crucial fact that they're defined in different files!</p>
-<p>I'm not sure how mypy avoids emitting this error, but given that pyright and pyrefly both have similar behaviour to us, we may want to just try to improve our diagnostic message here. Though I also don't know how we'd expect bokeh to fix this kind of thing? It seems like they're doing everything correctly as per the spec.</p>
+<p>Pyrefly at least gestures at the fact that the two classes have different line numbers, but still doesn&#x27;t mention the crucial fact that they&#x27;re defined in different files!</p>
+<p>I&#x27;m not sure how mypy avoids emitting this error, but given that pyright and pyrefly both have similar behaviour to us, we may want to just try to improve our diagnostic message here. Though I also don&#x27;t know how we&#x27;d expect bokeh to fix this kind of thing? It seems like they&#x27;re doing everything correctly as per the spec.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-10-07 15:46</div>
-            <div class="timeline-body"><p>One possible point of view here is to say &quot;shadowing a <code>.py</code> file with a <code>.pyi</code> is expressing intent to hide the <code>.py</code> from the type checker, so we just shouldn't check those files.&quot; Is it possible that's what mypy is doing, or does it emit other errors in the <code>.py</code> file?</p>
+            <div class="timeline-body"><p>One possible point of view here is to say &quot;shadowing a <code>.py</code> file with a <code>.pyi</code> is expressing intent to hide the <code>.py</code> from the type checker, so we just shouldn&#x27;t check those files.&quot; Is it possible that&#x27;s what mypy is doing, or does it emit other errors in the <code>.py</code> file?</p>
 <p>That approach is unsatisfactory as an LSP, though.</p>
-<p>I agree there's nothing wrong with what bokeh is doing here.</p>
+<p>I agree there&#x27;s nothing wrong with what bokeh is doing here.</p>
 <p>Better disambiguation of type names in our diagnostics would certainly be a good first step, and would be useful in lots of other cases, too.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-07 21:54</div>
             <div class="timeline-body"><blockquote>
-<p>One possible point of view here is to say &quot;shadowing a <code>.py</code> file with a <code>.pyi</code> is expressing intent to hide the <code>.py</code> from the type checker, so we just shouldn't check those files.&quot; Is it possible that's what mypy is doing, or does it emit other errors in the <code>.py</code> file?</p>
+<p>One possible point of view here is to say &quot;shadowing a <code>.py</code> file with a <code>.pyi</code> is expressing intent to hide the <code>.py</code> from the type checker, so we just shouldn&#x27;t check those files.&quot; Is it possible that&#x27;s what mypy is doing, or does it emit other errors in the <code>.py</code> file?</p>
 </blockquote>
-<p>That may indeed be what mypy is doing, since it emits no errors on the <code>.py</code> file, whereas pyright emits several. (But that could also just be because they're, you know, different type checkers that disagree on many things!)</p>
+<p>That may indeed be what mypy is doing, since it emits no errors on the <code>.py</code> file, whereas pyright emits several. (But that could also just be because they&#x27;re, you know, different type checkers that disagree on many things!)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/erictraut">@erictraut</a> on 2025-10-07 23:05</div>
             <div class="timeline-body"><blockquote>
-<p>I agree there's nothing wrong with what bokeh is doing here.</p>
+<p>I agree there&#x27;s nothing wrong with what bokeh is doing here.</p>
 </blockquote>
-<p>That's debatable. This is arguably a misuse of a stub file. I'm curious why they don't just add inline type annotations to the &quot;.py&quot; module. If they want to run type checking on their own code, this is the route I'd recommend.</p>
+<p>That&#x27;s debatable. This is arguably a misuse of a stub file. I&#x27;m curious why they don&#x27;t just add inline type annotations to the &quot;.py&quot; module. If they want to run type checking on their own code, this is the route I&#x27;d recommend.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -158,14 +158,14 @@ else:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-07 23:45</div>
-            <div class="timeline-body"><p>I suspect that there may still be a lot of ecosystem code out there that uses stub files side-by-side with the implementation, especially if mypy permits this practice. We might wish it weren't the case, but this is the first I'm hearing of the idea that this practice should be considered deprecated for projects that want to run type checkers on their own code.</p>
-<p>In any event, https://github.com/astral-sh/ruff/pull/20756 improves our diagnostics to make it clearer why we view the two types as being distinct even though they have the same fully qualified name.</p>
+            <div class="timeline-body"><p>I suspect that there may still be a lot of ecosystem code out there that uses stub files side-by-side with the implementation, especially if mypy permits this practice. We might wish it weren&#x27;t the case, but this is the first I&#x27;m hearing of the idea that this practice should be considered deprecated for projects that want to run type checkers on their own code.</p>
+<p>In any event, <a href="https://github.com/astral-sh/ruff/pull/20756">astral-sh/ruff#20756</a> improves our diagnostics to make it clearer why we view the two types as being distinct even though they have the same fully qualified name.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:45 UTC
+        Synced at 2026-01-20 19:25:41 UTC
     </footer>
 </body>
 </html>

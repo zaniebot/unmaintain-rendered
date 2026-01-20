@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/anmorgunov">@anmorgunov</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>When performing arithmetic operations on PyTorch tensors (e.g., <code>1.0 / (base ** (torch.arange(...).float() / dim))</code>), ty incorrectly infers the result type as <code>int | float</code> instead of <code>Tensor</code>. This causes false positive errors
 when passing the result to methods like <code>nn.Module.register_buffer()</code>, which expect a <code>Tensor | None</code>. mypy correctly infers the type.</p>
-<pre><code class="language-py">import torch
+<pre><code>import torch
 import torch.nn as nn
 
 
@@ -72,22 +72,22 @@ info: Method defined here
     |
 info: rule `invalid-argument-type` is enabled by default
 </code></pre>
-<h3>Version</h3>
+Version
 <p>ty 0.0.1-alpha.25 (3abd4c968 2025-10-29)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2025-11-03 18:44</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-11-03 18:44</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">type-inference</span> added by @sharkdp on 2025-11-03 18:44</div>
+            <div class="event">Label <span class="label">type-inference</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-11-03 18:44</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-11-03 18:46</div>
             <div class="timeline-body"><p>Thank you for reporting this.</p>
-<p>I can't fully confirm this at the moment as my connection is too bad to download pytorch, but it looks like we're not respecting <a href="https://github.com/pytorch/pytorch/blob/f3913ea641d871f04fa2b6588a77f63efeeb9f10/torch/_tensor.py#L1112-L1113"><code>__rpow__</code> on <code>Tensor</code></a> correctly.</p>
+<p>I can&#x27;t fully confirm this at the moment as my connection is too bad to download pytorch, but it looks like we&#x27;re not respecting <a href="https://github.com/pytorch/pytorch/blob/f3913ea641d871f04fa2b6588a77f63efeeb9f10/torch/_tensor.py#L1112-L1113"><code>__rpow__</code> on <code>Tensor</code></a> correctly.</p>
 <p>An MRE would be:</p>
-<pre><code class="language-py">class Tensor:
+<pre><code>class Tensor:
     def __rpow__(self, other) -&gt; Tensor:
         return self
 
@@ -99,13 +99,13 @@ reveal_type(2 ** Tensor())  # int, should be Tensor
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/anmorgunov">@anmorgunov</a> on 2025-11-03 18:56</div>
             <div class="timeline-body"><p>can confirm that it comes from raising to the power</p>
-<pre><code class="language-py">import torch
+<pre><code>import torch
 
 inv_freq = 2**torch.Tensor([1, 2, 3, 4, 5])
 
 reveal_type(inv_freq)
 </code></pre>
-<pre><code class="language-py">info[revealed-type]: Revealed type
+<pre><code>info[revealed-type]: Revealed type
  --&gt; check.py:5:13
   |
 3 | inv_freq = 2**torch.Tensor([1, 2, 3, 4, 5])
@@ -117,23 +117,23 @@ reveal_type(inv_freq)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-03 20:26</div>
-            <div class="timeline-body"><p>Thanks for the report! The root cause of this (thanks @AlexWaygood) is that the signature of <code>int.__pow__</code> is defined using a PEP 613 type alias in typeshed (<code>_PositiveInteger</code>), which we don't yet support correctly, so we wrongly think that the call to <code>int.__pow__</code> succeeds:</p>
+            <div class="timeline-body"><p>Thanks for the report! The root cause of this (thanks @AlexWaygood) is that the signature of <code>int.__pow__</code> is defined using a PEP 613 type alias in typeshed (<code>_PositiveInteger</code>), which we don&#x27;t yet support correctly, so we wrongly think that the call to <code>int.__pow__</code> succeeds:</p>
 <p>https://github.com/astral-sh/ruff/blob/fe4ee81b9749bd326845aec30e694af8568549e6/crates/ty_vendored/vendor/typeshed/stdlib/builtins.pyi#L553-L568</p>
 <p>Once we support PEP 613, we will find that none of the <code>int.__pow__</code> overloads match, which will then cause us to fallback to using <code>Tensor.__rpow__</code> to infer the result of this expression.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2025-11-03 20:26</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2025-11-03 20:26</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-12 01:27</div>
-            <div class="timeline-body"><p>Confirmed this will be fixed by https://github.com/astral-sh/ruff/pull/21394</p>
+            <div class="timeline-body"><p>Confirmed this will be fixed by <a href="https://github.com/astral-sh/ruff/pull/21394">astral-sh/ruff#21394</a></p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:53 UTC
+        Synced at 2026-01-20 19:25:52 UTC
     </footer>
 </body>
 </html>

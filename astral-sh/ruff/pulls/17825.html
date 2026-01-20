@@ -29,16 +29,16 @@ reasoning: #9572</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">documentation</span> added by @AlexWaygood on 2025-05-04 09:59</div>
+            <div class="event">Label <span class="label">documentation</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-04 09:59</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-04 10:07</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
@@ -49,11 +49,11 @@ reasoning: #9572</p>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/unnecessary_dunder_call.rs</code>:22 on 2025-05-05 18:23</div>
             <div class="timeline-body"><p>Like the other rule I reviewed, I think this fix is also always unsafe. Otherwise I think this explanation is pretty good. I think I would change it slightly to emphasize the custom dunder methods more heavily (as in <a href="https://github.com/astral-sh/ruff/issues/9572#issuecomment-1900031398">this comment</a>). I think we handle the operator precedence correctly (barring bugs in the implementation, which should be fixed, not make a rule unsafe!), so the unsafety is from the rule not resolving dunder methods, at least based on my reading. Maybe something like this:</p>
-<pre><code class="language-suggestion">/// This fix is marked as unsafe because replacing dunder method calls with operators
-/// or builtins may change the code's behavior in cases where a type only implements a
+<pre><code>/// This fix is marked as unsafe because replacing dunder method calls with operators
+/// or builtins may change the code&#x27;s behavior in cases where a type only implements a
 /// subset of the related methods, e.g. `__radd__`  but not `__add__`.
 </code></pre>
-<p>I'm not totally happy with that, but hopefully it pushes us in the right direction.</p>
+<p>I&#x27;m not totally happy with that, but hopefully it pushes us in the right direction.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -63,7 +63,7 @@ reasoning: #9572</p>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dscorbett">@dscorbett</a> on <code>crates/ruff_linter/src/rules/pylint/rules/unnecessary_dunder_call.rs</code>:22 on 2025-05-05 18:53</div>
             <div class="timeline-body"><p>Here are two more ways the fix is unsafe because it can change behavior:</p>
-<pre><code class="language-console">$ cat &gt;plc2801.py &lt;&lt;'# EOF'
+<pre><code>$ cat &gt;plc2801.py &lt;&lt;&#x27;# EOF&#x27;
 class C: pass
 c = C()
 c.__str__ = lambda: &quot;c&quot;
@@ -84,7 +84,7 @@ Traceback (most recent call last):
   File &quot;plc2801.py&quot;, line 3, in &lt;module&gt;
     print(c &gt; 1)
           ^^^^^^^
-TypeError: '&gt;' not supported between instances of 'C' and 'int'
+TypeError: &#x27;&gt;&#x27; not supported between instances of &#x27;C&#x27; and &#x27;int&#x27;
 </code></pre>
 </div>
         </div>
@@ -94,8 +94,8 @@ TypeError: '&gt;' not supported between instances of 'C' and 'int'
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/unnecessary_dunder_call.rs</code>:22 on 2025-05-05 19:38</div>
-            <div class="timeline-body"><p>Nice, thanks. I find it so weird that these print <code>NotImplemented</code> instead of raising some kind of exception. Maybe we can summarize this as something like &quot;... may change the program's behavior for types with custom dunder method implementations.&quot;</p>
-<p>This isn't really relevant for this PR, but I guess we could potentially mark the fix safe if we could infer that the types are built-in? Correspondingly, we should not offer a fix if we know the dunder method has been changed, as in these examples, but I think that requires a lot more type inference in the general case, a la ty (formerly red-knot).</p>
+            <div class="timeline-body"><p>Nice, thanks. I find it so weird that these print <code>NotImplemented</code> instead of raising some kind of exception. Maybe we can summarize this as something like &quot;... may change the program&#x27;s behavior for types with custom dunder method implementations.&quot;</p>
+<p>This isn&#x27;t really relevant for this PR, but I guess we could potentially mark the fix safe if we could infer that the types are built-in? Correspondingly, we should not offer a fix if we know the dunder method has been changed, as in these examples, but I think that requires a lot more type inference in the general case, a la ty (formerly red-knot).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -106,7 +106,7 @@ TypeError: '&gt;' not supported between instances of 'C' and 'int'
             <div class="timeline-header">Review comment by <a href="https://github.com/dscorbett">@dscorbett</a> on <code>crates/ruff_linter/src/rules/pylint/rules/unnecessary_dunder_call.rs</code>:22 on 2025-05-05 20:05</div>
             <div class="timeline-body"><p>It can also change the program’s behavior for types <em>without</em> custom dunder method implementations. In my example above, there are no custom <code>__gt__</code> implementations, and yet the fix for <code>__gt__</code> changes behavior. The fix is unsafe whenever the original code doesn’t do exactly what the replacement does, which is vague, but there are so many subtleties it’s hard to write a succinct yet helpful summary.</p>
 <p>It can still be unsafe with built-in types:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; (1).__gt__(1.0)
+<pre><code>&gt;&gt;&gt; (1).__gt__(1.0)
 NotImplemented
 &gt;&gt;&gt; 1 &gt; 1.0
 False
@@ -125,21 +125,21 @@ False
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/yunchipang">@yunchipang</a> on 2025-05-05 22:02</div>
-            <div class="timeline-body"><p>@ntBre @dscorbett thanks again for the reviews and context. I've tried my best to consolidate the cases and put together an updated explanation. Could you kindly take a look and let me know your thoughts?</p>
+            <div class="timeline-body"><p>@ntBre @dscorbett thanks again for the reviews and context. I&#x27;ve tried my best to consolidate the cases and put together an updated explanation. Could you kindly take a look and let me know your thoughts?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/unnecessary_dunder_call.rs</code>:24 on 2025-05-06 18:39</div>
-            <div class="timeline-body"><p>I don't think this point is correct, and if it were I would consider it a bug in the implementation, not a reason for unsafety. When I tested the autofix in the <a href="https://play.ruff.rs/575b5290-09f5-45c2-b5ce-6872ffd3230d">playground</a>, it correctly parenthesized the result to <code>-(a - b)</code>.</p>
+            <div class="timeline-body"><p>I don&#x27;t think this point is correct, and if it were I would consider it a bug in the implementation, not a reason for unsafety. When I tested the autofix in the <a href="https://play.ruff.rs/575b5290-09f5-45c2-b5ce-6872ffd3230d">playground</a>, it correctly parenthesized the result to <code>-(a - b)</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/unnecessary_dunder_call.rs</code>:41 on 2025-05-06 18:42</div>
             <div class="timeline-body"><p>This is also not quite right, the <code>split</code> call is what produces this output, otherwise you get something like this:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; str(c)
-'&lt;__main__.C object at 0x773bfaa74ec0&gt;'
+<pre><code>&gt;&gt;&gt; str(c)
+&#x27;&lt;__main__.C object at 0x773bfaa74ec0&gt;&#x27;
 </code></pre>
-<p>It's not particularly relevant to the example at hand, but we might as well be as accurate as we can.</p>
+<p>It&#x27;s not particularly relevant to the example at hand, but we might as well be as accurate as we can.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -154,7 +154,7 @@ False
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dscorbett">@dscorbett</a> on <code>crates/ruff_linter/src/rules/pylint/rules/unnecessary_dunder_call.rs</code>:41 on 2025-05-06 18:48</div>
             <div class="timeline-body"><p><code>str</code> was just the first thing I thought of; <code>bool</code> is a clearer example:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; c.__bool__ = lambda: False
+<pre><code>&gt;&gt;&gt; c.__bool__ = lambda: False
 &gt;&gt;&gt; c.__bool__()
 False
 &gt;&gt;&gt; bool(c)
@@ -168,10 +168,10 @@ True
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @ntBre on 2025-05-07 18:34</div>
+            <div class="event">Merged by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-07 18:34</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ntBre on 2025-05-07 18:34</div>
+            <div class="event">Closed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-07 18:34</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-05-07 22:05</div>
@@ -179,7 +179,7 @@ True
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:12:09 UTC
+        Synced at 2026-01-20 19:13:58 UTC
     </footer>
 </body>
 </html>

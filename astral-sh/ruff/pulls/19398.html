@@ -23,22 +23,22 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This PR moves most of the work of rendering concise diagnostics in Ruff into <code>ruff_db</code>, where the code is shared with ty. To accomplish this without breaking backwards compatibility in Ruff, there are two main changes on the <code>ruff_db</code>/ty side:</p>
 <ul>
 <li>Added the logic from Ruff for remapping notebook line numbers to cells</li>
-<li>Reordered the fields in the diagnostic to match Ruff and rustc<pre><code class="language-text"># old
+<li>Reordered the fields in the diagnostic to match Ruff and rustc<pre><code># old
 error[invalid-assignment] try.py:3:1: Object of type `Literal[1]` is not assignable to `str`
 # new
 try.py:3:1: error[invalid-assignment]: Object of type `Literal[1]` is not assignable to `str`
 </code></pre>
 </li>
 </ul>
-<p>I don't think the notebook change failed any tests on its own, and only a handful of snaphots changed in ty after reordering the fields, but this will obviously affect any other uses of the concise format, outside of tests, too.</p>
+<p>I don&#x27;t think the notebook change failed any tests on its own, and only a handful of snaphots changed in ty after reordering the fields, but this will obviously affect any other uses of the concise format, outside of tests, too.</p>
 <p>The other big change should only affect Ruff:</p>
 <ul>
 <li>Added three new <code>DisplayDiagnosticConfig</code> options
-Micha and I hoped that we could get by with one option (<code>hide_severity</code>), but Ruff also toggles <code>show_fix_status</code> itself, independently (there are cases where we want neither severity nor the fix status), and during the implementation I realized we also needed access to an <code>Applicability</code>. The main goal here is to suppress the severity (<code>error</code> above) because ruff only uses the <code>error</code> severity and to use the secondary/noqa code instead of the line name (<code>invalid-assignment</code> above).<pre><code class="language-text"># ty - same as &quot;new&quot; above
+Micha and I hoped that we could get by with one option (<code>hide_severity</code>), but Ruff also toggles <code>show_fix_status</code> itself, independently (there are cases where we want neither severity nor the fix status), and during the implementation I realized we also needed access to an <code>Applicability</code>. The main goal here is to suppress the severity (<code>error</code> above) because ruff only uses the <code>error</code> severity and to use the secondary/noqa code instead of the line name (<code>invalid-assignment</code> above).<pre><code># ty - same as &quot;new&quot; above
 try.py:3:1: error[invalid-assignment]: Object of type `Literal[1]` is not assignable to `str`
 # ruff
 try.py:3:1: RUF123 [*] Object of type `Literal[1]` is not assignable to `str`
@@ -46,16 +46,16 @@ try.py:3:1: RUF123 [*] Object of type `Literal[1]` is not assignable to `str`
 </li>
 </ul>
 <p>This part of the concise diagnostic is actually shared with the <code>full</code> output format in Ruff, but with the settings above, there are no snapshot changes to either format.</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>Existing tests with the handful of updates mentioned above, as well as some new tests in the <code>concise</code> module.</p>
 <p>Also this PR. Swapping the fields might have broken mypy_primer, unless it occasionally times out on its own.</p>
 <p>I also ran this script in the root of my Ruff checkout, which also has CPython in it:</p>
-<pre><code class="language-shell">flags=(--isolated --no-cache --no-respect-gitignore --output-format concise .)
+<pre><code>flags=(--isolated --no-cache --no-respect-gitignore --output-format concise .)
 diff &lt;(target/release/ruff check ${flags[@]} 2&gt; /dev/null) \
      &lt;(ruff check ${flags[@]} 2&gt; /dev/null)
 </code></pre>
 <p>This yielded an expected diff due to some t-string error changes on main since 0.12.4:</p>
-<pre><code class="language-diff">33622c33622
+<pre><code>33622c33622
 &lt; crates/ruff_python_parser/resources/inline/err/f_string_lambda_without_parentheses.py:1:15: SyntaxError: Expected an element of or the end of the f-string
 ---
 &gt; crates/ruff_python_parser/resources/inline/err/f_string_lambda_without_parentheses.py:1:15: SyntaxError: Expected an f-string or t-string element or the end of the f-string or t-string
@@ -72,84 +72,84 @@ diff &lt;(target/release/ruff check ${flags[@]} 2&gt; /dev/null) \
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> added by @ntBre on 2025-07-17 13:13</div>
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-17 13:13</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">diagnostics</span> added by @ntBre on 2025-07-17 13:13</div>
+            <div class="event">Label <span class="label">diagnostics</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-17 13:13</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-17 13:24</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-21 16:54</div>
-            <div class="timeline-body"><p>I think this is ready for a first review. The preview changes in the ecosystem are expected, but maybe undesirable. A couple of them look useful, but I'm definitely open to suppressing this for now if we want to try to make some of the fix suggestions less redundant with the main message before exposing them to users in this format.</p>
+            <div class="timeline-body"><p>I think this is ready for a first review. The preview changes in the ecosystem are expected, but maybe undesirable. A couple of them look useful, but I&#x27;m definitely open to suppressing this for now if we want to try to make some of the fix suggestions less redundant with the main message before exposing them to users in this format.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @ntBre on 2025-07-21 16:56</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-21 16:56</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @ntBre on 2025-07-21 16:56</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-21 16:56</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-07-21 16:56</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-21 16:56</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @ntBre on 2025-07-21 16:56</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-21 16:56</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @ntBre on 2025-07-21 16:56</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-21 16:56</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @ntBre on 2025-07-21 16:56</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-21 16:56</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[prototype] Move concise diagnostic rendering to `ruff_db`" to "Move concise diagnostic rendering to `ruff_db`" by @ntBre on 2025-07-21 16:56</div>
+            <div class="event">Renamed from &quot;[prototype] Move concise diagnostic rendering to `ruff_db`&quot; to &quot;Move concise diagnostic rendering to `ruff_db`&quot; by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-21 16:56</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @dcreager removed by @ntBre on 2025-07-21 16:56</div>
+            <div class="event">Review request for <a href="https://github.com/dcreager">@dcreager</a> removed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-21 16:56</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @carljm removed by @ntBre on 2025-07-21 16:56</div>
+            <div class="event">Review request for <a href="https://github.com/carljm">@carljm</a> removed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-21 16:56</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @sharkdp removed by @ntBre on 2025-07-21 16:56</div>
+            <div class="event">Review request for <a href="https://github.com/sharkdp">@sharkdp</a> removed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-21 16:56</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @AlexWaygood removed by @ntBre on 2025-07-21 16:56</div>
+            <div class="event">Review request for <a href="https://github.com/AlexWaygood">@AlexWaygood</a> removed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-21 16:56</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @BurntSushi by @ntBre on 2025-07-21 16:56</div>
+            <div class="event">Review requested from <a href="https://github.com/BurntSushi">@BurntSushi</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-21 16:56</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-21 17:03</div>
-            <div class="timeline-body"><p>I'll take a closer look tomorrow and try to come up with a suggestion. I don't think we can keep the rendering as is. The messages contain too much redundant information now</p>
+            <div class="timeline-body"><p>I&#x27;ll take a closer look tomorrow and try to come up with a suggestion. I don&#x27;t think we can keep the rendering as is. The messages contain too much redundant information now</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-21 21:07</div>
-            <div class="timeline-body"><p>Isn't your other PR addressing the difference in rendering (by moving the help text?)</p>
+            <div class="timeline-body"><p>Isn&#x27;t your other PR addressing the difference in rendering (by moving the help text?)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-21 21:30</div>
             <div class="timeline-body"><blockquote>
-<p>Isn't your other PR addressing the difference in rendering (by moving the help text?)</p>
+<p>Isn&#x27;t your other PR addressing the difference in rendering (by moving the help text?)</p>
 </blockquote>
-<p>Oh yeah, I think you're right. I was only thinking about the <code>full</code> diagnostic, but that should resolve this as well. We should just be able to use <code>concise_message</code> here again.</p>
+<p>Oh yeah, I think you&#x27;re right. I was only thinking about the <code>full</code> diagnostic, but that should resolve this as well. We should just be able to use <code>concise_message</code> here again.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-22 06:14</div>
-            <div class="timeline-body"><p>I'll review this after rebasing ontop of your ohter PR. That will make it easier for me to understand the scope of the changes.</p>
+            <div class="timeline-body"><p>I&#x27;ll review this after rebasing ontop of your ohter PR. That will make it easier for me to understand the scope of the changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -158,40 +158,40 @@ diff &lt;(target/release/ruff check ${flags[@]} 2&gt; /dev/null) \
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-22 15:37</div>
-            <div class="timeline-body"><p>As discussed on Discord, we should now match Ruff's concise styling exactly. I was hoping to get a clean diff from this command:</p>
-<pre><code class="language-shell">diff &lt;(CLICOLOR_FORCE=1 ruff check . --output-format concise --no-cache) \
+            <div class="timeline-body"><p>As discussed on Discord, we should now match Ruff&#x27;s concise styling exactly. I was hoping to get a clean diff from this command:</p>
+<pre><code>diff &lt;(CLICOLOR_FORCE=1 ruff check . --output-format concise --no-cache) \
      &lt;(CLICOLOR_FORCE=1 ~/astral/ruff/target/debug/ruff check . --output-format concise --no-cache)
 </code></pre>
 <p>but I think <code>colored</code> and <code>anstyle</code> output slightly different escape codes. This is the remaining diff, but I think both of these should render the same way:</p>
-<p><img width="312" height="99" alt="image" src="https://github.com/user-attachments/assets/df4808b6-06b1-4620-8054-0bc92b03ddff" /></p>
-<p><img width="565" height="104" alt="image" src="https://github.com/user-attachments/assets/e8380cb4-411b-4ffc-b9f3-aa8b7d54a9d4" /></p>
+<p><img alt="image" src="https://github.com/user-attachments/assets/df4808b6-06b1-4620-8054-0bc92b03ddff"></p>
+<p><img alt="image" src="https://github.com/user-attachments/assets/e8380cb4-411b-4ffc-b9f3-aa8b7d54a9d4"></p>
 <p>I did have to add some new <code>Style</code>s to the <code>Stylesheet</code> since Ruff was using non-bold cyan and bold red instead of bold bright red.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @ntBre on 2025-07-22 16:05</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-22 16:05</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2025-07-22 16:09</div>
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-07-22 18:56</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-22 18:56</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-07-22 18:56</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-22 18:56</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-07-22 19:43</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-22 19:43</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-07-22 19:43</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-22 19:43</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-22 19:52</div>
-            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+            <div class="timeline-body">
 
-<h2><code>ecosystem-analyzer</code> results</h2>
+<code>ecosystem-analyzer</code> results
 <p>| Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
 | <code>unresolved-import</code> | 134 | 134 | 0 |
@@ -205,10 +205,10 @@ diff &lt;(target/release/ruff check ${flags[@]} 2&gt; /dev/null) \
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @ntBre on 2025-07-23 15:43</div>
+            <div class="event">Merged by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-23 15:43</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ntBre on 2025-07-23 15:43</div>
+            <div class="event">Closed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-23 15:43</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-07-23 15:43</div>
@@ -216,7 +216,7 @@ diff &lt;(target/release/ruff check ${flags[@]} 2&gt; /dev/null) \
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:14:20 UTC
+        Synced at 2026-01-20 19:16:42 UTC
     </footer>
 </body>
 </html>

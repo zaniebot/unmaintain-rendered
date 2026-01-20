@@ -23,42 +23,42 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/stoney95">@stoney95</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Currently reading credentials from <code>keyring</code> is only supported when a username is provided in the URL of the index. This prohibits to define indexes - in pyproject.toml - that are shared within a team. See these two issues for further details:</p>
 <ul>
 <li>https://github.com/astral-sh/uv/issues/8810</li>
 <li>https://github.com/astral-sh/uv/issues/9165</li>
 </ul>
 <p>In general this PR provides two things:</p>
-<h3>Setting credentials for an index via CLI</h3>
+Setting credentials for an index via CLI
 <p>With this MR you can run <code>uv index credentials add --name &lt;name-of-the-index&gt; [--username &lt;username&gt;]</code>
 This will ask for the password of the user. A keyring entry will be made with the url of the index, the username and the password. The username and the index will be appended to &quot;&lt;uv_cache_dir&gt;/auth.toml&quot;. &quot;auth.toml&quot; has the following structure</p>
-<pre><code class="language-toml">[indexes.index1]
+<pre><code>[indexes.index1]
 username = &quot;my_user1&quot;
 
 [indexes.index2]
 username = &quot;my_other_user&quot;
 </code></pre>
-<h3>Using credentials</h3>
-<p>When reading the credentials in <code>uv_distribution_types::index::Index.credentials</code> it's now additionally checked if credentials have been configured via &quot;&lt;uv_cache_dir&gt;/auth.toml&quot; and <code>keyring</code>. The current implementation of reading the credentials from the environment variables <code>UV_INDEX_XXX</code> has priority over <code>keyring</code> authentication.</p>
-<h2>Test Plan</h2>
+Using credentials
+<p>When reading the credentials in <code>uv_distribution_types::index::Index.credentials</code> it&#x27;s now additionally checked if credentials have been configured via &quot;&lt;uv_cache_dir&gt;/auth.toml&quot; and <code>keyring</code>. The current implementation of reading the credentials from the environment variables <code>UV_INDEX_XXX</code> has priority over <code>keyring</code> authentication.</p>
+Test Plan
 <p>I have added unit tests to the newly defined <code>uv_auth::keyring_config</code> which takes care of loading, storing and modifying the auth configuration.</p>
 <p>I also want to add a test for <code>uv_auth::credentials::Credentials.from_keyring</code>. But am currently struggling with mocking keyring and config file.</p>
 <p>I manually tested the new command <code>uv index credentials add --name &lt;name-of-the-index&gt;</code> as I could not find examples for testing commands.</p>
-<h2>Further remarks</h2>
-<h3>I am a noobie in this context</h3>
+Further remarks
+I am a noobie in this context
 <ul>
 <li>I am new to rust</li>
 <li>I am new to uv</li>
 </ul>
 <p>=&gt; I am curious about your opinion and suggestions for improvements</p>
-<h3>Not completely ready</h3>
+Not completely ready
 <p>The current version of the PR is a draft. Especially in regards of error handling and logging. Also testing can be improved.
 I open this PR to discuss the direction in which the implementation is heading. As I am new to rust &amp; uv I would also like to receive your guideance upfront 🙂</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Converted to draft by @stoney95 on 2024-12-16 07:32</div>
+            <div class="event">Converted to draft by <a href="https://github.com/stoney95">@stoney95</a> on 2024-12-16 07:32</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/bschoenmaeckers">@bschoenmaeckers</a> on 2024-12-16 13:19</div>
@@ -66,7 +66,7 @@ I open this PR to discuss the direction in which the implementation is heading. 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @zanieb by @zanieb on 2024-12-16 21:09</div>
+            <div class="event">Assigned to <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-16 21:09</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/stoney95">@stoney95</a> on 2024-12-16 21:31</div>
@@ -89,7 +89,7 @@ I open this PR to discuss the direction in which the implementation is heading. 
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/lejmr">@lejmr</a> on 2025-01-02 22:03</div>
             <div class="timeline-body"><p>I was super curious whether it would be difficult to interact with keyring-rs directly, so I quickly implemented alternative Credential constructor (tests are necessary!), but it works with locally configured auth.toml and hand-crafted secret in keychain already..</p>
-<p>I like what you tried to achieve, but I think it would be good to implement the configuration to be similar to poetry, so users don't have to think and be surprised.</p>
+<p>I like what you tried to achieve, but I think it would be good to implement the configuration to be similar to poetry, so users don&#x27;t have to think and be surprised.</p>
 <p>Have a look here: https://github.com/astral-sh/uv/compare/main...lejmr:uv:simple-poetry-like-version?expand=1</p>
 </div>
         </div>
@@ -98,15 +98,15 @@ I open this PR to discuss the direction in which the implementation is heading. 
             <div class="timeline-body"><p>@lejmr, thanks for your suggestion. To clarify, I see two suggestions made from your end.</p>
 <ol>
 <li>How can we make use of the <code>keyring</code> crate.</li>
-<li>Let's discuss the naming of the index command.</li>
+<li>Let&#x27;s discuss the naming of the index command.</li>
 </ol>
 <p>Do you agree with this summary?</p>
-<h2>Personal opinion</h2>
-<h3><code>keyring</code> crate</h3>
+Personal opinion
+<code>keyring</code> crate
 <p>As mentioned before, I think the discussion of using the keyring crate is independent of this topic. As there is a global keyring provider (see the <a href="https://docs.astral.sh/uv/configuration/authentication/#http-authentication">uv docs</a>, and <a href="https://github.com/astral-sh/uv/blob/main/crates/uv-auth/src/keyring.rs">code section</a>), it should be controlled via this if the keyring crate (use <code>--keyring-provider import</code>) or a subprocess calling keyring (use <code>--keyring-provider subprocess</code>) is used.</p>
-<p>Personally I don't understand what's the benefit of leaving the choice to the user. Also, I would go for using the <code>keyring</code> crate. But as the global keyring provider is currently in place, we should not just ignore it.
+<p>Personally I don&#x27;t understand what&#x27;s the benefit of leaving the choice to the user. Also, I would go for using the <code>keyring</code> crate. But as the global keyring provider is currently in place, we should not just ignore it.
 I would be very glad, if somebody could explain, why the choice of the keyring provider is left to the user.</p>
-<h3>Index command naming</h3>
+Index command naming
 <p>With the current implementation the credentials could be set with <code>uv index credentials add --name &lt;name-of-the-index&gt;</code>.</p>
 <p>You suggest to follow the wording of poetry to make it easier for users to adopt, e.g. <code>uv config http-basic.&lt;name-of-the-index&gt; &lt;username&gt; &lt;password&gt;</code>
 For reference see the <a href="https://python-poetry.org/docs/repositories/#installing-from-private-package-sources">poetry docs</a>.</p>
@@ -116,7 +116,7 @@ For reference see the <a href="https://python-poetry.org/docs/repositories/#inst
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-12 15:06</div>
             <div class="timeline-body"><p>Hey @stoney95 sorry I missed your ping!</p>
-<p>Reviewing this is on my queue but I'm working through that holiday backlog still.</p>
+<p>Reviewing this is on my queue but I&#x27;m working through that holiday backlog still.</p>
 <p>Regarding</p>
 <blockquote>
 <p>@zanieb, clippy is configured to not allow the usage of fs::File, fs::read_to_string &amp; fs::remove_file (see <a href="https://github.com/astral-sh/uv/actions/runs/12546987083/job/34983707446?pr=9920">this check</a>).</p>
@@ -128,10 +128,10 @@ For reference see the <a href="https://python-poetry.org/docs/repositories/#inst
             <div class="timeline-header">Comment by <a href="https://github.com/lejmr">@lejmr</a> on 2025-01-12 23:14</div>
             <div class="timeline-body"><p>@stoney95, let me write my grains of salt..</p>
 <ol>
-<li>Naming.. I don't have strong opinion about uv command structure - <code>uv index credentials</code> make sense to me. What is important to understand, is that <code>uv</code> is lacking ability to define username/password out of the pyproject.toml or lock files, and this functionality is critical for team cooperation!  In other words, <code>uv auth</code> would be good for me too. Basically, the core of this functionality  should be &quot;user interface for managing usernames per index&quot;, and password management is just a bonus. <em>(no strong naming opinion here!)</em></li>
+<li>Naming.. I don&#x27;t have strong opinion about uv command structure - <code>uv index credentials</code> make sense to me. What is important to understand, is that <code>uv</code> is lacking ability to define username/password out of the pyproject.toml or lock files, and this functionality is critical for team cooperation!  In other words, <code>uv auth</code> would be good for me too. Basically, the core of this functionality  should be &quot;user interface for managing usernames per index&quot;, and password management is just a bonus. <em>(no strong naming opinion here!)</em></li>
 </ol>
 <p>Add/Rm etc is bad naming to me because what really happens is upsert, so add is confusing.</p>
-<ol start="2">
+<ol>
 <li>crate from keyring. Well, I primarily wanted to test what is possible. I think using subprocess is better since the official keyring has support for &quot;3rd party backends&quot; hence it is more flexible. Using the keyring-rs should be implemented as <code>native</code> flavor to Keyprovide in my opinion, but having proper <code>subprocess</code> can be quite sufficient!</li>
 </ol>
 <p>Regards 2), I think your implementation is just more complicated than what is necessary. I took shortcut by implementing <code>Credentials::from_keyring</code>  function and hacking it into <code>Index::credentials</code> function. What I think is proper:</p>
@@ -148,17 +148,17 @@ For reference see the <a href="https://python-poetry.org/docs/repositories/#inst
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/stoney95">@stoney95</a> on 2025-01-13 08:33</div>
             <div class="timeline-body"><p>@lejmr, thanks for explaining your suggestion in more details :)</p>
-<h3>Naming</h3>
+Naming
 <p>I would opt for <code>uv index credentials {set|unset|list}</code>. This opens up the possibility to add further index commands in the future, e.g. <code>uv index set</code> which can then guide a user to configure an index. This could be nice to have.</p>
-<h3>Keyring crate / Complicated implementation</h3>
+Keyring crate / Complicated implementation
 <p>I am using <code>Credentials::from_keyring</code> in <a href="https://github.com/stoney95/uv/blob/main/crates/uv-distribution-types/src/index.rs#L158-L176"><code>Index::credentials</code></a>. Before my adjustments this would first check if credentials are present in env variables. As a second option it will check if it can retrieve credentials from the url.</p>
 <p>If I understand your suggestion correctly we could modify <a href="https://github.com/stoney95/uv/blob/main/crates/uv-auth/src/credentials.rs#L127-L150"><code>Credentials::from_url</code></a> instead of trying to load credentials from keyring directly.</p>
-<p>So, we could make <code>Credentials::from_keyring</code> private and call it from within <a href="https://github.com/stoney95/uv/blob/main/crates/uv-auth/src/credentials.rs#L128-L130"><code>Credentials::from_url</code> when no username and password are encoded in the url</a>. What's your opinion on that? (@zanieb, I would also be interested to hear your opinion on that)</p>
+<p>So, we could make <code>Credentials::from_keyring</code> private and call it from within <a href="https://github.com/stoney95/uv/blob/main/crates/uv-auth/src/credentials.rs#L128-L130"><code>Credentials::from_url</code> when no username and password are encoded in the url</a>. What&#x27;s your opinion on that? (@zanieb, I would also be interested to hear your opinion on that)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/lejmr">@lejmr</a> on 2025-01-13 09:04</div>
-            <div class="timeline-body"><p>Keyring) if we modify ::from_url, so it loads username from auth.toml for the given URL, we don't need the from_keyring  at all because the secret is loaded by middleware, https://github.com/stoney95/uv/blob/main/crates/uv-auth/src/middleware.rs#L203 - which is already existing code, so we won't create any duplicity.</p>
+            <div class="timeline-body"><p>Keyring) if we modify ::from_url, so it loads username from auth.toml for the given URL, we don&#x27;t need the from_keyring  at all because the secret is loaded by middleware, https://github.com/stoney95/uv/blob/main/crates/uv-auth/src/middleware.rs#L203 - which is already existing code, so we won&#x27;t create any duplicity.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -170,11 +170,11 @@ For reference see the <a href="https://python-poetry.org/docs/repositories/#inst
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/stoney95">@stoney95</a> on 2025-01-31 23:09</div>
             <div class="timeline-body"><p>@lejmr, I moved the logic for loading the username to <code>credentials.from_url</code>. Thanks for pointing out this option! :)</p>
-<p>@nbaju1, I can't answer if this will work for tools as well. I assume that managing tools will also rely on the middleware. So, it should work, but I think the others in this thread are better suited to answer this question.</p>
+<p>@nbaju1, I can&#x27;t answer if this will work for tools as well. I assume that managing tools will also rely on the middleware. So, it should work, but I think the others in this thread are better suited to answer this question.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @stoney95 on 2025-02-28 14:46</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/stoney95">@stoney95</a> on 2025-02-28 14:46</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/stoney95">@stoney95</a> on 2025-02-28 14:47</div>
@@ -183,24 +183,24 @@ For reference see the <a href="https://python-poetry.org/docs/repositories/#inst
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/stoney95">@stoney95</a> on 2025-03-11 14:27</div>
-            <div class="timeline-body"><p>@charliermarsh, can you take a look at this PR? Or is there anything that's still missing to give it a review?</p>
+            <div class="timeline-body"><p>@charliermarsh, can you take a look at this PR? Or is there anything that&#x27;s still missing to give it a review?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-11 17:23</div>
-            <div class="timeline-body"><p>We're still figuring out how credential management fits into our larger user story. Projects like this involve a significant amount of design work on our end, which usually happens before a pull request is opened. In this case, the pull request will need to wait until we do that work so we can make sure it's aligned with our designs. It's nice to have this for inspiration, but it's a big deal to add a whole new interface to uv like this and we need to approach solutions carefully and holistically as we will be responsible for maintaining it in perpetuity.</p>
+            <div class="timeline-body"><p>We&#x27;re still figuring out how credential management fits into our larger user story. Projects like this involve a significant amount of design work on our end, which usually happens before a pull request is opened. In this case, the pull request will need to wait until we do that work so we can make sure it&#x27;s aligned with our designs. It&#x27;s nice to have this for inspiration, but it&#x27;s a big deal to add a whole new interface to uv like this and we need to approach solutions carefully and holistically as we will be responsible for maintaining it in perpetuity.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/stoney95">@stoney95</a> on 2025-03-13 13:08</div>
-            <div class="timeline-body"><p>Thanks for sharing your - and the uv-team's - perspective, @zanieb. Did you discuss the topic internally already and can you share what you are currently considering?</p>
+            <div class="timeline-body"><p>Thanks for sharing your - and the uv-team&#x27;s - perspective, @zanieb. Did you discuss the topic internally already and can you share what you are currently considering?</p>
 <p>In case I can support the design phase in some way or another, please let me know.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:41:04 UTC
+        Synced at 2026-01-20 19:49:51 UTC
     </footer>
 </body>
 </html>

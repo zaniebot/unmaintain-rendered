@@ -23,39 +23,39 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This PR fixes a number of issues with our inference for generic protocols:</p>
 <ul>
 <li><code>SupportsAbs[int]</code> should internally be considered a protocol class, even though <code>is_protocol(SupportsAbs[int])</code> returns <code>False</code> at runtime</li>
 <li>The stored interface for <code>SupportsAbs</code> should be <code>{&quot;__abs__&quot;: MethodMember(`(self) -&gt; Unknown`)}</code>, not <code>{&quot;__abs__&quot;: MethodMember(`(self) -&gt; _T_co@SupportsAbs`)}</code></li>
 <li>The stored interface for <code>SupportsAbs[int]</code> should be <code>{&quot;__abs__&quot;: MethodMember(`(self) -&gt; int`)}</code></li>
 </ul>
-<p>This PR results in quite a few ecosystem diagnostics going away, which I didn't expect! I analysed them in https://github.com/astral-sh/ruff/pull/19866#issuecomment-3223656138. Most of them are due to interactions between protocol assignability/equivalence and the overload call evaluation algorithm.</p>
-<p>There's a fairly steep regression on the <code>DateType</code> benchmark here, but most of the execution time for <code>DateType</code> is spent doing subtype checks between some fairly huge protocols; it's an extreme case. There aren't significant regressions on other benchmarks. I tried out an optimization where we only <em>lazily</em> specialized each protocol member, rather than eagerly specializing the whole interface in <code>cached_protocol_interface</code> (https://github.com/astral-sh/ruff/pull/19866/commits/decb3d49be4b62ce279cc9e913e2abca77fa77f0). This did indeed speedup the <code>DateType</code> benchmark quite a bit, but caused stack overflows on <code>optuna</code> which weren't fixable without adding new Salsa queries -- and adding the new Salsa queries undid the speedup on <code>DateType</code>. See https://github.com/astral-sh/ruff/pull/19866#issuecomment-3176804864, https://github.com/astral-sh/ruff/pull/19866#issuecomment-3207956231 and https://github.com/astral-sh/ruff/pull/19866#issuecomment-3208294155. I've therefore backed out that attempted optimisation; I think at this point we just have to eat the regression on this (somewhat strange and specific) benchmark, unless anybody else has any ideas! A regression test for the <code>optuna</code> stack overflow was added in https://github.com/astral-sh/ruff/pull/20095.</p>
-<h2>Test Plan</h2>
+<p>This PR results in quite a few ecosystem diagnostics going away, which I didn&#x27;t expect! I analysed them in <a href="https://github.com/astral-sh/ruff/pull/19866">astral-sh/ruff#19866</a>#issuecomment-3223656138. Most of them are due to interactions between protocol assignability/equivalence and the overload call evaluation algorithm.</p>
+<p>There&#x27;s a fairly steep regression on the <code>DateType</code> benchmark here, but most of the execution time for <code>DateType</code> is spent doing subtype checks between some fairly huge protocols; it&#x27;s an extreme case. There aren&#x27;t significant regressions on other benchmarks. I tried out an optimization where we only <em>lazily</em> specialized each protocol member, rather than eagerly specializing the whole interface in <code>cached_protocol_interface</code> (<a href="https://github.com/astral-sh/ruff/pull/19866">astral-sh/ruff#19866</a>/commits/decb3d49be4b62ce279cc9e913e2abca77fa77f0). This did indeed speedup the <code>DateType</code> benchmark quite a bit, but caused stack overflows on <code>optuna</code> which weren&#x27;t fixable without adding new Salsa queries -- and adding the new Salsa queries undid the speedup on <code>DateType</code>. See <a href="https://github.com/astral-sh/ruff/pull/19866">astral-sh/ruff#19866</a>#issuecomment-3176804864, <a href="https://github.com/astral-sh/ruff/pull/19866">astral-sh/ruff#19866</a>#issuecomment-3207956231 and <a href="https://github.com/astral-sh/ruff/pull/19866">astral-sh/ruff#19866</a>#issuecomment-3208294155. I&#x27;ve therefore backed out that attempted optimisation; I think at this point we just have to eat the regression on this (somewhat strange and specific) benchmark, unless anybody else has any ideas! A regression test for the <code>optuna</code> stack overflow was added in <a href="https://github.com/astral-sh/ruff/pull/20095">astral-sh/ruff#20095</a>.</p>
+Test Plan
 <p>Mdtests added and updated</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-08-11 16:26</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-11 16:26</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-11 16:28</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a>
 <p>No changes detected when running ty on typing conformance tests ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-11 16:29</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">black (https://github.com/psf/black)
+Changes were detected when running on open source projects
+
+<pre><code>black (https://github.com/psf/black)
 - src/blackd/middlewares.py:15:39: error[unsupported-operator] Operator `in` is not supported for types `str` and `under_cached_property[Unknown]`, in comparing `Literal[&quot;Access-Control-Request-Method&quot;]` with `Unknown | under_cached_property[Unknown]`
 - src/blackd/middlewares.py:21:18: warning[possibly-unbound-attribute] Attribute `get` on type `Unknown | under_cached_property[Unknown]` is possibly unbound
 - Found 65 diagnostics
@@ -239,16 +239,16 @@ scipy (https://github.com/scipy/scipy)
 + Found 6419 diagnostics
 
 </code></pre>
-</details>
-<details>
-<summary>Memory usage changes were detected when running on open source projects</summary>
 
-<pre><code class="language-diff">prefect (https://github.com/PrefectHQ/prefect)
+
+Memory usage changes were detected when running on open source projects
+
+<pre><code>prefect (https://github.com/PrefectHQ/prefect)
 -     struct metadata = ~26MB
 +     struct metadata = ~27MB
 
 </code></pre>
-</details>
+
 
 </div>
         </div>
@@ -259,17 +259,17 @@ scipy (https://github.com/scipy/scipy)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-08-11 16:35</div>
-            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+            <div class="timeline-body">
 
-<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
 
-<h2><a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Fgeneric-protocols?runnerMode=Instrumentation">CodSpeed Instrumentation Performance Report</a></h2>
-<h3>Merging #19866 will <strong>degrade performances by 13.81%</strong></h3>
-<p><sub>Comparing <code>alex/generic-protocols</code> (eec874b) with <code>main</code> (7d0c8e0)</sub></p>
-<h3>Summary</h3>
-<p><code>❌ 1 (👁 1)</code> regressions<br />
+
+<a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Fgeneric-protocols?runnerMode=Instrumentation">CodSpeed Instrumentation Performance Report</a>
+Merging #19866 will <strong>degrade performances by 13.81%</strong>
+<p>Comparing <code>alex/generic-protocols</code> (eec874b) with <code>main</code> (7d0c8e0)</p>
+Summary
+<p><code>❌ 1 (👁 1)</code> regressions<br>
 <code>✅ 41</code> untouched benchmarks</p>
-<h3>Benchmarks breakdown</h3>
+Benchmarks breakdown
 <p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
 | --- | --------- | ----------------------- | ------------------- | ------ |
 | 👁 | <code>DateType</code> | 234.4 ms | 271.9 ms | -13.81% |</p>
@@ -278,9 +278,9 @@ scipy (https://github.com/scipy/scipy)
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-11 18:17</div>
             <div class="timeline-body"><p>If I apply this diff, it makes the <code>DateType</code> benchmark a lot faster and continues to pass all tests, but causes stack overflows on <code>optuna</code> in mypy_primer runs (possibly others too):</p>
-<details>
 
-<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/src/types/protocol_class.rs b/crates/ty_python_semantic/src/types/protocol_class.rs
+
+<pre><code>diff --git a/crates/ty_python_semantic/src/types/protocol_class.rs b/crates/ty_python_semantic/src/types/protocol_class.rs
 index 7b82192ece..673aeecbf5 100644
 --- a/crates/ty_python_semantic/src/types/protocol_class.rs
 +++ b/crates/ty_python_semantic/src/types/protocol_class.rs
@@ -292,7 +292,7 @@ index 7b82192ece..673aeecbf5 100644
  use crate::{
      Db, FxOrderSet,
      place::{Boundness, Place, PlaceAndQualifiers, place_from_bindings, place_from_declarations},
-@@ -124,6 +125,7 @@ impl&lt;'db&gt; ProtocolInterface&lt;'db&gt; {
+@@ -124,6 +125,7 @@ impl&lt;&#x27;db&gt; ProtocolInterface&lt;&#x27;db&gt; {
                      ProtocolMemberData {
                          qualifiers: TypeQualifiers::default(),
                          kind: ProtocolMemberKind::Property(property),
@@ -300,9 +300,9 @@ index 7b82192ece..673aeecbf5 100644
                      },
                  )
              })
-@@ -142,18 +144,34 @@ impl&lt;'db&gt; ProtocolInterface&lt;'db&gt; {
+@@ -142,18 +144,34 @@ impl&lt;&#x27;db&gt; ProtocolInterface&lt;&#x27;db&gt; {
      where
-         'db: 'a,
+         &#x27;db: &#x27;a,
      {
 -        self.inner(db).iter().map(|(name, data)| ProtocolMember {
 -            name,
@@ -323,7 +323,7 @@ index 7b82192ece..673aeecbf5 100644
          })
      }
  
-     fn member_by_name&lt;'a&gt;(self, db: &amp;'db dyn Db, name: &amp;'a str) -&gt; Option&lt;ProtocolMember&lt;'a, 'db&gt;&gt; {
+     fn member_by_name&lt;&#x27;a&gt;(self, db: &amp;&#x27;db dyn Db, name: &amp;&#x27;a str) -&gt; Option&lt;ProtocolMember&lt;&#x27;a, &#x27;db&gt;&gt; {
 -        self.inner(db).get(name).map(|data| ProtocolMember {
 -            name,
 -            kind: data.kind,
@@ -343,10 +343,10 @@ index 7b82192ece..673aeecbf5 100644
          })
      }
  
-@@ -237,8 +255,13 @@ impl&lt;'db&gt; ProtocolInterface&lt;'db&gt; {
-         impl std::fmt::Display for ProtocolInterfaceDisplay&lt;'_&gt; {
-             fn fmt(&amp;self, f: &amp;mut std::fmt::Formatter&lt;'_&gt;) -&gt; std::fmt::Result {
-                 f.write_char('{')?;
+@@ -237,8 +255,13 @@ impl&lt;&#x27;db&gt; ProtocolInterface&lt;&#x27;db&gt; {
+         impl std::fmt::Display for ProtocolInterfaceDisplay&lt;&#x27;_&gt; {
+             fn fmt(&amp;self, f: &amp;mut std::fmt::Formatter&lt;&#x27;_&gt;) -&gt; std::fmt::Result {
+                 f.write_char(&#x27;{&#x27;)?;
 -                for (i, (name, data)) in self.interface.inner(self.db).iter().enumerate() {
 -                    write!(f, &quot;\&quot;{name}\&quot;: {data}&quot;, data = data.display(self.db))?;
 +                for (i, member) in self.interface.members(self.db).enumerate() {
@@ -359,23 +359,23 @@ index 7b82192ece..673aeecbf5 100644
                      if i &lt; self.interface.inner(self.db).len() - 1 {
                          f.write_str(&quot;, &quot;)?;
                      }
-@@ -257,6 +280,7 @@ impl&lt;'db&gt; ProtocolInterface&lt;'db&gt; {
+@@ -257,6 +280,7 @@ impl&lt;&#x27;db&gt; ProtocolInterface&lt;&#x27;db&gt; {
  #[derive(Debug, PartialEq, Eq, Clone, Hash, salsa::Update)]
- pub(super) struct ProtocolMemberData&lt;'db&gt; {
-     kind: ProtocolMemberKind&lt;'db&gt;,
-+    specialization: Option&lt;Specialization&lt;'db&gt;&gt;,
+ pub(super) struct ProtocolMemberData&lt;&#x27;db&gt; {
+     kind: ProtocolMemberKind&lt;&#x27;db&gt;,
++    specialization: Option&lt;Specialization&lt;&#x27;db&gt;&gt;,
      qualifiers: TypeQualifiers,
  }
  
-@@ -268,6 +292,7 @@ impl&lt;'db&gt; ProtocolMemberData&lt;'db&gt; {
-     fn normalized_impl(&amp;self, db: &amp;'db dyn Db, visitor: &amp;mut TypeTransformer&lt;'db&gt;) -&gt; Self {
+@@ -268,6 +292,7 @@ impl&lt;&#x27;db&gt; ProtocolMemberData&lt;&#x27;db&gt; {
+     fn normalized_impl(&amp;self, db: &amp;&#x27;db dyn Db, visitor: &amp;mut TypeTransformer&lt;&#x27;db&gt;) -&gt; Self {
          Self {
              kind: self.kind.normalized_impl(db, visitor),
 +            specialization: self.specialization.map(|s| s.normalized_impl(db, visitor)),
              qualifiers: self.qualifiers,
          }
      }
-@@ -276,6 +301,9 @@ impl&lt;'db&gt; ProtocolMemberData&lt;'db&gt; {
+@@ -276,6 +301,9 @@ impl&lt;&#x27;db&gt; ProtocolMemberData&lt;&#x27;db&gt; {
          Self {
              kind: self.kind.apply_type_mapping(db, type_mapping),
              qualifiers: self.qualifiers,
@@ -385,21 +385,21 @@ index 7b82192ece..673aeecbf5 100644
          }
      }
  
-@@ -291,41 +319,7 @@ impl&lt;'db&gt; ProtocolMemberData&lt;'db&gt; {
+@@ -291,41 +319,7 @@ impl&lt;&#x27;db&gt; ProtocolMemberData&lt;&#x27;db&gt; {
          Self {
              kind: self.kind.materialize(db, variance),
              qualifiers: self.qualifiers,
 -        }
 -    }
 -
--    fn display(&amp;self, db: &amp;'db dyn Db) -&gt; impl std::fmt::Display {
--        struct ProtocolMemberDataDisplay&lt;'db&gt; {
--            db: &amp;'db dyn Db,
--            data: ProtocolMemberKind&lt;'db&gt;,
+-    fn display(&amp;self, db: &amp;&#x27;db dyn Db) -&gt; impl std::fmt::Display {
+-        struct ProtocolMemberDataDisplay&lt;&#x27;db&gt; {
+-            db: &amp;&#x27;db dyn Db,
+-            data: ProtocolMemberKind&lt;&#x27;db&gt;,
 -        }
 -
--        impl std::fmt::Display for ProtocolMemberDataDisplay&lt;'_&gt; {
--            fn fmt(&amp;self, f: &amp;mut std::fmt::Formatter&lt;'_&gt;) -&gt; std::fmt::Result {
+-        impl std::fmt::Display for ProtocolMemberDataDisplay&lt;&#x27;_&gt; {
+-            fn fmt(&amp;self, f: &amp;mut std::fmt::Formatter&lt;&#x27;_&gt;) -&gt; std::fmt::Result {
 -                match self.data {
 -                    ProtocolMemberKind::Method(callable) =&gt; {
 -                        write!(f, &quot;MethodMember(`{}`)&quot;, callable.display(self.db))
@@ -428,14 +428,14 @@ index 7b82192ece..673aeecbf5 100644
          }
      }
  }
-@@ -366,6 +360,16 @@ impl&lt;'db&gt; ProtocolMemberKind&lt;'db&gt; {
+@@ -366,6 +360,16 @@ impl&lt;&#x27;db&gt; ProtocolMemberKind&lt;&#x27;db&gt; {
          }
      }
  
 +    fn apply_optional_specialization(
 +        self,
-+        db: &amp;'db dyn Db,
-+        specialization: Option&lt;Specialization&lt;'db&gt;&gt;,
++        db: &amp;&#x27;db dyn Db,
++        specialization: Option&lt;Specialization&lt;&#x27;db&gt;&gt;,
 +    ) -&gt; Self {
 +        specialization
 +            .map(|s| self.apply_type_mapping(db, &amp;TypeMapping::Specialization(s)))
@@ -444,20 +444,20 @@ index 7b82192ece..673aeecbf5 100644
 +
      fn find_legacy_typevars(
          &amp;self,
-         db: &amp;'db dyn Db,
-@@ -391,6 +395,38 @@ impl&lt;'db&gt; ProtocolMemberKind&lt;'db&gt; {
+         db: &amp;&#x27;db dyn Db,
+@@ -391,6 +395,38 @@ impl&lt;&#x27;db&gt; ProtocolMemberKind&lt;&#x27;db&gt; {
              }
          }
      }
 +
-+    fn display(self, db: &amp;'db dyn Db) -&gt; impl std::fmt::Display {
-+        struct ProtocolMemberKindDisplay&lt;'db&gt; {
-+            db: &amp;'db dyn Db,
-+            kind: ProtocolMemberKind&lt;'db&gt;,
++    fn display(self, db: &amp;&#x27;db dyn Db) -&gt; impl std::fmt::Display {
++        struct ProtocolMemberKindDisplay&lt;&#x27;db&gt; {
++            db: &amp;&#x27;db dyn Db,
++            kind: ProtocolMemberKind&lt;&#x27;db&gt;,
 +        }
 +
-+        impl std::fmt::Display for ProtocolMemberKindDisplay&lt;'_&gt; {
-+            fn fmt(&amp;self, f: &amp;mut std::fmt::Formatter&lt;'_&gt;) -&gt; std::fmt::Result {
++        impl std::fmt::Display for ProtocolMemberKindDisplay&lt;&#x27;_&gt; {
++            fn fmt(&amp;self, f: &amp;mut std::fmt::Formatter&lt;&#x27;_&gt;) -&gt; std::fmt::Result {
 +                match self.kind {
 +                    ProtocolMemberKind::Method(callable) =&gt; {
 +                        write!(f, &quot;MethodMember(`{}`)&quot;, callable.display(self.db))
@@ -484,7 +484,7 @@ index 7b82192ece..673aeecbf5 100644
  }
  
  /// A single member of a protocol interface.
-@@ -581,8 +617,6 @@ fn cached_protocol_interface&lt;'db&gt;(
+@@ -581,8 +617,6 @@ fn cached_protocol_interface&lt;&#x27;db&gt;(
                  })
                  .filter(|(name, _, _, _)| !excluded_from_proto_members(name))
                  .map(|(name, ty, qualifiers, bound_on_class)| {
@@ -493,7 +493,7 @@ index 7b82192ece..673aeecbf5 100644
                      let kind = match (ty, bound_on_class) {
                          // TODO: if the getter or setter is a function literal, we should
                          // upcast it to a `CallableType` so that two protocols with identical property
-@@ -601,7 +635,12 @@ fn cached_protocol_interface&lt;'db&gt;(
+@@ -601,7 +635,12 @@ fn cached_protocol_interface&lt;&#x27;db&gt;(
                          _ =&gt; ProtocolMemberKind::Other(ty),
                      };
  
@@ -508,7 +508,7 @@ index 7b82192ece..673aeecbf5 100644
                  }),
          );
 </code></pre>
-</details>
+
 
 <p>I guess I should try to minimize that stack overflow and add an mdtest...</p>
 </div>
@@ -519,7 +519,7 @@ index 7b82192ece..673aeecbf5 100644
 <p>I guess I should try to minimize that stack overflow and add an mdtest...</p>
 </blockquote>
 <p>minimized:</p>
-<pre><code class="language-py">from typing import Protocol
+<pre><code>from typing import Protocol
 
 class Foo[T](Protocol):
     def x(self) -&gt; &quot;T | Foo[T]&quot;: ...
@@ -531,12 +531,12 @@ x: str | Foo[str]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-11 21:43</div>
-            <div class="timeline-body"><p>To debug a stack overflow, the first thing you need is a backtrace. To get a backtrace, run the test binary directly (instead of via <code>cargo test</code>); the test output tells you the test binary name. Generally something like <code>/Users/carlmeyer/projects/ruff/target/debug/deps/mdtest-7855bafbe7e714e0 mdtest__pep695_type_aliases</code> (where I'm also passing an argument to narrow which tests are run). Run that to confirm it still stack-overflows, then run it under lldb (e.g. <code>lldb -- /Users/carlmeyer/projects/ruff/target/debug/deps/mdtest-7855bafbe7e714e0 mdtest__pep695_type_aliases</code>). When lldb starts up, use <code>run</code> to run the program, then once it stack-overflows use <code>bt</code> to get a backtrace. Scroll up to the point where the backtrace starts repeating itself, and you can figure out the cycle of functions that are calling themselves in an infinite loop. That should give a pretty good idea where we need to add cycle detection.</p>
+            <div class="timeline-body"><p>To debug a stack overflow, the first thing you need is a backtrace. To get a backtrace, run the test binary directly (instead of via <code>cargo test</code>); the test output tells you the test binary name. Generally something like <code>/Users/carlmeyer/projects/ruff/target/debug/deps/mdtest-7855bafbe7e714e0 mdtest__pep695_type_aliases</code> (where I&#x27;m also passing an argument to narrow which tests are run). Run that to confirm it still stack-overflows, then run it under lldb (e.g. <code>lldb -- /Users/carlmeyer/projects/ruff/target/debug/deps/mdtest-7855bafbe7e714e0 mdtest__pep695_type_aliases</code>). When lldb starts up, use <code>run</code> to run the program, then once it stack-overflows use <code>bt</code> to get a backtrace. Scroll up to the point where the backtrace starts repeating itself, and you can figure out the cycle of functions that are calling themselves in an infinite loop. That should give a pretty good idea where we need to add cycle detection.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-20 20:13</div>
-            <div class="timeline-body"><p>This is the section of the backtrace that repeats unendingly if I apply the patch in https://github.com/astral-sh/ruff/pull/19866#issuecomment-3176261676:</p>
+            <div class="timeline-body"><p>This is the section of the backtrace that repeats unendingly if I apply the patch in <a href="https://github.com/astral-sh/ruff/pull/19866">astral-sh/ruff#19866</a>#issuecomment-3176261676:</p>
 <pre><code>    frame #3805: 0x0000000100e74a7c ty`ty_python_semantic::types::signatures::CallableSignature::from_overloads::h160c085c76571d62(overloads=&lt;unavailable&gt;) at signatures.rs:51:46
     frame #3806: 0x00000001011f814c ty`ty_python_semantic::types::signatures::CallableSignature::apply_type_mapping::h2f18f781c1b51baa(self=0x00000001187100c0, db=&amp;dyn ty_python_semantic::db::Db @ 0x000000016ffcacb8, type_mapping=0x000000016ffcae80) at signatures.rs:84:9
     frame #3807: 0x0000000100ac4d70 ty`ty_python_semantic::types::CallableType::apply_type_mapping::h424be50bb82634f9(self=CallableType @ 0x000000016ffcad80, db=&amp;dyn ty_python_semantic::db::Db @ 0x000000016ffcad88, type_mapping=0x000000016ffcae80) at types.rs:8592:33
@@ -575,28 +575,28 @@ x: str | Foo[str]
     frame #3840: 0x0000000100f9721c ty`core::iter::traits::iterator::Iterator::collect::hc362bf1bbfc44466(self=&lt;unavailable&gt;) at iterator.rs:2027:9
     frame #3841: 0x0000000100e74a7c ty`ty_python_semantic::types::signatures::CallableSignature::from_overloads::h160c085c76571d62(overloads=&lt;unavailable&gt;) at signatures.rs:51:46
 </code></pre>
-<p>It's not totally obvious to me how to fix this with our existing <code>CycleDetector</code>s and <code>TypeTransformer</code>s.</p>
+<p>It&#x27;s not totally obvious to me how to fix this with our existing <code>CycleDetector</code>s and <code>TypeTransformer</code>s.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-20 22:46</div>
             <div class="timeline-body"><p>What this looks like is that in the process of specializing a protocol type, we have to map over a union in <code>apply_type_mapping_impl</code>, and in constructing/simplifying the new union we do a subtype check involving the original protocol, and that subtype check requires specializing that protocol type (this is the part I <em>think</em> is new in the patch?) -- and there we have a cycle.</p>
-<p>I agree this isn't easily amenable to our existing tools. Like the tuple-subtype-check-builds-a-union-of-its-elements issue I initially ran into in the recursive-type-aliases PR, the problem is the cycle passes through UnionBuilder and <code>has_relation_to_impl</code>, where we would lose our visitor from <code>apply_type_mapping_impl</code>.</p>
-<p>The part about &quot;subtype check of a protocol requires applying a type mapping to it&quot; feels a bit off to me (just in that applying a type mapping is kind of a heavyweight transformation that builds a new type, and it doesn't seem like we should have to do that just in order to make a subtype check), but I'm not sure if it's wrong or not without digging a lot deeper into this diff.</p>
+<p>I agree this isn&#x27;t easily amenable to our existing tools. Like the tuple-subtype-check-builds-a-union-of-its-elements issue I initially ran into in the recursive-type-aliases PR, the problem is the cycle passes through UnionBuilder and <code>has_relation_to_impl</code>, where we would lose our visitor from <code>apply_type_mapping_impl</code>.</p>
+<p>The part about &quot;subtype check of a protocol requires applying a type mapping to it&quot; feels a bit off to me (just in that applying a type mapping is kind of a heavyweight transformation that builds a new type, and it doesn&#x27;t seem like we should have to do that just in order to make a subtype check), but I&#x27;m not sure if it&#x27;s wrong or not without digging a lot deeper into this diff.</p>
 <p>Assuming that part is necessary, another way to break the cycle could be to re-introduce <code>UnionStrategy</code> and not simplify subtypes out of unions when we map over a union in <code>apply_type_mapping_impl</code>?</p>
-<p>Or to find another place we can insert a Salsa query to catch and iterate on the cycle (like we did for <code>TupleType::into_class_type</code>, which fixed the problem on the recursive type aliases PR.) It's not clear to me where that would be in this case, but maybe it would be on <code>Protocol::members</code> or similar?</p>
+<p>Or to find another place we can insert a Salsa query to catch and iterate on the cycle (like we did for <code>TupleType::into_class_type</code>, which fixed the problem on the recursive type aliases PR.) It&#x27;s not clear to me where that would be in this case, but maybe it would be on <code>Protocol::members</code> or similar?</p>
 <p>In general, we have decent tools now for preventing cycles within a <code>Type</code> method, but not when we introduce cycles that bounce back and forth between multiple different <code>Type</code> methods and <code>UnionBuilder</code>.</p>
 <p>Honestly, a very comprehensive fix for this would be to make e.g. <code>is_subtype_of</code> a Salsa query, but I think that might have significant memory costs.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-08-26 09:41</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-26 09:41</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-26 09:51</div>
-            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+            <div class="timeline-body">
 
-<h2><code>ecosystem-analyzer</code> results</h2>
+<code>ecosystem-analyzer</code> results
 <p>| Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
 | <code>possibly-unbound-attribute</code> | 0 | 43 | 2 |
@@ -616,11 +616,11 @@ x: str | Foo[str]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-26 10:52</div>
-            <div class="timeline-body"><h1>Ecosystem analysis</h1>
-<p>I haven't gone through every single hit but I've gone through enough to be fairly confident that everything here is basically working as expected. Most of the hits are due to interesting interactions between protocol assignability/equivalence and the overload evaluation algorithm.</p>
-<h2><code>aiohttp</code>, <code>discord.py</code>, <code>black</code></h2>
-<p>Nearly all of these hits are due to <code>aiohttp</code>'s use of <code>@reify</code> as a decorator in places like <a href="https://github.com/aio-libs/aiohttp/blob/6d76b651b2c1e99be0de733aee733874be4a698a/aiohttp/client_reqrep.py#L347-L380">this</a>. <code>reify</code> is actually an import of <code>propcache.api.under_cached_property</code>, and ty is finding type information for that class <a href="https://github.com/aio-libs/propcache/blob/b97e7e37cbe8329e2a4d8383166c094f471a0d6a/src/propcache/_helpers_py.py#L26-L62">here</a>. A minimized example of the code that we now infer differently is this:</p>
-<pre><code class="language-py">from typing import Mapping, Any, Protocol, Callable, overload, Self
+            <div class="timeline-body">Ecosystem analysis
+<p>I haven&#x27;t gone through every single hit but I&#x27;ve gone through enough to be fairly confident that everything here is basically working as expected. Most of the hits are due to interesting interactions between protocol assignability/equivalence and the overload evaluation algorithm.</p>
+<code>aiohttp</code>, <code>discord.py</code>, <code>black</code>
+<p>Nearly all of these hits are due to <code>aiohttp</code>&#x27;s use of <code>@reify</code> as a decorator in places like <a href="https://github.com/aio-libs/aiohttp/blob/6d76b651b2c1e99be0de733aee733874be4a698a/aiohttp/client_reqrep.py#L347-L380">this</a>. <code>reify</code> is actually an import of <code>propcache.api.under_cached_property</code>, and ty is finding type information for that class <a href="https://github.com/aio-libs/propcache/blob/b97e7e37cbe8329e2a4d8383166c094f471a0d6a/src/propcache/_helpers_py.py#L26-L62">here</a>. A minimized example of the code that we now infer differently is this:</p>
+<pre><code>from typing import Mapping, Any, Protocol, Callable, overload, Self
 
 class _CacheImpl[CacheT: Mapping[str, Any]](Protocol):
     cache: CacheT
@@ -644,19 +644,19 @@ def _(x: Response):
     reveal_type(x.headers.get)
 </code></pre>
 <p>On <code>main</code>, we reveal <code>under_cached_property[Unknown]</code> for the first <code>reveal_type</code> call, and emit an error on the second <code>reveal_type</code> call saying that &quot;<code>under_cached_property</code> has no member &quot;get&quot;<code>. This indicates that on </code>main<code>we incorrectly pick the first overload for</code>under_cached_property.<strong>get</strong><code>when resolving the</code>x.headers` attribute access.</p>
-<p>On this PR branch, however, we reveal <code>Unknown</code> for both <code>reveal_type</code> calls and do not emit an <code>unresolved-attribute</code> diagnostic. That indicates that we're now correctly picking the second overload for <code>under_cached_property.__get__</code> when resolving the <code>x.headers</code> attribute access -- but due to limitations in our constraints solver, we're still not able to solve the TypeVar.</p>
+<p>On this PR branch, however, we reveal <code>Unknown</code> for both <code>reveal_type</code> calls and do not emit an <code>unresolved-attribute</code> diagnostic. That indicates that we&#x27;re now correctly picking the second overload for <code>under_cached_property.__get__</code> when resolving the <code>x.headers</code> attribute access -- but due to limitations in our constraints solver, we&#x27;re still not able to solve the TypeVar.</p>
 <p>The conclusion here then is that the reason why our behaviour is changing on this snippet is that previously did not consider <code>Response</code> to be assignable to the type <code>_CacheImpl[Any]</code>, but now we do. This is confirmed by the fact that this assertion fails on <code>main</code>, but passes on my PR branch:</p>
-<pre><code class="language-py">static_assert(is_assignable_to(Response, _CacheImpl[Any]))
+<pre><code>static_assert(is_assignable_to(Response, _CacheImpl[Any]))
 </code></pre>
 <p>This all makes sense, since <code>_CacheImpl</code> is a generic protocol, and this PR fixes the interfaces of generic protocols</p>
-<h2><code>ddtrace-py</code>, <code>flake8</code>, <code>pwndbg</code></h2>
+<code>ddtrace-py</code>, <code>flake8</code>, <code>pwndbg</code>
 <p>These hits are because we now infer a different type here:</p>
-<pre><code class="language-py">def f(x):
+<pre><code>def f(x):
     reveal_type(&quot;\n&quot;.join(x))  # `LiteralString` on `main`, `Unknown` on this PR
 </code></pre>
-<p>On <code>main</code>, we're mistakenly confident that <a href="https://github.com/python/typeshed/blob/4fa56fbc236c99159c6132254d8f182598469df8/stdlib/builtins.pyi#L521-L524">the first overload for <code>str.join</code> is the correct one</a> to select here. The first overload has a parameter annotation of <code>Iterable[LiteralString]</code>, while the second overload has a parameter annotation of <code>Iterable[str]</code>.</p>
-<p>A repro of this issue that doesn't depend on typeshed's stubs for <code>str.join</code> is:</p>
-<pre><code class="language-py">from typing import Iterable, overload, LiteralString, Protocol
+<p>On <code>main</code>, we&#x27;re mistakenly confident that <a href="https://github.com/python/typeshed/blob/4fa56fbc236c99159c6132254d8f182598469df8/stdlib/builtins.pyi#L521-L524">the first overload for <code>str.join</code> is the correct one</a> to select here. The first overload has a parameter annotation of <code>Iterable[LiteralString]</code>, while the second overload has a parameter annotation of <code>Iterable[str]</code>.</p>
+<p>A repro of this issue that doesn&#x27;t depend on typeshed&#x27;s stubs for <code>str.join</code> is:</p>
+<pre><code>from typing import Iterable, overload, LiteralString, Protocol
 from ty_extensions import Unknown, is_assignable_to
 
 class Foo:
@@ -675,13 +675,13 @@ def f(x, y: Foo):
 <p>For all arguments, determine whether all possible <a href="https://typing.python.org/en/latest/spec/glossary.html#term-materialize">materializations</a> of the argument’s type are assignable to the corresponding parameter type for each of the remaining overloads. If so, eliminate all of the subsequent remaining overloads.</p>
 </blockquote>
 <p>On <code>main</code>, we mistakenly view <code>Iterable[str]</code> and <code>Iterable[LiteralString]</code> as equivalent types! This means that we eliminate the second overload (which uses <code>Iterable[str]</code>) during step (5), leaving only the first overload (using <code>Iterable[LiteralString]</code>) remaining. With this PR branch, however, we understand that <code>Iterable[str]</code> and <code>Iterable[LiteralString]</code> are <em>not</em> equivalent types, and that the parameter annotations of both overloads are satisfied, meaning that we should (as per step (5) of the overload evaluation algorithm) infer <code>Unknown</code> as the result of the call. (It is ambiguous which overload we should choose, and the return types of the two remaining overloads are not equivalent, meaning we cannot proceed to step (6).)</p>
-<h2><code>ignite</code>, <code>rotki</code></h2>
-<p>I haven't studied these ones in depth, but they look like they're almost certainly the same underlying issue as the <code>ddtrace-py</code> and <code>flake8</code> hits. It looks like the issue is that on <code>main</code> we currently infer the wrong result for a call to <code>sum()</code>, and <code>sum()</code> <a href="https://github.com/python/typeshed/blob/5509c518320f2d5fbb5ca3ea4e79b89b0a5f441a/stdlib/builtins.pyi#L1923-L1932">is an overloaded function in typeshed</a> where the different overloads all take <code>Iterable</code>s, but with <code>Iterable</code> specialized differently in each overload (exactly the same as <code>str.join()</code>).</p>
-<h2><code>meson</code>, <code>mkdocs</code>, <code>openlibrary</code>, <code>poetry</code>, <code>prefect</code>, <code>schemathesis</code>, <code>static-frame</code></h2>
+<code>ignite</code>, <code>rotki</code>
+<p>I haven&#x27;t studied these ones in depth, but they look like they&#x27;re almost certainly the same underlying issue as the <code>ddtrace-py</code> and <code>flake8</code> hits. It looks like the issue is that on <code>main</code> we currently infer the wrong result for a call to <code>sum()</code>, and <code>sum()</code> <a href="https://github.com/python/typeshed/blob/5509c518320f2d5fbb5ca3ea4e79b89b0a5f441a/stdlib/builtins.pyi#L1923-L1932">is an overloaded function in typeshed</a> where the different overloads all take <code>Iterable</code>s, but with <code>Iterable</code> specialized differently in each overload (exactly the same as <code>str.join()</code>).</p>
+<code>meson</code>, <code>mkdocs</code>, <code>openlibrary</code>, <code>poetry</code>, <code>prefect</code>, <code>schemathesis</code>, <code>static-frame</code>
 <p>Also looks like the same thing as with <code>ddtrace-py</code> and <code>flake8</code>, but this time with <a href="https://github.com/python/typeshed/blob/5509c518320f2d5fbb5ca3ea4e79b89b0a5f441a/stdlib/urllib/parse.pyi#L191-L194"><code>urllib.parse.urlunparse()</code></a> and <a href="https://github.com/python/typeshed/blob/5509c518320f2d5fbb5ca3ea4e79b89b0a5f441a/stdlib/urllib/parse.pyi#L197-L200"><code>urllib.parse.urlunsplit()</code></a></p>
-<h2><code>mitmproxy</code></h2>
+<code>mitmproxy</code>
 <p>This is the same again, but a slightly more elaborate example of how <code>Unknown</code>s can cascade through a program and become viral. The code has this variable assigned:</p>
-<pre><code class="language-py">    exclude = re.compile(
+<pre><code>    exclude = re.compile(
         &quot;|&quot;.join(
             f&quot;({fnmatch.translate(x)})&quot;
             for x in data[&quot;tool&quot;][&quot;pytest&quot;][&quot;individual_coverage&quot;][&quot;exclude&quot;]
@@ -689,35 +689,35 @@ def f(x, y: Foo):
     )
 </code></pre>
 <p>We infer the result of the generator expression as <code>Unknown</code>, and on this PR we now correctly infer the result of passing an instance of <code>Unknown</code> into <code>str.join()</code> as being <code>Unknown</code>. But that then means that the <code>exclude</code> variable is now also inferred as <code>Unknown</code>; this is because <code>re.compile()</code> is also an overloaded function, and it seems like passing an object of type <code>Unknown</code> is also causing us to return early at step (5) of the algorithm for that function.</p>
-<p>(I'm not sure it <em>should</em> be -- <code>Pattern[Unknown]</code> would be a fine type for us to infer here IMO, since step (5) of the overload evaluation algorithm only specifies that you need to stop at that step if the return types of all remaining overloads are not equivalent. For <code>re.compile()</code>, they arguably <em>are</em> all equivalent -- they're all <code>Pattern[str]</code> -- so I think we could probably proceed to step (6) here. But that's a separate issue.)</p>
+<p>(I&#x27;m not sure it <em>should</em> be -- <code>Pattern[Unknown]</code> would be a fine type for us to infer here IMO, since step (5) of the overload evaluation algorithm only specifies that you need to stop at that step if the return types of all remaining overloads are not equivalent. For <code>re.compile()</code>, they arguably <em>are</em> all equivalent -- they&#x27;re all <code>Pattern[str]</code> -- so I think we could probably proceed to step (6) here. But that&#x27;s a separate issue.)</p>
 <p>Anyway, the fact that we now infer <code>exclude</code> as being <code>Unknown</code> rather than <code>Pattern[str]</code> means that a true positive on <code>main</code> goes away on this branch lower down in the function.</p>
-<h2><code>kopf</code></h2>
-<p>We issue these <code>redundant-cast</code> diagnostics on <code>main</code> because we incorrectly view <code>Iterator[Unknown]</code> and <code>Iterator[bodies.Body]</code> as being equivalent types. Ideally of course we'd improve our TypeVar solving for protocols so that we'd infer a better type than <code>Iterator[Unknown]</code> for the result of the <code>dicts.walk()</code> call <a href="https://github.com/nolar/kopf/blob/ca3e0d0e2d3147c6728f3f01c4c7d2524f654b36/kopf/_core/engines/posting.py#L99">here</a>, but that's beyond the scope of this PR</p>
+<code>kopf</code>
+<p>We issue these <code>redundant-cast</code> diagnostics on <code>main</code> because we incorrectly view <code>Iterator[Unknown]</code> and <code>Iterator[bodies.Body]</code> as being equivalent types. Ideally of course we&#x27;d improve our TypeVar solving for protocols so that we&#x27;d infer a better type than <code>Iterator[Unknown]</code> for the result of the <code>dicts.walk()</code> call <a href="https://github.com/nolar/kopf/blob/ca3e0d0e2d3147c6728f3f01c4c7d2524f654b36/kopf/_core/engines/posting.py#L99">here</a>, but that&#x27;s beyond the scope of this PR</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[ty] Various fixes for generic protocols" to "[ty] Fix the inferred interface of specialized generic protocols" by @AlexWaygood on 2025-08-27 12:22</div>
+            <div class="event">Renamed from &quot;[ty] Various fixes for generic protocols&quot; to &quot;[ty] Fix the inferred interface of specialized generic protocols&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-27 12:22</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @AlexWaygood on 2025-08-27 12:33</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-27 12:33</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-08-27 12:33</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-27 12:33</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-08-27 12:33</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-27 12:33</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-08-27 12:33</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-27 12:33</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-27 12:33</div>
-            <div class="timeline-body"><p>Okay, I think this is now ready for review! I've updated the PR description.</p>
+            <div class="timeline-body"><p>Okay, I think this is now ready for review! I&#x27;ve updated the PR description.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/call/overloads.md</code>:1076 on 2025-08-27 16:30</div>
-            <div class="timeline-body"><p>Could add a TODO comment here that <code>Any &amp; (str | LiteralString)</code> (simplifying in this case to <code>Any &amp; str</code>) would also be a valid choice that's a bit more precise than the spec but still respects the gradual guarantee.</p>
+            <div class="timeline-body"><p>Could add a TODO comment here that <code>Any &amp; (str | LiteralString)</code> (simplifying in this case to <code>Any &amp; str</code>) would also be a valid choice that&#x27;s a bit more precise than the spec but still respects the gradual guarantee.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -736,14 +736,14 @@ def f(x, y: Foo):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/protocols.md</code>:1117 on 2025-08-27 17:11</div>
-            <div class="timeline-body"><p>added some extreme stress tests in https://github.com/astral-sh/ruff/pull/19866/commits/eec874b1dbe6afee11adc0df4b9ffe3bb41a131b! Pretty cool that they already all pass as expected 😃</p>
+            <div class="timeline-body"><p>added some extreme stress tests in <a href="https://github.com/astral-sh/ruff/pull/19866">astral-sh/ruff#19866</a>/commits/eec874b1dbe6afee11adc0df4b9ffe3bb41a131b! Pretty cool that they already all pass as expected 😃</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @AlexWaygood on 2025-08-27 17:16</div>
+            <div class="event">Merged by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-27 17:16</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-08-27 17:16</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-27 17:16</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-08-27 17:16</div>
@@ -751,7 +751,7 @@ def f(x, y: Foo):
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:15:00 UTC
+        Synced at 2026-01-20 19:17:37 UTC
     </footer>
 </body>
 </html>

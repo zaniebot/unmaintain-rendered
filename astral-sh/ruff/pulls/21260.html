@@ -23,39 +23,39 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a></div>
-            <div class="timeline-body"><p>Fixes https://github.com/astral-sh/ty/issues/1053</p>
-<h2>Summary</h2>
+            <div class="timeline-body"><p>Fixes <a href="https://github.com/astral-sh/ty/issues/1053">astral-sh/ty#1053</a></p>
+Summary
 <p>Other type checkers prioritize a submodule over a package <code>__getattr__</code> in <code>from mod import sub</code>, even though the runtime precedence is the other direction. In effect, this is making an implicit assumption that a module <code>__getattr__</code> will not handle (that is, will raise <code>AttributeError</code>) for names that are also actual submodules, rather than shadowing them. In practice this seems like a realistic assumption in the ecosystem? Or at least the ecosystem has adapted to it, and we need to adapt this precedence also, for ecosystem compatibility.</p>
-<p>The implementation is a bit ugly, precisely because it departs from the runtime semantics, and our implementation is oriented toward modeling runtime semantics accurately. That is, <code>__getattr__</code> is modeled within the member-lookup code, so it's hard to split &quot;member lookup result from module <code>__getattr__</code>&quot; apart from other member lookup results. I did this via a synthetic <code>TypeQualifier::FROM_MODULE_GETATTR</code> that we attach to a type resulting from a member lookup, which isn't beautiful but it works well and doesn't introduce inefficiency (e.g. redundant member lookups).</p>
-<h2>Test Plan</h2>
+<p>The implementation is a bit ugly, precisely because it departs from the runtime semantics, and our implementation is oriented toward modeling runtime semantics accurately. That is, <code>__getattr__</code> is modeled within the member-lookup code, so it&#x27;s hard to split &quot;member lookup result from module <code>__getattr__</code>&quot; apart from other member lookup results. I did this via a synthetic <code>TypeQualifier::FROM_MODULE_GETATTR</code> that we attach to a type resulting from a member lookup, which isn&#x27;t beautiful but it works well and doesn&#x27;t introduce inefficiency (e.g. redundant member lookups).</p>
+Test Plan
 <p>Updated mdtests.</p>
 <p>Also added a related mdtest formalizing our support for a module <code>__getattr__</code> that is explicitly annotated to accept a limited set of names. In principle this could be an alternative (more explicit) way to handle the precedence problem without departing from runtime semantics, if the ecosystem would adopt it.</p>
-<h3>Ecosystem analysis</h3>
+Ecosystem analysis
 <p>Lots of removed diagnostics which are an improvement because we now infer the expected submodule.</p>
 <p>Added diagnostics are mostly unrelated issues surfaced now because we previously had an earlier attribute error resulting in <code>Unknown</code>; now we correctly resolve the module so that earlier attribute error goes away, we get an actual type instead of <code>Unknown</code>, and that triggers a new error.</p>
-<p>In scipy and sklearn, the module <code>__getattr__</code> which we were respecting previously is un-annotated so returned a forgiving <code>Unknown</code>; now we correctly see the actual module, which reveals some cases of https://github.com/astral-sh/ty/issues/133 that were previously hidden (<code>scipy/optimize/__init__.py</code> <a href="https://github.com/scipy/scipy/blob/eff82ca575668d2d7a4bc12b6afba98daaf6d5d0/scipy/optimize/__init__.py#L429">imports <code>from ._tnc</code></a>.)</p>
+<p>In scipy and sklearn, the module <code>__getattr__</code> which we were respecting previously is un-annotated so returned a forgiving <code>Unknown</code>; now we correctly see the actual module, which reveals some cases of <a href="https://github.com/astral-sh/ty/issues/133">astral-sh/ty#133</a> that were previously hidden (<code>scipy/optimize/__init__.py</code> <a href="https://github.com/scipy/scipy/blob/eff82ca575668d2d7a4bc12b6afba98daaf6d5d0/scipy/optimize/__init__.py#L429">imports <code>from ._tnc</code></a>.)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @carljm on 2025-11-03 16:40</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/carljm">@carljm</a> on 2025-11-03 16:40</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-11-03 16:42</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a>
 <p>No changes detected when running ty on typing conformance tests ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-11-03 16:43</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">anyio (https://github.com/agronholm/anyio)
+Changes were detected when running on open source projects
+
+<pre><code>anyio (https://github.com/agronholm/anyio)
 + src/anyio/_backends/_asyncio.py:836:28: error[unresolved-attribute] Object of type `CancelScope` has no attribute `_effectively_cancelled`
 - src/anyio/_backends/_asyncio.py:696:26: error[unresolved-attribute] Object of type `type[BrokenWorkerInterpreter]` has no attribute `TaskStatus`
 + src/anyio/_backends/_asyncio.py:854:40: error[unresolved-attribute] Object of type `CancelScope` has no attribute `_host_task`
@@ -516,7 +516,7 @@ materialize (https://github.com/MaterializeInc/materialize)
 
 scipy (https://github.com/scipy/scipy)
 + scipy/differentiate/tests/test_differentiate.py:35:38: error[unresolved-attribute] Module `scipy.stats` has no member `_distr_params`
-+ scipy/integrate/_quadrature.py:1170:11: warning[possibly-missing-attribute] Attribute `_qmc` may be missing on object of type `&lt;module 'scipy.stats'&gt; | Unknown`
++ scipy/integrate/_quadrature.py:1170:11: warning[possibly-missing-attribute] Attribute `_qmc` may be missing on object of type `&lt;module &#x27;scipy.stats&#x27;&gt; | Unknown`
 + scipy/integrate/tests/test_tanhsinh.py:258:38: error[unresolved-attribute] Module `scipy.stats` has no member `_distr_params`
 + scipy/linalg/tests/test_batch.py:224:15: error[unresolved-attribute] Module `scipy.linalg` has no member `qr_update`
 + scipy/linalg/tests/test_batch.py:228:21: error[unresolved-attribute] Module `scipy.linalg` has no member `qr_update`
@@ -589,13 +589,13 @@ scipy (https://github.com/scipy/scipy)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-11-03 16:44</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-03 16:44</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-11-03 16:51</div>
-            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+            <div class="timeline-body">
 
-<h2><code>ecosystem-analyzer</code> results</h2>
+<code>ecosystem-analyzer</code> results
 <p>| Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
 | <code>unresolved-attribute</code> | 85 | 347 | 0 |
@@ -614,26 +614,26 @@ scipy (https://github.com/scipy/scipy)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @carljm on 2025-11-03 18:12</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/carljm">@carljm</a> on 2025-11-03 18:12</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @carljm on 2025-11-03 18:12</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/carljm">@carljm</a> on 2025-11-03 18:12</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @carljm on 2025-11-03 18:12</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/carljm">@carljm</a> on 2025-11-03 18:12</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @carljm on 2025-11-03 18:12</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/carljm">@carljm</a> on 2025-11-03 18:12</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/import/module_getattr.md</code>:98 on 2025-11-03 18:41</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">If you `from mod import sub`, at runtime `sub` will be the value returned by the module
+            <div class="timeline-body"><pre><code>If you `from mod import sub`, at runtime `sub` will be the value returned by the module
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:5442 on 2025-11-03 18:57</div>
-            <div class="timeline-body"><p>why are we using <code>DeclaredAndInferredType::MightBeDifferent</code> here? It looks like the type always comes from the return annotation of <code>__getattr__</code> (i.e., a declaration) and that they're always the same? Intuitively, <code>DeclaredAndInferredType::AreTheSame</code> feels like it would be a better fit here</p>
+            <div class="timeline-body"><p>why are we using <code>DeclaredAndInferredType::MightBeDifferent</code> here? It looks like the type always comes from the return annotation of <code>__getattr__</code> (i.e., a declaration) and that they&#x27;re always the same? Intuitively, <code>DeclaredAndInferredType::AreTheSame</code> feels like it would be a better fit here</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -646,7 +646,7 @@ scipy (https://github.com/scipy/scipy)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:5442 on 2025-11-03 20:07</div>
-            <div class="timeline-body"><p><code>AreTheSame</code> implies &quot;there are no type qualifiers on the declared type&quot;, because you provide only a type and internally it builds a no-qualifiers declared type from it. If there are potential qualifiers to pass through, we can't use it.</p>
+            <div class="timeline-body"><p><code>AreTheSame</code> implies &quot;there are no type qualifiers on the declared type&quot;, because you provide only a type and internally it builds a no-qualifiers declared type from it. If there are potential qualifiers to pass through, we can&#x27;t use it.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -659,10 +659,10 @@ scipy (https://github.com/scipy/scipy)
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @carljm on 2025-11-03 20:24</div>
+            <div class="event">Merged by <a href="https://github.com/carljm">@carljm</a> on 2025-11-03 20:24</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2025-11-03 20:24</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2025-11-03 20:24</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-11-03 20:24</div>
@@ -670,7 +670,7 @@ scipy (https://github.com/scipy/scipy)
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:16:58 UTC
+        Synced at 2026-01-20 19:20:14 UTC
     </footer>
 </body>
 </html>

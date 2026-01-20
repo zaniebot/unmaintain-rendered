@@ -23,84 +23,84 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>This PR fixes a variety of false-positive <code>invalid-super-argument</code> diagnostics that we can emit on <code>main</code>. These aren't <em>that</em> common in the ecosystem at the moment, but they will become much more common when we infer a good type for <code>self</code> in method bodies. https://github.com/astral-sh/ruff/pull/20723#issuecomment-3372209543 indicates that if we added an improved type of <code>self</code> right now, it would lead to nearly 500 new <code>invalid-super-argument</code> diagnostics being added, and I'd guess that nearly all of those are false positives.</p>
+            <div class="timeline-body">Summary
+<p>This PR fixes a variety of false-positive <code>invalid-super-argument</code> diagnostics that we can emit on <code>main</code>. These aren&#x27;t <em>that</em> common in the ecosystem at the moment, but they will become much more common when we infer a good type for <code>self</code> in method bodies. <a href="https://github.com/astral-sh/ruff/pull/20723">astral-sh/ruff#20723</a>#issuecomment-3372209543 indicates that if we added an improved type of <code>self</code> right now, it would lead to nearly 500 new <code>invalid-super-argument</code> diagnostics being added, and I&#x27;d guess that nearly all of those are false positives.</p>
 <p>There were two problems with our current logic: this <code>match</code> was not an exhaustive <code>match</code>, and was returning <code>None</code> for a large number of types. In reality, nearly all objects are valid as the second argument to a <code>super(x, y)</code> call as long as they are an instance or subclass of the first argument. (The same is true if the arguments are provided implicitly by the interpreter, as is usually the case.) This PR makes the <code>match</code> exhaustive, and significantly reduces the number of types which we disallow as the second argument to <code>super()</code>: we now only disallow &quot;purely structural&quot; types such as <code>Callable</code> types and synthesized protocols:</p>
 <p>https://github.com/astral-sh/ruff/blob/7064c38e53714edd76a9c2f80fed67b38a0b7c54/crates/ty_python_semantic/src/types.rs#L11332-L11359</p>
 <p>The second problem relates to this <code>is_subclass_of</code> call here:</p>
 <p>https://github.com/astral-sh/ruff/blob/7064c38e53714edd76a9c2f80fed67b38a0b7c54/crates/ty_python_semantic/src/types.rs#L11450-L11454</p>
-<p>With our current implementation of <code>is_subclass_of</code>, <code>list[Unknown]</code> is not recognised as being a &quot;subclass of&quot; <code>Sequence[int]</code>, for example, because <code>Sequence[int]</code> does not literally appear in the MRO of <code>list[Unknown]</code> (<code>Sequence[Unknown]</code> does). We've <a href="https://github.com/astral-sh/ty/issues/512#issuecomment-2923625966">discussed</a> <a href="https://github.com/astral-sh/ty/issues/492#issuecomment-2906000565">elsewhere</a> that this is a bit of a footgun since it doesn't really correspond to the subclass relationship between class objects at runtime, but for now I just work around the footgun :-)</p>
-<p>Fixes https://github.com/astral-sh/ty/issues/987, fixes https://github.com/astral-sh/ty/issues/697</p>
-<h2>Test plan</h2>
+<p>With our current implementation of <code>is_subclass_of</code>, <code>list[Unknown]</code> is not recognised as being a &quot;subclass of&quot; <code>Sequence[int]</code>, for example, because <code>Sequence[int]</code> does not literally appear in the MRO of <code>list[Unknown]</code> (<code>Sequence[Unknown]</code> does). We&#x27;ve <a href="https://github.com/astral-sh/ty/issues/512#issuecomment-2923625966">discussed</a> <a href="https://github.com/astral-sh/ty/issues/492#issuecomment-2906000565">elsewhere</a> that this is a bit of a footgun since it doesn&#x27;t really correspond to the subclass relationship between class objects at runtime, but for now I just work around the footgun :-)</p>
+<p>Fixes <a href="https://github.com/astral-sh/ty/issues/987">astral-sh/ty#987</a>, fixes <a href="https://github.com/astral-sh/ty/issues/697">astral-sh/ty#697</a></p>
+Test plan
 <p>Mdtests and snapshots</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-10-11 20:59</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-11 20:59</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-11 21:01</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a>
 <p>No changes detected when running ty on typing conformance tests ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-11 21:02</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">anyio (https://github.com/agronholm/anyio)
-- src/anyio/_core/_tempfile.py:349:22: error[invalid-super-argument] `SpooledTemporaryFile[bytes]` is not an instance or subclass of `&lt;class 'SpooledTemporaryFile'&gt;` in `super(&lt;class 'SpooledTemporaryFile'&gt;, SpooledTemporaryFile[bytes])` call
-- src/anyio/_core/_tempfile.py:370:22: error[invalid-super-argument] `SpooledTemporaryFile[bytes]` is not an instance or subclass of `&lt;class 'SpooledTemporaryFile'&gt;` in `super(&lt;class 'SpooledTemporaryFile'&gt;, SpooledTemporaryFile[bytes])` call
-- src/anyio/_core/_tempfile.py:377:22: error[invalid-super-argument] `SpooledTemporaryFile[bytes]` is not an instance or subclass of `&lt;class 'SpooledTemporaryFile'&gt;` in `super(&lt;class 'SpooledTemporaryFile'&gt;, SpooledTemporaryFile[bytes])` call
+Changes were detected when running on open source projects
+
+<pre><code>anyio (https://github.com/agronholm/anyio)
+- src/anyio/_core/_tempfile.py:349:22: error[invalid-super-argument] `SpooledTemporaryFile[bytes]` is not an instance or subclass of `&lt;class &#x27;SpooledTemporaryFile&#x27;&gt;` in `super(&lt;class &#x27;SpooledTemporaryFile&#x27;&gt;, SpooledTemporaryFile[bytes])` call
+- src/anyio/_core/_tempfile.py:370:22: error[invalid-super-argument] `SpooledTemporaryFile[bytes]` is not an instance or subclass of `&lt;class &#x27;SpooledTemporaryFile&#x27;&gt;` in `super(&lt;class &#x27;SpooledTemporaryFile&#x27;&gt;, SpooledTemporaryFile[bytes])` call
+- src/anyio/_core/_tempfile.py:377:22: error[invalid-super-argument] `SpooledTemporaryFile[bytes]` is not an instance or subclass of `&lt;class &#x27;SpooledTemporaryFile&#x27;&gt;` in `super(&lt;class &#x27;SpooledTemporaryFile&#x27;&gt;, SpooledTemporaryFile[bytes])` call
 - Found 224 diagnostics
 + Found 221 diagnostics
 
 werkzeug (https://github.com/pallets/werkzeug)
 + src/werkzeug/datastructures/mixins.py:260:48: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/werkzeug/datastructures/mixins.py:278:18: error[invalid-super-argument] `Self@pop` is not an instance or subclass of `&lt;class 'UpdateDictMixin'&gt;` in `super(&lt;class 'UpdateDictMixin'&gt;, Self@pop)` call
+- src/werkzeug/datastructures/mixins.py:278:18: error[invalid-super-argument] `Self@pop` is not an instance or subclass of `&lt;class &#x27;UpdateDictMixin&#x27;&gt;` in `super(&lt;class &#x27;UpdateDictMixin&#x27;&gt;, Self@pop)` call
 + src/werkzeug/datastructures/mixins.py:280:45: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 - Found 383 diagnostics
 + Found 384 diagnostics
 
 spack (https://github.com/spack/spack)
-- lib/spack/spack/package_base.py:278:9: error[invalid-super-argument] `Unknown &amp; ~&lt;Protocol with members 'executables'&gt;` is not an instance or subclass of `&lt;class 'DetectablePackageMeta'&gt;` in `super(&lt;class 'DetectablePackageMeta'&gt;, Unknown &amp; ~&lt;Protocol with members 'executables'&gt;)` call
-- lib/spack/spack/vendor/typing_extensions.py:842:39: error[invalid-super-argument] `Unknown &amp; &lt;Protocol with members '_subs_tree'&gt;` is not an instance or subclass of `Unknown` in `super(Unknown, Unknown &amp; &lt;Protocol with members '_subs_tree'&gt;)` call
+- lib/spack/spack/package_base.py:278:9: error[invalid-super-argument] `Unknown &amp; ~&lt;Protocol with members &#x27;executables&#x27;&gt;` is not an instance or subclass of `&lt;class &#x27;DetectablePackageMeta&#x27;&gt;` in `super(&lt;class &#x27;DetectablePackageMeta&#x27;&gt;, Unknown &amp; ~&lt;Protocol with members &#x27;executables&#x27;&gt;)` call
+- lib/spack/spack/vendor/typing_extensions.py:842:39: error[invalid-super-argument] `Unknown &amp; &lt;Protocol with members &#x27;_subs_tree&#x27;&gt;` is not an instance or subclass of `Unknown` in `super(Unknown, Unknown &amp; &lt;Protocol with members &#x27;_subs_tree&#x27;&gt;)` call
 - Found 7523 diagnostics
 + Found 7521 diagnostics
 
 tornado (https://github.com/tornadoweb/tornado)
-- tornado/test/util.py:124:13: error[invalid-super-argument] `Unknown &amp; ~&lt;class 'AbstractBaseWrapper'&gt;` is not an instance or subclass of `&lt;class 'AbstractBaseWrapper'&gt;` in `super(&lt;class 'AbstractBaseWrapper'&gt;, Unknown &amp; ~&lt;class 'AbstractBaseWrapper'&gt;)` call
+- tornado/test/util.py:124:13: error[invalid-super-argument] `Unknown &amp; ~&lt;class &#x27;AbstractBaseWrapper&#x27;&gt;` is not an instance or subclass of `&lt;class &#x27;AbstractBaseWrapper&#x27;&gt;` in `super(&lt;class &#x27;AbstractBaseWrapper&#x27;&gt;, Unknown &amp; ~&lt;class &#x27;AbstractBaseWrapper&#x27;&gt;)` call
 - Found 245 diagnostics
 + Found 244 diagnostics
 
 optuna (https://github.com/optuna/optuna)
-- optuna/testing/tempfile_pool.py:20:29: error[invalid-super-argument] `Unknown &amp; ~&lt;Protocol with members '_instance'&gt;` is not an instance or subclass of `&lt;class 'NamedTemporaryFilePool'&gt;` in `super(&lt;class 'NamedTemporaryFilePool'&gt;, Unknown &amp; ~&lt;Protocol with members '_instance'&gt;)` call
+- optuna/testing/tempfile_pool.py:20:29: error[invalid-super-argument] `Unknown &amp; ~&lt;Protocol with members &#x27;_instance&#x27;&gt;` is not an instance or subclass of `&lt;class &#x27;NamedTemporaryFilePool&#x27;&gt;` in `super(&lt;class &#x27;NamedTemporaryFilePool&#x27;&gt;, Unknown &amp; ~&lt;Protocol with members &#x27;_instance&#x27;&gt;)` call
 - Found 568 diagnostics
 + Found 567 diagnostics
 
 comtypes (https://github.com/enthought/comtypes)
-- comtypes/_post_coinit/unknwn.py:294:33: error[invalid-super-argument] `Unknown &amp; _compointer_base` is not an instance or subclass of `&lt;class '_compointer_base'&gt;` in `super(&lt;class '_compointer_base'&gt;, Unknown &amp; _compointer_base)` call
+- comtypes/_post_coinit/unknwn.py:294:33: error[invalid-super-argument] `Unknown &amp; _compointer_base` is not an instance or subclass of `&lt;class &#x27;_compointer_base&#x27;&gt;` in `super(&lt;class &#x27;_compointer_base&#x27;&gt;, Unknown &amp; _compointer_base)` call
 - Found 403 diagnostics
 + Found 402 diagnostics
 
 mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
-- bson/json_util.py:327:34: error[invalid-super-argument] `type[JSONOptions]` is not an instance or subclass of `&lt;class 'JSONOptions'&gt;` in `super(&lt;class 'JSONOptions'&gt;, type[JSONOptions])` call
+- bson/json_util.py:327:34: error[invalid-super-argument] `type[JSONOptions]` is not an instance or subclass of `&lt;class &#x27;JSONOptions&#x27;&gt;` in `super(&lt;class &#x27;JSONOptions&#x27;&gt;, type[JSONOptions])` call
 - Found 515 diagnostics
 + Found 514 diagnostics
 
 trio (https://github.com/python-trio/trio)
-- src/trio/testing/_raises_group.py:543:9: error[invalid-super-argument] `RaisesGroup[ExcT_1@__init__ | BaseExcT_1@__init__ | BaseExceptionGroup[BaseExcT_2@__init__]]` is not an instance or subclass of `&lt;class 'RaisesGroup'&gt;` in `super(&lt;class 'RaisesGroup'&gt;, RaisesGroup[ExcT_1@__init__ | BaseExcT_1@__init__ | BaseExceptionGroup[BaseExcT_2@__init__]])` call
+- src/trio/testing/_raises_group.py:543:9: error[invalid-super-argument] `RaisesGroup[ExcT_1@__init__ | BaseExcT_1@__init__ | BaseExceptionGroup[BaseExcT_2@__init__]]` is not an instance or subclass of `&lt;class &#x27;RaisesGroup&#x27;&gt;` in `super(&lt;class &#x27;RaisesGroup&#x27;&gt;, RaisesGroup[ExcT_1@__init__ | BaseExcT_1@__init__ | BaseExceptionGroup[BaseExcT_2@__init__]])` call
 - Found 648 diagnostics
 + Found 647 diagnostics
 
 meson (https://github.com/mesonbuild/meson)
-- mesonbuild/interpreterbase/baseobjects.py:56:9: error[invalid-super-argument] `type[InterpreterObject]` is not an instance or subclass of `&lt;class 'InterpreterObject'&gt;` in `super(&lt;class 'InterpreterObject'&gt;, type[InterpreterObject])` call
+- mesonbuild/interpreterbase/baseobjects.py:56:9: error[invalid-super-argument] `type[InterpreterObject]` is not an instance or subclass of `&lt;class &#x27;InterpreterObject&#x27;&gt;` in `super(&lt;class &#x27;InterpreterObject&#x27;&gt;, type[InterpreterObject])` call
 - Found 886 diagnostics
 + Found 885 diagnostics
 
@@ -110,56 +110,56 @@ scikit-build-core (https://github.com/scikit-build/scikit-build-core)
 + Found 52 diagnostics
 
 prefect (https://github.com/PrefectHQ/prefect)
-- src/prefect/_internal/websockets.py:134:9: error[invalid-super-argument] `Self@_proxy_connect` is not an instance or subclass of `&lt;class 'WebsocketProxyConnect'&gt;` in `super(&lt;class 'WebsocketProxyConnect'&gt;, Self@_proxy_connect)` call
+- src/prefect/_internal/websockets.py:134:9: error[invalid-super-argument] `Self@_proxy_connect` is not an instance or subclass of `&lt;class &#x27;WebsocketProxyConnect&#x27;&gt;` in `super(&lt;class &#x27;WebsocketProxyConnect&#x27;&gt;, Self@_proxy_connect)` call
 + src/prefect/context.py:202:16: error[invalid-return-type] Return type does not match returned value: expected `Self@model_copy`, found `ContextModel`
 + src/prefect/context.py:308:20: error[invalid-return-type] Return type does not match returned value: expected `Self@__aenter__`, found `AsyncClientContext`
-- src/prefect/context.py:199:15: error[invalid-super-argument] `Self@model_copy` is not an instance or subclass of `&lt;class 'ContextModel'&gt;` in `super(&lt;class 'ContextModel'&gt;, Self@model_copy)` call
-- src/prefect/context.py:308:20: error[invalid-super-argument] `Self@__aenter__` is not an instance or subclass of `&lt;class 'AsyncClientContext'&gt;` in `super(&lt;class 'AsyncClientContext'&gt;, Self@__aenter__)` call
-- src/prefect/context.py:316:20: error[invalid-super-argument] `Self@__aexit__` is not an instance or subclass of `&lt;class 'AsyncClientContext'&gt;` in `super(&lt;class 'AsyncClientContext'&gt;, Self@__aexit__)` call
+- src/prefect/context.py:199:15: error[invalid-super-argument] `Self@model_copy` is not an instance or subclass of `&lt;class &#x27;ContextModel&#x27;&gt;` in `super(&lt;class &#x27;ContextModel&#x27;&gt;, Self@model_copy)` call
+- src/prefect/context.py:308:20: error[invalid-super-argument] `Self@__aenter__` is not an instance or subclass of `&lt;class &#x27;AsyncClientContext&#x27;&gt;` in `super(&lt;class &#x27;AsyncClientContext&#x27;&gt;, Self@__aenter__)` call
+- src/prefect/context.py:316:20: error[invalid-super-argument] `Self@__aexit__` is not an instance or subclass of `&lt;class &#x27;AsyncClientContext&#x27;&gt;` in `super(&lt;class &#x27;AsyncClientContext&#x27;&gt;, Self@__aexit__)` call
 - Found 3250 diagnostics
 + Found 3248 diagnostics
 
 egglog-python (https://github.com/egraphs-good/egglog-python)
-- python/egglog/egraph.py:338:20: error[invalid-super-argument] `type[_ExprMetaclass]` is not an instance or subclass of `&lt;class '_ExprMetaclass'&gt;` in `super(&lt;class '_ExprMetaclass'&gt;, type[_ExprMetaclass])` call
+- python/egglog/egraph.py:338:20: error[invalid-super-argument] `type[_ExprMetaclass]` is not an instance or subclass of `&lt;class &#x27;_ExprMetaclass&#x27;&gt;` in `super(&lt;class &#x27;_ExprMetaclass&#x27;&gt;, type[_ExprMetaclass])` call
 - Found 1370 diagnostics
 + Found 1369 diagnostics
 
 zulip (https://github.com/zulip/zulip)
-- zerver/lib/response.py:67:27: error[invalid-super-argument] `type[Unknown]` is not an instance or subclass of `&lt;class 'MutableJsonResponse'&gt;` in `super(&lt;class 'MutableJsonResponse'&gt;, type[Unknown])` call
+- zerver/lib/response.py:67:27: error[invalid-super-argument] `type[Unknown]` is not an instance or subclass of `&lt;class &#x27;MutableJsonResponse&#x27;&gt;` in `super(&lt;class &#x27;MutableJsonResponse&#x27;&gt;, type[Unknown])` call
 - Found 2708 diagnostics
 + Found 2707 diagnostics
 
 sympy (https://github.com/sympy/sympy)
-- sympy/physics/control/lti.py:414:16: error[invalid-super-argument] `Unknown &amp; ~&lt;class 'LinearTimeInvariant'&gt;` is not an instance or subclass of `&lt;class 'LinearTimeInvariant'&gt;` in `super(&lt;class 'LinearTimeInvariant'&gt;, Unknown &amp; ~&lt;class 'LinearTimeInvariant'&gt;)` call
-- sympy/physics/control/lti.py:722:15: error[invalid-super-argument] `Unknown &amp; ~&lt;class 'TransferFunctionBase'&gt;` is not an instance or subclass of `&lt;class 'TransferFunctionBase'&gt;` in `super(&lt;class 'TransferFunctionBase'&gt;, Unknown &amp; ~&lt;class 'TransferFunctionBase'&gt;)` call
-- sympy/physics/control/lti.py:5454:19: error[invalid-super-argument] `Unknown &amp; ~&lt;class 'StateSpaceBase'&gt;` is not an instance or subclass of `&lt;class 'StateSpaceBase'&gt;` in `super(&lt;class 'StateSpaceBase'&gt;, Unknown &amp; ~&lt;class 'StateSpaceBase'&gt;)` call
+- sympy/physics/control/lti.py:414:16: error[invalid-super-argument] `Unknown &amp; ~&lt;class &#x27;LinearTimeInvariant&#x27;&gt;` is not an instance or subclass of `&lt;class &#x27;LinearTimeInvariant&#x27;&gt;` in `super(&lt;class &#x27;LinearTimeInvariant&#x27;&gt;, Unknown &amp; ~&lt;class &#x27;LinearTimeInvariant&#x27;&gt;)` call
+- sympy/physics/control/lti.py:722:15: error[invalid-super-argument] `Unknown &amp; ~&lt;class &#x27;TransferFunctionBase&#x27;&gt;` is not an instance or subclass of `&lt;class &#x27;TransferFunctionBase&#x27;&gt;` in `super(&lt;class &#x27;TransferFunctionBase&#x27;&gt;, Unknown &amp; ~&lt;class &#x27;TransferFunctionBase&#x27;&gt;)` call
+- sympy/physics/control/lti.py:5454:19: error[invalid-super-argument] `Unknown &amp; ~&lt;class &#x27;StateSpaceBase&#x27;&gt;` is not an instance or subclass of `&lt;class &#x27;StateSpaceBase&#x27;&gt;` in `super(&lt;class &#x27;StateSpaceBase&#x27;&gt;, Unknown &amp; ~&lt;class &#x27;StateSpaceBase&#x27;&gt;)` call
 - Found 14031 diagnostics
 + Found 14028 diagnostics
 
 </code></pre>
-</details>
+
 No memory usage changes detected ✅
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @AlexWaygood on 2025-10-12 19:01</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-12 19:01</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-10-12 19:01</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-12 19:01</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-10-12 19:01</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-12 19:01</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-10-12 19:01</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-12 19:01</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-10-12 19:01</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-12 19:01</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-12 19:04</div>
-            <div class="timeline-body"><p>With this PR, the <code>super()</code> implementation becomes large enough that we should move it to a separate <code>types::bound_super</code> submodule. I haven't done that in this PR, to keep the diff somewhat readable, but I can do it in a followup.</p>
+            <div class="timeline-body"><p>With this PR, the <code>super()</code> implementation becomes large enough that we should move it to a separate <code>types::bound_super</code> submodule. I haven&#x27;t done that in this PR, to keep the diff somewhat readable, but I can do it in a followup.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -170,7 +170,7 @@ No memory usage changes detected ✅
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types.rs</code>:11493 on 2025-10-13 08:55</div>
             <div class="timeline-body"><p>A version that avoids the additional allocation would be:</p>
-<pre><code class="language-suggestion">                return Ok(union
+<pre><code>                return Ok(union
                     .elements(db)
                     .iter()
                     .copied()
@@ -197,10 +197,10 @@ No memory usage changes detected ✅
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @AlexWaygood on 2025-10-13 10:57</div>
+            <div class="event">Merged by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-13 10:57</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-10-13 10:57</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-13 10:57</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-10-13 10:57</div>
@@ -211,11 +211,11 @@ No memory usage changes detected ✅
 <p>I mostly reviewed the implementation and trust you on the semantics here (or to pull someone in for a second review if you are unsure about parts of it).</p>
 </blockquote>
 <p>I checked all the <code>reveal_type</code> calls against the actual type at runtime that you get in the REPL.</p>
-<p>Some parts of this I'm slightly unsure about are:</p>
+<p>Some parts of this I&#x27;m slightly unsure about are:</p>
 <ul>
-<li><em>Should</em> we be banning abstract/structural types as the second argument to <code>super()</code>? I don't really know what our behaviour should be if we should allow them. Anyway, we banned them before this PR (but with a worse error message), so this PR didn't really change the status quo there. If others disagree with it and have a good suggestion for what our behaviour should be there, I can make a followup PR and rip it out</li>
-<li>Some of the error messages could probably still be improved (but again, I think they're better than they were before this PR)</li>
-<li>It's not sound in general to upcast a <code>TypedDict</code> to a <code>dict</code> type like I'm doing there, but I <em>think</em> it's okay in this instance? Anyway, that's an extreme edge case that probably nobody will actually come across in reality</li>
+<li><em>Should</em> we be banning abstract/structural types as the second argument to <code>super()</code>? I don&#x27;t really know what our behaviour should be if we should allow them. Anyway, we banned them before this PR (but with a worse error message), so this PR didn&#x27;t really change the status quo there. If others disagree with it and have a good suggestion for what our behaviour should be there, I can make a followup PR and rip it out</li>
+<li>Some of the error messages could probably still be improved (but again, I think they&#x27;re better than they were before this PR)</li>
+<li>It&#x27;s not sound in general to upcast a <code>TypedDict</code> to a <code>dict</code> type like I&#x27;m doing there, but I <em>think</em> it&#x27;s okay in this instance? Anyway, that&#x27;s an extreme edge case that probably nobody will actually come across in reality</li>
 </ul>
 <p>I think we can easily iterate on any of these, which is why I merged despite being unsure about them 😄</p>
 </div>
@@ -223,7 +223,7 @@ No memory usage changes detected ✅
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:16:21 UTC
+        Synced at 2026-01-20 19:19:26 UTC
     </footer>
 </body>
 </html>

@@ -27,10 +27,10 @@
 <p>Previously, we just checked the analogous thing for <code>SRC/foo</code>, but this can be misleading in situations with disjoint namespace packages that share a common base name (e.g. we may be working inside the namespace package <code>foo.buzz</code> and importing <code>foo.bar</code> from elsewhere).</p>
 <p>Supersedes #12987
 Closes #12984</p>
-<h1>Testing</h1>
-<p>We've added some unit tests displaying the different behavior in the function <code>match_sources</code> which implements this logic. In addition, here are the results of an ad-hoc, local test and comparison with <code>isort</code>. Notice that the preview behavior now coincides with <code>isort</code> - including the inconsistent classification of <code>from</code> imports.</p>
-<p>(I've manually edited out some of the irrelevant logs and such in the outputs)</p>
-<pre><code class="language-console">❯ tree
+Testing
+<p>We&#x27;ve added some unit tests displaying the different behavior in the function <code>match_sources</code> which implements this logic. In addition, here are the results of an ad-hoc, local test and comparison with <code>isort</code>. Notice that the preview behavior now coincides with <code>isort</code> - including the inconsistent classification of <code>from</code> imports.</p>
+<p>(I&#x27;ve manually edited out some of the irrelevant logs and such in the outputs)</p>
+<pre><code>❯ tree
 .
 ├── pyproject.toml
 └── src
@@ -39,13 +39,13 @@ Closes #12984</p>
             └── __init__.py
 
 ❯ ../target/debug/ruff check src/mynamespace/subpackage_a/__init__.py --no-cache --select I -v
-[2025-04-13][12:33:24][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'mynamespace.subpackage_b' as Known(FirstParty) (SourceMatch(&quot;/Users/dmbp/Documents/dev/contrib/ruff/exampleproj/src&quot;))
-[2025-04-13][12:33:24][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'mynamespace' as Known(FirstParty) (SourceMatch(&quot;/Users/dmbp/Documents/dev/contrib/ruff/exampleproj/src&quot;))
+[2025-04-13][12:33:24][ruff_linter::rules::isort::categorize][DEBUG] Categorized &#x27;mynamespace.subpackage_b&#x27; as Known(FirstParty) (SourceMatch(&quot;/Users/dmbp/Documents/dev/contrib/ruff/exampleproj/src&quot;))
+[2025-04-13][12:33:24][ruff_linter::rules::isort::categorize][DEBUG] Categorized &#x27;mynamespace&#x27; as Known(FirstParty) (SourceMatch(&quot;/Users/dmbp/Documents/dev/contrib/ruff/exampleproj/src&quot;))
 All checks passed!
 
 ❯ ../target/debug/ruff check src/mynamespace/subpackage_a/__init__.py --no-cache --select I -v --preview
-[2025-04-13][12:33:30][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'mynamespace.subpackage_b' as Known(ThirdParty) (NoMatch)
-[2025-04-13][12:33:30][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'mynamespace' as Known(FirstParty) (SourceMatch(&quot;/Users/dmbp/Documents/dev/contrib/ruff/exampleproj/src&quot;))
+[2025-04-13][12:33:30][ruff_linter::rules::isort::categorize][DEBUG] Categorized &#x27;mynamespace.subpackage_b&#x27; as Known(ThirdParty) (NoMatch)
+[2025-04-13][12:33:30][ruff_linter::rules::isort::categorize][DEBUG] Categorized &#x27;mynamespace&#x27; as Known(FirstParty) (SourceMatch(&quot;/Users/dmbp/Documents/dev/contrib/ruff/exampleproj/src&quot;))
 src/mynamespace/subpackage_a/__init__.py:1:1: I001 [*] Import block is un-sorted or un-formatted
   |
 1 | / import mynamespace.subpackage_b
@@ -71,151 +71,151 @@ from-type place_module for mynamespace returned FIRSTPARTY
 +
  from mynamespace import subpackage_b
 </code></pre>
-<h1>Summary of Ecosystem Checks</h1>
-<h2><code>snowcli</code></h2>
+Summary of Ecosystem Checks
+<code>snowcli</code>
 <p>These are all true positives! The package in this repo is <code>snowflake.cli</code>, and the ecosystem reports all have to do with importing third-party packages like <code>snowflake.snowpark</code> and <code>snowflake.connector</code>.</p>
-<h2><code>airflow</code></h2>
+<code>airflow</code>
 <p>Also true positives: the dependency <code>docs.utils.conf_constants</code> appears in various places and is correctly identified as third-party, whereas before it was considered first-party because a <code>docs</code> folder.</p>
-<h2><code>freedomofpress</code></h2>
+<code>freedomofpress</code>
 <p>This is a false positive because this repo contains a Python file that does not have a <code>.py</code> suffix, but instead uses the shebang specification: https://github.com/freedomofpress/securedrop/blob/develop/journalist_gui/SecureDropUpdater</p>
-<h2><code>mlflow</code></h2>
+<code>mlflow</code>
 <p>The <em>change</em> is a true positive, but there is a leftover false positive. The change concerns two imports:</p>
-<pre><code class="language-python">import docker
+<pre><code>import docker
 from docker.errors import APIError, BuildError
 </code></pre>
 <p>On <code>main</code>, these are <em>both</em> incorrectly identified as first-party due to a local folder named <code>docker</code>. In this PR with preview enabled, <code>docker.errors</code> is correctly identified as third-party, which causes a lint error to be emitted.</p>
-<h2><code>pytest</code></h2>
+<code>pytest</code>
 <p>The problematic import here is <code>from py.path import error</code> which is, unfortunately, incorrectly labeled as third-party in <code>preview</code>. This is because it is not possible to know this import is first party from the file system alone! Indeed, <code>path</code> is actually a submodule of a module called <code>_py</code>, and then we have:</p>
-<pre><code class="language-python"># src/py.py
+<pre><code># src/py.py
 import _pytest._py.path as path
 </code></pre>
-<p>If that's not bad enough, if you go to <code>src/_pytest/_py</code> you will not find <code>path/error</code> instead you will find <code>path.py</code> which has this line:</p>
-<pre><code class="language-python"># path.py
+<p>If that&#x27;s not bad enough, if you go to <code>src/_pytest/_py</code> you will not find <code>path/error</code> instead you will find <code>path.py</code> which has this line:</p>
+<pre><code># path.py
 from . import error
 </code></pre>
-<p>I don't think it's in scope to support something like that here! Maybe one day <code>ty</code> will power our import sorting!</p>
+<p>I don&#x27;t think it&#x27;s in scope to support something like that here! Maybe one day <code>ty</code> will power our import sorting!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @dylwil3 on 2025-03-08 09:43</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-03-08 09:43</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @dylwil3 on 2025-03-08 09:43</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-03-08 09:43</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">isort</span> added by @dylwil3 on 2025-03-08 09:43</div>
+            <div class="event">Label <span class="label">isort</span> added by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-03-08 09:43</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-08 09:50</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+22 -13 violations, +0 -0 fixes in 5 projects; 50 projects unchanged)</p>
-<details><summary><a href="https://github.com/Snowflake-Labs/snowcli">Snowflake-Labs/snowcli</a> (+15 -13 violations, +0 -0 fixes)</summary>
+<a href="https://github.com/Snowflake-Labs/snowcli">Snowflake-Labs/snowcli</a> (+15 -13 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/scripts/cleanup.py#L14'>scripts/cleanup.py:14:1:</a> I001 [*] Import block is un-sorted or un-formatted
-- <a href='https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/src/snowflake/cli/_plugins/connection/util.py#L15'>src/snowflake/cli/_plugins/connection/util.py:15:1:</a> I001 [*] Import block is un-sorted or un-formatted
-+ <a href='https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/src/snowflake/cli/_plugins/logs/manager.py#L1'>src/snowflake/cli/_plugins/logs/manager.py:1:1:</a> I001 [*] Import block is un-sorted or un-formatted
-+ <a href='https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/src/snowflake/cli/_plugins/logs/utils.py#L1'>src/snowflake/cli/_plugins/logs/utils.py:1:1:</a> I001 [*] Import block is un-sorted or un-formatted
-+ <a href='https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/src/snowflake/cli/_plugins/nativeapp/sf_sql_facade.py#L14'>src/snowflake/cli/_plugins/nativeapp/sf_sql_facade.py:14:1:</a> I001 [*] Import block is un-sorted or un-formatted
-+ <a href='https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/src/snowflake/cli/_plugins/project/manager.py#L14'>src/snowflake/cli/_plugins/project/manager.py:14:1:</a> I001 [*] Import block is un-sorted or un-formatted
-+ <a href='https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/src/snowflake/cli/_plugins/spcs/compute_pool/manager.py#L15'>src/snowflake/cli/_plugins/spcs/compute_pool/manager.py:15:1:</a> I001 [*] Import block is un-sorted or un-formatted
-+ <a href='https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/src/snowflake/cli/_plugins/spcs/image_repository/manager.py#L15'>src/snowflake/cli/_plugins/spcs/image_repository/manager.py:15:1:</a> I001 [*] Import block is un-sorted or un-formatted
-+ <a href='https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/src/snowflake/cli/_plugins/sql/manager.py#L15'>src/snowflake/cli/_plugins/sql/manager.py:15:1:</a> I001 [*] Import block is un-sorted or un-formatted
-+ <a href='https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/src/snowflake/cli/_plugins/sql/snowsql_commands.py#L1'>src/snowflake/cli/_plugins/sql/snowsql_commands.py:1:1:</a> I001 [*] Import block is un-sorted or un-formatted
-+ <a href='https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/src/snowflake/cli/_plugins/stage/diff.py#L15'>src/snowflake/cli/_plugins/stage/diff.py:15:1:</a> I001 [*] Import block is un-sorted or un-formatted
-+ <a href='https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/src/snowflake/cli/api/cli_global_context.py#L15'>src/snowflake/cli/api/cli_global_context.py:15:1:</a> I001 [*] Import block is un-sorted or un-formatted
-+ <a href='https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/src/snowflake/cli/api/connections.py#L15'>src/snowflake/cli/api/connections.py:15:1:</a> I001 [*] Import block is un-sorted or un-formatted
-+ <a href='https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/src/snowflake/cli/api/entities/common.py#L1'>src/snowflake/cli/api/entities/common.py:1:1:</a> I001 [*] Import block is un-sorted or un-formatted
-+ <a href='https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/src/snowflake/cli/api/sql_execution.py#L15'>src/snowflake/cli/api/sql_execution.py:15:1:</a> I001 [*] Import block is un-sorted or un-formatted
-+ <a href='https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/test_external_plugins/snowpark_hello_single_command/src/snowflakecli/test_plugins/snowpark_hello/manager.py#L14'>test_external_plugins/snowpark_hello_single_command/src/snowflakecli/test_plugins/snowpark_hello/manager.py:14:1:</a> I001 [*] Import block is un-sorted or un-formatted
-- <a href='https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/tests/nativeapp/utils.py#L15'>tests/nativeapp/utils.py:15:1:</a> I001 [*] Import block is un-sorted or un-formatted
-- <a href='https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/tests/test_data/projects/glob_patterns/main.py#L1'>tests/test_data/projects/glob_patterns/main.py:1:1:</a> I001 [*] Import block is un-sorted or un-formatted
-- <a href='https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/tests/test_data/projects/glob_patterns/src/app.py#L1'>tests/test_data/projects/glob_patterns/src/app.py:1:1:</a> I001 [*] Import block is un-sorted or un-formatted
-- <a href='https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/tests/test_data/projects/glob_patterns_zip/main.py#L1'>tests/test_data/projects/glob_patterns_zip/main.py:1:1:</a> I001 [*] Import block is un-sorted or un-formatted
-- <a href='https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/tests/test_data/projects/glob_patterns_zip/src/app.py#L1'>tests/test_data/projects/glob_patterns_zip/src/app.py:1:1:</a> I001 [*] Import block is un-sorted or un-formatted
-- <a href='https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/tests/test_main.py#L17'>tests/test_main.py:17:1:</a> I001 [*] Import block is un-sorted or un-formatted
-- <a href='https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/tests_integration/nativeapp/test_debug_mode.py#L15'>tests_integration/nativeapp/test_debug_mode.py:15:1:</a> I001 [*] Import block is un-sorted or un-formatted
-- <a href='https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/tests_integration/nativeapp/test_telemetry_errors.py#L14'>tests_integration/nativeapp/test_telemetry_errors.py:14:1:</a> I001 [*] Import block is un-sorted or un-formatted
-- <a href='https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/tests_integration/notebook/test_notebooks.py#L15'>tests_integration/notebook/test_notebooks.py:15:1:</a> I001 [*] Import block is un-sorted or un-formatted
-- <a href='https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/tests_integration/spcs/testing_utils/image_repository_utils.py#L1'>tests_integration/spcs/testing_utils/image_repository_utils.py:1:1:</a> I001 [*] Import block is un-sorted or un-formatted
-- <a href='https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/tests_integration/test_config.py#L15'>tests_integration/test_config.py:15:1:</a> I001 [*] Import block is un-sorted or un-formatted
-- <a href='https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/tests_integration/testing_utils/sql_utils.py#L15'>tests_integration/testing_utils/sql_utils.py:15:1:</a> I001 [*] Import block is un-sorted or un-formatted
++ <a href="https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/scripts/cleanup.py#L14">scripts/cleanup.py:14:1:</a> I001 [*] Import block is un-sorted or un-formatted
+- <a href="https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/src/snowflake/cli/_plugins/connection/util.py#L15">src/snowflake/cli/_plugins/connection/util.py:15:1:</a> I001 [*] Import block is un-sorted or un-formatted
++ <a href="https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/src/snowflake/cli/_plugins/logs/manager.py#L1">src/snowflake/cli/_plugins/logs/manager.py:1:1:</a> I001 [*] Import block is un-sorted or un-formatted
++ <a href="https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/src/snowflake/cli/_plugins/logs/utils.py#L1">src/snowflake/cli/_plugins/logs/utils.py:1:1:</a> I001 [*] Import block is un-sorted or un-formatted
++ <a href="https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/src/snowflake/cli/_plugins/nativeapp/sf_sql_facade.py#L14">src/snowflake/cli/_plugins/nativeapp/sf_sql_facade.py:14:1:</a> I001 [*] Import block is un-sorted or un-formatted
++ <a href="https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/src/snowflake/cli/_plugins/project/manager.py#L14">src/snowflake/cli/_plugins/project/manager.py:14:1:</a> I001 [*] Import block is un-sorted or un-formatted
++ <a href="https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/src/snowflake/cli/_plugins/spcs/compute_pool/manager.py#L15">src/snowflake/cli/_plugins/spcs/compute_pool/manager.py:15:1:</a> I001 [*] Import block is un-sorted or un-formatted
++ <a href="https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/src/snowflake/cli/_plugins/spcs/image_repository/manager.py#L15">src/snowflake/cli/_plugins/spcs/image_repository/manager.py:15:1:</a> I001 [*] Import block is un-sorted or un-formatted
++ <a href="https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/src/snowflake/cli/_plugins/sql/manager.py#L15">src/snowflake/cli/_plugins/sql/manager.py:15:1:</a> I001 [*] Import block is un-sorted or un-formatted
++ <a href="https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/src/snowflake/cli/_plugins/sql/snowsql_commands.py#L1">src/snowflake/cli/_plugins/sql/snowsql_commands.py:1:1:</a> I001 [*] Import block is un-sorted or un-formatted
++ <a href="https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/src/snowflake/cli/_plugins/stage/diff.py#L15">src/snowflake/cli/_plugins/stage/diff.py:15:1:</a> I001 [*] Import block is un-sorted or un-formatted
++ <a href="https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/src/snowflake/cli/api/cli_global_context.py#L15">src/snowflake/cli/api/cli_global_context.py:15:1:</a> I001 [*] Import block is un-sorted or un-formatted
++ <a href="https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/src/snowflake/cli/api/connections.py#L15">src/snowflake/cli/api/connections.py:15:1:</a> I001 [*] Import block is un-sorted or un-formatted
++ <a href="https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/src/snowflake/cli/api/entities/common.py#L1">src/snowflake/cli/api/entities/common.py:1:1:</a> I001 [*] Import block is un-sorted or un-formatted
++ <a href="https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/src/snowflake/cli/api/sql_execution.py#L15">src/snowflake/cli/api/sql_execution.py:15:1:</a> I001 [*] Import block is un-sorted or un-formatted
++ <a href="https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/test_external_plugins/snowpark_hello_single_command/src/snowflakecli/test_plugins/snowpark_hello/manager.py#L14">test_external_plugins/snowpark_hello_single_command/src/snowflakecli/test_plugins/snowpark_hello/manager.py:14:1:</a> I001 [*] Import block is un-sorted or un-formatted
+- <a href="https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/tests/nativeapp/utils.py#L15">tests/nativeapp/utils.py:15:1:</a> I001 [*] Import block is un-sorted or un-formatted
+- <a href="https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/tests/test_data/projects/glob_patterns/main.py#L1">tests/test_data/projects/glob_patterns/main.py:1:1:</a> I001 [*] Import block is un-sorted or un-formatted
+- <a href="https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/tests/test_data/projects/glob_patterns/src/app.py#L1">tests/test_data/projects/glob_patterns/src/app.py:1:1:</a> I001 [*] Import block is un-sorted or un-formatted
+- <a href="https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/tests/test_data/projects/glob_patterns_zip/main.py#L1">tests/test_data/projects/glob_patterns_zip/main.py:1:1:</a> I001 [*] Import block is un-sorted or un-formatted
+- <a href="https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/tests/test_data/projects/glob_patterns_zip/src/app.py#L1">tests/test_data/projects/glob_patterns_zip/src/app.py:1:1:</a> I001 [*] Import block is un-sorted or un-formatted
+- <a href="https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/tests/test_main.py#L17">tests/test_main.py:17:1:</a> I001 [*] Import block is un-sorted or un-formatted
+- <a href="https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/tests_integration/nativeapp/test_debug_mode.py#L15">tests_integration/nativeapp/test_debug_mode.py:15:1:</a> I001 [*] Import block is un-sorted or un-formatted
+- <a href="https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/tests_integration/nativeapp/test_telemetry_errors.py#L14">tests_integration/nativeapp/test_telemetry_errors.py:14:1:</a> I001 [*] Import block is un-sorted or un-formatted
+- <a href="https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/tests_integration/notebook/test_notebooks.py#L15">tests_integration/notebook/test_notebooks.py:15:1:</a> I001 [*] Import block is un-sorted or un-formatted
+- <a href="https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/tests_integration/spcs/testing_utils/image_repository_utils.py#L1">tests_integration/spcs/testing_utils/image_repository_utils.py:1:1:</a> I001 [*] Import block is un-sorted or un-formatted
+- <a href="https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/tests_integration/test_config.py#L15">tests_integration/test_config.py:15:1:</a> I001 [*] Import block is un-sorted or un-formatted
+- <a href="https://github.com/Snowflake-Labs/snowcli/blob/7db8e8eed4bceb3e7aafd427e0294b18dfb24543/tests_integration/testing_utils/sql_utils.py#L15">tests_integration/testing_utils/sql_utils.py:15:1:</a> I001 [*] Import block is un-sorted or un-formatted
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+4 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/apache/airflow">apache/airflow</a> (+4 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/apache/airflow/blob/3b80419e28a6ea95246b546460ffba78d09f3255/airflow-core/docs/conf.py#L21'>airflow-core/docs/conf.py:21:1:</a> I001 [*] Import block is un-sorted or un-formatted
-+ <a href='https://github.com/apache/airflow/blob/3b80419e28a6ea95246b546460ffba78d09f3255/chart/docs/conf.py#L21'>chart/docs/conf.py:21:1:</a> I001 [*] Import block is un-sorted or un-formatted
-+ <a href='https://github.com/apache/airflow/blob/3b80419e28a6ea95246b546460ffba78d09f3255/docker-stack-docs/conf.py#L21'>docker-stack-docs/conf.py:21:1:</a> I001 [*] Import block is un-sorted or un-formatted
-+ <a href='https://github.com/apache/airflow/blob/3b80419e28a6ea95246b546460ffba78d09f3255/providers-summary-docs/conf.py#L21'>providers-summary-docs/conf.py:21:1:</a> I001 [*] Import block is un-sorted or un-formatted
++ <a href="https://github.com/apache/airflow/blob/3b80419e28a6ea95246b546460ffba78d09f3255/airflow-core/docs/conf.py#L21">airflow-core/docs/conf.py:21:1:</a> I001 [*] Import block is un-sorted or un-formatted
++ <a href="https://github.com/apache/airflow/blob/3b80419e28a6ea95246b546460ffba78d09f3255/chart/docs/conf.py#L21">chart/docs/conf.py:21:1:</a> I001 [*] Import block is un-sorted or un-formatted
++ <a href="https://github.com/apache/airflow/blob/3b80419e28a6ea95246b546460ffba78d09f3255/docker-stack-docs/conf.py#L21">docker-stack-docs/conf.py:21:1:</a> I001 [*] Import block is un-sorted or un-formatted
++ <a href="https://github.com/apache/airflow/blob/3b80419e28a6ea95246b546460ffba78d09f3255/providers-summary-docs/conf.py#L21">providers-summary-docs/conf.py:21:1:</a> I001 [*] Import block is un-sorted or un-formatted
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/freedomofpress/securedrop">freedomofpress/securedrop</a> (+1 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/freedomofpress/securedrop">freedomofpress/securedrop</a> (+1 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/freedomofpress/securedrop/blob/216a5ca20d9075ec8a0a53f3d6b017522961a039/journalist_gui/test_gui.py#L1'>journalist_gui/test_gui.py:1:1:</a> I001 [*] Import block is un-sorted or un-formatted
++ <a href="https://github.com/freedomofpress/securedrop/blob/216a5ca20d9075ec8a0a53f3d6b017522961a039/journalist_gui/test_gui.py#L1">journalist_gui/test_gui.py:1:1:</a> I001 [*] Import block is un-sorted or un-formatted
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/mlflow/mlflow">mlflow/mlflow</a> (+1 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/mlflow/mlflow">mlflow/mlflow</a> (+1 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/mlflow/mlflow/blob/cd5ad85d6ed18c7298135a2ead3534267ca18bb2/tests/projects/utils.py#L50'>tests/projects/utils.py:50:5:</a> I001 [*] Import block is un-sorted or un-formatted
++ <a href="https://github.com/mlflow/mlflow/blob/cd5ad85d6ed18c7298135a2ead3534267ca18bb2/tests/projects/utils.py#L50">tests/projects/utils.py:50:5:</a> I001 [*] Import block is un-sorted or un-formatted
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/pytest-dev/pytest">pytest-dev/pytest</a> (+1 -0 violations, +0 -0 fixes)</summary>
+
+<a href="https://github.com/pytest-dev/pytest">pytest-dev/pytest</a> (+1 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/pytest-dev/pytest/blob/89b84cb56295c46e1d8834b599e858bc65c15a5b/testing/_py/test_local.py#L2'>testing/_py/test_local.py:2:1:</a> I001 [*] Import block is un-sorted or un-formatted
++ <a href="https://github.com/pytest-dev/pytest/blob/89b84cb56295c46e1d8834b599e858bc65c15a5b/testing/_py/test_local.py#L2">testing/_py/test_local.py:2:1:</a> I001 [*] Import block is un-sorted or un-formatted
 </pre>
 
 </p>
-</details>
-<details><summary>Changes by rule (1 rules affected)</summary>
+
+Changes by rule (1 rules affected)
 <p>
 
 <p>| code | total | + violation | - violation | + fix | - fix |
 | ---- | ------- | --------- | -------- | ----- | ---- |
 | I001 | 35 | 22 | 13 | 0 | 0 |</p>
 </p>
-</details>
 
-<h3>Formatter (stable)</h3>
+
+Formatter (stable)
 <p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
-<details><summary><a href="https://github.com/mesonbuild/meson-python">mesonbuild/meson-python</a> (error)</summary>
+<a href="https://github.com/mesonbuild/meson-python">mesonbuild/meson-python</a> (error)
 <p>
 
 <pre><code>warning: Detected debug build without --no-cache.
@@ -223,11 +223,11 @@ error: Failed to read tests/packages/symlinks/baz.py: No such file or directory 
 error: Failed to read tests/packages/symlinks/qux.py: No such file or directory (os error 2)
 </code></pre>
 </p>
-</details>
 
-<h3>Formatter (preview)</h3>
+
+Formatter (preview)
 <p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
-<details><summary><a href="https://github.com/mesonbuild/meson-python">mesonbuild/meson-python</a> (error)</summary>
+<a href="https://github.com/mesonbuild/meson-python">mesonbuild/meson-python</a> (error)
 <p>
 <pre>ruff format --preview</pre>
 </p>
@@ -238,40 +238,40 @@ error: Failed to read tests/packages/symlinks/baz.py: No such file or directory 
 error: Failed to read tests/packages/symlinks/qux.py: No such file or directory (os error 2)
 </code></pre>
 </p>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[`isort`] Only infer subpackages of namespace packages as first-party" to "[`isort`] Check full module path against project root(s) when categorizing first-party" by @dylwil3 on 2025-03-27 21:40</div>
+            <div class="event">Renamed from &quot;[`isort`] Only infer subpackages of namespace packages as first-party&quot; to &quot;[`isort`] Check full module path against project root(s) when categorizing first-party&quot; by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-03-27 21:40</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @dylwil3 on 2025-03-27 21:46</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-03-27 21:46</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @dylwil3 on 2025-03-27 21:46</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-03-27 21:46</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-01 12:18</div>
-            <div class="timeline-body"><p>I think that PR slipped our attention last week. At least I didn't notice it :)</p>
+            <div class="timeline-body"><p>I think that PR slipped our attention last week. At least I didn&#x27;t notice it :)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-01 12:19</div>
             <div class="timeline-body"><p>Did you click through the ecosystem checks?</p>
-<p>I'm torn but I think this should be gated behind preview. The ecosystem fallouts are significant enough.</p>
+<p>I&#x27;m torn but I think this should be gated behind preview. The ecosystem fallouts are significant enough.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-01 12:20</div>
-            <div class="timeline-body"><p>I haven't forgotten about this. I'm still waging war against my notification queue after the on-site 😢</p>
+            <div class="timeline-body"><p>I haven&#x27;t forgotten about this. I&#x27;m still waging war against my notification queue after the on-site 😢</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-04-02 10:34</div>
             <div class="timeline-body"><blockquote>
-<p>I think that PR slipped our attention last week. At least I didn't notice it :)
-I haven't forgotten about this. I'm still waging war against my notification queue after the on-site 😢</p>
+<p>I think that PR slipped our attention last week. At least I didn&#x27;t notice it :)
+I haven&#x27;t forgotten about this. I&#x27;m still waging war against my notification queue after the on-site 😢</p>
 </blockquote>
 <p>No worries!</p>
 <blockquote>
@@ -279,45 +279,45 @@ I haven't forgotten about this. I'm still waging war against my notification que
 </blockquote>
 <p>I did quickly before, but going through them again I noticed two examples that need more investigation.</p>
 <ul>
-<li><code>freedomofpress</code> has a strange directory layout leading to a false positive, but it's possible that this is expected and they just need to specify a different <code>tool.ruff.src</code></li>
+<li><code>freedomofpress</code> has a strange directory layout leading to a false positive, but it&#x27;s possible that this is expected and they just need to specify a different <code>tool.ruff.src</code></li>
 <li><code>mlflow</code> has a directory named <code>docker</code> with a Dockerfile in it... and imports a Python package named <code>docker</code>. This caused a <em>silent</em> error before where both imports <code>docker</code> and <code>docker.errors</code> were labeled as first party, but, since they were the only imports present, this had no effect on import sorting. But now we see that there is not <code>docker/errors</code> and label the second as third party.</li>
 </ul>
 <blockquote>
-<p>I'm torn but I think this should be gated behind preview. The ecosystem fallouts are significant enough.</p>
+<p>I&#x27;m torn but I think this should be gated behind preview. The ecosystem fallouts are significant enough.</p>
 </blockquote>
-<p>Good point - I'll try to sort out the least ugly way to do that...</p>
-<hr />
+<p>Good point - I&#x27;ll try to sort out the least ugly way to do that...</p>
+<hr>
 <p>Finally, I think I should try to fix the following limitation of the current approach. When we see</p>
-<pre><code class="language-python">from foo import bar
+<pre><code>from foo import bar
 </code></pre>
-<p>the former approach would look for a <code>foo</code> directory or a <code>foo.py</code> file and call it a day. The present approach does the same - we don't look for a <code>bar</code> subdirectory because we don't know whether <code>bar</code> is supposed to be an imported <em>object</em> or <em>module</em>. In fact, one source of false positives in the ecosystem check, and the reason for introducing <code>.module_source</code>, was that <code>categorize</code> was being passed the fully qualified name <code>foo.bar</code>, failing to find <code>foo/bar.py</code> or <code>foo/bar/</code>, and then declaring the import third party. So I think I need to add some logic around this, otherwise we could get different categorizations for importing a submodule depending on whether you did</p>
-<pre><code class="language-python">from foo import bar
+<p>the former approach would look for a <code>foo</code> directory or a <code>foo.py</code> file and call it a day. The present approach does the same - we don&#x27;t look for a <code>bar</code> subdirectory because we don&#x27;t know whether <code>bar</code> is supposed to be an imported <em>object</em> or <em>module</em>. In fact, one source of false positives in the ecosystem check, and the reason for introducing <code>.module_source</code>, was that <code>categorize</code> was being passed the fully qualified name <code>foo.bar</code>, failing to find <code>foo/bar.py</code> or <code>foo/bar/</code>, and then declaring the import third party. So I think I need to add some logic around this, otherwise we could get different categorizations for importing a submodule depending on whether you did</p>
+<pre><code>from foo import bar
 </code></pre>
 <p>or</p>
-<pre><code class="language-python">import foo.bar as bar
+<pre><code>import foo.bar as bar
 </code></pre>
-<p>I'm going to revert back to draft while I sort out all of the above. Sorry for the needless ping!</p>
+<p>I&#x27;m going to revert back to draft while I sort out all of the above. Sorry for the needless ping!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Converted to draft by @dylwil3 on 2025-04-02 10:34</div>
+            <div class="event">Converted to draft by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-04-02 10:34</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">preview</span> added by @dylwil3 on 2025-04-13 17:22</div>
+            <div class="event">Label <span class="label">preview</span> added by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-04-13 17:22</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @dylwil3 on 2025-04-13 17:39</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-04-13 17:39</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-23 07:32</div>
-            <div class="timeline-body"><p>I haven't looked at the code yet but could you update the PR summary or add a new comment that replies to your ecosystem findings and explains why we think they're correct. This will help us to remember the reasoning when writing the changelog in the next minor release</p>
+            <div class="timeline-body"><p>I haven&#x27;t looked at the code yet but could you update the PR summary or add a new comment that replies to your ecosystem findings and explains why we think they&#x27;re correct. This will help us to remember the reasoning when writing the changelog in the next minor release</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/Cargo.toml</code>:79 on 2025-04-23 07:33</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">tempfile = { workspace = true }
+            <div class="timeline-body"><pre><code>tempfile = { workspace = true }
 </code></pre>
-<p>I don't know why we use the long form, I think @charliermarsh migrated it some time ago but I prefer to keep using a consistent format.</p>
+<p>I don&#x27;t know why we use the long form, I think @charliermarsh migrated it some time ago but I prefer to keep using a consistent format.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -326,16 +326,16 @@ I haven't forgotten about this. I'm still waging war against my notification que
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/rules/typing_only_runtime_import.rs</code>:317 on 2025-04-23 07:37</div>
-            <div class="timeline-body"><p>I'll use this PR to establish a new practice around preview checks that, hopefully, will make promoting preview features easier (and finding them!)</p>
-<p>Let's create a <code>preview.rs</code> file similar to the one we have in the <a href="https://github.com/astral-sh/ruff/blob/1aad180aae84cd5d12d5a47c879183f559c871ed/crates/ruff_python_formatter/src/preview.rs#L1-L0">formatter</a> where we create a dedicated function for each preview functionality of the form:</p>
+            <div class="timeline-body"><p>I&#x27;ll use this PR to establish a new practice around preview checks that, hopefully, will make promoting preview features easier (and finding them!)</p>
+<p>Let&#x27;s create a <code>preview.rs</code> file similar to the one we have in the <a href="https://github.com/astral-sh/ruff/blob/1aad180aae84cd5d12d5a47c879183f559c871ed/crates/ruff_python_formatter/src/preview.rs#L1-L0">formatter</a> where we create a dedicated function for each preview functionality of the form:</p>
 <pre><code>def fn is_xy_enabled(settings: &amp;LinterSettings) -&gt; bool {
     settings.preview.is_enabled()
 }
 </code></pre>
 <p>This has the advantage that:</p>
 <ol>
-<li>It's easy to find all preview behavior and it gives us a place to document it (including instructions on what needs to be changed when promoting this behavior, e.g. update the documentations for x, y, z)</li>
-<li>It's easy to promote the preview behavior. Simply delete the function and Rust will guide you to change all call sites</li>
+<li>It&#x27;s easy to find all preview behavior and it gives us a place to document it (including instructions on what needs to be changed when promoting this behavior, e.g. update the documentations for x, y, z)</li>
+<li>It&#x27;s easy to promote the preview behavior. Simply delete the function and Rust will guide you to change all call sites</li>
 </ol>
 </div>
         </div>
@@ -361,7 +361,7 @@ I haven't forgotten about this. I'm still waging war against my notification que
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-04-23 07:49</div>
-            <div class="timeline-body"><p>Thanks to work on this. This looks good to me. I've a few smaller nit comments and I think we need to extend the documentation and the motivation for the change a bit before landing.</p>
+            <div class="timeline-body"><p>Thanks to work on this. This looks good to me. I&#x27;ve a few smaller nit comments and I think we need to extend the documentation and the motivation for the change a bit before landing.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -370,7 +370,7 @@ I haven't forgotten about this. I'm still waging war against my notification que
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/rules/typing_only_runtime_import.rs</code>:317 on 2025-04-26 19:39</div>
-            <div class="timeline-body"><p>Is this the sort of thing you mean? https://github.com/astral-sh/ruff/pull/17646</p>
+            <div class="timeline-body"><p>Is this the sort of thing you mean? <a href="https://github.com/astral-sh/ruff/pull/17646">astral-sh/ruff#17646</a></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -379,7 +379,7 @@ I haven't forgotten about this. I'm still waging war against my notification que
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>docs/faq.md</code>:315 on 2025-04-26 20:16</div>
-            <div class="timeline-body"><p>I've added some... I'm tempted to say something like &quot;this is much less likely to happen if you use the <code>src</code> layout&quot; but I was worried it would come across a bit harsh.</p>
+            <div class="timeline-body"><p>I&#x27;ve added some... I&#x27;m tempted to say something like &quot;this is much less likely to happen if you use the <code>src</code> layout&quot; but I was worried it would come across a bit harsh.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -388,8 +388,8 @@ I haven't forgotten about this. I'm still waging war against my notification que
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/isort/categorize.rs</code>:203 on 2025-04-26 20:16</div>
-            <div class="timeline-body"><p>I think it's written that way because <code>components()</code> doesn't have an <code>is_empty</code> method. in theory if <code>name</code> was, say &quot;.&quot; or &quot;....&quot; then this would trigger. I've turned it into an explicit check.</p>
-<p>I think that won't ever actually happen by the time we get to <code>match_sources</code> because <code>categorize</code> has already handled the relative import case by then - but I didn't want this function to depend on that assumption.</p>
+            <div class="timeline-body"><p>I think it&#x27;s written that way because <code>components()</code> doesn&#x27;t have an <code>is_empty</code> method. in theory if <code>name</code> was, say &quot;.&quot; or &quot;....&quot; then this would trigger. I&#x27;ve turned it into an explicit check.</p>
+<p>I think that won&#x27;t ever actually happen by the time we get to <code>match_sources</code> because <code>categorize</code> has already handled the relative import case by then - but I didn&#x27;t want this function to depend on that assumption.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -398,7 +398,7 @@ I haven't forgotten about this. I'm still waging war against my notification que
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/rules/typing_only_runtime_import.rs</code>:315 on 2025-04-26 20:17</div>
-            <div class="timeline-body"><p><code>import.source_name()</code> is just a slice not a <code>QualifiedName</code>, and <code>import</code> is something implementing the <code>Import</code> trait - so it seems like it could be somewhat disruptive to put that method everywhere? But I'm happy to do ti if you still think I should!</p>
+            <div class="timeline-body"><p><code>import.source_name()</code> is just a slice not a <code>QualifiedName</code>, and <code>import</code> is something implementing the <code>Import</code> trait - so it seems like it could be somewhat disruptive to put that method everywhere? But I&#x27;m happy to do ti if you still think I should!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -407,7 +407,7 @@ I haven't forgotten about this. I'm still waging war against my notification que
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/isort/categorize.rs</code>:203 on 2025-04-26 20:18</div>
-            <div class="timeline-body"><p>Haha never mind it's clippy's fault:</p>
+            <div class="timeline-body"><p>Haha never mind it&#x27;s clippy&#x27;s fault:</p>
 <pre><code>error: this block may be rewritten with the `?` operator
    --&gt; crates/ruff_linter/src/rules/isort/categorize.rs:204:13
     |
@@ -420,7 +420,7 @@ I haven't forgotten about this. I'm still waging war against my notification que
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-04-26 20:24</div>
-            <div class="timeline-body"><p>Note: There have been some other issues raised in #10519 but I think they are orthogonal to this fix (the issues are present both before and after the current change) so it's worth exploring solutions in a followup.</p>
+            <div class="timeline-body"><p>Note: There have been some other issues raised in #10519 but I think they are orthogonal to this fix (the issues are present both before and after the current change) so it&#x27;s worth exploring solutions in a followup.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -429,7 +429,7 @@ I haven't forgotten about this. I'm still waging war against my notification que
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/rules/typing_only_runtime_import.rs</code>:317 on 2025-04-27 09:56</div>
-            <div class="timeline-body"><p>Yes! I didn't expect that you would change all existing preview usages too. Thank you</p>
+            <div class="timeline-body"><p>Yes! I didn&#x27;t expect that you would change all existing preview usages too. Thank you</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -442,24 +442,24 @@ I haven't forgotten about this. I'm still waging war against my notification que
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-05-05 13:04</div>
+            <div class="event">Review request for <a href="https://github.com/AlexWaygood">@AlexWaygood</a> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-05 13:04</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-05 13:05</div>
             <div class="timeline-body"><p>I basically lost all context on this because the work I did on it was such a long time ago :-(</p>
-<p>if @MichaReiser is happy with this, I'm happy with it! I trust both of you to get it right 😃</p>
+<p>if @MichaReiser is happy with this, I&#x27;m happy with it! I trust both of you to get it right 😃</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @dylwil3 on 2025-05-05 16:40</div>
+            <div class="event">Merged by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-05-05 16:40</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dylwil3 on 2025-05-05 16:40</div>
+            <div class="event">Closed by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-05-05 16:40</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:10:33 UTC
+        Synced at 2026-01-20 19:12:07 UTC
     </footer>
 </body>
 </html>

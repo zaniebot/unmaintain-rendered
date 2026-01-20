@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/kforner">@kforner</a></div>
-            <div class="timeline-body"><h3>Question</h3>
+            <div class="timeline-body">Question
 <p>I want to build a docker image that will be used as a base image for multiple python-based analysis projects.
 The idea is to fix the Python version, and preinstall some commonly used packages to speed up downstream use.</p>
 <p>I tried using a common cache dir, via the $UV_CACHE_DIR var.
@@ -34,14 +34,14 @@ But I have a case, where some packages are under a pkgs/ folder, and running the
 <li>is it the right way to pre-install/pre-populate Python packages?</li>
 <li>How to run the pytests without re-downloading the dependencies.</li>
 </ul>
-<h3>Platform</h3>
+Platform
 <p><em>No response</em></p>
-<h3>Version</h3>
+Version
 <p><em>No response</em></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @kforner on 2025-11-17 09:20</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/kforner">@kforner</a> on 2025-11-17 09:20</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/pcastellazzi">@pcastellazzi</a> on 2025-11-18 13:55</div>
@@ -49,13 +49,13 @@ But I have a case, where some packages are under a pkgs/ folder, and running the
 <ul>
 <li><a href="https://docs.astral.sh/uv/guides/integration/docker/">https://docs.astral.sh/uv/guides/integration/docker/</a></li>
 <li><a href="https://github.com/astral-sh/uv-docker-example/">https://github.com/astral-sh/uv-docker-example/</a></li>
-<li><a href="https://github.com/astral-sh/uv/issues/8025">https://github.com/astral-sh/uv/issues/8025</a></li>
+<li><a href="https://github.com/astral-sh/uv/issues/8025">astral-sh/uv#8025</a></li>
 </ul>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kforner">@kforner</a> on 2025-11-19 10:03</div>
-            <div class="timeline-body"><p>Thanks. I had already looked at those docs, but I'm not sure it solves my particular problem.
+            <div class="timeline-body"><p>Thanks. I had already looked at those docs, but I&#x27;m not sure it solves my particular problem.
 I want to pre-populate a docker image with common packages, like pandas.
 Then this image should be used with different python projects.
 I wonder what is the best way to achieve this.</p>
@@ -64,13 +64,13 @@ I wonder what is the best way to achieve this.</p>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/pcastellazzi">@pcastellazzi</a> on 2025-11-19 18:18</div>
             <div class="timeline-body"><p>The simplest solution would be to se use something like:</p>
-<pre><code class="language-Dockerfile"># imageA
+<pre><code># imageA
 FROM python:3.14-trixie
 
 # install your shared dependencies globally
 RUN pip3 install pandas
 </code></pre>
-<pre><code class="language-Dockerfile"># imageB
+<pre><code># imageB
 FROM imageA
 ADD /path/to/project /app
 WORKSPACE /app
@@ -86,7 +86,7 @@ RUN python3 -m pip install -r requirements.txt
 ENTRYPOINT [&quot;python3&quot;, &quot;/app/myapp.py&quot;]
 </code></pre>
 <p>The reason i think caching would not solve your particular problem is data science libraries tend to have very long compile times. Caching the downloaded package is not enough, you need to also save the generated binaries.</p>
-<p>Having said that, you can try <code>uv run --offline --no-python-downloads --verbose --all-packages -- pytest -v</code> to help you debug what's going on with your setup. That will print a lot of information about what <code>uv</code> is trying to do and why.</p>
+<p>Having said that, you can try <code>uv run --offline --no-python-downloads --verbose --all-packages -- pytest -v</code> to help you debug what&#x27;s going on with your setup. That will print a lot of information about what <code>uv</code> is trying to do and why.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -97,13 +97,13 @@ So if I understand, your proposal is to by-pass uv?</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/pcastellazzi">@pcastellazzi</a> on 2025-11-20 15:11</div>
-            <div class="timeline-body"><p>For this particular case, yes. It seems there are no plans to allow <code>uv</code> to interact with python outside a virtual environment. <a href="https://github.com/astral-sh/uv/issues/1550">https://github.com/astral-sh/uv/issues/1550</a>. There are other paths you could take (like having your own PyPI mirror, think of <a href="https://jfrog.com/artifactory/">Artifactory</a> or <a href="https://bandersnatch.readthedocs.io/en/latest/index.html">Bandersnatch</a>; or using <a href="https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html">Conda</a> which support environment cloning out of the box and it was designed for data science in particular, so probably most of what you need is pre compiled out of the box).</p>
+            <div class="timeline-body"><p>For this particular case, yes. It seems there are no plans to allow <code>uv</code> to interact with python outside a virtual environment. <a href="https://github.com/astral-sh/uv/issues/1550">astral-sh/uv#1550</a>. There are other paths you could take (like having your own PyPI mirror, think of <a href="https://jfrog.com/artifactory/">Artifactory</a> or <a href="https://bandersnatch.readthedocs.io/en/latest/index.html">Bandersnatch</a>; or using <a href="https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html">Conda</a> which support environment cloning out of the box and it was designed for data science in particular, so probably most of what you need is pre compiled out of the box).</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:33:29 UTC
+        Synced at 2026-01-20 19:41:04 UTC
     </footer>
 </body>
 </html>

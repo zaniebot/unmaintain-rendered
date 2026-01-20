@@ -23,33 +23,33 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/lousyd">@lousyd</a></div>
-            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+            <div class="timeline-body">What version of ripgrep are you using?
 <p>ripgrep 11.0.1
 -SIMD -AVX (compiled)
 +SIMD +AVX (runtime)</p>
-<h4>How did you install ripgrep?</h4>
+How did you install ripgrep?
 <p>yum install ripgrep</p>
-<h4>What operating system are you using ripgrep on?</h4>
+What operating system are you using ripgrep on?
 <p>RHEL 7.7</p>
-<h4>Describe your question, feature request, or bug.</h4>
-<p>I would like to use ripgrep in a way that I can tell it to ignore files on certain filesystems. ripgrep can ignore certain filenames and paths, and it can be told not to cross filesystem boundaries with &quot;--one-file-system&quot;. Taking this one step further, I'd like to be able to say, for example, to ignore nfs filesystems. A similar feature can be found in updatedb (mlocate 0.26), which has a &quot;--add-prunefs&quot; option used to &quot;Add entries in white-space-separated list FS to PRUNEFS&quot;. The daily cron job for updatedb, on my system, does this:</p>
-<pre><code>nodevs=$(awk '$1 == &quot;nodev&quot; &amp;&amp; $2 != &quot;rootfs&quot; &amp;&amp; $2 != &quot;zfs&quot; { print $2 }' &lt; /proc/filesystems)
+Describe your question, feature request, or bug.
+<p>I would like to use ripgrep in a way that I can tell it to ignore files on certain filesystems. ripgrep can ignore certain filenames and paths, and it can be told not to cross filesystem boundaries with &quot;--one-file-system&quot;. Taking this one step further, I&#x27;d like to be able to say, for example, to ignore nfs filesystems. A similar feature can be found in updatedb (mlocate 0.26), which has a &quot;--add-prunefs&quot; option used to &quot;Add entries in white-space-separated list FS to PRUNEFS&quot;. The daily cron job for updatedb, on my system, does this:</p>
+<pre><code>nodevs=$(awk &#x27;$1 == &quot;nodev&quot; &amp;&amp; $2 != &quot;rootfs&quot; &amp;&amp; $2 != &quot;zfs&quot; { print $2 }&#x27; &lt; /proc/filesystems)
 /usr/bin/updatedb -f &quot;$nodevs&quot;
 </code></pre>
-<p>This basically looks in the kernel's table of known filesystems and pulls out the ones marked &quot;nodev&quot;, then tells updatedb to ignore files located on a filesystem that is one of those types. It would be awesome to have an option for ripgrep to tell it to do something like that. I very rarely want to search files under /proc or /run or so on. This would help with that. And this option would be especially useful to me to be able to avoid searching NFS mounts. Obviously sometimes you want to be able to search NFS mounts, but I have servers with NFS mounts that are terabytes in size and it's just user data, so I want ripgrep to ignore those and just search local filesystems.</p>
+<p>This basically looks in the kernel&#x27;s table of known filesystems and pulls out the ones marked &quot;nodev&quot;, then tells updatedb to ignore files located on a filesystem that is one of those types. It would be awesome to have an option for ripgrep to tell it to do something like that. I very rarely want to search files under /proc or /run or so on. This would help with that. And this option would be especially useful to me to be able to avoid searching NFS mounts. Obviously sometimes you want to be able to search NFS mounts, but I have servers with NFS mounts that are terabytes in size and it&#x27;s just user data, so I want ripgrep to ignore those and just search local filesystems.</p>
 <p>I would like to see this implemented as an environment variable and a command line option.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/genivia-inc">@genivia-inc</a> on 2020-01-13 03:52</div>
             <div class="timeline-body"><p>Interesting idea. I would suggest options to specify file systems to include and exclude in/from recursive searches. This covers the case of file system types too, since we can get a list of file systems given a file type from <code>/etc/mtab</code>, like so:</p>
-<pre><code>nodevs=`grep -w -e rootfs -e zfs /etc/mtab | sed 's/[^ ]* \([^ ]*\).*/\1/' | paste -d, - -`
+<pre><code>nodevs=`grep -w -e rootfs -e zfs /etc/mtab | sed &#x27;s/[^ ]* \([^ ]*\).*/\1/&#x27; | paste -d, - -`
 </code></pre>
 <p>Then we simply pass this to <code>--exclude-fs</code> to exclude the specified file systems:</p>
 <pre><code>grep --exclude-fs=&quot;$nodevs&quot; PATTERN PATH
 </code></pre>
 <p>where <code>--exclude-fs</code> excludes the specified file systems and devices, similar to <code>--exclude-dir</code> but applicable to all contents of the FS, including symlinks into the FS.</p>
-<p>This gave me an idea to <a href="https://github.com/Genivia/ugrep#fs">build something like this</a>, which I tested on Linux, Mac OS X (FreeBSD), and Cygwin. It's fairly straightforward to implement. I wasn't sure what to use to separate the paths and opted for commas instead of colons, since Cygwin drives e.g. <code>d:/</code> should be valid to pass to <code>--exclude-fs</code>. IMO commas seem OK, as it is not likely that mounts include them in their name.</p>
+<p>This gave me an idea to <a href="https://github.com/Genivia/ugrep#fs">build something like this</a>, which I tested on Linux, Mac OS X (FreeBSD), and Cygwin. It&#x27;s fairly straightforward to implement. I wasn&#x27;t sure what to use to separate the paths and opted for commas instead of colons, since Cygwin drives e.g. <code>d:/</code> should be valid to pass to <code>--exclude-fs</code>. IMO commas seem OK, as it is not likely that mounts include them in their name.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -59,13 +59,13 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/lousyd">@lousyd</a> on 2020-07-21 13:13</div>
-            <div class="timeline-body"><p>I just noticed that &quot;df&quot; from GNU coreutils 8.22 and later has a &quot;--local&quot; option. The man page says &quot;-l, --local    limit listing to local file systems&quot;. This is similar to what's requested here.</p>
+            <div class="timeline-body"><p>I just noticed that &quot;df&quot; from GNU coreutils 8.22 and later has a &quot;--local&quot; option. The man page says &quot;-l, --local    limit listing to local file systems&quot;. This is similar to what&#x27;s requested here.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:43:04 UTC
+        Synced at 2026-01-20 18:48:09 UTC
     </footer>
 </body>
 </html>

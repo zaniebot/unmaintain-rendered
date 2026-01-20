@@ -23,16 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/mmarinriera">@mmarinriera</a></div>
-            <div class="timeline-body"><!--
-Thank you for taking the time to report an issue! We're glad to have you involved with uv.
-
-If you're filing a bug report, please consider including the following information:
-
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
-* The current uv platform.
-* The current uv version (`uv --version`).
--->
+            <div class="timeline-body">
 
 <ul>
 <li>Command: <code>uv run</code>, <code>uv sync</code></li>
@@ -41,7 +32,7 @@ If you're filing a bug report, please consider including the following informati
 </ul>
 <p>Hi,</p>
 <p>I am working on a project that has <a href="https://github.com/jungmannlab/picasso"><code>picassosr</code></a> as a dependency. I am able to install the package and run the CLI via <code>uvx</code>,</p>
-<pre><code class="language-bash">uvx -p 3.10 --from &quot;picasso==0.7.3&quot; picasso --help
+<pre><code>uvx -p 3.10 --from &quot;picasso==0.7.3&quot; picasso --help
 </code></pre>
 <p>and that works. However if I try to <code>uv run</code> a project that has <code>picassosr</code> as a dependency, I get a &quot;no solution found&quot; error.</p>
 <p>To reproduce this behaviour, create a project with:</p>
@@ -55,16 +46,16 @@ If you're filing a bug report, please consider including the following informati
 <pre><code>% uv run -p 3.10 project
 Using CPython 3.10.15
 Creating virtual environment at: .venv
-  × No solution found when resolving dependencies for split (python_full_version &gt;= '3.12'):
-  ╰─▶ Because only the following versions of numpy{python_full_version &gt;= '3.12'} are available:
-          numpy{python_full_version &gt;= '3.12'}&lt;=2.0.2
-          numpy{python_full_version &gt;= '3.12'}&gt;=2.1.0
-      and pandas==2.1.1 depends on numpy{python_full_version &gt;= '3.12'}&gt;=1.26.0, we can conclude that pandas==2.1.1 depends on one of:
+  × No solution found when resolving dependencies for split (python_full_version &gt;= &#x27;3.12&#x27;):
+  ╰─▶ Because only the following versions of numpy{python_full_version &gt;= &#x27;3.12&#x27;} are available:
+          numpy{python_full_version &gt;= &#x27;3.12&#x27;}&lt;=2.0.2
+          numpy{python_full_version &gt;= &#x27;3.12&#x27;}&gt;=2.1.0
+      and pandas==2.1.1 depends on numpy{python_full_version &gt;= &#x27;3.12&#x27;}&gt;=1.26.0, we can conclude that pandas==2.1.1 depends on one of:
           numpy&gt;=1.26.0,&lt;=2.0.2
           numpy&gt;=2.1.0
 
       And because picassosr==0.7.3 depends on numpy==1.24.3, we can conclude that pandas==2.1.1 and picassosr==0.7.3 are incompatible.
-      And because picassosr==0.7.3 depends on pandas==2.1.1 and your project depends on picassosr==0.7.3, we can conclude that your project's
+      And because picassosr==0.7.3 depends on pandas==2.1.1 and your project depends on picassosr==0.7.3, we can conclude that your project&#x27;s
       requirements are unsatisfiable.
 </code></pre>
 <p>(Find attached below the verbose output of the same command).</p>
@@ -91,27 +82,27 @@ pipdeptree==2.23.4
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-30 19:10</div>
-            <div class="timeline-body"><p>Basically: this project can't resolve on Python 3.12, but on Pandas has the following dependencies:</p>
+            <div class="timeline-body"><p>Basically: this project can&#x27;t resolve on Python 3.12, but on Pandas has the following dependencies:</p>
 <pre><code>Requires-Dist: numpy&gt;=1.22.4; python_version &lt; &quot;3.11&quot;
 Requires-Dist: numpy&gt;=1.23.2; python_version == &quot;3.11&quot;
 Requires-Dist: numpy&gt;=1.26.0; python_version &gt;= &quot;3.12&quot;
 </code></pre>
-<p>So on Python 3.12, Pandas requires <em>at least</em> NumPy 1.26.0 -- but you require exactly Pandas 2.1.1 and NumPy 1.24.3, so there's no valid resolution on Python 3.12.</p>
+<p>So on Python 3.12, Pandas requires <em>at least</em> NumPy 1.26.0 -- but you require exactly Pandas 2.1.1 and NumPy 1.24.3, so there&#x27;s no valid resolution on Python 3.12.</p>
 <p>In uv, when you give us a Python requirement, we try to solve for all versions in the supported range, not <em>just</em> the current Python version.</p>
 <p>One way you can work around this is to tell uv that you <em>only</em> care about Python 3.10, with:</p>
-<pre><code class="language-toml">[tool.uv]
-environments = [&quot;python_version == '3.10'&quot;]
+<pre><code>[tool.uv]
+environments = [&quot;python_version == &#x27;3.10&#x27;&quot;]
 </code></pre>
 <p>That tells uv to <em>only</em> solve for Python 3.10.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-10-30 19:10</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-30 19:10</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-30 19:46</div>
             <div class="timeline-body"><p>And as another note, it works in <code>uvx</code> because there we only solve for a single Python version.</p>
-<p>Glad you're excited about the project :)</p>
+<p>Glad you&#x27;re excited about the project :)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -130,12 +121,12 @@ environments = [&quot;python_version == '3.10'&quot;]
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-10-31 11:57</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-31 11:57</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:28:02 UTC
+        Synced at 2026-01-20 19:35:09 UTC
     </footer>
 </body>
 </html>

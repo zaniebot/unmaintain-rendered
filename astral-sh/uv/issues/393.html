@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>Don't print colors when stderr is redirected to a file</h1>
+    <h1>Don&#x27;t print colors when stderr is redirected to a file</h1>
 
     <div class="meta">
         <span class="state-icon state-closed"></span>
@@ -40,12 +40,12 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-11-10 17:10</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-10 17:10</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-10 17:10</div>
             <div class="timeline-body"><p>In <code>pip_compile.rs</code>, we add:</p>
-<pre><code class="language-rust">    if output_file.is_some() {
+<pre><code>    if output_file.is_some() {
         colored::control::set_override(false);
     }
 </code></pre>
@@ -53,7 +53,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-10 17:11</div>
-            <div class="timeline-body"><p>I don't know if there's a better solution.</p>
+            <div class="timeline-body"><p>I don&#x27;t know if there&#x27;s a better solution.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -64,7 +64,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-10 18:58</div>
             <div class="timeline-body"><p>anstream is somewhat orthogonal to whether colors are enabled or not I think. (Although it may solve that problem.) To detect whether <code>stderr</code> is a tty or not, you want this:</p>
-<pre><code class="language-rust">use std::io::IsTerminal;
+<pre><code>use std::io::IsTerminal;
 
 if std::io::stderr().is_terminal() {
     println!(&quot;stderr is a tty!&quot;);
@@ -77,17 +77,17 @@ if std::io::stderr().is_terminal() {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-10 20:29</div>
-            <div class="timeline-body"><p>Hmm, why does Ruff not suffer from this problem? We don't print colors when you pipe stdout to a file.</p>
+            <div class="timeline-body"><p>Hmm, why does Ruff not suffer from this problem? We don&#x27;t print colors when you pipe stdout to a file.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-10 20:57</div>
-            <div class="timeline-body"><p>Maybe <code>colorize</code> handles writing stdout but not stderr or something, I don't know.</p>
+            <div class="timeline-body"><p>Maybe <code>colorize</code> handles writing stdout but not stderr or something, I don&#x27;t know.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-11-13 11:47</div>
-            <div class="timeline-body"><p>Yep it's stdout vs. stderr:</p>
+            <div class="timeline-body"><p>Yep it&#x27;s stdout vs. stderr:</p>
 <pre><code>cargo run --bin puffin-dev -q -- resolve-cli &quot;transformers[tensorboard]&quot; 2&gt; output.txt &gt; /dev/null
 </code></pre>
 <p>writes the correct output.txt, but without <code>&gt; /dev/null</code> i see the color codes.</p>
@@ -98,17 +98,17 @@ if std::io::stderr().is_terminal() {
             <div class="timeline-body"><blockquote>
 <p>I think https://docs.rs/anstream/latest/anstream/ maybe helps with this problem? @BurntSushi might have ideas too.</p>
 </blockquote>
-<p>After a quick look, I believe <code>anstream</code> gets this right. In particular, its <a href="https://docs.rs/anstream/latest/anstream/struct.AutoStream.html"><code>AutoStream</code></a> abstraction. In particular, it depends on <a href="https://docs.rs/anstream/latest/anstream/stream/trait.RawStream.html"><code>RawStream</code></a> which in turn depends the <a href="https://docs.rs/anstream/latest/anstream/stream/trait.IsTerminal.html"><code>IsTerminal</code></a> trait. (It looks like it's a copy of the standard library's trait, probably because it was published before <code>IsTerminal</code> was stable?) In any case, it doesn't look like it gets confused about stdout versus stderr.</p>
-<p>Looking at <a href="https://docs.rs/colorize/latest/colorize/"><code>colorize</code></a>, it exists at a lower level of abstraction. I don't believe it concerns itself with what its actually writing to or whether colors <em>ought</em> to be enabled.</p>
+<p>After a quick look, I believe <code>anstream</code> gets this right. In particular, its <a href="https://docs.rs/anstream/latest/anstream/struct.AutoStream.html"><code>AutoStream</code></a> abstraction. In particular, it depends on <a href="https://docs.rs/anstream/latest/anstream/stream/trait.RawStream.html"><code>RawStream</code></a> which in turn depends the <a href="https://docs.rs/anstream/latest/anstream/stream/trait.IsTerminal.html"><code>IsTerminal</code></a> trait. (It looks like it&#x27;s a copy of the standard library&#x27;s trait, probably because it was published before <code>IsTerminal</code> was stable?) In any case, it doesn&#x27;t look like it gets confused about stdout versus stderr.</p>
+<p>Looking at <a href="https://docs.rs/colorize/latest/colorize/"><code>colorize</code></a>, it exists at a lower level of abstraction. I don&#x27;t believe it concerns itself with what its actually writing to or whether colors <em>ought</em> to be enabled.</p>
 <p>Oh, Puffin is using <a href="https://docs.rs/colored/latest/colored/"><code>colored</code></a>, not <code>colorize</code>. And assuming Puffin is using its <code>ShouldColorize</code> abstraction, it does indeed appear to be <a href="https://docs.rs/colored/latest/src/colored/control.rs.html#106">hard-coded to assuming all output goes to stdout</a>.</p>
-<p>This looks like it might be a little tricky to fix without some refactoring. For example, this code prints to stderr directly using colorize's functions:</p>
+<p>This looks like it might be a little tricky to fix without some refactoring. For example, this code prints to stderr directly using colorize&#x27;s functions:</p>
 <p>https://github.com/astral-sh/puffin/blob/81c9cd0d4ad44920e3785fcb4a499e4f559c77f2/crates/puffin-cli/src/main.rs#L315-L331</p>
 <p>Same deal with <code>puffin-dev</code>:</p>
 <p>https://github.com/astral-sh/puffin/blob/81c9cd0d4ad44920e3785fcb4a499e4f559c77f2/crates/puffin-dev/src/main.rs#L96-L105</p>
-<p>Oh, maybe these are the only places? But in any case, I think they can't be correct because you can't really use <code>IsTerminal</code> in a global way like <code>colorize</code> is doing. You need separate detection logic based on where you're writing.</p>
+<p>Oh, maybe these are the only places? But in any case, I think they can&#x27;t be correct because you can&#x27;t really use <code>IsTerminal</code> in a global way like <code>colorize</code> is doing. You need separate detection logic based on where you&#x27;re writing.</p>
 <p>So long story short, maybe there are two choices here:</p>
 <ol>
-<li>If there's only a couple places where we print colors to stderr, then do our own <code>std::io::stderr().is_terminal()</code> check and only use colors if it's a terminal. Probably an easy fix.</li>
+<li>If there&#x27;s only a couple places where we print colors to stderr, then do our own <code>std::io::stderr().is_terminal()</code> check and only use colors if it&#x27;s a terminal. Probably an easy fix.</li>
 <li>Refactor to use a more principled solution like <code>anstream</code>.</li>
 </ol>
 </div>
@@ -119,7 +119,7 @@ if std::io::stderr().is_terminal() {
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-11-13 19:22</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-13 19:22</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-13 19:22</div>
@@ -127,12 +127,12 @@ if std::io::stderr().is_terminal() {
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-11-13 20:00</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-13 20:00</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:23:07 UTC
+        Synced at 2026-01-20 19:28:58 UTC
     </footer>
 </body>
 </html>

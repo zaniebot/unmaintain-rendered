@@ -23,17 +23,17 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/epage">@epage</a></div>
-            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+            <div class="timeline-body">Please complete the following tasks
 <ul>
 <li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
 <li>[X] I have searched the existing issues</li>
 </ul>
-<h3>Rust Version</h3>
+Rust Version
 <p>rustc 1.57.0 (f1edd0429 2021-11-29)</p>
-<h3>Clap Version</h3>
+Clap Version
 <p>master</p>
-<h3>Minimal reproducible code</h3>
-<pre><code class="language-rust">use clap::{app_from_crate, arg, App, AppSettings};
+Minimal reproducible code
+<pre><code>use clap::{app_from_crate, arg, App, AppSettings};
 
 fn main() {
     let matches = app_from_crate!()
@@ -50,7 +50,7 @@ fn main() {
 
     match matches.subcommand() {
         Some((&quot;add&quot;, sub_matches)) =&gt; println!(
-            &quot;'myapp add' was used, name is: {:?}&quot;,
+            &quot;&#x27;myapp add&#x27; was used, name is: {:?}&quot;,
             sub_matches.value_of(&quot;NAME&quot;)
         ),
         _ =&gt; unreachable!(),
@@ -58,58 +58,58 @@ fn main() {
 }
 
 </code></pre>
-<h3>Steps to reproduce the bug with the above code</h3>
+Steps to reproduce the bug with the above code
 <p>See below</p>
-<h3>Actual Behaviour</h3>
-<pre><code class="language-console">$ cargo run -- add name
+Actual Behaviour
+<pre><code>$ cargo run -- add name
    Compiling test-clap v0.1.0 (/home/epage/src/personal/test-clap)
     Finished dev [unoptimized + debuginfo] target(s) in 0.80s
      Running `target/debug/test-clap add name`
-'myapp add' was used, name is: Some(&quot;name&quot;)
+&#x27;myapp add&#x27; was used, name is: Some(&quot;name&quot;)
 
 $ cargo run -- -- add name
     Finished dev [unoptimized + debuginfo] target(s) in 0.01s
      Running `target/debug/test-clap -- add name`
-thread 'main' panicked at '`NAME` is not a name of an argument or a group.
-Make sure you're using the name of the argument itself and not the name of short or long flags.', /home/epage/src/personal/clap/src/parse/matches/arg_matches.rs:119:24
+thread &#x27;main&#x27; panicked at &#x27;`NAME` is not a name of an argument or a group.
+Make sure you&#x27;re using the name of the argument itself and not the name of short or long flags.&#x27;, /home/epage/src/personal/clap/src/parse/matches/arg_matches.rs:119:24
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 </code></pre>
 <p>This happens because <code>--</code> is escaping the command so it becomes an external subcommand that aliases the built-in.  A simple <code>match</code> does not catch this and we then try to access <code>&quot;NAME&quot;</code> in an <code>ArgMatches</code> meant for external subcommands (only <code>&quot;&quot;</code> exists)</p>
-<h3>Expected Behaviour</h3>
+Expected Behaviour
 <p>Its a bit unclear.  <code>cargo</code> just passes the <code>ArgMatches</code> along, warning about the contents, like:</p>
-<pre><code class="language-console">$ cargo run -- -- check --invalid_argument -some-other-argument
+<pre><code>$ cargo run -- -- check --invalid_argument -some-other-argument
     Finished dev [unoptimized + debuginfo] target(s) in 0.05s
      Running `target/debug/cargo -- check --invalid_argument -some-other-argument`
 warning: trailing arguments after built-in command `check` are ignored: `--invalid_argument -some-other-argument`
     Checking cargo v0.60.0 (/home/epage/src/personal/cargo)
 ^C  Building [=======================&gt; ] 169/171: cargo                                                           
 </code></pre>
-<p>So with the above problem, that'd look like:</p>
-<pre><code class="language-console">$ cargo run -- add name
+<p>So with the above problem, that&#x27;d look like:</p>
+<pre><code>$ cargo run -- add name
    Compiling test-clap v0.1.0 (/home/epage/src/personal/test-clap)
     Finished dev [unoptimized + debuginfo] target(s) in 0.80s
      Running `target/debug/test-clap add name`
-'myapp add' was used, name is: Some(&quot;name&quot;)
+&#x27;myapp add&#x27; was used, name is: Some(&quot;name&quot;)
 
 $ cargo run -- -- add name
     Finished dev [unoptimized + debuginfo] target(s) in 0.01s
      Running `target/debug/test-clap -- add name`
-'myapp add' was used, name is: None
+&#x27;myapp add&#x27; was used, name is: None
 </code></pre>
-<h3>Additional Context</h3>
-<p>Ran into this when porting cargo to clap3 with a test failure from <code>cargo_alias_config::weird_check</code>.  <code>cargo</code> takes the approach of running the escaped command but ignoring the arguments.  This means we pass an external subcommand's <code>ArgMatches</code> into a function assuming its getting <code>check</code>s <code>ArgMatches</code> and panics when it accesses an &quot;undefined&quot; field.</p>
-<p>Builder users can detect that its an external subcommand by checking for <code>values_of(&quot;&quot;)</code> but derive users can't do that.</p>
+Additional Context
+<p>Ran into this when porting cargo to clap3 with a test failure from <code>cargo_alias_config::weird_check</code>.  <code>cargo</code> takes the approach of running the escaped command but ignoring the arguments.  This means we pass an external subcommand&#x27;s <code>ArgMatches</code> into a function assuming its getting <code>check</code>s <code>ArgMatches</code> and panics when it accesses an &quot;undefined&quot; field.</p>
+<p>Builder users can detect that its an external subcommand by checking for <code>values_of(&quot;&quot;)</code> but derive users can&#x27;t do that.</p>
 <p>You have to even know to do that.</p>
-<p>Once you do that, the question is what is next.  Pass it through? Error?  Fallback to the built-in like cargo?  Seems like this should be the users choice.  The challenge is with the fallback.  They now need an <code>ArgMatches</code> that has the same shape (ie won't panic) when passing to that part of their program.</p>
-<h3>Debug Output</h3>
+<p>Once you do that, the question is what is next.  Pass it through? Error?  Fallback to the built-in like cargo?  Seems like this should be the users choice.  The challenge is with the fallback.  They now need an <code>ArgMatches</code> that has the same shape (ie won&#x27;t panic) when passing to that part of their program.</p>
+Debug Output
 <p><em>No response</em></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">C-bug</span> added by @epage on 2022-01-05 19:59</div>
+            <div class="event">Label <span class="label">C-bug</span> added by <a href="https://github.com/epage">@epage</a> on 2022-01-05 19:59</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "3.x" by @epage on 2022-01-05 20:00</div>
+            <div class="event">Added to milestone &quot;3.x&quot; by <a href="https://github.com/epage">@epage</a> on 2022-01-05 20:00</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-05 20:02</div>
@@ -118,61 +118,61 @@ $ cargo run -- -- add name
 <li>Call this out in in the <code>AllowExternalSubcommands</code> documentation</li>
 <li>Add an extra check to the derive to ensure we actually populate external subcommands.</li>
 </ul>
-<p>Unsure what I'll do for cargo to maintain behavior.</p>
+<p>Unsure what I&#x27;ll do for cargo to maintain behavior.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../rust-lang/cargo/pulls/10253.html">rust-lang/cargo#10253</a> on 2022-01-05 20:12</div>
+            <div class="event">Referenced in <a>rust-lang/cargo#10253</a> on 2022-01-05 20:12</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-01-05 21:02</div>
-            <div class="timeline-body"><p>A big problem with detecting this is the fact that we only populate <code>&quot;&quot;</code> in <code>ArgMatches</code> if there are arguments for the external subcommand.  The mere presence of <code>&quot;&quot;</code> causes <code>cargo</code> to issue a warning so others, in theory, could be relying on that and it'd be breaking to start populating it.</p>
+            <div class="timeline-body"><p>A big problem with detecting this is the fact that we only populate <code>&quot;&quot;</code> in <code>ArgMatches</code> if there are arguments for the external subcommand.  The mere presence of <code>&quot;&quot;</code> causes <code>cargo</code> to issue a warning so others, in theory, could be relying on that and it&#x27;d be breaking to start populating it.</p>
 <p>Without a way to detect this until 4.0:</p>
 <ul>
-<li>We can't fix the derive until then</li>
+<li>We can&#x27;t fix the derive until then</li>
 <li>We are limited in what we can say in the docs.</li>
 </ul>
 <p>So the choice is go straight for 4.0 already or apply a surgical hack to unblock cargo until 4.0.</p>
-<p>I'm leaning towards the surgical hack.</p>
+<p>I&#x27;m leaning towards the surgical hack.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2022-01-05 21:02</div>
+            <div class="event">Label <span class="label">A-derive</span> added by <a href="https://github.com/epage">@epage</a> on 2022-01-05 21:02</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">A-docs</span> added by @epage on 2022-01-05 21:02</div>
+            <div class="event">Label <span class="label">A-docs</span> added by <a href="https://github.com/epage">@epage</a> on 2022-01-05 21:02</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">A-parsing</span> added by @epage on 2022-01-05 21:02</div>
+            <div class="event">Label <span class="label">A-parsing</span> added by <a href="https://github.com/epage">@epage</a> on 2022-01-05 21:02</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">E-medium</span> added by @epage on 2022-01-05 21:02</div>
+            <div class="event">Label <span class="label">E-medium</span> added by <a href="https://github.com/epage">@epage</a> on 2022-01-05 21:02</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">M-breaking-change</span> added by @epage on 2022-01-05 21:02</div>
+            <div class="event">Label <span class="label">M-breaking-change</span> added by <a href="https://github.com/epage">@epage</a> on 2022-01-05 21:02</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Removed from milestone "3.x" by @epage on 2022-01-05 21:02</div>
+            <div class="event">Removed from milestone &quot;3.x&quot; by <a href="https://github.com/epage">@epage</a> on 2022-01-05 21:02</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "4.0" by @epage on 2022-01-05 21:02</div>
+            <div class="event">Added to milestone &quot;4.0&quot; by <a href="https://github.com/epage">@epage</a> on 2022-01-05 21:02</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../pulls/3264.html">clap-rs/clap#3264</a> on 2022-01-05 21:56</div>
+            <div class="event">Referenced in <a>clap-rs/clap#3264</a> on 2022-01-05 21:56</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../rust-lang/cargo/pulls/10265.html">rust-lang/cargo#10265</a> on 2022-01-06 15:33</div>
+            <div class="event">Referenced in <a>rust-lang/cargo#10265</a> on 2022-01-06 15:33</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../pulls/3703.html">clap-rs/clap#3703</a> on 2022-05-06 20:53</div>
+            <div class="event">Referenced in <a>clap-rs/clap#3703</a> on 2022-05-06 20:53</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @epage on 2022-05-06 21:18</div>
+            <div class="event">Closed by <a href="https://github.com/epage">@epage</a> on 2022-05-06 21:18</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:48:21 UTC
+        Synced at 2026-01-20 19:58:42 UTC
     </footer>
 </body>
 </html>

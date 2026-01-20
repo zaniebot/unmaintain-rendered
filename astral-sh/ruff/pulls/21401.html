@@ -23,45 +23,45 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Inference of type expressions should always be deferred when analysing a stub file: stubs are allowed to (and often do) do things like this:</p>
-<pre><code class="language-py">from typing import TypeVar
+<pre><code>from typing import TypeVar
 
 T = TypeVar(&quot;T&quot;, bound=Foo)
 
 class Foo: ...
 </code></pre>
-<p><code>bound=Foo</code> here would cause a <code>NameError</code> if you tried to run this snippet with an interpreter at runtime, since <code>Foo</code> is not yet defined at the point when the <code>TypeVar</code> is assigned. But it's nonetheless permitted in a stub file, because stub files are never intended to be executed at runtime. They're just &quot;data files&quot; for the type checker.</p>
-<p>This pattern is used in quite a few typeshed stub files. Among other things, the fact that we don't yet support it means that we aren't able to correctly infer the type of the <code>default=</code> argument for this <code>TypeVar</code> (<code>int</code> has not yet been defined at that point in <code>builtins.pyi</code>):</p>
+<p><code>bound=Foo</code> here would cause a <code>NameError</code> if you tried to run this snippet with an interpreter at runtime, since <code>Foo</code> is not yet defined at the point when the <code>TypeVar</code> is assigned. But it&#x27;s nonetheless permitted in a stub file, because stub files are never intended to be executed at runtime. They&#x27;re just &quot;data files&quot; for the type checker.</p>
+<p>This pattern is used in quite a few typeshed stub files. Among other things, the fact that we don&#x27;t yet support it means that we aren&#x27;t able to correctly infer the type of the <code>default=</code> argument for this <code>TypeVar</code> (<code>int</code> has not yet been defined at that point in <code>builtins.pyi</code>):</p>
 <p>https://github.com/astral-sh/ruff/blob/9dd666d67758c9d25a361c7c23d7f8b883b0b05a/crates/ty_vendored/vendor/typeshed/stdlib/builtins.pyi#L93</p>
 <p>And therefore we think that a bare <code>memoryview</code> annotation should signify <code>memoryview[Unknown]</code>, whereas in fact it should signify <code>memoryview[int]</code>.</p>
-<h2>Test Plan</h2>
-<!-- How was it tested? -->
+Test Plan
+
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-11-12 12:41</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-12 12:41</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[ty] Ensure annotation expressions in stub files are always deferred" to "[ty] Ensure annotation/type expressions in stub files are always deferred" by @AlexWaygood on 2025-11-12 12:43</div>
+            <div class="event">Renamed from &quot;[ty] Ensure annotation expressions in stub files are always deferred&quot; to &quot;[ty] Ensure annotation/type expressions in stub files are always deferred&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-12 12:43</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-12 12:44</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
-<details>
-<summary>Changes were detected when running ty on typing conformance tests</summary>
+Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a>
 
-<pre><code class="language-diff">--- old-output.txt	2025-11-13 13:18:20.973834959 +0000
+Changes were detected when running ty on typing conformance tests
+
+<pre><code>--- old-output.txt	2025-11-13 13:18:20.973834959 +0000
 +++ new-output.txt	2025-11-13 13:18:24.521875587 +0000
 @@ -39,7 +39,7 @@
  aliases_newtype.py:11:8: error[invalid-argument-type] Argument is incorrect: Expected `int`, found `Literal[&quot;user&quot;]`
  aliases_newtype.py:12:1: error[invalid-assignment] Object of type `Literal[42]` is not assignable to `UserId`
- aliases_newtype.py:18:1: error[invalid-assignment] Object of type `&lt;NewType pseudo-class 'UserId'&gt;` is not assignable to `type`
--aliases_newtype.py:23:16: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Unknown, ...]`, found `&lt;NewType pseudo-class 'UserId'&gt;`
-+aliases_newtype.py:23:16: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Divergent, ...]`, found `&lt;NewType pseudo-class 'UserId'&gt;`
+ aliases_newtype.py:18:1: error[invalid-assignment] Object of type `&lt;NewType pseudo-class &#x27;UserId&#x27;&gt;` is not assignable to `type`
+-aliases_newtype.py:23:16: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Unknown, ...]`, found `&lt;NewType pseudo-class &#x27;UserId&#x27;&gt;`
++aliases_newtype.py:23:16: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Divergent, ...]`, found `&lt;NewType pseudo-class &#x27;UserId&#x27;&gt;`
  aliases_newtype.py:26:21: error[invalid-base] Cannot subclass an instance of NewType
  aliases_newtype.py:35:1: error[invalid-newtype] The name of a `NewType` (`BadName`) must match the name of the variable it is assigned to (`GoodName`)
  aliases_newtype.py:41:6: error[invalid-type-form] `GoodNewType1` is a `NewType` and cannot be specialized
@@ -76,19 +76,19 @@ class Foo: ...
  aliases_type_statement.py:39:22: error[invalid-type-form] Tuple literals are not allowed in this context in a type expression
 
 </code></pre>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-12 12:45</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">aioredis (https://github.com/aio-libs/aioredis)
+Changes were detected when running on open source projects
+
+<pre><code>aioredis (https://github.com/aio-libs/aioredis)
 - aioredis/client.py:3430:13: error[invalid-assignment] Object of type `tuple[KeysView[object], ValuesView[object]]` is not assignable to `Sequence[bytes | str | memoryview[Unknown]] | AbstractSet[AnyKeyT@_zaggregate]`
 + aioredis/client.py:3430:13: error[invalid-assignment] Object of type `tuple[KeysView[object], ValuesView[object]]` is not assignable to `Sequence[bytes | str | memoryview[int]] | AbstractSet[AnyKeyT@_zaggregate]`
 - aioredis/client.py:3898:38: warning[possibly-missing-attribute] Attribute `split` may be missing on object of type `Unknown | bytes | memoryview[Unknown] | ... omitted 3 union elements`
@@ -133,8 +133,8 @@ scrapy (https://github.com/scrapy/scrapy)
 + tests/test_loader.py:164:40: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Divergent, ...]`, found `type | None`
 
 graphql-core (https://github.com/graphql-python/graphql-core)
-- src/graphql/pyutils/is_iterable.py:30:30: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | tuple[Unknown, ...]`, found `list[Unknown | &lt;class 'Collection'&gt;] | Unknown | &lt;class 'Collection'&gt; | tuple[Unknown | &lt;class 'Collection'&gt;, ...]`
-+ src/graphql/pyutils/is_iterable.py:30:30: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | tuple[Divergent, ...]`, found `list[Unknown | &lt;class 'Collection'&gt;] | Unknown | &lt;class 'Collection'&gt; | tuple[Unknown | &lt;class 'Collection'&gt;, ...]`
+- src/graphql/pyutils/is_iterable.py:30:30: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | tuple[Unknown, ...]`, found `list[Unknown | &lt;class &#x27;Collection&#x27;&gt;] | Unknown | &lt;class &#x27;Collection&#x27;&gt; | tuple[Unknown | &lt;class &#x27;Collection&#x27;&gt;, ...]`
++ src/graphql/pyutils/is_iterable.py:30:30: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | tuple[Divergent, ...]`, found `list[Unknown | &lt;class &#x27;Collection&#x27;&gt;] | Unknown | &lt;class &#x27;Collection&#x27;&gt; | tuple[Unknown | &lt;class &#x27;Collection&#x27;&gt;, ...]`
 
 dulwich (https://github.com/dulwich/dulwich)
 - dulwich/pack.py:3075:13: warning[possibly-missing-attribute] Attribute `write` may be missing on object of type `(((bytes, /) -&gt; None) &amp; ~(() -&gt; object)) | (((bytes | bytearray | memoryview[Unknown], /) -&gt; int) &amp; ~(() -&gt; object)) | (IO[bytes] &amp; ~(() -&gt; object))`
@@ -279,8 +279,8 @@ xarray (https://github.com/pydata/xarray)
 + xarray/backends/zarr.py:883:44: warning[possibly-missing-attribute] Attribute `fill_value` may be missing on object of type `Unknown | ndarray[@Todo, dtype[Any]]`
 - xarray/coding/times.py:1169:12: error[invalid-return-type] Return type does not match returned value: expected `tuple[T_DuckArray@_eagerly_encode_cf_datetime, str, str]`, found `tuple[Unknown | ndarray[@Todo, Unknown], str, str]`
 + xarray/coding/times.py:1169:12: error[invalid-return-type] Return type does not match returned value: expected `tuple[T_DuckArray@_eagerly_encode_cf_datetime, str, str]`, found `tuple[Unknown | ndarray[@Todo, dtype[Any]], str, str]`
-- xarray/compat/npcompat.py:73:38: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Unknown, ...]`, found `set[Unknown | &lt;class 'bool'&gt; | &lt;class 'signedinteger'&gt; | ... omitted 5 union elements]`
-+ xarray/compat/npcompat.py:73:38: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Divergent, ...]`, found `set[Unknown | &lt;class 'bool'&gt; | &lt;class 'signedinteger'&gt; | ... omitted 5 union elements]`
+- xarray/compat/npcompat.py:73:38: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Unknown, ...]`, found `set[Unknown | &lt;class &#x27;bool&#x27;&gt; | &lt;class &#x27;signedinteger&#x27;&gt; | ... omitted 5 union elements]`
++ xarray/compat/npcompat.py:73:38: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Divergent, ...]`, found `set[Unknown | &lt;class &#x27;bool&#x27;&gt; | &lt;class &#x27;signedinteger&#x27;&gt; | ... omitted 5 union elements]`
 - xarray/core/dataarray.py:158:29: warning[possibly-missing-attribute] Attribute `keys` may be missing on object of type `Sequence[Sequence[Unknown] | Index[Any] | DataArray | Variable | ndarray[@Todo, Unknown]] | Mapping[Unknown, Unknown]`
 + xarray/core/dataarray.py:158:29: warning[possibly-missing-attribute] Attribute `keys` may be missing on object of type `Sequence[Sequence[Unknown] | Index[Any] | DataArray | Variable | ndarray[@Todo, dtype[Any]]] | Mapping[Unknown, Unknown]`
 - xarray/core/dataarray.py:182:25: warning[possibly-missing-attribute] Attribute `items` may be missing on object of type `(Sequence[Sequence[Unknown] | Index[Any] | DataArray | Variable | ndarray[@Todo, Unknown]] &amp; ~Coordinates) | (Mapping[Unknown, Unknown] &amp; ~Coordinates) | None`
@@ -313,18 +313,18 @@ xarray (https://github.com/pydata/xarray)
 apprise (https://github.com/caronc/apprise)
 - apprise/plugins/simplepush.py:207:28: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bytes | bytearray | memoryview[Unknown]`, found `Unknown | None | bytes`
 + apprise/plugins/simplepush.py:207:28: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bytes | bytearray | memoryview[int]`, found `Unknown | None | bytes`
-- tests/test_plugin_email.py:515:36: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | tuple[Unknown, ...]`, found `(Unknown &amp; ~None) | &lt;class 'TypeError'&gt; | &lt;class 'NotifyEmail'&gt; | str | bool`
-+ tests/test_plugin_email.py:515:36: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | tuple[Divergent, ...]`, found `(Unknown &amp; ~None) | &lt;class 'TypeError'&gt; | &lt;class 'NotifyEmail'&gt; | str | bool`
-- tests/test_plugin_email.py:612:38: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | tuple[Unknown, ...]`, found `Unknown | &lt;class 'TypeError'&gt; | &lt;class 'NotifyEmail'&gt; | str | bool`
-+ tests/test_plugin_email.py:612:38: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | tuple[Divergent, ...]`, found `Unknown | &lt;class 'TypeError'&gt; | &lt;class 'NotifyEmail'&gt; | str | bool`
-- tests/test_plugin_email.py:624:34: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | tuple[Unknown, ...]`, found `(Unknown &amp; ~None) | &lt;class 'TypeError'&gt; | &lt;class 'NotifyEmail'&gt; | str | bool`
-+ tests/test_plugin_email.py:624:34: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | tuple[Divergent, ...]`, found `(Unknown &amp; ~None) | &lt;class 'TypeError'&gt; | &lt;class 'NotifyEmail'&gt; | str | bool`
-- tests/test_plugin_growl.py:323:36: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | tuple[Unknown, ...]`, found `(Unknown &amp; ~None) | &lt;class 'NotifyGrowl'&gt; | bool`
-+ tests/test_plugin_growl.py:323:36: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | tuple[Divergent, ...]`, found `(Unknown &amp; ~None) | &lt;class 'NotifyGrowl'&gt; | bool`
-- tests/test_plugin_growl.py:367:38: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | tuple[Unknown, ...]`, found `Unknown | None | &lt;class 'NotifyGrowl'&gt; | bool`
-+ tests/test_plugin_growl.py:367:38: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | tuple[Divergent, ...]`, found `Unknown | None | &lt;class 'NotifyGrowl'&gt; | bool`
-- tests/test_plugin_growl.py:376:34: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | tuple[Unknown, ...]`, found `(Unknown &amp; ~None) | &lt;class 'NotifyGrowl'&gt; | bool`
-+ tests/test_plugin_growl.py:376:34: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | tuple[Divergent, ...]`, found `(Unknown &amp; ~None) | &lt;class 'NotifyGrowl'&gt; | bool`
+- tests/test_plugin_email.py:515:36: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | tuple[Unknown, ...]`, found `(Unknown &amp; ~None) | &lt;class &#x27;TypeError&#x27;&gt; | &lt;class &#x27;NotifyEmail&#x27;&gt; | str | bool`
++ tests/test_plugin_email.py:515:36: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | tuple[Divergent, ...]`, found `(Unknown &amp; ~None) | &lt;class &#x27;TypeError&#x27;&gt; | &lt;class &#x27;NotifyEmail&#x27;&gt; | str | bool`
+- tests/test_plugin_email.py:612:38: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | tuple[Unknown, ...]`, found `Unknown | &lt;class &#x27;TypeError&#x27;&gt; | &lt;class &#x27;NotifyEmail&#x27;&gt; | str | bool`
++ tests/test_plugin_email.py:612:38: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | tuple[Divergent, ...]`, found `Unknown | &lt;class &#x27;TypeError&#x27;&gt; | &lt;class &#x27;NotifyEmail&#x27;&gt; | str | bool`
+- tests/test_plugin_email.py:624:34: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | tuple[Unknown, ...]`, found `(Unknown &amp; ~None) | &lt;class &#x27;TypeError&#x27;&gt; | &lt;class &#x27;NotifyEmail&#x27;&gt; | str | bool`
++ tests/test_plugin_email.py:624:34: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | tuple[Divergent, ...]`, found `(Unknown &amp; ~None) | &lt;class &#x27;TypeError&#x27;&gt; | &lt;class &#x27;NotifyEmail&#x27;&gt; | str | bool`
+- tests/test_plugin_growl.py:323:36: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | tuple[Unknown, ...]`, found `(Unknown &amp; ~None) | &lt;class &#x27;NotifyGrowl&#x27;&gt; | bool`
++ tests/test_plugin_growl.py:323:36: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | tuple[Divergent, ...]`, found `(Unknown &amp; ~None) | &lt;class &#x27;NotifyGrowl&#x27;&gt; | bool`
+- tests/test_plugin_growl.py:367:38: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | tuple[Unknown, ...]`, found `Unknown | None | &lt;class &#x27;NotifyGrowl&#x27;&gt; | bool`
++ tests/test_plugin_growl.py:367:38: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | tuple[Divergent, ...]`, found `Unknown | None | &lt;class &#x27;NotifyGrowl&#x27;&gt; | bool`
+- tests/test_plugin_growl.py:376:34: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | tuple[Unknown, ...]`, found `(Unknown &amp; ~None) | &lt;class &#x27;NotifyGrowl&#x27;&gt; | bool`
++ tests/test_plugin_growl.py:376:34: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | tuple[Divergent, ...]`, found `(Unknown &amp; ~None) | &lt;class &#x27;NotifyGrowl&#x27;&gt; | bool`
 
 setuptools (https://github.com/pypa/setuptools)
 - setuptools/__init__.py:191:16: error[invalid-return-type] Return type does not match returned value: expected `Command`, found `str | Command`
@@ -432,29 +432,29 @@ pandas (https://github.com/pandas-dev/pandas)
 
 ... (truncated 679 lines) ...
 </code></pre>
-</details>
 
-<details>
-<summary>Memory usage changes were detected when running on open source projects</summary>
 
-<pre><code class="language-diff">prefect (https://github.com/PrefectHQ/prefect)
+
+Memory usage changes were detected when running on open source projects
+
+<pre><code>prefect (https://github.com/PrefectHQ/prefect)
 -     struct metadata = ~36MB
 +     struct metadata = ~38MB
 
 
 </code></pre>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-11-12 12:46</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-12 12:46</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-12 12:52</div>
-            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+            <div class="timeline-body">
 
-<h2><code>ecosystem-analyzer</code> results</h2>
+<code>ecosystem-analyzer</code> results
 <p>| Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
 | <code>no-matching-overload</code> | 229 | 0 | 0 |
@@ -476,19 +476,19 @@ pandas (https://github.com/pandas-dev/pandas)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-11-12 12:54</div>
-            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+            <div class="timeline-body">
 
-<h2><a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Ftvar-bound-stubs2?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a></h2>
-<h3>Merging #21401 will <strong>degrade performances by 4.55%</strong></h3>
-<p><sub>Comparing <code>alex/tvar-bound-stubs2</code> (5d1bcb0) with <code>main</code> (04ab917)</sub></p>
-<h3>Summary</h3>
-<p><code>❌ 2</code> regressions<br />
-<code>✅ 20</code> untouched<br />
+<a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Ftvar-bound-stubs2?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a>
+Merging #21401 will <strong>degrade performances by 4.55%</strong>
+<p>Comparing <code>alex/tvar-bound-stubs2</code> (5d1bcb0) with <code>main</code> (04ab917)</p>
+Summary
+<p><code>❌ 2</code> regressions<br>
+<code>✅ 20</code> untouched<br>
 <code>⏩ 30</code> skipped[^skipped]</p>
 <blockquote>
 <p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Ftvar-bound-stubs2?utm_source=github&amp;utm_medium=comment&amp;utm_content=acknowledge">acknowledge them on CodSpeed</a>.</em></p>
 </blockquote>
-<h3>Benchmarks breakdown</h3>
+Benchmarks breakdown
 <p>|     | Mode | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
 | --- | ---- | --------- | ------ | ------ | ------ |
 | ❌ | Simulation | <a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Ftvar-bound-stubs2?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Amicro%3A%3Abenchmark_complex_constrained_attributes_1%3A%3Aty_micro%5Bcomplex_constrained_attributes_1%5D&amp;runnerMode=Instrumentation&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=benchmark"><code>ty_micro[complex_constrained_attributes_1]</code></a> | 66.3 ms | 69.3 ms | -4.33% |
@@ -499,10 +499,10 @@ pandas (https://github.com/pandas-dev/pandas)
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-12 17:52</div>
             <div class="timeline-body"><p>This new <code>dedupe</code> diagnostic is very weird:</p>
-<pre><code class="language-diff">+ dedupe/convenience.py:88:9: error[invalid-assignment] Object of type `property` is not assignable to `int`
+<pre><code>+ dedupe/convenience.py:88:9: error[invalid-assignment] Object of type `property` is not assignable to `int`
 </code></pre>
-<p>Here's a minimal repro:</p>
-<pre><code class="language-md">
+<p>Here&#x27;s a minimal repro:</p>
+<pre><code>
 `stub.pyi`:
 
 ```pyi
@@ -534,53 +534,53 @@ reveal_type(iinfo(&quot;int&quot;).max)  # revealed: property
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @AlexWaygood on 2025-11-13 11:47</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-13 11:47</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-11-13 11:47</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-13 11:47</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @AlexWaygood on 2025-11-13 12:06</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-13 12:06</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-11-13 12:06</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-13 12:06</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-13 12:50</div>
-            <div class="timeline-body"><h2>Ecosystem analysis</h2>
+            <div class="timeline-body">Ecosystem analysis
 <p>Overall this gets rid of a lot of <code>unresolved-reference</code> and <code>unresolved-attribute</code> errors; it appears to significantly improve our understanding of types from stub files and reduce the number of variables inferred as <code>Unknown</code>.</p>
 <p>There are lots of new <code>no-matching-overload</code> diagnostics on scipy, e.g.</p>
-<pre><code class="language-diff">+ scipy/interpolate/tests/test_bary_rational.py:173:42: error[no-matching-overload] No overload of function `assert_allclose` matches arguments
+<pre><code>+ scipy/interpolate/tests/test_bary_rational.py:173:42: error[no-matching-overload] No overload of function `assert_allclose` matches arguments
 </code></pre>
-<p>These appear due to a bug in numpy's stubs. That <code>scipy</code> call is <a href="https://github.com/scipy/scipy/blob/aa4eddcab554bdd41320952c5eb3050989bb9ca0/scipy/interpolate/tests/test_bary_rational.py#L173">here</a>, and we can see that it passes <code>atol=TOL</code> to <code>assert_allclose</code>. Adding a <code>reveal_type</code> call to that line indicates that we infer the type of <code>TOL</code> to be <code>floating[Any] | float64</code>. That seems to be accurate:</p>
+<p>These appear due to a bug in numpy&#x27;s stubs. That <code>scipy</code> call is <a href="https://github.com/scipy/scipy/blob/aa4eddcab554bdd41320952c5eb3050989bb9ca0/scipy/interpolate/tests/test_bary_rational.py#L173">here</a>, and we can see that it passes <code>atol=TOL</code> to <code>assert_allclose</code>. Adding a <code>reveal_type</code> call to that line indicates that we infer the type of <code>TOL</code> to be <code>floating[Any] | float64</code>. That seems to be accurate:</p>
 <pre><code>% uvx --with=scipy --with=pytest python3.14
 Installed 7 packages in 35ms
 Python 3.14.0 (main, Oct 10 2025, 12:54:13) [Clang 20.1.4 ] on darwin
 Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
 &gt;&gt;&gt; from scipy.interpolate.tests.test_bary_rational import TOL
 &gt;&gt;&gt; type(TOL)
-&lt;class 'numpy.float64'&gt;
+&lt;class &#x27;numpy.float64&#x27;&gt;
 </code></pre>
-<p>But none of <a href="https://github.com/numpy/numpy/blob/5d4dc2ab393e4e4d4cd0a2b77e3fe9f84487e409/numpy/testing/_private/utils.pyi#L325-L348">numpy's overloads for <code>assert_allclose</code></a> permit a type of <code>float64</code> or <code>floating</code> to be passed to the <code>atol</code> or <code>rtol</code> parameters; all overloads for the function use <code>float</code> for those parameters.</p>
+<p>But none of <a href="https://github.com/numpy/numpy/blob/5d4dc2ab393e4e4d4cd0a2b77e3fe9f84487e409/numpy/testing/_private/utils.pyi#L325-L348">numpy&#x27;s overloads for <code>assert_allclose</code></a> permit a type of <code>float64</code> or <code>floating</code> to be passed to the <code>atol</code> or <code>rtol</code> parameters; all overloads for the function use <code>float</code> for those parameters.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @AlexWaygood on 2025-11-13 13:18</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-13 13:18</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-11-13 13:18</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-13 13:18</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @AlexWaygood on 2025-11-13 13:18</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-13 13:18</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-11-13 13:18</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-13 13:18</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-11-13 13:18</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-13 13:18</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-11-13 13:18</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-13 13:18</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-13 13:40</div>
@@ -590,7 +590,7 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/infer/builder/type_expression.rs</code>:33 on 2025-11-13 17:04</div>
             <div class="timeline-body"><p>In general, setting the deferred state without a paired revert back to the previous deferred state is not right; it will cause the new deferred state to leak back up the stack, outside of this type expression inference.</p>
-<p>I feel like there might be some refactor called for here between this method and <code>infer_type_expression_with_state</code>, but I haven't quite sorted yet what it should be...</p>
+<p>I feel like there might be some refactor called for here between this method and <code>infer_type_expression_with_state</code>, but I haven&#x27;t quite sorted yet what it should be...</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -603,8 +603,8 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
             <div class="timeline-body"><blockquote>
 <p>In general, setting the deferred state without a paired revert back to the previous deferred state is not right; it will cause the new deferred state to leak back up the stack, outside of this type expression inference.</p>
 </blockquote>
-<p>Yes, but it can never leak so far as leak into a different file, correct? And when you're inferring types for one scope in a stub file, you know that all other scopes in that stub file will also be in a stub file. So I think this is fine for this specific scenario.</p>
-<p>My first draft of this PR just switched a bunch of callsites from <code>self.infer_type_expression(expr)</code> to <code>self.infer_type_expression_with_state(expr, state)</code> where <code>state</code> was <code>DeferredExpressionState::Deferred</code> if we were in a stub file. But that doesn't feel like a robust way of doing it at all, because you have to remember to do that every time, and there were <em>loads</em> of callsites where we were forgetting to do that.</p>
+<p>Yes, but it can never leak so far as leak into a different file, correct? And when you&#x27;re inferring types for one scope in a stub file, you know that all other scopes in that stub file will also be in a stub file. So I think this is fine for this specific scenario.</p>
+<p>My first draft of this PR just switched a bunch of callsites from <code>self.infer_type_expression(expr)</code> to <code>self.infer_type_expression_with_state(expr, state)</code> where <code>state</code> was <code>DeferredExpressionState::Deferred</code> if we were in a stub file. But that doesn&#x27;t feel like a robust way of doing it at all, because you have to remember to do that every time, and there were <em>loads</em> of callsites where we were forgetting to do that.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -618,16 +618,16 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer/builder/type_expression.rs</code>:33 on 2025-11-13 17:14</div>
             <div class="timeline-body"><blockquote>
-<p>I feel like there might be some refactor called for here between this method and <code>infer_type_expression_with_state</code>, but I haven't quite sorted yet what it should be...</p>
+<p>I feel like there might be some refactor called for here between this method and <code>infer_type_expression_with_state</code>, but I haven&#x27;t quite sorted yet what it should be...</p>
 </blockquote>
 <p>Yeah, I also looked briefly at whether a refactor would be possible, but it seemed nontrivial...</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @AlexWaygood on 2025-11-13 17:14</div>
+            <div class="event">Merged by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-13 17:14</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-11-13 17:14</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-13 17:14</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-11-13 17:14</div>
@@ -639,14 +639,14 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/infer/builder/type_expression.rs</code>:33 on 2025-11-13 17:16</div>
             <div class="timeline-body"><blockquote>
-<p>Yes, but it can never leak so far as leak into a different file, correct? And when you're inferring types for one scope in a stub file, you know that all other scopes in that stub file will also be in a stub file. So I think this is fine for this specific scenario.</p>
+<p>Yes, but it can never leak so far as leak into a different file, correct? And when you&#x27;re inferring types for one scope in a stub file, you know that all other scopes in that stub file will also be in a stub file. So I think this is fine for this specific scenario.</p>
 </blockquote>
-<p>I don't think it's fine, because the updated <code>DeferredExpressionState::Deferred</code> that is set here can leak into non-type-expressions in that stub file. And (at least in this PR) it is not the intent that <em>all</em> name references in stub files are deferred, only those in type expressions.</p>
+<p>I don&#x27;t think it&#x27;s fine, because the updated <code>DeferredExpressionState::Deferred</code> that is set here can leak into non-type-expressions in that stub file. And (at least in this PR) it is not the intent that <em>all</em> name references in stub files are deferred, only those in type expressions.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer/builder/type_expression.rs</code>:33 on 2025-11-13 17:37</div>
-            <div class="timeline-body"><p>Oh, good point. Argh, that seems serious enough that I maybe wouldn't have approved if I'd been reviewing 😆 Will fix in a followup!</p>
+            <div class="timeline-body"><p>Oh, good point. Argh, that seems serious enough that I maybe wouldn&#x27;t have approved if I&#x27;d been reviewing 😆 Will fix in a followup!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -656,7 +656,7 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:17:10 UTC
+        Synced at 2026-01-20 19:20:31 UTC
     </footer>
 </body>
 </html>

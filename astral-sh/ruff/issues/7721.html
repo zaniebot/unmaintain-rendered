@@ -23,59 +23,50 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MarcoGorelli">@MarcoGorelli</a></div>
-            <div class="timeline-body"><!--
-Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
-
-If you're filing a bug report, please consider including the following information:
-
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
-* The current Ruff settings (any relevant sections from your `pyproject.toml`).
-* The current Ruff version (`ruff --version`).
--->
+            <div class="timeline-body">
 
 <p>Hello,</p>
-<p>I've noticed that <code>ruff</code> has a <code>pandas-vet</code> plugin. Would you open to adding a Polars-vet one?</p>
+<p>I&#x27;ve noticed that <code>ruff</code> has a <code>pandas-vet</code> plugin. Would you open to adding a Polars-vet one?</p>
 <p>It could make suggestions such as</p>
-<pre><code class="language-diff">- pl.read_csv(file_name).lazy()
+<pre><code>- pl.read_csv(file_name).lazy()
 + pl.scan_csv(file_name)
 </code></pre>
 <p>or</p>
-<pre><code class="language-diff">- df.select(pl.col('a').map_elements(lambda lst: ' '.join([str(x) for x in lst])))
-+ df.select(pl.col('a').list.join(' '))
+<pre><code>- df.select(pl.col(&#x27;a&#x27;).map_elements(lambda lst: &#x27; &#x27;.join([str(x) for x in lst])))
++ df.select(pl.col(&#x27;a&#x27;).list.join(&#x27; &#x27;))
 </code></pre>
 <p>which can have a real impact on performance</p>
-<p>I could try putting something together if you'd be open to it</p>
+<p>I could try putting something together if you&#x27;d be open to it</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-30 17:13</div>
-            <div class="timeline-body"><p>I'm happy to add something like this! I'd prefer if we had a non-trivial set of rules in mind (e.g., at least five or so?) before we started to add them. I want to avoid a situation in which we create a new category, add one rule, then fail to expand it to a meaningful set.</p>
+            <div class="timeline-body"><p>I&#x27;m happy to add something like this! I&#x27;d prefer if we had a non-trivial set of rules in mind (e.g., at least five or so?) before we started to add them. I want to avoid a situation in which we create a new category, add one rule, then fail to expand it to a meaningful set.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">plugin</span> added by @charliermarsh on 2023-09-30 17:13</div>
+            <div class="event">Label <span class="label">plugin</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-30 17:13</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MarcoGorelli">@MarcoGorelli</a> on 2023-09-30 18:08</div>
-            <div class="timeline-body"><p>Sure, thanks! For a start, there's all the rewrites from https://github.com/pola-rs/polars/issues/9968, such as</p>
-<pre><code class="language-diff">- pl.col('a').map_elements(lambda x: np.sin(x))
-+ pl.col('a').sin()
+            <div class="timeline-body"><p>Sure, thanks! For a start, there&#x27;s all the rewrites from <a href="https://github.com/pola-rs/polars/issues/9968">pola-rs/polars#9968</a>, such as</p>
+<pre><code>- pl.col(&#x27;a&#x27;).map_elements(lambda x: np.sin(x))
++ pl.col(&#x27;a&#x27;).sin()
 
-- pl.col('a').map_elements(lambda x: x+1)
-+ (pl.col('a') + 1)
+- pl.col(&#x27;a&#x27;).map_elements(lambda x: x+1)
++ (pl.col(&#x27;a&#x27;) + 1)
 
-- pl.col('a').map_elements(lambda x: json.loads(x))
+- pl.col(&#x27;a&#x27;).map_elements(lambda x: json.loads(x))
 + pl.col(&quot;a&quot;).str.json_extract()
 
-- pl.col('a').map_elements(lambda x: dt.datetime.strptime(x, &quot;%Y-%m-%d&quot;))
-+ pl.col('a').str.to_datetime(format='%Y-%m-%d')
+- pl.col(&#x27;a&#x27;).map_elements(lambda x: dt.datetime.strptime(x, &quot;%Y-%m-%d&quot;))
++ pl.col(&#x27;a&#x27;).str.to_datetime(format=&#x27;%Y-%m-%d&#x27;)
 
-- pl.col('a').map_elements(lambda x: x.upper())
+- pl.col(&#x27;a&#x27;).map_elements(lambda x: x.upper())
 + pl.col(&quot;a&quot;).str.to_uppercase()
 </code></pre>
-<p>. Within Polars, warnings are emitted for some of these by parsing the bytecode of the passed function - but as Ruff deals with the AST, then I'd expect it to be possible to cover a lot more from that list</p>
-<p>The full list of test cases is here, there's quite a few already:</p>
+<p>. Within Polars, warnings are emitted for some of these by parsing the bytecode of the passed function - but as Ruff deals with the AST, then I&#x27;d expect it to be possible to cover a lot more from that list</p>
+<p>The full list of test cases is here, there&#x27;s quite a few already:</p>
 <p>https://github.com/pola-rs/polars/blob/f3142ccd321873d7be5b339fd6ec5536e8c3153e/py-polars/tests/test_udfs.py#L28-L144</p>
 </div>
         </div>
@@ -88,12 +79,12 @@ If you're filing a bug report, please consider including the following informati
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/stinodego">@stinodego</a> on 2023-10-19 11:05</div>
-            <div class="timeline-body"><p>One more suggestion in the 'lazy' category:</p>
-<pre><code class="language-diff">- DataFrame(...).lazy()
+            <div class="timeline-body"><p>One more suggestion in the &#x27;lazy&#x27; category:</p>
+<pre><code>- DataFrame(...).lazy()
 + LazyFrame(...)
 </code></pre>
 <p>Maybe one for assertions (the equality statements would result in an error):</p>
-<pre><code class="language-diff">- assert s1 == s2
+<pre><code>- assert s1 == s2
 + assert_series_equal(s1, s2)
 
 - assert df1 == df2
@@ -108,25 +99,25 @@ If you're filing a bug report, please consider including the following informati
 
 </code></pre>
 <p>One for <code>select</code>/<code>with_columns</code>:</p>
-<pre><code class="language-diff">- df.select(pl.all(), ...)
+<pre><code>- df.select(pl.all(), ...)
 + df.with_columns(...)
 
 - df.select(pl.col(&quot;*&quot;), ...)
 + df.with_columns(...)
 </code></pre>
 <p>Keyword syntax in <code>select</code>/<code>with_columns</code>:</p>
-<pre><code class="language-diff">- df.select(pl.col('a').abs().alias('abs'))
-+ df.select(abs=pl.col('a').abs())
+<pre><code>- df.select(pl.col(&#x27;a&#x27;).abs().alias(&#x27;abs&#x27;))
++ df.select(abs=pl.col(&#x27;a&#x27;).abs())
 </code></pre>
 <p>Keyword syntax in <code>filter</code>:</p>
-<pre><code class="language-diff">- df.filter(pl.col('a') == 'foo')
-+ df.filter(a='foo')
+<pre><code>- df.filter(pl.col(&#x27;a&#x27;) == &#x27;foo&#x27;)
++ df.filter(a=&#x27;foo&#x27;)
 </code></pre>
 <p>Using positional args instead of lists where possible:</p>
-<pre><code class="language-diff">- df.sort(['a', 'b'])
-+ df.sort('a', 'b')
+<pre><code>- df.sort([&#x27;a&#x27;, &#x27;b&#x27;])
++ df.sort(&#x27;a&#x27;, &#x27;b&#x27;)
 </code></pre>
-<p>...I'm sure I can come up with more :smile:
+<p>...I&#x27;m sure I can come up with more :smile:
 @MarcoGorelli Is this enough input?</p>
 </div>
         </div>
@@ -138,7 +129,7 @@ If you're filing a bug report, please consider including the following informati
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:48:31 UTC
+        Synced at 2026-01-20 18:48:43 UTC
     </footer>
 </body>
 </html>

@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dscorbett">@dscorbett</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>The fix for <a href="https://docs.astral.sh/ruff/rules/f-string-number-format/">f-string-number-format (FURB116)</a> only works on non-negative integers. If the argument isn’t an <code>int</code> or <code>bool</code> literal (or a variable that was set to one of those, or any other expression that Ruff can prove is a non-negative integer), the rule should be marked unsafe. The fix can also introduce a syntax error for certain complex expressions that the rule was probably not intended to handle.</p>
 <p>The fix changes behavior for negative integers.</p>
-<pre><code class="language-console">$ cat &gt;furb116_1.py &lt;&lt;'# EOF'
+<pre><code>$ cat &gt;furb116_1.py &lt;&lt;&#x27;# EOF&#x27;
 x = -1
 print(bin(x)[2:])
 # EOF
@@ -45,28 +45,28 @@ $ python furb116_1.py
 -1
 </code></pre>
 <p>FURB116 applies to all number literals, but <code>float</code> and <code>complex</code> literals are false positives which the rule should ignore.</p>
-<pre><code class="language-console">$ cat &gt;furb116_2.py &lt;&lt;'# EOF'
+<pre><code>$ cat &gt;furb116_2.py &lt;&lt;&#x27;# EOF&#x27;
 bin(1.0)[2:]
 # EOF
 
 $ python furb116_2.py 2&gt;&amp;1 | tail -n 1
-TypeError: 'float' object cannot be interpreted as an integer
+TypeError: &#x27;float&#x27; object cannot be interpreted as an integer
 
 $ ruff --isolated check --preview --select FURB116 furb116_2.py --fix
 Found 1 error (1 fixed, 0 remaining).
 
 $ python furb116_2.py 2&gt;&amp;1 | tail -n 1
-ValueError: Unknown format code 'b' for object of type 'float'
+ValueError: Unknown format code &#x27;b&#x27; for object of type &#x27;float&#x27;
 </code></pre>
 <p>In general, the fix should be marked unsafe, except when it can be proved to be safe. Otherwise, the fix changes behavior, sometimes by changing the error type as in the previous example, and sometimes by changing behavior in other ways.</p>
-<pre><code class="language-console">$ cat &gt;furb116_3.py &lt;&lt;'# EOF'
+<pre><code>$ cat &gt;furb116_3.py &lt;&lt;&#x27;# EOF&#x27;
 import datetime
 d = datetime.datetime.now(tz=datetime.UTC)
 print(bin(d)[2:])
 # EOF
 
 $ python furb116_3.py 2&gt;&amp;1 | tail -n 1
-TypeError: 'datetime.datetime' object cannot be interpreted as an integer
+TypeError: &#x27;datetime.datetime&#x27; object cannot be interpreted as an integer
 
 $ ruff --isolated check --preview --select FURB116 furb116_3.py --fix
 Found 1 error (1 fixed, 0 remaining).
@@ -80,7 +80,7 @@ $ python furb116_3.py
 b
 </code></pre>
 <p>The fix introduces a syntax error when the argument begins with a brace.</p>
-<pre><code class="language-console">$ cat &gt;furb116_4.py &lt;&lt;'# EOF'
+<pre><code>$ cat &gt;furb116_4.py &lt;&lt;&#x27;# EOF&#x27;
 print(bin({0: 1}[0].numerator)[2:])
 # EOF
 
@@ -91,7 +91,7 @@ $ ruff --isolated check --preview --select FURB116 furb116_4.py --diff 2&gt;&amp
 error: Fix introduced a syntax error. Reverting all changes.
 </code></pre>
 <p>The fix introduces a syntax error in Python 3.11 and earlier when the argument contains the same kind of quotation marks as the fix’s f-string.</p>
-<pre><code class="language-console">$ cat &gt;furb116_5.py &lt;&lt;'# EOF'
+<pre><code>$ cat &gt;furb116_5.py &lt;&lt;&#x27;# EOF&#x27;
 print(bin(len(&quot;xyz&quot;).numerator)[2:])
 # EOF
 
@@ -105,10 +105,10 @@ $ cat furb116_5.py
 print(f&quot;{len(&quot;xyz&quot;).numerator:b}&quot;)
 
 $ python3.11 furb116_5.py 2&gt;&amp;1 | tail -n 1
-SyntaxError: f-string: unmatched '('
+SyntaxError: f-string: unmatched &#x27;(&#x27;
 </code></pre>
 <p>The fix introduces a syntax error in Python 3.11 and earlier when the argument contains a backslash.</p>
-<pre><code class="language-console">$ cat &gt;furb116_6.py &lt;&lt;'# EOF'
+<pre><code>$ cat &gt;furb116_6.py &lt;&lt;&#x27;# EOF&#x27;
 print(bin(ord(&quot;\\&quot;).numerator)[2:])
 # EOF
 
@@ -125,7 +125,7 @@ $ python3.11 furb116_6.py 2&gt;&amp;1 | tail -n 1
 SyntaxError: unexpected character after line continuation character
 </code></pre>
 <p>The fix introduces a syntax error in Python 3.11 and earlier when the argument spans multiple lines.</p>
-<pre><code class="language-console">$ cat &gt;furb116_7.py &lt;&lt;'# EOF'
+<pre><code>$ cat &gt;furb116_7.py &lt;&lt;&#x27;# EOF&#x27;
 import sys
 print(hex(sys
 .maxunicode)[2:])
@@ -145,32 +145,32 @@ print(f&quot;{sys
 $ python3.11 furb116_7.py 2&gt;&amp;1 | tail -n 1
 SyntaxError: unterminated string literal (detected at line 2)
 </code></pre>
-<h3>Version</h3>
+Version
 <p>ruff 0.9.9 (091d0af2a 2025-02-28)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-03-03 15:46</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-03 15:46</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-03-03 15:46</div>
+            <div class="event">Label <span class="label">fixes</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-03 15:46</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">help wanted</span> added by @ntBre on 2025-03-03 15:46</div>
+            <div class="event">Label <span class="label">help wanted</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-03 15:46</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2025-05-03 13:59</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-03 13:59</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @MichaReiser on 2025-05-03 13:59</div>
+            <div class="event">Reopened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-03 13:59</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ntBre on 2025-05-12 20:08</div>
+            <div class="event">Closed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-12 20:08</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:52:18 UTC
+        Synced at 2026-01-20 18:49:35 UTC
     </footer>
 </body>
 </html>

@@ -29,20 +29,20 @@
 <ul>
 <li>Evaluate PGO on Ruff</li>
 <li>If it benefits Ruff - add a note to the Ruff documentation about building with PGO. In this case, users and maintainers who build their own Ruff packages will be aware of PGO as an additional way to optimize Ruff</li>
-<li>Optimize provided by Ruff team binaries on the CI (like it's already done for other projects like Rustc)</li>
+<li>Optimize provided by Ruff team binaries on the CI (like it&#x27;s already done for other projects like Rustc)</li>
 <li>After that, I suggest trying to apply <a href="https://github.com/llvm/llvm-project/blob/main/bolt/README.md">LLVM BOLT</a> as an additional post-PGO step. Rustc already does it on some platforms</li>
 </ul>
 <p>For the Rust projects, I suggest PGO optimizing with <a href="https://github.com/Kobzol/cargo-pgo">cargo-pgo</a>.</p>
-<p>I already tried to optimize Ruff with PGO on my local machines but unfortunately met a bug in Rustc on the LTO and PGO boundary. More details about the bug are available at https://github.com/rust-lang/rust/issues/115344#issuecomment-1703458011 . So I suggest leaving this issue as-is. And later when the bug in the upstream will be fixed, try to apply PGO to Ruff once again.</p>
+<p>I already tried to optimize Ruff with PGO on my local machines but unfortunately met a bug in Rustc on the LTO and PGO boundary. More details about the bug are available at <a href="https://github.com/rust-lang/rust/issues/115344">rust-lang/rust#115344</a>#issuecomment-1703458011 . So I suggest leaving this issue as-is. And later when the bug in the upstream will be fixed, try to apply PGO to Ruff once again.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-02 11:27</div>
-            <div class="timeline-body"><p>Thanks for this. I'm happy to support an evaluation to see if Ruff can benefit from PGO, at which point we can evaluate the tradeoffs of integrating it into our production pipeline. Is there anything we can do on our end to resolve that upstream bug (e.g., changes we can make to Ruff itself)?</p>
+            <div class="timeline-body"><p>Thanks for this. I&#x27;m happy to support an evaluation to see if Ruff can benefit from PGO, at which point we can evaluate the tradeoffs of integrating it into our production pipeline. Is there anything we can do on our end to resolve that upstream bug (e.g., changes we can make to Ruff itself)?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2023-09-02 11:27</div>
+            <div class="event">Label <span class="label">performance</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-02 11:27</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zamazan4ik">@zamazan4ik</a> on 2023-09-02 12:41</div>
@@ -61,9 +61,9 @@
             <div class="timeline-header">Comment by <a href="https://github.com/FilipAndersson245">@FilipAndersson245</a> on 2025-03-27 21:05</div>
             <div class="timeline-body"><p>I did a run trying to run the existing benchmark suit as intrinsic and optimization using  <code>cargo pgo</code>
 The performance numbers are quite shockingly large, so maybe I have done something wrong, them being upwards of <strong>15 - 35 %</strong> faster across the board except regressions in <code>red_knot_check_file[cold]</code> and<code>red_knot_check_file[incremental]</code></p>
-<details>
 
-<summary> release vs release + pgo</summary>
+
+ release vs release + pgo
 
 <pre><code>formatter/numpy/globals.py
                         time:   [16.068 µs 16.094 µs 16.123 µs]
@@ -527,7 +527,7 @@ Found 7 outliers among 100 measurements (7.00%)
   4 (4.00%) high mild
   3 (3.00%) high severe
 </code></pre>
-</details>
+
 @zamazan4ik do you have any insights in if this may be correct?
 
 <p>My system configuration.
@@ -549,7 +549,7 @@ CPU: AMD Ryzen 9 7950X (32) @ 4.499GHz</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-11 12:01</div>
-            <div class="timeline-body"><p>This does look promising but I think we should verify those numbers when running ruff over actual projects because it might very well be that the optimization now overfits on our very limited benchmarks (it's the same 4 files except for the red knot test).</p>
+            <div class="timeline-body"><p>This does look promising but I think we should verify those numbers when running ruff over actual projects because it might very well be that the optimization now overfits on our very limited benchmarks (it&#x27;s the same 4 files except for the red knot test).</p>
 <p>You could evaluate the runtime for some of the projects that run as part of our ecosystem check https://github.com/astral-sh/ruff/blob/613951d848c077146bf7b529b73e8b7ebe0f019b/python/ruff-ecosystem/ruff_ecosystem/defaults.py#L14-L140 It might also be good to use those as input for PGO</p>
 </div>
         </div>
@@ -582,8 +582,8 @@ pytorch
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-11 15:06</div>
-            <div class="timeline-body"><p>Yeah, that definitely looks promising. Are you interested in adding PGO support to Ruff? It isn't something that the team has time to focus on right now but it seems high impact. It would probably require selecting a few good input samples first and then figuring out how we integrate it into the release process.</p>
-<p>I'd be a bit more hesitant of adding PGO if it complicates our release process by a lot or complicates downstream packaging.</p>
+            <div class="timeline-body"><p>Yeah, that definitely looks promising. Are you interested in adding PGO support to Ruff? It isn&#x27;t something that the team has time to focus on right now but it seems high impact. It would probably require selecting a few good input samples first and then figuring out how we integrate it into the release process.</p>
+<p>I&#x27;d be a bit more hesitant of adding PGO if it complicates our release process by a lot or complicates downstream packaging.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -594,7 +594,7 @@ pytorch
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:48:12 UTC
+        Synced at 2026-01-20 18:48:41 UTC
     </footer>
 </body>
 </html>

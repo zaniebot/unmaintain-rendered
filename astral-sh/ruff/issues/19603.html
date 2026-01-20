@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/maltevesper">@maltevesper</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>I am not sure if this is a vscode plugin or ruff issue, that said:</p>
 <p>When using the <code>&quot;editor.formatOnSaveMode&quot;: &quot;modificationsIfAvailable&quot;</code> setting, Ruff does not add blank lines around newly added classes. This results in the CI checking the entire file finding new issues in the file.</p>
 <p>Example:</p>
@@ -47,24 +47,24 @@ class InsertedClass:    # New
                                   # ruff add whitespace after
 </code></pre>
 <p>I have not dug into the language server protocol and I am not sure if this is feasible (i.e. does the language server get enough context (i.e. code outside the edited area), when <code>modificationsIfAvailable</code> is set?</p>
-<h3>Version</h3>
+Version
 <p><em>No response</em></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @ntBre on 2025-07-28 16:55</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-28 16:55</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-28 17:08</div>
-            <div class="timeline-body"><p>Ah, that's interesting and does seem like a nice feature. I'm not sure if ruff gets a large enough range to make it feasible either, as you said. Maybe @MichaReiser or @dhruvmanila would know more.</p>
+            <div class="timeline-body"><p>Ah, that&#x27;s interesting and does seem like a nice feature. I&#x27;m not sure if ruff gets a large enough range to make it feasible either, as you said. Maybe @MichaReiser or @dhruvmanila would know more.</p>
 <p>Here are a few related links I found, including support for <code>modificationsIfAvailable</code> in ruff-lsp:</p>
 <ul>
 <li>https://code.visualstudio.com/updates/v1_49#_only-format-modified-text</li>
 <li>https://github.com/astral-sh/ruff-vscode/issues/319</li>
 <li>https://github.com/astral-sh/ruff-lsp/pull/373</li>
 </ul>
-<p>When reproducing this locally, I also see whitespace added <em>after</em> the new class but not before. Maybe that's something with my local setup, though.</p>
-<p>Out of curiosity, what's the benefit of using <code>modificationsIfAvailable</code> in this situation, if you're formatting the whole file in CI anyway?</p>
+<p>When reproducing this locally, I also see whitespace added <em>after</em> the new class but not before. Maybe that&#x27;s something with my local setup, though.</p>
+<p>Out of curiosity, what&#x27;s the benefit of using <code>modificationsIfAvailable</code> in this situation, if you&#x27;re formatting the whole file in CI anyway?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -72,30 +72,30 @@ class InsertedClass:    # New
             <div class="timeline-body"><p>I can reproduce this in the CLI using:</p>
 <pre><code>uvx ruff@latest format --range 3:1-5:1 range_formatting.py
 </code></pre>
-<p>The main idea of <code>modificationsIfAvailable</code> is that Ruff leaves unchanged lines alone. Now, Ruff doesn't know if the class was added or removed. It only knows that there's a class and the class is in the range that should be formatted. If it's a new class, it should add the empty lines. If it's an existing class, things are less clear.</p>
-<p>Given that Ruff can't tell if the class is new or not, I'm still leaning towards adding the blank lines if the range covers a class (or function, etc.).</p>
-<p>The logic for this is in <a href="https://github.com/astral-sh/ruff/blob/c9dff5c7d5bcab2a83f1c3b4a1a80af230ece541/crates/ruff_python_formatter/src/range.rs#L51"><code>format_range</code></a>. It's fairly involved because we first:</p>
+<p>The main idea of <code>modificationsIfAvailable</code> is that Ruff leaves unchanged lines alone. Now, Ruff doesn&#x27;t know if the class was added or removed. It only knows that there&#x27;s a class and the class is in the range that should be formatted. If it&#x27;s a new class, it should add the empty lines. If it&#x27;s an existing class, things are less clear.</p>
+<p>Given that Ruff can&#x27;t tell if the class is new or not, I&#x27;m still leaning towards adding the blank lines if the range covers a class (or function, etc.).</p>
+<p>The logic for this is in <a href="https://github.com/astral-sh/ruff/blob/c9dff5c7d5bcab2a83f1c3b4a1a80af230ece541/crates/ruff_python_formatter/src/range.rs#L51"><code>format_range</code></a>. It&#x27;s fairly involved because we first:</p>
 <ul>
 <li>Try to find the smallest possible range the formatter can format and that covers the range provided by the user</li>
 <li>After formatting, identify the range again and extract the relevant formatted code. This uses source maps to map the original offsets to the new offsets.</li>
 </ul>
-<p>I'm not entirely sure where I would implement the fix. The narrowing seems to be working as expected, it only selects the class. But we then don't include the empty lines when extracting the formatted code. This may require changing <a href="https://github.com/astral-sh/ruff/blob/9ae698fe30cf3526f0e7ae237b800b3ed19a819f/crates/ruff_formatter/src/lib.rs#L451"><code>Printed.slice_range</code></a> or emitting more source map markers in <code>FormatSuite</code> (etc)</p>
+<p>I&#x27;m not entirely sure where I would implement the fix. The narrowing seems to be working as expected, it only selects the class. But we then don&#x27;t include the empty lines when extracting the formatted code. This may require changing <a href="https://github.com/astral-sh/ruff/blob/9ae698fe30cf3526f0e7ae237b800b3ed19a819f/crates/ruff_formatter/src/lib.rs#L451"><code>Printed.slice_range</code></a> or emitting more source map markers in <code>FormatSuite</code> (etc)</p>
 <p>This test case seems related https://github.com/astral-sh/ruff/blob/4f7fb566f0c7f5ec9fb336373eae3e144e505d4e/crates/ruff_python_formatter/resources/test/fixtures/ruff/range_formatting/regressions.py#L77-L85</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-07-29 06:50</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-29 06:50</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2025-07-29 06:50</div>
+            <div class="event">Label <span class="label">formatter</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-29 06:50</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> removed by @MichaReiser on 2025-07-29 06:50</div>
+            <div class="event">Label <span class="label">question</span> removed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-29 06:50</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/maltevesper">@maltevesper</a> on 2025-08-28 14:22</div>
             <div class="timeline-body"><blockquote>
-<p>Out of curiosity, what's the benefit of using <code>modificationsIfAvailable</code> in this situation, if you're formatting the whole file in CI anyway?</p>
+<p>Out of curiosity, what&#x27;s the benefit of using <code>modificationsIfAvailable</code> in this situation, if you&#x27;re formatting the whole file in CI anyway?</p>
 </blockquote>
 <p>@ntBre : I think I still owe you an answer: I set my editor to format only the code I changed, to cause less issues with projects not using a formatter, and noticed when a project which uses a pipeline to check formatting complained.
 In hindsight I think this issue is minor. It might help with easing in teams which are reluctant on enforced formatting (introducing it for new code first), but as long as CI and formatting are consistent it should be fine. Obviously one would have to write a CI pipeline to only format the changed code for the last usecase to work. I assume this usecase would work with the current implementation as the reformatting should be consistent between duing it in bulk in the ci or running this from the editor.</p>
@@ -104,7 +104,7 @@ In hindsight I think this issue is minor. It might help with easing in teams whi
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:53:07 UTC
+        Synced at 2026-01-20 18:50:16 UTC
     </footer>
 </body>
 </html>

@@ -23,77 +23,77 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>Fixes https://github.com/astral-sh/ruff/issues/17537</p>
-<p>Red Knot's CLI sometimes <em>hangs</em> after encountering a panic. This was due to non-determinsim related to how panics are propagated by rayon and Salsa.</p>
+            <div class="timeline-body">Summary
+<p>Fixes <a href="https://github.com/astral-sh/ruff/issues/17537">astral-sh/ruff#17537</a></p>
+<p>Red Knot&#x27;s CLI sometimes <em>hangs</em> after encountering a panic. This was due to non-determinsim related to how panics are propagated by rayon and Salsa.</p>
 <ul>
 <li>Our main loop spawns a job to run the check command to remain responsive to <code>Ctrl + C</code> commands and incoming file watcher changes</li>
-<li>This thread is spawned using <code>rayon::spawn</code>. Rayon terminates the entire process if the task scheduled with <code>rayon::spawn</code> panics (we don't have any other panic handling today).</li>
+<li>This thread is spawned using <code>rayon::spawn</code>. Rayon terminates the entire process if the task scheduled with <code>rayon::spawn</code> panics (we don&#x27;t have any other panic handling today).</li>
 <li>This thread calls <code>db.check</code> right away which calls <code>project.check</code>, but is wrapped in a <code>salsa::Cancelled::catch</code>. I assumed that this only catches cancellations because of a pending write (e.g. a file watcher change) but it turns out, that it also catches panics if thread A depends on a query running in thread B and thread B panics.</li>
 <li>The actual checking happens in <code>project.check</code> where we use a thread pool and spawn a task for every file.</li>
 <li><code>project.check</code> uses <code>rayon::scope</code>: Unlike <code>rayon::spawn</code>, it propagates panics instead of terminating the process. However, it propagates an arbitrary panic if two threads panic (which is the case if thread A depends on a query in thread B and B panics).</li>
 </ul>
 <p>What happened is that sometimes rayon propagated the <code>Cancelled::PropagatedPanic</code> (the panic raised by salsa in thread A that depends on the panicking query running in thread B) panic over the <em>actual</em> panic in thread B, which then got swallowed by our <code>Cancelled::catch</code> wrapper inside <code>db.check</code>.</p>
 <p>We should probably change Salsa to use a different mechanism to handle thread-dependent panics because this is a logical error, whereas a pending write is not.</p>
-<p>This PR fixes the hang by repeating the <code>Cancelled::catch</code> inside each spawned thread. This has the advantage that we propagate the <em>real</em> panic from thread B and never the <em>placeholder</em> <code>Cancelled::PropagatedPanic</code> from thread A (which doesn't contain any useful debug information). More specifically, we now catch panics inside <code>check_file_impl</code> and create a diagnostic for them.</p>
+<p>This PR fixes the hang by repeating the <code>Cancelled::catch</code> inside each spawned thread. This has the advantage that we propagate the <em>real</em> panic from thread B and never the <em>placeholder</em> <code>Cancelled::PropagatedPanic</code> from thread A (which doesn&#x27;t contain any useful debug information). More specifically, we now catch panics inside <code>check_file_impl</code> and create a diagnostic for them.</p>
 <pre><code>error: panic: Panicked while checking `/Users/micha/astral/ecosystem/hydpy/hydpy/core/devicetools.py`: `dependency graph cycle querying try_metaclass_(Id(250b7)); set cycle_fn/cycle_initial to fixpoint iterate`
 info: This indicates a bug in Red Knot.
-info: If you could open an issue at https://github.com/astral-sh/ruff/issues/new?title=%5BRed%20Knot%20panic%5D, we'd be very appreciative!
+info: If you could open an issue at https://github.com/astral-sh/ruff/issues/new?title=%5BRed%20Knot%20panic%5D, we&#x27;d be very appreciative!
 </code></pre>
-<p>Ideally, we'd capture the backtrace too but that's a) more complicated and b) mostly empty in production builds.</p>
-<h2>Test Plan</h2>
-<p>I ran red knot on <a href="https://github.com/hydpy-dev/hydpy?rgh-link-date=2025-04-22T07%3A17%3A56.000Z">hydpy</a> for a couple of minutes and I couldn't reproduce the hang anymore (normally reproduces after 30s or so)</p>
+<p>Ideally, we&#x27;d capture the backtrace too but that&#x27;s a) more complicated and b) mostly empty in production builds.</p>
+Test Plan
+<p>I ran red knot on <a href="https://github.com/hydpy-dev/hydpy?rgh-link-date=2025-04-22T07%3A17%3A56.000Z">hydpy</a> for a couple of minutes and I couldn&#x27;t reproduce the hang anymore (normally reproduces after 30s or so)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2025-04-25 16:20</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-25 16:20</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-25 16:24</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
+<code>mypy_primer</code> results
 <p>No ecosystem changes detected ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @MichaReiser on 2025-04-25 16:31</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-25 16:31</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @MichaReiser on 2025-04-25 16:31</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-25 16:31</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-04-25 16:31</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-25 16:31</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-04-25 16:31</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-25 16:31</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @MichaReiser on 2025-04-25 16:31</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-25 16:31</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-04-25 16:38</div>
+            <div class="event">Review request for <a href="https://github.com/AlexWaygood">@AlexWaygood</a> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-25 16:38</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Converted to draft by @MichaReiser on 2025-04-25 16:41</div>
+            <div class="event">Converted to draft by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-25 16:41</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @MichaReiser on 2025-04-25 17:13</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-25 17:13</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[red-knot] Fix CLI hang when a dependend query panics" to "[red-knot] Fix CLI hang when a dependent query panics" by @AlexWaygood on 2025-04-25 17:15</div>
+            <div class="event">Renamed from &quot;[red-knot] Fix CLI hang when a dependend query panics&quot; to &quot;[red-knot] Fix CLI hang when a dependent query panics&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-25 17:15</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_project/src/lib.rs</code>:607 on 2025-04-25 18:26</div>
             <div class="timeline-body"><p>nit: today we use <code>[red-knot]</code> prefix on all our issues and PRs, can we stay consistent with that? e.g. <code>[red-knot] panic:</code> maybe?</p>
-<p>Of course we'll have to change this again soon :)</p>
+<p>Of course we&#x27;ll have to change this again soon :)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-04-25 18:28</div>
             <div class="timeline-body"><p>Nice! Thank you so much for tracking this down.</p>
 <p>The fix looks good, and also provides a better user experience for panics.</p>
-<p>Is my understanding correct that this means new ecosystem panics will now again not show up as a failure in the ecosystem job, and instead just as a diagnostic output diff? I think that's OK, but it does mean we need to be careful to check ecosystem output on our diffs.</p>
+<p>Is my understanding correct that this means new ecosystem panics will now again not show up as a failure in the ecosystem job, and instead just as a diagnostic output diff? I think that&#x27;s OK, but it does mean we need to be careful to check ecosystem output on our diffs.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -103,14 +103,14 @@ info: If you could open an issue at https://github.com/astral-sh/ruff/issues/new
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-25 20:18</div>
-            <div class="timeline-body"><p>That's correct. But panics come first with Andrew's new sorting and should be easy to discover because of it (unless it gets truncated).</p>
+            <div class="timeline-body"><p>That&#x27;s correct. But panics come first with Andrew&#x27;s new sorting and should be easy to discover because of it (unless it gets truncated).</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @MichaReiser on 2025-04-26 06:28</div>
+            <div class="event">Merged by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-26 06:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2025-04-26 06:28</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-26 06:28</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-04-26 06:28</div>
@@ -118,7 +118,7 @@ info: If you could open an issue at https://github.com/astral-sh/ruff/issues/new
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-04-28 07:07</div>
             <div class="timeline-body"><blockquote>
-<p>Is my understanding correct that this means new ecosystem panics will now again not show up as a failure in the ecosystem job, and instead just as a diagnostic output diff? I think that's OK, but it does mean we need to be careful to check ecosystem output on our diffs.</p>
+<p>Is my understanding correct that this means new ecosystem panics will now again not show up as a failure in the ecosystem job, and instead just as a diagnostic output diff? I think that&#x27;s OK, but it does mean we need to be careful to check ecosystem output on our diffs.</p>
 </blockquote>
 <p>Maybe we could still exit with a code different from 1 (type checking failed) and 2 (some other red knot error), like before? In this case, it would still be easy to detect panics (require no changes in mypy_primer).</p>
 </div>
@@ -128,7 +128,7 @@ info: If you could open an issue at https://github.com/astral-sh/ruff/issues/new
             <div class="timeline-body"><blockquote>
 <p>Maybe we could still exit with a code different from 1 (type checking failed) and 2 (some other red knot error), like before? In this case, it would still be easy to detect panics (require no changes in mypy_primer).</p>
 </blockquote>
-<p>Oh, you already proposed that change in https://github.com/astral-sh/ruff/pull/17640. In that case, mypy_primer CI runs will still fail in case of panics.</p>
+<p>Oh, you already proposed that change in <a href="https://github.com/astral-sh/ruff/pull/17640">astral-sh/ruff#17640</a>. In that case, mypy_primer CI runs will still fail in case of panics.</p>
 <p>Edit: well, not quite, still uses error code 2</p>
 </div>
         </div>
@@ -143,7 +143,7 @@ info: If you could open an issue at https://github.com/astral-sh/ruff/issues/new
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:11:54 UTC
+        Synced at 2026-01-20 19:13:40 UTC
     </footer>
 </body>
 </html>

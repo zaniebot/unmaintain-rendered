@@ -24,11 +24,11 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/CarrotManMatt">@CarrotManMatt</a></div>
             <div class="timeline-body"><p>When a project uses a package for building that has the original project as a runtime dependency, all build/lock/sync commands hang without any message or error.</p>
-<h1>Steps to reproduce</h1>
+Steps to reproduce
 <ol>
 <li>Create project <code>foo</code> with the following <code>pyproject.toml</code></li>
 </ol>
-<pre><code class="language-toml">[build-system]
+<pre><code>[build-system]
 build-backend = &quot;hatchling.build&quot;
 requires = [&quot;hatchling&quot;]
 
@@ -46,25 +46,25 @@ no-build = true
 package = true
 trusted-publishing = &quot;always&quot;
 </code></pre>
-<ol start="2">
+<ol>
 <li>Create the package <code>foo</code> within the project</li>
 </ol>
-<pre><code class="language-bash">mkdir foo/ &amp;&amp; touch foo/__init__.py
+<pre><code>mkdir foo/ &amp;&amp; touch foo/__init__.py
 </code></pre>
-<ol start="3">
+<ol>
 <li>Build the project as a wheel &amp; sdist</li>
 </ol>
-<pre><code class="language-bash">uv build --no-sources --build
+<pre><code>uv build --no-sources --build
 </code></pre>
-<ol start="4">
+<ol>
 <li>Publish the project to testpypi (package names will need to be changed to avoid collisions)</li>
 </ol>
-<pre><code class="language-bash">uv publish --publish-url https://test.pypi.org/legacy/
+<pre><code>uv publish --publish-url https://test.pypi.org/legacy/
 </code></pre>
-<ol start="5">
+<ol>
 <li>Create a new project bar with the following pyproject.toml</li>
 </ol>
-<pre><code class="language-toml">[build-system]
+<pre><code>[build-system]
 build-backend = &quot;hatchling.build&quot;
 requires = [&quot;hatchling&quot;]
 
@@ -83,32 +83,32 @@ no-build = true
 package = true
 trusted-publishing = &quot;always&quot;
 </code></pre>
-<ol start="6">
+<ol>
 <li>Create the package <code>bar</code> within the project</li>
 </ol>
-<pre><code class="language-bash">mkdir bar/ &amp;&amp; touch bar/__init__.py
+<pre><code>mkdir bar/ &amp;&amp; touch bar/__init__.py
 </code></pre>
-<ol start="7">
+<ol>
 <li>Build the project as a wheel only</li>
 </ol>
-<pre><code class="language-bash">uv build --no-sources --build --wheel
+<pre><code>uv build --no-sources --build --wheel
 </code></pre>
-<ol start="8">
+<ol>
 <li>Publish the built wheel to testpypi (package names will need to be changed to avoid collisions)</li>
 </ol>
-<pre><code class="language-bash">uv publish --publish-url https://test.pypi.org/legacy/
+<pre><code>uv publish --publish-url https://test.pypi.org/legacy/
 </code></pre>
-<ol start="9">
+<ol>
 <li>Edit the <code>pyproject.toml</code> of the <code>foo</code> project</li>
 </ol>
-<pre><code class="language-toml">[build-system]
+<pre><code>[build-system]
 build-backend = &quot;hatchling.build&quot;
 requires = [&quot;hatchling&quot;, &quot;bar&quot;]
 </code></pre>
-<ol start="10">
+<ol>
 <li>Run the following build command on project <code>foo</code>. Compared to step 3 this will now hang indefinetly</li>
 </ol>
-<pre><code class="language-bash">uv build --no-sources --build
+<pre><code>uv build --no-sources --build
 </code></pre>
 <p>I think this is a regression as the build of <code>foo</code> using <code>bar</code> as a build requirement worked successfully in uv version 0.5.11, but in 0.5.13 it fails (I have not verified this however). Is there something I am missing with this kind of circular dependency not being allowed? I would expect the build dependencies to be isolated and just use the existing published wheel, rather than installing the local project (which is what i think is happening)</p>
 </div>
@@ -119,22 +119,22 @@ requires = [&quot;hatchling&quot;, &quot;bar&quot;]
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">error messages</span> added by @charliermarsh on 2024-12-31 17:11</div>
+            <div class="event">Label <span class="label">error messages</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-31 17:11</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/CarrotManMatt">@CarrotManMatt</a> on 2024-12-31 17:53</div>
-            <div class="timeline-body"><p>Gotcha, many thanks for helping out. I think I didn't fully appreciate that there was a full dependency cycle during the build stage too, due to my setup possibly being outdated with the <code>foo</code> package version.</p>
+            <div class="timeline-body"><p>Gotcha, many thanks for helping out. I think I didn&#x27;t fully appreciate that there was a full dependency cycle during the build stage too, due to my setup possibly being outdated with the <code>foo</code> package version.</p>
 <p>A more helpful error message rather than just hanging would be appreciated for people running into this issue in the future.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-12-31 21:19</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-31 21:19</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-01 01:00</div>
             <div class="timeline-body"><p>So I took the time to publish these as https://test.pypi.org/project/circular-one/ and https://test.pypi.org/project/circular-two/, and this actually works for me?</p>
 <p>Specifically, this works <code>uv build --no-sources --build --index https://test.pypi.org/simple --index-strategy unsafe-best-match --verbose</code> given:</p>
-<pre><code class="language-toml">[project]
+<pre><code>[project]
 name = &quot;circular-one&quot;
 version = &quot;0.1.0&quot;
 description = &quot;Add your description here&quot;
@@ -159,7 +159,7 @@ package = true
 trusted-publishing = &quot;always&quot;
 </code></pre>
 <p>My guess is it might fail if I re-publish with:</p>
-<pre><code class="language-toml">[build-system]
+<pre><code>[build-system]
 requires = [&quot;hatchling&quot;, &quot;circular-two&quot;]
 build-backend = &quot;hatchling.build&quot;
 </code></pre>
@@ -176,10 +176,10 @@ build-backend = &quot;hatchling.build&quot;
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2025-01-01 03:22</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-01 03:22</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2025-01-01 03:22</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-01 03:22</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/CarrotManMatt">@CarrotManMatt</a> on 2025-01-01 14:21</div>
@@ -189,7 +189,7 @@ build-backend = &quot;hatchling.build&quot;
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:29:06 UTC
+        Synced at 2026-01-20 19:36:28 UTC
     </footer>
 </body>
 </html>

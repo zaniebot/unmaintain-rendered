@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a></div>
-            <div class="timeline-body"><p>https://github.com/astral-sh/ty/issues/233 mentions a problem with <code>finally</code> suites, but it looks like we also don't model <code>try</code> … <code>else</code> control flow correctly in all cases.</p>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ty/issues/233 mentions a problem with <code>finally</code> suites, but it looks like we also don&#x27;t model <code>try</code> … <code>else</code> control flow correctly in all cases.</p>
 <p>We currently infer <code>Literal[1, 2, 3]</code> here, but it should be <code>Literal[1, 3]</code>?</p>
-<pre><code class="language-py">def may_raise() -&gt; None: ...
+<pre><code>def may_raise() -&gt; None: ...
 def flag() -&gt; bool: ...
 
 x = 1
@@ -44,8 +44,8 @@ reveal_type(x)  # revealed: Literal[1, 2, 3]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-12-11 11:53</div>
-            <div class="timeline-body"><p>I spent a while thinking that this had something to do with the fact that we don't yet model the fact that simple statements like <code>x = 2</code> cannot ever raise exceptions (except for <code>KeyboardInterrupt</code>). But it doesn't actually have anything to do with that, I don't think. So let's use this example, which doesn't confuse the two issues in the same way ;)</p>
-<pre><code class="language-py">from typing import Literal
+            <div class="timeline-body"><p>I spent a while thinking that this had something to do with the fact that we don&#x27;t yet model the fact that simple statements like <code>x = 2</code> cannot ever raise exceptions (except for <code>KeyboardInterrupt</code>). But it doesn&#x27;t actually have anything to do with that, I don&#x27;t think. So let&#x27;s use this example, which doesn&#x27;t confuse the two issues in the same way ;)</p>
+<pre><code>from typing import Literal
 
 def may_raise() -&gt; Literal[2]:
     return 2
@@ -62,17 +62,17 @@ else:
     
 reveal_type(x)  # revealed: Literal[1, 2, 3]
 </code></pre>
-<p>Like your example, we reveal <code>Literal[1, 2, 3]</code> here, but it's possible that we should ideally reveal <code>Literal[1, 3]</code>. This is because the possible control-flow paths are as follows:</p>
+<p>Like your example, we reveal <code>Literal[1, 2, 3]</code> here, but it&#x27;s possible that we should ideally reveal <code>Literal[1, 3]</code>. This is because the possible control-flow paths are as follows:</p>
 <ol>
-<li>One of the <code>may_raise()</code> calls fails with something other than <code>KeyError</code>. The scope immediately terminates; this isn't interesting to us and we don't need to consider it any further.</li>
+<li>One of the <code>may_raise()</code> calls fails with something other than <code>KeyError</code>. The scope immediately terminates; this isn&#x27;t interesting to us and we don&#x27;t need to consider it any further.</li>
 <li>The first <code>try</code> <code>may_raise()</code> call fails with <code>KeyError</code>; we jump to the <code>except</code> branch before the <code>x</code> reassignment in the <code>try</code> statement. The <code>else</code> branch is not executed; <code>x</code> continues to have type <code>Literal[1]</code>.</li>
 <li>The first <code>try</code> <code>may_raise()</code> call succeeds, but the second one fails with <code>KeyError</code>. Since the expression on the r.h.s. of the reassignment statement fails, <code>x</code> is never reassigned, so we jump to the <code>exception</code> block. The <code>else</code> branch is not executed; <code>x</code> continues to have type <code>Literal[1]</code>.</li>
 <li>Both <code>try</code> <code>may_raise()</code> calls succeed; we skip to the <code>else</code> branch and the <code>except</code> branch is not executed. The <code>else</code> branch reassigns <code>x</code> again; the type of <code>x</code> is <code>Literal[3]</code> after we exit the entire <code>try</code>/<code>except</code> handler.</li>
 </ol>
 <p>This indicates that to get the desired result here, we need to have some special handling for assignments when the assignment is the <em>final</em> statement in a <code>try</code> suite. Either the assignment succeeds and we continue to the <code>else</code> suite, or the assignment does not succeed and we jump to the <code>except</code> suite.</p>
-<h3>Concern about <code>KeyboardInterrupt</code>s</h3>
+Concern about <code>KeyboardInterrupt</code>s
 <p>This feels like a massive edge case, but <em>is</em> it possible to jump from a <code>try</code> suite to an <code>except</code> suite <em>even if</em> all statements in the <code>try</code> actually succeed? What if something like this happens?</p>
-<pre><code class="language-py">from typing import Literal
+<pre><code>from typing import Literal
 
 def may_raise() -&gt; Literal[2]:
     return 2
@@ -90,10 +90,10 @@ else:
     
 reveal_type(x)  # revealed: Literal[1, 2, 3]
 </code></pre>
-<p>I don't know if it's even possible for a <code>KeyboardInterrupt</code> to intercept control flow at that point, though. (I think I'd probably have to dig deep into CPython's internals to find out?) And even if it <em>is</em> possible, I think it's probably not worth worrying about? It won't be intuitive for users to infer <code>Literal[1, 2, 3]</code> in these cases because of very obscure edge cases involving <code>KeyboardInterrupt</code> that would never happen in practice.</p>
-<h3>Concern about assignment expressions</h3>
+<p>I don&#x27;t know if it&#x27;s even possible for a <code>KeyboardInterrupt</code> to intercept control flow at that point, though. (I think I&#x27;d probably have to dig deep into CPython&#x27;s internals to find out?) And even if it <em>is</em> possible, I think it&#x27;s probably not worth worrying about? It won&#x27;t be intuitive for users to infer <code>Literal[1, 2, 3]</code> in these cases because of very obscure edge cases involving <code>KeyboardInterrupt</code> that would never happen in practice.</p>
+Concern about assignment expressions
 <p>Consider this variation:</p>
-<pre><code class="language-py">from typing import Literal
+<pre><code>from typing import Literal
 
 def may_raise() -&gt; Literal[2]:
     return 2
@@ -111,13 +111,13 @@ else:
     
 reveal_type(x)  # revealed: Literal[1, 2, 3]
 </code></pre>
-<p>Here we <em>should</em> infer <code>Literal[1, 2, 3]</code>, because it's very possible that the reassignment to <code>x</code> succeeds in the <code>try</code> suite even though the reassignment's enclosing statement fails: the inner expression in the <code>try</code>-block final statement (which reassigns <code>x</code>) is executed before the outer expression in the <code>try</code>-block final statement. So it's not enough to merely consider whether an assignment takes place in the final statement of a <code>try</code> block: assignment expressions require special handling.</p>
+<p>Here we <em>should</em> infer <code>Literal[1, 2, 3]</code>, because it&#x27;s very possible that the reassignment to <code>x</code> succeeds in the <code>try</code> suite even though the reassignment&#x27;s enclosing statement fails: the inner expression in the <code>try</code>-block final statement (which reassigns <code>x</code>) is executed before the outer expression in the <code>try</code>-block final statement. So it&#x27;s not enough to merely consider whether an assignment takes place in the final statement of a <code>try</code> block: assignment expressions require special handling.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-12-12 10:42</div>
-            <div class="timeline-body"><p>In fact, even for assignments that are created via statements rather than assignment expressions, simply looking at whether the assignment occurs in &quot;the last statement&quot; of the <code>try</code> suite would be too simplistic. In this snippet, the reassignment to <code>x</code> occurs in &quot;the last statement&quot; of the <code>try</code> suite (which is a <code>StmtIf</code> node), but it's clearly possible for us to jump to the <code>except</code> suite after <code>x</code> has been successfully reassigned to <code>2</code>, since other statements occur after the reassignment that are also substatements of &quot;the last statement&quot; of the <code>try</code> suite:</p>
-<pre><code class="language-py">def may_raise(): ...
+            <div class="timeline-body"><p>In fact, even for assignments that are created via statements rather than assignment expressions, simply looking at whether the assignment occurs in &quot;the last statement&quot; of the <code>try</code> suite would be too simplistic. In this snippet, the reassignment to <code>x</code> occurs in &quot;the last statement&quot; of the <code>try</code> suite (which is a <code>StmtIf</code> node), but it&#x27;s clearly possible for us to jump to the <code>except</code> suite after <code>x</code> has been successfully reassigned to <code>2</code>, since other statements occur after the reassignment that are also substatements of &quot;the last statement&quot; of the <code>try</code> suite:</p>
+<pre><code>def may_raise(): ...
 
 x = 1
 
@@ -136,28 +136,28 @@ else:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-12-14 01:48</div>
-            <div class="timeline-body"><p>Great analysis! I don't think we'd have to do anything recursive, though; it should be sufficient to just check if the assignment statement is the last statement in the body of the current try block.</p>
+            <div class="timeline-body"><p>Great analysis! I don&#x27;t think we&#x27;d have to do anything recursive, though; it should be sufficient to just check if the assignment statement is the last statement in the body of the current try block.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[red-knot] Control flow modelling error in `try` ... `else`" to "Control flow modelling error in `try` ... `else`" by @MichaReiser on 2025-05-07 15:27</div>
+            <div class="event">Renamed from &quot;[red-knot] Control flow modelling error in `try` ... `else`&quot; to &quot;Control flow modelling error in `try` ... `else`&quot; by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-07 15:27</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">control flow</span> added by @AlexWaygood on 2025-05-10 21:38</div>
+            <div class="event">Label <span class="label">control flow</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-10 21:38</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">runtime semantics</span> added by @AlexWaygood on 2025-05-11 07:48</div>
+            <div class="event">Label <span class="label">runtime semantics</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-11 07:48</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Z post-stable" by @carljm on 2025-11-13 16:00</div>
+            <div class="event">Added to milestone &quot;Z post-stable&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-11-13 16:00</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Removed from milestone "Z post-stable" by @carljm on 2025-11-18 16:10</div>
+            <div class="event">Removed from milestone &quot;Z post-stable&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-11-18 16:10</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-11-25 12:20</div>
             <div class="timeline-body"><p>Another case that came up in a real world project (modified here to make it a standalone example):</p>
-<pre><code class="language-py">def _(x: int | str):
+<pre><code>def _(x: int | str):
     if isinstance(x, str):
         try:
             x = int(x)
@@ -172,7 +172,7 @@ else:
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:19:44 UTC
+        Synced at 2026-01-20 19:24:19 UTC
     </footer>
 </body>
 </html>

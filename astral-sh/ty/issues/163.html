@@ -27,16 +27,16 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">diagnostics</span> added by @dhruvmanila on 2025-03-22 21:08</div>
+            <div class="event">Label <span class="label">diagnostics</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-03-22 21:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[red-knot] Provide context on why an assignment failed" to "Provide context on why an assignment failed" by @MichaReiser on 2025-05-07 15:26</div>
+            <div class="event">Renamed from &quot;[red-knot] Provide context on why an assignment failed&quot; to &quot;Provide context on why an assignment failed&quot; by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-07 15:26</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-07-27 10:28</div>
             <div class="timeline-body"><p>Would we be looking to create an enum to represent a reason for a lack of assignability/subtyping?</p>
 <p>Then return</p>
-<pre><code class="language-rust">enum RelationResult {
+<pre><code>enum RelationResult {
     Pass
     Fail(Reason)
 }
@@ -49,14 +49,14 @@
             <div class="timeline-body"><p>Possibly <code>has_relation_to</code> could return <code>Result&lt;(), AssignabilityError&gt;</code>:</p>
 <ul>
 <li>If the first type is a subtype of (or assignable to) the second type, <code>Ok(())</code> is returned</li>
-<li>If the first type doesn't have the given relation to the second type, however, <code>Err(Assignability)</code> is returned, where <code>AssignabilityError</code> is an enum that provides context on why the relation doesn't exist</li>
+<li>If the first type doesn&#x27;t have the given relation to the second type, however, <code>Err(Assignability)</code> is returned, where <code>AssignabilityError</code> is an enum that provides context on why the relation doesn&#x27;t exist</li>
 </ul>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-07-27 14:08</div>
             <div class="timeline-body"><p>Sounds good.</p>
-<p>Just wondering but what is the benefit of using a result for this. I think I'm right in saying <code>Result&lt;(), ...&gt;</code> is <em>equivalent</em> to <code>Option&lt;...&gt;</code> and also to my example. What makes you choose any one of these?</p>
+<p>Just wondering but what is the benefit of using a result for this. I think I&#x27;m right in saying <code>Result&lt;(), ...&gt;</code> is <em>equivalent</em> to <code>Option&lt;...&gt;</code> and also to my example. What makes you choose any one of these?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -67,9 +67,9 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-27 14:17</div>
             <div class="timeline-body"><blockquote>
-<p>Just wondering but what is the benefit of using a result for this. I think I'm right in saying <code>Result&lt;(), ...&gt;</code> is <em>equivalent</em> to <code>Option&lt;...&gt;</code> and also to my example. What makes you choose any one of these?</p>
+<p>Just wondering but what is the benefit of using a result for this. I think I&#x27;m right in saying <code>Result&lt;(), ...&gt;</code> is <em>equivalent</em> to <code>Option&lt;...&gt;</code> and also to my example. What makes you choose any one of these?</p>
 </blockquote>
-<p>I don't think using an <code>Option</code> or a &quot;top-level&quot; enum would be <em>wrong</em> -- but if an operation could succeed or fail (and we want to provide context for why it failed in the failure case), it seems natural to me to use a <code>Result</code> to represent that. It's the type that is generally used for this kind of situation, and it has language support built around it (e.g. you can use the <code>?</code> operator to propagate errors upwards, and <code>map_err</code> to convert one kind of error into another).</p>
+<p>I don&#x27;t think using an <code>Option</code> or a &quot;top-level&quot; enum would be <em>wrong</em> -- but if an operation could succeed or fail (and we want to provide context for why it failed in the failure case), it seems natural to me to use a <code>Result</code> to represent that. It&#x27;s the type that is generally used for this kind of situation, and it has language support built around it (e.g. you can use the <code>?</code> operator to propagate errors upwards, and <code>map_err</code> to convert one kind of error into another).</p>
 <blockquote>
 <p>Also do we not want the error type to represent subtyping issues too?</p>
 </blockquote>
@@ -78,14 +78,14 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-07-27 14:25</div>
-            <div class="timeline-body"><p>Okay sounds good, I'd be happy to set this up, it seems like we need a sort of base case for the enum (or a todo variant, or both?) to start.</p>
+            <div class="timeline-body"><p>Okay sounds good, I&#x27;d be happy to set this up, it seems like we need a sort of base case for the enum (or a todo variant, or both?) to start.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-07-27 21:16</div>
             <div class="timeline-body"><p>Making a small start on this. It seems fair to be able to allow multiple reasons, for union types for example.</p>
 <p>What do we think of this as a base for <code>TypeRelationError</code>?</p>
-<pre><code class="language-rust">#[derive(Debug, Clone, PartialEq, Eq)]
+<pre><code>#[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) struct TypeRelationError(pub(crate) Vec&lt;TypeRelationErrorKind&gt;);
 
 impl TypeRelationError {
@@ -115,7 +115,7 @@ pub(crate) enum TypeRelationErrorKind {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-27 22:08</div>
-            <div class="timeline-body"><p>Maybe as a followup, but I think this task in itself will involve some refactoring, so I wouldn't expand the scope for the initial PR</p>
+            <div class="timeline-body"><p>Maybe as a followup, but I think this task in itself will involve some refactoring, so I wouldn&#x27;t expand the scope for the initial PR</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -124,10 +124,10 @@ pub(crate) enum TypeRelationErrorKind {
 <p>Possibly <code>has_relation_to</code> could return <code>Result&lt;(), AssignabilityError&gt;</code>:</p>
 <ul>
 <li>If the first type is a subtype of (or assignable to) the second type, <code>Ok(())</code> is returned</li>
-<li>If the first type doesn't have the given relation to the second type, however, <code>Err(Assignability)</code> is returned, where <code>AssignabilityError</code> is an enum that provides context on why the relation doesn't exist</li>
+<li>If the first type doesn&#x27;t have the given relation to the second type, however, <code>Err(Assignability)</code> is returned, where <code>AssignabilityError</code> is an enum that provides context on why the relation doesn&#x27;t exist</li>
 </ul>
 </blockquote>
-<p>For what it's worth, this is quite similar to what I do in pycroscope, except that the error case is nested (<a href="https://github.com/JelleZijlstra/pycroscope/blob/0d19236e4eda771175170a6b165b0e9f6a211d19/pycroscope/value.py#L342">code here</a>).</p>
+<p>For what it&#x27;s worth, this is quite similar to what I do in pycroscope, except that the error case is nested (<a href="https://github.com/JelleZijlstra/pycroscope/blob/0d19236e4eda771175170a6b165b0e9f6a211d19/pycroscope/value.py#L342">code here</a>).</p>
 <p>The relevant function returns either:</p>
 <ul>
 <li>A dictionary providing bounds on TypeVars that need to apply for the assignment to work</li>
@@ -137,22 +137,22 @@ pub(crate) enum TypeRelationErrorKind {
 <pre><code>In [8]: typ = pycroscope.annotations.type_from_runtime(tuple[str, int] | tuple[str, float])
 
 In [10]: typ.can_assign(pycroscope.value.KnownValue((1, &quot;x&quot;)), pycroscope.runtime._get_checker())
-Out[10]: CanAssignError(message=&quot;Literal[(1, 'x')] is not assignable to tuple[str, int] | tuple[str, float]&quot;, children=[CanAssignError(message='Elements at position 0 are not compatible', children=[CanAssignError(message='Cannot assign Literal[1] to str', children=[], error_code=None)], error_code=None), CanAssignError(message='Elements at position 0 are not compatible', children=[CanAssignError(message='Cannot assign Literal[1] to str', children=[], error_code=None)], error_code=None)], error_code=None)
+Out[10]: CanAssignError(message=&quot;Literal[(1, &#x27;x&#x27;)] is not assignable to tuple[str, int] | tuple[str, float]&quot;, children=[CanAssignError(message=&#x27;Elements at position 0 are not compatible&#x27;, children=[CanAssignError(message=&#x27;Cannot assign Literal[1] to str&#x27;, children=[], error_code=None)], error_code=None), CanAssignError(message=&#x27;Elements at position 0 are not compatible&#x27;, children=[CanAssignError(message=&#x27;Cannot assign Literal[1] to str&#x27;, children=[], error_code=None)], error_code=None)], error_code=None)
 
 In [11]: print(_)
-  Literal[(1, 'x')] is not assignable to tuple[str, int] | tuple[str, float]
+  Literal[(1, &#x27;x&#x27;)] is not assignable to tuple[str, int] | tuple[str, float]
     Elements at position 0 are not compatible
       Cannot assign Literal[1] to str
     Elements at position 0 are not compatible
       Cannot assign Literal[1] to str
 </code></pre>
-<p>(Maybe not a great example because it doesn't tell you which arm of the union corresponds to the indented parts. I'm sure you can do better there :). But I think the idea of building up a tree of reasons for why the assignment didn't work is useful.)</p>
+<p>(Maybe not a great example because it doesn&#x27;t tell you which arm of the union corresponds to the indented parts. I&#x27;m sure you can do better there :). But I think the idea of building up a tree of reasons for why the assignment didn&#x27;t work is useful.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-29 11:00</div>
-            <div class="timeline-body"><p>If we consider the example I gave in https://github.com/astral-sh/ty/issues/866:</p>
-<pre><code class="language-py">from typing import Callable, Any
+            <div class="timeline-body"><p>If we consider the example I gave in <a href="https://github.com/astral-sh/ty/issues/866">astral-sh/ty#866</a>:</p>
+<pre><code>from typing import Callable, Any
 
 def f(x: Callable[[Any], Any]): ...
 
@@ -161,13 +161,13 @@ class Foo:
 
 f(Foo)
 </code></pre>
-<p>Mypy's diagnostic also isn't <em>great</em> in this case:</p>
+<p>Mypy&#x27;s diagnostic also isn&#x27;t <em>great</em> in this case:</p>
 <blockquote>
 <pre><code>error: Argument 1 to &quot;f&quot; has incompatible type &quot;type[Foo]&quot;; expected &quot;Callable[[Any], Any]&quot;  [arg-type]
 </code></pre>
 </blockquote>
 <p>https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=ee7c1164dc400825966268856211fa15</p>
-<p>But pyright's is much better here ('Extra parameter &quot;y&quot;'):</p>
+<p>But pyright&#x27;s is much better here (&#x27;Extra parameter &quot;y&quot;&#x27;):</p>
 <blockquote>
 <pre><code>Argument of type &quot;type[Foo]&quot; cannot be assigned to parameter &quot;x&quot; of type &quot;(Any) -&gt; Any&quot; in function &quot;f&quot;
   Type &quot;type[Foo]&quot; is not assignable to type &quot;(Any) -&gt; Any&quot;
@@ -175,8 +175,8 @@ f(Foo)
 </code></pre>
 </blockquote>
 <p>https://pyright-play.net/?pythonVersion=3.13&amp;strict=true&amp;enableExperimentalFeatures=true&amp;code=GYJw9gtgBALgngBwJYDsDmUkQWEMoDCAhgDYlEBGJApgDRQCCKcAUCwCbXBTAAUAHgC5CpclWoBtCUzgBdejNkBKYQDp1bAMbkAzjqgAxMGEEso5qJ24B9a6iQxbvHdRLB6-enBVR1qtnxGYEosQA</p>
-<p>For a similar case involving <code>Protocol</code>s, meanwhile, mypy's diagnostic is superior IMO:</p>
-<pre><code class="language-py">from typing import Protocol, Any
+<p>For a similar case involving <code>Protocol</code>s, meanwhile, mypy&#x27;s diagnostic is superior IMO:</p>
+<pre><code>from typing import Protocol, Any
 
 class Bar(Protocol):
     def __call__(self, x: Any) -&gt; Any: ...
@@ -197,7 +197,7 @@ main.py:13: note:     Expected:
 main.py:13: note:         def __call__(self, x: Any) -&gt; Any
 main.py:13: note:     Got:
 main.py:13: note:         def __call__(self, x: Any, y: Any) -&gt; Any
-main.py:13: note: &quot;Bar.__call__&quot; has type &quot;Callable[[Arg(Any, 'x')], Any]&quot;
+main.py:13: note: &quot;Bar.__call__&quot; has type &quot;Callable[[Arg(Any, &#x27;x&#x27;)], Any]&quot;
 </code></pre>
 <p>Pyright says:</p>
 <pre><code>Argument of type &quot;Foo&quot; cannot be assigned to parameter &quot;x&quot; of type &quot;Bar&quot; in function &quot;f&quot;
@@ -209,27 +209,27 @@ main.py:13: note: &quot;Bar.__call__&quot; has type &quot;Callable[[Arg(Any, 'x'
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Stable" by @carljm on 2025-11-13 06:28</div>
+            <div class="event">Added to milestone &quot;Stable&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-11-13 06:28</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-19 20:20</div>
             <div class="timeline-body"><p>https://github.com/astral-sh/ty/issues/1591 is another example case to consider here, where pyright provides a fantastic diagnostic.</p>
-<p><a href="https://pyrefly.org/sandbox/?project=N4IgZglgNgpgziAXKOBDAdgEwEYHsAeAdAA4CeS4ATrgLYAEALqcROgOZ0Q3G6UN0AFag1wBjXFAA0dACrMYANVSVpuAG4xKUXKkzSAyjACOAVxjpRMaQEkGm1CJV0AgulIGTxHnzjWsMfAAddGCAfRlQ8ToAXll5JUoACkCQcMjcFOlxNWUIDAZomUozAEpg8osoVDg4OkNTc0sAOVwGfQYkoVaxCQBtNPEAXRLEYLpxugABdU1tXTGJzBgwOlDQthgGCDsaNcS4GCgwaVYl-EQ6z28GX398aQB6EroAWgA%2BVYjxC8JfiompjMtDpMAtxksVmsNlsdnsDkcTncLnAoBBLI9nu86sYzBYYP0vrhBj8-iF0ACIat0ugGKhWHA4YdjnQclAzBdcNgAFYwUQMDGvD54CQkwj-RbLKmwdCMo6Yj6sBii8XgyVrbaaWVgeV0Wz2RwE9LEui-MVkimS04BfZM6Ss9kuNyPaRwWl8C6KmJ0AAMLpExA9NK9pp1iuV5olK3EJhpNoRLNQbJgF1c7joT0FnBp4bBdEpa0oMA0lAOmC1Or1lAcvENQxz-hWYES52xDTxLTaHV6rsow3rTd6KVQmToKWwI5SohSwwq%2BebF1Rrt6qboAB86D2%2B7mm-gyugQJIQCYtlA4CRyIgQABiOgAVRP21IdDAMb5EFw6Dgs8lYF4NAcoToCYNDYJo85ZgwOo9qM5ITIWDAmJQ5JgCkTTAaBlAXMA%2BAAL4pMEB4gGQhZgFApCECINBQBQN4CKQJFkRuGA4AQdDiOgkBsIhDjvugZo3oYMB0AAFgwDDEHAiAPA8xHLGRhC8GwDzmA8mBiHADzsZx3FbB%2BDzPrwdCoDk0CoNgsBsR%2B2lVrp5K4MQtlnsEZAMMJH4vMWcC8V6KQAMyEAAjAATPh%2B44YeqBvhoABi0AwBQaBYHgRBkCAOFAA">Pyrefly</a> also does alright here -- it doesn't provide the full chain like pyright does, but it gives you the inner-most detail.</p>
+<p><a href="https://pyrefly.org/sandbox/?project=N4IgZglgNgpgziAXKOBDAdgEwEYHsAeAdAA4CeS4ATrgLYAEALqcROgOZ0Q3G6UN0AFag1wBjXFAA0dACrMYANVSVpuAG4xKUXKkzSAyjACOAVxjpRMaQEkGm1CJV0AgulIGTxHnzjWsMfAAddGCAfRlQ8ToAXll5JUoACkCQcMjcFOlxNWUIDAZomUozAEpg8osoVDg4OkNTc0sAOVwGfQYkoVaxCQBtNPEAXRLEYLpxugABdU1tXTGJzBgwOlDQthgGCDsaNcS4GCgwaVYl-EQ6z28GX398aQB6EroAWgA%2BVYjxC8JfiompjMtDpMAtxksVmsNlsdnsDkcTncLnAoBBLI9nu86sYzBYYP0vrhBj8-iF0ACIat0ugGKhWHA4YdjnQclAzBdcNgAFYwUQMDGvD54CQkwj-RbLKmwdCMo6Yj6sBii8XgyVrbaaWVgeV0Wz2RwE9LEui-MVkimS04BfZM6Ss9kuNyPaRwWl8C6KmJ0AAMLpExA9NK9pp1iuV5olK3EJhpNoRLNQbJgF1c7joT0FnBp4bBdEpa0oMA0lAOmC1Or1lAcvENQxz-hWYES52xDTxLTaHV6rsow3rTd6KVQmToKWwI5SohSwwq%2BebF1Rrt6qboAB86D2%2B7mm-gyugQJIQCYtlA4CRyIgQABiOgAVRP21IdDAMb5EFw6Dgs8lYF4NAcoToCYNDYJo85ZgwOo9qM5ITIWDAmJQ5JgCkTTAaBlAXMA%2BAAL4pMEB4gGQhZgFApCECINBQBQN4CKQJFkRuGA4AQdDiOgkBsIhDjvugZo3oYMB0AAFgwDDEHAiAPA8xHLGRhC8GwDzmA8mBiHADzsZx3FbB%2BDzPrwdCoDk0CoNgsBsR%2B2lVrp5K4MQtlnsEZAMMJH4vMWcC8V6KQAMyEAAjAATPh%2B44YeqBvhoABi0AwBQaBYHgRBkCAOFAA">Pyrefly</a> also does alright here -- it doesn&#x27;t provide the full chain like pyright does, but it gives you the inner-most detail.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Removed from milestone "Stable" by @carljm on 2025-12-19 23:38</div>
+            <div class="event">Removed from milestone &quot;Stable&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-12-19 23:38</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "M1" by @carljm on 2025-12-19 23:38</div>
+            <div class="event">Added to milestone &quot;M1&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-12-19 23:38</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2026-01-11 16:36</div>
+            <div class="event">Assigned to <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-11 16:36</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:19:39 UTC
+        Synced at 2026-01-20 19:24:12 UTC
     </footer>
 </body>
 </html>

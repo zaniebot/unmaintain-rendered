@@ -23,36 +23,36 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/danparizher">@danparizher</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Fixes #18729 and fixes #16802</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>Manually verified via CLI that Ruff no longer enters an infinite loop by running:</p>
-<pre><code class="language-sh">echo 1 | ruff --isolated check - --select I002,UP010 --fix
+<pre><code>echo 1 | ruff --isolated check - --select I002,UP010 --fix
 </code></pre>
 <p>with <code>required-imports = [&quot;from __future__ import generator_stop&quot;]</code> set in the config, confirming “All checks passed!” and no snapshots were generated.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-17 21:18</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @ntBre by @ntBre on 2025-07-24 13:08</div>
+            <div class="event">Review requested from <a href="https://github.com/ntBre">@ntBre</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-24 13:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-07-25 22:02</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-25 22:02</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/unnecessary_future_import.rs</code>:129 on 2025-07-28 18:44</div>
-            <div class="timeline-body"><p>This looks like a nice potential helper function. Refactoring it like that would both allow us to reuse some code here with an early return and share this with UP035, which I think could use the same fix (https://github.com/astral-sh/ruff/issues/16802). I'd suggest something like:</p>
-<pre><code class="language-rust">fn helper_function(/* ... */) -&gt; bool {
+            <div class="timeline-body"><p>This looks like a nice potential helper function. Refactoring it like that would both allow us to reuse some code here with an early return and share this with UP035, which I think could use the same fix (<a href="https://github.com/astral-sh/ruff/issues/16802">astral-sh/ruff#16802</a>). I&#x27;d suggest something like:</p>
+<pre><code>fn helper_function(/* ... */) -&gt; bool {
   let name_import = match stmt {
               ruff_python_ast::Stmt::ImportFrom(ruff_python_ast::StmtImportFrom {
                   module,
@@ -96,7 +96,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/danparizher">@danparizher</a> on 2025-07-28 23:39</div>
-            <div class="timeline-body"><p>Thanks, I extracted that as a function and also added a check into <code>crates\ruff_linter\src\rules\pyupgrade\rules\deprecated_import.rs</code>. Let me know if that's correct. For adding tests for the whole <code>pyupgrade</code> module, what would that look like? Would appreciate recommendations</p>
+            <div class="timeline-body"><p>Thanks, I extracted that as a function and also added a check into <code>crates\ruff_linter\src\rules\pyupgrade\rules\deprecated_import.rs</code>. Let me know if that&#x27;s correct. For adding tests for the whole <code>pyupgrade</code> module, what would that look like? Would appreciate recommendations</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -108,9 +108,9 @@
             <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-29 18:18</div>
             <div class="timeline-body"><p>I found one new suggestion for the implementation, but this looks good otherwise.</p>
 <p>For the test, I wrote up this patch:</p>
-<details><summary>Patch</summary>
+Patch
 
-<pre><code class="language-diff">diff --git a/crates/ruff_linter/src/rules/pyupgrade/mod.rs b/crates/ruff_linter/src/rules/pyupgrade/mod.rs
+<pre><code>diff --git a/crates/ruff_linter/src/rules/pyupgrade/mod.rs b/crates/ruff_linter/src/rules/pyupgrade/mod.rs
 index 3f64cb323f..919958e48e 100644
 --- a/crates/ruff_linter/src/rules/pyupgrade/mod.rs
 +++ b/crates/ruff_linter/src/rules/pyupgrade/mod.rs
@@ -147,12 +147,12 @@ index 3f64cb323f..919958e48e 100644
 +            &amp;settings::LinterSettings {
 +                isort: isort::settings::Settings {
 +                    required_imports: BTreeSet::from_iter([
-+                        // https://github.com/astral-sh/ruff/issues/18729
++                        // <a href="https://github.com/astral-sh/ruff/issues/18729">astral-sh/ruff#18729</a>
 +                        NameImport::ImportFrom(MemberNameImport::member(
 +                            &quot;__future__&quot;.to_string(),
 +                            &quot;generator_stop&quot;.to_string(),
 +                        )),
-+                        // https://github.com/astral-sh/ruff/issues/16802
++                        // <a href="https://github.com/astral-sh/ruff/issues/16802">astral-sh/ruff#16802</a>
 +                        NameImport::ImportFrom(MemberNameImport::member(
 +                            &quot;collections&quot;.to_string(),
 +                            &quot;Sequence&quot;.to_string(),
@@ -194,20 +194,20 @@ index cf63762b8a..02eca4ca05 100644
      }};
      ($name:expr, $value:expr) =&gt; {{
 </code></pre>
-</details>
 
-<p>I guess nobody had ever tried to use the inline snapshot version of <code>assert_diagnostics!</code> because the <code>@</code> wasn't being passed along.</p>
-<p>This test fails on <code>main</code> with the expected failure to converge, but with your fixes it yields the expected snapshot. We fix the I002 issues and don't raise UP010 or UP035. Nice work.</p>
+
+<p>I guess nobody had ever tried to use the inline snapshot version of <code>assert_diagnostics!</code> because the <code>@</code> wasn&#x27;t being passed along.</p>
+<p>This test fails on <code>main</code> with the expected failure to converge, but with your fixes it yields the expected snapshot. We fix the I002 issues and don&#x27;t raise UP010 or UP035. Nice work.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @ntBre by @danparizher on 2025-07-30 15:34</div>
+            <div class="event">Review requested from <a href="https://github.com/ntBre">@ntBre</a> by <a href="https://github.com/danparizher">@danparizher</a> on 2025-07-30 15:34</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Prevent infinite fix loop between I002 and UP010 when required import is also unnecessary" to "[`pyupgrade`] Prevent infinite loop with I002 (`UP010`, `UP035`)" by @ntBre on 2025-07-30 20:26</div>
+            <div class="event">Renamed from &quot;Prevent infinite fix loop between I002 and UP010 when required import is also unnecessary&quot; to &quot;[`pyupgrade`] Prevent infinite loop with I002 (`UP010`, `UP035`)&quot; by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-30 20:26</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[`pyupgrade`] Prevent infinite loop with I002 (`UP010`, `UP035`)" to "[`pyupgrade`] Prevent infinite loop with `I002` (`UP010`, `UP035`)" by @ntBre on 2025-07-30 20:27</div>
+            <div class="event">Renamed from &quot;[`pyupgrade`] Prevent infinite loop with I002 (`UP010`, `UP035`)&quot; to &quot;[`pyupgrade`] Prevent infinite loop with `I002` (`UP010`, `UP035`)&quot; by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-30 20:27</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-30 21:02</div>
@@ -215,33 +215,33 @@ index cf63762b8a..02eca4ca05 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/deprecated_import.rs</code>:723 on 2025-07-30 21:02</div>
-            <div class="timeline-body"><p>I'm not totally sure, but this feels like it could be overly restrictive. This should be equivalent to:</p>
-<pre><code class="language-rust">    if import_from_stmt.names.iter().any(|alias| {
+            <div class="timeline-body"><p>I&#x27;m not totally sure, but this feels like it could be overly restrictive. This should be equivalent to:</p>
+<pre><code>    if import_from_stmt.names.iter().any(|alias| {
         is_import_required_by_isort(checker, StmtRef::ImportFrom(import_from_stmt), alias)
     }) {
         return;
     }
 </code></pre>
-<p>and I'm wondering if <code>all</code> might be the better condition than <code>any</code>. In terms of a test case, I tried this:</p>
-<pre><code class="language-rust">    #[test]
+<p>and I&#x27;m wondering if <code>all</code> might be the better condition than <code>any</code>. In terms of a test case, I tried this:</p>
+<pre><code>    #[test]
     fn i002_conflict() {
         let diagnostics = test_snippet(
             &quot;from pipes import quote, Template&quot;,
             &amp;settings::LinterSettings {
                 isort: isort::settings::Settings {
                     required_imports: BTreeSet::from_iter([
-                        // https://github.com/astral-sh/ruff/issues/18729
+                        // <a href="https://github.com/astral-sh/ruff/issues/18729">astral-sh/ruff#18729</a>
                         NameImport::ImportFrom(MemberNameImport::member(
                             &quot;__future__&quot;.to_string(),
                             &quot;generator_stop&quot;.to_string(),
                         )),
-                        // https://github.com/astral-sh/ruff/issues/16802
+                        // <a href="https://github.com/astral-sh/ruff/issues/16802">astral-sh/ruff#16802</a>
                         NameImport::ImportFrom(MemberNameImport::member(
                             &quot;collections&quot;.to_string(),
                             &quot;Sequence&quot;.to_string(),
                         )),
                         // Only bail out if _all_ the names in UP035 are required. `pipes.Template`
-                        // isn't flagged by UP035, so requiring it shouldn't prevent `pipes.quote`
+                        // isn&#x27;t flagged by UP035, so requiring it shouldn&#x27;t prevent `pipes.quote`
                         // from getting a diagnostic.
                         NameImport::ImportFrom(MemberNameImport::member(
                             &quot;pipes&quot;.to_string(),
@@ -283,7 +283,7 @@ index cf63762b8a..02eca4ca05 100644
     }
 </code></pre>
 <p>after switching to <code>all</code>. I think it makes sense to flag <code>quote</code> even if <code>Template</code> is required. What do  you think?</p>
-<p>I think that's consistent with the <code>continue</code> instead of <code>return</code> in UP010.</p>
+<p>I think that&#x27;s consistent with the <code>continue</code> instead of <code>return</code> in UP010.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -310,17 +310,17 @@ index cf63762b8a..02eca4ca05 100644
 <ul>
 <li>Stored the required imports on <code>ImportReplacer</code> instead of a <code>HashSet</code> so we can avoid allocating that up front</li>
 <li>Pushed to <code>unmatched_names</code> instead of continuing in <code>partition_imports</code> (this was causing the <code>from pipes import Template</code> import to be dropped when removing the <code>quote</code> import)</li>
-<li>Combined <code>i002_conflict</code> and <code>up035_partial_required_import</code>, that's what I had in mind initially. I don't think we need both tests separately</li>
+<li>Combined <code>i002_conflict</code> and <code>up035_partial_required_import</code>, that&#x27;s what I had in mind initially. I don&#x27;t think we need both tests separately</li>
 <li>Tried to simplify <code>is_import_required_by_isort</code> a bit</li>
 </ul>
-<p>I'm not sure if the simplification actually paid off. It seems nice not to allocate strings for the <code>NameImport</code>s, but now we have to call <code>qualified_name</code> repeatedly in the <code>any</code> check. Your version wasn't showing any performance regression, so if this regresses performance at all, I'll just put it back.</p>
+<p>I&#x27;m not sure if the simplification actually paid off. It seems nice not to allocate strings for the <code>NameImport</code>s, but now we have to call <code>qualified_name</code> repeatedly in the <code>any</code> check. Your version wasn&#x27;t showing any performance regression, so if this regresses performance at all, I&#x27;ll just put it back.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @ntBre on 2025-07-31 19:17</div>
+            <div class="event">Merged by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-31 19:17</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ntBre on 2025-07-31 19:17</div>
+            <div class="event">Closed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-31 19:17</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-07-31 20:44</div>
@@ -328,7 +328,7 @@ index cf63762b8a..02eca4ca05 100644
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:14:21 UTC
+        Synced at 2026-01-20 19:16:44 UTC
     </footer>
 </body>
 </html>

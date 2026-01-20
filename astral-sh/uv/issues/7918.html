@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/linde12">@linde12</a></div>
-            <div class="timeline-body"><h2>Scenario</h2>
+            <div class="timeline-body">Scenario
 <p>I have a script in a venv (EnvA) that:</p>
 <ul>
 <li>creates a new uv venv (EnvB)</li>
@@ -33,14 +33,14 @@
 </ul>
 <p>However the venv deletion fails on Windows since there are overlapping dependencies between the two environments (both depend on e.g. <code>markupsafe</code> which contains <code>pyd</code> files that are automatically loaded by python)</p>
 <p>This is because UV uses hardlinks to the uv cache, so deleting that file fails since it is hardlinked to the file in uv cache and that file (.pyd) is automatically loaded by python.</p>
-<p>Switching to using symlinks solves the issue, but i don't have control over how users will run this script. What is the decision behind using hardlinks by default on windows? I have little control over how the application runs <code>uv</code> (done by 3rd party library) so this is causing issues for my users. I guess i could patch the environment variable <code>UV_LINK_MODE</code> env var before invoking the 3rd party lib, but that feels like a hack and i'm not sure if it will work well.</p>
-<h2>Minimally reproducible example</h2>
+<p>Switching to using symlinks solves the issue, but i don&#x27;t have control over how users will run this script. What is the decision behind using hardlinks by default on windows? I have little control over how the application runs <code>uv</code> (done by 3rd party library) so this is causing issues for my users. I guess i could patch the environment variable <code>UV_LINK_MODE</code> env var before invoking the 3rd party lib, but that feels like a hack and i&#x27;m not sure if it will work well.</p>
+Minimally reproducible example
 <ol>
 <li>Create a new venv: <code>uv venv .venv</code></li>
 <li>Install <code>markupsafe</code> into that venv: <code>uv pip install markupsafe</code></li>
 <li>Create a <code>main.py</code> with contents like so:</li>
 </ol>
-<pre><code class="language-python">import subprocess
+<pre><code>import subprocess
 import shutil
 import os
 
@@ -49,54 +49,54 @@ subprocess.run([&quot;uv&quot;, &quot;venv&quot;, &quot;.venv&quot;], cwd=&quot;
 subprocess.run([&quot;uv&quot;, &quot;pip&quot;, &quot;install&quot;, &quot;markupsafe&quot;], cwd=&quot;./testdir&quot;)
 shutil.rmtree(&quot;testdir&quot;)
 </code></pre>
-<ol start="4">
+<ol>
 <li>Run <code>main.py</code> via <code>python main.py</code></li>
-<li>Notice that it will fail on Windows: <code>PermissionError: [WinError 5] Access is denied: 'testdir\\.venv\\Lib\\site-packages\\markupsafe\\_speedups.cp310-win_amd64.pyd'</code></li>
+<li>Notice that it will fail on Windows: <code>PermissionError: [WinError 5] Access is denied: &#x27;testdir\\.venv\\Lib\\site-packages\\markupsafe\\_speedups.cp310-win_amd64.pyd&#x27;</code></li>
 <li>Try changing link mode (e.g. via environment variable) to symlink and see that it then works when running <code>python main.py</code></li>
 </ol>
 <p>I think it boils down to python automatically loading <code>.pyd</code> files in your venv and then uv hardlinking to the cache, and when the file is loaded/has open file descriptors windows will not allow us to delete the hardlink. This is not only an issue for only markupsafe, but all libraries that use <code>.pyd</code> files, this was just an example.</p>
-<h2>tl;dr</h2>
+tl;dr
 <p>if you have a python script, with any dependency containing a <code>.pyd</code> file, and this script tries to delete a <code>.venv</code> containing a hardlink to the same <code>.pyd</code> file then Windows will throw you an &quot;Access is denied&quot; error.</p>
-<h2>Version</h2>
+Version
 <p>uv: <code>0.4.17</code></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/linde12">@linde12</a> on 2024-10-04 13:06</div>
             <div class="timeline-body"><blockquote>
-<p>I guess i could patch the environment variable UV_LINK_MODE env var before invoking the 3rd party lib, but that feels like a hack and i'm not sure if it will work well.</p>
+<p>I guess i could patch the environment variable UV_LINK_MODE env var before invoking the 3rd party lib, but that feels like a hack and i&#x27;m not sure if it will work well.</p>
 </blockquote>
-<p>symlink mode won't work either (unless developer mode or admin) but copy can be a workaround i guess :-/</p>
+<p>symlink mode won&#x27;t work either (unless developer mode or admin) but copy can be a workaround i guess :-/</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-10-04 13:11</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-04 13:11</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">windows</span> added by @zanieb on 2024-10-04 13:11</div>
+            <div class="event">Label <span class="label">windows</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-04 13:11</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">cache</span> added by @zanieb on 2024-10-04 13:11</div>
+            <div class="event">Label <span class="label">cache</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-04 13:11</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-04 13:12</div>
-            <div class="timeline-body"><p>I appreciate the clear write-up but I'm not sure that this is a bug and I'm also not sure that there's anything for us to do here. I guess we could &quot;always&quot; copy <code>.pyd</code> files on Windows, even if hardlinks are enabled?</p>
+            <div class="timeline-body"><p>I appreciate the clear write-up but I&#x27;m not sure that this is a bug and I&#x27;m also not sure that there&#x27;s anything for us to do here. I guess we could &quot;always&quot; copy <code>.pyd</code> files on Windows, even if hardlinks are enabled?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-04 13:21</div>
-            <div class="timeline-body"><p>It seems weird that you can't delete any hardlink when an fd is open? It seems like they should just stop you from deleting the last one.</p>
+            <div class="timeline-body"><p>It seems weird that you can&#x27;t delete any hardlink when an fd is open? It seems like they should just stop you from deleting the last one.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/linde12">@linde12</a> on 2024-10-04 13:50</div>
             <div class="timeline-body"><blockquote>
-<p>I appreciate the clear write-up but I'm not sure that this is a bug and I'm also not sure that there's anything for us to do here. I guess we could &quot;always&quot; copy <code>.pyd</code> files on Windows, even if hardlinks are enabled?</p>
+<p>I appreciate the clear write-up but I&#x27;m not sure that this is a bug and I&#x27;m also not sure that there&#x27;s anything for us to do here. I guess we could &quot;always&quot; copy <code>.pyd</code> files on Windows, even if hardlinks are enabled?</p>
 </blockquote>
-<p>Thanks. Yeah i'm not sure either, just wanted to bring it up. It's a foot-shotgun turned rabbit hole that i encountered.</p>
-<p>Copying would solve the problem, at the cost of disk space and performance (?) I'm not sure if that's better in favor of being more compatible with how it works using pip/virtualenv, or if this can be considered an acceptable discrepancy? Maybe it's fine if it is documented somehow, but its also kind of very specific.</p>
+<p>Thanks. Yeah i&#x27;m not sure either, just wanted to bring it up. It&#x27;s a foot-shotgun turned rabbit hole that i encountered.</p>
+<p>Copying would solve the problem, at the cost of disk space and performance (?) I&#x27;m not sure if that&#x27;s better in favor of being more compatible with how it works using pip/virtualenv, or if this can be considered an acceptable discrepancy? Maybe it&#x27;s fine if it is documented somehow, but its also kind of very specific.</p>
 <blockquote>
-<p>It seems weird that you can't delete any hardlink when an fd is open? It seems like they should just stop you from deleting the last one.</p>
+<p>It seems weird that you can&#x27;t delete any hardlink when an fd is open? It seems like they should just stop you from deleting the last one.</p>
 </blockquote>
 <p>Right?! I was confused as well, i guess its windows-related :shrug:</p>
 <p>@charliermarsh @zanieb
@@ -105,12 +105,12 @@ Thanks for all your hard work by the way, <code>uv</code> is <strong>awesome</st
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-10-04 15:42</div>
-            <div class="timeline-body"><p>Thanks @linde12, you explained some of the problems I've seen in windows CI. I'll test the link mode as a solution to them.. (edit: yes :slightly_smiling_face: )</p>
+            <div class="timeline-body"><p>Thanks @linde12, you explained some of the problems I&#x27;ve seen in windows CI. I&#x27;ll test the link mode as a solution to them.. (edit: yes :slightly_smiling_face: )</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-04 16:21</div>
-            <div class="timeline-body"><p>It sort of feels like we should just force copy of these files :/ I don't love it though</p>
+            <div class="timeline-body"><p>It sort of feels like we should just force copy of these files :/ I don&#x27;t love it though</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -121,7 +121,7 @@ This might be related to other factors like Windows version or Windows defender 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/linde12">@linde12</a> on 2024-10-04 16:38</div>
-            <div class="timeline-body"><p>@kahojyun mind running the example just to make sure? I was able to reproduce it on the two different windows 10 (i don't run windows myself and can't test on win11) machines, both when running mingw bash and regular powershell. One with python 3.8 and the other python 3.10 (just to make sure it wasn't python acting up).</p>
+            <div class="timeline-body"><p>@kahojyun mind running the example just to make sure? I was able to reproduce it on the two different windows 10 (i don&#x27;t run windows myself and can&#x27;t test on win11) machines, both when running mingw bash and regular powershell. One with python 3.8 and the other python 3.10 (just to make sure it wasn&#x27;t python acting up).</p>
 <p>I used <code>strace</code> (mingw) and could see that the <code>.pyd</code> was being loaded (regardless if i imported <code>markupsafe</code> or not) and as soon as that happened i could delete the entire <code>.venv</code> except the <code>.pyd</code> file.</p>
 <p>Maybe also, to be extra sure, set the <code>UV_LINK_MODE</code> to <code>hardlink</code> explicitly? E.g. <code>UV_LINK_MODE=hardlink strace python main.py</code></p>
 </div>
@@ -170,7 +170,7 @@ Resolved 1 package in 7ms
 Installed 1 package in 10ms
  + markupsafe==2.1.5
 </code></pre>
-<p>I don't have mingw and bash to try the exact command.</p>
+<p>I don&#x27;t have mingw and bash to try the exact command.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -182,8 +182,8 @@ Installed 1 package in 10ms
             <div class="timeline-header">Comment by <a href="https://github.com/linde12">@linde12</a> on 2024-10-04 17:17</div>
             <div class="timeline-body"><p>Here is a repo with two actions. One running win-11 and one win-10. It uses the example, but now i also import and use <code>markupsafe</code> (because it worked fine when i did not import it apparently, not sure why i got different behaviors)</p>
 <p>https://github.com/linde12/uv-py-hardlink-windows</p>
-<p><img src="https://github.com/user-attachments/assets/905df2d2-b7ca-4cf3-bcbb-5b454e2ca0b4" alt="image" /></p>
-<p><img src="https://github.com/user-attachments/assets/28642dc8-4ab2-4245-b126-c02f1503f0fb" alt="image" /></p>
+<p><img src="https://github.com/user-attachments/assets/905df2d2-b7ca-4cf3-bcbb-5b454e2ca0b4" alt="image"></p>
+<p><img src="https://github.com/user-attachments/assets/28642dc8-4ab2-4245-b126-c02f1503f0fb" alt="image"></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -198,13 +198,13 @@ Installed 1 package in 10ms
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/linde12">@linde12</a> on 2024-10-04 21:11</div>
             <div class="timeline-body"><p>Weird yeah... https://github.com/linde12/uv-py-hardlink-windows/actions/runs/11187011758/job/31103231396</p>
-<p>Without strace it works? I'm too tired for this... I'm almost sure i observed the same issue in pwsh too, but i might be wrong</p>
+<p>Without strace it works? I&#x27;m too tired for this... I&#x27;m almost sure i observed the same issue in pwsh too, but i might be wrong</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2024-10-05 01:05</div>
             <div class="timeline-body"><blockquote>
-<p>It sort of feels like we should just force copy of these files :/ I don't love it though</p>
+<p>It sort of feels like we should just force copy of these files :/ I don&#x27;t love it though</p>
 </blockquote>
 <p>Even though copying seems suboptimal I think it’s actually a good working solution.</p>
 <p>(Along with the omission of Bash, Microsoft’s decision to restrict symlink creation to elevated users in Windows seems like it was deliberately intended to break OS interoperability.)</p>
@@ -228,29 +228,29 @@ Installed 1 package in 10ms
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kahojyun">@kahojyun</a> on 2024-10-06 17:24</div>
-            <div class="timeline-body"><p>It seems that <a href="https://superuser.com/questions/678357/how-to-delete-windows-ntfs-hard-link-mklink-h-while-original-is-in-use">if any program opens the file without <code>FILE_SHARE_DELETE</code> flag, all of the hardlink-peers can't be deleted</a>. If we want to avoid this kind of error we have to use symlink or copy.</p>
-<p>(I'm okay with copy by default as long as <a href="https://devblogs.microsoft.com/engineering-at-microsoft/copy-on-write-in-win32-api-early-access/">Microsoft brings automatic CoW to Dev Drive</a>.)</p>
+            <div class="timeline-body"><p>It seems that <a href="https://superuser.com/questions/678357/how-to-delete-windows-ntfs-hard-link-mklink-h-while-original-is-in-use">if any program opens the file without <code>FILE_SHARE_DELETE</code> flag, all of the hardlink-peers can&#x27;t be deleted</a>. If we want to avoid this kind of error we have to use symlink or copy.</p>
+<p>(I&#x27;m okay with copy by default as long as <a href="https://devblogs.microsoft.com/engineering-at-microsoft/copy-on-write-in-win32-api-early-access/">Microsoft brings automatic CoW to Dev Drive</a>.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/linde12">@linde12</a> on 2024-10-06 17:55</div>
             <div class="timeline-body"><blockquote>
-<p>It seems that <a href="https://superuser.com/questions/678357/how-to-delete-windows-ntfs-hard-link-mklink-h-while-original-is-in-use">if any program opens the file without <code>FILE_SHARE_DELETE</code> flag, all of the hardlink-peers can't be deleted</a>. If we want to avoid this kind of error we have to use symlink or copy.</p>
-<p>(I'm okay with copy by default as long as <a href="https://devblogs.microsoft.com/engineering-at-microsoft/copy-on-write-in-win32-api-early-access/">Microsoft brings automatic CoW to Dev Drive</a>.)</p>
+<p>It seems that <a href="https://superuser.com/questions/678357/how-to-delete-windows-ntfs-hard-link-mklink-h-while-original-is-in-use">if any program opens the file without <code>FILE_SHARE_DELETE</code> flag, all of the hardlink-peers can&#x27;t be deleted</a>. If we want to avoid this kind of error we have to use symlink or copy.</p>
+<p>(I&#x27;m okay with copy by default as long as <a href="https://devblogs.microsoft.com/engineering-at-microsoft/copy-on-write-in-win32-api-early-access/">Microsoft brings automatic CoW to Dev Drive</a>.)</p>
 </blockquote>
 <p>I was actually reading the same post the other day, but was confused as to why we were seeing different behaviors. Especially when i was using <code>strace</code> :eyes: Copying the <code>.pyd</code> might be the least bad fix IMO</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/parched">@parched</a> on 2025-12-03 00:56</div>
-            <div class="timeline-body"><p>We're hitting this too, we have a windows machine where end-to-end testing regularly creates then deletes a lot of venvs but we also have a python process permanently running that uses all the same packages. The venv tear down is failing leaving all these half empty venvs full of <code>pyd</code>s</p>
-<p>What's needed to get this issue fixed? As far as I understand, based on the links above, uv shouldn't expect hardlinking to work on Windows. Should I submit a PR changing the default <code>link-mode</code> to <code>copy</code> on Windows?</p>
+            <div class="timeline-body"><p>We&#x27;re hitting this too, we have a windows machine where end-to-end testing regularly creates then deletes a lot of venvs but we also have a python process permanently running that uses all the same packages. The venv tear down is failing leaving all these half empty venvs full of <code>pyd</code>s</p>
+<p>What&#x27;s needed to get this issue fixed? As far as I understand, based on the links above, uv shouldn&#x27;t expect hardlinking to work on Windows. Should I submit a PR changing the default <code>link-mode</code> to <code>copy</code> on Windows?</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:27:29 UTC
+        Synced at 2026-01-20 19:34:29 UTC
     </footer>
 </body>
 </html>

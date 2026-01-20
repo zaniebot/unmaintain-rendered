@@ -23,18 +23,18 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/bybrooks">@bybrooks</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>Fixes https://github.com/astral-sh/uv/issues/17232</p>
+            <div class="timeline-body">Summary
+<p>Fixes <a href="https://github.com/astral-sh/uv/issues/17232">astral-sh/uv#17232</a></p>
 <p>When <code>uv build</code> fails (e.g., due to missing <code>__init__.py</code>), partial distribution
 files were being left in the <code>dist/</code> directory.</p>
-<h3>Changes</h3>
+Changes
 <ul>
 <li>Use <code>NamedTempFile</code> to write build output to a temporary file first</li>
 <li>Only persist the file to the final location on successful build</li>
 <li>If build fails, the temporary file is automatically cleaned up</li>
 <li>Added <code>Error::Persist</code> variant for handling persistence failures</li>
 </ul>
-<h2>Test Plan</h2>
+Test Plan
 <p>Added <code>no_partial_files_on_build_failure</code> test that verifies:</p>
 <ol>
 <li><code>build_source_dist</code> fails when <code>__init__.py</code> is missing</li>
@@ -46,23 +46,23 @@ files were being left in the <code>dist/</code> directory.</p>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv-build-backend/src/lib.rs</code>:36 on 2025-12-31 10:06</div>
             <div class="timeline-body"><p>I think having a custom error here is probably a good idea, but just a small request:</p>
-<p><code>tempfile::PersistError</code> contains both the <code>io::Error</code> and the <code>NamedTempFile</code> we failed to persist. We're not making use of the whole <code>NamedTempFile</code> and don't want to keep it around unnecessarily while we do error handling, we just need the <code>io::Error</code> inside.</p>
+<p><code>tempfile::PersistError</code> contains both the <code>io::Error</code> and the <code>NamedTempFile</code> we failed to persist. We&#x27;re not making use of the whole <code>NamedTempFile</code> and don&#x27;t want to keep it around unnecessarily while we do error handling, we just need the <code>io::Error</code> inside.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv-build-backend/src/source_dist.rs</code>:39 on 2025-12-31 10:51</div>
-            <div class="timeline-body"><p>Rather than <code>temp_file.as_file().try_clone()?</code> just make <code>TarGzWriter::new</code> accept <code>&amp;temp_file</code> (not really fussed between <code>&amp;'a NamedTempFile</code> and <code>writer: W where W: Write</code>, it's only used by this function).</p>
-<p>I don't know what cases <code>try_clone</code> would fail in but it's better to just avoid the opportunity entirely.</p>
+            <div class="timeline-body"><p>Rather than <code>temp_file.as_file().try_clone()?</code> just make <code>TarGzWriter::new</code> accept <code>&amp;temp_file</code> (not really fussed between <code>&amp;&#x27;a NamedTempFile</code> and <code>writer: W where W: Write</code>, it&#x27;s only used by this function).</p>
+<p>I don&#x27;t know what cases <code>try_clone</code> would fail in but it&#x27;s better to just avoid the opportunity entirely.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv-build-backend/src/wheel.rs</code>:56 on 2025-12-31 10:51</div>
-            <div class="timeline-body"><p>Ditto https://github.com/astral-sh/uv/pull/17276/changes#r2655204555</p>
+            <div class="timeline-body"><p>Ditto <a href="https://github.com/astral-sh/uv/pull/17276">astral-sh/uv#17276</a>/changes#r2655204555</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv-build-backend/src/wheel.rs</code>:307 on 2025-12-31 10:51</div>
-            <div class="timeline-body"><p>Ditto https://github.com/astral-sh/uv/pull/17276/changes#r2655204555</p>
+            <div class="timeline-body"><p>Ditto <a href="https://github.com/astral-sh/uv/pull/17276">astral-sh/uv#17276</a>/changes#r2655204555</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -73,10 +73,10 @@ files were being left in the <code>dist/</code> directory.</p>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/EliteTK">@EliteTK</a> reviewed on 2025-12-31 11:31</div>
             <div class="timeline-body"><p>Thanks for this!</p>
-<p>I left a few comments, I'm somewhat new here so my colleagues might have additional comments.</p>
+<p>I left a few comments, I&#x27;m somewhat new here so my colleagues might have additional comments.</p>
 <p>It would be good to add an integration test in <code>crates/uv/tests/it/build_backend.rs</code> to check the error messages.</p>
-<hr />
-<p>There's something to consider, this changes the behaviour for handling pre-existing built files. Currently we start by overwriting them. This means that in the case of a failure, the existing files are lost and replaced with incomplete new ones. Now we are only overwriting the files if we succeed. Personally it's what <em>I</em> would expect here.</p>
+<hr>
+<p>There&#x27;s something to consider, this changes the behaviour for handling pre-existing built files. Currently we start by overwriting them. This means that in the case of a failure, the existing files are lost and replaced with incomplete new ones. Now we are only overwriting the files if we succeed. Personally it&#x27;s what <em>I</em> would expect here.</p>
 <p>But when reporting errors, the user will see something like &quot;Failed to ... dist/project-0.1.0-py2.py3-none-any.whl&quot;, implying the specified file was not able to be built, but if they check, they will see there <em>is</em> a file there.</p>
 <p>Could this be confusing and should we do something about it? I see a couple of options aside from just leaving it as is:</p>
 <ul>
@@ -86,7 +86,7 @@ files were being left in the <code>dist/</code> directory.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @EliteTK by @EliteTK on 2025-12-31 11:32</div>
+            <div class="event">Assigned to <a href="https://github.com/EliteTK">@EliteTK</a> by <a href="https://github.com/EliteTK">@EliteTK</a> on 2025-12-31 11:32</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/bybrooks">@bybrooks</a> reviewed on 2025-12-31 18:27</div>
@@ -114,9 +114,9 @@ Thank you for the feedback!</p>
 <p>Delete any target files before attempting to write the new ones
 Mention in error reporting that the (or we could make it easier for ourselves and just say &quot;any&quot;) existing file has not been overwritten</p>
 </blockquote>
-<p>I'll go with <strong>Delete any target files before attempting to write the new ones</strong>.</p>
+<p>I&#x27;ll go with <strong>Delete any target files before attempting to write the new ones</strong>.</p>
 <p>This ensures a consistent state where the existence of the target file directly indicates a successful build.</p>
-<p>I'll implement this by deleting the target file (if it exists) before creating the temporary file.</p>
+<p>I&#x27;ll implement this by deleting the target file (if it exists) before creating the temporary file.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -127,17 +127,17 @@ Mention in error reporting that the (or we could make it easier for ourselves an
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-12-31 18:47</div>
-            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+            <div class="timeline-body">
 
-<h2><a href="https://codspeed.io/astral-sh/uv/branches/bybrooks%3Abybrooks%2Fatomic-build-output?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a></h2>
-<h3>Merging #17276 will <strong>not alter performance</strong></h3>
-<p><sub>Comparing <code>bybrooks:bybrooks/atomic-build-output</code> (bc49b6e) with <code>main</code> (82a6a66)</sub></p>
-<h3>Summary</h3>
+<a href="https://codspeed.io/astral-sh/uv/branches/bybrooks%3Abybrooks%2Fatomic-build-output?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a>
+Merging #17276 will <strong>not alter performance</strong>
+<p>Comparing <code>bybrooks:bybrooks/atomic-build-output</code> (bc49b6e) with <code>main</code> (82a6a66)</p>
+Summary
 <p><code>✅ 5</code> untouched</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @konstin by @zanieb on 2026-01-03 14:02</div>
+            <div class="event">Review requested from <a href="https://github.com/konstin">@konstin</a> by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-03 14:02</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/bybrooks">@bybrooks</a> reviewed on 2026-01-05 11:26</div>
@@ -151,14 +151,14 @@ Mention in error reporting that the (or we could make it easier for ourselves an
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2026-01-05 12:07</div>
             <div class="timeline-body"><blockquote>
-<p>There's something to consider, this changes the behaviour for handling pre-existing built files. Currently we start by overwriting them. This means that in the case of a failure, the existing files are lost and replaced with incomplete new ones. Now we are only overwriting the files if we succeed. Personally it's what <em>I</em> would expect here.</p>
+<p>There&#x27;s something to consider, this changes the behaviour for handling pre-existing built files. Currently we start by overwriting them. This means that in the case of a failure, the existing files are lost and replaced with incomplete new ones. Now we are only overwriting the files if we succeed. Personally it&#x27;s what <em>I</em> would expect here.</p>
 <p>But when reporting errors, the user will see something like &quot;Failed to ... dist/project-0.1.0-py2.py3-none-any.whl&quot;, implying the specified file was not able to be built, but if they check, they will see there <em>is</em> a file there.</p>
 <p>Could this be confusing and should we do something about it? I see a couple of options aside from just leaving it as is:</p>
 <pre><code>* Delete any target files before attempting to write the new ones
 
 * Mention in error reporting that the (or we could make it easier for ourselves and just say &quot;any&quot;) existing file has not been overwritten</code></pre>
 </blockquote>
-<p>Deleting the target file(s) before starting the build seems to be the easiest. No strong opinion, users shouldn't rely on a specific the state of <code>dist/</code> after a non-zero exist code anyway.</p>
+<p>Deleting the target file(s) before starting the build seems to be the easiest. No strong opinion, users shouldn&#x27;t rely on a specific the state of <code>dist/</code> after a non-zero exist code anyway.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -166,30 +166,30 @@ Mention in error reporting that the (or we could make it easier for ourselves an
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @konstin on 2026-01-05 12:30</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/konstin">@konstin</a> on 2026-01-05 12:30</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/bybrooks">@bybrooks</a> on 2026-01-06 12:54</div>
             <div class="timeline-body"><blockquote>
-<p>Deleting the target file(s) before starting the build seems to be the easiest. No strong opinion, users shouldn't rely on a specific the state of dist/ after a non-zero exist code anyway.</p>
+<p>Deleting the target file(s) before starting the build seems to be the easiest. No strong opinion, users shouldn&#x27;t rely on a specific the state of dist/ after a non-zero exist code anyway.</p>
 </blockquote>
 <p>Thanks for the reply.
 I’ve implemented the logic to delete existing files before the build starts. （ bc49b6e6464a97469ba109e0530e30c5936f3545）</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Clean up partial sdist/wheel on build failure" to "Avoid broken build artifacts on build failure" by @konstin on 2026-01-06 14:21</div>
+            <div class="event">Renamed from &quot;Clean up partial sdist/wheel on build failure&quot; to &quot;Avoid broken build artifacts on build failure&quot; by <a href="https://github.com/konstin">@konstin</a> on 2026-01-06 14:21</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @konstin on 2026-01-06 14:27</div>
+            <div class="event">Merged by <a href="https://github.com/konstin">@konstin</a> on 2026-01-06 14:27</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @konstin on 2026-01-06 14:27</div>
+            <div class="event">Closed by <a href="https://github.com/konstin">@konstin</a> on 2026-01-06 14:27</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:45:41 UTC
+        Synced at 2026-01-20 19:55:02 UTC
     </footer>
 </body>
 </html>

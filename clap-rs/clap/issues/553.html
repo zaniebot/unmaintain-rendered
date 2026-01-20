@@ -23,17 +23,17 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/rickystewart">@rickystewart</a></div>
-            <div class="timeline-body"><p>I notice there is a <code>Hidden</code> option for subcommands to mark them as hidden from the default help screen.  I'd like some of my subcommands to be hidden by default, but I'd like there to be some option to display all subcommands on the help screen if the user wants to see them.  i.e. <code>help</code> should display only the information for the public subcommands, but <code>help --all</code> should display the information for every subcommand, including the hidden ones.  Does Clap support this use case?</p>
+            <div class="timeline-body"><p>I notice there is a <code>Hidden</code> option for subcommands to mark them as hidden from the default help screen.  I&#x27;d like some of my subcommands to be hidden by default, but I&#x27;d like there to be some option to display all subcommands on the help screen if the user wants to see them.  i.e. <code>help</code> should display only the information for the public subcommands, but <code>help --all</code> should display the information for every subcommand, including the hidden ones.  Does Clap support this use case?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Show help for all subcommands with particular option?" to "Show help for all subcommands with --all option?" by @rickystewart on 2016-06-30 17:02</div>
+            <div class="event">Renamed from &quot;Show help for all subcommands with particular option?&quot; to &quot;Show help for all subcommands with --all option?&quot; by <a href="https://github.com/rickystewart">@rickystewart</a> on 2016-06-30 17:02</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-06-30 17:35</div>
-            <div class="timeline-body"><p>This can be done in your handling code. I'm not sure it's something I'd want to include in <code>clap</code> itself because it'd add a flag <code>--all</code> to all such interfaces which I don't think everyone would want.</p>
-<p>To do this in your code, it'd be something along the lines of:</p>
-<pre><code class="language-rust">extern crate clap;
+            <div class="timeline-body"><p>This can be done in your handling code. I&#x27;m not sure it&#x27;s something I&#x27;d want to include in <code>clap</code> itself because it&#x27;d add a flag <code>--all</code> to all such interfaces which I don&#x27;t think everyone would want.</p>
+<p>To do this in your code, it&#x27;d be something along the lines of:</p>
+<pre><code>extern crate clap;
 
 use std::env;
 
@@ -42,26 +42,26 @@ use clap::{App, SubCommand, AppSettings};
 fn main() {
     let mut app = build_app(true);
 
-    // Use the get_matches_from_safe_borrow() which doesn't consume the app binding and doesn't
+    // Use the get_matches_from_safe_borrow() which doesn&#x27;t consume the app binding and doesn&#x27;t
     // print the help message right away. Instead it returns an Err, saying the help was requested
     //
     // The unwrap_or_else with the e.exit() piece does all the familiar error messages upon a
     // failed parse.
     let m = app.get_matches_from_safe_borrow(env::args()).unwrap_or_else(|e| e.exit());
 
-    // Now we check for either normal --help, or '--help and --all'
+    // Now we check for either normal --help, or &#x27;--help and --all&#x27;
     if m.is_present(&quot;all&quot;) &amp;&amp; m.is_present(&quot;help&quot;) {
-        // Re-build the app, but don't hide the subcommands
+        // Re-build the app, but don&#x27;t hide the subcommands
         build_app(false).print_help().unwrap();
     } else if m.is_present(&quot;help&quot;) {
-        // just re-use the app we already built, and print it's help.
+        // just re-use the app we already built, and print it&#x27;s help.
         app.print_help().unwrap();
     }
 
     // Normal logic here...
 }
 
-fn build_app(hide_subcmds: bool) -&gt; App&lt;'static, 'static&gt; {
+fn build_app(hide_subcmds: bool) -&gt; App&lt;&#x27;static, &#x27;static&gt; {
     // First, we build any subcommands that may be hidden;
     let mut hidden = SubCommand::with_name(&quot;hidden&quot;);
     hidden = if hide_subcmds {
@@ -70,13 +70,13 @@ fn build_app(hide_subcmds: bool) -&gt; App&lt;'static, 'static&gt; {
         hidden
     };
 
-    // Build the app like normal, but store with a let binding because we're going to re-use it
+    // Build the app like normal, but store with a let binding because we&#x27;re going to re-use it
     //
-    // The only difference is we add a `--help` arg so that clap thinks we're handling help
+    // The only difference is we add a `--help` arg so that clap thinks we&#x27;re handling help
     // messages ourselves
     App::new(&quot;fake&quot;)
-        .args_from_usage(&quot;    --all  'Show all subcommands in help message'
-                          -h, --help 'Displays this help message'&quot;) // Simply needs a long
+        .args_from_usage(&quot;    --all  &#x27;Show all subcommands in help message&#x27;
+                          -h, --help &#x27;Displays this help message&#x27;&quot;) // Simply needs a long
                                                                     // of --help for this
                                                                     // to work
         .subcommand(SubCommand::with_name(&quot;test&quot;))
@@ -91,20 +91,20 @@ fn build_app(hide_subcmds: bool) -&gt; App&lt;'static, 'static&gt; {
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2016-06-30 17:37</div>
+            <div class="event">Label <span class="label">T: RFC / question</span> added by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-06-30 17:37</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/joshtriplett">@joshtriplett</a> on 2016-07-04 12:31</div>
-            <div class="timeline-body"><p>Rather than adding a separate option, I've often seen this done with <code>--help-all</code>, or occasionally <code>--help -v</code> if the program already has a &quot;verbose&quot; option.</p>
+            <div class="timeline-body"><p>Rather than adding a separate option, I&#x27;ve often seen this done with <code>--help-all</code>, or occasionally <code>--help -v</code> if the program already has a &quot;verbose&quot; option.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @kbknapp on 2016-08-21 19:47</div>
+            <div class="event">Closed by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-08-21 19:47</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:46:37 UTC
+        Synced at 2026-01-20 19:56:28 UTC
     </footer>
 </body>
 </html>

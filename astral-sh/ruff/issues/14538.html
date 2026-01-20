@@ -25,7 +25,7 @@
             <div class="timeline-header"><a href="https://github.com/dscorbett">@dscorbett</a></div>
             <div class="timeline-body"><p>The fix for TC003 sometimes makes Ruff fail or introduces type-checking problems when <code>lint.flake8-type-checking.quote-annotations = true</code> in Ruff 0.8.0.</p>
 <p>Here are some examples of type-checking problems. The first two make the types invalid. The rest change the types’ metadata. Metadata can be any Python expression and can be interpreted by any arbitrary tool, so Ruff should not make any assumptions about it or modify it beyond simple syntactic transformations like switching quotation marks.</p>
-<pre><code class="language-console">$ cat tc003_1.py
+<pre><code>$ cat tc003_1.py
 from collections.abc import Sequence
 from typing import Annotated
 a: Sequence[tuple[()]]
@@ -35,7 +35,7 @@ d: Sequence[Annotated[int, ([0] + [1])[1]]]
 e: Sequence[Annotated[int, list[&quot;int&quot;]]]
 f: Sequence[Annotated[int, Annotated[&quot;int&quot;, &quot;int&quot;]]]
 
-$ ruff check --isolated --select TC003 --config 'lint.flake8-type-checking.quote-annotations = true' tc003_1.py --unsafe-fixes --fix
+$ ruff check --isolated --select TC003 --config &#x27;lint.flake8-type-checking.quote-annotations = true&#x27; tc003_1.py --unsafe-fixes --fix
 Found 1 error (1 fixed, 0 remaining).
 
 $ cat tc003_1.py
@@ -48,7 +48,7 @@ b: &quot;Sequence[Annotated[int, ]]&quot;
 c: &quot;Sequence[Annotated[int, 1 | 3]]&quot;
 d: &quot;Sequence[Annotated[int, [0] + [1][1]]]&quot;
 e: &quot;Sequence[Annotated[int, list[int]]]&quot;
-f: &quot;Sequence[Annotated[int, Annotated[int, 'int']]]&quot;
+f: &quot;Sequence[Annotated[int, Annotated[int, &#x27;int&#x27;]]]&quot;
 
 $ mypy tc003_1.py
 tc003_1.py:5: error: Invalid type comment or annotation  [valid-type]
@@ -56,12 +56,12 @@ tc003_1.py:6: error: Annotated[...] must have exactly one type argument and at l
 Found 2 errors in 1 file (checked 1 source file)
 </code></pre>
 <p>Here is an example of a failure.</p>
-<pre><code class="language-console">$ cat tc003_2.py
+<pre><code>$ cat tc003_2.py
 from collections.abc import Sequence
 from typing import Annotated
 x: Sequence[Annotated[int, &quot;x&quot;[0]]]
 
-$ ruff check --isolated --select TC003 --config 'lint.flake8-type-checking.quote-annotations = true' tc003_2.py --unsafe-fixes --diff
+$ ruff check --isolated --select TC003 --config &#x27;lint.flake8-type-checking.quote-annotations = true&#x27; tc003_2.py --unsafe-fixes --diff
 
 error: Fix introduced a syntax error. Reverting all changes.
 
@@ -69,111 +69,111 @@ This indicates a bug in Ruff. If you could open an issue at:
 
     https://github.com/astral-sh/ruff/issues/new?title=%5BFix%20error%5D
 
-...quoting the contents of `tc003_2.py`, the rule codes TC003, along with the `pyproject.toml` settings and executed command, we'd be very appreciative!
+...quoting the contents of `tc003_2.py`, the rule codes TC003, along with the `pyproject.toml` settings and executed command, we&#x27;d be very appreciative!
 
 
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2024-11-22 21:54</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-22 21:54</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">fixes</span> added by @AlexWaygood on 2024-11-22 21:54</div>
+            <div class="event">Label <span class="label">fixes</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-22 21:54</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">help wanted</span> added by @AlexWaygood on 2024-11-22 21:54</div>
+            <div class="event">Label <span class="label">help wanted</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-22 21:54</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-11-23 07:42</div>
             <div class="timeline-body"><p>This looks to be the culprit, instead of properly handling 1 and 0 element tuples, 0 element tuples get skipped by <code>QuoteAnnotator::visit_expr</code> and 1 element tuples will not receive a trailing comma:</p>
 <p>https://github.com/astral-sh/ruff/blob/4ba847f250ea2022d93df8162f7e35aed6dd5381/crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs#L397-L410</p>
-<p>Should be a fairly easy fix, but I won't have time to get around to it today. So if someone else wants to write a couple of test cases and handling for those two cases, go right ahead.</p>
+<p>Should be a fairly easy fix, but I won&#x27;t have time to get around to it today. So if someone else wants to write a couple of test cases and handling for those two cases, go right ahead.</p>
 <p>For 0 element tuples you just have to <code>self.annotation.push(&quot;()&quot;)</code>, for the 1 element case you just want to make sure that a trailing comma gets emitted, because currently it will not be.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-11-23 14:01</div>
             <div class="timeline-body"><p>There are probably additional corner cases though, i.e. the ones where the tuple needs to be enclosed in parentheses in order to be syntactically distinguishable.</p>
-<p>So something like <code>Annotated[str, foo((1,2), &quot;bar&quot;)]</code> would likely be broken too by being translated into <code>&quot;Annotated[str, foo(1, 2, 'bar')]&quot;</code>.</p>
-<p>However it's somewhat questionable to quote anything containing <code>Annotated</code> to begin with, since it will likely be used at runtime, so maybe we should just not emit a fix (or violation) when we see <code>typing.Annotated</code>. In that case we would almost certainly only get corner cases for things that aren't syntactically valid type annotations, after fixing the 0-element tuple and 1-element tuple.</p>
-<p>But we could make certain we avoid bad cases by marking the fix invalid, as soon as we see an <code>ast.Tuple</code> with a parent node that isn't <code>ast.Subscript</code>.</p>
+<p>So something like <code>Annotated[str, foo((1,2), &quot;bar&quot;)]</code> would likely be broken too by being translated into <code>&quot;Annotated[str, foo(1, 2, &#x27;bar&#x27;)]&quot;</code>.</p>
+<p>However it&#x27;s somewhat questionable to quote anything containing <code>Annotated</code> to begin with, since it will likely be used at runtime, so maybe we should just not emit a fix (or violation) when we see <code>typing.Annotated</code>. In that case we would almost certainly only get corner cases for things that aren&#x27;t syntactically valid type annotations, after fixing the 0-element tuple and 1-element tuple.</p>
+<p>But we could make certain we avoid bad cases by marking the fix invalid, as soon as we see an <code>ast.Tuple</code> with a parent node that isn&#x27;t <code>ast.Subscript</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-11-24 11:57</div>
-            <div class="timeline-body"><p>I'm gonna take a stab at this. It shouldn't actually be too hard to fix the other corner-cases either, since most nodes aren't traversed manually and just rely on <code>Generator</code>, so I just need to make sure tuples are enclosed in parentheses unless the previous node was <code>Expr::Subscript</code>.</p>
-<p>There's still a larger of issue of whether or not we should allow any of the references inside type definitions to be quoted, when that type definition contains an <code>Annotated</code>, since that is a clear signal that the annotation will be inspected. But that's a much more tricky thing to fix and also affects references to type aliases that need to be available at runtime. This may be the reason why the fix is currently marked unsafe.</p>
+            <div class="timeline-body"><p>I&#x27;m gonna take a stab at this. It shouldn&#x27;t actually be too hard to fix the other corner-cases either, since most nodes aren&#x27;t traversed manually and just rely on <code>Generator</code>, so I just need to make sure tuples are enclosed in parentheses unless the previous node was <code>Expr::Subscript</code>.</p>
+<p>There&#x27;s still a larger of issue of whether or not we should allow any of the references inside type definitions to be quoted, when that type definition contains an <code>Annotated</code>, since that is a clear signal that the annotation will be inspected. But that&#x27;s a much more tricky thing to fix and also affects references to type aliases that need to be available at runtime. This may be the reason why the fix is currently marked unsafe.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-11-24 12:47</div>
             <div class="timeline-body"><p>The longer I look at this the more subtle problems stick out at me. The approach with a custom visitor that tries to get away with handling just a small subset of nodes is never going to be sound and by the time it is sound we may just have duplicated all the code of <code>Generator::unparse_expr</code> plus some additional branches.</p>
-<p>We will either need to extend <code>Generator</code> with a flag to optionally parse the value of <code>LiteralString</code> if it's inside a type definition, so all the nested quotes get removed from the expression (but that would mean that state would now have to live on the <code>LiteralString</code> node rather than only on the semantic model during traversal). Or we need to generate that expanded expression ourselves and pass it to <code>Generator</code>.</p>
+<p>We will either need to extend <code>Generator</code> with a flag to optionally parse the value of <code>LiteralString</code> if it&#x27;s inside a type definition, so all the nested quotes get removed from the expression (but that would mean that state would now have to live on the <code>LiteralString</code> node rather than only on the semantic model during traversal). Or we need to generate that expanded expression ourselves and pass it to <code>Generator</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-11-24 13:29</div>
-            <div class="timeline-body"><p>@charliermarsh Would you be opposed to adding a boolean field to <code>ExprStringLiteral</code> to indicate whether or not that string literal is a typing forward reference? It's kind of piggy, since we're leaking state of the semantic model into the AST, so the value will be meaningless until the semantic model has already traversed that branch of the AST and populated the value.</p>
+            <div class="timeline-body"><p>@charliermarsh Would you be opposed to adding a boolean field to <code>ExprStringLiteral</code> to indicate whether or not that string literal is a typing forward reference? It&#x27;s kind of piggy, since we&#x27;re leaking state of the semantic model into the AST, so the value will be meaningless until the semantic model has already traversed that branch of the AST and populated the value.</p>
 <p>But it also seems like the most efficient way to detect and expand forward references in <code>Generator</code>. Another potential way to do it is to give <code>Generator</code> a <code>Option&lt;&amp;SemanticModel&gt;</code>, so it can optionally detect <code>typing.Literal</code> and <code>typing.Annotated</code> during <code>ast::Subscript</code> traversal.</p>
 <p>It might also be possible to leverage the cache of parsed forward references to detect whether or not <code>ExprStringLiteral</code> is a forward reference, but then we would rely on those forward references already having been visited and parsed before, which is probably not true for nested cases.</p>
 <p>Or my least favorite way: Copy <code>Generator::unparse_expr</code> and make the necessary changes for removing redundant nested quotes and risk the two methods going out of sync.</p>
-<p>Or we just give up for now and only provide a naïve fix, that either doesn't expand nested quotes, that are safe to expand or only provides a fix in fewer cases where we don't have to worry about the complexity of nested quotes (which would essentially mean reverting to what we had before switching to this more powerful but broken version or something even more simple).</p>
+<p>Or we just give up for now and only provide a naïve fix, that either doesn&#x27;t expand nested quotes, that are safe to expand or only provides a fix in fewer cases where we don&#x27;t have to worry about the complexity of nested quotes (which would essentially mean reverting to what we had before switching to this more powerful but broken version or something even more simple).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-11-24 14:21</div>
-            <div class="timeline-body"><p>Actually, tagging wouldn't handle nested forward references properly either, unless the forward reference is already sitting parsed in the cache and has already been visited by the semantic model. So it's probably not worth adding this to the AST after all.</p>
+            <div class="timeline-body"><p>Actually, tagging wouldn&#x27;t handle nested forward references properly either, unless the forward reference is already sitting parsed in the cache and has already been visited by the semantic model. So it&#x27;s probably not worth adding this to the AST after all.</p>
 <p>Maybe it would be better to add a separate opinionated rule about nested forward references and the fix for that would remove one level of nesting at a time. Then we could rely on repeated fixes eventually giving us the desired result.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-24 20:53</div>
             <div class="timeline-body"><blockquote>
-<p>Actually, tagging wouldn't handle nested forward references properly either, unless the forward reference is already sitting parsed in the cache and has already been visited by the semantic model. So it's probably not worth adding this to the AST after all.</p>
+<p>Actually, tagging wouldn&#x27;t handle nested forward references properly either, unless the forward reference is already sitting parsed in the cache and has already been visited by the semantic model. So it&#x27;s probably not worth adding this to the AST after all.</p>
 </blockquote>
 <p>It might also not be possible because you would have to mutate the tree in the semantic model, or use a <code>Cell</code> which I rather avoid :)</p>
 <blockquote>
 <p>Maybe it would be better to add a separate opinionated rule about nested forward references and the fix for that would remove one level of nesting at a time. Then we could rely on repeated fixes eventually giving us the desired result.</p>
 </blockquote>
-<p>The challenge is that there's no guarantee that this rule is enabled or that the rule is run and fixed first.</p>
-<p>I haven't studied the problem in detail but is the rewrite a common problem? Could we just not emit a fix in those cases?</p>
+<p>The challenge is that there&#x27;s no guarantee that this rule is enabled or that the rule is run and fixed first.</p>
+<p>I haven&#x27;t studied the problem in detail but is the rewrite a common problem? Could we just not emit a fix in those cases?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-11-24 21:43</div>
             <div class="timeline-body"><blockquote>
-<p>I haven't studied the problem in detail but is the rewrite a common problem? Could we just not emit a fix in those cases?</p>
+<p>I haven&#x27;t studied the problem in detail but is the rewrite a common problem? Could we just not emit a fix in those cases?</p>
 </blockquote>
-<p>That's pretty much how it worked previously IIRC, if there were any quotes at all in the unparsed expression no fix would be emitted. But since <code>Literal</code> and type expressions that already contain some forward references are quite common, I assume there was a desire to improve the fix, hence the change to the current version that can handle some common cases, but is easily broken with more complex ones. I think I could easily improve the current fix to a degree where it would be correct in 99% of cases, but there would be no way to make it 100% robust. So if someone puts something unexpected inside a type definition, it will break, and it will probably do so quietly, which is the worst kind of breakage, since Ruff will now silently rewrite code and there would be no easy way to detect it.</p>
-<p>I assume it would be easy to write a fix that always works, all you'd have to do is put the unparsed expression into a new <code>StringExpr</code> node and then unparse that node. That should take care of nested quotes by escaping them. You could even avoid introducing escaped quotes in the most common case by inverting the setting for the preferred quotes in the stylizer for the first unparse.</p>
-<p>The major drawback to this version of the fix would be that you would introduce nested quotes for existing forward references, which usually is undesirable (I can imagine that there are some corner cases in runtime typing where nested forward references are the only way to make some code work, but that should be rare, I certainly have never seen it out in the wild). Nested quotes for <code>Literal</code> on the other hand are required. The same goes for any quotes within non-type expressions in <code>Annotated</code>, since those should be actual strings instead of forward references. If there was no mix then the fix would be easy too, you'd just remove all the quotes.</p>
+<p>That&#x27;s pretty much how it worked previously IIRC, if there were any quotes at all in the unparsed expression no fix would be emitted. But since <code>Literal</code> and type expressions that already contain some forward references are quite common, I assume there was a desire to improve the fix, hence the change to the current version that can handle some common cases, but is easily broken with more complex ones. I think I could easily improve the current fix to a degree where it would be correct in 99% of cases, but there would be no way to make it 100% robust. So if someone puts something unexpected inside a type definition, it will break, and it will probably do so quietly, which is the worst kind of breakage, since Ruff will now silently rewrite code and there would be no easy way to detect it.</p>
+<p>I assume it would be easy to write a fix that always works, all you&#x27;d have to do is put the unparsed expression into a new <code>StringExpr</code> node and then unparse that node. That should take care of nested quotes by escaping them. You could even avoid introducing escaped quotes in the most common case by inverting the setting for the preferred quotes in the stylizer for the first unparse.</p>
+<p>The major drawback to this version of the fix would be that you would introduce nested quotes for existing forward references, which usually is undesirable (I can imagine that there are some corner cases in runtime typing where nested forward references are the only way to make some code work, but that should be rare, I certainly have never seen it out in the wild). Nested quotes for <code>Literal</code> on the other hand are required. The same goes for any quotes within non-type expressions in <code>Annotated</code>, since those should be actual strings instead of forward references. If there was no mix then the fix would be easy too, you&#x27;d just remove all the quotes.</p>
 <blockquote>
-<p>The challenge is that there's no guarantee that this rule is enabled or that the rule is run and fixed first.</p>
+<p>The challenge is that there&#x27;s no guarantee that this rule is enabled or that the rule is run and fixed first.</p>
 </blockquote>
-<p>I can see how it would be a problem for a type expression that already contains nested forward references, but now needs to be quoted as a whole. In which case the two fixes would overlap. I don't really know how Ruff deals with overlapping edits.</p>
+<p>I can see how it would be a problem for a type expression that already contains nested forward references, but now needs to be quoted as a whole. In which case the two fixes would overlap. I don&#x27;t really know how Ruff deals with overlapping edits.</p>
 <p>But the other way around it seems unproblematic to me. If quoting the annotation introduces nested annotations, then if someone cares about getting rid of those they will be flagged by the other rule and subsequently fixed. The fixes should always stabilize this way.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-11-26 10:49</div>
             <div class="timeline-body"><p>@MichaReiser I guess the most sensible approach would be to extract <code>Generator::unparse_expr</code> and its dependencies into a trait with a few minor changes so implementations can decide what happens when visiting <code>ast::Subscript</code> and <code>ast::StringLiteral</code>, since those are the two points we need to be able to hook into in order to implement automatic expansion of forward references during node traversal. What do you think?</p>
-<p>My only concern would be that the trait would look a bit arbitrary, since it would be tailored exactly for this use-case, when there may well be other <code>Generator</code> traversal operations people would like to be able to hook into. If we wanted to actually be more generic a <code>derive</code> macro may make more sense, but it doesn't seem worth the additional effort right now.</p>
+<p>My only concern would be that the trait would look a bit arbitrary, since it would be tailored exactly for this use-case, when there may well be other <code>Generator</code> traversal operations people would like to be able to hook into. If we wanted to actually be more generic a <code>derive</code> macro may make more sense, but it doesn&#x27;t seem worth the additional effort right now.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-11-26 11:00</div>
-            <div class="timeline-body"><p>Actually, one common hook at the start of <code>unparse_expr</code> that can skip further traversal similar to <code>SourceOrderVisitor::enter_node</code> may be viable as well and would be a lot more flexible, although it would mean that we would potentially do the work of figuring out what kind of node we're visiting twice.</p>
-<p>Edit: Looks like this doesn't quite work either, since we would also need a post-traversal hook, so we can pop the current annotation state off the stack. But those two hooks together should be able to do a lot of different things.</p>
+            <div class="timeline-body"><p>Actually, one common hook at the start of <code>unparse_expr</code> that can skip further traversal similar to <code>SourceOrderVisitor::enter_node</code> may be viable as well and would be a lot more flexible, although it would mean that we would potentially do the work of figuring out what kind of node we&#x27;re visiting twice.</p>
+<p>Edit: Looks like this doesn&#x27;t quite work either, since we would also need a post-traversal hook, so we can pop the current annotation state off the stack. But those two hooks together should be able to do a lot of different things.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2024-11-27 17:58</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-27 17:58</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:51:37 UTC
+        Synced at 2026-01-20 18:49:01 UTC
     </footer>
 </body>
 </html>

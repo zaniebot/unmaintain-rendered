@@ -27,40 +27,40 @@
 <p>https://github.com/clap-rs/clap/blob/784524f7eb193e35f81082cc69454c8c21b948f7/src/osstringext.rs#L23-L32</p>
 <p>the transmute casts the <code>&amp;[u8]</code> to a <code>&amp;OsStr</code>. There are a couple problems with this:</p>
 <ol>
-<li>This is not actually a safe thing to do, since <code>&amp;[u8]</code> can be an arbitrary sequence of bytes, where as <code>&amp;OsStr</code> cannot on Windows. On Windows, it internally is WTF-8 and it's not clear what, if anything, goes wrong when it isn't WTF-8. (But if it isn't WTF-8, then it could very well break a perfectly valid internal invariant that leads to UB.) A plausible alternative is to make <code>from_bytes</code> unsafe.</li>
+<li>This is not actually a safe thing to do, since <code>&amp;[u8]</code> can be an arbitrary sequence of bytes, where as <code>&amp;OsStr</code> cannot on Windows. On Windows, it internally is WTF-8 and it&#x27;s not clear what, if anything, goes wrong when it isn&#x27;t WTF-8. (But if it isn&#x27;t WTF-8, then it could very well break a perfectly valid internal invariant that leads to UB.) A plausible alternative is to make <code>from_bytes</code> unsafe.</li>
 <li>The fact that an <code>&amp;OsStr</code> is internally a <code>&amp;[u8]</code> on Windows that is WTF-8 is an implementation detail, and could actually change, leading to an incorrect <code>transmute</code>.</li>
 </ol>
-<p>Is this code still present in clap 3? If so, could someone explain the motivation for this? I'd be happy to try to help brainstorm ways of removing it.</p>
+<p>Is this code still present in clap 3? If so, could someone explain the motivation for this? I&#x27;d be happy to try to help brainstorm ways of removing it.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Freaky">@Freaky</a> on 2019-07-22 16:46</div>
-            <div class="timeline-body"><p>It's still present in v3-master.  It's used to handle things like <code>--path=bla</code> and <code>-ofoo.txt</code>, hence trimming <code>-</code>'s and splitting at <code>=</code>'s or at specific positions.</p>
+            <div class="timeline-body"><p>It&#x27;s still present in v3-master.  It&#x27;s used to handle things like <code>--path=bla</code> and <code>-ofoo.txt</code>, hence trimming <code>-</code>&#x27;s and splitting at <code>=</code>&#x27;s or at specific positions.</p>
 <p>These need redoing to use encode_wide()/decode_wide() I guess.</p>
-<p>Out of interest, I just threw together <a href="https://gist.github.com/Freaky/c5defd016e037d25ac821d78a1676291">this</a>, which still assumes UTF/WTF-8, but at least tries to uphold the invariants.  My editor crashed three times writing it but I'm sure it's fi<em>OH GOD RAPTORS</em>.</p>
+<p>Out of interest, I just threw together <a href="https://gist.github.com/Freaky/c5defd016e037d25ac821d78a1676291">this</a>, which still assumes UTF/WTF-8, but at least tries to uphold the invariants.  My editor crashed three times writing it but I&#x27;m sure it&#x27;s fi<em>OH GOD RAPTORS</em>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-07-22 17:12</div>
-            <div class="timeline-body"><p>Yeah, I just don't think transmuting like this is a good idea. WTF-8 is an internal detail, and having an important crate in the ecosystem rely it is just not a good idea. The simplest way around this isn't to use <code>encode_wide</code>/<code>decode_wide</code> (because then you'd have to do everything in UCS-2 space), but rather, to just lossily decode the OsStr to UTF-8. In the vast majority of cases, this would only entail a UTF-8 check on Windows, and in the rare case where you have a <code>OsStr</code> with invalid UTF-16, you incur the allocation.</p>
+            <div class="timeline-body"><p>Yeah, I just don&#x27;t think transmuting like this is a good idea. WTF-8 is an internal detail, and having an important crate in the ecosystem rely it is just not a good idea. The simplest way around this isn&#x27;t to use <code>encode_wide</code>/<code>decode_wide</code> (because then you&#x27;d have to do everything in UCS-2 space), but rather, to just lossily decode the OsStr to UTF-8. In the vast majority of cases, this would only entail a UTF-8 check on Windows, and in the rare case where you have a <code>OsStr</code> with invalid UTF-16, you incur the allocation.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Freaky">@Freaky</a> on 2019-07-22 17:51</div>
-            <div class="timeline-body"><p>Without encode/decode_wide I don't see any way to handle it both correctly and safely.  Lossy decoding should be right out, because it implies corrupting some valid program arguments, so we're just left with panicking on invalid UTF-8 on Windows.</p>
+            <div class="timeline-body"><p>Without encode/decode_wide I don&#x27;t see any way to handle it both correctly and safely.  Lossy decoding should be right out, because it implies corrupting some valid program arguments, so we&#x27;re just left with panicking on invalid UTF-8 on Windows.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-07-22 18:08</div>
-            <div class="timeline-body"><p>I am operating at a loss here, because I don't understand the context in which these routines are being used. Certainly, what you're saying is not <em>generally</em> true. For example, <code>starts_with</code> can be implemented on Windows by lossily decoded the <code>OsStr</code> to UTF-8. The only case you'd miss out on is when the <code>starts_with</code> parameter contains a WTF-8 encoding of invalid UTF-16. So the question then becomes, in what circumstances does the parameter to <code>starts_with</code> actually contain meaningful WTF-8? Ideally, the answer to that is &quot;never.&quot;</p>
-<p>Taking a step back and re-reading your comment above, maybe now I'm starting to realize here. Specifically, I guess the <code>OsStr</code> is the thing itself that you need to parse, so even if you did a lossy decode, that wouldn't help you, because you wouldn't be able to easily move back to <code>OsStr</code> when it comes time to hand the arguments back to the caller.</p>
-<p>I think I now see the predicament, I think you're right. I see three possible choices:</p>
+            <div class="timeline-body"><p>I am operating at a loss here, because I don&#x27;t understand the context in which these routines are being used. Certainly, what you&#x27;re saying is not <em>generally</em> true. For example, <code>starts_with</code> can be implemented on Windows by lossily decoded the <code>OsStr</code> to UTF-8. The only case you&#x27;d miss out on is when the <code>starts_with</code> parameter contains a WTF-8 encoding of invalid UTF-16. So the question then becomes, in what circumstances does the parameter to <code>starts_with</code> actually contain meaningful WTF-8? Ideally, the answer to that is &quot;never.&quot;</p>
+<p>Taking a step back and re-reading your comment above, maybe now I&#x27;m starting to realize here. Specifically, I guess the <code>OsStr</code> is the thing itself that you need to parse, so even if you did a lossy decode, that wouldn&#x27;t help you, because you wouldn&#x27;t be able to easily move back to <code>OsStr</code> when it comes time to hand the arguments back to the caller.</p>
+<p>I think I now see the predicament, I think you&#x27;re right. I see three possible choices:</p>
 <ol>
-<li>Push on <code>OsStr</code> to get string-like methods. I think there was an RFC for it, but I'm not sure if there has been any movement on it.</li>
+<li>Push on <code>OsStr</code> to get string-like methods. I think there was an RFC for it, but I&#x27;m not sure if there has been any movement on it.</li>
 <li>Use <code>encode_wide</code> to get UCS-2 code units and parse those directly. Then use <code>decode_wide</code> to convert the arguments back to <code>OsString</code>.</li>
 <li>Use <code>encode_wide</code>, <strong>re-implement WTF-8</strong> and translate the UCS-2 code units to WTF-8, and then treat it as you are today. To get back, you then need to re-apply <code>decode_wide</code> to get <code>OsString</code> for every argument.</li>
 </ol>
-<p>The latter two imply quite a bit of work, and at least some additional performance overhead. <em>However</em>, the performance overhead would only occur when the <code>OsStr</code> couldn't be translated to UTF-8. When it can be converted to UTF-8, then you'd just do that.</p>
+<p>The latter two imply quite a bit of work, and at least some additional performance overhead. <em>However</em>, the performance overhead would only occur when the <code>OsStr</code> couldn&#x27;t be translated to UTF-8. When it can be converted to UTF-8, then you&#x27;d just do that.</p>
 <p>cc @SimonSapin - As the architect of WTF-8, what do you think the suggest path here should be? (I still continue to think the internal representation should just be exposed, despite the strong principles against doing so. The fact that we have people transmuting to the internal representation is going to make it de facto exposed eventually anyway.)</p>
 </div>
         </div>
@@ -72,12 +72,12 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-07-23 16:38</div>
-            <div class="timeline-body"><p>That's a lot more code, but on an initial skim, it looks good? It does seem unfortunate that everyone has to pay for the <code>Cow</code> though, although the cost should be pretty small.</p>
+            <div class="timeline-body"><p>That&#x27;s a lot more code, but on an initial skim, it looks good? It does seem unfortunate that everyone has to pay for the <code>Cow</code> though, although the cost should be pretty small.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/SimonSapin">@SimonSapin</a> on 2019-07-23 16:50</div>
-            <div class="timeline-body"><p>We have an RFC that changes the memory representation of <code>OsStr</code> on Windows: https://rust-lang.github.io/rfcs/2295-os-str-pattern.html / https://github.com/rust-lang/rust/issues/49802. This RFC is accepted, but not implemented yet.</p>
+            <div class="timeline-body"><p>We have an RFC that changes the memory representation of <code>OsStr</code> on Windows: https://rust-lang.github.io/rfcs/2295-os-str-pattern.html / <a href="https://github.com/rust-lang/rust/issues/49802">rust-lang/rust#49802</a>. This RFC is accepted, but not implemented yet.</p>
 <p>Officially exposing the byte representation would likely make this kind of change a breaking change. I would much prefer adding string-like methods to <code>OsStr</code>. In fact this is exactly what this RFC does. But indeed there hasn’t been much activity to implement since it was accepted a while ago.</p>
 </div>
         </div>
@@ -92,11 +92,11 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../murarth/gumdrop/issues/15.html">murarth/gumdrop#15</a> on 2019-08-01 16:31</div>
+            <div class="event">Referenced in <a>murarth/gumdrop#15</a> on 2019-08-01 16:31</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dylni">@dylni</a> on 2019-12-01 23:07</div>
-            <div class="timeline-body"><p>If you're interested, I created <a href="https://crates.io/crates/os_str_bytes">OsStr Bytes</a> to solve this problem. It allows accessing the bytes of <code>OsStr</code> and <code>OsString</code> safely, without making assumptions about how they're represented.</p>
+            <div class="timeline-body"><p>If you&#x27;re interested, I created <a href="https://crates.io/crates/os_str_bytes">OsStr Bytes</a> to solve this problem. It allows accessing the bytes of <code>OsStr</code> and <code>OsString</code> safely, without making assumptions about how they&#x27;re represented.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -105,12 +105,12 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @CreepySkeleton on 2020-02-01 13:04</div>
+            <div class="event">Closed by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-02-01 13:04</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:47:22 UTC
+        Synced at 2026-01-20 19:57:26 UTC
     </footer>
 </body>
 </html>

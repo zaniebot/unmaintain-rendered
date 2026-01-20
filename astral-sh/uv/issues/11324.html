@@ -23,14 +23,14 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/jamescooke">@jamescooke</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<h2>Current behaviour</h2>
+            <div class="timeline-body">Summary
+Current behaviour
 <p>We have an app which installs packages with uv in root, but then uses a team user to run the app.</p>
 <p>However, as of <code>0.5.29</code>, this has stopped working. The error received when the team user tries to <code>uv run</code> anything is:</p>
 <pre><code>error: failed to create file `/tmp/uv-f348faaccf85129c.lock`: Permission denied (os error 13)
 </code></pre>
 <p>The following dockerfile reproduces the error</p>
-<pre><code class="language-dockerfile">FROM python:3.13
+<pre><code>FROM python:3.13
 COPY --from=ghcr.io/astral-sh/uv:0.5.29 /uv /bin/uv
 
 WORKDIR /usr/src/app
@@ -56,26 +56,26 @@ Dockerfile:10
 --------------------
 ERROR: failed to solve: process &quot;/bin/sh -c uv run pytest -h&quot; did not complete successfully: exit code: 2
 </code></pre>
-<h2>Expected behaviour</h2>
+Expected behaviour
 <p>Pinning to <code>0.5.28</code> allows the build of the file above to run:</p>
-<pre><code class="language-dockerfile">COPY --from=ghcr.io/astral-sh/uv:0.5.28 /uv /bin/uv
+<pre><code>COPY --from=ghcr.io/astral-sh/uv:0.5.28 /uv /bin/uv
 </code></pre>
-<p>This is the expected behaviour (unless doing the above is deprecated - if so please could you help me understand if there's a path for root to install and &quot;normal&quot; users to use?)</p>
-<p>My colleague noticed this recent change released in <code>0.5.29</code> and thought it might be related to this issue: https://github.com/astral-sh/uv/pull/11259/</p>
-<h3>Platform</h3>
+<p>This is the expected behaviour (unless doing the above is deprecated - if so please could you help me understand if there&#x27;s a path for root to install and &quot;normal&quot; users to use?)</p>
+<p>My colleague noticed this recent change released in <code>0.5.29</code> and thought it might be related to this issue: <a href="https://github.com/astral-sh/uv/pull/11259">astral-sh/uv#11259</a>/</p>
+Platform
 <p>Linux 5.15.0-131-generic x86_64 GNU/Linux</p>
-<h3>Version</h3>
+Version
 <p>uv 0.5.29</p>
-<h3>Python version</h3>
+Python version
 <p>3.13.2</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @jamescooke on 2025-02-07 17:55</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/jamescooke">@jamescooke</a> on 2025-02-07 17:55</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-07 18:14</div>
-            <div class="timeline-body"><p>Interesting, thanks. I'll fix this in the next release. We shouldn't be failing here.</p>
+            <div class="timeline-body"><p>Interesting, thanks. I&#x27;ll fix this in the next release. We shouldn&#x27;t be failing here.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -83,11 +83,11 @@ ERROR: failed to solve: process &quot;/bin/sh -c uv run pytest -h&quot; did not 
             <div class="timeline-body"><p>Thanks for checking and confirming @charliermarsh 👍🏻</p>
 <p>Clarification for future readers: The small failing case above uses <code>uv init</code> in the Dockerfile. However, uv fails just the same when building a container image for an existing project. I just used <code>uv init</code> to create the simplest failing case possible.</p>
 <p>Alternatively, a project can be build &quot;like normal&quot; on the host:</p>
-<pre><code class="language-console">$ uv init
+<pre><code>$ uv init
 $ uv add pytest
 </code></pre>
 <p>Then the following Dockerfile will fail in the same way (with or without <code>--frozen</code>):</p>
-<pre><code class="language-dockerfile">FROM python:3.13
+<pre><code>FROM python:3.13
 COPY --from=ghcr.io/astral-sh/uv:0.5.29 /uv /bin/uv
 
 WORKDIR /usr/src/app
@@ -99,28 +99,28 @@ USER team
 RUN uv run pytest -h
 </code></pre>
 <p>Apart from just running as root instead, one work around appears to be to clean the <code>/tmp</code> dir after doing the <code>uv sync</code>.</p>
-<pre><code class="language-dockerfile">RUN rm /tmp/*
+<pre><code>RUN rm /tmp/*
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-07 20:23</div>
-            <div class="timeline-body"><p>Yeah, we're creating that file during <code>uv add</code> (because we sync the project environment), and the permissions are such that other users can't acquire it.</p>
+            <div class="timeline-body"><p>Yeah, we&#x27;re creating that file during <code>uv add</code> (because we sync the project environment), and the permissions are such that other users can&#x27;t acquire it.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-02-07 21:05</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-07 21:05</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2025-02-07 21:36</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-07 21:36</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2025-02-07 21:36</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-07 21:36</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:29:46 UTC
+        Synced at 2026-01-20 19:37:10 UTC
     </footer>
 </body>
 </html>

@@ -47,12 +47,12 @@ error: Failed to install: cfgv-3.4.0-py2.py3-none-any.whl (cfgv==3.4.0)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-28 22:05</div>
-            <div class="timeline-body"><p>My initial reaction is that we're unlikely to support this. (I'm also unsure how <code>python</code> knows to look in <code>.local/lib/python3.12/site-packages/</code> later?)</p>
-<p>Can you say more about the use-case? Why attempt to install into a directory for which you don't have write access?</p>
+            <div class="timeline-body"><p>My initial reaction is that we&#x27;re unlikely to support this. (I&#x27;m also unsure how <code>python</code> knows to look in <code>.local/lib/python3.12/site-packages/</code> later?)</p>
+<p>Can you say more about the use-case? Why attempt to install into a directory for which you don&#x27;t have write access?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">compatibility</span> added by @charliermarsh on 2024-02-28 22:10</div>
+            <div class="event">Label <span class="label">compatibility</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-28 22:10</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/haarisr">@haarisr</a> on 2024-02-28 22:20</div>
@@ -63,7 +63,7 @@ error: Failed to install: cfgv-3.4.0-py2.py3-none-any.whl (cfgv==3.4.0)
             <div class="timeline-header">Comment by <a href="https://github.com/NMertsch">@NMertsch</a> on 2024-02-28 22:41</div>
             <div class="timeline-body"><p>This is something I encounter regularly on Linux and Windows systems managed by companies, universities, research institutes, or other organizations: Python is installed system-wide and has system-wide packages in <code>/usr/local</code>. When users use pip outside a venv, packages will be installed in <code>~/.local</code>. Python will import from both sources.</p>
 <p>How to reproduce on a fresh Ubuntu 22.04:</p>
-<pre><code class="language-shell">$ sudo apt install python3-pip python3-is-python
+<pre><code>$ sudo apt install python3-pip python3-is-python
 $ pip install numpy  # install as &quot;normal&quot; user
 $ sudo su -  # switch to root
 # pip install pandas  # install as root
@@ -71,11 +71,11 @@ $ exit  # switch to &quot;normal&quot; user
 $ python
 &gt;&gt;&gt; import numpy, pandas
 &gt;&gt;&gt; numpy.__file__
-'/home/username/.local/lib/pythonX.X/site-packages/numpy/__init__.py'
+&#x27;/home/username/.local/lib/pythonX.X/site-packages/numpy/__init__.py&#x27;
 &gt;&gt;&gt; pandas.__file__
-'/usr/local/lib/pythonX.X/dist-packages/pandas/__init__.py'
+&#x27;/usr/local/lib/pythonX.X/dist-packages/pandas/__init__.py&#x27;
 </code></pre>
-<p>To me this seems to be desirable behavior for pip outside of venv. But I would understand if you don't want to support this because you (iiuc) want to encourage venv usage and added <code>--system</code> only for CI.</p>
+<p>To me this seems to be desirable behavior for pip outside of venv. But I would understand if you don&#x27;t want to support this because you (iiuc) want to encourage venv usage and added <code>--system</code> only for CI.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -88,28 +88,28 @@ $ python
             <div class="timeline-body"><blockquote>
 <p>What does <code>sysconfig.get_paths()</code> return for the system interpreter in this case?</p>
 </blockquote>
-<pre><code>{'stdlib': '/usr/lib/python3.10', 'platstdlib': '/usr/lib/python3.10', 'purelib': '/usr/local/lib/python3.10/dist-packages', 'platlib': '/usr/local/lib/python3.10/dist-packages', 'include': '/usr/include/python3.10', 'platinclude': '/usr/include/python3.10', 'scripts': '/usr/local/bin', 'data': '/usr/local'}
+<pre><code>{&#x27;stdlib&#x27;: &#x27;/usr/lib/python3.10&#x27;, &#x27;platstdlib&#x27;: &#x27;/usr/lib/python3.10&#x27;, &#x27;purelib&#x27;: &#x27;/usr/local/lib/python3.10/dist-packages&#x27;, &#x27;platlib&#x27;: &#x27;/usr/local/lib/python3.10/dist-packages&#x27;, &#x27;include&#x27;: &#x27;/usr/include/python3.10&#x27;, &#x27;platinclude&#x27;: &#x27;/usr/include/python3.10&#x27;, &#x27;scripts&#x27;: &#x27;/usr/local/bin&#x27;, &#x27;data&#x27;: &#x27;/usr/local&#x27;}
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/danielhollas">@danielhollas</a> on 2024-02-28 22:47</div>
-            <div class="timeline-body"><p>To clarify, pip supports installing to <code>~/.local</code> via the <code>--user</code> option. As mentioned above, this option is automatically a fallback when the system python install is not writeable. My guess is that this was deemed as a preferred behaviour so that users don't try to re-run pip with sudo.</p>
+            <div class="timeline-body"><p>To clarify, pip supports installing to <code>~/.local</code> via the <code>--user</code> option. As mentioned above, this option is automatically a fallback when the system python install is not writeable. My guess is that this was deemed as a preferred behaviour so that users don&#x27;t try to re-run pip with sudo.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-28 22:48</div>
-            <div class="timeline-body"><p>Yeah, this makes sense. I see the fallback <a href="https://github.com/pypa/pip/blob/0ad4c94be74cc24874c6feb5bb3c2152c398a18e/src/pip/_internal/commands/install.py#L652">here</a>: if the directory isn't writeable, they assume <code>--user</code>.</p>
+            <div class="timeline-body"><p>Yeah, this makes sense. I see the fallback <a href="https://github.com/pypa/pip/blob/0ad4c94be74cc24874c6feb5bb3c2152c398a18e/src/pip/_internal/commands/install.py#L652">here</a>: if the directory isn&#x27;t writeable, they assume <code>--user</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-28 22:49</div>
-            <div class="timeline-body"><p>This was also requested here: https://github.com/astral-sh/uv/issues/1584. I'm more open to supporting <code>--user</code> than to doing this automatic fallback.</p>
+            <div class="timeline-body"><p>This was also requested here: <a href="https://github.com/astral-sh/uv/issues/1584">astral-sh/uv#1584</a>. I&#x27;m more open to supporting <code>--user</code> than to doing this automatic fallback.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/NMertsch">@NMertsch</a> on 2024-02-28 22:51</div>
-            <div class="timeline-body"><p>In case you don't want to implement this automatic fallback, I think a more specific error message would be helpful (e.g. pointing to <code>--user</code> or <code>uv venv</code>).</p>
+            <div class="timeline-body"><p>In case you don&#x27;t want to implement this automatic fallback, I think a more specific error message would be helpful (e.g. pointing to <code>--user</code> or <code>uv venv</code>).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -122,20 +122,20 @@ $ python
             <div class="timeline-body"><blockquote>
 <p>I would like some packages like pre-commit to be installed globally on the system so that so that I do not have to source an environment everytime I commit</p>
 </blockquote>
-<p>I've been trying to be &quot;good&quot; and use <code>pipx</code> instead for these cases, e.g. python CLI application that I want globally. Would be great if <code>uv</code> eventually supported something like this (&quot;global venvs&quot;?) so that the <code>--user</code> option is not needed.</p>
+<p>I&#x27;ve been trying to be &quot;good&quot; and use <code>pipx</code> instead for these cases, e.g. python CLI application that I want globally. Would be great if <code>uv</code> eventually supported something like this (&quot;global venvs&quot;?) so that the <code>--user</code> option is not needed.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-28 22:58</div>
-            <div class="timeline-body"><p>(Aside: we plan to add <code>pipx</code>-like global installs for tools (https://github.com/astral-sh/uv/issues/1173). We actually have all the pieces we need to do this.)</p>
+            <div class="timeline-body"><p>(Aside: we plan to add <code>pipx</code>-like global installs for tools (<a href="https://github.com/astral-sh/uv/issues/1173">astral-sh/uv#1173</a>). We actually have all the pieces we need to do this.)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-02-29 03:47</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-29 03:47</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/gaby">@gaby</a> on 2024-03-17 02:00</div>
-            <div class="timeline-body"><p>@charliermarsh Is this similar to https://github.com/pypa/pipx/issues/754 which is approved in https://github.com/pypa/pipx/pull/1281 ?</p>
+            <div class="timeline-body"><p>@charliermarsh Is this similar to <a href="https://github.com/pypa/pipx/issues/754">pypa/pipx#754</a> which is approved in <a href="https://github.com/pypa/pipx/pull/1281">pypa/pipx#1281</a> ?</p>
 <p>That PR will add support for <code>--global</code> allowing users to install applications in venv at the global label (Multi-user)</p>
 </div>
         </div>
@@ -162,7 +162,7 @@ $ python
             <div class="timeline-body"><blockquote>
 <p>Can you say more about what a global package is, and what use-case you’re trying to accomplish?</p>
 </blockquote>
-<p>Global packages allows you to install isolated applications at the system(global) level. These can be applications/cli's managed by admins for systems with multiple users.</p>
+<p>Global packages allows you to install isolated applications at the system(global) level. These can be applications/cli&#x27;s managed by admins for systems with multiple users.</p>
 <p>Example:</p>
 <ul>
 <li>cli A uses pydantic v2</li>
@@ -183,20 +183,20 @@ $ python
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2024-07-14 13:48</div>
-            <div class="timeline-body"><p>@ulasozguler  when system python's directory has not Write access, it's recommended to use isolated python environment for installing tools. You can use pipx for such case which create isolated python for each tool and also expose to globally use.</p>
+            <div class="timeline-body"><p>@ulasozguler  when system python&#x27;s directory has not Write access, it&#x27;s recommended to use isolated python environment for installing tools. You can use pipx for such case which create isolated python for each tool and also expose to globally use.</p>
 <p>Also, uv has pipx-like feature which is in preview now: <code>uv tool install pre-commit</code> which install and expose that tool Or you can run your tool directly by <code>uvx pre-commit</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/gaby">@gaby</a> on 2024-07-14 13:50</div>
-            <div class="timeline-body"><p>@T-256 pipx added support for global venv back in May with v1.5.0 The main purpose is for tools/cli's that are used by multiple users in the same system. For example <code>ruff</code>.</p>
+            <div class="timeline-body"><p>@T-256 pipx added support for global venv back in May with v1.5.0 The main purpose is for tools/cli&#x27;s that are used by multiple users in the same system. For example <code>ruff</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2024-07-14 14:12</div>
             <div class="timeline-body"><p>(Wrong person mentioned in previous comment, edited)</p>
 <blockquote>
-<p>The main purpose is for tools/cli's that are used by multiple users in the same system.</p>
+<p>The main purpose is for tools/cli&#x27;s that are used by multiple users in the same system.</p>
 </blockquote>
 <p>@gaby Correct, that is purpose of this issue 👍</p>
 </div>
@@ -204,16 +204,16 @@ $ python
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ulasozguler">@ulasozguler</a> on 2024-07-14 14:32</div>
             <div class="timeline-body"><blockquote>
-<p>@ulasozguler when system python's directory has not Write access, it's recommended to use isolated python environment for installing tools. You can use pipx for such case which create isolated python for each tool and also expose to globally use.</p>
+<p>@ulasozguler when system python&#x27;s directory has not Write access, it&#x27;s recommended to use isolated python environment for installing tools. You can use pipx for such case which create isolated python for each tool and also expose to globally use.</p>
 <p>Also, uv has pipx-like feature which is in preview now: <code>uv tool install pre-commit</code> which install and expose that tool Or you can run your tool directly by <code>uvx pre-commit</code>.</p>
 </blockquote>
-<p>I'm not actually trying to install a shared tool, it's just a package that would normally (with <code>pip</code>) fallback to installing to user.</p>
-<p>My environment is in a Docker container, where I don't really need another python environment. I didn't want to add a venv to avoid increasing complexity, and I didn't want to run <code>uv pip install</code> with root privileges for security concerns. So it looks like I'm out of options.</p>
+<p>I&#x27;m not actually trying to install a shared tool, it&#x27;s just a package that would normally (with <code>pip</code>) fallback to installing to user.</p>
+<p>My environment is in a Docker container, where I don&#x27;t really need another python environment. I didn&#x27;t want to add a venv to avoid increasing complexity, and I didn&#x27;t want to run <code>uv pip install</code> with root privileges for security concerns. So it looks like I&#x27;m out of options.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-14 14:51</div>
-            <div class="timeline-body"><p>I don't currently plan to support <code>--user</code> as I'm not yet convinced that it outweighs its complexity budget. In other words, it adds a lot of complexity (both to uv and to the user experience) but doesn't strike me as sufficiently useful to merit it -- the situations in which folks want it seem rare and I feel like the alternative solutions are totally fine (I don't think adding a venv is a big problem, nor is running with root privileges in a container). But I may change my mind on this in the future based on demand.</p>
+            <div class="timeline-body"><p>I don&#x27;t currently plan to support <code>--user</code> as I&#x27;m not yet convinced that it outweighs its complexity budget. In other words, it adds a lot of complexity (both to uv and to the user experience) but doesn&#x27;t strike me as sufficiently useful to merit it -- the situations in which folks want it seem rare and I feel like the alternative solutions are totally fine (I don&#x27;t think adding a venv is a big problem, nor is running with root privileges in a container). But I may change my mind on this in the future based on demand.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -229,14 +229,14 @@ $ python
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-14 16:16</div>
-            <div class="timeline-body"><p>Please see the extensive discussion at https://github.com/astral-sh/uv/issues/2077 regarding the <code>--user</code> flag and workarounds.</p>
+            <div class="timeline-body"><p>Please see the extensive discussion at <a href="https://github.com/astral-sh/uv/issues/2077">astral-sh/uv#2077</a> regarding the <code>--user</code> flag and workarounds.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ulasozguler">@ulasozguler</a> on 2024-07-14 16:20</div>
-            <div class="timeline-body"><p>I think it's totally fair not to include it. The only reason I mentioned it is that it sounded like you were planning to add it in a previous comment.</p>
+            <div class="timeline-body"><p>I think it&#x27;s totally fair not to include it. The only reason I mentioned it is that it sounded like you were planning to add it in a previous comment.</p>
 <p><code>--prefix</code> solution works fine too, at least with the official Docker images. Just needed to change <code>PATH</code>.</p>
-<pre><code class="language-Dockerfile">FROM ghcr.io/astral-sh/uv:0.2.24 as uv
+<pre><code>FROM ghcr.io/astral-sh/uv:0.2.24 as uv
 FROM python:3.11.6
 COPY --from=uv /uv /bin/uv
 
@@ -262,7 +262,7 @@ RUN uv pip install -r $REQFILE --prefix &quot;/home/$USERNAME/.local/&quot;
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:24:05 UTC
+        Synced at 2026-01-20 19:30:05 UTC
     </footer>
 </body>
 </html>

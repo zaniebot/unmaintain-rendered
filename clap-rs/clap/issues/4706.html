@@ -23,60 +23,60 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/weihanglo">@weihanglo</a></div>
-            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+            <div class="timeline-body">Please complete the following tasks
 <ul>
 <li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
 <li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
 </ul>
-<h3>Clap Version</h3>
+Clap Version
 <p>4.1.4</p>
-<h3>Describe your use case</h3>
+Describe your use case
 <p>Clap has a good fix suggestion mechanism when a user types something wrong. It seems to be based on <a href="https://github.com/clap-rs/clap/blob/ad5d67623a89415c7f5f7e1f7a47bf5abdfd0b6c/src/parser/features/suggestions.rs#L20">Jaro distance</a>.</p>
 <p>A developer sometimes wants to provide an additional context on a specific situation to users. In order to do so, clap needs to support things like <strong>“when a user passes a non-existent flag/command/value/whatever, suggest a flag with this custom message instead.”</strong></p>
-<h3>Describe the solution you'd like</h3>
+Describe the solution you&#x27;d like
 <p>There are lots of different ways and layers to support this feature.</p>
-<p>I'll try to dump only one silly idea here: Clap seems to have <a href="https://docs.rs/clap/4.1.4/clap/?search=suggested">several kinds of suggested fix</a>. I don't have any knowledge of clap internals, but feel like at least <code>Arg</code> and <code>Command</code> can have a method, say <code>suggests</code>, accepting a flag name and an alternate message, such as</p>
-<pre><code class="language-diff"> Arg::new(&quot;directory&quot;)
+<p>I&#x27;ll try to dump only one silly idea here: Clap seems to have <a href="https://docs.rs/clap/4.1.4/clap/?search=suggested">several kinds of suggested fix</a>. I don&#x27;t have any knowledge of clap internals, but feel like at least <code>Arg</code> and <code>Command</code> can have a method, say <code>suggests</code>, accepting a flag name and an alternate message, such as</p>
+<pre><code> Arg::new(&quot;directory&quot;)
      .help(&quot;Change to DIRECTORY before doing anything&quot;)
-     .short('C')
+     .short(&#x27;C&#x27;)
      .value_name(&quot;DIRECTORY&quot;)
 +   .suggests(&quot;--cwd&quot;, &quot;long flag --cwd is not yet supported. Please use `-C` instead&quot;)
 </code></pre>
-<p>Not a good idea but you've got the gist.</p>
-<h3>Alternatives, if applicable</h3>
+<p>Not a good idea but you&#x27;ve got the gist.</p>
+Alternatives, if applicable
 <p>Do it manually on application-side. Like</p>
 <ul>
 <li>https://github.com/rust-lang/cargo/blob/39c13e67a5962466cc7253d41bc1099bbcb224c3/src/bin/cargo/commands/tree.rs#L230-L235</li>
 <li>https://github.com/rust-lang/cargo/blob/39c13e67a5962466cc7253d41bc1099bbcb224c3/src/bin/cargo/commands/read_manifest.rs#L4-L13</li>
 </ul>
 <p>They are not really in the same situation of this feature requests, as Cargo keeps a stable flag way longer than usual. However, if Cargo decide to remove those subcommand/flags, it may utilize this feature to provide good suggestions.</p>
-<h3>Additional Context</h3>
-<p>This idea was originally from <a href="https://github.com/rust-lang/cargo/issues/11702">https://github.com/rust-lang/cargo/issues/11702</a></p>
+Additional Context
+<p>This idea was originally from <a href="https://github.com/rust-lang/cargo/issues/11702">rust-lang/cargo#11702</a></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">C-enhancement</span> added by @weihanglo on 2023-02-13 15:03</div>
+            <div class="event">Label <span class="label">C-enhancement</span> added by <a href="https://github.com/weihanglo">@weihanglo</a> on 2023-02-13 15:03</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-02-13 15:23</div>
             <div class="timeline-body"><p>In rust-lang/cargo#11702, my original idea was for this to allow the user to provide custom suggestions, similar to the automatic ones.</p>
 <p>This would look like</p>
-<pre><code class="language-diff"> Arg::new(&quot;directory&quot;)
+<pre><code> Arg::new(&quot;directory&quot;)
      .help(&quot;Change to DIRECTORY before doing anything&quot;)
-     .short('C')
+     .short(&#x27;C&#x27;)
      .value_name(&quot;DIRECTORY&quot;)
 -   .suggests(&quot;--cwd&quot;, &quot;long flag --cwd is not yet supported. Please use `-C` instead&quot;)
 +   .suggest([&quot;--cwd&quot;, &quot;--directory&quot;, &quot;--cd&quot;])
 </code></pre>
 <p>with the error message:</p>
-<pre><code class="language-console">$ cargo --cwd ../foo
-error: unexpected argument '--cwd' found
+<pre><code>$ cargo --cwd ../foo
+error: unexpected argument &#x27;--cwd&#x27; found
 
-  note: argument '-C' exists
+  note: argument &#x27;-C&#x27; exists
 
 Usage: cargo [COMMAND]
 
-For more information, try '--help'.
+For more information, try &#x27;--help&#x27;.
 </code></pre>
 </div>
         </div>
@@ -87,7 +87,7 @@ For more information, try '--help'.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-02-13 15:25</div>
-            <div class="timeline-body"><p>Implementation note: we'll need to be careful that we can discover these for suggestions without</p>
+            <div class="timeline-body"><p>Implementation note: we&#x27;ll need to be careful that we can discover these for suggestions without</p>
 <ul>
 <li>Being used for inferring</li>
 <li>Being provided as dynamic suggestions so long as valid arguments are suggested</li>
@@ -96,39 +96,39 @@ For more information, try '--help'.
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">A-help</span> added by @epage on 2023-02-23 21:24</div>
+            <div class="event">Label <span class="label">A-help</span> added by <a href="https://github.com/epage">@epage</a> on 2023-02-23 21:24</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">S-waiting-on-design</span> added by @epage on 2023-02-23 21:24</div>
+            <div class="event">Label <span class="label">S-waiting-on-design</span> added by <a href="https://github.com/epage">@epage</a> on 2023-02-23 21:24</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../rust-lang/cargo/issues/12009.html">rust-lang/cargo#12009</a> on 2023-04-20 17:17</div>
+            <div class="event">Referenced in <a>rust-lang/cargo#12009</a> on 2023-04-20 17:17</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../rust-lang/cargo/issues/10362.html">rust-lang/cargo#10362</a> on 2023-05-24 17:47</div>
+            <div class="event">Referenced in <a>rust-lang/cargo#10362</a> on 2023-05-24 17:47</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../rust-lang/cargo/issues/12467.html">rust-lang/cargo#12467</a> on 2023-08-09 12:55</div>
+            <div class="event">Referenced in <a>rust-lang/cargo#12467</a> on 2023-08-09 12:55</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../rust-lang/cargo/pulls/12478.html">rust-lang/cargo#12478</a> on 2023-08-11 13:33</div>
+            <div class="event">Referenced in <a>rust-lang/cargo#12478</a> on 2023-08-11 13:33</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-08-11 14:04</div>
             <div class="timeline-body"><p>What if we instead supported this as</p>
-<pre><code class="language-rust"> Arg::new(&quot;directory&quot;)
+<pre><code> Arg::new(&quot;directory&quot;)
      .help(&quot;Change to DIRECTORY before doing anything&quot;)
-     .short('C')
+     .short(&#x27;C&#x27;)
      .value_name(&quot;DIRECTORY&quot;),
  Arg::new(&quot;cwd&quot;)
-     .long('cwd')
+     .long(&#x27;cwd&#x27;)
      .value_name(&quot;DIRECTORY&quot;)
      .hide(true)
      .action(ArgAction::Unsupported(&quot;long flag --cwd is not yet supported. Please use `-C` instead&quot;.into()))
 </code></pre>
 <ul>
 <li>debug_asserts will ensure <code>ArgAction::Unsupported</code> is used with `hide(true)</li>
-<li>If completions show hidden arguments, then they'll need to hide these</li>
+<li>If completions show hidden arguments, then they&#x27;ll need to hide these</li>
 </ul>
 </div>
         </div>
@@ -139,7 +139,7 @@ For more information, try '--help'.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-08-11 15:00</div>
-            <div class="timeline-body"><p>I'm leaning towards showing an unexpected argument error with the message inside of the tip</p>
+            <div class="timeline-body"><p>I&#x27;m leaning towards showing an unexpected argument error with the message inside of the tip</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -149,15 +149,15 @@ For more information, try '--help'.
 <li>Suggesting a new subcommand for a deprecated subcommand.</li>
 <li>Instead of erroring out, some flags just need a deprecation warning and continue working.</li>
 </ul>
-<p>I guess for the first one, cargo needs to match the Result by itself. For the latter, <code>ArgAction</code> doesn't apply to the situation.</p>
-<p>Also, should we talk about custom validation error message as a whole? I don't really understand clap internals so they might be different stuff.</p>
+<p>I guess for the first one, cargo needs to match the Result by itself. For the latter, <code>ArgAction</code> doesn&#x27;t apply to the situation.</p>
+<p>Also, should we talk about custom validation error message as a whole? I don&#x27;t really understand clap internals so they might be different stuff.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-08-11 15:26</div>
             <div class="timeline-body"><p>Native deprecation support is being tracked in #3321</p>
 <blockquote>
-<p>Also, should we talk about custom validation error message as a whole? I don't really understand clap internals so they might be different stuff.</p>
+<p>Also, should we talk about custom validation error message as a whole? I don&#x27;t really understand clap internals so they might be different stuff.</p>
 </blockquote>
 <p><a href="https://docs.rs/clap/latest/clap/struct.Arg.html#method.value_parser"><code>Arg::value_parser</code></a> allows validating an argument and converting it into a application-domain type</p>
 <p>Is that what you are looking for?</p>
@@ -170,10 +170,10 @@ Yep. <code>value_parser</code> might work. Will look into how to integrate.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../rust-lang/cargo/issues/12494.html">rust-lang/cargo#12494</a> on 2023-08-15 14:24</div>
+            <div class="event">Referenced in <a>rust-lang/cargo#12494</a> on 2023-08-15 14:24</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../pulls/5075.html">clap-rs/clap#5075</a> on 2023-08-16 19:55</div>
+            <div class="event">Referenced in <a>clap-rs/clap#5075</a> on 2023-08-16 19:55</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2023-08-16 19:56</div>
@@ -181,12 +181,12 @@ Yep. <code>value_parser</code> might work. Will look into how to integrate.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @epage on 2023-08-17 13:58</div>
+            <div class="event">Closed by <a href="https://github.com/epage">@epage</a> on 2023-08-17 13:58</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:49:01 UTC
+        Synced at 2026-01-20 19:59:39 UTC
     </footer>
 </body>
 </html>

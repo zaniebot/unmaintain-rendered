@@ -25,7 +25,7 @@
             <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a></div>
             <div class="timeline-body"><p>Consider the following example:</p>
 <p><code>overloaded.pyi</code>:</p>
-<pre><code class="language-pyi">from typing import overload
+<pre><code>from typing import overload
 from typing_extensions import LiteralString
 
 @overload
@@ -33,7 +33,7 @@ def f(x: LiteralString) -&gt; LiteralString: ...
 @overload
 def f(x: str) -&gt; str: ...
 </code></pre>
-<pre><code class="language-py">from typing import Any
+<pre><code>from typing import Any
 from typing_extensions import LiteralString
 
 from overloaded import f
@@ -46,7 +46,7 @@ def _(literal: LiteralString, string: str, any: Any):
     # Pyright and mypy both reveal `str` here, contrary to the spec.
     reveal_type(f(any))  # revealed: Any
 </code></pre>
-<p>For the last call, ty reveals <code>Any</code> while Pyright and mypy reveals <code>str</code>. The reason ty reveals <code>Any</code> is because the overload matching is ambiguous according to the spec. Here's how the algorithm detects that:</p>
+<p>For the last call, ty reveals <code>Any</code> while Pyright and mypy reveals <code>str</code>. The reason ty reveals <code>Any</code> is because the overload matching is ambiguous according to the spec. Here&#x27;s how the algorithm detects that:</p>
 <ol>
 <li>Arity does not eliminate any overloads</li>
 <li>Type checking does not eliminate any overloads</li>
@@ -55,22 +55,22 @@ def _(literal: LiteralString, string: str, any: Any):
 <li>All materialization of <code>Any</code> are not assignable to either of the overloads since it could materialize into anything other than <code>LiteralString</code> or <code>str</code>. The return types of the remaining overloads are not equivalent so the overload matching is ambiguous.</li>
 </ol>
 <p>More formally, at the end of step 5, before concluding that the overload matching is ambiguous, ty should check whether the return types are overlapping and return the widest type of them instead of <code>Any</code>.</p>
-<p>I'm not exactly sure if this is what Pyright / mypy does so it might be useful to hear from someone who knows about this.</p>
+<p>I&#x27;m not exactly sure if this is what Pyright / mypy does so it might be useful to hear from someone who knows about this.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-design</span> added by @dhruvmanila on 2025-06-17 04:55</div>
+            <div class="event">Label <span class="label">needs-design</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-17 04:55</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">overloads</span> added by @dhruvmanila on 2025-06-17 04:55</div>
+            <div class="event">Label <span class="label">overloads</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-17 04:55</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">typing semantics</span> added by @dhruvmanila on 2025-06-17 05:18</div>
+            <div class="event">Label <span class="label">typing semantics</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-06-17 05:18</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/erictraut">@erictraut</a> on 2025-06-17 15:09</div>
             <div class="timeline-body"><blockquote>
-<p>I'm not exactly sure if this is what Pyright / mypy does so it might be useful to hear from someone who knows about this.</p>
+<p>I&#x27;m not exactly sure if this is what Pyright / mypy does so it might be useful to hear from someone who knows about this.</p>
 </blockquote>
 <p>See <a href="https://github.com/astral-sh/ty/issues/552#issuecomment-2959627420">this comment</a> for more details.</p>
 </div>
@@ -82,12 +82,12 @@ def _(literal: LiteralString, string: str, any: Any):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jelle-openai">@jelle-openai</a> on 2025-06-17 16:29</div>
-            <div class="timeline-body"><p>Returning Any feels unfortunate though in cases like <a href="https://github.com/astral-sh/ty/issues/552#issuecomment-2959444394">Carl's example</a>, where <code>'%s %s' % (Any, Any)</code> gets inferred as Any. Users would surely expect type checkers to understand this is a str.</p>
+            <div class="timeline-body"><p>Returning Any feels unfortunate though in cases like <a href="https://github.com/astral-sh/ty/issues/552#issuecomment-2959444394">Carl&#x27;s example</a>, where <code>&#x27;%s %s&#x27; % (Any, Any)</code> gets inferred as Any. Users would surely expect type checkers to understand this is a str.</p>
 <p>I think if we had intersection support, we could do better here while preserving the gradual guarantee. In this example, we could infer <code>str &amp; Any</code>, which means <code>str</code> or some unknown subtype of <code>str</code>, and is therefore assignable to <code>LiteralString</code>. More generally when there are multiple possible return types that are not subtypes of each other, we could infer <code>AnyOf[T1, T2]</code>, which I <a href="https://github.com/python/typing/issues/566#issuecomment-2972730463">showed</a> can be implemented using intersections. However, this would require a change to the spec.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Consider checking for subtyping for ambiguous overload matching" to "Return intersection instead of Any for ambiguous overload match" by @carljm on 2025-11-14 15:07</div>
+            <div class="event">Renamed from &quot;Consider checking for subtyping for ambiguous overload matching&quot; to &quot;Return intersection instead of Any for ambiguous overload match&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-11-14 15:07</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-14 15:08</div>
@@ -96,15 +96,15 @@ def _(literal: LiteralString, string: str, any: Any):
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Z post-stable" by @carljm on 2025-11-14 15:08</div>
+            <div class="event">Added to milestone &quot;Z post-stable&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-11-14 15:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Removed from milestone "Z post-stable" by @carljm on 2025-11-18 16:10</div>
+            <div class="event">Removed from milestone &quot;Z post-stable&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-11-18 16:10</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:10 UTC
+        Synced at 2026-01-20 19:24:52 UTC
     </footer>
 </body>
 </html>

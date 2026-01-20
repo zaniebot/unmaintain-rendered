@@ -23,15 +23,15 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>The problem: given a (row, column) number (e.g., for a token in the AST), we need to be able to map it to a precise byte index in the source code. A while ago, we moved to <code>ropey</code> for this, since it was faster in practice (mostly, I think, because it's able to defer indexing). However, at some threshold of accesses, it becomes faster to index the string in advance, as we're doing here.</p>
-<p>(We can get a further speedup by doing an <code>is_ascii</code> check upfront. The vast majority of Python source code is ASCII, and it's much faster to index if we don't have to read every character's byte length, etc.)</p>
-<h2>Benchmark</h2>
+            <div class="timeline-body">Summary
+<p>The problem: given a (row, column) number (e.g., for a token in the AST), we need to be able to map it to a precise byte index in the source code. A while ago, we moved to <code>ropey</code> for this, since it was faster in practice (mostly, I think, because it&#x27;s able to defer indexing). However, at some threshold of accesses, it becomes faster to index the string in advance, as we&#x27;re doing here.</p>
+<p>(We can get a further speedup by doing an <code>is_ascii</code> check upfront. The vast majority of Python source code is ASCII, and it&#x27;s much faster to index if we don&#x27;t have to read every character&#x27;s byte length, etc.)</p>
+Benchmark
 <p>This newer version is a ~10.5% speedup in the ALL case, and a ~1% slowdown in the default case.</p>
 <p>Before:</p>
-<p><img src="https://user-images.githubusercontent.com/1309177/213883581-8f73c61d-2979-4171-88a6-a88d7ff07e40.png" alt="main" /></p>
+<p><img src="https://user-images.githubusercontent.com/1309177/213883581-8f73c61d-2979-4171-88a6-a88d7ff07e40.png" alt="main"></p>
 <p>After:</p>
-<p><img src="https://user-images.githubusercontent.com/1309177/213889593-551c1812-577e-488d-a006-ba6bfa2227e8.png" alt="Screen Shot 2023-01-21 at 5 33 27 PM" /></p>
+<p><img src="https://user-images.githubusercontent.com/1309177/213889593-551c1812-577e-488d-a006-ba6bfa2227e8.png" alt="Screen Shot 2023-01-21 at 5 33 27 PM"></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -41,12 +41,12 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/messense">@messense</a> on <code>src/source_code/locator.rs</code>:51 on 2023-01-19 10:49</div>
             <div class="timeline-body"><p>Use <code>char_indices()</code> might be cleaner?</p>
-<pre><code class="language-suggestion">pub fn compute_offsets(contents: &amp;str) -&gt; Vec&lt;Vec&lt;usize&gt;&gt; {
+<pre><code>pub fn compute_offsets(contents: &amp;str) -&gt; Vec&lt;Vec&lt;usize&gt;&gt; {
     let mut offsets = Vec::new();
     let mut current_row = Vec::new();
     for (index, char) in contents.char_indices() {
         current_row.push(index);
-        if char == '\n' {
+        if char == &#x27;\n&#x27; {
             offsets.push(current_row);
             current_row = Vec::new();
         }
@@ -58,15 +58,15 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Revert use of Rope for raw source code extraction" to "Index source cope upfront to power (row, column) lookups" by @charliermarsh on 2023-01-21 19:26</div>
+            <div class="event">Renamed from &quot;Revert use of Rope for raw source code extraction&quot; to &quot;Index source cope upfront to power (row, column) lookups&quot; by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-21 19:26</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Index source cope upfront to power (row, column) lookups" to "Index source code upfront to power (row, column) lookups" by @charliermarsh on 2023-01-21 19:26</div>
+            <div class="event">Renamed from &quot;Index source cope upfront to power (row, column) lookups&quot; to &quot;Index source code upfront to power (row, column) lookups&quot; by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-21 19:26</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/Stranger6667">@Stranger6667</a> on <code>src/source_code/locator.rs</code>:13 on 2023-01-21 21:48</div>
             <div class="timeline-body"><p>As an idea - could it be <code>Vec&lt;Range&lt;usize&gt;&gt;</code>? I assume that it will be faster to build (as there are fewer vectors involved). Then <code>trunc</code> will need a slight change:</p>
-<pre><code class="language-rust">fn truncate(location: Location, offsets: &amp;[Range&lt;usize&gt;], contents: &amp;str) -&gt; usize {
+<pre><code>fn truncate(location: Location, offsets: &amp;[Range&lt;usize&gt;], contents: &amp;str) -&gt; usize {
     if (location.row() - 1 == offsets.len() &amp;&amp; location.column() == 0)
         || (location.row() - 1 == offsets.len() - 1
             &amp;&amp; location.column() == offsets[location.row() - 1].len())
@@ -104,13 +104,13 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/source_code/locator.rs</code>:13 on 2023-01-21 21:56</div>
-            <div class="timeline-body"><p>What I'm considering is to use that exact strategy for ascii source code:</p>
-<pre><code class="language-rs">pub fn compute_offsets(contents: &amp;str) -&gt; Offset {
+            <div class="timeline-body"><p>What I&#x27;m considering is to use that exact strategy for ascii source code:</p>
+<pre><code>pub fn compute_offsets(contents: &amp;str) -&gt; Offset {
     if contents.is_ascii() {
         let mut offsets = Vec::with_capacity(48);
         let mut total = 0;
         offsets.push(total);
-        while let Some(index) = contents[total..].find('\n') {
+        while let Some(index) = contents[total..].find(&#x27;\n&#x27;) {
             offsets.push(total + index + 1);
             total += index + 1;
         }
@@ -119,11 +119,11 @@
         let mut offsets = Vec::with_capacity(48);
         let mut current_row = Vec::with_capacity(48);
         let mut current_byte_offset = 0;
-        let mut previous_char = '\0';
+        let mut previous_char = &#x27;\0&#x27;;
         for char in contents.chars() {
             current_row.push(current_byte_offset);
-            if char == '\n' {
-                if previous_char == '\r' {
+            if char == &#x27;\n&#x27; {
+                if previous_char == &#x27;\r&#x27; {
                     current_row.pop();
                 }
                 offsets.push(current_row);
@@ -158,7 +158,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/Stranger6667">@Stranger6667</a> on <code>src/source_code/locator.rs</code>:13 on 2023-01-21 22:03</div>
-            <div class="timeline-body"><p>Oh, you're right, it won't properly work for multibyte characters :(</p>
+            <div class="timeline-body"><p>Oh, you&#x27;re right, it won&#x27;t properly work for multibyte characters :(</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -167,7 +167,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/source_code/locator.rs</code>:13 on 2023-01-21 22:09</div>
-            <div class="timeline-body"><p>The vast majority of Python source code is single-byte though, so it'd be nice to exploit that :)</p>
+            <div class="timeline-body"><p>The vast majority of Python source code is single-byte though, so it&#x27;d be nice to exploit that :)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -182,15 +182,15 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-21 22:34</div>
             <div class="timeline-body"><p>Alright, newer version is a ~10.5% speedup in the <code>ALL</code> case, and a ~1% slowdown in the default case.</p>
-<p><img src="https://user-images.githubusercontent.com/1309177/213889593-551c1812-577e-488d-a006-ba6bfa2227e8.png" alt="Screen Shot 2023-01-21 at 5 33 27 PM" /></p>
+<p><img src="https://user-images.githubusercontent.com/1309177/213889593-551c1812-577e-488d-a006-ba6bfa2227e8.png" alt="Screen Shot 2023-01-21 at 5 33 27 PM"></p>
 <p>(Editing PR summary to include this outcome...)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2023-01-21 22:56</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-21 22:56</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-01-21 22:56</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-21 22:56</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2023-01-21 22:56</div>
@@ -198,7 +198,7 @@
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:55:37 UTC
+        Synced at 2026-01-20 18:51:52 UTC
     </footer>
 </body>
 </html>

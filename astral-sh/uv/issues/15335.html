@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charlesnicholson">@charlesnicholson</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>We have an extremely parallelized build that invokes <code>uv</code> from a bunch of different hardware threads, and we carefully manage the dependencies between them such that all required commands for a target are completed before that target builds.</p>
-<p>We upgraded to uv 0.8.5, and more recently 0.8.11, and have started seeing what looks like a race condition, but only on Linux. Reducing our build system's allowed concurrent executions of <code>uv</code> from 128 to 1 on Linux fixed it. It never manifests on macOS or Windows, which makes me suspect something like uv not flushing all pending file io before exiting? We've never seen this failure over dozens of runs across macOS + Windows + Linux per day for well over a year now, until we upgraded to the 0.8 line.</p>
-<p>Anyway, I don't have the time to put together a small MRE right now, but might be able to in the future.</p>
+<p>We upgraded to uv 0.8.5, and more recently 0.8.11, and have started seeing what looks like a race condition, but only on Linux. Reducing our build system&#x27;s allowed concurrent executions of <code>uv</code> from 128 to 1 on Linux fixed it. It never manifests on macOS or Windows, which makes me suspect something like uv not flushing all pending file io before exiting? We&#x27;ve never seen this failure over dozens of runs across macOS + Windows + Linux per day for well over a year now, until we upgraded to the 0.8 line.</p>
+<p>Anyway, I don&#x27;t have the time to put together a small MRE right now, but might be able to in the future.</p>
 <p>The job graph looks roughly like:</p>
 <p><code>uv venv path/to/venv</code>
 <code>uv pip install -p path/to/venv -r path/to/requirements.txt</code></p>
@@ -38,15 +38,15 @@ error: Request failed after 1 retries
   Caused by: Failed to fetch: `[https://pypi.org/simple/my-core-package/`](https://pypi.org/simple/my-core-package/%60)
   Caused by: HTTP status client error (404 Not Found) for url (https://pypi.org/simple/my-core-package/)
 </code></pre>
-<p>The error is that uv couldn't download <code>my.core-package</code> from pypi, but what's actually happening is that uv doesn't think that <code>my.core-package</code> exists in the venv! <code>my.leaf-package</code>'s pyproject.toml lists <code>my.core-package</code> as a dependency, and our build system ensures that <code>my.core-package</code> has been editable-installed into the venv and that the uv process has exited before it runs the editable-install command for <code>my.leaf-package</code>.</p>
+<p>The error is that uv couldn&#x27;t download <code>my.core-package</code> from pypi, but what&#x27;s actually happening is that uv doesn&#x27;t think that <code>my.core-package</code> exists in the venv! <code>my.leaf-package</code>&#x27;s pyproject.toml lists <code>my.core-package</code> as a dependency, and our build system ensures that <code>my.core-package</code> has been editable-installed into the venv and that the uv process has exited before it runs the editable-install command for <code>my.leaf-package</code>.</p>
 <p>I also think that in this example, the failure happened long before the attempt to install <code>my.leaf-package</code>; the build logs show that 2 uv editable installations occurred at almost the exact same time:</p>
 <pre><code>[4/419] UV //build/venv:venv__venv(//gntools/toolchains:gcc)
 [5/419] UV //build/venv:venv__requirements(//gntools/toolchains:gcc)
 [9/419] UV //my.core-package:my.core-package__editable_install(//gntools/toolchains:gcc)
 [12/419] UV //my.other-package:my.other-package__editable_install(//gntools/toolchains:gcc)
 </code></pre>
-<p>I suspect that the simultaneous installations at 9 and 12 here are leaving uv in a state where it doesn't &quot;see&quot; that <code>my.core-package</code> has been installed to the venv. The <code>my.leaf-package</code> step doesn't run for a good ~30 seconds after &quot;core&quot; and &quot;other&quot;, so the venv / cache are likely left in a bad state in this case.</p>
-<p>The GitHub Actions runner we're using is <code>ubuntu-latest</code>, which at time of writing is:</p>
+<p>I suspect that the simultaneous installations at 9 and 12 here are leaving uv in a state where it doesn&#x27;t &quot;see&quot; that <code>my.core-package</code> has been installed to the venv. The <code>my.leaf-package</code> step doesn&#x27;t run for a good ~30 seconds after &quot;core&quot; and &quot;other&quot;, so the venv / cache are likely left in a bad state in this case.</p>
+<p>The GitHub Actions runner we&#x27;re using is <code>ubuntu-latest</code>, which at time of writing is:</p>
 <pre><code>Operating System
   Ubuntu
   24.04.2
@@ -57,21 +57,21 @@ Runner Image
   Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20250810.1/images/ubuntu/Ubuntu2404-Readme.md
   Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20250810.1
 </code></pre>
-<h3>Platform</h3>
+Platform
 <p>Ubuntu 24.04.2 LTS</p>
-<h3>Version</h3>
+Version
 <p>uv 0.8.5, uv 0.8.11</p>
-<h3>Python version</h3>
+Python version
 <p>python 3.13</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @charlesnicholson on 2025-08-18 00:52</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/charlesnicholson">@charlesnicholson</a> on 2025-08-18 00:52</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:32:37 UTC
+        Synced at 2026-01-20 19:40:02 UTC
     </footer>
 </body>
 </html>

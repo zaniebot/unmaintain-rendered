@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a></div>
-            <div class="timeline-body"><h2>Introduction</h2>
+            <div class="timeline-body">Introduction
 <p>PEP 621 is limited. Specifically, it lacks</p>
 <ul>
 <li>Relative path support</li>
@@ -32,16 +32,16 @@
 <li>Index pinning or any sort of index specification</li>
 </ul>
 <p>The semantics of urls are a custom extension, PEP 440 does not specify how to use git references or subdirectories, instead pip has a custom stringly format. We need to somehow support these while still stying compatible with PEP 621.</p>
-<h2><code>tool.uv.source</code></h2>
+<code>tool.uv.source</code>
 <p>Drawing inspiration from cargo, poetry and rye, we add <code>tool.uv.sources</code> or (for now stub only) <code>tool.uv.workspace</code>:</p>
-<pre><code class="language-toml">[project]
+<pre><code>[project]
 name = &quot;albatross&quot;
 version = &quot;0.1.0&quot;
 dependencies = [
   &quot;tqdm &gt;=4.66.2,&lt;5&quot;,
   &quot;torch ==2.2.2&quot;,
   &quot;transformers[torch] &gt;=4.39.3,&lt;5&quot;,
-  &quot;importlib_metadata &gt;=7.1.0,&lt;8; python_version &lt; '3.10'&quot;,
+  &quot;importlib_metadata &gt;=7.1.0,&lt;8; python_version &lt; &#x27;3.10&#x27;&quot;,
   &quot;mollymawk ==0.1.0&quot;
 ]
 
@@ -60,8 +60,8 @@ include = [
 torch-cu118 = &quot;https://download.pytorch.org/whl/cu118&quot;
 </code></pre>
 <p>See <code>docs/specifying_dependencies.md</code> for a detailed explanation of the format. The basic gist is that <code>project.dependencies</code> is what ends up on pypi, while <code>tool.uv.sources</code> are your non-published additions. We do support the full range or PEP 508, we just hide it in the docs and prefer the exploded table for easier readability and less confusing with actual url parts.</p>
-<p>This format should eventually be able to subsume requirements.txt's current use cases. While we will continue to support the legacy <code>uv pip</code> interface, this is a piece of the uv's own top level interface. Together with <code>uv run</code> and a lockfile format, you should only need to write <code>pyproject.toml</code> and do <code>uv run</code>, which generates/uses/updates your lockfile behind the scenes, no more pip-style requirements involved. It also lays the groundwork for implementing index pinning.</p>
-<h2>Changes</h2>
+<p>This format should eventually be able to subsume requirements.txt&#x27;s current use cases. While we will continue to support the legacy <code>uv pip</code> interface, this is a piece of the uv&#x27;s own top level interface. Together with <code>uv run</code> and a lockfile format, you should only need to write <code>pyproject.toml</code> and do <code>uv run</code>, which generates/uses/updates your lockfile behind the scenes, no more pip-style requirements involved. It also lays the groundwork for implementing index pinning.</p>
+Changes
 <p>This PR implements:</p>
 <ul>
 <li>Reading and lowering <code>project.dependencies</code>, <code>project.optional-dependencies</code> and <code>tool.uv.sources</code> into a new requirements format, including:<ul>
@@ -85,45 +85,45 @@ torch-cu118 = &quot;https://download.pytorch.org/whl/cu118&quot;
 <li>Patching/replacing dependencies</li>
 </ul>
 <p>One technically breaking change is that we now require user provided pyproject.toml to be valid wrt to PEP 621. Included files still fall back to PEP 517. That means <code>pip install -r requirements.txt</code> requires it to be valid while <code>pip install -r requirements.txt</code> with <code>-e .</code> as content falls back to PEP 517 as before.</p>
-<h2>Implementation</h2>
-<p>The <code>pep508</code> requirement is replaced by a new <code>UvRequirement</code> (name up for bikeshedding, not particularly attached to the uv prefix). The still existing <code>pep508_rs::Requirement</code> type is a url format copied from pip's requirements.txt and doesn't appropriately capture all features we want/need to support. The bulk of the diff is changing the requirement type throughout the codebase.</p>
+Implementation
+<p>The <code>pep508</code> requirement is replaced by a new <code>UvRequirement</code> (name up for bikeshedding, not particularly attached to the uv prefix). The still existing <code>pep508_rs::Requirement</code> type is a url format copied from pip&#x27;s requirements.txt and doesn&#x27;t appropriately capture all features we want/need to support. The bulk of the diff is changing the requirement type throughout the codebase.</p>
 <p>We still use <code>VerbatimUrl</code> in many places, where we would expect a parsed/decomposed url type, specifically:</p>
 <ul>
-<li>Reading core metadata except top level pyproject.toml files, we fail a step later instead if the url isn't supported.</li>
+<li>Reading core metadata except top level pyproject.toml files, we fail a step later instead if the url isn&#x27;t supported.</li>
 <li>Allowed <code>Urls</code>.</li>
 <li><code>PackageId</code> with a custom <code>CanonicalUrl</code> comparison, instead of canonicalizing urls eagerly.</li>
 <li><code>PubGrubPackage</code>: We eventually convert the <code>VerbatimUrl</code> back to a <code>Dist</code> (<code>Dist::from_url</code>), instead of remembering the url.</li>
 <li>Source dist types: We use verbatim url even though we know and require that these are supported urls we can and have parsed.</li>
 </ul>
-<p>I tried to make improve the situation be replacing <code>VerbatimUrl</code>, but these changes would require massive invasive changes (see e.g. https://github.com/astral-sh/uv/pull/3253). A main problem is the ref <code>VersionOrUrl</code> and applying overrides, which assume the same requirement/url type everywhere. In its current form, this PR increases this tech debt.</p>
-<p>I've tried to split off PRs and commits, but the main refactoring is still a single monolith commit to make it compile and the tests pass.</p>
-<h2>Demo</h2>
+<p>I tried to make improve the situation be replacing <code>VerbatimUrl</code>, but these changes would require massive invasive changes (see e.g. <a href="https://github.com/astral-sh/uv/pull/3253">astral-sh/uv#3253</a>). A main problem is the ref <code>VersionOrUrl</code> and applying overrides, which assume the same requirement/url type everywhere. In its current form, this PR increases this tech debt.</p>
+<p>I&#x27;ve tried to split off PRs and commits, but the main refactoring is still a single monolith commit to make it compile and the tests pass.</p>
+Demo
 <p>Adding https://gist.githubusercontent.com/konstin/68f3e5ea5e8f1a30a0c9096ae72925c1/raw/d1ae3b85d5a0f3c4bb562c7dfd38c3dafc04ec08/pyproject.json as json schema (v7) to pycharm for <code>pyproject.toml</code>, you can try the IDE support already:</p>
-<p><img src="https://github.com/astral-sh/uv/assets/6826232/599082c7-6be5-41c1-a3cd-516092382f8d" alt="pycharm" /></p>
+<p><img src="https://github.com/astral-sh/uv/assets/6826232/599082c7-6be5-41c1-a3cd-516092382f8d" alt="pycharm"></p>
 <p><a href="https://github.com/astral-sh/uv/assets/6826232/c293c272-c80b-459d-8c95-8c46a8d198a1">dove.webm</a></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2024-04-25 11:34</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/konstin">@konstin</a> on 2024-04-25 11:34</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-04-26 12:35</div>
             <div class="timeline-body"><ul>
-<li><strong>#3277</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/uv/3277?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
-<li><strong>#3263</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/uv/3263?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a> 👈</li>
+<li><strong>#3277</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/uv/3277?utm_source=stack-comment-icon"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite"></a></li>
+<li><strong>#3263</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/uv/3263?utm_source=stack-comment-icon"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite"></a> 👈</li>
 <li><code>main</code></li>
 </ul>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">preview</span> added by @konstin on 2024-04-26 14:49</div>
+            <div class="event">Label <span class="label">preview</span> added by <a href="https://github.com/konstin">@konstin</a> on 2024-04-26 14:49</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @charliermarsh by @konstin on 2024-04-28 19:53</div>
+            <div class="event">Review requested from <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/konstin">@konstin</a> on 2024-04-28 19:53</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/error.rs</code>:28 on 2024-04-30 04:21</div>
-            <div class="timeline-body"><p>I'd probably just remove this TODO.</p>
+            <div class="timeline-body"><p>I&#x27;d probably just remove this TODO.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -133,7 +133,7 @@ torch-cu118 = &quot;https://download.pytorch.org/whl/cu118&quot;
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/lib.rs</code>:496 on 2024-04-30 04:29</div>
-            <div class="timeline-body"><p>I think all the changes in this file could've been done as a tiny standalone PR, to reduce the size of the diff.</p>
+            <div class="timeline-body"><p>I think all the changes in this file could&#x27;ve been done as a tiny standalone PR, to reduce the size of the diff.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -148,7 +148,7 @@ torch-cu118 = &quot;https://download.pytorch.org/whl/cu118&quot;
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/resolution.rs</code>:126 on 2024-04-30 04:32</div>
-            <div class="timeline-body"><p>I think we should just name this <code>Requirement</code>, and use <code>pep508::Requirement</code> everywhere else, personally. I'd like to avoid <code>Uv</code> in the name of abstractions.</p>
+            <div class="timeline-body"><p>I think we should just name this <code>Requirement</code>, and use <code>pep508::Requirement</code> everywhere else, personally. I&#x27;d like to avoid <code>Uv</code> in the name of abstractions.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -163,7 +163,7 @@ torch-cu118 = &quot;https://download.pytorch.org/whl/cu118&quot;
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/requirements-txt/src/lib.rs</code>:314 on 2024-04-30 04:35</div>
-            <div class="timeline-body"><p>Shouldn't this be a <code>pep508::Requirement</code>?</p>
+            <div class="timeline-body"><p>Shouldn&#x27;t this be a <code>pep508::Requirement</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -173,7 +173,7 @@ torch-cu118 = &quot;https://download.pytorch.org/whl/cu118&quot;
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/requirements-txt/src/requirement.rs</code>:19 on 2024-04-30 04:36</div>
-            <div class="timeline-body"><p>I feel like this should still be returning <code>Pep508(Requirement)</code>? I wouldn't have expected changes to this crate given that it doesn't support uv-style requirements.</p>
+            <div class="timeline-body"><p>I feel like this should still be returning <code>Pep508(Requirement)</code>? I wouldn&#x27;t have expected changes to this crate given that it doesn&#x27;t support uv-style requirements.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -188,7 +188,7 @@ torch-cu118 = &quot;https://download.pytorch.org/whl/cu118&quot;
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-dev/src/generate_json_schema.rs</code>:24 on 2024-04-30 04:38</div>
-            <div class="timeline-body"><p>Hmm -- why isn't this change part of <code>uv_workspace</code> directly?</p>
+            <div class="timeline-body"><p>Hmm -- why isn&#x27;t this change part of <code>uv_workspace</code> directly?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -223,7 +223,7 @@ torch-cu118 = &quot;https://download.pytorch.org/whl/cu118&quot;
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-requirements/src/specification.rs</code>:167 on 2024-04-30 04:43</div>
-            <div class="timeline-body"><p>What does it mean to be &quot;strict about PEP 621&quot; here? Can you expand on this comment? E.g., we're still falling back to treating it as a source tree below.</p>
+            <div class="timeline-body"><p>What does it mean to be &quot;strict about PEP 621&quot; here? Can you expand on this comment? E.g., we&#x27;re still falling back to treating it as a source tree below.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -257,7 +257,7 @@ torch-cu118 = &quot;https://download.pytorch.org/whl/cu118&quot;
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/uv_requirement.rs</code>:124 on 2024-04-30 04:49</div>
-            <div class="timeline-body"><p>What's the work involved here? (What's the goal?)</p>
+            <div class="timeline-body"><p>What&#x27;s the work involved here? (What&#x27;s the goal?)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -280,7 +280,7 @@ torch-cu118 = &quot;https://download.pytorch.org/whl/cu118&quot;
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/resolution.rs</code>:126 on 2024-04-30 04:52</div>
-            <div class="timeline-body"><p>(I'd apply this same judgment to all the other <code>Uv</code>-prefixed types. What do you think?)</p>
+            <div class="timeline-body"><p>(I&#x27;d apply this same judgment to all the other <code>Uv</code>-prefixed types. What do you think?)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -328,7 +328,7 @@ help: consider boxing the large fields to reduce the total size of the enum
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/distribution-types/src/parsed_url.rs</code>:80 on 2024-04-30 09:52</div>
-            <div class="timeline-body"><p>No, it's already removed: https://github.com/astral-sh/uv/pull/3263/files#diff-1a2282604ae94f9266d311e67fd6e0c365c2a76a7ef0fbd707bfc19e6dde48e5L18-L19</p>
+            <div class="timeline-body"><p>No, it&#x27;s already removed: <a href="https://github.com/astral-sh/uv/pull/3263">astral-sh/uv#3263</a>/files#diff-1a2282604ae94f9266d311e67fd6e0c365c2a76a7ef0fbd707bfc19e6dde48e5L18-L19</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -337,7 +337,7 @@ help: consider boxing the large fields to reduce the total size of the enum
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/distribution-types/src/uv_requirement.rs</code>:124 on 2024-04-30 10:10</div>
-            <div class="timeline-body"><p>You can do things like <code>flask==3.0.0</code> and <code>flask = { git = &quot;https://github.com/pallets/flask&quot;, tag = &quot;v2.0.0&quot; }</code>. We should error or warn when that happens, it's another consistency validation check.</p>
+            <div class="timeline-body"><p>You can do things like <code>flask==3.0.0</code> and <code>flask = { git = &quot;https://github.com/pallets/flask&quot;, tag = &quot;v2.0.0&quot; }</code>. We should error or warn when that happens, it&#x27;s another consistency validation check.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -346,7 +346,7 @@ help: consider boxing the large fields to reduce the total size of the enum
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/distribution-types/src/uv_requirement.rs</code>:122 on 2024-04-30 10:12</div>
-            <div class="timeline-body"><p>This is still mostly to-be-designed and mainly a placeholder, but i'd expect this to become the name of an index, e.g. <code>torch</code>, which is then defined elsewhere, either in this file or in a global configuration. This doesn't have any usages yet to be easy to change once we have the design</p>
+            <div class="timeline-body"><p>This is still mostly to-be-designed and mainly a placeholder, but i&#x27;d expect this to become the name of an index, e.g. <code>torch</code>, which is then defined elsewhere, either in this file or in a global configuration. This doesn&#x27;t have any usages yet to be easy to change once we have the design</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -355,7 +355,7 @@ help: consider boxing the large fields to reduce the total size of the enum
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/distribution-types/src/traits.rs</code>:172 on 2024-04-30 10:18</div>
-            <div class="timeline-body"><p>In <code>foo = { url = &quot;https://github.com/foo/foo&quot; }</code> we don't have a git prefix, while in <code>foo @ git+https://github.com/foo/foo</code>, we do. I went with the option to normalize both to no <code>git+</code> prefix, causing this oddity. (Adding the <code>git+</code> just for <code>.version_or_url()</code> doesn't work because it returns a <code>&amp;'a VerbatimUrl</code>)</p>
+            <div class="timeline-body"><p>In <code>foo = { url = &quot;https://github.com/foo/foo&quot; }</code> we don&#x27;t have a git prefix, while in <code>foo @ git+https://github.com/foo/foo</code>, we do. I went with the option to normalize both to no <code>git+</code> prefix, causing this oddity. (Adding the <code>git+</code> just for <code>.version_or_url()</code> doesn&#x27;t work because it returns a <code>&amp;&#x27;a VerbatimUrl</code>)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -373,7 +373,7 @@ help: consider boxing the large fields to reduce the total size of the enum
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/pep508-rs/src/unnamed.rs</code>:80 on 2024-04-30 10:26</div>
-            <div class="timeline-body"><p>Rebase fallout from https://github.com/astral-sh/uv/pull/3186, i'll revert the changes in this file</p>
+            <div class="timeline-body"><p>Rebase fallout from <a href="https://github.com/astral-sh/uv/pull/3186">astral-sh/uv#3186</a>, i&#x27;ll revert the changes in this file</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -405,7 +405,7 @@ help: consider boxing the large fields to reduce the total size of the enum
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-dev/src/generate_json_schema.rs</code>:24 on 2024-04-30 11:36</div>
-            <div class="timeline-body"><p>I was thinking that pure configuration files shouldn't have dependency information, so keeping them separate</p>
+            <div class="timeline-body"><p>I was thinking that pure configuration files shouldn&#x27;t have dependency information, so keeping them separate</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -546,7 +546,7 @@ help: consider boxing the large fields to reduce the total size of the enum
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-requirements/src/specification.rs</code>:131 on 2024-05-01 05:16</div>
-            <div class="timeline-body"><p>What does this comment mean? It needs more context, if I can't understand what it's referring to now I definitely won't be able to in the future!</p>
+            <div class="timeline-body"><p>What does this comment mean? It needs more context, if I can&#x27;t understand what it&#x27;s referring to now I definitely won&#x27;t be able to in the future!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -582,7 +582,7 @@ help: consider boxing the large fields to reduce the total size of the enum
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-requirements/src/pyproject.rs</code>:373 on 2024-05-01 05:22</div>
-            <div class="timeline-body"><p>In the sources design, what if we need to support multiple entries for a single package? Is it possible? What if I want to use a different index URL depending on whether I'm on mac or Linux?</p>
+            <div class="timeline-body"><p>In the sources design, what if we need to support multiple entries for a single package? Is it possible? What if I want to use a different index URL depending on whether I&#x27;m on mac or Linux?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -600,7 +600,7 @@ help: consider boxing the large fields to reduce the total size of the enum
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/pubgrub/dependencies.rs</code>:233 on 2024-05-01 05:24</div>
-            <div class="timeline-body"><p>Hmm, I'm not a big fan of what's happening in this branch... I don't like that we're having to recreate these URLs all over the place. Also don't like how much <code>VerbatimUrl</code> conversion and URL cloning and deref and such that we're needing to do. What do you see as the better / correct solution here?</p>
+            <div class="timeline-body"><p>Hmm, I&#x27;m not a big fan of what&#x27;s happening in this branch... I don&#x27;t like that we&#x27;re having to recreate these URLs all over the place. Also don&#x27;t like how much <code>VerbatimUrl</code> conversion and URL cloning and deref and such that we&#x27;re needing to do. What do you see as the better / correct solution here?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -609,7 +609,7 @@ help: consider boxing the large fields to reduce the total size of the enum
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolution.rs</code>:458 on 2024-05-01 05:25</div>
-            <div class="timeline-body"><p>Can we call this <code>requirements</code>? Again, I'd like to avoid encoding <code>uv_</code> in various places.</p>
+            <div class="timeline-body"><p>Can we call this <code>requirements</code>? Again, I&#x27;d like to avoid encoding <code>uv_</code> in various places.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -618,7 +618,7 @@ help: consider boxing the large fields to reduce the total size of the enum
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/uv_requirement.rs</code>:52 on 2024-05-01 05:27</div>
-            <div class="timeline-body"><p>Why does this take a reference and not an owned value? Can't we use the value directly for <code>ParsedLocalFileUrl</code> at least?</p>
+            <div class="timeline-body"><p>Why does this take a reference and not an owned value? Can&#x27;t we use the value directly for <code>ParsedLocalFileUrl</code> at least?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -650,10 +650,10 @@ help: consider boxing the large fields to reduce the total size of the enum
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-01 05:33</div>
-            <div class="timeline-body"><p>Another round of comments. I don't really expect to ask for any major changes, but I still have two <em>slightly</em> larger topics to resolve:</p>
+            <div class="timeline-body"><p>Another round of comments. I don&#x27;t really expect to ask for any major changes, but I still have two <em>slightly</em> larger topics to resolve:</p>
 <ol>
 <li>I still kinda feel like <code>requirements-txt</code> should <em>not</em> rely on the uv-specific requirement types.</li>
-<li>I'm trying to understand what a better setup would look like to allow us to avoid all the URL reconstruction and deconstruction throughout the codebase.</li>
+<li>I&#x27;m trying to understand what a better setup would look like to allow us to avoid all the URL reconstruction and deconstruction throughout the codebase.</li>
 </ol>
 </div>
         </div>
@@ -663,7 +663,7 @@ help: consider boxing the large fields to reduce the total size of the enum
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/requirements-txt/src/requirement.rs</code>:40 on 2024-05-02 11:38</div>
-            <div class="timeline-body"><p>Which part? There's a <code>impl Display for RequirementsTxtRequirement</code></p>
+            <div class="timeline-body"><p>Which part? There&#x27;s a <code>impl Display for RequirementsTxtRequirement</code></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -672,13 +672,13 @@ help: consider boxing the large fields to reduce the total size of the enum
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-requirements/src/pyproject.rs</code>:373 on 2024-05-02 11:48</div>
-            <div class="timeline-body"><p>toml does not allow redefining keys, so we can't use the METADATA email method of repeating keys. In the future, we can allow making <code>Source</code> an array (through an untagged enum):</p>
-<pre><code class="language-toml">foo = [
+            <div class="timeline-body"><p>toml does not allow redefining keys, so we can&#x27;t use the METADATA email method of repeating keys. In the future, we can allow making <code>Source</code> an array (through an untagged enum):</p>
+<pre><code>foo = [
     { url = &quot;https://linux.example.org/foo-2.0.0-cp39-cp39-linux_x86_64.whl&quot;, os = &quot;linux&quot; },
     { url = &quot;https://linux.example.org/foo-2.0.0-cp39-cp39-win_amd64.whl&quot;, os = &quot;windows&quot; }
 ]
 </code></pre>
-<p>I'd leave this as future work.</p>
+<p>I&#x27;d leave this as future work.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -687,7 +687,7 @@ help: consider boxing the large fields to reduce the total size of the enum
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/pubgrub/dependencies.rs</code>:233 on 2024-05-02 12:35</div>
-            <div class="timeline-body"><p>I've front-loaded this by putting a <code>VerbatimUrl</code> with the joined url on the url variants of <code>RequirementSource</code>.</p>
+            <div class="timeline-body"><p>I&#x27;ve front-loaded this by putting a <code>VerbatimUrl</code> with the joined url on the url variants of <code>RequirementSource</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -696,12 +696,12 @@ help: consider boxing the large fields to reduce the total size of the enum
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:1012 on 2024-05-02 13:05</div>
-            <div class="timeline-body"><p>Only by changing the type of <code>requires_dist</code>, if we want that. Currently the type mirrors the spec in that all urls are allowed, and we fail here if it's a url we don't support.</p>
+            <div class="timeline-body"><p>Only by changing the type of <code>requires_dist</code>, if we want that. Currently the type mirrors the spec in that all urls are allowed, and we fail here if it&#x27;s a url we don&#x27;t support.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-requirements/src/lookahead.rs</code>:173 on 2024-05-02 13:11</div>
-            <div class="timeline-body"><p>I've front-loaded this by putting a <code>VerbatimUrl</code> with the joined url on the url variants of <code>RequirementSource</code>.</p>
+            <div class="timeline-body"><p>I&#x27;ve front-loaded this by putting a <code>VerbatimUrl</code> with the joined url on the url variants of <code>RequirementSource</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -710,7 +710,7 @@ help: consider boxing the large fields to reduce the total size of the enum
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-requirements/src/pyproject.rs</code>:518 on 2024-05-02 13:19</div>
-            <div class="timeline-body"><p>Thanks, didn't realize that method exists</p>
+            <div class="timeline-body"><p>Thanks, didn&#x27;t realize that method exists</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -722,7 +722,7 @@ help: consider boxing the large fields to reduce the total size of the enum
             <div class="timeline-body"><blockquote>
 <p>I still kinda feel like requirements-txt should not rely on the uv-specific requirement types.</p>
 </blockquote>
-<p>Fixed by introducing <code>UnresolvedRequirementSpecification</code> and <code>UnresolvedRequirement</code> in <code>distribution-types</code>. It's a bit odd at first because <code>requirements-txt</code> depends on <code>distribution-types</code>, but it avoid cyclical crate dependencies and does the split.</p>
+<p>Fixed by introducing <code>UnresolvedRequirementSpecification</code> and <code>UnresolvedRequirement</code> in <code>distribution-types</code>. It&#x27;s a bit odd at first because <code>requirements-txt</code> depends on <code>distribution-types</code>, but it avoid cyclical crate dependencies and does the split.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -766,17 +766,17 @@ help: consider boxing the large fields to reduce the total size of the enum
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2024-05-03 21:10</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-03 21:10</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-05-03 21:10</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-03 21:10</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-05-03 21:10</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-requirements/src/pyproject.rs</code>:429 on 2024-05-04 02:48</div>
-            <div class="timeline-body"><p>This is incorrect. Don't we need the actual string here?</p>
+            <div class="timeline-body"><p>This is incorrect. Don&#x27;t we need the actual string here?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -789,7 +789,7 @@ help: consider boxing the large fields to reduce the total size of the enum
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-requirements/src/pyproject.rs</code>:428 on 2024-05-04 02:48</div>
-            <div class="timeline-body"><p>The docs on <code>RequirementSource::Git</code> say it's the URL <em>without</em> the <code>git+</code> prefix. Is this correct?</p>
+            <div class="timeline-body"><p>The docs on <code>RequirementSource::Git</code> say it&#x27;s the URL <em>without</em> the <code>git+</code> prefix. Is this correct?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -798,7 +798,7 @@ help: consider boxing the large fields to reduce the total size of the enum
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-installer/src/satisfies.rs</code>:64 on 2024-05-04 02:49</div>
-            <div class="timeline-body"><p>This seems off. Shouldn't we instead parse the URL, and use <code>CanonicalUrl</code> to compare these? Why are we comparing as strings?</p>
+            <div class="timeline-body"><p>This seems off. Shouldn&#x27;t we instead parse the URL, and use <code>CanonicalUrl</code> to compare these? Why are we comparing as strings?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -816,7 +816,7 @@ help: consider boxing the large fields to reduce the total size of the enum
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-requirements/src/pyproject.rs</code>:428 on 2024-05-04 02:54</div>
-            <div class="timeline-body"><p>Fixed here: https://github.com/astral-sh/uv/pull/3365</p>
+            <div class="timeline-body"><p>Fixed here: <a href="https://github.com/astral-sh/uv/pull/3365">astral-sh/uv#3365</a></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -825,7 +825,7 @@ help: consider boxing the large fields to reduce the total size of the enum
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-requirements/src/pyproject.rs</code>:429 on 2024-05-06 10:56</div>
-            <div class="timeline-body"><p>imho toml shouldn't support env vars</p>
+            <div class="timeline-body"><p>imho toml shouldn&#x27;t support env vars</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -843,7 +843,7 @@ help: consider boxing the large fields to reduce the total size of the enum
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-installer/src/satisfies.rs</code>:64 on 2024-05-06 10:57</div>
-            <div class="timeline-body"><p>(Fixed in https://github.com/astral-sh/uv/pull/3373)</p>
+            <div class="timeline-body"><p>(Fixed in <a href="https://github.com/astral-sh/uv/pull/3373">astral-sh/uv#3373</a>)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -853,13 +853,13 @@ help: consider boxing the large fields to reduce the total size of the enum
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/pip_compile.rs</code>:5227 on 2024-05-06 11:20</div>
             <div class="timeline-body"><p>https://github.com/astral-sh/uv/pull/3403</p>
-<p>I'd also like to track the origin of the invalid url, but that's a larger task.</p>
+<p>I&#x27;d also like to track the origin of the invalid url, but that&#x27;s a larger task.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:36:47 UTC
+        Synced at 2026-01-20 19:45:03 UTC
     </footer>
 </body>
 </html>

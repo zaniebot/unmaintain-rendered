@@ -23,27 +23,27 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/insane-dreamer">@insane-dreamer</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<p>When performing a symbol search in <code>zed</code> with <code>ty</code> enabled, I'm only getting a partial list of matches. I thought it was only returning the matches from open files, but I tried closing all files in the project, or opening other files, and the list of returned matches remained the same. Switching to <code>basedpyright</code> returns all matches. A couple of the matches that didn't show up with <code>ty</code> were private methods so I made those public (removing the <code>_</code>) and restarted ty but that didn't change anything.</p>
+            <div class="timeline-body">Summary
+<p>When performing a symbol search in <code>zed</code> with <code>ty</code> enabled, I&#x27;m only getting a partial list of matches. I thought it was only returning the matches from open files, but I tried closing all files in the project, or opening other files, and the list of returned matches remained the same. Switching to <code>basedpyright</code> returns all matches. A couple of the matches that didn&#x27;t show up with <code>ty</code> were private methods so I made those public (removing the <code>_</code>) and restarted ty but that didn&#x27;t change anything.</p>
 <p>I tested with a couple more queries, with both <code>basedpyright</code> and <code>ty</code> and found the following:</p>
 <ul>
-<li>all <code>ty</code> matches were module level constants or class names; it didn't return any function names with the same string, or any function level variables (<code>basedpyright</code> did return all of those)</li>
+<li>all <code>ty</code> matches were module level constants or class names; it didn&#x27;t return any function names with the same string, or any function level variables (<code>basedpyright</code> did return all of those)</li>
 <li>the exception to the above is that it did find unit test functions with the target string</li>
 <li>when I created a new function during the same session with the target string, and then ran symbol search with <code>ty</code>, it did find the new function (but did not find pre-existing functions with that string); however it incorrectly returned <em>two</em> matches: one in the file where the new function was created, and another match in another open file (but that was incorrect, that function was not called there).</li>
 </ul>
 <p>I tested with another python project, and found the same errors as above (ty only returned module level constants or class names), however, I found that it did return one function that had a decorator.</p>
 <p>I tested on a third python project, and it had the same error as reported above -- only showed module level constants and variables, not functions. See screenshot below.</p>
-<p><img width="686" height="452" alt="Image" src="https://github.com/user-attachments/assets/a7e9d4bf-f878-4545-b7a4-0949fc17e16a" /></p>
+<p><img alt="Image" src="https://github.com/user-attachments/assets/a7e9d4bf-f878-4545-b7a4-0949fc17e16a"></p>
 <p>this is after restarting Zed and the ty language server, zed logs show no errors, only related logs are:</p>
 <pre><code>2025-12-11T09:42:15-08:00 INFO  [lsp] starting language server process. binary path: &quot;/home/sean/.local/share/zed/languages/ty/ty-0.0.1-alpha.33/ty-x86_64-unknown-linux-gnu/ty&quot;, working directory: &quot;/home/sean/dev/pd&quot;, args: [&quot;server&quot;]
 2025-12-11T09:42:16-08:00 INFO  [lsp] starting language server process. binary path: &quot;/home/sean/.local/share/zed/languages/ruff/ruff-0.14.8/ruff-x86_64-unknown-linux-gnu/ruff&quot;, working directory: &quot;/home/sean/dev/pd&quot;, args: [&quot;server&quot;]
 </code></pre>
-<h3>Version</h3>
+Version
 <p>0.0.1-alpha.33/ty-x86_64-unknown-linux-gnu</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">server</span> added by @AlexWaygood on 2025-12-11 17:46</div>
+            <div class="event">Label <span class="label">server</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-11 17:46</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-11 18:03</div>
@@ -51,35 +51,35 @@
 <blockquote>
 <p>I tested on a third python project, and it had the same error as reported above -- only showed module level constants and variables, not functions. See screenshot below.</p>
 </blockquote>
-<p>Are any of those public? That would be easiest for me to ensure I'm seeing the same</p>
+<p>Are any of those public? That would be easiest for me to ensure I&#x27;m seeing the same</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/insane-dreamer">@insane-dreamer</a> on 2025-12-11 18:30</div>
             <div class="timeline-body"><p>@MichaReiser not public repos, but I pulled out a portion of the project into its own folder/project, and replicated the same issue, so this might be useful as a testbed. See screenshot with new search and partial matches</p>
-<p><img width="710" height="730" alt="Image" src="https://github.com/user-attachments/assets/9e9f19fe-a23e-44ce-85b1-80bb397735a5" /></p>
+<p><img alt="Image" src="https://github.com/user-attachments/assets/9e9f19fe-a23e-44ce-85b1-80bb397735a5"></p>
 <p><a href="https://github.com/user-attachments/files/24109651/pdpart.zip">pdpart.zip</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-11 19:21</div>
-            <div class="timeline-body"><p>I have a fix for it not returning nested workspace symbols but there's a second bug related to <code>__all__</code> that @BurntSushi might want to take a look at.</p>
-<p>It seems, that <code>SymbolVisitor</code> only returns symbols listed in <code>__all__</code> when it sees any <code>__all__</code> definition. This is the correct behavior for global symbols only but we should probably ignore <code>__all__</code> completely for workspace symbols. We should probably also double check if there's any other <em>global symbols</em> behavior that we added recently that shouldn't apply to workspace symbols.</p>
+            <div class="timeline-body"><p>I have a fix for it not returning nested workspace symbols but there&#x27;s a second bug related to <code>__all__</code> that @BurntSushi might want to take a look at.</p>
+<p>It seems, that <code>SymbolVisitor</code> only returns symbols listed in <code>__all__</code> when it sees any <code>__all__</code> definition. This is the correct behavior for global symbols only but we should probably ignore <code>__all__</code> completely for workspace symbols. We should probably also double check if there&#x27;s any other <em>global symbols</em> behavior that we added recently that shouldn&#x27;t apply to workspace symbols.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @BurntSushi by @MichaReiser on 2025-12-11 19:21</div>
+            <div class="event">Assigned to <a href="https://github.com/BurntSushi">@BurntSushi</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-11 19:21</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-12-11 19:21</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-11 19:21</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2025-12-12 12:29</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-12-12 12:29</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:21:16 UTC
+        Synced at 2026-01-20 19:26:23 UTC
     </footer>
 </body>
 </html>

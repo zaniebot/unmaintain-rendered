@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>[bug] Can't build Rust extensions via <code>pyo3</code> if using a <code>uv</code>-managed Python interpreter</h1>
+    <h1>[bug] Can&#x27;t build Rust extensions via <code>pyo3</code> if using a <code>uv</code>-managed Python interpreter</h1>
 
     <div class="meta">
         <span class="state-icon state-closed"></span>
@@ -26,14 +26,14 @@
             <div class="timeline-body"><p>When building the extension, the following error occurs (omitting the prefixes of some paths):</p>
 <pre><code>dyld[90807]: Library not loaded: /install/lib/libpython3.13.dylib
   Referenced from: &lt;A73153CF-70A5-379B-B9D3-526153D8322F&gt; repro/target/debug/deps/setup-29f3c899bfb488ef
-  Reason: tried: '/install/lib/libpython3.13.dylib' (no such file), 'repro/target/debug/deps/libpython3.13.dylib' (no such file), 'repro/target/debug/libpython3.13.dylib' (no such file), '.rustup/toolchains/stable-aarch64-
-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib/libpython3.13.dylib' (no such file), '.rustup/toolchains/stable-aarch64-apple-darwin/lib/libpython3.13.dylib' (no such file), '/Users/luca/lib/libpyt
-hon3.13.dylib' (no such file), '/usr/local/lib/libpython3.13.dylib' (no such file), '/usr/lib/libpython3.13.dylib' (no such file, not in dyld cache)
+  Reason: tried: &#x27;/install/lib/libpython3.13.dylib&#x27; (no such file), &#x27;repro/target/debug/deps/libpython3.13.dylib&#x27; (no such file), &#x27;repro/target/debug/libpython3.13.dylib&#x27; (no such file), &#x27;.rustup/toolchains/stable-aarch64-
+apple-darwin/lib/rustlib/aarch64-apple-darwin/lib/libpython3.13.dylib&#x27; (no such file), &#x27;.rustup/toolchains/stable-aarch64-apple-darwin/lib/libpython3.13.dylib&#x27; (no such file), &#x27;/Users/luca/lib/libpyt
+hon3.13.dylib&#x27; (no such file), &#x27;/usr/local/lib/libpython3.13.dylib&#x27; (no such file), &#x27;/usr/lib/libpython3.13.dylib&#x27; (no such file, not in dyld cache)
 error: test failed, to rerun pass `--lib
 </code></pre>
 <p>This is on macOS, using the latest Rust toolchain and <code>uv</code> build. I uploaded a <a href="https://github.com/LukeMathWalker/uv-repro-install-lib">reproduction repository</a> to help with the investigation.</p>
 <p>I originally suspected this to be an issue with <code>sysconfig</code>, but it appears to be configured correctly:</p>
-<p><img width="868" alt="Image" src="https://github.com/user-attachments/assets/e79936ec-d22d-4775-8be3-d9b6761d6884" /></p>
+<p><img alt="Image" src="https://github.com/user-attachments/assets/e79936ec-d22d-4775-8be3-d9b6761d6884"></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -52,7 +52,7 @@ error: test failed, to rerun pass `--lib
 <p>Just to confirm: have you tried reinstalling Python (like <code>uv python install 3.13 --reinstall</code>)?</p>
 </blockquote>
 <p>I had not!
-But it doesn't seem to change the outcome (reinstall =&gt; <code>uv clean</code> =&gt; same steps =&gt; error).</p>
+But it doesn&#x27;t seem to change the outcome (reinstall =&gt; <code>uv clean</code> =&gt; same steps =&gt; error).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -79,7 +79,7 @@ suppress_build_script_link_lines=false
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/LukeMathWalker">@LukeMathWalker</a> on 2025-01-14 14:36</div>
-            <div class="timeline-body"><p>I don't spot any smoking gun there since <code>lib_dir</code> is indeed pointing to the right place.
+            <div class="timeline-body"><p>I don&#x27;t spot any smoking gun there since <code>lib_dir</code> is indeed pointing to the right place.
 It somehow feels like the issue is the lack of that <code>lib_dir</code> in the list of paths to be searched for when looking for the <code>dylib</code> at runtime.</p>
 </div>
         </div>
@@ -92,12 +92,12 @@ Setting <code>-vvv</code> on <code>cargo build</code>, we get the following outp
 <p>which then shows up correctly as an <code>-L</code> option in the invocation of <code>rustc</code> to compile the final binary:</p>
 <pre><code> -L native=/Users/luca/.local/share/uv/python/cpython-3.13.1-macos-aarch64-none/lib`
 </code></pre>
-<p>but <a href="https://doc.rust-lang.org/cargo/reference/environment-variables.html#dynamic-library-paths">Cargo's documentations</a> states that:</p>
+<p>but <a href="https://doc.rust-lang.org/cargo/reference/environment-variables.html#dynamic-library-paths">Cargo&#x27;s documentations</a> states that:</p>
 <blockquote>
 <p>Search paths included from any build script with the <a href="https://doc.rust-lang.org/cargo/reference/build-scripts.html#rustc-link-search">rustc-link-search instruction</a>. Paths outside of the target directory are removed. It is the responsibility of the user running Cargo to properly set the environment if additional libraries on the system are needed in the search path.</p>
 </blockquote>
-<p>So I do wonder if that's the root cause here?
-Namely, <em>something</em> must copy the <code>dylib</code> into the <code>target</code> directory (or a directory on macOS's fallback list for dynamic library lookups) otherwise the binary won't work.</p>
+<p>So I do wonder if that&#x27;s the root cause here?
+Namely, <em>something</em> must copy the <code>dylib</code> into the <code>target</code> directory (or a directory on macOS&#x27;s fallback list for dynamic library lookups) otherwise the binary won&#x27;t work.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -119,11 +119,11 @@ Installed Python 3.12.8 in 1.45s
      Running unittests src/lib.rs (target/debug/deps/setup-29f3c899bfb488ef)
 dyld[37377]: Library not loaded: /install/lib/libpython3.12.dylib
   Referenced from: &lt;594B5A77-99FB-3942-8F15-0A487FE66DDF&gt; /Users/zb/workspace/uv-repro-install-lib/target/debug/deps/setup-29f3c899bfb488ef
-  Reason: tried: '/install/lib/libpython3.12.dylib' (no such file), '/System/Volumes/Preboot/Cryptexes/OS/install/lib/libpython3.12.dylib' (no such file), '/install/lib/libpython3.12.dylib' (no such file), '/Users/zb/workspace/uv-repro-install-lib/target/debug/deps/libpython3.12.dylib' (no such file), '/Users/zb/workspace/uv-repro-install-lib/target/debug/libpython3.12.dylib' (no such file), '/Users/zb/.rustup/toolchains/stable-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib/libpython3.12.dylib' (no such file), '/Users/zb/.rustup/toolchains/stable-aarch64-apple-darwin/lib/libpython3.12.dylib' (no such file), '/Users/zb/lib/libpython3.12.dylib' (no such file), '/usr/local/lib/libpython3.12.dylib' (no such file), '/usr/lib/libpython3.12.dylib' (no such file, not in dyld cache)
+  Reason: tried: &#x27;/install/lib/libpython3.12.dylib&#x27; (no such file), &#x27;/System/Volumes/Preboot/Cryptexes/OS/install/lib/libpython3.12.dylib&#x27; (no such file), &#x27;/install/lib/libpython3.12.dylib&#x27; (no such file), &#x27;/Users/zb/workspace/uv-repro-install-lib/target/debug/deps/libpython3.12.dylib&#x27; (no such file), &#x27;/Users/zb/workspace/uv-repro-install-lib/target/debug/libpython3.12.dylib&#x27; (no such file), &#x27;/Users/zb/.rustup/toolchains/stable-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib/libpython3.12.dylib&#x27; (no such file), &#x27;/Users/zb/.rustup/toolchains/stable-aarch64-apple-darwin/lib/libpython3.12.dylib&#x27; (no such file), &#x27;/Users/zb/lib/libpython3.12.dylib&#x27; (no such file), &#x27;/usr/local/lib/libpython3.12.dylib&#x27; (no such file), &#x27;/usr/lib/libpython3.12.dylib&#x27; (no such file, not in dyld cache)
 error: test failed, to rerun pass `--lib`
 
 Caused by:
-  process didn't exit successfully: `/Users/zb/workspace/uv-repro-install-lib/target/debug/deps/setup-29f3c899bfb488ef` (signal: 6, SIGABRT: process abort signal)
+  process didn&#x27;t exit successfully: `/Users/zb/workspace/uv-repro-install-lib/target/debug/deps/setup-29f3c899bfb488ef` (signal: 6, SIGABRT: process abort signal)
 </code></pre>
 </div>
         </div>
@@ -152,7 +152,7 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/LukeMathWalker">@LukeMathWalker</a> on 2025-01-14 15:24</div>
             <div class="timeline-body"><p>Using this build script for the same purpose seems to do the trick too:</p>
-<pre><code class="language-rust">use std::env::consts::{DLL_PREFIX, DLL_SUFFIX};
+<pre><code>use std::env::consts::{DLL_PREFIX, DLL_SUFFIX};
 use std::path::PathBuf;
 
 fn main() {
@@ -173,12 +173,12 @@ fn main() {
     println!(&quot;cargo:rustc-link-search=native={}&quot;, out_dir.display());
 }
 </code></pre>
-<p>Although it'd be nice if it wasn't needed 🤔</p>
+<p>Although it&#x27;d be nice if it wasn&#x27;t needed 🤔</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-14 15:25</div>
-            <div class="timeline-body"><p>I'm not sure what we could do to fix that; it seems like a pyo3 issue, right?</p>
+            <div class="timeline-body"><p>I&#x27;m not sure what we could do to fix that; it seems like a pyo3 issue, right?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -186,16 +186,16 @@ fn main() {
             <div class="timeline-body"><blockquote>
 <p>The <code>rustc-link-search</code> caveat seems worth pursing. I tried using the <code>target</code> directory though — no dice. Maybe it needs to be in a specific spot?</p>
 </blockquote>
-<p>I'd have to be <code>target/debug</code> (for a <code>debug</code> build). The top-level <code>target</code> directory it's indeed not in the search path by default.</p>
+<p>I&#x27;d have to be <code>target/debug</code> (for a <code>debug</code> build). The top-level <code>target</code> directory it&#x27;s indeed not in the search path by default.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/LukeMathWalker">@LukeMathWalker</a> on 2025-01-14 15:28</div>
             <div class="timeline-body"><blockquote>
-<p>I'm not sure what we could do to fix that; it seems like a pyo3 issue, right?</p>
+<p>I&#x27;m not sure what we could do to fix that; it seems like a pyo3 issue, right?</p>
 </blockquote>
-<p>It's unclear to me to what extent it's a <code>pyo3</code> issue, since it doesn't happen with &quot;stock&quot; Python.
-If I don't force the uv-managed Python interpreter, the build works and the final binary knows where to look for the dylib:</p>
+<p>It&#x27;s unclear to me to what extent it&#x27;s a <code>pyo3</code> issue, since it doesn&#x27;t happen with &quot;stock&quot; Python.
+If I don&#x27;t force the uv-managed Python interpreter, the build works and the final binary knows where to look for the dylib:</p>
 <pre><code>otool -L target/debug/deps/setup-a1fe82e135076eae
 target/debug/deps/setup-a1fe82e135076eae:
         /opt/homebrew/opt/python@3.13/Frameworks/Python.framework/Versions/3.13/Python (compatibility version 3.13.0, current version 3.13.0)
@@ -221,14 +221,14 @@ target/debug/deps/setup-a1fe82e135076eae:
             <div class="timeline-body"><blockquote>
 <p>Fair! The crux seems to be that one of our build paths <code>/install/...</code> is being picked up from somewhere outside of <code>sysconfig</code>. Presumably this link is present in a Python binary or library and we should patch that on install too?</p>
 </blockquote>
-<p>That's my guess, since <code>otool</code> on a <code>uv</code>-backed build outputs:</p>
+<p>That&#x27;s my guess, since <code>otool</code> on a <code>uv</code>-backed build outputs:</p>
 <pre><code>otool -L target/debug/deps/setup-a1fe82e135076eae
 target/debug/deps/setup-a1fe82e135076eae:
         /install/lib/libpython3.13.dylib (compatibility version 3.13.0, current version 3.13.0)
         /usr/lib/libiconv.2.dylib (compatibility version 7.0.0, current version 7.0.0)
         /usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1345.120.2)
 </code></pre>
-<p>and that's a mystery to me at the moment.</p>
+<p>and that&#x27;s a mystery to me at the moment.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -242,7 +242,7 @@ For a stock Python build, <code>pyo3-ffi</code> emits:</p>
 </code></pre>
 <p>And that stinks.
 Tracking this down into <code>pyo3-build-config</code>, it points here:</p>
-<pre><code class="language-rust">#[cfg(feature = &quot;resolve-config&quot;)]
+<pre><code>#[cfg(feature = &quot;resolve-config&quot;)]
 fn _add_python_framework_link_args(
     interpreter_config: &amp;InterpreterConfig,
     triple: &amp;Triple,
@@ -267,26 +267,26 @@ fn _add_python_framework_link_args(
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/LukeMathWalker">@LukeMathWalker</a> on 2025-01-14 15:46</div>
             <div class="timeline-body"><p>OK, I think I might have found it:</p>
-<pre><code class="language-python">from sysconfig import get_config_var
+<pre><code>from sysconfig import get_config_var
 
 FRAMEWORK_PREFIX = get_config_var(&quot;PYTHONFRAMEWORKPREFIX&quot;)
 </code></pre>
-<p>This outputs an empty string for a <code>uv</code> build, while it's set to &quot;/opt/homebrew/opt/python@3.13/Frameworks&quot; for a &quot;stock&quot; build.</p>
+<p>This outputs an empty string for a <code>uv</code> build, while it&#x27;s set to &quot;/opt/homebrew/opt/python@3.13/Frameworks&quot; for a &quot;stock&quot; build.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/LukeMathWalker">@LukeMathWalker</a> on 2025-01-14 15:48</div>
-            <div class="timeline-body"><p>This now begs the question: should <code>uv</code>-Python set that value? I'm not deep enough into <code>sysconfig</code>'s lore to know if the fix should be on the <code>pyo3</code> side or on the <code>uv</code> side.</p>
+            <div class="timeline-body"><p>This now begs the question: should <code>uv</code>-Python set that value? I&#x27;m not deep enough into <code>sysconfig</code>&#x27;s lore to know if the fix should be on the <code>pyo3</code> side or on the <code>uv</code> side.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-14 16:01</div>
-            <div class="timeline-body"><p>We're not doing a framework build of Python (it's... different), so I think that should be empty.</p>
+            <div class="timeline-body"><p>We&#x27;re not doing a framework build of Python (it&#x27;s... different), so I think that should be empty.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/LukeMathWalker">@LukeMathWalker</a> on 2025-01-14 16:09</div>
-            <div class="timeline-body"><p>Cool, then it's a red herring. Even more so since trying to emit that <code>&quot;cargo:rustc-link-arg=-Wl,-rpath,{}&quot;</code> instructions with various parent directories of the <code>uv</code> build doesn't seem to help our case.
+            <div class="timeline-body"><p>Cool, then it&#x27;s a red herring. Even more so since trying to emit that <code>&quot;cargo:rustc-link-arg=-Wl,-rpath,{}&quot;</code> instructions with various parent directories of the <code>uv</code> build doesn&#x27;t seem to help our case.
 This brings us back to the root question: where is <code>/install/lib/libpython3.13.dylib</code> coming from?</p>
 </div>
         </div>
@@ -325,7 +325,7 @@ lib/libpython3.12.dylib:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/LukeMathWalker">@LukeMathWalker</a> on 2025-01-14 16:32</div>
-            <div class="timeline-body"><p>That'd be quite weird, but it's interesting.
+            <div class="timeline-body"><p>That&#x27;d be quite weird, but it&#x27;s interesting.
 System Python seems to link to itself there?</p>
 <pre><code>otool -L /opt/homebrew/opt/python@3.13/Frameworks/Python.framework/Versions/3.13/Python
 /opt/homebrew/opt/python@3.13/Frameworks/Python.framework/Versions/3.13/Python:
@@ -398,26 +398,26 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-14 16:32</div>
             <div class="timeline-body"><p>AI tells me</p>
 <blockquote>
-<p>On macOS, dynamic libraries contain an installation path that tells the dynamic linker where to look for the library at runtime. This path is embedded in the library itself and can be different from its current location on disk. When the library is built, it's given this install path which represents where it expects to be installed in the final system.</p>
+<p>On macOS, dynamic libraries contain an installation path that tells the dynamic linker where to look for the library at runtime. This path is embedded in the library itself and can be different from its current location on disk. When the library is built, it&#x27;s given this install path which represents where it expects to be installed in the final system.</p>
 </blockquote>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/LukeMathWalker">@LukeMathWalker</a> on 2025-01-14 16:33</div>
-            <div class="timeline-body"><p>That checks out with what we are seeing I'd say.</p>
+            <div class="timeline-body"><p>That checks out with what we are seeing I&#x27;d say.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-14 16:34</div>
-            <div class="timeline-body"><p>I'd review a PR if you post it; otherwise, I'll get to it when I have a chance.</p>
-<p>I think this is a macOS-only issue, but haven't checked.</p>
+            <div class="timeline-body"><p>I&#x27;d review a PR if you post it; otherwise, I&#x27;ll get to it when I have a chance.</p>
+<p>I think this is a macOS-only issue, but haven&#x27;t checked.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2025-01-14 16:34</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-14 16:34</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">uv python</span> added by @zanieb on 2025-01-14 16:34</div>
+            <div class="event">Label <span class="label">uv python</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-14 16:34</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/LukeMathWalker">@LukeMathWalker</a> on 2025-01-14 16:42</div>
@@ -426,25 +426,25 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-14 16:44</div>
-            <div class="timeline-body"><p>It'd be a new one of these https://github.com/astral-sh/uv/blob/d2fb4c585d7882e3323082e0c80132a33a472bbf/crates/uv/src/commands/python/install.rs#L313</p>
+            <div class="timeline-body"><p>It&#x27;d be a new one of these https://github.com/astral-sh/uv/blob/d2fb4c585d7882e3323082e0c80132a33a472bbf/crates/uv/src/commands/python/install.rs#L313</p>
 <p>https://github.com/astral-sh/uv/blob/bec8468183c7cc1697ad1d34a5eb6087ec5c8a90/crates/uv-python/src/managed.rs#L496-L509</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/LukeMathWalker">@LukeMathWalker</a> on 2025-01-15 11:02</div>
-            <div class="timeline-body"><p>PR is up: https://github.com/astral-sh/uv/pull/10629</p>
+            <div class="timeline-body"><p>PR is up: <a href="https://github.com/astral-sh/uv/pull/10629">astral-sh/uv#10629</a></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2025-01-15 20:11</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-15 20:11</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2025-01-15 20:11</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-15 20:11</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:29:19 UTC
+        Synced at 2026-01-20 19:36:41 UTC
     </footer>
 </body>
 </html>

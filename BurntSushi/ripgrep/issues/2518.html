@@ -23,15 +23,15 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/burntbitterbal">@burntbitterbal</a></div>
-            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+            <div class="timeline-body">What version of ripgrep are you using?
 <p>ripgrep 13.0.0</p>
-<h4>How did you install ripgrep?</h4>
+How did you install ripgrep?
 <p>Macports</p>
-<h4>What operating system are you using ripgrep on?</h4>
+What operating system are you using ripgrep on?
 <p>Apple M1 Pro
 MacOS 12.6.3</p>
-<h4>Describe your bug.</h4>
-<p>Very surprised this happens since we trusted ripgrep to return correct matches, but it doesn't.</p>
+Describe your bug.
+<p>Very surprised this happens since we trusted ripgrep to return correct matches, but it doesn&#x27;t.</p>
 <p>Slow down is observed and wrong results are produced when running ripgrep with option <code>-o</code> against <a href="https://www.tensorflow.org/datasets/community_catalog/huggingface/enwik8">enwik8.txt</a> when searching for this set of words</p>
 <pre><code>inquisitorial
 Diablotins
@@ -67,15 +67,15 @@ interpro
 Deveson
 </code></pre>
 <p>The search results are wrong and search takes 36 times as long compared to searching the same set of words minus one word removed or added or a different set of words. This also appears to happen with other combinations of 32 words and other files.</p>
-<h4>What are the steps to reproduce the behavior?</h4>
+What are the steps to reproduce the behavior?
 <p>Download enwik8.txt and run <code>rg -on -f words.txt enwik8.txt</code>.</p>
-<h4>What is the actual behavior?</h4>
+What is the actual behavior?
 <p>Slowdown and wrong results:</p>
 <pre><code>/usr/bin/time rg -on -f words  enwik8.txt | wc
         7.70 real         7.53 user         0.13 sys
  100000000 100000000 802126412
 </code></pre>
-<h4>What is the expected behavior?</h4>
+What is the expected behavior?
 <p>A normal run would be similar to this, with these words and with <code>TEST</code> added (33 words to search):</p>
 <pre><code>/usr/bin/time rg -on -f words  enwik8.txt | wc
         0.21 real         0.20 user         0.01 sys
@@ -94,7 +94,7 @@ Deveson
 <p>The search results are wrong and search takes 36 times as long compared to searching the same set of words minus one word removed or added or a different set of words.</p>
 </blockquote>
 <p>Without commenting on correctness, your performance expectations are definitely wrong here. Adding one word can indeed slow things down by quite a bit. It really depends how common the word is. If adding a word results in a big increase in the number of matches, then I would expect that to slow things down.</p>
-<p>But I really need a full reproduction to say what's going on in this specific case. And also, why not say which word you removed that caused it to go faster?</p>
+<p>But I really need a full reproduction to say what&#x27;s going on in this specific case. And also, why not say which word you removed that caused it to go faster?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -104,19 +104,19 @@ Deveson
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2023-05-25 14:34</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-05-25 14:34</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-05-25 14:35</div>
             <div class="timeline-body"><p>Yup. There is a bug here. Interestingly, even small changes to the words, like chaging <code>Tolkien</code> to <code>tolkien</code> make ripgrep produce the correct result.</p>
-<p>It seems like what's happening is that something is triggering a bug that causes ripgrep to match at every position. That explains the slowdown and the large number of matches reported.</p>
+<p>It seems like what&#x27;s happening is that something is triggering a bug that causes ripgrep to match at every position. That explains the slowdown and the large number of matches reported.</p>
 <p>This looks like another literal optimization bug.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-05-25 15:14</div>
-            <div class="timeline-body"><p>Here's a minimal reproduction as a Rust program using the regex engine directly:</p>
-<pre><code class="language-rust">fn main() {
+            <div class="timeline-body"><p>Here&#x27;s a minimal reproduction as a Rust program using the regex engine directly:</p>
+<pre><code>fn main() {
     let needles = vec![
         &quot;aA&quot;, &quot;bA&quot;, &quot;cA&quot;, &quot;dA&quot;, &quot;eA&quot;, &quot;fA&quot;, &quot;gA&quot;, &quot;hA&quot;, &quot;iA&quot;, &quot;jA&quot;, &quot;kA&quot;, &quot;lA&quot;,
         &quot;mA&quot;, &quot;nA&quot;, &quot;oA&quot;, &quot;pA&quot;, &quot;qA&quot;, &quot;rA&quot;, &quot;sA&quot;, &quot;tA&quot;, &quot;uA&quot;, &quot;vA&quot;, &quot;wA&quot;, &quot;xA&quot;,
@@ -130,23 +130,23 @@ Deveson
 </code></pre>
 <p>That assert should pass, but it panics because <code>find_iter</code> found 6 matches even though there are zero.</p>
 <p>This is indeed a literal optimization bug. Sigh.</p>
-<p>I also don't have any great work arounds for you either. The bug happens as a result of using a sequence of literals with 26 different start bytes. It doesn't happen in every such case, because this particular bug also requires a suffix literal searcher to be extracted. One way to push ripgrep out of this bug is to add a pattern that can never match that also suppresses the suffix literal optimizer. For example, <code>ZQZQZQZQZQZQ\w</code>.</p>
+<p>I also don&#x27;t have any great work arounds for you either. The bug happens as a result of using a sequence of literals with 26 different start bytes. It doesn&#x27;t happen in every such case, because this particular bug also requires a suffix literal searcher to be extracted. One way to push ripgrep out of this bug is to add a pattern that can never match that also suppresses the suffix literal optimizer. For example, <code>ZQZQZQZQZQZQ\w</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-05-25 15:28</div>
-            <div class="timeline-body"><p>I filed a bug against the regex library as well: https://github.com/rust-lang/regex/issues/999</p>
+            <div class="timeline-body"><p>I filed a bug against the regex library as well: <a href="https://github.com/rust-lang/regex/issues/999">rust-lang/regex#999</a></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2023-05-25 17:06</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-05-25 17:06</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/burntbitterbal">@burntbitterbal</a> on 2023-08-27 23:37</div>
-            <div class="timeline-body"><p>Sorry to bother you again, I'm sure you're busy updating ripgrep. But this looks important.</p>
+            <div class="timeline-body"><p>Sorry to bother you again, I&#x27;m sure you&#x27;re busy updating ripgrep. But this looks important.</p>
 <p>I was alerted to this article https://www.genivia.com/ugrep.html was mentioned in the Reddit post https://www.reddit.com/r/opensource/comments/160zla6/ugrep_ultra_fast_grep_with_tui_unicode_support/</p>
 <p>Is this serious bug actually fixed in all ripgrep installs and all Rust regex library installs?</p>
-<p>I agree that this could be a security vulnerability, especially when it is more wide-spread than ripgrep (the Rust regex library.) I don't see a CVE on this issue or an advisory mention this issue. Other regex libraries have CVEs when such a bug was found.</p>
+<p>I agree that this could be a security vulnerability, especially when it is more wide-spread than ripgrep (the Rust regex library.) I don&#x27;t see a CVE on this issue or an advisory mention this issue. Other regex libraries have CVEs when such a bug was found.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -158,7 +158,7 @@ Deveson
 <blockquote>
 <p>Is this serious bug actually fixed in all ripgrep installs and all Rust regex library installs?</p>
 </blockquote>
-<p>It's fixed on master: https://github.com/BurntSushi/ripgrep/commit/fc0d9b90a9dbc1ba8d93a3f58da4ddbac0c40a7f</p>
+<p>It&#x27;s fixed on master: https://github.com/BurntSushi/ripgrep/commit/fc0d9b90a9dbc1ba8d93a3f58da4ddbac0c40a7f</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -166,24 +166,24 @@ Deveson
             <div class="timeline-body"><p>Searching for pcre cve gives hits, but I have not checked other libraries, just spent about a minute finding one like this:</p>
 <p><strong>CVE-2015-8393</strong>
 pcregrep in PCRE before 8.38 mishandles the -q option for binary files, which might allow remote attackers to obtain sensitive information via a crafted file, as demonstrated by a CGI script that sends stdout data to a client.</p>
-<p>I'm not a security specialist. This stuff is out of my league.</p>
+<p>I&#x27;m not a security specialist. This stuff is out of my league.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-08-28 01:40</div>
-            <div class="timeline-body"><p>That CVE is quite sparse on the details, but it reads to me like it's talking about the <code>--quiet</code> flag in combination with specific types of binary files. That's not applicable to this bug, which can only be triggered by a certain class of regexes. If your attacker can already change the regex to change what matches are emitted, then the threat model of &quot;produces matches when it shouldn't&quot; doesn't seem relevant.</p>
+            <div class="timeline-body"><p>That CVE is quite sparse on the details, but it reads to me like it&#x27;s talking about the <code>--quiet</code> flag in combination with specific types of binary files. That&#x27;s not applicable to this bug, which can only be triggered by a certain class of regexes. If your attacker can already change the regex to change what matches are emitted, then the threat model of &quot;produces matches when it shouldn&#x27;t&quot; doesn&#x27;t seem relevant.</p>
 <p>But yeah you made a statement of fact</p>
 <blockquote>
 <p>Other regex libraries have CVEs when such a bug was found.</p>
 </blockquote>
 <p>So I just assumed you actually had specific CVEs in mind that were relevant here.</p>
-<p>I'm not aware of any standing policy by any regex engine that treats match bugs as security vulnerabilities all on their own. That doesn't mean that treating match bugs as security problems is wrong, I'm just not aware of any precedent there.</p>
+<p>I&#x27;m not aware of any standing policy by any regex engine that treats match bugs as security vulnerabilities all on their own. That doesn&#x27;t mean that treating match bugs as security problems is wrong, I&#x27;m just not aware of any precedent there.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:43:41 UTC
+        Synced at 2026-01-20 18:48:13 UTC
     </footer>
 </body>
 </html>

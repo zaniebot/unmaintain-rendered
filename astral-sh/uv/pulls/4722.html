@@ -23,32 +23,32 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Partially closes #1917</p>
 <p>This PR picks up on some of the great work from #1864 and opted to keep <code>panic_immediate_abort</code> (for size reasons). I split the PR in different isolated commits in case we want to separate/cherry-pick them out.</p>
 <ol>
 <li>The first commit ports mostly all std changes from that PR into this PR. Binary sizes stayed the same ~16kb.</li>
-<li>The second commit migrates our existing usage of windows-sys to windows for a safer ffi calls with Results!. It also changes all large unsafe blocks to be isolated to the actual unsafe calls, and switches some areas to use std such as getenv port ( which seemed buggy! ) from launcher.c. In addition, this also adds more error checking in order to match some missing assertions from distlib's launcher.c. Note, due to the additional .text data, the binary sizes increased to ~20.5kb, but we can cut back on some of the added error msgs as needed.</li>
+<li>The second commit migrates our existing usage of windows-sys to windows for a safer ffi calls with Results!. It also changes all large unsafe blocks to be isolated to the actual unsafe calls, and switches some areas to use std such as getenv port ( which seemed buggy! ) from launcher.c. In addition, this also adds more error checking in order to match some missing assertions from distlib&#x27;s launcher.c. Note, due to the additional .text data, the binary sizes increased to ~20.5kb, but we can cut back on some of the added error msgs as needed.</li>
 <li>The third commit switches to using xwin for building on all 3 supported trampoline targets for sanity, and adds a CI bloat check for core::fmt and panic as a precaution. Sadly, this will invalidate the xwin cache on the first run.</li>
 </ol>
-<h2>Test Plan</h2>
+Test Plan
 <p>Most changes were tested on a couple of local GUI apps and console apps, also tested some of the error states manually by using SetLastError at different points in the code and/or passing in invalid handles.</p>
-<p>I'm not sure how far we can get with migrating some of the other calls without increasing binary size substantially. An initial attempt at using std::path didn't seem so bad size wise when I tried it (~1k). On other cases, such as std::process::exit added ~10k to the total binary size.</p>
+<p>I&#x27;m not sure how far we can get with migrating some of the other calls without increasing binary size substantially. An initial attempt at using std::path didn&#x27;t seem so bad size wise when I tried it (~1k). On other cases, such as std::process::exit added ~10k to the total binary size.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @konstin by @zanieb on 2024-07-02 20:19</div>
+            <div class="event">Review requested from <a href="https://github.com/konstin">@konstin</a> by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-02 20:19</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @BurntSushi by @zanieb on 2024-07-02 20:19</div>
+            <div class="event">Review requested from <a href="https://github.com/BurntSushi">@BurntSushi</a> by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-02 20:19</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-07-03 04:09</div>
-            <div class="timeline-body"><p>Below are some extra logging I added that is not part of distlib's launcher.c which we could arguably remove, although all these errors (if they occur) can diminish the stability of the console/gui script.</p>
-<details><summary>Patch File Diff (in case we want to remove the added logging)</summary>
+            <div class="timeline-body"><p>Below are some extra logging I added that is not part of distlib&#x27;s launcher.c which we could arguably remove, although all these errors (if they occur) can diminish the stability of the console/gui script.</p>
+Patch File Diff (in case we want to remove the added logging)
 <p>
 
-<pre><code class="language-patch">@@ -400,9 +400,7 @@
+<pre><code>@@ -400,9 +400,7 @@
          print_last_error_and_exit(&quot;Failed to spawn the python child process.&quot;);
      });
      let child_process_info = unsafe { child_process_info.assume_init() };
@@ -88,7 +88,7 @@
 @@ -463,16 +455,10 @@
      let mut msg = MaybeUninit::&lt;MSG&gt;::uninit();
      unsafe {
-         // End the launcher's &quot;app starting&quot; cursor state.
+         // End the launcher&#x27;s &quot;app starting&quot; cursor state.
 -        PostMessageA(None, 0, None, None).unwrap_or_else(|_| {
 -            eprintln!(&quot;Failed to post a message to specified window.&quot;);
 -        });
@@ -97,13 +97,13 @@
 -        }
 +        let _ = PostMessageA(None, 0, None, None);
 +        let _ = GetMessageA(msg.as_mut_ptr(), None, 0, 0);
-         // Proxy the child's input idle event.
+         // Proxy the child&#x27;s input idle event.
 -        if WaitForInputIdle(child_handle, INFINITE) != 0 {
 -            eprintln!(&quot;Failed to wait for input from window.&quot;);
 -        }
 +        let _ = WaitForInputIdle(child_handle, INFINITE);
          // Signal the process input idle event by creating a window and pumping
-         // sent messages. The window class isn't important, so just use the
+         // sent messages. The window class isn&#x27;t important, so just use the
          // system &quot;STATIC&quot; class.
 @@ -491,10 +477,8 @@
              None,
@@ -120,7 +120,7 @@
  
 @@ -517,9 +501,7 @@
  
-     // (best effort) Switch to some innocuous directory, so we don't hold the original cwd open.
+     // (best effort) Switch to some innocuous directory, so we don&#x27;t hold the original cwd open.
      // See distlib/PC/launcher.c::switch_working_directory
 -    if std::env::set_current_dir(std::env::temp_dir()).is_err() {
 -        eprintln!(&quot;Failed to set cwd to temp dir.&quot;);
@@ -140,7 +140,7 @@
          print_last_error_and_exit(&quot;Failed to get exit code of child process.&quot;);
 </code></pre>
 </p>
-</details> 
+ 
 
 </div>
         </div>
@@ -150,8 +150,8 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:508 on 2024-07-03 04:13</div>
-            <div class="timeline-body"><p>Note, the <code>c:\\</code> approach was removed as it's not part of <a href="https://github.com/pypa/distlib/blob/master/PC/launcher.c#L736">launcher.c</a>, plus the sysroot drive could vary on a system.</p>
-<p>getenv(c&quot;TEMP&quot;) was changed to use std instead as it had bugs when parsing the value of TEMP on my system probably due to W vs A calls but didn't dig too much, as a result <code>getenv</code> was deleted.</p>
+            <div class="timeline-body"><p>Note, the <code>c:\\</code> approach was removed as it&#x27;s not part of <a href="https://github.com/pypa/distlib/blob/master/PC/launcher.c#L736">launcher.c</a>, plus the sysroot drive could vary on a system.</p>
+<p>getenv(c&quot;TEMP&quot;) was changed to use std instead as it had bugs when parsing the value of TEMP on my system probably due to W vs A calls but didn&#x27;t dig too much, as a result <code>getenv</code> was deleted.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -174,7 +174,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-07-03 07:45</div>
             <div class="timeline-body"><blockquote>
-<p>I didn't commit the binaries, do we manually commit those on the PR?</p>
+<p>I didn&#x27;t commit the binaries, do we manually commit those on the PR?</p>
 </blockquote>
 <p>A member of the team will make a follow-up where the build the binaries and commit them</p>
 </div>
@@ -197,7 +197,7 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @samypr100 on 2024-07-03 14:47</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/samypr100">@samypr100</a> on 2024-07-03 14:47</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-07-06 20:30</div>
@@ -205,10 +205,10 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @konstin on 2024-07-06 20:38</div>
+            <div class="event">Merged by <a href="https://github.com/konstin">@konstin</a> on 2024-07-06 20:38</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @konstin on 2024-07-06 20:38</div>
+            <div class="event">Closed by <a href="https://github.com/konstin">@konstin</a> on 2024-07-06 20:38</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-07 16:52</div>
@@ -221,7 +221,7 @@
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:37:52 UTC
+        Synced at 2026-01-20 19:46:18 UTC
     </footer>
 </body>
 </html>

@@ -23,55 +23,55 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Fixes #9895</p>
-<p>The cause for this panic came from an offset error in the code. When analyzing a hypothetical f-string, we attempt to re-parse it as an f-string, and use the AST data to determine, among other things, whether the format specifiers are correct. To determine the 'correctness' of a format specifier, we actually have to re-parse the format specifier, and this is where the issue lies. To get the source text for the specifier, we were taking a slice from the original file source text... even though the AST data for the specifier belongs to the standalone parsed f-string expression, meaning that the ranges are going to be way off. In a file with Unicode, this can cause panics if the slice is inside a char boundary.</p>
+<p>The cause for this panic came from an offset error in the code. When analyzing a hypothetical f-string, we attempt to re-parse it as an f-string, and use the AST data to determine, among other things, whether the format specifiers are correct. To determine the &#x27;correctness&#x27; of a format specifier, we actually have to re-parse the format specifier, and this is where the issue lies. To get the source text for the specifier, we were taking a slice from the original file source text... even though the AST data for the specifier belongs to the standalone parsed f-string expression, meaning that the ranges are going to be way off. In a file with Unicode, this can cause panics if the slice is inside a char boundary.</p>
 <p>To fix this, we now slice from the temporary source we created earlier to parse the literal as an f-string.</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>The RUF027 snapshot test was amended to include a string with format specifiers which we <em>should</em> be calling out. This is to ensure we do slice format specifiers from the source text correctly.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @snowsignal on 2024-02-14 20:11</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-02-14 20:11</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @snowsignal on 2024-02-14 20:13</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-02-14 20:13</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-02-14 20:26</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+1 -0 violations, +0 -0 fixes in 1 projects; 42 projects unchanged)</p>
-<details><summary><a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+1 -0 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/pandas-dev/pandas/blob/aa6ab37499268e01e21610e6bb201c9659c02fb3/pandas/io/formats/format.py#L1919'>pandas/io/formats/format.py:1919:26:</a> RUF027 Possible f-string without an `f` prefix
++ <a href="https://github.com/pandas-dev/pandas/blob/aa6ab37499268e01e21610e6bb201c9659c02fb3/pandas/io/formats/format.py#L1919">pandas/io/formats/format.py:1919:26:</a> RUF027 Possible f-string without an `f` prefix
 </pre>
 
 </p>
-</details>
-<details><summary>Changes by rule (1 rules affected)</summary>
+
+Changes by rule (1 rules affected)
 <p>
 
 <p>| code | total | + violation | - violation | + fix | - fix |
 | ---- | ------- | --------- | -------- | ----- | ---- |
 | RUF027 | 1 | 1 | 0 | 0 | 0 |</p>
 </p>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/missing_fstring_syntax.rs</code>:94 on 2024-02-14 22:48</div>
-            <div class="timeline-body"><p>I believe there's a parse_expression_at method in the parser that gives you absolute offsets (less confusing)</p>
+            <div class="timeline-body"><p>I believe there&#x27;s a parse_expression_at method in the parser that gives you absolute offsets (less confusing)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -93,24 +93,24 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_linter/src/rules/ruff/rules/missing_fstring_syntax.rs</code>:94 on 2024-02-14 23:03</div>
-            <div class="timeline-body"><p>Actually, wait - I think it's a bit more complicated since putting the <code>f</code> at the front changes the resulting offset. We could just add 1 to the start offset (that was my original approach, actually) but I think slicing from the parsed string would be simpler and more immediately understandable.</p>
+            <div class="timeline-body"><p>Actually, wait - I think it&#x27;s a bit more complicated since putting the <code>f</code> at the front changes the resulting offset. We could just add 1 to the start offset (that was my original approach, actually) but I think slicing from the parsed string would be simpler and more immediately understandable.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/resources/test/fixtures/ruff/RUF027_0.py</code>:74 on 2024-02-15 04:33</div>
-            <div class="timeline-body"><p>Does this test case panic on main? It's not panicking for me. I think we can use the same code as mentioned in the issue.</p>
+            <div class="timeline-body"><p>Does this test case panic on main? It&#x27;s not panicking for me. I think we can use the same code as mentioned in the issue.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/ruff/rules/missing_fstring_syntax.rs</code>:91 on 2024-02-15 04:33</div>
-            <div class="timeline-body"><p>nit: we probably don't require the call to <code>range</code> because <code>locator.slice</code> expects a <code>Ranged</code> type</p>
-<pre><code class="language-suggestion">    let fstring_expr = format!(&quot;f{}&quot;, locator.slice(literal)));
+            <div class="timeline-body"><p>nit: we probably don&#x27;t require the call to <code>range</code> because <code>locator.slice</code> expects a <code>Ranged</code> type</p>
+<pre><code>    let fstring_expr = format!(&quot;f{}&quot;, locator.slice(literal)));
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/ruff/rules/missing_fstring_syntax.rs</code>:94 on 2024-02-15 04:35</div>
-            <div class="timeline-body"><p>We've used code like <code>&quot;f&quot;.text_len()</code> in multiple places but I guess this is fine as well.</p>
+            <div class="timeline-body"><p>We&#x27;ve used code like <code>&quot;f&quot;.text_len()</code> in multiple places but I guess this is fine as well.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -120,7 +120,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/missing_fstring_syntax.rs</code>:94 on 2024-02-15 09:57</div>
             <div class="timeline-body"><p>Ah good point. I missed the fact that we parse a modified string. We could subtract <code>-1</code> from the start but that would fail apart if the string is at the very start of the file (not unlikely for docstrings).</p>
-<p>I think it's fine. It might be worth adding a comment somewhere mentioning that all offsets are relative to <code>fstring_expr</code></p>
+<p>I think it&#x27;s fine. It might be worth adding a comment somewhere mentioning that all offsets are relative to <code>fstring_expr</code></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -133,15 +133,15 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_linter/resources/test/fixtures/ruff/RUF027_0.py</code>:74 on 2024-02-16 18:41</div>
-            <div class="timeline-body"><p>Oh yeah, this wasn't meant to test for a panic, this was to test that we <em>do</em> parse format specifiers correctly.</p>
-<p>I'll add the code from the original issue as an additional snapshot test :)</p>
+            <div class="timeline-body"><p>Oh yeah, this wasn&#x27;t meant to test for a panic, this was to test that we <em>do</em> parse format specifiers correctly.</p>
+<p>I&#x27;ll add the code from the original issue as an additional snapshot test :)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @snowsignal on 2024-02-16 20:04</div>
+            <div class="event">Merged by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-02-16 20:04</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @snowsignal on 2024-02-16 20:04</div>
+            <div class="event">Closed by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-02-16 20:04</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-02-16 20:04</div>
@@ -149,7 +149,7 @@
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:02:48 UTC
+        Synced at 2026-01-20 19:01:42 UTC
     </footer>
 </body>
 </html>

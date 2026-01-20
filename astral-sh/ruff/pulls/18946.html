@@ -23,31 +23,31 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>I think this should be the last step before combining <code>OldDiagnostic</code> and <code>ruff_db::Diagnostic</code>. We can't store a <code>NoqaCode</code> on <code>ruff_db::Diagnostic</code>, so I converted the <code>noqa_code</code> field to an <code>Option&lt;String&gt;</code> and then propagated this change to all of the callers.</p>
-<p>I tried to use <code>&amp;str</code> everywhere it was possible, so I think the remaining <code>to_string</code> calls are necessary. I spent some time trying to convert <em>everything</em> to <code>&amp;str</code> but ran into lifetime issues, especially in the <code>FixTable</code>. Maybe we can take another look at that if it causes a performance regression, but hopefully these paths aren't too hot. We also avoid some <code>to_string</code> calls, so it might even out a bit too.</p>
-<h2>Test Plan</h2>
+            <div class="timeline-body">Summary
+<p>I think this should be the last step before combining <code>OldDiagnostic</code> and <code>ruff_db::Diagnostic</code>. We can&#x27;t store a <code>NoqaCode</code> on <code>ruff_db::Diagnostic</code>, so I converted the <code>noqa_code</code> field to an <code>Option&lt;String&gt;</code> and then propagated this change to all of the callers.</p>
+<p>I tried to use <code>&amp;str</code> everywhere it was possible, so I think the remaining <code>to_string</code> calls are necessary. I spent some time trying to convert <em>everything</em> to <code>&amp;str</code> but ran into lifetime issues, especially in the <code>FixTable</code>. Maybe we can take another look at that if it causes a performance regression, but hopefully these paths aren&#x27;t too hot. We also avoid some <code>to_string</code> calls, so it might even out a bit too.</p>
+Test Plan
 <p>Existing tests</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> added by @ntBre on 2025-06-25 21:19</div>
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-25 21:19</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">diagnostics</span> added by @ntBre on 2025-06-25 21:19</div>
+            <div class="event">Label <span class="label">diagnostics</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-25 21:19</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-25 21:29</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
@@ -57,10 +57,10 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @ntBre on 2025-06-25 21:38</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-25 21:38</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-06-25 21:38</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-25 21:38</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-26 07:10</div>
@@ -69,10 +69,10 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/diagnostics.rs</code>:170 on 2025-06-26 07:10</div>
             <div class="timeline-body"><p>We could use hashbrown with <code>entry_ref</code> here to avoid allocating a new string only to increment the counter</p>
-<details><summary>Patch<summary>
+Patch
 <p>
 
-<pre><code class="language-patch">Index: Cargo.lock
+<pre><code>Index: Cargo.lock
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 &lt;+&gt;UTF-8
@@ -124,22 +124,22 @@ diff --git a/crates/ruff_linter/src/linter.rs b/crates/ruff_linter/src/linter.rs
  
 -    pub fn entry(&amp;mut self, code: String) -&gt; FixTableEntry {
 -        FixTableEntry(self.0.entry(code))
-+    pub fn entry&lt;'a&gt;(&amp;'a mut self, code: &amp;'a str) -&gt; FixTableEntry&lt;'a&gt; {
++    pub fn entry&lt;&#x27;a&gt;(&amp;&#x27;a mut self, code: &amp;&#x27;a str) -&gt; FixTableEntry&lt;&#x27;a&gt; {
 +        FixTableEntry(self.0.entry_ref(code))
      }
  
-     pub fn iter(&amp;self) -&gt; impl Iterator&lt;Item = (&amp;str, &amp;'static str, usize)&gt; {
+     pub fn iter(&amp;self) -&gt; impl Iterator&lt;Item = (&amp;str, &amp;&#x27;static str, usize)&gt; {
 @@ -120,7 +119,9 @@
      }
  }
  
--pub struct FixTableEntry&lt;'a&gt;(Entry&lt;'a, String, FixCount&gt;);
-+pub struct FixTableEntry&lt;'a&gt;(
-+    hashbrown::hash_map::EntryRef&lt;'a, 'a, String, str, FixCount, FxBuildHasher&gt;,
+-pub struct FixTableEntry&lt;&#x27;a&gt;(Entry&lt;&#x27;a, String, FixCount&gt;);
++pub struct FixTableEntry&lt;&#x27;a&gt;(
++    hashbrown::hash_map::EntryRef&lt;&#x27;a, &#x27;a, String, str, FixCount, FxBuildHasher&gt;,
 +);
  
- impl&lt;'a&gt; FixTableEntry&lt;'a&gt; {
-     pub fn or_default(self, rule_name: &amp;'static str) -&gt; &amp;'a mut usize {
+ impl&lt;&#x27;a&gt; FixTableEntry&lt;&#x27;a&gt; {
+     pub fn or_default(self, rule_name: &amp;&#x27;static str) -&gt; &amp;&#x27;a mut usize {
 @@ -650,7 +651,7 @@
              if iterations &lt; MAX_ITERATIONS {
                  // Count the number of fixed errors.
@@ -202,7 +202,7 @@ diff --git a/crates/ruff_linter/src/fix/mod.rs b/crates/ruff_linter/src/fix/mod.
 
 </code></pre>
 </p>
-</details> 
+ 
 
 </div>
         </div>
@@ -213,20 +213,20 @@ diff --git a/crates/ruff_linter/src/fix/mod.rs b/crates/ruff_linter/src/fix/mod.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/printer.rs</code>:365 on 2025-06-26 07:12</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">                        statistic.code.as_ref().unwrap_or_default().red().bold(),
+            <div class="timeline-body"><pre><code>                        statistic.code.as_ref().unwrap_or_default().red().bold(),
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/noqa.rs</code>:54 on 2025-06-26 07:13</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">        if code == Rule::BlanketNOQA.noqa_code() {
+            <div class="timeline-body"><pre><code>        if code == Rule::BlanketNOQA.noqa_code() {
 </code></pre>
-<p>We should add another <code>PartialEq</code> override if that's the only reason for changing the order here</p>
+<p>We should add another <code>PartialEq</code> override if that&#x27;s the only reason for changing the order here</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/noqa.rs</code>:81 on 2025-06-26 07:14</div>
-            <div class="timeline-body"><p>Could <code>matches</code> now be a <code>Vec&lt;&amp;'a str&gt;</code> instead?</p>
+            <div class="timeline-body"><p>Could <code>matches</code> now be a <code>Vec&lt;&amp;&#x27;a str&gt;</code> instead?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -236,13 +236,13 @@ diff --git a/crates/ruff_linter/src/fix/mod.rs b/crates/ruff_linter/src/fix/mod.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/message/text.rs</code>:255 on 2025-06-26 07:43</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">        let label = self.message.secondary_code().unwrap_or_default();
+            <div class="timeline-body"><pre><code>        let label = self.message.secondary_code().unwrap_or_default();
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/noqa.rs</code>:210 on 2025-06-26 08:06</div>
-            <div class="timeline-body"><p>I'm inclined to keep using <code>Rule</code> here:</p>
+            <div class="timeline-body"><p>I&#x27;m inclined to keep using <code>Rule</code> here:</p>
 <ul>
 <li>We anyway parse the rule code in the <code>Directive::Codes</code> branch</li>
 <li>I think we want to migrate to a model similar to ty long term where we collect all suppression comments and then check them inside <code>report_diagnostic</code> (where we have access to the <code>Rule</code>!)</li>
@@ -251,8 +251,8 @@ diff --git a/crates/ruff_linter/src/fix/mod.rs b/crates/ruff_linter/src/fix/mod.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-06-26 08:08</div>
-            <div class="timeline-body"><p>This mostly looks good. I think we want to keep using <code>Rule</code> in <code>noqa.rs</code>. But I'm not sure if that's better done in a separate PR</p>
-<p>I also suggest introducing a <code>SecondaryCode</code> struct. It's hard to tell what all the <code>&amp;str</code>  and <code>String</code> usages are (especially because there are so few comments)</p>
+            <div class="timeline-body"><p>This mostly looks good. I think we want to keep using <code>Rule</code> in <code>noqa.rs</code>. But I&#x27;m not sure if that&#x27;s better done in a separate PR</p>
+<p>I also suggest introducing a <code>SecondaryCode</code> struct. It&#x27;s hard to tell what all the <code>&amp;str</code>  and <code>String</code> usages are (especially because there are so few comments)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -261,7 +261,7 @@ diff --git a/crates/ruff_linter/src/fix/mod.rs b/crates/ruff_linter/src/fix/mod.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/noqa.rs</code>:210 on 2025-06-26 12:49</div>
-            <div class="timeline-body"><p><code>Rule</code> instead of reverting to <code>NoqaCode</code>? I don't think we always parse this back to a <code>Rule</code>, but I can give it a try if you want. This commit should show roughly all the places that could be affected: https://github.com/astral-sh/ruff/pull/18946/commits/97607a524cde36563a83ad1f10dbec35863625d2.</p>
+            <div class="timeline-body"><p><code>Rule</code> instead of reverting to <code>NoqaCode</code>? I don&#x27;t think we always parse this back to a <code>Rule</code>, but I can give it a try if you want. This commit should show roughly all the places that could be affected: <a href="https://github.com/astral-sh/ruff/pull/18946">astral-sh/ruff#18946</a>/commits/97607a524cde36563a83ad1f10dbec35863625d2.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -270,7 +270,7 @@ diff --git a/crates/ruff_linter/src/fix/mod.rs b/crates/ruff_linter/src/fix/mod.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/src/printer.rs</code>:309 on 2025-06-26 12:51</div>
-            <div class="timeline-body"><p>Hmm, I think if it wrapped a <code>String</code> we'd have to clone in <code>OldDiagnostic::secondary_code</code> right? I'll try it with a <code>&amp;str</code> and see if we can use that everywhere. I definitely agree that it would be more readable, though.</p>
+            <div class="timeline-body"><p>Hmm, I think if it wrapped a <code>String</code> we&#x27;d have to clone in <code>OldDiagnostic::secondary_code</code> right? I&#x27;ll try it with a <code>&amp;str</code> and see if we can use that everywhere. I definitely agree that it would be more readable, though.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -283,7 +283,7 @@ diff --git a/crates/ruff_linter/src/fix/mod.rs b/crates/ruff_linter/src/fix/mod.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/src/diagnostics.rs</code>:170 on 2025-06-26 13:03</div>
-            <div class="timeline-body"><p>Nice, thanks for the patch! It was annoying that I couldn't do this with a regular <code>Entry</code>.</p>
+            <div class="timeline-body"><p>Nice, thanks for the patch! It was annoying that I couldn&#x27;t do this with a regular <code>Entry</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -292,7 +292,7 @@ diff --git a/crates/ruff_linter/src/fix/mod.rs b/crates/ruff_linter/src/fix/mod.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/noqa.rs</code>:210 on 2025-06-26 13:19</div>
-            <div class="timeline-body"><p>Yes, I'm inclined to use <code>Rule</code> here instead of the secondary code.</p>
+            <div class="timeline-body"><p>Yes, I&#x27;m inclined to use <code>Rule</code> here instead of the secondary code.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -310,12 +310,12 @@ diff --git a/crates/ruff_linter/src/fix/mod.rs b/crates/ruff_linter/src/fix/mod.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/noqa.rs</code>:81 on 2025-06-26 13:30</div>
-            <div class="timeline-body"><p>I don't think so, but this is where I ran into lifetime issues. First in <code>check_noqa</code>, where iterating over the context creates a mutable borrow, but we need an immutable one later on.</p>
+            <div class="timeline-body"><p>I don&#x27;t think so, but this is where I ran into lifetime issues. First in <code>check_noqa</code>, where iterating over the context creates a mutable borrow, but we need an immutable one later on.</p>
 <p>https://github.com/astral-sh/ruff/blob/d04e63a6d9dbb5c751c99d113d7eaf98b765b426/crates/ruff_linter/src/checkers/noqa.rs#L47-L49</p>
-<p>We can possibly get around that by doing the iteration after the immutable borrows, but I'm not sure if that breaks other logic. It at least satisfies the compiler so that I can hit the next error.</p>
-<p>And then in <code>FileNoqaDirectives::extract</code> where the compiler says I'm returning a local reference.</p>
+<p>We can possibly get around that by doing the iteration after the immutable borrows, but I&#x27;m not sure if that breaks other logic. It at least satisfies the compiler so that I can hit the next error.</p>
+<p>And then in <code>FileNoqaDirectives::extract</code> where the compiler says I&#x27;m returning a local reference.</p>
 <p>https://github.com/astral-sh/ruff/blob/d04e63a6d9dbb5c751c99d113d7eaf98b765b426/crates/ruff_linter/src/noqa.rs#L263-L266</p>
-<p>Do you see anything obviously wrong I'm doing here?</p>
+<p>Do you see anything obviously wrong I&#x27;m doing here?</p>
 <p>I tried somewhat briefly to move this noqa logic into <code>LintContext</code> a couple of days ago, like we did with the per-file ignores, but it turned out to be trickier than expected and I postponed it to work on this PR.</p>
 </div>
         </div>
@@ -334,7 +334,7 @@ diff --git a/crates/ruff_linter/src/fix/mod.rs b/crates/ruff_linter/src/fix/mod.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/src/printer.rs</code>:309 on 2025-06-26 14:41</div>
-            <div class="timeline-body"><p>I think I was responding to these too early in the morning :facepalm: I can store the <code>SecondaryCode(String)</code> on the <code>OldDiagnostic</code> and then use <code>&amp;SecondaryCode</code> where I'm currently using <code>&amp;str</code>. I'm working on that, and then I'll try the <code>Rule</code> changes on a separate branch!</p>
+            <div class="timeline-body"><p>I think I was responding to these too early in the morning :facepalm: I can store the <code>SecondaryCode(String)</code> on the <code>OldDiagnostic</code> and then use <code>&amp;SecondaryCode</code> where I&#x27;m currently using <code>&amp;str</code>. I&#x27;m working on that, and then I&#x27;ll try the <code>Rule</code> changes on a separate branch!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -348,9 +348,9 @@ diff --git a/crates/ruff_linter/src/fix/mod.rs b/crates/ruff_linter/src/fix/mod.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-26 16:40</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
+<code>mypy_primer</code> results
 <p>No ecosystem changes detected ✅</p>
 </div>
         </div>
@@ -360,12 +360,12 @@ diff --git a/crates/ruff_linter/src/fix/mod.rs b/crates/ruff_linter/src/fix/mod.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/noqa.rs</code>:210 on 2025-06-26 17:07</div>
-            <div class="timeline-body"><p>I opened a small PR making this change: https://github.com/astral-sh/ruff/pull/18966. Hopefully that's what you had in mind.</p>
+            <div class="timeline-body"><p>I opened a small PR making this change: <a href="https://github.com/astral-sh/ruff/pull/18966">astral-sh/ruff#18966</a>. Hopefully that&#x27;s what you had in mind.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/message/mod.rs</code>:390 on 2025-06-27 06:27</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">#[derive(Clone, Debug, PartialEq, Eq, Default, Hash)]
+            <div class="timeline-body"><pre><code>#[derive(Clone, Debug, PartialEq, Eq, Default, Hash)]
 </code></pre>
 <p>Or do we use the ordering somewhere?</p>
 </div>
@@ -385,7 +385,7 @@ diff --git a/crates/ruff_linter/src/fix/mod.rs b/crates/ruff_linter/src/fix/mod.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/message/mod.rs</code>:390 on 2025-06-27 12:42</div>
-            <div class="timeline-body"><p>I think they're used for adding noqa codes, but I'll double check.</p>
+            <div class="timeline-body"><p>I think they&#x27;re used for adding noqa codes, but I&#x27;ll double check.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -394,7 +394,7 @@ diff --git a/crates/ruff_linter/src/fix/mod.rs b/crates/ruff_linter/src/fix/mod.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/message/mod.rs</code>:390 on 2025-06-27 12:48</div>
-            <div class="timeline-body"><p>Yeah, they're used in <code>collect_rule_codes</code>:</p>
+            <div class="timeline-body"><p>Yeah, they&#x27;re used in <code>collect_rule_codes</code>:</p>
 <p>https://github.com/astral-sh/ruff/blob/b1f4e536291d75018ee14062050b3ff89eb66d46/crates/ruff_linter/src/linter.rs#L682-L687</p>
 <p>and in <code>NoqaEdit::write</code>. We could map to strings first if that would be preferable over deriving these, though.</p>
 </div>
@@ -405,14 +405,14 @@ diff --git a/crates/ruff_linter/src/fix/mod.rs b/crates/ruff_linter/src/fix/mod.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/message/mod.rs</code>:390 on 2025-06-27 14:15</div>
-            <div class="timeline-body"><p>Nah, it's fine then.</p>
+            <div class="timeline-body"><p>Nah, it&#x27;s fine then.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @ntBre on 2025-06-27 15:36</div>
+            <div class="event">Merged by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-27 15:36</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ntBre on 2025-06-27 15:36</div>
+            <div class="event">Closed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-27 15:36</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-06-27 15:36</div>
@@ -420,7 +420,7 @@ diff --git a/crates/ruff_linter/src/fix/mod.rs b/crates/ruff_linter/src/fix/mod.
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:13:42 UTC
+        Synced at 2026-01-20 19:15:55 UTC
     </footer>
 </body>
 </html>

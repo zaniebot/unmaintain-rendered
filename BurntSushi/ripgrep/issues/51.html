@@ -29,21 +29,21 @@
 <li><code>--colors-path</code></li>
 <li><code>--colors-line-number</code></li>
 </ul>
-<p>Implementing the part where we set colors based on an argument is not particularly hard (just a matter of translating user input to <code>term::Attr</code> enums). Parsing input in the bash terminal format like <code>ag</code> does was not difficult to implement. However, this limits Windows usage because we don't have an easy translation between those colors.</p>
+<p>Implementing the part where we set colors based on an argument is not particularly hard (just a matter of translating user input to <code>term::Attr</code> enums). Parsing input in the bash terminal format like <code>ag</code> does was not difficult to implement. However, this limits Windows usage because we don&#x27;t have an easy translation between those colors.</p>
 <p>How should we go about supporting these color customizations for both Linux, Mac and Windows?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/eugene-bulkin">@eugene-bulkin</a> on 2016-09-24 04:58</div>
-            <div class="timeline-body"><p>For reference, here's a working example of using the bash format:</p>
-<p><img src="https://cloud.githubusercontent.com/assets/3990681/18806198/c6ece33a-81d8-11e6-90c6-9a742b8a5cbf.png" alt="Colored matches" /></p>
+            <div class="timeline-body"><p>For reference, here&#x27;s a working example of using the bash format:</p>
+<p><img src="https://cloud.githubusercontent.com/assets/3990681/18806198/c6ece33a-81d8-11e6-90c6-9a742b8a5cbf.png" alt="Colored matches"></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-24 05:15</div>
-            <div class="timeline-body"><p>I think we should take the common subset that is supported by all platforms and expose them as English names. I think that means these: https://stebalien.github.io/doc/term/term/color/index.html --- I don't know precisely which ones are or aren't supported on Windows though. Things like &quot;bold&quot; or background colors don't work either (I think), or rather, bold &quot;RED&quot; is &quot;BRIGHT_RED&quot;. So maybe we do something like: <code>--color-path COLOR</code> where <code>COLOR</code> is <code>FgName[:Bold][/BgName[:Bold]]</code>, and <code>FgName</code>/<code>BgName</code> is any one of (case insensitively) <code>black</code>, <code>blue</code>, <code>cyan</code>, <code>green</code>, <code>magenta</code>, <code>red</code>, <code>white</code>, <code>yellow</code>. We could note that background colors aren't supported on Windows.</p>
+            <div class="timeline-body"><p>I think we should take the common subset that is supported by all platforms and expose them as English names. I think that means these: https://stebalien.github.io/doc/term/term/color/index.html --- I don&#x27;t know precisely which ones are or aren&#x27;t supported on Windows though. Things like &quot;bold&quot; or background colors don&#x27;t work either (I think), or rather, bold &quot;RED&quot; is &quot;BRIGHT_RED&quot;. So maybe we do something like: <code>--color-path COLOR</code> where <code>COLOR</code> is <code>FgName[:Bold][/BgName[:Bold]]</code>, and <code>FgName</code>/<code>BgName</code> is any one of (case insensitively) <code>black</code>, <code>blue</code>, <code>cyan</code>, <code>green</code>, <code>magenta</code>, <code>red</code>, <code>white</code>, <code>yellow</code>. We could note that background colors aren&#x27;t supported on Windows.</p>
 <p>We should probably look at other tools that permit color customization and support both Linux and Windows and see what they do.</p>
-<p>I'd like to avoid specifying colors as ANSI escape codes.</p>
+<p>I&#x27;d like to avoid specifying colors as ANSI escape codes.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -59,7 +59,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-24 05:51</div>
-            <div class="timeline-body"><p>Yeah, it doesn't seem wise to jump on that so soon. We should stick with things that we know work. Maybe in a few years. :-)</p>
+            <div class="timeline-body"><p>Yeah, it doesn&#x27;t seem wise to jump on that so soon. We should stick with things that we know work. Maybe in a few years. :-)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -69,21 +69,21 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-24 18:07</div>
-            <div class="timeline-body"><p>@cloudhead You'd actually need <code>--colors=path:fg:blue,line:bg:black</code>, for example. That doesn't sound like a bad idea.</p>
+            <div class="timeline-body"><p>@cloudhead You&#x27;d actually need <code>--colors=path:fg:blue,line:bg:black</code>, for example. That doesn&#x27;t sound like a bad idea.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/eugene-bulkin">@eugene-bulkin</a> on 2016-09-25 17:42</div>
             <div class="timeline-body"><p>I quite like that syntax, I think that would be reasonable.</p>
-<p>And yeah, we can live with not customizing colors for Windows, but implementing for ANSI code-supporting terminals shouldn't be too bad. I'm thinking something like this:</p>
+<p>And yeah, we can live with not customizing colors for Windows, but implementing for ANSI code-supporting terminals shouldn&#x27;t be too bad. I&#x27;m thinking something like this:</p>
 <p><code>--colors=((path|line|match):(fg|bg|style):(color or bold/italic/etc.))*</code></p>
 <p>Not sure if <code>style</code> is the best word there, though.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-25 17:56</div>
-            <div class="timeline-body"><p>@eugene-bulkin I'm OK with <code>style</code>. Maybe <code>attr</code> is a little better.</p>
-<p>I think we should absolutely support customizing colors for Windows. I just think we should have good failure modes if an end user tries to specify something that won't work (like, <code>attr</code>, for instance).</p>
+            <div class="timeline-body"><p>@eugene-bulkin I&#x27;m OK with <code>style</code>. Maybe <code>attr</code> is a little better.</p>
+<p>I think we should absolutely support customizing colors for Windows. I just think we should have good failure modes if an end user tries to specify something that won&#x27;t work (like, <code>attr</code>, for instance).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -93,46 +93,46 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-25 18:00</div>
-            <div class="timeline-body"><p>I think it should be an error and cause <code>rg</code> to fail. Warnings are easy to miss, especially if they're emitted before search results.</p>
+            <div class="timeline-body"><p>I think it should be an error and cause <code>rg</code> to fail. Warnings are easy to miss, especially if they&#x27;re emitted before search results.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/eugene-bulkin">@eugene-bulkin</a> on 2016-09-25 18:09</div>
-            <div class="timeline-body"><p>Yeah, but is not being able to render a color they wanted really that worth killing the program? I view it as a soft error at best. But I don't have a problem with strict failure on all invalid input.</p>
+            <div class="timeline-body"><p>Yeah, but is not being able to render a color they wanted really that worth killing the program? I view it as a soft error at best. But I don&#x27;t have a problem with strict failure on all invalid input.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-25 18:21</div>
-            <div class="timeline-body"><p>I actually feel pretty strongly about this. If an end user asks ripgrep to do something, and ripgrep knows it can't, then it should just fail and tell the user how they can fix their problem. We should try to follow this philosophy everywhere in ripgrep.</p>
-<p>That's not to say that soft errors don't exist. One example of a soft error is if <code>ripgrep</code> can't descend into a directory. It emits the reason why it can't but otherwise continues on its merry way.</p>
+            <div class="timeline-body"><p>I actually feel pretty strongly about this. If an end user asks ripgrep to do something, and ripgrep knows it can&#x27;t, then it should just fail and tell the user how they can fix their problem. We should try to follow this philosophy everywhere in ripgrep.</p>
+<p>That&#x27;s not to say that soft errors don&#x27;t exist. One example of a soft error is if <code>ripgrep</code> can&#x27;t descend into a directory. It emits the reason why it can&#x27;t but otherwise continues on its merry way.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/eugene-bulkin">@eugene-bulkin</a> on 2016-09-25 18:25</div>
-            <div class="timeline-body"><p>That's convincing enough for me. Makes sense!</p>
+            <div class="timeline-body"><p>That&#x27;s convincing enough for me. Makes sense!</p>
 <p>So:</p>
 <ul>
-<li>Check if the user's environment allows them to change colors on their terminal. If not, <code>rg</code> fails with a relevant error message.</li>
+<li>Check if the user&#x27;s environment allows them to change colors on their terminal. If not, <code>rg</code> fails with a relevant error message.</li>
 <li>If the user can change colors, we go through the argument, which looks something like <code>--colors=((path|line|match):(fg|bg|style):(color or bold/italic/etc.))*</code> and parse into <code>Attr</code> values.</li>
 <li>The <code>Printer</code> is then passed these values if they exist, overriding any default values.</li>
 <li>Where <code>write_matched_line</code> and other methods manually set colors, use the user-provided ones or defaults.</li>
 </ul>
-<p>I think that's a relatively sufficient overview of the changes needed.</p>
+<p>I think that&#x27;s a relatively sufficient overview of the changes needed.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/homeworkprod">@homeworkprod</a> on 2016-09-25 18:29</div>
-            <div class="timeline-body"><p>Since this kind of colorization is usually more of a somewhat permanent configuration thing rather than on a per-search basis, I think this should be settable via configuration file as well (although an alias will probably do just fine on Linux and Mac OS X for now, but not sure if that's a practical option on Windows).</p>
-<p>Whether or not ripgrep currently reads settings from any non-ignore files (I don't know actually), it seems at least to be a good idea to design a syntax that doesn't interfere with what parsers for, say, TOML or INI-style syntax can handle. Or maybe there's nothing to worry about?</p>
+            <div class="timeline-body"><p>Since this kind of colorization is usually more of a somewhat permanent configuration thing rather than on a per-search basis, I think this should be settable via configuration file as well (although an alias will probably do just fine on Linux and Mac OS X for now, but not sure if that&#x27;s a practical option on Windows).</p>
+<p>Whether or not ripgrep currently reads settings from any non-ignore files (I don&#x27;t know actually), it seems at least to be a good idea to design a syntax that doesn&#x27;t interfere with what parsers for, say, TOML or INI-style syntax can handle. Or maybe there&#x27;s nothing to worry about?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-25 18:44</div>
-            <div class="timeline-body"><p>Let's please please avoid the question of a config file in this issue. There isn't actually an issue for a config file yet, but there probably should be. I'd like to at least try to resist the addition of a config file and see how far we can get with aliases.</p>
+            <div class="timeline-body"><p>Let&#x27;s please please avoid the question of a config file in this issue. There isn&#x27;t actually an issue for a config file yet, but there probably should be. I&#x27;d like to at least try to resist the addition of a config file and see how far we can get with aliases.</p>
 <blockquote>
-<p>Check if the user's environment allows them to change colors on their terminal. If not, rg fails with a relevant error message.</p>
+<p>Check if the user&#x27;s environment allows them to change colors on their terminal. If not, rg fails with a relevant error message.</p>
 </blockquote>
-<p>Funnily enough, if you pass <code>--color</code> today and it doesn't work, ripgrep silently ignores it (but puts it in the debug log). Foot, meet mouth. :-)</p>
+<p>Funnily enough, if you pass <code>--color</code> today and it doesn&#x27;t work, ripgrep silently ignores it (but puts it in the debug log). Foot, meet mouth. :-)</p>
 <p>What I was think here was if the end user specified an attribute on windows. I think those just never work.</p>
 <p>But yes, otherwise that sounds OK.</p>
 </div>
@@ -140,35 +140,35 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-25 18:50</div>
             <div class="timeline-body"><blockquote>
-<p>Funnily enough, if you pass --color today and it doesn't work, ripgrep silently ignores it (but puts it in the debug log).</p>
+<p>Funnily enough, if you pass --color today and it doesn&#x27;t work, ripgrep silently ignores it (but puts it in the debug log).</p>
 </blockquote>
 <p>Since this behavior is already in <code>ripgrep</code>, if you want to continue with soft errors, I would still merge it.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2016-09-25 19:03</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-25 19:03</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zachriggle">@zachriggle</a> on 2016-09-26 22:08</div>
-            <div class="timeline-body"><p>I'd vote for making things compatible with <code>ag</code>.</p>
-<p>Here's what I currently have:</p>
-<pre><code class="language-sh">alias ag=&quot;ag --color-path '1;35' --color-line-number '0;37' --color-match '0;32' --color --break --group --heading&quot;
+            <div class="timeline-body"><p>I&#x27;d vote for making things compatible with <code>ag</code>.</p>
+<p>Here&#x27;s what I currently have:</p>
+<pre><code>alias ag=&quot;ag --color-path &#x27;1;35&#x27; --color-line-number &#x27;0;37&#x27; --color-match &#x27;0;32&#x27; --color --break --group --heading&quot;
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-26 22:28</div>
-            <div class="timeline-body"><p>@zachriggle I'm strongly opposed to specifying colors with ANSI escape codes. That doesn't seem like good UX to me and will leave Windows users scratching their heads.</p>
+            <div class="timeline-body"><p>@zachriggle I&#x27;m strongly opposed to specifying colors with ANSI escape codes. That doesn&#x27;t seem like good UX to me and will leave Windows users scratching their heads.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zachriggle">@zachriggle</a> on 2016-09-26 22:32</div>
-            <div class="timeline-body"><p>I don't see why it can't be both.  Specifying color /names/, without knowledge of the user's terminal theme, means the color mappings will be wrong.</p>
+            <div class="timeline-body"><p>I don&#x27;t see why it can&#x27;t be both.  Specifying color /names/, without knowledge of the user&#x27;s terminal theme, means the color mappings will be wrong.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-26 22:42</div>
-            <div class="timeline-body"><p>@zachriggle Could you please explain more? I'm not especially knowledgable about ANSI color escape codes. What would fail if we only asked for color names?</p>
+            <div class="timeline-body"><p>@zachriggle Could you please explain more? I&#x27;m not especially knowledgable about ANSI color escape codes. What would fail if we only asked for color names?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -179,91 +179,91 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-27 12:19</div>
-            <div class="timeline-body"><p>@anlutro I'd like to keep discussion of a config file out of this issue. A config file doesn't have its own issue yet, but it probably should. I'd like to resist the idea and see how far we can get with aliases, but I expect I won't be able to hold out forever.</p>
-<p>I kind of suspect that I'd like to punt on support ANSI escape codes for now. Not only because it seems like a pretty niche use case, but the term coloring library we're using presents a (mostly) platform independent abstraction, which isn't going to allow using ANSI escape codes directly. It's a much bigger change to support them.</p>
+            <div class="timeline-body"><p>@anlutro I&#x27;d like to keep discussion of a config file out of this issue. A config file doesn&#x27;t have its own issue yet, but it probably should. I&#x27;d like to resist the idea and see how far we can get with aliases, but I expect I won&#x27;t be able to hold out forever.</p>
+<p>I kind of suspect that I&#x27;d like to punt on support ANSI escape codes for now. Not only because it seems like a pretty niche use case, but the term coloring library we&#x27;re using presents a (mostly) platform independent abstraction, which isn&#x27;t going to allow using ANSI escape codes directly. It&#x27;s a much bigger change to support them.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/llimllib">@llimllib</a> on 2016-10-26 01:34</div>
-            <div class="timeline-body"><p>Just to add a voice to the conversation, here's what the colors look like under <a href="https://chriskempson.github.io/base16/">base16-twilight</a>:</p>
-<p><img src="https://cloud.githubusercontent.com/assets/7150/19710186/910eed0e-9afa-11e6-9191-8dc2f244c422.png" alt="1 bash 2016-10-25 21-32-23" /></p>
-<p>It's nearly impossible to read the file name; the theme has switched the terminal's bold green for a color close to the background. Which is not your fault, I get, just a vote that I'd love to be able to customize the color.</p>
-<p>(Also: I really love ripgrep, thanks for the tool. I use search a lot more now that it's an order of magnitude faster. Hope this is helpful and not carping)</p>
+            <div class="timeline-body"><p>Just to add a voice to the conversation, here&#x27;s what the colors look like under <a href="https://chriskempson.github.io/base16/">base16-twilight</a>:</p>
+<p><img src="https://cloud.githubusercontent.com/assets/7150/19710186/910eed0e-9afa-11e6-9191-8dc2f244c422.png" alt="1 bash 2016-10-25 21-32-23"></p>
+<p>It&#x27;s nearly impossible to read the file name; the theme has switched the terminal&#x27;s bold green for a color close to the background. Which is not your fault, I get, just a vote that I&#x27;d love to be able to customize the color.</p>
+<p>(Also: I really love ripgrep, thanks for the tool. I use search a lot more now that it&#x27;s an order of magnitude faster. Hope this is helpful and not carping)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-26 10:54</div>
-            <div class="timeline-body"><p>@llimllib I don't think there's any question of whether we <em>should</em> allow color customization. I'm currently trying to tie off gitignore handling, which is taking longer than I hoped, but I hope to move into refactoring terminal related things like colors after that.</p>
+            <div class="timeline-body"><p>@llimllib I don&#x27;t think there&#x27;s any question of whether we <em>should</em> allow color customization. I&#x27;m currently trying to tie off gitignore handling, which is taking longer than I hoped, but I hope to move into refactoring terminal related things like colors after that.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-13 20:13</div>
-            <div class="timeline-body"><p>OK, I'm finally ready to tackle this issue (and the litany of other color related issues). In particular, my plan is to jettison use of the <code>term</code> crate and roll my own platform independent abstraction.</p>
+            <div class="timeline-body"><p>OK, I&#x27;m finally ready to tackle this issue (and the litany of other color related issues). In particular, my plan is to jettison use of the <code>term</code> crate and roll my own platform independent abstraction.</p>
 <p>I am going to move forward with this specification:</p>
 <pre><code>--colors=((path|line|match):(fg|bg|style):(value)) ...
 </code></pre>
-<p>The <code>--colors</code> flag specifies color settings for use in ripgrep's output. The <code>--colors</code> flag may be given multiple times. Each use of <code>--colors</code> sets the foreground/background color or the text style of a particular part of ripgrep's output. Currently, colors are limited to one of eight choices (red, blue, green, cyan, magenta, yellow, white and black) and text style is limited to either <code>nobold</code> or <code>bold</code>. There are otherwise three configurable aspects of ripgrep's output:</p>
+<p>The <code>--colors</code> flag specifies color settings for use in ripgrep&#x27;s output. The <code>--colors</code> flag may be given multiple times. Each use of <code>--colors</code> sets the foreground/background color or the text style of a particular part of ripgrep&#x27;s output. Currently, colors are limited to one of eight choices (red, blue, green, cyan, magenta, yellow, white and black) and text style is limited to either <code>nobold</code> or <code>bold</code>. There are otherwise three configurable aspects of ripgrep&#x27;s output:</p>
 <ul>
 <li><strong>path</strong> - Whenever a file path is printed.</li>
 <li><strong>line</strong> - Whenever a line number is printed.</li>
 <li><strong>match</strong> - Whenever text that explicitly matches the pattern is printed.</li>
 </ul>
 <p>For example, this sets the match color to red and its style to bold, and set the line number background to green and not bold:</p>
-<pre><code>--colors 'match:fg:red' --colors 'match:style:bold' --colors 'line:bg:green' --colors 'line:style:nobold'
+<pre><code>--colors &#x27;match:fg:red&#x27; --colors &#x27;match:style:bold&#x27; --colors &#x27;line:bg:green&#x27; --colors &#x27;line:style:nobold&#x27;
 </code></pre>
-<p>If you'd like to disable colors, then you can use the special <code>none</code> directive. For example, this disables any colors or styles when printing file paths:</p>
-<pre><code>--colors 'path:none'
+<p>If you&#x27;d like to disable colors, then you can use the special <code>none</code> directive. For example, this disables any colors or styles when printing file paths:</p>
+<pre><code>--colors &#x27;path:none&#x27;
 </code></pre>
 <p>Color settings are applied iteratively. For example, to clear any existing color settings for <code>match</code> and set its foreground to blue, one can do:</p>
-<pre><code>--colors 'match:none' --colors 'match:fg:blue'
+<pre><code>--colors &#x27;match:none&#x27; --colors &#x27;match:fg:blue&#x27;
 </code></pre>
-<hr />
-<p>While the above specification doesn't resolve <em>all</em> use cases (e.g., &quot;I want to set the exact ANSI escape code&quot;), it does solve the most important ones (e.g., &quot;I can't read the output of ripgrep&quot;) and dodges the question of platform differences by only supporting the intersection of ANSI color support and Windows console support. Most importantly, this specification leaves the door open for future expansion, such as additional text styles or supporting ANSI escape sequences directly.</p>
+<hr>
+<p>While the above specification doesn&#x27;t resolve <em>all</em> use cases (e.g., &quot;I want to set the exact ANSI escape code&quot;), it does solve the most important ones (e.g., &quot;I can&#x27;t read the output of ripgrep&quot;) and dodges the question of platform differences by only supporting the intersection of ANSI color support and Windows console support. Most importantly, this specification leaves the door open for future expansion, such as additional text styles or supporting ANSI escape sequences directly.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @BurntSushi by @BurntSushi on 2016-11-19 15:05</div>
+            <div class="event">Assigned to <a href="https://github.com/BurntSushi">@BurntSushi</a> by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-19 15:05</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2016-11-20 20:01</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-20 20:01</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/CallumHoward">@CallumHoward</a> on 2016-12-06 06:11</div>
-            <div class="timeline-body"><p>Let me know if it would be better to make a new issue, but is there a way to make text font bold without using bold colors? Ag does this as seen here:<br />
-<img src="http://i.imgur.com/cGxFyBO.png" alt="screenshot" /></p>
+            <div class="timeline-body"><p>Let me know if it would be better to make a new issue, but is there a way to make text font bold without using bold colors? Ag does this as seen here:<br>
+<img src="http://i.imgur.com/cGxFyBO.png" alt="screenshot"></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/anlutro">@anlutro</a> on 2016-12-06 07:30</div>
-            <div class="timeline-body"><p>ANSI color codes don't support &quot;just&quot; bold, you have to specify which color to be bold.</p>
+            <div class="timeline-body"><p>ANSI color codes don&#x27;t support &quot;just&quot; bold, you have to specify which color to be bold.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-12-06 11:51</div>
-            <div class="timeline-body"><p>@CallumHoward I don't really know how to interpret your screenshot, but you can try, for example, <code>--colors match:none --colors match:style:bold</code>. Check out the documentation for <code>--colors</code> in <code>rg --help</code>.</p>
+            <div class="timeline-body"><p>@CallumHoward I don&#x27;t really know how to interpret your screenshot, but you can try, for example, <code>--colors match:none --colors match:style:bold</code>. Check out the documentation for <code>--colors</code> in <code>rg --help</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/CallumHoward">@CallumHoward</a> on 2016-12-06 12:54</div>
             <div class="timeline-body"><p>My apologies, I was too brief before, as the difference in bolding between top and bottom is subtle. In the above screenshot with <code>ag</code> on top and <code>rg</code> below, the green path is bolded with font, but not with color. Likewise with the line numbers. This may be more clear when with a screenshot of my ansi color pallet settings:
-<img src="http://i.imgur.com/YiPnAhT.png" alt="screenshot" />
+<img src="http://i.imgur.com/YiPnAhT.png" alt="screenshot">
 Many terminals support bolding font independently from the bright ansi colors, as shown in the screenshot. With match:style:bold, the green path would appear almost black.
 I would like to be able to bold the <em>font</em> of the path and line numbers in <code>rg</code> to match the format of <code>ag</code> if possible.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-12-06 12:57</div>
-            <div class="timeline-body"><p>@CallumHoward Ah I see now, thanks for the clarification! I think you're experiencing the same problem as in #266.</p>
+            <div class="timeline-body"><p>@CallumHoward Ah I see now, thanks for the clarification! I think you&#x27;re experiencing the same problem as in #266.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ilohmar">@ilohmar</a> on 2016-12-26 16:11</div>
-            <div class="timeline-body"><p>The no-bold-escape-sequence output is not only a nuisance in terminal use, it is also a real problem for software trying to use <code>ripgrep</code> and parsing its output, e.g., when replacing <code>grep</code> by <code>ripgrep</code> in Emacs...  Are you planning to make this configurable, such that one could get actual 'bold' escape sequences?  Otherwise I will have to hack around the parsing code in Emacs, because I really like what I've seen of <code>ripgrep</code> so far!</p>
+            <div class="timeline-body"><p>The no-bold-escape-sequence output is not only a nuisance in terminal use, it is also a real problem for software trying to use <code>ripgrep</code> and parsing its output, e.g., when replacing <code>grep</code> by <code>ripgrep</code> in Emacs...  Are you planning to make this configurable, such that one could get actual &#x27;bold&#x27; escape sequences?  Otherwise I will have to hack around the parsing code in Emacs, because I really like what I&#x27;ve seen of <code>ripgrep</code> so far!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-12-26 16:40</div>
-            <div class="timeline-body"><p>@ilohmar Please file a new issue and describe the specific problem you're trying to solve. It would help if you left Emacs out of it completely (for example) because I don't use Emacs, and therefore I don't have the same context as you.</p>
+            <div class="timeline-body"><p>@ilohmar Please file a new issue and describe the specific problem you&#x27;re trying to solve. It would help if you left Emacs out of it completely (for example) because I don&#x27;t use Emacs, and therefore I don&#x27;t have the same context as you.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -284,7 +284,7 @@ I would like to be able to bold the <em>font</em> of the path and line numbers i
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Hnasar">@Hnasar</a> on 2018-02-22 20:34</div>
             <div class="timeline-body"><p>For anyone coming here trying to make <code>rg</code> look exactly like <code>ag</code>, you can do this:</p>
-<pre><code>rg --colors 'match:bg:yellow' --colors 'match:fg:black' --colors 'match:style:nobold' --colors 'path:fg:green' --colors 'path:style:bold' --colors 'line:fg:yellow' --colors 'line:style:bold' 
+<pre><code>rg --colors &#x27;match:bg:yellow&#x27; --colors &#x27;match:fg:black&#x27; --colors &#x27;match:style:nobold&#x27; --colors &#x27;path:fg:green&#x27; --colors &#x27;path:style:bold&#x27; --colors &#x27;line:fg:yellow&#x27; --colors &#x27;line:style:bold&#x27; 
 </code></pre>
 </div>
         </div>
@@ -296,7 +296,7 @@ I would like to be able to bold the <em>font</em> of the path and line numbers i
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:41:39 UTC
+        Synced at 2026-01-20 18:48:00 UTC
     </footer>
 </body>
 </html>

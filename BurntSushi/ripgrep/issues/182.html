@@ -23,17 +23,17 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/xuchunyang">@xuchunyang</a></div>
-            <div class="timeline-body"><p>I'm using rg 0.2.1 and Emacs 25. It looks like <code>--color</code> doesn't have effect under Emacs, while other tools such as grep works.</p>
+            <div class="timeline-body"><p>I&#x27;m using rg 0.2.1 and Emacs 25. It looks like <code>--color</code> doesn&#x27;t have effect under Emacs, while other tools such as grep works.</p>
 <ul>
 <li><code>M-! echo hello | grep --color=always hello</code> gives <code>[01;31m[Khello[m[K</code></li>
 <li><code>M-! echo hello | rg --color=always hello</code> gives <code>hello</code> (where is the escape code?)</li>
 </ul>
-<p>see also https://github.com/emacs-helm/helm/issues/1624#issuecomment-253879188</p>
+<p>see also <a href="https://github.com/emacs-helm/helm/issues/1624">emacs-helm/helm#1624</a>#issuecomment-253879188</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-15 13:31</div>
-            <div class="timeline-body"><p>Tracking down why colors aren't working has historically been a very challenging task because a lot of it is dependent on your environment. For example:</p>
+            <div class="timeline-body"><p>Tracking down why colors aren&#x27;t working has historically been a very challenging task because a lot of it is dependent on your environment. For example:</p>
 <pre><code>$ TERM=foobar rg --color=always PATTERN --debug
 </code></pre>
 <p>Colors no longer work. The <code>--debug</code> flag might show a lot of other junk, but in my case, I do see this:</p>
@@ -49,8 +49,8 @@ $ rg --color=always PATTERN --debug
 <p>In the debug output, I see:</p>
 <pre><code>DEBUG:rg::out: error loading terminfo for coloring: TERM environment variable unset, unable to detect a terminal
 </code></pre>
-<p>Once again, GNU grep still works. It seems GNU grep will fall back to some default settings that <code>ripgrep</code> doesn't do, and maybe we should do that. In the mean time, my strong suspicion is that something about your environment isn't configured correctly and GNU grep is bailing you out.</p>
-<p>So, can you run <code>rg</code> with <code>--debug</code> and see if you can find the relevant error message? If not, you can just post the entire output. If that doesn't turn up anything, what is the value of <code>TERM</code> when <code>rg</code> is run? What about <code>TERMINFO</code>?</p>
+<p>Once again, GNU grep still works. It seems GNU grep will fall back to some default settings that <code>ripgrep</code> doesn&#x27;t do, and maybe we should do that. In the mean time, my strong suspicion is that something about your environment isn&#x27;t configured correctly and GNU grep is bailing you out.</p>
+<p>So, can you run <code>rg</code> with <code>--debug</code> and see if you can find the relevant error message? If not, you can just post the entire output. If that doesn&#x27;t turn up anything, what is the value of <code>TERM</code> when <code>rg</code> is run? What about <code>TERMINFO</code>?</p>
 <p>Thanks!</p>
 </div>
         </div>
@@ -60,16 +60,16 @@ $ rg --color=always PATTERN --debug
 <pre><code>DEBUG:grep::search: regex ast:
 Literal {
     chars: [
-        'h',
-        'e',
-        'l',
-        'l',
-        'o'
+        &#x27;h&#x27;,
+        &#x27;e&#x27;,
+        &#x27;l&#x27;,
+        &#x27;l&#x27;,
+        &#x27;o&#x27;
     ],
     casei: false
 }
 DEBUG:grep::literals: literal prefixes detected: Literals { lits: [Complete(hello)], limit_size: 250, limit_class: 10 }
-DEBUG:rg::out: environment doesn't support coloring
+DEBUG:rg::out: environment doesn&#x27;t support coloring
 hello
 </code></pre>
 <p><code>M-! echo $TERM</code> returns <code>dumb</code> and <code>TERMINFO</code> is empty, probably not set.</p>
@@ -79,7 +79,7 @@ hello
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-15 14:06</div>
             <div class="timeline-body"><p>Having <code>TERMINFO</code> unset is OK. <code>ripgrep</code> will look in standard locations for your terminfo database.</p>
 <p>Indeed, if I set <code>TERM=dumb</code>, then I also get the same error message as you.</p>
-<p>So... It sounds like you need to change your <code>TERM</code> to a setting that supports colors. There's more info on the <code>dumb</code> setting <a href="http://stackoverflow.com/questions/39001517/features-obligatory-for-term-dumb-terminal">here</a> and <a href="http://emacs.stackexchange.com/questions/10137/what-does-term-dumb-in-eshell-mean">here</a>. Running <code>infocmp dumb</code> shows that a <code>dumb</code> terminal has very limited capabilities. If Emacs does indeed support colors, then it sounds like you'll need to change your <code>TERM</code> environment variable to something else.</p>
+<p>So... It sounds like you need to change your <code>TERM</code> to a setting that supports colors. There&#x27;s more info on the <code>dumb</code> setting <a href="http://stackoverflow.com/questions/39001517/features-obligatory-for-term-dumb-terminal">here</a> and <a href="http://emacs.stackexchange.com/questions/10137/what-does-term-dumb-in-eshell-mean">here</a>. Running <code>infocmp dumb</code> shows that a <code>dumb</code> terminal has very limited capabilities. If Emacs does indeed support colors, then it sounds like you&#x27;ll need to change your <code>TERM</code> environment variable to something else.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -89,25 +89,25 @@ hello
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-15 14:37</div>
-            <div class="timeline-body"><p>At least GNU grep hard codes ANSI color escape sequences and AFAIK doesn't actually respect the <code>TERMINFO</code> database. e.g.,</p>
+            <div class="timeline-body"><p>At least GNU grep hard codes ANSI color escape sequences and AFAIK doesn&#x27;t actually respect the <code>TERMINFO</code> database. e.g.,</p>
 <pre><code>static const char *selected_match_color = &quot;01;31&quot;;  /* bold red */
 </code></pre>
-<p><code>ripgrep</code> isn't failing as far as I can see, it's simply respecting what the environment is saying, while all of the other tools aren't.</p>
+<p><code>ripgrep</code> isn&#x27;t failing as far as I can see, it&#x27;s simply respecting what the environment is saying, while all of the other tools aren&#x27;t.</p>
 <p>What is the correct behavior here? If <code>TERM=dumb</code> is set and <code>--color=always</code> is set, then how does <code>ripgrep</code> know which <code>TERM</code> settings to use? Should it forcefully pick a <code>TERM</code> other than <code>dumb</code>? Which one?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-15 14:43</div>
-            <div class="timeline-body"><p>@ticki You seem to know a thing or two about this sort of thing. Can you make sense of this? I notice in your <code>termion</code> library, you don't read from the <code>TERMINFO</code> database and hardcode escape sequences. Does this work correctly across all terminals? (I suppose you're in good company, since GNU grep does the same.) If so, what's the purpose of the <code>TERMINFO</code> database in the first place? For things more advanced than colors?</p>
+            <div class="timeline-body"><p>@ticki You seem to know a thing or two about this sort of thing. Can you make sense of this? I notice in your <code>termion</code> library, you don&#x27;t read from the <code>TERMINFO</code> database and hardcode escape sequences. Does this work correctly across all terminals? (I suppose you&#x27;re in good company, since GNU grep does the same.) If so, what&#x27;s the purpose of the <code>TERMINFO</code> database in the first place? For things more advanced than colors?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/thierryvolpiatto">@thierryvolpiatto</a> on 2016-10-15 14:47</div>
             <div class="timeline-body"><p>Andrew Gallant notifications@github.com writes:</p>
 <blockquote>
-<p>At least GNU grep hard codes ANSI color escape sequences and AFAIK doesn't actually respect the TERMINFO database. e.g.,</p>
+<p>At least GNU grep hard codes ANSI color escape sequences and AFAIK doesn&#x27;t actually respect the TERMINFO database. e.g.,</p>
 <p>static const char <em>selected_match_color = &quot;01;31&quot;;  /</em> bold red */</p>
-<p>ripgrep isn't failing as far as I can see, it's simply respecting what the environment is saying, while all of the other tools aren't.</p>
+<p>ripgrep isn&#x27;t failing as far as I can see, it&#x27;s simply respecting what the environment is saying, while all of the other tools aren&#x27;t.</p>
 <p>What is the correct behavior here? If TERM=dumb is set and
 --color=always is set, then how does ripgrep know which TERM settings
 to use? Should it forcefully pick a TERM other than dumb? Which one?</p>
@@ -118,7 +118,7 @@ working, so perhaps it is the one to use when TERM=dumb ?</p>
 to use ?
 Does ripgrep obey to <code>GREP_COLORS</code> env var ? Seems no.
 Does it have a config file where we can set this ?</p>
-<h2></h2>
+
 <p>Thierry</p>
 </div>
         </div>
@@ -128,28 +128,28 @@ Does it have a config file where we can set this ?</p>
 <p>Ok, just found that if I set TERM to eterm-color colors with ripgrep are
 working, so perhaps it is the one to use when TERM=dumb ?</p>
 </blockquote>
-<p>&quot;it works for me&quot; isn't really a strong reason to assume &quot;it always works,&quot; unfortunately.</p>
+<p>&quot;it works for me&quot; isn&#x27;t really a strong reason to assume &quot;it always works,&quot; unfortunately.</p>
 <blockquote>
 <p>BTW ripgrep is using a basic red color, how do we configure which color
 to use ?
 Does ripgrep obey to <code>GREP_COLORS</code> env var ? Seems no.
 Does it have a config file where we can set this ?</p>
 </blockquote>
-<p>Colors aren't yet configurable. See: #51</p>
+<p>Colors aren&#x27;t yet configurable. See: #51</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-15 14:51</div>
-            <div class="timeline-body"><p>From reading the source of <code>termion</code>, I wonder if it'd be better to stop using the <code>term</code> crate, switch to <code>termion</code> for POSIX compatible stuff and handroll Windows support. This would mean not supporting the <code>TERMINFO</code> database, and I'm not sure what the implications of that are. (But it would also mean that colors would work independently of a <code>TERMINFO</code> database.)</p>
+            <div class="timeline-body"><p>From reading the source of <code>termion</code>, I wonder if it&#x27;d be better to stop using the <code>term</code> crate, switch to <code>termion</code> for POSIX compatible stuff and handroll Windows support. This would mean not supporting the <code>TERMINFO</code> database, and I&#x27;m not sure what the implications of that are. (But it would also mean that colors would work independently of a <code>TERMINFO</code> database.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-15 14:54</div>
-            <div class="timeline-body"><p>@thierryvolpiatto @xuchunyang I think the bottom line here is that while <code>ripgrep</code> is technically respecting the letter of the law, it doesn't actually match up with user expectations and that's bad. That means I agree we should do something here, but the right answer might take a bit of time to happen. For now, I'd request setting <code>TERM</code> to something that makes <code>ripgrep</code> work as a temporary work-around. Hopefully that's feasible to do.</p>
+            <div class="timeline-body"><p>@thierryvolpiatto @xuchunyang I think the bottom line here is that while <code>ripgrep</code> is technically respecting the letter of the law, it doesn&#x27;t actually match up with user expectations and that&#x27;s bad. That means I agree we should do something here, but the right answer might take a bit of time to happen. For now, I&#x27;d request setting <code>TERM</code> to something that makes <code>ripgrep</code> work as a temporary work-around. Hopefully that&#x27;s feasible to do.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2016-10-15 14:54</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-15 14:54</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/thierryvolpiatto">@thierryvolpiatto</a> on 2016-10-15 15:06</div>
@@ -157,32 +157,32 @@ Does it have a config file where we can set this ?</p>
 <blockquote>
 <p>@thierryvolpiatto @xuchunyang I think the bottom line here is that
 while ripgrep is technically respecting the letter of the law, it
-doesn't actually match up with user expectations and that's bad. That
+doesn&#x27;t actually match up with user expectations and that&#x27;s bad. That
 means I agree we should do something here, but the right answer might
 take a bit of time to happen.</p>
 </blockquote>
 <p>There is no hurry, thanks for all your explanations and sorry to not be
 able to help on this, my knowledge about all this is limited.</p>
 <blockquote>
-<p>For now, I'd request setting TERM to something that makes ripgrep work
-as a temporary work-around. Hopefully that's feasible to do.</p>
+<p>For now, I&#x27;d request setting TERM to something that makes ripgrep work
+as a temporary work-around. Hopefully that&#x27;s feasible to do.</p>
 </blockquote>
 <p>Ok, we will use <code>TERM=eterm-color</code> as a workaround for now.</p>
 <p>Thanks again for your help on this.</p>
-<h2></h2>
+
 <p>Thierry</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ticki">@ticki</a> on 2016-10-16 12:05</div>
-            <div class="timeline-body"><p>@BurntSushi So TERMINFO is mostly for detecting compatibility, but is only really relevant for very old terminals. Termion implements escapes which are supported by virtually every VTE used today (most of it is straight out of the ANSI standards, some are ones introduced by xterm). For the Windows stuff: I'm not that familiar with the Windows API, but I'm more than willing to accept a PR adding Windows support to Termion (i.e. adding the winapi calls to the formatter, I guess).</p>
+            <div class="timeline-body"><p>@BurntSushi So TERMINFO is mostly for detecting compatibility, but is only really relevant for very old terminals. Termion implements escapes which are supported by virtually every VTE used today (most of it is straight out of the ANSI standards, some are ones introduced by xterm). For the Windows stuff: I&#x27;m not that familiar with the Windows API, but I&#x27;m more than willing to accept a PR adding Windows support to Termion (i.e. adding the winapi calls to the formatter, I guess).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-16 13:54</div>
-            <div class="timeline-body"><p>@ticki Got ya. Given that every other tool in this space seems to not care about <code>TERMINFO</code>, it seems OK for <code>ripgrep</code> to do the same. With that in mind, I'd like to switch Unix handling to using <code>termion</code>, which I think should be straight-forward.</p>
-<p>I would definitely recommend treading carefully with Windows. For Windows, you need to make <em>synchronous</em> API calls to the console you're writing to, which means that you can't really implement Windows support in some arbitrary formatter that can write to anything. For <code>ripgrep</code>, this is particularly bad because we want to write matches to an in memory buffer and only actually print them later. There are a couple ways of doing this, including writing an ANSI interpreter, but I opted for something simpler but just as hacky: https://github.com/BurntSushi/ripgrep/blob/master/src/terminal_win.rs</p>
-<p>What I'm saying is: as a future user of <code>termion</code>, I don't expect you to support Windows for this. I expect to be subjected to grueling pain. :-)</p>
+            <div class="timeline-body"><p>@ticki Got ya. Given that every other tool in this space seems to not care about <code>TERMINFO</code>, it seems OK for <code>ripgrep</code> to do the same. With that in mind, I&#x27;d like to switch Unix handling to using <code>termion</code>, which I think should be straight-forward.</p>
+<p>I would definitely recommend treading carefully with Windows. For Windows, you need to make <em>synchronous</em> API calls to the console you&#x27;re writing to, which means that you can&#x27;t really implement Windows support in some arbitrary formatter that can write to anything. For <code>ripgrep</code>, this is particularly bad because we want to write matches to an in memory buffer and only actually print them later. There are a couple ways of doing this, including writing an ANSI interpreter, but I opted for something simpler but just as hacky: https://github.com/BurntSushi/ripgrep/blob/master/src/terminal_win.rs</p>
+<p>What I&#x27;m saying is: as a future user of <code>termion</code>, I don&#x27;t expect you to support Windows for this. I expect to be subjected to grueling pain. :-)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -192,16 +192,16 @@ as a temporary work-around. Hopefully that's feasible to do.</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kaushalmodi">@kaushalmodi</a> on 2016-10-20 14:17</div>
-            <div class="timeline-body"><p>I'm wondering if resolving this issue would also solve that other issue where ripgrep is inserting strange escape characters to the colored text.</p>
+            <div class="timeline-body"><p>I&#x27;m wondering if resolving this issue would also solve that other issue where ripgrep is inserting strange escape characters to the colored text.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-20 14:22</div>
-            <div class="timeline-body"><p>@kaushalmodi I bet it will, considering the new approach <em>should</em> be isomorphic to what GNU grep does today, which doesn't suffer from the same issue (I think).</p>
+            <div class="timeline-body"><p>@kaushalmodi I bet it will, considering the new approach <em>should</em> be isomorphic to what GNU grep does today, which doesn&#x27;t suffer from the same issue (I think).</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2016-11-20 20:01</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-20 20:01</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/thierryvolpiatto">@thierryvolpiatto</a> on 2017-01-13 17:15</div>
@@ -209,18 +209,18 @@ as a temporary work-around. Hopefully that's feasible to do.</p>
 <p><code>TERM=eterm-color rg --color=always --smart-case --no-heading --line-number %s %s %s</code></p>
 <p>Here the command line used with 0.3.2 (not highlighting):</p>
 <p><code>rg --color=always --smart-case --no-heading --line-number %s %s %s</code></p>
-<p><img src="https://cloud.githubusercontent.com/assets/1533939/21938213/acf88f62-d9ba-11e6-8044-0ae9d4239afa.png" alt="capture d ecran_2017-01-13_18-03-37" /></p>
+<p><img src="https://cloud.githubusercontent.com/assets/1533939/21938213/acf88f62-d9ba-11e6-8044-0ae9d4239afa.png" alt="capture d ecran_2017-01-13_18-03-37"></p>
 <p>Same result with the workaround:</p>
 <p><code>TERM=eterm-color rg --color=always --smart-case --no-heading --line-number %s %s %s</code></p>
 <p>Now with rg version 0.2.3 and this command line (now matches are highlighted as expected):</p>
 <p><code>TERM=eterm-color rg --color=always --smart-case --no-heading --line-number %s %s %s</code></p>
-<p><img src="https://cloud.githubusercontent.com/assets/1533939/21938353/48aa1fd4-d9bb-11e6-872d-a8f94fa41bfc.png" alt="capture d ecran_2017-01-13_18-08-00" /></p>
+<p><img src="https://cloud.githubusercontent.com/assets/1533939/21938353/48aa1fd4-d9bb-11e6-872d-a8f94fa41bfc.png" alt="capture d ecran_2017-01-13_18-08-00"></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-13 18:12</div>
-            <div class="timeline-body"><p>@thierryvolpiatto Thanks for taking the time to try and confirm the fix! Sorry it isn't working right for you. It's hard for me to understand your comment, but you're saying you can't get ripgrep <code>0.3.2</code> to output colors at all in emacs, regardless of any workaround? Can you try <code>--color ansi</code> instead of <code>--color always</code>? Also, what operation system are you on?</p>
-<p>I honestly have no clue what's going on. If you have <code>--color always</code> on non-Windows platforms, then it should always emit ANSI escape sequences now. On Windows however, <code>--color always</code> will always attempt to use the native console API for colors, which might not work in emacs. Instead, <code>--color ansi</code> will force the issue for ANSI escapes. Alternatively, <code>--color auto</code> with <code>TERM=eterm-color</code> should also work.</p>
+            <div class="timeline-body"><p>@thierryvolpiatto Thanks for taking the time to try and confirm the fix! Sorry it isn&#x27;t working right for you. It&#x27;s hard for me to understand your comment, but you&#x27;re saying you can&#x27;t get ripgrep <code>0.3.2</code> to output colors at all in emacs, regardless of any workaround? Can you try <code>--color ansi</code> instead of <code>--color always</code>? Also, what operation system are you on?</p>
+<p>I honestly have no clue what&#x27;s going on. If you have <code>--color always</code> on non-Windows platforms, then it should always emit ANSI escape sequences now. On Windows however, <code>--color always</code> will always attempt to use the native console API for colors, which might not work in emacs. Instead, <code>--color ansi</code> will force the issue for ANSI escapes. Alternatively, <code>--color auto</code> with <code>TERM=eterm-color</code> should also work.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -229,11 +229,11 @@ as a temporary work-around. Hopefully that's feasible to do.</p>
 <p>Andrew Gallant <a href="mailto:notifications@github.com">notifications@github.com</a> writes:</p>
 <blockquote>
 <p>@thierryvolpiatto Thanks for taking the time to try and confirm the
-fix! Sorry it isn't working right for you. It's hard for me to
-understand your comment, but you're saying you can't get ripgrep 0.3.2
+fix! Sorry it isn&#x27;t working right for you. It&#x27;s hard for me to
+understand your comment, but you&#x27;re saying you can&#x27;t get ripgrep 0.3.2
 to output colors at all in emacs, regardless of any workaround?</p>
 </blockquote>
-<p>Yes that's it, and 0.2.3 is working fine, I didn't try any version
+<p>Yes that&#x27;s it, and 0.2.3 is working fine, I didn&#x27;t try any version
 between 0.2.3 and 0.3.2 though.</p>
 <blockquote>
 <p>Can you try --color ansi instead of --color always?</p>
@@ -255,7 +255,7 @@ Thierry</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-13 19:00</div>
-            <div class="timeline-body"><p>@thierryvolpiatto Can you try to reproduce the issue outside of emacs? Basically, what you're reporting doesn't make any sense to me. :-)</p>
+            <div class="timeline-body"><p>@thierryvolpiatto Can you try to reproduce the issue outside of emacs? Basically, what you&#x27;re reporting doesn&#x27;t make any sense to me. :-)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -266,7 +266,7 @@ Thierry</p>
 </blockquote>
 <p>No, outside of emacs rg works perfectly.</p>
 <blockquote>
-<p>Basically, what you're reporting doesn't make any sense to me. :-)</p>
+<p>Basically, what you&#x27;re reporting doesn&#x27;t make any sense to me. :-)</p>
 </blockquote>
 <p>Sorry if my explanations are confuse, let me know what you are not
 understanding.</p>
@@ -277,20 +277,20 @@ Thierry</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-13 21:08</div>
-            <div class="timeline-body"><p>@thierryvolpiatto Sorry, I think I understand what you're saying. What I meant was, I don't understand how what you're reporting is actually possible. If you say <code>--color ansi</code>, then ANSI escape sequences should be emitted <em>no questions asked</em>.</p>
-<p>I think the only thing I can do at this point is try to reproducing it, but I've never used emacs before. (I'm a vim user.) How hard would it be to explain how to reproduce your issue to someone who has never used emacs before?</p>
+            <div class="timeline-body"><p>@thierryvolpiatto Sorry, I think I understand what you&#x27;re saying. What I meant was, I don&#x27;t understand how what you&#x27;re reporting is actually possible. If you say <code>--color ansi</code>, then ANSI escape sequences should be emitted <em>no questions asked</em>.</p>
+<p>I think the only thing I can do at this point is try to reproducing it, but I&#x27;ve never used emacs before. (I&#x27;m a vim user.) How hard would it be to explain how to reproduce your issue to someone who has never used emacs before?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/thierryvolpiatto">@thierryvolpiatto</a> on 2017-01-13 21:38</div>
             <div class="timeline-body"><p>Andrew Gallant <a href="mailto:notifications@github.com">notifications@github.com</a> writes:</p>
 <blockquote>
-<p>@thierryvolpiatto Sorry, I think I understand what you're saying. What
-I meant was, I don't understand how what you're reporting is actually
+<p>@thierryvolpiatto Sorry, I think I understand what you&#x27;re saying. What
+I meant was, I don&#x27;t understand how what you&#x27;re reporting is actually
 possible. If you say --color ansi, then ANSI escape sequences should
 be emitted no questions asked.</p>
 <p>I think the only thing I can do at this point is try to reproducing
-it, but I've never used emacs before. (I'm a vim user.) How hard would
+it, but I&#x27;ve never used emacs before. (I&#x27;m a vim user.) How hard would
 it be to explain how to reproduce your issue to someone who has never
 used emacs before?</p>
 </blockquote>
@@ -304,7 +304,7 @@ Let me know if you have difficulties to install.</p>
 </li>
 </ol>
 <p>emacs -Q</p>
-<ol start="3">
+<ol>
 <li><p>Once emacs started hit M-x ansi-term RET RET (where M is Meta and RET is Return).</p>
 </li>
 <li><p>You have now a prompt, just use rg as usual.</p>
@@ -320,7 +320,7 @@ Thierry</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-13 23:24</div>
-            <div class="timeline-body"><p>Interesting! That did the trick. Something is definitely a little weird, however, I am seeing that the match text is at least <em>bolded</em>, but it's not colored.</p>
+            <div class="timeline-body"><p>Interesting! That did the trick. Something is definitely a little weird, however, I am seeing that the match text is at least <em>bolded</em>, but it&#x27;s not colored.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -331,7 +331,7 @@ Thierry</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-13 23:44</div>
-            <div class="timeline-body"><p>Ah! I figured it out. It looks like the emacs terminal has very limited support for ANSI escape sequences, and doesn't actually work with constructs like <code>\x1B[38;5;4m</code> to set the text to blue (for example). Instead, it needs <code>\x1B[34m</code>. I think I just need to straighten this out and we should be good.</p>
+            <div class="timeline-body"><p>Ah! I figured it out. It looks like the emacs terminal has very limited support for ANSI escape sequences, and doesn&#x27;t actually work with constructs like <code>\x1B[38;5;4m</code> to set the text to blue (for example). Instead, it needs <code>\x1B[34m</code>. I think I just need to straighten this out and we should be good.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -355,7 +355,7 @@ Thierry</p>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:41:50 UTC
+        Synced at 2026-01-20 18:48:02 UTC
     </footer>
 </body>
 </html>

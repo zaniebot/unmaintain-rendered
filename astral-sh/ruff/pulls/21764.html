@@ -23,21 +23,21 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/pieterh-oai">@pieterh-oai</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This PR extends <code>generate.py</code> to codegen Python shims for the (entire) Ruff AST,
 replacing catchall Node in the previous PR (#21415). The shims work as follows:</p>
 <ul>
 <li>Python AST node classes (and objects) are created entirely on the Rust side
 as PyO3 types.</li>
-<li>From the Python code's point of view, node objects have the expected fields
-with names and types that line up with the Rust AST. The 'API' is a set of <code>pyi</code>
+<li>From the Python code&#x27;s point of view, node objects have the expected fields
+with names and types that line up with the Rust AST. The &#x27;API&#x27; is a set of <code>pyi</code>
 files in <code>ruff_linter/resources/</code>.</li>
 <li>The majority of AST node fields are lazily loaded (from the Rust AST to the
-projected Python AST) on first use. A subset of fields are marked as 'eager'
+projected Python AST) on first use. A subset of fields are marked as &#x27;eager&#x27;
 (e.g. <code>op</code> for <code>AugAssign</code> is string rather than a node subclass). The
 configuration of lazy vs. eager projection is configured in <code>ast.toml</code>.</li>
 <li>We use <code>RawNode</code> as a catch-all for any node types that are somehow not
-covered by the projection code. This means it's effectively unused right
+covered by the projection code. This means it&#x27;s effectively unused right
 now, but might be in the future if AST changes cause the codegen to be out
 of date.</li>
 </ul>
@@ -50,23 +50,23 @@ the corresponding output in <code>projection.rs</code></li>
 <li>Python <code>.pyi</code> interface files; see <code>write_python_stub</code> and
 the output in <code>ruff_linter/resources/ruff_external</code>.</li>
 </ol>
-<h2>Lifetime-related considerations</h2>
+Lifetime-related considerations
 <p>The challenging parts (at least for me) were handling lifetime differences
 between PyO3 AST node objects and the Ruff types that they need to refer to,
 the <code>SourceFile</code> and the corresponding Ruff AST node.</p>
-<p>Once on the Python-side heap,  it's not really possible to limit object lifetime
-(since we can't really make assertions when their refcount will hit 0, or
-if they'll need to be GC'd).  This means that we can't include direct references to the
+<p>Once on the Python-side heap,  it&#x27;s not really possible to limit object lifetime
+(since we can&#x27;t really make assertions when their refcount will hit 0, or
+if they&#x27;ll need to be GC&#x27;d).  This means that we can&#x27;t include direct references to the
 shorter-lived Rust-side objects in any PyO3 objects.</p>
-<p>It's not too hard to satisfy the Ruff compiler by cloning Ruff AST nodes and <code>Arc</code>
-references to the source, but that isn't efficient. Copying entire AST subtrees
+<p>It&#x27;s not too hard to satisfy the Ruff compiler by cloning Ruff AST nodes and <code>Arc</code>
+references to the source, but that isn&#x27;t efficient. Copying entire AST subtrees
 defeats the purpose of making field access lazy in the first place, and holding
 references through the <code>SourceFile</code> would mean that any file with at least 1 Python
 rule execution (even if it yields 0 results) will be held in memory until end of process
 (or, at best, a future CPython GC cycle, I guess?).</p>
 <p>On the flip side, if we avoid copying nodes and strong references to the source,
 we need to lifecycle-manage this so that the Python code fails in a predictable
-way. We probably want to fail early if a Python rule does something it shouldn't
+way. We probably want to fail early if a Python rule does something it shouldn&#x27;t
 (like storing nodes in a global and then trying to use that across <code>check_expr</code>
 invocations), rather than arbitrarily failing later.</p>
 <p>This is what I ended up doing:</p>
@@ -82,15 +82,15 @@ once it goes out of scope, the reference to <code>SourceFile</code> is unset and
 subsequent calls to <code>locator</code> will fail.</p>
 </li>
 </ul>
-<p>The code in <code>store.rs</code> and <code>source.rs</code> does more or less the same thing; I'd
+<p>The code in <code>store.rs</code> and <code>source.rs</code> does more or less the same thing; I&#x27;d
 be interested in feedback on how to clean this up more / how to make this
 more idiomatic.</p>
-<h2>Other tradeoffs:</h2>
+Other tradeoffs:
 <ul>
 <li><p>Lazy loading means that we generate very few Python heap objects up front.
 Calls from Python into Rust appear to be relatively inexpensive because
-of the 'single interpreter with multiple attached OS threads that
-don't interact' setup.</p>
+of the &#x27;single interpreter with multiple attached OS threads that
+don&#x27;t interact&#x27; setup.</p>
 </li>
 <li><p>This exposes the Ruff AST directly (though the codegen is structured
 in a way that could permit some rewriting).</p>
@@ -107,7 +107,7 @@ and 10kloc of generated code. I have put some, but not a lot, of work
 into trying to simplify the codegen parts.</p>
 </li>
 </ul>
-<h2>Test Plan</h2>
+Test Plan
 <pre><code>cargo test --workspace --exclude ty
 source ./scripts/nogil/nogil_env.sh ~/cpython_3_13_nogil/
 cargo test --workspace --exclude ty --features ext-lint
@@ -116,25 +116,25 @@ uvx pre-commit run --all-files --show-diff-on-failure
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[ruff][ext-lint] 4: codegen for the full AST" to "RFC [ruff][ext-lint] 4: codegen for the full AST" by @pieterh-oai on 2025-12-02 20:06</div>
+            <div class="event">Renamed from &quot;[ruff][ext-lint] 4: codegen for the full AST&quot; to &quot;RFC [ruff][ext-lint] 4: codegen for the full AST&quot; by <a href="https://github.com/pieterh-oai">@pieterh-oai</a> on 2025-12-02 20:06</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-07 01:42</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a>
 <p>No changes detected when running ty on typing conformance tests ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-07 01:43</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">pydantic (https://github.com/pydantic/pydantic)
+Changes were detected when running on open source projects
+
+<pre><code>pydantic (https://github.com/pydantic/pydantic)
 - pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
 + pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
 - pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
@@ -190,82 +190,82 @@ core (https://github.com/home-assistant/core)
 
 
 </code></pre>
-</details>
+
 
 <p>No memory usage changes detected ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-07 01:50</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+0 -6 violations, +0 -0 fixes in 1 projects; 54 projects unchanged)</p>
-<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+0 -6 violations, +0 -0 fixes)</summary>
+<a href="https://github.com/apache/superset">apache/superset</a> (+0 -6 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --no-preview --select ALL</pre>
 </p>
 <p>
 
 <pre>
-- <a href='https://github.com/apache/superset/blob/9968393e4c3a269d6a36c4ec1a8704ce184f0851/superset-extensions-cli/tests/conftest.py#L47'>superset-extensions-cli/tests/conftest.py:47:5:</a> D401 First line of docstring should be in imperative mood: "Default parameters for extension creation."
-- <a href='https://github.com/apache/superset/blob/9968393e4c3a269d6a36c4ec1a8704ce184f0851/superset-extensions-cli/tests/test_templates.py#L43'>superset-extensions-cli/tests/test_templates.py:43:5:</a> D401 First line of docstring should be in imperative mood: "Default template context for testing."
-- <a href='https://github.com/apache/superset/blob/9968393e4c3a269d6a36c4ec1a8704ce184f0851/superset/mcp_service/mcp_config.py#L160'>superset/mcp_service/mcp_config.py:160:5:</a> D401 First line of docstring should be in imperative mood: "Default MCP auth factory using app.config values."
-- <a href='https://github.com/apache/superset/blob/9968393e4c3a269d6a36c4ec1a8704ce184f0851/superset/utils/decorators.py#L215'>superset/utils/decorators.py:215:5:</a> D401 First line of docstring should be in imperative mood: "Default error handler whenever any exception is caught during a SQLAlchemy nested"
-- <a href='https://github.com/apache/superset/blob/9968393e4c3a269d6a36c4ec1a8704ce184f0851/superset/utils/machine_auth.py#L62'>superset/utils/machine_auth.py:62:9:</a> D401 First line of docstring should be in imperative mood: "Default AuthDriverFuncType type that sets a session cookie flask-login style"
-- <a href='https://github.com/apache/superset/blob/9968393e4c3a269d6a36c4ec1a8704ce184f0851/tests/unit_tests/datasets/conftest.py#L27'>tests/unit_tests/datasets/conftest.py:27:5:</a> D401 First line of docstring should be in imperative mood: "Default props for new columns"
+- <a href="https://github.com/apache/superset/blob/9968393e4c3a269d6a36c4ec1a8704ce184f0851/superset-extensions-cli/tests/conftest.py#L47">superset-extensions-cli/tests/conftest.py:47:5:</a> D401 First line of docstring should be in imperative mood: &quot;Default parameters for extension creation.&quot;
+- <a href="https://github.com/apache/superset/blob/9968393e4c3a269d6a36c4ec1a8704ce184f0851/superset-extensions-cli/tests/test_templates.py#L43">superset-extensions-cli/tests/test_templates.py:43:5:</a> D401 First line of docstring should be in imperative mood: &quot;Default template context for testing.&quot;
+- <a href="https://github.com/apache/superset/blob/9968393e4c3a269d6a36c4ec1a8704ce184f0851/superset/mcp_service/mcp_config.py#L160">superset/mcp_service/mcp_config.py:160:5:</a> D401 First line of docstring should be in imperative mood: &quot;Default MCP auth factory using app.config values.&quot;
+- <a href="https://github.com/apache/superset/blob/9968393e4c3a269d6a36c4ec1a8704ce184f0851/superset/utils/decorators.py#L215">superset/utils/decorators.py:215:5:</a> D401 First line of docstring should be in imperative mood: &quot;Default error handler whenever any exception is caught during a SQLAlchemy nested&quot;
+- <a href="https://github.com/apache/superset/blob/9968393e4c3a269d6a36c4ec1a8704ce184f0851/superset/utils/machine_auth.py#L62">superset/utils/machine_auth.py:62:9:</a> D401 First line of docstring should be in imperative mood: &quot;Default AuthDriverFuncType type that sets a session cookie flask-login style&quot;
+- <a href="https://github.com/apache/superset/blob/9968393e4c3a269d6a36c4ec1a8704ce184f0851/tests/unit_tests/datasets/conftest.py#L27">tests/unit_tests/datasets/conftest.py:27:5:</a> D401 First line of docstring should be in imperative mood: &quot;Default props for new columns&quot;
 </pre>
 
 </p>
-</details>
-<details><summary>Changes by rule (1 rules affected)</summary>
+
+Changes by rule (1 rules affected)
 <p>
 
 <p>| code | total | + violation | - violation | + fix | - fix |
 | ---- | ------- | --------- | -------- | ----- | ---- |
 | D401 | 6 | 0 | 6 | 0 | 0 |</p>
 </p>
-</details>
 
-<h3>Linter (preview)</h3>
+
+Linter (preview)
 <p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+0 -6 violations, +0 -0 fixes in 1 projects; 54 projects unchanged)</p>
-<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+0 -6 violations, +0 -0 fixes)</summary>
+<a href="https://github.com/apache/superset">apache/superset</a> (+0 -6 violations, +0 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview --select ALL</pre>
 </p>
 <p>
 
 <pre>
-- <a href='https://github.com/apache/superset/blob/9968393e4c3a269d6a36c4ec1a8704ce184f0851/superset-extensions-cli/tests/conftest.py#L47'>superset-extensions-cli/tests/conftest.py:47:5:</a> D401 First line of docstring should be in imperative mood: "Default parameters for extension creation."
-- <a href='https://github.com/apache/superset/blob/9968393e4c3a269d6a36c4ec1a8704ce184f0851/superset-extensions-cli/tests/test_templates.py#L43'>superset-extensions-cli/tests/test_templates.py:43:5:</a> D401 First line of docstring should be in imperative mood: "Default template context for testing."
-- <a href='https://github.com/apache/superset/blob/9968393e4c3a269d6a36c4ec1a8704ce184f0851/superset/mcp_service/mcp_config.py#L160'>superset/mcp_service/mcp_config.py:160:5:</a> D401 First line of docstring should be in imperative mood: "Default MCP auth factory using app.config values."
-- <a href='https://github.com/apache/superset/blob/9968393e4c3a269d6a36c4ec1a8704ce184f0851/superset/utils/decorators.py#L215'>superset/utils/decorators.py:215:5:</a> D401 First line of docstring should be in imperative mood: "Default error handler whenever any exception is caught during a SQLAlchemy nested"
-- <a href='https://github.com/apache/superset/blob/9968393e4c3a269d6a36c4ec1a8704ce184f0851/superset/utils/machine_auth.py#L62'>superset/utils/machine_auth.py:62:9:</a> D401 First line of docstring should be in imperative mood: "Default AuthDriverFuncType type that sets a session cookie flask-login style"
-- <a href='https://github.com/apache/superset/blob/9968393e4c3a269d6a36c4ec1a8704ce184f0851/tests/unit_tests/datasets/conftest.py#L27'>tests/unit_tests/datasets/conftest.py:27:5:</a> D401 First line of docstring should be in imperative mood: "Default props for new columns"
+- <a href="https://github.com/apache/superset/blob/9968393e4c3a269d6a36c4ec1a8704ce184f0851/superset-extensions-cli/tests/conftest.py#L47">superset-extensions-cli/tests/conftest.py:47:5:</a> D401 First line of docstring should be in imperative mood: &quot;Default parameters for extension creation.&quot;
+- <a href="https://github.com/apache/superset/blob/9968393e4c3a269d6a36c4ec1a8704ce184f0851/superset-extensions-cli/tests/test_templates.py#L43">superset-extensions-cli/tests/test_templates.py:43:5:</a> D401 First line of docstring should be in imperative mood: &quot;Default template context for testing.&quot;
+- <a href="https://github.com/apache/superset/blob/9968393e4c3a269d6a36c4ec1a8704ce184f0851/superset/mcp_service/mcp_config.py#L160">superset/mcp_service/mcp_config.py:160:5:</a> D401 First line of docstring should be in imperative mood: &quot;Default MCP auth factory using app.config values.&quot;
+- <a href="https://github.com/apache/superset/blob/9968393e4c3a269d6a36c4ec1a8704ce184f0851/superset/utils/decorators.py#L215">superset/utils/decorators.py:215:5:</a> D401 First line of docstring should be in imperative mood: &quot;Default error handler whenever any exception is caught during a SQLAlchemy nested&quot;
+- <a href="https://github.com/apache/superset/blob/9968393e4c3a269d6a36c4ec1a8704ce184f0851/superset/utils/machine_auth.py#L62">superset/utils/machine_auth.py:62:9:</a> D401 First line of docstring should be in imperative mood: &quot;Default AuthDriverFuncType type that sets a session cookie flask-login style&quot;
+- <a href="https://github.com/apache/superset/blob/9968393e4c3a269d6a36c4ec1a8704ce184f0851/tests/unit_tests/datasets/conftest.py#L27">tests/unit_tests/datasets/conftest.py:27:5:</a> D401 First line of docstring should be in imperative mood: &quot;Default props for new columns&quot;
 </pre>
 
 </p>
-</details>
-<details><summary>Changes by rule (1 rules affected)</summary>
+
+Changes by rule (1 rules affected)
 <p>
 
 <p>| code | total | + violation | - violation | + fix | - fix |
 | ---- | ------- | --------- | -------- | ----- | ---- |
 | D401 | 6 | 0 | 6 | 0 | 0 |</p>
 </p>
-</details>
 
-<h3>Formatter (stable)</h3>
+
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:17:47 UTC
+        Synced at 2026-01-20 19:21:20 UTC
     </footer>
 </body>
 </html>

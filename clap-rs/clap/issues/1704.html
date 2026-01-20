@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/krystian-wojtas">@krystian-wojtas</a></div>
-            <div class="timeline-body"><h3>What are you trying to do?</h3>
+            <div class="timeline-body">What are you trying to do?
 <p>I have group of options which could be used multiple times. All such groups should be kept without overwriting previous one.</p>
-<pre><code class="language-bash">$ prometheus_sensors_exporter \
+<pre><code>$ prometheus_sensors_exporter \
     \
     `# 2 physical sensors located on physycial different i2c bus or address` \
     --sensor \
@@ -41,7 +41,7 @@
 </code></pre>
 <p><code>--sensor</code> specifies instance of new group. Then suboptions are only for current group.</p>
 <p>Ideally parsing would generate instance of Vector&lt;Sensor&gt; defined something like</p>
-<pre><code class="language-rust">pub enum Device {
+<pre><code>pub enum Device {
     Tmp102,
     Si7021,
 }
@@ -55,21 +55,21 @@ pub struct Sensor {
 </code></pre>
 <p>Could it be possible?</p>
 <p>Or maybe would you recommend to model it in some another way which could be easier to implement?</p>
-<h3>What have you tried already?</h3>
-<p>I tired few examples, but I didn't find anything similar so far.</p>
+What have you tried already?
+<p>I tired few examples, but I didn&#x27;t find anything similar so far.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">T: RFC / question</span> added by @krystian-wojtas on 2020-02-22 19:26</div>
+            <div class="event">Label <span class="label">T: RFC / question</span> added by <a href="https://github.com/krystian-wojtas">@krystian-wojtas</a> on 2020-02-22 19:26</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/krystian-wojtas">@krystian-wojtas</a> on 2020-02-23 23:22</div>
             <div class="timeline-body"><p>I tried some prove of concept. Actually it is implemented with structopt, not clap. Just to give some idea.</p>
 <p>I found that structopt has method <code>from_iter</code> which I can use instead of <code>from_args</code>. Then I can provide some subgroup of all parameters and invoke it few times as many sensors are defined by provided user command line parameters.</p>
 <p>To split all parameters in such subgroups I used <code>Vector::split</code> function with custom delimiter <code>--sensor</code>.</p>
-<h3>Code</h3>
+Code
 <p>Here is implementation with only 2 such sensor parameters</p>
-<pre><code class="language-rust">// Standard modules paths
+<pre><code>// Standard modules paths
 use std::env;
 use structopt::StructOpt;
 
@@ -115,7 +115,7 @@ impl Config {
 
     pub fn parse(args: std::env::Args) -&gt; Config {
 
-        // Split command line arguments into groups separated by '--sensor' delimiter
+        // Split command line arguments into groups separated by &#x27;--sensor&#x27; delimiter
         let arguments: Vec&lt;String&gt; = args.collect();
         let mut sensor_parameters_groups = arguments.split(|argument| argument == &quot;--sensor&quot;);
 
@@ -164,12 +164,12 @@ fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
 }
 
 </code></pre>
-<h3>Run</h3>
+Run
 <p>Invocations are like that:</p>
 <ul>
 <li>without any arguments</li>
 </ul>
-<pre><code class="language-bash">% cargo run --
+<pre><code>% cargo run --
     Finished dev [unoptimized + debuginfo] target(s) in 0.04s
      Running `target/debug/prometheus_sensors_exporter`
 Config {
@@ -183,7 +183,7 @@ Config {
 <ul>
 <li>some sensors</li>
 </ul>
-<pre><code class="language-bash">% cargo run -- \
+<pre><code>% cargo run -- \
     \
     `# generic configuration` \
     --socket-interface=1.1.1.1 \
@@ -232,7 +232,7 @@ Config {
 <ul>
 <li>help message</li>
 </ul>
-<pre><code class="language-bash">% cargo run -- --help
+<pre><code>% cargo run -- --help
     Finished dev [unoptimized + debuginfo] target(s) in 0.04s
      Running `target/debug/prometheus_sensors_exporter --help`
 prometheus_sensors_exporter 0.1.2
@@ -248,7 +248,7 @@ OPTIONS:
         --socket-interface &lt;socket-interface&gt;    Address of interface to bind [default: 0.0.0.0]
         --socket-port &lt;socket-port&gt;              Number in decimal [default: 9898]
 </code></pre>
-<h3>Questions</h3>
+Questions
 <ul>
 <li>Is it some valid approach?</li>
 <li>Could clap be used to implement something similar?</li>
@@ -260,9 +260,9 @@ OPTIONS:
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/krystian-wojtas">@krystian-wojtas</a> on 2020-02-24 20:45</div>
             <div class="timeline-body"><p>I have some another tries</p>
-<h3>subcommand enum</h3>
+subcommand enum
 <p>Code</p>
-<pre><code class="language-rust">// Standard modules paths
+<pre><code>// Standard modules paths
 use structopt::StructOpt;
 
 #[derive(StructOpt, Debug)]
@@ -310,7 +310,7 @@ fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
 }
 </code></pre>
 <p>Run with one sensor</p>
-<pre><code class="language-bash">% cargo run -- \
+<pre><code>% cargo run -- \
     \
     `# generic configuration` \
     --socket-interface=1.1.1.1 \
@@ -335,7 +335,7 @@ OptGeneric {
 }
 </code></pre>
 <p>Run with 2 sensors</p>
-<pre><code class="language-bash">% cargo run -- \
+<pre><code>% cargo run -- \
     \
     `# generic configuration` \
     --socket-interface=1.1.1.1 \
@@ -350,16 +350,16 @@ OptGeneric {
 &gt;
     Finished dev [unoptimized + debuginfo] target(s) in 0.04s
      Running `target/debug/prometheus_sensors_exporter --socket-interface=1.1.1.1 --socket-port=10000 sensor --sensor-i2c-bus=0 --sensor-i2c-address=1 sensor --sensor-i2c-bus=1 --sensor-i2c-address=1`
-error: Found argument 'sensor' which wasn't expected, or isn't valid in this context
+error: Found argument &#x27;sensor&#x27; which wasn&#x27;t expected, or isn&#x27;t valid in this context
 
 USAGE:
     prometheus_sensors_exporter sensor --sensor-i2c-address &lt;sensor-i2c-address&gt; --sensor-i2c-bus &lt;sensor-i2c-bus&gt;
 
 For more information try --help
 </code></pre>
-<h3>subcommand vec enum</h3>
+subcommand vec enum
 <p>Code</p>
-<pre><code class="language-rust">// Standard modules paths
+<pre><code>// Standard modules paths
 use structopt::StructOpt;
 
 #[derive(StructOpt, Debug)]
@@ -407,7 +407,7 @@ fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
 }
 </code></pre>
 <p>Cannot compile</p>
-<pre><code class="language-bash">% cargo build
+<pre><code>% cargo build
    Compiling prometheus_sensors_exporter v0.1.2 (/home/k/project/prometheus_sensors_exporter)
 error[E0277]: the trait bound `std::vec::Vec&lt;OptSensor&gt;: structopt::StructOptInternal` is not satisfied
   --&gt; src/main.rs:17:17
@@ -448,9 +448,9 @@ To learn more, run the command again with --verbose.
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/krystian-wojtas">@krystian-wojtas</a> on 2020-02-24 21:12</div>
             <div class="timeline-body"><p>Using master clap</p>
-<h3>subcommand enum</h3>
+subcommand enum
 <p>Code</p>
-<pre><code class="language-rust">// Standard modules paths
+<pre><code>// Standard modules paths
 use clap::Clap;
 
 #[derive(Clap, Debug)]
@@ -498,7 +498,7 @@ fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
 }
 </code></pre>
 <p>Run with one sensor is ok</p>
-<pre><code class="language-bash">% cargo run -- \
+<pre><code>% cargo run -- \
     \
     `# generic configuration` \
     --socket-interface=1.1.1.1 \
@@ -523,7 +523,7 @@ OptGeneric {
 }
 </code></pre>
 <p>Run with 2 sensors is not allowed</p>
-<pre><code class="language-bash">% cargo run -- \
+<pre><code>% cargo run -- \
     \
     `# generic configuration` \
     --socket-interface=1.1.1.1 \
@@ -538,7 +538,7 @@ OptGeneric {
 
     Finished dev [unoptimized + debuginfo] target(s) in 0.04s
      Running `target/debug/prometheus_sensors_exporter --socket-interface=1.1.1.1 --socket-port=10000 sensor --sensor-i2c-bus=0 --sensor-i2c-address=1 sensor --sensor-i2c-bus=1 --sensor-i2c-address=1`
-error: Found argument 'sensor' which wasn't expected, or isn't valid in this context
+error: Found argument &#x27;sensor&#x27; which wasn&#x27;t expected, or isn&#x27;t valid in this context
 If you tried to supply `sensor` as a PATTERN use `-- sensor`
 
 USAGE:
@@ -546,9 +546,9 @@ USAGE:
 
 For more information try --help
 </code></pre>
-<h3>subcommand vec enum</h3>
+subcommand vec enum
 <p>Code</p>
-<pre><code class="language-rust">// Standard modules paths
+<pre><code>// Standard modules paths
 use clap::Clap;
 
 #[derive(Clap, Debug)]
@@ -596,7 +596,7 @@ fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
 }
 </code></pre>
 <p>Cannot compile. Error message is much better than structopt</p>
-<pre><code class="language-bash">[Running 'cargo check']
+<pre><code>[Running &#x27;cargo check&#x27;]
     Checking prometheus_sensors_exporter v0.1.2 (/home/k/project/prometheus_sensors_exporter)
 error[E0277]: the trait bound `std::vec::Vec&lt;OptSensor&gt;: clap::derive::Subcommand` is not satisfied
  --&gt; src/main.rs:4:10
@@ -633,7 +633,7 @@ To learn more, run the command again with --verbose.
 <p>Maybe this is some solution? Could it be sub-sub-sub-...-commands also? Could it be wrapped into Option (with Box?) to brake infinite recursion?</p>
 <p>This try is interesting as it compiles ok, but overflow stack in runtime</p>
 <p>Code</p>
-<pre><code class="language-rust">// Standard modules paths
+<pre><code>// Standard modules paths
 use clap::Clap;
 
 #[derive(Clap, Debug)]
@@ -684,7 +684,7 @@ fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
 }
 </code></pre>
 <p>Run</p>
-<pre><code class="language-bash">% cargo run -- \
+<pre><code>% cargo run -- \
     \
     `# generic configuration` \
     --socket-interface=1.1.1.1 \
@@ -699,7 +699,7 @@ fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
     Finished dev [unoptimized + debuginfo] target(s) in 0.62s
      Running `target/debug/prometheus_sensors_exporter --socket-interface=1.1.1.1 --socket-port=10000 sensor --sensor-i2c-bus=0 --sensor-i2c-address=1`
 
-thread 'main' has overflowed its stack
+thread &#x27;main&#x27; has overflowed its stack
 fatal runtime error: stack overflow
 [1]    9558 abort (core dumped)  cargo run -- `# generic configuration` --socket-interface=1.1.1.1  sensor
 </code></pre>
@@ -715,9 +715,9 @@ https://github.com/clap-rs/clap/blob/master/examples/20_subcommands.rs</p>
             <div class="timeline-header">Comment by <a href="https://github.com/krystian-wojtas">@krystian-wojtas</a> on 2020-02-24 22:07</div>
             <div class="timeline-body"><p>I see that example from documentation have specified tree of subcommands known ahead at compile time.</p>
 <p>Here is some another attempt</p>
-<h3>not multiple</h3>
+not multiple
 <p>Code</p>
-<pre><code class="language-rust">// Standard modules paths
+<pre><code>// Standard modules paths
 use clap::Clap;
 
 #[derive(Clap, Debug)]
@@ -769,7 +769,7 @@ fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
 }
 </code></pre>
 <p>Run help</p>
-<pre><code class="language-bash">% cargo run -- help
+<pre><code>% cargo run -- help
     Finished dev [unoptimized + debuginfo] target(s) in 0.04s
      Running `target/debug/prometheus_sensors_exporter help`
 prometheus_sensors_exporter
@@ -790,7 +790,7 @@ SUBCOMMANDS:
     sensor
 </code></pre>
 <p>Run help for subcommand</p>
-<pre><code class="language-bash">% cargo run -- help sensor
+<pre><code>% cargo run -- help sensor
     Finished dev [unoptimized + debuginfo] target(s) in 0.04s
      Running `target/debug/prometheus_sensors_exporter help sensor`
 prometheus_sensors_exporter-sensor
@@ -810,7 +810,7 @@ OPTIONS:
         --sensor-i2c-bus &lt;sensor-i2c-bus&gt;            Number in decimal [default: 1]
 </code></pre>
 <p>Run with one sensor</p>
-<pre><code class="language-bash">% cargo run -- \
+<pre><code>% cargo run -- \
     \
     `# generic configuration` \
     --socket-interface=1.1.1.1 \
@@ -835,7 +835,7 @@ OptGeneric {
 }
 </code></pre>
 <p>Run with 2 sensors</p>
-<pre><code class="language-bash">% cargo run -- \
+<pre><code>% cargo run -- \
     \
     `# generic configuration` \
     --socket-interface=1.1.1.1 \
@@ -851,15 +851,15 @@ OptGeneric {
 &gt;
     Finished dev [unoptimized + debuginfo] target(s) in 0.04s
      Running `target/debug/prometheus_sensors_exporter --socket-interface=1.1.1.1 --socket-port=10000 sensor --sensor-i2c-bus=0 --sensor-i2c-address=1 sensor --sensor-i2c-bus=1 --sensor-i2c-address=1`
-error: The argument '--sensor-i2c-bus &lt;sensor-i2c-bus&gt;' was provided more than once, but cannot be used multiple times
+error: The argument &#x27;--sensor-i2c-bus &lt;sensor-i2c-bus&gt;&#x27; was provided more than once, but cannot be used multiple times
 
 USAGE:
     prometheus_sensors_exporter sensor [OPTIONS] [more-optional-sensors]...
 
 For more information try --help
 </code></pre>
-<h3>multiple</h3>
-<pre><code class="language-rust">// Standard modules paths
+multiple
+<pre><code>// Standard modules paths
 use clap::Clap;
 
 #[derive(Clap, Debug)]
@@ -911,7 +911,7 @@ fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
 }
 </code></pre>
 <p>Run with 2 sensors</p>
-<pre><code class="language-bash">% cargo run -- \
+<pre><code>% cargo run -- \
     \
     `# generic configuration` \
     --socket-interface=1.1.1.1 \
@@ -947,9 +947,9 @@ OptGeneric {
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/krystian-wojtas">@krystian-wojtas</a> on 2020-02-24 23:14</div>
             <div class="timeline-body"><p>Here is best result I have so far</p>
-<h3>structopt</h3>
+structopt
 <p>Code</p>
-<pre><code class="language-rust">// Standard modules paths
+<pre><code>// Standard modules paths
 use std::env;
 use clap::Clap;
 
@@ -1007,7 +1007,7 @@ impl Config {
 
     pub fn parse(args: std::env::Args) -&gt; Self {
 
-        // Split command line arguments into groups separated by '--sensor' delimiter
+        // Split command line arguments into groups separated by &#x27;--sensor&#x27; delimiter
         let arguments: Vec&lt;String&gt; = args.collect();
         let mut sensor_parameters_groups = arguments.split(|argument| argument == &quot;sensor&quot;);
 
@@ -1063,7 +1063,7 @@ fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
 }
 </code></pre>
 <p>Run help</p>
-<pre><code class="language-bash">% cargo run -- --help
+<pre><code>% cargo run -- --help
     Finished dev [unoptimized + debuginfo] target(s) in 0.04s
      Running `target/debug/prometheus_sensors_exporter --help`
 prometheus_sensors_exporter 0.1.2
@@ -1085,7 +1085,7 @@ ARGS:
     &lt;more-optional-sensors&gt;...    Each sensor definition should start with &lt;sensor&gt; keyword followed by its options
 </code></pre>
 <p>Run with one sensor</p>
-<pre><code class="language-bash">% cargo run -- \
+<pre><code>% cargo run -- \
     \
     `# generic configuration` \
     --socket-interface=1.1.1.1 \
@@ -1108,7 +1108,7 @@ Config {
 }
 </code></pre>
 <p>Run with 3 sensors</p>
-<pre><code class="language-bash">% cargo run -- \
+<pre><code>% cargo run -- \
     \
     `# generic configuration` \
     --socket-interface=1.1.1.1 \
@@ -1151,9 +1151,9 @@ Config {
     ],
 }
 </code></pre>
-<h3>clap</h3>
+clap
 <p>Code</p>
-<pre><code class="language-rust">// Standard modules paths
+<pre><code>// Standard modules paths
 use std::env;
 use clap::Clap;
 
@@ -1211,7 +1211,7 @@ impl Config {
 
     pub fn parse(args: std::env::Args) -&gt; Self {
 
-        // Split command line arguments into groups separated by '--sensor' delimiter
+        // Split command line arguments into groups separated by &#x27;--sensor&#x27; delimiter
         let arguments: Vec&lt;String&gt; = args.collect();
         let mut sensor_parameters_groups = arguments.split(|argument| argument == &quot;sensor&quot;);
 
@@ -1267,7 +1267,7 @@ fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
 }
 </code></pre>
 <p>Cannot compile</p>
-<pre><code class="language-bash">[Running 'cargo check']
+<pre><code>[Running &#x27;cargo check&#x27;]
     Checking prometheus_sensors_exporter v0.1.2 (/home/k/project/prometheus_sensors_exporter)
 error[E0599]: no function or associated item named `from_iter` found for type `OptBasic` in the current scope
   --&gt; src/main.rs:68:32
@@ -1310,9 +1310,9 @@ To learn more, run the command again with --verbose.
             <div class="timeline-header">Comment by <a href="https://github.com/krystian-wojtas">@krystian-wojtas</a> on 2020-02-25 20:22</div>
             <div class="timeline-body"><p><code>structopt::from_iter</code> is called <code>clap::parse_from</code>.</p>
 <p>Here is same thing as previous implemented with clap.</p>
-<h3>clap</h3>
+clap
 <p>Code</p>
-<pre><code class="language-rust">// Standard modules paths
+<pre><code>// Standard modules paths
 use std::env;
 use clap::Clap;
 
@@ -1370,7 +1370,7 @@ impl Config {
 
     pub fn parse(args: std::env::Args) -&gt; Self {
 
-        // Split command line arguments into groups separated by '--sensor' delimiter
+        // Split command line arguments into groups separated by &#x27;--sensor&#x27; delimiter
         let arguments: Vec&lt;String&gt; = args.collect();
         let mut sensor_parameters_groups = arguments.split(|argument| argument == &quot;sensor&quot;);
 
@@ -1421,7 +1421,7 @@ fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
 }
 </code></pre>
 <p>Run with some sensors</p>
-<pre><code class="language-bash">% cargo run -- \
+<pre><code>% cargo run -- \
     \
     `# generic configuration` \
     --socket-interface=1.1.1.1 \
@@ -1466,7 +1466,7 @@ Config {
 }
 </code></pre>
 <p>Help</p>
-<pre><code class="language-bash">% cargo run -- --help
+<pre><code>% cargo run -- --help
     Finished dev [unoptimized + debuginfo] target(s) in 0.04s
      Running `target/debug/prometheus_sensors_exporter --help`
 prometheus_sensors_exporter
@@ -1494,9 +1494,9 @@ OPTIONS:
             <div class="timeline-header">Comment by <a href="https://github.com/krystian-wojtas">@krystian-wojtas</a> on 2020-02-25 20:31</div>
             <div class="timeline-body"><p>To summarize:</p>
 <p>I have parsing of command line arguments using this great library. For my case I had to split all commands to some smaller groups and run individual parsing for them.</p>
-<p>I'm wondering if it could be possible to express this logic by clap itself? Is such case worth to implement? Would it be more users interested in it? Or there are a low chance that anyone else would like to use clap in similar way?</p>
+<p>I&#x27;m wondering if it could be possible to express this logic by clap itself? Is such case worth to implement? Would it be more users interested in it? Or there are a low chance that anyone else would like to use clap in similar way?</p>
 <p>Is it useful to implement passing vector of enums? Something like</p>
-<pre><code class="language-rust">#[clap(subcommand)] 
+<pre><code>#[clap(subcommand)] 
 // or #[clap(subcommands)]  ?
 field: Vec&lt;UserEnum&gt;
 </code></pre>
@@ -1505,13 +1505,13 @@ field: Vec&lt;UserEnum&gt;
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-02-26 01:40</div>
-            <div class="timeline-body"><p>@CreepySkeleton What do you think about this whole issue? It's a different way of doing things for sure.</p>
+            <div class="timeline-body"><p>@CreepySkeleton What do you think about this whole issue? It&#x27;s a different way of doing things for sure.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-02-27 16:01</div>
-            <div class="timeline-body"><p>I'm afraid there's no way to implement <em>this exact</em> design with clap, but you can get pretty close.</p>
-<p>You see, <code>--sensor</code> takes arbitrary number of values <em>up to the next occurrence of <code>--sensor</code></em>. There's no way to express this condition via clap API, unfortunately, so it couldn't work, not out of box.</p>
+            <div class="timeline-body"><p>I&#x27;m afraid there&#x27;s no way to implement <em>this exact</em> design with clap, but you can get pretty close.</p>
+<p>You see, <code>--sensor</code> takes arbitrary number of values <em>up to the next occurrence of <code>--sensor</code></em>. There&#x27;s no way to express this condition via clap API, unfortunately, so it couldn&#x27;t work, not out of box.</p>
 <p>You can overcome this limitation by applying some sort of external preprocessing, splitting the args into groups manually, as you do in the <code>structopt</code> example.</p>
 <p>I can think about the alternative:</p>
 <pre><code>$ prometheus_sensors_exporter \
@@ -1530,7 +1530,7 @@ field: Vec&lt;UserEnum&gt;
 </code></pre>
 <p>The idea is to threat each group as <em>one option with multiple arguments</em>, each parameter is a key-value pair. Unfortunately, parsing these values is up to you, and the auto generated help message leaves much to be desired.</p>
 <blockquote>
-<p>I'm wondering if it could be possible to express this logic by clap itself? Is such case worth to implement? Would it be more users interested in it? Or there are a low chance that anyone else would like to use clap in similar way?</p>
+<p>I&#x27;m wondering if it could be possible to express this logic by clap itself? Is such case worth to implement? Would it be more users interested in it? Or there are a low chance that anyone else would like to use clap in similar way?</p>
 </blockquote>
 <p>Those are good questions, and whether we will consider adding support for this use case or not depends on the answers. This is the first such request, and it is also the first time I personally encounter this design.</p>
 <blockquote>
@@ -1545,49 +1545,49 @@ field: Vec&lt;UserEnum&gt;
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">C: parsing</span> added by @CreepySkeleton on 2020-06-30 10:20</div>
+            <div class="event">Label <span class="label">C: parsing</span> added by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-06-30 10:20</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">D: hard</span> added by @CreepySkeleton on 2020-06-30 10:20</div>
+            <div class="event">Label <span class="label">D: hard</span> added by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-06-30 10:20</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">help wanted</span> added by @CreepySkeleton on 2020-06-30 10:20</div>
+            <div class="event">Label <span class="label">help wanted</span> added by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-06-30 10:20</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">T: new feature</span> added by @CreepySkeleton on 2020-06-30 10:20</div>
+            <div class="event">Label <span class="label">T: new feature</span> added by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-06-30 10:20</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">W: maybe</span> added by @CreepySkeleton on 2020-06-30 10:20</div>
+            <div class="event">Label <span class="label">W: maybe</span> added by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-06-30 10:20</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../TeXitoi/structopt/issues/457.html">TeXitoi/structopt#457</a> on 2020-12-28 18:54</div>
+            <div class="event">Referenced in <a>TeXitoi/structopt#457</a> on 2020-12-28 18:54</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../epage/clapng/issues/140.html">epage/clapng#140</a> on 2021-12-06 19:13</div>
+            <div class="event">Referenced in <a>epage/clapng#140</a> on 2021-12-06 19:13</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">T: RFC / question</span> removed by @epage on 2021-12-08 21:01</div>
+            <div class="event">Label <span class="label">T: RFC / question</span> removed by <a href="https://github.com/epage">@epage</a> on 2021-12-08 21:01</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">T: new feature</span> removed by @epage on 2021-12-08 21:01</div>
+            <div class="event">Label <span class="label">T: new feature</span> removed by <a href="https://github.com/epage">@epage</a> on 2021-12-08 21:01</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">C-enhancement</span> added by @epage on 2021-12-08 21:01</div>
+            <div class="event">Label <span class="label">C-enhancement</span> added by <a href="https://github.com/epage">@epage</a> on 2021-12-08 21:01</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-08 21:02</div>
-            <div class="timeline-body"><p>We've also talked some about this in https://github.com/clap-rs/clap/issues/2683</p>
+            <div class="timeline-body"><p>We&#x27;ve also talked some about this in <a href="https://github.com/clap-rs/clap/issues/2683">clap-rs/clap#2683</a></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">E-hard</span> removed by @epage on 2021-12-09 21:11</div>
+            <div class="event">Label <span class="label">E-hard</span> removed by <a href="https://github.com/epage">@epage</a> on 2021-12-09 21:11</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">E-help-wanted</span> removed by @epage on 2021-12-09 21:11</div>
+            <div class="event">Label <span class="label">E-help-wanted</span> removed by <a href="https://github.com/epage">@epage</a> on 2021-12-09 21:11</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/elkowar">@elkowar</a> on 2022-09-03 16:54</div>
-            <div class="timeline-body"><p>I'd still love to see this, currently my CLI api is very much suffering from this not being implemented ^^'</p>
+            <div class="timeline-body"><p>I&#x27;d still love to see this, currently my CLI api is very much suffering from this not being implemented ^^&#x27;</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1596,15 +1596,15 @@ field: Vec&lt;UserEnum&gt;
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../bitcoindevkit/bdk-cli/pulls/124.html">bitcoindevkit/bdk-cli#124</a> on 2022-10-02 14:39</div>
+            <div class="event">Referenced in <a>bitcoindevkit/bdk-cli#124</a> on 2022-10-02 14:39</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Isaac-Leonard">@Isaac-Leonard</a> on 2024-02-17 13:55</div>
-            <div class="timeline-body"><p>Has there been any changes with this, I've been struggling to implement it for a few hours but it doesn't seem to be possible.</p>
+            <div class="timeline-body"><p>Has there been any changes with this, I&#x27;ve been struggling to implement it for a few hours but it doesn&#x27;t seem to be possible.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../fedimint/fedimint/pulls/4473.html">fedimint/fedimint#4473</a> on 2024-03-06 07:25</div>
+            <div class="event">Referenced in <a>fedimint/fedimint#4473</a> on 2024-03-06 07:25</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-03-21 12:34</div>
@@ -1612,16 +1612,16 @@ field: Vec&lt;UserEnum&gt;
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/5488.html">clap-rs/clap#5488</a> on 2024-05-08 07:46</div>
+            <div class="event">Referenced in <a>clap-rs/clap#5488</a> on 2024-05-08 07:46</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../LeoBorai/wait-on/issues/3.html">LeoBorai/wait-on#3</a> on 2024-05-17 04:37</div>
+            <div class="event">Referenced in <a>LeoBorai/wait-on#3</a> on 2024-05-17 04:37</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/cavivie">@cavivie</a> on 2024-09-12 06:22</div>
             <div class="timeline-body"><p>Uhh, fortunately I encountered this issue and found it opened here, unfortunately the solution is not yet in sight.</p>
-<p>I don't think command-chaining is a solution to this issue, it just seems like a workaround.</p>
-<p>An argument itself means a single value, but how a single value is parsed actually depends on the value parser of the argument itself. I expect <code>Vec</code> to be treated as a special object. If the argument has the &quot;argument group&quot; flag, then an argument parser (let's call it <code>ArgGroupValueParser</code>) is provided to parse the value after the argument into a <code>Vec</code> element type. Then we require that the elements in <code>Vec</code> can be parsed by <code>ArgGroupValueParser</code>. In fact, this requires clap to provide a capability to parse the value of the argument itself as a command line argument, which seems to have the meaning of <code>Matryoshka doll</code>.</p>
+<p>I don&#x27;t think command-chaining is a solution to this issue, it just seems like a workaround.</p>
+<p>An argument itself means a single value, but how a single value is parsed actually depends on the value parser of the argument itself. I expect <code>Vec</code> to be treated as a special object. If the argument has the &quot;argument group&quot; flag, then an argument parser (let&#x27;s call it <code>ArgGroupValueParser</code>) is provided to parse the value after the argument into a <code>Vec</code> element type. Then we require that the elements in <code>Vec</code> can be parsed by <code>ArgGroupValueParser</code>. In fact, this requires clap to provide a capability to parse the value of the argument itself as a command line argument, which seems to have the meaning of <code>Matryoshka doll</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1630,12 +1630,12 @@ field: Vec&lt;UserEnum&gt;
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/2222.html">clap-rs/clap#2222</a> on 2025-07-09 14:11</div>
+            <div class="event">Referenced in <a>clap-rs/clap#2222</a> on 2025-07-09 14:11</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:47:31 UTC
+        Synced at 2026-01-20 19:57:39 UTC
     </footer>
 </body>
 </html>

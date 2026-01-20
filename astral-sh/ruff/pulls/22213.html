@@ -23,43 +23,43 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>A couple things I noticed when taking another look at the callable type materializations.</p>
 <ol>
 <li>Previously we wrongly ignored the return type when bottom-materializing a callable with gradual signature, and always changed it to <code>Never</code>.</li>
-<li>We weren't correctly handling overloads that included a gradual signature. Rather than separately materializing each overload, we would just mark the entire callable as &quot;top&quot; or replace the entire callable with the bottom signature.</li>
+<li>We weren&#x27;t correctly handling overloads that included a gradual signature. Rather than separately materializing each overload, we would just mark the entire callable as &quot;top&quot; or replace the entire callable with the bottom signature.</li>
 </ol>
-<p>Really, &quot;top parameters&quot; is something that belongs on the <code>Parameters</code>, not on the entire <code>CallableType</code>. Conveniently, we already have <code>ParametersKind</code> where we can track this, right next to where we already track <code>ParametersKind::Gradual</code>. This saves a bit of memory, fixes the two bugs above, and simplifies the implementation considerably (net removal of 100+ LOC, a bunch of places that shouldn't need to care about topness of a callable no longer need to.)</p>
+<p>Really, &quot;top parameters&quot; is something that belongs on the <code>Parameters</code>, not on the entire <code>CallableType</code>. Conveniently, we already have <code>ParametersKind</code> where we can track this, right next to where we already track <code>ParametersKind::Gradual</code>. This saves a bit of memory, fixes the two bugs above, and simplifies the implementation considerably (net removal of 100+ LOC, a bunch of places that shouldn&#x27;t need to care about topness of a callable no longer need to.)</p>
 <p>One user-visible change from this is that I now display the &quot;top callable&quot; as <code>(Top[...]) -&gt; object</code> instead of <code>Top[(...) -&gt; object]</code>. I think this is a (minor) improvement, because it wraps exactly the part in <code>Top</code> that needs to be, rather than misleadingly wrapping the entire callable type, including the return type (which has already been separately materialized). I think the prior display would be particularly confusing if the return type also has its own <code>Top</code> in it: previously we could have e.g. <code>Top[(...) -&gt; Top[list[Unknown]]]</code>, which I think is less clear than the new <code>(Top[...]) -&gt; Top[list[Unknown]]</code>.</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>Added mdtests that failed before this PR and pass after it.</p>
-<h3>Ecosystem</h3>
+Ecosystem
 <p>The changed diagnostics are all either the change to <code>Top</code> display, or else known non-deterministic output. The added diagnostics are all true positives:</p>
-<p>The added diagnostic at https://github.com/pytorch/vision/blob/aa35ca1965bea39b9a0996d5d2d7f15d325e54d2/torchvision/transforms/v2/_utils.py#L149 is a true positive that wasn't caught by the previous version. <code>str</code> is not assignable to <code>Callable[[Any], Any]</code> (strings are not callable), nor is the top callable (top callable includes callables that do not take a single required positional argument.)</p>
-<p>The added diagnostic at https://github.com/Kludex/starlette/blob/081535ad9b46a29ca4d9beea9dea9d422b4c8f7d/starlette/routing.py#L67 is also a (pedantic) true positive. It's the same case as #1567 -- the code assumes that it is impossible for a subclass of <code>Response</code> to implement <code>__await__</code> (yielding something other than a <code>Response</code>).</p>
+<p>The added diagnostic at https://github.com/pytorch/vision/blob/aa35ca1965bea39b9a0996d5d2d7f15d325e54d2/torchvision/transforms/v2/_utils.py#L149 is a true positive that wasn&#x27;t caught by the previous version. <code>str</code> is not assignable to <code>Callable[[Any], Any]</code> (strings are not callable), nor is the top callable (top callable includes callables that do not take a single required positional argument.)</p>
+<p>The added diagnostic at https://github.com/Kludex/starlette/blob/081535ad9b46a29ca4d9beea9dea9d422b4c8f7d/starlette/routing.py#L67 is also a (pedantic) true positive. It&#x27;s the same case as #1567 -- the code assumes that it is impossible for a subclass of <code>Response</code> to implement <code>__await__</code> (yielding something other than a <code>Response</code>).</p>
 <p>The pytest added diagnostics are also both similar true positives: they make the assumption that an object cannot simultaneously be a <code>Sequence</code> and callable, or an <code>Iterable</code> and callable.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @carljm on 2025-12-26 21:22</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/carljm">@carljm</a> on 2025-12-26 21:22</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-26 21:24</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a>
 <p>No changes detected when running ty on typing conformance tests ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-26 21:25</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">attrs (https://github.com/python-attrs/attrs)
+Changes were detected when running on open source projects
+
+<pre><code>attrs (https://github.com/python-attrs/attrs)
 - src/attr/validators.py:175:24: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `((Overload[(pattern: str | Pattern[str], string: str, flags: int = 0) -&gt; Match[str] | None, (pattern: bytes | Pattern[bytes], string: Buffer, flags: int = 0) -&gt; Match[bytes] | None]) &amp; ~AlwaysTruthy &amp; ~AlwaysFalsy) | (str &amp; ~AlwaysFalsy)` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
 + src/attr/validators.py:175:24: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `(Overload[(pattern: str | Pattern[str], string: str, flags: int = 0) -&gt; Match[str] | None, (pattern: bytes | Pattern[bytes], string: Buffer, flags: int = 0) -&gt; Match[bytes] | None] &amp; ~AlwaysTruthy &amp; ~AlwaysFalsy) | (str &amp; ~AlwaysFalsy)` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
 
@@ -98,22 +98,22 @@ vision (https://github.com/pytorch/vision)
 + Found 1413 diagnostics
 
 discord.py (https://github.com/Rapptz/discord.py)
-- discord/app_commands/commands.py:2477:17: error[invalid-assignment] Object of type `list[Unknown]` is not assignable to attribute `__discord_app_commands_checks__` on type `(((...) -&gt; Coroutine[Any, Any, Unknown]) &amp; ~Top[Command[Unknown, Top[(...)], Unknown]] &amp; ~ContextMenu &amp; ~&lt;Protocol with members '__discord_app_commands_checks__'&gt;) | (((Interaction[Any], Member, /) -&gt; Coroutine[Any, Any, Any]) &amp; ~Top[Command[Unknown, Top[(...)], Unknown]] &amp; ~ContextMenu &amp; ~&lt;Protocol with members '__discord_app_commands_checks__'&gt;) | (((Interaction[Any], User, /) -&gt; Coroutine[Any, Any, Any]) &amp; ~Top[Command[Unknown, Top[(...)], Unknown]] &amp; ~ContextMenu &amp; ~&lt;Protocol with members '__discord_app_commands_checks__'&gt;) | (((Interaction[Any], Message, /) -&gt; Coroutine[Any, Any, Any]) &amp; ~Top[Command[Unknown, Top[(...)], Unknown]] &amp; ~ContextMenu &amp; ~&lt;Protocol with members '__discord_app_commands_checks__'&gt;)`
-+ discord/app_commands/commands.py:2477:17: error[invalid-assignment] Object of type `list[Unknown]` is not assignable to attribute `__discord_app_commands_checks__` on type `(((...) -&gt; Coroutine[Any, Any, Unknown]) &amp; ~Top[Command[Unknown, (...), Unknown]] &amp; ~ContextMenu &amp; ~&lt;Protocol with members '__discord_app_commands_checks__'&gt;) | (((Interaction[Any], Member, /) -&gt; Coroutine[Any, Any, Any]) &amp; ~Top[Command[Unknown, (...), Unknown]] &amp; ~ContextMenu &amp; ~&lt;Protocol with members '__discord_app_commands_checks__'&gt;) | (((Interaction[Any], User, /) -&gt; Coroutine[Any, Any, Any]) &amp; ~Top[Command[Unknown, (...), Unknown]] &amp; ~ContextMenu &amp; ~&lt;Protocol with members '__discord_app_commands_checks__'&gt;) | (((Interaction[Any], Message, /) -&gt; Coroutine[Any, Any, Any]) &amp; ~Top[Command[Unknown, (...), Unknown]] &amp; ~ContextMenu &amp; ~&lt;Protocol with members '__discord_app_commands_checks__'&gt;)`
+- discord/app_commands/commands.py:2477:17: error[invalid-assignment] Object of type `list[Unknown]` is not assignable to attribute `__discord_app_commands_checks__` on type `(((...) -&gt; Coroutine[Any, Any, Unknown]) &amp; ~Top[Command[Unknown, Top[(...)], Unknown]] &amp; ~ContextMenu &amp; ~&lt;Protocol with members &#x27;__discord_app_commands_checks__&#x27;&gt;) | (((Interaction[Any], Member, /) -&gt; Coroutine[Any, Any, Any]) &amp; ~Top[Command[Unknown, Top[(...)], Unknown]] &amp; ~ContextMenu &amp; ~&lt;Protocol with members &#x27;__discord_app_commands_checks__&#x27;&gt;) | (((Interaction[Any], User, /) -&gt; Coroutine[Any, Any, Any]) &amp; ~Top[Command[Unknown, Top[(...)], Unknown]] &amp; ~ContextMenu &amp; ~&lt;Protocol with members &#x27;__discord_app_commands_checks__&#x27;&gt;) | (((Interaction[Any], Message, /) -&gt; Coroutine[Any, Any, Any]) &amp; ~Top[Command[Unknown, Top[(...)], Unknown]] &amp; ~ContextMenu &amp; ~&lt;Protocol with members &#x27;__discord_app_commands_checks__&#x27;&gt;)`
++ discord/app_commands/commands.py:2477:17: error[invalid-assignment] Object of type `list[Unknown]` is not assignable to attribute `__discord_app_commands_checks__` on type `(((...) -&gt; Coroutine[Any, Any, Unknown]) &amp; ~Top[Command[Unknown, (...), Unknown]] &amp; ~ContextMenu &amp; ~&lt;Protocol with members &#x27;__discord_app_commands_checks__&#x27;&gt;) | (((Interaction[Any], Member, /) -&gt; Coroutine[Any, Any, Any]) &amp; ~Top[Command[Unknown, (...), Unknown]] &amp; ~ContextMenu &amp; ~&lt;Protocol with members &#x27;__discord_app_commands_checks__&#x27;&gt;) | (((Interaction[Any], User, /) -&gt; Coroutine[Any, Any, Any]) &amp; ~Top[Command[Unknown, (...), Unknown]] &amp; ~ContextMenu &amp; ~&lt;Protocol with members &#x27;__discord_app_commands_checks__&#x27;&gt;) | (((Interaction[Any], Message, /) -&gt; Coroutine[Any, Any, Any]) &amp; ~Top[Command[Unknown, (...), Unknown]] &amp; ~ContextMenu &amp; ~&lt;Protocol with members &#x27;__discord_app_commands_checks__&#x27;&gt;)`
 - discord/app_commands/commands.py:2479:13: error[unresolved-attribute] Object of type `(((...) -&gt; Coroutine[Any, Any, Unknown]) &amp; ~Top[Command[Unknown, Top[(...)], Unknown]] &amp; ~ContextMenu) | (((Interaction[Any], Member, /) -&gt; Coroutine[Any, Any, Any]) &amp; ~Top[Command[Unknown, Top[(...)], Unknown]] &amp; ~ContextMenu) | (((Interaction[Any], User, /) -&gt; Coroutine[Any, Any, Any]) &amp; ~Top[Command[Unknown, Top[(...)], Unknown]] &amp; ~ContextMenu) | (((Interaction[Any], Message, /) -&gt; Coroutine[Any, Any, Any]) &amp; ~Top[Command[Unknown, Top[(...)], Unknown]] &amp; ~ContextMenu)` has no attribute `__discord_app_commands_checks__`
 + discord/app_commands/commands.py:2479:13: error[unresolved-attribute] Object of type `(((...) -&gt; Coroutine[Any, Any, Unknown]) &amp; ~Top[Command[Unknown, (...), Unknown]] &amp; ~ContextMenu) | (((Interaction[Any], Member, /) -&gt; Coroutine[Any, Any, Any]) &amp; ~Top[Command[Unknown, (...), Unknown]] &amp; ~ContextMenu) | (((Interaction[Any], User, /) -&gt; Coroutine[Any, Any, Any]) &amp; ~Top[Command[Unknown, (...), Unknown]] &amp; ~ContextMenu) | (((Interaction[Any], Message, /) -&gt; Coroutine[Any, Any, Any]) &amp; ~Top[Command[Unknown, (...), Unknown]] &amp; ~ContextMenu)` has no attribute `__discord_app_commands_checks__`
-- discord/ext/commands/core.py:1942:17: error[invalid-assignment] Object of type `list[Unknown]` is not assignable to attribute `__commands_checks__` on type `((...) -&gt; Coroutine[Any, Any, Any]) &amp; ~Top[Command[Unknown, Top[(...)], Unknown]] &amp; ~&lt;Protocol with members '__commands_checks__'&gt;`
-+ discord/ext/commands/core.py:1942:17: error[invalid-assignment] Object of type `list[Unknown]` is not assignable to attribute `__commands_checks__` on type `((...) -&gt; Coroutine[Any, Any, Any]) &amp; ~Top[Command[Unknown, (...), Unknown]] &amp; ~&lt;Protocol with members '__commands_checks__'&gt;`
+- discord/ext/commands/core.py:1942:17: error[invalid-assignment] Object of type `list[Unknown]` is not assignable to attribute `__commands_checks__` on type `((...) -&gt; Coroutine[Any, Any, Any]) &amp; ~Top[Command[Unknown, Top[(...)], Unknown]] &amp; ~&lt;Protocol with members &#x27;__commands_checks__&#x27;&gt;`
++ discord/ext/commands/core.py:1942:17: error[invalid-assignment] Object of type `list[Unknown]` is not assignable to attribute `__commands_checks__` on type `((...) -&gt; Coroutine[Any, Any, Any]) &amp; ~Top[Command[Unknown, (...), Unknown]] &amp; ~&lt;Protocol with members &#x27;__commands_checks__&#x27;&gt;`
 - discord/ext/commands/core.py:1944:13: error[unresolved-attribute] Object of type `((...) -&gt; Coroutine[Any, Any, Any]) &amp; ~Top[Command[Unknown, Top[(...)], Unknown]]` has no attribute `__commands_checks__`
 + discord/ext/commands/core.py:1944:13: error[unresolved-attribute] Object of type `((...) -&gt; Coroutine[Any, Any, Any]) &amp; ~Top[Command[Unknown, (...), Unknown]]` has no attribute `__commands_checks__`
-- discord/ext/commands/core.py:2365:17: error[invalid-assignment] Object of type `list[Unknown]` is not assignable to attribute `__commands_checks__` on type `((...) -&gt; Coroutine[Any, Any, Any]) &amp; ~Top[Command[Unknown, Top[(...)], Unknown]] &amp; ~&lt;Protocol with members '__commands_checks__'&gt;`
-+ discord/ext/commands/core.py:2365:17: error[invalid-assignment] Object of type `list[Unknown]` is not assignable to attribute `__commands_checks__` on type `((...) -&gt; Coroutine[Any, Any, Any]) &amp; ~Top[Command[Unknown, (...), Unknown]] &amp; ~&lt;Protocol with members '__commands_checks__'&gt;`
+- discord/ext/commands/core.py:2365:17: error[invalid-assignment] Object of type `list[Unknown]` is not assignable to attribute `__commands_checks__` on type `((...) -&gt; Coroutine[Any, Any, Any]) &amp; ~Top[Command[Unknown, Top[(...)], Unknown]] &amp; ~&lt;Protocol with members &#x27;__commands_checks__&#x27;&gt;`
++ discord/ext/commands/core.py:2365:17: error[invalid-assignment] Object of type `list[Unknown]` is not assignable to attribute `__commands_checks__` on type `((...) -&gt; Coroutine[Any, Any, Any]) &amp; ~Top[Command[Unknown, (...), Unknown]] &amp; ~&lt;Protocol with members &#x27;__commands_checks__&#x27;&gt;`
 - discord/ext/commands/core.py:2367:13: error[unresolved-attribute] Object of type `((...) -&gt; Coroutine[Any, Any, Any]) &amp; ~Top[Command[Unknown, Top[(...)], Unknown]]` has no attribute `__commands_checks__`
 + discord/ext/commands/core.py:2367:13: error[unresolved-attribute] Object of type `((...) -&gt; Coroutine[Any, Any, Any]) &amp; ~Top[Command[Unknown, (...), Unknown]]` has no attribute `__commands_checks__`
 - discord/ext/commands/core.py:2368:13: error[invalid-assignment] Object of type `Literal[True]` is not assignable to attribute `__discord_app_commands_guild_only__` on type `((...) -&gt; Coroutine[Any, Any, Any]) &amp; ~Top[Command[Unknown, Top[(...)], Unknown]]`
 + discord/ext/commands/core.py:2368:13: error[invalid-assignment] Object of type `Literal[True]` is not assignable to attribute `__discord_app_commands_guild_only__` on type `((...) -&gt; Coroutine[Any, Any, Any]) &amp; ~Top[Command[Unknown, (...), Unknown]]`
-- discord/ext/commands/core.py:2440:17: error[invalid-assignment] Object of type `list[Unknown]` is not assignable to attribute `__commands_checks__` on type `((...) -&gt; Coroutine[Any, Any, Any]) &amp; ~Top[Command[Unknown, Top[(...)], Unknown]] &amp; ~&lt;Protocol with members '__commands_checks__'&gt;`
-+ discord/ext/commands/core.py:2440:17: error[invalid-assignment] Object of type `list[Unknown]` is not assignable to attribute `__commands_checks__` on type `((...) -&gt; Coroutine[Any, Any, Any]) &amp; ~Top[Command[Unknown, (...), Unknown]] &amp; ~&lt;Protocol with members '__commands_checks__'&gt;`
+- discord/ext/commands/core.py:2440:17: error[invalid-assignment] Object of type `list[Unknown]` is not assignable to attribute `__commands_checks__` on type `((...) -&gt; Coroutine[Any, Any, Any]) &amp; ~Top[Command[Unknown, Top[(...)], Unknown]] &amp; ~&lt;Protocol with members &#x27;__commands_checks__&#x27;&gt;`
++ discord/ext/commands/core.py:2440:17: error[invalid-assignment] Object of type `list[Unknown]` is not assignable to attribute `__commands_checks__` on type `((...) -&gt; Coroutine[Any, Any, Any]) &amp; ~Top[Command[Unknown, (...), Unknown]] &amp; ~&lt;Protocol with members &#x27;__commands_checks__&#x27;&gt;`
 - discord/ext/commands/core.py:2442:13: error[unresolved-attribute] Object of type `((...) -&gt; Coroutine[Any, Any, Any]) &amp; ~Top[Command[Unknown, Top[(...)], Unknown]]` has no attribute `__commands_checks__`
 + discord/ext/commands/core.py:2442:13: error[unresolved-attribute] Object of type `((...) -&gt; Coroutine[Any, Any, Any]) &amp; ~Top[Command[Unknown, (...), Unknown]]` has no attribute `__commands_checks__`
 - discord/ext/commands/core.py:2443:13: error[invalid-assignment] Object of type `Literal[True]` is not assignable to attribute `__discord_app_commands_is_nsfw__` on type `((...) -&gt; Coroutine[Any, Any, Any]) &amp; ~Top[Command[Unknown, Top[(...)], Unknown]]`
@@ -159,10 +159,10 @@ scikit-build-core (https://github.com/scikit-build/scikit-build-core)
 + Found 47 diagnostics
 
 ibis (https://github.com/ibis-project/ibis)
-- ibis/tests/expr/test_table.py:1936:9: error[invalid-argument-type] Argument to bound method `pivot_longer` is incorrect: Expected `((str, /) -&gt; Value) | Mapping[str, (str, /) -&gt; Value] | None`, found `dict[str, (Overload[(self: LiteralString) -&gt; str, (self) -&gt; str]) | &lt;class 'int'&gt;]`
-+ ibis/tests/expr/test_table.py:1936:9: error[invalid-argument-type] Argument to bound method `pivot_longer` is incorrect: Expected `((str, /) -&gt; Value) | Mapping[str, (str, /) -&gt; Value] | None`, found `dict[str, Overload[(self: LiteralString) -&gt; str, (self) -&gt; str] | &lt;class 'int'&gt;]`
-- ibis/tests/expr/test_table.py:1959:13: error[invalid-argument-type] Argument to bound method `pivot_longer` is incorrect: Expected `((str, /) -&gt; Value) | Mapping[str, (str, /) -&gt; Value] | None`, found `dict[str, (Overload[(self: LiteralString) -&gt; str, (self) -&gt; str]) | &lt;class 'int'&gt;]`
-+ ibis/tests/expr/test_table.py:1959:13: error[invalid-argument-type] Argument to bound method `pivot_longer` is incorrect: Expected `((str, /) -&gt; Value) | Mapping[str, (str, /) -&gt; Value] | None`, found `dict[str, Overload[(self: LiteralString) -&gt; str, (self) -&gt; str] | &lt;class 'int'&gt;]`
+- ibis/tests/expr/test_table.py:1936:9: error[invalid-argument-type] Argument to bound method `pivot_longer` is incorrect: Expected `((str, /) -&gt; Value) | Mapping[str, (str, /) -&gt; Value] | None`, found `dict[str, (Overload[(self: LiteralString) -&gt; str, (self) -&gt; str]) | &lt;class &#x27;int&#x27;&gt;]`
++ ibis/tests/expr/test_table.py:1936:9: error[invalid-argument-type] Argument to bound method `pivot_longer` is incorrect: Expected `((str, /) -&gt; Value) | Mapping[str, (str, /) -&gt; Value] | None`, found `dict[str, Overload[(self: LiteralString) -&gt; str, (self) -&gt; str] | &lt;class &#x27;int&#x27;&gt;]`
+- ibis/tests/expr/test_table.py:1959:13: error[invalid-argument-type] Argument to bound method `pivot_longer` is incorrect: Expected `((str, /) -&gt; Value) | Mapping[str, (str, /) -&gt; Value] | None`, found `dict[str, (Overload[(self: LiteralString) -&gt; str, (self) -&gt; str]) | &lt;class &#x27;int&#x27;&gt;]`
++ ibis/tests/expr/test_table.py:1959:13: error[invalid-argument-type] Argument to bound method `pivot_longer` is incorrect: Expected `((str, /) -&gt; Value) | Mapping[str, (str, /) -&gt; Value] | None`, found `dict[str, Overload[(self: LiteralString) -&gt; str, (self) -&gt; str] | &lt;class &#x27;int&#x27;&gt;]`
 
 scikit-learn (https://github.com/scikit-learn/scikit-learn)
 - sklearn/externals/array_api_extra/_lib/_at.py:300:17: warning[possibly-missing-attribute] Attribute `dtype` may be missing on object of type `int | Array | tuple[int | slice[Any, Any, Any] | EllipsisType | Array, ...] | slice[Any, Any, Any] | EllipsisType`
@@ -203,7 +203,7 @@ core (https://github.com/home-assistant/core)
 
 
 </code></pre>
-</details>
+
 
 <p>No memory usage changes detected ✅</p>
 </div>
@@ -214,17 +214,17 @@ core (https://github.com/home-assistant/core)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:1625 on 2025-12-26 21:26</div>
-            <div class="timeline-body"><p>I intentionally decided not to preserve this comment in the new location for this check. It's redundant with the existing comment on <code>BindingError::CalledTopCallable</code> itself (not to mention the diagnostic we emit for it), and those are both places you would very quickly find if you were curious about this check.</p>
+            <div class="timeline-body"><p>I intentionally decided not to preserve this comment in the new location for this check. It&#x27;s redundant with the existing comment on <code>BindingError::CalledTopCallable</code> itself (not to mention the diagnostic we emit for it), and those are both places you would very quickly find if you were curious about this check.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @carljm on 2025-12-26 21:37</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/carljm">@carljm</a> on 2025-12-26 21:37</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-26 21:42</div>
-            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+            <div class="timeline-body">
 
-<h2><code>ecosystem-analyzer</code> results</h2>
+<code>ecosystem-analyzer</code> results
 <p>| Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
 | <code>invalid-assignment</code> | 1 | 0 | 16 |
@@ -241,48 +241,48 @@ core (https://github.com/home-assistant/core)
             <div class="timeline-body"><blockquote>
 <p>One user-visible change from this is that I now display the &quot;top callable&quot; as <code>(Top[...]) -&gt; object</code> instead of <code>Top[(...) -&gt; object]</code>.</p>
 </blockquote>
-<p>But the top materialization of a <code>Callable</code> uses the bottom materialization of a <code>Parameters</code>. So shouldn't <code>Top[(...) -&gt; object]</code> be equivalent to <code>Bottom[...] -&gt; object</code>?</p>
-<p>I think this is an argument in favour of our current display, actually. It means you don't have to think about contravariance.</p>
+<p>But the top materialization of a <code>Callable</code> uses the bottom materialization of a <code>Parameters</code>. So shouldn&#x27;t <code>Top[(...) -&gt; object]</code> be equivalent to <code>Bottom[...] -&gt; object</code>?</p>
+<p>I think this is an argument in favour of our current display, actually. It means you don&#x27;t have to think about contravariance.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-26 21:54</div>
             <div class="timeline-body"><blockquote>
-<p>But the top materialization of a <code>Callable</code> uses the bottom materialization of a <code>Parameters</code>. So shouldn't <code>Top[(...) -&gt; object]</code> be equivalent to <code>Bottom[...] -&gt; object</code>?</p>
+<p>But the top materialization of a <code>Callable</code> uses the bottom materialization of a <code>Parameters</code>. So shouldn&#x27;t <code>Top[(...) -&gt; object]</code> be equivalent to <code>Bottom[...] -&gt; object</code>?</p>
 </blockquote>
-<p>I think it's arguable and a bit arbitrary whether you consider the entire <code>Parameters</code> to be in contravariant position, or the types of individual parameters. The semantics of how arity mismatches work with parameter subtyping is not arbitrary, of course, but the way we label it is. So I don't think <code>(Top[...]) -&gt; object</code> is wrong, and I made that (arbitrary) choice so that you wouldn't have to think about contravariance.</p>
+<p>I think it&#x27;s arguable and a bit arbitrary whether you consider the entire <code>Parameters</code> to be in contravariant position, or the types of individual parameters. The semantics of how arity mismatches work with parameter subtyping is not arbitrary, of course, but the way we label it is. So I don&#x27;t think <code>(Top[...]) -&gt; object</code> is wrong, and I made that (arbitrary) choice so that you wouldn&#x27;t have to think about contravariance.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @carljm on 2025-12-26 23:17</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/carljm">@carljm</a> on 2025-12-26 23:17</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @carljm on 2025-12-26 23:17</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/carljm">@carljm</a> on 2025-12-26 23:17</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-26 23:31</div>
-            <div class="timeline-body"><p>The ecosystem-analyzer workflow reruns automatically on new pushes to a labelled PR following https://github.com/astral-sh/ruff/commit/19b10993e1bfcdcb0be8fad8b4259a0f504860c6; there's no need to remove and re-add the label anymore to trigger a rerun :-)</p>
+            <div class="timeline-body"><p>The ecosystem-analyzer workflow reruns automatically on new pushes to a labelled PR following https://github.com/astral-sh/ruff/commit/19b10993e1bfcdcb0be8fad8b4259a0f504860c6; there&#x27;s no need to remove and re-add the label anymore to trigger a rerun :-)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @carljm on 2025-12-26 23:51</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/carljm">@carljm</a> on 2025-12-26 23:51</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @carljm on 2025-12-26 23:51</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/carljm">@carljm</a> on 2025-12-26 23:51</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @carljm on 2025-12-26 23:51</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/carljm">@carljm</a> on 2025-12-26 23:51</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @carljm on 2025-12-26 23:51</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/carljm">@carljm</a> on 2025-12-26 23:51</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-26 23:53</div>
-            <div class="timeline-body"><p>@AlexWaygood I don't feel strongly about the display -- I think it's a bit odd (and more visually confusing) to wrap extra stuff in <code>Top</code> that will always already be fully static, but it's not <em>wrong</em>. And I see the possibility that someone who knows too much about variance could be confused by what <code>Top</code> means inside a parameter list. So if you still think the old display is preferable, I don't think it'd be much work to restore it.</p>
+            <div class="timeline-body"><p>@AlexWaygood I don&#x27;t feel strongly about the display -- I think it&#x27;s a bit odd (and more visually confusing) to wrap extra stuff in <code>Top</code> that will always already be fully static, but it&#x27;s not <em>wrong</em>. And I see the possibility that someone who knows too much about variance could be confused by what <code>Top</code> means inside a parameter list. So if you still think the old display is preferable, I don&#x27;t think it&#x27;d be much work to restore it.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @charliermarsh by @carljm on 2025-12-26 23:53</div>
+            <div class="event">Review requested from <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/carljm">@carljm</a> on 2025-12-26 23:53</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-12-27 11:51</div>
@@ -290,13 +290,13 @@ core (https://github.com/home-assistant/core)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:1921 on 2025-12-27 11:51</div>
-            <div class="timeline-body"><p>It's very tempting, looking at this, to think &quot;Ah, but surely the top-materialization of a <code>Callable</code> parameters can also be simplified, to <code>(*args: Never, **kwargs: Never)</code>, the inverse of the bottom-materialization of a <code>Callable</code> parameters directly below? But no, that's not the case, because those parameters would still permit calls that pass 0 arguments in -- it's actually &quot;the same&quot; as the empty parameters list <code>()</code>. It might be worth adding a comment here explicitly laying that out?</p>
+            <div class="timeline-body"><p>It&#x27;s very tempting, looking at this, to think &quot;Ah, but surely the top-materialization of a <code>Callable</code> parameters can also be simplified, to <code>(*args: Never, **kwargs: Never)</code>, the inverse of the bottom-materialization of a <code>Callable</code> parameters directly below? But no, that&#x27;s not the case, because those parameters would still permit calls that pass 0 arguments in -- it&#x27;s actually &quot;the same&quot; as the empty parameters list <code>()</code>. It might be worth adding a comment here explicitly laying that out?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:1341 on 2025-12-27 12:04</div>
-            <div class="timeline-body"><p>no tests fail if I remove this, and I think the logic would be taken care of by the generalised fall-through below, so I think it's just a pure optimisation? But codspeed isn't reporting any speedup on this PR, so I'd be inclined to remove it, to keep the code simple (this method is already very complex)</p>
-<pre><code class="language-suggestion">        // The top signature is supertype of (and assignable from) all other signatures.
+            <div class="timeline-body"><p>no tests fail if I remove this, and I think the logic would be taken care of by the generalised fall-through below, so I think it&#x27;s just a pure optimisation? But codspeed isn&#x27;t reporting any speedup on this PR, so I&#x27;d be inclined to remove it, to keep the code simple (this method is already very complex)</p>
+<pre><code>        // The top signature is supertype of (and assignable from) all other signatures.
         if other.parameters.is_top() {
             return ConstraintSet::from(true);
         }
@@ -305,7 +305,7 @@ core (https://github.com/home-assistant/core)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/materialization.md</code>:73 on 2025-12-27 12:09</div>
-            <div class="timeline-body"><p>I don't think this is true? <code>Bottom[list[Any]]</code> should simplify to <code>Never</code>, I think. But obviously this is a pre-existing issue.</p>
+            <div class="timeline-body"><p>I don&#x27;t think this is true? <code>Bottom[list[Any]]</code> should simplify to <code>Never</code>, I think. But obviously this is a pre-existing issue.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -319,15 +319,15 @@ core (https://github.com/home-assistant/core)
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-27 15:31</div>
             <div class="timeline-body"><blockquote>
-<p>@AlexWaygood I don't feel strongly about the display -- I think it's a bit odd (and more visually confusing) to wrap extra stuff in <code>Top</code> that will always already be fully static, but it's not <em>wrong</em>. And I see the possibility that someone who knows too much about variance could be confused by what <code>Top</code> means inside a parameter list. So if you still think the old display is preferable, I don't think it'd be much work to restore it.</p>
+<p>@AlexWaygood I don&#x27;t feel strongly about the display -- I think it&#x27;s a bit odd (and more visually confusing) to wrap extra stuff in <code>Top</code> that will always already be fully static, but it&#x27;s not <em>wrong</em>. And I see the possibility that someone who knows too much about variance could be confused by what <code>Top</code> means inside a parameter list. So if you still think the old display is preferable, I don&#x27;t think it&#x27;d be much work to restore it.</p>
 </blockquote>
-<p>I do still prefer the current display, I think. I totally see your point that the top materialisation of the return type can always be (and is always!) fully simplified, so it doesn't &quot;need&quot; to be wrapped in <code>Top</code>. But (at somebody who knows too much about variance myself), I still find it a bit confusing personally.</p>
+<p>I do still prefer the current display, I think. I totally see your point that the top materialisation of the return type can always be (and is always!) fully simplified, so it doesn&#x27;t &quot;need&quot; to be wrapped in <code>Top</code>. But (at somebody who knows too much about variance myself), I still find it a bit confusing personally.</p>
 <p>I also find the situation with the parentheses in the current display to be a little confusing. <code>Top[(...)] -&gt; object</code> would make more sense to me than <code>(Top[...]) -&gt; object</code> — the parentheses in the latter look redundant to me, and also seem too similar to our display for a parameters set that takes only a single parameter. But here again, I feel like we can just sidestep that issue entirely by sticking with our current display ;)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:195 on 2025-12-27 15:38</div>
-            <div class="timeline-body"><p>I worry that this PR makes the <code>Parameters::new()</code> method a bit of a footgun. You have to remember never to use it when you're constructing a new <code>Parameters</code> from an existing <code>Parameters</code>, because the existing <code>Parameters</code> might be a top materialisation. Iterating over the existing parameters and passing them to <code>Parameters::new()</code> will discard that information — so maybe <code>Parameters::new()</code> should take an additional <code>parameters_kind</code> parameter, to force us to consider that explicitly every time we construct a new <code>Parameters</code>?</p>
+            <div class="timeline-body"><p>I worry that this PR makes the <code>Parameters::new()</code> method a bit of a footgun. You have to remember never to use it when you&#x27;re constructing a new <code>Parameters</code> from an existing <code>Parameters</code>, because the existing <code>Parameters</code> might be a top materialisation. Iterating over the existing parameters and passing them to <code>Parameters::new()</code> will discard that information — so maybe <code>Parameters::new()</code> should take an additional <code>parameters_kind</code> parameter, to force us to consider that explicitly every time we construct a new <code>Parameters</code>?</p>
 <p>It looks like this issue might already exist for gradual <code>Parameters</code>, though.</p>
 </div>
         </div>
@@ -342,13 +342,13 @@ core (https://github.com/home-assistant/core)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/materialization.md</code>:73 on 2025-12-27 17:04</div>
-            <div class="timeline-body"><p>It's more complex than that -- we don't actually want to simplify <code>Bottom[list[Any]]</code> to <code>Never</code> because that has other undesirable consequences. But I'll add some nuance to the wording here.</p>
+            <div class="timeline-body"><p>It&#x27;s more complex than that -- we don&#x27;t actually want to simplify <code>Bottom[list[Any]]</code> to <code>Never</code> because that has other undesirable consequences. But I&#x27;ll add some nuance to the wording here.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:1341 on 2025-12-27 17:35</div>
-            <div class="timeline-body"><p>This condition is necessary for correctness, though only in an edge case (and apparently one we're lacking test coverage of). Without it, we will wrongly consider a top callable to be a subtype of <code>(*object, **object) -&gt; object</code> -- this is a side effect of how we give the top callable the parameters <code>(*object, **object)</code> in order to avoid redundant arity-checking errors when calling it.</p>
-<p>I'll add a test case that fails without this.</p>
+            <div class="timeline-body"><p>This condition is necessary for correctness, though only in an edge case (and apparently one we&#x27;re lacking test coverage of). Without it, we will wrongly consider a top callable to be a subtype of <code>(*object, **object) -&gt; object</code> -- this is a side effect of how we give the top callable the parameters <code>(*object, **object)</code> in order to avoid redundant arity-checking errors when calling it.</p>
+<p>I&#x27;ll add a test case that fails without this.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -357,7 +357,7 @@ core (https://github.com/home-assistant/core)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-27 18:15</div>
-            <div class="timeline-body"><p>I restored the old display of top callables. I also noticed that we were needlessly parenthesizing overloaded callables (they are wrapped in <code>Overload[]</code>, so by the same reasoning that we don't parenthesize <code>Top[]</code>, we don't need to parenthesize overloads either), so I fixed that as well in passing.</p>
+            <div class="timeline-body"><p>I restored the old display of top callables. I also noticed that we were needlessly parenthesizing overloaded callables (they are wrapped in <code>Overload[]</code>, so by the same reasoning that we don&#x27;t parenthesize <code>Top[]</code>, we don&#x27;t need to parenthesize overloads either), so I fixed that as well in passing.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -366,11 +366,11 @@ core (https://github.com/home-assistant/core)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:195 on 2025-12-27 18:29</div>
-            <div class="timeline-body"><p>The problem doesn't exist for <code>Gradual</code>, because gradual-parameters can be (and is) automatically determined from the parameters (if they are <code>(*Any, **Any)</code>, that's the gradual parameters).</p>
+            <div class="timeline-body"><p>The problem doesn&#x27;t exist for <code>Gradual</code>, because gradual-parameters can be (and is) automatically determined from the parameters (if they are <code>(*Any, **Any)</code>, that&#x27;s the gradual parameters).</p>
 <p>This also makes it awkward to add a <code>kind</code> parameter here, since it would be redundant information in every case except <code>Top</code>.</p>
-<p>We could add an <code>is_top</code> parameter, but that is also awkward, because if it's <code>true</code> the provided parameters iterator would be ignored.</p>
+<p>We could add an <code>is_top</code> parameter, but that is also awkward, because if it&#x27;s <code>true</code> the provided parameters iterator would be ignored.</p>
 <p>I think the most natural API is to provide the existing <code>new()</code>, <code>bottom()</code>, and <code>top()</code> constructors, with their current signatures. Though we could rename <code>new()</code> to <code>from_parameters()</code> to make it seem a bit less general?</p>
-<p>I don't see a great solution to avoid the potential for mistakes here -- it's just the case that a <code>Parameters</code> is no longer fully determined by its list of <code>parameters</code>, there's no way around us having to understand that. I don't think that &quot;constructing a parameters from an existing parameters&quot; is going to be a super common task.</p>
+<p>I don&#x27;t see a great solution to avoid the potential for mistakes here -- it&#x27;s just the case that a <code>Parameters</code> is no longer fully determined by its list of <code>parameters</code>, there&#x27;s no way around us having to understand that. I don&#x27;t think that &quot;constructing a parameters from an existing parameters&quot; is going to be a super common task.</p>
 <p>Open to suggestions here.</p>
 </div>
         </div>
@@ -384,10 +384,10 @@ core (https://github.com/home-assistant/core)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @carljm on 2025-12-27 18:45</div>
+            <div class="event">Merged by <a href="https://github.com/carljm">@carljm</a> on 2025-12-27 18:45</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2025-12-27 18:45</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2025-12-27 18:45</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-12-27 18:45</div>
@@ -395,7 +395,7 @@ core (https://github.com/home-assistant/core)
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:18:26 UTC
+        Synced at 2026-01-20 19:22:14 UTC
     </footer>
 </body>
 </html>

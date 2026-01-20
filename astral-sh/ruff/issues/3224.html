@@ -24,20 +24,20 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dycw">@dycw</a></div>
             <div class="timeline-body"><p>Suppose a file is stable under <code>autoflake</code>, <code>black</code> and <code>isort</code>. If an import is added and then later unused and removed via <code>autoflake</code>, one might presume <code>black</code> and <code>isort</code> would resolve back to the same file. This certainly introduces potentially many diffs.</p>
-<h3>Minimal example</h3>
+Minimal example
 <p>Start with an empty directory with <code>foo.py</code> and no config files of any sort:</p>
-<pre><code class="language-python"># foo.py
+<pre><code># foo.py
 from package import item1, item2, item3, item4, item5, item6, item7, item8, item9
 
 a = item1, item2, item3, item4, item5, item6, item7, item8, item9
 </code></pre>
 <p>This is stable under <code>autoflake</code>, <code>black</code> and <code>isort</code>:</p>
-<pre><code class="language-bash">❯ black foo.py &amp;&amp; ruff foo.py --select=F401,I001 --fix
+<pre><code>❯ black foo.py &amp;&amp; ruff foo.py --select=F401,I001 --fix
 All done! ✨ 🍰 ✨
 1 file left unchanged.
 </code></pre>
-<p>Now add an additional import to breach <code>black</code>'s default line-length:</p>
-<pre><code class="language-python"># foo.py
+<p>Now add an additional import to breach <code>black</code>&#x27;s default line-length:</p>
+<pre><code># foo.py
 from package import item1, item2, item3, item4, item5, item6, item7, item8, item9
 from package import item10
 
@@ -45,7 +45,7 @@ a = item1, item2, item3, item4, item5, item6, item7, item8, item9
 a = item10
 </code></pre>
 <p>This is stable after two runs:</p>
-<pre><code class="language-bash">❯ black foo.py &amp;&amp; ruff foo.py --select=F401,I001 --fix
+<pre><code>❯ black foo.py &amp;&amp; ruff foo.py --select=F401,I001 --fix
 All done! ✨ 🍰 ✨
 1 file left unchanged.
 Found 1 error (1 fixed, 0 remaining).
@@ -55,7 +55,7 @@ All done! ✨ 🍰 ✨
 1 file left unchanged.
 </code></pre>
 <p>with the end result being:</p>
-<pre><code class="language-python"># foo.py
+<pre><code># foo.py
 from package import (
     item1,
     item2,
@@ -73,7 +73,7 @@ a = item1, item2, item3, item4, item5, item6, item7, item8, item9
 a = item10
 </code></pre>
 <p>Now remove the usage of <code>item10</code>, i.e., the last line. <code>autoflake</code> will remove the import of <code>item10</code>, with the end result (again stable after two runs):</p>
-<pre><code class="language-python"># foo.py
+<pre><code># foo.py
 from package import (
     item1,
     item2,
@@ -89,7 +89,7 @@ from package import (
 a = item1, item2, item3, item4, item5, item6, item7, item8, item9
 </code></pre>
 <p>However, this is unlikely the desired result. Removing successive imports can even leave you with:</p>
-<pre><code class="language-python"># foo.py
+<pre><code># foo.py
 from package import (
     item1,
 )
@@ -102,16 +102,16 @@ a = item1
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-25 16:46</div>
-            <div class="timeline-body"><p>The thing is, I think this is consistent with the isort and black's behaviors: they always add the trailing comma when expanding, and they respect trailing comma when contracting, so it's not possible to revert back to a state like <code>from package import item1</code> once you've expanded an import. I don't see how we could support this without <em>not</em> respecting trailing commas.</p>
+            <div class="timeline-body"><p>The thing is, I think this is consistent with the isort and black&#x27;s behaviors: they always add the trailing comma when expanding, and they respect trailing comma when contracting, so it&#x27;s not possible to revert back to a state like <code>from package import item1</code> once you&#x27;ve expanded an import. I don&#x27;t see how we could support this without <em>not</em> respecting trailing commas.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-02-25 16:46</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-25 16:46</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dycw">@dycw</a> on 2023-02-26 01:10</div>
-            <div class="timeline-body"><p>Hi @charliermarsh , I understand, however I feel there is a case here because I strongly subscribe to <code>black</code>'s own philosophy of minimizing diffs. To that end, this is the workaround I mentioned:</p>
-<pre><code class="language-python"># foo.py
+            <div class="timeline-body"><p>Hi @charliermarsh , I understand, however I feel there is a case here because I strongly subscribe to <code>black</code>&#x27;s own philosophy of minimizing diffs. To that end, this is the workaround I mentioned:</p>
+<pre><code># foo.py
 from package import (
     item1,
 )
@@ -119,22 +119,22 @@ from package import (
 a = item1
 </code></pre>
 <p>If we add <code>force-single-line</code></p>
-<pre><code class="language-bash">echo '[tool.ruff.isort]\nforce-single-line = true' &gt; pyproject.toml
+<pre><code>echo &#x27;[tool.ruff.isort]\nforce-single-line = true&#x27; &gt; pyproject.toml
 </code></pre>
 <p>and then re-run:</p>
-<pre><code class="language-bash">❯ black foo.py &amp;&amp; ruff foo.py --select=F401,I001 --fix
+<pre><code>❯ black foo.py &amp;&amp; ruff foo.py --select=F401,I001 --fix
 All done! ✨ 🍰 ✨
 1 file left unchanged.
 Found 1 error (1 fixed, 0 remaining).
 </code></pre>
 <p>we get the required behavior:</p>
-<pre><code class="language-python"># foo.py
+<pre><code># foo.py
 from package import item1
 
 a = item1
 </code></pre>
-<p>Of course, I'd then essentially remove</p>
-<pre><code class="language-bash"> ❯ rm pyproject.toml
+<p>Of course, I&#x27;d then essentially remove</p>
+<pre><code> ❯ rm pyproject.toml
 </code></pre>
 <p>to recover the original settings.</p>
 </div>
@@ -150,12 +150,12 @@ a = item1
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dycw on 2023-03-03 08:01</div>
+            <div class="event">Closed by <a href="https://github.com/dycw">@dycw</a> on 2023-03-03 08:01</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:46:39 UTC
+        Synced at 2026-01-20 18:48:33 UTC
     </footer>
 </body>
 </html>

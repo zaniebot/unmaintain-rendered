@@ -28,12 +28,12 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">server</span> added by @AlexWaygood on 2025-08-21 09:46</div>
+            <div class="event">Label <span class="label">server</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-21 09:46</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-21 10:15</div>
             <div class="timeline-body"><p>I took a quick look at the LSP specification. This requires setting <code>location</code> on the inlay label.</p>
-<p>I think it's fine for a first implementation to only have a link for the outer most type, but it would be nice if we could support clicking on sub types as well (<code>list[User]</code>, I want to click <code>User</code>).</p>
+<p>I think it&#x27;s fine for a first implementation to only have a link for the outer most type, but it would be nice if we could support clicking on sub types as well (<code>list[User]</code>, I want to click <code>User</code>).</p>
 <p>Somewhat related, we could also set tooltips on inlay labels</p>
 <p>https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#inlayHintLabelPart</p>
 </div>
@@ -41,13 +41,13 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-08-26 12:17</div>
             <div class="timeline-body"><p>I think that this may require a refactor of the <code>display.rs</code> file.</p>
-<p>What I'm thinking is that we should represent the &quot;display&quot; of a type as a list of <code>DisplayPart</code> enum or similar. Then in inlay hints we can iterate over that and identify what parts we can create a goto from, and we should be able to keep the display output exactly the same.</p>
+<p>What I&#x27;m thinking is that we should represent the &quot;display&quot; of a type as a list of <code>DisplayPart</code> enum or similar. Then in inlay hints we can iterate over that and identify what parts we can create a goto from, and we should be able to keep the display output exactly the same.</p>
 <p>I will have a play around with this. But otherwise i think i would have to duplicate a lot of code from display as i want to be able to display in the same was that <code>display.rs</code> does whilst also getting information from the displayed output (like where each goto definition should be placed within the inlay hint part).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-08-26 15:15</div>
-            <div class="timeline-body"><p>I can spend some time thinking about this tomorrow morning (it's end of day for me :)) unless @Gankra has some thoughts on how to approach this?</p>
+            <div class="timeline-body"><p>I can spend some time thinking about this tomorrow morning (it&#x27;s end of day for me :)) unless @Gankra has some thoughts on how to approach this?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -58,13 +58,13 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-08-28 11:51</div>
             <div class="timeline-body"><blockquote>
-<p>What I'm thinking is that we should represent the &quot;display&quot; of a type as a list of <code>DisplayPart</code> enum or similar. Then in inlay hints we can iterate over that and identify what parts we can create a goto from, and we should be able to keep the display output exactly the same.</p>
+<p>What I&#x27;m thinking is that we should represent the &quot;display&quot; of a type as a list of <code>DisplayPart</code> enum or similar. Then in inlay hints we can iterate over that and identify what parts we can create a goto from, and we should be able to keep the display output exactly the same.</p>
 </blockquote>
-<p>And the reason for this would be that, considering Micha's example above, the &quot;list&quot; and &quot;User&quot; would need to be separate so that they can have their own location value? So, the <code>: list[User]</code> would actually be a list containing <code>: </code>, <code>list</code>, <code>[</code>, <code>User</code>, <code>]</code>.</p>
-<p>The other thing to note which seems more important is that some of the types wouldn't display valid Python syntax. For example, <code>x = Foo</code> where <code>Foo</code> is a user defined class would display <code>x: &lt;class 'Foo'&gt; = Foo</code>. I also quickly checked what Pylance is doing and it seems that it's only providing the location for the outermost type, so in <code>list[Foo]</code>, it would only be able to goto definition on <code>list</code> and not on <code>Foo</code>.</p>
-<p>This is what Micha also suggested and I think I agree that we can start with just resolving the information on the outermost name node. This can be done by manually collecting all the characters that form up a valid Python identifier if the inlay hint starts with it (thus excluding the class syntax or any other invalid syntax) and when we encounter any character which isn't valid we stop and the collected characters would form up the identifier for which we should look up additional information.</p>
-<p>I also wonder what's the use of the <code>tooltip</code> field.</p>
-<p>I'd also recommend if we can lazily resolve this information if the client supports it via https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#inlayHint_resolve. You can refer to the logic for resolving code actions lazily in the Ruff language server for reference.</p>
+<p>And the reason for this would be that, considering Micha&#x27;s example above, the &quot;list&quot; and &quot;User&quot; would need to be separate so that they can have their own location value? So, the <code>: list[User]</code> would actually be a list containing <code>: </code>, <code>list</code>, <code>[</code>, <code>User</code>, <code>]</code>.</p>
+<p>The other thing to note which seems more important is that some of the types wouldn&#x27;t display valid Python syntax. For example, <code>x = Foo</code> where <code>Foo</code> is a user defined class would display <code>x: &lt;class &#x27;Foo&#x27;&gt; = Foo</code>. I also quickly checked what Pylance is doing and it seems that it&#x27;s only providing the location for the outermost type, so in <code>list[Foo]</code>, it would only be able to goto definition on <code>list</code> and not on <code>Foo</code>.</p>
+<p>This is what Micha also suggested and I think I agree that we can start with just resolving the information on the outermost name node. This can be done by manually collecting all the characters that form up a valid Python identifier if the inlay hint starts with it (thus excluding the class syntax or any other invalid syntax) and when we encounter any character which isn&#x27;t valid we stop and the collected characters would form up the identifier for which we should look up additional information.</p>
+<p>I also wonder what&#x27;s the use of the <code>tooltip</code> field.</p>
+<p>I&#x27;d also recommend if we can lazily resolve this information if the client supports it via https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#inlayHint_resolve. You can refer to the logic for resolving code actions lazily in the Ruff language server for reference.</p>
 <p>Does this help?</p>
 </div>
         </div>
@@ -72,36 +72,36 @@
             <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-08-28 16:30</div>
             <div class="timeline-body"><p>Thank you.</p>
 <blockquote>
-<p>This is what Micha also suggested and I think I agree that we can start with just resolving the information on the outermost name node. This can be done by manually collecting all the characters that form up a valid Python identifier if the inlay hint starts with it (thus excluding the class syntax or any other invalid syntax) and when we encounter any character which isn't valid we stop and the collected characters would form up the identifier for which we should look up additional information.</p>
+<p>This is what Micha also suggested and I think I agree that we can start with just resolving the information on the outermost name node. This can be done by manually collecting all the characters that form up a valid Python identifier if the inlay hint starts with it (thus excluding the class syntax or any other invalid syntax) and when we encounter any character which isn&#x27;t valid we stop and the collected characters would form up the identifier for which we should look up additional information.</p>
 </blockquote>
 <p>This seems like a fair approach.</p>
-<p>For <code>&lt;class 'Foo'&gt;</code> would we not want to allow the use to goto on <code>Foo</code> within that. I think that is useful and when using that approach we would also be able to got on <code>(int, str, /) -&gt; bool</code> for example.</p>
-<p>I'll have a go at this anyway.</p>
+<p>For <code>&lt;class &#x27;Foo&#x27;&gt;</code> would we not want to allow the use to goto on <code>Foo</code> within that. I think that is useful and when using that approach we would also be able to got on <code>(int, str, /) -&gt; bool</code> for example.</p>
+<p>I&#x27;ll have a go at this anyway.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-08-29 10:31</div>
             <div class="timeline-body"><blockquote>
-<p>For <code>&lt;class 'Foo'&gt;</code> would we not want to allow the use to goto on <code>Foo</code> within that. I think that is useful and when using that approach we would also be able to got on <code>(int, str, /) -&gt; bool</code> for example.</p>
+<p>For <code>&lt;class &#x27;Foo&#x27;&gt;</code> would we not want to allow the use to goto on <code>Foo</code> within that. I think that is useful and when using that approach we would also be able to got on <code>(int, str, /) -&gt; bool</code> for example.</p>
 </blockquote>
-<p>I agree that it would be useful but I want to avoid increasing the scope here, so we could just start with a simple implementation but I don't mind if you want to try it.</p>
+<p>I agree that it would be useful but I want to avoid increasing the scope here, so we could just start with a simple implementation but I don&#x27;t mind if you want to try it.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Stable" by @MichaReiser on 2025-11-14 08:56</div>
+            <div class="event">Added to milestone &quot;Stable&quot; by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-14 08:56</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-11-20 14:42</div>
-            <div class="timeline-body"><p>Done in https://github.com/astral-sh/ruff/pull/21533 although there's plenty of things that could be followed up.</p>
+            <div class="timeline-body"><p>Done in <a href="https://github.com/astral-sh/ruff/pull/21533">astral-sh/ruff#21533</a> although there&#x27;s plenty of things that could be followed up.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @Gankra on 2025-11-20 14:42</div>
+            <div class="event">Closed by <a href="https://github.com/Gankra">@Gankra</a> on 2025-11-20 14:42</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-11-21 01:25</div>
             <div class="timeline-body"><p>@Gankra would you want to make an issue for the follow ups you want to support.</p>
-<p>I'm interested to see and would love to help in any way.</p>
+<p>I&#x27;m interested to see and would love to help in any way.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -115,13 +115,13 @@
 <ul>
 <li>#317</li>
 </ul>
-<p>In particular the machinery I setup should be a good foundation for it, I'll leave some notes in there.</p>
+<p>In particular the machinery I setup should be a good foundation for it, I&#x27;ll leave some notes in there.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:32 UTC
+        Synced at 2026-01-20 19:25:23 UTC
     </footer>
 </body>
 </html>

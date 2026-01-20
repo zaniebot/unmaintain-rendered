@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1><code>uv pip install</code> private pypi repo doesn't work when used in docker by default</h1>
+    <h1><code>uv pip install</code> private pypi repo doesn&#x27;t work when used in docker by default</h1>
 
     <div class="meta">
         <span class="state-icon state-closed"></span>
@@ -32,11 +32,11 @@ linux, opensuse</p>
 #14 0.500   Caused by: dns error: failed to lookup address information: Name does not resolve
 #14 0.500   Caused by: failed to lookup address information: Name does not resolve
 </code></pre>
-<details>
 
-<summary>Here is the full dockerfile</summary>
 
-<pre><code class="language-docker">    FROM ghcr.io/astral-sh/uv:0.4.24 AS uv
+Here is the full dockerfile
+
+<pre><code>    FROM ghcr.io/astral-sh/uv:0.4.24 AS uv
 
     FROM python:3.9.20-slim-bookworm
     
@@ -61,15 +61,15 @@ linux, opensuse</p>
     RUN --mount=type=secret,id=netrc,required,target=/root/.netrc uv pip install -v -r requirements.txt
 
 </code></pre>
-</details>
 
-<details>
 
-<summary>Here is the output for the docker build command. Both pip and uv pip. </summary>
+
+
+Here is the output for the docker build command. Both pip and uv pip. 
 Removed the unrelated layers to make it a little bit shorter
 
 <p><code>docker build --secret id=netrc,src=$HOME/.netrc --progress=plain --no-cache . | tee build.log</code></p>
-<pre><code class="language-logs">#8 [stage-1 2/8] RUN python -m venv /opt/venv
+<pre><code>#8 [stage-1 2/8] RUN python -m venv /opt/venv
 #8 DONE 3.4s
 
 #9 [stage-1 3/8] COPY --from=uv /uv /bin/uv
@@ -195,11 +195,11 @@ Dockerfile:23
 --------------------
 ERROR: failed to solve: process &quot;/bin/sh -c uv pip install -v -r requirements.txt&quot; did not complete successfully: exit code: 2
 </code></pre>
-</details>
 
-<details>
 
-<summary>the installed requirements file looks like this</summary>
+
+
+the installed requirements file looks like this
 
 <pre><code>--index-url https://pypi.org/simple
 --extra-index-url https://gitlab.tmloc.com/api/v4/groups/7/-/packages/pypi/simple
@@ -208,7 +208,7 @@ alembic==1.13.3
 
 tm-redis==2.1.1
 </code></pre>
-</details>
+
 
 <p>Do you have any idea what could be the issue?</p>
 <p>It can be workarounded by manually writing the DNS ip addresses to <code>/etc/docker/daemon.json</code> but I guess that it should behave the same as pip :shrug:</p>
@@ -221,18 +221,18 @@ tm-redis==2.1.1
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/atigbadr">@atigbadr</a> on 2025-01-17 15:15</div>
-            <div class="timeline-body"><p>I'm getting this while building images on DinD environment as well.</p>
+            <div class="timeline-body"><p>I&#x27;m getting this while building images on DinD environment as well.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-17 15:18</div>
-            <div class="timeline-body"><p>Sorry I'm not sure how uv could fix this or why it's different— we're just using a standard <code>reqwest</code> network stack.</p>
+            <div class="timeline-body"><p>Sorry I&#x27;m not sure how uv could fix this or why it&#x27;s different— we&#x27;re just using a standard <code>reqwest</code> network stack.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/atigbadr">@atigbadr</a> on 2025-01-17 15:22</div>
             <div class="timeline-body"><blockquote>
-<p>Sorry I'm not sure how uv could fix this or why it's different— we're just using a standard <code>reqwest</code> network stack.</p>
+<p>Sorry I&#x27;m not sure how uv could fix this or why it&#x27;s different— we&#x27;re just using a standard <code>reqwest</code> network stack.</p>
 </blockquote>
 <p>Using pip install works with no issue, apt install, every other command works except for UV
 Including UV pip install and UV python install</p>
@@ -241,7 +241,7 @@ Including UV pip install and UV python install</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-17 15:48</div>
-            <div class="timeline-body"><p>As I said, it's likely this is a &quot;Rust networking stack&quot; problem not a &quot;uv&quot; problem. Some brief research</p>
+            <div class="timeline-body"><p>As I said, it&#x27;s likely this is a &quot;Rust networking stack&quot; problem not a &quot;uv&quot; problem. Some brief research</p>
 <ul>
 <li>https://stackoverflow.com/a/72545037</li>
 <li>https://stackoverflow.com/questions/68397898/minimal-docker-for-networking-rust-binary/68409203#68409203</li>
@@ -252,7 +252,7 @@ Including UV pip install and UV python install</p>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/plusls">@plusls</a> on 2025-02-25 01:03</div>
             <div class="timeline-body"><p>A simple patch to fix it:</p>
-<pre><code class="language-diff">diff --git a/crates/uv-client/Cargo.toml b/crates/uv-client/Cargo.toml
+<pre><code>diff --git a/crates/uv-client/Cargo.toml b/crates/uv-client/Cargo.toml
 index 529e4afcc..d8b6981d1 100644
 --- a/crates/uv-client/Cargo.toml
 +++ b/crates/uv-client/Cargo.toml
@@ -276,7 +276,7 @@ index 3c7a5eb71..2a95e14de 100644
 
  use crate::linehaul::LineHaul;
  use crate::middleware::OfflineMiddleware;
-@@ -270,6 +271,7 @@ impl&lt;'a&gt; BaseClientBuilder&lt;'a&gt; {
+@@ -270,6 +271,7 @@ impl&lt;&#x27;a&gt; BaseClientBuilder&lt;&#x27;a&gt; {
      ) -&gt; Client {
          // Configure the builder.
          let client_builder = ClientBuilder::new()
@@ -288,7 +288,7 @@ index 3c7a5eb71..2a95e14de 100644
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">external</span> added by @zanieb on 2025-02-25 01:33</div>
+            <div class="event">Label <span class="label">external</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-25 01:33</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/stevapple">@stevapple</a> on 2025-03-04 01:46</div>
@@ -300,18 +300,18 @@ index 3c7a5eb71..2a95e14de 100644
             <div class="timeline-body"><blockquote>
 <p><a href="https://github.com/plusls">@plusls</a> Would you mind proposing a PR with the fix? It is life-saving for distributing app with Docker,</p>
 </blockquote>
-<p>This patch modifies reqwest's DNS implementation to hickory. Therefore, it is not suitable for direct submission as a PR and should instead be made a configurable option in uv or a Rust feature.</p>
+<p>This patch modifies reqwest&#x27;s DNS implementation to hickory. Therefore, it is not suitable for direct submission as a PR and should instead be made a configurable option in uv or a Rust feature.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-06 20:47</div>
-            <div class="timeline-body"><p>I don't fully understand the implications of the hickory resolver, it'd be great if someone had more context on that.</p>
+            <div class="timeline-body"><p>I don&#x27;t fully understand the implications of the hickory resolver, it&#x27;d be great if someone had more context on that.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/plusls">@plusls</a> on 2025-03-07 00:08</div>
             <div class="timeline-body"><blockquote>
-<p>I don't fully understand the implications of the hickory resolver, it'd be great if someone had more context on that.</p>
+<p>I don&#x27;t fully understand the implications of the hickory resolver, it&#x27;d be great if someone had more context on that.</p>
 </blockquote>
 <p>Because uv default static link with musl libc，it do not support tcp dns resolve
 If dns package too large, it will resolv failed</p>
@@ -319,7 +319,7 @@ If dns package too large, it will resolv failed</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-07 00:44</div>
-            <div class="timeline-body"><p>mm does it work with our non-Docker distributions? Those don't statically link musl libc.</p>
+            <div class="timeline-body"><p>mm does it work with our non-Docker distributions? Those don&#x27;t statically link musl libc.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -347,7 +347,7 @@ If dns package too large, it will resolv failed</p>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/plusls">@plusls</a> on 2025-03-07 00:58</div>
             <div class="timeline-body"><blockquote>
-<p>mm does it work with our non-Docker distributions? Those don't statically link musl libc.</p>
+<p>mm does it work with our non-Docker distributions? Those don&#x27;t statically link musl libc.</p>
 </blockquote>
 <p>But the uv install script will auto download the uv which static link with musl libc.</p>
 <p>It will works if use gnu gcc toolchain</p>
@@ -355,13 +355,13 @@ If dns package too large, it will resolv failed</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-07 01:01</div>
-            <div class="timeline-body"><p>I don't think this is true? I believe we only use the musl build if we can't detect glibc.</p>
+            <div class="timeline-body"><p>I don&#x27;t think this is true? I believe we only use the musl build if we can&#x27;t detect glibc.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/plusls">@plusls</a> on 2025-03-07 01:04</div>
             <div class="timeline-body"><blockquote>
-<p>I don't think this is true? I believe we only use the musl build if we can't detect glibc.</p>
+<p>I don&#x27;t think this is true? I believe we only use the musl build if we can&#x27;t detect glibc.</p>
 </blockquote>
 <p>Oh, it is my fault, I direct use the  <code>ghcr.io/astral-sh/uv:debian</code></p>
 <pre><code>$ docker run -it --rm ghcr.io/astral-sh/uv:debian bash
@@ -385,13 +385,13 @@ root@3fc89d4f80da:/#
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-07 14:01</div>
-            <div class="timeline-body"><p>Sounds like we should try to use a newer version of musl then? I'm not sure where that comes from.</p>
+            <div class="timeline-body"><p>Sounds like we should try to use a newer version of musl then? I&#x27;m not sure where that comes from.</p>
 <p>cc @konstin</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-03-07 14:47</div>
-            <div class="timeline-body"><p>Judging from https://blog.rust-lang.org/2023/05/09/Updating-musl-targets.html / https://github.com/rust-lang/rust/pull/107129, the musl version is shipped with rust itself? Doing DNS ourselves without libc involvement sounds easier here.</p>
+            <div class="timeline-body"><p>Judging from https://blog.rust-lang.org/2023/05/09/Updating-musl-targets.html / <a href="https://github.com/rust-lang/rust/pull/107129">rust-lang/rust#107129</a>, the musl version is shipped with rust itself? Doing DNS ourselves without libc involvement sounds easier here.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -399,7 +399,7 @@ root@3fc89d4f80da:/#
             <div class="timeline-body"><blockquote>
 <p>Doing DNS ourselves without libc involvement sounds easier here.</p>
 </blockquote>
-<p>From my perspective it's worth applying a Rust DNS resolver (eg. <code>HickoryResolver</code>) at least for all Musl builds. Not sure if we want to keep the Glibc builds as it is now (pros: smaller size, no behavior change, less dependency; cons: divergence with Musl, complexity in build infra).</p>
+<p>From my perspective it&#x27;s worth applying a Rust DNS resolver (eg. <code>HickoryResolver</code>) at least for all Musl builds. Not sure if we want to keep the Glibc builds as it is now (pros: smaller size, no behavior change, less dependency; cons: divergence with Musl, complexity in build infra).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -434,22 +434,22 @@ Using Python 3.11.11 environment at: /opt/venv
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/stevapple">@stevapple</a> on 2025-04-08 01:59</div>
-            <div class="timeline-body"><p>@RouquinBlanc This is rather expected, simply because you're using <code>python:3.11-slim</code> which is based on Debian (a Glibc-based distro), so it will use <code>manylinux</code> wheel with <code>pip install</code> and bypass all the issues raised above because they're Musl related.</p>
+            <div class="timeline-body"><p>@RouquinBlanc This is rather expected, simply because you&#x27;re using <code>python:3.11-slim</code> which is based on Debian (a Glibc-based distro), so it will use <code>manylinux</code> wheel with <code>pip install</code> and bypass all the issues raised above because they&#x27;re Musl related.</p>
 <p>Everything will change if you switch to a Musl-based image, eg. <code>python:3.11-alpine</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @Gankra by @Gankra on 2025-04-11 14:54</div>
+            <div class="event">Assigned to <a href="https://github.com/Gankra">@Gankra</a> by <a href="https://github.com/Gankra">@Gankra</a> on 2025-04-11 14:54</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-04-11 16:08</div>
-            <div class="timeline-body"><p>It seems like musl 1.2.4 came with some non-trivial breaking changes that rust is struggling to integrate. There's been a branch open for 1.2.5 for a year:</p>
+            <div class="timeline-body"><p>It seems like musl 1.2.4 came with some non-trivial breaking changes that rust is struggling to integrate. There&#x27;s been a branch open for 1.2.5 for a year:</p>
 <ul>
 <li>https://github.com/rust-lang/rust/pull/125692</li>
 </ul>
 <p>As I understand it, musl libc had a bunch of aliases for symbols <a href="https://github.com/rust-lang/libc/issues/2934">that the libc crate was using and the musl team decided to drop because they were causing havoc with some C++ projects</a>. The libc crate was <a href="https://github.com/rust-lang/libc/pull/2935">changed to use the proper symbol names</a> (released in 0.2.145 almost two years ago), but various crates in the ecosystem (<a href="https://crates.io/crates/getrandom">like getrandom</a>) were on such old versions of the libc crate that tons of things broke when bumping to musl 1.2.4+, as of July 2024.</p>
-<p>I'll poke upstream to see if progress can be made on the issue.</p>
-<hr />
+<p>I&#x27;ll poke upstream to see if progress can be made on the issue.</p>
+<hr>
 <p>See also, other discussion of this in the ecosystem:</p>
 <ul>
 <li>https://github.com/rust-cross/rust-musl-cross/pull/152</li>
@@ -472,16 +472,16 @@ Previously tried directly starting from the release docker images ghcr.io/astral
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-06 18:39</div>
-            <div class="timeline-body"><p>This should be fixed in our Docker images as of https://github.com/astral-sh/uv/pull/16584</p>
+            <div class="timeline-body"><p>This should be fixed in our Docker images as of <a href="https://github.com/astral-sh/uv/pull/16584">astral-sh/uv#16584</a></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2025-11-06 18:39</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-06 18:39</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:27:53 UTC
+        Synced at 2026-01-20 19:34:58 UTC
     </footer>
 </body>
 </html>

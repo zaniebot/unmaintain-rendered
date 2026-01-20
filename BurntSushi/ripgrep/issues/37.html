@@ -23,12 +23,12 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/uazu">@uazu</a></div>
-            <div class="timeline-body"><p>Viewing with <code>--color always</code> piped to <code>less -R</code>, colours appear correctly but there are ^O characters (\x0F) inserted regularly, which appear in less as inverted <code>^O</code>. When removed with <code>sed 's/\x0f//g'</code> output appears like screenshot.</p>
+            <div class="timeline-body"><p>Viewing with <code>--color always</code> piped to <code>less -R</code>, colours appear correctly but there are ^O characters (\x0F) inserted regularly, which appear in less as inverted <code>^O</code>. When removed with <code>sed &#x27;s/\x0f//g&#x27;</code> output appears like screenshot.</p>
 <p>Tested release binary version 0.1.16 on Debian Linux, with TERM=screen.linux.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2016-09-24 02:04</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-24 02:04</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-24 02:04</div>
@@ -37,7 +37,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-27 01:08</div>
-            <div class="timeline-body"><p>N.B. When I'm in a screen session, if I do <code>TERM=xterm rg -p foo | less -R</code> then things appear to work. When <code>TERM=screen</code>, I see the same <code>^0</code> characters as the OP. I wonder if it's a bug in the <code>term</code> library I'm using.</p>
+            <div class="timeline-body"><p>N.B. When I&#x27;m in a screen session, if I do <code>TERM=xterm rg -p foo | less -R</code> then things appear to work. When <code>TERM=screen</code>, I see the same <code>^0</code> characters as the OP. I wonder if it&#x27;s a bug in the <code>term</code> library I&#x27;m using.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -47,7 +47,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/uazu">@uazu</a> on 2016-09-27 15:00</div>
-            <div class="timeline-body"><p>Yes, I can work around it. ^O is shift-in, i.e. switch to non-graphic character set, so may be part of a generic &quot;reset&quot; sequence. As I need to add <code>--color always</code> to use with less, I need to put a wrapper script around it anyway so I'll add TERM=whatever there. Perhaps it only needs documenting. However if there was a way to just reset colours without also resetting character set that might avoid confusion.</p>
+            <div class="timeline-body"><p>Yes, I can work around it. ^O is shift-in, i.e. switch to non-graphic character set, so may be part of a generic &quot;reset&quot; sequence. As I need to add <code>--color always</code> to use with less, I need to put a wrapper script around it anyway so I&#x27;ll add TERM=whatever there. Perhaps it only needs documenting. However if there was a way to just reset colours without also resetting character set that might avoid confusion.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -62,22 +62,22 @@
 <pre><code>$ infocmp -1 screen | grep sgr0
     sgr0=\E[m\017,
 </code></pre>
-<p>...so whenever ripgrep calls <code>.reset()</code>, the term crate looks up the sequence associated with <code>sgr0</code> (&quot;set graphical rendition to 0&quot; i.e. all fancy things turned off), the terminfo database for <code>screen</code> defines <code>sgr0</code> to be &quot;ESC [ m ^O&quot; and so that's what gets written to the screen.</p>
-<p>If there's a bug here, I'd say it's in <code>less</code> for half-assing its escape-sequence passthrough.</p>
+<p>...so whenever ripgrep calls <code>.reset()</code>, the term crate looks up the sequence associated with <code>sgr0</code> (&quot;set graphical rendition to 0&quot; i.e. all fancy things turned off), the terminfo database for <code>screen</code> defines <code>sgr0</code> to be &quot;ESC [ m ^O&quot; and so that&#x27;s what gets written to the screen.</p>
+<p>If there&#x27;s a bug here, I&#x27;d say it&#x27;s in <code>less</code> for half-assing its escape-sequence passthrough.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/uazu">@uazu</a> on 2016-10-09 11:45</div>
-            <div class="timeline-body"><p>Well, I now have a wrapper around ripgrep which sets TERM=xterm and pipes to <code>less</code> and everything is fine (and I use ripgrep all the time now -- Thanks!). However, maybe using the 'reset' (sgr0) sequence in this application is overkill, since you don't need to reset everything, but rather just the colours. If there is some other terminfo string that can be used for that then the problem is avoided. Otherwise the TERM=xterm workaround needs to be documented, since I'm sure some other people will want to use <code>ripgrep</code> with <code>less</code> on <code>screen</code>.</p>
+            <div class="timeline-body"><p>Well, I now have a wrapper around ripgrep which sets TERM=xterm and pipes to <code>less</code> and everything is fine (and I use ripgrep all the time now -- Thanks!). However, maybe using the &#x27;reset&#x27; (sgr0) sequence in this application is overkill, since you don&#x27;t need to reset everything, but rather just the colours. If there is some other terminfo string that can be used for that then the problem is avoided. Otherwise the TERM=xterm workaround needs to be documented, since I&#x27;m sure some other people will want to use <code>ripgrep</code> with <code>less</code> on <code>screen</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Screwtapello">@Screwtapello</a> on 2016-10-09 12:49</div>
-            <div class="timeline-body"><p><code>sgr0</code> is definitely the canonical way to do it. And it's not just colours - ripgrep also makes some text bold.</p>
+            <div class="timeline-body"><p><code>sgr0</code> is definitely the canonical way to do it. And it&#x27;s not just colours - ripgrep also makes some text bold.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2016-11-20 20:01</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-20 20:01</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kaushalmodi">@kaushalmodi</a> on 2016-11-22 09:36</div>
@@ -87,7 +87,7 @@
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:41:38 UTC
+        Synced at 2026-01-20 18:48:00 UTC
     </footer>
 </body>
 </html>

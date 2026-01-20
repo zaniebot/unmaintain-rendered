@@ -23,110 +23,110 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/epage">@epage</a></div>
-            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+            <div class="timeline-body">Please complete the following tasks
 <ul>
 <li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
 <li>[X] I have searched the existing issues</li>
 </ul>
-<h3>Clap Version</h3>
+Clap Version
 <p>v3.0.0-beta.4</p>
-<h3>Describe your use case</h3>
+Describe your use case
 <p><code>clap_derive</code> has a <code>default_value_t</code> attribute that takes a rust data type, instead of a string, and sets it as <code>default_value</code> on the <code>Arg</code>.</p>
 <p>However, there are related functions that are missing similar <code>_t</code> magic methods</p>
-<h3>Describe the solution you'd like</h3>
+Describe the solution you&#x27;d like
 <p>Add magic methods for other raw methods that accept a value corresponding to the field the attribute is applied to</p>
-<h3>Alternatives, if applicable</h3>
+Alternatives, if applicable
 <p><em>No response</em></p>
-<h3>Additional Context</h3>
+Additional Context
 <p><em>No response</em></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">T: enhancement</span> added by @epage on 2021-10-05 14:20</div>
+            <div class="event">Label <span class="label">T: enhancement</span> added by <a href="https://github.com/epage">@epage</a> on 2021-10-05 14:20</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">T: new feature</span> added by @epage on 2021-10-05 14:20</div>
+            <div class="event">Label <span class="label">T: new feature</span> added by <a href="https://github.com/epage">@epage</a> on 2021-10-05 14:20</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">D: medium</span> added by @epage on 2021-10-05 14:20</div>
+            <div class="event">Label <span class="label">D: medium</span> added by <a href="https://github.com/epage">@epage</a> on 2021-10-05 14:20</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">C: derive macros</span> added by @epage on 2021-10-05 14:20</div>
+            <div class="event">Label <span class="label">C: derive macros</span> added by <a href="https://github.com/epage">@epage</a> on 2021-10-05 14:20</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/marjakm">@marjakm</a> on 2021-11-04 16:00</div>
             <div class="timeline-body"><p>As I see it, those methods are all special cases of a pattern that uses a type to generate some code, but why allow only a few special cases not all such patterns?</p>
 <p>default_value_t basically generates a call to</p>
-<pre><code class="language-rust">pub struct Arg {
-    pub fn default_value(self, val: &amp;'help str) -&gt; Self;
+<pre><code>pub struct Arg {
+    pub fn default_value(self, val: &amp;&#x27;help str) -&gt; Self;
 }
 </code></pre>
 <p>as something like this:</p>
-<pre><code class="language-rust">arg = Arg::default_value(arg, generate_default_from_type!{T});
+<pre><code>arg = Arg::default_value(arg, generate_default_from_type!{T});
 </code></pre>
 <p><code>generate_default_from_type</code> is a special macro in generator, adding <code>default_missing_value_t</code> support would mean creating a similar macro that also takes the type T. Why only allow this pattern for macros defined in the code generator, why not allow the user of the library to provide the macro (or maybe function) and generate code that provides the type to the user-defined macro (or function).</p>
 <p>It could be implemented by allowing the user to annotate like such:</p>
-<pre><code class="language-rust">    struct Opt {
+<pre><code>    struct Opt {
         #[clap(modify_t(my_mod))]
         arg: i32,
     }
     
     fn my_mod&lt;T: Default + serde::Serialize&gt;(a: Arg) -&gt; Arg {
-        let val: &amp;'static str = todo!(&quot;serialize default T with serde_json, and leak boxed string&quot;);
+        let val: &amp;&#x27;static str = todo!(&quot;serialize default T with serde_json, and leak boxed string&quot;);
         a.default_value(val)
          .default_value_if(todo!(), todo!(), todo!())
     }
 </code></pre>
 <p>Derive crate could generate something like this:</p>
-<pre><code class="language-rust">arg = my_mod::&lt;T&gt;(arg);
+<pre><code>arg = my_mod::&lt;T&gt;(arg);
 </code></pre>
 <p>It would still be useful to have attributes such as <code>default_value_t</code> and <code>default_missing_value_t</code>, but they could be implemented via having the macros defined as functions somewhere and converting <code>default_missing_value_t</code> to <code>modify_t(generate_default_from_type)</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/marjakm">@marjakm</a> on 2021-11-04 16:06</div>
-            <div class="timeline-body"><p>I actually would like to generate <code>Arg::about</code> calls in just this way - the arg parses <code>Option&lt;ComplexStruct&gt;</code> via json, the default value should be the empty string, but I'd like to generate an example json in the about.</p>
+            <div class="timeline-body"><p>I actually would like to generate <code>Arg::about</code> calls in just this way - the arg parses <code>Option&lt;ComplexStruct&gt;</code> via json, the default value should be the empty string, but I&#x27;d like to generate an example json in the about.</p>
 <p>If you like the above-described solution, I could actually try implementing it and making a pull request</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-11-04 16:10</div>
-            <div class="timeline-body"><p>Let's split that out into its own issue to talk about.  This is specifically about providing natively typed magic methods that map to regular methods.</p>
+            <div class="timeline-body"><p>Let&#x27;s split that out into its own issue to talk about.  This is specifically about providing natively typed magic methods that map to regular methods.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-11-04 16:10</div>
-            <div class="timeline-body"><p>Also of note: we might want to see how https://github.com/clap-rs/clap/issues/2683 impacts this issue.</p>
+            <div class="timeline-body"><p>Also of note: we might want to see how <a href="https://github.com/clap-rs/clap/issues/2683">clap-rs/clap#2683</a> impacts this issue.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../pulls/2990.html">clap-rs/clap#2990</a> on 2021-11-04 20:20</div>
+            <div class="event">Referenced in <a>clap-rs/clap#2990</a> on 2021-11-04 20:20</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/2991.html">clap-rs/clap#2991</a> on 2021-11-04 21:33</div>
+            <div class="event">Referenced in <a>clap-rs/clap#2991</a> on 2021-11-04 21:33</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../epage/clapng/issues/211.html">epage/clapng#211</a> on 2021-12-06 22:15</div>
+            <div class="event">Referenced in <a>epage/clapng#211</a> on 2021-12-06 22:15</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">T: new feature</span> removed by @epage on 2021-12-08 21:09</div>
+            <div class="event">Label <span class="label">T: new feature</span> removed by <a href="https://github.com/epage">@epage</a> on 2021-12-08 21:09</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">S-waiting-on-decision</span> added by @epage on 2021-12-13 21:22</div>
+            <div class="event">Label <span class="label">S-waiting-on-decision</span> added by <a href="https://github.com/epage">@epage</a> on 2021-12-13 21:22</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">D: medium</span> removed by @epage on 2021-12-13 21:22</div>
+            <div class="event">Label <span class="label">D: medium</span> removed by <a href="https://github.com/epage">@epage</a> on 2021-12-13 21:22</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../pulls/3333.html">clap-rs/clap#3333</a> on 2022-01-24 14:09</div>
+            <div class="event">Referenced in <a>clap-rs/clap#3333</a> on 2022-01-24 14:09</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/3807.html">clap-rs/clap#3807</a> on 2022-06-09 13:55</div>
+            <div class="event">Referenced in <a>clap-rs/clap#3807</a> on 2022-06-09 13:55</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:48:07 UTC
+        Synced at 2026-01-20 19:58:22 UTC
     </footer>
 </body>
 </html>

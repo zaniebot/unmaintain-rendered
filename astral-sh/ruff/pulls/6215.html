@@ -23,16 +23,16 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/LaBatata101">@LaBatata101</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Checks for the presence of redundant <code>Literal</code> types and builtin super types in an union. See <a href="https://github.com/PyCQA/flake8-pyi/blob/2a86db8271dc500247a8a69419536240334731cf/pyi.py#L1261">original source</a>.</p>
 <p>This implementation has a couple of differences from the original. The first one is, we support the <code>complex</code> and <code>float</code> builtin types. The second is, when reporting diagnostic for a <code>Literal</code> with multiple members of the same type, we print the entire <code>Literal</code> while <code>flak8</code> only prints the <code>Literal</code> with its first member.
 For example:</p>
-<pre><code class="language-python">from typing import Literal
+<pre><code>from typing import Literal
 
 x: Literal[1, 2] | int
 </code></pre>
 <p>Ruff will show <code>Literal[1, 2]</code> while flake8 only shows <code>Literal[1]</code>.</p>
-<pre><code class="language-shell">$ ruff crates/ruff/resources/test/fixtures/flake8_pyi/PYI051.pyi
+<pre><code>$ ruff crates/ruff/resources/test/fixtures/flake8_pyi/PYI051.pyi
 crates/ruff/resources/test/fixtures/flake8_pyi/PYI051.pyi:4:18: PYI051 `Literal[&quot;foo&quot;]` is redundant in an union with `str`
 crates/ruff/resources/test/fixtures/flake8_pyi/PYI051.pyi:5:37: PYI051 `Literal[b&quot;bar&quot;, b&quot;foo&quot;]` is redundant in an union with `bytes`
 crates/ruff/resources/test/fixtures/flake8_pyi/PYI051.pyi:6:37: PYI051 `Literal[5]` is redundant in an union with `int`
@@ -43,44 +43,44 @@ crates/ruff/resources/test/fixtures/flake8_pyi/PYI051.pyi:9:31: PYI051 `Literal[
 crates/ruff/resources/test/fixtures/flake8_pyi/PYI051.pyi:9:53: PYI051 `Literal[3.14]` is redundant in an union with `float`
 Found 8 errors.
 </code></pre>
-<pre><code class="language-shell">$ flake8 crates/ruff/resources/test/fixtures/flake8_pyi/PYI051.pyi
-crates/ruff/resources/test/fixtures/flake8_pyi/PYI051.pyi:4:18: Y051 &quot;Literal['foo']&quot; is redundant in a union with &quot;str&quot;
-crates/ruff/resources/test/fixtures/flake8_pyi/PYI051.pyi:5:37: Y051 &quot;Literal[b'bar']&quot; is redundant in a union with &quot;bytes&quot;
+<pre><code>$ flake8 crates/ruff/resources/test/fixtures/flake8_pyi/PYI051.pyi
+crates/ruff/resources/test/fixtures/flake8_pyi/PYI051.pyi:4:18: Y051 &quot;Literal[&#x27;foo&#x27;]&quot; is redundant in a union with &quot;str&quot;
+crates/ruff/resources/test/fixtures/flake8_pyi/PYI051.pyi:5:37: Y051 &quot;Literal[b&#x27;bar&#x27;]&quot; is redundant in a union with &quot;bytes&quot;
 crates/ruff/resources/test/fixtures/flake8_pyi/PYI051.pyi:6:37: Y051 &quot;Literal[5]&quot; is redundant in a unionwith &quot;int&quot;
-crates/ruff/resources/test/fixtures/flake8_pyi/PYI051.pyi:6:67: Y051 &quot;Literal['foo']&quot; is redundant in a union with &quot;str&quot;
-crates/ruff/resources/test/fixtures/flake8_pyi/PYI051.pyi:7:37: Y051 &quot;Literal[b'str_bytes']&quot; is redundantin a union with &quot;bytes&quot;
+crates/ruff/resources/test/fixtures/flake8_pyi/PYI051.pyi:6:67: Y051 &quot;Literal[&#x27;foo&#x27;]&quot; is redundant in a union with &quot;str&quot;
+crates/ruff/resources/test/fixtures/flake8_pyi/PYI051.pyi:7:37: Y051 &quot;Literal[b&#x27;str_bytes&#x27;]&quot; is redundantin a union with &quot;bytes&quot;
 crates/ruff/resources/test/fixtures/flake8_pyi/PYI051.pyi:7:51: Y051 &quot;Literal[42]&quot; is redundant in a union with &quot;int&quot;
 </code></pre>
 <p>While implementing this rule, I found a bug in the <code>is_unchecked_union</code> check. This is the new check.</p>
 <p>https://github.com/astral-sh/ruff/blob/1ab86bad35e5edd1ba4cd82b0eb4c78416509dac/crates/ruff/src/checkers/ast/analyze/expression.rs#L85-L102</p>
 <p>The purpose of the check was to prevent rules from navigating through nested <code>Union</code>s, as they already handle nested <code>Union</code>s. The way it was implemented, this was not happening, the rules were getting executed more than one time and sometimes were receiving expressions that were not <code>Union</code>. For example, with the following code:</p>
-<pre><code class="language-python"> typing.Union[Literal[5], int, typing.Union[Literal[&quot;foo&quot;], str]]
+<pre><code> typing.Union[Literal[5], int, typing.Union[Literal[&quot;foo&quot;], str]]
 </code></pre>
 <p>The rules were receiving the expressions in the following order:
 - <code>typing.Union[Literal[5], int, typing.Union[Literal[&quot;foo&quot;], str]]</code>
 - <code>Literal[5]</code>
 - <code>typing.Union[Literal[&quot;foo&quot;], str]]</code></p>
 <p>This was causing <code>PYI030</code> to report redundant information, for example:</p>
-<pre><code class="language-python"> typing.Union[Literal[5], int, typing.Union[Literal[&quot;foo&quot;], Literal[&quot;bar&quot;]]]
+<pre><code> typing.Union[Literal[5], int, typing.Union[Literal[&quot;foo&quot;], Literal[&quot;bar&quot;]]]
 </code></pre>
 <p>This is the <code>PYI030</code> output for this code:</p>
-<pre><code class="language-shell">PYI030 Multiple literal members in a union. Use a single literal, e.g. `Literal[5, &quot;foo&quot;, &quot;bar&quot;]`
+<pre><code>PYI030 Multiple literal members in a union. Use a single literal, e.g. `Literal[5, &quot;foo&quot;, &quot;bar&quot;]`
 YI030 Multiple literal members in a union. Use a single literal, e.g.`Literal[5, &quot;foo&quot;]`
 </code></pre>
-<p>If I haven't misinterpreted the rule, that looks incorrect. I didn't have the time to check the <code>PYI016</code> rule.</p>
-<p>The last thing is, I couldn't find a reason for the &quot;Why is this bad?&quot; section for <code>PYI051</code>.</p>
+<p>If I haven&#x27;t misinterpreted the rule, that looks incorrect. I didn&#x27;t have the time to check the <code>PYI016</code> rule.</p>
+<p>The last thing is, I couldn&#x27;t find a reason for the &quot;Why is this bad?&quot; section for <code>PYI051</code>.</p>
 <p>Ref: #848</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>Snapshots and manual runs of flake8.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-01 00:28</div>
-            <div class="timeline-body"><h2>PR Check Results</h2>
-<h3>Ecosystem</h3>
+            <div class="timeline-body">PR Check Results
+Ecosystem
 <p>✅ ecosystem check detected no changes.</p>
-<h3>Benchmark</h3>
-<h4>Linux</h4>
+Benchmark
+Linux
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 formatter/large/dataset.py                 1.04      8.8±0.08ms     4.6 MB/sec    1.00      8.5±0.06ms     4.8 MB/sec
@@ -96,7 +96,7 @@ linter/default-rules/numpy/ctypeslib.py    1.00   1199.5±6.73µs    13.9 MB/sec
 linter/default-rules/numpy/globals.py      1.00    120.5±3.44µs    24.5 MB/sec    1.01    121.4±1.03µs    24.3 MB/sec
 linter/default-rules/pydantic/types.py     1.00      2.6±0.01ms     9.7 MB/sec    1.00      2.6±0.01ms     9.7 MB/sec
 </code></pre>
-<h4>Windows</h4>
+Windows
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 formatter/large/dataset.py                 1.00      9.8±0.08ms     4.1 MB/sec    1.02     10.0±0.10ms     4.1 MB/sec
@@ -112,7 +112,7 @@ linter/default-rules/numpy/ctypeslib.py    1.02  1506.5±18.21µs    11.1 MB/sec
 linter/default-rules/numpy/globals.py      1.02    170.0±3.40µs    17.4 MB/sec    1.00    165.8±2.20µs    17.8 MB/sec
 linter/default-rules/pydantic/types.py     1.00      3.2±0.07ms     8.0 MB/sec    1.00      3.2±0.04ms     8.0 MB/sec
 </code></pre>
-<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
 
 </div>
         </div>
@@ -127,34 +127,34 @@ linter/default-rules/pydantic/types.py     1.00      3.2±0.07ms     8.0 MB/sec 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_pyi/rules/redundant_literal_union.rs</code>:124 on 2023-08-01 04:20</div>
-            <div class="timeline-body"><p>@LaBatata101 - I think the issue is that we needed to treat these two cases as separate. Otherwise, we were flagging cases like <code>Literal[1, 2]</code>, since we'd detect that we have <code>int</code> in the <code>Union</code> (by way of visiting the <code>1</code> and <code>2</code>).</p>
+            <div class="timeline-body"><p>@LaBatata101 - I think the issue is that we needed to treat these two cases as separate. Otherwise, we were flagging cases like <code>Literal[1, 2]</code>, since we&#x27;d detect that we have <code>int</code> in the <code>Union</code> (by way of visiting the <code>1</code> and <code>2</code>).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-01 04:43</div>
-            <div class="timeline-body"><p>Oh sorry, I missed your comment about the <code>is_unchecked_union</code> check and accidentally reverted that code when merging. @zanieb, do you mind reviewing that comment in the PR summary and helping understand whether it's a valid change?</p>
+            <div class="timeline-body"><p>Oh sorry, I missed your comment about the <code>is_unchecked_union</code> check and accidentally reverted that code when merging. @zanieb, do you mind reviewing that comment in the PR summary and helping understand whether it&#x27;s a valid change?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-08-01 04:44</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-01 04:44</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @zanieb by @zanieb on 2023-08-02 19:26</div>
+            <div class="event">Assigned to <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-02 19:26</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-02 19:37</div>
-            <div class="timeline-body"><p>Mentioned to @zanieb offline but I think the current <code>is_unchecked_union</code> is &quot;more correct&quot; than the version proposed here (which will miss cases like <code>f(Union[...])</code>, since it ignores anything with a parent expression). However, there's at least one bug in the current version unrelated to the logic of the check itself and instead related to some quirks on the semantic model traversal, I think. I will document separately.</p>
+            <div class="timeline-body"><p>Mentioned to @zanieb offline but I think the current <code>is_unchecked_union</code> is &quot;more correct&quot; than the version proposed here (which will miss cases like <code>f(Union[...])</code>, since it ignores anything with a parent expression). However, there&#x27;s at least one bug in the current version unrelated to the logic of the check itself and instead related to some quirks on the semantic model traversal, I think. I will document separately.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2023-08-02 19:37</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-02 19:37</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-08-02 19:37</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-02 19:37</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-02 19:46</div>
-            <div class="timeline-body"><p>Documented here: https://github.com/astral-sh/ruff/issues/6285</p>
+            <div class="timeline-body"><p>Documented here: <a href="https://github.com/astral-sh/ruff/issues/6285">astral-sh/ruff#6285</a></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -163,7 +163,7 @@ linter/default-rules/pydantic/types.py     1.00      3.2±0.07ms     8.0 MB/sec 
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:59:12 UTC
+        Synced at 2026-01-20 18:55:52 UTC
     </footer>
 </body>
 </html>

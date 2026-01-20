@@ -23,42 +23,42 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>This PR rewrites <code>Type::try_iterate()</code> to greatly improve the quality of our type inference for edge cases involving iterables, and greatly improve the quality of our diagnostics. <code>IterateError</code> is renamed to <code>IterationError</code>, and ~~is expanded to have 10(!) inner variants~~. (Following code review, I've managed to reduce this to 4 inner variants.)</p>
-<p>Fixes https://github.com/astral-sh/ruff/issues/16272. Fixes https://github.com/astral-sh/ruff/issues/16123. Helps a lot with astral-sh/ruff#13989.</p>
+            <div class="timeline-body">Summary
+<p>This PR rewrites <code>Type::try_iterate()</code> to greatly improve the quality of our type inference for edge cases involving iterables, and greatly improve the quality of our diagnostics. <code>IterateError</code> is renamed to <code>IterationError</code>, and ~~is expanded to have 10(!) inner variants~~. (Following code review, I&#x27;ve managed to reduce this to 4 inner variants.)</p>
+<p>Fixes <a href="https://github.com/astral-sh/ruff/issues/16272">astral-sh/ruff#16272</a>. Fixes <a href="https://github.com/astral-sh/ruff/issues/16123">astral-sh/ruff#16123</a>. Helps a lot with astral-sh/ruff#13989.</p>
 <p>Note: some of the diagnostic messages are now somewhat verbose. In the long run, I think we could probably change a lot of them to be diagnostics with concise messages but with several notes attached to them.</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>Several new mdtests, and lots of diagnostic snapshots</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-02-22 22:05</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-22 22:05</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-02-22 22:05</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-22 22:05</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2025-02-22 22:05</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-22 22:05</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-02-22 22:05</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-22 22:05</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2364 on 2025-02-23 09:07</div>
-            <div class="timeline-body"><p>I'd prefer to keep the error type named <code>IterateError</code> because I then don't have to guess what the error type is named: <code>try_iterate</code> -&gt; <code>IterateError</code>, <code>try_call</code> -&gt; <code>CallError</code>.</p>
+            <div class="timeline-body"><p>I&#x27;d prefer to keep the error type named <code>IterateError</code> because I then don&#x27;t have to guess what the error type is named: <code>try_iterate</code> -&gt; <code>IterateError</code>, <code>try_call</code> -&gt; <code>CallError</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2964 on 2025-02-23 09:15</div>
-            <div class="timeline-body"><p>I'm not sure if retaining all those different errors is the right approach. This is what I called out in my <code>CallOutcome</code> refactor that we need to find the right balance between retaining enough detail for diagnostics without making error handling awkward in other cases.</p>
-<p>I think my preference here would be that the diagnostic handler recomputes some of that information rather than that we funnel it all the way through. The argument here isn't necessarily performance but the complexity it introduces when handling an iterate error. You can see this with <code>CallError</code> today: Each call site that handles <code>CallError</code> needs to match on all variants and define how a call error in that situation should be matched. The more variants, the more complicated these error handlers become. Obviously, we have to retain enough information to distinguish the cases that are relevant for error propagation but we should aim to keep the enum minimal.</p>
-<p>I also expect that we'll need more variants long term and may even need to retain more information per variant to highlight the relevant parts. That's why I'm somewhat leaning towards simply re-doing some of the <code>iterate</code> resolution <code>IterateError</code>'s diagnostic logic. E.g. what about unions?</p>
+            <div class="timeline-body"><p>I&#x27;m not sure if retaining all those different errors is the right approach. This is what I called out in my <code>CallOutcome</code> refactor that we need to find the right balance between retaining enough detail for diagnostics without making error handling awkward in other cases.</p>
+<p>I think my preference here would be that the diagnostic handler recomputes some of that information rather than that we funnel it all the way through. The argument here isn&#x27;t necessarily performance but the complexity it introduces when handling an iterate error. You can see this with <code>CallError</code> today: Each call site that handles <code>CallError</code> needs to match on all variants and define how a call error in that situation should be matched. The more variants, the more complicated these error handlers become. Obviously, we have to retain enough information to distinguish the cases that are relevant for error propagation but we should aim to keep the enum minimal.</p>
+<p>I also expect that we&#x27;ll need more variants long term and may even need to retain more information per variant to highlight the relevant parts. That&#x27;s why I&#x27;m somewhat leaning towards simply re-doing some of the <code>iterate</code> resolution <code>IterateError</code>&#x27;s diagnostic logic. E.g. what about unions?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-23 09:20</div>
-            <div class="timeline-body"><p>The error messages look great. Although they're all rather long now. It makes me wonder if now is the right time to improve them or if we should just wait for when we have <code>notes</code> (or another mechanism to explain why a certain diagnostic was created) to make the improvement.</p>
-<p>Either way. I'm concerned about having 10 <code>IterateError</code> variants. It doesn't seem to scale well and I'm somewhat convinced that we'll have to retain even more information for diagnostics in the future (e.g. the range where the <code>__getitem__</code> and <code>__iterate__</code> method are defined).</p>
+            <div class="timeline-body"><p>The error messages look great. Although they&#x27;re all rather long now. It makes me wonder if now is the right time to improve them or if we should just wait for when we have <code>notes</code> (or another mechanism to explain why a certain diagnostic was created) to make the improvement.</p>
+<p>Either way. I&#x27;m concerned about having 10 <code>IterateError</code> variants. It doesn&#x27;t seem to scale well and I&#x27;m somewhat convinced that we&#x27;ll have to retain even more information for diagnostics in the future (e.g. the range where the <code>__getitem__</code> and <code>__iterate__</code> method are defined).</p>
 <p>This makes me believe that we should not distinguish between all those variants in <code>IterateError</code> but instead redo some of the <code>iterate</code> logic in the <code>IterateError::report_diagnostic</code>.</p>
 </div>
         </div>
@@ -77,8 +77,8 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2364 on 2025-02-23 14:16</div>
-            <div class="timeline-body"><p>blegh, I much prefer <code>IterationError</code> 😄 because &quot;iterate&quot; just can't be used as a <a href="https://en.wikipedia.org/wiki/Noun_adjunct">noun adjunct</a> in the same way as &quot;call&quot; or &quot;bool&quot; (because it's a verb rather than a noun -- &quot;call&quot; can be both a verb or a noun depending on context, which is why that feels OK to me, but that's not true for &quot;iterate&quot;)</p>
-<p>I don't feel too strongly though. I can change this back if you strongly dislike the new name, or if others agree with you :-)</p>
+            <div class="timeline-body"><p>blegh, I much prefer <code>IterationError</code> 😄 because &quot;iterate&quot; just can&#x27;t be used as a <a href="https://en.wikipedia.org/wiki/Noun_adjunct">noun adjunct</a> in the same way as &quot;call&quot; or &quot;bool&quot; (because it&#x27;s a verb rather than a noun -- &quot;call&quot; can be both a verb or a noun depending on context, which is why that feels OK to me, but that&#x27;s not true for &quot;iterate&quot;)</p>
+<p>I don&#x27;t feel too strongly though. I can change this back if you strongly dislike the new name, or if others agree with you :-)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -88,16 +88,16 @@
 </blockquote>
 <p>Thanks!</p>
 <blockquote>
-<p>Although they're all rather long now. It makes me wonder if now is the right time to improve them or if we should just wait for when we have <code>notes</code> (or another mechanism to explain why a certain diagnostic was created) to make the improvement.</p>
+<p>Although they&#x27;re all rather long now. It makes me wonder if now is the right time to improve them or if we should just wait for when we have <code>notes</code> (or another mechanism to explain why a certain diagnostic was created) to make the improvement.</p>
 </blockquote>
 <p>Yeah. The main reasons why I wanted to do something now were:</p>
 <ul>
-<li>We have some error messages on <code>main</code> that are just flat-out incorrect, and are pretty confusing (https://github.com/astral-sh/ruff/issues/16272)</li>
+<li>We have some error messages on <code>main</code> that are just flat-out incorrect, and are pretty confusing (<a href="https://github.com/astral-sh/ruff/issues/16272">astral-sh/ruff#16272</a>)</li>
 <li>We finally <em>can</em> have both type inference that is more precise and diagnostics that are more informative, following your great work this week refacting <code>Type::call()</code> and <code>Type::iterate()</code>. I wanted to try it out 😄</li>
-<li>I think we will <em>want</em> all this information in our diagnostics. I agree that we probably won't want it <em>presented</em> all in one long sentence in the final version of our diagnostics, but it seems to me that this work will make it easier to migrate to those kinds of diagnostics-with-notes when the time comes -- because the changes I'm making here mean that when the time comes, all the information will be available to us to produce those kinds of diagnostics.</li>
+<li>I think we will <em>want</em> all this information in our diagnostics. I agree that we probably won&#x27;t want it <em>presented</em> all in one long sentence in the final version of our diagnostics, but it seems to me that this work will make it easier to migrate to those kinds of diagnostics-with-notes when the time comes -- because the changes I&#x27;m making here mean that when the time comes, all the information will be available to us to produce those kinds of diagnostics.</li>
 </ul>
 <blockquote>
-<p>Either way. I'm concerned about having 10 <code>IterateError</code> variants.</p>
+<p>Either way. I&#x27;m concerned about having 10 <code>IterateError</code> variants.</p>
 </blockquote>
 <p>I looked again following your comments, and managed to reduce it to 4 variants without sacrificing the precision of our type inference or our diagnostic messages.</p>
 </div>
@@ -111,8 +111,8 @@
             <div class="timeline-body"><blockquote>
 <p>Each call site that handles <code>CallError</code> needs to match on all variants and define how a call error in that situation should be matched. The more variants, the more complicated these error handlers become.</p>
 </blockquote>
-<p>FWIW: while I absolutely agree that this is a concern, I think it is <em>less</em> of a concern for iteration than it is for calling. The main reason why we need to match on <code>CallError</code> everywhere is because so many high-level operations in Python desugar to lots of call operations. Iteration <em>does</em> happen implicitly in lots of places in Python, but the only place I know of where there's a higher-level operation that uses iteration under the hood is the <code>in</code> and <code>not in</code> operators: if a container doesn't have a <code>__contains__</code> method, Python will attempt to iterate over the container to see if the object is (or isn't) in the container.</p>
-<p>The TL;DR here is that I think there will overall be many fewer places that we will need to match over the variants here and propagate them into a higher-level diagnostic; it's not nearly as significant a problem as it is for <code>CallError</code>.</p>
+<p>FWIW: while I absolutely agree that this is a concern, I think it is <em>less</em> of a concern for iteration than it is for calling. The main reason why we need to match on <code>CallError</code> everywhere is because so many high-level operations in Python desugar to lots of call operations. Iteration <em>does</em> happen implicitly in lots of places in Python, but the only place I know of where there&#x27;s a higher-level operation that uses iteration under the hood is the <code>in</code> and <code>not in</code> operators: if a container doesn&#x27;t have a <code>__contains__</code> method, Python will attempt to iterate over the container to see if the object is (or isn&#x27;t) in the container.</p>
+<p>The TL;DR here is that I think there will overall be many fewer places that we will need to match over the variants here and propagate them into a higher-level diagnostic; it&#x27;s not nearly as significant a problem as it is for <code>CallError</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -124,17 +124,17 @@
             <div class="timeline-body"><blockquote>
 <p>Thank you! I looked at it again and I managed to reduce it from 10 to 4 variants without dup</p>
 </blockquote>
-<p>Nice, I'll have another look and this addresses my concerns :)</p>
-<p>I also think that I probably haven't done a good job at this myself with <code>BoolError</code>. It's more fine-grained than it probably ought to be.</p>
+<p>Nice, I&#x27;ll have another look and this addresses my concerns :)</p>
+<p>I also think that I probably haven&#x27;t done a good job at this myself with <code>BoolError</code>. It&#x27;s more fine-grained than it probably ought to be.</p>
 <blockquote>
-<p>The TL;DR here is that I think there will overall be many fewer places that we will need to match over the variants here and propagate them into a higher-level diagnostic; it's not nearly as significant a problem as it is for CallError.</p>
+<p>The TL;DR here is that I think there will overall be many fewer places that we will need to match over the variants here and propagate them into a higher-level diagnostic; it&#x27;s not nearly as significant a problem as it is for CallError.</p>
 </blockquote>
-<p>I totally agree with this. I believe there's only one case inside <code>member</code> where we have to deal with <code>iterate</code> errors. My motivation for course correcting here is mainly to test and establish certain patterns and it seems you've been very successful at it!</p>
+<p>I totally agree with this. I believe there&#x27;s only one case inside <code>member</code> where we have to deal with <code>iterate</code> errors. My motivation for course correcting here is mainly to test and establish certain patterns and it seems you&#x27;ve been very successful at it!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2364 on 2025-02-23 15:20</div>
-            <div class="timeline-body"><p>It's too much a detail to feel strongly about it but I'm interested in other opinions as well</p>
+            <div class="timeline-body"><p>It&#x27;s too much a detail to feel strongly about it but I&#x27;m interested in other opinions as well</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -143,15 +143,15 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/unpacking.md_-_Unpacking_-_Right_hand_side_not_iterable.snap</code>:25 on 2025-02-23 15:46</div>
-            <div class="timeline-body"><p>I think I prefer the old message because it's more on the point
+            <div class="timeline-body"><p>I think I prefer the old message because it&#x27;s more on the point
 (Overall, messages should be as concise as possible).</p>
-<p>I do think that we want to add a help text saying <em>because <code>Literal[1]</code> doesn't have an <code>__iter__</code> method</em> and <em>because <code>Literal[1]</code> doesn't have a <code>__getitem__</code> method</em> once our diagnostic system supports it.</p>
+<p>I do think that we want to add a help text saying <em>because <code>Literal[1]</code> doesn&#x27;t have an <code>__iter__</code> method</em> and <em>because <code>Literal[1]</code> doesn&#x27;t have a <code>__getitem__</code> method</em> once our diagnostic system supports it.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/loops/for.md</code>:108 on 2025-02-23 15:54</div>
-            <div class="timeline-body"><p>I'm curious to hear your take on this and how you decided to use snapshoting because it's not clear to me when we want to use snapshot tests. I've found updating the messages very painful when working on <code>unsupported-bool-conversion</code> but having the assertions (and messages) inline is significantely more readable and avoids bugs slipping through by accepting the snapshot tests.</p>
-<p>I think it's a failure if we start using snapshot tests everywhere (or for a large majority of tests) because the experience is than very close to what we have from Ruff. Instead, we should use them mainly to validate that the diagnostic ranges are correct.</p>
+            <div class="timeline-body"><p>I&#x27;m curious to hear your take on this and how you decided to use snapshoting because it&#x27;s not clear to me when we want to use snapshot tests. I&#x27;ve found updating the messages very painful when working on <code>unsupported-bool-conversion</code> but having the assertions (and messages) inline is significantely more readable and avoids bugs slipping through by accepting the snapshot tests.</p>
+<p>I think it&#x27;s a failure if we start using snapshot tests everywhere (or for a large majority of tests) because the experience is than very close to what we have from Ruff. Instead, we should use them mainly to validate that the diagnostic ranges are correct.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -161,8 +161,8 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2964 on 2025-02-23 16:08</div>
-            <div class="timeline-body"><p>Thanks for iterating on this. I still think that we might be doing too much work in <code>Type::iterate</code> that's wasted if we don't end up emitting the diagnostic but I'd have to play with the error variants myself to fully understand if that's the case and you can probably answer this best. I also don't think that this should block merging this PR anymore.</p>
-<p>Ideally, we'd have exactly one error variant that <code>Type::iterate</code> returns. That would be the most efficient and easiest to handle by upstream code. It also allows to defer some of the error-probing calls to the diagnostic code path only (and skip them entirely if the diagnostic is turned off). There are two reasons why we might not want to do that:</p>
+            <div class="timeline-body"><p>Thanks for iterating on this. I still think that we might be doing too much work in <code>Type::iterate</code> that&#x27;s wasted if we don&#x27;t end up emitting the diagnostic but I&#x27;d have to play with the error variants myself to fully understand if that&#x27;s the case and you can probably answer this best. I also don&#x27;t think that this should block merging this PR anymore.</p>
+<p>Ideally, we&#x27;d have exactly one error variant that <code>Type::iterate</code> returns. That would be the most efficient and easiest to handle by upstream code. It also allows to defer some of the error-probing calls to the diagnostic code path only (and skip them entirely if the diagnostic is turned off). There are two reasons why we might not want to do that:</p>
 <ul>
 <li>We might want to infer a more precise type for the element type even in the error case</li>
 <li>We might have upstream code that calls <code>iterate</code> with deviating behavior based on <em>some condition</em></li>
@@ -176,11 +176,11 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2964 on 2025-02-23 18:19</div>
             <div class="timeline-body"><blockquote>
-<p>I still think that we might be doing too much work in <code>Type::iterate</code> that's wasted if we don't end up emitting the diagnostic but I'd have to play with the error variants myself to fully understand if that's the case and you can probably answer this best.</p>
+<p>I still think that we might be doing too much work in <code>Type::iterate</code> that&#x27;s wasted if we don&#x27;t end up emitting the diagnostic but I&#x27;d have to play with the error variants myself to fully understand if that&#x27;s the case and you can probably answer this best.</p>
 </blockquote>
-<p>I don't <em>think</em> that's the case. But if you think you can make all my tests pass while doing less work in <code>Type::iterate()</code>, I'd love to see it ;-)</p>
-<p>For example, here's one edge case that we don't handle correctly on <code>main</code> (it's covered by a test in this PR):</p>
-<pre><code class="language-py">from typing import reveal_type
+<p>I don&#x27;t <em>think</em> that&#x27;s the case. But if you think you can make all my tests pass while doing less work in <code>Type::iterate()</code>, I&#x27;d love to see it ;-)</p>
+<p>For example, here&#x27;s one edge case that we don&#x27;t handle correctly on <code>main</code> (it&#x27;s covered by a test in this PR):</p>
+<pre><code>from typing import reveal_type
 
 class Iterator:
     def __next__(self) -&gt; str:
@@ -230,14 +230,14 @@ info: revealed-type
 18 |         yield x
    |
 </code></pre>
-<p>which is much more correct, in my view. Since the <code>__iter__</code> method is possibly unbound, we union together the return type of the iterator's <code>__next__</code> method and the return type of the <code>__getitem__</code> method to infer the type for <code>x</code> (rather than just using the return type of the <code>__next__</code> method. And we no longer report a diagnostic, which reflects the behaviour you get at runtime, where the <code>Foo</code> class is always iterable whether or not <code>flag</code> is <code>True</code> or <code>False</code>:</p>
-<pre><code class="language-pycon">% python -i foo.py                                                                                     
+<p>which is much more correct, in my view. Since the <code>__iter__</code> method is possibly unbound, we union together the return type of the iterator&#x27;s <code>__next__</code> method and the return type of the <code>__getitem__</code> method to infer the type for <code>x</code> (rather than just using the return type of the <code>__next__</code> method. And we no longer report a diagnostic, which reflects the behaviour you get at runtime, where the <code>Foo</code> class is always iterable whether or not <code>flag</code> is <code>True</code> or <code>False</code>:</p>
+<pre><code>% python -i foo.py                                                                                     
 &gt;&gt;&gt; next(test(flag=True))
-Runtime type is 'str'
-'foo'
+Runtime type is &#x27;str&#x27;
+&#x27;foo&#x27;
 &gt;&gt;&gt; next(test(flag=False))
-Runtime type is 'bytes'
-b'42'
+Runtime type is &#x27;bytes&#x27;
+b&#x27;42&#x27;
 </code></pre>
 <p>But in order to achieve this we do need to continue calling dunders even after we hit the first error (which would be that the <code>__iter__</code> method is possibly unbound). We need to check that the <code>__iter__</code> method returns a valid iterator class in the event that it is bound, and we need to check that <code>__getitem__</code> provides a valid fallback in the event that <code>__iter__</code> is unbound. Only then do we have enough information to return <code>Ok()</code> from <code>Type::try_iterate()</code> rather than <code>Err()</code>.</p>
 </div>
@@ -248,7 +248,7 @@ b'42'
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2385 on 2025-02-23 18:26</div>
-            <div class="timeline-body"><p>yeah, it's too long... I'll shorten it to <code>PossiblyUnboundIterAndGetitemError</code>. Still pretty long but it's... better</p>
+            <div class="timeline-body"><p>yeah, it&#x27;s too long... I&#x27;ll shorten it to <code>PossiblyUnboundIterAndGetitemError</code>. Still pretty long but it&#x27;s... better</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -262,9 +262,9 @@ b'42'
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2964 on 2025-02-23 18:41</div>
             <div class="timeline-body"><blockquote>
-<p>I don't think that's the case. But if you think you can make all my tests pass while doing less work in Type::iterate(), I'd love to see it ;-)</p>
+<p>I don&#x27;t think that&#x27;s the case. But if you think you can make all my tests pass while doing less work in Type::iterate(), I&#x27;d love to see it ;-)</p>
 </blockquote>
-<p>Hmm, I rather don't. I don't consider it a priority right now and I also think that you should know best. I was mainly trying to explain when I think it's appropriate to add new variants and it's perfect if you've now narrowed it down to exactly those cases</p>
+<p>Hmm, I rather don&#x27;t. I don&#x27;t consider it a priority right now and I also think that you should know best. I was mainly trying to explain when I think it&#x27;s appropriate to add new variants and it&#x27;s perfect if you&#x27;ve now narrowed it down to exactly those cases</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -273,9 +273,9 @@ b'42'
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/unpacking.md_-_Unpacking_-_Right_hand_side_not_iterable.snap</code>:25 on 2025-02-23 18:59</div>
-            <div class="timeline-body"><p>I agree with all that. I actually think for all of these diagnostics, the top-line error message should probably just be either &quot;Object of type <whatever> is not iterable&quot; or &quot;Object of type <whatever> may not be iterable&quot;.</p>
-<p>Again, though, this PR isn't really about trying to get to <em>perfect</em> diagnostics right now -- its aim is really to distinguish between the different error cases and make sure that we're propagating the necessary information into `IterationError`` so that we can easily turn these into beautifully presented diagnostics when our infrastructure's there.</p>
-<p>Overall, I think I'd prefer to leave this as-is for now. Otherwise it's the only <code>IterationError</code> diagnostic message that doesn't given an explanation, which seems inconsistent 😄 and I think long-term, the explanation probably shouldn't be part of the top-line message for any of these diagnostics</p>
+            <div class="timeline-body"><p>I agree with all that. I actually think for all of these diagnostics, the top-line error message should probably just be either &quot;Object of type  is not iterable&quot; or &quot;Object of type  may not be iterable&quot;.</p>
+<p>Again, though, this PR isn&#x27;t really about trying to get to <em>perfect</em> diagnostics right now -- its aim is really to distinguish between the different error cases and make sure that we&#x27;re propagating the necessary information into `IterationError`` so that we can easily turn these into beautifully presented diagnostics when our infrastructure&#x27;s there.</p>
+<p>Overall, I think I&#x27;d prefer to leave this as-is for now. Otherwise it&#x27;s the only <code>IterationError</code> diagnostic message that doesn&#x27;t given an explanation, which seems inconsistent 😄 and I think long-term, the explanation probably shouldn&#x27;t be part of the top-line message for any of these diagnostics</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -284,7 +284,7 @@ b'42'
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/unpacking.md_-_Unpacking_-_Right_hand_side_not_iterable.snap</code>:25 on 2025-02-23 19:19</div>
-            <div class="timeline-body"><p>I added a TODO comment in https://github.com/astral-sh/ruff/pull/16321/commits/df75629989c3d947c5cba5e107d35ec7e78f780d saying that we probably don't want all the information in one long sentence. Though I think the TODO comment also applies to lots of our other diagnostics right now!</p>
+            <div class="timeline-body"><p>I added a TODO comment in <a href="https://github.com/astral-sh/ruff/pull/16321">astral-sh/ruff#16321</a>/commits/df75629989c3d947c5cba5e107d35ec7e78f780d saying that we probably don&#x27;t want all the information in one long sentence. Though I think the TODO comment also applies to lots of our other diagnostics right now!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -293,26 +293,26 @@ b'42'
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/loops/for.md</code>:108 on 2025-02-23 21:12</div>
-            <div class="timeline-body"><p>It's a great question.</p>
+            <div class="timeline-body"><p>It&#x27;s a great question.</p>
 <p>Overall I feel like mdtest (as it is currently -- obviously we can keep improving it!) is fantastic in a lot of ways:</p>
 <ul>
 <li>It allows us to write tests very concisely and declaratively</li>
-<li>It's very easy to make lots of assertions on which types are revealed in which cases</li>
-<li>It's very easy to make lots of assertions that &quot;this Python code leads us to emit an error on that line with error code X&quot;.</li>
+<li>It&#x27;s very easy to make lots of assertions on which types are revealed in which cases</li>
+<li>It&#x27;s very easy to make lots of assertions that &quot;this Python code leads us to emit an error on that line with error code X&quot;.</li>
 </ul>
-<p>What I think mdtest isn't very well suited to right now is making assertions on the full error message:</p>
+<p>What I think mdtest isn&#x27;t very well suited to right now is making assertions on the full error message:</p>
 <ul>
-<li>It's very tedious to have to go through all locations and update the asserted error message if you make a change to the error message</li>
-<li>Even if you do make an assertion on the full error message, you don't see the full details of how the diagnostic will be rendered to the user. And as we've been discussing, that seems pretty relevant here, since cramming all the information into one sentence obviously isn't the ideal way of presenting these diagnostics.</li>
-<li>[This one is very fixable] I was pretty surprised that my changes didn't initially lead to any tests failing, even though I had changed a bunch of error messages. That's because currently if the error message is &quot;Object X is not iterable because foo bar baz&quot; and the assertion is <code>error: [not-iterable] &quot;Object X is not iterable&quot;</code>, the assertion will pass, since mdtest just checks whether the actual error message <em>contains</em> the asserted errror message (it doesn't check that the asserted error message is a fullmatch).</li>
+<li>It&#x27;s very tedious to have to go through all locations and update the asserted error message if you make a change to the error message</li>
+<li>Even if you do make an assertion on the full error message, you don&#x27;t see the full details of how the diagnostic will be rendered to the user. And as we&#x27;ve been discussing, that seems pretty relevant here, since cramming all the information into one sentence obviously isn&#x27;t the ideal way of presenting these diagnostics.</li>
+<li>[This one is very fixable] I was pretty surprised that my changes didn&#x27;t initially lead to any tests failing, even though I had changed a bunch of error messages. That&#x27;s because currently if the error message is &quot;Object X is not iterable because foo bar baz&quot; and the assertion is <code>error: [not-iterable] &quot;Object X is not iterable&quot;</code>, the assertion will pass, since mdtest just checks whether the actual error message <em>contains</em> the asserted errror message (it doesn&#x27;t check that the asserted error message is a fullmatch).</li>
 </ul>
-<p>So using snapshots felt like a good fit for a lot of these tests, where what we really want to test is how the information is reported to the user, and where we expect that the presentation of the diagnostics will continue to change in the future. However, I do agree that it's not ideal:</p>
+<p>So using snapshots felt like a good fit for a lot of these tests, where what we really want to test is how the information is reported to the user, and where we expect that the presentation of the diagnostics will continue to change in the future. However, I do agree that it&#x27;s not ideal:</p>
 <ul>
 <li>It would be so much nicer with inline snapshots; having them far away from the Python snippets makes it much harder to tell whether the snapshot is correct or incorrect</li>
-<li>It's much easier to just blindly accept the snapshot without checking that it's correct</li>
-<li>Our current snapshotting setup for mdtest isn't ideal. <code>cargo test -p red_knot_python_semantic</code> stops testing a markdown file as soon as it finds a failing snapshot in that markdown file. That meant that I had to run <code>cargo test -p red_knot_python_semantic; cargo insta review</code> several times before all snapshots for <code>for.md</code> were updated, which was pretty frustrating.</li>
+<li>It&#x27;s much easier to just blindly accept the snapshot without checking that it&#x27;s correct</li>
+<li>Our current snapshotting setup for mdtest isn&#x27;t ideal. <code>cargo test -p red_knot_python_semantic</code> stops testing a markdown file as soon as it finds a failing snapshot in that markdown file. That meant that I had to run <code>cargo test -p red_knot_python_semantic; cargo insta review</code> several times before all snapshots for <code>for.md</code> were updated, which was pretty frustrating.</li>
 </ul>
-<p>All told, I'm also not sure that using this much snapshotting is a great idea right now. I'm happy to switch it to standard mdtest assertions on full diagnostic messages if you'd prefer it :-)</p>
+<p>All told, I&#x27;m also not sure that using this much snapshotting is a great idea right now. I&#x27;m happy to switch it to standard mdtest assertions on full diagnostic messages if you&#x27;d prefer it :-)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -321,7 +321,7 @@ b'42'
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/loops/for.md</code>:108 on 2025-02-24 07:22</div>
-            <div class="timeline-body"><p>Thanks for the detailed explanation. I'd probably create one snapshot test for each unique diagnostic rendering variant. All tests that only enforce type inference feature should not use snaphshot testing. I leave it up to you to assess whether that's the case.</p>
+            <div class="timeline-body"><p>Thanks for the detailed explanation. I&#x27;d probably create one snapshot test for each unique diagnostic rendering variant. All tests that only enforce type inference feature should not use snaphshot testing. I leave it up to you to assess whether that&#x27;s the case.</p>
 <p>I suspect that @carljm has opinions on this as well ;)</p>
 </div>
         </div>
@@ -332,31 +332,31 @@ b'42'
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/loops/for.md</code>:108 on 2025-02-24 14:24</div>
             <div class="timeline-body"><blockquote>
-<p>I'd probably create one snapshot test for each unique diagnostic rendering variant.</p>
+<p>I&#x27;d probably create one snapshot test for each unique diagnostic rendering variant.</p>
 </blockquote>
-<p>That makes sense to me. I did a quickish audit and removed a few hundred lines of snapshots. We're pretty much there on this PR now, I think.</p>
+<p>That makes sense to me. I did a quickish audit and removed a few hundred lines of snapshots. We&#x27;re pretty much there on this PR now, I think.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/loops/for.md</code>:108 on 2025-02-24 18:36</div>
-            <div class="timeline-body"><p>I don't think I have a lot to add here. As far as the current state, I think I basically agree with what Micha suggests above.</p>
-<p>This thread did prompt me to add a few thoughts over on https://github.com/astral-sh/ruff/issues/16255</p>
-<p>Regarding messages in <code># error:</code> comments being a &quot;contains&quot; check rather than a &quot;full match&quot;, that was intentional, the idea being to reduce update pain by only asserting the critical information that a certain test wants to ensure is present in the message. I'm not sure this works out in practice, though; we almost always use the full message, and it reads pretty oddly if you don't. So I'd be OK changing this to full match.</p>
+            <div class="timeline-body"><p>I don&#x27;t think I have a lot to add here. As far as the current state, I think I basically agree with what Micha suggests above.</p>
+<p>This thread did prompt me to add a few thoughts over on <a href="https://github.com/astral-sh/ruff/issues/16255">astral-sh/ruff#16255</a></p>
+<p>Regarding messages in <code># error:</code> comments being a &quot;contains&quot; check rather than a &quot;full match&quot;, that was intentional, the idea being to reduce update pain by only asserting the critical information that a certain test wants to ensure is present in the message. I&#x27;m not sure this works out in practice, though; we almost always use the full message, and it reads pretty oddly if you don&#x27;t. So I&#x27;d be OK changing this to full match.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/loops/for.md</code>:444 on 2025-02-24 18:43</div>
-            <div class="timeline-body"><p>This test does not snapshot diagnostics but also doesn't include a message here; is that intentional?</p>
+            <div class="timeline-body"><p>This test does not snapshot diagnostics but also doesn&#x27;t include a message here; is that intentional?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/for.md_-_For_loops_-_Possibly_unbound_`__iter__`_and_bad_`__getitem__`_method.snap</code>:44 on 2025-02-24 19:02</div>
-            <div class="timeline-body"><p>Haven't gotten to the implementation yet, but just from reading the tests it's not clear to me why here we get &quot;does not support the old-style iteration protocol&quot; while in another test I saw an error message that said something like &quot;expects a <code>__getitem__</code> signature at least as permissive as ...&quot;.</p>
+            <div class="timeline-body"><p>Haven&#x27;t gotten to the implementation yet, but just from reading the tests it&#x27;s not clear to me why here we get &quot;does not support the old-style iteration protocol&quot; while in another test I saw an error message that said something like &quot;expects a <code>__getitem__</code> signature at least as permissive as ...&quot;.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2364 on 2025-02-24 19:07</div>
-            <div class="timeline-body"><p><code>IterateError</code> sounds wrong to me also, for the grammatical reason @AlexWaygood describes. I don't think I would be likely to make the assumption that the error type would be named precisely the same as the method that can return it. But I also don't feel strongly about it either way, <code>IterateError</code> really wouldn't bother me.</p>
+            <div class="timeline-body"><p><code>IterateError</code> sounds wrong to me also, for the grammatical reason @AlexWaygood describes. I don&#x27;t think I would be likely to make the assumption that the error type would be named precisely the same as the method that can return it. But I also don&#x27;t feel strongly about it either way, <code>IterateError</code> really wouldn&#x27;t bother me.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -370,17 +370,17 @@ b'42'
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/loops/for.md</code>:444 on 2025-02-25 05:54</div>
-            <div class="timeline-body"><p>IIRC the specific reason I added this test was to check that we still inferred <code>int</code> (rather than <code>Unknown</code>) for <code>x</code>, despite the fact that <code>__iter__</code> is possibly unbound and <code>__getitem__</code> is set to <code>None</code>. I think in an early version of this PR, that wasn't true.</p>
-<p>This at least warrants me adding some prose to describe the test, though; I agree that this isn't obvious! And it's probably best to include the full error message here anyway, just for consistency with the other tests in this file.</p>
+            <div class="timeline-body"><p>IIRC the specific reason I added this test was to check that we still inferred <code>int</code> (rather than <code>Unknown</code>) for <code>x</code>, despite the fact that <code>__iter__</code> is possibly unbound and <code>__getitem__</code> is set to <code>None</code>. I think in an early version of this PR, that wasn&#x27;t true.</p>
+<p>This at least warrants me adding some prose to describe the test, though; I agree that this isn&#x27;t obvious! And it&#x27;s probably best to include the full error message here anyway, just for consistency with the other tests in this file.</p>
 <p>Thanks!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/loops/for.md</code>:108 on 2025-02-25 11:39</div>
             <div class="timeline-body"><blockquote>
-<p>Regarding messages in <code># error:</code> comments being a &quot;contains&quot; check rather than a &quot;full match&quot;, that was intentional, the idea being to reduce update pain by only asserting the critical information that a certain test wants to ensure is present in the message. I'm not sure this works out in practice, though; we almost always use the full message, and it reads pretty oddly if you don't. So I'd be OK changing this to full match.</p>
+<p>Regarding messages in <code># error:</code> comments being a &quot;contains&quot; check rather than a &quot;full match&quot;, that was intentional, the idea being to reduce update pain by only asserting the critical information that a certain test wants to ensure is present in the message. I&#x27;m not sure this works out in practice, though; we almost always use the full message, and it reads pretty oddly if you don&#x27;t. So I&#x27;d be OK changing this to full match.</p>
 </blockquote>
-<p>Yeah, I remember the reasons for the decision! But I also agree that it hasn't proven useful in practice. And as I say, it actually <em>confused</em> me briefly while working on this PR -- so I'd also favour changing it now to require a full match.</p>
+<p>Yeah, I remember the reasons for the decision! But I also agree that it hasn&#x27;t proven useful in practice. And as I say, it actually <em>confused</em> me briefly while working on this PR -- so I&#x27;d also favour changing it now to require a full match.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -402,14 +402,14 @@ b'42'
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/for.md_-_For_loops_-_Possibly_unbound_`__iter__`_and_bad_`__getitem__`_method.snap</code>:44 on 2025-02-25 13:57</div>
-            <div class="timeline-body"><p>It's because I was being lazy about <code>CallError::Union(_)</code> variants. Fixed it now.</p>
+            <div class="timeline-body"><p>It&#x27;s because I was being lazy about <code>CallError::Union(_)</code> variants. Fixed it now.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @AlexWaygood on 2025-02-25 14:02</div>
+            <div class="event">Merged by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-25 14:02</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-02-25 14:02</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-25 14:02</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-28 11:40</div>
@@ -418,7 +418,7 @@ b'42'
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/loops/for.md</code>:108 on 2025-02-28 11:40</div>
             <div class="timeline-body"><p>Hmm, I tried out making this change and a surprising number of tests failed. I guess we use this feature more than I thought.</p>
-<p>It's probably worth revisiting this once we have support for subdiagnostics/notes. Once those are implemented, we'll generally have shorter summary lines in our diagnostics, so it'll be less cumbersome to enforce a fullmatch on the summary line as part of mdtest.</p>
+<p>It&#x27;s probably worth revisiting this once we have support for subdiagnostics/notes. Once those are implemented, we&#x27;ll generally have shorter summary lines in our diagnostics, so it&#x27;ll be less cumbersome to enforce a fullmatch on the summary line as part of mdtest.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -427,7 +427,7 @@ b'42'
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:10:17 UTC
+        Synced at 2026-01-20 19:11:44 UTC
     </footer>
 </body>
 </html>

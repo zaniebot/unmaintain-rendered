@@ -23,12 +23,12 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/xtaran">@xtaran</a></div>
-            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+            <div class="timeline-body">What version of ripgrep are you using?
 <pre><code>ripgrep 0.10.0
 -SIMD -AVX (compiled)
 +SIMD +AVX (runtime)
 </code></pre>
-<h4>How did you install ripgrep?</h4>
+How did you install ripgrep?
 <p><code>ripgrep</code> package version 0.10.0-2 from Debian Buster (current &quot;Testing&quot;, soon to be Debian 10):</p>
 <pre><code>~ → apt-cache policy ripgrep
 ripgrep:
@@ -40,7 +40,7 @@ ripgrep:
         600 https://debian.ethz.ch/debian testing/main amd64 Packages
         100 /var/lib/dpkg/status
 </code></pre>
-<h4>What operating system are you using ripgrep on?</h4>
+What operating system are you using ripgrep on?
 <pre><code>~ → lsb_release -a
 No LSB modules are available.
 Distributor ID: Debian
@@ -48,9 +48,9 @@ Description:    Debian GNU/Linux buster/sid
 Release:        unstable
 Codename:       sid
 </code></pre>
-<h4>Describe your question, feature request, or bug.</h4>
+Describe your question, feature request, or bug.
 <p>with several GB of log files via STDIN (actually <code>xzcat</code> outout), <code>rg</code> as well as <code>rg -F</code> immediately exited without any output while <code>fgrep</code> found many hits until it issued the warning <code>Binary file (standard input) matches</code>.</p>
-<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+If this is a bug, what are the steps to reproduce the behavior?
 <p>Consider the following example (based on <a href="https://github.com/BurntSushi/ripgrep/files/3009527/aeh.txt">this file</a>):</p>
 <pre><code>→ cat -v aeh.txt
 a
@@ -88,7 +88,7 @@ Binary file (standard input) matches
 → echo $?
 0
 </code></pre>
-<p>So fgrep properly indicates with the exit code if there was a hit even though it didn't output anything besides the warning about binary junk.</p>
+<p>So fgrep properly indicates with the exit code if there was a hit even though it didn&#x27;t output anything besides the warning about binary junk.</p>
 <p>But even though the hit would have been before the NUL byte, <code>rg</code> claims (via exit code) that there is no hit inside the STDIN despite <code>rg -a</code> says otherwise (via output and exit code).</p>
 <p><code>cat aeh.txt | strace rg ä</code> shows that it exits rather quickly after having read the NUL byte:</p>
 <pre><code>read(0, &quot;a\n\303\244\n\0\na\n&quot;, 8192)   = 9
@@ -100,44 +100,44 @@ exit_group(1)                           = ?
 <p>Constraints to trigger the issue: data must contain a NUL byte and neither of the options <code>-a</code> and <code>--text</code> must be set. On larger files (gigabytes) it is obvious that rg exits preliminarily if the NUL byte is close to the beginning solely because of how quick the command exits. We actually discovered the issue that way: Searching through syslog files which contained anything remote syslog servers sent to our server, including garbled binary junk. rg exited way too quickly and without any output at all, especially in comparison to fgrep.</p>
 <p>Impact: Does not indicate that there were hits and preliminarily exits without further notice, hence can yield wrong results (exit code as well as output) without any indication of there being an issue with binary junk.</p>
 <p>Workaround: always use option <code>-a</code> or <code>--text</code> when contents might contain binary junk instead of relying on warnings from <code>rg</code> as fgrep does.</p>
-<h4>If this is a bug, what is the actual behavior?</h4>
+If this is a bug, what is the actual behavior?
 <pre><code>→ cat aeh.txt| rg --debug a
 DEBUG|grep_regex::literal|/usr/share/cargo/registry/ripgrep-0.10.0/debian/cargo_registry/grep-regex-0.1.1/src/literal.rs:58: literal prefixes detected: Literals { lits: [Complete(a)], limit_size: 250, limit_class: 10 }
 DEBUG|globset|/usr/share/cargo/registry/ripgrep-0.10.0/debian/cargo_registry/globset-0.4.2/src/lib.rs:429: built glob set; 0 literals, 0 basenames, 8 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
 DEBUG|globset|/usr/share/cargo/registry/ripgrep-0.10.0/debian/cargo_registry/globset-0.4.2/src/lib.rs:429: built glob set; 0 literals, 1 basenames, 0 extensions, 0 prefixes, 1 suffixes, 0 required extensions, 0 regexes
 a
 </code></pre>
-<h4>If this is a bug, what is the expected behavior?</h4>
-<p>Behaving as grep/egrep/fgrep: Informing the user about binary junk in the input instead of silently exiting as if no match was found or all matches were found despite this wasn't true.</p>
-<h4>Notes</h4>
+If this is a bug, what is the expected behavior?
+<p>Behaving as grep/egrep/fgrep: Informing the user about binary junk in the input instead of silently exiting as if no match was found or all matches were found despite this wasn&#x27;t true.</p>
+Notes
 <ul>
-<li>Yes, fgrep/grep/egrep also has its issues there like the warning being on STDOUT, not STDERR, but it's still much more clear in indicating the issue compared to <code>rg</code>.</li>
-<li>I also tried to see if the options <code>-F</code> and <code>--no-encoding</code> make a difference in this case, but they don't.</li>
+<li>Yes, fgrep/grep/egrep also has its issues there like the warning being on STDOUT, not STDERR, but it&#x27;s still much more clear in indicating the issue compared to <code>rg</code>.</li>
+<li>I also tried to see if the options <code>-F</code> and <code>--no-encoding</code> make a difference in this case, but they don&#x27;t.</li>
 <li>This might be related to #1207.</li>
 <li>I reported this initially <a href="https://bugs.debian.org/925544">in Debian as #925544</a></li>
-<li>Via Github's &quot;possibly related issues&quot; (but when initially searching for <code>nul</code> and <code>null</code> in the list of open issues) I stumbled upon #306 which seems to declare the observed behaviour as feature named &quot;skipping binary files&quot;. But this is IMHO definitely the wrong approach as you can't guess that in advance when e.g. getting gigabytes fed on STDIN just to discover that at some point there's binary junk inmidst already grepped text. So IMHO you should just behave here like grep/egrep/fgrep does and report the fact that you've found a hit in a binary file instead of silently exiting. (It might be ok-ish if you just skip such files when doing recursive greps, but e.g. not if that files was explicitly listed as parameter or data comes from STDIN.)</li>
+<li>Via Github&#x27;s &quot;possibly related issues&quot; (but when initially searching for <code>nul</code> and <code>null</code> in the list of open issues) I stumbled upon #306 which seems to declare the observed behaviour as feature named &quot;skipping binary files&quot;. But this is IMHO definitely the wrong approach as you can&#x27;t guess that in advance when e.g. getting gigabytes fed on STDIN just to discover that at some point there&#x27;s binary junk inmidst already grepped text. So IMHO you should just behave here like grep/egrep/fgrep does and report the fact that you&#x27;ve found a hit in a binary file instead of silently exiting. (It might be ok-ish if you just skip such files when doing recursive greps, but e.g. not if that files was explicitly listed as parameter or data comes from STDIN.)</li>
 </ul>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-03-26 18:25</div>
-            <div class="timeline-body"><p>Thanks for the thorough report. As you guessed, this is indeed a duplicate of #306. So I'm going to close this in favor of that.</p>
+            <div class="timeline-body"><p>Thanks for the thorough report. As you guessed, this is indeed a duplicate of #306. So I&#x27;m going to close this in favor of that.</p>
 <blockquote>
-<p>I stumbled upon #306 which seems to declare the observed behaviour as feature named &quot;skipping binary files&quot;. But this is IMHO definitely the wrong approach as you can't guess that in advance when e.g. getting gigabytes fed on STDIN just to discover that at some point there's binary junk inmidst already grepped text. So IMHO you should just behave here like grep/egrep/fgrep does and report the fact that you've found a hit in a binary file instead of silently exiting. (It might be ok-ish if you just skip such files when doing recursive greps, but e.g. not if that files was explicitly listed as parameter or data comes from STDIN.)</p>
+<p>I stumbled upon #306 which seems to declare the observed behaviour as feature named &quot;skipping binary files&quot;. But this is IMHO definitely the wrong approach as you can&#x27;t guess that in advance when e.g. getting gigabytes fed on STDIN just to discover that at some point there&#x27;s binary junk inmidst already grepped text. So IMHO you should just behave here like grep/egrep/fgrep does and report the fact that you&#x27;ve found a hit in a binary file instead of silently exiting. (It might be ok-ish if you just skip such files when doing recursive greps, but e.g. not if that files was explicitly listed as parameter or data comes from STDIN.)</p>
 </blockquote>
 <p>Did you read my <a href="https://github.com/BurntSushi/ripgrep/issues/306#issuecomment-442931406">analysis on this</a>? Please consider giving that a read and commenting on that issue with your thoughts. In particular, my suggested path forward is indeed to do as you say: print a message saying that the binary file matched and the skip the rest. There is some unfortunate implementation complexity with respect to doing this when searching via memory maps.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2019-03-26 18:25</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-03-26 18:25</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">duplicate</span> added by @BurntSushi on 2019-03-26 18:25</div>
+            <div class="event">Label <span class="label">duplicate</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-03-26 18:25</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/xtaran">@xtaran</a> on 2019-03-26 18:31</div>
             <div class="timeline-body"><blockquote>
-<p>Thanks for the thorough report. As you guessed, this is indeed a duplicate of #306. So I'm going to close this in favor of that.</p>
+<p>Thanks for the thorough report. As you guessed, this is indeed a duplicate of #306. So I&#x27;m going to close this in favor of that.</p>
 </blockquote>
 <p>Fair enough.</p>
 <blockquote>
@@ -157,7 +157,7 @@ a
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:42:52 UTC
+        Synced at 2026-01-20 18:48:08 UTC
     </footer>
 </body>
 </html>

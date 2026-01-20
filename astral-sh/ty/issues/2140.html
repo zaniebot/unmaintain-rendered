@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>assume in narrowing that tuple subclasses don't override <code>__eq__</code></h1>
+    <h1>assume in narrowing that tuple subclasses don&#x27;t override <code>__eq__</code></h1>
 
     <div class="meta">
         <span class="state-icon state-closed"></span>
@@ -23,61 +23,61 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dsfaccini">@dsfaccini</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>Ty does not narrow a <code>Literal</code>/tuple union when assigning to a wider <code>Literal</code> union.</p>
 <p>Playground link: https://play.ty.dev/f8ecb06d-124e-4921-a082-9038c1302ed2</p>
-<h3>Repro (self-contained)</h3>
+Repro (self-contained)
 <p><code>ty_repro_literal.py</code>:</p>
-<pre><code class="language-python">from typing import Literal
+<pre><code>from typing import Literal
 
-def demo(x: Literal['none', 'auto', 'required'] | tuple[list[str], Literal['auto', 'required']]):
-    y: Literal['none', 'required', 'auto'] | int | None
-    if x in ('auto', 'required'):
+def demo(x: Literal[&#x27;none&#x27;, &#x27;auto&#x27;, &#x27;required&#x27;] | tuple[list[str], Literal[&#x27;auto&#x27;, &#x27;required&#x27;]]):
+    y: Literal[&#x27;none&#x27;, &#x27;required&#x27;, &#x27;auto&#x27;] | int | None
+    if x in (&#x27;auto&#x27;, &#x27;required&#x27;):
         y = x
-    elif x == 'none':
-        y = 'none'
+    elif x == &#x27;none&#x27;:
+        y = &#x27;none&#x27;
     elif isinstance(x, tuple):
-        y = 'auto'
+        y = &#x27;auto&#x27;
     else:
         y = None
     return y
 </code></pre>
 <p>Run:</p>
-<pre><code class="language-bash">uvx ty check ty_repro_literal.py
+<pre><code>uvx ty check ty_repro_literal.py
 </code></pre>
-<h3>Actual result</h3>
+Actual result
 <pre><code>error[invalid-assignment]: Object of type `Literal[&quot;auto&quot;, &quot;required&quot;] | tuple[list[str], Literal[&quot;auto&quot;, &quot;required&quot;]]` is not assignable to `Literal[&quot;none&quot;, &quot;required&quot;, &quot;auto&quot;] | int | None`
  --&gt; ty_repro_literal.py:6:9
 </code></pre>
-<h3>Expected result</h3>
-<p>No diagnostic: in the <code>x in ('auto', 'required')</code> branch, <code>x</code> is narrowed to <code>Literal['auto', 'required']</code>, which is assignable to <code>Literal['none', 'required', 'auto'] | int | None</code>.</p>
-<h3>Notes</h3>
+Expected result
+<p>No diagnostic: in the <code>x in (&#x27;auto&#x27;, &#x27;required&#x27;)</code> branch, <code>x</code> is narrowed to <code>Literal[&#x27;auto&#x27;, &#x27;required&#x27;]</code>, which is assignable to <code>Literal[&#x27;none&#x27;, &#x27;required&#x27;, &#x27;auto&#x27;] | int | None</code>.</p>
+Notes
 <p>Occurs on <code>ty 0.0.4</code> via <code>uvx ty check</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">narrowing</span> added by @mtshiba on 2025-12-21 05:09</div>
+            <div class="event">Label <span class="label">narrowing</span> added by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-12-21 05:09</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-12-21 13:42</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-12-21 13:42</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-22 18:05</div>
             <div class="timeline-body"><p>Thanks for the report!</p>
 <p>ty is working as designed in this case, and is in fact highlighting a hole in the logic of your code.</p>
-<p>The type <code>tuple</code> includes subclasses of the built-in tuple, and such subclasses are free to arbitrarily override <code>__eq__</code> in such a way that they would compare equal to the string &quot;auto&quot; or the string &quot;required&quot;, thus passing the <code>if x in ('auto', 'required')</code> check. Thus if we add a <code>reveal_type(x)</code> inside the first <code>if</code> body, we can see that ty narrows away the possibility of <code>Literal['none']</code>, but it does not narrow away the possibility of the tuple type, and this leads to the error on assigning to <code>y</code>.</p>
+<p>The type <code>tuple</code> includes subclasses of the built-in tuple, and such subclasses are free to arbitrarily override <code>__eq__</code> in such a way that they would compare equal to the string &quot;auto&quot; or the string &quot;required&quot;, thus passing the <code>if x in (&#x27;auto&#x27;, &#x27;required&#x27;)</code> check. Thus if we add a <code>reveal_type(x)</code> inside the first <code>if</code> body, we can see that ty narrows away the possibility of <code>Literal[&#x27;none&#x27;]</code>, but it does not narrow away the possibility of the tuple type, and this leads to the error on assigning to <code>y</code>.</p>
 <p>Adding an <code>isinstance(x, str)</code> condition to that first <code>if</code> test closes this hole, and the error goes away.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2025-12-22 18:05</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2025-12-22 18:05</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-22 18:09</div>
             <div class="timeline-body"><blockquote>
 <p>The type <code>tuple</code> includes subclasses of the built-in tuple, and such subclasses are free to arbitrarily override <code>__eq__</code></p>
 </blockquote>
-<p>Though I think we're planning to ban <code>__eq__</code> overrides (and overrides of other comparison methods) on tuple subclasses, or many of the <code>Literal</code> types we infer for tuple comparisons aren't sound?</p>
+<p>Though I think we&#x27;re planning to ban <code>__eq__</code> overrides (and overrides of other comparison methods) on tuple subclasses, or many of the <code>Literal</code> types we infer for tuple comparisons aren&#x27;t sound?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -87,18 +87,18 @@ def demo(x: Literal['none', 'auto', 'required'] | tuple[list[str], Literal['auto
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-22 19:51</div>
-            <div class="timeline-body"><p>Yep, agreed. I remembered discussion of banning <code>__bool__</code> and <code>__len__</code> on tuple subclasses (in #215 and #560); I'm not finding explicit discussion of banning <code>__eq__</code> also, but I think you're right that we do other narrowing that's only valid if we do.</p>
-<p>So I'll reopen this (and review Charlie's PR!). Also created #2171 to explicitly track our intention re tuple subclasses. I thought maybe we had an issue for this already, but I couldn't find one.</p>
+            <div class="timeline-body"><p>Yep, agreed. I remembered discussion of banning <code>__bool__</code> and <code>__len__</code> on tuple subclasses (in #215 and #560); I&#x27;m not finding explicit discussion of banning <code>__eq__</code> also, but I think you&#x27;re right that we do other narrowing that&#x27;s only valid if we do.</p>
+<p>So I&#x27;ll reopen this (and review Charlie&#x27;s PR!). Also created #2171 to explicitly track our intention re tuple subclasses. I thought maybe we had an issue for this already, but I couldn&#x27;t find one.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @carljm on 2025-12-22 19:51</div>
+            <div class="event">Reopened by <a href="https://github.com/carljm">@carljm</a> on 2025-12-22 19:51</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "ty literal narrowing: invalid-assignment after Literal branch test" to "assume in narrowing that tuple subclasses don't override `__eq__`" by @carljm on 2025-12-22 19:51</div>
+            <div class="event">Renamed from &quot;ty literal narrowing: invalid-assignment after Literal branch test&quot; to &quot;assume in narrowing that tuple subclasses don&#x27;t override `__eq__`&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-12-22 19:51</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2025-12-22 20:44</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-12-22 20:44</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dsfaccini">@dsfaccini</a> on 2025-12-22 22:07</div>
@@ -108,7 +108,7 @@ def demo(x: Literal['none', 'auto', 'required'] | tuple[list[str], Literal['auto
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:21:29 UTC
+        Synced at 2026-01-20 19:26:41 UTC
     </footer>
 </body>
 </html>

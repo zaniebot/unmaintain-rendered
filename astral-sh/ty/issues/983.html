@@ -23,12 +23,12 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/LoicRiegel">@LoicRiegel</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>Hi,
 I discovered a situation where an &quot;inconsistent-mro&quot; error is detected but that is a false positive: there is no TypeError at runtime.</p>
-<p>I'm not a metaclass expert, so I'm not sure if it's a bug from ty or if something else is going on, but I still wanted to report that. Maybe it has to do with the C++ bindings inside shiboken?</p>
+<p>I&#x27;m not a metaclass expert, so I&#x27;m not sure if it&#x27;s a bug from ty or if something else is going on, but I still wanted to report that. Maybe it has to do with the C++ bindings inside shiboken?</p>
 <p><strong>Steps to reproduce</strong></p>
-<pre><code class="language-sh">uv init
+<pre><code>uv init
 uv add PySide6
 # copy content below into main.py
 uvx ty --version
@@ -36,7 +36,7 @@ uvx ty check
 uv run main.py
 </code></pre>
 <p>Content to paste &quot;main.py&quot;:</p>
-<pre><code class="language-py">from abc import ABCMeta
+<pre><code>from abc import ABCMeta
 from PySide6.QtCore import QObject
 
 
@@ -47,7 +47,7 @@ class Test(type(QObject), ABCMeta):
 <pre><code>uvx ty check
 WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
 Checking ------------------------------------------------------------ 1/1 files                                                                                                                                    
-error[inconsistent-mro]: Cannot create a consistent method resolution order (MRO) for class `Test` with bases list `[&lt;class 'type'&gt;, &lt;class 'ABCMeta'&gt;]`
+error[inconsistent-mro]: Cannot create a consistent method resolution order (MRO) for class `Test` with bases list `[&lt;class &#x27;type&#x27;&gt;, &lt;class &#x27;ABCMeta&#x27;&gt;]`
  --&gt; main.py:5:1
   |
 5 | / class Test(type(QObject), ABCMeta):
@@ -61,15 +61,15 @@ Found 1 diagnostic
 <p>However &quot;uv run main.py&quot; runs just fine.</p>
 <p>Expected (I guess):
 ty does not raise any error, since the code does not throw a TypeError (as stated in the documentation page of this error).</p>
-<h3>Version</h3>
+Version
 <p>ty 0.0.1-alpha.17 (1712284c8 2025-08-06)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/LoicRiegel">@LoicRiegel</a> on 2025-08-14 10:23</div>
-            <div class="timeline-body"><p>By the way I wanted to find a single uv command to reproduce the problem without having to create the project and everything but I couldn't find it.
+            <div class="timeline-body"><p>By the way I wanted to find a single uv command to reproduce the problem without having to create the project and everything but I couldn&#x27;t find it.
 I tried things like <code>uvx --no-project --with PySide6 ty check main.py</code>...
-If it's possible let me know ^^</p>
+If it&#x27;s possible let me know ^^</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -84,24 +84,24 @@ Traceback (most recent call last):
     class C(type, ABCMeta): ...
 TypeError: Cannot create a consistent method resolution order (MRO) for bases type, ABCMeta
 </code></pre>
-<p>So given ty's understanding of the types of the two bases, I think we are issuing the <code>inconsistent-mro</code> error correctly. The question is why we understand the type of <code>type(QObject)</code> to be <code>&lt;class 'type'&gt;</code> instead of <code>Shiboken.ObjectType</code> as it is at runtime.</p>
-<p>And I think the reason for this is inaccurate stubs. The <code>QtCore.pyi</code> which I find installed with PySide6 just shows <code>QObject</code> as a regular class inheriting from <code>Shiboken.Object</code>, and the <a href="https://github.com/pyside/pyside-setup/blob/dev/sources/shiboken6/shibokenmodule/Shiboken.pyi#L16">shiboken stub</a> shows <code>Object</code> as a perfectly ordinary class; no metaclass or anything. It doesn't even define anything named <code>ObjectType</code>.</p>
-<p>So given the type information ty is working from, I think inferring the type of <code>type(QObject)</code> as <code>&lt;class 'type'&gt;</code> is correct, and therefore the <code>inconsistent-mro</code> error is also correct.</p>
-<p>FWIW, I tested this same snippet with mypy and pyright. Mypy issues an even more basic &quot;Unsupported dynamic base class 'type'&quot; error, and pyright issues the same inconsistent MRO error that we do.</p>
-<p>So I don't think there is any bug in ty here; if you want this code to type-check, it will require improvements to the PySide6 and/or Shiboken stubs, so that they even recognize the existence of <code>Shiboken.ObjectType</code> (the thing you are trying to inherit from) in the first place.</p>
+<p>So given ty&#x27;s understanding of the types of the two bases, I think we are issuing the <code>inconsistent-mro</code> error correctly. The question is why we understand the type of <code>type(QObject)</code> to be <code>&lt;class &#x27;type&#x27;&gt;</code> instead of <code>Shiboken.ObjectType</code> as it is at runtime.</p>
+<p>And I think the reason for this is inaccurate stubs. The <code>QtCore.pyi</code> which I find installed with PySide6 just shows <code>QObject</code> as a regular class inheriting from <code>Shiboken.Object</code>, and the <a href="https://github.com/pyside/pyside-setup/blob/dev/sources/shiboken6/shibokenmodule/Shiboken.pyi#L16">shiboken stub</a> shows <code>Object</code> as a perfectly ordinary class; no metaclass or anything. It doesn&#x27;t even define anything named <code>ObjectType</code>.</p>
+<p>So given the type information ty is working from, I think inferring the type of <code>type(QObject)</code> as <code>&lt;class &#x27;type&#x27;&gt;</code> is correct, and therefore the <code>inconsistent-mro</code> error is also correct.</p>
+<p>FWIW, I tested this same snippet with mypy and pyright. Mypy issues an even more basic &quot;Unsupported dynamic base class &#x27;type&#x27;&quot; error, and pyright issues the same inconsistent MRO error that we do.</p>
+<p>So I don&#x27;t think there is any bug in ty here; if you want this code to type-check, it will require improvements to the PySide6 and/or Shiboken stubs, so that they even recognize the existence of <code>Shiboken.ObjectType</code> (the thing you are trying to inherit from) in the first place.</p>
 <blockquote>
 <p>wanted to find a single uv command to reproduce the problem without having to create the project and everything</p>
 </blockquote>
-<p>Hmm, I'm not aware of how to do this either. I suspect the issue with using <code>--with</code> is that it creates the venv in a place where ty can't find it? Although I'm not sure why it doesn't set the <code>VIRTUAL_ENV</code> environment variable.</p>
+<p>Hmm, I&#x27;m not aware of how to do this either. I suspect the issue with using <code>--with</code> is that it creates the venv in a place where ty can&#x27;t find it? Although I&#x27;m not sure why it doesn&#x27;t set the <code>VIRTUAL_ENV</code> environment variable.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2025-08-14 16:07</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2025-08-14 16:07</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:27 UTC
+        Synced at 2026-01-20 19:25:15 UTC
     </footer>
 </body>
 </html>

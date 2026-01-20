@@ -23,15 +23,15 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/tylerlaprade">@tylerlaprade</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>After upgrading to Ruff 0.14.0 and Python 3.14, I autofixed my codebase to remove thousands of quoted annotations, which is great. However, when I run my app, those names are undefined. If I add <code>from __future__ import annotations</code> to the file, the runtime errors go away, but</p>
 <ol>
 <li>I did not think this would be needed, and</li>
-<li>If it is needed, the autofix should've added it</li>
+<li>If it is needed, the autofix should&#x27;ve added it</li>
 </ol>
-<p><em>UPDATE:</em> The only two affected files both had <code>from django.db.models.signals import ModelSignal</code> in an <code>if TYPE_CHECKING</code> block, so that's likely related.</p>
-<p><em>UPDATE2:</em> Another file was affected, but it's only used in the Django admin portal, so I didn't notice. This one doesn't have <code>ModelSignal</code>, but it does have <code>SimpleLazyObject</code></p>
-<h3>Version</h3>
+<p><em>UPDATE:</em> The only two affected files both had <code>from django.db.models.signals import ModelSignal</code> in an <code>if TYPE_CHECKING</code> block, so that&#x27;s likely related.</p>
+<p><em>UPDATE2:</em> Another file was affected, but it&#x27;s only used in the Django admin portal, so I didn&#x27;t notice. This one doesn&#x27;t have <code>ModelSignal</code>, but it does have <code>SimpleLazyObject</code></p>
+Version
 <p>0.14.0</p>
 </div>
         </div>
@@ -42,19 +42,19 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tylerlaprade">@tylerlaprade</a> on 2025-10-09 09:48</div>
-            <div class="timeline-body"><p>@MichaReiser, here's one affected snippet. It was failing to find <code>CondorBaseModel</code>, which is a custom base class we've defined for all our Django objects. Ruff removed the quotes from the annotation.</p>
-<pre><code class="language-python3">    @abstractmethod
-    def get_models(self) -&gt; list['type[CondorBaseModel]']:
+            <div class="timeline-body"><p>@MichaReiser, here&#x27;s one affected snippet. It was failing to find <code>CondorBaseModel</code>, which is a custom base class we&#x27;ve defined for all our Django objects. Ruff removed the quotes from the annotation.</p>
+<pre><code>    @abstractmethod
+    def get_models(self) -&gt; list[&#x27;type[CondorBaseModel]&#x27;]:
 </code></pre>
-<p>Any repro is going to have to be run as part of a Django project, so I can't easily show anything meaningful in the playground.</p>
+<p>Any repro is going to have to be run as part of a Django project, so I can&#x27;t easily show anything meaningful in the playground.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tylerlaprade">@tylerlaprade</a> on 2025-10-09 09:53</div>
             <div class="timeline-body"><p>Okay, so I played around with that file and found that it happens for this specifically and not other usages of <code>CondorBaseModel</code> annotations:</p>
-<pre><code class="language-python3">    def _make_log_create(self) -&gt; Callable[..., None]:
+<pre><code>    def _make_log_create(self) -&gt; Callable[..., None]:
         def _log_create(
-            sender: type['CondorBaseModel'], instance: 'CondorBaseModel', created: bool, **kwargs
+            sender: type[&#x27;CondorBaseModel&#x27;], instance: &#x27;CondorBaseModel&#x27;, created: bool, **kwargs
         ) -&gt; None:
             if created:
                 self.create_non_m2m_log_entry(
@@ -63,20 +63,20 @@
 
         return _log_create
 </code></pre>
-<p>I suspect my initial thought around specific Django imports was a red herring, and that it's actually just failing for annotations in nested function definitions.</p>
+<p>I suspect my initial thought around specific Django imports was a red herring, and that it&#x27;s actually just failing for annotations in nested function definitions.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tylerlaprade">@tylerlaprade</a> on 2025-10-09 09:55</div>
-            <div class="timeline-body"><p>The other file it's failing in is trickier, though. In here, it's failing on <code>ModelSignal</code>:</p>
-<pre><code class="language-python3">@receiver(post_delete, sender=Forecast)
+            <div class="timeline-body"><p>The other file it&#x27;s failing in is trickier, though. In here, it&#x27;s failing on <code>ModelSignal</code>:</p>
+<pre><code>@receiver(post_delete, sender=Forecast)
 @receiver(post_delete, sender=ForecastFolder)
 @receiver(post_soft_delete, sender=Forecast)
 @receiver(post_soft_delete, sender=ForecastFolder)
 def forecast_or_forecastfolder_deleted_callback(
     sender: type[Forecast | ForecastFolder],
     instance: Forecast | ForecastFolder,
-    signal: 'ModelSignal',
+    signal: &#x27;ModelSignal&#x27;,
     **kwargs,
 ) -&gt; None:
 </code></pre>
@@ -85,7 +85,7 @@ def forecast_or_forecastfolder_deleted_callback(
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-09 13:37</div>
-            <div class="timeline-body"><p>Coincidentally, https://github.com/astral-sh/ruff/issues/6510 also appeared in my notifications this morning. I wonder if we should be respecting the <a href="https://docs.astral.sh/ruff/settings/#lint_flake8-type-checking_runtime-evaluated-base-classes">runtime-evaluated-base-classes</a> and <a href="https://docs.astral.sh/ruff/settings/#lint_flake8-type-checking_runtime-evaluated-decorators">runtime-evaluated-decorators</a> settings from the TC rules in <code>UP037</code> too?</p>
+            <div class="timeline-body"><p>Coincidentally, <a href="https://github.com/astral-sh/ruff/issues/6510">astral-sh/ruff#6510</a> also appeared in my notifications this morning. I wonder if we should be respecting the <a href="https://docs.astral.sh/ruff/settings/#lint_flake8-type-checking_runtime-evaluated-base-classes">runtime-evaluated-base-classes</a> and <a href="https://docs.astral.sh/ruff/settings/#lint_flake8-type-checking_runtime-evaluated-decorators">runtime-evaluated-decorators</a> settings from the TC rules in <code>UP037</code> too?</p>
 <p>I guess it might not make sense to reuse those directly, but something similar seems helpful here.</p>
 </div>
         </div>
@@ -95,35 +95,35 @@ def forecast_or_forecastfolder_deleted_callback(
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-10-09 17:02</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-09 17:02</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">fixes</span> added by @MichaReiser on 2025-10-09 17:02</div>
+            <div class="event">Label <span class="label">fixes</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-09 17:02</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-09 17:03</div>
-            <div class="timeline-body"><p>CC: @dylwil3 We might need to mark the rule as unsafe for Python 3.14 if there's no from future import</p>
+            <div class="timeline-body"><p>CC: @dylwil3 We might need to mark the rule as unsafe for Python 3.14 if there&#x27;s no from future import</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-10-10 19:31</div>
-            <div class="timeline-body"><p>I'm still trying to understand this a bit better, and it would help if I could reproduce it. In one of your comments you said this:</p>
+            <div class="timeline-body"><p>I&#x27;m still trying to understand this a bit better, and it would help if I could reproduce it. In one of your comments you said this:</p>
 <blockquote>
-<p>I suspect my initial thought around specific Django imports was a red herring, and that it's actually just failing for annotations in nested function definitions.</p>
+<p>I suspect my initial thought around specific Django imports was a red herring, and that it&#x27;s actually just failing for annotations in nested function definitions.</p>
 </blockquote>
-<p>Can you provide a minimal reproducible example that doesn't have anything to do with Django? If not - could you provide a minimal reproducible example that does involve Django (but include the full steps to reproduce)?</p>
+<p>Can you provide a minimal reproducible example that doesn&#x27;t have anything to do with Django? If not - could you provide a minimal reproducible example that does involve Django (but include the full steps to reproduce)?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/danparizher">@danparizher</a> on 2025-10-13 05:40</div>
             <div class="timeline-body"><p>I was able to reproduce this with the following snippet:</p>
-<pre><code class="language-py">from typing import TYPE_CHECKING
+<pre><code>from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from typing import Tuple, List
 
 class CustomModel:
-    &quot;&quot;&quot;A custom model class that simulates Django's behavior&quot;&quot;&quot;
+    &quot;&quot;&quot;A custom model class that simulates Django&#x27;s behavior&quot;&quot;&quot;
     pass
 
 def outer_function():
@@ -146,8 +146,8 @@ def outer_function():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-10-13 18:03</div>
-            <div class="timeline-body"><p>Thanks for the investigation! Unfortunately I'm still having trouble reproducing the actual error here. Maybe I'm missing steps or something obvious? I copied and pasted your snippet into <code>ex.py</code> and then did:</p>
-<pre><code class="language-console">❯ uvx python3.14 ex.py
+            <div class="timeline-body"><p>Thanks for the investigation! Unfortunately I&#x27;m still having trouble reproducing the actual error here. Maybe I&#x27;m missing steps or something obvious? I copied and pasted your snippet into <code>ex.py</code> and then did:</p>
+<pre><code>❯ uvx python3.14 ex.py
 
 ❯ ruff check --isolated --no-cache --select UP037 --target-version py314 ex.py --output-format concise
 ex.py:14:17: UP037 [*] Remove quotes from type annotation
@@ -164,7 +164,7 @@ Found 2 errors (2 fixed, 0 remaining).
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-mre</span> added by @dylwil3 on 2025-10-13 18:08</div>
+            <div class="event">Label <span class="label">needs-mre</span> added by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-10-13 18:08</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tylerlaprade">@tylerlaprade</a> on 2025-10-13 18:25</div>
@@ -174,13 +174,13 @@ Found 2 errors (2 fixed, 0 remaining).
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-10-13 18:55</div>
             <div class="timeline-body"><p>Still no error</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; from typing import TYPE_CHECKING
+<pre><code>&gt;&gt;&gt; from typing import TYPE_CHECKING
 ...
 ... if TYPE_CHECKING:
 ...     from typing import Tuple, List
 ...
 ... class CustomModel:
-...     &quot;&quot;&quot;A custom model class that simulates Django's behavior&quot;&quot;&quot;
+...     &quot;&quot;&quot;A custom model class that simulates Django&#x27;s behavior&quot;&quot;&quot;
 ...     pass
 ...
 ... def outer_function():
@@ -206,16 +206,16 @@ Created instance: &lt;__main__.CustomModel object at 0x10355d010&gt;
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-10 17:29</div>
-            <div class="timeline-body"><p>I'll close this because I think we still don't have an MRE? Happy to re-open if someone can provide an MRE (or can describe cases where the fix causes runtime errors)</p>
+            <div class="timeline-body"><p>I&#x27;ll close this because I think we still don&#x27;t have an MRE? Happy to re-open if someone can provide an MRE (or can describe cases where the fix causes runtime errors)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2025-12-10 17:29</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-10 17:29</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:53:26 UTC
+        Synced at 2026-01-20 18:50:30 UTC
     </footer>
 </body>
 </html>

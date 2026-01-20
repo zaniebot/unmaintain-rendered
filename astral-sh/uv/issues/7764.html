@@ -23,8 +23,8 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/tcwalther">@tcwalther</a></div>
-            <div class="timeline-body"><p>I'm using torchaudio to load audio files, which under the hood uses ffmpeg. On MacOS with Apple Silicon, ffmpeg's libraries will be installed to /opt/homebrew/lib.</p>
-<p>When I run my script regularly with Python's good old venv and <code>python scripts/worker.py</code>, torchaudio successfully finds ffmpeg in /opt/homebrew/lib. When I run my script with <code>uv run worker</code>, whereas <code>worker</code> is a defined script in <code>pyproject.toml</code>, torchaudio can't find ffmpeg and says that the search paths are:</p>
+            <div class="timeline-body"><p>I&#x27;m using torchaudio to load audio files, which under the hood uses ffmpeg. On MacOS with Apple Silicon, ffmpeg&#x27;s libraries will be installed to /opt/homebrew/lib.</p>
+<p>When I run my script regularly with Python&#x27;s good old venv and <code>python scripts/worker.py</code>, torchaudio successfully finds ffmpeg in /opt/homebrew/lib. When I run my script with <code>uv run worker</code>, whereas <code>worker</code> is a defined script in <code>pyproject.toml</code>, torchaudio can&#x27;t find ffmpeg and says that the search paths are:</p>
 <ul>
 <li><code>$PROJECT_DIR/.venv/lib/python3.10/site-packages/torch/lib/libavutil.56.dylib</code></li>
 <li><code>/usr/lib/libavutil.56.dylib</code></li>
@@ -32,7 +32,7 @@
 <li><code>/usr/local/lib/libavutil.56.dylib</code></li>
 <li><code>/usr/lib/libavutil.56.dylib</code></li>
 </ul>
-<p>(not sure why /usr/lib is duplicated; I'm just copying the output)</p>
+<p>(not sure why /usr/lib is duplicated; I&#x27;m just copying the output)</p>
 <p>The file, however, is located at <code>/opt/homebrew/lib/libavutil.56.dylib</code>. Why is the dyld search path different when running my script via <code>uv run</code>?</p>
 </div>
         </div>
@@ -45,12 +45,12 @@
             <div class="timeline-header">Comment by <a href="https://github.com/tcwalther">@tcwalther</a> on 2024-10-11 13:41</div>
             <div class="timeline-body"><p>@zanieb yes, that is probably the case. Thanks for pointing that out.</p>
 <p>I solved it by symlinking ffmpeg into /usr/local/lib. Not perfect but works. I also looked at pixi, which I know uses uv under the hood, but found it a bit confusing tbh.</p>
-<p>Would you consider adding /opt/homebrew/lib to the search path? Given homebrew's widespread adoption I believe it would be very helpful, and at least in my eyes it would be expected behaviour.</p>
+<p>Would you consider adding /opt/homebrew/lib to the search path? Given homebrew&#x27;s widespread adoption I believe it would be very helpful, and at least in my eyes it would be expected behaviour.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-25 20:24</div>
-            <div class="timeline-body"><p>I'm pretty hesitant to add a special-case like that for all macOS users. We can definitely consider it though.</p>
+            <div class="timeline-body"><p>I&#x27;m pretty hesitant to add a special-case like that for all macOS users. We can definitely consider it though.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -58,15 +58,15 @@
             <div class="timeline-body"><p>Also experiencing this issue. I think having a simple workaround documented may be helpful. It would be nice if <code>uv</code> could somehow account for this, maybe with a flag during <code>uv python install</code></p>
 <p>A minimal example to cause this error, make a project with <code>uv</code> that uses the <code>filemagic</code> python library, which relies on the C lib <code>libmagic</code>.</p>
 <p>Install libmagic with brew</p>
-<pre><code class="language-Shell">brew install libmagic
+<pre><code>brew install libmagic
 </code></pre>
 <p>Bootstrap a UV project</p>
-<pre><code class="language-Shell">uv init
+<pre><code>uv init
 uv add filemagic
 uv python install
 </code></pre>
 <p>in your <code>hello.py</code> add the following</p>
-<pre><code class="language-Python">import magic
+<pre><code>import magic
 
 
 with magic.Magic() as m:
@@ -74,10 +74,10 @@ with magic.Magic() as m:
 
 </code></pre>
 <p>Now run the file.</p>
-<pre><code class="language-Shell">uv run hello.py
+<pre><code>uv run hello.py
 </code></pre>
 <p>And see the error caused at runtime:</p>
-<pre><code class="language-Shell">Traceback (most recent call last):
+<pre><code>Traceback (most recent call last):
   File &quot;&lt;dir&gt;/example/hello.py&quot;, line 1, in &lt;module&gt;
     import magic
   File &quot;&lt;dir&gt;/example/.venv/lib/python3.11/site-packages/magic/__init__.py&quot;, line 18, in &lt;module&gt;
@@ -85,11 +85,11 @@ with magic.Magic() as m:
   File &quot;&lt;dir&gt;/example/.venv/lib/python3.11/site-packages/magic/identify.py&quot;, line 16, in &lt;module&gt;
     from magic import api
   File &quot;&lt;dir&gt;/example/.venv/lib/python3.11/site-packages/magic/api.py&quot;, line 22, in &lt;module&gt;
-    raise ImportError('Unable to find magic library')
+    raise ImportError(&#x27;Unable to find magic library&#x27;)
 ImportError: Unable to find magic library
 </code></pre>
 <p>If you now uninstall the <code>uv</code> instance of python and install it via homebrew the error no longer occurs.</p>
-<pre><code class="language-Shell">uv python uninstall 3.11
+<pre><code>uv python uninstall 3.11
 rm -rf .venv
 brew install python@3.11
 uv sync
@@ -110,7 +110,7 @@ https://github.com/python/cpython/blob/c5b99f5c2c5347d66b9da362773969c531fb6c85/
             <div class="timeline-body"><p>You can add the fallback library path within python. Make sure you call before the <code>import</code> loading a module that depends on a homebrew installed library.</p>
 <pre><code>def patch_for_homebrew_libs():
     os.environ[&quot;DYLD_FALLBACK_LIBRARY_PATH&quot;] = (
-        f&quot;{os.getenv('HOMEBREW_PREFIX', '/opt/homebrew')}/lib/&quot;
+        f&quot;{os.getenv(&#x27;HOMEBREW_PREFIX&#x27;, &#x27;/opt/homebrew&#x27;)}/lib/&quot;
     )
 </code></pre>
 </div>
@@ -120,7 +120,7 @@ https://github.com/python/cpython/blob/c5b99f5c2c5347d66b9da362773969c531fb6c85/
             <div class="timeline-body"><blockquote>
 <p>Via <a href="https://github.com/astral-sh/uv/issues/6971">#6971</a>, <code>export DYLD_FALLBACK_LIBRARY_PATH=&quot;$HOMEBREW_PREFIX/lib&quot;</code> in my <code>.zshrc</code> has solved this issue for me (with libcairo).</p>
 </blockquote>
-<p>This doesn't work for me. It seems that macOS protections filter out <code>DYLD_FALLBACK_LIBRARY_PATH</code> (https://developer.apple.com/library/archive/documentation/Security/Conceptual/System_Integrity_Protection_Guide/RuntimeProtections/RuntimeProtections.html). For example, if I set <code>DYLD_FALLBACK_LIBRARY_PATH</code> in <code>~/.zshrc</code> and start a new shell it's not in <code>env</code>. Same in a terminal launched in VSCode.</p>
+<p>This doesn&#x27;t work for me. It seems that macOS protections filter out <code>DYLD_FALLBACK_LIBRARY_PATH</code> (https://developer.apple.com/library/archive/documentation/Security/Conceptual/System_Integrity_Protection_Guide/RuntimeProtections/RuntimeProtections.html). For example, if I set <code>DYLD_FALLBACK_LIBRARY_PATH</code> in <code>~/.zshrc</code> and start a new shell it&#x27;s not in <code>env</code>. Same in a terminal launched in VSCode.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -129,14 +129,14 @@ https://github.com/python/cpython/blob/c5b99f5c2c5347d66b9da362773969c531fb6c85/
 <p>You can add the fallback library path within python. Make sure you call before the <code>import</code> loading a module that depends on a homebrew installed library.</p>
 <pre><code>def patch_for_homebrew_libs():
     os.environ[&quot;DYLD_FALLBACK_LIBRARY_PATH&quot;] = (
-        f&quot;{os.getenv('HOMEBREW_PREFIX', '/opt/homebrew')}/lib/&quot;
+        f&quot;{os.getenv(&#x27;HOMEBREW_PREFIX&#x27;, &#x27;/opt/homebrew&#x27;)}/lib/&quot;
     )
 </code></pre>
 </blockquote>
 <p>Migrated to uv and hit the same issue as everyone else here. This is the only thing that would solve it for me. Thanks</p>
-<pre><code class="language-py"> if sys.platform == &quot;darwin&quot; and os.getenv(&quot;HOMEBREW_PREFIX&quot;):
+<pre><code> if sys.platform == &quot;darwin&quot; and os.getenv(&quot;HOMEBREW_PREFIX&quot;):
         os.environ[&quot;DYLD_FALLBACK_LIBRARY_PATH&quot;] = (
-            f&quot;{os.getenv('HOMEBREW_PREFIX', '/opt/homebrew')}/lib/&quot;
+            f&quot;{os.getenv(&#x27;HOMEBREW_PREFIX&#x27;, &#x27;/opt/homebrew&#x27;)}/lib/&quot;
         )
 </code></pre>
 </div>
@@ -144,7 +144,7 @@ https://github.com/python/cpython/blob/c5b99f5c2c5347d66b9da362773969c531fb6c85/
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:27:23 UTC
+        Synced at 2026-01-20 19:34:22 UTC
     </footer>
 </body>
 </html>

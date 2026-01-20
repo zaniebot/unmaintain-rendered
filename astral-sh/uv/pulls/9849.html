@@ -25,17 +25,17 @@
             <div class="timeline-header"><a href="https://github.com/pradyunsg">@pradyunsg</a></div>
             <div class="timeline-body"><p>Resolves #2500
 Intend to resolve #4466 before coming out of draft mode here.</p>
-<p>x-ref <a href="https://github.com/astral-sh/uv/pull/2413">https://github.com/astral-sh/uv/pull/2413</a>, since this PR removes an assumption introduced in that PR that a missing site-packages directory means that there are <em>no</em> packages to be found.</p>
-<h2>Summary</h2>
-<!-- What's the purpose of the change? What does it do, and why? -->
+<p>x-ref <a href="https://github.com/astral-sh/uv/pull/2413">astral-sh/uv#2413</a>, since this PR removes an assumption introduced in that PR that a missing site-packages directory means that there are <em>no</em> packages to be found.</p>
+Summary
+
 
 <ul>
-<li>Change installed package discovery logic to use <code>sys.path</code> rather than inferred paths based on <code>sysconfig</code>'s <code>purelib</code> and <code>platlib</code> directories.</li>
+<li>Change installed package discovery logic to use <code>sys.path</code> rather than inferred paths based on <code>sysconfig</code>&#x27;s <code>purelib</code> and <code>platlib</code> directories.</li>
 <li>[TODO] Change uninstallation logic to skip over packages that are installed outside the working environment.</li>
 <li>[TODO] Remove any dead code, if the <code>site_packages</code> we were computing for this is not used anywhere else.</li>
 </ul>
-<h2>Test Plan</h2>
-<!-- How was it tested? -->
+Test Plan
+
 
 <p>Only manually tested as of now.</p>
 <p>The plan for automated tests is: Use a <code>.pth</code> file as an extra path to be injected to the virtual environment being modified, with the extra path pointing to site-packages from another virtual environment.</p>
@@ -45,61 +45,61 @@ Intend to resolve #4466 before coming out of draft mode here.</p>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-12 20:15</div>
             <div class="timeline-body"><p>Wow, new contributor just dropped!</p>
-<p><img src="https://github.com/user-attachments/assets/5d81232a-86e0-4ead-a5dd-78dfaac2218e" alt="Screenshot 2024-12-12 at 3 15 03 PM" /></p>
+<p><img src="https://github.com/user-attachments/assets/5d81232a-86e0-4ead-a5dd-78dfaac2218e" alt="Screenshot 2024-12-12 at 3 15 03 PM"></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-12-12 20:15</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-12 20:15</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/pradyunsg">@pradyunsg</a> on 2024-12-13 13:16</div>
             <div class="timeline-body"><p><em>sigh</em></p>
-<p>Locally, I'm hitting https://github.com/rust-lang/rust-analyzer/issues/16959 trying to diagnose what's happening in the two spots that the most recent commit has added more granular <code>bail!</code> logs to, and looks like I can't step through with a debugger on this without resorting to hackery around <code>CARGO_MANIFEST_DIR</code>. 😞</p>
+<p>Locally, I&#x27;m hitting <a href="https://github.com/rust-lang/rust-analyzer/issues/16959">rust-lang/rust-analyzer#16959</a> trying to diagnose what&#x27;s happening in the two spots that the most recent commit has added more granular <code>bail!</code> logs to, and looks like I can&#x27;t step through with a debugger on this without resorting to hackery around <code>CARGO_MANIFEST_DIR</code>. 😞</p>
 <p>All the tests run via the VS Code UI for debug end up panicking before running with:</p>
 <pre><code>---- tool_upgrade::tool_upgrade_multiple_names stdout ----
-thread 'tool_upgrade::tool_upgrade_multiple_names' panicked at crates/uv/tests/it/common/mod.rs:292:84:
+thread &#x27;tool_upgrade::tool_upgrade_multiple_names&#x27; panicked at crates/uv/tests/it/common/mod.rs:292:84:
 called `Result::unwrap()` on an `Err` value: NotPresent
 </code></pre>
-<p>Looks like I'll be falling back to using regular <code>println!</code> to diagnose things. 🌈</p>
+<p>Looks like I&#x27;ll be falling back to using regular <code>println!</code> to diagnose things. 🌈</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/pradyunsg">@pradyunsg</a> on 2024-12-13 18:53</div>
-            <div class="timeline-body"><p>Doing a brain dump since I need a break now -- it took me a bit of time to separate a bunch of tooling failures/noise, and actually understand what's broken here...</p>
+            <div class="timeline-body"><p>Doing a brain dump since I need a break now -- it took me a bit of time to separate a bunch of tooling failures/noise, and actually understand what&#x27;s broken here...</p>
 <p>https://github.com/astral-sh/uv/blob/5903ce5759770755373a962c8b51ee2534de50aa/crates/uv-virtualenv/src/lib.rs#L71</p>
-<p>The virtual environment's <code>Interpreter</code> object is created based on the base environments' <code>Interpreter</code> object. This step, notably, does not update the information about <code>sys.path</code>, which keeps pointing to paths from the base environment. A bunch of the failures in tests are happening since the logic ends up using a &quot;stale&quot; <code>sys.path</code> information from the base environment when working with the virtual environment's interpreter.</p>
-<p>An easy reproducer for this, with this PR, is using <code>uv tool install &lt;whatever&gt;</code> for a tool that doesn't already have an environment for it. You'll see it fail to find the distributions that were <em>just installed</em> in the virtualenv created.</p>
-<p>This used to be fine earlier since the logic didn't care at all about sys.path and the interpreter's prefix was being updated which was effectively &quot;updating&quot; the site-packages path that'd be used for the lookups. Ignoring to update sys.path is not viable, at least, not with the goal of this change of using appropriately using sys.path for package discovery.</p>
-<p>Still thinking through what to do here... The &quot;slow&quot; option here would be to recreate the <code>Interpreter</code> object with the interpreter query logic again (caching that as appropriate). However, the only attribute that's incorrect in a manner that matters semantically today is <code>sys.path</code> and all the other attributes could be inferred from the base Python. Plus, this approach is also gonna make nearly all locations where uv works with a virtualenv it just created meaningfully slower by requiring it to wait on the Python interpreter query logic ~every time (it's very unlikely that the user will have the newly created interpreters' information cached).</p>
+<p>The virtual environment&#x27;s <code>Interpreter</code> object is created based on the base environments&#x27; <code>Interpreter</code> object. This step, notably, does not update the information about <code>sys.path</code>, which keeps pointing to paths from the base environment. A bunch of the failures in tests are happening since the logic ends up using a &quot;stale&quot; <code>sys.path</code> information from the base environment when working with the virtual environment&#x27;s interpreter.</p>
+<p>An easy reproducer for this, with this PR, is using <code>uv tool install &lt;whatever&gt;</code> for a tool that doesn&#x27;t already have an environment for it. You&#x27;ll see it fail to find the distributions that were <em>just installed</em> in the virtualenv created.</p>
+<p>This used to be fine earlier since the logic didn&#x27;t care at all about sys.path and the interpreter&#x27;s prefix was being updated which was effectively &quot;updating&quot; the site-packages path that&#x27;d be used for the lookups. Ignoring to update sys.path is not viable, at least, not with the goal of this change of using appropriately using sys.path for package discovery.</p>
+<p>Still thinking through what to do here... The &quot;slow&quot; option here would be to recreate the <code>Interpreter</code> object with the interpreter query logic again (caching that as appropriate). However, the only attribute that&#x27;s incorrect in a manner that matters semantically today is <code>sys.path</code> and all the other attributes could be inferred from the base Python. Plus, this approach is also gonna make nearly all locations where uv works with a virtualenv it just created meaningfully slower by requiring it to wait on the Python interpreter query logic ~every time (it&#x27;s very unlikely that the user will have the newly created interpreters&#x27; information cached).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/pradyunsg">@pradyunsg</a> on 2024-12-13 19:05</div>
-            <div class="timeline-body"><p>Ok, an alternative that I haven't fully thought through the implications of... I think this is more of a reasonable guess of what sys.path will be, but it might just work. Here's the idea:</p>
+            <div class="timeline-body"><p>Ok, an alternative that I haven&#x27;t fully thought through the implications of... I think this is more of a reasonable guess of what sys.path will be, but it might just work. Here&#x27;s the idea:</p>
 <p>Instead of querying the interpreter again, use the <code>base_interpreter.sys_path_after_site_import + [virtualenv.site_packages]</code> when system-site-packages is true / use <code>base_interpreter.sys_path_before_site_import + [virtualenv.site_packages]</code> when system-site-packages is false. This, of course, relies on the fact that <code>python</code> lets us disable <code>site</code> on startup &amp; uv has control over the complete lifetime/invocation for its interpreter introspection logic.</p>
-<pre><code class="language-sh-session">❯ /opt/pradyunsg/bin/python3.12 -S -c &quot;import sys; print(sys.path)&quot;                                                
-['', '/opt/pradyunsg/lib/python312.zip', '/opt/pradyunsg/lib/python3.12', '/opt/pradyunsg/lib/python3.12/lib-dynload']
+<pre><code>❯ /opt/pradyunsg/bin/python3.12 -S -c &quot;import sys; print(sys.path)&quot;                                                
+[&#x27;&#x27;, &#x27;/opt/pradyunsg/lib/python312.zip&#x27;, &#x27;/opt/pradyunsg/lib/python3.12&#x27;, &#x27;/opt/pradyunsg/lib/python3.12/lib-dynload&#x27;]
 ❯ /opt/pradyunsg/bin/python3.12 -c &quot;import sys; print(sys.path)&quot; 
-['', '/opt/pradyunsg/lib/python312.zip', '/opt/pradyunsg/lib/python3.12', '/opt/pradyunsg/lib/python3.12/lib-dynload', '/opt/pradyunsg/lib/python3.12/site-packages']
+[&#x27;&#x27;, &#x27;/opt/pradyunsg/lib/python312.zip&#x27;, &#x27;/opt/pradyunsg/lib/python3.12&#x27;, &#x27;/opt/pradyunsg/lib/python3.12/lib-dynload&#x27;, &#x27;/opt/pradyunsg/lib/python3.12/site-packages&#x27;]
 </code></pre>
-<p>Let me know if this seems reasonable, and also... I'd be very happy to hear if someone can think of a scenario where this might be broken!</p>
+<p>Let me know if this seems reasonable, and also... I&#x27;d be very happy to hear if someone can think of a scenario where this might be broken!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2024-12-15 00:34</div>
             <div class="timeline-body"><blockquote>
-<p>I'd be very happy to hear if someone can think of a scenario where this might be broken!</p>
+<p>I&#x27;d be very happy to hear if someone can think of a scenario where this might be broken!</p>
 </blockquote>
-<p>Broken might be a bit harsh, but 'incomplete'?</p>
+<p>Broken might be a bit harsh, but &#x27;incomplete&#x27;?</p>
 <ul>
 <li>this will indeed work for <code>system-site-packages</code>, since the paths all come from the base interpreter anyway</li>
-<li>but I don't think it will work for the broader pattern of modifying the module search path via <code>sitecustomize.py</code>/<code>.pth</code> files?<ul>
-<li>This is commonly used to implement 'layered'/'stacked' venvs (<a href="https://github.com/astral-sh/uv/issues/2500#issuecomment-2189503090">see comment</a>)</li>
+<li>but I don&#x27;t think it will work for the broader pattern of modifying the module search path via <code>sitecustomize.py</code>/<code>.pth</code> files?<ul>
+<li>This is commonly used to implement &#x27;layered&#x27;/&#x27;stacked&#x27; venvs (<a href="https://github.com/astral-sh/uv/issues/2500#issuecomment-2189503090">see comment</a>)</li>
 </ul>
 </li>
 </ul>
 <p>I do note that the former usage is much more common than the latter.</p>
-<p>If the 'correct' thing to do is unacceptably slow -- and the guess is good enough for most use cases -- maybe an acceptable compromise is to do the 'good enough' thing by default and provide an option for those who really need that extra correctness?</p>
+<p>If the &#x27;correct&#x27; thing to do is unacceptably slow -- and the guess is good enough for most use cases -- maybe an acceptable compromise is to do the &#x27;good enough&#x27; thing by default and provide an option for those who really need that extra correctness?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -107,13 +107,13 @@ called `Result::unwrap()` on an `Err` value: NotPresent
             <div class="timeline-body"><blockquote>
 <p><code>sitecustomize.py</code>/<code>.pth</code> files</p>
 </blockquote>
-<p>You won't have these in an environment that was just-created in-process by uv, as I understand it. You could have these in the base environment though, so the &quot;guess&quot; model doesn't work in general for environments with <code>include-system-site-packages = true</code>.</p>
-<p>I think that's fine. We could stick with this computational approach for environments with <code>include-system-site-packages = false</code>, since that's likely the 90% case and fall back to doing the subprocess for environments with <code>include-system-site-packages = true</code>.</p>
+<p>You won&#x27;t have these in an environment that was just-created in-process by uv, as I understand it. You could have these in the base environment though, so the &quot;guess&quot; model doesn&#x27;t work in general for environments with <code>include-system-site-packages = true</code>.</p>
+<p>I think that&#x27;s fine. We could stick with this computational approach for environments with <code>include-system-site-packages = false</code>, since that&#x27;s likely the 90% case and fall back to doing the subprocess for environments with <code>include-system-site-packages = true</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-29 01:45</div>
-            <div class="timeline-body"><p>I think it's ok to re-query information if we have to. We cache it anyway, and ideally we only do this when <code>system-site-packages = true</code>.</p>
+            <div class="timeline-body"><p>I think it&#x27;s ok to re-query information if we have to. We cache it anyway, and ideally we only do this when <code>system-site-packages = true</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -124,10 +124,10 @@ called `Result::unwrap()` on an `Err` value: NotPresent
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2024-12-29 18:22</div>
             <div class="timeline-body"><blockquote>
-<p>I think it's ok to re-query information if we have to. We cache it anyway, and ideally we only do this when <code>system-site-packages = true</code>.</p>
+<p>I think it&#x27;s ok to re-query information if we have to. We cache it anyway, and ideally we only do this when <code>system-site-packages = true</code>.</p>
 </blockquote>
 <p>A-ha! Maybe an elegant solution would be to tune the cache key for <code>sys.path</code>?</p>
-<p>That way the 'expensive'/side-effectful recomputation will be done <em>at most</em> once, and ideally not at all (ideally cache entry populated at end of venv creation)</p>
+<p>That way the &#x27;expensive&#x27;/side-effectful recomputation will be done <em>at most</em> once, and ideally not at all (ideally cache entry populated at end of venv creation)</p>
 <p>The cache key could be some sort of serialised struct that encapsulates the myriad things that could influence <code>sys.path</code>:</p>
 <ul>
 <li>base prefix</li>
@@ -142,7 +142,7 @@ called `Result::unwrap()` on an `Err` value: NotPresent
             <div class="timeline-body"><blockquote>
 <p>Do you need any guidance on the code changes, beyond that?</p>
 </blockquote>
-<p>Not at the moment. I'll only be able to pick this back up early next year.</p>
+<p>Not at the moment. I&#x27;ll only be able to pick this back up early next year.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -155,12 +155,12 @@ called `Result::unwrap()` on an `Err` value: NotPresent
             <div class="timeline-header">Comment by <a href="https://github.com/pradyunsg">@pradyunsg</a> on 2025-01-13 20:34</div>
             <div class="timeline-body"><pre><code>{purelib:&quot;/Users/pgedam/Developer/github/astral-sh/uv/workarea.ignore/.venv/opt/homebrew/Cellar/python@3.13/3.13.0_1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages&quot;, platlib:&quot;/Users/pgedam/Developer/github/astral-sh/uv/workarea.ignore/.venv/opt/homebrew/Cellar/python@3.13/3.13.0_1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages&quot;, scripts:&quot;/Users/pgedam/Developer/github/astral-sh/uv/workarea.ignore/.venv/opt/homebrew/Cellar/python@3.13/3.13.0_1/Frameworks/Python.framework/Versions/3.13/bin&quot;, data:&quot;/Users/pgedam/Developer/github/astral-sh/uv/workarea.ignore/.venv/opt/homebrew/Cellar/python@3.13/3.13.0_1/Frameworks/Python.framework/Versions/3.13&quot;, include:&quot;/Users/pgedam/Developer/github/astral-sh/uv/workarea.ignore/.venv/include/site/python3.13&quot;}
 </code></pre>
-<p>It looks like the <code>virtualenv.scheme</code>'s value is incorrect when it gets passed into <code>Interpreter.with_virtualenv</code>. I'm gonna look into what's going on with the path composition for those schemes tomorrow.</p>
+<p>It looks like the <code>virtualenv.scheme</code>&#x27;s value is incorrect when it gets passed into <code>Interpreter.with_virtualenv</code>. I&#x27;m gonna look into what&#x27;s going on with the path composition for those schemes tomorrow.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/pradyunsg">@pradyunsg</a> on 2025-01-14 15:22</div>
-            <div class="timeline-body"><p>Looks like it's wrong at the point of querying the interpreter.</p>
+            <div class="timeline-body"><p>Looks like it&#x27;s wrong at the point of querying the interpreter.</p>
 <pre><code>        virtualenv: Scheme {
             purelib: &quot;opt/homebrew/Cellar/python@3.13/3.13.0_1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages&quot;,
             platlib: &quot;opt/homebrew/Cellar/python@3.13/3.13.0_1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages&quot;,
@@ -181,15 +181,15 @@ called `Result::unwrap()` on an `Err` value: NotPresent
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Unassigned @charliermarsh by @konstin on 2025-02-10 17:31</div>
+            <div class="event">Unassigned <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/konstin">@konstin</a> on 2025-02-10 17:31</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @konstin by @konstin on 2025-02-10 17:31</div>
+            <div class="event">Assigned to <a href="https://github.com/konstin">@konstin</a> by <a href="https://github.com/konstin">@konstin</a> on 2025-02-10 17:31</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2025-02-14 18:47</div>
             <div class="timeline-body"><p>By the way, I think this might fix <code>uv pip list</code> on PyPy, due to stdlib installs of packages:</p>
-<pre><code class="language-console">$ uv venv --seed
+<pre><code>$ uv venv --seed
 Using PyPy 3.10.16 interpreter at: /usr/local/bin/python
 Creating virtual environment with seed packages at: .venv
  + pip==25.0.1
@@ -218,17 +218,17 @@ wheel      0.45.1
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Unassigned @konstin by @konstin on 2025-03-19 17:30</div>
+            <div class="event">Unassigned <a href="https://github.com/konstin">@konstin</a> by <a href="https://github.com/konstin">@konstin</a> on 2025-03-19 17:30</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-03-19 17:33</div>
-            <div class="timeline-body"><p>As a semi-update on this, I tried a few ways to finish this, including <code>site.getsitepackage()</code> in https://github.com/astral-sh/uv/pull/11670, but this raised a number of additional problems each time (internal deduplication, fedora using different paths, how to deal with not-uninstallable packages in <code>uv sync</code>, etc.) we need to resolve to eventually land this.</p>
+            <div class="timeline-body"><p>As a semi-update on this, I tried a few ways to finish this, including <code>site.getsitepackage()</code> in <a href="https://github.com/astral-sh/uv/pull/11670">astral-sh/uv#11670</a>, but this raised a number of additional problems each time (internal deduplication, fedora using different paths, how to deal with not-uninstallable packages in <code>uv sync</code>, etc.) we need to resolve to eventually land this.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:41:02 UTC
+        Synced at 2026-01-20 19:49:48 UTC
     </footer>
 </body>
 </html>

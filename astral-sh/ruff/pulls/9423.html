@@ -32,7 +32,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/string_or_bytes_too_long.rs</code>:83 on 2024-01-07 17:31</div>
-            <div class="timeline-body"><p>Nit: I'd recommend passing in <code>semantic: &amp;SemanticModel</code> here, since it's a much lighter dependency than <code>&amp;Checker</code> (and makes the function's dependencies much clearer).</p>
+            <div class="timeline-body"><p>Nit: I&#x27;d recommend passing in <code>semantic: &amp;SemanticModel</code> here, since it&#x27;s a much lighter dependency than <code>&amp;Checker</code> (and makes the function&#x27;s dependencies much clearer).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -41,7 +41,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/string_or_bytes_too_long.rs</code>:57 on 2024-01-07 17:35</div>
-            <div class="timeline-body"><p>I think for simplicity I might suggest structuring this like <code>is_docstring_stmt</code> -- so just return <code>true</code> if we're in one of those decorators, rather than comparing the literal.</p>
+            <div class="timeline-body"><p>I think for simplicity I might suggest structuring this like <code>is_docstring_stmt</code> -- so just return <code>true</code> if we&#x27;re in one of those decorators, rather than comparing the literal.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -71,17 +71,17 @@ semantic.resolve_call_path(call.func.as_ref()).is_some_and(...)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/string_or_bytes_too_long.rs</code>:57 on 2024-01-07 17:43</div>
-            <div class="timeline-body"><p>Yeah, I wondered about that. It would make it simpler, but could possibly lead to false negatives if people are (incorrectly) passing in string literals as a second or third argument to <code>@deprecated</code>? Only the first argument should really be excluded. But I'll admit it's unlikely that people would pass in string literals as a second or third argument of <code>@deprecated</code>, since it only has one non-keyword-only argument at runtime. So maybe the simpler solution is better here. I'll defer to your judgement :)</p>
+            <div class="timeline-body"><p>Yeah, I wondered about that. It would make it simpler, but could possibly lead to false negatives if people are (incorrectly) passing in string literals as a second or third argument to <code>@deprecated</code>? Only the first argument should really be excluded. But I&#x27;ll admit it&#x27;s unlikely that people would pass in string literals as a second or third argument of <code>@deprecated</code>, since it only has one non-keyword-only argument at runtime. So maybe the simpler solution is better here. I&#x27;ll defer to your judgement :)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-01-07 18:07</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
@@ -91,7 +91,7 @@ semantic.resolve_call_path(call.func.as_ref()).is_some_and(...)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/string_or_bytes_too_long.rs</code>:57 on 2024-01-07 19:08</div>
-            <div class="timeline-body"><p>Hmm I see. I'd be okay with the simpler method, but if we retain this, I think it needs to be tweaked a bit, since <code>StringLike</code> can be an f-string or a bytes literal. Instead of comparing based on type and contents, can we just compare the ranges to see if the first argument is <code>string</code>?</p>
+            <div class="timeline-body"><p>Hmm I see. I&#x27;d be okay with the simpler method, but if we retain this, I think it needs to be tweaked a bit, since <code>StringLike</code> can be an f-string or a bytes literal. Instead of comparing based on type and contents, can we just compare the ranges to see if the first argument is <code>string</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -102,11 +102,11 @@ semantic.resolve_call_path(call.func.as_ref()).is_some_and(...)
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/string_or_bytes_too_long.rs</code>:57 on 2024-01-07 21:24</div>
             <div class="timeline-body"><p>Yeah, I changed my mind -- have amended the PR to go with the simpler approach :)</p>
 <p>I think I was worrying to much -- declining to emit this error on any arguments inside a call to <code>@warnings.deprecated</code> should be fine. False negatives are obviously less bad than false positives in general, but that feels especially true here: the whole premise of PYI053 is basically a somewhat fuzzy heuristic for spotting some questionably long default values in stubs.</p>
-<p>Plus, it feels really unlikely that anybody would trigger this hypothetical false negative in practice (since you'd have to write code that type checkers would flag, and runtime Python would reject). <em>And</em> flake8-pyi also just ignores all string literals inside calls to <code>@warnings.deprecated</code>, so we'll be consistent with the original Python implementation of this rule :)</p>
+<p>Plus, it feels really unlikely that anybody would trigger this hypothetical false negative in practice (since you&#x27;d have to write code that type checkers would flag, and runtime Python would reject). <em>And</em> flake8-pyi also just ignores all string literals inside calls to <code>@warnings.deprecated</code>, so we&#x27;ll be consistent with the original Python implementation of this rule :)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @charliermarsh by @AlexWaygood on 2024-01-07 21:24</div>
+            <div class="event">Review requested from <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-01-07 21:24</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-01-07 23:32</div>
@@ -114,10 +114,10 @@ semantic.resolve_call_path(call.func.as_ref()).is_some_and(...)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2024-01-07 23:41</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-07 23:41</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-01-07 23:41</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-07 23:41</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-07 23:42</div>
@@ -125,11 +125,11 @@ semantic.resolve_call_path(call.func.as_ref()).is_some_and(...)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/string_or_bytes_too_long.rs</code>:57 on 2024-01-07 23:42</div>
-            <div class="timeline-body"><p>I definitely could've gone either way here -- it seemed &quot;simple enough&quot; to me that it was a better complexity tradeoff to just go with this approach, but I can also see how it would be subtly wrong in some ways.</p>
+            <div class="timeline-body"><p>I definitely could&#x27;ve gone either way here -- it seemed &quot;simple enough&quot; to me that it was a better complexity tradeoff to just go with this approach, but I can also see how it would be subtly wrong in some ways.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-01-07 23:42</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-07 23:42</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-01-07 23:43</div>
@@ -137,7 +137,7 @@ semantic.resolve_call_path(call.func.as_ref()).is_some_and(...)
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:02:09 UTC
+        Synced at 2026-01-20 19:00:28 UTC
     </footer>
 </body>
 </html>

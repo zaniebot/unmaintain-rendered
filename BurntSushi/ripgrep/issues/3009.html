@@ -23,24 +23,24 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/cosmicexplorer">@cosmicexplorer</a></div>
-            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+            <div class="timeline-body">Please tick this box to confirm you have reviewed the above.
 <ul>
 <li>[x] I have a different issue.</li>
 </ul>
-<h3>What version of ripgrep are you using?</h3>
+What version of ripgrep are you using?
 <p>master (de4baa10024f2cb62d438596274b9b710e01c59b)</p>
-<h3>How did you install ripgrep?</h3>
+How did you install ripgrep?
 <p>I am able to reproduce this on <code>master</code>.</p>
-<h3>What operating system are you using ripgrep on?</h3>
+What operating system are you using ripgrep on?
 <p>Arch Linux (64-bit, x86):</p>
-<pre><code class="language-shell">&gt; uname -a
+<pre><code>&gt; uname -a
 Linux terrestrial-gamma-ray-flash 6.13.5-zen1-1-zen #1 ZEN SMP PREEMPT_DYNAMIC Thu, 27 Feb 2025 18:09:27 +0000 x86_64 GNU/Linux
 </code></pre>
-<h3>Describe your bug.</h3>
+Describe your bug.
 <p><code>WalkParallel::visit()</code> will nondeterministically hang if the <code>ParallelVisitor::visit()</code> implementation panics. This also occurs when providing a closure to <code>WalkParallel::run()</code>.</p>
-<h3>What are the steps to reproduce the behavior?</h3>
+What are the steps to reproduce the behavior?
 <p>I am working on a minimal fix to this right now (see https://github.com/BurntSushi/ripgrep/compare/master...cosmicexplorer:ripgrep:parallel-panic-quit?expand=1), but I think it will require a change to the parallelization methods we use from crossbeam, so I wanted to create this issue beforehand. I am currently able to reproduce this with the following:</p>
-<pre><code class="language-diff">diff --git a/crates/ignore/src/walk.rs b/crates/ignore/src/walk.rs
+<pre><code>diff --git a/crates/ignore/src/walk.rs b/crates/ignore/src/walk.rs
 index d6ea9c2..4387fca 100644
 --- a/crates/ignore/src/walk.rs
 +++ b/crates/ignore/src/walk.rs
@@ -66,37 +66,37 @@ index d6ea9c2..4387fca 100644
 
 </code></pre>
 <p>Apply the above diff, then run the following command:</p>
-<pre><code class="language-shell">&gt; cd crates/ignore
+<pre><code>&gt; cd crates/ignore
 &gt; timeout -k 2 1 cargo test --lib -- parallel
 </code></pre>
 <p>I typically have to run this many many times on my very fast laptop to get it to trigger. More reliably, you can run:</p>
-<pre><code class="language-shell">&gt; cd crates/ignore
+<pre><code>&gt; cd crates/ignore
 &gt; cargo test
 </code></pre>
 <p>And running all the tests at once makes this trigger much more reliably.</p>
-<h3>What is the actual behavior?</h3>
+What is the actual behavior?
 <p>The process hangs, typically somewhere in the <code>Worker::get_work()</code> method. If I add a print statement within this sub-<code>loop</code>: https://github.com/BurntSushi/ripgrep/blob/de4baa10024f2cb62d438596274b9b710e01c59b/crates/ignore/src/walk.rs#L1695-L1707 it will print this out endlessly.</p>
 <p>This especially seems to occur more often if the panic handler is non-trivial: I first noticed this when using <code>color-eyre</code>, which prints the panic to the console after composing a backtrace.</p>
-<h3>What is the expected behavior?</h3>
+What is the expected behavior?
 <p>The <code>WalkParallel::visit()</code> method should not hang, and should instead propagate the panic.</p>
 <p>My first attempt to solve this (see https://github.com/cosmicexplorer/ripgrep/commit/246c1621760b41f631606c7b3061a25efe86e0fc) set the <code>quit_now</code> flag if any worker panics, and checked <code>self.is_quit_now()</code> within the sub-<code>loop</code>. This seems to have made it repro less often, but I am still able to get it to repro regardless, even without modifying the panic handler.</p>
-<p>There are some other changes I want to propose to the <code>ParallelVisitor{,Builder}</code> traits as well which may make this easier (such as propagating unwind safety), but I'm currently hoping to solve this without making any changes to the external interface. This may require changing the parallelism primitives we use, but maybe not.</p>
+<p>There are some other changes I want to propose to the <code>ParallelVisitor{,Builder}</code> traits as well which may make this easier (such as propagating unwind safety), but I&#x27;m currently hoping to solve this without making any changes to the external interface. This may require changing the parallelism primitives we use, but maybe not.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2025-08-17 21:05</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-08-17 21:05</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/cosmicexplorer">@cosmicexplorer</a> on 2026-01-16 06:15</div>
-            <div class="timeline-body"><p>I wrote a very thorough report in my comment on the PR https://github.com/BurntSushi/ripgrep/pull/3010#issuecomment-3585898743 which described three separate components of what I believe to constitute a much more robust architecture for parallel directory traversal. Since this is the issue we're keeping to track parallelism strategies for this <em>inherently recursive</em> and <em>completely unpredictable</em> problem, I wanted to highlight the two points specifically relevant to the hang this issue describes:</p>
-<h1>File Nodes Do Not Spawn New Work</h1>
+            <div class="timeline-body"><p>I wrote a very thorough report in my comment on the PR <a href="https://github.com/BurntSushi/ripgrep/pull/3010">BurntSushi/ripgrep#3010</a>#issuecomment-3585898743 which described three separate components of what I believe to constitute a much more robust architecture for parallel directory traversal. Since this is the issue we&#x27;re keeping to track parallelism strategies for this <em>inherently recursive</em> and <em>completely unpredictable</em> problem, I wanted to highlight the two points specifically relevant to the hang this issue describes:</p>
+File Nodes Do Not Spawn New Work
 <blockquote>
-<p>Personally, I have also separated the worker threads by category, and given each category individually configurable thread counts. I don't know if that will help performance, but I do think that the definition of &quot;done&quot; differs based upon whether the current node is a directory or not, which I think may justify slightly different looping techniques.</p>
+<p>Personally, I have also separated the worker threads by category, and given each category individually configurable thread counts. I don&#x27;t know if that will help performance, but I do think that the definition of &quot;done&quot; differs based upon whether the current node is a directory or not, which I think may justify slightly different looping techniques.</p>
 </blockquote>
-<p>This just refers to the observation that visiting a file node is not going to produce any further recursive work like a symlink or directory would. The actual work a file visit is likely to perform also necessarily involves negotiating through the filesystem's block layer, which is almost an entirely distinct field of research than the VFS abstraction provided by the OS.</p>
-<h2>Parallelism in Non-Recursive Directory Iteration Requires More Research</h2>
+<p>This just refers to the observation that visiting a file node is not going to produce any further recursive work like a symlink or directory would. The actual work a file visit is likely to perform also necessarily involves negotiating through the filesystem&#x27;s block layer, which is almost an entirely distinct field of research than the VFS abstraction provided by the OS.</p>
+Parallelism in Non-Recursive Directory Iteration Requires More Research
 <p>The <code>getdents()</code> method (described at length below) introduces a kind of &quot;SIMD&quot; primitive operation. Now we can retrieve enough data from the OS at once to meaningfully avoid rapid-fire blocking on syscalls, and instead look to <em>pipeline</em> our computations across distinct threads of control. There are many ways to conceive of this. I would say the most general one I have found (which can be translated to many distinct execution models) is:</p>
-<ol start="0">
+<ol>
 <li>[opendir] attempt to retrieve a file descriptor from an input path string</li>
 <li>[spread] <code>getdents()</code> upon an open directory node produces a stream of directory entries</li>
 <li>[classify] use the <code>d_type</code> field of <code>posix_dent</code> to classify the entry kind.<ul>
@@ -111,7 +111,7 @@ index d6ea9c2..4387fca 100644
 </ul>
 </li>
 </ol>
-<p><strong>You'll note that one worker pool must cover directories. This introduces the exact same kind of cyclic dependency that led to the livelock described in this issue!</strong></p>
+<p><strong>You&#x27;ll note that one worker pool must cover directories. This introduces the exact same kind of cyclic dependency that led to the livelock described in this issue!</strong></p>
 <ul>
 <li>However, we now have a barrier between them—this is a length-2 cycle.</li>
 <li>Practically speaking, it means we can tag the outputs of <code>getdents()</code> calls to identify when a worker has completed at a distinct point in time.<ul>
@@ -119,25 +119,25 @@ index d6ea9c2..4387fca 100644
 </ul>
 </li>
 </ul>
-<h1>VFS Abstractions Have Implicit Lifetimes</h1>
+VFS Abstractions Have Implicit Lifetimes
 <p>On that note, the VFS abstractions provided by the rust stdlib utterly fail to represent the lifetime bounds of their source material. This led to a string of decisions, which include <a href="https://github.com/rust-lang/rust/blob/18ae99075575810a158cc670dcc7579f1c2ca012/library/std/src/sys/helpers/small_c_string.rs#L22">copying every path string to a new heap-allocated buffer to add a null byte before any vfs syscall</a> and then immediately dropping that allocation.</p>
-<p>Since I haven't produced an apples-to-apples benchmark yet, I will simply note how the <code>ignore</code> crate (correctly and effectively) relies upon repeatedly joining path components together for use as unique identifiers. This is in many ways more robust than the guarantees provided by e.g. an inode in a multithreaded/multiprocess environment (like I said, I've been researching this very deeply), but it also triggers the heap allocation code path hidden in the stdlib for vfs syscalls.</p>
+<p>Since I haven&#x27;t produced an apples-to-apples benchmark yet, I will simply note how the <code>ignore</code> crate (correctly and effectively) relies upon repeatedly joining path components together for use as unique identifiers. This is in many ways more robust than the guarantees provided by e.g. an inode in a multithreaded/multiprocess environment (like I said, I&#x27;ve been researching this very deeply), but it also triggers the heap allocation code path hidden in the stdlib for vfs syscalls.</p>
 <p>My in-progress diff against the rust stdlib wraps an opened directory fd witb a read-write lock and generalizes this into a very simple trait with methods that propagate the lifetime bounds of <code>&amp;self</code>: https://github.com/cosmicexplorer/rust/blob/87c614c0532125b2536b05c79c2cbafc2364149a/library/std/src/sys/fs/unix.rs#L863</p>
-<pre><code class="language-rust">    pub(super) trait FileDescriptorHandle {
-        type FdRead&lt;'h&gt;: ops::Deref&lt;Target = fd::RawFd&gt; where Self: 'h;
-        type FdWrite&lt;'h&gt;: ops::DerefMut&lt;Target = fd::RawFd&gt; where Self: 'h;
+<pre><code>    pub(super) trait FileDescriptorHandle {
+        type FdRead&lt;&#x27;h&gt;: ops::Deref&lt;Target = fd::RawFd&gt; where Self: &#x27;h;
+        type FdWrite&lt;&#x27;h&gt;: ops::DerefMut&lt;Target = fd::RawFd&gt; where Self: &#x27;h;
 
-        fn as_fd&lt;'h&gt;(&amp;'h self) -&gt; Self::FdRead&lt;'h&gt;;
-        fn as_mut_fd&lt;'h&gt;(&amp;'h self) -&gt; Self::FdWrite&lt;'h&gt;;
+        fn as_fd&lt;&#x27;h&gt;(&amp;&#x27;h self) -&gt; Self::FdRead&lt;&#x27;h&gt;;
+        fn as_mut_fd&lt;&#x27;h&gt;(&amp;&#x27;h self) -&gt; Self::FdWrite&lt;&#x27;h&gt;;
     }
 </code></pre>
-<h2><code>getdents()</code> and <code>readlink{,at}()</code> as Case Studies for Fixed-Size Buffers</h2>
+<code>getdents()</code> and <code>readlink{,at}()</code> as Case Studies for Fixed-Size Buffers
 <p>There are many things to say about <code>getdents()</code>, which I will be able to say more fully after my third (and hopefully final) whack at translating its model of the universe into rust (see rust-lang/libc#4522 regarding stabilization).</p>
 <p>While the size of the<code>getdents()</code> buffer size is very directly interpretable as a classic flow control mechanism that trades off between latency and throughput, I have also introduced a separate API for reading symlinks which makes use of such a provided buffer: https://codeberg.org/cosmicexplorer/deep-link/src/commit/1ea3eba5d599d8c48ea56816b7103b12ee49d505/d-major/readdir-sys/src/wrappers.rs#L397</p>
-<pre><code class="language-rust">  fn readlink_static_impl&lt;'buf&gt;(
-    mut buf: Pin&lt;&amp;'buf mut [MaybeUninit&lt;u8&gt;]&gt;,
+<pre><code>  fn readlink_static_impl&lt;&#x27;buf&gt;(
+    mut buf: Pin&lt;&amp;&#x27;buf mut [MaybeUninit&lt;u8&gt;]&gt;,
     f: impl FnOnce(*mut libc::c_char, usize) -&gt; isize,
-  ) -&gt; Result&lt;Pin&lt;&amp;'buf ffi::CStr&gt;, ReadlinkError&gt; {
+  ) -&gt; Result&lt;Pin&lt;&amp;&#x27;buf ffi::CStr&gt;, ReadlinkError&gt; {
     if buf.is_empty() {
       return Err(ReadlinkError::BufferTooSmall { len: buf.len() });
     }
@@ -157,19 +157,19 @@ index d6ea9c2..4387fca 100644
 </code></pre>
 <p>Instead of <em>unconditionally</em> starting small then repeatedly allocating in a loop like the stdlib, exposing a slice here means you can identify the precise path to the  symlink with the linked data length that exceeded your expectations.</p>
 <p>I subsequently leverage <code>ops::ControlFlow</code> to translate the success/failure cases of this logic upon fixed slice lengths into a loop that reallocates a <code>Vec</code> like the stdlib. <code>ops::ControlFlow</code> is a really useful way to codify the ambiguities of iteration logic in systems with multiple interacting components like this one.</p>
-<h3><code>Arc::make_mut()</code> Minimizes Copies with Lifetimes</h3>
-<p>So I've built this tower of type parameters and carefully propagated lifetime bounds through our associated types. I am pretty confident this third implementation I've finally landed on is <em>correctly</em> decoupled to this degree.</p>
-<p>One reason this can be helpful is that it can identify places where one concrete type was playing two distinct roles. See my comment which describes the <code>getdents()</code> buffer as a counterexample to simpler models of extern types https://github.com/rust-lang/rust/issues/43467#issuecomment-3741642799 which attempts to describe how knowledge of alignment vs field layout can be meaningfully demarcated in cases like <code>getdents()</code>.</p>
+<code>Arc::make_mut()</code> Minimizes Copies with Lifetimes
+<p>So I&#x27;ve built this tower of type parameters and carefully propagated lifetime bounds through our associated types. I am pretty confident this third implementation I&#x27;ve finally landed on is <em>correctly</em> decoupled to this degree.</p>
+<p>One reason this can be helpful is that it can identify places where one concrete type was playing two distinct roles. See my comment which describes the <code>getdents()</code> buffer as a counterexample to simpler models of extern types <a href="https://github.com/rust-lang/rust/issues/43467">rust-lang/rust#43467</a>#issuecomment-3741642799 which attempts to describe how knowledge of alignment vs field layout can be meaningfully demarcated in cases like <code>getdents()</code>.</p>
 <p>Another reason is that it can help to avoid overeager cloning just because the type system said so. If you know your file visitors literally never need to know anything but the file descriptor itself, then you can pipeline the <code>open()</code> calls in a distinct phase/pool and avoid cloning path strings! And maybe you can close the parent dir now too!</p>
 <p>But this becomes more difficult without lifetimes, and the stable <code>fs::{ReadDir,DirEntry}</code> structs directly employ <code>Arc</code> to avoid lifetime bounds. So then what to do about the <code>getdents()</code> buffer if the user is still playing with a<code>DirEntry</code> struct synthesized from data in the buffer in one thread, and also wants to read the next batch of entries in another thread? https://github.com/cosmicexplorer/rust/blob/87c614c0532125b2536b05c79c2cbafc2364149a/library/std/src/sys/fs/unix.rs#L1249</p>
-<pre><code class="language-rust">    impl&lt;Buf, MutRef&gt; IterEntries&lt;Pin&lt;MutRef&gt;&gt;
+<pre><code>    impl&lt;Buf, MutRef&gt; IterEntries&lt;Pin&lt;MutRef&gt;&gt;
     where
         MutRef: CloneMutRef&lt;R = Buf&gt;,
         Buf: AsMut&lt;[mem::MaybeUninit&lt;u8&gt;]&gt; + Clone,
     {
-        fn next_getdents_entries&lt;'fd&gt;(
+        fn next_getdents_entries&lt;&#x27;fd&gt;(
             buf: MutRef,
-            fd: &amp;'fd mut fd::RawFd,
+            fd: &amp;&#x27;fd mut fd::RawFd,
         ) -&gt; ChunkedStreamResult&lt;Self, io::Error&gt; {
             let mut buf = pin::UnsafePinned::new(buf);
             let mut buf_pin = unsafe { Pin::new_unchecked(&amp;mut buf) };
@@ -191,7 +191,7 @@ index d6ea9c2..4387fca 100644
     </div>
 
     <footer>
-        Synced at 2026-01-16 06:56:09 UTC
+        Synced at 2026-01-20 18:48:14 UTC
     </footer>
 </body>
 </html>

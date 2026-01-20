@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/A-CGray">@A-CGray</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>I am running into issues trying to use the <code>extend</code> key to combine global and local ruff configurations.</p>
 <p>My &quot;global&quot; ruff config file is at <code>~/.config/ruff/ruff.toml</code>:</p>
-<pre><code class="language-toml">target-version = &quot;py39&quot;
+<pre><code>target-version = &quot;py39&quot;
 
 line-length = 120
 
@@ -74,7 +74,7 @@ docstring-code-format = true
 &quot;tests/*&quot; = [&quot;D&quot;] # Ignore docstring checks in tests
 </code></pre>
 <p>Then, in the root folder of a project called CMPLXFOIL, I have the following local ruff config that I want to add to the global config:</p>
-<pre><code class="language-toml">extend = &quot;~/.config/ruff/ruff.toml&quot;
+<pre><code>extend = &quot;~/.config/ruff/ruff.toml&quot;
 extend-exclude =[
     &quot;src_cs/complexify.py&quot;
 ]
@@ -156,23 +156,23 @@ doc/conf.py:25:1: F405 `extensions` may be undefined, or defined from star impor
 Found 4 errors.
 </code></pre>
 <p>It seems like ruff is ignoring several of the configuration options specified in my global config file. For example, it complains that &quot;No <code>target-version</code> found in <code>ruff.toml</code>&quot; despite this being specified in my global config file. Additionally it is running checks on files such as <code>__init__.py</code> and <code>doc/conf.py</code> that are specifically excluded from checks in the global config.</p>
-<p>If I run <code>ruff check</code> in a different project that doesn't have its own local ruff config, the global config file is found and used correctly, so I don't think there are any issues with the content of that file, the issue seems to be with how the local and global configs are merged when using <code>extend</code>.</p>
-<h3>Version</h3>
+<p>If I run <code>ruff check</code> in a different project that doesn&#x27;t have its own local ruff config, the global config file is found and used correctly, so I don&#x27;t think there are any issues with the content of that file, the issue seems to be with how the local and global configs are merged when using <code>extend</code>.</p>
+Version
 <p>ruff 0.12.10</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-25 20:59</div>
             <div class="timeline-body"><p>Thanks for the report!</p>
-<p>I'm having some trouble reproducing this. Are there any other configuration files around that could be having an impact?</p>
+<p>I&#x27;m having some trouble reproducing this. Are there any other configuration files around that could be having an impact?</p>
 <p>I tried a fresh docker image with this local config:</p>
-<pre><code class="language-toml">extend = &quot;~/.config/ruff/ruff.toml&quot;
+<pre><code>extend = &quot;~/.config/ruff/ruff.toml&quot;
 extend-exclude =[
     &quot;src_cs/complexify.py&quot;
 ]
 </code></pre>
 <p>A global ruff config at <code>~/.config/ruff/ruff.toml</code>:</p>
-<pre><code class="language-toml">target-version = &quot;py313&quot;
+<pre><code>target-version = &quot;py313&quot;
 
 exclude = [
     &quot;.git&quot;,
@@ -186,19 +186,19 @@ exclude = [
 select = [&quot;UP046&quot;]
 </code></pre>
 <p>And a Python file with an UP046 violation for the configured Python version in <code>src/try.py</code>:</p>
-<pre><code class="language-py">from typing import TypeVar, Generic
+<pre><code>from typing import TypeVar, Generic
 
 T = TypeVar(&quot;T&quot;)
 
 class C(Generic[T]): ...
 </code></pre>
 <p>This reports a diagnostic as written and no diagnostic if I comment out the  local <code>extend</code> setting.</p>
-<p>I'm not sure the logs are going to be very helpful here. I didn't see any logging calls around where we do the extending, and my logs don't show any mention of <code>~/.config/ruff/ruff.toml</code> either. The <code>--show-settings</code> flag, however, does show the correct <code>target_version</code>.</p>
-<p>There is a known issue with overlapping configuration options in https://github.com/astral-sh/ruff/issues/9872, which you could be running into if your local config is longer than what's included here.</p>
+<p>I&#x27;m not sure the logs are going to be very helpful here. I didn&#x27;t see any logging calls around where we do the extending, and my logs don&#x27;t show any mention of <code>~/.config/ruff/ruff.toml</code> either. The <code>--show-settings</code> flag, however, does show the correct <code>target_version</code>.</p>
+<p>There is a known issue with overlapping configuration options in <a href="https://github.com/astral-sh/ruff/issues/9872">astral-sh/ruff#9872</a>, which you could be running into if your local config is longer than what&#x27;s included here.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @ntBre on 2025-08-25 20:59</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-25 20:59</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/A-CGray">@A-CGray</a> on 2025-08-25 22:29</div>
@@ -216,13 +216,13 @@ class C(Generic[T]): ...
             <div class="timeline-body"><blockquote>
 <p>FWIW may be related to <a href="https://github.com/astral-sh/ruff/issues/8795#issuecomment-3215813669">this report</a> I made</p>
 </blockquote>
-<p>You're right, if I pass the local config file explicitly (<code>ruff check -v --config ruff.toml</code>) this issue goes away. As suggested by a comment on that issue, if I change the exclude from <code>&quot;doc/conf.py&quot;</code> to <code>&quot;/**/doc/conf.py&quot;</code> then the issue also goes away. so clearly it is a matter of the paths in the global config not being correctly treated as relative to the location of the local config.</p>
+<p>You&#x27;re right, if I pass the local config file explicitly (<code>ruff check -v --config ruff.toml</code>) this issue goes away. As suggested by a comment on that issue, if I change the exclude from <code>&quot;doc/conf.py&quot;</code> to <code>&quot;/**/doc/conf.py&quot;</code> then the issue also goes away. so clearly it is a matter of the paths in the global config not being correctly treated as relative to the location of the local config.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Teyik0">@Teyik0</a> on 2025-09-02 06:25</div>
-            <div class="timeline-body"><p>Also found that lint.per-file-ignores don't work when using extend configuration.</p>
-<pre><code class="language-bash"># ruff_base.toml
+            <div class="timeline-body"><p>Also found that lint.per-file-ignores don&#x27;t work when using extend configuration.</p>
+<pre><code># ruff_base.toml
 [lint.per-file-ignores]
 &quot;tests/**/*.py&quot; = [
     &quot;S101&quot;,    # Allow assert statements
@@ -235,7 +235,7 @@ class C(Generic[T]): ...
 extend = &quot;src/ultrapyup/resources/ruff_base.toml&quot;
 </code></pre>
 <p>The rules actually works when inside pyproject.toml directly.</p>
-<pre><code class="language-bash"># pyproject.toml
+<pre><code># pyproject.toml
 [tool.ruff]
 extend = &quot;src/ultrapyup/resources/ruff_base.toml&quot;
 [tool.ruff.lint.per-file-ignores] # Workaround for now
@@ -251,16 +251,16 @@ You may label this as a bug</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-02 13:48</div>
-            <div class="timeline-body"><p>Thank y'all! I think I'll close this in favor of #8795 since it sounds like the root cause is the same (relative paths in <code>extend</code>ed globs). That way we can keep the discussion in one place.</p>
+            <div class="timeline-body"><p>Thank y&#x27;all! I think I&#x27;ll close this in favor of #8795 since it sounds like the root cause is the same (relative paths in <code>extend</code>ed globs). That way we can keep the discussion in one place.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ntBre on 2025-09-02 13:48</div>
+            <div class="event">Closed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-02 13:48</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:53:15 UTC
+        Synced at 2026-01-20 18:50:22 UTC
     </footer>
 </body>
 </html>

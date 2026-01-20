@@ -23,24 +23,24 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This PR improves Black compatibility by breaking implicit concatenated string before any binary expression.</p>
-<pre><code class="language-python">(
+<pre><code>(
     b + c + d + &quot;aaaaaaaaaaaaaaaaaaaaaaaaaaaaa&quot;
     &quot;bbbbbbbbbbbbbbbbbbbbbbbbbbbbb&quot;
     &quot;cccccccccccccccccccccccccc&quot; % aaaaaaaaaaaa + x
 )
 </code></pre>
 <p>You can see how Black inserts line breaks between the implicit concatenated string parts but it keeps the binary expression operators and operands on the same line.</p>
-<p>The challenge with implementing this formatting is that it is necessary that the outermost group is the group around the implicit concatenated strings but this doesn't match our AST structure: The strings are leaf nodes in the AST.  See the tree for a very basic example <code>a + 'b' 'c'</code></p>
-<pre><code class="language-mermaid">graph
+<p>The challenge with implementing this formatting is that it is necessary that the outermost group is the group around the implicit concatenated strings but this doesn&#x27;t match our AST structure: The strings are leaf nodes in the AST.  See the tree for a very basic example <code>a + &#x27;b&#x27; &#x27;c&#x27;</code></p>
+<pre><code>graph
 	+ --&gt; a
 	+ --&gt; A
-    A[&quot;'b' 'c'&quot;]
+    A[&quot;&#x27;b&#x27; &#x27;c&#x27;&quot;]
 </code></pre>
-<p>The existing implementation used a custom layout for when the implicit concatenated string is on the left side but it isn't able to handle implicit concatenated strings on the right or in nested binary expressions.</p>
+<p>The existing implementation used a custom layout for when the implicit concatenated string is on the left side but it isn&#x27;t able to handle implicit concatenated strings on the right or in nested binary expressions.</p>
 <p>This PR solves this by <em>flattening</em> the binary expression. From the code documentation</p>
-<pre><code class="language-rust">/// Binary chain represented as a flat vector where operands are stored at even indices and operators
+<pre><code>/// Binary chain represented as a flat vector where operands are stored at even indices and operators
 /// add odd indices.
 ///
 /// ```python
@@ -59,8 +59,8 @@
 /// └──d
 /// ```
 ///
-/// The slice representation of the above is closer to what you have in source. It's a simple sequence of operands and operators,
-/// entirely ignoring operator precedence (doesn't flatten parenthesized expressions):
+/// The slice representation of the above is closer to what you have in source. It&#x27;s a simple sequence of operands and operators,
+/// entirely ignoring operator precedence (doesn&#x27;t flatten parenthesized expressions):
 ///
 /// ```text
 /// -----------------------------
@@ -76,8 +76,8 @@
 /// Operands in multi-operand slices are separated by operators.
 </code></pre>
 <p>The flat representation allows to first split the binary expression by implicit concatenated strings and only then, operator by operator based on the operator precedence.</p>
-<h2>Test Plan</h2>
-<p>I added new tests, reviewed that the changes now match Black's formatting.</p>
+Test Plan
+<p>I added new tests, reviewed that the changes now match Black&#x27;s formatting.</p>
 <p>The PR improves the black compatibility</p>
 <p><strong>PR</strong>
 | project      | similarity index  | total files       | changed files     |
@@ -106,13 +106,13 @@
             <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
 <ul>
 <li>main<ul>
-<li><strong>PR #7145</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7145" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>  👈<ul>
-<li><strong>PR #7193</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7193" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
-<li><strong>PR #7215</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7215" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
-<li><strong>PR #7217</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7217" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
-<li><strong>PR #7219</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7219" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
-* <strong>PR #7242</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7242" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
-* <strong>PR #7567</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7567" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #7145</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7145"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite"></a>  👈<ul>
+<li><strong>PR #7193</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7193"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite"></a><ul>
+<li><strong>PR #7215</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7215"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite"></a><ul>
+<li><strong>PR #7217</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7217"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite"></a><ul>
+<li><strong>PR #7219</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7219"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite"></a>
+* <strong>PR #7242</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7242"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite"></a>
+* <strong>PR #7567</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7567"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite"></a></li>
 </ul>
 </li>
 </ul>
@@ -128,7 +128,7 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2023-09-05 10:02</div>
+            <div class="event">Label <span class="label">formatter</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-05 10:02</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/format.rs</code>:119 on 2023-09-06 12:22</div>
@@ -148,12 +148,12 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@expression__binary_implicit_string.py.snap</code>:269 on 2023-09-06 12:25</div>
-            <div class="timeline-body"><p>I'll add support for compare expressions in a separate PR</p>
+            <div class="timeline-body"><p>I&#x27;ll add support for compare expressions in a separate PR</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/expr_bin_op.rs</code>:35 on 2023-09-06 12:26</div>
-            <div class="timeline-body"><p>I'll add support for f-strings in a separate PR</p>
+            <div class="timeline-body"><p>I&#x27;ll add support for f-strings in a separate PR</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -168,20 +168,20 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-09-06 12:36</div>
-            <div class="timeline-body"><h2>PR Check Results</h2>
-<h3>Ecosystem</h3>
+            <div class="timeline-body">PR Check Results
+Ecosystem
 <p>✅ ecosystem check detected no changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Formatter: Beta" by @MichaReiser on 2023-09-06 12:42</div>
+            <div class="event">Added to milestone &quot;Formatter: Beta&quot; by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-06 12:42</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @MichaReiser on 2023-09-06 12:42</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-06 12:42</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-06 12:43</div>
-            <div class="timeline-body"><p>The performance benchmarks look off. This should not improve performance. I would be happy if it doesn't regress performance</p>
+            <div class="timeline-body"><p>The performance benchmarks look off. This should not improve performance. I would be happy if it doesn&#x27;t regress performance</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -189,10 +189,10 @@
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2023-09-06 12:44</div>
+            <div class="event">Review requested from <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-06 12:44</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @konstin by @MichaReiser on 2023-09-06 12:44</div>
+            <div class="event">Review requested from <a href="https://github.com/konstin">@konstin</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-06 12:44</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/expression/expr_bin_op.rs</code>:391 on 2023-09-06 13:09</div>
@@ -201,7 +201,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/expression/expr_bin_op.rs</code>:569 on 2023-09-06 13:10</div>
-            <div class="timeline-body"><p>Doesn't it need to hold at least one <em>operand</em>? That's the debug assertion in the constructor.</p>
+            <div class="timeline-body"><p>Doesn&#x27;t it need to hold at least one <em>operand</em>? That&#x27;s the debug assertion in the constructor.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -239,7 +239,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/expr_bin_op.rs</code>:765 on 2023-09-06 13:58</div>
-            <div class="timeline-body"><p>I don't think it's a 100% guaranteed but the unsafe code is invalid for sure if these constraints are violated.</p>
+            <div class="timeline-body"><p>I don&#x27;t think it&#x27;s a 100% guaranteed but the unsafe code is invalid for sure if these constraints are violated.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -253,16 +253,16 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2023-09-06 14:20</div>
-            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/flatten-binary-expression">CodSpeed Performance Report</a></h2>
-<h3>Merging #7145 will <strong>degrade performances by 2.44%</strong></h3>
-<p><sub>Comparing <code>flatten-binary-expression</code> (668d1c4) with <code>main</code> (fa0b6f4)</sub></p>
-<h3>Summary</h3>
+            <div class="timeline-body"><a href="https://codspeed.io/astral-sh/ruff/branches/flatten-binary-expression">CodSpeed Performance Report</a>
+Merging #7145 will <strong>degrade performances by 2.44%</strong>
+<p>Comparing <code>flatten-binary-expression</code> (668d1c4) with <code>main</code> (fa0b6f4)</p>
+Summary
 <p><code>❌ 1</code> regressions
 <code>✅ 24</code> untouched benchmarks</p>
 <blockquote>
 <p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/ruff/branches/flatten-binary-expression">acknowledge them on CodSpeed</a>.</em></p>
 </blockquote>
-<h3>Benchmarks breakdown</h3>
+Benchmarks breakdown
 <p>|     | Benchmark | <code>main</code> | <code>flatten-binary-expression</code> | Change |
 | --- | --------- | ----------------------- | ------------------- | ------ |
 | ❌ | <code>linter/all-rules[numpy/ctypeslib.py]</code> | 32.9 ms | 33.8 ms | -2.44% |</p>
@@ -271,15 +271,15 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-06 14:34</div>
             <div class="timeline-body"><blockquote>
-<h2><a href="https://codspeed.io/astral-sh/ruff/branches/flatten-binary-expression">CodSpeed Performance Report</a></h2>
-<h3>Merging #7145 will <strong>degrade performances by 2.44%</strong></h3>
+<a href="https://codspeed.io/astral-sh/ruff/branches/flatten-binary-expression">CodSpeed Performance Report</a>
+Merging #7145 will <strong>degrade performances by 2.44%</strong>
 <p>Comparing <code>flatten-binary-expression</code> (<a href="https://github.com/astral-sh/ruff/commit/668d1c4948406b6ff8df48b2067e87b8095031f9">668d1c4</a>) with <code>main</code> (<a href="https://github.com/astral-sh/ruff/commit/fa0b6f4813944af7b765fe4bc3705e75eae5acc0">fa0b6f4</a>)</p>
-<h3>Summary</h3>
+Summary
 <p><code>❌ 1</code> regressions <code>✅ 24</code> untouched benchmarks</p>
 <blockquote>
 <p>⚠️ <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/ruff/branches/flatten-binary-expression">acknowledge them on CodSpeed</a>.</em></p>
 </blockquote>
-<h3>Benchmarks breakdown</h3>
+Benchmarks breakdown
 <p>Benchmark 	<code>main</code> 	<code>flatten-binary-expression</code> 	Change
 ❌ 	<code>linter/all-rules[numpy/ctypeslib.py]</code> 	32.9 ms 	33.8 ms 	-2.44%</p>
 </blockquote>
@@ -287,10 +287,10 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @MichaReiser on 2023-09-08 06:51</div>
+            <div class="event">Merged by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-08 06:51</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2023-09-08 06:51</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-08 06:51</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2023-09-08 06:51</div>
@@ -298,7 +298,7 @@
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:00:02 UTC
+        Synced at 2026-01-20 18:56:57 UTC
     </footer>
 </body>
 </html>

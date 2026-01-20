@@ -23,48 +23,48 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/learnbyexample">@learnbyexample</a></div>
-            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+            <div class="timeline-body">What version of ripgrep are you using?
 <pre><code>$ rg --version
 ripgrep 11.0.2 (rev 3de31f7527)
 -SIMD -AVX (compiled)
 +SIMD -AVX (runtime)
 </code></pre>
-<h4>How did you install ripgrep?</h4>
+How did you install ripgrep?
 <p>Using <code>ripgrep_11.0.2_amd64.deb</code></p>
-<h4>What operating system are you using ripgrep on?</h4>
+What operating system are you using ripgrep on?
 <p>Ubuntu LTS 16.04</p>
-<h4>Describe your question, feature request, or bug.</h4>
+Describe your question, feature request, or bug.
 <p>When <code>-P</code> option is used, <code>\s</code> seems to take ending newline character of input line into consideration.</p>
-<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+If this is a bug, what are the steps to reproduce the behavior?
 <p>Consider this sample input file:</p>
-<pre><code class="language-bash">$ printf 'foo 42\nxoyz\ncat\tdog\n' &gt; ip.txt
+<pre><code>$ printf &#x27;foo 42\nxoyz\ncat\tdog\n&#x27; &gt; ip.txt
 $ cat ip.txt
 foo 42
 xoyz
 cat	dog
 </code></pre>
-<p>Here's a minimal example showing the issue (I needed lookarounds, hence the need for <code>-P</code> switch)</p>
-<pre><code class="language-bash">$ # extract till last 'o' in the line, if there are no more whitespaces after 'o'
-$ # the issue is that characters after 'o' are also displayed despite the -o switch
-$ rg -NoP '.*o(?!.*\s)' ip.txt
+<p>Here&#x27;s a minimal example showing the issue (I needed lookarounds, hence the need for <code>-P</code> switch)</p>
+<pre><code>$ # extract till last &#x27;o&#x27; in the line, if there are no more whitespaces after &#x27;o&#x27;
+$ # the issue is that characters after &#x27;o&#x27; are also displayed despite the -o switch
+$ rg -NoP &#x27;.*o(?!.*\s)&#x27; ip.txt
 xoyz
 cat	dog
 
 $ # works if I replace \s with space/tab character class or use GNU grep
 $ # using \s(?!$) instead of \s is another workaround that works
-$ rg -NoP '.*o(?!.*[ \t])' ip.txt
+$ rg -NoP &#x27;.*o(?!.*[ \t])&#x27; ip.txt
 xo
 cat	do
-$ grep -oP '.*o(?!.*\s)' ip.txt
+$ grep -oP &#x27;.*o(?!.*\s)&#x27; ip.txt
 xo
 cat	do
 </code></pre>
 <p>Another example shown below:</p>
-<pre><code>$ rg -No '.*\s' ip.txt
+<pre><code>$ rg -No &#x27;.*\s&#x27; ip.txt
 foo 
 cat	
 
-$ rg -NoP '.*\s' ip.txt
+$ rg -NoP &#x27;.*\s&#x27; ip.txt
 foo 42
 cat	dog
 </code></pre>
@@ -72,12 +72,12 @@ cat	dog
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-10-10 10:41</div>
-            <div class="timeline-body"><p>Interesting, yeah, I think I might see why this happens. With the default regex engine, all character classes containing <code>\n</code> (including <code>\s</code>) are <em>rewritten</em> to <em>not</em> contain <code>\n</code>. But doing this isn't possible with PCRE2. Of course, this is why ripgrep then uses PCRE2 on a line-by-line basis instead of searching through many lines at once. My guess is that it is including the the <code>\n</code> at the end of each line, and it probably shouldn't be. Although, I haven't thought through the full consequences of that. I will attempt a fix for this at some point, but it is possible that this will end up being a <code>wontfix</code> bug.</p>
+            <div class="timeline-body"><p>Interesting, yeah, I think I might see why this happens. With the default regex engine, all character classes containing <code>\n</code> (including <code>\s</code>) are <em>rewritten</em> to <em>not</em> contain <code>\n</code>. But doing this isn&#x27;t possible with PCRE2. Of course, this is why ripgrep then uses PCRE2 on a line-by-line basis instead of searching through many lines at once. My guess is that it is including the the <code>\n</code> at the end of each line, and it probably shouldn&#x27;t be. Although, I haven&#x27;t thought through the full consequences of that. I will attempt a fix for this at some point, but it is possible that this will end up being a <code>wontfix</code> bug.</p>
 <p>Thanks for filing this!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2019-10-10 10:41</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-10-10 10:41</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/maage">@maage</a> on 2020-08-19 14:04</div>
@@ -99,7 +99,7 @@ grep (GNU grep) 3.3
 ...
 </code></pre>
 <p>Test data:</p>
-<pre><code>$ printf 'foo 42\nxoyz\ncat\tdog\nfoo' &gt; ip.txt
+<pre><code>$ printf &#x27;foo 42\nxoyz\ncat\tdog\nfoo&#x27; &gt; ip.txt
 $ cat ip.txt; echo &quot;&lt;EOF&gt;&quot; 
 foo 42
 xoyz
@@ -107,24 +107,24 @@ cat	dog
 foo&lt;EOF&gt;
 </code></pre>
 <p>Just to make comparison complete:</p>
-<pre><code>$ pcre2grep -o '.*o(?!.*\s)' ip.txt 
+<pre><code>$ pcre2grep -o &#x27;.*o(?!.*\s)&#x27; ip.txt 
 xo
 cat	do
 foo
-$ perl -ne 'chomp;print &quot;$&amp;\n&quot; if /.*o(?!.*\s)/' ip.txt 
+$ perl -ne &#x27;chomp;print &quot;$&amp;\n&quot; if /.*o(?!.*\s)/&#x27; ip.txt 
 xo
 cat	do
 foo
-$ grep -oP '.*o(?!.*\s)' ip.txt
+$ grep -oP &#x27;.*o(?!.*\s)&#x27; ip.txt
 xo
 cat	do
 foo
-$ perl -ne 'print &quot;$&amp;\n&quot; if /.*o(?!.*\s)/' ip.txt 
+$ perl -ne &#x27;print &quot;$&amp;\n&quot; if /.*o(?!.*\s)/&#x27; ip.txt 
 foo
 </code></pre>
 <p>In perl line contains \n at the end when you go over line by line. Seems pcre2grep does do that. Grep colors all matches correctly. Others do not do coloring.</p>
 <p>With rg:</p>
-<pre><code>$ rg -NoP '.*o(?!.*\s)' ip.txt
+<pre><code>$ rg -NoP &#x27;.*o(?!.*\s)&#x27; ip.txt
 xoyz
 cat	dog
 foo
@@ -133,15 +133,15 @@ foo
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2021-05-31 23:02</div>
+            <div class="event">Label <span class="label">rollup</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-05-31 23:02</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2021-06-01 01:51</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-06-01 01:51</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:43:01 UTC
+        Synced at 2026-01-20 18:48:09 UTC
     </footer>
 </body>
 </html>

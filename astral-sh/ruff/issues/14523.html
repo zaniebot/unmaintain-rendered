@@ -23,14 +23,14 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ThiefMaster">@ThiefMaster</a></div>
-            <div class="timeline-body"><p>There are a few cases where it does not really make sense to get the warning, since it's pretty clearly intentional to avoid escaping, but adding noqa comments in every place where it's used would be very noisy/verbose:</p>
+            <div class="timeline-body"><p>There are a few cases where it does not really make sense to get the warning, since it&#x27;s pretty clearly intentional to avoid escaping, but adding noqa comments in every place where it&#x27;s used would be very noisy/verbose:</p>
 <ul>
 <li><code>Markup(render_template(...))</code></li>
-<li><code>Markup(_('Have a look at &lt;strong&gt;this&lt;/strong&gt; translated string!'))</code></li>
-<li><code>msg = _('Have a look at &lt;strong&gt;this&lt;/strong&gt;!'); Markup(msg)</code></li>
+<li><code>Markup(_(&#x27;Have a look at &lt;strong&gt;this&lt;/strong&gt; translated string!&#x27;))</code></li>
+<li><code>msg = _(&#x27;Have a look at &lt;strong&gt;this&lt;/strong&gt;!&#x27;); Markup(msg)</code></li>
 </ul>
-<p>So ideally I'd like to have a setting where I can add function names (ideally as import strings, but just names would also be OK most of the time) to be considered safe to have their return value passed to <code>Markdown</code> - either directly or via a variable assignment.</p>
-<p>In the above case, I'd expect all 3 warnings to disappear by whitelisting <code>render_template</code> and <code>_</code>.</p>
+<p>So ideally I&#x27;d like to have a setting where I can add function names (ideally as import strings, but just names would also be OK most of the time) to be considered safe to have their return value passed to <code>Markdown</code> - either directly or via a variable assignment.</p>
+<p>In the above case, I&#x27;d expect all 3 warnings to disappear by whitelisting <code>render_template</code> and <code>_</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -39,23 +39,23 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-11-22 10:47</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-22 10:47</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2024-11-22 10:47</div>
+            <div class="event">Label <span class="label">preview</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-22 10:47</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-11-22 10:58</div>
             <div class="timeline-body"><p>Generally my recommendation in these cases it to encapsulate the behavior that looks unsafe into a new function and use that instead of the original one, that way you only have to ignore errors in those few helper functions.</p>
-<p>i.e. define a <code>render_template_markup</code> and <code>translated_markup</code> (you can configure i18n tooling to pick up additional function names for picking up i18n strings automatically) for those two cases and use those where appropriate. I think that's also good documentation.</p>
-<p>Allowing <code>gettext</code> and other translation functions to pass through unchecked still has some risk, since the translations themselves could be compromised and that's a lot harder to spot than a compromised string literal. So I would try to avoid including markup in translation strings. That being said, I realize it can be inconvenient to split translations into chunks just for the sake of safety, so I have included markup in translations myself in some occasions.</p>
-<p>In either case we could perhaps add an additional setting to define a number of functions that are considered safe to be wrapped in <code>Markup</code>, things like sanitization functions and template rendering functions come to mind. But I still think it's generally better to define wrapper functions, since then you don't always have to manually wrap the result. It's also less likely that you will forget to wrap the result this way.</p>
+<p>i.e. define a <code>render_template_markup</code> and <code>translated_markup</code> (you can configure i18n tooling to pick up additional function names for picking up i18n strings automatically) for those two cases and use those where appropriate. I think that&#x27;s also good documentation.</p>
+<p>Allowing <code>gettext</code> and other translation functions to pass through unchecked still has some risk, since the translations themselves could be compromised and that&#x27;s a lot harder to spot than a compromised string literal. So I would try to avoid including markup in translation strings. That being said, I realize it can be inconvenient to split translations into chunks just for the sake of safety, so I have included markup in translations myself in some occasions.</p>
+<p>In either case we could perhaps add an additional setting to define a number of functions that are considered safe to be wrapped in <code>Markup</code>, things like sanitization functions and template rendering functions come to mind. But I still think it&#x27;s generally better to define wrapper functions, since then you don&#x27;t always have to manually wrap the result. It&#x27;s also less likely that you will forget to wrap the result this way.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-11-22 11:03</div>
             <div class="timeline-body"><p>Another thing I have done in the past is define a function like this:</p>
-<pre><code class="language-python">@overload
+<pre><code>@overload
 def my_gettext(text: str) -&gt; str: ...
 
 @overload
@@ -70,7 +70,7 @@ def my_gettext(text: str, *, markup: bool = False) -&gt; str:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-11-22 15:09</div>
-            <div class="timeline-body"><p>All in all I'm +0 on adding a whitelist. It can genuinely make sense for some cases and it puts the power to make the decision where to draw the line for safety into the user's hands (you may e.g. decide that you take proper care to secure your translation data, so it's fine to include markup in translations).</p>
+            <div class="timeline-body"><p>All in all I&#x27;m +0 on adding a whitelist. It can genuinely make sense for some cases and it puts the power to make the decision where to draw the line for safety into the user&#x27;s hands (you may e.g. decide that you take proper care to secure your translation data, so it&#x27;s fine to include markup in translations).</p>
 <p>But it also comes with the risk of making it too easy to accidentally ignore a large set of patterns that still have some unsafe corner cases and this is a security rule, so a higher level of churn is to be expected. Prompting people to restructure their code a bit, to make it less likely to introduce safety bugs seems like a net-positive to me, but that could also be resolved by recommending against using that whitelist as anything other than a temporary stop-gap measure for functions other than sanitization functions (like <code>bleach.clean</code>).</p>
 </div>
         </div>
@@ -81,25 +81,25 @@ def my_gettext(text: str, *, markup: bool = False) -&gt; str:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-11-22 15:17</div>
-            <div class="timeline-body"><p>You're not wrong, but giving people a false sense of security isn't great either. A lot of bandit rules are even noisier than this one and don't even try to exclude some easily detectable false positives, so by that measure this rule is actually quite forgiving.</p>
-<p>I'm not sure what the correct trade-off is going to be. But I'm certainly not strongly opposed to adding a whitelist, just cautioning that it may weaken the rule's effect.</p>
+            <div class="timeline-body"><p>You&#x27;re not wrong, but giving people a false sense of security isn&#x27;t great either. A lot of bandit rules are even noisier than this one and don&#x27;t even try to exclude some easily detectable false positives, so by that measure this rule is actually quite forgiving.</p>
+<p>I&#x27;m not sure what the correct trade-off is going to be. But I&#x27;m certainly not strongly opposed to adding a whitelist, just cautioning that it may weaken the rule&#x27;s effect.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-22 16:40</div>
-            <div class="timeline-body"><p>I like your suggestion of a wrapper function for new code. But I can see how existing code can't easily be rewritten to use such a wrapper function, which is why an allow-list probably makes sense.</p>
+            <div class="timeline-body"><p>I like your suggestion of a wrapper function for new code. But I can see how existing code can&#x27;t easily be rewritten to use such a wrapper function, which is why an allow-list probably makes sense.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dhruvmanila on 2024-12-20 09:36</div>
+            <div class="event">Closed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-12-20 09:36</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dhruvmanila on 2024-12-20 09:36</div>
+            <div class="event">Closed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-12-20 09:36</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:51:36 UTC
+        Synced at 2026-01-20 18:49:00 UTC
     </footer>
 </body>
 </html>

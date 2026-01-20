@@ -23,29 +23,29 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Fixes #10618.</p>
 <p>This PR introduces a proper API for sending requests to the client and handling any response sent back. Dynamic capability registration now uses this new API, fixing an issue where a much more simplistic response handler silently flushes a code action request that needed a response.</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>#10618 can no longer be reproduced. No errors about unhandled responses should appear in the extension output, and you should see this new log when the server starts:</p>
 <pre><code>&lt;DATE&gt; &lt;TIME&gt; [info] &lt;DURATION&gt; INFO ruff_server::server Configuration file watcher successfully registered
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">server</span> added by @snowsignal on 2024-03-26 18:23</div>
+            <div class="event">Label <span class="label">server</span> added by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-03-26 18:23</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @charliermarsh by @snowsignal on 2024-03-26 18:27</div>
+            <div class="event">Review requested from <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-03-26 18:27</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-03-26 18:37</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
@@ -74,7 +74,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/server.rs</code>:117 on 2024-03-26 18:45</div>
-            <div class="timeline-body"><p>It was an error before because we didn't have any reason to receive a response from the server. Now that we have an interface to send the client requests, we do want to listen for responses.</p>
+            <div class="timeline-body"><p>It was an error before because we didn&#x27;t have any reason to receive a response from the server. Now that we have an interface to send the client requests, we do want to listen for responses.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -87,12 +87,12 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/server.rs</code>:107 on 2024-03-26 18:50</div>
-            <div class="timeline-body"><p>You're on the right track, but we don't actually wait for the client to respond here. We kick off a request and then immediately go into the event loop. Responses are handled as part of that event loop.</p>
+            <div class="timeline-body"><p>You&#x27;re on the right track, but we don&#x27;t actually wait for the client to respond here. We kick off a request and then immediately go into the event loop. Responses are handled as part of that event loop.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_server/src/server.rs</code>:107 on 2024-03-26 19:16</div>
-            <div class="timeline-body"><p>Ahh ok makes sense. Is it important that the dynamic capabilities response is handled &quot;first&quot;, or it's ok if they're out-of-order? (Do we enforce the order in any way?)</p>
+            <div class="timeline-body"><p>Ahh ok makes sense. Is it important that the dynamic capabilities response is handled &quot;first&quot;, or it&#x27;s ok if they&#x27;re out-of-order? (Do we enforce the order in any way?)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -108,34 +108,34 @@
             <div class="timeline-body"><blockquote>
 <p>(Do we enforce the order in any way?)</p>
 </blockquote>
-<p>We don't enforce the order - we rely on <code>lsp_server::Connection</code> to give us messages in the order the client sent them. The LSP specification requires that <a href="https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#messageOrdering">requests on both sides are processed in the order that they're received</a>, but it doesn't say that all incoming requests need to be handled before responses, or vice-versa.</p>
+<p>We don&#x27;t enforce the order - we rely on <code>lsp_server::Connection</code> to give us messages in the order the client sent them. The LSP specification requires that <a href="https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#messageOrdering">requests on both sides are processed in the order that they&#x27;re received</a>, but it doesn&#x27;t say that all incoming requests need to be handled before responses, or vice-versa.</p>
 <blockquote>
-<p>Is it important that the dynamic capabilities response is handled &quot;first&quot;, or it's ok if they're out-of-order?</p>
+<p>Is it important that the dynamic capabilities response is handled &quot;first&quot;, or it&#x27;s ok if they&#x27;re out-of-order?</p>
 </blockquote>
-<p>In this specific instance, it's absolutely fine to have this happen out-of-order because the response handler doesn't do anything besides log a success. Technically, the client could wait an arbitrary amount before sending this response if it wanted to (though that would be rude).</p>
+<p>In this specific instance, it&#x27;s absolutely fine to have this happen out-of-order because the response handler doesn&#x27;t do anything besides log a success. Technically, the client could wait an arbitrary amount before sending this response if it wanted to (though that would be rude).</p>
 <p>I think this scenario would also work in the general case:</p>
 <pre><code>1. client sends request A to server
 2. server sends request B to client
 3. server sends response A to client
 4. client sends response B response to server
 </code></pre>
-<p>The response handler for <code>response B</code> would be run with a potentially different state then when <code>request B</code> was sent occurred if <code>request A</code> was a local task that modified the state, but the response handler shouldn't have any guarantees on execution order to begin with.</p>
+<p>The response handler for <code>response B</code> would be run with a potentially different state then when <code>request B</code> was sent occurred if <code>request A</code> was a local task that modified the state, but the response handler shouldn&#x27;t have any guarantees on execution order to begin with.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @snowsignal on 2024-03-26 20:53</div>
+            <div class="event">Merged by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-03-26 20:53</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @snowsignal on 2024-03-26 20:53</div>
+            <div class="event">Closed by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-03-26 20:53</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-03-26 20:53</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/server.rs</code>:174 on 2024-03-27 08:05</div>
-            <div class="timeline-body"><p>Nit: This is not something we need to immediately follow up. It's more an observation and maybe we have ideas on how we could improve it later on.</p>
-<p>What would be nice is if it wouldn't be necessary to specify the <code>Request</code> type when calling the function, and instead could let Rust infer it. I think the issue here is that we pass the parameters but there's no way to get to the request from the parameters (only the other way around).
-I don't have a solution to it, but thought it might be worth raising because maybe you have a great idea on how this could be improved.</p>
+            <div class="timeline-body"><p>Nit: This is not something we need to immediately follow up. It&#x27;s more an observation and maybe we have ideas on how we could improve it later on.</p>
+<p>What would be nice is if it wouldn&#x27;t be necessary to specify the <code>Request</code> type when calling the function, and instead could let Rust infer it. I think the issue here is that we pass the parameters but there&#x27;s no way to get to the request from the parameters (only the other way around).
+I don&#x27;t have a solution to it, but thought it might be worth raising because maybe you have a great idea on how this could be improved.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -149,14 +149,14 @@ I don't have a solution to it, but thought it might be worth raising because may
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/server.rs</code>:174 on 2024-03-27 19:09</div>
-            <div class="timeline-body"><p>Unfortunately I think this is just a limitation of Rust's type resolver, and I understand why. It would definitely be nice if the compiler could infer the type from the <code>Params</code> + <code>Result</code> type, but it would fail in a scenario where multiple requests had the same <code>Params</code> and <code>Result</code> type.</p>
-<p>I'm fine with being explicit about the request type, to be honest. We do something similar when creating tasks for API endpoints. We <em>could</em> make the request a function argument and that would remove the need to specify the generic parameter, but I prefer putting it in angle brackets 😄</p>
+            <div class="timeline-body"><p>Unfortunately I think this is just a limitation of Rust&#x27;s type resolver, and I understand why. It would definitely be nice if the compiler could infer the type from the <code>Params</code> + <code>Result</code> type, but it would fail in a scenario where multiple requests had the same <code>Params</code> and <code>Result</code> type.</p>
+<p>I&#x27;m fine with being explicit about the request type, to be honest. We do something similar when creating tasks for API endpoints. We <em>could</em> make the request a function argument and that would remove the need to specify the generic parameter, but I prefer putting it in angle brackets 😄</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:03:22 UTC
+        Synced at 2026-01-20 19:02:42 UTC
     </footer>
 </body>
 </html>

@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>At runtime, if a class does not define <code>__bool__</code> but does define <code>__len__</code>, the result of the <code>__len__</code> call will be used to determine the truthiness of that object. The most common examples of this are various builtin containers such as tuple, list and others:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; bool(())
+<pre><code>&gt;&gt;&gt; bool(())
 False
 &gt;&gt;&gt; bool((1,))
 True
@@ -33,45 +33,45 @@ True
 Traceback (most recent call last):
   File &quot;&lt;python-input-6&gt;&quot;, line 1, in &lt;module&gt;
     list.__bool__
-AttributeError: type object 'list' has no attribute '__bool__'. Did you mean: '__doc__'?
+AttributeError: type object &#x27;list&#x27; has no attribute &#x27;__bool__&#x27;. Did you mean: &#x27;__doc__&#x27;?
 &gt;&gt;&gt; bool([])
 False
 &gt;&gt;&gt; bool([1])
 True
 </code></pre>
-<p>Up till now, we haven't attempted to represent this in ty: if a class <code>N</code> defines a custom <code>__len__</code> method, we've ignored it for the purposes of determining the truthiness of that class's instances. This is because <code>__bool__</code> always takes priority over <code>__len__</code>, and it's always possible that a subclass of <code>N</code> could override <code>__bool__</code> (thus invalidating, for some subtypes of <code>N</code>, the assumptions regarding truthiness that we made from looking at the return type of <code>N.__len__</code>).</p>
+<p>Up till now, we haven&#x27;t attempted to represent this in ty: if a class <code>N</code> defines a custom <code>__len__</code> method, we&#x27;ve ignored it for the purposes of determining the truthiness of that class&#x27;s instances. This is because <code>__bool__</code> always takes priority over <code>__len__</code>, and it&#x27;s always possible that a subclass of <code>N</code> could override <code>__bool__</code> (thus invalidating, for some subtypes of <code>N</code>, the assumptions regarding truthiness that we made from looking at the return type of <code>N.__len__</code>).</p>
 <p>However, this approach has several problems:</p>
 <ul>
-<li>It ignores the fact that if a <code>@final</code> class defines <code>__len__</code> but does not define <code>__bool__</code>, it's perfectly safe to look at the return type of <code>__len__</code></li>
-<li>It ignores the fact that if a <code>@final</code> class defines neither <code>__len__</code> nor <code>__bool__</code>, it's perfectly safe to consider the class as being always truthy</li>
-<li>It's led us to synthesize <code>__bool__</code> methods for tuple classes that actually don't exist at runtime</li>
+<li>It ignores the fact that if a <code>@final</code> class defines <code>__len__</code> but does not define <code>__bool__</code>, it&#x27;s perfectly safe to look at the return type of <code>__len__</code></li>
+<li>It ignores the fact that if a <code>@final</code> class defines neither <code>__len__</code> nor <code>__bool__</code>, it&#x27;s perfectly safe to consider the class as being always truthy</li>
+<li>It&#x27;s led us to synthesize <code>__bool__</code> methods for tuple classes that actually don&#x27;t exist at runtime</li>
 </ul>
-<p>This PR fixes these problems. It still leaves several issues unresolved: arguably, if we see that the runtime implicitly calls a badly defined <code>__len__</code> method, we should emit diagnostics warning the user about this. But these false negatives already exist on <code>main</code>, and it would take quite some time to write out all the code and tests for this kind of diagnostic. It doesn't seem to me to be a priority right now, so I chose to cut scope here.</p>
-<p>Helps with https://github.com/astral-sh/ty/issues/1420. It doesn't close that issue (our behaviour will remain the same for the snippet the author posted in that issue!), but it'll make it easier for me to justify our current behaviour to the author of that issue. I have trouble justifying our current behaviour, since it just doesn't emulate the semantics at runtime fully enough IMO 😄</p>
-<h2>Test plan</h2>
+<p>This PR fixes these problems. It still leaves several issues unresolved: arguably, if we see that the runtime implicitly calls a badly defined <code>__len__</code> method, we should emit diagnostics warning the user about this. But these false negatives already exist on <code>main</code>, and it would take quite some time to write out all the code and tests for this kind of diagnostic. It doesn&#x27;t seem to me to be a priority right now, so I chose to cut scope here.</p>
+<p>Helps with <a href="https://github.com/astral-sh/ty/issues/1420">astral-sh/ty#1420</a>. It doesn&#x27;t close that issue (our behaviour will remain the same for the snippet the author posted in that issue!), but it&#x27;ll make it easier for me to justify our current behaviour to the author of that issue. I have trouble justifying our current behaviour, since it just doesn&#x27;t emulate the semantics at runtime fully enough IMO 😄</p>
+Test plan
 <p>Added mdtests</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-10-23 16:59</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-23 16:59</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-23 17:02</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a>
 <p>No changes detected when running ty on typing conformance tests ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-23 17:04</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">pytest (https://github.com/pytest-dev/pytest)
+Changes were detected when running on open source projects
+
+<pre><code>pytest (https://github.com/pytest-dev/pytest)
 - src/_pytest/_code/code.py:1087:68: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `str | (ExceptionInfo[BaseException] &amp; ~AlwaysTruthy &amp; ~AlwaysFalsy)`
 - Found 483 diagnostics
 + Found 482 diagnostics
@@ -85,25 +85,25 @@ pywin32 (https://github.com/mhammond/pywin32)
 + com/win32comext/axscript/server/axsite.py:50:13: warning[possibly-missing-attribute] Attribute `Close` may be missing on object of type `(Unknown &amp; ~AlwaysFalsy) | PyIUnknown`
 
 </code></pre>
-</details>
+
 No memory usage changes detected ✅
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[ty] Treat `@final` instances with no `__bool__` or `__len__` override as `AlwaysTruthy` subtypes" to "[ty] Consider `__len__` when determining the truthiness of an instance of a tuple class or a `@final` class" by @AlexWaygood on 2025-10-23 18:14</div>
+            <div class="event">Renamed from &quot;[ty] Treat `@final` instances with no `__bool__` or `__len__` override as `AlwaysTruthy` subtypes&quot; to &quot;[ty] Consider `__len__` when determining the truthiness of an instance of a tuple class or a `@final` class&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-23 18:14</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @AlexWaygood on 2025-10-23 18:51</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-23 18:51</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-10-23 18:51</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-23 18:51</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-10-23 18:51</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-23 18:51</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-10-23 18:51</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-23 18:51</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/type_compendium/always_truthy_falsy.md</code>:20 on 2025-10-23 19:01</div>
@@ -122,7 +122,7 @@ No memory usage changes detected ✅
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-23 19:07</div>
-            <div class="timeline-body"><p>Hmm, I worry this will be painful but we'll need to also implement the same logic for the not goto definition</p>
+            <div class="timeline-body"><p>Hmm, I worry this will be painful but we&#x27;ll need to also implement the same logic for the not goto definition</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -137,24 +137,24 @@ No memory usage changes detected ✅
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-23 19:22</div>
             <div class="timeline-body"><blockquote>
-<p>Hmm, I worry this will be painful but we'll need to also implement the same logic for the not goto definition</p>
+<p>Hmm, I worry this will be painful but we&#x27;ll need to also implement the same logic for the not goto definition</p>
 </blockquote>
 <p>Great point. I think I fixed this -- want to take another look?</p>
-<p>For goto definition, I don't think it's so important that we do the &quot;only respect the dunder if it's <code>@final</code> dance. We don't really need to worry so much about soundness when the user is just asking us to jump to the definition that will be used at runtime 😄</p>
+<p>For goto definition, I don&#x27;t think it&#x27;s so important that we do the &quot;only respect the dunder if it&#x27;s <code>@final</code> dance. We don&#x27;t really need to worry so much about soundness when the user is just asking us to jump to the definition that will be used at runtime 😄</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2025-10-23 19:22</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-23 19:22</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/goto_definition.rs</code>:1297 on 2025-10-24 06:05</div>
-            <div class="timeline-body"><p>What's the reason for changing this test?</p>
+            <div class="timeline-body"><p>What&#x27;s the reason for changing this test?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/goto_definition.rs</code>:1516 on 2025-10-24 06:08</div>
-            <div class="timeline-body"><p>This seems somewhat unfortunate. I think I'd expect the IDE to jump to either <code>__bool__</code> or <code>__len__</code> (it should be forgiving). E.g, huh... why does ty complain about <code>not a</code> not being supported. Click... ahhh, <code>__bool__</code> has the wrong signature.</p>
-<p>We don't need to change this here but I think we should change the documentation to make it sound less so that this is our desired behavior.</p>
+            <div class="timeline-body"><p>This seems somewhat unfortunate. I think I&#x27;d expect the IDE to jump to either <code>__bool__</code> or <code>__len__</code> (it should be forgiving). E.g, huh... why does ty complain about <code>not a</code> not being supported. Click... ahhh, <code>__bool__</code> has the wrong signature.</p>
+<p>We don&#x27;t need to change this here but I think we should change the documentation to make it sound less so that this is our desired behavior.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -167,7 +167,7 @@ No memory usage changes detected ✅
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_ide/src/goto_definition.rs</code>:1516 on 2025-10-24 06:43</div>
-            <div class="timeline-body"><p>Oh, I was just trying to preserve our existing behaviour here. goto already doesn't work for the other operators if the dunders are defined slightly incorrectly. I'll fix this up, thanks</p>
+            <div class="timeline-body"><p>Oh, I was just trying to preserve our existing behaviour here. goto already doesn&#x27;t work for the other operators if the dunders are defined slightly incorrectly. I&#x27;ll fix this up, thanks</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -180,10 +180,10 @@ No memory usage changes detected ✅
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @AlexWaygood on 2025-10-24 09:29</div>
+            <div class="event">Merged by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-24 09:29</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-10-24 09:29</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-24 09:29</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-10-24 09:29</div>
@@ -209,7 +209,7 @@ No memory usage changes detected ✅
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:16:39 UTC
+        Synced at 2026-01-20 19:19:50 UTC
     </footer>
 </body>
 </html>

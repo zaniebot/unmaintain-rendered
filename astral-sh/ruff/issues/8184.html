@@ -28,8 +28,8 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-24 20:55</div>
-            <div class="timeline-body"><p>We don't have this behavior, no. We could consider adding it based on interest.</p>
-<p>(Not strictly relevant to the question, but just so there's no confusion for any future readers: all benchmarks were compared against Black with <code>--fast</code>.)</p>
+            <div class="timeline-body"><p>We don&#x27;t have this behavior, no. We could consider adding it based on interest.</p>
+<p>(Not strictly relevant to the question, but just so there&#x27;s no confusion for any future readers: all benchmarks were compared against Black with <code>--fast</code>.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -40,8 +40,8 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-24 21:01</div>
             <div class="timeline-body"><p>No problem.</p>
-<p>For completeness: our test suite consists of a large set of <a href="https://github.com/astral-sh/ruff/tree/0236e0751ce0f7230a834f9afe8c747b07faf0ee/crates/ruff_python_formatter/resources/test/fixtures">fixtures</a> (including Black's own test fixtures, plus a bunch of our own), and then we also run the formatter over a selection of open source projects on CI too (<code>twine</code>, <code>django</code>, <code>transformers</code>, <code>typeshed</code>, <code>warehouse</code>, <code>zulip</code>, <code>home-assistant</code>, <code>poetry</code>, <code>cpython</code>).</p>
-<p>For the fixtures, we validate output against checked-in snapshots. For the ecosystem projects, we're just diffing to assess similarity. But in both cases, we also error if:</p>
+<p>For completeness: our test suite consists of a large set of <a href="https://github.com/astral-sh/ruff/tree/0236e0751ce0f7230a834f9afe8c747b07faf0ee/crates/ruff_python_formatter/resources/test/fixtures">fixtures</a> (including Black&#x27;s own test fixtures, plus a bunch of our own), and then we also run the formatter over a selection of open source projects on CI too (<code>twine</code>, <code>django</code>, <code>transformers</code>, <code>typeshed</code>, <code>warehouse</code>, <code>zulip</code>, <code>home-assistant</code>, <code>poetry</code>, <code>cpython</code>).</p>
+<p>For the fixtures, we validate output against checked-in snapshots. For the ecosystem projects, we&#x27;re just diffing to assess similarity. But in both cases, we also error if:</p>
 <ul>
 <li>We output syntactically invalid code.</li>
 <li>We fail to format any comments.</li>
@@ -50,10 +50,10 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2023-10-24 23:34</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-24 23:34</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2023-10-24 23:34</div>
+            <div class="event">Label <span class="label">formatter</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-24 23:34</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-25 03:17</div>
@@ -62,7 +62,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-10-25 16:34</div>
-            <div class="timeline-body"><p>We also have fuzzing (e.g. https://github.com/astral-sh/ruff/issues/7938) which covers a lot of strange edge cases. In recent runs i've only seen instabilities (the second formatting pass looks different than the first) but no syntax errors.</p>
+            <div class="timeline-body"><p>We also have fuzzing (e.g. <a href="https://github.com/astral-sh/ruff/issues/7938">astral-sh/ruff#7938</a>) which covers a lot of strange edge cases. In recent runs i&#x27;ve only seen instabilities (the second formatting pass looks different than the first) but no syntax errors.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -81,8 +81,8 @@
             <div class="timeline-body"><blockquote>
 <p>Validating the final AST can still help against accidental formatting changes that would change runtime behaviour.</p>
 </blockquote>
-<p>That's true, but it requires that the used AST only captures runtime semantics, which isn't the case for Ruff. For example, ruff stores (or will soon) the parts of each implicit concatenated string as individual nodes because having access to each part is useful when doing static analysis (but irrelevant for an interpreter):</p>
-<pre><code class="language-python">&quot;a&quot; &quot;b&quot;
+<p>That&#x27;s true, but it requires that the used AST only captures runtime semantics, which isn&#x27;t the case for Ruff. For example, ruff stores (or will soon) the parts of each implicit concatenated string as individual nodes because having access to each part is useful when doing static analysis (but irrelevant for an interpreter):</p>
+<pre><code>&quot;a&quot; &quot;b&quot;
 
 # joined
 &quot;ab&quot;
@@ -92,34 +92,34 @@
 <li><code>&quot;ab&quot;</code>: <code>StringList[&quot;ab&quot;]</code></li>
 </ul>
 <p>The runtime value of both expressions is the same, but Ruff uses a different internal representation for each.</p>
-<p>I believe there are other examples around parenthesizing match cases which change the AST structure, but don't result in a semantical change.</p>
-<p>Because of that, I believe using the AST for asserting that the runtime semantics are unchanged isn't a good choice and it prevents Ruff from changing its internal AST structure to capture more information, slowing down the development.</p>
-<p>It would be nice to have another automatic means to validate that the formatter doesn't change program semantics (could be very useful during fuzzing). We could explore integrating and comparing Python's AST as part of fuzzing, but I prefer not to compare Ruff's ASTs as part of <code>ruff format</code> for the reasons mentioned above and because re-parsing and comparing the AST causes a significant slowdown.</p>
+<p>I believe there are other examples around parenthesizing match cases which change the AST structure, but don&#x27;t result in a semantical change.</p>
+<p>Because of that, I believe using the AST for asserting that the runtime semantics are unchanged isn&#x27;t a good choice and it prevents Ruff from changing its internal AST structure to capture more information, slowing down the development.</p>
+<p>It would be nice to have another automatic means to validate that the formatter doesn&#x27;t change program semantics (could be very useful during fuzzing). We could explore integrating and comparing Python&#x27;s AST as part of fuzzing, but I prefer not to compare Ruff&#x27;s ASTs as part of <code>ruff format</code> for the reasons mentioned above and because re-parsing and comparing the AST causes a significant slowdown.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tusharsadhwani">@tusharsadhwani</a> on 2023-10-30 09:21</div>
             <div class="timeline-body"><blockquote>
-<p>We could explore integrating and comparing Python's AST as part of fuzzing</p>
+<p>We could explore integrating and comparing Python&#x27;s AST as part of fuzzing</p>
 </blockquote>
-<p>@MichaReiser That is indeed along the lines of what I'm suggesting. Having that option available to end users behind a CLI flag would be a nice to have, but using it for fuzzing during CI seems much more important to me.</p>
+<p>@MichaReiser That is indeed along the lines of what I&#x27;m suggesting. Having that option available to end users behind a CLI flag would be a nice to have, but using it for fuzzing during CI seems much more important to me.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-30 13:27</div>
             <div class="timeline-body"><blockquote>
-<p>That's true, but it requires that the used AST only captures runtime semantics, which isn't the case for Ruff.</p>
+<p>That&#x27;s true, but it requires that the used AST only captures runtime semantics, which isn&#x27;t the case for Ruff.</p>
 </blockquote>
-<p>In fairness, we do have the <code>Comparable</code> AST variant which exists for this purpose and intentionally ignores (e.g.) implicit concatenations. That property should be maintained over time too -- it's meant to capture whether two AST nodes correspond to the same value.</p>
+<p>In fairness, we do have the <code>Comparable</code> AST variant which exists for this purpose and intentionally ignores (e.g.) implicit concatenations. That property should be maintained over time too -- it&#x27;s meant to capture whether two AST nodes correspond to the same value.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-31 01:00</div>
             <div class="timeline-body"><blockquote>
-<p>In fairness, we do have the Comparable AST variant which exists for this purpose and intentionally ignores (e.g.) implicit concatenations. That property should be maintained over time too -- it's meant to capture whether two AST nodes correspond to the same value.</p>
+<p>In fairness, we do have the Comparable AST variant which exists for this purpose and intentionally ignores (e.g.) implicit concatenations. That property should be maintained over time too -- it&#x27;s meant to capture whether two AST nodes correspond to the same value.</p>
 </blockquote>
 <p>Oh right. Although it will be interesting to see how we would support this (in a cheap way) if we change our AST structure more fundamentally.</p>
-<p>We're also considering integrating <code>isort</code> into the formatter, which would ultimately mean that we have to remove the AST equality check.</p>
+<p>We&#x27;re also considering integrating <code>isort</code> into the formatter, which would ultimately mean that we have to remove the AST equality check.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -130,8 +130,8 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/juftin">@juftin</a> on 2023-11-08 17:29</div>
-            <div class="timeline-body"><p>I've been working on introducing the ruff formatter at work but got this question when trying to introduce it as a formatting tool for my organization.</p>
-<p>The <code>black</code> formatter's claim that it is safe to use is based on the fact that it <a href="https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html#ast-before-and-after-formatting">checks the AST before and after and compares the two</a> is a big reason why a given org may push back on switching from black to ruff - it's a powerful piece of marketing.</p>
+            <div class="timeline-body"><p>I&#x27;ve been working on introducing the ruff formatter at work but got this question when trying to introduce it as a formatting tool for my organization.</p>
+<p>The <code>black</code> formatter&#x27;s claim that it is safe to use is based on the fact that it <a href="https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html#ast-before-and-after-formatting">checks the AST before and after and compares the two</a> is a big reason why a given org may push back on switching from black to ruff - it&#x27;s a powerful piece of marketing.</p>
 <blockquote>
 <p>To put things in perspective, the code equivalence check is a feature of Black which other formatters don’t implement at all. It is of crucial importance to us to ensure code behaves the way it did before it got reformatted. We treat this as a feature and there are no plans to relax this in the future.</p>
 </blockquote>
@@ -141,7 +141,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/SonOfLilit">@SonOfLilit</a> on 2023-11-09 17:14</div>
             <div class="timeline-body"><p>If you only want to add it to tests and fuzzing, one easy way to write an AST comparison test would be:</p>
-<pre><code class="language-python">def check_same_ast(path):
+<pre><code>def check_same_ast(path):
     with temp_copy(path) as before:
         with temp_copy(path) as after:
             run_ruff(after)
@@ -153,22 +153,22 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tusharsadhwani">@tusharsadhwani</a> on 2023-11-10 09:37</div>
-            <div class="timeline-body"><p>@SonOfLilit ruff outputs aren't identical to black though</p>
+            <div class="timeline-body"><p>@SonOfLilit ruff outputs aren&#x27;t identical to black though</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/SonOfLilit">@SonOfLilit</a> on 2023-11-11 11:13</div>
-            <div class="timeline-body"><p>Indeed, they aren't. But black output is idempotent and does the check we
+            <div class="timeline-body"><p>Indeed, they aren&#x27;t. But black output is idempotent and does the check we
 want, so two files will have the same output if and only if they contain
 the same AST, so comparing before/after ruff is a cheap way to compare ASTs.</p>
 <p>On Fri, Nov 10, 2023, 11:38 Tushar Sadhwani <em><strong>@</strong></em>.***&gt;
 wrote:</p>
 <blockquote>
-<p>@SonOfLilit <a href="https://github.com/SonOfLilit">https://github.com/SonOfLilit</a> ruff outputs aren't identical
+<p>@SonOfLilit <a href="https://github.com/SonOfLilit">https://github.com/SonOfLilit</a> ruff outputs aren&#x27;t identical
 to black though</p>
 <p>—
 Reply to this email directly, view it on GitHub
-<a href="https://github.com/astral-sh/ruff/issues/8184#issuecomment-1805389875">https://github.com/astral-sh/ruff/issues/8184#issuecomment-1805389875</a>,
+<a href="https://github.com/astral-sh/ruff/issues/8184#issuecomment-1805389875">astral-sh/ruff#8184</a>,
 or unsubscribe
 <a href="https://github.com/notifications/unsubscribe-auth/AAADU7OIFELZ34GIE6LCLE3YDXYX7AVCNFSM6AAAAAA6OJRBJWVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMYTQMBVGM4DSOBXGU">https://github.com/notifications/unsubscribe-auth/AAADU7OIFELZ34GIE6LCLE3YDXYX7AVCNFSM6AAAAAA6OJRBJWVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMYTQMBVGM4DSOBXGU</a>
 .
@@ -183,12 +183,12 @@ You are receiving this because you were mentioned.Message ID:
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-11-13 17:43</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-13 17:43</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-13 17:48</div>
             <div class="timeline-body"><p>We now perform this validation during tests.</p>
-<p>Interestingly, in implementing this validation, I learned that Black actually <em>does</em> modify the AST during formatting, and so Ruff does too :) Namely, Black modifies indentation within docstrings, which is reflected in the AST; and Black will also parenthesize long <code>del</code> statements (e.g., convert <code>del a, b</code> to <code>del (a, b</code>)), which doesn't change the semantics but does change the AST.</p>
+<p>Interestingly, in implementing this validation, I learned that Black actually <em>does</em> modify the AST during formatting, and so Ruff does too :) Namely, Black modifies indentation within docstrings, which is reflected in the AST; and Black will also parenthesize long <code>del</code> statements (e.g., convert <code>del a, b</code> to <code>del (a, b</code>)), which doesn&#x27;t change the semantics but does change the AST.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -205,7 +205,7 @@ Is there an option to use this at runtime like in black?</p>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:48:43 UTC
+        Synced at 2026-01-20 18:48:44 UTC
     </footer>
 </body>
 </html>

@@ -23,27 +23,27 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ryanhuanli">@ryanhuanli</a></div>
-            <div class="timeline-body"><p>I'm working in a version control system that all files are symlinks to a shared cache system (to save space).
+            <div class="timeline-body"><p>I&#x27;m working in a version control system that all files are symlinks to a shared cache system (to save space).
 So I need to use -L (--follow), otherwise ripgrep hit nothing.</p>
 <p>-L turning on two things together:</p>
 <ol>
 <li>when linking to file, it greps</li>
 <li>when linking to directory, it recursively search within</li>
 </ol>
-<p>However it's very common that some people have links pointing to
-other directory inside workarea (cause duplication or deep recursive) or something outside workarea which I don't really care,
+<p>However it&#x27;s very common that some people have links pointing to
+other directory inside workarea (cause duplication or deep recursive) or something outside workarea which I don&#x27;t really care,
 so what I really need is only #1(file), but not #2(dir).</p>
-<p>fdfind have a similar case where it handles with '-type l', which ONLY do #1 (to include links pointing to file),
+<p>fdfind have a similar case where it handles with &#x27;-type l&#x27;, which ONLY do #1 (to include links pointing to file),
 and -L only do #2(dir recursively).</p>
 <p>It will be great if I can control this separately in ripgrep, or if there is any way to workaround .
-I currently have to add all these dir links to ignore list whenever I'm getting hit ...</p>
+I currently have to add all these dir links to ignore list whenever I&#x27;m getting hit ...</p>
 <p>Thanks!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-10-21 20:51</div>
             <div class="timeline-body"><p>Could you please provide a reproduction along with actual output and expected output? Just to make sure we are on the same page.</p>
-<p>IMO, this is not actually &quot;very common,&quot; so I'm skeptical of the motivation for this. Certainly, the meaning of <code>-L</code> at least isn't going to change. Adding new flags seems like a pretty subtle thing for this.</p>
+<p>IMO, this is not actually &quot;very common,&quot; so I&#x27;m skeptical of the motivation for this. Certainly, the meaning of <code>-L</code> at least isn&#x27;t going to change. Adding new flags seems like a pretty subtle thing for this.</p>
 <p>The only work arounds I can think of at present are to use ignore files (as you point out), or to use hard links for files.</p>
 </div>
         </div>
@@ -55,7 +55,7 @@ I currently have to add all these dir links to ignore list whenever I'm getting 
 <p>Sure here is a case in your regression test format:
 1/2 are current behavior.
 and 3 is what I hope it could do w/ new option</p>
-<pre><code class="language-rust">rgtest!(r9999, |dir: Dir, mut cmd: TestCommand| {
+<pre><code>rgtest!(r9999, |dir: Dir, mut cmd: TestCommand| {
     dir.create_dir (&quot;regular_dir&quot;);
     dir.create     (&quot;regular_dir/regular_file&quot;, &quot;line1\nkeyword\nline2\n&quot;);
     dir.link_file  (&quot;regular_dir/regular_file&quot;, &quot;regular_dir/link_file&quot;, );
@@ -86,59 +86,59 @@ regular_dir/regular_file
 });
 </code></pre>
 <blockquote>
-<p>IMO, this is not actually &quot;very common,&quot; so I'm skeptical of the motivation for this.</p>
+<p>IMO, this is not actually &quot;very common,&quot; so I&#x27;m skeptical of the motivation for this.</p>
 </blockquote>
 <p>I suppose you are talking about all files being link,
-yes, it's not common in software world,
-but I'm in Semiconductor Industry, we have a lot of huge files,
+yes, it&#x27;s not common in software world,
+but I&#x27;m in Semiconductor Industry, we have a lot of huge files,
 so nearly all version control systems (DesignSync/SOS, etc.) chosen by the companies have link cache system,
 to take less disk space and checkout time.</p>
 <blockquote>
-<p>Certainly, the meaning of <code>-L</code> at least isn't going to change. Adding new flags seems like a pretty subtle thing for this.</p>
+<p>Certainly, the meaning of <code>-L</code> at least isn&#x27;t going to change. Adding new flags seems like a pretty subtle thing for this.</p>
 </blockquote>
-<p>Agree, I'm not suggesting changing default, just wish more precise control on links w/ new option.</p>
+<p>Agree, I&#x27;m not suggesting changing default, just wish more precise control on links w/ new option.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ComedyTomedy">@ComedyTomedy</a> on 2022-07-22 14:58</div>
             <div class="timeline-body"><p>I was about to open a new issue, when I saw this very similar one.</p>
-<p>Is there any reason why the default behaviour (without flags) shouldn't be to treat symlinks that point to regular files as if they were regular files themselves? Soft links to directories would of course still be skipped, as suggested above.</p>
+<p>Is there any reason why the default behaviour (without flags) shouldn&#x27;t be to treat symlinks that point to regular files as if they were regular files themselves? Soft links to directories would of course still be skipped, as suggested above.</p>
 <blockquote>
-<p>IMO, this is not actually &quot;very common,&quot; so I'm skeptical of the motivation for this.</p>
+<p>IMO, this is not actually &quot;very common,&quot; so I&#x27;m skeptical of the motivation for this.</p>
 </blockquote>
-<p>A lot of people <em>do</em> symlink regular files -- It's quite common to symlink dotfiles in order to synchronise or version control them without checking in (or synching) one's entire home directory. GNU Stow would be one example, but there are many others. I believe Nix does a system-wide version, so for NixOS users <code>rg</code> might be unusuable or at least silently give &quot;wrong&quot; results.</p>
-<p>Equally if symlinking files isn't common among software developers, there might be little negative impact from changing the default behaviour ;)</p>
-<p>For now I'll add <code>-L</code> to an alias, but following symlinks to other parts of the filesystem isn't usually what I'd want (ideally)</p>
+<p>A lot of people <em>do</em> symlink regular files -- It&#x27;s quite common to symlink dotfiles in order to synchronise or version control them without checking in (or synching) one&#x27;s entire home directory. GNU Stow would be one example, but there are many others. I believe Nix does a system-wide version, so for NixOS users <code>rg</code> might be unusuable or at least silently give &quot;wrong&quot; results.</p>
+<p>Equally if symlinking files isn&#x27;t common among software developers, there might be little negative impact from changing the default behaviour ;)</p>
+<p>For now I&#x27;ll add <code>-L</code> to an alias, but following symlinks to other parts of the filesystem isn&#x27;t usually what I&#x27;d want (ideally)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-07-22 15:56</div>
             <div class="timeline-body"><blockquote>
-<p>Equally if symlinking files isn't common among software developers</p>
+<p>Equally if symlinking files isn&#x27;t common among software developers</p>
 </blockquote>
-<p>That isn't what I said. Obviously symlinking itself is common. What I was saying wasn't common was this: &quot;all files are symlinks to a shared cache system.&quot;</p>
+<p>That isn&#x27;t what I said. Obviously symlinking itself is common. What I was saying wasn&#x27;t common was this: &quot;all files are symlinks to a shared cache system.&quot;</p>
 <blockquote>
-<p>Is there any reason why the default behaviour (without flags) shouldn't be to treat symlinks that point to regular files as if they were regular files themselves?</p>
+<p>Is there any reason why the default behaviour (without flags) shouldn&#x27;t be to treat symlinks that point to regular files as if they were regular files themselves?</p>
 </blockquote>
 <p>One reason is probably that this is how existing recursive grep tools work. The other reason is probably the reason why those grep tools chose that behavior: searching symlinks by default, even if just limited to files, is not unlikely to lead to undesirable behavior, like searching and reporting the results for identical files multiple times.</p>
-<p>Personally, I'd still rather that folks used the <code>-L</code> flag here and used an ignore file to tell ripgrep to ignore whatever directories you don't want. I am not particularly keen on adding a new flag for this.</p>
+<p>Personally, I&#x27;d still rather that folks used the <code>-L</code> flag here and used an ignore file to tell ripgrep to ignore whatever directories you don&#x27;t want. I am not particularly keen on adding a new flag for this.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ComedyTomedy">@ComedyTomedy</a> on 2022-07-22 18:43</div>
-            <div class="timeline-body"><p>That's reasonable. <code>-L</code> will pretty much always do what I want anyway - just wanted to make the suggestion in case it had been overlooked. Thanks for the quick and considered response!</p>
+            <div class="timeline-body"><p>That&#x27;s reasonable. <code>-L</code> will pretty much always do what I want anyway - just wanted to make the suggestion in case it had been overlooked. Thanks for the quick and considered response!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2023-11-13 15:51</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-13 15:51</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2023-11-13 15:51</div>
+            <div class="event">Label <span class="label">wontfix</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-13 15:51</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:43:27 UTC
+        Synced at 2026-01-20 18:48:11 UTC
     </footer>
 </body>
 </html>

@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charlesnicholson">@charlesnicholson</a></div>
-            <div class="timeline-body"><p>I'm running uv v0.1.27 on GitHub Actions on macOS x64, Linux x64, and Windows x64 runners. All jobs in my matrix succeed except for the Windows one, which reliably crashes out with an interesting OS error about a file being partially locked.</p>
+            <div class="timeline-body"><p>I&#x27;m running uv v0.1.27 on GitHub Actions on macOS x64, Linux x64, and Windows x64 runners. All jobs in my matrix succeed except for the Windows one, which reliably crashes out with an interesting OS error about a file being partially locked.</p>
 <p>I suspect it comes from the ninja build engine aggressively invoking multiple instances of uv very closely in time; when I turn on the timestamps I see the following:</p>
 <pre><code>Tue, 02 Apr 2024 00:11:28 GMT [33/298] UV //fi.package:fi.package__editable_install(//gntools/toolchains:msvc)
 Tue, 02 Apr 2024 00:11:31 GMT FAILED: bin/venv/gn_stamps/fi.package_editable_install.timestamp 
@@ -34,45 +34,45 @@ Tue, 02 Apr 2024 00:11:31 GMT [35/298] UV //fi.otherpackage:fi.otherpackage__edi
 Tue, 02 Apr 2024 00:11:31 GMT ninja: build stopped: subcommand failed.
 </code></pre>
 <p>The <code>fi_run.py</code> is just a wrapper that stamps a file on success, and sets optional environment variables in the process it launches (we use <code>VIRTUAL_ENV</code> to point uv at the right directory).</p>
-<p>It looks like <code>fi.package</code> and <code>fi.otherpackage</code> are both being scheduled for concurrent execution by ninja. Each one runs <code>uv pip install -e path/to/package</code>, and the <code>uv</code> instances seem to be fighting for a lock of some kind? (The <code>WHEEL</code> command doesn't use <code>uv</code> but does use the venv to run <code>python -m build ...</code>. I don't suspect it yet...)</p>
-<p>When I re-introduce a build lane (pool) of size 1, which forces ninja to only schedule one <code>uv</code> instance at a time, Windows succeeds. I've never seen this <code>os error 33</code> issue before, so I suspect it's new with <code>uv</code> as I introduce it into my codebase, and perhaps has something to do with locking the cache or the venv, depending on what it's doing?</p>
-<p>I'm happy to run any experiments with custom branches if it's helpful. Thanks for uv!</p>
+<p>It looks like <code>fi.package</code> and <code>fi.otherpackage</code> are both being scheduled for concurrent execution by ninja. Each one runs <code>uv pip install -e path/to/package</code>, and the <code>uv</code> instances seem to be fighting for a lock of some kind? (The <code>WHEEL</code> command doesn&#x27;t use <code>uv</code> but does use the venv to run <code>python -m build ...</code>. I don&#x27;t suspect it yet...)</p>
+<p>When I re-introduce a build lane (pool) of size 1, which forces ninja to only schedule one <code>uv</code> instance at a time, Windows succeeds. I&#x27;ve never seen this <code>os error 33</code> issue before, so I suspect it&#x27;s new with <code>uv</code> as I introduce it into my codebase, and perhaps has something to do with locking the cache or the venv, depending on what it&#x27;s doing?</p>
+<p>I&#x27;m happy to run any experiments with custom branches if it&#x27;s helpful. Thanks for uv!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-02 02:23</div>
             <div class="timeline-body"><p>Interesting thanks for the all the details!</p>
-<p>We <em>should</em> be robust to concurrent execution (#2730) but I wouldn't be surprised if there were some edge-cases on Windows in particular.</p>
+<p>We <em>should</em> be robust to concurrent execution (#2730) but I wouldn&#x27;t be surprised if there were some edge-cases on Windows in particular.</p>
 <p>cc @konstin</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-04-02 02:23</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-02 02:23</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">windows</span> added by @zanieb on 2024-04-02 02:23</div>
+            <div class="event">Label <span class="label">windows</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-02 02:23</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-04-02 10:05</div>
-            <div class="timeline-body"><p>Is the error from ninja or from uv? For background, we create and lock <code>bin/venv/.lock</code> to prevent concurrent modification of the venv, which should queue <code>fi.package</code> and <code>fi.otherpackage</code> after another. Could it be that in your case uv is too fast for ninja, causing a race where pip was slow enough that this happened sequentially? (we had this kind of error happen before (https://github.com/python/cpython/issues/75953#issuecomment-1846131495))</p>
+            <div class="timeline-body"><p>Is the error from ninja or from uv? For background, we create and lock <code>bin/venv/.lock</code> to prevent concurrent modification of the venv, which should queue <code>fi.package</code> and <code>fi.otherpackage</code> after another. Could it be that in your case uv is too fast for ninja, causing a race where pip was slow enough that this happened sequentially? (we had this kind of error happen before (<a href="https://github.com/python/cpython/issues/75953">python/cpython#75953</a>#issuecomment-1846131495))</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charlesnicholson">@charlesnicholson</a> on 2024-04-02 12:33</div>
-            <div class="timeline-body"><p>It seems unlikely that the error would lie in ninja, but of course it's possible.</p>
+            <div class="timeline-body"><p>It seems unlikely that the error would lie in ninja, but of course it&#x27;s possible.</p>
 <p>FWIW ninja is used to build chrome on windows 100s of times per day on Google CI, and chrome has ~50k+ targets, many of which complete in ~1ms. Over the past 10+ years, that ninja-scheduled build hits pretty much every race condition that can exist, at every level of the stack! :)</p>
-<p>I'll do a few experiments outside of our build and ninja, maybe I can tease it out in a raw python/C++ example on my Win11 machine.</p>
-<p>It may well be my output timestamp code, but the build system errors if any targets write to the same output file. Things are happening very quickly, though, so I'll also look into whether we're explicitly flushing all of our disk io.</p>
+<p>I&#x27;ll do a few experiments outside of our build and ninja, maybe I can tease it out in a raw python/C++ example on my Win11 machine.</p>
+<p>It may well be my output timestamp code, but the build system errors if any targets write to the same output file. Things are happening very quickly, though, so I&#x27;ll also look into whether we&#x27;re explicitly flushing all of our disk io.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-04-02 12:47</div>
-            <div class="timeline-body"><p>Could you try <code>konsti/add-filename-to-like-error</code> (https://github.com/astral-sh/uv/compare/konsti/add-filename-to-like-error) to check if we get more context? It looks like the locking doesn't go through fs_err, that's why it has degraded error messages without filenames (sorry for assuming this was ninja initially, i incorrectly assume we had added filenames / context to all error messages)</p>
+            <div class="timeline-body"><p>Could you try <code>konsti/add-filename-to-like-error</code> (https://github.com/astral-sh/uv/compare/konsti/add-filename-to-like-error) to check if we get more context? It looks like the locking doesn&#x27;t go through fs_err, that&#x27;s why it has degraded error messages without filenames (sorry for assuming this was ninja initially, i incorrectly assume we had added filenames / context to all error messages)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charlesnicholson">@charlesnicholson</a> on 2024-04-02 13:20</div>
-            <div class="timeline-body"><p>No apology needed; it wasn't the best bug report: &quot;hey, your tool may or may not be crashing, here are logs from my build system with 3+ layers of indirection before it hits your tool&quot; :)</p>
+            <div class="timeline-body"><p>No apology needed; it wasn&#x27;t the best bug report: &quot;hey, your tool may or may not be crashing, here are logs from my build system with 3+ layers of indirection before it hits your tool&quot; :)</p>
 <p>Anyway, I tried your branch and the logs showed this:</p>
 <pre><code>error: Could not try lock bin\venv\.lock: The process cannot access the file because another process has locked a portion of the file. (os error 33)
 </code></pre>
@@ -81,17 +81,17 @@ Tue, 02 Apr 2024 00:11:31 GMT ninja: build stopped: subcommand failed.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-04-02 13:24</div>
-            <div class="timeline-body"><p>Oh it's the try part that fails! I'll see about a PR that handles that better tomorrow, we assumed we're getting a <code>std::io::ErrorKind::WouldBlock</code> but apparently we aren't.</p>
+            <div class="timeline-body"><p>Oh it&#x27;s the try part that fails! I&#x27;ll see about a PR that handles that better tomorrow, we assumed we&#x27;re getting a <code>std::io::ErrorKind::WouldBlock</code> but apparently we aren&#x27;t.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charlesnicholson">@charlesnicholson</a> on 2024-04-02 13:26</div>
-            <div class="timeline-body"><p>Nice! Feel free to ping me here if you'd like me to try any PR branches. I'm holding steady by just having the dedicated uv build lane only for the Windows build; uv has been a huge speedup over pip even when running 100% serially.</p>
+            <div class="timeline-body"><p>Nice! Feel free to ping me here if you&#x27;d like me to try any PR branches. I&#x27;m holding steady by just having the dedicated uv build lane only for the Windows build; uv has been a huge speedup over pip even when running 100% serially.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-04-03 08:57</div>
-            <div class="timeline-body"><p>Could you try https://github.com/astral-sh/uv/pull/2800? I've reproduced the failure on windows and this fixes it</p>
+            <div class="timeline-body"><p>Could you try <a href="https://github.com/astral-sh/uv/pull/2800">astral-sh/uv#2800</a>? I&#x27;ve reproduced the failure on windows and this fixes it</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -100,12 +100,12 @@ Tue, 02 Apr 2024 00:11:31 GMT ninja: build stopped: subcommand failed.
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @konstin on 2024-04-03 14:02</div>
+            <div class="event">Closed by <a href="https://github.com/konstin">@konstin</a> on 2024-04-03 14:02</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:24:34 UTC
+        Synced at 2026-01-20 19:30:42 UTC
     </footer>
 </body>
 </html>

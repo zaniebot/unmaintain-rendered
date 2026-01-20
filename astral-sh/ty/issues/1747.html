@@ -23,11 +23,11 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/BHSPitMonkey">@BHSPitMonkey</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>Examples: https://play.ty.dev/e6628610-7be6-4090-82ca-d1cadf92e85f</p>
 <p>Beginning with the <code>alpha.28</code> release (and still happening as of <code>alpha.30</code>), ty emits <code>invalid-type-form</code> for valid types that happen to share a name with an instance method.</p>
 <p>Example involving the <code>set</code> builtin:</p>
-<pre><code class="language-python">class Foo:
+<pre><code>class Foo:
   def set(self) -&gt; None:
     pass
 
@@ -41,7 +41,7 @@
 Variable of type `def set(self) -&gt; None` is not allowed in a type expression
 </code></pre>
 <p>Example using a non-builtin type:</p>
-<pre><code class="language-python">from datetime import datetime
+<pre><code>from datetime import datetime
 
 class Foo:
   def datetime(self) -&gt; None:
@@ -52,17 +52,17 @@ class Foo:
 </code></pre>
 <pre><code>Variable of type `def datetime(self) -&gt; None` is not allowed
 </code></pre>
-<h3>Version</h3>
+Version
 <p>ty 0.0.1-alpha.28, ty 0.0.1-alpha.29, ty 0.0.1-alpha.30</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @sharkdp on 2025-12-03 20:02</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-03 20:02</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-03 20:04</div>
             <div class="timeline-body"><p>Thank you for reporting this.</p>
-<p>Pyright seems to support this, but mypy and pyrefly also think that something is wrong here. I think it's reasonable for <code>ty</code> to assume that <code>set</code> refers to the <em>symbol in the same scope of the same name</em>, even if that happens to be a function definition. I would advise to disambiguate the name of the type by using an <code>as</code>-import, a type alias, a fully qualified name or similar.</p>
+<p>Pyright seems to support this, but mypy and pyrefly also think that something is wrong here. I think it&#x27;s reasonable for <code>ty</code> to assume that <code>set</code> refers to the <em>symbol in the same scope of the same name</em>, even if that happens to be a function definition. I would advise to disambiguate the name of the type by using an <code>as</code>-import, a type alias, a fully qualified name or similar.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -83,23 +83,23 @@ Traceback (most recent call last):
   File &quot;&lt;python-input-0&gt;&quot;, line 5, in Foo
     def bar(self) -&gt; set[int]:  # invalid-type-form
                      ~~~^^^^^
-TypeError: 'function' object is not subscriptable
+TypeError: &#x27;function&#x27; object is not subscriptable
 </code></pre>
-<p>IMO it's unfortunate that there has been confusion in the past around these name resolution rules (contributed to both by type-checkers and the behavior of <code>typing.get_type_hints</code> with string annotations), but I think it's clear that using normal resolution rules is the least confusing and most consistent path forward.</p>
+<p>IMO it&#x27;s unfortunate that there has been confusion in the past around these name resolution rules (contributed to both by type-checkers and the behavior of <code>typing.get_type_hints</code> with string annotations), but I think it&#x27;s clear that using normal resolution rules is the least confusing and most consistent path forward.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2025-12-03 20:21</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2025-12-03 20:21</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BHSPitMonkey">@BHSPitMonkey</a> on 2025-12-03 20:43</div>
-            <div class="timeline-body"><p>Thanks for clarifying, that makes sense! I only thought to compare against Pyright's behavior, but I see what you mean about adhering to how Python treats the (class) local scope here. I'll get around this by using <code>-&gt; builtins.set[...]</code> in our code.</p>
+            <div class="timeline-body"><p>Thanks for clarifying, that makes sense! I only thought to compare against Pyright&#x27;s behavior, but I see what you mean about adhering to how Python treats the (class) local scope here. I&#x27;ll get around this by using <code>-&gt; builtins.set[...]</code> in our code.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/correctmost">@correctmost</a> on 2025-12-03 21:05</div>
             <div class="timeline-body"><p>I have seen a similar <code>invalid-type-form</code> warning in the archinstall codebase where ty is the only type checker to issue a warning:</p>
-<pre><code class="language-python">from __future__ import annotations
+<pre><code>from __future__ import annotations
 import uuid
 from enum import Enum
 
@@ -110,14 +110,14 @@ class PartitionGUID(Enum):
         return uuid.UUID(self.value).bytes
 </code></pre>
 <p>Pyrefly, Pyright, mypy, and zuban do not emit type-form warnings for the same code, and the code also works at runtime.  (ty does not warn about the code if <code>from __future__ import annotations</code> is removed.)</p>
-<p>I don't know if that possibly changes this bug's resolution, but I thought I'd at least mention a case where ty seems to differ in behavior from other major type checkers.</p>
+<p>I don&#x27;t know if that possibly changes this bug&#x27;s resolution, but I thought I&#x27;d at least mention a case where ty seems to differ in behavior from other major type checkers.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BHSPitMonkey">@BHSPitMonkey</a> on 2025-12-03 21:17</div>
-            <div class="timeline-body"><p>@correctmost That's the same case discussed above; It works at runtime because Python doesn't enforce type annotations, but in the <code>class PartitionGUID</code> scope the Python runtime would interpret <code>bytes</code> as a reference to the property instead of the builtin (e.g. if you added a class variable <code>foo = bytes</code>, it would refer to the property).</p>
-<p>You can use the same workaround I'm using, e.g.:</p>
-<pre><code class="language-python">from __future__ import annotations
+            <div class="timeline-body"><p>@correctmost That&#x27;s the same case discussed above; It works at runtime because Python doesn&#x27;t enforce type annotations, but in the <code>class PartitionGUID</code> scope the Python runtime would interpret <code>bytes</code> as a reference to the property instead of the builtin (e.g. if you added a class variable <code>foo = bytes</code>, it would refer to the property).</p>
+<p>You can use the same workaround I&#x27;m using, e.g.:</p>
+<pre><code>from __future__ import annotations
 import builtins
 import uuid
 from enum import Enum
@@ -135,7 +135,7 @@ class PartitionGUID(Enum):
             <div class="timeline-body"><p>Thanks @correctmost for the additional example!</p>
 <p>For stringified annotations (<code>from __future__ import annotations</code>), runtime never even evaluates the annotation. <code>typing.get_type_hints</code> will evaluate the stringified annotation, but it has a special-case internally to swap the local and global namespaces, so the global namespace is preferred over the local one.</p>
 <p>This example works for mypy, pyrefly, and zuban for an entirely different reason than it &quot;works&quot; in <code>get_type_hints</code>. They do not implement the same namespace-swapping that <code>get_type_hints</code> does (and pyright does), which is clear because they all complain about the annotation on <code>foo</code> here:</p>
-<pre><code class="language-py">from __future__ import annotations
+<pre><code>from __future__ import annotations
 
 class C:
     def bytes(self) -&gt; bytes:  # mypy, pyrefly, zuban are all OK with this
@@ -145,7 +145,7 @@ class C:
         return self.bytes()
 </code></pre>
 <p>At runtime, names in type annotations with <code>from __future__ import annotations</code> are only evaluated if you explicitly ask for their evaluation, and not immediately. This means they can be forward references. Ty models this accurately, and thus (with <code>from __future__ import annotations</code>) we consider the annotation <code>bytes</code> in <code>def bytes(self) -&gt; bytes:</code> to be a forward-reference to that same method.</p>
-<p>Note that in Python 3.14, with PEP 649/749, annotations are deferred by default (without stringifying them), and <code>from __future__ import annotations</code> will become deprecated in future. And the behavior of Python 3.14 at runtime matches ty's behavior:</p>
+<p>Note that in Python 3.14, with PEP 649/749, annotations are deferred by default (without stringifying them), and <code>from __future__ import annotations</code> will become deprecated in future. And the behavior of Python 3.14 at runtime matches ty&#x27;s behavior:</p>
 <pre><code>Python 3.14.0rc2 (main, Aug 28 2025, 17:02:21) [Clang 20.1.4 ] on darwin
 Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
 &gt;&gt;&gt; class C:
@@ -153,38 +153,38 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
 ...         return b&quot;&quot;
 ...
 &gt;&gt;&gt; C.bytes.__annotations__
-{'return': &lt;function C.bytes at 0x1048607d0&gt;}
+{&#x27;return&#x27;: &lt;function C.bytes at 0x1048607d0&gt;}
 </code></pre>
-<p>So it still seems to me that ty's behavior here is the most consistent, and that the best thing to do with such annotations is to disambiguate them, which will give full compatibility across all type checkers and future runtime behavior.</p>
+<p>So it still seems to me that ty&#x27;s behavior here is the most consistent, and that the best thing to do with such annotations is to disambiguate them, which will give full compatibility across all type checkers and future runtime behavior.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-03 22:14</div>
-            <div class="timeline-body"><p>Since this is clearly a subtle issue that other people are likely to run into, and there's at least some possibility that we might decide to make our behavior less internally consistent in order to improve compatibility with other type checkers (though at the moment I'm not convinced we should do this), I'll go ahead and reopen this for visibility.</p>
+            <div class="timeline-body"><p>Since this is clearly a subtle issue that other people are likely to run into, and there&#x27;s at least some possibility that we might decide to make our behavior less internally consistent in order to improve compatibility with other type checkers (though at the moment I&#x27;m not convinced we should do this), I&#x27;ll go ahead and reopen this for visibility.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @carljm on 2025-12-03 22:14</div>
+            <div class="event">Reopened by <a href="https://github.com/carljm">@carljm</a> on 2025-12-03 22:14</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> removed by @carljm on 2025-12-03 22:14</div>
+            <div class="event">Label <span class="label">question</span> removed by <a href="https://github.com/carljm">@carljm</a> on 2025-12-03 22:14</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> added by @carljm on 2025-12-03 22:14</div>
+            <div class="event">Label <span class="label">needs-decision</span> added by <a href="https://github.com/carljm">@carljm</a> on 2025-12-03 22:14</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Spurious `invalid-type-form` when instance method shares name with a type" to "Consider disallowing forward references to non-global names in `__future__.annotations` (for compatibility" by @carljm on 2025-12-03 22:17</div>
+            <div class="event">Renamed from &quot;Spurious `invalid-type-form` when instance method shares name with a type&quot; to &quot;Consider disallowing forward references to non-global names in `__future__.annotations` (for compatibility&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-12-03 22:17</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-03 22:19</div>
             <div class="timeline-body"><p>To better illustrate the difference between ty and other type checkers, ty supports this forward reference (in Python 3.14, or if <code>from __future__ import annotations</code> is active):</p>
-<pre><code class="language-py">class C:
+<pre><code>class C:
     def foo(self) -&gt; IntAlias:
         return 1
 
     IntAlias = int
 </code></pre>
-<p>Whereas mypy/pyrefly/zuban all error that <code>IntAlias</code> is not defined (but are fine if <code>IntAlias</code> is defined above <code>foo</code> instead). This is what leads to the difference in behavior on @correctmost 's example: ty is the only one to support forward references in non-global scope.</p>
+<p>Whereas mypy/pyrefly/zuban all error that <code>IntAlias</code> is not defined (but are fine if <code>IntAlias</code> is defined above <code>foo</code> instead). This is what leads to the difference in behavior on @correctmost &#x27;s example: ty is the only one to support forward references in non-global scope.</p>
 <p>But at runtime in Python 3.14, the above works fine and the return annotation in <code>__annotations__</code> resolves to <code>int</code>.</p>
 </div>
         </div>
@@ -202,17 +202,17 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">diagnostics</span> added by @MichaReiser on 2025-12-04 06:15</div>
+            <div class="event">Label <span class="label">diagnostics</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-04 06:15</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Consider disallowing forward references to non-global names in `__future__.annotations` (for compatibility" to "Consider disallowing forward references to non-global names in `__future__.annotations` (for compatibility)" by @carljm on 2025-12-18 00:19</div>
+            <div class="event">Renamed from &quot;Consider disallowing forward references to non-global names in `__future__.annotations` (for compatibility&quot; to &quot;Consider disallowing forward references to non-global names in `__future__.annotations` (for compatibility)&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-12-18 00:19</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konn">@konn</a> on 2025-12-19 08:43</div>
-            <div class="timeline-body"><p>Hi, I'm just redirected from #2101. We have a
+            <div class="timeline-body"><p>Hi, I&#x27;m just redirected from #2101. We have a
 case where all the classes/functions are defined in the same module, and that stub file has thousands of auto-generated lines.</p>
 <p>Much simplified version is as follows:</p>
-<pre><code class="language-py">class A: ...
+<pre><code>class A: ...
 
 class B:
     def A(self, name: str) -&gt; A: ...
@@ -225,9 +225,9 @@ class B:
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-22 17:59</div>
             <div class="timeline-body"><p>@konn In your original example, every type checker except pyright will error on the return annotation of <code>return_a</code> method, see e.g. mypy: https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=032b3775e8d655314c535884b76b36e2</p>
-<p>Pyright doesn't error because it copies the local/global namespace swap performed by <code>typing.get_type_hints</code>. It does this even when <code>from __future__ import annotations</code> is not active, which means it gives results which don't match the runtime resolution of annotations.</p>
+<p>Pyright doesn&#x27;t error because it copies the local/global namespace swap performed by <code>typing.get_type_hints</code>. It does this even when <code>from __future__ import annotations</code> is not active, which means it gives results which don&#x27;t match the runtime resolution of annotations.</p>
 <p>The workaround available in your case (or any similar case) is to alias the name to remove ambiguity:</p>
-<pre><code class="language-py">class A: ...
+<pre><code>class A: ...
 _AliasToA = A
 
 class B:
@@ -240,7 +240,7 @@ class B:
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:21:10 UTC
+        Synced at 2026-01-20 19:26:15 UTC
     </footer>
 </body>
 </html>

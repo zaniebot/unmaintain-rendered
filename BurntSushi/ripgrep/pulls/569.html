@@ -25,40 +25,40 @@
             <div class="timeline-header"><a href="https://github.com/okdana">@okdana</a></div>
             <div class="timeline-body"><p>Related to #568</p>
 <p>This makes it so that options that take arguments which might conceivably begin with a leading hyphen actually accept arguments with leading hyphens. And it adds a test to make sure that works.</p>
-<p>IMO, <code>clap</code>'s default behaviour here is really undesirable. I guess it works the way it does because it wants to detect when a user might have given an option without giving a required argument to the previous one, but there's not really any reliable way to discern the user's intent. You're trading one assumption (the POSIX-style assumption that <code>-1</code> in <code>rg -C -1</code> is simply a bad argument to <code>-C</code>) for another one (the assumption that the user tried to use <code>-C</code> without giving it an argument at all). Neither one is more reliable than the other, but the POSIX-style assumption is more consistent and less surprising, i think.</p>
-<p>To that end i tried simply setting <a href="https://docs.rs/clap/2.24.0/clap/enum.AppSettings.html#variant.AllowLeadingHyphen"><code>AppSettings::AllowLeadingHyphen</code></a> on the app to always override that behaviour, but it caused bizarre errors — for example, when i'd run <code>rg -M20 -C1</code> it would interpret <code>-C1</code> as the pattern operand for some reason.</p>
+<p>IMO, <code>clap</code>&#x27;s default behaviour here is really undesirable. I guess it works the way it does because it wants to detect when a user might have given an option without giving a required argument to the previous one, but there&#x27;s not really any reliable way to discern the user&#x27;s intent. You&#x27;re trading one assumption (the POSIX-style assumption that <code>-1</code> in <code>rg -C -1</code> is simply a bad argument to <code>-C</code>) for another one (the assumption that the user tried to use <code>-C</code> without giving it an argument at all). Neither one is more reliable than the other, but the POSIX-style assumption is more consistent and less surprising, i think.</p>
+<p>To that end i tried simply setting <a href="https://docs.rs/clap/2.24.0/clap/enum.AppSettings.html#variant.AllowLeadingHyphen"><code>AppSettings::AllowLeadingHyphen</code></a> on the app to always override that behaviour, but it caused bizarre errors — for example, when i&#x27;d run <code>rg -M20 -C1</code> it would interpret <code>-C1</code> as the pattern operand for some reason.</p>
 <p>So... as a compromise, i added the <code>ArgSettings</code> version to all of the options that accept an arbitrary string. That seems to work, i guess.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @BurntSushi on 2017-07-30 21:55</div>
+            <div class="event">Merged by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-07-30 21:55</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2017-07-30 21:55</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-07-30 21:55</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-07-30 21:56</div>
             <div class="timeline-body"><p>Yup, this seems reasonable to me!</p>
-<p>I agree that it might be worth it for clap to rethink how it does things here, but the last time I dug into it with @kbknapp it seemed more complex than what I had initially thought. I can't remember the details now though.</p>
+<p>I agree that it might be worth it for clap to rethink how it does things here, but the last time I dug into it with @kbknapp it seemed more complex than what I had initially thought. I can&#x27;t remember the details now though.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-07-30 22:43</div>
-            <div class="timeline-body"><p>FWIW This is something I've been thinking about for 3.x  specifically. Granted the work on that has been going <em>far</em> slower than I'd like/anticipated just due to my paid job monopolizing my time as of late.</p>
-<p>The hard part about this issue (for 2.x mind you; 3.x will handle this differently in a manner consistent with the OPs ideas) is knowing when to present which kind of error. 2.x uses almost no backtracking, and must decide which argument it's currently parsing. This sounds simple in most cases, but to do it in the generic case is rather difficult because by default 2.x allows multiple values to be passed in to a single option consecutively (i.e. <code>--option val val</code>). When combined with all other forms of arguments, <em>and</em> providing a solution that works for all applications and not just a single implementation it becomes tricky.</p>
-<p>3.x is tackling this by having more sane defaults. For instance by default only one value per instance of an option, such as <code>--option val --option val</code>, and disallowing empty values by default such as <code>--option val | --option</code>. All the old behavior will become opt-in, rather than opt-out that they currently are. Likewise, values which start with a hyphen should become the default as it'll be easy to detect the complicated case if someone has opt-ed in to all these strange behaviors, making it the exception and no longer the rule.</p>
+            <div class="timeline-body"><p>FWIW This is something I&#x27;ve been thinking about for 3.x  specifically. Granted the work on that has been going <em>far</em> slower than I&#x27;d like/anticipated just due to my paid job monopolizing my time as of late.</p>
+<p>The hard part about this issue (for 2.x mind you; 3.x will handle this differently in a manner consistent with the OPs ideas) is knowing when to present which kind of error. 2.x uses almost no backtracking, and must decide which argument it&#x27;s currently parsing. This sounds simple in most cases, but to do it in the generic case is rather difficult because by default 2.x allows multiple values to be passed in to a single option consecutively (i.e. <code>--option val val</code>). When combined with all other forms of arguments, <em>and</em> providing a solution that works for all applications and not just a single implementation it becomes tricky.</p>
+<p>3.x is tackling this by having more sane defaults. For instance by default only one value per instance of an option, such as <code>--option val --option val</code>, and disallowing empty values by default such as <code>--option val | --option</code>. All the old behavior will become opt-in, rather than opt-out that they currently are. Likewise, values which start with a hyphen should become the default as it&#x27;ll be easy to detect the complicated case if someone has opt-ed in to all these strange behaviors, making it the exception and no longer the rule.</p>
 <p>Those are probably the biggest changes to defaults coming, as those are the most confusing for users from my optic.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-07-30 23:41</div>
-            <div class="timeline-body"><p>@kbknapp Thanks for thinking about this! Can't wait for clap 3.x. :-)</p>
+            <div class="timeline-body"><p>@kbknapp Thanks for thinking about this! Can&#x27;t wait for clap 3.x. :-)</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 18:27:53 UTC
+        Synced at 2026-01-20 18:48:16 UTC
     </footer>
 </body>
 </html>

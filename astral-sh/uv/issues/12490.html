@@ -23,29 +23,29 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/D3nn3">@D3nn3</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>In the past couple of releases, the support for the <code>--constraints</code> flag was added in multiple places to allow an external constraint file when e.g. adding a dependency. What my team is missing is the ability to define a constrain file for <code>uv sync</code>.</p>
-<h3>Example</h3>
-<p>In a project using Airflow we have airflow as an dependency which requires a constraint file. Currently the following isn't possible:</p>
-<pre><code class="language-bash">uv sync --constraint https://url.com/path/to/remote/constraint/file/constraints.txt
+Example
+<p>In a project using Airflow we have airflow as an dependency which requires a constraint file. Currently the following isn&#x27;t possible:</p>
+<pre><code>uv sync --constraint https://url.com/path/to/remote/constraint/file/constraints.txt
 </code></pre>
 <p>This would allow us to easily update all dependency (e.g. also dev dependencies) respecting the constraints without the need for workarounds.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @D3nn3 on 2025-03-26 15:19</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/D3nn3">@D3nn3</a> on 2025-03-26 15:19</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-01 18:52</div>
-            <div class="timeline-body"><p>We're generally hesitant to support constraints in this form. We added them in <code>uv add</code> for import purposes. Allowing them in arbitrary <code>uv lock</code> and <code>sync</code> operations feels contrary to encoding constraints into the project. e.g., would you expect the lockfile to change here?</p>
+            <div class="timeline-body"><p>We&#x27;re generally hesitant to support constraints in this form. We added them in <code>uv add</code> for import purposes. Allowing them in arbitrary <code>uv lock</code> and <code>sync</code> operations feels contrary to encoding constraints into the project. e.g., would you expect the lockfile to change here?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> added by @zanieb on 2025-04-01 18:52</div>
+            <div class="event">Label <span class="label">needs-decision</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-01 18:52</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/D3nn3">@D3nn3</a> on 2025-04-02 12:45</div>
-            <div class="timeline-body"><p>Hey @zanieb , thanks for getting back to me! I totally get your point. Let me maybe explain in more detail what challenges we're facing (which is why I created the ticket). It could also be that our challenges can be solved in a different way 🙂</p>
+            <div class="timeline-body"><p>Hey @zanieb , thanks for getting back to me! I totally get your point. Let me maybe explain in more detail what challenges we&#x27;re facing (which is why I created the ticket). It could also be that our challenges can be solved in a different way 🙂</p>
 <p>Like probably a lot of people opening issues regarding external constraint files, we also have a project for defining airflow DAGs. Our <code>pyproject.toml</code> file has airflow as an dependency and the dependency section might look something like this:</p>
 <pre><code>...
 
@@ -65,40 +65,40 @@ dev = [
 <p>When deploying to Production, we just update the DAGs, which are normal Python modules mounted into the Docker container with a volume (which is the recommended way proposed by airflow). Developing DAGs locally and testing them therefore becomes a bit of a challenge since versions of dependencies differ and unexpected errors on Production can occur like mentioned above.</p>
 <p>We are facing two challenges:</p>
 <ul>
-<li>We'd like to install required dependencies while respecting the constraints defined in the external constraint file by airflow (without listing all of them in our pyproject.toml). This is to guarantee that versions of dependencies are exactly the same as in our Production environment.</li>
-<li>We'd like a way to easily update unrelated dependencies (like ruff in the example) by e.g. doing something like <code>uv sync</code> or <code>uv lock --upgrade</code> while respecting the constraints defined in the external constraint file.</li>
+<li>We&#x27;d like to install required dependencies while respecting the constraints defined in the external constraint file by airflow (without listing all of them in our pyproject.toml). This is to guarantee that versions of dependencies are exactly the same as in our Production environment.</li>
+<li>We&#x27;d like a way to easily update unrelated dependencies (like ruff in the example) by e.g. doing something like <code>uv sync</code> or <code>uv lock --upgrade</code> while respecting the constraints defined in the external constraint file.</li>
 </ul>
 <p>The idea we had was to add the <code>--constraint</code> flag to e.g. <code>uv sync</code>, since in the last couple of release it was added to other commands as well.</p>
-<p>Regarding your question if we'd expect the lockfile to change here: The behavior shouldn't actually differ from the current one! We imagine the <code>--constraint</code> flag to be an additional source for version constraints when checking for compatible versions of dependencies. E.g. in the example mentioned above, uv would see that <code>apache-airflow-providers-http</code> is required as a dependency by airflow, would check the version constraints in the <code>pyproject.toml</code> file and additionally from the constraint file and pick the appropriate version (if one exists). Essentially: it would be the exact same behavior as if we'd copy/paste the constraints from the required dependencies from the external constraint file into the <code>pyproject.toml</code> file.</p>
+<p>Regarding your question if we&#x27;d expect the lockfile to change here: The behavior shouldn&#x27;t actually differ from the current one! We imagine the <code>--constraint</code> flag to be an additional source for version constraints when checking for compatible versions of dependencies. E.g. in the example mentioned above, uv would see that <code>apache-airflow-providers-http</code> is required as a dependency by airflow, would check the version constraints in the <code>pyproject.toml</code> file and additionally from the constraint file and pick the appropriate version (if one exists). Essentially: it would be the exact same behavior as if we&#x27;d copy/paste the constraints from the required dependencies from the external constraint file into the <code>pyproject.toml</code> file.</p>
 <p>As far as we know there is a workaround involving exporting the dependencies in the <code>pyproject.toml</code> file into a <code>requirements.txt</code> file and installing them via pip which supports the constraint flag. But this workaround is a bit cumbersome and an easier (and uv native) solution would be highly appreciated!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jabbera">@jabbera</a> on 2025-04-03 01:26</div>
-            <div class="timeline-body"><p>@zanieb I recently encountered a similar problem, albeit for a distinct reason. As an enterprise, we maintain a global constraint file used throughout our company. This file essentially serves as a prohibited list for packages, as detailed below. We consistently implement the [PIP, UV]_CONSTRAINT environment variable for all employees and automated systems engaged in Python work or builds. This setup ensures that everyone is automatically subscribed to our constraint list by default, with the option to opt-out if necessary. It's essential for lockfiles to adhere to these constraints, as this provides us with an efficient method to quickly rectify company-wide issues associated with a problematic package without needing to individually notify everyone. If we addressed this through package dependencies, it would necessitate extensive package modifications merely to exclude a package likely to be fixed shortly. Following the release of the fix, everyone would then need to reverse those changes. This process creates unnecessary modifications for a problem that could be easily resolved using the constraint file.</p>
+            <div class="timeline-body"><p>@zanieb I recently encountered a similar problem, albeit for a distinct reason. As an enterprise, we maintain a global constraint file used throughout our company. This file essentially serves as a prohibited list for packages, as detailed below. We consistently implement the [PIP, UV]_CONSTRAINT environment variable for all employees and automated systems engaged in Python work or builds. This setup ensures that everyone is automatically subscribed to our constraint list by default, with the option to opt-out if necessary. It&#x27;s essential for lockfiles to adhere to these constraints, as this provides us with an efficient method to quickly rectify company-wide issues associated with a problematic package without needing to individually notify everyone. If we addressed this through package dependencies, it would necessitate extensive package modifications merely to exclude a package likely to be fixed shortly. Following the release of the fix, everyone would then need to reverse those changes. This process creates unnecessary modifications for a problem that could be easily resolved using the constraint file.</p>
 <p>Specifically, I need it on the lock command. I am impartial if the sync command supports it.</p>
 <pre><code>pyodbc!=5.0.0,!=4.0.34
-bokeh!=3.3.*  # https://github.com/bokeh/bokeh/issues/13521
-pydantic!=2.5.0 # https://github.com/pydantic/pydantic/issues/8096
-osqp!=1.0.2 # https://github.com/osqp/osqp/issues/728. Busted wheels
+bokeh!=3.3.*  # <a href="https://github.com/bokeh/bokeh/issues/13521">bokeh/bokeh#13521</a>
+pydantic!=2.5.0 # <a href="https://github.com/pydantic/pydantic/issues/8096">pydantic/pydantic#8096</a>
+osqp!=1.0.2 # <a href="https://github.com/osqp/osqp/issues/728">osqp/osqp#728</a>. Busted wheels
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/emiliadecaudin">@emiliadecaudin</a> on 2025-05-02 18:20</div>
-            <div class="timeline-body"><p>Hi all; as a heavy Airflow user, I'm wrestling this question as well. One solution that I'd be interested in would be to support putting constraint URLs directly in <code>tool.uv.constraint-dependencies</code>. This would allow having a fixed reference to a constraints URL (which could be compiled to an actual list of constraints in uv.lock) and obviate the need to paste a whole list of constraints into <code>tool.uv.constraint-dependencies</code>, as well as the worry that running <code>uv lock --upgrade</code> will undo any constraints added using <code>uv add --constraint</code>.</p>
+            <div class="timeline-body"><p>Hi all; as a heavy Airflow user, I&#x27;m wrestling this question as well. One solution that I&#x27;d be interested in would be to support putting constraint URLs directly in <code>tool.uv.constraint-dependencies</code>. This would allow having a fixed reference to a constraints URL (which could be compiled to an actual list of constraints in uv.lock) and obviate the need to paste a whole list of constraints into <code>tool.uv.constraint-dependencies</code>, as well as the worry that running <code>uv lock --upgrade</code> will undo any constraints added using <code>uv add --constraint</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/guilhem-dvr">@guilhem-dvr</a> on 2025-06-18 15:18</div>
-            <div class="timeline-body"><p>I've faced the challenges described by @D3nn3 multiple times, in the past with a pyspark project running in Databricks, and now in an airflow project running in Cloud Composer. Both services provide constraints files/lists:</p>
+            <div class="timeline-body"><p>I&#x27;ve faced the challenges described by @D3nn3 multiple times, in the past with a pyspark project running in Databricks, and now in an airflow project running in Cloud Composer. Both services provide constraints files/lists:</p>
 <ul>
 <li>Databricks Runtime images: https://docs.databricks.com/aws/en/release-notes/runtime/16.4lts#installed-python-libraries</li>
 <li>Cloud Composer images: https://cloud.google.com/composer/docs/composer-versions#images-composer-3</li>
 </ul>
 <p>A solution could be to manually lock the constraints in the project, but:</p>
 <ol>
-<li>it's a tedious process - those constraints files can be fairly large - and it forces the user to install all the dependencies when developing</li>
+<li>it&#x27;s a tedious process - those constraints files can be fairly large - and it forces the user to install all the dependencies when developing</li>
 <li>it makes upgrading a service version much harder</li>
 </ol>
 <p>Having at least a <code>--constraint</code> option on <code>uv lock</code> would be convenient to a. safely upgrade dependencies and b. check that a project still matches some external constraints.</p>
@@ -107,7 +107,7 @@ osqp!=1.0.2 # https://github.com/osqp/osqp/issues/728. Busted wheels
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Logan-Pageler">@Logan-Pageler</a> on 2025-09-10 18:03</div>
-            <div class="timeline-body"><p>I'm also in favor of @emiliadecaudin idea of supporting constraint urls with <code>tool.uv.constraint-dependencies</code> .</p>
+            <div class="timeline-body"><p>I&#x27;m also in favor of @emiliadecaudin idea of supporting constraint urls with <code>tool.uv.constraint-dependencies</code> .</p>
 <p>We use a constraint file to mange a bunch of jupyter environments and a cluster of computers for parallel computing. We want our workspaces to follow this constraint file, but currently we just copy and paste it into the <code>pyproject.toml</code> file when we make updates. It would be very useful to not have to do this as its easy to forget.</p>
 </div>
         </div>
@@ -115,19 +115,19 @@ osqp!=1.0.2 # https://github.com/osqp/osqp/issues/728. Busted wheels
             <div class="timeline-header">Comment by <a href="https://github.com/prakharcode">@prakharcode</a> on 2025-12-08 14:34</div>
             <div class="timeline-body"><p>Just here to add, that I am facing the same problem.
 Adding a large constraint file (copy pasted) from airflow to the <code>pyproject.toml</code> is very prone to errors.</p>
-<p>Supporting a file based constraints would be ideal. Currently there is a way to do <code>uv pip install -r requirements.txt --constraints constraints.txt</code> but this is not nice and 'non' uv way.</p>
+<p>Supporting a file based constraints would be ideal. Currently there is a way to do <code>uv pip install -r requirements.txt --constraints constraints.txt</code> but this is not nice and &#x27;non&#x27; uv way.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-08 15:06</div>
-            <div class="timeline-body"><p>@prakharcode sounds like you could use https://github.com/astral-sh/uv/issues/16508</p>
+            <div class="timeline-body"><p>@prakharcode sounds like you could use <a href="https://github.com/astral-sh/uv/issues/16508">astral-sh/uv#16508</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/hvanvoorhis">@hvanvoorhis</a> on 2025-12-11 23:05</div>
             <div class="timeline-body"><p>or maybe</p>
 <pre><code>[tool.uv]
-constraint-dependency-urls = ['http://airflow...','http://databricks']
+constraint-dependency-urls = [&#x27;http://airflow...&#x27;,&#x27;http://databricks&#x27;]
 </code></pre>
 <p>then we can specify the external constraint URL like Databricks, airflow etc use.</p>
 </div>
@@ -135,7 +135,7 @@ constraint-dependency-urls = ['http://airflow...','http://databricks']
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:30:39 UTC
+        Synced at 2026-01-20 19:37:58 UTC
     </footer>
 </body>
 </html>

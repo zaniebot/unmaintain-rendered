@@ -23,23 +23,23 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Currently we have a branch near the top of <code>Type::has_relation_to_impl</code> that returns <code>ConstraintSet::from(true)</code> if the l.h.s. is a typevar <code>T</code> and the right-hand side is a union <code>U</code> where <code>T</code> is one of the elements of <code>U</code>:</p>
 <p>https://github.com/astral-sh/ruff/blob/337e3ebd27407f50b96dd686631c4ac4697fa973/crates/ty_python_semantic/src/types/relation.rs#L463-L475</p>
-<p>But this branch isn't only correct for type variables! In general, it is true for <em>any</em> type <code>T</code> that it will be assignable to, redundant with, and -- in some cases -- a subtype of a union <code>U</code> if <code>T</code> is contained within the elements of <code>U</code>. The branch is only <em>necessary</em> for type variables, because for non-type-variables we apply a more generalized handling lower down here:</p>
+<p>But this branch isn&#x27;t only correct for type variables! In general, it is true for <em>any</em> type <code>T</code> that it will be assignable to, redundant with, and -- in some cases -- a subtype of a union <code>U</code> if <code>T</code> is contained within the elements of <code>U</code>. The branch is only <em>necessary</em> for type variables, because for non-type-variables we apply a more generalized handling lower down here:</p>
 <p>https://github.com/astral-sh/ruff/blob/337e3ebd27407f50b96dd686631c4ac4697fa973/crates/ty_python_semantic/src/types/relation.rs#L730-L739</p>
 <p>But the generalized handling for <code>T &lt;: U</code> can be very slow in certain pathological cases (<em>cough</em> pydantic) where a union type contains very complicated types early on in its list of elements. For example, consider the following scenario: we want to check whether <code>C</code> is a subtype of <code>U</code>, and <code>U</code> is a union with the following elements list:</p>
 <pre><code>-----------
 A | B | C |
 -----------
 </code></pre>
-<p>Unfortunately, <code>A</code> and <code>B</code> are both complex recursive structural types (<em>cough</em> pydantic's huge <code>TypedDict</code>s), and checking whether <code>C</code> is a subtype of <code>A</code> or <code>B</code> is a question that takes us a long time to answer. But with our current generalized handling for determining whether <code>C &lt;: U</code> for a union type <code>U</code>, we <em>must</em> answer these questions before we even ask the question &quot;Is <code>C</code> a subtype of <code>C</code>?&quot;, for which the answer is trivial.</p>
-<p>By extending the trivial <code>if union.elements(db).contains(self)</code> check early on in <code>Type::has_relation_to()</code> to <em>all</em> types (not just type variables), we can achieve a significant speedup over what we have on the <code>main</code> branch. Now, in the above example, we quickly iterate over the elements of <code>U</code> once, discover that <code>C</code> is trivially contained in <code>U</code>'s elements, and return <code>true</code> for the overall subtyping check without ever having to ask whether <code>C</code> is a subtype of <code>A</code> or <code>B</code>.</p>
+<p>Unfortunately, <code>A</code> and <code>B</code> are both complex recursive structural types (<em>cough</em> pydantic&#x27;s huge <code>TypedDict</code>s), and checking whether <code>C</code> is a subtype of <code>A</code> or <code>B</code> is a question that takes us a long time to answer. But with our current generalized handling for determining whether <code>C &lt;: U</code> for a union type <code>U</code>, we <em>must</em> answer these questions before we even ask the question &quot;Is <code>C</code> a subtype of <code>C</code>?&quot;, for which the answer is trivial.</p>
+<p>By extending the trivial <code>if union.elements(db).contains(self)</code> check early on in <code>Type::has_relation_to()</code> to <em>all</em> types (not just type variables), we can achieve a significant speedup over what we have on the <code>main</code> branch. Now, in the above example, we quickly iterate over the elements of <code>U</code> once, discover that <code>C</code> is trivially contained in <code>U</code>&#x27;s elements, and return <code>true</code> for the overall subtyping check without ever having to ask whether <code>C</code> is a subtype of <code>A</code> or <code>B</code>.</p>
 <p>Essentially this means that for <em>any</em> type <code>T</code>, if we want to check whether <code>T</code> is a subtype of a union <code>U</code> we <em>may</em> iterate over the elements of the union twice: once for this fast path to check whether the union trivially contains <code>T</code> in its elements, and (if it is not trivially contained) once again to do the full (slow) <code>has_relation_to_impl</code> check for each element in the union.</p>
-<p>It's perhaps surprising that iterating over the union elements twice would be consistently faster than iterating over the union elements once. However, the Codspeed results on this PR have very consistently shown some impressive speedups and no performance regressions.</p>
-<h2>Behaviour change</h2>
-<p>As well as achieving a big speedup, this PR also (to my surprise) improves our type-variable solving for <code>Callable</code> types. I've added a regression test for this to the PR:</p>
-<pre><code class="language-py">from typing import Callable
+<p>It&#x27;s perhaps surprising that iterating over the union elements twice would be consistently faster than iterating over the union elements once. However, the Codspeed results on this PR have very consistently shown some impressive speedups and no performance regressions.</p>
+Behaviour change
+<p>As well as achieving a big speedup, this PR also (to my surprise) improves our type-variable solving for <code>Callable</code> types. I&#x27;ve added a regression test for this to the PR:</p>
+<pre><code>from typing import Callable
 
 class Box[T]:
     def get(self) -&gt; T:
@@ -52,24 +52,24 @@ def get_int() -&gt; int | None: ...
 
 reveal_type(my_iter(get_int))  # `main`: Box[int | None]`; PR: Box[int]
 </code></pre>
-<p>I've stared at it for a while, but I don't <em>fully</em> understand why this PR fixes the bug. It makes me a bit nervous, because I worry that the bug is still there <em>somewhere</em> else in our code, and that this PR merely papers over the bug somehow. But @carljm encouraged me to open this up for review, so that's what I'm doing! I'm curious if the reason for the behaviour change is obvious to somebody else.</p>
-<p>This behaviour change has a significant, positive impact on the ecosystem, because of typeshed's third overload for <code>builtins.iter()</code>:</p>
+<p>I&#x27;ve stared at it for a while, but I don&#x27;t <em>fully</em> understand why this PR fixes the bug. It makes me a bit nervous, because I worry that the bug is still there <em>somewhere</em> else in our code, and that this PR merely papers over the bug somehow. But @carljm encouraged me to open this up for review, so that&#x27;s what I&#x27;m doing! I&#x27;m curious if the reason for the behaviour change is obvious to somebody else.</p>
+<p>This behaviour change has a significant, positive impact on the ecosystem, because of typeshed&#x27;s third overload for <code>builtins.iter()</code>:</p>
 <p>https://github.com/astral-sh/ruff/blob/337e3ebd27407f50b96dd686631c4ac4697fa973/crates/ty_vendored/vendor/typeshed/stdlib/builtins.pyi#L3746-L3761</p>
-<h2>Reduction in nondeterminism??</h2>
-<p>I <em>may</em> be imagining it -- and it's very hard to tell -- but I think this PR <em>may</em> reduce our level of nondeterminism? There are still some flakes in the mypy_primer report, but I <em>think</em> the level of flakes on this PR has been consistently lower than I've seen on other ty PRs recently. Since we know that the number of flakes significantly increased after https://github.com/astral-sh/ruff/pull/21551, and we know that this PR impacts our behaviour when solving type variables in <code>Callable</code> types, I wonder if this <em>might</em> also accidentally be improving the situation there somewhat?</p>
-<p>It's again a bit of a mystery to me why this would be the case, however. It's also hard to confirm, since there is definitely still some flakiness in the ecosystem report (and there was <em>some</em> flakiness in the report prior to #21551, too!).</p>
-<h2>Reflexivity of subtyping for type variables</h2>
+Reduction in nondeterminism??
+<p>I <em>may</em> be imagining it -- and it&#x27;s very hard to tell -- but I think this PR <em>may</em> reduce our level of nondeterminism? There are still some flakes in the mypy_primer report, but I <em>think</em> the level of flakes on this PR has been consistently lower than I&#x27;ve seen on other ty PRs recently. Since we know that the number of flakes significantly increased after <a href="https://github.com/astral-sh/ruff/pull/21551">astral-sh/ruff#21551</a>, and we know that this PR impacts our behaviour when solving type variables in <code>Callable</code> types, I wonder if this <em>might</em> also accidentally be improving the situation there somewhat?</p>
+<p>It&#x27;s again a bit of a mystery to me why this would be the case, however. It&#x27;s also hard to confirm, since there is definitely still some flakiness in the ecosystem report (and there was <em>some</em> flakiness in the report prior to #21551, too!).</p>
+Reflexivity of subtyping for type variables
 <p>An implementation detail of this PR is that we currently return <code>false</code> from the <code>Type::subtyping_is_always_reflexive()</code> method on <code>main</code> if a type is a <code>Type::TypeVar</code> variant, but this PR changes that so we return <code>true</code> for <code>Type::TypeVar</code> variants.</p>
 <p>The rationale for the current return-type of <code>false</code> is stated in this comment here:</p>
 <p>https://github.com/astral-sh/ruff/blob/337e3ebd27407f50b96dd686631c4ac4697fa973/crates/ty_python_semantic/src/types/relation.rs#L491-L501</p>
 <p>But the <code>subtyping_is_always_reflexive</code> method only has a single callsite on <code>main</code>, and that is here:</p>
 <p>https://github.com/astral-sh/ruff/blob/337e3ebd27407f50b96dd686631c4ac4697fa973/crates/ty_python_semantic/src/types/relation.rs#L327-L334</p>
 <p>and we also implement on <code>main</code> that <code>T</code> is always a subtype of <code>T | None</code> if <code>T</code> is a type variable, which I think is also only safe if we are able to assume that subtyping is always reflexive for <code>Type::TypeVar</code> variants. It therefore seems like we <em>de-facto</em> treat <code>Type::TypeVar</code> variants in exactly the same way as all <code>Type</code> variants for which we return <code>true</code> from <code>Type::subtyping_is_always_reflexive()</code>, and that therefore life becomes much simpler if we simply return <code>true</code> from that method for <code>Type::TypeVar()</code> types.</p>
-<p>I'm curious if I'm missing something here?</p>
-<h2>Open questions</h2>
-<p>It's <em>possible</em> that there are pathologically large unions where iterating over the union twice would mean that this new implementation of subtyping against union types is actually slower. Should we skip the fast path for non-type-variable types if the length of the union is above a certain arbitrary threshhold? Or is that something we should just leave for now, until we have hard evidence that this is a real problem?</p>
-<p>I initially played around with using an <code>FxOrderSet</code> for <code>UnionType::elements()</code>, in https://github.com/astral-sh/ruff/pull/22458. That would make the <code>.contains()</code> fast path <code>O(1)</code> rather than <code>O(n)</code>, which would alleviate the concern about pathologically large unions. But (to my surprise) the Codspeed reports appear to show that this PR is ~as fast as #22458, and #22458 has a memory-usage regression which this PR does not. So for now, I am proposing adding the fast path while still keeping <code>UnionType::elements</code> as a boxed slice.</p>
-<h2>Test Plan</h2>
+<p>I&#x27;m curious if I&#x27;m missing something here?</p>
+Open questions
+<p>It&#x27;s <em>possible</em> that there are pathologically large unions where iterating over the union twice would mean that this new implementation of subtyping against union types is actually slower. Should we skip the fast path for non-type-variable types if the length of the union is above a certain arbitrary threshhold? Or is that something we should just leave for now, until we have hard evidence that this is a real problem?</p>
+<p>I initially played around with using an <code>FxOrderSet</code> for <code>UnionType::elements()</code>, in <a href="https://github.com/astral-sh/ruff/pull/22458">astral-sh/ruff#22458</a>. That would make the <code>.contains()</code> fast path <code>O(1)</code> rather than <code>O(n)</code>, which would alleviate the concern about pathologically large unions. But (to my surprise) the Codspeed reports appear to show that this PR is ~as fast as #22458, and #22458 has a memory-usage regression which this PR does not. So for now, I am proposing adding the fast path while still keeping <code>UnionType::elements</code> as a boxed slice.</p>
+Test Plan
 <ul>
 <li>Existing tests</li>
 <li>One new mdtest for the improvement to typevar solving for <code>Callable</code> types</li>
@@ -77,34 +77,34 @@ reveal_type(my_iter(get_int))  # `main`: Box[int | None]`; PR: Box[int]
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">performance</span> added by @AlexWaygood on 2026-01-10 15:30</div>
+            <div class="event">Label <span class="label">performance</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-10 15:30</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2026-01-10 15:30</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-10 15:30</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">performance</span> added by @AlexWaygood on 2026-01-10 15:30</div>
+            <div class="event">Label <span class="label">performance</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-10 15:30</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2026-01-10 15:30</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-10 15:30</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-10 15:32</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2><a href="https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance/">Typing conformance results</a></h2>
+<a href="https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance/">Typing conformance results</a>
 <p>No changes detected ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-10 15:33</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">spack (https://github.com/spack/spack)
+Changes were detected when running on open source projects
+
+<pre><code>spack (https://github.com/spack/spack)
 - lib/spack/spack/spec_parser.py:472:16: error[invalid-return-type] Return type does not match returned value: expected `list[Spec]`, found `list[Spec | None]`
 - Found 4345 diagnostics
 + Found 4344 diagnostics
@@ -232,55 +232,55 @@ core (https://github.com/home-assistant/core)
 
 
 </code></pre>
-</details>
+
 
 <p>No memory usage changes detected ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2026-01-10 15:42</div>
-            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+            <div class="timeline-body">
 
-<h2>Merging this PR will <strong>improve performance by 27.64%</strong></h2>
-<p><code>⚡ 1</code> improved benchmark<br />
-<code>✅ 22</code> untouched benchmarks<br />
+Merging this PR will <strong>improve performance by 27.64%</strong>
+<p><code>⚡ 1</code> improved benchmark<br>
+<code>✅ 22</code> untouched benchmarks<br>
 <code>⏩ 30</code> skipped benchmarks[^skipped]</p>
-<h3>Performance Changes</h3>
-<h2>|     | Mode | Benchmark | <code>BASE</code> | <code>HEAD</code> | Efficiency |
+Performance Changes
+|     | Mode | Benchmark | <code>BASE</code> | <code>HEAD</code> | Efficiency |
 | --- | ---- | --------- | ------ | ------ | ---------- |
-| ⚡ | WallTime | <a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Funion-fast-path-still-vec?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Apydantic&amp;runnerMode=WallTime&amp;utm_source=github&amp;utm_medium=comment-v2&amp;utm_content=benchmark"><code>pydantic</code></a> | 10.4 s | 8.1 s | +27.64% |</h2>
-<p><sub>Comparing <code>alex/union-fast-path-still-vec</code> (31d7e8c) with <code>main</code> (ed355b6)</sub></p>
-<a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Funion-fast-path-still-vec?utm_source=github&utm_medium=comment-v2&utm_content=button">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://codspeed.io/pr-report/open-in-codspeed-dark.svg">
-    <source media="(prefers-color-scheme: light)" srcset="https://codspeed.io/pr-report/open-in-codspeed-light.svg">
-    <img alt="Open in CodSpeed" src="https://codspeed.io/pr-report/open-in-codspeed-light.svg" width="169" height="32">
-  </picture>
+| ⚡ | WallTime | <a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Funion-fast-path-still-vec?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Apydantic&amp;runnerMode=WallTime&amp;utm_source=github&amp;utm_medium=comment-v2&amp;utm_content=benchmark"><code>pydantic</code></a> | 10.4 s | 8.1 s | +27.64% |
+<p>Comparing <code>alex/union-fast-path-still-vec</code> (31d7e8c) with <code>main</code> (ed355b6)</p>
+<a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Funion-fast-path-still-vec?utm_source=github&amp;utm_medium=comment-v2&amp;utm_content=button">
+  
+    
+    
+    <img alt="Open in CodSpeed" src="https://codspeed.io/pr-report/open-in-codspeed-light.svg">
+  
 </a>
 
 <p>[^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, <a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Funion-fast-path-still-vec?sectionId=benchmark-comparison-section-baseline-result-skipped&amp;utm_source=github&amp;utm_medium=comment-v2&amp;utm_content=archive">click here and archive them to remove them from the performance reports</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @AlexWaygood on 2026-01-16 19:57</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-16 19:57</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @AlexWaygood on 2026-01-16 19:57</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-16 19:57</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2026-01-16 19:57</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-16 19:57</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @AlexWaygood on 2026-01-16 19:57</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-16 19:57</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2026-01-16 20:04</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-16 20:04</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-16 20:09</div>
-            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+            <div class="timeline-body">
 
-<h2><code>ecosystem-analyzer</code> results</h2>
+<code>ecosystem-analyzer</code> results
 <p>| Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
 | <code>invalid-argument-type</code> | 8 | 79 | 2 |
@@ -300,14 +300,14 @@ core (https://github.com/home-assistant/core)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2026-01-16 20:37</div>
-            <div class="timeline-body"><p>This looks good to me, nice work! I think the behavior change is an improvement, and I don't think we necessarily need to fully explain it. It's intuitive to me that it arises from doing fewer unnecessary <code>has_relation_to</code> comparisons in union cases, though I haven't fully traced out the details.</p>
+            <div class="timeline-body"><p>This looks good to me, nice work! I think the behavior change is an improvement, and I don&#x27;t think we necessarily need to fully explain it. It&#x27;s intuitive to me that it arises from doing fewer unnecessary <code>has_relation_to</code> comparisons in union cases, though I haven&#x27;t fully traced out the details.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @AlexWaygood on 2026-01-16 22:09</div>
+            <div class="event">Merged by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-16 22:09</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2026-01-16 22:09</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-16 22:09</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2026-01-16 22:09</div>
@@ -315,7 +315,7 @@ core (https://github.com/home-assistant/core)
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2026-01-17 07:18</div>
             <div class="timeline-body"><blockquote>
-<p>It's <em>possible</em> that there are pathologically large unions where iterating over the union twice would mean that this new implementation of subtyping against union types is actually slower.</p>
+<p>It&#x27;s <em>possible</em> that there are pathologically large unions where iterating over the union twice would mean that this new implementation of subtyping against union types is actually slower.</p>
 </blockquote>
 <p>Iterating through a contiguous slice like this is really fast! I would only anticipate this would cause a performance problem if it makes us do something &quot;expensive enough&quot; to each union element in the first traversal, where something in our previous single traversal would let us short-circuit and return early without processing every element. <code>when_any</code> <em>does</em> short-circuit if any of the union elements returns <code>AlwaysTrue</code>. But in this branch, the first traversal is just doing a simple equality check. Any code that with large enough unions to make this first traversal expensive will have many deeper performance issues.</p>
 </div>
@@ -323,7 +323,7 @@ core (https://github.com/home-assistant/core)
     </div>
 
     <footer>
-        Synced at 2026-01-17 08:09:24 UTC
+        Synced at 2026-01-20 19:22:52 UTC
     </footer>
 </body>
 </html>

@@ -37,15 +37,15 @@ Ctrl+C in Windows is the expected way to go. But it does NOT work now.</p>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-12-18 16:19</div>
             <div class="timeline-body"><p>It is not related to #200.</p>
-<p>In the case of <code>--files</code> at least, I understand the bug. The problem is that the <code>^C</code> handler tries to acquire a lock on <code>stdout</code> to clear color codes, but the way <code>--files</code> is currently written is that it holds that lock for the entirety of its operation. This shouldn't be too hard to fix.</p>
-<p>I can't reproduce this under normal search operation though (on Linux). I'll need to explicitly try it on Windows.</p>
+<p>In the case of <code>--files</code> at least, I understand the bug. The problem is that the <code>^C</code> handler tries to acquire a lock on <code>stdout</code> to clear color codes, but the way <code>--files</code> is currently written is that it holds that lock for the entirety of its operation. This shouldn&#x27;t be too hard to fix.</p>
+<p>I can&#x27;t reproduce this under normal search operation though (on Linux). I&#x27;ll need to explicitly try it on Windows.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2016-12-18 16:19</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-12-18 16:19</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2016-12-18 16:19</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-12-18 16:19</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-12-24 15:49</div>
@@ -56,17 +56,17 @@ Ctrl+C in Windows is the expected way to go. But it does NOT work now.</p>
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-12-24 17:50</div>
             <div class="timeline-body"><p>I would like to remove the <code>^C</code> handling in ripgrep, whose only purpose is to reset color codes. This is a nice convenience because if you <code>^C</code> in the middle of writing colored text, the terminal will take on whatever style was enabled at that point. There are many problems with this though:</p>
 <ol>
-<li>It doesn't work on Windows at all. Firstly, the <code>^C</code> handling itself doesn't work inside MSYS2 terminals. Secondly, while the <code>^C</code> handling works in a normal Windows console, it isn't actually capable of resetting anything since there is no equivalent &quot;clear&quot; operation like there is in ANSI terminals.</li>
-<li>Even when all of the above works, it is still imperfect in ANSI terminals. Namely, the normal process for writing to <code>stdout</code> acquires a lock to make throughput as fast as possible, but resetting the terminal also requires writing to <code>stdout</code>. Therefore, there must be some kind of synchronization between printing to stdout and resetting the terminal, which is not ideal. If we &quot;just ignore&quot; this problem, then you wind with the problem of not being able to kill ripgrep while it's searching a single large file, which I think is really terrible UX.</li>
+<li>It doesn&#x27;t work on Windows at all. Firstly, the <code>^C</code> handling itself doesn&#x27;t work inside MSYS2 terminals. Secondly, while the <code>^C</code> handling works in a normal Windows console, it isn&#x27;t actually capable of resetting anything since there is no equivalent &quot;clear&quot; operation like there is in ANSI terminals.</li>
+<li>Even when all of the above works, it is still imperfect in ANSI terminals. Namely, the normal process for writing to <code>stdout</code> acquires a lock to make throughput as fast as possible, but resetting the terminal also requires writing to <code>stdout</code>. Therefore, there must be some kind of synchronization between printing to stdout and resetting the terminal, which is not ideal. If we &quot;just ignore&quot; this problem, then you wind with the problem of not being able to kill ripgrep while it&#x27;s searching a single large file, which I think is really terrible UX.</li>
 </ol>
-<p>All told, my feeling is that getting the color reset handling right just isn't worth it. If you run into the problem, it's easy to fix by simply running:</p>
+<p>All told, my feeling is that getting the color reset handling right just isn&#x27;t worth it. If you run into the problem, it&#x27;s easy to fix by simply running:</p>
 <pre><code>$ echo -ne &quot;\033[0m&quot;
 </code></pre>
 <p>cc @lambda</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2016-12-24 17:53</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-12-24 17:53</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/hacst">@hacst</a> on 2017-01-20 21:19</div>
@@ -76,12 +76,12 @@ Ctrl+C in Windows is the expected way to go. But it does NOT work now.</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-20 22:06</div>
-            <div class="timeline-body"><p>I understand it is unfortunate. I'm open to better ideas.</p>
+            <div class="timeline-body"><p>I understand it is unfortunate. I&#x27;m open to better ideas.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/seabadger">@seabadger</a> on 2017-03-28 12:47</div>
-            <div class="timeline-body"><p>Perhaps a silly question, but can't you just have an atexit handler that always resets colors, and the ctrl-c just ensures regular processing is interrupted s. t. exit() is called (after releasing any resources)?</p>
+            <div class="timeline-body"><p>Perhaps a silly question, but can&#x27;t you just have an atexit handler that always resets colors, and the ctrl-c just ensures regular processing is interrupted s. t. exit() is called (after releasing any resources)?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -99,18 +99,18 @@ Ctrl+C in Windows is the expected way to go. But it does NOT work now.</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/seabadger">@seabadger</a> on 2017-03-28 14:49</div>
-            <div class="timeline-body"><p>First -- a disclaimer: I may be coming at this from the point of ignorance, as (1) I've just discovered this project and only looked at small parts of the code so far, (2) don't know Rust so may be missing something even for the parts that I did look at, and (3) don't know what solutions were already considered and discarded beyond the one in this issue. So my apologies if I'm mentioning something obvious and/or obviously wrong.</p>
+            <div class="timeline-body"><p>First -- a disclaimer: I may be coming at this from the point of ignorance, as (1) I&#x27;ve just discovered this project and only looked at small parts of the code so far, (2) don&#x27;t know Rust so may be missing something even for the parts that I did look at, and (3) don&#x27;t know what solutions were already considered and discarded beyond the one in this issue. So my apologies if I&#x27;m mentioning something obvious and/or obviously wrong.</p>
 <p>That said: if I understood correctly, the implementation that was removed by commit  de5cb7d22e00c18dfce082a68b0cf45924b56e7f did the work (cleanup + exit) directly in the signal handler, which indeed required this kind of synchronization.</p>
 <p>Would it be feasible to instead defer the actual work to a safer point?
 E.g., the signal handler would set a boolean flag; the worker threads would eventually see the flag is set and terminate.
 Once all the workers terminate, presumably no further output is being produced, so cleanup (i.e., color reset) can be safely performed.</p>
 <p>This assumes:</p>
 <ul>
-<li>worker threads are not detached, so there's a join point after which the cleanup can be performed (I see that at least some threads are joined, but I don't know if that's true for all cases).</li>
+<li>worker threads are not detached, so there&#x27;s a join point after which the cleanup can be performed (I see that at least some threads are joined, but I don&#x27;t know if that&#x27;s true for all cases).</li>
 <li>the flag check in the workers is inexpensive (or can be made inexpensive by only doing it relatively infrequently).</li>
 </ul>
-<p>Hope I didn't miss something glaringly obvious...</p>
-<p>(and you're right about <code>atexit</code>, of course).</p>
+<p>Hope I didn&#x27;t miss something glaringly obvious...</p>
+<p>(and you&#x27;re right about <code>atexit</code>, of course).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -124,7 +124,7 @@ Once all the workers terminate, presumably no further output is being produced, 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/seabadger">@seabadger</a> on 2017-03-28 15:31</div>
-            <div class="timeline-body"><p>(To be fair, a large recursive grep or 'find | xargs grep'  would not necessarily respond to Control-C instantaneously (speaking from experience) -- so at least from the user's perspective, I think I would find this acceptable; can't speak for others, of course. But the effect on the code structure remains, so here I'll defer to you)</p>
+            <div class="timeline-body"><p>(To be fair, a large recursive grep or &#x27;find | xargs grep&#x27;  would not necessarily respond to Control-C instantaneously (speaking from experience) -- so at least from the user&#x27;s perspective, I think I would find this acceptable; can&#x27;t speak for others, of course. But the effect on the code structure remains, so here I&#x27;ll defer to you)</p>
 <p>How about another approach that (I think) addresses both issues: a wrapper.
 Basically, the parent process (which could be rg itself):</p>
 <ul>
@@ -133,40 +133,40 @@ Basically, the parent process (which could be rg itself):</p>
 <li>waits for child to terminate</li>
 <li>cleans up</li>
 </ul>
-<p>The parent's signal handler would simply pass the signal on to the child process. The child process should behave exactly as rg behaves today.</p>
+<p>The parent&#x27;s signal handler would simply pass the signal on to the child process. The child process should behave exactly as rg behaves today.</p>
 <p>Cons:</p>
 <ul>
 <li>cost of fork(). Unless rg is run in  a tight loop, or the binary size grows significantly, I hope this would not be very noticeable (am I missing common use cases?)</li>
 </ul>
 <p>Pros:</p>
 <ul>
-<li>avoids the 'slow to respond' problem</li>
+<li>avoids the &#x27;slow to respond&#x27; problem</li>
 <li>should not be very intrusive with respect to most of the code.</li>
 </ul>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-28 15:37</div>
-            <div class="timeline-body"><p>@seabadger Hmmmmmmmm..... I like that. I can't immediately think of a counter-argument to that. My only caveat is that it would be nice if it worked on Windows, although I suppose it wouldn't have to be a hard requirement. (It could be something that only works on Unixish systems.)</p>
+            <div class="timeline-body"><p>@seabadger Hmmmmmmmm..... I like that. I can&#x27;t immediately think of a counter-argument to that. My only caveat is that it would be nice if it worked on Windows, although I suppose it wouldn&#x27;t have to be a hard requirement. (It could be something that only works on Unixish systems.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-28 15:38</div>
-            <div class="timeline-body"><p>One other point: I don't have good intuition as to the overhead of a single <code>fork</code> call, but I do expect ripgrep to be used in some <code>xargs</code> pipelines occasionally, which could suffer from that overhead, but it feels like it'd be awfully small to me.</p>
+            <div class="timeline-body"><p>One other point: I don&#x27;t have good intuition as to the overhead of a single <code>fork</code> call, but I do expect ripgrep to be used in some <code>xargs</code> pipelines occasionally, which could suffer from that overhead, but it feels like it&#x27;d be awfully small to me.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @BurntSushi on 2017-03-31 09:16</div>
+            <div class="event">Reopened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-31 09:16</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/DoumanAsh">@DoumanAsh</a> on 2017-03-31 11:00</div>
             <div class="timeline-body"><p>@BurntSushi After a brief look at code what i can see is that std get locked once rg runs in one thread. Is it actually necessary to lock stdout in one thread runner?
-P.s. i'm still trying to get hand of multi-threaded code</p>
+P.s. i&#x27;m still trying to get hand of multi-threaded code</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-31 11:10</div>
-            <div class="timeline-body"><p>@DoumanAsh Could you please read this thread? I think the current best solution is a fork-exec that was written up here https://github.com/BurntSushi/ripgrep/issues/281#issuecomment-289808716 --- I just don't know if it works on Windows.</p>
+            <div class="timeline-body"><p>@DoumanAsh Could you please read this thread? I think the current best solution is a fork-exec that was written up here <a href="https://github.com/BurntSushi/ripgrep/issues/281">BurntSushi/ripgrep#281</a>#issuecomment-289808716 --- I just don&#x27;t know if it works on Windows.</p>
 <blockquote>
 <p>Is it actually necessary to lock stdout in one thread runner?</p>
 </blockquote>
@@ -178,7 +178,7 @@ P.s. i'm still trying to get hand of multi-threaded code</p>
             <div class="timeline-body"><p>@BurntSushi I started implementing  with <code>command</code> instead of <code>fork</code> but it seems to be rather ugly (at least to me)
 https://github.com/DoumanAsh/ripgrep/commit/0d141ec4f81617ab89bff7ec1c809ee862b4b104</p>
 <p>It is rather difficult to detect whether you are invoked by user or yourself unless i specify some hidden option.
-I think maybe it would be better to spent some efforts into researching Windows's fork replacement</p>
+I think maybe it would be better to spent some efforts into researching Windows&#x27;s fork replacement</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -193,7 +193,7 @@ I think maybe it would be better to spent some efforts into researching Windows'
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/DoumanAsh">@DoumanAsh</a> on 2017-04-02 14:28</div>
-            <div class="timeline-body"><p>@seabadger I'm not aware of any way. The only thing we can reliable to find is zero argument of our process (name of binary or how it has been started) but if you have any hints...?</p>
+            <div class="timeline-body"><p>@seabadger I&#x27;m not aware of any way. The only thing we can reliable to find is zero argument of our process (name of binary or how it has been started) but if you have any hints...?</p>
 <p><strong>UPD:</strong> But we could start Command with special environment variable which actually might be better</p>
 </div>
         </div>
@@ -205,23 +205,23 @@ I think maybe it would be better to spent some efforts into researching Windows'
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jethrogb">@jethrogb</a> on 2017-04-10 06:26</div>
-            <div class="timeline-body"><p>The child process sounds like a nice solution, but it's kind of a big hammer for a small problem. Why not just ignore the lock on stdout and write the terminal color reset code directly to fd 1?</p>
+            <div class="timeline-body"><p>The child process sounds like a nice solution, but it&#x27;s kind of a big hammer for a small problem. Why not just ignore the lock on stdout and write the terminal color reset code directly to fd 1?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-04-10 08:24</div>
             <div class="timeline-body"><p>If that actually works, then I would be okay with it. termcolor would need
 to support that type of access directly. The fundamental problem is that
-your solution isn't actually guaranteed to work.</p>
+your solution isn&#x27;t actually guaranteed to work.</p>
 <p>On Apr 10, 2017 2:26 AM, &quot;jethrogb&quot; <a href="mailto:notifications@github.com">notifications@github.com</a> wrote:</p>
 <blockquote>
-<p>The child process sounds like a nice solution, but it's kind of a big
+<p>The child process sounds like a nice solution, but it&#x27;s kind of a big
 hammer for a small problem. Why not just ignore the lock on stdout and
 write the terminal color reset directly to fd 1?</p>
 <p>—
 You are receiving this because you were mentioned.
 Reply to this email directly, view it on GitHub
-<a href="https://github.com/BurntSushi/ripgrep/issues/281#issuecomment-292860321">https://github.com/BurntSushi/ripgrep/issues/281#issuecomment-292860321</a>,
+<a href="https://github.com/BurntSushi/ripgrep/issues/281#issuecomment-292860321">BurntSushi/ripgrep#281</a>,
 or mute the thread
 <a href="https://github.com/notifications/unsubscribe-auth/AAb34ki_oLPcNORhtkj2T7bZz5N1FA9iks5rucuIgaJpZM4LNnaR">https://github.com/notifications/unsubscribe-auth/AAb34ki_oLPcNORhtkj2T7bZz5N1FA9iks5rucuIgaJpZM4LNnaR</a>
 .</p>
@@ -235,7 +235,7 @@ or mute the thread
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-04-10 10:38</div>
-            <div class="timeline-body"><p>@DoumanAsh I think @jethrogb's proposal relies on it <em>not</em> being likely that the main thread will print more colors. That's what I meant by &quot;it's not guaranteed to work.&quot; However, it may work well in practice. The vast majority of printer execution is spent writing the actual results, and not tweaking the color configuration. (In any case, Windows is a red herring. I imagine @jethrogb's fix would work equally well on both Unix and Windows.)</p>
+            <div class="timeline-body"><p>@DoumanAsh I think @jethrogb&#x27;s proposal relies on it <em>not</em> being likely that the main thread will print more colors. That&#x27;s what I meant by &quot;it&#x27;s not guaranteed to work.&quot; However, it may work well in practice. The vast majority of printer execution is spent writing the actual results, and not tweaking the color configuration. (In any case, Windows is a red herring. I imagine @jethrogb&#x27;s fix would work equally well on both Unix and Windows.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -268,11 +268,11 @@ Expected: output is interrupted right away, focus goes back to command line (e.g
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-22 02:01</div>
-            <div class="timeline-body"><p>I've finally gotten a chance to test this on Windows and this is definitely fixed. I can <code>^C</code> ripgrep in either PowerShell or cygwin and it reliably stops.</p>
+            <div class="timeline-body"><p>I&#x27;ve finally gotten a chance to test this on Windows and this is definitely fixed. I can <code>^C</code> ripgrep in either PowerShell or cygwin and it reliably stops.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2017-10-22 02:01</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-22 02:01</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/th1000s">@th1000s</a> on 2024-02-01 00:28</div>
@@ -282,7 +282,7 @@ Expected: output is interrupted right away, focus goes back to command line (e.g
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:41:58 UTC
+        Synced at 2026-01-20 18:48:03 UTC
     </footer>
 </body>
 </html>

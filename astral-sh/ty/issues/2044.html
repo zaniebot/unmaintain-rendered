@@ -23,80 +23,80 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a></div>
-            <div class="timeline-body"><p>This is pulled out of https://github.com/astral-sh/ty/issues/2031 which I'd prefer to keep scoped to the panic in the language server. A couple thoughts were expressed there, e.g., https://github.com/astral-sh/ty/issues/2031#issuecomment-3667543854</p>
-<p>Today, we error when <code>VIRTUAL_ENV</code> refers to a missing path. There's not a clear consensus on whether or not we should continue to other methods of Python environment discovery. If we ignore an invalid <code>VIRTUAL_ENV</code> value, we should probably warn?</p>
-<p>I don't think we need to act on this urgently, but I'd like to have a central place for discussion.</p>
+            <div class="timeline-body"><p>This is pulled out of <a href="https://github.com/astral-sh/ty/issues/2031">astral-sh/ty#2031</a> which I&#x27;d prefer to keep scoped to the panic in the language server. A couple thoughts were expressed there, e.g., <a href="https://github.com/astral-sh/ty/issues/2031">astral-sh/ty#2031</a>#issuecomment-3667543854</p>
+<p>Today, we error when <code>VIRTUAL_ENV</code> refers to a missing path. There&#x27;s not a clear consensus on whether or not we should continue to other methods of Python environment discovery. If we ignore an invalid <code>VIRTUAL_ENV</code> value, we should probably warn?</p>
+<p>I don&#x27;t think we need to act on this urgently, but I&#x27;d like to have a central place for discussion.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">cli</span> added by @zanieb on 2025-12-17 23:37</div>
+            <div class="event">Label <span class="label">cli</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-17 23:37</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> added by @zanieb on 2025-12-17 23:37</div>
+            <div class="event">Label <span class="label">needs-decision</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-17 23:37</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-18 07:24</div>
-            <div class="timeline-body"><p>The reason why I think it's related to #2031 is that it would be the most straightforward fix</p>
+            <div class="timeline-body"><p>The reason why I think it&#x27;s related to #2031 is that it would be the most straightforward fix</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-18 15:24</div>
             <div class="timeline-body"><p>Pasting my comment from #2031 (now closed):</p>
 <blockquote>
-<p>I think I'd much prefer a hard exit when invoked on the CLI. I don't see a use case for setting an invalid <code>VIRTUAL_ENV</code> from the CLI and I'd want to fix that immediately as a user, since the type-checking results could make very little sense in that situation.</p>
+<p>I think I&#x27;d much prefer a hard exit when invoked on the CLI. I don&#x27;t see a use case for setting an invalid <code>VIRTUAL_ENV</code> from the CLI and I&#x27;d want to fix that immediately as a user, since the type-checking results could make very little sense in that situation.</p>
 <p>The LSP case seems different; I think logging a warning and continuing could make sense there</p>
 </blockquote>
 <p>@zanieb responded:</p>
 <blockquote>
-<p>I'm not sure if I agree. <code>uv pip install</code> doesn't hard exit here — and from experience there it's unfortunately common for people to have invalid <code>VIRTUAL_ENV</code> variables.</p>
+<p>I&#x27;m not sure if I agree. <code>uv pip install</code> doesn&#x27;t hard exit here — and from experience there it&#x27;s unfortunately common for people to have invalid <code>VIRTUAL_ENV</code> variables.</p>
 </blockquote>
-<p>I'm curious how so many people end up with invalid <code>VIRTUAL_ENV</code> variables 😆 And I'd prefer to avoid implicit behaviour where possible for ty, so that it's clear why we're producing the results that we are.</p>
-<p>But even putting that aside, to me, the <code>uv pip</code> case still sort-of feels pretty different? If <code>VIRTUAL_ENV</code> points to a nonexistent directory, it still seems like there's a pretty good chance that they meant to just install the thing into their local virtual environment, so carrying on as normal seems rational there. But for the ty case, there's a good chance that we just won't find a local virtual environment at all, and carrying on in that case despite a broken <code>VIRTUAL_ENV</code> variable seems like it could be really confusing. You could end up with hundreds of <code>unresolved-import</code> diagnostics suddenly appearing (all of which would be &quot;duplicates&quot; if there's just a single cause), and the warning about the broken <code>VIRTUAL_ENV</code> variable would be miles higher in the terminal.</p>
-<p>I still think it's just a much better UX if we have a hard early exit for the CLI case here.</p>
+<p>I&#x27;m curious how so many people end up with invalid <code>VIRTUAL_ENV</code> variables 😆 And I&#x27;d prefer to avoid implicit behaviour where possible for ty, so that it&#x27;s clear why we&#x27;re producing the results that we are.</p>
+<p>But even putting that aside, to me, the <code>uv pip</code> case still sort-of feels pretty different? If <code>VIRTUAL_ENV</code> points to a nonexistent directory, it still seems like there&#x27;s a pretty good chance that they meant to just install the thing into their local virtual environment, so carrying on as normal seems rational there. But for the ty case, there&#x27;s a good chance that we just won&#x27;t find a local virtual environment at all, and carrying on in that case despite a broken <code>VIRTUAL_ENV</code> variable seems like it could be really confusing. You could end up with hundreds of <code>unresolved-import</code> diagnostics suddenly appearing (all of which would be &quot;duplicates&quot; if there&#x27;s just a single cause), and the warning about the broken <code>VIRTUAL_ENV</code> variable would be miles higher in the terminal.</p>
+<p>I still think it&#x27;s just a much better UX if we have a hard early exit for the CLI case here.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-18 16:24</div>
             <div class="timeline-body"><blockquote>
-<p>But for the ty case, there's a good chance that we just won't find a local virtual environment at all, and carrying on in that case despite a broken VIRTUAL_ENV variable seems like it could be really confusing.</p>
+<p>But for the ty case, there&#x27;s a good chance that we just won&#x27;t find a local virtual environment at all, and carrying on in that case despite a broken VIRTUAL_ENV variable seems like it could be really confusing.</p>
 </blockquote>
 <p>Why are we any less likely to find a local virtual environment in ty than in uv?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-18 16:25</div>
-            <div class="timeline-body"><p>I don't think we're less likely, but I think the behaviour is much more confusing and annoying in the situation where you don't find a virtual environment. We'll just carry on type checking all your code even if we don't find a virtual environment (which I think is correct, you shouldn't <em>have</em> to have a virtual environment setup in order to run a type checker), but our results are very likely to be useless</p>
+            <div class="timeline-body"><p>I don&#x27;t think we&#x27;re less likely, but I think the behaviour is much more confusing and annoying in the situation where you don&#x27;t find a virtual environment. We&#x27;ll just carry on type checking all your code even if we don&#x27;t find a virtual environment (which I think is correct, you shouldn&#x27;t <em>have</em> to have a virtual environment setup in order to run a type checker), but our results are very likely to be useless</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-18 16:47</div>
             <div class="timeline-body"><p>But in contrast, for uv you said</p>
 <blockquote>
-<p>it still seems like there's a pretty good chance that they meant to just install the thing into their local virtual environment</p>
+<p>it still seems like there&#x27;s a pretty good chance that they meant to just install the thing into their local virtual environment</p>
 </blockquote>
-<p>I don't see how the chances are different here?</p>
+<p>I don&#x27;t see how the chances are different here?</p>
 <p>I think the argument at</p>
 <blockquote>
-<p>We'll just carry on type checking all your code even if we don't find a virtual environment (which I think is correct, you shouldn't have to have a virtual environment setup in order to run a type checker)</p>
+<p>We&#x27;ll just carry on type checking all your code even if we don&#x27;t find a virtual environment (which I think is correct, you shouldn&#x27;t have to have a virtual environment setup in order to run a type checker)</p>
 </blockquote>
 <p>is more compelling — in the sense that uv will fail if it does not find a virtual environment.</p>
-<p>However, I think it also is an argument for not erroring... in the sense that if ty's <em>general</em> behavior is to continue if a virtual environment is not found, it's surprising that setting <code>VIRTUAL_ENV</code> would prevent it from doing so? The issue of continuing to type check and report useless diagnostics is a more fundamental choice ty has made.</p>
+<p>However, I think it also is an argument for not erroring... in the sense that if ty&#x27;s <em>general</em> behavior is to continue if a virtual environment is not found, it&#x27;s surprising that setting <code>VIRTUAL_ENV</code> would prevent it from doing so? The issue of continuing to type check and report useless diagnostics is a more fundamental choice ty has made.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-18 16:50</div>
-            <div class="timeline-body"><p>the fact that <code>VIRTUAL_ENV</code> is set seems pretty explicit that the user <em>wants</em> us to find a virtual environment. But we can't figure out what virtual environment it is that they want us to find!</p>
-<p>We haven't received any user reports yet that they find our current CLI behaviour bad. I would be inclined to keep it as-is until we receive any complaints</p>
+            <div class="timeline-body"><p>the fact that <code>VIRTUAL_ENV</code> is set seems pretty explicit that the user <em>wants</em> us to find a virtual environment. But we can&#x27;t figure out what virtual environment it is that they want us to find!</p>
+<p>We haven&#x27;t received any user reports yet that they find our current CLI behaviour bad. I would be inclined to keep it as-is until we receive any complaints</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-18 16:53</div>
             <div class="timeline-body"><blockquote>
-<p>We haven't received any user reports yet that they find our current CLI behaviour bad. I would be inclined to keep it as-is until we receive any complaints</p>
+<p>We haven&#x27;t received any user reports yet that they find our current CLI behaviour bad. I would be inclined to keep it as-is until we receive any complaints</p>
 </blockquote>
-<p>I'm not saying we should change it without hearing more feedback, per my first post:</p>
+<p>I&#x27;m not saying we should change it without hearing more feedback, per my first post:</p>
 <blockquote>
-<p>I don't think we need to act on this urgently, but I'd like to have a central place for discussion.</p>
+<p>I don&#x27;t think we need to act on this urgently, but I&#x27;d like to have a central place for discussion.</p>
 </blockquote>
 <blockquote>
 <p>the fact that VIRTUAL_ENV is set seems pretty explicit that the user wants us to find a virtual environment.</p>
@@ -123,7 +123,7 @@
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:21:24 UTC
+        Synced at 2026-01-20 19:26:33 UTC
     </footer>
 </body>
 </html>

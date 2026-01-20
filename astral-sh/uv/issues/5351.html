@@ -34,10 +34,10 @@ Compiling all the info below with my current investigation.</p>
 Python: 3.9.19
 Platform: Windows
 </code></pre>
-<pre><code class="language-text"># requirements.txt
+<pre><code># requirements.txt
 importlib-metadata==8.1.0
 </code></pre>
-<pre><code class="language-bash">uv pip compile .\requirements.txt -vvv
+<pre><code>uv pip compile .\requirements.txt -vvv
 </code></pre>
 <pre><code>    0.000048s DEBUG uv uv 0.2.27
  uv_requirements::specification::from_source source=.\requirements.txt
@@ -74,17 +74,17 @@ importlib-metadata==8.1.0
 I am however unsure how to parse the cache headers / any other information that would indicate why UV thinks so.</p>
 <p>Below a manual head request for that index
 <code>HEAD https://&lt;internal-repo&gt;/repository/pypi-group/simple/importlib-metadata/</code>
-<img src="https://github.com/user-attachments/assets/8228bb24-7b92-40e1-b6fb-8b4934f1fd28" alt="image" /></p>
+<img src="https://github.com/user-attachments/assets/8228bb24-7b92-40e1-b6fb-8b4934f1fd28" alt="image"></p>
 <p>The repo does have the <code>8.1.0</code> (we essentially have a pass through mirror using nexus with very minimal caching, should have gotten the new release shortly after it was pushed on PyPi)
 <code>GET https://&lt;internal-repo&gt;/repository/pypi-group/simple/importlib-metadata/</code></p>
-<pre><code class="language-html">...
+<pre><code>...
 &lt;a href=&quot;../../packages/importlib-metadata/8.1.0/importlib_metadata-8.1.0-py3-none-any.whl#sha256=3cd29f739ed65973840b068e3132135ce954c254d48b5b640484467ef7ab3c8c&quot; rel=&quot;internal&quot; data-requires-python=&quot;&amp;gt;=3.8&quot; &gt;importlib_metadata-8.1.0-py3-none-any.whl&lt;/a&gt;&lt;br/&gt;
         &lt;a href=&quot;../../packages/importlib-metadata/8.1.0/importlib_metadata-8.1.0.tar.gz#sha256=fcdcb1d5ead7bdf3dd32657bb94ebe9d2aabfe89a19782ddc32da5041d6ebfb4&quot; rel=&quot;internal&quot; data-requires-python=&quot;&amp;gt;=3.8&quot; &gt;importlib_metadata-8.1.0.tar.gz&lt;/a&gt;&lt;br/&gt;
 &lt;/body&gt;
 &lt;/html&gt;
 </code></pre>
 <p>Now the plot thickens, when running without cache, uv correctly installs / compiles the package (as expected I assume)</p>
-<pre><code class="language-bash">uv pip compile .\requirements.txt --no-cache -v
+<pre><code>uv pip compile .\requirements.txt --no-cache -v
 </code></pre>
 <pre><code>DEBUG uv 0.2.27
 DEBUG Starting Python discovery for any Python
@@ -119,13 +119,13 @@ zipp==3.19.2
     # via importlib-metadata
 </code></pre>
 <p>Now dropping all of my cache would probably resolve the issue as well, however more interestingly, dropping just the importlib-metadata cache does <strong>not</strong> resolve the issue.</p>
-<pre><code class="language-bash">uv cache clean importlib-metadata -vvv
+<pre><code>uv cache clean importlib-metadata -vvv
 </code></pre>
 <pre><code>0.000048s DEBUG uv uv 0.2.27
 No cache entries found for importlib-metadata
 </code></pre>
-<p>So far so good, however running the original command again, it clearly still has a cache file relating to importlib-metadata (...\simple-v9\dcb525f06f275a06\importlib-metadata.rkyv, not familiar with how to read rust .rkyv, however opening with text editor clearly shows there's several importlib-metadata version in there, no 8.1.0). Would expect this to be deleted, but then maybe that's me misunderstanding how some internal work.</p>
-<pre><code class="language-bash">uv pip compile .\requirements.txt -vvv
+<p>So far so good, however running the original command again, it clearly still has a cache file relating to importlib-metadata (...\simple-v9\dcb525f06f275a06\importlib-metadata.rkyv, not familiar with how to read rust .rkyv, however opening with text editor clearly shows there&#x27;s several importlib-metadata version in there, no 8.1.0). Would expect this to be deleted, but then maybe that&#x27;s me misunderstanding how some internal work.</p>
+<pre><code>uv pip compile .\requirements.txt -vvv
 </code></pre>
 <pre><code>   0.000056s DEBUG uv uv 0.2.27
  uv_requirements::specification::from_source source=.\requirements.txt
@@ -168,7 +168,7 @@ No cache entries found for importlib-metadata
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-23 17:15</div>
-            <div class="timeline-body"><p>So, as background, we respect HTTP caching headers for the simple API responses (so, e.g., we cache PyPI responses for 10 minutes, per their headers). Are you seeing this behavior consistently, or was it only for the first 10 minutes after publishing? (I assume the latter.) Either way, running <code>uv cache clean</code> should've resolved the issue -- I think there might a bug there, that we're missing the <code>.rkyv</code> files. I'll fix that now.</p>
+            <div class="timeline-body"><p>So, as background, we respect HTTP caching headers for the simple API responses (so, e.g., we cache PyPI responses for 10 minutes, per their headers). Are you seeing this behavior consistently, or was it only for the first 10 minutes after publishing? (I assume the latter.) Either way, running <code>uv cache clean</code> should&#x27;ve resolved the issue -- I think there might a bug there, that we&#x27;re missing the <code>.rkyv</code> files. I&#x27;ll fix that now.</p>
 <p>Is there any <code>Cache-Control</code> header on your proxy response? Perhaps some header is indicating that we can cache it indefinitely.</p>
 </div>
         </div>
@@ -176,13 +176,13 @@ No cache entries found for importlib-metadata
             <div class="timeline-header">Comment by <a href="https://github.com/jbw-vtl">@jbw-vtl</a> on 2024-07-23 17:15</div>
             <div class="timeline-body"><p>Adding on, after running the compile once with <code>--refresh-package importlib-metadata</code> following all the previous steps, it does compile correctly.
 Subsequent calls are now working as intended, assuming the cache was refreshed.</p>
-<p>Which I found in https://github.com/astral-sh/uv/issues/2538</p>
+<p>Which I found in <a href="https://github.com/astral-sh/uv/issues/2538">astral-sh/uv#2538</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-23 17:15</div>
-            <div class="timeline-body"><p>Thanks for the thorough write-up! Some people on the team are more familiar with the cache and can probably weigh in on what's going on, but hopefully I can unblock you quickly.</p>
-<p>Unlike pip, uv respects the <code>max-age</code> cache response from the registry which is generally 10 minutes (context on that in https://github.com/astral-sh/uv/issues/505). If you attempt to install the package within that range, we will use the cached version instead of a newly released one. Best practice for ensuring the latest version of a package is used is to use <code>--refresh-package &lt;name&gt;</code>.</p>
+            <div class="timeline-body"><p>Thanks for the thorough write-up! Some people on the team are more familiar with the cache and can probably weigh in on what&#x27;s going on, but hopefully I can unblock you quickly.</p>
+<p>Unlike pip, uv respects the <code>max-age</code> cache response from the registry which is generally 10 minutes (context on that in <a href="https://github.com/astral-sh/uv/issues/505">astral-sh/uv#505</a>). If you attempt to install the package within that range, we will use the cached version instead of a newly released one. Best practice for ensuring the latest version of a package is used is to use <code>--refresh-package &lt;name&gt;</code>.</p>
 <p>Did this happen outside that range?</p>
 </div>
         </div>
@@ -193,12 +193,12 @@ Subsequent calls are now working as intended, assuming the cache was refreshed.<
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-23 17:18</div>
-            <div class="timeline-body"><p>The <code>uv cache clean importlib-metadata</code> <em>not</em> removing the <code>.rkyv</code> file is indeed a bug that I just reproduced. I think it only applies to non-PyPI indexes. I'll fix now: https://github.com/astral-sh/uv/issues/5352</p>
+            <div class="timeline-body"><p>The <code>uv cache clean importlib-metadata</code> <em>not</em> removing the <code>.rkyv</code> file is indeed a bug that I just reproduced. I think it only applies to non-PyPI indexes. I&#x27;ll fix now: <a href="https://github.com/astral-sh/uv/issues/5352">astral-sh/uv#5352</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jbw-vtl">@jbw-vtl</a> on 2024-07-23 17:23</div>
-            <div class="timeline-body"><p>The nexus repo response doesn't set any cache header from what I can see (sent the response in the screenshot) but maybe i'm not looking at the right thing.
+            <div class="timeline-body"><p>The nexus repo response doesn&#x27;t set any cache header from what I can see (sent the response in the screenshot) but maybe i&#x27;m not looking at the right thing.
 Both me and my dev-ops team are a bit puzzled, we found configuration for the cache control towards PyPi but not for incoming requests (to our repo) itself.</p>
 <p>We noticed this first occurrence about 30 minutes after the <code>importlib-metadata==8.1.0</code> was released and were still running into the same issue about 3 hours later at which point we decided to drop the whole cache in our CI environment.
 That did &quot;resolve&quot; the issue, however could pop up again.
@@ -208,8 +208,8 @@ When this happens again (will try to replicate over the coming days), not sure h
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-23 17:33</div>
-            <div class="timeline-body"><p>If you run, e.g., <code>RUST_LOG=trace uv pip install flask --reinstall -n -vvv</code>, you'll get way more output including things like:</p>
-<pre><code>0.211284s  31ms TRACE uv_client::httpcache cached request https://files.pythonhosted.org/packages/bb/2a/10164ed1f31196a2f7f3799368a821765c62851ead0e630ab52b8e14b4d0/blinker-1.8.2-py3-none-any.whl is storable because its response has a 'public' cache-control directive
+            <div class="timeline-body"><p>If you run, e.g., <code>RUST_LOG=trace uv pip install flask --reinstall -n -vvv</code>, you&#x27;ll get way more output including things like:</p>
+<pre><code>0.211284s  31ms TRACE uv_client::httpcache cached request https://files.pythonhosted.org/packages/bb/2a/10164ed1f31196a2f7f3799368a821765c62851ead0e630ab52b8e14b4d0/blinker-1.8.2-py3-none-any.whl is storable because its response has a &#x27;public&#x27; cache-control directive
 </code></pre>
 </div>
         </div>
@@ -220,12 +220,12 @@ Unfortunately the cache got cleaned using the <code>--refresh-package</code>, ho
 <p>Apologies for the big blob below, cut out anything not related to importlib-metadata.
 Not too familiar with the output, but some things stand out</p>
 <ul>
-<li><code>0.011418s   1ms TRACE uv_client::httpcache cached request https://&lt;internal-repo&gt;/repository/pypi-group/simple/importlib-metadata/ is storable because its response has a heuristically cacheable status code 200</code><br />
+<li><code>0.011418s   1ms TRACE uv_client::httpcache cached request https://&lt;internal-repo&gt;/repository/pypi-group/simple/importlib-metadata/ is storable because its response has a heuristically cacheable status code 200</code><br>
 Not sure how to read this, however it looks like it keeps the cached response based on a 200? or does that mean its going to cache the response because it was successful.</li>
 <li>However next line then mentions it found a fresh response for the same request</li>
 <li>Reading through all the logs, not seeing any info relating to cache control headers, merely <code>is storable because its response has a heuristically cacheable status code 200</code></li>
 <li>Also saw this warning, does that mean our nexus repo does not support range requests or uv in the configuration we are running with does not support it? <code>WARN uv_distribution::distribution_database Range requests unsupported when fetching metadata for importlib-metadata==8.1.0; downloading wheel directly (range requests are not supported)</code></li>
-<li>We are running nexus repo version <code>3.57.1-03</code> from July 2023 (about a year behind) in case that's relevant. Looked through all newer releases and could not find any references to the <code>Accept-Ranges</code> header. In the index responses headers am not seeing that header set. Assuming we could get some additional performance boost here if that's enabled to reduce network usage.</li>
+<li>We are running nexus repo version <code>3.57.1-03</code> from July 2023 (about a year behind) in case that&#x27;s relevant. Looked through all newer releases and could not find any references to the <code>Accept-Ranges</code> header. In the index responses headers am not seeing that header set. Assuming we could get some additional performance boost here if that&#x27;s enabled to reduce network usage.</li>
 </ul>
 <pre><code> uv_resolver::resolver::process_request request=Versions importlib-metadata
    uv_resolver::resolver::choose_version package=importlib-metadata
@@ -295,7 +295,7 @@ Not sure how to read this, however it looks like it keeps the cached response ba
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-23 18:00</div>
             <div class="timeline-body"><blockquote>
-<p>We are running nexus repo version 3.57.1-03 from July 2023 (about a year behind) in case that's relevant. Looked through all newer releases and could not find any references to the Accept-Ranges header. In the index responses headers am not seeing that header set. Assuming we could get some additional performance boost here if that's enabled to reduce network usage.</p>
+<p>We are running nexus repo version 3.57.1-03 from July 2023 (about a year behind) in case that&#x27;s relevant. Looked through all newer releases and could not find any references to the Accept-Ranges header. In the index responses headers am not seeing that header set. Assuming we could get some additional performance boost here if that&#x27;s enabled to reduce network usage.</p>
 </blockquote>
 <p>Yeah, if your index supports range requests, we can resolve faster. Even better are the <code>.metadata</code> files that PyPI exposes, like: https://files.pythonhosted.org/packages/ef/a6/62565a6e1cf69e10f5727360368e451d4b7f58beeac6173dc9db836a5b46/iniconfig-2.0.0-py3-none-any.whl.metadata</p>
 </div>
@@ -304,7 +304,7 @@ Not sure how to read this, however it looks like it keeps the cached response ba
             <div class="timeline-header">Comment by <a href="https://github.com/jbw-vtl">@jbw-vtl</a> on 2024-07-23 18:22</div>
             <div class="timeline-body"><p>interesting not seen this. Nexus repo definitely does not have support for these unfortunately.
 Will open a request with our point of contact to further explore the <code>Accept-Ranges</code> and <code>Cache-Control</code> headers for Python repos in Nexus, from what I can tell it supports neither currently.</p>
-<p>Either way, keen to get some further input from you guys whenever available, it seems possible uv is not handling caching for repo's without Cache-Control headers properly / is too relaxed with it's TTL for these cases.
+<p>Either way, keen to get some further input from you guys whenever available, it seems possible uv is not handling caching for repo&#x27;s without Cache-Control headers properly / is too relaxed with it&#x27;s TTL for these cases.
 Will feed back if this pops up again with hopefully more decisive trace logs.</p>
 </div>
         </div>
@@ -315,11 +315,11 @@ Will feed back if this pops up again with hopefully more decisive trace logs.</p
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-07-23 18:34</div>
-            <div class="timeline-body"><p>From a quick glance, I'm not seeing anything interesting with respect to the HTTP cache semantics we have implemented. It seems to detect a &quot;fresh&quot; response without issue, which means, &quot;the data we have cached is fresh after considering HTTP cache headers.&quot; And thus, a &quot;fresh&quot; response is one that can be used.</p>
-<p>The only thing that doesn't seemed to be cached is this:</p>
+            <div class="timeline-body"><p>From a quick glance, I&#x27;m not seeing anything interesting with respect to the HTTP cache semantics we have implemented. It seems to detect a &quot;fresh&quot; response without issue, which means, &quot;the data we have cached is fresh after considering HTTP cache headers.&quot; And thus, a &quot;fresh&quot; response is one that can be used.</p>
+<p>The only thing that doesn&#x27;t seemed to be cached is this:</p>
 <pre><code>0.013232s   0ms TRACE uv_client::cached_client No cache entry exists for \\?\&lt;path-to-cache&gt;\wheels-v1\index\dcb525f06f275a06\importlib-metadata\importlib_metadata-8.1.0-py3-none-any.msgpack
 </code></pre>
-<p>But that's not in our HTTP semantics. That's just a result of not being able to find any cached file for that wheel.</p>
+<p>But that&#x27;s not in our HTTP semantics. That&#x27;s just a result of not being able to find any cached file for that wheel.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -330,8 +330,8 @@ Will feed back if this pops up again with hopefully more decisive trace logs.</p
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jbw-vtl">@jbw-vtl</a> on 2024-07-24 10:02</div>
-            <div class="timeline-body"><p>Just ran into another case with the cache thinking it's up to date for a package pushed yesterday evening (<code>pyspnego==0.11.1</code>).</p>
-<p>Same behavior, new version for several hours (this time &gt;~12), but UV thinking it's cache is up to date.</p>
+            <div class="timeline-body"><p>Just ran into another case with the cache thinking it&#x27;s up to date for a package pushed yesterday evening (<code>pyspnego==0.11.1</code>).</p>
+<p>Same behavior, new version for several hours (this time &gt;~12), but UV thinking it&#x27;s cache is up to date.</p>
 <p>Got the full trace output this time.
 Realized there was a new version <code>0.2.28</code> available, so upgraded and ran again without making any cache change which was now successful.
 Included both full verbose + trace outputs below.</p>
@@ -492,7 +492,7 @@ uv: 0.2.28
     0.283064s DEBUG hyper_util::client::legacy::pool pooling idle connection for (&quot;https&quot;, &lt;internal-repo&gt;)
     0.298589s TRACE uv_resolver::resolver Received built distribution metadata for: pyspnego==0.11.1
     0.298804s 290ms DEBUG uv_resolver::resolver Adding transitive dependency for pyspnego==0.11.1: cryptography*
-    0.298867s 290ms DEBUG uv_resolver::resolver Adding transitive dependency for pyspnego==0.11.1: sspilib{sys_platform == 'win32'}&gt;=0.1.0
+    0.298867s 290ms DEBUG uv_resolver::resolver Adding transitive dependency for pyspnego==0.11.1: sspilib{sys_platform == &#x27;win32&#x27;}&gt;=0.1.0
     0.298944s 290ms  INFO pubgrub::internal::partial_solution add_decision: pyspnego @ 0.11.1
  uv_resolver::resolver::process_request request=Versions cryptography
    uv_resolver::resolver::choose_version package=cryptography
@@ -603,39 +603,39 @@ uv: 0.2.28
           0.565170s  17ms DEBUG uv_client::cached_client Found not-modified response for: https://&lt;internal-repo&gt;/repository/pypi-group/packages/cryptography/43.0.0/cryptography-43.0.0-cp39-abi3-win_amd64.whl#sha256=0663585d02f76929792470451a5ba64424acc3cd5227b03921dab0e2f27b1709
          uv_client::cached_client::refresh_cache file=\\?\&lt;path-to-cache&gt;\wheels-v1\index\dcb525f06f275a06\cryptography\cryptography-43.0.0-cp39-abi3-win_amd64.http
     0.570601s TRACE uv_resolver::resolver Received built distribution metadata for: cryptography==43.0.0
-    0.570761s 561ms DEBUG uv_resolver::resolver Adding transitive dependency for cryptography==43.0.0: cffi{platform_python_implementation != 'PyPy'}&gt;=1.12
+    0.570761s 561ms DEBUG uv_resolver::resolver Adding transitive dependency for cryptography==43.0.0: cffi{platform_python_implementation != &#x27;PyPy&#x27;}&gt;=1.12
     0.570931s 562ms  INFO pubgrub::internal::partial_solution add_decision: cryptography @ 43.0.0
  uv_resolver::resolver::process_request request=Versions cffi
-   uv_resolver::resolver::choose_version package=sspilib{sys_platform == 'win32'}
-      0.571546s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of sspilib{sys_platform == 'win32'} (&gt;=0.1.0)
+   uv_resolver::resolver::choose_version package=sspilib{sys_platform == &#x27;win32&#x27;}
+      0.571546s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of sspilib{sys_platform == &#x27;win32&#x27;} (&gt;=0.1.0)
       0.571619s   0ms TRACE uv_resolver::candidate_selector selecting candidate for package sspilib with range Range { segments: [(Included(&quot;0.1.0&quot;), Unbounded)] } with 1 remote versions
    uv_client::registry_client::simple_api package=cffi
       0.571869s   0ms TRACE uv_resolver::candidate_selector found candidate for package PackageName(&quot;sspilib&quot;) with range Range { segments: [(Included(&quot;0.1.0&quot;), Unbounded)] } after 1 steps: &quot;0.1.0&quot; version
       0.571939s   0ms DEBUG uv_resolver::resolver Selecting: sspilib==0.1.0 [compatible] (sspilib-0.1.0-cp39-cp39-win_amd64.whl)
       0.572057s   0ms TRACE uv_client::registry_client Fetching metadata for cffi from https://&lt;internal-repo&gt;/repository/pypi-group/simple/cffi/
-   uv_resolver::resolver::get_dependencies_forking package=sspilib{sys_platform == 'win32'}, version=0.1.0
-     uv_resolver::resolver::get_dependencies package=sspilib{sys_platform == 'win32'}, version=0.1.0
+   uv_resolver::resolver::get_dependencies_forking package=sspilib{sys_platform == &#x27;win32&#x27;}, version=0.1.0
+     uv_resolver::resolver::get_dependencies package=sspilib{sys_platform == &#x27;win32&#x27;}, version=0.1.0
      uv_client::cached_client::get_cacheable
        uv_client::cached_client::read_and_parse_cache file=\\?\&lt;path-to-cache&gt;\simple-v10\index\dcb525f06f275a06\cffi.rkyv
     0.572646s 563ms DEBUG uv_resolver::resolver Adding transitive dependency for sspilib==0.1.0: sspilib==0.1.0
-    0.572709s 563ms DEBUG uv_resolver::resolver Adding transitive dependency for sspilib==0.1.0: sspilib{sys_platform == 'win32'}==0.1.0
+    0.572709s 563ms DEBUG uv_resolver::resolver Adding transitive dependency for sspilib==0.1.0: sspilib{sys_platform == &#x27;win32&#x27;}==0.1.0
  uv_client::cached_client::from_path_sync path=&quot;\\\\?\\&lt;path-to-cache&gt;\\simple-v10\\index\\dcb525f06f275a06\\cffi.rkyv&quot;
-    0.572826s 564ms  INFO pubgrub::internal::partial_solution add_decision: sspilib{sys_platform == 'win32'} @ 0.1.0
-   uv_resolver::resolver::choose_version package=sspilib{sys_platform == 'win32'}
+    0.572826s 564ms  INFO pubgrub::internal::partial_solution add_decision: sspilib{sys_platform == &#x27;win32&#x27;} @ 0.1.0
+   uv_resolver::resolver::choose_version package=sspilib{sys_platform == &#x27;win32&#x27;}
           0.572982s   0ms TRACE uv_client::cached_client No cache entry exists for \\?\&lt;path-to-cache&gt;\simple-v10\index\dcb525f06f275a06\cffi.rkyv
-      0.573042s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of sspilib{sys_platform == 'win32'} (==0.1.0)
+      0.573042s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of sspilib{sys_platform == &#x27;win32&#x27;} (==0.1.0)
       0.573111s   0ms TRACE uv_resolver::candidate_selector selecting candidate for package sspilib with range Range { segments: [(Included(&quot;0.1.0&quot;), Included(&quot;0.1.0&quot;))] } with 1 remote versions
       0.573173s   0ms TRACE uv_resolver::candidate_selector found candidate for package PackageName(&quot;sspilib&quot;) with range Range { segments: [(Included(&quot;0.1.0&quot;), Included(&quot;0.1.0&quot;))] } after 1 steps: &quot;0.1.0&quot; version
       0.573234s   0ms DEBUG uv_resolver::resolver Selecting: sspilib==0.1.0 [compatible] (sspilib-0.1.0-cp39-cp39-win_amd64.whl)
         0.573442s   1ms DEBUG uv_client::cached_client No cache entry for: https://&lt;internal-repo&gt;/repository/pypi-group/simple/cffi/
        uv_client::cached_client::fresh_request url=&quot;https://&lt;internal-repo&gt;/repository/pypi-group/simple/cffi/&quot;
           0.573553s   0ms TRACE uv_client::cached_client Sending fresh GET request for https://&lt;internal-repo&gt;/repository/pypi-group/simple/cffi/
-   uv_resolver::resolver::get_dependencies_forking package=sspilib{sys_platform == 'win32'}, version=0.1.0
+   uv_resolver::resolver::get_dependencies_forking package=sspilib{sys_platform == &#x27;win32&#x27;}, version=0.1.0
           0.573684s   0ms TRACE uv_auth::middleware Handling request for https://&lt;internal-repo&gt;/repository/pypi-group/simple/cffi/
           0.573744s   0ms TRACE uv_auth::middleware Request for https://&lt;internal-repo&gt;/repository/pypi-group/simple/cffi/ is unauthenticated, checking cache
           0.573802s   0ms TRACE uv_auth::cache No credentials in cache for URL https://&lt;internal-repo&gt;/repository/pypi-group/simple/cffi/
           0.573857s   0ms TRACE uv_auth::middleware Attempting unauthenticated request for https://&lt;internal-repo&gt;/repository/pypi-group/simple/cffi/
-     uv_resolver::resolver::get_dependencies package=sspilib{sys_platform == 'win32'}, version=0.1.0
+     uv_resolver::resolver::get_dependencies package=sspilib{sys_platform == &#x27;win32&#x27;}, version=0.1.0
           0.573988s   0ms TRACE hyper_util::client::legacy::pool take? (&quot;https&quot;, &lt;internal-repo&gt;): expiration = Some(90s)
           0.574047s   0ms DEBUG hyper_util::client::legacy::pool reuse idle connection for (&quot;https&quot;, &lt;internal-repo&gt;)
  uv_resolver::resolver::process_request request=Prefetch sspilib ==0.1.0
@@ -651,7 +651,7 @@ uv: 0.2.28
             0.575571s   1ms TRACE uv_client::httpcache cached request https://&lt;internal-repo&gt;/repository/pypi-group/packages/sspilib/0.1.0/sspilib-0.1.0-cp39-cp39-win_amd64.whl#sha256=369727097f07a440099882580e284e137d9c27b7de354d63b65e327a454e7bee is storable because its response has a heuristically cacheable status code 200
             0.575707s   1ms DEBUG uv_client::cached_client Found fresh response for: https://&lt;internal-repo&gt;/repository/pypi-group/packages/sspilib/0.1.0/sspilib-0.1.0-cp39-cp39-win_amd64.whl#sha256=369727097f07a440099882580e284e137d9c27b7de354d63b65e327a454e7bee
     0.575845s TRACE uv_resolver::resolver Received built distribution metadata for: sspilib==0.1.0
-    0.575911s 567ms  INFO pubgrub::internal::partial_solution add_decision: sspilib{sys_platform == 'win32'} @ 0.1.0
+    0.575911s 567ms  INFO pubgrub::internal::partial_solution add_decision: sspilib{sys_platform == &#x27;win32&#x27;} @ 0.1.0
    uv_resolver::resolver::choose_version package=sspilib
       0.576139s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of sspilib (==0.1.0)
       0.576204s   0ms TRACE uv_resolver::candidate_selector selecting candidate for package sspilib with range Range { segments: [(Included(&quot;0.1.0&quot;), Included(&quot;0.1.0&quot;))] } with 1 remote versions
@@ -660,7 +660,7 @@ uv: 0.2.28
    uv_resolver::resolver::get_dependencies_forking package=sspilib, version=0.1.0
      uv_resolver::resolver::get_dependencies package=sspilib, version=0.1.0
     0.576503s 567ms  INFO pubgrub::internal::partial_solution add_decision: sspilib @ 0.1.0
-   uv_resolver::resolver::choose_version package=cffi{platform_python_implementation != 'PyPy'}
+   uv_resolver::resolver::choose_version package=cffi{platform_python_implementation != &#x27;PyPy&#x27;}
           0.615185s  41ms TRACE uv_client::httpcache cached request https://&lt;internal-repo&gt;/repository/pypi-group/simple/cffi/ is storable because its response has a heuristically cacheable status code 200
        uv_client::cached_client::new_cache file=\\?\&lt;path-to-cache&gt;\simple-v10\index\dcb525f06f275a06\cffi.rkyv
        uv_client::registry_client::parse_simple_api package=cffi
@@ -669,25 +669,25 @@ uv: 0.2.28
     0.629012s DEBUG hyper_util::client::legacy::pool pooling idle connection for (&quot;https&quot;, &lt;internal-repo&gt;)
    uv_resolver::version_map::from_metadata
     0.634172s TRACE uv_resolver::resolver Received package metadata for: cffi
-      0.634245s  57ms DEBUG uv_resolver::resolver Searching for a compatible version of cffi{platform_python_implementation != 'PyPy'} (&gt;=1.12)
+      0.634245s  57ms DEBUG uv_resolver::resolver Searching for a compatible version of cffi{platform_python_implementation != &#x27;PyPy&#x27;} (&gt;=1.12)
       0.634335s  57ms TRACE uv_resolver::candidate_selector selecting candidate for package cffi with range Range { segments: [(Included(&quot;1.12&quot;), Unbounded)] } with 76 remote versions
       0.634565s  58ms TRACE uv_resolver::candidate_selector found candidate for package PackageName(&quot;cffi&quot;) with range Range { segments: [(Included(&quot;1.12&quot;), Unbounded)] } after 2 steps: &quot;1.16.0&quot; version
       0.634624s  58ms DEBUG uv_resolver::resolver Selecting: cffi==1.16.0 [compatible] (cffi-1.16.0-cp39-cp39-win_amd64.whl)
-   uv_resolver::resolver::get_dependencies_forking package=cffi{platform_python_implementation != 'PyPy'}, version=1.16.0
-     uv_resolver::resolver::get_dependencies package=cffi{platform_python_implementation != 'PyPy'}, version=1.16.0
+   uv_resolver::resolver::get_dependencies_forking package=cffi{platform_python_implementation != &#x27;PyPy&#x27;}, version=1.16.0
+     uv_resolver::resolver::get_dependencies package=cffi{platform_python_implementation != &#x27;PyPy&#x27;}, version=1.16.0
     0.634834s 626ms DEBUG uv_resolver::resolver Adding transitive dependency for cffi==1.16.0: cffi==1.16.0
-    0.634889s 626ms DEBUG uv_resolver::resolver Adding transitive dependency for cffi==1.16.0: cffi{platform_python_implementation != 'PyPy'}==1.16.0
-    0.634952s 626ms  INFO pubgrub::internal::partial_solution add_decision: cffi{platform_python_implementation != 'PyPy'} @ 1.16.0
-   uv_resolver::resolver::choose_version package=cffi{platform_python_implementation != 'PyPy'}
-      0.635121s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of cffi{platform_python_implementation != 'PyPy'} (==1.16.0)
+    0.634889s 626ms DEBUG uv_resolver::resolver Adding transitive dependency for cffi==1.16.0: cffi{platform_python_implementation != &#x27;PyPy&#x27;}==1.16.0
+    0.634952s 626ms  INFO pubgrub::internal::partial_solution add_decision: cffi{platform_python_implementation != &#x27;PyPy&#x27;} @ 1.16.0
+   uv_resolver::resolver::choose_version package=cffi{platform_python_implementation != &#x27;PyPy&#x27;}
+      0.635121s   0ms DEBUG uv_resolver::resolver Searching for a compatible version of cffi{platform_python_implementation != &#x27;PyPy&#x27;} (==1.16.0)
       0.635178s   0ms TRACE uv_resolver::candidate_selector selecting candidate for package cffi with range Range { segments: [(Included(&quot;1.16.0&quot;), Included(&quot;1.16.0&quot;))] } with 76 remote versions
       0.635236s   0ms TRACE uv_resolver::candidate_selector found candidate for package PackageName(&quot;cffi&quot;) with range Range { segments: [(Included(&quot;1.16.0&quot;), Included(&quot;1.16.0&quot;))] } after 2 steps: &quot;1.16.0&quot; version
       0.635295s   0ms DEBUG uv_resolver::resolver Selecting: cffi==1.16.0 [compatible] (cffi-1.16.0-cp39-cp39-win_amd64.whl)
  uv_resolver::resolver::process_request request=Prefetch cffi ==1.16.0
     0.635430s   0ms TRACE uv_resolver::candidate_selector selecting candidate for package cffi with range Range { segments: [(Included(&quot;1.16.0&quot;), Included(&quot;1.16.0&quot;))] } with 76 remote versions
     0.635779s   0ms TRACE uv_resolver::candidate_selector found candidate for package PackageName(&quot;cffi&quot;) with range Range { segments: [(Included(&quot;1.16.0&quot;), Included(&quot;1.16.0&quot;))] } after 2 steps: &quot;1.16.0&quot; version
-   uv_resolver::resolver::get_dependencies_forking package=cffi{platform_python_implementation != 'PyPy'}, version=1.16.0
-     uv_resolver::resolver::get_dependencies package=cffi{platform_python_implementation != 'PyPy'}, version=1.16.0
+   uv_resolver::resolver::get_dependencies_forking package=cffi{platform_python_implementation != &#x27;PyPy&#x27;}, version=1.16.0
+     uv_resolver::resolver::get_dependencies package=cffi{platform_python_implementation != &#x27;PyPy&#x27;}, version=1.16.0
  uv_resolver::resolver::process_request request=Metadata cffi==1.16.0
    uv_distribution::distribution_database::get_or_build_wheel_metadata dist=cffi==1.16.0
      uv_client::registry_client::wheel_metadata built_dist=cffi==1.16.0
@@ -719,7 +719,7 @@ uv: 0.2.28
           0.687274s   1ms DEBUG uv_client::cached_client Found fresh response for: https://&lt;internal-repo&gt;/repository/pypi-group/packages/cffi/1.16.0/cffi-1.16.0-cp39-cp39-win_amd64.whl#sha256=3686dffb02459559c74dd3d81748269ffb0eb027c39a6fc99502de37d501faa8
     0.688880s TRACE uv_resolver::resolver Received built distribution metadata for: cffi==1.16.0
     0.689004s 680ms DEBUG uv_resolver::resolver Adding transitive dependency for cffi==1.16.0: pycparser*
-    0.689086s 680ms  INFO pubgrub::internal::partial_solution add_decision: cffi{platform_python_implementation != 'PyPy'} @ 1.16.0
+    0.689086s 680ms  INFO pubgrub::internal::partial_solution add_decision: cffi{platform_python_implementation != &#x27;PyPy&#x27;} @ 1.16.0
  uv_resolver::resolver::process_request request=Versions pycparser
    uv_client::registry_client::simple_api package=pycparser
    uv_resolver::resolver::choose_version package=cffi
@@ -792,13 +792,13 @@ uv: 0.2.28
     0.731982s 723ms DEBUG uv_resolver::resolver::batch_prefetch Tried 5 versions: cffi 1, cryptography 1, pycparser 1, pyspnego 1, sspilib 1
     0.732039s 723ms DEBUG uv_resolver::resolver Split specific environment resolution took 0.723s
     0.732236s 723ms TRACE uv_resolver::resolver Resolution: pyspnego -&gt; sspilib
-    0.732291s 723ms TRACE uv_resolver::resolver Resolution:     0.11.1 -&gt; 0.1.0 ; sys_platform == 'win32'
+    0.732291s 723ms TRACE uv_resolver::resolver Resolution:     0.11.1 -&gt; 0.1.0 ; sys_platform == &#x27;win32&#x27;
     0.732343s 723ms TRACE uv_resolver::resolver Resolution: pyspnego -&gt; cryptography
     0.732398s 723ms TRACE uv_resolver::resolver Resolution:     0.11.1 -&gt; 43.0.0
     0.732449s 723ms TRACE uv_resolver::resolver Resolution: cffi -&gt; pycparser
     0.732502s 723ms TRACE uv_resolver::resolver Resolution:     1.16.0 -&gt; 2.22
     0.732554s 723ms TRACE uv_resolver::resolver Resolution: cryptography -&gt; cffi
-    0.732607s 723ms TRACE uv_resolver::resolver Resolution:     43.0.0 -&gt; 1.16.0 ; platform_python_implementation != 'PyPy'
+    0.732607s 723ms TRACE uv_resolver::resolver Resolution:     43.0.0 -&gt; 1.16.0 ; platform_python_implementation != &#x27;PyPy&#x27;
     0.732659s 723ms TRACE uv_resolver::resolver Resolution: ROOT -&gt; pyspnego
     0.732712s 723ms TRACE uv_resolver::resolver Resolution:     0a0.dev0 -&gt; 0.11.1
 Resolved 5 packages in 725ms
@@ -830,7 +830,7 @@ Oddly enough the <code>0.2.28</code> release fixed this for other packages, howe
 python `3.10.14`
 windows / debian
 </code></pre>
-<pre><code class="language-bash">RUST_LOG=trace uv pip install company-auth==2.5.0 -vvv
+<pre><code>RUST_LOG=trace uv pip install company-auth==2.5.0 -vvv
 </code></pre>
 <pre><code>    0.000039s DEBUG uv uv 0.2.29
  uv_requirements::specification::from_source source=company-auth==2.5.0
@@ -880,9 +880,9 @@ windows / debian
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-26 14:39</div>
-            <div class="timeline-body"><p>It's all the same issue: uv thinks that the response is cacheable indefinitely based on something in your cache headers.</p>
+            <div class="timeline-body"><p>It&#x27;s all the same issue: uv thinks that the response is cacheable indefinitely based on something in your cache headers.</p>
 <p>While we figure it out, I would suggest adding:</p>
-<pre><code class="language-toml">[tool.uv.pip]
+<pre><code>[tool.uv.pip]
 refresh = true
 </code></pre>
 <p>...to your <code>pyproject.toml</code> or <code>uv.toml</code> for now. That should ensure that we always refresh the simple metadata responses.</p>
@@ -896,7 +896,7 @@ refresh = true
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jbw-vtl">@jbw-vtl</a> on 2024-07-26 14:45</div>
             <div class="timeline-body"><p>Here you go</p>
-<pre><code class="language-bash">http get https://&lt;internal-repo&gt;/repository/pypi-group/simple/importlib-metadata/
+<pre><code>http get https://&lt;internal-repo&gt;/repository/pypi-group/simple/importlib-metadata/
 </code></pre>
 <pre><code>HTTP/1.1 200 OK
 Connection: Keep-Alive
@@ -927,14 +927,14 @@ X-XSS-Protection: 1; mode=block
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-07-26 15:12</div>
-            <div class="timeline-body"><p>Since there isn't an <code>Expires</code> header or any cache control headers, I <em>believe</em> <code>uv</code> is going through its &quot;heuristic&quot; for how long a response should be fresh for before calling it stale, and this is based on the last-modified header: https://github.com/astral-sh/uv/blob/cb505d24f80725ccdfb8625acc0ce418d99bf63c/crates/uv-client/src/httpcache/mod.rs#L946-L950</p>
-<p>We could probably use better logging here, particularly around choices made based on heuristics. And perhaps the heuristic ought to be tweaked. (Assuming I've diagnosed the problem correctly.)</p>
+            <div class="timeline-body"><p>Since there isn&#x27;t an <code>Expires</code> header or any cache control headers, I <em>believe</em> <code>uv</code> is going through its &quot;heuristic&quot; for how long a response should be fresh for before calling it stale, and this is based on the last-modified header: https://github.com/astral-sh/uv/blob/cb505d24f80725ccdfb8625acc0ce418d99bf63c/crates/uv-client/src/httpcache/mod.rs#L946-L950</p>
+<p>We could probably use better logging here, particularly around choices made based on heuristics. And perhaps the heuristic ought to be tweaked. (Assuming I&#x27;ve diagnosed the problem correctly.)</p>
 <p>Of course, the HTTP server should probably have better cache headers, but <code>uv</code> should probably also have better heuristics if possible. (And at least log something that indicates the problem.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-26 15:14</div>
-            <div class="timeline-body"><p>👍 Yeah, I'm mostly wondering if the last-modified header is being updated or not for those &quot;stale&quot; packages.</p>
+            <div class="timeline-body"><p>👍 Yeah, I&#x27;m mostly wondering if the last-modified header is being updated or not for those &quot;stale&quot; packages.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -951,7 +951,7 @@ However when the issue popped up on Tuesday, our repo returned a response with t
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jbw-vtl">@jbw-vtl</a> on 2024-07-31 13:55</div>
-            <div class="timeline-body"><p>This has popped up again just now in our CI, however was not able to reproduce locally i'm afraid.
+            <div class="timeline-body"><p>This has popped up again just now in our CI, however was not able to reproduce locally i&#x27;m afraid.
 Looked through the heuristic logic in detail and think uv is caching too aggressively.</p>
 <p>See the below, think this is roughly what happened with <code>importlib-metadata 8.1.0</code> initially (however no way to be sure).
 https://pypi.org/project/importlib-metadata/#history
@@ -991,12 +991,12 @@ So the new <code>importlib-metadata</code> release 8.1.0 which came out the next
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2024-07-31 15:12</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-07-31 15:12</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:25:43 UTC
+        Synced at 2026-01-20 19:32:11 UTC
     </footer>
 </body>
 </html>

@@ -23,26 +23,26 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/mdekstrand">@mdekstrand</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<p>I am looking for options to archive my dependencies' distributions, primarily for bundling reproducible scientific workflows for archival and distribution.</p>
+            <div class="timeline-body">Summary
+<p>I am looking for options to archive my dependencies&#x27; distributions, primarily for bundling reproducible scientific workflows for archival and distribution.</p>
 <p>I see some discussion about functionality like <code>venv-pack</code> or <code>conda-pack</code> (#8653, #6970), but they seem to be primarily about archiving the extracted virtual environment.</p>
 <p>I think another solution could provide a lot of the same benefits, including supporting airgapped installs, without the need for solving the various arcane problems involved in bundling and relocating entire virtual environments: the ability to bundle the <em>distributions</em>, optionally also including the wheels built from sdists. The basic idea has two parts:</p>
 <ol>
 <li>A command, maybe <code>uv download</code> or a new option for <code>uv export</code>, that copies the distributions from the cache into a specified directory, for either the current platform or all locked platforms.</li>
 <li>An option to <code>uv sync</code> that uses the files from the exported directory (possibly just pre-seeding them into the cache).</li>
 </ol>
-<h3>Example</h3>
+Example
 <p>Preparing the archive:</p>
-<pre><code class="language-console">$ uv download --all-platforms -o dist/dependencies/
+<pre><code>$ uv download --all-platforms -o dist/dependencies/
 248 distributions downloaded
 </code></pre>
 <p>Installing from archive:</p>
-<pre><code class="language-console">$ uv sync --dist-archive dist/dependencies
+<pre><code>$ uv sync --dist-archive dist/dependencies
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @mdekstrand on 2025-05-05 16:20</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/mdekstrand">@mdekstrand</a> on 2025-05-05 16:20</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-05 16:24</div>
@@ -54,8 +54,8 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tingerrr">@tingerrr</a> on 2025-11-25 09:58</div>
-            <div class="timeline-body"><p>I think the downloaded archive would be in structure the same as a <a href="https://docs.astral.sh/uv/concepts/indexes/#flat-indexes">flat index</a>, so, all that's needed for installing it is a flat index pointing at that directory, right? Can a flat index be specified on the CLI?</p>
-<p>Separately, as noted in the linked <code>pip downlaod</code> discussion, is it perhaps more appropriate to provide the equivalent of <code>pip wheel</code> (or at least a flag for it) since it builds wheels for packages which don't come with a pre-built one.</p>
+            <div class="timeline-body"><p>I think the downloaded archive would be in structure the same as a <a href="https://docs.astral.sh/uv/concepts/indexes/#flat-indexes">flat index</a>, so, all that&#x27;s needed for installing it is a flat index pointing at that directory, right? Can a flat index be specified on the CLI?</p>
+<p>Separately, as noted in the linked <code>pip downlaod</code> discussion, is it perhaps more appropriate to provide the equivalent of <code>pip wheel</code> (or at least a flag for it) since it builds wheels for packages which don&#x27;t come with a pre-built one.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -63,18 +63,18 @@
             <div class="timeline-body"><p>Currently, you can sorta create such a directory with:</p>
 <p>(note using <a href="https://github.com/cryptaliagy/tomlq">tomlq</a> and jq)</p>
 <pre><code>indexDir=$(mktemp -d)
-tq -f uv.lock --output json '.' | jq '.. | objects | .url | select(. != null)' -cr | \
+tq -f uv.lock --output json &#x27;.&#x27; | jq &#x27;.. | objects | .url | select(. != null)&#x27; -cr | \
     xargs curl -sL --output-dir &quot;$indexDir&quot; --create-dirs --remote-name-all
 </code></pre>
-<p>This misses build deps (https://github.com/astral-sh/uv/issues/5190), but otherwise seems to work okay with <code>--find-links</code> and <code>uv pip install</code> I think.</p>
-<p>I think it'd be nice for <code>uv</code> itself to support something like this though since it feels a little wrong to parse through <code>uv.lock</code> like that, and I wouldn't be surprised if there's edge cases this misses.</p>
-<p>The above's what I ended up with over in <a href="https://github.com/NixOS/nixpkgs/blob/a816e8e506c106d297dd89a2c4807e39628f7b41/pkgs/by-name/an/anki/update.sh#L64-L66">nixpkgs's anki pkg</a> (and used <a href="https://github.com/NixOS/nixpkgs/blob/a816e8e506c106d297dd89a2c4807e39628f7b41/pkgs/by-name/an/anki/package.nix#L186">here</a>), so that hack did work in at least one case 😀</p>
+<p>This misses build deps (<a href="https://github.com/astral-sh/uv/issues/5190">astral-sh/uv#5190</a>), but otherwise seems to work okay with <code>--find-links</code> and <code>uv pip install</code> I think.</p>
+<p>I think it&#x27;d be nice for <code>uv</code> itself to support something like this though since it feels a little wrong to parse through <code>uv.lock</code> like that, and I wouldn&#x27;t be surprised if there&#x27;s edge cases this misses.</p>
+<p>The above&#x27;s what I ended up with over in <a href="https://github.com/NixOS/nixpkgs/blob/a816e8e506c106d297dd89a2c4807e39628f7b41/pkgs/by-name/an/anki/update.sh#L64-L66">nixpkgs&#x27;s anki pkg</a> (and used <a href="https://github.com/NixOS/nixpkgs/blob/a816e8e506c106d297dd89a2c4807e39628f7b41/pkgs/by-name/an/anki/package.nix#L186">here</a>), so that hack did work in at least one case 😀</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:31:13 UTC
+        Synced at 2026-01-20 19:38:30 UTC
     </footer>
 </body>
 </html>

@@ -24,77 +24,77 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
             <div class="timeline-body"><p>The following snippet correctly causes Ruff to emit PYI025:</p>
-<pre><code class="language-py">from collections.abc import Set as Set
+<pre><code>from collections.abc import Set as Set
 
 __all__ = [&quot;Set&quot;]
 </code></pre>
 <p>But if you apply the autofix, it &quot;fixes&quot; it to this, which is... not correct:</p>
-<pre><code class="language-py">from collections.abc import Set as AbstractSet
+<pre><code>from collections.abc import Set as AbstractSet
 
 AbstractSet = [&quot;Set&quot;]
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2024-03-21 11:23</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-21 11:23</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">fixes</span> added by @AlexWaygood on 2024-03-21 11:23</div>
+            <div class="event">Label <span class="label">fixes</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-21 11:23</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">linter</span> added by @AlexWaygood on 2024-03-21 11:23</div>
+            <div class="event">Label <span class="label">linter</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-21 11:23</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-21 11:28</div>
-            <div class="timeline-body"><p>What's the correct fix in your view or should the rule not emit a fix if it's a module scoped variable named <code>__all__</code>?</p>
+            <div class="timeline-body"><p>What&#x27;s the correct fix in your view or should the rule not emit a fix if it&#x27;s a module scoped variable named <code>__all__</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-21 11:37</div>
-            <div class="timeline-body"><p>Including the name <code>&quot;Set&quot;</code> in <code>__all__</code> marks the symbol as being publicly exported from the module, but it doesn't create a binding in and of itself -- the <code>Set</code> binding is created via the import. So we definitely shouldn't be removing the <code>__all__</code> variable from the module here.</p>
-<p>If we stipulate that it's correct for us to emit the violation here at all, the correct fix would be to modify the original snippet to</p>
-<pre><code class="language-py">from collections.abc import Set as AbstractSet
+            <div class="timeline-body"><p>Including the name <code>&quot;Set&quot;</code> in <code>__all__</code> marks the symbol as being publicly exported from the module, but it doesn&#x27;t create a binding in and of itself -- the <code>Set</code> binding is created via the import. So we definitely shouldn&#x27;t be removing the <code>__all__</code> variable from the module here.</p>
+<p>If we stipulate that it&#x27;s correct for us to emit the violation here at all, the correct fix would be to modify the original snippet to</p>
+<pre><code>from collections.abc import Set as AbstractSet
 
 __all__ = [&quot;AbstractSet&quot;]
 </code></pre>
 <p>rather than what we currently do, which is to modify the snippet to this:</p>
-<pre><code class="language-py">from collections.abc import Set as AbstractSet
+<pre><code>from collections.abc import Set as AbstractSet
 
 AbstractSet = [&quot;Set&quot;]
 </code></pre>
-<p>This is an edge case that's unlikely to come up. However, I'm somewhat concerned that it points to a broader issue with the autofix machinery that could also impact other rules.</p>
-<h2>Should we be emitting PYI025 on this snippet at all?</h2>
-<p>This is debatable. However, I think it's fine to emit PYI025 even if the <code>&quot;Set&quot;</code> symbol appears in <code>__all__</code>, since that's very much an edge case that's extremely unlikely to actually come up. I'm not really concerned about this.</p>
+<p>This is an edge case that&#x27;s unlikely to come up. However, I&#x27;m somewhat concerned that it points to a broader issue with the autofix machinery that could also impact other rules.</p>
+Should we be emitting PYI025 on this snippet at all?
+<p>This is debatable. However, I think it&#x27;s fine to emit PYI025 even if the <code>&quot;Set&quot;</code> symbol appears in <code>__all__</code>, since that&#x27;s very much an edge case that&#x27;s extremely unlikely to actually come up. I&#x27;m not really concerned about this.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-21 11:40</div>
             <div class="timeline-body"><p>Note that the code will actually trigger F811 after being &quot;autofixed&quot; for PYI025:</p>
-<pre><code class="language-py">from collections.abc import Set as AbstractSet
+<pre><code>from collections.abc import Set as AbstractSet
 
 AbstractSet = [&quot;Set&quot;]  # F811: Redefinition of unused `AbstractSet` from line 1
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @AlexWaygood on 2024-03-21 15:02</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-21 15:02</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Unassigned @charliermarsh by @AlexWaygood on 2024-03-21 15:18</div>
+            <div class="event">Unassigned <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-21 15:18</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-22 11:58</div>
             <div class="timeline-body"><p>The autofix is done using the renamer here:</p>
 <p>https://github.com/astral-sh/ruff/blob/4f06d59ff6f58f2d13c2f8fcfe375b81058f87c3/crates/ruff_linter/src/rules/flake8_pyi/rules/unaliased_collections_abc_set_import.rs#L80</p>
-<p>The issue in the renamer is here where, after renaming the binding itself (<code>from collections.abc import Set</code>), we then proceed to try to rename all <em>references</em> to the binding that we've just renamed:</p>
+<p>The issue in the renamer is here where, after renaming the binding itself (<code>from collections.abc import Set</code>), we then proceed to try to rename all <em>references</em> to the binding that we&#x27;ve just renamed:</p>
 <p>https://github.com/astral-sh/ruff/blob/4f06d59ff6f58f2d13c2f8fcfe375b81058f87c3/crates/ruff_linter/src/renamer.rs#L202-L206</p>
-<p>The renamer correctly recognises that <code>__all__ = [&quot;Set&quot;]</code> counts as a resolved reference to the <code>Set</code> symbol that we've just renamed. But it then incorrectly renames the target of the assignment rather than the string in the assignment's value.</p>
+<p>The renamer correctly recognises that <code>__all__ = [&quot;Set&quot;]</code> counts as a resolved reference to the <code>Set</code> symbol that we&#x27;ve just renamed. But it then incorrectly renames the target of the assignment rather than the string in the assignment&#x27;s value.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-22 12:20</div>
             <div class="timeline-body"><p>Adding this debug print:</p>
-<pre><code class="language-diff">diff --git a/crates/ruff_linter/src/renamer.rs b/crates/ruff_linter/src/renamer.rs
+<pre><code>diff --git a/crates/ruff_linter/src/renamer.rs b/crates/ruff_linter/src/renamer.rs
 index 8571d7f53..e8f4d1295 100644
 --- a/crates/ruff_linter/src/renamer.rs
 +++ b/crates/ruff_linter/src/renamer.rs
@@ -112,15 +112,15 @@ index 8571d7f53..e8f4d1295 100644
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2024-03-22 12:27</div>
+            <div class="event">Assigned to <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-22 12:27</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2024-03-22 20:06</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-22 20:06</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:49:54 UTC
+        Synced at 2026-01-20 18:48:51 UTC
     </footer>
 </body>
 </html>

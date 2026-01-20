@@ -23,11 +23,11 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/cgearing">@cgearing</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>Hi, thanks for your hard work on Ruff!</p>
 <p>We recently upgraded to the latest version and have been working through the errors generated relating to pyupgrade and the new <code>type</code> expression syntax, however we are seeing some tricky behaviour that we think might need looking at.</p>
 <p>MRE below:</p>
-<pre><code class="language-python">from typing import Generic, TypeVar
+<pre><code>from typing import Generic, TypeVar
 
 
 class One: ...
@@ -43,15 +43,15 @@ class Test(Generic[EitherT]):...
 
 </code></pre>
 <p>Running <code>ruff check --select=UP</code> on this will give the following error:</p>
-<pre><code class="language-bash">min.py:13:12: UP046 Generic class `Test` uses `Generic` subclass instead of type parameters
+<pre><code>min.py:13:12: UP046 Generic class `Test` uses `Generic` subclass instead of type parameters
    |
 13 | class Test(Generic[EitherT]):...
    |            ^^^^^^^^^^^^^^^^ UP046
    |
    = help: Use type parameters
 </code></pre>
-<p>However, TypeVars don't seem to be valid to be used in the new syntax, nor can you create reusable constrained type definitions using the new <code>type</code> expression, you would have to do the below:</p>
-<pre><code class="language-python">
+<p>However, TypeVars don&#x27;t seem to be valid to be used in the new syntax, nor can you create reusable constrained type definitions using the new <code>type</code> expression, you would have to do the below:</p>
+<pre><code>
 from typing import TypeVar, Generic
 
 class One: ...
@@ -61,23 +61,23 @@ class Two: ...
 class Test[T: (One, Two)]: ...
 </code></pre>
 <p>Is it intended that this error should just be ignored wherever a constrained TypeVar needs to be used across multiple sites?</p>
-<h3>Version</h3>
+Version
 <p>ruff 0.12.2</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-11 19:02</div>
             <div class="timeline-body"><p>Thanks for the kind words!</p>
-<p>@AlexWaygood gave a really nice answer on a closely-related issue <a href="https://github.com/astral-sh/ruff/issues/18894#issuecomment-2996595541">here</a> with an example for a reusable type alias with bounds, but I'm not sure it extends to constrained type variables, as you point out.</p>
+<p>@AlexWaygood gave a really nice answer on a closely-related issue <a href="https://github.com/astral-sh/ruff/issues/18894#issuecomment-2996595541">here</a> with an example for a reusable type alias with bounds, but I&#x27;m not sure it extends to constrained type variables, as you point out.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @ntBre on 2025-07-11 19:03</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-11 19:03</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-14 08:07</div>
-            <div class="timeline-body"><p>I'm not very familiar with Python's type syntax and I'm sure I'm overlooking some subtle behavior but can't you use</p>
-<pre><code class="language-py">class One: ...
+            <div class="timeline-body"><p>I&#x27;m not very familiar with Python&#x27;s type syntax and I&#x27;m sure I&#x27;m overlooking some subtle behavior but can&#x27;t you use</p>
+<pre><code>class One: ...
 
 
 class Two: ...
@@ -107,12 +107,12 @@ x = test.b(Two()) # errors
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/cgearing">@cgearing</a> on 2025-07-14 11:04</div>
             <div class="timeline-body"><p>@AlexWaygood would a PR adjusting the behaviour of UP046 to not error when countering a constrained <code>TypeVar</code> be a good approach?  It seems like an oversight in PEP695 that constrained types in the new syntax should be a literal tuple expression, but unless that changes it seems that there is a genuine use-case for keeping <code>class SomeClass(Generic[SomeConstrainedType])</code>.</p>
-<p>I'd be happy to have a go if so!</p>
+<p>I&#x27;d be happy to have a go if so!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-14 16:45</div>
-            <div class="timeline-body"><p>I agree that you can't switch from an old-style TypeVar with constraints to a PEP-695-style TypeVar with constraints without adding some degree of code duplication. That's a bit unfortunate.</p>
+            <div class="timeline-body"><p>I agree that you can&#x27;t switch from an old-style TypeVar with constraints to a PEP-695-style TypeVar with constraints without adding some degree of code duplication. That&#x27;s a bit unfortunate.</p>
 <p>However, as, PEP-695 <a href="https://peps.python.org/pep-0695/#points-of-confusion">explains</a>:</p>
 <blockquote>
 <p>The scoping rules for type variables are difficult to understand. Type variables are typically allocated within the global scope, but their semantic meaning is valid only when used within the context of a generic class, function, or type alias. A single runtime instance of a type variable may be reused in multiple generic contexts, and it has a different semantic meaning in each of these contexts. This PEP proposes to eliminate this source of confusion by declaring type parameters at a natural place within a class, function, or type alias declaration statement.</p>
@@ -121,12 +121,12 @@ x = test.b(Two()) # errors
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2025-07-24 11:59</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-24 11:59</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:53:03 UTC
+        Synced at 2026-01-20 18:50:13 UTC
     </footer>
 </body>
 </html>

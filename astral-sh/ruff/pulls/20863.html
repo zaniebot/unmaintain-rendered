@@ -23,19 +23,19 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This PR switches from thin to fat LTO optimization.</p>
-<p>The main motivation is that using lto=fat fixes the binary size increase that we've seen after switching to inventory for <a href="https://github.com/astral-sh/ruff/issues/20845#issuecomment-3401604238">ingredient registration</a>. The regression is mainly due to symbols not being removed when using lto=thin, but they're successfully removed when using lto=fat (from 19MB to 17MB).</p>
+<p>The main motivation is that using lto=fat fixes the binary size increase that we&#x27;ve seen after switching to inventory for <a href="https://github.com/astral-sh/ruff/issues/20845#issuecomment-3401604238">ingredient registration</a>. The regression is mainly due to symbols not being removed when using lto=thin, but they&#x27;re successfully removed when using lto=fat (from 19MB to 17MB).</p>
 <p>Using lto=fat also results in a significant performance improvement, which I think is worth it on its own.</p>
-<p>Unfortunately, using lto=flat does have the downside that release builds take significantly longer. One of the main motivations for using <code>lto=thin</code> when we switched from <code>fat</code> to <code>thin</code> in https://github.com/astral-sh/ruff/pull/9031 was to improve performance. To mitigate this, I changed the <code>--profiling</code> profile to only use <code>lto=thin</code>, similar to what we do in uv (where we disable lto entirely). This PR is also likely to make the mypy primer and benchmark jobs slower (or when running mypy primer locally), because of a significant increase in compile time.</p>
-<p>This setup now mirrors uv's (with the exception that <code>profiling</code> use <code>lto=fat</code>).</p>
+<p>Unfortunately, using lto=flat does have the downside that release builds take significantly longer. One of the main motivations for using <code>lto=thin</code> when we switched from <code>fat</code> to <code>thin</code> in <a href="https://github.com/astral-sh/ruff/pull/9031">astral-sh/ruff#9031</a> was to improve performance. To mitigate this, I changed the <code>--profiling</code> profile to only use <code>lto=thin</code>, similar to what we do in uv (where we disable lto entirely). This PR is also likely to make the mypy primer and benchmark jobs slower (or when running mypy primer locally), because of a significant increase in compile time.</p>
+<p>This setup now mirrors uv&#x27;s (with the exception that <code>profiling</code> use <code>lto=fat</code>).</p>
 <p>I do feel a bit bad about making this change while @BurntSushi is out, because I know he feels the most vocal about this.</p>
 <p>Clean build timing:</p>
 <ul>
 <li>fat: 2m 02s</li>
 <li>thin: 1m 00s</li>
 </ul>
-<p>Fixes https://github.com/astral-sh/ruff/issues/20845</p>
+<p>Fixes <a href="https://github.com/astral-sh/ruff/issues/20845">astral-sh/ruff#20845</a></p>
 <p>Relevant discussions:</p>
 <ul>
 <li>https://github.com/astral-sh/uv/pull/5904</li>
@@ -46,16 +46,16 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-10-14 13:16</div>
-            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+            <div class="timeline-body">
 
-<h2><a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Ffat-lto">CodSpeed Performance Report</a></h2>
-<h3>Merging #20863 will <strong>degrade performances by 5.28%</strong></h3>
-<p><sub>Comparing <code>micha/fat-lto</code> (6e2b809) with <code>main</code> (abf685b)</sub></p>
-<h3>Summary</h3>
-<p><code>⚡ 25</code> improvements<br />
-<code>❌ 1 (👁 1)</code> regression<br />
+<a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Ffat-lto">CodSpeed Performance Report</a>
+Merging #20863 will <strong>degrade performances by 5.28%</strong>
+<p>Comparing <code>micha/fat-lto</code> (6e2b809) with <code>main</code> (abf685b)</p>
+Summary
+<p><code>⚡ 25</code> improvements<br>
+<code>❌ 1 (👁 1)</code> regression<br>
 <code>✅ 25</code> untouched</p>
-<h3>Benchmarks breakdown</h3>
+Benchmarks breakdown
 <p>|     | Mode | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
 | --- | ---- | --------- | ------ | ------ | ------ |
 | ⚡ | Instrumentation | <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Ffat-lto?uri=crates%2Fruff_benchmark%2Fbenches%2Flinter.rs%3A%3Aall_rules%3A%3Abenchmark_all_rules%3A%3Alinter%2Fall-rules%5Blarge%2Fdataset.py%5D&amp;runnerMode=Instrumentation"><code>linter/all-rules[large/dataset.py]</code></a> | 17.7 ms | 16.2 ms | +9.37% |
@@ -79,7 +79,7 @@
 | ⚡ | WallTime | <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Ffat-lto?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Alarge%5Bsympy%5D&amp;runnerMode=WallTime"><code>large[sympy]</code></a> | 42.9 s | 38.9 s | +10.33% |
 | ⚡ | WallTime | <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Ffat-lto?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Amedium%5Bcolour-science%5D&amp;runnerMode=WallTime"><code>medium[colour-science]</code></a> | 12.3 s | 11.1 s | +11.07% |
 | ... | ... | ... | ... | ... | ... |</p>
-<p><br/></p>
+<p><br></p>
 <blockquote>
 <p>:information_source: <em>Only the first 20 benchmarks are displayed. <a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Ffat-lto">Go to the app to view all benchmarks</a>.</em></p>
 </blockquote>
@@ -87,39 +87,39 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-14 13:20</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">release</span> added by @MichaReiser on 2025-10-14 14:27</div>
+            <div class="event">Label <span class="label">release</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-14 14:27</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2025-10-14 14:42</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-14 14:42</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @MichaReiser on 2025-10-14 14:42</div>
+            <div class="event">Reopened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-14 14:42</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @MichaReiser on 2025-10-14 14:49</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-14 14:49</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-14 14:49</div>
-            <div class="timeline-body"><p>I'm not sure why that one instrumented benchmark regresses. But a 10% improvement on our walltime benchmarks is very convincing</p>
+            <div class="timeline-body"><p>I&#x27;m not sure why that one instrumented benchmark regresses. But a 10% improvement on our walltime benchmarks is very convincing</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>Cargo.toml</code>:311 on 2025-10-14 15:32</div>
-            <div class="timeline-body"><pre><code class="language-suggestion"># that we aren't shipping, but in order to make those two the same, we'd
+            <div class="timeline-body"><pre><code># that we aren&#x27;t shipping, but in order to make those two the same, we&#x27;d
 </code></pre>
 </div>
         </div>
@@ -129,26 +129,26 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Enable fat LTO" to "Enable lto=fat" by @MichaReiser on 2025-10-14 16:47</div>
+            <div class="event">Renamed from &quot;Enable fat LTO&quot; to &quot;Enable lto=fat&quot; by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-14 16:47</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @MichaReiser on 2025-10-15 06:59</div>
+            <div class="event">Merged by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-15 06:59</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2025-10-15 06:59</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-15 06:59</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-10-15 07:00</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-10-27 14:02</div>
-            <div class="timeline-body"><p>Yeah I think I've slowly become okay with this sort of change. I even recently did the same for ripgrep. I still don't like that we have different compilation settings for profiling versus release, but I haven't been bitten too hard by it yet.</p>
+            <div class="timeline-body"><p>Yeah I think I&#x27;ve slowly become okay with this sort of change. I even recently did the same for ripgrep. I still don&#x27;t like that we have different compilation settings for profiling versus release, but I haven&#x27;t been bitten too hard by it yet.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:16:24 UTC
+        Synced at 2026-01-20 19:19:31 UTC
     </footer>
 </body>
 </html>

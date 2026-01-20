@@ -23,17 +23,17 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/affanshahid">@affanshahid</a></div>
-            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+            <div class="timeline-body">Please complete the following tasks
 <ul>
 <li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
 <li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
 </ul>
-<h3>Rust Version</h3>
+Rust Version
 <p>rustc 1.63.0 (4b91a6ea7 2022-08-08)</p>
-<h3>Clap Version</h3>
+Clap Version
 <p>3.2.21</p>
-<h3>Minimal reproducible code</h3>
-<pre><code class="language-rust">use chrono::DateTime;
+Minimal reproducible code
+<pre><code>use chrono::DateTime;
 use chrono::TimeZone;
 use chrono::Utc;
 use clap::Parser;
@@ -54,18 +54,18 @@ fn main() {
     let args = Args::parse();
 }
 </code></pre>
-<h3>Steps to reproduce the bug with the above code</h3>
+Steps to reproduce the bug with the above code
 <p><code>cargo run -- --help</code></p>
-<h3>Actual Behaviour</h3>
+Actual Behaviour
 <p>I get the following error</p>
-<pre><code>thread 'main' panicked at 'Argument `start`'s default_value=&quot;2022-09-14 20:30:14.397521 UTC&quot; failed validation: error: Invalid value &quot;2022-09-14 20:30:14.397521 UTC&quot; for '--start &lt;START&gt;': input contains invalid characters
+<pre><code>thread &#x27;main&#x27; panicked at &#x27;Argument `start`&#x27;s default_value=&quot;2022-09-14 20:30:14.397521 UTC&quot; failed validation: error: Invalid value &quot;2022-09-14 20:30:14.397521 UTC&quot; for &#x27;--start &lt;START&gt;&#x27;: input contains invalid characters
 </code></pre>
-<p>I'm not sure why this is happening but my guess is that it is calling <code>fmt</code> using the <code>Display</code> trait on the default DateTime I have provided (which prints the date in a different format) and then trying to parse it using the function I have provided which expects the RFC 3339 format.</p>
-<h3>Expected Behaviour</h3>
+<p>I&#x27;m not sure why this is happening but my guess is that it is calling <code>fmt</code> using the <code>Display</code> trait on the default DateTime I have provided (which prints the date in a different format) and then trying to parse it using the function I have provided which expects the RFC 3339 format.</p>
+Expected Behaviour
 <p>There should be no errors and it should use the default date as is.</p>
-<h3>Additional Context</h3>
+Additional Context
 <p><em>No response</em></p>
-<h3>Debug Output</h3>
+Debug Output
 <pre><code>[      clap::builder::command] 	Command::_do_parse
 [      clap::builder::command] 	Command::_build: name=&quot;finny&quot;
 [      clap::builder::command] 	Command::_propagate:finny
@@ -79,7 +79,7 @@ fn main() {
 [clap::builder::debug_asserts] 	Arg::_debug_asserts:start
 [      clap::builder::command] 	Command::color: Color setting...
 [      clap::builder::command] 	Auto
-thread 'main' panicked at 'Argument `start`'s default_value=&quot;2022-09-14 20:46:12.909474 UTC&quot; failed validation: error: Invalid value &quot;2022-09-14 20:46:12.909474 UTC&quot; for '--start &lt;START&gt;': input contains invalid characters
+thread &#x27;main&#x27; panicked at &#x27;Argument `start`&#x27;s default_value=&quot;2022-09-14 20:46:12.909474 UTC&quot; failed validation: error: Invalid value &quot;2022-09-14 20:46:12.909474 UTC&quot; for &#x27;--start &lt;START&gt;&#x27;: input contains invalid characters
 
 For more information try --help
 
@@ -158,30 +158,30 @@ Backtrace:
              at /rustc/4b91a6ea7258a947e59c6522cd5898e7c0a6a88f/library/std/src/rt.rs:144:17
   27: _main
 
-', /Users/affan/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-3.2.21/src/builder/debug_asserts.rs:845:13
+&#x27;, /Users/affan/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-3.2.21/src/builder/debug_asserts.rs:845:13
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">C-bug</span> added by @affanshahid on 2022-09-14 20:49</div>
+            <div class="event">Label <span class="label">C-bug</span> added by <a href="https://github.com/affanshahid">@affanshahid</a> on 2022-09-14 20:49</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-09-14 21:18</div>
             <div class="timeline-body"><blockquote>
-<p>I'm not sure why this is happening but my guess is that it is calling fmt using the Display trait on the default DateTime I have provided (which prints the date in a different format) and then trying to parse it using the function I have provided which expects the RFC 3339 format.</p>
+<p>I&#x27;m not sure why this is happening but my guess is that it is calling fmt using the Display trait on the default DateTime I have provided (which prints the date in a different format) and then trying to parse it using the function I have provided which expects the RFC 3339 format.</p>
 </blockquote>
-<p>Yes, <code>default_value_t</code> relies on the <code>Display</code> implementation. Whether you used <code>default_value_t</code> / <code>Display</code> or used <code>default_value = &quot;&quot;</code>, we provide asserts to help catch mistakes earlier development so you don't have to wait until you've exhaustively tested in your CLI.</p>
-<p>In this case, you will need to use <code>default_value = &quot;...&quot;</code> which will require a <code>&amp;'static str</code>.  You can get one with either leaking memory or <code>once_cell</code>.</p>
-<p>Since it sounds like things are working as expected, I'm going to go ahead and close for now.  If there was something I'm missing, let me know and we re-open this!</p>
+<p>Yes, <code>default_value_t</code> relies on the <code>Display</code> implementation. Whether you used <code>default_value_t</code> / <code>Display</code> or used <code>default_value = &quot;&quot;</code>, we provide asserts to help catch mistakes earlier development so you don&#x27;t have to wait until you&#x27;ve exhaustively tested in your CLI.</p>
+<p>In this case, you will need to use <code>default_value = &quot;...&quot;</code> which will require a <code>&amp;&#x27;static str</code>.  You can get one with either leaking memory or <code>once_cell</code>.</p>
+<p>Since it sounds like things are working as expected, I&#x27;m going to go ahead and close for now.  If there was something I&#x27;m missing, let me know and we re-open this!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @epage on 2022-09-14 21:18</div>
+            <div class="event">Closed by <a href="https://github.com/epage">@epage</a> on 2022-09-14 21:18</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:48:45 UTC
+        Synced at 2026-01-20 19:59:16 UTC
     </footer>
 </body>
 </html>

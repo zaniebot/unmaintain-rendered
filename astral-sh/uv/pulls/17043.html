@@ -23,12 +23,12 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/e-nomem">@e-nomem</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>This PR explicitly sets the entry type for files in an sdist. This changes the entry type from <code>AREGTYPE</code> (the 'legacy' regular file type) to <code>REGTYPE</code> (the 'normal' regular file type) in the generated tar.</p>
+            <div class="timeline-body">Summary
+<p>This PR explicitly sets the entry type for files in an sdist. This changes the entry type from <code>AREGTYPE</code> (the &#x27;legacy&#x27; regular file type) to <code>REGTYPE</code> (the &#x27;normal&#x27; regular file type) in the generated tar.</p>
 <p>This change works around a bug in the python <code>tarfile</code> module that causes all entries after a certain point in the tar to be silently ignored if any entry matches some very specific conditions. In <code>maturin</code> this was very visible since the <code>PKG-INFO</code> was written at the very end so <code>twine check</code> would loudly complain that the <code>PKG-INFO</code> was missing and that the sdist was invalid. In <code>uv</code> the <code>PKG-INFO</code> is written at the beginning so this issue is unlikely to be caught.</p>
 <p>Note that this change does mean that sdists created with newer versions of the uv build backend will not be byte-for-byte identical with sdists from an older version.</p>
-<p>See https://github.com/PyO3/maturin/issues/2855#issuecomment-3546501132</p>
-<h2>Test Plan</h2>
+<p>See <a href="https://github.com/PyO3/maturin/issues/2855">PyO3/maturin#2855</a>#issuecomment-3546501132</p>
+Test Plan
 <p>This is the same as the change that was made in maturin to work around the same issue</p>
 </div>
         </div>
@@ -37,16 +37,16 @@
             <div class="timeline-body"><blockquote>
 <p>This change works around a bug in the python <code>tarfile</code> module that causes all entries after a certain point in the tar to be silently ignored if any entry matches some very specific conditions.</p>
 </blockquote>
-<p>Out of curiosity, did you file a bug with CPython for this? I suspect it's the kind of thing they'd be interested in fixing in a patch release for each non-EOL version.</p>
-<p>Edit: my bad, I see you filed it as https://github.com/python/cpython/issues/141707! Linking here so these get cross-referenced 🙂</p>
+<p>Out of curiosity, did you file a bug with CPython for this? I suspect it&#x27;s the kind of thing they&#x27;d be interested in fixing in a patch release for each non-EOL version.</p>
+<p>Edit: my bad, I see you filed it as <a href="https://github.com/python/cpython/issues/141707">python/cpython#141707</a>! Linking here so these get cross-referenced 🙂</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @konstin by @zanieb on 2025-12-09 17:15</div>
+            <div class="event">Review requested from <a href="https://github.com/konstin">@konstin</a> by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-09 17:15</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/e-nomem">@e-nomem</a> on 2025-12-09 19:07</div>
-            <div class="timeline-body"><p>There's also a related issue in <code>tar-rs</code> to initialize headers by default to <code>REGTYPE</code> instead of <code>AREGTYPE</code> because I suspect that most users are just not explicitly setting this flag rather than wanting to actually use the legacy type. It's not likely to get merged anytime soon though because it's a breaking change. https://github.com/alexcrichton/tar-rs/issues/422</p>
+            <div class="timeline-body"><p>There&#x27;s also a related issue in <code>tar-rs</code> to initialize headers by default to <code>REGTYPE</code> instead of <code>AREGTYPE</code> because I suspect that most users are just not explicitly setting this flag rather than wanting to actually use the legacy type. It&#x27;s not likely to get merged anytime soon though because it&#x27;s a breaking change. <a href="https://github.com/alexcrichton/tar-rs/issues/422">alexcrichton/tar-rs#422</a></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -56,8 +56,8 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/e-nomem">@e-nomem</a> on 2025-12-10 12:23</div>
-            <div class="timeline-body"><p>Here's a rust script that will create two tar files in the local directory:</p>
-<pre><code class="language-rust">#!/usr/bin/env -S cargo +nightly -Zscript
+            <div class="timeline-body"><p>Here&#x27;s a rust script that will create two tar files in the local directory:</p>
+<pre><code>#!/usr/bin/env -S cargo +nightly -Zscript
 ---cargo
 [dependencies]
 tar = &quot;0.4.44&quot;
@@ -100,8 +100,8 @@ fn main() -&gt; Result&lt;(), IoError&gt; {
 	Ok(())
 }
 </code></pre>
-<p>And here's a python script to test the two tar files:</p>
-<pre><code class="language-python">#!/usr/bin/env -S uv run --script
+<p>And here&#x27;s a python script to test the two tar files:</p>
+<pre><code>#!/usr/bin/env -S uv run --script
 # /// script
 # requires-python = &quot;&gt;=3.9&quot;
 # dependencies = [
@@ -115,7 +115,7 @@ import pytest
 
 
 def get_members(filename):
-	with tarfile.open(filename, 'r') as tar:
+	with tarfile.open(filename, &#x27;r&#x27;) as tar:
 		return tar.getmembers()
 
 
@@ -128,14 +128,14 @@ def test_bad_tar():
 	assert len(get_members(&quot;bad.tar&quot;)) == 3
 
 
-@pytest.mark.parametrize('format', (
+@pytest.mark.parametrize(&#x27;format&#x27;, (
 	pytest.param(tarfile.GNU_FORMAT, id=&quot;gnu&quot;),
 	pytest.param(tarfile.PAX_FORMAT, id=&quot;pax&quot;),
 ))
 @pytest.mark.xfail(strict=True)
 def test_python_only(format):
 	fp = BytesIO()
-	with tarfile.open(mode='w', fileobj=fp, format=format) as tar:
+	with tarfile.open(mode=&#x27;w&#x27;, fileobj=fp, format=format) as tar:
 		info = tarfile.TarInfo()
 		info.type = tarfile.AREGTYPE
 		info.name = (&quot;a&quot; * 99) + &quot;/bbb&quot;
@@ -144,7 +144,7 @@ def test_python_only(format):
 		expected = {t.name: t.type for t in tar.getmembers()}
 	
 	fp.seek(0)
-	with tarfile.open(mode='r', fileobj=fp) as tar:
+	with tarfile.open(mode=&#x27;r&#x27;, fileobj=fp) as tar:
 		actual = {t.name: t.type for t in tar.getmembers()}
 	
 	assert expected == actual
@@ -156,7 +156,7 @@ if __name__ == &quot;__main__&quot;:
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-12-11 10:17</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/konstin">@konstin</a> on 2025-12-11 10:17</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-12-11 10:24</div>
@@ -165,19 +165,19 @@ if __name__ == &quot;__main__&quot;:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-12-11 10:24</div>
-            <div class="timeline-body"><p>I've added a comment explaining why we need to set that type.</p>
+            <div class="timeline-body"><p>I&#x27;ve added a comment explaining why we need to set that type.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @konstin on 2025-12-11 10:37</div>
+            <div class="event">Merged by <a href="https://github.com/konstin">@konstin</a> on 2025-12-11 10:37</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @konstin on 2025-12-11 10:37</div>
+            <div class="event">Closed by <a href="https://github.com/konstin">@konstin</a> on 2025-12-11 10:37</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:45:32 UTC
+        Synced at 2026-01-20 19:54:53 UTC
     </footer>
 </body>
 </html>

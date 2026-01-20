@@ -25,15 +25,15 @@
             <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a></div>
             <div class="timeline-body"><p>In transformers, we have:</p>
 <ul>
-<li><code>tensorflow-text</code>: <code>tensorflow-macos; python_full_version &gt;= '3.13' and platform_machine == 'arm64' and platform_system == 'Darwin'</code></li>
-<li><code>tensorflow-macos</code>: <code>tensorflow-cpu-aws; (python_full_version &lt; '3.10' and platform_machine == 'aarch64' and platform_system == 'Linux') or (python_full_version &gt;= '3.13' and platform_machine == 'aarch64' and platform_system == 'Linux') or (python_full_version &gt;= '3.13' and platform_machine == 'arm64' and platform_system == 'Linux')</code></li>
-<li><code>tensorflow-macos</code>: <code>tensorflow-intel; python_full_version &gt;= '3.13' and platform_system == 'Windows'</code></li>
+<li><code>tensorflow-text</code>: <code>tensorflow-macos; python_full_version &gt;= &#x27;3.13&#x27; and platform_machine == &#x27;arm64&#x27; and platform_system == &#x27;Darwin&#x27;</code></li>
+<li><code>tensorflow-macos</code>: <code>tensorflow-cpu-aws; (python_full_version &lt; &#x27;3.10&#x27; and platform_machine == &#x27;aarch64&#x27; and platform_system == &#x27;Linux&#x27;) or (python_full_version &gt;= &#x27;3.13&#x27; and platform_machine == &#x27;aarch64&#x27; and platform_system == &#x27;Linux&#x27;) or (python_full_version &gt;= &#x27;3.13&#x27; and platform_machine == &#x27;arm64&#x27; and platform_system == &#x27;Linux&#x27;)</code></li>
+<li><code>tensorflow-macos</code>: <code>tensorflow-intel; python_full_version &gt;= &#x27;3.13&#x27; and platform_system == &#x27;Windows&#x27;</code></li>
 </ul>
 <p>This means that <code>tensorflow-cpu-aws</code> and <code>tensorflow-intel</code> can never be installed, and we can drop them from the lockfile.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2024-09-03 08:31</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/konstin">@konstin</a> on 2024-09-03 08:31</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-03 17:07</div>
@@ -41,12 +41,12 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolution/graph.rs</code>:303 on 2024-09-03 17:07</div>
-            <div class="timeline-body"><p>A DFS / BFS wasn't sufficient for creating the marker expressions for <code>pip compile --universal</code>. That's why we have <code>propagate_markers</code>. Is there a reason that it's different here?</p>
+            <div class="timeline-body"><p>A DFS / BFS wasn&#x27;t sufficient for creating the marker expressions for <code>pip compile --universal</code>. That&#x27;s why we have <code>propagate_markers</code>. Is there a reason that it&#x27;s different here?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolution/graph.rs</code>:303 on 2024-09-03 17:07</div>
-            <div class="timeline-body"><p>I think you need to guarantee that you've visited <em>every</em> parent before you visit any child.</p>
+            <div class="timeline-body"><p>I think you need to guarantee that you&#x27;ve visited <em>every</em> parent before you visit any child.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -65,23 +65,23 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/resolution/graph.rs</code>:303 on 2024-09-04 08:27</div>
             <div class="timeline-body"><p><code>propagate_markers</code> is updating the graph itself and not considering the starting environments, so i found it easier to create a separate method.</p>
-<p>The algorithm is a variant of Dijkstra's algorithm for not totally ordered distances: Whenever we find a shorter distance to a node (a marker that is not a subset of the existing marker), we re-queue the node and update all its children: We may not have visited all parents yet, but if a parent propagates an update, we will also propagate it to all children. This implicitly handles cycles, whenever we re-reach a node through a cycle the marker we have is a more specific marker/longer path, so we don't update the node and don't re-queue it.</p>
+<p>The algorithm is a variant of Dijkstra&#x27;s algorithm for not totally ordered distances: Whenever we find a shorter distance to a node (a marker that is not a subset of the existing marker), we re-queue the node and update all its children: We may not have visited all parents yet, but if a parent propagates an update, we will also propagate it to all children. This implicitly handles cycles, whenever we re-reach a node through a cycle the marker we have is a more specific marker/longer path, so we don&#x27;t update the node and don&#x27;t re-queue it.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-09-04 08:57</div>
             <div class="timeline-body"><p>tl;dr: Not without an extra layer of virtual packages or forking.</p>
-<p>Say we have A -&gt; B on linux and B -&gt; C on windows. We first process A with A -&gt; B, and then B with B -&gt; C. At this point, we know that B is linux only, so we could drop the B -&gt; C edge. Later, we process a package D (universally included), with D -&gt; B. Now we would need to add back C since it is included again, but this doesn't work since pubgrub needs all it's incompatibilities to be immutable.</p>
+<p>Say we have A -&gt; B on linux and B -&gt; C on windows. We first process A with A -&gt; B, and then B with B -&gt; C. At this point, we know that B is linux only, so we could drop the B -&gt; C edge. Later, we process a package D (universally included), with D -&gt; B. Now we would need to add back C since it is included again, but this doesn&#x27;t work since pubgrub needs all it&#x27;s incompatibilities to be immutable.</p>
 <p>To mitigate this, we would need a virtual package for each platform, treating platforms like extras, so e.g. splitting the real B into B[not(windows)] and B[windows], with A[universal] -&gt; B[not(windows)], B[windows] -&gt; C[...], B[not(windows)] -&gt; B, B[windows] -&gt; B, and all packages without platforms being dummies that only force the same version of a package. Since we need to propagate this information across intermediary dependencies, we would have to create virtual packages for all intermediary dependencies, creating a massive virtual dependency tree.</p>
 <p>We could also fork every time we see a platform marker, for the known trade-offs.</p>
 <p>Cargo has this problem too.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @konstin on 2024-09-04 08:57</div>
+            <div class="event">Merged by <a href="https://github.com/konstin">@konstin</a> on 2024-09-04 08:57</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @konstin on 2024-09-04 08:57</div>
+            <div class="event">Closed by <a href="https://github.com/konstin">@konstin</a> on 2024-09-04 08:57</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-09-04 08:57</div>
@@ -98,7 +98,7 @@
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:39:22 UTC
+        Synced at 2026-01-20 19:48:01 UTC
     </footer>
 </body>
 </html>

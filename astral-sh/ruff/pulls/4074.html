@@ -23,56 +23,56 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>In #3521, we modified our <code>force-single-line = true</code> behavior to preserve inline comments on imports when splitting multi-member imports into multiple single-member imports. This is useful, since those inline comments are often suppressions that we want to propagate and preserve. For example given:</p>
-<pre><code class="language-py">from foo import (  # noqa: F401
+<pre><code>from foo import (  # noqa: F401
   bar,
   baz,
 )
 </code></pre>
 <p>After #3521, we reformatted that (with <code>force-single-line = true</code>) to:</p>
-<pre><code class="language-py">from foo import bar  # noqa: F401
+<pre><code>from foo import bar  # noqa: F401
 from foo import baz  # noqa: F401
 </code></pre>
 <p>This is all well and good, but #4062 pointed out a case in which this comment propagate caused us to infinitely duplicate those inline comments in certain cases, leading to an exponential blowup.</p>
 <p>Given:</p>
-<pre><code class="language-py">from mypackage.subpackage import (  # long comment that seems to be a problem
+<pre><code>from mypackage.subpackage import (  # long comment that seems to be a problem
     a_long_variable_name_that_causes_problems,
     items,
 )
 </code></pre>
-<p>After one round of fixing, we'd produce:</p>
-<pre><code class="language-py">from mypackage.subpackage import (  # long comment that seems to be a problem
+<p>After one round of fixing, we&#x27;d produce:</p>
+<pre><code>from mypackage.subpackage import (  # long comment that seems to be a problem
     a_long_variable_name_that_causes_problems,
 )
 from mypackage.subpackage import items  # long comment that seems to be a problem
 </code></pre>
-<p>On the next pass, we'd recombine these imports, and notice that <code>from mypackage.subpackage import items</code> is missing the inline comment <code># long comment that seems to be a problem</code>, which is instead attached to the <em>member import</em> <code>items</code>. When we then force-split these imports, we'd duplicate the comment:</p>
-<pre><code class="language-py">from mypackage.subpackage import (  # long comment that seems to be a problem
+<p>On the next pass, we&#x27;d recombine these imports, and notice that <code>from mypackage.subpackage import items</code> is missing the inline comment <code># long comment that seems to be a problem</code>, which is instead attached to the <em>member import</em> <code>items</code>. When we then force-split these imports, we&#x27;d duplicate the comment:</p>
+<pre><code>from mypackage.subpackage import (  # long comment that seems to be a problem
     a_long_variable_name_that_causes_problems,
 )
 from mypackage.subpackage import (  # long comment that seems to be a problem
     items,  # long comment that seems to be a problem
 )
 </code></pre>
-<p>On the next pass, we'd find <em>two</em> inline comments, and we'd duplicate them on each import statement.</p>
-<p>Anyway, the fix here is to avoid ever combining separate import statements if they're going to eventually be split. Previously, we'd combine those statements during normalization, then split them up at a later pass via a dedicated method. Instead, if we avoid combining imports and handle the splitting during normalization itself, we avoid all of these issues.</p>
+<p>On the next pass, we&#x27;d find <em>two</em> inline comments, and we&#x27;d duplicate them on each import statement.</p>
+<p>Anyway, the fix here is to avoid ever combining separate import statements if they&#x27;re going to eventually be split. Previously, we&#x27;d combine those statements during normalization, then split them up at a later pass via a dedicated method. Instead, if we avoid combining imports and handle the splitting during normalization itself, we avoid all of these issues.</p>
 <p>Closes #4062.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-04-24 04:20</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-24 04:20</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">isort</span> added by @charliermarsh on 2023-04-24 04:20</div>
+            <div class="event">Label <span class="label">isort</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-24 04:20</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-04-24 04:36</div>
-            <div class="timeline-body"><h2>PR Check Results</h2>
-<h3>Ecosystem</h3>
+            <div class="timeline-body">PR Check Results
+Ecosystem
 <p>✅ ecosystem check detected no changes.</p>
-<h3>Benchmark</h3>
-<h4>Linux</h4>
+Benchmark
+Linux
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 linter/all-rules/large/dataset.py          1.00     14.2±0.03ms     2.9 MB/sec    1.00     14.2±0.04ms     2.9 MB/sec
@@ -88,7 +88,7 @@ parser/numpy/ctypeslib.py                  1.00   1155.3±0.89µs    14.4 MB/sec
 parser/numpy/globals.py                    1.00    114.8±0.30µs    25.7 MB/sec    1.04    119.9±0.15µs    24.6 MB/sec
 parser/pydantic/types.py                   1.00      2.5±0.00ms    10.1 MB/sec    1.08      2.7±0.00ms     9.4 MB/sec
 </code></pre>
-<h4>Windows</h4>
+Windows
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 linter/all-rules/large/dataset.py          1.00     21.1±0.52ms  1969.8 KB/sec    1.00     21.2±0.45ms  1967.5 KB/sec
@@ -104,15 +104,15 @@ parser/numpy/ctypeslib.py                  1.01  1608.0±42.15µs    10.4 MB/sec
 parser/numpy/globals.py                    1.00    160.5±5.16µs    18.4 MB/sec    1.00    160.5±8.00µs    18.4 MB/sec
 parser/pydantic/types.py                   1.01      3.7±0.09ms     7.0 MB/sec    1.00      3.6±0.07ms     7.0 MB/sec
 </code></pre>
-<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2023-04-24 04:39</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-24 04:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-04-24 04:39</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-24 04:39</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2023-04-24 04:39</div>
@@ -120,7 +120,7 @@ parser/pydantic/types.py                   1.01      3.7±0.09ms     7.0 MB/sec 
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:57:08 UTC
+        Synced at 2026-01-20 18:53:22 UTC
     </footer>
 </body>
 </html>

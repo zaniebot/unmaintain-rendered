@@ -24,26 +24,26 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/rtpg">@rtpg</a></div>
             <div class="timeline-body"><p>This is a set of changes that allow for <code>cargo --bin red_knot</code> to not panic (though report <em>many</em> failures across the repo).</p>
-<p>The main idea here is to avoid panicking if, instead, type inference can choose to have &quot;less information&quot;. For example, if some entry is not found, we often can return <code>Unknown</code>. In a stable system this can lead to <code>Unknown</code> spreading in a nasty way, but here this could allow for easier post-mortem debugging (for example, querying the salsa DB ad-hoc to figure out <em>why</em> certain expectations didn't hold).</p>
-<p>I tried adding <code>tracing</code> logs in places that felt like indications of real failures upstream (in particular partial AST traversal). I'm not well versed in <code>tracing</code>, but in Python land I would probably group all of these into a specific logger so that they can be treated as &quot;road to 1.0&quot; stuff.</p>
-<p>In this process I changed some ID lookup methods to return <code>Option</code>. I believe that the goal here is that this wouldn't be needed (as the inference DB should cover &quot;everything&quot;), but the changeset is so small that it feels worthwhile until AST failures are inbound.</p>
+<p>The main idea here is to avoid panicking if, instead, type inference can choose to have &quot;less information&quot;. For example, if some entry is not found, we often can return <code>Unknown</code>. In a stable system this can lead to <code>Unknown</code> spreading in a nasty way, but here this could allow for easier post-mortem debugging (for example, querying the salsa DB ad-hoc to figure out <em>why</em> certain expectations didn&#x27;t hold).</p>
+<p>I tried adding <code>tracing</code> logs in places that felt like indications of real failures upstream (in particular partial AST traversal). I&#x27;m not well versed in <code>tracing</code>, but in Python land I would probably group all of these into a specific logger so that they can be treated as &quot;road to 1.0&quot; stuff.</p>
+<p>In this process I changed some ID lookup methods to return <code>Option</code>. I believe that the goal here is that this wouldn&#x27;t be needed (as the inference DB should cover &quot;everything&quot;), but the changeset is so small that it feels worthwhile until AST failures are inbound.</p>
 <p>Part of the failures I found were &quot;invalid AST but still constructed by Ruff&quot;-style errors.</p>
 <p>An example is <code>x, y: int = 1, 2</code>.</p>
-<p>red_knot sees an annotated assignment, and so figures out the types of <code>1</code> and <code>2</code>, but then trying to assign <code>1</code> and <code>2</code> to the left side (as a tuple), but an awkward interaction between annotated assignments and tuple assignments (like <code>x, y = 1, 2</code>) leads to <code>x, y</code> getting defined by <code>1</code> and <code>2</code>. This hits the &quot;shouldn't have more than one definition for an expression&quot; problem.</p>
-<p>Ultimately this is a syntax error to begin with, so then we probably shouldn't traverse this. But if we don't traverse it and &quot;try our best&quot; with the above, suddenly <code>x</code> and <code>y</code> don't have anything associated.</p>
-<p>I think the &quot;right thing&quot; to do above is to try harder (for example, erase the signature in the type inference treatment). But I think this branch shows that the cost of trying to keep the system running instead doesn't have too high of a cost.</p>
+<p>red_knot sees an annotated assignment, and so figures out the types of <code>1</code> and <code>2</code>, but then trying to assign <code>1</code> and <code>2</code> to the left side (as a tuple), but an awkward interaction between annotated assignments and tuple assignments (like <code>x, y = 1, 2</code>) leads to <code>x, y</code> getting defined by <code>1</code> and <code>2</code>. This hits the &quot;shouldn&#x27;t have more than one definition for an expression&quot; problem.</p>
+<p>Ultimately this is a syntax error to begin with, so then we probably shouldn&#x27;t traverse this. But if we don&#x27;t traverse it and &quot;try our best&quot; with the above, suddenly <code>x</code> and <code>y</code> don&#x27;t have anything associated.</p>
+<p>I think the &quot;right thing&quot; to do above is to try harder (for example, erase the signature in the type inference treatment). But I think this branch shows that the cost of trying to keep the system running instead doesn&#x27;t have too high of a cost.</p>
 <p>In any case, this branch is hopefully an indicator of what kinds of places in the code are triggering panics when running <code>red_knot</code> against the <code>ruff</code> repo (as artificial of an example that might be).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/rtpg">@rtpg</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:217 on 2024-10-10 07:00</div>
             <div class="timeline-body"><p>There are a bunch of warnings I added just to try and get things working.</p>
-<p>In total there are 228 warnings (of which this one is only hit 5 times), so it's pretty surmountable all things considered</p>
+<p>In total there are 228 warnings (of which this one is only hit 5 times), so it&#x27;s pretty surmountable all things considered</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/rtpg">@rtpg</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:584 on 2024-10-10 07:07</div>
-            <div class="timeline-body"><p>if we visit with an invalid target we get downstream errors on re-defining things. There's likely a way to visit here with an invalid target that doesn't generate issues</p>
+            <div class="timeline-body"><p>if we visit with an invalid target we get downstream errors on re-defining things. There&#x27;s likely a way to visit here with an invalid target that doesn&#x27;t generate issues</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -52,7 +52,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:896 on 2024-10-10 07:08</div>
-            <div class="timeline-body"><p>We limit the use of <code>tracing::warn</code> for messages that need the user's attention and they need to address (e.g. when setting up file watching for a directory failed). Here, there's not much a user can do about this and invalid syntax is very common in an LSP. Logging a warning would be very noisy for users. We should use either the <code>debug</code> or possibly even <code>trace</code> level instead.</p>
+            <div class="timeline-body"><p>We limit the use of <code>tracing::warn</code> for messages that need the user&#x27;s attention and they need to address (e.g. when setting up file watching for a directory failed). Here, there&#x27;s not much a user can do about this and invalid syntax is very common in an LSP. Logging a warning would be very noisy for users. We should use either the <code>debug</code> or possibly even <code>trace</code> level instead.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -68,15 +68,15 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/rtpg">@rtpg</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:216 on 2024-10-10 07:10</div>
-            <div class="timeline-body"><p>here I went with leaving only <code>try_expression_ty</code>, other places I <code>Option</code>'d the existing methods. Not sure what pattern makes sense (if any)</p>
+            <div class="timeline-body"><p>here I went with leaving only <code>try_expression_ty</code>, other places I <code>Option</code>&#x27;d the existing methods. Not sure what pattern makes sense (if any)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-10 07:10</div>
             <div class="timeline-body"><blockquote>
-<p>In this process I changed some ID lookup methods to return Option. I believe that the goal here is that this wouldn't be needed (as the inference DB should cover &quot;everything&quot;), but the changeset is so small that it feels worthwhile until AST failures are inbound.</p>
+<p>In this process I changed some ID lookup methods to return Option. I believe that the goal here is that this wouldn&#x27;t be needed (as the inference DB should cover &quot;everything&quot;), but the changeset is so small that it feels worthwhile until AST failures are inbound.</p>
 </blockquote>
-<p>Could you talk me through the benefit of returning an <code>Option</code> in more detail? To me it's not clear how panicking at the call side is much different than panicking in the e.g. <code>expression</code> method directly because the call site is visible in the stack frame.</p>
+<p>Could you talk me through the benefit of returning an <code>Option</code> in more detail? To me it&#x27;s not clear how panicking at the call side is much different than panicking in the e.g. <code>expression</code> method directly because the call site is visible in the stack frame.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -90,12 +90,12 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-10-10 07:12</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
@@ -108,32 +108,32 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-10-10 19:48</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-10 19:48</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-10-16 16:10</div>
-            <div class="timeline-body"><p>This is very useful, thanks for putting it up! I've created https://github.com/astral-sh/ruff/issues/13778 to track the overall issue of error resilience.</p>
-<p>I don't think I want to move forward with landing this exact approach. I'd like to take this project in a more incremental fashion, fixing one cause of panics at a time (so we can consider the tradeoffs in each case, and look at relevant code samples), and ensuring we add a test case (not just &quot;this Python file exists in the ruff repo&quot;, but an actual test case that runs in CI) for each case that we fix.</p>
+            <div class="timeline-body"><p>This is very useful, thanks for putting it up! I&#x27;ve created <a href="https://github.com/astral-sh/ruff/issues/13778">astral-sh/ruff#13778</a> to track the overall issue of error resilience.</p>
+<p>I don&#x27;t think I want to move forward with landing this exact approach. I&#x27;d like to take this project in a more incremental fashion, fixing one cause of panics at a time (so we can consider the tradeoffs in each case, and look at relevant code samples), and ensuring we add a test case (not just &quot;this Python file exists in the ruff repo&quot;, but an actual test case that runs in CI) for each case that we fix.</p>
 <p>But regardless this PR is a great resource and reference point to have on hand for that work.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-10-16 16:11</div>
-            <div class="timeline-body"><p>I'm also aware that some issues addressed in this PR might be bugs on valid syntax, not panics on invalid syntax; those should also be addressed in separate PRs.</p>
+            <div class="timeline-body"><p>I&#x27;m also aware that some issues addressed in this PR might be bugs on valid syntax, not panics on invalid syntax; those should also be addressed in separate PRs.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-11-14 10:14</div>
-            <div class="timeline-body"><p>I'm tentatively closing this with the same reasoning as in https://github.com/astral-sh/ruff/issues/13710#issuecomment-2475926923. Please feel free to comment here if you feel that something from this branch should be integrated into red knot.</p>
+            <div class="timeline-body"><p>I&#x27;m tentatively closing this with the same reasoning as in <a href="https://github.com/astral-sh/ruff/issues/13710">astral-sh/ruff#13710</a>#issuecomment-2475926923. Please feel free to comment here if you feel that something from this branch should be integrated into red knot.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @sharkdp on 2024-11-14 10:14</div>
+            <div class="event">Closed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-11-14 10:14</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:06:55 UTC
+        Synced at 2026-01-20 19:07:21 UTC
     </footer>
 </body>
 </html>

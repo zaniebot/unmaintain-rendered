@@ -25,7 +25,7 @@
             <div class="timeline-header"><a href="https://github.com/ssbarnea">@ssbarnea</a></div>
             <div class="timeline-body"><p>I am inside a virtualenv that was created using mise and uv where uv is installed</p>
 <p>Code to reproduce:</p>
-<pre><code class="language-shell">❯ echo $VIRTUAL_ENV
+<pre><code>❯ echo $VIRTUAL_ENV
 /Users/ssbarnea/.venv
 
 ❯ which python3
@@ -53,20 +53,20 @@ FileNotFoundError: /Users/ssbarnea/.local/bin/uv
             <div class="timeline-body"><blockquote>
 <p>In fact if find_uv_bin implementation would have used <code>shutil.which</code> to find the executable it would have worked.</p>
 </blockquote>
-<p>It's very intentional that we do not use that as it would find an arbitrary uv installation rather than the one corresponding to the Python module.</p>
+<p>It&#x27;s very intentional that we do not use that as it would find an arbitrary uv installation rather than the one corresponding to the Python module.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @zanieb by @zanieb on 2025-01-06 20:35</div>
+            <div class="event">Assigned to <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-06 20:35</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-01-06 20:35</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-06 20:35</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ssbarnea">@ssbarnea</a> on 2025-01-16 16:22</div>
             <div class="timeline-body"><p>@zanieb I do understand the concern about find random other uv installations but at the same time this underlines a critical architectural flaw regarding <code>uv</code>. The fact that the <code>script</code> is the binary executable. I do think that the correct way to achieve this is to keep the script as a minimal python script that just calls the <code>python -m uv</code> which translates to execution of <code>uv/__main__.py</code> which would call the embedded binary that would have to included inside the module.</p>
 <p>This bug almost renders <code>system-site-packages</code> unusable with uv, as once you try to use it, you lose access to uv and no way to fix it:</p>
-<pre><code class="language-shell"># inside the venv created by uv with system site packages:
+<pre><code># inside the venv created by uv with system site packages:
 ❯ \pip install uv
 Requirement already satisfied: uv in /Users/ssbarnea/.config/mise/installs/python/3.13.1/lib/python3.13/site-packages (0.5.18)
 
@@ -89,16 +89,16 @@ FileNotFoundError: /Users/ssbarnea/.local/bin/uv
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Flamefire">@Flamefire</a> on 2025-06-05 08:09</div>
-            <div class="timeline-body"><p>I think both the code and the error is not complete. It tries several paths and then reports FileNotFound for the first. Shouldn't it report all paths?</p>
-<p>Also: <code>target_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), &quot;bin&quot;, uv_exe)</code> can't be correct, can it?</p>
-<p><code>__file__</code> is <code>&lt;prefix&gt;/lib/python3.13/site-packages/uv/_find_uv.py</code>. So there are about 3 levels of <code>dirname</code> missing, aren't there?</p>
+            <div class="timeline-body"><p>I think both the code and the error is not complete. It tries several paths and then reports FileNotFound for the first. Shouldn&#x27;t it report all paths?</p>
+<p>Also: <code>target_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), &quot;bin&quot;, uv_exe)</code> can&#x27;t be correct, can it?</p>
+<p><code>__file__</code> is <code>&lt;prefix&gt;/lib/python3.13/site-packages/uv/_find_uv.py</code>. So there are about 3 levels of <code>dirname</code> missing, aren&#x27;t there?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ssbarnea">@ssbarnea</a> on 2025-06-20 20:39</div>
             <div class="timeline-body"><p>@zanieb As of today, current version of uv package is broken with mise installed pythons (and likely pyenv too) because of the faulty path logic. I am not sure what kind of python is @Flamefire using but that is the same bug.</p>
 <p>Here is a simple reproducer:</p>
-<pre><code class="language-shell">% command -v python3
+<pre><code>% command -v python3
 /Users/ssbarnea/.local/share/mise/installs/python/3.13.5/bin/python3
 
 % uv venv foo --system-site-packages
@@ -155,12 +155,12 @@ lrwxr-xr-x  1 ssbarnea  staff  67 20 Jun 21:45 /Users/ssbarnea/foo/bin/python -&
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-20 20:54</div>
-            <div class="timeline-body"><p>Can we solve this in some other way? It feels like an X-Y problem. E.g., why do you need <code>python -m uv</code> in the first place, and <code>--system-site-packages</code>? (Note that we don't really support <code>--system-site-packages</code>.)</p>
+            <div class="timeline-body"><p>Can we solve this in some other way? It feels like an X-Y problem. E.g., why do you need <code>python -m uv</code> in the first place, and <code>--system-site-packages</code>? (Note that we don&#x27;t really support <code>--system-site-packages</code>.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-20 20:59</div>
-            <div class="timeline-body"><p>Oh, you're saying that <code>find_uv_bin</code> doesn't work with <code>system-site-packages</code> specifically? I don't know what that has to do with mise, but yeah that's just not a supported use-case for <code>find_uv_bin</code> I think? We could consider trying to support it, but I don't think the solution is to use <code>which</code>, instead we'd need to make sure the package is coming from the parent &quot;system&quot; Python environment.</p>
+            <div class="timeline-body"><p>Oh, you&#x27;re saying that <code>find_uv_bin</code> doesn&#x27;t work with <code>system-site-packages</code> specifically? I don&#x27;t know what that has to do with mise, but yeah that&#x27;s just not a supported use-case for <code>find_uv_bin</code> I think? We could consider trying to support it, but I don&#x27;t think the solution is to use <code>which</code>, instead we&#x27;d need to make sure the package is coming from the parent &quot;system&quot; Python environment.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -175,9 +175,9 @@ lrwxr-xr-x  1 ssbarnea  staff  67 20 Jun 21:45 /Users/ssbarnea/foo/bin/python -&
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Flamefire">@Flamefire</a> on 2025-06-21 09:41</div>
             <div class="timeline-body"><blockquote>
-<p>Can we solve this in some other way? It feels like an X-Y problem. E.g., why do you need <code>python -m uv</code> in the first place, and <code>--system-site-packages</code>? (Note that we don't really support <code>--system-site-packages</code>.)</p>
+<p>Can we solve this in some other way? It feels like an X-Y problem. E.g., why do you need <code>python -m uv</code> in the first place, and <code>--system-site-packages</code>? (Note that we don&#x27;t really support <code>--system-site-packages</code>.)</p>
 </blockquote>
-<p>It is not only with vens but with a regular installation too, see https://github.com/astral-sh/uv/issues/10194#issuecomment-2943180761</p>
+<p>It is not only with vens but with a regular installation too, see <a href="https://github.com/astral-sh/uv/issues/10194">astral-sh/uv#10194</a>#issuecomment-2943180761</p>
 <p>To me it looks like <code>find_uv_bin</code> only works by accident and/or in very narrow use cases of a system installed python &amp; uv.</p>
 <blockquote>
 <p>Where is uv installed relative to that Python version?</p>
@@ -187,7 +187,7 @@ lrwxr-xr-x  1 ssbarnea  staff  67 20 Jun 21:45 /Users/ssbarnea/foo/bin/python -&
 <p><code>__file__</code> is <code>&lt;prefix&gt;/lib/python3.13/site-packages/uv/_find_uv.py</code></p>
 </blockquote>
 <p>So <code>target_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), &quot;bin&quot;, uv_exe)</code> yields <code>&lt;prefix&gt;/lib/python3.13/site-packages/bin/uv</code> instead of <code>&lt;prefix&gt;/bin/uv</code></p>
-<p>I can't really see in which case this path-logic does work. It seems like the folder of <code>_find_uv.py</code> needs to be a sibling of <code>bin</code> which I don't know when this would be the case.<br />
+<p>I can&#x27;t really see in which case this path-logic does work. It seems like the folder of <code>_find_uv.py</code> needs to be a sibling of <code>bin</code> which I don&#x27;t know when this would be the case.<br>
 What am I missing?</p>
 </div>
         </div>
@@ -201,13 +201,13 @@ What am I missing?</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-21 11:48</div>
-            <div class="timeline-body"><p>I believe https://github.com/astral-sh/uv/pull/14181 will resolve this</p>
+            <div class="timeline-body"><p>I believe <a href="https://github.com/astral-sh/uv/pull/14181">astral-sh/uv#14181</a> will resolve this</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Flamefire">@Flamefire</a> on 2025-06-21 12:00</div>
             <div class="timeline-body"><p>I see thanks. We are using <code>pip install --prefix</code> for all installations. Not sure how the resulting layout of <code>--target</code> looks like.</p>
-<p>This is important e.g. if the global installation isn't writeable or should stay clean. We use a <code>sitecustomize.py</code> to make sure that prefix is found (and <code>$PATH</code> for the bin folder).<br />
+<p>This is important e.g. if the global installation isn&#x27;t writeable or should stay clean. We use a <code>sitecustomize.py</code> to make sure that prefix is found (and <code>$PATH</code> for the bin folder).<br>
 In general this is common in the HPC context where software is &quot;made available&quot; using modules that basically just set environment variables.</p>
 <p>So it would be great if the prefix layout was supported. I think this is easy to detect: <code>basename(dirname(dirname(__file__))) == &quot;site-packages&quot;</code></p>
 </div>
@@ -224,10 +224,10 @@ In general this is common in the HPC context where software is &quot;made availa
 import site
 import sys
 
-ebpythonprefixes = os.getenv('EBPYTHONPREFIXES')
+ebpythonprefixes = os.getenv(&#x27;EBPYTHONPREFIXES&#x27;)
 
 if ebpythonprefixes:
-    postfix = os.path.join('lib', 'python' + '.'.join(map(str, sys.version_info[:2])), 'site-packages')
+    postfix = os.path.join(&#x27;lib&#x27;, &#x27;python&#x27; + &#x27;.&#x27;.join(map(str, sys.version_info[:2])), &#x27;site-packages&#x27;)
 
     for prefix in ebpythonprefixes.split(os.pathsep):
         sitedir = os.path.join(prefix, postfix)
@@ -238,7 +238,7 @@ if ebpythonprefixes:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-21 12:35</div>
-            <div class="timeline-body"><p>Alright, does something like https://github.com/astral-sh/uv/pull/14184 work for you?</p>
+            <div class="timeline-body"><p>Alright, does something like <a href="https://github.com/astral-sh/uv/pull/14184">astral-sh/uv#14184</a> work for you?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -252,12 +252,12 @@ if ebpythonprefixes:
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2025-08-07 18:40</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-07 18:40</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:29:03 UTC
+        Synced at 2026-01-20 19:36:25 UTC
     </footer>
 </body>
 </html>

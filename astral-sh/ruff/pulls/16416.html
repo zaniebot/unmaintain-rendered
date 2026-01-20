@@ -23,26 +23,26 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <ul>
 <li>Attributes/method are now properly looked up on metaclasses, when called on class objects</li>
 <li>We properly distinguish between data descriptors and non-data descriptors (but we do not yet support them in store-context, i.e. <code>obj.data_descr = …</code>)</li>
 <li>The descriptor protocol is now implemented in a single unified place for instances, classes and dunder-calls. Unions and possibly-unbound symbols are supported in all possible stages of the process by creating union types as results.</li>
 <li>In general, the handling of &quot;possibly-unbound&quot; symbols has been improved in a lot of places: meta-class attributes, attributes, descriptors with possibly-unbound <code>__get__</code> methods, instance attributes, …</li>
-<li>We keep track of type qualifiers in a lot more places. I anticipate that this will be useful if we import e.g. <code>Final</code> symbols from other modules (see relevant change to typing spec: https://github.com/python/typing/pull/1937).</li>
+<li>We keep track of type qualifiers in a lot more places. I anticipate that this will be useful if we import e.g. <code>Final</code> symbols from other modules (see relevant change to typing spec: <a href="https://github.com/python/typing/pull/1937">python/typing#1937</a>).</li>
 <li>Detection and special-casing of the <code>typing.Protocol</code> special form in order to avoid lots of changes in the test suite due to new <code>@Todo</code> types when looking up attributes on builtin types which have <code>Protocol</code> in their MRO. We previously
-looked up attributes in a wrong way, which is why this didn't come up before.</li>
+looked up attributes in a wrong way, which is why this didn&#x27;t come up before.</li>
 </ul>
 <p>closes #16367
 closes #15966</p>
-<h2>Context</h2>
-<p>The way attribute lookup in <code>Type::member</code> worked before was simply wrong (mostly my own fault). The whole instance-attribute lookup should probably never have been integrated into <code>Type::member</code>. And the <code>Type::static_member</code> function that I introduced in my last descriptor PR was the wrong abstraction. It's kind of fascinating how far this approach took us, but I am pretty confident that the new approach proposed here is what we need to model this correctly.</p>
+Context
+<p>The way attribute lookup in <code>Type::member</code> worked before was simply wrong (mostly my own fault). The whole instance-attribute lookup should probably never have been integrated into <code>Type::member</code>. And the <code>Type::static_member</code> function that I introduced in my last descriptor PR was the wrong abstraction. It&#x27;s kind of fascinating how far this approach took us, but I am pretty confident that the new approach proposed here is what we need to model this correctly.</p>
 <p>There are three key pieces that are required to implement attribute lookups:</p>
 <ul>
 <li><strong><code>Type::class_member</code></strong>/<strong><code>Type::find_in_mro</code></strong>: The <code>Type::find_in_mro</code> method that can look up attributes on class bodies (and corresponding bases). This is a partial function on types, as it can not be called on instance types like<code>Type::Instance(…)</code> or <code>Type::IntLiteral(…)</code>. For this reason, we usually call it through <code>Type::class_member</code>, which is essentially just <code>type.to_meta_type().find_in_mro(…)</code> plus union/intersection handling.</li>
 <li><strong><code>Type::instance_member</code></strong>: This new function is basically the type-level equivalent to <code>obj.__dict__[name]</code> when called on <code>Type::Instance(…)</code>. We use this to discover instance attributes such as those that we see as declarations on class bodies or as (annotated) assignments to <code>self.attr</code> in methods of a class.</li>
 <li>The implementation of the descriptor protocol. It works slightly different for instances and for class objects, but it can be described by the general framework:<ul>
-<li>Call <code>type.class_member(&quot;attribute&quot;)</code> to look up &quot;attribute&quot; in the MRO of the meta type of <code>type</code>. Call the resulting <code>Symbol</code> <code>meta_attr</code> (even if it's unbound).</li>
+<li>Call <code>type.class_member(&quot;attribute&quot;)</code> to look up &quot;attribute&quot; in the MRO of the meta type of <code>type</code>. Call the resulting <code>Symbol</code> <code>meta_attr</code> (even if it&#x27;s unbound).</li>
 <li>Use <code>meta_attr.class_member(&quot;__get__&quot;)</code> to look up <code>__get__</code> on the <em>meta type</em> of <code>meta_attr</code>. Call it with <code>__get__(meta_attr, self, self.to_meta_type())</code>. If this fails (either the lookup or the call), just proceed with <code>meta_attr</code>. Otherwise, replace <code>meta_attr</code> in the following with the return type of <code>__get__</code>. In this step, we also probe if a <code>__set__</code> or <code>__delete__</code> method exists and store it in <code>meta_attr_kind</code> (can be either &quot;data descriptor&quot; or &quot;normal attribute or non-data descriptor&quot;).</li>
 <li>Compute a <code>fallback</code> type.<ul>
 <li>For instances, we use <code>self.instance_member(&quot;attribute&quot;)</code></li>
@@ -59,28 +59,28 @@ closes #15966</p>
 </ul>
 </li>
 </ul>
-<p>This allows us to handle class objects and instances within the same framework. There is a minor additional detail where for instances, we do not allow the fallback type (the instance attribute) to completely shadow the non-data descriptor. We do this because we (currently) don't want to pretend that we can statically infer that an instance attribute is always set.</p>
+<p>This allows us to handle class objects and instances within the same framework. There is a minor additional detail where for instances, we do not allow the fallback type (the instance attribute) to completely shadow the non-data descriptor. We do this because we (currently) don&#x27;t want to pretend that we can statically infer that an instance attribute is always set.</p>
 <p>Dunder method calls can also be embedded into this framework. The only thing that changes is that <em>there is no fallback type</em>. If a dunder method is called on an instance, we do not fall back to instance variables. If a dunder method is called on a class object, we only look it up on the meta class, never on the class itself.</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>New Markdown tests.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2025-02-27 15:29</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-02-27 15:29</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-02-28 12:58</div>
-            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+            <div class="timeline-body">
 
-<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
 
-<h2><a href="https://codspeed.io/astral-sh/ruff/branches/david%2Fdescriptor-protocol-pt2">CodSpeed Performance Report</a></h2>
-<h3>Merging #16416 will <strong>degrade performances by 4.29%</strong></h3>
-<p><sub>Comparing <code>david/descriptor-protocol-pt2</code> (689053e) with <code>main</code> (a18d8bf)</sub></p>
-<h3>Summary</h3>
-<p><code>❌ 1 (👁 1)</code> regressions<br />
+
+<a href="https://codspeed.io/astral-sh/ruff/branches/david%2Fdescriptor-protocol-pt2">CodSpeed Performance Report</a>
+Merging #16416 will <strong>degrade performances by 4.29%</strong>
+<p>Comparing <code>david/descriptor-protocol-pt2</code> (689053e) with <code>main</code> (a18d8bf)</p>
+Summary
+<p><code>❌ 1 (👁 1)</code> regressions<br>
 <code>✅ 31</code> untouched benchmarks</p>
-<h3>Benchmarks breakdown</h3>
+Benchmarks breakdown
 <p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
 | --- | --------- | ----------------------- | ------------------- | ------ |
 | 👁 | <code>red_knot_check_file[incremental]</code> | 5.2 ms | 5.5 ms | -4.29% |</p>
@@ -89,7 +89,7 @@ closes #15966</p>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/stdlib_typing_aliases.md</code>:73 on 2025-03-03 10:33</div>
             <div class="timeline-body"><p>The other MROs below are not updated, as e.g. <code>dict</code> has a <code>MutableMapping</code> base which is defined using a <code>_alias = _SpecialGenericAlias</code>:</p>
-<pre><code class="language-pyi">MutableMapping = _alias(collections.abc.MutableMapping, 2)
+<pre><code>MutableMapping = _alias(collections.abc.MutableMapping, 2)
 </code></pre>
 </div>
         </div>
@@ -103,7 +103,7 @@ closes #15966</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/getattr_static.md</code>:62 on 2025-03-03 10:38</div>
-            <div class="timeline-body"><p>Would be easy to fix this (special case <code>int.real</code> similar to how we do in <code>Type::member</code>), but since we don't really depend on <code>static_member</code> / <code>getattr_static</code> anymore, I didn't think it would be particularly important.</p>
+            <div class="timeline-body"><p>Would be easy to fix this (special case <code>int.real</code> similar to how we do in <code>Type::member</code>), but since we don&#x27;t really depend on <code>static_member</code> / <code>getattr_static</code> anymore, I didn&#x27;t think it would be particularly important.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -112,7 +112,7 @@ closes #15966</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md</code>:154 on 2025-03-03 10:40</div>
-            <div class="timeline-body"><p>This was required to avoid a salsa cycle. See related discussion https://github.com/astral-sh/ruff/pull/16428#discussion_r1975823169</p>
+            <div class="timeline-body"><p>This was required to avoid a salsa cycle. See related discussion <a href="https://github.com/astral-sh/ruff/pull/16428">astral-sh/ruff#16428</a>#discussion_r1975823169</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -130,9 +130,9 @@ closes #15966</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/suppressions/type_ignore.md</code>:49 on 2025-03-03 11:00</div>
-            <div class="timeline-body"><p>I don't think it does because it no longer asserts that the diagnostic can be suppressed by a suppression comment on the line the expression start/ends (the <code>2 + &quot;test&quot;</code> expression now starts/ends at the same line).</p>
+            <div class="timeline-body"><p>I don&#x27;t think it does because it no longer asserts that the diagnostic can be suppressed by a suppression comment on the line the expression start/ends (the <code>2 + &quot;test&quot;</code> expression now starts/ends at the same line).</p>
 <p>Can we keep the binary expression over two lines?</p>
-<pre><code class="language-suggestion">y = (
+<pre><code>y = (
     # error: [unsupported-operator]
     cast(
         int,
@@ -159,11 +159,11 @@ closes #15966</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/suppressions/type_ignore.md</code>:49 on 2025-03-03 11:09</div>
-            <div class="timeline-body"><p>What's important (and I think you got that right) is that the inner <code>type: ignore</code> shouldn't suppress the error from adding <code>int</code> and <code>&quot;other&quot;</code></p>
+            <div class="timeline-body"><p>What&#x27;s important (and I think you got that right) is that the inner <code>type: ignore</code> shouldn&#x27;t suppress the error from adding <code>int</code> and <code>&quot;other&quot;</code></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[red-knot] Descriptor protocol: Data descriptors" to "[red-knot] Attribute access and the Descriptor protocol" by @sharkdp on 2025-03-03 13:50</div>
+            <div class="event">Renamed from &quot;[red-knot] Descriptor protocol: Data descriptors&quot; to &quot;[red-knot] Attribute access and the Descriptor protocol&quot; by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-03-03 13:50</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-03 15:23</div>
@@ -171,7 +171,7 @@ closes #15966</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/stdlib_typing_aliases.md</code>:73 on 2025-03-03 15:23</div>
-            <div class="timeline-body"><p>I think that's what the runtime definition is but IIRC the typeshed definition of <code>MutableMapping</code> is pretty different?</p>
+            <div class="timeline-body"><p>I think that&#x27;s what the runtime definition is but IIRC the typeshed definition of <code>MutableMapping</code> is pretty different?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -180,11 +180,11 @@ closes #15966</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/stdlib_typing_aliases.md</code>:73 on 2025-03-03 15:40</div>
-            <div class="timeline-body"><p>Oh, yes — of course. Tricked myself by using Pylance go-to-definition :upside_down_face:. Then it's probably related to <code>MutableMapping</code>/<code>Mapping</code> having <code>Generic</code> in their MRO.</p>
+            <div class="timeline-body"><p>Oh, yes — of course. Tricked myself by using Pylance go-to-definition :upside_down_face:. Then it&#x27;s probably related to <code>MutableMapping</code>/<code>Mapping</code> having <code>Generic</code> in their MRO.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[red-knot] Attribute access and the Descriptor protocol" to "[red-knot] Attribute access and the descriptor protocol" by @sharkdp on 2025-03-04 12:43</div>
+            <div class="event">Renamed from &quot;[red-knot] Attribute access and the Descriptor protocol&quot; to &quot;[red-knot] Attribute access and the descriptor protocol&quot; by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-03-04 12:43</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md</code>:103 on 2025-03-04 14:19</div>
@@ -202,11 +202,11 @@ closes #15966</p>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/getattr_static.md</code>:62 on 2025-03-05 21:46</div>
             <div class="timeline-body"><p>This actually seems like it makes our inference more accurate, since <code>int.real</code> is a descriptor:</p>
-<pre><code class="language-pycon">Python 3.11.4 (main, Sep 30 2023, 10:54:38) [GCC 11.4.0] on linux
+<pre><code>Python 3.11.4 (main, Sep 30 2023, 10:54:38) [GCC 11.4.0] on linux
 Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
 &gt;&gt;&gt; import inspect
 &gt;&gt;&gt; inspect.getattr_static(1, &quot;real&quot;)
-&lt;attribute 'real' of 'int' objects&gt;
+&lt;attribute &#x27;real&#x27; of &#x27;int&#x27; objects&gt;
 &gt;&gt;&gt;
 </code></pre>
 </div>
@@ -217,7 +217,7 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/dunder.md</code>:96 on 2025-03-06 08:57</div>
-            <div class="timeline-body"><p>This is more of a regression test for something that was broken previously, but I can also remove it again if we don't think it adds any value.</p>
+            <div class="timeline-body"><p>This is more of a regression test for something that was broken previously, but I can also remove it again if we don&#x27;t think it adds any value.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -235,14 +235,14 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/getattr_static.md</code>:62 on 2025-03-06 13:18</div>
-            <div class="timeline-body"><p>You're right!</p>
+            <div class="timeline-body"><p>You&#x27;re right!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @sharkdp on 2025-03-06 16:29</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-03-06 16:29</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @sharkdp on 2025-03-06 16:29</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-03-06 16:29</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-03-06 16:31</div>
@@ -250,7 +250,7 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3653 on 2025-03-06 16:31</div>
-            <div class="timeline-body"><p>The changes here are a bit unfortunate. I have moved <code>or_fall_back_to</code> from <code>Symbol</code> to <code>SymbolAndQualifiers</code>, as that was required for most of the call sites. But here, and below, just using <code>Symbol</code> would be enough. There are no qualifiers, as we're dealing with types from bindings here. I'm happy to look into this — either here or in a follow up.</p>
+            <div class="timeline-body"><p>The changes here are a bit unfortunate. I have moved <code>or_fall_back_to</code> from <code>Symbol</code> to <code>SymbolAndQualifiers</code>, as that was required for most of the call sites. But here, and below, just using <code>Symbol</code> would be enough. There are no qualifiers, as we&#x27;re dealing with types from bindings here. I&#x27;m happy to look into this — either here or in a follow up.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -259,7 +259,7 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1606 on 2025-03-06 16:32</div>
-            <div class="timeline-body"><p>This is something that's potentially worth discussing.</p>
+            <div class="timeline-body"><p>This is something that&#x27;s potentially worth discussing.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -273,7 +273,7 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/stdlib_typing_aliases.md</code>:73 on 2025-03-06 18:56</div>
-            <div class="timeline-body"><p>If I'm understanding this TODO correctly, I think we can remove it, I don't think we would ever want to do that. Precise inference of <code>__mro__</code> is really mostly for our own testing purposes, not because real code needs it. We need our MRO to be accurate for attribute/method resolution. In the case of typeshed, it should be accurate to what typeshed says, not to runtime. Put otherwise: when typeshed lies to us, we should just believe it :)</p>
+            <div class="timeline-body"><p>If I&#x27;m understanding this TODO correctly, I think we can remove it, I don&#x27;t think we would ever want to do that. Precise inference of <code>__mro__</code> is really mostly for our own testing purposes, not because real code needs it. We need our MRO to be accurate for attribute/method resolution. In the case of typeshed, it should be accurate to what typeshed says, not to runtime. Put otherwise: when typeshed lies to us, we should just believe it :)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -288,12 +288,12 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/methods.md</code>:267 on 2025-03-07 00:44</div>
-            <div class="timeline-body"><p>The type annotation <code>type[C | D | E]</code> is a bit odd here, and the tests here don't appear to depend on it? Conventional practice is to leave the <code>cls</code> / <code>self</code> arg unannotated, I would probably do that unless we are specifically testing something about the behavior of this annotation.</p>
+            <div class="timeline-body"><p>The type annotation <code>type[C | D | E]</code> is a bit odd here, and the tests here don&#x27;t appear to depend on it? Conventional practice is to leave the <code>cls</code> / <code>self</code> arg unannotated, I would probably do that unless we are specifically testing something about the behavior of this annotation.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/generics/scoping.md</code>:235 on 2025-03-07 00:47</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">    # TODO: error for reuse of typevar
+            <div class="timeline-body"><pre><code>    # TODO: error for reuse of typevar
     class Bad1[T]: ...
     # TODO: no non-subscriptable error, error for reuse of typevar
 </code></pre>
@@ -317,13 +317,13 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1423 on 2025-03-07 02:00</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">                    // return type otherwise, and since `find_name_in_mro` is usually called via `class_member`, this is not
+            <div class="timeline-body"><pre><code>                    // return type otherwise, and since `find_name_in_mro` is usually called via `class_member`, this is not
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1502 on 2025-03-07 02:07</div>
-            <div class="timeline-body"><p>Why is this clause necessary/correct? Doesn't it bypass all attributes/methods defined on <code>builtins.type</code> in typeshed?</p>
+            <div class="timeline-body"><p>Why is this clause necessary/correct? Doesn&#x27;t it bypass all attributes/methods defined on <code>builtins.type</code> in typeshed?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -333,39 +333,39 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1679 on 2025-03-07 05:17</div>
-            <div class="timeline-body"><p>There seems to be an assumption made in this method that whatever qualifiers apply to the symbol <code>attribute</code> should also apply to its <code>__get__</code> method. I'm not surprised if this makes no difference currently due to our limited use of qualifiers, but it doesn't seem correct to me.</p>
+            <div class="timeline-body"><p>There seems to be an assumption made in this method that whatever qualifiers apply to the symbol <code>attribute</code> should also apply to its <code>__get__</code> method. I&#x27;m not surprised if this makes no difference currently due to our limited use of qualifiers, but it doesn&#x27;t seem correct to me.</p>
 <p>It also makes me wonder if this really should take <code>SymbolAndQualifiers</code>, or should just take <code>&amp;self</code> (which is the type of attribute) and let the caller manage qualifiers.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4753 on 2025-03-07 13:13</div>
-            <div class="timeline-body"><p>I'm not sure this has much impact yet since our use of intersections is limited, but the boundness logic here doesn't seem right to me. Let's say we have a type <code>X &amp; Y</code> and we are mapping over an attribute access <code>.foo</code>. If the <code>foo</code> attribute is definitely bound on <code>X</code> and unbound on <code>Y</code>, it is definitely bound on <code>X &amp; Y</code>. In general the boundness of an operation on an intersection should be the &quot;maximum&quot; boundness of the operation on the elements.</p>
+            <div class="timeline-body"><p>I&#x27;m not sure this has much impact yet since our use of intersections is limited, but the boundness logic here doesn&#x27;t seem right to me. Let&#x27;s say we have a type <code>X &amp; Y</code> and we are mapping over an attribute access <code>.foo</code>. If the <code>foo</code> attribute is definitely bound on <code>X</code> and unbound on <code>Y</code>, it is definitely bound on <code>X &amp; Y</code>. In general the boundness of an operation on an intersection should be the &quot;maximum&quot; boundness of the operation on the elements.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/class.rs</code>:341 on 2025-03-07 13:15</div>
-            <div class="timeline-body"><p>Nit: we don't &quot;skip protocols&quot;, we &quot;skip Protocol&quot; -- it is the base type <code>Protocol</code> itself that we skip, not &quot;protocols&quot; (which is all classes inheriting <code>Protocol</code>).</p>
+            <div class="timeline-body"><p>Nit: we don&#x27;t &quot;skip protocols&quot;, we &quot;skip Protocol&quot; -- it is the base type <code>Protocol</code> itself that we skip, not &quot;protocols&quot; (which is all classes inheriting <code>Protocol</code>).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/class.rs</code>:416 on 2025-03-07 13:19</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">                    // TODO: We currently skip Protocol when looking up instance members, in order to
+            <div class="timeline-body"><pre><code>                    // TODO: We currently skip Protocol when looking up instance members, in order to
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/class.rs</code>:587 on 2025-03-07 13:23</div>
-            <div class="timeline-body"><p>I'm not sure about this case. If it's not explicitly marked as <code>ClassVar</code>, shouldn't we consider this a possible instance attribute, which <em>might</em> be found in <code>__dict__</code>? (We would allow assignment of it on an instance.)</p>
+            <div class="timeline-body"><p>I&#x27;m not sure about this case. If it&#x27;s not explicitly marked as <code>ClassVar</code>, shouldn&#x27;t we consider this a possible instance attribute, which <em>might</em> be found in <code>__dict__</code>? (We would allow assignment of it on an instance.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1863 on 2025-03-07 13:25</div>
-            <div class="timeline-body"><p>I'm curious about the switch from taking <code>&amp;str</code> to taking a <code>Name</code>; is this motivated by performance? It makes a number of callsites more verbose, and it seems like it might require more string cloning?</p>
+            <div class="timeline-body"><p>I&#x27;m curious about the switch from taking <code>&amp;str</code> to taking a <code>Name</code>; is this motivated by performance? It makes a number of callsites more verbose, and it seems like it might require more string cloning?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3653 on 2025-03-07 13:27</div>
-            <div class="timeline-body"><p>It seems like it would be good to be able to do this operation on a <code>Symbol</code> without being required to provide qualifiers -- but I think it's fine to address this in a follow-up.</p>
+            <div class="timeline-body"><p>It seems like it would be good to be able to do this operation on a <code>Symbol</code> without being required to provide qualifiers -- but I think it&#x27;s fine to address this in a follow-up.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -375,26 +375,26 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-03-07 13:29</div>
-            <div class="timeline-body"><p>This is excellent! Left some comments but IMO nothing that can't be left as a TODO and addressed as follow up; probably better to land this sooner rather than later.</p>
+            <div class="timeline-body"><p>This is excellent! Left some comments but IMO nothing that can&#x27;t be left as a TODO and addressed as follow up; probably better to land this sooner rather than later.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/attributes.md</code>:712 on 2025-03-07 13:36</div>
-            <div class="timeline-body"><p>Nit: &quot;Metaclass and meta-type&quot; are spelled somewhat inconsistently throughout this PR. I'd always spell it as &quot;metaclass&quot; rather than &quot;meta class&quot; and &quot;meta-type&quot; rather than &quot;meta type&quot;</p>
-<pre><code class="language-suggestion">object first, i.e. on the metaclass:
+            <div class="timeline-body"><p>Nit: &quot;Metaclass and meta-type&quot; are spelled somewhat inconsistently throughout this PR. I&#x27;d always spell it as &quot;metaclass&quot; rather than &quot;meta class&quot; and &quot;meta-type&quot; rather than &quot;meta type&quot;</p>
+<pre><code>object first, i.e. on the metaclass:
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/attributes.md</code>:791 on 2025-03-07 13:43</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">If the (meta)class is a union type or if the attribute on the (meta)class has a union type, we
+            <div class="timeline-body"><pre><code>If the (meta)class is a union type or if the attribute on the (meta)class has a union type, we
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/getattr_static.md</code>:75 on 2025-03-07 13:49</div>
-            <div class="timeline-body"><p>Do we have any tests covering the fact that attributes on a class's metaclass <em>cannot</em> be accessed when proving <em>instances</em> of the class (they can only be accessed when probing the class object itself)?</p>
-<pre><code class="language-pycon">Python 3.11.4 (main, Sep 30 2023, 10:54:38) [GCC 11.4.0] on linux
+            <div class="timeline-body"><p>Do we have any tests covering the fact that attributes on a class&#x27;s metaclass <em>cannot</em> be accessed when proving <em>instances</em> of the class (they can only be accessed when probing the class object itself)?</p>
+<pre><code>Python 3.11.4 (main, Sep 30 2023, 10:54:38) [GCC 11.4.0] on linux
 Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
 &gt;&gt;&gt; class Meta(type):
 ...     attr = 42
@@ -407,7 +407,7 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
 &gt;&gt;&gt; f.attr
 Traceback (most recent call last):
   File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
-AttributeError: 'Foo' object has no attribute 'attr'
+AttributeError: &#x27;Foo&#x27; object has no attribute &#x27;attr&#x27;
 &gt;&gt;&gt;
 </code></pre>
 </div>
@@ -419,44 +419,44 @@ AttributeError: 'Foo' object has no attribute 'attr'
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md</code>:514 on 2025-03-07 13:55</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">class TailoredForMetaclassAccess:
+            <div class="timeline-body"><pre><code>class TailoredForMetaclassAccess:
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md</code>:519 on 2025-03-07 13:55</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">    metaclass_access: TailoredForMetaclassAccess = TailoredForMetaclassAccess()
+            <div class="timeline-body"><pre><code>    metaclass_access: TailoredForMetaclassAccess = TailoredForMetaclassAccess()
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md</code>:527 on 2025-03-07 13:56</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">reveal_type(C.metaclass_access)  # revealed: bytes
+            <div class="timeline-body"><pre><code>reveal_type(C.metaclass_access)  # revealed: bytes
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md</code>:605 on 2025-03-07 13:57</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">descriptor protocol on the callable's `__call__` method:
+            <div class="timeline-body"><pre><code>descriptor protocol on the callable&#x27;s `__call__` method:
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:10 on 2025-03-07 14:07</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">use ruff_python_ast as ast;
+            <div class="timeline-body"><pre><code>use ruff_python_ast as ast;
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1421 on 2025-03-07 14:09</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">                    // If some elements are classes, and some are not, we simply fall back to `Unbound` for the non-class
+            <div class="timeline-body"><pre><code>                    // If some elements are classes, and some are not, we simply fall back to `Unbound` for the non-class
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1431 on 2025-03-07 14:12</div>
             <div class="timeline-body"><p>We could consider implementing <code>Default</code> for <code>SymbolAndQualifiers</code> (which would return <code>Symbol::Unbound</code> with no qualifiers). Then this, and similar branches, could be:</p>
-<pre><code class="language-suggestion">                        .unwrap_or_default()
+<pre><code>                        .unwrap_or_default()
 </code></pre>
 </div>
         </div>
@@ -472,13 +472,13 @@ AttributeError: 'Foo' object has no attribute 'attr'
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1991 on 2025-03-07 14:33</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">                    &quot;Calling `find_name_in_mro` on class literals and subclass-of types should always return `Some`&quot;,
+            <div class="timeline-body"><pre><code>                    &quot;Calling `find_name_in_mro` on class literals and subclass-of types should always return `Some`&quot;,
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-07 15:07</div>
-            <div class="timeline-body"><p>Not a proper review as I'm on my phone, but a couple of minor things I spotted skimming through the diff. Nothing blocking!</p>
+            <div class="timeline-body"><p>Not a proper review as I&#x27;m on my phone, but a couple of minor things I spotted skimming through the diff. Nothing blocking!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -536,7 +536,7 @@ AttributeError: 'Foo' object has no attribute 'attr'
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1863 on 2025-03-07 19:03</div>
             <div class="timeline-body"><blockquote>
-<p>I'm curious about the switch from taking <code>&amp;str</code> to taking a <code>Name</code>; is this motivated by performance?</p>
+<p>I&#x27;m curious about the switch from taking <code>&amp;str</code> to taking a <code>Name</code>; is this motivated by performance?</p>
 </blockquote>
 <p>Yes. I followed a suggestion by @MichaReiser when I originally made <code>member</code> a salsa query, because those can not take reference arguments. And it lead to a rather drastic performance improvement despite the string-clones. In the meantime, I have moved the <code>salsa::tracked</code> annotation to <code>member_lookup_with_policy</code>, so I now reverted this change (but kept it for some other functions which are still query). This makes the <code>member</code> call sites nicer again, but the cloning is still there … inside <code>member</code> where it calls into <code>member_lookup_with_policy</code>.</p>
 <p>Note that <code>Name</code> contains a <code>CompactString</code> which can store up to 24 bytes on the stack, which should be ~~more than enough for any Python attribute name~~ relatively cheap to clone, even for <code>really_really_long_names</code>.</p>
@@ -548,7 +548,7 @@ AttributeError: 'Foo' object has no attribute 'attr'
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1443 on 2025-03-07 19:06</div>
-            <div class="timeline-body"><p>Thanks, I'll note this down for a follow-up.</p>
+            <div class="timeline-body"><p>Thanks, I&#x27;ll note this down for a follow-up.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -557,7 +557,7 @@ AttributeError: 'Foo' object has no attribute 'attr'
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1939 on 2025-03-07 19:06</div>
-            <div class="timeline-body"><p>Same here, I'll address this in a follow-up.</p>
+            <div class="timeline-body"><p>Same here, I&#x27;ll address this in a follow-up.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -569,13 +569,13 @@ AttributeError: 'Foo' object has no attribute 'attr'
             <div class="timeline-body"><p>I believe this clause it both necessary and correct. But I should have written a comment, because it is definitely confusing. When I looked at it again, I also thought it was clearly wrong at first.</p>
 <p>We eagerly normalize <code>type[object]</code>, i.e. <code>Type::SubclassOf(&quot;object&quot;)</code> to <code>type</code>, i.e. <code>Type::Instance(&quot;type&quot;)</code>. So looking up a name in the MRO of an <em>instance</em> of <code>type</code> is equivalent to looking up the name in the MRO of the <em>class</em> <code>object</code>.</p>
 <p>When this clause is removed and we return <code>None</code>, we run into problems when e.g. looking up attributes on instances of <code>object</code>: <code>object().does_this_exist</code>.</p>
-<p>I'll add a comment.</p>
+<p>I&#x27;ll add a comment.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/attributes.md</code>:992 on 2025-03-07 19:43</div>
-            <div class="timeline-body"><p>Hm, interesting question. I saw the new <code>| Unknown</code> and initially thought it would make sense, but now that I think about it more carefully, I'm not so sure.</p>
-<p>The <code>if flag</code> test in the method is more for &quot;visualization purposes&quot;. We don't analyze control flow in methods for the purposes of attribute assignments.</p>
+            <div class="timeline-body"><p>Hm, interesting question. I saw the new <code>| Unknown</code> and initially thought it would make sense, but now that I think about it more carefully, I&#x27;m not so sure.</p>
+<p>The <code>if flag</code> test in the method is more for &quot;visualization purposes&quot;. We don&#x27;t analyze control flow in methods for the purposes of attribute assignments.</p>
 <p>We really union the possibly-undeclared <code>int</code> with a definitely bound <code>Unknown | int</code> here, meaning that the <code>Unknown</code> comes from the undeclared attribute assignment. Do you think it would make more sense to infer <code>int</code> here?</p>
 </div>
         </div>
@@ -589,7 +589,7 @@ AttributeError: 'Foo' object has no attribute 'attr'
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1502 on 2025-03-07 19:52</div>
-            <div class="timeline-body"><p>Oh, that's subtle! But yes, makes sense.</p>
+            <div class="timeline-body"><p>Oh, that&#x27;s subtle! But yes, makes sense.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -601,8 +601,8 @@ AttributeError: 'Foo' object has no attribute 'attr'
             <div class="timeline-body"><blockquote>
 <p>There seems to be an assumption made in this method that whatever qualifiers apply to the symbol <code>attribute</code> should also apply to its <code>__get__</code> method.</p>
 </blockquote>
-<p>You're right. This is just wrong. For now, I replaced the <code>.with_qualifiers(…)</code> call on the return type of <code>__get__</code> with <code>.into()</code>, which I believe makes this semantically correct.</p>
-<p>The suggested refactoring makes sense to me, I'll do this in a follow up.</p>
+<p>You&#x27;re right. This is just wrong. For now, I replaced the <code>.with_qualifiers(…)</code> call on the return type of <code>__get__</code> with <code>.into()</code>, which I believe makes this semantically correct.</p>
+<p>The suggested refactoring makes sense to me, I&#x27;ll do this in a follow up.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -612,7 +612,7 @@ AttributeError: 'Foo' object has no attribute 'attr'
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/attributes.md</code>:992 on 2025-03-07 19:59</div>
             <div class="timeline-body"><p>Yes, your description of what is happening is exactly what I meant by &quot;comes from it being possibly undeclared.&quot; That is, the declared type is possibly-not-declared, so we union it with the implicit attribute type which includes <code>Unknown</code>.</p>
-<p>That seems like a reasonable outcome to me. I do think it's important that if the <code>x: int</code> here were unconditional, then we would just infer <code>int</code>. And that is indeed the case.</p>
+<p>That seems like a reasonable outcome to me. I do think it&#x27;s important that if the <code>x: int</code> here were unconditional, then we would just infer <code>int</code>. And that is indeed the case.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -621,7 +621,7 @@ AttributeError: 'Foo' object has no attribute 'attr'
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4753 on 2025-03-07 20:09</div>
-            <div class="timeline-body"><p>Oh — If the unbound handling is wrong here, it's a pre-existing issue in <code>map_with_boundness</code> as well. I'd like to understand this in detail and write a few test cases, so I hope it's fine if I take this as a follow up as well, even though it's wrong.</p>
+            <div class="timeline-body"><p>Oh — If the unbound handling is wrong here, it&#x27;s a pre-existing issue in <code>map_with_boundness</code> as well. I&#x27;d like to understand this in detail and write a few test cases, so I hope it&#x27;s fine if I take this as a follow up as well, even though it&#x27;s wrong.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -639,7 +639,7 @@ AttributeError: 'Foo' object has no attribute 'attr'
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/class.rs</code>:587 on 2025-03-07 20:28</div>
-            <div class="timeline-body"><p>So this is the case I talked about yesterday. It's definitely not straightforward to just return <code>declared.with_qualifiers(qualifiers)</code> here. If we do so, we treat every function on a class (which is declared and bound) into an instance attribute. Which does not just feel wrong, but also produces a lot of test failures. Instance attributes take precedence over non-data descriptors, so that would mean that we do not generate bound methods for something like <code>C().some_method</code>, but a normal <code>Literal</code> function type.</p>
+            <div class="timeline-body"><p>So this is the case I talked about yesterday. It&#x27;s definitely not straightforward to just return <code>declared.with_qualifiers(qualifiers)</code> here. If we do so, we treat every function on a class (which is declared and bound) into an instance attribute. Which does not just feel wrong, but also produces a lot of test failures. Instance attributes take precedence over non-data descriptors, so that would mean that we do not generate bound methods for something like <code>C().some_method</code>, but a normal <code>Literal</code> function type.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -648,14 +648,14 @@ AttributeError: 'Foo' object has no attribute 'attr'
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1545 on 2025-03-07 20:28</div>
-            <div class="timeline-body"><p>This is the same question as below I think, so let's continue the discussion there.</p>
+            <div class="timeline-body"><p>This is the same question as below I think, so let&#x27;s continue the discussion there.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @sharkdp on 2025-03-07 21:03</div>
+            <div class="event">Merged by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-03-07 21:03</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @sharkdp on 2025-03-07 21:03</div>
+            <div class="event">Closed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-03-07 21:03</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-03-07 21:03</div>
@@ -666,7 +666,7 @@ AttributeError: 'Foo' object has no attribute 'attr'
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/class.rs</code>:587 on 2025-03-07 21:06</div>
-            <div class="timeline-body"><p>I decided to merge this PR before signing off for the weekend, but curious to hear your opinion here. I think what I implemented here (w.r.t. this case) mostly keeps the behavior as it was before, but that doesn't necessarily mean that it's the best possible behavior. It's certainly somewhat inconsistent with how we treat declared-but-unbound attributes on the class body (for which we also see no attribute assignments). Another way to make it consistent would be to make <em>those</em> also return <code>Unbound</code> (maybe except for stubs), unless we see at least one attribute binding in a method(?).</p>
+            <div class="timeline-body"><p>I decided to merge this PR before signing off for the weekend, but curious to hear your opinion here. I think what I implemented here (w.r.t. this case) mostly keeps the behavior as it was before, but that doesn&#x27;t necessarily mean that it&#x27;s the best possible behavior. It&#x27;s certainly somewhat inconsistent with how we treat declared-but-unbound attributes on the class body (for which we also see no attribute assignments). Another way to make it consistent would be to make <em>those</em> also return <code>Unbound</code> (maybe except for stubs), unless we see at least one attribute binding in a method(?).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -675,12 +675,12 @@ AttributeError: 'Foo' object has no attribute 'attr'
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3903 on 2025-03-07 21:21</div>
-            <div class="timeline-body"><p>Sorry, I'm a bit late to the party. I think what we could do here instead is:</p>
+            <div class="timeline-body"><p>Sorry, I&#x27;m a bit late to the party. I think what we could do here instead is:</p>
 <ul>
-<li>add an internal <code>member_query(db: &amp;'db dyn Db, name: InternedName)</code> function</li>
+<li>add an internal <code>member_query(db: &amp;&#x27;db dyn Db, name: InternedName)</code> function</li>
 <li>Add a new salsa interned <code>InternedName</code> struct that has a single field, a <code>Name</code> (we may need a newtype wrapper). Implement <code>salsa::Lookup</code> (if necessary) for <code>Name</code></li>
 </ul>
-<p>Salsa allows us to lookup the <code>InternedName</code> by reference and only clone when the name isn't already interned. Calling <code>member_query</code> is then a regular salsa query without any allocations</p>
+<p>Salsa allows us to lookup the <code>InternedName</code> by reference and only clone when the name isn&#x27;t already interned. Calling <code>member_query</code> is then a regular salsa query without any allocations</p>
 <p>Oh, I see that the query takes two arguments, the type AND the member. I suspect that this approach could be slightly slower because Salsa still requires an intermediate salsa-interned struct that holds the name and the member, unless you rename <code>InternedName</code> to <code>MemberLookup</code> and add two fields: <code>type</code> and <code>name</code></p>
 </div>
         </div>
@@ -690,8 +690,8 @@ AttributeError: 'Foo' object has no attribute 'attr'
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/class.rs</code>:587 on 2025-03-08 00:26</div>
-            <div class="timeline-body"><p>The inconsistency that I was thinking about here is that if we see e.g. <code>foo: int = 1</code> in a class body (without a <code>ClassVar</code> annotation), we generally consider that to be an instance attribute with class fallback value. This means we will allow it to be set on an instance, which means it <em>could</em> exist in the instance dictionary, which means it <em>could</em> shadow a non-data descriptor. But I think you're right that we have to assume it does not, otherwise non-data descriptors would never work at all. It's not just methods, it's anytime you do <code>d: NonDataDescriptor = NonDataDescriptor()</code> on a class, we would think <code>C().d</code> might give you back <code>NonDataDescriptor</code>, because there might be one of those set in the instance dict. This is definitely not useful behavior.</p>
-<p>So I think what you've done here is right! We will see if any issues come up on real codebases and can tweak accordingly.</p>
+            <div class="timeline-body"><p>The inconsistency that I was thinking about here is that if we see e.g. <code>foo: int = 1</code> in a class body (without a <code>ClassVar</code> annotation), we generally consider that to be an instance attribute with class fallback value. This means we will allow it to be set on an instance, which means it <em>could</em> exist in the instance dictionary, which means it <em>could</em> shadow a non-data descriptor. But I think you&#x27;re right that we have to assume it does not, otherwise non-data descriptors would never work at all. It&#x27;s not just methods, it&#x27;s anytime you do <code>d: NonDataDescriptor = NonDataDescriptor()</code> on a class, we would think <code>C().d</code> might give you back <code>NonDataDescriptor</code>, because there might be one of those set in the instance dict. This is definitely not useful behavior.</p>
+<p>So I think what you&#x27;ve done here is right! We will see if any issues come up on real codebases and can tweak accordingly.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -712,13 +712,13 @@ AttributeError: 'Foo' object has no attribute 'attr'
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3653 on 2025-03-12 10:03</div>
-            <div class="timeline-body"><p>I attempted to solve this, but I think this would not just require us to duplicate all of these methods (<code>or_fall_back_to</code>, <code>unwrap_with_diagnostic</code>, …), but also <code>LookupError</code>/<code>LookupResult</code>. These new functions would have only very few call sites. And I'm not 100% sure I understand the motivation behind the <code>Symbol</code>/<code>LookupResult</code> split. This is also low priority, so I suggest that I discuss this with @AlexWaygood in one of our next 1:1s.</p>
+            <div class="timeline-body"><p>I attempted to solve this, but I think this would not just require us to duplicate all of these methods (<code>or_fall_back_to</code>, <code>unwrap_with_diagnostic</code>, …), but also <code>LookupError</code>/<code>LookupResult</code>. These new functions would have only very few call sites. And I&#x27;m not 100% sure I understand the motivation behind the <code>Symbol</code>/<code>LookupResult</code> split. This is also low priority, so I suggest that I discuss this with @AlexWaygood in one of our next 1:1s.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:10:23 UTC
+        Synced at 2026-01-20 19:11:51 UTC
     </footer>
 </body>
 </html>

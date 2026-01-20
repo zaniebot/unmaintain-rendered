@@ -23,35 +23,35 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>If two types are gradually-equivalent, that means they share the same set of possible materializations. There's no need to keep two such types in the same union or intersection; we should simplify them.</p>
-<p>Fixes https://github.com/astral-sh/ruff/issues/17465</p>
-<p>The one downside here is that now we will simplify e.g. <code>Unknown | Todo(...)</code> to just <code>Unknown</code>, if <code>Unknown</code> was added to the union first. This is correct from a type perspective (they are equivalent types), but it can mean we lose visibility into part of the cause for the type inferring as unknown. I think this is OK, but if we think it's important to avoid this, I can add a special case to try to preserve <code>Todo</code> over <code>Unknown</code>, if we see them both in the same union or intersection.</p>
-<h2>Test Plan</h2>
+            <div class="timeline-body">Summary
+<p>If two types are gradually-equivalent, that means they share the same set of possible materializations. There&#x27;s no need to keep two such types in the same union or intersection; we should simplify them.</p>
+<p>Fixes <a href="https://github.com/astral-sh/ruff/issues/17465">astral-sh/ruff#17465</a></p>
+<p>The one downside here is that now we will simplify e.g. <code>Unknown | Todo(...)</code> to just <code>Unknown</code>, if <code>Unknown</code> was added to the union first. This is correct from a type perspective (they are equivalent types), but it can mean we lose visibility into part of the cause for the type inferring as unknown. I think this is OK, but if we think it&#x27;s important to avoid this, I can add a special case to try to preserve <code>Todo</code> over <code>Unknown</code>, if we see them both in the same union or intersection.</p>
+Test Plan
 <p>Added and updated mdtests.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2025-04-18 18:11</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/carljm">@carljm</a> on 2025-04-18 18:11</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @carljm on 2025-04-18 18:11</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/carljm">@carljm</a> on 2025-04-18 18:11</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @carljm on 2025-04-18 18:11</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/carljm">@carljm</a> on 2025-04-18 18:11</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @carljm on 2025-04-18 18:11</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/carljm">@carljm</a> on 2025-04-18 18:11</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-18 18:13</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">bidict (https://github.com/jab/bidict)
+Changes were detected when running on open source projects
+
+<pre><code>bidict (https://github.com/jab/bidict)
 - error[lint:invalid-argument-type] /tmp/mypy_primer/projects/bidict/tests/microbenchmarks.py:25:26: Argument to this function is incorrect: Expected `(...) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[deque]`
 - error[lint:invalid-argument-type] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:88:25: Argument to this function is incorrect: Expected `(...) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[OnDup]`
 + error[lint:invalid-argument-type] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:88:25: Argument to this function is incorrect: Expected `(...) -&gt; Unknown`, found `Literal[OnDup]`
@@ -245,7 +245,7 @@ scrapy (https://github.com/scrapy/scrapy)
 + Found 1590 diagnostics
 
 </code></pre>
-</details>
+
 
 </div>
         </div>
@@ -257,7 +257,7 @@ scrapy (https://github.com/scrapy/scrapy)
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-18 21:37</div>
             <div class="timeline-body"><p>I think it makes sense to simplify <code>Unknown | Todo</code> to <code>Unknown</code>.</p>
-<p>As the mypy_primer hits on this PR demonstrate, it obviously isn't currently true that we infer <code>Todo</code> types for all features that are Still To Be Done. But if we <em>did</em> (and ideally we <em>would</em>), then we wouldn't be losing any information by simplifying <code>Unknown | Todo</code> to <code>Todo</code>. It would accurately reflect the fact that even if we had Done All The Typing Features, the type would still be inferred as something dynamic due to an error in the user's code somewhere.</p>
+<p>As the mypy_primer hits on this PR demonstrate, it obviously isn&#x27;t currently true that we infer <code>Todo</code> types for all features that are Still To Be Done. But if we <em>did</em> (and ideally we <em>would</em>), then we wouldn&#x27;t be losing any information by simplifying <code>Unknown | Todo</code> to <code>Todo</code>. It would accurately reflect the fact that even if we had Done All The Typing Features, the type would still be inferred as something dynamic due to an error in the user&#x27;s code somewhere.</p>
 <p>I do think we should prioritise fixing the new ecosystem hits, though: we should be inferring <code>Todo</code> rather than <code>Unknown</code> for most of those things.</p>
 </div>
         </div>
@@ -266,10 +266,10 @@ scrapy (https://github.com/scrapy/scrapy)
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @carljm on 2025-04-18 22:08</div>
+            <div class="event">Merged by <a href="https://github.com/carljm">@carljm</a> on 2025-04-18 22:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2025-04-18 22:08</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2025-04-18 22:08</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-04-18 22:08</div>
@@ -277,7 +277,7 @@ scrapy (https://github.com/scrapy/scrapy)
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:11:41 UTC
+        Synced at 2026-01-20 19:13:27 UTC
     </footer>
 </body>
 </html>

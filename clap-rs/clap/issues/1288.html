@@ -23,31 +23,29 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/lazyuser">@lazyuser</a></div>
-            <div class="timeline-body"><!--
-Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`
--->
+            <div class="timeline-body">
 
-<h3>Rust Version</h3>
+Rust Version
 <p>rustc 1.26.0 (a77568041 2018-05-07)</p>
-<h3>Affected Version of clap</h3>
+Affected Version of clap
 <p>clap 2.31.2</p>
-<h3>Expected Behavior Summary</h3>
+Expected Behavior Summary
 <p>output:</p>
 <pre><code>1: [1]
 1: subcmd
 2: [1]
 2: subcmd
 </code></pre>
-<h3>Actual Behavior Summary</h3>
+Actual Behavior Summary
 <p>output:</p>
 <pre><code>1: [1]
 1: subcmd
-thread 'main' panicked at 'called `Result::unwrap()` on an `Err` value: Error { message: &quot;\u{1b}[1;31merror:\u{1b}[0m Invalid value: The argument \'subcmd\' isn\'t a valid value&quot;, kind: ValueValidation, info: None }', libcore/result.rs:945:5
+thread &#x27;main&#x27; panicked at &#x27;called `Result::unwrap()` on an `Err` value: Error { message: &quot;\u{1b}[1;31merror:\u{1b}[0m Invalid value: The argument \&#x27;subcmd\&#x27; isn\&#x27;t a valid value&quot;, kind: ValueValidation, info: None }&#x27;, libcore/result.rs:945:5
 </code></pre>
-<h3>Steps to Reproduce the issue</h3>
+Steps to Reproduce the issue
 <p>run the code below</p>
-<h3>Sample Code or Link to Sample Code</h3>
-<pre><code class="language-rust">#[macro_use]
+Sample Code or Link to Sample Code
+<pre><code>#[macro_use]
 extern crate clap;
 use clap::{App, Arg, SubCommand};
 
@@ -84,14 +82,14 @@ fn main() {
     }
 }
 </code></pre>
-<h3>Debug output</h3>
+Debug output
 <p><a href="https://github.com/kbknapp/clap-rs/files/2080063/debug.txt">debug.txt</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-06-07 18:13</div>
             <div class="timeline-body"><p>Thanks for filing this and for all the details :smile:</p>
-<p>While this sounds like a cut and dry bug, &quot;If a value matches a subcommand exactly, it's a subcommand!&quot; it's not quite that simple. There have been multiple instances where a value can match a subcommand name exactly. So clap uses the policy, &quot;if the argument <em>can</em> be a value, it probably <em>is</em> a value.&quot;</p>
+<p>While this sounds like a cut and dry bug, &quot;If a value matches a subcommand exactly, it&#x27;s a subcommand!&quot; it&#x27;s not quite that simple. There have been multiple instances where a value can match a subcommand name exactly. So clap uses the policy, &quot;if the argument <em>can</em> be a value, it probably <em>is</em> a value.&quot;</p>
 <p>The fix is to limit the number of values <em>per occurrence</em> of the argument which accepts multiple values. This is normally a better design.</p>
 <p>i.e.</p>
 <pre><code>$ app -f 1 -f 1 subcmd
@@ -100,32 +98,32 @@ $ app -f 1 1 subcmd
     # Not allowed
 </code></pre>
 <p>The way to do this is to set <code>Arg::number_of_values(1)</code> <em>and</em> <code>Arg::multiple(true)</code>.</p>
-<p>I'm going to close this as by design, however I'm also open to discussion on the matter :wink:</p>
+<p>I&#x27;m going to close this as by design, however I&#x27;m also open to discussion on the matter :wink:</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @kbknapp on 2018-06-07 18:13</div>
+            <div class="event">Closed by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-06-07 18:13</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2018-06-07 18:13</div>
+            <div class="event">Label <span class="label">T: RFC / question</span> added by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-06-07 18:13</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/lazyuser">@lazyuser</a> on 2018-06-10 12:38</div>
             <div class="timeline-body"><p>Thanks for the explanation. Indeed it works fine with number_of_values(1). Maybe you should mention number_of_values(1) in a docs for Arg::multiple().</p>
-<p>If you're interested, I've had a strange clap behavior while trying to workaround the issue by myself. I tried to add &quot;--&quot; before the subcommand:</p>
-<pre><code class="language-rust">let cmdline = vec![&quot;app&quot;, &quot;-f&quot;, &quot;1&quot;, &quot;--&quot;, &quot;subcmd&quot;];
+<p>If you&#x27;re interested, I&#x27;ve had a strange clap behavior while trying to workaround the issue by myself. I tried to add &quot;--&quot; before the subcommand:</p>
+<pre><code>let cmdline = vec![&quot;app&quot;, &quot;-f&quot;, &quot;1&quot;, &quot;--&quot;, &quot;subcmd&quot;];
 </code></pre>
 <p>and got the funny-looking error:</p>
-<pre><code>error: The subcommand 'subcmd' wasn't recognized
-        Did you mean 'subcmd'?
+<pre><code>error: The subcommand &#x27;subcmd&#x27; wasn&#x27;t recognized
+        Did you mean &#x27;subcmd&#x27;?
 </code></pre>
-<p>P.S. Also, I've just noticed I've had a typo in a reference to another issue. Removed it.</p>
+<p>P.S. Also, I&#x27;ve just noticed I&#x27;ve had a typo in a reference to another issue. Removed it.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:47:10 UTC
+        Synced at 2026-01-20 19:57:12 UTC
     </footer>
 </body>
 </html>

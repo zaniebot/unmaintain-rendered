@@ -25,13 +25,13 @@
             <div class="timeline-header"><a href="https://github.com/topoinix">@topoinix</a></div>
             <div class="timeline-body"><p><a href="https://github.com/user-attachments/files/22522407/default.ruff.toml.txt">.ruff.toml.txt</a>
 <a href="https://github.com/user-attachments/files/22522406/ruff-check-show-settings.txt">ruff-check-show-settings.txt</a></p>
-<h2>Summary</h2>
-<p>The output of the command <code>ruff check --show-settings</code> resembles a <code>.ruff.toml</code> file (when reformatted using bare keys). Despite the close resemblance, it does not form a valid <code>TOML</code> file, and it cannot be used to configure <code>Ruff</code>. This could be confusing if one tries to rely on this output when modifying <code>Ruff</code>'s configuration file, e.g. if they want to start with a full template with default (or resolved) configuration settings.</p>
+Summary
+<p>The output of the command <code>ruff check --show-settings</code> resembles a <code>.ruff.toml</code> file (when reformatted using bare keys). Despite the close resemblance, it does not form a valid <code>TOML</code> file, and it cannot be used to configure <code>Ruff</code>. This could be confusing if one tries to rely on this output when modifying <code>Ruff</code>&#x27;s configuration file, e.g. if they want to start with a full template with default (or resolved) configuration settings.</p>
 <p><a href="https://github.com/astral-sh/ruff/pull/9464">#9464</a> has improved the output of the above command a lot. Still, given this <a href="https://github.com/astral-sh/ruff/pull/9464#pullrequestreview-1815926526_">comment</a>, it seems that producing a valid <code>.ruff.toml</code> file was not its aim. Subject to minor modifications, mentioned below, most of the reported settings could be adjusted to adhere to the <code>.ruff.toml</code> schema. A few would require more involved restructuring.</p>
 <p>I was wondering whether there are some intentional reasons for this disparity, and whether you would be open to change or consider a proposal to address (some of) these inconsistencies that make it difficult to effectively use the output of the command.</p>
-<h2>Version</h2>
+Version
 <p>ruff 0.13.1</p>
-<h2>Details</h2>
+Details
 <p>This disparity seems to stem from the fact that <code>ruff check --show-settings</code> displays the resolved <a href="https://github.com/astral-sh/ruff/blob/09f570af9271168cfca11388c33d5182168e1b4c/crates/ruff_workspace/src/settings.rs#L21-L40"><code>settings::Settings</code></a>, whereas the configuration files are deserialised into <a href="https://github.com/astral-sh/ruff/blob/09f570af9271168cfca11388c33d5182168e1b4c/crates/ruff_workspace/src/options.rs#L41-L460"><code>options::Options</code></a>, and both structures have different fields, and so do some of their field types.</p>
 <p>There are a few distinct issues that lead to this disparity:</p>
 <ol>
@@ -43,7 +43,7 @@
 </li>
 </ol>
 <p>Addressing these first three issues results in ~68% of the configuration keys (~75% of reported keys) adhering to the schema.</p>
-<ol start="4">
+<ol>
 <li>Inconsistent field names. For instance:</li>
 </ol>
 <ul>
@@ -59,7 +59,7 @@
 |----------------------------------|-----------------------------------|
 | <code>runtime_required_base_classes</code>  | <code>runtime_evaluated_base_classes</code>  |
 | <code>runtime_required_decorators</code>    | <code>runtime_evaluated_decorators</code>    |</p>
-<ol start="5">
+<ol>
 <li><p>Some configuration fields are nested differently in the two structures. For instance, some fields of <code>options::Options</code> are included in <code>settings::Settings</code> through a substructure. For instance,</p>
 <ul>
 <li><code>exclude</code> appears as <code>file_resolver.exclude</code></li>
@@ -73,15 +73,15 @@
 <li><p>Also, values need to be formatted to result in valid <code>TOML</code>, e.g. <a href="https://toml.io/en/v1.0.0#string">strings</a> should be quoted and regular expression patterns escaped.</p>
 </li>
 </ol>
-<h2>Discussion</h2>
+Discussion
 <p>In terms of quantity, most of the inconsistencies seem straightforward to fix. On the other hand, issues listed under points 5 and 6 seem to require restructuring, flattening the <code>settings::Settings</code> structure or modifying the configuration API (possibly allowing for backward compatibility). It would be good to know if the maintainers have any preference.</p>
 <p>I am attaching the keys reported by the above command and those accepted by <code>.ruff.toml</code> (both renamed in line with the first three points and presented in dotted key format to simplify comparison).</p>
 <p>Thank you for your consideration!</p>
-<h2>Related issues and pull requests</h2>
+Related issues and pull requests
 <ul>
-<li><p><a href="https://github.com/astral-sh/ruff/issues/8334"><img src="https://img.shields.io/github/issues/detail/title/astral-sh/ruff/8334?logo=github" alt="GitHub issue/pull request detail" /></a></p>
+<li><p><a href="https://github.com/astral-sh/ruff/issues/8334"><img src="https://img.shields.io/github/issues/detail/title/astral-sh/ruff/8334?logo=github" alt="GitHub issue/pull request detail"></a></p>
 </li>
-<li><p><a href="https://github.com/astral-sh/ruff/pull/9464"><img src="https://img.shields.io/github/issues/detail/title/astral-sh/ruff/9464?logo=github" alt="GitHub issue/pull request detail" /></a></p>
+<li><p><a href="https://github.com/astral-sh/ruff/pull/9464"><img src="https://img.shields.io/github/issues/detail/title/astral-sh/ruff/9464?logo=github" alt="GitHub issue/pull request detail"></a></p>
 </li>
 </ul>
 </div>
@@ -89,7 +89,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-25 08:06</div>
             <div class="timeline-body"><p>Thanks for the detailed write-up.</p>
-<p>It's intentional that the <code>--show-settings</code> output doesn't resemble <code>.ruff.toml</code> because it isn't always a 1:1 mapping between configuration field and resolved value. You noted that some settings would require significant restructuring. Those structure differences are intentional: <code>Settings</code> is designed so that Ruff can look up the relevant values as fast as possible.</p>
+<p>It&#x27;s intentional that the <code>--show-settings</code> output doesn&#x27;t resemble <code>.ruff.toml</code> because it isn&#x27;t always a 1:1 mapping between configuration field and resolved value. You noted that some settings would require significant restructuring. Those structure differences are intentional: <code>Settings</code> is designed so that Ruff can look up the relevant values as fast as possible.</p>
 <blockquote>
 <p>[lint.pylint] accepts the key max-nested-blocks, which is not reported.</p>
 </blockquote>
@@ -97,12 +97,12 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2025-09-25 08:06</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-25 08:06</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:53:22 UTC
+        Synced at 2026-01-20 18:50:27 UTC
     </footer>
 </body>
 </html>

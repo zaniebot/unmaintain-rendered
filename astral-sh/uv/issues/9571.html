@@ -24,17 +24,17 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/bepuca">@bepuca</a></div>
             <div class="timeline-body"><p>Hello! I am using workspaces for my project and they are really a game changer. I was waiting for some tooling supporting this nicely for a very very long time and had to do different shanenigans to simulate it. Now, I have a bit of a specific situation and I am unsure what would be the recommended way to solve it using <code>uv</code>. I have the hunch it is solvable in a nice way but I am not sure how to put the pieces together.</p>
-<h2>Context</h2>
-<p>The project is related to machine learning. Within the project, we have several packages that are responsible for different things. Think &quot;data prep&quot;, &quot;train model 1&quot;, &quot;train model 2&quot;, &quot;eval&quot;, for instance. Each of these is now a workspace, which works nicely. In my developer environment, aka my laptop, I want one big environment which uv solves nicely. The thing is that most of these packages are expensive payloads that require GPUs or GPU clusters, so they need to be submitted to the cloud. To submit them to the cloud, I'd like to bundle the bare minimum (both files and dependencies) into a Docker image. For this, we currently just package the workspace folder and extract the requirements from the super lock into a package specific requirements.txt with <code>uv export --package</code>. It is important to have the bare minimum for 2 reasons: size of image and understanding the payload. If I bundle the whole repo, it is hard to know what code is relevant. If I bundle the bare minimum, understanding (and reproducing) is much easier.</p>
+Context
+<p>The project is related to machine learning. Within the project, we have several packages that are responsible for different things. Think &quot;data prep&quot;, &quot;train model 1&quot;, &quot;train model 2&quot;, &quot;eval&quot;, for instance. Each of these is now a workspace, which works nicely. In my developer environment, aka my laptop, I want one big environment which uv solves nicely. The thing is that most of these packages are expensive payloads that require GPUs or GPU clusters, so they need to be submitted to the cloud. To submit them to the cloud, I&#x27;d like to bundle the bare minimum (both files and dependencies) into a Docker image. For this, we currently just package the workspace folder and extract the requirements from the super lock into a package specific requirements.txt with <code>uv export --package</code>. It is important to have the bare minimum for 2 reasons: size of image and understanding the payload. If I bundle the whole repo, it is hard to know what code is relevant. If I bundle the bare minimum, understanding (and reproducing) is much easier.</p>
 <p>Now, I also want to make sure there is no leaking of dependencies (use a dep from another workspace that is not installed in the relevant package) that in the IDE does not complain but would fail after packaging in the cloud. For that, we are using <code>uv run --isolate --package ...</code> and, once again, works brilliantly.</p>
-<h2>The Problem</h2>
-<p>Now the problem arises when I have common code. For instance, a class representing my data contract that could be the output types of data prep that go to be inputs of model train. The &quot;ideal&quot; way I can think of is that <code>common</code> or <code>shared</code> is a workspace of its own. Then, use <code>uv export</code> with the dependencies of the two packages and <code>uv run --package X --package common</code>. But this does not work as <code>error: the argument '--package &lt;PACKAGE&gt;' cannot be used multiple times</code>. I do not want to go through the pain of publishing common anywhere, as it adds a lot of complexity.</p>
+The Problem
+<p>Now the problem arises when I have common code. For instance, a class representing my data contract that could be the output types of data prep that go to be inputs of model train. The &quot;ideal&quot; way I can think of is that <code>common</code> or <code>shared</code> is a workspace of its own. Then, use <code>uv export</code> with the dependencies of the two packages and <code>uv run --package X --package common</code>. But this does not work as <code>error: the argument &#x27;--package &lt;PACKAGE&gt;&#x27; cannot be used multiple times</code>. I do not want to go through the pain of publishing common anywhere, as it adds a lot of complexity.</p>
 <p>So in summary I need:</p>
 <ul>
 <li>Ability to export a lock/requirements.txt that covers the dependencies of two packages (I could bypass that but just centralizing dependencies in the non &quot;common&quot; workspace).</li>
 <li>Ability to <code>uv run --isolate --package A</code> a script of pkg A that can import &quot;common&quot; package and also pkg A but has no knowledge of packages B,C,D.</li>
 </ul>
-<p>I had a look at https://github.com/astral-sh/uv/issues/6935 and linked solutions, which makes me think the pieces are there but I am struggling to piece them together. Hence, I thought it would be amazing if someone with deep knowledge could help me understand what would be the recommended pattern for this.</p>
+<p>I had a look at <a href="https://github.com/astral-sh/uv/issues/6935">astral-sh/uv#6935</a> and linked solutions, which makes me think the pieces are there but I am struggling to piece them together. Hence, I thought it would be amazing if someone with deep knowledge could help me understand what would be the recommended pattern for this.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -43,7 +43,7 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @zanieb on 2024-12-02 23:38</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-02 23:38</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/bepuca">@bepuca</a> on 2024-12-09 13:31</div>
@@ -54,14 +54,14 @@ I find a few instances in which we may require this and it would be super helpfu
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-07 19:33</div>
             <div class="timeline-body"><p>cc @charliermarsh</p>
-<p>It seems fine to allow <code>--package</code> to be repeated in <code>uv export</code>. I think there's another issue about that but can't find it.</p>
+<p>It seems fine to allow <code>--package</code> to be repeated in <code>uv export</code>. I think there&#x27;s another issue about that but can&#x27;t find it.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MCRE-BE">@MCRE-BE</a> on 2025-05-16 07:19</div>
             <div class="timeline-body"><p>If I understand your issue, this is how I solved it.
 Package structure as follows:</p>
-<pre><code class="language-python">albatross
+<pre><code>albatross
 ├── packages
 │   ├── bird-feeder  # from github.com/org/bird-feeder, but this directory is in top-level .gitignore
 │   │   ├── pyproject.toml
@@ -85,7 +85,7 @@ Package structure as follows:</p>
         └── main.py
 </code></pre>
 <p>in main.py I declare my dependencies inlines as follows :</p>
-<pre><code class="language-python"># %%
+<pre><code># %%
 # /// script
 # dependencies = [
 #   &quot;tqdm&quot;,
@@ -101,7 +101,7 @@ Package structure as follows:</p>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:28:39 UTC
+        Synced at 2026-01-20 19:35:53 UTC
     </footer>
 </body>
 </html>

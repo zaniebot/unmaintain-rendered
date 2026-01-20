@@ -23,34 +23,34 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>This is a more robust fix for https://github.com/astral-sh/uv/issues/2300.</p>
+            <div class="timeline-body">Summary
+<p>This is a more robust fix for <a href="https://github.com/astral-sh/uv/issues/2300">astral-sh/uv#2300</a>.</p>
 <p>The basic issue is:</p>
 <ul>
 <li>When we resolve, we attempt to pre-fetch the distribution metadata for candidate packages.</li>
-<li>It's possible that the resolution completes <em>without</em> those pre-fetch responses. (In the linked issue, this was mainly because we were running with <code>--no-deps</code>, but the pre-fetch was causing us to attempt to build a package to get its dependencies. The resolution would then finish before the build completed.)</li>
-<li>In that case, the <code>Index</code> will be marked as &quot;waiting&quot; for that response -- but it'll never come through.</li>
-<li>If there's a subsequent call to the <code>Index</code>, to see if we should fetch or are waiting for that response, we'll end up waiting for it forever, since it <em>looks</em> like it's in-flight (but isn't). (In the linked issue, we had to build the source distribution for the install phase of <code>pip install</code>, but <code>setuptools</code> was in this bad state from the <em>resolve</em> phase.)</li>
+<li>It&#x27;s possible that the resolution completes <em>without</em> those pre-fetch responses. (In the linked issue, this was mainly because we were running with <code>--no-deps</code>, but the pre-fetch was causing us to attempt to build a package to get its dependencies. The resolution would then finish before the build completed.)</li>
+<li>In that case, the <code>Index</code> will be marked as &quot;waiting&quot; for that response -- but it&#x27;ll never come through.</li>
+<li>If there&#x27;s a subsequent call to the <code>Index</code>, to see if we should fetch or are waiting for that response, we&#x27;ll end up waiting for it forever, since it <em>looks</em> like it&#x27;s in-flight (but isn&#x27;t). (In the linked issue, we had to build the source distribution for the install phase of <code>pip install</code>, but <code>setuptools</code> was in this bad state from the <em>resolve</em> phase.)</li>
 </ul>
 <p>This PR modifies the resolver to ensure that we flush the stream of requests before returning. Specifically, we now <code>join</code> rather than <code>select</code> between the resolution and request-handling futures.</p>
-<p>This <em>could</em> be wasteful, since we don't <em>need</em> those requests, but it at least ensures that every <code>.wait</code> is followed by <code> .done</code>. In practice, I expect this not to have any significant effect on performance, since we end up using the pre-fetched distributions almost every time.</p>
-<h2>Test Plan</h2>
-<p>I ran through the test plan from https://github.com/astral-sh/uv/pull/2373, but ran the build 10 times and ensured it never crashed. (I reverted https://github.com/astral-sh/uv/pull/2373, since that <em>also</em> fixes the issue in the proximate case, by never fetching <code>setuptools</code> during the resolve phase.)</p>
+<p>This <em>could</em> be wasteful, since we don&#x27;t <em>need</em> those requests, but it at least ensures that every <code>.wait</code> is followed by <code> .done</code>. In practice, I expect this not to have any significant effect on performance, since we end up using the pre-fetched distributions almost every time.</p>
+Test Plan
+<p>I ran through the test plan from <a href="https://github.com/astral-sh/uv/pull/2373">astral-sh/uv#2373</a>, but ran the build 10 times and ensured it never crashed. (I reverted <a href="https://github.com/astral-sh/uv/pull/2373">astral-sh/uv#2373</a>, since that <em>also</em> fixes the issue in the proximate case, by never fetching <code>setuptools</code> during the resolve phase.)</p>
 <p>I also added logging to verify that requests are being handled <em>after</em> the resolution completes, as expected.</p>
 <p>I also introduced an arbitrary error in <code>fetch</code> to ensure that the error was immediately propagated.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-03-12 04:04</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-12 04:04</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @charliermarsh on 2024-03-12 04:04</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-12 04:04</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-03-12 04:04</div>
+            <div class="event">Review requested from <a href="https://github.com/BurntSushi">@BurntSushi</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-12 04:04</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @konstin by @charliermarsh on 2024-03-12 04:04</div>
+            <div class="event">Review requested from <a href="https://github.com/konstin">@konstin</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-12 04:04</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-12 04:04</div>
@@ -77,8 +77,8 @@ Benchmark 2: ./target/release/uv (resolve-cold)
   Range (min … max):   179.9 ms … 326.9 ms    50 runs
 
 Summary
-  './target/release/uv (resolve-cold)' ran
-    1.00 ± 0.29 times faster than './target/release/uv-main (resolve-cold)'
+  &#x27;./target/release/uv (resolve-cold)&#x27; ran
+    1.00 ± 0.29 times faster than &#x27;./target/release/uv-main (resolve-cold)&#x27;
 </code></pre>
 </div>
         </div>
@@ -101,17 +101,17 @@ Summary
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2024-03-12 14:13</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-12 14:13</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-03-12 14:13</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-12 14:13</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-03-12 14:13</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-12 14:14</div>
-            <div class="timeline-body"><p>I also benchmarked on home-assistant to be safe (this branch is &quot;faster&quot; but I think it's just noise):</p>
+            <div class="timeline-body"><p>I also benchmarked on home-assistant to be safe (this branch is &quot;faster&quot; but I think it&#x27;s just noise):</p>
 <pre><code>❯ python -m scripts.bench \
         --uv-path ./target/release/uv-main \
         --uv-path ./target/release/uv \
@@ -125,15 +125,15 @@ Benchmark 2: ./target/release/uv (resolve-cold)
   Range (min … max):   13.290 s … 14.202 s    10 runs
 
 Summary
-  './target/release/uv (resolve-cold)' ran
-    1.03 ± 0.03 times faster than './target/release/uv-main (resolve-cold)'
+  &#x27;./target/release/uv (resolve-cold)&#x27; ran
+    1.03 ± 0.03 times faster than &#x27;./target/release/uv-main (resolve-cold)&#x27;
 </code></pre>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:36:03 UTC
+        Synced at 2026-01-20 19:44:15 UTC
     </footer>
 </body>
 </html>

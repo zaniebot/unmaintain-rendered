@@ -24,16 +24,16 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/xpe">@xpe</a></div>
             <div class="timeline-body"><p>Thanks for this great library!</p>
-<p>I've spent some time looking for the easiest path to tell clap show a full help message on a bare command invocation. (This is the behavior with commands such as <code>java</code> and <code>cloc</code>.)</p>
-<p>These commands don't work:</p>
-<pre><code>let mut app = App::new(&quot;name me&quot;).args_from_usage(&quot;&lt;input_file&gt; 'Sets the input file to use'&quot;);
+<p>I&#x27;ve spent some time looking for the easiest path to tell clap show a full help message on a bare command invocation. (This is the behavior with commands such as <code>java</code> and <code>cloc</code>.)</p>
+<p>These commands don&#x27;t work:</p>
+<pre><code>let mut app = App::new(&quot;name me&quot;).args_from_usage(&quot;&lt;input_file&gt; &#x27;Sets the input file to use&#x27;&quot;);
 let matches = app.get_matches(); // moves `app`
 app.print_help(); // will not compile since `app` has been moved
 </code></pre>
 <p>I understand there are (at least) these options to make the API work as I intend:</p>
 <ol>
 <li>Clone <code>app</code> before passing it to <code>get_matches</code>.</li>
-<li>Find a function similar to <code>get_matches</code> that does not move <code>app</code>. (I'm not sure if one exists.)</li>
+<li>Find a function similar to <code>get_matches</code> that does not move <code>app</code>. (I&#x27;m not sure if one exists.)</li>
 </ol>
 <p>I have a <em>design</em> question: What is the rationale for <code>get_matches</code> moving the <code>app</code> value? Perhaps a borrow would work out better?</p>
 <p>P.S. For some context, feel free to see: http://stackoverflow.com/questions/40951538/method-call-on-clap-app-moving-ownership-more-than-once</p>
@@ -43,9 +43,9 @@ app.print_help(); // will not compile since `app` has been moved
             <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-27 04:29</div>
             <div class="timeline-body"><p>Thanks!</p>
 <p>You have a few options. You can either use <a href="https://docs.rs/clap/2.19.2/clap/enum.AppSettings.html#variant.ArgRequiredElseHelp"><code>AppSettings::ArgRequiredElseHelp</code></a> or you can keep the move from happening by using <a href="https://docs.rs/clap/2.19.2/clap/struct.App.html#method.get_matches_from_safe_borrow"><code>App::get_matches_from_safe_borrow</code></a>.</p>
-<p>The downside with the second approach is it returns a <code>Result</code>, and you'll also have to provide the args to match against, either by providing your own arbitrary <code>Vec</code>, <code>std::env::args</code> or <code>std::env::args_os</code> (if you wish to support invalid UTF-8).</p>
+<p>The downside with the second approach is it returns a <code>Result</code>, and you&#x27;ll also have to provide the args to match against, either by providing your own arbitrary <code>Vec</code>, <code>std::env::args</code> or <code>std::env::args_os</code> (if you wish to support invalid UTF-8).</p>
 <p>An example of the second version, should you choose that route would be:</p>
-<pre><code class="language-rust">let matches = // build app like normal
+<pre><code>let matches = // build app like normal
     .get_matches_from_safe_borrow(std::env:args_os())
     .unwrap_or_else(|e| e.exit())
 </code></pre>
@@ -54,33 +54,33 @@ app.print_help(); // will not compile since `app` has been moved
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">T: RFC / question</span> added by @kbknapp on 2016-12-27 04:29</div>
+            <div class="event">Label <span class="label">T: RFC / question</span> added by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-27 04:29</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @kbknapp on 2016-12-31 06:19</div>
+            <div class="event">Closed by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-12-31 06:19</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/EvanLuo42">@EvanLuo42</a> on 2022-05-25 12:35</div>
             <div class="timeline-body"><blockquote>
 <p>Thanks!</p>
 <p>You have a few options. You can either use <a href="https://docs.rs/clap/2.19.2/clap/enum.AppSettings.html#variant.ArgRequiredElseHelp"><code>AppSettings::ArgRequiredElseHelp</code></a> or you can keep the move from happening by using <a href="https://docs.rs/clap/2.19.2/clap/struct.App.html#method.get_matches_from_safe_borrow"><code>App::get_matches_from_safe_borrow</code></a>.</p>
-<p>The downside with the second approach is it returns a <code>Result</code>, and you'll also have to provide the args to match against, either by providing your own arbitrary <code>Vec</code>, <code>std::env::args</code> or <code>std::env::args_os</code> (if you wish to support invalid UTF-8).</p>
+<p>The downside with the second approach is it returns a <code>Result</code>, and you&#x27;ll also have to provide the args to match against, either by providing your own arbitrary <code>Vec</code>, <code>std::env::args</code> or <code>std::env::args_os</code> (if you wish to support invalid UTF-8).</p>
 <p>An example of the second version, should you choose that route would be:</p>
-<pre><code class="language-rust">let matches = // build app like normal
+<pre><code>let matches = // build app like normal
     .get_matches_from_safe_borrow(std::env:args_os())
     .unwrap_or_else(|e| e.exit())
 </code></pre>
 <p>The <code>e.exit()</code> portion does exactly what <code>clap</code> normally does, presenting an error message and gracefully exiting.</p>
 <p>Hope this helps!</p>
 </blockquote>
-<p>I used this way to create matches. It's like:</p>
-<pre><code class="language-rust">let mut command = Command::new(&quot;ctool&quot;);
+<p>I used this way to create matches. It&#x27;s like:</p>
+<pre><code>let mut command = Command::new(&quot;ctool&quot;);
 let matches = command.
     .try_get_matches_from(std::env::args_os())
     .unwrap_or_else(|e| e.exit());
 </code></pre>
 <p>And I want to use custom error, I did like this:</p>
-<pre><code class="language-rust">let action_undefined_error = command.error(
+<pre><code>let action_undefined_error = command.error(
         clap::ErrorKind::InvalidValue,
         &quot;The given action is not supported, please enter base64, hex, etc.&quot;
     );
@@ -95,7 +95,7 @@ let matches = command.
             <div class="timeline-body"><p><code>try_get_matches_from</code> took ownership of <code>command</code> and then you are trying to use <code>command</code> again.</p>
 <p>Options</p>
 <ul>
-<li>Create a <code>fn command() -&gt; Command&lt;'static&gt;</code> and write your errors as <code>command().error(...)</code>.  This will slow things down but in the error case so its unlikely anyone will notice</li>
+<li>Create a <code>fn command() -&gt; Command&lt;&#x27;static&gt;</code> and write your errors as <code>command().error(...)</code>.  This will slow things down but in the error case so its unlikely anyone will notice</li>
 <li>Use <code>_mut</code> variant for parsing, whether <a href="https://docs.rs/clap/latest/clap/struct.App.html#method.get_matches_mut"><code>get_matches_mut</code></a> or <code>try_get_matches_from_mut</code>.</li>
 </ul>
 </div>
@@ -106,7 +106,7 @@ let matches = command.
 <p><code>try_get_matches_from</code> took ownership of <code>command</code> and then you are trying to use <code>command</code> again.</p>
 <p>Options</p>
 <ul>
-<li>Create a <code>fn command() -&gt; Command&lt;'static&gt;</code> and write your errors as <code>command().error(...)</code>.  This will slow things down but in the error case so its unlikely anyone will notice</li>
+<li>Create a <code>fn command() -&gt; Command&lt;&#x27;static&gt;</code> and write your errors as <code>command().error(...)</code>.  This will slow things down but in the error case so its unlikely anyone will notice</li>
 <li>Use <code>_mut</code> variant for parsing, whether <a href="https://docs.rs/clap/latest/clap/struct.App.html#method.get_matches_mut"><code>get_matches_mut</code></a> or <code>try_get_matches_from_mut</code>.</li>
 </ul>
 </blockquote>
@@ -116,7 +116,7 @@ let matches = command.
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:46:47 UTC
+        Synced at 2026-01-20 19:56:41 UTC
     </footer>
 </body>
 </html>

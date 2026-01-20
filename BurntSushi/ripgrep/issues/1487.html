@@ -23,29 +23,29 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/gaycodegal">@gaycodegal</a></div>
-            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+            <div class="timeline-body">What version of ripgrep are you using?
 <p>ripgrep 11.0.2
 -SIMD -AVX (compiled)
 +SIMD +AVX (runtime)</p>
-<h4>How did you install ripgrep?</h4>
+How did you install ripgrep?
 <p>cargo install ripgrep</p>
-<h4>What operating system are you using ripgrep on?</h4>
+What operating system are you using ripgrep on?
 <p>Linux username 5.3.0-28-generic #30~18.04.1-Ubuntu SMP Fri Jan 17 06:14:09 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux</p>
-<h4>Sample of reproducing the bug:</h4>
+Sample of reproducing the bug:
 <p>What I tried to do:</p>
-<pre><code class="language-bash">echo -e &quot;hi.hh\0you.hh&quot; | rg --null --null-data -e '\.hh$' -r &quot;&quot; | xargs -0 -I{} echo {}.first {}.second
+<pre><code>echo -e &quot;hi.hh\0you.hh&quot; | rg --null --null-data -e &#x27;\.hh$&#x27; -r &quot;&quot; | xargs -0 -I{} echo {}.first {}.second
 </code></pre>
-<h5>bad output</h5>
+bad output
 <pre><code>hi.hh.h hi.hh.hh
 you
 .h you
 .hh
 </code></pre>
-<h4>How I expect it to work</h4>
+How I expect it to work
 <p>This does work fine. (note replaced \0 with \n, and removed null command line args)</p>
-<pre><code class="language-bash">echo -e &quot;hi.hh\nyou.hh&quot; | rg -e '\.hh$' -r &quot;&quot; | xargs -I{} echo {}.first {}.second
+<pre><code>echo -e &quot;hi.hh\nyou.hh&quot; | rg -e &#x27;\.hh$&#x27; -r &quot;&quot; | xargs -I{} echo {}.first {}.second
 </code></pre>
-<h5>good output</h5>
+good output
 <pre><code>hi.h hi.hh
 you.h you.hh
 </code></pre>
@@ -54,34 +54,34 @@ you.h you.hh
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2020-02-16 03:34</div>
             <div class="timeline-body"><p>I guess this is because <code>$</code> still only matches <code>\n</code> and EOS with <code>--null-data</code>. You can confirm this easily by looking at what matches are highlighted when you search for a pattern containing <code>$</code> (the <code>&lt;...&gt;</code> here represent the matches):</p>
-<pre><code>% printf 'hi.hh\0you.hh' | \rg --color=always --null-data '\.hh$'
+<pre><code>% printf &#x27;hi.hh\0you.hh&#x27; | \rg --color=always --null-data &#x27;\.hh$&#x27;
 hi.hhyou&lt;.hh&gt;
 
-% printf 'hi.hh\0you.hh\nme.hh' | \rg --color=always --null-data '\.hh$'
+% printf &#x27;hi.hh\0you.hh\nme.hh&#x27; | \rg --color=always --null-data &#x27;\.hh$&#x27;
 hi.hhyou&lt;.hh&gt;
 me&lt;.hh&gt;
 </code></pre>
 <p>Meanwhile, GNU <code>grep</code> does this:</p>
-<pre><code>% printf 'hi.hh\0you.hh' | \ggrep --color=always -z '\.hh$'
+<pre><code>% printf &#x27;hi.hh\0you.hh&#x27; | \ggrep --color=always -z &#x27;\.hh$&#x27;
 hi&lt;.hh&gt;you&lt;.hh&gt;
 
-% printf 'hi.hh\0you.hh\nme.hh' | \ggrep --color=always -z '\.hh$'
+% printf &#x27;hi.hh\0you.hh\nme.hh&#x27; | \ggrep --color=always -z &#x27;\.hh$&#x27;
 hi&lt;.hh&gt;you.hh
 me&lt;.hh&gt;
 </code></pre>
-<p>Maybe it's been addressed before and i just don't remember, but it does seem like the GNU behaviour is more intuitive/useful. That's how i assumed it worked, at least</p>
+<p>Maybe it&#x27;s been addressed before and i just don&#x27;t remember, but it does seem like the GNU behaviour is more intuitive/useful. That&#x27;s how i assumed it worked, at least</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-02-16 16:38</div>
-            <div class="timeline-body"><p>Hmm, I don't get the same outputs with the examples given...</p>
-<pre><code>$ echo -e &quot;hi.hh\0you.hh&quot; | rg --null --null-data -e '\.hh$' -r &quot;&quot; | xargs -0 -I{} echo {}.first {}.second
+            <div class="timeline-body"><p>Hmm, I don&#x27;t get the same outputs with the examples given...</p>
+<pre><code>$ echo -e &quot;hi.hh\0you.hh&quot; | rg --null --null-data -e &#x27;\.hh$&#x27; -r &quot;&quot; | xargs -0 -I{} echo {}.first {}.second
 hi.hh.first hi.hh.second
 you
 .first you
 .second
 
-$ echo -e &quot;hi.hh\nyou.hh&quot; | rg -e '\.hh$' -r &quot;&quot; | xargs -I{} echo {}.first {}.second
+$ echo -e &quot;hi.hh\nyou.hh&quot; | rg -e &#x27;\.hh$&#x27; -r &quot;&quot; | xargs -I{} echo {}.first {}.second
 hi.first hi.second
 you.first you.second
 </code></pre>
@@ -90,24 +90,24 @@ you.first you.second
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-02-16 16:58</div>
-            <div class="timeline-body"><p>I'm going to mark this at <code>wontfix</code> for now. Fixing this correctly probably means adding a configurable knob to the regex engine to permit setting the line terminator recognized by <code>^</code> and <code>$</code>. I've filed an issue for that: https://github.com/rust-lang/regex/issues/644</p>
+            <div class="timeline-body"><p>I&#x27;m going to mark this at <code>wontfix</code> for now. Fixing this correctly probably means adding a configurable knob to the regex engine to permit setting the line terminator recognized by <code>^</code> and <code>$</code>. I&#x27;ve filed an issue for that: <a href="https://github.com/rust-lang/regex/issues/644">rust-lang/regex#644</a></p>
 <p>If that ever gets fixed, then we could have ripgrep enable it whenever <code>--null-data</code> is enabled.</p>
-<p>(GNU grep's DFA implementation takes this route as well. It can be configured to have <code>\0</code> be a line terminator.)</p>
+<p>(GNU grep&#x27;s DFA implementation takes this route as well. It can be configured to have <code>\0</code> be a line terminator.)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2020-02-16 16:58</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-02-16 16:58</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2020-02-16 16:59</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-02-16 16:59</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2020-02-16 16:59</div>
+            <div class="event">Label <span class="label">wontfix</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-02-16 16:59</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:43:05 UTC
+        Synced at 2026-01-20 18:48:09 UTC
     </footer>
 </body>
 </html>

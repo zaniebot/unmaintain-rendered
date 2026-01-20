@@ -24,27 +24,27 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Avasam">@Avasam</a></div>
             <div class="timeline-body"><p><code>hardcoded-password-string (S105)</code>, <code>hardcoded-password-func-arg (S106)</code> and <code>hardcoded-password-default (S107)</code> will naturally have false-positives. But do they make sense to enable in stubs? Is the risk that hardcoded password be found in source code on an assignement of a certain name, and have that be exposed as public API through stubs, actually a concern ?</p>
-<p>Or should one be encouraged to disable these rules for stubs in one's projects if they produce too many false-positives ?</p>
-<p>(this question is extracted from https://github.com/astral-sh/ruff/issues/14535#issuecomment-2561461038 for ease of tracking and discussion)</p>
+<p>Or should one be encouraged to disable these rules for stubs in one&#x27;s projects if they produce too many false-positives ?</p>
+<p>(this question is extracted from <a href="https://github.com/astral-sh/ruff/issues/14535">astral-sh/ruff#14535</a>#issuecomment-2561461038 for ease of tracking and discussion)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @dhruvmanila on 2024-12-31 05:36</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-12-31 05:36</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-12-31 05:42</div>
-            <div class="timeline-body"><p>I think I'd prefer to keep these rules enabled on stub files. These aren't executed nor importable via user code but it still will be visible in the source code and there isn't any way to catch them other then these rules.</p>
+            <div class="timeline-body"><p>I think I&#x27;d prefer to keep these rules enabled on stub files. These aren&#x27;t executed nor importable via user code but it still will be visible in the source code and there isn&#x27;t any way to catch them other then these rules.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-31 11:44</div>
-            <div class="timeline-body"><p>Do you have real-world examples where those rules flagged some code that was out of the stub author's control? The only legitimate place I can think of right now is the default value for function arguments and parameters. In this case, the default value should already be flagged in the actual code, and, arguably, the rules are then somewhat useless to run on stub files.</p>
+            <div class="timeline-body"><p>Do you have real-world examples where those rules flagged some code that was out of the stub author&#x27;s control? The only legitimate place I can think of right now is the default value for function arguments and parameters. In this case, the default value should already be flagged in the actual code, and, arguably, the rules are then somewhat useless to run on stub files.</p>
 <p>But that only really applies to S107 because stub files should rarely contain function calls.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-12-31 13:51</div>
-            <div class="timeline-body"><p>I think the only thing I'd consider a false positive in stubs if the rule flaggs <code>AnnAssign</code> nodes that don't have a value expression, or for function defaults, if that default value is <code>...</code>.</p>
+            <div class="timeline-body"><p>I think the only thing I&#x27;d consider a false positive in stubs if the rule flaggs <code>AnnAssign</code> nodes that don&#x27;t have a value expression, or for function defaults, if that default value is <code>...</code>.</p>
 <p>Since in both cases we can comfortably say that there is no hardcoded password to be found in the stub file (although it might be worth to check the annotation for a suspicious <code>Literal[]</code> just in case).</p>
 <p>So I think the main thing we want to protect ourselves from is some automatic stub generation tool copying a hardcoded password from the source code to the stub.</p>
 </div>
@@ -54,10 +54,10 @@
             <div class="timeline-body"><blockquote>
 <p>But that only really applies to S107 because stub files should rarely contain function calls.</p>
 </blockquote>
-<p>I think you meant <a href="https://docs.astral.sh/ruff/rules/hardcoded-password-func-arg/#hardcoded-password-func-arg-s106">hardcoded-password-func-arg (S106)</a> ? There's some possible calls with kwargs in stubs (I can think of custom decorators that affect types, and class params like <code>metaclass</code> and <code>TypeDict</code>'s <code>total</code>). But landing on one that triggers S106 is probably extremely rare and non-stdlib only.</p>
-<hr />
+<p>I think you meant <a href="https://docs.astral.sh/ruff/rules/hardcoded-password-func-arg/#hardcoded-password-func-arg-s106">hardcoded-password-func-arg (S106)</a> ? There&#x27;s some possible calls with kwargs in stubs (I can think of custom decorators that affect types, and class params like <code>metaclass</code> and <code>TypeDict</code>&#x27;s <code>total</code>). But landing on one that triggers S106 is probably extremely rare and non-stdlib only.</p>
+<hr>
 <blockquote>
-<p>Do you have real-world examples where those rules flagged some code that was out of the stub author's control?</p>
+<p>Do you have real-world examples where those rules flagged some code that was out of the stub author&#x27;s control?</p>
 </blockquote>
 <p><a href="https://docs.astral.sh/ruff/rules/hardcoded-password-string/#hardcoded-password-string-s105">hardcoded-password-string (S105)</a></p>
 <pre><code>stubs\braintree\braintree\transaction.pyi:41:24: S105 Possible hardcoded password assigned to: &quot;Token&quot;
@@ -83,8 +83,8 @@ stubs\openpyxl\openpyxl\formula\tokenizer.pyi:20:27: S105 Possible hardcoded pas
 stubs\waitress\waitress\rfc7230.pyi:26:16: S105 Possible hardcoded password assigned to: &quot;TOKEN&quot;
    |
 24 | RWS: Final = r&quot;[ \t]{1,}?&quot;
-25 | TCHAR: Final = r&quot;[!#$%&amp;'*+\-.^_`|~0-9A-Za-z]&quot;
-26 | TOKEN: Final = r&quot;[!#$%&amp;'*+\-.^_`|~0-9A-Za-z]{1,}&quot;
+25 | TCHAR: Final = r&quot;[!#$%&amp;&#x27;*+\-.^_`|~0-9A-Za-z]&quot;
+26 | TOKEN: Final = r&quot;[!#$%&amp;&#x27;*+\-.^_`|~0-9A-Za-z]{1,}&quot;
    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ S105
 27 | VCHAR: Final = r&quot;\x21-\x7e&quot;
 28 | WS: Final = r&quot;[ \t]&quot;
@@ -182,24 +182,24 @@ stubs\tensorflow\tensorflow\keras\layers\__init__.pyi:159:26: S107 Possible hard
 161 |         idf_weights: TensorCompatible | None = None,
    |
 </code></pre>
-<hr />
+<hr>
 <blockquote>
 <p>So I think the main thing we want to protect ourselves from is some automatic stub generation tool copying a hardcoded password from the source code to the stub.</p>
 </blockquote>
-<p>That's a valid argument (and more or less what I was suggesting in my original post, but better illustrated).</p>
+<p>That&#x27;s a valid argument (and more or less what I was suggesting in my original post, but better illustrated).</p>
 <blockquote>
-<p>I think the only thing I'd consider a false positive in stubs if the rule flaggs <code>AnnAssign</code> nodes that don't have a value expression, or for function defaults, if that default value is <code>...</code>.</p>
+<p>I think the only thing I&#x27;d consider a false positive in stubs if the rule flaggs <code>AnnAssign</code> nodes that don&#x27;t have a value expression, or for function defaults, if that default value is <code>...</code>.</p>
 </blockquote>
-<p>From what I can tell, it's only acting on strings. Not elipsis or other types (like ints). So all good there.</p>
-<hr />
-<p>As a sidenote, I'd maybe even lump in <a href="https://docs.astral.sh/ruff/rules/hardcoded-bind-all-interfaces/#hardcoded-bind-all-interfaces-s104">hardcoded-bind-all-interfaces (S104)</a> with a different argument as it's not about leaking a password, but a misconfiguration. Similar to https://github.com/astral-sh/ruff/issues/15207 it doesn't affect runtime so can't be an issue.
-However it's also probably very rare and just like <code>S106</code> I don't have a real-world example.</p>
+<p>From what I can tell, it&#x27;s only acting on strings. Not elipsis or other types (like ints). So all good there.</p>
+<hr>
+<p>As a sidenote, I&#x27;d maybe even lump in <a href="https://docs.astral.sh/ruff/rules/hardcoded-bind-all-interfaces/#hardcoded-bind-all-interfaces-s104">hardcoded-bind-all-interfaces (S104)</a> with a different argument as it&#x27;s not about leaking a password, but a misconfiguration. Similar to <a href="https://github.com/astral-sh/ruff/issues/15207">astral-sh/ruff#15207</a> it doesn&#x27;t affect runtime so can&#x27;t be an issue.
+However it&#x27;s also probably very rare and just like <code>S106</code> I don&#x27;t have a real-world example.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-03 09:10</div>
             <div class="timeline-body"><p>Thanks for sharing the examples. They are all obvious false positives but so are they if used outside a stub file.</p>
-<p>I'm also leaning towards the keeping the rule as is because of the argument @Daverball made before</p>
+<p>I&#x27;m also leaning towards the keeping the rule as is because of the argument @Daverball made before</p>
 <blockquote>
 <p>So I think the main thing we want to protect ourselves from is some automatic stub generation tool copying a hardcoded password from the source code to the stub.</p>
 </blockquote>
@@ -207,11 +207,11 @@ However it's also probably very rare and just like <code>S106</code> I don't hav
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-03 15:58</div>
-            <div class="timeline-body"><p>I agree with the other maintainers on this issue. I think having a hardcoded password in a stub is just as big a security issue as having a hardcoded password in a runtime file, and I agree that it's easy to see how it could happen as a result of a stub generated by <a href="https://mypy.readthedocs.io/en/stable/stubgen.html">stubgen</a> or a codemod made by <a href="https://github.com/JelleZijlstra/stubdefaulter">stubdefaulter</a>. It's true that our bandit rules have lots of false positives, but if you're working on code where security is important, you really don't want to miss any possible vulnerabilities, so in some ways erring on the side of false positives is <em>desirable</em> for security rules.</p>
+            <div class="timeline-body"><p>I agree with the other maintainers on this issue. I think having a hardcoded password in a stub is just as big a security issue as having a hardcoded password in a runtime file, and I agree that it&#x27;s easy to see how it could happen as a result of a stub generated by <a href="https://mypy.readthedocs.io/en/stable/stubgen.html">stubgen</a> or a codemod made by <a href="https://github.com/JelleZijlstra/stubdefaulter">stubdefaulter</a>. It&#x27;s true that our bandit rules have lots of false positives, but if you&#x27;re working on code where security is important, you really don&#x27;t want to miss any possible vulnerabilities, so in some ways erring on the side of false positives is <em>desirable</em> for security rules.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-01-03 15:58</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-03 15:58</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-01-03 17:24</div>
@@ -221,7 +221,7 @@ However it's also probably very rare and just like <code>S106</code> I don't hav
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:51:54 UTC
+        Synced at 2026-01-20 18:49:13 UTC
     </footer>
 </body>
 </html>

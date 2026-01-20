@@ -23,14 +23,14 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Salamandar">@Salamandar</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>There are multiple issues:</p>
 <ul>
 <li>typeshed defines str.split() and str.join() with a return type of LiteralString or list[LiteralString]
-https://github.com/python/typeshed/issues/10887</li>
+<a href="https://github.com/python/typeshed/issues/10887">python/typeshed#10887</a></li>
 <li><code>ty</code> considers str as LiteralString:</li>
 </ul>
-<pre><code class="language-py">a = str()
+<pre><code>a = str()
 reveal_type(a)
 page_lines = &quot;&quot;.join(some_method_returning_str()).split(&quot;\n&quot;)
 reveal_type(page_lines)
@@ -40,26 +40,26 @@ reveal_type(page_lines)
 <pre><code>note: Revealed type is &quot;builtins.str&quot;
 note: Revealed type is &quot;builtins.list[builtins.str]&quot;
 </code></pre>
-<p>and as list is invariant, we can't pass <code>list[LiteralString]</code> to functions expecting a list[str]…</p>
-<h3>Platform</h3>
+<p>and as list is invariant, we can&#x27;t pass <code>list[LiteralString]</code> to functions expecting a list[str]…</p>
+Platform
 <p>Linux</p>
-<h3>Version</h3>
+Version
 <p>0.0.8, 0.0.11</p>
-<h3>Python version</h3>
+Python version
 <p>3.13.11</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @Salamandar on 2026-01-10 10:02</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/Salamandar">@Salamandar</a> on 2026-01-10 10:02</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> removed by @AlexWaygood on 2026-01-10 11:17</div>
+            <div class="event">Label <span class="label">bug</span> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-10 11:17</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-10 11:25</div>
             <div class="timeline-body"><p>Thanks for the report!</p>
-<p>We intend to soon change our behaviour to mypy's to allow you to use an explicit inline annotation to do a &quot;safe upcast&quot;. In this case, you want ty to infer a <code>str</code> rather than <code>Literal[&quot;&quot;]</code> for your initial assignment, and once we implement this behaviour change, you'd be able to achieve that with</p>
-<pre><code class="language-py">a: str = str()
+<p>We intend to soon change our behaviour to mypy&#x27;s to allow you to use an explicit inline annotation to do a &quot;safe upcast&quot;. In this case, you want ty to infer a <code>str</code> rather than <code>Literal[&quot;&quot;]</code> for your initial assignment, and once we implement this behaviour change, you&#x27;d be able to achieve that with</p>
+<pre><code>a: str = str()
 </code></pre>
 <p>Apart from that, the other thing ty could do here would be to <em>implicitly</em> infer (even without the annotation) that we need to infer the broader type here at the assignment of <code>a</code> to avoid false positives later on in the scope. That <em>might</em> be possible with sufficiently advanced bidirectional inference, but it seems hard in this specific case.</p>
 </div>
@@ -67,61 +67,61 @@ note: Revealed type is &quot;builtins.list[builtins.str]&quot;
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-12 08:13</div>
             <div class="timeline-body"><p>As a short-term measure you can use</p>
-<pre><code class="language-py">from typing import cast
+<pre><code>from typing import cast
 
 a = cast(str, str())
 </code></pre>
-<p>But I realise that's not ideal.</p>
+<p>But I realise that&#x27;s not ideal.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bidirectional inference</span> added by @ibraheemdev on 2026-01-13 01:07</div>
+            <div class="event">Label <span class="label">bidirectional inference</span> added by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2026-01-13 01:07</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-13 02:01</div>
             <div class="timeline-body"><p>This is two (related) reports in one. In the OP example, the type of <code>a</code> is irrelevant to the type of <code>page_lines</code>.</p>
-<p>In the case of <code>a</code>, I think ty's inference is fine; we do know that <code>a</code> is <code>Literal[&quot;&quot;]</code> after <code>a = str()</code>, and it causes no harm to infer it as such. We should allow <code>a: str = str()</code> as an explicit upcast, and we will with #136. Other type checkers don't infer <code>str()</code> as <code>Literal[&quot;&quot;]</code>, but they do infer <code>&quot;&quot;</code> as <code>Literal[&quot;&quot;]</code>; there's no practical difference.</p>
-<p>The case of <code>page_lines</code> is more complex, because inserting an annotation <code>page_lines: list[str]</code> actually results in a type error, since we still infer the RHS as <code>list[LiteralString]</code>, which is not assignable to <code>list[str]</code>. Thus even #136 won't help here.</p>
+<p>In the case of <code>a</code>, I think ty&#x27;s inference is fine; we do know that <code>a</code> is <code>Literal[&quot;&quot;]</code> after <code>a = str()</code>, and it causes no harm to infer it as such. We should allow <code>a: str = str()</code> as an explicit upcast, and we will with #136. Other type checkers don&#x27;t infer <code>str()</code> as <code>Literal[&quot;&quot;]</code>, but they do infer <code>&quot;&quot;</code> as <code>Literal[&quot;&quot;]</code>; there&#x27;s no practical difference.</p>
+<p>The case of <code>page_lines</code> is more complex, because inserting an annotation <code>page_lines: list[str]</code> actually results in a type error, since we still infer the RHS as <code>list[LiteralString]</code>, which is not assignable to <code>list[str]</code>. Thus even #136 won&#x27;t help here.</p>
 <p>Breaking down the example:</p>
-<p><code>typed_as_literal_string.split(&quot;\n&quot;)</code> should be typed as <code>list[LiteralString]</code> according to the overloads of <code>str.split</code> in typeshed, and other type-checkers agree. Pyright and pyrefly also error on <code>x: list[str] = typed_as_literalstring.split(&quot;\n&quot;)</code>, just like we do. (Mypy doesn't support <code>LiteralString</code> at all, so its behavior is irrelevant here.) There may be a usability issue here, but if so it's shared across the typing ecosystem, and the solution is probably to just upcast <code>typed_as_literalstring</code> to <code>str</code> before calling <code>.split()</code> on it.</p>
+<p><code>typed_as_literal_string.split(&quot;\n&quot;)</code> should be typed as <code>list[LiteralString]</code> according to the overloads of <code>str.split</code> in typeshed, and other type-checkers agree. Pyright and pyrefly also error on <code>x: list[str] = typed_as_literalstring.split(&quot;\n&quot;)</code>, just like we do. (Mypy doesn&#x27;t support <code>LiteralString</code> at all, so its behavior is irrelevant here.) There may be a usability issue here, but if so it&#x27;s shared across the typing ecosystem, and the solution is probably to just upcast <code>typed_as_literalstring</code> to <code>str</code> before calling <code>.split()</code> on it.</p>
 <p>Which gets to the place where there might be a bug in ty. We infer <code>&quot;&quot;.join(returns_str())</code> as <code>LiteralString</code>, but other type checkers infer it as <code>str</code>. And according to the overloads of <code>str.join</code> in typeshed, it looks like we are wrong. We are picking the overload</p>
-<pre><code class="language-py">    def join(self: LiteralString, iterable: Iterable[LiteralString], /) -&gt; LiteralString:
+<pre><code>    def join(self: LiteralString, iterable: Iterable[LiteralString], /) -&gt; LiteralString:
 </code></pre>
-<p>The root cause of this seems to be that we wrongly think <code>str</code> is assignable to <code>Iterable[LiteralString]</code>. And the root cause of <em>that</em> seems to be that we don't consider the annotated type of <code>self</code> when determining protocol assignability. <code>Iterable</code> is a protocol with just one method, <code>__iter__</code>, and <code>str</code> has the following overloads for <code>__iter__</code>:</p>
-<pre><code class="language-py">    @overload
+<p>The root cause of this seems to be that we wrongly think <code>str</code> is assignable to <code>Iterable[LiteralString]</code>. And the root cause of <em>that</em> seems to be that we don&#x27;t consider the annotated type of <code>self</code> when determining protocol assignability. <code>Iterable</code> is a protocol with just one method, <code>__iter__</code>, and <code>str</code> has the following overloads for <code>__iter__</code>:</p>
+<pre><code>    @overload
     def __iter__(self: LiteralString) -&gt; Iterator[LiteralString]:
         &quot;&quot;&quot;Implement iter(self).&quot;&quot;&quot;
 
     @overload
     def __iter__(self) -&gt; Iterator[str]: ...  # type: ignore[misc]
 </code></pre>
-<p>It seems like we consider the first overload here to make <code>str</code> a subtype of <code>Iterator[LiteralString]</code> -- but we shouldn't even consider that overload, due to the more specific annotated type of <code>self</code>.</p>
+<p>It seems like we consider the first overload here to make <code>str</code> a subtype of <code>Iterator[LiteralString]</code> -- but we shouldn&#x27;t even consider that overload, due to the more specific annotated type of <code>self</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Strings are considered as LiteralStrings" to "`str` should not be assignable to `Iterable[LiteralString]`" by @carljm on 2026-01-13 02:02</div>
+            <div class="event">Renamed from &quot;Strings are considered as LiteralStrings&quot; to &quot;`str` should not be assignable to `Iterable[LiteralString]`&quot; by <a href="https://github.com/carljm">@carljm</a> on 2026-01-13 02:02</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bidirectional inference</span> removed by @carljm on 2026-01-13 02:02</div>
+            <div class="event">Label <span class="label">bidirectional inference</span> removed by <a href="https://github.com/carljm">@carljm</a> on 2026-01-13 02:02</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">Protocols</span> added by @carljm on 2026-01-13 02:02</div>
+            <div class="event">Label <span class="label">Protocols</span> added by <a href="https://github.com/carljm">@carljm</a> on 2026-01-13 02:02</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-13 02:03</div>
-            <div class="timeline-body"><p>I'm not sure how we'd apply bidirectional inference in this case, since <code>str.split(&quot;\n&quot;)</code> is not generic -- given the base type inferred as <code>LiteralString</code>, we are simply picking the right overload for <code>split()</code>.</p>
+            <div class="timeline-body"><p>I&#x27;m not sure how we&#x27;d apply bidirectional inference in this case, since <code>str.split(&quot;\n&quot;)</code> is not generic -- given the base type inferred as <code>LiteralString</code>, we are simply picking the right overload for <code>split()</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Stable" by @carljm on 2026-01-13 02:03</div>
+            <div class="event">Added to milestone &quot;Stable&quot; by <a href="https://github.com/carljm">@carljm</a> on 2026-01-13 02:03</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "`str` should not be assignable to `Iterable[LiteralString]`" to "`"".join(typed_as_str)` should be typed as `str`, not `LiteralString`" by @carljm on 2026-01-13 02:05</div>
+            <div class="event">Renamed from &quot;`str` should not be assignable to `Iterable[LiteralString]`&quot; to &quot;`&quot;&quot;.join(typed_as_str)` should be typed as `str`, not `LiteralString`&quot; by <a href="https://github.com/carljm">@carljm</a> on 2026-01-13 02:05</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-13 08:03</div>
             <div class="timeline-body"><blockquote>
-<p>I'm not sure how we'd apply bidirectional inference in this case, since <code>str.split(&quot;\n&quot;)</code> is not generic -- given the base type inferred as <code>LiteralString</code>, we are simply picking the right overload for <code>split()</code>.</p>
+<p>I&#x27;m not sure how we&#x27;d apply bidirectional inference in this case, since <code>str.split(&quot;\n&quot;)</code> is not generic -- given the base type inferred as <code>LiteralString</code>, we are simply picking the right overload for <code>split()</code>.</p>
 </blockquote>
 <p>The idea is that we could potentially use advanced whole-of-scope bidirectional inference to avoid inferring LiteralString in the first place, and instead we could infer str there because of the fact that inferring the more precise type causes type errors later on in the scope.</p>
 </div>
@@ -131,14 +131,14 @@ a = cast(str, str())
             <div class="timeline-body"><blockquote>
 <p>The idea is that we could potentially use advanced whole-of-scope bidirectional inference to avoid inferring LiteralString in the first place, and instead we could infer str there because of the fact that inferring the more precise type causes type errors later on in the scope.</p>
 </blockquote>
-<p>I'm skeptical that this will be a workable approach. The &quot;whole-scope bidirectional inference&quot; we've discussed so far in #1473  (which is already pretty ambitious IMO) at least has a pretty clear idea of exactly where we need to look ahead for relevant type contexts (&quot;uses of this particular container&quot;). Making inference decisions based on a much fuzzier concept of &quot;does this cause type errors later on&quot; (where the errors might be due to several inference steps beyond the type we are currently inferring) is I think a road we should not go down.</p>
-<p>In any case I think we should keep <em>this</em> issue narrowly scoped to the wrong assignability of <code>str</code> to <code>Iterable[LiteralString]</code> causing us to pick the wrong overload of <code>str.join</code>, as outlined above. That's where we are going wrong relative to other type checkers in this case.</p>
+<p>I&#x27;m skeptical that this will be a workable approach. The &quot;whole-scope bidirectional inference&quot; we&#x27;ve discussed so far in #1473  (which is already pretty ambitious IMO) at least has a pretty clear idea of exactly where we need to look ahead for relevant type contexts (&quot;uses of this particular container&quot;). Making inference decisions based on a much fuzzier concept of &quot;does this cause type errors later on&quot; (where the errors might be due to several inference steps beyond the type we are currently inferring) is I think a road we should not go down.</p>
+<p>In any case I think we should keep <em>this</em> issue narrowly scoped to the wrong assignability of <code>str</code> to <code>Iterable[LiteralString]</code> causing us to pick the wrong overload of <code>str.join</code>, as outlined above. That&#x27;s where we are going wrong relative to other type checkers in this case.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-13 20:27:54 UTC
+        Synced at 2026-01-20 19:27:03 UTC
     </footer>
 </body>
 </html>

@@ -23,43 +23,43 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/jklaiho">@jklaiho</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<p>I'm installing uv for all users on a system. This involves downloading the installer and executing it as root:</p>
+            <div class="timeline-body">Summary
+<p>I&#x27;m installing uv for all users on a system. This involves downloading the installer and executing it as root:</p>
 <pre><code>UV_INSTALL_DIR=/usr/local/bin INSTALLER_NO_MODIFY_PATH=1 ./install.sh
 </code></pre>
 <p>For some reason, the <code>uv</code> and <code>uvx</code> binaries are created with the owner/group values of <code>1001:117</code>. The same happens if I just download the release file from GitHub and extract it manually as root.</p>
 <p>If I perform the installation with a non-root user into a path owned by them, the files are created with the owner/group of that user.</p>
-<p>This seems like it may be a *nix feature rather than a uv &quot;bug&quot; as such, but I'd still expect root-installed binaries to end up as <code>root:root</code>. Is there anything the installer could do to facilitate that?</p>
-<h3>Platform</h3>
+<p>This seems like it may be a *nix feature rather than a uv &quot;bug&quot; as such, but I&#x27;d still expect root-installed binaries to end up as <code>root:root</code>. Is there anything the installer could do to facilitate that?</p>
+Platform
 <p>Ubuntu 24.04 amd64</p>
-<h3>Version</h3>
+Version
 <p>uv 0.6.14</p>
-<h3>Python version</h3>
+Python version
 <p>Python 3.12.3</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @jklaiho on 2025-04-17 12:55</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/jklaiho">@jklaiho</a> on 2025-04-17 12:55</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @Gankra by @zanieb on 2025-04-17 21:22</div>
+            <div class="event">Assigned to <a href="https://github.com/Gankra">@Gankra</a> by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-17 21:22</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-04-22 19:13</div>
-            <div class="timeline-body"><p>Installing &quot;as root&quot; isn't really a supported workflow, no. Could you elaborate on how you did it &quot;as root&quot; (sudo? su?)? Also is this actually preventing the other users from running it? What are the full permissions you're ending up with?</p>
+            <div class="timeline-body"><p>Installing &quot;as root&quot; isn&#x27;t really a supported workflow, no. Could you elaborate on how you did it &quot;as root&quot; (sudo? su?)? Also is this actually preventing the other users from running it? What are the full permissions you&#x27;re ending up with?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">wish</span> added by @Gankra on 2025-04-22 19:13</div>
+            <div class="event">Label <span class="label">wish</span> added by <a href="https://github.com/Gankra">@Gankra</a> on 2025-04-22 19:13</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> removed by @Gankra on 2025-04-22 19:13</div>
+            <div class="event">Label <span class="label">bug</span> removed by <a href="https://github.com/Gankra">@Gankra</a> on 2025-04-22 19:13</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jklaiho">@jklaiho</a> on 2025-04-23 11:17</div>
-            <div class="timeline-body"><p>Being a centrally managed multi-user system, it just didn't make sense to me to have everyone install a separate <code>uv</code> binary when everything seemingly works just fine with one installed by root in <code>/usr/local/bin</code>. (Except self-updates by non-root users, but that's by design in this case.)</p>
-<p>I installed it via an Ansible task that sudoes using <code>become_user</code>. The method of becoming root doesn't matter, same result.</p>
-<p>I changed the ownership of the extracted binaries to <code>root:root</code> with a later Ansible task. They have <code>0755</code> perms when extracted, so it didn't <em>particularly</em> matter what the ownership was before, anyone could still run them. Kinda ugly to have them owned by user 1001, who does exist on the system and has no business being the owner of the binaries, which is the main reason I wanted them changed.</p>
+            <div class="timeline-body"><p>Being a centrally managed multi-user system, it just didn&#x27;t make sense to me to have everyone install a separate <code>uv</code> binary when everything seemingly works just fine with one installed by root in <code>/usr/local/bin</code>. (Except self-updates by non-root users, but that&#x27;s by design in this case.)</p>
+<p>I installed it via an Ansible task that sudoes using <code>become_user</code>. The method of becoming root doesn&#x27;t matter, same result.</p>
+<p>I changed the ownership of the extracted binaries to <code>root:root</code> with a later Ansible task. They have <code>0755</code> perms when extracted, so it didn&#x27;t <em>particularly</em> matter what the ownership was before, anyone could still run them. Kinda ugly to have them owned by user 1001, who does exist on the system and has no business being the owner of the binaries, which is the main reason I wanted them changed.</p>
 <p>Looking deeper, I checked what your GitHub release tarballs contain:</p>
 <pre><code>$ tar tvzf uv-x86_64-unknown-linux-gnu.tar.gz
 drwxr-xr-x runner/docker     0 2025-04-10 00:38 uv-x86_64-unknown-linux-gnu/
@@ -73,18 +73,18 @@ drwxr-xr-x runner/docker     0 2025-04-10 00:38 uv-x86_64-unknown-linux-gnu/
 <li><code>tar --owner=0 --group=0 &lt;etc&gt;</code> directly.</li>
 </ul>
 <p>I tested both. Extracting as root, the files come out as <code>root:root</code>. Extracting as a non-root user, they come out with the UID:GID of that user, just like they currently do.</p>
-<p>Having a single <code>/usr/local/bin/uv</code> common to all users is a completely valid use case IMHO, unless I've missed something in the docs that absolutely prevents it from being a consideration, and this change of ownership inside the tarball seemingly breaks nothing that's currently working, just makes root installs nicer without the extra <code>chown</code> step to ensure that a random user on the system doesn't own the binaries.</p>
+<p>Having a single <code>/usr/local/bin/uv</code> common to all users is a completely valid use case IMHO, unless I&#x27;ve missed something in the docs that absolutely prevents it from being a consideration, and this change of ownership inside the tarball seemingly breaks nothing that&#x27;s currently working, just makes root installs nicer without the extra <code>chown</code> step to ensure that a random user on the system doesn&#x27;t own the binaries.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AThePeanut4">@AThePeanut4</a> on 2025-11-10 18:53</div>
-            <div class="timeline-body"><p>I have exactly the same situation, where I want to install into <code>/usr/local/bin</code>. I found an even simpler fix - just use <code>--no-same-owner</code> in the <code>tar</code> command - which I've made PR https://github.com/axodotdev/cargo-dist/pull/2195 for in the upstream project.</p>
+            <div class="timeline-body"><p>I have exactly the same situation, where I want to install into <code>/usr/local/bin</code>. I found an even simpler fix - just use <code>--no-same-owner</code> in the <code>tar</code> command - which I&#x27;ve made PR <a href="https://github.com/axodotdev/cargo-dist/pull/2195">axodotdev/cargo-dist#2195</a> for in the upstream project.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:30:59 UTC
+        Synced at 2026-01-20 19:38:17 UTC
     </footer>
 </body>
 </html>

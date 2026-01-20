@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/knutae">@knutae</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>The following code produces an invalid-argument-type error</p>
-<pre><code class="language-python">import pandas
+<pre><code>import pandas
 
 def frametest():
     return pandas.DataFrame([[1], [2]], columns=[&quot;a&quot;, &quot;b&quot;])
@@ -60,13 +60,13 @@ Found 1 diagnostic
 </code></pre>
 <p>This was tested with the latest pandas version, 2.3.3.</p>
 <p>Note that it works with ty version 0.0.1-alpha.26, but fails with 0.0.1-alpha.27.</p>
-<h3>Version</h3>
+Version
 <p>0.0.1-alpha.27</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-19 20:15</div>
-            <div class="timeline-body"><p>Thanks for the report! It looks like this error is in fact correct, though we definitely need to provide better diagnostics here (tracked in https://github.com/astral-sh/ty/issues/163). The best fix on your end is to simply install the <code>pandas-stubs</code> stubs package, which provides better type annotations for pandas users.</p>
+            <div class="timeline-body"><p>Thanks for the report! It looks like this error is in fact correct, though we definitely need to provide better diagnostics here (tracked in <a href="https://github.com/astral-sh/ty/issues/163">astral-sh/ty#163</a>). The best fix on your end is to simply install the <code>pandas-stubs</code> stubs package, which provides better type annotations for pandas users.</p>
 <p>Pyright gives the same error here, and provides a great diagnostic to explain the root cause:</p>
 <pre><code>  /Users/carlmeyer/projects/ruff-examples/pandastest/main.py:3:13 - information: Type of &quot;pandas.DataFrame.__init__&quot; is &quot;(self: DataFrame, data: Unknown | None = None, index: ExtensionArray | ndarray[tuple[Any, ...], dtype[Any]] | Index | Series | SequenceNotStr[Unknown] | range | None = None, columns: ExtensionArray | ndarray[tuple[Any, ...], dtype[Any]] | Index | Series | SequenceNotStr[Unknown] | range | None = None, dtype: ExtensionDtype | str | dtype[Any] | type[str] | type[complex] | type[bool] | type[object] | None = None, copy: bool | None = None) -&gt; None&quot;
   /Users/carlmeyer/projects/ruff-examples/pandastest/main.py:6:49 - error: Argument of type &quot;list[str]&quot; cannot be assigned to parameter &quot;columns&quot; of type &quot;Axes | None&quot; in function &quot;__init__&quot;
@@ -80,20 +80,20 @@ Found 1 diagnostic
           Type &quot;(value: str, start: SupportsIndex = 0, stop: SupportsIndex = sys.maxsize, /) -&gt; int&quot; is not assignable to type &quot;(value: Any, /, start: int = 0, stop: int = ...) -&gt; int&quot;
     ... (reportArgumentType)
 </code></pre>
-<p>Ultimately the bug is a single mis-placed character in the signature of the <code>index</code> method of pandas' <code>SequenceNotStr</code> type. In <a href="https://github.com/pandas-dev/pandas/blob/2.3.x/pandas/_typing.py#L140">the 2.3.x branch of pandas, that method has this signature</a>:</p>
-<pre><code class="language-py">def index(self, value: Any, /, start: int = 0, stop: int = ...) -&gt; int: ...
+<p>Ultimately the bug is a single mis-placed character in the signature of the <code>index</code> method of pandas&#x27; <code>SequenceNotStr</code> type. In <a href="https://github.com/pandas-dev/pandas/blob/2.3.x/pandas/_typing.py#L140">the 2.3.x branch of pandas, that method has this signature</a>:</p>
+<pre><code>def index(self, value: Any, /, start: int = 0, stop: int = ...) -&gt; int: ...
 </code></pre>
 <p>Note that the <code>/</code> comes after <code>value</code> parameter, but before <code>start</code> and <code>stop</code>, meaning that <code>start</code> and <code>stop</code> may be passed as keywords.</p>
 <p>But <a href="https://github.com/python/typeshed/blob/main/stdlib/builtins.pyi#L1117">in typeshed, the builtin <code>list</code> type has an <code>index</code> method with this signature</a>:</p>
-<pre><code class="language-py">def index(self, value: _T, start: SupportsIndex = 0, stop: SupportsIndex = sys.maxsize, /) -&gt; int: ...
+<pre><code>def index(self, value: _T, start: SupportsIndex = 0, stop: SupportsIndex = sys.maxsize, /) -&gt; int: ...
 </code></pre>
 <p>Here the <code>/</code> comes after all the parameters, meaning they are all positional-only; none may be passed as a keyword argument. That discrepancy makes <code>list</code> not assignable to the <code>SequenceNotStr</code> protocol.</p>
 <p>This pandas bug has been fixed <a href="https://github.com/pandas-dev/pandas/blob/main/pandas/_typing.py#L124">in the main branch of pandas</a>, and <a href="https://github.com/pandas-dev/pandas-stubs/blob/main/pandas-stubs/_typing.pyi#L106">does not occur in pandas-stubs</a> (which is why installing <code>pandas-stubs</code> fixes the problem).</p>
-<p>So closing this as not a bug in ty, though it definitely provides a great example of why we need https://github.com/astral-sh/ty/issues/163, as well as https://github.com/astral-sh/ty/issues/1537.</p>
+<p>So closing this as not a bug in ty, though it definitely provides a great example of why we need <a href="https://github.com/astral-sh/ty/issues/163">astral-sh/ty#163</a>, as well as <a href="https://github.com/astral-sh/ty/issues/1537">astral-sh/ty#1537</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2025-11-19 20:15</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2025-11-19 20:15</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-19 20:53</div>
@@ -103,7 +103,7 @@ Found 1 diagnostic
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:21:00 UTC
+        Synced at 2026-01-20 19:26:01 UTC
     </footer>
 </body>
 </html>

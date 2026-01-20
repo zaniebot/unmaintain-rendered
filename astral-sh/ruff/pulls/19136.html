@@ -23,34 +23,34 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/danparizher">@danparizher</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Fixes #19076</p>
 <p>An attempt at fixing #19076 where the rule could change program behavior by incorrectly converting from_float/from_decimal method calls to constructor calls.</p>
-<p>The fix implements argument validation using Ruff's existing type inference system (<code>ResolvedPythonType</code>, <code>typing::is_int</code>, <code>typing::is_float</code>) to determine when conversions are actually safe, adds logic to detect invalid method calls (wrong argument counts, incorrect keyword names) and suppress fixes for them, and changes the default fix applicability from <code>Safe</code> to <code>Unsafe</code> with safe fixes only offered when the argument type is known to be compatible and no problematic keywords are used.</p>
+<p>The fix implements argument validation using Ruff&#x27;s existing type inference system (<code>ResolvedPythonType</code>, <code>typing::is_int</code>, <code>typing::is_float</code>) to determine when conversions are actually safe, adds logic to detect invalid method calls (wrong argument counts, incorrect keyword names) and suppress fixes for them, and changes the default fix applicability from <code>Safe</code> to <code>Unsafe</code> with safe fixes only offered when the argument type is known to be compatible and no problematic keywords are used.</p>
 <p>One uncertainty is whether the type inference catches all possible edge cases in complex codebases, but the new approach is significantly more conservative and safer than the previous implementation.</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>I updated the existing test fixtures with edge cases from the issue and manually verified behavior with temporary test files for valid/unsafe/invalid scenarios.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-04 03:22</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @ntBre by @MichaReiser on 2025-07-14 09:19</div>
+            <div class="event">Review requested from <a href="https://github.com/ntBre">@ntBre</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-14 09:19</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-07-14 15:52</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-14 15:52</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-07-14 15:52</div>
+            <div class="event">Label <span class="label">fixes</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-14 15:52</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/unnecessary_from_float.rs</code>:80 on 2025-07-14 15:56</div>
@@ -65,7 +65,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/unnecessary_from_float.rs</code>:187 on 2025-07-14 16:11</div>
             <div class="timeline-body"><p>I <em>think</em> this could be simplified by checking <code>call.arguments.len()</code> which should account for both <code>args</code> and <code>keywords</code> and then using <code>find_argument</code> to locate it by name or position:</p>
-<pre><code class="language-suggestion">            // from_float(f) - should have exactly one positional argument or 'f' keyword
+<pre><code>            // from_float(f) - should have exactly one positional argument or &#x27;f&#x27; keyword
             if call.arguments.len() != 1 {
                 false
             } else {
@@ -81,8 +81,8 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/unnecessary_from_float.rs</code>:187 on 2025-07-14 16:15</div>
-            <div class="timeline-body"><p>We may also need to match on the constructor here. <code>Decimal.from_float</code> is positional-only, unless that's checked somewhere else:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; from decimal import Decimal
+            <div class="timeline-body"><p>We may also need to match on the constructor here. <code>Decimal.from_float</code> is positional-only, unless that&#x27;s checked somewhere else:</p>
+<pre><code>&gt;&gt;&gt; from decimal import Decimal
 &gt;&gt;&gt; Decimal.from_float(f=123)
 Traceback (most recent call last):
   File &quot;&lt;python-input-7&gt;&quot;, line 1, in &lt;module&gt;
@@ -95,9 +95,9 @@ TypeError: Decimal.from_float() takes no keyword arguments
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/unnecessary_from_float.rs</code>:250 on 2025-07-14 16:16</div>
             <div class="timeline-body"><p>We should just move this check after the other <code>report_diagnostic</code> call instead of duplicating the construction.</p>
-<pre><code class="language-suggestion">    // Validate that the method call has correct arguments
+<pre><code>    // Validate that the method call has correct arguments
     if !has_valid_method_arguments(call, method_name) {
-        // Don't suggest a fix for invalid calls
+        // Don&#x27;t suggest a fix for invalid calls
         return;
     }
 </code></pre>
@@ -111,7 +111,7 @@ TypeError: Decimal.from_float() takes no keyword arguments
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/unnecessary_from_float.rs</code>:340 on 2025-07-14 16:26</div>
-            <div class="timeline-body"><p>nit: I'd probably put this right after the <code>let-else</code> checking that it's a <code>Call</code>. I'm not sure which of these checks is most expensive, but that makes sense logically at least.</p>
+            <div class="timeline-body"><p>nit: I&#x27;d probably put this right after the <code>let-else</code> checking that it&#x27;s a <code>Call</code>. I&#x27;m not sure which of these checks is most expensive, but that makes sense logically at least.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -120,11 +120,11 @@ TypeError: Decimal.from_float() takes no keyword arguments
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @ntBre by @danparizher on 2025-07-14 20:26</div>
+            <div class="event">Review requested from <a href="https://github.com/ntBre">@ntBre</a> by <a href="https://github.com/danparizher">@danparizher</a> on 2025-07-14 20:26</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/unnecessary_from_float.rs</code>:185 on 2025-07-16 14:57</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">        arg_expr
+            <div class="timeline-body"><pre><code>        arg_expr
             .as_name_expr()
             .and_then(|name| semantic.only_binding(name).map(|id| semantic.binding(id)))
             .map(|binding| {
@@ -139,7 +139,7 @@ TypeError: Decimal.from_float() takes no keyword arguments
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/unnecessary_from_float.rs</code>:223 on 2025-07-16 14:57</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">                arg_expr
+            <div class="timeline-body"><pre><code>                arg_expr
                     .as_call_expr()
                     .and_then(|call| semantic.resolve_qualified_name(&amp;call.func))
                     .is_some_and(|qualified_name| {
@@ -150,27 +150,27 @@ TypeError: Decimal.from_float() takes no keyword arguments
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/unnecessary_from_float.rs</code>:249 on 2025-07-16 15:01</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">                call.arguments.find_positional(0)
+            <div class="timeline-body"><pre><code>                call.arguments.find_positional(0)
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/unnecessary_from_float.rs</code>:241 on 2025-07-16 15:03</div>
-            <div class="timeline-body"><p>I see now that we could actually convert the <code>len</code> check to an early return since it's shared by both branches:</p>
-<pre><code class="language-suggestion">    if call.arguments.len() != 1 {
+            <div class="timeline-body"><p>I see now that we could actually convert the <code>len</code> check to an early return since it&#x27;s shared by both branches:</p>
+<pre><code>    if call.arguments.len() != 1 {
         return None;
     }
     
     match method_name {
         MethodName::FromFloat =&gt; {
-            // Decimal.from_float is positional-only; Fraction.from_float allows keyword 'f'.
+            // Decimal.from_float is positional-only; Fraction.from_float allows keyword &#x27;f&#x27;.
             if constructor == Constructor::Decimal {
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/unnecessary_from_float.rs</code>:261 on 2025-07-16 15:03</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">            call.arguments.find_argument_value(&quot;dec&quot;, 0)
+            <div class="timeline-body"><pre><code>            call.arguments.find_argument_value(&quot;dec&quot;, 0)
 </code></pre>
 <p>after the early return above.</p>
 </div>
@@ -181,10 +181,10 @@ TypeError: Decimal.from_float() takes no keyword arguments
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @ntBre on 2025-07-16 15:38</div>
+            <div class="event">Merged by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-16 15:38</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ntBre on 2025-07-16 15:38</div>
+            <div class="event">Closed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-16 15:38</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-07-16 15:51</div>
@@ -192,7 +192,7 @@ TypeError: Decimal.from_float() takes no keyword arguments
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:13:57 UTC
+        Synced at 2026-01-20 19:16:15 UTC
     </footer>
 </body>
 </html>

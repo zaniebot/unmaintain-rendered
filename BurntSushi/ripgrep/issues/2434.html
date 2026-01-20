@@ -23,29 +23,29 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/lyrixx">@lyrixx</a></div>
-            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+            <div class="timeline-body">What version of ripgrep are you using?
 <pre><code>rg --version
 ripgrep 13.0.0
 -SIMD -AVX (compiled)
 +SIMD +AVX (runtime)
 </code></pre>
-<h4>How did you install ripgrep?</h4>
+How did you install ripgrep?
 <p>with cargo</p>
-<h4>What operating system are you using ripgrep on?</h4>
+What operating system are you using ripgrep on?
 <pre><code>Distributor ID: Ubuntu
 Description:    Ubuntu 22.04.2 LTS
 Release:        22.04
 Codename:       jammy
 </code></pre>
-<h4>Describe your bug.</h4>
+Describe your bug.
 <p>RG return the list of the file, instead of what it matches in the document</p>
-<h4>What are the steps to reproduce the behavior?</h4>
+What are the steps to reproduce the behavior?
 <p>Use the following code to reproduce:</p>
 <pre><code>mkdir ripgrep
 cd ripgrep
 
 touch a b c d e
-cat &gt; CHANGELOG.md &lt;&lt;'EOF'
+cat &gt; CHANGELOG.md &lt;&lt;&#x27;EOF&#x27;
 CHANGELOG
 =========
 
@@ -63,28 +63,28 @@ EOF
 </code></pre>
 <p>I have a more complex regex, but I have simplified it to show the bug</p>
 <p>Not in a sub-shell, no trailing space ✅</p>
-<pre><code>rg '6.3\n---\n\n' -U --multiline-dotall  CHANGELOG.md 
+<pre><code>rg &#x27;6.3\n---\n\n&#x27; -U --multiline-dotall  CHANGELOG.md 
 4:6.3
 5:---
 6:
 </code></pre>
 <p>Not in a sub-shell, with trailing space ✅</p>
-<pre><code>&gt;/tmp/foobar/ripgrep rg '6.3\n---\n\n ' -U --multiline-dotall  CHANGELOG.md 
+<pre><code>&gt;/tmp/foobar/ripgrep rg &#x27;6.3\n---\n\n &#x27; -U --multiline-dotall  CHANGELOG.md 
 4:6.3
 5:---
 6:
 7: * foo bar baz
 </code></pre>
 <p>In a subshell, no trailing space ✅</p>
-<pre><code>echo `rg '6.3\n---\n\n' -U --multiline-dotall  CHANGELOG.md` 
+<pre><code>echo `rg &#x27;6.3\n---\n\n&#x27; -U --multiline-dotall  CHANGELOG.md` 
 6.3 ---
 </code></pre>
 <p>In a subshell, with trailing space ❌</p>
 <pre><code>                                          #⬇ There is a trailing space here
-&gt;/tmp/foobar/ripgrep echo `rg '6.3\n---\n\n ' -U --multiline-dotall  CHANGELOG.md` 
+&gt;/tmp/foobar/ripgrep echo `rg &#x27;6.3\n---\n\n &#x27; -U --multiline-dotall  CHANGELOG.md` 
 6.3 --- a b c CHANGELOG.md d e foo bar baz
 </code></pre>
-<hr />
+<hr>
 <p>As you can see, there is something super strange. As soon as I put a trailing space, rg print in the middle of the output the files in the current directly!</p>
 </div>
         </div>
@@ -94,29 +94,29 @@ EOF
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @lyrixx on 2023-02-28 16:12</div>
+            <div class="event">Closed by <a href="https://github.com/lyrixx">@lyrixx</a> on 2023-02-28 16:12</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-02-28 16:34</div>
             <div class="timeline-body"><p>If you fix your own problem, it is good practice to include the answer so that if others have the same problem, it will be more helpful. In this case, I actually get different output than you for the last example:</p>
-<pre><code>$ echo `rg '6.3\n---\n\n ' -U --multiline-dotall  CHANGELOG.md`
+<pre><code>$ echo `rg &#x27;6.3\n---\n\n &#x27; -U --multiline-dotall  CHANGELOG.md`
 6.3 --- * foo bar baz
 </code></pre>
 <p>Which looks correct to me. That trailing space matches something on the next line, and thus ripgrep prints the whole thing.</p>
-<p>I don't think this has anything with running ripgrep as a sub-process. The output is just a little weird because you're passing it to <code>echo</code>.</p>
+<p>I don&#x27;t think this has anything with running ripgrep as a sub-process. The output is just a little weird because you&#x27;re passing it to <code>echo</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Issue when run in a subprocess" to "too much output when `rg` command is passed to `echo`" by @BurntSushi on 2023-02-28 16:35</div>
+            <div class="event">Renamed from &quot;Issue when run in a subprocess&quot; to &quot;too much output when `rg` command is passed to `echo`&quot; by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-02-28 16:35</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/lyrixx">@lyrixx</a> on 2023-02-28 16:57</div>
             <div class="timeline-body"><p>Sorry for not putting my answer here :(</p>
 <p>the problem was indeed about echoing something that containes <code>*</code> and so it globs...</p>
 <p>I fixed the issue by surrounding it with <code>&quot;</code>:</p>
-<pre><code>&gt;/tmp/foobar/ripgrep echo `rg '6.3\n---\n\n ' -U --multiline-dotall  CHANGELOG.md` 
+<pre><code>&gt;/tmp/foobar/ripgrep echo `rg &#x27;6.3\n---\n\n &#x27; -U --multiline-dotall  CHANGELOG.md` 
 6.3 --- a b c CHANGELOG.md d e foo bar baz
-&gt;/tmp/foobar/ripgrep echo &quot;`rg '6.3\n---\n\n ' -U --multiline-dotall  CHANGELOG.md`&quot;
+&gt;/tmp/foobar/ripgrep echo &quot;`rg &#x27;6.3\n---\n\n &#x27; -U --multiline-dotall  CHANGELOG.md`&quot;
 6.3
 ---
 
@@ -127,7 +127,7 @@ EOF
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:43:37 UTC
+        Synced at 2026-01-20 18:48:12 UTC
     </footer>
 </body>
 </html>

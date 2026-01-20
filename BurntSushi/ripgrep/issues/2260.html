@@ -23,16 +23,16 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/BeerAndMala">@BeerAndMala</a></div>
-            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+            <div class="timeline-body">What version of ripgrep are you using?
 <p>11.0.2
 (but irrelevant, this is using grep = &quot;0.2&quot; as dependencies/as a library)</p>
-<h4>How did you install ripgrep?</h4>
+How did you install ripgrep?
 <p>Unrelated (apt). Cargo for grep</p>
-<h4>What operating system are you using ripgrep on?</h4>
+What operating system are you using ripgrep on?
 <p>Ubuntu Linux</p>
-<h4>Describe your bug.</h4>
+Describe your bug.
 <p>Trying to match a regex to a file fails for some expressions that should work</p>
-<h4>What are the steps to reproduce the behavior?</h4>
+What are the steps to reproduce the behavior?
 <p>Minimal test case: File containing</p>
 <pre><code>GATGTCCACGAGGTCTCTCCAGCACTCTAGGCGTTTTGTACCGTTCGTATAGCATACATTATACGAACGGTAGGTATAATTACACTTTATATCGAGCTCGAATTCATCGATCTGTCTCTTATACACATCTGACGCTGCCGACGAGCGATC
 </code></pre>
@@ -45,7 +45,7 @@ fn main() {
     let args: Vec&lt;String&gt; = env::args().collect();
     
     let matcher = RegexMatcherBuilder::new()
-        .line_terminator(Some(b'\n'))
+        .line_terminator(Some(b&#x27;\n&#x27;))
         .build(&amp;args[1]).unwrap();
     let mut searcher = SearcherBuilder::new()
         .line_number(true)
@@ -58,34 +58,34 @@ fn main() {
     })).unwrap();
 }
 </code></pre>
-<h4>What is the actual behavior?</h4>
+What is the actual behavior?
 <p>Run this with</p>
-<p><code>cargo run '^[GATC]{20,}$' samplefilehere</code> leads to one line of output (expected)</p>
-<p><code>cargo run '^[NGATC]{20,}$' samplefilehere</code> leads to no output (note me adding an N to the character class, unexpected)</p>
-<p><code>grep -E '^[NGATC]{20,}$' samplefilehere</code> works as expected</p>
+<p><code>cargo run &#x27;^[GATC]{20,}$&#x27; samplefilehere</code> leads to one line of output (expected)</p>
+<p><code>cargo run &#x27;^[NGATC]{20,}$&#x27; samplefilehere</code> leads to no output (note me adding an N to the character class, unexpected)</p>
+<p><code>grep -E &#x27;^[NGATC]{20,}$&#x27; samplefilehere</code> works as expected</p>
 <p>rg works as expected</p>
 <p>Using the underlying regex crate (i.e. removing the code above and just doing a <code>BufReader.lines()</code> and then <code>Regex.is_match()</code> works as expected</p>
 <p>I admit I might do something very very dumb, but I cannot see it and the same expression (which .. I feel is perfectly fine) works in all other tools. Just not with the grep crate and the RegexMatcherBuilder above.</p>
-<h4>What is the expected behavior?</h4>
+What is the expected behavior?
 <p>Any regex supporting tool should match my input with the given expression(s)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-07-15 13:08</div>
             <div class="timeline-body"><p>OK so this is definitely a bug, but a pretty gnarly one and the result of two different optimizations in play here that result in inconsistent behavior.</p>
-<p>Here's the short term thing you want: you should enable <code>multi_line</code> on <code>RegexMatcherBuilder</code>. Otherwise, your <code>^</code> and <code>$</code> are interpreted as &quot;beginning and end of text&quot; instead of &quot;beginning and end of text, or beginning and end of line.&quot; The latter is generally what you want in a grep tool, and the former is generally not tested as well and thus uncovered a bug.</p>
-<p>The longer story here is that there is an optimization in place that tries to look for matching lines the &quot;fast&quot; way, which avoids iterating over every line in the haystack. When this optimization is used, your regex with <code>^</code> and <code>$</code> doesn't match because your haystack includes a trailing newline character. That is, <code>^[GATC]+$</code> does not match <code>AGTC\n</code>. <code>(?m)^[GATC]+$</code> will match it though.</p>
+<p>Here&#x27;s the short term thing you want: you should enable <code>multi_line</code> on <code>RegexMatcherBuilder</code>. Otherwise, your <code>^</code> and <code>$</code> are interpreted as &quot;beginning and end of text&quot; instead of &quot;beginning and end of text, or beginning and end of line.&quot; The latter is generally what you want in a grep tool, and the former is generally not tested as well and thus uncovered a bug.</p>
+<p>The longer story here is that there is an optimization in place that tries to look for matching lines the &quot;fast&quot; way, which avoids iterating over every line in the haystack. When this optimization is used, your regex with <code>^</code> and <code>$</code> doesn&#x27;t match because your haystack includes a trailing newline character. That is, <code>^[GATC]+$</code> does not match <code>AGTC\n</code>. <code>(?m)^[GATC]+$</code> will match it though.</p>
 <p>So... why does <code>^[GATC]{20,}$</code> match but <code>^[NGATC]{20,}$</code> does not? Well, the former has literals extracted from it. Namely, <code>G</code>, <code>A</code>, <code>T</code> and <code>C</code>. ripgrep will look for matches of those literals before running the full regex engine. The second regex exceeds the heuristic literal extraction routine and <em>no</em> literals are extracted from it. This in means ripgrep runs the full regex engine. In both cases though, the &quot;fast&quot; line matching algorithm is used. In that &quot;fast&quot; variant, we first look for a &quot;candidate&quot; match:</p>
 <p>https://github.com/BurntSushi/ripgrep/blob/dd104b5bcd7628b2e2ba9ca8e9832c03fd3dab07/crates/searcher/src/searcher/core.rs#L376</p>
 <p>If a candidate is found, then we need to confirm it:</p>
 <p>https://github.com/BurntSushi/ripgrep/blob/dd104b5bcd7628b2e2ba9ca8e9832c03fd3dab07/crates/searcher/src/searcher/core.rs#L393-L416</p>
 <p>So when literals are extracted (in the case of <code>[GATC]</code>), the candidate search just looks for matches of <code>[GATC]</code>. When a candidate is found, the <strong>line terminators are stripped</strong> and then we try to confirm the match. Since the line terminator is stripped, your regex matches.</p>
-<p>But when literals aren't extracted, the candidate search just runs the full regex engine. But since this is a fast path, the meat of the optimization is that the candidate search doesn't care about lines per se and so there is no opportunity to strip line terminators. Thus, your <code>[NGATC]</code> regex never matches.</p>
-<p>The right thing to do here is to probably disable the fast line search optimization if there are any anchors in the regex that only match beginning/end of test (as opposed to anchors that match either the beginning/end of text or the beginning/end of lines). The &quot;slow&quot; path iterates over every line, strips the line terminators and then runs the regex as you would expect. And in this case, both of your regexes match. This is why if you remove your <code>line_terminator(b'\n')</code> option, then you get expected results. That <code>line_terminator</code> option is necessary to trigger the fast path.</p>
+<p>But when literals aren&#x27;t extracted, the candidate search just runs the full regex engine. But since this is a fast path, the meat of the optimization is that the candidate search doesn&#x27;t care about lines per se and so there is no opportunity to strip line terminators. Thus, your <code>[NGATC]</code> regex never matches.</p>
+<p>The right thing to do here is to probably disable the fast line search optimization if there are any anchors in the regex that only match beginning/end of test (as opposed to anchors that match either the beginning/end of text or the beginning/end of lines). The &quot;slow&quot; path iterates over every line, strips the line terminators and then runs the regex as you would expect. And in this case, both of your regexes match. This is why if you remove your <code>line_terminator(b&#x27;\n&#x27;)</code> option, then you get expected results. That <code>line_terminator</code> option is necessary to trigger the fast path.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2022-07-15 14:01</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-07-15 14:01</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-07-15 14:03</div>
@@ -93,12 +93,12 @@ fn main() {
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2022-07-15 14:03</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-07-15 14:03</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:43:34 UTC
+        Synced at 2026-01-20 18:48:12 UTC
     </footer>
 </body>
 </html>

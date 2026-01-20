@@ -23,19 +23,19 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>We have a few rules that rely on detecting whether two statements are in different branches -- for example, different arms of an <code>if</code>-<code>else</code>. Historically, the way this was implemented is that, given two statement IDs, we'd find the common parent (by traversing upwards via our <code>Statements</code> abstraction); then identify branches &quot;manually&quot; by matching the parents against <code>try</code>, <code>if</code>, and <code>match</code>, and returning iterators over the arms; then check if there's an arm for which one of the statements is a child, and the other is not.</p>
+            <div class="timeline-body">Summary
+<p>We have a few rules that rely on detecting whether two statements are in different branches -- for example, different arms of an <code>if</code>-<code>else</code>. Historically, the way this was implemented is that, given two statement IDs, we&#x27;d find the common parent (by traversing upwards via our <code>Statements</code> abstraction); then identify branches &quot;manually&quot; by matching the parents against <code>try</code>, <code>if</code>, and <code>match</code>, and returning iterators over the arms; then check if there&#x27;s an arm for which one of the statements is a child, and the other is not.</p>
 <p>This has a few drawbacks:</p>
 <ol>
 <li><p>First, the code is generally a bit hard to follow (Konsti mentioned this too when working on the <code>ElifElseClause</code> refactor).</p>
 </li>
-<li><p>Second, this is the only place in the codebase where we need to go from <code>&amp;Stmt</code> to <code>StatementID</code> -- <em>everywhere</em> else, we only need to go in the <em>other</em> direction. Supporting these lookups means we need to maintain a mapping from <code>&amp;Stmt</code> to <code>StatementID</code> that includes every <code>&amp;Stmt</code> in the program. (We <em>also</em> end up maintaining a <code>depth</code> level for every statement.) I'd like to get rid of these requirements to improve efficiency, reduce complexity, and enable us to treat AST modes more generically in the future. (When I looked at adding the <code>&amp;Expr</code> to our existing statement-tracking infrastructure, maintaining a hash map with all the statements noticeably hurt performance.)</p>
+<li><p>Second, this is the only place in the codebase where we need to go from <code>&amp;Stmt</code> to <code>StatementID</code> -- <em>everywhere</em> else, we only need to go in the <em>other</em> direction. Supporting these lookups means we need to maintain a mapping from <code>&amp;Stmt</code> to <code>StatementID</code> that includes every <code>&amp;Stmt</code> in the program. (We <em>also</em> end up maintaining a <code>depth</code> level for every statement.) I&#x27;d like to get rid of these requirements to improve efficiency, reduce complexity, and enable us to treat AST modes more generically in the future. (When I looked at adding the <code>&amp;Expr</code> to our existing statement-tracking infrastructure, maintaining a hash map with all the statements noticeably hurt performance.)</p>
 </li>
 </ol>
-<p>The solution implemented here instead makes branches a first-class concept in the semantic model. Like with <code>Statements</code>, we now have a <code>Branches</code> abstraction, where each branch points to its optional parent. When we store statements, we store the <code>BranchID</code> alongside each statement. When we need to detect whether two statements are in the same branch, we just realize each statement's branch path and compare the two. (Assuming that the two statements are in the same scope, then they're on the same branch IFF one branch path is a subset of the other, starting from the top.) We then add some calls to the visitor to push and pop branches in the appropriate places, for <code>if</code>, <code>try</code>, and <code>match</code> statements.</p>
+<p>The solution implemented here instead makes branches a first-class concept in the semantic model. Like with <code>Statements</code>, we now have a <code>Branches</code> abstraction, where each branch points to its optional parent. When we store statements, we store the <code>BranchID</code> alongside each statement. When we need to detect whether two statements are in the same branch, we just realize each statement&#x27;s branch path and compare the two. (Assuming that the two statements are in the same scope, then they&#x27;re on the same branch IFF one branch path is a subset of the other, starting from the top.) We then add some calls to the visitor to push and pop branches in the appropriate places, for <code>if</code>, <code>try</code>, and <code>match</code> statements.</p>
 <p>Note that a branch is not 1:1 with a statement; instead, each branch is closer to a suite, but not <em>every</em> suite is a branch. For example, each arm in an <code>if</code>-<code>elif</code>-<code>else</code> is a branch, but the <code>else</code> in a <code>for</code> loop is not considered a branch.</p>
-<p>In addition to being much simpler, this should also be more efficient, since we've shed the entire <code>&amp;Stmt</code> hash map, plus the <code>depth</code> that we track on <code>StatementWithParent</code> in favor of a single <code>Option&lt;BranchID&gt;</code> on <code>StatementWithParent</code> plus a single vector for all branches. The lookups should be faster too, since instead of doing a bunch of jumps around with the hash map + repeated recursive calls to find the common parents, we instead just do a few simple lookups in the <code>Branches</code> vector to realize and compare the branch paths.</p>
-<h2>Test Plan</h2>
+<p>In addition to being much simpler, this should also be more efficient, since we&#x27;ve shed the entire <code>&amp;Stmt</code> hash map, plus the <code>depth</code> that we track on <code>StatementWithParent</code> in favor of a single <code>Option&lt;BranchID&gt;</code> on <code>StatementWithParent</code> plus a single vector for all branches. The lookups should be faster too, since instead of doing a bunch of jumps around with the hash map + repeated recursive calls to find the common parents, we instead just do a few simple lookups in the <code>Branches</code> vector to realize and compare the branch paths.</p>
+Test Plan
 <p><code>cargo test</code> -- we have a lot of coverage for this, which we inherited from PyFlakes</p>
 </div>
         </div>
@@ -58,15 +58,15 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> added by @charliermarsh on 2023-08-19 19:19</div>
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-19 19:19</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-19 19:54</div>
-            <div class="timeline-body"><h2>PR Check Results</h2>
-<h3>Ecosystem</h3>
+            <div class="timeline-body">PR Check Results
+Ecosystem
 <p>✅ ecosystem check detected no changes.</p>
-<h3>Benchmark</h3>
-<h4>Linux</h4>
+Benchmark
+Linux
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 formatter/large/dataset.py                 1.00      3.3±0.16ms    12.3 MB/sec    1.07      3.5±0.16ms    11.5 MB/sec
@@ -82,7 +82,7 @@ linter/default-rules/numpy/ctypeslib.py    1.01  1258.5±44.41µs    13.2 MB/sec
 linter/default-rules/numpy/globals.py      1.06    153.2±7.70µs    19.3 MB/sec    1.00    145.1±6.17µs    20.3 MB/sec
 linter/default-rules/pydantic/types.py     1.00      2.6±0.12ms     9.9 MB/sec    1.00      2.6±0.09ms     9.9 MB/sec
 </code></pre>
-<h4>Windows</h4>
+Windows
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 formatter/large/dataset.py                 1.00      3.7±0.05ms    11.0 MB/sec    1.00      3.7±0.05ms    10.9 MB/sec
@@ -98,7 +98,7 @@ linter/default-rules/numpy/ctypeslib.py    1.00  1468.9±21.61µs    11.3 MB/sec
 linter/default-rules/numpy/globals.py      1.00    172.2±3.15µs    17.1 MB/sec    1.00    172.9±2.20µs    17.1 MB/sec
 linter/default-rules/pydantic/types.py     1.00      3.1±0.03ms     8.2 MB/sec    1.00      3.1±0.04ms     8.2 MB/sec
 </code></pre>
-<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
 
 </div>
         </div>
@@ -198,7 +198,7 @@ Found 11 outliers among 100 measurements (11.00%)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-19 20:54</div>
-            <div class="timeline-body"><p>(I don't think any of the benchmarks even trigger the branch detection though, that's just from not hashing the statement etc. presumedly.)</p>
+            <div class="timeline-body"><p>(I don&#x27;t think any of the benchmarks even trigger the branch detection though, that&#x27;s just from not hashing the statement etc. presumedly.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -230,14 +230,14 @@ Found 3 outliers among 100 measurements (3.00%)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-19 21:24</div>
-            <div class="timeline-body"><p>Merging as a non-behavior-changing refactor that I have high confidence in and don't want to distract others by. If anyone is eager to review I'll happily address follow-up feedback.</p>
+            <div class="timeline-body"><p>Merging as a non-behavior-changing refactor that I have high confidence in and don&#x27;t want to distract others by. If anyone is eager to review I&#x27;ll happily address follow-up feedback.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2023-08-19 21:28</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-19 21:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-08-19 21:28</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-19 21:28</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2023-08-19 21:28</div>
@@ -254,13 +254,13 @@ Found 3 outliers among 100 measurements (3.00%)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_semantic/src/branches.rs</code>:19 on 2023-08-21 14:51</div>
-            <div class="timeline-body"><p>i don't like that the macro adds the field to the struct, it makes it hard to follow and hard to IDE/tool-inspect what data that struct actually is</p>
+            <div class="timeline-body"><p>i don&#x27;t like that the macro adds the field to the struct, it makes it hard to follow and hard to IDE/tool-inspect what data that struct actually is</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:59:39 UTC
+        Synced at 2026-01-20 18:56:28 UTC
     </footer>
 </body>
 </html>

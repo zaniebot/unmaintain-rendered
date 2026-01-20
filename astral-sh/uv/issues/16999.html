@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/vient">@vient</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>I tried to do <code>sudo python3 -m uv pip install --compile &lt;a ton of packages&gt;</code> and got</p>
 <pre><code>Prepared 688 packages in 51.95s
 Uninstalled 13 packages in 51ms
@@ -33,16 +33,16 @@ error: Failed to bytecode-compile Python file in: /usr/twix/python3.12/lib/pytho
   Caused by: Too many open files (os error 24)
 </code></pre>
 <p>Open files limit at this time was 1024. <code>ulimit -n 65536</code> fixed the issue but it would be nice for uv to check the limit, maybe try to increase it by itself if hard limit permits so.</p>
-<h3>Platform</h3>
+Platform
 <p>Ubuntu 20.04</p>
-<h3>Version</h3>
+Version
 <p>uv 0.9.15</p>
-<h3>Python version</h3>
+Python version
 <p>Python 3.12.11</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @vient on 2025-12-05 13:22</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/vient">@vient</a> on 2025-12-05 13:22</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-05 14:41</div>
@@ -50,19 +50,19 @@ error: Failed to bytecode-compile Python file in: /usr/twix/python3.12/lib/pytho
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "uv pip install --compile fails with "too many open files" error on default Ubuntu settings" to "Bytecode compilation can fail with "too many open files" on default Ubuntu settings" by @zanieb on 2025-12-05 14:41</div>
+            <div class="event">Renamed from &quot;uv pip install --compile fails with &quot;too many open files&quot; error on default Ubuntu settings&quot; to &quot;Bytecode compilation can fail with &quot;too many open files&quot; on default Ubuntu settings&quot; by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-05 14:41</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-12-06 03:56</div>
             <div class="timeline-body"><p>I think this kind of error is pretty common in a lot of software, especially when limits are set very low.</p>
-<p>Here's an easy docker repro: <code>docker run -it --rm --cpus=2 --ulimit nofile=30:30 ghcr.io/astral-sh/uv:python3.13-trixie bash -c 'uv venv; uv pip install --compile jupyter'</code></p>
+<p>Here&#x27;s an easy docker repro: <code>docker run -it --rm --cpus=2 --ulimit nofile=30:30 ghcr.io/astral-sh/uv:python3.13-trixie bash -c &#x27;uv venv; uv pip install --compile jupyter&#x27;</code></p>
 <pre><code>Using CPython 3.13.9 interpreter at: /usr/local/bin/python
 Creating virtual environment at: .venv
 Activate with: source .venv/bin/activate
 ⠼ pyzmq==27.1.0                                                                                                         error: Failed to write to the client cache
   Caused by: No file descriptors available (os error 24) at path &quot;/root/.cache/uv/simple-v18/pypi/.tmp8TDa6v&quot;
 </code></pre>
-<p>There's also other errors that may occur elsewhere, which can be likely due to <code>--compile</code> making the situation a tad worse.</p>
+<p>There&#x27;s also other errors that may occur elsewhere, which can be likely due to <code>--compile</code> making the situation a tad worse.</p>
 <pre><code>Using CPython 3.13.9 interpreter at: /usr/local/bin/python
 Creating virtual environment at: .venv
 Activate with: source .venv/bin/activate
@@ -90,15 +90,15 @@ Resolved 97 packages in 756ms
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-12-09 14:37</div>
-            <div class="timeline-body"><p>That explains it, that means we're failing we have have more than 8 file descriptors open per thread, which includes pipes we need to communicate with the compilation subprocess.</p>
-<p>We can adjust the concurrency limit based on the ulimit, and emit a warning if there's a ulimit that's very low compared to the number of cores.</p>
+            <div class="timeline-body"><p>That explains it, that means we&#x27;re failing we have have more than 8 file descriptors open per thread, which includes pipes we need to communicate with the compilation subprocess.</p>
+<p>We can adjust the concurrency limit based on the ulimit, and emit a warning if there&#x27;s a ulimit that&#x27;s very low compared to the number of cores.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-12-11 11:10</div>
-            <div class="timeline-body"><p>Another option is to increase the ulimit for our current process below the hard limit using <code>setrlimit</code>. The underlying problem is that Linux has an old hardcoded of 1024 open files for a process, which isn't reasonable on a modern 128 core machine - if you do a simple one thread per core model, you get 1028 / 128 = 8 file handles per core!</p>
-<p>Ideally, we'd increase this limit permanently, but that requires either root, which many user's don't have, or workarounds such as calling <code>ulimit</code> in the user's shell profile, which then only works for subprocess of that shell, but either way <code>ulimit</code> is something so low level that I'd rather not expose our users too it only because they have a powerful machine.</p>
-<p>There's precedent for increasing the ulimit in the process:</p>
+            <div class="timeline-body"><p>Another option is to increase the ulimit for our current process below the hard limit using <code>setrlimit</code>. The underlying problem is that Linux has an old hardcoded of 1024 open files for a process, which isn&#x27;t reasonable on a modern 128 core machine - if you do a simple one thread per core model, you get 1028 / 128 = 8 file handles per core!</p>
+<p>Ideally, we&#x27;d increase this limit permanently, but that requires either root, which many user&#x27;s don&#x27;t have, or workarounds such as calling <code>ulimit</code> in the user&#x27;s shell profile, which then only works for subprocess of that shell, but either way <code>ulimit</code> is something so low level that I&#x27;d rather not expose our users too it only because they have a powerful machine.</p>
+<p>There&#x27;s precedent for increasing the ulimit in the process:</p>
 <ul>
 <li>bun: https://github.com/oven-sh/bun/blob/1d50af7fe86065fbdd72667fed7b80b070ba24bb/src/fs.zig#L785-L818</li>
 <li>nginx: https://github.com/nginx/nginx/blob/c70457482c4223b6fd9adc3caa6a302163e6030d/src/os/unix/ngx_process_cycle.c#L777-L797</li>
@@ -108,12 +108,12 @@ Resolved 97 packages in 756ms
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2026-01-15 18:17</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-15 18:17</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-15 18:53:27 UTC
+        Synced at 2026-01-20 19:41:13 UTC
     </footer>
 </body>
 </html>

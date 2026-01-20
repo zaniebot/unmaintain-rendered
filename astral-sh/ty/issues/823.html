@@ -23,18 +23,18 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/erictraut">@erictraut</a></div>
-            <div class="timeline-body"><h3>Question</h3>
+            <div class="timeline-body">Question
 <p>I have some questions about the intended behavior for type declarations in ty.</p>
 <p>My understanding is that ty allows the types of local variables (and parameters) to be declared multiple times with conflicting types as long as all assignments that are reachable from each declaration honor the declared type.</p>
-<pre><code class="language-python">def func(x: int):
+<pre><code>def func(x: int):
     print(x)
     x: str = &quot;&quot; # OK
     x = 1 # Error
 </code></pre>
 <p>I think this works — and is provably type safe — because local variables and parameters are not visible outside of their scope. (I personally think this approach complicates the mental model for type declarations, and it allows for the inadvisable reuse of variables for conflicting uses which harms readability and maintainability, but I understand that some Python developers are OK with this practice.)</p>
-<p>I'm not sure how this redeclaration behavior extends to symbols that are visible outside of their scope. Has this been considered?</p>
-<p>Here's an example:</p>
-<pre><code class="language-python">x: int = 0
+<p>I&#x27;m not sure how this redeclaration behavior extends to symbols that are visible outside of their scope. Has this been considered?</p>
+<p>Here&#x27;s an example:</p>
+<pre><code>x: int = 0
 
 def func():
     global x
@@ -43,9 +43,9 @@ def func():
 func()
 reveal_type(x)  # ?
 </code></pre>
-<p>Currently, ty reports no errors for this code. Is that intended? Or perhaps it's functionality that is planned but not yet implemented?</p>
+<p>Currently, ty reports no errors for this code. Is that intended? Or perhaps it&#x27;s functionality that is planned but not yet implemented?</p>
 <p>Or consider this:</p>
-<pre><code class="language-python">class A:
+<pre><code>class A:
     def method_1(self):
         self.x: int = 10
 
@@ -60,7 +60,7 @@ reveal_type(x)  # ?
 
 a = A()
 
-# What type should be revealed here? Looks like it's order
+# What type should be revealed here? Looks like it&#x27;s order
 # dependent. If I switch the method order in A, I get different
 # results.
 reveal_type(a.x)
@@ -70,77 +70,77 @@ reveal_type(a.x)
 a.x = 0
 </code></pre>
 <p>Or similarly:</p>
-<pre><code class="language-python">class B:
+<pre><code>class B:
     y: int = 0
 
     def __init__(self):
         self.y: str = &quot;&quot;
 </code></pre>
-<h3>Version</h3>
+Version
 <p><em>No response</em></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @erictraut on 2025-07-14 19:29</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/erictraut">@erictraut</a> on 2025-07-14 19:29</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-14 19:33</div>
             <div class="timeline-body"><blockquote>
-<pre><code class="language-py">def func():
+<pre><code>def func():
     global x
     x: str = &quot;&quot;  # Should this be allowed?
 </code></pre>
 </blockquote>
-<p>This one definitely should not be allowed because it's a SyntaxError:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; def func():
+<p>This one definitely should not be allowed because it&#x27;s a SyntaxError:</p>
+<pre><code>&gt;&gt;&gt; def func():
 ...     global x
 ...     x: str = &quot;&quot;
 ...     
   File &quot;&lt;python-input-0&gt;&quot;, line 4
     x: str = &quot;&quot;
     ^^^^^^^^^^^
-SyntaxError: annotated name 'x' can't be global
+SyntaxError: annotated name &#x27;x&#x27; can&#x27;t be global
 </code></pre>
-<p>The fact that we don't currently emit an error for it is tracked in https://github.com/astral-sh/ruff/issues/17412. Once we've implemented the syntax error detection, I don't think we need to add an additional diagnostic on top of that.</p>
+<p>The fact that we don&#x27;t currently emit an error for it is tracked in <a href="https://github.com/astral-sh/ruff/issues/17412">astral-sh/ruff#17412</a>. Once we&#x27;ve implemented the syntax error detection, I don&#x27;t think we need to add an additional diagnostic on top of that.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-14 19:36</div>
-            <div class="timeline-body"><p>I believe your other questions are covered by https://github.com/astral-sh/ty/issues/206, and will be fixed by https://github.com/astral-sh/ruff/pull/18953</p>
+            <div class="timeline-body"><p>I believe your other questions are covered by <a href="https://github.com/astral-sh/ty/issues/206">astral-sh/ty#206</a>, and will be fixed by <a href="https://github.com/astral-sh/ruff/pull/18953">astral-sh/ruff#18953</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/erictraut">@erictraut</a> on 2025-07-14 19:42</div>
             <div class="timeline-body"><blockquote>
-<p>This one definitely should not be allowed because it's a SyntaxError</p>
+<p>This one definitely should not be allowed because it&#x27;s a SyntaxError</p>
 </blockquote>
-<p>Wow, I didn't realize that. None of today's popular type checkers (mypy, pyright, pyre, pyrefly, ty) check for that currently.</p>
+<p>Wow, I didn&#x27;t realize that. None of today&#x27;s popular type checkers (mypy, pyright, pyre, pyrefly, ty) check for that currently.</p>
 <blockquote>
 <p>I believe your other questions are covered by <a href="https://github.com/astral-sh/ty/issues/206">#206</a>, and will be fixed by <a href="https://github.com/astral-sh/ruff/pull/18953">astral-sh/ruff#18953</a></p>
 </blockquote>
-<p>Thanks, I looked for an open issue but didn't find this one. If I understand correctly, that means ty will eventually emit errors for the last three code samples that I posed above. Makes sense.</p>
+<p>Thanks, I looked for an open issue but didn&#x27;t find this one. If I understand correctly, that means ty will eventually emit errors for the last three code samples that I posed above. Makes sense.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-14 19:43</div>
             <div class="timeline-body"><blockquote>
-<p>Thanks, I looked for an open issue but didn't find this one. If I understand correctly, that means ty will eventually emit errors for the last three code samples that I posed above. Makes sense.</p>
+<p>Thanks, I looked for an open issue but didn&#x27;t find this one. If I understand correctly, that means ty will eventually emit errors for the last three code samples that I posed above. Makes sense.</p>
 </blockquote>
-<p>Yup, that's correct</p>
+<p>Yup, that&#x27;s correct</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-14 20:09</div>
-            <div class="timeline-body"><p>Closing, since I think these are sufficiently covered by https://github.com/astral-sh/ruff/issues/17412 and #206. But thanks for the queries -- we're obviously trying something new here and it's good to think these things through!</p>
+            <div class="timeline-body"><p>Closing, since I think these are sufficiently covered by <a href="https://github.com/astral-sh/ruff/issues/17412">astral-sh/ruff#17412</a> and #206. But thanks for the queries -- we&#x27;re obviously trying something new here and it&#x27;s good to think these things through!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-07-14 20:09</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-14 20:09</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:18 UTC
+        Synced at 2026-01-20 19:25:03 UTC
     </footer>
 </body>
 </html>

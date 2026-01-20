@@ -24,30 +24,30 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a></div>
             <div class="timeline-body"><p>Rebase of #6365 authored by @davidszotten.</p>
-<h2>Summary</h2>
+Summary
 <p>This PR updates the AST structure for an f-string elements.</p>
-<p>The main <strong>motivation</strong> behind this change is to have a dedicated node for the string part of an f-string. Previously, the existing <code>ExprStringLiteral</code> node was used for this purpose which isn't exactly correct. The <code>ExprStringLiteral</code> node should include the quotes as well in the range but the f-string literal element doesn't include the quote as it's a specific part within an f-string. For example,</p>
-<pre><code class="language-python">f&quot;foo {x}&quot;
+<p>The main <strong>motivation</strong> behind this change is to have a dedicated node for the string part of an f-string. Previously, the existing <code>ExprStringLiteral</code> node was used for this purpose which isn&#x27;t exactly correct. The <code>ExprStringLiteral</code> node should include the quotes as well in the range but the f-string literal element doesn&#x27;t include the quote as it&#x27;s a specific part within an f-string. For example,</p>
+<pre><code>f&quot;foo {x}&quot;
 # ^^^^
 # This is the literal part of an f-string
 </code></pre>
 <p>The introduction of <code>FStringElement</code> enum is helpful which represent either the literal part or the expression part of an f-string.</p>
-<h3>Rule Updates</h3>
-<p>This means that there'll be two nodes representing a string depending on the context. One for a normal string literal while the other is a string literal within an f-string. The AST checker is updated to accommodate this change. The rules which work on string literal are updated to check on the literal part of f-string as well.</p>
-<h4>Notes</h4>
+Rule Updates
+<p>This means that there&#x27;ll be two nodes representing a string depending on the context. One for a normal string literal while the other is a string literal within an f-string. The AST checker is updated to accommodate this change. The rules which work on string literal are updated to check on the literal part of f-string as well.</p>
+Notes
 <ol>
-<li>The <code>Expr::is_literal_expr</code> method would check for <code>ExprStringLiteral</code> and return true if so. But now that we don't represent the literal part of an f-string using that node, this improves the method's behavior and confines to the actual expression. We do have the <code>FStringElement::is_literal</code> method.</li>
-<li>We avoid checking if we're in a f-string context before adding to <code>string_type_definitions</code> because the f-string literal is now a dedicated node and not part of <code>Expr</code>.</li>
+<li>The <code>Expr::is_literal_expr</code> method would check for <code>ExprStringLiteral</code> and return true if so. But now that we don&#x27;t represent the literal part of an f-string using that node, this improves the method&#x27;s behavior and confines to the actual expression. We do have the <code>FStringElement::is_literal</code> method.</li>
+<li>We avoid checking if we&#x27;re in a f-string context before adding to <code>string_type_definitions</code> because the f-string literal is now a dedicated node and not part of <code>Expr</code>.</li>
 <li>Annotations cannot use f-string so we avoid changing any rules which work on annotation and checks for <code>ExprStringLiteral</code>.</li>
 </ol>
-<h2>Test Plan</h2>
+Test Plan
 <ul>
 <li>All references of <code>Expr::StringLiteral</code> were checked to see if any of the rules require updating to account for the f-string literal element node.</li>
 <li>New test cases are added for rules which check against the literal part of an f-string.</li>
 <li>Check the ecosystem results and ensure it remains unchanged.</li>
 </ul>
-<h2>Performance</h2>
-<p>There's a performance penalty in the parser. The reason for this remains unknown as it seems that the generated assembly code is now different for the <code>__reduce154</code> function. The reduce function body is just popping the <code>ParenthesizedExpr</code> on top of the stack and pushing it with the new location.</p>
+Performance
+<p>There&#x27;s a performance penalty in the parser. The reason for this remains unknown as it seems that the generated assembly code is now different for the <code>__reduce154</code> function. The reduce function body is just popping the <code>ParenthesizedExpr</code> on top of the stack and pushing it with the new location.</p>
 <ul>
 <li>The size of <code>FStringElement</code> enum is the same as <code>Expr</code> which is what it replaces in <code>FString::format_spec</code></li>
 <li>The size of <code>FStringExpressionElement</code> is the same as <code>ExprFormattedValue</code> which is what it replaces</li>
@@ -57,9 +57,9 @@
 <li>Original profile: https://share.firefox.dev/3Taa7ES</li>
 <li>Profile after boxing some node fields: https://share.firefox.dev/3GsNXpD</li>
 </ul>
-<h3>Backtracking</h3>
-<p>I tried backtracking the changes to see if any of the isolated change produced this regression. The problem here is that the overall change is so small that there's only a single checkpoint where I can backtrack and that checkpoint results in the same regression. This checkpoint is to revert using <code>Expr</code> to the <code>FString::format_spec</code> field. After this point, the change would revert back to the original implementation.</p>
-<h2>Review process</h2>
+Backtracking
+<p>I tried backtracking the changes to see if any of the isolated change produced this regression. The problem here is that the overall change is so small that there&#x27;s only a single checkpoint where I can backtrack and that checkpoint results in the same regression. This checkpoint is to revert using <code>Expr</code> to the <code>FString::format_spec</code> field. After this point, the change would revert back to the original implementation.</p>
+Review process
 <p>The review process is similar to #7927. The first set of commits update the node structure, parser, and related AST files. Then, further commits update the linter and formatter part to account for the AST change.</p>
 </div>
         </div>
@@ -68,14 +68,14 @@
             <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
 <ul>
 <li>main<ul>
-<li><strong>PR #8062</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8062?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
-<li><strong>PR #8063</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8063?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
-<li><strong>PR #8064</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8064?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
-<li><strong>PR #7927</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7927?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
-<li><strong>PR #8826</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8826?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
-* <strong>PR #8828</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8828?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
-* <strong>PR #8835</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8835?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>  👈
-* <strong>PR #9016</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/9016?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #8062</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8062?utm_source=stack-comment-icon"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite"></a><ul>
+<li><strong>PR #8063</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8063?utm_source=stack-comment-icon"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite"></a><ul>
+<li><strong>PR #8064</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8064?utm_source=stack-comment-icon"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite"></a><ul>
+<li><strong>PR #7927</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7927?utm_source=stack-comment-icon"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite"></a><ul>
+<li><strong>PR #8826</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8826?utm_source=stack-comment-icon"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite"></a>
+* <strong>PR #8828</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8828?utm_source=stack-comment-icon"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite"></a>
+* <strong>PR #8835</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8835?utm_source=stack-comment-icon"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite"></a>  👈
+* <strong>PR #9016</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/9016?utm_source=stack-comment-icon"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite"></a></li>
 </ul>
 </li>
 </ul>
@@ -92,16 +92,16 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2023-11-24 23:49</div>
-            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/dhruv/fstring-element">CodSpeed Performance Report</a></h2>
-<h3>Merging #8835 will <strong>degrade performances by 6.65%</strong></h3>
-<p><sub>Comparing <code>dhruv/fstring-element</code> (b6be853) with <code>main</code> (af88ffc)</sub></p>
-<h3>Summary</h3>
+            <div class="timeline-body"><a href="https://codspeed.io/astral-sh/ruff/branches/dhruv/fstring-element">CodSpeed Performance Report</a>
+Merging #8835 will <strong>degrade performances by 6.65%</strong>
+<p>Comparing <code>dhruv/fstring-element</code> (b6be853) with <code>main</code> (af88ffc)</p>
+Summary
 <p><code>❌ 6</code> regressions
 <code>✅ 24</code> untouched benchmarks</p>
 <blockquote>
 <p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/ruff/branches/dhruv/fstring-element">acknowledge them on CodSpeed</a>.</em></p>
 </blockquote>
-<h3>Benchmarks breakdown</h3>
+Benchmarks breakdown
 <p>|     | Benchmark | <code>main</code> | <code>dhruv/fstring-element</code> | Change |
 | --- | --------- | ----------------------- | ------------------- | ------ |
 | ❌ | <code>linter/default-rules[numpy/ctypeslib.py]</code> | 16.1 ms | 17.2 ms | -6.65% |
@@ -114,16 +114,16 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-11-24 23:54</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
@@ -133,13 +133,13 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> added by @dhruvmanila on 2023-11-25 00:41</div>
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-11-25 00:41</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dhruvmanila on 2023-11-27 22:04</div>
+            <div class="event">Closed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-11-27 22:04</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @dhruvmanila on 2023-11-27 22:04</div>
+            <div class="event">Reopened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-11-27 22:04</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-12-04 00:31</div>
@@ -147,13 +147,13 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:182 on 2023-12-04 00:31</div>
-            <div class="timeline-body"><p>What's the motivation for boxing some fields? it seems unrelated to the PR itself. It makes it more difficult for me to judge if the drop regression is due to the new f-string node layout or the other boxing changes. Would you mind splitting this commit into its own PR?</p>
+            <div class="timeline-body"><p>What&#x27;s the motivation for boxing some fields? it seems unrelated to the PR itself. It makes it more difficult for me to judge if the drop regression is due to the new f-string node layout or the other boxing changes. Would you mind splitting this commit into its own PR?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-12-04 02:55</div>
             <div class="timeline-body"><p>Comparing the generated llvm instructions between main and this PR</p>
-<pre><code class="language-diff">&lt; define internal fastcc void @_ZN18ruff_python_parser6python12__parse__Top11__reduce15417hd406a4d6cb8441daE(ptr noalias nocapture noundef align 8 dereferenceable(24) %__symbols) unnamed_addr #2 personality ptr @rust_eh_personality {
+<pre><code>&lt; define internal fastcc void @_ZN18ruff_python_parser6python12__parse__Top11__reduce15417hd406a4d6cb8441daE(ptr noalias nocapture noundef align 8 dereferenceable(24) %__symbols) unnamed_addr #2 personality ptr @rust_eh_personality {
 ---
 &gt; define internal fastcc void @_ZN18ruff_python_parser6python12__parse__Top11__reduce15417h429ba5e9ae4663f4E(ptr noalias nocapture noundef align 8 dereferenceable(24) %__symbols) unnamed_addr #2 personality ptr @rust_eh_personality {
 6,10c6,12
@@ -305,7 +305,7 @@
 (venv) 
 </code></pre>
 <p>I did compare the generated assembly and the new assembly indeed is longer for reduce154 than it used to.</p>
-<pre><code class="language-diff">8c8
+<pre><code>8c8
 &lt;  cbz     x8, LBB835_3
 ---
 &gt;  cbz     x8, LBB839_3
@@ -414,7 +414,7 @@
 &gt; LBB839_9:
 
 </code></pre>
-<p>It seems that the new version uses <code>ldr</code> instead of <code>ldrb</code> on ARM which loads the entire 4 bytes instead of just 8bits into memory. I'm no good at reading assembly...</p>
+<p>It seems that the new version uses <code>ldr</code> instead of <code>ldrb</code> on ARM which loads the entire 4 bytes instead of just 8bits into memory. I&#x27;m no good at reading assembly...</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -441,22 +441,22 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:182 on 2023-12-04 14:53</div>
-            <div class="timeline-body"><p>Ugh, sorry. That was just me figuring out if decreasing the size would revert the regression -- it doesn't, I'll revert the change.</p>
+            <div class="timeline-body"><p>Ugh, sorry. That was just me figuring out if decreasing the size would revert the regression -- it doesn&#x27;t, I&#x27;ll revert the change.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @dhruvmanila on 2023-12-04 21:04</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-12-04 21:04</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2023-12-04 21:04</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-12-04 21:04</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2023-12-05 01:40</div>
+            <div class="event">Review requested from <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-12-05 01:40</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/expression.rs</code>:1011 on 2023-12-05 01:51</div>
-            <div class="timeline-body"><p>Nit: Not necessarily better, it just feels a bit more explicit to me but I don't have a clear preference.</p>
-<pre><code class="language-suggestion">            for element in value.elements().filter_map(|element| element.as_literal()) {
+            <div class="timeline-body"><p>Nit: Not necessarily better, it just feels a bit more explicit to me but I don&#x27;t have a clear preference.</p>
+<pre><code>            for element in value.elements().filter_map(|element| element.as_literal()) {
                 if checker.enabled(Rule::HardcodedBindAllInterfaces) {
 </code></pre>
 <p>But you then need to access the <code>value</code> and <code>range</code> through <code>element</code>.</p>
@@ -464,7 +464,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/expression.rs</code>:1017 on 2023-12-05 01:53</div>
-            <div class="timeline-body"><p>Would it make sense to have a <code>analyze_string_like</code> function that accepts a <code>string_like</code> value (new <code>StringLike</code> enum that is either a <code>FStringLiteral</code> or <code>StringExpressionLiteral</code>) to ensure we don't forget to the rules to <code>FStringLiteral</code>, regular strings, and potentially bytes? Or is it only a subset of string rules that need to run for fstring literals?</p>
+            <div class="timeline-body"><p>Would it make sense to have a <code>analyze_string_like</code> function that accepts a <code>string_like</code> value (new <code>StringLike</code> enum that is either a <code>FStringLiteral</code> or <code>StringExpressionLiteral</code>) to ensure we don&#x27;t forget to the rules to <code>FStringLiteral</code>, regular strings, and potentially bytes? Or is it only a subset of string rules that need to run for fstring literals?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -479,7 +479,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_pytest_style/rules/helpers.rs</code>:59 on 2023-12-05 02:17</div>
-            <div class="timeline-body"><p>I got rather confused by the <code>parts</code> method here. Like what's the difference between a <code>FStringPart</code> and an <code>FStringElement</code>, they even have the same members (although <code>FStringPart::Literal</code> takes a <code>StringLiteral</code> and <code>Element::Literal</code> an <code>FStringElementLiteral</code>).</p>
+            <div class="timeline-body"><p>I got rather confused by the <code>parts</code> method here. Like what&#x27;s the difference between a <code>FStringPart</code> and an <code>FStringElement</code>, they even have the same members (although <code>FStringPart::Literal</code> takes a <code>StringLiteral</code> and <code>Element::Literal</code> an <code>FStringElementLiteral</code>).</p>
 <p>It clicked when opening the PR and looking up the definition, although I wonder if we can improve the naming (unrelated to this PR).</p>
 <p>A not fully formed idea:</p>
 <ul>
@@ -492,7 +492,7 @@
 <p>Same for bytes.</p>
 <p>We may also want to change the <code>parts</code> and <code>parts_mut</code> methods to return a <code>&amp;[]</code> instead of an iterator.</p>
 <p>The part I feel uncertain about is if it is okay to name an <code>f&quot;abcd&quot;</code> a literal, but I think it is. For example, the object notation <code>{a: &quot;bcd&quot;}</code> in JavaScript is a <code>ObjectLiteral</code> and it contains dynamic content as well.</p>
-<p>I don't suggest making these changes as part of this PR. It's just something I dripped over when reviewing and thought I would raise.</p>
+<p>I don&#x27;t suggest making these changes as part of this PR. It&#x27;s just something I dripped over when reviewing and thought I would raise.</p>
 <p>Edit: Even the Python spec names them literals: A formatted string literal</p>
 </div>
         </div>
@@ -504,7 +504,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/tryceratops/rules/raise_vanilla_args.rs</code>:109 on 2023-12-05 02:23</div>
             <div class="timeline-body"><p>Nit:</p>
-<pre><code class="language-suggestion">                    ast::FStringPart::FString(f_string) =&gt; {
+<pre><code>                    ast::FStringPart::FString(f_string) =&gt; {
                         for literal in f_string.elements.iter().filter_map(|element| element.as_literal()) {
                             if literal.value.chars().any(char::is_whitespace) {
                                 return true;
@@ -515,7 +515,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/visitor/transformer.rs</code>:738 on 2023-12-05 02:40</div>
-            <div class="timeline-body"><p>It feels inconsistent to me that we have visitors for <code>string_literal</code> and <code>byte_literals</code> but that we aren't visiting <code>Literal</code> elements here. I think we should either have visitors for both or neither. The same applies to <code>preorder</code> and the regular visitor</p>
+            <div class="timeline-body"><p>It feels inconsistent to me that we have visitors for <code>string_literal</code> and <code>byte_literals</code> but that we aren&#x27;t visiting <code>Literal</code> elements here. I think we should either have visitors for both or neither. The same applies to <code>preorder</code> and the regular visitor</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -530,14 +530,14 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/other/f_string_expression_element.rs</code>:8 on 2023-12-05 02:48</div>
-            <div class="timeline-body"><p>I'm not sure if it's worth adding these implementations considering that they won't work. I rather have <code>fstring_expression_element.format()</code> to not compile than fail at runtime.</p>
+            <div class="timeline-body"><p>I&#x27;m not sure if it&#x27;s worth adding these implementations considering that they won&#x27;t work. I rather have <code>fstring_expression_element.format()</code> to not compile than fail at runtime.</p>
 <p>Should we exclude them from the generate script. We can still add them when they become useful.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-12-05 02:53</div>
             <div class="timeline-body"><p>Thanks for driving this long standing PR forward. I like what I see in the parser diffs.</p>
-<p>The majority of comments are nits, but there's the question whather we should visit the <code>FStringLiteralElement</code> in visitors and if some lint rules should check if it si a single element fstring to avoid false positives.</p>
+<p>The majority of comments are nits, but there&#x27;s the question whather we should visit the <code>FStringLiteralElement</code> in visitors and if some lint rules should check if it si a single element fstring to avoid false positives.</p>
 <p>I would prefer for @charliermarsh to also review the linter changes, considering that he has more context than I.</p>
 </div>
         </div>
@@ -547,7 +547,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/expression.rs</code>:1017 on 2023-12-05 14:19</div>
-            <div class="timeline-body"><p>It always triggered for such cases, we're just maintaining the behavior. The reason is that it could be useful for cases like <code>f&quot;0.0.0.0{port}/path&quot;</code>: https://play.ruff.rs/7b6e80ea-5858-4983-877c-1669a5cd538d</p>
+            <div class="timeline-body"><p>It always triggered for such cases, we&#x27;re just maintaining the behavior. The reason is that it could be useful for cases like <code>f&quot;0.0.0.0{port}/path&quot;</code>: https://play.ruff.rs/7b6e80ea-5858-4983-877c-1669a5cd538d</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -556,7 +556,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_pytest_style/rules/helpers.rs</code>:59 on 2023-12-05 14:21</div>
-            <div class="timeline-body"><p>Thanks! I'll explore this in a follow-up PR.</p>
+            <div class="timeline-body"><p>Thanks! I&#x27;ll explore this in a follow-up PR.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -565,7 +565,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/pyflakes/rules/f_string_missing_placeholders.rs</code>:55 on 2023-12-05 14:23</div>
-            <div class="timeline-body"><p>I thought so but currently it's only being used in a single place.</p>
+            <div class="timeline-body"><p>I thought so but currently it&#x27;s only being used in a single place.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -574,7 +574,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/expression.rs</code>:1011 on 2023-12-05 14:42</div>
-            <div class="timeline-body"><p>Yeah, I thought about this. I don't really like the formatting so I think it's worth updating as per your suggestion.</p>
+            <div class="timeline-body"><p>Yeah, I thought about this. I don&#x27;t really like the formatting so I think it&#x27;s worth updating as per your suggestion.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -583,9 +583,9 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_ast/src/visitor/transformer.rs</code>:738 on 2023-12-05 15:02</div>
-            <div class="timeline-body"><p>I see your point. Wouldn't <code>visit_f_string_element</code> cover visiting the literal element of an f-string? This is similar to what we have with <code>visit_match_case</code> and <code>visit_pattern</code>.</p>
-<p>Currently, we've a visitor for an <code>FStringElement</code> which is what you're highlighting here. I'd prefer to keep the literal visitors because they help in the formatter comment placements. Is what you're suggesting to replace <code>visit_f_string_element</code> with <code>visit_f_string_literal_element</code> and <code>visit_f_string_expression_element</code>? So, the hierarchy would be:</p>
-<pre><code class="language-bash">FString # visit_f_string
+            <div class="timeline-body"><p>I see your point. Wouldn&#x27;t <code>visit_f_string_element</code> cover visiting the literal element of an f-string? This is similar to what we have with <code>visit_match_case</code> and <code>visit_pattern</code>.</p>
+<p>Currently, we&#x27;ve a visitor for an <code>FStringElement</code> which is what you&#x27;re highlighting here. I&#x27;d prefer to keep the literal visitors because they help in the formatter comment placements. Is what you&#x27;re suggesting to replace <code>visit_f_string_element</code> with <code>visit_f_string_literal_element</code> and <code>visit_f_string_expression_element</code>? So, the hierarchy would be:</p>
+<pre><code>FString # visit_f_string
  |- FStringLiteralElement # visit_f_string_literal_element
  |- FStringExpressionElement # visit_f_string_expression_element
 </code></pre>
@@ -602,7 +602,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/string_or_bytes_too_long.rs</code>:46 on 2023-12-05 20:34</div>
-            <div class="timeline-body"><p>Yeah, I think this might be a good idea (https://github.com/astral-sh/ruff/pull/9016).</p>
+            <div class="timeline-body"><p>Yeah, I think this might be a good idea (<a href="https://github.com/astral-sh/ruff/pull/9016">astral-sh/ruff#9016</a>).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -616,14 +616,14 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/visitor/transformer.rs</code>:738 on 2023-12-06 00:30</div>
             <div class="timeline-body"><blockquote>
-<p>I see your point. Wouldn't visit_f_string_element cover visiting the literal element of an f-string? This is similar to what we have with visit_match_case and visit_pattern.</p>
+<p>I see your point. Wouldn&#x27;t visit_f_string_element cover visiting the literal element of an f-string? This is similar to what we have with visit_match_case and visit_pattern.</p>
 </blockquote>
-<p>That makes sense. Thank's for explaining.</p>
+<p>That makes sense. Thank&#x27;s for explaining.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/expression.rs</code>:1017 on 2023-12-06 17:56</div>
-            <div class="timeline-body"><p>Refer: https://github.com/astral-sh/ruff/pull/9016</p>
+            <div class="timeline-body"><p>Refer: <a href="https://github.com/astral-sh/ruff/pull/9016">astral-sh/ruff#9016</a></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -636,7 +636,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:818 on 2023-12-06 21:54</div>
-            <div class="timeline-body"><p>The <code>in_f_string</code> check isn't required now that there's a dedicated node for the literal part of f-string and it isn't the same as <code>ExprStringLiteral</code>.</p>
+            <div class="timeline-body"><p>The <code>in_f_string</code> check isn&#x27;t required now that there&#x27;s a dedicated node for the literal part of f-string and it isn&#x27;t the same as <code>ExprStringLiteral</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -663,7 +663,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/expression.rs</code>:1010 on 2023-12-07 00:44</div>
-            <div class="timeline-body"><p>It looks like we already wouldn't flag that on <code>main</code>, though I'm curious if it should be considered a bug. E.g., for <code>S104</code>, should we flag <code>f&quot;0.0&quot; f&quot;.0.0&quot;</code>?</p>
+            <div class="timeline-body"><p>It looks like we already wouldn&#x27;t flag that on <code>main</code>, though I&#x27;m curious if it should be considered a bug. E.g., for <code>S104</code>, should we flag <code>f&quot;0.0&quot; f&quot;.0.0&quot;</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -677,11 +677,11 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/expression.rs</code>:1010 on 2023-12-07 01:10</div>
-            <div class="timeline-body"><p>This is a good point and yes it will be a false negative now. It's not just <code>f&quot;/tmp&quot; f&quot;/bad&quot;</code> but also <code>&quot;/tmp&quot; f&quot;/bad&quot;</code> (string and f-string)</p>
+            <div class="timeline-body"><p>This is a good point and yes it will be a false negative now. It&#x27;s not just <code>f&quot;/tmp&quot; f&quot;/bad&quot;</code> but also <code>&quot;/tmp&quot; f&quot;/bad&quot;</code> (string and f-string)</p>
 <p>We can introduce a method which iterates over the concatenated literal parts of an f-string. For example,</p>
-<pre><code class="language-python">&quot;foo&quot; f&quot;bar {x} baz&quot; &quot;end&quot;
+<pre><code>&quot;foo&quot; f&quot;bar {x} baz&quot; &quot;end&quot;
 </code></pre>
-<p>The above code would return two strings: <code>&quot;foobar &quot;</code> and <code>&quot; bazend&quot;</code>. Here, I don't see a way to avoid string allocation here.</p>
+<p>The above code would return two strings: <code>&quot;foobar &quot;</code> and <code>&quot; bazend&quot;</code>. Here, I don&#x27;t see a way to avoid string allocation here.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -690,14 +690,14 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/expression.rs</code>:1010 on 2023-12-07 16:27</div>
-            <div class="timeline-body"><p>I'm moving ahead with this limitation for now but we can revisit if it proves to be a problem. My hunch is this shouldn't be but you never know 🤷‍♂️</p>
+            <div class="timeline-body"><p>I&#x27;m moving ahead with this limitation for now but we can revisit if it proves to be a problem. My hunch is this shouldn&#x27;t be but you never know 🤷‍♂️</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @dhruvmanila on 2023-12-07 16:28</div>
+            <div class="event">Merged by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-12-07 16:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dhruvmanila on 2023-12-07 16:28</div>
+            <div class="event">Closed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-12-07 16:28</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2023-12-07 16:28</div>
@@ -705,7 +705,7 @@
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:01:33 UTC
+        Synced at 2026-01-20 18:59:35 UTC
     </footer>
 </body>
 </html>

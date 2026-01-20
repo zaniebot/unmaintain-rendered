@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This PR removes the need for an <code>Rc</code> to implement interned by using the <code>Buffer</code> as an interner</p>
 <ul>
 <li>Create an ID for the interned content</li>
@@ -31,11 +31,11 @@
 <li>Write a <code>Reference(id)</code> node to reference to the interned content.</li>
 </ul>
 <p>The <code>Printer</code> skips interned content but writes it to an internal <code>Index</code>. The <code>Printer</code> uses the internal <code>Index</code> to resolve the <code>Interned</code> content when it sees a <code>Reference</code>. The fact that <code>id</code>s tend to be monotonic allows the use of a <code>Vec</code> as an <code>Index</code> similar to <code>Group</code> ids</p>
-<p>The downside of this approach is that it is more complicated to reason about and it is no longer possible to inspect the content of <code>Reference</code> without tracking all interned content. Another downside is that the IR is slightly misleading because you see <code>Interned</code> content and would assume it gets printed in that place, which is not true. For example, the interned content appears before the <code>best_fitting,</code> but the content only gets printed inside the best-fitting variants. Moving the <code>Interned</code> content into the first best fitting variant doesn't work because that content only gets printed conditionally, meaning the <code>Printer</code> would then not always see the <code>Interned</code> content, failing to resolve the <code>Reference</code>.</p>
-<p><img src="https://github.com/astral-sh/ruff/assets/1203881/cc009b59-11a1-42df-a9a6-27a68db4166a" alt="image" /></p>
-<h2>Alternatives</h2>
-<p>One alternative that I explored is to use <code>bumpallo</code> instead and use it to allocate <code>BestFitting</code> vectors, dynamic strings, and Rcs. This could improve performance even more because it eliminates the 3-4% drop-time too. However, it comes at the downside that <code>Buffer</code> requires a new <code>'elements</code> lifetime that needs to be added everywhere (<code>Format</code>, <code>Formatter</code>, <code>Buffer</code>, <code>FormatNode</code>, <code>FormatNodeRule</code>....). I gave up at some point because it made the API significantly more complicated.</p>
-<h2>Test Plan</h2>
+<p>The downside of this approach is that it is more complicated to reason about and it is no longer possible to inspect the content of <code>Reference</code> without tracking all interned content. Another downside is that the IR is slightly misleading because you see <code>Interned</code> content and would assume it gets printed in that place, which is not true. For example, the interned content appears before the <code>best_fitting,</code> but the content only gets printed inside the best-fitting variants. Moving the <code>Interned</code> content into the first best fitting variant doesn&#x27;t work because that content only gets printed conditionally, meaning the <code>Printer</code> would then not always see the <code>Interned</code> content, failing to resolve the <code>Reference</code>.</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/1203881/cc009b59-11a1-42df-a9a6-27a68db4166a" alt="image"></p>
+Alternatives
+<p>One alternative that I explored is to use <code>bumpallo</code> instead and use it to allocate <code>BestFitting</code> vectors, dynamic strings, and Rcs. This could improve performance even more because it eliminates the 3-4% drop-time too. However, it comes at the downside that <code>Buffer</code> requires a new <code>&#x27;elements</code> lifetime that needs to be added everywhere (<code>Format</code>, <code>Formatter</code>, <code>Buffer</code>, <code>FormatNode</code>, <code>FormatNodeRule</code>....). I gave up at some point because it made the API significantly more complicated.</p>
+Test Plan
 <p><code>cargo test</code></p>
 </div>
         </div>
@@ -44,8 +44,8 @@
             <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
 <ul>
 <li>main<ul>
-<li><strong>PR #7411</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7411" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
-<li><strong>PR #7443</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7443" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>  👈</li>
+<li><strong>PR #7411</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7411"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite"></a><ul>
+<li><strong>PR #7443</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7443"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite"></a>  👈</li>
 </ul>
 </li>
 </ul>
@@ -56,17 +56,17 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2023-09-16 17:31</div>
-            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/allocation-free-interned">CodSpeed Performance Report</a></h2>
-<h3>Merging #7443 will <strong>degrade performances by 2.45%</strong></h3>
-<p><sub>Comparing <code>allocation-free-interned</code> (e112b02) with <code>best-fitting-reduce-allocations</code> (2843fc0)</sub></p>
-<h3>Summary</h3>
+            <div class="timeline-body"><a href="https://codspeed.io/astral-sh/ruff/branches/allocation-free-interned">CodSpeed Performance Report</a>
+Merging #7443 will <strong>degrade performances by 2.45%</strong>
+<p>Comparing <code>allocation-free-interned</code> (e112b02) with <code>best-fitting-reduce-allocations</code> (2843fc0)</p>
+Summary
 <p><code>⚡ 2</code> improvements
 <code>❌ 1</code> regressions
 <code>✅ 22</code> untouched benchmarks</p>
 <blockquote>
 <p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/ruff/branches/allocation-free-interned">acknowledge them on CodSpeed</a>.</em></p>
 </blockquote>
-<h3>Benchmarks breakdown</h3>
+Benchmarks breakdown
 <p>|     | Benchmark | <code>best-fitting-reduce-allocations</code> | <code>allocation-free-interned</code> | Change |
 | --- | --------- | ----------------------- | ------------------- | ------ |
 | ⚡ | <code>formatter[unicode/pypinyin.py]</code> | 3.7 ms | 3.6 ms | +2.26% |
@@ -75,10 +75,10 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">performance</span> added by @MichaReiser on 2023-09-16 18:33</div>
+            <div class="event">Label <span class="label">performance</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-16 18:33</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2023-09-16 18:33</div>
+            <div class="event">Label <span class="label">formatter</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-16 18:33</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-18 19:45</div>
@@ -86,7 +86,7 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2023-09-18 19:45</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-18 19:45</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-01-16 10:04</div>
@@ -94,7 +94,7 @@
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:00:19 UTC
+        Synced at 2026-01-20 18:57:21 UTC
     </footer>
 </body>
 </html>

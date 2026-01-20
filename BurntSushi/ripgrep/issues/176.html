@@ -23,13 +23,13 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/isobit">@isobit</a></div>
-            <div class="timeline-body"><p>Say for example I'm trying to find instances of <code>click</code> that reside in a <code>listeners</code> block, like so:</p>
+            <div class="timeline-body"><p>Say for example I&#x27;m trying to find instances of <code>click</code> that reside in a <code>listeners</code> block, like so:</p>
 <pre><code>listeners: {
     foo: ...
     click: ....
 }
 </code></pre>
-<p>According to the Rust regex docs, I should be able to do: <code>rg '(?s)listeners.+click'</code>, but this doesn't seem to work. Does ripgrep not support multiline regex?</p>
+<p>According to the Rust regex docs, I should be able to do: <code>rg &#x27;(?s)listeners.+click&#x27;</code>, but this doesn&#x27;t seem to work. Does ripgrep not support multiline regex?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -40,13 +40,13 @@
 <p>Correct. Not even the <code>s</code> flag will help, because <code>ripgrep</code> explicitly instructs the regex automaton to never match <code>\n</code>. Like <code>grep</code>, <code>ripgrep</code> is a <em>line oriented search tool</em>.</p>
 <p><code>ripgrep</code> can perform a search in two different ways. One of them reads a chunk of bytes at a time and searches it. The other memory maps the file and searches that all at once. The former has a number of advantages, including being faster when searching a large number of small files in parallel and being able to search streams in constant memory. The latter has the advantage of being faster for single files (sometimes) and much simpler to implement.</p>
 <p>The former <em>only works</em> because search is line oriented. A multiline regex can technically match, say, 2GB of data, which is completely incompatible with searching small chunks at a time.</p>
-<p>The latter could be made to work with multiline search, but memory maps can't search stdin for example. So a multiline search on stdin would have to block and read all of stdin into memory before searching. (There exists a way around even this, but it requires changing the regex engine to be capable of incremental search, which is an even bigger change, but theoretically possible.)</p>
+<p>The latter could be made to work with multiline search, but memory maps can&#x27;t search stdin for example. So a multiline search on stdin would have to block and read all of stdin into memory before searching. (There exists a way around even this, but it requires changing the regex engine to be capable of incremental search, which is an even bigger change, but theoretically possible.)</p>
 <p>multiline searching therefore comes with significant implementation complexity, and IMO is a pretty niche use case. I can also imagine it having a pretty big impact on the printing code. This fact alone is a good reason why it may never be in <code>ripgrep</code> proper, but perhaps once #162 is done, others can take a crack at it.</p>
-<p>This is a good example of a feature that The Silver Searcher has that <code>ripgrep</code> may either never have or won't have for a long time.</p>
+<p>This is a good example of a feature that The Silver Searcher has that <code>ripgrep</code> may either never have or won&#x27;t have for a long time.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2016-10-13 22:06</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-13 22:06</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/isobit">@isobit</a> on 2016-10-13 23:50</div>
@@ -55,7 +55,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-13 23:53</div>
-            <div class="timeline-body"><p>@joshglendenning Yeah, I admit, it would be nice, and if it were easy, I'd have no problems with it. While I do consider it niche, I have no doubts that it would be quite useful!</p>
+            <div class="timeline-body"><p>@joshglendenning Yeah, I admit, it would be nice, and if it were easy, I&#x27;d have no problems with it. While I do consider it niche, I have no doubts that it would be quite useful!</p>
 <p>Once I split out most of the pieces of <code>ripgrep</code> to library form, perhaps there will be interest in building other tools for more niche use cases! I will keep this case in mind as I do that though.</p>
 </div>
         </div>
@@ -66,36 +66,36 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-10 00:57</div>
-            <div class="timeline-body"><p>@maxbrunsfeld I've been meaning to add an &quot;anti pitch&quot; section to the README like the one in my blog post. <a href="https://github.com/BurntSushi/ripgrep#why-shouldnt-i-use-ripgrep">That's now done.</a> Thanks for the reminder!</p>
+            <div class="timeline-body"><p>@maxbrunsfeld I&#x27;ve been meaning to add an &quot;anti pitch&quot; section to the README like the one in my blog post. <a href="https://github.com/BurntSushi/ripgrep#why-shouldnt-i-use-ripgrep">That&#x27;s now done.</a> Thanks for the reminder!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @BurntSushi on 2017-03-17 01:08</div>
+            <div class="event">Reopened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-17 01:08</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-17 01:18</div>
-            <div class="timeline-body"><p>I'm going to re-open this, because it's one of the most highly requested features.</p>
-<p>Nothing has changed about the <a href="https://github.com/BurntSushi/ripgrep/issues/176#issuecomment-253652811">problems I outlined above</a>. However, multiline search needn't be the default. If we provide it as a flag, then we can do what we need to do to support multiline search only when that flag is provided. The critical thing that multiline search needs is a <em>complete</em> sequence of bytes in memory to search. Memory maps can provide this, but failing that, we would need to read the entire file into memory before starting a search.</p>
-<p>Other than using heap space proportional to the file being searched, the fundamental issue with this flag is when it's used in conjunction with searching stdin. Namely, ripgrep will need to block until EOF is read on stdin before a search can even start. Alternatively, multiline search simply wouldn't be allowed on stdin. The silver searcher will in fact do this silently when searching stdin:</p>
-<pre><code>/* TODO: this will only match single lines. multi-line regexes silently don't match */
+            <div class="timeline-body"><p>I&#x27;m going to re-open this, because it&#x27;s one of the most highly requested features.</p>
+<p>Nothing has changed about the <a href="https://github.com/BurntSushi/ripgrep/issues/176#issuecomment-253652811">problems I outlined above</a>. However, multiline search needn&#x27;t be the default. If we provide it as a flag, then we can do what we need to do to support multiline search only when that flag is provided. The critical thing that multiline search needs is a <em>complete</em> sequence of bytes in memory to search. Memory maps can provide this, but failing that, we would need to read the entire file into memory before starting a search.</p>
+<p>Other than using heap space proportional to the file being searched, the fundamental issue with this flag is when it&#x27;s used in conjunction with searching stdin. Namely, ripgrep will need to block until EOF is read on stdin before a search can even start. Alternatively, multiline search simply wouldn&#x27;t be allowed on stdin. The silver searcher will in fact do this silently when searching stdin:</p>
+<pre><code>/* TODO: this will only match single lines. multi-line regexes silently don&#x27;t match */
 void search_stream(FILE *stream, const char *path) {
     // ...
 }
 </code></pre>
-<p>I don't like the &quot;silent&quot; idea, but stopping ripgrep with an error is certainly something I'd be open to. Neither seem like good choices to me, but I don't think it should block this feature altogether.</p>
+<p>I don&#x27;t like the &quot;silent&quot; idea, but stopping ripgrep with an error is certainly something I&#x27;d be open to. Neither seem like good choices to me, but I don&#x27;t think it should block this feature altogether.</p>
 <p>N.B. This is a significant feature and it would have to be part of the libripgrep effort.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-17 01:22</div>
-            <div class="timeline-body"><p>The other thing I forgot to mention is that multiline search will negate inner literal optimizations. Normal prefix and, in special cases, suffix, literal optimizations will still be performed as part of the regex engine. (I've long thought about making inner literal optimizations work on arbitrary strings, but it's hard.)</p>
+            <div class="timeline-body"><p>The other thing I forgot to mention is that multiline search will negate inner literal optimizations. Normal prefix and, in special cases, suffix, literal optimizations will still be performed as part of the regex engine. (I&#x27;ve long thought about making inner literal optimizations work on arbitrary strings, but it&#x27;s hard.)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">libripgrep</span> added by @BurntSushi on 2017-03-17 01:22</div>
+            <div class="event">Label <span class="label">libripgrep</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-17 01:22</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "libripgrep" by @BurntSushi on 2017-03-17 01:23</div>
+            <div class="event">Added to milestone &quot;libripgrep&quot; by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-17 01:23</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/gulshan">@gulshan</a> on 2017-03-17 01:35</div>
@@ -104,37 +104,37 @@ void search_stream(FILE *stream, const char *path) {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/d-akara">@d-akara</a> on 2017-03-17 01:36</div>
-            <div class="timeline-body"><p>How significant are the trade-offs to the user experience?<br />
-If doing multiline is more expensive, I'm fine with that as long as single line performance is not impacted.</p>
+            <div class="timeline-body"><p>How significant are the trade-offs to the user experience?<br>
+If doing multiline is more expensive, I&#x27;m fine with that as long as single line performance is not impacted.</p>
 <p>Would you actually need a special flag to ripgrep? or can you reliably determine from the expression itself?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-17 01:49</div>
-            <div class="timeline-body"><p>Great questions! Keep'em coming.</p>
+            <div class="timeline-body"><p>Great questions! Keep&#x27;em coming.</p>
 <blockquote>
 <p>Assuming single lines are being loaded for search now</p>
 </blockquote>
-<p>They are not. If they were, ripgrep would be very slow. The reasons for this are a bit subtle, but basically, &quot;it's faster to search a huge chunk than it is to break it into little pieces and then search each piece.&quot; &quot;Huge chunk&quot; in this case might be the size of some internal buffer, perhaps, 8KB.</p>
-<p>If you're curious about how a fast grep tool works in more detail, check out this section in my blog post on ripgrep: http://blog.burntsushi.net/ripgrep/#anatomy-of-a-grep</p>
+<p>They are not. If they were, ripgrep would be very slow. The reasons for this are a bit subtle, but basically, &quot;it&#x27;s faster to search a huge chunk than it is to break it into little pieces and then search each piece.&quot; &quot;Huge chunk&quot; in this case might be the size of some internal buffer, perhaps, 8KB.</p>
+<p>If you&#x27;re curious about how a fast grep tool works in more detail, check out this section in my blog post on ripgrep: http://blog.burntsushi.net/ripgrep/#anatomy-of-a-grep</p>
 <blockquote>
 <p>can that be changed to n lines, n set to 10 or 20 or something like that? While a line gets in, another gets out of the load in FIFO fashion? This will not be technically correct for all cases, but may be enough for most cases.</p>
 </blockquote>
-<p>If you have a regex like <code>a\s+b</code>, then it's not possible to determine the length of the match up front. You have three choices:</p>
+<p>If you have a regex like <code>a\s+b</code>, then it&#x27;s not possible to determine the length of the match up front. You have three choices:</p>
 <ol>
-<li>You use a regex engine that supports incremental search. (This is somewhat at odds with performance if &quot;incremental&quot; means &quot;byte at a time.&quot; So for something like this, you'd need an incremental engine that can process chunks at a time.) ripgrep's regex engine doesn't support this.</li>
+<li>You use a regex engine that supports incremental search. (This is somewhat at odds with performance if &quot;incremental&quot; means &quot;byte at a time.&quot; So for something like this, you&#x27;d need an incremental engine that can process chunks at a time.) ripgrep&#x27;s regex engine doesn&#x27;t support this.</li>
 <li>You feed the regex engine every byte you got. (The Plan.)</li>
-<li>You arbitrarily cap the size of the match. This will invariably get things wrong and there's no way to escape.</li>
+<li>You arbitrarily cap the size of the match. This will invariably get things wrong and there&#x27;s no way to escape.</li>
 </ol>
-<p>I still actually strongly believe that multiline search is a very niche feature, but it is one that can be quite useful when the situation calls for it. (A text editor is perhaps one such situation, but ripgrep is first and foremost a command line tool where multiline search feels a lot less common.) Therefore, taking approach (3) doesn't seem worth it. In the common case, memory maps will work just fine and your OS will manage the memory for you. It's only the corner cases that are sub-optimal: when memory maps can't be used (e.g., on virtual files or stdin).</p>
+<p>I still actually strongly believe that multiline search is a very niche feature, but it is one that can be quite useful when the situation calls for it. (A text editor is perhaps one such situation, but ripgrep is first and foremost a command line tool where multiline search feels a lot less common.) Therefore, taking approach (3) doesn&#x27;t seem worth it. In the common case, memory maps will work just fine and your OS will manage the memory for you. It&#x27;s only the corner cases that are sub-optimal: when memory maps can&#x27;t be used (e.g., on virtual files or stdin).</p>
 <blockquote>
-<p>How significant are the trade-offs to the user experience? If doing multiline is more expensive, I'm fine with that as long as single line performance is not impacted.</p>
+<p>How significant are the trade-offs to the user experience? If doing multiline is more expensive, I&#x27;m fine with that as long as single line performance is not impacted.</p>
 </blockquote>
-<p>If <code>--multiline</code> is behind a flag, then I'm pretty confident that the standard UX of ripgrep won't be impacted. Including performance.</p>
+<p>If <code>--multiline</code> is behind a flag, then I&#x27;m pretty confident that the standard UX of ripgrep won&#x27;t be impacted. Including performance.</p>
 <blockquote>
 <p>Would you actually need a special flag to ripgrep? or can you reliably determine from the expression itself?</p>
 </blockquote>
-<p>A flag is 100% necessary. A regex like <code>a\s+b</code> shouldn't match across multiple lines by default, because that's what we've all come to expect from line oriented searchers. But it is totally plausible that you might <em>want</em> it to. That's when you'd pass a flag.</p>
+<p>A flag is 100% necessary. A regex like <code>a\s+b</code> shouldn&#x27;t match across multiple lines by default, because that&#x27;s what we&#x27;ve all come to expect from line oriented searchers. But it is totally plausible that you might <em>want</em> it to. That&#x27;s when you&#x27;d pass a flag.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -144,7 +144,7 @@ If doing multiline is more expensive, I'm fine with that as long as single line 
 </blockquote>
 <p>I would agree use is actually niche, but desire to use is not.</p>
 <ol>
-<li>It is a bit non intuitive how to properly write a multiline expression.  Especially if the engine doesn't support the <code>. dotAll</code> matching and even worse if you want to constrain to a range like next N lines.</li>
+<li>It is a bit non intuitive how to properly write a multiline expression.  Especially if the engine doesn&#x27;t support the <code>. dotAll</code> matching and even worse if you want to constrain to a range like next N lines.</li>
 <li>Due to 1, many use incomplete results although not always knowingly.  Most coding languages can have line breaks almost anywhere.</li>
 </ol>
 <p>I would say if you are searching for 2 terms and completeness is important then using multiline would often be your default.  However, writing an expression to find termA followed by termB within 5 or less lines is likely not something that rolls off of the fingertips of someone who occasionally uses regular expressions although I think many would find it useful and use such expressions if more intuitive to write.</p>
@@ -152,13 +152,13 @@ If doing multiline is more expensive, I'm fine with that as long as single line 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-17 10:58</div>
-            <div class="timeline-body"><p>@dakaraphi Good points. I'd like to use your comment to <em>constrain</em> this feature, namely, that multiline search is the ability to apply a regex whose matches may span an arbitrary number of lines.</p>
+            <div class="timeline-body"><p>@dakaraphi Good points. I&#x27;d like to use your comment to <em>constrain</em> this feature, namely, that multiline search is the ability to apply a regex whose matches may span an arbitrary number of lines.</p>
 <p>With that said:</p>
 <ol>
 <li>It would be plausible to make <code>.</code> match <code>\n</code> by default if multiline mode is enabled.</li>
-<li>The use case of &quot;where do <code>A</code> and <code>B</code> co-occur within N lines of each other&quot; is definitely something I agree can be useful. It's possible to some extent to do this with a regex, e.g., <code>A([^\n]*\n){0,5}[^\n]*B|B([^\n]*\n){0,5}[^\n]*A</code>, but that is a little painful. Extending this to three terms would probably be horrifying.</li>
+<li>The use case of &quot;where do <code>A</code> and <code>B</code> co-occur within N lines of each other&quot; is definitely something I agree can be useful. It&#x27;s possible to some extent to do this with a regex, e.g., <code>A([^\n]*\n){0,5}[^\n]*B|B([^\n]*\n){0,5}[^\n]*A</code>, but that is a little painful. Extending this to three terms would probably be horrifying.</li>
 </ol>
-<p>I think (2) is something that's enabled by multiline search, although, today, you can do something similar with contexts: <code>rg B -C5 | rg A -C5</code> for example works to some extent. Regardless, it might be wiser to categorize this into a separate feature whose UX can be more thoughtfully designed. Others have requested similarish things, as in #346 and #360. <a href="https://github.com/svent/sift"><code>sift</code></a> is a tool that has support for this kind of matching, so we may be able to crib ideas from them.</p>
+<p>I think (2) is something that&#x27;s enabled by multiline search, although, today, you can do something similar with contexts: <code>rg B -C5 | rg A -C5</code> for example works to some extent. Regardless, it might be wiser to categorize this into a separate feature whose UX can be more thoughtfully designed. Others have requested similarish things, as in #346 and #360. <a href="https://github.com/svent/sift"><code>sift</code></a> is a tool that has support for this kind of matching, so we may be able to crib ideas from them.</p>
 <p>With all that said, we must be careful not to get too far away from what ripgrep is supposed to be good at doing: <em>searching lines</em>. :-) I say this because there <em>has</em> to be a point at which &quot;write code for your specialized search&quot; becomes a valid thing to say. The key is figuring out where that point is.</p>
 </div>
         </div>
@@ -172,8 +172,8 @@ If doing multiline is more expensive, I'm fine with that as long as single line 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-17 12:54</div>
-            <div class="timeline-body"><p>@dakaraphi Sorry, the intention of me saying that was to push UX concerns like &quot;how do I find co-occurring terms, A and B, within a fixed number of lines&quot; out of multiline support. i.e., I don't think that particular UX should be addressed as part of standard multiline support, but should instead be considered as a separate feature (that may or may not happen). :-)</p>
-<p>I don't think there's anything ripgrep would do differently in terms of UX with respect to the silver searcher, other than 1) not doing it by default and 2) probably not doing silent things.</p>
+            <div class="timeline-body"><p>@dakaraphi Sorry, the intention of me saying that was to push UX concerns like &quot;how do I find co-occurring terms, A and B, within a fixed number of lines&quot; out of multiline support. i.e., I don&#x27;t think that particular UX should be addressed as part of standard multiline support, but should instead be considered as a separate feature (that may or may not happen). :-)</p>
+<p>I don&#x27;t think there&#x27;s anything ripgrep would do differently in terms of UX with respect to the silver searcher, other than 1) not doing it by default and 2) probably not doing silent things.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -183,32 +183,32 @@ If doing multiline is more expensive, I'm fine with that as long as single line 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/d-akara">@d-akara</a> on 2017-03-17 14:22</div>
-            <div class="timeline-body"><p>I'm not sure about command line tools.  Prior to using VS Code I was using Brackets which supported multiline file search.  I believe other editors like Sublime, Notepad++ etc also support multiline.</p>
+            <div class="timeline-body"><p>I&#x27;m not sure about command line tools.  Prior to using VS Code I was using Brackets which supported multiline file search.  I believe other editors like Sublime, Notepad++ etc also support multiline.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/d-akara">@d-akara</a> on 2017-03-17 14:25</div>
             <div class="timeline-body"><blockquote>
-<p>I don't think that particular UX should be addressed as part of standard multiline support, but should instead be considered as a separate feature (that may or may not happen). :-)</p>
+<p>I don&#x27;t think that particular UX should be addressed as part of standard multiline support, but should instead be considered as a separate feature (that may or may not happen). :-)</p>
 </blockquote>
-<p>ok right.  Yes I'm not sure if that really should be part of something like ripgrep or not.  For example, I've been thinking about maybe writing some extension for VS Code like a regex helper or such that would take something like common patterns or templates and you just plugin the values for such use cases and it would generate the regex.</p>
+<p>ok right.  Yes I&#x27;m not sure if that really should be part of something like ripgrep or not.  For example, I&#x27;ve been thinking about maybe writing some extension for VS Code like a regex helper or such that would take something like common patterns or templates and you just plugin the values for such use cases and it would generate the regex.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-17 14:38</div>
-            <div class="timeline-body"><p>@dakaraphi Great! I think we're on the same page now. :-) Thanks for poking!</p>
+            <div class="timeline-body"><p>@dakaraphi Great! I think we&#x27;re on the same page now. :-) Thanks for poking!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2017-04-09 13:13</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-04-09 13:13</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/rshpeley">@rshpeley</a> on 2017-04-30 05:34</div>
             <div class="timeline-body"><p>@dakaraphi directed me here from Microsoft/vscode #13155</p>
-<p>It looks like one of the most common requests for searching across multiple lines is related to text editors. At the moment, my needs are very simple. If I can get a match across multiple files in a project for a multiline selection -- even if it's fully literal -- I could work with it. For most text editors, the menu option to search across multiple lines is separate than a simple search, and so a ripgrep flag, as @BurntSushi suggested, would naturally fit this use case.</p>
-<p>I'm still making it through @BurntSushi's <em>anatomy of a grep</em> link, but it appears to me that a multiline search for text editors mostly requires a literal search with some multiple literals (white space, line endings) and therefore the search won't even make it to the regex engine for these cases.</p>
-<p>Isn't the multiple line selection just a contiguous sequence of bytes (in the fully literal case) to be matched in a buffer? Or am I missing something related to optimisation here?</p>
-<p>I'm sure people will come up with cases where a regex in a multiline search/replace would be mighty handy, but I think support for the simpler multiple literal multiline case would be a good start to give some text editors (such as vscode and atom) missing functionality.</p>
+<p>It looks like one of the most common requests for searching across multiple lines is related to text editors. At the moment, my needs are very simple. If I can get a match across multiple files in a project for a multiline selection -- even if it&#x27;s fully literal -- I could work with it. For most text editors, the menu option to search across multiple lines is separate than a simple search, and so a ripgrep flag, as @BurntSushi suggested, would naturally fit this use case.</p>
+<p>I&#x27;m still making it through @BurntSushi&#x27;s <em>anatomy of a grep</em> link, but it appears to me that a multiline search for text editors mostly requires a literal search with some multiple literals (white space, line endings) and therefore the search won&#x27;t even make it to the regex engine for these cases.</p>
+<p>Isn&#x27;t the multiple line selection just a contiguous sequence of bytes (in the fully literal case) to be matched in a buffer? Or am I missing something related to optimisation here?</p>
+<p>I&#x27;m sure people will come up with cases where a regex in a multiline search/replace would be mighty handy, but I think support for the simpler multiple literal multiline case would be a good start to give some text editors (such as vscode and atom) missing functionality.</p>
 <p>btw, a most excellent ripgrep article @BurntSushi!</p>
 </div>
         </div>
@@ -219,14 +219,14 @@ If doing multiline is more expensive, I'm fine with that as long as single line 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-04-30 11:57</div>
-            <div class="timeline-body"><p>@rshpeley I'm having a hard time understanding your comment. Do you have a specific question?</p>
+            <div class="timeline-body"><p>@rshpeley I&#x27;m having a hard time understanding your comment. Do you have a specific question?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/rshpeley">@rshpeley</a> on 2017-04-30 13:42</div>
-            <div class="timeline-body"><p>@BurntSushi I'm having a hard time understanding why you don't understand -- in particular your now edited comment where you previously said,</p>
+            <div class="timeline-body"><p>@BurntSushi I&#x27;m having a hard time understanding why you don&#x27;t understand -- in particular your now edited comment where you previously said,</p>
 <p><em>(Implementation suggestions are welcome, but I strongly advise reading the existing implementation before making them.)</em></p>
-<p>If I had a specific question, other than the topic of this one, I would have started a new issue. Perhaps it would be better for you to state what you don't understand from my previous post.</p>
+<p>If I had a specific question, other than the topic of this one, I would have started a new issue. Perhaps it would be better for you to state what you don&#x27;t understand from my previous post.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -236,7 +236,7 @@ If doing multiline is more expensive, I'm fine with that as long as single line 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/waldyrious">@waldyrious</a> on 2017-04-30 19:58</div>
-            <div class="timeline-body"><p>Sorry to interject, but although I agree @rshpeley's comment was perhaps a bit longer (or less structured) than ideal, I believe it does contain sufficient elements to provide the relevant information, particularly:</p>
+            <div class="timeline-body"><p>Sorry to interject, but although I agree @rshpeley&#x27;s comment was perhaps a bit longer (or less structured) than ideal, I believe it does contain sufficient elements to provide the relevant information, particularly:</p>
 <blockquote>
 <p>Are you making a suggestion on the next step?</p>
 <blockquote>
@@ -247,7 +247,7 @@ If doing multiline is more expensive, I'm fine with that as long as single line 
 <blockquote>
 <p>Are there specific questions I can help answer for you?</p>
 <blockquote>
-<p>Isn't the multiple line selection just a contiguous sequence of bytes (in the fully literal case) to be matched in a buffer? Or am I missing something related to optimisation here?</p>
+<p>Isn&#x27;t the multiple line selection just a contiguous sequence of bytes (in the fully literal case) to be matched in a buffer? Or am I missing something related to optimisation here?</p>
 </blockquote>
 </blockquote>
 </div>
@@ -257,9 +257,9 @@ If doing multiline is more expensive, I'm fine with that as long as single line 
             <div class="timeline-body"><blockquote>
 <p>I think support for the simpler multiple literal multiline case would be a good start</p>
 </blockquote>
-<p>I disagree. I'm not particularly interested in half baked solutions. Moreover, I don't think &quot;simpler&quot; actually carries through to the implementation.</p>
+<p>I disagree. I&#x27;m not particularly interested in half baked solutions. Moreover, I don&#x27;t think &quot;simpler&quot; actually carries through to the implementation.</p>
 <blockquote>
-<p>Isn't the multiple line selection just a contiguous sequence of bytes (in the fully literal case) to be matched in a buffer? Or am I missing something related to optimisation here?</p>
+<p>Isn&#x27;t the multiple line selection just a contiguous sequence of bytes (in the fully literal case) to be matched in a buffer? Or am I missing something related to optimisation here?</p>
 </blockquote>
 <p>All searching happens through the <code>grep</code> crate, and the interface is a regex. Literal optimizations are an implementation detail.</p>
 <p>I would be happy to answer more specific questions about the code.</p>
@@ -268,13 +268,13 @@ If doing multiline is more expensive, I'm fine with that as long as single line 
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kasperschnack">@kasperschnack</a> on 2018-03-26 10:09</div>
             <div class="timeline-body"><p>I was looking for this feature and found a hacky way of matching only files that contained both(all) patterns</p>
-<p><code>rg -C 9999 pattern1 | rg pattern2</code>. I know, it isn't pretty. But it gets the job done :)</p>
+<p><code>rg -C 9999 pattern1 | rg pattern2</code>. I know, it isn&#x27;t pretty. But it gets the job done :)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-06-26 00:19</div>
-            <div class="timeline-body"><p>I am making decent progress on multi line mode in ripgrep. In the course of implementing it, I came across a question that doesn't have an obvious answer (to me anyway) and I was wondering if anyone had any thoughts on it.</p>
-<p>In particular, when multi line mode is enabled (which is an opt-in), what should the semantics of <code>.</code> be? In most regex engines, a <code>.</code> will match any character except for <code>\n</code>. In ripgrep today, we obviously don't have to worry about this because every match is restricted to a single line, so a <code>.</code> can't match through a <code>\n</code>. But in multi line mode, it's not clear to me what the <strong>default</strong> behavior should be.</p>
+            <div class="timeline-body"><p>I am making decent progress on multi line mode in ripgrep. In the course of implementing it, I came across a question that doesn&#x27;t have an obvious answer (to me anyway) and I was wondering if anyone had any thoughts on it.</p>
+<p>In particular, when multi line mode is enabled (which is an opt-in), what should the semantics of <code>.</code> be? In most regex engines, a <code>.</code> will match any character except for <code>\n</code>. In ripgrep today, we obviously don&#x27;t have to worry about this because every match is restricted to a single line, so a <code>.</code> can&#x27;t match through a <code>\n</code>. But in multi line mode, it&#x27;s not clear to me what the <strong>default</strong> behavior should be.</p>
 <ul>
 <li>We could make <code>.</code> match <code>\n</code> by default when multi line mode is enabled, which seems somewhat natural, since multi line mode had to be explicitly enabled. However, I worry that folks will find this surprising since I kind of think that most people have come to expect <code>.</code> to not match <code>\n</code>.</li>
 <li>We could make <code>.</code> not match <code>\n</code> by default when multi line mode is enabled, but here I feel like this might also be surprising since folks might be expecting this sort of thing to &quot;just work&quot; since they had to opt-in to multi line search.</li>
@@ -285,8 +285,8 @@ If doing multiline is more expensive, I'm fine with that as long as single line 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/varkor">@varkor</a> on 2018-06-26 00:51</div>
-            <div class="timeline-body"><p>Personally, I've always found it frustrating that <code>.</code> does not match newlines, as when I want to match any character, I mean any character, and having to special case <code>\n</code> each time is a pain.</p>
-<p>I think though people might have come to expect <code>.</code> doesn't match <code>\n</code>, that's more often than not an inconvenience rather than a feature. I think, as you say, having opted into multi-line mode is a sufficient reason to override this behaviour.</p>
+            <div class="timeline-body"><p>Personally, I&#x27;ve always found it frustrating that <code>.</code> does not match newlines, as when I want to match any character, I mean any character, and having to special case <code>\n</code> each time is a pain.</p>
+<p>I think though people might have come to expect <code>.</code> doesn&#x27;t match <code>\n</code>, that&#x27;s more often than not an inconvenience rather than a feature. I think, as you say, having opted into multi-line mode is a sufficient reason to override this behaviour.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -295,21 +295,21 @@ If doing multiline is more expensive, I'm fine with that as long as single line 
 <pre><code>$ cat testing
 a
 b
-$ ag '...' testing
-$ ag '(?s)...' testing
+$ ag &#x27;...&#x27; testing
+$ ag &#x27;(?s)...&#x27; testing
 1:a
 2:b
 </code></pre>
-<p>Not to imply that we should definitely follow the silver searcher's lead, but it's an interesting data point.</p>
+<p>Not to imply that we should definitely follow the silver searcher&#x27;s lead, but it&#x27;s an interesting data point.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/d-akara">@d-akara</a> on 2018-06-26 14:00</div>
-            <div class="timeline-body"><p>Most implementations have a 'dotall' flag.  Typically 's'</p>
+            <div class="timeline-body"><p>Most implementations have a &#x27;dotall&#x27; flag.  Typically &#x27;s&#x27;</p>
 <p>For example:
-PCRE uses 's' http://php.net/manual/en/reference.pcre.pattern.modifiers.php
-JavaScript will use 's' https://github.com/tc39/proposal-regexp-dotall-flag
-Python uses 's' https://docs.python.org/2/library/re.html#re.S</p>
+PCRE uses &#x27;s&#x27; http://php.net/manual/en/reference.pcre.pattern.modifiers.php
+JavaScript will use &#x27;s&#x27; https://github.com/tc39/proposal-regexp-dotall-flag
+Python uses &#x27;s&#x27; https://docs.python.org/2/library/re.html#re.S</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -320,14 +320,14 @@ Python uses 's' https://docs.python.org/2/library/re.html#re.S</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/d-akara">@d-akara</a> on 2018-06-26 14:24</div>
-            <div class="timeline-body"><p>I guess I'm stating convention is already well established that you must opt-in to dotall.
-Although convenient, I'm not sure if enabling multi-line should change the meaning of <code>.</code></p>
+            <div class="timeline-body"><p>I guess I&#x27;m stating convention is already well established that you must opt-in to dotall.
+Although convenient, I&#x27;m not sure if enabling multi-line should change the meaning of <code>.</code></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ssokolow">@ssokolow</a> on 2018-06-26 14:29</div>
             <div class="timeline-body"><p>@dakaraphi PCRE, JavaScript, and Python all have regex engines that operate in multi-line-capable mode by default. ripgrep would require an option to opt into that mode.</p>
-<p>The question is whether &quot;enable multi-line matching, but keep <code>.</code> in non-dotall mode&quot; is a common enough case to justify &quot;enable multi-line matching&quot; not implying dotall. (Keeping in mind that it's always possible to turn dotall back off using <code>(?-s:.)</code>.)</p>
+<p>The question is whether &quot;enable multi-line matching, but keep <code>.</code> in non-dotall mode&quot; is a common enough case to justify &quot;enable multi-line matching&quot; not implying dotall. (Keeping in mind that it&#x27;s always possible to turn dotall back off using <code>(?-s:.)</code>.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -339,15 +339,15 @@ Although convenient, I'm not sure if enabling multi-line should change the meani
             <div class="timeline-header">Comment by <a href="https://github.com/d-akara">@d-akara</a> on 2018-06-26 14:37</div>
             <div class="timeline-body"><p>I was considering if one were switching regex implementations how likely they might need to alter their existing regex to work with ripgrep.
 Seems either way you are likely that you would have to alter the existing regex being that multiline is already default from other implementations.</p>
-<p>In such case, there doesn't seem to be much gained from keeping the original precedent.  I agree that <code>.</code> should default as dotall</p>
+<p>In such case, there doesn&#x27;t seem to be much gained from keeping the original precedent.  I agree that <code>.</code> should default as dotall</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2018-06-26 14:58</div>
-            <div class="timeline-body"><p>I don't think i've ever seen a regular-expression implementation that automatically enables <code>DOTALL</code> (or equivalent) in 'multi-line' mode. (To say 'multi-line' here is a bit confusing, because in PCRE and, i'm pretty sure, the Rust engine as well, patterns are <em>always</em> matched across lines, and the <code>MULTILINE</code> option just controls whether <code>^</code> and <code>$</code> match only against the full string or against each line in it.)</p>
+            <div class="timeline-body"><p>I don&#x27;t think i&#x27;ve ever seen a regular-expression implementation that automatically enables <code>DOTALL</code> (or equivalent) in &#x27;multi-line&#x27; mode. (To say &#x27;multi-line&#x27; here is a bit confusing, because in PCRE and, i&#x27;m pretty sure, the Rust engine as well, patterns are <em>always</em> matched across lines, and the <code>MULTILINE</code> option just controls whether <code>^</code> and <code>$</code> match only against the full string or against each line in it.)</p>
 <p>One major example of an end-user application of regex searching i can think of is Sublime Text, whose search function <em>does</em> operate across lines by default, but, again, it does <em>not</em> enable the <code>DOTALL</code> behaviour.</p>
-<p>Sounds like most of the people who've commented so far are in favour of defaulting to <code>DOTALL</code>, but idk, might be worth considering that it will be different from most other search tools. I personally don't feel super strongly either way, it's easy enough to change if i ever need that functionality.</p>
-<p>Whichever way you decide, if you're worried about the UX, you could always offer an additional option in <code>rg</code> to control the default flags. Like a <code>--regex-modes=-s</code> or whatever that people could put in their alias/config.</p>
+<p>Sounds like most of the people who&#x27;ve commented so far are in favour of defaulting to <code>DOTALL</code>, but idk, might be worth considering that it will be different from most other search tools. I personally don&#x27;t feel super strongly either way, it&#x27;s easy enough to change if i ever need that functionality.</p>
+<p>Whichever way you decide, if you&#x27;re worried about the UX, you could always offer an additional option in <code>rg</code> to control the default flags. Like a <code>--regex-modes=-s</code> or whatever that people could put in their alias/config.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -355,20 +355,20 @@ Seems either way you are likely that you would have to alter the existing regex 
             <div class="timeline-body"><p>A point of clarity: regex engines often expose both &quot;multiline&quot; flags and &quot;dotall&quot; flags. They do different but somewhat related things. Multiline flags typically impact the behavior of <code>^</code> and <code>$</code>. Namely, when multiline mode is disabled, <code>^</code> will only match at the beginning of a haystack where as if mulitline mode is enabled, then <code>^</code> can also match the position immediately following the line terminator. This proceeds analogously for <code>$</code>. (Regex engines also often expose <code>\A</code> and <code>\z</code> as variants of <code>^</code> and <code>$</code> that always behave as if multiline mode is disabled.)</p>
 <p>As far as I know, most regex engines have both of these modes disabled by default. That is, <code>^/$</code> only match at the beginning/end of a haystack and <code>.</code> never matches <code>\n</code>.</p>
 <p>Today, ripgrep always enables multiline mode for the regex engine (such that <code>^/$</code> maybe after/before line terminators). The question of whether <code>.</code> matches a line terminator is moot because ripgrep specifically forbids this.</p>
-<p>In a world where &quot;multiline search&quot; is enabled (completely unrelated to the &quot;mulitline mode&quot; mentioned above for regexes), it's less clear what the defaults for these should be. I'm inclined to continue to keep multiline mode in the regex itself enabled by default. The dotall flag is where I'm kind of hung up.</p>
-<p>@okdana A <code>--regex-modes</code> flag is interesting. I'd be sad if we had to resort to that, but yeah, I can kind of see that happening. (And sorry, I typed out most of this comment before I saw yours, so apologies for re-explaining some things!)</p>
+<p>In a world where &quot;multiline search&quot; is enabled (completely unrelated to the &quot;mulitline mode&quot; mentioned above for regexes), it&#x27;s less clear what the defaults for these should be. I&#x27;m inclined to continue to keep multiline mode in the regex itself enabled by default. The dotall flag is where I&#x27;m kind of hung up.</p>
+<p>@okdana A <code>--regex-modes</code> flag is interesting. I&#x27;d be sad if we had to resort to that, but yeah, I can kind of see that happening. (And sorry, I typed out most of this comment before I saw yours, so apologies for re-explaining some things!)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ssokolow">@ssokolow</a> on 2018-06-26 15:05</div>
-            <div class="timeline-body"><p>I should probably also have clarified that I was contrasting the behaviour of PCRE, JavaScript, and Python's regex engines with the behaviour ripgrep currently imposes on Rust's regex engine rather than the bare capabilities of the <code>regex</code> crate.</p>
+            <div class="timeline-body"><p>I should probably also have clarified that I was contrasting the behaviour of PCRE, JavaScript, and Python&#x27;s regex engines with the behaviour ripgrep currently imposes on Rust&#x27;s regex engine rather than the bare capabilities of the <code>regex</code> crate.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/cosmicexplorer">@cosmicexplorer</a> on 2018-07-04 14:08</div>
-            <div class="timeline-body"><p>If I'm understanding it correctly, having the dotall flag enabled by default would make something like <code>name1.*name2</code> potentially match two consecutive lines <code>name1\nname2</code>, as well as <code>name1name2</code>? I don't know if I'm missing a use case, but I find myself very often using <code>&lt;pattern1&gt;.*&lt;pattern2&gt;</code> when I use ripgrep from the command line, much more than I would expect to find <code>.</code> matching a newline as useful. I can see dotall being on by default as requiring a lot of typing to avoid accidentally matching something much too large across multiple lines (not a perf problem, but could cover up many intended matches in a single big match depending on greediness). Anecdotally, when using <code>isearch</code> in emacs interactively, I have found it tolerable to type out <code>\(.\|\n\)</code> to express a match across lines (because I'm far less often interested in matching that) and since ripgrep is PCRE (and searching more than one file at a time) that's 3 fewer backslashes, so it would be even more tolerable.</p>
-<p>I also think the conjunction of multiline matching mode on by default, and dotall mode off by default, makes sense -- if you were to do <code>rg -l '^a.*b' | xargs sed -rie 's/^a.*b//g'</code> (which I've done), you currently can expect <code>.</code> to match similarly for <code>rg</code> and <code>sed</code>. I don't think it's necessary to follow the lead of other tools' interfaces if that's not the best, but I also think that conjunction of options is a highly sensible default, and getting that parity with other tools seems like a useful bonus, again unless that parity requires other compromises.</p>
-<p>All of the above is clearly anecdotal, I just wanted to comment because I feel like I have (anecdotally) definitely run into the problem of accidentally matching too much when running interactive searches when <code>.</code> matches a newline (when I have set up my search flags to do that, in other search tools). I think either approach would work -- but I really do think the frequency of searches intended to span multiple lines will be a lot lower (and typing out <code>(?s:.)</code> will then be more tolerable), and for someone who's not familiar with the default, accidentally matching their whole file (in a pathological case) could be potentially very confusing, even if the reasoning is in the help page.</p>
+            <div class="timeline-body"><p>If I&#x27;m understanding it correctly, having the dotall flag enabled by default would make something like <code>name1.*name2</code> potentially match two consecutive lines <code>name1\nname2</code>, as well as <code>name1name2</code>? I don&#x27;t know if I&#x27;m missing a use case, but I find myself very often using <code>&lt;pattern1&gt;.*&lt;pattern2&gt;</code> when I use ripgrep from the command line, much more than I would expect to find <code>.</code> matching a newline as useful. I can see dotall being on by default as requiring a lot of typing to avoid accidentally matching something much too large across multiple lines (not a perf problem, but could cover up many intended matches in a single big match depending on greediness). Anecdotally, when using <code>isearch</code> in emacs interactively, I have found it tolerable to type out <code>\(.\|\n\)</code> to express a match across lines (because I&#x27;m far less often interested in matching that) and since ripgrep is PCRE (and searching more than one file at a time) that&#x27;s 3 fewer backslashes, so it would be even more tolerable.</p>
+<p>I also think the conjunction of multiline matching mode on by default, and dotall mode off by default, makes sense -- if you were to do <code>rg -l &#x27;^a.*b&#x27; | xargs sed -rie &#x27;s/^a.*b//g&#x27;</code> (which I&#x27;ve done), you currently can expect <code>.</code> to match similarly for <code>rg</code> and <code>sed</code>. I don&#x27;t think it&#x27;s necessary to follow the lead of other tools&#x27; interfaces if that&#x27;s not the best, but I also think that conjunction of options is a highly sensible default, and getting that parity with other tools seems like a useful bonus, again unless that parity requires other compromises.</p>
+<p>All of the above is clearly anecdotal, I just wanted to comment because I feel like I have (anecdotally) definitely run into the problem of accidentally matching too much when running interactive searches when <code>.</code> matches a newline (when I have set up my search flags to do that, in other search tools). I think either approach would work -- but I really do think the frequency of searches intended to span multiple lines will be a lot lower (and typing out <code>(?s:.)</code> will then be more tolerable), and for someone who&#x27;s not familiar with the default, accidentally matching their whole file (in a pathological case) could be potentially very confusing, even if the reasoning is in the help page.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -376,21 +376,21 @@ Seems either way you are likely that you would have to alter the existing regex 
             <div class="timeline-body"><blockquote>
 <p><code>name1.*name2</code> potentially match two consecutive lines <code>name1\nname2</code>, as well as <code>name1name2</code></p>
 </blockquote>
-<p>That's correct, yes.</p>
+<p>That&#x27;s correct, yes.</p>
 <blockquote>
-<p>I don't know if I'm missing a use case, but I find myself very often using <code>&lt;pattern1&gt;.*&lt;pattern2&gt;</code> when I use ripgrep from the command line, much more than I would expect to find multiline search useful.</p>
+<p>I don&#x27;t know if I&#x27;m missing a use case, but I find myself very often using <code>&lt;pattern1&gt;.*&lt;pattern2&gt;</code> when I use ripgrep from the command line, much more than I would expect to find multiline search useful.</p>
 </blockquote>
-<p>Multi line search will emphatically be opt-in (as noted in my comments above) and not be enabled by default. Therefore, the question here is only about what the defaults are when multi line search is enabled. The defaults when multi line search is not enabled (which is itself ripgrep's default) will not change.</p>
+<p>Multi line search will emphatically be opt-in (as noted in my comments above) and not be enabled by default. Therefore, the question here is only about what the defaults are when multi line search is enabled. The defaults when multi line search is not enabled (which is itself ripgrep&#x27;s default) will not change.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/cosmicexplorer">@cosmicexplorer</a> on 2018-07-04 14:17</div>
-            <div class="timeline-body"><p>Yes, I'm sorry, I had just edited it to reflect that I meant &quot;the ability to search across multiple lines with <code>.</code> alone&quot;, not &quot;multi-line search&quot;.</p>
+            <div class="timeline-body"><p>Yes, I&#x27;m sorry, I had just edited it to reflect that I meant &quot;the ability to search across multiple lines with <code>.</code> alone&quot;, not &quot;multi-line search&quot;.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-07-04 14:22</div>
-            <div class="timeline-body"><p>@cosmicexplorer Does that change the rest of your calculus at all? That is, in order to use multi line search, you already need to explicitly opt into it, so the thinking I had is that if <code>.</code> matches <code>\n</code> by default in multi line search, then that would be OK since you're already explicitly opting into multi line search.</p>
+            <div class="timeline-body"><p>@cosmicexplorer Does that change the rest of your calculus at all? That is, in order to use multi line search, you already need to explicitly opt into it, so the thinking I had is that if <code>.</code> matches <code>\n</code> by default in multi line search, then that would be OK since you&#x27;re already explicitly opting into multi line search.</p>
 <p>As a point of clarity, note that enabling multi line search itself by default for ripgrep proper is not up for discussion IMO. That will never happen.</p>
 </div>
         </div>
@@ -401,28 +401,28 @@ Seems either way you are likely that you would have to alter the existing regex 
 </blockquote>
 <p>Understood!</p>
 <blockquote>
-<p>...if <code>.</code> matches <code>\n</code> by default in multi line search, then that would be OK since you're already explicitly opting into multi line search.</p>
+<p>...if <code>.</code> matches <code>\n</code> by default in multi line search, then that would be OK since you&#x27;re already explicitly opting into multi line search.</p>
 </blockquote>
-<p>I was thinking about this and this logic is pretty reasonable, and could definitely justify the decision. I guess my concern is that if the default with multi-line search is that <code>.</code> matches <code>\n</code>, then I think the <code>^</code> and <code>$</code> are only going to be useful when you need to match the end of a line and have that also be the end of a string, which, if you're trying to match a pattern across multiple lines, seems like it becomes less likely to be what you want (especially since e.g. <code>$</code> in this case can be simulated anyway with <code>\n?\Z</code> I think?). That's of course unless the default pattern expands to allow <code>^</code>/<code>$</code> in the <em>middle</em> of patterns -- but that's not at all a serious suggestion.</p>
+<p>I was thinking about this and this logic is pretty reasonable, and could definitely justify the decision. I guess my concern is that if the default with multi-line search is that <code>.</code> matches <code>\n</code>, then I think the <code>^</code> and <code>$</code> are only going to be useful when you need to match the end of a line and have that also be the end of a string, which, if you&#x27;re trying to match a pattern across multiple lines, seems like it becomes less likely to be what you want (especially since e.g. <code>$</code> in this case can be simulated anyway with <code>\n?\Z</code> I think?). That&#x27;s of course unless the default pattern expands to allow <code>^</code>/<code>$</code> in the <em>middle</em> of patterns -- but that&#x27;s not at all a serious suggestion.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-07-04 14:50</div>
-            <div class="timeline-body"><p>@cosmicexplorer Hmm, that is an interesting one to noodle on. The problem is that the usefulness of <code>^/$</code> is a bit strange in general when multi line search is enabled. Namely, all we're discussing here are the semantics of <code>.</code>, but there are other commonly used character classes, such as <code>\s</code> or <code>[[:space:]]</code>, that will also be able to match through a <code>\n</code> when multi line search is enabled, which will make the interaction between <code>^/$</code> and <code>\s</code> similarly confusing as <code>^/$</code> with <code>(?s:.)</code>. But, <code>\s</code> matches much less than <code>.</code>, so the confusion may not manifest nearly as frequently.</p>
+            <div class="timeline-body"><p>@cosmicexplorer Hmm, that is an interesting one to noodle on. The problem is that the usefulness of <code>^/$</code> is a bit strange in general when multi line search is enabled. Namely, all we&#x27;re discussing here are the semantics of <code>.</code>, but there are other commonly used character classes, such as <code>\s</code> or <code>[[:space:]]</code>, that will also be able to match through a <code>\n</code> when multi line search is enabled, which will make the interaction between <code>^/$</code> and <code>\s</code> similarly confusing as <code>^/$</code> with <code>(?s:.)</code>. But, <code>\s</code> matches much less than <code>.</code>, so the confusion may not manifest nearly as frequently.</p>
 <p>I think we might just need to pick one here, and then probably provide a flag for enabling/disabling DOTALL semantics so that folks can pick their own default via an alias or ripgreprc. :-/</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/cosmicexplorer">@cosmicexplorer</a> on 2018-07-04 14:57</div>
-            <div class="timeline-body"><p>I will always advocate for &quot;just picking one&quot;, and I definitely hadn't considered the potential dilemma for character classes besides <code>.</code> that you just mentioned -- especially in the cli context (which is what we're discussing). I think if all of this is behind a non-default flag anyway it does seem to make sense to not necessarily be super concerned about the default semantics of DOTALL behind a non-default flag. And thinking again about the &quot;searching a few different patterns on the command line&quot; context I can see <code>.</code> matching newline being pretty nifty (the example in the OP in particular).</p>
+            <div class="timeline-body"><p>I will always advocate for &quot;just picking one&quot;, and I definitely hadn&#x27;t considered the potential dilemma for character classes besides <code>.</code> that you just mentioned -- especially in the cli context (which is what we&#x27;re discussing). I think if all of this is behind a non-default flag anyway it does seem to make sense to not necessarily be super concerned about the default semantics of DOTALL behind a non-default flag. And thinking again about the &quot;searching a few different patterns on the command line&quot; context I can see <code>.</code> matching newline being pretty nifty (the example in the OP in particular).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/joshtriplett">@joshtriplett</a> on 2018-07-04 18:53</div>
-            <div class="timeline-body"><p>For my part, I'd personally find it confusing and inconvenient if <code>.</code> matched newlines by default, even after opting into searches spanning lines, but that's primarily because no other regex engine does that.</p>
-<p>However, there's an interesting related issue: negated character classes do include newlines even when <code>.</code> doesn't. Even with DOTALL disabled, regex engines normally let <code>[^x]</code> match <em>any</em> character other than x, including newline. This can <em>also</em> be confusing and inconvenient, but can also sometimes be exactly what you want.</p>
-<p>I think I'd describe the distinction this way: sometimes when doing a multiline search, you still want to match something line-oriented <em>inside</em> that search, and even after opting into multiline search, when you write the line-oriented sub-search you might get surprised if the components of that sub-search match across lines.</p>
-<p>So, I'd suggest the following:</p>
+            <div class="timeline-body"><p>For my part, I&#x27;d personally find it confusing and inconvenient if <code>.</code> matched newlines by default, even after opting into searches spanning lines, but that&#x27;s primarily because no other regex engine does that.</p>
+<p>However, there&#x27;s an interesting related issue: negated character classes do include newlines even when <code>.</code> doesn&#x27;t. Even with DOTALL disabled, regex engines normally let <code>[^x]</code> match <em>any</em> character other than x, including newline. This can <em>also</em> be confusing and inconvenient, but can also sometimes be exactly what you want.</p>
+<p>I think I&#x27;d describe the distinction this way: sometimes when doing a multiline search, you still want to match something line-oriented <em>inside</em> that search, and even after opting into multiline search, when you write the line-oriented sub-search you might get surprised if the components of that sub-search match across lines.</p>
+<p>So, I&#x27;d suggest the following:</p>
 <ul>
 <li>Separate the options to enable multiline and dotall.</li>
 <li>In addition to the in-regex options like <code>(?:m)</code>, have a command-line option that enables multiline for the whole regex, and another that enables dotall. (But perhaps have a single combined option for what seems to be a common case; for instance, <code>-m</code> for multiline and <code>-M</code> for multline-with-dotall.)</li>
@@ -432,7 +432,7 @@ Seems either way you are likely that you would have to alter the existing regex 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/thijsvandien">@thijsvandien</a> on 2018-07-05 00:38</div>
-            <div class="timeline-body"><p>Coming back to the question whether there are other tools, I've been using <code>pcregrep -M</code> when I need multiline matching. There, a <code>.</code> does not match a <code>\n</code> automatically, whereas <code>\s</code> does. In fact, I wasn't able to find any option to change that.</p>
+            <div class="timeline-body"><p>Coming back to the question whether there are other tools, I&#x27;ve been using <code>pcregrep -M</code> when I need multiline matching. There, a <code>.</code> does not match a <code>\n</code> automatically, whereas <code>\s</code> does. In fact, I wasn&#x27;t able to find any option to change that.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -446,9 +446,9 @@ can extract a clew from a wisp of straw or a flake of cigar ash;
 but Doctor Watson has to have it taken out for him and dusted,
 and exhibited clearly, with a label attached.
 
-$ pcregrep 'Sherlock.Holmeses' sherlock
-$ pcregrep -M 'Sherlock.Holmeses' sherlock
-$ pcregrep -M 'Sherlock(?s:.)Holmeses' sherlock
+$ pcregrep &#x27;Sherlock.Holmeses&#x27; sherlock
+$ pcregrep -M &#x27;Sherlock.Holmeses&#x27; sherlock
+$ pcregrep -M &#x27;Sherlock(?s:.)Holmeses&#x27; sherlock
 For the Doctor Watsons of this world, as opposed to the Sherlock
 Holmeses, success in the province of detective work must always
 </code></pre>
@@ -461,38 +461,38 @@ Holmeses, success in the province of detective work must always
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mateon1">@mateon1</a> on 2018-07-19 18:41</div>
-            <div class="timeline-body"><p>I may be a bit late to comment on this issue, since the general consensus so far is to ignore the behavior  of existing regex engines and set DOTALL by default with multiline, but I'll say this anyways.</p>
+            <div class="timeline-body"><p>I may be a bit late to comment on this issue, since the general consensus so far is to ignore the behavior  of existing regex engines and set DOTALL by default with multiline, but I&#x27;ll say this anyways.</p>
 <p>My personal experience with writing multiline regexes makes me expect <code>.</code> to NOT match newlines by default. In cases where I want to match anything I usually use <code>[\s\S]</code> or a similar construct.
-I don't use DOTALL pretty much at all, since I work with many different regex engines, some of which don't support it (e.g. Javascript regexes), so I prefer to always use &quot;portable&quot; regex syntax.</p>
-<p>If DOTALL-by-default ends up being implemented, I'd like it to be possible to disable it via a command-line flag, so it'd be possible to make a shell alias that disables DOTALL without an inline flag.</p>
+I don&#x27;t use DOTALL pretty much at all, since I work with many different regex engines, some of which don&#x27;t support it (e.g. Javascript regexes), so I prefer to always use &quot;portable&quot; regex syntax.</p>
+<p>If DOTALL-by-default ends up being implemented, I&#x27;d like it to be possible to disable it via a command-line flag, so it&#x27;d be possible to make a shell alias that disables DOTALL without an inline flag.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-07-21 01:01</div>
-            <div class="timeline-body"><p>@mateon1 I'm currently leaning in the direction of not enabling <code>DOTALL</code> by default, such that <code>.</code> will not match new lines. My suspicion is that we'll want a flag to twiddle <code>DOTALL</code> either way, but I'll probably start without it.</p>
+            <div class="timeline-body"><p>@mateon1 I&#x27;m currently leaning in the direction of not enabling <code>DOTALL</code> by default, such that <code>.</code> will not match new lines. My suspicion is that we&#x27;ll want a flag to twiddle <code>DOTALL</code> either way, but I&#x27;ll probably start without it.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Kroc">@Kroc</a> on 2018-08-01 01:31</div>
-            <div class="timeline-body"><p>I think PCRE supports <code>\A</code> &amp; <code>\Z</code> for matching the start and end of input independent of <code>^</code> (start of line) &amp; <code>$</code> end of line. I am personally in favour of including newlines by default, because it's mind-numbing to write a complex 'catch-all' pattern every time you want to skip over some white-space.</p>
+            <div class="timeline-body"><p>I think PCRE supports <code>\A</code> &amp; <code>\Z</code> for matching the start and end of input independent of <code>^</code> (start of line) &amp; <code>$</code> end of line. I am personally in favour of including newlines by default, because it&#x27;s mind-numbing to write a complex &#x27;catch-all&#x27; pattern every time you want to skip over some white-space.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-01 01:34</div>
-            <div class="timeline-body"><p>@Kroc I'm having a hard time understanding your comment. Have you read the conversation above? It sounds like you're confusing things, but I can't tell for sure. If you aren't sure how to untangle your comment, then I'd suggest providing some small examples.</p>
+            <div class="timeline-body"><p>@Kroc I&#x27;m having a hard time understanding your comment. Have you read the conversation above? It sounds like you&#x27;re confusing things, but I can&#x27;t tell for sure. If you aren&#x27;t sure how to untangle your comment, then I&#x27;d suggest providing some small examples.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-06 15:29</div>
-            <div class="timeline-body"><p>All righty, so, the <a href="https://github.com/BurntSushi/ripgrep/tree/ag/libripgrep-freeze-1"><code>ag/libripgrep-freeze-1</code></a> branch has multiline powered ripgrep on it. It passes the integration test suite on Unix (I still have a bit of work to do for Windows), but if folks want to try it out, they can build it from source now. I won't force push to that branch (<code>ag/libripgrep</code> is my dev branch and i do frequently force push to it).</p>
+            <div class="timeline-body"><p>All righty, so, the <a href="https://github.com/BurntSushi/ripgrep/tree/ag/libripgrep-freeze-1"><code>ag/libripgrep-freeze-1</code></a> branch has multiline powered ripgrep on it. It passes the integration test suite on Unix (I still have a bit of work to do for Windows), but if folks want to try it out, they can build it from source now. I won&#x27;t force push to that branch (<code>ag/libripgrep</code> is my dev branch and i do frequently force push to it).</p>
 <p>Right now, you get multiline search using the <code>--multiline</code> flag. The &quot;dot all&quot; option is not enabled by default, so you need to use <code>(?s)</code> to make it possible for <code>.</code> to match <code>\n</code> in your regex.</p>
-<p>I've been using it a little bit myself, and here's my rough experience (with the added caveat that I still don't quite consider myself the target audience for this feature, so I don't really trust my experience yet):</p>
+<p>I&#x27;ve been using it a little bit myself, and here&#x27;s my rough experience (with the added caveat that I still don&#x27;t quite consider myself the target audience for this feature, so I don&#x27;t really trust my experience yet):</p>
 <ul>
-<li>Nearly every time I've run a multiline search, I've used <code>.*?</code> as a way to match through multiple lines. As a result, I've basically always needed to add <code>(?s)</code> to my regex.</li>
+<li>Nearly every time I&#x27;ve run a multiline search, I&#x27;ve used <code>.*?</code> as a way to match through multiple lines. As a result, I&#x27;ve basically always needed to add <code>(?s)</code> to my regex.</li>
 <li>The <code>--multiline</code> flag is kind of painful to type and too long. It feels like this flag is deserving of a short switch.</li>
 <li>I found myself &quot;overshooting&quot; my search quite a bit, where I would wind up with matches that spanned many more lines than I intended. It seems like a dual to <code>--max-columns</code> might be desirable here, such that matches longer than a particular number of lines are omitted.</li>
 </ul>
-<p>With respect to finding a short switch to enable multiline mode, unfortunately, both <code>-m</code> and <code>-M</code> are taken. While ripgrep has generally reserved the right to make breaking changes in accordance with semver, I am in practice pretty conservative about it, and would rather not re-purpose existing flags. Therefore, if we want a short switch for multiline mode, then we'll need to pick from the available switches. Here are the switches already in use:</p>
+<p>With respect to finding a short switch to enable multiline mode, unfortunately, both <code>-m</code> and <code>-M</code> are taken. While ripgrep has generally reserved the right to make breaking changes in accordance with semver, I am in practice pretty conservative about it, and would rather not re-purpose existing flags. Therefore, if we want a short switch for multiline mode, then we&#x27;ll need to pick from the available switches. Here are the switches already in use:</p>
 <pre><code>0 a A b B c C e E f F g h H
 i j l L m M n N o p q r s S
 t T u v V w x z
@@ -503,62 +503,62 @@ t T u v V w x z
 <p>Alphabetic lowercase switches available:</p>
 <pre><code>d k y
 </code></pre>
-<p>Wow. That's a little horrifying to look at! We're almost out of real estate.</p>
+<p>Wow. That&#x27;s a little horrifying to look at! We&#x27;re almost out of real estate.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-06 15:42</div>
             <div class="timeline-body"><p>Some random thoughts on switches to get the ball rolling, in particular, looking at how these switches are used by other tools:</p>
 <ul>
-<li><code>-d</code>/<code>-D</code> are used in GNU grep to control the behavior when a &quot;directory&quot;/&quot;device&quot; is encountered. It's conceivable ripgrep could support this one day, but I doubt it deserves a short switch.</li>
+<li><code>-d</code>/<code>-D</code> are used in GNU grep to control the behavior when a &quot;directory&quot;/&quot;device&quot; is encountered. It&#x27;s conceivable ripgrep could support this one day, but I doubt it deserves a short switch.</li>
 <li><code>-G</code> is used in GNU grep to indicate the use of &quot;basic&quot; regexes, which ripgrep will never support.</li>
-<li><code>-I</code> is related to changing how binary detection. Probably doesn't deserve a short switch.</li>
-<li><code>-J</code> isn't used by GNU grep at all.</li>
-<li><code>-K</code> isn't used by GNU grep at all.</li>
-<li><code>-O</code> isn't used by GNU grep at all.</li>
+<li><code>-I</code> is related to changing how binary detection. Probably doesn&#x27;t deserve a short switch.</li>
+<li><code>-J</code> isn&#x27;t used by GNU grep at all.</li>
+<li><code>-K</code> isn&#x27;t used by GNU grep at all.</li>
+<li><code>-O</code> isn&#x27;t used by GNU grep at all.</li>
 <li><code>-P</code> is out. I have another use in mind for this.</li>
 <li><code>-Q</code> is commonly used as &quot;literal&quot; search in other tools (ack, ag).</li>
-<li><code>-R</code> means &quot;recursive search, but follow symlinks,&quot; which doesn't really make sense in ripgrep. Plus, we already have <code>-L/--follow</code> for following symlinks.</li>
-<li><code>-U</code>, like <code>-I</code>, is also related to binary detection. Probably also doesn't deserve a short switch. This is also the second letter in <code>multiline</code>. <code>-U</code> is also used in the silver searcher to relax its filtering, but ripgrep generally uses <code>-u</code> for that. Hmm.</li>
-<li><code>-W</code> isn't used by GNU grep at all.</li>
-<li><code>-X</code> isn't used by GNU grep at all.</li>
-<li><code>-Y</code> isn't used by GNU grep at all.</li>
+<li><code>-R</code> means &quot;recursive search, but follow symlinks,&quot; which doesn&#x27;t really make sense in ripgrep. Plus, we already have <code>-L/--follow</code> for following symlinks.</li>
+<li><code>-U</code>, like <code>-I</code>, is also related to binary detection. Probably also doesn&#x27;t deserve a short switch. This is also the second letter in <code>multiline</code>. <code>-U</code> is also used in the silver searcher to relax its filtering, but ripgrep generally uses <code>-u</code> for that. Hmm.</li>
+<li><code>-W</code> isn&#x27;t used by GNU grep at all.</li>
+<li><code>-X</code> isn&#x27;t used by GNU grep at all.</li>
+<li><code>-Y</code> isn&#x27;t used by GNU grep at all.</li>
 <li><code>-Z</code> is used in GNU grep, but ripgrep uses <code>-0/--null</code> for the same functionality.</li>
 </ul>
-<p><code>-k</code> isn't used by GNU grep, although it is used in <code>ack</code>, where I believe the ripgrep equivalent would be <code>-tall</code>.</p>
+<p><code>-k</code> isn&#x27;t used by GNU grep, although it is used in <code>ack</code>, where I believe the ripgrep equivalent would be <code>-tall</code>.</p>
 <p><code>-y</code> appears to be an obsolete synonym for <code>-i</code> in GNU grep. TIL. Neat.</p>
 <p><code>ag</code> itself uses the <code>--multiline</code> flag, but of course, multiline is the default there.</p>
-<p>I'm currently liking <code>-U</code> the best, but the choices aren't great.</p>
+<p>I&#x27;m currently liking <code>-U</code> the best, but the choices aren&#x27;t great.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2018-08-06 15:49</div>
-            <div class="timeline-body"><p>You could use <code>-1</code> (the digit), as a slightly oblique reference to 'single-line' (hence <code>(?s)</code>) mode</p>
-<p>Edit: Oh, i misread; i thought you said <code>(?s)</code> was enabled by default. Maybe that doesn't make sense then. idk, <code>-U</code> seems fine</p>
+            <div class="timeline-body"><p>You could use <code>-1</code> (the digit), as a slightly oblique reference to &#x27;single-line&#x27; (hence <code>(?s)</code>) mode</p>
+<p>Edit: Oh, i misread; i thought you said <code>(?s)</code> was enabled by default. Maybe that doesn&#x27;t make sense then. idk, <code>-U</code> seems fine</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/d-akara">@d-akara</a> on 2018-08-06 16:06</div>
-            <div class="timeline-body"><p>So what I've done in the past is to limit lines within the regex itself using something like
+            <div class="timeline-body"><p>So what I&#x27;ve done in the past is to limit lines within the regex itself using something like
 <code>line(.*\n.*){0,2}word</code></p>
-<p>Where I'm looking for <code>line</code> and <code>word</code> within 2 lines of each other</p>
+<p>Where I&#x27;m looking for <code>line</code> and <code>word</code> within 2 lines of each other</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/roblourens">@roblourens</a> on 2018-08-07 18:40</div>
-            <div class="timeline-body"><p>I played with this a bit and it works great! With the current output format, vscode won't be able to use it because it can't distinguish between one match across two lines, and two one-line matches. But once we have the parseable output which seems to also be in progress, we will be ready to use it!</p>
-<p>re: short switch, I like your reasoning for <code>-U</code>, I can't come up with a better justification for any of the other letters. <code>-Y</code> for multyline, <code>-K</code> for search akross lines...</p>
+            <div class="timeline-body"><p>I played with this a bit and it works great! With the current output format, vscode won&#x27;t be able to use it because it can&#x27;t distinguish between one match across two lines, and two one-line matches. But once we have the parseable output which seems to also be in progress, we will be ready to use it!</p>
+<p>re: short switch, I like your reasoning for <code>-U</code>, I can&#x27;t come up with a better justification for any of the other letters. <code>-Y</code> for multyline, <code>-K</code> for search akross lines...</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/thijsvandien">@thijsvandien</a> on 2018-08-07 18:51</div>
-            <div class="timeline-body"><p>Although I much appreciate backward compatibility, personally I'd say that the ability for multiline searches is in itself a big enough change (heck, it was something <code>rg</code> would never do), that it would justify giving it its well deserved <code>-M</code>.</p>
+            <div class="timeline-body"><p>Although I much appreciate backward compatibility, personally I&#x27;d say that the ability for multiline searches is in itself a big enough change (heck, it was something <code>rg</code> would never do), that it would justify giving it its well deserved <code>-M</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-07 19:45</div>
-            <div class="timeline-body"><p>@roblourens Thank you so much for trying it out! I will hook up the JSON output format soon and update this thread when that's done.</p>
-<p>@thijsvandien I'd like to avoid the backward compatibility discussion if possible please. While I have no concrete way of knowing this, my feeling from talking to various people about how they use ripgrep is that <code>-m</code> and <code>-M</code> are not infrequently used. <code>-M</code> in particular was added almost a year and a half ago and <code>-m</code> was added before even that. Reversing course on that kind of thing is not good for users. <strong>The hardest part about backwards compatibility is coming to terms with the fact that your software will have warts.</strong> If I could do it all again, I would have found a different short flag for <code>--max-columns</code> and used <code>-M</code> for multiline. Alas, we shall live with the wart. It is not the first and will most certainly not be the last.</p>
+            <div class="timeline-body"><p>@roblourens Thank you so much for trying it out! I will hook up the JSON output format soon and update this thread when that&#x27;s done.</p>
+<p>@thijsvandien I&#x27;d like to avoid the backward compatibility discussion if possible please. While I have no concrete way of knowing this, my feeling from talking to various people about how they use ripgrep is that <code>-m</code> and <code>-M</code> are not infrequently used. <code>-M</code> in particular was added almost a year and a half ago and <code>-m</code> was added before even that. Reversing course on that kind of thing is not good for users. <strong>The hardest part about backwards compatibility is coming to terms with the fact that your software will have warts.</strong> If I could do it all again, I would have found a different short flag for <code>--max-columns</code> and used <code>-M</code> for multiline. Alas, we shall live with the wart. It is not the first and will most certainly not be the last.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -568,7 +568,7 @@ t T u v V w x z
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-07 20:02</div>
-            <div class="timeline-body"><p>I'm probably going to regret this, but let's see if Twitter can be useful for something: https://twitter.com/burntsushi5/status/1026921457237078019</p>
+            <div class="timeline-body"><p>I&#x27;m probably going to regret this, but let&#x27;s see if Twitter can be useful for something: https://twitter.com/burntsushi5/status/1026921457237078019</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -582,45 +582,45 @@ t T u v V w x z
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/gibfahn">@gibfahn</a> on 2018-08-08 09:24</div>
             <div class="timeline-body"><blockquote>
-<p>Nearly every time I've run a multiline search, I've used .*? as a way to match through multiple lines. As a result, I've basically always needed to add (?s) to my regex.</p>
+<p>Nearly every time I&#x27;ve run a multiline search, I&#x27;ve used .*? as a way to match through multiple lines. As a result, I&#x27;ve basically always needed to add (?s) to my regex.</p>
 </blockquote>
 <p>Am I right in saying that if <code>DOTALL</code> is on by default, you can just use <code>[^\n]</code> instead of <code>.</code> to not use it, whereas if <code>DOTALL</code> is off by default, you can use <code>[.\n]</code> to get the same result?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-08 09:30</div>
-            <div class="timeline-body"><p>Yes, I believe that's correct.</p>
+            <div class="timeline-body"><p>Yes, I believe that&#x27;s correct.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2018-08-08 09:40</div>
-            <div class="timeline-body"><p><code>[.\n]</code> would match either a literal <code>.</code> or a new-line; if you wanted to match any character across lines in a pattern with <code>DOTALL</code> disabled by default i think you'd probably want to use either <code>[\s\S]</code> or <code>(?s:.)</code></p>
+            <div class="timeline-body"><p><code>[.\n]</code> would match either a literal <code>.</code> or a new-line; if you wanted to match any character across lines in a pattern with <code>DOTALL</code> disabled by default i think you&#x27;d probably want to use either <code>[\s\S]</code> or <code>(?s:.)</code></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-08 09:47</div>
-            <div class="timeline-body"><p>Oof. Thanks @okdana. I shouldn't be responding to email right after I wake up. :)</p>
+            <div class="timeline-body"><p>Oof. Thanks @okdana. I shouldn&#x27;t be responding to email right after I wake up. :)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/thijsvandien">@thijsvandien</a> on 2018-08-08 12:01</div>
-            <div class="timeline-body"><p>If we continue thinking metaphorically, <code>-Z</code> also makes sense, because you're searching in a (big) Z-pattern then (reach the end of one line, go to the beginning of the next, and on, and on).</p>
+            <div class="timeline-body"><p>If we continue thinking metaphorically, <code>-Z</code> also makes sense, because you&#x27;re searching in a (big) Z-pattern then (reach the end of one line, go to the beginning of the next, and on, and on).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/lnicola">@lnicola</a> on 2018-08-08 12:18</div>
-            <div class="timeline-body"><p>How about <code>-2</code>, because you're looking for more than one thing?</p>
-<p>Anyway, it probably doesn't matter.</p>
+            <div class="timeline-body"><p>How about <code>-2</code>, because you&#x27;re looking for more than one thing?</p>
+<p>Anyway, it probably doesn&#x27;t matter.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-08 13:44</div>
-            <div class="timeline-body"><p>Another way to utter <code>(?s:.)</code> is <code>\p{any}</code> (new as of ripgrep 0.9.0 IIRC), although I'm not sure that it is actually better.</p>
+            <div class="timeline-body"><p>Another way to utter <code>(?s:.)</code> is <code>\p{any}</code> (new as of ripgrep 0.9.0 IIRC), although I&#x27;m not sure that it is actually better.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-08 20:41</div>
-            <div class="timeline-body"><p>And Twitter says... Both <code>-U</code> and <code>-X</code>! Hah. A tie. I'm just going to go with <code>-U</code>, which is what I was originally leaning towards anyway.</p>
+            <div class="timeline-body"><p>And Twitter says... Both <code>-U</code> and <code>-X</code>! Hah. A tie. I&#x27;m just going to go with <code>-U</code>, which is what I was originally leaning towards anyway.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -630,7 +630,7 @@ t T u v V w x z
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-16 16:07</div>
-            <div class="timeline-body"><p>All righty, here is what I have for docs for multiline mode. Do folks mind giving them a quick skim to make sure I haven't missed anything? Are there any obvious unanswered questions that the docs could cover?</p>
+            <div class="timeline-body"><p>All righty, here is what I have for docs for multiline mode. Do folks mind giving them a quick skim to make sure I haven&#x27;t missed anything? Are there any obvious unanswered questions that the docs could cover?</p>
 <pre><code>-U, --multiline
     Enable matching across multiple lines.
 
@@ -689,23 +689,23 @@ regexes like \n are permitted.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-16 17:29</div>
-            <div class="timeline-body"><p>Weird. Looks like I botched the copy &amp; paste! Let's try again. Here's <code>-U/--multiline</code>:</p>
+            <div class="timeline-body"><p>Weird. Looks like I botched the copy &amp; paste! Let&#x27;s try again. Here&#x27;s <code>-U/--multiline</code>:</p>
 <pre><code>Enable matching across multiple lines.
 
 When multiline mode is enabled, ripgrep will lift the restriction that a match
 cannot include a line terminator. For example, when multiline mode is not
-enabled (the default), then the regex '\\p{any}' will match any Unicode
-codepoint other than '\\n'. Similarly, the regex '\\n' is explicitly forbidden,
+enabled (the default), then the regex &#x27;\\p{any}&#x27; will match any Unicode
+codepoint other than &#x27;\\n&#x27;. Similarly, the regex &#x27;\\n&#x27; is explicitly forbidden,
 and if you try to use it, ripgrep will return an error. However, when multiline
-mode is enabled, '\\p{any}' will match any Unicode codepoint including '\\n'
-and regexes like '\\n' are permitted.
+mode is enabled, &#x27;\\p{any}&#x27; will match any Unicode codepoint including &#x27;\\n&#x27;
+and regexes like &#x27;\\n&#x27; are permitted.
 
 An important caveat here is that multiline mode does not change the match
-semantics of '.'. Namely, in most regex matchers, a '.' will by default match
-any character other than '\\n', and this is true in ripgrep as well. In order
-to make '.' match '\\n', you must enable the \&quot;dot all\&quot; flag inside the regex.
-For example, both '(?s).' and '(?s:.)' have the same semantics, where '.' will
-match any character, including '\\n'. Alternatively, the '--multiline-dotall'
+semantics of &#x27;.&#x27;. Namely, in most regex matchers, a &#x27;.&#x27; will by default match
+any character other than &#x27;\\n&#x27;, and this is true in ripgrep as well. In order
+to make &#x27;.&#x27; match &#x27;\\n&#x27;, you must enable the \&quot;dot all\&quot; flag inside the regex.
+For example, both &#x27;(?s).&#x27; and &#x27;(?s:.)&#x27; have the same semantics, where &#x27;.&#x27; will
+match any character, including &#x27;\\n&#x27;. Alternatively, the &#x27;--multiline-dotall&#x27;
 flag may be passed to make the \&quot;dot all\&quot; behavior the default. This flag only
 applies when mulitline search is enabled.
 
@@ -719,19 +719,19 @@ memory (either by reading it on to the heap or by memory mapping it). Things
 that cannot be memory mapped (such as stdin) will be consumed until EOF before
 searching can begin. In general, ripgrep will only do these things when
 necessary. That is, even if you use the --multiline flag but your regex cannot
-match over multiple lines, then ripgrep won't consume unnecessary resources.
+match over multiple lines, then ripgrep won&#x27;t consume unnecessary resources.
 Nevertheless, if you only care about matches spanning at most one line, then it
 is always better to disable multiline mode.
 
 This flag can be disabled with --no-multiline.
 </code></pre>
 <p>And <code>--multiline-dotall</code>:</p>
-<pre><code>This flag causes '.' to match new lines when multiline searching is enabled.
+<pre><code>This flag causes &#x27;.&#x27; to match new lines when multiline searching is enabled.
 
-This flag has no effect if multiline searching isn't enabled.
+This flag has no effect if multiline searching isn&#x27;t enabled.
 
-Normally, a '.' will match any character except for newlines. While this
-behavior typically isn't relevant for line oriented matching (since matches
+Normally, a &#x27;.&#x27; will match any character except for newlines. While this
+behavior typically isn&#x27;t relevant for line oriented matching (since matches
 can span at most one line), this can be useful when searching with the
 -U/--multiline flag.
 </code></pre>
@@ -743,17 +743,17 @@ can span at most one line), this can be useful when searching with the
 <blockquote>
 <p>cannot include a line terminator. For example, when multiline mode is not</p>
 </blockquote>
-<p>Instead of &quot;For example&quot;, I'd use &quot;In particular&quot;, &quot;namely&quot;, &quot;specifically&quot;, or some other equivalent expression.</p>
+<p>Instead of &quot;For example&quot;, I&#x27;d use &quot;In particular&quot;, &quot;namely&quot;, &quot;specifically&quot;, or some other equivalent expression.</p>
 <blockquote>
 <p>However, when multiline
-mode is enabled, '\p{any}' will match any Unicode codepoint including '\n'
-and regexes like '\n' are permitted.</p>
+mode is enabled, &#x27;\p{any}&#x27; will match any Unicode codepoint including &#x27;\n&#x27;
+and regexes like &#x27;\n&#x27; are permitted.</p>
 </blockquote>
-<p>I'd use commas around &quot;including '\n'&quot;, which IMO makes the sentence structure (and intended reading flow) slightly more explicit.</p>
+<p>I&#x27;d use commas around &quot;including &#x27;\n&#x27;&quot;, which IMO makes the sentence structure (and intended reading flow) slightly more explicit.</p>
 <blockquote>
 <p>An important caveat here</p>
 </blockquote>
-<p>I don't think the &quot;here&quot; is necessary. Or in other words, IMO it is not specific enough to be useful.</p>
+<p>I don&#x27;t think the &quot;here&quot; is necessary. Or in other words, IMO it is not specific enough to be useful.</p>
 <blockquote>
 <p>applies when mulitline search is enabled.</p>
 </blockquote>
@@ -761,7 +761,7 @@ and regexes like '\n' are permitted.</p>
 <blockquote>
 <p>slower than normal line oriented searches</p>
 </blockquote>
-<p>I'd hyphenate &quot;line oriented searches&quot; --&gt; &quot;line-oriented searches&quot;.</p>
+<p>I&#x27;d hyphenate &quot;line oriented searches&quot; --&gt; &quot;line-oriented searches&quot;.</p>
 <blockquote>
 <p>either by reading it on to the heap</p>
 </blockquote>
@@ -772,9 +772,9 @@ and regexes like '\n' are permitted.</p>
 <p>Suggestion: &quot;memory-mapping&quot; and &quot;memory-mapped&quot;.</p>
 <blockquote>
 <p>even if you use the --multiline flag but your regex cannot
-match over multiple lines, then ripgrep won't consume unnecessary resources.</p>
+match over multiple lines, then ripgrep won&#x27;t consume unnecessary resources.</p>
 </blockquote>
-<p>I'm not sure this sentence's structure conveys the intended message clearly. Do you think you could rephrase it somehow? I think what's confusing me is the &quot;even if&quot; / &quot;but&quot; / &quot;then&quot; structure.</p>
+<p>I&#x27;m not sure this sentence&#x27;s structure conveys the intended message clearly. Do you think you could rephrase it somehow? I think what&#x27;s confusing me is the &quot;even if&quot; / &quot;but&quot; / &quot;then&quot; structure.</p>
 <blockquote>
 <p>any character except for newlines.</p>
 </blockquote>
@@ -787,12 +787,12 @@ match over multiple lines, then ripgrep won't consume unnecessary resources.</p>
 <p>this can be useful when searching with the
 -U/--multiline flag.</p>
 </blockquote>
-<p>Just for completeness, I'd add a note at the end explicitly mentioning that multiline mode by default assumes a false dotall flag.</p>
+<p>Just for completeness, I&#x27;d add a note at the end explicitly mentioning that multiline mode by default assumes a false dotall flag.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-16 18:03</div>
-            <div class="timeline-body"><p>@waldyrious Awesome! I think I took all of your suggestions except for the first. Here's paragraph containing the portion you requested to have rewritten. What do you think?</p>
+            <div class="timeline-body"><p>@waldyrious Awesome! I think I took all of your suggestions except for the first. Here&#x27;s paragraph containing the portion you requested to have rewritten. What do you think?</p>
 <pre><code>**WARNING**: Because of how the underlying regex engine works, multiline
 searches may be slower than normal line-oriented searches, and they may also
 use more memory. In particular, when multiline mode is enabled, ripgrep
@@ -801,7 +801,7 @@ memory (either by reading it onto the heap or by memory-mapping it). Things
 that cannot be memory-mapped (such as stdin) will be consumed until EOF before
 searching can begin. In general, ripgrep will only do these things when
 necessary. Specifically, if the --multiline flag is provided by the regex
-cannot match over multiple lines, then ripgrep won't read each file into memory
+cannot match over multiple lines, then ripgrep won&#x27;t read each file into memory
 before searching it. Nevertheless, if you only care about matches spanning at
 most one line, then it is always better to disable multiline mode.
 </code></pre>
@@ -814,7 +814,7 @@ most one line, then it is always better to disable multiline mode.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-16 23:44</div>
-            <div class="timeline-body"><p>@thijsvandien Nah. The <code>--multiline-dotall</code> flag is probably intended to be something that goes in your config file (or an alias) as something that's always set, if those are the semantics you prefer by default.</p>
+            <div class="timeline-body"><p>@thijsvandien Nah. The <code>--multiline-dotall</code> flag is probably intended to be something that goes in your config file (or an alias) as something that&#x27;s always set, if those are the semantics you prefer by default.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -825,14 +825,14 @@ most one line, then it is always better to disable multiline mode.
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mateon1">@mateon1</a> on 2018-08-17 03:00</div>
             <div class="timeline-body"><p>Some nits:</p>
-<pre><code>This flag causes '.' to match new lines
+<pre><code>This flag causes &#x27;.&#x27; to match new lines
 </code></pre>
 <p>Should be <code>newlines</code> for consistency reasons</p>
 <pre><code>requires that each file it searches appear as if it exists contiguously in
 </code></pre>
 <p>appear<strong>s</strong>, but perhaps this section could be worded differently.
 Maybe: <code>... ripgrep requires that the searched file is laid out/mapped/allocated contiguously in memory</code>
-I'm unsure which wording is the best (I prefer <code>laid out</code>, but maybe that's not appropriate for documentation), but all three sound better to me than the existing version.</p>
+I&#x27;m unsure which wording is the best (I prefer <code>laid out</code>, but maybe that&#x27;s not appropriate for documentation), but all three sound better to me than the existing version.</p>
 <pre><code>Specifically, if the --multiline flag is provided by the regex
 cannot match over multiple lines
 </code></pre>
@@ -841,16 +841,16 @@ cannot match over multiple lines
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/waldyrious">@waldyrious</a> on 2018-08-17 08:59</div>
-            <div class="timeline-body"><p>@BurntSushi I'm glad you agree with the suggestions! The reworded sentence is indeed much clearer, after fixing the typo pointed out by @mateon1.</p>
-<p>Here's the diff of that sentence, for future reference/convenience:</p>
-<pre><code class="language-diff">-That is, even if you use the --multiline flag but your regex cannot
--match over multiple lines, then ripgrep won't consume unnecessary resources.
+            <div class="timeline-body"><p>@BurntSushi I&#x27;m glad you agree with the suggestions! The reworded sentence is indeed much clearer, after fixing the typo pointed out by @mateon1.</p>
+<p>Here&#x27;s the diff of that sentence, for future reference/convenience:</p>
+<pre><code>-That is, even if you use the --multiline flag but your regex cannot
+-match over multiple lines, then ripgrep won&#x27;t consume unnecessary resources.
 +Specifically, if the --multiline flag is provided but the regex
-+cannot match over multiple lines, then ripgrep won't read each file into memory
++cannot match over multiple lines, then ripgrep won&#x27;t read each file into memory
 +before searching it.
 </code></pre>
-<p>Now that I re-read that, I'm not sure &quot;cannot match&quot; is the best choice of words, since it can imply both a neutral statement or an imperative enforcement. (Not sure I'm being clear myself; let me know if I should rephrase!)</p>
-<p>I suppose you're referring to the case where the regex does not contain any patterns that would match newlines, or it contains <code>.</code> without the dotall flag being activated. Is that correct?</p>
+<p>Now that I re-read that, I&#x27;m not sure &quot;cannot match&quot; is the best choice of words, since it can imply both a neutral statement or an imperative enforcement. (Not sure I&#x27;m being clear myself; let me know if I should rephrase!)</p>
+<p>I suppose you&#x27;re referring to the case where the regex does not contain any patterns that would match newlines, or it contains <code>.</code> without the dotall flag being activated. Is that correct?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -858,18 +858,18 @@ cannot match over multiple lines
             <div class="timeline-body"><p>@mateon1 Thanks! I took your advice, and chose &quot;laid out.&quot;</p>
 <p>@waldyrious</p>
 <blockquote>
-<p>I suppose you're referring to the case where the regex does not contain any patterns that would match newlines, or it contains . without the dotall flag being activated. Is that correct?</p>
+<p>I suppose you&#x27;re referring to the case where the regex does not contain any patterns that would match newlines, or it contains . without the dotall flag being activated. Is that correct?</p>
 </blockquote>
 <p>Yes. Whether dotall is enabled or not is mostly orthogonal; what matters is whether a <code>\n</code> exists in any of the possible matches of a regex. Enabling dotall and uttering <code>.</code> is one way to achieve that, but a literal <code>\n</code>, <code>\s</code>, <code>\p{any}</code> and so on also achieve that.</p>
-<p>It is possible I should just remove this part of the docs. I'm not sure. I put it there as a way of saying that even if you enable multiline mode but don't make use it, you generally won't pay (much) for it. But maybe that's not that important.</p>
+<p>It is possible I should just remove this part of the docs. I&#x27;m not sure. I put it there as a way of saying that even if you enable multiline mode but don&#x27;t make use it, you generally won&#x27;t pay (much) for it. But maybe that&#x27;s not that important.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/waldyrious">@waldyrious</a> on 2018-08-17 14:07</div>
-            <div class="timeline-body"><p>I think it wouldn't be a problem if it were removed, but it is useful information so I'd have a slight preference to keep it.</p>
+            <div class="timeline-body"><p>I think it wouldn&#x27;t be a problem if it were removed, but it is useful information so I&#x27;d have a slight preference to keep it.</p>
 <p>IMO changing that sentence to something like this:</p>
 <blockquote>
-<p>&quot;Specifically, if the --multiline flag is provided, but the regex ~~cannot match over multiple lines~~ <em>does not contain patterns that would match \n characters</em>, then ripgrep ~~won't read~~ <em>will automatically avoid reading</em> each file into memory before searching it.&quot;</p>
+<p>&quot;Specifically, if the --multiline flag is provided, but the regex ~~cannot match over multiple lines~~ <em>does not contain patterns that would match \n characters</em>, then ripgrep ~~won&#x27;t read~~ <em>will automatically avoid reading</em> each file into memory before searching it.&quot;</p>
 </blockquote>
 <p>...would make it sufficiently unambiguous.</p>
 </div>
@@ -880,12 +880,12 @@ cannot match over multiple lines
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2018-08-20 11:10</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-20 11:10</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/myfairsyer">@myfairsyer</a> on 2018-08-23 21:25</div>
             <div class="timeline-body"><p>Will <code>\n</code> only match <code>\n</code> / <code>0x0A</code> or any common single line break (<code>\r?\n</code>) (or if you take the classic MacOS and BBC into account <a href="https://regex101.com/r/T5dkAH/1/"><code>((\n\r?)|(\r\n?))</code></a>)</p>
-<p>(I do know that both styles exist among regex engines but couldn't tell which is which)</p>
+<p>(I do know that both styles exist among regex engines but couldn&#x27;t tell which is which)</p>
 <p>Sry if there is an answer to that somewhere.</p>
 </div>
         </div>
@@ -893,12 +893,12 @@ cannot match over multiple lines
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-23 21:52</div>
             <div class="timeline-body"><p><code>\n</code> only matches <code>\n</code>.</p>
 <p>Current master has a <code>--crlf</code> option that causes <code>$</code> to match <code>\r\n</code> line breaks in addition to <code>\n</code>.</p>
-<p>I'm not aware of any regex engines that permit a literal <code>\n</code> to match <code>\r\n</code>. Some regex engines certainly allow for a looser definition of what &quot;line terminator&quot; actually means when necessary, e.g., when matching the <code>^</code> or <code>$</code> anchors. If you know of a regex engine that permits a literal <code>\n</code> to match <code>\r\n</code> then I'd like to have a link to that so I can investigate!</p>
+<p>I&#x27;m not aware of any regex engines that permit a literal <code>\n</code> to match <code>\r\n</code>. Some regex engines certainly allow for a looser definition of what &quot;line terminator&quot; actually means when necessary, e.g., when matching the <code>^</code> or <code>$</code> anchors. If you know of a regex engine that permits a literal <code>\n</code> to match <code>\r\n</code> then I&#x27;d like to have a link to that so I can investigate!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/roblourens">@roblourens</a> on 2018-08-23 23:36</div>
-            <div class="timeline-body"><p>VS Code matches <code>\r\n</code> on <code>\n</code> when ctrl+f searching in a single file, it's useful in an editor but I wouldn't use that as inspiration for ripgrep.</p>
+            <div class="timeline-body"><p>VS Code matches <code>\r\n</code> on <code>\n</code> when ctrl+f searching in a single file, it&#x27;s useful in an editor but I wouldn&#x27;t use that as inspiration for ripgrep.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -907,12 +907,12 @@ cannot match over multiple lines
 regexes?</p>
 <p>On Thu, Aug 23, 2018, 19:36 Rob Lourens <a href="mailto:notifications@github.com">notifications@github.com</a> wrote:</p>
 <blockquote>
-<p>VS Code matches \r\n on \n when ctrl+f searching in a single file, it's
-useful in an editor but I wouldn't use that as inspiration.</p>
+<p>VS Code matches \r\n on \n when ctrl+f searching in a single file, it&#x27;s
+useful in an editor but I wouldn&#x27;t use that as inspiration.</p>
 <p>—
 You are receiving this because you modified the open/close state.
 Reply to this email directly, view it on GitHub
-<a href="https://github.com/BurntSushi/ripgrep/issues/176#issuecomment-415606098">https://github.com/BurntSushi/ripgrep/issues/176#issuecomment-415606098</a>,
+<a href="https://github.com/BurntSushi/ripgrep/issues/176#issuecomment-415606098">BurntSushi/ripgrep#176</a>,
 or mute the thread
 <a href="https://github.com/notifications/unsubscribe-auth/AAb34nyP5Q-P7DWfp_i4QLvDJ-p0RCLDks5uTzx3gaJpZM4KWZCK">https://github.com/notifications/unsubscribe-auth/AAb34nyP5Q-P7DWfp_i4QLvDJ-p0RCLDks5uTzx3gaJpZM4KWZCK</a>
 .</p>
@@ -921,17 +921,17 @@ or mute the thread
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/roblourens">@roblourens</a> on 2018-08-23 23:46</div>
-            <div class="timeline-body"><p>No, it's just something vscode does.</p>
+            <div class="timeline-body"><p>No, it&#x27;s just something vscode does.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/myfairsyer">@myfairsyer</a> on 2018-08-24 06:38</div>
             <div class="timeline-body"><blockquote>
-<p>If you know of a regex engine that permits a literal \n to match \r\n then I'd like to have a link to that so I can investigate!</p>
+<p>If you know of a regex engine that permits a literal \n to match \r\n then I&#x27;d like to have a link to that so I can investigate!</p>
 </blockquote>
 <p>@BurntSushi Most probably I only encountered it in text editors like VSCode.</p>
 <blockquote>
-<p>it's useful in an editor but I wouldn't use that as inspiration for ripgrep.</p>
+<p>it&#x27;s useful in an editor but I wouldn&#x27;t use that as inspiration for ripgrep.</p>
 </blockquote>
 <p>@roblourens Would you mind to elaborate?
 And does that mean that VSCode will behave differently inside an editor and when searching across files?</p>
@@ -939,55 +939,55 @@ And does that mean that VSCode will behave differently inside an editor and when
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/roblourens">@roblourens</a> on 2018-08-24 15:18</div>
-            <div class="timeline-body"><p>Personally I don't prefer &quot;magic&quot; like that, but yeah I'll have to see whether we can rewrite <code>\n</code> to <code>\r?\n</code> so that search across files works the same as search inside files.</p>
+            <div class="timeline-body"><p>Personally I don&#x27;t prefer &quot;magic&quot; like that, but yeah I&#x27;ll have to see whether we can rewrite <code>\n</code> to <code>\r?\n</code> so that search across files works the same as search inside files.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/myfairsyer">@myfairsyer</a> on 2018-08-24 16:11</div>
             <div class="timeline-body"><blockquote>
-<p>it's useful in an editor but I wouldn't use that as inspiration for ripgrep.</p>
+<p>it&#x27;s useful in an editor but I wouldn&#x27;t use that as inspiration for ripgrep.</p>
 </blockquote>
 <blockquote>
 <p>@roblourens Would you mind to elaborate?</p>
 </blockquote>
 <blockquote>
-<p>Personally I don't prefer &quot;magic&quot; like that</p>
+<p>Personally I don&#x27;t prefer &quot;magic&quot; like that</p>
 </blockquote>
 <p>@roblourens
 I was rather driving at the distinction between text editor and ripgrep.
-I couldn't quite follow.
+I couldn&#x27;t quite follow.
 Is it b/c you consider ripgrep as a command line tool having a more advanced audience which demands more control and less <em>magic</em> than a graphical text editor?</p>
 <p>@BurntSushi
-I don't want to derail or hijack this therad for irrelevant discussions.
-You said you'd like to know more and investigate and found VSCode's behavior interesting.
-If you don't anymore tell me.</p>
+I don&#x27;t want to derail or hijack this therad for irrelevant discussions.
+You said you&#x27;d like to know more and investigate and found VSCode&#x27;s behavior interesting.
+If you don&#x27;t anymore tell me.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/wmww">@wmww</a> on 2018-10-31 20:41</div>
-            <div class="timeline-body"><p>Currently, if you try to make a multiline search without the <code>-U/--multiline</code> option, ripgrep errors with <code>the literal '&quot;\n&quot;' is not allowed in a regex</code>. Would it make sense to mention the existence of a multiline enabling option here?</p>
+            <div class="timeline-body"><p>Currently, if you try to make a multiline search without the <code>-U/--multiline</code> option, ripgrep errors with <code>the literal &#x27;&quot;\n&quot;&#x27; is not allowed in a regex</code>. Would it make sense to mention the existence of a multiline enabling option here?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-10-31 21:08</div>
-            <div class="timeline-body"><p>@wmww That should already be done on master. See: https://github.com/BurntSushi/ripgrep/issues/1055</p>
+            <div class="timeline-body"><p>@wmww That should already be done on master. See: <a href="https://github.com/BurntSushi/ripgrep/issues/1055">BurntSushi/ripgrep#1055</a></p>
 <p>Also, please file new issues for new requests.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/unphased">@unphased</a> on 2020-11-25 22:33</div>
-            <div class="timeline-body"><p>~Hi, I'm curious if there is a way to make multiline dot non-greedy? I tried <code>(?s).*?</code> and <code>.*?</code> under <code>--multiline-dotall</code> and neither worked. It seems with multiline mode, the <code>.*?</code> fails to become non-greedy. Is there an underlying reason for this?~</p>
+            <div class="timeline-body"><p>~Hi, I&#x27;m curious if there is a way to make multiline dot non-greedy? I tried <code>(?s).*?</code> and <code>.*?</code> under <code>--multiline-dotall</code> and neither worked. It seems with multiline mode, the <code>.*?</code> fails to become non-greedy. Is there an underlying reason for this?~</p>
 <p>~<code>[^&gt;]</code> and such work under multiline mode, though, which is the less general way to do sort of non-greedy stuff.~</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-11-25 22:39</div>
-            <div class="timeline-body"><p>Please file a new issue. And please don't use phrases like &quot;does not work&quot; without actually <em>showing</em> what you mean by it. Please fill out the complete bug template.</p>
+            <div class="timeline-body"><p>Please file a new issue. And please don&#x27;t use phrases like &quot;does not work&quot; without actually <em>showing</em> what you mean by it. Please fill out the complete bug template.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/unphased">@unphased</a> on 2020-11-26 00:22</div>
-            <div class="timeline-body"><p>You're right, sorry for trying to resurrect and derail an old issue. I did more testing on this and I think I neglected to consider something with my test. it seems all to work as expected.</p>
+            <div class="timeline-body"><p>You&#x27;re right, sorry for trying to resurrect and derail an old issue. I did more testing on this and I think I neglected to consider something with my test. it seems all to work as expected.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -997,13 +997,13 @@ If you don't anymore tell me.</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-12-01 13:07</div>
-            <div class="timeline-body"><p>No. And I don't see any obvious way to implement that either. You can usually build such limits into your regex instead.</p>
+            <div class="timeline-body"><p>No. And I don&#x27;t see any obvious way to implement that either. You can usually build such limits into your regex instead.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/amosbird">@amosbird</a> on 2021-12-01 13:13</div>
             <div class="timeline-body"><blockquote>
-<p>No. And I don't see any obvious way to implement that either. You can usually build such limits into your regex instead.</p>
+<p>No. And I don&#x27;t see any obvious way to implement that either. You can usually build such limits into your regex instead.</p>
 </blockquote>
 <p>Can we build a regex to match the following?  <code>foo.*[at most three new lines]bar.*[at most three new lines]baz.*</code> (all together at most three new lines)</p>
 </div>
@@ -1011,13 +1011,13 @@ If you don't anymore tell me.</p>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-12-01 13:39</div>
             <div class="timeline-body"><p>@amosbird Sure? Why not? <code>foo(.*\n?){0,3}bar(.*\n?){0,3}</code>, or something like that anyway.</p>
-<p>In the future, I'd really prefer you open new tickets for support questions. Bumping old issues doesn't make these discussions easy to find. There is even a <a href="https://github.com/BurntSushi/ripgrep/discussions">Q&amp;A forum</a> designed for this purpose. Please use it.</p>
+<p>In the future, I&#x27;d really prefer you open new tickets for support questions. Bumping old issues doesn&#x27;t make these discussions easy to find. There is even a <a href="https://github.com/BurntSushi/ripgrep/discussions">Q&amp;A forum</a> designed for this purpose. Please use it.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/amosbird">@amosbird</a> on 2021-12-01 14:11</div>
             <div class="timeline-body"><blockquote>
-<p>In the future, I'd really prefer you open new tickets for support questions. Bumping old issues doesn't make these discussions easy to find. There is even a Q&amp;A forum designed for this purpose. Please use it.</p>
+<p>In the future, I&#x27;d really prefer you open new tickets for support questions. Bumping old issues doesn&#x27;t make these discussions easy to find. There is even a Q&amp;A forum designed for this purpose. Please use it.</p>
 </blockquote>
 <p>Sure. Will continue the discussion in the Q&amp;A forum.</p>
 </div>
@@ -1025,7 +1025,7 @@ If you don't anymore tell me.</p>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:41:49 UTC
+        Synced at 2026-01-20 18:48:01 UTC
     </footer>
 </body>
 </html>

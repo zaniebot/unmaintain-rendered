@@ -23,32 +23,32 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/m-aciek">@m-aciek</a></div>
-            <div class="timeline-body"><pre><code class="language-python">from datetime import date, datetime
+            <div class="timeline-body"><pre><code>from datetime import date, datetime
 
 if datetime.now() &lt; date.today():
-    print(&quot;that's a surprise!&quot;)
+    print(&quot;that&#x27;s a surprise!&quot;)
 </code></pre>
 <ul>
 <li><p>What is the actual behavior/output?
 No error!</p>
 </li>
 <li><p>What is the behavior/output you expect?
-A warning, since at runtime we get <code>TypeError: can't compare datetime.datetime to datetime.date</code>.</p>
+A warning, since at runtime we get <code>TypeError: can&#x27;t compare datetime.datetime to datetime.date</code>.</p>
 </li>
 </ul>
-<p><code>datetime</code> subclassing <code>date</code> is a violation of Liskov substitution principle in Python. Though I'd expect typecheckers to at least warn the developer.</p>
-<p>Related report in mypy: https://github.com/python/mypy/issues/9015.</p>
+<p><code>datetime</code> subclassing <code>date</code> is a violation of Liskov substitution principle in Python. Though I&#x27;d expect typecheckers to at least warn the developer.</p>
+<p>Related report in mypy: <a href="https://github.com/python/mypy/issues/9015">python/mypy#9015</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-09 11:41</div>
-            <div class="timeline-body"><p>Thanks for opening the issue. No type checker that I'm aware of issues a complaint about this code, so I would classify this as a feature rather than a bug. As you say, the fundamental problem is that <code>datetime</code> breaks the Liskov Substitution Principle.</p>
-<p>It's possible we could add some logic like Jukka describes in https://github.com/python/mypy/issues/9015#issuecomment-646678572, but this definitely wouldn't be a priority for us since it goes above and beyond compliance with the typing spec. It also seems like the kind of thing that could possibly be expensive to check fully.</p>
-<p>Another option would, I suppose, be to hardcode some special-cased logic in specifically for <code>datetime</code> and <code>date</code>. I don't like that option though: adding special-casing like that doesn't scale well (several other classes in the CPython stdlib are unsound in the same way), creates inconsistencies that can be confusing to users, and is prone to breakage.</p>
+            <div class="timeline-body"><p>Thanks for opening the issue. No type checker that I&#x27;m aware of issues a complaint about this code, so I would classify this as a feature rather than a bug. As you say, the fundamental problem is that <code>datetime</code> breaks the Liskov Substitution Principle.</p>
+<p>It&#x27;s possible we could add some logic like Jukka describes in <a href="https://github.com/python/mypy/issues/9015">python/mypy#9015</a>#issuecomment-646678572, but this definitely wouldn&#x27;t be a priority for us since it goes above and beyond compliance with the typing spec. It also seems like the kind of thing that could possibly be expensive to check fully.</p>
+<p>Another option would, I suppose, be to hardcode some special-cased logic in specifically for <code>datetime</code> and <code>date</code>. I don&#x27;t like that option though: adding special-casing like that doesn&#x27;t scale well (several other classes in the CPython stdlib are unsound in the same way), creates inconsistencies that can be confusing to users, and is prone to breakage.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">wish</span> added by @AlexWaygood on 2025-06-09 11:41</div>
+            <div class="event">Label <span class="label">wish</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-09 11:41</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-09 11:47</div>
@@ -57,7 +57,7 @@ A warning, since at runtime we get <code>TypeError: can't compare datetime.datet
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-09 14:50</div>
-            <div class="timeline-body"><p>Somewhat related to https://github.com/astral-sh/ty/issues/576</p>
+            <div class="timeline-body"><p>Somewhat related to <a href="https://github.com/astral-sh/ty/issues/576">astral-sh/ty#576</a></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -67,22 +67,22 @@ A warning, since at runtime we get <code>TypeError: can't compare datetime.datet
 </blockquote>
 <p>eh, not really:</p>
 <ul>
-<li>strict-equality is about catching expressions that likely always evaluate to <code>False</code> or <code>True</code> (probably unintentionally). This issue is about catching exceptions that arise from non-equality comparisons. It's debatable whether strict-equality should even be a type checker issue or whether it should be a linter issue; this issue is definitely a type-checking issue.</li>
+<li>strict-equality is about catching expressions that likely always evaluate to <code>False</code> or <code>True</code> (probably unintentionally). This issue is about catching exceptions that arise from non-equality comparisons. It&#x27;s debatable whether strict-equality should even be a type checker issue or whether it should be a linter issue; this issue is definitely a type-checking issue.</li>
 <li>strict-equality is something that existing type checkers already have some kind of solution for (even though all existing solutions use somewhat ugly heuristics). This is something that no type checker has a solution for really.</li>
-<li>This issue only arises because the CPython stdlib is breaking some fundamental rules of subtyping, which typeshed is forced to mimic in its stubs, and this breaks some fundamental assumptions made by ty. (You can see this from the number of <code>type: ignore[override]</code> comments in <a href="https://github.com/python/typeshed/blob/8f5a80e7b741226e525bd90e45496b8f68dc69b6/stdlib/datetime.pyi#L331-L334">typeshed's stubs for the datetime module</a>!) None of that's the case for strict-equality considerations; strict-equality isn't really an issue to do with type safety at all.</li>
+<li>This issue only arises because the CPython stdlib is breaking some fundamental rules of subtyping, which typeshed is forced to mimic in its stubs, and this breaks some fundamental assumptions made by ty. (You can see this from the number of <code>type: ignore[override]</code> comments in <a href="https://github.com/python/typeshed/blob/8f5a80e7b741226e525bd90e45496b8f68dc69b6/stdlib/datetime.pyi#L331-L334">typeshed&#x27;s stubs for the datetime module</a>!) None of that&#x27;s the case for strict-equality considerations; strict-equality isn&#x27;t really an issue to do with type safety at all.</li>
 </ul>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Z post-stable" by @carljm on 2025-11-15 01:58</div>
+            <div class="event">Added to milestone &quot;Z post-stable&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-11-15 01:58</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Removed from milestone "Z post-stable" by @carljm on 2025-11-18 16:10</div>
+            <div class="event">Removed from milestone &quot;Z post-stable&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-11-18 16:10</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:06 UTC
+        Synced at 2026-01-20 19:24:48 UTC
     </footer>
 </body>
 </html>

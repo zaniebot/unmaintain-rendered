@@ -23,15 +23,15 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/wshanks">@wshanks</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>As described in the documentation <a href="https://docs.astral.sh/uv/concepts/indexes/#pinning-a-package-to-an-index">here</a>, <code>uv.tool.sources</code> can be used to pin a dependency to a specific index. The second example given is to pin <code>torch</code> to different Pytorch indexes depending on the platform:</p>
-<pre><code class="language-toml">[project]
+<pre><code>[project]
 dependencies = [&quot;torch&quot;]
 
 [tool.uv.sources]
 torch = [
-  { index = &quot;pytorch-cu118&quot;, marker = &quot;sys_platform == 'darwin'&quot;},
-  { index = &quot;pytorch-cu124&quot;, marker = &quot;sys_platform != 'darwin'&quot;},
+  { index = &quot;pytorch-cu118&quot;, marker = &quot;sys_platform == &#x27;darwin&#x27;&quot;},
+  { index = &quot;pytorch-cu124&quot;, marker = &quot;sys_platform != &#x27;darwin&#x27;&quot;},
 ]
 
 [[tool.uv.index]]
@@ -45,35 +45,35 @@ url = &quot;https://download.pytorch.org/whl/cu124&quot;
 <p>If one uses <code>uv pip install .</code> in the project directory containing the <code>pyproject.toml</code> file on Linux, the <code>tool.uv.sources</code> table is respected and in this case <code>torch</code> would be installed from the <code>pytorch-cu124</code> index. However, if one uses <code>uv pip install torch</code>, uv will instead fall back to checking the indexes in order and will install <code>torch</code> from the <code>python-cu118</code> index.</p>
 <p>The main usage pattern where I encounter this behavior is with <a href="https://github.com/tox-dev/tox-uv">tox-uv</a>. <code>tox</code> splits out the project dependencies from the project and installs all the dependencies with an explicit <code>pip install</code> step and then installs the project after that. When using <code>tox-uv</code>, the dependency installation step using <code>uv pip install &lt;dependencies&gt;</code> installs the dependencies without referencing the <code>tool.uv.sources</code> index pinning.</p>
 <p>I filed this under the &quot;bug&quot; category. My preference would be for <code>uv pip install</code> to respect <code>uv.tool.sources</code> when run in a directory with a <code>pyproject.toml</code> file (like <code>tool.uv.index</code> is). However, I could understand if the decision was that <code>tool.uv.sources</code> only applied to project installation and not ad hoc package installation (but maybe that should be documented).</p>
-<h3>Platform</h3>
+Platform
 <p>Fedora Linux 42, x86_64 (but should be platform independent)</p>
-<h3>Version</h3>
+Version
 <p>uv 0.8.14</p>
-<h3>Python version</h3>
+Python version
 <p>Python 3.13.3</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @wshanks on 2025-09-02 17:50</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/wshanks">@wshanks</a> on 2025-09-02 17:50</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-09-05 12:08</div>
-            <div class="timeline-body"><p>This is by design: Sources only apply to dependencies in the project or workspace. They work better with the project-based commands (<code>uv lock</code>, <code>uv sync</code>, <code>uv run</code>, etc.). I agree that it's confusing that we apply e.g. indexes in <code>pyproject.toml</code> are always respected but sources only for the project, but we found it would be more confusing if <code>uv pip install torch</code> would consider project sources.</p>
+            <div class="timeline-body"><p>This is by design: Sources only apply to dependencies in the project or workspace. They work better with the project-based commands (<code>uv lock</code>, <code>uv sync</code>, <code>uv run</code>, etc.). I agree that it&#x27;s confusing that we apply e.g. indexes in <code>pyproject.toml</code> are always respected but sources only for the project, but we found it would be more confusing if <code>uv pip install torch</code> would consider project sources.</p>
 <p>For the tox-uv case, we have <code>uv sync --no-install-workspace</code> to install only the dependencies, and then <code>uv sync</code> which install only the workspace members on top. Those commands may work better for this model than the <code>uv pip</code> interface.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/wshanks">@wshanks</a> on 2025-09-05 14:43</div>
-            <div class="timeline-body"><p>Thanks @konstin! I will close since there is no action to take here. Digging some more into the tox-uv repo to see where <code>uv sync --no-install-workspace</code> could go, I realized that there was a change intended to address <code>tool.uv.sources</code> in https://github.com/tox-dev/tox-uv/pull/180. That provides an option to set <code>package = uv</code> which leads to tox running <code>uv pip install .</code> instead of splitting out the dependencies and installing them first. So that option causes uv to get called only once with the project in the list of packages to be installed and so <code>tool.uv.sources</code> is used. Thanks to uv being super fast the loss of having the dependencies set up separately so that their setup can be skipped on subsequent runs is not really missed.</p>
+            <div class="timeline-body"><p>Thanks @konstin! I will close since there is no action to take here. Digging some more into the tox-uv repo to see where <code>uv sync --no-install-workspace</code> could go, I realized that there was a change intended to address <code>tool.uv.sources</code> in <a href="https://github.com/tox-dev/tox-uv/pull/180">tox-dev/tox-uv#180</a>. That provides an option to set <code>package = uv</code> which leads to tox running <code>uv pip install .</code> instead of splitting out the dependencies and installing them first. So that option causes uv to get called only once with the project in the list of packages to be installed and so <code>tool.uv.sources</code> is used. Thanks to uv being super fast the loss of having the dependencies set up separately so that their setup can be skipped on subsequent runs is not really missed.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @wshanks on 2025-09-05 14:43</div>
+            <div class="event">Closed by <a href="https://github.com/wshanks">@wshanks</a> on 2025-09-05 14:43</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:32:47 UTC
+        Synced at 2026-01-20 19:40:13 UTC
     </footer>
 </body>
 </html>

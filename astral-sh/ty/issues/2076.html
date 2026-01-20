@@ -23,38 +23,38 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/duncanmmacleod">@duncanmmacleod</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>Attempting to access a module-level object (attribute) that is set dynamically (e.g. with <code>setattr</code> or <code>globals()</code>) results in an <code>unresolved-attribute</code> warning, despite the attribute being actually resolvable.</p>
 <p>Consider this toy example:</p>
-<details open>
-<summary>example.py</summary>
 
-<pre><code class="language-python">globals()[&quot;EXAMPLE&quot;] = True
+example.py
+
+<pre><code>globals()[&quot;EXAMPLE&quot;] = True
 </code></pre>
-</details>
 
-<details open>
-<summary>test_example.py</summary>
 
-<pre><code class="language-python">import example
+
+test_example.py
+
+<pre><code>import example
 
 if example.EXAMPLE:
     print(&quot;Example is True&quot;)
 </code></pre>
-</details>
 
-<details open>
-<summary>Python output</summary>
 
-<pre><code class="language-console">$ python test_example.py
+
+Python output
+
+<pre><code>$ python test_example.py
 Example is True
 </code></pre>
-</details>
 
-<details open>
-<summary>ty output</summary>
 
-<pre><code class="language-console">$ uvx ty check example.py test_example.py
+
+ty output
+
+<pre><code>$ uvx ty check example.py test_example.py
 error[unresolved-attribute]: Module `example` has no member `EXAMPLE`
  --&gt; test_example.py:3:4
   |
@@ -68,30 +68,30 @@ info: rule `unresolved-attribute` is enabled by default
 
 Found 1 diagnostic
 </code></pre>
-</details>
 
-<hr />
+
+<hr>
 <p>A more realistic example (how I actually got here) is when using the <a href="https://docs.astropy.org/en/stable/constants/"><code>astropy.constants</code></a> module:</p>
-<details open>
-<summary>test_astropy.py</summary>
 
-<pre><code class="language-python">from astropy import constants
+test_astropy.py
+
+<pre><code>from astropy import constants
 print(f&quot;Speed of light: {constants.c.value} m/s&quot;)
 </code></pre>
-</details>
 
-<details open>
-<summary>Python output</summary>
 
-<pre><code class="language-console">$ uv run test_astropy.py
+
+Python output
+
+<pre><code>$ uv run test_astropy.py
 Speed of light: 299792458.0 m/s
 </code></pre>
-</details>
 
-<details open>
-<summary>ty output</summary>
 
-<pre><code class="language-console">$ uvx ty check test_astropy.py
+
+ty output
+
+<pre><code>$ uvx ty check test_astropy.py
 error[unresolved-attribute]: Module `astropy.constants` has no member `c`
  --&gt; test_astropy.py:2:26
   |
@@ -103,34 +103,34 @@ info: rule `unresolved-attribute` is enabled by default
 
 Found 1 diagnostic
 </code></pre>
-</details>
 
-<hr />
-<p>Apologies if this is a duplicate of an existing report, I looked but didn't see anything obvious.</p>
-<h3>Version</h3>
+
+<hr>
+<p>Apologies if this is a duplicate of an existing report, I looked but didn&#x27;t see anything obvious.</p>
+Version
 <p>ty 0.0.3</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-18 15:32</div>
             <div class="timeline-body"><p>Hey, thanks for the report!</p>
-<p>Mypy, pyright and pyrefly all emit the same error on <code>astropy.constants.c</code> here, so I'm not totally sure that this is a bug in ty. In general, there are lots of dynamic patterns in Python that work at runtime but that can't be supported by static type checkers, unfortunately. I think dynamically assigning globals using the <code>globals()</code> dictionary probably falls into that bucket, I'm afraid? And similar for the <code>utils._set_c()</code> magic that astropy is doing.</p>
+<p>Mypy, pyright and pyrefly all emit the same error on <code>astropy.constants.c</code> here, so I&#x27;m not totally sure that this is a bug in ty. In general, there are lots of dynamic patterns in Python that work at runtime but that can&#x27;t be supported by static type checkers, unfortunately. I think dynamically assigning globals using the <code>globals()</code> dictionary probably falls into that bucket, I&#x27;m afraid? And similar for the <code>utils._set_c()</code> magic that astropy is doing.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @AlexWaygood on 2025-12-18 15:32</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-18 15:32</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/duncanmmacleod">@duncanmmacleod</a> on 2025-12-18 15:53</div>
             <div class="timeline-body"><p>Thanks @AlexWaygood for the swift reply! I confirmed that mypy also emits the same (I had a misconfiguration for mypy when testing this early).</p>
 <p>I understand that a static typer might not be able to handle myriad dynamic magic, but it would be great if a solution became available.</p>
-<p>I searched the docs, but didn't see an answer to this, but is it possible to disable/ignore an error/warning based on a regex of the warning message? In this example it would be great to ignore <code>unresolved-attribute</code> in any module when the message refers to <code>astropy.constants</code>.</p>
+<p>I searched the docs, but didn&#x27;t see an answer to this, but is it possible to disable/ignore an error/warning based on a regex of the warning message? In this example it would be great to ignore <code>unresolved-attribute</code> in any module when the message refers to <code>astropy.constants</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-18 16:00</div>
-            <div class="timeline-body"><p>No, I don't think we currently support ignoring errors based on a regex, unfortunately. We allow suppressing <a href="https://docs.astral.sh/ty/reference/configuration/#overrides">specific error codes on a per-module basis</a>, e.g. I think you'd do this to ignore all <code>unresolved-attribute</code> errors being reported in <code>foo.py</code>:</p>
-<pre><code class="language-toml">[[tool.ty.overrides]]
+            <div class="timeline-body"><p>No, I don&#x27;t think we currently support ignoring errors based on a regex, unfortunately. We allow suppressing <a href="https://docs.astral.sh/ty/reference/configuration/#overrides">specific error codes on a per-module basis</a>, e.g. I think you&#x27;d do this to ignore all <code>unresolved-attribute</code> errors being reported in <code>foo.py</code>:</p>
+<pre><code>[[tool.ty.overrides]]
 include = [&quot;foo.py&quot;]
 
 [tool.ty.overrides.rules]
@@ -141,26 +141,26 @@ unresolved-attribute = &quot;ignore&quot;
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/duncanmmacleod">@duncanmmacleod</a> on 2025-12-18 16:06</div>
             <div class="timeline-body"><p>Thanks @AlexWaygood.</p>
-<p>I'll leave it to you to close this or leave it open for discussion as you see fit.</p>
+<p>I&#x27;ll leave it to you to close this or leave it open for discussion as you see fit.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-18 16:15</div>
-            <div class="timeline-body"><p>Something equivalent to pyrefly's https://pyrefly.org/en/docs/configuration/#replace-imports-with-any option might be helpful for this kind of thing. Thoughts @carljm / @MichaReiser?</p>
+            <div class="timeline-body"><p>Something equivalent to pyrefly&#x27;s https://pyrefly.org/en/docs/configuration/#replace-imports-with-any option might be helpful for this kind of thing. Thoughts @carljm / @MichaReiser?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-18 16:18</div>
-            <div class="timeline-body"><p>Okay, I'll close this in favour of #2078 and mention the alternative configuration option there instead. Thanks!</p>
+            <div class="timeline-body"><p>Okay, I&#x27;ll close this in favour of #2078 and mention the alternative configuration option there instead. Thanks!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-12-18 16:18</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-18 16:18</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:21:26 UTC
+        Synced at 2026-01-20 19:26:36 UTC
     </footer>
 </body>
 </html>

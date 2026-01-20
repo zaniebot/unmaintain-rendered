@@ -23,35 +23,35 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>Previously if an explicit specialization failed (e.g. wrong number of type arguments or violates an upper bound) we just inferred <code>Unknown</code> for the entire type. This actually caused us to panic on an a case of a recursive upper bound with invalid specialization; the upper bound would oscillate indefinitely in fixpoint iteration between <code>Unknown</code> and the given specialization. This could be fixed with a cycle recovery function, but in this case there's a simpler fix: if we infer <code>C[Unknown]</code> instead of <code>Unknown</code> for an invalid attempt to specialize <code>C</code>, that allows fixpoint iteration to quickly converge, as well as giving a more precise type inference.</p>
-<p>Other type checkers actually just go with the attempted specialization even if it's invalid. So if <code>C</code> has a type parameter with upper bound <code>int</code>, and you say <code>C[str]</code>, they'll emit a diagnostic but just go with <code>C[str]</code>. Even weirder, if <code>C</code> has a single type parameter and you say <code>C[str, bytes]</code>, they'll just go with <code>C[str]</code> as the type. I'm not convinced by this approach; it seems odd to have specializations floating around that explicitly violate the declared upper bound, or in the latter case aren't even the specialization the annotation requested. I prefer <code>C[Unknown]</code> for this case.</p>
-<p>Fixing this revealed an issue with <code>collections.namedtuple</code>, which returns <code>type[tuple[Any, ...]]</code>. Due to https://github.com/astral-sh/ty/issues/1649 we consider that to be an invalid specialization. So previously we returned <code>Unknown</code>; after this PR it would be <code>type[tuple[Unknown]]</code>, leading to more false positives from our lack of functional namedtuple support. To avoid that I added an explicit Todo type for functional namedtuples for now.</p>
-<h2>Test Plan</h2>
+            <div class="timeline-body">Summary
+<p>Previously if an explicit specialization failed (e.g. wrong number of type arguments or violates an upper bound) we just inferred <code>Unknown</code> for the entire type. This actually caused us to panic on an a case of a recursive upper bound with invalid specialization; the upper bound would oscillate indefinitely in fixpoint iteration between <code>Unknown</code> and the given specialization. This could be fixed with a cycle recovery function, but in this case there&#x27;s a simpler fix: if we infer <code>C[Unknown]</code> instead of <code>Unknown</code> for an invalid attempt to specialize <code>C</code>, that allows fixpoint iteration to quickly converge, as well as giving a more precise type inference.</p>
+<p>Other type checkers actually just go with the attempted specialization even if it&#x27;s invalid. So if <code>C</code> has a type parameter with upper bound <code>int</code>, and you say <code>C[str]</code>, they&#x27;ll emit a diagnostic but just go with <code>C[str]</code>. Even weirder, if <code>C</code> has a single type parameter and you say <code>C[str, bytes]</code>, they&#x27;ll just go with <code>C[str]</code> as the type. I&#x27;m not convinced by this approach; it seems odd to have specializations floating around that explicitly violate the declared upper bound, or in the latter case aren&#x27;t even the specialization the annotation requested. I prefer <code>C[Unknown]</code> for this case.</p>
+<p>Fixing this revealed an issue with <code>collections.namedtuple</code>, which returns <code>type[tuple[Any, ...]]</code>. Due to <a href="https://github.com/astral-sh/ty/issues/1649">astral-sh/ty#1649</a> we consider that to be an invalid specialization. So previously we returned <code>Unknown</code>; after this PR it would be <code>type[tuple[Unknown]]</code>, leading to more false positives from our lack of functional namedtuple support. To avoid that I added an explicit Todo type for functional namedtuples for now.</p>
+Test Plan
 <p>Added and updated mdtests.</p>
 <p>The conformance suite changes have to do with <code>ParamSpec</code>, so no meaningful signal there.</p>
-<p>The ecosystem changes appear to be the expected effects of having more precise type information (including occurrences of known issues such as https://github.com/astral-sh/ty/issues/1495 ). Most effects are just changes to types in diagnostics.</p>
+<p>The ecosystem changes appear to be the expected effects of having more precise type information (including occurrences of known issues such as <a href="https://github.com/astral-sh/ty/issues/1495">astral-sh/ty#1495</a> ). Most effects are just changes to types in diagnostics.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @carljm on 2025-11-27 00:57</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/carljm">@carljm</a> on 2025-11-27 00:57</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-27 00:59</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
-<details>
-<summary>Changes were detected when running ty on typing conformance tests</summary>
+Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a>
 
-<pre><code class="language-diff">--- old-output.txt	2025-11-27 12:32:15.155059641 +0000
+Changes were detected when running ty on typing conformance tests
+
+<pre><code>--- old-output.txt	2025-11-27 12:32:15.155059641 +0000
 +++ new-output.txt	2025-11-27 12:32:18.475105279 +0000
 @@ -451,11 +451,9 @@
- generics_defaults.py:55:1: error[type-assertion-failure] Type `type[AllTheDefaults[int, int | float | complex, str, int, bool]]` does not match asserted type `&lt;class 'AllTheDefaults[int, int | float | complex, str, int, bool]'&gt;`
- generics_defaults.py:59:1: error[type-assertion-failure] Type `type[AllTheDefaults[int, int | float | complex, str, int, bool]]` does not match asserted type `&lt;class 'AllTheDefaults[int, int | float | complex, str, int, bool]'&gt;`
- generics_defaults.py:63:1: error[type-assertion-failure] Type `type[AllTheDefaults[int, int | float | complex, str, int, bool]]` does not match asserted type `&lt;class 'AllTheDefaults[int, int | float | complex, str, int, bool]'&gt;`
--generics_defaults.py:79:1: error[type-assertion-failure] Type `Unknown` does not match asserted type `&lt;class 'Class_ParamSpec'&gt;`
-+generics_defaults.py:79:1: error[type-assertion-failure] Type `type[Class_ParamSpec[Unknown]]` does not match asserted type `&lt;class 'Class_ParamSpec'&gt;`
+ generics_defaults.py:55:1: error[type-assertion-failure] Type `type[AllTheDefaults[int, int | float | complex, str, int, bool]]` does not match asserted type `&lt;class &#x27;AllTheDefaults[int, int | float | complex, str, int, bool]&#x27;&gt;`
+ generics_defaults.py:59:1: error[type-assertion-failure] Type `type[AllTheDefaults[int, int | float | complex, str, int, bool]]` does not match asserted type `&lt;class &#x27;AllTheDefaults[int, int | float | complex, str, int, bool]&#x27;&gt;`
+ generics_defaults.py:63:1: error[type-assertion-failure] Type `type[AllTheDefaults[int, int | float | complex, str, int, bool]]` does not match asserted type `&lt;class &#x27;AllTheDefaults[int, int | float | complex, str, int, bool]&#x27;&gt;`
+-generics_defaults.py:79:1: error[type-assertion-failure] Type `Unknown` does not match asserted type `&lt;class &#x27;Class_ParamSpec&#x27;&gt;`
++generics_defaults.py:79:1: error[type-assertion-failure] Type `type[Class_ParamSpec[Unknown]]` does not match asserted type `&lt;class &#x27;Class_ParamSpec&#x27;&gt;`
  generics_defaults.py:79:56: error[invalid-type-arguments] Too many type arguments to class `Class_ParamSpec`: expected between 0 and 1, got 2
 -generics_defaults.py:80:1: error[type-assertion-failure] Type `Unknown` does not match asserted type `Class_ParamSpec[Unknown]`
  generics_defaults.py:80:53: error[invalid-type-arguments] Too many type arguments to class `Class_ParamSpec`: expected between 0 and 1, got 2
@@ -60,26 +60,26 @@
  generics_defaults.py:81:68: error[invalid-type-arguments] Too many type arguments to class `Class_ParamSpec`: expected between 0 and 1, got 2
  generics_defaults.py:91:26: error[invalid-argument-type] `@Todo(starred expression)` is not a valid argument to `Generic`
 @@ -1031,4 +1029,4 @@
- typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
+ typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key &#x27;name&#x27; in TypedDict `Movie` constructor
  typeddicts_usage.py:28:18: error[invalid-key] Unknown key &quot;title&quot; for TypedDict `Movie`: Unknown key &quot;title&quot;
  typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions
 -Found 1033 diagnostics
 +Found 1031 diagnostics
 
 </code></pre>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-27 01:01</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">async-utils (https://github.com/mikeshardmind/async-utils)
+Changes were detected when running on open source projects
+
+<pre><code>async-utils (https://github.com/mikeshardmind/async-utils)
 + src/async_utils/corofunc_cache.py:50:58: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `CoroFunc[Unknown]`
 + src/async_utils/task_cache.py:53:62: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `TaskFunc[Unknown]`
 - Found 27 diagnostics
@@ -466,19 +466,19 @@ pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
 
 ... (truncated 202 lines) ...
 </code></pre>
-</details>
+
 
 <p>No memory usage changes detected ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @carljm on 2025-11-27 01:03</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/carljm">@carljm</a> on 2025-11-27 01:03</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-27 01:11</div>
-            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+            <div class="timeline-body">
 
-<h2><code>ecosystem-analyzer</code> results</h2>
+<code>ecosystem-analyzer</code> results
 <p>| Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
 | <code>type-assertion-failure</code> | 1 | 8 | 170 |
@@ -498,25 +498,25 @@ pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @carljm on 2025-11-27 01:43</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/carljm">@carljm</a> on 2025-11-27 01:43</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @carljm on 2025-11-27 01:43</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/carljm">@carljm</a> on 2025-11-27 01:43</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @carljm on 2025-11-27 01:43</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/carljm">@carljm</a> on 2025-11-27 01:43</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @carljm on 2025-11-27 01:43</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/carljm">@carljm</a> on 2025-11-27 01:43</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-27 01:52</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
@@ -527,14 +527,14 @@ pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-11-27 07:09</div>
-            <div class="timeline-body"><p>Sorry, I didn't see this PR before merging https://github.com/astral-sh/ruff/pull/21635. I can take ownership of changing this PR accordingly merging <code>main</code> here.</p>
+            <div class="timeline-body"><p>Sorry, I didn&#x27;t see this PR before merging <a href="https://github.com/astral-sh/ruff/pull/21635">astral-sh/ruff#21635</a>. I can take ownership of changing this PR accordingly merging <code>main</code> here.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @sharkdp on 2025-11-27 12:44</div>
+            <div class="event">Merged by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-11-27 12:44</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @sharkdp on 2025-11-27 12:44</div>
+            <div class="event">Closed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-11-27 12:44</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-11-27 12:44</div>
@@ -542,7 +542,7 @@ pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:17:36 UTC
+        Synced at 2026-01-20 19:21:05 UTC
     </footer>
 </body>
 </html>

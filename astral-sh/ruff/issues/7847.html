@@ -23,20 +23,11 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Guilherme-Vasconcelos">@Guilherme-Vasconcelos</a></div>
-            <div class="timeline-body"><!--
-Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+            <div class="timeline-body">
 
-If you're filing a bug report, please consider including the following information:
-
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
-* The current Ruff settings (any relevant sections from your `pyproject.toml`).
-* The current Ruff version (`ruff --version`).
--->
-
-<h2>Code snippet that reproduces the bug</h2>
+Code snippet that reproduces the bug
 <p>The following snippet emits B023 (function-uses-loop-variable):</p>
-<pre><code class="language-python">def make_squared_list(size: int) -&gt; list[int]:
+<pre><code>def make_squared_list(size: int) -&gt; list[int]:
     result = []
 
     for i in range(size):
@@ -53,18 +44,18 @@ If you're filing a bug report, please consider including the following informati
     return result
 </code></pre>
 <p>I have found out that adding a <code>nonlocal &lt;variable&gt;</code> declaration followed by an assignment to itself makes the error go away, i.e. change the closure <code>_append_to_result</code> to this:</p>
-<pre><code class="language-python">def _append_to_result() -&gt; None:
+<pre><code>def _append_to_result() -&gt; None:
     # No longer emits any warnings.
     nonlocal square
     square = square
     result.append(square)
 </code></pre>
-<h2>Command invoked</h2>
-<pre><code class="language-sh">$ poetry run ruff ./ruff_bug.py
+Command invoked
+<pre><code>$ poetry run ruff ./ruff_bug.py
 </code></pre>
-<h2>Current ruff settings</h2>
+Current ruff settings
 <p>Relevant sections from <code>pyproject.toml</code>:</p>
-<pre><code class="language-toml">[tool.ruff]
+<pre><code>[tool.ruff]
 select = [
     &quot;F&quot;,
     &quot;E&quot;,
@@ -91,8 +82,8 @@ ignore = [
 [tool.ruff.pycodestyle]
 ignore-overlong-task-comments = true
 </code></pre>
-<h2>Current ruff version</h2>
-<pre><code class="language-sh">$ poetry run ruff --version
+Current ruff version
+<pre><code>$ poetry run ruff --version
 ruff 0.0.291
 </code></pre>
 </div>
@@ -100,7 +91,7 @@ ruff 0.0.291
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-07 15:13</div>
             <div class="timeline-body"><p>Thanks for the well written issue :) this does look like a bug, even if I move return the function and run it in a new scope the variable is indeed bound</p>
-<pre><code class="language-python">def make_squared_list(size: int) -&gt; list[int]:
+<pre><code>def make_squared_list(size: int) -&gt; list[int]:
     result = []
 
     for i in range(size):
@@ -127,18 +118,18 @@ make_squared_list(3)()
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2023-10-07 15:13</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-07 15:13</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-08 14:28</div>
-            <div class="timeline-body"><p>(Confirmed that flake8-bugbear also flags these cases. So it's not a bug in our re-implementation. We should still fix if we can.)</p>
+            <div class="timeline-body"><p>(Confirmed that flake8-bugbear also flags these cases. So it&#x27;s not a bug in our re-implementation. We should still fix if we can.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-08 14:35</div>
             <div class="timeline-body"><p>Hmm, I looked at some bugbear issues, and it does seem like this is valid to flag in some cases.</p>
 <p>For example, this prints <code>[1, 1]</code> instead of <code>[0, 1]</code>. Note that the function defined in the loop is called <em>after</em> the loop, rather than within each iteration:</p>
-<pre><code class="language-python">def make_squared_list(size: int) -&gt; list[int]:
+<pre><code>def make_squared_list(size: int) -&gt; list[int]:
     result = []
 
     functions = []
@@ -161,17 +152,17 @@ make_squared_list(3)()
 
 print(make_squared_list(2))
 </code></pre>
-<p>See https://github.com/PyCQA/flake8-bugbear/issues/402.</p>
+<p>See <a href="https://github.com/PyCQA/flake8-bugbear/issues/402">PyCQA/flake8-bugbear#402</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/beauxq">@beauxq</a> on 2024-08-29 13:01</div>
             <div class="timeline-body"><p>I think this false positive could be eliminated without risking any false negatives.</p>
 <p>We should be able to detect whether the only thing that is done with the function is calling it within the same loop.
-If that is the case, it shouldn't be reported.
+If that is the case, it shouldn&#x27;t be reported.
 If anything else is done with the function besides calling it in the same loop, the error should be reported.</p>
-<hr />
-<pre><code class="language-python">    for i in range(size):
+<hr>
+<pre><code>    for i in range(size):
         square = i**2
 
         def _append_to_result() -&gt; None:
@@ -181,8 +172,8 @@ If anything else is done with the function besides calling it in the same loop, 
     return result
 </code></pre>
 <p>Nothing is done besides calling it in the same loop, so it should not be reported.</p>
-<hr />
-<pre><code class="language-python3">    for i in range(size):
+<hr>
+<pre><code>    for i in range(size):
         square = i**2
 
         def _append_to_result() -&gt; None:
@@ -192,8 +183,8 @@ If anything else is done with the function besides calling it in the same loop, 
     return _append_to_result
 </code></pre>
 <p>Something is done besides calling it in the same loop (returning it), so it should be reported.</p>
-<hr />
-<pre><code class="language-python3">    for i in range(size):
+<hr>
+<pre><code>    for i in range(size):
         square = i**2
 
         def _append_to_result() -&gt; None:
@@ -202,16 +193,16 @@ If anything else is done with the function besides calling it in the same loop, 
         functions.append(_append_to_result)
 </code></pre>
 <p>Something is done besides calling it in the same loop (passing it to another function), so it should be reported.</p>
-<hr />
+<hr>
 <p>In case someone wonders why someone would want to define a function only to call it within the same loop, the biggest reason I do it is code organization.</p>
 <ul>
 <li>It organizes a section of code together and gives it a name.</li>
-<li>It creates a new scope so temp variables don't pollute the name space.</li>
+<li>It creates a new scope so temp variables don&#x27;t pollute the name space.</li>
 <li>It is collapsible in a code editor.</li>
 </ul>
 <p>In one place I ran into this false positive, there were 5 variables captured by the function.
 Having to bind all of them would make a bunch of noise that would make it harder to read.
-<code>noqa</code> comments on all the usages would also make it harder to read. And I don't want to risk a false negative somewhere else by ignoring the whole file. Ignoring the rule also brings the risk that someone else could come later and change it to use the function outside the loop, and the problem wouldn't be caught.</p>
+<code>noqa</code> comments on all the usages would also make it harder to read. And I don&#x27;t want to risk a false negative somewhere else by ignoring the whole file. Ignoring the rule also brings the risk that someone else could come later and change it to use the function outside the loop, and the problem wouldn&#x27;t be caught.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -241,7 +232,7 @@ I just had to disable B023 checks in my config as we have numerous such uses</p>
     labels = label_mapping_f(labels)
 </code></pre>
 </blockquote>
-<p>I don't think that one is really safe for the linter to ignore, because it doesn't know whether <code>np.vectorize</code> is going to call it immediately, or save a reference to it to call later.</p>
+<p>I don&#x27;t think that one is really safe for the linter to ignore, because it doesn&#x27;t know whether <code>np.vectorize</code> is going to call it immediately, or save a reference to it to call later.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -252,7 +243,7 @@ I just had to disable B023 checks in my config as we have numerous such uses</p>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:48:34 UTC
+        Synced at 2026-01-20 18:48:43 UTC
     </footer>
 </body>
 </html>

@@ -23,29 +23,29 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/tdejager">@tdejager</a></div>
-            <div class="timeline-body"><h2>Intro</h2>
+            <div class="timeline-body">Intro
 <p><strong>TLDR</strong> Incorrect normalization when running a windows file path through a <code>Requirement::from_str(spec_str).unwrap();</code> <strong>only</strong> on windows.</p>
-<p>This is a bit of a strange issue, and perhaps we are doing something wrong :) But we we are using the pep508_rs from the UV project in <a href="https://github.com/prefix-dev/pixi">pixi</a>. We use to test if a lock file is out of date by matching it with the requirements we get back from uv. We've found this strange issue, where there is a difference for absolute file path handling in linux vs windows.</p>
-<h2>To reproduce</h2>
-<p>Before I explain the issue, here is a reproducer, with a small CI pipeline that set's things up and tests <a href="https://github.com/tdejager/pep508-repro/blob/main/src/lib.rs">reproducer</a>.
+<p>This is a bit of a strange issue, and perhaps we are doing something wrong :) But we we are using the pep508_rs from the UV project in <a href="https://github.com/prefix-dev/pixi">pixi</a>. We use to test if a lock file is out of date by matching it with the requirements we get back from uv. We&#x27;ve found this strange issue, where there is a difference for absolute file path handling in linux vs windows.</p>
+To reproduce
+<p>Before I explain the issue, here is a reproducer, with a small CI pipeline that set&#x27;s things up and tests <a href="https://github.com/tdejager/pep508-repro/blob/main/src/lib.rs">reproducer</a>.
 This only is a problem on windows, other platforms have a different normalization codepath. I.e. the problem is probably gated behind a <code>#[cfg(windows)]</code></p>
 <p><a href="https://github.com/tdejager/pep508-repro/actions/runs/8755369544/job/24029289515">Failing test</a></p>
-<h2>Problem</h2>
+Problem
 <p>The problem is that given the following direct-url requirement:</p>
-<pre><code class="language-rust">let spec_str = &quot;mypkg @ file:///C:/path/to/my_pkg&quot;;
+<pre><code>let spec_str = &quot;mypkg @ file:///C:/path/to/my_pkg&quot;;
 let spec = Requirement::from_str(spec_str).unwrap();
 </code></pre>
 <p>When I read the code, I expect the path to be normalized in windows to: <code>C:\\path\\to\\my_pkg</code>.</p>
-<h2>Why is this unexpected?</h2>
+Why is this unexpected?
 <p>This because the requirements parsing, gets to the following function:</p>
-<pre><code class="language-rust">fn parse_url(cursor: &amp;mut Cursor, working_dir: Option&lt;&amp;Path&gt;) -&gt; Result&lt;VerbatimUrl, Pep508Error&gt; {
+<pre><code>fn parse_url(cursor: &amp;mut Cursor, working_dir: Option&lt;&amp;Path&gt;) -&gt; Result&lt;VerbatimUrl, Pep508Error&gt; {
 // ...✂️✂️✂️ rest of function
     let url = preprocess_url(url, working_dir, cursor, start, len)?;
 }
 </code></pre>
 <p>which in turn calls <code>preprocess_url</code>.</p>
-<p>Which has the following part that I'm insterested in:</p>
-<pre><code class="language-rust">/// Create a `VerbatimUrl` to represent the requirement.
+<p>Which has the following part that I&#x27;m insterested in:</p>
+<pre><code>/// Create a `VerbatimUrl` to represent the requirement.
 fn preprocess_url(
     url: &amp;str,
     #[cfg_attr(not(feature = &quot;non-pep508-extensions&quot;), allow(unused))] working_dir: Option&lt;&amp;Path&gt;,
@@ -72,23 +72,23 @@ fn preprocess_url(
 <pre><code>///C:/path/to/my_pkg =&gt; C:\\path\\to\\my_pkg
 </code></pre>
 <p>The weird thing is that if I call these functions directly</p>
-<pre><code class="language-rust">uv_fs::normalize_url_path(pep508_rs::strip_host(&quot;///C:/path/to/my_pkg&quot;)); // Produces:  C:\\path\\to\\my_pkg as expected.
+<pre><code>uv_fs::normalize_url_path(pep508_rs::strip_host(&quot;///C:/path/to/my_pkg&quot;)); // Produces:  C:\\path\\to\\my_pkg as expected.
 </code></pre>
 <p>They do exactly this. However, going through the Requirement parsing e.g:</p>
-<pre><code class="language-rust">let spec = Requirement::from_str(spec_str).unwrap();
+<pre><code>let spec = Requirement::from_str(spec_str).unwrap();
 if let Some(VersionOrUrl::Url(url)) = spec.version_or_url {
     let path = url.path(); // This is: /C:/path/to/my_pkg
 }
 </code></pre>
-<p>it somehow does not, which I don't understand. Sorry for the long write-up, it was pretty hard to explain succinctly. Let me know if you need more information</p>
+<p>it somehow does not, which I don&#x27;t understand. Sorry for the long write-up, it was pretty hard to explain succinctly. Let me know if you need more information</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">windows</span> added by @konstin on 2024-04-19 14:48</div>
+            <div class="event">Label <span class="label">windows</span> added by <a href="https://github.com/konstin">@konstin</a> on 2024-04-19 14:48</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-19 14:58</div>
-            <div class="timeline-body"><p>Have you confirmed that we're actually hitting the <code>Some(Scheme::File)</code> branch in this case?</p>
+            <div class="timeline-body"><p>Have you confirmed that we&#x27;re actually hitting the <code>Some(Scheme::File)</code> branch in this case?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -98,7 +98,7 @@ if let Some(VersionOrUrl::Url(url)) = spec.version_or_url {
     Finished dev [unoptimized + debuginfo] target(s) in 0.07s
      Running `target\debug\pep508_reproducer.exe`
 [C:\Users\Ruben\development\uv\crates\pep508-rs\src\lib.rs:1060:17] &amp;path = &quot;C:\\path\\to\\my_pkg&quot;
-thread 'main' panicked at src\main.rs:10:9:
+thread &#x27;main&#x27; panicked at src\main.rs:10:9:
 assertion `left == right` failed
   left: &quot;/C:/path/to/my_pkg&quot;
  right: &quot;C:\\path\\to\\my_pkg&quot;
@@ -107,7 +107,7 @@ assertion `left == right` failed
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-19 16:02</div>
-            <div class="timeline-body"><p>I can look into this tonight, I still haven't wrapped my head around what the problem is.</p>
+            <div class="timeline-body"><p>I can look into this tonight, I still haven&#x27;t wrapped my head around what the problem is.</p>
 <p>Just to clarify, are you running all of these tests <em>on</em> Windows? I think the path normalization probably differs depending on the host platform, not just the paths themselves.</p>
 </div>
         </div>
@@ -120,8 +120,8 @@ Swapped the words succeeding and failing. Windows fails as is expected.</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-19 23:56</div>
-            <div class="timeline-body"><p>I might need to understand the actual problem that it's causing, but isn't this just the difference between a <code>Path</code> and <code>url.path()</code> (which is just the string after the host etc.)?</p>
-<pre><code class="language-rust">let url = Url::from_str(&quot;file:///C:/path/to/my_pkg&quot;).unwrap();
+            <div class="timeline-body"><p>I might need to understand the actual problem that it&#x27;s causing, but isn&#x27;t this just the difference between a <code>Path</code> and <code>url.path()</code> (which is just the string after the host etc.)?</p>
+<pre><code>let url = Url::from_str(&quot;file:///C:/path/to/my_pkg&quot;).unwrap();
 
 println!(&quot;{}&quot;, url.path());
 // /C:/path/to/my_pkg
@@ -134,8 +134,8 @@ println!(&quot;{}&quot;, path.display());
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tdejager">@tdejager</a> on 2024-04-20 07:10</div>
-            <div class="timeline-body"><p>Well not really it's more like what you expect the normalization to be when an absolute file url gets passed into the requirement.</p>
-<p>And as you can see the output does not correspond to what the functions in 'preprocess_url' say what they should be doing.</p>
+            <div class="timeline-body"><p>Well not really it&#x27;s more like what you expect the normalization to be when an absolute file url gets passed into the requirement.</p>
+<p>And as you can see the output does not correspond to what the functions in &#x27;preprocess_url&#x27; say what they should be doing.</p>
 <p>The weird thing is still that calling these functions directly does yield the result that the comments imply.</p>
 </div>
         </div>
@@ -146,7 +146,7 @@ println!(&quot;{}&quot;, path.display());
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tdejager">@tdejager</a> on 2024-04-20 07:57</div>
-            <div class="timeline-body"><p>Also, sorry for the fact I can't debug it a bit better but I don't have access to a windows machine atm. But will have after the weekend!</p>
+            <div class="timeline-body"><p>Also, sorry for the fact I can&#x27;t debug it a bit better but I don&#x27;t have access to a windows machine atm. But will have after the weekend!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -162,12 +162,12 @@ println!(&quot;{}&quot;, path.display());
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @tdejager on 2024-04-22 07:32</div>
+            <div class="event">Closed by <a href="https://github.com/tdejager">@tdejager</a> on 2024-04-22 07:32</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:24:43 UTC
+        Synced at 2026-01-20 19:30:52 UTC
     </footer>
 </body>
 </html>

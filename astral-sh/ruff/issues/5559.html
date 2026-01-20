@@ -47,9 +47,9 @@
 bar = make_bar()
 
 # `bar` has a string annotation-- if we want to operate on it, we need to evaluate it. This requires
-# calling `get_type_hints`, but this fails because &quot;Bar&quot; can't be dereferenced since referent `Bar`
+# calling `get_type_hints`, but this fails because &quot;Bar&quot; can&#x27;t be dereferenced since referent `Bar`
 # vanished with local scope
-get_type_hints(bar)  # =&gt; NameError: name 'Bar' is not defined.
+get_type_hints(bar)  # =&gt; NameError: name &#x27;Bar&#x27; is not defined.
 </code></pre>
 <p>We have plenty of code meeting these conditions in Dagster (mostly in tests), so my <a href="https://github.com/dagster-io/dagster/pull/14675">experiment</a> in injecting <code>from __future__ import annotations</code> to enable <code>TCH</code> autofix has failed. Other projects that use runtime type annotation introspection are likely to encounter the same issues.</p>
 <p>Therefore, a significant enhancement to <code>TCH</code> autofix would be to detect where annotations <em>could</em> be stored as strings, and perform a targeted conversion for you using quoting. Example:</p>
@@ -72,7 +72,7 @@ def foo(lock: &quot;Lock&quot;):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-06 13:54</div>
-            <div class="timeline-body"><p>Yeah, I agree this would be useful. I'm not yet certain how hard it is to get right, but I agree that it would be useful... flake8-type-checking has rules for this, which we could look at for reference: https://pypi.org/project/flake8-type-checking/.</p>
+            <div class="timeline-body"><p>Yeah, I agree this would be useful. I&#x27;m not yet certain how hard it is to get right, but I agree that it would be useful... flake8-type-checking has rules for this, which we could look at for reference: https://pypi.org/project/flake8-type-checking/.</p>
 <blockquote>
 <p>annotations are being created in a local scope.</p>
 </blockquote>
@@ -80,7 +80,7 @@ def foo(lock: &quot;Lock&quot;):
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">core</span> added by @charliermarsh on 2023-07-06 13:54</div>
+            <div class="event">Label <span class="label">core</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-06 13:54</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2023-07-06 14:04</div>
@@ -100,13 +100,13 @@ def foo(lock: &quot;Lock&quot;):
             <div class="timeline-body"><blockquote>
 <p>I think it will be difficult to reliably determine whether an annotation is required at runtime</p>
 </blockquote>
-<p>Haven't thought it all the way through, but can't you just see if the only uses of a symbol are inside non-local type annotations, while also applying the existing settings used to special case e.g. Pydantic? Maybe determining scoping is harder than I think.</p>
+<p>Haven&#x27;t thought it all the way through, but can&#x27;t you just see if the only uses of a symbol are inside non-local type annotations, while also applying the existing settings used to special case e.g. Pydantic? Maybe determining scoping is harder than I think.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-14 21:02</div>
-            <div class="timeline-body"><p>Can you explain what you mean in terms of this example? (I.e., why <code>x: Bar</code> can't be quoted.)</p>
-<pre><code class="language-python">def make_bar():
+            <div class="timeline-body"><p>Can you explain what you mean in terms of this example? (I.e., why <code>x: Bar</code> can&#x27;t be quoted.)</p>
+<pre><code>def make_bar():
     class Bar:
         ...
 
@@ -124,19 +124,19 @@ print(get_type_hints(bar))
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2023-07-14 21:08</div>
             <div class="timeline-body"><blockquote>
-<p>Can you explain what you mean in terms of this example? (I.e., why x: Bar can't be quoted.)</p>
+<p>Can you explain what you mean in terms of this example? (I.e., why x: Bar can&#x27;t be quoted.)</p>
 </blockquote>
 <ul>
 <li>With <code>x: Bar</code> (unquoted case), <code>bar.__annotations__[&quot;x&quot;]</code> stores a direct reference to <code>Bar</code>.</li>
 <li>When <code>x: &quot;Bar&quot;</code> (quoted case), <code>bar.__annotations__[&quot;x&quot;]</code> stores the string <code>&quot;Bar&quot;</code>.</li>
 <li>When <code>get_type_hints(bar)</code> is applied, Python tries to resolve each annotation<ul>
-<li>If it's a type, just return it.</li>
-<li>If it's as string, dereference it.</li>
+<li>If it&#x27;s a type, just return it.</li>
+<li>If it&#x27;s as string, dereference it.</li>
 </ul>
 </li>
 <li>When Python tries to dereference the string &quot;Bar&quot;, it comes up empty and throws a <code>NameError</code>.</li>
 </ul>
-<p>I'm not sure why Python fails in exactly this scenario. I guess the defining module for the object holding the annotations is known, so Python is able to look up the referent of string annotations if they exist in the defining module's <code>__dict__</code>.</p>
+<p>I&#x27;m not sure why Python fails in exactly this scenario. I guess the defining module for the object holding the annotations is known, so Python is able to look up the referent of string annotations if they exist in the defining module&#x27;s <code>__dict__</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -149,7 +149,7 @@ print(get_type_hints(bar))
             <div class="timeline-body"><blockquote>
 <p>But, does &quot;whether we can quote it&quot; depend on whether and when get_type_hints is called? Or is there a more robust and general methodology we can follow?</p>
 </blockquote>
-<p>I would say just be conservative and always assume that <code>get_type_hints</code> might be called-- so if it references a local scope symbol, don't quote it.</p>
+<p>I would say just be conservative and always assume that <code>get_type_hints</code> might be called-- so if it references a local scope symbol, don&#x27;t quote it.</p>
 <p>In practice referencing local scope symbols is going to be pretty rare in 99% of Python code anyway.</p>
 </div>
         </div>
@@ -160,13 +160,13 @@ print(get_type_hints(bar))
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-14 22:30</div>
-            <div class="timeline-body"><p>It's also a little less critical for the TCH rules in particular since we're only dealing with imported symbols. But I suppose if the import itself is within a function scope...</p>
+            <div class="timeline-body"><p>It&#x27;s also a little less critical for the TCH rules in particular since we&#x27;re only dealing with imported symbols. But I suppose if the import itself is within a function scope...</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-23 04:44</div>
-            <div class="timeline-body"><p>I have something that I've been testing against Dagster here: https://github.com/astral-sh/ruff/pull/6001. The outputs look correct to me -- one example:</p>
-<pre><code class="language-diff">--- a/examples/assets_smoke_test/assets_smoke_test/pure_python_assets.py
+            <div class="timeline-body"><p>I have something that I&#x27;ve been testing against Dagster here: <a href="https://github.com/astral-sh/ruff/pull/6001">astral-sh/ruff#6001</a>. The outputs look correct to me -- one example:</p>
+<pre><code>--- a/examples/assets_smoke_test/assets_smoke_test/pure_python_assets.py
 +++ b/examples/assets_smoke_test/assets_smoke_test/pure_python_assets.py
 @@ -1,5 +1,9 @@
 +from typing import TYPE_CHECKING
@@ -210,27 +210,27 @@ print(get_type_hints(bar))
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tylerlaprade">@tylerlaprade</a> on 2023-07-23 16:04</div>
-            <div class="timeline-body"><p>If there's an easy way for me to locally run a preview version of Ruff, I'm happy to run your enhanced rule on my private codebase and verify the runtime behavior. Obviously would be easier if someone else has a large open-source codebase to test on, though.</p>
+            <div class="timeline-body"><p>If there&#x27;s an easy way for me to locally run a preview version of Ruff, I&#x27;m happy to run your enhanced rule on my private codebase and verify the runtime behavior. Obviously would be easier if someone else has a large open-source codebase to test on, though.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-23 16:08</div>
-            <div class="timeline-body"><p>Thanks! I can kick off a release build dry-run which will generate wheel files that you can download and <code>pip install</code>. I'll post here with the link.</p>
+            <div class="timeline-body"><p>Thanks! I can kick off a release build dry-run which will generate wheel files that you can download and <code>pip install</code>. I&#x27;ll post here with the link.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-23 16:43</div>
-            <div class="timeline-body"><p>If you'd like, you can click <a href="https://github.com/astral-sh/ruff/actions/runs/5637406313">here</a>, download the &quot;Wheels&quot; at the bottom, unzip, and <code>pip install</code> the wheel that matches your platform.</p>
+            <div class="timeline-body"><p>If you&#x27;d like, you can click <a href="https://github.com/astral-sh/ruff/actions/runs/5637406313">here</a>, download the &quot;Wheels&quot; at the bottom, unzip, and <code>pip install</code> the wheel that matches your platform.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tylerlaprade">@tylerlaprade</a> on 2023-07-23 16:52</div>
-            <div class="timeline-body"><p>This looks much more comprehensive than when I made <code>from __future__ import annotations</code> required (which barely modified anything)! I really like the looks of it. However, a runtime error has been introduced that doesn't get detected by my typechecker:</p>
-<img width="570" alt="image" src="https://github.com/astral-sh/ruff/assets/5475199/597ebbd3-de0f-4b8b-aa38-5df63452a40d">
+            <div class="timeline-body"><p>This looks much more comprehensive than when I made <code>from __future__ import annotations</code> required (which barely modified anything)! I really like the looks of it. However, a runtime error has been introduced that doesn&#x27;t get detected by my typechecker:</p>
+<img alt="image" src="https://github.com/astral-sh/ruff/assets/5475199/597ebbd3-de0f-4b8b-aa38-5df63452a40d">
 
-<img width="535" alt="image" src="https://github.com/astral-sh/ruff/assets/5475199/494ac5ac-9ed6-4b7d-9993-7ee0d314a40e">
+<img alt="image" src="https://github.com/astral-sh/ruff/assets/5475199/494ac5ac-9ed6-4b7d-9993-7ee0d314a40e">
 
-<img width="492" alt="image" src="https://github.com/astral-sh/ruff/assets/5475199/1be5355e-a95d-473f-8b88-3528432e85f0">
+<img alt="image" src="https://github.com/astral-sh/ruff/assets/5475199/1be5355e-a95d-473f-8b88-3528432e85f0">
 
 </div>
         </div>
@@ -251,16 +251,16 @@ print(get_type_hints(bar))
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2023-07-24 13:16</div>
-            <div class="timeline-body"><p>The above outputs look good to me, as long as there's a setting to avoid applying the rule to functions with certain decorators (and IIRC this already exists).</p>
+            <div class="timeline-body"><p>The above outputs look good to me, as long as there&#x27;s a setting to avoid applying the rule to functions with certain decorators (and IIRC this already exists).</p>
 <blockquote>
 <p>But not sure how best to check whether the rule is having any unintended effects on runtime behavior.</p>
 </blockquote>
-<p>Potential unintended runtime effects are unavoidable since people could always be accessing <code>.__annotations__</code> and performing arbitrary logic with it. But as long as those annotations aren't coming from local scope, they can be easily worked around by changing direct <code>.__annotations__</code> access to use <code>typing.get_type_hints</code>.</p>
+<p>Potential unintended runtime effects are unavoidable since people could always be accessing <code>.__annotations__</code> and performing arbitrary logic with it. But as long as those annotations aren&#x27;t coming from local scope, they can be easily worked around by changing direct <code>.__annotations__</code> access to use <code>typing.get_type_hints</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-26 20:09</div>
-            <div class="timeline-body"><p>I'm blocked on supporting unions (e.g., when quoting <code>DataFrame</code> in <code>DataFrame | int</code>, you need to quote the entire union, like <code>&quot;DataFrame | int&quot;</code>). There are just a bunch of edge cases and we don't have access to the full AST when constructing the fix (so we need to do manual lexing). This might require some new infrastructure to be fully robust.</p>
+            <div class="timeline-body"><p>I&#x27;m blocked on supporting unions (e.g., when quoting <code>DataFrame</code> in <code>DataFrame | int</code>, you need to quote the entire union, like <code>&quot;DataFrame | int&quot;</code>). There are just a bunch of edge cases and we don&#x27;t have access to the full AST when constructing the fix (so we need to do manual lexing). This might require some new infrastructure to be fully robust.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -269,12 +269,12 @@ print(get_type_hints(bar))
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-12-13 03:12</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-13 03:12</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:47:37 UTC
+        Synced at 2026-01-20 18:48:38 UTC
     </footer>
 </body>
 </html>

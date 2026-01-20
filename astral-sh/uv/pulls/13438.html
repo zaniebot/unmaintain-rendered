@@ -23,21 +23,21 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/aldanor">@aldanor</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>There's some inconsistent behaviour in handling symlinks when <code>cache-key</code> is a glob or a file path. This PR attempts to address that.</p>
+            <div class="timeline-body">Summary
+<p>There&#x27;s some inconsistent behaviour in handling symlinks when <code>cache-key</code> is a glob or a file path. This PR attempts to address that.</p>
 <ul>
-<li><p>When cache-key is a path, <a href="https://doc.rust-lang.org/std/path/struct.Path.html#method.metadata"><code>Path::metadata()</code></a> is used to check if it's a file or not. According to the docs:</p>
+<li><p>When cache-key is a path, <a href="https://doc.rust-lang.org/std/path/struct.Path.html#method.metadata"><code>Path::metadata()</code></a> is used to check if it&#x27;s a file or not. According to the docs:</p>
 <blockquote>
 <p>This function will traverse symbolic links to query information about the destination file.</p>
 </blockquote>
 <p>So, if the target file is a symlink, it will be resolved and the metadata will be queried for the underlying file.</p>
 </li>
 <li><p>When cache-key is a glob, <code>globwalk</code> is used, specifically allowing for symlinks:</p>
-<pre><code class="language-rust">.file_type(globwalk::FileType::FILE | globwalk::FileType::SYMLINK)
+<pre><code>.file_type(globwalk::FileType::FILE | globwalk::FileType::SYMLINK)
 </code></pre>
 </li>
 <li><p>However, without enabling link following, <code>DirEntry::metadata()</code> will return an equivalent of <code>Path::symlink_metadata()</code> (and not <code>Path::metadata()</code>), which will have a file type that looks like</p>
-<pre><code class="language-rust">FileType {
+<pre><code>FileType {
     is_file: false,
     is_dir: false,
     is_symlink: true,
@@ -45,17 +45,17 @@
  }
 </code></pre>
 </li>
-<li><p>Then, there's a check for <code>metadata.is_file()</code> which fails and complains that the target entry &quot;is a directory when file was expected&quot;.</p>
+<li><p>Then, there&#x27;s a check for <code>metadata.is_file()</code> which fails and complains that the target entry &quot;is a directory when file was expected&quot;.</p>
 </li>
-<li><p>TLDR: glob cache-keys don't work with symlinks.</p>
+<li><p>TLDR: glob cache-keys don&#x27;t work with symlinks.</p>
 </li>
 </ul>
-<h2>Solutions</h2>
+Solutions
 <p>Option 1 (current PR): follow symlinks.</p>
-<p>Option 2 (also doable): don't follow symlinks, but resolve the resulting target entry manually in case its file type is a symlink. However, this would be a little weird and unobvious in that we resolve files but not directories for some reason. Also, symlinking directories is pretty useful if you want to symlink directories of local dependencies that are not under the project's path.</p>
-<h2>Test Plan</h2>
+<p>Option 2 (also doable): don&#x27;t follow symlinks, but resolve the resulting target entry manually in case its file type is a symlink. However, this would be a little weird and unobvious in that we resolve files but not directories for some reason. Also, symlinking directories is pretty useful if you want to symlink directories of local dependencies that are not under the project&#x27;s path.</p>
+Test Plan
 <p>This has been tested manually:</p>
-<pre><code class="language-rust">fn main() {
+<pre><code>fn main() {
     for follow_links in [false, true] {
         let walker = globwalk::GlobWalkerBuilder::from_patterns(&quot;.&quot;, &amp;[&quot;a/*&quot;])
             .file_type(globwalk::FileType::FILE | globwalk::FileType::SYMLINK)
@@ -76,7 +76,7 @@
     dbg!(path.symlink_metadata().unwrap().file_type());
 }
 </code></pre>
-<p>Current behaviour (glob cache-key, don't follow links):</p>
+<p>Current behaviour (glob cache-key, don&#x27;t follow links):</p>
 <pre><code>[src/main.rs:9:9] &amp;entry = DirEntry(&quot;./a/b&quot;)
 [src/main.rs:10:9] entry.file_type() = FileType {
     is_file: false,
@@ -117,16 +117,16 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @charliermarsh by @konstin on 2025-05-14 07:20</div>
+            <div class="event">Review requested from <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/konstin">@konstin</a> on 2025-05-14 07:20</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-05-14 07:20</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/konstin">@konstin</a> on 2025-05-14 07:20</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @charliermarsh removed by @konstin on 2025-05-15 14:09</div>
+            <div class="event">Review request for <a href="https://github.com/charliermarsh">@charliermarsh</a> removed by <a href="https://github.com/konstin">@konstin</a> on 2025-05-15 14:09</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @BurntSushi by @konstin on 2025-05-15 14:09</div>
+            <div class="event">Review requested from <a href="https://github.com/BurntSushi">@BurntSushi</a> by <a href="https://github.com/konstin">@konstin</a> on 2025-05-15 14:09</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-05-15 16:39</div>
@@ -143,48 +143,48 @@
             <div class="timeline-body"><p>@BurntSushi thanks for the reply!</p>
 <p>Both points are valid and I had pretty much the same thoughts... a few notes though:</p>
 <ol>
-<li>In the current uv, you can essentially already escape the current CWD by specifying a non-glob symlink which would then follow a different code path. It's quite odd that <code>file = &quot;a/b&quot;</code> would work but <code>file = &quot;a/*&quot;</code> won't.</li>
+<li>In the current uv, you can essentially already escape the current CWD by specifying a non-glob symlink which would then follow a different code path. It&#x27;s quite odd that <code>file = &quot;a/b&quot;</code> would work but <code>file = &quot;a/*&quot;</code> won&#x27;t.</li>
 <li>As it was written, the globwalk filter being used specifically allows for symlinks, so it seemed like the original intention was to support symlinks.</li>
 </ol>
 <blockquote>
 <p>Maybe option (2) is the right way to go here for now? Although I do agree it is perhaps a little odd.</p>
 </blockquote>
-<p>Yea, it feels a bit inconsistent and may be even harder to explain/document - like, then we allow <code>a/b</code> when a is a symlink and/or b is a symlink, we allow <code>a/b/*</code> when <code>*</code> is a symlink and <code>a/*/b</code> when b is a symlink, but we don't allow <code>a/*/b</code> when <code>*</code> is a symlink... I think it might be easier to just say 'non-globs already follow symlinks; globs behave the same way'?</p>
+<p>Yea, it feels a bit inconsistent and may be even harder to explain/document - like, then we allow <code>a/b</code> when a is a symlink and/or b is a symlink, we allow <code>a/b/*</code> when <code>*</code> is a symlink and <code>a/*/b</code> when b is a symlink, but we don&#x27;t allow <code>a/*/b</code> when <code>*</code> is a symlink... I think it might be easier to just say &#x27;non-globs already follow symlinks; globs behave the same way&#x27;?</p>
 <p>If you have a strong preference towards option 2 though, that should be easy to implement as well.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-05-15 17:15</div>
-            <div class="timeline-body"><p>Yeah I agree it's non-ideal. Hmmmm.</p>
-<p>Another option that comes to mind that is found in other glob implementations is <code>***</code>, as in, <code>foo/***/something.toml</code>. The triple star behaves like <code>**</code>, but follows symlinks. However, I don't think any of the Rust glob crates support this. It would be plausibly ideal here because it would let folks writing globs specifically opt into symlink traversal.</p>
+            <div class="timeline-body"><p>Yeah I agree it&#x27;s non-ideal. Hmmmm.</p>
+<p>Another option that comes to mind that is found in other glob implementations is <code>***</code>, as in, <code>foo/***/something.toml</code>. The triple star behaves like <code>**</code>, but follows symlinks. However, I don&#x27;t think any of the Rust glob crates support this. It would be plausibly ideal here because it would let folks writing globs specifically opt into symlink traversal.</p>
 <p>Yet another option is to add an opt-in configuration controlling whether symlinks are followed for glob walking. That feels not great though.</p>
-<p>The reason why I am being super cautious here is that, in my experience, it's <em>very easy</em> for symlinks to blow up the size of a directory tree. I see this all the time with users of VS Code somehow finding that ripgrep is constantly re-traversing <code>node_modules</code> directories. Which can easily get to hundreds of thousands of directory entries when symlinks are followed. Now I don't think that's as common in Python ecosystem, but it's still something to be cautious about. Basically, I worry about merging this and it causing massive perf regressions for people using cache key globs.</p>
+<p>The reason why I am being super cautious here is that, in my experience, it&#x27;s <em>very easy</em> for symlinks to blow up the size of a directory tree. I see this all the time with users of VS Code somehow finding that ripgrep is constantly re-traversing <code>node_modules</code> directories. Which can easily get to hundreds of thousands of directory entries when symlinks are followed. Now I don&#x27;t think that&#x27;s as common in Python ecosystem, but it&#x27;s still something to be cautious about. Basically, I worry about merging this and it causing massive perf regressions for people using cache key globs.</p>
 <p>cc @zanieb here for an opinion about UX.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-28 18:39</div>
-            <div class="timeline-body"><p>I'm not sure I agree with the premise that</p>
+            <div class="timeline-body"><p>I&#x27;m not sure I agree with the premise that</p>
 <blockquote>
-<p>It's quite odd that file = &quot;a/b&quot; would work but file = &quot;a/*&quot; won't.</p>
+<p>It&#x27;s quite odd that file = &quot;a/b&quot; would work but file = &quot;a/*&quot; won&#x27;t.</p>
 </blockquote>
-<p>In the former, you've explicitly requested we use &quot;a/b&quot; as a cache key whereas in the latter it's implicit.</p>
+<p>In the former, you&#x27;ve explicitly requested we use &quot;a/b&quot; as a cache key whereas in the latter it&#x27;s implicit.</p>
 <p>Are there cases where you really need to follow a globbed symlink instead of specifying it explicitly?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @zanieb by @zanieb on 2025-05-28 18:39</div>
+            <div class="event">Assigned to <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-28 18:39</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/aldanor">@aldanor</a> on 2025-05-28 21:46</div>
-            <div class="timeline-body"><p>@zanieb a real-world example: there's a proto/ folder with tons of *.proto symlinks to various proto schemas around the codebase. The package itself reruns protobuf codegen. If any of those symlinked schemas changes, we'd like to rebuild the package automatically.</p>
-<p>It is possible to specify it all manually but then we're doing it twice.</p>
-<p>One middle-ground solution here, I guess, is to not follow links in the walker, however always resolve the final DirEntry (i.e. via fs::metadata and not entry.metadata()). It's trivial to add if there's consensus.</p>
+            <div class="timeline-body"><p>@zanieb a real-world example: there&#x27;s a proto/ folder with tons of *.proto symlinks to various proto schemas around the codebase. The package itself reruns protobuf codegen. If any of those symlinked schemas changes, we&#x27;d like to rebuild the package automatically.</p>
+<p>It is possible to specify it all manually but then we&#x27;re doing it twice.</p>
+<p>One middle-ground solution here, I guess, is to not follow links in the walker, however always resolve the final DirEntry (i.e. via fs::metadata and not entry.metadata()). It&#x27;s trivial to add if there&#x27;s consensus.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-02 16:09</div>
-            <div class="timeline-body"><p>I think I'm in favor of the opt-in <code>***</code> syntax. I think it'll overlap with the conversation at https://github.com/astral-sh/uv/pull/13469#issuecomment-2913017907 though.</p>
+            <div class="timeline-body"><p>I think I&#x27;m in favor of the opt-in <code>***</code> syntax. I think it&#x27;ll overlap with the conversation at <a href="https://github.com/astral-sh/uv/pull/13469">astral-sh/uv#13469</a>#issuecomment-2913017907 though.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -194,8 +194,8 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-02 23:06</div>
-            <div class="timeline-body"><p>I'm not sure, honestly. Is that equivalent to saying &quot;we don't follow symlinks for directories&quot; or would you still follow to a directory if it was a leaf? I worry that will be harder to teach than &quot;we only follow symlinks with <code>***</code>&quot;.</p>
-<p>I'm not sure if that assuages @BurntSushi's performance concerns.</p>
+            <div class="timeline-body"><p>I&#x27;m not sure, honestly. Is that equivalent to saying &quot;we don&#x27;t follow symlinks for directories&quot; or would you still follow to a directory if it was a leaf? I worry that will be harder to teach than &quot;we only follow symlinks with <code>***</code>&quot;.</p>
+<p>I&#x27;m not sure if that assuages @BurntSushi&#x27;s performance concerns.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -203,41 +203,41 @@
             <div class="timeline-body"><blockquote>
 <p>or would you still follow to a directory if it was a leaf?</p>
 </blockquote>
-<p>No you won't follow if it was a leaf (because that's it, it's a leaf). <code>walkdir</code> itself keeps its internal state where it doesn't follow symlinked dirs because we don't enable <code>follow_links</code> option. It's just that you can resolve those symlinks yourself post-factum without altering the walking behaviour, that's what I meant.</p>
-<p>As for <code>***</code> - if there's consensus on adding it, if need be I can also add it to the crate proposed in https://github.com/astral-sh/uv/pull/13469.</p>
+<p>No you won&#x27;t follow if it was a leaf (because that&#x27;s it, it&#x27;s a leaf). <code>walkdir</code> itself keeps its internal state where it doesn&#x27;t follow symlinked dirs because we don&#x27;t enable <code>follow_links</code> option. It&#x27;s just that you can resolve those symlinks yourself post-factum without altering the walking behaviour, that&#x27;s what I meant.</p>
+<p>As for <code>***</code> - if there&#x27;s consensus on adding it, if need be I can also add it to the crate proposed in <a href="https://github.com/astral-sh/uv/pull/13469">astral-sh/uv#13469</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-06-03 12:36</div>
-            <div class="timeline-body"><p>I think you're suggesting your option 2?</p>
+            <div class="timeline-body"><p>I think you&#x27;re suggesting your option 2?</p>
 <blockquote>
-<p>Option 2 (also doable): don't follow symlinks, but resolve the resulting target entry manually in case its file type is a symlink. However, this would be a little weird and unobvious in that we resolve files but not directories for some reason. Also, symlinking directories is pretty useful if you want to symlink directories of local dependencies that are not under the project's path.</p>
+<p>Option 2 (also doable): don&#x27;t follow symlinks, but resolve the resulting target entry manually in case its file type is a symlink. However, this would be a little weird and unobvious in that we resolve files but not directories for some reason. Also, symlinking directories is pretty useful if you want to symlink directories of local dependencies that are not under the project&#x27;s path.</p>
 </blockquote>
-<p>That downside seems kinda unfortunate. I feel like <code>***</code> is the best solution here, but I don't know how willing we will be to switch to a brand new globbing crate. And yeah, adding <code>***</code> support otherwise is pretty tricky because it requires coupling between the glob syntax and directory traversal (which <code>globset</code> does not have yet).</p>
+<p>That downside seems kinda unfortunate. I feel like <code>***</code> is the best solution here, but I don&#x27;t know how willing we will be to switch to a brand new globbing crate. And yeah, adding <code>***</code> support otherwise is pretty tricky because it requires coupling between the glob syntax and directory traversal (which <code>globset</code> does not have yet).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-10 23:17</div>
             <div class="timeline-body"><blockquote>
-<p>One middle-ground solution here, I guess, is to not follow links in the walker, however always resolve the final DirEntry (i.e. via fs::metadata and not entry.metadata()). It's trivial to add if there's consensus.</p>
+<p>One middle-ground solution here, I guess, is to not follow links in the walker, however always resolve the final DirEntry (i.e. via fs::metadata and not entry.metadata()). It&#x27;s trivial to add if there&#x27;s consensus.</p>
 </blockquote>
-<p>I don't mind this, personally, since it seems unintrusive and resolves a real-world use-case.</p>
+<p>I don&#x27;t mind this, personally, since it seems unintrusive and resolves a real-world use-case.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/aldanor">@aldanor</a> on 2025-07-11 02:21</div>
-            <div class="timeline-body"><p>@charliermarsh thanks, I'll update the PR shortly</p>
+            <div class="timeline-body"><p>@charliermarsh thanks, I&#x27;ll update the PR shortly</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/aldanor">@aldanor</a> on 2025-07-11 18:25</div>
-            <div class="timeline-body"><p>@BurntSushi I think this should do it? I've added a quick unix test as well.</p>
+            <div class="timeline-body"><p>@BurntSushi I think this should do it? I&#x27;ve added a quick unix test as well.</p>
 <p>Please lmk if I missed something.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/aldanor">@aldanor</a> on 2025-07-11 18:30</div>
-            <div class="timeline-body"><p>I'm not entirely sure though how to make the tests pass clippy since entire std::fs seems to be banned 🤔</p>
+            <div class="timeline-body"><p>I&#x27;m not entirely sure though how to make the tests pass clippy since entire std::fs seems to be banned 🤔</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -251,7 +251,7 @@
 <p>(Use <code>fs_err</code> instead of <code>std::fs</code>.)</p>
 </blockquote>
 <p>@charliermarsh I see, thanks! Should be fixed now.</p>
-<p>(btw I think you can make clippy bans even a bit tighter - e.g. there's methods in <code>Path</code> that are essentially wrappers around <code>fs</code> functions like <code>Path::metadata()</code>)</p>
+<p>(btw I think you can make clippy bans even a bit tighter - e.g. there&#x27;s methods in <code>Path</code> that are essentially wrappers around <code>fs</code> functions like <code>Path::metadata()</code>)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -260,15 +260,15 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @BurntSushi on 2025-07-14 15:35</div>
+            <div class="event">Merged by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-07-14 15:35</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2025-07-14 15:35</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-07-14 15:35</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:43:09 UTC
+        Synced at 2026-01-20 19:52:09 UTC
     </footer>
 </body>
 </html>

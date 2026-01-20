@@ -23,17 +23,17 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/johnniemorrow">@johnniemorrow</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>Hi,</p>
-<p>I'm seeing a <code>call-non-callable</code> error calling <code>pytest.fail()</code>:</p>
-<pre><code class="language-python">import pytest
+<p>I&#x27;m seeing a <code>call-non-callable</code> error calling <code>pytest.fail()</code>:</p>
+<pre><code>import pytest
 
 def test_pytest():
     pytest.fail(&quot;because...&quot;)
 
 </code></pre>
-<pre><code class="language-bash">$ ty check tests/test_pytest.py
-error[call-non-callable]: Object of type `_WithException[Unknown, &lt;class 'Failed'&gt;]` is not callable
+<pre><code>$ ty check tests/test_pytest.py
+error[call-non-callable]: Object of type `_WithException[Unknown, &lt;class &#x27;Failed&#x27;&gt;]` is not callable
  --&gt; tests/test_pytest.py:4:5
   |
 3 | def test_pytest():
@@ -44,44 +44,44 @@ info: rule `call-non-callable` is enabled by default
 
 Found 1 diagnostic
 </code></pre>
-<h3>Version</h3>
+Version
 <p>ty 0.0.1-alpha.7</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">generics</span> added by @carljm on 2025-05-30 16:56</div>
+            <div class="event">Label <span class="label">generics</span> added by <a href="https://github.com/carljm">@carljm</a> on 2025-05-30 16:56</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">Protocols</span> added by @carljm on 2025-05-30 16:56</div>
+            <div class="event">Label <span class="label">Protocols</span> added by <a href="https://github.com/carljm">@carljm</a> on 2025-05-30 16:56</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-30 16:58</div>
             <div class="timeline-body"><p>Thanks for the report!</p>
-<p>https://github.com/astral-sh/ty/issues/480 is at least part of the issue here (see https://github.com/pytest-dev/pytest/blob/main/src/_pytest/outcomes.py#L89 ) -- not sure if there will be anything additional needed on the Protocols side once that's fixed.</p>
+<p>https://github.com/astral-sh/ty/issues/480 is at least part of the issue here (see https://github.com/pytest-dev/pytest/blob/main/src/_pytest/outcomes.py#L89 ) -- not sure if there will be anything additional needed on the Protocols side once that&#x27;s fixed.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-30 17:31</div>
-            <div class="timeline-body"><p>#480 is insufficient, but it's not because of lack of protocol support, it's because of https://discuss.python.org/t/when-should-we-assume-callable-types-are-method-descriptors/92938 and related issues:</p>
+            <div class="timeline-body"><p>#480 is insufficient, but it&#x27;s not because of lack of protocol support, it&#x27;s because of https://discuss.python.org/t/when-should-we-assume-callable-types-are-method-descriptors/92938 and related issues:</p>
 <ul>
-<li>Pytest's <code>_WithException</code> protocol has a <code>__call__</code> instance attribute, but we only consider types to be callable if they have a class <code>__call__</code> attribute</li>
-<li><code>_WithException.__call__</code> is annotated as a <code>Callable</code> type, but it's not clear whether <code>Callable</code> types should be treated as having <code>__get__</code> methods, and we only view objects as callable if their class <code>__call__</code> attributes have <code>__get__</code> methods.</li>
+<li>Pytest&#x27;s <code>_WithException</code> protocol has a <code>__call__</code> instance attribute, but we only consider types to be callable if they have a class <code>__call__</code> attribute</li>
+<li><code>_WithException.__call__</code> is annotated as a <code>Callable</code> type, but it&#x27;s not clear whether <code>Callable</code> types should be treated as having <code>__get__</code> methods, and we only view objects as callable if their class <code>__call__</code> attributes have <code>__get__</code> methods.</li>
 </ul>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-30 17:42</div>
             <div class="timeline-body"><p>Ok, so this depends on #480, #491, and (a variant case of) #384.</p>
-<p>Regarding the latter, I do think there is potentially something Protocol-specific here, in that I think our rationale for assuming an annotated (but not assigned) class attribute is <em>not</em> accessible on the class, doesn't really apply to Protocols. (And I'm increasingly thinking maybe we should just abandon our strictness here and follow mypy/pyright, allowing anything annotated on the class to be potentially present on the class.)</p>
+<p>Regarding the latter, I do think there is potentially something Protocol-specific here, in that I think our rationale for assuming an annotated (but not assigned) class attribute is <em>not</em> accessible on the class, doesn&#x27;t really apply to Protocols. (And I&#x27;m increasingly thinking maybe we should just abandon our strictness here and follow mypy/pyright, allowing anything annotated on the class to be potentially present on the class.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-30 17:56</div>
             <div class="timeline-body"><blockquote>
-<p>Regarding the latter, I do think there is potentially something Protocol-specific here, in that I think our rationale for assuming an annotated (but not assigned) class attribute is <em>not</em> accessible on the class, doesn't really apply to Protocols.</p>
+<p>Regarding the latter, I do think there is potentially something Protocol-specific here, in that I think our rationale for assuming an annotated (but not assigned) class attribute is <em>not</em> accessible on the class, doesn&#x27;t really apply to Protocols.</p>
 </blockquote>
-<p>I can see reasons for accepting the unsoundness for pragmatic reasons and doing what mypy/pyright do here w.r.t. allowing anything annotated on the class to be accessed on the class. Similarly with assuming that <code>__get__</code> exists on <code>Callable</code> types. But I don't see any reason to treat attribute access on protocols differently to attribute access on other classes. It's pretty easy to demonstrate that mypy/pyright's behaviour with protocols in this regard is unsound -- mypy accepts this, but it fails at runtime because the <code>__call__</code> attribute is only accessible on instances:</p>
-<pre><code class="language-py">from typing import Protocol, Callable
+<p>I can see reasons for accepting the unsoundness for pragmatic reasons and doing what mypy/pyright do here w.r.t. allowing anything annotated on the class to be accessed on the class. Similarly with assuming that <code>__get__</code> exists on <code>Callable</code> types. But I don&#x27;t see any reason to treat attribute access on protocols differently to attribute access on other classes. It&#x27;s pretty easy to demonstrate that mypy/pyright&#x27;s behaviour with protocols in this regard is unsound -- mypy accepts this, but it fails at runtime because the <code>__call__</code> attribute is only accessible on instances:</p>
+<pre><code>from typing import Protocol, Callable
 
 class Foo(Protocol):
     __call__: Callable[..., None]
@@ -99,36 +99,36 @@ f(Bar())
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-30 18:02</div>
-            <div class="timeline-body"><p>I wouldn't want to adopt that unsoundness; I'd want to instead reject that as a protocol match. But I also agree that interpreting unassigned-but-annotated attributes differently for Protocols would be confusing, because it would mean that a class with an annotated assignment might not satisfy a protocol with an identical-looking annotated assignment. That's not great.</p>
-<p>So yeah -- it's increasingly feeling like our two options are a) allow annotated-but-unassigned class attributes to be accessed on the class, or b) convince an unknown number of existing projects to change the way they annotate. And (b) sounds like a real uphill battle.</p>
+            <div class="timeline-body"><p>I wouldn&#x27;t want to adopt that unsoundness; I&#x27;d want to instead reject that as a protocol match. But I also agree that interpreting unassigned-but-annotated attributes differently for Protocols would be confusing, because it would mean that a class with an annotated assignment might not satisfy a protocol with an identical-looking annotated assignment. That&#x27;s not great.</p>
+<p>So yeah -- it&#x27;s increasingly feeling like our two options are a) allow annotated-but-unassigned class attributes to be accessed on the class, or b) convince an unknown number of existing projects to change the way they annotate. And (b) sounds like a real uphill battle.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-01 14:10</div>
-            <div class="timeline-body"><p>It doesn't really do much to address the general issue, because I'm sure other users are also relying on the mypy/pyright behaviour here. But FWIW, pytest specifically appear open to changing their annotations to remove ambiguity here: https://github.com/pytest-dev/pytest/pull/13445</p>
+            <div class="timeline-body"><p>It doesn&#x27;t really do much to address the general issue, because I&#x27;m sure other users are also relying on the mypy/pyright behaviour here. But FWIW, pytest specifically appear open to changing their annotations to remove ambiguity here: <a href="https://github.com/pytest-dev/pytest/pull/13445">pytest-dev/pytest#13445</a></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "pytest.fail() reports call-not-callable" to "pytest.fail() and pytest.skip() are not considered callable (`call-not-callable` diagnostic emitted)" by @AlexWaygood on 2025-06-18 14:55</div>
+            <div class="event">Renamed from &quot;pytest.fail() reports call-not-callable&quot; to &quot;pytest.fail() and pytest.skip() are not considered callable (`call-not-callable` diagnostic emitted)&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-18 14:55</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "pytest.fail() and pytest.skip() are not considered callable (`call-not-callable` diagnostic emitted)" to "`pytest.fail()`, `pytest.skip()` and `pytest.xfail()` are not considered callable (`call-not-callable` diagnostic emitted)" by @AlexWaygood on 2025-07-01 13:16</div>
+            <div class="event">Renamed from &quot;pytest.fail() and pytest.skip() are not considered callable (`call-not-callable` diagnostic emitted)&quot; to &quot;`pytest.fail()`, `pytest.skip()` and `pytest.xfail()` are not considered callable (`call-not-callable` diagnostic emitted)&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-01 13:16</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-01 13:17</div>
             <div class="timeline-body"><blockquote>
 <p>But FWIW, pytest specifically appear open to changing their annotations to remove ambiguity here: <a href="https://github.com/pytest-dev/pytest/pull/13445">pytest-dev/pytest#13445</a></p>
 </blockquote>
-<p>(This PR has now been merged to the pytest <code>main</code> branch, but hasn't yet made its way into a pytest release.)</p>
+<p>(This PR has now been merged to the pytest <code>main</code> branch, but hasn&#x27;t yet made its way into a pytest release.)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @sharkdp on 2025-07-02 16:03</div>
+            <div class="event">Closed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-02 16:03</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:03 UTC
+        Synced at 2026-01-20 19:24:43 UTC
     </footer>
 </body>
 </html>

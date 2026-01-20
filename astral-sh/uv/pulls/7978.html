@@ -23,33 +23,27 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/t-kalinowski">@t-kalinowski</a></div>
-            <div class="timeline-body"><!--
-Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+            <div class="timeline-body">
 
-- Does this pull request include a summary of the change? (See below.)
-- Does this pull request include a descriptive title?
-- Does this pull request include references to any relevant issues?
--->
-
-<h2>Summary</h2>
+Summary
 <p>Currently, running <code>activate_this.py</code> leaves the following symbols in <code>__main__</code>:</p>
 <pre><code>abs_file annotations base bin_dir lib os path prev_length site sys
 </code></pre>
 <p>This PR updates the <code>activate_this.py</code> script so it does not leave any detritus in <code>__main__</code>.</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>This could be tested with something like this:</p>
-<pre><code class="language-bash">activate_this=$(python -c '__import__(&quot;sys&quot;).exec_prefix + &quot;/bin/activate_this.py&quot;')
-pollution=$(python -c &quot;start = set(dir()); __import__('runpy').run_path($activate_this); print(start.difference(['start']+dir()))'
+<pre><code>activate_this=$(python -c &#x27;__import__(&quot;sys&quot;).exec_prefix + &quot;/bin/activate_this.py&quot;&#x27;)
+pollution=$(python -c &quot;start = set(dir()); __import__(&#x27;runpy&#x27;).run_path($activate_this); print(start.difference([&#x27;start&#x27;]+dir()))&#x27;
 
 # if len(pollution), error
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @konstin by @zanieb on 2024-10-07 17:06</div>
+            <div class="event">Review requested from <a href="https://github.com/konstin">@konstin</a> by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-07 17:06</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @konstin by @zanieb on 2024-10-07 17:06</div>
+            <div class="event">Assigned to <a href="https://github.com/konstin">@konstin</a> by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-07 17:06</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/j178">@j178</a> on <code>crates/uv-virtualenv/src/activator/activate_this.py</code>:34 on 2024-10-08 07:27</div>
@@ -75,42 +69,42 @@ pollution=$(python -c &quot;start = set(dir()); __import__('runpy').run_path($ac
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-10-08 12:46</div>
-            <div class="timeline-body"><p>Hi! I've tried the reproducer command, but for me</p>
-<pre><code class="language-console">python -c &quot;start = set(dir()); __import__('runpy').run_path('.venv/bin/activate_this.py'); print(start.difference(['start']+dir()))&quot;
+            <div class="timeline-body"><p>Hi! I&#x27;ve tried the reproducer command, but for me</p>
+<pre><code>python -c &quot;start = set(dir()); __import__(&#x27;runpy&#x27;).run_path(&#x27;.venv/bin/activate_this.py&#x27;); print(start.difference([&#x27;start&#x27;]+dir()))&quot;
 </code></pre>
-<p>returns an empty set. I'm probably using a different setup though since <code>activate_this=$(python -c '__import__(&quot;sys&quot;).exec_prefix + &quot;/bin/activate_this.py&quot;')</code> resolves to an empty string in my bash on ubuntu 22.04 (<code>sys.exec_prefix</code> is <code>/usr</code> fwiw), could you tell me some more about your setup?</p>
+<p>returns an empty set. I&#x27;m probably using a different setup though since <code>activate_this=$(python -c &#x27;__import__(&quot;sys&quot;).exec_prefix + &quot;/bin/activate_this.py&quot;&#x27;)</code> resolves to an empty string in my bash on ubuntu 22.04 (<code>sys.exec_prefix</code> is <code>/usr</code> fwiw), could you tell me some more about your setup?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-mre</span> added by @konstin on 2024-10-08 12:46</div>
+            <div class="event">Label <span class="label">needs-mre</span> added by <a href="https://github.com/konstin">@konstin</a> on 2024-10-08 12:46</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/t-kalinowski">@t-kalinowski</a> on 2024-10-08 13:01</div>
-            <div class="timeline-body"><p>Thanks. I see now that runpy does some additional isolation and doesn't execute directly in <code>__main__</code>.</p>
+            <div class="timeline-body"><p>Thanks. I see now that runpy does some additional isolation and doesn&#x27;t execute directly in <code>__main__</code>.</p>
 <p>In reticulate, we run the script using the Python C API: <code>PyRun_StringFlags()</code> (https://github.com/rstudio/reticulate/blob/d2c83b04ebc6fbecab057c369c2562adb332db67/src/python.cpp#L2749).</p>
-<p>Perhaps running the activate script in a new dict is more correct, 🤔. Still, that's old, and very exercised code, and this is the first time I've seen this issue.</p>
+<p>Perhaps running the activate script in a new dict is more correct, 🤔. Still, that&#x27;s old, and very exercised code, and this is the first time I&#x27;ve seen this issue.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/t-kalinowski">@t-kalinowski</a> on 2024-10-08 13:02</div>
-            <div class="timeline-body"><p>But I see that <code>virtualenv</code> also takes a similar approach as here, https://github.com/pypa/virtualenv/blob/main/src/virtualenv/activation/python/activate_this.py. I'm starting to think the fix needs to be in reticulate.</p>
+            <div class="timeline-body"><p>But I see that <code>virtualenv</code> also takes a similar approach as here, https://github.com/pypa/virtualenv/blob/main/src/virtualenv/activation/python/activate_this.py. I&#x27;m starting to think the fix needs to be in reticulate.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-mre</span> removed by @konstin on 2024-10-08 16:55</div>
+            <div class="event">Label <span class="label">needs-mre</span> removed by <a href="https://github.com/konstin">@konstin</a> on 2024-10-08 16:55</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/t-kalinowski">@t-kalinowski</a> on 2024-10-08 18:22</div>
-            <div class="timeline-body"><p>I've updated reticulate, and this PR is no longer needed from our end. Feel free to close or merge (I think it's still a net improvement, but you have more context). Sorry for the noise!</p>
+            <div class="timeline-body"><p>I&#x27;ve updated reticulate, and this PR is no longer needed from our end. Feel free to close or merge (I think it&#x27;s still a net improvement, but you have more context). Sorry for the noise!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @konstin on 2024-10-08 20:36</div>
+            <div class="event">Closed by <a href="https://github.com/konstin">@konstin</a> on 2024-10-08 20:36</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:40:00 UTC
+        Synced at 2026-01-20 19:48:40 UTC
     </footer>
 </body>
 </html>

@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/OctopusET">@OctopusET</a></div>
-            <div class="timeline-body"><h2>Problem</h2>
+            <div class="timeline-body">Problem
 <p>Compression tests (lz4, brotli, zstd) fail on <code>riscv64</code> when running under QEMU user-mode emulation. The tests attempt to execute compression commands even when the required tools are missing, instead of skipping as expected.</p>
-<h2>Root Cause</h2>
-<p>This is caused by a known limitation in QEMU user-mode's <code>posix_spawn</code> implementation. When spawning a non-existent command:</p>
+Root Cause
+<p>This is caused by a known limitation in QEMU user-mode&#x27;s <code>posix_spawn</code> implementation. When spawning a non-existent command:</p>
 <ul>
 <li><strong>Expected:</strong> <code>posix_spawn</code> returns <code>ENOENT</code> (Error).</li>
 <li><strong>QEMU:</strong> <code>posix_spawn</code> returns <code>0</code> (Success), but the child process silently fails with exit code <code>127</code>.</li>
@@ -40,20 +40,20 @@
 <li>When the child writes the error code (<code>errno</code>) to the memory, it writes to its <em>own</em> copy. The parent reads the original memory (where error is 0) and assumes success.</li>
 </ol>
 <p>This issue specifically affects newer environments (glibc 2.34+, e.g., Ubuntu 22.04+). Older environments like Ubuntu 20.04 (glibc 2.31) are unaffected because they handle <code>vfork</code> fallbacks differently, masking the QEMU bug.</p>
-<h2>Why this fix is needed</h2>
+Why this fix is needed
 <p>Currently, <code>aarch64</code> tests pass only because the CI uses Ubuntu 20.04 (glibc 2.31). Once <code>cross-rs</code> or CI images update to Ubuntu 22.04+ (glibc 2.35+), <code>aarch64</code> and other architectures will start failing too. This PR prevents future breakages across all architectures.</p>
-<h2>The Fix</h2>
+The Fix
 <p>Updated <code>cmd_exists()</code> to verify that the command <strong>executed successfully</strong> (exit code 0), rather than just checking if the spawn call itself returned <code>Ok</code>.</p>
 <ul>
 <li><strong>Native / Normal:</strong> Returns <code>Err(NotFound)</code> -&gt; function returns <code>false</code>.</li>
 <li><strong>QEMU (Bugged):</strong> Returns <code>Ok(ExitStatus(127))</code> -&gt; <code>status.success()</code> is <code>false</code> -&gt; function returns <code>false</code>.</li>
 </ul>
 <p>I also removed the <code>#[cfg(not(target_arch = &quot;riscv64&quot;))]</code> guards from the compression tests as they are no longer needed.</p>
-<h2>Verification</h2>
+Verification
 <p>Verified on an x86_64 host cross-compiling to <code>riscv64</code> and <code>aarch64</code> (via QEMU user-mode). Tests now correctly skip when compression tools are missing, and pass when they are present.</p>
-<h2>Reference</h2>
+Reference
 <ul>
-<li>Related Rust issue: https://github.com/rust-lang/rust/issues/90825</li>
+<li>Related Rust issue: <a href="https://github.com/rust-lang/rust/issues/90825">rust-lang/rust#90825</a></li>
 </ul>
 </div>
         </div>
@@ -63,20 +63,20 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @BurntSushi on 2025-12-17 16:38</div>
+            <div class="event">Merged by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-12-17 16:38</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2025-12-17 16:38</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-12-17 16:38</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/OctopusET">@OctopusET</a> on 2025-12-17 16:39</div>
-            <div class="timeline-body"><p>I couldn't understand why only risc-v tests are failing. Turns out it was QEMU+glibc issue.</p>
+            <div class="timeline-body"><p>I couldn&#x27;t understand why only risc-v tests are failing. Turns out it was QEMU+glibc issue.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:44:26 UTC
+        Synced at 2026-01-20 18:48:21 UTC
     </footer>
 </body>
 </html>

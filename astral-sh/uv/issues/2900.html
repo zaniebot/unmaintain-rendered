@@ -23,20 +23,11 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/slafs">@slafs</a></div>
-            <div class="timeline-body"><!--
-Thank you for taking the time to report an issue! We're glad to have you involved with uv.
-
-If you're filing a bug report, please consider including the following information:
-
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
-* The current uv platform.
-* The current uv version (`uv --version`).
--->
+            <div class="timeline-body">
 
 <p>uv panics when trying to create more than one <code>RequirementsSource</code> instance in the <code>from_package</code> method when the given name is a file.</p>
 <p>The below steps (ran inside <code>python:3.11-alpine</code> container, but the same happens on OSX 14.4.1) will reproduce the crash:</p>
-<pre><code class="language-sh"># pip install uv
+<pre><code># pip install uv
 Collecting uv
   Downloading uv-0.1.29-py3-none-musllinux_1_2_x86_64.whl.metadata (26 kB)
 Downloading uv-0.1.29-py3-none-musllinux_1_2_x86_64.whl (11.5 MB)
@@ -47,16 +38,16 @@ Successfully installed uv-0.1.29
 # echo cowsay &gt; ./req2.txt
 # uv pip install req1.txt req2.txt
 ✔ `req1.txt` looks like a local requirements file but was passed as a package name. Did you mean `-r req1.txt`? · yes
-thread 'main' panicked at crates/uv-requirements/src/sources.rs:98:75:
+thread &#x27;main&#x27; panicked at crates/uv-requirements/src/sources.rs:98:75:
 called `Result::unwrap()` on an `Err` value: Ctrl-C error: Ctrl-C signal handler already registered
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 </code></pre>
-<p>This happens when trying to prompt the user to auto convert <code>pip install file.txt</code> into a proper <code>-r</code> form (which is a very nice feature, that I'm planning to utilize often BTW 👍).</p>
-<p>With one file everything's fine, but when passing more than one (e.g. with a glob),
+<p>This happens when trying to prompt the user to auto convert <code>pip install file.txt</code> into a proper <code>-r</code> form (which is a very nice feature, that I&#x27;m planning to utilize often BTW 👍).</p>
+<p>With one file everything&#x27;s fine, but when passing more than one (e.g. with a glob),
 uv panics, because it tries to unwrap on an error from the <code>ctrlc::set_handler</code> call.
-The error apparently happens when trying to set more than one handler for <kbd>Ctrl</kbd>+<kbd>C</kbd>.</p>
+The error apparently happens when trying to set more than one handler for Ctrl+C.</p>
 <p>This workaround works for me:</p>
-<pre><code class="language-diff">diff --git a/crates/uv-requirements/src/confirm.rs b/crates/uv-requirements/src/confirm.rs
+<pre><code>diff --git a/crates/uv-requirements/src/confirm.rs b/crates/uv-requirements/src/confirm.rs
 index 3b111d33..e8737b73 100644
 --- a/crates/uv-requirements/src/confirm.rs
 +++ b/crates/uv-requirements/src/confirm.rs
@@ -86,15 +77,15 @@ index 3b111d33..e8737b73 100644
          &quot;{} {} {} {} {}&quot;,
 </code></pre>
 <p>Which I would be more than happy to turn into a PR 🤞.</p>
-<p>However, looking at <a href="http://detegr.github.io/doc/ctrlc/fn.set_handler.html">the <code>set_handler</code> docs from <code>ctrlc</code></a> it looks like it shouldn't ever return MultipleHandlers (there's a <code>try_set_handler</code> function for that) and it should overwrite the existing handler 🤷.</p>
-<p>I've asked this question in https://github.com/Detegr/rust-ctrlc/issues/118</p>
+<p>However, looking at <a href="http://detegr.github.io/doc/ctrlc/fn.set_handler.html">the <code>set_handler</code> docs from <code>ctrlc</code></a> it looks like it shouldn&#x27;t ever return MultipleHandlers (there&#x27;s a <code>try_set_handler</code> function for that) and it should overwrite the existing handler 🤷.</p>
+<p>I&#x27;ve asked this question in <a href="https://github.com/Detegr/rust-ctrlc/issues/118">Detegr/rust-ctrlc#118</a></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-04-08 13:29</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-08 13:29</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-04-08 13:29</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-08 13:29</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-08 13:29</div>
@@ -102,20 +93,20 @@ index 3b111d33..e8737b73 100644
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Unassigned @charliermarsh by @charliermarsh on 2024-04-08 13:29</div>
+            <div class="event">Unassigned <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-08 13:29</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-08 13:42</div>
-            <div class="timeline-body"><p>My read is that <code>set_handler</code> <em>will</em> return an error if called twice. But if there's an existing handler set by the system, it will overwrite it. So I think we should proceed with your change. PR welcome.</p>
+            <div class="timeline-body"><p>My read is that <code>set_handler</code> <em>will</em> return an error if called twice. But if there&#x27;s an existing handler set by the system, it will overwrite it. So I think we should proceed with your change. PR welcome.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-04-08 17:18</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-08 17:18</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:24:37 UTC
+        Synced at 2026-01-20 19:30:46 UTC
     </footer>
 </body>
 </html>

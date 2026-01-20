@@ -23,8 +23,8 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/thejchap">@thejchap</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>Fixes https://github.com/astral-sh/ty/issues/1241</p>
+            <div class="timeline-body">Summary
+<p>Fixes <a href="https://github.com/astral-sh/ty/issues/1241">astral-sh/ty#1241</a></p>
 <ul>
 <li>support <code>.value</code> on single member enums<ul>
 <li>more context in this <a href="https://github.com/astral-sh/ruff/pull/19382">pr</a> - for single-member enums, the type is an instance of the enum class. for multi-member enums, its a union of literals. handle the former</li>
@@ -32,50 +32,50 @@
 </li>
 <li>lightweight handling of arbitrary mixins (return <code>Any</code>)</li>
 </ul>
-<h2>Test Plan</h2>
+Test Plan
 <p>new mdtests</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-24 00:04</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a>
 <p>No changes detected when running ty on typing conformance tests ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-24 00:04</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
+<code>mypy_primer</code> results
 <p>No ecosystem changes detected ✅</p>
 <p>No memory usage changes detected ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-09-24 07:44</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-24 07:44</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @thejchap on 2025-09-26 02:59</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/thejchap">@thejchap</a> on 2025-09-26 02:59</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @thejchap on 2025-09-26 02:59</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/thejchap">@thejchap</a> on 2025-09-26 02:59</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @thejchap on 2025-09-26 02:59</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/thejchap">@thejchap</a> on 2025-09-26 02:59</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @thejchap on 2025-09-26 02:59</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/thejchap">@thejchap</a> on 2025-09-26 02:59</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @thejchap on 2025-09-26 02:59</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/thejchap">@thejchap</a> on 2025-09-26 02:59</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/enums.rs</code>:168 on 2025-09-26 10:29</div>
-            <div class="timeline-body"><p>hmm, I'm not sure we should be adding more special cases here. An enum class that uses <code>bytes</code> as a mixin isn't conceptually any different from an enum that uses <code>tuple</code> or <code>list</code> or <code>dict</code> as a mixin, or a custom dataclass or custom <code>NamedTuple</code> as a mixin. Why should we treat <code>bytes</code> and <code>float</code> specially here?</p>
-<p>Rather than adding more special cases, I think we should have a generalised fallback logic that iterates through the MRO of the enum class to check whether it has a custom mixin that isn't <code>str</code> or <code>int</code>. (Those two make sense to special-case, I think, because of the presence of <code>StrEnum</code> and <code>IntEnum</code> in the stdlib. You can determine whether an element in the MRO is a &quot;custom mixin&quot; class by checking if it isn't <code>object</code> and isn't a subclass of <code>enum.Enum</code> -- if both those conditions hold, I think we can treat it as a mixin class.) If the enum class has a custom mixin and <code>auto()</code> is used to define the value of an enum member, we should probably infer the <code>.value</code> of that enum member as just being <code>Any</code>, which would still be more accurate than what we have on <code>main</code> (even if it isn't very precise!). It seems pretty hard to predict whether the <code>.value</code> property is going to give you an instance of the mixin or an integer:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; class Foo: ...
+            <div class="timeline-body"><p>hmm, I&#x27;m not sure we should be adding more special cases here. An enum class that uses <code>bytes</code> as a mixin isn&#x27;t conceptually any different from an enum that uses <code>tuple</code> or <code>list</code> or <code>dict</code> as a mixin, or a custom dataclass or custom <code>NamedTuple</code> as a mixin. Why should we treat <code>bytes</code> and <code>float</code> specially here?</p>
+<p>Rather than adding more special cases, I think we should have a generalised fallback logic that iterates through the MRO of the enum class to check whether it has a custom mixin that isn&#x27;t <code>str</code> or <code>int</code>. (Those two make sense to special-case, I think, because of the presence of <code>StrEnum</code> and <code>IntEnum</code> in the stdlib. You can determine whether an element in the MRO is a &quot;custom mixin&quot; class by checking if it isn&#x27;t <code>object</code> and isn&#x27;t a subclass of <code>enum.Enum</code> -- if both those conditions hold, I think we can treat it as a mixin class.) If the enum class has a custom mixin and <code>auto()</code> is used to define the value of an enum member, we should probably infer the <code>.value</code> of that enum member as just being <code>Any</code>, which would still be more accurate than what we have on <code>main</code> (even if it isn&#x27;t very precise!). It seems pretty hard to predict whether the <code>.value</code> property is going to give you an instance of the mixin or an integer:</p>
+<pre><code>&gt;&gt;&gt; class Foo: ...
 &gt;&gt;&gt; import enum
 &gt;&gt;&gt; class FooEnum(Foo, enum.Enum):
 ...     X = enum.auto()
@@ -86,7 +86,7 @@
 ...     X = enum.auto()
 ...     
 &gt;&gt;&gt; BEnum.X.value
-b'\x00'
+b&#x27;\x00&#x27;
 &gt;&gt;&gt; class TEnum(tuple, enum.Enum):
 ...     X = enum.auto()
 ...     
@@ -106,17 +106,17 @@ b'\x00'
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/thejchap">@thejchap</a> on <code>crates/ty_python_semantic/src/types/enums.rs</code>:168 on 2025-09-26 16:31</div>
-            <div class="timeline-body"><p>this makes a lot more sense - thanks - didn't feel great about the explicit special cases after going down that road...</p>
+            <div class="timeline-body"><p>this makes a lot more sense - thanks - didn&#x27;t feel great about the explicit special cases after going down that road...</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Converted to draft by @thejchap on 2025-09-26 16:31</div>
+            <div class="event">Converted to draft by <a href="https://github.com/thejchap">@thejchap</a> on 2025-09-26 16:31</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @thejchap on 2025-11-08 23:34</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/thejchap">@thejchap</a> on 2025-11-08 23:34</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @thejchap on 2025-11-08 23:34</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/thejchap">@thejchap</a> on 2025-11-08 23:34</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/thejchap">@thejchap</a> on 2025-11-08 23:34</div>
@@ -129,51 +129,51 @@ b'\x00'
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-11-09 23:55</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-09 23:55</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[ty] handle more `enum.auto()` cases" to "[ty] Fix incorrect inference of `enum.auto()` for enums with non-`int` mixins, and imprecise inference of `enum.auto()` for single-member enums" by @AlexWaygood on 2025-11-09 23:56</div>
+            <div class="event">Renamed from &quot;[ty] handle more `enum.auto()` cases&quot; to &quot;[ty] Fix incorrect inference of `enum.auto()` for enums with non-`int` mixins, and imprecise inference of `enum.auto()` for single-member enums&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-09 23:56</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-11-09 23:57</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-09 23:57</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @AlexWaygood on 2025-11-10 00:06</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-10 00:06</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-11-10 00:06</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-10 00:06</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-10 00:17</div>
-            <div class="timeline-body"><p>@woodruffw, any idea why astral-bot isn't posting or editing any ecosystem-report comments on this PR? :-)</p>
-<p>I'd love to double-check the ecosystem impact here before merging</p>
+            <div class="timeline-body"><p>@woodruffw, any idea why astral-bot isn&#x27;t posting or editing any ecosystem-report comments on this PR? :-)</p>
+<p>I&#x27;d love to double-check the ecosystem impact here before merging</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/woodruffw">@woodruffw</a> on 2025-11-10 03:22</div>
             <div class="timeline-body"><p>(Just synchronizing chat streams)</p>
-<p>Yeah, I have a theory on what's causing this -- I've opened a tracking issue on the bot!</p>
+<p>Yeah, I have a theory on what&#x27;s causing this -- I&#x27;ve opened a tracking issue on the bot!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/woodruffw">@woodruffw</a> on 2025-11-10 16:39</div>
-            <div class="timeline-body"><p>I've made a tentative fix for this, which is now in place -- I'm going to fast-forward this branch to confirm that it works.</p>
+            <div class="timeline-body"><p>I&#x27;ve made a tentative fix for this, which is now in place -- I&#x27;m going to fast-forward this branch to confirm that it works.</p>
 <p>Edit: appears to be working!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @AlexWaygood on 2025-11-10 17:51</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-10 17:51</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @AlexWaygood on 2025-11-10 17:53</div>
+            <div class="event">Merged by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-10 17:53</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-11-10 17:53</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-10 17:53</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:15:58 UTC
+        Synced at 2026-01-20 19:18:54 UTC
     </footer>
 </body>
 </html>

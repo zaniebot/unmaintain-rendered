@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dscorbett">@dscorbett</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p><a href="https://docs.astral.sh/ruff/rules/builtin-variable-shadowing/"><code>builtin-variable-shadowing</code> (A001)</a> and <a href="https://docs.astral.sh/ruff/rules/builtin-attribute-shadowing/"><code>builtin-attribute-shadowing</code> (A003)</a> should not report violations for variables that match the names of module attributes.</p>
 <p>For example, even though <code>builtins.__doc__</code> exists, setting <code>__doc__</code> in a module does not shadow it, because every module already has its own <code>__doc__</code> whether you set it explicitly or not.</p>
-<pre><code class="language-console">$ cat &gt;a001.py &lt;&lt;'# EOF'
+<pre><code>$ cat &gt;a001.py &lt;&lt;&#x27;# EOF&#x27;
 from importlib.machinery import SourceFileLoader
 __doc__ = &quot;...&quot;
 __name__ = &quot;a001&quot;
@@ -44,7 +44,7 @@ a001.py:6:1: A001 Variable `__spec__` is shadowing a Python builtin
 Found 5 errors.
 </code></pre>
 <p>Getting a false positive for A003 is more contrived but still possible. In the following example, <code>C.__doc__</code> is not shadowing <code>builtins.__doc__</code>. (It does shadow <code>a003.__doc__</code> but that is okay because classes are allowed to have docstrings.)</p>
-<pre><code class="language-console">$ cat &gt;a003.py &lt;&lt;'# EOF'
+<pre><code>$ cat &gt;a003.py &lt;&lt;&#x27;# EOF&#x27;
 class C:
     __doc__ = &quot;None&quot;
     def f() -&gt; __doc__: ...
@@ -54,24 +54,24 @@ $ ruff --isolated check --select A003 a003.py --output-format concise
 a003.py:3:16: A003 Python builtin is shadowed by class attribute `__doc__` from line 2
 Found 1 error.
 </code></pre>
-<h3>Version</h3>
+Version
 <p>ruff 0.9.7 (54fccb3ee 2025-02-20)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-25 16:35</div>
-            <div class="timeline-body"><p>These are arguably still antipatterns (I wouldn't recommend for users to shadow these implicit module globals either; it seems ~as bad as shadowing a builtin). But I agree that at the very least, the diagnostic message here is incorrect, since it's not really a builtin symbol being shadowed in these code snippets.</p>
+            <div class="timeline-body"><p>These are arguably still antipatterns (I wouldn&#x27;t recommend for users to shadow these implicit module globals either; it seems ~as bad as shadowing a builtin). But I agree that at the very least, the diagnostic message here is incorrect, since it&#x27;s not really a builtin symbol being shadowed in these code snippets.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-02-25 16:35</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-25 16:35</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-25 16:37</div>
-            <div class="timeline-body"><p>I'm undecided on whether we should</p>
+            <div class="timeline-body"><p>I&#x27;m undecided on whether we should</p>
 <ol>
 <li>Say that shadowing <code>__doc__</code>, <code>__name__</code> etc. is just outside the purview of these rules (and that it should be reported by another (new) rule), or</li>
-<li>Continue to flag these globals being shadowed with these rules, just change the error message when these globals are shadowed so that we don't mention a &quot;builtin&quot; being shadowed</li>
+<li>Continue to flag these globals being shadowed with these rules, just change the error message when these globals are shadowed so that we don&#x27;t mention a &quot;builtin&quot; being shadowed</li>
 </ol>
 </div>
         </div>
@@ -87,7 +87,7 @@ Found 1 error.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-25 23:01</div>
-            <div class="timeline-body"><p>Fair enough, that's all pretty convincing!</p>
+            <div class="timeline-body"><p>Fair enough, that&#x27;s all pretty convincing!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -99,19 +99,19 @@ I opened a <a href="https://github.com/astral-sh/ruff/pull/16454">PR</a> to fix 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-03-02 02:04</div>
-            <div class="timeline-body"><p>I have sometimes assigned directly to <code>__doc__</code> to change its type in type-checkers from <code>str | None</code> to <code>str</code>, without also having to assert it: https://github.com/microsoft/pyright/issues/9404</p>
-<p>I guess there's an argument to be made about Python being run in optimized mode removing docstrings. But that also feels out of scope for A001's reasoning and could be mentioned in a replacement rule.</p>
+            <div class="timeline-body"><p>I have sometimes assigned directly to <code>__doc__</code> to change its type in type-checkers from <code>str | None</code> to <code>str</code>, without also having to assert it: <a href="https://github.com/microsoft/pyright/issues/9404">microsoft/pyright#9404</a></p>
+<p>I guess there&#x27;s an argument to be made about Python being run in optimized mode removing docstrings. But that also feels out of scope for A001&#x27;s reasoning and could be mentioned in a replacement rule.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-03 10:06</div>
-            <div class="timeline-body"><p>Makes sense to me. We could have a separate rule that warns if you assign to <code>__doc__</code> that let's you know that this doesn't change the module's doc comment.</p>
+            <div class="timeline-body"><p>Makes sense to me. We could have a separate rule that warns if you assign to <code>__doc__</code> that let&#x27;s you know that this doesn&#x27;t change the module&#x27;s doc comment.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:52:16 UTC
+        Synced at 2026-01-20 18:49:34 UTC
     </footer>
 </body>
 </html>

@@ -46,12 +46,12 @@
             <div class="timeline-body"><p>This is interesting, thanks!</p>
 <p>Could you share a script that generates the mock data directory?</p>
 <p>Also, I would like to see this benchmarked on real world corpora. Like the Linux and chromium repos (and any other large repos).</p>
-<p>As for single producer, the reason why ripgrep wasn't architected that way is because it seems likely to be overall slower. ripgrep benefits a lot from not just parallelizing searching, but also parallelizing gitignore matching. Won't a single producer inhibit the former?</p>
+<p>As for single producer, the reason why ripgrep wasn&#x27;t architected that way is because it seems likely to be overall slower. ripgrep benefits a lot from not just parallelizing searching, but also parallelizing gitignore matching. Won&#x27;t a single producer inhibit the former?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/arriven">@arriven</a> on 2022-07-23 15:39</div>
-            <div class="timeline-body"><p>Sure, here's the script to generate the mock data</p>
+            <div class="timeline-body"><p>Sure, here&#x27;s the script to generate the mock data</p>
 <pre><code>use std::fs::File;
 use std::fs;
 use std::io::prelude::*;
@@ -75,7 +75,7 @@ fn main() -&gt; std::io::Result&lt;()&gt; {
     Ok(())
 } 
 </code></pre>
-<p>Single producer will indeed inhibit gitignore matching. I'll check how it impacts the speed on real world data but seeing the results I got on mock data I have a suspicion that it will still end up being faster in this mode. That being said, for now it's still possible to have multiple producers and limit the file stack size.</p>
+<p>Single producer will indeed inhibit gitignore matching. I&#x27;ll check how it impacts the speed on real world data but seeing the results I got on mock data I have a suspicion that it will still end up being faster in this mode. That being said, for now it&#x27;s still possible to have multiple producers and limit the file stack size.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -118,7 +118,7 @@ fn main() -&gt; std::io::Result&lt;()&gt; {
 <pre><code>3.36user 6.81system 0:03.07elapsed 331%CPU (0avgtext+0avgdata 82040maxresident)k
 3780536inputs+0outputs (52major+19671minor)pagefaults 0swaps
 </code></pre>
-<p>not really surprising as it seems like definitions for ignore is copied into all worker threads, matching filename against an in-memory container should be a lot cheaper than matching file content. It also seems like the problem is quite heavy on I/O so I'm wondering how async/green threads implementation would hold here</p>
+<p>not really surprising as it seems like definitions for ignore is copied into all worker threads, matching filename against an in-memory container should be a lot cheaper than matching file content. It also seems like the problem is quite heavy on I/O so I&#x27;m wondering how async/green threads implementation would hold here</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -126,19 +126,19 @@ fn main() -&gt; std::io::Result&lt;()&gt; {
             <div class="timeline-body"><blockquote>
 <p>not really surprising as it seems like definitions for ignore is copied into all worker threads, matching filename against an in-memory container should be a lot cheaper than matching file content.</p>
 </blockquote>
-<p>It isn't necessarily. Gitignore files can be hundreds of lines long, where as a single file might be a couple of lines.</p>
-<p>Chromium is a good test case though. That's an encouraging result. The MySQL repo used to have an absolutely mammoth gitignore, which is what provoked parallelizing gitignore in the first place. But IIRC, they got rid of that.</p>
-<p>Also, wait, doesn't this PR still parallelize gitignore matching? I haven't read it in depth yet. I thought the single producer model was future work.</p>
+<p>It isn&#x27;t necessarily. Gitignore files can be hundreds of lines long, where as a single file might be a couple of lines.</p>
+<p>Chromium is a good test case though. That&#x27;s an encouraging result. The MySQL repo used to have an absolutely mammoth gitignore, which is what provoked parallelizing gitignore in the first place. But IIRC, they got rid of that.</p>
+<p>Also, wait, doesn&#x27;t this PR still parallelize gitignore matching? I haven&#x27;t read it in depth yet. I thought the single producer model was future work.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/arriven">@arriven</a> on 2022-07-23 17:58</div>
-            <div class="timeline-body"><p>This PR allows us to run some workers in consumer-only mode (we need at least one such worker or there's a minor chance of getting a deadlock in some cases). I just set it to run all but one worker in that mode because it seems to be yielding the best results. But it's also easy to make it configurable via command line.</p>
+            <div class="timeline-body"><p>This PR allows us to run some workers in consumer-only mode (we need at least one such worker or there&#x27;s a minor chance of getting a deadlock in some cases). I just set it to run all but one worker in that mode because it seems to be yielding the best results. But it&#x27;s also easy to make it configurable via command line.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-07-23 17:59</div>
-            <div class="timeline-body"><p>To be honest, I'm not really grok'ing what you're saying. I think I'll just have to go over this PR very carefully. I'm not sure when I'll have time for that.</p>
+            <div class="timeline-body"><p>To be honest, I&#x27;m not really grok&#x27;ing what you&#x27;re saying. I think I&#x27;ll just have to go over this PR very carefully. I&#x27;m not sure when I&#x27;ll have time for that.</p>
 <p>Also definitely do not want this kind of super subtle thing to be configurable via the CLI. :-)</p>
 </div>
         </div>
@@ -154,7 +154,7 @@ fn main() -&gt; std::io::Result&lt;()&gt; {
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-07-08 13:41</div>
             <div class="timeline-body"><p>So I ran this on a huge directory tree that contains all of the crates from crates.io from a while back. This is what I got:</p>
-<pre><code>$ time rg-before 'fn matched_stripped'
+<pre><code>$ time rg-before &#x27;fn matched_stripped&#x27;
 rustfmt_ignore-0.4.10/src/gitignore.rs
 243:    fn matched_stripped&lt;P: AsRef&lt;Path&gt;&gt;(
 
@@ -167,7 +167,7 @@ sys     1:03.55
 maxmem  352 MB
 faults  20
 
-$ time rg-after 'fn matched_stripped'
+$ time rg-after &#x27;fn matched_stripped&#x27;
 rustfmt_ignore-0.4.10/src/gitignore.rs
 243:    fn matched_stripped&lt;P: AsRef&lt;Path&gt;&gt;(
 
@@ -181,21 +181,21 @@ maxmem  353 MB
 faults  64
 </code></pre>
 <p>I ran each one a few times each. Memory usage and time remained roughly the same.</p>
-<p>I'm overall a little skeptical of this change. I probably haven't given it enough thought yet, but the regression on a real world (but brutal) use case I think means I'm going to decline this for now. The other concern I have is termination. It has been notoriously tricky to get that right. I'm not saying it's wrong in this PR, but it's a risk because it's difficult to test.</p>
-<p>I'm hoping to do an overhaul of the <code>ignore</code> crate soon, and this will definitely be one of the things I re-visit.</p>
+<p>I&#x27;m overall a little skeptical of this change. I probably haven&#x27;t given it enough thought yet, but the regression on a real world (but brutal) use case I think means I&#x27;m going to decline this for now. The other concern I have is termination. It has been notoriously tricky to get that right. I&#x27;m not saying it&#x27;s wrong in this PR, but it&#x27;s a risk because it&#x27;s difficult to test.</p>
+<p>I&#x27;m hoping to do an overhaul of the <code>ignore</code> crate soon, and this will definitely be one of the things I re-visit.</p>
 <p>Thank you for the work and the ideas. :-)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2023-07-08 13:41</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-07-08 13:41</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">gitignore</span> added by @BurntSushi on 2023-07-08 13:41</div>
+            <div class="event">Label <span class="label">gitignore</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-07-08 13:41</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:44:05 UTC
+        Synced at 2026-01-20 18:48:19 UTC
     </footer>
 </body>
 </html>

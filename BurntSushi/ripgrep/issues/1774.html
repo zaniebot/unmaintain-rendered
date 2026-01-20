@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/blueforesticarus">@blueforesticarus</a></div>
-            <div class="timeline-body"><p>This is the most common issue i've had with ripgrep and similar tools.</p>
+            <div class="timeline-body"><p>This is the most common issue i&#x27;ve had with ripgrep and similar tools.</p>
 <p>Lets consider the following problem:</p>
 <ol>
 <li>I have a list of absolute paths.</li>
@@ -31,18 +31,18 @@
 <li>I would like it to work for any valid path-name</li>
 </ol>
 <p>The initial solution would be something like this:
-<code>fd / | rg -F &quot;$HOME&quot; -r '~' </code></p>
+<code>fd / | rg -F &quot;$HOME&quot; -r &#x27;~&#x27; </code></p>
 <p>However this will fail in the following way:
 <code>home/user/my_chroot/home/user/... -&gt; ~/my_chroot/~/...</code></p>
 <p>To solve this we need a position specifier.
-<code>fd / | rg  &quot;^$HOME&quot; -r '~' </code></p>
+<code>fd / | rg  &quot;^$HOME&quot; -r &#x27;~&#x27; </code></p>
 <p>However, now $HOME is being interpreted as a regex string, if it contains any special regex characters it will fail.
 &quot;[.*+&quot; might be an unlikely name for a user or directory, but it is a valid path, and we want it to work.</p>
 <p>We could escape $HOME as a regex string, however, I suggest a better solution is incorporate constants into the command line syntax, and possibly the regex engine itself.</p>
-<p>As an example: lets say &quot;-C<key> <value>&quot; defines a constant, and in the regex string &quot;@<key>&quot; represents the constant.
+<p>As an example: lets say &quot;-C &quot; defines a constant, and in the regex string &quot;@&quot; represents the constant.
 Then we could use the following:
-<code>fd / | rg -Ch  &quot;$HOME&quot; &quot;^@h&quot; -r '~' </code></p>
-<p>The syntax is just and example and probably would be different. The regex syntax for constants would only be turned on when you define a constant, so the addition wouldn't break anything currently working.
+<code>fd / | rg -Ch  &quot;$HOME&quot; &quot;^@h&quot; -r &#x27;~&#x27; </code></p>
+<p>The syntax is just and example and probably would be different. The regex syntax for constants would only be turned on when you define a constant, so the addition wouldn&#x27;t break anything currently working.
 Under the hood ripgrep could translate the constant into an escaped sequence, or constants could be implemented in the regex engine itself.</p>
 </div>
         </div>
@@ -50,11 +50,11 @@ Under the hood ripgrep could translate the constant into an escaped sequence, or
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-01-06 17:19</div>
             <div class="timeline-body"><p>I think the simplest thing might actually be to adopt a feature from other regex engines. Some regex engines let you do things like <code>\Q...\E</code> where <code>...</code> are interpreted literally, i.e., no escape sequences are respected. See https://stackoverflow.com/questions/30776860/regular-expression-q-e for example.</p>
 <p>Then you should be able to do:</p>
-<pre><code>$ fd / | rg &quot;^\Q$HOME\E&quot; -r '~'
+<pre><code>$ fd / | rg &quot;^\Q$HOME\E&quot; -r &#x27;~&#x27;
 </code></pre>
-<p>But this would be a feature of the <a href="https://github.com/rust-lang/regex">regex engine</a>, not ripgrep, so I'll open an issue there. Once I do that, I'll close this one.</p>
-<p>I expect it will be some time before this is implemented though, so you'll have to work around it if you need this to work now. Here's one solution via a Rust program. Here's the <code>Cargo.toml</code>:</p>
-<pre><code class="language-toml">[package]
+<p>But this would be a feature of the <a href="https://github.com/rust-lang/regex">regex engine</a>, not ripgrep, so I&#x27;ll open an issue there. Once I do that, I&#x27;ll close this one.</p>
+<p>I expect it will be some time before this is implemented though, so you&#x27;ll have to work around it if you need this to work now. Here&#x27;s one solution via a Rust program. Here&#x27;s the <code>Cargo.toml</code>:</p>
+<pre><code>[package]
 name = &quot;regex-escape&quot;
 version = &quot;0.1.0&quot;
 authors = [&quot;Andrew Gallant &lt;jamslam@gmail.com&gt;&quot;]
@@ -67,7 +67,7 @@ anyhow = &quot;1&quot;
 regex-syntax = &quot;0.6.21&quot;
 </code></pre>
 <p>And <code>src/main.rs</code>:</p>
-<pre><code class="language-rust">use std::io::Write;
+<pre><code>use std::io::Write;
 
 fn main() -&gt; anyhow::Result&lt;()&gt; {
     let args: Vec&lt;std::ffi::OsString&gt; = std::env::args_os().collect();
@@ -88,18 +88,18 @@ fn main() -&gt; anyhow::Result&lt;()&gt; {
    Compiling regex-syntax v0.6.21
    Compiling regex-escape v0.1.0 (/tmp/regex-escape)
     Finished release [optimized] target(s) in 4.49s
-$ ./target/release/regex-escape '[.*+'
+$ ./target/release/regex-escape &#x27;[.*+&#x27;
 \[\.\*\+
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2021-01-06 17:19</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-01-06 17:19</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/blueforesticarus">@blueforesticarus</a> on 2021-03-04 05:10</div>
             <div class="timeline-body"><p>What if the variable string needed to include <code>\Q</code> or <code>\E</code> as a literal?</p>
-<p>It seems like string constants are a simpler and more usefull feature. It's kinda bizarre that regex engines don't normally implement this.</p>
+<p>It seems like string constants are a simpler and more usefull feature. It&#x27;s kinda bizarre that regex engines don&#x27;t normally implement this.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -107,12 +107,12 @@ $ ./target/release/regex-escape '[.*+'
             <div class="timeline-body"><blockquote>
 <p>What if the variable string needed to include <code>\Q</code> or <code>\E</code> as a literal?</p>
 </blockquote>
-<p>That's a good point. It makes the entire construct not 100% correct for all inputs, which does, IMO, kind of limit its value.</p>
+<p>That&#x27;s a good point. It makes the entire construct not 100% correct for all inputs, which does, IMO, kind of limit its value.</p>
 <blockquote>
-<p>It seems like string constants are a simpler and more usefull feature. It's kinda bizarre that regex engines don't normally implement this.</p>
+<p>It seems like string constants are a simpler and more usefull feature. It&#x27;s kinda bizarre that regex engines don&#x27;t normally implement this.</p>
 </blockquote>
-<p>It's actually not bizarre at all. Almost all regex engines provide a way to escape any string such that it is fully interpreted as a literal. When you combine that with most programming language's string interpolation facilities, you essentially get what you're asking for nearly for free.</p>
-<p>The problem here is that ripgrep isn't used inside the context of a programming language with its regex engine API exposed, so there's no easy way to escape arbitrary content beyond what I posted above. Normally this isn't a problem since <code>-F</code> is good enough for most cases.</p>
+<p>It&#x27;s actually not bizarre at all. Almost all regex engines provide a way to escape any string such that it is fully interpreted as a literal. When you combine that with most programming language&#x27;s string interpolation facilities, you essentially get what you&#x27;re asking for nearly for free.</p>
+<p>The problem here is that ripgrep isn&#x27;t used inside the context of a programming language with its regex engine API exposed, so there&#x27;s no easy way to escape arbitrary content beyond what I posted above. Normally this isn&#x27;t a problem since <code>-F</code> is good enough for most cases.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -123,48 +123,48 @@ $ ./target/release/regex-escape '[.*+'
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-03-04 14:58</div>
-            <div class="timeline-body"><p>@blueForestIcarus I suspect you're thinking that way because you aren't familiar with regex internals. It is <em>perhaps</em> feasible in a very simplistic or toy regex engine, but production grade regex engines that prioritize performance do a substantial amount of analysis or construct things like finite state machines. You can't just interpolate a fixed string into stuff like that without doing potentially much more work.</p>
-<p>I do not want us to chase our tails around regex internals. I would ask that you either trust me as someone who has spent years in the domain, or that you take some time to read the regex crate source code. I can assure you though that this missing functionality you're after is <em>not</em> missing for bizarre reasons.</p>
-<p>I'd like to note that this conversation is drifting between different types of features. For example, in ripgrep's case, we do not need to implement interpolation of string constants at regex search time. The interpolation only needs to be done at compile time because ripgrep doesn't provide the same expressive power as a programming language.</p>
+            <div class="timeline-body"><p>@blueForestIcarus I suspect you&#x27;re thinking that way because you aren&#x27;t familiar with regex internals. It is <em>perhaps</em> feasible in a very simplistic or toy regex engine, but production grade regex engines that prioritize performance do a substantial amount of analysis or construct things like finite state machines. You can&#x27;t just interpolate a fixed string into stuff like that without doing potentially much more work.</p>
+<p>I do not want us to chase our tails around regex internals. I would ask that you either trust me as someone who has spent years in the domain, or that you take some time to read the regex crate source code. I can assure you though that this missing functionality you&#x27;re after is <em>not</em> missing for bizarre reasons.</p>
+<p>I&#x27;d like to note that this conversation is drifting between different types of features. For example, in ripgrep&#x27;s case, we do not need to implement interpolation of string constants at regex search time. The interpolation only needs to be done at compile time because ripgrep doesn&#x27;t provide the same expressive power as a programming language.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/blueforesticarus">@blueforesticarus</a> on 2021-03-04 15:17</div>
-            <div class="timeline-body"><p>Alright, well as far a ripgrep is concerned, without adding definitely missing and questionably  possible features to regex engine, I still think my original suggestion is better than the <code>'\Q...\E'</code> thing.</p>
-<p>It could be implemented by replacing  <code>@X</code> in the string with the value passed at the command line before the string is compiled as regex. It wouldn't interfere with existing patterns because it would only look for <code>@X</code> if h was given a value at the command line.</p>
+            <div class="timeline-body"><p>Alright, well as far a ripgrep is concerned, without adding definitely missing and questionably  possible features to regex engine, I still think my original suggestion is better than the <code>&#x27;\Q...\E&#x27;</code> thing.</p>
+<p>It could be implemented by replacing  <code>@X</code> in the string with the value passed at the command line before the string is compiled as regex. It wouldn&#x27;t interfere with existing patterns because it would only look for <code>@X</code> if h was given a value at the command line.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-03-04 15:37</div>
-            <div class="timeline-body"><p>@blueForestIcarus Yes, I will have to give this some thought. I'm not yet convinced that the added complexity of this feature is really worth it, but I do understand that it solves a real problem. With that said, the work-around I posted above shouldn't be too much trouble. So I think the question is whether I'm okay forcing folks with this kind of problem into using said work-around.</p>
+            <div class="timeline-body"><p>@blueForestIcarus Yes, I will have to give this some thought. I&#x27;m not yet convinced that the added complexity of this feature is really worth it, but I do understand that it solves a real problem. With that said, the work-around I posted above shouldn&#x27;t be too much trouble. So I think the question is whether I&#x27;m okay forcing folks with this kind of problem into using said work-around.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/learnbyexample">@learnbyexample</a> on 2021-03-17 06:54</div>
             <div class="timeline-body"><p><code>\Q...\E</code> is already supported by <code>-P</code> option.</p>
-<pre><code class="language-bash">$ h='/home/user/'
-$ echo '/home/user/my_chroot/home/user/' | rg &quot;$h&quot; -r '~/'
+<pre><code>$ h=&#x27;/home/user/&#x27;
+$ echo &#x27;/home/user/my_chroot/home/user/&#x27; | rg &quot;$h&quot; -r &#x27;~/&#x27;
 ~/my_chroot~/
-$ echo '/home/user/my_chroot/home/user/' | rg -P '^\Q'&quot;$h&quot; -r '~/'
+$ echo &#x27;/home/user/my_chroot/home/user/&#x27; | rg -P &#x27;^\Q&#x27;&quot;$h&quot; -r &#x27;~/&#x27;
 ~/my_chroot/home/user/
 </code></pre>
 <p>If the variable to be protected has <code>\Q</code> or <code>\E</code>, you can use <code>perl</code></p>
-<pre><code class="language-bash">$ h='\Q\E123'
+<pre><code>$ h=&#x27;\Q\E123&#x27;
 
 # no output
-$ echo '\Q\E123asdb\Q\E123' | rg -P '^\Q'&quot;$h&quot; -r '~/'
+$ echo &#x27;\Q\E123asdb\Q\E123&#x27; | rg -P &#x27;^\Q&#x27;&quot;$h&quot; -r &#x27;~/&#x27;
 
 # with perl
-$ echo '\Q\E123asdb\Q\E123' | s=&quot;$h&quot; perl -pe 's|^\Q$ENV{s}|~/|'
+$ echo &#x27;\Q\E123asdb\Q\E123&#x27; | s=&quot;$h&quot; perl -pe &#x27;s|^\Q$ENV{s}|~/|&#x27;
 ~/asdb\Q\E123
 </code></pre>
-<p><strong>Note</strong> that with <code>rg</code> you'll need to use <code>--passthru</code> option if you want all input lines in the output irrespective of whether a match was found or not. And you may want to consider the case where filenames can have characters like newline.</p>
+<p><strong>Note</strong> that with <code>rg</code> you&#x27;ll need to use <code>--passthru</code> option if you want all input lines in the output irrespective of whether a match was found or not. And you may want to consider the case where filenames can have characters like newline.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-03-17 13:47</div>
-            <div class="timeline-body"><p>@learnbyexample Yes, I was of course referring to the default regex engine. PCRE doesn't tend to do as well when you have a lot of regexes/words to search for:</p>
-<pre><code>$ awk 'length($0) &gt;= 18 { print }' /usr/share/dict/words &gt; words.18
+            <div class="timeline-body"><p>@learnbyexample Yes, I was of course referring to the default regex engine. PCRE doesn&#x27;t tend to do as well when you have a lot of regexes/words to search for:</p>
+<pre><code>$ awk &#x27;length($0) &gt;= 18 { print }&#x27; /usr/share/dict/words &gt; words.18
 $ wc -l words.18
 233 words.18
 $ time rg -c -F -f words.18 OpenSubtitles2018.raw.sample.small.en
@@ -184,14 +184,14 @@ sys     0.003
 maxmem  33 MB
 faults  0
 </code></pre>
-<p>And I actually had to use such a large word size to filter the data set, because otherwise PCRE complains that the regex is too large. I would increase the size limit, but given how slow it is on just a couple hundred words, I'm sure it wouldn't end well. :-)</p>
+<p>And I actually had to use such a large word size to filter the data set, because otherwise PCRE complains that the regex is too large. I would increase the size limit, but given how slow it is on just a couple hundred words, I&#x27;m sure it wouldn&#x27;t end well. :-)</p>
 <p>The Perl example is interesting. It looks like its regex engine explicitly supports interpolation?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/learnbyexample">@learnbyexample</a> on 2021-03-17 15:29</div>
             <div class="timeline-body"><p>@BurntSushi sorry, I should have worded better to mean that <code>\Q..\E</code> can be used right now by OP for the given problem. Having this feature supported by Rust regex would be welcome too.</p>
-<p>Perl will interpolate variables if the delimiter isn't single quote.</p>
+<p>Perl will interpolate variables if the delimiter isn&#x27;t single quote.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -201,19 +201,19 @@ faults  0
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-24 20:20</div>
-            <div class="timeline-body"><p>I think I'm going to pass on this. It seems pretty complicated to support and it's not clear it's worth doing.</p>
+            <div class="timeline-body"><p>I think I&#x27;m going to pass on this. It seems pretty complicated to support and it&#x27;s not clear it&#x27;s worth doing.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2023-11-24 20:20</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-24 20:20</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2023-11-24 20:20</div>
+            <div class="event">Label <span class="label">wontfix</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-24 20:20</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:43:18 UTC
+        Synced at 2026-01-20 18:48:10 UTC
     </footer>
 </body>
 </html>

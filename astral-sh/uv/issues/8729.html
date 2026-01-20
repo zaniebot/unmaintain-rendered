@@ -25,10 +25,10 @@
             <div class="timeline-header"><a href="https://github.com/rahuliyer95">@rahuliyer95</a></div>
             <div class="timeline-body"><p><em>(I believe this question has probably been asked before, but for some reason I am not able to find the previous issue so please feel free to direct me that issue if you are able to find it)</em></p>
 <p>I am trying to build a wheel for my project, for which I simply ran</p>
-<pre><code class="language-sh">$ uv build --wheel
+<pre><code>$ uv build --wheel
 </code></pre>
 <p>Inspecting the wheel I noticed that it took the dependencies from <code>pyproject.toml</code>. Is there a way to use the pinned dependencies from the <code>uv.lock</code> file itself?</p>
-<pre><code class="language-sh">$ unzip -p dist/playground-1.0.0-py3-none-any.whl playground-1.0.0.dist-info/METADATA
+<pre><code>$ unzip -p dist/playground-1.0.0-py3-none-any.whl playground-1.0.0.dist-info/METADATA
 ...
 Requires-Dist: aiofiles ~=24.1
 Requires-Dist: fsspec ~=2024.0
@@ -45,11 +45,11 @@ Requires-Dist: universal-pathlib ~=0.2
 Requires-Dist: uvloop ~=0.19
 Requires-Dist: yarl ~=1.8
 </code></pre>
-<details>
 
-<summary><code>pyproject.toml</code></summary>
 
-<pre><code class="language-toml">[project]
+<code>pyproject.toml</code>
+
+<pre><code>[project]
 name = &quot;playground&quot;
 version = &quot;1.0.0&quot;
 description = &quot;Playground&quot;
@@ -94,32 +94,32 @@ target-version = &quot;py310&quot;
 [tool.ruff.format]
 docstring-code-format = true
 </code></pre>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-01 13:34</div>
-            <div class="timeline-body"><p>I think we're somewhat unlikely to support this... The built wheel needs to use the declared project metadata, not the resolved application versions. It might also violate the spec in some sense.</p>
+            <div class="timeline-body"><p>I think we&#x27;re somewhat unlikely to support this... The built wheel needs to use the declared project metadata, not the resolved application versions. It might also violate the spec in some sense.</p>
 <p>What problem are you trying to solve? What are you looking to do with the wheel?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-11-01 13:34</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-01 13:34</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/rahuliyer95">@rahuliyer95</a> on 2024-11-01 16:33</div>
             <div class="timeline-body"><blockquote>
 <p>What problem are you trying to solve?</p>
 </blockquote>
-<p>I'll try to explain without sharing too much internal details. Our setup for ETL jobs require us to install wheels from our internal PyPI installations (because of various limitations on support for alternatives like Docker images). When the ETL job starts the first thing it does is</p>
-<pre><code class="language-sh">pip install --index &lt;internal-pypi-index-url&gt; &lt;package-name&gt;==&lt;package-version&gt;
+<p>I&#x27;ll try to explain without sharing too much internal details. Our setup for ETL jobs require us to install wheels from our internal PyPI installations (because of various limitations on support for alternatives like Docker images). When the ETL job starts the first thing it does is</p>
+<pre><code>pip install --index &lt;internal-pypi-index-url&gt; &lt;package-name&gt;==&lt;package-version&gt;
 # with above example
 # pip install --index &lt;internal-pypi-index-url&gt; playground==1.0.0
 </code></pre>
-<p>With the above wheel it would end up resolving versions for dependencies when it's installing the wheel and it might install a different patch version than the one we tested with. To avoid this problem I was hoping that we can build the wheel from the pinned versions. Our existing setup uses <a href="https://python-poetry.org/">poetry</a> and we use the <a href="https://github.com/cloud-custodian/poetry-plugin-freeze">poetry-freeze-wheel</a> plugin to solve this problem.</p>
+<p>With the above wheel it would end up resolving versions for dependencies when it&#x27;s installing the wheel and it might install a different patch version than the one we tested with. To avoid this problem I was hoping that we can build the wheel from the pinned versions. Our existing setup uses <a href="https://python-poetry.org/">poetry</a> and we use the <a href="https://github.com/cloud-custodian/poetry-plugin-freeze">poetry-freeze-wheel</a> plugin to solve this problem.</p>
 <blockquote>
-<p>I think we're somewhat unlikely to support this... The built wheel needs to use the declared project metadata, not the resolved application versions. It might also violate the spec in some sense.</p>
+<p>I think we&#x27;re somewhat unlikely to support this... The built wheel needs to use the declared project metadata, not the resolved application versions. It might also violate the spec in some sense.</p>
 </blockquote>
 <p>I can totally understand the complexity of this very non-standard use-case. Unfortunately, I am not sure how many others want a behavior like this (through some CLI option maybe). I was trying to migrate from <code>poetry</code> to <code>uv</code> and this was the last blocker on the list.</p>
 <p>@charliermarsh Please let me know if this explains the use-case and if any other details are needed from me. Thanks for all the amazing work you do!</p>
@@ -127,14 +127,14 @@ docstring-code-format = true
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-01 23:23</div>
-            <div class="timeline-body"><p>I'd love to try to get some sort of <code>--locked</code> install concept into the standards, perhaps after we manage to standardize on a lock format.</p>
+            <div class="timeline-body"><p>I&#x27;d love to try to get some sort of <code>--locked</code> install concept into the standards, perhaps after we manage to standardize on a lock format.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/EternityForest">@EternityForest</a> on 2024-11-11 04:10</div>
             <div class="timeline-body"><p>This issue is also the blocker for me switching from Poetry.</p>
 <p>Locked dependencies in wheels allow leaving Docker and the like out completely and making apps users can install with a single pipx command.</p>
-<p>As I understand Poetry plugins do it by building the wheel, then modifying it after, so it doesn't seem like it's too hard to implement since it's basically just copying the data you already have in uv.lock, right?</p>
+<p>As I understand Poetry plugins do it by building the wheel, then modifying it after, so it doesn&#x27;t seem like it&#x27;s too hard to implement since it&#x27;s basically just copying the data you already have in uv.lock, right?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -144,21 +144,21 @@ docstring-code-format = true
 <p>In our GitHub Actions (GHA) workflows, my package is installed frequently from a private artifact. Each installation pulls the latest compatible version of aiohttp because it’s a transitive dependency of aiodocker and satisfies the ^3.8 version constraint.</p>
 <p>This week, a new version of aiohttp (3.11) introduced a breaking change that caused aiodocker to break. As a result, my package—despite no changes on my end—broke because of this upstream issue.</p>
 <p>Here’s the related issue for reference: <a href="https://github.com/aio-libs/aiodocker/issues/918">aio-libs/aiodocker#918</a>.</p>
-<p>Currently i use poetry and they don't have a solution for that:
-https://github.com/python-poetry/poetry/issues/2778</p>
+<p>Currently i use poetry and they don&#x27;t have a solution for that:
+<a href="https://github.com/python-poetry/poetry/issues/2778">python-poetry/poetry#2778</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/EternityForest">@EternityForest</a> on 2024-11-20 10:07</div>
-            <div class="timeline-body"><p>@idan-rahamim-lendbuzz poetry does have third party plugins like https://github.com/cloud-custodian/poetry-plugin-freeze, but I'm not aware of a UV equivalent yet</p>
+            <div class="timeline-body"><p>@idan-rahamim-lendbuzz poetry does have third party plugins like https://github.com/cloud-custodian/poetry-plugin-freeze, but I&#x27;m not aware of a UV equivalent yet</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/idan-rahamim-lendbuzz">@idan-rahamim-lendbuzz</a> on 2024-11-20 10:12</div>
             <div class="timeline-body"><blockquote>
-<p>@idan-rahamim-lendbuzz poetry does have third party plugins like https://github.com/cloud-custodian/poetry-plugin-freeze, but I'm not aware of a UV equivalent yet</p>
+<p>@idan-rahamim-lendbuzz poetry does have third party plugins like https://github.com/cloud-custodian/poetry-plugin-freeze, but I&#x27;m not aware of a UV equivalent yet</p>
 </blockquote>
-<p>I can't use such plugins due to security reasons.</p>
+<p>I can&#x27;t use such plugins due to security reasons.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -166,7 +166,7 @@ https://github.com/python-poetry/poetry/issues/2778</p>
             <div class="timeline-body"><p>I believe that this option would be interesting to ensure that the users get the same exact set of project dependencies that was used during the development process. Just to make sure that the experience is smooth.</p>
 <p>As of now, my team uses <code>setup.py</code> in our old workflow with <code>install_requires</code> a frozen requirements.txt.</p>
 <p>But the idea behind it is that we force our package to be installed with the set of dependencies that we now for sure are working.</p>
-<p>Example of a bad scenario was illustrated by @rahuliyer95, and it is exactly what I'm talking about. Sometimes things just break with newer versions and it is hard to track those sometimes.</p>
+<p>Example of a bad scenario was illustrated by @rahuliyer95, and it is exactly what I&#x27;m talking about. Sometimes things just break with newer versions and it is hard to track those sometimes.</p>
 <p>Though I believe that this not a best practice in general, but in corporate setting with some flows this is gold.</p>
 </div>
         </div>
@@ -176,15 +176,15 @@ https://github.com/python-poetry/poetry/issues/2778</p>
 <ul>
 <li>A requirement that refers to an environment variable that is expanded by Hatch during build:</li>
 </ul>
-<pre><code class="language-toml">[project]
+<pre><code>[project]
 dependencies = [
   &quot;hello-world == {env:UV_HELLO_WORLD_VERSION}&quot;,
 ]
 </code></pre>
 <ul>
-<li>A build hook that adds the `uv.lock' file to the source distribution for use in the wheel builder:</li>
+<li>A build hook that adds the `uv.lock&#x27; file to the source distribution for use in the wheel builder:</li>
 </ul>
-<pre><code class="language-py">@cache
+<pre><code>@cache
 def find_workspace_root(cwd: Path | str) -&gt; Path | None:
    cwd = Path(cwd)
    if cwd == Path(cwd.root) or cwd == cwd.parent:
@@ -207,7 +207,7 @@ class MyBuildHook(BuildHookInterface[BuilderConfig]):
 <ul>
 <li>And finally a metadata hook that would set environment variables from the contents of <code>uv.lock</code> before interpolation happens:</li>
 </ul>
-<pre><code class="language-python">def load_uv_lock(root: Path | str):
+<pre><code>def load_uv_lock(root: Path | str):
     uv_lock_path = Path(root) / &quot;uv.lock&quot;
     try:
         with uv_lock_path.open(&quot;rb&quot;) as fp:
@@ -239,7 +239,7 @@ class MyMetadataHook(MetadataHookInterface):
 <ul>
 <li>To force the metadata hook to run, you may also need to add an additional dynamic field:</li>
 </ul>
-<pre><code class="language-toml">[project]
+<pre><code>[project]
 dynamic = [&quot;version&quot;, &quot;x-run-hook&quot;]
 </code></pre>
 </div>
@@ -254,7 +254,7 @@ dynamic = [&quot;version&quot;, &quot;x-run-hook&quot;]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kwaegel">@kwaegel</a> on 2025-02-12 19:10</div>
-            <div class="timeline-body"><p>@edgarrmondragon I think I figured out a bash equivalent for that Poetry PoC, which adds a <code>pinned</code> dependency group, builds the package, then reverts the change. There's probably some way to write this as a <code>hatchling</code> plugin.</p>
+            <div class="timeline-body"><p>@edgarrmondragon I think I figured out a bash equivalent for that Poetry PoC, which adds a <code>pinned</code> dependency group, builds the package, then reverts the change. There&#x27;s probably some way to write this as a <code>hatchling</code> plugin.</p>
 <pre><code>#!/bin/bash
 set -euo pipefail
 
@@ -272,7 +272,7 @@ cp uv.lock uv.lock.bak
 uv export --locked --no-dev --no-extra pinned --no-hashes --no-emit-workspace \
     --output-file pinned_requirements.txt &gt; /dev/null
 
-# Add an optional 'pinned' group that contains the pinned dependency list.
+# Add an optional &#x27;pinned&#x27; group that contains the pinned dependency list.
 uv add --optional pinned -r pinned_requirements.txt
 
 # Build the package.
@@ -288,14 +288,14 @@ rm -f pinned_requirements.txt
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on 2025-02-12 20:03</div>
             <div class="timeline-body"><blockquote>
-<p>There's probably some way to write this as a <code>hatchling</code> plugin.</p>
+<p>There&#x27;s probably some way to write this as a <code>hatchling</code> plugin.</p>
 </blockquote>
 <p>@kwaegel let me know what you think of https://github.com/edgarrmondragon/hatch-pinned-extra 🙂</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kwaegel">@kwaegel</a> on 2025-02-13 00:21</div>
-            <div class="timeline-body"><p>Cool! That mostly seems to work, but it's giving me very slightly different results from the script-based version. I'll try to file a ticket once I figure out what's going on, but in general it seems like a better solution.</p>
+            <div class="timeline-body"><p>Cool! That mostly seems to work, but it&#x27;s giving me very slightly different results from the script-based version. I&#x27;ll try to file a ticket once I figure out what&#x27;s going on, but in general it seems like a better solution.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -303,7 +303,7 @@ rm -f pinned_requirements.txt
             <div class="timeline-body"><p>+1 for this.</p>
 <p>My use case for something like <code>uv build --wheel --pinned</code> is databricks asset bundles, where you can include a wheel to go along with a job definition. I need exact, reproducible environments to train ML models. Of course there are workarounds, but this feature would be cleanest.</p>
 <p>For reference, I would use it like this:</p>
-<pre><code class="language-yaml"># databricks.yml
+<pre><code># databricks.yml
 artifacts:
   python_package:
     type: wheel
@@ -314,12 +314,12 @@ artifacts:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/EternityForest">@EternityForest</a> on 2025-02-27 02:06</div>
-            <div class="timeline-body"><p>@timvink I think I'd prefer it be a setting in pyproject.toml, I can't imagine any time I would ever want to build a non-frozen wheel for a completed application, and by adding it to the metadata, unmodified build and publish commands could do the right thing.</p>
+            <div class="timeline-body"><p>@timvink I think I&#x27;d prefer it be a setting in pyproject.toml, I can&#x27;t imagine any time I would ever want to build a non-frozen wheel for a completed application, and by adding it to the metadata, unmodified build and publish commands could do the right thing.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-27 09:27</div>
-            <div class="timeline-body"><p>Since it hasn't been mentioned before, I want to share this workaround: You can <code>uv export</code> the lockfile and use it as constraint on installation of the wheel, e.g.</p>
+            <div class="timeline-body"><p>Since it hasn&#x27;t been mentioned before, I want to share this workaround: You can <code>uv export</code> the lockfile and use it as constraint on installation of the wheel, e.g.</p>
 <pre><code>uv export --no-emit-workspace --no-hashes -o requirements-frozen.txt
 uv build
 pip install -c requirements-frozen.txt dist/foo-0.1.0-py3-none-any.whl 
@@ -337,7 +337,7 @@ pip install -c requirements-frozen.txt dist/foo-0.1.0-py3-none-any.whl
 <p>At 11am30 this morning, <code>uv tool install mysoftware</code> worked great</p>
 <p>At 11am31 it did not anymore, because someone has published on pypi a new version of its software that lifted a restriction on a another dependency, leading to an incompatibility. semver not carefully followed by anyone.</p>
 <p>What i want is to be able to create 2 wheels.</p>
-<pre><code class="language-hash">$ uv build mysoftware --pinned
+<pre><code>$ uv build mysoftware --pinned
 this is my main CLI, mainly usable by `uv tool install`
 
 $ uv build mysoftware[api]
@@ -349,7 +349,7 @@ the API version of the cli, without any frozen dependencies, used with `uv add`
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:28:04 UTC
+        Synced at 2026-01-20 19:35:10 UTC
     </footer>
 </body>
 </html>

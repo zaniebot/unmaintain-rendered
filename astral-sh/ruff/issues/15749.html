@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1><code>format.exclude</code> doesn't respect directories, while global <code>extend-exclude</code> does</h1>
+    <h1><code>format.exclude</code> doesn&#x27;t respect directories, while global <code>extend-exclude</code> does</h1>
 
     <div class="meta">
         <span class="state-icon state-closed"></span>
@@ -23,15 +23,15 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/DavisVaughan">@DavisVaughan</a></div>
-            <div class="timeline-body"><h3>Description</h3>
-<p>I've attached a zip with the following structure</p>
+            <div class="timeline-body">Description
+<p>I&#x27;ve attached a zip with the following structure</p>
 <pre><code>test/
   ruff.toml
   python/
     test.py
 </code></pre>
 <p>If you set</p>
-<pre><code class="language-toml">extend-exclude = [&quot;python&quot;]
+<pre><code>extend-exclude = [&quot;python&quot;]
 </code></pre>
 <p>then you do get <code>python/test.py</code> excluded</p>
 <pre><code>ruff format -v
@@ -45,7 +45,7 @@
 warning: No Python files found under the given path(s)
 </code></pre>
 <p>but if you set</p>
-<pre><code class="language-toml">[format]
+<pre><code>[format]
 exclude = [&quot;python&quot;]
 </code></pre>
 <p>then <code>python/test.py</code> is formatted!</p>
@@ -63,28 +63,28 @@ exclude = [&quot;python&quot;]
 1 file reformatted
 </code></pre>
 <p>I believe this is because when you process the global <code>extend-exclude</code>, that happens when you are <em>discovering</em> files, and you get a chance to short circuit the discovery and tell <code>ignore</code> to refuse to recurse into <code>python/</code>. That happens here with <code>WalkState::Skip</code>: https://github.com/astral-sh/ruff/blob/cb3361e682fc52d7ac9fdc5e2558373eb1d94a1f/crates/ruff_workspace/src/resolver.rs#L525. Because of that, you never even look at <code>test.py</code>.</p>
-<p>But in the <code>format.exclude</code> case, you've already discovered <code>python/test.py</code>, and now you're applying ad-hoc format specific exclusions to the files you've discovered. That happens here:
+<p>But in the <code>format.exclude</code> case, you&#x27;ve already discovered <code>python/test.py</code>, and now you&#x27;re applying ad-hoc format specific exclusions to the files you&#x27;ve discovered. That happens here:
 https://github.com/astral-sh/ruff/blob/cb3361e682fc52d7ac9fdc5e2558373eb1d94a1f/crates/ruff/src/commands/format.rs#L127</p>
-<p>But <code>match_exclusion()</code> doesn't walk up the directory tree, so when it gets <code>path/to/python/test.py</code> (basename <code>test.py</code>) and tries to apply the <code>python</code> glob matcher, it never matches.</p>
-<p>Notably, you do have some tools that do walk up the directory tree, like <code>is_file_excluded()</code> (https://github.com/astral-sh/ruff/blob/cb3361e682fc52d7ac9fdc5e2558373eb1d94a1f/crates/ruff_workspace/src/resolver.rs#L692) and <code>match_any_exclusion()</code> (https://github.com/astral-sh/ruff/blob/cb3361e682fc52d7ac9fdc5e2558373eb1d94a1f/crates/ruff_workspace/src/resolver.rs#L779) used by the LSP when deciding whether the open document should be formatted or not, so maybe it's a matter of slotting in or reworking one of those. I'd be mildly worried about the cost of looking up the directory tree of every single file you're getting ready to format though, so another alternative might be moving the formatter specific exclusions down into the discovery phase as well.</p>
+<p>But <code>match_exclusion()</code> doesn&#x27;t walk up the directory tree, so when it gets <code>path/to/python/test.py</code> (basename <code>test.py</code>) and tries to apply the <code>python</code> glob matcher, it never matches.</p>
+<p>Notably, you do have some tools that do walk up the directory tree, like <code>is_file_excluded()</code> (https://github.com/astral-sh/ruff/blob/cb3361e682fc52d7ac9fdc5e2558373eb1d94a1f/crates/ruff_workspace/src/resolver.rs#L692) and <code>match_any_exclusion()</code> (https://github.com/astral-sh/ruff/blob/cb3361e682fc52d7ac9fdc5e2558373eb1d94a1f/crates/ruff_workspace/src/resolver.rs#L779) used by the LSP when deciding whether the open document should be formatted or not, so maybe it&#x27;s a matter of slotting in or reworking one of those. I&#x27;d be mildly worried about the cost of looking up the directory tree of every single file you&#x27;re getting ready to format though, so another alternative might be moving the formatter specific exclusions down into the discovery phase as well.</p>
 <p><a href="https://github.com/user-attachments/files/18552374/test.zip">test.zip</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-27 01:24</div>
-            <div class="timeline-body"><p>Thanks for the clear write-up, though I believe this is a duplicate of https://github.com/astral-sh/ruff/issues/8267</p>
+            <div class="timeline-body"><p>Thanks for the clear write-up, though I believe this is a duplicate of <a href="https://github.com/astral-sh/ruff/issues/8267">astral-sh/ruff#8267</a></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">duplicate</span> added by @charliermarsh on 2025-01-27 01:24</div>
+            <div class="event">Label <span class="label">duplicate</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-27 01:24</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2025-01-27 01:33</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-27 01:33</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:52:05 UTC
+        Synced at 2026-01-20 18:49:22 UTC
     </footer>
 </body>
 </html>

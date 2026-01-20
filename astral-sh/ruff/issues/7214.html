@@ -24,7 +24,7 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/WhyNotHugo">@WhyNotHugo</a></div>
             <div class="timeline-body"><p>My <code>test.py</code>:</p>
-<pre><code class="language-py">from typing import TYPE_CHECKING
+<pre><code>from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from sentry_sdk._types import Event
@@ -34,7 +34,7 @@ def before_send(event: Event, hint: Hint) -&gt; Event | None:
     pass
 </code></pre>
 <p>Steps to reproduce:</p>
-<pre><code class="language-console">&gt; ruff --select TCH test.py
+<pre><code>&gt; ruff --select TCH test.py
 test.py:4:35: TCH004 [*] Move import `sentry_sdk._types.Event` out of type-checking block. Import is used for more than type hinting.
 test.py:5:35: TCH004 [*] Move import `sentry_sdk._types.Hint` out of type-checking block. Import is used for more than type hinting.
 Found 2 errors.
@@ -46,14 +46,14 @@ Found 2 errors.
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/WhyNotHugo">@WhyNotHugo</a> on 2023-09-07 09:39</div>
             <div class="timeline-body"><p>Oh, this is half-wrong. I need to include <code>from __future__ import annotations</code> in this file for the example to do what I mean.</p>
-<p>I'm not sure that the auto-fix is correct here; the auto-fix moves the <code>imports</code> out of the <code>if TYPE_CHECKING</code> block, but this is not valid in many cases (including this particular one).</p>
+<p>I&#x27;m not sure that the auto-fix is correct here; the auto-fix moves the <code>imports</code> out of the <code>if TYPE_CHECKING</code> block, but this is not valid in many cases (including this particular one).</p>
 <p>The correct fix in this case is to include <code>from __future__ import annotations</code>. However, I suspect that this fix is invalid in some other situations.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-07 13:38</div>
-            <div class="timeline-body"><p>Yeah, unfortunately Python requires that type annotations on function signatures are available at runtime. (This isn't true of all annotations -- for example, annotated assignments outside of the top-level are not evaluated at runtime IIRC.)</p>
-<p>The current fix is limited to moving imports as it attempts to avoid changing the semantics of the code. We've explored supporting automatic quoting for annotations (https://github.com/astral-sh/ruff/pull/6001), which would let us handle this case without adding a <code>from __future__ import annotations</code> import. We could <em>also</em> consider a setting to automatically add <code>from __future__ import annotations</code> in such cases, but that's an even bigger change to user code and would not be safe to do by default.</p>
+            <div class="timeline-body"><p>Yeah, unfortunately Python requires that type annotations on function signatures are available at runtime. (This isn&#x27;t true of all annotations -- for example, annotated assignments outside of the top-level are not evaluated at runtime IIRC.)</p>
+<p>The current fix is limited to moving imports as it attempts to avoid changing the semantics of the code. We&#x27;ve explored supporting automatic quoting for annotations (<a href="https://github.com/astral-sh/ruff/pull/6001">astral-sh/ruff#6001</a>), which would let us handle this case without adding a <code>from __future__ import annotations</code> import. We could <em>also</em> consider a setting to automatically add <code>from __future__ import annotations</code> in such cases, but that&#x27;s an even bigger change to user code and would not be safe to do by default.</p>
 <p>(If you <em>do</em> want to use <code>__future__</code> annotations here, I might recommend using this with <code>from __future__ import annotations</code> as a <a href="https://beta.ruff.rs/docs/settings/#isort-required-imports">required imports</a>.)</p>
 </div>
         </div>
@@ -66,7 +66,7 @@ Found 2 errors.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-09-08 16:19</div>
-            <div class="timeline-body"><p>We can't know that the imported types are only available when type checking (without adding multifile analysis) and that seems like a relatively rare case. Perhaps it's worth opening a bug report at Sentry? I'm curious why they made that design decision.</p>
+            <div class="timeline-body"><p>We can&#x27;t know that the imported types are only available when type checking (without adding multifile analysis) and that seems like a relatively rare case. Perhaps it&#x27;s worth opening a bug report at Sentry? I&#x27;m curious why they made that design decision.</p>
 <p>We are already using the &quot;suggested&quot; applicability for this fix so once #4185 lands we will not apply this when <code>--fix</code> is used.</p>
 </div>
         </div>
@@ -74,13 +74,13 @@ Found 2 errors.
             <div class="timeline-header">Comment by <a href="https://github.com/aqeelat">@aqeelat</a> on 2023-09-20 11:09</div>
             <div class="timeline-body"><p>I have an example that shows another false positive with TCH004:</p>
 <p><code>pyproject.toml</code>:</p>
-<pre><code class="language-toml">[tool.ruff]
+<pre><code>[tool.ruff]
 extend-select = [&quot;TCH&quot;]
 line-length = 120
 target-version = &quot;py311&quot;
 </code></pre>
 <p><code>base.py</code>:</p>
-<pre><code class="language-python">import abc
+<pre><code>import abc
 from typing import Generic
 from typing import TypeVar
 
@@ -92,7 +92,7 @@ class MyBaseClass(abc.ABC, Generic[T]):
     pass
 </code></pre>
 <p><code>concrete.py</code>:</p>
-<pre><code class="language-python">from __future__ import annotations
+<pre><code>from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
@@ -108,12 +108,12 @@ class MyConcreteClass(MyBaseClass[list[Iterator]]):
 
 </code></pre>
 <p>Error:</p>
-<pre><code class="language-shell">concrete.py:8:33: TCH004 [*] Move import `collections.abc.Iterator` out of type-checking block. Import is used for more than type hinting.
+<pre><code>concrete.py:8:33: TCH004 [*] Move import `collections.abc.Iterator` out of type-checking block. Import is used for more than type hinting.
 Found 1 error.
 [*] 1 potentially fixable with the --fix option.
 </code></pre>
-<p>Tbh, I'm not sure if this is a false positive or is a correct error.
-We've been using it as <code>class MyConcreteClass(MyBaseClass[list[&quot;Iterator&quot;]])</code> in production without any issues, but when I removed the quotations, this error appeared.</p>
+<p>Tbh, I&#x27;m not sure if this is a false positive or is a correct error.
+We&#x27;ve been using it as <code>class MyConcreteClass(MyBaseClass[list[&quot;Iterator&quot;]])</code> in production without any issues, but when I removed the quotations, this error appeared.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -122,21 +122,21 @@ We've been using it as <code>class MyConcreteClass(MyBaseClass[list[&quot;Iterat
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">type-inference</span> added by @zanieb on 2023-10-03 17:23</div>
+            <div class="event">Label <span class="label">type-inference</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-03 17:23</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">multifile-analysis</span> added by @zanieb on 2023-10-03 17:23</div>
+            <div class="event">Label <span class="label">multifile-analysis</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-03 17:23</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2023-10-06 03:41</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-06 03:41</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">multifile-analysis</span> removed by @MichaReiser on 2024-10-24 14:34</div>
+            <div class="event">Label <span class="label">multifile-analysis</span> removed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-24 14:34</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:48:16 UTC
+        Synced at 2026-01-20 18:48:42 UTC
     </footer>
 </body>
 </html>

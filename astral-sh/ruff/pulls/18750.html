@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This PR includes a behavioral change to how we infer types for nonlocal uses of symbols within a module. Where we would previously use the type that a use at the end of the scope would see, we now consider all reachable bindings and union the results:</p>
-<pre><code class="language-py">x = None
+<pre><code>x = None
 
 def f():
     reveal_type(x)  # previously `Unknown | Literal[1]`, now `Unknown | None | Literal[1]`
@@ -37,33 +37,33 @@ x = 1
 f()
 </code></pre>
 <p>This helps especially in cases where the the end of the scope is not reachable:</p>
-<pre><code class="language-py">def outer(x: int):
+<pre><code>def outer(x: int):
     def inner():
         reveal_type(x)  # previously `Unknown`, now `int`
 
     raise ValueError
 </code></pre>
 <p>This PR also proposes to skip the boundness analysis of nonlocal uses. This is consistent with the &quot;all reachable bindings&quot; strategy, because the implicit <code>x = &lt;unbound&gt;</code> binding is also always reachable, and we would have to emit &quot;possibly-unresolved&quot; diagnostics for every nonlocal use otherwise. Changing this behavior allows common use-cases like the following to type check without any errors:</p>
-<pre><code class="language-py">def outer(flag: bool):
+<pre><code>def outer(flag: bool):
     if flag:
         x = 1
 
         def inner():
             print(x)  # previously: possibly-unresolved-reference, now: no error
 </code></pre>
-<p>closes https://github.com/astral-sh/ty/issues/210
-closes https://github.com/astral-sh/ty/issues/607
-closes https://github.com/astral-sh/ty/issues/699</p>
-<h2>Follow up</h2>
-<p>It is now possible to resolve the following TODO, but I would like to do that as a follow-up, because it requires some changes to how we treat implicit attribute assignments, which could result in ecosystem changes that I'd like to see separately.</p>
+<p>closes <a href="https://github.com/astral-sh/ty/issues/210">astral-sh/ty#210</a>
+closes <a href="https://github.com/astral-sh/ty/issues/607">astral-sh/ty#607</a>
+closes <a href="https://github.com/astral-sh/ty/issues/699">astral-sh/ty#699</a></p>
+Follow up
+<p>It is now possible to resolve the following TODO, but I would like to do that as a follow-up, because it requires some changes to how we treat implicit attribute assignments, which could result in ecosystem changes that I&#x27;d like to see separately.</p>
 <p>https://github.com/astral-sh/ruff/blob/315fb0f3da4e5f2097a294c344025dec28ebf2a5/crates/ty_python_semantic/src/semantic_index/builder.rs#L1095-L1117</p>
-<h2>Ecosystem analysis</h2>
+Ecosystem analysis
 <p><a href="https://shark.fish/diff-public-types.html"><strong>Full report</strong></a></p>
 <ul>
 <li><p>This change obviously removes a lot of <code>possibly-unresolved-reference</code> diagnostics (7818) because we do not analyze boundness for nonlocal uses of symbols inside modules anymore.</p>
 </li>
 <li><p>As the primary goal here, this change also removes a lot of false-positive <code>unresolved-reference</code> diagnostics (231) in scenarios like this:</p>
-<pre><code class="language-py">def _(flag: bool):
+<pre><code>def _(flag: bool):
     if flag:
         x = 1
 
@@ -74,7 +74,7 @@ closes https://github.com/astral-sh/ty/issues/699</p>
 </code></pre>
 </li>
 <li><p>This change also introduces some new false positives for cases like:</p>
-<pre><code class="language-py">def _():
+<pre><code>def _():
     x = None
 
     x = &quot;test&quot;
@@ -82,30 +82,30 @@ closes https://github.com/astral-sh/ty/issues/699</p>
     def inner():
         x.upper()  # Attribute `upper` on type `Unknown | None | Literal[&quot;test&quot;]` is possibly unbound
 </code></pre>
-<p>We have test cases for these situations and it's plausible that we can improve this in a follow-up.</p>
+<p>We have test cases for these situations and it&#x27;s plausible that we can improve this in a follow-up.</p>
 </li>
 </ul>
-<h2>Test Plan</h2>
+Test Plan
 <p>New Markdown tests</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @sharkdp on 2025-06-18 13:17</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-18 13:17</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "David/public types" to "[ty] Infer public types as unions of all reachable bindings" by @sharkdp on 2025-06-18 13:18</div>
+            <div class="event">Renamed from &quot;David/public types&quot; to &quot;[ty] Infer public types as unions of all reachable bindings&quot; by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-18 13:18</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-18 13:22</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">pytest-robotframework (https://github.com/detachhead/pytest-robotframework)
-+ warning[unused-ignore-comment] pytest_robotframework/_internal/robot/listeners_and_suite_visitors.py:673:33: Unused `ty: ignore` directive: 'possibly-unresolved-reference'
-+ warning[unused-ignore-comment] pytest_robotframework/_internal/robot/listeners_and_suite_visitors.py:690:40: Unused `ty: ignore` directive: 'possibly-unresolved-reference'
+Changes were detected when running on open source projects
+
+<pre><code>pytest-robotframework (https://github.com/detachhead/pytest-robotframework)
++ warning[unused-ignore-comment] pytest_robotframework/_internal/robot/listeners_and_suite_visitors.py:673:33: Unused `ty: ignore` directive: &#x27;possibly-unresolved-reference&#x27;
++ warning[unused-ignore-comment] pytest_robotframework/_internal/robot/listeners_and_suite_visitors.py:690:40: Unused `ty: ignore` directive: &#x27;possibly-unresolved-reference&#x27;
 - Found 183 diagnostics
 + Found 185 diagnostics
 
@@ -564,14 +564,14 @@ dulwich (https://github.com/dulwich/dulwich)
 + Found 148 diagnostics
 
 mypy-protobuf (https://github.com/dropbox/mypy-protobuf)
-+ warning[possibly-unbound-attribute] test/generated/testproto/test_pb2.pyi:396:25: Attribute `service` on type `&lt;module 'google.protobuf'&gt; | Unknown` is possibly unbound
-+ warning[possibly-unbound-attribute] test/generated/testproto/test_pb2.pyi:405:25: Attribute `service` on type `&lt;module 'google.protobuf'&gt; | Unknown` is possibly unbound
-+ warning[possibly-unbound-attribute] test/generated/testproto/test_pb2.pyi:414:37: Attribute `service` on type `&lt;module 'google.protobuf'&gt; | Unknown` is possibly unbound
-+ warning[possibly-unbound-attribute] test/generated/testproto/test_pb2.pyi:418:25: Attribute `service` on type `&lt;module 'google.protobuf'&gt; | Unknown` is possibly unbound
-+ warning[possibly-unbound-attribute] test/generated/testproto/test_pb2.pyi:426:25: Attribute `service` on type `&lt;module 'google.protobuf'&gt; | Unknown` is possibly unbound
-+ warning[possibly-unbound-attribute] test/generated/testproto/test_pb2.pyi:437:25: Attribute `service` on type `&lt;module 'google.protobuf'&gt; | Unknown` is possibly unbound
-+ warning[possibly-unbound-attribute] test/generated/testproto/test_pb2.pyi:443:37: Attribute `service` on type `&lt;module 'google.protobuf'&gt; | Unknown` is possibly unbound
-+ warning[possibly-unbound-attribute] test/generated/testproto/test_pb2.pyi:447:25: Attribute `service` on type `&lt;module 'google.protobuf'&gt; | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] test/generated/testproto/test_pb2.pyi:396:25: Attribute `service` on type `&lt;module &#x27;google.protobuf&#x27;&gt; | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] test/generated/testproto/test_pb2.pyi:405:25: Attribute `service` on type `&lt;module &#x27;google.protobuf&#x27;&gt; | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] test/generated/testproto/test_pb2.pyi:414:37: Attribute `service` on type `&lt;module &#x27;google.protobuf&#x27;&gt; | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] test/generated/testproto/test_pb2.pyi:418:25: Attribute `service` on type `&lt;module &#x27;google.protobuf&#x27;&gt; | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] test/generated/testproto/test_pb2.pyi:426:25: Attribute `service` on type `&lt;module &#x27;google.protobuf&#x27;&gt; | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] test/generated/testproto/test_pb2.pyi:437:25: Attribute `service` on type `&lt;module &#x27;google.protobuf&#x27;&gt; | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] test/generated/testproto/test_pb2.pyi:443:37: Attribute `service` on type `&lt;module &#x27;google.protobuf&#x27;&gt; | Unknown` is possibly unbound
++ warning[possibly-unbound-attribute] test/generated/testproto/test_pb2.pyi:447:25: Attribute `service` on type `&lt;module &#x27;google.protobuf&#x27;&gt; | Unknown` is possibly unbound
 - Found 46 diagnostics
 + Found 54 diagnostics
 
@@ -691,39 +691,39 @@ pyjwt (https://github.com/jpadilla/pyjwt)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-06-20 13:23</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-20 13:23</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-06-23 08:56</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-23 08:56</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-06-23 08:56</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-23 08:56</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-06-23 13:20</div>
-            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+            <div class="timeline-body">
 
-<!-- __CODSPEED_WALLTIME_PERFORMANCE_REPORT_COMMENT__ -->
 
-<h2><a href="https://codspeed.io/astral-sh/ruff/branches/david%2Fpublic-types?runnerMode=WallTime">CodSpeed WallTime Performance Report</a></h2>
-<h3>Merging #18750 will <strong>not alter performance</strong></h3>
-<p><sub>Comparing <code>david/public-types</code> (4226670) with <code>main</code> (2362263)</sub></p>
-<h3>Summary</h3>
+
+<a href="https://codspeed.io/astral-sh/ruff/branches/david%2Fpublic-types?runnerMode=WallTime">CodSpeed WallTime Performance Report</a>
+Merging #18750 will <strong>not alter performance</strong>
+<p>Comparing <code>david/public-types</code> (4226670) with <code>main</code> (2362263)</p>
+Summary
 <p><code>✅ 8</code> untouched benchmarks</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-24 12:39</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
@@ -733,12 +733,12 @@ pyjwt (https://github.com/jpadilla/pyjwt)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/scopes/builtin.md</code>:35 on 2025-06-24 14:50</div>
-            <div class="timeline-body"><p>I believe this could be a follow-up task. I haven't seen any ecosystem problems related to this.</p>
+            <div class="timeline-body"><p>I believe this could be a follow-up task. I haven&#x27;t seen any ecosystem problems related to this.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:1 on 2025-06-24 14:52</div>
-            <div class="timeline-body"><p>I think I'll need some help deciding if these changes here are okay or not.</p>
+            <div class="timeline-body"><p>I think I&#x27;ll need some help deciding if these changes here are okay or not.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -751,14 +751,14 @@ pyjwt (https://github.com/jpadilla/pyjwt)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:1646 on 2025-06-25 11:09</div>
-            <div class="timeline-body"><p>Can't easily get this to work with <code>TypeArrayDisplay</code>, so just join it manually.</p>
+            <div class="timeline-body"><p>Can&#x27;t easily get this to work with <code>TypeArrayDisplay</code>, so just join it manually.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-06-25 11:27</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-25 11:27</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-06-25 11:27</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-25 11:27</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-25 11:51</div>
@@ -777,7 +777,7 @@ pyjwt (https://github.com/jpadilla/pyjwt)
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:1646 on 2025-06-25 11:55</div>
             <div class="timeline-body"><p>I guess a generalised version would be something like this (untested):</p>
-<pre><code class="language-rs">fn describe_types_list&lt;'db, I, IT, D&gt;(db: &amp;'db dyn Db, types: I) -&gt; String
+<pre><code>fn describe_types_list&lt;&#x27;db, I, IT, D&gt;(db: &amp;&#x27;db dyn Db, types: I) -&gt; String
 where
     I: IntoIterator&lt;IntoIter = IT&gt;,
     IT: ExactSizeIterator&lt;Item = D&gt; + DoubleEndedIterator,
@@ -792,16 +792,16 @@ where
     let mut buffer = String::new();
 
     for type in types {
-        buffer.push('`');
+        buffer.push(&#x27;`&#x27;);
         buffer.push_str(type);
         buffer.push_str(&quot;`, &quot;);
     }
 
-    buffer.push('`');
+    buffer.push(&#x27;`&#x27;);
     buffer.push_str(penultimate_type);
     buffer.push_str(&quot;` and `&quot;);
     buffer.push_str(final_type);
-    buffer.push('`');
+    buffer.push(&#x27;`&#x27;);
 
     buffer
 }
@@ -809,13 +809,13 @@ where
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @sharkdp on 2025-06-25 12:25</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-25 12:25</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @sharkdp on 2025-06-25 12:25</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-25 12:25</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @sharkdp on 2025-06-25 12:25</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-25 12:25</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-06-25 12:41</div>
@@ -830,7 +830,7 @@ where
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Converted to draft by @sharkdp on 2025-06-25 13:34</div>
+            <div class="event">Converted to draft by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-25 13:34</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-25 13:35</div>
@@ -838,16 +838,16 @@ where
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-06-25 14:07</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-25 14:07</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-06-25 14:07</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-25 14:07</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-06-25 14:08</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-25 14:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-06-25 14:08</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-25 14:08</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-06-25 14:10</div>
@@ -855,46 +855,46 @@ where
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:421 on 2025-06-25 14:10</div>
-            <div class="timeline-body"><p>We currently don't filter out overloads from <em>bindings</em>, only from declarations. This is easy to change, but we would still infer the wrong type here (only <code>Overload[(x: int) -&gt; int, (x: bytes) -&gt; bytes]</code>). It's not clear to me if this is an important case that we need to handle.</p>
+            <div class="timeline-body"><p>We currently don&#x27;t filter out overloads from <em>bindings</em>, only from declarations. This is easy to change, but we would still infer the wrong type here (only <code>Overload[(x: int) -&gt; int, (x: bytes) -&gt; bytes]</code>). It&#x27;s not clear to me if this is an important case that we need to handle.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-06-25 14:13</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-25 14:13</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-06-25 14:13</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-25 14:13</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @sharkdp on 2025-06-25 14:16</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-25 14:16</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/declaration/error.md</code>:50 on 2025-06-25 14:18</div>
             <div class="timeline-body"><p>nit: it would be nice to at least have backticks around each type, e.g.</p>
-<pre><code class="language-suggestion">    x = &quot;a&quot;  # error: [conflicting-declarations] &quot;Conflicting declared types for `x`: `str`, `int`, `bytes`&quot;
+<pre><code>    x = &quot;a&quot;  # error: [conflicting-declarations] &quot;Conflicting declared types for `x`: `str`, `int`, `bytes`&quot;
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>python/py-fuzzer/fuzz.py</code>:175 on 2025-06-25 14:26</div>
-            <div class="timeline-body"><p>I don't think this should be necessary because the fuzzer CI job currently only complains if you introduce <em>new</em> panics relative to the <code>main</code> branch. So once this PR is merged, the new failures will be naturally incorporated into the baseline for future PRs, and the fuzzer CI job won't fail on those future PRs.</p>
-<p>The reason for the existing <code>skip_check</code> set above isn't because we panic on those seeds -- it's because we take an excruciatingly long time attempting to resolve cycles when we analyze those seeds (or at least, that was the case last time we checked), and it sucks if the fuzzer job takes 15 minutes in CI 😄</p>
+            <div class="timeline-body"><p>I don&#x27;t think this should be necessary because the fuzzer CI job currently only complains if you introduce <em>new</em> panics relative to the <code>main</code> branch. So once this PR is merged, the new failures will be naturally incorporated into the baseline for future PRs, and the fuzzer CI job won&#x27;t fail on those future PRs.</p>
+<p>The reason for the existing <code>skip_check</code> set above isn&#x27;t because we panic on those seeds -- it&#x27;s because we take an excruciatingly long time attempting to resolve cycles when we analyze those seeds (or at least, that was the case last time we checked), and it sucks if the fuzzer job takes 15 minutes in CI 😄</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:5 on 2025-06-25 14:27</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">The &quot;public type&quot; of a symbol refers to the type that is inferred for a symbol from an external (either enclosing or nested)
+            <div class="timeline-body"><pre><code>The &quot;public type&quot; of a symbol refers to the type that is inferred for a symbol from an external (either enclosing or nested)
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:7 on 2025-06-25 14:27</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">currently make the simplifying assumption that an inner scope (such as the `inner` function below)
+            <div class="timeline-body"><pre><code>currently make the simplifying assumption that an inner scope (such as the `inner` function below)
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:9 on 2025-06-25 14:28</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">could be executed at any position in its enclosing scope. The public type of a symbol in the outer scope
+            <div class="timeline-body"><pre><code>could be executed at any position in its enclosing scope. The public type of a symbol in the outer scope
 from the perspective of the inner scope should therefore be the union of all possible types that the
 symbol could have.
 </code></pre>
@@ -903,53 +903,53 @@ symbol could have.
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:91 on 2025-06-25 14:30</div>
             <div class="timeline-body"><p>To more clearly distinguish this case from the case that we <em>do</em> want to complain about (which you detail in your following example):</p>
-<pre><code class="language-suggestion">If a symbol is only conditionally bound and the inner scope is bound in the same branch,
+<pre><code>If a symbol is only conditionally bound and the inner scope is bound in the same branch,
 we do not raise any errors:
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:115 on 2025-06-25 14:31</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">type, which would have resulted in incorrect type inference here:
+            <div class="timeline-body"><pre><code>type, which would have resulted in incorrect type inference here:
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:147 on 2025-06-25 14:32</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">Arbitrarily many levels of nesting are supported:
+            <div class="timeline-body"><pre><code>Arbitrarily many levels of nesting are supported:
 </code></pre>
 <p>or</p>
-<pre><code class="language-suggestion">An arbitrary level of nesting is supported:
+<pre><code>An arbitrary level of nesting is supported:
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:192 on 2025-06-25 14:33</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">When a declaration only appears in one branch, we also consider the types of the symbol's bindings in other branches:
+            <div class="timeline-body"><pre><code>When a declaration only appears in one branch, we also consider the types of the symbol&#x27;s bindings in other branches:
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:210 on 2025-06-25 14:34</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">declaration and a binding, but we still add `None` to the public type union in a situation like this:
+            <div class="timeline-body"><pre><code>declaration and a binding, but we still add `None` to the public type union in a situation like this:
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:308 on 2025-06-25 14:36</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">        # TODO: this should ideally be `Unknown | None | Literal[1]`
-        # (requires https://github.com/astral-sh/ty/issues/220)
+            <div class="timeline-body"><pre><code>        # TODO: this should ideally be `Unknown | None | Literal[1]`
+        # (requires <a href="https://github.com/astral-sh/ty/issues/220">astral-sh/ty#220</a>)
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:362 on 2025-06-25 14:38</div>
-            <div class="timeline-body"><p>I'm struggling to parse this -- the example seems to show that we include both overloads in the revealed type of <code>f</code>, just like we do if there <em>is</em> an overload implementation?</p>
+            <div class="timeline-body"><p>I&#x27;m struggling to parse this -- the example seems to show that we include both overloads in the revealed type of <code>f</code>, just like we do if there <em>is</em> an overload implementation?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:419 on 2025-06-25 14:39</div>
-            <div class="timeline-body"><p>hmm, this one's a bit concerning. It seems pretty obviously incorrect, and (unlike the one with conditionally overridden builtins) I don't think it'll be easy to explain to users why it happens.</p>
+            <div class="timeline-body"><p>hmm, this one&#x27;s a bit concerning. It seems pretty obviously incorrect, and (unlike the one with conditionally overridden builtins) I don&#x27;t think it&#x27;ll be easy to explain to users why it happens.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -964,19 +964,19 @@ we do not raise any errors:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:1 on 2025-06-25 16:16</div>
-            <div class="timeline-body"><p>FWIW I don't love this name, if anyone has a better idea -- originally it was both the type seen by nested scopes and by imports, but those have diverged already, and fully break with this PR. &quot;Public&quot; seems like a better fit for imports than for nested scopes. But I don't have a great alternative in mind for how to name &quot;the type seen by nested scopes in the same file.&quot;</p>
+            <div class="timeline-body"><p>FWIW I don&#x27;t love this name, if anyone has a better idea -- originally it was both the type seen by nested scopes and by imports, but those have diverged already, and fully break with this PR. &quot;Public&quot; seems like a better fit for imports than for nested scopes. But I don&#x27;t have a great alternative in mind for how to name &quot;the type seen by nested scopes in the same file.&quot;</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:5 on 2025-06-25 16:20</div>
             <div class="timeline-body"><p>I think the current text is correct here (although it maybe could be clearer, I initially read &quot;from an enclosing scope&quot; as describing &quot;where we are inferring from&quot; rather than describing &quot;a symbol&quot;).</p>
-<p>I don't think we ever look at public types of symbols of symbols in nested scopes (name lookup travels up the scope tree, not down it), so I don't see a reason to mention both, as in the suggested change here.</p>
+<p>I don&#x27;t think we ever look at public types of symbols of symbols in nested scopes (name lookup travels up the scope tree, not down it), so I don&#x27;t see a reason to mention both, as in the suggested change here.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:6 on 2025-06-25 16:22</div>
             <div class="timeline-body"><p>One idea for how to make this read slightly clearer (to me, anyway)</p>
-<pre><code class="language-suggestion">The &quot;public type&quot; of a symbol refers to the type that is inferred in a nested scope for a symbol
+<pre><code>The &quot;public type&quot; of a symbol refers to the type that is inferred in a nested scope for a symbol
 defined in an outer enclosing scope. Since it is not generally possible to analyze the full control
 flow of a program, we
 </code></pre>
@@ -984,14 +984,14 @@ flow of a program, we
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:9 on 2025-06-25 16:25</div>
-            <div class="timeline-body"><p>This edit seems to imply that a given symbol may have different public types, from different perspectives. I don't think that's true?</p>
+            <div class="timeline-body"><p>This edit seems to imply that a given symbol may have different public types, from different perspectives. I don&#x27;t think that&#x27;s true?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:91 on 2025-06-25 16:31</div>
-            <div class="timeline-body"><p>I think this edit suggests we are already employing a heuristic, or a level of smarts, that we don't actually employ in this PR -- though we may want to in future.</p>
-<p>I do agree that currently this example and the following one are redundant, except for the fact that in the second case we say we want to change the behavior in future, and in the first case we don't say that. So it might be good to be clearer about that. I would probably try to do that without implying that we are already doing more than we do. So something like this text introducing the second test:</p>
-<p>&quot;In the future, we may try to be smarter about which bindings must or must not be a visible to a given nested scope, depending where it is defined. In the above case, this shouldn't change the behavior -- <code>x</code> is defined before <code>inner</code> in the same branch, so should be considered definitely-bound for <code>inner</code>. But in other cases we may want to emit <code>possibly-unresolved-reference</code> in future:&quot;</p>
+            <div class="timeline-body"><p>I think this edit suggests we are already employing a heuristic, or a level of smarts, that we don&#x27;t actually employ in this PR -- though we may want to in future.</p>
+<p>I do agree that currently this example and the following one are redundant, except for the fact that in the second case we say we want to change the behavior in future, and in the first case we don&#x27;t say that. So it might be good to be clearer about that. I would probably try to do that without implying that we are already doing more than we do. So something like this text introducing the second test:</p>
+<p>&quot;In the future, we may try to be smarter about which bindings must or must not be a visible to a given nested scope, depending where it is defined. In the above case, this shouldn&#x27;t change the behavior -- <code>x</code> is defined before <code>inner</code> in the same branch, so should be considered definitely-bound for <code>inner</code>. But in other cases we may want to emit <code>possibly-unresolved-reference</code> in future:&quot;</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1011,27 +1011,27 @@ flow of a program, we
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:362 on 2025-06-25 16:44</div>
-            <div class="timeline-body"><p>&quot;Consider&quot; here means &quot;union into the final type&quot;. That is, the point of this test is that we infer the type <code>Overload[(x: int) -&gt; int, (x: str) -&gt; str]</code> for <code>f</code> (and yes, that does &quot;consider&quot; all overloads in a different sense), we don't infer the type <code>Overload[(x: int) -&gt; int, (x: str) -&gt; str] | ((x: int) -&gt; int)</code> (where we wrongly &quot;consider&quot; the first overload as a standalone definition to be unioned.)</p>
+            <div class="timeline-body"><p>&quot;Consider&quot; here means &quot;union into the final type&quot;. That is, the point of this test is that we infer the type <code>Overload[(x: int) -&gt; int, (x: str) -&gt; str]</code> for <code>f</code> (and yes, that does &quot;consider&quot; all overloads in a different sense), we don&#x27;t infer the type <code>Overload[(x: int) -&gt; int, (x: str) -&gt; str] | ((x: int) -&gt; int)</code> (where we wrongly &quot;consider&quot; the first overload as a standalone definition to be unioned.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:419 on 2025-06-25 16:51</div>
-            <div class="timeline-body"><p>I'm not sure why the same logic that handles the non-conditional overload cases doesn't handle this one as well (probably will be clearer after reading the code), but I don't think find it super concerning, mostly just because I think this pattern is vanishingly rare, and other type checkers don't handle it well either. (There are conditionally-defined overloads in typeshed, but always with statically known branches.)</p>
+            <div class="timeline-body"><p>I&#x27;m not sure why the same logic that handles the non-conditional overload cases doesn&#x27;t handle this one as well (probably will be clearer after reading the code), but I don&#x27;t think find it super concerning, mostly just because I think this pattern is vanishingly rare, and other type checkers don&#x27;t handle it well either. (There are conditionally-defined overloads in typeshed, but always with statically known branches.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/scopes/eager.md</code>:392 on 2025-06-25 16:53</div>
-            <div class="timeline-body"><p>The semantics of deferred annotations aren't clear -- in principle evaluation of a deferred annotation could be triggered at any time. So it's not clear to me that this should ideally be <code>Unknown | str</code></p>
+            <div class="timeline-body"><p>The semantics of deferred annotations aren&#x27;t clear -- in principle evaluation of a deferred annotation could be triggered at any time. So it&#x27;s not clear to me that this should ideally be <code>Unknown | str</code></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/terminal_statements.md</code>:587 on 2025-06-25 16:56</div>
-            <div class="timeline-body"><p>I think this is the same thing I mentioned in a comment above, but I don't think it relies on escape analysis, as implied in this comment. If <code>g</code> escapes, that still doesn't allow some external code not visible to us can change its closure variables. (Well, technically they can by directly modifying <code>__closure__</code> on the function, but this is beyond what I think we should model.) I think we can eliminate <code>Unknown</code> simply based on &quot;symbol resolves to a function-like scope, and there are no nested <code>nonlocal</code> declarations of that symbol that might modify it&quot;.</p>
+            <div class="timeline-body"><p>I think this is the same thing I mentioned in a comment above, but I don&#x27;t think it relies on escape analysis, as implied in this comment. If <code>g</code> escapes, that still doesn&#x27;t allow some external code not visible to us can change its closure variables. (Well, technically they can by directly modifying <code>__closure__</code> on the function, but this is beyond what I think we should model.) I think we can eliminate <code>Unknown</code> simply based on &quot;symbol resolves to a function-like scope, and there are no nested <code>nonlocal</code> declarations of that symbol that might modify it&quot;.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:1780 on 2025-06-25 17:01</div>
-            <div class="timeline-body"><p>As mentioned in another test, it's not actually clear to me what's more correct here, so maybe we don't need a TODO for it (unless we see real-world motivating examples for a different behavior)</p>
+            <div class="timeline-body"><p>As mentioned in another test, it&#x27;s not actually clear to me what&#x27;s more correct here, so maybe we don&#x27;t need a TODO for it (unless we see real-world motivating examples for a different behavior)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1046,10 +1046,10 @@ flow of a program, we
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:5 on 2025-06-25 17:17</div>
             <div class="timeline-body"><blockquote>
-<p>I don't think we ever look at public types of symbols of symbols in nested scopes</p>
+<p>I don&#x27;t think we ever look at public types of symbols of symbols in nested scopes</p>
 </blockquote>
-<p>Don't we? This reveals <code>int</code>, not <code>Literal[1]</code>:</p>
-<pre><code class="language-py">class Foo:
+<p>Don&#x27;t we? This reveals <code>int</code>, not <code>Literal[1]</code>:</p>
+<pre><code>class Foo:
     X: int = 1
 
 reveal_type(Foo.X)
@@ -1073,10 +1073,10 @@ reveal_type(Foo.X)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:5 on 2025-06-25 17:22</div>
-            <div class="timeline-body"><p>Resolving class variables uses end-of-scope types, even after this PR, and I don't think we are considering changing that (or should). So the concept of &quot;public type&quot; described in this PR is really just about nested scopes.</p>
+            <div class="timeline-body"><p>Resolving class variables uses end-of-scope types, even after this PR, and I don&#x27;t think we are considering changing that (or should). So the concept of &quot;public type&quot; described in this PR is really just about nested scopes.</p>
 <p>I think this is a further point in favor of &quot;public type is not a good name for this concept.&quot;</p>
 <p>You can see that even after this PR, we only consider the last definition of <code>x</code> here, not all definitions of <code>x</code>:</p>
-<pre><code class="language-py">class C:
+<pre><code>class C:
     x = 1
     x = 2
 
@@ -1103,7 +1103,7 @@ reveal_type(C.x)  # revealed: Unknown | Literal[2]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:9 on 2025-06-25 17:27</div>
-            <div class="timeline-body"><p>I think this is the same conversation we're having at https://github.com/astral-sh/ruff/pull/18750#discussion_r2166871990</p>
+            <div class="timeline-body"><p>I think this is the same conversation we&#x27;re having at <a href="https://github.com/astral-sh/ruff/pull/18750">astral-sh/ruff#18750</a>#discussion_r2166871990</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1124,7 +1124,7 @@ reveal_type(C.x)  # revealed: Unknown | Literal[2]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:308 on 2025-06-25 17:39</div>
-            <div class="timeline-body"><p>hmm, yeah, I'm not sure either now that I look more closely. No idea what other type checkers do.</p>
+            <div class="timeline-body"><p>hmm, yeah, I&#x27;m not sure either now that I look more closely. No idea what other type checkers do.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1133,8 +1133,8 @@ reveal_type(C.x)  # revealed: Unknown | Literal[2]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:362 on 2025-06-25 17:41</div>
-            <div class="timeline-body"><p>maybe this, to clarify that it's just showing that we have similar behaviour for overloaded functions without implementations as overloaded functions with implementations:</p>
-<pre><code class="language-suggestion">Similarly, if there is no implementation, we only consider the last overload definition.
+            <div class="timeline-body"><p>maybe this, to clarify that it&#x27;s just showing that we have similar behaviour for overloaded functions without implementations as overloaded functions with implementations:</p>
+<pre><code>Similarly, if there is no implementation, we only consider the last overload definition.
 </code></pre>
 </div>
         </div>
@@ -1154,18 +1154,18 @@ reveal_type(C.x)  # revealed: Unknown | Literal[2]
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:419 on 2025-06-25 17:58</div>
             <div class="timeline-body"><blockquote>
-<p>I'm not sure why the same logic that handles the non-conditional overload cases doesn't handle this one as well</p>
+<p>I&#x27;m not sure why the same logic that handles the non-conditional overload cases doesn&#x27;t handle this one as well</p>
 </blockquote>
 <p>I described this in another comment higher above:</p>
 <blockquote>
-<p>We currently don't filter out overloads from bindings, only from declarations. This is easy to change, but we would still infer the wrong type here (only Overload[(x: int) -&gt; int, (x: bytes) -&gt; bytes]). It's not clear to me if this is an important case that we need to handle.</p>
+<p>We currently don&#x27;t filter out overloads from bindings, only from declarations. This is easy to change, but we would still infer the wrong type here (only Overload[(x: int) -&gt; int, (x: bytes) -&gt; bytes]). It&#x27;s not clear to me if this is an important case that we need to handle.</p>
 </blockquote>
-<p>In summary, it is easy to change this to <code>Overload[(x: int) -&gt; int, (x: bytes) -&gt; bytes</code>, and I should probably just do that. It's harder to change this to the same union that we infer in the local scope.</p>
+<p>In summary, it is easy to change this to <code>Overload[(x: int) -&gt; int, (x: bytes) -&gt; bytes</code>, and I should probably just do that. It&#x27;s harder to change this to the same union that we infer in the local scope.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>python/py-fuzzer/fuzz.py</code>:175 on 2025-06-25 18:03</div>
-            <div class="timeline-body"><p>Ah, I see! I was very confused why I was so unlucky to only be the second person to run into this. So if I understand correctly, I'll just revert this change and ignore the fuzzer failure on this PR (I made sure that all these seeds are related to cyclic / self-referential problems, as indicated in the comment).</p>
+            <div class="timeline-body"><p>Ah, I see! I was very confused why I was so unlucky to only be the second person to run into this. So if I understand correctly, I&#x27;ll just revert this change and ignore the fuzzer failure on this PR (I made sure that all these seeds are related to cyclic / self-referential problems, as indicated in the comment).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1196,7 +1196,7 @@ reveal_type(C.x)  # revealed: Unknown | Literal[2]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:26 on 2025-06-25 18:18</div>
-            <div class="timeline-body"><p>Yeah, I didn't mention class scopes because names in class scopes are not visible to nested scopes anyway</p>
+            <div class="timeline-body"><p>Yeah, I didn&#x27;t mention class scopes because names in class scopes are not visible to nested scopes anyway</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1214,7 +1214,7 @@ reveal_type(C.x)  # revealed: Unknown | Literal[2]
 <p>also covered the fact that we prefer the declared type over the inferred type</p>
 </blockquote>
 <p>This is indeed a characteristic that is shared by all of imported types, attribute types, and &quot;nonlocal types&quot; (what are currently called &quot;public types&quot; in this PR) -- but this PR is only about the latter.</p>
-<p>The confusion here is really my fault -- I conflated all of these under the single name &quot;public type&quot; initially, and we've discovered over time the ways in which they need to be different, and now we need to sort out what to call each of them as well.</p>
+<p>The confusion here is really my fault -- I conflated all of these under the single name &quot;public type&quot; initially, and we&#x27;ve discovered over time the ways in which they need to be different, and now we need to sort out what to call each of them as well.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1224,10 +1224,10 @@ reveal_type(C.x)  # revealed: Unknown | Literal[2]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:419 on 2025-06-25 18:50</div>
-            <div class="timeline-body"><p>I don't understand the relevance of bindings vs declarations, considering that all <code>def</code> statements are both, so in this example <code>f</code> is always declared, so I don't see why we would ever even look at bindings for <code>f</code> when deciding its public type?</p>
+            <div class="timeline-body"><p>I don&#x27;t understand the relevance of bindings vs declarations, considering that all <code>def</code> statements are both, so in this example <code>f</code> is always declared, so I don&#x27;t see why we would ever even look at bindings for <code>f</code> when deciding its public type?</p>
 <p>To me it seems this limitation is more related to the fact that the current handling of overloads in <code>PublicTypeBuilder</code> is simply based on the order in which we see the definitions, with the logic being that any function-literal declaration of a name &quot;erases&quot; an immediately-preceding overloaded function-literal declaration of that same name.</p>
-<p>The handling which I intuitively expected would be a bit different, and perhaps more complex, but would handle this case correctly: it would be that for any <code>OverloadLiteral</code> declaration we find, we look at what function-literal type is its predecessor (not based on the order we are processing the declarations, but based on <code>OverloadLiteral::previous_overload</code> on the type, which respects control flow), and we'd eliminate that type from the union we are building.</p>
-<p>That said, I don't think that this is an important case we need to handle, so I'm fine going with the current handling with TODO. (And it's entirely probably that I'm missing some reason why the handling I expected doesn't actually work.)</p>
+<p>The handling which I intuitively expected would be a bit different, and perhaps more complex, but would handle this case correctly: it would be that for any <code>OverloadLiteral</code> declaration we find, we look at what function-literal type is its predecessor (not based on the order we are processing the declarations, but based on <code>OverloadLiteral::previous_overload</code> on the type, which respects control flow), and we&#x27;d eliminate that type from the union we are building.</p>
+<p>That said, I don&#x27;t think that this is an important case we need to handle, so I&#x27;m fine going with the current handling with TODO. (And it&#x27;s entirely probably that I&#x27;m missing some reason why the handling I expected doesn&#x27;t actually work.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1237,23 +1237,23 @@ reveal_type(C.x)  # revealed: Unknown | Literal[2]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/place.rs</code>:1152 on 2025-06-25 18:55</div>
-            <div class="timeline-body"><p>A goal of the previous code was to avoid creating a <code>UnionBuilder</code> if there is only one type to consider (which is probably the common case?). It seems we could still avoid creating a <code>PublicTypeBuilder</code> in that scenario? I'm not sure if this makes a measurable difference to performance, though.</p>
+            <div class="timeline-body"><p>A goal of the previous code was to avoid creating a <code>UnionBuilder</code> if there is only one type to consider (which is probably the common case?). It seems we could still avoid creating a <code>PublicTypeBuilder</code> in that scenario? I&#x27;m not sure if this makes a measurable difference to performance, though.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/place.rs</code>:1125 on 2025-06-25 18:58</div>
-            <div class="timeline-body"><p>Would <code>AssumeBound</code> be a better name than <code>AlwaysBound</code> for this variant? This usage site makes it clear that it's not really &quot;always bound&quot;, it's just that we generally aren't checking for boundness.</p>
+            <div class="timeline-body"><p>Would <code>AssumeBound</code> be a better name than <code>AlwaysBound</code> for this variant? This usage site makes it clear that it&#x27;s not really &quot;always bound&quot;, it&#x27;s just that we generally aren&#x27;t checking for boundness.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/semantic_index/use_def.rs</code>:686 on 2025-06-25 19:04</div>
-            <div class="timeline-body"><p>It's not totally clear to me that reusing <code>Declarations</code> and <code>Bindings</code> structs, adding <code>PreviousDefinitions</code> flag when recording a definition, and leaving their constraint-tracking functionality unused in this case, is the clearest approach here? How much code would actually be duplicated if we used bespoke simpler vectors of bindings/declarations here?</p>
-<p>Really fine with either option here, just curious if it's a tradeoff you considered.</p>
+            <div class="timeline-body"><p>It&#x27;s not totally clear to me that reusing <code>Declarations</code> and <code>Bindings</code> structs, adding <code>PreviousDefinitions</code> flag when recording a definition, and leaving their constraint-tracking functionality unused in this case, is the clearest approach here? How much code would actually be duplicated if we used bespoke simpler vectors of bindings/declarations here?</p>
+<p>Really fine with either option here, just curious if it&#x27;s a tradeoff you considered.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-06-25 19:05</div>
-            <div class="timeline-body"><p>This looks really good, thank you! I think all of my comments fall into the &quot;for your consider and discretion&quot; category, I'm happy with this as-is.</p>
+            <div class="timeline-body"><p>This looks really good, thank you! I think all of my comments fall into the &quot;for your consider and discretion&quot; category, I&#x27;m happy with this as-is.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1264,7 +1264,7 @@ reveal_type(C.x)  # revealed: Unknown | Literal[2]
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:419 on 2025-06-25 19:26</div>
             <div class="timeline-body"><p>On further reflection I realized why bindings matter -- because in this scenario, given the control-flow-insensitive handling of the overloaded function declarations, we end up considering only the third declaration, and that declaration is only conditionally reachable, so then we fall back to bindings.</p>
 <p>I think doing the same filtering on bindings that we do on declarations might be important, not for the scenario shown here (overloaded functions in which some overloads are conditional based on not-statically-known conditions should be rare), but for this simpler and more plausible scenario:</p>
-<pre><code class="language-py">from typing import overload
+<pre><code>from typing import overload
 
 def returns_bool() -&gt; bool:
     return True
@@ -1286,7 +1286,7 @@ if returns_bool():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:419 on 2025-06-26 00:38</div>
-            <div class="timeline-body"><p>It feels like (in general) we should be able to detect when the bindings we get back are the same Definitions as the declarations we already checked, and not uselessly redo the same work in these scenarios with Definitions that are both bindings and declarations. But that's probably out of scope for this PR (and maybe not that valuable anyway.)</p>
+            <div class="timeline-body"><p>It feels like (in general) we should be able to detect when the bindings we get back are the same Definitions as the declarations we already checked, and not uselessly redo the same work in these scenarios with Definitions that are both bindings and declarations. But that&#x27;s probably out of scope for this PR (and maybe not that valuable anyway.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1295,8 +1295,8 @@ if returns_bool():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:231 on 2025-06-26 07:47</div>
-            <div class="timeline-body"><p>This can't really be demonstrated without a gradual type like <code>Unknown</code>, I think? If <code>some_library</code> would exist, the import would be a declaration of <code>&lt;module 'some_library'&gt;</code>. We would then error on the <code>some_library = None</code> binding (<code>invalid-assignment</code>). And both the local and nonlocal type would be <code>&lt;module 'some_library'&gt;</code> here.</p>
-<p>This code pattern will lead to type errors in either case (library exists or not), and I'm not sure if it should generally be recommended over alternatives, but it is so pervasive across the ecosystem that I wanted to capture it in a test.</p>
+            <div class="timeline-body"><p>This can&#x27;t really be demonstrated without a gradual type like <code>Unknown</code>, I think? If <code>some_library</code> would exist, the import would be a declaration of <code>&lt;module &#x27;some_library&#x27;&gt;</code>. We would then error on the <code>some_library = None</code> binding (<code>invalid-assignment</code>). And both the local and nonlocal type would be <code>&lt;module &#x27;some_library&#x27;&gt;</code> here.</p>
+<p>This code pattern will lead to type errors in either case (library exists or not), and I&#x27;m not sure if it should generally be recommended over alternatives, but it is so pervasive across the ecosystem that I wanted to capture it in a test.</p>
 <p>I changed the name to <code>optional_dependency</code> to make this a bit more clear, but also happy to just remove this test.</p>
 </div>
         </div>
@@ -1306,7 +1306,7 @@ if returns_bool():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/public_types.md</code>:1 on 2025-06-26 08:34</div>
-            <div class="timeline-body"><p>I'll do the renaming (which involves renaming some files) in a follow-up to this.</p>
+            <div class="timeline-body"><p>I&#x27;ll do the renaming (which involves renaming some files) in a follow-up to this.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1329,10 +1329,10 @@ if returns_bool():
 </blockquote>
 <p>Yes, exactly. I should have described this better.</p>
 <blockquote>
-<p>It feels like (in general) we should be able to detect when the bindings we get back are the same Definitions as the declarations we already checked, and not uselessly redo the same work in these scenarios with Definitions that are both bindings and declarations. But that's probably out of scope for this PR</p>
+<p>It feels like (in general) we should be able to detect when the bindings we get back are the same Definitions as the declarations we already checked, and not uselessly redo the same work in these scenarios with Definitions that are both bindings and declarations. But that&#x27;s probably out of scope for this PR</p>
 </blockquote>
 <p>I thought about this as well. And I agree, this seems like a major change. In a scenario like the following, we currently do not keep track of whether or not these two definitions come from the same &quot;possibly reachable&quot; branch or not</p>
-<pre><code class="language-py">if flag:
+<pre><code>if flag:
     x: int
 else:
     x = 1
@@ -1359,7 +1359,7 @@ use(x)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:1646 on 2025-06-26 10:03</div>
-            <div class="timeline-body"><p>Thank you, Alex. I'll keep this for a follow-up.</p>
+            <div class="timeline-body"><p>Thank you, Alex. I&#x27;ll keep this for a follow-up.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1381,19 +1381,19 @@ use(x)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-06-26 10:14</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-26 10:14</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-06-26 10:14</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-26 10:14</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[ty] Infer public types as unions of all reachable bindings" to "[ty] Infer nonlocal types as unions of all reachable bindings" by @sharkdp on 2025-06-26 10:24</div>
+            <div class="event">Renamed from &quot;[ty] Infer public types as unions of all reachable bindings&quot; to &quot;[ty] Infer nonlocal types as unions of all reachable bindings&quot; by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-26 10:24</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @sharkdp on 2025-06-26 10:24</div>
+            <div class="event">Merged by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-26 10:24</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @sharkdp on 2025-06-26 10:24</div>
+            <div class="event">Closed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-06-26 10:24</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-06-26 10:24</div>
@@ -1401,7 +1401,7 @@ use(x)
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:13:29 UTC
+        Synced at 2026-01-20 19:15:39 UTC
     </footer>
 </body>
 </html>

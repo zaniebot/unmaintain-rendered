@@ -24,71 +24,71 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/CoderJoshDK">@CoderJoshDK</a></div>
             <div class="timeline-body"><p>Rare bug, hard to reproduce.</p>
-<p>Error's log:</p>
-<pre><code class="language-log">[ERROR][2024-02-09 14:12:56] ...lsp/handlers.lua:535&quot;Ruff: Lint failed (
+<p>Error&#x27;s log:</p>
+<pre><code>[ERROR][2024-02-09 14:12:56] ...lsp/handlers.lua:535&quot;Ruff: Lint failed (
 error: Ruff crashed. If you could open an issue at:
 
     https://github.com/astral-sh/ruff/issues/new?title=%5BPanic%5D
 
-...quoting the executed command, along with the relevant file contents and `pyproject.toml` settings, we'd be very appreciative!
+...quoting the executed command, along with the relevant file contents and `pyproject.toml` settings, we&#x27;d be very appreciative!
 
-thread 'main' panicked at /Users/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/path-dedot-3.1.1/src/lib.rs:330:70:
+thread &#x27;main&#x27; panicked at /Users/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/path-dedot-3.1.1/src/lib.rs:330:70:
 called `Result::unwrap()` on an `Err` value: Os { code: 2, kind: NotFound, message: &quot;No such file or directory&quot; }
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 )
 </code></pre>
-<h2>Context</h2>
+Context
 <p>I wrote a NeoVim plugin that creates files for temp use. In the process of that, a new named buffer is created. That buffer is pointing to a file that does not exist. It will not be writen, until the user saves the buffer. When nvim opens that buffer, the error message comes up. The issue with this bug, is that it is rare. It has happened to me twice in the span of 3 days. I have now patched my plugin, so it creates the buffers in a differnt way. But <a href="https://github.com/CoderJoshDK/playground.nvim/tree/502e1fbdafe28b6ee986aa5e4fd355aa3925cf54">this commit version</a> is the latest one that can cuase the error.</p>
 <p>The basics of the code that cuases this issue, is:</p>
-<pre><code class="language-lua">local buf_n = vim.api.nvim_create_buf(false, false)
-vim.api.nvim_buf_set_name(buf_n, &quot;/absolute/path/to/nothing.py&quot;) -- absolute path to a new python file that doesn't exist yet.
+<pre><code>local buf_n = vim.api.nvim_create_buf(false, false)
+vim.api.nvim_buf_set_name(buf_n, &quot;/absolute/path/to/nothing.py&quot;) -- absolute path to a new python file that doesn&#x27;t exist yet.
 vim.api.nvim_set_current_buf(buf_n)
 vim.cmd.filetype(&quot;detect&quot;) -- this is what triggers ruff to start and then causes the error. But this is needed and most of the time works
 </code></pre>
 <p>Now, the weird thing, is that you would think this error would happen either all the time, or never. But it happens randomly. The issue would seem to be related to some process that tries to read the file, but there is only a buffer that just so happens to have a name.</p>
 <p>The error would keep coming up (crashing the server and then I guess restarting it again and crashing) until I closed the whole instance of nvim and opened it up again. (<code>:qa</code>)</p>
 <p>When I ran into this error, I would run this code in a lua <code>cwd</code>. Meaning, there is no local <code>pyproject.toml</code>. There is a global config I have, as seen bellow.</p>
-<h2>Computer/Software Info</h2>
+Computer/Software Info
 <p>MacOs : 14.2.1
 NVim : 0.9.5
 python3 --version : Python 3.11.7 (brew, so there are multiple versions of python on machine, as you will see later)</p>
-<h3>Mason info dump</h3>
+Mason info dump
 <p>Mason is the lsp manager I use for nvim.</p>
-<details>
-  <summary>Ruff</summary>
+
+  Ruff
 
 <p><code>mason-receipt.json</code></p>
-<pre><code class="language-json">{&quot;name&quot;:&quot;ruff&quot;,&quot;secondary_sources&quot;:[],&quot;schema_version&quot;:&quot;1.1&quot;,&quot;links&quot;:{&quot;share&quot;:{},&quot;bin&quot;:{&quot;ruff&quot;:&quot;venv\/bin\/ruff&quot;},&quot;opt&quot;:{}},&quot;primary_source&quot;:{&quot;type&quot;:&quot;registry+v1&quot;,&quot;id&quot;:&quot;pkg:pypi\/ruff@0.2.1&quot;},&quot;metrics&quot;:{&quot;start_time&quot;:1707262291048,&quot;completion_time&quot;:1707262295039}}
+<pre><code>{&quot;name&quot;:&quot;ruff&quot;,&quot;secondary_sources&quot;:[],&quot;schema_version&quot;:&quot;1.1&quot;,&quot;links&quot;:{&quot;share&quot;:{},&quot;bin&quot;:{&quot;ruff&quot;:&quot;venv\/bin\/ruff&quot;},&quot;opt&quot;:{}},&quot;primary_source&quot;:{&quot;type&quot;:&quot;registry+v1&quot;,&quot;id&quot;:&quot;pkg:pypi\/ruff@0.2.1&quot;},&quot;metrics&quot;:{&quot;start_time&quot;:1707262291048,&quot;completion_time&quot;:1707262295039}}
 </code></pre>
 <p><code>venv/pyvenv.cfg</code></p>
-<pre><code class="language-cfg">home = /opt/homebrew/opt/python@3.12/bin
+<pre><code>home = /opt/homebrew/opt/python@3.12/bin
 include-system-site-packages = false
 version = 3.12.1
 executable = /opt/homebrew/Cellar/python@3.12/3.12.1_1/Frameworks/Python.framework/Versions/3.12/bin/python3.12
 command = /opt/homebrew/opt/python@3.12/bin/python3.12 -m venv /Users/&lt;user&gt;/.local/share/nvim/mason/packages/ruff/venv
 </code></pre>
-</details>
 
-<details>
-  <summary>ruff_lsp</summary>
+
+
+  ruff_lsp
 
 <p><code>mason-receipt.json</code></p>
-<pre><code class="language-json">{&quot;name&quot;:&quot;ruff-lsp&quot;,&quot;secondary_sources&quot;:[],&quot;schema_version&quot;:&quot;1.1&quot;,&quot;links&quot;:{&quot;share&quot;:{},&quot;bin&quot;:{&quot;ruff-lsp&quot;:&quot;venv\/bin\/ruff-lsp&quot;},&quot;opt&quot;:{}},&quot;primary_source&quot;:{&quot;type&quot;:&quot;registry+v1&quot;,&quot;id&quot;:&quot;pkg:pypi\/ruff-lsp@0.0.52&quot;},&quot;metrics&quot;:{&quot;start_time&quot;:1707262291169,&quot;completion_time&quot;:1707262295374}}
+<pre><code>{&quot;name&quot;:&quot;ruff-lsp&quot;,&quot;secondary_sources&quot;:[],&quot;schema_version&quot;:&quot;1.1&quot;,&quot;links&quot;:{&quot;share&quot;:{},&quot;bin&quot;:{&quot;ruff-lsp&quot;:&quot;venv\/bin\/ruff-lsp&quot;},&quot;opt&quot;:{}},&quot;primary_source&quot;:{&quot;type&quot;:&quot;registry+v1&quot;,&quot;id&quot;:&quot;pkg:pypi\/ruff-lsp@0.0.52&quot;},&quot;metrics&quot;:{&quot;start_time&quot;:1707262291169,&quot;completion_time&quot;:1707262295374}}
 </code></pre>
 <p><code>venv/pyvenv.cfg</code></p>
-<pre><code class="language-cfg">home = /opt/homebrew/opt/python@3.12/bin
+<pre><code>home = /opt/homebrew/opt/python@3.12/bin
 include-system-site-packages = false
 version = 3.12.1
 executable = /opt/homebrew/Cellar/python@3.12/3.12.1_1/Frameworks/Python.framework/Versions/3.12/bin/python3.12
 command = /opt/homebrew/opt/python@3.12/bin/python3.12 -m venv /Users/&lt;user&gt;/.local/share/nvim/mason/packages/ruff-lsp/venv
 </code></pre>
-</details>
 
-<h3>Global configs</h3>
-<details>
-  <summary>`${config_dir}/ruff/pyproject.toml` (mac)</summary>
 
-<pre><code class="language-toml">line-length = 90
+Global configs
+
+  `${config_dir}/ruff/pyproject.toml` (mac)
+
+<pre><code>line-length = 90
 fix = true
 target-version = &quot;py311&quot;
 
@@ -98,23 +98,23 @@ ignore = [&quot;PLR0913&quot;, &quot;ISC001&quot;]
 [lint]
 select = [&quot;E&quot;, &quot;F&quot;, &quot;B&quot;, &quot;W&quot;, &quot;Q&quot;, &quot;A&quot;,
     &quot;UP&quot;, &quot;ASYNC&quot;, &quot;FA&quot;, &quot;ISC&quot;, &quot;RET&quot;, &quot;SIM&quot;, &quot;ARG&quot;, &quot;PL&quot;, &quot;RUF&quot;]
-# Maybe don't allow some SIM options
+# Maybe don&#x27;t allow some SIM options
 extend-select = [&quot;I001&quot;]
 </code></pre>
-</details>
 
-<details>
-  <summary>Unlikely to matter; extra info</summary>
 
-<p>I also have ruff global pip installed. That version is <code>0.1.15</code>. I do have a different plugin that uses this global one. (actually this doesn't feel right. I feel like I remember updating it to <code>0.2.x</code> but my pip freeze says otherwise.) But this shouldn't be the issue, becasuse this is only used for formating. And I know this isn't the issue, because it <strong>only</strong> runs on formatting, and the error would come from just opening the buffer. The server would restart and then keep crashing every time I sent an update to the server (like moving my cursor or typing).</p>
-</details>
+
+  Unlikely to matter; extra info
+
+<p>I also have ruff global pip installed. That version is <code>0.1.15</code>. I do have a different plugin that uses this global one. (actually this doesn&#x27;t feel right. I feel like I remember updating it to <code>0.2.x</code> but my pip freeze says otherwise.) But this shouldn&#x27;t be the issue, becasuse this is only used for formating. And I know this isn&#x27;t the issue, because it <strong>only</strong> runs on formatting, and the error would come from just opening the buffer. The server would restart and then keep crashing every time I sent an update to the server (like moving my cursor or typing).</p>
+
 
 <p>Please let me know if there is anything else you need or want to know. This would seem to be a low priority issue, since it is inconsitant and also me being a strange use case. But good to keep in mind if something larger pops up that is related.
 I will let you know if the error comes back. And I will try to keep better notes next time.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-02-11 00:09</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-11 00:09</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-11 00:09</div>
@@ -123,21 +123,21 @@ I will let you know if the error comes back. And I will try to keep better notes
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-02-12 10:39</div>
-            <div class="timeline-body"><p>Hey, thanks for providing all the details regarding the issue! Unfortunately, I'm unable to reproduce this locally.</p>
-<p>My first instinct is that not having a file on disk shouldn't result in any error because the way <code>ruff-lsp</code> and <code>ruff</code> interacts is via stdin. The buffer content is passed in via stdin and the path is set via the <a href="https://github.com/astral-sh/ruff-lsp/blob/4afe87915f89574340f4a7c36d398478cc5574a5/ruff_lsp/server.py#L1884-L1885"><code>--stdin-filename</code> CLI argument</a>. This means that both the server and Ruff doesn't interact with the file on disk.</p>
-<p>The second thing is that the config content you've provided is for a <code>ruff.toml</code>/<code>.ruff.toml</code> file while the path uses the <code>pyproject.toml</code> config. The content is invalid for the <code>pyproject.toml</code> file where the top level settings would go under <code>[tool.ruff]</code> and linter settings would go under <code>[tool.ruff.lint]</code>.</p>
+            <div class="timeline-body"><p>Hey, thanks for providing all the details regarding the issue! Unfortunately, I&#x27;m unable to reproduce this locally.</p>
+<p>My first instinct is that not having a file on disk shouldn&#x27;t result in any error because the way <code>ruff-lsp</code> and <code>ruff</code> interacts is via stdin. The buffer content is passed in via stdin and the path is set via the <a href="https://github.com/astral-sh/ruff-lsp/blob/4afe87915f89574340f4a7c36d398478cc5574a5/ruff_lsp/server.py#L1884-L1885"><code>--stdin-filename</code> CLI argument</a>. This means that both the server and Ruff doesn&#x27;t interact with the file on disk.</p>
+<p>The second thing is that the config content you&#x27;ve provided is for a <code>ruff.toml</code>/<code>.ruff.toml</code> file while the path uses the <code>pyproject.toml</code> config. The content is invalid for the <code>pyproject.toml</code> file where the top level settings would go under <code>[tool.ruff]</code> and linter settings would go under <code>[tool.ruff.lint]</code>.</p>
 <p>Now, the error message suggests that the failure point is in the <a href="https://github.com/magiclen/path-dedot/blob/36c197f922d4c8779594ce25b8ffc6cb0315c6a8/src/lib.rs#L329-L330"><code>unwrap</code> call</a> to get the current working directory here in Ruff:</p>
 <p>https://github.com/astral-sh/ruff/blob/6dc1b219176a1a94e4f1436a431c02222926b44c/crates/ruff_linter/src/fs.rs#L67-L68</p>
 <p>Now, the containing function is invoked throughout the codebase to convert the absolute path to the relative one as per the current working directory. This is used to display the path, store the diagnostics as per the path, etc.</p>
-<p>It would be really useful to get the backtrace using <code>RUST_BACKTRACE=1</code> to understand where the error is originating from but I assume that's going to be challenging given the frequency of the issue.</p>
+<p>It would be really useful to get the backtrace using <code>RUST_BACKTRACE=1</code> to understand where the error is originating from but I assume that&#x27;s going to be challenging given the frequency of the issue.</p>
 <p>I also played around with the linked plugin through <code>:Playground py random</code> command but it works as expected i.e., creates a temporary buffer and as I update the buffer content, the diagnostics change, tried code actions and formatting as well without saving the file.</p>
-<p>I feel like I need to give it another look with a fresh mind at a later point but this is currently what I've played around with so far.</p>
-<hr />
+<p>I feel like I need to give it another look with a fresh mind at a later point but this is currently what I&#x27;ve played around with so far.</p>
+<hr>
 <p>That said,</p>
 <ol>
 <li>Are you able to reproduce this in any way using the mentioned code above? The one which creates an unnamed buffer.</li>
 <li>If you can provide a minimal Python code in which case it panics, it could be useful in figuring out where in Ruff this problem is originating from.</li>
-<li>Using the mentioned plugin, can you provide the steps you took to create the playground and how you used it which lead to the panic? It might be that I'm not using the plugin in a way that you were using it.</li>
+<li>Using the mentioned plugin, can you provide the steps you took to create the playground and how you used it which lead to the panic? It might be that I&#x27;m not using the plugin in a way that you were using it.</li>
 </ol>
 </div>
         </div>
@@ -145,13 +145,13 @@ I will let you know if the error comes back. And I will try to keep better notes
             <div class="timeline-header">Comment by <a href="https://github.com/CoderJoshDK">@CoderJoshDK</a> on 2024-02-12 12:38</div>
             <div class="timeline-body"><p>I was originally hesitant to even share because I knew this would be a difficult bug to reproduce. But I will try to help.</p>
 <blockquote>
-<p>The second thing is that the config content you've provided is for a ruff.toml/.ruff.toml file while the path uses the pyproject.toml config.</p>
+<p>The second thing is that the config content you&#x27;ve provided is for a ruff.toml/.ruff.toml file while the path uses the pyproject.toml config.</p>
 </blockquote>
 <p>Yes, sorry, you are right. It is a <code>ruff.toml</code> file. The location is otherwise correct.</p>
 <blockquote>
 <p>It would be really useful to get the backtrace using <code>RUST_BACKTRACE=1</code></p>
 </blockquote>
-<p>I agree. I only stumbled into the error. I have set it globally now. But yea, because it was so infrequent, I couldn't catch it while I had this on.</p>
+<p>I agree. I only stumbled into the error. I have set it globally now. But yea, because it was so infrequent, I couldn&#x27;t catch it while I had this on.</p>
 <blockquote>
 <p>[ ... ] as I update the buffer content, the diagnostics change, tried code actions and formatting as well without saving the file.</p>
 </blockquote>
@@ -165,20 +165,20 @@ Meaning, that:</p>
 <p>[ ... ] can you provide the steps you took to create the playground and how you used it which lead to the panic?</p>
 </blockquote>
 <p>The way you used the plugin, was the exact way I did for causing the error. <code>:Playground py random</code> would do it.</p>
-<p>I spent about an &gt;hour this morning trying to forcibly recreate the error. And ... no dice. My intuition is telling me that this is most likely not a ruff error. It might be due to discrepancies between how nvim handles file paths. It sometimes will automatically change things around from absolute and relative. But I could not replicate that, and this is pure speculation. It might not be due to that at all. The only other thing that might be messing things up, is that the named buffer, is put into a folder that is newly created. Potentially causing this discrepancy, where the file location does exist but for some reason it isn't being recognized into <code>CWD</code>. How that would even be possible, I have no idea.</p>
+<p>I spent about an &gt;hour this morning trying to forcibly recreate the error. And ... no dice. My intuition is telling me that this is most likely not a ruff error. It might be due to discrepancies between how nvim handles file paths. It sometimes will automatically change things around from absolute and relative. But I could not replicate that, and this is pure speculation. It might not be due to that at all. The only other thing that might be messing things up, is that the named buffer, is put into a folder that is newly created. Potentially causing this discrepancy, where the file location does exist but for some reason it isn&#x27;t being recognized into <code>CWD</code>. How that would even be possible, I have no idea.</p>
 <p>But regardless of the exact mechanism, the part of the code that panics seems to agree that this is not a ruff error. I will keep an eye out for the error, but will unlikely find it again. If you think this is as far as it goes, you can close the issue (or give it another try). Either way, good luck (and also thanks for all the work)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-02-13 11:29</div>
-            <div class="timeline-body"><p>It could be that this issue isn't related to Neovim.</p>
+            <div class="timeline-body"><p>It could be that this issue isn&#x27;t related to Neovim.</p>
 <p>What kind of setup do you have in Neovim? Can you share the list of plugins you have installed and if possible, can you try to do the same task by having a minimal set of plugins instead?</p>
 <blockquote>
 <p>It might be due to discrepancies between how nvim handles file paths. It sometimes will automatically change things around from absolute and relative.</p>
 </blockquote>
 <p>Can you expand on this? Like, have you faced this problem before? Do you have any plugin which changes directory automatically for you (something like https://github.com/oberblastmeister/rooter.nvim)?</p>
 <p>As per the <a href="https://doc.rust-lang.org/stable/std/env/fn.current_dir.html">documentation of <code>current_dir</code></a>, the error could be due to either directory not existing or insufficient permission. Which OS are you on?</p>
-<p>Regardless, we can keep this issue around to see if anyone else faces this problem. In case you're able to provide more information in the future, please do so.</p>
+<p>Regardless, we can keep this issue around to see if anyone else faces this problem. In case you&#x27;re able to provide more information in the future, please do so.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -187,8 +187,8 @@ Meaning, that:</p>
 <p>What kind of setup do you have in Neovim?</p>
 </blockquote>
 <p><a href="https://github.com/CoderJoshDK/JoshieVim">My own configs</a>.</p>
-<details>
-<summary>Plugin List</summary>
+
+Plugin List
 
 <pre><code>  Total: 36 plugins
 
@@ -230,7 +230,7 @@ Meaning, that:</p>
     ● which-key.nvim 1.75ms  start
     ● zen-mode.nvim 0.3ms  start
 </code></pre>
-</details>
+
 
 <blockquote>
 <p>can you try to do the same task by having a minimal set of plugins instead?</p>
@@ -239,7 +239,7 @@ Meaning, that:</p>
 <blockquote>
 <p>As per the <a href="https://doc.rust-lang.org/stable/std/env/fn.current_dir.html">documentation of <code>current_dir</code></a>, the error could be due to either directory not existing or insufficient permission. Which OS are you on?</p>
 </blockquote>
-<p>MacOS : 14.2.1. And the error being reported does seem to be <code>Current directory does not exist.</code> (at least based on the wording of the error). However, it says that it is based on <code>CWD</code>. Nothing I have messes with the <code>CWD</code>. <code>nvim-tree</code> has the potential to change the CWD, but even at that, it doesn't seem to have an effect (tried testing where I change my directory).</p>
+<p>MacOS : 14.2.1. And the error being reported does seem to be <code>Current directory does not exist.</code> (at least based on the wording of the error). However, it says that it is based on <code>CWD</code>. Nothing I have messes with the <code>CWD</code>. <code>nvim-tree</code> has the potential to change the CWD, but even at that, it doesn&#x27;t seem to have an effect (tried testing where I change my directory).</p>
 <p>As for what I am talking about with filename modifiers:
 https://vi.stackexchange.com/questions/39786/expand-sometimes-gives-me-a-full-path</p>
 </div>
@@ -274,12 +274,12 @@ after ruff cleanup and re-running the ruff format seems like working fine. I am 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-01 09:14</div>
-            <div class="timeline-body"><p>@dhruvinsh If the issue is unrelated to what's being discussed here, I would suggest to open a new ticket for it.</p>
+            <div class="timeline-body"><p>@dhruvinsh If the issue is unrelated to what&#x27;s being discussed here, I would suggest to open a new ticket for it.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mesllo-bc">@mesllo-bc</a> on 2025-02-24 18:30</div>
-            <div class="timeline-body"><p>Is there a fix for this? I'm suddenly getting this same issue for ruff <code>v0.9.6</code> and ruff <code>0.9.7</code>. Clearing <code>.ruff_cache</code> did not solve the issue. Reinstalling from scratch also did not help.</p>
+            <div class="timeline-body"><p>Is there a fix for this? I&#x27;m suddenly getting this same issue for ruff <code>v0.9.6</code> and ruff <code>0.9.7</code>. Clearing <code>.ruff_cache</code> did not solve the issue. Reinstalling from scratch also did not help.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -289,12 +289,12 @@ after ruff cleanup and re-running the ruff format seems like working fine. I am 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-25 10:26</div>
-            <div class="timeline-body"><p>I'm not sure if @CoderJoshDK is still facing this issue especially with the native server as <code>ruff-lsp</code> is deprecated.</p>
-<p>@mesllo-bc I'd suggest opening a new issue with the problem that you're facing along with a way for us to reproduce it.</p>
+            <div class="timeline-body"><p>I&#x27;m not sure if @CoderJoshDK is still facing this issue especially with the native server as <code>ruff-lsp</code> is deprecated.</p>
+<p>@mesllo-bc I&#x27;d suggest opening a new issue with the problem that you&#x27;re facing along with a way for us to reproduce it.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @CoderJoshDK on 2025-02-25 13:30</div>
+            <div class="event">Closed by <a href="https://github.com/CoderJoshDK">@CoderJoshDK</a> on 2025-02-25 13:30</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/CoderJoshDK">@CoderJoshDK</a> on 2025-02-25 14:17</div>
@@ -305,7 +305,7 @@ after ruff cleanup and re-running the ruff format seems like working fine. I am 
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:49:36 UTC
+        Synced at 2026-01-20 18:48:50 UTC
     </footer>
 </body>
 </html>

@@ -23,90 +23,90 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>This is a preparatory PR in support of #19919. It moves our <code>Diff</code> rendering code from <code>ruff_linter</code> to <code>ruff_db</code>, where we have direct access to the <code>DiagnosticStylesheet</code> used by our other diagnostic rendering code. As shown by the tests, this shouldn't cause any visible changes. The colors aren't exactly the same, as I note in a TODO comment, but I don't think there's any existing way to see those, even in tests.</p>
+            <div class="timeline-body">Summary
+<p>This is a preparatory PR in support of #19919. It moves our <code>Diff</code> rendering code from <code>ruff_linter</code> to <code>ruff_db</code>, where we have direct access to the <code>DiagnosticStylesheet</code> used by our other diagnostic rendering code. As shown by the tests, this shouldn&#x27;t cause any visible changes. The colors aren&#x27;t exactly the same, as I note in a TODO comment, but I don&#x27;t think there&#x27;s any existing way to see those, even in tests.</p>
 <p>The <code>Diff</code> implementation is mostly unchanged. I just switched from a Ruff-specific <code>SourceFile</code> to a <code>DiagnosticSource</code> (removing an <code>expect_ruff_source_file</code> call) and updated the <code>LineStyle</code> struct and other styling calls to use <code>fmt_styled</code> and our existing stylesheet.</p>
-<p>In support of these changes, I added three styles to our stylesheet: <code>insertion</code> and <code>deletion</code> for the corresponding diff operations, and <code>underline</code>, which apparently we <em>can</em> use, as I hoped on Discord. This isn't supported in all terminals, though. It worked in ghostty but not in st for me.</p>
-<p>I moved the <code>calculate_print_width</code> function from the now-deleted <code>diff.rs</code> to a method on <code>OneIndexed</code>, where it was available everywhere we needed it. I'm not sure if that's desirable, or if my other changes to the function are either (using <code>ilog10</code> instead of a loop). This does make it <code>const</code> and slightly simplifies things in my opinion, but I'm happy to revert it if preferred.</p>
+<p>In support of these changes, I added three styles to our stylesheet: <code>insertion</code> and <code>deletion</code> for the corresponding diff operations, and <code>underline</code>, which apparently we <em>can</em> use, as I hoped on Discord. This isn&#x27;t supported in all terminals, though. It worked in ghostty but not in st for me.</p>
+<p>I moved the <code>calculate_print_width</code> function from the now-deleted <code>diff.rs</code> to a method on <code>OneIndexed</code>, where it was available everywhere we needed it. I&#x27;m not sure if that&#x27;s desirable, or if my other changes to the function are either (using <code>ilog10</code> instead of a loop). This does make it <code>const</code> and slightly simplifies things in my opinion, but I&#x27;m happy to revert it if preferred.</p>
 <p>I also inlined a version of <code>show_nonprinting</code> from the <code>ShowNonprinting</code> trait in <code>ruff_linter</code>:</p>
 <p>https://github.com/astral-sh/ruff/blob/f4be05a83be770c8c9781088508275170396b411/crates/ruff_linter/src/text_helpers.rs#L3-L5</p>
-<p>This trait is now only used in <code>source_kind.rs</code>, so I'm not sure it's worth having the trait or the macro-generated implementation (which is only called once). This is obviously closely related to our unprintable character handling in diagnostic rendering, but the usage seems different enough not to try to combine them.</p>
+<p>This trait is now only used in <code>source_kind.rs</code>, so I&#x27;m not sure it&#x27;s worth having the trait or the macro-generated implementation (which is only called once). This is obviously closely related to our unprintable character handling in diagnostic rendering, but the usage seems different enough not to try to combine them.</p>
 <p>https://github.com/astral-sh/ruff/blob/f4be05a83be770c8c9781088508275170396b411/crates/ruff_db/src/diagnostic/render.rs#L990-L998</p>
 <p>We could also move the trait to another crate where we can use it in <code>ruff_db</code> instead of inlining here, of course.</p>
-<p>Finally, this PR makes <code>TextEmitter</code> a very thin wrapper around a <code>DisplayDiagnosticsConfig</code>. It's still used in a few places, though, unlike the other emitters we've replaced, so I figured it was worth keeping around. It's a pretty nice API for setting all of the options on the config and then passing that along to a <code>DisplayDiagnostics</code>.</p>
-<h2>Test Plan</h2>
+<p>Finally, this PR makes <code>TextEmitter</code> a very thin wrapper around a <code>DisplayDiagnosticsConfig</code>. It&#x27;s still used in a few places, though, unlike the other emitters we&#x27;ve replaced, so I figured it was worth keeping around. It&#x27;s a pretty nice API for setting all of the options on the config and then passing that along to a <code>DisplayDiagnostics</code>.</p>
+Test Plan
 <p>Existing snapshot tests with diffs</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-20 16:35</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a>
 <p>No changes detected when running ty on typing conformance tests ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-20 16:37</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
+<code>mypy_primer</code> results
 <p>No ecosystem changes detected ✅
 No memory usage changes detected ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> added by @ntBre on 2025-08-20 16:45</div>
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-20 16:45</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @ntBre on 2025-08-20 16:51</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-20 16:51</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @ntBre on 2025-08-20 16:51</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-20 16:51</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-08-20 16:51</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-20 16:51</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @ntBre on 2025-08-20 16:51</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-20 16:51</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @ntBre on 2025-08-20 16:51</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-20 16:51</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @dcreager removed by @ntBre on 2025-08-20 16:51</div>
+            <div class="event">Review request for <a href="https://github.com/dcreager">@dcreager</a> removed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-20 16:51</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @carljm removed by @ntBre on 2025-08-20 16:51</div>
+            <div class="event">Review request for <a href="https://github.com/carljm">@carljm</a> removed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-20 16:51</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @sharkdp removed by @ntBre on 2025-08-20 16:51</div>
+            <div class="event">Review request for <a href="https://github.com/sharkdp">@sharkdp</a> removed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-20 16:51</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-20 16:54</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_source_file/src/line_index.rs</code>:626 on 2025-08-20 17:13</div>
-            <div class="timeline-body"><p>I don't think I understand what this method does :sweat. I'd find it helpful if it had a few doctests to demonstrate what it does.</p>
-<p>The name <code>width</code> is also somewhat misleading because it suggests to me that it computes the unicode width, which it doesn't (but, as I said, I don't understand what it does).</p>
+            <div class="timeline-body"><p>I don&#x27;t think I understand what this method does :sweat. I&#x27;d find it helpful if it had a few doctests to demonstrate what it does.</p>
+<p>The name <code>width</code> is also somewhat misleading because it suggests to me that it computes the unicode width, which it doesn&#x27;t (but, as I said, I don&#x27;t understand what it does).</p>
 <p>If I understand this correctly, this computes the number of digits? Maybe <code>digits</code> or <code>digits_len</code> would be  better name.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-08-20 17:13</div>
-            <div class="timeline-body"><p>This is a bit tough to review because the moves the code and changes the code are in the same commit but I don't think it's worth the work to split the commits now.</p>
+            <div class="timeline-body"><p>This is a bit tough to review because the moves the code and changes the code are in the same commit but I don&#x27;t think it&#x27;s worth the work to split the commits now.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -123,7 +123,7 @@ No memory usage changes detected ✅</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_source_file/src/line_index.rs</code>:626 on 2025-08-20 17:48</div>
-            <div class="timeline-body"><p>No worries. I think it's fine on <code>OneIndexed</code>. It's just the name that I found confusing. I think <code>digits</code> would be easier to understand.</p>
+            <div class="timeline-body"><p>No worries. I think it&#x27;s fine on <code>OneIndexed</code>. It&#x27;s just the name that I found confusing. I think <code>digits</code> would be easier to understand.</p>
 <p>Could we use this also in https://github.com/astral-sh/ruff/blob/7dfde3b929c70b5f5fb9933ef09b8005717a8d85/crates/ty_server/src/server/api/requests/completion.rs#L60</p>
 </div>
         </div>
@@ -139,16 +139,16 @@ No memory usage changes detected ✅</p>
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_source_file/src/line_index.rs</code>:626 on 2025-08-20 18:09</div>
             <div class="timeline-body"><p>I meant the old implementation in the new method, but either works for me. I renamed and expanded the docs.</p>
 <p>It looks like we can use it there in ty too! Is it okay to unwrap since we know completions is non-empty?</p>
-<pre><code class="language-rust">        let max_index_len = OneIndexed::new(completions.len()).unwrap().digits().get();
+<pre><code>        let max_index_len = OneIndexed::new(completions.len()).unwrap().digits().get();
 </code></pre>
 <p>Otherwise we can use <code>OneIndexed::from_zero_indexed</code>, but that adds 1 after <code>saturating_sub</code> subtracted one, so it seems a little silly. We can also <code>unwrap_or_default</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @ntBre on 2025-08-21 13:47</div>
+            <div class="event">Merged by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-21 13:47</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ntBre on 2025-08-21 13:47</div>
+            <div class="event">Closed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-21 13:47</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-08-21 13:47</div>
@@ -156,7 +156,7 @@ No memory usage changes detected ✅</p>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:15:12 UTC
+        Synced at 2026-01-20 19:17:53 UTC
     </footer>
 </body>
 </html>

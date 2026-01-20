@@ -25,98 +25,98 @@
             <div class="timeline-header"><a href="https://github.com/Jasha10">@Jasha10</a></div>
             <div class="timeline-body"><p>Hello,</p>
 <p>If I import <code>typing.Literal</code> in <code>lib.py</code> then do <code>from lib import Literal</code> in <code>main.py</code>, ruff fails to treat the <code>Literal</code> type annotations properly.</p>
-<pre><code class="language-python"># lib.py
+<pre><code># lib.py
 from typing import Literal
 
 __all__ = [&quot;Literal&quot;]
 </code></pre>
-<pre><code class="language-python"># main.py
+<pre><code># main.py
 from lib import Literal
 
 foo: Literal[&quot;bar&quot;] = &quot;bar&quot;
 </code></pre>
-<pre><code class="language-bash">$ ruff check *.py
+<pre><code>$ ruff check *.py
 main.py:4:15: F821 Undefined name `bar`
 Found 1 error.
 $ ruff --version
 ruff 0.0.280
 </code></pre>
-<h3>Expected behavior:</h3>
+Expected behavior:
 <p>Ruff should recognize that <code>Literal[&quot;bar&quot;]</code> is an annotation for a string literal and not flag the name <code>bar</code> as undefined.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-23 15:56</div>
-            <div class="timeline-body"><p>For now, you'll need to mark <code>lib</code> in <a href="https://beta.ruff.rs/docs/settings/#typing-modules"><code>typing-modules</code></a>, like:</p>
-<pre><code class="language-python">[tool.ruff]
+            <div class="timeline-body"><p>For now, you&#x27;ll need to mark <code>lib</code> in <a href="https://beta.ruff.rs/docs/settings/#typing-modules"><code>typing-modules</code></a>, like:</p>
+<pre><code>[tool.ruff]
 typing-modules = [&quot;lib&quot;]
 </code></pre>
-<p>This tells Ruff to treat exports from <code>lib</code> as if they are re-exports from <code>typing</code>. Let me know if it doesn't work for whatever reason :)</p>
+<p>This tells Ruff to treat exports from <code>lib</code> as if they are re-exports from <code>typing</code>. Let me know if it doesn&#x27;t work for whatever reason :)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-07-23 15:56</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-23 15:56</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Jasha10">@Jasha10</a> on 2023-07-23 16:48</div>
             <div class="timeline-body"><p>Thanks for the tip, @charliermarsh.
-This still does not cover my use-case which involves <code>from typing import Literal as L</code> and then re-export of <code>L</code>. Here's an updated repro:</p>
-<pre><code class="language-python"># lib.py
+This still does not cover my use-case which involves <code>from typing import Literal as L</code> and then re-export of <code>L</code>. Here&#x27;s an updated repro:</p>
+<pre><code># lib.py
 from typing import Literal as L
 from typing import Literal
 
 __all__ = [&quot;L&quot;, &quot;Literal&quot;]
 </code></pre>
-<pre><code class="language-python"># main.py
+<pre><code># main.py
 from lib import L, Literal
 
 foo1: Literal[&quot;bar&quot;] = &quot;bar&quot;
 foo2: L[&quot;bar&quot;] = &quot;bar&quot;
 </code></pre>
-<pre><code class="language-toml"># pyproject.toml
+<pre><code># pyproject.toml
 [tool.ruff]
 typing-modules = [&quot;lib&quot;]
 </code></pre>
-<pre><code class="language-bash">$ ruff check *.py
+<pre><code>$ ruff check *.py
 main.py:5:10: F821 Undefined name `bar`
 Found 1 error.
 </code></pre>
-<p>I'll update this issue's name accordingly.</p>
+<p>I&#x27;ll update this issue&#x27;s name accordingly.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "re-export `typing.Literal`: F821 Undefined name `bar`" to "re-export `from typing import Literal as L`: F821 Undefined name `bar`" by @Jasha10 on 2023-07-23 16:49</div>
+            <div class="event">Renamed from &quot;re-export `typing.Literal`: F821 Undefined name `bar`&quot; to &quot;re-export `from typing import Literal as L`: F821 Undefined name `bar`&quot; by <a href="https://github.com/Jasha10">@Jasha10</a> on 2023-07-23 16:49</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @charliermarsh on 2023-07-23 17:29</div>
+            <div class="event">Reopened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-23 17:29</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-23 17:30</div>
-            <div class="timeline-body"><p>Makes sense, thanks. To set expectations, this won't be fixed in an imminent release since it requires us to resolve symbols across files, but it will be fixed eventually.</p>
+            <div class="timeline-body"><p>Makes sense, thanks. To set expectations, this won&#x27;t be fixed in an imminent release since it requires us to resolve symbols across files, but it will be fixed eventually.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-07-24 02:22</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-24 02:22</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">type-inference</span> added by @charliermarsh on 2023-07-24 02:22</div>
+            <div class="event">Label <span class="label">type-inference</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-24 02:22</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/rlipperts">@rlipperts</a> on 2023-07-25 06:33</div>
             <div class="timeline-body"><p>I also stumbled upon this while evaluating if I want to use <a href="https://github.com/ramonhagenaars/nptyping">nptyping</a> in my work project:</p>
-<pre><code class="language-python">from nptyping import Float, NDArray, Shape
+<pre><code>from nptyping import Float, NDArray, Shape
 
 my_array: NDArray[Shape[&quot;x, y, z, 3&quot;], Float]
 </code></pre>
 <p>results in</p>
-<pre><code class="language-bash">$ ruff check nptyping_test.py
+<pre><code>$ ruff check nptyping_test.py
 nptyping_test.py:3:26: F821 Undefined name `x`
 nptyping_test.py:3:29: F821 Undefined name `y`
 nptyping_test.py:3:32: F821 Undefined name `z`
 Found 3 errors.
 </code></pre>
 <p>even with</p>
-<pre><code class="language-toml">typing-modules = [&quot;nptyping&quot;]
+<pre><code>typing-modules = [&quot;nptyping&quot;]
 </code></pre>
 <p>in my <code>pyproject.toml</code>.</p>
 <p>As it seems this is a real-world example of the issue described by @Jasha10 - <a href="https://github.com/ramonhagenaars/nptyping/blob/master/USERDOCS.md?plain=1#L117C00-L126C82">nptyping uses Literal for their shape Keyword</a>.</p>
@@ -124,12 +124,12 @@ Found 3 errors.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Jasha10">@Jasha10</a> on 2023-07-25 17:10</div>
-            <div class="timeline-body"><p>Thanks for adding this context @rlipperts. My usecase is also related to <code>ntyping</code> -- I'm using a personal fork of <code>ntyping</code> in my own project.</p>
+            <div class="timeline-body"><p>Thanks for adding this context @rlipperts. My usecase is also related to <code>ntyping</code> -- I&#x27;m using a personal fork of <code>ntyping</code> in my own project.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-25 17:14</div>
-            <div class="timeline-body"><p>We could special-case <code>nptying.Shape</code> as an alias of <code>Literal</code>. (But it wouldn't solve cases in which that's re-exported under some other alias.)</p>
+            <div class="timeline-body"><p>We could special-case <code>nptying.Shape</code> as an alias of <code>Literal</code>. (But it wouldn&#x27;t solve cases in which that&#x27;s re-exported under some other alias.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -153,19 +153,19 @@ Code:</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-26 12:37</div>
-            <div class="timeline-body"><p>@Pierre-Sassoulas - I believe that issue is separate and related to the use of future annotations. It’s fixed on main and will be out soon. (Similar to https://github.com/astral-sh/ruff/issues/6055.)</p>
+            <div class="timeline-body"><p>@Pierre-Sassoulas - I believe that issue is separate and related to the use of future annotations. It’s fixed on main and will be out soon. (Similar to <a href="https://github.com/astral-sh/ruff/issues/6055">astral-sh/ruff#6055</a>.)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">multifile-analysis</span> added by @AlexWaygood on 2024-03-12 16:06</div>
+            <div class="event">Label <span class="label">multifile-analysis</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-12 16:06</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">multifile-analysis</span> removed by @MichaReiser on 2024-10-24 14:33</div>
+            <div class="event">Label <span class="label">multifile-analysis</span> removed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-24 14:33</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:47:46 UTC
+        Synced at 2026-01-20 18:48:39 UTC
     </footer>
 </body>
 </html>

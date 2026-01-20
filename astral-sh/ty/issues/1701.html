@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/patrick91">@patrick91</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>Not sure if the title is descriptive enough, anyway, I have this decorator:</p>
-<pre><code class="language-python">from typing import Literal
+<pre><code>from typing import Literal
 from collections.abc import AsyncGenerator, Callable
 
 
@@ -37,7 +37,7 @@ def decorator[Item](
     return inner
 </code></pre>
 <p>When I try to use and pass a message, the inferred type is too narrow, see:</p>
-<pre><code class="language-python">@decorator(message=&quot;hello&quot;)
+<pre><code>@decorator(message=&quot;hello&quot;)
 async def my_generator() -&gt; AsyncGenerator[Literal[&quot;hello&quot;]]:
     yield &quot;hello&quot;
 
@@ -48,22 +48,22 @@ async def my_generator2() -&gt; AsyncGenerator[str]:
     yield &quot;world&quot;
 </code></pre>
 <p>I also tried with this, but I get the same output 😊</p>
-<pre><code class="language-python">message: str = &quot;hello&quot;
+<pre><code>message: str = &quot;hello&quot;
 
 @decorator(message=message)
 async def my_generator3() -&gt; AsyncGenerator[str]:
     yield &quot;world&quot;
 </code></pre>
 <p>https://play.ty.dev/67bbea2d-a7d1-40a9-bce6-fa6787129244</p>
-<h3>Version</h3>
+Version
 <p>ty 0.0.1-alpha.29 (0c3cae494 2025-11-28)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2025-12-01 11:11</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-01 11:11</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">generics</span> added by @sharkdp on 2025-12-01 11:11</div>
+            <div class="event">Label <span class="label">generics</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-01 11:11</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-01 11:19</div>
@@ -71,37 +71,37 @@ async def my_generator3() -&gt; AsyncGenerator[str]:
 <p>This will hopefully be fixed by #623.</p>
 <blockquote>
 <p>I also tried with this, but I get the same output 😊</p>
-<pre><code class="language-py">message: str = &quot;hello&quot;
+<pre><code>message: str = &quot;hello&quot;
 
 @decorator(message=message)
 async def my_generator3() -&gt; AsyncGenerator[str]:
     yield &quot;world&quot;
 </code></pre>
 </blockquote>
-<p>That doesn't work because we still use <code>Literal[&quot;hello&quot;]</code> as the inferred type of <code>message</code> in the local scope, even though it's declared as <code>str</code>. <code>@decorator(message=cast(str, &quot;hello&quot;))</code> would be a workaround.</p>
+<p>That doesn&#x27;t work because we still use <code>Literal[&quot;hello&quot;]</code> as the inferred type of <code>message</code> in the local scope, even though it&#x27;s declared as <code>str</code>. <code>@decorator(message=cast(str, &quot;hello&quot;))</code> would be a workaround.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-02 02:23</div>
-            <div class="timeline-body"><p>I don't think the new constraint solver alone will solve this. It will also require an additional feature (not otherwise discussed in an issue, AFAIK) to use the decorated function as part of a callable type context when inferring the decorator expression.</p>
-<p>I'm not quite sure how to interpret mypy and pyright's behavior here. They seem to use this type context to some degree, because they are fine with both <code>my_generator</code> and <code>my_generator2</code>. If they were unconditionally doing literal promotion here with no type context, they would fail on <code>my_generator</code>. But they don't seem to fully use the type context, because they both fail on a <code>my_generator3</code> that returns <code>AsyncGenerator[object]</code>, even though it's also perfectly valid to infer <code>Item=object</code> from <code>@decorator(message=&quot;hello&quot;)</code>.</p>
-<p>EDIT: Oh, actually mypy and pyright's behavior is fully explainable by literal promotion, without any use of type context, because <code>AsyncGenerator</code> is covariant in its yielded type.</p>
+            <div class="timeline-body"><p>I don&#x27;t think the new constraint solver alone will solve this. It will also require an additional feature (not otherwise discussed in an issue, AFAIK) to use the decorated function as part of a callable type context when inferring the decorator expression.</p>
+<p>I&#x27;m not quite sure how to interpret mypy and pyright&#x27;s behavior here. They seem to use this type context to some degree, because they are fine with both <code>my_generator</code> and <code>my_generator2</code>. If they were unconditionally doing literal promotion here with no type context, they would fail on <code>my_generator</code>. But they don&#x27;t seem to fully use the type context, because they both fail on a <code>my_generator3</code> that returns <code>AsyncGenerator[object]</code>, even though it&#x27;s also perfectly valid to infer <code>Item=object</code> from <code>@decorator(message=&quot;hello&quot;)</code>.</p>
+<p>EDIT: Oh, actually mypy and pyright&#x27;s behavior is fully explainable by literal promotion, without any use of type context, because <code>AsyncGenerator</code> is covariant in its yielded type.</p>
 <p>So it seems like our choice here is to attempt to do better than mypy/pyright (but in a way that probably few users will care about) by using this type context, or to more aggressively promote literals in this case (which requires defining the limits of &quot;this case&quot;) and match their behavior.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-02 02:28</div>
+            <div class="event">Added to milestone &quot;Stable&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-12-02 02:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Generic type parameter inferred as literal type instead of widening to match decorated function's return type" to "Use decorated function as type context when inferring decorator expression" by @carljm on 2025-12-02 02:28</div>
+            <div class="event">Renamed from &quot;Generic type parameter inferred as literal type instead of widening to match decorated function&#x27;s return type&quot; to &quot;Use decorated function as type context when inferring decorator expression&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-12-02 02:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Use decorated function as type context when inferring decorator expression" to "Use decorated function as type context when inferring decorator expression (or more aggressively promote literals in decorators)" by @carljm on 2025-12-02 02:35</div>
+            <div class="event">Renamed from &quot;Use decorated function as type context when inferring decorator expression&quot; to &quot;Use decorated function as type context when inferring decorator expression (or more aggressively promote literals in decorators)&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-12-02 02:35</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:21:07 UTC
+        Synced at 2026-01-20 19:26:11 UTC
     </footer>
 </body>
 </html>

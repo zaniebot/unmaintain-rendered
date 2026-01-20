@@ -25,10 +25,10 @@
             <div class="timeline-header"><a href="https://github.com/jackvreeken">@jackvreeken</a></div>
             <div class="timeline-body"><p>While playing around with getting deterministic builds to work (see #10523 ), I noticed something odd. I was getting two possible image digests, with the difference between the two solely being because of a differently sized .pyc file (one is a few bytes larger than the other).</p>
 <p>The offending file seems to be <code>scipy/stats/tests/__pycache__/test_sampling.cpython-313.pyc</code> , and only that one for some reason. Because the source file is 54 KB, and because I also wanted to upload the two resulting bytecode files, I made a repository instead of a gist: https://github.com/jackvreeken/uv-scipy-bytecode-issue/tree/87a8691b75f60007c277866da76bf70b7f799845 . The folder names refer to the first four characters of the digest I was getting at the time.</p>
-<p>I tried to figure out if there's a difference between the bytecodes with <code>dis</code>, but that says they are identical (if I filter out the &quot;at 0x...., file &quot; differences).</p>
-<p>I hope it's something stupid on my end, I just found it rather suspicious (and messing with deterministic builds).</p>
-<details>
-  <summary>uv.lock, Dockerfile, and Docker command</summary>
+<p>I tried to figure out if there&#x27;s a difference between the bytecodes with <code>dis</code>, but that says they are identical (if I filter out the &quot;at 0x...., file &quot; differences).</p>
+<p>I hope it&#x27;s something stupid on my end, I just found it rather suspicious (and messing with deterministic builds).</p>
+
+  uv.lock, Dockerfile, and Docker command
 
 <p>uv.lock section of SciPy</p>
 <pre><code>[[package]]
@@ -58,7 +58,7 @@ wheels = [
 ]
 </code></pre>
 <p>Docker file</p>
-<pre><code class="language-Dockerfile">FROM ghcr.io/astral-sh/uv:0.5.18 AS uv
+<pre><code>FROM ghcr.io/astral-sh/uv:0.5.18 AS uv
 
 # First, bundle the dependencies into the task root.
 FROM public.ecr.aws/lambda/python:3.13 AS builder
@@ -104,13 +104,13 @@ CMD [&quot;app/handler.lambda_handler&quot;]
 <p>Build command:</p>
 <pre><code>docker buildx build --no-cache --build-arg SOURCE_DATE_EPOCH=0 --build-arg BUILDKIT_CREATED_AT=1970-01-01T00:00:00Z --platform linux/amd64 --provenance=false -t test-image-1 --output type=docker,buildinfo=false,rewrite-timestamp=true -f path/to/Dockerfile .
 </code></pre>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-15 00:31</div>
-            <div class="timeline-body"><p>I think this is discussed at https://github.com/astral-sh/uv/issues/10523 too.</p>
+            <div class="timeline-body"><p>I think this is discussed at <a href="https://github.com/astral-sh/uv/issues/10523">astral-sh/uv#10523</a> too.</p>
 <p>Specifically</p>
 <blockquote>
 <p>all bytecode files, a timestamp is written into the header of each one to decide when to invalidate it</p>
@@ -120,22 +120,22 @@ CMD [&quot;app/handler.lambda_handler&quot;]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jackvreeken">@jackvreeken</a> on 2025-01-15 00:44</div>
-            <div class="timeline-body"><p>This issue is related to https://github.com/astral-sh/uv/issues/10523 in the sense that we're both trying to accomplish deterministic docker builds. Wheres #10523 focuses on time stamps on files, this issue focuses on an inconsistent file size. Sometimes <code>uv</code> builds a slightly bigger .pyc than other times (there are two options), and only for the file mentioned.</p>
-<p>I changed the wording in the opening to reflect that it's a about a <strong>size</strong> difference.</p>
+            <div class="timeline-body"><p>This issue is related to <a href="https://github.com/astral-sh/uv/issues/10523">astral-sh/uv#10523</a> in the sense that we&#x27;re both trying to accomplish deterministic docker builds. Wheres #10523 focuses on time stamps on files, this issue focuses on an inconsistent file size. Sometimes <code>uv</code> builds a slightly bigger .pyc than other times (there are two options), and only for the file mentioned.</p>
+<p>I changed the wording in the opening to reflect that it&#x27;s a about a <strong>size</strong> difference.</p>
 <blockquote>
 <p>all bytecode files, a timestamp is written into the header of each one to decide when to invalidate it</p>
 </blockquote>
-<p>I don't run into any issues on that front (so maybe the allegedly included time stamp is the same? or omitted?), but I don't know <code>pyc</code> file format that well.</p>
+<p>I don&#x27;t run into any issues on that front (so maybe the allegedly included time stamp is the same? or omitted?), but I don&#x27;t know <code>pyc</code> file format that well.</p>
 <pre><code>$ cmp d0ab/test_sampling.cpython-313.pyc 9797/test_sampling.cpython-313.pyc
 d0ab/test_sampling.cpython-313.pyc 9797/test_sampling.cpython-313.pyc differ: char 32818, line 138
 </code></pre>
-<p>Does not seem like it's the header at least.</p>
+<p>Does not seem like it&#x27;s the header at least.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-15 00:58</div>
             <div class="timeline-body"><p>Interesting, thanks for clarifying!</p>
-<p>I guess the next step is to look at how we compile the files and see if it's our problem or an upstream issue :)</p>
+<p>I guess the next step is to look at how we compile the files and see if it&#x27;s our problem or an upstream issue :)</p>
 <p>The script is at https://github.com/astral-sh/uv/blob/a6602ad416a922060efb3c5f19daf4977c50ace3/crates/uv-installer/src/pip_compileall.py</p>
 <p>Can you reproduce with <code>pip</code>? Can you reproduce with <code>python -m compileall</code>?</p>
 </div>
@@ -181,11 +181,11 @@ RUN --mount=from=uv,source=/uv,target=/bin/uv \
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-15 16:34</div>
-            <div class="timeline-body"><p>That's fairly surprising... We be good to understand what's going on there.</p>
+            <div class="timeline-body"><p>That&#x27;s fairly surprising... We be good to understand what&#x27;s going on there.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @konstin by @konstin on 2025-01-15 19:07</div>
+            <div class="event">Assigned to <a href="https://github.com/konstin">@konstin</a> by <a href="https://github.com/konstin">@konstin</a> on 2025-01-15 19:07</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jackvreeken">@jackvreeken</a> on 2025-01-19 23:08</div>
@@ -204,10 +204,10 @@ RUN --mount=from=uv,source=/uv,target=/bin/uv \
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Unassigned @konstin by @konstin on 2025-01-20 15:25</div>
+            <div class="event">Unassigned <a href="https://github.com/konstin">@konstin</a> by <a href="https://github.com/konstin">@konstin</a> on 2025-01-20 15:25</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-01-20 15:25</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/konstin">@konstin</a> on 2025-01-20 15:25</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-03 14:16</div>
@@ -216,63 +216,63 @@ RUN --mount=from=uv,source=/uv,target=/bin/uv \
 <li>https://github.com/python/cpython/issues/78274</li>
 <li>https://bugs.python.org/issue34033</li>
 </ul>
-<p>I'm not sure yet if we can mitigate this downstream.</p>
+<p>I&#x27;m not sure yet if we can mitigate this downstream.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">upstream</span> added by @konstin on 2025-02-03 14:16</div>
+            <div class="event">Label <span class="label">upstream</span> added by <a href="https://github.com/konstin">@konstin</a> on 2025-02-03 14:16</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-06 12:42</div>
-            <div class="timeline-body"><p>Reported upstream with a minimal reproducer: https://github.com/python/cpython/issues/129724</p>
+            <div class="timeline-body"><p>Reported upstream with a minimal reproducer: <a href="https://github.com/python/cpython/issues/129724">python/cpython#129724</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/encukou">@encukou</a> on 2025-02-06 15:06</div>
-            <div class="timeline-body"><p>Correct, CPython doesn't guarantee reproducibility here.
-I agree it's surprising -- we tend to merge PRs that make them &quot;more reproducible&quot;, so by now the <em>easy</em> cases of non-reproducible pycs are solved :)</p>
+            <div class="timeline-body"><p>Correct, CPython doesn&#x27;t guarantee reproducibility here.
+I agree it&#x27;s surprising -- we tend to merge PRs that make them &quot;more reproducible&quot;, so by now the <em>easy</em> cases of non-reproducible pycs are solved :)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-06 15:09</div>
-            <div class="timeline-body"><p>Do you by change have insights into why the numbers are different for our case, i.e. where does marshal serialize those counts from and what's different if we processed an <code>import foo</code> earlier, or more generally why <code>sys.getrefcount</code> gets marshaled? I tried reading marshal.c but i didn't get the big picture of why the format does that.</p>
+            <div class="timeline-body"><p>Do you by change have insights into why the numbers are different for our case, i.e. where does marshal serialize those counts from and what&#x27;s different if we processed an <code>import foo</code> earlier, or more generally why <code>sys.getrefcount</code> gets marshaled? I tried reading marshal.c but i didn&#x27;t get the big picture of why the format does that.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/encukou">@encukou</a> on 2025-02-06 15:29</div>
             <div class="timeline-body"><p><code>FLAG_REF</code> gets added if an object might appear later in the file, in which case it can later be referenced by <code>TYPE_REF</code> (using an index to the array of all objects with <code>FLAG_REF</code>).
 To determine if the object might appear later, marshal uses a heuristic -- it skips objects with a refcount of 1: https://github.com/python/cpython/blob/55f17b77c305be877ac856d6426b13591cbc7fc8/Python/marshal.c#L385-L392</p>
-<p>If an object makes its way into some container or instance attribute, its refcount will go up and it'll start getting a <code>FLAG_REF</code> when it's marshalled. (And the indices of all subsequent flagged objects will change.)</p>
-<p>In the <a href="https://github.com/jackvreeken/uv-scipy-bytecode-issue/tree/87a8691b75f60007c277866da76bf70b7f799845">repo</a>, this affects a <code>frozenset({'randint', 'nchypergeom_fisher', 'nchypergeom_wallenius'})</code>.</p>
+<p>If an object makes its way into some container or instance attribute, its refcount will go up and it&#x27;ll start getting a <code>FLAG_REF</code> when it&#x27;s marshalled. (And the indices of all subsequent flagged objects will change.)</p>
+<p>In the <a href="https://github.com/jackvreeken/uv-scipy-bytecode-issue/tree/87a8691b75f60007c277866da76bf70b7f799845">repo</a>, this affects a <code>frozenset({&#x27;randint&#x27;, &#x27;nchypergeom_fisher&#x27;, &#x27;nchypergeom_wallenius&#x27;})</code>.</p>
 <p>You can analyze this like so (with <a href="https://pypi.org/project/marshalparser/">marshlaparser</a> installed):</p>
 <pre><code>diff --color=always -U3 &lt;(python -m marshalparser 6e7c/test_sampling.cpython-313.pyc -p) &lt;(python -m marshalparser ff6c/test_sampling.cpython-313.pyc -p) | less -R
 </code></pre>
-<pre><code class="language-diff">--- /dev/fd/63  2025-02-06 16:22:08.091555673 +0100
+<pre><code>--- /dev/fd/63  2025-02-06 16:22:08.091555673 +0100
 +++ /dev/fd/62  2025-02-06 16:22:08.092555697 +0100
 @@ -3645,19 +3645,19 @@
-         result=b'TestDiscreteAliasUrn', type=&lt;class 'bytes'&gt;
-         n=32812/0x802c byte=(b'69', b'i', 0b1101001) TYPE_INT 
-         result=633, type=&lt;class 'int'&gt;
--        n=32817/0x8031 byte=(b'3e', b'&gt;', 0b111110) TYPE_FROZENSET 
-+        n=32817/0x8031 byte=(b'3e', b'&gt;', 0b111110) TYPE_FROZENSET REF[462]
+         result=b&#x27;TestDiscreteAliasUrn&#x27;, type=&lt;class &#x27;bytes&#x27;&gt;
+         n=32812/0x802c byte=(b&#x27;69&#x27;, b&#x27;i&#x27;, 0b1101001) TYPE_INT 
+         result=633, type=&lt;class &#x27;int&#x27;&gt;
+-        n=32817/0x8031 byte=(b&#x27;3e&#x27;, b&#x27;&gt;&#x27;, 0b111110) TYPE_FROZENSET 
++        n=32817/0x8031 byte=(b&#x27;3e&#x27;, b&#x27;&gt;&#x27;, 0b111110) TYPE_FROZENSET REF[462]
            tuple/list/set size: 3
--          n=32822/0x8036 byte=(b'5a', b'Z', 0b1011010) TYPE_SHORT_ASCII_INTERNED REF[462]
-+          n=32822/0x8036 byte=(b'5a', b'Z', 0b1011010) TYPE_SHORT_ASCII_INTERNED REF[463]
-           result=b'randint', type=&lt;class 'bytes'&gt;
--          n=32831/0x803f byte=(b'5a', b'Z', 0b1011010) TYPE_SHORT_ASCII_INTERNED REF[463]
-+          n=32831/0x803f byte=(b'5a', b'Z', 0b1011010) TYPE_SHORT_ASCII_INTERNED REF[464]
-           result=b'nchypergeom_fisher', type=&lt;class 'bytes'&gt;
--          n=32851/0x8053 byte=(b'5a', b'Z', 0b1011010) TYPE_SHORT_ASCII_INTERNED REF[464]
-+          n=32851/0x8053 byte=(b'5a', b'Z', 0b1011010) TYPE_SHORT_ASCII_INTERNED REF[465]
-           result=b'nchypergeom_wallenius', type=&lt;class 'bytes'&gt;
--        result=frozenset({b'nchypergeom_wallenius', b'randint', b'nchypergeom_fisher'}), type=&lt;class 'frozenset'&gt;
--        n=32874/0x806a byte=(b'7a', b'z', 0b1111010) TYPE_SHORT_ASCII REF[465]
-+        result=frozenset({b'randint', b'nchypergeom_fisher', b'nchypergeom_wallenius'}), type=&lt;class 'frozenset'&gt;
-+        n=32874/0x806a byte=(b'7a', b'z', 0b1111010) TYPE_SHORT_ASCII REF[466]
-         result=b'distname, params', type=&lt;class 'bytes'&gt;
-         n=32892/0x807c byte=(b'63', b'c', 0b1100011) TYPE_CODE 
--          n=32913/0x8091 byte=(b'73', b's', 0b1110011) TYPE_STRING REF[466]
-+          n=32913/0x8091 byte=(b'73', b's', 0b1110011) TYPE_STRING REF[467]
+-          n=32822/0x8036 byte=(b&#x27;5a&#x27;, b&#x27;Z&#x27;, 0b1011010) TYPE_SHORT_ASCII_INTERNED REF[462]
++          n=32822/0x8036 byte=(b&#x27;5a&#x27;, b&#x27;Z&#x27;, 0b1011010) TYPE_SHORT_ASCII_INTERNED REF[463]
+           result=b&#x27;randint&#x27;, type=&lt;class &#x27;bytes&#x27;&gt;
+-          n=32831/0x803f byte=(b&#x27;5a&#x27;, b&#x27;Z&#x27;, 0b1011010) TYPE_SHORT_ASCII_INTERNED REF[463]
++          n=32831/0x803f byte=(b&#x27;5a&#x27;, b&#x27;Z&#x27;, 0b1011010) TYPE_SHORT_ASCII_INTERNED REF[464]
+           result=b&#x27;nchypergeom_fisher&#x27;, type=&lt;class &#x27;bytes&#x27;&gt;
+-          n=32851/0x8053 byte=(b&#x27;5a&#x27;, b&#x27;Z&#x27;, 0b1011010) TYPE_SHORT_ASCII_INTERNED REF[464]
++          n=32851/0x8053 byte=(b&#x27;5a&#x27;, b&#x27;Z&#x27;, 0b1011010) TYPE_SHORT_ASCII_INTERNED REF[465]
+           result=b&#x27;nchypergeom_wallenius&#x27;, type=&lt;class &#x27;bytes&#x27;&gt;
+-        result=frozenset({b&#x27;nchypergeom_wallenius&#x27;, b&#x27;randint&#x27;, b&#x27;nchypergeom_fisher&#x27;}), type=&lt;class &#x27;frozenset&#x27;&gt;
+-        n=32874/0x806a byte=(b&#x27;7a&#x27;, b&#x27;z&#x27;, 0b1111010) TYPE_SHORT_ASCII REF[465]
++        result=frozenset({b&#x27;randint&#x27;, b&#x27;nchypergeom_fisher&#x27;, b&#x27;nchypergeom_wallenius&#x27;}), type=&lt;class &#x27;frozenset&#x27;&gt;
++        n=32874/0x806a byte=(b&#x27;7a&#x27;, b&#x27;z&#x27;, 0b1111010) TYPE_SHORT_ASCII REF[466]
+         result=b&#x27;distname, params&#x27;, type=&lt;class &#x27;bytes&#x27;&gt;
+         n=32892/0x807c byte=(b&#x27;63&#x27;, b&#x27;c&#x27;, 0b1100011) TYPE_CODE 
+-          n=32913/0x8091 byte=(b&#x27;73&#x27;, b&#x27;s&#x27;, 0b1110011) TYPE_STRING REF[466]
++          n=32913/0x8091 byte=(b&#x27;73&#x27;, b&#x27;s&#x27;, 0b1110011) TYPE_STRING REF[467]
 ...
 (and lots more cases of &quot;ref&quot; numbers being offset by 1)
 </code></pre>
@@ -280,8 +280,8 @@ To determine if the object might appear later, marshal uses a heuristic -- it sk
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-02-06 15:43</div>
-            <div class="timeline-body"><p>I assume from this discussion you are also going to see this non-deterministic behavior with Python's standard library <a href="https://docs.python.org/3/library/compileall.html#compileall.compile_dir">compile directory call </a> with <a href="https://docs.python.org/3/library/compileall.html#cmdoption-compileall-j">more than 1 worker</a>, e.g.</p>
-<pre><code class="language-bash">python -m compileall -j4 /path/to/directory
+            <div class="timeline-body"><p>I assume from this discussion you are also going to see this non-deterministic behavior with Python&#x27;s standard library <a href="https://docs.python.org/3/library/compileall.html#compileall.compile_dir">compile directory call </a> with <a href="https://docs.python.org/3/library/compileall.html#cmdoption-compileall-j">more than 1 worker</a>, e.g.</p>
+<pre><code>python -m compileall -j4 /path/to/directory
 </code></pre>
 </div>
         </div>
@@ -293,7 +293,7 @@ To determine if the object might appear later, marshal uses a heuristic -- it sk
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:29:20 UTC
+        Synced at 2026-01-20 19:36:42 UTC
     </footer>
 </body>
 </html>

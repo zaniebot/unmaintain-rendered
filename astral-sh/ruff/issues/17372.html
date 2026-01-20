@@ -23,117 +23,117 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/UnoYakshi">@UnoYakshi</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<h1>Problem</h1>
+            <div class="timeline-body">Summary
+Problem
 <p>In a simple Django-Ninja project, routers/APIs endpoints with &quot;unused&quot; (by developers) <code>request</code> trigger <code>ARG001</code>.</p>
-<h1>Context</h1>
-<pre><code class="language-python"># Imports and stuff...
+Context
+<pre><code># Imports and stuff...
 
 
-@router.get('/', response=list[UserSchema])
+@router.get(&#x27;/&#x27;, response=list[UserSchema])
 def get_users(request: HttpRequest) -&gt; list[UserSchema]:  # Triggers ARG001!
     &quot;&quot;&quot;Retrieve all Users...&quot;&quot;&quot;
 
     return [UserSchema.from_orm(user) for user in BaseUser.objects.all()]
 
 
-@router.get('/{uuid}', response=UserSchema)
-def get_user(uuid: str) -&gt; UserSchema:  # Doesn't trigger ARG001, but fails within Django-Ninja...
+@router.get(&#x27;/{uuid}&#x27;, response=UserSchema)
+def get_user(uuid: str) -&gt; UserSchema:  # Doesn&#x27;t trigger ARG001, but fails within Django-Ninja...
     &quot;&quot;&quot;Retrieve a specific User by UUID...&quot;&quot;&quot;
 
     return UserSchema.from_orm(BaseUser.objects.get(id=uuid))
 </code></pre>
-<p>Please, ping me if you need copy-and-paste setup, I'll compose it. For now, my current project has too much project-specific configs (mixins, directories structure, etc.)</p>
-<h2>Function: <code>get_users()</code>, Endpoint: <code>GET /</code></h2>
+<p>Please, ping me if you need copy-and-paste setup, I&#x27;ll compose it. For now, my current project has too much project-specific configs (mixins, directories structure, etc.)</p>
+Function: <code>get_users()</code>, Endpoint: <code>GET /</code>
 <p><code>ruff check</code> for this file tells:</p>
 <pre><code>13:15 ARG001 Unused function argument: `request`
 </code></pre>
-<h2>Function: <code>get_user()</code>, Endpoint <code>GET /&lt;uuid&gt;</code></h2>
-<h3>remove <code>request</code> parameter</h3>
+Function: <code>get_user()</code>, Endpoint <code>GET /&lt;uuid&gt;</code>
+remove <code>request</code> parameter
 <p>Fails when calling the endpoint <code>GET /&lt;uuid&gt;</code>. Because, in fact, <code>request</code> IS used in runtime. Traceback:</p>
 <pre><code>Traceback (most recent call last):
   File &quot;ABSOLUTE_PATH_TO_PROJECT/.venv/lib/python3.13/site-packages/ninja/operation.py&quot;, line 133, in run
     result = self.view_func(request, **values)
-TypeError: get_user() got multiple values for argument 'uuid'
+TypeError: get_user() got multiple values for argument &#x27;uuid&#x27;
 </code></pre>
-<h3>rename <code>request</code> to <code>_request</code></h3>
+rename <code>request</code> to <code>_request</code>
 <p>As suggested in <code>ARG001</code>, such arguments should be prefixed with <code>_</code>. However, it also gives an error:</p>
-<pre><code>NameError: Fields must not use names with leading underscores; e.g., use 'request' instead of '_request'.
+<pre><code>NameError: Fields must not use names with leading underscores; e.g., use &#x27;request&#x27; instead of &#x27;_request&#x27;.
 </code></pre>
-<h1>&quot;Solutions&quot;</h1>
+&quot;Solutions&quot;
 <ol>
-<li>Set <code>lint.dummy-variable-rgx = &quot;^request$&quot;</code>. I don't think I should do that, though:</li>
+<li>Set <code>lint.dummy-variable-rgx = &quot;^request$&quot;</code>. I don&#x27;t think I should do that, though:</li>
 </ol>
 <ul>
 <li>the purpose this of this parameter is different</li>
 <li>there could be more implicitly used input parameters</li>
 </ul>
-<ol start="2">
-<li>Ignore <code>ARG001</code> altogether because IDEs will most likely highlight unused arguments, anyway. But I don't like the idea of CI not catching fundamental linting issues.</li>
+<ol>
+<li>Ignore <code>ARG001</code> altogether because IDEs will most likely highlight unused arguments, anyway. But I don&#x27;t like the idea of CI not catching fundamental linting issues.</li>
 <li>Adding <code>#noqa: ARG001</code> to every endpoint method is not good enough.</li>
 </ol>
-<h1>Suggestion</h1>
+Suggestion
 <p>Add a separate linting config parameter for such cases.</p>
-<pre><code class="language-toml">[lint.per-varname-ignores]
+<pre><code>[lint.per-varname-ignores]
 &quot;request&quot; = [&quot;ARG001&quot;]
 </code></pre>
-<p>Perhaps, it already exists and I'm blind/silly.</p>
-<h3>Version</h3>
+<p>Perhaps, it already exists and I&#x27;m blind/silly.</p>
+Version
 <p>ruff 0.11.5</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "`ARG001` False Positive (Djang-Ninja)" to "`ARG001` False Positive (Django-Ninja)" by @UnoYakshi on 2025-04-13 12:00</div>
+            <div class="event">Renamed from &quot;`ARG001` False Positive (Djang-Ninja)&quot; to &quot;`ARG001` False Positive (Django-Ninja)&quot; by <a href="https://github.com/UnoYakshi">@UnoYakshi</a> on 2025-04-13 12:00</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-15 13:35</div>
-            <div class="timeline-body"><p>Thanks for the report! This is interesting. So django-ninja requires you to include a <code>request</code> parameter in every handler even if you don't use it directly?</p>
-<p>I like your idea of a config option for this because it seems difficult to detect otherwise, but it may also be doable with type inference that can inspect the decorator's definition.</p>
+            <div class="timeline-body"><p>Thanks for the report! This is interesting. So django-ninja requires you to include a <code>request</code> parameter in every handler even if you don&#x27;t use it directly?</p>
+<p>I like your idea of a config option for this because it seems difficult to detect otherwise, but it may also be doable with type inference that can inspect the decorator&#x27;s definition.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-04-15 13:35</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-15 13:35</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-design</span> added by @ntBre on 2025-04-15 13:35</div>
+            <div class="event">Label <span class="label">needs-design</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-15 13:35</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/UnoYakshi">@UnoYakshi</a> on 2025-04-16 10:34</div>
             <div class="timeline-body"><blockquote>
-<p>So django-ninja requires you to include a <code>request</code> parameter in every handler even if you don't use it directly?</p>
+<p>So django-ninja requires you to include a <code>request</code> parameter in every handler even if you don&#x27;t use it directly?</p>
 </blockquote>
-<p>I'm working with Django-Ninja like for ca. a week, hence, there might be other ways. However, <a href="https://django-ninja.dev/guides/input/operations/">how-to in docs</a> doesn't seem to suggest an alternative.</p>
+<p>I&#x27;m working with Django-Ninja like for ca. a week, hence, there might be other ways. However, <a href="https://django-ninja.dev/guides/input/operations/">how-to in docs</a> doesn&#x27;t seem to suggest an alternative.</p>
 <blockquote>
-<p>I like your idea of a config option for this because it seems difficult to detect otherwise, but it may also be doable with type inference that can inspect the decorator's definition.</p>
+<p>I like your idea of a config option for this because it seems difficult to detect otherwise, but it may also be doable with type inference that can inspect the decorator&#x27;s definition.</p>
 </blockquote>
-<p>I suggested another config parameter because, I presume, it'd most likely be the cheapest/simplest solution. I mean, it's <code>lint.dummy-variable-rgx</code> with another name, or are there caveats? I know a little bit of Rust so I might even try to add a PR for that as a little hands-on exercise.
-As for the type inference, as far as I'm aware it's in the design/development stage? Or there is a nightly version available already?</p>
+<p>I suggested another config parameter because, I presume, it&#x27;d most likely be the cheapest/simplest solution. I mean, it&#x27;s <code>lint.dummy-variable-rgx</code> with another name, or are there caveats? I know a little bit of Rust so I might even try to add a PR for that as a little hands-on exercise.
+As for the type inference, as far as I&#x27;m aware it&#x27;s in the design/development stage? Or there is a nightly version available already?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-16 13:18</div>
             <div class="timeline-body"><blockquote>
-<p>I'm working with Django-Ninja like for ca. a week, hence, there might be other ways. However, <a href="https://django-ninja.dev/guides/input/operations/">how-to in docs</a> doesn't seem to suggest an alternative.</p>
+<p>I&#x27;m working with Django-Ninja like for ca. a week, hence, there might be other ways. However, <a href="https://django-ninja.dev/guides/input/operations/">how-to in docs</a> doesn&#x27;t seem to suggest an alternative.</p>
 </blockquote>
 <p>Yeah I looked at the docs a bit, and that was my conclusion too.</p>
 <blockquote>
-<p>I suggested another config parameter because, I presume, it'd most likely be the cheapest/simplest solution. I mean, it's <code>lint.dummy-variable-rgx</code> with another name, or are there caveats? I know a little bit of Rust so I might even try to add a PR for that as a little hands-on exercise.</p>
+<p>I suggested another config parameter because, I presume, it&#x27;d most likely be the cheapest/simplest solution. I mean, it&#x27;s <code>lint.dummy-variable-rgx</code> with another name, or are there caveats? I know a little bit of Rust so I might even try to add a PR for that as a little hands-on exercise.</p>
 </blockquote>
-<p>I think it is pretty much that straightforward. I'd want to check with @MichaReiser before adding a new config option though.</p>
+<p>I think it is pretty much that straightforward. I&#x27;d want to check with @MichaReiser before adding a new config option though.</p>
 <blockquote>
-<p>As for the type inference, as far as I'm aware it's in the design/development stage? Or there is a nightly version available already?</p>
+<p>As for the type inference, as far as I&#x27;m aware it&#x27;s in the design/development stage? Or there is a nightly version available already?</p>
 </blockquote>
-<p>We do have our type-checker, red-knot, in development right now, but it's a separate binary (no nightly release yet, but you can build from source if you're really curious 🙂). Eventually we also hope to use some of its type inference capabilities in ruff itself, but that is farther away.</p>
+<p>We do have our type-checker, red-knot, in development right now, but it&#x27;s a separate binary (no nightly release yet, but you can build from source if you&#x27;re really curious 🙂). Eventually we also hope to use some of its type inference capabilities in ruff itself, but that is farther away.</p>
 <p>In short, the config option seems like the quickest and easiest way to solve this right now, but Micha might have better ideas.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-22 09:51</div>
-            <div class="timeline-body"><p>The underlying problem that I see here is that Ruff doesn't understand the <code>router.get</code> (and similar) decorators.</p>
-<p>One option is to disable <code>ARG001</code> for any decorated function (unless it is a known decorator). That's the safest but probably leads to many false positives. The alternative is to add an allow list of decorators where unused arguments aren't flagged.</p>
-<p>Both approaches have the downside that any unused argument won't be flagged for those functions, which may be overly permissive.</p>
-<p>I'm a bit hesitant to add either configuration option just yet unless there are other users/frameworks where people run into this.</p>
-<p>@UnoYakshi have you considered opening an issue in <code>django-ninja</code> asking if it would be an option to make the <code>request</code> argument optional (so that it doesn't have to be specified in the function if unused in the entire body)?</p>
+            <div class="timeline-body"><p>The underlying problem that I see here is that Ruff doesn&#x27;t understand the <code>router.get</code> (and similar) decorators.</p>
+<p>One option is to disable <code>ARG001</code> for any decorated function (unless it is a known decorator). That&#x27;s the safest but probably leads to many false positives. The alternative is to add an allow list of decorators where unused arguments aren&#x27;t flagged.</p>
+<p>Both approaches have the downside that any unused argument won&#x27;t be flagged for those functions, which may be overly permissive.</p>
+<p>I&#x27;m a bit hesitant to add either configuration option just yet unless there are other users/frameworks where people run into this.</p>
+<p>@UnoYakshi have you considered opening an issue in <code>django-ninja</code> asking if it would be an option to make the <code>request</code> argument optional (so that it doesn&#x27;t have to be specified in the function if unused in the entire body)?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -142,15 +142,15 @@ As for the type inference, as far as I'm aware it's in the design/development st
 <blockquote>
 <p>One option is to disable ARG001 for any decorated function.</p>
 </blockquote>
-<p>I'd prefer not to exclude <code>ARG001</code> from anywhere if possible. I do like the rule most of the time, decorator or not.</p>
+<p>I&#x27;d prefer not to exclude <code>ARG001</code> from anywhere if possible. I do like the rule most of the time, decorator or not.</p>
 <blockquote>
-<p>The alternative is to add an allow list of decorators where unused arguments aren't flagged.</p>
+<p>The alternative is to add an allow list of decorators where unused arguments aren&#x27;t flagged.</p>
 </blockquote>
-<p>I'm not really sure if the problem lies within decorators area. Do you mind elaborating why do you think otherwise? As I see it's possible to write similar non-decorated (maybe, currying?) code that could dynamically use a function with &quot;unused&quot; argument. E.g., getting a method from a module via <code>inspect</code>, not <code>import</code> (I can provide a code example if I didn't express the idea clear enough).</p>
+<p>I&#x27;m not really sure if the problem lies within decorators area. Do you mind elaborating why do you think otherwise? As I see it&#x27;s possible to write similar non-decorated (maybe, currying?) code that could dynamically use a function with &quot;unused&quot; argument. E.g., getting a method from a module via <code>inspect</code>, not <code>import</code> (I can provide a code example if I didn&#x27;t express the idea clear enough).</p>
 <blockquote>
-<p>@UnoYakshi have you considered opening an issue in django-ninja asking if it would be an option to make the request argument optional (so that it doesn't have to be specified in the function if unused in the entire body)?</p>
+<p>@UnoYakshi have you considered opening an issue in django-ninja asking if it would be an option to make the request argument optional (so that it doesn&#x27;t have to be specified in the function if unused in the entire body)?</p>
 </blockquote>
-<p>I didn't think about that before, but I'll open an issue, sure. Update: <a href="https://github.com/vitalik/django-ninja/issues/1458">link to the issue</a>.</p>
+<p>I didn&#x27;t think about that before, but I&#x27;ll open an issue, sure. Update: <a href="https://github.com/vitalik/django-ninja/issues/1458">link to the issue</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -160,10 +160,10 @@ As for the type inference, as far as I'm aware it's in the design/development st
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/UnoYakshi">@UnoYakshi</a> on 2025-05-21 15:55</div>
-            <div class="timeline-body"><p>Except for it doesn't work on my side for now.</p>
-<pre><code>NameError: Fields must not use names with leading underscores; e.g., use 'request' instead of '_request'.
+            <div class="timeline-body"><p>Except for it doesn&#x27;t work on my side for now.</p>
+<pre><code>NameError: Fields must not use names with leading underscores; e.g., use &#x27;request&#x27; instead of &#x27;_request&#x27;.
 </code></pre>
-<p>So I'm sticking with the dummy-thing for the time being.</p>
+<p>So I&#x27;m sticking with the dummy-thing for the time being.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -176,18 +176,18 @@ As for the type inference, as far as I'm aware it's in the design/development st
             <div class="timeline-body"><blockquote>
 <p>Where do you get this <code>NameError</code>?</p>
 </blockquote>
-<p>When I start Django (<code>manage.py runserver ...</code>), it's thrown in the console with traceback. Or did you mean something else?</p>
+<p>When I start Django (<code>manage.py runserver ...</code>), it&#x27;s thrown in the console with traceback. Or did you mean something else?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-22 14:11</div>
-            <div class="timeline-body"><p>I saw you posted on the upstream issue too. Let's see what they reply</p>
+            <div class="timeline-body"><p>I saw you posted on the upstream issue too. Let&#x27;s see what they reply</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:52:34 UTC
+        Synced at 2026-01-20 18:49:49 UTC
     </footer>
 </body>
 </html>

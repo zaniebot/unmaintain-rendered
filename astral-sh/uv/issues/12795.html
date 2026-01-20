@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/risky-rickman">@risky-rickman</a></div>
-            <div class="timeline-body"><h3>Question</h3>
+            <div class="timeline-body">Question
 <p>My directory structure looks something like:</p>
 <ul>
 <li>project_a</li>
@@ -32,20 +32,20 @@
 </ul>
 <p>I want to be able to package project_a and shared_lib together for a deployment. As far as i can tell the only way to do this is to either:</p>
 <p>upload shared_lib and project_a to a package repo
-create a temp directory with project_a and shared_lib, and then moving project_a's pyproject.toml into the folder root before running my build.</p>
-<p>I'm hesitant to commit to either of these as it feels like there must be an easier way.  I'd love to hear some opinions on how i might accomplish this.</p>
-<h3>Platform</h3>
+create a temp directory with project_a and shared_lib, and then moving project_a&#x27;s pyproject.toml into the folder root before running my build.</p>
+<p>I&#x27;m hesitant to commit to either of these as it feels like there must be an easier way.  I&#x27;d love to hear some opinions on how i might accomplish this.</p>
+Platform
 <p><em>No response</em></p>
-<h3>Version</h3>
+Version
 <p><em>No response</em></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @risky-rickman on 2025-04-10 00:05</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/risky-rickman">@risky-rickman</a> on 2025-04-10 00:05</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-10 01:15</div>
-            <div class="timeline-body"><p>As in, you want <code>shared_lib</code> to be vendored into <code>project_a</code>'s source distribution or wheel?</p>
+            <div class="timeline-body"><p>As in, you want <code>shared_lib</code> to be vendored into <code>project_a</code>&#x27;s source distribution or wheel?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -56,7 +56,7 @@ create a temp directory with project_a and shared_lib, and then moving project_a
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Tremeschin">@Tremeschin</a> on 2025-04-19 09:00</div>
             <div class="timeline-body"><p>This is more of a build backend problem than uv I reckon, it can be done with <a href="https://hatch.pypa.io/1.13/config/build/#packages">hatchling</a> pretty easily:</p>
-<pre><code class="language-toml">[build-system]
+<pre><code>[build-system]
 requires = [&quot;hatchling&quot;]
 build-backend = &quot;hatchling.build&quot;
 
@@ -68,8 +68,8 @@ packages = [
 ]
 </code></pre>
 <p>Running <code>uv build --wheel</code> creates a monorepo wheel that includes both projects and itself.</p>
-<p>However, I'd advise against this from experience, as each subproject will miss their dist info, importlib metadata fails. Instead, list all projects in the main <code>[tool.uv.workspace]</code>, let each project match the monorepo's version in their pyproject:</p>
-<pre><code class="language-toml">
+<p>However, I&#x27;d advise against this from experience, as each subproject will miss their dist info, importlib metadata fails. Instead, list all projects in the main <code>[tool.uv.workspace]</code>, let each project match the monorepo&#x27;s version in their pyproject:</p>
+<pre><code>
 [tool.hatch.version]
 path = &quot;../shared_lib/version.py&quot;
 
@@ -85,7 +85,7 @@ dependencies = [
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/krishmas">@krishmas</a> on 2025-10-15 00:43</div>
-            <div class="timeline-body"><p>What if there's a very large number of packages in the workspace though? Like if there's <code>project_&lt;a-z&gt;</code> and <code>shared_lib_&lt;a-z&gt;</code>. If <code>project_a</code> depends on <code>shared_lib_a</code> via it's dependencies in <code>project_a</code>'s pyproject.toml</p>
+            <div class="timeline-body"><p>What if there&#x27;s a very large number of packages in the workspace though? Like if there&#x27;s <code>project_&lt;a-z&gt;</code> and <code>shared_lib_&lt;a-z&gt;</code>. If <code>project_a</code> depends on <code>shared_lib_a</code> via it&#x27;s dependencies in <code>project_a</code>&#x27;s pyproject.toml</p>
 <pre><code>dependencies = [
     &quot;shared_lib_a&quot;
     ...
@@ -119,34 +119,34 @@ members = [
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Tremeschin">@Tremeschin</a> on 2025-10-15 00:55</div>
             <div class="timeline-body"><p>@krishmas Perhaps <code>uv build --all --wheel</code> and/or <code>uv sync --all-packages</code>, which runs on all workspace members?</p>
-<p>For uv tool install it'll need to be on PyPI or specified as a git+ dependency for a direct repo. I personally have a common hatchling <a href="https://github.com/BrokenSource/Hook">hook</a> to resolve metadata package versions if inside a local monorepo, otherwise <a href="https://github.com/BrokenSource/DepthFlow/blob/6bb8d5e560b4463ae60564ff767291a8fe142817/pyproject.toml#L20-L21">keep git+ dependencies</a>.</p>
+<p>For uv tool install it&#x27;ll need to be on PyPI or specified as a git+ dependency for a direct repo. I personally have a common hatchling <a href="https://github.com/BrokenSource/Hook">hook</a> to resolve metadata package versions if inside a local monorepo, otherwise <a href="https://github.com/BrokenSource/DepthFlow/blob/6bb8d5e560b4463ae60564ff767291a8fe142817/pyproject.toml#L20-L21">keep git+ dependencies</a>.</p>
 <ul>
 <li>For example <code>uvx --from git+https://github.com/BrokenSource/ShaderFlow --python 3.13 shaderflow basic main</code>, or running <code>uv build --all</code> in the monorepo and getting &quot;vendored&quot; versions for members packages on PyPI</li>
 </ul>
-<p>Not saying it's an ideal solution, but it's been working great for me, adapt this to your needs 🙂</p>
+<p>Not saying it&#x27;s an ideal solution, but it&#x27;s been working great for me, adapt this to your needs 🙂</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/krishmas">@krishmas</a> on 2025-10-15 01:21</div>
-            <div class="timeline-body"><p>Got it... hm yeah I'm coming from a Go/Bazel and Rust/Cargo world where making binaries is part of the workspace manager so maybe my expectations are misaligned, but since we're explicitly defining dependencies in pyproject.toml files <strong>and</strong> since <code>uv tool install project_a</code> already creates a snapshot/copy of <code>project_a</code>, why can't that snapshot/copy also include the workspace dependencies (<code>shared_lib_a</code>) defined in the <code>pyproject.toml</code> instead of just including a <code>.pth</code> file that links back to the <code>shared_lib_a</code> source code?</p>
-<p>Like if I accidentally break or delete <code>shared_lib_a</code> source code after <code>uv tool install</code>ing <code>project_a</code> when the library was working, why should my installed <code>project_a</code> tool break? 😅 Shouldn't the working <code>shared_lib_a</code> have been packaged into the tool?</p>
+            <div class="timeline-body"><p>Got it... hm yeah I&#x27;m coming from a Go/Bazel and Rust/Cargo world where making binaries is part of the workspace manager so maybe my expectations are misaligned, but since we&#x27;re explicitly defining dependencies in pyproject.toml files <strong>and</strong> since <code>uv tool install project_a</code> already creates a snapshot/copy of <code>project_a</code>, why can&#x27;t that snapshot/copy also include the workspace dependencies (<code>shared_lib_a</code>) defined in the <code>pyproject.toml</code> instead of just including a <code>.pth</code> file that links back to the <code>shared_lib_a</code> source code?</p>
+<p>Like if I accidentally break or delete <code>shared_lib_a</code> source code after <code>uv tool install</code>ing <code>project_a</code> when the library was working, why should my installed <code>project_a</code> tool break? 😅 Shouldn&#x27;t the working <code>shared_lib_a</code> have been packaged into the tool?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> removed by @konstin on 2025-12-18 15:39</div>
+            <div class="event">Label <span class="label">question</span> removed by <a href="https://github.com/konstin">@konstin</a> on 2025-12-18 15:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2025-12-18 15:39</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/konstin">@konstin</a> on 2025-12-18 15:39</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-12-18 15:40</div>
-            <div class="timeline-body"><p>There's no selective bundling support in uv yet, but we want to improve the support for large workspaces with different deployment subsets.</p>
+            <div class="timeline-body"><p>There&#x27;s no selective bundling support in uv yet, but we want to improve the support for large workspaces with different deployment subsets.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:30:54 UTC
+        Synced at 2026-01-20 19:38:12 UTC
     </footer>
 </body>
 </html>

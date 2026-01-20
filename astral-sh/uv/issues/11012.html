@@ -23,19 +23,19 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/tmm1">@tmm1</a></div>
-            <div class="timeline-body"><h3>Question</h3>
+            <div class="timeline-body">Question
 <p>Following up on #10694  with some more real-world examples.</p>
-<h2>triton vs pytorch-triton</h2>
+triton vs pytorch-triton
 <p>Many pytorch ecosystem packages depend on <code>triton</code>, so pyproject/uv.lock will often contain <code>triton == 3.1.0</code>.</p>
 <p>However, when switching to pytorch nightly the equivalent nightly package for triton is named <code>pytorch-triton</code>: https://github.com/pytorch/pytorch/blob/main/RELEASE.md#triton-dependency-for-the-release</p>
-<p>So the equivalent entry to use nightly is something like <code>pytorch-triton == 3.2.0+git0d4682f0</code>. But adding this to your project doesn't remove the transitive <code>triton == 3.1.0</code> so it seems both get installed:</p>
+<p>So the equivalent entry to use nightly is something like <code>pytorch-triton == 3.2.0+git0d4682f0</code>. But adding this to your project doesn&#x27;t remove the transitive <code>triton == 3.1.0</code> so it seems both get installed:</p>
 <pre><code>❯ ls -d .venv/lib/python3.11/site-packages/*triton*
 .venv/lib/python3.11/site-packages/pytorch_triton-3.2.0+git0d4682f0.dist-info 
 .venv/lib/python3.11/site-packages/triton-3.1.0.dist-info
 .venv/lib/python3.11/site-packages/triton 
 </code></pre>
 <p>and since they both write files to <code>site-packages/triton</code> its not fully clear which version ends up getting used.</p>
-<h2>flash-attn v2 vs v3</h2>
+flash-attn v2 vs v3
 <p>There are two version of flash-attn available, both named flash-attn but with differing version numbers. In a regular python pip environment, it seems possible to install them both:</p>
 <pre><code>$ pip list | grep flash
 flash-attn                  2.7.2.post1
@@ -51,15 +51,15 @@ Installed 1 package in 197ms
  - flash-attn==3.0.0b1 (from git+https://github.com/Dao-AILab/flash-attention@6b1d059eda21c1bd421f3d352786fca2cab61954#subdirectory=hopper)
  + flash-attn==2.7.3 (from git+https://github.com/Dao-AILab/flash-attention@6b1d059eda21c1bd421f3d352786fca2cab61954)
 </code></pre>
-<p>The replacement behavior is probably what makes the most sense, but currently it is necessary to have both installed to actually use FA3: https://github.com/Dao-AILab/flash-attention/issues/1467</p>
-<h3>Platform</h3>
+<p>The replacement behavior is probably what makes the most sense, but currently it is necessary to have both installed to actually use FA3: <a href="https://github.com/Dao-AILab/flash-attention/issues/1467">Dao-AILab/flash-attention#1467</a></p>
+Platform
 <p>Linux amd64</p>
-<h3>Version</h3>
+Version
 <p>uv 0.5.22</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @tmm1 on 2025-01-28 01:57</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/tmm1">@tmm1</a> on 2025-01-28 01:57</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tmm1">@tmm1</a> on 2025-01-28 01:59</div>
@@ -75,50 +75,50 @@ Installed 1 package in 197ms
             <div class="timeline-body"><blockquote>
 <p>The replacement behavior is probably what makes the most sense, but currently it is necessary to have both installed to actually use FA3.</p>
 </blockquote>
-<p>Unfortunately, no. There's no support in the Python runtime for having multiple versions of a single package installed. It's not possible. (You might be interested in Armin's <a href="https://github.com/mitsuhiko/multiversion">multiversion</a> from a decade ago as a guide on what breaks.)</p>
+<p>Unfortunately, no. There&#x27;s no support in the Python runtime for having multiple versions of a single package installed. It&#x27;s not possible. (You might be interested in Armin&#x27;s <a href="https://github.com/mitsuhiko/multiversion">multiversion</a> from a decade ago as a guide on what breaks.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tmm1">@tmm1</a> on 2025-01-29 18:09</div>
             <div class="timeline-body"><p>In this case the fa2 and fa3 packages are completely separate and have no overlapping files. Installing them side-by-side is expected and necessary to use tools like <code>tritonbench</code> or even to experiment with both in <code>transformers</code>.</p>
-<p>Is there any way to force uv to do so? Or to alias names so it doesn't think they're the same package?</p>
-<p>Similiarly for the <code>triton</code> package, I'm wondering if there's a way to mask it out? i.e. To specific it should <em>not</em> be installed at all (because the <code>pytorch-triton</code> nightly build is newer and <em>does</em> have overlapping files).</p>
-<p>I also run into this issue where it isn't available in newer pythons:</p>
-<pre><code>error: Distribution `triton==3.1.0 @ registry+https://pypi.org/simple` can't be installed because it doesn't have a source distribution or wheel for the current platform
+<p>Is there any way to force uv to do so? Or to alias names so it doesn&#x27;t think they&#x27;re the same package?</p>
+<p>Similiarly for the <code>triton</code> package, I&#x27;m wondering if there&#x27;s a way to mask it out? i.e. To specific it should <em>not</em> be installed at all (because the <code>pytorch-triton</code> nightly build is newer and <em>does</em> have overlapping files).</p>
+<p>I also run into this issue where it isn&#x27;t available in newer pythons:</p>
+<pre><code>error: Distribution `triton==3.1.0 @ registry+https://pypi.org/simple` can&#x27;t be installed because it doesn&#x27;t have a source distribution or wheel for the current platform
 
-hint: You're using CPython 3.13 (`cp313`), but  `triton` (v3.1.0) only has wheels with the following Python ABI tags: `cp311`, `cp312`
+hint: You&#x27;re using CPython 3.13 (`cp313`), but  `triton` (v3.1.0) only has wheels with the following Python ABI tags: `cp311`, `cp312`
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tmm1">@tmm1</a> on 2025-01-29 18:11</div>
             <div class="timeline-body"><blockquote>
-<p>if there's a way to mask it out</p>
+<p>if there&#x27;s a way to mask it out</p>
 </blockquote>
-<p>found https://github.com/astral-sh/uv/issues/9174#issuecomment-2482710850 and https://github.com/astral-sh/uv/issues/4422#issuecomment-2254182800</p>
+<p>found <a href="https://github.com/astral-sh/uv/issues/9174">astral-sh/uv#9174</a>#issuecomment-2482710850 and <a href="https://github.com/astral-sh/uv/issues/4422">astral-sh/uv#4422</a>#issuecomment-2254182800</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-29 18:13</div>
-            <div class="timeline-body"><p>Is there anything you can link me to, to understand why you're supposed to install two flash-attention versions at the same time, or even that it's a recommended approach?</p>
+            <div class="timeline-body"><p>Is there anything you can link me to, to understand why you&#x27;re supposed to install two flash-attention versions at the same time, or even that it&#x27;s a recommended approach?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tmm1">@tmm1</a> on 2025-01-29 19:38</div>
-            <div class="timeline-body"><p>I don't think it was necessarily designed that way.. but to practically use these packages right now, it is necessary.</p>
+            <div class="timeline-body"><p>I don&#x27;t think it was necessarily designed that way.. but to practically use these packages right now, it is necessary.</p>
 <p>Basically, a lot of the sources in the flash-attn repo were copied into a <code>./hopper/</code> subdirectory, the version was updated to be 3.0b1, all the modules removed, and then the cuda kernels were modified.</p>
 <p>So this 3.0 beta package just contains new cuda code for updated GPUs and some basic interface python code.</p>
-<p>To effectively use the cuda code, you need the rest of the supporting library, which is still only published in the flash-attn 2.x packages. So i.e. if you need <code>from flash_attn.bert_padding import pad_input</code> to prepare your inputs for the fa3 kernel, it doesn't work in the uv venv</p>
+<p>To effectively use the cuda code, you need the rest of the supporting library, which is still only published in the flash-attn 2.x packages. So i.e. if you need <code>from flash_attn.bert_padding import pad_input</code> to prepare your inputs for the fa3 kernel, it doesn&#x27;t work in the uv venv</p>
 <p>Another example is <code>torchtitan</code>, which benchmarks both approaches. It calls <code>pip install -e .</code> in both the <a href="https://github.com/pytorch-labs/tritonbench/blob/18eaf8447a4547310c7dc357c3797cec0f37c49f/install.py#L70-L71">main repo</a> and the <a href="https://github.com/pytorch-labs/tritonbench/blob/18eaf8447a4547310c7dc357c3797cec0f37c49f/tools/flash_attn/install.py#L47">hopper subdirectory</a>.</p>
 <p>EDIT: related https://github.com/Dao-AILab/flash-attention/discussions/1457</p>
-<hr />
+<hr>
 <p>As a workaround, I guess the simplest thing would be fork Dao-AILab/flash-attention, change hopper/setup.py so the package name is unique, then use that new git url as my dependency.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:29:34 UTC
+        Synced at 2026-01-20 19:36:56 UTC
     </footer>
 </body>
 </html>

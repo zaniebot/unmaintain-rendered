@@ -23,12 +23,12 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Easy trick to reduce the size of the struct, since these are never mutated.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2024-07-22 14:50</div>
+            <div class="event">Label <span class="label">performance</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-22 14:50</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-07-22 14:50</div>
@@ -41,16 +41,16 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-07-22 14:57</div>
-            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/uv/branches/charlie/box">CodSpeed Performance Report</a></h2>
-<h3>Merging #5291 will <strong>degrade performances by 24.1%</strong></h3>
-<p><sub>Comparing <code>charlie/box</code> (2fb6638) with <code>main</code> (d11d11e)</sub></p>
-<h3>Summary</h3>
+            <div class="timeline-body"><a href="https://codspeed.io/astral-sh/uv/branches/charlie/box">CodSpeed Performance Report</a>
+Merging #5291 will <strong>degrade performances by 24.1%</strong>
+<p>Comparing <code>charlie/box</code> (2fb6638) with <code>main</code> (d11d11e)</p>
+Summary
 <p><code>❌ 3</code> regressions
 <code>✅ 10</code> untouched benchmarks</p>
 <blockquote>
 <p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/uv/branches/charlie/box">acknowledge them on CodSpeed</a>.</em></p>
 </blockquote>
-<h3>Benchmarks breakdown</h3>
+Benchmarks breakdown
 <p>|     | Benchmark | <code>main</code> | <code>charlie/box</code> | Change |
 | --- | --------- | ----------------------- | ------------------- | ------ |
 | ❌ | <code>wheelname_parsing[flyte-long-compatible]</code> | 9.9 µs | 11.5 µs | -14.37% |
@@ -60,42 +60,42 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-22 15:01</div>
-            <div class="timeline-body"><p>That's surprising, will take a look.</p>
+            <div class="timeline-body"><p>That&#x27;s surprising, will take a look.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-07-23 14:45</div>
             <div class="timeline-body"><p>I like it.</p>
-<p>We could probably do more work to shrink this type if we think it's causing issues.</p>
+<p>We could probably do more work to shrink this type if we think it&#x27;s causing issues.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-23 14:46</div>
             <div class="timeline-body"><p>Why do you think the benchmarks regressed? :(</p>
-<p>When I just did collect and didn't pre-allocator the vector by scanning the string twice, it regressed even more.</p>
+<p>When I just did collect and didn&#x27;t pre-allocator the vector by scanning the string twice, it regressed even more.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-07-23 14:53</div>
             <div class="timeline-body"><blockquote>
 <p>Why do you think the benchmarks regressed? :(</p>
-<p>When I just did collect and didn't pre-allocator the vector by scanning the string twice, it regressed even more.</p>
+<p>When I just did collect and didn&#x27;t pre-allocator the vector by scanning the string twice, it regressed even more.</p>
 </blockquote>
 <p>I spent some time looking at the flamegraph diff, and nothing sticks out at me. So for this, I think my next step would be to:</p>
 <ol>
-<li>Run the benchmarks locally by measuring wall clock time instead of instruction count, which is what I believe codspeed is doing, right? If the wall clock time has no difference, then I'd ship it.</li>
-<li>If there is a difference, then I'd look to see if profiles locally say more than the codspeed flamegraphs. Failing that, I'd start looking at the actual codegen differences.</li>
+<li>Run the benchmarks locally by measuring wall clock time instead of instruction count, which is what I believe codspeed is doing, right? If the wall clock time has no difference, then I&#x27;d ship it.</li>
+<li>If there is a difference, then I&#x27;d look to see if profiles locally say more than the codspeed flamegraphs. Failing that, I&#x27;d start looking at the actual codegen differences.</li>
 </ol>
-<p>In terms of <em>why</em> this is happening, I don't actually have a great guess. Maybe this change increases instruction counts by doing the <code>Vec -&gt; Box</code> conversion and that in turn causes the regression? That guess is making <em>a lot</em> of assumptions though (codspeed's cost model, that <code>Vec -&gt; Box</code> conversion is even adding instructions and probably more) that aren't necessarily correct.</p>
+<p>In terms of <em>why</em> this is happening, I don&#x27;t actually have a great guess. Maybe this change increases instruction counts by doing the <code>Vec -&gt; Box</code> conversion and that in turn causes the regression? That guess is making <em>a lot</em> of assumptions though (codspeed&#x27;s cost model, that <code>Vec -&gt; Box</code> conversion is even adding instructions and probably more) that aren&#x27;t necessarily correct.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-09-23 23:30</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-23 23:30</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:38:17 UTC
+        Synced at 2026-01-20 19:46:45 UTC
     </footer>
 </body>
 </html>

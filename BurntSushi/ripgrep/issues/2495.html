@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>Smart case doesn't work as expected with character classes</h1>
+    <h1>Smart case doesn&#x27;t work as expected with character classes</h1>
 
     <div class="meta">
         <span class="state-icon state-closed"></span>
@@ -23,28 +23,28 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ariel-miculas">@ariel-miculas</a></div>
-            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+            <div class="timeline-body">What version of ripgrep are you using?
 <p>❯ rg --version
 ripgrep 13.0.0
 -SIMD -AVX (compiled)
 +SIMD +AVX (runtime)</p>
-<h4>How did you install ripgrep?</h4>
+How did you install ripgrep?
 <p>cargo install ripgrep</p>
-<h4>What operating system are you using ripgrep on?</h4>
+What operating system are you using ripgrep on?
 <p>Replace this text with your operating system and version.
 Arch Linux 6.1.2-arch1-1 x86 GNU/Linux</p>
-<h4>Describe your bug.</h4>
-<p>Smart case doesn't work as expected when I introduce character classes in my regex.</p>
-<h4>What are the steps to reproduce the behavior?</h4>
+Describe your bug.
+<p>Smart case doesn&#x27;t work as expected when I introduce character classes in my regex.</p>
+What are the steps to reproduce the behavior?
 <pre><code>❯ echo MY_RUST &gt; sample
 ❯ alias rg
-rg='rg --smart-case'
-❯ rg '[^a-zA-Z]rust' sample
+rg=&#x27;rg --smart-case&#x27;
+❯ rg &#x27;[^a-zA-Z]rust&#x27; sample
 </code></pre>
-<h4>What is the actual behavior?</h4>
-<p>Actual behavior is that the pattern doesn't match.</p>
-<h4>What is the expected behavior?</h4>
-<p>I'm expecting the pattern to match, because <code>rust</code> is all lowercase, so the search should be case insensitive. I do have <code>A-Z</code> in my character class, but conceptually I'm negating the entire character class, so I'm not matching any lowercase or uppercase letters in my (character class) pattern. Ultimately I'm expecting only literal string characters to influence the smart-case, i.e. character classes and other special characters shouldn't be taken into account for the smart-case feature.</p>
+What is the actual behavior?
+<p>Actual behavior is that the pattern doesn&#x27;t match.</p>
+What is the expected behavior?
+<p>I&#x27;m expecting the pattern to match, because <code>rust</code> is all lowercase, so the search should be case insensitive. I do have <code>A-Z</code> in my character class, but conceptually I&#x27;m negating the entire character class, so I&#x27;m not matching any lowercase or uppercase letters in my (character class) pattern. Ultimately I&#x27;m expecting only literal string characters to influence the smart-case, i.e. character classes and other special characters shouldn&#x27;t be taken into account for the smart-case feature.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -56,28 +56,28 @@ rg='rg --smart-case'
             
             A pattern is considered all lowercase if both of the following rules hold:
             
-            First, the pattern contains at least one literal character. For example, 'a\w'
-            contains a literal ('a') but just '\w' does not.
+            First, the pattern contains at least one literal character. For example, &#x27;a\w&#x27;
+            contains a literal (&#x27;a&#x27;) but just &#x27;\w&#x27; does not.
             
             Second, of the literals in the pattern, none of them are considered to be
-            uppercase according to Unicode. For example, 'foo\pL' has no uppercase
-            literals but 'Foo\pL' does.
+            uppercase according to Unicode. For example, &#x27;foo\pL&#x27; has no uppercase
+            literals but &#x27;Foo\pL&#x27; does.
             
             This overrides the -s/--case-sensitive and -i/--ignore-case flags.
 </code></pre>
-<p>The <code>A-Z</code> in the character class are literals, and those are indeed what disables smart case. I grant that you've stumbled over a somewhat odd case, but what you're asking for is probably not what you intend. You've written the character class <code>[^a-zA-Z]</code>, and from what I can tell, because the <em>negation</em> of that class doesn't include <code>A-Z</code>, then it follows that it doesn't contain any uppercase characters and thus smart case should be enabled. Do I have you right? If so, there is an incorrect jump there. <code>[^a-zA-Z]</code> is not &quot;match all ASCII characters except for <code>a-z</code> and <code>A-Z</code>.&quot; It is, &quot;match all <em>Unicode scalar values</em> except for <code>a-z</code> and <code>A-Z</code>.&quot; That set of Unicode scalar values certainly contains uppercase characters, and thus, smart case wouldn't be enabled in your case even if it followed your rules. You'd have to disable Unicode mode (<code>--no-unicode</code>) for your rules to have the intended effect.</p>
-<p>I personally think the current behavior is the most intuitive: smart case is enabled when there aren't any <em>literal</em> uppercase characters in your pattern. That's it. Your pattern has uppercase literals in it, and therefore, the search should be case sensitive because you <em>took case into account when writing your pattern</em>. That's kind of the point of smart case.</p>
+<p>The <code>A-Z</code> in the character class are literals, and those are indeed what disables smart case. I grant that you&#x27;ve stumbled over a somewhat odd case, but what you&#x27;re asking for is probably not what you intend. You&#x27;ve written the character class <code>[^a-zA-Z]</code>, and from what I can tell, because the <em>negation</em> of that class doesn&#x27;t include <code>A-Z</code>, then it follows that it doesn&#x27;t contain any uppercase characters and thus smart case should be enabled. Do I have you right? If so, there is an incorrect jump there. <code>[^a-zA-Z]</code> is not &quot;match all ASCII characters except for <code>a-z</code> and <code>A-Z</code>.&quot; It is, &quot;match all <em>Unicode scalar values</em> except for <code>a-z</code> and <code>A-Z</code>.&quot; That set of Unicode scalar values certainly contains uppercase characters, and thus, smart case wouldn&#x27;t be enabled in your case even if it followed your rules. You&#x27;d have to disable Unicode mode (<code>--no-unicode</code>) for your rules to have the intended effect.</p>
+<p>I personally think the current behavior is the most intuitive: smart case is enabled when there aren&#x27;t any <em>literal</em> uppercase characters in your pattern. That&#x27;s it. Your pattern has uppercase literals in it, and therefore, the search should be case sensitive because you <em>took case into account when writing your pattern</em>. That&#x27;s kind of the point of smart case.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2023-04-20 17:32</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-04-20 17:32</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2023-04-20 17:32</div>
+            <div class="event">Label <span class="label">wontfix</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-04-20 17:32</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ariel-miculas">@ariel-miculas</a> on 2023-04-20 17:54</div>
-            <div class="timeline-body"><p>Probably a better explanation is &quot;my pattern contains uppercase characters, but it excludes them, so I don't actually want smart-case to be case sensitive&quot;, but I guess it's best to use the case insensitive option instead of smart-case.</p>
+            <div class="timeline-body"><p>Probably a better explanation is &quot;my pattern contains uppercase characters, but it excludes them, so I don&#x27;t actually want smart-case to be case sensitive&quot;, but I guess it&#x27;s best to use the case insensitive option instead of smart-case.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -87,13 +87,13 @@ rg='rg --smart-case'
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ariel-miculas">@ariel-miculas</a> on 2023-04-20 18:19</div>
-            <div class="timeline-body"><p>I'm not intentionally matching any uppercase characters, so I'm expecting a case insensitive match. I guess what I expected was <code>[^a-zA-Z]rust</code> to behave kind of like <code>\Wrust</code> (but I wanted to exclude <code>_</code> from the definition of a word). Since <code>\W</code> is not treated as an uppercase character, the pattern <code>\Wrust</code> performs an insensitive match. But my hand-made <code>[^a-zA-Z]</code> disables smart-case's case insensitive match. But the &quot;solution&quot; for me would be &quot;treat character classes like escape patterns&quot;, i.e. don't look inside character classes for uppercase characters when deciding the <code>smart-case</code> behavior. But I understand this would break the expectations of users doing <code>[AB]rust</code> (or maybe not, since I only want case sensitive search for <code>[AB]Rust</code> and I want case insensitive search for <code>[AB]rust</code>). Anyway, now I agree with your statement along the lines that &quot;smart case is weird&quot;.</p>
+            <div class="timeline-body"><p>I&#x27;m not intentionally matching any uppercase characters, so I&#x27;m expecting a case insensitive match. I guess what I expected was <code>[^a-zA-Z]rust</code> to behave kind of like <code>\Wrust</code> (but I wanted to exclude <code>_</code> from the definition of a word). Since <code>\W</code> is not treated as an uppercase character, the pattern <code>\Wrust</code> performs an insensitive match. But my hand-made <code>[^a-zA-Z]</code> disables smart-case&#x27;s case insensitive match. But the &quot;solution&quot; for me would be &quot;treat character classes like escape patterns&quot;, i.e. don&#x27;t look inside character classes for uppercase characters when deciding the <code>smart-case</code> behavior. But I understand this would break the expectations of users doing <code>[AB]rust</code> (or maybe not, since I only want case sensitive search for <code>[AB]Rust</code> and I want case insensitive search for <code>[AB]rust</code>). Anyway, now I agree with your statement along the lines that &quot;smart case is weird&quot;.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:43:40 UTC
+        Synced at 2026-01-20 18:48:13 UTC
     </footer>
 </body>
 </html>

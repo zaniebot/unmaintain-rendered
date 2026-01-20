@@ -23,26 +23,26 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a></div>
-            <div class="timeline-body"><p>We should not represent &quot;unbound&quot; as a type, because it's only meaningful within a scope, it shouldn't &quot;travel&quot; across scopes as a type.</p>
+            <div class="timeline-body"><p>We should not represent &quot;unbound&quot; as a type, because it&#x27;s only meaningful within a scope, it shouldn&#x27;t &quot;travel&quot; across scopes as a type.</p>
 <p>Instead, we should explicitly use the use-def map methods to check whether a name may be unbound in the places where it matters.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2024-10-07 19:36</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/carljm">@carljm</a> on 2024-10-07 19:36</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @MichaReiser by @carljm on 2024-10-07 19:38</div>
+            <div class="event">Assigned to <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/carljm">@carljm</a> on 2024-10-07 19:38</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-08 16:46</div>
-            <div class="timeline-body"><p>Depends on https://github.com/astral-sh/ruff/pull/13563</p>
+            <div class="timeline-body"><p>Depends on <a href="https://github.com/astral-sh/ruff/pull/13563">astral-sh/ruff#13563</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-09 09:39</div>
             <div class="timeline-body"><p>Some extra notes from my conversation with @carljm the other day regarding on how this should be implemented</p>
 <blockquote>
-<p>In general, when we query the type of a symbol from another scope, and that symbol either doesn't exist or is definitely unbound, that should be a diagnostic and we should return <code>Unknown</code>.
+<p>In general, when we query the type of a symbol from another scope, and that symbol either doesn&#x27;t exist or is definitely unbound, that should be a diagnostic and we should return <code>Unknown</code>.
 if the symbol is conditionally bound, we should just return the type from the bound paths (and possibly a diagnostic in this case as well)
 the &quot;diagnostic&quot; part may require some of these methods to gain a more complex <code>Outcome</code>-style return type
 but it would also be possible to remove Unbound (and just return <code>Unknown</code> in those cases) without handling the diagnostic part at all yet</p>
@@ -54,23 +54,23 @@ but it would also be possible to remove Unbound (and just return <code>Unknown</
             <div class="timeline-body"><p>In the context of reviewing and landing #13563 I ended up looking at this a bit; not far enough to have any useful code, just enough to have more clear ideas of how we might want to implement it.</p>
 <p>I think ultimately <code>symbol_ty_by_id</code> and all the functions based on it will need a more complex return type than just a <code>Type</code>, because callers will want to know both the type, if any, and whether the symbol is possibly unbound or definitely unbound (in which case there will be no <code>Type</code> available) and also possibly/definitely undeclared.</p>
 <p>This will bring these symbol lookup functions more inline with <code>Type::call</code> and friends, where we use a bespoke return type (<code>CallOutcome</code> in the case of <code>Type::call</code>) to give callers more flexibility in handling various possible cases. (The root cause of the <code>Type::Unbound</code> mistake was me trying too hard to avoid such custom return types and squeeze too much information into a plain <code>Type</code> return.)</p>
-<p>It's possible that for best efficiency this return type (we could call it <code>SymbolLookupResult</code>, unless we can think of something shorter that's equally clear?) should actually be a lazy wrapper around an iterator of types that need to be unioned, generic over the complex iterators constructed in <code>bindings_ty</code> and <code>declarations_ty</code> (or both chained together, in the case of a partially-declared symbol). The advantage of this would be that the caller could decide (via methods on <code>SymbolLookupResult</code>) to insert more types into the union, depending on maybe-unboundness, before the union is even first constructed, and we'd construct fewer temporary union types.</p>
+<p>It&#x27;s possible that for best efficiency this return type (we could call it <code>SymbolLookupResult</code>, unless we can think of something shorter that&#x27;s equally clear?) should actually be a lazy wrapper around an iterator of types that need to be unioned, generic over the complex iterators constructed in <code>bindings_ty</code> and <code>declarations_ty</code> (or both chained together, in the case of a partially-declared symbol). The advantage of this would be that the caller could decide (via methods on <code>SymbolLookupResult</code>) to insert more types into the union, depending on maybe-unboundness, before the union is even first constructed, and we&#x27;d construct fewer temporary union types.</p>
 <p>Or another approach that might be simpler (fewer lifetimes?), but would mean collecting the types into a vector, would be for <code>SymbolLookupResult</code> to effectively be a wrapper around a <code>UnionBuilder</code> plus bound-ness / declared-ness info, that only actually builds the union type on demand.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @sharkdp by @MichaReiser on 2024-10-25 07:37</div>
+            <div class="event">Assigned to <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-25 07:37</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Unassigned @MichaReiser by @MichaReiser on 2024-10-25 07:37</div>
+            <div class="event">Unassigned <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-25 07:37</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @sharkdp on 2024-10-31 19:05</div>
+            <div class="event">Closed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-10-31 19:05</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:51:13 UTC
+        Synced at 2026-01-20 18:48:58 UTC
     </footer>
 </body>
 </html>

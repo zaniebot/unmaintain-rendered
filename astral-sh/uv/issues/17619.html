@@ -23,23 +23,23 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Henri-J-Norden">@Henri-J-Norden</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>Hello,</p>
 <p>I have a private package registry, but would like to avoid replicating public dependencies from PyPi to the private registry or proxying requests for unknown packages through the private registry to PyPi. This can be configured easily by just setting the <code>UV_INDEX</code> env var - by default, <code>uv</code> automatically falls back to PyPi when a package is not found in the private registry.</p>
 <p>However, when running the same package multiple times in a row with <code>uvx</code>, there is a noticeable pause during every execution for dependency resolution. It is especially noticeable for larger packages with many dependencies.</p>
 <p>This seems to be caused by <code>uv</code> never caching negative responses from the private registry. Essentially the control header is ignored, when the private registry responds with HTTP404 for any of the dependencies (that are always expected to be on PyPi).</p>
-<p>This is surprising behavior, as I expected <code>uv</code> to cache the 404 response (until max-age has elapsed) and immediately fall back to the default index (and use a cached response from the default index, if any). If negative caching is not supported by design (even behind a cli flag or env var), then I feel like <code>uv</code> should at least print a warning when it ignores the cache control header (instead of dropping it silently). The <a href="https://docs.astral.sh/uv/concepts/indexes/#customizing-cache-control-headers">documentation</a> could also be improved, since it's not clear what should happen in more complex cases.</p>
-<hr />
-<h1>Example</h1>
+<p>This is surprising behavior, as I expected <code>uv</code> to cache the 404 response (until max-age has elapsed) and immediately fall back to the default index (and use a cached response from the default index, if any). If negative caching is not supported by design (even behind a cli flag or env var), then I feel like <code>uv</code> should at least print a warning when it ignores the cache control header (instead of dropping it silently). The <a href="https://docs.astral.sh/uv/concepts/indexes/#customizing-cache-control-headers">documentation</a> could also be improved, since it&#x27;s not clear what should happen in more complex cases.</p>
+<hr>
+Example
 <p>For the following example, I have built (<code>uv build --sdist</code>) and published (<code>uv publish</code>) a single package to the private registry: <code>private</code>.</p>
-<h3>private/pyproject.toml</h3>
-<pre><code class="language-toml">[project]
+private/pyproject.toml
+<pre><code>[project]
 name = &quot;private&quot;
 version = &quot;0.1.0&quot;
 dependencies = [&quot;example_pypi_package&quot;]  # public package, only on PyPi
 </code></pre>
 <p>The private registry sets the <code>Cache-Control</code> header to <code>public, max-age=600</code> in every response, if the request is not POST, PUT or PATCH.</p>
-<pre><code class="language-shell">$ curl -X GET -I http://localhost:8000/packages/pypi/simple/example_pypi_package/
+<pre><code>$ curl -X GET -I http://localhost:8000/packages/pypi/simple/example_pypi_package/
 HTTP/1.1 404 Not Found
 Server: Werkzeug/3.1.5 Python/3.13.11
 Date: Mon, 19 Jan 2026 23:56:28 GMT
@@ -57,15 +57,15 @@ Server-Timing: TimerPanel_utime;dur=11.525999999996372;desc=&quot;User CPU time&
 Connection: close
 </code></pre>
 <p>The private registry is part of a proprietary program, so I am unable to share the source code.</p>
-<h2>Log snippets</h2>
+Log snippets
 <p>With <code>UV_INDEX=http://__token__:***@localhost:8000/packages/pypi/simple/</code>, I executed <code>uvx -vvv private</code> twice in a row - the log below is from the second execution.</p>
 <p>Notice how <code>private</code> is loaded from the cache:</p>
-<pre><code class="language-shell">TRACE Response from http://localhost:8000/packages/pypi/simple/private/ is storable because it has a 'public' cache-control directive
+<pre><code>TRACE Response from http://localhost:8000/packages/pypi/simple/private/ is storable because it has a &#x27;public&#x27; cache-control directive
 TRACE Freshness lifetime found via cache-control max age setting: 600s
 DEBUG Found fresh response for: http://localhost:8000/packages/pypi/simple/private/
 </code></pre>
 <p>... but the <code>example-pypi-package</code> response from the private registry is not cached:</p>
-<pre><code class="language-shell">DEBUG No cache entry for: http://localhost:8000/packages/pypi/simple/example-pypi-package/
+<pre><code>DEBUG No cache entry for: http://localhost:8000/packages/pypi/simple/example-pypi-package/
 DEBUG Sending fresh GET request for: http://localhost:8000/packages/pypi/simple/example-pypi-package/
 TRACE Handling request for http://__token__:****@localhost:8000/packages/pypi/simple/example-pypi-package/ with authentication policy auto
 TRACE Request for http://__token__:****@localhost:8000/packages/pypi/simple/example-pypi-package/ already contains username and password
@@ -82,14 +82,14 @@ TRACE Received response for fresh request with status 404 Not Found for: http://
 TRACE Considering retry of response HTTP 404 Not Found for http://localhost:8000/packages/pypi/simple/example-pypi-package/
 TRACE Cannot retry nested reqwest error
 TRACE Fetching metadata for example-pypi-package from https://pypi.org/simple/example-pypi-package/
-TRACE Response from https://pypi.org/simple/example-pypi-package/ is storable because it has a 'public' cache-control directive
+TRACE Response from https://pypi.org/simple/example-pypi-package/ is storable because it has a &#x27;public&#x27; cache-control directive
 TRACE Freshness lifetime found via cache-control max age setting: 600s
 DEBUG Found fresh response for: https://pypi.org/simple/example-pypi-package/
 </code></pre>
-<h2>Full log</h2>
-<details>
+Full log
 
-<pre><code class="language-shell">$ uvx -V
+
+<pre><code>$ uvx -V
 uvx 0.9.26 (ee4f00362 2026-01-15)
 
 $ uvx -vvv private
@@ -101,7 +101,7 @@ DEBUG Searching for default Python interpreter in managed installations or searc
 DEBUG Searching for managed installations at `/home/henri/.local/share/uv/python`
 TRACE Found `ld` path: /lib64/ld-linux-x86-64.so.2
 TRACE stdout output from `ld`: &quot;&quot;
-TRACE stderr output from `ld`: &quot;/lib64/ld-linux-x86-64.so.2: missing program name\nTry '/lib64/ld-linux-x86-64.so.2 --help' for more information.\n&quot;
+TRACE stderr output from `ld`: &quot;/lib64/ld-linux-x86-64.so.2: missing program name\nTry &#x27;/lib64/ld-linux-x86-64.so.2 --help&#x27; for more information.\n&quot;
 TRACE Tried to find musl version by running `&quot;/lib64/ld-linux-x86-64.so.2&quot;`, but failed: Could not find musl version in output of: `/lib64/ld-linux-x86-64.so.2`
 TRACE Tried to find libc version from possible symlink at &quot;/lib64/ld-linux-x86-64.so.2&quot;, but failed: Failed to determine libc
 TRACE stdout output from `ld.so --version`: &quot;ld.so (GNU libc) stable release version 2.42.\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.\nThere is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A\nPARTICULAR PURPOSE.\n&quot;
@@ -128,7 +128,7 @@ INFO add_decision: Id::&lt;PubGrubPackage&gt;(0) @ 0a0.dev0 without checking dep
 TRACE Assigned packages: root==0a0.dev0
 TRACE Chose package for decision: private. remaining choices: 
 TRACE Fetching metadata for private from http://__token__:****@localhost:8000/packages/pypi/simple/private/
-TRACE Response from http://localhost:8000/packages/pypi/simple/private/ is storable because it has a 'public' cache-control directive
+TRACE Response from http://localhost:8000/packages/pypi/simple/private/ is storable because it has a &#x27;public&#x27; cache-control directive
 TRACE Freshness lifetime found via cache-control max age setting: 600s
 DEBUG Found fresh response for: http://localhost:8000/packages/pypi/simple/private/
 TRACE Received package metadata for: private
@@ -142,7 +142,7 @@ TRACE Returning candidate for package private with range * after 1 steps
 DEBUG Selecting: private==0.1.0 [compatible] (private-0.1.0.tar.gz)
 TRACE Checking lock for `/home/henri/.cache/uv/sdists-v9/index/c1deb61519d057b2/private/0.1.0` at `/home/henri/.cache/uv/sdists-v9/index/c1deb61519d057b2/private/0.1.0/.lock`
 DEBUG Acquired exclusive lock for `/home/henri/.cache/uv/sdists-v9/index/c1deb61519d057b2/private/0.1.0`
-TRACE Response from http://localhost:8000/packages/pypi/download/private/private-0.1.0.tar.gz is storable because it has an 'max-age' cache-control directive
+TRACE Response from http://localhost:8000/packages/pypi/download/private/private-0.1.0.tar.gz is storable because it has an &#x27;max-age&#x27; cache-control directive
 TRACE Freshness lifetime found via cache-control max age setting: 86400s
 DEBUG Found fresh response for: http://localhost:8000/packages/pypi/download/private/private-0.1.0.tar.gz
 DEBUG Found static `pyproject.toml` for: private==0.1.0
@@ -171,7 +171,7 @@ TRACE Received response for fresh request with status 404 Not Found for: http://
 TRACE Considering retry of response HTTP 404 Not Found for http://localhost:8000/packages/pypi/simple/example-pypi-package/
 TRACE Cannot retry nested reqwest error
 TRACE Fetching metadata for example-pypi-package from https://pypi.org/simple/example-pypi-package/
-TRACE Response from https://pypi.org/simple/example-pypi-package/ is storable because it has a 'public' cache-control directive
+TRACE Response from https://pypi.org/simple/example-pypi-package/ is storable because it has a &#x27;public&#x27; cache-control directive
 TRACE Freshness lifetime found via cache-control max age setting: 600s
 DEBUG Found fresh response for: https://pypi.org/simple/example-pypi-package/
 TRACE Received package metadata for: example-pypi-package
@@ -183,7 +183,7 @@ TRACE Found candidate for package example-pypi-package with range * after 1 step
 TRACE Returning candidate for package example-pypi-package with range * after 1 steps
 TRACE Returning candidate for package example-pypi-package with range * after 1 steps
 DEBUG Selecting: example-pypi-package==0.1.0 [compatible] (example_pypi_package-0.1.0-py3-none-any.whl)
-TRACE Response from https://files.pythonhosted.org/packages/5c/1b/413af2998cc5930ad77331da8de618bc2e83feee034a6b36dc5122804b4f/example_pypi_package-0.1.0-py3-none-any.whl.metadata is storable because it has a 'public' cache-control directive
+TRACE Response from https://files.pythonhosted.org/packages/5c/1b/413af2998cc5930ad77331da8de618bc2e83feee034a6b36dc5122804b4f/example_pypi_package-0.1.0-py3-none-any.whl.metadata is storable because it has a &#x27;public&#x27; cache-control directive
 TRACE Freshness lifetime found via cache-control max age setting: 365000000s
 DEBUG Found fresh response for: https://files.pythonhosted.org/packages/5c/1b/413af2998cc5930ad77331da8de618bc2e83feee034a6b36dc5122804b4f/example_pypi_package-0.1.0-py3-none-any.whl.metadata
 TRACE Received built distribution metadata for: example-pypi-package==0.1.0
@@ -205,26 +205,26 @@ DEBUG Looking at `.dist-info` at: /home/henri/.cache/uv/archive-v0/2vKDRN-FsuGZd
 Package `private` does not provide any executables.
 DEBUG Released lock at `/home/henri/.cache/uv/.lock`
 </code></pre>
-</details>
 
-<h3>Platform</h3>
+
+Platform
 <p>Linux 6.18.6-2-cachyos x86_64 GNU/Linux</p>
-<h3>Version</h3>
+Version
 <p>uv 0.9.26 (ee4f00362 2026-01-15)</p>
-<h3>Python version</h3>
+Python version
 <p>Python 3.13.11</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @Henri-J-Norden on 2026-01-20 00:52</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/Henri-J-Norden">@Henri-J-Norden</a> on 2026-01-20 00:52</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Cache control headers ignored for 404 response from package repo" to "Cache control headers ignored for 404 response from package registry" by @Henri-J-Norden on 2026-01-20 01:09</div>
+            <div class="event">Renamed from &quot;Cache control headers ignored for 404 response from package repo&quot; to &quot;Cache control headers ignored for 404 response from package registry&quot; by <a href="https://github.com/Henri-J-Norden">@Henri-J-Norden</a> on 2026-01-20 01:09</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-20 01:42:55 UTC
+        Synced at 2026-01-20 19:41:34 UTC
     </footer>
 </body>
 </html>

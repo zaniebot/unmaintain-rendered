@@ -23,11 +23,11 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This PR implements support for providing LSP client settings.</p>
 <p>The complementary PR in the ty VS Code extension: astral-sh/ty-vscode#106.</p>
-<p>Notes for the previous iteration of this PR is in https://github.com/astral-sh/ruff/pull/19614#issuecomment-3136477864 (click on &quot;Details&quot;).</p>
-<p>Specifically, this PR splits the client settings into 3 distinct groups. Keep in mind that these groups are not visible to the user, they're merely an implementation detail. The groups are:</p>
+<p>Notes for the previous iteration of this PR is in <a href="https://github.com/astral-sh/ruff/pull/19614">astral-sh/ruff#19614</a>#issuecomment-3136477864 (click on &quot;Details&quot;).</p>
+<p>Specifically, this PR splits the client settings into 3 distinct groups. Keep in mind that these groups are not visible to the user, they&#x27;re merely an implementation detail. The groups are:</p>
 <ol>
 <li><code>GlobalOptions</code> - these are the options that are global to the language server and will be the same for all the workspaces that are handled by the server</li>
 <li><code>WorkspaceOptions</code> - these are the options that are specific to a workspace and will be applied only when running any logic for that workspace</li>
@@ -48,28 +48,28 @@
 <li><code>disableLanguageServices</code></li>
 <li><code>pythonExtension</code> (Python environment information that is populated by the ty VS Code extension)</li>
 </ul>
-<h3><code>workspace/configuration</code></h3>
-<p>This request allows server to ask the client for configuration to a specific workspace. But, this is only supported by the client that has the <code>workspace.configuration</code> client capability set to <code>true</code>. What to do for clients that don't support pulling configurations?</p>
-<p>In that case, the settings needs to be provided in the initialization options and updating the values of those settings can only be done by restarting the server. With the way this is implemented, this means that if the client does not support pulling workspace configuration then there's no way to specify settings specific to a workspace. Earlier, this would've been possible by providing an array of client options with an additional field which specifies which workspace the options belong to but that adds complexity and clients that actually do not support <code>workspace/configuration</code> would usually not support multiple workspaces either.</p>
+<code>workspace/configuration</code>
+<p>This request allows server to ask the client for configuration to a specific workspace. But, this is only supported by the client that has the <code>workspace.configuration</code> client capability set to <code>true</code>. What to do for clients that don&#x27;t support pulling configurations?</p>
+<p>In that case, the settings needs to be provided in the initialization options and updating the values of those settings can only be done by restarting the server. With the way this is implemented, this means that if the client does not support pulling workspace configuration then there&#x27;s no way to specify settings specific to a workspace. Earlier, this would&#x27;ve been possible by providing an array of client options with an additional field which specifies which workspace the options belong to but that adds complexity and clients that actually do not support <code>workspace/configuration</code> would usually not support multiple workspaces either.</p>
 <p>Now, for the clients that do support this, the server will initiate the request to get the configuration for all the workspaces at the start of the server. Once the server receives these options, it will resolve them for each workspace as follows:</p>
 <ol>
-<li>Combine the client options sent during initialization with the options specific to the workspace creating the final client options that's specific to this workspace</li>
+<li>Combine the client options sent during initialization with the options specific to the workspace creating the final client options that&#x27;s specific to this workspace</li>
 <li>Create a global options by combining the global options from (1) for all workspaces which in turn will also combine the global options sent during initialization</li>
 </ol>
 <p>The global options are resolved into the global settings and are available on the <code>Session</code> which is initialized with the default global settings. The workspace options are resolved into the workspace settings and are available on the respective <code>Workspace</code>.</p>
-<p>The <code>SessionSnapshot</code> contains the global settings while the document snapshot contains the workspace settings. We could add the global settings to the document snapshot but that's currently not needed.</p>
-<h3>Document diagnostic dynamic registration</h3>
-<p>Currently, the document diagnostic server capability is created based on the <code>diagnosticMode</code> sent during initialization. But, that wouldn't provide us with the complete picture. This means the server needs to defer registering the document diagnostic capability at a later point once the settings have been resolved.</p>
+<p>The <code>SessionSnapshot</code> contains the global settings while the document snapshot contains the workspace settings. We could add the global settings to the document snapshot but that&#x27;s currently not needed.</p>
+Document diagnostic dynamic registration
+<p>Currently, the document diagnostic server capability is created based on the <code>diagnosticMode</code> sent during initialization. But, that wouldn&#x27;t provide us with the complete picture. This means the server needs to defer registering the document diagnostic capability at a later point once the settings have been resolved.</p>
 <p>This is done using dynamic registration for clients that support it. For clients that do not support dynamic registration for document diagnostic capability, the server advertises itself as always supporting workspace diagnostics and work done progress token.</p>
 <p>This dynamic registration now allows us to change the server capability for workspace diagnostics based on the resolved <code>diagnosticMode</code> value. In the future, once <code>workspace/didChangeConfiguration</code> is supported, we can avoid the server restart when users have changed any client settings.</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>Add integration tests and recorded videos on the user experience in various editors:</p>
-<h3>VS Code</h3>
-<p>For VS Code users, the settings experience is unchanged because the extension defines it's own interface on how the user can specify the server setting. This means everything is under the <code>ty.*</code> namespace as usual.</p>
+VS Code
+<p>For VS Code users, the settings experience is unchanged because the extension defines it&#x27;s own interface on how the user can specify the server setting. This means everything is under the <code>ty.*</code> namespace as usual.</p>
 <p>https://github.com/user-attachments/assets/c2e5ba5c-7617-406e-a09d-e397ce9c3b93</p>
-<h3>Zed</h3>
+Zed
 <p>For Zed, the settings experience has changed. Users can specify settings during initialization:</p>
-<pre><code class="language-json">{
+<pre><code>{
   &quot;lsp&quot;: {
     &quot;ty&quot;: {
       &quot;initialization_options&quot;: {
@@ -83,7 +83,7 @@
 }
 </code></pre>
 <p>Or, can specify the options under the <code>settings</code> key:</p>
-<pre><code class="language-json">{
+<pre><code>{
   &quot;lsp&quot;: {
     &quot;ty&quot;: {
       &quot;settings&quot;: {
@@ -100,10 +100,10 @@
   }
 }
 </code></pre>
-<p>The <code>logLevel</code> and <code>logFile</code> setting still needs to go under the initialization options because they're required by the server during initialization.</p>
+<p>The <code>logLevel</code> and <code>logFile</code> setting still needs to go under the initialization options because they&#x27;re required by the server during initialization.</p>
 <p>We can remove the nesting of the settings under the &quot;ty&quot; namespace by updating the return type of https://github.com/zed-extensions/ty/blob/db9ea0cdfd7352529748ef5bf729a152c0219805/src/tychecker.rs#L45-L49 to be wrapped inside <code>ty</code> directly so that users can avoid doing the double nesting.</p>
-<p>There's one issue here which is that if the <code>diagnosticMode</code> is specified in both the initialization option and settings key, then the resolution is a bit different - if either of them is set to be <code>workspace</code>, then it wins which means that in the following configuration, the diagnostic mode is <code>workspace</code>:</p>
-<pre><code class="language-json">{
+<p>There&#x27;s one issue here which is that if the <code>diagnosticMode</code> is specified in both the initialization option and settings key, then the resolution is a bit different - if either of them is set to be <code>workspace</code>, then it wins which means that in the following configuration, the diagnostic mode is <code>workspace</code>:</p>
+<pre><code>{
   &quot;lsp&quot;: {
     &quot;ty&quot;: {
       &quot;settings&quot;: {
@@ -120,31 +120,31 @@
 </code></pre>
 <p>This behavior is mainly a result of combining global options from various workspace configuration results. Users should not be able to provide global options in multiple workspaces but that restriction cannot be done on the server side. The ty VS Code extension restricts these global settings to only be set in the user settings and not in workspace settings but we do not control extensions in other editors.</p>
 <p>https://github.com/user-attachments/assets/8e2d6c09-18e6-49e5-ab78-6cf942fe1255</p>
-<h3>Neovim</h3>
+Neovim
 <p>Same as in Zed.</p>
-<h3>Other</h3>
+Other
 <p>Other editors that do not support <code>workspace/configuration</code>, the users would need to provide the server settings during initialization.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">server</span> added by @dhruvmanila on 2025-07-29 09:13</div>
+            <div class="event">Label <span class="label">server</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-07-29 09:13</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @dhruvmanila on 2025-07-29 09:13</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-07-29 09:13</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-29 09:49</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a>
 <p>No changes detected when running ty on typing conformance tests ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-29 09:51</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
+<code>mypy_primer</code> results
 <p>No ecosystem changes detected ✅
 No memory usage changes detected ✅</p>
 </div>
@@ -160,19 +160,19 @@ No memory usage changes detected ✅</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server/api/requests/workspace_diagnostic.rs</code>:106 on 2025-07-30 08:11</div>
-            <div class="timeline-body"><p>What would you think of naming <code>global_settings</code>, <code>window_settings</code> (I'm okay with global settings. I'm just wondering if it's worth aligning with VS code's terminology)</p>
+            <div class="timeline-body"><p>What would you think of naming <code>global_settings</code>, <code>window_settings</code> (I&#x27;m okay with global settings. I&#x27;m just wondering if it&#x27;s worth aligning with VS code&#x27;s terminology)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/session/settings.rs</code>:21 on 2025-07-30 08:18</div>
             <div class="timeline-body"><p>I do find <code>combine</code> on the <code>Settings</code> struct a bit surprsing. The way this works in ty (and uv and ruff) is that you can combine <code>Options</code>. All options are then resolved to a single <code>Settings</code>.</p>
 <p>The way this could look like in your PR is that you have a <code>GlobalOptions</code> struct. Each workspace configuration contains a <code>GlobalOptions</code> field and the server can combine all of these together. <code>GlobalOptions</code> then implements an <code>into_settings</code> which resolves any default values.</p>
-<p>The benefit of the <code>Options</code> struct is that <code>diagnostic_mode</code> can be an <code>Option&lt;DiagnosticMode&gt;</code>. This allows us to distinguish between: <em>initialize didn't set <code>DiagnosticMode</code></em> and <em>the user specified the default <code>DiagnsoticMode</code></em>.</p>
+<p>The benefit of the <code>Options</code> struct is that <code>diagnostic_mode</code> can be an <code>Option&lt;DiagnosticMode&gt;</code>. This allows us to distinguish between: <em>initialize didn&#x27;t set <code>DiagnosticMode</code></em> and <em>the user specified the default <code>DiagnsoticMode</code></em>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/capabilities.rs</code>:252 on 2025-07-30 08:19</div>
-            <div class="timeline-body"><p>This feels a bit out of place. The function doesn't contain any code related to capabilities</p>
+            <div class="timeline-body"><p>This feels a bit out of place. The function doesn&#x27;t contain any code related to capabilities</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -181,11 +181,11 @@ No memory usage changes detected ✅</p>
 <blockquote>
 <p>One way to improve would be to accept all the settings in initialization options and consider them global settings. Then, if the client supports workspace/configuration request, we can ask the client for workspace specific configuration that would take precedence over the global settings.</p>
 </blockquote>
-<p>This makes a lot of sense to me and seems more intuitive. Especially given that most editors don't support workspaces.</p>
+<p>This makes a lot of sense to me and seems more intuitive. Especially given that most editors don&#x27;t support workspaces.</p>
 <blockquote>
 <p>Here, there are two kinds of settings that options.into_settings will return - GlobalSettings are the ones that are applied globally e.g., ty.diagnosticMode and WorkspaceSettings are the ones that are applied on a per-workspace level e.g., ty.disableLanguageServices.</p>
 </blockquote>
-<p>I don't fully understand this part. I also left an inline comment related to this but I think the structure we want to deserialize into in the workspace configuration handler is one that has two fields: <code>global_options</code> and <code>workspace_options</code> (we can use <code>serde(flatten)</code> to hide this detail from clients). I think this will help clarify which fields are workspace specific vs which fields are global. It also allows you to implement <code>combine</code> on <code>GlobalOptions</code> and not on settings (following the pattern we use in the CLI)</p>
+<p>I don&#x27;t fully understand this part. I also left an inline comment related to this but I think the structure we want to deserialize into in the workspace configuration handler is one that has two fields: <code>global_options</code> and <code>workspace_options</code> (we can use <code>serde(flatten)</code> to hide this detail from clients). I think this will help clarify which fields are workspace specific vs which fields are global. It also allows you to implement <code>combine</code> on <code>GlobalOptions</code> and not on settings (following the pattern we use in the CLI)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -195,28 +195,28 @@ No memory usage changes detected ✅</p>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-07-30 13:58</div>
             <div class="timeline-body"><p>Notes for the previous iteration:</p>
-<details><summary>Details</summary>
+Details
 <p>
 
 <p>This PR adds support for client settings via the <code>workspace/configuration</code> request.</p>
 <p>Currently, the settings can only be passed in via the initialization options which are limited because any change to the settings require a server restart to take effect. This is why Micha added the infrastructure to request configuration for a specific workspace via the <code>workspace/configuration</code> request.</p>
-<p>This PR implements the point 1, 2, 3 from https://github.com/astral-sh/ty/issues/82#issuecomment-3026608030 i.e.,</p>
+<p>This PR implements the point 1, 2, 3 from <a href="https://github.com/astral-sh/ty/issues/82">astral-sh/ty#82</a>#issuecomment-3026608030 i.e.,</p>
 <ul>
 <li>Create a <code>InitializationOptions</code> that only contains <code>logLevel</code> and <code>logFiles</code>. These are the static options that actually require a server restart to take effect</li>
 <li>Start the server initialization process where the server initiates a request to get all workspace configurations via <code>workspace/configuration</code> request endpoint and defers all notifications and requests until the initialization is complete</li>
 <li>Once the server receives the response from <code>workspace/configuration</code> request, it initializes the workspace options with the received data</li>
-<li>Here, there are two kinds of settings that <code>options.into_settings</code> will return - <code>GlobalSettings</code> are the ones that are applied globally e.g., <code>ty.diagnosticMode</code> and <code>WorkspaceSettings</code> are the ones that are applied on a per-workspace level e.g., <code>ty.disableLanguageServices</code>. Now, the protocol only allows to request configuration specific to a workspace, there's no concept of global settings that are dynamic in the spec, so we model that internally using <code>GlobalSettings</code> but this requires taking all the <code>GlobalSettings</code> from all the configured workspaces and combining them. This could result in a mis-match where one workspace has &quot;workspace&quot; diagnostic mode while other has &quot;openFilesOnly&quot; diagnostic mode. In this case, the server should show this mismatch somehow but currently it doesn't.</li>
+<li>Here, there are two kinds of settings that <code>options.into_settings</code> will return - <code>GlobalSettings</code> are the ones that are applied globally e.g., <code>ty.diagnosticMode</code> and <code>WorkspaceSettings</code> are the ones that are applied on a per-workspace level e.g., <code>ty.disableLanguageServices</code>. Now, the protocol only allows to request configuration specific to a workspace, there&#x27;s no concept of global settings that are dynamic in the spec, so we model that internally using <code>GlobalSettings</code> but this requires taking all the <code>GlobalSettings</code> from all the configured workspaces and combining them. This could result in a mis-match where one workspace has &quot;workspace&quot; diagnostic mode while other has &quot;openFilesOnly&quot; diagnostic mode. In this case, the server should show this mismatch somehow but currently it doesn&#x27;t.</li>
 </ul>
-<p>This split is recommended in https://github.com/microsoft/language-server-protocol/issues/567 and is also followed by Dart where <a href="https://github.com/dart-lang/sdk/blob/main/pkg/analysis_server/tool/lsp_spec/README.md#initialization-options">initialization options</a> are separate from <a href="https://github.com/dart-lang/sdk/blob/main/pkg/analysis_server/tool/lsp_spec/README.md#client-workspace-configuration">workspace options</a>.</p>
-<p>But, there seems to be one issue which is that the way <code>workspace/configuration</code> works is that the client can store these settings in any structure it wants which means that the way the user would need to store the settings might differ from editor to editor. I've provided examples on what it would look like with this PR.</p>
+<p>This split is recommended in <a href="https://github.com/microsoft/language-server-protocol/issues/567">microsoft/language-server-protocol#567</a> and is also followed by Dart where <a href="https://github.com/dart-lang/sdk/blob/main/pkg/analysis_server/tool/lsp_spec/README.md#initialization-options">initialization options</a> are separate from <a href="https://github.com/dart-lang/sdk/blob/main/pkg/analysis_server/tool/lsp_spec/README.md#client-workspace-configuration">workspace options</a>.</p>
+<p>But, there seems to be one issue which is that the way <code>workspace/configuration</code> works is that the client can store these settings in any structure it wants which means that the way the user would need to store the settings might differ from editor to editor. I&#x27;ve provided examples on what it would look like with this PR.</p>
 <p>For VS Code:</p>
-<pre><code class="language-json">{
+<pre><code>{
 	&quot;ty.logLevel&quot;: &quot;debug&quot;,
 	&quot;ty.diagnosticMode&quot;: &quot;workspace&quot;
 }
 </code></pre>
 <p>For Neovim:</p>
-<pre><code class="language-lua">{
+<pre><code>{
 	settings = {
 		diagnosticMode = &quot;workspace&quot;,
 	},
@@ -226,7 +226,7 @@ No memory usage changes detected ✅</p>
 }
 </code></pre>
 <p>For Zed:</p>
-<pre><code class="language-json">{
+<pre><code>{
   &quot;lsp&quot;: {
     &quot;ty&quot;: {
       &quot;settings&quot;: {
@@ -242,14 +242,14 @@ No memory usage changes detected ✅</p>
 }
 </code></pre>
 <p>For Helix:</p>
-<pre><code class="language-toml">[language-server.ty.config]
+<pre><code>[language-server.ty.config]
 logLevel = &quot;debug&quot;
 ty = { diagnosticMode = &quot;workspace&quot; }
 </code></pre>
-<h3>Question</h3>
-<p>Based on all of the changes that I've made so far and what I'm observing when using this PR to define the settings in an editor is that this model still seems a bit confusing from a user perspective. One way to improve would be to accept all the settings in initialization options and consider them global settings. Then, if the client supports <code>workspace/configuration</code> request, we can ask the client for workspace specific configuration that would take precedence over the global settings. But, note that some settings like <code>diagnosticMode</code> are still global so a workspace setting cannot override the value of <code>diagnosticMode</code>. We could show a warning if the user has done this.</p>
+Question
+<p>Based on all of the changes that I&#x27;ve made so far and what I&#x27;m observing when using this PR to define the settings in an editor is that this model still seems a bit confusing from a user perspective. One way to improve would be to accept all the settings in initialization options and consider them global settings. Then, if the client supports <code>workspace/configuration</code> request, we can ask the client for workspace specific configuration that would take precedence over the global settings. But, note that some settings like <code>diagnosticMode</code> are still global so a workspace setting cannot override the value of <code>diagnosticMode</code>. We could show a warning if the user has done this.</p>
 </p>
-</details> 
+ 
 
 </div>
         </div>
@@ -259,7 +259,7 @@ ty = { diagnosticMode = &quot;workspace&quot; }
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/api/requests/workspace_diagnostic.rs</code>:106 on 2025-07-30 14:23</div>
-            <div class="timeline-body"><p>I'm not a big fan of <code>window_settings</code> as that seems too specific to VS Code (there are no windows for Neovim :)). I'll keep this as global settings.</p>
+            <div class="timeline-body"><p>I&#x27;m not a big fan of <code>window_settings</code> as that seems too specific to VS Code (there are no windows for Neovim :)). I&#x27;ll keep this as global settings.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -268,7 +268,7 @@ ty = { diagnosticMode = &quot;workspace&quot; }
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/session/settings.rs</code>:21 on 2025-07-30 14:23</div>
-            <div class="timeline-body"><p>Thank you, I've implemented this change.</p>
+            <div class="timeline-body"><p>Thank you, I&#x27;ve implemented this change.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -281,25 +281,25 @@ ty = { diagnosticMode = &quot;workspace&quot; }
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @dhruvmanila on 2025-08-04 12:18</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-08-04 12:18</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @dhruvmanila on 2025-08-04 12:18</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-08-04 12:18</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @dhruvmanila on 2025-08-04 12:18</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-08-04 12:18</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @dhruvmanila on 2025-08-04 12:19</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-08-04 12:19</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2025-08-05 02:09</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-08-05 02:09</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/api/requests/workspace_symbols.rs</code>:33 on 2025-08-05 04:18</div>
-            <div class="timeline-body"><p>We can't query this setting because it's scope is limited to a specific workspace and these endpoints are for <em>all</em> the workspaces managed by the server i.e., this setting is present under <code>WorkspaceSettings</code> but the <code>SessionSnapshot</code> does not know which workspace is this endpoint for.</p>
+            <div class="timeline-body"><p>We can&#x27;t query this setting because it&#x27;s scope is limited to a specific workspace and these endpoints are for <em>all</em> the workspaces managed by the server i.e., this setting is present under <code>WorkspaceSettings</code> but the <code>SessionSnapshot</code> does not know which workspace is this endpoint for.</p>
 <p>I think this is fine because all the workspace related endpoints except for workspace diagnostics are triggered by user explicitly. But, if we do want to enforce this, we could use the settings value from each workspace and act on it accordingly. For example, in workspace symbols, we would skip the workspace if language services are disabled for that workspace:</p>
-<pre><code class="language-rs">        // Iterate through all projects in the session
+<pre><code>        // Iterate through all projects in the session
         for db in snapshot.projects() {
 			// Find the workspace which this project belongs to
 			// Check if language services are enabled or not
@@ -314,14 +314,14 @@ ty = { diagnosticMode = &quot;workspace&quot; }
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @sharkdp removed by @sharkdp on 2025-08-05 06:55</div>
+            <div class="event">Review request for <a href="https://github.com/sharkdp">@sharkdp</a> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-05 06:55</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">great writeup</span> added by @MichaReiser on 2025-08-05 08:33</div>
+            <div class="event">Label <span class="label">great writeup</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-05 08:33</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server/api/notifications/did_close.rs</code>:62 on 2025-08-05 08:38</div>
-            <div class="timeline-body"><p>I think this now justifies calling <code>session.bump_revision</code> in <code>close_file</code>. Overall, I think it's better to all <code>bump_file</code> one time too many than too few times</p>
+            <div class="timeline-body"><p>I think this now justifies calling <code>session.bump_revision</code> in <code>close_file</code>. Overall, I think it&#x27;s better to all <code>bump_file</code> one time too many than too few times</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -336,13 +336,13 @@ ty = { diagnosticMode = &quot;workspace&quot; }
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server/main_loop.rs</code>:249 on 2025-08-05 08:43</div>
-            <div class="timeline-body"><p>Let's add a custom message here in case there is a faulty client (or a client where a user needs to specify this manually).</p>
-<p>A custom message at least gives users (and us) a hint what's going wrong. This is especially useful in release builds where we strip debug information.</p>
+            <div class="timeline-body"><p>Let&#x27;s add a custom message here in case there is a faulty client (or a client where a user needs to specify this manually).</p>
+<p>A custom message at least gives users (and us) a hint what&#x27;s going wrong. This is especially useful in release builds where we strip debug information.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server/main_loop.rs</code>:266 on 2025-08-05 08:44</div>
-            <div class="timeline-body"><p>I know it's unrelated to your changes, so I'm okay deferring this. But should we maybe show a pop up if this happens? E.g. could this happen if a user configures zed or neovim incorrectly?</p>
+            <div class="timeline-body"><p>I know it&#x27;s unrelated to your changes, so I&#x27;m okay deferring this. But should we maybe show a pop up if this happens? E.g. could this happen if a user configures zed or neovim incorrectly?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -357,7 +357,7 @@ ty = { diagnosticMode = &quot;workspace&quot; }
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/session/options.rs</code>:57 on 2025-08-05 08:47</div>
-            <div class="timeline-body"><p>Nit: <code>Result&lt;InitializationOptions, (InitializationOptions, serde_json::Eror)&gt;</code> might be more explicit (and Rust will warn if the caller doesn't handle the error). I think we could even return <code>Result&lt;InitializationOptions, serde_json::Error&gt;</code> and leave it to the caller to fall back to the default options</p>
+            <div class="timeline-body"><p>Nit: <code>Result&lt;InitializationOptions, (InitializationOptions, serde_json::Eror)&gt;</code> might be more explicit (and Rust will warn if the caller doesn&#x27;t handle the error). I think we could even return <code>Result&lt;InitializationOptions, serde_json::Error&gt;</code> and leave it to the caller to fall back to the default options</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -367,7 +367,7 @@ ty = { diagnosticMode = &quot;workspace&quot; }
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/session/options.rs</code>:109 on 2025-08-05 08:51</div>
-            <div class="timeline-body"><p>Maybe document this type too. I was a bit surprised that <code>log_level</code> isn't part of <code>GlobalOptions</code> but I think the reason is that <code>GlobalOptions</code> stores all non-static options.</p>
+            <div class="timeline-body"><p>Maybe document this type too. I was a bit surprised that <code>log_level</code> isn&#x27;t part of <code>GlobalOptions</code> but I think the reason is that <code>GlobalOptions</code> stores all non-static options.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -387,34 +387,34 @@ ty = { diagnosticMode = &quot;workspace&quot; }
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/session/options.rs</code>:243 on 2025-08-05 08:58</div>
-            <div class="timeline-body"><p>I don't think this is a correct use of <code>unreachable</code> and we should use <code>panic</code> instead. Non VS code clients could set <code>ty.pythonExtension</code> in the initialization and workspace options and it would deserialize just fine. I'm also not sure if it's worth panicing or if we should just always take the first value that is <code>Some</code>.</p>
+            <div class="timeline-body"><p>I don&#x27;t think this is a correct use of <code>unreachable</code> and we should use <code>panic</code> instead. Non VS code clients could set <code>ty.pythonExtension</code> in the initialization and workspace options and it would deserialize just fine. I&#x27;m also not sure if it&#x27;s worth panicing or if we should just always take the first value that is <code>Some</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/session/options.rs</code>:332 on 2025-08-05 08:59</div>
-            <div class="timeline-body"><p>Hmm. I'd rather not have a third <code>Combine</code> trait. Can't we use the <code>Combine</code> trait from <code>ty_project</code> directly?</p>
+            <div class="timeline-body"><p>Hmm. I&#x27;d rather not have a third <code>Combine</code> trait. Can&#x27;t we use the <code>Combine</code> trait from <code>ty_project</code> directly?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server.rs</code>:58 on 2025-08-05 09:01</div>
-            <div class="timeline-body"><p>Nit: This is a pre-existing issue but let's maybe use <code>context</code> to add some extra information what's failing to deserialize</p>
-<pre><code class="language-suggestion">        } = serde_json::from_value(init_value).context(&quot;Failed to deserialize the `initializationParams`)?;
+            <div class="timeline-body"><p>Nit: This is a pre-existing issue but let&#x27;s maybe use <code>context</code> to add some extra information what&#x27;s failing to deserialize</p>
+<pre><code>        } = serde_json::from_value(init_value).context(&quot;Failed to deserialize the `initializationParams`)?;
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server.rs</code>:70 on 2025-08-05 09:01</div>
-            <div class="timeline-body"><p>I'd change this to debug or use a proper <code>Display</code> for <code>initialization_options</code>. <code>info</code> level messages are meant for users.</p>
+            <div class="timeline-body"><p>I&#x27;d change this to debug or use a proper <code>Display</code> for <code>initialization_options</code>. <code>info</code> level messages are meant for users.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server.rs</code>:77 on 2025-08-05 09:03</div>
-            <div class="timeline-body"><p>I'm inclined to move the &quot;fallback to default&quot; logic here or we risk that we someday return something other than the defaults and forget to adjust the log message.</p>
+            <div class="timeline-body"><p>I&#x27;m inclined to move the &quot;fallback to default&quot; logic here or we risk that we someday return something other than the defaults and forget to adjust the log message.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/session.rs</code>:462 on 2025-08-05 09:05</div>
-            <div class="timeline-body"><p>Can't you call <code>combine</code> directly on <code>combined_global_options</code> (<code>Combine</code> is implemented for <code>Option&lt;T&gt;</code> where <code>T: Combine</code>)</p>
+            <div class="timeline-body"><p>Can&#x27;t you call <code>combine</code> directly on <code>combined_global_options</code> (<code>Combine</code> is implemented for <code>Option&lt;T&gt;</code> where <code>T: Combine</code>)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -424,23 +424,23 @@ ty = { diagnosticMode = &quot;workspace&quot; }
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/tests/e2e/snapshots/e2e__initialize__open_files_diagnostic_registration_via_initialization.snap</code>:1 on 2025-08-05 09:09</div>
-            <div class="timeline-body"><p>Should we use inline snapshots for those. They're very small</p>
+            <div class="timeline-body"><p>Should we use inline snapshots for those. They&#x27;re very small</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/tests/e2e/main.rs</code>:229 on 2025-08-05 09:11</div>
-            <div class="timeline-body"><p>Maybe use <code>expect</code> or <code>or_else</code> to give the test author more context about what's going wrong.</p>
+            <div class="timeline-body"><p>Maybe use <code>expect</code> or <code>or_else</code> to give the test author more context about what&#x27;s going wrong.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/tests/e2e/main.rs</code>:196 on 2025-08-05 09:12</div>
-            <div class="timeline-body"><p>Isn't it required that we have one option for each <code>url</code>? What's the reason for allowing <code>None</code> for the configuration?</p>
+            <div class="timeline-body"><p>Isn&#x27;t it required that we have one option for each <code>url</code>? What&#x27;s the reason for allowing <code>None</code> for the configuration?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-08-05 09:15</div>
             <div class="timeline-body"><p>This is awesome. Thank you.</p>
-<p>The only change I'd like to see before landing this PR is to deduplicate <code>Combine</code>. We already have two implementations of it (one in ty and one in ruff). I'd rather avoid a third.</p>
+<p>The only change I&#x27;d like to see before landing this PR is to deduplicate <code>Combine</code>. We already have two implementations of it (one in ty and one in ruff). I&#x27;d rather avoid a third.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -449,7 +449,7 @@ ty = { diagnosticMode = &quot;workspace&quot; }
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/api/notifications/did_close.rs</code>:62 on 2025-08-05 10:29</div>
-            <div class="timeline-body"><p>Yeah, I think that's correct and I think it should also be bumped in the virtual file branch. So, closing the virtual file or a file that does not belong to a workspace should refresh the workspace diagnostics because the diagnostics that are from that file should not be present now.</p>
+            <div class="timeline-body"><p>Yeah, I think that&#x27;s correct and I think it should also be bumped in the virtual file branch. So, closing the virtual file or a file that does not belong to a workspace should refresh the workspace diagnostics because the diagnostics that are from that file should not be present now.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -463,7 +463,7 @@ ty = { diagnosticMode = &quot;workspace&quot; }
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/main_loop.rs</code>:222 on 2025-08-05 10:37</div>
-            <div class="timeline-body"><p>Ah yeah, I think that's possible here. Thanks</p>
+            <div class="timeline-body"><p>Ah yeah, I think that&#x27;s possible here. Thanks</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -476,7 +476,7 @@ ty = { diagnosticMode = &quot;workspace&quot; }
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server.rs</code>:37 on 2025-08-05 10:40</div>
-            <div class="timeline-body"><p>Yes! I've updated it.</p>
+            <div class="timeline-body"><p>Yes! I&#x27;ve updated it.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -485,7 +485,7 @@ ty = { diagnosticMode = &quot;workspace&quot; }
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/main_loop.rs</code>:266 on 2025-08-05 10:43</div>
-            <div class="timeline-body"><p>Yeah, I think that could happen and it might go unnoticed, I think it'd be useful to add a popup.</p>
+            <div class="timeline-body"><p>Yeah, I think that could happen and it might go unnoticed, I think it&#x27;d be useful to add a popup.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -494,7 +494,7 @@ ty = { diagnosticMode = &quot;workspace&quot; }
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/main_loop.rs</code>:266 on 2025-08-05 10:46</div>
-            <div class="timeline-body"><p>I think it'd be better as a follow-up instead</p>
+            <div class="timeline-body"><p>I think it&#x27;d be better as a follow-up instead</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -512,7 +512,7 @@ ty = { diagnosticMode = &quot;workspace&quot; }
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/session/options.rs</code>:57 on 2025-08-05 10:55</div>
-            <div class="timeline-body"><p>I'm not sure if either of this is more beneficial mainly because we can only add the trace message once tracing is initialized and we require the initialization options (or the default ones) to initialize the tracing system. This is why I opted to return both the <code>Ok</code> and <code>Err</code> variant explicitly.</p>
+            <div class="timeline-body"><p>I&#x27;m not sure if either of this is more beneficial mainly because we can only add the trace message once tracing is initialized and we require the initialization options (or the default ones) to initialize the tracing system. This is why I opted to return both the <code>Ok</code> and <code>Err</code> variant explicitly.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -530,7 +530,7 @@ ty = { diagnosticMode = &quot;workspace&quot; }
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/session/options.rs</code>:105 on 2025-08-05 11:06</div>
-            <div class="timeline-body"><p>No, it's `Combine.</p>
+            <div class="timeline-body"><p>No, it&#x27;s `Combine.</p>
 <p>https://github.com/astral-sh/ruff/blob/fd335eb8b7065303193c5d3f04c76bca9da98b35/crates/ty_project/src/metadata/options.rs#L39</p>
 <p>Thinking about this more. I think it may require you to move <code>Combine</code> into its own <code>ty_options</code> or <code>ty_combine</code> (or whatever) crate to make the macro work</p>
 </div>
@@ -541,7 +541,7 @@ ty = { diagnosticMode = &quot;workspace&quot; }
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/session/options.rs</code>:229 on 2025-08-05 11:19</div>
-            <div class="timeline-body"><p>I actually have a small doubt about this -- this is mainly to accommodate the fact that users <em>could</em> set <code>diagnosticMode</code> to <code>workspace</code> in one workspace while <code>openFilesOnly</code> in other which isn't allowed but it's not something that we can enforce at the server level (we could probably check each workspace options before combining). So, the logic here states that <code>self</code> could either be <code>workspace</code> or <code>openFilesOnly</code> but if <code>other</code> is <code>workspace</code> then <code>self</code> should be <code>workspace</code>. This is to make sure that <code>workspace</code> always wins over <code>openFilesOnly</code>.</p>
+            <div class="timeline-body"><p>I actually have a small doubt about this -- this is mainly to accommodate the fact that users <em>could</em> set <code>diagnosticMode</code> to <code>workspace</code> in one workspace while <code>openFilesOnly</code> in other which isn&#x27;t allowed but it&#x27;s not something that we can enforce at the server level (we could probably check each workspace options before combining). So, the logic here states that <code>self</code> could either be <code>workspace</code> or <code>openFilesOnly</code> but if <code>other</code> is <code>workspace</code> then <code>self</code> should be <code>workspace</code>. This is to make sure that <code>workspace</code> always wins over <code>openFilesOnly</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -550,7 +550,7 @@ ty = { diagnosticMode = &quot;workspace&quot; }
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/session/options.rs</code>:229 on 2025-08-05 11:22</div>
-            <div class="timeline-body"><p>I've added a comment.</p>
+            <div class="timeline-body"><p>I&#x27;ve added a comment.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -559,7 +559,7 @@ ty = { diagnosticMode = &quot;workspace&quot; }
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/session/options.rs</code>:243 on 2025-08-05 11:24</div>
-            <div class="timeline-body"><p>I think this path will only be taken when <em>both</em> are <code>Some</code>, so I'm not sure what would &quot;take the first value that is <code>Some</code>&quot; look like. We could add a debug message and take the one from <code>self</code> but unless the user looks at the code (ty server or ty VS Code extension) they wouldn't know that something like this is possible.</p>
+            <div class="timeline-body"><p>I think this path will only be taken when <em>both</em> are <code>Some</code>, so I&#x27;m not sure what would &quot;take the first value that is <code>Some</code>&quot; look like. We could add a debug message and take the one from <code>self</code> but unless the user looks at the code (ty server or ty VS Code extension) they wouldn&#x27;t know that something like this is possible.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -577,7 +577,7 @@ ty = { diagnosticMode = &quot;workspace&quot; }
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server.rs</code>:70 on 2025-08-05 11:29</div>
-            <div class="timeline-body"><p>Yeah, I've converted to <code>debug</code> for now but it might be useful to have the <code>display_settings</code> macro available by moving it out of <code>ruff_linter</code>.</p>
+            <div class="timeline-body"><p>Yeah, I&#x27;ve converted to <code>debug</code> for now but it might be useful to have the <code>display_settings</code> macro available by moving it out of <code>ruff_linter</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -586,7 +586,7 @@ ty = { diagnosticMode = &quot;workspace&quot; }
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server.rs</code>:77 on 2025-08-05 11:31</div>
-            <div class="timeline-body"><p>That sounds reasonable. I've also moved the initialization options debug message after this so that it reads better and we can see whether the options were deserialized successfully or not before actually looking at the options:</p>
+            <div class="timeline-body"><p>That sounds reasonable. I&#x27;ve also moved the initialization options debug message after this so that it reads better and we can see whether the options were deserialized successfully or not before actually looking at the options:</p>
 <p>Failed to deserialize ...
 Initialization options: ...</p>
 </div>
@@ -597,7 +597,7 @@ Initialization options: ...</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/session.rs</code>:462 on 2025-08-05 11:32</div>
-            <div class="timeline-body"><p>Ah yes, I'm slowly getting used to the &quot;combine&quot; logic...</p>
+            <div class="timeline-body"><p>Ah yes, I&#x27;m slowly getting used to the &quot;combine&quot; logic...</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -606,7 +606,7 @@ Initialization options: ...</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/session.rs</code>:542 on 2025-08-05 11:34</div>
-            <div class="timeline-body"><p>Yeah, I think that's better and now that I realize it it's more inline with some of the other values that are updated (e.g., on <code>File</code>).</p>
+            <div class="timeline-body"><p>Yeah, I think that&#x27;s better and now that I realize it it&#x27;s more inline with some of the other values that are updated (e.g., on <code>File</code>).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -615,7 +615,7 @@ Initialization options: ...</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/tests/e2e/snapshots/e2e__initialize__open_files_diagnostic_registration_via_initialization.snap</code>:1 on 2025-08-05 11:37</div>
-            <div class="timeline-body"><p>Yeah, good idea, I'll update it</p>
+            <div class="timeline-body"><p>Yeah, good idea, I&#x27;ll update it</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -624,7 +624,7 @@ Initialization options: ...</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/tests/e2e/main.rs</code>:196 on 2025-08-05 11:38</div>
-            <div class="timeline-body"><p>It's not a requirement for the storage part on the client side but it's a requirement when responding to the server which is handled by the <code>handle_workspace_configuration_request</code> method.</p>
+            <div class="timeline-body"><p>It&#x27;s not a requirement for the storage part on the client side but it&#x27;s a requirement when responding to the server which is handled by the <code>handle_workspace_configuration_request</code> method.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -633,7 +633,7 @@ Initialization options: ...</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/tests/e2e/main.rs</code>:229 on 2025-08-05 11:40</div>
-            <div class="timeline-body"><p>I'm using <code>.context</code></p>
+            <div class="timeline-body"><p>I&#x27;m using <code>.context</code></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -642,46 +642,46 @@ Initialization options: ...</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/session/options.rs</code>:105 on 2025-08-05 11:47</div>
-            <div class="timeline-body"><p>Hmm, yeah. I'll move it to the <code>ty_combine</code> crate.</p>
+            <div class="timeline-body"><p>Hmm, yeah. I&#x27;ll move it to the <code>ty_combine</code> crate.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-08-05 11:53</div>
-            <div class="timeline-body"><p>(I've addressed most of the feedback, I need to address a couple more but I need to go out for sometime, will do it once I'm back.)</p>
+            <div class="timeline-body"><p>(I&#x27;ve addressed most of the feedback, I need to address a couple more but I need to go out for sometime, will do it once I&#x27;m back.)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2025-08-06 05:13</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-08-06 05:13</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @carljm removed by @dhruvmanila on 2025-08-06 05:13</div>
+            <div class="event">Review request for <a href="https://github.com/carljm">@carljm</a> removed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-08-06 05:13</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @dcreager removed by @dhruvmanila on 2025-08-06 05:13</div>
+            <div class="event">Review request for <a href="https://github.com/dcreager">@dcreager</a> removed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-08-06 05:13</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @AlexWaygood removed by @dhruvmanila on 2025-08-06 05:13</div>
+            <div class="event">Review request for <a href="https://github.com/AlexWaygood">@AlexWaygood</a> removed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-08-06 05:13</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-06 05:25</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @dhruvmanila on 2025-08-06 13:07</div>
+            <div class="event">Merged by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-08-06 13:07</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dhruvmanila on 2025-08-06 13:07</div>
+            <div class="event">Closed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-08-06 13:07</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-08-06 13:07</div>
@@ -689,7 +689,7 @@ Initialization options: ...</p>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:14:38 UTC
+        Synced at 2026-01-20 19:17:08 UTC
     </footer>
 </body>
 </html>

@@ -23,22 +23,22 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/johnwalk-spotify">@johnwalk-spotify</a></div>
-            <div class="timeline-body"><h3>Question</h3>
-<p>We have a project with a number of build dependencies (specifically protobuf compilation) that must be kept consistent with the runtime versions of those dependencies.  This circumstance is pretty well-documented already in the <a href="https://docs.astral.sh/uv/concepts/projects/config/#build-isolation">project config page</a>, but the examples there refer only to building the project's child dependencies, not the project itself.</p>
-<p>We can get the build to work by setting <code>no-build-isolation-package</code> referring to the top-level project, but this feels overly aggressive. When instead trying to use the annotation introduced in https://github.com/astral-sh/uv/pull/15036, the build errors due to circular reasoning trying to resolve the local project, as it does not read as having static metadata available.</p>
+            <div class="timeline-body">Question
+<p>We have a project with a number of build dependencies (specifically protobuf compilation) that must be kept consistent with the runtime versions of those dependencies.  This circumstance is pretty well-documented already in the <a href="https://docs.astral.sh/uv/concepts/projects/config/#build-isolation">project config page</a>, but the examples there refer only to building the project&#x27;s child dependencies, not the project itself.</p>
+<p>We can get the build to work by setting <code>no-build-isolation-package</code> referring to the top-level project, but this feels overly aggressive. When instead trying to use the annotation introduced in <a href="https://github.com/astral-sh/uv/pull/15036">astral-sh/uv#15036</a>, the build errors due to circular reasoning trying to resolve the local project, as it does not read as having static metadata available.</p>
 <p>For building this project, then:</p>
 <ol>
 <li>Is there a way for <code>extra-build-dependencies</code> annotations to support the parent package rather than just its child dependencies?</li>
 <li>Should we instead just consider this project as not supporting build isolation and proceed with that?</li>
 </ol>
-<h3>Platform</h3>
+Platform
 <p><em>No response</em></p>
-<h3>Version</h3>
+Version
 <p>0.8.22</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @johnwalk-spotify on 2025-09-29 14:36</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/johnwalk-spotify">@johnwalk-spotify</a> on 2025-09-29 14:36</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zsol">@zsol</a> on 2025-09-29 16:01</div>
@@ -46,30 +46,30 @@
 <p>the build errors due to circular reasoning trying to resolve the local project, as it does not read as having static metadata available</p>
 </blockquote>
 <p>Could you elaborate a little bit more, please? An error log or, even better, a minimal repro would be amazing to look at!</p>
-<p>I've been thinking about this problem for a while, and have an alternative way of matching build requirements to runtime versions, but it's sort of stalled because it's not clear to me if #15036 is good enough for people's needs or not. Having more information about when #15036 isn't good enough for actual use cases would help motivate that work.</p>
+<p>I&#x27;ve been thinking about this problem for a while, and have an alternative way of matching build requirements to runtime versions, but it&#x27;s sort of stalled because it&#x27;s not clear to me if #15036 is good enough for people&#x27;s needs or not. Having more information about when #15036 isn&#x27;t good enough for actual use cases would help motivate that work.</p>
 <p>FWIW, disabling build isolation is a good option to unblock yourself today, but might make things more complicated down the line.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/johnwalk-spotify">@johnwalk-spotify</a> on 2025-09-29 16:08</div>
             <div class="timeline-body"><p>Passing along from the help channel on our internal slack, but the error triggered on <code>uv build</code> is</p>
-<pre><code class="language-shell">Building wheel...
+<pre><code>Building wheel...
   × Failed to build `&lt;path to local source for package&gt;`
   ╰─▶ Extra build requirement `grpcio-tools` was declared with `match-runtime = true`, but `&lt;project name&gt;` does not declare static metadata, making runtime-matching impossible
 </code></pre>
-<p><code>pyproject.toml</code> for the project itself is static and should be compliant, so I suppose reading from a local source still hits the check introduced in https://github.com/astral-sh/uv/pull/15292 ?</p>
+<p><code>pyproject.toml</code> for the project itself is static and should be compliant, so I suppose reading from a local source still hits the check introduced in <a href="https://github.com/astral-sh/uv/pull/15292">astral-sh/uv#15292</a> ?</p>
 <p>I can see about putting together a minimal repro as well</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-29 16:16</div>
-            <div class="timeline-body"><p>Hm I think that sounds like an unintentional side-effect of https://github.com/astral-sh/uv/pull/15292, cc @charliermarsh</p>
+            <div class="timeline-body"><p>Hm I think that sounds like an unintentional side-effect of <a href="https://github.com/astral-sh/uv/pull/15292">astral-sh/uv#15292</a>, cc @charliermarsh</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/johnwalk-spotify">@johnwalk-spotify</a> on 2025-09-29 17:07</div>
             <div class="timeline-body"><p>yeah for a minimal repro, a fresh <code>uv init --lib build-test</code> then modifying pyproject.toml to</p>
-<pre><code class="language-toml">[project]
+<pre><code>[project]
 name = &quot;build-test&quot;
 version = &quot;0.1.0&quot;
 description = &quot;Add your description here&quot;
@@ -100,12 +100,12 @@ build-test = [
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-09-29 17:09</div>
-            <div class="timeline-body"><p>Thanks, I'll take a look.</p>
+            <div class="timeline-body"><p>Thanks, I&#x27;ll take a look.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-10-01 00:51</div>
-            <div class="timeline-body"><p>&quot;Real&quot; support here means we have to resolve the project dependencies, which... feels like a lot. I'm wondering if we should just ignore <code>match-runtime = true</code> in <code>uv build</code>? I'm not sure.</p>
+            <div class="timeline-body"><p>&quot;Real&quot; support here means we have to resolve the project dependencies, which... feels like a lot. I&#x27;m wondering if we should just ignore <code>match-runtime = true</code> in <code>uv build</code>? I&#x27;m not sure.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -118,33 +118,33 @@ build-test = [
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/johnwalk-spotify">@johnwalk-spotify</a> on 2025-10-02 13:16</div>
-            <div class="timeline-body"><p>(he says knowing nothing at all about uv's internals, so feel free to disregard)</p>
+            <div class="timeline-body"><p>(he says knowing nothing at all about uv&#x27;s internals, so feel free to disregard)</p>
 <p>given the error ☝️ was on not finding project metadata statically for the parent package... it seems like all the information needed for <code>tool.uv.dependency-metadata</code> would be present in the local pyproject.toml.  Would it be sensical to detect the local project (maybe even workspace members?) as keys in <code>tool.uv.extra-build-dependencies</code> and inject metadata from the local pyproject.toml that way?</p>
 <p>or does that only work for project dependencies rather than build requirements? 🤔</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/johnwalk-spotify">@johnwalk-spotify</a> on 2025-10-02 13:21</div>
-            <div class="timeline-body"><p>I suppose that doesn't really get around needing to resolve the project (though wouldn't that need to happen for any dependency with <code>match-runtime</code> set?)</p>
+            <div class="timeline-body"><p>I suppose that doesn&#x27;t really get around needing to resolve the project (though wouldn&#x27;t that need to happen for any dependency with <code>match-runtime</code> set?)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/johnwalk-spotify">@johnwalk-spotify</a> on 2025-10-03 16:06</div>
             <div class="timeline-body"><p>Yeah no good, manually adding</p>
-<pre><code class="language-toml">[tool.uv.sources]
+<pre><code>[tool.uv.sources]
 build-test = { path = &quot;.&quot; }
 
 [[tool.uv.dependency-metadata]]
 name = &quot;build-test&quot;
 requires-dist = [&quot;numpy&quot;]
 </code></pre>
-<p>doesn't resolve it so that path doesn't seem sufficient anyhow</p>
+<p>doesn&#x27;t resolve it so that path doesn&#x27;t seem sufficient anyhow</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:33:01 UTC
+        Synced at 2026-01-20 19:40:30 UTC
     </footer>
 </body>
 </html>

@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/jankatins">@jankatins</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>This is working python code:</p>
 <pre><code>import os
 
@@ -40,7 +40,7 @@ s = Settings()
 print(s.EXAMPLE_SETTING)
 </code></pre>
 <p>Mypy has a plugin which makes it recognise that the arguments are filled from env vars. How would I accomplish something similar with ty?</p>
-<pre><code class="language-shell">λ  python test.py      
+<pre><code>λ  python test.py      
 example_value
 
 # Without the pydantic.mypy plugin
@@ -65,19 +65,19 @@ info: rule `missing-argument` is enabled by default
 
 Found 1 diagnostic
 </code></pre>
-<h3>Version</h3>
+Version
 <p>ty 0.0.1-alpha.19</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">wish</span> added by @carljm on 2025-08-20 23:00</div>
+            <div class="event">Label <span class="label">wish</span> added by <a href="https://github.com/carljm">@carljm</a> on 2025-08-20 23:00</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">library</span> added by @carljm on 2025-08-20 23:00</div>
+            <div class="event">Label <span class="label">library</span> added by <a href="https://github.com/carljm">@carljm</a> on 2025-08-20 23:00</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-20 23:10</div>
-            <div class="timeline-body"><p>I'm not totally sure, but I <em>think</em> the root cause of this issue is that Pydantic's ModelMetaclass behaves differently from dataclasses, in that it won't synthesize a new <code>__init__</code> method for a subclass if a base class defines a custom <code>__init__</code> method. <code>BaseSettings</code> defines <code>__init__</code> with no required arguments, but then type checkers assume that <code>Settings</code> will synthesize a new <code>__init__</code> with the <code>EXAMPLE_SETTING</code> field -- but Pydantic doesn't actually do that.</p>
+            <div class="timeline-body"><p>I&#x27;m not totally sure, but I <em>think</em> the root cause of this issue is that Pydantic&#x27;s ModelMetaclass behaves differently from dataclasses, in that it won&#x27;t synthesize a new <code>__init__</code> method for a subclass if a base class defines a custom <code>__init__</code> method. <code>BaseSettings</code> defines <code>__init__</code> with no required arguments, but then type checkers assume that <code>Settings</code> will synthesize a new <code>__init__</code> with the <code>EXAMPLE_SETTING</code> field -- but Pydantic doesn&#x27;t actually do that.</p>
 <p>I think it will be best for pydantic-settings library to find a way to make this work within the standard type system. One option for that would be to use a distinct constructor like <code>Settings.from_env()</code> instead of relying on <code>__init__</code>. Another option could be to add a new keyword argument to <code>dataclass_transform</code> that would specify this alternate behavior where a custom <code>__init__</code> is not overridden with a synthesized one on a subclass.</p>
 </div>
         </div>
@@ -89,26 +89,26 @@ Found 1 diagnostic
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Viicos">@Viicos</a> on 2025-08-21 08:09</div>
             <div class="timeline-body"><blockquote>
-<p>I'm not totally sure, but I <em>think</em> the root cause of this issue is that Pydantic's ModelMetaclass behaves differently from dataclasses, in that it won't synthesize a new <code>__init__</code> method for a subclass if a base class defines a custom <code>__init__</code> method. <code>BaseSettings</code> defines <code>__init__</code> with no required arguments, but then type checkers assume that <code>Settings</code> will synthesize a new <code>__init__</code> with the <code>EXAMPLE_SETTING</code> field -- but Pydantic doesn't actually do that.</p>
+<p>I&#x27;m not totally sure, but I <em>think</em> the root cause of this issue is that Pydantic&#x27;s ModelMetaclass behaves differently from dataclasses, in that it won&#x27;t synthesize a new <code>__init__</code> method for a subclass if a base class defines a custom <code>__init__</code> method. <code>BaseSettings</code> defines <code>__init__</code> with no required arguments, but then type checkers assume that <code>Settings</code> will synthesize a new <code>__init__</code> with the <code>EXAMPLE_SETTING</code> field -- but Pydantic doesn&#x27;t actually do that.</p>
 </blockquote>
-<p>More generally, the <code>BaseSettings</code> has a number of dynamic behavior that can't reasonably be supported by standards compliant type checkers (without any plugin). Pydantic settings has a concept of <em>sources</em> (env variables, configuration files), that are loaded on the fly during validation. On top of that, sources can be configured at validation time with extra keyword arguments to <code>__init__()</code> (e.g. <code>_env_file</code>).</p>
-<hr />
+<p>More generally, the <code>BaseSettings</code> has a number of dynamic behavior that can&#x27;t reasonably be supported by standards compliant type checkers (without any plugin). Pydantic settings has a concept of <em>sources</em> (env variables, configuration files), that are loaded on the fly during validation. On top of that, sources can be configured at validation time with extra keyword arguments to <code>__init__()</code> (e.g. <code>_env_file</code>).</p>
+<hr>
 <p>I think the only possible way to support such use cases would be via plugins/special casing, but this has drawbacks and a lot of challenges that can really increase the complexity of type checkers (Some related discussion on Pyrefly: https://github.com/facebook/pyrefly/discussions/854#discussioncomment-14063403).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-21 14:44</div>
-            <div class="timeline-body"><p>I'm not sure why static type checkers would need to know or care about all the implementation details of sources etc: they just need to understand the correct <code>__init__</code> signature, and then what attributes exist on the resulting object, with what types. To me that seems like a much smaller problem, that should be tractable to fit into the standard type system, with either some adjustments to the API of <code>BaseSettings</code>, or some addition to the type system. But it's quite possible I'm missing something.</p>
-<p>(Edited to add: it may partly depend on expectations for how much static type checkers should validate. But I think the goal here should not be &quot;static type checkers fully understand all the config sources and can validate and catch every possible runtime error&quot;, it should rather be &quot;static type checkers understand just enough of the API to avoid false positive errors, there are runtime errors that they simply aren't going to catch.&quot;)</p>
+            <div class="timeline-body"><p>I&#x27;m not sure why static type checkers would need to know or care about all the implementation details of sources etc: they just need to understand the correct <code>__init__</code> signature, and then what attributes exist on the resulting object, with what types. To me that seems like a much smaller problem, that should be tractable to fit into the standard type system, with either some adjustments to the API of <code>BaseSettings</code>, or some addition to the type system. But it&#x27;s quite possible I&#x27;m missing something.</p>
+<p>(Edited to add: it may partly depend on expectations for how much static type checkers should validate. But I think the goal here should not be &quot;static type checkers fully understand all the config sources and can validate and catch every possible runtime error&quot;, it should rather be &quot;static type checkers understand just enough of the API to avoid false positive errors, there are runtime errors that they simply aren&#x27;t going to catch.&quot;)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Viicos">@Viicos</a> on 2025-10-21 10:53</div>
             <div class="timeline-body"><blockquote>
-<p>I'm not sure why static type checkers would need to know or care about all the implementation details of sources etc: they just need to understand the correct <code>__init__</code> signature, and then what attributes exist on the resulting object, with what types.</p>
+<p>I&#x27;m not sure why static type checkers would need to know or care about all the implementation details of sources etc: they just need to understand the correct <code>__init__</code> signature, and then what attributes exist on the resulting object, with what types.</p>
 </blockquote>
 <p>The issue here is that <code>pydantic-settings</code> &quot;injects&quot; values from different sources (env vars, config files, etc), so that instantiating a settings class <em>without</em> any arguments still works, even though there are required fields:</p>
-<pre><code class="language-python">class Settings(BaseSettings):
+<pre><code>class Settings(BaseSettings):
     EXAMPLE_SETTING: str
 
 Settings()  # Fine at runtime, `EXAMPLE_SETTING` is read from env.
@@ -129,32 +129,32 @@ Settings()  # Fine at runtime, `EXAMPLE_SETTING` is read from env.
 <li>have special-casing for specific libraries in static type checkers (what Pyrefly is aiming for). I recently exchanged with the Pyrefly team about this, there are benefits but also drawbacks [^1].</li>
 <li>on our side, trying as much as possible to be compliant to the typing spec, and possibly propose changes to the spec if necessary (for instance, I believe it would be beneficial to have a way to specify the type coercion logic with <code>@dataclass_transform</code>, instead of incorporating such logic in type checkers).</li>
 </ul>
-<p>[^1]: Special casing incorporated in type checkers puts the burden on type checkers maintainers, is subject to (breaking) changes in the special-cased library, and going the other way with plugins isn't perfect either (one plugin is necessary for each type checker, designing a plugin API is hard, challenges for static languages such as Rust).</p>
+<p>[^1]: Special casing incorporated in type checkers puts the burden on type checkers maintainers, is subject to (breaking) changes in the special-cased library, and going the other way with plugins isn&#x27;t perfect either (one plugin is necessary for each type checker, designing a plugin API is hard, challenges for static languages such as Rust).</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">wish</span> removed by @carljm on 2025-11-15 01:55</div>
+            <div class="event">Label <span class="label">wish</span> removed by <a href="https://github.com/carljm">@carljm</a> on 2025-11-15 01:55</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/K-Yo">@K-Yo</a> on 2025-12-19 09:16</div>
-            <div class="timeline-body"><p>For informations, this topic has been discussed for pyright validation of pydantic settings here: https://github.com/pydantic/pydantic-settings/issues/201</p>
+            <div class="timeline-body"><p>For informations, this topic has been discussed for pyright validation of pydantic settings here: <a href="https://github.com/pydantic/pydantic-settings/issues/201">pydantic/pydantic-settings#201</a></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-22 23:54</div>
+            <div class="event">Added to milestone &quot;Stable&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-12-22 23:54</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Cjkjvfnby">@Cjkjvfnby</a> on 2025-12-23 09:20</div>
-            <div class="timeline-body"><p>I'd say this class does not have <code>__init__</code> defined, because it's generated at runtime.  Such classes are common to Python, and treating them as a dataclass (expecting that fields in the class are part of the <code>__init__</code>) is not always correct.</p>
+            <div class="timeline-body"><p>I&#x27;d say this class does not have <code>__init__</code> defined, because it&#x27;s generated at runtime.  Such classes are common to Python, and treating them as a dataclass (expecting that fields in the class are part of the <code>__init__</code>) is not always correct.</p>
 <p>What about giving a special setting, like per-class-override:  that will allow us to set specific rules for a specific class, and its descendants.</p>
-<pre><code class="language-toml">[[tool.ty.overrides]]
+<pre><code>[[tool.ty.overrides]]
 class = &quot;BaseSettings&quot;
 
 [tool.ty.overrides.rules]
 missing-argument = &quot;ignored&quot;
 </code></pre>
 <p>A similar approach is used for coverage, where you could exclude specific patterns from report:</p>
-<pre><code class="language-toml">[tool.coverage.report]
+<pre><code>[tool.coverage.report]
 exclude_also = [
     &quot;if TYPE_CHECKING:&quot;,
     ]
@@ -164,7 +164,7 @@ exclude_also = [
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:32 UTC
+        Synced at 2026-01-20 19:25:22 UTC
     </footer>
 </body>
 </html>

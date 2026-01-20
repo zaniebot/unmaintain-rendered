@@ -23,30 +23,30 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Create definitions and infer types for PEP 695 type variables.</p>
 <p>This just gives us the type of the type variable itself (the type of <code>T</code> as a runtime object in the body of <code>def f[T](): ...</code>), with special handling for its attributes <code>__name__</code>, <code>__bound__</code>, <code>__constraints__</code>, and <code>__default__</code>. Mostly the support for these attributes exists because it is easy to implement and allows testing that we are internally representing the typevar correctly.</p>
-<p>This PR doesn't yet have support for interpreting a typevar as a type annotation, which is of course the primary use of a typevar. But the information we store in the typevar's type in this PR gives us everything we need to handle it correctly in a future PR when the typevar appears in an annotation.</p>
-<h2>Test Plan</h2>
+<p>This PR doesn&#x27;t yet have support for interpreting a typevar as a type annotation, which is of course the primary use of a typevar. But the information we store in the typevar&#x27;s type in this PR gives us everything we need to handle it correctly in a future PR when the typevar appears in an annotation.</p>
+Test Plan
 <p>Added mdtest.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2024-11-08 00:21</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/carljm">@carljm</a> on 2024-11-08 00:21</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @carljm on 2024-11-08 00:21</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/carljm">@carljm</a> on 2024-11-08 00:21</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @carljm on 2024-11-08 00:21</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/carljm">@carljm</a> on 2024-11-08 00:21</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @carljm on 2024-11-08 00:21</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/carljm">@carljm</a> on 2024-11-08 00:21</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/generics.md</code>:76 on 2024-11-08 00:36</div>
             <div class="timeline-body"><p>These types could more precisely be class literals; <code>Literal[A]</code> instead of <code>type[A]</code>. But we want to store them as the instance type they represent (that is, interpreted as a type expression, not a value expression), because the priority is efficiency of using typevars as type annotations, not introspecting their dunder attributes. So that means this introspection is effectively round-tripping the type through a <code>.to_instance()</code> and then back through <code>.to_meta_type()</code>. Since a bound can be any kind of type, we have to do this round-trip generically, which means we get back <code>type[A]</code> from that round trip, not <code>Literal[A]</code>.</p>
-<p>With some special-casing of <code>Type::Instance</code> -&gt; <code>Type::ClassLiteral</code> we <em>could</em> get <code>Literal[A]</code> here, but I don't think it's worth it. Precision of these dunder types matters very little, and <code>type[]</code> will be more familiar to users anyway.</p>
+<p>With some special-casing of <code>Type::Instance</code> -&gt; <code>Type::ClassLiteral</code> we <em>could</em> get <code>Literal[A]</code> here, but I don&#x27;t think it&#x27;s worth it. Precision of these dunder types matters very little, and <code>type[]</code> will be more familiar to users anyway.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -55,18 +55,18 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-08 01:07</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1715 on 2024-11-08 07:45</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">                    typevar
+            <div class="timeline-body"><pre><code>                    typevar
                         .constraints(db)
                         .iter()
                         .map(|ty| ty.to_meta_type(db))
@@ -100,7 +100,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1758 on 2024-11-08 09:32</div>
-            <div class="timeline-body"><p>Given that a list of constraints is interpreted as: <em>can only ever be solved as being exactly one of the constraints</em>, it seems a bit strange to me to map the &quot;no constraints&quot; case to an empty list (which could also mean: can't be solved at all, because there are no options given). I realize that both <code>mypy</code> and <code>pyright</code> disallow this (<em>&quot;TypeVar must have at least two constrained types&quot;</em>), but it still seems potentially dangerous to conflate these two potential meanings. So maybe we should change the return type to <code>Option&lt;&amp;[Type&lt;'db&gt;]&gt;</code> and return <code>None</code> here?</p>
+            <div class="timeline-body"><p>Given that a list of constraints is interpreted as: <em>can only ever be solved as being exactly one of the constraints</em>, it seems a bit strange to me to map the &quot;no constraints&quot; case to an empty list (which could also mean: can&#x27;t be solved at all, because there are no options given). I realize that both <code>mypy</code> and <code>pyright</code> disallow this (<em>&quot;TypeVar must have at least two constrained types&quot;</em>), but it still seems potentially dangerous to conflate these two potential meanings. So maybe we should change the return type to <code>Option&lt;&amp;[Type&lt;&#x27;db&gt;]&gt;</code> and return <code>None</code> here?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -128,7 +128,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/generics.md</code>:105 on 2024-11-08 11:12</div>
             <div class="timeline-body"><p>nit</p>
-<pre><code class="language-suggestion">class A: ...
+<pre><code>class A: ...
 class B: ...
 class A1(A): ...
 </code></pre>
@@ -149,7 +149,7 @@ class A1(A): ...
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1387 on 2024-11-08 11:20</div>
             <div class="timeline-body"><p>You can <code>.collect()</code> directly into a boxed slice:</p>
-<pre><code class="language-suggestion">               let tys: Box&lt;_&gt; = elts
+<pre><code>               let tys: Box&lt;_&gt; = elts
                     .iter()
                     .map(|expr| self.infer_type_expression(expr))
                     .collect();
@@ -166,15 +166,15 @@ class A1(A): ...
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1671 on 2024-11-08 11:30</div>
-            <div class="timeline-body"><p>I guess I'm curious what including <code>TypeVar</code> in this struct gives us, relative to having a dedicated <code>Type::TypeParameter(TypeParameterType)</code> variant and an enum like this:</p>
-<pre><code class="language-rs">enum TypeParameterType {
-    TypeVar(TypeVarInstance&lt;'db&gt;),
-    ParamSpec(ParamSpecInstance&lt;'db&gt;),
-    TypeVarTuple(TypeVarTupleInstance&lt;'db&gt;),
+            <div class="timeline-body"><p>I guess I&#x27;m curious what including <code>TypeVar</code> in this struct gives us, relative to having a dedicated <code>Type::TypeParameter(TypeParameterType)</code> variant and an enum like this:</p>
+<pre><code>enum TypeParameterType {
+    TypeVar(TypeVarInstance&lt;&#x27;db&gt;),
+    ParamSpec(ParamSpecInstance&lt;&#x27;db&gt;),
+    TypeVarTuple(TypeVarTupleInstance&lt;&#x27;db&gt;),
 }
 </code></pre>
 <p>I can see that <code>TypeVar</code> instances are similar to <code>KnownInstance</code>s in that they have a fallback to a regular <code>Instance</code> type for many operations. But they differ in that there is only one <code>typing.Literal</code> symbol and only one <code>typing.NoDefault</code> symbol, whereas there are many <code>TypeVar</code> instances.</p>
-<p>You've already had to add a significant amount of special casing for the <code>TypeVar</code> variant of this enum in the <code>KnownInstanceType::member</code> method, and I think as we build out support for type variables across our data model the differences to the other variants of this enum will only continue to grow.</p>
+<p>You&#x27;ve already had to add a significant amount of special casing for the <code>TypeVar</code> variant of this enum in the <code>KnownInstanceType::member</code> method, and I think as we build out support for type variables across our data model the differences to the other variants of this enum will only continue to grow.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -187,7 +187,7 @@ class A1(A): ...
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1778 on 2024-11-08 12:30</div>
-            <div class="timeline-body"><p>If that's the case, then we should use <code>salsa::tracked</code> here so that equality is defined by its identity.</p>
+            <div class="timeline-body"><p>If that&#x27;s the case, then we should use <code>salsa::tracked</code> here so that equality is defined by its identity.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -196,8 +196,8 @@ class A1(A): ...
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/generics.md</code>:71 on 2024-11-08 15:05</div>
-            <div class="timeline-body"><p>In this case, we are simply precisely typing the actual runtime value of <code>T.__constraints__</code>. The runtime does, in fact, return an empty tuple for the <code>__constraints__</code> property of a typevar that does not have constraints. Your argument may be an argument for why the runtime should preferably not do that, but given that it does, I don't see a case for typing it less precisely than we are able to.</p>
-<p>I don't think the type we infer for this attribute of the typevar object has much relevance to how we actually use the typevar constraints internally; it's purely for the sake of user code that introspects a typevar object (which is quite rare in practice.) So changing our internal representation may have benefits in keeping our internal semantics clearer, but I think changing this inference would be pretty much irrelevant to keeping our internal semantics clear.</p>
+            <div class="timeline-body"><p>In this case, we are simply precisely typing the actual runtime value of <code>T.__constraints__</code>. The runtime does, in fact, return an empty tuple for the <code>__constraints__</code> property of a typevar that does not have constraints. Your argument may be an argument for why the runtime should preferably not do that, but given that it does, I don&#x27;t see a case for typing it less precisely than we are able to.</p>
+<p>I don&#x27;t think the type we infer for this attribute of the typevar object has much relevance to how we actually use the typevar constraints internally; it&#x27;s purely for the sake of user code that introspects a typevar object (which is quite rare in practice.) So changing our internal representation may have benefits in keeping our internal semantics clearer, but I think changing this inference would be pretty much irrelevant to keeping our internal semantics clear.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -209,14 +209,14 @@ class A1(A): ...
             <div class="timeline-body"><blockquote>
 <p>I think as we build out support for type variables across our data model the differences to the other variants of this enum will only continue to grow.</p>
 </blockquote>
-<p>I think this is the point that I don't believe is true, which gives me a different perspective on this tradeoff.</p>
+<p>I think this is the point that I don&#x27;t believe is true, which gives me a different perspective on this tradeoff.</p>
 <p>When we support typevars as annotations, we will need to add a representation for &quot;something typed by a type variable&quot;, e.g. <code>x: T</code>. This is a very special type, and we will definitely need a dedicated <code>Type</code> variant for it. It certainly will not reuse the type of the type variable object itself (though it will likely internally store a reference to the same <code>TypeVarInstance</code>.) The type of the type variable itself is a singleton type representing exactly one instance of <code>typing.TypeVar</code>, whereas the type of <code>x</code> in <code>x: T</code> is the type &quot;some unknown set of objects, constrained by the upper bound or constraints on the type var.&quot; Reusing the same type variant for these would be similar to trying to share the same <code>Type</code> variant for <code>Type::ClassLiteral</code> and <code>Type::Instance</code> -- they are too semantically different for that to make sense.</p>
-<p>The type of the type variable itself, as a runtime object, which is what we have in this PR, is (I believe) feature-complete as of this PR, and shouldn't need to change or expand (though of course we will need to add paramspecs and typevartuples). It is nothing more than a known instance with some attributes whose type we can infer more precisely than typeshed. (We probably don't even <em>need</em> to do that, it was just convenient for testing purposes.) Typevar objects don't have much interesting behavior as runtime objects, so I don't see what else we would need to add in future.</p>
-<p>I think it's quite a significant benefit to use <code>KnownInstance</code> for this type to get the fallback behavior for free, and avoid the need to add another variant, with very similar behavior to <code>KnownInstance</code>, to every Type match. (And in the end, add <em>two</em> new <code>Type</code> variants for typevars.)</p>
+<p>The type of the type variable itself, as a runtime object, which is what we have in this PR, is (I believe) feature-complete as of this PR, and shouldn&#x27;t need to change or expand (though of course we will need to add paramspecs and typevartuples). It is nothing more than a known instance with some attributes whose type we can infer more precisely than typeshed. (We probably don&#x27;t even <em>need</em> to do that, it was just convenient for testing purposes.) Typevar objects don&#x27;t have much interesting behavior as runtime objects, so I don&#x27;t see what else we would need to add in future.</p>
+<p>I think it&#x27;s quite a significant benefit to use <code>KnownInstance</code> for this type to get the fallback behavior for free, and avoid the need to add another variant, with very similar behavior to <code>KnownInstance</code>, to every Type match. (And in the end, add <em>two</em> new <code>Type</code> variants for typevars.)</p>
 <blockquote>
 <p>But they differ in that there is only one <code>typing.Literal</code> symbol and only one <code>typing.NoDefault</code> symbol, whereas there are many <code>TypeVar</code> instances.</p>
 </blockquote>
-<p>There is exactly one instance of each <code>TypeVar</code>, though. Which is why the <code>TypeVar</code> variant holds data to describe <em>which</em> typevar it represents, but the <code>typing.NoDefault</code> and <code>typing.Literal</code> variants don't. It is still the case that every given <code>Type::KnownInstance</code> represents exactly one singleton object.</p>
+<p>There is exactly one instance of each <code>TypeVar</code>, though. Which is why the <code>TypeVar</code> variant holds data to describe <em>which</em> typevar it represents, but the <code>typing.NoDefault</code> and <code>typing.Literal</code> variants don&#x27;t. It is still the case that every given <code>Type::KnownInstance</code> represents exactly one singleton object.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -280,13 +280,13 @@ class A1(A): ...
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1383 on 2024-11-08 18:33</div>
-            <div class="timeline-body"><p>Yeah, that's definitely better. I thought it was slightly semantically odd to store the constraints as a <code>TupleType</code>, but I don't think there's actually any problem with it; they are provided syntactically as a tuple, and they are just a list of types, which is what a <code>TupleType</code> also is. And it's definitely more efficient.</p>
+            <div class="timeline-body"><p>Yeah, that&#x27;s definitely better. I thought it was slightly semantically odd to store the constraints as a <code>TupleType</code>, but I don&#x27;t think there&#x27;s actually any problem with it; they are provided syntactically as a tuple, and they are just a list of types, which is what a <code>TupleType</code> also is. And it&#x27;s definitely more efficient.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1744 on 2024-11-08 18:37</div>
-            <div class="timeline-body"><p>I don't think there's anything meta about this data, is there? :P</p>
-<pre><code class="language-suggestion">/// Data regarding a single type variable.
+            <div class="timeline-body"><p>I don&#x27;t think there&#x27;s anything meta about this data, is there? :P</p>
+<pre><code>/// Data regarding a single type variable.
 ///
 /// This is referenced by `KnownInstanceType::TypeVar` (to represent the singleton type of the
 /// runtime `typing.TypeVar` object itself). In the future, it will also be referenced by a new
@@ -302,7 +302,7 @@ class A1(A): ...
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1401 on 2024-11-08 18:38</div>
-            <div class="timeline-body"><p>It looks like if I turn <code>TypeVarInstance</code> into a tracked struct instead of an interned one, this doesn't work anymore.</p>
+            <div class="timeline-body"><p>It looks like if I turn <code>TypeVarInstance</code> into a tracked struct instead of an interned one, this doesn&#x27;t work anymore.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -316,7 +316,7 @@ class A1(A): ...
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1778 on 2024-11-08 19:50</div>
             <div class="timeline-body"><p>Great catch! Fixed to use <code>salsa::tracked</code> and added a comment about why this matters.</p>
-<p>Discovered a salsa requirement in the process: any field of a tracked struct which has a <code>'db</code> lifetime must itself be a tracked or interned Salsa struct, or must derive <code>salsa::Update</code>. This is not a hard requirement to abide by, but the error if you fail to is quite opaque: it's just an error on the tracked struct definition claiming that lifetimes don't live long enough, <code>'db</code> must outlive <code>'static</code>.</p>
+<p>Discovered a salsa requirement in the process: any field of a tracked struct which has a <code>&#x27;db</code> lifetime must itself be a tracked or interned Salsa struct, or must derive <code>salsa::Update</code>. This is not a hard requirement to abide by, but the error if you fail to is quite opaque: it&#x27;s just an error on the tracked struct definition claiming that lifetimes don&#x27;t live long enough, <code>&#x27;db</code> must outlive <code>&#x27;static</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -325,8 +325,8 @@ class A1(A): ...
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1744 on 2024-11-08 19:53</div>
-            <div class="timeline-body"><p>closing parentheses should come before the period unless it's a full sentence inside the parentheses ;)</p>
-<pre><code class="language-suggestion">/// defaulting to the default type of this type var when not otherwise bound to a type).
+            <div class="timeline-body"><p>closing parentheses should come before the period unless it&#x27;s a full sentence inside the parentheses ;)</p>
+<pre><code>/// defaulting to the default type of this type var when not otherwise bound to a type).
 </code></pre>
 </div>
         </div>
@@ -341,16 +341,16 @@ class A1(A): ...
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/definition.rs</code>:496 on 2024-11-08 20:05</div>
-            <div class="timeline-body"><p>I don't think making them declarations would have any effect.</p>
-<p>They are &quot;declared&quot; in their own scope, and then used in the function or class body scope, which is a nested scope. There's no prohibition against redefining a declared name from an outer scope; you're just shadowing it with your own local, which is allowed. So making them declarations doesn't actually prevent you from arbitrarily shadowing the typevar name with something totally different inside the function/class body.</p>
-<p>The only thing it would prevent is reassigning the name <em>in the type param scope</em>. But this isn't possible anyway, because type param scopes can't contain statements or named expressions.</p>
-<p>Later we'll also want to support typevars of the form <code>T = typing.TypeVar(&quot;T&quot;)</code>. But these won't even be <code>DefinitionKind::TypeVar</code>, they'll just be <code>DefinitionKind::Assignment</code>. And since we won't know until type inference that the RHS even is a typevar, I don't think we could special-case those to be declarations even if we wanted to (and I don't think we do; I think declaration-or-not should be determined purely by the syntactic form, not by the type of the RHS of an assignment.)</p>
-<p>If we decide we want to emit an error if you shadow a type variable, we can certainly do that (but again I'm not sure we should; neither pyright nor mypy does), but it would be a special-case diagnostic, it can't be done by making type parameters declarations.</p>
+            <div class="timeline-body"><p>I don&#x27;t think making them declarations would have any effect.</p>
+<p>They are &quot;declared&quot; in their own scope, and then used in the function or class body scope, which is a nested scope. There&#x27;s no prohibition against redefining a declared name from an outer scope; you&#x27;re just shadowing it with your own local, which is allowed. So making them declarations doesn&#x27;t actually prevent you from arbitrarily shadowing the typevar name with something totally different inside the function/class body.</p>
+<p>The only thing it would prevent is reassigning the name <em>in the type param scope</em>. But this isn&#x27;t possible anyway, because type param scopes can&#x27;t contain statements or named expressions.</p>
+<p>Later we&#x27;ll also want to support typevars of the form <code>T = typing.TypeVar(&quot;T&quot;)</code>. But these won&#x27;t even be <code>DefinitionKind::TypeVar</code>, they&#x27;ll just be <code>DefinitionKind::Assignment</code>. And since we won&#x27;t know until type inference that the RHS even is a typevar, I don&#x27;t think we could special-case those to be declarations even if we wanted to (and I don&#x27;t think we do; I think declaration-or-not should be determined purely by the syntactic form, not by the type of the RHS of an assignment.)</p>
+<p>If we decide we want to emit an error if you shadow a type variable, we can certainly do that (but again I&#x27;m not sure we should; neither pyright nor mypy does), but it would be a special-case diagnostic, it can&#x27;t be done by making type parameters declarations.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1639 on 2024-11-08 20:44</div>
-            <div class="timeline-body"><p>Great observation! After playing with it, I came to feel the opposite; I think for a singleton type it's simpler if we just represent its instance as <code>Type::Instance(KnownClass)</code>, and reserve <code>KnownInstance</code> for cases where we actually need to distinguish between different instances of one type. The extra case in <code>Type::is_singleton</code> is not really a burden, and we could even add a <code>KnownClass::is_singleton</code> to better consolidate this information into <code>KnownClass</code>.</p>
+            <div class="timeline-body"><p>Great observation! After playing with it, I came to feel the opposite; I think for a singleton type it&#x27;s simpler if we just represent its instance as <code>Type::Instance(KnownClass)</code>, and reserve <code>KnownInstance</code> for cases where we actually need to distinguish between different instances of one type. The extra case in <code>Type::is_singleton</code> is not really a burden, and we could even add a <code>KnownClass::is_singleton</code> to better consolidate this information into <code>KnownClass</code>.</p>
 <p>So I removed <code>KnownInstanceType::NoDefault</code>, and added <code>KnownClass::NoDefaultType</code> to the existing check for <code>NoneType</code> in <code>Type::is_singleton</code>.</p>
 </div>
         </div>
@@ -367,12 +367,12 @@ class A1(A): ...
             <div class="timeline-body"><blockquote>
 <p>and we could even add a <code>KnownClass::is_singleton</code> to better consolidate this information into <code>KnownClass</code>.</p>
 </blockquote>
-<p>I like that idea quite a lot, actually! Though no need to do it in this PR if you don't want to</p>
+<p>I like that idea quite a lot, actually! Though no need to do it in this PR if you don&#x27;t want to</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/definition.rs</code>:496 on 2024-11-08 20:55</div>
-            <div class="timeline-body"><p>(I did end up deciding to make them declarations anyway -- even if it makes no difference, I think it makes semantic sense, and actually <code>DeclarationAndBinding</code> is marginally more efficient since it doesn't have to look for other reaching declarations.)</p>
+            <div class="timeline-body"><p>(I did end up deciding to make them declarations anyway -- even if it makes no difference, I think it makes semantic sense, and actually <code>DeclarationAndBinding</code> is marginally more efficient since it doesn&#x27;t have to look for other reaching declarations.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -390,7 +390,7 @@ class A1(A): ...
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1578 on 2024-11-08 21:08</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">    const fn is_singleton(self) -&gt; bool {
+            <div class="timeline-body"><pre><code>    const fn is_singleton(self) -&gt; bool {
 </code></pre>
 </div>
         </div>
@@ -408,10 +408,10 @@ class A1(A): ...
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @carljm on 2024-11-08 21:23</div>
+            <div class="event">Merged by <a href="https://github.com/carljm">@carljm</a> on 2024-11-08 21:23</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2024-11-08 21:23</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2024-11-08 21:23</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-11-08 21:23</div>
@@ -422,7 +422,7 @@ class A1(A): ...
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1578 on 2024-11-08 21:23</div>
-            <div class="timeline-body"><p>Oops, already had hit the auto-merge button. I'll push a follow-up for this.</p>
+            <div class="timeline-body"><p>Oops, already had hit the auto-merge button. I&#x27;ll push a follow-up for this.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -440,11 +440,11 @@ class A1(A): ...
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:675 on 2024-11-08 22:24</div>
-            <div class="timeline-body"><p>I think this makes sense, because I'm guessing <code>NoDefaultType</code> sometimes comes from <code>typing</code> and sometimes comes from <code>typing_extensions</code>. But it doesn't actually seem to be tested anywhere; no tests fail if I revert this change.</p>
+            <div class="timeline-body"><p>I think this makes sense, because I&#x27;m guessing <code>NoDefaultType</code> sometimes comes from <code>typing</code> and sometimes comes from <code>typing_extensions</code>. But it doesn&#x27;t actually seem to be tested anywhere; no tests fail if I revert this change.</p>
 <p>I also wonder if this and some code in <code>display.rs</code> could be micro-optimised slightly by reducing some Salsa lookups:</p>
-<pre><code class="language-diff">--- a/crates/red_knot_python_semantic/src/types.rs
+<pre><code>--- a/crates/red_knot_python_semantic/src/types.rs
 +++ b/crates/red_knot_python_semantic/src/types.rs
-@@ -666,13 +666,11 @@ impl&lt;'db&gt; Type&lt;'db&gt; {
+@@ -666,13 +666,11 @@ impl&lt;&#x27;db&gt; Type&lt;&#x27;db&gt; {
                      Type::Instance(InstanceType { class: self_class }),
                      Type::Instance(InstanceType { class: target_class })
                  )
@@ -467,7 +467,7 @@ diff --git a/crates/red_knot_python_semantic/src/types/display.rs b/crates/red_k
 index 5bcafd902..bb0603ed0 100644
 --- a/crates/red_knot_python_semantic/src/types/display.rs
 +++ b/crates/red_knot_python_semantic/src/types/display.rs
-@@ -66,15 +66,13 @@ impl Display for DisplayRepresentation&lt;'_&gt; {
+@@ -66,15 +66,13 @@ impl Display for DisplayRepresentation&lt;&#x27;_&gt; {
              Type::Any =&gt; f.write_str(&quot;Any&quot;),
              Type::Never =&gt; f.write_str(&quot;Never&quot;),
              Type::Unknown =&gt; f.write_str(&quot;Unknown&quot;),
@@ -488,9 +488,9 @@ index 5bcafd902..bb0603ed0 100644
 +                };
 +                f.write_str(representation)
              }
-             // `[Type::Todo]`'s display should be explicit that is not a valid display of
+             // `[Type::Todo]`&#x27;s display should be explicit that is not a valid display of
              // any other type
-@@ -87,7 +85,6 @@ impl Display for DisplayRepresentation&lt;'_&gt; {
+@@ -87,7 +85,6 @@ impl Display for DisplayRepresentation&lt;&#x27;_&gt; {
              Type::SubclassOf(SubclassOfType { class }) =&gt; {
                  write!(f, &quot;type[{}]&quot;, class.name(self.db))
              }
@@ -508,7 +508,7 @@ index 5bcafd902..bb0603ed0 100644
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:914 on 2024-11-08 22:46</div>
             <div class="timeline-body"><p>nit</p>
-<pre><code class="language-suggestion">                class.known(db).is_some_and(|known_class| known_class.is_singleton())
+<pre><code>                class.known(db).is_some_and(|known_class| known_class.is_singleton())
 </code></pre>
 </div>
         </div>
@@ -533,7 +533,7 @@ index 5bcafd902..bb0603ed0 100644
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:07:33 UTC
+        Synced at 2026-01-20 19:08:14 UTC
     </footer>
 </body>
 </html>

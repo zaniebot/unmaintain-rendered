@@ -23,14 +23,14 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/danking">@danking</a></div>
-            <div class="timeline-body"><p>Hey there! A huge thank you for building ruff. It's been an invaluable tool for us over at https://github.com/hail-is/hail .</p>
+            <div class="timeline-body"><p>Hey there! A huge thank you for building ruff. It&#x27;s been an invaluable tool for us over at https://github.com/hail-is/hail .</p>
 <p>Am I being incredibly dense or should this rule not trigger on this code?</p>
-<pre><code class="language-bash">cat &gt;pyproject.toml &lt;&lt;'EOF'
+<pre><code>cat &gt;pyproject.toml &lt;&lt;&#x27;EOF&#x27;
 [tool.ruff]
 select = [&quot;F&quot;, &quot;E&quot;, &quot;W&quot;, &quot;I&quot;, &quot;PL&quot;, &quot;RUF&quot;]
 EOF
 
-cat &gt;foo.py &lt;&lt;'EOF'
+cat &gt;foo.py &lt;&lt;&#x27;EOF&#x27;
 import asyncio
 
 x = asyncio.create_task(asyncio.sleep(1))
@@ -62,27 +62,27 @@ Found 1 error.
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Incorrect lint? RUF006 Store a reference to the return value of `asyncio.create_task`" to "Incorrect lint in 0.1.8? RUF006 Store a reference to the return value of `asyncio.create_task`" by @danking on 2023-12-14 17:09</div>
+            <div class="event">Renamed from &quot;Incorrect lint? RUF006 Store a reference to the return value of `asyncio.create_task`&quot; to &quot;Incorrect lint in 0.1.8? RUF006 Store a reference to the return value of `asyncio.create_task`&quot; by <a href="https://github.com/danking">@danking</a> on 2023-12-14 17:09</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-14 17:34</div>
             <div class="timeline-body"><p>Thanks for the kind words!</p>
-<p>You're right, we need to consider the control flow in this case. Marking as a bug, sorry for the disruption.</p>
+<p>You&#x27;re right, we need to consider the control flow in this case. Marking as a bug, sorry for the disruption.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-12-14 17:34</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-14 17:34</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-15 01:05</div>
-            <div class="timeline-body"><p>Do you have a real-world example from <code>hail</code> or another project where this triggered in a manner like the above? It's just hard to reason about the &quot;correct&quot; behavior so looking for help.</p>
+            <div class="timeline-body"><p>Do you have a real-world example from <code>hail</code> or another project where this triggered in a manner like the above? It&#x27;s just hard to reason about the &quot;correct&quot; behavior so looking for help.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/danking">@danking</a> on 2023-12-15 03:05</div>
             <div class="timeline-body"><p>Ah, heh, I oversimplified 😉 . The exact code in question is <a href="https://github.com/hail-is/hail/blob/main/hail/python/hailtop/aiotools/fs/copier.py#L504-L530">this</a>.</p>
-<p>The code is a bit opaque and could probably be written better but I think I see the issue. Ruff cannot prove that we always <code>asyncio.wait</code> or <code>await</code> the task because of a correlated if. To simplify, the following code always awaits the task but ruff can't prove that to itself. It even fails if the second if is <code>if x:</code>.</p>
-<pre><code class="language-python3">import asyncio
+<p>The code is a bit opaque and could probably be written better but I think I see the issue. Ruff cannot prove that we always <code>asyncio.wait</code> or <code>await</code> the task because of a correlated if. To simplify, the following code always awaits the task but ruff can&#x27;t prove that to itself. It even fails if the second if is <code>if x:</code>.</p>
+<pre><code>import asyncio
 
 async def foo(x: bool):
     if x:
@@ -96,24 +96,24 @@ async def foo(x: bool):
             await t
 
 </code></pre>
-<p>OK! So, I now do not believe this is a bug in ruff. It's just inherent to ruff's incompleteness.</p>
+<p>OK! So, I now do not believe this is a bug in ruff. It&#x27;s just inherent to ruff&#x27;s incompleteness.</p>
 <p>I <em>do</em> think there is a bug in the error message. Can we change it to:</p>
 <pre><code>RUF006 Cannot prove result of `asyncio.create_task` is awaited in all program traces.
 </code></pre>
-<p>That message would've given me enough clew to solve this on my own without bothering you :).</p>
-<p>If you like the message: https://github.com/astral-sh/ruff/pull/9144; but I realize it violates the imperative phrasing you prefer in these messages.</p>
+<p>That message would&#x27;ve given me enough clew to solve this on my own without bothering you :).</p>
+<p>If you like the message: <a href="https://github.com/astral-sh/ruff/pull/9144">astral-sh/ruff#9144</a>; but I realize it violates the imperative phrasing you prefer in these messages.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/danking">@danking</a> on 2023-12-15 03:30</div>
             <div class="timeline-body"><p>Hmm. Getting sucked into your codebase a bit! It seems like this is not the intention of <code>bindings.is_used()</code>, right? That ought to return true (i.e. references is non-empty) because the <em>binding</em> is, syntactically, referenced.</p>
-<p>I can imagine a more sophisticated notion of &quot;usage&quot; that ties an allocation site to a use-site , but that doesn't seem to be the intention of Binding.</p>
+<p>I can imagine a more sophisticated notion of &quot;usage&quot; that ties an allocation site to a use-site , but that doesn&#x27;t seem to be the intention of Binding.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-15 03:48</div>
             <div class="timeline-body"><p>Thanks for the thorough follow-up :)</p>
-<p>Ahh I see. So, it works if you remove the <code>else</code>: https://play.ruff.rs/00a2d9af-223c-4934-8be5-02860e66898e. The issue is that we don't do any sophisticated branch analysis yet, so when we see <code>t = None</code>, it shadows the <code>t = asyncio.create_task(asyncio.sleep(1))</code> binding, and so the <code>t = asyncio.create_task(asyncio.sleep(1))</code> binding appears to have no usages. We can solve this by looking ahead to see if any <em>shadowed</em> bindings are used, since those are very likely to be fine usages.</p>
+<p>Ahh I see. So, it works if you remove the <code>else</code>: https://play.ruff.rs/00a2d9af-223c-4934-8be5-02860e66898e. The issue is that we don&#x27;t do any sophisticated branch analysis yet, so when we see <code>t = None</code>, it shadows the <code>t = asyncio.create_task(asyncio.sleep(1))</code> binding, and so the <code>t = asyncio.create_task(asyncio.sleep(1))</code> binding appears to have no usages. We can solve this by looking ahead to see if any <em>shadowed</em> bindings are used, since those are very likely to be fine usages.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -128,19 +128,19 @@ x = 5
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-15 05:14</div>
-            <div class="timeline-body"><p>That's correct -- it's not <em>actually</em> shadowing, but our semantic model doesn't take branching into account in a meaningful way, so it treats the code <em>as if</em> the <code>else</code> is shadowing the assignment in the <code>if</code>.</p>
+            <div class="timeline-body"><p>That&#x27;s correct -- it&#x27;s not <em>actually</em> shadowing, but our semantic model doesn&#x27;t take branching into account in a meaningful way, so it treats the code <em>as if</em> the <code>else</code> is shadowing the assignment in the <code>if</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/yakMM">@yakMM</a> on 2023-12-20 12:57</div>
             <div class="timeline-body"><p>Same false positive (I assume) with the following code:</p>
-<pre><code class="language-py">if some_condition:
+<pre><code>if some_condition:
     task = asyncio.create_task(coro)
 else:
     task = asyncio.create_task(another_coro)
 </code></pre>
 <p>Workaround on my side:</p>
-<pre><code class="language-py">
+<pre><code>
 if not some_condition:
     coro = another_coro
 
@@ -149,10 +149,10 @@ task = asyncio.create_task(coro)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-12-20 16:14</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-20 16:14</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-12-20 17:07</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-20 17:07</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-20 17:12</div>
@@ -162,7 +162,7 @@ task = asyncio.create_task(coro)
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:49:16 UTC
+        Synced at 2026-01-20 18:48:48 UTC
     </footer>
 </body>
 </html>

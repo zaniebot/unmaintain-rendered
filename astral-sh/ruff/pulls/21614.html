@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>For something like this:</p>
-<pre><code class="language-py">from typing import Callable
+<pre><code>from typing import Callable
 
 def my_lossy_decorator(fn: Callable[..., int]) -&gt; Callable[..., int]:
     return fn
@@ -35,46 +35,46 @@ class MyClass:
     def method(self) -&gt; int:
         return 42
 </code></pre>
-<p>we will currently infer the type of <code>MyClass.method</code> as a function-like <code>Callable</code>, but we will infer the type of <code>MyClass().method</code> as a <code>Callable</code> that is <em>not</em> function-like. That's because a <code>CallableType</code> currently &quot;forgets&quot; whether it was function-like or not during the <code>bound_self</code> transformation:</p>
+<p>we will currently infer the type of <code>MyClass.method</code> as a function-like <code>Callable</code>, but we will infer the type of <code>MyClass().method</code> as a <code>Callable</code> that is <em>not</em> function-like. That&#x27;s because a <code>CallableType</code> currently &quot;forgets&quot; whether it was function-like or not during the <code>bound_self</code> transformation:</p>
 <p>https://github.com/astral-sh/ruff/blob/a57e29131125bf05db7379e90c7616eec32624fe/crates/ty_python_semantic/src/types.rs#L10985-L10987</p>
-<p>This seems incorrect, and it's quite different to what we do when binding the <code>self</code> parameter of <code>FunctionLiteral</code> types: <code>BoundMethod</code> types are all seen as subtypes of function-like <code>Callable</code> supertypes -- here's <code>BoundMethodType::into_callable_type</code>:</p>
+<p>This seems incorrect, and it&#x27;s quite different to what we do when binding the <code>self</code> parameter of <code>FunctionLiteral</code> types: <code>BoundMethod</code> types are all seen as subtypes of function-like <code>Callable</code> supertypes -- here&#x27;s <code>BoundMethodType::into_callable_type</code>:</p>
 <p>https://github.com/astral-sh/ruff/blob/a57e29131125bf05db7379e90c7616eec32624fe/crates/ty_python_semantic/src/types.rs#L10844-L10860</p>
-<p>The bug here is also causing lots of false positives in the ecosystem report on https://github.com/astral-sh/ruff/pull/21611: a decorated method on a subclass is currently not seen as validly overriding an undecorated method with the same signature on a superclass, because the undecorated superclass method is seen as function-like after binding <code>self</code> whereas the decorated subclass method is not.</p>
+<p>The bug here is also causing lots of false positives in the ecosystem report on <a href="https://github.com/astral-sh/ruff/pull/21611">astral-sh/ruff#21611</a>: a decorated method on a subclass is currently not seen as validly overriding an undecorated method with the same signature on a superclass, because the undecorated superclass method is seen as function-like after binding <code>self</code> whereas the decorated subclass method is not.</p>
 <p>Fixing the bug required adding a new API in <code>protocol_class.rs</code>, because it turns out that for our purposes in protocol subtyping/assignability, we really do want a callable type to forget its function-like-ness when binding <code>self</code>.</p>
 <p>I initially tried out this change without changing anything in <code>protocol_class.rs</code>. However, it resulted in many ecosystem false positives and new false positives on the typing conformance test suite. This is because it would mean that no protocol with a <code>__call__</code> method would ever be seen as a subtype of a <code>Callable</code> type, since the <code>__call__</code> method on the protocol would be seen as being function-like whereas the <code>Callable</code> type would not be seen as function-like.</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>Added an mdtest that fails on <code>main</code></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-11-24 14:07</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-24 14:07</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-11-24 14:07</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-24 14:07</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-11-24 14:07</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-24 14:07</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-11-24 14:07</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-24 14:07</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-24 14:09</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a>
 <p>No changes detected when running ty on typing conformance tests ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-24 14:11</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">antidote (https://github.com/Finistere/antidote)
+Changes were detected when running on open source projects
+
+<pre><code>antidote (https://github.com/Finistere/antidote)
 - src/antidote/core/_raw/wrapper.py:102:13: error[unresolved-attribute] Object of type `(...) -&gt; object` has no attribute `__get__`
 - src/antidote/core/_raw/wrapper.py:136:13: error[unresolved-attribute] Object of type `(...) -&gt; Awaitable[object]` has no attribute `__get__`
 + src/antidote/core/_raw/wrapper.py:102:13: warning[possibly-missing-attribute] Attribute `__get__` may be missing on object of type `((...) -&gt; object) | ((...) -&gt; object)`
@@ -92,16 +92,16 @@ egglog-python (https://github.com/egraphs-good/egglog-python)
 
 
 </code></pre>
-</details>
+
 
 <p>No memory usage changes detected ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-24 14:16</div>
-            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+            <div class="timeline-body">
 
-<h2><code>ecosystem-analyzer</code> results</h2>
+<code>ecosystem-analyzer</code> results
 <p>| Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
 | <code>invalid-assignment</code> | 0 | 2 | 0 |
@@ -112,33 +112,33 @@ egglog-python (https://github.com/egraphs-good/egglog-python)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @AlexWaygood on 2025-11-24 14:23</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-24 14:23</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-11-24 14:23</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-24 14:23</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-24 15:56</div>
-            <div class="timeline-body"><p>The ecosystem diff shows two false-positive diagnostics going away. It also shows two pre-existing diagnostics becoming slightly more confusing due to the fact that we don't have a great way of distinguishing between function-like callables and non-function-like callables in our <code>Type</code> display yet.</p>
+            <div class="timeline-body"><p>The ecosystem diff shows two false-positive diagnostics going away. It also shows two pre-existing diagnostics becoming slightly more confusing due to the fact that we don&#x27;t have a great way of distinguishing between function-like callables and non-function-like callables in our <code>Type</code> display yet.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @AlexWaygood on 2025-11-24 15:56</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-24 15:56</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-11-24 15:56</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-24 15:56</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-11-24 15:56</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-24 15:56</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-11-24 15:56</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-24 15:56</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Converted to draft by @AlexWaygood on 2025-11-24 20:10</div>
+            <div class="event">Converted to draft by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-24 20:10</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @AlexWaygood on 2025-11-24 20:13</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-24 20:13</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-11-24 21:08</div>
@@ -146,10 +146,10 @@ egglog-python (https://github.com/egraphs-good/egglog-python)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @AlexWaygood on 2025-11-24 21:14</div>
+            <div class="event">Merged by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-24 21:14</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-11-24 21:14</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-24 21:14</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-11-24 21:14</div>
@@ -157,7 +157,7 @@ egglog-python (https://github.com/egraphs-good/egglog-python)
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:17:32 UTC
+        Synced at 2026-01-20 19:21:01 UTC
     </footer>
 </body>
 </html>

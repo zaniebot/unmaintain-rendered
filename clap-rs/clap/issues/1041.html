@@ -23,115 +23,115 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Rupsbant">@Rupsbant</a></div>
-            <div class="timeline-body"><h3>Affected Version of clap</h3>
+            <div class="timeline-body">Affected Version of clap
 <p>All 2.x. Breaking API change</p>
-<h3>Expected Behavior Summary</h3>
+Expected Behavior Summary
 <p>I want to decouple groups of options to several structs. I want to have a pair functions: one that adds arguments to an App with generated names, one that generates a structure with the added arguments.</p>
-<h3>Actual Behavior Summary</h3>
-<p>Uncompilable: the types don't allow to create String in a function and return a borrow.</p>
-<h3>Sample code</h3>
+Actual Behavior Summary
+<p>Uncompilable: the types don&#x27;t allow to create String in a function and return a borrow.</p>
+Sample code
 <pre><code>struct A {
 ...
 }
 impl A {
-  fn arguments&lt;'a, 'b&gt;(prefix: &amp;str) -&gt; Vec&lt;Arg&lt;'a, 'b&gt;&gt; {
+  fn arguments&lt;&#x27;a, &#x27;b&gt;(prefix: &amp;str) -&gt; Vec&lt;Arg&lt;&#x27;a, &#x27;b&gt;&gt; {
     let name = format!(&quot;{}.name&quot;, prefix);
     ...
   }
 }
 </code></pre>
-<h3>Proposed solution</h3>
-<p>Since clap is dependent on its speed it's probably not an option to force 'String' instead of '&amp;str'. However I think Cow<str> should give enough options.</p>
-<h3>Alternative for me</h3>
+Proposed solution
+<p>Since clap is dependent on its speed it&#x27;s probably not an option to force &#x27;String&#x27; instead of &#x27;&amp;str&#x27;. However I think Cow should give enough options.</p>
+Alternative for me
 <p>Create a struct <code>AParse</code> to contain the owned strings, split the function <code>arguments</code> in two parts. A can generate an <code>AParse</code>struct before creating the App object.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-09-14 14:55</div>
-            <div class="timeline-body"><p>This is a focus of 3.x so stay tuned. I've been able to get some work done in spurts during lulls in my day job (which have been few and far between this year). Watch the 3x-master branch for details :wink:</p>
+            <div class="timeline-body"><p>This is a focus of 3.x so stay tuned. I&#x27;ve been able to get some work done in spurts during lulls in my day job (which have been few and far between this year). Watch the 3x-master branch for details :wink:</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">W: 3.x</span> added by @kbknapp on 2017-09-14 14:55</div>
+            <div class="event">Label <span class="label">W: 3.x</span> added by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-09-14 14:55</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-11-12 20:07</div>
-            <div class="timeline-body"><p>Personally, I'd like to move away from storing <code>&amp;str</code>s inside the <code>Arg</code>s as the name. This would solve lifetime issues as I want 3.x to be able to remove the <code>Arg|App&lt;'a, 'b&gt;</code> lifetimes. This could be solved by moving to owned <code>String</code>s which takes a slight performance hit.</p>
-<h2>History</h2>
+            <div class="timeline-body"><p>Personally, I&#x27;d like to move away from storing <code>&amp;str</code>s inside the <code>Arg</code>s as the name. This would solve lifetime issues as I want 3.x to be able to remove the <code>Arg|App&lt;&#x27;a, &#x27;b&gt;</code> lifetimes. This could be solved by moving to owned <code>String</code>s which takes a slight performance hit.</p>
+History
 <p>clap has two lifetimes for both <code>Arg</code> and <code>App</code> which reference the name, or <em>key</em> of the struct and data related to displaying of the help message or errors. clap uses <code>name</code> and <code>key</code> interchangeably.</p>
-<p>clap used to only accept <code>&amp;'static str</code>s because that's what 99% of users use. However, some users <em>do</em> dynamically create args and such, so we moved to <code>&amp;'key str</code> and <code>&amp;'data str</code> to refer to the name/key and display data. There reason these two are separate is because tying them to the same lifetime was cumbersome when one wanted to use <code>'static</code> for one, but dynamically mess with the other.</p>
-<h3>Why not use String?</h3>
-<p>clap originally <em>could</em> have used an owned <code>String</code> to hold both the name and data, however for performance reasons we elected not to. I'm considering moving to String for the name/key as these are typically small, but am reluctant to use <code>String</code> for the data piece as this could be huge and I have yet to see someone who uses anything other than <code>&amp;'static str</code> for such data.</p>
-<h2>Moving Forward</h2>
+<p>clap used to only accept <code>&amp;&#x27;static str</code>s because that&#x27;s what 99% of users use. However, some users <em>do</em> dynamically create args and such, so we moved to <code>&amp;&#x27;key str</code> and <code>&amp;&#x27;data str</code> to refer to the name/key and display data. There reason these two are separate is because tying them to the same lifetime was cumbersome when one wanted to use <code>&#x27;static</code> for one, but dynamically mess with the other.</p>
+Why not use String?
+<p>clap originally <em>could</em> have used an owned <code>String</code> to hold both the name and data, however for performance reasons we elected not to. I&#x27;m considering moving to String for the name/key as these are typically small, but am reluctant to use <code>String</code> for the data piece as this could be huge and I have yet to see someone who uses anything other than <code>&amp;&#x27;static str</code> for such data.</p>
+Moving Forward
 <p>I want to get away from using <code>&amp;str</code> for the name/key as this is preventing several key features like the ability to create <code>no-*</code> args on the fly.</p>
-<p>We <em>could</em> move to <code>Cow&lt;'static, str&gt;</code> for data piece, but so far all attempts to do this have been a hassle. However, I'm OK with it being a hassle if the end result for <em>users</em> is better.</p>
-<p>I'm open to ideas.</p>
+<p>We <em>could</em> move to <code>Cow&lt;&#x27;static, str&gt;</code> for data piece, but so far all attempts to do this have been a hassle. However, I&#x27;m OK with it being a hassle if the end result for <em>users</em> is better.</p>
+<p>I&#x27;m open to ideas.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/1104.html">clap-rs/clap#1104</a> on 2017-11-12 20:11</div>
+            <div class="event">Referenced in <a>clap-rs/clap#1104</a> on 2017-11-12 20:11</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/1037.html">clap-rs/clap#1037</a> on 2017-11-13 02:18</div>
+            <div class="event">Referenced in <a>clap-rs/clap#1037</a> on 2017-11-13 02:18</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "v3-alpha1" by @kbknapp on 2018-02-02 02:05</div>
+            <div class="event">Added to milestone &quot;v3-alpha1&quot; by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-02-02 02:05</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @kbknapp by @kbknapp on 2018-07-22 02:41</div>
+            <div class="event">Assigned to <a href="https://github.com/kbknapp">@kbknapp</a> by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-07-22 02:41</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">T: enhancement</span> added by @kbknapp on 2018-07-22 02:42</div>
+            <div class="event">Label <span class="label">T: enhancement</span> added by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-07-22 02:42</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">E: breaking change</span> added by @kbknapp on 2018-07-22 02:42</div>
+            <div class="event">Label <span class="label">E: breaking change</span> added by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-07-22 02:42</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">P2: need to have</span> added by @kbknapp on 2018-07-22 02:42</div>
+            <div class="event">Label <span class="label">P2: need to have</span> added by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-07-22 02:42</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">D: hard</span> added by @kbknapp on 2018-07-22 02:42</div>
+            <div class="event">Label <span class="label">D: hard</span> added by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-07-22 02:42</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../sharkdp/pastel/pulls/84.html">sharkdp/pastel#84</a> on 2019-08-30 21:28</div>
+            <div class="event">Referenced in <a>sharkdp/pastel#84</a> on 2019-08-30 21:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Removed from milestone "v3-alpha.2" by @pksunkara on 2020-02-01 07:45</div>
+            <div class="event">Removed from milestone &quot;v3-alpha.2&quot; by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-02-01 07:45</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "v3.0" by @pksunkara on 2020-02-01 07:45</div>
+            <div class="event">Added to milestone &quot;v3.0&quot; by <a href="https://github.com/pksunkara">@pksunkara</a> on 2020-02-01 07:45</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../pulls/1728.html">clap-rs/clap#1728</a> on 2020-03-05 18:55</div>
+            <div class="event">Referenced in <a>clap-rs/clap#1728</a> on 2020-03-05 18:55</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../PyO3/pyo3/pulls/1118.html">PyO3/pyo3#1118</a> on 2020-08-26 23:17</div>
+            <div class="event">Referenced in <a>PyO3/pyo3#1118</a> on 2020-08-26 23:17</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../ramsayleung/rspotify/pulls/161.html">ramsayleung/rspotify#161</a> on 2020-12-17 17:26</div>
+            <div class="event">Referenced in <a>ramsayleung/rspotify#161</a> on 2020-12-17 17:26</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../ducaale/xh/issues/142.html">ducaale/xh#142</a> on 2021-05-23 14:19</div>
+            <div class="event">Referenced in <a>ducaale/xh#142</a> on 2021-05-23 14:19</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">W: 3.x</span> removed by @pksunkara on 2021-05-26 11:14</div>
+            <div class="event">Label <span class="label">W: 3.x</span> removed by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-05-26 11:14</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Removed from milestone "3.0" by @pksunkara on 2021-05-26 11:14</div>
+            <div class="event">Removed from milestone &quot;3.0&quot; by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-05-26 11:14</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-07-06 13:41</div>
             <div class="timeline-body"><p>I wonder if <a href="https://docs.rs/kstring/1.0.1/kstring/"><code>kstring</code></a> would be a good fit.  Internally, its an <code>Enum</code> with variants for</p>
 <ul>
 <li>Owned String</li>
-<li><code>&amp;'static str</code></li>
+<li><code>&amp;&#x27;static str</code></li>
 <li>Inline strings, when small</li>
 </ul>
-<p>I implemented this for <code>liquid</code> template engine for generating the data context to pass in when rendering.  I had a similar situation where most data was <code>'static</code> but not all.  I wanted a more ergonomic <code>Cow</code>.  I then also threw in small string optimization to bypass <code>String</code> where possible, because most of my strings were short.</p>
+<p>I implemented this for <code>liquid</code> template engine for generating the data context to pass in when rendering.  I had a similar situation where most data was <code>&#x27;static</code> but not all.  I wanted a more ergonomic <code>Cow</code>.  I then also threw in small string optimization to bypass <code>String</code> where possible, because most of my strings were short.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "4.0" by @pksunkara on 2021-07-06 18:56</div>
+            <div class="event">Added to milestone &quot;4.0&quot; by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-07-06 18:56</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-07-06 18:56</div>
@@ -161,28 +161,28 @@ KString: 24
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-07-06 21:26</div>
-            <div class="timeline-body"><p>My bad. Let me rephrase, I am concerned about the performance issues related to running time because of the indirections introduced by kstring or similar such library. Also pure <code>Cow</code> implementation has that IIUC (https://github.com/clap-rs/clap/pull/2504).</p>
-<p>I haven't actually worked with something like this before, so my entire theory can be wrong.</p>
+            <div class="timeline-body"><p>My bad. Let me rephrase, I am concerned about the performance issues related to running time because of the indirections introduced by kstring or similar such library. Also pure <code>Cow</code> implementation has that IIUC (<a href="https://github.com/clap-rs/clap/pull/2504">clap-rs/clap#2504</a>).</p>
+<p>I haven&#x27;t actually worked with something like this before, so my entire theory can be wrong.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-07-06 21:46</div>
-            <div class="timeline-body"><p>My first comment was meant to give a rough idea of what runtime performance looks like compared to other options according to <code>kstring</code>s benchmarks.  If there is interest in this direction, I can go implement support and run clap's benchmarks.  I didn't want to spend time on something if there wasn't interest.</p>
+            <div class="timeline-body"><p>My first comment was meant to give a rough idea of what runtime performance looks like compared to other options according to <code>kstring</code>s benchmarks.  If there is interest in this direction, I can go implement support and run clap&#x27;s benchmarks.  I didn&#x27;t want to spend time on something if there wasn&#x27;t interest.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-07-06 21:55</div>
-            <div class="timeline-body"><p>You don't have to implement it for clap and run the benchmarks. What I am looking for is a small bench implemented purely on a struct containing a string with large number of iterations doing something which involves accessing the string inside the struct and cloning the struct.</p>
+            <div class="timeline-body"><p>You don&#x27;t have to implement it for clap and run the benchmarks. What I am looking for is a small bench implemented purely on a struct containing a string with large number of iterations doing something which involves accessing the string inside the struct and cloning the struct.</p>
 <ul>
 <li><p>With a lifetime str:</p>
-<pre><code>struct Test&lt;'a&gt; {
-  inner: &amp;'a str;
+<pre><code>struct Test&lt;&#x27;a&gt; {
+  inner: &amp;&#x27;a str;
 }
 </code></pre>
 </li>
 <li><p>Non-ergonomic with cow:</p>
-<pre><code>struct Test&lt;'a&gt; {
-  inner: Cow&lt;'a, str&gt;;
+<pre><code>struct Test&lt;&#x27;a&gt; {
+  inner: Cow&lt;&#x27;a, str&gt;;
 }
 </code></pre>
 </li>
@@ -190,8 +190,8 @@ KString: 24
 </li>
 </ul>
 <p>Once we have these, if we make sure that the performance is not too bad, we can go ahead with implementation.</p>
-<hr />
-<p>If the performance is concerning, we can still implement it but should. provide cargo features to let user pick and choose. I haven't looked into kstring, but hopefully it allows something like this.</p>
+<hr>
+<p>If the performance is concerning, we can still implement it but should. provide cargo features to let user pick and choose. I haven&#x27;t looked into kstring, but hopefully it allows something like this.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -204,37 +204,37 @@ KString: 24
 <li>Derefs are pretty much the same across the board.</li>
 </ul>
 <p>For <code>clone</code> there seems to be a 10ns overhead that, if it can be diagnosed and fixed, would close the gap with <code>Cow</code>.  I suspect this is fixable or else we would see this same slowdown on deref.</p>
-<p>EDIT: I've not updated my charts above but I have dropped the overhead from 10ns to 5ns by <strong>not</strong> inlining <code>clone()</code>.  My guess is we were thrashing the icache.</p>
+<p>EDIT: I&#x27;ve not updated my charts above but I have dropped the overhead from 10ns to 5ns by <strong>not</strong> inlining <code>clone()</code>.  My guess is we were thrashing the icache.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2021-07-08 14:48</div>
             <div class="timeline-body"><p>The only &quot;downside&quot; my naive glance at <code>kstring</code> presents to <code>clap</code> specifically in regards to the spirit of this issue is that not <em>all</em> strings of the App/Arg/etc structs could be made into <code>kstring</code>s, i.e. the help/about strings can and often do extend well beyond the 16 bytes mentioned (often into the hundreds or thousands of bytes). So if we still have <em>some</em> lifetimes around for those help/about strings, the signature of the struct ultimately remains unchanged for end users.</p>
-<p>Performance is another matter entirely though, and we may well benefit from something other than <code>&amp;str</code>, even if the struct signature doesn't change.</p>
+<p>Performance is another matter entirely though, and we may well benefit from something other than <code>&amp;str</code>, even if the struct signature doesn&#x27;t change.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-07-08 14:59</div>
-            <div class="timeline-body"><p><code>kstring::KString</code> overflows from inline strings to the heap, so it can handle any arbitrary string.  Its effectively a <code>enum { Static(&amp;'static), Inline(...), Heap(Box&lt;str&gt;) }</code>.</p>
+            <div class="timeline-body"><p><code>kstring::KString</code> overflows from inline strings to the heap, so it can handle any arbitrary string.  Its effectively a <code>enum { Static(&amp;&#x27;static), Inline(...), Heap(Box&lt;str&gt;) }</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/pksunkara">@pksunkara</a> on 2021-07-09 11:16</div>
             <div class="timeline-body"><p>The performance actually looks good to me.</p>
-<p>If we were to use this, kstring needs to implement <code>From</code> for all inputs we want to take. I think <code>&amp;'help str</code> is missing.</p>
+<p>If we were to use this, kstring needs to implement <code>From</code> for all inputs we want to take. I think <code>&amp;&#x27;help str</code> is missing.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-07-09 13:52</div>
             <div class="timeline-body"><p><code>kstring::KString</code> <a href="https://docs.rs/kstring/1.0.4/kstring/struct.KString.html#impl-From%3C%26%27s%20Box%3Cstr%2C%20Global%3E%3E">implements From</a> for</p>
 <ul>
-<li><code>&amp;'static str</code> instead of <code>&amp;str</code></li>
+<li><code>&amp;&#x27;static str</code> instead of <code>&amp;str</code></li>
 <li><code>String</code></li>
 <li><code>&amp;String</code> (now, looks like I missed this case before)</li>
 </ul>
 <p>My assumption is that clap argument types break down as:</p>
 <ul>
-<li>80% <code>&amp;'static</code></li>
+<li>80% <code>&amp;&#x27;static</code></li>
 <li>10% <code>String</code> or <code>&amp;String</code> (from <code>std::env:var</code>, <code>format!</code>)</li>
 <li>5% yaml (which internally turns into <code>&amp;String</code>)</li>
 <li>5% <code>&amp;str</code></li>
@@ -244,86 +244,86 @@ KString: 24
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/853.html">clap-rs/clap#853</a> on 2021-07-20 17:26</div>
+            <div class="event">Referenced in <a>clap-rs/clap#853</a> on 2021-07-20 17:26</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/918.html">clap-rs/clap#918</a> on 2021-07-20 17:31</div>
+            <div class="event">Referenced in <a>clap-rs/clap#918</a> on 2021-07-20 17:31</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/2150.html">clap-rs/clap#2150</a> on 2021-10-04 17:53</div>
+            <div class="event">Referenced in <a>clap-rs/clap#2150</a> on 2021-10-04 17:53</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/2870.html">clap-rs/clap#2870</a> on 2021-10-14 00:35</div>
+            <div class="event">Referenced in <a>clap-rs/clap#2870</a> on 2021-10-14 00:35</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../pulls/2976.html">clap-rs/clap#2976</a> on 2021-11-01 14:33</div>
+            <div class="event">Referenced in <a>clap-rs/clap#2976</a> on 2021-11-01 14:33</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../epage/clapng/issues/70.html">epage/clapng#70</a> on 2021-12-06 16:32</div>
+            <div class="event">Referenced in <a>epage/clapng#70</a> on 2021-12-06 16:32</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../epage/clapng/issues/79.html">epage/clapng#79</a> on 2021-12-06 16:35</div>
+            <div class="event">Referenced in <a>epage/clapng#79</a> on 2021-12-06 16:35</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">P2: need to have</span> removed by @epage on 2021-12-09 17:10</div>
+            <div class="event">Label <span class="label">P2: need to have</span> removed by <a href="https://github.com/epage">@epage</a> on 2021-12-09 17:10</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">A-builder</span> added by @epage on 2021-12-09 17:10</div>
+            <div class="event">Label <span class="label">A-builder</span> added by <a href="https://github.com/epage">@epage</a> on 2021-12-09 17:10</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">E-hard</span> removed by @epage on 2021-12-09 17:10</div>
+            <div class="event">Label <span class="label">E-hard</span> removed by <a href="https://github.com/epage">@epage</a> on 2021-12-09 17:10</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">E-medium</span> added by @epage on 2021-12-09 17:10</div>
+            <div class="event">Label <span class="label">E-medium</span> added by <a href="https://github.com/epage">@epage</a> on 2021-12-09 17:10</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/1788.html">clap-rs/clap#1788</a> on 2021-12-09 21:22</div>
+            <div class="event">Referenced in <a>clap-rs/clap#1788</a> on 2021-12-09 21:22</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/3287.html">clap-rs/clap#3287</a> on 2022-01-12 15:30</div>
+            <div class="event">Referenced in <a>clap-rs/clap#3287</a> on 2022-01-12 15:30</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../aobatact/clap-serde/issues/1.html">aobatact/clap-serde#1</a> on 2022-01-21 15:33</div>
+            <div class="event">Referenced in <a>aobatact/clap-serde#1</a> on 2022-01-21 15:33</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2022-02-02 20:55</div>
-            <div class="timeline-body"><p>When we do this, we should keep the workarounds in https://github.com/clap-rs/clap/issues/1104 in mind and have an <code>ToId</code> trait that we use on builder functions that can be implemented by an enum for type chekcing.</p>
+            <div class="timeline-body"><p>When we do this, we should keep the workarounds in <a href="https://github.com/clap-rs/clap/issues/1104">clap-rs/clap#1104</a> in mind and have an <code>ToId</code> trait that we use on builder functions that can be implemented by an enum for type chekcing.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/1206.html">clap-rs/clap#1206</a> on 2022-05-18 11:33</div>
+            <div class="event">Referenced in <a>clap-rs/clap#1206</a> on 2022-05-18 11:33</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/4035.html">clap-rs/clap#4035</a> on 2022-08-09 18:24</div>
+            <div class="event">Referenced in <a>clap-rs/clap#4035</a> on 2022-08-09 18:24</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../pulls/4072.html">clap-rs/clap#4072</a> on 2022-08-12 21:48</div>
+            <div class="event">Referenced in <a>clap-rs/clap#4072</a> on 2022-08-12 21:48</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../pulls/4081.html">clap-rs/clap#4081</a> on 2022-08-15 18:27</div>
+            <div class="event">Referenced in <a>clap-rs/clap#4081</a> on 2022-08-15 18:27</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../pulls/4084.html">clap-rs/clap#4084</a> on 2022-08-16 16:54</div>
+            <div class="event">Referenced in <a>clap-rs/clap#4084</a> on 2022-08-16 16:54</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../pulls/4096.html">clap-rs/clap#4096</a> on 2022-08-19 16:55</div>
+            <div class="event">Referenced in <a>clap-rs/clap#4096</a> on 2022-08-19 16:55</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../pulls/4097.html">clap-rs/clap#4097</a> on 2022-08-19 17:13</div>
+            <div class="event">Referenced in <a>clap-rs/clap#4097</a> on 2022-08-19 17:13</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../pulls/4103.html">clap-rs/clap#4103</a> on 2022-08-22 21:02</div>
+            <div class="event">Referenced in <a>clap-rs/clap#4103</a> on 2022-08-22 21:02</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @epage on 2022-08-22 21:48</div>
+            <div class="event">Closed by <a href="https://github.com/epage">@epage</a> on 2022-08-22 21:48</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../solana-labs/solana-program-library/pulls/6376.html">solana-labs/solana-program-library#6376</a> on 2024-03-12 01:15</div>
+            <div class="event">Referenced in <a>solana-labs/solana-program-library#6376</a> on 2024-03-12 01:15</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:46:59 UTC
+        Synced at 2026-01-20 19:56:58 UTC
     </footer>
 </body>
 </html>

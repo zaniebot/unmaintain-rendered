@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This PR implements the &quot;greeter&quot; approach for checking the AST for syntax errors emitted by the CPython compiler. It introduces two main infrastructural changes to support all of the compile-time errors:</p>
 <ol>
 <li>Adds a new <code>semantic_errors</code> module to the parser crate with public <code>SemanticSyntaxChecker</code> and <code>SemanticSyntaxError</code> types</li>
@@ -32,36 +32,36 @@
 <p>As a proof of concept, it also implements detection of two syntax errors:</p>
 <ol>
 <li>A reimplementation of <a href="https://docs.astral.sh/ruff/rules/late-future-import/"><code>late-future-import</code></a> (<code>F404</code>)</li>
-<li>Detection of rebound comprehension iteration variables (https://github.com/astral-sh/ruff/issues/14395)</li>
+<li>Detection of rebound comprehension iteration variables (<a href="https://github.com/astral-sh/ruff/issues/14395">astral-sh/ruff#14395</a>)</li>
 </ol>
-<h2>Test plan</h2>
+Test plan
 <p>Existing F404 tests, new inline tests in the <code>ruff_python_parser</code> crate, and a linter CLI test showing an example of the <code>Message</code> output.</p>
 <p>I also tested in VS Code, where <code>preview = false</code> and turning off syntax errors both disable the new errors:</p>
-<p><img src="https://github.com/user-attachments/assets/cf453d95-04f7-484b-8440-cb812f29d45e" alt="image" /></p>
+<p><img src="https://github.com/user-attachments/assets/cf453d95-04f7-484b-8440-cb812f29d45e" alt="image"></p>
 <p>And on the playground, where <code>preview = false</code> also disables the errors:</p>
-<p><img src="https://github.com/user-attachments/assets/a97570c4-1efa-439f-9d99-a54487dd6064" alt="image" /></p>
+<p><img src="https://github.com/user-attachments/assets/a97570c4-1efa-439f-9d99-a54487dd6064" alt="image"></p>
 <p>Fixes #14395</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:76 on 2025-02-11 21:36</div>
-            <div class="timeline-body"><p>I don't think we should use another collection here. We should either push directly into <code>TypeCheckDiagnostics</code> or, what I'd prefer, move this to the semantic index phase.</p>
+            <div class="timeline-body"><p>I don&#x27;t think we should use another collection here. We should either push directly into <code>TypeCheckDiagnostics</code> or, what I&#x27;d prefer, move this to the semantic index phase.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_syntax_errors/src/lib.rs</code>:96 on 2025-02-11 21:39</div>
-            <div class="timeline-body"><p>I don't think I'd implement <code>SourceOrderVisitor</code> here because you never call into <code>walk_stmt</code> or similar, so it sort of feels unnecessary. Instead, I'd only implement the methods that you plan on calling from <code>Checker</code> / Red Knot's visiting logic. For now, all you'd need is to have a <code>enter_stmt(&amp;mut self, stmt: &amp;Stmt)</code> function.</p>
-<p>The reason I recommend against implementing <code>SourceOrderVisitor</code> is because both the <code>Checker</code> and Red Knot's semantic index builder visit the tree in semantic and not source ordering. Using the <code>SourceOrderVisitor</code> trait here would give the wrong impression that the visiting happens in source order instead.</p>
+            <div class="timeline-body"><p>I don&#x27;t think I&#x27;d implement <code>SourceOrderVisitor</code> here because you never call into <code>walk_stmt</code> or similar, so it sort of feels unnecessary. Instead, I&#x27;d only implement the methods that you plan on calling from <code>Checker</code> / Red Knot&#x27;s visiting logic. For now, all you&#x27;d need is to have a <code>enter_stmt(&amp;mut self, stmt: &amp;Stmt)</code> function.</p>
+<p>The reason I recommend against implementing <code>SourceOrderVisitor</code> is because both the <code>Checker</code> and Red Knot&#x27;s semantic index builder visit the tree in semantic and not source ordering. Using the <code>SourceOrderVisitor</code> trait here would give the wrong impression that the visiting happens in source order instead.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/settings/types.rs</code>:68 on 2025-02-11 21:40</div>
-            <div class="timeline-body"><p>Oh no, more <code>PythonVersion</code> types :( I'm somewhat inclined to move red knot's <code>PythonVersion</code> to <code>ruff_db</code> and reuse that instead (Ruff already depends on the <code>ruff_db</code> crate so adding that dependency won't hurt.</p>
+            <div class="timeline-body"><p>Oh no, more <code>PythonVersion</code> types :( I&#x27;m somewhat inclined to move red knot&#x27;s <code>PythonVersion</code> to <code>ruff_db</code> and reuse that instead (Ruff already depends on the <code>ruff_db</code> crate so adding that dependency won&#x27;t hurt.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-11 21:43</div>
-            <div class="timeline-body"><p>I haven't done an in depth review (as this is also a draft PR) but I left a few comments that hopefully help clarify things.</p>
+            <div class="timeline-body"><p>I haven&#x27;t done an in depth review (as this is also a draft PR) but I left a few comments that hopefully help clarify things.</p>
 <p>Is the idea to emit version specific syntax errors (not semantic syntax errors) as part of the <code>SyntaxChecker</code> or do you still plan on emitting those as part of the parser?</p>
 <p>I think we have to explore some alternative designs to decide on whether we want a rule code but it should definetely not block you from prototyping.</p>
 </div>
@@ -69,7 +69,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-11 22:20</div>
             <div class="timeline-body"><blockquote>
-<p>I haven't done an in depth review (as this is also a draft PR) but I left a few comments that hopefully help clarify things.</p>
+<p>I haven&#x27;t done an in depth review (as this is also a draft PR) but I left a few comments that hopefully help clarify things.</p>
 </blockquote>
 <p>Thanks Micha! Our conversation earlier was very helpful, and I think these comments clear up some places where I was still confused.</p>
 <blockquote>
@@ -80,7 +80,7 @@
 <blockquote>
 <p>I think we have to explore some alternative designs to decide on whether we want a rule code but it should definetely not block you from prototyping.</p>
 </blockquote>
-<p>I partially updated the design doc with your rule code suggestions from earlier, but I still need to add a more concrete proposal to help with this discussion. I'll do that tonight or first thing in the morning.</p>
+<p>I partially updated the design doc with your rule code suggestions from earlier, but I still need to add a more concrete proposal to help with this discussion. I&#x27;ll do that tonight or first thing in the morning.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -103,21 +103,21 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-11 22:43</div>
-            <div class="timeline-body"><p>I haven't handled all of the review comments yet, but I rebased to get the new <code>Diagnostic</code> changes and hopefully fix the CI failures. I'm hoping this will be faster on codspeed than the other two prototypes too, or at least faster than the first one for sure.</p>
+            <div class="timeline-body"><p>I haven&#x27;t handled all of the review comments yet, but I rebased to get the new <code>Diagnostic</code> changes and hopefully fix the CI failures. I&#x27;m hoping this will be faster on codspeed than the other two prototypes too, or at least faster than the first one for sure.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-11 22:51</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
@@ -129,28 +129,28 @@
 <p>Exactly. My motivation for this is that:</p>
 <ul>
 <li>The parser already emits syntax errors today. So it feels seems like a good fit to emit the version specific syntax (not compile) errors in the parser too.</li>
-<li>Our parser is used by other projects and I think it would be useful for them too if they can enforce a specific python version during parser without having to depend on the syntax-checker crate (which we'll likely remove if we unify Ruff/Red Knot)</li>
+<li>Our parser is used by other projects and I think it would be useful for them too if they can enforce a specific python version during parser without having to depend on the syntax-checker crate (which we&#x27;ll likely remove if we unify Ruff/Red Knot)</li>
 <li>I would love if the formatter tests could assert that there are no syntax errors in the source and formatted file. Doing so is much easier if this is a capability of the formatter than compared to calling into some visitor.</li>
-<li>I'm sort of okay with not documenting version specific syntax errors. I do think we may want to have some documentation for compile errors, at least long term.</li>
+<li>I&#x27;m sort of okay with not documenting version specific syntax errors. I do think we may want to have some documentation for compile errors, at least long term.</li>
 </ul>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-12 11:59</div>
             <div class="timeline-body"><blockquote>
-<p>I'm sort of okay with not documenting version specific syntax errors. I do think we may want to have some documentation for compile errors, at least long term.</p>
+<p>I&#x27;m sort of okay with not documenting version specific syntax errors. I do think we may want to have some documentation for compile errors, at least long term.</p>
 </blockquote>
-<p>For most of these, I think we could get away without documentation. There's not that much to say about the <code>match</code> statement not being valid before Python 3.10, for example.</p>
-<p>For some of them, though, I think docs would be really useful for our users. For example, the <a href="https://peps.python.org/pep-0614/">syntax differences between Python 3.8 and 3.9 due to PEP 614</a> are pretty subtle. And the details on when exactly you're able to parenthesize context managers in <code>with</code> statements on Python 3.8 are also pretty complicated -- I can never remember what they are!</p>
+<p>For most of these, I think we could get away without documentation. There&#x27;s not that much to say about the <code>match</code> statement not being valid before Python 3.10, for example.</p>
+<p>For some of them, though, I think docs would be really useful for our users. For example, the <a href="https://peps.python.org/pep-0614/">syntax differences between Python 3.8 and 3.9 due to PEP 614</a> are pretty subtle. And the details on when exactly you&#x27;re able to parenthesize context managers in <code>with</code> statements on Python 3.8 are also pretty complicated -- I can never remember what they are!</p>
 <p>This is invalid syntax on Python 3.8:</p>
-<pre><code class="language-py">with (
+<pre><code>with (
     foo() as x,
     bar() as y,
 ):
     pass
 </code></pre>
 <p>But these are all valid syntax:</p>
-<pre><code class="language-pycon">Python 3.8.18 (default, Feb 15 2024, 19:36:58) 
+<pre><code>Python 3.8.18 (default, Feb 15 2024, 19:36:58) 
 [Clang 15.0.0 (clang-1500.1.0.2.5)] on darwin
 Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
 &gt;&gt;&gt; with (x, y) as foo:
@@ -158,21 +158,21 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
 ... 
 Traceback (most recent call last):
   File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
-NameError: name 'x' is not defined
+NameError: name &#x27;x&#x27; is not defined
 &gt;&gt;&gt; with (x,
 ...     y) as foo:
 ...     pass
 ... 
 Traceback (most recent call last):
   File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
-NameError: name 'x' is not defined
+NameError: name &#x27;x&#x27; is not defined
 &gt;&gt;&gt; with (x,
 ... y):
 ...     pass
 ... 
 Traceback (most recent call last):
   File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
-NameError: name 'x' is not defined
+NameError: name &#x27;x&#x27; is not defined
 &gt;&gt;&gt; with (
 ...     x,
 ... ):
@@ -180,7 +180,7 @@ NameError: name 'x' is not defined
 ... 
 Traceback (most recent call last):
   File &quot;&lt;stdin&gt;&quot;, line 2, in &lt;module&gt;
-NameError: name 'x' is not defined
+NameError: name &#x27;x&#x27; is not defined
 &gt;&gt;&gt; with (
 ...     x,
 ...     y
@@ -189,14 +189,14 @@ NameError: name 'x' is not defined
 ... 
 Traceback (most recent call last):
   File &quot;&lt;stdin&gt;&quot;, line 2, in &lt;module&gt;
-NameError: name 'x' is not defined
+NameError: name &#x27;x&#x27; is not defined
 &gt;&gt;&gt; with x, (
 ...     y
 ... ): pass
 ... 
 Traceback (most recent call last):
   File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
-NameError: name 'x' is not defined
+NameError: name &#x27;x&#x27; is not defined
 &gt;&gt;&gt; with x as foo, (
 ... y
 ... ) as bar:
@@ -204,7 +204,7 @@ NameError: name 'x' is not defined
 ... 
 Traceback (most recent call last):
   File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
-NameError: name 'x' is not defined
+NameError: name &#x27;x&#x27; is not defined
 &gt;&gt;&gt; with x() as foo, (
 ...     y()
 ... ) as bar:
@@ -212,34 +212,34 @@ NameError: name 'x' is not defined
 ... 
 Traceback (most recent call last):
   File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
-NameError: name 'x' is not defined
+NameError: name &#x27;x&#x27; is not defined
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-12 12:11</div>
             <div class="timeline-body"><blockquote>
-<p>For some of them, though, I think docs would be really useful for our users. For example, the <a href="https://peps.python.org/pep-0614/">syntax differences between Python 3.8 and 3.9 due to PEP 614</a> are pretty subtle. And the details on when exactly you're able to parenthesize context managers in with statements on Python 3.8 are also pretty complicated -- I can never remember what they are!</p>
+<p>For some of them, though, I think docs would be really useful for our users. For example, the <a href="https://peps.python.org/pep-0614/">syntax differences between Python 3.8 and 3.9 due to PEP 614</a> are pretty subtle. And the details on when exactly you&#x27;re able to parenthesize context managers in with statements on Python 3.8 are also pretty complicated -- I can never remember what they are!</p>
 </blockquote>
-<p>That's fair. But how is it different from any other syntax error. E.g what if you get a comprehension wrong?</p>
-<p>Either way. Having them in the parser doesn't mean that we can never have unique error codes. Red Knot would allow for it. It might just not be possible today and I think that's fine.</p>
+<p>That&#x27;s fair. But how is it different from any other syntax error. E.g what if you get a comprehension wrong?</p>
+<p>Either way. Having them in the parser doesn&#x27;t mean that we can never have unique error codes. Red Knot would allow for it. It might just not be possible today and I think that&#x27;s fine.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-12 12:19</div>
             <div class="timeline-body"><blockquote>
-<p>That's fair. But how is it different from any other syntax error.</p>
+<p>That&#x27;s fair. But how is it different from any other syntax error.</p>
 </blockquote>
 <p>Well, as we discussed earlier, we also probably want version-dependent syntax errors to be suppressible. If an error is suppressible and has documentation, it ends up looking <em>very much</em> like a lint rule, no? ;)</p>
-<p>And that's not to say that I want them detected using the same infrastructure as a lint rule. I think you're right that it'll be more performant to detect them in the parser where possible, and I think you make a great point when you say that it would be great for the formatter tests to be able to assert that they don't introduce any new version-dependent syntax errors. But I think we should be <em>aware</em> that these in quite a few ways are going to end up looking a lot more like our existing linter rules than our existing syntax rules.</p>
+<p>And that&#x27;s not to say that I want them detected using the same infrastructure as a lint rule. I think you&#x27;re right that it&#x27;ll be more performant to detect them in the parser where possible, and I think you make a great point when you say that it would be great for the formatter tests to be able to assert that they don&#x27;t introduce any new version-dependent syntax errors. But I think we should be <em>aware</em> that these in quite a few ways are going to end up looking a lot more like our existing linter rules than our existing syntax rules.</p>
 <blockquote>
 <p>E.g what if you get a comprehension wrong?</p>
 </blockquote>
-<p>Sure, it might be nice to have better docs for our existing syntax errors too ;-) but I do think it's especially confusing and subtle for users if whether or not they get a syntax error depends on the target Python version we've inferred for their project. And documenting clearly which Python version the new syntax was added in could really help users.</p>
+<p>Sure, it might be nice to have better docs for our existing syntax errors too ;-) but I do think it&#x27;s especially confusing and subtle for users if whether or not they get a syntax error depends on the target Python version we&#x27;ve inferred for their project. And documenting clearly which Python version the new syntax was added in could really help users.</p>
 <blockquote>
-<p>Either way. Having them in the parser doesn't mean that we can never have unique error codes. Red Knot would allow for it. It might just not be possible today and I think that's fine.</p>
+<p>Either way. Having them in the parser doesn&#x27;t mean that we can never have unique error codes. Red Knot would allow for it. It might just not be possible today and I think that&#x27;s fine.</p>
 </blockquote>
-<p>I don't have a strong opinion on whether we should detect these errors in the parser or elsewhere. But if we are going to detect them in the parser, I do think we should have a <em>plan</em> for how we'll provide docs for these errors. It doesn't have to be part of the initial PR adding these syntax diagnostics, but it <em>is</em> important to me.</p>
+<p>I don&#x27;t have a strong opinion on whether we should detect these errors in the parser or elsewhere. But if we are going to detect them in the parser, I do think we should have a <em>plan</em> for how we&#x27;ll provide docs for these errors. It doesn&#x27;t have to be part of the initial PR adding these syntax diagnostics, but it <em>is</em> important to me.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -247,19 +247,19 @@ NameError: name 'x' is not defined
             <div class="timeline-body"><blockquote>
 <p>Well, as we discussed earlier, we also probably want version-dependent syntax errors to be suppressible. If an error is suppressible and has documentation, it ends up looking very much like a lint rule, no? ;)</p>
 </blockquote>
-<p>I don't think this is something we have an agreement on.</p>
+<p>I don&#x27;t think this is something we have an agreement on.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-12 12:33</div>
             <div class="timeline-body"><blockquote>
-<p>I don't think this is something we have an agreement on.</p>
+<p>I don&#x27;t think this is something we have an agreement on.</p>
 </blockquote>
-<p>Oh, sorry about that. I think I misunderstood our earlier conversation on Monday in that case -- that's on me :-)</p>
+<p>Oh, sorry about that. I think I misunderstood our earlier conversation on Monday in that case -- that&#x27;s on me :-)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Syntax errors prototype v3" to "[syntax-errors] Start detecting compile-time syntax errors" by @ntBre on 2025-03-17 19:50</div>
+            <div class="event">Renamed from &quot;Syntax errors prototype v3&quot; to &quot;[syntax-errors] Start detecting compile-time syntax errors&quot; by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-17 19:50</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:29 on 2025-03-19 17:40</div>
@@ -289,40 +289,40 @@ NameError: name 'x' is not defined
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @ntBre on 2025-03-19 18:23</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-19 18:23</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-03-19 18:24</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-19 18:24</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-20 03:32</div>
-            <div class="timeline-body"><p>I did notice one slightly surprising thing when testing the server integration. Because the greeter is tied to the AST visitor, if you have no AST-based rules enabled (e.g. <code>select = []</code>, which I had in my test config for some reason), you won't get any of these errors either.</p>
+            <div class="timeline-body"><p>I did notice one slightly surprising thing when testing the server integration. Because the greeter is tied to the AST visitor, if you have no AST-based rules enabled (e.g. <code>select = []</code>, which I had in my test config for some reason), you won&#x27;t get any of these errors either.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-20 07:34</div>
             <div class="timeline-body"><blockquote>
-<p>I did notice one slightly surprising thing when testing the server integration. Because the greeter is tied to the AST visitor, if you have no AST-based rules enabled (e.g. <code>select = []</code>, which I had in my test config for some reason), you won't get any of these errors either.</p>
+<p>I did notice one slightly surprising thing when testing the server integration. Because the greeter is tied to the AST visitor, if you have no AST-based rules enabled (e.g. <code>select = []</code>, which I had in my test config for some reason), you won&#x27;t get any of these errors either.</p>
 </blockquote>
 <p>We have to remove this check</p>
 <p>https://github.com/astral-sh/ruff/blob/37fbe58b13b905bfafac326a74c922f72f3b54a1/crates/ruff_linter/src/linter.rs#L139-L142</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">core</span> added by @MichaReiser on 2025-03-20 07:34</div>
+            <div class="event">Label <span class="label">core</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-20 07:34</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>Cargo.toml</code>:33 on 2025-03-20 07:35</div>
             <div class="timeline-body"><p>Maybe:</p>
-<pre><code class="language-suggestion">ruff_python_syntax_errors = { path = &quot;crates/ruff_python_semantic_errors&quot; }
+<pre><code>ruff_python_syntax_errors = { path = &quot;crates/ruff_python_semantic_errors&quot; }
 </code></pre>
-<p>To clarify that it doesn't implement other syntax errors? We could also use <code>semantic_syntax_errors</code> but it feels very long.</p>
+<p>To clarify that it doesn&#x27;t implement other syntax errors? We could also use <code>semantic_syntax_errors</code> but it feels very long.</p>
 <p>Another alternative is to implement the checks inside the parser crate. Or does the crate have dependencies that would prevent us from doing that?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/tests/lint.rs</code>:5496 on 2025-03-20 07:36</div>
-            <div class="timeline-body"><p>Let's add a test verifying that the semantic syntax errors are reported even if a user disabled all ast rules.</p>
+            <div class="timeline-body"><p>Let&#x27;s add a test verifying that the semantic syntax errors are reported even if a user disabled all ast rules.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -337,32 +337,32 @@ NameError: name 'x' is not defined
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:525 on 2025-03-20 07:40</div>
-            <div class="timeline-body"><p>Nit: I would rename the methods to <code>visit_stmt</code> because the <code>enter_</code> suggests that there's an <code>exit_</code> pendant for every enter method. Unless you plan on adding <code>exit_*</code> methods to the visitor.</p>
+            <div class="timeline-body"><p>Nit: I would rename the methods to <code>visit_stmt</code> because the <code>enter_</code> suggests that there&#x27;s an <code>exit_</code> pendant for every enter method. Unless you plan on adding <code>exit_*</code> methods to the visitor.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:2772 on 2025-03-20 07:43</div>
-            <div class="timeline-body"><p>Would you mind double-checking if/how Ruff sorts diagnostics? Does it sort diagnosics by file and their source location or only file? It's important that we sort by both, or late future import errors will now always appear last, even if their source location is earlier in a file.</p>
+            <div class="timeline-body"><p>Would you mind double-checking if/how Ruff sorts diagnostics? Does it sort diagnosics by file and their source location or only file? It&#x27;s important that we sort by both, or late future import errors will now always appear last, even if their source location is earlier in a file.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/linter.rs</code>:340 on 2025-03-20 07:45</div>
-            <div class="timeline-body"><p>Let's move this check into <code>Checker</code> so that we avoid collecting the semantic syntax errors if the preview mode is off (Ideally, we'd skip the entire <code>SemanticSyntaxVisitor</code> but I think that would make the code unnecessarily awkward. Although it might be worth it if you're concerned about panics (it then gives users a way to opt out of the new semantic syntax visitor by disabling preview).</p>
+            <div class="timeline-body"><p>Let&#x27;s move this check into <code>Checker</code> so that we avoid collecting the semantic syntax errors if the preview mode is off (Ideally, we&#x27;d skip the entire <code>SemanticSyntaxVisitor</code> but I think that would make the code unnecessarily awkward. Although it might be worth it if you&#x27;re concerned about panics (it then gives users a way to opt out of the new semantic syntax visitor by disabling preview).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_syntax_errors/src/lib.rs</code>:21 on 2025-03-20 07:49</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">    python_version: PythonVersion,
+            <div class="timeline-body"><pre><code>    python_version: PythonVersion,
 </code></pre>
 <p><code>target_version</code> is the &quot;legacy&quot; ruff term.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_syntax_errors/src/lib.rs</code>:27 on 2025-03-20 07:53</div>
-            <div class="timeline-body"><p>It's unfortunate that it requires us to re-implement the <code>seen_docstring_boundary</code>.</p>
+            <div class="timeline-body"><p>It&#x27;s unfortunate that it requires us to re-implement the <code>seen_docstring_boundary</code>.</p>
 <p>It makes me wonder if we should pass a <code>context</code> variable to each <code>visit</code> method that allows to pass some state to the visitor.</p>
 <p>For example:</p>
-<pre><code class="language-rust">fn visit_stmt(&amp;mut self, contex: &amp;SemanticSyntaxContext) {...}
+<pre><code>fn visit_stmt(&amp;mut self, contex: &amp;SemanticSyntaxContext) {...}
 
 #[derive(Debug)]
 struct SemanticSyntaxContext {
@@ -371,7 +371,7 @@ struct SemanticSyntaxContext {
 </code></pre>
 <p>Or we can add a <code>set_seen_docstring_boundary</code> method to the <code>SyntaxChecker</code> and require the <code>Checker</code> to call it when appropriate (this seems a bit more error-prone to me).</p>
 <p>Another alternative is to make <code>Context</code> a trait with:</p>
-<pre><code class="language-rust">trait SemanticSyntaxContext {
+<pre><code>trait SemanticSyntaxContext {
 	fn python_version(&amp;self) -&gt; PythonVersion;
 
 	fn seen_docstring_boundary(&amp;self) -&gt; bool;
@@ -385,12 +385,12 @@ struct SemanticSyntaxContext {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_syntax_errors/src/lib.rs</code>:167 on 2025-03-20 07:59</div>
-            <div class="timeline-body"><p>Always collecting the names here seems unfortunate because most generators never contain an <code>ExprNamed</code>. I would store the generators on the <code>ReboundComprehensionVisitor</code> and use an <code>Option&lt;FxHashSet&lt;&amp;'a Name&gt;&gt;</code> to lazily collect the target names (or a <code>OnceCell</code>)</p>
+            <div class="timeline-body"><p>Always collecting the names here seems unfortunate because most generators never contain an <code>ExprNamed</code>. I would store the generators on the <code>ReboundComprehensionVisitor</code> and use an <code>Option&lt;FxHashSet&lt;&amp;&#x27;a Name&gt;&gt;</code> to lazily collect the target names (or a <code>OnceCell</code>)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_syntax_errors/src/lib.rs</code>:194 on 2025-03-20 08:00</div>
-            <div class="timeline-body"><p>I think it would be great to report all violations because it's annoying if you fix one violation only for the next to appear.</p>
+            <div class="timeline-body"><p>I think it would be great to report all violations because it&#x27;s annoying if you fix one violation only for the next to appear.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -402,8 +402,8 @@ struct SemanticSyntaxContext {
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-03-20 08:03</div>
             <div class="timeline-body"><p>This looks good. I mainly have a few minor comments besides:</p>
 <ul>
-<li>I'd be open to move the checker into <code>ruff_python_parser</code>. Unless you forsee that the checks need to depend on additional crates</li>
-<li>I'm a bit worried about having to reimplement state that's currently tracked on <code>Checker</code> (e.g. seen_docstring). That's why I'm leaning towards introducing a <code>SemanticSyntaxContext</code> trait that <code>Checker</code> implements and allows providing &quot;external&quot; state to the checker. See inline comment</li>
+<li>I&#x27;d be open to move the checker into <code>ruff_python_parser</code>. Unless you forsee that the checks need to depend on additional crates</li>
+<li>I&#x27;m a bit worried about having to reimplement state that&#x27;s currently tracked on <code>Checker</code> (e.g. seen_docstring). That&#x27;s why I&#x27;m leaning towards introducing a <code>SemanticSyntaxContext</code> trait that <code>Checker</code> implements and allows providing &quot;external&quot; state to the checker. See inline comment</li>
 </ul>
 </div>
         </div>
@@ -418,9 +418,9 @@ struct SemanticSyntaxContext {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-03-20 11:21</div>
-            <div class="timeline-body"><p>Feel free to request my review if it's needed otherwise I agree with all of Micha's review comments.</p>
-<p>I'd suggest doing some testing in an editor context considering the <code>ruff.configuration</code> and <code>ruff.showSyntaxErrors</code> setting.</p>
-<p>One thing that I'm reminded of is to check if <code>--statistics</code> includes the count of these new syntax errors or not. I think it should, we might want to update the CLI test case for <code>--statistics</code> to include these new errors.</p>
+            <div class="timeline-body"><p>Feel free to request my review if it&#x27;s needed otherwise I agree with all of Micha&#x27;s review comments.</p>
+<p>I&#x27;d suggest doing some testing in an editor context considering the <code>ruff.configuration</code> and <code>ruff.showSyntaxErrors</code> setting.</p>
+<p>One thing that I&#x27;m reminded of is to check if <code>--statistics</code> includes the count of these new syntax errors or not. I think it should, we might want to update the CLI test case for <code>--statistics</code> to include these new errors.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -429,7 +429,7 @@ struct SemanticSyntaxContext {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_syntax_errors/src/lib.rs</code>:27 on 2025-03-20 11:24</div>
-            <div class="timeline-body"><p>I'm not exactly sure which context are you referring to by &quot;I like the context most&quot; but my preference would be to have a context struct that's owned by the <code>Checker</code> which is then passed to the <code>SyntaxChecker</code>'s <code>visit_stmt</code> and <code>visit_expr</code> methods aka your first suggestion.</p>
+            <div class="timeline-body"><p>I&#x27;m not exactly sure which context are you referring to by &quot;I like the context most&quot; but my preference would be to have a context struct that&#x27;s owned by the <code>Checker</code> which is then passed to the <code>SyntaxChecker</code>&#x27;s <code>visit_stmt</code> and <code>visit_expr</code> methods aka your first suggestion.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -441,7 +441,7 @@ struct SemanticSyntaxContext {
             <div class="timeline-body"><p>I believe the idea is:</p>
 <ul>
 <li>Move the detection logic to the new crate so that red-knot can detect it using the same backend logic, which will also want to detect this syntax error</li>
-<li>But from Ruff's side, make sure that this syntax error continues to be <em>reported</em> using a linter diagnostic and with the same error code that it has always had. This ensures backwards compatibility for Ruff users while also ensuring that we do not duplicate code between the two tools or risking inconsistent behaviour between the two tools.</li>
+<li>But from Ruff&#x27;s side, make sure that this syntax error continues to be <em>reported</em> using a linter diagnostic and with the same error code that it has always had. This ensures backwards compatibility for Ruff users while also ensuring that we do not duplicate code between the two tools or risking inconsistent behaviour between the two tools.</li>
 </ul>
 <p>You can see that for Ruff, the diagnostic is still only reported if the lint rule is actually enabled. That logic has just been moved to line 2761 in <code>crates/ruff_linter/src/checkers/ast/mod.rs</code></p>
 </div>
@@ -452,7 +452,7 @@ struct SemanticSyntaxContext {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_syntax_errors/src/lib.rs</code>:27 on 2025-03-20 11:46</div>
-            <div class="timeline-body"><p>Good point. The context trait but I'm also fine with the context struct.</p>
+            <div class="timeline-body"><p>Good point. The context trait but I&#x27;m also fine with the context struct.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -461,13 +461,13 @@ struct SemanticSyntaxContext {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/statement.rs</code>:856 on 2025-03-20 12:45</div>
-            <div class="timeline-body"><p>Yes, Alex is right. This does not remove the rule and shouldn't change any user-facing behavior (I'll double check the sorting behavior you mentioned elsewhere), it just implements it with the new checker. The main motivation for this change was just to show that it's straightforward to emit these new errors as either true <code>Diagnostic</code>s or as <code>Message</code>s. That way we can migrate existing ruff rules that fit into this category if/when we want.</p>
+            <div class="timeline-body"><p>Yes, Alex is right. This does not remove the rule and shouldn&#x27;t change any user-facing behavior (I&#x27;ll double check the sorting behavior you mentioned elsewhere), it just implements it with the new checker. The main motivation for this change was just to show that it&#x27;s straightforward to emit these new errors as either true <code>Diagnostic</code>s or as <code>Message</code>s. That way we can migrate existing ruff rules that fit into this category if/when we want.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_syntax_errors/src/lib.rs</code>:27 on 2025-03-20 12:57</div>
-            <div class="timeline-body"><p>The trait sounds a bit more natural to me because the <code>Checker</code> already has this state in its <code>SemanticModel</code>, so I think we'd have to repack it into a context struct for use by the <code>SyntaxChecker</code>.  Pushing the semantic errors directly is another nice benefit of the trait.</p>
-<p>I'll play with these today and see how they feel.</p>
+            <div class="timeline-body"><p>The trait sounds a bit more natural to me because the <code>Checker</code> already has this state in its <code>SemanticModel</code>, so I think we&#x27;d have to repack it into a context struct for use by the <code>SyntaxChecker</code>.  Pushing the semantic errors directly is another nice benefit of the trait.</p>
+<p>I&#x27;ll play with these today and see how they feel.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -480,7 +480,7 @@ struct SemanticSyntaxContext {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_syntax_errors/src/lib.rs</code>:167 on 2025-03-20 13:40</div>
-            <div class="timeline-body"><p>That's a good point. Is it even worth caching them like that, or should we just do a linear search each time? I think <code>generators</code> is likely to be small and most of them won't contain an <code>ExprNamed</code> anyway, like you said. That's the approach I've taken for now.</p>
+            <div class="timeline-body"><p>That&#x27;s a good point. Is it even worth caching them like that, or should we just do a linear search each time? I think <code>generators</code> is likely to be small and most of them won&#x27;t contain an <code>ExprNamed</code> anyway, like you said. That&#x27;s the approach I&#x27;ve taken for now.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -490,7 +490,7 @@ struct SemanticSyntaxContext {
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:2772 on 2025-03-20 14:03</div>
             <div class="timeline-body"><p>Empirically, I tested on this snippet:</p>
-<pre><code class="language-python">import late_future_import  # F401
+<pre><code>import late_future_import  # F401
 
 from __future__ import annotations  # F404
 
@@ -533,16 +533,16 @@ https://github.com/astral-sh/ruff/blob/cdafd8e32b1c4d76d61d6d6578a8a7fa5a63dab2/
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_syntax_errors/src/lib.rs</code>:27 on 2025-03-20 15:54</div>
-            <div class="timeline-body"><p>One downside of the trait approach is that I couldn't borrow the <code>Checker</code> mutably and immutably at the same time:</p>
-<pre><code class="language-rust">    fn visit_stmt(&amp;mut self, stmt: &amp;'a Stmt) {
+            <div class="timeline-body"><p>One downside of the trait approach is that I couldn&#x27;t borrow the <code>Checker</code> mutably and immutably at the same time:</p>
+<pre><code>    fn visit_stmt(&amp;mut self, stmt: &amp;&#x27;a Stmt) {
         self.syntax_checker.visit_stmt(stmt, self);
              ^^^^^^^^^^^^^^                  ^^^^
              mutable borrow                  immutable
         ...
     }
 </code></pre>
-<p>so I added some <code>RefCell</code>s in the <code>SemanticSyntaxChecker</code> to make them both immutable. This also means that it's not easy to have a <code>SemanticSyntaxContext::push_semantic_error</code> method; it would require another <code>RefCell</code> back on the implementer.</p>
-<p>I still think it's okay, or maybe I'm missing something that would make it nicer too.</p>
+<p>so I added some <code>RefCell</code>s in the <code>SemanticSyntaxChecker</code> to make them both immutable. This also means that it&#x27;s not easy to have a <code>SemanticSyntaxContext::push_semantic_error</code> method; it would require another <code>RefCell</code> back on the implementer.</p>
+<p>I still think it&#x27;s okay, or maybe I&#x27;m missing something that would make it nicer too.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -551,7 +551,7 @@ https://github.com/astral-sh/ruff/blob/cdafd8e32b1c4d76d61d6d6578a8a7fa5a63dab2/
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_syntax_errors/src/lib.rs</code>:27 on 2025-03-20 15:58</div>
-            <div class="timeline-body"><p>Ugh, that's annoying but makes sense. Yeah, you would have to <code>std::mem::take</code> <code>syntax_checker</code> before calling <code>visit_stmt</code>.</p>
+            <div class="timeline-body"><p>Ugh, that&#x27;s annoying but makes sense. Yeah, you would have to <code>std::mem::take</code> <code>syntax_checker</code> before calling <code>visit_stmt</code>.</p>
 <p>Or we use the context struct, where you can copy over the relevant state.</p>
 </div>
         </div>
@@ -562,12 +562,12 @@ https://github.com/astral-sh/ruff/blob/cdafd8e32b1c4d76d61d6d6578a8a7fa5a63dab2/
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/linter.rs</code>:340 on 2025-03-20 16:04</div>
             <div class="timeline-body"><p>Ah I see what you mean about it being awkward. I thought I could just do something like</p>
-<pre><code class="language-rust">if self.settings.preview.is_enabled() {
+<pre><code>if self.settings.preview.is_enabled() {
     self.syntax_checker.visit_stmt(stmt);
 }
 </code></pre>
 <p>But this loses F404 detection when preview is disabled. For now I moved this into <code>check_ast</code> to avoid pushing onto the <code>semantic_syntax_errors</code> <code>Vec</code> when preview is disabled.</p>
-<p>I don't think there's any panic-prone code in here, but I'll look back over it with that in mind. If we keep the context trait, the <code>RefCell</code> stuff is the most panicky, I think, but the encapsulated usage here should be about as safe as it gets.</p>
+<p>I don&#x27;t think there&#x27;s any panic-prone code in here, but I&#x27;ll look back over it with that in mind. If we keep the context trait, the <code>RefCell</code> stuff is the most panicky, I think, but the encapsulated usage here should be about as safe as it gets.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -576,8 +576,8 @@ https://github.com/astral-sh/ruff/blob/cdafd8e32b1c4d76d61d6d6578a8a7fa5a63dab2/
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_syntax_errors/src/lib.rs</code>:27 on 2025-03-20 16:18</div>
-            <div class="timeline-body"><p>I guess I'm slightly averse to the struct because I think we'd have to construct one on each call? I'm picturing</p>
-<pre><code class="language-rust">    fn visit_stmt(&amp;mut self, stmt: &amp;'a Stmt) {
+            <div class="timeline-body"><p>I guess I&#x27;m slightly averse to the struct because I think we&#x27;d have to construct one on each call? I&#x27;m picturing</p>
+<pre><code>    fn visit_stmt(&amp;mut self, stmt: &amp;&#x27;a Stmt) {
         self.syntax_checker.visit_stmt(
             stmt,
             Context {
@@ -588,7 +588,7 @@ https://github.com/astral-sh/ruff/blob/cdafd8e32b1c4d76d61d6d6578a8a7fa5a63dab2/
         ....
     }
 </code></pre>
-<p>It's pretty minor either way for so few fields, but I'm not sure how big it will get over time. It would definitely require fewer lines of code changed in the current version, though.</p>
+<p>It&#x27;s pretty minor either way for so few fields, but I&#x27;m not sure how big it will get over time. It would definitely require fewer lines of code changed in the current version, though.</p>
 <p><code>Checker</code> could also hold onto a <code>Context</code> of course, but then we have to keep it up to date when the underlying state changes, or move the underlying state to the <code>Context</code>, I guess.</p>
 </div>
         </div>
@@ -626,14 +626,14 @@ https://github.com/astral-sh/ruff/blob/cdafd8e32b1c4d76d61d6d6578a8a7fa5a63dab2/
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>Cargo.toml</code>:33 on 2025-03-20 17:47</div>
-            <div class="timeline-body"><p>I'm fine with any of it but I myself would go with <code>semantic_errors</code> because it's short and simple.</p>
+            <div class="timeline-body"><p>I&#x27;m fine with any of it but I myself would go with <code>semantic_errors</code> because it&#x27;s short and simple.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-20 22:14</div>
             <div class="timeline-body"><p>Thanks @dhruvmanila! I did test <code>ruff.showSyntaxErrors</code> initially, but I have now also tried <code>ruff.configuration</code>. It properly seems to override the local <code>ruff.toml</code> and setting <code>&quot;preview&quot;: false</code> there disables the new errors.</p>
 <p>I also added a test for <code>--statistics</code>, which seems to be working properly for all of the syntax error kinds.</p>
-<p>Otherwise, I think I've handled the other comments too. Thank you and @MichaReiser  for the reviews! This push should get the updated ecosystem check as well, just in case.</p>
+<p>Otherwise, I think I&#x27;ve handled the other comments too. Thank you and @MichaReiser  for the reviews! This push should get the updated ecosystem check as well, just in case.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -645,10 +645,10 @@ https://github.com/astral-sh/ruff/blob/cdafd8e32b1c4d76d61d6d6578a8a7fa5a63dab2/
             <div class="timeline-body"><blockquote>
 <p><code>Checker</code> could also hold onto a <code>Context</code> of course, but then we have to keep it up to date when the underlying state changes, or move the underlying state to the <code>Context</code>, I guess.</p>
 </blockquote>
-<p>This is what I actually envisioned with my comment. The context would all be grouped under a single struct which the <code>Checker</code> owns and that context itself would be passed to the <code>SyntaxChecker</code> whenever required. So, it would be the <code>Checker</code>'s responsibility to keep the context up to date while the <code>SyntaxError</code> should only have a read-only copy / reference to the context.</p>
-<p>This does has the disadvantage that the diff of this PR might get large because it'll require updating multiple fields so I'd be fine moving with your approach of using either trait or creating a context specific to <code>SyntaxChecker</code>.</p>
+<p>This is what I actually envisioned with my comment. The context would all be grouped under a single struct which the <code>Checker</code> owns and that context itself would be passed to the <code>SyntaxChecker</code> whenever required. So, it would be the <code>Checker</code>&#x27;s responsibility to keep the context up to date while the <code>SyntaxError</code> should only have a read-only copy / reference to the context.</p>
+<p>This does has the disadvantage that the diff of this PR might get large because it&#x27;ll require updating multiple fields so I&#x27;d be fine moving with your approach of using either trait or creating a context specific to <code>SyntaxChecker</code>.</p>
 <blockquote>
-<p>I guess I'm slightly averse to the struct because I think we'd have to construct one on each call? I'm picturing</p>
+<p>I guess I&#x27;m slightly averse to the struct because I think we&#x27;d have to construct one on each call? I&#x27;m picturing</p>
 </blockquote>
 <p>We could have a method on the <code>Checker</code> to create the context relevant to the <code>SyntaxChecker</code>.</p>
 </div>
@@ -665,9 +665,9 @@ https://github.com/astral-sh/ruff/blob/cdafd8e32b1c4d76d61d6d6578a8a7fa5a63dab2/
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/tests/generate_inline_tests.rs</code>:42 on 2025-03-21 04:57</div>
             <div class="timeline-body"><p>Is there a specific reason that semantic errors are separate from other parser tests?</p>
-<p>I think I'd prefer to expand the current test infrastructure to include them but I might be missing something that's obvious to you. What I'd do is:</p>
+<p>I think I&#x27;d prefer to expand the current test infrastructure to include them but I might be missing something that&#x27;s obvious to you. What I&#x27;d do is:</p>
 <ul>
-<li>Include the <code>semantic_error</code> crate in <code>generate_inline_tests</code>. This will also remove the need of <code>resources/inline/semantic</code> directory as I think the generated test files are just an abstraction so it doesn't matter where those files are located as long as the test picks them up</li>
+<li>Include the <code>semantic_error</code> crate in <code>generate_inline_tests</code>. This will also remove the need of <code>resources/inline/semantic</code> directory as I think the generated test files are just an abstraction so it doesn&#x27;t matter where those files are located as long as the test picks them up</li>
 <li>Expand <code>test_valid_syntax</code> and <code>test_invalid_syntax</code> to check the semantic errors using the <code>TestVisitor</code></li>
 </ul>
 <p>Curious to hear your thoughts on this.</p>
@@ -675,7 +675,7 @@ https://github.com/astral-sh/ruff/blob/cdafd8e32b1c4d76d61d6d6578a8a7fa5a63dab2/
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/semantic_errors/mod.rs</code>:195 on 2025-03-21 04:59</div>
-            <div class="timeline-body"><p>nit: can we move the test closer to where it's being added? So, above the <code>add_error</code> call below on line 220</p>
+            <div class="timeline-body"><p>nit: can we move the test closer to where it&#x27;s being added? So, above the <code>add_error</code> call below on line 220</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -684,7 +684,7 @@ https://github.com/astral-sh/ruff/blob/cdafd8e32b1c4d76d61d6d6578a8a7fa5a63dab2/
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/semantic_errors/mod.rs</code>:1 on 2025-03-21 07:56</div>
-            <div class="timeline-body"><p>I don't think this module has to have its own directory. Its only a single file. I'd move it to <code>src/semantic_errors.rs</code></p>
+            <div class="timeline-body"><p>I don&#x27;t think this module has to have its own directory. Its only a single file. I&#x27;d move it to <code>src/semantic_errors.rs</code></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -699,9 +699,9 @@ https://github.com/astral-sh/ruff/blob/cdafd8e32b1c4d76d61d6d6578a8a7fa5a63dab2/
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/semantic_errors/mod.rs</code>:25 on 2025-03-21 08:32</div>
-            <div class="timeline-body"><p>I'd prefer not to use a <code>RefCell</code> here because they are only needed because of how <code>Checker</code> is organized. I quickly looked at Red Knot and I don't think ref cells will be necessary in Red Knot because it also has a <code>context</code> type that is independent. That's why I think the mutability should be worked around in <code>Checker</code> and not here.</p>
-<p>I had to play with the code to come up with a recommendation. That's why I'll share a patch here.</p>
-<pre><code class="language-patch">Subject: [PATCH] Align server indexing with CLI behavior
+            <div class="timeline-body"><p>I&#x27;d prefer not to use a <code>RefCell</code> here because they are only needed because of how <code>Checker</code> is organized. I quickly looked at Red Knot and I don&#x27;t think ref cells will be necessary in Red Knot because it also has a <code>context</code> type that is independent. That&#x27;s why I think the mutability should be worked around in <code>Checker</code> and not here.</p>
+<p>I had to play with the code to come up with a recommendation. That&#x27;s why I&#x27;ll share a patch here.</p>
+<pre><code>Subject: [PATCH] Align server indexing with CLI behavior
 ---
 Index: crates/ruff_python_parser/tests/fixtures.rs
 IDEA additional info:
@@ -785,7 +785,7 @@ diff --git a/crates/ruff_python_parser/tests/fixtures.rs b/crates/ruff_python_pa
      }
 -}
  
--impl Visitor&lt;'_&gt; for TestVisitor {
+-impl Visitor&lt;&#x27;_&gt; for TestVisitor {
 -    fn visit_stmt(&amp;mut self, stmt: &amp;ruff_python_ast::Stmt) {
 -        self.checker.visit_stmt(stmt, self);
 -        ruff_python_ast::visitor::walk_stmt(self, stmt);
@@ -808,7 +808,7 @@ diff --git a/crates/ruff_python_parser/src/semantic_errors/mod.rs b/crates/ruff_
 +++ b/crates/ruff_python_parser/src/semantic_errors/mod.rs	(date 1742545597028)
 @@ -4,7 +4,7 @@
  //! [`SemanticSyntaxChecker::visit_stmt`] and [`SemanticSyntaxChecker::visit_expr`] methods should
- //! be called in a parent `Visitor`'s `visit_stmt` and `visit_expr` methods, respectively.
+ //! be called in a parent `Visitor`&#x27;s `visit_stmt` and `visit_expr` methods, respectively.
  
 -use std::{cell::RefCell, fmt::Display};
 +use std::fmt::Display;
@@ -958,16 +958,16 @@ diff --git a/crates/ruff_python_parser/src/semantic_errors/mod.rs b/crates/ruff_
 +    }
 +}
 +
-+impl&lt;Ctx&gt; Visitor&lt;'_&gt; for SemanticSyntaxCheckerVisitor&lt;Ctx&gt;
++impl&lt;Ctx&gt; Visitor&lt;&#x27;_&gt; for SemanticSyntaxCheckerVisitor&lt;Ctx&gt;
 +where
 +    Ctx: SemanticSyntaxContext,
 +{
-+    fn visit_stmt(&amp;mut self, stmt: &amp;'_ Stmt) {
++    fn visit_stmt(&amp;mut self, stmt: &amp;&#x27;_ Stmt) {
 +        self.checker.visit_stmt(stmt, &amp;self.context);
 +        ruff_python_ast::visitor::walk_stmt(self, stmt);
 +    }
 +
-+    fn visit_expr(&amp;mut self, expr: &amp;'_ Expr) {
++    fn visit_expr(&amp;mut self, expr: &amp;&#x27;_ Expr) {
 +        self.checker.visit_expr(expr, &amp;self.context);
 +        ruff_python_ast::visitor::walk_expr(self, expr);
 +    }
@@ -987,7 +987,7 @@ diff --git a/crates/ruff_linter/src/checkers/ast/mod.rs b/crates/ruff_linter/src
 +    semantic_errors: RefCell&lt;Vec&lt;SemanticSyntaxError&gt;&gt;,
  }
  
- impl&lt;'a&gt; Checker&lt;'a&gt; {
+ impl&lt;&#x27;a&gt; Checker&lt;&#x27;a&gt; {
 @@ -280,6 +281,7 @@
              docstring_state: DocstringState::default(),
              target_version,
@@ -1008,7 +1008,7 @@ diff --git a/crates/ruff_linter/src/checkers/ast/mod.rs b/crates/ruff_linter/src
 +    }
  }
  
- impl SemanticSyntaxContext for Checker&lt;'_&gt; {
+ impl SemanticSyntaxContext for Checker&lt;&#x27;_&gt; {
 @@ -530,11 +538,27 @@
      fn python_version(&amp;self) -&gt; PythonVersion {
          self.target_version
@@ -1031,8 +1031,8 @@ diff --git a/crates/ruff_linter/src/checkers/ast/mod.rs b/crates/ruff_linter/src
 +    }
  }
  
- impl&lt;'a&gt; Visitor&lt;'a&gt; for Checker&lt;'a&gt; {
-     fn visit_stmt(&amp;mut self, stmt: &amp;'a Stmt) {
+ impl&lt;&#x27;a&gt; Visitor&lt;&#x27;a&gt; for Checker&lt;&#x27;a&gt; {
+     fn visit_stmt(&amp;mut self, stmt: &amp;&#x27;a Stmt) {
 -        self.syntax_checker.visit_stmt(stmt, self);
 +        self.with_semantic_checker(|semantic, context| semantic.visit_stmt(stmt, context));
  
@@ -1041,7 +1041,7 @@ diff --git a/crates/ruff_linter/src/checkers/ast/mod.rs b/crates/ruff_linter/src
 @@ -1147,7 +1171,7 @@
      }
  
-     fn visit_expr(&amp;mut self, expr: &amp;'a Expr) {
+     fn visit_expr(&amp;mut self, expr: &amp;&#x27;a Expr) {
 -        self.syntax_checker.visit_expr(expr, self);
 +        self.with_semantic_checker(|semantic, context| semantic.visit_expr(expr, context));
  
@@ -1087,7 +1087,7 @@ diff --git a/crates/ruff_linter/src/checkers/ast/mod.rs b/crates/ruff_linter/src
 <p>The main changes are:</p>
 <ul>
 <li>Use <code>std::mem::take</code> in <code>Checker</code> to work around the mutability problem. But use a helper method to do this to avoid the situation where we forget to put it back.</li>
-<li>Add a <code>report_semantic_error</code> method to context. This will work better with Red Knot's error reporting (where errors are immediately checked for suppressions)</li>
+<li>Add a <code>report_semantic_error</code> method to context. This will work better with Red Knot&#x27;s error reporting (where errors are immediately checked for suppressions)</li>
 <li>Introduce a <code>SemanticSyntaxCheckerVisitor</code> that can be used in tests. It should reduce the risk that we forget to update tests when adding new <code>visit_</code> methods.</li>
 </ul>
 </div>
@@ -1103,7 +1103,7 @@ diff --git a/crates/ruff_linter/src/checkers/ast/mod.rs b/crates/ruff_linter/src
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_syntax_errors/src/lib.rs</code>:27 on 2025-03-21 09:21</div>
-            <div class="timeline-body"><p>Separating <code>Checker</code> and its context information would be nice and could help with some future work too, but I think it's a little out of scope for this PR. I commented with a solution that should allow us to work-around the mutability problem locally in <code>Checker</code>.</p>
+            <div class="timeline-body"><p>Separating <code>Checker</code> and its context information would be nice and could help with some future work too, but I think it&#x27;s a little out of scope for this PR. I commented with a solution that should allow us to work-around the mutability problem locally in <code>Checker</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1112,7 +1112,7 @@ diff --git a/crates/ruff_linter/src/checkers/ast/mod.rs b/crates/ruff_linter/src
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/tests/generate_inline_tests.rs</code>:42 on 2025-03-21 11:09</div>
-            <div class="timeline-body"><p>I thought we might want to avoid the AST visitor in the existing tests, but if it's okay to check that for all of them, I can definitely combine these!</p>
+            <div class="timeline-body"><p>I thought we might want to avoid the AST visitor in the existing tests, but if it&#x27;s okay to check that for all of them, I can definitely combine these!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1143,10 +1143,10 @@ diff --git a/crates/ruff_linter/src/checkers/ast/mod.rs b/crates/ruff_linter/src
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @ntBre on 2025-03-21 18:45</div>
+            <div class="event">Merged by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-21 18:45</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ntBre on 2025-03-21 18:45</div>
+            <div class="event">Closed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-21 18:45</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-03-21 18:45</div>
@@ -1154,7 +1154,7 @@ diff --git a/crates/ruff_linter/src/checkers/ast/mod.rs b/crates/ruff_linter/src
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:09:58 UTC
+        Synced at 2026-01-20 19:11:22 UTC
     </footer>
 </body>
 </html>

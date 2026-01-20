@@ -23,39 +23,39 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a></div>
-            <div class="timeline-body"><p>This implements the stopgap approach described in https://github.com/astral-sh/ty/issues/336#issuecomment-2880532213 for handling literal types in generic class specializations.</p>
+            <div class="timeline-body"><p>This implements the stopgap approach described in <a href="https://github.com/astral-sh/ty/issues/336">astral-sh/ty#336</a>#issuecomment-2880532213 for handling literal types in generic class specializations.</p>
 <p>With this approach, we will promote any literal to its instance type, but <em>only</em> when inferring a generic class specialization from a constructor call:</p>
-<pre><code class="language-py">class C[T]:
+<pre><code>class C[T]:
     def __init__(self, x: T) -&gt; None: ...
 
 reveal_type(C(&quot;string&quot;))  # revealed: C[str]
 </code></pre>
-<p>If you specialize the class explicitly, we still use whatever type you provide, even if it's a literal:</p>
-<pre><code class="language-py">from typing import Literal
+<p>If you specialize the class explicitly, we still use whatever type you provide, even if it&#x27;s a literal:</p>
+<pre><code>from typing import Literal
 
 reveal_type(C[Literal[5]](5))  # revealed: C[Literal[5]]
 </code></pre>
-<p>And this doesn't apply at all to generic functions:</p>
-<pre><code class="language-py">def f[T](x: T) -&gt; T:
+<p>And this doesn&#x27;t apply at all to generic functions:</p>
+<pre><code>def f[T](x: T) -&gt; T:
     return x
 
 reveal_type(f(5))  # revealed: Literal[5]
 </code></pre>
-<hr />
-<p>As part of making this happen, we also generalize the <code>TypeMapping</code> machinery.  This provides a way to apply a function to type, returning a new type.  Complicating matters is that for function literals, we have to apply the mapping lazily, since the function's signature is not created until (and if) someone calls its <code>signature</code> method.  That means we have to stash away the mappings that we want to apply to the signatures parameter/return annotations once we do create it.  This requires some minor <code>Cow</code> shenanigans to continue working for partial specializations.</p>
+<hr>
+<p>As part of making this happen, we also generalize the <code>TypeMapping</code> machinery.  This provides a way to apply a function to type, returning a new type.  Complicating matters is that for function literals, we have to apply the mapping lazily, since the function&#x27;s signature is not created until (and if) someone calls its <code>signature</code> method.  That means we have to stash away the mappings that we want to apply to the signatures parameter/return annotations once we do create it.  This requires some minor <code>Cow</code> shenanigans to continue working for partial specializations.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @dcreager on 2025-05-14 18:08</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/dcreager">@dcreager</a> on 2025-05-14 18:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-05-14 18:08</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/dcreager">@dcreager</a> on 2025-05-14 18:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @dcreager on 2025-05-14 18:08</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/dcreager">@dcreager</a> on 2025-05-14 18:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @dcreager on 2025-05-14 18:08</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/dcreager">@dcreager</a> on 2025-05-14 18:08</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:1415 on 2025-05-14 18:12</div>
@@ -68,13 +68,13 @@ reveal_type(f(5))  # revealed: Literal[5]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-14 19:04</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">async-utils (https://github.com/mikeshardmind/async-utils)
+Changes were detected when running on open source projects
+
+<pre><code>async-utils (https://github.com/mikeshardmind/async-utils)
 - error[invalid-assignment] src/async_utils/priority_sem.py:31:1: Object of type `ContextVar[Literal[0]]` is not assignable to `ContextVar[int]`
 - Found 16 diagnostics
 + Found 15 diagnostics
@@ -312,7 +312,7 @@ zulip (https://github.com/zulip/zulip)
 + error[invalid-argument-type] zerver/tests/test_widgets.py:479:24: Argument to function `assert_success` is incorrect: Expected `dict[str, object]`, found `dict[str, str]`
 - error[invalid-argument-type] zerver/tests/test_widgets.py:478:24: Argument to function `assert_success` is incorrect: Expected `dict[str, object]`, found `dict[str, Literal[&quot;new_option&quot;, &quot;maybe&quot;, 7]]`
 + error[invalid-argument-type] zerver/tests/test_widgets.py:533:24: Argument to function `assert_success` is incorrect: Expected `dict[str, object]`, found `dict[str, str | int]`
-- error[invalid-argument-type] zerver/tests/test_widgets.py:479:24: Argument to function `assert_success` is incorrect: Expected `dict[str, object]`, found `dict[str, Literal[&quot;question&quot;, &quot;what's for dinner?&quot;]]`
+- error[invalid-argument-type] zerver/tests/test_widgets.py:479:24: Argument to function `assert_success` is incorrect: Expected `dict[str, object]`, found `dict[str, Literal[&quot;question&quot;, &quot;what&#x27;s for dinner?&quot;]]`
 - error[invalid-argument-type] zerver/tests/test_widgets.py:533:24: Argument to function `assert_success` is incorrect: Expected `dict[str, object]`, found `dict[str, Literal[&quot;new_task&quot;, &quot;eat&quot;, &quot;&quot;, 7, False]]`
 - error[invalid-argument-type] zerver/tests/test_widgets.py:534:24: Argument to function `assert_success` is incorrect: Expected `dict[str, object]`, found `dict[str, Literal[&quot;strike&quot;, &quot;5,9&quot;]]`
 + error[invalid-argument-type] zerver/tests/test_widgets.py:534:24: Argument to function `assert_success` is incorrect: Expected `dict[str, object]`, found `dict[str, str]`
@@ -341,7 +341,7 @@ scipy (https://github.com/scipy/scipy)
 + error[call-non-callable] scipy/optimize/tests/test_chandrupatla.py:731:9: Method `__getitem__` of type `(Overload[(key: SupportsIndex, /) -&gt; Unknown, (key: slice[Any, Any, Any], /) -&gt; tuple[Unknown, ...]]) | (bound method dict[str, int].__getitem__(key: str, /) -&gt; int)` is not callable on object of type `tuple[Unknown] | dict[str, int]`
 
 </code></pre>
-</details>
+
 
 </div>
         </div>
@@ -357,7 +357,7 @@ scipy (https://github.com/scipy/scipy)
 <li><code>Type::FunctionLiteral</code>, <code>Type::BoundMethod</code>, <code>Type::MethodWrapper</code>, <code>Type::WrapperDescriptor</code>, <code>Type::DataclassDecorator</code>, <code>Type::DataclassTransformer</code>: should any/all of these types be promoted to <code>Callable</code> types?</li>
 <li>Should heterogeneous tuple types be promoted to homogeneous tuple types? (Easy with <code>TupleType::homogeneous_supertype()</code>)</li>
 </ul>
-<p>I'm not saying we necessarily should or shouldn't do any of these... but what's the framework for thinking about which ones we should do and which we shouldn't?</p>
+<p>I&#x27;m not saying we necessarily should or shouldn&#x27;t do any of these... but what&#x27;s the framework for thinking about which ones we should do and which we shouldn&#x27;t?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -367,9 +367,9 @@ scipy (https://github.com/scipy/scipy)
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:960 on 2025-05-14 20:21</div>
             <div class="timeline-body"><blockquote>
-<p>but what's the framework for thinking about which ones we should do and which we shouldn't?</p>
+<p>but what&#x27;s the framework for thinking about which ones we should do and which we shouldn&#x27;t?</p>
 </blockquote>
-<p>Those are good examples of other things we'll need to support with full bidirectional type inference, but I don't think I'd use the mechanism from this PR for any of them. This was meant to be a much more focused stop-gap.  So tbh, the decision tree was just that this was the minimal change that had a nice diff on the ecosystem report!</p>
+<p>Those are good examples of other things we&#x27;ll need to support with full bidirectional type inference, but I don&#x27;t think I&#x27;d use the mechanism from this PR for any of them. This was meant to be a much more focused stop-gap.  So tbh, the decision tree was just that this was the minimal change that had a nice diff on the ecosystem report!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -396,10 +396,10 @@ scipy (https://github.com/scipy/scipy)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @dcreager on 2025-05-19 19:42</div>
+            <div class="event">Merged by <a href="https://github.com/dcreager">@dcreager</a> on 2025-05-19 19:42</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dcreager on 2025-05-19 19:42</div>
+            <div class="event">Closed by <a href="https://github.com/dcreager">@dcreager</a> on 2025-05-19 19:42</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-05-19 19:42</div>
@@ -407,7 +407,7 @@ scipy (https://github.com/scipy/scipy)
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:12:35 UTC
+        Synced at 2026-01-20 19:14:31 UTC
     </footer>
 </body>
 </html>

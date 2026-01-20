@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a></div>
-            <div class="timeline-body"><p>Currently, if any cell contains any magic commands it'll be ignored even if the cell contains valid Python code. This might lead to false positive as some code is intentionally ignored for linting (undefined symbol).</p>
+            <div class="timeline-body"><p>Currently, if any cell contains any magic commands it&#x27;ll be ignored even if the cell contains valid Python code. This might lead to false positive as some code is intentionally ignored for linting (undefined symbol).</p>
 <p>At a high level overview what <code>black</code> does is the following:</p>
 <ol>
-<li>Using IPython's transformer, convert the magic commands into the respective function calls (<code>% ...</code> will be converted to <code>get_ipython().run_cell_magic</code>)</li>
+<li>Using IPython&#x27;s transformer, convert the magic commands into the respective function calls (<code>% ...</code> will be converted to <code>get_ipython().run_cell_magic</code>)</li>
 <li>Replace cell magics with tokens (string values which is a valid Python code) and keep track of such replacements</li>
 <li>Replace line magics in the same way as mentioned in (2)</li>
 <li>Returned the transformed code along with the replacements</li>
@@ -36,7 +36,7 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">core</span> added by @dhruvmanila on 2023-06-12 16:17</div>
+            <div class="event">Label <span class="label">core</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-06-12 16:17</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-06-14 16:33</div>
@@ -44,25 +44,25 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @dhruvmanila by @dhruvmanila on 2023-06-26 16:11</div>
+            <div class="event">Assigned to <a href="https://github.com/dhruvmanila">@dhruvmanila</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-06-26 16:11</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2023-07-18 03:30</div>
-            <div class="timeline-body"><p>There might be an easier but dumber way to do with without invoking IPython, which I would assume would be slow. You could add a configurable list of &quot;ignored&quot; magics. The default could contain the built-in magics that don't have much affect: <code>%%time</code>, <code>%%timeit</code>, etc. But a user could override the list via configuration. Detecting them I'd assume is already mostly done, since it can ignore them?</p>
-<p>This wouldn't cover magics that modify stuff or change the language, but would cover a lot of common cases &amp; is the situation that is easiest to report violations and autofix.</p>
+            <div class="timeline-body"><p>There might be an easier but dumber way to do with without invoking IPython, which I would assume would be slow. You could add a configurable list of &quot;ignored&quot; magics. The default could contain the built-in magics that don&#x27;t have much affect: <code>%%time</code>, <code>%%timeit</code>, etc. But a user could override the list via configuration. Detecting them I&#x27;d assume is already mostly done, since it can ignore them?</p>
+<p>This wouldn&#x27;t cover magics that modify stuff or change the language, but would cover a lot of common cases &amp; is the situation that is easiest to report violations and autofix.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-07-20 04:08</div>
-            <div class="timeline-body"><p>Hey, thanks for the suggestions. Yes, invoking IPython would be slow and we're not going that route. Instead, we'll use a new parser mode in which the parser will parse the magic commands at possible locations. New tokens and AST nodes are introduced which will be available only in that mode. Although the node isn't finalized, you can refer to https://github.com/astral-sh/RustPython-Parser/pull/31.</p>
+            <div class="timeline-body"><p>Hey, thanks for the suggestions. Yes, invoking IPython would be slow and we&#x27;re not going that route. Instead, we&#x27;ll use a new parser mode in which the parser will parse the magic commands at possible locations. New tokens and AST nodes are introduced which will be available only in that mode. Although the node isn&#x27;t finalized, you can refer to <a href="https://github.com/astral-sh/RustPython-Parser/pull/31">astral-sh/RustPython-Parser#31</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-07-26 02:11</div>
-            <div class="timeline-body"><p>The solution which we've implemented is to integrate it in the parser directly. The following changes were made to the parser to accommodate the requirement:</p>
+            <div class="timeline-body"><p>The solution which we&#x27;ve implemented is to integrate it in the parser directly. The following changes were made to the parser to accommodate the requirement:</p>
 <ul>
 <li>A new <a href="https://github.com/astral-sh/RustPython-Parser/blob/13196fc50010d1c89ab732bdbd348800f6815dcc/core/src/mode.rs#L12-L35"><code>Jupyter</code> mode</a> was added to allow lexing/parsing the magic commands only for Jupyter Notebooks and give an error otherwise.</li>
-<li>The lexer will recognize the magic commands and emit the <a href="https://github.com/astral-sh/RustPython-Parser/blob/13196fc50010d1c89ab732bdbd348800f6815dcc/parser/src/token.rs#L46-L53"><code>MagicCommand</code> token</a> wherever it's allowed[^1] i.e., as standalone statement (<code>%matplotlib inline</code>) or in an assignment statement (<code>dir = !pwd</code>).<ul>
+<li>The lexer will recognize the magic commands and emit the <a href="https://github.com/astral-sh/RustPython-Parser/blob/13196fc50010d1c89ab732bdbd348800f6815dcc/parser/src/token.rs#L46-L53"><code>MagicCommand</code> token</a> wherever it&#x27;s allowed[^1] i.e., as standalone statement (<code>%matplotlib inline</code>) or in an assignment statement (<code>dir = !pwd</code>).<ul>
 <li>https://github.com/astral-sh/RustPython-Parser/pull/23</li>
 <li>https://github.com/astral-sh/RustPython-Parser/pull/30</li>
 </ul>
@@ -72,7 +72,7 @@
 </ul>
 </li>
 </ul>
-<h3>References</h3>
+References
 <ul>
 <li>All possible magic command related documentation is present on this page: https://ipython.readthedocs.io/en/stable/interactive/reference.html#interactive-use</li>
 <li>Original implementation in IPython codebase: https://github.com/ipython/ipython/blob/main/IPython/core/inputtransformer2.py</li>
@@ -82,12 +82,12 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dhruvmanila on 2023-08-09 04:58</div>
+            <div class="event">Closed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-08-09 04:58</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:47:27 UTC
+        Synced at 2026-01-20 18:48:37 UTC
     </footer>
 </body>
 </html>

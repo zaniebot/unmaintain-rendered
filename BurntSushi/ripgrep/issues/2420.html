@@ -23,25 +23,25 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/gmile">@gmile</a></div>
-            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+            <div class="timeline-body">What version of ripgrep are you using?
 <pre><code>ripgrep 13.0.0
 -SIMD -AVX (compiled)
 +SIMD +AVX (runtime)
 </code></pre>
-<h4>How did you install ripgrep?</h4>
+How did you install ripgrep?
 <p>Via homebrew, e.g.:</p>
 <pre><code>brew install ripgrep
 </code></pre>
-<h4>What operating system are you using ripgrep on?</h4>
+What operating system are you using ripgrep on?
 <p>macOS 12.5.1 (21G83)</p>
-<h4>Describe your bug.</h4>
+Describe your bug.
 <p>When using a multiline match, reported line numbers appear to not be correct.</p>
-<h4>What are the steps to reproduce the behavior?</h4>
+What are the steps to reproduce the behavior?
 <p>Attempt to find out the line numbers of a <code>myapp</code> string, that is known to occur between <code>app_env</code> and <code>:billing</code> strings.</p>
-<pre><code>rg --replace '$1' --only-matching --multiline &quot;(?s)app_env.*?(myapp).*?:billing&quot;
+<pre><code>rg --replace &#x27;$1&#x27; --only-matching --multiline &quot;(?s)app_env.*?(myapp).*?:billing&quot;
 </code></pre>
 <p>Using the following text:</p>
-<pre><code class="language-elixir">defmodule MyModule do
+<pre><code>defmodule MyModule do
   app_env(:plans, :myapp, [:billing, :plans],
     binding_order: [:config],
     required: true,
@@ -58,16 +58,16 @@
   )
 end
 </code></pre>
-<h4>What is the actual behavior?</h4>
+What is the actual behavior?
 <p>The following output is observed:</p>
-<pre><code>rg --debug --replace '$1' --only-matching --multiline &quot;(?s)app_env.*?(myapp).*?:billing&quot; test.txt
+<pre><code>rg --debug --replace &#x27;$1&#x27; --only-matching --multiline &quot;(?s)app_env.*?(myapp).*?:billing&quot; test.txt
 DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
 2:myapp
 8:myapp
 </code></pre>
-<h4>What is the expected behavior?</h4>
+What is the expected behavior?
 <p>The following output is expected:</p>
-<pre><code>rg --debug --replace '$1' --only-matching --multiline &quot;(?s)app_env.*?(myapp).*?:billing&quot; test.txt
+<pre><code>rg --debug --replace &#x27;$1&#x27; --only-matching --multiline &quot;(?s)app_env.*?(myapp).*?:billing&quot; test.txt
 DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
 2:myapp
 10:myapp
@@ -82,8 +82,8 @@ DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basen
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-02-16 16:29</div>
             <div class="timeline-body"><p>It looks like your expected and actual output are the same? Or am I missing something?</p>
-<p>The problem here is definitely because of the replacement. It's not obvious to me how line numbers should actually be counted/displayed. In this case, there are two matches in your haystack. One contained to line 2 and one that is spread across lines 8 through 11. You've also told ripgrep, &quot;replace the entire span of the match with <code>$1</code>.&quot; So ripgrep does just that. And it reports the second replacement as &quot;occurring&quot; on line 8 because that's where the start of the match occurred. If your <em>replacement</em> spans multiple lines, then the line numbers adjust as you might expect:</p>
-<pre><code>$ rg --only-matching --multiline &quot;(?s)app_env.*?(myapp).*?:billing&quot; haystack -r $'X\nY'
+<p>The problem here is definitely because of the replacement. It&#x27;s not obvious to me how line numbers should actually be counted/displayed. In this case, there are two matches in your haystack. One contained to line 2 and one that is spread across lines 8 through 11. You&#x27;ve also told ripgrep, &quot;replace the entire span of the match with <code>$1</code>.&quot; So ripgrep does just that. And it reports the second replacement as &quot;occurring&quot; on line 8 because that&#x27;s where the start of the match occurred. If your <em>replacement</em> spans multiple lines, then the line numbers adjust as you might expect:</p>
+<pre><code>$ rg --only-matching --multiline &quot;(?s)app_env.*?(myapp).*?:billing&quot; haystack -r $&#x27;X\nY&#x27;
 2:X
 3:Y
 8:X
@@ -97,7 +97,7 @@ DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basen
             <div class="timeline-body"><blockquote>
 <p>My expectation is that <code>(anything)</code> will be captured into <code>$1</code> seems to not stand correct here</p>
 </blockquote>
-<p>That seems to be exactly what is happening here? <code>(myapp)</code> is capturing <code>myapp</code> into <code>$1</code>, and that's what is being replaced here.</p>
+<p>That seems to be exactly what is happening here? <code>(myapp)</code> is capturing <code>myapp</code> into <code>$1</code>, and that&#x27;s what is being replaced here.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -105,7 +105,7 @@ DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basen
             <div class="timeline-body"><blockquote>
 <p>The really crucial bit of information here is what you expect to happen, but it looks like that was maybe you have a mistake there?</p>
 </blockquote>
-<p>@BurntSushi I've just updated the original post with correct expectation, not sure why I originally did it wrong 😞</p>
+<p>@BurntSushi I&#x27;ve just updated the original post with correct expectation, not sure why I originally did it wrong 😞</p>
 <p>I get this output:</p>
 <pre><code>2:myapp
 8:myapp
@@ -114,43 +114,43 @@ DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basen
 <pre><code>2:myapp
 10:myapp
 </code></pre>
-<p>It seems I am failing to wrap my head around either there's an issue with my regexp, or why how line numbers are calculated in case of multiline match 🤔</p>
-<p>From what you're saying, it sounds like the reported line numbers correspond to the whole matched string, e.g. starting with <code>app_env</code>? 🤔 For some reason I was ended up under impression it's the match group line number that will be reported :(</p>
+<p>It seems I am failing to wrap my head around either there&#x27;s an issue with my regexp, or why how line numbers are calculated in case of multiline match 🤔</p>
+<p>From what you&#x27;re saying, it sounds like the reported line numbers correspond to the whole matched string, e.g. starting with <code>app_env</code>? 🤔 For some reason I was ended up under impression it&#x27;s the match group line number that will be reported :(</p>
 <p>Is there a way the regexp could be re-written to match the conditions, e.g. to get a line location of string B, given string B is between strings A and C, even if all 3 are on different lines?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-02-16 16:51</div>
-            <div class="timeline-body"><p>There's really no way for ripgrep to know what you intend the line number to be. ripgrep just reports line numbers based on the match. Consider how your desire would scale to multiple capture groups, or even if your replacement was just a literal string and not a capture group at all. There's no clear and obvious rule that I can see that gets you what you want. The status quo might not always line up with your intuition, but it's a consistent rule: regardless of whether multiline is used or not, ripgrep replaces the entire match with the replacement given, and the line number corresponds to the line number of where the match started. (At least to me, that <em>also</em> matches my own intuition, because the replacement is actually deleting lines here.)</p>
+            <div class="timeline-body"><p>There&#x27;s really no way for ripgrep to know what you intend the line number to be. ripgrep just reports line numbers based on the match. Consider how your desire would scale to multiple capture groups, or even if your replacement was just a literal string and not a capture group at all. There&#x27;s no clear and obvious rule that I can see that gets you what you want. The status quo might not always line up with your intuition, but it&#x27;s a consistent rule: regardless of whether multiline is used or not, ripgrep replaces the entire match with the replacement given, and the line number corresponds to the line number of where the match started. (At least to me, that <em>also</em> matches my own intuition, because the replacement is actually deleting lines here.)</p>
 <blockquote>
 <p>Is there a way the regexp could be re-written to match the conditions, e.g. to get a line location of string B, given string B is between strings A and C, even if all 3 are on different lines?</p>
 </blockquote>
-<p>It's hard for me to parse this request as-is, but based on the context, I don't think so. There really is a fundamental issue here where you're replacing the entire contents of a match that spans several lines with a a single string that spans only one line. The line numbers have to be reconciled in some way.</p>
+<p>It&#x27;s hard for me to parse this request as-is, but based on the context, I don&#x27;t think so. There really is a fundamental issue here where you&#x27;re replacing the entire contents of a match that spans several lines with a a single string that spans only one line. The line numbers have to be reconciled in some way.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/gmile">@gmile</a> on 2023-02-16 16:53</div>
             <div class="timeline-body"><p>@BurntSushi fair enough, thank you! :+1:</p>
-<p>I think I understand the issue here, particularly, my wrong expectations towards what should be the line number. I'll have to think of a way to re-write my regex a bit more, or completely change the approach here.</p>
-<p>Closing the issue since obviously this doesn't look like a bug in ripgrep.</p>
+<p>I think I understand the issue here, particularly, my wrong expectations towards what should be the line number. I&#x27;ll have to think of a way to re-write my regex a bit more, or completely change the approach here.</p>
+<p>Closing the issue since obviously this doesn&#x27;t look like a bug in ripgrep.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @gmile on 2023-02-16 16:53</div>
+            <div class="event">Closed by <a href="https://github.com/gmile">@gmile</a> on 2023-02-16 16:53</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-02-16 16:56</div>
-            <div class="timeline-body"><p>Aye. It's worth pointing out here that grep tools, and in particular ripgrep's <code>-r/--replace</code> flag, are first order approximations of search (and replace) tasks. They are constrained in what they can do, and that is in part (only in part) what permits them to be so fast and &quot;simple.&quot;</p>
-<p>What I'm trying to say here is that if a simple one-liner with ripgrep doesn't get you what you want, then a simple 10-liner in Python (or whatever language) might be the way to go. :-)</p>
+            <div class="timeline-body"><p>Aye. It&#x27;s worth pointing out here that grep tools, and in particular ripgrep&#x27;s <code>-r/--replace</code> flag, are first order approximations of search (and replace) tasks. They are constrained in what they can do, and that is in part (only in part) what permits them to be so fast and &quot;simple.&quot;</p>
+<p>What I&#x27;m trying to say here is that if a simple one-liner with ripgrep doesn&#x27;t get you what you want, then a simple 10-liner in Python (or whatever language) might be the way to go. :-)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2023-02-16 16:56</div>
+            <div class="event">Label <span class="label">wontfix</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-02-16 16:56</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:43:37 UTC
+        Synced at 2026-01-20 18:48:12 UTC
     </footer>
 </body>
 </html>

@@ -28,11 +28,11 @@
 <li><code>(Literal[False] | Literal[True]) | AlwaysTruthy</code> -&gt; <code>bool | AlwaysTruthy</code></li>
 <li><code>Literal[False] | (Literal[True] | AlwaysTruthy)</code> -&gt; <code>Literal[False] | AlwaysTruthy</code></li>
 </ul>
-<p>We don't currently recognise that <code>AlwaysTruthy | bool</code> and <code>AlwaysTruthy | Literal[False]</code> are equivalent types; this should be fixed.</p>
+<p>We don&#x27;t currently recognise that <code>AlwaysTruthy | bool</code> and <code>AlwaysTruthy | Literal[False]</code> are equivalent types; this should be fixed.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-01-15 20:17</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-15 20:17</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-16 10:15</div>
@@ -48,7 +48,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-16 10:41</div>
             <div class="timeline-body"><p>Some failing tests, if anybody is interested in working on this:</p>
-<pre><code class="language-diff">--- a/crates/red_knot_python_semantic/resources/mdtest/union_types.md
+<pre><code>--- a/crates/red_knot_python_semantic/resources/mdtest/union_types.md
 +++ b/crates/red_knot_python_semantic/resources/mdtest/union_types.md
 @@ -141,3 +141,17 @@ def _(
      reveal_type(i1)  # revealed: P &amp; Q
@@ -71,7 +71,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-01-17 22:29</div>
-            <div class="timeline-body"><p>This (and the complexity of our existing handling of <code>bool</code> in unions and intersections) makes me wonder if it would be simpler if we always eagerly decomposed <code>bool</code> to <code>Literal[False] | Literal[True]</code> in a union, and then just collected it back to <code>bool</code> at display time? We already collect literal types in union display, so collecting these two together and displaying them as <code>bool</code> shouldn't be hard.</p>
+            <div class="timeline-body"><p>This (and the complexity of our existing handling of <code>bool</code> in unions and intersections) makes me wonder if it would be simpler if we always eagerly decomposed <code>bool</code> to <code>Literal[False] | Literal[True]</code> in a union, and then just collected it back to <code>bool</code> at display time? We already collect literal types in union display, so collecting these two together and displaying them as <code>bool</code> shouldn&#x27;t be hard.</p>
 <p>This would be generally in line with &quot;one internal representation for equivalent things.&quot;</p>
 <p>This means that intersections with <code>bool</code> (e.g. <code>bool &amp; P</code>) would technically become <code>(Literal[True] &amp; P) | (Literal[False] &amp; P)</code>. But I think this would actually be OK, because <code>Literal[True]</code> and <code>Literal[False]</code> are both singleton types, which should mean any intersection with either of them always simplifies to either <code>Never</code> or to <code>Literal[True/False]</code> itself, meaning <code>bool &amp; P</code> would never actually remain a union-of-intersections, it must always simplify down to either <code>Never</code>, either <code>Literal[True]</code> or <code>Literal[False]</code>, or <code>Literal[True] | Literal[False]</code>.</p>
 </div>
@@ -84,9 +84,9 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-20 11:39</div>
             <div class="timeline-body"><blockquote>
-<p>This (and the complexity of our existing handling of <code>bool</code> in unions and intersections) makes me wonder if it would be simpler if we always eagerly decomposed <code>bool</code> to <code>Literal[False] | Literal[True]</code> in a union, and then just collected it back to <code>bool</code> at display time? We already collect literal types in union display, so collecting these two together and displaying them as <code>bool</code> shouldn't be hard.</p>
+<p>This (and the complexity of our existing handling of <code>bool</code> in unions and intersections) makes me wonder if it would be simpler if we always eagerly decomposed <code>bool</code> to <code>Literal[False] | Literal[True]</code> in a union, and then just collected it back to <code>bool</code> at display time? We already collect literal types in union display, so collecting these two together and displaying them as <code>bool</code> shouldn&#x27;t be hard.</p>
 </blockquote>
-<p>This works for the <code>bool</code> case, but the <code>LiteralString</code> case is harder to fix because of the fact that we don't have a dedicated type for &quot;all the literal strings except for <code>Literal[&quot;&quot;]</code>&quot;. As well as the invariant I mentioned above (<code>AlwaysTruthy | LiteralString ≡ AlwaysTruthy | Literal[&quot;&quot;]</code>), the property tests inform me that we also have at least two others that we must respect when simplifying and comparing unions:</p>
+<p>This works for the <code>bool</code> case, but the <code>LiteralString</code> case is harder to fix because of the fact that we don&#x27;t have a dedicated type for &quot;all the literal strings except for <code>Literal[&quot;&quot;]</code>&quot;. As well as the invariant I mentioned above (<code>AlwaysTruthy | LiteralString ≡ AlwaysTruthy | Literal[&quot;&quot;]</code>), the property tests inform me that we also have at least two others that we must respect when simplifying and comparing unions:</p>
 <ul>
 <li><code>AlwaysTruthy | LiteralString ≡ AlwaysTruthy | Literal[&quot;&quot;]</code></li>
 <li><code>~AlwaysFalsy | LiteralString ≡ ~AlwaysFalsy | Literal[&quot;&quot;]</code></li>
@@ -105,50 +105,50 @@
 <p>Now <code>bool</code> is no longer a subtype of <code>bool | str</code></p>
 </blockquote>
 <p>Would this be solved by a special case in <code>is_equivalent_to</code> encoding the equivalence of <code>bool</code> to <code>Literal[True] | Literal[False]</code>?</p>
-<p>I guess if our aim is to prefer &quot;one representation for one type&quot; then we should prefer to decompose everywhere or nowhere. But I don't think decomposing everywhere is really an option, as we need the typeshed stub for the <code>bool</code> type to tell us a lot of things about the <code>bool</code> type.</p>
+<p>I guess if our aim is to prefer &quot;one representation for one type&quot; then we should prefer to decompose everywhere or nowhere. But I don&#x27;t think decomposing everywhere is really an option, as we need the typeshed stub for the <code>bool</code> type to tell us a lot of things about the <code>bool</code> type.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2025-01-25 13:02</div>
+            <div class="event">Assigned to <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-25 13:02</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Geo5">@Geo5</a> on 2025-02-12 23:18</div>
-            <div class="timeline-body"><p>~~I just found a possible bug/disagreement with <code>mypy</code> which might be relevant to this discussion: https://github.com/astral-sh/ruff/issues/16129~~ Sorry for the noise, didn't read the docs close enough, you are probably already aware!</p>
+            <div class="timeline-body"><p>~~I just found a possible bug/disagreement with <code>mypy</code> which might be relevant to this discussion: <a href="https://github.com/astral-sh/ruff/issues/16129">astral-sh/ruff#16129</a>~~ Sorry for the noise, didn&#x27;t read the docs close enough, you are probably already aware!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-05-07 15:22</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-07 15:22</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[red-knot] `AlwaysTruthy | bool` is equivalent to `AlwaysTruthy | Literal[False]`" to "`AlwaysTruthy | bool` is equivalent to `AlwaysTruthy | Literal[False]`" by @MichaReiser on 2025-05-07 15:27</div>
+            <div class="event">Renamed from &quot;[red-knot] `AlwaysTruthy | bool` is equivalent to `AlwaysTruthy | Literal[False]`&quot; to &quot;`AlwaysTruthy | bool` is equivalent to `AlwaysTruthy | Literal[False]`&quot; by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-07 15:27</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">set-theoretic types</span> added by @AlexWaygood on 2025-05-11 07:20</div>
+            <div class="event">Label <span class="label">set-theoretic types</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-11 07:20</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-07-12 16:18</div>
             <div class="timeline-body"><p>It looks like you currently have an implementation of <code>is_equivalent</code> that walks over each type in a separate traversal from other operations like <code>is_subtype</code>.</p>
 <p>(Terminology: <code>A = B</code> means A is equivalent to B, <code>A &lt;: B</code> means A is a subtype of B, <code>Top[A]</code> is the top and <code>Bottom[A]</code> the bottom materialization.)</p>
 <p>I think you can achieve a simpler implementation by implementing equivalence in terms of subtyping. For fully static types, <code>A = B</code> if and only if <code>A &lt;: B</code> and <code>B &lt;: A</code>: if two sets are both subsets of each other, they must be equal. For dynamic types, this holds too if you use the appropriate definition of subtyping, but that definition is different from the one you already use in union simplification (which is <code>Top[A] &lt;: Bottom[B]</code>). Instead, the definition you need to use here is: given two gradual types A and B, <code>A &lt;: B &lt;=&gt; Bottom[A] &lt;: Bottom[B] and Top[A] &lt;: Top[B]</code>. Thus, two gradual types are equivalent under this definition if their bottom materializations as well as their top materializations are equivalent.</p>
-<p>Now, this approach requires you to implement subtyping correctly and to have a way to deal with the top and bottom materializations. Regarding subtyping, ty currently fails <code>static_assert(is_subtype_of(AlwaysTruthy | bool, AlwaysTruthy | Literal[False]))</code>. The approach I use for this in pycroscope is that certain types support a &quot;decompose&quot; operation; for example, <code>bool</code> decomposes into <code>Literal[True]</code> and <code>Literal[False]</code>. If we're assigning to a union and the assignment appears to fail, we decompose the right-hand side and try assigning the resulting union to the left-hand side. In this example, the important part we're evaluating is <code>bool &lt;: AlwaysTruthy | Literal[False]</code>. <code>bool</code> isn't a subtype of either of the elements in the union, so we fall back to decomposing into <code>Literal[True] | Literal[False]</code>, and now we see that subtyping succeeds, because True is a subtype of AlwaysTruthy and False is False. This technique means we don't have to worry much about normalizing unions.</p>
-<p>The other tricky part is the bottom materialization, as we've already talked about this in other issues. If you think directly in set-theoretic terms, the bottom materialization is very often an uninhabited type and therefore the same as Never, which would have the undesirable consequence that lots of gradual types are consistent with each other. I currently think you can get around this by just, well, pretending that the bottom materialization exists separately from Never and treating it like an infinite intersection. This feels unsatisfying and I need to think more about it, but I believe it may work well in practice.</p>
-<p>But with these concerns out of the way, what I'm suggesting here enables you to implement the various operations on types in terms of a smaller number of primitives: subtyping and the top/bottom materializations. That should make it easier to ensure the various operations behave consistently with each other.</p>
+<p>Now, this approach requires you to implement subtyping correctly and to have a way to deal with the top and bottom materializations. Regarding subtyping, ty currently fails <code>static_assert(is_subtype_of(AlwaysTruthy | bool, AlwaysTruthy | Literal[False]))</code>. The approach I use for this in pycroscope is that certain types support a &quot;decompose&quot; operation; for example, <code>bool</code> decomposes into <code>Literal[True]</code> and <code>Literal[False]</code>. If we&#x27;re assigning to a union and the assignment appears to fail, we decompose the right-hand side and try assigning the resulting union to the left-hand side. In this example, the important part we&#x27;re evaluating is <code>bool &lt;: AlwaysTruthy | Literal[False]</code>. <code>bool</code> isn&#x27;t a subtype of either of the elements in the union, so we fall back to decomposing into <code>Literal[True] | Literal[False]</code>, and now we see that subtyping succeeds, because True is a subtype of AlwaysTruthy and False is False. This technique means we don&#x27;t have to worry much about normalizing unions.</p>
+<p>The other tricky part is the bottom materialization, as we&#x27;ve already talked about this in other issues. If you think directly in set-theoretic terms, the bottom materialization is very often an uninhabited type and therefore the same as Never, which would have the undesirable consequence that lots of gradual types are consistent with each other. I currently think you can get around this by just, well, pretending that the bottom materialization exists separately from Never and treating it like an infinite intersection. This feels unsatisfying and I need to think more about it, but I believe it may work well in practice.</p>
+<p>But with these concerns out of the way, what I&#x27;m suggesting here enables you to implement the various operations on types in terms of a smaller number of primitives: subtyping and the top/bottom materializations. That should make it easier to ensure the various operations behave consistently with each other.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-07-14 23:50</div>
-            <div class="timeline-body"><p>I think there are several separable points here. The most relevant to this issue is the concept of &quot;decomposable&quot; types. This concept already exists in the spec (and now also in ty, though it post-dates the prior discussion in this issue) as part of the overload evaluation spec. I think this is a useful concept and I believe it could be used more generally in subtyping to fix this issue. I think that's true independent of whether we also decide to implement equivalence in terms of subtyping of top and bottom materializations. The latter is also interesting, but I don't think it's required to solve this issue, it has some theoretical question marks that you observed, and I'm not convinced yet that it will be a net simplification or a performance improvement over what we have today.</p>
+            <div class="timeline-body"><p>I think there are several separable points here. The most relevant to this issue is the concept of &quot;decomposable&quot; types. This concept already exists in the spec (and now also in ty, though it post-dates the prior discussion in this issue) as part of the overload evaluation spec. I think this is a useful concept and I believe it could be used more generally in subtyping to fix this issue. I think that&#x27;s true independent of whether we also decide to implement equivalence in terms of subtyping of top and bottom materializations. The latter is also interesting, but I don&#x27;t think it&#x27;s required to solve this issue, it has some theoretical question marks that you observed, and I&#x27;m not convinced yet that it will be a net simplification or a performance improvement over what we have today.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-13 00:40</div>
-            <div class="timeline-body"><p>Not clear to me how critical this is, given we haven't seen any user reports about it. Currently marking it in-scope for stable release as P2, happy to discuss/adjust.</p>
+            <div class="timeline-body"><p>Not clear to me how critical this is, given we haven&#x27;t seen any user reports about it. Currently marking it in-scope for stable release as P2, happy to discuss/adjust.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:19:43 UTC
+        Synced at 2026-01-20 19:24:18 UTC
     </footer>
 </body>
 </html>

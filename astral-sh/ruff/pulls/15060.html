@@ -23,35 +23,29 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/viccie30">@viccie30</a></div>
-            <div class="timeline-body"><!--
-Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+            <div class="timeline-body">
 
-- Does this pull request include a summary of the change? (See below.)
-- Does this pull request include a descriptive title?
-- Does this pull request include references to any relevant issues?
--->
-
-<h2>Summary</h2>
+Summary
 <p>This PR makes ruff recognize functions decorated with methods,
 like FastAPI uses to specify endpoints.</p>
-<p>I've implemented the check by generalizing
+<p>I&#x27;ve implemented the check by generalizing
 <code>ruff_linter::src::rules::fastapi::rules::is_fastapi_route_call</code> to
 recognize methods of specific classes used as decorators.</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>I have added tests by duplicating and adjusting
 <code>crates/ruff_linter/resources/test/fixtures/flake8_type_checking/runtime_evaluated_decorators_{1..3}.py</code>.</p>
-<!-- How was it tested? -->
+
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-12-19 12:16</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
@@ -66,7 +60,7 @@ recognize methods of specific classes used as decorators.</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-19 12:27</div>
-            <div class="timeline-body"><p>Would this address https://github.com/astral-sh/ruff/issues/13713 ?</p>
+            <div class="timeline-body"><p>Would this address <a href="https://github.com/astral-sh/ruff/issues/13713">astral-sh/ruff#13713</a> ?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -89,7 +83,7 @@ recognize methods of specific classes used as decorators.</p>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-19 12:32</div>
             <div class="timeline-body"><p>Thank you. I think this makes sense.</p>
-<p>@Daverball, I'd be interested in your thoughts on this change because you're the most familiar with our type-checking rules.</p>
+<p>@Daverball, I&#x27;d be interested in your thoughts on this change because you&#x27;re the most familiar with our type-checking rules.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -104,13 +98,13 @@ recognize methods of specific classes used as decorators.</p>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-12-19 12:57</div>
             <div class="timeline-body"><p>This looks good to me. The flake8 plugin currently does something less clever for FastAPI support, with a toggle that you have to enable if you use FastAPI, which increases false negatives in the rest of your code. This approach seems more balanced and flexible.</p>
-<p>My only concern is that we probably want to add additional settings to support marker generics like <code>sqlalchemy.orm.Mapped</code>, which require some or all of the symbols to be available at runtime. I think FastAPI also has some things like that. So at that point we'd have at least five very similar options, which begs the question of whether there's maybe a better way to organize them.</p>
+<p>My only concern is that we probably want to add additional settings to support marker generics like <code>sqlalchemy.orm.Mapped</code>, which require some or all of the symbols to be available at runtime. I think FastAPI also has some things like that. So at that point we&#x27;d have at least five very similar options, which begs the question of whether there&#x27;s maybe a better way to organize them.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/viccie30">@viccie30</a> on 2024-12-19 13:19</div>
             <div class="timeline-body"><blockquote>
-<p>My only concern is that we probably want to add additional settings to support marker generics like <code>sqlalchemy.orm.Mapped</code>, which require some or all of the symbols to be available at runtime. I think FastAPI also has some things like that. So at that point we'd have at least five very similar options, which begs the question of whether there's maybe a better way to organize them.</p>
+<p>My only concern is that we probably want to add additional settings to support marker generics like <code>sqlalchemy.orm.Mapped</code>, which require some or all of the symbols to be available at runtime. I think FastAPI also has some things like that. So at that point we&#x27;d have at least five very similar options, which begs the question of whether there&#x27;s maybe a better way to organize them.</p>
 </blockquote>
 <p>I had throught about rolling this option into <code>runtime-evaluated-decorators</code> by adding a fallback from matching any identifier in the list literally to matching any value that is initialized by any identifier in the list, but I thought separating the two was cleaner.</p>
 </div>
@@ -118,7 +112,7 @@ recognize methods of specific classes used as decorators.</p>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-12-19 13:21</div>
             <div class="timeline-body"><p>The one thing this currently fails to cover is sharing your instances between modules:</p>
-<pre><code class="language-python">from datetime import datetime
+<pre><code>from datetime import datetime
 from mymodule import app
 
 @app.put(&quot;/datetime&quot;)
@@ -126,9 +120,9 @@ def set_datetime(value: datetime) -&gt; None:
     pass
 </code></pre>
 <p>The question is if that matters, since red knot presumably will be able to handle that case in the future.</p>
-<hr />
+<hr>
 <p>But we could also support that use-case by extending <code>runtime-evaluated-decorators</code> to match if the dotted name starts the same way, rather than only when it matches exactly:</p>
-<pre><code class="language-toml">[tool.ruff.lint.flake8-type-checking]
+<pre><code>[tool.ruff.lint.flake8-type-checking]
 runtime-evaluated-decorators = [&quot;mymodule.app&quot;]
 </code></pre>
 <p>would match <code>@mymodule.app</code> but also <code>@mymodule.app.route</code></p>
@@ -138,7 +132,7 @@ runtime-evaluated-decorators = [&quot;mymodule.app&quot;]
             <div class="timeline-header">Comment by <a href="https://github.com/viccie30">@viccie30</a> on 2024-12-19 13:25</div>
             <div class="timeline-body"><blockquote>
 <p>The one thing this currently fails to cover is sharing your instances between modules:</p>
-<pre><code class="language-python">from datetime import datetime
+<pre><code>from datetime import datetime
 from mymodule import app
 
 @app.put(&quot;/datetime&quot;)
@@ -147,27 +141,27 @@ def set_datetime(value: datetime) -&gt; None:
 </code></pre>
 <p>The question is if that matters, since red knot presumably will be able to handle that case in the future.</p>
 <p>But we could also support that use-case by extending <code>runtime-evaluated-decorators</code> to match if the dotted name starts the same way, rather than only when it matches exactly:</p>
-<pre><code class="language-toml">[tool.ruff.lint.flake8-type-checking]
+<pre><code>[tool.ruff.lint.flake8-type-checking]
 runtime-required-decorators = [&quot;mymodule.app&quot;]
 </code></pre>
 <p>would match <code>@mymodule.app</code> but also <code>@mymodule.app.route</code></p>
 </blockquote>
-<p>I had thought about how to add that possibility, but I could not find a clean way. If this is something you would like to see as you sketched it above, I'd be happy to add it.</p>
+<p>I had thought about how to add that possibility, but I could not find a clean way. If this is something you would like to see as you sketched it above, I&#x27;d be happy to add it.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-12-19 13:52</div>
             <div class="timeline-body"><blockquote>
-<p>If this is something you would like to see as you sketched it above, I'd be happy to add it.</p>
+<p>If this is something you would like to see as you sketched it above, I&#x27;d be happy to add it.</p>
 </blockquote>
 <p>I think that would be enough to cover most FastAPI use-cases, so it seems like a desirable improvement to the semantics of that setting. Although it might require some documentation improvements, so people understand, that this is something they can do.</p>
 <p>It might also be interesting to investigate whether we can get away with just the original setting with this change, as long as we can match the binding in the module it was defined to the fully qualified name. I.e.</p>
 <p><code>mymodule/__init__.py</code></p>
-<pre><code class="language-python">from fastapi import FastAPI as Api
+<pre><code>from fastapi import FastAPI as Api
 
 app = Api()
 
-@app.put(&quot;/datetime&quot;)  # matches &quot;mymodule.app&quot; because we're in `mymodule`.
+@app.put(&quot;/datetime&quot;)  # matches &quot;mymodule.app&quot; because we&#x27;re in `mymodule`.
 def set_datetime(value: datetime) -&gt; None:
     pass
 </code></pre>
@@ -189,21 +183,21 @@ def set_datetime(value: datetime) -&gt; None:
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-12-19 14:30</div>
             <div class="timeline-body"><p>I have no merging power. All I can give is my opinion.</p>
-<p>I think the feature is fine the way you implemented it, but if we can support this use-case with only the existing setting by slightly changing the semantics, that would be even better, since we wouldn't need to rely on a potentially expensive <code>resolve_assignment</code> that way and can keep the configuration more simple.</p>
-<p>If you feel like experimenting with the suggested approach in a separate PR, feel free. But please don't feel compelled to invest the time. I'm happy to try it myself, although I definitely won't get around to it today.</p>
+<p>I think the feature is fine the way you implemented it, but if we can support this use-case with only the existing setting by slightly changing the semantics, that would be even better, since we wouldn&#x27;t need to rely on a potentially expensive <code>resolve_assignment</code> that way and can keep the configuration more simple.</p>
+<p>If you feel like experimenting with the suggested approach in a separate PR, feel free. But please don&#x27;t feel compelled to invest the time. I&#x27;m happy to try it myself, although I definitely won&#x27;t get around to it today.</p>
 <p>@MichaReiser Care to chime in, with how you would like this to move forward?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">configuration</span> added by @MichaReiser on 2024-12-30 16:23</div>
+            <div class="event">Label <span class="label">configuration</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-30 16:23</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-30 17:01</div>
             <div class="timeline-body"><p>Sorry, I was out for most days last week and I also needed some time to familiarize myself with the subject.</p>
-<p>Adding regex support is an option but I'm a bit hesitant of doing so because a) it requires matching on the qualified names string representation which requires allocating a <code>String</code> and most (if not all) other qualified name settings don't support it. We could consider only testing if the qualified name starts with the same segments, but this seems like a possible footgun to me which is why I think that having to list all methods might be better for now (related issue https://github.com/astral-sh/ruff/pull/15060).</p>
-<p>I'm not that much concerned about <code>resolve_assignment</code>. We use it in other rules already. But I'm interested in exploring ways to avoid introducing a new option because it's not very obvious which one a user has to pick.</p>
-<p>I'm probably overlooking something, but could we combine the two options and change <code>required_decorators</code> to:</p>
-<pre><code class="language-rust">fn runtime_required_decorators(
+<p>Adding regex support is an option but I&#x27;m a bit hesitant of doing so because a) it requires matching on the qualified names string representation which requires allocating a <code>String</code> and most (if not all) other qualified name settings don&#x27;t support it. We could consider only testing if the qualified name starts with the same segments, but this seems like a possible footgun to me which is why I think that having to list all methods might be better for now (related issue <a href="https://github.com/astral-sh/ruff/pull/15060">astral-sh/ruff#15060</a>).</p>
+<p>I&#x27;m not that much concerned about <code>resolve_assignment</code>. We use it in other rules already. But I&#x27;m interested in exploring ways to avoid introducing a new option because it&#x27;s not very obvious which one a user has to pick.</p>
+<p>I&#x27;m probably overlooking something, but could we combine the two options and change <code>required_decorators</code> to:</p>
+<pre><code>fn runtime_required_decorators(
     decorator_list: &amp;[Decorator],
     decorators: &amp;[String],
     semantic: &amp;SemanticModel,
@@ -233,40 +227,40 @@ def set_datetime(value: datetime) -&gt; None:
     })
 }
 </code></pre>
-<p>Or are there cases where the resolved qualified name wouldn't be unique?</p>
+<p>Or are there cases where the resolved qualified name wouldn&#x27;t be unique?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/viccie30">@viccie30</a> on 2024-12-30 17:51</div>
             <div class="timeline-body"><blockquote>
-<p>Or are there cases where the resolved qualified name wouldn't be unique?</p>
+<p>Or are there cases where the resolved qualified name wouldn&#x27;t be unique?</p>
 </blockquote>
-<p>I don't think so, unless someone would want to have</p>
-<pre><code class="language-python">var = Class()
+<p>I don&#x27;t think so, unless someone would want to have</p>
+<pre><code>var = Class()
 
 @var.method
 def function():
     ....
 </code></pre>
 <p>match and</p>
-<pre><code class="language-python">var = Class()
+<pre><code>var = Class()
 
 @Class
 def function():
     ....
 </code></pre>
-<p>not match, but I don't think that will be an issue in practice.</p>
+<p>not match, but I don&#x27;t think that will be an issue in practice.</p>
 <p>I added a new option because I thought there might be confusion otherwise, but looking at it now I think adding this to the existing check is fine.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-31 14:11</div>
-            <div class="timeline-body"><p>Thank you @viccie30 for putting up this PR. @Daverball followed up on the discussion and created a PR that extends the existing option to cover class methods too. See https://github.com/astral-sh/ruff/pull/15204</p>
-<p>I'll close this PR in favor of this new PR as it achieves the same end-goal but without introducing a new setting. Thanks again for PRing this change and initiating the discussion!</p>
+            <div class="timeline-body"><p>Thank you @viccie30 for putting up this PR. @Daverball followed up on the discussion and created a PR that extends the existing option to cover class methods too. See <a href="https://github.com/astral-sh/ruff/pull/15204">astral-sh/ruff#15204</a></p>
+<p>I&#x27;ll close this PR in favor of this new PR as it achieves the same end-goal but without introducing a new setting. Thanks again for PRing this change and initiating the discussion!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2024-12-31 14:11</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-31 14:11</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-12-31 14:15</div>
@@ -274,7 +268,7 @@ def function():
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:08:36 UTC
+        Synced at 2026-01-20 19:09:37 UTC
     </footer>
 </body>
 </html>

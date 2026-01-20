@@ -23,12 +23,12 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Historically, when creating a virtual environments on Unix, we used <code>canonicalize</code> to resolve all symlinks to find the &quot;base&quot; interpreter. This has some undesirable affects, especially for Homebrew-installed Pythons, because it means that we use the patch version of the interpreter as a base -- so if you then upgrade your Python version with Homebrew, all of your virtual environments break.</p>
 <p>This PR modifies the behavior as follows:</p>
 <ul>
-<li>If we're not in a virtual environment (common case), just use <code>sys.executable</code> without resolving anything.</li>
-<li>If we're in a virtual environment, resolve symlinks until we find a non-virtual interpreter.</li>
+<li>If we&#x27;re not in a virtual environment (common case), just use <code>sys.executable</code> without resolving anything.</li>
+<li>If we&#x27;re in a virtual environment, resolve symlinks until we find a non-virtual interpreter.</li>
 </ul>
 <p>This leads to desired behavior for a variety of Pythons. The behaviors of various tools are collated <a href="https://docs.google.com/spreadsheets/d/1Vw5ClYEjgrBJJhQiwa3cCenIA1GbcRyudYN9NwQaEcM/edit?gid=0#gid=0">here</a>, with the proposed behavior on the far right. To summarize the results (AFAICT):</p>
 <ul>
@@ -36,29 +36,29 @@
 <li>The latest <code>virtualenv</code> looks <em>mostly</em> like current-uv (it fully resolves the executable).</li>
 <li>Prior versions of <code>virtualenv</code> did something else that looks more like this PR.</li>
 </ul>
-<p>Closes https://github.com/astral-sh/uv/issues/1640.
-Closes https://github.com/astral-sh/uv/issues/1795.</p>
+<p>Closes <a href="https://github.com/astral-sh/uv/issues/1640">astral-sh/uv#1640</a>.
+Closes <a href="https://github.com/astral-sh/uv/issues/1795">astral-sh/uv#1795</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-10-22 00:16</div>
+            <div class="event">Review requested from <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-22 00:16</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @konstin by @charliermarsh on 2024-10-22 00:16</div>
+            <div class="event">Review requested from <a href="https://github.com/konstin">@konstin</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-22 00:16</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">breaking</span> added by @charliermarsh on 2024-10-22 00:17</div>
+            <div class="event">Label <span class="label">breaking</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-22 00:17</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-22 00:20</div>
             <div class="timeline-body"><p>For posterity (and testing), I used this janky script to test various behaviors:</p>
-<pre><code class="language-python">import sys
+<pre><code>import sys
 import subprocess
 import os
 import tempfile
 
 def create_venv_and_print_info(python_path):
-    virtualenv = '20.25.0'
+    virtualenv = &#x27;20.25.0&#x27;
     uv = True
     cargo = False
 
@@ -66,63 +66,63 @@ def create_venv_and_print_info(python_path):
     with tempfile.TemporaryDirectory() as temp_dir:
         # Create first venv using subprocess
         if cargo:
-            subprocess.run(['../uv/target/debug/uv', 'venv', '-p', python_path, temp_dir], check=True)
+            subprocess.run([&#x27;../uv/target/debug/uv&#x27;, &#x27;venv&#x27;, &#x27;-p&#x27;, python_path, temp_dir], check=True)
         elif uv:
-            subprocess.run(['uv', 'venv', '-p', python_path, temp_dir], check=True)
+            subprocess.run([&#x27;uv&#x27;, &#x27;venv&#x27;, &#x27;-p&#x27;, python_path, temp_dir], check=True)
         elif virtualenv is None:
-            subprocess.run([python_path, '-m', 'venv', temp_dir], check=True)
+            subprocess.run([python_path, &#x27;-m&#x27;, &#x27;venv&#x27;, temp_dir], check=True)
         else:
-            subprocess.run(['uvx', f'virtualenv@{virtualenv}', '-p', python_path, temp_dir], check=True)
+            subprocess.run([&#x27;uvx&#x27;, f&#x27;virtualenv@{virtualenv}&#x27;, &#x27;-p&#x27;, python_path, temp_dir], check=True)
 
         # Path to the Python binary in the first venv
-        venv_python = os.path.join(temp_dir, 'bin', 'python')
+        venv_python = os.path.join(temp_dir, &#x27;bin&#x27;, &#x27;python&#x27;)
 
         # Run Python in the nested venv to get the required information
-        command = f'{venv_python} -c &quot;import sys; print(sys._base_executable); print(sys.base_prefix)&quot;'
+        command = f&#x27;{venv_python} -c &quot;import sys; print(sys._base_executable); print(sys.base_prefix)&quot;&#x27;
         result = subprocess.run(command, shell=True, capture_output=True, text=True, check=True)
 
         # Print nested venv information
-        with open(os.path.join(temp_dir, 'pyvenv.cfg'), 'r') as f:
+        with open(os.path.join(temp_dir, &#x27;pyvenv.cfg&#x27;), &#x27;r&#x27;) as f:
             for line in f:
-                if line.startswith('home ='):
-                    print(line.split('=')[1].strip())
+                if line.startswith(&#x27;home =&#x27;):
+                    print(line.split(&#x27;=&#x27;)[1].strip())
                     break
 
-        print(result.stdout.strip().split('\n')[0])
-        print(result.stdout.strip().split('\n')[1])
+        print(result.stdout.strip().split(&#x27;\n&#x27;)[0])
+        print(result.stdout.strip().split(&#x27;\n&#x27;)[1])
         
         # Create a nested temporary directory for the second venv
         with tempfile.TemporaryDirectory() as nested_temp_dir:
             # Create nested venv using subprocess
             if cargo:
-                subprocess.run(['../uv/target/debug/uv', 'venv', '-p', venv_python, nested_temp_dir], check=True)
+                subprocess.run([&#x27;../uv/target/debug/uv&#x27;, &#x27;venv&#x27;, &#x27;-p&#x27;, venv_python, nested_temp_dir], check=True)
             elif uv:
-                subprocess.run(['uv', 'venv', '-p', venv_python, nested_temp_dir], check=True)
+                subprocess.run([&#x27;uv&#x27;, &#x27;venv&#x27;, &#x27;-p&#x27;, venv_python, nested_temp_dir], check=True)
             elif virtualenv is None:
-                subprocess.run([venv_python, '-m', 'venv', nested_temp_dir], check=True)
+                subprocess.run([venv_python, &#x27;-m&#x27;, &#x27;venv&#x27;, nested_temp_dir], check=True)
             else:
-                subprocess.run(['uvx', f'virtualenv@{virtualenv}', '-p', venv_python, nested_temp_dir], check=True)
+                subprocess.run([&#x27;uvx&#x27;, f&#x27;virtualenv@{virtualenv}&#x27;, &#x27;-p&#x27;, venv_python, nested_temp_dir], check=True)
 
             # Path to the Python binary in the nested venv
-            nested_venv_python = os.path.join(nested_temp_dir, 'bin', 'python')
+            nested_venv_python = os.path.join(nested_temp_dir, &#x27;bin&#x27;, &#x27;python&#x27;)
             
             # Run Python in the nested venv to get the required information
-            command = f'{nested_venv_python} -c &quot;import sys; print(sys._base_executable); print(sys.base_prefix)&quot;'
+            command = f&#x27;{nested_venv_python} -c &quot;import sys; print(sys._base_executable); print(sys.base_prefix)&quot;&#x27;
             result = subprocess.run(command, shell=True, capture_output=True, text=True, check=True)
 
             # Print nested venv information
-            with open(os.path.join(nested_temp_dir, 'pyvenv.cfg'), 'r') as f:
+            with open(os.path.join(nested_temp_dir, &#x27;pyvenv.cfg&#x27;), &#x27;r&#x27;) as f:
                 for line in f:
-                    if line.startswith('home ='):
-                        print(line.split('=')[1].strip())
+                    if line.startswith(&#x27;home =&#x27;):
+                        print(line.split(&#x27;=&#x27;)[1].strip())
                         break
 
-            print(result.stdout.strip().split('\n')[0])
-            print(result.stdout.strip().split('\n')[1])
+            print(result.stdout.strip().split(&#x27;\n&#x27;)[0])
+            print(result.stdout.strip().split(&#x27;\n&#x27;)[1])
 
         
 
-if __name__ == '__main__':
+if __name__ == &#x27;__main__&#x27;:
     if len(sys.argv) != 2:
         print(&quot;Usage: python script.py &lt;path_to_python_interpreter&gt;&quot;)
         sys.exit(1)
@@ -134,7 +134,7 @@ if __name__ == '__main__':
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2024-10-22 00:28</div>
-            <div class="timeline-body"><p>Would the proposed solution break this person's situation? https://github.com/pypa/virtualenv/issues/2682</p>
+            <div class="timeline-body"><p>Would the proposed solution break this person&#x27;s situation? <a href="https://github.com/pypa/virtualenv/issues/2682">pypa/virtualenv#2682</a></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -144,7 +144,7 @@ if __name__ == '__main__':
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-22 00:36</div>
-            <div class="timeline-body"><p>But I think it's the right tradeoff to have the behavior here and break that unusual setup. Per https://github.com/pypa/virtualenv/issues/2770#issuecomment-2376338499 though we could also just keep resolving while it's not a &quot;Python environment&quot;.</p>
+            <div class="timeline-body"><p>But I think it&#x27;s the right tradeoff to have the behavior here and break that unusual setup. Per <a href="https://github.com/pypa/virtualenv/issues/2770">pypa/virtualenv#2770</a>#issuecomment-2376338499 though we could also just keep resolving while it&#x27;s not a &quot;Python environment&quot;.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -154,7 +154,7 @@ if __name__ == '__main__':
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-22 00:39</div>
-            <div class="timeline-body"><p>I'm not really sure how to detect that.</p>
+            <div class="timeline-body"><p>I&#x27;m not really sure how to detect that.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -164,7 +164,7 @@ if __name__ == '__main__':
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2024-10-22 00:45</div>
-            <div class="timeline-body"><p>Ah it seems that's also what someone recommended recently on the corresponding CPython issue:</p>
+            <div class="timeline-body"><p>Ah it seems that&#x27;s also what someone recommended recently on the corresponding CPython issue:</p>
 <ul>
 <li>https://github.com/python/cpython/issues/106045#issuecomment-2380588780</li>
 <li>https://github.com/python/cpython/pull/115237</li>
@@ -173,35 +173,35 @@ if __name__ == '__main__':
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-22 00:49</div>
-            <div class="timeline-body"><p>I don't fully understand the motivation for that CPython PR. That seems to be recursively resolving symlinks regardless of whether it's a virtual environment or not. Why would that <em>not</em> break the Homebrew case?</p>
+            <div class="timeline-body"><p>I don&#x27;t fully understand the motivation for that CPython PR. That seems to be recursively resolving symlinks regardless of whether it&#x27;s a virtual environment or not. Why would that <em>not</em> break the Homebrew case?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2024-10-22 00:51</div>
-            <div class="timeline-body"><p>Perhaps it would, I haven't looked at the code so much as I wanted to just bring it to your attention in case it helps in the implementation of Paul's idea.</p>
+            <div class="timeline-body"><p>Perhaps it would, I haven&#x27;t looked at the code so much as I wanted to just bring it to your attention in case it helps in the implementation of Paul&#x27;s idea.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-22 00:52</div>
-            <div class="timeline-body"><p>I think it still would because it's recursively resolving symlinks for <code>home</code>. But maybe it solves a different problem.</p>
+            <div class="timeline-body"><p>I think it still would because it&#x27;s recursively resolving symlinks for <code>home</code>. But maybe it solves a different problem.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-22 00:53</div>
-            <div class="timeline-body"><p>(We seem to have this same issue in our test suite, we have symlinks to Pythons that aren't a full &quot;install tree&quot;, just an executable.)</p>
+            <div class="timeline-body"><p>(We seem to have this same issue in our test suite, we have symlinks to Pythons that aren&#x27;t a full &quot;install tree&quot;, just an executable.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-22 00:57</div>
             <div class="timeline-body"><blockquote>
-<p>(We seem to have this same issue in our test suite, we have symlinks to Pythons that aren't a full &quot;install tree&quot;, just an executable.)</p>
+<p>(We seem to have this same issue in our test suite, we have symlinks to Pythons that aren&#x27;t a full &quot;install tree&quot;, just an executable.)</p>
 </blockquote>
 <p>This suggests we should take on some long needed improvements to our mock Python installations in tests.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-22 00:58</div>
-            <div class="timeline-body"><p>I'm not sure... I'm starting to wonder if this is really the right solution.</p>
+            <div class="timeline-body"><p>I&#x27;m not sure... I&#x27;m starting to wonder if this is really the right solution.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -218,9 +218,9 @@ if __name__ == '__main__':
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-22 01:06</div>
             <div class="timeline-body"><p>Other options include...</p>
 <ul>
-<li><p>Use <code>sys._base_executable</code> on Unix, like <code>venv</code>. We'd get the &quot;right&quot; behavior for Homebrew, but not with nested virtualenvs (which is maybe fine).</p>
+<li><p>Use <code>sys._base_executable</code> on Unix, like <code>venv</code>. We&#x27;d get the &quot;right&quot; behavior for Homebrew, but not with nested virtualenvs (which is maybe fine).</p>
 </li>
-<li><p>Stick with what we have here, fix our test suite setup, and call &quot;symlinks that aren't Python installations&quot; unsupported.</p>
+<li><p>Stick with what we have here, fix our test suite setup, and call &quot;symlinks that aren&#x27;t Python installations&quot; unsupported.</p>
 </li>
 <li><p>Stick with our current behavior.</p>
 </li>
@@ -229,18 +229,18 @@ if __name__ == '__main__':
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2024-10-22 01:08</div>
-            <div class="timeline-body"><p>FYI not sure if UV has the same concept but Hatch won't even consider certain paths as eligible for creating virtual environments if they are not considered stable: https://github.com/pypa/hatch/blob/hatch-v1.13.0/src/hatch/env/virtual.py#L411-L430</p>
+            <div class="timeline-body"><p>FYI not sure if UV has the same concept but Hatch won&#x27;t even consider certain paths as eligible for creating virtual environments if they are not considered stable: https://github.com/pypa/hatch/blob/hatch-v1.13.0/src/hatch/env/virtual.py#L411-L430</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-22 01:31</div>
-            <div class="timeline-body"><p>Ah yeah, we don't have such a concept.</p>
+            <div class="timeline-body"><p>Ah yeah, we don&#x27;t have such a concept.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-22 01:39</div>
             <div class="timeline-body"><blockquote>
-<p>Stick with what we have here, fix our test suite setup, and call &quot;symlinks that aren't Python installations&quot; unsupported.</p>
+<p>Stick with what we have here, fix our test suite setup, and call &quot;symlinks that aren&#x27;t Python installations&quot; unsupported.</p>
 </blockquote>
 <p>This breaks the goals of creating a stable Python versions directory as described in <a href="https://www.notion.so/astral-sh/Installing-a-python-command-with-uv-11f48797e1ca8054ba80e93154b2b241?pvs=4#11f48797e1ca80a2a8bbc05c90cfd2b6">this internal design</a>. Of course, we can do whatever we want for executables we control. But I was hoping that requirement would help inform the generalized solution.</p>
 </div>
@@ -253,7 +253,7 @@ if __name__ == '__main__':
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-tool/src/lib.rs</code>:359 on 2024-10-22 17:06</div>
             <div class="timeline-body"><p>nit:</p>
-<pre><code class="language-suggestion">fn as_absolute_path(path: OsString) -&gt; Option&lt;PathBuf&gt; {
+<pre><code>fn as_absolute_path(path: OsString) -&gt; Option&lt;PathBuf&gt; {
 </code></pre>
 </div>
         </div>
@@ -279,15 +279,15 @@ if __name__ == '__main__':
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-22 20:22</div>
-            <div class="timeline-body"><p>This is really complicated and may need to be resolved in the standard library (if at all). I'm tempted to just emulate the standard library behavior for now (use <code>sys._base_executable</code> rather than canonicalizing).</p>
+            <div class="timeline-body"><p>This is really complicated and may need to be resolved in the standard library (if at all). I&#x27;m tempted to just emulate the standard library behavior for now (use <code>sys._base_executable</code> rather than canonicalizing).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2024-10-22 20:50</div>
             <div class="timeline-body"><blockquote>
-<p>I'm tempted to just emulate the standard library behavior for now (use <code>sys._base_executable</code> rather than canonicalizing).</p>
+<p>I&#x27;m tempted to just emulate the standard library behavior for now (use <code>sys._base_executable</code> rather than canonicalizing).</p>
 </blockquote>
-<p>Wouldn't maintaining the current behavior cause the least amount of breakage? Not in the sense of UV but overall use.</p>
+<p>Wouldn&#x27;t maintaining the current behavior cause the least amount of breakage? Not in the sense of UV but overall use.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -297,44 +297,44 @@ if __name__ == '__main__':
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2024-10-22 21:57</div>
-            <div class="timeline-body"><p>I'm just trying to understand, since there is not a great complete solution, which implementation breaks the fewest number of people based on your understanding of use cases in the wild.</p>
+            <div class="timeline-body"><p>I&#x27;m just trying to understand, since there is not a great complete solution, which implementation breaks the fewest number of people based on your understanding of use cases in the wild.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/pfmoore">@pfmoore</a> on 2024-10-22 22:39</div>
-            <div class="timeline-body"><p>I've not really been following the variations on this, so I'm struggling to keep clear in my mind what's being proposed and what the various behaviours are. But my basic view is that no-one is served by having <code>venv</code>, <code>virtualenv</code> and <code>uv</code> behave differently when it comes to creating virtual environments. With that in mind, and given that <code>venv</code> is part of the stdlib, I would prefer it if:</p>
+            <div class="timeline-body"><p>I&#x27;ve not really been following the variations on this, so I&#x27;m struggling to keep clear in my mind what&#x27;s being proposed and what the various behaviours are. But my basic view is that no-one is served by having <code>venv</code>, <code>virtualenv</code> and <code>uv</code> behave differently when it comes to creating virtual environments. With that in mind, and given that <code>venv</code> is part of the stdlib, I would prefer it if:</p>
 <ol>
 <li><code>uv</code> and <code>virtualenv</code> did the same as <code>venv</code> does.</li>
-<li>If there's a case for different behaviour, it gets proposed as a change to <code>venv</code> in the first place, with 3rd party tools changing once the core developers accept the new behaviour. I'm fine with tools implementing the new behaviour before it becomes available in the stdlib, as long as it's been <em>accepted</em> for the stdlib.</li>
+<li>If there&#x27;s a case for different behaviour, it gets proposed as a change to <code>venv</code> in the first place, with 3rd party tools changing once the core developers accept the new behaviour. I&#x27;m fine with tools implementing the new behaviour before it becomes available in the stdlib, as long as it&#x27;s been <em>accepted</em> for the stdlib.</li>
 </ol>
-<p>The use cases I am aware of here are described in https://github.com/pypa/virtualenv/issues/2682 and https://github.com/pypa/virtualenv/issues/2770. Virtualenv &quot;fixed&quot; 2682, breaking compatibility with <code>venv</code> in the process. I personally believe that was a mistake (for the reasons I state above) but https://github.com/python/cpython/issues/106045 was raised asking for the corresponding change in <code>venv</code>, and <em>if</em> that gets accepted (it hasn't yet) then the current behaviour of <code>virtualenv</code> would (IMO) be OK on the basis of being in alignment with the accepted behaviour of <code>venv</code>.</p>
+<p>The use cases I am aware of here are described in <a href="https://github.com/pypa/virtualenv/issues/2682">pypa/virtualenv#2682</a> and <a href="https://github.com/pypa/virtualenv/issues/2770">pypa/virtualenv#2770</a>. Virtualenv &quot;fixed&quot; 2682, breaking compatibility with <code>venv</code> in the process. I personally believe that was a mistake (for the reasons I state above) but <a href="https://github.com/python/cpython/issues/106045">python/cpython#106045</a> was raised asking for the corresponding change in <code>venv</code>, and <em>if</em> that gets accepted (it hasn&#x27;t yet) then the current behaviour of <code>virtualenv</code> would (IMO) be OK on the basis of being in alignment with the accepted behaviour of <code>venv</code>.</p>
 <blockquote>
-<p>I'm just trying to understand, since there is not a great complete solution, which implementation breaks the fewest number of people based on your understanding of use cases in the wild.</p>
+<p>I&#x27;m just trying to understand, since there is not a great complete solution, which implementation breaks the fewest number of people based on your understanding of use cases in the wild.</p>
 </blockquote>
-<p>As noted, I only know of 2 cases, and I would <em>also</em> be interested if <code>uv</code> is aware of any others. As https://github.com/pypa/virtualenv/issues/2682 affects Homebrew users, I suspect that it affects more users than the other issue. But having said that, no Homebrew users had complained about the behaviour of <code>virtualenv</code> or <code>venv</code> until January of this year, suggesting that it can't be <em>that</em> common a problem (given how many people use Homebrew...)</p>
+<p>As noted, I only know of 2 cases, and I would <em>also</em> be interested if <code>uv</code> is aware of any others. As <a href="https://github.com/pypa/virtualenv/issues/2682">pypa/virtualenv#2682</a> affects Homebrew users, I suspect that it affects more users than the other issue. But having said that, no Homebrew users had complained about the behaviour of <code>virtualenv</code> or <code>venv</code> until January of this year, suggesting that it can&#x27;t be <em>that</em> common a problem (given how many people use Homebrew...)</p>
 <blockquote>
-<p>This is really complicated and may need to be resolved in the standard library (if at all). I'm tempted to just emulate the standard library behavior for now (use sys._base_executable rather than canonicalizing).</p>
+<p>This is really complicated and may need to be resolved in the standard library (if at all). I&#x27;m tempted to just emulate the standard library behavior for now (use sys._base_executable rather than canonicalizing).</p>
 </blockquote>
-<p>To be honest, that seems to me to be by far the safest option. If you do this, the only thing I'd suggest is that you keep an eye on https://github.com/python/cpython/issues/106045 - I see @konstin is active on that issue, though, so you have that covered.</p>
-<p>One other thing I'll note. The original post here said:</p>
+<p>To be honest, that seems to me to be by far the safest option. If you do this, the only thing I&#x27;d suggest is that you keep an eye on <a href="https://github.com/python/cpython/issues/106045">python/cpython#106045</a> - I see @konstin is active on that issue, though, so you have that covered.</p>
+<p>One other thing I&#x27;ll note. The original post here said:</p>
 <blockquote>
-<p>If we're in a virtual environment, resolve symlinks until we find a non-virtual interpreter.</p>
+<p>If we&#x27;re in a virtual environment, resolve symlinks until we find a non-virtual interpreter.</p>
 </blockquote>
-<p>I don't know if that's still the behaviour, but it seems like it would be broken on Windows. Windows virtual environments (at least ones created by <code>venv</code>, and I assume all others) don't use symlinks to point back to the base interpreter. Instead they use a custom launcher executable (which is undocumented, and considered an implementation detail). The <em>only</em> supported way of finding the environment's base interpreter is by reading <code>sys.base_prefix</code> (or the <code>home</code> key in `pyvenv.cfg) and locating the executable from there.</p>
+<p>I don&#x27;t know if that&#x27;s still the behaviour, but it seems like it would be broken on Windows. Windows virtual environments (at least ones created by <code>venv</code>, and I assume all others) don&#x27;t use symlinks to point back to the base interpreter. Instead they use a custom launcher executable (which is undocumented, and considered an implementation detail). The <em>only</em> supported way of finding the environment&#x27;s base interpreter is by reading <code>sys.base_prefix</code> (or the <code>home</code> key in `pyvenv.cfg) and locating the executable from there.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-22 22:47</div>
             <div class="timeline-body"><blockquote>
-<p>But having said that, no Homebrew users had complained about the behaviour of virtualenv or venv until January of this year, suggesting that it can't be that common a problem (given how many people use Homebrew...)</p>
+<p>But having said that, no Homebrew users had complained about the behaviour of virtualenv or venv until January of this year, suggesting that it can&#x27;t be that common a problem (given how many people use Homebrew...)</p>
 </blockquote>
-<p>I think it's very common for people to have their Homebrew virtual environments broken during patch version upgrades, e.g., there are a lot of complaints about this in pipx which I presume uses one of those two libraries for virtual environment creation. From what I understand, if it did not completely resolve the path, it'd use the minor-version directory that Homebrew constructs to avoid this problem and the user experience would be improved. I'm surprised you haven't seen complaints about this, it's a frequent pain point people highlight with Homebrew Python.</p>
-<p>(Besides this nit, I think I'm pretty well aligned with your summary)</p>
+<p>I think it&#x27;s very common for people to have their Homebrew virtual environments broken during patch version upgrades, e.g., there are a lot of complaints about this in pipx which I presume uses one of those two libraries for virtual environment creation. From what I understand, if it did not completely resolve the path, it&#x27;d use the minor-version directory that Homebrew constructs to avoid this problem and the user experience would be improved. I&#x27;m surprised you haven&#x27;t seen complaints about this, it&#x27;s a frequent pain point people highlight with Homebrew Python.</p>
+<p>(Besides this nit, I think I&#x27;m pretty well aligned with your summary)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-22 23:04</div>
-            <div class="timeline-body"><p>Thanks for chiming in @pfmoore -- I really appreciate it. I'm in agreement with your summary:</p>
+            <div class="timeline-body"><p>Thanks for chiming in @pfmoore -- I really appreciate it. I&#x27;m in agreement with your summary:</p>
 <ol>
 <li>Ideally, we should have the same functional behavior as the standard library, at least as far as correctness goes.</li>
 <li>As such, we should use <code>sys._base_executable</code> for now.</li>
@@ -342,49 +342,49 @@ if __name__ == '__main__':
 <p>For uv users, using <code>sys._base_executable</code> will not change behavior for the vast majority of cases, but it will fix the Homebrew issues that have been reported.</p>
 <p>I only have a few other misc. comments to offer:</p>
 <blockquote>
-<p>But having said that, no Homebrew users had complained about the behaviour of virtualenv or venv until January of this year, suggesting that it can't be that common a problem (given how many people use Homebrew...)</p>
+<p>But having said that, no Homebrew users had complained about the behaviour of virtualenv or venv until January of this year, suggesting that it can&#x27;t be that common a problem (given how many people use Homebrew...)</p>
 </blockquote>
 <p>I think venv actually has the &quot;right&quot; behavior for Homebrew (see <a href="https://docs.google.com/spreadsheets/d/1Vw5ClYEjgrBJJhQiwa3cCenIA1GbcRyudYN9NwQaEcM/edit?gid=0#gid=0">sheet</a>), in that it resolves <code>home</code> to (e.g.) <code>/opt/homebrew/opt/python@3.12/bin</code>. This matched prior versions of virtualenv, but not the most recent releases. From that perspective, uv was diverging, and the change to use <code>sys._base_executable</code> will bring it into alignment with the standard library and &quot;fix&quot; that issue (which was reported to us several times).</p>
-<p>Regarding https://github.com/pypa/virtualenv/issues/2682 and https://github.com/python/cpython/issues/106045: it's true that we'll now suffer from these issues, but I have some suspicion that there's more going on there than just the <code>realpath</code> resolution, as per @konstin's comments and testing. Those also seem like minority cases.</p>
+<p>Regarding <a href="https://github.com/pypa/virtualenv/issues/2682">pypa/virtualenv#2682</a> and <a href="https://github.com/python/cpython/issues/106045">python/cpython#106045</a>: it&#x27;s true that we&#x27;ll now suffer from these issues, but I have some suspicion that there&#x27;s more going on there than just the <code>realpath</code> resolution, as per @konstin&#x27;s comments and testing. Those also seem like minority cases.</p>
 <blockquote>
-<p>I don't know if that's still the behaviour, but it seems like it would be broken on Windows.</p>
+<p>I don&#x27;t know if that&#x27;s still the behaviour, but it seems like it would be broken on Windows.</p>
 </blockquote>
-<p>We actually already used <code>sys._base_executable</code> on Windows, and this PR didn't touch the Windows behavior. So today at least I think we're actually closer to <code>python -m venv</code> on Windows than we are on Linux.</p>
+<p>We actually already used <code>sys._base_executable</code> on Windows, and this PR didn&#x27;t touch the Windows behavior. So today at least I think we&#x27;re actually closer to <code>python -m venv</code> on Windows than we are on Linux.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-22 23:19</div>
-            <div class="timeline-body"><p>Ok, I'm pursuing those changes in https://github.com/astral-sh/uv/pull/8481 rather than repurposing this PR.</p>
+            <div class="timeline-body"><p>Ok, I&#x27;m pursuing those changes in <a href="https://github.com/astral-sh/uv/pull/8481">astral-sh/uv#8481</a> rather than repurposing this PR.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-10-23 09:58</div>
             <div class="timeline-body"><blockquote>
-<p>As noted, I only know of 2 cases, and I would also be interested if uv is aware of any others. As https://github.com/pypa/virtualenv/issues/2682 affects Homebrew users, I suspect that it affects more users than the other issue. But having said that, no Homebrew users had complained about the behaviour of virtualenv or venv until January of this year, suggesting that it can't be that common a problem (given how many people use Homebrew...)</p>
+<p>As noted, I only know of 2 cases, and I would also be interested if uv is aware of any others. As <a href="https://github.com/pypa/virtualenv/issues/2682">pypa/virtualenv#2682</a> affects Homebrew users, I suspect that it affects more users than the other issue. But having said that, no Homebrew users had complained about the behaviour of virtualenv or venv until January of this year, suggesting that it can&#x27;t be that common a problem (given how many people use Homebrew...)</p>
 </blockquote>
-<p>From personal experience with Python users, these problems are underreported. I'm for example affected by #1795, but would have never considered reporting it.</p>
-<p>I also want to reraise https://github.com/python/cpython/issues/114476: To have consensus between tools, we need a documented API with the correct value.</p>
+<p>From personal experience with Python users, these problems are underreported. I&#x27;m for example affected by #1795, but would have never considered reporting it.</p>
+<p>I also want to reraise <a href="https://github.com/python/cpython/issues/114476">python/cpython#114476</a>: To have consensus between tools, we need a documented API with the correct value.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-24 16:59</div>
             <div class="timeline-body"><p>In #8484, I also found that I needed to use a heuristic to workaround a limitation in the <code>python-build-standalone</code> builds (if
-you symlink one of those binaries to another location, <code>sys._base_executable</code> resolves to that new location, so <code>home</code> gets set to something that isn't a Python installation). Related: https://github.com/indygreg/python-build-standalone/issues/380.</p>
-<p>The heuristic I have there, for now, is: if <code>sys._base_executable</code> isn't in the <code>scripts</code> path, resolve the symlink and try again. I don't know if that's entirely sound, though.</p>
+you symlink one of those binaries to another location, <code>sys._base_executable</code> resolves to that new location, so <code>home</code> gets set to something that isn&#x27;t a Python installation). Related: <a href="https://github.com/indygreg/python-build-standalone/issues/380">indygreg/python-build-standalone#380</a>.</p>
+<p>The heuristic I have there, for now, is: if <code>sys._base_executable</code> isn&#x27;t in the <code>scripts</code> path, resolve the symlink and try again. I don&#x27;t know if that&#x27;s entirely sound, though.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-28 15:55</div>
-            <div class="timeline-body"><p>Closing in favor of https://github.com/astral-sh/uv/pull/8481.</p>
+            <div class="timeline-body"><p>Closing in favor of <a href="https://github.com/astral-sh/uv/pull/8481">astral-sh/uv#8481</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-10-28 15:55</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-28 15:55</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:40:14 UTC
+        Synced at 2026-01-20 19:48:55 UTC
     </footer>
 </body>
 </html>

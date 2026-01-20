@@ -23,33 +23,22 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Avasam">@Avasam</a></div>
-            <div class="timeline-body"><!--
-Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
-
-If you're filing a bug report, please consider including the following information:
-
-* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
-  e.g. "RUF001", "unused variable", "Jupyter notebook"
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
-* The current Ruff settings (any relevant sections from your `pyproject.toml`).
-* The current Ruff version (`ruff --version`).
--->
+            <div class="timeline-body">
 
 <p>https://docs.astral.sh/ruff/rules/custom-type-var-return-type/
-I feel like logically a fix for this rule should be feasible without too much complexity? (at least in pyi files and maybe py files above 3.10, see https://github.com/astral-sh/ruff/issues/9761). Useful to migrate codebases still using the old <code>TypeVar</code> way of typing <code>Self</code>. The fix should be unsafe as there's still edge-cases where using a <code>TypeVar</code> is needed (typeshed has some of those). Marking it unsafe may also simplify the logic to apply the fix (if <code>Self</code> already exists in scope)</p>
+I feel like logically a fix for this rule should be feasible without too much complexity? (at least in pyi files and maybe py files above 3.10, see <a href="https://github.com/astral-sh/ruff/issues/9761">astral-sh/ruff#9761</a>). Useful to migrate codebases still using the old <code>TypeVar</code> way of typing <code>Self</code>. The fix should be unsafe as there&#x27;s still edge-cases where using a <code>TypeVar</code> is needed (typeshed has some of those). Marking it unsafe may also simplify the logic to apply the fix (if <code>Self</code> already exists in scope)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">fixes</span> added by @MichaReiser on 2024-11-08 07:39</div>
+            <div class="event">Label <span class="label">fixes</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-08 07:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2024-11-12 11:13</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-12 11:13</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2024-11-18 02:30</div>
             <div class="timeline-body"><p>CC @InSyncWithFoo</p>
-<p>On v0.7.4 running <code>ruff check --select=PYI019 --fix --preview</code> on https://github.com/microsoft/python-type-stubs/ still leaves me with 9 errors. What's making it so these are not autofixable ? I can't find any difference between them and the one that gets fixed.</p>
+<p>On v0.7.4 running <code>ruff check --select=PYI019 --fix --preview</code> on https://github.com/microsoft/python-type-stubs/ still leaves me with 9 errors. What&#x27;s making it so these are not autofixable ? I can&#x27;t find any difference between them and the one that gets fixed.</p>
 <pre><code>stubs\sklearn\calibration.pyi:89:10: PYI019 Methods like `fit` should return `Self` instead of a custom `TypeVar`
    |
 87 |         y: ArrayLike,
@@ -153,7 +142,7 @@ Found 10 errors (1 fixed, 9 remaining).
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-11-18 02:42</div>
             <div class="timeline-body"><p>The autofix is marked as display-only when the method has &quot;complex&quot; annotations. As this was the initial implementation, I only handled the &quot;bare name&quot; cases.</p>
-<pre><code class="language-python"># Before
+<pre><code># Before
 def m(self: _S, other: _S, others: list[_S]) -&gt; _S: ...
 #                      ^^          ^^^^^^^^ This is not.
 #                      This is safe and simple to replace.
@@ -165,8 +154,8 @@ def m(self, other: Self, others: list[_S]) -&gt; Self: ...
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2024-11-18 02:53</div>
-            <div class="timeline-body"><p>They all seem to match what you're saying though, that's what I don't get.</p>
-<pre><code class="language-py">class _SigmoidCalibration(RegressorMixin, BaseEstimator):
+            <div class="timeline-body"><p>They all seem to match what you&#x27;re saying though, that&#x27;s what I don&#x27;t get.</p>
+<pre><code>class _SigmoidCalibration(RegressorMixin, BaseEstimator):
     def fit(
         self: _SigmoidCalibration_Self,
         X: ArrayLike,
@@ -235,11 +224,11 @@ class _MultiOutputEstimator(MetaEstimatorMixin, BaseEstimator, metaclass=ABCMeta
 </code></pre>
 <p>And the typevars are all <code>_SomeClass_Self = TypeVar(&quot;_SomeClass_Self &quot;, bound=&quot;_SomeClass&quot;)</code></p>
 <p>But this got autofixed:</p>
-<pre><code class="language-py">class _BaseHeterogeneousEnsemble(MetaEstimatorMixin, _BaseComposition, metaclass=ABCMeta):
+<pre><code>class _BaseHeterogeneousEnsemble(MetaEstimatorMixin, _BaseComposition, metaclass=ABCMeta):
     def set_params(self: _BaseHeterogeneousEnsemble_Self, **params) -&gt; _BaseHeterogeneousEnsemble_Self: ...
 </code></pre>
-<p>Edit: Oh do you mean that no other param must be annotated? (because it's not yet checking if the TypeVar is reused)</p>
-<p>In any case, it sounds like there's a follow-up to your first pass (thanks for that). @MichaReiser could this issue be re-openned as it is not yet completed ?</p>
+<p>Edit: Oh do you mean that no other param must be annotated? (because it&#x27;s not yet checking if the TypeVar is reused)</p>
+<p>In any case, it sounds like there&#x27;s a follow-up to your first pass (thanks for that). @MichaReiser could this issue be re-openned as it is not yet completed ?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -255,7 +244,7 @@ class _MultiOutputEstimator(MetaEstimatorMixin, BaseEstimator, metaclass=ABCMeta
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:51:28 UTC
+        Synced at 2026-01-20 18:49:00 UTC
     </footer>
 </body>
 </html>

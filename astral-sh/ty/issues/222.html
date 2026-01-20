@@ -25,60 +25,60 @@
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
             <div class="timeline-body"><p>The type <code>type[Any]</code> is exactly equivalent to <code>type &amp; Any</code> (or <code>type[object] &amp; Any</code>). Conceptually, these are all equivalent spellings of &quot;a type of unknown size and bounds, but which is known to be no larger than the type <code>type</code>[^1]&quot;. By the same token, <code>type[Unknown]</code> is equivalent to <code>type &amp; Unknown</code>; <code>type[@Todo(&quot;do the thing&quot;)]</code> is equivalent to <code>type &amp; @Todo(&quot;do the thing&quot;)</code>.</p>
 <p>We currently represent <code>type[Any]</code> and <code>type &amp; Any</code> using different internal representations in red-knot. We should fix this: equivalent types should have the same internal representation in our model. This helps avoid unnecessary overhead, and also reduces the internal complexity in our model.</p>
-<p>Of the two representations, the <code>type &amp; Any</code> representation is the better one for us internally, because it's a more general way of representing the type and will allow us to get rid of more complexity in our internal model. However, when <em>displaying</em> the type to users (for example, in the output of <code>reveal_type</code>), we should continue to use the notation <code>type[Any]</code>, or we'll end up with highly confusing outcomes like this:</p>
-<pre><code class="language-py">from typing import Any
+<p>Of the two representations, the <code>type &amp; Any</code> representation is the better one for us internally, because it&#x27;s a more general way of representing the type and will allow us to get rid of more complexity in our internal model. However, when <em>displaying</em> the type to users (for example, in the output of <code>reveal_type</code>), we should continue to use the notation <code>type[Any]</code>, or we&#x27;ll end up with highly confusing outcomes like this:</p>
+<pre><code>from typing import Any
 
 def f(x: type[Any]):
     reveal_type(x)  # type &amp; Any. User is now very confused.
 </code></pre>
-<p>Implementing this will require some special-casing in <code>Type::display()</code>. We'll want to make sure that the special-casing is also able to understand that <code>type &amp; Any &amp; T</code> should be represented as <code>type[Any] &amp; T</code> when displayed to the user.</p>
+<p>Implementing this will require some special-casing in <code>Type::display()</code>. We&#x27;ll want to make sure that the special-casing is also able to understand that <code>type &amp; Any &amp; T</code> should be represented as <code>type[Any] &amp; T</code> when displayed to the user.</p>
 <p>[^1]: The type <code>type</code>, of course, describes &quot;All possible instances of the class <code>type</code>&quot;. It is exactly equivalent to the type <code>type[object]</code>, which describes &quot;All possible subclasses of the class <code>object</code>&quot;.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-01-09 18:39</div>
-            <div class="timeline-body"><p>One nit: I think we need to consider <code>Any</code> and <code>Unknown</code> and <code>Todo</code> as all (gradually) equivalent to each other, and thus <code>type &amp; Any</code> and <code>type &amp; Unknown</code> and <code>type &amp; Todo</code> as also equivalent. The distinction between <code>Any</code> vs <code>Unknown</code> vs <code>Todo</code> is entirely about provenance/debugging, there is no type level distinction. (And I've been wondering if the <code>Any</code> vs <code>Unknown</code> distinction is really worth it.)</p>
-<p>I realize this violates the aim of having exactly one representation for a given type, but I don't think that's something we'll be able to achieve 100%.</p>
+            <div class="timeline-body"><p>One nit: I think we need to consider <code>Any</code> and <code>Unknown</code> and <code>Todo</code> as all (gradually) equivalent to each other, and thus <code>type &amp; Any</code> and <code>type &amp; Unknown</code> and <code>type &amp; Todo</code> as also equivalent. The distinction between <code>Any</code> vs <code>Unknown</code> vs <code>Todo</code> is entirely about provenance/debugging, there is no type level distinction. (And I&#x27;ve been wondering if the <code>Any</code> vs <code>Unknown</code> distinction is really worth it.)</p>
+<p>I realize this violates the aim of having exactly one representation for a given type, but I don&#x27;t think that&#x27;s something we&#x27;ll be able to achieve 100%.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-09 18:42</div>
             <div class="timeline-body"><blockquote>
-<p>(And I've been wondering if the <code>Any</code> vs <code>Unknown</code> distinction is really worth it.)</p>
+<p>(And I&#x27;ve been wondering if the <code>Any</code> vs <code>Unknown</code> distinction is really worth it.)</p>
 </blockquote>
-<p>Ah, I still think this will pay off in the long run, but that's getting off-topic</p>
+<p>Ah, I still think this will pay off in the long run, but that&#x27;s getting off-topic</p>
 <blockquote>
-<p>I realize this violates the aim of having exactly one representation for a given type, but I don't think that's something we'll be able to achieve 100%.</p>
+<p>I realize this violates the aim of having exactly one representation for a given type, but I don&#x27;t think that&#x27;s something we&#x27;ll be able to achieve 100%.</p>
 </blockquote>
-<p>Agreed. We should do it when it's possible, but it won't always be possible, and that's okay</p>
+<p>Agreed. We should do it when it&#x27;s possible, but it won&#x27;t always be possible, and that&#x27;s okay</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-11 13:20</div>
             <div class="timeline-body"><p>Implementing this simplification might be blocked on improving our support for intersections across red-knot. Our support for <code>type[Any]</code> is actually pretty good now (some TODOs remain, but not so many). We still have quite a few TODOs for intersections, though, e.g.</p>
 <p>https://github.com/astral-sh/ruff/blob/c39ca8fe6d3fb77684d2919a58b77cca95671ab7/crates/red_knot_python_semantic/src/types.rs#L2353-L2358</p>
-<p>so if we implemented the simplification right now, I'm guessing quite a few of our tests for <code>type[Any]</code> and <code>type[Unknown]</code> would start failing. It would be best if we didn't regress functionality like that.</p>
+<p>so if we implemented the simplification right now, I&#x27;m guessing quite a few of our tests for <code>type[Any]</code> and <code>type[Unknown]</code> would start failing. It would be best if we didn&#x27;t regress functionality like that.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[red-knot] `type[Any]` is equivalent to `type & Any`" to "`type[Any]` is equivalent to `type & Any`" by @MichaReiser on 2025-05-07 15:27</div>
+            <div class="event">Renamed from &quot;[red-knot] `type[Any]` is equivalent to `type &amp; Any`&quot; to &quot;`type[Any]` is equivalent to `type &amp; Any`&quot; by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-07 15:27</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">type properties</span> added by @AlexWaygood on 2025-05-11 07:20</div>
+            <div class="event">Label <span class="label">type properties</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-11 07:20</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">set-theoretic types</span> added by @AlexWaygood on 2025-05-11 07:20</div>
+            <div class="event">Label <span class="label">set-theoretic types</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-11 07:20</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Z post-stable" by @carljm on 2025-11-13 16:01</div>
+            <div class="event">Added to milestone &quot;Z post-stable&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-11-13 16:01</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Removed from milestone "Z post-stable" by @carljm on 2025-11-18 16:10</div>
+            <div class="event">Removed from milestone &quot;Z post-stable&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-11-18 16:10</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:19:44 UTC
+        Synced at 2026-01-20 19:24:18 UTC
     </footer>
 </body>
 </html>

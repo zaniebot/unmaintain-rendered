@@ -23,56 +23,50 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/jbramley">@jbramley</a></div>
-            <div class="timeline-body"><!--
-Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+            <div class="timeline-body">
 
-- Does this pull request include a summary of the change? (See below.)
-- Does this pull request include a descriptive title?
-- Does this pull request include references to any relevant issues?
--->
-
-<h2>Summary</h2>
+Summary
 <p>Given the following code:</p>
-<pre><code class="language-python">set(([x for x in range(5)]))
+<pre><code>set(([x for x in range(5)]))
 </code></pre>
 <p>the current implementation of C403 results in</p>
-<pre><code class="language-python">{(x for x in range(5))}
+<pre><code>{(x for x in range(5))}
 </code></pre>
 <p>which is a set containing a generator rather than the result of the generator.</p>
 <p>This change removes the extraneous parentheses so that the resulting code is:</p>
-<pre><code class="language-python">{x for x in range(5)}
+<pre><code>{x for x in range(5)}
 </code></pre>
-<h2>Test Plan</h2>
+Test Plan
 <p><code>cargo nextest run</code> and <code>cargo insta test</code></p>
-<!-- How was it tested? -->
+
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-02 14:12</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_list_comprehension_set.rs</code>:87 on 2025-02-02 16:16</div>
             <div class="timeline-body"><p>It might be nice to avoid using the <code>generator</code> here to preserve comments in the comprehension like the non-parenthesized code. For example,</p>
-<pre><code class="language-python">s = set(# outer set comment
+<pre><code>s = set(# outer set comment
     ( # inner paren comment - not preserved
         (([ # comment in the comprehension
             x for x in range(3)]))))
 </code></pre>
-<p>We'll still lose the comment in the inner parentheses, but that seems like the weirdest place to put a comment of the three. It might be good to add a test like this with the comments and also one with multiple levels of parentheses like:</p>
-<pre><code class="language-python">s = set(((([x for x in range(3)]))))
+<p>We&#x27;ll still lose the comment in the inner parentheses, but that seems like the weirdest place to put a comment of the three. It might be good to add a test like this with the comments and also one with multiple levels of parentheses like:</p>
+<pre><code>s = set(((([x for x in range(3)]))))
 </code></pre>
 <p>I started to suggest an approach that would <em>not</em> have worked with multiple parentheses, but your approach handles that nicely, so it would be good to capture that in a test.</p>
 <p>Back to avoiding the generator, you can slice the original source text (instead of round-tripping through the generator like <code>checker.generator().expr(argument)</code>) with code like <code>checker.source()[range].to_string()</code>. After that change, the new code started to look very similar to the old code, so I ended up with something like this. What do you think?</p>
-<pre><code class="language-diff">diff --git a/crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_list_comprehension_set.rs b/crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_list_comprehension_set.rs
+<pre><code>diff --git a/crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_list_comprehension_set.rs b/crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_list_comprehension_set.rs
 index c518a8b11..cd7d0901a 100644
 --- a/crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_list_comprehension_set.rs
 +++ b/crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_list_comprehension_set.rs
@@ -140,7 +134,7 @@ index c518a8b11..cd7d0901a 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_list_comprehension_set.rs</code>:87 on 2025-02-02 17:25</div>
-            <div class="timeline-body"><p>This isn't related to your changes, but while we're here, I'd probably slightly prefer to make</p>
+            <div class="timeline-body"><p>This isn&#x27;t related to your changes, but while we&#x27;re here, I&#x27;d probably slightly prefer to make</p>
 <p>https://github.com/astral-sh/ruff/blob/d9a1034db05ff6627323339d9395e80e78e8f47a/crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_list_comprehension_set.rs#L58-L59</p>
 <p>into an early return to avoid a level of nesting, and similarly move the code out of the <code>fix = {</code> block. The last line of the unwrapped block could just be <code>let fix = Fix::unsafe_edits(call_start, [call_end, replacement]);</code>.</p>
 </div>
@@ -151,10 +145,10 @@ index c518a8b11..cd7d0901a 100644
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-02-02 17:49</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-02 17:49</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-02-02 17:49</div>
+            <div class="event">Label <span class="label">fixes</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-02 17:49</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/jbramley">@jbramley</a> reviewed on 2025-02-02 23:32</div>
@@ -162,11 +156,11 @@ index c518a8b11..cd7d0901a 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/jbramley">@jbramley</a> on <code>crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_list_comprehension_set.rs</code>:87 on 2025-02-02 23:32</div>
-            <div class="timeline-body"><p>Fantastic! Thank you. I didn't know about slicing the source like that. Makes things a lot simpler.</p>
+            <div class="timeline-body"><p>Fantastic! Thank you. I didn&#x27;t know about slicing the source like that. Makes things a lot simpler.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @ntBre by @MichaReiser on 2025-02-03 14:55</div>
+            <div class="event">Review requested from <a href="https://github.com/ntBre">@ntBre</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-03 14:55</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-03 18:16</div>
@@ -183,15 +177,15 @@ index c518a8b11..cd7d0901a 100644
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @ntBre on 2025-02-03 18:26</div>
+            <div class="event">Merged by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-03 18:26</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ntBre on 2025-02-03 18:26</div>
+            <div class="event">Closed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-03 18:26</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:09:41 UTC
+        Synced at 2026-01-20 19:11:02 UTC
     </footer>
 </body>
 </html>

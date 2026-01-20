@@ -24,7 +24,7 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/wimglenn">@wimglenn</a></div>
             <div class="timeline-body"><p>If an index url has been specified directly in the <a href="https://pip.pypa.io/en/stable/reference/requirements-file-format/#global-options">requirements file</a> using <code>-i</code> or <code>--index-url</code>, this should have precedence over env var.</p>
-<p>Currently uv will use UV_INDEX_URL if it's set, and ignore the one in the requirements file. Reproducer:</p>
+<p>Currently uv will use UV_INDEX_URL if it&#x27;s set, and ignore the one in the requirements file. Reproducer:</p>
 <pre><code>$ uv --version
 uv 0.3.1 (be17d132a 2024-08-21)
 $ python3 -VV
@@ -60,33 +60,33 @@ Successfully installed uv-reqs-example-0.1
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-22 12:38</div>
-            <div class="timeline-body"><p>Hmm, I think it's arguably unclear <em>what</em> we should use here. I would find it more dangerous that the environment variable (which is presumedly set by the user) is ignored, and the one in a <code>requirements.txt</code> in a file was picked up (which could be from another project or similar). But I can see an argument either way. I'd rather document this as an incompatibility than change it though, I think.</p>
+            <div class="timeline-body"><p>Hmm, I think it&#x27;s arguably unclear <em>what</em> we should use here. I would find it more dangerous that the environment variable (which is presumedly set by the user) is ignored, and the one in a <code>requirements.txt</code> in a file was picked up (which could be from another project or similar). But I can see an argument either way. I&#x27;d rather document this as an incompatibility than change it though, I think.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">documentation</span> added by @charliermarsh on 2024-08-22 12:38</div>
+            <div class="event">Label <span class="label">documentation</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-22 12:38</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">compatibility</span> added by @charliermarsh on 2024-08-22 12:38</div>
+            <div class="event">Label <span class="label">compatibility</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-22 12:38</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/wimglenn">@wimglenn</a> on 2024-08-23 02:59</div>
-            <div class="timeline-body"><p><em>Below, I'm intending to convince you that retaining compatibility with pip is a better choice than documenting as an incompatibility.</em></p>
+            <div class="timeline-body"><p><em>Below, I&#x27;m intending to convince you that retaining compatibility with pip is a better choice than documenting as an incompatibility.</em></p>
 <p>Consider when there is a custom <em>default</em> index set. This is pretty common in corporate environments, where PyPI packages may need to be cached, whitelisted or shadowed with patched versions, e.g. by using an internal <a href="https://github.com/devpi/devpi/tree/main/server">devpi-server</a>.</p>
-<p>The custom index is set as the default index (for all users) by <code>/etc/pip.conf</code> file, owned by root and placed by sysadmin or config mgmt. Now, uv doesn't look at <code>/etc/pip.conf</code>, ~nor allow a global default configuration~ (no longer true since uv 0.4.26 <a href="https://github.com/astral-sh/uv/pull/7851">#7851</a>), only considers the user's <code>~/.config/uv/uv.toml</code> - so this is only an option to set a default index for <em>pip</em>.</p>
+<p>The custom index is set as the default index (for all users) by <code>/etc/pip.conf</code> file, owned by root and placed by sysadmin or config mgmt. Now, uv doesn&#x27;t look at <code>/etc/pip.conf</code>, ~nor allow a global default configuration~ (no longer true since uv 0.4.26 <a href="https://github.com/astral-sh/uv/pull/7851">#7851</a>), only considers the user&#x27;s <code>~/.config/uv/uv.toml</code> - so this is only an option to set a default index for <em>pip</em>.</p>
 <p>The next-best option for the sysadmin to put a sensible default index for uv would probably be setting <code>UV_INDEX_URL</code> (perhaps in <code>/etc/environment</code>, or by wrapping the uv executable).</p>
-<p>However, if the <code>UV_INDEX_URL</code> takes precedence over the index specified by requirements files, that's an unfortunate situation - users would have to <em>unset</em> the env var (which they might not even know about) to allow using the index which the requirements file was attempting to provide.</p>
+<p>However, if the <code>UV_INDEX_URL</code> takes precedence over the index specified by requirements files, that&#x27;s an unfortunate situation - users would have to <em>unset</em> the env var (which they might not even know about) to allow using the index which the requirements file was attempting to provide.</p>
 <p>As I mentioned earlier, the simple failure mode is that packages are not found, but the more confusing and hard-to-debug failure mode is if the installation succeeds but uses the wrong packages (because it was using the wrong index). Switching from <code>pip</code> to <code>uv pip</code> should not be so error-prone.</p>
 <p>The failure mode I describe might sound like a weird edge-case, but could actually be quite common especially with devpi-server, where &quot;team-specific&quot; indices could inherit and mirror a default index, to host a mix of their own/patched local versions layered over the default versions.</p>
 <blockquote>
 <p>... and the one in a <code>requirements.txt</code> in a file was picked up (which could be from another project or similar).</p>
 </blockquote>
-<p>I'm not sure what you mean here? Unless I'm mistaken, it is part of the <a href="https://pip.pypa.io/en/stable/reference/requirements-file-format/#global-options">requirements file format</a> that the file can control the index-url. This is not dangerous, because requirements files and their custom indices can not be used during dependency resolving from some other top-level installation candidate. The requirements file would have been installed directly with <code>-r</code>. At least, it's not any more dangerous than a <a href="https://peps.python.org/pep-0508/#examples">direct url requirement</a>, as specified in PEP 508.</p>
+<p>I&#x27;m not sure what you mean here? Unless I&#x27;m mistaken, it is part of the <a href="https://pip.pypa.io/en/stable/reference/requirements-file-format/#global-options">requirements file format</a> that the file can control the index-url. This is not dangerous, because requirements files and their custom indices can not be used during dependency resolving from some other top-level installation candidate. The requirements file would have been installed directly with <code>-r</code>. At least, it&#x27;s not any more dangerous than a <a href="https://peps.python.org/pep-0508/#examples">direct url requirement</a>, as specified in PEP 508.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sebastianw">@sebastianw</a> on 2025-01-17 16:11</div>
-            <div class="timeline-body"><p>I'm currently faced with this problem. I would love to specify index rules in the pyproject.toml file and completely ignore --index and --extra-index definitions in <code>requirements.txt</code> as these are provided partially by external projects (in this case external Ansible collections).</p>
+            <div class="timeline-body"><p>I&#x27;m currently faced with this problem. I would love to specify index rules in the pyproject.toml file and completely ignore --index and --extra-index definitions in <code>requirements.txt</code> as these are provided partially by external projects (in this case external Ansible collections).</p>
 <p>We use uv like this:</p>
 <pre><code>uv pip compile -U --generate-hashes --output-file requirements.txt requirements.in collections/ansible_collections/*/*/requirements.txt -n --no-strip-extras --emit-index-url --index-strategy unsafe-best-match --emit-index-annotation
 </code></pre>
@@ -97,7 +97,7 @@ Successfully installed uv-reqs-example-0.1
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:26:21 UTC
+        Synced at 2026-01-20 19:33:03 UTC
     </footer>
 </body>
 </html>

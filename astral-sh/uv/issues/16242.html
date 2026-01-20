@@ -23,21 +23,21 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/rabyj">@rabyj</a></div>
-            <div class="timeline-body"><h3>Question</h3>
-<h2>Summary</h2>
+            <div class="timeline-body">Question
+Summary
 <p>My goal is to maintain a consistent preference for pre-compiled wheels from local indexes across all Python versions, falling back to PyPI only when no local wheel is available.</p>
-<p>When using <code>index-strategy = &quot;unsafe-first-match&quot;</code>, uv selects packages from different indexes depending on the Python version, even though local indexes 'should' be consistently preferred (according to &quot;Indexes are prioritized in the order in which they’re defined&quot;). This appears to be related to wheel compatibility tags and possibly transitive dependency resolution.</p>
-<h2>Expected Behavior</h2>
+<p>When using <code>index-strategy = &quot;unsafe-first-match&quot;</code>, uv selects packages from different indexes depending on the Python version, even though local indexes &#x27;should&#x27; be consistently preferred (according to &quot;Indexes are prioritized in the order in which they’re defined&quot;). This appears to be related to wheel compatibility tags and possibly transitive dependency resolution.</p>
+Expected Behavior
 <p>With <code>unsafe-first-match</code> index strategy, uv should consistently select <code>scikit-learn==1.2.1+computecanada</code> from local indexes across all Python versions where compatible wheels are available.</p>
-<h2>Actual Behavior</h2>
+Actual Behavior
 <ul>
 <li><strong>Python 3.8/3.9</strong>: Resolves to <code>scikit-learn==1.2.1</code> from PyPI (ignoring local index)</li>
 <li><strong>Python 3.10/3.11</strong>: Resolves to <code>scikit-learn==1.2.1+computecanada</code> from local index (as expected)</li>
 </ul>
-<h2>Reproduction</h2>
-<h3>Configuration</h3>
+Reproduction
+Configuration
 <p>pyproject.toml:</p>
-<pre><code class="language-toml">[project]
+<pre><code>[project]
 name = &quot;test&quot;
 version = &quot;0&quot;
 requires-python = &quot;&gt;=3.8, &lt;3.12&quot;
@@ -65,36 +65,36 @@ format = &quot;flat&quot;
 name = &quot;pypi&quot;
 url = &quot;https://pypi.org/simple&quot;
 </code></pre>
-<h3>Available Wheels in Local Indexes</h3>
+Available Wheels in Local Indexes
 <ul>
 <li><strong>path1</strong>: <code>scikit-learn==1.2.1+computecanada</code> with <code>cp310</code>, <code>cp311</code> compatibility tags</li>
 <li><strong>path2</strong>: <code>scikit-learn==1.2.1+computecanada</code> with <code>cp38</code>, <code>cp39</code> compatibility tags</li>
 </ul>
-<h3>Steps to Reproduce</h3>
+Steps to Reproduce
 <ol>
 <li>Use the pyproject.toml.</li>
-<li>Be in an environment with cvmfs (sorry I don't know how to reproduce the issue locally)</li>
+<li>Be in an environment with cvmfs (sorry I don&#x27;t know how to reproduce the issue locally)</li>
 <li>Run <code>uv pip compile --python 3.8 pyproject.toml</code> (or 3.9) → Results in PyPI version being selected</li>
 <li>Run <code>uv pip compile --python 3.10 pyproject.toml</code> (or 3.11) → Results in local version being selected</li>
 </ol>
-<h2>Attempted Workarounds</h2>
-<h4>Using explicit local version and <code>unsafe-first-match</code></h4>
+Attempted Workarounds
+Using explicit local version and <code>unsafe-first-match</code>
 <p>Specifying <code>scikit-learn==1.2.1+computecanada</code> directly fails depending on index order, since the wheel for the specific Python version may not be in the first-matched index.</p>
 <p>Specifically, putting <code>PATH1</code> first, and trying to install for python 3.8/3.9, or <code>PATH2</code> first, and trying to install for python3.10/3.11, result in errors.</p>
-<h4>Using <code>unsafe-best-match</code></h4>
+Using <code>unsafe-best-match</code>
 <p>This strategy works but causes many other packages to be superseded by PyPI versions, which is not desirable for this use case.</p>
-<h2>Questions</h2>
+Questions
 <ol>
 <li>Is this the expected behavior for <code>unsafe-first-match</code> when wheels have different compatibility tags across indexes?</li>
 <li>Is there a way to configure uv to always prefer local indexes when compatible wheels exist, regardless of Python version?</li>
 <li>Should the presence of a transitive dependency (<code>scikit-optimize</code>) affect the index selection for a direct dependency?</li>
 </ol>
 <p>Thanks for any help!</p>
-<h2>Debug logs</h2>
-<details><summary>Python 3.11</summary>
+Debug logs
+Python 3.11
 <p>
 
-<pre><code class="language-text">(epiclass_uv_test) [rabyj][rabyj@narval1 python]$ uv -v pip compile pyproject.toml
+<pre><code>(epiclass_uv_test) [rabyj][rabyj@narval1 python]$ uv -v pip compile pyproject.toml
 DEBUG uv 0.9.0
 DEBUG Acquired shared lock for `/home/rabyj/.cache/uv`
 DEBUG Starting Python discovery for a default Python
@@ -195,12 +195,12 @@ threadpoolctl==3.6.0+computecanada
 DEBUG Released lock at `/home/rabyj/.cache/uv/.lock`
 </code></pre>
 </p>
-</details>
 
-<details><summary>Python 3.8</summary>
+
+Python 3.8
 <p>
 
-<pre><code class="language-python(epiclass_uv_test)">DEBUG uv 0.9.0
+<pre><code>DEBUG uv 0.9.0
 DEBUG Acquired shared lock for `/home/rabyj/.cache/uv`
 DEBUG Starting Python discovery for a default Python
 DEBUG Looking for exact match for request a default Python
@@ -311,39 +311,39 @@ threadpoolctl==3.5.0+computecanada
 DEBUG Released lock at `/home/rabyj/.cache/uv/.lock`
 </code></pre>
 </p>
-</details>
 
-<h3>Platform</h3>
+
+Platform
 <p>Linux 4.18.0-553.77.1.el8_10.x86_64 x86_64 GNU/Linux</p>
-<h3>Version</h3>
+Version
 <p>uv 0.9.0</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @rabyj on 2025-10-10 22:39</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/rabyj">@rabyj</a> on 2025-10-10 22:39</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/michael-o">@michael-o</a> on 2025-12-13 22:56</div>
-            <div class="timeline-body"><p>I have reported a quite similar issue with #17109. Tried for two days all possible variations. scikit-learn being one of my deps. It seems uv have a problem with split dependencies. It kept ignoring my setup. Unfortunately, I had to resort to a proxpi setup to combine multiple indexes: https://github.com/EpicWink/proxpi/pull/76</p>
+            <div class="timeline-body"><p>I have reported a quite similar issue with #17109. Tried for two days all possible variations. scikit-learn being one of my deps. It seems uv have a problem with split dependencies. It kept ignoring my setup. Unfortunately, I had to resort to a proxpi setup to combine multiple indexes: <a href="https://github.com/EpicWink/proxpi/pull/76">EpicWink/proxpi#76</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/rabyj">@rabyj</a> on 2025-12-15 18:10</div>
-            <div class="timeline-body"><p>@michael-o In my case, I think something like #16301 might resolve my problem, I don't know if it could also help your use case?</p>
+            <div class="timeline-body"><p>@michael-o In my case, I think something like #16301 might resolve my problem, I don&#x27;t know if it could also help your use case?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/michael-o">@michael-o</a> on 2025-12-16 07:49</div>
             <div class="timeline-body"><blockquote>
-<p><a href="https://github.com/michael-o">@michael-o</a> In my case, I think something like <a href="https://github.com/astral-sh/uv/issues/16301">#16301</a> might resolve my problem, I don't know if it could also help your use case?</p>
+<p><a href="https://github.com/michael-o">@michael-o</a> In my case, I think something like <a href="https://github.com/astral-sh/uv/issues/16301">#16301</a> might resolve my problem, I don&#x27;t know if it could also help your use case?</p>
 </blockquote>
-<p>I don't this so, but I also don't think that this proposal is right. What you are looking for is a profile to activate an index based on external factors/markers. E.g., Maven offers to active repositories based on evaluators in a profile.
+<p>I don&#x27;t this so, but I also don&#x27;t think that this proposal is right. What you are looking for is a profile to activate an index based on external factors/markers. E.g., Maven offers to active repositories based on evaluators in a profile.
 The philosophy with uv seems to be that the pyproject.toml is expected to be static...</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-12-16 09:47</div>
-            <div class="timeline-body"><p>In the example, is there a reason why the wheelhouse indexes don't mirror the packages for PyPI fully, so the index can replace PyPI for the given package?</p>
+            <div class="timeline-body"><p>In the example, is there a reason why the wheelhouse indexes don&#x27;t mirror the packages for PyPI fully, so the index can replace PyPI for the given package?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -358,31 +358,31 @@ The philosophy with uv seems to be that the pyproject.toml is expected to be sta
 <blockquote>
 <p>The philosophy with uv seems to be that the pyproject.toml is expected to be static...</p>
 </blockquote>
-<p>I don't see how my feature request (ignoring missing indexes) is incompatible with that philosophy, if the comment was referring to #16301  :/</p>
-<p>As for the present issue, I ended giving up and dropping python &lt; cp3.10, (it's EOL anyways), so that I only need to put one of the wheelhouses in the config.</p>
-<p>It really would be great if UV was more flexible with the indexes, in any case. I imagine there must be other older issues that have a better view of the whole problem, I just didn't find when searching. Maybe https://github.com/astral-sh/uv/issues/8253 is related, but I'm unsure.</p>
+<p>I don&#x27;t see how my feature request (ignoring missing indexes) is incompatible with that philosophy, if the comment was referring to #16301  :/</p>
+<p>As for the present issue, I ended giving up and dropping python &lt; cp3.10, (it&#x27;s EOL anyways), so that I only need to put one of the wheelhouses in the config.</p>
+<p>It really would be great if UV was more flexible with the indexes, in any case. I imagine there must be other older issues that have a better view of the whole problem, I just didn&#x27;t find when searching. Maybe <a href="https://github.com/astral-sh/uv/issues/8253">astral-sh/uv#8253</a> is related, but I&#x27;m unsure.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-12-17 16:36</div>
-            <div class="timeline-body"><p>Currently, uv isn't really supporting layering and index on top of another in the way of only adding specific packages from another URL, uv and the <code>uv.lock</code> format assume that there's one source per version. This is partially for security (https://pytorch.org/blog/compromised-nightly-dependency/), hence the <code>unsafe-</code> name in the options that partially ignore this.</p>
+            <div class="timeline-body"><p>Currently, uv isn&#x27;t really supporting layering and index on top of another in the way of only adding specific packages from another URL, uv and the <code>uv.lock</code> format assume that there&#x27;s one source per version. This is partially for security (https://pytorch.org/blog/compromised-nightly-dependency/), hence the <code>unsafe-</code> name in the options that partially ignore this.</p>
 <p>The ideal thing from a uv perspective would be the CVMFS mirroring the other wheels for each version they build, this would create consistency from a resolving and locking perspective.</p>
 <p>We can keep this issue to track better index layering.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> removed by @konstin on 2025-12-17 16:37</div>
+            <div class="event">Label <span class="label">question</span> removed by <a href="https://github.com/konstin">@konstin</a> on 2025-12-17 16:37</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2025-12-17 16:37</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/konstin">@konstin</a> on 2025-12-17 16:37</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-design</span> added by @konstin on 2025-12-17 16:37</div>
+            <div class="event">Label <span class="label">needs-design</span> added by <a href="https://github.com/konstin">@konstin</a> on 2025-12-17 16:37</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/michael-o">@michael-o</a> on 2025-12-17 17:36</div>
             <div class="timeline-body"><blockquote>
-<p>Currently, uv isn't really supporting layering and index on top of another in the way of only adding specific packages from another URL, uv and the <code>uv.lock</code> format assume that there's one source per version. This is partially for security (https://pytorch.org/blog/compromised-nightly-dependency/), hence the <code>unsafe-</code> name in the options that partially ignore this.</p>
+<p>Currently, uv isn&#x27;t really supporting layering and index on top of another in the way of only adding specific packages from another URL, uv and the <code>uv.lock</code> format assume that there&#x27;s one source per version. This is partially for security (https://pytorch.org/blog/compromised-nightly-dependency/), hence the <code>unsafe-</code> name in the options that partially ignore this.</p>
 <p>The ideal thing from a uv perspective would be the CVMFS mirroring the other wheels for each version they build, this would create consistency from a resolving and locking perspective.</p>
 <p>We can keep this issue to track better index layering.</p>
 </blockquote>
@@ -394,27 +394,27 @@ The philosophy with uv seems to be that the pyproject.toml is expected to be sta
             <div class="timeline-body"><blockquote>
 <p>The ideal thing from a uv perspective would be the CVMFS mirroring the other wheels for each version they build, this would create consistency from a resolving and locking perspective.</p>
 </blockquote>
-<p>We can't really expect them to build wheels for each package versions, sadly. Limited workforce and all.</p>
+<p>We can&#x27;t really expect them to build wheels for each package versions, sadly. Limited workforce and all.</p>
 <p>Thank you for confirming my use case is not possible for now.</p>
-<p>I guess for now I'll have to use 'best-match' and exclude PyPI entirely when compiling requirements, and iteratively build missing packages. This process makes resolving the full missing packages list take much longer, but it is what it is. At least I know it's safe since I'll only be allowing CVMFS wheelhouses.</p>
+<p>I guess for now I&#x27;ll have to use &#x27;best-match&#x27; and exclude PyPI entirely when compiling requirements, and iteratively build missing packages. This process makes resolving the full missing packages list take much longer, but it is what it is. At least I know it&#x27;s safe since I&#x27;ll only be allowing CVMFS wheelhouses.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-12-17 18:16</div>
-            <div class="timeline-body"><p>I didn't mean that they need to build all versions, rather than mirroring the PyPI wheels in addition to their own builds. There may be some complications around 1.2.1 vs. 1.2.1+computecanada, cause they are technically not same, at least for indexes I'm more familiar with creating builds that use the same version without local suffix; But that of course depends on the specific index setup.</p>
+            <div class="timeline-body"><p>I didn&#x27;t mean that they need to build all versions, rather than mirroring the PyPI wheels in addition to their own builds. There may be some complications around 1.2.1 vs. 1.2.1+computecanada, cause they are technically not same, at least for indexes I&#x27;m more familiar with creating builds that use the same version without local suffix; But that of course depends on the specific index setup.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/rabyj">@rabyj</a> on 2025-12-17 18:22</div>
             <div class="timeline-body"><p>Ah I see, I misunderstood. All of their wheels are marked with that suffix.</p>
-<p>If you mean having PyPI wheels directly accessible in their wheelhouses, they won't do that for sure, since it's supposed to be a secure-ish system, and there are no guarantees on PyPI packages. They only make wheels built on the system available on compute nodes (internet-less).</p>
-<p>~~If you mean shadowing the PyPI packages, they probably won't care for it since they don't explicitly support uv use (only pip). Bleh. My understanding is that they explicitly add a suffix so that users don't get confused by the source of the package (since the suffix shows up on <code>pip list</code>), if this method means the name shadows the PyPI package, they probably won't want to do that.~~</p>
+<p>If you mean having PyPI wheels directly accessible in their wheelhouses, they won&#x27;t do that for sure, since it&#x27;s supposed to be a secure-ish system, and there are no guarantees on PyPI packages. They only make wheels built on the system available on compute nodes (internet-less).</p>
+<p>~~If you mean shadowing the PyPI packages, they probably won&#x27;t care for it since they don&#x27;t explicitly support uv use (only pip). Bleh. My understanding is that they explicitly add a suffix so that users don&#x27;t get confused by the source of the package (since the suffix shows up on <code>pip list</code>), if this method means the name shadows the PyPI package, they probably won&#x27;t want to do that.~~</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:33:08 UTC
+        Synced at 2026-01-20 19:40:38 UTC
     </footer>
 </body>
 </html>

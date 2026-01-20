@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/woodruffw">@woodruffw</a></div>
-            <div class="timeline-body"><p>First of all, thanks for <code>ruff</code>! I've been trying it on a few of my projects, and it's been a pleasure to use.</p>
-<p>This is a report for what looks (to me) like a false positive in <code>ruff</code>'s <code>pyupgrade</code>-style rules.</p>
+            <div class="timeline-body"><p>First of all, thanks for <code>ruff</code>! I&#x27;ve been trying it on a few of my projects, and it&#x27;s been a pleasure to use.</p>
+<p>This is a report for what looks (to me) like a false positive in <code>ruff</code>&#x27;s <code>pyupgrade</code>-style rules.</p>
 <p>The code in question:</p>
-<pre><code class="language-python">        # Make sure the directory exists
+<pre><code>        # Make sure the directory exists
         try:
             os.makedirs(os.path.dirname(name), self.dirmode)
         except (IOError, OSError):  # pragma: no cover
@@ -38,7 +38,7 @@ Found 1 error(s).
 1 potentially fixable with the --fix option.
 </code></pre>
 <p>...and wants to auto-fix it as this:</p>
-<pre><code class="language-python">
+<pre><code>
         # Make sure the directory exists
         try:
             os.makedirs(os.path.dirname(name), self.dirmode)
@@ -47,7 +47,7 @@ Found 1 error(s).
 </code></pre>
 <p>However, as far as I can tell, <a href="https://docs.python.org/3/library/exceptions.html#IOError"><code>IOError</code> is not a subclass of <code>OSError</code></a>. As such, this fix probably causes an unintended behavioral change: <code>IOError</code>s are no longer caught.</p>
 <p>Running context:</p>
-<pre><code class="language-console">$ ruff --version
+<pre><code>$ ruff --version
 ruff 0.0.207
 
 $ python -V
@@ -63,28 +63,28 @@ Python 3.11.0
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/woodruffw">@woodruffw</a> on 2023-01-02 22:28</div>
             <div class="timeline-body"><p>Hmm, maybe this is a documentation error in Python: <code>IOError</code> is indeed a subclass of <code>OSError</code>, according to the MRO:</p>
-<pre><code class="language-python">&gt;&gt;&gt; IOError.__mro__
-(&lt;class 'OSError'&gt;, &lt;class 'Exception'&gt;, &lt;class 'BaseException'&gt;, &lt;class 'object'&gt;)
+<pre><code>&gt;&gt;&gt; IOError.__mro__
+(&lt;class &#x27;OSError&#x27;&gt;, &lt;class &#x27;Exception&#x27;&gt;, &lt;class &#x27;BaseException&#x27;&gt;, &lt;class &#x27;object&#x27;&gt;)
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-02 22:28</div>
-            <div class="timeline-body"><p>Yeah, I'm seeing <code>IOError = OSError</code> in the <code>builtins.py</code> source.</p>
+            <div class="timeline-body"><p>Yeah, I&#x27;m seeing <code>IOError = OSError</code> in the <code>builtins.py</code> source.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/woodruffw">@woodruffw</a> on 2023-01-02 22:29</div>
-            <div class="timeline-body"><p>Yep! Sorry, this looks like an overeager report on my part :sweat_smile:. I'll follow up with CPython to get the docs fixed.</p>
+            <div class="timeline-body"><p>Yep! Sorry, this looks like an overeager report on my part :sweat_smile:. I&#x27;ll follow up with CPython to get the docs fixed.</p>
 <p>Thanks again for <code>ruff</code>!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @woodruffw on 2023-01-02 22:29</div>
+            <div class="event">Closed by <a href="https://github.com/woodruffw">@woodruffw</a> on 2023-01-02 22:29</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-02 22:30</div>
-            <div class="timeline-body"><p>No prob at all, thanks for taking the time to file such a thorough Issue in the first place! Don't hesitate if you run into other problems etc.</p>
+            <div class="timeline-body"><p>No prob at all, thanks for taking the time to file such a thorough Issue in the first place! Don&#x27;t hesitate if you run into other problems etc.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -92,7 +92,7 @@ Python 3.11.0
             <div class="timeline-body"><p>Hi guys! First of all, many thanks for this awesome tool!</p>
 <p>Found a false positive one:</p>
 <p>My code:</p>
-<pre><code class="language-python">import socket
+<pre><code>import socket
 ...
 from kombu import Connection, exceptions
 
@@ -106,21 +106,21 @@ except (socket.error, exceptions.OperationalError):
     return HttpResponseServerError(&quot;cache: cannot connect to broker.&quot;)
 </code></pre>
 <p>their MROs:</p>
-<pre><code class="language-python">exceptions.OperationalError.__mro__
-(&lt;class 'kombu.exceptions.OperationalError'&gt;, &lt;class 'kombu.exceptions.KombuError'&gt;, &lt;class 'Exception'&gt;, &lt;class 'BaseException'&gt;, &lt;class 'object'&gt;)
+<pre><code>exceptions.OperationalError.__mro__
+(&lt;class &#x27;kombu.exceptions.OperationalError&#x27;&gt;, &lt;class &#x27;kombu.exceptions.KombuError&#x27;&gt;, &lt;class &#x27;Exception&#x27;&gt;, &lt;class &#x27;BaseException&#x27;&gt;, &lt;class &#x27;object&#x27;&gt;)
 
 socket.error.__mro__
-(&lt;class 'OSError'&gt;, &lt;class 'Exception'&gt;, &lt;class 'BaseException'&gt;, &lt;class 'object'&gt;)
+(&lt;class &#x27;OSError&#x27;&gt;, &lt;class &#x27;Exception&#x27;&gt;, &lt;class &#x27;BaseException&#x27;&gt;, &lt;class &#x27;object&#x27;&gt;)
 </code></pre>
 <p>ruff suggests:</p>
-<pre><code class="language-python">try:
+<pre><code>try:
     conn = Connection(settings.CELERY_BROKER_URL)
     conn.ensure_connection(max_retries=2)
     conn._close()
 except OSError:
     return HttpResponseServerError(&quot;cache: cannot connect to broker.&quot;)
 </code></pre>
-<p>Seems like ruff ignores the second one's MRO. Thank you!</p>
+<p>Seems like ruff ignores the second one&#x27;s MRO. Thank you!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -131,7 +131,7 @@ except OSError:
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:45:55 UTC
+        Synced at 2026-01-20 18:48:29 UTC
     </footer>
 </body>
 </html>

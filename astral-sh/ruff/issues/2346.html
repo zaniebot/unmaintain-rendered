@@ -23,8 +23,8 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ngnpope">@ngnpope</a></div>
-            <div class="timeline-body"><p>This is a bit of an odd one. Let's start with the ~minimal reproducer to refer to:</p>
-<pre><code class="language-python">from __future__ import annotations
+            <div class="timeline-body"><p>This is a bit of an odd one. Let&#x27;s start with the ~minimal reproducer to refer to:</p>
+<pre><code>from __future__ import annotations
 
 import enum
 import sys
@@ -63,17 +63,17 @@ class Animal(StrEnum):
     CAT = enum.auto()
     DOG = enum.auto()
 </code></pre>
-<p>Python's <code>enum</code> does some weird things. Normally linters complain that <a href="https://docs.python.org/3/library/enum.html#enum.Enum._generate_next_value_"><code>_generate_next_value_</code></a>, as a method, should have the first argument named <code>self</code>. There are also issues with <code>mypy</code> - see <a href="https://github.com/python/mypy/issues/7591">this</a>, and the solution there is to add a <code>@staticmethod</code> decorator.</p>
-<p>However, on Python &lt; 3.10 it isn't possible to define <code>_generate_next_value_()</code> inside the same class in which we define members. This is because until Python 3.10, static methods could not be called from within the class body, which is what happens when an enum class is created. <em>(So you can split into a separate <code>AnimalBase</code> and <code>Animal</code> to work around this.)</em></p>
+<p>Python&#x27;s <code>enum</code> does some weird things. Normally linters complain that <a href="https://docs.python.org/3/library/enum.html#enum.Enum._generate_next_value_"><code>_generate_next_value_</code></a>, as a method, should have the first argument named <code>self</code>. There are also issues with <code>mypy</code> - see <a href="https://github.com/python/mypy/issues/7591">this</a>, and the solution there is to add a <code>@staticmethod</code> decorator.</p>
+<p>However, on Python &lt; 3.10 it isn&#x27;t possible to define <code>_generate_next_value_()</code> inside the same class in which we define members. This is because until Python 3.10, static methods could not be called from within the class body, which is what happens when an enum class is created. <em>(So you can split into a separate <code>AnimalBase</code> and <code>Animal</code> to work around this.)</em></p>
 <p>So the idea in the above example is to define a dummy decorator for runtime on Python &lt; 3.10. And this works:</p>
-<pre><code class="language-console">❯ mypy --version
+<pre><code>❯ mypy --version
 mypy 0.991 (compiled: yes)
 
 ❯ mypy --strict bug.py 
 Success: no issues found in 1 source file
 </code></pre>
-<p>But <code>N805</code> doesn't understand this. Looking at the configuration options, <code>ruff</code> has <a href="https://github.com/charliermarsh/ruff#staticmethod-decorators"><code>staticmethod-decorators</code></a> for <code>pep8-naming</code>. But this doesn't seem to work...</p>
-<pre><code class="language-console">❯ ruff --version
+<p>But <code>N805</code> doesn&#x27;t understand this. Looking at the configuration options, <code>ruff</code> has <a href="https://github.com/charliermarsh/ruff#staticmethod-decorators"><code>staticmethod-decorators</code></a> for <code>pep8-naming</code>. But this doesn&#x27;t seem to work...</p>
+<pre><code>❯ ruff --version
 ruff 0.0.237
 
 ❯ ruff --select N805 bug.py 
@@ -104,13 +104,13 @@ Found 1 error.
 ❯ ruff --select N805 bug.py
 ❯ # No errors were raised...
 </code></pre>
-<p>So either <code>staticmethod-decorators</code> doesn't work properly, or the above way of defining the decorator is confusing <code>ruff</code>... 🤔</p>
+<p>So either <code>staticmethod-decorators</code> doesn&#x27;t work properly, or the above way of defining the decorator is confusing <code>ruff</code>... 🤔</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-30 12:16</div>
-            <div class="timeline-body"><p>I'm assuming the decorator here, in the example:</p>
-<pre><code class="language-py">class Animal(StrEnum):
+            <div class="timeline-body"><p>I&#x27;m assuming the decorator here, in the example:</p>
+<pre><code>class Animal(StrEnum):
     # Override the default as enum.StrEnum forces lowercase values.
     @staticmethod
     def _generate_next_value_(
@@ -122,12 +122,12 @@ Found 1 error.
     DOG = enum.auto()
 </code></pre>
 <p>Should be <code>@staticmethod_hack</code>?</p>
-<p>Right now, Ruff is gonna have trouble tracking that it's <code>@staticmethod_hack</code> is sometimes equal to <code>@staticmethod</code>, unfortunately.</p>
-<p>I suppose one workaround would be to move that <code>@staticmethod_hack</code> into a separate file, then import it, and add that path to <code>staticmethod-decorators</code>, like <code>staticmethod-decorators = [&quot;my_file.staticmethod_hack&quot;]</code>. I haven't tried it... but I assume that would work.</p>
+<p>Right now, Ruff is gonna have trouble tracking that it&#x27;s <code>@staticmethod_hack</code> is sometimes equal to <code>@staticmethod</code>, unfortunately.</p>
+<p>I suppose one workaround would be to move that <code>@staticmethod_hack</code> into a separate file, then import it, and add that path to <code>staticmethod-decorators</code>, like <code>staticmethod-decorators = [&quot;my_file.staticmethod_hack&quot;]</code>. I haven&#x27;t tried it... but I assume that would work.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-01-30 12:16</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-30 12:16</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ngnpope">@ngnpope</a> on 2023-01-30 12:30</div>
@@ -136,10 +136,10 @@ Found 1 error.
 </blockquote>
 <p>Yes 🤦🏻 Copy-pasted the wrong version.</p>
 <blockquote>
-<p>Ruff is gonna have trouble tracking that it's <code>@staticmethod_hack</code> is sometimes equal to <code>@staticmethod</code>, unfortunately.</p>
+<p>Ruff is gonna have trouble tracking that it&#x27;s <code>@staticmethod_hack</code> is sometimes equal to <code>@staticmethod</code>, unfortunately.</p>
 </blockquote>
-<p>Ok, I guess this is one of those too-dynamic things... It's easy enough to use <code># noqa: N805</code> or split out the method to a separate enum base until 3.10 becomes the minimum version. I'd just wondered if there was something that was overlooked.</p>
-<p>Feel free to close this one out if there's nothing to action. It can serve as documentation for someone searching the issue tracker.</p>
+<p>Ok, I guess this is one of those too-dynamic things... It&#x27;s easy enough to use <code># noqa: N805</code> or split out the method to a separate enum base until 3.10 becomes the minimum version. I&#x27;d just wondered if there was something that was overlooked.</p>
+<p>Feel free to close this one out if there&#x27;s nothing to action. It can serve as documentation for someone searching the issue tracker.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -148,13 +148,13 @@ Found 1 error.
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-01-30 12:33</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-30 12:33</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/l0b0">@l0b0</a> on 2023-02-08 22:17</div>
             <div class="timeline-body"><p>Thank you for <code>staticmethod_hack</code>! Unfortunately, <code>pylint</code> has some issues with it:</p>
 <blockquote>
-<p>Class name &quot;staticmethod_hack&quot; doesn't conform to PascalCase naming style (invalid-name)</p>
+<p>Class name &quot;staticmethod_hack&quot; doesn&#x27;t conform to PascalCase naming style (invalid-name)</p>
 </blockquote>
 <p>and</p>
 <blockquote>
@@ -165,7 +165,7 @@ Found 1 error.
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:46:17 UTC
+        Synced at 2026-01-20 18:48:31 UTC
     </footer>
 </body>
 </html>

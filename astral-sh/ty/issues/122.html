@@ -25,7 +25,7 @@
             <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a></div>
             <div class="timeline-body"><p>Related:</p>
 <p>What should be the expected revealed type here?</p>
-<pre><code class="language-py">from typing_extensions import reveal_type
+<pre><code>from typing_extensions import reveal_type
 
 class A: ...
 class B: ...
@@ -40,12 +40,12 @@ reveal_type(A | B) # revealed: `UnionType` or `type[A] | type[B]`?
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-20 10:43</div>
             <div class="timeline-body"><p>What do you mean in your issue title when you say &quot;Allow <code>isinstance(x, str | int)</code>&quot;? We already allow these calls as long as you have <code>--python-version=3.10</code> (or higher) set: https://playknot.ruff.rs/fe84b883-b0cd-42bf-93c4-4e4d8f42f710</p>
-<p>It's true that <code>reveal_type(int | str)</code> reveals <code>UnionType</code> -- but this is accurate regarding what the type is at runtime:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; type(int | str)
-&lt;class 'types.UnionType'&gt;
+<p>It&#x27;s true that <code>reveal_type(int | str)</code> reveals <code>UnionType</code> -- but this is accurate regarding what the type is at runtime:</p>
+<pre><code>&gt;&gt;&gt; type(int | str)
+&lt;class &#x27;types.UnionType&#x27;&gt;
 </code></pre>
-<p>Something we don't yet do is support narrowing inside these branches, e.g.</p>
-<pre><code class="language-py">def f(x: object):
+<p>Something we don&#x27;t yet do is support narrowing inside these branches, e.g.</p>
+<pre><code>def f(x: object):
     if isinstance(x, (int, str)):
         reveal_type(x)  # revealed: int | str
 
@@ -57,7 +57,7 @@ reveal_type(A | B) # revealed: `UnionType` or `type[A] | type[B]`?
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[red-knot] Allow `isinstance(x, str | int)` (PEP 604 union types)" to "[red-knot] Allow narrowing with `isinstance(x, str | int)` (PEP 604 union types)" by @MatthewMckee4 on 2025-04-20 10:45</div>
+            <div class="event">Renamed from &quot;[red-knot] Allow `isinstance(x, str | int)` (PEP 604 union types)&quot; to &quot;[red-knot] Allow narrowing with `isinstance(x, str | int)` (PEP 604 union types)&quot; by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-04-20 10:45</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-04-20 10:48</div>
@@ -76,9 +76,9 @@ So, im not sure what the functionality should be</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-20 14:31</div>
-            <div class="timeline-body"><p>This is quite a hard problem. (That doesn't mean that you <em>shouldn't</em> work on it -- though you of course don't have to -- it's just that there's a number of things to think through!)</p>
-<p>I don't think we should infer the type of <code>A | B</code> here as a <code>Type::Union</code> because in contexts where we need to treat the object as a value expression that might lead to incorrect inferences. For example:</p>
-<pre><code class="language-py">class A:
+            <div class="timeline-body"><p>This is quite a hard problem. (That doesn&#x27;t mean that you <em>shouldn&#x27;t</em> work on it -- though you of course don&#x27;t have to -- it&#x27;s just that there&#x27;s a number of things to think through!)</p>
+<p>I don&#x27;t think we should infer the type of <code>A | B</code> here as a <code>Type::Union</code> because in contexts where we need to treat the object as a value expression that might lead to incorrect inferences. For example:</p>
+<pre><code>class A:
     x = 42
 
 class B:
@@ -90,29 +90,29 @@ reveal_type(C.x)  # if we inferred `C` as having type `A | B`,
                   # we would fail to emit an error here and would reveal `Literal[42]`.
                   # But it fails at runtime! Because at runtime, `C` has type `types.UnionType`.
 </code></pre>
-<p>One solution here might be a new <code>Type</code> variant to represent these <code>types.UnionType</code> instances? We need to continue treating them as &quot;just instances of <code>types.UnionType</code>&quot; in the vast majority of cases, but in specific situations (like <code>isinstance()</code> narrowing), we need to be able to know what the original classes where that were <code>|</code>'d together to create the <code>UnionType</code> instance.</p>
+<p>One solution here might be a new <code>Type</code> variant to represent these <code>types.UnionType</code> instances? We need to continue treating them as &quot;just instances of <code>types.UnionType</code>&quot; in the vast majority of cases, but in specific situations (like <code>isinstance()</code> narrowing), we need to be able to know what the original classes where that were <code>|</code>&#x27;d together to create the <code>UnionType</code> instance.</p>
 <p>We have a similar problem for lots of other special typing constructs. For example:</p>
-<pre><code class="language-py">from typing import Literal
+<pre><code>from typing import Literal
 
 X = Literal[&quot;foo&quot;, &quot;bar&quot;]
 
 def f(x: X):
     reveal_type(x)
 </code></pre>
-<p>At runtime, the type of <code>X</code> is <code>typing._LiteralGenericAlias</code>. That's not a class that even exists in typeshed; typeshed just says that <code>typing.Literal</code> is an instance of <code>_SpecialForm</code>, and it just says that all instances of <code>_SpecialForm</code> return <code>object</code> from their <code>__getitem__</code> method. In most cases, we want to treat <code>Literal[&quot;foo&quot;, &quot;bar&quot;]</code> as an opaque object (which is why typeshed tells us to infer <code>object</code> for it), but in specific cases (where it's used in a type expression), we want to get back the original strings that were used to subscript <code>Literal</code>.</p>
-<p>So I could see there being a more general solution there that doesn't just fix things for <code>UnionType</code>s: a <code>Type</code> variant that keeps track of the runtime type of the object as well as the type we should use whenever the object is used in a type expression:</p>
-<pre><code class="language-rs">struct TypeForm&lt;'db&gt; {
-    runtime_type: Type&lt;'db&gt;,
-    in_type_expression: Type&lt;'db&gt;
+<p>At runtime, the type of <code>X</code> is <code>typing._LiteralGenericAlias</code>. That&#x27;s not a class that even exists in typeshed; typeshed just says that <code>typing.Literal</code> is an instance of <code>_SpecialForm</code>, and it just says that all instances of <code>_SpecialForm</code> return <code>object</code> from their <code>__getitem__</code> method. In most cases, we want to treat <code>Literal[&quot;foo&quot;, &quot;bar&quot;]</code> as an opaque object (which is why typeshed tells us to infer <code>object</code> for it), but in specific cases (where it&#x27;s used in a type expression), we want to get back the original strings that were used to subscript <code>Literal</code>.</p>
+<p>So I could see there being a more general solution there that doesn&#x27;t just fix things for <code>UnionType</code>s: a <code>Type</code> variant that keeps track of the runtime type of the object as well as the type we should use whenever the object is used in a type expression:</p>
+<pre><code>struct TypeForm&lt;&#x27;db&gt; {
+    runtime_type: Type&lt;&#x27;db&gt;,
+    in_type_expression: Type&lt;&#x27;db&gt;
 }
 </code></pre>
 <p>where the union <code>A | B</code> would be represented as</p>
-<pre><code class="language-rs">TypeForm {
+<pre><code>TypeForm {
     runtime_type: KnownClass::UnionType.to_instance(db),
     in_type_expression: UnionType::from_elements(db, [A, B]),
 }
 </code></pre>
-<p>cc. @dcreager, who I know has been doing a fair bit of thinking about how to represent typeforms in red-knot's model recently</p>
+<p>cc. @dcreager, who I know has been doing a fair bit of thinking about how to represent typeforms in red-knot&#x27;s model recently</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -121,18 +121,18 @@ def f(x: X):
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[red-knot] Allow narrowing with `isinstance(x, str | int)` (PEP 604 union types)" to "Allow narrowing with `isinstance(x, str | int)` (PEP 604 union types)" by @MichaReiser on 2025-05-07 15:25</div>
+            <div class="event">Renamed from &quot;[red-knot] Allow narrowing with `isinstance(x, str | int)` (PEP 604 union types)&quot; to &quot;Allow narrowing with `isinstance(x, str | int)` (PEP 604 union types)&quot; by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-07 15:25</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">narrowing</span> added by @AlexWaygood on 2025-05-10 18:07</div>
+            <div class="event">Label <span class="label">narrowing</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-10 18:07</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-11-08 18:20</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-08 18:20</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:19:35 UTC
+        Synced at 2026-01-20 19:24:08 UTC
     </footer>
 </body>
 </html>

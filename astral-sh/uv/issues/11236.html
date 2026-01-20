@@ -23,8 +23,8 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Willem-J-an">@Willem-J-an</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<p>I'm trying to use the keyring integration to authenticate to private repo for one of the packages.
+            <div class="timeline-body">Summary
+<p>I&#x27;m trying to use the keyring integration to authenticate to private repo for one of the packages.
 The behavior that I see for <code>uv sync --extra dev --verbose</code> is: (See below for corresponding pyproject extract)</p>
 <blockquote>
 <p>Note that this behavior is consistent across uv add, uv pip install, uv sync, etc</p>
@@ -68,51 +68,51 @@ explicit = true
 url = &quot;https://pypi.org/simple&quot;
 default = true
 </code></pre>
-<h3>Platform</h3>
+Platform
 <p>Linux 6.8.0-52-generic x86_64 GNU/Linux</p>
-<h3>Version</h3>
+Version
 <p>uv 0.5.28</p>
-<h3>Python version</h3>
+Python version
 <p>Python 3.11.11</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @Willem-J-an on 2025-02-05 07:54</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/Willem-J-an">@Willem-J-an</a> on 2025-02-05 07:54</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Keyring integration quirky" to "Keyring integration requires entry at /simple/package/, not /simple/" by @Willem-J-an on 2025-02-05 07:55</div>
+            <div class="event">Renamed from &quot;Keyring integration quirky&quot; to &quot;Keyring integration requires entry at /simple/package/, not /simple/&quot; by <a href="https://github.com/Willem-J-an">@Willem-J-an</a> on 2025-02-05 07:55</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-05 15:23</div>
             <div class="timeline-body"><p>Thanks for the report!</p>
-<p>What keyring plugin are you using? This behavior actually differs per keyring plugin — and I'd argue that the behavior that checks for a prefix-match is correct rather than requiring the user to provide the exact URL for the index root.</p>
+<p>What keyring plugin are you using? This behavior actually differs per keyring plugin — and I&#x27;d argue that the behavior that checks for a prefix-match is correct rather than requiring the user to provide the exact URL for the index root.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Willem-J-an">@Willem-J-an</a> on 2025-02-05 15:41</div>
             <div class="timeline-body"><p>Do you mean keyring backend, or keyring plugin in uv?
-I think it's just python keyring with subprocess mode.</p>
+I think it&#x27;s just python keyring with subprocess mode.</p>
 <p>You argue that check for prefix match is correct, so that would be setting /simple/, not /simple/package/ right? So you agree with my bug report then?🤔</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-05 15:45</div>
-            <div class="timeline-body"><p>I'm talking about the keyring backend.</p>
+            <div class="timeline-body"><p>I&#x27;m talking about the keyring backend.</p>
 <blockquote>
 <p>You argue that check for prefix match is correct, so that would be setting /simple/, not /simple/package/ right? So you agree with my bug report then?</p>
 </blockquote>
-<p>I'm saying that keyring should behave as such:</p>
-<p>If there's a request for <code>https://example/com/foo/bar</code> and there are credentials for <code>https://example/com/foo</code> it should return them.</p>
+<p>I&#x27;m saying that keyring should behave as such:</p>
+<p>If there&#x27;s a request for <code>https://example/com/foo/bar</code> and there are credentials for <code>https://example/com/foo</code> it should return them.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-05 15:45</div>
-            <div class="timeline-body"><p>I think I'll need trace logs to dig in further.</p>
+            <div class="timeline-body"><p>I think I&#x27;ll need trace logs to dig in further.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Willem-J-an">@Willem-J-an</a> on 2025-02-06 07:17</div>
-            <div class="timeline-body"><p>I see what you mean, my keyring backends don't work that way.</p>
+            <div class="timeline-body"><p>I see what you mean, my keyring backends don&#x27;t work that way.</p>
 <pre><code>keyring.backends.chainer.ChainerBackend (priority: 10)
 keyring.backends.fail.Keyring (priority: 0)
 keyring.backends.libsecret.Keyring (priority: 4.8)
@@ -126,14 +126,14 @@ keyring.backends.SecretService.Keyring (priority: 5)
             <div class="timeline-body"><p>Decided to look into the rust code, lord bless my soul.</p>
 <p>If the first attempt fails, a second attempt is made to check for host credentials.
 <a href="https://github.com/astral-sh/uv/blob/5ce48cf79910975c089046d97a45334ad2b3cf0a/crates/uv-auth/src/keyring.rs#L66C8-L80C10">See keyring.rs</a>
-It's a bit finicky (No ending backslash, no protocol - these are present in the absolute URI), but:
+It&#x27;s a bit finicky (No ending backslash, no protocol - these are present in the absolute URI), but:
 IF <code>keyring get private-sandbox.com Token</code> yields the token, the token is successfully retrieved.</p>
 <p>This seems like a solid workaround for my case. I do think the docs need some love on this topic.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-06 14:28</div>
-            <div class="timeline-body"><p>Can you share those trace logs? I'm surprised you'd need to do that.</p>
+            <div class="timeline-body"><p>Can you share those trace logs? I&#x27;m surprised you&#x27;d need to do that.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -146,7 +146,7 @@ DEBUG Using Python request `&gt;=3.11` from `requires-python` metadata
 DEBUG Checking for Python environment at `.venv`
 TRACE Ignoring stale interpreter markers for: .venv/bin/python3
 TRACE Querying interpreter executable at /home/user/code/sample/.venv/bin/python3
-DEBUG The virtual environment's Python version satisfies `&gt;=3.11`
+DEBUG The virtual environment&#x27;s Python version satisfies `&gt;=3.11`
 TRACE Caching credentials for https://Token@pkgs.private-repo.com/_packaging/feed/pypi/simple/
 TRACE Caching credentials for https://Token@pkgs.private-repo.com/_packaging/Sandbox/pypi/simple/
 TRACE Caching credentials for https://Token@pkgs.private-repo.com/_packaging/feed/pypi/simple/
@@ -158,7 +158,7 @@ DEBUG Solving with installed Python version: 3.11.11
 DEBUG Solving with target Python version: &gt;=3.11
 DEBUG Narrowed `requires-python` bound to: &gt;=3.11
 DEBUG Narrowed `requires-python` bound to: &gt;=3.11
-DEBUG Solving split (python_full_version &gt;= '3.12') (requires-python: RequiresPython { specifiers: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: &quot;3.11&quot; }]), range: RequiresPythonRange(LowerBound(Included(&quot;3.12&quot;)), UpperBound(Unbounded)) })
+DEBUG Solving split (python_full_version &gt;= &#x27;3.12&#x27;) (requires-python: RequiresPython { specifiers: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: &quot;3.11&quot; }]), range: RequiresPythonRange(LowerBound(Included(&quot;3.12&quot;)), UpperBound(Unbounded)) })
 TRACE Assigned packages:
 TRACE Chose package for decision: root. remaining choices:
 DEBUG Adding direct dependency: sample-project*
@@ -210,7 +210,7 @@ TRACE Assigned packages: root==0a0.dev0
 TRACE Chose package for decision: sample-project. remaining choices:
 DEBUG Searching for a compatible version of sample-project @ file:///home/user/code/sample (&lt;0.1.0 | &gt;0.1.0)
 DEBUG No compatible version found for: sample-project
-TRACE Cached request https://pypi.org/simple/cachy/ is storable because its response has a 'public' cache-control directive
+TRACE Cached request https://pypi.org/simple/cachy/ is storable because its response has a &#x27;public&#x27; cache-control directive
 TRACE Received package metadata for: cachy
 TRACE Resolver derivation tree before reduction
 term root==0a0.dev0
@@ -224,8 +224,8 @@ TRACE Resolver derivation tree after reduction
 term sample-project==0.1.0
   sample-project==0.1.0 depends on cachy==0.3.0
   cachy not found in the package registry
-  × No solution found when resolving dependencies for split (python_full_version &gt;= '3.12'):
-  ╰─▶ Because cachy was not found in the package registry and your project depends on cachy==0.3.0, we can conclude that your project's requirements are unsatisfiable.
+  × No solution found when resolving dependencies for split (python_full_version &gt;= &#x27;3.12&#x27;):
+  ╰─▶ Because cachy was not found in the package registry and your project depends on cachy==0.3.0, we can conclude that your project&#x27;s requirements are unsatisfiable.
 
       hint: An index URL (https://pkgs.private-repo.com/_packaging/feed/pypi/simple/) could not be queried due to a lack of valid authentication credentials (401 Unauthorized).
 
@@ -240,7 +240,7 @@ DEBUG No workspace root found, using project root
 DEBUG Using Python request `&gt;=3.11` from `requires-python` metadata
 DEBUG Checking for Python environment at `.venv`
 TRACE Cached interpreter info for Python 3.11.11, skipping probing: .venv/bin/python3
-DEBUG The virtual environment's Python version satisfies `&gt;=3.11`
+DEBUG The virtual environment&#x27;s Python version satisfies `&gt;=3.11`
 TRACE Caching credentials for https://Token@pkgs.private-repo.com/_packaging/feed/pypi/simple/
 TRACE Caching credentials for https://Token@pkgs.private-repo.com/_packaging/Sandbox/pypi/simple/
 TRACE Caching credentials for https://Token@pkgs.private-repo.com/_packaging/feed/pypi/simple/
@@ -255,7 +255,7 @@ DEBUG Solving with installed Python version: 3.11.11
 DEBUG Solving with target Python version: &gt;=3.11
 DEBUG Narrowed `requires-python` bound to: &gt;=3.11
 DEBUG Narrowed `requires-python` bound to: &gt;=3.11
-DEBUG Solving split (python_full_version &gt;= '3.12') (requires-python: RequiresPython { specifiers: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: &quot;3.11&quot; }]), range: RequiresPythonRange(LowerBound(Included(&quot;3.12&quot;)), UpperBound(Unbounded)) })
+DEBUG Solving split (python_full_version &gt;= &#x27;3.12&#x27;) (requires-python: RequiresPython { specifiers: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: &quot;3.11&quot; }]), range: RequiresPythonRange(LowerBound(Included(&quot;3.12&quot;)), UpperBound(Unbounded)) })
 TRACE Assigned packages:
 TRACE Chose package for decision: root. remaining choices:
 DEBUG Adding direct dependency: sample-project*
@@ -290,12 +290,12 @@ TRACE Using credentials from previous fetch for https://pkgs.private-repo.com/_p
 TRACE Considering retry of error: Error { kind: WrappedReqwestError(Url { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;pkgs.private-repo.com&quot;)), port: None, path: &quot;/_packaging/Sandbox/pypi/simple/cachy/&quot;, query: None, fragment: None }, WrappedReqwestError(Reqwest(reqwest::Error { kind: Status(404), url: &quot;https://pkgs.private-repo.com/_packaging/Sandbox/pypi/simple/cachy/&quot; }))) }
 TRACE Cannot retry error: not an IO error
 TRACE Fetching metadata for cachy from https://pypi.org/simple/cachy/
-TRACE Cached request https://pypi.org/simple/cachy/ is storable because its response has a 'public' cache-control directive
+TRACE Cached request https://pypi.org/simple/cachy/ is storable because its response has a &#x27;public&#x27; cache-control directive
 TRACE Freshness lifetime found via cache-control max age setting: 600s
 DEBUG Found fresh response for: https://pypi.org/simple/cachy/
 TRACE Received package metadata for: cachy
 TRACE Updating cached credentials for https://pkgs.private-repo.com/_packaging/feed/pypi/simple/cachy/ to Credentials { username: Username(Some(&quot;Token&quot;)), password: Some(&quot;NotMyPassword,PromiseDad&quot;) }
-TRACE Cached request https://pkgs.private-repo.com/_packaging/feed/pypi/simple/cachy/ is not storable because its response has a 'no-store' cache-control directive
+TRACE Cached request https://pkgs.private-repo.com/_packaging/feed/pypi/simple/cachy/ is not storable because its response has a &#x27;no-store&#x27; cache-control directive
 TRACE Received package metadata for: cachy
 DEBUG Searching for a compatible version of cachy (&gt;=0.3.0, &lt;0.3.0+)
 TRACE Selecting candidate for cachy with range &gt;=0.3.0, &lt;0.3.0+ with 7 remote versions
@@ -326,8 +326,8 @@ TRACE Cached request https://pkgs.private-repo.com/_packaging/fff0d200-7487-4c06
 TRACE Received built distribution metadata for: cachy==0.3.0
 TRACE Assigned packages: root==0a0.dev0, sample-project==0.1.0, cachy==0.3.0
 DEBUG Tried 2 versions: cachy 1, sample-project 1
-DEBUG split `python_full_version &gt;= '3.12'` resolution took 0.822s
-DEBUG Solving split (python_full_version == '3.11.*') (requires-python: RequiresPython { specifiers: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: &quot;3.11&quot; }]), range: RequiresPythonRange(LowerBound(Included(&quot;3.11&quot;)), UpperBound(Excluded(&quot;3.12&quot;))) })
+DEBUG split `python_full_version &gt;= &#x27;3.12&#x27;` resolution took 0.822s
+DEBUG Solving split (python_full_version == &#x27;3.11.*&#x27;) (requires-python: RequiresPython { specifiers: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: &quot;3.11&quot; }]), range: RequiresPythonRange(LowerBound(Included(&quot;3.11&quot;)), UpperBound(Excluded(&quot;3.12&quot;))) })
 TRACE Assigned packages:
 TRACE Chose package for decision: root. remaining choices:
 DEBUG Adding direct dependency: sample-project*
@@ -342,16 +342,16 @@ TRACE Using preference cachy 0.3.0
 DEBUG Selecting: cachy==0.3.0 [preference] (cachy-0.3.0-py2.py3-none-any.whl)
 TRACE Assigned packages: root==0a0.dev0, sample-project==0.1.0, cachy==0.3.0
 DEBUG Tried 2 versions: cachy 1, sample-project 1
-DEBUG split `python_full_version == '3.11.*'` resolution took 0.000s
+DEBUG split `python_full_version == &#x27;3.11.*&#x27;` resolution took 0.000s
 INFO Solved your requirements for 2 environments
-DEBUG Distinct solution for split (python_full_version &gt;= '3.12') with 2 packages
-DEBUG Distinct solution for split (python_full_version == '3.11.*') with 2 packages
-TRACE Resolution: ResolverEnvironment { kind: Universal { initial_forks: [python_full_version &gt;= '3.12', python_full_version == '3.11.*'], markers: python_full_version &gt;= '3.12', include: {}, exclude: {} } }
+DEBUG Distinct solution for split (python_full_version &gt;= &#x27;3.12&#x27;) with 2 packages
+DEBUG Distinct solution for split (python_full_version == &#x27;3.11.*&#x27;) with 2 packages
+TRACE Resolution: ResolverEnvironment { kind: Universal { initial_forks: [python_full_version &gt;= &#x27;3.12&#x27;, python_full_version == &#x27;3.11.*&#x27;], markers: python_full_version &gt;= &#x27;3.12&#x27;, include: {}, exclude: {} } }
 TRACE Resolution edge: sample-project -&gt; cachy
 TRACE Resolution edge:     0.1.0 -&gt; 0.3.0
 TRACE Resolution edge: ROOT -&gt; sample-project
 TRACE Resolution edge:     0a0.dev0 -&gt; 0.1.0
-TRACE Resolution: ResolverEnvironment { kind: Universal { initial_forks: [python_full_version &gt;= '3.12', python_full_version == '3.11.*'], markers: python_full_version == '3.11.*', include: {}, exclude: {} } }
+TRACE Resolution: ResolverEnvironment { kind: Universal { initial_forks: [python_full_version &gt;= &#x27;3.12&#x27;, python_full_version == &#x27;3.11.*&#x27;], markers: python_full_version == &#x27;3.11.*&#x27;, include: {}, exclude: {} } }
 TRACE Resolution edge: sample-project -&gt; cachy
 TRACE Resolution edge:     0.1.0 -&gt; 0.3.0
 TRACE Resolution edge: ROOT -&gt; sample-project
@@ -396,7 +396,7 @@ TRACE Found cached credentials for realm Token@https://pkgs.private-repo.com
 TRACE Considering retry of error: Error { kind: WrappedReqwestError(Url { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;pkgs.private-repo.com&quot;)), port: None, path: &quot;/_packaging/Sandbox/pypi/simple/hatchling/&quot;, query: None, fragment: None }, WrappedReqwestError(Reqwest(reqwest::Error { kind: Status(404), url: &quot;https://pkgs.private-repo.com/_packaging/Sandbox/pypi/simple/hatchling/&quot; }))) }
 TRACE Cannot retry error: not an IO error
 TRACE Fetching metadata for hatchling from https://pypi.org/simple/hatchling/
-TRACE Cached request https://pypi.org/simple/hatchling/ is storable because its response has a 'public' cache-control directive
+TRACE Cached request https://pypi.org/simple/hatchling/ is storable because its response has a &#x27;public&#x27; cache-control directive
 TRACE Freshness lifetime found via cache-control max age setting: 600s
 DEBUG Found fresh response for: https://pypi.org/simple/hatchling/
 TRACE Received package metadata for: hatchling
@@ -408,7 +408,7 @@ TRACE Selecting candidate for hatchling with range * with 76 remote versions
 TRACE Found candidate for package hatchling with range * after 1 steps: 1.27.0 version
 TRACE Returning candidate for package hatchling with range * after 1 steps
 DEBUG Selecting: hatchling==1.27.0 [compatible] (hatchling-1.27.0-py3-none-any.whl)
-TRACE Cached request https://files.pythonhosted.org/packages/08/e7/ae38d7a6dfba0533684e0b2136817d667588ae3ec984c1a4e5df5eb88482/hatchling-1.27.0-py3-none-any.whl.metadata is storable because its response has a 'public' cache-control directive
+TRACE Cached request https://files.pythonhosted.org/packages/08/e7/ae38d7a6dfba0533684e0b2136817d667588ae3ec984c1a4e5df5eb88482/hatchling-1.27.0-py3-none-any.whl.metadata is storable because its response has a &#x27;public&#x27; cache-control directive
 TRACE Freshness lifetime found via cache-control max age setting: 365000000s
 DEBUG Found fresh response for: https://files.pythonhosted.org/packages/08/e7/ae38d7a6dfba0533684e0b2136817d667588ae3ec984c1a4e5df5eb88482/hatchling-1.27.0-py3-none-any.whl.metadata
 TRACE Received built distribution metadata for: hatchling==1.27.0
@@ -449,21 +449,21 @@ TRACE Found cached credentials for realm Token@https://pkgs.private-repo.com
 TRACE Considering retry of error: Error { kind: WrappedReqwestError(Url { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;pkgs.private-repo.com&quot;)), port: None, path: &quot;/_packaging/Sandbox/pypi/simple/trove-classifiers/&quot;, query: None, fragment: None }, WrappedReqwestError(Reqwest(reqwest::Error { kind: Status(404), url: &quot;https://pkgs.private-repo.com/_packaging/Sandbox/pypi/simple/trove-classifiers/&quot; }))) }
 TRACE Cannot retry error: not an IO error
 TRACE Fetching metadata for trove-classifiers from https://pypi.org/simple/trove-classifiers/
-TRACE Cached request https://pypi.org/simple/trove-classifiers/ is storable because its response has a 'public' cache-control directive
+TRACE Cached request https://pypi.org/simple/trove-classifiers/ is storable because its response has a &#x27;public&#x27; cache-control directive
 TRACE Freshness lifetime found via cache-control max age setting: 600s
 DEBUG Found fresh response for: https://pypi.org/simple/trove-classifiers/
 TRACE Received package metadata for: trove-classifiers
 TRACE Selecting candidate for trove-classifiers with range * with 101 remote versions
 TRACE Found candidate for package trove-classifiers with range * after 1 steps: 2025.1.15.22 version
 TRACE Returning candidate for package trove-classifiers with range * after 1 steps
-TRACE Cached request https://files.pythonhosted.org/packages/2b/c5/6422dbc59954389b20b2aba85b737ab4a552e357e7ea14b52f40312e7c84/trove_classifiers-2025.1.15.22-py3-none-any.whl.metadata is storable because its response has a 'public' cache-control directive
+TRACE Cached request https://files.pythonhosted.org/packages/2b/c5/6422dbc59954389b20b2aba85b737ab4a552e357e7ea14b52f40312e7c84/trove_classifiers-2025.1.15.22-py3-none-any.whl.metadata is storable because its response has a &#x27;public&#x27; cache-control directive
 TRACE Freshness lifetime found via cache-control max age setting: 365000000s
 DEBUG Found fresh response for: https://files.pythonhosted.org/packages/2b/c5/6422dbc59954389b20b2aba85b737ab4a552e357e7ea14b52f40312e7c84/trove_classifiers-2025.1.15.22-py3-none-any.whl.metadata
 TRACE Received built distribution metadata for: trove-classifiers==2025.1.15.22
 TRACE Considering retry of error: Error { kind: WrappedReqwestError(Url { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;pkgs.private-repo.com&quot;)), port: None, path: &quot;/_packaging/Sandbox/pypi/simple/packaging/&quot;, query: None, fragment: None }, WrappedReqwestError(Reqwest(reqwest::Error { kind: Status(404), url: &quot;https://pkgs.private-repo.com/_packaging/Sandbox/pypi/simple/packaging/&quot; }))) }
 TRACE Cannot retry error: not an IO error
 TRACE Fetching metadata for packaging from https://pypi.org/simple/packaging/
-TRACE Cached request https://pypi.org/simple/packaging/ is storable because its response has a 'public' cache-control directive
+TRACE Cached request https://pypi.org/simple/packaging/ is storable because its response has a &#x27;public&#x27; cache-control directive
 TRACE Freshness lifetime found via cache-control max age setting: 600s
 DEBUG Found fresh response for: https://pypi.org/simple/packaging/
 TRACE Received package metadata for: packaging
@@ -475,7 +475,7 @@ TRACE Returning candidate for package packaging with range &gt;=24.2 after 1 ste
 TRACE Found candidate for package packaging with range &gt;=24.2 after 1 steps: 24.2 version
 TRACE Returning candidate for package packaging with range &gt;=24.2 after 1 steps
 DEBUG Selecting: packaging==24.2 [compatible] (packaging-24.2-py3-none-any.whl)
-TRACE Cached request https://files.pythonhosted.org/packages/88/ef/eb23f262cca3c0c4eb7ab1933c3b1f03d021f2c48f54763065b6f0e321be/packaging-24.2-py3-none-any.whl.metadata is storable because its response has a 'public' cache-control directive
+TRACE Cached request https://files.pythonhosted.org/packages/88/ef/eb23f262cca3c0c4eb7ab1933c3b1f03d021f2c48f54763065b6f0e321be/packaging-24.2-py3-none-any.whl.metadata is storable because its response has a &#x27;public&#x27; cache-control directive
 TRACE Freshness lifetime found via cache-control max age setting: 365000000s
 DEBUG Found fresh response for: https://files.pythonhosted.org/packages/88/ef/eb23f262cca3c0c4eb7ab1933c3b1f03d021f2c48f54763065b6f0e321be/packaging-24.2-py3-none-any.whl.metadata
 TRACE Received built distribution metadata for: packaging==24.2
@@ -487,21 +487,21 @@ TRACE Retrying request for https://pkgs.private-repo.com/_packaging/fff0d200-748
 TRACE Considering retry of error: Error { kind: WrappedReqwestError(Url { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;pkgs.private-repo.com&quot;)), port: None, path: &quot;/_packaging/Sandbox/pypi/simple/pluggy/&quot;, query: None, fragment: None }, WrappedReqwestError(Reqwest(reqwest::Error { kind: Status(404), url: &quot;https://pkgs.private-repo.com/_packaging/Sandbox/pypi/simple/pluggy/&quot; }))) }
 TRACE Cannot retry error: not an IO error
 TRACE Fetching metadata for pluggy from https://pypi.org/simple/pluggy/
-TRACE Cached request https://pypi.org/simple/pluggy/ is storable because its response has a 'public' cache-control directive
+TRACE Cached request https://pypi.org/simple/pluggy/ is storable because its response has a &#x27;public&#x27; cache-control directive
 TRACE Freshness lifetime found via cache-control max age setting: 600s
 DEBUG Found fresh response for: https://pypi.org/simple/pluggy/
 TRACE Received package metadata for: pluggy
 TRACE Selecting candidate for pluggy with range &gt;=1.0.0 with 23 remote versions
 TRACE Found candidate for package pluggy with range &gt;=1.0.0 after 1 steps: 1.5.0 version
 TRACE Returning candidate for package pluggy with range &gt;=1.0.0 after 1 steps
-TRACE Cached request https://files.pythonhosted.org/packages/88/5f/e351af9a41f866ac3f1fac4ca0613908d9a41741cfcf2228f4ad853b697d/pluggy-1.5.0-py3-none-any.whl.metadata is storable because its response has a 'public' cache-control directive
+TRACE Cached request https://files.pythonhosted.org/packages/88/5f/e351af9a41f866ac3f1fac4ca0613908d9a41741cfcf2228f4ad853b697d/pluggy-1.5.0-py3-none-any.whl.metadata is storable because its response has a &#x27;public&#x27; cache-control directive
 TRACE Freshness lifetime found via cache-control max age setting: 365000000s
 DEBUG Found fresh response for: https://files.pythonhosted.org/packages/88/5f/e351af9a41f866ac3f1fac4ca0613908d9a41741cfcf2228f4ad853b697d/pluggy-1.5.0-py3-none-any.whl.metadata
 TRACE Received built distribution metadata for: pluggy==1.5.0
 TRACE Considering retry of error: Error { kind: WrappedReqwestError(Url { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;pkgs.private-repo.com&quot;)), port: None, path: &quot;/_packaging/Sandbox/pypi/simple/pathspec/&quot;, query: None, fragment: None }, WrappedReqwestError(Reqwest(reqwest::Error { kind: Status(404), url: &quot;https://pkgs.private-repo.com/_packaging/Sandbox/pypi/simple/pathspec/&quot; }))) }
 TRACE Cannot retry error: not an IO error
 TRACE Fetching metadata for pathspec from https://pypi.org/simple/pathspec/
-TRACE Cached request https://pypi.org/simple/pathspec/ is storable because its response has a 'public' cache-control directive
+TRACE Cached request https://pypi.org/simple/pathspec/ is storable because its response has a &#x27;public&#x27; cache-control directive
 TRACE Freshness lifetime found via cache-control max age setting: 600s
 DEBUG Found fresh response for: https://pypi.org/simple/pathspec/
 TRACE Received package metadata for: pathspec
@@ -513,7 +513,7 @@ TRACE Returning candidate for package pathspec with range &gt;=0.10.1 after 1 st
 TRACE Found candidate for package pathspec with range &gt;=0.10.1 after 1 steps: 0.12.1 version
 TRACE Returning candidate for package pathspec with range &gt;=0.10.1 after 1 steps
 DEBUG Selecting: pathspec==0.12.1 [compatible] (pathspec-0.12.1-py3-none-any.whl)
-TRACE Cached request https://files.pythonhosted.org/packages/cc/20/ff623b09d963f88bfde16306a54e12ee5ea43e9b597108672ff3a408aad6/pathspec-0.12.1-py3-none-any.whl.metadata is storable because its response has a 'public' cache-control directive
+TRACE Cached request https://files.pythonhosted.org/packages/cc/20/ff623b09d963f88bfde16306a54e12ee5ea43e9b597108672ff3a408aad6/pathspec-0.12.1-py3-none-any.whl.metadata is storable because its response has a &#x27;public&#x27; cache-control directive
 TRACE Freshness lifetime found via cache-control max age setting: 365000000s
 DEBUG Found fresh response for: https://files.pythonhosted.org/packages/cc/20/ff623b09d963f88bfde16306a54e12ee5ea43e9b597108672ff3a408aad6/pathspec-0.12.1-py3-none-any.whl.metadata
 TRACE Received built distribution metadata for: pathspec==0.12.1
@@ -630,7 +630,7 @@ TRACE Returning candidate for package packaging with range &gt;=24.2 after 1 ste
 TRACE Considering retry of error: Error { kind: WrappedReqwestError(Url { scheme: &quot;https&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Domain(&quot;pkgs.private-repo.com&quot;)), port: None, path: &quot;/_packaging/Sandbox/pypi/simple/editables/&quot;, query: None, fragment: None }, WrappedReqwestError(Reqwest(reqwest::Error { kind: Status(404), url: &quot;https://pkgs.private-repo.com/_packaging/Sandbox/pypi/simple/editables/&quot; }))) }
 TRACE Cannot retry error: not an IO error
 TRACE Fetching metadata for editables from https://pypi.org/simple/editables/
-TRACE Cached request https://pypi.org/simple/editables/ is storable because its response has a 'public' cache-control directive
+TRACE Cached request https://pypi.org/simple/editables/ is storable because its response has a &#x27;public&#x27; cache-control directive
 TRACE Freshness lifetime found via cache-control max age setting: 600s
 DEBUG Found fresh response for: https://pypi.org/simple/editables/
 TRACE Received package metadata for: editables
@@ -642,7 +642,7 @@ TRACE Found candidate for package editables with range &gt;=0.3, &lt;1.dev0 afte
 TRACE Returning candidate for package editables with range &gt;=0.3, &lt;1.dev0 after 1 steps
 TRACE Returning candidate for package editables with range &gt;=0.3, &lt;1.dev0 after 1 steps
 DEBUG Selecting: editables==0.5 [compatible] (editables-0.5-py3-none-any.whl)
-TRACE Cached request https://files.pythonhosted.org/packages/6b/be/0f2f4a5e8adc114a02b63d92bf8edbfa24db6fc602fca83c885af2479e0e/editables-0.5-py3-none-any.whl.metadata is storable because its response has a 'public' cache-control directive
+TRACE Cached request https://files.pythonhosted.org/packages/6b/be/0f2f4a5e8adc114a02b63d92bf8edbfa24db6fc602fca83c885af2479e0e/editables-0.5-py3-none-any.whl.metadata is storable because its response has a &#x27;public&#x27; cache-control directive
 TRACE Freshness lifetime found via cache-control max age setting: 365000000s
 DEBUG Found fresh response for: https://files.pythonhosted.org/packages/6b/be/0f2f4a5e8adc114a02b63d92bf8edbfa24db6fc602fca83c885af2479e0e/editables-0.5-py3-none-any.whl.metadata
 TRACE Received built distribution metadata for: editables==0.5
@@ -738,7 +738,7 @@ Installed 2 packages in 1ms
 <p>One thing of interest to me is that we cache the username for the root of the index</p>
 <pre><code>TRACE Caching credentials for https://Token@pkgs.private-repo.com/_packaging/Sandbox/pypi/simple/
 </code></pre>
-<p>But we don't consider that cache for subsequent requests</p>
+<p>But we don&#x27;t consider that cache for subsequent requests</p>
 <pre><code>TRACE Fetching metadata for cachy from https://Token@pkgs.private-repo.com/_packaging/Sandbox/pypi/simple/cachy/
 TRACE Sending fresh GET request for https://pkgs.private-repo.com/_packaging/Sandbox/pypi/simple/cachy/
 TRACE Handling request for https://Token@pkgs.private-repo.com/_packaging/Sandbox/pypi/simple/cachy/
@@ -752,26 +752,26 @@ TRACE Considering retry of error: Error { kind: WrappedReqwestError(Url { scheme
 TRACE Cannot retry error: not an IO error
 </code></pre>
 <p>A few possibilities...</p>
-<p>(1) In the vein of https://github.com/astral-sh/uv/issues/4583 we could know this is a package in an index URL and check the keyring for the root if we cannot find credentials for the password
-(2) We could eagerly fetch credentials for the root from the keying (before we make requests) which would mean there's a matching password in the cache later
+<p>(1) In the vein of <a href="https://github.com/astral-sh/uv/issues/4583">astral-sh/uv#4583</a> we could know this is a package in an index URL and check the keyring for the root if we cannot find credentials for the password
+(2) We could eagerly fetch credentials for the root from the keying (before we make requests) which would mean there&#x27;s a matching password in the cache later
 (3) We could use existing cache entries for a parent URL as a hint that we should query the keyring again</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-20 22:07</div>
-            <div class="timeline-body"><p>Note this is a duplicate of https://github.com/astral-sh/uv/issues/4056</p>
+            <div class="timeline-body"><p>Note this is a duplicate of <a href="https://github.com/astral-sh/uv/issues/4056">astral-sh/uv#4056</a></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @jtfmumm by @jtfmumm on 2025-04-11 07:32</div>
+            <div class="event">Assigned to <a href="https://github.com/jtfmumm">@jtfmumm</a> by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-04-11 07:32</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2025-04-29 21:37</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-29 21:37</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:29:43 UTC
+        Synced at 2026-01-20 19:37:05 UTC
     </footer>
 </body>
 </html>

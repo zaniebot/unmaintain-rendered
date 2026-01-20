@@ -23,57 +23,57 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/hauntsaninja">@hauntsaninja</a></div>
-            <div class="timeline-body"><p>I can't find a linter that warns me about <code>sum(list_of_lists, [])</code>. Basically any time the <code>default</code> arg of <code>sum</code> is a list literal, I think something slow could happen. Maybe ruff could warn me about this? :-)</p>
+            <div class="timeline-body"><p>I can&#x27;t find a linter that warns me about <code>sum(list_of_lists, [])</code>. Basically any time the <code>default</code> arg of <code>sum</code> is a list literal, I think something slow could happen. Maybe ruff could warn me about this? :-)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-06-14 10:12</div>
-            <div class="timeline-body"><p>Is the correct replacement for this <code>list(itertools.chain(*list_of_lists))</code> or is there a better solution? I've been following https://stackoverflow.com/a/953097/3549270 so far</p>
+            <div class="timeline-body"><p>Is the correct replacement for this <code>list(itertools.chain(*list_of_lists))</code> or is there a better solution? I&#x27;ve been following https://stackoverflow.com/a/953097/3549270 so far</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-06-14 14:23</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-14 14:23</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2023-06-14 19:09</div>
-            <div class="timeline-body"><p>Yup, that'll work!</p>
-<p>I don't have strong opinions on the replacement, they all seem to be a constant factor off.</p>
+            <div class="timeline-body"><p>Yup, that&#x27;ll work!</p>
+<p>I don&#x27;t have strong opinions on the replacement, they all seem to be a constant factor off.</p>
 <ul>
 <li><code>list(itertools.chain.from_iterable(list_of_lists))</code> looks to be a shade faster than <code>list(itertools.chain(*list_of_lists))</code> on my machine</li>
 <li>Looking at your StackOverflow link I see mention of <code>functools.reduce(operator.iadd, list_of_lists, [])</code>, which is fastest for me</li>
 <li>The most straightforward is probably just <code>[x for lst in list_of_lists for x in lst]</code></li>
 </ul>
-<pre><code>λ python3.11 -m timeit -n 10000 -r 20 -s 'l=[[1,2,3],[4,5,6], [7], [8,9]]*99;import itertools,functools,operator' '[x for y in l for x in y]'
+<pre><code>λ python3.11 -m timeit -n 10000 -r 20 -s &#x27;l=[[1,2,3],[4,5,6], [7], [8,9]]*99;import itertools,functools,operator&#x27; &#x27;[x for y in l for x in y]&#x27;
 10000 loops, best of 20: 25.5 usec per loop
-λ python3.11 -m timeit -n 10000 -r 20 -s 'l=[[1,2,3],[4,5,6], [7], [8,9]]*99;import itertools,functools,operator' 'list(itertools.chain(*l))'
+λ python3.11 -m timeit -n 10000 -r 20 -s &#x27;l=[[1,2,3],[4,5,6], [7], [8,9]]*99;import itertools,functools,operator&#x27; &#x27;list(itertools.chain(*l))&#x27;
 10000 loops, best of 20: 18.5 usec per loop
-λ python3.11 -m timeit -n 10000 -r 20 -s 'l=[[1,2,3],[4,5,6], [7], [8,9]]*99;import itertools,functools,operator' 'list(itertools.chain.from_iterable(l))'
+λ python3.11 -m timeit -n 10000 -r 20 -s &#x27;l=[[1,2,3],[4,5,6], [7], [8,9]]*99;import itertools,functools,operator&#x27; &#x27;list(itertools.chain.from_iterable(l))&#x27;
 10000 loops, best of 20: 17.5 usec per loop
-λ python3.11 -m timeit -n 10000 -r 20 -s 'l=[[1,2,3],[4,5,6], [7], [8,9]]*99;import itertools,functools,operator' 'functools.reduce(operator.iadd, l, [])'
+λ python3.11 -m timeit -n 10000 -r 20 -s &#x27;l=[[1,2,3],[4,5,6], [7], [8,9]]*99;import itertools,functools,operator&#x27; &#x27;functools.reduce(operator.iadd, l, [])&#x27;
 10000 loops, best of 20: 11.7 usec per loop
 </code></pre>
 <p>Repro using the nice perfplot code from your StackOverflow link:</p>
-<p><img src="https://github.com/astral-sh/ruff/assets/12621235/502fc680-1430-4975-89c3-097a4e23de5d" alt="out" /></p>
+<p><img src="https://github.com/astral-sh/ruff/assets/12621235/502fc680-1430-4975-89c3-097a4e23de5d" alt="out"></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-07-10 01:27</div>
+            <div class="event">Label <span class="label">needs-decision</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-10 01:27</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2023-07-25 22:36</div>
-            <div class="timeline-body"><p>Saw a &quot;needs decision&quot; label got added. I'd vote the best replacement is <code>functools.reduce(operator.iadd, l, [])</code>. If we don't want to add imports, then <code>[x for y in l for x in y]</code>.</p>
+            <div class="timeline-body"><p>Saw a &quot;needs decision&quot; label got added. I&#x27;d vote the best replacement is <code>functools.reduce(operator.iadd, l, [])</code>. If we don&#x27;t want to add imports, then <code>[x for y in l for x in y]</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-25 23:00</div>
-            <div class="timeline-body"><p>I'm cool with adding this as long as the ecosystem checks look okay (that is: no major false positives).</p>
+            <div class="timeline-body"><p>I&#x27;m cool with adding this as long as the ecosystem checks look okay (that is: no major false positives).</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> removed by @charliermarsh on 2023-07-25 23:00</div>
+            <div class="event">Label <span class="label">needs-decision</span> removed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-25 23:00</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">accepted</span> added by @charliermarsh on 2023-07-25 23:00</div>
+            <div class="event">Label <span class="label">accepted</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-25 23:00</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-08-06 04:05</div>
@@ -81,10 +81,10 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @evanrittenhouse by @dhruvmanila on 2023-08-06 07:08</div>
+            <div class="event">Assigned to <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-08-06 07:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-08-17 03:13</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-17 03:13</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/arogozhnikov">@arogozhnikov</a> on 2024-02-25 10:19</div>
@@ -101,13 +101,13 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2024-02-26 00:38</div>
-            <div class="timeline-body"><p>Yes, that's the magic of <code>iadd</code> instead of <code>add</code>.</p>
+            <div class="timeline-body"><p>Yes, that&#x27;s the magic of <code>iadd</code> instead of <code>add</code>.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:47:28 UTC
+        Synced at 2026-01-20 18:48:37 UTC
     </footer>
 </body>
 </html>

@@ -23,45 +23,45 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/NMertsch">@NMertsch</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p><code>uv init</code> does not escape quotes when inserting the git &quot;user.name&quot; config value as &quot;project.author.name&quot;.</p>
-<h4>How to reproduce</h4>
+How to reproduce
 <p>Steps:</p>
-<pre><code class="language-shell"># create new directory
+<pre><code># create new directory
 mkdir my-new-project
 cd my-new-project
 
 # configure git user
 git init
-git config user.name 'Tony &quot;Iron Man&quot; Stark'
-git config user.email 'ironman@example.com'
+git config user.name &#x27;Tony &quot;Iron Man&quot; Stark&#x27;
+git config user.email &#x27;ironman@example.com&#x27;
 
 # create new uv package
 uv init --package
 </code></pre>
 <p>This creates the following <code>project.authors</code> field in pyproject.toml:</p>
-<pre><code class="language-toml">[project]
+<pre><code>[project]
 authors = [
     { name = &quot;Tony &quot;Iron Man&quot; Stark&quot;, email = &quot;ironman@example.com&quot; }
 ]
 </code></pre>
 <p>Note the string <code>&quot;Tony &quot;Iron Man&quot; Stark&quot;</code>, which should be <code>&quot;Tony \&quot;Iron Man\&quot; Stark&quot;</code></p>
-<p>(This came up while testing. I don't suggest that quotes in a git username are a good idea.)</p>
-<h3>Platform</h3>
+<p>(This came up while testing. I don&#x27;t suggest that quotes in a git username are a good idea.)</p>
+Platform
 <p>Linux 6.17.0-6-generic x86_64 GNU/Linux</p>
-<h3>Version</h3>
+Version
 <p>uv 0.9.10</p>
-<h3>Python version</h3>
+Python version
 <p>Python 3.13.3</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @NMertsch on 2025-11-17 23:07</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/NMertsch">@NMertsch</a> on 2025-11-17 23:07</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/NMertsch">@NMertsch</a> on 2025-11-17 23:36</div>
             <div class="timeline-body"><p>The code is in <a href="https://github.com/astral-sh/uv/blob/512c0ca5edc34f4eb932d5dd59cc86f842a8817c/crates/uv/src/commands/project/init.rs#L938-L946">crates/uv/src/commands/project/init.rs</a>:</p>
-<pre><code class="language-rust">impl Author {
+<pre><code>impl Author {
     fn to_toml_string(&amp;self) -&gt; String {
         match self {
             Self::NameEmail { name, email } =&gt; {
@@ -93,9 +93,9 @@ Self::Email(email) =&gt; format!(&quot;{{ email = &quot;{email}&quot; }}&quot;),
 }
 Using <a href="https://docs.rs/toml/latest/toml/ser/fn.to_string.html"><code>toml::to_string()</code></a> might be a bit much for this case. Maybe <code>name.replace(&quot;\&quot;&quot;, &quot;\\\&quot;&quot;)</code> is enough?</p>
 </blockquote>
-<p>Using <a href="https://docs.rs/toml/latest/toml/ser/fn.to_string.html"><code>to_string</code></a> has the other added benefit of handling other control characters, backslashes, etc (in addition to double quotes). I think this is the 'proper' fix here.</p>
+<p>Using <a href="https://docs.rs/toml/latest/toml/ser/fn.to_string.html"><code>to_string</code></a> has the other added benefit of handling other control characters, backslashes, etc (in addition to double quotes). I think this is the &#x27;proper&#x27; fix here.</p>
 <p>Something like:</p>
-<pre><code class="language-rust">use toml_edit::InlineTable;
+<pre><code>use toml_edit::InlineTable;
 
 #[derive(Debug)]
 enum Author {
@@ -131,16 +131,16 @@ impl Author {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-11-19 09:45</div>
-            <div class="timeline-body"><p>It's definitely a better idea to use <code>toml_edit</code> here than trying to use a template that doesn't do toml escaping.</p>
+            <div class="timeline-body"><p>It&#x27;s definitely a better idea to use <code>toml_edit</code> here than trying to use a template that doesn&#x27;t do toml escaping.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @woodruffw on 2025-11-20 19:10</div>
+            <div class="event">Closed by <a href="https://github.com/woodruffw">@woodruffw</a> on 2025-11-20 19:10</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:33:29 UTC
+        Synced at 2026-01-20 19:41:05 UTC
     </footer>
 </body>
 </html>

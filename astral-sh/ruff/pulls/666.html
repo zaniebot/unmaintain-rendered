@@ -23,12 +23,12 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/squiddy">@squiddy</a></div>
-            <div class="timeline-body"><p>I've got the tests and the right behaviour in place, but the code is not pretty right now.</p>
+            <div class="timeline-body"><p>I&#x27;ve got the tests and the right behaviour in place, but the code is not pretty right now.</p>
 <ul>
 <li>[x] Cleanup code</li>
 </ul>
-<hr />
-<p>This resolves the issue where ruff doesn't see any unused imports in code like this:</p>
+<hr>
+<p>This resolves the issue where ruff doesn&#x27;t see any unused imports in code like this:</p>
 <pre><code>import multiprocessing.pool
 import multiprocessing.process
 z = multiprocessing.pool.ThreadPool()</code></pre>
@@ -68,7 +68,7 @@ os.path.exists(&quot;foo&quot;)</code></pre>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/squiddy">@squiddy</a> on 2022-11-12 05:34</div>
-            <div class="timeline-body"><p>I should have specified that more. I'd really appreciate a code review on the approach itself, the cleanup part is primary about the changes to <code>handle_node_load</code>.</p>
+            <div class="timeline-body"><p>I should have specified that more. I&#x27;d really appreciate a code review on the approach itself, the cleanup part is primary about the changes to <code>handle_node_load</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -77,21 +77,21 @@ os.path.exists(&quot;foo&quot;)</code></pre>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @charliermarsh on 2022-11-12 17:15</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-12 17:15</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-13 15:54</div>
-            <div class="timeline-body"><p>(Overall, what you've written in the summary makes sense. Haven't read the code yet.)</p>
+            <div class="timeline-body"><p>(Overall, what you&#x27;ve written in the summary makes sense. Haven&#x27;t read the code yet.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/check_ast.rs</code>:1965 on 2022-11-13 16:16</div>
             <div class="timeline-body"><p>I think we can avoid cloning any expressions here like:</p>
-<pre><code class="language-rust">let ids: Vec&lt;(String, &amp;Expr)&gt; = match &amp;expr.node {
+<pre><code>let ids: Vec&lt;(String, &amp;Expr)&gt; = match &amp;expr.node {
     ExprKind::Name { id, .. } =&gt; vec![(id.clone(), expr)],
     ExprKind::Attribute { value, .. } =&gt; {
         let path = compose_call_path(expr).unwrap();
-        let segments: Vec&lt;&amp;str&gt; = path.split('.').collect();
+        let segments: Vec&lt;&amp;str&gt; = path.split(&#x27;.&#x27;).collect();
         if segments.len() &gt; 1 {
             (1..segments.len())
                 .rev()
@@ -108,7 +108,7 @@ os.path.exists(&quot;foo&quot;)</code></pre>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/check_ast.rs</code>:2395 on 2022-11-13 16:17</div>
-            <div class="timeline-body"><p>Is this safe? What assumptions is it making? (That there's at least one member in <code>ids</code>, and at least one member in <code>self.scope_stack</code>?)</p>
+            <div class="timeline-body"><p>Is this safe? What assumptions is it making? (That there&#x27;s at least one member in <code>ids</code>, and at least one member in <code>self.scope_stack</code>?)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -118,19 +118,19 @@ os.path.exists(&quot;foo&quot;)</code></pre>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/check_ast.rs</code>:1966 on 2022-11-13 16:24</div>
-            <div class="timeline-body"><p>I'd love to get rid of the ID clones... trying to figure out if that's possible.</p>
+            <div class="timeline-body"><p>I&#x27;d love to get rid of the ID clones... trying to figure out if that&#x27;s possible.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/check_ast.rs</code>:1966 on 2022-11-13 16:35</div>
             <div class="timeline-body"><p>I think this gets it down to one copy:</p>
-<pre><code class="language-rust">let call_path;
+<pre><code>let call_path;
 let ids: Vec&lt;(&amp;str, &amp;Expr)&gt; = match &amp;expr.node {
     ExprKind::Name { id, .. } =&gt; vec![(id, expr)],
     ExprKind::Attribute { value, .. } =&gt; {
         call_path = compose_call_path(expr).unwrap();
         call_path
-            .rmatch_indices('.')
+            .rmatch_indices(&#x27;.&#x27;)
             .map(|(i, _)| (&amp;call_path[..i], &amp;**value))
             .collect()
     }
@@ -142,12 +142,12 @@ let ids: Vec&lt;(&amp;str, &amp;Expr)&gt; = match &amp;expr.node {
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/check_ast.rs</code>:1971 on 2022-11-13 16:36</div>
             <div class="timeline-body"><p>What about this case? This seems like it should be valid but is currently unhandled.</p>
-<pre><code class="language-py">import a.b.c.d
+<pre><code>import a.b.c.d
 
 foo = a.b.c.d
 </code></pre>
 <p>Ruff gives me:</p>
-<pre><code class="language-py">Found 2 error(s).
+<pre><code>Found 2 error(s).
 foo.py:1:1: F401 `a.b.c.d` imported but unused
 foo.py:9:7: F821 Undefined name `a`
 </code></pre>
@@ -167,7 +167,7 @@ foo.py:9:7: F821 Undefined name `a`
             <div class="timeline-body"><blockquote>
 <p>@squiddy - Would you like me to clean up based on the comments and get this merged? Totally up to you.</p>
 </blockquote>
-<p>I've give it a try, thanks for the review.</p>
+<p>I&#x27;ve give it a try, thanks for the review.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -176,7 +176,7 @@ foo.py:9:7: F821 Undefined name `a`
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/squiddy">@squiddy</a> on <code>src/check_ast.rs</code>:1965 on 2022-11-26 07:48</div>
-            <div class="timeline-body"><p>Thank you. Closing in favor of https://github.com/charliermarsh/ruff/pull/666#discussion_r1020931419, where you tidied this up even more.</p>
+            <div class="timeline-body"><p>Thank you. Closing in favor of <a href="https://github.com/charliermarsh/ruff/pull/666">charliermarsh/ruff#666</a>#discussion_r1020931419, where you tidied this up even more.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -190,7 +190,7 @@ foo.py:9:7: F821 Undefined name `a`
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/squiddy">@squiddy</a> on <code>src/check_ast.rs</code>:1971 on 2022-11-26 08:10</div>
-            <div class="timeline-body"><p><code>ids</code> didn't include the full identifier (only <code>a.b.c</code> in this case). Extended it to and your test case passes now.</p>
+            <div class="timeline-body"><p><code>ids</code> didn&#x27;t include the full identifier (only <code>a.b.c</code> in this case). Extended it to and your test case passes now.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -203,14 +203,14 @@ foo.py:9:7: F821 Undefined name `a`
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/squiddy">@squiddy</a> on <code>src/check_ast.rs</code>:1970 on 2022-11-26 08:12</div>
-            <div class="timeline-body"><p>Yes, you are right. Resolving this because the current code doesn't care anymore.</p>
+            <div class="timeline-body"><p>Yes, you are right. Resolving this because the current code doesn&#x27;t care anymore.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/squiddy">@squiddy</a> on <code>src/check_ast.rs</code>:2395 on 2022-11-26 08:37</div>
             <div class="timeline-body"><p>Yes to both.</p>
-<p>At least one member in <code>ids</code> should be safe to assume. We're either called with a <code>Name</code> or <code>Attribute</code>, return otherwise.
-You are right about the <code>scope_stack</code>. If that can be empty, we would crash here. I'm not too familiar with that yet, can this be empty?</p>
+<p>At least one member in <code>ids</code> should be safe to assume. We&#x27;re either called with a <code>Name</code> or <code>Attribute</code>, return otherwise.
+You are right about the <code>scope_stack</code>. If that can be empty, we would crash here. I&#x27;m not too familiar with that yet, can this be empty?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -225,7 +225,7 @@ You are right about the <code>scope_stack</code>. If that can be empty, we would
             <div class="timeline-header">Review comment by <a href="https://github.com/squiddy">@squiddy</a> on <code>src/check_ast.rs</code>:2395 on 2022-11-26 08:39</div>
             <div class="timeline-body"><p>I could initialize <code>not_found</code> with the first entry of <code>ids</code>, which is then either the name or the full expression for an attribute (e.g. <code>multiprocessing.pool.Pool</code>).</p>
 <p>If we find a match in the imports, we return early.</p>
-<p>If we don't, we'll report the whole expression/identifier as unknown.</p>
+<p>If we don&#x27;t, we&#x27;ll report the whole expression/identifier as unknown.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -240,7 +240,7 @@ You are right about the <code>scope_stack</code>. If that can be empty, we would
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-26 21:28</div>
-            <div class="timeline-body"><p>Cool, gonna profile this tonight to make sure it's not a significant regression, then we can merge.</p>
+            <div class="timeline-body"><p>Cool, gonna profile this tonight to make sure it&#x27;s not a significant regression, then we can merge.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -250,20 +250,20 @@ You are right about the <code>scope_stack</code>. If that can be empty, we would
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/squiddy">@squiddy</a> on 2022-12-09 10:40</div>
-            <div class="timeline-body"><p>@charliermarsh I know you're very busy - good evidence to the success of ruff - so I'm not being pushy here.</p>
-<p>Can I help you here move this forward? If it's the slowdown that is blocking this, how would I go about that measuring that? Is it just hyperfine + running ruff on the cmdline, or did you do some in-depth profiling?</p>
-<p>I'm happy for anything you can share that helps me help you. :)</p>
+            <div class="timeline-body"><p>@charliermarsh I know you&#x27;re very busy - good evidence to the success of ruff - so I&#x27;m not being pushy here.</p>
+<p>Can I help you here move this forward? If it&#x27;s the slowdown that is blocking this, how would I go about that measuring that? Is it just hyperfine + running ruff on the cmdline, or did you do some in-depth profiling?</p>
+<p>I&#x27;m happy for anything you can share that helps me help you. :)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-09 21:29</div>
-            <div class="timeline-body"><p>Thanks for this really kind and understanding message (and not pushy at all). I've been a bad maintainer on this one, asking you to make changes and then failing to follow-up, so I apologize.</p>
-<p>I did try to get this across the finish line once or twice but was struggling to eke out any more performance gains and felt mixed about introducing a performance penalty. But the blocker now is that I need to do a fairly substantial rebase due to https://github.com/charliermarsh/ruff/pull/1147 and https://github.com/charliermarsh/ruff/pull/1137. If you're up for trying to handle that, it'd be appreciated. But otherwise, I'll continue to try to get to this when I can.</p>
+            <div class="timeline-body"><p>Thanks for this really kind and understanding message (and not pushy at all). I&#x27;ve been a bad maintainer on this one, asking you to make changes and then failing to follow-up, so I apologize.</p>
+<p>I did try to get this across the finish line once or twice but was struggling to eke out any more performance gains and felt mixed about introducing a performance penalty. But the blocker now is that I need to do a fairly substantial rebase due to <a href="https://github.com/charliermarsh/ruff/pull/1147">charliermarsh/ruff#1147</a> and <a href="https://github.com/charliermarsh/ruff/pull/1137">charliermarsh/ruff#1137</a>. If you&#x27;re up for trying to handle that, it&#x27;d be appreciated. But otherwise, I&#x27;ll continue to try to get to this when I can.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/squiddy">@squiddy</a> on 2022-12-10 04:09</div>
-            <div class="timeline-body"><p>I'm doing the rebase now and see what else I can do.</p>
+            <div class="timeline-body"><p>I&#x27;m doing the rebase now and see what else I can do.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -290,7 +290,7 @@ You are right about the <code>scope_stack</code>. If that can be empty, we would
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyflakes/mod.rs</code>:2248 on 2022-12-10 04:28</div>
-            <div class="timeline-body"><p>(These are literally the Pyflakes tests ported to Rust, so if we change behavior (as we're doing in this PR), we'll likely need to tweak the expectations of the tests.)</p>
+            <div class="timeline-body"><p>(These are literally the Pyflakes tests ported to Rust, so if we change behavior (as we&#x27;re doing in this PR), we&#x27;ll likely need to tweak the expectations of the tests.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -301,16 +301,16 @@ You are right about the <code>scope_stack</code>. If that can be empty, we would
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/squiddy">@squiddy</a> on 2022-12-26 07:18</div>
-            <div class="timeline-body"><p>Closing for now. I haven't made any good progress, might look into that again at some later point.</p>
+            <div class="timeline-body"><p>Closing for now. I haven&#x27;t made any good progress, might look into that again at some later point.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @squiddy on 2022-12-26 07:18</div>
+            <div class="event">Closed by <a href="https://github.com/squiddy">@squiddy</a> on 2022-12-26 07:18</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:54:51 UTC
+        Synced at 2026-01-20 18:51:26 UTC
     </footer>
 </body>
 </html>

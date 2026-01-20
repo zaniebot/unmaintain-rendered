@@ -24,13 +24,13 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ayjayt">@ayjayt</a></div>
             <div class="timeline-body"><p>Hi!</p>
-<p>Sometimes my dev dependencies come from private repos, and therefore they can't be resolved in all workflows:</p>
+<p>Sometimes my dev dependencies come from private repos, and therefore they can&#x27;t be resolved in all workflows:</p>
 <ul>
 <li>during normal usage</li>
 <li>during CI testing</li>
 </ul>
 <p>for example</p>
-<p><code>uv</code> seems to try and resolve all dependency groups even if they're not included. :-)</p>
+<p><code>uv</code> seems to try and resolve all dependency groups even if they&#x27;re not included. :-)</p>
 <p>Just posting this here to start a discussion!</p>
 <p>Thanks</p>
 </div>
@@ -40,7 +40,7 @@
             <div class="timeline-body"><p>Dependencies in <code>dev</code> group get <a href="https://docs.astral.sh/uv/concepts/projects/dependencies/#default-groups">resolved by default</a>:</p>
 <blockquote>
 <p>By default, uv includes the dev dependency group in the environment (e.g., during uv run or uv sync). The default groups to include can be changed using the tool.uv.default-groups setting.</p>
-<pre><code class="language-toml">[tool.uv]
+<pre><code>[tool.uv]
 default-groups = [&quot;dev&quot;, &quot;foo&quot;]
 </code></pre>
 </blockquote>
@@ -50,7 +50,7 @@ default-groups = [&quot;dev&quot;, &quot;foo&quot;]
             <div class="timeline-header">Comment by <a href="https://github.com/ayjayt">@ayjayt</a> on 2024-12-27 18:10</div>
             <div class="timeline-body"><p>Hi @T-256, <strong>all dependencies get <em>resolved</em> ~by default~ everytime</strong>, even if they are not actually downloaded and installed (ie <em>included</em>). This is not documented, but it is the actual implemented behavior.</p>
 <p>You can test this by creating a nonsense group with a nonsense dependency and then explicitly telling it not to be installed.</p>
-<pre><code class="language-toml"># pyroject.toml
+<pre><code># pyroject.toml
 
 [dependency-groups]
 foo = [
@@ -62,42 +62,42 @@ foo = [
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-27 22:15</div>
-            <div class="timeline-body"><p>Yeah, it's intentional that we always resolve all groups. If you have workflows where you need to use your project without resolving those groups, you should be able to <code>uv run</code> without re-resolving, as long as you have a <code>uv.lock</code> checked in.</p>
+            <div class="timeline-body"><p>Yeah, it&#x27;s intentional that we always resolve all groups. If you have workflows where you need to use your project without resolving those groups, you should be able to <code>uv run</code> without re-resolving, as long as you have a <code>uv.lock</code> checked in.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-12-27 22:15</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-27 22:15</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ayjayt">@ayjayt</a> on 2024-12-27 23:59</div>
-            <div class="timeline-body"><p>I feel I don't understand the implementation of <code>uv run</code> and <code>uv.lock</code> well enough to comment, but my understanding is that:</p>
+            <div class="timeline-body"><p>I feel I don&#x27;t understand the implementation of <code>uv run</code> and <code>uv.lock</code> well enough to comment, but my understanding is that:</p>
 <p>if there is an updated <code>uv.lock</code> checked in to the <strong>git repo</strong> , <code>uv run</code> will skip the resolving phase and use whatever is in <code>uv.lock</code>, even if the dependencies impossible to resolve were added after the <code>uv.lock</code> was checked in?</p>
 <p>Is there some kind of contribution I could make to provide a solution by which certain dependency groups could be entirely ignored by <code>uv</code>?</p>
 <p>Such as a</p>
 <pre><code>[tool.uv]
 ignore-groups = [&quot;nickelback&quot;, &quot;phish&quot;]
 </code></pre>
-<p>~It would also roll into my other issue: https://github.com/astral-sh/uv/issues/10200#issuecomment-2564096152~</p>
+<p>~It would also roll into my other issue: <a href="https://github.com/astral-sh/uv/issues/10200">astral-sh/uv#10200</a>#issuecomment-2564096152~</p>
 <p>?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/schloerke">@schloerke</a> on 2025-01-22 16:28</div>
             <div class="timeline-body"><blockquote>
-<p>it's intentional that we always resolve all groups</p>
+<p>it&#x27;s intentional that we always resolve all groups</p>
 </blockquote>
-<p>Maybe I'm missing something, but when calling <code>uv</code> command where I've explicitly asked for an extra group (<code>--group foo</code>) or to ignore a group (<code>--no-group foo</code>) then I'd expect it to only attempt to resolve those tangible groups. Only the groups required for execution should be used for dependency resolution.</p>
-<p>My interpretation of the groups is that if I stated <code>uv sync --no-group foo</code> with the pyproject.toml above, I'd expect it to have the same behavior as <code>[dependency-group]</code> project file which has called <code>uv sync</code>.</p>
-<p>Crafting a <code>uv.lock</code> file manually doesn't seem like a long term solution.</p>
+<p>Maybe I&#x27;m missing something, but when calling <code>uv</code> command where I&#x27;ve explicitly asked for an extra group (<code>--group foo</code>) or to ignore a group (<code>--no-group foo</code>) then I&#x27;d expect it to only attempt to resolve those tangible groups. Only the groups required for execution should be used for dependency resolution.</p>
+<p>My interpretation of the groups is that if I stated <code>uv sync --no-group foo</code> with the pyproject.toml above, I&#x27;d expect it to have the same behavior as <code>[dependency-group]</code> project file which has called <code>uv sync</code>.</p>
+<p>Crafting a <code>uv.lock</code> file manually doesn&#x27;t seem like a long term solution.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-22 16:35</div>
-            <div class="timeline-body"><p>We resolve all groups and use a shared resolution for the project (stored in <code>uv.lock</code>). Selecting groups only applies to which subset of the lockfile is synced. This is a fundamental behavior of uv — we're not likely to change it. I understand why it'd be nice to avoid resolving those groups in some cases, but it's not realistic for us to implement.</p>
+            <div class="timeline-body"><p>We resolve all groups and use a shared resolution for the project (stored in <code>uv.lock</code>). Selecting groups only applies to which subset of the lockfile is synced. This is a fundamental behavior of uv — we&#x27;re not likely to change it. I understand why it&#x27;d be nice to avoid resolving those groups in some cases, but it&#x27;s not realistic for us to implement.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2025-01-22 16:35</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-22 16:35</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ayjayt">@ayjayt</a> on 2025-01-22 18:00</div>
@@ -106,7 +106,7 @@ ignore-groups = [&quot;nickelback&quot;, &quot;phish&quot;]
 <p>If you view your program as a pipeline from</p>
 <p><code>specification (pyproject.toml)  --&gt; lock file (uv.lock) --&gt; environment (.venv)</code></p>
 <p>I think that model could incorporate this idea, and the &quot;explicit groups&quot; would be ignored between any edge unless explicitly included.</p>
-<p>That said, I realize you have a lot to deal with, as do I, I wish I had time to make contribution, and I appreciate the work you've done on the project.</p>
+<p>That said, I realize you have a lot to deal with, as do I, I wish I had time to make contribution, and I appreciate the work you&#x27;ve done on the project.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -118,13 +118,13 @@ ignore-groups = [&quot;nickelback&quot;, &quot;phish&quot;]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-22 18:15</div>
-            <div class="timeline-body"><p>Yeah we'd need to resolve them in combination with the other groups and project because they <em>could</em> be installed together. The main thing we could do is add support for <em>only</em> using a group in isolation — so only <code>uv sync --only-group foo</code> would be allowed.</p>
+            <div class="timeline-body"><p>Yeah we&#x27;d need to resolve them in combination with the other groups and project because they <em>could</em> be installed together. The main thing we could do is add support for <em>only</em> using a group in isolation — so only <code>uv sync --only-group foo</code> would be allowed.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:29:04 UTC
+        Synced at 2026-01-20 19:36:25 UTC
     </footer>
 </body>
 </html>

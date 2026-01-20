@@ -23,31 +23,31 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/IDrokin117">@IDrokin117</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Resolves #18165</p>
 <p>Added pattern <code>[&quot;sys&quot;, &quot;version_info&quot;, &quot;major&quot;]</code> to the existing matches for <code>sys.version_info</code> to ensure consistent handling of both the base object and its major version attribute.</p>
-<h2>Test Plan</h2>
+Test Plan
 <p><code>cargo nextest run</code> and <code>cargo insta test</code></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-06-11 20:16</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-11 20:16</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-11 20:22</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/outdated_version_block.rs</code>:114 on 2025-06-11 21:29</div>
             <div class="timeline-body"><p>This seems pretty minor, especially because the fix is always unsafe, but this also calls <code>map_subscript</code> on <code>sys.version_info.major</code>, which we might not <em>really</em> want to allow. In other words, I think this would fix code like</p>
-<pre><code class="language-python">import sys
+<pre><code>import sys
 
 if sys.version_info.major[1] &gt; 3:
     print(3)
@@ -55,21 +55,21 @@ else:
     print(2)
 </code></pre>
 <p>to avoid the <code>TypeError</code> that would otherwise occur:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; import sys
+<pre><code>&gt;&gt;&gt; import sys
 &gt;&gt;&gt; sys.version_info.major[1]
 Traceback (most recent call last):
   File &quot;&lt;python-input-1&gt;&quot;, line 1, in &lt;module&gt;
     sys.version_info.major[1]
     ~~~~~~~~~~~~~~~~~~~~~~^^^
-TypeError: 'int' object is not subscriptable
+TypeError: &#x27;int&#x27; object is not subscriptable
 </code></pre>
-<p>It's much more convenient to add the check here, but I might lean slightly toward a separate <code>resolve_qualified_name</code> call to avoid <code>map_subscript</code> on <code>major</code>.</p>
+<p>It&#x27;s much more convenient to add the check here, but I might lean slightly toward a separate <code>resolve_qualified_name</code> call to avoid <code>map_subscript</code> on <code>major</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/outdated_version_block.rs</code>:114 on 2025-06-11 21:31</div>
-            <div class="timeline-body"><p>This isn't related to your changes, but I guess this rule is pretty lenient with these comparisons anyway. For example, it still applies to comparisons like these that would also fail at runtime:</p>
-<pre><code class="language-python">import sys
+            <div class="timeline-body"><p>This isn&#x27;t related to your changes, but I guess this rule is pretty lenient with these comparisons anyway. For example, it still applies to comparisons like these that would also fail at runtime:</p>
+<pre><code>import sys
 
 if sys.version_info &lt; 3: ...
 if sys.version_info[0] &lt; (3, 0): ...
@@ -87,12 +87,12 @@ if sys.version_info[0] &lt; (3, 0): ...
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/IDrokin117">@IDrokin117</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/outdated_version_block.rs</code>:114 on 2025-06-12 20:24</div>
-            <div class="timeline-body"><p>@ntBre Thanks for the review. Point taken. I've added a dedicated <code>resolve_qualified_name</code> call for the <code>.major</code> case. Could you take a look at the revised approach?
+            <div class="timeline-body"><p>@ntBre Thanks for the review. Point taken. I&#x27;ve added a dedicated <code>resolve_qualified_name</code> call for the <code>.major</code> case. Could you take a look at the revised approach?
 I also want to implement the fix for your second remark. Should this go into the current PR or would you prefer a separate PR?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @ntBre by @IDrokin117 on 2025-06-14 15:55</div>
+            <div class="event">Review requested from <a href="https://github.com/ntBre">@ntBre</a> by <a href="https://github.com/IDrokin117">@IDrokin117</a> on 2025-06-14 15:55</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/outdated_version_block.rs</code>:458 on 2025-06-16 19:25</div>
@@ -106,7 +106,7 @@ I also want to implement the fix for your second remark. Should this go into the
 <blockquote>
 <p>I also want to implement the fix for your second remark. Should this go into the current PR or would you prefer a separate PR?</p>
 </blockquote>
-<p>Let's go ahead and merge the changes from this PR and leave the rest for a follow-up. We should probably also open an issue for the invalid comparisons to see if anyone else has feedback on possible fixes. There's currently a related rule (<a href="https://docs.astral.sh/ruff/rules/unrecognized-version-info-check/#unrecognized-version-info-check-pyi003">unrecognized-version-info-check (PYI003)</a>, and really PYI003-PYI006) that I think only applies in <code>.pyi</code> files. So there are already at least two options for detecting these issues: adding them to UP036 or PYI003.</p>
+<p>Let&#x27;s go ahead and merge the changes from this PR and leave the rest for a follow-up. We should probably also open an issue for the invalid comparisons to see if anyone else has feedback on possible fixes. There&#x27;s currently a related rule (<a href="https://docs.astral.sh/ruff/rules/unrecognized-version-info-check/#unrecognized-version-info-check-pyi003">unrecognized-version-info-check (PYI003)</a>, and really PYI003-PYI006) that I think only applies in <code>.pyi</code> files. So there are already at least two options for detecting these issues: adding them to UP036 or PYI003.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -115,7 +115,7 @@ I also want to implement the fix for your second remark. Should this go into the
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/IDrokin117">@IDrokin117</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/outdated_version_block.rs</code>:458 on 2025-06-17 06:02</div>
-            <div class="timeline-body"><p>Got it. I've replaced <code>checker</code> with <code>semantic</code>.</p>
+            <div class="timeline-body"><p>Got it. I&#x27;ve replaced <code>checker</code> with <code>semantic</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -134,20 +134,20 @@ I also want to implement the fix for your second remark. Should this go into the
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-23 19:56</div>
-            <div class="timeline-body"><p>Oops, I guess I shouldn't have dismissed the notification until I saw it actually merge, sorry!</p>
+            <div class="timeline-body"><p>Oops, I guess I shouldn&#x27;t have dismissed the notification until I saw it actually merge, sorry!</p>
 <p>It looks like the workflow might still be using an old version of the <code>ci.yaml</code> file with an old version of install-action. This error should be resolved on <code>main</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @ntBre on 2025-06-23 20:01</div>
+            <div class="event">Merged by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-23 20:01</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ntBre on 2025-06-23 20:01</div>
+            <div class="event">Closed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-23 20:01</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:13:21 UTC
+        Synced at 2026-01-20 19:15:29 UTC
     </footer>
 </body>
 </html>

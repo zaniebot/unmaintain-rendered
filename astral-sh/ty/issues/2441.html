@@ -24,8 +24,8 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/hamdanal">@hamdanal</a></div>
             <div class="timeline-body"><p>#1240 suggests to stop adding <code>| Unknown</code> in places where ty currently adds it for better gradual typing.
-https://github.com/astral-sh/ty/issues/1240#issuecomment-3729947824 is a recent great news in this regard as it proposes a very well thought solution - to stop adding the union with <code>Unknown</code> except for certain cases where the assigned value is a singleton like <code>None</code>. There are some places where even this special case isn't needed as the value used if final somewhat, either by being assigned to a <code>Final</code> target or by being a never-assigned throwaway expression. Here is a non-exhaustive list of these places:</p>
-<pre><code class="language-py">from typing import Final, reveal_type
+<a href="https://github.com/astral-sh/ty/issues/1240">astral-sh/ty#1240</a>#issuecomment-3729947824 is a recent great news in this regard as it proposes a very well thought solution - to stop adding the union with <code>Unknown</code> except for certain cases where the assigned value is a singleton like <code>None</code>. There are some places where even this special case isn&#x27;t needed as the value used if final somewhat, either by being assigned to a <code>Final</code> target or by being a never-assigned throwaway expression. Here is a non-exhaustive list of these places:</p>
+<pre><code>from typing import Final, reveal_type
 
 # Final variable
 _1: Final = reveal_type([1, 2, 3])
@@ -39,61 +39,61 @@ _3 = [_ for _ in reveal_type([1, 2, 3])]
 # Throwaway function argument
 _4 = map(str, reveal_type([1, 2, 3]))
 </code></pre>
-<p>All these <code>reveal_type</code> currently reveal <code>list[Unknown | int]</code>. With the solution proposed in https://github.com/astral-sh/ty/issues/1240#issuecomment-3729947824 they will become <code>list[int]</code>. However, if we replace <code>[1, 2, 3]</code> by , say, <code>[None]</code> the <code>Unknown</code> union will still be used. I think that won't be necessary with no fallout as the value in these cases is kind of &quot;final&quot;. I'd also argue that a more precise type could be inferred here, like <code>list[Literal[1, 2, 3]]</code> in the examples above (well, maybe, unless I am missing something).</p>
+<p>All these <code>reveal_type</code> currently reveal <code>list[Unknown | int]</code>. With the solution proposed in <a href="https://github.com/astral-sh/ty/issues/1240">astral-sh/ty#1240</a>#issuecomment-3729947824 they will become <code>list[int]</code>. However, if we replace <code>[1, 2, 3]</code> by , say, <code>[None]</code> the <code>Unknown</code> union will still be used. I think that won&#x27;t be necessary with no fallout as the value in these cases is kind of &quot;final&quot;. I&#x27;d also argue that a more precise type could be inferred here, like <code>list[Literal[1, 2, 3]]</code> in the examples above (well, maybe, unless I am missing something).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-11 09:34</div>
-            <div class="timeline-body"><p>Hmm, but <code>Final</code> doesn't mean immutable — it just means that the variable can't be reassigned. I wouldn't want to emit false-positive diagnostics on things like this:</p>
-<pre><code class="language-py">X: Final = [None, None, None]
+            <div class="timeline-body"><p>Hmm, but <code>Final</code> doesn&#x27;t mean immutable — it just means that the variable can&#x27;t be reassigned. I wouldn&#x27;t want to emit false-positive diagnostics on things like this:</p>
+<pre><code>X: Final = [None, None, None]
 
 if foo:
     X[1] = Foo
 
 </code></pre>
 <p>Or this:</p>
-<pre><code class="language-py">X: Final = [None, None, None]
+<pre><code>X: Final = [None, None, None]
 
 if foo:
     X.append(42)
 </code></pre>
-<p>I like the idea of inferring more precise types for throwaway loop variables. But I think you'd basically never iterate over a throwaway list that only contains <code>None</code>, so I don't think we'd be likely to do any unioning with <code>Unknown</code> for the vast majority of throwaway lists anyway once we've implemented https://github.com/astral-sh/ty/issues/1240#issuecomment-3729947824. So that sort-of feels like a separate issue to add a new heuristic where we avoid <code>Literal</code> promotion for the elements of &quot;immediately consumed&quot; invariant containers that aren't too large</p>
+<p>I like the idea of inferring more precise types for throwaway loop variables. But I think you&#x27;d basically never iterate over a throwaway list that only contains <code>None</code>, so I don&#x27;t think we&#x27;d be likely to do any unioning with <code>Unknown</code> for the vast majority of throwaway lists anyway once we&#x27;ve implemented <a href="https://github.com/astral-sh/ty/issues/1240">astral-sh/ty#1240</a>#issuecomment-3729947824. So that sort-of feels like a separate issue to add a new heuristic where we avoid <code>Literal</code> promotion for the elements of &quot;immediately consumed&quot; invariant containers that aren&#x27;t too large</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/hamdanal">@hamdanal</a> on 2026-01-11 09:51</div>
             <div class="timeline-body"><blockquote>
-<p>Hmm, but <code>Final</code> doesn't mean immutable — it just means that the variable can't be reassigned.</p>
+<p>Hmm, but <code>Final</code> doesn&#x27;t mean immutable — it just means that the variable can&#x27;t be reassigned.</p>
 </blockquote>
 <p>I was sure I missed something!</p>
 <blockquote>
-<p>I like the idea of inferring more precise types for throwaway loop variables. But I think you'd basically never iterate over a throwaway list that only contains <code>None</code>, so I don't think we'd be likely to do any unioning with <code>Unknown</code> for the vast majority of throwaway lists anyway once we've implemented <a href="https://github.com/astral-sh/ty/issues/1240#issuecomment-3729947824">#1240 (comment)</a>. So that sort-of feels like a separate issue to add a new heuristic where we avoid <code>Literal</code> promotion for the elements of &quot;immediately consumed&quot; invariant containers that aren't too large</p>
+<p>I like the idea of inferring more precise types for throwaway loop variables. But I think you&#x27;d basically never iterate over a throwaway list that only contains <code>None</code>, so I don&#x27;t think we&#x27;d be likely to do any unioning with <code>Unknown</code> for the vast majority of throwaway lists anyway once we&#x27;ve implemented <a href="https://github.com/astral-sh/ty/issues/1240#issuecomment-3729947824">#1240 (comment)</a>. So that sort-of feels like a separate issue to add a new heuristic where we avoid <code>Literal</code> promotion for the elements of &quot;immediately consumed&quot; invariant containers that aren&#x27;t too large</p>
 </blockquote>
 <p>Sounds reasonable</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-11 14:13</div>
-            <div class="timeline-body"><p>The proposal to avoid <code>Literal</code> promotion in cases of &quot;throwaway&quot; list/dict/set literals like <code>for x in [1, 2, 3]</code> is similar to https://github.com/astral-sh/ty/issues/2280, where the request is for us to avoid <code>Literal</code> promotion for</p>
-<pre><code class="language-py">x = frozenset({1, 2, 3})
+            <div class="timeline-body"><p>The proposal to avoid <code>Literal</code> promotion in cases of &quot;throwaway&quot; list/dict/set literals like <code>for x in [1, 2, 3]</code> is similar to <a href="https://github.com/astral-sh/ty/issues/2280">astral-sh/ty#2280</a>, where the request is for us to avoid <code>Literal</code> promotion for</p>
+<pre><code>x = frozenset({1, 2, 3})
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-13 02:33</div>
-            <div class="timeline-body"><p>Thanks for the suggestion! I'll remove the specific mention of <code>| Unknown</code> unioning (since that's covered by #1240, and what remains of it will be considered a form of &quot;literal promotion&quot;) and retitle this to just be about avoiding literal promotion in throwaway cases where we can prove the container does not &quot;escape&quot;.</p>
+            <div class="timeline-body"><p>Thanks for the suggestion! I&#x27;ll remove the specific mention of <code>| Unknown</code> unioning (since that&#x27;s covered by #1240, and what remains of it will be considered a form of &quot;literal promotion&quot;) and retitle this to just be about avoiding literal promotion in throwaway cases where we can prove the container does not &quot;escape&quot;.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Safe places to totally stop unioning with `Unknown` and maybe infer more precise types" to "Avoid literal promotion for throwaway (non-escaping) invariant containers" by @carljm on 2026-01-13 02:33</div>
+            <div class="event">Renamed from &quot;Safe places to totally stop unioning with `Unknown` and maybe infer more precise types&quot; to &quot;Avoid literal promotion for throwaway (non-escaping) invariant containers&quot; by <a href="https://github.com/carljm">@carljm</a> on 2026-01-13 02:33</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">generics</span> added by @carljm on 2026-01-13 02:33</div>
+            <div class="event">Label <span class="label">generics</span> added by <a href="https://github.com/carljm">@carljm</a> on 2026-01-13 02:33</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-13 03:22:41 UTC
+        Synced at 2026-01-20 19:27:04 UTC
     </footer>
 </body>
 </html>

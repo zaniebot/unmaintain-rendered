@@ -23,22 +23,22 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a></div>
-            <div class="timeline-body"><p>We spend a noticeable amount of time (in both Ruff and Red Knot) parsing, and a noticeable subset of <em>that</em> is in <code>malloc</code>.  Our <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_python_ast/src/nodes.rs">current AST representation</a> is just a straight tree of nodes, which can put a lot of pressure on the memory allocator and isn't very cache-friendly when we go to consume the AST later.</p>
-<details>
-<summary>Flame graph</summary>
+            <div class="timeline-body"><p>We spend a noticeable amount of time (in both Ruff and Red Knot) parsing, and a noticeable subset of <em>that</em> is in <code>malloc</code>.  Our <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_python_ast/src/nodes.rs">current AST representation</a> is just a straight tree of nodes, which can put a lot of pressure on the memory allocator and isn&#x27;t very cache-friendly when we go to consume the AST later.</p>
 
-<p><img src="https://github.com/user-attachments/assets/9b7baecc-5df9-4a5d-8e10-45185905d454" alt="flamegraph" /></p>
-</details>
+Flame graph
 
-<p>In https://github.com/astral-sh/ruff/pull/12419, @MichaReiser explored using <code>bumpalo</code>.  This would reduce <code>malloc</code> overhead, since all AST nodes would be allocated from the bump allocator.  But the data structure itself was still directly storing the tree structure.  In https://github.com/astral-sh/ruff/pull/12419#issuecomment-2262727929, Micha referenced <a href="https://ziglang.org/download/0.8.0/release-notes.html#Reworked-Memory-Layout">this blog post</a> about Zig's data-oriented &quot;struct of arrays&quot; representation.  We should consider exploring a similar approach to see if we can achieve similar speedups and memory savings.</p>
-<p>(This would be much easier with https://github.com/astral-sh/ruff/issues/15655, since we wouldn't have to copy/paste the data representation changes in each of the syntax nodes.  But this will likely require extensive updates everywhere we consume ASTs, since all of that code currently assumes it can use direct field access.  We might consider a separate first step that updates consumers to use accessor methods, which would just read the fields directly without changing the representation.)</p>
+<p><img src="https://github.com/user-attachments/assets/9b7baecc-5df9-4a5d-8e10-45185905d454" alt="flamegraph"></p>
+
+
+<p>In <a href="https://github.com/astral-sh/ruff/pull/12419">astral-sh/ruff#12419</a>, @MichaReiser explored using <code>bumpalo</code>.  This would reduce <code>malloc</code> overhead, since all AST nodes would be allocated from the bump allocator.  But the data structure itself was still directly storing the tree structure.  In <a href="https://github.com/astral-sh/ruff/pull/12419">astral-sh/ruff#12419</a>#issuecomment-2262727929, Micha referenced <a href="https://ziglang.org/download/0.8.0/release-notes.html#Reworked-Memory-Layout">this blog post</a> about Zig&#x27;s data-oriented &quot;struct of arrays&quot; representation.  We should consider exploring a similar approach to see if we can achieve similar speedups and memory savings.</p>
+<p>(This would be much easier with <a href="https://github.com/astral-sh/ruff/issues/15655">astral-sh/ruff#15655</a>, since we wouldn&#x27;t have to copy/paste the data representation changes in each of the syntax nodes.  But this will likely require extensive updates everywhere we consume ASTs, since all of that code currently assumes it can use direct field access.  We might consider a separate first step that updates consumers to use accessor methods, which would just read the fields directly without changing the representation.)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> added by @dcreager on 2025-01-21 22:30</div>
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/dcreager">@dcreager</a> on 2025-01-21 22:30</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">help wanted</span> added by @dcreager on 2025-01-21 22:30</div>
+            <div class="event">Label <span class="label">help wanted</span> added by <a href="https://github.com/dcreager">@dcreager</a> on 2025-01-21 22:30</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-01-22 02:04</div>
@@ -48,14 +48,14 @@
 <li><a href="https://recursion.wtf/posts/rust_schemes/">Inanna Malick</a></li>
 </ol>
 <p>Something like (2) might be easier to incrementally adopt. It could also help with the issue that we use the AST in two different ways: on the one hand, it is a sort of static object, the result of parsing, which lives for the duration of the program and is then dropped. On the other hand, we sometimes hand-write mini ASTs to feed into the <code>Generator</code> when writing fixes. If we adopted the generic approach of (2), maybe we could allow both uses on equal footing.</p>
-<p>Unfortunately I don't think (2) applies immediately- we can't just take <code>T=Box&lt;Expr&gt;</code> since sometimes we refer to children via <code>Vec</code> and other times via <code>Box</code> etc.</p>
+<p>Unfortunately I don&#x27;t think (2) applies immediately- we can&#x27;t just take <code>T=Box&lt;Expr&gt;</code> since sometimes we refer to children via <code>Vec</code> and other times via <code>Box</code> etc.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-22 07:18</div>
             <div class="timeline-body"><p>Some other considerations when working on this</p>
 <ul>
-<li>How expensive and ergonomic is it to mutate the AST? This becomes relevant if we want to move from text based fixes to AST generated fixes (which would help protect against the many incorrect parantheses/precedence bugs we've experienced and might allow for an automated way to preserve comments).</li>
+<li>How expensive and ergonomic is it to mutate the AST? This becomes relevant if we want to move from text based fixes to AST generated fixes (which would help protect against the many incorrect parantheses/precedence bugs we&#x27;ve experienced and might allow for an automated way to preserve comments).</li>
 <li>Does the representation support ancestor/children/descendents traversal (ideally allocation free)</li>
 <li>Does the representation allow for node-reuse? E.g. reuse the same <code>self</code> identifier everywhere its used in the file</li>
 </ul>
@@ -67,18 +67,18 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> removed by @MichaReiser on 2025-01-22 07:18</div>
+            <div class="event">Label <span class="label">internal</span> removed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-22 07:18</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">core</span> added by @MichaReiser on 2025-01-22 07:18</div>
+            <div class="event">Label <span class="label">core</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-22 07:18</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-design</span> added by @MichaReiser on 2025-01-22 07:18</div>
+            <div class="event">Label <span class="label">needs-design</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-22 07:18</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:52:02 UTC
+        Synced at 2026-01-20 18:49:21 UTC
     </footer>
 </body>
 </html>

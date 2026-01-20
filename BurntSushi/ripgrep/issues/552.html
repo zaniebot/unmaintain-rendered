@@ -30,43 +30,43 @@
 </blockquote>
 <p>By not returning <code>self</code>, <code>GitignoreBuilder::add()</code> enforces having three statements for a simple build, instead of one.</p>
 <p>In this repo, <code>GlobSetBuilder::add()</code>, and possibly other builder methods, already return <code>self</code>.</p>
-<p>Next, it returns <code>Option&lt;Error&gt;</code>, which is something very hard to deal with. If the method is not returning <code>self</code> because it needs early error handling (I think that's questionable for itself), it should return <code>Result&lt;(), Error&gt;</code>, so an <code>unwrap()</code>/<code>expect</code>/<code>try!()</code>/<code>?</code> can be used to handle the error. With the current return type, two statements are needed to handle the error.</p>
-<p>FYI: I didn't see anything regarding these cases in the API Guideline, so I've filed an issue suggesting to document it: <a href="https://github.com/brson/rust-api-guidelines/issues/102">https://github.com/brson/rust-api-guidelines/issues/102</a>.</p>
+<p>Next, it returns <code>Option&lt;Error&gt;</code>, which is something very hard to deal with. If the method is not returning <code>self</code> because it needs early error handling (I think that&#x27;s questionable for itself), it should return <code>Result&lt;(), Error&gt;</code>, so an <code>unwrap()</code>/<code>expect</code>/<code>try!()</code>/<code>?</code> can be used to handle the error. With the current return type, two statements are needed to handle the error.</p>
+<p>FYI: I didn&#x27;t see anything regarding these cases in the API Guideline, so I&#x27;ve filed an issue suggesting to document it: <a href="https://github.com/brson/rust-api-guidelines/issues/102">brson/rust-api-guidelines#102</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-07-12 22:54</div>
             <div class="timeline-body"><p>I like API guidelines, but just because one does not follow them in a specific instance does not mean the API is poor. API guidelines are called <em>guidelines</em> for a reason. :-)</p>
-<p>In this particular case, <code>add</code> returns an <code>Option&lt;Error&gt;</code> because it indicates <em>partial failure</em>. The problem with a <code>Result&lt;(), Error&gt;</code> return type is that it becomes too easy to completely bail on the creation of a <code>Gitignore</code> just because a single glob failed to parse. This is actually important in practice because <code>git</code> is completely silent on errors when parsing <code>.gitignore</code> files, so it's easy to see how invalid globs might appear. There is even a particularly notable case where globs like <code>a**b</code> are permitted by <code>git</code>, but are rejected by both the specification written in <code>man gitignore</code> and ripgrep's implementation of said spec. It would be disastrous in this case to reject the entire <code>gitignore</code>.</p>
+<p>In this particular case, <code>add</code> returns an <code>Option&lt;Error&gt;</code> because it indicates <em>partial failure</em>. The problem with a <code>Result&lt;(), Error&gt;</code> return type is that it becomes too easy to completely bail on the creation of a <code>Gitignore</code> just because a single glob failed to parse. This is actually important in practice because <code>git</code> is completely silent on errors when parsing <code>.gitignore</code> files, so it&#x27;s easy to see how invalid globs might appear. There is even a particularly notable case where globs like <code>a**b</code> are permitted by <code>git</code>, but are rejected by both the specification written in <code>man gitignore</code> and ripgrep&#x27;s implementation of said spec. It would be disastrous in this case to reject the entire <code>gitignore</code>.</p>
 <p>I would be OK with adding another method that returns a <code>Result&lt;&amp;mut Gitignore, Error&gt;</code>.</p>
 <blockquote>
 <p>By not returning self, GitignoreBuilder::add() enforces having three statements for a simple build, instead of one.</p>
 </blockquote>
-<p>Indeed, and this is the desired outcome. If you only need to parse a single <code>.gitignore</code> file, then you can use the <a href="https://docs.rs/ignore/0.2.0/ignore/gitignore/struct.Gitignore.html#method.new"><code>Gitignore::new</code></a> convenience constructor. Although, this also returns a <code>(Gitignore, Option&lt;Error&gt;)</code> for the same reasons as above. We could add another constructor that returns a <code>Result&lt;Gitignore, Error&gt;</code> (complete failure even if only a single glob is invalid), but I'm not sure what I'd call it.</p>
+<p>Indeed, and this is the desired outcome. If you only need to parse a single <code>.gitignore</code> file, then you can use the <a href="https://docs.rs/ignore/0.2.0/ignore/gitignore/struct.Gitignore.html#method.new"><code>Gitignore::new</code></a> convenience constructor. Although, this also returns a <code>(Gitignore, Option&lt;Error&gt;)</code> for the same reasons as above. We could add another constructor that returns a <code>Result&lt;Gitignore, Error&gt;</code> (complete failure even if only a single glob is invalid), but I&#x27;m not sure what I&#x27;d call it.</p>
 <blockquote>
-<p>Next, it returns Option<Error>, which is something very hard to deal with.</p>
+<p>Next, it returns Option, which is something very hard to deal with.</p>
 </blockquote>
 <p>I will submit to you that it is not the type that is hard to deal with, but that partial success is the thing that is hard to deal with. :-)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-07-12 22:55</div>
-            <div class="timeline-body"><p>Note that the documentation explains some of this. Could you help me write better documentation so that others aren't baffled by the type signature?</p>
+            <div class="timeline-body"><p>Note that the documentation explains some of this. Could you help me write better documentation so that others aren&#x27;t baffled by the type signature?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/behnam">@behnam</a> on 2017-07-15 21:32</div>
-            <div class="timeline-body"><p>Sorry, my wording was poor here. What I meant was this: although the API works for how it's used at the moment, it's not easy to work with in other cases; and since it's a main entry to this public API, I think it can be improved.</p>
-<p>I should also note that I'm still learning common practices in Rust and some assumptions I have about APIs do not apply here. But, also, as a user, I don't expected to get surprising results, and when it happens, I try to start a discussion to see if we can improve the API or documents.</p>
+            <div class="timeline-body"><p>Sorry, my wording was poor here. What I meant was this: although the API works for how it&#x27;s used at the moment, it&#x27;s not easy to work with in other cases; and since it&#x27;s a main entry to this public API, I think it can be improved.</p>
+<p>I should also note that I&#x27;m still learning common practices in Rust and some assumptions I have about APIs do not apply here. But, also, as a user, I don&#x27;t expected to get surprising results, and when it happens, I try to start a discussion to see if we can improve the API or documents.</p>
 <blockquote>
 <p>I like API guidelines, but just because one does not follow them in a specific instance does not mean the API is poor. API guidelines are called guidelines for a reason. :-)</p>
 </blockquote>
-<p>Agreed. I shouldn't have used <em>violate</em>. I meant it's not following a <em>common practice</em>.</p>
+<p>Agreed. I shouldn&#x27;t have used <em>violate</em>. I meant it&#x27;s not following a <em>common practice</em>.</p>
 <p>I also agree with the point that the API needs to be able to allow ignoring bad glob rules in gitignore files, which is what git does by default.</p>
-<p>To step back a bit, the way I got into this problem was this: I renamed the test gitignore file in my diff, where I was using the Builder to set up my test case. After the rename, all my matches started to fail and I didn't know why. It looked like my gitignore file is loading, but it's not matching the paths I have. After some debug, I realized that I'm throwing away the returned optional-error value of <code>.add()</code>, and it's something that can fail.</p>
-<p>Now, there's one thing here that was very surprising to me: the main input passed into the <code>add()</code> method, the file path, was invalid and I was not aware that it will fail silently. I think this error is a different kind of error than glob errors.</p>
+<p>To step back a bit, the way I got into this problem was this: I renamed the test gitignore file in my diff, where I was using the Builder to set up my test case. After the rename, all my matches started to fail and I didn&#x27;t know why. It looked like my gitignore file is loading, but it&#x27;s not matching the paths I have. After some debug, I realized that I&#x27;m throwing away the returned optional-error value of <code>.add()</code>, and it&#x27;s something that can fail.</p>
+<p>Now, there&#x27;s one thing here that was very surprising to me: the main input passed into the <code>add()</code> method, the file path, was invalid and I was not aware that it will fail silently. I think this error is a different kind of error than glob errors.</p>
 <p>With the assumption that each step of a builder can fail or throw <em>optional-errors</em>, I would argue that <code>add()</code> needs to distinguish between them: the file not existing is a hard error, which should be returned by <code>Result&lt;_, Error&gt;</code>. The glob-pattern errors may be returned in <code>Result&lt;Option&lt;Vec&lt;GlobError&gt;&gt;, _&gt;</code>.</p>
-<p>I have not worked with many Builder patterns in Rust yet, but from other backgrounds, I would say I prefer a solution that's more <em>declarative</em>, and while being flexible and allowing user to easily set to ignore some errors, doesn't do so by default.</p>
+<p>I have not worked with many Builder patterns in Rust yet, but from other backgrounds, I would say I prefer a solution that&#x27;s more <em>declarative</em>, and while being flexible and allowing user to easily set to ignore some errors, doesn&#x27;t do so by default.</p>
 <p>Agreed that it is expected for the class with default configs (<code>Gitignore</code>) to have default git-like behavior, but the builder class (<code>GitignoreBuilder</code>) can maintain compatibility without surprises.</p>
 <p>In this case, we can allow user to define the behavior for <em>optional-errors</em> in the builder set up. The options would be: 1) ignore glob errors, 2) fail on glob errors, or 3) set up a user-defined handler on glob errors (so application can show warnings and such). This can be done with a builder method <code>on_glob_errors()</code> that accepts an error-handling strategy enum.</p>
 <p>With that, we can also go back to returning <code>self</code> from all builder methods, and returning the final result from <code>build()</code>, with success or error.</p>
@@ -74,28 +74,28 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-07-16 03:02</div>
-            <div class="timeline-body"><p>@behnam I'm much much more receptive to this style of argument. :-) Namely, we don't really have guidelines that apply to partial success, so using the guidelines here doesn't really make a lot of sense. I'm not even sure whether we can really establish guidelines at all, since partial success isn't something that I see that much, and therefore, we don't have much data.</p>
-<p>I feel like I agree with you more than I disagree, but it's not completely clear cut to me. Namely, I agree with the abstract idea that not all errors should necessarily be treated equally. A nit though:</p>
+            <div class="timeline-body"><p>@behnam I&#x27;m much much more receptive to this style of argument. :-) Namely, we don&#x27;t really have guidelines that apply to partial success, so using the guidelines here doesn&#x27;t really make a lot of sense. I&#x27;m not even sure whether we can really establish guidelines at all, since partial success isn&#x27;t something that I see that much, and therefore, we don&#x27;t have much data.</p>
+<p>I feel like I agree with you more than I disagree, but it&#x27;s not completely clear cut to me. Namely, I agree with the abstract idea that not all errors should necessarily be treated equally. A nit though:</p>
 <blockquote>
 <p><code>Result&lt;Option&lt;Vec&lt;GlobError&gt;&gt;, _&gt;</code></p>
 </blockquote>
-<p>We don't actually need to return a <code>Vec&lt;_&gt;</code> here since the <a href="https://docs.rs/ignore/0.2.1/ignore/enum.Error.html"><code>Error</code> type already encapsulates the possibility for multiple errors with its <code>Partial</code> variant</a>. This representation is useful because it permits callers to both treat the error as a black box that can be logged and subsequently ignored, but also permits them to inspect the error more carefully if necessary.</p>
-<p>I <em>think</em> I agree with your more important point that we should perhaps use a <code>Result</code> here in principle and yield an error for more surprising circumstances such as the one you ran into where the <code>.gitignore</code> file doesn't exist. The problem with this approach is that actual tools <em>probably</em> don't care whether a <code>.gitignore</code> file exists or not, since its existence is pretty much always optional. Namely, if the API returned a <code>Result</code>, then tools like ripgrep would want to log and ignore an error regardless of whether it was from the <code>Ok</code> or <code>Err</code> variant of the <code>Result</code> you propose. Invariably, the claim I'm making here is that the API, as exposed today, is probably exactly what you want in most use cases.</p>
+<p>We don&#x27;t actually need to return a <code>Vec&lt;_&gt;</code> here since the <a href="https://docs.rs/ignore/0.2.1/ignore/enum.Error.html"><code>Error</code> type already encapsulates the possibility for multiple errors with its <code>Partial</code> variant</a>. This representation is useful because it permits callers to both treat the error as a black box that can be logged and subsequently ignored, but also permits them to inspect the error more carefully if necessary.</p>
+<p>I <em>think</em> I agree with your more important point that we should perhaps use a <code>Result</code> here in principle and yield an error for more surprising circumstances such as the one you ran into where the <code>.gitignore</code> file doesn&#x27;t exist. The problem with this approach is that actual tools <em>probably</em> don&#x27;t care whether a <code>.gitignore</code> file exists or not, since its existence is pretty much always optional. Namely, if the API returned a <code>Result</code>, then tools like ripgrep would want to log and ignore an error regardless of whether it was from the <code>Ok</code> or <code>Err</code> variant of the <code>Result</code> you propose. Invariably, the claim I&#x27;m making here is that the API, as exposed today, is probably exactly what you want in most use cases.</p>
 <p>I am sympathetic to the failure mode you ran into. I can see how it would be annoying. Adding an <code>on_glob_errors</code> method feels like it might complicate the API a bit too much. Are there use cases for this level of control outside of tests where you ran into this problem?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-21 22:26</div>
-            <div class="timeline-body"><p>I'm going to close this. While I don't necessarily believe the current API is great, I do think it is fine compared to alternatives. Partial success of an operation invariably leads to code that is more complex than code with total success or total failure. I would be willing to revisit this if someone came up with concrete alternatives that addressed the use case here.</p>
+            <div class="timeline-body"><p>I&#x27;m going to close this. While I don&#x27;t necessarily believe the current API is great, I do think it is fine compared to alternatives. Partial success of an operation invariably leads to code that is more complex than code with total success or total failure. I would be willing to revisit this if someone came up with concrete alternatives that addressed the use case here.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2017-10-21 22:26</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-21 22:26</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:42:14 UTC
+        Synced at 2026-01-20 18:48:04 UTC
     </footer>
 </body>
 </html>

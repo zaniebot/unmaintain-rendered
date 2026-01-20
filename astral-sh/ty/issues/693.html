@@ -25,8 +25,8 @@
             <div class="timeline-header"><a href="https://github.com/tim-x-y-z">@tim-x-y-z</a></div>
             <div class="timeline-body"><p>Hi team,</p>
 <p>First of all, thank you for the excellent work on <code>ty</code>!</p>
-<p>In our monorepo setup, we rely on <code>executionEnvironments</code> in <code>pyrightconfig.toml</code> to isolate type checking per service and control <code>extraPaths</code> in a scoped, declarative way. Here's a simplified version of our config:</p>
-<pre><code class="language-toml">[tool.pyright]
+<p>In our monorepo setup, we rely on <code>executionEnvironments</code> in <code>pyrightconfig.toml</code> to isolate type checking per service and control <code>extraPaths</code> in a scoped, declarative way. Here&#x27;s a simplified version of our config:</p>
+<pre><code>[tool.pyright]
 include = [&quot;.&quot;]
 extraPaths = [&quot;shared/lib&quot;]
 executionEnvironments = [
@@ -45,19 +45,19 @@ It would be incredibly helpful if <code>ty</code> supported something similar!</
 <p>Can you tell us a bit more about your setup?</p>
 <ul>
 <li>Do you use a single or multiple virtual environments?</li>
-<li>Is the main motivation to restrict imports between services (e.g., that <code>service-b</code> can't import a dependency that it shouldn't see?) and that the IDE doesn't suggest imports from packages that shouldn't be visible?</li>
+<li>Is the main motivation to restrict imports between services (e.g., that <code>service-b</code> can&#x27;t import a dependency that it shouldn&#x27;t see?) and that the IDE doesn&#x27;t suggest imports from packages that shouldn&#x27;t be visible?</li>
 <li>Are there other reasons why you use this setup?</li>
 </ul>
-<p>We've thought about this a bit in combination with uv's workspace support, but it may be useful to provide this also for users that don't use uv.</p>
+<p>We&#x27;ve thought about this a bit in combination with uv&#x27;s workspace support, but it may be useful to provide this also for users that don&#x27;t use uv.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">configuration</span> added by @MichaReiser on 2025-06-24 10:34</div>
+            <div class="event">Label <span class="label">configuration</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-24 10:34</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tim-x-y-z">@tim-x-y-z</a> on 2025-06-24 10:48</div>
             <div class="timeline-body"><p>Thanks for the follow-up!</p>
-<p>I don't have the full context here but let me try to answer your questions:</p>
+<p>I don&#x27;t have the full context here but let me try to answer your questions:</p>
 <ul>
 <li>We do use uv, but we work mainly inside containers. That means we manipulate the PYTHONPATH directly for each service to get things working as expected.</li>
 <li>yes - it serves as a soft boundary mechanism; but then when building each service we only copy files from relevant packages.</li>
@@ -70,39 +70,39 @@ It would be incredibly helpful if <code>ty</code> supported something similar!</
             <div class="timeline-body"><blockquote>
 <p>some services may have overlapping module names (e.g., both service-a and service-b define their own constants.py / models.py), so being able to control extraPaths per service lets us isolate resolution. This allows from constants import ... to work correctly within the context of each service.</p>
 </blockquote>
-<p>Okay, that's interesting. Because it means it requires a different resolution priority for each service (based on what packages are on the search path). This is a bit more tricky because it means that resolving the module name <code>foo</code> can result in different files depending on in which file the import is.</p>
+<p>Okay, that&#x27;s interesting. Because it means it requires a different resolution priority for each service (based on what packages are on the search path). This is a bit more tricky because it means that resolving the module name <code>foo</code> can result in different files depending on in which file the import is.</p>
 <p>Technically: What this requires is to parametrize <code>resolve_module</code> and <code>file_to_module</code> with the <code>search_path_settings</code> combined with some configuration that allows overriding the search path per package.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-24 11:35</div>
             <div class="timeline-body"><blockquote>
-<p>Okay, that's interesting. Because it means it requires a different resolution priority for each service (based on what packages are on the search path). This is a bit more tricky because it means that resolving the module name <code>foo</code> can result in different files depending on in which file the import is.</p>
+<p>Okay, that&#x27;s interesting. Because it means it requires a different resolution priority for each service (based on what packages are on the search path). This is a bit more tricky because it means that resolving the module name <code>foo</code> can result in different files depending on in which file the import is.</p>
 <p>Technically: What this requires is to parametrize <code>resolve_module</code> and <code>file_to_module</code> with the <code>search_path_settings</code> combined with some configuration that allows overriding the search path per package.</p>
 </blockquote>
-<p>I don't think this would produce consistent or accurate results when typechecking. If each package requires separate search-path settings, I think the only way to accurately type-check them would be to invoke ty separately on each package with different search-path settings. See also @erictraut's explanation <a href="https://github.com/microsoft/pyright/discussions/7979#discussioncomment-9527473">here</a> of why he regrets adding the <code>executionEnvironments</code> feature to pyright.</p>
+<p>I don&#x27;t think this would produce consistent or accurate results when typechecking. If each package requires separate search-path settings, I think the only way to accurately type-check them would be to invoke ty separately on each package with different search-path settings. See also @erictraut&#x27;s explanation <a href="https://github.com/microsoft/pyright/discussions/7979#discussioncomment-9527473">here</a> of why he regrets adding the <code>executionEnvironments</code> feature to pyright.</p>
 <p>I think the best way to solve this issue would be to provide a uv integration where uv invokes ty separately for each package in the monorepo, with different search-path settings for each package.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-24 11:49</div>
             <div class="timeline-body"><blockquote>
-<p>I don't think this would produce consistent or accurate results when typechecking. If each package requires separate search-path settings, I think the only way to accurately type-check them would be to invoke ty separately on each package with different search-path settings. See also @erictraut's explanation https://github.com/microsoft/pyright/discussions/7979#discussioncomment-9527473 of why he regrets adding the executionEnvironments feature to pyright.</p>
+<p>I don&#x27;t think this would produce consistent or accurate results when typechecking. If each package requires separate search-path settings, I think the only way to accurately type-check them would be to invoke ty separately on each package with different search-path settings. See also @erictraut&#x27;s explanation https://github.com/microsoft/pyright/discussions/7979#discussioncomment-9527473 of why he regrets adding the executionEnvironments feature to pyright.</p>
 </blockquote>
-<p>Isn't this different? The author isn't asking to allow customization of the Python version or platform. Only the extra-paths.</p>
+<p>Isn&#x27;t this different? The author isn&#x27;t asking to allow customization of the Python version or platform. Only the extra-paths.</p>
 <blockquote>
 <p>I think the best way to solve this issue would be to provide a uv integration where uv invokes ty separately for each package in the monorepo, with different search-path settings for each package.</p>
 </blockquote>
-<p>That works for the CLI, but it's a bit trickier in the LSP use case.</p>
+<p>That works for the CLI, but it&#x27;s a bit trickier in the LSP use case.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-24 12:00</div>
             <div class="timeline-body"><blockquote>
-<p>Isn't this different? The author isn't asking to allow customization of the Python version or platform. Only the extra-paths.</p>
+<p>Isn&#x27;t this different? The author isn&#x27;t asking to allow customization of the Python version or platform. Only the extra-paths.</p>
 </blockquote>
 <p>I think the principle is exactly the same! Extra paths are given top priority (higher priority than first-party, standard-library or third-party code) when it comes to module resolution. The presence or absence of extra paths could mean that an <code>import a</code> statement in a shared module <code>b</code> would be resolved to a totally different file. That could mean that all the types in module <code>b</code> are resolved totally differently depending on whether those extra paths are present or absent, if classes and functions from <code>a</code> are used heavily in <code>b</code>.</p>
-<p>If package <code>foo</code> is meant to be checked with some extra paths and package <code>bar</code> isn't meant to be checked with those extra paths but they both import <code>b</code>, there's no way we could provide an accurate type-checking result for both <code>foo</code> and <code>bar</code> in a single run of ty with our current model, I don't think. We'd essential have to resolve all types for <code>b</code> twice, once &quot;from the perspective of <code>foo</code>&quot; (with the extra paths) and once &quot;from the perspective of <code>bar</code>&quot; (without the extra paths).</p>
+<p>If package <code>foo</code> is meant to be checked with some extra paths and package <code>bar</code> isn&#x27;t meant to be checked with those extra paths but they both import <code>b</code>, there&#x27;s no way we could provide an accurate type-checking result for both <code>foo</code> and <code>bar</code> in a single run of ty with our current model, I don&#x27;t think. We&#x27;d essential have to resolve all types for <code>b</code> twice, once &quot;from the perspective of <code>foo</code>&quot; (with the extra paths) and once &quot;from the perspective of <code>bar</code>&quot; (without the extra paths).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -110,22 +110,22 @@ It would be incredibly helpful if <code>ty</code> supported something similar!</
             <div class="timeline-body"><p>I agree that it can lead to inconsistencies.</p>
 <p>I think the main challenge here is how to enable this in the LSP and the CLI while giving a consistent experience.</p>
 <p>One option is that users should configure ty at the project level instead and that the LSP finds all ty projects in a workspace (unlike today, where it finds at most one). This requires a mechanism for inheriting configurations.</p>
-<p>Regarding the CLI: uv could run ty on every project but that's very wasteful for projects that don't need this isolation (we end up checking the same modules over and over again). So I think we havet to do better than this.</p>
-<p>Related to https://github.com/astral-sh/ty/issues/2410</p>
+<p>Regarding the CLI: uv could run ty on every project but that&#x27;s very wasteful for projects that don&#x27;t need this isolation (we end up checking the same modules over and over again). So I think we havet to do better than this.</p>
+<p>Related to <a href="https://github.com/astral-sh/ty/issues/2410">astral-sh/ty#2410</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-24 12:20</div>
             <div class="timeline-body"><blockquote>
-<p>Regarding the CLI: uv could run ty on every project but that's very wasteful for projects that don't need this isolation (we end up checking the same modules over and over again). So I think we havet to do better than this.</p>
+<p>Regarding the CLI: uv could run ty on every project but that&#x27;s very wasteful for projects that don&#x27;t need this isolation (we end up checking the same modules over and over again). So I think we havet to do better than this.</p>
 </blockquote>
-<p>I agree not all monorepos require per-package isolation. But features such as per-package extra-paths or per-package Python version configuration only make sense in the context of per-package isolation, I think. Ideally CLI users would be able to choose between a fast type-checking experience where ty checks all packages all at once (without per-package isolation) and an experience where they're able to provide per-package configuration options like these (which I think necessitates a separate invocation of ty for each package if we want to provide accurate, consistent type-checking).</p>
+<p>I agree not all monorepos require per-package isolation. But features such as per-package extra-paths or per-package Python version configuration only make sense in the context of per-package isolation, I think. Ideally CLI users would be able to choose between a fast type-checking experience where ty checks all packages all at once (without per-package isolation) and an experience where they&#x27;re able to provide per-package configuration options like these (which I think necessitates a separate invocation of ty for each package if we want to provide accurate, consistent type-checking).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-24 12:23</div>
             <div class="timeline-body"><p>This definetely needs some design ;)</p>
-<p>What I find important to point out is that we do want per-package isolation per-default when it comes to third party imports for users using uv and this doesn't require multiple runs because: ty can do an extra check <em>after</em> module resolution whether this import is allowed in this package (because it has a dependency on that package). If not, then ty can raise a specific diagnostic code saying that the module was found but the package isn't allowed to depend on it.</p>
+<p>What I find important to point out is that we do want per-package isolation per-default when it comes to third party imports for users using uv and this doesn&#x27;t require multiple runs because: ty can do an extra check <em>after</em> module resolution whether this import is allowed in this package (because it has a dependency on that package). If not, then ty can raise a specific diagnostic code saying that the module was found but the package isn&#x27;t allowed to depend on it.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -134,11 +134,11 @@ It would be incredibly helpful if <code>ty</code> supported something similar!</
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Support for `executionEnvironments` in monorepo's" to "Support for `executionEnvironments` in monorepos" by @AlexWaygood on 2025-06-25 14:57</div>
+            <div class="event">Renamed from &quot;Support for `executionEnvironments` in monorepo&#x27;s&quot; to &quot;Support for `executionEnvironments` in monorepos&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-25 14:57</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Mokto">@Mokto</a> on 2025-12-17 20:58</div>
-            <div class="timeline-body"><p>Not sure it helps but the way it's configured with <code>pyright</code> is the <code>executionEnvironments</code> option.</p>
+            <div class="timeline-body"><p>Not sure it helps but the way it&#x27;s configured with <code>pyright</code> is the <code>executionEnvironments</code> option.</p>
 <pre><code>
 executionEnvironments = [
     { root = &quot;clustering/src&quot;, pythonVersion = &quot;3.12&quot;, extraPaths = [ &quot;extra/common&quot; ] },
@@ -150,7 +150,7 @@ executionEnvironments = [
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:12 UTC
+        Synced at 2026-01-20 19:24:55 UTC
     </footer>
 </body>
 </html>

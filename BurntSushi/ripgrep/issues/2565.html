@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>perf(ignore): don't search subdirs for git/ignore files if max depth is reached</h1>
+    <h1>perf(ignore): don&#x27;t search subdirs for git/ignore files if max depth is reached</h1>
 
     <div class="meta">
         <span class="state-icon state-open"></span>
@@ -29,13 +29,13 @@
 for ((i=1; i&lt;=100; i++)); do     mktemp --directory XXX; done
 </code></pre>
 <p>a.rs</p>
-<pre><code class="language-rs">use ignore::WalkBuilder;
+<pre><code>use ignore::WalkBuilder;
 
 fn main() {
     let arg = std::env::args().nth(1).unwrap();
     let files: Vec&lt;_&gt; = WalkBuilder::new(&amp;arg)
         .hidden(false)
-        .follow_links(false) // We're scanning over depth 1
+        .follow_links(false) // We&#x27;re scanning over depth 1
         .max_depth(Some(1))
         .build()
         .collect();
@@ -44,7 +44,7 @@ fn main() {
 <pre><code>cargo b --release
 strace target/release/a a
 </code></pre>
-<p>you can see that we do a lot of unneeded syscalls because we're reading git/ignore files even though we won't search inside those directorates</p>
+<p>you can see that we do a lot of unneeded syscalls because we&#x27;re reading git/ignore files even though we won&#x27;t search inside those directorates</p>
 <pre><code>openat(AT_FDCWD, &quot;/home/mrcool/dev/rust/others/ripgrep/crates/ignore/a/Vwe&quot;, O_RDONLY|O_NONBLOCK|O_CLOEXEC|O_DIRECTORY) = 4
 newfstatat(4, &quot;&quot;, {st_mode=S_IFDIR|0700, st_size=4096, ...}, AT_EMPTY_PATH) = 0
 statx(AT_FDCWD, &quot;/home/mrcool/dev/rust/others/ripgrep/crates/ignore/a/Vwe/.git&quot;, AT_STATX_SYNC_AS_STAT, STATX_ALL, 0x7fffdb02f030) = -1 ENOENT (Aucun fichier ou dossier de ce type)
@@ -58,10 +58,10 @@ close(4)                                = 0
 <p>this is the best case (empty dirs), in practice its worse because directory can have those files, and this crate will have to issue read syscalls for them</p>
 <p>without that search, it would be only 3 syscalls per directory</p>
 <p><strong>suggestion:</strong>
-I'm suggestion to not search for those files inside subdirs if we reach the max depth
-Unless I'm missing something it should keep the exact same functionality while having all the performance boost</p>
+I&#x27;m suggestion to not search for those files inside subdirs if we reach the max depth
+Unless I&#x27;m missing something it should keep the exact same functionality while having all the performance boost</p>
 <p><strong>motivation:</strong>
-you can checkout https://github.com/helix-editor/helix/issues/7715 where disabling this behavior improved the walking from ~4000 syscalls to ~900 and from 20 seconds to 100 ms in my old pc with hdd drive
+you can checkout <a href="https://github.com/helix-editor/helix/issues/7715">helix-editor/helix#7715</a> where disabling this behavior improved the walking from ~4000 syscalls to ~900 and from 20 seconds to 100 ms in my old pc with hdd drive
 so ~3000 wasted syscalls for ~300 files</p>
 </div>
         </div>
@@ -74,11 +74,11 @@ so ~3000 wasted syscalls for ~300 files</p>
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-07-23 12:02</div>
             <div class="timeline-body"><p>The implementation should already do this:</p>
 <p>https://github.com/BurntSushi/ripgrep/blob/304a60e8e9d4b2a42dc3dfb1ba4cef6d7bf92515/crates/ignore/src/walk.rs#L1493-L1495</p>
-<p>If it's not, I'm not sure why. I personally won't have a chance to investigate this probably until I give <code>ignore</code> a refresh. And I don't know when that will happen. Help is wanted if there's a simple fix.</p>
+<p>If it&#x27;s not, I&#x27;m not sure why. I personally won&#x27;t have a chance to investigate this probably until I give <code>ignore</code> a refresh. And I don&#x27;t know when that will happen. Help is wanted if there&#x27;s a simple fix.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">help wanted</span> added by @BurntSushi on 2023-07-23 12:02</div>
+            <div class="event">Label <span class="label">help wanted</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-07-23 12:02</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sigmaSd">@sigmaSd</a> on 2023-07-23 12:37</div>
@@ -87,7 +87,7 @@ so ~3000 wasted syscalls for ~300 files</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-07-23 12:38</div>
-            <div class="timeline-body"><p>Yes, that's because the single threaded case uses <a href="https://docs.rs/walkdir/latest/walkdir/struct.WalkDir.html#method.max_depth">walkdir's <code>max_depth</code> option</a>.</p>
+            <div class="timeline-body"><p>Yes, that&#x27;s because the single threaded case uses <a href="https://docs.rs/walkdir/latest/walkdir/struct.WalkDir.html#method.max_depth">walkdir&#x27;s <code>max_depth</code> option</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -97,13 +97,13 @@ so ~3000 wasted syscalls for ~300 files</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-07-23 12:47</div>
-            <div class="timeline-body"><p>Like I said, I haven't looked into this. I only know that <code>max_depth</code> is being used in some capacity. If there's an easy fix, patches are welcome.</p>
+            <div class="timeline-body"><p>Like I said, I haven&#x27;t looked into this. I only know that <code>max_depth</code> is being used in some capacity. If there&#x27;s an easy fix, patches are welcome.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AgustinRamiroDiaz">@AgustinRamiroDiaz</a> on 2023-08-01 21:34</div>
-            <div class="timeline-body"><p>@sigmaSd I've tried reproducing your steps but didn't hit the issue :thinking:</p>
-<p>Here's my last output while following your guide</p>
+            <div class="timeline-body"><p>@sigmaSd I&#x27;ve tried reproducing your steps but didn&#x27;t hit the issue :thinking:</p>
+<p>Here&#x27;s my last output while following your guide</p>
 <pre><code>execve(&quot;target/release/rg&quot;, [&quot;target/release/rg&quot;], 0x7ffe7abc8160 /* 71 vars */) = 0
 brk(NULL)                               = 0x562e07ec1000
 arch_prctl(0x3001 /* ARCH_??? */, 0x7fffbb302e30) = -1 EINVAL (Invalid argument)
@@ -166,11 +166,11 @@ read(3, &quot;6000-7f825149a000 r--p 00214000 &quot;..., 1024) = 1024
 read(3, &quot;linux-x86-64.so.2\n7f82514e1000-7&quot;..., 1024) = 823
 close(3)                                = 0
 sched_getaffinity(61339, 32, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]) = 8
-write(2, &quot;thread '&quot;, 8thread ')                 = 8
+write(2, &quot;thread &#x27;&quot;, 8thread &#x27;)                 = 8
 write(2, &quot;main&quot;, 4main)                     = 4
-write(2, &quot;' panicked at '&quot;, 15' panicked at ')         = 15
+write(2, &quot;&#x27; panicked at &#x27;&quot;, 15&#x27; panicked at &#x27;)         = 15
 write(2, &quot;called `Option::unwrap()` on a `&quot;..., 43called `Option::unwrap()` on a `None` value) = 43
-write(2, &quot;', &quot;, 3', )                      = 3
+write(2, &quot;&#x27;, &quot;, 3&#x27;, )                      = 3
 write(2, &quot;crates/core/main.rs&quot;, 19crates/core/main.rs)     = 19
 write(2, &quot;:&quot;, 1:)                        = 1
 write(2, &quot;51&quot;, 251)                       = 2
@@ -190,23 +190,23 @@ exit_group(101)                         = ?
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sigmaSd">@sigmaSd</a> on 2023-08-01 21:39</div>
-            <div class="timeline-body"><p>@AgustinRamiroDiaz I'm not sure what steps are you following,  you seem to be spawning rg for some reason</p>
+            <div class="timeline-body"><p>@AgustinRamiroDiaz I&#x27;m not sure what steps are you following,  you seem to be spawning rg for some reason</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AgustinRamiroDiaz">@AgustinRamiroDiaz</a> on 2023-08-02 12:08</div>
             <div class="timeline-body"><p>@sigmaSd yeah, I forgot to clarify</p>
-<p>I couldn't follow this steps</p>
+<p>I couldn&#x27;t follow this steps</p>
 <pre><code>cargo b --release
 strace target/release/a a
 </code></pre>
-<p>because I wasn't getting a <code>target/release/a</code> binary. So instead of creating the <code>a.rs</code> file I've modified the <code>main.rs</code> to be
+<p>because I wasn&#x27;t getting a <code>target/release/a</code> binary. So instead of creating the <code>a.rs</code> file I&#x27;ve modified the <code>main.rs</code> to be
 use ignore::WalkBuilder;</p>
 <pre><code>fn main() {
     let arg = std::env::args().nth(1).unwrap();
     let files: Vec&lt;_&gt; = WalkBuilder::new(&amp;arg)
         .hidden(false)
-        .follow_links(false) // We're scanning over depth 1
+        .follow_links(false) // We&#x27;re scanning over depth 1
         .max_depth(Some(1))
         .build()
         .collect();
@@ -226,7 +226,7 @@ strace target/release/rg
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:43:42 UTC
+        Synced at 2026-01-20 18:48:13 UTC
     </footer>
 </body>
 </html>

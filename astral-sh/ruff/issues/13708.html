@@ -33,10 +33,10 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">testing</span> added by @AlexWaygood on 2024-10-10 21:16</div>
+            <div class="event">Label <span class="label">testing</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-10 21:16</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-10-10 21:16</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-10 21:16</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-10 21:16</div>
@@ -45,31 +45,31 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-10-10 21:32</div>
-            <div class="timeline-body"><p>It is generally the case that if you make an assertion that doesn't match a diagnostic on that line, you will get two &quot;failures&quot; on the test: an unmatched assertion and an unmatched diagnostic. I don't really see a way around this without hiding useful info. To debug a mismatch you likely want to see both things that failed to match each other.</p>
+            <div class="timeline-body"><p>It is generally the case that if you make an assertion that doesn&#x27;t match a diagnostic on that line, you will get two &quot;failures&quot; on the test: an unmatched assertion and an unmatched diagnostic. I don&#x27;t really see a way around this without hiding useful info. To debug a mismatch you likely want to see both things that failed to match each other.</p>
 <p>In the case of <code>revealed: </code> we currently only suppress the undefined-reveal diagnostic if we actually match a revealed type. We could relax this and say that any <code>revealed: </code> assertion on a line already shows your intent to use <code>reveal_type</code> and should always silence <code>undefined-reveal</code> on that line, whether the revealed-type actually matches or no. That seems reasonable to me and would reduce the three lines of output to two lines.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-10 21:47</div>
-            <div class="timeline-body"><p>That sounds reasonable to me, too... though I'm still not sure I <em>fully</em> understand why we don't simply suppress all the <code>unimported-reveal</code> diagnostics in <code>mdtest</code>s. If a contributor writes this in a test:</p>
-<pre><code class="language-py">reveal_type(2)
+            <div class="timeline-body"><p>That sounds reasonable to me, too... though I&#x27;m still not sure I <em>fully</em> understand why we don&#x27;t simply suppress all the <code>unimported-reveal</code> diagnostics in <code>mdtest</code>s. If a contributor writes this in a test:</p>
+<pre><code>reveal_type(2)
 </code></pre>
 <p>And the test comes back at them with a message telling them</p>
 <pre><code>    line 16: unexpected error: [undefined-reveal] &quot;`reveal_type` used without importing it; this is allowed for debugging convenience but will fail at runtime&quot;
 </code></pre>
-<p>they'll surely think that they need to import <code>reveal_type</code> in order to make the test to pass, but that's not true (the error will go away as soon as they add a <code># revealed</code> assertion).</p>
-<p>In https://github.com/astral-sh/ruff/pull/13695#discussion_r1795629361 you mentioned that you wanted to emit these diagnostics to be emitted in <code>mdtest</code> so that you'd be able to test the diagnostics emitted by <code>reveal_type</code> itself, but I'm not sure I see why the tests for <code>reveal_type</code> itself <em>have</em> to use <code>mdtest</code>. ISTM that a simpler way of doing it would be to have it so that the <code>unimported-reveal</code> diagnostics are never emitted in the context of <code>mdtest</code>, and the (small number of) tests for <code>reveal_type</code> itself are not written using <code>mdtest</code>.</p>
+<p>they&#x27;ll surely think that they need to import <code>reveal_type</code> in order to make the test to pass, but that&#x27;s not true (the error will go away as soon as they add a <code># revealed</code> assertion).</p>
+<p>In <a href="https://github.com/astral-sh/ruff/pull/13695">astral-sh/ruff#13695</a>#discussion_r1795629361 you mentioned that you wanted to emit these diagnostics to be emitted in <code>mdtest</code> so that you&#x27;d be able to test the diagnostics emitted by <code>reveal_type</code> itself, but I&#x27;m not sure I see why the tests for <code>reveal_type</code> itself <em>have</em> to use <code>mdtest</code>. ISTM that a simpler way of doing it would be to have it so that the <code>unimported-reveal</code> diagnostics are never emitted in the context of <code>mdtest</code>, and the (small number of) tests for <code>reveal_type</code> itself are not written using <code>mdtest</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-10-10 22:01</div>
-            <div class="timeline-body"><p>Yes, we could do it that way. The general principle that pushes me away from doing that is to avoid modifying the behavior of the system under test as much as possible, since that leads to misleading test results and can also lead to confusion. The <code>undefined-reveal</code> diagnostic is a real diagnostic that red-knot really emits; always silencing it in tests means that the diagnostics you see from red-knot on a snippet of code may be different from the diagnostics you would see from red-knot for that exact same code outside of the test context. That's something to avoid, if possible. Inability to write tests for the <code>undefined-reveal</code> diagnostic in mdtest is just a symptom of that problem.</p>
+            <div class="timeline-body"><p>Yes, we could do it that way. The general principle that pushes me away from doing that is to avoid modifying the behavior of the system under test as much as possible, since that leads to misleading test results and can also lead to confusion. The <code>undefined-reveal</code> diagnostic is a real diagnostic that red-knot really emits; always silencing it in tests means that the diagnostics you see from red-knot on a snippet of code may be different from the diagnostics you would see from red-knot for that exact same code outside of the test context. That&#x27;s something to avoid, if possible. Inability to write tests for the <code>undefined-reveal</code> diagnostic in mdtest is just a symptom of that problem.</p>
 <p>You may be right that contributors will be confused by the <code>undefined-reveal</code> diagnostic, and if that does turn out to be a problem, we can revisit. Maybe the specifics of this case outweigh the general principle.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-10 22:06</div>
-            <div class="timeline-body"><p>Makes sense. I do also find it confusing for me personally, as well as contributors, that I have to remember to ignore these messages telling me to import <code>reveal_type</code> ;) But we can leave it for now and wait to see if I'm the only one. This idea of yours sounds great as a first step:</p>
+            <div class="timeline-body"><p>Makes sense. I do also find it confusing for me personally, as well as contributors, that I have to remember to ignore these messages telling me to import <code>reveal_type</code> ;) But we can leave it for now and wait to see if I&#x27;m the only one. This idea of yours sounds great as a first step:</p>
 <blockquote>
 <p>In the case of <code>revealed: </code> we currently only suppress the undefined-reveal diagnostic if we actually match a revealed type. We could relax this and say that any <code>revealed: </code> assertion on a line already shows your intent to use <code>reveal_type</code> and should always silence <code>undefined-reveal</code> on that line, whether the revealed-type actually matches or no. That seems reasonable to me and would reduce the three lines of output to two lines.</p>
 </blockquote>
@@ -77,19 +77,19 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-10-10 23:41</div>
-            <div class="timeline-body"><p>Pushed a PR that implements the first step (silencing <code>undefined-reveal</code> on any line including a <code># revealed: </code> assertion), and also tries to balance giving some more useful direction for undefined-reveal in mdtest context, without concealing red-knot's normal diagnostic for undefined-reveal.</p>
+            <div class="timeline-body"><p>Pushed a PR that implements the first step (silencing <code>undefined-reveal</code> on any line including a <code># revealed: </code> assertion), and also tries to balance giving some more useful direction for undefined-reveal in mdtest context, without concealing red-knot&#x27;s normal diagnostic for undefined-reveal.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2024-10-11 00:33</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2024-10-11 00:33</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2024-10-11 00:33</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2024-10-11 00:33</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:51:15 UTC
+        Synced at 2026-01-20 18:48:58 UTC
     </footer>
 </body>
 </html>

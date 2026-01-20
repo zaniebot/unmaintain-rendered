@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ghost">@ghost</a></div>
-            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+            <div class="timeline-body">What version of ripgrep are you using?
 <p>with <code>cargo install ripgrip</code>:</p>
 <pre><code>ripgrep 0.10.0
 -SIMD -AVX (compiled)
@@ -33,69 +33,69 @@
 <pre><code>ripgrep 0.10.0 (rev 8a7db1a918)
 -SIMD -AVX (compiled)
 </code></pre>
-<h4>How did you install ripgrep?</h4>
+How did you install ripgrep?
 <ol>
 <li>with <code>cargo install ripgrep</code></li>
 <li>with github release binary</li>
 </ol>
-<h4>What operating system are you using ripgrep on?</h4>
+What operating system are you using ripgrep on?
 <p>Windows 10 Enterprise
 Version: 1709
 OS Build: 16299.904</p>
-<h4>Describe your question, feature request, or bug.</h4>
-<p><code>rg</code> exits before matching all there is or, alternatively, thinks those matches failed. I'm running:</p>
+Describe your question, feature request, or bug.
+<p><code>rg</code> exits before matching all there is or, alternatively, thinks those matches failed. I&#x27;m running:</p>
 <pre><code>rg -N &quot;^[^ ]+ (2018|2019)-&quot; file.log &gt;output.log
 </code></pre>
 <p>The input file size is 7735mb, the output file is 1229mb.</p>
-<p>When I'm running:</p>
+<p>When I&#x27;m running:</p>
 <pre><code>grep &quot;^[^ ]\+ \(2018\|2019\)-&quot; file.log &gt;output.log
 </code></pre>
 <p>The output file is 5948mb.</p>
-<p>When I look into <code>rg</code>'s result it just looks like <code>file.log</code> got abandoned somewhere along the way and <code>rg</code> just quit without completing the job. No error messages.</p>
-<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+<p>When I look into <code>rg</code>&#x27;s result it just looks like <code>file.log</code> got abandoned somewhere along the way and <code>rg</code> just quit without completing the job. No error messages.</p>
+If this is a bug, what are the steps to reproduce the behavior?
 <p>See above, reproduces every time.</p>
-<h4>If this is a bug, what is the actual behavior?</h4>
+If this is a bug, what is the actual behavior?
 <pre><code>DEBUG|grep_regex::literal|grep-regex\src\literal.rs:110: required literal found: &quot; 201&quot;
 DEBUG|globset|globset\src\lib.rs:429: built glob set; 0 literals, 0 basenames, 8 extensions, 0 prefixes, 0 suffixes, 0 required extensions,
 0 regexes
 DEBUG|grep_searcher::searcher::mmap|grep-searcher\src\searcher\mmap.rs:86: gm.log: failed to open memory map: file length overflows usize
 </code></pre>
-<h4>If this is a bug, what is the expected behavior?</h4>
+If this is a bug, what is the expected behavior?
 <p>To match all the input.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-02-07 22:13</div>
-            <div class="timeline-body"><p>Can you should the output with the <code>--trace</code> flag? It's going to be hard to debug this without the input file. The current size of the file is probably too big, so if you can find a way to shrink the test case such that the problem still occurs, that would be helpful.</p>
-<p>My guess is that your log file contains binary data (a <code>NUL</code> byte), which is causing ripgrep to give up. If so, then passing the <code>-a</code> flag to ripgrep should fix it. With that said, I'd probably expect grep to have the same behavior here, so something isn't adding up.</p>
+            <div class="timeline-body"><p>Can you should the output with the <code>--trace</code> flag? It&#x27;s going to be hard to debug this without the input file. The current size of the file is probably too big, so if you can find a way to shrink the test case such that the problem still occurs, that would be helpful.</p>
+<p>My guess is that your log file contains binary data (a <code>NUL</code> byte), which is causing ripgrep to give up. If so, then passing the <code>-a</code> flag to ripgrep should fix it. With that said, I&#x27;d probably expect grep to have the same behavior here, so something isn&#x27;t adding up.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2019-02-07 22:13</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-02-07 22:13</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ghost">@ghost</a> on 2019-02-08 19:42</div>
-            <div class="timeline-body"><p>@BurntSushi You are right, completely bizzarely, our Java app produced log messages that contained NUL characters. I'm not even sure how that's technically possible, because all log messages should be <code>java.lang.String</code> which is pure Unicode. <code>-a</code> solves the problem, thanks. But still, GNU grep doesn't seem to care about it and <code>rg</code> didn't give any stderr warning, so it looked fishy.</p>
+            <div class="timeline-body"><p>@BurntSushi You are right, completely bizzarely, our Java app produced log messages that contained NUL characters. I&#x27;m not even sure how that&#x27;s technically possible, because all log messages should be <code>java.lang.String</code> which is pure Unicode. <code>-a</code> solves the problem, thanks. But still, GNU grep doesn&#x27;t seem to care about it and <code>rg</code> didn&#x27;t give any stderr warning, so it looked fishy.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-02-08 20:28</div>
-            <div class="timeline-body"><p>All righty. I'm going to call this a duplicate of #306 then. See <a href="https://github.com/BurntSushi/ripgrep/issues/306#issuecomment-442931406">my comment</a> in that issue for a deeper explanation of the issue. Thanks for the report!</p>
+            <div class="timeline-body"><p>All righty. I&#x27;m going to call this a duplicate of #306 then. See <a href="https://github.com/BurntSushi/ripgrep/issues/306#issuecomment-442931406">my comment</a> in that issue for a deeper explanation of the issue. Thanks for the report!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2019-02-08 20:28</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-02-08 20:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">duplicate</span> added by @BurntSushi on 2019-02-08 20:28</div>
+            <div class="event">Label <span class="label">duplicate</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-02-08 20:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> removed by @BurntSushi on 2019-02-08 20:28</div>
+            <div class="event">Label <span class="label">question</span> removed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-02-08 20:28</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:42:49 UTC
+        Synced at 2026-01-20 18:48:08 UTC
     </footer>
 </body>
 </html>

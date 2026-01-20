@@ -23,11 +23,11 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Generally, comparisons to <code>True</code>, <code>False</code>, and <code>None</code> singletons should use <code>obj is True</code> instead of <code>obj == True</code>.</p>
-<p>However, it is common for libraries to override the <code>==</code>/<code>__eq__</code> operator to create simple APIs for filtering data. In these cases, correcting <code>==</code> to <code>is</code> changes the meaning of the program and breaks the user's code. The same applies for <code>!=</code> and <code>is not</code>.</p>
+<p>However, it is common for libraries to override the <code>==</code>/<code>__eq__</code> operator to create simple APIs for filtering data. In these cases, correcting <code>==</code> to <code>is</code> changes the meaning of the program and breaks the user&#x27;s code. The same applies for <code>!=</code> and <code>is not</code>.</p>
 <p>This is a tracking issue for all invalid corrections from this rule.</p>
-<h2>Types with the issue</h2>
+Types with the issue
 <ul>
 <li><code>pandas.DataFrame</code> often used with <code>DataFrame.mask</code>, <code>DataFrame.where</code></li>
 <li><code>pandas.Series</code> often used with <code>Series.mask</code>, <code>Series.where</code></li>
@@ -35,15 +35,15 @@
 <li><code>sqlalchemy.Column</code> often used with <code>Query.having</code>, <code>Query.filter</code>, <code>Query.where</code></li>
 </ul>
 <p><em>If an issue with an unlisted type is encountered please reply and I will edit to add it here.</em></p>
-<h2>Resolution</h2>
+Resolution
 <p>Eventually, ruff is likely to detect these cases by inferring the datatype involved and exclude it from the suggested fix.</p>
 <p>In the meantime, you may:</p>
 <ul>
 <li>Disable rule <a href="https://beta.ruff.rs/docs/rules/true-false-comparison/">E712</a></li>
 <li>Use an alternative comparison method that is not ambiguous (e.g. <code>pandas.Series.eq</code>)</li>
 </ul>
-<h2>Examples</h2>
-<pre><code class="language-python">import numpy
+Examples
+<pre><code>import numpy
 
 numpy.array([True, False]) == False
 # array([False,  True])
@@ -51,7 +51,7 @@ numpy.array([True, False]) == False
 numpy.array([True, False]) is False
 # False
 </code></pre>
-<pre><code class="language-python">import pandas
+<pre><code>import pandas
 
 pandas.Series([True, False]) == False
 # 0    False
@@ -64,7 +64,7 @@ pandas.Series([True, False]) is False
 # Alternative safe syntax
 pandas.Series([True, False]).eq(False)
 </code></pre>
-<pre><code class="language-python">pandas.DataFrame({&quot;x&quot;: [True, False]}) == False
+<pre><code>pandas.DataFrame({&quot;x&quot;: [True, False]}) == False
 #       x
 # 0  False
 # 1  True
@@ -75,7 +75,7 @@ pandas.DataFrame({&quot;x&quot;: [True, False]}) is False
 # Alternative safe syntax
 pandas.DataFrame({&quot;x&quot;: [True, False]}).eq(False)
 </code></pre>
-<pre><code class="language-python">import sqlalchemy
+<pre><code>import sqlalchemy
 c = sqlalchemy.Column(&quot;foo&quot;, sqlalchemy.Boolean)
 
 c == True
@@ -88,7 +88,7 @@ c is True
 c.is_(True)
 c.is_not(False)
 </code></pre>
-<h2>Related issues</h2>
+Related issues
 <ul>
 <li>https://github.com/charliermarsh/ruff/issues/2443</li>
 <li>https://github.com/charliermarsh/ruff/issues/1852</li>
@@ -97,18 +97,18 @@ c.is_not(False)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-05-21 16:06</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-21 16:06</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">type-inference</span> added by @charliermarsh on 2023-05-21 16:06</div>
+            <div class="event">Label <span class="label">type-inference</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-21 16:06</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Fix changing `==`/`!=` to `is`/`is not` is not correct for some types" to "Fix (E712) changing `==`/`!=` to `is`/`is not` is not correct for some types" by @zanieb on 2023-05-21 16:07</div>
+            <div class="event">Renamed from &quot;Fix changing `==`/`!=` to `is`/`is not` is not correct for some types&quot; to &quot;Fix (E712) changing `==`/`!=` to `is`/`is not` is not correct for some types&quot; by <a href="https://github.com/zanieb">@zanieb</a> on 2023-05-21 16:07</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ndevenish">@ndevenish</a> on 2023-06-19 14:36</div>
             <div class="timeline-body"><p>I just spent a while tracking down this exact issue, an error introduced by ruff and reduced to the almost identical:</p>
-<pre><code class="language-python">import numpy as np
+<pre><code>import numpy as np
 
 arr = np.array([False, True, False, True])
 print(repr(arr == False))
@@ -116,16 +116,16 @@ print(repr(arr == False))
 print(repr(arr is False))
 # False
 </code></pre>
-<p>Reading the other thread, it sounds like this autofix can't be made safe. I would suggest disabling it completely then, because using truthiness in numpy comparison isn't a rare operation, and expecting everyone to &quot;know&quot; not to do this seems to defeat the point of an autocorrecting linter.</p>
+<p>Reading the other thread, it sounds like this autofix can&#x27;t be made safe. I would suggest disabling it completely then, because using truthiness in numpy comparison isn&#x27;t a rare operation, and expecting everyone to &quot;know&quot; not to do this seems to defeat the point of an autocorrecting linter.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-19 14:44</div>
             <div class="timeline-body"><blockquote>
-<p>Reading the other thread, it sounds like this autofix can't be made safe. I would suggest disabling it completely then, because using truthiness in numpy comparison isn't a rare operation, and expecting everyone to &quot;know&quot; not to do this seems to defeat the point of an autocorrecting linter.</p>
+<p>Reading the other thread, it sounds like this autofix can&#x27;t be made safe. I would suggest disabling it completely then, because using truthiness in numpy comparison isn&#x27;t a rare operation, and expecting everyone to &quot;know&quot; not to do this seems to defeat the point of an autocorrecting linter.</p>
 </blockquote>
 <p>I think making this a suggested fix (as it is now) will have the same effect, once we introduce <code>--fix</code> and <code>--fix-unsafe</code> (the former of which will only make automatic fixes, while the latter will include suggested fixes, which may include changes in behavior).</p>
-<p>The problem with removing the autofix entirely is that it doesn't really reduce the burden or expectation on the user, because this diagnostic will still be <em>raised</em>, and so users will still be required to look at the code and understand whether or not to change it. Performing the fix <em>automatically</em> has the downside of silently breaking the code, but requiring users to opt-in to the change explicitly seems (to me) as safe as pointing them to the diagnostic without including any possible fix.</p>
+<p>The problem with removing the autofix entirely is that it doesn&#x27;t really reduce the burden or expectation on the user, because this diagnostic will still be <em>raised</em>, and so users will still be required to look at the code and understand whether or not to change it. Performing the fix <em>automatically</em> has the downside of silently breaking the code, but requiring users to opt-in to the change explicitly seems (to me) as safe as pointing them to the diagnostic without including any possible fix.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -159,7 +159,7 @@ if greeting is True:
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-07-18 13:53</div>
             <div class="timeline-body"><p>@nicornk you can use the unambiguous alternate syntax e.g. <code>df = df.where(F.col(&quot;colName&quot;).is_(True))</code> or disable the rule. Additionally, once Ruff has type inference, we will avoid suggesting a change to <code>col is True</code>.</p>
-<p>@dstoeckel while I agree that <code>if foo</code> is definitely better than <code>if foo == True</code>, there are entirely valid uses for checking if something is <code>True</code> or <code>False</code> without having a <code>__bool__</code> cast occur and there are cases outside of <code>if</code> statments where the user must perform the cast. Unfortunately the diagnostic must try to guess the intent of the user when suggesting a fix which puts us in a tough spot. I'm not sure this issue is the correct place to discuss the validity of the rule as a whole though, I'd like to keep this scoped to a discussion of false positives based on type inference.</p>
+<p>@dstoeckel while I agree that <code>if foo</code> is definitely better than <code>if foo == True</code>, there are entirely valid uses for checking if something is <code>True</code> or <code>False</code> without having a <code>__bool__</code> cast occur and there are cases outside of <code>if</code> statments where the user must perform the cast. Unfortunately the diagnostic must try to guess the intent of the user when suggesting a fix which puts us in a tough spot. I&#x27;m not sure this issue is the correct place to discuss the validity of the rule as a whole though, I&#x27;d like to keep this scoped to a discussion of false positives based on type inference.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -167,7 +167,7 @@ if greeting is True:
             <div class="timeline-body"><blockquote>
 <p>Additionally, once Ruff has type inference</p>
 </blockquote>
-<p>Is there an existing ongoing effort for this that's public?</p>
+<p>Is there an existing ongoing effort for this that&#x27;s public?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -191,14 +191,14 @@ match x:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-06 16:05</div>
-            <div class="timeline-body"><p>Please let's not make this issue a debate about how <code>if _ == True</code>, <code>if _ is True</code>, and <code>if _</code> should be used or whether <code>E712</code> is valid in general.</p>
-<p>The libraries that are the focus of this issue have designed APIs where specific comparisons are necessary. This issue is intended to track support for patterns in those APIs. I'd recommend creating a new <a href="https://github.com/astral-sh/ruff/discussions">discussion</a> if you want to discuss broader concerns.</p>
+            <div class="timeline-body"><p>Please let&#x27;s not make this issue a debate about how <code>if _ == True</code>, <code>if _ is True</code>, and <code>if _</code> should be used or whether <code>E712</code> is valid in general.</p>
+<p>The libraries that are the focus of this issue have designed APIs where specific comparisons are necessary. This issue is intended to track support for patterns in those APIs. I&#x27;d recommend creating a new <a href="https://github.com/astral-sh/ruff/discussions">discussion</a> if you want to discuss broader concerns.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/VictorGob">@VictorGob</a> on 2023-12-22 10:23</div>
             <div class="timeline-body"><p>Just to add an example, of an error that took me a while to fix.</p>
-<pre><code class="language-python3">import pandas as pd
+<pre><code>import pandas as pd
 
 # Example dataframe
 df = pd.DataFrame({&quot;id&quot;: [1, 2, 3, 4, 5], &quot;col_2&quot;: [True, False, True, False, True]})
@@ -207,7 +207,7 @@ df = pd.DataFrame({&quot;id&quot;: [1, 2, 3, 4, 5], &quot;col_2&quot;: [True, Fa
 a = df[df[&quot;col_2&quot;] == False]
 print(a)
 
-# This does not work, pandas will raise 'KeyError: False'
+# This does not work, pandas will raise &#x27;KeyError: False&#x27;
 b = df[df[&quot;col_2&quot;] is False]
 print(b)
 </code></pre>
@@ -216,7 +216,7 @@ print(b)
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/simonpanay">@simonpanay</a> on 2024-02-16 09:43</div>
             <div class="timeline-body"><p>Another example with sqlalchemy2 ( where syntax has changed a lot comparing with versions 1.x):</p>
-<pre><code class="language-python">    query = request.dbsession.execute(
+<pre><code>    query = request.dbsession.execute(
         select(Station, func.min(Check.result))  # pylint: disable=E1102
         .join(Check.channel)
         .join(Channel.station)
@@ -232,7 +232,7 @@ If replaced by <code>Station.triggered is False</code> the result is not what is
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/psychedelicious">@psychedelicious</a> on 2024-06-12 23:44</div>
             <div class="timeline-body"><p>Same thing with <a href="https://docs.astral.sh/ruff/rules/none-comparison/">E711</a>.</p>
-<p>Would be nice to have a brief mention in the rule's docs calling out common situations where this is unsafe and why</p>
+<p>Would be nice to have a brief mention in the rule&#x27;s docs calling out common situations where this is unsafe and why</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -243,7 +243,7 @@ If replaced by <code>Station.triggered is False</code> the result is not what is
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/torzsmokus">@torzsmokus</a> on 2024-08-02 12:04</div>
             <div class="timeline-body"><p>But why do we change <code>==</code>/<code>!=</code> to <code>is</code>/<code>is not</code> at all??  <a href="https://peps.python.org/pep-0008/#:~:text=%3D%3D%20True%3A-,Worse,-%3A">PEP8 says it is even <strong>worse</strong></a>.
-<img src="https://github.com/user-attachments/assets/437a4cce-d707-49fb-9a23-10559972ec4d" alt="image" /></p>
+<img src="https://github.com/user-attachments/assets/437a4cce-d707-49fb-9a23-10559972ec4d" alt="image"></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -291,7 +291,7 @@ If replaced by <code>Station.triggered is False</code> the result is not what is
             <div class="timeline-header">Comment by <a href="https://github.com/subnix">@subnix</a> on 2024-09-18 12:07</div>
             <div class="timeline-body"><p>Note about SQLAlchemy:</p>
 <p>The <code>.is_</code> and <code>.is_not</code> methods may not be safe alternatives to the equality (<code>==</code>/<code>!=</code>) operators, because <code>IS</code> and <code>=</code> are different SQL operators. Consider the following example in MySQL:</p>
-<pre><code class="language-sql">SELECT 10 IS TRUE;
+<pre><code>SELECT 10 IS TRUE;
 /* 1 */
 SELECT 10 = TRUE;
 /* 0 */
@@ -301,7 +301,7 @@ SELECT NULL != FALSE;
 /* NULL */
 </code></pre>
 <p>Thus, the safe alternative for comparing to booleans is:</p>
-<pre><code class="language-python">c == True
+<pre><code>c == True
 # &lt;sqlalchemy.sql.elements.BinaryExpression object at 0x1026203e0&gt;
 c == sqlalchemy.true()
 # &lt;sqlalchemy.sql.elements.BinaryExpression object at 0x1026222a0&gt;
@@ -321,12 +321,12 @@ c == sqlalchemy.true()
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/oscarbenjamin">@oscarbenjamin</a> on 2025-12-24 13:51</div>
             <div class="timeline-body"><p>The rule E712 throws about 1000 errors on the sympy codebase some of which could be changed to <code>is True</code> but many (most?) of which should not. The reason that <code>== True</code> is often used is that sympy has its own symbolic versions of True and False:</p>
-<pre><code class="language-python">In [1]: from sympy import *
+<pre><code>In [1]: from sympy import *
 
 In [2]: S.true
 Out[2]: True
 
-In [3]: x = Symbol('x')
+In [3]: x = Symbol(&#x27;x&#x27;)
 
 In [4]: e = x &gt; 0
 
@@ -346,40 +346,40 @@ In [9]: e.subs(x, 1) is True
 Out[9]: False
 </code></pre>
 <p>Symbolic true is needed because e.g.:</p>
-<pre><code class="language-python">In [11]: S.true.subs(x, 1)
+<pre><code>In [11]: S.true.subs(x, 1)
 Out[11]: True
 
 In [12]: True.subs(x, 1)
 ...
-AttributeError: 'bool' object has no attribute 'subs'
+AttributeError: &#x27;bool&#x27; object has no attribute &#x27;subs&#x27;
 </code></pre>
 <p>Calling <code>__bool__</code> on a symbolic relational can raise an error:</p>
-<pre><code class="language-python">In [10]: bool(x &gt; 0)
+<pre><code>In [10]: bool(x &gt; 0)
 ...
 TypeError: cannot determine truth value of Relational: x &gt; 0
 </code></pre>
 <p>Given an arbitrary expression <code>e</code> then it is common to write something like</p>
-<pre><code class="language-python">if (e &gt; 0) == True
+<pre><code>if (e &gt; 0) == True
 </code></pre>
 <p>to test if the expression is definitely positive without raising a potential exception if the check is undecidable.</p>
-<p>The fix suggested by <code>E712</code> is incorrect in this case because the correct is condition would be with sympy's symbolic True:</p>
-<pre><code class="language-python">if (e &gt; 0) is S.true
+<p>The fix suggested by <code>E712</code> is incorrect in this case because the correct is condition would be with sympy&#x27;s symbolic True:</p>
+<pre><code>if (e &gt; 0) is S.true
 </code></pre>
-<p>I think that <code>E712</code> is a valid rule but in the sympy codebase (or downstream code using sympy) the unsafe fix would be wrong much of the time and instead someone would need to through all 1000 cases manually and figure out whether each one should be <code>is True</code> or <code>is S.true</code>. I am not particularly motivated to do that and I wouldn't even want to review a PR if someone else did it so probably not worth it.</p>
-<p>I also expect that many sympy contributors would find <code>E712</code> confusing and end up writing the wrong code so leaving aside the current 1000 errors I'm not sure it would be worth enabling the rule unless we could tell ruff somehow to mention <code>S.true</code> in a custom error message. At least I suppose the E712 doc page links to this issue.</p>
+<p>I think that <code>E712</code> is a valid rule but in the sympy codebase (or downstream code using sympy) the unsafe fix would be wrong much of the time and instead someone would need to through all 1000 cases manually and figure out whether each one should be <code>is True</code> or <code>is S.true</code>. I am not particularly motivated to do that and I wouldn&#x27;t even want to review a PR if someone else did it so probably not worth it.</p>
+<p>I also expect that many sympy contributors would find <code>E712</code> confusing and end up writing the wrong code so leaving aside the current 1000 errors I&#x27;m not sure it would be worth enabling the rule unless we could tell ruff somehow to mention <code>S.true</code> in a custom error message. At least I suppose the E712 doc page links to this issue.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/oscarbenjamin">@oscarbenjamin</a> on 2025-12-24 13:54</div>
             <div class="timeline-body"><p>The E711 doc page links to this issue:
 https://docs.astral.sh/ruff/rules/true-false-comparison/</p>
-<p>In principle this issue applies to both E711 (None) and E712 (True and False). In practice I am not aware of any situation where there would be an issue with the E711 fixer and I don't see any actual examples listed above. I'm not sure what the bar is for considering a fix to be safe but for my own codebases I would be happy to autofix E711 but not E712.</p>
+<p>In principle this issue applies to both E711 (None) and E712 (True and False). In practice I am not aware of any situation where there would be an issue with the E711 fixer and I don&#x27;t see any actual examples listed above. I&#x27;m not sure what the bar is for considering a fix to be safe but for my own codebases I would be happy to autofix E711 but not E712.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:47:15 UTC
+        Synced at 2026-01-20 18:48:36 UTC
     </footer>
 </body>
 </html>

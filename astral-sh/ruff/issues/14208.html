@@ -23,8 +23,8 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><p>Believe it or not, Python accepts arbitrary callables as metaclasses in <code>class</code> statements -- and those callables don't have to return instances of <code>type</code>. As long as the callable accepts the same arguments as <code>type.__new__</code>, it's an acceptable metaclass; the binding created by the class statement is set to whatever calling the metaclass returns:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; def returns_int(*args: object) -&gt; int:
+            <div class="timeline-body"><p>Believe it or not, Python accepts arbitrary callables as metaclasses in <code>class</code> statements -- and those callables don&#x27;t have to return instances of <code>type</code>. As long as the callable accepts the same arguments as <code>type.__new__</code>, it&#x27;s an acceptable metaclass; the binding created by the class statement is set to whatever calling the metaclass returns:</p>
+<pre><code>&gt;&gt;&gt; def returns_int(*args: object) -&gt; int:
 ...     return 42
 ...     
 &gt;&gt;&gt; class A(metaclass=returns_int): ...
@@ -32,43 +32,43 @@
 &gt;&gt;&gt; A
 42
 </code></pre>
-<p>Currently we don't understand this in red-knot: we think that the <code>class A</code> statement constitutes a class definition, when it does not. Mypy <a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=f27cb48434f3e879d42cb54615444755">&quot;solves&quot; this problem</a> by emitting a diagnostic saying that a dynamic metaclass like this isn't supported. Pyright doesn't emit a diagnostic, and <a href="https://pyright-play.net/?strict=true&amp;code=CYUwZgBATiAuCuUB2BnA%2BgSybAFAKgEMoBzFALggHsAjAKxAGNYBKCAWgD4ItYyAoCIOhxESCABYATHz4MANgRQoIAQRwBbOAXmKUAXhgJk6HswoA6SzJgA3EATlpYATwAOIHCuZ8gA">just gets it wrong</a>.</p>
-<p>I think mypy's &quot;solution&quot; here is acceptable (metaclasses that are not subclasses of <code>type</code> are really very rare). But it also might not be too much work for us to just add an accurate understanding of the runtime semantics here, and infer that the <code>class A</code> statement binds the <code>A</code> symbol to an instance of <code>int</code> rather than a newly created class.</p>
+<p>Currently we don&#x27;t understand this in red-knot: we think that the <code>class A</code> statement constitutes a class definition, when it does not. Mypy <a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=f27cb48434f3e879d42cb54615444755">&quot;solves&quot; this problem</a> by emitting a diagnostic saying that a dynamic metaclass like this isn&#x27;t supported. Pyright doesn&#x27;t emit a diagnostic, and <a href="https://pyright-play.net/?strict=true&amp;code=CYUwZgBATiAuCuUB2BnA%2BgSybAFAKgEMoBzFALggHsAjAKxAGNYBKCAWgD4ItYyAoCIOhxESCABYATHz4MANgRQoIAQRwBbOAXmKUAXhgJk6HswoA6SzJgA3EATlpYATwAOIHCuZ8gA">just gets it wrong</a>.</p>
+<p>I think mypy&#x27;s &quot;solution&quot; here is acceptable (metaclasses that are not subclasses of <code>type</code> are really very rare). But it also might not be too much work for us to just add an accurate understanding of the runtime semantics here, and infer that the <code>class A</code> statement binds the <code>A</code> symbol to an instance of <code>int</code> rather than a newly created class.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-11-08 18:29</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-08 18:29</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[red-knot] Either support metaclasses that are subclasses of `type`, or emit a diagnostic when encountering them" to "[red-knot] Either support metaclasses that are not subclasses of `type`, or emit a diagnostic when encountering them" by @AlexWaygood on 2024-11-08 23:52</div>
+            <div class="event">Renamed from &quot;[red-knot] Either support metaclasses that are subclasses of `type`, or emit a diagnostic when encountering them&quot; to &quot;[red-knot] Either support metaclasses that are not subclasses of `type`, or emit a diagnostic when encountering them&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-08 23:52</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-11-13 09:58</div>
-            <div class="timeline-body"><p>Pyright's behavior seems to be a deliberate design choice:</p>
+            <div class="timeline-body"><p>Pyright&#x27;s behavior seems to be a deliberate design choice:</p>
 <blockquote>
 <p>If a custom metaclass is present, pyright evaluates its <code>__call__</code> method to determine whether it returns an instance of the class. If not, it assumes that the metaclass has custom behavior that overrides <code>type.__call__</code>. Likewise, if a class provides a <code>__new__</code> method that returns a type other than the class being constructed (or a child class thereof), it assumes that <code>__init__</code> will not be called.</p>
-<p>— <a href="https://github.com/microsoft/pyright/blob/HEAD/docs/mypy-comparison.md#constructor-calls"><i>Comparison with Mypy</i> § Constructor Calls</a></p>
+<p>— <a href="https://github.com/microsoft/pyright/blob/HEAD/docs/mypy-comparison.md#constructor-calls">Comparison with Mypy § Constructor Calls</a></p>
 </blockquote>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-13 11:16</div>
             <div class="timeline-body"><blockquote>
-<p>Pyright's behavior seems to be a deliberate design choice:</p>
+<p>Pyright&#x27;s behavior seems to be a deliberate design choice:</p>
 </blockquote>
-<p>Thanks, that's interesting! I still dislike pyright's behaviour here, though, even if it's deliberate. There's lots of potentially invalid metaclasses that pyright simply doesn't detect, and that I think it would be quite easily to statically detect.</p>
+<p>Thanks, that&#x27;s interesting! I still dislike pyright&#x27;s behaviour here, though, even if it&#x27;s deliberate. There&#x27;s lots of potentially invalid metaclasses that pyright simply doesn&#x27;t detect, and that I think it would be quite easily to statically detect.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2025-01-09 00:34</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2025-01-09 00:34</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2025-01-09 00:34</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2025-01-09 00:34</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:51:29 UTC
+        Synced at 2026-01-20 18:49:00 UTC
     </footer>
 </body>
 </html>

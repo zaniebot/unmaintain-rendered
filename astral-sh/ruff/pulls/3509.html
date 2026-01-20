@@ -23,26 +23,26 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a></div>
-            <div class="timeline-body"><p>This PR wraps the linting of every file in a <a href="https://blog.rust-lang.org/2016/05/26/Rust-1.9.html#controlled-unwinding"><code>catch_unwind</code></a> to catch potential panics (due to a bug in ruff) and prints a warning instead of crashing ruff. Catching panics on a per-file basis has the advantage that it doesn't prevent users from adopting or continuing using Ruff because of a bug triggered by a specific code snipped. The catch handler also includes the name of the problematic file to ease identifying the bug.</p>
+            <div class="timeline-body"><p>This PR wraps the linting of every file in a <a href="https://blog.rust-lang.org/2016/05/26/Rust-1.9.html#controlled-unwinding"><code>catch_unwind</code></a> to catch potential panics (due to a bug in ruff) and prints a warning instead of crashing ruff. Catching panics on a per-file basis has the advantage that it doesn&#x27;t prevent users from adopting or continuing using Ruff because of a bug triggered by a specific code snipped. The catch handler also includes the name of the problematic file to ease identifying the bug.</p>
 <p>The main downside of this approach is that we now need to compile ruff with <code>panic=unwind</code> instead of <code>panic=abort</code>. Changing the panic type results in a ~15% performance regression on my machine:</p>
-<pre><code>Panic 'unwind': ./target/release/ruff ./crates/ruff/resources/test/cpython/ --no-cache
+<pre><code>Panic &#x27;unwind&#x27;: ./target/release/ruff ./crates/ruff/resources/test/cpython/ --no-cache
   Time (mean ± σ):     215.3 ms ±   6.2 ms    [User: 3753.3 ms, System: 98.0 ms]
   Range (min … max):   203.8 ms … 226.1 ms    13 runs
  
-Panic 'abort': ./target/release/ruff ./crates/ruff/resources/test/cpython/ --no-cache
+Panic &#x27;abort&#x27;: ./target/release/ruff ./crates/ruff/resources/test/cpython/ --no-cache
   Time (mean ± σ):     188.9 ms ±   3.6 ms    [User: 3216.8 ms, System: 116.1 ms]
   Range (min … max):   181.5 ms … 194.0 ms    15 runs
 </code></pre>
 <p>It also slightly increases the binary from ~19MB to ~20MB due to the additional metadata required to enable unwinding (stack walking etc).</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>I changed a linter and added an intentional index out of bounds. Ruff linted all files but printed the following warning everytime the out of bounds index paniced</p>
 <pre><code>warning: Linting panicked /home/micha/.config/JetBrains/CLion2022.3/scratches/scratch_3.py: This indicates a bug in `ruff`. If you could open an issue at:
 
 https://github.com/charliermarsh/ruff/issues/new?title=%5BLinter%20panic%5D
 
-with the relevant file contents, the `pyproject.toml` settings, and the following stack trace, we'd be very appreciative!
+with the relevant file contents, the `pyproject.toml` settings, and the following stack trace, we&#x27;d be very appreciative!
 
-panicked at 'index out of bounds: the len is 0 but the index is 1', crates/ruff/src/rules/pycodestyle/rules/compound_statements.rs:108:14
+panicked at &#x27;index out of bounds: the len is 0 but the index is 1&#x27;, crates/ruff/src/rules/pycodestyle/rules/compound_statements.rs:108:14
 Backtrace:    0: ruff_cli::panic::catch_unwind::{{closure}}
              at ./crates/ruff_cli/src/panic.rs:35:25
    1: &lt;alloc::boxed::Box&lt;F,A&gt; as core::ops::function::Fn&lt;Args&gt;&gt;::call
@@ -161,10 +161,10 @@ Backtrace:    0: ruff_cli::panic::catch_unwind::{{closure}}
   59: __libc_start_main
   60: _start
 </code></pre>
-<p>The top frames are related to Rust's unwind handling but frame 11 points to the problematic line.</p>
-<h2>Alternatives</h2>
+<p>The top frames are related to Rust&#x27;s unwind handling but frame 11 points to the problematic line.</p>
+Alternatives
 <ul>
-<li>We could set a panic handler (<code>set_handler</code>) per processed file. This would allow us to print the file name before crashing ruff, but it doesn't solve the problem that the bug now prevents users from using ruff.</li>
+<li>We could set a panic handler (<code>set_handler</code>) per processed file. This would allow us to print the file name before crashing ruff, but it doesn&#x27;t solve the problem that the bug now prevents users from using ruff.</li>
 <li>Keep as is</li>
 <li>Ship two binaries and fallback to the binary with <code>catch_unwind</code> enabled if we run into a panic :rofl:</li>
 </ul>
@@ -172,7 +172,7 @@ Backtrace:    0: ruff_cli::panic::catch_unwind::{{closure}}
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/commands/run.rs</code>:172 on 2023-03-14 14:27</div>
-            <div class="timeline-body"><p>We would, ideally, push a warning <code>Diagnostic</code> instead of returning <code>Ok</code> (which is decisive and could result in miscounts if we ever print all linted files), but our diagnostic infrastructure doesn't allow this today.</p>
+            <div class="timeline-body"><p>We would, ideally, push a warning <code>Diagnostic</code> instead of returning <code>Ok</code> (which is decisive and could result in miscounts if we ever print all linted files), but our diagnostic infrastructure doesn&#x27;t allow this today.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -181,16 +181,16 @@ Backtrace:    0: ruff_cli::panic::catch_unwind::{{closure}}
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2023-03-14 14:31</div>
+            <div class="event">Review requested from <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-03-14 14:31</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">performance</span> added by @MichaReiser on 2023-03-14 14:31</div>
+            <div class="event">Label <span class="label">performance</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-03-14 14:31</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">cli</span> added by @MichaReiser on 2023-03-14 14:31</div>
+            <div class="event">Label <span class="label">cli</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-03-14 14:31</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @MichaReiser on 2023-03-14 14:31</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-03-14 14:31</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-03-16 10:52</div>
@@ -198,11 +198,11 @@ Backtrace:    0: ruff_cli::panic::catch_unwind::{{closure}}
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-03-16 11:04</div>
-            <div class="timeline-body"><h2>PR Check Results</h2>
-<h3>Ecosystem</h3>
+            <div class="timeline-body">PR Check Results
+Ecosystem
 <p>✅ ecosystem check detected no changes.</p>
-<h3>Benchmark</h3>
-<h4>Linux</h4>
+Benchmark
+Linux
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 linter/all-rules/large/dataset.py          1.00     16.5±0.08ms     2.5 MB/sec    1.00     16.6±0.10ms     2.5 MB/sec
@@ -214,7 +214,7 @@ linter/default-rules/numpy/ctypeslib.py    1.02      2.0±0.01ms     8.3 MB/sec 
 linter/default-rules/numpy/globals.py      1.01    230.5±0.67µs    12.8 MB/sec    1.00    227.5±1.61µs    13.0 MB/sec
 linter/default-rules/pydantic/types.py     1.01      4.2±0.01ms     6.1 MB/sec    1.00      4.1±0.02ms     6.2 MB/sec
 </code></pre>
-<h4>Windows</h4>
+Windows
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 linter/all-rules/large/dataset.py          1.01     16.0±0.52ms     2.5 MB/sec    1.00     15.9±0.59ms     2.6 MB/sec
@@ -226,7 +226,7 @@ linter/default-rules/numpy/ctypeslib.py    1.02  1937.6±72.40µs     8.6 MB/sec
 linter/default-rules/numpy/globals.py      1.01   215.2±12.72µs    13.7 MB/sec    1.00    212.7±8.49µs    13.9 MB/sec
 linter/default-rules/pydantic/types.py     1.04      4.1±0.14ms     6.3 MB/sec    1.00      3.9±0.19ms     6.5 MB/sec
 </code></pre>
-<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
 
 </div>
         </div>
@@ -245,8 +245,8 @@ linter/default-rules/pydantic/types.py     1.04      4.1±0.14ms     6.3 MB/sec 
             <div class="timeline-body"><blockquote>
 <p>(Also, the benchmarks look unchanged -- any idea why that is?)</p>
 </blockquote>
-<p>Cargo doesn't support 'panic=abort' for benchmarks or tests, they always run with 'panic=unwind' <a href="https://github.com/rust-lang/cargo/issues/11214">[source]</a></p>
-<p>I'll reply to your other question tomorrow.</p>
+<p>Cargo doesn&#x27;t support &#x27;panic=abort&#x27; for benchmarks or tests, they always run with &#x27;panic=unwind&#x27; <a href="https://github.com/rust-lang/cargo/issues/11214">[source]</a></p>
+<p>I&#x27;ll reply to your other question tomorrow.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -254,16 +254,16 @@ linter/default-rules/pydantic/types.py     1.04      4.1±0.14ms     6.3 MB/sec 
             <div class="timeline-body"><blockquote>
 <p>How do you think about the tradeoffs here? Would we ever want to enable this until we feel really confident in no-panics, and then remove?</p>
 </blockquote>
-<p>It's a difficult one. It comes comes down to the assessment of whether Ruff aborting in the case of a panic is a problem for users.</p>
-<p>In my view, the value of Ruff is increased productivity for users, allowing them to ship high-quality software faster. And ruff delivers on that promise for many users by reducing the lint time from 30s+ to a few milliseconds. But, in my view, it's less important for productivity whether Ruff takes 190ms or 220ms, it doesn't significantly impact productivity.</p>
+<p>It&#x27;s a difficult one. It comes comes down to the assessment of whether Ruff aborting in the case of a panic is a problem for users.</p>
+<p>In my view, the value of Ruff is increased productivity for users, allowing them to ship high-quality software faster. And ruff delivers on that promise for many users by reducing the lint time from 30s+ to a few milliseconds. But, in my view, it&#x27;s less important for productivity whether Ruff takes 190ms or 220ms, it doesn&#x27;t significantly impact productivity.</p>
 <p>However, productivity takes a significant hit if Ruff blows up because of a bug, because then:</p>
 <ul>
-<li>users have to do without Ruff's guidance to write high-quality software</li>
+<li>users have to do without Ruff&#x27;s guidance to write high-quality software</li>
 <li>either users spend (a lot of) time identifying the bug and, in the best case, suppress the problematic rule in the file or on the line causing the bug</li>
 <li>..or users disable ruff until the fix is shipped (locally, on CI, for everyone)</li>
 </ul>
-<p>That's why I'm leaning toward making this a permanent change, except if we have the data that panics are extremely rare, we're in a position to ship bugfixes in hours to days, and Ruff is an established reliable high-quality productivity tool. But @charliermarsh, you're in a better position to assess if this has been a pain-point for users or if I'm extravagating ;)</p>
-<p>Obviously, regressing performance by 15% is significant. Especially because it applies to all code, including the code and tool we'll write in the future. My take here is that I'm convinced that we can improve performance by more than 15% if we are mindful of performance (make performance a habit) and focus on performant architectures and algorithms. Unfortunately, this requires more effort than using <code>panic=abort</code>.</p>
+<p>That&#x27;s why I&#x27;m leaning toward making this a permanent change, except if we have the data that panics are extremely rare, we&#x27;re in a position to ship bugfixes in hours to days, and Ruff is an established reliable high-quality productivity tool. But @charliermarsh, you&#x27;re in a better position to assess if this has been a pain-point for users or if I&#x27;m extravagating ;)</p>
+<p>Obviously, regressing performance by 15% is significant. Especially because it applies to all code, including the code and tool we&#x27;ll write in the future. My take here is that I&#x27;m convinced that we can improve performance by more than 15% if we are mindful of performance (make performance a habit) and focus on performant architectures and algorithms. Unfortunately, this requires more effort than using <code>panic=abort</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -273,7 +273,7 @@ linter/default-rules/pydantic/types.py     1.04      4.1±0.14ms     6.3 MB/sec 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-18 18:28</div>
-            <div class="timeline-body"><p>For what it's worth, I'm not sure how to quantify it, but I do think panics are uncommon. Most panic reports have fallen into two camps: (1) some file in the codebase uses CR line endings, typically a file that exists to <em>test</em> CR line endings (we improved this recently); or (2) actual fuzzing. But every panic <em>has</em> been indicative of a real bug, and <em>any</em> file panicking makes Ruff totally unusable right now.</p>
+            <div class="timeline-body"><p>For what it&#x27;s worth, I&#x27;m not sure how to quantify it, but I do think panics are uncommon. Most panic reports have fallen into two camps: (1) some file in the codebase uses CR line endings, typically a file that exists to <em>test</em> CR line endings (we improved this recently); or (2) actual fuzzing. But every panic <em>has</em> been indicative of a real bug, and <em>any</em> file panicking makes Ruff totally unusable right now.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -281,7 +281,7 @@ linter/default-rules/pydantic/types.py     1.04      4.1±0.14ms     6.3 MB/sec 
             <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
 <ul>
 <li>main<ul>
-<li><strong>PR #3509</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3509" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a>  👈</li>
+<li><strong>PR #3509</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3509"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite"></a>  👈</li>
 </ul>
 </li>
 </ul>
@@ -289,10 +289,10 @@ linter/default-rules/pydantic/types.py     1.04      4.1±0.14ms     6.3 MB/sec 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @MichaReiser on 2023-03-19 16:08</div>
+            <div class="event">Merged by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-03-19 16:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2023-03-19 16:08</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-03-19 16:08</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2023-03-19 16:08</div>
@@ -300,7 +300,7 @@ linter/default-rules/pydantic/types.py     1.04      4.1±0.14ms     6.3 MB/sec 
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:56:38 UTC
+        Synced at 2026-01-20 18:52:46 UTC
     </footer>
 </body>
 </html>

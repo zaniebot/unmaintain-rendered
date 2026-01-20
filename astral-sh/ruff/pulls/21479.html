@@ -23,44 +23,44 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/danparizher">@danparizher</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Fixes false positives in SIM222 and SIM223 where truthiness was incorrectly assumed for <code>tuple(x)</code>, <code>list(x)</code>, <code>set(x)</code> when <code>x</code> is not iterable.</p>
 <p>Fixes #21473.</p>
-<h2>Problem</h2>
+Problem
 <p><code>Truthiness::from_expr</code> recursively called itself on arguments to iterable initializers (<code>tuple</code>, <code>list</code>, <code>set</code>) without checking if the argument is iterable, causing false positives for cases like <code>tuple(0) or True</code> and <code>tuple(&quot;&quot;) or True</code>.</p>
-<h2>Approach</h2>
+Approach
 <p>Added <code>is_definitely_not_iterable</code> helper and updated <code>Truthiness::from_expr</code> to return <code>Unknown</code> for non-iterable arguments (numbers, booleans, None) and string literals when called with iterable initializers, preventing incorrect truthiness assumptions.</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>Added test cases to <code>SIM222.py</code> and <code>SIM223.py</code> for <code>tuple(&quot;&quot;)</code>, <code>tuple(0)</code>, <code>tuple(1)</code>, <code>tuple(False)</code>, and <code>tuple(None)</code> with <code>or True</code> and <code>and False</code> patterns.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-16 17:38</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-16 18:26</div>
-            <div class="timeline-body"><p>Thanks, @danparizher, for this PR. It's great to see how you jump on every Ruff issue. We appreciate your contributions greatly, and you're very productive. You're that productive that it is challenging for us to keep up with the number of PRs you submit; it can sometimes even feel a bit overwhelming to see 5 new PRs.</p>
-<p>That's why I'd like to ask you to give us some time to catch up. I think an ideal contribution experience for us (you as a contributor and we as a reviewer) would be to aim for a low one-digit number of open PRs that we aim to land before starting any new ones. That gives us the necessary time to properly review your PRs, as well as those from other contributors.</p>
-<p>I hope you won't receive this as discouraging because we really value your contributions and we would love to see more of them, maybe just have them a little more spaces out so that we can keep up :)</p>
+            <div class="timeline-body"><p>Thanks, @danparizher, for this PR. It&#x27;s great to see how you jump on every Ruff issue. We appreciate your contributions greatly, and you&#x27;re very productive. You&#x27;re that productive that it is challenging for us to keep up with the number of PRs you submit; it can sometimes even feel a bit overwhelming to see 5 new PRs.</p>
+<p>That&#x27;s why I&#x27;d like to ask you to give us some time to catch up. I think an ideal contribution experience for us (you as a contributor and we as a reviewer) would be to aim for a low one-digit number of open PRs that we aim to land before starting any new ones. That gives us the necessary time to properly review your PRs, as well as those from other contributors.</p>
+<p>I hope you won&#x27;t receive this as discouraging because we really value your contributions and we would love to see more of them, maybe just have them a little more spaces out so that we can keep up :)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/danparizher">@danparizher</a> on 2025-11-16 18:34</div>
-            <div class="timeline-body"><p>I'm not sure why this <code>ruff::cli analyze_graph</code> test is failing, I don't believe my changes are related to it.</p>
+            <div class="timeline-body"><p>I&#x27;m not sure why this <code>ruff::cli analyze_graph</code> test is failing, I don&#x27;t believe my changes are related to it.</p>
 <p>Thanks so much for the kind words @MichaReiser! No worries at all, I completely get it—sorry for the PR flood! &quot;Overzealous contributor&quot; is probably a fitting title; I just get excited about Ruff 😄</p>
-<p>I'll throttle back and stick to just a couple of open PRs at a time. I totally respect the need to keep the review pipeline manageable for you all and appreciate the heads-up!</p>
+<p>I&#x27;ll throttle back and stick to just a couple of open PRs at a time. I totally respect the need to keep the review pipeline manageable for you all and appreciate the heads-up!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -71,15 +71,15 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_ast/src/helpers.rs</code>:1347 on 2025-11-17 21:43</div>
-            <div class="timeline-body"><p>I wonder if it might make more sense to list the types we explicitly want to recurse for instead of filtering out the cases where we don't want to recurse. Maybe just even a big <code>match</code> on <code>argument</code> would be easiest to reason about. What do you think?</p>
+            <div class="timeline-body"><p>I wonder if it might make more sense to list the types we explicitly want to recurse for instead of filtering out the cases where we don&#x27;t want to recurse. Maybe just even a big <code>match</code> on <code>argument</code> would be easiest to reason about. What do you think?</p>
 <p>Basically I think we need to return <code>Self::Unknown</code> here and avoid recursing for any type that has a definite <code>Self::Truthy</code> or <code>Self::Falsey</code> (or <code>Self::None</code>) type in one of the match arms above this, if the type might result in an empty iterable or will raise a type error.</p>
-<p>As it stands, I don't think this PR actually fixes the t-string case from the issue.</p>
+<p>As it stands, I don&#x27;t think this PR actually fixes the t-string case from the issue.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM222.py</code>:222 on 2025-11-17 21:44</div>
             <div class="timeline-body"><p>We should add a t-string case:</p>
-<pre><code class="language-suggestion">tuple(t&quot;&quot;) or True  # OK
+<pre><code>tuple(t&quot;&quot;) or True  # OK
 </code></pre>
 </div>
         </div>
@@ -88,7 +88,7 @@
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-11-17 21:49</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-17 21:49</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/danparizher">@danparizher</a> reviewed on 2025-11-19 21:17</div>
@@ -112,7 +112,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_ast/src/helpers.rs</code>:1387 on 2025-11-19 22:02</div>
             <div class="timeline-body"><p>I think it would be more clear if we grouped all of the expressions into one recursive arm and one <code>Self::Unknown</code> arm. Is the default <code>_</code> matching anything here? It seems like most cases are enumerated.</p>
-<p>I'm kind of second-guessing my suggestion to list them all, but let's get the groups sorted out conclusively, and then we can decide to trim it down if it seems excessive.</p>
+<p>I&#x27;m kind of second-guessing my suggestion to list them all, but let&#x27;s get the groups sorted out conclusively, and then we can decide to trim it down if it seems excessive.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -129,11 +129,11 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @ntBre by @danparizher on 2025-11-20 00:56</div>
+            <div class="event">Review requested from <a href="https://github.com/ntBre">@ntBre</a> by <a href="https://github.com/danparizher">@danparizher</a> on 2025-11-20 00:56</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_ast/src/helpers.rs</code>:1340 on 2025-11-21 21:06</div>
-            <div class="timeline-body"><p>We're still not recursing on string literals, and the pytest snapshot is still changing like I mentioned in https://github.com/astral-sh/ruff/pull/21479#discussion_r2543698051 and https://github.com/astral-sh/ruff/pull/21479#discussion_r2535574572.</p>
+            <div class="timeline-body"><p>We&#x27;re still not recursing on string literals, and the pytest snapshot is still changing like I mentioned in <a href="https://github.com/astral-sh/ruff/pull/21479">astral-sh/ruff#21479</a>#discussion_r2543698051 and <a href="https://github.com/astral-sh/ruff/pull/21479">astral-sh/ruff#21479</a>#discussion_r2535574572.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -141,17 +141,17 @@
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @ntBre by @danparizher on 2025-11-29 00:36</div>
+            <div class="event">Review requested from <a href="https://github.com/ntBre">@ntBre</a> by <a href="https://github.com/danparizher">@danparizher</a> on 2025-11-29 00:36</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-12-01 21:57</div>
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @ntBre on 2025-12-01 21:57</div>
+            <div class="event">Merged by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-01 21:57</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ntBre on 2025-12-01 21:57</div>
+            <div class="event">Closed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-01 21:57</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-12-01 22:37</div>
@@ -159,7 +159,7 @@
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:17:19 UTC
+        Synced at 2026-01-20 19:20:43 UTC
     </footer>
 </body>
 </html>

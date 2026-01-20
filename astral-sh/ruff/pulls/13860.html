@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This PR changes how quotes are selected for f-strings and nested string literals when preview mode is on.</p>
 <p>For the outer f-string: The logic is the same as for any other strings, except that we only count the quotes inside literal parts. This is different from before where <code>choose_quotes</code> analyzed the entire f-string, including expressions.</p>
 <p>The rules for inner f-strings are:</p>
@@ -31,43 +31,43 @@
 <li>If the outer f-string is a triple quoted string: Prefer the configured quote style</li>
 <li>If the outer f-string is single quoted: Prefer the opposite quote style (alternate the quote styles).</li>
 </ul>
-<pre><code class="language-python">f&quot;{'inner'}&quot;
+<pre><code>f&quot;{&#x27;inner&#x27;}&quot;
 
 # Before
 f&quot;{&quot;inner&quot;}&quot;
 </code></pre>
 <p>The only exception to the above rule is when targeting &lt;Py312 and the f-string contains a debug-expression that itself contains quotes:</p>
-<pre><code class="language-python">f'{a + &quot;b&quot;=}' # Can't change the quotes here
+<pre><code>f&#x27;{a + &quot;b&quot;=}&#x27; # Can&#x27;t change the quotes here
 </code></pre>
-<p>In this case, changing the quotes is unsafe because the debug expression will retain its existing quotes. That's why the implementation must preserve the outer quotes as is. Changing the outer quotes is fine when targeting Py312+.</p>
-<pre><code class="language-python">f&quot;{a + &quot;b&quot;=}&quot;
+<p>In this case, changing the quotes is unsafe because the debug expression will retain its existing quotes. That&#x27;s why the implementation must preserve the outer quotes as is. Changing the outer quotes is fine when targeting Py312+.</p>
+<pre><code>f&quot;{a + &quot;b&quot;=}&quot;
 </code></pre>
 <p>The advantage of limiting the pre-312 behavior to only debug expressions is that an upgrade of the target version to 312 should result in a very small diff considering that debug expressions containing quotes should be rare.</p>
-<p>Fixes https://github.com/astral-sh/ruff/issues/13237
-Fixes https://github.com/astral-sh/ruff/issues/11056</p>
-<h2>Considerations</h2>
+<p>Fixes <a href="https://github.com/astral-sh/ruff/issues/13237">astral-sh/ruff#13237</a>
+Fixes <a href="https://github.com/astral-sh/ruff/issues/11056">astral-sh/ruff#11056</a></p>
+Considerations
 <p>This new style no longer optimizes for the fewest &quot;foreign&quot; quotes in total. E.g. it changes</p>
-<pre><code class="language-python">return f'#{data[&quot;node&quot;][&quot;number&quot;]} {component_str}{data[&quot;node&quot;][&quot;title&quot;]}'
+<pre><code>return f&#x27;#{data[&quot;node&quot;][&quot;number&quot;]} {component_str}{data[&quot;node&quot;][&quot;title&quot;]}&#x27;
 </code></pre>
 <p>to</p>
-<pre><code class="language-python">return f&quot;#{data['node']['number']} {component_str}{data['node']['title']}&quot;
+<pre><code>return f&quot;#{data[&#x27;node&#x27;][&#x27;number&#x27;]} {component_str}{data[&#x27;node&#x27;][&#x27;title&#x27;]}&quot;
 </code></pre>
 <p>where the total preferred quotes count is 2, but it uses 8 single quotes.</p>
-<h2>Test Plan</h2>
+Test Plan
 <ul>
 <li>Added tests</li>
 <li>Reviewed the snapshot changes</li>
 <li>Reviewed the ecosystem changes</li>
 </ul>
-<h2>Review</h2>
+Review
 <p>The most useful for review is if you can think of more cursed f-string examples where the above approach might produce invalid f-strings or weird looking quote selections.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2024-10-21 14:28</div>
+            <div class="event">Label <span class="label">formatter</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-21 14:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2024-10-21 14:28</div>
+            <div class="event">Label <span class="label">preview</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-21 14:28</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-21 14:48</div>
@@ -80,1269 +80,1269 @@ Fixes https://github.com/astral-sh/ruff/issues/11056</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-10-21 15:17</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>ℹ️ ecosystem check <strong>detected format changes</strong>. (+338 -338 lines in 178 files in 30 projects; 24 projects unchanged)</p>
-<details><summary><a href="https://github.com/DisnakeDev/disnake">DisnakeDev/disnake</a> (+2 -2 lines across 1 file)</summary>
+<a href="https://github.com/DisnakeDev/disnake">DisnakeDev/disnake</a> (+2 -2 lines across 1 file)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/opus.py#L371'>disnake/opus.py~L371</a></p>
-<pre><code class="language-diff">     def set_bandwidth(self, req: BAND_CTL) -&gt; None:
+<p><a href="https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/opus.py#L371">disnake/opus.py~L371</a></p>
+<pre><code>     def set_bandwidth(self, req: BAND_CTL) -&gt; None:
          if req not in band_ctl:
              raise KeyError(
--                f'{req!r} is not a valid bandwidth setting. Try one of: {&quot;,&quot;.join(band_ctl)}'
-+                f&quot;{req!r} is not a valid bandwidth setting. Try one of: {','.join(band_ctl)}&quot;
+-                f&#x27;{req!r} is not a valid bandwidth setting. Try one of: {&quot;,&quot;.join(band_ctl)}&#x27;
++                f&quot;{req!r} is not a valid bandwidth setting. Try one of: {&#x27;,&#x27;.join(band_ctl)}&quot;
              )
  
          k = band_ctl[req]
 </code></pre>
-<p><a href='https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/opus.py#L380'>disnake/opus.py~L380</a></p>
-<pre><code class="language-diff">     def set_signal_type(self, req: SIGNAL_CTL) -&gt; None:
+<p><a href="https://github.com/DisnakeDev/disnake/blob/a34d0f95b4465f5fcf8bc5b20c25040e155f00e6/disnake/opus.py#L380">disnake/opus.py~L380</a></p>
+<pre><code>     def set_signal_type(self, req: SIGNAL_CTL) -&gt; None:
          if req not in signal_ctl:
              raise KeyError(
--                f'{req!r} is not a valid bandwidth setting. Try one of: {&quot;,&quot;.join(signal_ctl)}'
-+                f&quot;{req!r} is not a valid bandwidth setting. Try one of: {','.join(signal_ctl)}&quot;
+-                f&#x27;{req!r} is not a valid bandwidth setting. Try one of: {&quot;,&quot;.join(signal_ctl)}&#x27;
++                f&quot;{req!r} is not a valid bandwidth setting. Try one of: {&#x27;,&#x27;.join(signal_ctl)}&quot;
              )
  
          k = signal_ctl[req]
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/RasaHQ/rasa">RasaHQ/rasa</a> (+2 -2 lines across 1 file)</summary>
+
+<a href="https://github.com/RasaHQ/rasa">RasaHQ/rasa</a> (+2 -2 lines across 1 file)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/training/interactive.py#L346'>rasa/core/training/interactive.py~L346</a></p>
-<pre><code class="language-diff">     choices = []
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/training/interactive.py#L346">rasa/core/training/interactive.py~L346</a></p>
+<pre><code>     choices = []
      for p in sorted_intents:
          name_with_confidence = (
--            f'{p.get(&quot;confidence&quot;):03.2f} {p.get(INTENT_NAME_KEY):40}'
-+            f&quot;{p.get('confidence'):03.2f} {p.get(INTENT_NAME_KEY):40}&quot;
+-            f&#x27;{p.get(&quot;confidence&quot;):03.2f} {p.get(INTENT_NAME_KEY):40}&#x27;
++            f&quot;{p.get(&#x27;confidence&#x27;):03.2f} {p.get(INTENT_NAME_KEY):40}&quot;
          )
          choice = {
              INTENT_NAME_KEY: name_with_confidence,
 </code></pre>
-<p><a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/training/interactive.py#L674'>rasa/core/training/interactive.py~L674</a></p>
-<pre><code class="language-diff">     await _print_history(conversation_id, endpoint)
+<p><a href="https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/training/interactive.py#L674">rasa/core/training/interactive.py~L674</a></p>
+<pre><code>     await _print_history(conversation_id, endpoint)
  
      choices = [
--        {&quot;name&quot;: f'{a[&quot;score&quot;]:03.2f} {a[&quot;action&quot;]:40}', &quot;value&quot;: a[&quot;action&quot;]}
-+        {&quot;name&quot;: f&quot;{a['score']:03.2f} {a['action']:40}&quot;, &quot;value&quot;: a[&quot;action&quot;]}
+-        {&quot;name&quot;: f&#x27;{a[&quot;score&quot;]:03.2f} {a[&quot;action&quot;]:40}&#x27;, &quot;value&quot;: a[&quot;action&quot;]}
++        {&quot;name&quot;: f&quot;{a[&#x27;score&#x27;]:03.2f} {a[&#x27;action&#x27;]:40}&quot;, &quot;value&quot;: a[&quot;action&quot;]}
          for a in predictions
      ]
  
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/Snowflake-Labs/snowcli">Snowflake-Labs/snowcli</a> (+1 -1 lines across 1 file)</summary>
+
+<a href="https://github.com/Snowflake-Labs/snowcli">Snowflake-Labs/snowcli</a> (+1 -1 lines across 1 file)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/Snowflake-Labs/snowcli/blob/1acca459e210e7a40513d7663108c3e873b2f85b/tests/test_connection.py#L1268'>tests/test_connection.py~L1268</a></p>
-<pre><code class="language-diff">             [&quot;connection&quot;, &quot;generate-jwt&quot;, &quot;-c&quot;, &quot;jwt&quot;],
+<p><a href="https://github.com/Snowflake-Labs/snowcli/blob/1acca459e210e7a40513d7663108c3e873b2f85b/tests/test_connection.py#L1268">tests/test_connection.py~L1268</a></p>
+<pre><code>             [&quot;connection&quot;, &quot;generate-jwt&quot;, &quot;-c&quot;, &quot;jwt&quot;],
          )
          assert (
--            f'{attribute.capitalize().replace(&quot;_&quot;, &quot; &quot;)} is not set in the connection context'
-+            f&quot;{attribute.capitalize().replace('_', ' ')} is not set in the connection context&quot;
+-            f&#x27;{attribute.capitalize().replace(&quot;_&quot;, &quot; &quot;)} is not set in the connection context&#x27;
++            f&quot;{attribute.capitalize().replace(&#x27;_&#x27;, &#x27; &#x27;)} is not set in the connection context&quot;
              in result.output
          )
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+8 -8 lines across 5 files)</summary>
+
+<a href="https://github.com/apache/airflow">apache/airflow</a> (+8 -8 lines across 5 files)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/apache/airflow/blob/35142a907f5f37c9a4d0fb2f402831703f258ad3/dev/breeze/src/airflow_breeze/commands/release_management_commands.py#L2035'>dev/breeze/src/airflow_breeze/commands/release_management_commands.py~L2035</a></p>
-<pre><code class="language-diff">     &quot;&quot;&quot;Check if package has been prepared in dist folder.&quot;&quot;&quot;
+<p><a href="https://github.com/apache/airflow/blob/35142a907f5f37c9a4d0fb2f402831703f258ad3/dev/breeze/src/airflow_breeze/commands/release_management_commands.py#L2035">dev/breeze/src/airflow_breeze/commands/release_management_commands.py~L2035</a></p>
+<pre><code>     &quot;&quot;&quot;Check if package has been prepared in dist folder.&quot;&quot;&quot;
      return any(
          file.startswith((
--            f'apache_airflow_providers_{package.replace(&quot;.&quot;, &quot;_&quot;)}',
--            f'apache-airflow-providers-{package.replace(&quot;.&quot;, &quot;-&quot;)}',
-+            f&quot;apache_airflow_providers_{package.replace('.', '_')}&quot;,
-+            f&quot;apache-airflow-providers-{package.replace('.', '-')}&quot;,
+-            f&#x27;apache_airflow_providers_{package.replace(&quot;.&quot;, &quot;_&quot;)}&#x27;,
+-            f&#x27;apache-airflow-providers-{package.replace(&quot;.&quot;, &quot;-&quot;)}&#x27;,
++            f&quot;apache_airflow_providers_{package.replace(&#x27;.&#x27;, &#x27;_&#x27;)}&quot;,
++            f&quot;apache-airflow-providers-{package.replace(&#x27;.&#x27;, &#x27;-&#x27;)}&quot;,
          ))
          for file in dist_files
      )
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/35142a907f5f37c9a4d0fb2f402831703f258ad3/dev/breeze/src/airflow_breeze/commands/release_management_commands.py#L2048'>dev/breeze/src/airflow_breeze/commands/release_management_commands.py~L2048</a></p>
-<pre><code class="language-diff"> def get_suffix_from_package_in_dist(dist_files: list[str], package: str) -&gt; str | None:
+<p><a href="https://github.com/apache/airflow/blob/35142a907f5f37c9a4d0fb2f402831703f258ad3/dev/breeze/src/airflow_breeze/commands/release_management_commands.py#L2048">dev/breeze/src/airflow_breeze/commands/release_management_commands.py~L2048</a></p>
+<pre><code> def get_suffix_from_package_in_dist(dist_files: list[str], package: str) -&gt; str | None:
      &quot;&quot;&quot;Get suffix from package prepared in dist folder.&quot;&quot;&quot;
      for file in dist_files:
--        if file.startswith(f'apache_airflow_providers_{package.replace(&quot;.&quot;, &quot;_&quot;)}') and file.endswith(
-+        if file.startswith(f&quot;apache_airflow_providers_{package.replace('.', '_')}&quot;) and file.endswith(
+-        if file.startswith(f&#x27;apache_airflow_providers_{package.replace(&quot;.&quot;, &quot;_&quot;)}&#x27;) and file.endswith(
++        if file.startswith(f&quot;apache_airflow_providers_{package.replace(&#x27;.&#x27;, &#x27;_&#x27;)}&quot;) and file.endswith(
              &quot;.tar.gz&quot;
          ):
              file = file[: -len(&quot;.tar.gz&quot;)]
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/35142a907f5f37c9a4d0fb2f402831703f258ad3/dev/breeze/src/airflow_breeze/utils/packages.py#L714'>dev/breeze/src/airflow_breeze/utils/packages.py~L714</a></p>
-<pre><code class="language-diff">             f&quot;[error]Error {e}[/]\n&quot;
+<p><a href="https://github.com/apache/airflow/blob/35142a907f5f37c9a4d0fb2f402831703f258ad3/dev/breeze/src/airflow_breeze/utils/packages.py#L714">dev/breeze/src/airflow_breeze/utils/packages.py~L714</a></p>
+<pre><code>             f&quot;[error]Error {e}[/]\n&quot;
              f&quot;[error]When fetching tags from remote. Your tags might not be refreshed.[/]\n\n&quot;
-             f'[warning]Please refresh the tags manually via:[/]\n\n&quot;'
--            f'{&quot; &quot;.join(fetch_command)}\n\n'
-+            f&quot;{' '.join(fetch_command)}\n\n&quot;
+             f&#x27;[warning]Please refresh the tags manually via:[/]\n\n&quot;&#x27;
+-            f&#x27;{&quot; &quot;.join(fetch_command)}\n\n&#x27;
++            f&quot;{&#x27; &#x27;.join(fetch_command)}\n\n&quot;
          )
          sys.exit(1)
  
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/35142a907f5f37c9a4d0fb2f402831703f258ad3/providers/src/airflow/providers/docker/decorators/docker.py#L161'>providers/src/airflow/providers/docker/decorators/docker.py~L161</a></p>
-<pre><code class="language-diff">             f&quot;&quot;&quot;bash -cx  '{
+<p><a href="https://github.com/apache/airflow/blob/35142a907f5f37c9a4d0fb2f402831703f258ad3/providers/src/airflow/providers/docker/decorators/docker.py#L161">providers/src/airflow/providers/docker/decorators/docker.py~L161</a></p>
+<pre><code>             f&quot;&quot;&quot;bash -cx  &#x27;{
                  _generate_decode_command(&quot;__PYTHON_SCRIPT&quot;, &quot;/tmp/script.py&quot;, self.python_command)
              } &amp;&amp;&quot;&quot;&quot;
--            f'{_generate_decode_command(&quot;__PYTHON_INPUT&quot;, &quot;/tmp/script.in&quot;, self.python_command)} &amp;&amp;'
-+            f&quot;{_generate_decode_command('__PYTHON_INPUT', '/tmp/script.in', self.python_command)} &amp;&amp;&quot;
-             f&quot;{self.python_command} /tmp/script.py /tmp/script.in /tmp/script.out none /tmp/script.out'&quot;
+-            f&#x27;{_generate_decode_command(&quot;__PYTHON_INPUT&quot;, &quot;/tmp/script.in&quot;, self.python_command)} &amp;&amp;&#x27;
++            f&quot;{_generate_decode_command(&#x27;__PYTHON_INPUT&#x27;, &#x27;/tmp/script.in&#x27;, self.python_command)} &amp;&amp;&quot;
+             f&quot;{self.python_command} /tmp/script.py /tmp/script.in /tmp/script.out none /tmp/script.out&#x27;&quot;
          )
  
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/35142a907f5f37c9a4d0fb2f402831703f258ad3/providers/tests/system/amazon/aws/example_sagemaker_endpoint.py#L211'>providers/tests/system/amazon/aws/example_sagemaker_endpoint.py~L211</a></p>
-<pre><code class="language-diff">     upload_data = S3CreateObjectOperator(
+<p><a href="https://github.com/apache/airflow/blob/35142a907f5f37c9a4d0fb2f402831703f258ad3/providers/tests/system/amazon/aws/example_sagemaker_endpoint.py#L211">providers/tests/system/amazon/aws/example_sagemaker_endpoint.py~L211</a></p>
+<pre><code>     upload_data = S3CreateObjectOperator(
          task_id=&quot;upload_data&quot;,
          s3_bucket=test_setup[&quot;bucket_name&quot;],
--        s3_key=f'{test_setup[&quot;input_data_s3_key&quot;]}/train.csv',
-+        s3_key=f&quot;{test_setup['input_data_s3_key']}/train.csv&quot;,
+-        s3_key=f&#x27;{test_setup[&quot;input_data_s3_key&quot;]}/train.csv&#x27;,
++        s3_key=f&quot;{test_setup[&#x27;input_data_s3_key&#x27;]}/train.csv&quot;,
          data=TRAIN_DATA,
      )
  
 </code></pre>
-<p><a href='https://github.com/apache/airflow/blob/35142a907f5f37c9a4d0fb2f402831703f258ad3/tests/models/test_dagbag.py#L498'>tests/models/test_dagbag.py~L498</a></p>
-<pre><code class="language-diff">         dag_id = expected_dag.dag_id
+<p><a href="https://github.com/apache/airflow/blob/35142a907f5f37c9a4d0fb2f402831703f258ad3/tests/models/test_dagbag.py#L498">tests/models/test_dagbag.py~L498</a></p>
+<pre><code>         dag_id = expected_dag.dag_id
          actual_dagbag.log.info(&quot;validating %s&quot;, dag_id)
          assert (dag_id in actual_found_dag_ids) == should_be_found, (
--            f&quot;dag \&quot;{dag_id}\&quot; should {'' if should_be_found else 'not '}&quot;
-+            f'dag &quot;{dag_id}&quot; should {&quot;&quot; if should_be_found else &quot;not &quot;}'
-             f'have been found after processing dag &quot;{expected_dag.dag_id}&quot;'
+-            f&quot;dag \&quot;{dag_id}\&quot; should {&#x27;&#x27; if should_be_found else &#x27;not &#x27;}&quot;
++            f&#x27;dag &quot;{dag_id}&quot; should {&quot;&quot; if should_be_found else &quot;not &quot;}&#x27;
+             f&#x27;have been found after processing dag &quot;{expected_dag.dag_id}&quot;&#x27;
          )
          assert (dag_id in actual_dagbag.dags) == should_be_found, (
--            f&quot;dag \&quot;{dag_id}\&quot; should {'' if should_be_found else 'not '}&quot;
-+            f'dag &quot;{dag_id}&quot; should {&quot;&quot; if should_be_found else &quot;not &quot;}'
-             f'be in dagbag.dags after processing dag &quot;{expected_dag.dag_id}&quot;'
+-            f&quot;dag \&quot;{dag_id}\&quot; should {&#x27;&#x27; if should_be_found else &#x27;not &#x27;}&quot;
++            f&#x27;dag &quot;{dag_id}&quot; should {&quot;&quot; if should_be_found else &quot;not &quot;}&#x27;
+             f&#x27;be in dagbag.dags after processing dag &quot;{expected_dag.dag_id}&quot;&#x27;
          )
  
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+7 -7 lines across 5 files)</summary>
+
+<a href="https://github.com/apache/superset">apache/superset</a> (+7 -7 lines across 5 files)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/apache/superset/blob/4433ef47feccb4bdac00ea9235802202b1e92952/superset/db_engine_specs/snowflake.py#L334'>superset/db_engine_specs/snowflake.py~L334</a></p>
-<pre><code class="language-diff">         if missing := sorted(required - present):
+<p><a href="https://github.com/apache/superset/blob/4433ef47feccb4bdac00ea9235802202b1e92952/superset/db_engine_specs/snowflake.py#L334">superset/db_engine_specs/snowflake.py~L334</a></p>
+<pre><code>         if missing := sorted(required - present):
              errors.append(
                  SupersetError(
--                    message=f'One or more parameters are missing: {&quot;, &quot;.join(missing)}',
-+                    message=f&quot;One or more parameters are missing: {', '.join(missing)}&quot;,
+-                    message=f&#x27;One or more parameters are missing: {&quot;, &quot;.join(missing)}&#x27;,
++                    message=f&quot;One or more parameters are missing: {&#x27;, &#x27;.join(missing)}&quot;,
                      error_type=SupersetErrorType.CONNECTION_MISSING_PARAMETERS_ERROR,
                      level=ErrorLevel.WARNING,
                      extra={&quot;missing&quot;: missing},
 </code></pre>
-<p><a href='https://github.com/apache/superset/blob/4433ef47feccb4bdac00ea9235802202b1e92952/superset/sql_lab.py#L267'>superset/sql_lab.py~L267</a></p>
-<pre><code class="language-diff">         if not query.tmp_table_name:
+<p><a href="https://github.com/apache/superset/blob/4433ef47feccb4bdac00ea9235802202b1e92952/superset/sql_lab.py#L267">superset/sql_lab.py~L267</a></p>
+<pre><code>         if not query.tmp_table_name:
              start_dttm = datetime.fromtimestamp(query.start_time)
              query.tmp_table_name = (
--                f'tmp_{query.user_id}_table_{start_dttm.strftime(&quot;%Y_%m_%d_%H_%M_%S&quot;)}'
-+                f&quot;tmp_{query.user_id}_table_{start_dttm.strftime('%Y_%m_%d_%H_%M_%S')}&quot;
+-                f&#x27;tmp_{query.user_id}_table_{start_dttm.strftime(&quot;%Y_%m_%d_%H_%M_%S&quot;)}&#x27;
++                f&quot;tmp_{query.user_id}_table_{start_dttm.strftime(&#x27;%Y_%m_%d_%H_%M_%S&#x27;)}&quot;
              )
          sql = parsed_query.as_create_table(
              query.tmp_table_name,
 </code></pre>
-<p><a href='https://github.com/apache/superset/blob/4433ef47feccb4bdac00ea9235802202b1e92952/superset/tags/api.py#L143'>superset/tags/api.py~L143</a></p>
-<pre><code class="language-diff">         &quot;&quot;&quot;Deterministic string representation of the API instance for etag_cache.&quot;&quot;&quot;
+<p><a href="https://github.com/apache/superset/blob/4433ef47feccb4bdac00ea9235802202b1e92952/superset/tags/api.py#L143">superset/tags/api.py~L143</a></p>
+<pre><code>         &quot;&quot;&quot;Deterministic string representation of the API instance for etag_cache.&quot;&quot;&quot;
          return (
              &quot;Superset.tags.api.TagRestApi@v&quot;
--            f'{self.appbuilder.app.config[&quot;VERSION_STRING&quot;]}'
--            f'{self.appbuilder.app.config[&quot;VERSION_SHA&quot;]}'
-+            f&quot;{self.appbuilder.app.config['VERSION_STRING']}&quot;
-+            f&quot;{self.appbuilder.app.config['VERSION_SHA']}&quot;
+-            f&#x27;{self.appbuilder.app.config[&quot;VERSION_STRING&quot;]}&#x27;
+-            f&#x27;{self.appbuilder.app.config[&quot;VERSION_SHA&quot;]}&#x27;
++            f&quot;{self.appbuilder.app.config[&#x27;VERSION_STRING&#x27;]}&quot;
++            f&quot;{self.appbuilder.app.config[&#x27;VERSION_SHA&#x27;]}&quot;
          )
  
      @expose(&quot;/&quot;, methods=(&quot;POST&quot;,))
 </code></pre>
-<p><a href='https://github.com/apache/superset/blob/4433ef47feccb4bdac00ea9235802202b1e92952/tests/integration_tests/datasets/api_tests.py#L723'>tests/integration_tests/datasets/api_tests.py~L723</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/apache/superset/blob/4433ef47feccb4bdac00ea9235802202b1e92952/tests/integration_tests/datasets/api_tests.py#L723">tests/integration_tests/datasets/api_tests.py~L723</a></p>
+<pre><code> 
          # cleanup
          data = json.loads(rv.data.decode(&quot;utf-8&quot;))
--        uri = f'api/v1/dataset/{data.get(&quot;id&quot;)}'
-+        uri = f&quot;api/v1/dataset/{data.get('id')}&quot;
+-        uri = f&#x27;api/v1/dataset/{data.get(&quot;id&quot;)}&#x27;
++        uri = f&quot;api/v1/dataset/{data.get(&#x27;id&#x27;)}&quot;
          rv = self.client.delete(uri)
          assert rv.status_code == 200
          with example_db.get_sqla_engine() as engine:
 </code></pre>
-<p><a href='https://github.com/apache/superset/blob/4433ef47feccb4bdac00ea9235802202b1e92952/tests/integration_tests/datasets/api_tests.py#L808'>tests/integration_tests/datasets/api_tests.py~L808</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/apache/superset/blob/4433ef47feccb4bdac00ea9235802202b1e92952/tests/integration_tests/datasets/api_tests.py#L808">tests/integration_tests/datasets/api_tests.py~L808</a></p>
+<pre><code> 
              # cleanup
              data = json.loads(rv.data.decode(&quot;utf-8&quot;))
--            uri = f'api/v1/dataset/{data.get(&quot;id&quot;)}'
-+            uri = f&quot;api/v1/dataset/{data.get('id')}&quot;
+-            uri = f&#x27;api/v1/dataset/{data.get(&quot;id&quot;)}&#x27;
++            uri = f&quot;api/v1/dataset/{data.get(&#x27;id&#x27;)}&quot;
              rv = self.client.delete(uri)
              assert rv.status_code == 200
  
 </code></pre>
-<p><a href='https://github.com/apache/superset/blob/4433ef47feccb4bdac00ea9235802202b1e92952/tests/integration_tests/datasource_tests.py#L541'>tests/integration_tests/datasource_tests.py~L541</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/apache/superset/blob/4433ef47feccb4bdac00ea9235802202b1e92952/tests/integration_tests/datasource_tests.py#L541">tests/integration_tests/datasource_tests.py~L541</a></p>
+<pre><code> 
      sql = (
          f&quot;select * from ({virtual_dataset.sql}) as tbl &quot;
--        f'limit {app.config[&quot;SAMPLES_ROW_LIMIT&quot;]}'
-+        f&quot;limit {app.config['SAMPLES_ROW_LIMIT']}&quot;
+-        f&#x27;limit {app.config[&quot;SAMPLES_ROW_LIMIT&quot;]}&#x27;
++        f&quot;limit {app.config[&#x27;SAMPLES_ROW_LIMIT&#x27;]}&quot;
      )
      eager_samples = virtual_dataset.database.get_df(sql)
  
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/aws/aws-sam-cli">aws/aws-sam-cli</a> (+2 -2 lines across 2 files)</summary>
+
+<a href="https://github.com/aws/aws-sam-cli">aws/aws-sam-cli</a> (+2 -2 lines across 2 files)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/aws/aws-sam-cli/blob/97e63dcc2738529eded8eecfef4b875abc3a476f/tests/integration/testdata/remote_invoke/lambda-fns/main.py#L9'>tests/integration/testdata/remote_invoke/lambda-fns/main.py~L9</a></p>
-<pre><code class="language-diff">     print(&quot;value2 = &quot; + event[&quot;key2&quot;])
+<p><a href="https://github.com/aws/aws-sam-cli/blob/97e63dcc2738529eded8eecfef4b875abc3a476f/tests/integration/testdata/remote_invoke/lambda-fns/main.py#L9">tests/integration/testdata/remote_invoke/lambda-fns/main.py~L9</a></p>
+<pre><code>     print(&quot;value2 = &quot; + event[&quot;key2&quot;])
      print(&quot;value3 = &quot; + event[&quot;key3&quot;])
  
--    return {&quot;message&quot;: f'{event[&quot;key1&quot;]} {event[&quot;key3&quot;]}'}
-+    return {&quot;message&quot;: f&quot;{event['key1']} {event['key3']}&quot;}
+-    return {&quot;message&quot;: f&#x27;{event[&quot;key1&quot;]} {event[&quot;key3&quot;]}&#x27;}
++    return {&quot;message&quot;: f&quot;{event[&#x27;key1&#x27;]} {event[&#x27;key3&#x27;]}&quot;}
  
  
  def custom_env_var_echo_handler(event, context):
 </code></pre>
-<p><a href='https://github.com/aws/aws-sam-cli/blob/97e63dcc2738529eded8eecfef4b875abc3a476f/tests/unit/commands/pipeline/init/test_initeractive_init_flow.py#L188'>tests/unit/commands/pipeline/init/test_initeractive_init_flow.py~L188</a></p>
-<pre><code class="language-diff">             str([&quot;2&quot;, &quot;pipeline_execution_role&quot;]): &quot;arn:aws:iam::123456789012:role/execution-role&quot;,
+<p><a href="https://github.com/aws/aws-sam-cli/blob/97e63dcc2738529eded8eecfef4b875abc3a476f/tests/unit/commands/pipeline/init/test_initeractive_init_flow.py#L188">tests/unit/commands/pipeline/init/test_initeractive_init_flow.py~L188</a></p>
+<pre><code>             str([&quot;2&quot;, &quot;pipeline_execution_role&quot;]): &quot;arn:aws:iam::123456789012:role/execution-role&quot;,
              str([&quot;default&quot;, &quot;pipeline_execution_role&quot;]): &quot;arn:aws:iam::123456789012:role/execution-role&quot;,
              str([&quot;stage_names_message&quot;]): &quot;Here are the stage configuration names detected &quot;
--            f'in {os.path.join(&quot;.aws-sam&quot;, &quot;pipeline&quot;, &quot;pipelineconfig.toml&quot;)}:\n\t1 - testing\n\t2 - prod',
-+            f&quot;in {os.path.join('.aws-sam', 'pipeline', 'pipelineconfig.toml')}:\n\t1 - testing\n\t2 - prod&quot;,
+-            f&#x27;in {os.path.join(&quot;.aws-sam&quot;, &quot;pipeline&quot;, &quot;pipelineconfig.toml&quot;)}:\n\t1 - testing\n\t2 - prod&#x27;,
++            f&quot;in {os.path.join(&#x27;.aws-sam&#x27;, &#x27;pipeline&#x27;, &#x27;pipelineconfig.toml&#x27;)}:\n\t1 - testing\n\t2 - prod&quot;,
              &quot;shared_values&quot;: &quot;default&quot;,
          })
          cookiecutter_mock.assert_called_once_with(
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/binary-husky/gpt_academic">binary-husky/gpt_academic</a> (+12 -12 lines across 8 files)</summary>
+
+<a href="https://github.com/binary-husky/gpt_academic">binary-husky/gpt_academic</a> (+12 -12 lines across 8 files)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/binary-husky/gpt_academic/blob/69f3755682e8fb5c07d12a78e40fc06e5ac9d233/crazy_functions/Conversation_To_File.py#L246'>crazy_functions/Conversation_To_File.py~L246</a></p>
-<pre><code class="language-diff">         local_history = &quot;&lt;br/&gt;&quot;.join([
+<p><a href="https://github.com/binary-husky/gpt_academic/blob/69f3755682e8fb5c07d12a78e40fc06e5ac9d233/crazy_functions/Conversation_To_File.py#L246">crazy_functions/Conversation_To_File.py~L246</a></p>
+<pre><code>         local_history = &quot;&lt;br/&gt;&quot;.join([
              &quot;`&quot; + hide_cwd(f) + f&quot; ({gen_file_preview(f)})&quot; + &quot;`&quot;
              for f in glob.glob(
--                f'{get_log_folder(get_user(chatbot), plugin_name=&quot;chat_history&quot;)}/**/{f_prefix}*.html',
-+                f&quot;{get_log_folder(get_user(chatbot), plugin_name='chat_history')}/**/{f_prefix}*.html&quot;,
+-                f&#x27;{get_log_folder(get_user(chatbot), plugin_name=&quot;chat_history&quot;)}/**/{f_prefix}*.html&#x27;,
++                f&quot;{get_log_folder(get_user(chatbot), plugin_name=&#x27;chat_history&#x27;)}/**/{f_prefix}*.html&quot;,
                  recursive=True,
              )
          ])
 </code></pre>
-<p><a href='https://github.com/binary-husky/gpt_academic/blob/69f3755682e8fb5c07d12a78e40fc06e5ac9d233/crazy_functions/Conversation_To_File.py#L285'>crazy_functions/Conversation_To_File.py~L285</a></p>
-<pre><code class="language-diff">     local_history = &quot;&lt;br/&gt;&quot;.join([
+<p><a href="https://github.com/binary-husky/gpt_academic/blob/69f3755682e8fb5c07d12a78e40fc06e5ac9d233/crazy_functions/Conversation_To_File.py#L285">crazy_functions/Conversation_To_File.py~L285</a></p>
+<pre><code>     local_history = &quot;&lt;br/&gt;&quot;.join([
          &quot;`&quot; + hide_cwd(f) + &quot;`&quot;
          for f in glob.glob(
--            f'{get_log_folder(get_user(chatbot), plugin_name=&quot;chat_history&quot;)}/**/{f_prefix}*.html',
-+            f&quot;{get_log_folder(get_user(chatbot), plugin_name='chat_history')}/**/{f_prefix}*.html&quot;,
+-            f&#x27;{get_log_folder(get_user(chatbot), plugin_name=&quot;chat_history&quot;)}/**/{f_prefix}*.html&#x27;,
++            f&quot;{get_log_folder(get_user(chatbot), plugin_name=&#x27;chat_history&#x27;)}/**/{f_prefix}*.html&quot;,
              recursive=True,
          )
      ])
      for f in glob.glob(
--        f'{get_log_folder(get_user(chatbot), plugin_name=&quot;chat_history&quot;)}/**/{f_prefix}*.html',
-+        f&quot;{get_log_folder(get_user(chatbot), plugin_name='chat_history')}/**/{f_prefix}*.html&quot;,
+-        f&#x27;{get_log_folder(get_user(chatbot), plugin_name=&quot;chat_history&quot;)}/**/{f_prefix}*.html&#x27;,
++        f&quot;{get_log_folder(get_user(chatbot), plugin_name=&#x27;chat_history&#x27;)}/**/{f_prefix}*.html&quot;,
          recursive=True,
      ):
          os.remove(f)
 </code></pre>
-<p><a href='https://github.com/binary-husky/gpt_academic/blob/69f3755682e8fb5c07d12a78e40fc06e5ac9d233/crazy_functions/Markdown_Translate.py#L193'>crazy_functions/Markdown_Translate.py~L193</a></p>
-<pre><code class="language-diff">                 txt = txt.replace(&quot;/blob/&quot;, &quot;/&quot;)
+<p><a href="https://github.com/binary-husky/gpt_academic/blob/69f3755682e8fb5c07d12a78e40fc06e5ac9d233/crazy_functions/Markdown_Translate.py#L193">crazy_functions/Markdown_Translate.py~L193</a></p>
+<pre><code>                 txt = txt.replace(&quot;/blob/&quot;, &quot;/&quot;)
  
          r = requests.get(txt, proxies=proxies)
--        download_local = f'{get_log_folder(plugin_name=&quot;批量Markdown翻译&quot;)}/raw-readme-{gen_time_str()}.md'
--        project_folder = f'{get_log_folder(plugin_name=&quot;批量Markdown翻译&quot;)}'
-+        download_local = f&quot;{get_log_folder(plugin_name='批量Markdown翻译')}/raw-readme-{gen_time_str()}.md&quot;
-+        project_folder = f&quot;{get_log_folder(plugin_name='批量Markdown翻译')}&quot;
+-        download_local = f&#x27;{get_log_folder(plugin_name=&quot;批量Markdown翻译&quot;)}/raw-readme-{gen_time_str()}.md&#x27;
+-        project_folder = f&#x27;{get_log_folder(plugin_name=&quot;批量Markdown翻译&quot;)}&#x27;
++        download_local = f&quot;{get_log_folder(plugin_name=&#x27;批量Markdown翻译&#x27;)}/raw-readme-{gen_time_str()}.md&quot;
++        project_folder = f&quot;{get_log_folder(plugin_name=&#x27;批量Markdown翻译&#x27;)}&quot;
          with open(download_local, &quot;wb+&quot;) as f:
              f.write(r.content)
          file_manifest = [download_local]
 </code></pre>
-<p><a href='https://github.com/binary-husky/gpt_academic/blob/69f3755682e8fb5c07d12a78e40fc06e5ac9d233/crazy_functions/Social_Helper.py#L182'>crazy_functions/Social_Helper.py~L182</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/binary-husky/gpt_academic/blob/69f3755682e8fb5c07d12a78e40fc06e5ac9d233/crazy_functions/Social_Helper.py#L182">crazy_functions/Social_Helper.py~L182</a></p>
+<pre><code> 
          try:
              Explaination = &quot;\n&quot;.join([
--                f'{k}: {v[&quot;explain_to_llm&quot;]}' for k, v in self.tools_to_select.items()
-+                f&quot;{k}: {v['explain_to_llm']}&quot; for k, v in self.tools_to_select.items()
+-                f&#x27;{k}: {v[&quot;explain_to_llm&quot;]}&#x27; for k, v in self.tools_to_select.items()
++                f&quot;{k}: {v[&#x27;explain_to_llm&#x27;]}&quot; for k, v in self.tools_to_select.items()
              ])
  
              class UserSociaIntention(BaseModel):
 </code></pre>
-<p><a href='https://github.com/binary-husky/gpt_academic/blob/69f3755682e8fb5c07d12a78e40fc06e5ac9d233/crazy_functions/gen_fns/gen_fns_shared.py#L22'>crazy_functions/gen_fns/gen_fns_shared.py~L22</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/binary-husky/gpt_academic/blob/69f3755682e8fb5c07d12a78e40fc06e5ac9d233/crazy_functions/gen_fns/gen_fns_shared.py#L22">crazy_functions/gen_fns/gen_fns_shared.py~L22</a></p>
+<pre><code> 
  def try_make_module(code, chatbot):
      module_file = &quot;gpt_fn_&quot; + gen_time_str().replace(&quot;-&quot;, &quot;_&quot;)
--    fn_path = f'{get_log_folder(plugin_name=&quot;gen_plugin_verify&quot;)}/{module_file}.py'
-+    fn_path = f&quot;{get_log_folder(plugin_name='gen_plugin_verify')}/{module_file}.py&quot;
+-    fn_path = f&#x27;{get_log_folder(plugin_name=&quot;gen_plugin_verify&quot;)}/{module_file}.py&#x27;
++    fn_path = f&quot;{get_log_folder(plugin_name=&#x27;gen_plugin_verify&#x27;)}/{module_file}.py&quot;
      with open(fn_path, &quot;w&quot;, encoding=&quot;utf8&quot;) as f:
          f.write(code)
      promote_file_to_downloadzone(fn_path, chatbot=chatbot)
 </code></pre>
-<p><a href='https://github.com/binary-husky/gpt_academic/blob/69f3755682e8fb5c07d12a78e40fc06e5ac9d233/crazy_functions/gen_fns/gen_fns_shared.py#L70'>crazy_functions/gen_fns/gen_fns_shared.py~L70</a></p>
-<pre><code class="language-diff">     return_dict[&quot;traceback&quot;] = &quot;&quot;
+<p><a href="https://github.com/binary-husky/gpt_academic/blob/69f3755682e8fb5c07d12a78e40fc06e5ac9d233/crazy_functions/gen_fns/gen_fns_shared.py#L70">crazy_functions/gen_fns/gen_fns_shared.py~L70</a></p>
+<pre><code>     return_dict[&quot;traceback&quot;] = &quot;&quot;
      try:
          module_file = &quot;gpt_fn_&quot; + gen_time_str().replace(&quot;-&quot;, &quot;_&quot;)
--        fn_path = f'{get_log_folder(plugin_name=&quot;gen_plugin_run&quot;)}/{module_file}.py'
-+        fn_path = f&quot;{get_log_folder(plugin_name='gen_plugin_run')}/{module_file}.py&quot;
+-        fn_path = f&#x27;{get_log_folder(plugin_name=&quot;gen_plugin_run&quot;)}/{module_file}.py&#x27;
++        fn_path = f&quot;{get_log_folder(plugin_name=&#x27;gen_plugin_run&#x27;)}/{module_file}.py&quot;
          with open(fn_path, &quot;w&quot;, encoding=&quot;utf8&quot;) as f:
              f.write(code)
          class_name = get_class_name(code)
 </code></pre>
-<p><a href='https://github.com/binary-husky/gpt_academic/blob/69f3755682e8fb5c07d12a78e40fc06e5ac9d233/crazy_functions/vt_fns/vt_call_plugin.py#L187'>crazy_functions/vt_fns/vt_call_plugin.py~L187</a></p>
-<pre><code class="language-diff">     # ⭐ ⭐ ⭐ 执行插件
+<p><a href="https://github.com/binary-husky/gpt_academic/blob/69f3755682e8fb5c07d12a78e40fc06e5ac9d233/crazy_functions/vt_fns/vt_call_plugin.py#L187">crazy_functions/vt_fns/vt_call_plugin.py~L187</a></p>
+<pre><code>     # ⭐ ⭐ ⭐ 执行插件
      fn = plugin[&quot;Function&quot;]
      fn_name = fn.__name__
--    msg = f'{llm_kwargs[&quot;llm_model&quot;]}为您选择了插件: `{fn_name}`\n\n插件说明：{plugin[&quot;Info&quot;]}\n\n插件参数：{plugin_sel.plugin_arg}\n\n假如偏离了您的要求，按停止键终止。'
-+    msg = f&quot;{llm_kwargs['llm_model']}为您选择了插件: `{fn_name}`\n\n插件说明：{plugin['Info']}\n\n插件参数：{plugin_sel.plugin_arg}\n\n假如偏离了您的要求，按停止键终止。&quot;
+-    msg = f&#x27;{llm_kwargs[&quot;llm_model&quot;]}为您选择了插件: `{fn_name}`\n\n插件说明：{plugin[&quot;Info&quot;]}\n\n插件参数：{plugin_sel.plugin_arg}\n\n假如偏离了您的要求，按停止键终止。&#x27;
++    msg = f&quot;{llm_kwargs[&#x27;llm_model&#x27;]}为您选择了插件: `{fn_name}`\n\n插件说明：{plugin[&#x27;Info&#x27;]}\n\n插件参数：{plugin_sel.plugin_arg}\n\n假如偏离了您的要求，按停止键终止。&quot;
      yield from update_ui_lastest_msg(
          lastmsg=msg, chatbot=chatbot, history=history, delay=2
      )
 </code></pre>
-<p><a href='https://github.com/binary-husky/gpt_academic/blob/69f3755682e8fb5c07d12a78e40fc06e5ac9d233/request_llms/bridge_all.py#L1170'>request_llms/bridge_all.py~L1170</a></p>
-<pre><code class="language-diff">             raise ValueError(&quot;AZURE_CFG_ARRAY中配置的模型必须以azure开头&quot;)
+<p><a href="https://github.com/binary-husky/gpt_academic/blob/69f3755682e8fb5c07d12a78e40fc06e5ac9d233/request_llms/bridge_all.py#L1170">request_llms/bridge_all.py~L1170</a></p>
+<pre><code>             raise ValueError(&quot;AZURE_CFG_ARRAY中配置的模型必须以azure开头&quot;)
          endpoint_ = (
              azure_cfg_dict[&quot;AZURE_ENDPOINT&quot;]
--            + f'openai/deployments/{azure_cfg_dict[&quot;AZURE_ENGINE&quot;]}/chat/completions?api-version=2023-05-15'
-+            + f&quot;openai/deployments/{azure_cfg_dict['AZURE_ENGINE']}/chat/completions?api-version=2023-05-15&quot;
+-            + f&#x27;openai/deployments/{azure_cfg_dict[&quot;AZURE_ENGINE&quot;]}/chat/completions?api-version=2023-05-15&#x27;
++            + f&quot;openai/deployments/{azure_cfg_dict[&#x27;AZURE_ENGINE&#x27;]}/chat/completions?api-version=2023-05-15&quot;
          )
          model_info.update({
              azure_model_name: {
 </code></pre>
-<p><a href='https://github.com/binary-husky/gpt_academic/blob/69f3755682e8fb5c07d12a78e40fc06e5ac9d233/request_llms/com_google.py#L101'>request_llms/com_google.py~L101</a></p>
-<pre><code class="language-diff"> def html_local_file(file):
+<p><a href="https://github.com/binary-husky/gpt_academic/blob/69f3755682e8fb5c07d12a78e40fc06e5ac9d233/request_llms/com_google.py#L101">request_llms/com_google.py~L101</a></p>
+<pre><code> def html_local_file(file):
      base_path = os.path.dirname(__file__)  # 项目目录
      if os.path.exists(str(file)):
--        file = f'file={file.replace(base_path, &quot;.&quot;)}'
-+        file = f&quot;file={file.replace(base_path, '.')}&quot;
+-        file = f&#x27;file={file.replace(base_path, &quot;.&quot;)}&#x27;
++        file = f&quot;file={file.replace(base_path, &#x27;.&#x27;)}&quot;
      return file
  
  
 </code></pre>
-<p><a href='https://github.com/binary-husky/gpt_academic/blob/69f3755682e8fb5c07d12a78e40fc06e5ac9d233/shared_utils/handle_upload.py#L14'>shared_utils/handle_upload.py~L14</a></p>
-<pre><code class="language-diff"> def html_local_file(file):
+<p><a href="https://github.com/binary-husky/gpt_academic/blob/69f3755682e8fb5c07d12a78e40fc06e5ac9d233/shared_utils/handle_upload.py#L14">shared_utils/handle_upload.py~L14</a></p>
+<pre><code> def html_local_file(file):
      base_path = os.path.dirname(__file__)  # 项目目录
      if os.path.exists(str(file)):
--        file = f'file={file.replace(base_path, &quot;.&quot;)}'
-+        file = f&quot;file={file.replace(base_path, '.')}&quot;
+-        file = f&#x27;file={file.replace(base_path, &quot;.&quot;)}&#x27;
++        file = f&quot;file={file.replace(base_path, &#x27;.&#x27;)}&quot;
      return file
  
  
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+1 -1 lines across 1 file)</summary>
+
+<a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+1 -1 lines across 1 file)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/scripts/milestone.py#L67'>scripts/milestone.py~L67</a></p>
-<pre><code class="language-diff">     &quot;&quot;&quot;Returns a humanized description of the given issue or PR data.&quot;&quot;&quot;
+<p><a href="https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/scripts/milestone.py#L67">scripts/milestone.py~L67</a></p>
+<pre><code>     &quot;&quot;&quot;Returns a humanized description of the given issue or PR data.&quot;&quot;&quot;
      component = get_label_component(data)
      component_str = &quot;&quot; if not component else f&quot;[component: {component}] &quot;
--    return f'#{data[&quot;node&quot;][&quot;number&quot;]} {component_str}{data[&quot;node&quot;][&quot;title&quot;]}'
-+    return f&quot;#{data['node']['number']} {component_str}{data['node']['title']}&quot;
+-    return f&#x27;#{data[&quot;node&quot;][&quot;number&quot;]} {component_str}{data[&quot;node&quot;][&quot;title&quot;]}&#x27;
++    return f&quot;#{data[&#x27;node&#x27;][&#x27;number&#x27;]} {component_str}{data[&#x27;node&#x27;][&#x27;title&#x27;]}&quot;
  
  
  def get_milestone_number(title, token, allow_closed):
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/fronzbot/blinkpy">fronzbot/blinkpy</a> (+3 -3 lines across 2 files)</summary>
+
+<a href="https://github.com/fronzbot/blinkpy">fronzbot/blinkpy</a> (+3 -3 lines across 2 files)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/fronzbot/blinkpy/blob/e2c747b5ad295424b08ff4fb03204129155666fc/blinksync/blinksync.py#L65'>blinksync/blinksync.py~L65</a></p>
-<pre><code class="language-diff">             await my_sync.refresh()
+<p><a href="https://github.com/fronzbot/blinkpy/blob/e2c747b5ad295424b08ff4fb03204129155666fc/blinksync/blinksync.py#L65">blinksync/blinksync.py~L65</a></p>
+<pre><code>             await my_sync.refresh()
              if my_sync.local_storage and my_sync.local_storage_manifest_ready:
                  print(&quot;Manifest is ready&quot;)
 -                print(f&quot;Manifest {my_sync._local_storage[&quot;manifest&quot;]}&quot;)
-+                print(f&quot;Manifest {my_sync._local_storage['manifest']}&quot;)
++                print(f&quot;Manifest {my_sync._local_storage[&#x27;manifest&#x27;]}&quot;)
              else:
                  print(&quot;Manifest not ready&quot;)
              for name, camera in blink.cameras.items():
 </code></pre>
-<p><a href='https://github.com/fronzbot/blinkpy/blob/e2c747b5ad295424b08ff4fb03204129155666fc/blinksync/blinksync.py#L91'>blinksync/blinksync.py~L91</a></p>
-<pre><code class="language-diff">                         await item.prepare_download(blink)
+<p><a href="https://github.com/fronzbot/blinkpy/blob/e2c747b5ad295424b08ff4fb03204129155666fc/blinksync/blinksync.py#L91">blinksync/blinksync.py~L91</a></p>
+<pre><code>                         await item.prepare_download(blink)
                          await item.download_video(
                              blink,
 -                            f&quot;{path}/{item.name}_{item.created_at.astimezone().isoformat().replace(&quot;:&quot;, &quot;_&quot;)}.mp4&quot;,
-+                            f&quot;{path}/{item.name}_{item.created_at.astimezone().isoformat().replace(':', '_')}.mp4&quot;,
++                            f&quot;{path}/{item.name}_{item.created_at.astimezone().isoformat().replace(&#x27;:&#x27;, &#x27;_&#x27;)}.mp4&quot;,
                          )
                      if button == DELETE:
                          await item.delete_video(blink)
 </code></pre>
-<p><a href='https://github.com/fronzbot/blinkpy/blob/e2c747b5ad295424b08ff4fb03204129155666fc/tests/test_camera_functions.py#L119'>tests/test_camera_functions.py~L119</a></p>
-<pre><code class="language-diff">                     f&quot;temperature response {mock_resp.return_value}.&quot;
+<p><a href="https://github.com/fronzbot/blinkpy/blob/e2c747b5ad295424b08ff4fb03204129155666fc/tests/test_camera_functions.py#L119">tests/test_camera_functions.py~L119</a></p>
+<pre><code>                     f&quot;temperature response {mock_resp.return_value}.&quot;
                  ),
                  (
 -                    f&quot;WARNING:blinkpy.camera:for network_id ({config[&quot;network_id&quot;]}) &quot;
-+                    f&quot;WARNING:blinkpy.camera:for network_id ({config['network_id']}) &quot;
++                    f&quot;WARNING:blinkpy.camera:for network_id ({config[&#x27;network_id&#x27;]}) &quot;
                      f&quot;and camera_id ({self.camera.camera_id})&quot;
                  ),
                  (&quot;WARNING:blinkpy.camera:Could not find thumbnail for camera new.&quot;),
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+1 -1 lines across 1 file)</summary>
+
+<a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+1 -1 lines across 1 file)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/ibis-project/ibis/blob/3252b38ce372427ad3913e894a66f05b153443c1/ibis/backends/clickhouse/tests/test_client.py#L362'>ibis/backends/clickhouse/tests/test_client.py~L362</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/ibis-project/ibis/blob/3252b38ce372427ad3913e894a66f05b153443c1/ibis/backends/clickhouse/tests/test_client.py#L362">ibis/backends/clickhouse/tests/test_client.py~L362</a></p>
+<pre><code> 
  
  def test_password_with_bracket():
--    password = f'{os.environ.get(&quot;IBIS_TEST_CLICKHOUSE_PASSWORD&quot;, &quot;&quot;)}[]'
-+    password = f&quot;{os.environ.get('IBIS_TEST_CLICKHOUSE_PASSWORD', '')}[]&quot;
+-    password = f&#x27;{os.environ.get(&quot;IBIS_TEST_CLICKHOUSE_PASSWORD&quot;, &quot;&quot;)}[]&#x27;
++    password = f&quot;{os.environ.get(&#x27;IBIS_TEST_CLICKHOUSE_PASSWORD&#x27;, &#x27;&#x27;)}[]&quot;
      quoted_pass = quote_plus(password)
      host = os.environ.get(&quot;IBIS_TEST_CLICKHOUSE_HOST&quot;, &quot;localhost&quot;)
      user = os.environ.get(&quot;IBIS_TEST_CLICKHOUSE_USER&quot;, &quot;default&quot;)
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/langchain-ai/langchain">langchain-ai/langchain</a> (+16 -16 lines across 6 files)</summary>
+
+<a href="https://github.com/langchain-ai/langchain">langchain-ai/langchain</a> (+16 -16 lines across 6 files)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/langchain-ai/langchain/blob/0640cbf2f126f773b7ae78b0f94c1ba0caabb2c1/docs/docs/how_to/chat_token_usage_tracking.ipynb#L138'>docs/docs/how_to/chat_token_usage_tracking.ipynb~L138</a></p>
-<pre><code class="language-diff">     }
+<p><a href="https://github.com/langchain-ai/langchain/blob/0640cbf2f126f773b7ae78b0f94c1ba0caabb2c1/docs/docs/how_to/chat_token_usage_tracking.ipynb#L138">docs/docs/how_to/chat_token_usage_tracking.ipynb~L138</a></p>
+<pre><code>     }
     ],
     &quot;source&quot;: [
--    &quot;print(f'OpenAI: {openai_response.response_metadata[\&quot;token_usage\&quot;]}\\n')\n&quot;,
--    &quot;print(f'Anthropic: {anthropic_response.response_metadata[\&quot;usage\&quot;]}')&quot;
-+    &quot;print(f\&quot;OpenAI: {openai_response.response_metadata['token_usage']}\\n\&quot;)\n&quot;,
-+    &quot;print(f\&quot;Anthropic: {anthropic_response.response_metadata['usage']}\&quot;)&quot;
+-    &quot;print(f&#x27;OpenAI: {openai_response.response_metadata[\&quot;token_usage\&quot;]}\\n&#x27;)\n&quot;,
+-    &quot;print(f&#x27;Anthropic: {anthropic_response.response_metadata[\&quot;usage\&quot;]}&#x27;)&quot;
++    &quot;print(f\&quot;OpenAI: {openai_response.response_metadata[&#x27;token_usage&#x27;]}\\n\&quot;)\n&quot;,
++    &quot;print(f\&quot;Anthropic: {anthropic_response.response_metadata[&#x27;usage&#x27;]}\&quot;)&quot;
     ]
    },
    {
 </code></pre>
-<p><a href='https://github.com/langchain-ai/langchain/blob/0640cbf2f126f773b7ae78b0f94c1ba0caabb2c1/docs/docs/how_to/chat_token_usage_tracking.ipynb#L307'>docs/docs/how_to/chat_token_usage_tracking.ipynb~L307</a></p>
-<pre><code class="language-diff">     &quot;\n&quot;,
+<p><a href="https://github.com/langchain-ai/langchain/blob/0640cbf2f126f773b7ae78b0f94c1ba0caabb2c1/docs/docs/how_to/chat_token_usage_tracking.ipynb#L307">docs/docs/how_to/chat_token_usage_tracking.ipynb~L307</a></p>
+<pre><code>     &quot;\n&quot;,
      &quot;async for event in structured_llm.astream_events(\&quot;Tell me a joke\&quot;, version=\&quot;v2\&quot;):\n&quot;,
      &quot;    if event[\&quot;event\&quot;] == \&quot;on_chat_model_end\&quot;:\n&quot;,
--    &quot;        print(f'Token usage: {event[\&quot;data\&quot;][\&quot;output\&quot;].usage_metadata}\\n')\n&quot;,
-+    &quot;        print(f\&quot;Token usage: {event['data']['output'].usage_metadata}\\n\&quot;)\n&quot;,
+-    &quot;        print(f&#x27;Token usage: {event[\&quot;data\&quot;][\&quot;output\&quot;].usage_metadata}\\n&#x27;)\n&quot;,
++    &quot;        print(f\&quot;Token usage: {event[&#x27;data&#x27;][&#x27;output&#x27;].usage_metadata}\\n\&quot;)\n&quot;,
      &quot;    elif event[\&quot;event\&quot;] == \&quot;on_chain_end\&quot;:\n&quot;,
      &quot;        print(event[\&quot;data\&quot;][\&quot;output\&quot;])\n&quot;,
      &quot;    else:\n&quot;,
 </code></pre>
-<p><a href='https://github.com/langchain-ai/langchain/blob/0640cbf2f126f773b7ae78b0f94c1ba0caabb2c1/docs/docs/how_to/message_history.ipynb#L376'>docs/docs/how_to/message_history.ipynb~L376</a></p>
-<pre><code class="language-diff">    &quot;source&quot;: [
+<p><a href="https://github.com/langchain-ai/langchain/blob/0640cbf2f126f773b7ae78b0f94c1ba0caabb2c1/docs/docs/how_to/message_history.ipynb#L376">docs/docs/how_to/message_history.ipynb~L376</a></p>
+<pre><code>    &quot;source&quot;: [
      &quot;state = app.get_state(config).values\n&quot;,
      &quot;\n&quot;,
--    &quot;print(f'Language: {state[\&quot;language\&quot;]}')\n&quot;,
-+    &quot;print(f\&quot;Language: {state['language']}\&quot;)\n&quot;,
+-    &quot;print(f&#x27;Language: {state[\&quot;language\&quot;]}&#x27;)\n&quot;,
++    &quot;print(f\&quot;Language: {state[&#x27;language&#x27;]}\&quot;)\n&quot;,
      &quot;for message in state[\&quot;messages\&quot;]:\n&quot;,
      &quot;    message.pretty_print()&quot;
     ]
 </code></pre>
-<p><a href='https://github.com/langchain-ai/langchain/blob/0640cbf2f126f773b7ae78b0f94c1ba0caabb2c1/docs/docs/how_to/message_history.ipynb#L427'>docs/docs/how_to/message_history.ipynb~L427</a></p>
-<pre><code class="language-diff">    &quot;source&quot;: [
+<p><a href="https://github.com/langchain-ai/langchain/blob/0640cbf2f126f773b7ae78b0f94c1ba0caabb2c1/docs/docs/how_to/message_history.ipynb#L427">docs/docs/how_to/message_history.ipynb~L427</a></p>
+<pre><code>    &quot;source&quot;: [
      &quot;state = app.get_state(config).values\n&quot;,
      &quot;\n&quot;,
--    &quot;print(f'Language: {state[\&quot;language\&quot;]}')\n&quot;,
-+    &quot;print(f\&quot;Language: {state['language']}\&quot;)\n&quot;,
+-    &quot;print(f&#x27;Language: {state[\&quot;language\&quot;]}&#x27;)\n&quot;,
++    &quot;print(f\&quot;Language: {state[&#x27;language&#x27;]}\&quot;)\n&quot;,
      &quot;for message in state[\&quot;messages\&quot;]:\n&quot;,
      &quot;    message.pretty_print()&quot;
     ]
 </code></pre>
-<p><a href='https://github.com/langchain-ai/langchain/blob/0640cbf2f126f773b7ae78b0f94c1ba0caabb2c1/libs/cli/langchain_cli/namespaces/app.py#L249'>libs/cli/langchain_cli/namespaces/app.py~L249</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/langchain-ai/langchain/blob/0640cbf2f126f773b7ae78b0f94c1ba0caabb2c1/libs/cli/langchain_cli/namespaces/app.py#L249">libs/cli/langchain_cli/namespaces/app.py~L249</a></p>
+<pre><code> 
      chain_names = []
      for e in installed_exports:
--        original_candidate = f'{e[&quot;package_name&quot;].replace(&quot;-&quot;, &quot;_&quot;)}_chain'
-+        original_candidate = f&quot;{e['package_name'].replace('-', '_')}_chain&quot;
+-        original_candidate = f&#x27;{e[&quot;package_name&quot;].replace(&quot;-&quot;, &quot;_&quot;)}_chain&#x27;
++        original_candidate = f&quot;{e[&#x27;package_name&#x27;].replace(&#x27;-&#x27;, &#x27;_&#x27;)}_chain&quot;
          candidate = original_candidate
          i = 2
          while candidate in chain_names:
 </code></pre>
-<p><a href='https://github.com/langchain-ai/langchain/blob/0640cbf2f126f773b7ae78b0f94c1ba0caabb2c1/libs/community/langchain_community/graphs/neo4j_graph.py#L178'>libs/community/langchain_community/graphs/neo4j_graph.py~L178</a></p>
-<pre><code class="language-diff">                         example = (
+<p><a href="https://github.com/langchain-ai/langchain/blob/0640cbf2f126f773b7ae78b0f94c1ba0caabb2c1/libs/community/langchain_community/graphs/neo4j_graph.py#L178">libs/community/langchain_community/graphs/neo4j_graph.py~L178</a></p>
+<pre><code>                         example = (
                              (
                                  &quot;Available options: &quot;
--                                f'{[clean_string_values(el) for el in prop[&quot;values&quot;]]}'
-+                                f&quot;{[clean_string_values(el) for el in prop['values']]}&quot;
+-                                f&#x27;{[clean_string_values(el) for el in prop[&quot;values&quot;]]}&#x27;
++                                f&quot;{[clean_string_values(el) for el in prop[&#x27;values&#x27;]]}&quot;
                              )
                              if prop[&quot;values&quot;]
                              else &quot;&quot;
 </code></pre>
-<p><a href='https://github.com/langchain-ai/langchain/blob/0640cbf2f126f773b7ae78b0f94c1ba0caabb2c1/libs/community/langchain_community/graphs/neo4j_graph.py#L192'>libs/community/langchain_community/graphs/neo4j_graph.py~L192</a></p>
-<pre><code class="language-diff">                     &quot;LOCAL_DATE_TIME&quot;,
+<p><a href="https://github.com/langchain-ai/langchain/blob/0640cbf2f126f773b7ae78b0f94c1ba0caabb2c1/libs/community/langchain_community/graphs/neo4j_graph.py#L192">libs/community/langchain_community/graphs/neo4j_graph.py~L192</a></p>
+<pre><code>                     &quot;LOCAL_DATE_TIME&quot;,
                  ]:
                      if prop.get(&quot;min&quot;) is not None:
--                        example = f'Min: {prop[&quot;min&quot;]}, Max: {prop[&quot;max&quot;]}'
-+                        example = f&quot;Min: {prop['min']}, Max: {prop['max']}&quot;
+-                        example = f&#x27;Min: {prop[&quot;min&quot;]}, Max: {prop[&quot;max&quot;]}&#x27;
++                        example = f&quot;Min: {prop[&#x27;min&#x27;]}, Max: {prop[&#x27;max&#x27;]}&quot;
                      else:
                          example = (
-                             f'Example: &quot;{prop[&quot;values&quot;][0]}&quot;'
+                             f&#x27;Example: &quot;{prop[&quot;values&quot;][0]}&quot;&#x27;
 </code></pre>
-<p><a href='https://github.com/langchain-ai/langchain/blob/0640cbf2f126f773b7ae78b0f94c1ba0caabb2c1/libs/community/langchain_community/graphs/neo4j_graph.py#L204'>libs/community/langchain_community/graphs/neo4j_graph.py~L204</a></p>
-<pre><code class="language-diff">                     if not prop.get(&quot;min_size&quot;) or prop[&quot;min_size&quot;] &gt; LIST_LIMIT:
+<p><a href="https://github.com/langchain-ai/langchain/blob/0640cbf2f126f773b7ae78b0f94c1ba0caabb2c1/libs/community/langchain_community/graphs/neo4j_graph.py#L204">libs/community/langchain_community/graphs/neo4j_graph.py~L204</a></p>
+<pre><code>                     if not prop.get(&quot;min_size&quot;) or prop[&quot;min_size&quot;] &gt; LIST_LIMIT:
                          continue
                      example = (
--                        f'Min Size: {prop[&quot;min_size&quot;]}, Max Size: {prop[&quot;max_size&quot;]}'
-+                        f&quot;Min Size: {prop['min_size']}, Max Size: {prop['max_size']}&quot;
+-                        f&#x27;Min Size: {prop[&quot;min_size&quot;]}, Max Size: {prop[&quot;max_size&quot;]}&#x27;
++                        f&quot;Min Size: {prop[&#x27;min_size&#x27;]}, Max Size: {prop[&#x27;max_size&#x27;]}&quot;
                      )
                  formatted_node_props.append(
-                     f&quot;  - `{prop['property']}`: {prop['type']} {example}&quot;
+                     f&quot;  - `{prop[&#x27;property&#x27;]}`: {prop[&#x27;type&#x27;]} {example}&quot;
 </code></pre>
-<p><a href='https://github.com/langchain-ai/langchain/blob/0640cbf2f126f773b7ae78b0f94c1ba0caabb2c1/libs/community/langchain_community/graphs/neo4j_graph.py#L226'>libs/community/langchain_community/graphs/neo4j_graph.py~L226</a></p>
-<pre><code class="language-diff">                         example = (
+<p><a href="https://github.com/langchain-ai/langchain/blob/0640cbf2f126f773b7ae78b0f94c1ba0caabb2c1/libs/community/langchain_community/graphs/neo4j_graph.py#L226">libs/community/langchain_community/graphs/neo4j_graph.py~L226</a></p>
+<pre><code>                         example = (
                              (
                                  &quot;Available options: &quot;
--                                f'{[clean_string_values(el) for el in prop[&quot;values&quot;]]}'
-+                                f&quot;{[clean_string_values(el) for el in prop['values']]}&quot;
+-                                f&#x27;{[clean_string_values(el) for el in prop[&quot;values&quot;]]}&#x27;
++                                f&quot;{[clean_string_values(el) for el in prop[&#x27;values&#x27;]]}&quot;
                              )
                              if prop[&quot;values&quot;]
                              else &quot;&quot;
 </code></pre>
-<p><a href='https://github.com/langchain-ai/langchain/blob/0640cbf2f126f773b7ae78b0f94c1ba0caabb2c1/libs/community/langchain_community/graphs/neo4j_graph.py#L239'>libs/community/langchain_community/graphs/neo4j_graph.py~L239</a></p>
-<pre><code class="language-diff">                     &quot;LOCAL_DATE_TIME&quot;,
+<p><a href="https://github.com/langchain-ai/langchain/blob/0640cbf2f126f773b7ae78b0f94c1ba0caabb2c1/libs/community/langchain_community/graphs/neo4j_graph.py#L239">libs/community/langchain_community/graphs/neo4j_graph.py~L239</a></p>
+<pre><code>                     &quot;LOCAL_DATE_TIME&quot;,
                  ]:
                      if prop.get(&quot;min&quot;):  # If we have min/max
--                        example = f'Min: {prop[&quot;min&quot;]}, Max:  {prop[&quot;max&quot;]}'
-+                        example = f&quot;Min: {prop['min']}, Max:  {prop['max']}&quot;
+-                        example = f&#x27;Min: {prop[&quot;min&quot;]}, Max:  {prop[&quot;max&quot;]}&#x27;
++                        example = f&quot;Min: {prop[&#x27;min&#x27;]}, Max:  {prop[&#x27;max&#x27;]}&quot;
                      else:  # return a single value
                          example = (
-                             f'Example: &quot;{prop[&quot;values&quot;][0]}&quot;' if prop[&quot;values&quot;] else &quot;&quot;
+                             f&#x27;Example: &quot;{prop[&quot;values&quot;][0]}&quot;&#x27; if prop[&quot;values&quot;] else &quot;&quot;
 </code></pre>
-<p><a href='https://github.com/langchain-ai/langchain/blob/0640cbf2f126f773b7ae78b0f94c1ba0caabb2c1/libs/community/langchain_community/graphs/neo4j_graph.py#L249'>libs/community/langchain_community/graphs/neo4j_graph.py~L249</a></p>
-<pre><code class="language-diff">                     if not prop.get(&quot;min_size&quot;) or prop[&quot;min_size&quot;] &gt; LIST_LIMIT:
+<p><a href="https://github.com/langchain-ai/langchain/blob/0640cbf2f126f773b7ae78b0f94c1ba0caabb2c1/libs/community/langchain_community/graphs/neo4j_graph.py#L249">libs/community/langchain_community/graphs/neo4j_graph.py~L249</a></p>
+<pre><code>                     if not prop.get(&quot;min_size&quot;) or prop[&quot;min_size&quot;] &gt; LIST_LIMIT:
                          continue
                      example = (
--                        f'Min Size: {prop[&quot;min_size&quot;]}, Max Size: {prop[&quot;max_size&quot;]}'
-+                        f&quot;Min Size: {prop['min_size']}, Max Size: {prop['max_size']}&quot;
+-                        f&#x27;Min Size: {prop[&quot;min_size&quot;]}, Max Size: {prop[&quot;max_size&quot;]}&#x27;
++                        f&quot;Min Size: {prop[&#x27;min_size&#x27;]}, Max Size: {prop[&#x27;max_size&#x27;]}&quot;
                      )
                  formatted_rel_props.append(
-                     f&quot;  - `{prop['property']}: {prop['type']}` {example}&quot;
+                     f&quot;  - `{prop[&#x27;property&#x27;]}: {prop[&#x27;type&#x27;]}` {example}&quot;
 </code></pre>
-<p><a href='https://github.com/langchain-ai/langchain/blob/0640cbf2f126f773b7ae78b0f94c1ba0caabb2c1/libs/community/langchain_community/vectorstores/typesense.py#L159'>libs/community/langchain_community/vectorstores/typesense.py~L159</a></p>
-<pre><code class="language-diff">         embedded_query = [str(x) for x in self._embedding.embed_query(query)]
+<p><a href="https://github.com/langchain-ai/langchain/blob/0640cbf2f126f773b7ae78b0f94c1ba0caabb2c1/libs/community/langchain_community/vectorstores/typesense.py#L159">libs/community/langchain_community/vectorstores/typesense.py~L159</a></p>
+<pre><code>         embedded_query = [str(x) for x in self._embedding.embed_query(query)]
          query_obj = {
              &quot;q&quot;: &quot;*&quot;,
--            &quot;vector_query&quot;: f'vec:([{&quot;,&quot;.join(embedded_query)}], k:{k})',
-+            &quot;vector_query&quot;: f&quot;vec:([{','.join(embedded_query)}], k:{k})&quot;,
+-            &quot;vector_query&quot;: f&#x27;vec:([{&quot;,&quot;.join(embedded_query)}], k:{k})&#x27;,
++            &quot;vector_query&quot;: f&quot;vec:([{&#x27;,&#x27;.join(embedded_query)}], k:{k})&quot;,
              &quot;filter_by&quot;: filter,
              &quot;collection&quot;: self._typesense_collection_name,
          }
 </code></pre>
-<p><a href='https://github.com/langchain-ai/langchain/blob/0640cbf2f126f773b7ae78b0f94c1ba0caabb2c1/templates/neo4j-semantic-ollama/neo4j_semantic_ollama/recommendation_tool.py#L78'>templates/neo4j-semantic-ollama/neo4j_semantic_ollama/recommendation_tool.py~L78</a></p>
-<pre><code class="language-diff">         try:
+<p><a href="https://github.com/langchain-ai/langchain/blob/0640cbf2f126f773b7ae78b0f94c1ba0caabb2c1/templates/neo4j-semantic-ollama/neo4j_semantic_ollama/recommendation_tool.py#L78">templates/neo4j-semantic-ollama/neo4j_semantic_ollama/recommendation_tool.py~L78</a></p>
+<pre><code>         try:
              return (
                  &quot;Recommended movies are: &quot;
--                f'{f&quot;###Movie {nl}&quot;.join([el[&quot;movie&quot;] for el in response])}'
-+                f&quot;{f'###Movie {nl}'.join([el['movie'] for el in response])}&quot;
+-                f&#x27;{f&quot;###Movie {nl}&quot;.join([el[&quot;movie&quot;] for el in response])}&#x27;
++                f&quot;{f&#x27;###Movie {nl}&#x27;.join([el[&#x27;movie&#x27;] for el in response])}&quot;
              )
          except Exception:
              return &quot;Can you tell us about some of the movies you liked?&quot;
 </code></pre>
-<p><a href='https://github.com/langchain-ai/langchain/blob/0640cbf2f126f773b7ae78b0f94c1ba0caabb2c1/templates/neo4j-semantic-ollama/neo4j_semantic_ollama/recommendation_tool.py#L88'>templates/neo4j-semantic-ollama/neo4j_semantic_ollama/recommendation_tool.py~L88</a></p>
-<pre><code class="language-diff">         try:
+<p><a href="https://github.com/langchain-ai/langchain/blob/0640cbf2f126f773b7ae78b0f94c1ba0caabb2c1/templates/neo4j-semantic-ollama/neo4j_semantic_ollama/recommendation_tool.py#L88">templates/neo4j-semantic-ollama/neo4j_semantic_ollama/recommendation_tool.py~L88</a></p>
+<pre><code>         try:
              return (
                  &quot;Recommended movies are: &quot;
--                f'{f&quot;###Movie {nl}&quot;.join([el[&quot;movie&quot;] for el in response])}'
-+                f&quot;{f'###Movie {nl}'.join([el['movie'] for el in response])}&quot;
+-                f&#x27;{f&quot;###Movie {nl}&quot;.join([el[&quot;movie&quot;] for el in response])}&#x27;
++                f&quot;{f&#x27;###Movie {nl}&#x27;.join([el[&#x27;movie&#x27;] for el in response])}&quot;
              )
          except Exception:
              return &quot;Something went wrong&quot;
 </code></pre>
-<p><a href='https://github.com/langchain-ai/langchain/blob/0640cbf2f126f773b7ae78b0f94c1ba0caabb2c1/templates/neo4j-semantic-ollama/neo4j_semantic_ollama/recommendation_tool.py#L102'>templates/neo4j-semantic-ollama/neo4j_semantic_ollama/recommendation_tool.py~L102</a></p>
-<pre><code class="language-diff">     try:
+<p><a href="https://github.com/langchain-ai/langchain/blob/0640cbf2f126f773b7ae78b0f94c1ba0caabb2c1/templates/neo4j-semantic-ollama/neo4j_semantic_ollama/recommendation_tool.py#L102">templates/neo4j-semantic-ollama/neo4j_semantic_ollama/recommendation_tool.py~L102</a></p>
+<pre><code>     try:
          return (
              &quot;Recommended movies are: &quot;
--            f'{f&quot;###Movie {nl}&quot;.join([el[&quot;movie&quot;] for el in response])}'
-+            f&quot;{f'###Movie {nl}'.join([el['movie'] for el in response])}&quot;
+-            f&#x27;{f&quot;###Movie {nl}&quot;.join([el[&quot;movie&quot;] for el in response])}&#x27;
++            f&quot;{f&#x27;###Movie {nl}&#x27;.join([el[&#x27;movie&#x27;] for el in response])}&quot;
          )
      except Exception:
          return &quot;Something went wrong&quot;
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/latchbio/latch">latchbio/latch</a> (+1 -1 lines across 1 file)</summary>
+
+<a href="https://github.com/latchbio/latch">latchbio/latch</a> (+1 -1 lines across 1 file)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/latchbio/latch/blob/06fe2bf81530454968297f225ab382490139c145/latch_cli/services/move.py#L156'>latch_cli/services/move.py~L156</a></p>
-<pre><code class="language-diff">                 raise e
+<p><a href="https://github.com/latchbio/latch/blob/06fe2bf81530454968297f225ab382490139c145/latch_cli/services/move.py#L156">latch_cli/services/move.py~L156</a></p>
+<pre><code>                 raise e
  
      if len(srcs) == 1:
--        src_str = f'{click.style(&quot;Source: &quot;, fg=&quot;blue&quot;)}{srcs[0]}'
-+        src_str = f&quot;{click.style('Source: ', fg='blue')}{srcs[0]}&quot;
+-        src_str = f&#x27;{click.style(&quot;Source: &quot;, fg=&quot;blue&quot;)}{srcs[0]}&#x27;
++        src_str = f&quot;{click.style(&#x27;Source: &#x27;, fg=&#x27;blue&#x27;)}{srcs[0]}&quot;
      else:
          src_str = &quot;\n&quot;.join([
              click.style(&quot;Sources: &quot;, fg=&quot;blue&quot;),
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/lnbits/lnbits">lnbits/lnbits</a> (+7 -7 lines across 2 files)</summary>
+
+<a href="https://github.com/lnbits/lnbits">lnbits/lnbits</a> (+7 -7 lines across 2 files)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/lnbits/wallets/phoenixd.py#L232'>lnbits/wallets/phoenixd.py~L232</a></p>
-<pre><code class="language-diff">                             and message_json.get(&quot;type&quot;) == &quot;payment_received&quot;
+<p><a href="https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/lnbits/wallets/phoenixd.py#L232">lnbits/wallets/phoenixd.py~L232</a></p>
+<pre><code>                             and message_json.get(&quot;type&quot;) == &quot;payment_received&quot;
                          ):
                              logger.info(
--                                f'payment-received: {message_json[&quot;paymentHash&quot;]}'
-+                                f&quot;payment-received: {message_json['paymentHash']}&quot;
+-                                f&#x27;payment-received: {message_json[&quot;paymentHash&quot;]}&#x27;
++                                f&quot;payment-received: {message_json[&#x27;paymentHash&#x27;]}&quot;
                              )
                              yield message_json[&quot;paymentHash&quot;]
  
 </code></pre>
-<p><a href='https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/tests/regtest/test_real_invoice.py#L45'>tests/regtest/test_real_invoice.py~L45</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/tests/regtest/test_real_invoice.py#L45">tests/regtest/test_real_invoice.py~L45</a></p>
+<pre><code> 
      # check the payment status
      response = await client.get(
--        f'/api/v1/payments/{invoice[&quot;payment_hash&quot;]}', headers=inkey_headers_from
-+        f&quot;/api/v1/payments/{invoice['payment_hash']}&quot;, headers=inkey_headers_from
+-        f&#x27;/api/v1/payments/{invoice[&quot;payment_hash&quot;]}&#x27;, headers=inkey_headers_from
++        f&quot;/api/v1/payments/{invoice[&#x27;payment_hash&#x27;]}&quot;, headers=inkey_headers_from
      )
      assert response.status_code &lt; 300
      payment_status = response.json()
 </code></pre>
-<p><a href='https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/tests/regtest/test_real_invoice.py#L74'>tests/regtest/test_real_invoice.py~L74</a></p>
-<pre><code class="language-diff">     invoice = response.json()
+<p><a href="https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/tests/regtest/test_real_invoice.py#L74">tests/regtest/test_real_invoice.py~L74</a></p>
+<pre><code>     invoice = response.json()
  
      response = await client.get(
--        f'/api/v1/payments/{invoice[&quot;payment_hash&quot;]}', headers=inkey_headers_from
-+        f&quot;/api/v1/payments/{invoice['payment_hash']}&quot;, headers=inkey_headers_from
+-        f&#x27;/api/v1/payments/{invoice[&quot;payment_hash&quot;]}&#x27;, headers=inkey_headers_from
++        f&quot;/api/v1/payments/{invoice[&#x27;payment_hash&#x27;]}&quot;, headers=inkey_headers_from
      )
      assert response.status_code &lt; 300
      payment_status = response.json()
 </code></pre>
-<p><a href='https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/tests/regtest/test_real_invoice.py#L84'>tests/regtest/test_real_invoice.py~L84</a></p>
-<pre><code class="language-diff">         assert payment.checking_id == invoice[&quot;payment_hash&quot;]
+<p><a href="https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/tests/regtest/test_real_invoice.py#L84">tests/regtest/test_real_invoice.py~L84</a></p>
+<pre><code>         assert payment.checking_id == invoice[&quot;payment_hash&quot;]
  
          response = await client.get(
--            f'/api/v1/payments/{invoice[&quot;payment_hash&quot;]}', headers=inkey_headers_from
-+            f&quot;/api/v1/payments/{invoice['payment_hash']}&quot;, headers=inkey_headers_from
+-            f&#x27;/api/v1/payments/{invoice[&quot;payment_hash&quot;]}&#x27;, headers=inkey_headers_from
++            f&quot;/api/v1/payments/{invoice[&#x27;payment_hash&#x27;]}&quot;, headers=inkey_headers_from
          )
          assert response.status_code &lt; 300
          payment_status = response.json()
 </code></pre>
-<p><a href='https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/tests/regtest/test_real_invoice.py#L128'>tests/regtest/test_real_invoice.py~L128</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/tests/regtest/test_real_invoice.py#L128">tests/regtest/test_real_invoice.py~L128</a></p>
+<pre><code> 
      # check the payment status
      response = await client.get(
--        f'/api/v1/payments/{invoice[&quot;payment_hash&quot;]}', headers=inkey_headers_from
-+        f&quot;/api/v1/payments/{invoice['payment_hash']}&quot;, headers=inkey_headers_from
+-        f&#x27;/api/v1/payments/{invoice[&quot;payment_hash&quot;]}&#x27;, headers=inkey_headers_from
++        f&quot;/api/v1/payments/{invoice[&#x27;payment_hash&#x27;]}&quot;, headers=inkey_headers_from
      )
      payment_status = response.json()
      assert payment_status[&quot;paid&quot;]
 </code></pre>
-<p><a href='https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/tests/regtest/test_real_invoice.py#L290'>tests/regtest/test_real_invoice.py~L290</a></p>
-<pre><code class="language-diff">     assert response.status_code &lt; 300
+<p><a href="https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/tests/regtest/test_real_invoice.py#L290">tests/regtest/test_real_invoice.py~L290</a></p>
+<pre><code>     assert response.status_code &lt; 300
      invoice = response.json()
      response = await client.get(
--        f'/api/v1/payments/{invoice[&quot;payment_hash&quot;]}', headers=inkey_headers_from
-+        f&quot;/api/v1/payments/{invoice['payment_hash']}&quot;, headers=inkey_headers_from
+-        f&#x27;/api/v1/payments/{invoice[&quot;payment_hash&quot;]}&#x27;, headers=inkey_headers_from
++        f&quot;/api/v1/payments/{invoice[&#x27;payment_hash&#x27;]}&quot;, headers=inkey_headers_from
      )
      payment_status = response.json()
      assert not payment_status[&quot;paid&quot;]
 </code></pre>
-<p><a href='https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/tests/regtest/test_real_invoice.py#L299'>tests/regtest/test_real_invoice.py~L299</a></p>
-<pre><code class="language-diff">         assert payment.checking_id == invoice[&quot;payment_hash&quot;]
+<p><a href="https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/tests/regtest/test_real_invoice.py#L299">tests/regtest/test_real_invoice.py~L299</a></p>
+<pre><code>         assert payment.checking_id == invoice[&quot;payment_hash&quot;]
  
          response = await client.get(
--            f'/api/v1/payments/{invoice[&quot;payment_hash&quot;]}', headers=inkey_headers_from
-+            f&quot;/api/v1/payments/{invoice['payment_hash']}&quot;, headers=inkey_headers_from
+-            f&#x27;/api/v1/payments/{invoice[&quot;payment_hash&quot;]}&#x27;, headers=inkey_headers_from
++            f&quot;/api/v1/payments/{invoice[&#x27;payment_hash&#x27;]}&quot;, headers=inkey_headers_from
          )
          assert response.status_code &lt; 300
          payment_status = response.json()
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/milvus-io/pymilvus">milvus-io/pymilvus</a> (+2 -2 lines across 2 files)</summary>
+
+<a href="https://github.com/milvus-io/pymilvus">milvus-io/pymilvus</a> (+2 -2 lines across 2 files)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/milvus-io/pymilvus/blob/0fc6b28fcfafa625c53f8f257f39c08ae8e40b88/examples/hello_hybrid_bm25.py#L157'>examples/hello_hybrid_bm25.py~L157</a></p>
-<pre><code class="language-diff">         print(f&quot;text: {hit.text} distance {hit.score}&quot;)
+<p><a href="https://github.com/milvus-io/pymilvus/blob/0fc6b28fcfafa625c53f8f257f39c08ae8e40b88/examples/hello_hybrid_bm25.py#L157">examples/hello_hybrid_bm25.py~L157</a></p>
+<pre><code>         print(f&quot;text: {hit.text} distance {hit.score}&quot;)
  else:
      for hit in res:
--        print(f'text: {hit.fields[&quot;text&quot;]} distance {hit.distance}')
-+        print(f&quot;text: {hit.fields['text']} distance {hit.distance}&quot;)
+-        print(f&#x27;text: {hit.fields[&quot;text&quot;]} distance {hit.distance}&#x27;)
++        print(f&quot;text: {hit.fields[&#x27;text&#x27;]} distance {hit.distance}&quot;)
  
  # If you used both BGE-M3 and the reranker, you should see the following:
  # text: Alan Turing was the first person to conduct substantial research in AI. distance 0.9306981017573297
 </code></pre>
-<p><a href='https://github.com/milvus-io/pymilvus/blob/0fc6b28fcfafa625c53f8f257f39c08ae8e40b88/examples/hello_hybrid_sparse_dense.py#L151'>examples/hello_hybrid_sparse_dense.py~L151</a></p>
-<pre><code class="language-diff">         print(f&quot;text: {hit.text} distance {hit.score}&quot;)
+<p><a href="https://github.com/milvus-io/pymilvus/blob/0fc6b28fcfafa625c53f8f257f39c08ae8e40b88/examples/hello_hybrid_sparse_dense.py#L151">examples/hello_hybrid_sparse_dense.py~L151</a></p>
+<pre><code>         print(f&quot;text: {hit.text} distance {hit.score}&quot;)
  else:
      for hit in res:
--        print(f'text: {hit.fields[&quot;text&quot;]} distance {hit.distance}')
-+        print(f&quot;text: {hit.fields['text']} distance {hit.distance}&quot;)
+-        print(f&#x27;text: {hit.fields[&quot;text&quot;]} distance {hit.distance}&#x27;)
++        print(f&quot;text: {hit.fields[&#x27;text&#x27;]} distance {hit.distance}&quot;)
  
  # If you used both BGE-M3 and the reranker, you should see the following:
  # text: Alan Turing was the first person to conduct substantial research in AI. distance 0.9306981017573297
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/mlflow/mlflow">mlflow/mlflow</a> (+3 -3 lines across 2 files)</summary>
+
+<a href="https://github.com/mlflow/mlflow">mlflow/mlflow</a> (+3 -3 lines across 2 files)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/mlflow/mlflow/blob/ab44d3b69294fd75bfd7b5d06e1d517355df0a69/tests/recipes/test_ingest_step.py#L103'>tests/recipes/test_ingest_step.py~L103</a></p>
-<pre><code class="language-diff">     pandas_df_part2 = pandas_df[1:]
+<p><a href="https://github.com/mlflow/mlflow/blob/ab44d3b69294fd75bfd7b5d06e1d517355df0a69/tests/recipes/test_ingest_step.py#L103">tests/recipes/test_ingest_step.py~L103</a></p>
+<pre><code>     pandas_df_part2 = pandas_df[1:]
      pandas_df_part1.to_csv(dataset_path / &quot;df1.csv&quot;)
      pandas_df_part2.to_csv(dataset_path / &quot;df2.csv&quot;)
--    dataset_path = [f'{dataset_path / &quot;df1.csv&quot;}', f'{dataset_path / &quot;df2.csv&quot;}']
-+    dataset_path = [f&quot;{dataset_path / 'df1.csv'}&quot;, f&quot;{dataset_path / 'df2.csv'}&quot;]
+-    dataset_path = [f&#x27;{dataset_path / &quot;df1.csv&quot;}&#x27;, f&#x27;{dataset_path / &quot;df2.csv&quot;}&#x27;]
++    dataset_path = [f&quot;{dataset_path / &#x27;df1.csv&#x27;}&quot;, f&quot;{dataset_path / &#x27;df2.csv&#x27;}&quot;]
  
      recipe_yaml = tmp_recipe_root_path.joinpath(_RECIPE_CONFIG_FILE_NAME)
      recipe_yaml.write_text(
 </code></pre>
-<p><a href='https://github.com/mlflow/mlflow/blob/ab44d3b69294fd75bfd7b5d06e1d517355df0a69/tests/recipes/test_ingest_step.py#L158'>tests/recipes/test_ingest_step.py~L158</a></p>
-<pre><code class="language-diff">         dataset_path = pathlib.Path(os.path.relpath(dataset_path))
+<p><a href="https://github.com/mlflow/mlflow/blob/ab44d3b69294fd75bfd7b5d06e1d517355df0a69/tests/recipes/test_ingest_step.py#L158">tests/recipes/test_ingest_step.py~L158</a></p>
+<pre><code>         dataset_path = pathlib.Path(os.path.relpath(dataset_path))
  
      if explicit_file_list and multiple_files:
--        dataset_path = [f'{dataset_path / &quot;df1.csv&quot;}', f'{dataset_path / &quot;df2.csv&quot;}']
-+        dataset_path = [f&quot;{dataset_path / 'df1.csv'}&quot;, f&quot;{dataset_path / 'df2.csv'}&quot;]
+-        dataset_path = [f&#x27;{dataset_path / &quot;df1.csv&quot;}&#x27;, f&#x27;{dataset_path / &quot;df2.csv&quot;}&#x27;]
++        dataset_path = [f&quot;{dataset_path / &#x27;df1.csv&#x27;}&quot;, f&quot;{dataset_path / &#x27;df2.csv&#x27;}&quot;]
      else:
          dataset_path = str(dataset_path)
  
 </code></pre>
-<p><a href='https://github.com/mlflow/mlflow/blob/ab44d3b69294fd75bfd7b5d06e1d517355df0a69/tests/server/auth/test_auth.py#L114'>tests/server/auth/test_auth.py~L114</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/mlflow/mlflow/blob/ab44d3b69294fd75bfd7b5d06e1d517355df0a69/tests/server/auth/test_auth.py#L114">tests/server/auth/test_auth.py~L114</a></p>
+<pre><code> 
      # authenticate with the newly created user
      headers = {
--        &quot;Authorization&quot;: f'Bearer {jwt.encode({&quot;username&quot;: username}, &quot;secret&quot;, algorithm=&quot;HS256&quot;)}'
-+        &quot;Authorization&quot;: f&quot;Bearer {jwt.encode({'username': username}, 'secret', algorithm='HS256')}&quot;
+-        &quot;Authorization&quot;: f&#x27;Bearer {jwt.encode({&quot;username&quot;: username}, &quot;secret&quot;, algorithm=&quot;HS256&quot;)}&#x27;
++        &quot;Authorization&quot;: f&quot;Bearer {jwt.encode({&#x27;username&#x27;: username}, &#x27;secret&#x27;, algorithm=&#x27;HS256&#x27;)}&quot;
      }
      _mlflow_search_experiments_rest(client.tracking_uri, headers)
  
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+6 -6 lines across 3 files)</summary>
+
+<a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+6 -6 lines across 3 files)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/pandas-dev/pandas/blob/68d9dcab5b543adb3bfe5b83563c61a9b8afae77/pandas/io/formats/xml.py#L404'>pandas/io/formats/xml.py~L404</a></p>
-<pre><code class="language-diff">                         f&quot;{self.prefix} is not included in namespaces&quot;
+<p><a href="https://github.com/pandas-dev/pandas/blob/68d9dcab5b543adb3bfe5b83563c61a9b8afae77/pandas/io/formats/xml.py#L404">pandas/io/formats/xml.py~L404</a></p>
+<pre><code>                         f&quot;{self.prefix} is not included in namespaces&quot;
                      ) from err
              elif &quot;&quot; in self.namespaces:
--                uri = f'{{{self.namespaces[&quot;&quot;]}}}'
-+                uri = f&quot;{{{self.namespaces['']}}}&quot;
+-                uri = f&#x27;{{{self.namespaces[&quot;&quot;]}}}&#x27;
++                uri = f&quot;{{{self.namespaces[&#x27;&#x27;]}}}&quot;
              else:
                  uri = &quot;&quot;
  
 </code></pre>
-<p><a href='https://github.com/pandas-dev/pandas/blob/68d9dcab5b543adb3bfe5b83563c61a9b8afae77/pandas/io/formats/xml.py#L502'>pandas/io/formats/xml.py~L502</a></p>
-<pre><code class="language-diff">                         f&quot;{self.prefix} is not included in namespaces&quot;
+<p><a href="https://github.com/pandas-dev/pandas/blob/68d9dcab5b543adb3bfe5b83563c61a9b8afae77/pandas/io/formats/xml.py#L502">pandas/io/formats/xml.py~L502</a></p>
+<pre><code>                         f&quot;{self.prefix} is not included in namespaces&quot;
                      ) from err
              elif &quot;&quot; in self.namespaces:
--                uri = f'{{{self.namespaces[&quot;&quot;]}}}'
-+                uri = f&quot;{{{self.namespaces['']}}}&quot;
+-                uri = f&#x27;{{{self.namespaces[&quot;&quot;]}}}&#x27;
++                uri = f&quot;{{{self.namespaces[&#x27;&#x27;]}}}&quot;
              else:
                  uri = &quot;&quot;
  
 </code></pre>
-<p><a href='https://github.com/pandas-dev/pandas/blob/68d9dcab5b543adb3bfe5b83563c61a9b8afae77/pandas/tests/io/json/test_pandas.py#L1776'>pandas/tests/io/json/test_pandas.py~L1776</a></p>
-<pre><code class="language-diff">     )
+<p><a href="https://github.com/pandas-dev/pandas/blob/68d9dcab5b543adb3bfe5b83563c61a9b8afae77/pandas/tests/io/json/test_pandas.py#L1776">pandas/tests/io/json/test_pandas.py~L1776</a></p>
+<pre><code>     )
      def test_read_json_with_very_long_file_path(self, compression):
          # GH 46718
--        long_json_path = f'{&quot;a&quot; * 1000}.json{compression}'
-+        long_json_path = f&quot;{'a' * 1000}.json{compression}&quot;
+-        long_json_path = f&#x27;{&quot;a&quot; * 1000}.json{compression}&#x27;
++        long_json_path = f&quot;{&#x27;a&#x27; * 1000}.json{compression}&quot;
          with pytest.raises(
              FileNotFoundError, match=f&quot;File {long_json_path} does not exist&quot;
          ):
 </code></pre>
-<p><a href='https://github.com/pandas-dev/pandas/blob/68d9dcab5b543adb3bfe5b83563c61a9b8afae77/scripts/validate_docstrings.py#L368'>scripts/validate_docstrings.py~L368</a></p>
-<pre><code class="language-diff">         )
+<p><a href="https://github.com/pandas-dev/pandas/blob/68d9dcab5b543adb3bfe5b83563c61a9b8afae77/scripts/validate_docstrings.py#L368">scripts/validate_docstrings.py~L368</a></p>
+<pre><code>         )
          for err_code in actual_failures - expected_failures:
              sys.stdout.write(
--                f'{prefix}{res[&quot;file&quot;]}:{res[&quot;file_line&quot;]}:'
-+                f&quot;{prefix}{res['file']}:{res['file_line']}:&quot;
+-                f&#x27;{prefix}{res[&quot;file&quot;]}:{res[&quot;file_line&quot;]}:&#x27;
++                f&quot;{prefix}{res[&#x27;file&#x27;]}:{res[&#x27;file_line&#x27;]}:&quot;
                  f&quot;{err_code}:{func_name}:{error_messages[err_code]}\n&quot;
              )
              exit_status += 1
          for err_code in ignore_errors.get(func_name, set()) - actual_failures:
              sys.stdout.write(
--                f'{prefix}{res[&quot;file&quot;]}:{res[&quot;file_line&quot;]}:'
-+                f&quot;{prefix}{res['file']}:{res['file_line']}:&quot;
+-                f&#x27;{prefix}{res[&quot;file&quot;]}:{res[&quot;file_line&quot;]}:&#x27;
++                f&quot;{prefix}{res[&#x27;file&#x27;]}:{res[&#x27;file_line&#x27;]}:&quot;
                  f&quot;{err_code}:{func_name}:&quot;
                  &quot;EXPECTED TO FAIL, BUT NOT FAILING\n&quot;
              )
 </code></pre>
-<p><a href='https://github.com/pandas-dev/pandas/blob/68d9dcab5b543adb3bfe5b83563c61a9b8afae77/scripts/validate_docstrings.py#L407'>scripts/validate_docstrings.py~L407</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/pandas-dev/pandas/blob/68d9dcab5b543adb3bfe5b83563c61a9b8afae77/scripts/validate_docstrings.py#L407">scripts/validate_docstrings.py~L407</a></p>
+<pre><code> 
      sys.stderr.write(header(&quot;Validation&quot;))
      if result[&quot;errors&quot;]:
--        sys.stderr.write(f'{len(result[&quot;errors&quot;])} Errors found for `{func_name}`:\n')
-+        sys.stderr.write(f&quot;{len(result['errors'])} Errors found for `{func_name}`:\n&quot;)
+-        sys.stderr.write(f&#x27;{len(result[&quot;errors&quot;])} Errors found for `{func_name}`:\n&#x27;)
++        sys.stderr.write(f&quot;{len(result[&#x27;errors&#x27;])} Errors found for `{func_name}`:\n&quot;)
          for err_code, err_desc in result[&quot;errors&quot;]:
              sys.stderr.write(f&quot;\t{err_code}\t{err_desc}\n&quot;)
      else:
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/prefecthq/prefect">prefecthq/prefect</a> (+1 -1 lines across 1 file)</summary>
+
+<a href="https://github.com/prefecthq/prefect">prefecthq/prefect</a> (+1 -1 lines across 1 file)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/prefecthq/prefect/blob/d09ef03bef4d2ffa70b8f9f260418ecbbf0926a1/src/prefect/blocks/core.py#L623'>src/prefect/blocks/core.py~L623</a></p>
-<pre><code class="language-diff">         qualified_name = to_qualified_name(cls)
+<p><a href="https://github.com/prefecthq/prefect/blob/d09ef03bef4d2ffa70b8f9f260418ecbbf0926a1/src/prefect/blocks/core.py#L623">src/prefect/blocks/core.py~L623</a></p>
+<pre><code>         qualified_name = to_qualified_name(cls)
          module_str = &quot;.&quot;.join(qualified_name.split(&quot;.&quot;)[:-1])
          class_name = cls.__name__
--        block_variable_name = f'{cls.get_block_type_slug().replace(&quot;-&quot;, &quot;_&quot;)}_block'
-+        block_variable_name = f&quot;{cls.get_block_type_slug().replace('-', '_')}_block&quot;
+-        block_variable_name = f&#x27;{cls.get_block_type_slug().replace(&quot;-&quot;, &quot;_&quot;)}_block&#x27;
++        block_variable_name = f&quot;{cls.get_block_type_slug().replace(&#x27;-&#x27;, &#x27;_&#x27;)}_block&quot;
  
          return dedent(
              f&quot;&quot;&quot;\
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/pypa/build">pypa/build</a> (+1 -1 lines across 1 file)</summary>
+
+<a href="https://github.com/pypa/build">pypa/build</a> (+1 -1 lines across 1 file)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/pypa/build/blob/84e649587cb13220d6dd74c870e2bc639f608fde/src/build/__main__.py#L323'>src/build/<strong>main</strong>.py~L323</a></p>
-<pre><code class="language-diff">         '--version',
-         '-V',
-         action='version',
--        version=f&quot;build {build.__version__} ({','.join(build.__path__)})&quot;,
-+        version=f'build {build.__version__} ({&quot;,&quot;.join(build.__path__)})',
+<p><a href="https://github.com/pypa/build/blob/84e649587cb13220d6dd74c870e2bc639f608fde/src/build/__main__.py#L323">src/build/<strong>main</strong>.py~L323</a></p>
+<pre><code>         &#x27;--version&#x27;,
+         &#x27;-V&#x27;,
+         action=&#x27;version&#x27;,
+-        version=f&quot;build {build.__version__} ({&#x27;,&#x27;.join(build.__path__)})&quot;,
++        version=f&#x27;build {build.__version__} ({&quot;,&quot;.join(build.__path__)})&#x27;,
      )
      parser.add_argument(
-         '--verbose',
+         &#x27;--verbose&#x27;,
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/pypa/cibuildwheel">pypa/cibuildwheel</a> (+3 -3 lines across 1 file)</summary>
+
+<a href="https://github.com/pypa/cibuildwheel">pypa/cibuildwheel</a> (+3 -3 lines across 1 file)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/pypa/cibuildwheel/blob/b98602705f5449b8e221a1849a8dc18e8d8b14db/test/utils.py#L293'>test/utils.py~L293</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/pypa/cibuildwheel/blob/b98602705f5449b8e221a1849a8dc18e8d8b14db/test/utils.py#L293">test/utils.py~L293</a></p>
+<pre><code> 
              if machine_arch == &quot;arm64&quot;:
                  arm64_macosx = _floor_macosx(min_macosx, &quot;11.0&quot;)
--                platform_tags = [f'macosx_{arm64_macosx.replace(&quot;.&quot;, &quot;_&quot;)}_arm64']
-+                platform_tags = [f&quot;macosx_{arm64_macosx.replace('.', '_')}_arm64&quot;]
+-                platform_tags = [f&#x27;macosx_{arm64_macosx.replace(&quot;.&quot;, &quot;_&quot;)}_arm64&#x27;]
++                platform_tags = [f&quot;macosx_{arm64_macosx.replace(&#x27;.&#x27;, &#x27;_&#x27;)}_arm64&quot;]
              else:
--                platform_tags = [f'macosx_{min_macosx.replace(&quot;.&quot;, &quot;_&quot;)}_x86_64']
-+                platform_tags = [f&quot;macosx_{min_macosx.replace('.', '_')}_x86_64&quot;]
+-                platform_tags = [f&#x27;macosx_{min_macosx.replace(&quot;.&quot;, &quot;_&quot;)}_x86_64&#x27;]
++                platform_tags = [f&quot;macosx_{min_macosx.replace(&#x27;.&#x27;, &#x27;_&#x27;)}_x86_64&quot;]
  
              if include_universal2:
--                platform_tags.append(f'macosx_{min_macosx.replace(&quot;.&quot;, &quot;_&quot;)}_universal2')
-+                platform_tags.append(f&quot;macosx_{min_macosx.replace('.', '_')}_universal2&quot;)
+-                platform_tags.append(f&#x27;macosx_{min_macosx.replace(&quot;.&quot;, &quot;_&quot;)}_universal2&#x27;)
++                platform_tags.append(f&quot;macosx_{min_macosx.replace(&#x27;.&#x27;, &#x27;_&#x27;)}_universal2&quot;)
          else:
              msg = f&quot;Unsupported platform {platform!r}&quot;
              raise Exception(msg)
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/python/mypy">python/mypy</a> (+2 -2 lines across 2 files)</summary>
+
+<a href="https://github.com/python/mypy">python/mypy</a> (+2 -2 lines across 2 files)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/python/mypy/blob/e106dd7a0653c24d67597adf3ae6939d7ff9a376/mypy/errors.py#L898'>mypy/errors.py~L898</a></p>
-<pre><code class="language-diff">                     a.append(&quot; &quot; * DEFAULT_SOURCE_OFFSET + source_line_expanded)
+<p><a href="https://github.com/python/mypy/blob/e106dd7a0653c24d67597adf3ae6939d7ff9a376/mypy/errors.py#L898">mypy/errors.py~L898</a></p>
+<pre><code>                     a.append(&quot; &quot; * DEFAULT_SOURCE_OFFSET + source_line_expanded)
                      marker = &quot;^&quot;
                      if end_line == line and end_column &gt; column:
--                        marker = f'^{&quot;~&quot; * (end_column - column - 1)}'
-+                        marker = f&quot;^{'~' * (end_column - column - 1)}&quot;
+-                        marker = f&#x27;^{&quot;~&quot; * (end_column - column - 1)}&#x27;
++                        marker = f&quot;^{&#x27;~&#x27; * (end_column - column - 1)}&quot;
                      a.append(&quot; &quot; * (DEFAULT_SOURCE_OFFSET + column) + marker)
          return a
  
 </code></pre>
-<p><a href='https://github.com/python/mypy/blob/e106dd7a0653c24d67597adf3ae6939d7ff9a376/mypy/stubtest.py#L1554'>mypy/stubtest.py~L1554</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/python/mypy/blob/e106dd7a0653c24d67597adf3ae6939d7ff9a376/mypy/stubtest.py#L1554">mypy/stubtest.py~L1554</a></p>
+<pre><code> 
  
  def describe_runtime_callable(signature: inspect.Signature, *, is_async: bool) -&gt; str:
--    return f'{&quot;async &quot; if is_async else &quot;&quot;}def {signature}'
-+    return f&quot;{'async ' if is_async else ''}def {signature}&quot;
+-    return f&#x27;{&quot;async &quot; if is_async else &quot;&quot;}def {signature}&#x27;
++    return f&quot;{&#x27;async &#x27; if is_async else &#x27;&#x27;}def {signature}&quot;
  
  
  def is_subtype_helper(left: mypy.types.Type, right: mypy.types.Type) -&gt; bool:
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/python/typeshed">python/typeshed</a> (+1 -1 lines across 1 file)</summary>
+
+<a href="https://github.com/python/typeshed">python/typeshed</a> (+1 -1 lines across 1 file)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/python/typeshed/blob/ca65e087f1f9dfc28e89192b60ce7cfc2e92c674/scripts/stubsabot.py#L533'>scripts/stubsabot.py~L533</a></p>
-<pre><code class="language-diff">     output = subprocess.check_output([&quot;git&quot;, &quot;remote&quot;, &quot;get-url&quot;, &quot;origin&quot;], text=True).strip()
+<p><a href="https://github.com/python/typeshed/blob/ca65e087f1f9dfc28e89192b60ce7cfc2e92c674/scripts/stubsabot.py#L533">scripts/stubsabot.py~L533</a></p>
+<pre><code>     output = subprocess.check_output([&quot;git&quot;, &quot;remote&quot;, &quot;get-url&quot;, &quot;origin&quot;], text=True).strip()
      match = re.match(r&quot;(git@github.com:|https://github.com/)(?P&lt;owner&gt;[^/]+)/(?P&lt;repo&gt;[^/\s]+)&quot;, output)
-     assert match is not None, f&quot;Couldn't identify origin's owner: {output!r}&quot;
--    assert match.group(&quot;repo&quot;).removesuffix(&quot;.git&quot;) == &quot;typeshed&quot;, f'Unexpected repo: {match.group(&quot;repo&quot;)!r}'
-+    assert match.group(&quot;repo&quot;).removesuffix(&quot;.git&quot;) == &quot;typeshed&quot;, f&quot;Unexpected repo: {match.group('repo')!r}&quot;
+     assert match is not None, f&quot;Couldn&#x27;t identify origin&#x27;s owner: {output!r}&quot;
+-    assert match.group(&quot;repo&quot;).removesuffix(&quot;.git&quot;) == &quot;typeshed&quot;, f&#x27;Unexpected repo: {match.group(&quot;repo&quot;)!r}&#x27;
++    assert match.group(&quot;repo&quot;).removesuffix(&quot;.git&quot;) == &quot;typeshed&quot;, f&quot;Unexpected repo: {match.group(&#x27;repo&#x27;)!r}&quot;
      return match.group(&quot;owner&quot;)
  
  
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/reflex-dev/reflex">reflex-dev/reflex</a> (+3 -3 lines across 2 files)</summary>
+
+<a href="https://github.com/reflex-dev/reflex">reflex-dev/reflex</a> (+3 -3 lines across 2 files)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/reflex-dev/reflex/blob/c103ab5e2872ca9496978360802d84c930e50b4e/reflex/custom_components/custom_components.py#L770'>reflex/custom_components/custom_components.py~L770</a></p>
-<pre><code class="language-diff">     pyproject_toml = _get_package_config()
+<p><a href="https://github.com/reflex-dev/reflex/blob/c103ab5e2872ca9496978360802d84c930e50b4e/reflex/custom_components/custom_components.py#L770">reflex/custom_components/custom_components.py~L770</a></p>
+<pre><code>     pyproject_toml = _get_package_config()
      project = pyproject_toml[&quot;project&quot;]
      console.print(
--        f'Double check the information before publishing: {project[&quot;name&quot;]} version {project[&quot;version&quot;]}'
-+        f&quot;Double check the information before publishing: {project['name']} version {project['version']}&quot;
+-        f&#x27;Double check the information before publishing: {project[&quot;name&quot;]} version {project[&quot;version&quot;]}&#x27;
++        f&quot;Double check the information before publishing: {project[&#x27;name&#x27;]} version {project[&#x27;version&#x27;]}&quot;
      )
  
      console.print(&quot;Update or enter to keep the current information.&quot;)
 </code></pre>
-<p><a href='https://github.com/reflex-dev/reflex/blob/c103ab5e2872ca9496978360802d84c930e50b4e/reflex/custom_components/custom_components.py#L782'>reflex/custom_components/custom_components.py~L782</a></p>
-<pre><code class="language-diff">     author[&quot;name&quot;] = console.ask(f&quot;Author Name&quot;, default=author.get(&quot;name&quot;, &quot;&quot;))
+<p><a href="https://github.com/reflex-dev/reflex/blob/c103ab5e2872ca9496978360802d84c930e50b4e/reflex/custom_components/custom_components.py#L782">reflex/custom_components/custom_components.py~L782</a></p>
+<pre><code>     author[&quot;name&quot;] = console.ask(f&quot;Author Name&quot;, default=author.get(&quot;name&quot;, &quot;&quot;))
      author[&quot;email&quot;] = console.ask(f&quot;Author Email&quot;, default=author.get(&quot;email&quot;, &quot;&quot;))
  
--    console.print(f'Current keywords are: {project.get(&quot;keywords&quot;) or []}')
-+    console.print(f&quot;Current keywords are: {project.get('keywords') or []}&quot;)
+-    console.print(f&#x27;Current keywords are: {project.get(&quot;keywords&quot;) or []}&#x27;)
++    console.print(f&quot;Current keywords are: {project.get(&#x27;keywords&#x27;) or []}&quot;)
      keyword_action = console.ask(
          &quot;Keep, replace or append?&quot;, choices=[&quot;k&quot;, &quot;r&quot;, &quot;a&quot;], default=&quot;k&quot;
      )
 </code></pre>
-<p><a href='https://github.com/reflex-dev/reflex/blob/c103ab5e2872ca9496978360802d84c930e50b4e/reflex/vars/base.py#L364'>reflex/vars/base.py~L364</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/reflex-dev/reflex/blob/c103ab5e2872ca9496978360802d84c930e50b4e/reflex/vars/base.py#L364">reflex/vars/base.py~L364</a></p>
+<pre><code> 
                  _default_var_type: ClassVar[GenericType] = python_types[0]
  
--            ToVarOperation.__name__ = f'To{cls.__name__.removesuffix(&quot;Var&quot;)}Operation'
-+            ToVarOperation.__name__ = f&quot;To{cls.__name__.removesuffix('Var')}Operation&quot;
+-            ToVarOperation.__name__ = f&#x27;To{cls.__name__.removesuffix(&quot;Var&quot;)}Operation&#x27;
++            ToVarOperation.__name__ = f&quot;To{cls.__name__.removesuffix(&#x27;Var&#x27;)}Operation&quot;
  
              _var_subclasses.append(VarSubclassEntry(cls, ToVarOperation, python_types))
  
 </code></pre>
 </p>
-</details>
-<details><summary><a href="https://github.com/rotki/rotki">rotki/rotki</a> (+187 -187 lines across 83 files)</summary>
+
+<a href="https://github.com/rotki/rotki">rotki/rotki</a> (+187 -187 lines across 83 files)
 <p>
 <pre>ruff format --preview</pre>
 </p>
 <p>
 
-<p><a href='https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/rest.py#L447'>rotkehlchen/api/rest.py~L447</a></p>
-<pre><code class="language-diff">             f&quot;{task_str} dies with exception: {greenlet.exception}.\n&quot;
+<p><a href="https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/rest.py#L447">rotkehlchen/api/rest.py~L447</a></p>
+<pre><code>             f&quot;{task_str} dies with exception: {greenlet.exception}.\n&quot;
              f&quot;Exception Name: {greenlet.exc_info[0]}\n&quot;
              f&quot;Exception Info: {greenlet.exc_info[1]}\n&quot;
--            f'Traceback:\n {&quot;&quot;.join(traceback.format_tb(greenlet.exc_info[2]))}',
-+            f&quot;Traceback:\n {''.join(traceback.format_tb(greenlet.exc_info[2]))}&quot;,
+-            f&#x27;Traceback:\n {&quot;&quot;.join(traceback.format_tb(greenlet.exc_info[2]))}&#x27;,
++            f&quot;Traceback:\n {&#x27;&#x27;.join(traceback.format_tb(greenlet.exc_info[2]))}&quot;,
          )
-         # also write an error for the task result if it's not the main greenlet
+         # also write an error for the task result if it&#x27;s not the main greenlet
          if task_id is not None:
 </code></pre>
-<p><a href='https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/rest.py#L1479'>rotkehlchen/api/rest.py~L1479</a></p>
-<pre><code class="language-diff">             return api_response(
+<p><a href="https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/rest.py#L1479">rotkehlchen/api/rest.py~L1479</a></p>
+<pre><code>             return api_response(
                  result=wrap_in_fail_result(
                      f&quot;Failed to add {asset.asset_type!s} {asset.name} &quot;
--                    f'since it already exists. Existing ids: {&quot;,&quot;.join(identifiers)}'
-+                    f&quot;since it already exists. Existing ids: {','.join(identifiers)}&quot;
+-                    f&#x27;since it already exists. Existing ids: {&quot;,&quot;.join(identifiers)}&#x27;
++                    f&quot;since it already exists. Existing ids: {&#x27;,&#x27;.join(identifiers)}&quot;
                  ),
                  status_code=HTTPStatus.CONFLICT,
              )
 </code></pre>
-<p><a href='https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/rest.py#L1716'>rotkehlchen/api/rest.py~L1716</a></p>
-<pre><code class="language-diff">                     message=msg,
+<p><a href="https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/rest.py#L1716">rotkehlchen/api/rest.py~L1716</a></p>
+<pre><code>                     message=msg,
                      status_code=HTTPStatus.CONFLICT,
                  )
--            log.debug(f'extracted {len(data[&quot;events&quot;])} events from {filepath}')
-+            log.debug(f&quot;extracted {len(data['events'])} events from {filepath}&quot;)
+-            log.debug(f&#x27;extracted {len(data[&quot;events&quot;])} events from {filepath}&#x27;)
++            log.debug(f&quot;extracted {len(data[&#x27;events&#x27;])} events from {filepath}&quot;)
              self.rotkehlchen.accountant.process_history(
                  start_ts=Timestamp(data[&quot;pnl_settings&quot;][&quot;from_timestamp&quot;]),
                  end_ts=Timestamp(data[&quot;pnl_settings&quot;][&quot;to_timestamp&quot;]),
 </code></pre>
-<p><a href='https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/rest.py#L3269'>rotkehlchen/api/rest.py~L3269</a></p>
-<pre><code class="language-diff">         &quot;&quot;&quot;Return the current price of the assets in the target asset currency.&quot;&quot;&quot;
+<p><a href="https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/rest.py#L3269">rotkehlchen/api/rest.py~L3269</a></p>
+<pre><code>         &quot;&quot;&quot;Return the current price of the assets in the target asset currency.&quot;&quot;&quot;
          log.debug(
              f&quot;Querying the current {target_asset.identifier} price of these assets: &quot;
--            f'{&quot;, &quot;.join([asset.identifier for asset in assets])}',
-+            f&quot;{', '.join([asset.identifier for asset in assets])}&quot;,
+-            f&#x27;{&quot;, &quot;.join([asset.identifier for asset in assets])}&#x27;,
++            f&quot;{&#x27;, &#x27;.join([asset.identifier for asset in assets])}&quot;,
          )
-         # Type is list instead of tuple here because you can't serialize a tuple
+         # Type is list instead of tuple here because you can&#x27;t serialize a tuple
          assets_price: dict[Asset, list[Price | (int | None | bool)]] = {}
 </code></pre>
-<p><a href='https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/rest.py#L3376'>rotkehlchen/api/rest.py~L3376</a></p>
-<pre><code class="language-diff">         &quot;&quot;&quot;
+<p><a href="https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/rest.py#L3376">rotkehlchen/api/rest.py~L3376</a></p>
+<pre><code>         &quot;&quot;&quot;
          log.debug(
              f&quot;Querying the historical {target_asset.identifier} price of these assets: &quot;
--            f'{&quot;, &quot;.join(f&quot;{asset.identifier} at {ts}&quot; for asset, ts in assets_timestamp)}',
-+            f&quot;{', '.join(f'{asset.identifier} at {ts}' for asset, ts in assets_timestamp)}&quot;,
+-            f&#x27;{&quot;, &quot;.join(f&quot;{asset.identifier} at {ts}&quot; for asset, ts in assets_timestamp)}&#x27;,
++            f&quot;{&#x27;, &#x27;.join(f&#x27;{asset.identifier} at {ts}&#x27; for asset, ts in assets_timestamp)}&quot;,
              assets_timestamp=assets_timestamp,
          )
          assets_price: defaultdict[Asset, defaultdict] = defaultdict(
 </code></pre>
-<p><a href='https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/v1/fields.py#L533'>rotkehlchen/api/v1/fields.py~L533</a></p>
-<pre><code class="language-diff">         if self.limit_to is not None and chain_id not in self.limit_to:
+<p><a href="https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/v1/fields.py#L533">rotkehlchen/api/v1/fields.py~L533</a></p>
+<pre><code>         if self.limit_to is not None and chain_id not in self.limit_to:
              raise ValidationError(
                  f&quot;Given chain_id {value} is not one of &quot;
--                f'{&quot;,&quot;.join([str(x) for x in self.limit_to])} as needed by the endpoint',
-+                f&quot;{','.join([str(x) for x in self.limit_to])} as needed by the endpoint&quot;,
+-                f&#x27;{&quot;,&quot;.join([str(x) for x in self.limit_to])} as needed by the endpoint&#x27;,
++                f&quot;{&#x27;,&#x27;.join([str(x) for x in self.limit_to])} as needed by the endpoint&quot;,
              )
  
          return chain_id
 </code></pre>
-<p><a href='https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/v1/fields.py#L573'>rotkehlchen/api/v1/fields.py~L573</a></p>
-<pre><code class="language-diff">         if self.limit_to is not None and chain not in self.limit_to:
+<p><a href="https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/v1/fields.py#L573">rotkehlchen/api/v1/fields.py~L573</a></p>
+<pre><code>         if self.limit_to is not None and chain not in self.limit_to:
              raise ValidationError(
                  f&quot;Given chain {value} is not one of &quot;
--                f'{&quot;,&quot;.join([str(x) for x in self.limit_to])} as needed by the endpoint',
-+                f&quot;{','.join([str(x) for x in self.limit_to])} as needed by the endpoint&quot;,
+-                f&#x27;{&quot;,&quot;.join([str(x) for x in self.limit_to])} as needed by the endpoint&#x27;,
++                f&quot;{&#x27;,&#x27;.join([str(x) for x in self.limit_to])} as needed by the endpoint&quot;,
              )
  
          return chain
 </code></pre>
-<p><a href='https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/v1/fields.py#L808'>rotkehlchen/api/v1/fields.py~L808</a></p>
-<pre><code class="language-diff">         if self.limit_to is not None and location not in self.limit_to:
+<p><a href="https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/v1/fields.py#L808">rotkehlchen/api/v1/fields.py~L808</a></p>
+<pre><code>         if self.limit_to is not None and location not in self.limit_to:
              raise ValidationError(
                  f&quot;Given location {value} is not one of &quot;
--                f'{&quot;,&quot;.join([str(x) for x in self.limit_to])} as needed by the endpoint',
-+                f&quot;{','.join([str(x) for x in self.limit_to])} as needed by the endpoint&quot;,
+-                f&#x27;{&quot;,&quot;.join([str(x) for x in self.limit_to])} as needed by the endpoint&#x27;,
++                f&quot;{&#x27;,&#x27;.join([str(x) for x in self.limit_to])} as needed by the endpoint&quot;,
              )
  
          return location
 </code></pre>
-<p><a href='https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/v1/fields.py#L930'>rotkehlchen/api/v1/fields.py~L930</a></p>
-<pre><code class="language-diff">             ):  # noqa: E501
+<p><a href="https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/v1/fields.py#L930">rotkehlchen/api/v1/fields.py~L930</a></p>
+<pre><code>             ):  # noqa: E501
                  raise ValidationError(
                      f&quot;Given file {value.filename} does not end in any of &quot;
--                    f'{&quot;,&quot;.join(self.allowed_extensions)}',
-+                    f&quot;{','.join(self.allowed_extensions)}&quot;,
+-                    f&#x27;{&quot;,&quot;.join(self.allowed_extensions)}&#x27;,
++                    f&quot;{&#x27;,&#x27;.join(self.allowed_extensions)}&quot;,
                  )
  
              return value
 </code></pre>
-<p><a href='https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/v1/fields.py#L950'>rotkehlchen/api/v1/fields.py~L950</a></p>
-<pre><code class="language-diff">         ):  # noqa: E501
+<p><a href="https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/v1/fields.py#L950">rotkehlchen/api/v1/fields.py~L950</a></p>
+<pre><code>         ):  # noqa: E501
              raise ValidationError(
                  f&quot;Given file {path} does not end in any of &quot;
--                f'{&quot;,&quot;.join(self.allowed_extensions)}',
-+                f&quot;{','.join(self.allowed_extensions)}&quot;,
+-                f&#x27;{&quot;,&quot;.join(self.allowed_extensions)}&#x27;,
++                f&quot;{&#x27;,&#x27;.join(self.allowed_extensions)}&quot;,
              )
  
          return path
 </code></pre>
-<p><a href='https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/v1/schemas.py#L342'>rotkehlchen/api/v1/schemas.py~L342</a></p>
-<pre><code class="language-diff">             SUPPORTED_CHAIN_IDS
+<p><a href="https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/v1/schemas.py#L342">rotkehlchen/api/v1/schemas.py~L342</a></p>
+<pre><code>             SUPPORTED_CHAIN_IDS
          ):
              raise ValidationError(
--                message=f'rotki does not support evm transactions for {data[&quot;evm_chain&quot;]}',
-+                message=f&quot;rotki does not support evm transactions for {data['evm_chain']}&quot;,
+-                message=f&#x27;rotki does not support evm transactions for {data[&quot;evm_chain&quot;]}&#x27;,
++                message=f&quot;rotki does not support evm transactions for {data[&#x27;evm_chain&#x27;]}&quot;,
                  field_name=&quot;evm_chain&quot;,
              )
  
 </code></pre>
-<p><a href='https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/v1/schemas.py#L482'>rotkehlchen/api/v1/schemas.py~L482</a></p>
-<pre><code class="language-diff">         ).issubset(valid_ordering_attr):
+<p><a href="https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/v1/schemas.py#L482">rotkehlchen/api/v1/schemas.py~L482</a></p>
+<pre><code>         ).issubset(valid_ordering_attr):
              error_msg = (
                  f&quot;order_by_attributes for trades can not be &quot;
--                f'{&quot;,&quot;.join(set(data[&quot;order_by_attributes&quot;]) - valid_ordering_attr)}'
-+                f&quot;{','.join(set(data['order_by_attributes']) - valid_ordering_attr)}&quot;
+-                f&#x27;{&quot;,&quot;.join(set(data[&quot;order_by_attributes&quot;]) - valid_ordering_attr)}&#x27;
++                f&quot;{&#x27;,&#x27;.join(set(data[&#x27;order_by_attributes&#x27;]) - valid_ordering_attr)}&quot;
              )
              raise ValidationError(
                  message=error_msg,
 </code></pre>
-<p><a href='https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/v1/schemas.py#L711'>rotkehlchen/api/v1/schemas.py~L711</a></p>
-<pre><code class="language-diff">         ).issubset(valid_ordering_attr):
+<p><a href="https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/v1/schemas.py#L711">rotkehlchen/api/v1/schemas.py~L711</a></p>
+<pre><code>         ).issubset(valid_ordering_attr):
              error_msg = (
                  f&quot;order_by_attributes for history event data can not be &quot;
--                f'{&quot;,&quot;.join(set(data[&quot;order_by_attributes&quot;]) - valid_ordering_attr)}'
-+                f&quot;{','.join(set(data['order_by_attributes']) - valid_ordering_attr)}&quot;
+-                f&#x27;{&quot;,&quot;.join(set(data[&quot;order_by_attributes&quot;]) - valid_ordering_attr)}&#x27;
++                f&quot;{&#x27;,&#x27;.join(set(data[&#x27;order_by_attributes&#x27;]) - valid_ordering_attr)}&quot;
              )
              raise ValidationError(
                  message=error_msg,
 </code></pre>
-<p><a href='https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/v1/schemas.py#L1001'>rotkehlchen/api/v1/schemas.py~L1001</a></p>
-<pre><code class="language-diff">         ).issubset(valid_ordering_attr):
+<p><a href="https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/v1/schemas.py#L1001">rotkehlchen/api/v1/schemas.py~L1001</a></p>
+<pre><code>         ).issubset(valid_ordering_attr):
              error_msg = (
                  f&quot;order_by_attributes for asset movements can not be &quot;
--                f'{&quot;,&quot;.join(set(data[&quot;order_by_attributes&quot;]) - valid_ordering_attr)}'
-+                f&quot;{','.join(set(data['order_by_attributes']) - valid_ordering_attr)}&quot;
+-                f&#x27;{&quot;,&quot;.join(set(data[&quot;order_by_attributes&quot;]) - valid_ordering_attr)}&#x27;
++                f&quot;{&#x27;,&#x27;.join(set(data[&#x27;order_by_attributes&#x27;]) - valid_ordering_attr)}&quot;
              )
              raise ValidationError(
                  message=error_msg,
 </code></pre>
-<p><a href='https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/v1/schemas.py#L1195'>rotkehlchen/api/v1/schemas.py~L1195</a></p>
-<pre><code class="language-diff"> 
+<p><a href="https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/v1/schemas.py#L1195">rotkehlchen/api/v1/schemas.py~L1195</a></p>
+<pre><code> 
      if (invalid_oracles := given_set - SETTABLE_CURRENT_PRICE_ORACLES) != set():
          raise ValidationError(
--            f'Invalid current price oracles given: {&quot;, &quot;.join([str(x) for x in invalid_oracles])}. ',  # noqa: E501
-+            f&quot;Invalid current price oracles given: {', '.join([str(x) for x in invalid_oracles])}. &quot;,  # noqa: E501
+-            f&#x27;Invalid current price oracles given: {&quot;, &quot;.join([str(x) for x in invalid_oracles])}. &#x27;,  # noqa: E501
++            f&quot;Invalid current price oracles given: {&#x27;, &#x27;.join([str(x) for x in invalid_oracles])}. &quot;,  # noqa: E501
          )
  
  
 </code></pre>
-<p><a href='https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/v1/schemas.py#L1209'>rotkehlchen/api/v1/schemas.py~L1209</a></p>
-<pre><code class="language-diff">         oracle_names = [str(oracle) for oracle in historical_price_oracles]
+<p><a href="https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/v1/schemas.py#L1209">rotkehlchen/api/v1/schemas.py~L1209</a></p>
+<pre><code>         oracle_names = [str(oracle) for oracle in historical_price_oracles]
          supported_oracle_names = [str(oracle) for oracle in HistoricalPriceOracle]
          raise ValidationError(
--            f'Invalid historical price oracles in: {&quot;, &quot;.join(oracle_names)}. '
--            f'Supported oracles are: {&quot;, &quot;.join(supported_oracle_names)}. '
-+            f&quot;Invalid historical price oracles in: {', '.join(oracle_names)}. &quot;
-+            f&quot;Supported oracles are: {', '.join(supported_oracle_names)}. &quot;
+-            f&#x27;Invalid historical price oracles in: {&quot;, &quot;.join(oracle_names)}. &#x27;
+-            f&#x27;Supported oracles are: {&quot;, &quot;.join(supported_oracle_names)}. &#x27;
++            f&quot;Invalid historical price oracles in: {&#x27;, &#x27;.join(oracle_names)}. &quot;
++            f&quot;Supported oracles are: {&#x27;, &#x27;.join(supported_oracle_names)}. &quot;
              f&quot;Check there are no repeated ones.&quot;,
          )
  
 </code></pre>
-<p><a href='https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/v1/schemas.py#L1508'>rotkehlchen/api/v1/schemas.py~L1508</a></p>
-<pre><code class="language-diff">         if data.get(&quot;api_key&quot;) is None:
+<p><a href="https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/v1/schemas.py#L1508">rotkehlchen/api/v1/schemas.py~L1508</a></p>
+<pre><code>         if data.get(&quot;api_key&quot;) is None:
              if data[&quot;name&quot;] != ExternalService.MONERIUM:
                  raise ValidationError(
--                    message=f'an api key is needed for {data[&quot;name&quot;].name.lower()}',
-+                    message=f&quot;an api key is needed for {data['name'].name.lower()}&quot;,
+-                    message=f&#x27;an api key is needed for {data[&quot;name&quot;].name.lower()}&#x27;,
++                    message=f&quot;an api key is needed for {data[&#x27;name&#x27;].name.lower()}&quot;,
                      field_name=&quot;api_key&quot;,
                  )
  
 </code></pre>
-<p><a href='https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/v1/schemas.py#L1702'>rotkehlchen/api/v1/schemas.py~L1702</a></p>
-<pre><code class="language-diff">         ).issubset(valid_ordering_attr):
+<p><a href="https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/v1/schemas.py#L1702">rotkehlchen/api/v1/schemas.py~L1702</a></p>
+<pre><code>         ).issubset(valid_ordering_attr):
              error_msg = (
                  f&quot;order_by_attributes for accounting report data can not be &quot;
--                f'{&quot;,&quot;.join(set(data[&quot;order_by_attributes&quot;]) - valid_ordering_attr)}'
-+                f&quot;{','.join(set(data['order_by_attributes']) - valid_ordering_attr)}&quot;
+-                f&#x27;{&quot;,&quot;.join(set(data[&quot;order_by_attributes&quot;]) - valid_ordering_attr)}&#x27;
++                f&quot;{&#x27;,&#x27;.join(set(data[&#x27;order_by_attributes&#x27;]) - valid_ordering_attr)}&quot;
              )
              raise ValidationError(
                  message=error_msg,
 </code></pre>
-<p><a href='https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/v1/schemas.py#L2775'>rotkehlchen/api/v1/schemas.py~L2775</a></p>
-<pre><code class="language-diff">         ).issubset(valid_ordering_attr):
+<p><a href="https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/v1/schemas.py#L2775">rotkehlchen/api/v1/schemas.py~L2775</a></p>
+<pre><code>         ).issubset(valid_ordering_attr):
              error_msg = (
                  f&quot;order_by_attributes for eth2 daily stats can not be &quot;
--                f'{&quot;,&quot;.join(set(data[&quot;order_by_attributes&quot;]) - valid_ordering_attr)}'
-+                f&quot;{','.join(set(data['order_by_attributes']) - valid_ordering_attr)}&quot;
+-                f&#x27;{&quot;,&quot;.join(set(data[&quot;order_by_attributes&quot;]) - valid_ordering_attr)}&#x27;
++                f&quot;{&#x27;,&#x27;.join(set(data[&#x27;order_by_attributes&#x27;]) - valid_ordering_attr)}&quot;
              )
              raise ValidationError(
                  message=error_msg,
 </code></pre>
-<p><a href='https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/v1/schemas.py#L2888'>rotkehlchen/api/v1/schemas.py~L2888</a></p>
-<pre><code class="language-diff">                 address = to_checksum_address(data[&quot;address&quot;])
+<p><a href="https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/v1/schemas.py#L2888">rotkehlchen/api/v1/schemas.py~L2888</a></p>
+<pre><code>                 address = to_checksum_address(data[&quot;address&quot;])
              except ValueError as e:
                  raise ValidationError(
--                    f'Given value {data[&quot;address&quot;]} is not a valid {data[&quot;blockchain&quot;]} address',
-+                    f&quot;Given value {data['address']} is not a valid {data['blockchain']} address&quot;,
+-                    f&#x27;Given value {data[&quot;address&quot;]} is not a valid {data[&quot;blockchain&quot;]} address&#x27;,
++                    f&quot;Given value {data[&#x27;address&#x27;]} is not a valid {data[&#x27;blockchain&#x27;]} address&quot;,
                      field_name=&quot;address&quot;,
                  ) from e
          else:
 </code></pre>
-<p><a href='https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/v1/schemas.py#L2929'>rotkehlchen/api/v1/schemas.py~L2929</a></p>
-<pre><code class="language-diff">             )
+<p><a href="https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/v1/schemas.py#L2929">rotkehlchen/api/v1/schemas.py~L2929</a></p>
+<pre><code>             )
          ):
              raise ValidationError(
--                f'Given value {data[&quot;address&quot;]} is not a {blockchain} address',
-+                f&quot;Given value {data['address']} is not a {blockchain} address&quot;,
+-                f&#x27;Given value {data[&quot;address&quot;]} is not a {blockchain} address&#x27;,
++                f&quot;Given value {data[&#x27;address&#x27;]} is not a {blockchain} address&quot;,
                  field_name=&quot;address&quot;,
              )
  
 </code></pre>
-<p><a href='https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/v1/schemas.py#L3096'>rotkehlchen/api/v1/schemas.py~L3096</a></p>
-<pre><code class="language-diff">             == data[&quot;location_data_snapshot&quot;][0].time
+<p><a href="https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/v1/schemas.py#L3096">rotkehlchen/api/v1/schemas.py~L3096</a></p>
+<pre><code>             == data[&quot;location_data_snapshot&quot;][0].time
          ):  # noqa: E501
              raise ValidationError(
--                f'timestamp provided {data[&quot;timestamp&quot;]} is not the same as the '
-+                f&quot;timestamp provided {data['timestamp']} is not the same as the &quot;
+-                f&#x27;timestamp provided {data[&quot;timestamp&quot;]} is not the same as the &#x27;
++                f&quot;timestamp provided {data[&#x27;timestamp&#x27;]} is not the same as the &quot;
                  f&quot;one for the entries provided.&quot;,
              )
  
 </code></pre>
-<p><a href='https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/v1/schemas.py#L3357'>rotkehlchen/api/v1/schemas.py~L3357</a></p>
-<pre><code class="language-diff">             ).fetchone()[0]
+<p><a href="https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/v1/schemas.py#L3357">rotkehlchen/api/v1/schemas.py~L3357</a></p>
+<pre><code>             ).fetchone()[0]
              if tx_count &gt; 0:
                  raise ValidationError(
--                    message=f'tx_hash {data[&quot;tx_hash&quot;].hex()} for {data[&quot;evm_chain&quot;]} already present in the database',  # noqa: E501
-+                    message=f&quot;tx_hash {data['tx_hash'].hex()} for {data['evm_chain']} already present in the database&quot;,  # noqa: E501
+-                    message=f&#x27;tx_hash {data[&quot;tx_hash&quot;].hex()} for {data[&quot;evm_chain&quot;]} already present in the database&#x27;,  # noqa: E501
++                    message=f&quot;tx_hash {data[&#x27;tx_hash&#x27;].hex()} for {data[&#x27;evm_chain&#x27;]} already present in the database&quot;,  # noqa: E501
                      field_name=&quot;tx_hash&quot;,
                  )
  
 </code></pre>
-<p><a href='https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/v1/schemas.py#L3367'>rotkehlchen/api/v1/schemas.py~L3367</a></p>
-<pre><code class="language-diff">             ).fetchone()[0]
+<p><a href="https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/api/v1/schemas.py#L3367">rotkehlchen/api/v1/schemas.py~L3367</a></p>
+<pre><code>             ).fetchone()[0]
              if accounts_count == 0:
                  raise ValidationError(
--                    message=f'address {data[&quot;associated_address&quot;]} provided is not tracked by rotki for {data[&quot;evm_chain&quot;]}',  # noqa: E501
-+                    message=f&quot;address {data['associated_address']} provided is not tracked by rotki for {data['evm_chain']}&quot;,  # noqa: E501
+-                    message=f&#x27;address {data[&quot;associated_address&quot;]} provided is not tracked by rotki for {data[&quot;evm_chain&quot;]}&#x27;,  # noqa: E501
++                    message=f&quot;address {data[&#x27;associated_address&#x27;]} provided is not tracked by rotki for {data[&#x27;evm_chain&#x27;]}&quot;,  # noqa: E501
                      field_name=&quot;associated_address&quot;,
                  )
  
 </code></pre>
-<p><a href='https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/chain/aggregator.py#L535'>rotkehlchen/chain/aggregator.py~L535</a></p>
-<pre><code class="language-diff">         if len(bad_accounts) != 0:
-             word = &quot;already&quot; if append_or_remove == &quot;append&quot; else &quot;don't&quot;
+<p><a href="https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/chain/aggregator.py#L535">rotkehlchen/chain/aggregator.py~L535</a></p>
+<pre><code>         if len(bad_accounts) != 0:
+             word = &quot;already&quot; if append_or_remove == &quot;append&quot; else &quot;don&#x27;t&quot;
              raise InputError(
--                f'Blockchain account/s {&quot;,&quot;.join(bad_accounts)} {word} exist',
-+                f&quot;Blockchain account/s {','.join(bad_accounts)} {word} exist&quot;,
+-                f&#x27;Blockchain account/s {&quot;,&quot;.join(bad_accounts)} {word} exist&#x27;,
++                f&quot;Blockchain account/s {&#x27;,&#x27;.join(bad_accounts)} {word} exist&quot;,
              )
  
      @protect_with_lock(arguments_matter=True)
 </code></pre>
-<p><a href='https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/chain/aggregator.py#L781'>rotkehlchen/chain/aggregator.py~L781</a></p>
-<pre><code class="language-diff">         if len(unknown_accounts) != 0:
+<p><a href="https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/chain/aggregator.py#L781">rotkehlchen/chain/aggregator.py~L781</a></p>
+<pre><code>         if len(unknown_accounts) != 0:
              raise InputError(
                  f&quot;Tried to remove unknown {blockchain.value} &quot;
--                f'accounts {&quot;,&quot;.join(unknown_accounts)}',
-+                f&quot;accounts {','.join(unknown_accounts)}&quot;,
+-                f&#x27;accounts {&quot;,&quot;.join(unknown_accounts)}&#x27;,
++                f&quot;accounts {&#x27;,&#x27;.join(unknown_accounts)}&quot;,
              )
  
          self.modify_blockchain_accounts(
 </code></pre>
-<p><a href='https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/chain/ethereum/airdrops.py#L41'>rotkehlchen/chain/ethereum/airdrops.py~L41</a></p>
-<pre><code class="language-diff"> log = RotkehlchenLogsAdapter(logger)
+<p><a href="https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/chain/ethereum/airdrops.py#L41">rotkehlchen/chain/ethereum/airdrops.py~L41</a></p>
+<pre><code> log = RotkehlchenLogsAdapter(logger)
  
  AIRDROPS_REPO_BASE: Final = (
--    f'https://raw.githubusercontent.com/rotki/data/{&quot;main&quot; if is_production() else &quot;develop&quot;}'  # noqa: E501
-+    f&quot;https://raw.githubusercontent.com/rotki/data/{'main' if is_production() else 'develop'}&quot;  # noqa: E501
+-    f&#x27;https://raw.githubusercontent.com/rotki/data/{&quot;main&quot; if is_production() else &quot;develop&quot;}&#x27;  # noqa: E501
++    f&quot;https://raw.githubusercontent.com/rotki/data/{&#x27;main&#x27; if is_production() else &#x27;develop&#x27;}&quot;  # noqa: E501
  )
  AIRDROPS_INDEX: Final = f&quot;{AIRDROPS_REPO_BASE}/airdrops/index_v3.json&quot;
  ETAG_CACHE_KEY: Final = &quot;ETag&quot;
 </code></pre>
-<p><a href='https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/chain/ethereum/modules/compound/v3/compound.py#L75'>rotkehlchen/chain/ethereum/modules/compound/v3/compound.py~L75</a></p>
-<pre><code class="language-diff">                 rates_calls[balance_type].append((
+<p><a href="https://github.com/rotki/rotki/blob/20fb816f2d05bbf585e7ad98cb6047fa69b65874/rotkehlchen/chain/ethereum/modules/compound/v3/compound.py#L75">rotkehlchen/chain/ethereum/modules/compound/v3/compound.py~L75</a></p>
+<pre><code>                 rates_calls[balance_type].append((
                      token_address,
                      token_contract.encode(
--                        method_name=f'get{&quot;Supply&quot; if balance_type == BalanceType.ASSET else &quot;Borrow&quot;}Rate',  # noqa: E501
-+                        method_name=f&quot;get{'Supply' if balance_type == BalanceType.ASSET else 'Borrow'}Rate&quot;,  ...*[Comment body truncated]*
+-                        method_name=f&#x27;get{&quot;Supply&quot; if balance_type == BalanceType.ASSET else &quot;Borrow&quot;}Rate&#x27;,  # noqa: E501
++                        method_name=f&quot;get{&#x27;Supply&#x27; if balance_type == BalanceType.ASSET else &#x27;Borrow&#x27;}Rate&quot;,  ...*[Comment body truncated]*
 </code></pre>
 </div>
         </div>
@@ -1352,18 +1352,18 @@ Fixes https://github.com/astral-sh/ruff/issues/11056</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Alternate quotes for strings inside f-strings when targeting Py312+ and preview mode is on" to "Alternate quotes for strings inside f-strings in preview " by @MichaReiser on 2024-10-22 09:09</div>
+            <div class="event">Renamed from &quot;Alternate quotes for strings inside f-strings when targeting Py312+ and preview mode is on&quot; to &quot;Alternate quotes for strings inside f-strings in preview &quot; by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-22 09:09</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @MichaReiser on 2024-10-22 10:03</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-22 10:03</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dhruvmanila by @MichaReiser on 2024-10-22 10:05</div>
+            <div class="event">Review requested from <a href="https://github.com/dhruvmanila">@dhruvmanila</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-22 10:05</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/src/string/normalize.rs</code>:139 on 2024-10-22 10:26</div>
             <div class="timeline-body"><p>This might make <code>rustfmt</code> mad so might want to do this locally</p>
-<pre><code class="language-suggestion">                if fstring
+<pre><code>                if fstring
                     .elements
                     .expressions()
                     .any(|expression| {
@@ -1372,7 +1372,7 @@ Fixes https://github.com/astral-sh/ruff/issues/11056</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@expression__fstring.py.snap</code>:578 on 2024-10-22 11:06</div>
-            <div class="timeline-body"><p>It's interesting that as a side effect we'll start fixing certain code that would raise a syntax error pre-3.12.</p>
+            <div class="timeline-body"><p>It&#x27;s interesting that as a side effect we&#x27;ll start fixing certain code that would raise a syntax error pre-3.12.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1386,7 +1386,7 @@ Fixes https://github.com/astral-sh/ruff/issues/11056</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/string/normalize.rs</code>:139 on 2024-10-22 11:31</div>
-            <div class="timeline-body"><p>Oh it's on elements. I always try to call it on the fstring</p>
+            <div class="timeline-body"><p>Oh it&#x27;s on elements. I always try to call it on the fstring</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1404,19 +1404,19 @@ Fixes https://github.com/astral-sh/ruff/issues/11056</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2024-10-22 12:04</div>
-            <div class="timeline-body"><p>This is great! I really like the ecosystem changes as well. I played around with random f-string with quotes but couldn't really find anything unexpected.</p>
+            <div class="timeline-body"><p>This is great! I really like the ecosystem changes as well. I played around with random f-string with quotes but couldn&#x27;t really find anything unexpected.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-22 16:09</div>
-            <div class="timeline-body"><p>I'll do another review of my own changes tomorrow and then plan to land this.</p>
+            <div class="timeline-body"><p>I&#x27;ll do another review of my own changes tomorrow and then plan to land this.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @MichaReiser on 2024-10-23 05:57</div>
+            <div class="event">Merged by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-23 05:57</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2024-10-23 05:57</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-23 05:57</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-10-23 05:57</div>
@@ -1424,7 +1424,7 @@ Fixes https://github.com/astral-sh/ruff/issues/11056</p>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:07:09 UTC
+        Synced at 2026-01-20 19:07:39 UTC
     </footer>
 </body>
 </html>

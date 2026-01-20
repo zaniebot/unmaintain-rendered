@@ -23,17 +23,17 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/PrettyWood">@PrettyWood</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Implement validation for <code>TypedDict</code> constructor calls and dictionary literal assignments, including support for <code>total=False</code> and proper field management.
 Also add support for <code>Required</code> and <code>NotRequired</code> type qualifiers in <code>TypedDict</code> classes, along with proper inheritance behavior and the <code>total=</code> parameter.
 Support both constructor calls and dict literal syntax</p>
-<p>part of https://github.com/astral-sh/ty/issues/154</p>
-<h3>Basic Required Field Validation</h3>
-<pre><code class="language-py">class Person(TypedDict):
+<p>part of <a href="https://github.com/astral-sh/ty/issues/154">astral-sh/ty#154</a></p>
+Basic Required Field Validation
+<pre><code>class Person(TypedDict):
     name: str
     age: int | None
 
-# Error: Missing required field 'name' in TypedDict `Person` constructor
+# Error: Missing required field &#x27;name&#x27; in TypedDict `Person` constructor
 incomplete = Person(age=25)
 
 # Error: Invalid argument to key &quot;name&quot; with declared type `str` on TypedDict `Person`
@@ -42,9 +42,9 @@ wrong_type = Person(name=123, age=25)
 # Error: Invalid key access on TypedDict `Person`: Unknown key &quot;extra&quot;
 extra_field = Person(name=&quot;Bob&quot;, age=25, extra=True)
 </code></pre>
-<p><img width="773" height="191" alt="Screenshot 2025-08-07 at 17 59 22" src="https://github.com/user-attachments/assets/79076d98-e85f-4495-93d6-a731aa72a5c9" /></p>
-<h3>Support for <code>total=False</code></h3>
-<pre><code class="language-py">class OptionalPerson(TypedDict, total=False):
+<p><img alt="Screenshot 2025-08-07 at 17 59 22" src="https://github.com/user-attachments/assets/79076d98-e85f-4495-93d6-a731aa72a5c9"></p>
+Support for <code>total=False</code>
+<pre><code>class OptionalPerson(TypedDict, total=False):
     name: str
     age: int | None
 
@@ -58,8 +58,8 @@ frank = OptionalPerson(name=&quot;Frank&quot;, age=25)
 invalid_type = OptionalPerson(name=123)  # Error: Invalid argument type
 invalid_extra = OptionalPerson(extra=True)  # Error: Invalid key access
 </code></pre>
-<h3>Dictionary Literal Validation</h3>
-<pre><code class="language-py"># Type checking works for both constructors and dict literals
+Dictionary Literal Validation
+<pre><code># Type checking works for both constructors and dict literals
 person: Person = {&quot;name&quot;: &quot;Alice&quot;, &quot;age&quot;: 30}
 
 reveal_type(person[&quot;name&quot;])  # revealed: str
@@ -68,8 +68,8 @@ reveal_type(person[&quot;age&quot;])   # revealed: int | None
 # Error: Invalid key access on TypedDict `Person`: Unknown key &quot;non_existing&quot;
 reveal_type(person[&quot;non_existing&quot;])  # revealed: Unknown
 </code></pre>
-<h3><code>Required</code>, <code>NotRequired</code>, <code>total</code></h3>
-<pre><code class="language-python">from typing import TypedDict
+<code>Required</code>, <code>NotRequired</code>, <code>total</code>
+<pre><code>from typing import TypedDict
 from typing_extensions import Required, NotRequired
 
 class PartialUser(TypedDict, total=False):
@@ -96,99 +96,99 @@ emp = Employee(name=&quot;Charlie&quot;, department=&quot;Engineering&quot;)  # 
 Employee(department=&quot;Engineering&quot;)  # ❌
 e: Employee = {&quot;age&quot;: 1}  # ❌
 </code></pre>
-<p><img width="898" height="683" alt="Screenshot 2025-08-11 at 22 02 57" src="https://github.com/user-attachments/assets/4c1b18cd-cb2e-493a-a948-51589d121738" /></p>
-<h2>Implementation</h2>
-<p>The implementation reuses existing validation logic done in https://github.com/astral-sh/ruff/pull/19782</p>
-<h3>ℹ️ Why I did NOT synthesize an <code>__init__</code> for <code>TypedDict</code>:</h3>
+<p><img alt="Screenshot 2025-08-11 at 22 02 57" src="https://github.com/user-attachments/assets/4c1b18cd-cb2e-493a-a948-51589d121738"></p>
+Implementation
+<p>The implementation reuses existing validation logic done in <a href="https://github.com/astral-sh/ruff/pull/19782">astral-sh/ruff#19782</a></p>
+ℹ️ Why I did NOT synthesize an <code>__init__</code> for <code>TypedDict</code>:
 <p><code>TypedDict</code> inherits <code>dict.__init__(self, *args, **kwargs)</code> that accepts all arguments.
 The type resolution system finds this inherited signature <strong>before</strong> looking for synthesized members.
 So <code>own_synthesized_member()</code> is never called because a signature already exists.</p>
-<p>To force synthesis, you'd have to override Python’s inheritance mechanism,  which would break compatibility with the existing ecosystem.</p>
-<p>This is why I went with ad-hoc validation. IMO it's the only viable approach that respects Python’s<br />
+<p>To force synthesis, you&#x27;d have to override Python’s inheritance mechanism,  which would break compatibility with the existing ecosystem.</p>
+<p>This is why I went with ad-hoc validation. IMO it&#x27;s the only viable approach that respects Python’s<br>
 inheritance semantics while providing the required validation.</p>
-<h3>Refacto of <code>Field</code></h3>
+Refacto of <code>Field</code>
 <p><strong>Before:</strong></p>
-<pre><code class="language-rust">struct Field&lt;'db&gt; {
-    declared_ty: Type&lt;'db&gt;,
-    default_ty: Option&lt;Type&lt;'db&gt;&gt;,     // NamedTuple and dataclass only
+<pre><code>struct Field&lt;&#x27;db&gt; {
+    declared_ty: Type&lt;&#x27;db&gt;,
+    default_ty: Option&lt;Type&lt;&#x27;db&gt;&gt;,     // NamedTuple and dataclass only
     init_only: bool,                   // dataclass only  
     init: bool,                        // dataclass only
     is_required: Option&lt;bool&gt;,         // TypedDict only
 }
 </code></pre>
 <p><strong>After:</strong></p>
-<pre><code class="language-rust">struct Field&lt;'db&gt; {
-    declared_ty: Type&lt;'db&gt;,
-    kind: FieldKind&lt;'db&gt;,
+<pre><code>struct Field&lt;&#x27;db&gt; {
+    declared_ty: Type&lt;&#x27;db&gt;,
+    kind: FieldKind&lt;&#x27;db&gt;,
 }
 
-enum FieldKind&lt;'db&gt; {
-    NamedTuple { default_ty: Option&lt;Type&lt;'db&gt;&gt; },
-    Dataclass { default_ty: Option&lt;Type&lt;'db&gt;&gt;, init_only: bool, init: bool },
+enum FieldKind&lt;&#x27;db&gt; {
+    NamedTuple { default_ty: Option&lt;Type&lt;&#x27;db&gt;&gt; },
+    Dataclass { default_ty: Option&lt;Type&lt;&#x27;db&gt;&gt;, init_only: bool, init: bool },
     TypedDict { is_required: bool },
 }
 </code></pre>
-<h2>Test Plan</h2>
+Test Plan
 <p>Updated Markdown tests</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @PrettyWood on 2025-08-07 15:57</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/PrettyWood">@PrettyWood</a> on 2025-08-07 15:57</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @PrettyWood on 2025-08-07 15:57</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/PrettyWood">@PrettyWood</a> on 2025-08-07 15:57</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @PrettyWood on 2025-08-07 15:57</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/PrettyWood">@PrettyWood</a> on 2025-08-07 15:57</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @PrettyWood on 2025-08-07 15:57</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/PrettyWood">@PrettyWood</a> on 2025-08-07 15:57</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[ty] validate constructor call of TypedDict" to "[ty] validate constructor call of `TypedDict`" by @PrettyWood on 2025-08-07 15:58</div>
+            <div class="event">Renamed from &quot;[ty] validate constructor call of TypedDict&quot; to &quot;[ty] validate constructor call of `TypedDict`&quot; by <a href="https://github.com/PrettyWood">@PrettyWood</a> on 2025-08-07 15:58</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-07 16:02</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
-<details>
-<summary>Changes were detected when running ty on typing conformance tests</summary>
+Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a>
 
-<pre><code class="language-diff">--- old-output.txt	2025-08-25 12:37:55.634200073 +0000
+Changes were detected when running ty on typing conformance tests
+
+<pre><code>--- old-output.txt	2025-08-25 12:37:55.634200073 +0000
 +++ new-output.txt	2025-08-25 12:37:58.166200560 +0000
 @@ -847,8 +847,16 @@
  tuples_type_form.py:15:1: error[invalid-assignment] Object of type `tuple[Literal[1], Literal[&quot;&quot;]]` is not assignable to `tuple[int, int]`
  tuples_type_form.py:25:1: error[invalid-assignment] Object of type `tuple[Literal[1]]` is not assignable to `tuple[()]`
  tuples_type_form.py:36:1: error[invalid-assignment] Object of type `tuple[Literal[1], Literal[2], Literal[3], Literal[&quot;&quot;]]` is not assignable to `tuple[int, ...]`
-+typeddicts_operations.py:37:5: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
++typeddicts_operations.py:37:5: error[missing-typed-dict-key] Missing required key &#x27;name&#x27; in TypedDict `Movie` constructor
  typeddicts_operations.py:60:1: error[type-assertion-failure] Argument does not have asserted type `str | None`
 +typeddicts_operations.py:62:1: error[unresolved-attribute] Type `MovieOptional` has no attribute `clear`
-+typeddicts_readonly_inheritance.py:65:1: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `RequiredName` constructor
++typeddicts_readonly_inheritance.py:65:1: error[missing-typed-dict-key] Missing required key &#x27;name&#x27; in TypedDict `RequiredName` constructor
 +typeddicts_type_consistency.py:69:21: error[invalid-key] Invalid key access on TypedDict `A3`: Unknown key &quot;y&quot;
  typeddicts_type_consistency.py:101:1: error[invalid-assignment] Object of type `Unknown | None` is not assignable to `str`
 +typeddicts_usage.py:23:7: error[invalid-key] Invalid key access on TypedDict `Movie`: Unknown key &quot;director&quot;
 +typeddicts_usage.py:24:17: error[invalid-assignment] Invalid assignment to key &quot;year&quot; with declared type `int` on TypedDict `Movie`: value of type `Literal[&quot;1982&quot;]`
-+typeddicts_usage.py:28:1: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
++typeddicts_usage.py:28:1: error[missing-typed-dict-key] Missing required key &#x27;name&#x27; in TypedDict `Movie` constructor
 +typeddicts_usage.py:28:18: error[invalid-key] Invalid key access on TypedDict `Movie`: Unknown key &quot;title&quot;
  typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions. Did you mean to use a concrete TypedDict or `collections.abc.Mapping[str, object]` instead?
 -Found 851 diagnostics
 +Found 859 diagnostics
  WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
 </code></pre>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-07 16:04</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">aioredis (https://github.com/aio-libs/aioredis)
+Changes were detected when running on open source projects
+
+<pre><code>aioredis (https://github.com/aio-libs/aioredis)
 - aioredis/connection.py:1201:51: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 - aioredis/connection.py:1205:39: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 - Found 17 diagnostics
@@ -223,44 +223,44 @@ cloud-init (https://github.com/canonical/cloud-init)
 + Found 631 diagnostics
 
 AutoSplit (https://github.com/Toufool/AutoSplit)
-+ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'split_hotkey' in TypedDict `UserProfileDict` constructor
-+ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'reset_hotkey' in TypedDict `UserProfileDict` constructor
-+ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'undo_split_hotkey' in TypedDict `UserProfileDict` constructor
-+ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'skip_split_hotkey' in TypedDict `UserProfileDict` constructor
-+ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'pause_hotkey' in TypedDict `UserProfileDict` constructor
-+ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'screenshot_hotkey' in TypedDict `UserProfileDict` constructor
-+ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'toggle_auto_reset_image_hotkey' in TypedDict `UserProfileDict` constructor
-+ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'fps_limit' in TypedDict `UserProfileDict` constructor
-+ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'live_capture_region' in TypedDict `UserProfileDict` constructor
-+ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'capture_method' in TypedDict `UserProfileDict` constructor
-+ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'capture_device_id' in TypedDict `UserProfileDict` constructor
-+ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'capture_device_name' in TypedDict `UserProfileDict` constructor
-+ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'default_comparison_method' in TypedDict `UserProfileDict` constructor
-+ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'default_similarity_threshold' in TypedDict `UserProfileDict` constructor
-+ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'default_delay_time' in TypedDict `UserProfileDict` constructor
-+ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'default_pause_time' in TypedDict `UserProfileDict` constructor
-+ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'loop_splits' in TypedDict `UserProfileDict` constructor
-+ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'start_also_resets' in TypedDict `UserProfileDict` constructor
-+ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'enable_auto_reset' in TypedDict `UserProfileDict` constructor
-+ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'split_image_directory' in TypedDict `UserProfileDict` constructor
-+ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'screenshot_directory' in TypedDict `UserProfileDict` constructor
-+ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'open_screenshot' in TypedDict `UserProfileDict` constructor
-+ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'screenshot_on' in TypedDict `UserProfileDict` constructor
-+ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'captured_window_title' in TypedDict `UserProfileDict` constructor
-+ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key 'capture_region' in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key &#x27;split_hotkey&#x27; in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key &#x27;reset_hotkey&#x27; in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key &#x27;undo_split_hotkey&#x27; in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key &#x27;skip_split_hotkey&#x27; in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key &#x27;pause_hotkey&#x27; in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key &#x27;screenshot_hotkey&#x27; in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key &#x27;toggle_auto_reset_image_hotkey&#x27; in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key &#x27;fps_limit&#x27; in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key &#x27;live_capture_region&#x27; in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key &#x27;capture_method&#x27; in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key &#x27;capture_device_id&#x27; in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key &#x27;capture_device_name&#x27; in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key &#x27;default_comparison_method&#x27; in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key &#x27;default_similarity_threshold&#x27; in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key &#x27;default_delay_time&#x27; in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key &#x27;default_pause_time&#x27; in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key &#x27;loop_splits&#x27; in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key &#x27;start_also_resets&#x27; in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key &#x27;enable_auto_reset&#x27; in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key &#x27;split_image_directory&#x27; in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key &#x27;screenshot_directory&#x27; in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key &#x27;open_screenshot&#x27; in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key &#x27;screenshot_on&#x27; in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key &#x27;captured_window_title&#x27; in TypedDict `UserProfileDict` constructor
++ src/user_profile.py:144:35: error[missing-typed-dict-key] Missing required key &#x27;capture_region&#x27; in TypedDict `UserProfileDict` constructor
 - Found 110 diagnostics
 + Found 135 diagnostics
 
 freqtrade (https://github.com/freqtrade/freqtrade)
-+ freqtrade/freqtradebot.py:2406:13: error[missing-typed-dict-key] Missing required key 'id' in TypedDict `RPCProtectionMsg` constructor
-+ freqtrade/freqtradebot.py:2406:13: error[missing-typed-dict-key] Missing required key 'pair' in TypedDict `RPCProtectionMsg` constructor
-+ freqtrade/freqtradebot.py:2406:13: error[missing-typed-dict-key] Missing required key 'lock_time' in TypedDict `RPCProtectionMsg` constructor
-+ freqtrade/freqtradebot.py:2406:13: error[missing-typed-dict-key] Missing required key 'lock_timestamp' in TypedDict `RPCProtectionMsg` constructor
-+ freqtrade/freqtradebot.py:2406:13: error[missing-typed-dict-key] Missing required key 'lock_end_time' in TypedDict `RPCProtectionMsg` constructor
-+ freqtrade/freqtradebot.py:2406:13: error[missing-typed-dict-key] Missing required key 'lock_end_timestamp' in TypedDict `RPCProtectionMsg` constructor
-+ freqtrade/freqtradebot.py:2406:13: error[missing-typed-dict-key] Missing required key 'reason' in TypedDict `RPCProtectionMsg` constructor
-+ freqtrade/freqtradebot.py:2406:13: error[missing-typed-dict-key] Missing required key 'side' in TypedDict `RPCProtectionMsg` constructor
-+ freqtrade/freqtradebot.py:2406:13: error[missing-typed-dict-key] Missing required key 'active' in TypedDict `RPCProtectionMsg` constructor
++ freqtrade/freqtradebot.py:2406:13: error[missing-typed-dict-key] Missing required key &#x27;id&#x27; in TypedDict `RPCProtectionMsg` constructor
++ freqtrade/freqtradebot.py:2406:13: error[missing-typed-dict-key] Missing required key &#x27;pair&#x27; in TypedDict `RPCProtectionMsg` constructor
++ freqtrade/freqtradebot.py:2406:13: error[missing-typed-dict-key] Missing required key &#x27;lock_time&#x27; in TypedDict `RPCProtectionMsg` constructor
++ freqtrade/freqtradebot.py:2406:13: error[missing-typed-dict-key] Missing required key &#x27;lock_timestamp&#x27; in TypedDict `RPCProtectionMsg` constructor
++ freqtrade/freqtradebot.py:2406:13: error[missing-typed-dict-key] Missing required key &#x27;lock_end_time&#x27; in TypedDict `RPCProtectionMsg` constructor
++ freqtrade/freqtradebot.py:2406:13: error[missing-typed-dict-key] Missing required key &#x27;lock_end_timestamp&#x27; in TypedDict `RPCProtectionMsg` constructor
++ freqtrade/freqtradebot.py:2406:13: error[missing-typed-dict-key] Missing required key &#x27;reason&#x27; in TypedDict `RPCProtectionMsg` constructor
++ freqtrade/freqtradebot.py:2406:13: error[missing-typed-dict-key] Missing required key &#x27;side&#x27; in TypedDict `RPCProtectionMsg` constructor
++ freqtrade/freqtradebot.py:2406:13: error[missing-typed-dict-key] Missing required key &#x27;active&#x27; in TypedDict `RPCProtectionMsg` constructor
 - Found 375 diagnostics
 + Found 384 diagnostics
 
@@ -284,54 +284,54 @@ prefect (https://github.com/PrefectHQ/prefect)
 + Found 2948 diagnostics
 
 dd-trace-py (https://github.com/DataDog/dd-trace-py)
-+ ddtrace/llmobs/_experiment.py:172:9: error[missing-typed-dict-key] Missing required key 'input_data' in TypedDict `DatasetRecord` constructor
-+ ddtrace/llmobs/_experiment.py:172:9: error[missing-typed-dict-key] Missing required key 'expected_output' in TypedDict `DatasetRecord` constructor
-+ ddtrace/llmobs/_experiment.py:172:9: error[missing-typed-dict-key] Missing required key 'metadata' in TypedDict `DatasetRecord` constructor
++ ddtrace/llmobs/_experiment.py:172:9: error[missing-typed-dict-key] Missing required key &#x27;input_data&#x27; in TypedDict `DatasetRecord` constructor
++ ddtrace/llmobs/_experiment.py:172:9: error[missing-typed-dict-key] Missing required key &#x27;expected_output&#x27; in TypedDict `DatasetRecord` constructor
++ ddtrace/llmobs/_experiment.py:172:9: error[missing-typed-dict-key] Missing required key &#x27;metadata&#x27; in TypedDict `DatasetRecord` constructor
 + ddtrace/llmobs/_llmobs.py:1646:43: error[invalid-key] Invalid key access on TypedDict `LLMObsEvaluationMetricEvent`: Unknown key &quot;metadata&quot;
 + ddtrace/llmobs/_llmobs.py:1784:43: error[invalid-key] Invalid key access on TypedDict `LLMObsEvaluationMetricEvent`: Unknown key &quot;metadata&quot;
-+ tests/llmobs/test_experiments.py:73:9: error[missing-typed-dict-key] Missing required key 'metadata' in TypedDict `DatasetRecord` constructor
-+ tests/llmobs/test_experiments.py:73:9: error[missing-typed-dict-key] Missing required key 'record_id' in TypedDict `DatasetRecord` constructor
-+ tests/llmobs/test_experiments.py:339:13: error[missing-typed-dict-key] Missing required key 'metadata' in TypedDict `DatasetRecord` constructor
-+ tests/llmobs/test_experiments.py:339:13: error[missing-typed-dict-key] Missing required key 'record_id' in TypedDict `DatasetRecord` constructor
-+ tests/llmobs/test_experiments.py:340:13: error[missing-typed-dict-key] Missing required key 'metadata' in TypedDict `DatasetRecord` constructor
-+ tests/llmobs/test_experiments.py:340:13: error[missing-typed-dict-key] Missing required key 'record_id' in TypedDict `DatasetRecord` constructor
-+ tests/llmobs/test_experiments.py:351:9: error[missing-typed-dict-key] Missing required key 'metadata' in TypedDict `DatasetRecord` constructor
-+ tests/llmobs/test_experiments.py:351:9: error[missing-typed-dict-key] Missing required key 'expected_output' in TypedDict `DatasetRecord` constructor
-+ tests/llmobs/test_experiments.py:351:9: error[missing-typed-dict-key] Missing required key 'record_id' in TypedDict `DatasetRecord` constructor
-+ tests/llmobs/test_experiments.py:421:7: error[missing-typed-dict-key] Missing required key 'metadata' in TypedDict `DatasetRecord` constructor
-+ tests/llmobs/test_experiments.py:421:7: error[missing-typed-dict-key] Missing required key 'record_id' in TypedDict `DatasetRecord` constructor
-+ tests/llmobs/test_experiments.py:428:9: error[missing-typed-dict-key] Missing required key 'record_id' in TypedDict `DatasetRecord` constructor
-+ tests/llmobs/test_experiments.py:428:9: error[missing-typed-dict-key] Missing required key 'metadata' in TypedDict `DatasetRecord` constructor
-+ tests/llmobs/test_experiments.py:458:7: error[missing-typed-dict-key] Missing required key 'record_id' in TypedDict `DatasetRecord` constructor
-+ tests/llmobs/test_experiments.py:458:7: error[missing-typed-dict-key] Missing required key 'metadata' in TypedDict `DatasetRecord` constructor
-+ tests/llmobs/test_experiments.py:473:7: error[missing-typed-dict-key] Missing required key 'record_id' in TypedDict `DatasetRecord` constructor
-+ tests/llmobs/test_experiments.py:473:7: error[missing-typed-dict-key] Missing required key 'metadata' in TypedDict `DatasetRecord` constructor
-+ tests/llmobs/test_experiments.py:509:13: error[missing-typed-dict-key] Missing required key 'record_id' in TypedDict `DatasetRecord` constructor
-+ tests/llmobs/test_experiments.py:549:7: error[missing-typed-dict-key] Missing required key 'metadata' in TypedDict `DatasetRecord` constructor
-+ tests/llmobs/test_experiments.py:549:7: error[missing-typed-dict-key] Missing required key 'record_id' in TypedDict `DatasetRecord` constructor
-+ tests/llmobs/test_experiments.py:553:9: error[missing-typed-dict-key] Missing required key 'record_id' in TypedDict `DatasetRecord` constructor
-+ tests/llmobs/test_experiments.py:553:9: error[missing-typed-dict-key] Missing required key 'metadata' in TypedDict `DatasetRecord` constructor
-+ tests/llmobs/test_experiments.py:583:7: error[missing-typed-dict-key] Missing required key 'metadata' in TypedDict `DatasetRecord` constructor
-+ tests/llmobs/test_experiments.py:583:7: error[missing-typed-dict-key] Missing required key 'record_id' in TypedDict `Datas...*[Comment body truncated]*
++ tests/llmobs/test_experiments.py:73:9: error[missing-typed-dict-key] Missing required key &#x27;metadata&#x27; in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:73:9: error[missing-typed-dict-key] Missing required key &#x27;record_id&#x27; in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:339:13: error[missing-typed-dict-key] Missing required key &#x27;metadata&#x27; in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:339:13: error[missing-typed-dict-key] Missing required key &#x27;record_id&#x27; in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:340:13: error[missing-typed-dict-key] Missing required key &#x27;metadata&#x27; in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:340:13: error[missing-typed-dict-key] Missing required key &#x27;record_id&#x27; in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:351:9: error[missing-typed-dict-key] Missing required key &#x27;metadata&#x27; in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:351:9: error[missing-typed-dict-key] Missing required key &#x27;expected_output&#x27; in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:351:9: error[missing-typed-dict-key] Missing required key &#x27;record_id&#x27; in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:421:7: error[missing-typed-dict-key] Missing required key &#x27;metadata&#x27; in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:421:7: error[missing-typed-dict-key] Missing required key &#x27;record_id&#x27; in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:428:9: error[missing-typed-dict-key] Missing required key &#x27;record_id&#x27; in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:428:9: error[missing-typed-dict-key] Missing required key &#x27;metadata&#x27; in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:458:7: error[missing-typed-dict-key] Missing required key &#x27;record_id&#x27; in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:458:7: error[missing-typed-dict-key] Missing required key &#x27;metadata&#x27; in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:473:7: error[missing-typed-dict-key] Missing required key &#x27;record_id&#x27; in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:473:7: error[missing-typed-dict-key] Missing required key &#x27;metadata&#x27; in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:509:13: error[missing-typed-dict-key] Missing required key &#x27;record_id&#x27; in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:549:7: error[missing-typed-dict-key] Missing required key &#x27;metadata&#x27; in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:549:7: error[missing-typed-dict-key] Missing required key &#x27;record_id&#x27; in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:553:9: error[missing-typed-dict-key] Missing required key &#x27;record_id&#x27; in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:553:9: error[missing-typed-dict-key] Missing required key &#x27;metadata&#x27; in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:583:7: error[missing-typed-dict-key] Missing required key &#x27;metadata&#x27; in TypedDict `DatasetRecord` constructor
++ tests/llmobs/test_experiments.py:583:7: error[missing-typed-dict-key] Missing required key &#x27;record_id&#x27; in TypedDict `Datas...*[Comment body truncated]*
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-08-07 16:04</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-07 16:04</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">diagnostics</span> added by @dhruvmanila on 2025-08-08 07:04</div>
+            <div class="event">Label <span class="label">diagnostics</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-08-08 07:04</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @PrettyWood on 2025-08-10 20:36</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/PrettyWood">@PrettyWood</a> on 2025-08-10 20:36</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-15 01:06</div>
-            <div class="timeline-body"><p>This is very cool. Sorry I haven't gotten a chance to review it yet; will try to soon, or may leave it at this point for @sharkdp to look at next week when he's back from vacation.</p>
+            <div class="timeline-body"><p>This is very cool. Sorry I haven&#x27;t gotten a chance to review it yet; will try to soon, or may leave it at this point for @sharkdp to look at next week when he&#x27;s back from vacation.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-08-18 13:05</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-18 13:05</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/typed_dict.md</code>:226 on 2025-08-18 13:10</div>
@@ -344,9 +344,9 @@ dd-trace-py (https://github.com/DataDog/dd-trace-py)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-18 13:14</div>
-            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+            <div class="timeline-body">
 
-<h2><code>ecosystem-analyzer</code> results</h2>
+<code>ecosystem-analyzer</code> results
 <p>| Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
 | <code>missing-typed-dict-required-field</code> | 86 | 0 | 0 |
@@ -360,51 +360,51 @@ dd-trace-py (https://github.com/DataDog/dd-trace-py)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/diagnostic.rs</code>:1728 on 2025-08-18 13:29</div>
-            <div class="timeline-body"><p>I'm wondering if the rule name should mention <code>TypedDict</code> somehow? Or do we anticipate other use cases for this rule that are not <code>TypedDict</code>-specific?</p>
+            <div class="timeline-body"><p>I&#x27;m wondering if the rule name should mention <code>TypedDict</code> somehow? Or do we anticipate other use cases for this rule that are not <code>TypedDict</code>-specific?</p>
 <p>For comparison, mypy uses <code>typeddict-item</code>, and pyrefly uses <code>typed-dict-key-error</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:1162 on 2025-08-18 13:30</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">    /// `NamedTuple` field metadata
+            <div class="timeline-body"><pre><code>    /// `NamedTuple` field metadata
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:1593 on 2025-08-18 13:32</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">    /// This does **not** consider Python default values on parameters — only whether
+            <div class="timeline-body"><pre><code>    /// This does **not** consider Python default values on parameters — only whether
     /// a type annotation specifies them as required or not.
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:1596 on 2025-08-18 13:32</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">    /// - `NamedTuple` / dataclass: Always `true` (all fields are required).
+            <div class="timeline-body"><pre><code>    /// - `NamedTuple` / dataclass: Always `true` (all fields are required).
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:1600 on 2025-08-18 13:33</div>
             <div class="timeline-body"><p>I think I prefer removing this:</p>
-<pre><code class="language-suggestion"></code></pre>
+<pre><code></code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:1590 on 2025-08-18 13:34</div>
-            <div class="timeline-body"><p>I the term &quot;type-required&quot; an official one? If not, I think I'd just go with &quot;required&quot; (throughout this doc-comment and in the method name). Or maybe just <code>is_total_typed_dict</code>? Or reverse the logic and call it <code>is_non_total_typed_dict</code>? This way, the doc-comment could also be simplified a lot.</p>
+            <div class="timeline-body"><p>I the term &quot;type-required&quot; an official one? If not, I think I&#x27;d just go with &quot;required&quot; (throughout this doc-comment and in the method name). Or maybe just <code>is_total_typed_dict</code>? Or reverse the logic and call it <code>is_non_total_typed_dict</code>? This way, the doc-comment could also be simplified a lot.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:1597 on 2025-08-18 13:36</div>
             <div class="timeline-body"><p>Should this be:</p>
-<pre><code class="language-suggestion">    /// - `TypedDict`: Defaults to `true` unless `total=False`.
+<pre><code>    /// - `TypedDict`: Defaults to `true` unless `total=False`.
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:1609 on 2025-08-18 13:38</div>
             <div class="timeline-body"><p>Maybe</p>
-<pre><code class="language-suggestion">        // Look for `total=False` in class keyword arguments. Note that it is fine to only check for
+<pre><code>        // Look for `total=False` in class keyword arguments. Note that it is fine to only check for
         // Boolean literals here (https://typing.python.org/en/latest/spec/typeddict.html#totality)
 </code></pre>
 </div>
@@ -412,8 +412,8 @@ dd-trace-py (https://github.com/DataDog/dd-trace-py)
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:4703 on 2025-08-18 14:04</div>
             <div class="timeline-body"><p>This leads to some immediate benefits (see updated &quot;alice&quot; tests), but it contradicts our usual splitting of declared type and inferred type, where the inferred type can be more precise than the declared type.</p>
-<p>Admittedly, I'm struggling to find real-world examples where this might lead to observable differences (let alone actual problems). The best I came up with is the following exampel, which makes use of PEP-728 <a href="https://peps.python.org/pep-0728/#the-extra-items-class-parameter"><code>extra_items</code></a>:</p>
-<pre><code class="language-py">from typing import TypedDict
+<p>Admittedly, I&#x27;m struggling to find real-world examples where this might lead to observable differences (let alone actual problems). The best I came up with is the following exampel, which makes use of PEP-728 <a href="https://peps.python.org/pep-0728/#the-extra-items-class-parameter"><code>extra_items</code></a>:</p>
+<pre><code>from typing import TypedDict
 
 class OnlyA(TypedDict, extra_items=bool):
     a: int
@@ -425,8 +425,8 @@ class Both(TypedDict):
 only_a: OnlyA = {&quot;a&quot;: 1, &quot;b&quot;: True}
 both: Both = only_a
 </code></pre>
-<p>In this constructed example, we would lose the information that <code>&quot;b&quot;</code> is a key of the dict literal because the inferred type for <code>only_a</code> would be <code>OnlyA</code> instead of the type of the dict literal (which we can't really represent right now, but that's beside the point). This would lead to an error on the <code>both: Both = only_a</code> assignment, which some might consider correct, but that's how ty works in other cases as well:</p>
-<pre><code class="language-py">a: int = 1
+<p>In this constructed example, we would lose the information that <code>&quot;b&quot;</code> is a key of the dict literal because the inferred type for <code>only_a</code> would be <code>OnlyA</code> instead of the type of the dict literal (which we can&#x27;t really represent right now, but that&#x27;s beside the point). This would lead to an error on the <code>both: Both = only_a</code> assignment, which some might consider correct, but that&#x27;s how ty works in other cases as well:</p>
+<pre><code>a: int = 1
 b: Literal[1] = a  # okay!
 </code></pre>
 <p>So I guess the benefits far outweigh the drawbacks? But it would be good to get some feedback from others on the team.</p>
@@ -436,7 +436,7 @@ b: Literal[1] = a  # okay!
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-08-18 14:08</div>
             <div class="timeline-body"><p>Thank you very much — this looks great.</p>
 <p>I fixed some merge conflicts on your branch to see the update ecosystem impact.</p>
-<p>It's unfortunate that this causes a lot of new false positives, since <code>NotRequired</code> is not supported yet (on this branch). I think we should probably rebase https://github.com/astral-sh/ruff/pull/19865 on top of this and consider merging it into this branch before we merge this to <code>main</code> (thank you for splitting them in the first place though!). I think you should be able to change the merge base of https://github.com/astral-sh/ruff/pull/19865 to the branch of this PR, so it's easier to review? Or does that only work for branches inside the ruff repo? If so, I could also open an integration branch that we could merge both of these into.</p>
+<p>It&#x27;s unfortunate that this causes a lot of new false positives, since <code>NotRequired</code> is not supported yet (on this branch). I think we should probably rebase <a href="https://github.com/astral-sh/ruff/pull/19865">astral-sh/ruff#19865</a> on top of this and consider merging it into this branch before we merge this to <code>main</code> (thank you for splitting them in the first place though!). I think you should be able to change the merge base of <a href="https://github.com/astral-sh/ruff/pull/19865">astral-sh/ruff#19865</a> to the branch of this PR, so it&#x27;s easier to review? Or does that only work for branches inside the ruff repo? If so, I could also open an integration branch that we could merge both of these into.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -445,13 +445,13 @@ b: Literal[1] = a  # okay!
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/PrettyWood">@PrettyWood</a> on <code>crates/ty_python_semantic/src/types/diagnostic.rs</code>:1728 on 2025-08-18 14:36</div>
-            <div class="timeline-body"><p>Yes in my head Namedtuples, dataclasses and typeddict have a lot in common and IMO it made sense to have common errors. But if other libs split into specific errors, I guess it's best to do as well and see later if things should be merged</p>
+            <div class="timeline-body"><p>Yes in my head Namedtuples, dataclasses and typeddict have a lot in common and IMO it made sense to have common errors. But if other libs split into specific errors, I guess it&#x27;s best to do as well and see later if things should be merged</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/PrettyWood">@PrettyWood</a> on 2025-08-18 14:45</div>
             <div class="timeline-body"><p>Thank you very much @sharkdp for the merge conflict + review! (btw huge fan of your work, I use daily <code>bat</code> and <code>fd</code>! &lt;3)
-I rebased the 6 commits to support <code>Required</code> and <code>NotRequired</code> and added a last commit with your feedbacks (most of them didn't apply because they were on <code>are_fields_type_required()</code>, which I replaced.</p>
+I rebased the 6 commits to support <code>Required</code> and <code>NotRequired</code> and added a last commit with your feedbacks (most of them didn&#x27;t apply because they were on <code>are_fields_type_required()</code>, which I replaced.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -466,12 +466,12 @@ But it made the implementation way easier for my little mind. Happy to change th
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:846 on 2025-08-19 01:06</div>
-            <div class="timeline-body"><p>nit: let's put all this TypedDict-specific stuff in its own submodule (separate-file submodule, this file is already massive)</p>
+            <div class="timeline-body"><p>nit: let&#x27;s put all this TypedDict-specific stuff in its own submodule (separate-file submodule, this file is already massive)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:4703 on 2025-08-19 01:23</div>
-            <div class="timeline-body"><p>Yes, I think we should go ahead with this; I think it's the behavior we want in this case. It may be that the implementation is subsumed in future by a more general implementation of bidirectional checking where we instead pass in the <code>TypedDict</code> context to the initial type inference of the dict literal, but it's OK if this particular implementation turns out to be temporary; it makes <code>TypedDict</code> much more useful immediately.</p>
+            <div class="timeline-body"><p>Yes, I think we should go ahead with this; I think it&#x27;s the behavior we want in this case. It may be that the implementation is subsumed in future by a more general implementation of bidirectional checking where we instead pass in the <code>TypedDict</code> context to the initial type inference of the dict literal, but it&#x27;s OK if this particular implementation turns out to be temporary; it makes <code>TypedDict</code> much more useful immediately.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -488,10 +488,10 @@ But it made the implementation way easier for my little mind. Happy to change th
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-08-19 08:27</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-19 08:27</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-08-19 08:27</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-19 08:27</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> requested changes on 2025-08-19 09:57</div>
@@ -501,7 +501,7 @@ But it made the implementation way easier for my little mind. Happy to change th
 <li>There are some true positives which users tried to <code># type: ignore</code>. It seems that the way the ignore-comments are placed is not compatible with the diagnostic ranges that we create. It would be good to look into a few of these examples and to create some tests. Maybe we can adapt the diagnostic range to get rid of some of these new diagnostics.</li>
 <li>The errors on <code>strawberry</code> are false positives. The code there constructs a TypedDict using <code>MyTypedDict({&quot;my_field&quot;: 1})</code>, i.e. there is an additional <code>{…}</code> layer. This does not seem to be supported yet. I added some tests to demonstrate the current behavior.</li>
 </ul>
-<p>While writing these tests, I also noticed that this approach here has some severe limitations. For example, we don't verify a function call like <code>accepts_person({&quot;name&quot;: &quot;Alice&quot;})</code> where <code>accepts_person</code> takes a <code>Person</code> <code>TypedDict</code>. Also, <code>TypedDict</code> construction does not seem to be validated if the left hand side is a non-name target (<code>house.person = {&quot;name&quot;: &quot;Alice&quot;}</code>). I think we should try to understand these cases better. It might be fine to start with an initial version here that has some false negatives. But maybe this indicates that we should go for a completely different solution here where we infer a new <code>Type::DictLiteral</code> type for <code>{…}</code> dict literals, that we can then use in normal assignability checks.</p>
+<p>While writing these tests, I also noticed that this approach here has some severe limitations. For example, we don&#x27;t verify a function call like <code>accepts_person({&quot;name&quot;: &quot;Alice&quot;})</code> where <code>accepts_person</code> takes a <code>Person</code> <code>TypedDict</code>. Also, <code>TypedDict</code> construction does not seem to be validated if the left hand side is a non-name target (<code>house.person = {&quot;name&quot;: &quot;Alice&quot;}</code>). I think we should try to understand these cases better. It might be fine to start with an initial version here that has some false negatives. But maybe this indicates that we should go for a completely different solution here where we infer a new <code>Type::DictLiteral</code> type for <code>{…}</code> dict literals, that we can then use in normal assignability checks.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -509,12 +509,12 @@ But it made the implementation way easier for my little mind. Happy to change th
             <div class="timeline-body"><blockquote>
 <p>The code there constructs a TypedDict using MyTypedDict({&quot;my_field&quot;: 1}), i.e. there is an additional {…} layer.</p>
 </blockquote>
-<p>This is technically not allowed by the spec, but it probably should be. I'll open a discussion.</p>
+<p>This is technically not allowed by the spec, but it probably should be. I&#x27;ll open a discussion.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-08-19 22:26</div>
-            <div class="timeline-body"><p>Refer to https://discuss.python.org/t/allow-typeddict-construction-with-typename/102974 . To be clear, though the spec doesn't currently discuss this syntax, I'd recommend ty add support for it, because it's used in practice and we'll likely add it to the spec.</p>
+            <div class="timeline-body"><p>Refer to https://discuss.python.org/t/allow-typeddict-construction-with-typename/102974 . To be clear, though the spec doesn&#x27;t currently discuss this syntax, I&#x27;d recommend ty add support for it, because it&#x27;s used in practice and we&#x27;ll likely add it to the spec.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -522,24 +522,24 @@ But it made the implementation way easier for my little mind. Happy to change th
             <div class="timeline-body"><p>@carljm and I talked about this PR yesterday. The main conclusion is that we would like to go ahead with what you have. To extend / clarify / correct my comments from above:</p>
 <ul>
 <li>The <code># type: ignore</code> thing =&gt; this is not the most important part, but I think we should at least write some tests. It seems to be quite common to suppress type checker errors on <code>TypedDict</code> construction.</li>
-<li>The <code>MyTypedDict({&quot;my_field&quot;: 1})</code> syntax =&gt; see Jelle's comment (thank you!). We don't have to support <em>checking</em> these constructions, but it would be good not to emit N_keys diagnostics for every such construction. In general, I'm wondering if we should summarize multiple missing keys into a single diagnostic message.</li>
-<li>Concerning the limitation of your approach: we think this is a valuable step anyway. We currently anticipate solving the remaining cases using a variant of https://github.com/astral-sh/ty/issues/168. Your change here is basically a &quot;light&quot; version of adding contextual information that only works for annotated assignments. So we think that large parts of the implementation can be reused when we implement bidirectional type checking.</li>
+<li>The <code>MyTypedDict({&quot;my_field&quot;: 1})</code> syntax =&gt; see Jelle&#x27;s comment (thank you!). We don&#x27;t have to support <em>checking</em> these constructions, but it would be good not to emit N_keys diagnostics for every such construction. In general, I&#x27;m wondering if we should summarize multiple missing keys into a single diagnostic message.</li>
+<li>Concerning the limitation of your approach: we think this is a valuable step anyway. We currently anticipate solving the remaining cases using a variant of <a href="https://github.com/astral-sh/ty/issues/168">astral-sh/ty#168</a>. Your change here is basically a &quot;light&quot; version of adding contextual information that only works for annotated assignments. So we think that large parts of the implementation can be reused when we implement bidirectional type checking.</li>
 </ul>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/PrettyWood">@PrettyWood</a> on 2025-08-20 14:58</div>
-            <div class="timeline-body"><p>Thank you for the valuable feedback. I'll work on the type ignore and construction via dict tonight or tomorrow.
+            <div class="timeline-body"><p>Thank you for the valuable feedback. I&#x27;ll work on the type ignore and construction via dict tonight or tomorrow.
 The goal is to make this PR mergeable without raising false negatives.</p>
-<p>I already started to work on a new <code>DictLiteral</code> type yesterday. But maybe you had something in mind to implement bidirectional checking. You'll tell me!</p>
+<p>I already started to work on a new <code>DictLiteral</code> type yesterday. But maybe you had something in mind to implement bidirectional checking. You&#x27;ll tell me!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-20 15:06</div>
             <div class="timeline-body"><blockquote>
-<p>I already started to work on a new <code>DictLiteral</code> type yesterday. But maybe you had something in mind to implement bidirectional checking. You'll tell me!</p>
+<p>I already started to work on a new <code>DictLiteral</code> type yesterday. But maybe you had something in mind to implement bidirectional checking. You&#x27;ll tell me!</p>
 </blockquote>
-<p>Sorry for my misleading comment earlier. I think we basically decided yesterday that bidirectional type inference is a more promising and more general solution here (compared to the <code>DictLiteral</code> type), mostly because we're going to need it for other use cases anyway. So it's not clear if adding a <code>DictLiteral</code> type would be beneficial long-term. We might not need it anymore once we have bidirectional type inference. And therefore, it's probably not very helpful to invest time into it right now.</p>
+<p>Sorry for my misleading comment earlier. I think we basically decided yesterday that bidirectional type inference is a more promising and more general solution here (compared to the <code>DictLiteral</code> type), mostly because we&#x27;re going to need it for other use cases anyway. So it&#x27;s not clear if adding a <code>DictLiteral</code> type would be beneficial long-term. We might not need it anymore once we have bidirectional type inference. And therefore, it&#x27;s probably not very helpful to invest time into it right now.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -549,12 +549,12 @@ The goal is to make this PR mergeable without raising false negatives.</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/PrettyWood">@PrettyWood</a> on 2025-08-20 21:52</div>
-            <div class="timeline-body"><p>@sharkdp @carljm Update done! I'll update with <code>main</code> once I have your approval</p>
+            <div class="timeline-body"><p>@sharkdp @carljm Update done! I&#x27;ll update with <code>main</code> once I have your approval</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-20 21:54</div>
-            <div class="timeline-body"><p>I'll let @sharkdp take the lead on review of this one. We won't be able to fully evaluate the PR until it is updated with main (so we can get ecosystem and conformance suite results from it), but it should be possible to give feedback on the implementation.</p>
+            <div class="timeline-body"><p>I&#x27;ll let @sharkdp take the lead on review of this one. We won&#x27;t be able to fully evaluate the PR until it is updated with main (so we can get ecosystem and conformance suite results from it), but it should be possible to give feedback on the implementation.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -563,28 +563,28 @@ The goal is to make this PR mergeable without raising false negatives.</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/typed_dict.md</code>:226 on 2025-08-22 15:39</div>
-            <div class="timeline-body"><p>This has been marked as resolved, but I don't see a comment?</p>
+            <div class="timeline-body"><p>This has been marked as resolved, but I don&#x27;t see a comment?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-22 15:43</div>
-            <div class="timeline-body"><p>Thank you very much for the detailed updates! I am planning to do a full review on Monday. Seeing the updated ecosystem results would be great, but I can also fix the conflicts myself, if the branch hasn't been updated by then.</p>
+            <div class="timeline-body"><p>Thank you very much for the detailed updates! I am planning to do a full review on Monday. Seeing the updated ecosystem results would be great, but I can also fix the conflicts myself, if the branch hasn&#x27;t been updated by then.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/PrettyWood">@PrettyWood</a> on 2025-08-25 09:15</div>
-            <div class="timeline-body"><p>@sharkdp I just pushed the merge conflict. I won't be there later today. Feel free to change directly whatever you want.
+            <div class="timeline-body"><p>@sharkdp I just pushed the merge conflict. I won&#x27;t be there later today. Feel free to change directly whatever you want.
 Thank you</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-08-25 09:20</div>
+            <div class="event">Review request for <a href="https://github.com/AlexWaygood">@AlexWaygood</a> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-25 09:20</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-08-25 09:21</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-25 09:21</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-08-25 09:21</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-25 09:21</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:1696 on 2025-08-25 09:39</div>
@@ -594,46 +594,46 @@ Thank you</p>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:2525 on 2025-08-25 09:42</div>
             <div class="timeline-body"><p>Maybe</p>
-<pre><code class="language-suggestion">                                .expect(&quot;TypedDictParams should be available for CodeGeneratorKind::TypedDict&quot;)
+<pre><code>                                .expect(&quot;TypedDictParams should be available for CodeGeneratorKind::TypedDict&quot;)
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/diagnostic.rs</code>:1769 on 2025-08-25 09:45</div>
             <div class="timeline-body"><p>I think I would prefer something slightly shorter. I think we can maybe leave &quot;required&quot; out of the rule name? And use &quot;key&quot; instead of &quot;field&quot;?</p>
-<pre><code class="language-suggestion">    pub(crate) static MISSING_TYPED_DICT_KEY = {
+<pre><code>    pub(crate) static MISSING_TYPED_DICT_KEY = {
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/typed_dict.rs</code>:18 on 2025-08-25 09:47</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">    /// Keeps track of the keyword arguments that were passed-in during class definition.
+            <div class="timeline-body"><pre><code>    /// Keeps track of the keyword arguments that were passed-in during class definition.
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/typed_dict.rs</code>:26 on 2025-08-25 09:52</div>
-            <div class="timeline-body"><p>It looks like <code>extra_items</code> will not be a simple flag, so maybe let's just remove this for now?</p>
-<pre><code class="language-suggestion"></code></pre>
+            <div class="timeline-body"><p>It looks like <code>extra_items</code> will not be a simple flag, so maybe let&#x27;s just remove this for now?</p>
+<pre><code></code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/typed_dict.rs</code>:111 on 2025-08-25 09:52</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">    /// For constructor arguments like `MyTypedDict(key=value)`
+            <div class="timeline-body"><pre><code>    /// For constructor arguments like `MyTypedDict(key=value)`
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/typed_dict.md</code>:37 on 2025-08-25 09:59</div>
             <div class="timeline-body"><p>This seems to be in the wrong position?</p>
-<pre><code class="language-suggestion"></code></pre>
+<pre><code></code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/typed_dict.md</code>:556 on 2025-08-25 11:48</div>
             <div class="timeline-body"><p>Minor</p>
-<pre><code class="language-suggestion">When inheriting from a `TypedDict` with a different `total` setting, inherited fields maintain
-their original requirement status, while new fields follow the child class's `total` setting:
+<pre><code>When inheriting from a `TypedDict` with a different `total` setting, inherited fields maintain
+their original requirement status, while new fields follow the child class&#x27;s `total` setting:
 </code></pre>
 </div>
         </div>
@@ -644,16 +644,16 @@ their original requirement status, while new fields follow the child class's `to
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-08-25 12:30</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-25 12:30</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-08-25 12:30</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-25 12:30</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @sharkdp on 2025-08-25 12:45</div>
+            <div class="event">Merged by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-25 12:45</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @sharkdp on 2025-08-25 12:45</div>
+            <div class="event">Closed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-25 12:45</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-08-25 17:49</div>
@@ -661,7 +661,7 @@ their original requirement status, while new fields follow the child class's `to
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:14:55 UTC
+        Synced at 2026-01-20 19:17:31 UTC
     </footer>
 </body>
 </html>

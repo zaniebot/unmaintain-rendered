@@ -25,123 +25,123 @@
             <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a></div>
             <div class="timeline-body"><p>We now use ternary decision diagrams (TDDs) to represent visibility constraints.  A TDD is just like a BDD (<a href="https://en.wikipedia.org/wiki/Binary_decision_diagram"><em>binary</em> decision diagram</a>), but with &quot;ambiguous&quot; as an additional allowed value.  Unlike the previous representation, TDDs are strongly normalizing, so equivalent ternary formulas are represented by exactly the same graph node, and can be compared for equality in constant time.</p>
 <p>We currently have a slight 1-3% performance regression with this in place, according to local testing.  However, we also have a <em>5× increase</em> in performance for pathological cases, since we can now remove the recursion limit when we evaluate visibility constraints.</p>
-<p>As follow-on work, we are now closer to being able to remove the <code>simplify_visibility_constraint</code> calls in the semantic index builder.  In the vast majority of cases, we now see (for instance) that the visibility constraint after an <code>if</code> statement, for bindings of symbols that weren't rebound in any branch, simplifies back to <code>true</code>.  But there are still some cases we generate constraints that are cyclic.  With fixed-point cycle support in salsa, or with some careful analysis of the still-failing cases, we might be able to remove those.</p>
+<p>As follow-on work, we are now closer to being able to remove the <code>simplify_visibility_constraint</code> calls in the semantic index builder.  In the vast majority of cases, we now see (for instance) that the visibility constraint after an <code>if</code> statement, for bindings of symbols that weren&#x27;t rebound in any branch, simplifies back to <code>true</code>.  But there are still some cases we generate constraints that are cyclic.  With fixed-point cycle support in salsa, or with some careful analysis of the still-failing cases, we might be able to remove those.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-02-01 00:17</div>
             <div class="timeline-body"><p>Very excited about this!</p>
-<p>Per your request (and the &quot;draft&quot; status), I'll refrain from a detailed look at the code until you declare it ready for review. Just one general thought, based on the title of the PR: when I looked at this previously, my conclusion was that we don't actually need TDDs here, BDDs suffice. If we build a BDD of the constraints, and then evaluate that BDD, anytime a decision node evaluates to &quot;ambiguous&quot;, we can immediately short-circuit to a result of &quot;ambiguous&quot;. I guess another way to say this is that a TDD where the &quot;ambiguous&quot; exit of every node leads immediately to the &quot;ambiguous&quot; terminal (which is our scenario, I think), is isomorphic to a BDD where the &quot;ambiguous&quot; exits can be implied.</p>
-<p>Just mentioning that in case it's useful or allows any simplification (I don't know if it does, since I haven't looked at your code yet.). Ultimately I'll be happy with any solution that performs well and allows us to get rid of the arbitrary depth limit, no matter what we call it!</p>
+<p>Per your request (and the &quot;draft&quot; status), I&#x27;ll refrain from a detailed look at the code until you declare it ready for review. Just one general thought, based on the title of the PR: when I looked at this previously, my conclusion was that we don&#x27;t actually need TDDs here, BDDs suffice. If we build a BDD of the constraints, and then evaluate that BDD, anytime a decision node evaluates to &quot;ambiguous&quot;, we can immediately short-circuit to a result of &quot;ambiguous&quot;. I guess another way to say this is that a TDD where the &quot;ambiguous&quot; exit of every node leads immediately to the &quot;ambiguous&quot; terminal (which is our scenario, I think), is isomorphic to a BDD where the &quot;ambiguous&quot; exits can be implied.</p>
+<p>Just mentioning that in case it&#x27;s useful or allows any simplification (I don&#x27;t know if it does, since I haven&#x27;t looked at your code yet.). Ultimately I&#x27;ll be happy with any solution that performs well and allows us to get rid of the arbitrary depth limit, no matter what we call it!</p>
 <p>(One other thought: if we are getting rid of the depth limit, we should run this on Black and verify that the big perf regression @sharkdp observed is in fact gone.)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-02-01 00:19</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-01 00:19</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-02-01 02:09</div>
             <div class="timeline-body"><blockquote>
 <p>If we build a BDD of the constraints, and then evaluate that BDD, anytime a decision node evaluates to &quot;ambiguous&quot;, we can immediately short-circuit to a result of &quot;ambiguous&quot;.</p>
 </blockquote>
-<p>Hmm, I thought we'd need to model ambiguous edges fully, since (e.g.) <code>ambiguous ∧ false = false</code>.  So if we have a constraint of <code>C1 ∧ C2</code>, where <code>C1</code> is <code>amb</code> and <code>C2</code> is <code>false</code>, I think your optimization would over-approximate the result to <code>amb</code> instead of <code>false</code>.  Am I following that right?</p>
+<p>Hmm, I thought we&#x27;d need to model ambiguous edges fully, since (e.g.) <code>ambiguous ∧ false = false</code>.  So if we have a constraint of <code>C1 ∧ C2</code>, where <code>C1</code> is <code>amb</code> and <code>C2</code> is <code>false</code>, I think your optimization would over-approximate the result to <code>amb</code> instead of <code>false</code>.  Am I following that right?</p>
 <blockquote>
 <p>(One other thought: if we are getting rid of the depth limit, we should run this on Black and verify that the big perf regression @sharkdp observed is in fact gone.)</p>
 </blockquote>
-<p>Ah, that makes me a bit happier about the performance numbers I'm seeing!  Codspeed is reporting a 3% regression with this in place.  When I test locally, using hyperfine on black, I see similar numbers.  But that might not be apples-to-apples, since <code>main</code> has a recursion limit in place but this feature branch does not.</p>
+<p>Ah, that makes me a bit happier about the performance numbers I&#x27;m seeing!  Codspeed is reporting a 3% regression with this in place.  When I test locally, using hyperfine on black, I see similar numbers.  But that might not be apples-to-apples, since <code>main</code> has a recursion limit in place but this feature branch does not.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-02-01 16:05</div>
             <div class="timeline-body"><blockquote>
-<p>I thought we'd need to model ambiguous edges fully, since (e.g.) <code>ambiguous ∧ false = false</code></p>
+<p>I thought we&#x27;d need to model ambiguous edges fully, since (e.g.) <code>ambiguous ∧ false = false</code></p>
 </blockquote>
-<p>You're right, of course! I remembered that I'd reached the conclusion we could do this with just BDDs, but when I tried to recall the reasoning for that conclusion, I thought I'd come up with a simpler reason, but instead it was just a wrong reason :)</p>
-<p>The actual reason I'd reached this conclusion before was because OxiDD will allow you to supply &quot;resolutions&quot; (that is, t/f values) for nodes in a BDD and will then simplify the BDD accordingly, such that the resolved nodes disappear from it. So I thought if we built a BDD and then resolved the nodes that we can infer a statically-known truthiness for, the BDD would either simplify to just a terminal, or not, in which case it remains ambiguous.</p>
-<p>But I don't know if that's actually a good/efficient approach, compared to building a TDD and evaluating it!</p>
+<p>You&#x27;re right, of course! I remembered that I&#x27;d reached the conclusion we could do this with just BDDs, but when I tried to recall the reasoning for that conclusion, I thought I&#x27;d come up with a simpler reason, but instead it was just a wrong reason :)</p>
+<p>The actual reason I&#x27;d reached this conclusion before was because OxiDD will allow you to supply &quot;resolutions&quot; (that is, t/f values) for nodes in a BDD and will then simplify the BDD accordingly, such that the resolved nodes disappear from it. So I thought if we built a BDD and then resolved the nodes that we can infer a statically-known truthiness for, the BDD would either simplify to just a terminal, or not, in which case it remains ambiguous.</p>
+<p>But I don&#x27;t know if that&#x27;s actually a good/efficient approach, compared to building a TDD and evaluating it!</p>
 <blockquote>
 <p>Codspeed is reporting a 3% regression with this in place. When I test locally, using hyperfine on black, I see similar numbers. But that might not be apples-to-apples,</p>
 </blockquote>
-<p>IIRC @sharkdp was seeing like 5x regression on Black without the recursion limit, so it seems like you're doing much better on the pathological cases. It's too bad if this comes with an across-the-board regression, but I think it's worth it to get rid of the arbitrary limit. We probably will need such limits in some places, but they are a really bad experience when users encounter them, so as much as we can avoid them, or make them so high that users will never encounter them in realistic code, we should try to do so.</p>
+<p>IIRC @sharkdp was seeing like 5x regression on Black without the recursion limit, so it seems like you&#x27;re doing much better on the pathological cases. It&#x27;s too bad if this comes with an across-the-board regression, but I think it&#x27;s worth it to get rid of the arbitrary limit. We probably will need such limits in some places, but they are a really bad experience when users encounter them, so as much as we can avoid them, or make them so high that users will never encounter them in realistic code, we should try to do so.</p>
 <p>Of course we should also take a look at profiles and see if there are ways to bring down the regression here!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-03 15:24</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-02-03 15:26</div>
-            <div class="timeline-body"><p>I've extracted the refactoring parts of this into a separate PR to make everything easier to review: https://github.com/astral-sh/ruff/pull/15913</p>
+            <div class="timeline-body"><p>I&#x27;ve extracted the refactoring parts of this into a separate PR to make everything easier to review: <a href="https://github.com/astral-sh/ruff/pull/15913">astral-sh/ruff#15913</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-02-03 15:36</div>
-            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+            <div class="timeline-body">
 
-<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
 
-<h2><a href="https://codspeed.io/astral-sh/ruff/branches/dcreager%2Ftdd">CodSpeed Performance Report</a></h2>
-<h3>Merging #15861 will <strong>not alter performance</strong></h3>
-<p><sub>Comparing <code>dcreager/tdd</code> (ec35dcf) with <code>main</code> (6bb3235)</sub></p>
-<h3>Summary</h3>
+
+<a href="https://codspeed.io/astral-sh/ruff/branches/dcreager%2Ftdd">CodSpeed Performance Report</a>
+Merging #15861 will <strong>not alter performance</strong>
+<p>Comparing <code>dcreager/tdd</code> (ec35dcf) with <code>main</code> (6bb3235)</p>
+Summary
 <p><code>✅ 32</code> untouched benchmarks</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-02-03 18:36</div>
             <div class="timeline-body"><blockquote>
-<p>IIRC @sharkdp was seeing like 5x regression on Black without the recursion limit, so it seems like you're doing much better on the pathological cases. It's too bad if this comes with an across-the-board regression, but I think it's worth it to get rid of the arbitrary limit. We probably will need such limits in some places, but they are a really bad experience when users encounter them, so as much as we can avoid them, or make them so high that users will never encounter them in realistic code, we should try to do so.</p>
+<p>IIRC @sharkdp was seeing like 5x regression on Black without the recursion limit, so it seems like you&#x27;re doing much better on the pathological cases. It&#x27;s too bad if this comes with an across-the-board regression, but I think it&#x27;s worth it to get rid of the arbitrary limit. We probably will need such limits in some places, but they are a really bad experience when users encounter them, so as much as we can avoid them, or make them so high that users will never encounter them in realistic code, we should try to do so.</p>
 <p>Of course we should also take a look at profiles and see if there are ways to bring down the regression here!</p>
 </blockquote>
 <p>As expected, the execution time shifts from being mostly in the evaluate step on <code>main</code>:</p>
-<p><img src="https://github.com/user-attachments/assets/9985524d-9ec6-496f-a0aa-ecedcaaf4474" alt="main" /></p>
+<p><img src="https://github.com/user-attachments/assets/9985524d-9ec6-496f-a0aa-ecedcaaf4474" alt="main"></p>
 <p>to being mostly in the build step with this PR:</p>
-<p><img src="https://github.com/user-attachments/assets/2d2657a4-69b2-4107-9ea7-60323a08b3cc" alt="feature" /></p>
+<p><img src="https://github.com/user-attachments/assets/2d2657a4-69b2-4107-9ea7-60323a08b3cc" alt="feature"></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-02-03 19:47</div>
-            <div class="timeline-body"><p>I think this is at a good point now.  In local testing, I've gotten the performance regression down to 1-2%.  Interested to see what codspeed says about the latest commits on the branch.</p>
+            <div class="timeline-body"><p>I think this is at a good point now.  In local testing, I&#x27;ve gotten the performance regression down to 1-2%.  Interested to see what codspeed says about the latest commits on the branch.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @dcreager on 2025-02-03 19:48</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/dcreager">@dcreager</a> on 2025-02-03 19:48</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @dcreager on 2025-02-03 19:48</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/dcreager">@dcreager</a> on 2025-02-03 19:48</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @dcreager on 2025-02-03 19:48</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/dcreager">@dcreager</a> on 2025-02-03 19:48</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-02-03 19:48</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/dcreager">@dcreager</a> on 2025-02-03 19:48</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @dcreager on 2025-02-03 19:48</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/dcreager">@dcreager</a> on 2025-02-03 19:48</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-02-03 20:05</div>
-            <div class="timeline-body"><p>For some reason CodSpeed <a href="https://codspeed.io/astral-sh/ruff/branches/dcreager%2Ftdd">thinks</a> it doesn't have data on the baseline for this PR, but just comparing the results here with the ones on main (or <code>vc-api</code>), it looks like about 2% regression (89.5 ms -&gt; 91.6 ms).</p>
+            <div class="timeline-body"><p>For some reason CodSpeed <a href="https://codspeed.io/astral-sh/ruff/branches/dcreager%2Ftdd">thinks</a> it doesn&#x27;t have data on the baseline for this PR, but just comparing the results here with the ones on main (or <code>vc-api</code>), it looks like about 2% regression (89.5 ms -&gt; 91.6 ms).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-02-03 20:09</div>
             <div class="timeline-body"><blockquote>
-<p>As follow-on work, we are now closer to being able to remove the simplify_visibility_constraint calls in the semantic index builder. In the vast majority of cases, we now see (for instance) that the visibility constraint after an if statement, for bindings of symbols that weren't rebound in any branch, simplifies back to true. But there are still some cases we generate constraints that are cyclic. With fixed-point cycle support in salsa, or with some careful analysis of the still-failing cases, we might be able to remove those.</p>
+<p>As follow-on work, we are now closer to being able to remove the simplify_visibility_constraint calls in the semantic index builder. In the vast majority of cases, we now see (for instance) that the visibility constraint after an if statement, for bindings of symbols that weren&#x27;t rebound in any branch, simplifies back to true. But there are still some cases we generate constraints that are cyclic. With fixed-point cycle support in salsa, or with some careful analysis of the still-failing cases, we might be able to remove those.</p>
 </blockquote>
-<p>I would definitely like to see the failing cases and understand why they need to be cyclic, or if there's some missing simplification (other than the &quot;no new bindings&quot; heuristic that doesn't work with with terminals) that could avoid the cycles. But this can be a follow-up.</p>
+<p>I would definitely like to see the failing cases and understand why they need to be cyclic, or if there&#x27;s some missing simplification (other than the &quot;no new bindings&quot; heuristic that doesn&#x27;t work with with terminals) that could avoid the cycles. But this can be a follow-up.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -152,14 +152,14 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-02-03 20:14</div>
             <div class="timeline-body"><blockquote>
-<p>For some reason CodSpeed <a href="https://codspeed.io/astral-sh/ruff/branches/dcreager%2Ftdd">thinks</a> it doesn't have data on the baseline for this PR, but just comparing the results here with the ones on main (or <code>vc-api</code>), it looks like about 2% regression (89.5 ms -&gt; 91.6 ms).</p>
+<p>For some reason CodSpeed <a href="https://codspeed.io/astral-sh/ruff/branches/dcreager%2Ftdd">thinks</a> it doesn&#x27;t have data on the baseline for this PR, but just comparing the results here with the ones on main (or <code>vc-api</code>), it looks like about 2% regression (89.5 ms -&gt; 91.6 ms).</p>
 </blockquote>
 <p>I rebased after merging #15913, which should hopefully update codspeed</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/visibility_constraints.rs</code>:385 on 2025-02-03 20:22</div>
-            <div class="timeline-body"><p>This doesn't define any deterministic ordering of terminal nodes, but just always returns <code>Greater</code> for any comparison of two terminals (that is, the result depends on which is <code>a</code> and which is <code>b</code>.) I guess in practice that's OK, because the implementations of <code>add_and_constraint</code> and <code>add_or_constraint</code> always handle any both-terminal case up-front, before needing to order nodes? Should that implicit requirement be documented?</p>
+            <div class="timeline-body"><p>This doesn&#x27;t define any deterministic ordering of terminal nodes, but just always returns <code>Greater</code> for any comparison of two terminals (that is, the result depends on which is <code>a</code> and which is <code>b</code>.) I guess in practice that&#x27;s OK, because the implementations of <code>add_and_constraint</code> and <code>add_or_constraint</code> always handle any both-terminal case up-front, before needing to order nodes? Should that implicit requirement be documented?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -176,7 +176,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-02-03 20:28</div>
             <div class="timeline-body"><blockquote>
-<p>I would definitely like to see the failing cases and understand why they need to be cyclic, or if there's some missing simplification (other than the &quot;no new bindings&quot; heuristic that doesn't work with with terminals) that could avoid the cycles. But this can be a follow-up.</p>
+<p>I would definitely like to see the failing cases and understand why they need to be cyclic, or if there&#x27;s some missing simplification (other than the &quot;no new bindings&quot; heuristic that doesn&#x27;t work with with terminals) that could avoid the cycles. But this can be a follow-up.</p>
 </blockquote>
 <p>As one example, <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/resources/test/fixtures/flake8_return/RET503.py"><code>flake8_return/RET503.py</code></a> works fine when analyzed as a <code>.py</code> file, but has a cycle when analyzed as a <code>.pyi</code> file</p>
 </div>
@@ -187,7 +187,7 @@
 <p>As one example, <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/resources/test/fixtures/flake8_return/RET503.py"><code>flake8_return/RET503.py</code></a> works fine when analyzed as a <code>.py</code> file, but has a cycle when analyzed as a <code>.pyi</code> file</p>
 </blockquote>
 <p>And I minimized it down to this repro:</p>
-<pre><code class="language-py">def foo() -&gt; int:
+<pre><code>def foo() -&gt; int:
     def baz() -&gt; int:
         return 1
     if baz() &gt; 3:
@@ -199,7 +199,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-02-03 21:20</div>
-            <div class="timeline-body"><p>Summarizing from Discord: I think a) such code would never actually occur in a stub file; they shouldn't even have function bodies other than ellipsis (and perhaps we should make this explicit in how we handle them), and b) it would be fine to go ahead and remove the simplify calls and mark that file xfail (though ideal if we could mark only the pyi version of it as xfail?) pending fixpoint iteration, which I think would solve the panic.</p>
+            <div class="timeline-body"><p>Summarizing from Discord: I think a) such code would never actually occur in a stub file; they shouldn&#x27;t even have function bodies other than ellipsis (and perhaps we should make this explicit in how we handle them), and b) it would be fine to go ahead and remove the simplify calls and mark that file xfail (though ideal if we could mark only the pyi version of it as xfail?) pending fixpoint iteration, which I think would solve the panic.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -210,35 +210,35 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-02-03 21:25</div>
             <div class="timeline-body"><p>Looks great to me!</p>
-<p>Micha or David may have Rust/perf suggestions I missed, but I think it's OK to go ahead with this and handle any such comments as follow-ups.</p>
+<p>Micha or David may have Rust/perf suggestions I missed, but I think it&#x27;s OK to go ahead with this and handle any such comments as follow-ups.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-02-03 21:28</div>
             <div class="timeline-body"><blockquote>
-<p>Summarizing from Discord: I think a) such code would never actually occur in a stub file; they shouldn't even have function bodies other than ellipsis (and perhaps we should make this explicit in how we handle them), and b) it would be fine to go ahead and remove the simplify calls and mark that file xfail (though ideal if we could mark only the pyi version of it as xfail?) pending fixpoint iteration, which I think would solve the panic.</p>
+<p>Summarizing from Discord: I think a) such code would never actually occur in a stub file; they shouldn&#x27;t even have function bodies other than ellipsis (and perhaps we should make this explicit in how we handle them), and b) it would be fine to go ahead and remove the simplify calls and mark that file xfail (though ideal if we could mark only the pyi version of it as xfail?) pending fixpoint iteration, which I think would solve the panic.</p>
 </blockquote>
-<p>Done.  Performance between keeping and removing the simplify calls seems to be a wash.  I've removed them in the interests of simpler code, and added a pyi-only xfail for the one failing test.</p>
+<p>Done.  Performance between keeping and removing the simplify calls seems to be a wash.  I&#x27;ve removed them in the interests of simpler code, and added a pyi-only xfail for the one failing test.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-03 21:34</div>
-            <div class="timeline-body"><p>I haven't reviewed the code yet but the regression might simply come from that we now evaluate (or simplify) more constraints than before because the semantic indexer processes all constraints whereas simplification during inference was lazy (and only for the queried definitions)</p>
+            <div class="timeline-body"><p>I haven&#x27;t reviewed the code yet but the regression might simply come from that we now evaluate (or simplify) more constraints than before because the semantic indexer processes all constraints whereas simplification during inference was lazy (and only for the queried definitions)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/visibility_constraints.rs</code>:284 on 2025-02-03 22:18</div>
-            <div class="timeline-body"><p>Mostly because I thought it was overkill to add <code>newtype_index</code>es for the two vectors, but actually that type safety seems like a good thing.  I'll change it</p>
+            <div class="timeline-body"><p>Mostly because I thought it was overkill to add <code>newtype_index</code>es for the two vectors, but actually that type safety seems like a good thing.  I&#x27;ll change it</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/visibility_constraints.rs</code>:334 on 2025-02-03 22:24</div>
-            <div class="timeline-body"><p>There's a <code>debug_assert</code> that we're less than 2^24 in <code>from_index_and_copy</code>, though that happens after the cast.  Switching to <code>IndexVec</code> gives us that u32 check for free.</p>
+            <div class="timeline-body"><p>There&#x27;s a <code>debug_assert</code> that we&#x27;re less than 2^24 in <code>from_index_and_copy</code>, though that happens after the cast.  Switching to <code>IndexVec</code> gives us that u32 check for free.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/visibility_constraints.rs</code>:385 on 2025-02-03 22:43</div>
-            <div class="timeline-body"><p>Good catch, I'll add that as another case; it seems brittle to rely on the caller always doing that</p>
+            <div class="timeline-body"><p>Good catch, I&#x27;ll add that as another case; it seems brittle to rely on the caller always doing that</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -257,7 +257,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-02-03 23:24</div>
-            <div class="timeline-body"><p>Hmm, the switch to <code>IndexVec</code> (or at least, something in the recent commits) seems to have grown the regression; now we're seeing a significant regression even in incremental check, which is a bit strange.</p>
+            <div class="timeline-body"><p>Hmm, the switch to <code>IndexVec</code> (or at least, something in the recent commits) seems to have grown the regression; now we&#x27;re seeing a significant regression even in incremental check, which is a bit strange.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -268,27 +268,27 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-02-04 00:07</div>
             <div class="timeline-body"><blockquote>
-<p>Hmm, the switch to <code>IndexVec</code> (or at least, something in the recent commits) seems to have grown the regression; now we're seeing a significant regression even in incremental check, which is a bit strange.</p>
+<p>Hmm, the switch to <code>IndexVec</code> (or at least, something in the recent commits) seems to have grown the regression; now we&#x27;re seeing a significant regression even in incremental check, which is a bit strange.</p>
 </blockquote>
-<p>I do see a 2-3% regression between the <code>IndexVec</code> commit and the one immediately before it.  My hunch is that it's because we're not storing <code>ConstraintId</code> and <code>InteriorNodeId</code> directly, and have to convert into that from the bit-hacked <code>u32</code> on each access.  That does a bounds check each time.  I'm going to revert that commit and add a note about why we're using <code>Vec</code>.  (Alternatively I could add an <code>unchecked</code> constructor for the ID types.)</p>
+<p>I do see a 2-3% regression between the <code>IndexVec</code> commit and the one immediately before it.  My hunch is that it&#x27;s because we&#x27;re not storing <code>ConstraintId</code> and <code>InteriorNodeId</code> directly, and have to convert into that from the bit-hacked <code>u32</code> on each access.  That does a bounds check each time.  I&#x27;m going to revert that commit and add a note about why we&#x27;re using <code>Vec</code>.  (Alternatively I could add an <code>unchecked</code> constructor for the ID types.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-02-04 00:24</div>
             <div class="timeline-body"><blockquote>
-<p>I'm going to revert that commit and add a note about why we're using <code>Vec</code>. (Alternatively I could add an <code>unchecked</code> constructor for the ID types.)</p>
+<p>I&#x27;m going to revert that commit and add a note about why we&#x27;re using <code>Vec</code>. (Alternatively I could add an <code>unchecked</code> constructor for the ID types.)</p>
 </blockquote>
 <p>Ackshually I can write a custom <code>Idx</code> impl for a couple of types and bypass the asserts, I think.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-02-04 01:49</div>
-            <div class="timeline-body"><p>Still seeing the larger regression with custom <code>Idx</code> impls, and again with a revert of the <code>Vec</code> → <code>IndexVec</code> commit.  I'm stumped, will look at this some more in the morning.</p>
+            <div class="timeline-body"><p>Still seeing the larger regression with custom <code>Idx</code> impls, and again with a revert of the <code>Vec</code> → <code>IndexVec</code> commit.  I&#x27;m stumped, will look at this some more in the morning.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/visibility_constraints.rs</code>:191 on 2025-02-04 08:08</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">            ALWAYS_TRUE =&gt; f.field(&amp;&quot;AlwaysTrue&quot;).finish(),
+            <div class="timeline-body"><pre><code>            ALWAYS_TRUE =&gt; f.field(&amp;&quot;AlwaysTrue&quot;).finish(),
             AMBIGUOUS =&gt; f.field(&amp;&quot;Ambiguous&quot;).finish(),
             ALWAYS_FALSE =&gt; f.field(&amp;&quot;AlwaysFalse&quot;).finish(),
 </code></pre>
@@ -296,8 +296,8 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/visibility_constraints.rs</code>:193 on 2025-02-04 08:09</div>
-            <div class="timeline-body"><p>Nit: Makes it clearer what's different/shared between the branches:</p>
-<pre><code class="language-suggestion">        let mut f = f.debug_tuple(&quot;ScopedVisibilityConstraintId&quot;);
+            <div class="timeline-body"><p>Nit: Makes it clearer what&#x27;s different/shared between the branches:</p>
+<pre><code>        let mut f = f.debug_tuple(&quot;ScopedVisibilityConstraintId&quot;);
         match *self {
             ALWAYS_TRUE =&gt; f.field(&amp;&quot;AlwaysTrue&quot;),
             AMBIGUOUS =&gt; f.field(&amp;&quot;Ambiguous&quot;),
@@ -311,27 +311,27 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/visibility_constraints.rs</code>:232 on 2025-02-04 08:11</div>
-            <div class="timeline-body"><p>I'm not familiar with TDD myself (I'm familiar with test driven development but that's not it). Would it make sense to extend the module level documentation and also include a link to what TDD means in this context?</p>
+            <div class="timeline-body"><p>I&#x27;m not familiar with TDD myself (I&#x27;m familiar with test driven development but that&#x27;s not it). Would it make sense to extend the module level documentation and also include a link to what TDD means in this context?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/visibility_constraints.rs</code>:219 on 2025-02-04 08:12</div>
-            <div class="timeline-body"><p>It's unclear to me what a copy number is. Can you expand the comment to cover this in more detail. It may also be worthwhile to explain the internal representation. How many constraints can be expressed etc.</p>
+            <div class="timeline-body"><p>It&#x27;s unclear to me what a copy number is. Can you expand the comment to cover this in more detail. It may also be worthwhile to explain the internal representation. How many constraints can be expressed etc.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/visibility_constraints.rs</code>:270 on 2025-02-04 08:15</div>
-            <div class="timeline-body"><p>I'd expected this to also be defined on <code>ScopedVisiblityConstraitId</code> as it is used in <code>is_terminal</code> and that there's only an alias here.</p>
+            <div class="timeline-body"><p>I&#x27;d expected this to also be defined on <code>ScopedVisiblityConstraitId</code> as it is used in <code>is_terminal</code> and that there&#x27;s only an alias here.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/visibility_constraints.rs</code>:285 on 2025-02-04 08:18</div>
-            <div class="timeline-body"><p>if we end up not using <code>IndexVec</code>, I still recommend to create a newtype wrapper around <code>u32</code> to signify what the <code>u32</code> here means (it's an index into the constraints/interiors vec?)</p>
+            <div class="timeline-body"><p>if we end up not using <code>IndexVec</code>, I still recommend to create a newtype wrapper around <code>u32</code> to signify what the <code>u32</code> here means (it&#x27;s an index into the constraints/interiors vec?)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/visibility_constraints.rs</code>:283 on 2025-02-04 08:30</div>
-            <div class="timeline-body"><p>This struct defines a fair amount of heap-allocated data structures and requires a lot of hashing. It would be nice not to have to do that, but I don't see how we can restructure the code to avoid it (unless maybe combining some maps and encoding the <code>or</code>/<code>and</code> in the key but that might as well turn out to be slower if it happens that the map has to resize more often because of it.</p>
+            <div class="timeline-body"><p>This struct defines a fair amount of heap-allocated data structures and requires a lot of hashing. It would be nice not to have to do that, but I don&#x27;t see how we can restructure the code to avoid it (unless maybe combining some maps and encoding the <code>or</code>/<code>and</code> in the key but that might as well turn out to be slower if it happens that the map has to resize more often because of it.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -352,7 +352,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/visibility_constraints.rs</code>:191 on 2025-02-04 18:24</div>
-            <div class="timeline-body"><p>The <code>format_args!</code> part makes this render as a symbol, not a string: <code>ScopedVisibilityConstraintId(AlwaysTrue)</code> as opposed to <code>ScopedVisibilityConstraintId(&quot;AlwaysTrue&quot;)</code>.  It's small and aesthetic but I like it better!  I've added a comment explaining why</p>
+            <div class="timeline-body"><p>The <code>format_args!</code> part makes this render as a symbol, not a string: <code>ScopedVisibilityConstraintId(AlwaysTrue)</code> as opposed to <code>ScopedVisibilityConstraintId(&quot;AlwaysTrue&quot;)</code>.  It&#x27;s small and aesthetic but I like it better!  I&#x27;ve added a comment explaining why</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -382,12 +382,12 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/visibility_constraints.rs</code>:285 on 2025-02-04 19:01</div>
-            <div class="timeline-body"><p>We're back to using <code>IndexVec</code></p>
+            <div class="timeline-body"><p>We&#x27;re back to using <code>IndexVec</code></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/visibility_constraints.rs</code>:283 on 2025-02-04 19:02</div>
-            <div class="timeline-body"><p>The hashing is an important part of the data structure, since we have to intern all of the nodes to guarantee that the TDD is reduced.  (I included a description of what it means to be reduced, and why that's important, in the module documentation that I added).</p>
+            <div class="timeline-body"><p>The hashing is an important part of the data structure, since we have to intern all of the nodes to guarantee that the TDD is reduced.  (I included a description of what it means to be reduced, and why that&#x27;s important, in the module documentation that I added).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -395,10 +395,10 @@
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @dcreager on 2025-02-04 19:32</div>
+            <div class="event">Merged by <a href="https://github.com/dcreager">@dcreager</a> on 2025-02-04 19:32</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dcreager on 2025-02-04 19:32</div>
+            <div class="event">Closed by <a href="https://github.com/dcreager">@dcreager</a> on 2025-02-04 19:32</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-02-04 19:32</div>
@@ -406,7 +406,7 @@
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:09:39 UTC
+        Synced at 2026-01-20 19:11:00 UTC
     </footer>
 </body>
 </html>

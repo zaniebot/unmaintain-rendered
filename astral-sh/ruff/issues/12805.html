@@ -28,22 +28,22 @@
 try-except, continue, pass, PERF203, try-except-in-loop</p>
 </li>
 <li><p>A minimal code snippet that reproduces the bug.
-Here's a few examples taken directly from setuptools. I don't see a better way of writing them, nor does the doc at make any mention of such cases. Where the iteration must complete and ignore certain errors https://docs.astral.sh/ruff/rules/try-except-in-loop/</p>
+Here&#x27;s a few examples taken directly from setuptools. I don&#x27;t see a better way of writing them, nor does the doc at make any mention of such cases. Where the iteration must complete and ignore certain errors https://docs.astral.sh/ruff/rules/try-except-in-loop/</p>
 </li>
 </ul>
-<pre><code class="language-py">def test_process_template_line_invalid(self):
+<pre><code>def test_process_template_line_invalid(self):
     # invalid lines
     file_list = FileList()
     for action in (
-        'include',
-        'exclude',
-        'global-include',
-        'global-exclude',
-        'recursive-include',
-        'recursive-exclude',
-        'graft',
-        'prune',
-        'blarg',
+        &#x27;include&#x27;,
+        &#x27;exclude&#x27;,
+        &#x27;global-include&#x27;,
+        &#x27;global-exclude&#x27;,
+        &#x27;recursive-include&#x27;,
+        &#x27;recursive-exclude&#x27;,
+        &#x27;graft&#x27;,
+        &#x27;prune&#x27;,
+        &#x27;blarg&#x27;,
     ):
         try:
             file_list.process_template_line(action)
@@ -65,8 +65,8 @@ def filesys_decode(path):
     if isinstance(path, str):
         return path
 
-    fs_enc = sys.getfilesystemencoding() or 'utf-8'
-    candidates = fs_enc, 'utf-8'
+    fs_enc = sys.getfilesystemencoding() or &#x27;utf-8&#x27;
+    candidates = fs_enc, &#x27;utf-8&#x27;
 
     for enc in candidates:
         try:
@@ -110,18 +110,18 @@ ruff 0.5.7</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-08-14 08:41</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-14 08:41</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2024-08-14 08:42</div>
+            <div class="event">Label <span class="label">preview</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-14 08:42</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2024-08-14 08:42</div>
+            <div class="event">Label <span class="label">help wanted</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-14 08:42</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-14 10:45</div>
-            <div class="timeline-body"><p>I'm not sure I understand why this is a false positive. The premise of this rule is that raising and catching an exception is often surprisingly expensive in Python. If you have a <code>try</code>/<code>except</code> clause in a tight loop, you can often speedup your code by refactoring your code to use &quot;Look Before You Leap&quot; (LBYL) idioms inside the loop instead of <code>try</code>/<code>except</code> clauses. For example, a change like this <em>can</em> speedup your code a lot (depending on the precise circumstances), which is often surprising to Python developers because it's often seen as less idiomatic:</p>
-<pre><code class="language-diff">for x in whatever:
+            <div class="timeline-body"><p>I&#x27;m not sure I understand why this is a false positive. The premise of this rule is that raising and catching an exception is often surprisingly expensive in Python. If you have a <code>try</code>/<code>except</code> clause in a tight loop, you can often speedup your code by refactoring your code to use &quot;Look Before You Leap&quot; (LBYL) idioms inside the loop instead of <code>try</code>/<code>except</code> clauses. For example, a change like this <em>can</em> speedup your code a lot (depending on the precise circumstances), which is often surprising to Python developers because it&#x27;s often seen as less idiomatic:</p>
+<pre><code>for x in whatever:
 -    try:
 -        val = mapping[x]
 -    except KeyError:
@@ -136,25 +136,25 @@ ruff 0.5.7</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">help wanted</span> removed by @AlexWaygood on 2024-08-14 10:45</div>
+            <div class="event">Label <span class="label">help wanted</span> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-14 10:45</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2024-08-16 15:51</div>
-            <div class="timeline-body"><p>@AlexWaygood It's a false-positive when there's no better way than using try-catch.</p>
-<p>The example you gave (a classic check for KeyError, AttributeError, etc.) is a great example I didn't immediatly think of. And a reason why my false-positives probably can't be avoided with heuristics.
+            <div class="timeline-body"><p>@AlexWaygood It&#x27;s a false-positive when there&#x27;s no better way than using try-catch.</p>
+<p>The example you gave (a classic check for KeyError, AttributeError, etc.) is a great example I didn&#x27;t immediatly think of. And a reason why my false-positives probably can&#x27;t be avoided with heuristics.
 I think such an example should probably be added to the doc as another way to avoid try-except in loops where possible. (Doc only references the LBYL idiom)</p>
-<p>Sidenote: my first example isn't great as it's better served by <code>pytest.raises</code> anyway. Per-file-ignore could also be used to ignore <code>PERF203</code> in tests if need be.</p>
-<hr />
-<p>The reasons you mentioned that you wouldn't turn this rule on in CI is also why I use warning/info levels in other linters (pyright, ESLint): bring the dev's attention to a code smell/potential issue, but don't fail tests for it.
-And one of the reasons I'm in support of configuring a &quot;warning&quot; level for rules in Ruff https://github.com/astral-sh/ruff/issues/1256</p>
+<p>Sidenote: my first example isn&#x27;t great as it&#x27;s better served by <code>pytest.raises</code> anyway. Per-file-ignore could also be used to ignore <code>PERF203</code> in tests if need be.</p>
+<hr>
+<p>The reasons you mentioned that you wouldn&#x27;t turn this rule on in CI is also why I use warning/info levels in other linters (pyright, ESLint): bring the dev&#x27;s attention to a code smell/potential issue, but don&#x27;t fail tests for it.
+And one of the reasons I&#x27;m in support of configuring a &quot;warning&quot; level for rules in Ruff <a href="https://github.com/astral-sh/ruff/issues/1256">astral-sh/ruff#1256</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-16 16:14</div>
             <div class="timeline-body"><blockquote>
-<p>@AlexWaygood It's a false-positive when there's no better way than using try-catch.</p>
+<p>@AlexWaygood It&#x27;s a false-positive when there&#x27;s no better way than using try-catch.</p>
 </blockquote>
-<p>Right, sometimes it's impractical or silly to refactor the code to use LBYL idioms. But the rule is still working as designed, in that it's accurately identifying a place where an exception might be repeatedly raised and caught inside a loop, which <em>could</em> lead to a performance bottleneck. That's the purpose of the rule, so from that perspective it's not really a false positive.</p>
+<p>Right, sometimes it&#x27;s impractical or silly to refactor the code to use LBYL idioms. But the rule is still working as designed, in that it&#x27;s accurately identifying a place where an exception might be repeatedly raised and caught inside a loop, which <em>could</em> lead to a performance bottleneck. That&#x27;s the purpose of the rule, so from that perspective it&#x27;s not really a false positive.</p>
 <blockquote>
 <p>think such an example should probably be added to the doc as another way to avoid try-except in loops where possible. (Doc only references the LBYL idiom)</p>
 </blockquote>
@@ -162,12 +162,12 @@ And one of the reasons I'm in support of configuring a &quot;warning&quot; level
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2024-08-17 15:00</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-17 15:00</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:50:50 UTC
+        Synced at 2026-01-20 18:48:56 UTC
     </footer>
 </body>
 </html>

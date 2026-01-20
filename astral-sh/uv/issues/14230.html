@@ -23,49 +23,49 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/stewit">@stewit</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>While <code>uv run</code> adds missing dependencies from the lock file, it does not remove extraneous packages that may have been installed manually into the venv. I would expect it to do a full sync (if necessary) so that extraneous packages are removed.</p>
 <p>To reproduce</p>
 <pre><code>uv init
 uv add pip
-uv run python -c 'import requests'  # correctly throws ModuleNotFoundError
+uv run python -c &#x27;import requests&#x27;  # correctly throws ModuleNotFoundError
 
 uv run pip install requests
-uv run python -c 'import requests'  # no error: manually installed requests is not removed!
+uv run python -c &#x27;import requests&#x27;  # no error: manually installed requests is not removed!
 
 # Note: manually sync does a complete sync removing extraneous packages
 uv sync
-uv run python -c 'import requests'  # correctly throws ModuleNotFoundError
+uv run python -c &#x27;import requests&#x27;  # correctly throws ModuleNotFoundError
 </code></pre>
 <p>Note: The <a href="https://docs.astral.sh/uv/guides/projects/#running-commands">documentation</a> on <code>uv run</code> explicitely states</p>
 <blockquote>
 <p>uv run guarantees that your command is run in a consistent, locked environment.</p>
 </blockquote>
 <p>I interpret &quot;consistent&quot; to mean that exactly the locked dependencies are installed.</p>
-<h4>Why this is a problem:</h4>
+Why this is a problem:
 <p>A junior developer wants to try a new library. Not well-versed with dependency management tooling he manually installs it into the venv. Succeeding in what he wants to achieve he adds unit tests which are run with <code>uv run ...</code>.</p>
 <p>Finally pushes his branch without detecting that a dependency is not declared correctly. Unit tests then fail somewhere in CI.</p>
-<h3>Platform</h3>
+Platform
 <p>Linux</p>
-<h3>Version</h3>
+Version
 <p>0.7.14</p>
-<h3>Python version</h3>
+Python version
 <p>Python 3.13</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @stewit on 2025-06-24 07:28</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/stewit">@stewit</a> on 2025-06-24 07:28</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-24 08:43</div>
-            <div class="timeline-body"><p>Consistent in this case means that all your project requirements are fulfilled and there aren't clashes between their requirements. For <code>uv run</code>, we intentionally chose an inexact sync by default, so <code>uv run</code> doesn't do to many changes before running; We've put the convenience of an inexact sync higher than the potential problems with undeclared dependencies. You can use <code>uv run --exact</code> to get an exact sync. For running tests specifically, you could consider <code>uv run --isolated</code>.</p>
+            <div class="timeline-body"><p>Consistent in this case means that all your project requirements are fulfilled and there aren&#x27;t clashes between their requirements. For <code>uv run</code>, we intentionally chose an inexact sync by default, so <code>uv run</code> doesn&#x27;t do to many changes before running; We&#x27;ve put the convenience of an inexact sync higher than the potential problems with undeclared dependencies. You can use <code>uv run --exact</code> to get an exact sync. For running tests specifically, you could consider <code>uv run --isolated</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-06-24 08:44</div>
+            <div class="event">Label <span class="label">bug</span> removed by <a href="https://github.com/konstin">@konstin</a> on 2025-06-24 08:44</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @konstin on 2025-06-24 08:44</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/konstin">@konstin</a> on 2025-06-24 08:44</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/stewit">@stewit</a> on 2025-06-24 09:18</div>
@@ -75,17 +75,17 @@ uv run python -c 'import requests'  # correctly throws ModuleNotFoundError
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-08-19 15:17</div>
-            <div class="timeline-body"><p>The idea behind this is that it the packages that are installed are from a single, consistent resolution that is stored in <code>uv.lock</code>. We don't consider extra package a problem in that regard, we usually see that people run <code>uv sync --locked</code> in CI which catches this problem for them.</p>
+            <div class="timeline-body"><p>The idea behind this is that it the packages that are installed are from a single, consistent resolution that is stored in <code>uv.lock</code>. We don&#x27;t consider extra package a problem in that regard, we usually see that people run <code>uv sync --locked</code> in CI which catches this problem for them.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-19 17:18</div>
-            <div class="timeline-body"><p>I think in a world where we have a top-level <code>uv test</code> command I'd imagine it runs with <code>--exact</code> by default, but that's just not the right default for the majority of the <code>uv run</code> users.</p>
+            <div class="timeline-body"><p>I think in a world where we have a top-level <code>uv test</code> command I&#x27;d imagine it runs with <code>--exact</code> by default, but that&#x27;s just not the right default for the majority of the <code>uv run</code> users.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/stewit">@stewit</a> on 2025-08-25 07:39</div>
-            <div class="timeline-body"><p>Yes, I understand that, thank you all. I would still kindly suggest being more precise about the term “consistent” in the linked documentation — but maybe I'm the only one who finds this confusing.</p>
+            <div class="timeline-body"><p>Yes, I understand that, thank you all. I would still kindly suggest being more precise about the term “consistent” in the linked documentation — but maybe I&#x27;m the only one who finds this confusing.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -102,12 +102,12 @@ uv run python -c 'import requests'  # correctly throws ModuleNotFoundError
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2026-01-09 13:20</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-09 13:20</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:31:53 UTC
+        Synced at 2026-01-20 19:39:09 UTC
     </footer>
 </body>
 </html>

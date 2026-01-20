@@ -23,46 +23,46 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/zilto">@zilto</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<p>I'm getting new type errors when upgrading from <code>0.0.1a21</code> to <code>0.0.1a22</code>. Some light code change on my end make the type-checker pass, but I'm unsure if my code or <code>ty</code> is incorrect.</p>
-<h2>Setup</h2>
-<p>I'm using <code>ty</code> across two libraries, so I'm trying to have a reduced example, but I didn't try the following repro</p>
-<h3>From the main library (can't edit this code)</h3>
-<pre><code class="language-python"># library/destinations/implementations/foo/factory.py
+            <div class="timeline-body">Summary
+<p>I&#x27;m getting new type errors when upgrading from <code>0.0.1a21</code> to <code>0.0.1a22</code>. Some light code change on my end make the type-checker pass, but I&#x27;m unsure if my code or <code>ty</code> is incorrect.</p>
+Setup
+<p>I&#x27;m using <code>ty</code> across two libraries, so I&#x27;m trying to have a reduced example, but I didn&#x27;t try the following repro</p>
+From the main library (can&#x27;t edit this code)
+<pre><code># library/destinations/implementations/foo/factory.py
 class Destination(abc.ABC, Generic[Config, Client]): ...
 
 class foo(Destination[FooConfig, FooClient]): ...
 </code></pre>
-<pre><code class="language-python"># library/destinations/__init__.py
+<pre><code># library/destinations/__init__.py
 from library.destinations.impl.foo.factory import foo
 
 __all__ = [&quot;foo&quot;]
 </code></pre>
-<h3>From the downstream library (can edit this code)</h3>
+From the downstream library (can edit this code)
 <p>In <code>0.0.1a21</code>, the following code passes all checks (<code>ty check</code>)</p>
-<pre><code class="language-python">import library
+<pre><code>import library
 
 def create_destination() -&gt; library.destinations.foo:
    return library.destinations.foo(...)
 </code></pre>
 <p>In <code>0.0.1a22</code>, the code fails with</p>
-<pre><code class="language-shell">def create_destination() -&gt; Generator[library.destinations.foo, None, None]:
+<pre><code>def create_destination() -&gt; Generator[library.destinations.foo, None, None]:
                                                                     ^^^^^^^^^^^^^^^^^^^
 info: rule `invalid-type-form` is enabled by default
 </code></pre>
 <p>This fixes it</p>
-<pre><code class="language-python">import library
+<pre><code>import library
 from library.destinations import foo
 
 def create_destination() -&gt; foo:
    return library.destinations.foo(...)
 </code></pre>
-<h3>Version</h3>
+Version
 <p>0.0.1a22</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-info</span> added by @sharkdp on 2025-12-01 18:00</div>
+            <div class="event">Label <span class="label">needs-info</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-01 18:00</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-01 18:01</div>
@@ -85,7 +85,7 @@ def create_destination() -&gt; foo:
 <p>The error message that you get on 0.0.1a22 looks like it points to code that is different from what you have in your snippet?</p>
 </blockquote>
 <p>I tried to trim the initial error message. This is what I get for <code>0.0.1a22</code></p>
-<pre><code class="language-shell">error[invalid-type-form]: Variable of type `Never` is not allowed in a type expression
+<pre><code>error[invalid-type-form]: Variable of type `Never` is not allowed in a type expression
   --&gt; tests/conftest.py:18:16
    |
 16 | def tmp_duckdb_destination(
@@ -96,7 +96,7 @@ def create_destination() -&gt; foo:
 info: rule `invalid-type-form` is enabled by default
 </code></pre>
 <p>This is what I get for <code>0.0.1a29</code></p>
-<pre><code class="language-shell">error[invalid-type-form]: Variable of type `Never` is not allowed in a type expression
+<pre><code>error[invalid-type-form]: Variable of type `Never` is not allowed in a type expression
   --&gt; tests/conftest.py:18:16
    |
 16 | def tmp_duckdb_destination(
@@ -129,25 +129,25 @@ info: rule `invalid-type-form` is enabled by default
 <p>Searching the codebase, <code>sys.platform</code> is used twice and <code>sys.version_info</code> only once. All of these instances are within the closure of functions, suggesting no impact on the current issue.</p>
 <blockquote>
 <p>Or if there could be some other reason why ty thinks that this symbols is unreachable?
-My guess would be that there's some name shadowing in the codebase and <code>ty</code> name resolution diverges from the Pyhton name resolution. See step 4. and 5.</p>
+My guess would be that there&#x27;s some name shadowing in the codebase and <code>ty</code> name resolution diverges from the Pyhton name resolution. See step 4. and 5.</p>
 </blockquote>
 <p>The import for <code>dlt.destinations.duckdb</code> is as follow:</p>
 <ol>
 <li><p><code>repro.py</code> (type-checked user code)</p>
-<pre><code class="language-python">import dlt
+<pre><code>import dlt
 
 def foo() -&gt; dlt.destinations.duckdb:
   return dlt.destinations.duckdb(...)
 </code></pre>
 </li>
 <li><p><code>dlt/__init__.py</code></p>
-<pre><code class="language-python">from dlt import destinations
+<pre><code>from dlt import destinations
 
 __all__ = (&quot;destinations&quot;, ...)
 </code></pre>
 </li>
 <li><p><code>dlt/destinations/__init__.py</code></p>
-<pre><code class="language-python">from dlt.destinations.impl.duckdb.factory import duckdb
+<pre><code>from dlt.destinations.impl.duckdb.factory import duckdb
 
 __all__ = (&quot;duckdb&quot;, ...)
 </code></pre>
@@ -159,13 +159,13 @@ This file is empty. There is no import or public namespace</p>
 This file is empty. There is no import or public namespace</p>
 </li>
 <li><p><code>dlt/destinations/impl/duckdb/factory.py</code></p>
-<pre><code class="language-python"># actual class implementation
+<pre><code># actual class implementation
 class duckdb: ...
 </code></pre>
 </li>
 </ol>
 <p>It would be useful to have a traceback until the type resolution hits <code>Never</code> in addition to the message</p>
-<pre><code class="language-shell">error[invalid-type-form]: Variable of type `Never` is not allowed in a type expression
+<pre><code>error[invalid-type-form]: Variable of type `Never` is not allowed in a type expression
 </code></pre>
 </div>
         </div>
@@ -182,7 +182,7 @@ class duckdb: ...
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-info</span> removed by @AlexWaygood on 2025-12-04 16:09</div>
+            <div class="event">Label <span class="label">needs-info</span> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-04 16:09</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-04 16:57</div>
@@ -190,13 +190,13 @@ class duckdb: ...
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-04 16:58</div>
+            <div class="event">Added to milestone &quot;Stable&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-12-04 16:58</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "`invalid-type-form` regression from `0.0.1a21 -> 0.0.1a22`" to "imports from non-terminating modules resolved as Never" by @carljm on 2025-12-04 16:59</div>
+            <div class="event">Renamed from &quot;`invalid-type-form` regression from `0.0.1a21 -&gt; 0.0.1a22`&quot; to &quot;imports from non-terminating modules resolved as Never&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-12-04 16:59</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">unreachable-code</span> added by @carljm on 2025-12-04 16:59</div>
+            <div class="event">Label <span class="label">unreachable-code</span> added by <a href="https://github.com/carljm">@carljm</a> on 2025-12-04 16:59</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zilto">@zilto</a> on 2025-12-05 14:39</div>
@@ -205,12 +205,12 @@ class duckdb: ...
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "imports from non-terminating modules resolved as Never" to "imports from non-terminating modules silently resolved as Never" by @carljm on 2025-12-05 16:10</div>
+            <div class="event">Renamed from &quot;imports from non-terminating modules resolved as Never&quot; to &quot;imports from non-terminating modules silently resolved as Never&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-12-05 16:10</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:21:08 UTC
+        Synced at 2026-01-20 19:26:12 UTC
     </footer>
 </body>
 </html>

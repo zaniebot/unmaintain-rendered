@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><p>Here's what these types represent:</p>
+            <div class="timeline-body"><p>Here&#x27;s what these types represent:</p>
 <ul>
 <li><code>tuple</code>: the set of all possible runtime instances of the class <code>tuple</code> (including instances of tuple subclasses)</li>
 <li><code>AlwaysFalsy</code>: the set of all possible runtime objects whose truthiness can be statically determined to always be false</li>
@@ -40,7 +40,7 @@
             <div class="timeline-body"><blockquote>
 <p>~By the same token, <code>tuple &amp; ~AlwaysTruthy</code> should also simplify to <code>tuple[()]</code>~.</p>
 </blockquote>
-<p>I initially wrote this, but it's incorrect. There are many possible tuple objects with ambiguous truthiness; the <code>tuple</code> type is bigger than the union of all <em>heterogeneous tuple</em> types. So <code>tuple &amp; ~AlwaysTruthy</code> is not an equivalent type to <code>tuple &amp; AlwaysFalsy</code>; it's actually equivalent to something like <code>(tuple &amp; AlwaysFalsy) | (tuple &amp; NeitherAlwaysFalsyNorAlwaysTruthy)</code>.</p>
+<p>I initially wrote this, but it&#x27;s incorrect. There are many possible tuple objects with ambiguous truthiness; the <code>tuple</code> type is bigger than the union of all <em>heterogeneous tuple</em> types. So <code>tuple &amp; ~AlwaysTruthy</code> is not an equivalent type to <code>tuple &amp; AlwaysFalsy</code>; it&#x27;s actually equivalent to something like <code>(tuple &amp; AlwaysFalsy) | (tuple &amp; NeitherAlwaysFalsyNorAlwaysTruthy)</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -48,30 +48,30 @@
             <div class="timeline-body"><blockquote>
 <p>Tuple instances (and instances of any tuple subclass, assuming the subclass conforms to the Liskov principle) are only ever falsy if they are 0-length</p>
 </blockquote>
-<p>Is this accurate? How does Liskov guarantee this? The <code>tuple.__bool__</code> method can only be known to return <code>bool</code> (do we have enough expressiveness in the type system to define an overload for <code>__bool__</code> that says it must return <code>Literal[False]</code> if its type parameters are empty? typeshed doesn't currently do that, in any case), so I'm not sure Liskov can tell us anything about what the <code>__bool__</code> method of a subclass of <code>tuple</code> returns, or what relationship that has to its element types.</p>
+<p>Is this accurate? How does Liskov guarantee this? The <code>tuple.__bool__</code> method can only be known to return <code>bool</code> (do we have enough expressiveness in the type system to define an overload for <code>__bool__</code> that says it must return <code>Literal[False]</code> if its type parameters are empty? typeshed doesn&#x27;t currently do that, in any case), so I&#x27;m not sure Liskov can tell us anything about what the <code>__bool__</code> method of a subclass of <code>tuple</code> returns, or what relationship that has to its element types.</p>
 <blockquote>
 <p>Heterogeneous tuple types are different from <code>Literal</code> types in this way, in that they can be inhabited by subclasses of <code>tuple</code> as well as literal tuples.</p>
 </blockquote>
-<p>If this and the above are both true, then I'm not sure that we can actually say that the type <code>tuple[()]</code> even inhabits <code>AlwaysFalsy</code>, because it can be inhabited by an instance of some <code>tuple</code> subclass whose <code>__bool__</code> always returns <code>true</code>, even when empty.</p>
+<p>If this and the above are both true, then I&#x27;m not sure that we can actually say that the type <code>tuple[()]</code> even inhabits <code>AlwaysFalsy</code>, because it can be inhabited by an instance of some <code>tuple</code> subclass whose <code>__bool__</code> always returns <code>true</code>, even when empty.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-01-17 22:41</div>
-            <div class="timeline-body"><p>As an illustration, here's <a href="https://pyright-play.net/?strict=true&amp;code=GYJw9gtgBALgngBwJYDsDmUkQWEMogCmAboQIYA2A%2BvAoQFD0AmhwUwAFDAFywCuCCoQDaHAJQBdMd3pQ5mNj1nyVRGHxAooAFRB8Gqwus1QAYpQDODegGMKZCxagBZONoFDhAKm0SuHkR8pGRUWNioqACMwMGoqDisKYDEoAFoAPiho2JCVeTUNLV19RkJseF5Xd0FA9RrRSQkoAF4XNwCOcTFGIlJKGkRCDk4yhHgxMSA">pyright getting this wrong</a>.</p>
-<p>It allows the type <code>MyTuple[*tuple[()]]</code> to be assigned to the type <code>tuple[()]</code> (correctly, according to &quot;the tuple type is not a literal type, it includes subclasses&quot;), and it also allows <code>MyTuple</code> to define a <code>__bool__</code> that always returns <code>True</code> (also correctly, per typeshed's definition of the <code>tuple</code> type), and then it considers an empty tuple to always be falsy (intuitive, and true if we don't consider subclasses, but wrong because of the combination of the prior two), and thus ends up inferring <code>Literal[False]</code> as the return type when at runtime this code returns <code>True</code>.</p>
-<p>It's a bit sad if the conclusion here is that we can't safely consider the empty tuple type a subtype of <code>AlwaysFalsy</code>. But I think that is the only correct conclusion, assuming our heterogenous-tuple type is what we infer from a <code>tuple[...]</code> annotation.</p>
-<p>We could of course <em>also</em> implement a <code>LiteralTuple</code> type, for which we could consider the empty literal-tuple <code>AlwaysFalsy</code> (and all non-empty ones <code>AlwaysTruthy</code>). But I'm not sure how useful such a type would be, since we could only infer it for actual tuple literals.</p>
-<p>Or we could have a special-case rule forbidding subclasses of <code>tuple</code> from overriding <code>__bool__</code> or <code>__len__</code>, but that's pretty weird.</p>
+            <div class="timeline-body"><p>As an illustration, here&#x27;s <a href="https://pyright-play.net/?strict=true&amp;code=GYJw9gtgBALgngBwJYDsDmUkQWEMogCmAboQIYA2A%2BvAoQFD0AmhwUwAFDAFywCuCCoQDaHAJQBdMd3pQ5mNj1nyVRGHxAooAFRB8Gqwus1QAYpQDODegGMKZCxagBZONoFDhAKm0SuHkR8pGRUWNioqACMwMGoqDisKYDEoAFoAPiho2JCVeTUNLV19RkJseF5Xd0FA9RrRSQkoAF4XNwCOcTFGIlJKGkRCDk4yhHgxMSA">pyright getting this wrong</a>.</p>
+<p>It allows the type <code>MyTuple[*tuple[()]]</code> to be assigned to the type <code>tuple[()]</code> (correctly, according to &quot;the tuple type is not a literal type, it includes subclasses&quot;), and it also allows <code>MyTuple</code> to define a <code>__bool__</code> that always returns <code>True</code> (also correctly, per typeshed&#x27;s definition of the <code>tuple</code> type), and then it considers an empty tuple to always be falsy (intuitive, and true if we don&#x27;t consider subclasses, but wrong because of the combination of the prior two), and thus ends up inferring <code>Literal[False]</code> as the return type when at runtime this code returns <code>True</code>.</p>
+<p>It&#x27;s a bit sad if the conclusion here is that we can&#x27;t safely consider the empty tuple type a subtype of <code>AlwaysFalsy</code>. But I think that is the only correct conclusion, assuming our heterogenous-tuple type is what we infer from a <code>tuple[...]</code> annotation.</p>
+<p>We could of course <em>also</em> implement a <code>LiteralTuple</code> type, for which we could consider the empty literal-tuple <code>AlwaysFalsy</code> (and all non-empty ones <code>AlwaysTruthy</code>). But I&#x27;m not sure how useful such a type would be, since we could only infer it for actual tuple literals.</p>
+<p>Or we could have a special-case rule forbidding subclasses of <code>tuple</code> from overriding <code>__bool__</code> or <code>__len__</code>, but that&#x27;s pretty weird.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[red-knot] `tuple & AlwaysFalsy` should simplify to `tuple[()]`" to "`tuple & AlwaysFalsy` should simplify to `tuple[()]`" by @MichaReiser on 2025-05-07 15:27</div>
+            <div class="event">Renamed from &quot;[red-knot] `tuple &amp; AlwaysFalsy` should simplify to `tuple[()]`&quot; to &quot;`tuple &amp; AlwaysFalsy` should simplify to `tuple[()]`&quot; by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-07 15:27</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">type properties</span> added by @AlexWaygood on 2025-05-11 07:24</div>
+            <div class="event">Label <span class="label">type properties</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-11 07:24</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">set-theoretic types</span> added by @AlexWaygood on 2025-05-11 07:24</div>
+            <div class="event">Label <span class="label">set-theoretic types</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-11 07:24</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-23 09:43</div>
@@ -85,21 +85,21 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-28 18:22</div>
             <div class="timeline-body"><blockquote>
-<p>Or we could have a special-case rule forbidding subclasses of <code>tuple</code> from overriding <code>__bool__</code> or <code>__len__</code>, but that's pretty weird.</p>
+<p>Or we could have a special-case rule forbidding subclasses of <code>tuple</code> from overriding <code>__bool__</code> or <code>__len__</code>, but that&#x27;s pretty weird.</p>
 </blockquote>
 <p>Our latest thinking here is that this may actually be the best option, pragmatically.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2025-05-30 08:41</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-05-30 08:41</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2025-08-22 13:11</div>
+            <div class="event">Assigned to <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-22 13:11</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:19:43 UTC
+        Synced at 2026-01-20 19:24:17 UTC
     </footer>
 </body>
 </html>

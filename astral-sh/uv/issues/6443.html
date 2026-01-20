@@ -27,22 +27,22 @@
 <pre><code>cat &lt;&lt;EOF | sudo BUILDKIT_PROGRESS=plain docker build -
 FROM library/python:3.11                                                                                                                                                                                                                    
                                                                                                                                                                                                                                             
-RUN pip install 'uv == 0.3.1' \                                                                                                                                                                                                                        
-    &amp;&amp; printf &gt;pyproject.toml '\                                                                                                                                                                                                            
+RUN pip install &#x27;uv == 0.3.1&#x27; \                                                                                                                                                                                                                        
+    &amp;&amp; printf &gt;pyproject.toml &#x27;\                                                                                                                                                                                                            
       [project]\n\                                                                                                                                                                                                                          
       dependencies = [&quot;django ~= 4.2&quot;]\n\                                                                                                                                                                                                   
       name = &quot;demo&quot;\n\                                                                                                                                                                                                                      
       version = &quot;0.1.0&quot;\n\                                                                                                                                                                                                                  
       requires-python = &quot;&gt;=3.11.7&quot;\n\                                                                                                                                                                                                       
-    '\                                                                                                                                                                                                                                      
+    &#x27;\                                                                                                                                                                                                                                      
     &amp;&amp; uv lock                                                                                                                                                                                                                              
 RUN uv sync -vv                                                                                                                                                                                                                             
 EOF
 </code></pre>
 <p>This is not specific to Django, according to my experiments.</p>
 <p>The build freezes after <code>uv_build::run_python_script script=&quot;get_requires_for_build_editable&quot;, python_version=3.11.9</code> verbose log, keeping a high CPU load for a few minutes.</p>
-<details>
-  <summary>Output</summary>
+
+  Output
 
 <pre><code>#0 building with &quot;default&quot; instance using docker driver
 
@@ -60,14 +60,14 @@ EOF
 #4 [1/3] FROM docker.io/library/python:3.11
 #4 CACHED
 
-#5 [2/3] RUN pip install 'uv == 0.3.1'     &amp;&amp; printf &gt;pyproject.toml '      [project]\n      dependencies = [&quot;django ~= 4.2&quot;]\n      name = &quot;demo&quot;\n      version = &quot;0.1.0&quot;\n      requires-python = &quot;&gt;=3.11.7&quot;\n    '    &amp;&amp; uv lock
+#5 [2/3] RUN pip install &#x27;uv == 0.3.1&#x27;     &amp;&amp; printf &gt;pyproject.toml &#x27;      [project]\n      dependencies = [&quot;django ~= 4.2&quot;]\n      name = &quot;demo&quot;\n      version = &quot;0.1.0&quot;\n      requires-python = &quot;&gt;=3.11.7&quot;\n    &#x27;    &amp;&amp; uv lock
 #5 2.203 Collecting uv==0.3.1
 #5 2.413   Downloading uv-0.3.1-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (10 kB)
 #5 2.476 Downloading uv-0.3.1-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (11.4 MB)
 #5 5.212    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.4/11.4 MB 4.3 MB/s eta 0:00:00
 #5 5.309 Installing collected packages: uv
 #5 5.457 Successfully installed uv-0.3.1
-#5 5.457 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+#5 5.457 WARNING: Running pip as the &#x27;root&#x27; user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
 #5 5.730 
 #5 5.730 [notice] A new release of pip is available: 24.0 -&gt; 24.2
 #5 5.730 [notice] To update, run: pip install --upgrade pip
@@ -273,11 +273,11 @@ EOF
 #6 1.786             1.559729s   1s  DEBUG uv_build Calling `setuptools.build_meta:__legacy__.get_requires_for_build_editable()`
 #6 1.786            uv_build::run_python_script script=&quot;get_requires_for_build_editable&quot;, python_version=3.11.9
 </code></pre>
-</details>
+
 
 <p>However, this only happens if I build this at the root of filesystem. Adding <code>WORKDIR /home</code> before installation recovers everything, the build completes in seconds.</p>
-<details>
-  <summary>Healthy output</summary>
+
+  Healthy output
 
 <pre><code>#0 building with &quot;default&quot; instance using docker driver
 
@@ -298,14 +298,14 @@ EOF
 #5 [2/4] WORKDIR /home
 #5 DONE 0.0s
 
-#6 [3/4] RUN pip install 'uv == 0.3.1'     &amp;&amp; printf &gt;pyproject.toml '      [project]\n      dependencies = [&quot;django ~= 4.2&quot;]\n      name = &quot;demo&quot;\n      version = &quot;0.1.0&quot;\n      requires-python = &quot;&gt;=3.11.7&quot;\n    '    &amp;&amp; uv lock
+#6 [3/4] RUN pip install &#x27;uv == 0.3.1&#x27;     &amp;&amp; printf &gt;pyproject.toml &#x27;      [project]\n      dependencies = [&quot;django ~= 4.2&quot;]\n      name = &quot;demo&quot;\n      version = &quot;0.1.0&quot;\n      requires-python = &quot;&gt;=3.11.7&quot;\n    &#x27;    &amp;&amp; uv lock
 #6 2.111 Collecting uv==0.3.1
 #6 2.261   Downloading uv-0.3.1-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (10 kB)
 #6 2.330 Downloading uv-0.3.1-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (11.4 MB)
 #6 5.310    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.4/11.4 MB 3.9 MB/s eta 0:00:00
 #6 5.404 Installing collected packages: uv
 #6 5.553 Successfully installed uv-0.3.1
-#6 5.554 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+#6 5.554 WARNING: Running pip as the &#x27;root&#x27; user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
 #6 5.969 
 #6 5.969 [notice] A new release of pip is available: 24.0 -&gt; 24.2
 #6 5.969 [notice] To update, run: pip install --upgrade pip
@@ -530,7 +530,7 @@ EOF
 #8 writing image sha256:3bb91ec30c2b3d53d377fa973b0a190a52381a48c7956c00bf21fa1fac1f5d44 done
 #8 DONE 0.8s
 </code></pre>
-</details>
+
 
 </div>
         </div>
@@ -540,20 +540,20 @@ EOF
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-08-22 16:06</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-22 16:06</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">great writeup</span> added by @zanieb on 2024-08-22 16:06</div>
+            <div class="event">Label <span class="label">great writeup</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-22 16:06</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sterliakov">@sterliakov</a> on 2024-08-22 16:13</div>
-            <div class="timeline-body"><p>Hm, that's really interesting: it builds fine with <code>hatchling</code>. However, adding <code>--no-build-package demo</code> flag to the original <code>uv sync</code> command does not change anything, so the problem shouldn't be caused by building a root project.</p>
-<p>Just for the sake of completeness, here's what does build:</p>
+            <div class="timeline-body"><p>Hm, that&#x27;s really interesting: it builds fine with <code>hatchling</code>. However, adding <code>--no-build-package demo</code> flag to the original <code>uv sync</code> command does not change anything, so the problem shouldn&#x27;t be caused by building a root project.</p>
+<p>Just for the sake of completeness, here&#x27;s what does build:</p>
 <pre><code>cat &lt;&lt;EOF | sudo BUILDKIT_PROGRESS=plain docker build -
 FROM library/python:3.11                                                                                                                                                                                                                    
                                                                                                                                                                                                                                             
-RUN pip install 'uv == 0.3.1' \                                                                                                                                                                                                             
-    &amp;&amp; printf &gt;pyproject.toml '\                                                                                                                                                                                                            
+RUN pip install &#x27;uv == 0.3.1&#x27; \                                                                                                                                                                                                             
+    &amp;&amp; printf &gt;pyproject.toml &#x27;\                                                                                                                                                                                                            
       [build-system]\n\                                                                                                                                                                                                                     
       requires = [&quot;hatchling&quot;]\n\                                                                                                                                                                                                           
       build-backend = &quot;hatchling.build&quot;\n\                                                                                                                                                                                                  
@@ -564,7 +564,7 @@ RUN pip install 'uv == 0.3.1' \
       name = &quot;demo&quot;\n\                                                                                                                                                                                                                      
       version = &quot;0.1.0&quot;\n\                                                                                                                                                                                                                  
       requires-python = &quot;&gt;=3.11.7&quot;\n\                                                                                                                                                                                                       
-    '\                                                                                                                                                                                                                                      
+    &#x27;\                                                                                                                                                                                                                                      
     &amp;&amp; mkdir src &amp;&amp; touch src/__init__.py \
     &amp;&amp; uv lock                                                                                                                                                                                        
 RUN uv sync -vv                                                                                                                                                                                                                             
@@ -574,45 +574,45 @@ EOF
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-22 16:14</div>
-            <div class="timeline-body"><p><code>--no-build-package</code> can't be applied to local editables — just remote source distributions. I think it will be ignored.</p>
-<p>Created an issue to improve messaging there https://github.com/astral-sh/uv/issues/6446</p>
+            <div class="timeline-body"><p><code>--no-build-package</code> can&#x27;t be applied to local editables — just remote source distributions. I think it will be ignored.</p>
+<p>Created an issue to improve messaging there <a href="https://github.com/astral-sh/uv/issues/6446">astral-sh/uv#6446</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sterliakov">@sterliakov</a> on 2024-08-22 16:29</div>
-            <div class="timeline-body"><p>Ough. Is there any way to spell &quot;I don't want the root project built - please just install the dependencies as specified&quot;?</p>
+            <div class="timeline-body"><p>Ough. Is there any way to spell &quot;I don&#x27;t want the root project built - please just install the dependencies as specified&quot;?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-22 16:33</div>
-            <div class="timeline-body"><p>Not yet, but probably soon — lots of discussion on that at https://github.com/astral-sh/uv/issues/4028</p>
-<p>I'd highly recommend not using setuptools in the meantime, maybe this needs to be reported there? I'm not sure without really digging in.</p>
+            <div class="timeline-body"><p>Not yet, but probably soon — lots of discussion on that at <a href="https://github.com/astral-sh/uv/issues/4028">astral-sh/uv#4028</a></p>
+<p>I&#x27;d highly recommend not using setuptools in the meantime, maybe this needs to be reported there? I&#x27;m not sure without really digging in.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sterliakov">@sterliakov</a> on 2024-08-22 16:38</div>
-            <div class="timeline-body"><p>I'll try to debug a bit today, but this really looks like a setuptools problem - I'll report my investigation here later and close the issue if it's not on uv's side, reporting my observations to setuptools instead.</p>
+            <div class="timeline-body"><p>I&#x27;ll try to debug a bit today, but this really looks like a setuptools problem - I&#x27;ll report my investigation here later and close the issue if it&#x27;s not on uv&#x27;s side, reporting my observations to setuptools instead.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sterliakov">@sterliakov</a> on 2024-08-22 17:39</div>
-            <div class="timeline-body"><p>Well, sorry for spending your time - this bug has nothing to do with <code>uv</code>. It's caused by <code>setuptools</code> package discovery attempt and can be fixed with e.g.</p>
+            <div class="timeline-body"><p>Well, sorry for spending your time - this bug has nothing to do with <code>uv</code>. It&#x27;s caused by <code>setuptools</code> package discovery attempt and can be fixed with e.g.</p>
 <pre><code>[tool.setuptools.packages.find]
 where = []
 </code></pre>
-<p>Without this, setuptools apparently try to scan the whole image's filesystem while working in <code>/</code>, and that is expected to take unreasonable time.</p>
+<p>Without this, setuptools apparently try to scan the whole image&#x27;s filesystem while working in <code>/</code>, and that is expected to take unreasonable time.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @sterliakov on 2024-08-22 17:39</div>
+            <div class="event">Closed by <a href="https://github.com/sterliakov">@sterliakov</a> on 2024-08-22 17:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">upstream</span> added by @zanieb on 2024-08-22 17:47</div>
+            <div class="event">Label <span class="label">upstream</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-22 17:47</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:26:23 UTC
+        Synced at 2026-01-20 19:33:05 UTC
     </footer>
 </body>
 </html>

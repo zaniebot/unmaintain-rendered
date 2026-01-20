@@ -23,46 +23,46 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a></div>
-            <div class="timeline-body"><p>Using <code>uv</code> as an entrypoint is surprising (it differs from the base image) and broke the example at https://github.com/astral-sh/uv-docker-example/pull/13 — I had to add:</p>
-<pre><code class="language-dockerfile">ENTRYPOINT []
+            <div class="timeline-body"><p>Using <code>uv</code> as an entrypoint is surprising (it differs from the base image) and broke the example at <a href="https://github.com/astral-sh/uv-docker-example/pull/13">astral-sh/uv-docker-example#13</a> — I had to add:</p>
+<pre><code>ENTRYPOINT []
 </code></pre>
 <p>cc @samypr100</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> added by @zanieb on 2024-09-04 15:26</div>
+            <div class="event">Label <span class="label">needs-decision</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-04 15:26</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-09-04 15:43</div>
             <div class="timeline-body"><p>Agreed, we can change it (just deleting that line) in the CI yaml.</p>
-<p>Since its our own images I thought we'd aim for a consistent entrypoint experience across all of them rather than retain the upstream entrypoint which would differ depending on the tag. You see that consistency often on other images derived from base images (e.g. redis, etc.).</p>
+<p>Since its our own images I thought we&#x27;d aim for a consistent entrypoint experience across all of them rather than retain the upstream entrypoint which would differ depending on the tag. You see that consistency often on other images derived from base images (e.g. redis, etc.).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-04 15:46</div>
-            <div class="timeline-body"><p>Ah interesting. Hm. I'm not sure — it's probably not going to be common to use <code>uv</code> as the entrypoint since it's not a &quot;service&quot;? It makes sense in the distroless image because there's nothing else to invoke.</p>
+            <div class="timeline-body"><p>Ah interesting. Hm. I&#x27;m not sure — it&#x27;s probably not going to be common to use <code>uv</code> as the entrypoint since it&#x27;s not a &quot;service&quot;? It makes sense in the distroless image because there&#x27;s nothing else to invoke.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-09-04 15:56</div>
             <div class="timeline-body"><blockquote>
-<p>Ah interesting. Hm. I'm not sure — it's probably not going to be common to use <code>uv</code> as the entrypoint since it's not a &quot;service&quot;? It makes sense in the distroless image because there's nothing else to invoke.</p>
+<p>Ah interesting. Hm. I&#x27;m not sure — it&#x27;s probably not going to be common to use <code>uv</code> as the entrypoint since it&#x27;s not a &quot;service&quot;? It makes sense in the distroless image because there&#x27;s nothing else to invoke.</p>
 </blockquote>
 <p>It also applies CLI tools afaik. I do get the point though, normally by convention I expect tag variations offered by a specific project to default their entrypoint to their service/binary. If we want a different experience, we can do that as well easily.</p>
-<p>There's two core use cases here</p>
+<p>There&#x27;s two core use cases here</p>
 <ul>
 <li>Experience when pulling the image via docker run (no args) - first time experience</li>
 <li>Building using FROM</li>
 </ul>
 <p>In the first case you immediately get uv rather than something else, and it delivers a nice new user experience (no surprises from parent image).</p>
 <p>In the second case, its quite common to use multi-stage to solve if this becomes an issue.
-On single stage you also get the benefit of leveraging CMD alongside the default ENTRYPOINT. For example CMD <code>run xyz</code> would end up becoming <code>uv run xyz</code> which I think also delivers a nice user experience focused on uv, rather than the upstream image's focus (as that could change over time).</p>
+On single stage you also get the benefit of leveraging CMD alongside the default ENTRYPOINT. For example CMD <code>run xyz</code> would end up becoming <code>uv run xyz</code> which I think also delivers a nice user experience focused on uv, rather than the upstream image&#x27;s focus (as that could change over time).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-09-04 18:23</div>
             <div class="timeline-body"><p>@zanieb For example, in the example from https://github.com/astral-sh/uv-docker-example</p>
-<pre><code class="language-Dockerfile"># Reset the entrypoint, don't invoke `uv`
+<pre><code># Reset the entrypoint, don&#x27;t invoke `uv`
 ENTRYPOINT []
 
 # Run the FastAPI application by default
@@ -71,12 +71,12 @@ ENTRYPOINT []
 CMD [&quot;fastapi&quot;, &quot;dev&quot;, &quot;--host&quot;, &quot;0.0.0.0&quot;, &quot;src/uv_docker_example&quot;]
 </code></pre>
 <p>would become something like</p>
-<pre><code class="language-Dockerfile"># Run the FastAPI application by default
+<pre><code># Run the FastAPI application by default
 # Uses `fastapi dev` to enable hot-reloading when the `watch` sync occurs
 # Uses `--host 0.0.0.0` to allow access from outside the container
 CMD [&quot;run&quot;, &quot;fastapi&quot;, &quot;dev&quot;, &quot;--host&quot;, &quot;0.0.0.0&quot;, &quot;src/uv_docker_example&quot;]
 </code></pre>
-<p>which showcases uv's capabilites further as you can see, but I might be biased towards uv everything 😆</p>
+<p>which showcases uv&#x27;s capabilites further as you can see, but I might be biased towards uv everything 😆</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -93,15 +93,15 @@ CMD [&quot;run&quot;, &quot;fastapi&quot;, &quot;dev&quot;, &quot;--host&quot;, 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2024-09-04 23:55</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-04 23:55</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2024-09-04 23:55</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-04 23:55</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:26:51 UTC
+        Synced at 2026-01-20 19:33:40 UTC
     </footer>
 </body>
 </html>

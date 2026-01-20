@@ -24,24 +24,24 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/avicooper1">@avicooper1</a></div>
             <div class="timeline-body"><p>Linux, Python version 3.10, uv version 0.5.4</p>
-<p>I am trying to set up the following set of requirements in my team's project: I have dependency <code>A</code> for the project. I don't care what the version <code>A</code> is, but would strongly prefer it be the latest version. I would also occasionally like to use dependency <code>B</code>. Dependency <code>B</code> has a transitive dependency which happens to be an old version of <code>A</code>.</p>
-<p>Specifically, the project depends on <code>transformers</code>, and I'd like to have the latest version 4.46.3. I'd occasionally like to use <code>salesforce-lavis.</code> However the latest version of this library depends on <code>transformers&gt;=4.25.0,&lt;4.27</code>.</p>
+<p>I am trying to set up the following set of requirements in my team&#x27;s project: I have dependency <code>A</code> for the project. I don&#x27;t care what the version <code>A</code> is, but would strongly prefer it be the latest version. I would also occasionally like to use dependency <code>B</code>. Dependency <code>B</code> has a transitive dependency which happens to be an old version of <code>A</code>.</p>
+<p>Specifically, the project depends on <code>transformers</code>, and I&#x27;d like to have the latest version 4.46.3. I&#x27;d occasionally like to use <code>salesforce-lavis.</code> However the latest version of this library depends on <code>transformers&gt;=4.25.0,&lt;4.27</code>.</p>
 <p>My goal is to be able to run my code with <code>transformers==4.46.3</code>, but if I set some flag, then it would be <code>transformers==4.26.1</code> (the version that gets resolved for <code>salesforce-lavis</code>.) For example,</p>
-<pre><code class="language-bash">$ uv run python
+<pre><code>$ uv run python
 &gt;&gt;&gt; import transformers
 &gt;&gt;&gt; transformers.__version__
-'4.46.3'
+&#x27;4.46.3&#x27;
 </code></pre>
 <p>but if I run something else, it automatically changes the version:</p>
-<pre><code class="language-bash">$ uv run --WITH_LAVIS python
+<pre><code>$ uv run --WITH_LAVIS python
 &gt;&gt;&gt; import transformers
 &gt;&gt;&gt; transformers.__version__
-'4.26.1'
+&#x27;4.26.1&#x27;
 </code></pre>
-<p>I have looked into using groups, optional dependancies, and extras. I'm not sure any of them solve what I am looking to do, and I'm wondering if there is any workaround.</p>
-<hr />
-<p>The farthest I've gotten is with the following <code>toml</code>:</p>
-<pre><code class="language-toml">[project]
+<p>I have looked into using groups, optional dependancies, and extras. I&#x27;m not sure any of them solve what I am looking to do, and I&#x27;m wondering if there is any workaround.</p>
+<hr>
+<p>The farthest I&#x27;ve gotten is with the following <code>toml</code>:</p>
+<pre><code>[project]
 name = &quot;uv-test&quot;
 version = &quot;0.1.0&quot;
 description = &quot;Add your description here&quot;
@@ -72,24 +72,24 @@ conflicts = [
 <ol>
 <li>Ideally it would be easy to set up:</li>
 </ol>
-<pre><code class="language-bash">$ uv init
+<pre><code>$ uv init
 $ uv add transformers
 $ uv add --group lavis salesforce-lavis
 </code></pre>
 <p>and the desired behavior would be achieved. However to get the above <code>toml</code> I needed to manually create the base group, set it to be the default, and to not conflict with the lavis group.</p>
-<ol start="2">
-<li><p>Even with this approach, it doesn't seem possible to upgrade <code>transformers</code> to the newest version. For example, starting with the same <code>toml</code>, but with an empty base dependency list, running <code>uv add --group base transformers</code> or <code>uv add --group base -U transformers</code> installs the same old version that's already being used by <code>salesforce-lavis</code>.</p>
+<ol>
+<li><p>Even with this approach, it doesn&#x27;t seem possible to upgrade <code>transformers</code> to the newest version. For example, starting with the same <code>toml</code>, but with an empty base dependency list, running <code>uv add --group base transformers</code> or <code>uv add --group base -U transformers</code> installs the same old version that&#x27;s already being used by <code>salesforce-lavis</code>.</p>
 </li>
-<li><p>It doesn't seem like this approach would work if more dependencies were added outside of any group, (ie. inside <code>dependencies = []</code>.) I tried using <code>uv run --group lavis python</code> and it yields <code>transformers==4.46.3</code> (which itself seems like a bug to me.) If limited to using <code>--no-group</code> then if there is ever a new dependency that can be used by both base and lavis, <code>uv run --only-group lavis python</code> will not see it.</p>
+<li><p>It doesn&#x27;t seem like this approach would work if more dependencies were added outside of any group, (ie. inside <code>dependencies = []</code>.) I tried using <code>uv run --group lavis python</code> and it yields <code>transformers==4.46.3</code> (which itself seems like a bug to me.) If limited to using <code>--no-group</code> then if there is ever a new dependency that can be used by both base and lavis, <code>uv run --only-group lavis python</code> will not see it.</p>
 </li>
 </ol>
-<hr />
-<p>If there are any workarounds to achieve what I'm hoping to, I would greatly appreciate some direction! Thank you.</p>
+<hr>
+<p>If there are any workarounds to achieve what I&#x27;m hoping to, I would greatly appreciate some direction! Thank you.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-22 14:04</div>
-            <div class="timeline-body"><p>Yeah for something like this you'll need to edit the <code>pyproject.toml</code> manually -- it's fairly complex and I don't know that it would be easy to express in <code>uv add</code> even if we wanted to support it natively there.</p>
+            <div class="timeline-body"><p>Yeah for something like this you&#x27;ll need to edit the <code>pyproject.toml</code> manually -- it&#x27;s fairly complex and I don&#x27;t know that it would be easy to express in <code>uv add</code> even if we wanted to support it natively there.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -102,8 +102,8 @@ $ uv add --group lavis salesforce-lavis
             <div class="timeline-body"><blockquote>
 <p>I tried using uv run --group lavis python and it yields transformers==4.46.3 (which itself seems like a bug to me.)</p>
 </blockquote>
-<p>I think this should fail at runtime... Since it's trying to install both conflicting groups. I consider that a bug.</p>
-<p>(Filed: https://github.com/astral-sh/uv/issues/9355)</p>
+<p>I think this should fail at runtime... Since it&#x27;s trying to install both conflicting groups. I consider that a bug.</p>
+<p>(Filed: <a href="https://github.com/astral-sh/uv/issues/9355">astral-sh/uv#9355</a>)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -117,20 +117,20 @@ $ uv add --group lavis salesforce-lavis
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-11-22 14:10</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-22 14:10</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-22 15:42</div>
-            <div class="timeline-body"><p>Yeah I don't love the idea of automatically disabling default groups, though we could consider it if it's super common. It seems like the first step is a more helpful error message.</p>
+            <div class="timeline-body"><p>Yeah I don&#x27;t love the idea of automatically disabling default groups, though we could consider it if it&#x27;s super common. It seems like the first step is a more helpful error message.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/fynnsu">@fynnsu</a> on 2024-11-22 17:41</div>
             <div class="timeline-body"><blockquote>
-<p>I am trying to set up the following set of requirements in my team's project: I have dependency A for the project. I don't care what the version A is, but would strongly prefer it be the latest version. I would also occasionally like to use dependency B. Dependency B has a transitive dependency which happens to be an old version of A.</p>
+<p>I am trying to set up the following set of requirements in my team&#x27;s project: I have dependency A for the project. I don&#x27;t care what the version A is, but would strongly prefer it be the latest version. I would also occasionally like to use dependency B. Dependency B has a transitive dependency which happens to be an old version of A.</p>
 </blockquote>
 <p>I am also dealing with a similar issue. I have a package that depends on pytorch and I would like to always use that latest stable version when running things with <code>uv run</code>, etc. However, I have a github action that runs regularly and tests my package against the latest pytorch <strong>nightly</strong> version. So for that case only, I want to use a different pytorch version from a different index.</p>
-<p>It would be great if there was a way to setup the dependencies with default versions but have the ability to override all defaults with a flag. It seems like the <code>--with</code> option does something similar (i.e. <code>--with torch&lt;2</code> will install <code>torch&lt;2</code> even if <code>torch&gt;2</code> is in my <code>pyproject.toml</code>) but only works with packages, not groups and doesn't allow me to specify a different index (<code>uv run --with torch --index-url ...</code> doesn't use the specified index for the <code>--with</code> install).</p>
+<p>It would be great if there was a way to setup the dependencies with default versions but have the ability to override all defaults with a flag. It seems like the <code>--with</code> option does something similar (i.e. <code>--with torch&lt;2</code> will install <code>torch&lt;2</code> even if <code>torch&gt;2</code> is in my <code>pyproject.toml</code>) but only works with packages, not groups and doesn&#x27;t allow me to specify a different index (<code>uv run --with torch --index-url ...</code> doesn&#x27;t use the specified index for the <code>--with</code> install).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -142,7 +142,7 @@ error: group `base`, group `lavis` are incompatible with the declared conflicts:
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2024-11-22 19:38</div>
+            <div class="event">Label <span class="label">needs-mre</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-22 19:38</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-25 03:01</div>
@@ -150,25 +150,25 @@ error: group `base`, group `lavis` are incompatible with the declared conflicts:
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2025-01-25 03:01</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-25 03:01</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/djsaunde">@djsaunde</a> on 2025-09-12 14:20</div>
-            <div class="timeline-body"><p>I'm running into a similar issue with the following (simplified):</p>
-<pre><code class="language-toml">[project]
+            <div class="timeline-body"><p>I&#x27;m running into a similar issue with the following (simplified):</p>
+<pre><code>[project]
 dependencies = [&quot;torch&gt;=2.60&quot;]
 
 [project.optional-dependencies]
 vllm = [&quot;vllm&gt;=0.10.0&quot;]
 </code></pre>
-<p>When not installing vllm, I'd like to be able to resolve to <code>torch==2.8.0</code> by default, but latest vllm is pinned to <code>torch==2.7.1</code> for <a href="https://github.com/vllm-project/vllm/issues/9554#issuecomment-2426840976">reasons</a>.</p>
+<p>When not installing vllm, I&#x27;d like to be able to resolve to <code>torch==2.8.0</code> by default, but latest vllm is pinned to <code>torch==2.7.1</code> for <a href="https://github.com/vllm-project/vllm/issues/9554#issuecomment-2426840976">reasons</a>.</p>
 <p>Any solve for this?</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:28:30 UTC
+        Synced at 2026-01-20 19:35:41 UTC
     </footer>
 </body>
 </html>

@@ -23,16 +23,16 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/yumeminami">@yumeminami</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>Fixes issue #15190 where <code>uv sync --no-sources</code> fails to switch from editable to registry package installations. The problem occurred because the installer's satisfaction check didn't consider the <code>--no-sources</code> flag when determining if an existing editable installation was compatible with a registry requirement.</p>
-<h2>Solution</h2>
+            <div class="timeline-body">Summary
+<p>Fixes issue #15190 where <code>uv sync --no-sources</code> fails to switch from editable to registry package installations. The problem occurred because the installer&#x27;s satisfaction check didn&#x27;t consider the <code>--no-sources</code> flag when determining if an existing editable installation was compatible with a registry requirement.</p>
+Solution
 <p>Modified <code>RequirementSatisfaction::check()</code> to reject non-registry installations when <code>SourceStrategy::Disabled</code> and the requirement is from registry. Added <code>SourceStrategy</code> parameter threading through the entire call chain from commands to the satisfaction check to ensure consistent behavior between <code>uv sync --no-sources</code> and <code>uv pip install --no-sources</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-12 13:00</div>
             <div class="timeline-body"><p>Hey thanks for taking a swing at this!</p>
-<p>Naively, I think I'd expect this to be implemented in <code>SitePackages</code> instead? e.g.,</p>
+<p>Naively, I think I&#x27;d expect this to be implemented in <code>SitePackages</code> instead? e.g.,</p>
 <p>https://github.com/astral-sh/uv/blob/c19a294a48351ca84f18149fd6bcbf17d9e20bd9/crates/uv-installer/src/site_packages.rs#L291-L298</p>
 <p>https://github.com/astral-sh/uv/blob/c19a294a48351ca84f18149fd6bcbf17d9e20bd9/crates/uv-installer/src/site_packages.rs#L386-L393</p>
 <p>Did you look at that? Does that not work for some reason?</p>
@@ -58,7 +58,7 @@
             <div class="timeline-header">Comment by <a href="https://github.com/yumeminami">@yumeminami</a> on 2025-08-13 03:18</div>
             <div class="timeline-body"><p>@zanieb</p>
 <p>same problem use <code>uv pip install --no-sources</code></p>
-<pre><code class="language-bash">(test_uv_pip_no_sources) ➜  test_uv_pip_no_sources git:(fix/sync-no-sources-editable-switch) ✗ cat pyproject.toml             
+<pre><code>(test_uv_pip_no_sources) ➜  test_uv_pip_no_sources git:(fix/sync-no-sources-editable-switch) ✗ cat pyproject.toml             
 [project]
 name = &quot;test_no_sources&quot;
 version = &quot;0.0.1&quot;
@@ -116,9 +116,9 @@ Required-by: test-no-sources
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-13 03:52</div>
             <div class="timeline-body"><p>Yes sorry, <code>RequirementSatisfaction::check</code> and the <code>Planner::build</code> methods are relevant too.</p>
-<p>I'm not sure if we need to propagate the source strategy? That should be reflected in the resolution?</p>
-<p>I think we should be able to tell if an installed distribution matches the resolution. Naively, I'd image we want something like this?</p>
-<pre><code class="language-diff">diff --git a/crates/uv-installer/src/satisfies.rs b/crates/uv-installer/src/satisfies.rs
+<p>I&#x27;m not sure if we need to propagate the source strategy? That should be reflected in the resolution?</p>
+<p>I think we should be able to tell if an installed distribution matches the resolution. Naively, I&#x27;d image we want something like this?</p>
+<pre><code>diff --git a/crates/uv-installer/src/satisfies.rs b/crates/uv-installer/src/satisfies.rs
 index b7e824202..48709e2cc 100644
 --- a/crates/uv-installer/src/satisfies.rs
 +++ b/crates/uv-installer/src/satisfies.rs
@@ -171,12 +171,12 @@ DEBUG Requirement installed, but mismatched:
 Installed: Url(InstalledDirectUrlDist { name: PackageName(&quot;anyio&quot;), version: &quot;4.3.0&quot;, direct_url: LocalDirectory { url: &quot;file:///Users/wingmunfung/test_uv_sync/local_dep&quot;, dir_info: DirInfo { editable: Some(true) }, subdirectory: None }, url: DisplaySafeUrl { scheme: &quot;file&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: None, port: None, path: &quot;/Users/wingmunfung/test_uv_sync/local_dep&quot;, query: None, fragment: None }, editable: true, path: &quot;/Users/wingmunfung/test_uv_sync/.venv/lib/python3.13/site-packages/anyio-4.3.0.dist-info&quot;, cache_info: Some(CacheInfo { timestamp: Some(Timestamp(SystemTime { tv_sec: 1755059554, tv_nsec: 377749146 })), commit: None, tags: None, env: {}, directories: {&quot;src&quot;: None} }) }) 
 Requested: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: Equal, version: &quot;4.3.0&quot; }]), index: None, conflict: None }
 
-thread 'main2' panicked at crates/uv-installer/src/plan.rs:150:17:
+thread &#x27;main2&#x27; panicked at crates/uv-installer/src/plan.rs:150:17:
 internal error: entered unreachable code: Installed distribution could not be Found in site-packages: anyio==4.3.0 (from file:///Users/wingmunfung/test_uv_sync/local_dep)
 Note: Run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 DEBUG Released lock at `/Users/wingmunfung/test_uv_sync/.venv/.lock`
 
-Thread 'main' panicked at /Users/wingmunfung/workspace/uv/crates/uv/src/lib.rs:2300:10:
+Thread &#x27;main&#x27; panicked at /Users/wingmunfung/workspace/uv/crates/uv/src/lib.rs:2300:10:
 Tokio executor failed, was there a panic?: Any { .. }
 </code></pre>
 </div>
@@ -184,7 +184,7 @@ Tokio executor failed, was there a panic?: Any { .. }
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/yumeminami">@yumeminami</a> on 2025-08-13 14:44</div>
             <div class="timeline-body"><p>https://github.com/astral-sh/uv/blob/78c8c711fa6d86b95f3e4b749da4573c01d2aae0/crates/uv-installer/src/plan.rs#L94-L102</p>
-<p>Doesn’t the log above violate the assumption in the comment https://github.com/astral-sh/uv/pull/15234#issuecomment-3183609624?</p>
+<p>Doesn’t the log above violate the assumption in the comment <a href="https://github.com/astral-sh/uv/pull/15234">astral-sh/uv#15234</a>#issuecomment-3183609624?</p>
 <pre><code>DEBUG Found installed version of anyio==4.3.0 (from file:///Users/wingmunfung/test_uv_sync/local_dep) that satisfies *
 DEBUG Selecting: anyio==4.3.0 [installed] (installed)
 DEBUG Requirement installed, but mismatched: 
@@ -201,15 +201,15 @@ Requested: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-14 12:30</div>
-            <div class="timeline-body"><p>Hey, I'll look when I get a chance — I've been a bit busy and don't know the answer off the top of my head so I'll need to dig into the problem.</p>
+            <div class="timeline-body"><p>Hey, I&#x27;ll look when I get a chance — I&#x27;ve been a bit busy and don&#x27;t know the answer off the top of my head so I&#x27;ll need to dig into the problem.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-16 22:29</div>
             <div class="timeline-body"><p>I think that comment is probably wrong. I think <code>CandidateSelector::select</code> <em>can</em> return <code>InstalledDirectUrlDist</code> if you have an already-installed URL that matches a user requirement (e.g., you have <code>anyio @ 4.3.0</code> installed from Git, and you run <code>uv pip install anyio</code>).</p>
-<p>I think the error you're seeing is because you changed the logic in the install plan, but you need to make a corresponding change in the resolver, such that when resolving, we <em>don't</em> choose the already-installed URL distribution if the user didn't request a URL. In other words: you need to reflect the change in both the install plan <em>and</em> the resolver, and modifying <code>satisfies</code> only affects the install plan.</p>
-<p>It's not totally clear to me whether we want that behavior, though. It's clear for the <code>uv sync</code> case, but like, if we make this change as described, then <code>uv pip install git+https://github.com/agronholm/anyio</code> followed by <code>uv pip install anyio</code> would uninstall the Git-based <code>anyio</code> and then reinstall it from PyPI. That would be a breaking change, so we probably make sure we want to do that before finishing the PR.</p>
-<p>(Alternatively, if we could somehow make this change <em>only</em> for the <code>uv sync</code> case, that'd be easier to ship.)</p>
+<p>I think the error you&#x27;re seeing is because you changed the logic in the install plan, but you need to make a corresponding change in the resolver, such that when resolving, we <em>don&#x27;t</em> choose the already-installed URL distribution if the user didn&#x27;t request a URL. In other words: you need to reflect the change in both the install plan <em>and</em> the resolver, and modifying <code>satisfies</code> only affects the install plan.</p>
+<p>It&#x27;s not totally clear to me whether we want that behavior, though. It&#x27;s clear for the <code>uv sync</code> case, but like, if we make this change as described, then <code>uv pip install git+https://github.com/agronholm/anyio</code> followed by <code>uv pip install anyio</code> would uninstall the Git-based <code>anyio</code> and then reinstall it from PyPI. That would be a breaking change, so we probably make sure we want to do that before finishing the PR.</p>
+<p>(Alternatively, if we could somehow make this change <em>only</em> for the <code>uv sync</code> case, that&#x27;d be easier to ship.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -237,29 +237,29 @@ Requested: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator:
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @charliermarsh by @charliermarsh on 2025-08-22 10:23</div>
+            <div class="event">Review requested from <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-22 10:23</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-08-22 10:23</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-22 10:23</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2025-08-22 10:23</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-22 10:23</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-22 11:45</div>
-            <div class="timeline-body"><p>@yumeminami -- What do you think of https://github.com/astral-sh/uv/pull/15450? It's a slightly different approach whereby the <code>check</code> logic uses different rules depending on whether we're using <code>uv pip</code> or <code>uv sync</code>.</p>
+            <div class="timeline-body"><p>@yumeminami -- What do you think of <a href="https://github.com/astral-sh/uv/pull/15450">astral-sh/uv#15450</a>? It&#x27;s a slightly different approach whereby the <code>check</code> logic uses different rules depending on whether we&#x27;re using <code>uv pip</code> or <code>uv sync</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/yumeminami">@yumeminami</a> on 2025-08-23 04:15</div>
             <div class="timeline-body"><p>@charliermarsh</p>
 <p>Thanks your feedback!</p>
-<p>I took a look of #15450 and I think it did the thing like as discussed in https://github.com/astral-sh/uv/pull/15234#issuecomment-3182003235 by passing the <code>SyncModel</code>(<code>Sourcestrategy</code> in the comment) argument through multiple functions until it reaches <code>RequirementSatisfaction::check</code>.</p>
+<p>I took a look of #15450 and I think it did the thing like as discussed in <a href="https://github.com/astral-sh/uv/pull/15234">astral-sh/uv#15234</a>#issuecomment-3182003235 by passing the <code>SyncModel</code>(<code>Sourcestrategy</code> in the comment) argument through multiple functions until it reaches <code>RequirementSatisfaction::check</code>.</p>
 <p>I have some suggestions:</p>
 <ol>
-<li><code>SyncModel</code> implies it's about <code>uv sync</code>? I'm not sure, but it actually controls the &quot;packet matching strategy&quot; and I feel like <code>Stateful</code> and <code>Stateless</code> might be a bit ambiguous. And I sugget use this <code>InstallationStrategy</code>, what do you think?</li>
+<li><code>SyncModel</code> implies it&#x27;s about <code>uv sync</code>? I&#x27;m not sure, but it actually controls the &quot;packet matching strategy&quot; and I feel like <code>Stateful</code> and <code>Stateless</code> might be a bit ambiguous. And I sugget use this <code>InstallationStrategy</code>, what do you think?</li>
 </ol>
-<pre><code class="language-rust">/// Defines the strategy for determining whether an installed package satisfies a requirement.
+<pre><code>/// Defines the strategy for determining whether an installed package satisfies a requirement.
   ///
   /// This enum controls how the package installer validates existing installations against
   /// new requirements, particularly when there are differences in source types (registry vs local).
@@ -291,8 +291,8 @@ Requested: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator:
       Strict,
   }
 </code></pre>
-<ol start="2">
-<li>Does this PR fix the issue in https://github.com/astral-sh/uv/pull/15234#issuecomment-3182044630 about <code>pip install --no-soures</code>? If the checks detect a <code>Statefule</code> condition and a <code>distribution mismatch</code> <code>InstalledDist::Registry { .. }</code>, should we prompt the user?</li>
+<ol>
+<li>Does this PR fix the issue in <a href="https://github.com/astral-sh/uv/pull/15234">astral-sh/uv#15234</a>#issuecomment-3182044630 about <code>pip install --no-soures</code>? If the checks detect a <code>Statefule</code> condition and a <code>distribution mismatch</code> <code>InstalledDist::Registry { .. }</code>, should we prompt the user?</li>
 </ol>
 </div>
         </div>
@@ -307,7 +307,7 @@ Requested: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator:
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-08-24 12:20</div>
             <div class="timeline-body"><p>Yeah I think your names are better (mine were sort of lazy, to validate the idea).</p>
 <p>I think this should <em>only</em> apply to <code>uv sync</code> personally, and even <code>uv pip install --no-sources</code> should have the same behavior whereby we &quot;accept&quot; the implicit registry requirement.</p>
-<p>We might (?) need to thread this through to the candidate selector / resolver as well, is the only other downside... That's why some tests are failing, I think.</p>
+<p>We might (?) need to thread this through to the candidate selector / resolver as well, is the only other downside... That&#x27;s why some tests are failing, I think.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -345,13 +345,13 @@ Requested: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator:
 wrote:</p>
 <blockquote>
 <p><em>charliermarsh</em> left a comment (astral-sh/uv#15234)
-<a href="https://github.com/astral-sh/uv/pull/15234#issuecomment-3289087527">https://github.com/astral-sh/uv/pull/15234#issuecomment-3289087527</a></p>
+<a href="https://github.com/astral-sh/uv/pull/15234#issuecomment-3289087527">astral-sh/uv#15234</a></p>
 <p>@yumeminami <a href="https://github.com/yumeminami">https://github.com/yumeminami</a> -- Sorry, I was trying to
 convey that I think this should <em>only</em> affect uv sync (and uv pip install
 should be unchanged). Do you agree?</p>
 <p>—
 Reply to this email directly, view it on GitHub
-<a href="https://github.com/astral-sh/uv/pull/15234#issuecomment-3289087527">https://github.com/astral-sh/uv/pull/15234#issuecomment-3289087527</a>, or
+<a href="https://github.com/astral-sh/uv/pull/15234#issuecomment-3289087527">astral-sh/uv#15234</a>, or
 unsubscribe
 <a href="https://github.com/notifications/unsubscribe-auth/AQDB34QOSDH6KYLOJZ6Q7EL3STER3AVCNFSM6AAAAACDV3WXSKVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZTEOBZGA4DONJSG4">https://github.com/notifications/unsubscribe-auth/AQDB34QOSDH6KYLOJZ6Q7EL3STER3AVCNFSM6AAAAACDV3WXSKVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZTEOBZGA4DONJSG4</a>
 .
@@ -380,15 +380,15 @@ You are receiving this because you were mentioned.Message ID:
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @zanieb on 2025-09-17 11:35</div>
+            <div class="event">Merged by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-17 11:35</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2025-09-17 11:35</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-17 11:35</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:44:20 UTC
+        Synced at 2026-01-20 19:53:33 UTC
     </footer>
 </body>
 </html>

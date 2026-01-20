@@ -24,7 +24,7 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Kakadus">@Kakadus</a></div>
             <div class="timeline-body"><p>PLR0912 is not equivalent to pylint. The following function is accepted by pylint but rejected by ruff:</p>
-<pre><code class="language-py">def capital(country):
+<pre><code>def capital(country):
     if country == &quot;Australia&quot;:
         return &quot;Canberra&quot;
     elif country == &quot;Brazil&quot;:
@@ -57,23 +57,23 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-30 07:34</div>
-            <div class="timeline-body"><p>The rule was added in https://github.com/astral-sh/ruff/pull/2550 but there's no conversation in that PR nor is there any change to the rule explaining if that divergence is indeed intentional.</p>
-<p>@chanman3388 as author of the rule. What's  your take on this?</p>
+            <div class="timeline-body"><p>The rule was added in <a href="https://github.com/astral-sh/ruff/pull/2550">astral-sh/ruff#2550</a> but there&#x27;s no conversation in that PR nor is there any change to the rule explaining if that divergence is indeed intentional.</p>
+<p>@chanman3388 as author of the rule. What&#x27;s  your take on this?</p>
 <p>To me, counting <code>except</code> as its own branch does make sense. Because the except might or might not be executed. So the try block has two possible exit branches.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @dhruvmanila on 2024-04-30 07:48</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-30 07:48</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/chanman3388">@chanman3388</a> on 2024-04-30 08:09</div>
             <div class="timeline-body"><blockquote>
-<p>The rule was added in #2550 but there's no conversation in that PR nor is there any change to the rule explaining if that divergence is indeed intentional.</p>
-<p>@chanman3388 as author of the rule. What's your take on this?</p>
+<p>The rule was added in #2550 but there&#x27;s no conversation in that PR nor is there any change to the rule explaining if that divergence is indeed intentional.</p>
+<p>@chanman3388 as author of the rule. What&#x27;s your take on this?</p>
 <p>To me, counting <code>except</code> as its own branch does make sense. Because the except might or might not be executed. So the try block has two possible exit branches.</p>
 </blockquote>
-<p>I don't believe that this divergence was intentional, pylint does some odd things, I'd be inclined to agree with @MichaReiser that is <em>is</em> its own branch or brances, but I guess the question to me is whether we should remain faithful to pylint's implementation which looks like:</p>
-<pre><code class="language-python">    def visit_try(self, node: nodes.Try) -&gt; None:
+<p>I don&#x27;t believe that this divergence was intentional, pylint does some odd things, I&#x27;d be inclined to agree with @MichaReiser that is <em>is</em> its own branch or brances, but I guess the question to me is whether we should remain faithful to pylint&#x27;s implementation which looks like:</p>
+<pre><code>    def visit_try(self, node: nodes.Try) -&gt; None:
         &quot;&quot;&quot;Increments the branches counter.&quot;&quot;&quot;
         branches = len(node.handlers)
         if node.orelse:
@@ -83,34 +83,34 @@
         self._inc_branch(node, branches)
         self._inc_all_stmts(branches)
 </code></pre>
-<p>or if we should go with our own interpretation. Looking at the python <a href="https://docs.python.org/3/library/ast.html#ast.Try">AST</a> I can't tell if this was oversight or if the intention was to consider exceptions differently?</p>
+<p>or if we should go with our own interpretation. Looking at the python <a href="https://docs.python.org/3/library/ast.html#ast.Try">AST</a> I can&#x27;t tell if this was oversight or if the intention was to consider exceptions differently?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-22 02:29</div>
-            <div class="timeline-body"><p>It looks like the difference is whether the try <em>body</em> counts as a branch? I'd say it should, probably. Although it's perhaps strange that <code>finally</code> counts as a branch, since it always runs? Ultimately, though, the rule is trying to capture some measure of complexity, and both the <code>try</code> body and the <code>finally</code> contribute to complexity in a way...</p>
+            <div class="timeline-body"><p>It looks like the difference is whether the try <em>body</em> counts as a branch? I&#x27;d say it should, probably. Although it&#x27;s perhaps strange that <code>finally</code> counts as a branch, since it always runs? Ultimately, though, the rule is trying to capture some measure of complexity, and both the <code>try</code> body and the <code>finally</code> contribute to complexity in a way...</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-22 02:32</div>
-            <div class="timeline-body"><p>I'd be fine to remove the body from the count though. It's a bit more consistent with Pylint and is pretty marginal either way.</p>
+            <div class="timeline-body"><p>I&#x27;d be fine to remove the body from the count though. It&#x27;s a bit more consistent with Pylint and is pretty marginal either way.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-05-22 03:02</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-22 03:02</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-22 03:13</div>
-            <div class="timeline-body"><p>Related: https://github.com/astral-sh/ruff/issues/11421</p>
+            <div class="timeline-body"><p>Related: <a href="https://github.com/astral-sh/ruff/issues/11421">astral-sh/ruff#11421</a></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-05-22 03:38</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-22 03:38</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:50:10 UTC
+        Synced at 2026-01-20 18:48:52 UTC
     </footer>
 </body>
 </html>

@@ -23,22 +23,22 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MamadouSDiallo">@MamadouSDiallo</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p><code>ty</code> does not seem to know <code>dmatrix</code> is part of <code>patsy</code>.</p>
-<pre><code class="language-py">from patsy import dmatrix
+<pre><code>from patsy import dmatrix
 </code></pre>
-<h3>Version</h3>
+Version
 <p><em>No response</em></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-13 22:51</div>
-            <div class="timeline-body"><p>This is because patsy's <code>__init__.py</code> uses a <a href="https://github.com/pydata/patsy/blob/master/patsy/__init__.py#L79">highly dynamic method</a> to expose submodules, which isn't standardized for static analysis to understand. A quick check suggests no other Python type checker understands this either. It would require adding specialized support for patsy into type checkers.</p>
+            <div class="timeline-body"><p>This is because patsy&#x27;s <code>__init__.py</code> uses a <a href="https://github.com/pydata/patsy/blob/master/patsy/__init__.py#L79">highly dynamic method</a> to expose submodules, which isn&#x27;t standardized for static analysis to understand. A quick check suggests no other Python type checker understands this either. It would require adding specialized support for patsy into type checkers.</p>
 <p>A more feasible route would likely be for the patsy project (or any interested patsy user) to provide type stubs for patsy, or for patsy to use a less dynamic way of re-exporting submodule contents, if it wants to better support use with type-checking.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2025-08-13 22:51</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2025-08-13 22:51</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MamadouSDiallo">@MamadouSDiallo</a> on 2025-08-15 17:11</div>
@@ -47,12 +47,12 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jelle-openai">@jelle-openai</a> on 2025-08-15 17:15</div>
-            <div class="timeline-body"><p>I suspect the reason mypy understands this is that it automatically treats submodules as available attributes on their parent modules, even if they're not explicitly exported. For similar reasons, on this code sample:</p>
-<pre><code class="language-python">import collections
+            <div class="timeline-body"><p>I suspect the reason mypy understands this is that it automatically treats submodules as available attributes on their parent modules, even if they&#x27;re not explicitly exported. For similar reasons, on this code sample:</p>
+<pre><code>import collections
 
 print(collections.abc.Sequence)
 </code></pre>
-<p>ty <a href="https://play.ty.dev/cd6cc938-1134-491d-8ca7-248f4c4b040e">reports</a>, &quot;Type <code>&lt;module 'collections'&gt;</code> has no attribute <code>abc</code>&quot;, but mypy is fine with it.</p>
+<p>ty <a href="https://play.ty.dev/cd6cc938-1134-491d-8ca7-248f4c4b040e">reports</a>, &quot;Type <code>&lt;module &#x27;collections&#x27;&gt;</code> has no attribute <code>abc</code>&quot;, but mypy is fine with it.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -60,7 +60,7 @@ print(collections.abc.Sequence)
             <div class="timeline-body"><blockquote>
 <p>Mypy runs it just fine but thanks for the info.</p>
 </blockquote>
-<p>I'm not able to reproduce that result. I put <code>from patsy import dmatrix</code> into <code>main.py</code> and then ran <code>uv init .; uv add patsy</code> to create a venv at <code>.venv</code> with patsy installed in it. Then I get these results from mypy:</p>
+<p>I&#x27;m not able to reproduce that result. I put <code>from patsy import dmatrix</code> into <code>main.py</code> and then ran <code>uv init .; uv add patsy</code> to create a venv at <code>.venv</code> with patsy installed in it. Then I get these results from mypy:</p>
 <pre><code>➜ uvx mypy main.py --python-executable .venv/bin/python
 main.py:1: error: Skipping analyzing &quot;patsy&quot;: module is installed, but missing library stubs or py.typed marker  [import-untyped]
 main.py:1: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
@@ -70,18 +70,18 @@ Found 1 error in 1 file (checked 1 source file)
 main.py:1: error: Module &quot;patsy&quot; has no attribute &quot;dmatrix&quot;  [attr-defined]
 Found 1 error in 1 file (checked 1 source file)
 </code></pre>
-<p>So initially mypy complains that patsy is untyped, and if I use <code>--follow-untyped-imports</code> it instead gives the same error ty does; it can't find <code>dmatrix</code> submodule either.</p>
-<p>Mypy has lots of options, so it's quite possible that you have some combination of options that is silencing this error for you. But even if that's the case, I'm pretty sure that if you <code>reveal_type(dmatrix)</code> after <code>from patsy import dmatrix</code>, you'll find that mypy is just treating it as <code>Any</code>.</p>
+<p>So initially mypy complains that patsy is untyped, and if I use <code>--follow-untyped-imports</code> it instead gives the same error ty does; it can&#x27;t find <code>dmatrix</code> submodule either.</p>
+<p>Mypy has lots of options, so it&#x27;s quite possible that you have some combination of options that is silencing this error for you. But even if that&#x27;s the case, I&#x27;m pretty sure that if you <code>reveal_type(dmatrix)</code> after <code>from patsy import dmatrix</code>, you&#x27;ll find that mypy is just treating it as <code>Any</code>.</p>
 <blockquote>
 <p>I suspect the reason mypy understands this is that it automatically treats submodules as available attributes on their parent modules</p>
 </blockquote>
-<p>I don't think that is the case here, because <code>dmatrix</code> is not actually a direct submodule of <code>patsy</code> at all; it's a more deeply-nested submodule that <code>patsy/__init__.py</code> explicitly attaches to the root <code>patsy</code> package using some dynamic code.</p>
+<p>I don&#x27;t think that is the case here, because <code>dmatrix</code> is not actually a direct submodule of <code>patsy</code> at all; it&#x27;s a more deeply-nested submodule that <code>patsy/__init__.py</code> explicitly attaches to the root <code>patsy</code> package using some dynamic code.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:26 UTC
+        Synced at 2026-01-20 19:25:15 UTC
     </footer>
 </body>
 </html>

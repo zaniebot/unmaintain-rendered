@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ntjohnson1">@ntjohnson1</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<p>I didn't see discussion on numpy specific support or other index related edge cases.</p>
-<pre><code class="language-python">def example(data: int | Sequence[int | float]) -&gt; None:
+            <div class="timeline-body">Summary
+<p>I didn&#x27;t see discussion on numpy specific support or other index related edge cases.</p>
+<pre><code>def example(data: int | Sequence[int | float]) -&gt; None:
     if isinstance(data, Sequence):
         np_data = np.array(data).reshape((1, -1))
         if np_data.shape[1] not in (3, 4): # &lt;---
@@ -34,30 +34,30 @@
 </code></pre>
 <p><code>error[index-out-of-bounds]: Index 0 is out of bounds for tuple </code>tuple[()]<code> with length 0</code></p>
 <p>A simpler version does seem to infer the shape correctly.</p>
-<pre><code class="language-python">  a = [1]
+<pre><code>  a = [1]
   b = np.array(a).reshape((1, -1))
   c = b.shape[1]
 </code></pre>
-<p>This triggers an index-out-of-bounds error (it thinks shape is an empty tuple so shape[0] also doesn't work). Mypy appears to infer the output shape from the reshape call.</p>
+<p>This triggers an index-out-of-bounds error (it thinks shape is an empty tuple so shape[0] also doesn&#x27;t work). Mypy appears to infer the output shape from the reshape call.</p>
 <p>Version <code>ty 0.0.11</code></p>
-<h3>Version</h3>
+Version
 <p>ty 0.0.11 (830cb9cc6 2026-01-09)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-15 00:03</div>
-            <div class="timeline-body"><p>Thanks for the report! I'm having trouble reproducing your results. With numpy 2.3.0 or 2.4.1, the snippet you provided works correctly for me (we infer <code>tuple[int, int]</code> for the shape). Can you clarify the version of numpy you are using, and verify you are checking exactly the code snippet provided?</p>
+            <div class="timeline-body"><p>Thanks for the report! I&#x27;m having trouble reproducing your results. With numpy 2.3.0 or 2.4.1, the snippet you provided works correctly for me (we infer <code>tuple[int, int]</code> for the shape). Can you clarify the version of numpy you are using, and verify you are checking exactly the code snippet provided?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-info</span> added by @carljm on 2026-01-15 00:03</div>
+            <div class="event">Label <span class="label">needs-info</span> added by <a href="https://github.com/carljm">@carljm</a> on 2026-01-15 00:03</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntjohnson1">@ntjohnson1</a> on 2026-01-15 00:17</div>
             <div class="timeline-body"><p>Background context:</p>
 <p>In my PR I linked above I added a minimal ty setup for us to start checking it out. Running <code>uv run ty check</code> from the root without the index-out-of-bounds ignore triggers on https://github.com/rerun-io/rerun/blob/42f2479854d591c21eea1eccb2c47a4a9b7ae39d/rerun_py/rerun_sdk/rerun/datatypes/rgba32_ext.py#L56 however I pasted the snippet above in that same file and it also triggered.</p>
 <p>Minimal standalone repro:</p>
-<pre><code class="language-python">#example.py
+<pre><code>#example.py
 import numpy as np
 from typing import Sequence
 
@@ -68,7 +68,7 @@ def example(data: int | Sequence[int | float]) -&gt; None:
             raise ValueError(f&quot;expected sequence of length of 3 or 4, received {np_data.shape[1]}&quot;)
     return None
 </code></pre>
-<pre><code class="language-bash">uv venv --python=3.11
+<pre><code>uv venv --python=3.11
 source .venv/bin/activate
 uv pip install ty==0.0.11 numpy==2.3.5
 ty check example.py
@@ -77,7 +77,7 @@ ty check example.py
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-15 00:36</div>
-            <div class="timeline-body"><p>Thanks for the additional info! There still seems to be some mysterious additional factor in play, because when I follow your exact instructions, the issue still doesn't reproduce for me:</p>
+            <div class="timeline-body"><p>Thanks for the additional info! There still seems to be some mysterious additional factor in play, because when I follow your exact instructions, the issue still doesn&#x27;t reproduce for me:</p>
 <pre><code>➜ mkdir issue2501 &amp;&amp; cd issue2501
 
 ➜ uv venv --python=3.11
@@ -108,22 +108,22 @@ def example(data: int | Sequence[int | float]) -&gt; None:
 ➜ ty check .
 All checks passed!
 </code></pre>
-<p>(ty actually doesn't care about the Python version in the virtualenv, but explicitly passing <code>--python-version 3.11</code> to ty doesn't make any difference, either.)</p>
+<p>(ty actually doesn&#x27;t care about the Python version in the virtualenv, but explicitly passing <code>--python-version 3.11</code> to ty doesn&#x27;t make any difference, either.)</p>
 <p>Is there any chance <code>ty</code> in your environment is resolving to some older ty elsewhere, rather than the 0.0.11 just installed in the venv?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntjohnson1">@ntjohnson1</a> on 2026-01-15 00:57</div>
             <div class="timeline-body"><p>WEIRD restarting my shell and the standalone example stopped failing.</p>
-<p>It still fails running <code>uv run ty check</code> from root on my branch off rerun though (if I don't ignore the index-out-of-bounds rule). I'll probably have time to dig into this a bit more tomorrow to figure out what the disconnect is.</p>
+<p>It still fails running <code>uv run ty check</code> from root on my branch off rerun though (if I don&#x27;t ignore the index-out-of-bounds rule). I&#x27;ll probably have time to dig into this a bit more tomorrow to figure out what the disconnect is.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntjohnson1">@ntjohnson1</a> on 2026-01-16 21:26</div>
-            <div class="timeline-body"><p>Ok I put together a small repo (not much more code from above but couldn't get it to trigger in a single file) that I am able to reproduce the problem in. I confirmed I saw the error on both my laptops.
+            <div class="timeline-body"><p>Ok I put together a small repo (not much more code from above but couldn&#x27;t get it to trigger in a single file) that I am able to reproduce the problem in. I confirmed I saw the error on both my laptops.
 https://github.com/ntjohnson1/ty-2501
 clone then</p>
-<pre><code class="language-console">uv sync
+<pre><code>uv sync
 uv run ty check
 </code></pre>
 <p>My guess is that its related to the circular dependency.</p>
@@ -132,8 +132,8 @@ uv run ty check
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-17 01:39</div>
             <div class="timeline-body"><p>Thanks for the reproducer!</p>
-<p>It's not related to the circular dependency. It is in fact the Python version -- now that I see the <code>pyproject.toml</code> in your reproducer, I see that ty will actually choose Python 3.10 (the lowest supported Python version). And in fact the issue repros consistently under Python 3.10, but not on 3.11+, with this simple reproducer:</p>
-<pre><code class="language-py">import numpy as np
+<p>It&#x27;s not related to the circular dependency. It is in fact the Python version -- now that I see the <code>pyproject.toml</code> in your reproducer, I see that ty will actually choose Python 3.10 (the lowest supported Python version). And in fact the issue repros consistently under Python 3.10, but not on 3.11+, with this simple reproducer:</p>
+<pre><code>import numpy as np
 
 def reshape_test(data: np.ndarray[tuple[int, int], np.dtype[np.uint8]]):
     out = data.reshape((1, -1))
@@ -145,17 +145,17 @@ def reshape_test(data: np.ndarray[tuple[int, int], np.dtype[np.uint8]]):
 <p>And the root cause is both simple and silly: numpy does <a href="https://github.com/numpy/numpy/blob/maintenance/2.3.x/numpy/__init__.pyi#L174"><code>from typing import Never</code></a>, and we correctly model that <code>typing.Never</code> does not exist on Python 3.10. So that overload becomes an overload on <code>Sequence[Unknown]</code> (which matches) instead of <code>Sequence[Never]</code>.</p>
 <p>And in fact mypy does exactly the same thing as ty, if you give it <code>--python-version 3.10</code>!</p>
 <p>So the only difference between mypy and ty here is the Python version they use to check by default: ty chooses the lowest version supported in your <code>pyproject.toml</code>.</p>
-<p>It seems like numpy 2.3.5 doesn't really support Python 3.10 (or if it intends to, its stubs are subtly broken on 3.10). So if you can, it seems like the best fix would be for you to bump your minimum supported Python version to 3.11 in your <code>pyproject.toml</code>. Or failing that, explicitly configure ty to check against Python 3.11.</p>
-<p>Closing, since it doesn't look like there's a bug in ty here.</p>
+<p>It seems like numpy 2.3.5 doesn&#x27;t really support Python 3.10 (or if it intends to, its stubs are subtly broken on 3.10). So if you can, it seems like the best fix would be for you to bump your minimum supported Python version to 3.11 in your <code>pyproject.toml</code>. Or failing that, explicitly configure ty to check against Python 3.11.</p>
+<p>Closing, since it doesn&#x27;t look like there&#x27;s a bug in ty here.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2026-01-17 01:39</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2026-01-17 01:39</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-17 02:02:43 UTC
+        Synced at 2026-01-20 19:27:08 UTC
     </footer>
 </body>
 </html>

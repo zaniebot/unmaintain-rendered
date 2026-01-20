@@ -23,11 +23,11 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a></div>
-            <div class="timeline-body"><p>See: https://github.com/astral-sh/uv/pull/12070#issuecomment-3079302031</p>
+            <div class="timeline-body"><p>See: <a href="https://github.com/astral-sh/uv/pull/12070">astral-sh/uv#12070</a>#issuecomment-3079302031</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2025-07-16 17:38</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-16 17:38</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-18 23:43</div>
@@ -35,22 +35,22 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-07-18 23:43</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-07-18 23:43</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/geofft">@geofft</a> on 2025-07-19 00:45</div>
             <div class="timeline-body"><p>(cc @dekhtiarjonathan)</p>
-<p>So, for the specific issue that spawned this, it's because <code>nvidia-smi --query-gpu=driver_version --format=csv</code> is producing multiple lines of output if you have multiple GPUs.</p>
-<p>I <em>suspect</em> that this is just an artifact of CSV being a tabular format, and it's printing one line per GPU and fills in the <code>driver_version</code> column with the same value. I can't really imagine how you would have multiple versions of the same driver loaded.</p>
+<p>So, for the specific issue that spawned this, it&#x27;s because <code>nvidia-smi --query-gpu=driver_version --format=csv</code> is producing multiple lines of output if you have multiple GPUs.</p>
+<p>I <em>suspect</em> that this is just an artifact of CSV being a tabular format, and it&#x27;s printing one line per GPU and fills in the <code>driver_version</code> column with the same value. I can&#x27;t really imagine how you would have multiple versions of the same driver loaded.</p>
 <p>The Python code using NVML is calling <code>nvmlSystemGetDriverVersion()</code> once, a function <a href="https://docs.nvidia.com/deploy/nvml-api/group__nvmlSystemQueries.html">documented</a> as not being GPU-specific.</p>
-<p>If this really is the problem, then let's just read multiple lines of input and check that they're equal to the first one (and throw an error saying to report a bug if they're not).</p>
-<hr />
-<p>My hesitation around NVML is that you don't need to have it installed <em>in a way that uv can find</em>. You can have it installed on <code>bin/python</code>'s rpath, or on a nonstandard <code>LD_LIBRARY_PATH</code>, or with some sort of magical Python library loader calling <code>ctypes</code>, or whatever. You can use a uv with an incompatible glibc—in particular I don't think this change is going to work with our &quot;distroless&quot; uv Docker image which uses musl but is capable of installing manylinux wheels if it sees a glibc present on the system, because uv itself won't be able to load the library.</p>
-<p>This is also largely my hesitation around nvidia-smi (which doesn't need to be installed at all, or if it's installed it doesn't need to be on your <code>PATH</code>, or it could be misconfigured in a way where it can't load NVML itself, etc.), which is why we try parsing out of /proc and /sys first. I guess the problem is that WSL does something more magical where <code>/dev/nvidia*</code> relays things to the actual Windows driver in the NT kernel driving the actual hardware, and there's no <code>nvidia</code> driver in the WSL kernel.</p>
+<p>If this really is the problem, then let&#x27;s just read multiple lines of input and check that they&#x27;re equal to the first one (and throw an error saying to report a bug if they&#x27;re not).</p>
+<hr>
+<p>My hesitation around NVML is that you don&#x27;t need to have it installed <em>in a way that uv can find</em>. You can have it installed on <code>bin/python</code>&#x27;s rpath, or on a nonstandard <code>LD_LIBRARY_PATH</code>, or with some sort of magical Python library loader calling <code>ctypes</code>, or whatever. You can use a uv with an incompatible glibc—in particular I don&#x27;t think this change is going to work with our &quot;distroless&quot; uv Docker image which uses musl but is capable of installing manylinux wheels if it sees a glibc present on the system, because uv itself won&#x27;t be able to load the library.</p>
+<p>This is also largely my hesitation around nvidia-smi (which doesn&#x27;t need to be installed at all, or if it&#x27;s installed it doesn&#x27;t need to be on your <code>PATH</code>, or it could be misconfigured in a way where it can&#x27;t load NVML itself, etc.), which is why we try parsing out of /proc and /sys first. I guess the problem is that WSL does something more magical where <code>/dev/nvidia*</code> relays things to the actual Windows driver in the NT kernel driving the actual hardware, and there&#x27;s no <code>nvidia</code> driver in the WSL kernel.</p>
 <p>I could buy the argument that we ought to swap out nvidia-smi for NVML, or have one be a fallback for the other.</p>
 <p>If we could somehow bundle and statically link our own NVML, then that seems like it would be fine. I assume licensing makes that hard.</p>
 <p>But—the ioctl that <code>nvmlSystemGetDriverVersion()</code> wraps is documented in NVIDIA/open-gpu-kernel-modules... what if we just called the ioctl? Is that a stable/public interface?</p>
-<p>How about changing the logic to try the ioctl first, then try /sys and /proc (which are helpful if for whatever reason you don't have permissions on <code>/dev/nvidia*</code>, or you're in a container and forgot to share the devices into the container but that's a problem you can fix later once you get an error from PyTorch, or whatever), then finally try nvidia-smi and dedup the lines?</p>
+<p>How about changing the logic to try the ioctl first, then try /sys and /proc (which are helpful if for whatever reason you don&#x27;t have permissions on <code>/dev/nvidia*</code>, or you&#x27;re in a container and forgot to share the devices into the container but that&#x27;s a problem you can fix later once you get an error from PyTorch, or whatever), then finally try nvidia-smi and dedup the lines?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -60,18 +60,18 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/geofft">@geofft</a> on 2025-07-19 01:16</div>
-            <div class="timeline-body"><p>Well, I can say from prior experience that I had a setup where we installed libnvidia-ml.so.1 on a directory added to LD_LIBRARY_PATH by a Python startup wrapper script, and not globally :) IIRC this is one of the drivers that's in the &quot;forward compatibility&quot; package, along with libcuda.so.1. It looks like the CUDA runtime shipped on PyPI doesn't currently contain the forward compatibility stuff, but I think it'd be nice, because it means everything can be in a virtualenv (or virtualenv-like thing).</p>
+            <div class="timeline-body"><p>Well, I can say from prior experience that I had a setup where we installed libnvidia-ml.so.1 on a directory added to LD_LIBRARY_PATH by a Python startup wrapper script, and not globally :) IIRC this is one of the drivers that&#x27;s in the &quot;forward compatibility&quot; package, along with libcuda.so.1. It looks like the CUDA runtime shipped on PyPI doesn&#x27;t currently contain the forward compatibility stuff, but I think it&#x27;d be nice, because it means everything can be in a virtualenv (or virtualenv-like thing).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/geofft">@geofft</a> on 2025-07-19 01:18</div>
-            <div class="timeline-body"><p>Looks like https://github.com/NVIDIA/open-gpu-kernel-modules/discussions/530 has some links to sample code that speaks the NVIDIA ioctl API if we want to go that route. (To be clear, I'm not sure if we do....)</p>
-<p>Getting the driver version out of the ioctl API seems easy; if we also want to get compute capabilities, which it sounds like we should from discussion in the other issue, that's a bit more involved.</p>
+            <div class="timeline-body"><p>Looks like https://github.com/NVIDIA/open-gpu-kernel-modules/discussions/530 has some links to sample code that speaks the NVIDIA ioctl API if we want to go that route. (To be clear, I&#x27;m not sure if we do....)</p>
+<p>Getting the driver version out of the ioctl API seems easy; if we also want to get compute capabilities, which it sounds like we should from discussion in the other issue, that&#x27;s a bit more involved.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/DEKHTIARJonathan">@DEKHTIARJonathan</a> on 2025-07-19 04:12</div>
-            <div class="timeline-body"><p>A long time ago we used to compile and execute some C code to get both libcuda version and SM. Though if <code>nvml</code> is not a guarantee on the system - we will have a problem with https://github.com/wheelnext/nvidia-variant-provider. So let's find the best approach and we can both leverage it.</p>
+            <div class="timeline-body"><p>A long time ago we used to compile and execute some C code to get both libcuda version and SM. Though if <code>nvml</code> is not a guarantee on the system - we will have a problem with https://github.com/wheelnext/nvidia-variant-provider. So let&#x27;s find the best approach and we can both leverage it.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -86,41 +86,41 @@ NVML calls from multiple threads.
 <blockquote>
 <p>Well, I can say from prior experience that I had a setup where we installed libnvidia-ml.so.1 on a directory added to LD_LIBRARY_PATH by a Python startup wrapper script, and not globally</p>
 </blockquote>
-<p>I do not see how <code>uv</code> can fix it. Both <code>nvml</code> and <code>nvidia-smi</code> that you rely on right now depend on the &quot;visible libcuda&quot; through <code>LD_LIBRARY_PATH</code> ... If someone modifies it at runtime but not install time ... Well ... I really don't see how you can &quot;guess what the user will do at exec time&quot;. That will also be true with Wheel Variant.</p>
-<p>Currently you are using <code>nvidia-smi</code> - <code>nvml</code> is the low level library underneath. I don't see how using <code>nvidia-smi</code> can do what you want but not <code>nvml</code></p>
+<p>I do not see how <code>uv</code> can fix it. Both <code>nvml</code> and <code>nvidia-smi</code> that you rely on right now depend on the &quot;visible libcuda&quot; through <code>LD_LIBRARY_PATH</code> ... If someone modifies it at runtime but not install time ... Well ... I really don&#x27;t see how you can &quot;guess what the user will do at exec time&quot;. That will also be true with Wheel Variant.</p>
+<p>Currently you are using <code>nvidia-smi</code> - <code>nvml</code> is the low level library underneath. I don&#x27;t see how using <code>nvidia-smi</code> can do what you want but not <code>nvml</code></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/geofft">@geofft</a> on 2025-07-19 07:09</div>
-            <div class="timeline-body"><p>OK, mostly out of curiosity, I implemented #14743 to query the driver version via the ioctl. I am pretty confident in the stability of that particular ABI, as there are comments in the open kernel module saying that it needs to be stable for the sake of older/newer clients, so they can properly figure out that they're incompatible.</p>
-<p>We ought to be able to get compute capability out of the same interface, but it will be more complicated and we have to think about ABI stability. (I just learned that https://github.com/google/gvisor/tree/master/pkg/sentry/devices/nvproxy tracks changes in the NVIDIA kernel ABI, because it's used to emulate/relay ioctls from the guest to a host that might be running one of many possible driver versions. I haven't looked in detail but maybe it's helpful if we do go down this road, which, again, I'm not sure we should.)</p>
+            <div class="timeline-body"><p>OK, mostly out of curiosity, I implemented #14743 to query the driver version via the ioctl. I am pretty confident in the stability of that particular ABI, as there are comments in the open kernel module saying that it needs to be stable for the sake of older/newer clients, so they can properly figure out that they&#x27;re incompatible.</p>
+<p>We ought to be able to get compute capability out of the same interface, but it will be more complicated and we have to think about ABI stability. (I just learned that https://github.com/google/gvisor/tree/master/pkg/sentry/devices/nvproxy tracks changes in the NVIDIA kernel ABI, because it&#x27;s used to emulate/relay ioctls from the guest to a host that might be running one of many possible driver versions. I haven&#x27;t looked in detail but maybe it&#x27;s helpful if we do go down this road, which, again, I&#x27;m not sure we should.)</p>
 <blockquote>
-<p>Currently you are using nvidia-smi - nvml is the low level library underneath. I don't see how using nvidia-smi can do what you want but not nvml</p>
+<p>Currently you are using nvidia-smi - nvml is the low level library underneath. I don&#x27;t see how using nvidia-smi can do what you want but not nvml</p>
 </blockquote>
 <p>Well, the one case that comes to mind is the our &quot;distroless&quot; uv binary, which (if I remember correctly) is statically linked against musl and therefore cannot open shared libraries. But it can run subprocesses just fine, and we do support using it to create manylinux (glibc-based) venvs. I find this a little weird, to be fair, but it seems to work fine and there are arguments in favor of it.</p>
-<p>Also, it doesn't seem <em>that</em> wacky to have a setup where the NVIDIA libraries are accessible within your Python environment and for the execution of <code>nvidia-smi</code> but not for other commands on the system. For something like pip that is running in the context of the Python environment that is about to run PyTorch (or whatever), it makes sense to expect it to be possible to load NVML, but you don't have that guarantee for uv.</p>
-<p>(I think it would be sound to move some of this logic into Python interpreter discovery, and say that if Python can't load libnvidia-ml.so, then really nothing is going to work. But that would make things slower, I think.)</p>
+<p>Also, it doesn&#x27;t seem <em>that</em> wacky to have a setup where the NVIDIA libraries are accessible within your Python environment and for the execution of <code>nvidia-smi</code> but not for other commands on the system. For something like pip that is running in the context of the Python environment that is about to run PyTorch (or whatever), it makes sense to expect it to be possible to load NVML, but you don&#x27;t have that guarantee for uv.</p>
+<p>(I think it would be sound to move some of this logic into Python interpreter discovery, and say that if Python can&#x27;t load libnvidia-ml.so, then really nothing is going to work. But that would make things slower, I think.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/DEKHTIARJonathan">@DEKHTIARJonathan</a> on 2025-07-19 07:16</div>
-            <div class="timeline-body"><p>I'm probably missing some context and depth on uv. I really struggle to understand why that statement</p>
-<p><code>For something like pip that is running in the context of the Python environment that is about to run PyTorch (or whatever), it makes sense to expect it to be possible to load NVML, but you don't have that guarantee for uv.</code></p>
-<p>As I said it's probably lacking some context. I don't understand how the environment is able to load nvml in Python or 'nvidia-smi' but uv can not. That's puzzling to me...</p>
+            <div class="timeline-body"><p>I&#x27;m probably missing some context and depth on uv. I really struggle to understand why that statement</p>
+<p><code>For something like pip that is running in the context of the Python environment that is about to run PyTorch (or whatever), it makes sense to expect it to be possible to load NVML, but you don&#x27;t have that guarantee for uv.</code></p>
+<p>As I said it&#x27;s probably lacking some context. I don&#x27;t understand how the environment is able to load nvml in Python or &#x27;nvidia-smi&#x27; but uv can not. That&#x27;s puzzling to me...</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/geofft">@geofft</a> on 2025-07-20 05:02</div>
-            <div class="timeline-body"><p>After a bunch of digging I have learned that the ioctl interface does not actually answer what compute capability a device is, that's something NVML presumably figures out in userspace given the device's hardware version from the <a href="https://github.com/NVIDIA/open-gpu-kernel-modules/blob/575.64.03/src/common/sdk/nvidia/inc/ctrl/ctrl2080/ctrl2080mc.h#L38"><code>NV2080_CTRL_CMD_MC_GET_ARCH_INFO</code></a> operation.</p>
-<p>On the one hand, that's a strong argument in favor of using NVML (directly or via nvidia-smi).</p>
-<p>On the other hand, the fact that this answer is potentially versioned/variable with respect to the current userspace NVML installation (certainly an older version can fail to tell you what the compute capability is for a newer GPU, even if it's not the case that two different versions of NVML will give different successful answers) worries me, since again I've worked with systems where the installation in <code>/usr</code> is unavailable or out of date (usually thanks to old container images) and you really need the compat libraries from the CUDA installation to make things work.</p>
-<p>So at this point I really am leaning towards having a giant mapping from PCI IDs to associated compute capabilities.... although that still leaves the question of whether that will work right on WSL2  if the whole deal is that there is no PCI device on the WSL2 kernel. (But there <em>is</em> a pretty clear ioctl to ask the NVIDIA driver for the cards' PCI IDs, so maybe that will work.)</p>
+            <div class="timeline-body"><p>After a bunch of digging I have learned that the ioctl interface does not actually answer what compute capability a device is, that&#x27;s something NVML presumably figures out in userspace given the device&#x27;s hardware version from the <a href="https://github.com/NVIDIA/open-gpu-kernel-modules/blob/575.64.03/src/common/sdk/nvidia/inc/ctrl/ctrl2080/ctrl2080mc.h#L38"><code>NV2080_CTRL_CMD_MC_GET_ARCH_INFO</code></a> operation.</p>
+<p>On the one hand, that&#x27;s a strong argument in favor of using NVML (directly or via nvidia-smi).</p>
+<p>On the other hand, the fact that this answer is potentially versioned/variable with respect to the current userspace NVML installation (certainly an older version can fail to tell you what the compute capability is for a newer GPU, even if it&#x27;s not the case that two different versions of NVML will give different successful answers) worries me, since again I&#x27;ve worked with systems where the installation in <code>/usr</code> is unavailable or out of date (usually thanks to old container images) and you really need the compat libraries from the CUDA installation to make things work.</p>
+<p>So at this point I really am leaning towards having a giant mapping from PCI IDs to associated compute capabilities.... although that still leaves the question of whether that will work right on WSL2  if the whole deal is that there is no PCI device on the WSL2 kernel. (But there <em>is</em> a pretty clear ioctl to ask the NVIDIA driver for the cards&#x27; PCI IDs, so maybe that will work.)</p>
 <p>(Alternatively, it would be nice if NVIDIA could publish some MIT-licensed source code to do the parts of NVML that we and the variant provider need.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/DEKHTIARJonathan">@DEKHTIARJonathan</a> on 2025-07-20 20:05</div>
-            <div class="timeline-body"><p>You keep saying there's a problem and I still don't understand why you can't use the very library designed to do exactly this. I'm just confused by your messages.</p>
+            <div class="timeline-body"><p>You keep saying there&#x27;s a problem and I still don&#x27;t understand why you can&#x27;t use the very library designed to do exactly this. I&#x27;m just confused by your messages.</p>
 <p>A few clear scenarios where using <code>nvml</code> would not work and why would be useful.</p>
 </div>
         </div>
@@ -128,47 +128,47 @@ NVML calls from multiple threads.
             <div class="timeline-header">Comment by <a href="https://github.com/geofft">@geofft</a> on 2025-07-21 01:28</div>
             <div class="timeline-body"><p>Here are a few scenarios I have in mind:</p>
 <ol>
-<li>You're following the instructions at https://docs.astral.sh/uv/guides/integration/docker/ to install uv via <code>COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/</code>, which gets you a statically-musl-linked binary. This binary is unable to load any libraries because it is statically linked. Even if it were dynamically linked against musl, it would not be able to load libnvidia-ml.so, which has a dependency on glibc. However, this build of uv is still perfectly capable of either using a system-installed Python linking glibc or downloading one from python-build-standalone, and creating manylinux virtualenvs, where NVML, CUDA, and the Torch wheels will all work fine.</li>
-<li>You're running a generic container image like <code>debian</code> on a host, where the host NVIDIA drivers are installed normally <em>on the host</em>, but the userspace part of the drivers are not installed in the image in /usr. You can still expect actually doing GPU stuff in Python to work as long as Python code can open <code>libcudart.so.12</code> (e.g.) and <code>libcuda.so.1</code>. Some specific scenarios where this might be the case:<ol>
+<li>You&#x27;re following the instructions at https://docs.astral.sh/uv/guides/integration/docker/ to install uv via <code>COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/</code>, which gets you a statically-musl-linked binary. This binary is unable to load any libraries because it is statically linked. Even if it were dynamically linked against musl, it would not be able to load libnvidia-ml.so, which has a dependency on glibc. However, this build of uv is still perfectly capable of either using a system-installed Python linking glibc or downloading one from python-build-standalone, and creating manylinux virtualenvs, where NVML, CUDA, and the Torch wheels will all work fine.</li>
+<li>You&#x27;re running a generic container image like <code>debian</code> on a host, where the host NVIDIA drivers are installed normally <em>on the host</em>, but the userspace part of the drivers are not installed in the image in /usr. You can still expect actually doing GPU stuff in Python to work as long as Python code can open <code>libcudart.so.12</code> (e.g.) and <code>libcuda.so.1</code>. Some specific scenarios where this might be the case:<ol>
 <li>The container manager (e.g. with the help of nvidia-docker or something) is bind-mounting /usr/local/nvidia/ from the host into the image, and something is setting <code>LD_LIBRARY_PATH</code> at runtime for Python startup to point there, but it is not set in general in the container.</li>
 <li>Something <em>is</em> setting <code>LD_LIBRARY_PATH</code> in general, but something is <em>unsetting</em> it before uv gets to run. This type of thing has happened to me much more than I would like.</li>
 <li>You have the CUDA runtime and cuda-compat (which includes libcuda.so.1 but not libnvidia-ml.so.1) installed either globally or directly into the Python environment,  but you do not have NVML or any other components of the normal userspace drivers installed. You do not actually need NVML installed to do CUDA stuff and such a container image will work fine.</li>
 </ol>
 </li>
 </ol>
-<p>Here's a way to convince yourself of that latter point without building a container image:</p>
-<pre><code class="language-pycon">$ uvx --with torch,numpy python
+<p>Here&#x27;s a way to convince yourself of that latter point without building a container image:</p>
+<pre><code>$ uvx --with torch,numpy python
 Installed 26 packages in 351ms
 Python 3.12.3 (main, Jun 18 2025, 17:59:45) [GCC 13.3.0] on linux
 Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
 &gt;&gt;&gt; import torch
 &gt;&gt;&gt; torch.cuda.is_available()
 True
-&gt;&gt;&gt; torch.tensor([[1.]], device='cuda')
-tensor([[1.]], device='cuda:0')
-&gt;&gt;&gt; 'nvidia-ml' in open('/proc/self/maps').read()
+&gt;&gt;&gt; torch.tensor([[1.]], device=&#x27;cuda&#x27;)
+tensor([[1.]], device=&#x27;cuda:0&#x27;)
+&gt;&gt;&gt; &#x27;nvidia-ml&#x27; in open(&#x27;/proc/self/maps&#x27;).read()
 True
 &gt;&gt;&gt; exit()
-$ echo 'nope' &gt; libnvidia-ml.so.1
+$ echo &#x27;nope&#x27; &gt; libnvidia-ml.so.1
 $ LD_LIBRARY_PATH=. uvx --with torch,numpy python
 Python 3.12.3 (main, Jun 18 2025, 17:59:45) [GCC 13.3.0] on linux
 Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
 &gt;&gt;&gt; import torch
 &gt;&gt;&gt; torch.cuda.is_available()
 True
-&gt;&gt;&gt; torch.tensor([[1.]], device='cuda')
-tensor([[1.]], device='cuda:0')
-&gt;&gt;&gt; 'nvidia-ml' in open('/proc/self/maps').read()
+&gt;&gt;&gt; torch.tensor([[1.]], device=&#x27;cuda&#x27;)
+tensor([[1.]], device=&#x27;cuda:0&#x27;)
+&gt;&gt;&gt; &#x27;nvidia-ml&#x27; in open(&#x27;/proc/self/maps&#x27;).read()
 False
 </code></pre>
 <p>While PyTorch uses NVML if available to query what devices are on the system etc., it will fall back to asking those questions to libcudart, which does not seem to need to load libnvidia-ml to answer those questions.</p>
 <p>(By &quot;installed directly into the Python environment&quot; I mean with again either a wrapper setting <code>LD_LIBRARY_PATH</code> or something involving rpaths. The Torch wheels on PyPI use rpaths to find libcudart from the nvidia-cuda-runtime-cu12 etc. wheels, and do not find the global libcudart. While the CUDA runtime wheels on PyPI do not include the cuda-compat libraries, shipping them into Python environments is definitely a thing I have done on my own—specifically to handle the case of wanting to be able to use a newer Python environment + newer physical GPU without having to update the container image. If it is helpful I can build such a container image to demonstrate what it looks like.)</p>
-<p>In both of these cases, something like pip, being  Python code running inside the Python environment in question, will behave <em>more</em> closely to the behavior of libraries like PyTorch—though, even then, e.g. <code>ctypes.CDLL(&quot;libcudart.so.12&quot;)</code> will fail (or find the wrong library) because <code>libtorch_cuda.so</code> relies on rpaths to find it, and will also fail if you have not <em>yet</em> installed the CUDA runtime into the environment. But uv is not running inside the Python environment at all, so its behavior can be very different. (For the same reason, &quot;what if it's statically linked against musl and cannot load libraries at all&quot; is something we have to worry about but pip doesn't—if pip is running inside a Python interpreter that is itself statically linked against musl, that interpreter cannot load compiled extension modules like PyTorch, let alone CUDA, so pip doesn't need to answer any questions about GPUs.)</p>
+<p>In both of these cases, something like pip, being  Python code running inside the Python environment in question, will behave <em>more</em> closely to the behavior of libraries like PyTorch—though, even then, e.g. <code>ctypes.CDLL(&quot;libcudart.so.12&quot;)</code> will fail (or find the wrong library) because <code>libtorch_cuda.so</code> relies on rpaths to find it, and will also fail if you have not <em>yet</em> installed the CUDA runtime into the environment. But uv is not running inside the Python environment at all, so its behavior can be very different. (For the same reason, &quot;what if it&#x27;s statically linked against musl and cannot load libraries at all&quot; is something we have to worry about but pip doesn&#x27;t—if pip is running inside a Python interpreter that is itself statically linked against musl, that interpreter cannot load compiled extension modules like PyTorch, let alone CUDA, so pip doesn&#x27;t need to answer any questions about GPUs.)</p>
 <p>We could decide to move some of the discovery logic into the set of things we query the Python interpreter for. But</p>
 <ul>
-<li>This <em>still</em> has the downside that you need to install some set of userspace library that might not be currently installed to get the answer. Again, it is wholly possible to set up a self-contained virtual environment for GPU-enabled PyTorch that runs on a container image with no NVIDIA libraries installed in the container image, and it's often preferable to do so, so that everything is versioned along with the venv and not dependent on the system (the version of the container image). The only dependency is on the kernel driver and the physical hardware.</li>
-<li>As noted above, even if they are installed, they may not be implicitly importable, and we'd have to add some heuristics around how we think an actual library like <code>libtorch_cuda</code> is going to look for things.</li>
-<li>For uv more so than pip, calling into Python is slow. We do already do some interpreter discovery by calling into Python, but (as I understand it) we try to avoid doing it as much as possible, and we cache it as a function <em>of the Python install</em>, where here it's a function <em>of the system CUDA install</em>, and either of these can change without the other changing.</li>
+<li>This <em>still</em> has the downside that you need to install some set of userspace library that might not be currently installed to get the answer. Again, it is wholly possible to set up a self-contained virtual environment for GPU-enabled PyTorch that runs on a container image with no NVIDIA libraries installed in the container image, and it&#x27;s often preferable to do so, so that everything is versioned along with the venv and not dependent on the system (the version of the container image). The only dependency is on the kernel driver and the physical hardware.</li>
+<li>As noted above, even if they are installed, they may not be implicitly importable, and we&#x27;d have to add some heuristics around how we think an actual library like <code>libtorch_cuda</code> is going to look for things.</li>
+<li>For uv more so than pip, calling into Python is slow. We do already do some interpreter discovery by calling into Python, but (as I understand it) we try to avoid doing it as much as possible, and we cache it as a function <em>of the Python install</em>, where here it&#x27;s a function <em>of the system CUDA install</em>, and either of these can change without the other changing.</li>
 </ul>
 </div>
         </div>
@@ -186,13 +186,13 @@ False
 <pre><code>$ ./test.sh 
 + docker_run uv-cuda-demo-base ldd /bin/uv
 	not a dynamic executable
-+ docker_run uv-cuda-demo-base /v/bin/python -c 'import torch; print(f&quot;{torch.cuda.is_available()=}&quot;); import ctypes; print(ctypes.CDLL(&quot;libnvidia-ml.so.1&quot;))'
++ docker_run uv-cuda-demo-base /v/bin/python -c &#x27;import torch; print(f&quot;{torch.cuda.is_available()=}&quot;); import ctypes; print(ctypes.CDLL(&quot;libnvidia-ml.so.1&quot;))&#x27;
 torch.cuda.is_available()=False
 OSError: libnvidia-ml.so.1: cannot open shared object file: No such file or directory
-+ docker_run uv-cuda-demo-global env LD_LIBRARY_PATH=/usr/local/cuda-12.9/compat /v/bin/python -c 'import torch; print(f&quot;{torch.cuda.is_available()=}&quot;); import ctypes; print(ctypes.CDLL(&quot;libnvidia-ml.so.1&quot;))'
++ docker_run uv-cuda-demo-global env LD_LIBRARY_PATH=/usr/local/cuda-12.9/compat /v/bin/python -c &#x27;import torch; print(f&quot;{torch.cuda.is_available()=}&quot;); import ctypes; print(ctypes.CDLL(&quot;libnvidia-ml.so.1&quot;))&#x27;
 torch.cuda.is_available()=True
 OSError: libnvidia-ml.so.1: cannot open shared object file: No such file or directory
-+ docker_run uv-cuda-demo-venv /v/bin/python -c 'import torch; print(f&quot;{torch.cuda.is_available()=}&quot;); import ctypes; print(ctypes.CDLL(&quot;libnvidia-ml.so.1&quot;))'
++ docker_run uv-cuda-demo-venv /v/bin/python -c &#x27;import torch; print(f&quot;{torch.cuda.is_available()=}&quot;); import ctypes; print(ctypes.CDLL(&quot;libnvidia-ml.so.1&quot;))&#x27;
 torch.cuda.is_available()=True
 OSError: libnvidia-ml.so.1: cannot open shared object file: No such file or directory
 </code></pre>
@@ -201,14 +201,14 @@ OSError: libnvidia-ml.so.1: cannot open shared object file: No such file or dire
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/vyasr">@vyasr</a> on 2025-07-24 04:34</div>
-            <div class="timeline-body"><p>There's a ton of detail in this thread. I'll come back to read through it in more detail later and test (probably on Friday, when I can also test out the example you posted), but from a quick skim I have a general idea and I can probably move things faster with a few quick clarifications. @geofft IIUC your concern is the following:</p>
+            <div class="timeline-body"><p>There&#x27;s a ton of detail in this thread. I&#x27;ll come back to read through it in more detail later and test (probably on Friday, when I can also test out the example you posted), but from a quick skim I have a general idea and I can probably move things faster with a few quick clarifications. @geofft IIUC your concern is the following:</p>
 <ul>
 <li><code>uv</code> provides standalone binaries that statically link everything, including the C standard library (using musl, not glibc). You cannot have any external library dependencies without breaking portability guarantees, including no glibc dependency so that you can run on systems regardless of the available version of glibc. Are you allowed to dlopen other libraries, though?</li>
 <li>You need to be able to run in systems where CUDA support is provided by the <code>cuda-compat</code> package, which means that <code>libnvidia-ml.so.1</code> is not actually available inside the container. In those cases do you still see the real library (libnvidia-ml.so.535....) in the container mounted in? I would expect that to be mounted in if you are using the nvidia-container-cli, but I could be mistaken.</li>
 <li>You need to work on bare metal in situations where the user has done a custom installation of the CUDA driver (e.g. by extracting binaries from runfiles) and has only actually installed nvidia.ko and libcuda.so.</li>
 </ul>
-<p>I agree that in principle it is possible to wind up in a scenario that does not have NVML. I do not know the kernel driver's interfaces well enough to know if there is a reliable way to query what we need from just that, though, and it sounds like you have concluded from some experimentation that there is not. How widespread do you think those use cases are? Will we wind up excluding a large portion of users by not supporting that out of the box?</p>
-<p>If you think that is critical I agree that the ideal case would be that we ask internally for some help in writing the code needed to determine that. I don't know if that is feasible or realistic, though, and even if it is I don't know what the timespan for implementing that is. NVML-based detection seems like a good enough approach to go with in the short to intermediate term while we sort out whether there is a reliable way to do this with only the (user and kernel) driver libraries installed and absolutely nothing else.</p>
+<p>I agree that in principle it is possible to wind up in a scenario that does not have NVML. I do not know the kernel driver&#x27;s interfaces well enough to know if there is a reliable way to query what we need from just that, though, and it sounds like you have concluded from some experimentation that there is not. How widespread do you think those use cases are? Will we wind up excluding a large portion of users by not supporting that out of the box?</p>
+<p>If you think that is critical I agree that the ideal case would be that we ask internally for some help in writing the code needed to determine that. I don&#x27;t know if that is feasible or realistic, though, and even if it is I don&#x27;t know what the timespan for implementing that is. NVML-based detection seems like a good enough approach to go with in the short to intermediate term while we sort out whether there is a reliable way to do this with only the (user and kernel) driver libraries installed and absolutely nothing else.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -217,7 +217,7 @@ OSError: libnvidia-ml.so.1: cannot open shared object file: No such file or dire
 <blockquote>
 <p>Are you allowed to dlopen other libraries, though?</p>
 </blockquote>
-<p>A fully static ELF executable (as we're producing) can't load dynamic libraries.</p>
+<p>A fully static ELF executable (as we&#x27;re producing) can&#x27;t load dynamic libraries.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -226,16 +226,16 @@ OSError: libnvidia-ml.so.1: cannot open shared object file: No such file or dire
 <blockquote>
 <p>However, this build of uv is still perfectly capable of either using a system-installed Python linking glibc or downloading one from python-build-standalone, and creating manylinux virtualenvs, where NVML, CUDA, and the Torch wheels will all work fine.</p>
 </blockquote>
-<p>That implies that you are OK running other executables that happen to load glibc transitively (i.e. the system Python installation in this case). If that is true, could the dlopen be deferred to a subprocess? Not that I'm advocating this as a good solution, but I'm not seeing the distinction between doing that and running a glibc-linked Python installation.</p>
+<p>That implies that you are OK running other executables that happen to load glibc transitively (i.e. the system Python installation in this case). If that is true, could the dlopen be deferred to a subprocess? Not that I&#x27;m advocating this as a good solution, but I&#x27;m not seeing the distinction between doing that and running a glibc-linked Python installation.</p>
 <p>It seems like the next follow-up here for me is to figure out if there is any way to do what NVML is doing to determine compute capabilities without NVML itself.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/geofft">@geofft</a> on 2025-07-26 01:15</div>
             <div class="timeline-body"><blockquote>
-<p>That implies that you are OK running other executables that happen to load glibc transitively (i.e. the system Python installation in this case). If that is true, could the dlopen be deferred to a subprocess? Not that I'm advocating this as a good solution, but I'm not seeing the distinction between doing that and running a glibc-linked Python installation.</p>
+<p>That implies that you are OK running other executables that happen to load glibc transitively (i.e. the system Python installation in this case). If that is true, could the dlopen be deferred to a subprocess? Not that I&#x27;m advocating this as a good solution, but I&#x27;m not seeing the distinction between doing that and running a glibc-linked Python installation.</p>
 </blockquote>
-<p>Yeah, I guess we could do that - the requirement here is this uv binary must not have a <em>hard</em> requirement on glibc, but it can have a soft requirement in the form of an embedded binary that it writes out and then calls as a subprocess. There's still a concern about performance, and there are some mild logistical hoops, but I would guess this would work in the majority of cases.</p>
+<p>Yeah, I guess we could do that - the requirement here is this uv binary must not have a <em>hard</em> requirement on glibc, but it can have a soft requirement in the form of an embedded binary that it writes out and then calls as a subprocess. There&#x27;s still a concern about performance, and there are some mild logistical hoops, but I would guess this would work in the majority of cases.</p>
 <blockquote>
 <p>It seems like the next follow-up here for me is to figure out if there is any way to do what NVML is doing to determine compute capabilities without NVML itself.</p>
 </blockquote>
@@ -244,21 +244,21 @@ OSError: libnvidia-ml.so.1: cannot open shared object file: No such file or dire
 <blockquote>
 <p>In those cases do you still see the real library (libnvidia-ml.so.535....) in the container mounted in? I would expect that to be mounted in if you are using the nvidia-container-cli, but I could be mistaken.</p>
 </blockquote>
-<p>I think these are indeed mounted in by the various container plugins (assuming they're installed on the host), but sometimes not on the default linker search path because they end up in /usr/local/nvidia or something. I guess we could probe some possible paths where it might be.</p>
-<p>(I feel like I remember seeing that NVIDIA-built Docker images have them in /etc/ld.so.cache because the system <em>on which the container is built</em> also has the drivers installed and is using an NVIDIA container plugin; it's nice for this to not be a requirement, so you can use other container build pipelines, other people's base containers, etc.)</p>
-<p>Also I'm not sure what happens on WSL2, where there isn't a need for the host (Windows) to have the Linux userspace components at all.</p>
+<p>I think these are indeed mounted in by the various container plugins (assuming they&#x27;re installed on the host), but sometimes not on the default linker search path because they end up in /usr/local/nvidia or something. I guess we could probe some possible paths where it might be.</p>
+<p>(I feel like I remember seeing that NVIDIA-built Docker images have them in /etc/ld.so.cache because the system <em>on which the container is built</em> also has the drivers installed and is using an NVIDIA container plugin; it&#x27;s nice for this to not be a requirement, so you can use other container build pipelines, other people&#x27;s base containers, etc.)</p>
+<p>Also I&#x27;m not sure what happens on WSL2, where there isn&#x27;t a need for the host (Windows) to have the Linux userspace components at all.</p>
 <blockquote>
 <p>You need to work on bare metal in situations where the user has done a custom installation of the CUDA driver (e.g. by extracting binaries from runfiles) and has only actually installed nvidia.ko and libcuda.so.</p>
 </blockquote>
-<p>Yes. I don't think this is a 100% hard requirement, to be clear, since we can always ask the user to fix their setup or override the detection with environment variables. But I have seen enough weird setups that I think if we're in a situation where Torch would successfully run, it's annoying if uv, the thing that isn't actually using a GPU, thinks your CUDA installation is insufficient.</p>
-<p>&quot;Weird setups&quot; includes individual end users who are trying to fix their setup in haphazard ways, repackagers like Linux distros (I think NVML and nvidia-smi might not be hard dependencies in some distos' own packaging), and people with complicated HPC setups.</p>
-<p>Also, to be precise, I want to work in a situation where you don't even have libcuda.so, just nvidia.ko (or something else like WSL2 or gVisor that provides compatible <code>/dev/nvidia*</code> proxy devices), i.e, all we require is the kernel driver. libcuda.so can come from some sort of cuda-compat wheel, which would mean all your userspace dependencies are inside your virtual environment. This intuitively seems desirable on containers, WSL2, etc., and even on normal systems, I think it would be good for user experience for uv to be able to ensure everything on the userspace side is set up correctly as opposed to needing you to globally install the right thing. It's in line with what we do for non-CUDA things.</p>
+<p>Yes. I don&#x27;t think this is a 100% hard requirement, to be clear, since we can always ask the user to fix their setup or override the detection with environment variables. But I have seen enough weird setups that I think if we&#x27;re in a situation where Torch would successfully run, it&#x27;s annoying if uv, the thing that isn&#x27;t actually using a GPU, thinks your CUDA installation is insufficient.</p>
+<p>&quot;Weird setups&quot; includes individual end users who are trying to fix their setup in haphazard ways, repackagers like Linux distros (I think NVML and nvidia-smi might not be hard dependencies in some distos&#x27; own packaging), and people with complicated HPC setups.</p>
+<p>Also, to be precise, I want to work in a situation where you don&#x27;t even have libcuda.so, just nvidia.ko (or something else like WSL2 or gVisor that provides compatible <code>/dev/nvidia*</code> proxy devices), i.e, all we require is the kernel driver. libcuda.so can come from some sort of cuda-compat wheel, which would mean all your userspace dependencies are inside your virtual environment. This intuitively seems desirable on containers, WSL2, etc., and even on normal systems, I think it would be good for user experience for uv to be able to ensure everything on the userspace side is set up correctly as opposed to needing you to globally install the right thing. It&#x27;s in line with what we do for non-CUDA things.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:32:08 UTC
+        Synced at 2026-01-20 19:39:27 UTC
     </footer>
 </body>
 </html>

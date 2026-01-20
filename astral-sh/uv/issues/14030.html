@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MalteEbner">@MalteEbner</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>The way how uv handles different packages with the same name is very confusing. I tried it with pillow-simd and pillow.</p>
 <p>The order in which pillow-simd and pillow are installed can cause the wrong version of them to be used or the installation to be missing. Basically there are 5 different states:</p>
 <p>| Pillow-SIMD          | Pillow               | Notes                                         |
@@ -35,13 +35,13 @@
 | Installed &amp; Inactive | Installed &amp; Active   | Both installed; Pillow is the active one      |</p>
 <p>The problem is now that I cannot define that never both should be installed, but only one. I tried many different approaches, but non of them worked.</p>
 <p>E.g. I used dependency groups, (one with pillow and one with pillow-simd). However, due to main or dev dependencies having pillow as transitive dependency, there still was the problem of both being installed and the active one depending on the order of installation or the order of dependency groups.</p>
-<h3>Wished behaviour.</h3>
+Wished behaviour.
 <p>I would like to tell that always either pillow or pillow-simd is installed, but never both. How can I do that?</p>
-<h3>Reproduction examples.</h3>
+Reproduction examples.
 <p>Two examples for weird behaviours:</p>
-<h4>No fallback to pillow</h4>
-<p>Let's start with a completely fresh pyproject.toml and .venv</p>
-<pre><code class="language-bash">ubuntu@ip-172-31-20-46:/GitHub/lightly-core/test_pillow$ rm -R .venv/
+No fallback to pillow
+<p>Let&#x27;s start with a completely fresh pyproject.toml and .venv</p>
+<pre><code>ubuntu@ip-172-31-20-46:/GitHub/lightly-core/test_pillow$ rm -R .venv/
 ubuntu@ip-172-31-20-46:/GitHub/lightly-core/test_pillow$ uv venv .venv --python 3.10
 Using CPython 3.10.13
 Creating virtual environment at: .venv
@@ -50,9 +50,9 @@ ubuntu@ip-172-31-20-46:/GitHub/lightly-core/test_pillow$ source .venv/bin/activa
 (.venv) ubuntu@ip-172-31-20-46:/GitHub/lightly-core/test_pillow$ uv run python -c &quot;from PIL import Image; print(Image.__version__)&quot;
 Traceback (most recent call last):
   File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
-ModuleNotFoundError: No module named 'PIL'
+ModuleNotFoundError: No module named &#x27;PIL&#x27;
 
-# Let's add pillow for arm64 and pillow-simd for amd64. The versions are just as expected.
+# Let&#x27;s add pillow for arm64 and pillow-simd for amd64. The versions are just as expected.
 (.venv) ubuntu@ip-172-31-20-46:/GitHub/lightly-core/test_pillow$ uv add pillow --group arm64
 Resolved 2 packages in 26ms
 Installed 1 package in 2ms
@@ -66,7 +66,7 @@ Installed 1 package in 6ms
 (.venv) ubuntu@ip-172-31-20-46:/GitHub/lightly-core/test_pillow$ uv run python -c &quot;from PIL import Image; print(Image.__version__)&quot;
 9.5.0.post2
 
-# Let's add matplotlib, which requires pillow
+# Let&#x27;s add matplotlib, which requires pillow
 (.venv) ubuntu@ip-172-31-20-46:/GitHub/lightly-core/test_pillow$ uv add matplotlib
 Resolved 14 packages in 40ms
 Installed 10 packages in 14ms
@@ -83,7 +83,7 @@ Installed 10 packages in 14ms
 # It still uses pillow-simd
 (.venv) ubuntu@ip-172-31-20-46:/GitHub/lightly-core/test_pillow$ uv run python -c &quot;from PIL import Image; print(Image.__version__)&quot;
 9.5.0.post2
-# Let's sync again, without the amd64 group
+# Let&#x27;s sync again, without the amd64 group
 (.venv) ubuntu@ip-172-31-20-46:/GitHub/lightly-core/test_pillow$ uv sync
 Resolved 14 packages in 9ms
 Uninstalled 1 package in 1ms
@@ -93,23 +93,23 @@ Uninstalled 1 package in 1ms
 (.venv) ubuntu@ip-172-31-20-46:/GitHub/lightly-core/test_pillow$ uv run python -c &quot;from PIL import Image; print(Image.__version__)&quot;
 Traceback (most recent call last):
   File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
-ImportError: cannot import name 'Image' from 'PIL' (unknown location)
+ImportError: cannot import name &#x27;Image&#x27; from &#x27;PIL&#x27; (unknown location)
 </code></pre>
-<h4>Not using pillow-simd even though it is defined in a group</h4>
-<p>Let's start with a completely fresh pyproject.toml and .venv</p>
-<pre><code class="language-bash">ubuntu@ip-172-31-20-46:/GitHub/lightly-core/test_pillow$ uv venv .venv --python 3.10
+Not using pillow-simd even though it is defined in a group
+<p>Let&#x27;s start with a completely fresh pyproject.toml and .venv</p>
+<pre><code>ubuntu@ip-172-31-20-46:/GitHub/lightly-core/test_pillow$ uv venv .venv --python 3.10
 Using CPython 3.10.13
 Creating virtual environment at: .venv
 Activate with: source .venv/bin/activate
 ubuntu@ip-172-31-20-46:/GitHub/lightly-core/test_pillow$ source .venv/bin/activate
-# Let's install pillow-simd in a group
+# Let&#x27;s install pillow-simd in a group
 (.venv) ubuntu@ip-172-31-20-46:/GitHub/lightly-core/test_pillow$ uv add pillow-simd --group amd64
 Resolved 2 packages in 13ms
 Installed 1 package in 2ms
  + pillow-simd==9.5.0.post2
 (.venv) ubuntu@ip-172-31-20-46:/GitHub/lightly-core/test_pillow$ uv run python -c &quot;from PIL import Image; print(Image.__version__)&quot;
 9.5.0.post2
-# Let's add matplotlib. It now installs pillow instead of using pillow-simd
+# Let&#x27;s add matplotlib. It now installs pillow instead of using pillow-simd
 (.venv) ubuntu@ip-172-31-20-46:/GitHub/lightly-core/test_pillow$ uv add matplotlib
 Resolved 14 packages in 25ms
 Installed 11 packages in 14ms
@@ -127,7 +127,7 @@ Installed 11 packages in 14ms
 # As expected, pillow (non-SIMD) is now used
 (.venv) ubuntu@ip-172-31-20-46:/GitHub/lightly-core/test_pillow$ uv run python -c &quot;from PIL import Image; print(Image.__version__)&quot;
 11.2.1
-# Let's install the amd64 group with pillow-simd again. Nothing happens
+# Let&#x27;s install the amd64 group with pillow-simd again. Nothing happens
 (.venv) ubuntu@ip-172-31-20-46:/GitHub/lightly-core/test_pillow$ uv sync --group amd64
 Resolved 14 packages in 9ms
 Audited 12 packages in 0.01ms
@@ -135,21 +135,21 @@ Audited 12 packages in 0.01ms
 (.venv) ubuntu@ip-172-31-20-46:/GitHub/lightly-core/test_pillow$ uv run python -c &quot;from PIL import Image; print(Image.__version__)&quot;
 11.2.1
 </code></pre>
-<h2></h2>
-<h3>Platform</h3>
+
+Platform
 <p>Ubuntu 20.04 amd64</p>
-<h3>Version</h3>
+Version
 <p>0.7.5</p>
-<h3>Python version</h3>
+Python version
 <p>3.10.13</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @MalteEbner on 2025-06-13 15:37</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/MalteEbner">@MalteEbner</a> on 2025-06-13 15:37</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-13 15:49</div>
-            <div class="timeline-body"><p>I think that's another case of https://github.com/astral-sh/uv/pull/13437: The two packages contain the same modules, so installing them together leads to a race condition on installation. Or in your case, one package overrides the other and then also removes those files. Generally, uv can't tell that pillow-simd is also pillow and can be used with matplotlib, I don't think they can be used together without hacks.</p>
+            <div class="timeline-body"><p>I think that&#x27;s another case of <a href="https://github.com/astral-sh/uv/pull/13437">astral-sh/uv#13437</a>: The two packages contain the same modules, so installing them together leads to a race condition on installation. Or in your case, one package overrides the other and then also removes those files. Generally, uv can&#x27;t tell that pillow-simd is also pillow and can be used with matplotlib, I don&#x27;t think they can be used together without hacks.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -157,26 +157,26 @@ Audited 12 packages in 0.01ms
             <div class="timeline-body"><p>Suggested solution: I think it should be possible for the user to define different packages under the same module name similar to the sources logic. Something similar to this:</p>
 <pre><code>[tool.uv.sources]
 pillow = [
-  { package = &quot;pillow-simd&gt;=9,&lt;10&quot;, marker = &quot;platform_machine == 'x86_64'&quot;},
-  { package = &quot;pillow&gt;=11,&lt;12&quot;, marker = &quot;platform_machine == 'aarch64'&quot;},
+  { package = &quot;pillow-simd&gt;=9,&lt;10&quot;, marker = &quot;platform_machine == &#x27;x86_64&#x27;&quot;},
+  { package = &quot;pillow&gt;=11,&lt;12&quot;, marker = &quot;platform_machine == &#x27;aarch64&#x27;&quot;},
 ]
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-13 16:07</div>
-            <div class="timeline-body"><p>This works, but the problem is that matplotlib depends on pillow, not on pillow-simd, and there's no mechanism in python packaging to tell that pillow-simd is a replacement for pillow, so you can't mix pillow-simd and matplotlib.</p>
+            <div class="timeline-body"><p>This works, but the problem is that matplotlib depends on pillow, not on pillow-simd, and there&#x27;s no mechanism in python packaging to tell that pillow-simd is a replacement for pillow, so you can&#x27;t mix pillow-simd and matplotlib.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-13 16:55</div>
-            <div class="timeline-body"><p>This is tracked in https://github.com/astral-sh/uv/issues/4422</p>
+            <div class="timeline-body"><p>This is tracked in <a href="https://github.com/astral-sh/uv/issues/4422">astral-sh/uv#4422</a></p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:31:47 UTC
+        Synced at 2026-01-20 19:39:03 UTC
     </footer>
 </body>
 </html>

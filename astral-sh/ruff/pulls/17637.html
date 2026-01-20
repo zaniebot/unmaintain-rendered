@@ -23,25 +23,25 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This PR resolves both the typing-related and syntax error TODOs added in #17563 by tracking a set of <code>global</code> bindings for each scope. As discussed below, we avoid the additional AST traversal from ruff by collecting <code>Name</code>s from <code>global</code>  statements while building the semantic index and emit a syntax error if the <code>Name</code> is already bound in the current scope at the point of the <code>global</code> statement. This has the downside of separating the error from the <code>SemanticSyntaxChecker</code>, but I plan to explore using this approach in the <code>SemanticSyntaxChecker</code> itself as a follow-up. It seems like this may be a better approach for ruff as well.</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>Updated all of the related mdtests to remove the TODOs (and add quotes I forgot on the messages).</p>
-<p>There is one remaining TODO, but it requires <code>nonlocal</code> support, which isn't even incorporated into the <code>SemanticSyntaxChecker</code> yet.</p>
+<p>There is one remaining TODO, but it requires <code>nonlocal</code> support, which isn&#x27;t even incorporated into the <code>SemanticSyntaxChecker</code> yet.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @ntBre on 2025-04-25 21:33</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-25 21:33</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-25 21:35</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">pytest-robotframework (https://github.com/detachhead/pytest-robotframework)
+Changes were detected when running on open source projects
+
+<pre><code>pytest-robotframework (https://github.com/detachhead/pytest-robotframework)
 - warning[lint:unresolved-reference] tests/fixtures/test_python/test_fixture_class_scope.py:13:5: Name `count_1` used when not defined
 - warning[lint:unresolved-reference] tests/fixtures/test_python/test_fixture_class_scope.py:19:5: Name `count_2` used when not defined
 - warning[lint:unresolved-reference] tests/fixtures/test_python/test_fixture_module_scope/conftest.py:11:5: Name `count` used when not defined
@@ -403,9 +403,9 @@ pwndbg (https://github.com/pwndbg/pwndbg)
 - warning[lint:unresolved-reference] pwndbg/aglib/kernel/__init__.py:141:14: Name `_kconfig` used when not defined
 - warning[lint:possibly-unresolved-reference] pwndbg/aglib/kernel/__init__.py:143:12: Name `_kconfig` used when possibly not defined
 - warning[lint:unresolved-reference] pwndbg/aglib/kernel/__init__.py:525:8: Name `_arch_ops` used when not defined
-- error[lint:unresolved-attribute] pwndbg/aglib/kernel/__init__.py:526:12: Type `&lt;module 'pwndbg.aglib.arch'&gt;` has no attribute `name`
-- error[lint:unresolved-attribute] pwndbg/aglib/kernel/__init__.py:528:14: Type `&lt;module 'pwndbg.aglib.arch'&gt;` has no attribute `name`
-- error[lint:unresolved-attribute] pwndbg/aglib/kernel/__init__.py:530:14: Type `&lt;module 'pwndbg.aglib.arch'&gt;` has no attribute `name`
+- error[lint:unresolved-attribute] pwndbg/aglib/kernel/__init__.py:526:12: Type `&lt;module &#x27;pwndbg.aglib.arch&#x27;&gt;` has no attribute `name`
+- error[lint:unresolved-attribute] pwndbg/aglib/kernel/__init__.py:528:14: Type `&lt;module &#x27;pwndbg.aglib.arch&#x27;&gt;` has no attribute `name`
+- error[lint:unresolved-attribute] pwndbg/aglib/kernel/__init__.py:530:14: Type `&lt;module &#x27;pwndbg.aglib.arch&#x27;&gt;` has no attribute `name`
 - warning[lint:possibly-unresolved-reference] pwndbg/aglib/kernel/__init__.py:533:12: Name `_arch_ops` used when possibly not defined
 - warning[lint:unresolved-reference] pwndbg/aglib/kernel/vmmap.py:250:36: Name `monitor_info_mem_not_warned` used when not defined
 - warning[lint:unresolved-reference] pwndbg/commands/ai.py:505:22: Name `last_pc` used when not defined
@@ -707,8 +707,8 @@ jax (https://github.com/google/jax)
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-29 23:36</div>
             <div class="timeline-body"><p>Thanks for working on this!</p>
-<p>My preference for red-knot would be to avoid the double AST visit if we can -- and I think we fairly easily can. I admit I'm a little surprised to see that it has 0% perf impact in the benchmark. I do wonder if this result would hold up on much larger projects? In particular, semantic indexing is a cost we pay on <em>every</em> file, even third-party files we aren't checking, and this could make a difference when checking a project with lots of big third-party dependencies.</p>
-<p>I think the way I would do this in red-knot, without the double visit, is for semantic indexing to do nothing more than record which names are marked global in each scope, and handle the rest of it in type checking. When checking a scope we'd again record which symbols we've seen marked as global when we hit the global statement, and on every <code>Name</code> node we'd check if the symbol is a) marked as <code>global</code> in the semantic index, but b) we haven't yet seen in a <code>global</code> statement in checking, and if so we'd emit the diagnostic.</p>
+<p>My preference for red-knot would be to avoid the double AST visit if we can -- and I think we fairly easily can. I admit I&#x27;m a little surprised to see that it has 0% perf impact in the benchmark. I do wonder if this result would hold up on much larger projects? In particular, semantic indexing is a cost we pay on <em>every</em> file, even third-party files we aren&#x27;t checking, and this could make a difference when checking a project with lots of big third-party dependencies.</p>
+<p>I think the way I would do this in red-knot, without the double visit, is for semantic indexing to do nothing more than record which names are marked global in each scope, and handle the rest of it in type checking. When checking a scope we&#x27;d again record which symbols we&#x27;ve seen marked as global when we hit the global statement, and on every <code>Name</code> node we&#x27;d check if the symbol is a) marked as <code>global</code> in the semantic index, but b) we haven&#x27;t yet seen in a <code>global</code> statement in checking, and if so we&#x27;d emit the diagnostic.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -718,13 +718,13 @@ jax (https://github.com/google/jax)
 </blockquote>
 <p>Thanks for taking a look!</p>
 <blockquote>
-<p>My preference for red-knot would be to avoid the double AST visit if we can -- and I think we fairly easily can. I admit I'm a little surprised to see that it has 0% perf impact in the benchmark. I do wonder if this result would hold up on much larger projects? In particular, semantic indexing is a cost we pay on every file, even third-party files we aren't checking, and this could make a difference when checking a project with lots of big third-party dependencies.</p>
+<p>My preference for red-knot would be to avoid the double AST visit if we can -- and I think we fairly easily can. I admit I&#x27;m a little surprised to see that it has 0% perf impact in the benchmark. I do wonder if this result would hold up on much larger projects? In particular, semantic indexing is a cost we pay on every file, even third-party files we aren&#x27;t checking, and this could make a difference when checking a project with lots of big third-party dependencies.</p>
 </blockquote>
-<p>I was definitely surprised by this too. I haven't tried a larger project, but it does sound like that would cause problems.</p>
+<p>I was definitely surprised by this too. I haven&#x27;t tried a larger project, but it does sound like that would cause problems.</p>
 <blockquote>
-<p>I think the way I would do this in red-knot, without the double visit, is for semantic indexing to do nothing more than record which names are marked global in each scope, and handle the rest of it in type checking. When checking a scope we'd again record which symbols we've seen marked as global when we hit the global statement, and on every <code>Name</code> node we'd check if the symbol is a) marked as <code>global</code> in the semantic index, but b) we haven't yet seen in a <code>global</code> statement in checking, and if so we'd emit the diagnostic.</p>
+<p>I think the way I would do this in red-knot, without the double visit, is for semantic indexing to do nothing more than record which names are marked global in each scope, and handle the rest of it in type checking. When checking a scope we&#x27;d again record which symbols we&#x27;ve seen marked as global when we hit the global statement, and on every <code>Name</code> node we&#x27;d check if the symbol is a) marked as <code>global</code> in the semantic index, but b) we haven&#x27;t yet seen in a <code>global</code> statement in checking, and if so we&#x27;d emit the diagnostic.</p>
 </blockquote>
-<p>That approach definitely makes sense to me for red-knot. However, if I'm following correctly, I think this might conflict a bit with how the semantic syntax errors are currently detected in the semantic indexing phase. I may need to move the embedded <code>SemanticSyntaxChecker</code> from the <code>SemanticIndexBuilder</code> to the <code>TypeInferenceBuilder</code>, or just emit the <code>global</code> error separately. I'll take a closer look at those approaches this week.</p>
+<p>That approach definitely makes sense to me for red-knot. However, if I&#x27;m following correctly, I think this might conflict a bit with how the semantic syntax errors are currently detected in the semantic indexing phase. I may need to move the embedded <code>SemanticSyntaxChecker</code> from the <code>SemanticIndexBuilder</code> to the <code>TypeInferenceBuilder</code>, or just emit the <code>global</code> error separately. I&#x27;ll take a closer look at those approaches this week.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -732,21 +732,21 @@ jax (https://github.com/google/jax)
             <div class="timeline-body"><blockquote>
 <p>think this might conflict a bit with how the semantic syntax errors are currently detected in the semantic indexing phase. I may need to move the embedded <code>SemanticSyntaxChecker</code> from the <code>SemanticIndexBuilder</code> to the <code>TypeInferenceBuilder</code>, or just emit the <code>global</code> error separately.</p>
 </blockquote>
-<p>I was assuming the latter. Is there any need for all semantic syntax errors to be emitted from <code>SemanticSyntaxChecker</code>? It doesn't seem necessary to change the implementation of all the existing checks just to keep them together.</p>
+<p>I was assuming the latter. Is there any need for all semantic syntax errors to be emitted from <code>SemanticSyntaxChecker</code>? It doesn&#x27;t seem necessary to change the implementation of all the existing checks just to keep them together.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-30 15:08</div>
             <div class="timeline-body"><blockquote>
-<p>I was assuming the latter. Is there any need for all semantic syntax errors to be emitted from SemanticSyntaxChecker? It doesn't seem necessary to change the implementation of all the existing checks just to keep them together.</p>
+<p>I was assuming the latter. Is there any need for all semantic syntax errors to be emitted from SemanticSyntaxChecker? It doesn&#x27;t seem necessary to change the implementation of all the existing checks just to keep them together.</p>
 </blockquote>
-<p>Not strictly, but the visitor assumes that at least, the entire function body is visited in one go. I think that would also prevent us from moving this to type inference because we aren't visiting the body eagerly (and always in chunks without preserving any state in between)</p>
+<p>Not strictly, but the visitor assumes that at least, the entire function body is visited in one go. I think that would also prevent us from moving this to type inference because we aren&#x27;t visiting the body eagerly (and always in chunks without preserving any state in between)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-30 15:10</div>
             <div class="timeline-body"><p>Could we instead record all global usages in <code>SemanticIndexBuilder</code> and then do a post processing in <code>SemanticSyntaxChecker</code> where, given all known symbols and the known places of global usages.</p>
-<p>Alternatively. I would also be okay if that one check would be implemented separately between Red Knot and Ruff. It isn't a complicated check either way.</p>
+<p>Alternatively. I would also be okay if that one check would be implemented separately between Red Knot and Ruff. It isn&#x27;t a complicated check either way.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -754,17 +754,17 @@ jax (https://github.com/google/jax)
             <div class="timeline-body"><blockquote>
 <p>Could we instead record all global usages in <code>SemanticIndexBuilder</code> and then do a post processing in <code>SemanticSyntaxChecker</code> where, given all known symbols and the known places of global usages.</p>
 </blockquote>
-<p>This sounds promising, I'll give it a try!</p>
+<p>This sounds promising, I&#x27;ll give it a try!</p>
 <blockquote>
-<p>Alternatively. I would also be okay if that one check would be implemented separately between Red Knot and Ruff. It isn't a complicated check either way.</p>
+<p>Alternatively. I would also be okay if that one check would be implemented separately between Red Knot and Ruff. It isn&#x27;t a complicated check either way.</p>
 </blockquote>
-<p>Yeah I don't really mind implementing it separately either. I think we might run into something similar for a couple of other errors (<a href="https://docs.astral.sh/ruff/rules/nonlocal-and-global/#nonlocal-and-global-ple0115">nonlocal-and-global (PLE0115)</a> comes to mind, but I think there's at least one more <code>global</code> error I'm forgetting). So it would be nice to keep them in the <code>Checker</code> but not a huge deal in any case.</p>
+<p>Yeah I don&#x27;t really mind implementing it separately either. I think we might run into something similar for a couple of other errors (<a href="https://docs.astral.sh/ruff/rules/nonlocal-and-global/#nonlocal-and-global-ple0115">nonlocal-and-global (PLE0115)</a> comes to mind, but I think there&#x27;s at least one more <code>global</code> error I&#x27;m forgetting). So it would be nice to keep them in the <code>Checker</code> but not a huge deal in any case.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-02 21:00</div>
-            <div class="timeline-body"><p>Thanks to help from @AlexWaygood in our pairing session today, we are now handling all of the typing-related todos as well as the semantic errors. There's one todo left for <code>nonlocal</code> and <code>global</code>, but the <code>SemanticSyntaxChecker</code> doesn't handle <code>nonlocal</code> at all yet either.</p>
-<p>We avoided the double AST visit by recording the globals while building the semantic index and then emitting them directly in <code>build</code> without relying on the <code>SemanticSyntaxChecker</code>. I'm actually wondering if this might be the better approach to these errors in general (querying the parent visitor to see if the name is bound in the current scope at the <code>global</code> statement rather than the other way around), so I'll leave this as a draft a bit longer. This also means the error is emitted on the <code>global</code> statement rather than the name. That's in line with CPython but not the corresponding ruff rule (<a href="https://docs.astral.sh/ruff/rules/load-before-global-declaration/">PLE0118</a>).</p>
+            <div class="timeline-body"><p>Thanks to help from @AlexWaygood in our pairing session today, we are now handling all of the typing-related todos as well as the semantic errors. There&#x27;s one todo left for <code>nonlocal</code> and <code>global</code>, but the <code>SemanticSyntaxChecker</code> doesn&#x27;t handle <code>nonlocal</code> at all yet either.</p>
+<p>We avoided the double AST visit by recording the globals while building the semantic index and then emitting them directly in <code>build</code> without relying on the <code>SemanticSyntaxChecker</code>. I&#x27;m actually wondering if this might be the better approach to these errors in general (querying the parent visitor to see if the name is bound in the current scope at the <code>global</code> statement rather than the other way around), so I&#x27;ll leave this as a draft a bit longer. This also means the error is emitted on the <code>global</code> statement rather than the name. That&#x27;s in line with CPython but not the corresponding ruff rule (<a href="https://docs.astral.sh/ruff/rules/load-before-global-declaration/">PLE0118</a>).</p>
 <p>Also I apparently caused a new panic with this backtrace, which I can reproduce locally based on the fuzzer output:</p>
 <pre><code>  crates/red_knot_python_semantic/resources/mdtest/scopes/global.md:184 panicked at /home/brent/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/42f1583/src/function/fetch.rs:130:25
   crates/red_knot_python_semantic/resources/mdtest/scopes/global.md:184 dependency graph cycle when querying value_type_(Id(1400)), set cycle_fn/cycle_initial to fixpoint iterate.
@@ -791,14 +791,14 @@ Query stack:
   crates/red_knot_python_semantic/resources/mdtest/scopes/global.md:184 
 </code></pre>
 <p>Input code:</p>
-<pre><code class="language-python">global name_5
+<pre><code>global name_5
 (name_2 := name_5)
 
 def name_1(name_4: name_2, /):
     pass
 type name_5 = name_5
 </code></pre>
-<p>So that's another reason to stay in draft!</p>
+<p>So that&#x27;s another reason to stay in draft!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -808,7 +808,7 @@ type name_5 = name_5
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1355 on 2025-05-02 22:28</div>
             <div class="timeline-body"><p>this gets rid of one of the failing seeds on the fuzzer CI job:</p>
-<pre><code class="language-suggestion">        let declarations = if is_global &amp;&amp; file_scope_id != FileScopeId::global() {
+<pre><code>        let declarations = if is_global &amp;&amp; file_scope_id != FileScopeId::global() {
 </code></pre>
 </div>
         </div>
@@ -818,8 +818,8 @@ type name_5 = name_5
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:5154 on 2025-05-02 22:33</div>
-            <div class="timeline-body"><p>Similar to https://github.com/astral-sh/ruff/pull/17637/files#r2072209268, I think this might cause infinite recursion if we're already in the global scope. I'm also not sure this is totally correct -- if a symbol is declared as <code>global</code> in a function scope, it <em>can</em> fallback to bindings in the global scope, but we still need to iterate over bindings in the inner scope before falling back to the global-scope bindings. The global-scope <code>x = 42</code> binding here is overridden by the <code>x = 56</code> binding later on in the function scope:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; x = 42
+            <div class="timeline-body"><p>Similar to <a href="https://github.com/astral-sh/ruff/pull/17637">astral-sh/ruff#17637</a>/files#r2072209268, I think this might cause infinite recursion if we&#x27;re already in the global scope. I&#x27;m also not sure this is totally correct -- if a symbol is declared as <code>global</code> in a function scope, it <em>can</em> fallback to bindings in the global scope, but we still need to iterate over bindings in the inner scope before falling back to the global-scope bindings. The global-scope <code>x = 42</code> binding here is overridden by the <code>x = 56</code> binding later on in the function scope:</p>
+<pre><code>&gt;&gt;&gt; x = 42
 &gt;&gt;&gt; def f():
 ...     global x
 ...     print(x)
@@ -830,8 +830,8 @@ type name_5 = name_5
 42
 56
 </code></pre>
-<p>The way this differs from normal local variables is that you're not normally allowed to fallback to the global scope like that if the variable has also been assigned to in the function scope. This produces an error because <code>x</code> is not declared as <code>global</code>: falling back to the global scope is forbidden because <code>x</code> is assigned to later on in the function, making it a local-only variable:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; x = 42
+<p>The way this differs from normal local variables is that you&#x27;re not normally allowed to fallback to the global scope like that if the variable has also been assigned to in the function scope. This produces an error because <code>x</code> is not declared as <code>global</code>: falling back to the global scope is forbidden because <code>x</code> is assigned to later on in the function, making it a local-only variable:</p>
+<pre><code>&gt;&gt;&gt; x = 42
 &gt;&gt;&gt; def f():
 ...     print(x)
 ...     x = 56
@@ -845,7 +845,7 @@ Traceback (most recent call last):
   File &quot;&lt;python-input-3&gt;&quot;, line 2, in f
     print(x)
           ^
-UnboundLocalError: cannot access local variable 'x' where it is not associated with a value
+UnboundLocalError: cannot access local variable &#x27;x&#x27; where it is not associated with a value
 </code></pre>
 </div>
         </div>
@@ -855,8 +855,8 @@ UnboundLocalError: cannot access local variable 'x' where it is not associated w
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:5154 on 2025-05-05 19:18</div>
-            <div class="timeline-body"><p>I'm confident that I'm missing something here because your explanation makes sense to me, but I tried turning these into mdtests and they seem to be working as I would expect:</p>
-<pre><code class="language-markdown">```py
+            <div class="timeline-body"><p>I&#x27;m confident that I&#x27;m missing something here because your explanation makes sense to me, but I tried turning these into mdtests and they seem to be working as I would expect:</p>
+<pre><code>```py
 x = 42
 
 def f():
@@ -884,9 +884,9 @@ def f():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:5154 on 2025-05-05 22:21</div>
-            <div class="timeline-body"><p>Ahh I think I forgot how this function worked. We'll have already iterated over the definitions in the scope we're currently in before we get here! So it's actually no surprise that you're observing the correct behaviour here already.</p>
+            <div class="timeline-body"><p>Ahh I think I forgot how this function worked. We&#x27;ll have already iterated over the definitions in the scope we&#x27;re currently in before we get here! So it&#x27;s actually no surprise that you&#x27;re observing the correct behaviour here already.</p>
 <p>One more test you could add would be to check that we <em>skip</em> over intermediate scopes in between the global scope and the current scope for <code>global</code> names. I think you get this right currently, but it would be good to test it explicitly:</p>
-<pre><code class="language-py">x: int = 42
+<pre><code>x: int = 42
 
 def f():
     x: str = &quot;foo&quot;
@@ -904,7 +904,7 @@ def f():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:5154 on 2025-05-05 22:23</div>
-            <div class="timeline-body"><p>Scratch that, you already have that test case, it's just not in the diff of this PR! Sorry!</p>
+            <div class="timeline-body"><p>Scratch that, you already have that test case, it&#x27;s just not in the diff of this PR! Sorry!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -912,7 +912,7 @@ def f():
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[red-knot] Copy and paste ruff's `global` handling" to "[ty] Implement `global` handling and `load-before-global-declaration` syntax error" by @ntBre on 2025-05-06 14:37</div>
+            <div class="event">Renamed from &quot;[red-knot] Copy and paste ruff&#x27;s `global` handling&quot; to &quot;[ty] Implement `global` handling and `load-before-global-declaration` syntax error&quot; by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-06 14:37</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-05-06 15:18</div>
@@ -924,20 +924,20 @@ def f():
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @ntBre on 2025-05-06 15:19</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-06 15:19</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @ntBre on 2025-05-06 15:19</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-06 15:19</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @ntBre on 2025-05-06 15:19</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-06 15:19</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @ntBre on 2025-05-06 15:19</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-06 15:19</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/semantic_index.rs</code>:182 on 2025-05-06 15:26</div>
-            <div class="timeline-body"><p>Is the idea here for using a hash map that only very few scopes have globals (it's not a densly populated array), which is why it doesn't make sense to use an <code>IndexVec</code>.</p>
+            <div class="timeline-body"><p>Is the idea here for using a hash map that only very few scopes have globals (it&#x27;s not a densly populated array), which is why it doesn&#x27;t make sense to use an <code>IndexVec</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -966,11 +966,11 @@ def f():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-06 16:15</div>
-            <div class="timeline-body"><p>I think you could do something like this to implement the changes @MichaReiser's suggesting (which I agree make sense -- a <code>ScopedSymbolId</code> will take up less memory than a <code>Name</code>):</p>
-<details>
-<summary>Suggested patch</summary>
+            <div class="timeline-body"><p>I think you could do something like this to implement the changes @MichaReiser&#x27;s suggesting (which I agree make sense -- a <code>ScopedSymbolId</code> will take up less memory than a <code>Name</code>):</p>
 
-<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/src/semantic_index.rs b/crates/ty_python_semantic/src/semantic_index.rs
+Suggested patch
+
+<pre><code>diff --git a/crates/ty_python_semantic/src/semantic_index.rs b/crates/ty_python_semantic/src/semantic_index.rs
 index 584064564c..7978ee189d 100644
 --- a/crates/ty_python_semantic/src/semantic_index.rs
 +++ b/crates/ty_python_semantic/src/semantic_index.rs
@@ -983,16 +983,16 @@ index 584064564c..7978ee189d 100644
  /// Returns the semantic index for `file`.
  ///
  /// Prefer using [`symbol_table`] when working with symbols from a single scope.
-@@ -179,7 +177,7 @@ pub(crate) struct SemanticIndex&lt;'db&gt; {
-     scope_ids_by_scope: IndexVec&lt;FileScopeId, ScopeId&lt;'db&gt;&gt;,
+@@ -179,7 +177,7 @@ pub(crate) struct SemanticIndex&lt;&#x27;db&gt; {
+     scope_ids_by_scope: IndexVec&lt;FileScopeId, ScopeId&lt;&#x27;db&gt;&gt;,
  
      /// Map from the file-local [`FileScopeId`] to the [`Globals`] it contains.
 -    globals_by_scope: FxHashMap&lt;FileScopeId, Globals&gt;,
 +    globals_by_scope: FxHashMap&lt;FileScopeId, FxHashSet&lt;ScopedSymbolId&gt;&gt;,
  
      /// Use-def map for each scope in this file.
-     use_def_maps: IndexVec&lt;FileScopeId, Arc&lt;UseDefMap&lt;'db&gt;&gt;&gt;,
-@@ -260,8 +258,14 @@ impl&lt;'db&gt; SemanticIndex&lt;'db&gt; {
+     use_def_maps: IndexVec&lt;FileScopeId, Arc&lt;UseDefMap&lt;&#x27;db&gt;&gt;&gt;,
+@@ -260,8 +258,14 @@ impl&lt;&#x27;db&gt; SemanticIndex&lt;&#x27;db&gt; {
          self.scope_ids_by_scope.iter().copied()
      }
  
@@ -1022,16 +1022,16 @@ index aa0dee089c..39e94fc98a 100644
  mod except_handlers;
  
  #[derive(Clone, Debug, Default)]
-@@ -108,7 +106,7 @@ pub(super) struct SemanticIndexBuilder&lt;'db&gt; {
-     use_def_maps: IndexVec&lt;FileScopeId, UseDefMapBuilder&lt;'db&gt;&gt;,
+@@ -108,7 +106,7 @@ pub(super) struct SemanticIndexBuilder&lt;&#x27;db&gt; {
+     use_def_maps: IndexVec&lt;FileScopeId, UseDefMapBuilder&lt;&#x27;db&gt;&gt;,
      scopes_by_node: FxHashMap&lt;NodeWithScopeKey, FileScopeId&gt;,
      scopes_by_expression: FxHashMap&lt;ExpressionNodeKey, FileScopeId&gt;,
 -    globals_by_scope: FxHashMap&lt;FileScopeId, Globals&gt;,
 +    globals_by_scope: FxHashMap&lt;FileScopeId, FxHashSet&lt;ScopedSymbolId&gt;&gt;,
-     definitions_by_node: FxHashMap&lt;DefinitionNodeKey, Definitions&lt;'db&gt;&gt;,
-     expressions_by_node: FxHashMap&lt;ExpressionNodeKey, Expression&lt;'db&gt;&gt;,
+     definitions_by_node: FxHashMap&lt;DefinitionNodeKey, Definitions&lt;&#x27;db&gt;&gt;,
+     expressions_by_node: FxHashMap&lt;ExpressionNodeKey, Expression&lt;&#x27;db&gt;&gt;,
      imported_modules: FxHashSet&lt;ModuleName&gt;,
-@@ -1089,6 +1087,7 @@ impl&lt;'db&gt; SemanticIndexBuilder&lt;'db&gt; {
+@@ -1089,6 +1087,7 @@ impl&lt;&#x27;db&gt; SemanticIndexBuilder&lt;&#x27;db&gt; {
          self.scopes_by_node.shrink_to_fit();
          self.generator_functions.shrink_to_fit();
          self.eager_snapshots.shrink_to_fit();
@@ -1078,7 +1078,7 @@ diff --git a/crates/ty_python_semantic/src/types/infer.rs b/crates/ty_python_sem
 index 21b7699691..490ade86e6 100644
 --- a/crates/ty_python_semantic/src/types/infer.rs
 +++ b/crates/ty_python_semantic/src/types/infer.rs
-@@ -1373,17 +1373,18 @@ impl&lt;'db&gt; TypeInferenceBuilder&lt;'db&gt; {
+@@ -1373,17 +1373,18 @@ impl&lt;&#x27;db&gt; TypeInferenceBuilder&lt;&#x27;db&gt; {
  
          let file_scope_id = binding.file_scope(self.db());
          let symbol_table = self.index.symbol_table(file_scope_id);
@@ -1103,7 +1103,7 @@ index 21b7699691..490ade86e6 100644
              match self
                  .index
                  .symbol_table(FileScopeId::global())
-@@ -5211,12 +5212,15 @@ impl&lt;'db&gt; TypeInferenceBuilder&lt;'db&gt; {
+@@ -5211,12 +5212,15 @@ impl&lt;&#x27;db&gt; TypeInferenceBuilder&lt;&#x27;db&gt; {
  
              let current_file = self.file();
  
@@ -1125,19 +1125,19 @@ index 21b7699691..490ade86e6 100644
                      db,
                      FileScopeId::global().to_scope_id(db, current_file),
 </code></pre>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/semantic_index.rs</code>:179 on 2025-05-06 18:18</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">    /// Map from the file-local [`FileScopeId`] to the set of global names it contains.
+            <div class="timeline-body"><pre><code>    /// Map from the file-local [`FileScopeId`] to the set of global names it contains.
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-05-06 18:19</div>
-            <div class="timeline-body"><p>This LGTM, thank you! I'd love for @carljm to take a quick look too though</p>
+            <div class="timeline-body"><p>This LGTM, thank you! I&#x27;d love for @carljm to take a quick look too though</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1151,7 +1151,7 @@ index 21b7699691..490ade86e6 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/scopes/global.md</code>:195 on 2025-05-07 23:56</div>
-            <div class="timeline-body"><p>Probably best to give this a separate heading. Two unnamed code blocks under a single heading are merged into a single file for checking. Seems to be ok here at the moment, but this can lead to future confusion when we're dealing with global scope. E.g. at the moment the first test is only showing <code>Literal[42]</code> because the second test also assigns <code>x = 42</code> -- if the second test assigned something different to <code>x</code>, the first test would see that instead.</p>
+            <div class="timeline-body"><p>Probably best to give this a separate heading. Two unnamed code blocks under a single heading are merged into a single file for checking. Seems to be ok here at the moment, but this can lead to future confusion when we&#x27;re dealing with global scope. E.g. at the moment the first test is only showing <code>Literal[42]</code> because the second test also assigns <code>x = 42</code> -- if the second test assigned something different to <code>x</code>, the first test would see that instead.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1161,26 +1161,26 @@ index 21b7699691..490ade86e6 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/semantic_index.rs</code>:179 on 2025-05-08 00:01</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">    /// Map from the file-local [`FileScopeId`] to the set of explicit-global symbols it contains.
+            <div class="timeline-body"><pre><code>    /// Map from the file-local [`FileScopeId`] to the set of explicit-global symbols it contains.
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/scopes/global.md</code>:42 on 2025-05-08 00:09</div>
-            <div class="timeline-body"><p>I think there's a set of cases that we aren't testing, which is when we mark a name <code>global</code> in a nested scope, and then declare that name with a new type in that scope, e.g.</p>
-<pre><code class="language-py">x: int = 1
+            <div class="timeline-body"><p>I think there&#x27;s a set of cases that we aren&#x27;t testing, which is when we mark a name <code>global</code> in a nested scope, and then declare that name with a new type in that scope, e.g.</p>
+<pre><code>x: int = 1
 
 def f():
     global x
     x: str = &quot;foo&quot;
 </code></pre>
-<p>We should definitely error on that assignment, since it's an assignment to the global with the wrong type. I think we should probably error any time a <code>global</code> name is declared with a type in the local scope, even if the type is the same -- that kind of local re-declaration of a global gives the wrong impression and doesn't make sense.</p>
-<p>It's OK if this is a TODO in this PR, but we should at least add a TODO for it.</p>
+<p>We should definitely error on that assignment, since it&#x27;s an assignment to the global with the wrong type. I think we should probably error any time a <code>global</code> name is declared with a type in the local scope, even if the type is the same -- that kind of local re-declaration of a global gives the wrong impression and doesn&#x27;t make sense.</p>
+<p>It&#x27;s OK if this is a TODO in this PR, but we should at least add a TODO for it.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:1380 on 2025-05-08 00:10</div>
-            <div class="timeline-body"><p>We can push this down into the only branch where it's needed?</p>
+            <div class="timeline-body"><p>We can push this down into the only branch where it&#x27;s needed?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1199,14 +1199,14 @@ def f():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/scopes/global.md</code>:42 on 2025-05-08 03:31</div>
-            <div class="timeline-body"><p>that's actually a (currently unimplemented?) syntax error to provide a local-scope annotation for a name declared global. So I don't think we should emit an error about it in type inference — that would lead to unnecessary double diagnostics.</p>
+            <div class="timeline-body"><p>that&#x27;s actually a (currently unimplemented?) syntax error to provide a local-scope annotation for a name declared global. So I don&#x27;t think we should emit an error about it in type inference — that would lead to unnecessary double diagnostics.</p>
 <p>We should implement the syntax error (either here or in a followup PR) though! And we should add tests now.</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; x: int = 1
+<pre><code>&gt;&gt;&gt; x: int = 1
 &gt;&gt;&gt; def f():
 ...     global x
 ...     x: str = &quot;foo&quot;
   File &quot;&lt;string&gt;&quot;, line 3
-SyntaxError: annotated name 'x' can't be global
+SyntaxError: annotated name &#x27;x&#x27; can&#x27;t be global
 </code></pre>
 </div>
         </div>
@@ -1216,7 +1216,7 @@ SyntaxError: annotated name 'x' can't be global
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/scopes/global.md</code>:42 on 2025-05-08 04:47</div>
-            <div class="timeline-body"><p>Oh cool, didn't realize that was a syntax error -- even if the declaration comes after the <code>global</code> statement. Agreed.</p>
+            <div class="timeline-body"><p>Oh cool, didn&#x27;t realize that was a syntax error -- even if the declaration comes after the <code>global</code> statement. Agreed.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1234,7 +1234,7 @@ SyntaxError: annotated name 'x' can't be global
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ty_python_semantic/resources/mdtest/scopes/global.md</code>:199 on 2025-05-08 13:03</div>
-            <div class="timeline-body"><p>Not really, just avoiding two comments on the first one haha I've updated it!</p>
+            <div class="timeline-body"><p>Not really, just avoiding two comments on the first one haha I&#x27;ve updated it!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1243,7 +1243,7 @@ SyntaxError: annotated name 'x' can't be global
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:1380 on 2025-05-08 13:10</div>
-            <div class="timeline-body"><p>I ran into some &quot;borrowed value does not live long enough&quot; errors when trying to move this into the <code>if</code> or <code>match</code>. Happy to try again if I'm missing something here, though. I think the <code>declarations</code> binding just below this is storing a reference to <code>global_use_def_map</code>.</p>
+            <div class="timeline-body"><p>I ran into some &quot;borrowed value does not live long enough&quot; errors when trying to move this into the <code>if</code> or <code>match</code>. Happy to try again if I&#x27;m missing something here, though. I think the <code>declarations</code> binding just below this is storing a reference to <code>global_use_def_map</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1253,11 +1253,11 @@ SyntaxError: annotated name 'x' can't be global
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:1380 on 2025-05-08 13:16</div>
             <div class="timeline-body"><p>You might be able to make it a little lazier, e.g.</p>
-<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/src/types/infer.rs b/crates/ty_python_semantic/src/types/infer.rs
+<pre><code>diff --git a/crates/ty_python_semantic/src/types/infer.rs b/crates/ty_python_semantic/src/types/infer.rs
 index 490ade86e6..0c3a9efc5c 100644
 --- a/crates/ty_python_semantic/src/types/infer.rs
 +++ b/crates/ty_python_semantic/src/types/infer.rs
-@@ -1382,15 +1382,17 @@ impl&lt;'db&gt; TypeInferenceBuilder&lt;'db&gt; {
+@@ -1382,15 +1382,17 @@ impl&lt;&#x27;db&gt; TypeInferenceBuilder&lt;&#x27;db&gt; {
                  .index
                  .symbol_is_global_in_scope(symbol_id, file_scope_id);
  
@@ -1286,17 +1286,17 @@ index 490ade86e6..0c3a9efc5c 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ty_python_semantic/resources/mdtest/scopes/global.md</code>:42 on 2025-05-08 13:32</div>
-            <div class="timeline-body"><p>I added this to the <code>global</code> mdtest as a TODO and added the syntax error to https://github.com/astral-sh/ruff/issues/17412!</p>
+            <div class="timeline-body"><p>I added this to the <code>global</code> mdtest as a TODO and added the syntax error to <a href="https://github.com/astral-sh/ruff/issues/17412">astral-sh/ruff#17412</a>!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-08 13:39</div>
-            <div class="timeline-body"><p>Thank you all for the very helpful reviews (and the help implementing this)! I'll merge this later today in case anyone wants one more look at the recent small changes.</p>
+            <div class="timeline-body"><p>Thank you all for the very helpful reviews (and the help implementing this)! I&#x27;ll merge this later today in case anyone wants one more look at the recent small changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:1380 on 2025-05-08 14:22</div>
-            <div class="timeline-body"><p>Not a big deal, it's just one hashmap lookup</p>
+            <div class="timeline-body"><p>Not a big deal, it&#x27;s just one hashmap lookup</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1305,10 +1305,10 @@ index 490ade86e6..0c3a9efc5c 100644
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @ntBre on 2025-05-08 14:30</div>
+            <div class="event">Merged by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-08 14:30</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ntBre on 2025-05-08 14:30</div>
+            <div class="event">Closed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-08 14:30</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-05-08 14:30</div>
@@ -1316,7 +1316,7 @@ index 490ade86e6..0c3a9efc5c 100644
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:11:55 UTC
+        Synced at 2026-01-20 19:13:41 UTC
     </footer>
 </body>
 </html>

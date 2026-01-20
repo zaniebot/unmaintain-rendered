@@ -25,7 +25,7 @@
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a></div>
             <div class="timeline-body"><p>This PR changes <code>Stylist</code> to initialize from tokens instead of re-lexing a string, which, in the worst case, requires re-lexing the whole program.</p>
 <p>This was the reason why <code>numpy/globals.py</code> regressed by close to 15% compared to when pydocstyle is disabled.</p>
-<h2>Benchmarks</h2>
+Benchmarks
 <ul>
 <li><code>non-logical</code>: <code>main</code> with logical_lines disabled</li>
 <li><code>pr3737</code>: Base reference with <code>logical_lines</code> enabled</li>
@@ -44,48 +44,48 @@ linter/default-rules/numpy/globals.py      1.00    101.0±0.41µs    29.2 MB/sec
 linter/default-rules/pydantic/types.py     1.03      2.1±0.01ms    11.9 MB/sec    1.11      2.3±0.02ms    11.0 MB/sec    1.11      2.3±0.04ms    11.0 MB/sec    1.00      2.1±0.04ms    12.2 MB/sec
 </code></pre>
 <p>This shows that the performance compared to main is nearly unchanged, but performance improves when enabling <code>logical_lines</code> (worst case is now about 10% of regression and no longer 20%)</p>
-<h2>CPython Benchmark</h2>
+CPython Benchmark
 <p>This is a end-to-end benchmark comparing the performance between the logical lines implementation of this PR, the logical lines implementation at the start of this stack, and when logical lines is disabled. The results show that</p>
 <ul>
 <li>Reduces the slowdown of enabling logical lines from 1.71 to 1.26</li>
 <li>Caching performance depends on the number of enabled rules... :confused:</li>
 <li>This stack improves the performance of running all rules by roughly 10%</li>
 </ul>
-<h3>Default Rules - No cache</h3>
+Default Rules - No cache
 <pre>
-<b>Summary</b>
-  &apos;<span style="color:#2AA1B3">./no-logical-main ./crates/ruff/resources/test/cpython/ --no-cache</span>&apos; ran
-<span style="color:#26A269"><b>    1.00</b></span> ± <span style="color:#26A269">0.02</span> times faster than &apos;<span style="color:#A347BA">./no-logical-pr ./crates/ruff/resources/test/cpython/ --no-cache</span>&apos;
-<span style="color:#26A269"><b>    1.26</b></span> ± <span style="color:#26A269">0.03</span> times faster than &apos;<span style="color:#A347BA">./logical-pr ./crates/ruff/resources/test/cpython/ --no-cache</span>&apos;
-<span style="color:#26A269"><b>    1.71</b></span> ± <span style="color:#26A269">0.05</span> times faster than &apos;<span style="color:#A347BA">./logical-main ./crates/ruff/resources/test/cpython/ --no-cache</span>&apos;</pre>
+Summary
+  &apos;<span>./no-logical-main ./crates/ruff/resources/test/cpython/ --no-cache</span>&apos; ran
+<span>    1.00</span> ± <span>0.02</span> times faster than &apos;<span>./no-logical-pr ./crates/ruff/resources/test/cpython/ --no-cache</span>&apos;
+<span>    1.26</span> ± <span>0.03</span> times faster than &apos;<span>./logical-pr ./crates/ruff/resources/test/cpython/ --no-cache</span>&apos;
+<span>    1.71</span> ± <span>0.05</span> times faster than &apos;<span>./logical-main ./crates/ruff/resources/test/cpython/ --no-cache</span>&apos;</pre>
 
-<h3>Default Rules -- Cache</h3>
+Default Rules -- Cache
 <pre> 
-<b>Summary</b>
-  &apos;<span style="color:#2AA1B3">./no-logical-main ./crates/ruff/resources/test/cpython/</span>&apos; ran
-<span style="color:#26A269"><b>    1.00</b></span> ± <span style="color:#26A269">0.06</span> times faster than &apos;<span style="color:#A347BA">./no-logical-pr ./crates/ruff/resources/test/cpython/</span>&apos;
-<span style="color:#26A269"><b>    2.07</b></span> ± <span style="color:#26A269">0.11</span> times faster than &apos;<span style="color:#A347BA">./logical-pr ./crates/ruff/resources/test/cpython/</span>&apos;
-<span style="color:#26A269"><b>    2.08</b></span> ± <span style="color:#26A269">0.12</span> times faster than &apos;<span style="color:#A347BA">./logical-main ./crates/ruff/resources/test/cpython/</span>&apos;
+Summary
+  &apos;<span>./no-logical-main ./crates/ruff/resources/test/cpython/</span>&apos; ran
+<span>    1.00</span> ± <span>0.06</span> times faster than &apos;<span>./no-logical-pr ./crates/ruff/resources/test/cpython/</span>&apos;
+<span>    2.07</span> ± <span>0.11</span> times faster than &apos;<span>./logical-pr ./crates/ruff/resources/test/cpython/</span>&apos;
+<span>    2.08</span> ± <span>0.12</span> times faster than &apos;<span>./logical-main ./crates/ruff/resources/test/cpython/</span>&apos;
 </pre>
 
-<h3>All Rules - No cache</h3>
+All Rules - No cache
 <pre>
-<b>Summary</b>
-  &apos;<span style="color:#2AA1B3">./no-logical-pr ./crates/ruff/resources/test/cpython/ --no-cache --select=ALL -e</span>&apos; ran
-<span style="color:#26A269"><b>    1.06</b></span> ± <span style="color:#26A269">0.03</span> times faster than &apos;<span style="color:#A347BA">./no-logical-main ./crates/ruff/resources/test/cpython/ --no-cache --select=ALL -e</span>&apos;
-<span style="color:#26A269"><b>    1.07</b></span> ± <span style="color:#26A269">0.03</span> times faster than &apos;<span style="color:#A347BA">./logical-pr ./crates/ruff/resources/test/cpython/ --no-cache --select=ALL -e</span>&apos;
-<span style="color:#26A269"><b>    1.24</b></span> ± <span style="color:#26A269">0.03</span> times faster than &apos;<span style="color:#A347BA">./logical-main ./crates/ruff/resources/test/cpython/ --no-cache --select=ALL -e</span>&apos;
+Summary
+  &apos;<span>./no-logical-pr ./crates/ruff/resources/test/cpython/ --no-cache --select=ALL -e</span>&apos; ran
+<span>    1.06</span> ± <span>0.03</span> times faster than &apos;<span>./no-logical-main ./crates/ruff/resources/test/cpython/ --no-cache --select=ALL -e</span>&apos;
+<span>    1.07</span> ± <span>0.03</span> times faster than &apos;<span>./logical-pr ./crates/ruff/resources/test/cpython/ --no-cache --select=ALL -e</span>&apos;
+<span>    1.24</span> ± <span>0.03</span> times faster than &apos;<span>./logical-main ./crates/ruff/resources/test/cpython/ --no-cache --select=ALL -e</span>&apos;
 </pre>
 
-<h3>All Rules - Cache</h3>
-<pre><b>Summary</b>
-  &apos;<span style="color:#2AA1B3">./no-logical-pr check ./crates/ruff/resources/test/cpython/ --select=ALL -e</span>&apos; ran
-<span style="color:#26A269"><b>    1.08</b></span> ± <span style="color:#26A269">0.04</span> times faster than &apos;<span style="color:#A347BA">./logical-pr check ./crates/ruff/resources/test/cpython/ --select=ALL -e</span>&apos;
-<span style="color:#26A269"><b>    1.10</b></span> ± <span style="color:#26A269">0.04</span> times faster than &apos;<span style="color:#A347BA">./no-logical-main check ./crates/ruff/resources/test/cpython/ --select=ALL -e</span>&apos;
-<span style="color:#26A269"><b>    1.22</b></span> ± <span style="color:#26A269">0.05</span> times faster than &apos;<span style="color:#A347BA">./logical-main check ./crates/ruff/resources/test/cpython/ --select=ALL -e</span>&apos;
+All Rules - Cache
+<pre>Summary
+  &apos;<span>./no-logical-pr check ./crates/ruff/resources/test/cpython/ --select=ALL -e</span>&apos; ran
+<span>    1.08</span> ± <span>0.04</span> times faster than &apos;<span>./logical-pr check ./crates/ruff/resources/test/cpython/ --select=ALL -e</span>&apos;
+<span>    1.10</span> ± <span>0.04</span> times faster than &apos;<span>./no-logical-main check ./crates/ruff/resources/test/cpython/ --select=ALL -e</span>&apos;
+<span>    1.22</span> ± <span>0.05</span> times faster than &apos;<span>./logical-main check ./crates/ruff/resources/test/cpython/ --select=ALL -e</span>&apos;
 </pre>
 
-<h2>Memory usage</h2>
+Memory usage
 <p>The stack improves memory usage due to the removed <code>text</code> and <code>mappings</code>. Measuring the impact of logical lines vs main is difficult because the new lint generates a ton more violations than running the existing default set and all these Diagnostics must be stored in memory.</p>
 <p>But here are some rough numbers</p>
 <ul>
@@ -101,13 +101,13 @@ linter/default-rules/pydantic/types.py     1.03      2.1±0.01ms    11.9 MB/sec 
             <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
 <ul>
 <li>main<ul>
-<li><strong>PR #3714</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3714" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a><ul>
-<li><strong>PR #3715</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3715" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a><ul>
-<li><strong>PR #3735</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3735" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a><ul>
-<li><strong>PR #3736</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3736" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a><ul>
-<li><strong>PR #3745</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3745" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a>
-* <strong>PR #3757</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3757" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a>  👈</li>
-<li><strong>PR #3737</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3737" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #3714</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3714"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite"></a><ul>
+<li><strong>PR #3715</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3715"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite"></a><ul>
+<li><strong>PR #3735</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3735"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite"></a><ul>
+<li><strong>PR #3736</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3736"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite"></a><ul>
+<li><strong>PR #3745</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3745"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite"></a>
+* <strong>PR #3757</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3757"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite"></a>  👈</li>
+<li><strong>PR #3737</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3737"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite"></a></li>
 </ul>
 </li>
 </ul>
@@ -124,20 +124,20 @@ linter/default-rules/pydantic/types.py     1.03      2.1±0.01ms    11.9 MB/sec 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-03-27 11:04</div>
-            <div class="timeline-body"><h2>PR Check Results</h2>
-<h3>Ecosystem</h3>
+            <div class="timeline-body">PR Check Results
+Ecosystem
 <p>ℹ️ ecosystem check <strong>detected changes</strong>. (+1, -1, 0 error(s))</p>
-<details><summary>bokeh (+1, -1)</summary>
+bokeh (+1, -1)
 <p>
 
-<pre><code class="language-diff">+ src/bokeh/util/browser.py:120:5: SIM108 [*] Use ternary operator `url = location if location.startswith(&quot;http&quot;) else &quot;file://&quot; + abspath(location)` instead of `if`-`else`-block
-- src/bokeh/util/browser.py:120:5: SIM108 [*] Use ternary operator `url = location if location.startswith('http') else 'file://' + abspath(location)` instead of `if`-`else`-block
+<pre><code>+ src/bokeh/util/browser.py:120:5: SIM108 [*] Use ternary operator `url = location if location.startswith(&quot;http&quot;) else &quot;file://&quot; + abspath(location)` instead of `if`-`else`-block
+- src/bokeh/util/browser.py:120:5: SIM108 [*] Use ternary operator `url = location if location.startswith(&#x27;http&#x27;) else &#x27;file://&#x27; + abspath(location)` instead of `if`-`else`-block
 </code></pre>
 </p>
-</details>
 
-<h3>Benchmark</h3>
-<h4>Linux</h4>
+
+Benchmark
+Linux
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 linter/all-rules/large/dataset.py          1.00     13.7±0.04ms     3.0 MB/sec    1.00     13.7±0.05ms     3.0 MB/sec
@@ -149,7 +149,7 @@ linter/default-rules/numpy/ctypeslib.py    1.02   1652.1±3.22µs    10.1 MB/sec
 linter/default-rules/numpy/globals.py      1.00    182.0±0.45µs    16.2 MB/sec    1.00    182.2±1.42µs    16.2 MB/sec
 linter/default-rules/pydantic/types.py     1.03      3.4±0.01ms     7.4 MB/sec    1.00      3.3±0.02ms     7.7 MB/sec
 </code></pre>
-<h4>Windows</h4>
+Windows
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 linter/all-rules/large/dataset.py          1.00     15.3±0.27ms     2.7 MB/sec    1.03     15.7±0.28ms     2.6 MB/sec
@@ -161,12 +161,12 @@ linter/default-rules/numpy/ctypeslib.py    1.00  1827.9±32.09µs     9.1 MB/sec
 linter/default-rules/numpy/globals.py      1.00    205.0±7.41µs    14.4 MB/sec    1.01   207.7±24.27µs    14.2 MB/sec
 linter/default-rules/pydantic/types.py     1.03      3.9±0.12ms     6.5 MB/sec    1.00      3.8±0.36ms     6.7 MB/sec
 </code></pre>
-<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Initialize Stylist from tokens" to "perf(pydocstyle): Initialize Stylist from tokens" by @MichaReiser on 2023-03-27 11:45</div>
+            <div class="event">Renamed from &quot;Initialize Stylist from tokens&quot; to &quot;perf(pydocstyle): Initialize Stylist from tokens&quot; by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-03-27 11:45</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-03-27 11:48</div>
@@ -174,18 +174,18 @@ linter/default-rules/pydantic/types.py     1.03      3.9±0.12ms     6.5 MB/sec 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/source_code/stylist.rs</code>:79 on 2023-03-27 11:48</div>
-            <div class="timeline-body"><p>Ideally, we wouldn't need to iterate here but that's not possible without cloning <code>tokens</code> because <code>parse_program</code> requires owned tokens.</p>
+            <div class="timeline-body"><p>Ideally, we wouldn&#x27;t need to iterate here but that&#x27;s not possible without cloning <code>tokens</code> because <code>parse_program</code> requires owned tokens.</p>
 <p>Iterating over some tokens here should be significantly cheaper than re-lexing all the tokens.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @MichaReiser on 2023-03-27 11:52</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-03-27 11:52</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-03-27 12:26</div>
             <div class="timeline-body"><blockquote>
-<h2>PR Check Results</h2>
-<h3>Ecosystem</h3>
+PR Check Results
+Ecosystem
 <p>information_source ecosystem check <strong>detected changes</strong>. (+1, -1, 0 error(s))
 bokeh (+1, -1)</p>
 </blockquote>
@@ -193,14 +193,14 @@ bokeh (+1, -1)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2023-03-27 12:31</div>
+            <div class="event">Review requested from <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-03-27 12:31</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "perf(pydocstyle): Initialize Stylist from tokens" to "perf(pycodestyle): Initialize Stylist from tokens" by @charliermarsh on 2023-03-27 13:09</div>
+            <div class="event">Renamed from &quot;perf(pydocstyle): Initialize Stylist from tokens&quot; to &quot;perf(pycodestyle): Initialize Stylist from tokens&quot; by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-27 13:09</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/source_code/stylist.rs</code>:79 on 2023-03-27 15:21</div>
-            <div class="timeline-body"><p>If we're doing this already, would it make sense to remove the <code>OnceCell</code> entirely from <code>indentation</code> and <code>quote</code>?</p>
+            <div class="timeline-body"><p>If we&#x27;re doing this already, would it make sense to remove the <code>OnceCell</code> entirely from <code>indentation</code> and <code>quote</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -217,7 +217,7 @@ bokeh (+1, -1)</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/source_code/stylist.rs</code>:79 on 2023-03-27 15:51</div>
-            <div class="timeline-body"><p>Not sure. The problem is that we'll use <code>Locator</code> which I, as far I understand, we should avoid because building the index is expensive</p>
+            <div class="timeline-body"><p>Not sure. The problem is that we&#x27;ll use <code>Locator</code> which I, as far I understand, we should avoid because building the index is expensive</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -235,7 +235,7 @@ bokeh (+1, -1)</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/source_code/stylist.rs</code>:79 on 2023-03-27 19:01</div>
-            <div class="timeline-body"><p>Eh yeah, alright, let's leave it as-is. At some point we should get some data or otherwise develop intuition around how often <code>Locator</code> is actually getting initialized (i.e., is every file populating it anyway, despite doing so lazily? Or no?).</p>
+            <div class="timeline-body"><p>Eh yeah, alright, let&#x27;s leave it as-is. At some point we should get some data or otherwise develop intuition around how often <code>Locator</code> is actually getting initialized (i.e., is every file populating it anyway, despite doing so lazily? Or no?).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -252,10 +252,10 @@ bokeh (+1, -1)</p>
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @MichaReiser on 2023-03-28 09:53</div>
+            <div class="event">Merged by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-03-28 09:53</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2023-03-28 09:53</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-03-28 09:53</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2023-03-28 09:53</div>
@@ -263,7 +263,7 @@ bokeh (+1, -1)</p>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:56:51 UTC
+        Synced at 2026-01-20 18:53:01 UTC
     </footer>
 </body>
 </html>

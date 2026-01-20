@@ -23,17 +23,17 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/mikeleppane">@mikeleppane</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<h3>Problem</h3>
+            <div class="timeline-body">Summary
+Problem
 <p>Rules <a href="https://docs.astral.sh/ruff/rules/unused-variable/">F841</a> (<code>unused-variable</code>) and <a href="https://docs.astral.sh/ruff/rules/nonlocal-without-binding/">PLE0117</a> (<code>nonlocal-without-binding</code>) incorrectly flagged usage within method definitions, causing false positives.
 Root Cause: Both rules failed to recognize that it is a special variable automatically available in Python method definitions. In methods, it is implicitly bound by the Python runtime, making assignments to it legitimate and declarations valid. <code>__class__``__class__``nonlocal __class__</code></p>
-<h3>Solution</h3>
+Solution
 <ul>
 <li>Added special handling for when detected within method definitions: <code>__class__</code></li>
 <li><strong>F841</strong>: Skip unused variable warnings for assignments in methods <code>__class__</code></li>
 <li><strong>PLE0117</strong>: Allow statements in methods without requiring explicit outer bindings <code>nonlocal __class__</code></li>
 </ul>
-<pre><code class="language-python">class C:
+<pre><code>class C:
     def set_class(self, cls):
         __class__ = cls  # No longer warns about unused variable
         
@@ -41,24 +41,24 @@ Root Cause: Both rules failed to recognize that it is a special variable automat
         nonlocal __class__  # No longer warns about missing binding
         return __class__
 </code></pre>
-<h2>Test Plan</h2>
-<pre><code class="language-bash">cargo test
+Test Plan
+<pre><code>cargo test
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-06 13:02</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-08-06 15:19</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-06 15:19</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyflakes/rules/unused_variable.rs</code>:289 on 2025-08-06 15:25</div>
@@ -69,16 +69,16 @@ Root Cause: Both rules failed to recognize that it is a special variable automat
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-08-06 15:41</div>
             <div class="timeline-body"><p>Thanks for working on this!</p>
-<p>This looks like it fixes the issue for these two rules. Did you look into my suggestion about synthesizing a <code>__class__</code> binding for class scopes (https://github.com/astral-sh/ruff/issues/18442#issuecomment-2935976782)? I'm still not sure if that's a good idea or not, but it could be nice to resolve this more generally instead of adding special cases to individual rules as needed, and that seemed like one approach.</p>
+<p>This looks like it fixes the issue for these two rules. Did you look into my suggestion about synthesizing a <code>__class__</code> binding for class scopes (<a href="https://github.com/astral-sh/ruff/issues/18442">astral-sh/ruff#18442</a>#issuecomment-2935976782)? I&#x27;m still not sure if that&#x27;s a good idea or not, but it could be nice to resolve this more generally instead of adding special cases to individual rules as needed, and that seemed like one approach.</p>
 <p>In grepping around, it looks like we might already have handling for this, if we can call this enclosing <code>resolve_load</code> function:</p>
 <p>https://github.com/astral-sh/ruff/blob/4d57fcd5a488e628aa26aaacd0a61728609ff310/crates/ruff_python_semantic/src/model.rs#L412-L422</p>
-<p>If neither of these solutions looks fruitful, I'm happy with what you have here too :)</p>
+<p>If neither of these solutions looks fruitful, I&#x27;m happy with what you have here too :)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mikeleppane">@mikeleppane</a> on 2025-08-07 13:57</div>
             <div class="timeline-body"><p>@ntBre thanks for the good comments! What would you think about this approach, in which we add a method to the semantic model that would expose implicit global functionality? Something like this:</p>
-<pre><code class="language-rust">impl&lt;'a&gt; SemanticModel&lt;'a&gt; {
+<pre><code>impl&lt;&#x27;a&gt; SemanticModel&lt;&#x27;a&gt; {
     /// Check if a name would resolve as an implicit global from a given scope
     /// without actually creating references or modifying state.
     pub fn would_resolve_as_implicit_global(&amp;self, name: &amp;str, scope_id: ScopeId) -&gt; bool {
@@ -122,7 +122,7 @@ pub(crate) fn unused_variable(checker: &amp;Checker, name: &amp;str, binding: &a
         return;
     }
 
-    /*// Skip __class__ in method definitions - it's automatically bound by Python
+    /*// Skip __class__ in method definitions - it&#x27;s automatically bound by Python
     if name == &quot;__class__&quot; &amp;&amp; is_binding_in_method_definition(checker, binding) {
         return;
     }*/
@@ -146,11 +146,11 @@ pub(crate) fn unused_variable(checker: &amp;Checker, name: &amp;str, binding: &a
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-08-07 17:51</div>
             <div class="timeline-body"><p>I haven’t reviewed the code but I have three responses to the opening comment.</p>
-<pre><code class="language-python">    def set_class(self, cls):
+<pre><code>    def set_class(self, cls):
         __class__ = cls  # No longer warns about unused variable
 </code></pre>
 <p>There actually should be an F841 warning because <code>__class__</code> is a local variable here, not a nonlocal variable, and is therefore unused.</p>
-<pre><code class="language-python">    def get_class(self):
+<pre><code>    def get_class(self):
         nonlocal __class__  # No longer warns about missing binding
         return __class__
 </code></pre>
@@ -161,8 +161,8 @@ pub(crate) fn unused_variable(checker: &amp;Checker, name: &amp;str, binding: &a
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-13 18:12</div>
             <div class="timeline-body"><p>Thanks @dscorbett, it sounds like the fix here is not quite right.</p>
-<p>@mikeleppane I'm not sure adding this method to the semantic model would be very helpful, at least as used in this snippet. We'd still have to be careful to call it in each affected rule, so it's not much of a step up from the type of special-casing in this PR. That's why I'm still intrigued by the synthetic binding approach. It would be a small special case when creating new scopes, and then all of our other infrastructure should continue working as usual. That may still not work, though, because <code>__class__</code> isn't bound in the class scope, but it's also not exactly bound in the method scope because you can't usually do something like this:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; class C:
+<p>@mikeleppane I&#x27;m not sure adding this method to the semantic model would be very helpful, at least as used in this snippet. We&#x27;d still have to be careful to call it in each affected rule, so it&#x27;s not much of a step up from the type of special-casing in this PR. That&#x27;s why I&#x27;m still intrigued by the synthetic binding approach. It would be a small special case when creating new scopes, and then all of our other infrastructure should continue working as usual. That may still not work, though, because <code>__class__</code> isn&#x27;t bound in the class scope, but it&#x27;s also not exactly bound in the method scope because you can&#x27;t usually do something like this:</p>
+<pre><code>&gt;&gt;&gt; class C:
 ...     def f():
 ...         x = 1
 ...         nonlocal x
@@ -171,25 +171,25 @@ pub(crate) fn unused_variable(checker: &amp;Checker, name: &amp;str, binding: &a
   File &quot;&lt;python-input-5&gt;&quot;, line 4
     nonlocal x
     ^^^^^^^^^^
-SyntaxError: name 'x' is assigned to before nonlocal declaration
+SyntaxError: name &#x27;x&#x27; is assigned to before nonlocal declaration
 </code></pre>
 <p>which seems analogous to the <code>nonlocal</code> case for <code>__class__</code> if you synthesize it as a binding in the method.</p>
-<p>I think I've talked myself out of the synthetic binding, so maybe a new semantic model method <em>is</em> called for, but ideally we'd call it within existing semantic model methods so that every rule benefits from it automatically. It may also be worth checking how ty handles this. I didn't turn up anything obviously helpful in a very quick grep, but I suspect that they may have an answer somewhere.</p>
-<p>We <em>could</em> push a synthetic scope between the class and the method, which seems closest to how this is implemented in CPython, but then we have to skip that scope kind everywhere else, which doesn't seem worth it.</p>
+<p>I think I&#x27;ve talked myself out of the synthetic binding, so maybe a new semantic model method <em>is</em> called for, but ideally we&#x27;d call it within existing semantic model methods so that every rule benefits from it automatically. It may also be worth checking how ty handles this. I didn&#x27;t turn up anything obviously helpful in a very quick grep, but I suspect that they may have an answer somewhere.</p>
+<p>We <em>could</em> push a synthetic scope between the class and the method, which seems closest to how this is implemented in CPython, but then we have to skip that scope kind everywhere else, which doesn&#x27;t seem worth it.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-26 13:50</div>
-            <div class="timeline-body"><p>Thanks again for your work here! I think we can close this now in favor of https://github.com/astral-sh/ruff/pull/20048. I pulled in your tests over there and added you as a co-author :)</p>
+            <div class="timeline-body"><p>Thanks again for your work here! I think we can close this now in favor of <a href="https://github.com/astral-sh/ruff/pull/20048">astral-sh/ruff#20048</a>. I pulled in your tests over there and added you as a co-author :)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ntBre on 2025-08-26 13:50</div>
+            <div class="event">Closed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-26 13:50</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:14:51 UTC
+        Synced at 2026-01-20 19:17:26 UTC
     </footer>
 </body>
 </html>

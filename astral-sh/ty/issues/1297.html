@@ -23,11 +23,11 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/jfaldanam">@jfaldanam</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>When running <code>ty</code> on a Jupyter notebook, the IPython builtin <code>display</code> is flagged as an <code>unresolved-reference</code> unless it is explicitly imported. In Jupyter, <code>display</code> is provided by IPython and is commonly used without an import.</p>
 <p>As an user, for <code>.ipynb</code> files executed in an IPython/Jupyter context, <code>ty</code> should recognize IPython-provided builtins (e.g., <code>display</code>) and not report them as unresolved.</p>
-<p>The actual behavior is that <code>ty</code> reports <code>error[unresolved-reference]: Name 'display' used when not defined</code> for code cells that call <code>display(...)</code> without an explicit import.</p>
-<h1>Steps to reproduce</h1>
+<p>The actual behavior is that <code>ty</code> reports <code>error[unresolved-reference]: Name &#x27;display&#x27; used when not defined</code> for code cells that call <code>display(...)</code> without an explicit import.</p>
+Steps to reproduce
 <p>The following minimal working example illustrates how it diagnoses and unresolve-reference for the first use of display, but not when imported explicitly.</p>
 <p>To reproduce:</p>
 <ol>
@@ -36,7 +36,7 @@
 <ul>
 <li>A very simple notebook with 2 cells, the first only runs <code>display(&quot;Hello, world!&quot;)</code> while the second one runs <code>from IPython.display import display</code> and right after <code>display(&quot;Hello, world!&quot;)</code>.</li>
 </ul>
-<ol start="2">
+<ol>
 <li>Run <code>uvx ty check test.ipynb </code></li>
 <li>Observe the diagnostic for the first cell but not the second</li>
 </ol>
@@ -51,8 +51,8 @@ info: rule `unresolved-reference` is enabled by default
 
 Found 1 diagnostic
 </code></pre>
-<h2>Example to reproduce the issue</h2>
-<pre><code class="language-ipynb">{
+Example to reproduce the issue
+<pre><code>{
  &quot;cells&quot;: [
   {
    &quot;cell_type&quot;: &quot;code&quot;,
@@ -63,7 +63,7 @@ Found 1 diagnostic
     {
      &quot;data&quot;: {
       &quot;text/plain&quot;: [
-       &quot;'Hello, world!'&quot;
+       &quot;&#x27;Hello, world!&#x27;&quot;
       ]
      },
      &quot;metadata&quot;: {},
@@ -83,7 +83,7 @@ Found 1 diagnostic
     {
      &quot;data&quot;: {
       &quot;text/plain&quot;: [
-       &quot;'Hello, world!'&quot;
+       &quot;&#x27;Hello, world!&#x27;&quot;
       ]
      },
      &quot;metadata&quot;: {},
@@ -114,7 +114,7 @@ Found 1 diagnostic
  &quot;nbformat_minor&quot;: 5
 }
 </code></pre>
-<h3>Version</h3>
+Version
 <p>ty 0.0.1-alpha.21</p>
 </div>
         </div>
@@ -124,18 +124,18 @@ Found 1 diagnostic
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">imports</span> added by @sharkdp on 2025-10-06 08:25</div>
+            <div class="event">Label <span class="label">imports</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-06 08:25</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jfaldanam">@jfaldanam</a> on 2025-10-06 10:49</div>
             <div class="timeline-body"><p>I have tried to research this with not much luck.</p>
 <p>Empirically, I have tested with this same file with <code>nbqa</code> + <code>mypy</code> (<code>mypy</code> alone does seem to require some configuration to support notebooks).</p>
 <p>With the same example provided above, it reports that there are no issues found:</p>
-<pre><code class="language-bash">$ uvx --with mypy nbqa mypy test.ipynb # Same file as above
+<pre><code>$ uvx --with mypy nbqa mypy test.ipynb # Same file as above
 Success: no issues found in 1 source file
 </code></pre>
 <p>However, if I remove the import in the second cell (<code>from IPython.display import display</code>), it fails on both (so it is taking any import in future cells to check for a name being defined in previous cells):</p>
-<pre><code class="language-bash">$ uvx --with mypy nbqa mypy test.ipynb  # After removing import from second cell
+<pre><code>$ uvx --with mypy nbqa mypy test.ipynb  # After removing import from second cell
 test.ipynb:cell_1:1: error: Name &quot;display&quot; is not defined  [name-defined]
 test.ipynb:cell_2:2: error: Name &quot;display&quot; is not defined  [name-defined]
 Found 2 errors in 1 file (checked 1 source file)
@@ -144,15 +144,15 @@ Found 2 errors in 1 file (checked 1 source file)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">notebook</span> added by @carljm on 2025-10-06 15:20</div>
+            <div class="event">Label <span class="label">notebook</span> added by <a href="https://github.com/carljm">@carljm</a> on 2025-10-06 15:20</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Stable" by @MichaReiser on 2025-11-14 08:39</div>
+            <div class="event">Added to milestone &quot;Stable&quot; by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-14 08:39</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/FrancoisHuet">@FrancoisHuet</a> on 2025-11-25 21:44</div>
             <div class="timeline-body"><p>Re: Do you know how other type-checkers handle this situation</p>
-<p>To silence this error with pylint, I've been using &quot;--additional-builtins=display&quot;.  I'm in the same boat as jfaldanam, and would be happy with a similar option -though of course, better notebook support would be ideal-.  Thanks for all your work!</p>
+<p>To silence this error with pylint, I&#x27;ve been using &quot;--additional-builtins=display&quot;.  I&#x27;m in the same boat as jfaldanam, and would be happy with a similar option -though of course, better notebook support would be ideal-.  Thanks for all your work!</p>
 <p>Also, if I do import display, Ruff complains:</p>
 <blockquote>
 <p>Import <code>display</code> is shadowing a Python builtin Ruff <a href="https://docs.astral.sh/ruff/rules/builtin-import-shadowing">A004</a></p>
@@ -172,13 +172,13 @@ Found 2 errors in 1 file (checked 1 source file)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-09 09:51</div>
-            <div class="timeline-body"><p>We now support a custom <code>__builtins__.pyi</code> where you can define the IPython builtins. This obvioulsy isn't very convenient, but a work around for now</p>
+            <div class="timeline-body"><p>We now support a custom <code>__builtins__.pyi</code> where you can define the IPython builtins. This obvioulsy isn&#x27;t very convenient, but a work around for now</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:44 UTC
+        Synced at 2026-01-20 19:25:40 UTC
     </footer>
 </body>
 </html>

@@ -31,23 +31,23 @@ is equivalent to this pcre2grep one:
 <code>pcre2grep &quot;Failed\s+(.*)&quot; -o1 -h luu*.2018-09-2?</code></p>
 <p>I understand that ripgrep tries to keep command line compatibility with grep and other searchers as much as possible.
 But we are all lazy :-) So if you could find some ways to implement the &quot;shortcuts&quot; to make the options easier to use (without breaking compatibility) that would be just awesome.</p>
-<p>For instance, how about automatically considering the filename as a 'glob' in case 1) the 'verbatim' file does not exist and 2) the name contains &quot;glob symbols&quot;: ? and / or *. This would essentially eliminate the need for <code>-g</code> option in most cases.</p>
+<p>For instance, how about automatically considering the filename as a &#x27;glob&#x27; in case 1) the &#x27;verbatim&#x27; file does not exist and 2) the name contains &quot;glob symbols&quot;: ? and / or *. This would essentially eliminate the need for <code>-g</code> option in most cases.</p>
 <p>Another example: <code>-o --replace $1</code> could be effectively combined into something like <code>-o1</code> or <code>-o $1</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-09-26 12:58</div>
-            <div class="timeline-body"><p>Sorry, but I don't think you've actually written a minimal command here. However, I am not a frequent user of <code>pcre2grep</code>, so I am not certain. In particular, I imagine that this would work:</p>
+            <div class="timeline-body"><p>Sorry, but I don&#x27;t think you&#x27;ve actually written a minimal command here. However, I am not a frequent user of <code>pcre2grep</code>, so I am not certain. In particular, I imagine that this would work:</p>
 <pre><code>$ rg &quot;Failed\s+(.*)&quot; -or $1 --no-filename luu*.2018-09-2?
 </code></pre>
-<p>If you want something more succinct, then I don't understand why you are spelling out <code>--replace</code> instead of using its short option <code>-r</code>.</p>
-<p>Adding an argument to <code>-o/--only-matching</code> doesn't make sense in my opinion. It is much better expressed through the orthogonal concept of <code>-r/--replace</code>.</p>
-<p>I don't understand why you are OK with using standard shell globbing with <code>pcre2grep</code>, but not with ripgrep. ripgrep accepts a list of file paths just like any other grep-like tool.</p>
+<p>If you want something more succinct, then I don&#x27;t understand why you are spelling out <code>--replace</code> instead of using its short option <code>-r</code>.</p>
+<p>Adding an argument to <code>-o/--only-matching</code> doesn&#x27;t make sense in my opinion. It is much better expressed through the orthogonal concept of <code>-r/--replace</code>.</p>
+<p>I don&#x27;t understand why you are OK with using standard shell globbing with <code>pcre2grep</code>, but not with ripgrep. ripgrep accepts a list of file paths just like any other grep-like tool.</p>
 <p>You do not have single quotes around your <code>-g</code> argument, which means it is probably not being interpreted in a way that you expect.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2018-09-26 12:58</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-09-26 12:58</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sabi0">@sabi0</a> on 2018-09-26 13:30</div>
@@ -55,23 +55,23 @@ But we are all lazy :-) So if you could find some ways to implement the &quot;sh
 And indeed, when abbreviated to <code>-or $1</code> it does not look that bad anymore.
 I could also live with &quot;orthogonal&quot; <code>-o</code> and <code>-r</code> (and even use that to benefit in some cases).</p>
 <p>I do miss the shorthand for <code>--no-filename</code> though as I use this option all the time.</p>
-<p>As for the globs I should have mentioned that I am using ripgrep on Windows - there's no &quot;shell globbing&quot;. All I get without <code>-g</code> is: &quot;The filename, directory name, or volume label syntax is incorrect. (os error 123)&quot;.</p>
+<p>As for the globs I should have mentioned that I am using ripgrep on Windows - there&#x27;s no &quot;shell globbing&quot;. All I get without <code>-g</code> is: &quot;The filename, directory name, or volume label syntax is incorrect. (os error 123)&quot;.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-09-26 13:41</div>
             <div class="timeline-body"><blockquote>
-<p>As for the globs I should have mentioned that I am using ripgrep on Windows - there's no &quot;shell globbing&quot;. All I get without -g is: &quot;The filename, directory name, or volume label syntax is incorrect. (os error 123)&quot;.</p>
+<p>As for the globs I should have mentioned that I am using ripgrep on Windows - there&#x27;s no &quot;shell globbing&quot;. All I get without -g is: &quot;The filename, directory name, or volume label syntax is incorrect. (os error 123)&quot;.</p>
 </blockquote>
-<p>Yes. This is why the issue template asks you what OS you're on. :-) This is a known bug: #234. Your input on that issue (not this one) would be appreciated. For example, one thing I'm uncertain about is whether ripgrep should use the standard Windows globbing APIs, or whether it should just use normal Unix-style globbing.</p>
+<p>Yes. This is why the issue template asks you what OS you&#x27;re on. :-) This is a known bug: #234. Your input on that issue (not this one) would be appreciated. For example, one thing I&#x27;m uncertain about is whether ripgrep should use the standard Windows globbing APIs, or whether it should just use normal Unix-style globbing.</p>
 <blockquote>
 <p>I do miss the shorthand for --no-filename though as I use this option all the time.</p>
 </blockquote>
-<p>It's a niche option, so it's not going to get a short flag, sorry. It's niche because <code>--no-filename</code> is the default already in the most common scenario that you would want it: when searching a single file or a stream. But otherwise, you almost always want to see <em>which</em> file matched when searching many of them. There are very few short flags left that are available, and I don't see myself using up one of those for <code>--no-filename</code>.</p>
+<p>It&#x27;s a niche option, so it&#x27;s not going to get a short flag, sorry. It&#x27;s niche because <code>--no-filename</code> is the default already in the most common scenario that you would want it: when searching a single file or a stream. But otherwise, you almost always want to see <em>which</em> file matched when searching many of them. There are very few short flags left that are available, and I don&#x27;t see myself using up one of those for <code>--no-filename</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2018-09-26 13:41</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-09-26 13:41</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sabi0">@sabi0</a> on 2018-09-27 08:31</div>
@@ -85,21 +85,21 @@ I could also live with &quot;orthogonal&quot; <code>-o</code> and <code>-r</code
 <p>This mostly on the grounds that invoking <code>rg</code> without any arguments prints:</p>
 <pre><code>For more information try --help
 </code></pre>
-<p>and doesn't print either of the following:</p>
+<p>and doesn&#x27;t print either of the following:</p>
 <pre><code>For more information try -h
 For more information try -h / --help
 </code></pre>
-<p>I use <code>--no-filename</code> a lot, so it's not a niche option in general I guess.</p>
+<p>I use <code>--no-filename</code> a lot, so it&#x27;s not a niche option in general I guess.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-11-28 22:03</div>
             <div class="timeline-body"><p>@cebaa Thanks for the thoughtful response! One possible work-around to your problem is to setup an alias like <code>alias rgh=&quot;rg --no-filename&quot;</code>.</p>
 <blockquote>
-<p>I use <code>--no-filename</code> a lot, so it's not a niche option in general I guess.</p>
+<p>I use <code>--no-filename</code> a lot, so it&#x27;s not a niche option in general I guess.</p>
 </blockquote>
-<p>When I call a feature or idea &quot;niche,&quot; that doesn't mean it isn't useful or is unimportant. It just means that, <em>in my judgment</em>, it doesn't have broad appeal. My judgment <em>could be</em> stupendously wrong, but part of the input to that judgment is the fact that I've been on the Internet for a very long time, and people are most vocal when they disagree rather than agree. (There is a saying that the quickest way to find an answer to a question is to loudly proclaim an answer you know to be wrong; folks will jump over themselves to correct you.) Therefore, when I call something &quot;niche,&quot; it has the interesting effect of folks announcing that they use that feature all the time and then concluding that, therefore, it is not niche. But, as I'm sure you can appreciate, that isn't necessarily true. The inputs that go into my judgment are incredibly biased and flawed in a lot of different ways, and this is why I've reversed several &quot;decisions&quot; I've made in the past. So far, so good.</p>
-<p>At the end of the day, we have scarce resources and someone needs to make a judgment call about how to spend them. Your idea about re-purposing the <code>-h</code> flag is interesting, but I don't think I'm going to pursue it. In particular, ripgrep's <code>-h</code> and <code>--help</code> flags have intentionally different behavior. The former shows a condensed help output where as the latter is much more verbose. That both flags aren't advertised in the output of <code>rg</code> without any arguments is not necessarily an acknowledgment on my part that <code>-h</code> isn't helpful. It would actually be better if it mentioned both <code>-h</code> and <code>--help</code>. Even if they didn't have different behavior, I still would not like to re-purpose the <code>-h</code> flag because, in my opinion, that <code>-h</code> shows help output is a very strong convention in command line tools, and I'd rather not break it.</p>
+<p>When I call a feature or idea &quot;niche,&quot; that doesn&#x27;t mean it isn&#x27;t useful or is unimportant. It just means that, <em>in my judgment</em>, it doesn&#x27;t have broad appeal. My judgment <em>could be</em> stupendously wrong, but part of the input to that judgment is the fact that I&#x27;ve been on the Internet for a very long time, and people are most vocal when they disagree rather than agree. (There is a saying that the quickest way to find an answer to a question is to loudly proclaim an answer you know to be wrong; folks will jump over themselves to correct you.) Therefore, when I call something &quot;niche,&quot; it has the interesting effect of folks announcing that they use that feature all the time and then concluding that, therefore, it is not niche. But, as I&#x27;m sure you can appreciate, that isn&#x27;t necessarily true. The inputs that go into my judgment are incredibly biased and flawed in a lot of different ways, and this is why I&#x27;ve reversed several &quot;decisions&quot; I&#x27;ve made in the past. So far, so good.</p>
+<p>At the end of the day, we have scarce resources and someone needs to make a judgment call about how to spend them. Your idea about re-purposing the <code>-h</code> flag is interesting, but I don&#x27;t think I&#x27;m going to pursue it. In particular, ripgrep&#x27;s <code>-h</code> and <code>--help</code> flags have intentionally different behavior. The former shows a condensed help output where as the latter is much more verbose. That both flags aren&#x27;t advertised in the output of <code>rg</code> without any arguments is not necessarily an acknowledgment on my part that <code>-h</code> isn&#x27;t helpful. It would actually be better if it mentioned both <code>-h</code> and <code>--help</code>. Even if they didn&#x27;t have different behavior, I still would not like to re-purpose the <code>-h</code> flag because, in my opinion, that <code>-h</code> shows help output is a very strong convention in command line tools, and I&#x27;d rather not break it.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -116,22 +116,22 @@ For more information try -h / --help
 <blockquote>
 <p>Thanks for the thoughtful response!</p>
 </blockquote>
-<p>I should be thanking you for that! Aside from the great work on the software itself, you're awesome at communication, kudos for that and keep up the good work.</p>
+<p>I should be thanking you for that! Aside from the great work on the software itself, you&#x27;re awesome at communication, kudos for that and keep up the good work.</p>
 <blockquote>
 <p>One possible work-around to your problem is to setup an alias like alias rgh=&quot;rg --no-filename&quot;.</p>
 </blockquote>
-<p>Yeah, I know, I just try not to do that, for the following reason: when I go to another machine and especially <em>another person's</em> machine, as soon as I start typing and being greeted with &quot;command not found&quot; they start wondering if calling me to help them troubleshoot things was really a wise idea :)</p>
-<p>In other words, once you start customizing, you end up customizing everything and then you're an island on your own. The impedance mismatch comes with a price IMHO.</p>
+<p>Yeah, I know, I just try not to do that, for the following reason: when I go to another machine and especially <em>another person&#x27;s</em> machine, as soon as I start typing and being greeted with &quot;command not found&quot; they start wondering if calling me to help them troubleshoot things was really a wise idea :)</p>
+<p>In other words, once you start customizing, you end up customizing everything and then you&#x27;re an island on your own. The impedance mismatch comes with a price IMHO.</p>
 <blockquote>
-<p>In particular, ripgrep's -h and --help flags have intentionally different behavior.</p>
+<p>In particular, ripgrep&#x27;s -h and --help flags have intentionally different behavior.</p>
 </blockquote>
 <p>Ah, I missed that part. Fair enough. Actually, this also looks like a standard behavior across other CLIs, so <code>rg</code> is on the right side there.</p>
 <blockquote>
-<p>That both flags aren't advertised in the output of rg without any arguments is not necessarily an acknowledgment on my part that -h isn't helpful.</p>
+<p>That both flags aren&#x27;t advertised in the output of rg without any arguments is not necessarily an acknowledgment on my part that -h isn&#x27;t helpful.</p>
 </blockquote>
 <p>Just to clarify, I meant that more as: <code>--help</code> is already advertised, so if someone gets stuck, they will be able to get unstuck by using <code>--help</code>, without needing to know about <code>-h</code>.</p>
 <blockquote>
-<p>-h shows help output is a very strong convention in command line tools, and I'd rather not break it.</p>
+<p>-h shows help output is a very strong convention in command line tools, and I&#x27;d rather not break it.</p>
 </blockquote>
 <p>Yeah, I guess <code>grep</code> is actually an offender here. Many other CLIs use <code>-h</code> for that purpose.</p>
 <p>@sabi0 Yeah I know, see the above for the rationale against.</p>
@@ -140,7 +140,7 @@ For more information try -h / --help
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:42:42 UTC
+        Synced at 2026-01-20 18:48:07 UTC
     </footer>
 </body>
 </html>

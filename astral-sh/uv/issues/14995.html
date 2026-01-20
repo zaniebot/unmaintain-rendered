@@ -23,66 +23,66 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/yuxuan-z19">@yuxuan-z19</a></div>
-            <div class="timeline-body"><h3>Question</h3>
+            <div class="timeline-body">Question
 <p>I created a virtual environment using <code>uv</code> in a project folder:</p>
-<pre><code class="language-bash">uv venv &amp;&amp; source .venv/bin/activate
+<pre><code>uv venv &amp;&amp; source .venv/bin/activate
 </code></pre>
-<p>And confirmed it's being used:</p>
-<pre><code class="language-bash">$ which python
+<p>And confirmed it&#x27;s being used:</p>
+<pre><code>$ which python
 /data/zyx/learn-cuda/.venv/bin/python
 
-$ python -c 'import sys; print(sys.executable)'
+$ python -c &#x27;import sys; print(sys.executable)&#x27;
 /data/zyx/learn-cuda/.venv/bin/python
 </code></pre>
 <p>However, when I run this command with Nsight Compute <code>ncu</code>:</p>
-<pre><code class="language-bash">$ ncu --target-processes all python -c 'import sys; print(sys.executable)'
+<pre><code>$ ncu --target-processes all python -c &#x27;import sys; print(sys.executable)&#x27;
 /usr/bin/python
 ==WARNING== No kernels were profiled.
 </code></pre>
 <p>It resolves to <code>/usr/bin/python</code>, and not the one from <code>.venv</code>. Using <code>$(which python)</code> yields expected behavior:</p>
-<pre><code class="language-bash">$ ncu --target-processes all $(which python) -c 'import sys; print(sys.executable)'
+<pre><code>$ ncu --target-processes all $(which python) -c &#x27;import sys; print(sys.executable)&#x27;
 /data/zyx/learn-cuda/.venv/bin/python
 ==WARNING== No kernels were profiled.
 </code></pre>
-<h3>Expected</h3>
+Expected
 <p>If the virtual environment is active (either manually or via <code>uv</code>), I would expect python to resolve to the one inside <code>.venv</code>, even under <code>ncu</code>.</p>
-<h3>Question</h3>
+Question
 <p>Is this a limitation or design choice of <code>uv</code> (e.g. not modifying <code>PATH</code>/<code>VIRTUAL_ENV</code> like<code> venv</code> does)? Should I be using <code>uv run</code> or something else to ensure subprocesses inherit the correct Python path?</p>
-<h3>Platform</h3>
+Platform
 <p>Ubuntu 24.04.2 LTS</p>
-<h3>Version</h3>
+Version
 <p>uv 0.7.0</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @yuxuan-z19 on 2025-07-31 14:07</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/yuxuan-z19">@yuxuan-z19</a> on 2025-07-31 14:07</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-31 14:17</div>
-            <div class="timeline-body"><p>If you activate the virtual environment, it <em>is</em> on the <code>PATH</code>. I'm not sure what the deal is with <code>ncu</code>.</p>
-<p>You could try <code>uv run ncu ...</code> and we'll activate the environment automatically, but... I doubt the behavior will be different than manually activating it.</p>
+            <div class="timeline-body"><p>If you activate the virtual environment, it <em>is</em> on the <code>PATH</code>. I&#x27;m not sure what the deal is with <code>ncu</code>.</p>
+<p>You could try <code>uv run ncu ...</code> and we&#x27;ll activate the environment automatically, but... I doubt the behavior will be different than manually activating it.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/yuxuan-z19">@yuxuan-z19</a> on 2025-07-31 14:38</div>
             <div class="timeline-body"><p>@zanieb Thank you! This workaround indeed resolves the issue in some way.</p>
-<pre><code class="language-bash">$ uv run ncu --target-processes all python -c 'import sys; print(sys.executable)'
+<pre><code>$ uv run ncu --target-processes all python -c &#x27;import sys; print(sys.executable)&#x27;
 /data/zyx/learn-cuda/.venv/bin/python
 ==WARNING== No kernels were profiled.
 </code></pre>
 <p>I have observed that this problem depends on the shell environment being used.</p>
 <p>When running in <code>bash</code>, <code>ncu</code> behaves as expected:</p>
-<pre><code class="language-bash">(learn-cuda) zyx@nv4090:~/learn-cuda$ ps -p $$ -o comm=
+<pre><code>(learn-cuda) zyx@nv4090:~/learn-cuda$ ps -p $$ -o comm=
 bash
-(learn-cuda) zyx@nv4090:~/learn-cuda$ ncu --target-processes all python -c 'import sys; print(sys.executable)' 
+(learn-cuda) zyx@nv4090:~/learn-cuda$ ncu --target-processes all python -c &#x27;import sys; print(sys.executable)&#x27; 
 /data/zyx/learn-cuda/.venv/bin/python
 ==WARNING== No kernels were profiled.
 </code></pre>
 <p>However, in my default <strong><code>zsh</code></strong> shell with <strong><code>oh-my-zsh</code></strong>, the command fails to pick up the virtual environment Python unless I specify the absolute path:</p>
 <p>Interestingly, running the command inside a subshell works correctly in <code>zsh</code>:</p>
-<pre><code class="language-bash">$ ps -p $$ -o comm=
+<pre><code>$ ps -p $$ -o comm=
 zsh
-$ zsh -c &quot;ncu --target-processes all python -c 'import sys; print(sys.executable)'&quot;
+$ zsh -c &quot;ncu --target-processes all python -c &#x27;import sys; print(sys.executable)&#x27;&quot;
 /data/zyx/learn-cuda/.venv/bin/python
 </code></pre>
 <p>I will report this issue on the NVIDIA Developer Forum for further investigation.</p>
@@ -90,12 +90,12 @@ $ zsh -c &quot;ncu --target-processes all python -c 'import sys; print(sys.execu
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @yuxuan-z19 on 2025-07-31 14:38</div>
+            <div class="event">Closed by <a href="https://github.com/yuxuan-z19">@yuxuan-z19</a> on 2025-07-31 14:38</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:32:26 UTC
+        Synced at 2026-01-20 19:39:47 UTC
     </footer>
 </body>
 </html>

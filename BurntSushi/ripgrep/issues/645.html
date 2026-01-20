@@ -24,14 +24,14 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sunshowers">@sunshowers</a></div>
             <div class="timeline-body"><p>Hi! Does ripgrep provide a way to disable gitignore parsing by default and only rely on <code>.ignore</code> files?</p>
-<hr />
+<hr>
 <p>Some surrounding context:</p>
-<p>We've deployed ripgrep to thousands of developers at Facebook and people really love it overall. But we have thousands of files that are tracked but match ignore rules, and ripgrep skips over those files by default.</p>
-<p>(Facebook uses Mercurial, but for various reasons the source of truth for ignore rules is still gitignores. We have a script that reads a repo with gitignores and generates a set of hgignores to go along with it. This shouldn't be relevant to the rest of the discussion.)</p>
-<p>There's a fundamental incompatibility between the way ripgrep looks at ignore rules and the way VCS systems look at ignore rules. <code>.gitignore</code> (and <code>.hgignore</code>, <code>.svnignore</code> etc) only applies to files <em>not already tracked</em> by the VCS. But since ripgrep is unaware of what files are tracked by the VCS, it applies gitignore rules to all files including tracked ones.</p>
-<p>At Facebook we have thousands of files that are tracked but match ignore rules, and ripgrep skips over them by default. I would be very surprised if other repos (especially large ones) wouldn't hit the same issue.</p>
+<p>We&#x27;ve deployed ripgrep to thousands of developers at Facebook and people really love it overall. But we have thousands of files that are tracked but match ignore rules, and ripgrep skips over those files by default.</p>
+<p>(Facebook uses Mercurial, but for various reasons the source of truth for ignore rules is still gitignores. We have a script that reads a repo with gitignores and generates a set of hgignores to go along with it. This shouldn&#x27;t be relevant to the rest of the discussion.)</p>
+<p>There&#x27;s a fundamental incompatibility between the way ripgrep looks at ignore rules and the way VCS systems look at ignore rules. <code>.gitignore</code> (and <code>.hgignore</code>, <code>.svnignore</code> etc) only applies to files <em>not already tracked</em> by the VCS. But since ripgrep is unaware of what files are tracked by the VCS, it applies gitignore rules to all files including tracked ones.</p>
+<p>At Facebook we have thousands of files that are tracked but match ignore rules, and ripgrep skips over them by default. I would be very surprised if other repos (especially large ones) wouldn&#x27;t hit the same issue.</p>
 <p>It would be great if we could maintain a separate list of rules in <code>.ignore</code> and then have <code>rg</code> not try and read <code>.gitignore</code> rules at all. Even better if this could be configured per-repository, but a global config would also be OK.</p>
-<p>I guess we could deploy <code>rg</code> as a shell script that calls the actual <code>rg</code> binary with <code>--no-ignore-vcs</code>, but then sometimes people do want to apply the ignore rules and there doesn't appear to be a <code>--ignore-vcs</code> flag.</p>
+<p>I guess we could deploy <code>rg</code> as a shell script that calls the actual <code>rg</code> binary with <code>--no-ignore-vcs</code>, but then sometimes people do want to apply the ignore rules and there doesn&#x27;t appear to be a <code>--ignore-vcs</code> flag.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -39,43 +39,43 @@
             <div class="timeline-body"><blockquote>
 <p>Hi! Does ripgrep provide a way to disable gitignore parsing by default and only rely on .ignore files?</p>
 </blockquote>
-<p>Hiya! In today's ripgrep, other than <code>--no-ignore-vcs</code>, yes, there is technically a way to do this that I <em>think</em> satisfies your use case. If you <em>start</em> your <code>.ignore</code> file with a blanket whitelist, e.g., <code>!*</code>, then it will override every single gitignore file that ripgrep reads (because any <code>.ignore</code> file takes precedence over all <code>.gitignore</code> files, the exact rules are <a href="https://docs.rs/ignore/0.2.2/ignore/struct.WalkBuilder.html#ignore-rules">documented here</a>). The immediate problem you'll notice with this is that it will whitelist all hidden files as well, which overrides ripgrep's logic to skip hidden files. You can work around this by using the pattern <code>![!.]*</code>, which white lists every file that doesn't start with a <code>.</code>.</p>
-<p>Note that it will be interesting to see whether such a rule causes ripgrep to run more slowly on your repo. If your gitignore files are already extensive, then my guess is no, but it's worth checking just in case.</p>
+<p>Hiya! In today&#x27;s ripgrep, other than <code>--no-ignore-vcs</code>, yes, there is technically a way to do this that I <em>think</em> satisfies your use case. If you <em>start</em> your <code>.ignore</code> file with a blanket whitelist, e.g., <code>!*</code>, then it will override every single gitignore file that ripgrep reads (because any <code>.ignore</code> file takes precedence over all <code>.gitignore</code> files, the exact rules are <a href="https://docs.rs/ignore/0.2.2/ignore/struct.WalkBuilder.html#ignore-rules">documented here</a>). The immediate problem you&#x27;ll notice with this is that it will whitelist all hidden files as well, which overrides ripgrep&#x27;s logic to skip hidden files. You can work around this by using the pattern <code>![!.]*</code>, which white lists every file that doesn&#x27;t start with a <code>.</code>.</p>
+<p>Note that it will be interesting to see whether such a rule causes ripgrep to run more slowly on your repo. If your gitignore files are already extensive, then my guess is no, but it&#x27;s worth checking just in case.</p>
 <p>With that said, to respond more generally:</p>
 <ul>
 <li>I do agree that there is an impedance mismatch here between git and ripgrep for exactly the reason you state.</li>
-<li>In general, I think the &quot;right&quot; solution to this is to make <code>--no-ignore-vcs</code> work for you, such that an <code>--ignore-vcs</code> flag is available. This is really part of #196, which is to add config files to ripgrep, which in turn needs precisely this behavior: the ability to override any flag that has been set as a default in the config file. Unfortunately, that issue has been stalled for some time, but it is still something I'd like to do.</li>
+<li>In general, I think the &quot;right&quot; solution to this is to make <code>--no-ignore-vcs</code> work for you, such that an <code>--ignore-vcs</code> flag is available. This is really part of #196, which is to add config files to ripgrep, which in turn needs precisely this behavior: the ability to override any flag that has been set as a default in the config file. Unfortunately, that issue has been stalled for some time, but it is still something I&#x27;d like to do.</li>
 </ul>
-<p>The other solution that I don't think you mentioned is to add explicit whitelists for files that are tracked by git but would otherwise be ignored. My guess is that you've already considered that solution and ruled it out. :-)</p>
+<p>The other solution that I don&#x27;t think you mentioned is to add explicit whitelists for files that are tracked by git but would otherwise be ignored. My guess is that you&#x27;ve already considered that solution and ruled it out. :-)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2017-10-21 01:24</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-21 01:24</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sunshowers">@sunshowers</a> on 2017-10-22 00:00</div>
-            <div class="timeline-body"><p>Thanks! Looks like <code>!*</code> works to disable gitignore parsing, but there doesn't appear to be a difference wrt hidden files caused if I replace <code>!*</code> with <code>![!.]*</code>. I think matching hidden files is OK for us, so consider this problem mostly resolved.</p>
-<p>Is the exact syntax for <code>.ignore</code> documented somewhere? I couldn't find any docs in the <code>ignore</code> create.</p>
+            <div class="timeline-body"><p>Thanks! Looks like <code>!*</code> works to disable gitignore parsing, but there doesn&#x27;t appear to be a difference wrt hidden files caused if I replace <code>!*</code> with <code>![!.]*</code>. I think matching hidden files is OK for us, so consider this problem mostly resolved.</p>
+<p>Is the exact syntax for <code>.ignore</code> documented somewhere? I couldn&#x27;t find any docs in the <code>ignore</code> create.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sunshowers">@sunshowers</a> on 2017-10-22 00:03</div>
             <div class="timeline-body"><p>Looking at <code>--debug</code> output I noticed that <code>.gitignore</code> files were still being parsed. It would be a cool optimization to skip over those files if <code>.ignore</code> is sufficiently broad.</p>
-<p>Having this <code>.ignore</code> file doesn't make ripgrep appreciably slower, but skipping over <code>.gitignore</code> files with <code>--no-ignore-vcs</code> causes ripgrep to be around 33% faster for our repo :)</p>
+<p>Having this <code>.ignore</code> file doesn&#x27;t make ripgrep appreciably slower, but skipping over <code>.gitignore</code> files with <code>--no-ignore-vcs</code> causes ripgrep to be around 33% faster for our repo :)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sunshowers">@sunshowers</a> on 2017-10-22 00:17</div>
             <div class="timeline-body"><p>Also, for anyone who stumbles on this in the future:</p>
 <blockquote>
-<p>The other solution that I don't think you mentioned is to add explicit whitelists for files that are tracked by git but would otherwise be ignored. My guess is that you've already considered that solution and ruled it out. :-)</p>
+<p>The other solution that I don&#x27;t think you mentioned is to add explicit whitelists for files that are tracked by git but would otherwise be ignored. My guess is that you&#x27;ve already considered that solution and ruled it out. :-)</p>
 </blockquote>
-<p>Yeah, the problem is not with building that list of files (Mercurial makes it really easy to figure that out: <code>hg files -I 'set:hgignore()'</code>). The problem is keeping that list up to date in a repository which thousands of engineers are committing to. :)</p>
+<p>Yeah, the problem is not with building that list of files (Mercurial makes it really easy to figure that out: <code>hg files -I &#x27;set:hgignore()&#x27;</code>). The problem is keeping that list up to date in a repository which thousands of engineers are committing to. :)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-22 00:29</div>
-            <div class="timeline-body"><p>@sid0 Here's an example that shows the difference between <code>!*</code> and <code>![!.]*</code>:</p>
+            <div class="timeline-body"><p>@sid0 Here&#x27;s an example that shows the difference between <code>!*</code> and <code>![!.]*</code>:</p>
 <pre><code>[andrew@Cheetah ripgrep-645] tree
 .
 ├── bar
@@ -145,36 +145,36 @@ foo
 .git/hooks/pre-receive.sample
 </code></pre>
 <blockquote>
-<p>Is the exact syntax for .ignore documented somewhere? I couldn't find any docs in the ignore create.</p>
+<p>Is the exact syntax for .ignore documented somewhere? I couldn&#x27;t find any docs in the ignore create.</p>
 </blockquote>
 <p>It should be the same as <code>.gitignore</code>, but the glob implementation itself is in the <code>globset</code> crate, and its syntax is documented here: https://docs.rs/globset/0.2.0/globset/#syntax</p>
 <blockquote>
 <p>Looking at --debug output I noticed that .gitignore files were still being parsed. It would be a cool optimization to skip over those files if .ignore is sufficiently broad.</p>
 </blockquote>
 <blockquote>
-<p>Having this .ignore file doesn't make ripgrep appreciably slower, but skipping over .gitignore files with --no-ignore-vcs causes ripgrep to be around 33% faster for our repo :)</p>
+<p>Having this .ignore file doesn&#x27;t make ripgrep appreciably slower, but skipping over .gitignore files with --no-ignore-vcs causes ripgrep to be around 33% faster for our repo :)</p>
 </blockquote>
-<p>Yeah that'd be neat. 33% is quite amazing. Your <code>.gitignore</code> files must be craaaazy! ripgrep (well, <code>globset</code>) already does a ton of optimizations here, and actually avoids compiling a glob matcher (which is actually implemented via translation to a regex) if it doesn't have to, e.g., for simple globs like <code>foo</code> or <code>*.foo</code>.</p>
-<p>I'm personally unlikely to implement said optimization because I do still consider <code>--no-ignore-vcs</code> with a corresponding <code>--ignore-vcs</code> to be the &quot;right&quot; answer here. The optimization is probably pretty tricky to implement in the current code as well, since you need to turn it on and off depending on where you are in the directory tree during traversal. (If the <code>.ignore</code> file that contains <code>!*</code> is no longer in scope, then you need to go back to matching gitignores.)</p>
+<p>Yeah that&#x27;d be neat. 33% is quite amazing. Your <code>.gitignore</code> files must be craaaazy! ripgrep (well, <code>globset</code>) already does a ton of optimizations here, and actually avoids compiling a glob matcher (which is actually implemented via translation to a regex) if it doesn&#x27;t have to, e.g., for simple globs like <code>foo</code> or <code>*.foo</code>.</p>
+<p>I&#x27;m personally unlikely to implement said optimization because I do still consider <code>--no-ignore-vcs</code> with a corresponding <code>--ignore-vcs</code> to be the &quot;right&quot; answer here. The optimization is probably pretty tricky to implement in the current code as well, since you need to turn it on and off depending on where you are in the directory tree during traversal. (If the <code>.ignore</code> file that contains <code>!*</code> is no longer in scope, then you need to go back to matching gitignores.)</p>
 <blockquote>
-<p>Yeah, the problem is not with building that list of files (Mercurial makes it really easy to figure that out: <code>hg files -I 'set:hgignore()'</code>). The problem is keeping that list up to date in a repository which thousands of engineers are committing to. :)</p>
+<p>Yeah, the problem is not with building that list of files (Mercurial makes it really easy to figure that out: <code>hg files -I &#x27;set:hgignore()&#x27;</code>). The problem is keeping that list up to date in a repository which thousands of engineers are committing to. :)</p>
 </blockquote>
 <p>Interesting! My mind has trouble thinking at that level of development scale. Pretty neat tidbit, thanks!</p>
-<hr />
+<hr>
 <p>My feeling is that this particular issue can be closed, where the <code>--ignore-vcs</code> option is covered by #196, or have I missed anything else?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sunshowers">@sunshowers</a> on 2017-10-22 20:37</div>
             <div class="timeline-body"><blockquote>
-<p>Here's an example that shows the difference between !* and ![!.]*:</p>
+<p>Here&#x27;s an example that shows the difference between !* and ![!.]*:</p>
 </blockquote>
 <p>Ah, looks like it works for hidden files in the top level but not in subdirectories (try adding e.g. <code>dir1/.foo</code>). But <code>!**/[!.]*</code> works fine for hidden files in subdirectories too. This is a bit weird, I guess.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-22 20:49</div>
-            <div class="timeline-body"><p>@sid0 Ah right yeah, if a glob doesn't contain a <code>/</code>, then the glob is applied to the entire path (relative to the originating ignore file), so <code>![!.]*</code> only works on top-level items. The <code>!**/[!.]*</code> glob correctly checks the basename of a path. (These are gitignore semantics.)</p>
+            <div class="timeline-body"><p>@sid0 Ah right yeah, if a glob doesn&#x27;t contain a <code>/</code>, then the glob is applied to the entire path (relative to the originating ignore file), so <code>![!.]*</code> only works on top-level items. The <code>!**/[!.]*</code> glob correctly checks the basename of a path. (These are gitignore semantics.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -183,7 +183,7 @@ foo
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @sunshowers on 2017-10-22 23:15</div>
+            <div class="event">Closed by <a href="https://github.com/sunshowers">@sunshowers</a> on 2017-10-22 23:15</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-03-23 15:02</div>
@@ -219,7 +219,7 @@ $ rg sherlock -l
 $ rg sherlock -l --hidden
 .foo/test
 .svn/test
-$ echo '.svn' &gt; .ignore
+$ echo &#x27;.svn&#x27; &gt; .ignore
 $ rg sherlock -l --hidden
 .foo/test
 </code></pre>
@@ -232,13 +232,13 @@ The GUIDE is good and many cases are explained well, althouth paritcularly --ign
 I usually do searches in different servers/locations and cannot expect  .ignore files are present there.
 modifying/creating .ignore files in each location would be less efficient than specifying excludes directly in command line. Currently I am quite happy with the approach I described myself and which is efficiently the same as you suggested in your example.
 It just feels not quite logical to me that when  --hidden option is there, --ignore-vcs option is not respected
-for at least .svn/ folders that are considered vcs related. If --hidden is supposed to win over --ignore-vcs by design (which is rather not obvious), I'd suggest mentioning that in the documentation for completeness reason.</p>
+for at least .svn/ folders that are considered vcs related. If --hidden is supposed to win over --ignore-vcs by design (which is rather not obvious), I&#x27;d suggest mentioning that in the documentation for completeness reason.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:42:19 UTC
+        Synced at 2026-01-20 18:48:05 UTC
     </footer>
 </body>
 </html>

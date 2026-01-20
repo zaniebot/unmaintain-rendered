@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/mmerickel">@mmerickel</a></div>
-            <div class="timeline-body"><p>This is the same issue as on https://github.com/astral-sh/rye/issues/813 but I'm reproducing it here using uv's new workspace features to replace rye with uv.</p>
-<h2>Repro Structure</h2>
-<h3>pyproject.toml</h3>
-<pre><code class="language-toml">[project]
+            <div class="timeline-body"><p>This is the same issue as on <a href="https://github.com/astral-sh/rye/issues/813">astral-sh/rye#813</a> but I&#x27;m reproducing it here using uv&#x27;s new workspace features to replace rye with uv.</p>
+Repro Structure
+pyproject.toml
+<pre><code>[project]
 name = &quot;my-workspace&quot;
 version = &quot;0.0.0&quot;
 dependencies = [
@@ -46,8 +46,8 @@ members = [
     &quot;src/my-app&quot;,
 ]
 </code></pre>
-<h3>src/my-setuptools-extension/pyproject.toml</h3>
-<pre><code class="language-toml">[build-system]
+src/my-setuptools-extension/pyproject.toml
+<pre><code>[build-system]
 requires = [
     &quot;setuptools&quot;,
     &quot;wheel&quot;,
@@ -68,8 +68,8 @@ build_webassets = &quot;my_setuptools_ext:BuildWebAssetsCommand&quot;
 [tool.setuptools]
 py-modules = [&quot;my_setuptools_ext&quot;]
 </code></pre>
-<h3>src/my-setuptools-extension/my_setuptools_ext.py</h3>
-<pre><code class="language-python">from setuptools import Command
+src/my-setuptools-extension/my_setuptools_ext.py
+<pre><code>from setuptools import Command
 
 
 class BuildWebAssetsCommand(Command):
@@ -80,10 +80,10 @@ class BuildWebAssetsCommand(Command):
         pass
 
     def run(self):
-        print('running!!!')
+        print(&#x27;running!!!&#x27;)
 </code></pre>
-<h3>src/my-app/pyproject.toml</h3>
-<pre><code class="language-toml">[build-system]
+src/my-app/pyproject.toml
+<pre><code>[build-system]
 requires = [
     &quot;setuptools&quot;,
     &quot;wheel&quot;,
@@ -95,9 +95,9 @@ build-backend = &quot;setuptools.build_meta&quot;
 name = &quot;my-app&quot;
 version = &quot;0.0.0&quot;
 </code></pre>
-<h3>src/my-app/setup.py</h3>
+src/my-app/setup.py
 <p>This step is optional but here for completeness to prove you can use the extension.</p>
-<pre><code class="language-python">import setuptools  # noqa: F401 isort:skip must import before distutils
+<pre><code>import setuptools  # noqa: F401 isort:skip must import before distutils
 from distutils.command.build import build as _BuildCommand
 from setuptools import setup
 from setuptools.command.develop import develop as _DevelopCommand
@@ -105,30 +105,30 @@ from setuptools.command.sdist import sdist as _SDistCommand
 
 
 class SDistCommand(_SDistCommand):
-    sub_commands = [('build_webassets', None)] + _SDistCommand.sub_commands
+    sub_commands = [(&#x27;build_webassets&#x27;, None)] + _SDistCommand.sub_commands
 
 
 class BuildCommand(_BuildCommand):
-    sub_commands = [('build_webassets', None)] + _DevelopCommand.sub_commands
+    sub_commands = [(&#x27;build_webassets&#x27;, None)] + _DevelopCommand.sub_commands
 
 
 class DevelopCommand(_DevelopCommand):
     def run(self):
-        self.run_command('build_webassets')
+        self.run_command(&#x27;build_webassets&#x27;)
         _DevelopCommand.run(self)
 
 
 setup(
     cmdclass={
-        'sdist': SDistCommand,
-        'develop': DevelopCommand,
-        'build': BuildCommand,
+        &#x27;sdist&#x27;: SDistCommand,
+        &#x27;develop&#x27;: DevelopCommand,
+        &#x27;build&#x27;: BuildCommand,
     }
 )
 </code></pre>
-<h2>Expected Result</h2>
+Expected Result
 <p>No errors, build the packages and allow my-app to be installed.</p>
-<h2>Actual Result</h2>
+Actual Result
 <pre><code>❯ uv sync
 warning: No `requires-python` value found in the workspace. Defaulting to `&gt;=3.9`.
 warning: Missing version constraint (e.g., a lower bound) for `setuptools`
@@ -139,12 +139,12 @@ error: Failed to prepare distributions
   Caused by: No solution found when resolving: setuptools, wheel, my-setuptools-extension
   Caused by: Because my-setuptools-extension was not found in the package registry and you require my-setuptools-extension, we can conclude that your requirements are unsatisfiable.
 </code></pre>
-<p>uv is failing to find <code>my-setuptools-extension</code> which is defined in the workspace. This is only an issue when it's a build requirement.</p>
-<h2>Version Info</h2>
+<p>uv is failing to find <code>my-setuptools-extension</code> which is defined in the workspace. This is only an issue when it&#x27;s a build requirement.</p>
+Version Info
 <pre><code>uv 0.4.6 (Homebrew 2024-09-05)
 macos 14.6.1 (m1 max)
 </code></pre>
-<h2>Additional Info</h2>
+Additional Info
 <p>In our current repo, we do this by running a specific build step on build-requirement packages into a wheelhouse and then install all of the other packages with a find-links to the wheelhouse.</p>
 <pre><code>$ env/bin/pip wheel -w wheels src/my-setuptools-extension
 $ env/bin/pip install --find-links wheels -e src/my-app
@@ -152,20 +152,20 @@ $ env/bin/pip install --find-links wheels -e src/my-app
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-09-06 23:09</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-06 23:09</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-09-06 23:13</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-06 23:13</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-10-15 15:31</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-15 15:31</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mmerickel">@mmerickel</a> on 2024-10-15 23:36</div>
-            <div class="timeline-body"><p>Hey @charliermarsh @konstin just to followup on this. I'm super excited that this was merged and it does work if I specify <code>--wheel</code> but just to be clear here is the current behavior now which we may want to consider improving or not, but I'll bring it up:</p>
+            <div class="timeline-body"><p>Hey @charliermarsh @konstin just to followup on this. I&#x27;m super excited that this was merged and it does work if I specify <code>--wheel</code> but just to be clear here is the current behavior now which we may want to consider improving or not, but I&#x27;ll bring it up:</p>
 <p><code>uv build --project src/my-app</code> fails because it tries to build the wheel from the source dist and hence the build requirements are not available.</p>
 <p>However <code>uv build --project src/my-app --wheel</code> works when it builds the wheel directly.</p>
-<p>This is good enough for me, in this case I'm only interested in building wheels. I just want to be clear that it's a gotcha. I think it's quite related to what @konstin was getting at with their comment here: https://github.com/astral-sh/uv/pull/7172#issuecomment-2340881869</p>
+<p>This is good enough for me, in this case I&#x27;m only interested in building wheels. I just want to be clear that it&#x27;s a gotcha. I think it&#x27;s quite related to what @konstin was getting at with their comment here: <a href="https://github.com/astral-sh/uv/pull/7172">astral-sh/uv#7172</a>#issuecomment-2340881869</p>
 <p>The output of both is below using uv 0.4.22:</p>
 <pre><code>~/scratch/uv-test
 ❯ uvx uv build --project src/my-app
@@ -175,15 +175,15 @@ running egg_info
 writing my_app.egg-info/PKG-INFO
 writing dependency_links to my_app.egg-info/dependency_links.txt
 writing top-level names to my_app.egg-info/top_level.txt
-reading manifest file 'my_app.egg-info/SOURCES.txt'
-writing manifest file 'my_app.egg-info/SOURCES.txt'
+reading manifest file &#x27;my_app.egg-info/SOURCES.txt&#x27;
+writing manifest file &#x27;my_app.egg-info/SOURCES.txt&#x27;
 running sdist
 running egg_info
 writing my_app.egg-info/PKG-INFO
 writing dependency_links to my_app.egg-info/dependency_links.txt
 writing top-level names to my_app.egg-info/top_level.txt
-reading manifest file 'my_app.egg-info/SOURCES.txt'
-writing manifest file 'my_app.egg-info/SOURCES.txt'
+reading manifest file &#x27;my_app.egg-info/SOURCES.txt&#x27;
+writing manifest file &#x27;my_app.egg-info/SOURCES.txt&#x27;
 warning: SDistCommand: standard file not found: should have one of README, README.rst, README.txt, README.md
 
 running build_webassets
@@ -201,7 +201,7 @@ copying my_app.egg-info/top_level.txt -&gt; my_app-0.0.0/my_app.egg-info
 copying my_app.egg-info/SOURCES.txt -&gt; my_app-0.0.0/my_app.egg-info
 Writing my_app-0.0.0/setup.cfg
 Creating tar archive
-removing 'my_app-0.0.0' (and everything under it)
+removing &#x27;my_app-0.0.0&#x27; (and everything under it)
 Building wheel from source distribution...
 error: Failed to resolve requirements from `build-system.requires`
   Caused by: No solution found when resolving: `setuptools`, `wheel`, `my-setuptools-extension`
@@ -215,8 +215,8 @@ running egg_info
 writing my_app.egg-info/PKG-INFO
 writing dependency_links to my_app.egg-info/dependency_links.txt
 writing top-level names to my_app.egg-info/top_level.txt
-reading manifest file 'my_app.egg-info/SOURCES.txt'
-writing manifest file 'my_app.egg-info/SOURCES.txt'
+reading manifest file &#x27;my_app.egg-info/SOURCES.txt&#x27;
+writing manifest file &#x27;my_app.egg-info/SOURCES.txt&#x27;
 running bdist_wheel
 running build
 running build_webassets
@@ -228,16 +228,16 @@ running egg_info
 writing my_app.egg-info/PKG-INFO
 writing dependency_links to my_app.egg-info/dependency_links.txt
 writing top-level names to my_app.egg-info/top_level.txt
-reading manifest file 'my_app.egg-info/SOURCES.txt'
-writing manifest file 'my_app.egg-info/SOURCES.txt'
+reading manifest file &#x27;my_app.egg-info/SOURCES.txt&#x27;
+writing manifest file &#x27;my_app.egg-info/SOURCES.txt&#x27;
 Copying my_app.egg-info to build/bdist.macosx-11.0-arm64/wheel/./my_app-0.0.0-py3.9.egg-info
 running install_scripts
 creating build/bdist.macosx-11.0-arm64/wheel/my_app-0.0.0.dist-info/WHEEL
-creating '/Users/michael.merickel/scratch/uv-test/dist/.tmpkc1lKg/.tmp-meam8_7j/my_app-0.0.0-py3-none-any.whl' and adding 'build/bdist.macosx-11.0-arm64/wheel' to it
-adding 'my_app-0.0.0.dist-info/METADATA'
-adding 'my_app-0.0.0.dist-info/WHEEL'
-adding 'my_app-0.0.0.dist-info/top_level.txt'
-adding 'my_app-0.0.0.dist-info/RECORD'
+creating &#x27;/Users/michael.merickel/scratch/uv-test/dist/.tmpkc1lKg/.tmp-meam8_7j/my_app-0.0.0-py3-none-any.whl&#x27; and adding &#x27;build/bdist.macosx-11.0-arm64/wheel&#x27; to it
+adding &#x27;my_app-0.0.0.dist-info/METADATA&#x27;
+adding &#x27;my_app-0.0.0.dist-info/WHEEL&#x27;
+adding &#x27;my_app-0.0.0.dist-info/top_level.txt&#x27;
+adding &#x27;my_app-0.0.0.dist-info/RECORD&#x27;
 removing build/bdist.macosx-11.0-arm64/wheel
 Successfully built dist/my_app-0.0.0-py3-none-any.whl
 </code></pre>
@@ -245,13 +245,13 @@ Successfully built dist/my_app-0.0.0-py3-none-any.whl
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-15 23:47</div>
-            <div class="timeline-body"><p>Ahh right. That's a good catch -- that may be what @konstin was getting at (but I misunderstood). I think that's actually good behavior, but it should be documented.</p>
+            <div class="timeline-body"><p>Ahh right. That&#x27;s a good catch -- that may be what @konstin was getting at (but I misunderstood). I think that&#x27;s actually good behavior, but it should be documented.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kaxil">@kaxil</a> on 2024-10-15 23:55</div>
             <div class="timeline-body"><p>@charliermarsh
-Yup, I am fighting that behaviour right now in the Airflow repo: https://github.com/apache/airflow/pull/43056</p>
+Yup, I am fighting that behaviour right now in the Airflow repo: <a href="https://github.com/apache/airflow/pull/43056">apache/airflow#43056</a></p>
 <p>When I tried to bump uv to <code>0.4.22</code> our build from sdist started failing with the following.</p>
 <pre><code>error: Failed to build: `apache-airflow @ file:///dist/apache_airflow-3.0.0.dev0.tar.gz`
   Caused by: Failed to parse entry for: `local-providers`
@@ -262,14 +262,14 @@ Yup, I am fighting that behaviour right now in the Airflow repo: https://github.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-15 23:59</div>
-            <div class="timeline-body"><p>@kaxil -- You're seeing this with <code>uv build</code>, or <code>uv pip install</code>?</p>
+            <div class="timeline-body"><p>@kaxil -- You&#x27;re seeing this with <code>uv build</code>, or <code>uv pip install</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kaxil">@kaxil</a> on 2024-10-16 00:01</div>
             <div class="timeline-body"><p>Yeah sry, I am seeing the issue with <code>uv pip install</code> when installing from sdist.</p>
-<p>We have the following in Airflow's <code>pyproject.toml</code>:</p>
-<pre><code class="language-toml">...
+<p>We have the following in Airflow&#x27;s <code>pyproject.toml</code>:</p>
+<pre><code>...
 [tool.uv]
 dev-dependencies = [
   &quot;local-providers&quot;,
@@ -289,7 +289,7 @@ members = [&quot;providers&quot;, &quot;task_sdk&quot;]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-16 00:07</div>
-            <div class="timeline-body"><p>And it fails when installing from a <code>.tar.gz</code>? I guess I'd consider that a bug. I'll take a look.</p>
+            <div class="timeline-body"><p>And it fails when installing from a <code>.tar.gz</code>? I guess I&#x27;d consider that a bug. I&#x27;ll take a look.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -299,7 +299,7 @@ members = [&quot;providers&quot;, &quot;task_sdk&quot;]
 </blockquote>
 <p>Correct.</p>
 <blockquote>
-<p>I guess I'd consider that a bug. I'll take a look.</p>
+<p>I guess I&#x27;d consider that a bug. I&#x27;ll take a look.</p>
 </blockquote>
 <p>Thanks</p>
 </div>
@@ -317,13 +317,13 @@ members = [&quot;providers&quot;, &quot;task_sdk&quot;]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-16 00:46</div>
-            <div class="timeline-body"><p>Thank you, it's fixed here: https://github.com/astral-sh/uv/pull/8235</p>
+            <div class="timeline-body"><p>Thank you, it&#x27;s fixed here: <a href="https://github.com/astral-sh/uv/pull/8235">astral-sh/uv#8235</a></p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:26:56 UTC
+        Synced at 2026-01-20 19:33:46 UTC
     </footer>
 </body>
 </html>

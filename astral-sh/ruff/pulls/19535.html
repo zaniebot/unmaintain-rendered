@@ -23,15 +23,15 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This was previously the last commit in #19415, split out to make it easier to review. This applies the fixes from c9b99e4, 5021f32, and 2922490cb8 to the new rendering code in <code>ruff_db</code>. I initially intended only to fix the empty span after a line terminator (as you can see in the branch name), but the two fixes were tied pretty closely together, and my initial fix for the empty spans needed a big change after trying to handle unprintable characters too. I can still split this up if it would help with review. I would just start with the unprintable characters first.</p>
-<p>The implementation here is essentially copy-pasted from <code>ruff_linter::message::text.rs</code>, with the <code>SourceCode</code> struct renamed to <code>EscapedSourceCode</code> since there's already a <code>SourceCode</code> in scope in <code>render.rs</code>. It's also updated slightly to account for the multiple annotations for a single snippet. The original implementation used some types from the <code>line_width</code> module from <code>ruff_linter</code>. I copied over heavily stripped-down versions of these instead of trying to import them. We could inline the remaining code entirely, if we want, but I thought it was nice enough to keep.</p>
+<p>The implementation here is essentially copy-pasted from <code>ruff_linter::message::text.rs</code>, with the <code>SourceCode</code> struct renamed to <code>EscapedSourceCode</code> since there&#x27;s already a <code>SourceCode</code> in scope in <code>render.rs</code>. It&#x27;s also updated slightly to account for the multiple annotations for a single snippet. The original implementation used some types from the <code>line_width</code> module from <code>ruff_linter</code>. I copied over heavily stripped-down versions of these instead of trying to import them. We could inline the remaining code entirely, if we want, but I thought it was nice enough to keep.</p>
 <p>I also moved over <code>ceil_char_boundary</code>, which is unchanged except to make it a free function taking a <code>&amp;str</code> instead of a <code>Locator</code> method. All of this code could be deleted from <code>ruff_linter</code> if we also move over the <code>grouped</code> output format, which will be the last user after #19415.</p>
-<h2>Test Plan</h2>
-<p>I added new tests in <code>ruff_linter</code> that call into the new rendering code to snapshot the diagnostics for the affected cases. These are copies of existing snapshots in Ruff, so it's helpful to compare them. These are a bit noisy because of the other rendering differences in the header, but all of the <code>^^^</code> indicators should be the same.</p>
-<details><summary>`empty_span_after_line_terminator` diff</summary>
+Test Plan
+<p>I added new tests in <code>ruff_linter</code> that call into the new rendering code to snapshot the diagnostics for the affected cases. These are copies of existing snapshots in Ruff, so it&#x27;s helpful to compare them. These are a bit noisy because of the other rendering differences in the header, but all of the <code>^^^</code> indicators should be the same.</p>
+`empty_span_after_line_terminator` diff
 
-<pre><code class="language-diff">diff --git a/crates/ruff_linter/src/rules/pycodestyle/snapshots/ruff_linter__rules__pycodestyle__tests__E112_E11.py.snap b/crates/ruff_linter/src/message/snapshots/ruff_linter__message__text__tests__empty_span_after_line_terminator.snap
+<pre><code>diff --git a/crates/ruff_linter/src/rules/pycodestyle/snapshots/ruff_linter__rules__pycodestyle__tests__E112_E11.py.snap b/crates/ruff_linter/src/message/snapshots/ruff_linter__message__text__tests__empty_span_after_line_terminator.snap
 index 5ade4346e0..6df75c16f0 100644
 --- a/crates/ruff_linter/src/rules/pycodestyle/snapshots/ruff_linter__rules__pycodestyle__tests__E112_E11.py.snap
 +++ b/crates/ruff_linter/src/message/snapshots/ruff_linter__message__text__tests__empty_span_after_line_terminator.snap
@@ -71,7 +71,7 @@ index 5ade4346e0..6df75c16f0 100644
  10 | #: E113
  11 | print()
 @@ -31,7 +35,8 @@ E11.py:12:1: SyntaxError: Unexpected indentation
- 14 | mimetype = 'application/x-directory'
+ 14 | mimetype = &#x27;application/x-directory&#x27;
     |
  
 -E11.py:14:1: SyntaxError: Expected a statement
@@ -104,11 +104,11 @@ index 5ade4346e0..6df75c16f0 100644
  43 | #: E112
  44 | if False:  #
 </code></pre>
-</details>
 
-<details><summary>`unprintable_characters` diff</summary>
 
-<pre><code class="language-diff">diff --git a/crates/ruff_linter/src/rules/pylint/snapshots/ruff_linter__rules__pylint__tests__PLE2512_invalid_characters.py.snap b/crates/ruff_linter/src/message/snapshots/ruff_linter__message__text__tests__unprintable_characters.snap
+`unprintable_characters` diff
+
+<pre><code>diff --git a/crates/ruff_linter/src/rules/pylint/snapshots/ruff_linter__rules__pylint__tests__PLE2512_invalid_characters.py.snap b/crates/ruff_linter/src/message/snapshots/ruff_linter__message__text__tests__unprintable_characters.snap
 index 52cfdf9cce..fcfa1ac9f1 100644
 --- a/crates/ruff_linter/src/rules/pylint/snapshots/ruff_linter__rules__pylint__tests__PLE2512_invalid_characters.py.snap
 +++ b/crates/ruff_linter/src/message/snapshots/ruff_linter__message__text__tests__unprintable_characters.snap
@@ -122,48 +122,48 @@ index 52cfdf9cce..fcfa1ac9f1 100644
 +error[invalid-character-sub]: Invalid unescaped character SUB, use &quot;\x1A&quot; instead
 +  --&gt; invalid_characters.py:24:12
     |
- 22 | cr_ok = f'\\r'
+ 22 | cr_ok = f&#x27;\\r&#x27;
  23 |
- 24 | sub = 'sub '
+ 24 | sub = &#x27;sub &#x27;
 -   |            ^ PLE2512
 +   |            ^
- 25 | sub = f'sub '
+ 25 | sub = f&#x27;sub &#x27;
     |
 -   = help: Replace with escape sequence
 +help: Replace with escape sequence
  
 -ℹ Safe fix
--21 21 | cr_ok = '\\r'
--22 22 | cr_ok = f'\\r'
+-21 21 | cr_ok = &#x27;\\r&#x27;
+-22 22 | cr_ok = f&#x27;\\r&#x27;
 -23 23 | 
--24    |-sub = 'sub '
--   24 |+sub = 'sub \x1A'
--25 25 | sub = f'sub '
+-24    |-sub = &#x27;sub &#x27;
+-   24 |+sub = &#x27;sub \x1A&#x27;
+-25 25 | sub = f&#x27;sub &#x27;
 -26 26 | 
--27 27 | sub_ok = '\x1a'
+-27 27 | sub_ok = &#x27;\x1a&#x27;
 -
 -invalid_characters.py:25:13: PLE2512 [*] Invalid unescaped character SUB, use &quot;\x1A&quot; instead
 +error[invalid-character-sub]: Invalid unescaped character SUB, use &quot;\x1A&quot; instead
 +  --&gt; invalid_characters.py:25:13
     |
- 24 | sub = 'sub '
- 25 | sub = f'sub '
+ 24 | sub = &#x27;sub &#x27;
+ 25 | sub = f&#x27;sub &#x27;
 -   |             ^ PLE2512
 +   |             ^
  26 |
- 27 | sub_ok = '\x1a'
+ 27 | sub_ok = &#x27;\x1a&#x27;
     |
 -   = help: Replace with escape sequence
 -
 -ℹ Safe fix
--22 22 | cr_ok = f'\\r'
+-22 22 | cr_ok = f&#x27;\\r&#x27;
 -23 23 | 
--24 24 | sub = 'sub '
--25    |-sub = f'sub '
--   25 |+sub = f'sub \x1A'
+-24 24 | sub = &#x27;sub &#x27;
+-25    |-sub = f&#x27;sub &#x27;
+-   25 |+sub = f&#x27;sub \x1A&#x27;
 -26 26 | 
--27 27 | sub_ok = '\x1a'
--28 28 | sub_ok = f'\x1a'
+-27 27 | sub_ok = &#x27;\x1a&#x27;
+-28 28 | sub_ok = f&#x27;\x1a&#x27;
 +help: Replace with escape sequence
  
 -invalid_characters.py:55:25: PLE2512 [*] Invalid unescaped character SUB, use &quot;\x1A&quot; instead
@@ -172,11 +172,11 @@ index 52cfdf9cce..fcfa1ac9f1 100644
     |
  53 | zwsp_after_multicharacter_grapheme_cluster = f&quot;ಫ್ರಾನ್ಸಿಸ್ಕೊ ​​&quot;
  54 |
- 55 | nested_fstrings = f'␈{f'{f'␛'}'}'
+ 55 | nested_fstrings = f&#x27;␈{f&#x27;{f&#x27;␛&#x27;}&#x27;}&#x27;
 -   |                         ^ PLE2512
 +   |                         ^
  56 |
- 57 | # https://github.com/astral-sh/ruff/issues/7455#issuecomment-1741998106
+ 57 | # <a href="https://github.com/astral-sh/ruff/issues/7455">astral-sh/ruff#7455</a>#issuecomment-1741998106
     |
 -   = help: Replace with escape sequence
 -
@@ -184,10 +184,10 @@ index 52cfdf9cce..fcfa1ac9f1 100644
 -52 52 | zwsp_after_multicharacter_grapheme_cluster = &quot;ಫ್ರಾನ್ಸಿಸ್ಕೊ ​​&quot;
 -53 53 | zwsp_after_multicharacter_grapheme_cluster = f&quot;ಫ್ರಾನ್ಸಿಸ್ಕೊ ​​&quot;
 -54 54 | 
--55    |-nested_fstrings = f'␈{f'{f'␛'}'}'
--   55 |+nested_fstrings = f'␈{f'\x1A{f'␛'}'}'
+-55    |-nested_fstrings = f&#x27;␈{f&#x27;{f&#x27;␛&#x27;}&#x27;}&#x27;
+-   55 |+nested_fstrings = f&#x27;␈{f&#x27;\x1A{f&#x27;␛&#x27;}&#x27;}&#x27;
 -56 56 | 
--57 57 | # https://github.com/astral-sh/ruff/issues/7455#issuecomment-1741998106
+-57 57 | # <a href="https://github.com/astral-sh/ruff/issues/7455">astral-sh/ruff#7455</a>#issuecomment-1741998106
 -58 58 | x = f&quot;&quot;&quot;}}ab&quot;&quot;&quot;
 +help: Replace with escape sequence
  
@@ -195,23 +195,23 @@ index 52cfdf9cce..fcfa1ac9f1 100644
 +error[invalid-character-sub]: Invalid unescaped character SUB, use &quot;\x1A&quot; instead
 +  --&gt; invalid_characters.py:58:12
     |
- 57 | # https://github.com/astral-sh/ruff/issues/7455#issuecomment-1741998106
+ 57 | # <a href="https://github.com/astral-sh/ruff/issues/7455">astral-sh/ruff#7455</a>#issuecomment-1741998106
  58 | x = f&quot;&quot;&quot;}}ab&quot;&quot;&quot;
 -   |            ^ PLE2512
 +   |            ^
- 59 | # https://github.com/astral-sh/ruff/issues/7455#issuecomment-1741998256
+ 59 | # <a href="https://github.com/astral-sh/ruff/issues/7455">astral-sh/ruff#7455</a>#issuecomment-1741998256
  60 | x = f&quot;&quot;&quot;}}a␛b&quot;&quot;&quot;
     |
 -   = help: Replace with escape sequence
 +help: Replace with escape sequence
  
 -ℹ Safe fix
--55 55 | nested_fstrings = f'␈{f'{f'␛'}'}'
+-55 55 | nested_fstrings = f&#x27;␈{f&#x27;{f&#x27;␛&#x27;}&#x27;}&#x27;
 -56 56 | 
--57 57 | # https://github.com/astral-sh/ruff/issues/7455#issuecomment-1741998106
+-57 57 | # <a href="https://github.com/astral-sh/ruff/issues/7455">astral-sh/ruff#7455</a>#issuecomment-1741998106
 -58    |-x = f&quot;&quot;&quot;}}ab&quot;&quot;&quot;
 -   58 |+x = f&quot;&quot;&quot;}}a\x1Ab&quot;&quot;&quot;
--59 59 | # https://github.com/astral-sh/ruff/issues/7455#issuecomment-1741998256
+-59 59 | # <a href="https://github.com/astral-sh/ruff/issues/7455">astral-sh/ruff#7455</a>#issuecomment-1741998256
 -60 60 | x = f&quot;&quot;&quot;}}a␛b&quot;&quot;&quot;
 -61 61 | 
 -
@@ -219,7 +219,7 @@ index 52cfdf9cce..fcfa1ac9f1 100644
 +error[invalid-character-sub]: Invalid unescaped character SUB, use &quot;\x1A&quot; instead
 +  --&gt; invalid_characters.py:64:12
     |
- 63 | # https://github.com/astral-sh/ruff/issues/13294
+ 63 | # <a href="https://github.com/astral-sh/ruff/issues/13294">astral-sh/ruff#13294</a>
  64 | print(r&quot;&quot;&quot;␈␛�​
 -   |            ^ PLE2512
 +   |            ^
@@ -262,7 +262,7 @@ index 52cfdf9cce..fcfa1ac9f1 100644
 +error[invalid-character-sub]: Invalid unescaped character SUB, use &quot;\x1A&quot; instead
 +  --&gt; invalid_characters.py:73:9
     |
- 71 | # https://github.com/astral-sh/ruff/issues/18815
+ 71 | # <a href="https://github.com/astral-sh/ruff/issues/18815">astral-sh/ruff#18815</a>
  72 | b = &quot;\␈&quot;
  73 | sub = &quot;\&quot;
 -   |         ^ PLE2512
@@ -278,21 +278,21 @@ index 52cfdf9cce..fcfa1ac9f1 100644
 +  --&gt; invalid_characters.py:80:25
     |
  78 | # tstrings
- 79 | esc = t'esc esc ␛'
- 80 | nested_tstrings = t'␈{t'{t'␛'}'}'
+ 79 | esc = t&#x27;esc esc ␛&#x27;
+ 80 | nested_tstrings = t&#x27;␈{t&#x27;{t&#x27;␛&#x27;}&#x27;}&#x27;
 -   |                         ^ PLE2512
 +   |                         ^
- 81 | nested_ftstrings = t'␈{f'{t'␛'}'}'
+ 81 | nested_ftstrings = t&#x27;␈{f&#x27;{t&#x27;␛&#x27;}&#x27;}&#x27;
     |
 -   = help: Replace with escape sequence
 -
 -ℹ Safe fix
 -77 77 | 
 -78 78 | # tstrings
--79 79 | esc = t'esc esc ␛'
--80    |-nested_tstrings = t'␈{t'{t'␛'}'}'
--   80 |+nested_tstrings = t'␈{t'\x1A{t'␛'}'}'
--81 81 | nested_ftstrings = t'␈{f'{t'␛'}'}'
+-79 79 | esc = t&#x27;esc esc ␛&#x27;
+-80    |-nested_tstrings = t&#x27;␈{t&#x27;{t&#x27;␛&#x27;}&#x27;}&#x27;
+-   80 |+nested_tstrings = t&#x27;␈{t&#x27;\x1A{t&#x27;␛&#x27;}&#x27;}&#x27;
+-81 81 | nested_ftstrings = t&#x27;␈{f&#x27;{t&#x27;␛&#x27;}&#x27;}&#x27;
 -82 82 | 
 +help: Replace with escape sequence
  
@@ -300,9 +300,9 @@ index 52cfdf9cce..fcfa1ac9f1 100644
 +error[invalid-character-sub]: Invalid unescaped character SUB, use &quot;\x1A&quot; instead
 +  --&gt; invalid_characters.py:81:26
     |
- 79 | esc = t'esc esc ␛'
- 80 | nested_tstrings = t'␈{t'{t'␛'}'}'
- 81 | nested_ftstrings = t'␈{f'{t'␛'}'}'
+ 79 | esc = t&#x27;esc esc ␛&#x27;
+ 80 | nested_tstrings = t&#x27;␈{t&#x27;{t&#x27;␛&#x27;}&#x27;}&#x27;
+ 81 | nested_ftstrings = t&#x27;␈{f&#x27;{t&#x27;␛&#x27;}&#x27;}&#x27;
 -   |                          ^ PLE2512
 +   |                          ^
     |
@@ -310,41 +310,41 @@ index 52cfdf9cce..fcfa1ac9f1 100644
 -
 -ℹ Safe fix
 -78 78 | # tstrings
--79 79 | esc = t'esc esc ␛'
--80 80 | nested_tstrings = t'␈{t'{t'␛'}'}'
--81    |-nested_ftstrings = t'␈{f'{t'␛'}'}'
--   81 |+nested_ftstrings = t'␈{f'\x1A{t'␛'}'}'
+-79 79 | esc = t&#x27;esc esc ␛&#x27;
+-80 80 | nested_tstrings = t&#x27;␈{t&#x27;{t&#x27;␛&#x27;}&#x27;}&#x27;
+-81    |-nested_ftstrings = t&#x27;␈{f&#x27;{t&#x27;␛&#x27;}&#x27;}&#x27;
+-   81 |+nested_ftstrings = t&#x27;␈{f&#x27;\x1A{t&#x27;␛&#x27;}&#x27;}&#x27;
 -82 82 |
 +help: Replace with escape sequence
 </code></pre>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> added by @ntBre on 2025-07-24 18:42</div>
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-24 18:42</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">diagnostics</span> added by @ntBre on 2025-07-24 18:42</div>
+            <div class="event">Label <span class="label">diagnostics</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-24 18:42</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-24 18:52</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-24 18:57</div>
-            <div class="timeline-body"><p>After looking at this again,  I think we can probably do both this check and the unprintable check in <code>RenderableSnippet::new</code> as I mentioned in my other comment. I think I'll try that before taking this out of draft.</p>
+            <div class="timeline-body"><p>After looking at this again,  I think we can probably do both this check and the unprintable check in <code>RenderableSnippet::new</code> as I mentioned in my other comment. I think I&#x27;ll try that before taking this out of draft.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -372,57 +372,57 @@ index 52cfdf9cce..fcfa1ac9f1 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-25 18:40</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
+<code>mypy_primer</code> results
 <p>No ecosystem changes detected ✅
 No memory usage changes detected ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Fix empty spans following a line terminator in `ruff_db`" to "Fix empty spans following a line terminator and unprintable character spans in `ruff_db`" by @ntBre on 2025-07-25 19:43</div>
+            <div class="event">Renamed from &quot;Fix empty spans following a line terminator in `ruff_db`&quot; to &quot;Fix empty spans following a line terminator and unprintable character spans in `ruff_db`&quot; by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-25 19:43</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @ntBre on 2025-07-25 19:47</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-25 19:47</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @ntBre on 2025-07-25 19:47</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-25 19:47</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-07-25 19:47</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-25 19:47</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @ntBre on 2025-07-25 19:47</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-25 19:47</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @ntBre on 2025-07-25 19:47</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-25 19:47</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @ntBre on 2025-07-25 19:47</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-25 19:47</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @dcreager removed by @ntBre on 2025-07-25 19:47</div>
+            <div class="event">Review request for <a href="https://github.com/dcreager">@dcreager</a> removed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-25 19:47</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @carljm removed by @ntBre on 2025-07-25 19:47</div>
+            <div class="event">Review request for <a href="https://github.com/carljm">@carljm</a> removed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-25 19:47</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @sharkdp removed by @ntBre on 2025-07-25 19:47</div>
+            <div class="event">Review request for <a href="https://github.com/sharkdp">@sharkdp</a> removed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-25 19:47</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @AlexWaygood removed by @ntBre on 2025-07-25 19:47</div>
+            <div class="event">Review request for <a href="https://github.com/AlexWaygood">@AlexWaygood</a> removed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-25 19:47</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @BurntSushi by @ntBre on 2025-07-25 19:47</div>
+            <div class="event">Review requested from <a href="https://github.com/BurntSushi">@BurntSushi</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-25 19:47</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-07-26 09:42</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-26 09:42</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Fix empty spans following a line terminator and unprintable character spans in `ruff_db`" to "Fix empty spans following a line terminator and unprintable character spans in Diagnostics" by @MichaReiser on 2025-07-26 09:42</div>
+            <div class="event">Renamed from &quot;Fix empty spans following a line terminator and unprintable character spans in `ruff_db`&quot; to &quot;Fix empty spans following a line terminator and unprintable character spans in Diagnostics&quot; by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-26 09:42</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Fix empty spans following a line terminator and unprintable character spans in Diagnostics" to "Fix empty spans following a line terminator and unprintable character spans in diagnostics" by @MichaReiser on 2025-07-26 09:42</div>
+            <div class="event">Renamed from &quot;Fix empty spans following a line terminator and unprintable character spans in Diagnostics&quot; to &quot;Fix empty spans following a line terminator and unprintable character spans in diagnostics&quot; by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-26 09:42</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-26 09:45</div>
@@ -435,14 +435,14 @@ No memory usage changes detected ✅</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:833 on 2025-07-26 10:27</div>
-            <div class="timeline-body"><p>The name here feels a bit off now, considering that it isn't a proper builder anymore.</p>
+            <div class="timeline-body"><p>The name here feels a bit off now, considering that it isn&#x27;t a proper builder anymore.</p>
 <p>Maybe just call it <code>Position</code> and I suggest renaming <code>get</code> to <code>width</code> to make it clear what it returns (or remove the accessor all together and access the field directly)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:892 on 2025-07-26 10:29</div>
-            <div class="timeline-body"><p>I don't think I fully understand why we need to collect the ranges first, only to then zip then here again. Can't we call <code>ann.range()</code> inside the loop?</p>
-<pre><code class="language-rust">for ann in annotations.iter_mut() {
+            <div class="timeline-body"><p>I don&#x27;t think I fully understand why we need to collect the ranges first, only to then zip then here again. Can&#x27;t we call <code>ann.range()</code> inside the loop?</p>
+<pre><code>for ann in annotations.iter_mut() {
 	let original_range = ann.range();
   if index &lt; usize::from(original_range.start()) {
 </code></pre>
@@ -450,7 +450,7 @@ No memory usage changes detected ✅</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:882 on 2025-07-26 10:31</div>
-            <div class="timeline-body"><p>Nit: Move the declaration of this variable closer to where it's used.</p>
+            <div class="timeline-body"><p>Nit: Move the declaration of this variable closer to where it&#x27;s used.</p>
 <p>Same for <code>last_end</code>. It helps readability because, as a reader, I have to page less variables into my memory :)</p>
 </div>
         </div>
@@ -470,10 +470,10 @@ No memory usage changes detected ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> removed by @MichaReiser on 2025-07-26 10:35</div>
+            <div class="event">Label <span class="label">internal</span> removed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-26 10:35</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Fix empty spans following a line terminator and unprintable character spans in diagnostics" to "[ty] Fix empty spans following a line terminator and unprintable character spans in diagnostics" by @MichaReiser on 2025-07-26 10:35</div>
+            <div class="event">Renamed from &quot;Fix empty spans following a line terminator and unprintable character spans in diagnostics&quot; to &quot;[ty] Fix empty spans following a line terminator and unprintable character spans in diagnostics&quot; by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-26 10:35</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-26 13:17</div>
@@ -483,8 +483,8 @@ No memory usage changes detected ✅</p>
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/message/text.rs</code>:480 on 2025-07-26 13:17</div>
             <div class="timeline-body"><p>Not very easily. For the tests in <code>ruff_db</code> we have to synthesize diagnostics:</p>
 <p>https://github.com/astral-sh/ruff/blob/dc92966cc0ec10f703157262519837e197cf2da0/crates/ruff_db/src/diagnostic/render.rs#L2597-L2606</p>
-<p>I started out doing that and then realized it would be much easier to use Ruff's actual infrastructure to get the diagnostics and not accidentally test the wrong thing.</p>
-<p>It should be safe to delete these tests once Ruff uses the new renderer in general anyway, since they'll be duplicates of existing snapshots.</p>
+<p>I started out doing that and then realized it would be much easier to use Ruff&#x27;s actual infrastructure to get the diagnostics and not accidentally test the wrong thing.</p>
+<p>It should be safe to delete these tests once Ruff uses the new renderer in general anyway, since they&#x27;ll be duplicates of existing snapshots.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -504,7 +504,7 @@ No memory usage changes detected ✅</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:981 on 2025-07-26 13:32</div>
-            <div class="timeline-body"><p>I thought this would be okay in this context because checking <code>\n</code> as the preceding character should cover both <code>\n</code> and <code>\r\n</code> line endings, but it's easy enough to add <code>\r</code> either way.</p>
+            <div class="timeline-body"><p>I thought this would be okay in this context because checking <code>\n</code> as the preceding character should cover both <code>\n</code> and <code>\r\n</code> line endings, but it&#x27;s easy enough to add <code>\r</code> either way.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -514,7 +514,7 @@ No memory usage changes detected ✅</p>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:932 on 2025-07-26 13:39</div>
             <div class="timeline-body"><p>I think it does look nicer inlined now that I tried it, thanks! You can see the whole looping logic on one screen now.</p>
-<p>I don't see a great way to combine the two matches, but I still think it's an improvement.</p>
+<p>I don&#x27;t see a great way to combine the two matches, but I still think it&#x27;s an improvement.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -528,7 +528,7 @@ No memory usage changes detected ✅</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:932 on 2025-07-26 14:01</div>
-            <div class="timeline-body"><p>Oh, I see how to combine them. Obviously <code>\n</code> and <code>\r</code> won't hit the unprintable branch :facepalm:</p>
+            <div class="timeline-body"><p>Oh, I see how to combine them. Obviously <code>\n</code> and <code>\r</code> won&#x27;t hit the unprintable branch :facepalm:</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -541,7 +541,7 @@ No memory usage changes detected ✅</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/message/text.rs</code>:480 on 2025-07-26 16:18</div>
-            <div class="timeline-body"><p>I still think it's worth having dedicated tests for this or we'll loose the assertion if the rule changes or gets removed. I'm aware that it requires building the diagnostics manually but I'd expect that ir isn't too hard. It only requires calling a fewer diagnostic builder methods (and it's definitely easier to debug). But maybe I'm missing something?</p>
+            <div class="timeline-body"><p>I still think it&#x27;s worth having dedicated tests for this or we&#x27;ll loose the assertion if the rule changes or gets removed. I&#x27;m aware that it requires building the diagnostics manually but I&#x27;d expect that ir isn&#x27;t too hard. It only requires calling a fewer diagnostic builder methods (and it&#x27;s definitely easier to debug). But maybe I&#x27;m missing something?</p>
 <p>(Looking at the test. The builder code is roughly as much code as what you have here)</p>
 </div>
         </div>
@@ -551,8 +551,8 @@ No memory usage changes detected ✅</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/message/text.rs</code>:480 on 2025-07-26 16:34</div>
-            <div class="timeline-body"><p>That's the builder code for one diagnostic, whereas the current test has 6 diagnostics in this case and 10 diagnostics for <code>unprintable_characters</code>. I'll strip down the two interesting cases and move them to <code>ruff_db</code>. I thought it was nice to have the full snapshot for diffing against Ruff, but now that that's resolved we can just keep minimized versions of the tests.</p>
-<p>I'm still a bit wary of having to manually input the ranges in the builder, which could also fall out of sync with real diagnostics, but I see the benefits otherwise.</p>
+            <div class="timeline-body"><p>That&#x27;s the builder code for one diagnostic, whereas the current test has 6 diagnostics in this case and 10 diagnostics for <code>unprintable_characters</code>. I&#x27;ll strip down the two interesting cases and move them to <code>ruff_db</code>. I thought it was nice to have the full snapshot for diffing against Ruff, but now that that&#x27;s resolved we can just keep minimized versions of the tests.</p>
+<p>I&#x27;m still a bit wary of having to manually input the ranges in the builder, which could also fall out of sync with real diagnostics, but I see the benefits otherwise.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -561,7 +561,7 @@ No memory usage changes detected ✅</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/message/text.rs</code>:480 on 2025-07-26 16:56</div>
-            <div class="timeline-body"><p>Alright, that wasn't so bad: a4f74340fb068fb24da84f1f73af31ba29c2b5b1. I also applied the patch to <code>main</code> and checked that they failed there as expected.</p>
+            <div class="timeline-body"><p>Alright, that wasn&#x27;t so bad: a4f74340fb068fb24da84f1f73af31ba29c2b5b1. I also applied the patch to <code>main</code> and checked that they failed there as expected.</p>
 <p>The stripped down versions are also nice because they fit better as inline snapshots.</p>
 </div>
         </div>
@@ -572,19 +572,19 @@ No memory usage changes detected ✅</p>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/message/text.rs</code>:480 on 2025-07-26 17:53</div>
             <div class="timeline-body"><blockquote>
-<p>I'm still a bit wary of having to manually input the ranges in the builder</p>
+<p>I&#x27;m still a bit wary of having to manually input the ranges in the builder</p>
 </blockquote>
 <p>What I like to do in those cases is to use str.find to get the offset</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:892 on 2025-07-27 15:37</div>
-            <div class="timeline-body"><p>I realized that we didn't have a test for this in the stripped-down version, so I just added another test case. Without using <code>original_ranges</code>, this input:</p>
-<pre><code class="language-py">  # rendered as ^H^Z^[ in my editor
+            <div class="timeline-body"><p>I realized that we didn&#x27;t have a test for this in the stripped-down version, so I just added another test case. Without using <code>original_ranges</code>, this input:</p>
+<pre><code>  # rendered as ^H^Z^[ in my editor
 </code></pre>
 <p>causes</p>
-<pre><code>    thread 'diagnostic::render::full::tests::multiple_unprintable_characters' panicked at crates/ruff_annotate_snippets/src/renderer/display_list.rs:1450:29:
-    byte index 5 is not a char boundary; it is inside '␛' (bytes 4..7) of `␈␛`
+<pre><code>    thread &#x27;diagnostic::render::full::tests::multiple_unprintable_characters&#x27; panicked at crates/ruff_annotate_snippets/src/renderer/display_list.rs:1450:29:
+    byte index 5 is not a char boundary; it is inside &#x27;␛&#x27; (bytes 4..7) of `␈␛`
 </code></pre>
 <p>From my earlier debugging, the issue was some kind of double  counting in <code>replace_whitespace_and_unprintable</code>. The input annotation range here is <code>1..1</code>, and the output in this panicking version is <code>5..5</code>, instead of the correct <code>3..3</code>, so it gets shifted twice if you compare against the current range.</p>
 </div>
@@ -599,13 +599,13 @@ No memory usage changes detected ✅</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:981 on 2025-07-28 08:01</div>
-            <div class="timeline-body"><p>That's true. But Ruff still supports <code>\r</code> (because python does)</p>
+            <div class="timeline-body"><p>That&#x27;s true. But Ruff still supports <code>\r</code> (because python does)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:892 on 2025-07-28 08:10</div>
-            <div class="timeline-body"><p>Ohh, I see now. This is a callback function. That's why it matters.</p>
-<p>It seems unfortunate that we have to collect all original ranges even if the source code doesn't contain a single tab character (which should be the most common case).</p>
+            <div class="timeline-body"><p>Ohh, I see now. This is a callback function. That&#x27;s why it matters.</p>
+<p>It seems unfortunate that we have to collect all original ranges even if the source code doesn&#x27;t contain a single tab character (which should be the most common case).</p>
 <p>Would it make sense to change the <code>for (index, c) in source.char_indices() {</code> to track the relative offset compared to the source offset. This way, you could call <code>update_ranges</code> with <code>index + relative_offset</code> and remove the original ranges thing entirely</p>
 </div>
         </div>
@@ -615,7 +615,7 @@ No memory usage changes detected ✅</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:892 on 2025-07-28 08:12</div>
-            <div class="timeline-body"><p>Thinking about this: I think the relative offset is already known. It's <code>result.text_len() - source.text_len()</code>. That's how many characters where inserted by this function</p>
+            <div class="timeline-body"><p>Thinking about this: I think the relative offset is already known. It&#x27;s <code>result.text_len() - source.text_len()</code>. That&#x27;s how many characters where inserted by this function</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -628,9 +628,9 @@ No memory usage changes detected ✅</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:892 on 2025-07-28 12:39</div>
-            <div class="timeline-body"><p><code>result</code> is likely empty until the very end of the function because we try to return a <code>Cow::Borrowed(source)</code> if nothing is modified, so I don't think we can get the offset from there.</p>
+            <div class="timeline-body"><p><code>result</code> is likely empty until the very end of the function because we try to return a <code>Cow::Borrowed(source)</code> if nothing is modified, so I don&#x27;t think we can get the offset from there.</p>
 <p>The insertion position also matters since the callback differentiates between insertions before the start of the annotation and elsewhere inside the annotation, and it will be different for each annotation. Maybe an offset can still capture that, though.</p>
-<p>I'll keep thinking about this, I agree it would be much nicer not to collect.</p>
+<p>I&#x27;ll keep thinking about this, I agree it would be much nicer not to collect.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -640,7 +640,7 @@ No memory usage changes detected ✅</p>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:892 on 2025-07-28 12:48</div>
             <div class="timeline-body"><blockquote>
-<p>result is likely empty until the very end of the function because we try to return a Cow::Borrowed(source) if nothing is modified, so I don't think we can get the offset from there.</p>
+<p>result is likely empty until the very end of the function because we try to return a Cow::Borrowed(source) if nothing is modified, so I don&#x27;t think we can get the offset from there.</p>
 </blockquote>
 <p>It seems we update <code>result</code> everytime before we call <code>update_ranges</code>. Which makes sense to me. We update the source text and that, in return, requires updating the annotations.</p>
 </div>
@@ -656,7 +656,7 @@ No memory usage changes detected ✅</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:892 on 2025-07-28 12:53</div>
-            <div class="timeline-body"><p>Alternatively, we could just do a regex search for tab and unprintable characters (looks like 5 distinct bytes?). If none are found, then you can just quit early with the <code>Cow::Borrowed</code> case. This search won't need to do UTF-8 decoding and <code>regex</code> might even vectorize it, so it could save you from allocating and UTF-8 decoding.</p>
+            <div class="timeline-body"><p>Alternatively, we could just do a regex search for tab and unprintable characters (looks like 5 distinct bytes?). If none are found, then you can just quit early with the <code>Cow::Borrowed</code> case. This search won&#x27;t need to do UTF-8 decoding and <code>regex</code> might even vectorize it, so it could save you from allocating and UTF-8 decoding.</p>
 <p>With all that said, even without that search to bail early, the up-front alloc here is almost certainly marginal. We are in the rendering code here, which does all sorts of allocs (including in <code>annotate-snippets</code>).</p>
 </div>
         </div>
@@ -670,8 +670,8 @@ No memory usage changes detected ✅</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:892 on 2025-07-28 12:54</div>
-            <div class="timeline-body"><p>Ah maybe I'm misunderstanding the suggestion. In my naive attempt I tried <code>result.text_len() - source.text_len()</code> and kept getting underflow errors because we're building up the <code>result</code> over time, but <code>source</code> is always quite long from the beginning. Did you mean some sub-slice of <code>source</code>? Or maybe I injected this at the wrong point in the function.</p>
-<p>What I meant to say above is &quot;<code>result</code> doesn't have a comparable length to <code>source</code> until the very end of the function,&quot; not that it's totally empty.</p>
+            <div class="timeline-body"><p>Ah maybe I&#x27;m misunderstanding the suggestion. In my naive attempt I tried <code>result.text_len() - source.text_len()</code> and kept getting underflow errors because we&#x27;re building up the <code>result</code> over time, but <code>source</code> is always quite long from the beginning. Did you mean some sub-slice of <code>source</code>? Or maybe I injected this at the wrong point in the function.</p>
+<p>What I meant to say above is &quot;<code>result</code> doesn&#x27;t have a comparable length to <code>source</code> until the very end of the function,&quot; not that it&#x27;s totally empty.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -680,7 +680,7 @@ No memory usage changes detected ✅</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:892 on 2025-07-28 13:00</div>
-            <div class="timeline-body"><p>Oh I see. In that case, isn't the relative offset <code>result.text_len() - i</code>?</p>
+            <div class="timeline-body"><p>Oh I see. In that case, isn&#x27;t the relative offset <code>result.text_len() - i</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -689,22 +689,22 @@ No memory usage changes detected ✅</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:892 on 2025-07-28 14:00</div>
-            <div class="timeline-body"><p>Ah, you're right, thanks! I had just missed accounting for the width of the character being inserted when I tried this initially.</p>
+            <div class="timeline-body"><p>Ah, you&#x27;re right, thanks! I had just missed accounting for the width of the character being inserted when I tried this initially.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-28 14:03</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2>Diagnostic diff on typing conformance tests</h2>
+Diagnostic diff on typing conformance tests
 <p>No changes detected when running ty on typing conformance tests ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @ntBre on 2025-07-29 12:25</div>
+            <div class="event">Merged by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-29 12:25</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ntBre on 2025-07-29 12:25</div>
+            <div class="event">Closed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-29 12:25</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-07-29 12:26</div>
@@ -712,7 +712,7 @@ No memory usage changes detected ✅</p>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:14:32 UTC
+        Synced at 2026-01-20 19:16:59 UTC
     </footer>
 </body>
 </html>

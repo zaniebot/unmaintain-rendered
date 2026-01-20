@@ -23,38 +23,38 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This PR adds support for <code>@no_type_check</code>. Specifically, functions annotated with <code>@no_type_check</code>.</p>
 <p>I think I solved it and the below no longer applies :)</p>
-<p>The basics are working, but I'm running into cycles when the diagnostics are emitted from the annotated function's signature and I want to get a second opinion on what the best approach.</p>
+<p>The basics are working, but I&#x27;m running into cycles when the diagnostics are emitted from the annotated function&#x27;s signature and I want to get a second opinion on what the best approach.</p>
 <p>The current implementation infers the <code>FunctionType</code> and then checks if any decorator in <code>FunctionLiteralType::decorators</code> is the known <code>NoTypeCheck</code> function. This works well, but cycles are more likely because <code>FunctionLiteralType</code> infers the type of the return type and decorators, and any of those could create a cycle.</p>
 <p>An alternative is to do something <a href="https://github.com/microsoft/pyright/blob/17cee31c838961c88103950d7a2d95399a2b6237/packages/pyright-internal/src/analyzer/decorators.ts#L54-L124">closer to Pyright</a>:
-Instead of resolving the entire <code>FunctionLiteralType</code>, iterate over the function's decorators directly and infer each decorator expression. This reduces the possible cycles because it reduces the scope to the decorators only.</p>
-<p>Either approach requires a <code>recovery_fn</code> on the called query to return <code>Type::Unknown</code> for the decorator's expression. So I think this PR might
+Instead of resolving the entire <code>FunctionLiteralType</code>, iterate over the function&#x27;s decorators directly and infer each decorator expression. This reduces the possible cycles because it reduces the scope to the decorators only.</p>
+<p>Either approach requires a <code>recovery_fn</code> on the called query to return <code>Type::Unknown</code> for the decorator&#x27;s expression. So I think this PR might
 be blocked on fixpoint iteration.</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>Added tests, some of them panic :)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @MichaReiser on 2024-12-23 10:51</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-23 10:51</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2024-12-23 10:51</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-23 10:51</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @MichaReiser on 2024-12-23 10:51</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-23 10:51</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-12-23 10:51</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-23 10:51</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/suppressions/no-type-check.md</code>:41 on 2024-12-24 13:49</div>
             <div class="timeline-body"><p>Mypy should be all lowercase unless it starts a sentence:</p>
-<pre><code class="language-suggestion">Both mypy and Pyright flag the `unknown_decorator` but we don't. 
+<pre><code>Both mypy and Pyright flag the `unknown_decorator` but we don&#x27;t. 
 </code></pre>
-<p>Also, wouldn't it be more correct to flag <code>unknown_decorator</code> here? This snippet desugars to something like this at runtime:</p>
-<pre><code class="language-py">from typing import no_type_check
+<p>Also, wouldn&#x27;t it be more correct to flag <code>unknown_decorator</code> here? This snippet desugars to something like this at runtime:</p>
+<pre><code>from typing import no_type_check
 
 def test() -&gt; int:
     return a + 5
@@ -62,23 +62,23 @@ def test() -&gt; int:
 test = unknown_decorator(no_type_check(test))
 </code></pre>
 <p>So I would expect only the class/function and decorators beneath the <code>no_type_check</code> decorator to be covered by the <code>no_type_check</code> &quot;magic&quot;, not decorators above the <code>no_type_check</code> decorator.</p>
-<p>If this is something we'd ideally change at some point, could we add a note to that effect here?</p>
+<p>If this is something we&#x27;d ideally change at some point, could we add a note to that effect here?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:11 on 2024-12-24 13:50</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">use ruff_python_ast as ast;
+            <div class="timeline-body"><pre><code>use ruff_python_ast as ast;
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/suppressions/no-type-check.md</code>:74 on 2024-12-24 13:56</div>
-            <div class="timeline-body"><p>Could you say more about why you think pyright's partial support of this feature is desirable here? (Or if you don't think that pyright's behaviour is desirable here, should this be a TODO?)</p>
+            <div class="timeline-body"><p>Could you say more about why you think pyright&#x27;s partial support of this feature is desirable here? (Or if you don&#x27;t think that pyright&#x27;s behaviour is desirable here, should this be a TODO?)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:1 on 2024-12-24 13:57</div>
-            <div class="timeline-body"><p>nit: none of the changes to this file seem to be substantive; it looks like it's just refactoring of imports. Do they need to be part of this PR?</p>
+            <div class="timeline-body"><p>nit: none of the changes to this file seem to be substantive; it looks like it&#x27;s just refactoring of imports. Do they need to be part of this PR?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -86,8 +86,8 @@ test = unknown_decorator(no_type_check(test))
             <div class="timeline-body"><ul>
 <li><p>Elsewhere in red-knot we use the <code>into_</code> prefix for functions like this -- should we do the same here? E.g. https://github.com/astral-sh/ruff/blob/5bc9d6d3aa694ab13f38dd5cf91b713fd3844380/crates/red_knot_python_semantic/src/types.rs#L566-L571</p>
 </li>
-<li><p>You can simplify the <code>expect_function</code> method a few lines above now that you've added this method:</p>
-<pre><code class="language-diff">diff --git a/crates/red_knot_python_semantic/src/semantic_index/symbol.rs b/crates/red_knot_python_semantic/src/semantic_index/symbol.rs
+<li><p>You can simplify the <code>expect_function</code> method a few lines above now that you&#x27;ve added this method:</p>
+<pre><code>diff --git a/crates/red_knot_python_semantic/src/semantic_index/symbol.rs b/crates/red_knot_python_semantic/src/semantic_index/symbol.rs
 index 3e1ec2806..5ed9746e0 100644
 --- a/crates/red_knot_python_semantic/src/semantic_index/symbol.rs
 +++ b/crates/red_knot_python_semantic/src/semantic_index/symbol.rs
@@ -108,7 +108,7 @@ index 3e1ec2806..5ed9746e0 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/context.rs</code>:151 on 2024-12-24 14:05</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">                scope
+            <div class="timeline-body"><pre><code>                scope
                     .node()
                     .as_function()?
                     .range()
@@ -119,22 +119,22 @@ index 3e1ec2806..5ed9746e0 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/suppressions/no-type-check.md</code>:92 on 2024-12-24 14:15</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">    # error: [unused-ignore-comment]
+            <div class="timeline-body"><pre><code>    # error: [unused-ignore-comment]
 </code></pre>
 <p>Also, I wonder if it would be nice to have an additional explanation included in the error message here, such as:</p>
-<pre><code class="language-suggestion">    # error: [unused-ignore-comment] &quot;Unused ignore comment (all errors in `test` are already ignored due because it is decorated with `@no_type_check`)&quot;
+<pre><code>    # error: [unused-ignore-comment] &quot;Unused ignore comment (all errors in `test` are already ignored due because it is decorated with `@no_type_check`)&quot;
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-12-24 14:36</div>
             <div class="timeline-body"><p>Thanks! This overall seems like the way I would have gone about implementing this.</p>
-<p>I <em>think</em> I understand the issue you point out with regard to cycles -- correct me if I'm wrong:</p>
+<p>I <em>think</em> I understand the issue you point out with regard to cycles -- correct me if I&#x27;m wrong:</p>
 <ol>
-<li>This PR means that we need to evaluate the types for certain functions eagerly, in order to determine if they're decorated with <code>@no_type_check</code>, because we need to know if a function is decorated with <code>@no_type_check</code> in order to determine whether we should be emitting diagnostics regarding that function</li>
-<li>But we emit diagnostics during the process of type inference, so some types aren't actually ready yet at the point when we emit diagnostics</li>
+<li>This PR means that we need to evaluate the types for certain functions eagerly, in order to determine if they&#x27;re decorated with <code>@no_type_check</code>, because we need to know if a function is decorated with <code>@no_type_check</code> in order to determine whether we should be emitting diagnostics regarding that function</li>
+<li>But we emit diagnostics during the process of type inference, so some types aren&#x27;t actually ready yet at the point when we emit diagnostics</li>
 </ol>
-<p>Examining the types of the decorators directly (without inferring the type of the function that's being decorated) makes sense to me... or potentially we could filter out the <code>@no_type_check</code>-ignored diagnostics after the whole file has been inferred (rather than as part of <code>context.report_lint()</code>), because at that point we know that all types are &quot;ready&quot;?</p>
+<p>Examining the types of the decorators directly (without inferring the type of the function that&#x27;s being decorated) makes sense to me... or potentially we could filter out the <code>@no_type_check</code>-ignored diagnostics after the whole file has been inferred (rather than as part of <code>context.report_lint()</code>), because at that point we know that all types are &quot;ready&quot;?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -148,7 +148,7 @@ index 3e1ec2806..5ed9746e0 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/suppressions/no-type-check.md</code>:74 on 2024-12-24 15:32</div>
-            <div class="timeline-body"><p>sure: It's mainly that the semantics are unclear according to <a href="https://discuss.python.org/t/no-type-check-decorator/43119">this discussion</a> and the typing spec explicitly leaves it open for type checkers not to support classes.</p>
+            <div class="timeline-body"><p>sure: It&#x27;s mainly that the semantics are unclear according to <a href="https://discuss.python.org/t/no-type-check-decorator/43119">this discussion</a> and the typing spec explicitly leaves it open for type checkers not to support classes.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -161,7 +161,7 @@ index 3e1ec2806..5ed9746e0 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:1 on 2024-12-24 15:33</div>
-            <div class="timeline-body"><p>IMO, splitting them out feels like too much work. I don't mind reverting</p>
+            <div class="timeline-body"><p>IMO, splitting them out feels like too much work. I don&#x27;t mind reverting</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -170,7 +170,7 @@ index 3e1ec2806..5ed9746e0 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/symbol.rs</code>:481 on 2024-12-24 15:34</div>
-            <div class="timeline-body"><p>It's called <code>as</code> because it doesn't consume <code>self</code>, consistent with the terminology we use elsewhere.</p>
+            <div class="timeline-body"><p>It&#x27;s called <code>as</code> because it doesn&#x27;t consume <code>self</code>, consistent with the terminology we use elsewhere.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -182,25 +182,25 @@ index 3e1ec2806..5ed9746e0 100644
             <div class="timeline-body"><blockquote>
 <p>but then again, <code>no_type_check</code> disables type checking for the entire function... which I would expect includes all decorators.</p>
 </blockquote>
-<p>I would <em>not</em> expect that, because the decorator is applied to the function (and in fact redefines the function!) after the function has actually been defined -- that's just how Python's semantics work. But maybe I'm unusual in &quot;seeing through the sugar&quot; when I read decorators in Python source code :-)</p>
+<p>I would <em>not</em> expect that, because the decorator is applied to the function (and in fact redefines the function!) after the function has actually been defined -- that&#x27;s just how Python&#x27;s semantics work. But maybe I&#x27;m unusual in &quot;seeing through the sugar&quot; when I read decorators in Python source code :-)</p>
 <p>If this is something we might want to come back to later, maybe we could reword this like this:</p>
-<pre><code class="language-suggestion">Both mypy and Pyright flag the `unknown_decorator`. We don't currently, but we might consider doing so in the future.
+<pre><code>Both mypy and Pyright flag the `unknown_decorator`. We don&#x27;t currently, but we might consider doing so in the future.
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-24 15:42</div>
             <div class="timeline-body"><blockquote>
-<p>This PR means that we need to evaluate the types for certain functions eagerly in order to determine if they're</p>
+<p>This PR means that we need to evaluate the types for certain functions eagerly in order to determine if they&#x27;re</p>
 </blockquote>
-<p>I wouldn't necessarily say we evaluate them eagerly. It's still lazy. It's just that we need to infer the enclosing function's type when we emit a diagnostic. Other than that, yes, that's exactly the reason why</p>
-<p>Filtering the diagnostics out at later stages is a possibility but it complicates the tracking of which ignore codes are used, because we may have to mark them as &quot;unused&quot; when filtering out diagnostics. That's why I prefer keeping it in the <em>emit</em> path as it is in this PR. I also think that will get the required functionality for free once we have fixpoint working. The only question is if we're concerned about handling cycles on a function level and, because of that, prefer infering the decorators instead (to have it at the expression level).</p>
+<p>I wouldn&#x27;t necessarily say we evaluate them eagerly. It&#x27;s still lazy. It&#x27;s just that we need to infer the enclosing function&#x27;s type when we emit a diagnostic. Other than that, yes, that&#x27;s exactly the reason why</p>
+<p>Filtering the diagnostics out at later stages is a possibility but it complicates the tracking of which ignore codes are used, because we may have to mark them as &quot;unused&quot; when filtering out diagnostics. That&#x27;s why I prefer keeping it in the <em>emit</em> path as it is in this PR. I also think that will get the required functionality for free once we have fixpoint working. The only question is if we&#x27;re concerned about handling cycles on a function level and, because of that, prefer infering the decorators instead (to have it at the expression level).</p>
 <p>A third possibility is that we track more state in the <code>InferContext</code> and have a <code>in_no_type_check</code> field that is one of:</p>
 <ul>
 <li>Yes: Set when inferring the function definition and it sees a <code>no_type_check</code> decorator</li>
 <li>IfEnclosing: Only in a <code>no_type_check</code> block if the enclosing function is decorated</li>
 </ul>
-<p>That might actually be a good solution and might remove the need for some of the &quot;search the child scopes to find the right function&quot; code as well. It doesn't remove the need for fixpoint entirely. We might still run into cycles but it should be very unlikely.</p>
+<p>That might actually be a good solution and might remove the need for some of the &quot;search the child scopes to find the right function&quot; code as well. It doesn&#x27;t remove the need for fixpoint entirely. We might still run into cycles but it should be very unlikely.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -209,10 +209,10 @@ index 3e1ec2806..5ed9746e0 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/suppressions/no-type-check.md</code>:74 on 2024-12-24 15:42</div>
-            <div class="timeline-body"><p>Ah, I forgot that mypy also didn't support decorating classes with <code>@no_type_check</code> (and in fact, no other type checker does currently). Your wording here made me think that we were specifically copying pyright's implementation decisions here, but that's obviously not the case. Could you maybe reword this to something like this?</p>
-<pre><code class="language-suggestion">Red Knot does not support `no_type_check` annotations on classes currently. The behaviour of `no_type_check` when applied to classes is [not fully specified currently](https://typing.readthedocs.io/en/latest/spec/directives.html#no-type-check), and applying the decorator to classes is not supported by any other type checkers currently.
+            <div class="timeline-body"><p>Ah, I forgot that mypy also didn&#x27;t support decorating classes with <code>@no_type_check</code> (and in fact, no other type checker does currently). Your wording here made me think that we were specifically copying pyright&#x27;s implementation decisions here, but that&#x27;s obviously not the case. Could you maybe reword this to something like this?</p>
+<pre><code>Red Knot does not support `no_type_check` annotations on classes currently. The behaviour of `no_type_check` when applied to classes is [not fully specified currently](https://typing.readthedocs.io/en/latest/spec/directives.html#no-type-check), and applying the decorator to classes is not supported by any other type checkers currently.
 </code></pre>
-<p>We could even consider emitting a diagnostic if a class is decorated with <code>@no_type_check</code>, since it clearly won't have the effect the user wants.</p>
+<p>We could even consider emitting a diagnostic if a class is decorated with <code>@no_type_check</code>, since it clearly won&#x27;t have the effect the user wants.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -231,7 +231,7 @@ index 3e1ec2806..5ed9746e0 100644
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/suppressions/no-type-check.md</code>:74 on 2024-12-24 15:44</div>
             <div class="timeline-body"><blockquote>
-<p>We could even consider emitting a diagnostic if a class is decorated with @no_type_check, since it clearly won't have the effect the user wants.</p>
+<p>We could even consider emitting a diagnostic if a class is decorated with @no_type_check, since it clearly won&#x27;t have the effect the user wants.</p>
 </blockquote>
 <p>Possibly, but not as part of this PR ;)</p>
 </div>
@@ -242,7 +242,7 @@ index 3e1ec2806..5ed9746e0 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:1 on 2024-12-24 15:45</div>
-            <div class="timeline-body"><p>I guess I'm okay with the changes here staying in the PR. It just took me a little longer to review the PR because I had to figure out if they were actually substantive or not :-)</p>
+            <div class="timeline-body"><p>I guess I&#x27;m okay with the changes here staying in the PR. It just took me a little longer to review the PR because I had to figure out if they were actually substantive or not :-)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -266,63 +266,63 @@ index 3e1ec2806..5ed9746e0 100644
             <div class="timeline-body"><blockquote>
 <p>Also, I wonder if it would be nice to have an additional explanation included in the error message here, such as:</p>
 </blockquote>
-<p>Possibly, but it requires some extra metadata tracking for suppressions or at least post-processing in the <code>unused-ignore-comment</code> rule. I don't think it's a priority right now (we already go beyond by flagging unused ignore comments</p>
+<p>Possibly, but it requires some extra metadata tracking for suppressions or at least post-processing in the <code>unused-ignore-comment</code> rule. I don&#x27;t think it&#x27;s a priority right now (we already go beyond by flagging unused ignore comments</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-12-24 16:24</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/suppressions/no-type-check.md</code>:49 on 2024-12-24 16:44</div>
-            <div class="timeline-body"><p>This behavior doesn't match my reading of the wording in the spec. &quot;...all type errors for the def statement...&quot; seems like it would include all decorators, regardless of position. (Or possibly exclude all decorators, regardless of position, depending whether you consider decorators part of the <code>def</code> statement or not; it seems to me that they are part of it.)</p>
+            <div class="timeline-body"><p>This behavior doesn&#x27;t match my reading of the wording in the spec. &quot;...all type errors for the def statement...&quot; seems like it would include all decorators, regardless of position. (Or possibly exclude all decorators, regardless of position, depending whether you consider decorators part of the <code>def</code> statement or not; it seems to me that they are part of it.)</p>
 <p>Nonetheless, I think we should go ahead with this order-dependent behavior for now, because I think it does make the most intuitive sense. Decorators preceding <code>@no_type_check</code> are outside the &quot;scope&quot; of <code>@no_type_check</code>, decorators after it are inside its &quot;scope&quot;.</p>
 <p>(From my experiments, it seems that both pyright and mypy never suppress errors in decorators?)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/suppressions/no-type-check.md</code>:91 on 2024-12-24 16:50</div>
-            <div class="timeline-body"><p>nit: it's not specified at all :)</p>
-<pre><code class="language-suggestion">[not specified currently](https://typing.readthedocs.io/en/latest/spec/directives.html#no-type-check),
+            <div class="timeline-body"><p>nit: it&#x27;s not specified at all :)</p>
+<pre><code>[not specified currently](https://typing.readthedocs.io/en/latest/spec/directives.html#no-type-check),
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/suppressions/no-type-check.md</code>:92 on 2024-12-24 16:51</div>
-            <div class="timeline-body"><p>nit: it's not supported in mypy either.</p>
-<pre><code class="language-suggestion">and applying the decorator to classes is not supported by Pyright or mypy.
+            <div class="timeline-body"><p>nit: it&#x27;s not supported in mypy either.</p>
+<pre><code>and applying the decorator to classes is not supported by Pyright or mypy.
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/suppressions/no-type-check.md</code>:94 on 2024-12-24 16:57</div>
             <div class="timeline-body"><p>&quot;annotation&quot; is the wrong terminology here; only things like <code>x: int</code> constitute annotations in Python</p>
-<pre><code class="language-suggestion">A future improvement might be to emit a diagnostic if `no_type_check` is used to decorate a
+<pre><code>A future improvement might be to emit a diagnostic if `no_type_check` is used to decorate a
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/suppressions/no-type-check.md</code>:113 on 2024-12-24 17:00</div>
-            <div class="timeline-body"><p>could we assert the error message here, so that it's obvious in the future what's changing if we decide to improve the diagnostic in the future?</p>
-<pre><code class="language-suggestion">    # error: [unused-ignore-comment] &quot;Unused `knot: ignore` directive: 'unresolved-reference'&quot;
+            <div class="timeline-body"><p>could we assert the error message here, so that it&#x27;s obvious in the future what&#x27;s changing if we decide to improve the diagnostic in the future?</p>
+<pre><code>    # error: [unused-ignore-comment] &quot;Unused `knot: ignore` directive: &#x27;unresolved-reference&#x27;&quot;
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/context.rs</code>:189 on 2024-12-24 17:05</div>
-            <div class="timeline-body"><p>The name of this variant is quite verbose but doesn't really add much clarity IMO (it wasn't at all obvious at the usage sites what this variant represented; I still had to jump to the enum definition and read the doc comment to understand what it meant). I'd probably just call it <code>Maybe</code> or <code>Possibly</code>. The doc comment is great!</p>
+            <div class="timeline-body"><p>The name of this variant is quite verbose but doesn&#x27;t really add much clarity IMO (it wasn&#x27;t at all obvious at the usage sites what this variant represented; I still had to jump to the enum definition and read the doc comment to understand what it meant). I&#x27;d probably just call it <code>Maybe</code> or <code>Possibly</code>. The doc comment is great!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1062 on 2024-12-24 17:06</div>
-            <div class="timeline-body"><p>nit: there's only one usage of <code>decorator_tys</code> after this point, shadowing it seems unnecessary; why not just change <code>decorator_tys</code> to <code>decorator_tys.into_boxed_slice()</code> below?</p>
+            <div class="timeline-body"><p>nit: there&#x27;s only one usage of <code>decorator_tys</code> after this point, shadowing it seems unnecessary; why not just change <code>decorator_tys</code> to <code>decorator_tys.into_boxed_slice()</code> below?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -332,24 +332,24 @@ index 3e1ec2806..5ed9746e0 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/suppressions/no-type-check.md</code>:1 on 2024-12-24 17:09</div>
-            <div class="timeline-body"><p>nit: we use snake_case rather than kebab-case for most of our other mdtest filenames (and the decorator is called <code>no_type_check</code> rather than <code>no-type-check</code>, so snake case would make more sense to me here even if that wasn't our convention)</p>
+            <div class="timeline-body"><p>nit: we use snake_case rather than kebab-case for most of our other mdtest filenames (and the decorator is called <code>no_type_check</code> rather than <code>no-type-check</code>, so snake case would make more sense to me here even if that wasn&#x27;t our convention)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/context.rs</code>:38 on 2024-12-24 17:11</div>
             <div class="timeline-body"><p>I would probably call this field</p>
-<pre><code class="language-suggestion">    no_type_check_status: InNoTypeCheck,
+<pre><code>    no_type_check_status: InNoTypeCheck,
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/context.rs</code>:131 on 2024-12-24 17:13</div>
-            <div class="timeline-body"><p>It seems like we currently only ever set this field to the <code>Yes</code> variant, so I'd be tempted to do something like this, which feels more readable to me:</p>
-<pre><code class="language-diff">diff --git a/crates/red_knot_python_semantic/src/types/context.rs b/crates/red_knot_python_semantic/src/types/context.rs
+            <div class="timeline-body"><p>It seems like we currently only ever set this field to the <code>Yes</code> variant, so I&#x27;d be tempted to do something like this, which feels more readable to me:</p>
+<pre><code>diff --git a/crates/red_knot_python_semantic/src/types/context.rs b/crates/red_knot_python_semantic/src/types/context.rs
 index 9543bde55..ace859425 100644
 --- a/crates/red_knot_python_semantic/src/types/context.rs
 +++ b/crates/red_knot_python_semantic/src/types/context.rs
-@@ -126,8 +126,8 @@ impl&lt;'db&gt; InferContext&lt;'db&gt; {
+@@ -126,8 +126,8 @@ impl&lt;&#x27;db&gt; InferContext&lt;&#x27;db&gt; {
          });
      }
  
@@ -373,7 +373,7 @@ index fc4970462..27132d97c 100644
  use super::diagnostic::{
      report_index_out_of_bounds, report_invalid_exception_caught, report_invalid_exception_cause,
      report_invalid_exception_raised, report_non_subscriptable,
-@@ -1033,7 +1033,7 @@ impl&lt;'db&gt; TypeInferenceBuilder&lt;'db&gt; {
+@@ -1033,7 +1033,7 @@ impl&lt;&#x27;db&gt; TypeInferenceBuilder&lt;&#x27;db&gt; {
              // and, if so, suppress any errors.
              if let Type::FunctionLiteral(function) = ty {
                  if function.is_known(self.db(), KnownFunction::NoTypeCheck) {
@@ -383,7 +383,7 @@ index fc4970462..27132d97c 100644
              }
          }
 </code></pre>
-<p>But the advantage of your current version is that it's more extensible, so I don't have a strong opinion</p>
+<p>But the advantage of your current version is that it&#x27;s more extensible, so I don&#x27;t have a strong opinion</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -397,7 +397,7 @@ index fc4970462..27132d97c 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/suppressions/no-type-check.md</code>:94 on 2024-12-26 10:02</div>
-            <div class="timeline-body"><p>Eh, but your suggested wording (thanks!) on line 89 used annotations. That's why I used it here.</p>
+            <div class="timeline-body"><p>Eh, but your suggested wording (thanks!) on line 89 used annotations. That&#x27;s why I used it here.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -407,14 +407,14 @@ index fc4970462..27132d97c 100644
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/suppressions/no-type-check.md</code>:49 on 2024-12-26 10:09</div>
             <div class="timeline-body"><p>Yes, it seems neither <a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=05e1a1d26c29be3df8f98652e1aa3805">Mypy</a> nor <a href="https://pyright-play.net/?strict=true&amp;code=GYJw9gtgBALgngBwJYDsDmUkQWEMopgD68CApkQMYAWZlA1gFCMACArivYQO4pEAmdXAEMYuVoRKIKNOk0HBYZAM4wAFAEooAWgB8mFDABcjKGaggyMNiBRRhUANRQArKfPMJxUjNoNWHFxgvAJCIKLiCkqqmjr6qMbuZpbWtvZOrkA">Pyright</a> suppress errors in decorators.</p>
-<p>I think we should do the same, considering that this most closely matches your reading of the spec and is what existing type checkers do. Changing from what mypy and Pyright do to this order-dependent checking is also easier because it's relaxation. The other way would be a breaking change.</p>
-<p>Whether it's most intuitive probably depends on your understanding of how decorators work. My intuition was that the decorator applies to the entire def statement, including all decorators, regardless of the ordering. But that's not what existing type checkers do. I'd then expect that decorators aren't part of the function definition.</p>
+<p>I think we should do the same, considering that this most closely matches your reading of the spec and is what existing type checkers do. Changing from what mypy and Pyright do to this order-dependent checking is also easier because it&#x27;s relaxation. The other way would be a breaking change.</p>
+<p>Whether it&#x27;s most intuitive probably depends on your understanding of how decorators work. My intuition was that the decorator applies to the entire def statement, including all decorators, regardless of the ordering. But that&#x27;s not what existing type checkers do. I&#x27;d then expect that decorators aren&#x27;t part of the function definition.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/suppressions/no-type-check.md</code>:94 on 2024-12-26 10:11</div>
             <div class="timeline-body"><p>Oh, great point, the use of &quot;annotation&quot; on that line is also incorrect, and should be changed :-)</p>
-<p>I didn't notice that you used the word &quot;annotation&quot; in that sentence when I made my suggestion in https://github.com/astral-sh/ruff/pull/15122#discussion_r1896836658; I guess I was concentrating on other things at the time. Sorry!</p>
+<p>I didn&#x27;t notice that you used the word &quot;annotation&quot; in that sentence when I made my suggestion in <a href="https://github.com/astral-sh/ruff/pull/15122">astral-sh/ruff#15122</a>#discussion_r1896836658; I guess I was concentrating on other things at the time. Sorry!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -427,7 +427,7 @@ index fc4970462..27132d97c 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/suppressions/no-type-check.md</code>:49 on 2024-12-26 10:21</div>
-            <div class="timeline-body"><p>Honestly, I would much rather we give this decorator the same semantics as any other decorator in the language has at runtime when it comes to the things the decorator applies to. We can have a debate over whether or not that's intuitive to people who aren't fully familiar with the semantics of decorators, but doing otherwise just feels really inconsistent to me. Decorators have very consistent semantics on this point in Python (the desugaring I gave in https://github.com/astral-sh/ruff/pull/15122#discussion_r1896765782), but we'd be saying we'd be treating this one decorator differently to any other decorator in the language (and, in fact, differently to how it works at runtime!). I'm honestly not sure how we'd justify the different semantics for this decorator in documentation or if we were responding to issue reports; it just doesn't make sense.</p>
+            <div class="timeline-body"><p>Honestly, I would much rather we give this decorator the same semantics as any other decorator in the language has at runtime when it comes to the things the decorator applies to. We can have a debate over whether or not that&#x27;s intuitive to people who aren&#x27;t fully familiar with the semantics of decorators, but doing otherwise just feels really inconsistent to me. Decorators have very consistent semantics on this point in Python (the desugaring I gave in <a href="https://github.com/astral-sh/ruff/pull/15122">astral-sh/ruff#15122</a>#discussion_r1896765782), but we&#x27;d be saying we&#x27;d be treating this one decorator differently to any other decorator in the language (and, in fact, differently to how it works at runtime!). I&#x27;m honestly not sure how we&#x27;d justify the different semantics for this decorator in documentation or if we were responding to issue reports; it just doesn&#x27;t make sense.</p>
 <p>I think mypy and pyright got it wrong here, and we have a chance to do better.</p>
 </div>
         </div>
@@ -440,7 +440,7 @@ index fc4970462..27132d97c 100644
             <div class="timeline-body"><blockquote>
 <p>I think mypy and pyright got it wrong here, and we have a chance to do better.</p>
 </blockquote>
-<p>Maybe, but do we feel that strongly that it's worth introducing an incompatibility? What you propose is also not consistent with the specification (regardless of whatever reading you use). Overall I feel like consistency with other tools and the specification is more important than deviating because it could be an annoyance for users using multiple type checkers. It's also something that's very easy to change later (and probably so uncommon, that getting this perfect has very diminishing return)</p>
+<p>Maybe, but do we feel that strongly that it&#x27;s worth introducing an incompatibility? What you propose is also not consistent with the specification (regardless of whatever reading you use). Overall I feel like consistency with other tools and the specification is more important than deviating because it could be an annoyance for users using multiple type checkers. It&#x27;s also something that&#x27;s very easy to change later (and probably so uncommon, that getting this perfect has very diminishing return)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -453,10 +453,10 @@ index fc4970462..27132d97c 100644
 <blockquote>
 <p>considering that this most closely matches your reading of the spec</p>
 </blockquote>
-<p>No, my reading of the spec wording is that it would suggest suppressing errors in all decorators (they are part of the def statement, because they modify it and they syntactically can't stand apart from it), which is the opposite of what mypy and pyright do.</p>
-<p>I don't think there is a consensus here that we'd be deviating from, I just think it's an edge-case behavior that nobody ever thought about very carefully, either in the existing type checkers or in writing the spec.</p>
-<p>I'm also not concerned about this being an adoption barrier or compatibility problem, since it would only cause us to suppress a few additional type errors in an unusual case; worst case someone might have to remove a <code>type: ignore</code>? I think there will be many more serious problems for anyone trying to check a codebase on multiple different type checkers; I don't think people do this, because it's too painful. Compatibility between type checkers in practice is all about libraries being able to specify public interfaces that can work for users of multiple type checkers; this issue doesn't affect that.</p>
-<p>If this ever came up in discussion in the typing council, I would argue for specifying the &quot;suppress errors in later decorators&quot; behavior, and I suspect there would be support for that position, because it's the most sensible one given Python semantics.</p>
+<p>No, my reading of the spec wording is that it would suggest suppressing errors in all decorators (they are part of the def statement, because they modify it and they syntactically can&#x27;t stand apart from it), which is the opposite of what mypy and pyright do.</p>
+<p>I don&#x27;t think there is a consensus here that we&#x27;d be deviating from, I just think it&#x27;s an edge-case behavior that nobody ever thought about very carefully, either in the existing type checkers or in writing the spec.</p>
+<p>I&#x27;m also not concerned about this being an adoption barrier or compatibility problem, since it would only cause us to suppress a few additional type errors in an unusual case; worst case someone might have to remove a <code>type: ignore</code>? I think there will be many more serious problems for anyone trying to check a codebase on multiple different type checkers; I don&#x27;t think people do this, because it&#x27;s too painful. Compatibility between type checkers in practice is all about libraries being able to specify public interfaces that can work for users of multiple type checkers; this issue doesn&#x27;t affect that.</p>
+<p>If this ever came up in discussion in the typing council, I would argue for specifying the &quot;suppress errors in later decorators&quot; behavior, and I suspect there would be support for that position, because it&#x27;s the most sensible one given Python semantics.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -466,9 +466,9 @@ index fc4970462..27132d97c 100644
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/suppressions/no-type-check.md</code>:49 on 2024-12-26 19:23</div>
             <div class="timeline-body"><blockquote>
-<p>I think there will be many more serious problems for anyone trying to check a codebase on multiple different type checkers; I don't think people do this, because it's too painful.</p>
+<p>I think there will be many more serious problems for anyone trying to check a codebase on multiple different type checkers; I don&#x27;t think people do this, because it&#x27;s too painful.</p>
 </blockquote>
-<p>It's pretty common for library authors to do this, because library authors often want users of their library to have a good experience whether their users use pyright or mypy. And it's also pretty common for people to use VSCode or pycharm as their IDE locally (which usually means using pyright or pycharm in their editor, even though there <em>are</em> mypy plugins for both) but run mypy in CI. So I don't think it's true that &quot;people don't do this&quot;.</p>
+<p>It&#x27;s pretty common for library authors to do this, because library authors often want users of their library to have a good experience whether their users use pyright or mypy. And it&#x27;s also pretty common for people to use VSCode or pycharm as their IDE locally (which usually means using pyright or pycharm in their editor, even though there <em>are</em> mypy plugins for both) but run mypy in CI. So I don&#x27;t think it&#x27;s true that &quot;people don&#x27;t do this&quot;.</p>
 <p>But I agree that people find it painful. I also agree that this is a very minor incompatibility relative to the many other incompatibilities that already exist between mypy/pyright/pycharm, and that are likely to exist between mypy/red-knot, pyright/red-knot and pycharm/red-knot. And I agree that people are very unlikely to come across this incompatibility in practice, and that there are easy workarounds for people who do come across it.</p>
 </div>
         </div>
@@ -478,9 +478,9 @@ index fc4970462..27132d97c 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/suppressions/no-type-check.md</code>:49 on 2024-12-27 17:38</div>
-            <div class="timeline-body"><p>I agree that there are very few users that will be impacted by this change, and if so, it's most likely only that a violation now has been fixed (which might raise an <code>unused-type-ignore</code> warning). However, my concern is that every deviation from mypy and pyright increases the migration cost to Red Knot. Is it because they have to change their mental model or because there are more, fewer, or different violations. That's why I think we should pick our battles carefully because large code bases are likely to exercise many deviations, and every one of those will require manual changes when migrating to Red Knot (or using Red Knot side by side with another type checker).</p>
+            <div class="timeline-body"><p>I agree that there are very few users that will be impacted by this change, and if so, it&#x27;s most likely only that a violation now has been fixed (which might raise an <code>unused-type-ignore</code> warning). However, my concern is that every deviation from mypy and pyright increases the migration cost to Red Knot. Is it because they have to change their mental model or because there are more, fewer, or different violations. That&#x27;s why I think we should pick our battles carefully because large code bases are likely to exercise many deviations, and every one of those will require manual changes when migrating to Red Knot (or using Red Knot side by side with another type checker).</p>
 <p>My other concern is simply that I think this approach is the least spec-compliant because you could read it as either including or excluding all decorators. But excluding only some seems to be the most far-fetched interpretation.</p>
-<p>That's why I still think leaving it just as is for now is the best and we can easily change it later (it only requires moving a single line of code). However, I also get the impression that you two feel somewhat strongly about this, and that's why I don't object to changing it (just tell me, no need for an explanation ;)).</p>
+<p>That&#x27;s why I still think leaving it just as is for now is the best and we can easily change it later (it only requires moving a single line of code). However, I also get the impression that you two feel somewhat strongly about this, and that&#x27;s why I don&#x27;t object to changing it (just tell me, no need for an explanation ;)).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -489,15 +489,15 @@ index fc4970462..27132d97c 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/suppressions/no-type-check.md</code>:49 on 2024-12-27 17:59</div>
-            <div class="timeline-body"><p>I honestly think it's a mistake to read the language of the spec too closely in situations like this. The aim is that the spec will eventually be precise in its language in all areas. But the spec is still very new, and still a work in progress in many places. I think there are many places in the spec where the language the spec uses could plausibly be understood to imply behaviours in certain edge cases which were never intended by authors of the spec.</p>
-<p>I agree that compatibility with other type checkers is really important, so I really appreciate you arguing strongly for this! However, I still feel quite strongly that the order-dependent behaviour (where <code>@no_type_check</code> applies its magic to all decorators below <code>@no_type_check</code>, and the class, but no decorators above it) is the better one. If one thing is important for a Python type checker, it's for the tool to have a consistent and understandable model of Python's semantics with as few special cases as possible. So I <em>really</em> dislike the idea of carving out a special case for this decorator so that it works differently to all other decorators in Python. In this case, I don't think that's outweighed by the compatibility costs, personally :-)</p>
+            <div class="timeline-body"><p>I honestly think it&#x27;s a mistake to read the language of the spec too closely in situations like this. The aim is that the spec will eventually be precise in its language in all areas. But the spec is still very new, and still a work in progress in many places. I think there are many places in the spec where the language the spec uses could plausibly be understood to imply behaviours in certain edge cases which were never intended by authors of the spec.</p>
+<p>I agree that compatibility with other type checkers is really important, so I really appreciate you arguing strongly for this! However, I still feel quite strongly that the order-dependent behaviour (where <code>@no_type_check</code> applies its magic to all decorators below <code>@no_type_check</code>, and the class, but no decorators above it) is the better one. If one thing is important for a Python type checker, it&#x27;s for the tool to have a consistent and understandable model of Python&#x27;s semantics with as few special cases as possible. So I <em>really</em> dislike the idea of carving out a special case for this decorator so that it works differently to all other decorators in Python. In this case, I don&#x27;t think that&#x27;s outweighed by the compatibility costs, personally :-)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @MichaReiser on 2024-12-30 09:42</div>
+            <div class="event">Merged by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-30 09:42</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2024-12-30 09:42</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-30 09:42</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-12-30 09:42</div>
@@ -505,7 +505,7 @@ index fc4970462..27132d97c 100644
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:08:42 UTC
+        Synced at 2026-01-20 19:09:45 UTC
     </footer>
 </body>
 </html>

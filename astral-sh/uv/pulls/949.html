@@ -23,28 +23,28 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Today, we support <code>--reinstall</code> and <code>--reinstall-package [package]</code> as arguments to <code>pip sync</code>. This flag looks at the lockfile, and does two things:</p>
 <ol>
 <li>Purges the cache, for each package in the lockfile (or each package identified by <code>--reinstall-package</code>).</li>
 <li>Marks the package for reinstallation (so, uninstalls it, then rebuilds and reinstalls it).</li>
 </ol>
 <p>This is useful both for ignoring cached data and forcing a reinstall into the virtual environment.</p>
-<p>I want to split this behavior in two, since ignoring cached data is useful in <em>other</em> commands too, like <code>pip compile</code>, where the second part (&quot;reinstall&quot;) isn't relevant (see: #945).</p>
-<p>The problem with a <code>--refresh</code> flag is that we can't know the set of packages we might <em>try</em> to read upfront. So the strategy we take for <code>pip sync</code> (where we have a lockfile) doesn't work for <code>pip compile</code> (where we might end up looking up data for transitive dependencies).</p>
-<p>So, instead, here's a different idea: we add an API to the <code>Cache</code> to lazily refresh entries. <code>Cache</code> now accepts a <code>Refresh</code> policy, and has a <code>fresh_entry</code> method. If you call <code>fresh_entry</code>, and a <code>Refresh</code> policy is set, then we check if the <code>CacheEntry</code> has been refreshed yet; if not, we purge it from the cache.</p>
+<p>I want to split this behavior in two, since ignoring cached data is useful in <em>other</em> commands too, like <code>pip compile</code>, where the second part (&quot;reinstall&quot;) isn&#x27;t relevant (see: #945).</p>
+<p>The problem with a <code>--refresh</code> flag is that we can&#x27;t know the set of packages we might <em>try</em> to read upfront. So the strategy we take for <code>pip sync</code> (where we have a lockfile) doesn&#x27;t work for <code>pip compile</code> (where we might end up looking up data for transitive dependencies).</p>
+<p>So, instead, here&#x27;s a different idea: we add an API to the <code>Cache</code> to lazily refresh entries. <code>Cache</code> now accepts a <code>Refresh</code> policy, and has a <code>fresh_entry</code> method. If you call <code>fresh_entry</code>, and a <code>Refresh</code> policy is set, then we check if the <code>CacheEntry</code> has been refreshed yet; if not, we purge it from the cache.</p>
 <p>This has the effect of (1) only purging entries we try to read, while (2) ensuring that we only purge <em>once</em> within a single command (so, if we purge, then try to read the same wheel twice in different operations within a single process, we <em>do</em> use the newly-cached data).</p>
 <p>The downside here is that we need to be careful about when we call <code>.fresh_entry</code> vs <code>.entry</code>, <em>and</em> <code>.fresh_entry</code> introduces <code>async</code> into more places (since we need to use our <code>once_map</code> to ensure we wait on purging to complete across concurrent tasks).</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Converted to draft by @charliermarsh on 2024-01-17 15:12</div>
+            <div class="event">Converted to draft by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-17 15:12</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-01-17 15:12</div>
+            <div class="event">Review requested from <a href="https://github.com/BurntSushi">@BurntSushi</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-17 15:12</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @konstin by @charliermarsh on 2024-01-17 15:12</div>
+            <div class="event">Review requested from <a href="https://github.com/konstin">@konstin</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-17 15:12</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-17 15:13</div>
@@ -70,17 +70,17 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-cache/src/lib.rs</code>:218 on 2024-01-17 15:17</div>
-            <div class="timeline-body"><p>So the <code>refresh</code> mechanism works by purging from the cache. This does mean that if you run with <code>--refresh</code>, then your operation fails after purging, and you run without <code>--refresh</code>, the entry is gone from the cache. I think that's correct behavior.</p>
+            <div class="timeline-body"><p>So the <code>refresh</code> mechanism works by purging from the cache. This does mean that if you run with <code>--refresh</code>, then your operation fails after purging, and you run without <code>--refresh</code>, the entry is gone from the cache. I think that&#x27;s correct behavior.</p>
 <p>An alternative would be to try and find a way to signal that we should skip the first read, and then make cache writes everywhere safe when an entry exists already.(This latter thing is a little tricky. We could be writing a directory to the cache, which would need to replace an existing directory.)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-01-17 15:17</div>
+            <div class="event">Review requested from <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-17 15:17</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-17 15:24</div>
-            <div class="timeline-body"><p>Another downside is that running with <code>--refresh-package flask</code> will only refresh the cache entries that we ultimately try to read. So you could have some mix of entries from different runs of <code>puffin</code>. That should be okay, but it's not as clear-cut as the previous behavior.</p>
-<p>(An alternative solution to solve <em>that</em> problem would be to structure the refresh mechanism as: the first time we ask for a package, purge <em>all</em> entries for that package. But I think that's even more error-prone since we're then relying on <code>purge</code> including the <em>current</em> entry, whereas this solution at least creates an explicit connection between the entry and the refresh action.)</p>
+            <div class="timeline-body"><p>Another downside is that running with <code>--refresh-package flask</code> will only refresh the cache entries that we ultimately try to read. So you could have some mix of entries from different runs of <code>puffin</code>. That should be okay, but it&#x27;s not as clear-cut as the previous behavior.</p>
+<p>(An alternative solution to solve <em>that</em> problem would be to structure the refresh mechanism as: the first time we ask for a package, purge <em>all</em> entries for that package. But I think that&#x27;s even more error-prone since we&#x27;re then relying on <code>purge</code> including the <em>current</em> entry, whereas this solution at least creates an explicit connection between the entry and the refresh action.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -91,7 +91,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/puffin-cache/src/lib.rs</code>:153 on 2024-01-17 15:35</div>
             <div class="timeline-body"><p>Thought: Can we replace <em>all</em> extant uses of <code>Cache::entry</code> with <code>Cache::fresh_entry</code> and then rename <code>Cache::fresh_entry</code> to <code>Cache::entry</code>? (And the existing <code>Cache::entry</code> would become an internal helper routine or just deleted entirely.)</p>
-<p>The benefit of this is that then you don't have to worry about choosing the right one. And on top of that, it seems like a minor footgun for <code>Cache::entry</code> to exist <em>and</em> specifically ignore the configured refresh policy.</p>
+<p>The benefit of this is that then you don&#x27;t have to worry about choosing the right one. And on top of that, it seems like a minor footgun for <code>Cache::entry</code> to exist <em>and</em> specifically ignore the configured refresh policy.</p>
 <p>If we do need to keep <code>Cache::entry</code>, I might suggest renaming it. Maybe, <code>Cache::entry_no_refresh</code> or something similarly baroque. And then rename <code>fresh_entry</code> to <code>entry</code>, because it seems like <code>fresh_entry</code> is probably what one ought to reach for by default?</p>
 </div>
         </div>
@@ -131,7 +131,7 @@
             <div class="timeline-body"><blockquote>
 <p>As a general wonderingment, could the <code>Refresh::All</code> policy be implemented by purging the cache up-front in its entirety? If so, does that simplify anything here?</p>
 </blockquote>
-<p>It could, but is that correct? It feels a bit heavy, since we'll throw away source distributions and such for other projects. We would still need this same mechanism for per-package refresh, but we could also decide that isn't important</p>
+<p>It could, but is that correct? It feels a bit heavy, since we&#x27;ll throw away source distributions and such for other projects. We would still need this same mechanism for per-package refresh, but we could also decide that isn&#x27;t important</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -139,8 +139,8 @@
             <div class="timeline-body"><blockquote>
 <p>Do we need to support --reinstall-package? Do you know under what conditions is it typically used?</p>
 </blockquote>
-<p>Maybe not. This was originally added to support use-cases in which users want to force a rebuild of some dependency, ignoring the version that's already installed in their environment.</p>
-<p>For example, if you install a path dependency into your virtual environment, then by default, if you try to do it again (even if the path dependency changes in some way), we won't reinstall it. So you need to use <code>--reinstall</code> to force that package to be removed and then rebuilt.</p>
+<p>Maybe not. This was originally added to support use-cases in which users want to force a rebuild of some dependency, ignoring the version that&#x27;s already installed in their environment.</p>
+<p>For example, if you install a path dependency into your virtual environment, then by default, if you try to do it again (even if the path dependency changes in some way), we won&#x27;t reinstall it. So you need to use <code>--reinstall</code> to force that package to be removed and then rebuilt.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -149,18 +149,18 @@
 <blockquote>
 <p>As a general wonderingment, could the <code>Refresh::All</code> policy be implemented by purging the cache up-front in its entirety? If so, does that simplify anything here?</p>
 </blockquote>
-<p>It could, but is that correct? It feels a bit heavy, since we'll throw away source distributions and such for other projects. We would still need this same mechanism for per-package refresh, but we could also decide that isn't important</p>
+<p>It could, but is that correct? It feels a bit heavy, since we&#x27;ll throw away source distributions and such for other projects. We would still need this same mechanism for per-package refresh, but we could also decide that isn&#x27;t important</p>
 </blockquote>
-<p>Yeah I think that's kind of where I was going. That is, if we chose not to support <code>--reinstall-package</code> (or otherwise anything that purges the cache on a package-by-package basis), then that might simplify things here.</p>
+<p>Yeah I think that&#x27;s kind of where I was going. That is, if we chose not to support <code>--reinstall-package</code> (or otherwise anything that purges the cache on a package-by-package basis), then that might simplify things here.</p>
 <p>I am also asking questions to help improve my understanding, so my suggestions are not fully informed. :)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-01-17 15:55</div>
             <div class="timeline-body"><blockquote>
-<p>For example, if you install a path dependency into your virtual environment, then by default, if you try to do it again (even if the path dependency changes in some way), we won't reinstall it. So you need to use <code>--reinstall</code> to force that package to be removed and then rebuilt.</p>
+<p>For example, if you install a path dependency into your virtual environment, then by default, if you try to do it again (even if the path dependency changes in some way), we won&#x27;t reinstall it. So you need to use <code>--reinstall</code> to force that package to be removed and then rebuilt.</p>
 </blockquote>
-<p>Hmmm I see. That makes sense. (I was about to ask if we could just do the reinstall automatically, but you'd still need this PR to do that. And perhaps those sorts of questions are better left to the higher level commands in puffin that have yet to be written. :))</p>
+<p>Hmmm I see. That makes sense. (I was about to ask if we could just do the reinstall automatically, but you&#x27;d still need this PR to do that. And perhaps those sorts of questions are better left to the higher level commands in puffin that have yet to be written. :))</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -171,7 +171,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-17 17:43</div>
-            <div class="timeline-body"><p>@konstin - We can <em>maybe</em> support that... I will try. It's just harder.</p>
+            <div class="timeline-body"><p>@konstin - We can <em>maybe</em> support that... I will try. It&#x27;s just harder.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -184,8 +184,8 @@
 <li>Send a fresh request: Forced by purging the cache</li>
 </ul>
 <p>The average cost is: fresh request &gt;&gt; revalidation request &gt;&gt; using the cache.</p>
-<hr />
-<p>I'm fine with any solution that doesn't depend on 5-10 min timeouts, which would give the illusion that the software is fast in warm cache cases, while in practice when i do one packaging now and another one an hour is get a much slower warm cache case.</p>
+<hr>
+<p>I&#x27;m fine with any solution that doesn&#x27;t depend on 5-10 min timeouts, which would give the illusion that the software is fast in warm cache cases, while in practice when i do one packaging now and another one an hour is get a much slower warm cache case.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -195,11 +195,11 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-17 18:09</div>
-            <div class="timeline-body"><p>I view it more from the perspective of the actual user experience, and less from the perspective of the perception or illusion of the benchmarks or whatever else. It's very common to run multiple commands and operations in a short window of time. It's good to improve that experience.</p>
+            <div class="timeline-body"><p>I view it more from the perspective of the actual user experience, and less from the perspective of the perception or illusion of the benchmarks or whatever else. It&#x27;s very common to run multiple commands and operations in a short window of time. It&#x27;s good to improve that experience.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-01-23 03:25</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-23 03:25</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-23 03:25</div>
@@ -209,7 +209,7 @@
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:35:12 UTC
+        Synced at 2026-01-20 19:43:14 UTC
     </footer>
 </body>
 </html>

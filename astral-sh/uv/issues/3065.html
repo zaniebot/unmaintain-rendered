@@ -23,15 +23,15 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/kvelicka">@kvelicka</a></div>
-            <div class="timeline-body"><p>I'm trying to pre-build some wheels for a Pyston based build pipeline. I've realised that using <code>uv pip install</code> appears to ignore my pre-built wheels. DEBUG/TRACE level logging doesn't seem to provide enough information as to why the wheel I built was unsuitable.</p>
-<p>I managed to get the repro down to a <em>fairly</em> minimal Dockerfile, which will hopefully make this bug not too onerous to reproduce. It might be useful to run the Dockerfile using <code>DOCKER_BUILDKIT=0 docker build .</code> as doing it that way doesn't swallow logs/output (e.g. output of  <code>ls $HOME/wheels</code>). In the example I'm packaging <code>gevent</code>  but the issue isn't package specific AFAICT.</p>
+            <div class="timeline-body"><p>I&#x27;m trying to pre-build some wheels for a Pyston based build pipeline. I&#x27;ve realised that using <code>uv pip install</code> appears to ignore my pre-built wheels. DEBUG/TRACE level logging doesn&#x27;t seem to provide enough information as to why the wheel I built was unsuitable.</p>
+<p>I managed to get the repro down to a <em>fairly</em> minimal Dockerfile, which will hopefully make this bug not too onerous to reproduce. It might be useful to run the Dockerfile using <code>DOCKER_BUILDKIT=0 docker build .</code> as doing it that way doesn&#x27;t swallow logs/output (e.g. output of  <code>ls $HOME/wheels</code>). In the example I&#x27;m packaging <code>gevent</code>  but the issue isn&#x27;t package specific AFAICT.</p>
 <p>On my machine the last command fails with</p>
 <pre><code>  × No solution found when resolving dependencies:
   ╰─▶ Because gevent==24.2.1 is unusable because no wheels are available with
       a matching Python implementation and you require gevent==24.2.1, we can
       conclude that the requirements are unsatisfiable.
 </code></pre>
-<pre><code class="language-Dockerfile">
+<pre><code>
 FROM ubuntu:22.04
 
 RUN apt update &amp;&amp; apt install -qqy git curl build-essential libffi-dev
@@ -47,7 +47,7 @@ ENV PATH $PYENV_ROOT/versions/$PYTHON/bin:$PATH
 RUN python -m pip install uv==0.1.32
 
 RUN uv venv --seed /root/.venv
-# Poor man's `activate` - can't just `activate` in a docker image
+# Poor man&#x27;s `activate` - can&#x27;t just `activate` in a docker image
 ENV PATH=&quot;/root/.venv/bin:$PATH&quot;
 
 RUN mkdir $HOME/wheels
@@ -62,7 +62,7 @@ RUN ls $HOME/wheels
 RUN uv pip install --offline --find-links $HOME/wheels/ -v gevent==24.2.1
 
 # alternative repro
-# RUN uv pip install --only-binary ':all:' --find-links $HOME/wheels/ -v gevent==24.2.1
+# RUN uv pip install --only-binary &#x27;:all:&#x27; --find-links $HOME/wheels/ -v gevent==24.2.1
 
 
 </code></pre>
@@ -70,16 +70,16 @@ RUN uv pip install --offline --find-links $HOME/wheels/ -v gevent==24.2.1
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-16 16:38</div>
-            <div class="timeline-body"><p>Thanks for the clear repro. I was able to reproduce but haven't yet dug into what's happening.</p>
+            <div class="timeline-body"><p>Thanks for the clear repro. I was able to reproduce but haven&#x27;t yet dug into what&#x27;s happening.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kvelicka">@kvelicka</a> on 2024-04-16 16:59</div>
-            <div class="timeline-body"><p>Actually it's worth mentioning #1681 here, as the repro above is a reduced example of how we use the <code>pip wheel</code> command.</p>
+            <div class="timeline-body"><p>Actually it&#x27;s worth mentioning #1681 here, as the repro above is a reduced example of how we use the <code>pip wheel</code> command.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-04-18 03:05</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-18 03:05</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-18 04:00</div>
@@ -88,59 +88,59 @@ RUN uv pip install --offline --find-links $HOME/wheels/ -v gevent==24.2.1
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-18 05:05</div>
-            <div class="timeline-body"><p>The problem is that <code>sys.implementation.version</code> is return 3.8, when it should be returning 2.3, I guess? So we're looking for a wheel like <code>pyston38-pyston_38</code>.</p>
+            <div class="timeline-body"><p>The problem is that <code>sys.implementation.version</code> is return 3.8, when it should be returning 2.3, I guess? So we&#x27;re looking for a wheel like <code>pyston38-pyston_38</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-18 05:06</div>
-            <div class="timeline-body"><p>Is this a Pyston bug? I'm confused.</p>
+            <div class="timeline-body"><p>Is this a Pyston bug? I&#x27;m confused.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-18 05:07</div>
             <div class="timeline-body"><blockquote>
-<p>version is a named tuple, in the same format as sys.version_info. It represents the version of the Python implementation. This has a distinct meaning from the specific version of the Python language to which the currently running interpreter conforms, which sys.version_info represents. For example, for PyPy 1.8 sys.implementation.version might be sys.version_info(1, 8, 0, 'final', 0), whereas sys.version_info would be sys.version_info(2, 7, 2, 'final', 0). For CPython they are the same value, since it is the reference implementation.</p>
+<p>version is a named tuple, in the same format as sys.version_info. It represents the version of the Python implementation. This has a distinct meaning from the specific version of the Python language to which the currently running interpreter conforms, which sys.version_info represents. For example, for PyPy 1.8 sys.implementation.version might be sys.version_info(1, 8, 0, &#x27;final&#x27;, 0), whereas sys.version_info would be sys.version_info(2, 7, 2, &#x27;final&#x27;, 0). For CPython they are the same value, since it is the reference implementation.</p>
 </blockquote>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-18 05:08</div>
-            <div class="timeline-body"><p>But in the above, I see <code>sys.version_info(major=3, minor=8, micro=12, releaselevel='final', serial=0)</code>. So I don't see how I would get <code>pyston_23</code>, where is it exposed? 🤔</p>
+            <div class="timeline-body"><p>But in the above, I see <code>sys.version_info(major=3, minor=8, micro=12, releaselevel=&#x27;final&#x27;, serial=0)</code>. So I don&#x27;t see how I would get <code>pyston_23</code>, where is it exposed? 🤔</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-18 05:12</div>
-            <div class="timeline-body"><p>Wow, I guess you're supposed to do something like this? https://github.com/isabella232/tox-gh/blob/b3f9ac0150f30be765ada0dcde8b4eb18f7373a6/src/tox_gh/plugin.py#L35</p>
-<p>I got there from reading https://github.com/pyston/pyston/issues/39.</p>
+            <div class="timeline-body"><p>Wow, I guess you&#x27;re supposed to do something like this? https://github.com/isabella232/tox-gh/blob/b3f9ac0150f30be765ada0dcde8b4eb18f7373a6/src/tox_gh/plugin.py#L35</p>
+<p>I got there from reading <a href="https://github.com/pyston/pyston/issues/39">pyston/pyston#39</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-18 05:13</div>
-            <div class="timeline-body"><p>Yeah, that does return <code>sys.version_info(major=2, minor=3, micro=5, releaselevel='final', serial=0)</code>. Interesting. Why on Earth don't they return that from <code>sys.implementation.version</code>?</p>
+            <div class="timeline-body"><p>Yeah, that does return <code>sys.version_info(major=2, minor=3, micro=5, releaselevel=&#x27;final&#x27;, serial=0)</code>. Interesting. Why on Earth don&#x27;t they return that from <code>sys.implementation.version</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kvelicka">@kvelicka</a> on 2024-04-18 08:34</div>
-            <div class="timeline-body"><p>Thanks a lot of looking into this. I hoped that this was something about it being not-cpython rather than a Pyston-specific quirk but sounds like latter is the case. Hopefully you can find some simple fix/workaround for this but if that's looking unlikely it's probably not the end of the word - I expect uv's Pyston userbase to be a vanishingly small percentage of all users so no hard feelings if this ends up as wontfix!</p>
+            <div class="timeline-body"><p>Thanks a lot of looking into this. I hoped that this was something about it being not-cpython rather than a Pyston-specific quirk but sounds like latter is the case. Hopefully you can find some simple fix/workaround for this but if that&#x27;s looking unlikely it&#x27;s probably not the end of the word - I expect uv&#x27;s Pyston userbase to be a vanishingly small percentage of all users so no hard feelings if this ends up as wontfix!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">compatibility</span> added by @charliermarsh on 2024-04-20 01:27</div>
+            <div class="event">Label <span class="label">compatibility</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-20 01:27</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Unassigned @charliermarsh by @charliermarsh on 2024-04-20 01:36</div>
+            <div class="event">Unassigned <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-20 01:36</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-20 02:00</div>
-            <div class="timeline-body"><p>Hmm yeah, I think I'm gonna close this as wontfix. I changed our logic to return the <code>pyston_version_info</code> when present, but the wheels still aren't quite working. I'm confused because the wheel tag is <code>pyston38-pyston_23_aarch64_linux_gnu-linux_aarch64</code>, but I feel like it should be... <code>pyston38_pyston_23-aarch64_linux_gnu-linux_aarch64</code>, since we split on <code>-</code>? I'm sure I'm wrong, but it's hard to justify investing deeply in it -- sorry about that!</p>
+            <div class="timeline-body"><p>Hmm yeah, I think I&#x27;m gonna close this as wontfix. I changed our logic to return the <code>pyston_version_info</code> when present, but the wheels still aren&#x27;t quite working. I&#x27;m confused because the wheel tag is <code>pyston38-pyston_23_aarch64_linux_gnu-linux_aarch64</code>, but I feel like it should be... <code>pyston38_pyston_23-aarch64_linux_gnu-linux_aarch64</code>, since we split on <code>-</code>? I&#x27;m sure I&#x27;m wrong, but it&#x27;s hard to justify investing deeply in it -- sorry about that!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-04-20 02:00</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-20 02:00</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-14 02:05</div>
-            <div class="timeline-body"><p>I'm realizing that I misread the tag. It's <code>pyston38-pyston_23_aarch64_linux_gnu-linux_aarch64</code>, which is (<code>pyston38</code>, <code>pyston_23_aarch64_linux_gnu</code>, <code>linux_aarch64</code>).</p>
+            <div class="timeline-body"><p>I&#x27;m realizing that I misread the tag. It&#x27;s <code>pyston38-pyston_23_aarch64_linux_gnu-linux_aarch64</code>, which is (<code>pyston38</code>, <code>pyston_23_aarch64_linux_gnu</code>, <code>linux_aarch64</code>).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -151,7 +151,7 @@ RUN uv pip install --offline --find-links $HOME/wheels/ -v gevent==24.2.1
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:24:41 UTC
+        Synced at 2026-01-20 19:30:49 UTC
     </footer>
 </body>
 </html>

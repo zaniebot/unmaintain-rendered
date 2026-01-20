@@ -23,8 +23,8 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>Closes: https://github.com/astral-sh/ty/issues/157</p>
+            <div class="timeline-body">Summary
+<p>Closes: <a href="https://github.com/astral-sh/ty/issues/157">astral-sh/ty#157</a></p>
 <p>This PR adds support for the following capabilities involving a <code>ParamSpec</code> type variable:</p>
 <ul>
 <li>Representing <code>P.args</code> and <code>P.kwargs</code> in the type system</li>
@@ -32,24 +32,24 @@
 <li>Specializing <code>P</code> against the stored parameters</li>
 </ul>
 <p>The value of a <code>ParamSpec</code> type variable is being represented using <code>CallableType</code> with a <code>CallableTypeKind::ParamSpecValue</code> variant. This <code>CallableTypeKind</code> is expanded from the existing <code>is_function_like</code> boolean flag. An <code>enum</code> is used as these variants are mutually exclusive.</p>
-<p>For context, an initial iteration made an attempt to expand the <code>Specialization</code> to use <code>TypeOrParameters</code> enum that represents that a type variable can specialize into either a <code>Type</code> or <code>Parameters</code> but that increased the complexity of the code as all downstream usages would need to handle both the variants appropriately. Additionally, we'd have also need to establish an invariant that a regular type variable always maps to a <code>Type</code> while a paramspec type variable always maps to a <code>Parameters</code>.</p>
-<p>I've intentionally left out checking and raising diagnostics when the <code>ParamSpec</code> type variable and it's components are not being used correctly to avoid scope increase and it can easily be done as a follow-up. This would also include the scoping rules which I don't think a regular type variable implements either.</p>
-<h2>Test Plan</h2>
+<p>For context, an initial iteration made an attempt to expand the <code>Specialization</code> to use <code>TypeOrParameters</code> enum that represents that a type variable can specialize into either a <code>Type</code> or <code>Parameters</code> but that increased the complexity of the code as all downstream usages would need to handle both the variants appropriately. Additionally, we&#x27;d have also need to establish an invariant that a regular type variable always maps to a <code>Type</code> while a paramspec type variable always maps to a <code>Parameters</code>.</p>
+<p>I&#x27;ve intentionally left out checking and raising diagnostics when the <code>ParamSpec</code> type variable and it&#x27;s components are not being used correctly to avoid scope increase and it can easily be done as a follow-up. This would also include the scoping rules which I don&#x27;t think a regular type variable implements either.</p>
+Test Plan
 <p>Add new mdtest cases and update existing test cases.</p>
 <p>Ran this branch on pyx, no new diagnostics.</p>
-<h3>Ecosystem analysis</h3>
-<p>There's a case where in an annotated assignment like:</p>
-<pre><code class="language-py">type CustomType[P] = Callable[...]
+Ecosystem analysis
+<p>There&#x27;s a case where in an annotated assignment like:</p>
+<pre><code>type CustomType[P] = Callable[...]
 
 def value[**P](...): ...
 
 def another[**P](...):
 	target: CustomType[P] = value
 </code></pre>
-<p>The type of <code>value</code> is a callable and it has a paramspec that's bound to <code>value</code>, <code>CustomType</code> is a type alias that's a callable and <code>P</code> that's used in it's specialization is bound to <code>another</code>. Now, ty infers the type of <code>target</code> same as <code>value</code> and does not use the declared type <code>CustomType[P]</code>. <a href="https://github.com/mikeshardmind/async-utils/blob/0980b9d9ab2bc7a24777684a884f4ea96cbbe5f9/src/async_utils/gen_transform.py#L108">This is the assignment</a> that I'm referring to which then leads to error in downstream usage. Pyright and mypy does seem to use the declared type.</p>
+<p>The type of <code>value</code> is a callable and it has a paramspec that&#x27;s bound to <code>value</code>, <code>CustomType</code> is a type alias that&#x27;s a callable and <code>P</code> that&#x27;s used in it&#x27;s specialization is bound to <code>another</code>. Now, ty infers the type of <code>target</code> same as <code>value</code> and does not use the declared type <code>CustomType[P]</code>. <a href="https://github.com/mikeshardmind/async-utils/blob/0980b9d9ab2bc7a24777684a884f4ea96cbbe5f9/src/async_utils/gen_transform.py#L108">This is the assignment</a> that I&#x27;m referring to which then leads to error in downstream usage. Pyright and mypy does seem to use the declared type.</p>
 <p>There are multiple diagnostics in <code>dd-trace-py</code> that requires support for <code>cls</code>.</p>
-<p>I'm seeing <code>Divergent</code> type for an example like which ~~I'm not sure why, I'll look into it tomorrow~~ is because of a cycle as mentioned in https://github.com/astral-sh/ty/issues/1729#issuecomment-3612279974:</p>
-<pre><code class="language-py">from typing import Callable
+<p>I&#x27;m seeing <code>Divergent</code> type for an example like which ~~I&#x27;m not sure why, I&#x27;ll look into it tomorrow~~ is because of a cycle as mentioned in <a href="https://github.com/astral-sh/ty/issues/1729">astral-sh/ty#1729</a>#issuecomment-3612279974:</p>
+<pre><code>from typing import Callable
 
 def decorator[**P](c: Callable[P, int]) -&gt; Callable[P, str]: ...
 
@@ -59,8 +59,8 @@ def func(a: int) -&gt; int: ...
 # ((a: int) -&gt; str) | ((a: Divergent) -&gt; str)
 reveal_type(func)
 </code></pre>
-<p>I ~~need to look into why are the parameters not being specialized through multiple decorators in the following code~~ think this is also because of the cycle mentioned in https://github.com/astral-sh/ty/issues/1729#issuecomment-3612279974 and the fact that we don't support <code>staticmethod</code> properly:</p>
-<pre><code class="language-py">from contextlib import contextmanager
+<p>I ~~need to look into why are the parameters not being specialized through multiple decorators in the following code~~ think this is also because of the cycle mentioned in <a href="https://github.com/astral-sh/ty/issues/1729">astral-sh/ty#1729</a>#issuecomment-3612279974 and the fact that we don&#x27;t support <code>staticmethod</code> properly:</p>
+<pre><code>from contextlib import contextmanager
 
 class Foo:
     @staticmethod
@@ -72,11 +72,11 @@ foo = Foo()
 # ty: Revealed type: `() -&gt; _GeneratorContextManager[Unknown, None, None]` [revealed-type]
 reveal_type(foo.method)
 </code></pre>
-<p>There's some issue related to <code>Protocol</code> that are generic over a <code>ParamSpec</code> in <code>starlette</code> which might be related to https://github.com/astral-sh/ty/issues/1635 but I'm not sure. Here's a minimal example to reproduce:</p>
-<details><summary>Code snippet:</summary>
+<p>There&#x27;s some issue related to <code>Protocol</code> that are generic over a <code>ParamSpec</code> in <code>starlette</code> which might be related to <a href="https://github.com/astral-sh/ty/issues/1635">astral-sh/ty#1635</a> but I&#x27;m not sure. Here&#x27;s a minimal example to reproduce:</p>
+Code snippet:
 <p>
 
-<pre><code class="language-py">from collections.abc import Awaitable, Callable, MutableMapping
+<pre><code>from collections.abc import Awaitable, Callable, MutableMapping
 from typing import Any, Callable, ParamSpec, Protocol
 
 P = ParamSpec(&quot;P&quot;)
@@ -93,7 +93,7 @@ _Receive = Callable[[], Awaitable[Any]]
 _Send = Callable[[Any], Awaitable[None]]
 
 # Since `starlette.types.ASGIApp` type differs from `ASGIApplication` from `asgiref`
-# we need to define a more permissive version of ASGIApp that doesn't cause type errors.
+# we need to define a more permissive version of ASGIApp that doesn&#x27;t cause type errors.
 _ASGIApp = Callable[[_Scope, _Receive, _Send], Awaitable[None]]
 
 
@@ -126,21 +126,21 @@ class ServerErrorMiddleware:
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -&gt; None: ...
 
 
-# ty: Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'ServerErrorMiddleware'&gt;` [invalid-argument-type]
+# ty: Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;ServerErrorMiddleware&#x27;&gt;` [invalid-argument-type]
 Middleware(ServerErrorMiddleware, value=500, flag=True)
 </code></pre>
 </p>
-</details> 
+ 
 
-<h3>Conformance analysis</h3>
+Conformance analysis
 <blockquote>
-<pre><code class="language-diff">-constructors_callable.py:36:13: info[revealed-type] Revealed type: `(...) -&gt; Unknown`
+<pre><code>-constructors_callable.py:36:13: info[revealed-type] Revealed type: `(...) -&gt; Unknown`
 +constructors_callable.py:36:13: info[revealed-type] Revealed type: `(x: int) -&gt; Unknown`
 </code></pre>
 </blockquote>
-<p>Requires return type inference i.e., https://github.com/astral-sh/ruff/pull/21551</p>
+<p>Requires return type inference i.e., <a href="https://github.com/astral-sh/ruff/pull/21551">astral-sh/ruff#21551</a></p>
 <blockquote>
-<pre><code class="language-diff">+constructors_callable.py:194:16: error[invalid-argument-type] Argument is incorrect: Expected `list[T@__init__]`, found `list[Unknown | str]`
+<pre><code>+constructors_callable.py:194:16: error[invalid-argument-type] Argument is incorrect: Expected `list[T@__init__]`, found `list[Unknown | str]`
 +constructors_callable.py:194:22: error[invalid-argument-type] Argument is incorrect: Expected `list[T@__init__]`, found `list[Unknown | str]`
 +constructors_callable.py:195:4: error[invalid-argument-type] Argument is incorrect: Expected `list[T@__init__]`, found `list[Unknown | int]`
 +constructors_callable.py:195:9: error[invalid-argument-type] Argument is incorrect: Expected `list[T@__init__]`, found `list[Unknown | str]`
@@ -148,35 +148,35 @@ Middleware(ServerErrorMiddleware, value=500, flag=True)
 </blockquote>
 <p>I might need to look into why this is happening...</p>
 <blockquote>
-<pre><code class="language-diff">+generics_defaults.py:79:1: error[type-assertion-failure] Type `type[Class_ParamSpec[(str, int, /)]]` does not match asserted type `&lt;class 'Class_ParamSpec'&gt;`
+<pre><code>+generics_defaults.py:79:1: error[type-assertion-failure] Type `type[Class_ParamSpec[(str, int, /)]]` does not match asserted type `&lt;class &#x27;Class_ParamSpec&#x27;&gt;`
 </code></pre>
 </blockquote>
 <p>which is on the following code</p>
-<pre><code class="language-py">DefaultP = ParamSpec(&quot;DefaultP&quot;, default=[str, int])
+<pre><code>DefaultP = ParamSpec(&quot;DefaultP&quot;, default=[str, int])
 
 class Class_ParamSpec(Generic[DefaultP]): ...
 
 assert_type(Class_ParamSpec, type[Class_ParamSpec[str, int]])
 </code></pre>
-<p>It's occurring because there's no equivalence relationship defined between <code>ClassLiteral</code> and <code>KnownInstanceType::TypeGenericAlias</code> which is what these types are.</p>
+<p>It&#x27;s occurring because there&#x27;s no equivalence relationship defined between <code>ClassLiteral</code> and <code>KnownInstanceType::TypeGenericAlias</code> which is what these types are.</p>
 <p>Everything else looks good to me!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @dhruvmanila on 2025-11-14 08:25</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-11-14 08:25</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Add support for `P.args` and `P.kwargs`" to "[ty] Add support for `P.args` and `P.kwargs`" by @dhruvmanila on 2025-11-14 08:25</div>
+            <div class="event">Renamed from &quot;Add support for `P.args` and `P.kwargs`&quot; to &quot;[ty] Add support for `P.args` and `P.kwargs`&quot; by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-11-14 08:25</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-14 08:28</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
-<details>
-<summary>Changes were detected when running ty on typing conformance tests</summary>
+Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a>
 
-<pre><code class="language-diff">--- old-output.txt	2025-12-05 16:25:18.961900308 +0000
+Changes were detected when running ty on typing conformance tests
+
+<pre><code>--- old-output.txt	2025-12-05 16:25:18.961900308 +0000
 +++ new-output.txt	2025-12-05 16:25:22.658918282 +0000
 @@ -3,22 +3,20 @@
  _directives_deprecated_library.py:36:41: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self@__add__`
@@ -201,8 +201,8 @@ assert_type(Class_ParamSpec, type[Class_ParamSpec[str, int]])
  aliases_implicit.py:79:29: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
 +aliases_implicit.py:80:24: error[invalid-type-arguments] Type argument for `ParamSpec` must be either a list of types, `ParamSpec`, `Concatenate`, or `...`
  aliases_implicit.py:81:25: error[invalid-type-arguments] Type `str` is not assignable to upper bound `int | float` of type variable `TFloat@GoodTypeAlias12`
- aliases_implicit.py:107:9: error[invalid-type-form] Variable of type `list[Unknown | &lt;class 'int'&gt; | &lt;class 'str'&gt;]` is not allowed in a type expression
- aliases_implicit.py:108:9: error[invalid-type-form] Variable of type `tuple[tuple[&lt;class 'int'&gt;, &lt;class 'str'&gt;]]` is not allowed in a type expression
+ aliases_implicit.py:107:9: error[invalid-type-form] Variable of type `list[Unknown | &lt;class &#x27;int&#x27;&gt; | &lt;class &#x27;str&#x27;&gt;]` is not allowed in a type expression
+ aliases_implicit.py:108:9: error[invalid-type-form] Variable of type `tuple[tuple[&lt;class &#x27;int&#x27;&gt;, &lt;class &#x27;str&#x27;&gt;]]` is not allowed in a type expression
 @@ -44,7 +42,7 @@
  aliases_newtype.py:61:38: error[invalid-newtype] invalid base for `typing.NewType`: type `TD1`
  aliases_newtype.py:63:15: error[invalid-newtype] Wrong number of arguments in `NewType` creation, expected 2, found 3
@@ -295,16 +295,16 @@ assert_type(Class_ParamSpec, type[Class_ParamSpec[str, int]])
  enums_members.py:84:1: error[type-assertion-failure] Type `Unknown` does not match asserted type `property`
  enums_members.py:84:35: error[invalid-type-form] Type arguments for `Literal` must be `None`, a literal value (int, bool, str, or bytes), or an enum member
 @@ -446,11 +450,7 @@
- generics_defaults.py:55:1: error[type-assertion-failure] Type `type[AllTheDefaults[int, int | float | complex, str, int, bool]]` does not match asserted type `&lt;class 'AllTheDefaults[int, int | float | complex, str, int, bool]'&gt;`
- generics_defaults.py:59:1: error[type-assertion-failure] Type `type[AllTheDefaults[int, int | float | complex, str, int, bool]]` does not match asserted type `&lt;class 'AllTheDefaults[int, int | float | complex, str, int, bool]'&gt;`
- generics_defaults.py:63:1: error[type-assertion-failure] Type `type[AllTheDefaults[int, int | float | complex, str, int, bool]]` does not match asserted type `&lt;class 'AllTheDefaults[int, int | float | complex, str, int, bool]'&gt;`
--generics_defaults.py:79:1: error[type-assertion-failure] Type `type[Class_ParamSpec[Unknown]]` does not match asserted type `&lt;class 'Class_ParamSpec'&gt;`
+ generics_defaults.py:55:1: error[type-assertion-failure] Type `type[AllTheDefaults[int, int | float | complex, str, int, bool]]` does not match asserted type `&lt;class &#x27;AllTheDefaults[int, int | float | complex, str, int, bool]&#x27;&gt;`
+ generics_defaults.py:59:1: error[type-assertion-failure] Type `type[AllTheDefaults[int, int | float | complex, str, int, bool]]` does not match asserted type `&lt;class &#x27;AllTheDefaults[int, int | float | complex, str, int, bool]&#x27;&gt;`
+ generics_defaults.py:63:1: error[type-assertion-failure] Type `type[AllTheDefaults[int, int | float | complex, str, int, bool]]` does not match asserted type `&lt;class &#x27;AllTheDefaults[int, int | float | complex, str, int, bool]&#x27;&gt;`
+-generics_defaults.py:79:1: error[type-assertion-failure] Type `type[Class_ParamSpec[Unknown]]` does not match asserted type `&lt;class &#x27;Class_ParamSpec&#x27;&gt;`
 -generics_defaults.py:79:56: error[invalid-type-arguments] Too many type arguments to class `Class_ParamSpec`: expected between 0 and 1, got 2
 -generics_defaults.py:80:53: error[invalid-type-arguments] Too many type arguments to class `Class_ParamSpec`: expected between 0 and 1, got 2
 -generics_defaults.py:81:29: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[bool, bool]`?
 -generics_defaults.py:81:68: error[invalid-type-arguments] Too many type arguments to class `Class_ParamSpec`: expected between 0 and 1, got 2
-+generics_defaults.py:79:1: error[type-assertion-failure] Type `type[Class_ParamSpec[(str, int, /)]]` does not match asserted type `&lt;class 'Class_ParamSpec'&gt;`
- generics_defaults.py:94:1: error[type-assertion-failure] Type `@Todo(specialized non-generic class)` does not match asserted type `&lt;class 'Class_TypeVarTuple'&gt;`
++generics_defaults.py:79:1: error[type-assertion-failure] Type `type[Class_ParamSpec[(str, int, /)]]` does not match asserted type `&lt;class &#x27;Class_ParamSpec&#x27;&gt;`
+ generics_defaults.py:94:1: error[type-assertion-failure] Type `@Todo(specialized non-generic class)` does not match asserted type `&lt;class &#x27;Class_TypeVarTuple&#x27;&gt;`
  generics_defaults.py:95:1: error[type-assertion-failure] Type `@Todo(specialized non-generic class)` does not match asserted type `Class_TypeVarTuple`
  generics_defaults.py:127:32: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `T4@func1`
 @@ -468,32 +468,42 @@
@@ -375,26 +375,26 @@ assert_type(Class_ParamSpec, type[Class_ParamSpec[str, int]])
  generics_syntax_scoping.py:116:13: error[type-assertion-failure] Type `TypeVar` does not match asserted type `typing.TypeVar`
  generics_syntax_scoping.py:121:9: error[type-assertion-failure] Type `int | float | complex` does not match asserted type `complex`
 @@ -1021,4 +1031,4 @@
- typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
+ typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key &#x27;name&#x27; in TypedDict `Movie` constructor
  typeddicts_usage.py:28:18: error[invalid-key] Unknown key &quot;title&quot; for TypedDict `Movie`: Unknown key &quot;title&quot;
  typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions
 -Found 1023 diagnostics
 +Found 1033 diagnostics
 
 </code></pre>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-14 08:28</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">anyio (https://github.com/agronholm/anyio)
+Changes were detected when running on open source projects
+
+<pre><code>anyio (https://github.com/agronholm/anyio)
 + src/anyio/_backends/_asyncio.py:2565:13: error[invalid-argument-type] Argument to bound method `run` is incorrect: Expected `Coroutine[Any, Any, _T@run_coroutine_threadsafe]`, found `CoroutineType[Any, Any, T_Retval@run_async_from_thread]`
 - src/anyio/functools.py:199:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `(...) -&gt; Awaitable[Unknown]`, found `((...) -&gt; Coroutine[Any, Any, T@_LRUCacheWrapper]) | ((...) -&gt; T@_LRUCacheWrapper)`
 + src/anyio/functools.py:199:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `(...) -&gt; Awaitable[Unknown]`, found `((**P@__call__) -&gt; Coroutine[Any, Any, T@_LRUCacheWrapper]) | ((...) -&gt; T@_LRUCacheWrapper)`
@@ -453,8 +453,8 @@ spack (https://github.com/spack/spack)
 beartype (https://github.com/beartype/beartype)
 - beartype/bite/kind/infercallable.py:562:9: error[invalid-type-form] The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
 + beartype/bite/kind/infercallable.py:562:18: error[invalid-type-form] The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
-- beartype/claw/_package/clawpkgtrie.py:66:29: warning[unsupported-base] Unsupported class base with type `&lt;class 'dict[str, PackagesTrieBlacklist]'&gt; | &lt;class 'dict[str, Divergent]'&gt;`
-- beartype/claw/_package/clawpkgtrie.py:247:29: warning[unsupported-base] Unsupported class base with type `&lt;class 'dict[str, PackagesTrieWhitelist]'&gt; | &lt;class 'dict[str, Divergent]'&gt;`
+- beartype/claw/_package/clawpkgtrie.py:66:29: warning[unsupported-base] Unsupported class base with type `&lt;class &#x27;dict[str, PackagesTrieBlacklist]&#x27;&gt; | &lt;class &#x27;dict[str, Divergent]&#x27;&gt;`
+- beartype/claw/_package/clawpkgtrie.py:247:29: warning[unsupported-base] Unsupported class base with type `&lt;class &#x27;dict[str, PackagesTrieWhitelist]&#x27;&gt; | &lt;class &#x27;dict[str, Divergent]&#x27;&gt;`
 - Found 494 diagnostics
 + Found 492 diagnostics
 
@@ -576,126 +576,126 @@ scrapy (https://github.com/scrapy/scrapy)
 + scrapy/utils/decorators.py:98:51: error[unresolved-attribute] Object of type `(**_P@_warn_spider_arg) -&gt; _T@_warn_spider_arg` has no attribute `__qualname__`
 
 starlette (https://github.com/encode/starlette)
-- starlette/applications.py:86:25: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'ServerErrorMiddleware'&gt;`
-+ starlette/applications.py:86:25: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'ServerErrorMiddleware'&gt;`
-- starlette/applications.py:88:27: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'ExceptionMiddleware'&gt;`
-+ starlette/applications.py:88:27: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'ExceptionMiddleware'&gt;`
-- starlette/applications.py:241:33: error[invalid-argument-type] Argument to bound method `add_middleware` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'BaseHTTPMiddleware'&gt;`
-+ starlette/applications.py:241:33: error[invalid-argument-type] Argument to bound method `add_middleware` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'BaseHTTPMiddleware'&gt;`
-- tests/middleware/test_base.py:84:28: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'CustomMiddleware'&gt;`
-+ tests/middleware/test_base.py:84:28: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'CustomMiddleware'&gt;`
-- tests/middleware/test_base.py:152:24: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'aMiddleware'&gt;`
-+ tests/middleware/test_base.py:152:24: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'aMiddleware'&gt;`
-- tests/middleware/test_base.py:153:24: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'bMiddleware'&gt;`
-+ tests/middleware/test_base.py:153:24: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'bMiddleware'&gt;`
-- tests/middleware/test_base.py:154:24: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'cMiddleware'&gt;`
-+ tests/middleware/test_base.py:154:24: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'cMiddleware'&gt;`
-- tests/middleware/test_base.py:169:75: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'CustomMiddleware'&gt;`
-+ tests/middleware/test_base.py:169:75: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'CustomMiddleware'&gt;`
-- tests/middleware/test_base.py:187:44: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'CustomMiddleware'&gt;`
-+ tests/middleware/test_base.py:187:44: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'CustomMiddleware'&gt;`
-- tests/middleware/test_base.py:277:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'BaseHTTPMiddleware'&gt;`
-+ tests/middleware/test_base.py:277:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'BaseHTTPMiddleware'&gt;`
-- tests/middleware/test_base.py:315:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'BaseHTTPMiddleware'&gt;`
-+ tests/middleware/test_base.py:315:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'BaseHTTPMiddleware'&gt;`
-- tests/middleware/test_base.py:335:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'BaseHTTPMiddleware'&gt;`
-+ tests/middleware/test_base.py:335:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'BaseHTTPMiddleware'&gt;`
-- tests/middleware/test_base.py:362:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'BaseHTTPMiddleware'&gt;`
-+ tests/middleware/test_base.py:362:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'BaseHTTPMiddleware'&gt;`
-- tests/middleware/test_base.py:433:24: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'BaseHTTPMiddleware'&gt;`
-+ tests/middleware/test_base.py:433:24: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'BaseHTTPMiddleware'&gt;`
-- tests/middleware/test_base.py:434:24: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'ContextManagerMiddleware'&gt;`
-+ tests/middleware/test_base.py:434:24: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'ContextManagerMiddleware'&gt;`
-- tests/middleware/test_base.py:609:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'ConsumingMiddleware'&gt;`
-+ tests/middleware/test_base.py:609:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'ConsumingMiddleware'&gt;`
-- tests/middleware/test_base.py:638:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'ConsumingMiddleware'&gt;`
-+ tests/middleware/test_base.py:638:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'ConsumingMiddleware'&gt;`
-- tests/middleware/test_base.py:667:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'ConsumingMiddleware'&gt;`
-+ tests/middleware/test_base.py:667:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'ConsumingMiddleware'&gt;`
-- tests/middleware/test_base.py:693:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'ConsumingMiddleware'&gt;`
-+ tests/middleware/test_base.py:693:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'ConsumingMiddleware'&gt;`
-- tests/middleware/test_base.py:725:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'ConsumingMiddleware'&gt;`
-+ tests/middleware/test_base.py:725:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'ConsumingMiddleware'&gt;`
-- tests/middleware/test_base.py:754:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'ConsumingMiddleware'&gt;`
-+ tests/middleware/test_base.py:754:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'ConsumingMiddleware'&gt;`
-- tests/middleware/test_base.py:843:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'ConsumingMiddleware'&gt;`
-+ tests/middleware/test_base.py:843:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'ConsumingMiddleware'&gt;`
-- tests/middleware/test_base.py:871:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'ConsumingMiddleware'&gt;`
-+ tests/middleware/test_base.py:871:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'ConsumingMiddleware'&gt;`
-- tests/middleware/test_base.py:1086:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'MyMiddleware'&gt;`
-+ tests/middleware/test_base.py:1086:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'MyMiddleware'&gt;`
-- tests/middleware/test_base.py:1220:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'BaseHTTPMiddleware'&gt;`
-+ tests/middleware/test_base.py:1220:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'BaseHTTPMiddleware'&gt;`
-- tests/middleware/test_base.py:1278:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'PassthroughMiddleware'&gt;`
-+ tests/middleware/test_base.py:1278:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'PassthroughMiddleware'&gt;`
-- tests/middleware/test_cors.py:20:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'CORSMiddleware'&gt;`
-+ tests/middleware/test_cors.py:20:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'CORSMiddleware'&gt;`
-- tests/middleware/test_cors.py:81:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'CORSMiddleware'&gt;`
-+ tests/middleware/test_cors.py:81:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'CORSMiddleware'&gt;`
-- tests/middleware/test_cors.py:132:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'CORSMiddleware'&gt;`
-+ tests/middleware/test_cors.py:132:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'CORSMiddleware'&gt;`
-- tests/middleware/test_cors.py:181:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'CORSMiddleware'&gt;`
-+ tests/middleware/test_cors.py:181:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'CORSMiddleware'&gt;`
-- tests/middleware/test_cors.py:222:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'CORSMiddleware'&gt;`
-+ tests/middleware/test_cors.py:222:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'CORSMiddleware'&gt;`
-- tests/middleware/test_cors.py:255:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'CORSMiddleware'&gt;`
-+ tests/middleware/test_cors.py:255:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'CORSMiddleware'&gt;`
-- tests/middleware/test_cors.py:285:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'CORSMiddleware'&gt;`
-+ tests/middleware/test_cors.py:285:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'CORSMiddleware'&gt;`
-- tests/middleware/test_cors.py:310:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'CORSMiddleware'&gt;`
-+ tests/middleware/test_cors.py:310:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'CORSMiddleware'&gt;`
-- tests/middleware/test_cors.py:382:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'CORSMiddleware'&gt;`
-+ tests/middleware/test_cors.py:382:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'CORSMiddleware'&gt;`
-- tests/middleware/test_cors.py:415:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'CORSMiddleware'&gt;`
-+ tests/middleware/test_cors.py:415:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'CORSMiddleware'&gt;`
-- tests/middleware/test_cors.py:436:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'CORSMiddleware'&gt;`
-+ tests/middleware/test_cors.py:436:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'CORSMiddleware'&gt;`
-- tests/middleware/test_cors.py:456:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'CORSMiddleware'&gt;`
-+ tests/middleware/test_cors.py:456:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'CORSMiddleware'&gt;`
-- tests/middleware/test_cors.py:473:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'CORSMiddleware'&gt;`
-+ tests/middleware/test_cors.py:473:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'CORSMiddleware'&gt;`
-- tests/middleware/test_cors.py:492:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'CORSMiddleware'&gt;`
-+ tests/middleware/test_cors.py:492:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'CORSMiddleware'&gt;`
-- tests/middleware/test_cors.py:513:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'CORSMiddleware'&gt;`
-+ tests/middleware/test_cors.py:513:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'CORSMiddleware'&gt;`
-- tests/middleware/test_cors.py:543:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'CORSMiddleware'&gt;`
-+ tests/middleware/test_cors.py:543:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'CORSMiddleware'&gt;`
-- tests/middleware/test_cors.py:583:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'CORSMiddleware'&gt;`
-+ tests/middleware/test_cors.py:583:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'CORSMiddleware'&gt;`
-- tests/middleware/test_gzip.py:23:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'GZipMiddleware'&gt;`
-+ tests/middleware/test_gzip.py:23:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'GZipMiddleware'&gt;`
-- tests/middleware/test_gzip.py:41:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'GZipMiddleware'&gt;`
-+ tests/middleware/test_gzip.py:41:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'GZipMiddleware'&gt;`
-- tests/middleware/test_gzip.py:61:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'GZipMiddleware'&gt;`
-+ tests/middleware/test_gzip.py:61:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'GZipMiddleware'&gt;`
-- tests/middleware/test_gzip.py:84:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'GZipMiddleware'&gt;`
-+ tests/middleware/test_gzip.py:84:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'GZipMiddleware'&gt;`
-- tests/middleware/test_gzip.py:107:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'GZipMiddleware'&gt;`
-+ tests/middleware/test_gzip.py:107:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'GZipMiddleware'&gt;`
-- tests/middleware/test_gzip.py:132:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'GZipMiddleware'&gt;`
-+ tests/middleware/test_gzip.py:132:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'GZipMiddleware'&gt;`
-- tests/middleware/test_gzip.py:155:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'GZipMiddleware'&gt;`
-+ tests/middleware/test_gzip.py:155:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'GZipMiddleware'&gt;`
-- tests/middleware/test_gzip.py:180:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'GZipMiddleware'&gt;`
-+ tests/middleware/test_gzip.py:180:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'GZipMiddleware'&gt;`
-- tests/middleware/test_https_redirect.py:16:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'HTTPSRedirectMiddleware'&gt;`
-+ tests/middleware/test_https_redirect.py:16:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'HTTPSRedirectMiddleware'&gt;`
-- tests/middleware/test_middleware.py:16:29: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'CustomMiddleware'&gt;`
-+ tests/middleware/test_middleware.py:16:29: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'CustomMiddleware'&gt;`
-- tests/middleware/test_middleware.py:21:36: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'CustomMiddleware'&gt;`
-+ tests/middleware/test_middleware.py:21:36: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'CustomMiddleware'&gt;`
-- tests/middleware/test_session.py:35:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class 'SessionMiddleware'&gt;`
-+ tests/middleware/test_session.py:35:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class 'SessionMiddleware'&gt;`
+- starlette/applications.py:86:25: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;ServerErrorMiddleware&#x27;&gt;`
++ starlette/applications.py:86:25: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;ServerErrorMiddleware&#x27;&gt;`
+- starlette/applications.py:88:27: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;ExceptionMiddleware&#x27;&gt;`
++ starlette/applications.py:88:27: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;ExceptionMiddleware&#x27;&gt;`
+- starlette/applications.py:241:33: error[invalid-argument-type] Argument to bound method `add_middleware` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;BaseHTTPMiddleware&#x27;&gt;`
++ starlette/applications.py:241:33: error[invalid-argument-type] Argument to bound method `add_middleware` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;BaseHTTPMiddleware&#x27;&gt;`
+- tests/middleware/test_base.py:84:28: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;CustomMiddleware&#x27;&gt;`
++ tests/middleware/test_base.py:84:28: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;CustomMiddleware&#x27;&gt;`
+- tests/middleware/test_base.py:152:24: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;aMiddleware&#x27;&gt;`
++ tests/middleware/test_base.py:152:24: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;aMiddleware&#x27;&gt;`
+- tests/middleware/test_base.py:153:24: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;bMiddleware&#x27;&gt;`
++ tests/middleware/test_base.py:153:24: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;bMiddleware&#x27;&gt;`
+- tests/middleware/test_base.py:154:24: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;cMiddleware&#x27;&gt;`
++ tests/middleware/test_base.py:154:24: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;cMiddleware&#x27;&gt;`
+- tests/middleware/test_base.py:169:75: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;CustomMiddleware&#x27;&gt;`
++ tests/middleware/test_base.py:169:75: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;CustomMiddleware&#x27;&gt;`
+- tests/middleware/test_base.py:187:44: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;CustomMiddleware&#x27;&gt;`
++ tests/middleware/test_base.py:187:44: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;CustomMiddleware&#x27;&gt;`
+- tests/middleware/test_base.py:277:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;BaseHTTPMiddleware&#x27;&gt;`
++ tests/middleware/test_base.py:277:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;BaseHTTPMiddleware&#x27;&gt;`
+- tests/middleware/test_base.py:315:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;BaseHTTPMiddleware&#x27;&gt;`
++ tests/middleware/test_base.py:315:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;BaseHTTPMiddleware&#x27;&gt;`
+- tests/middleware/test_base.py:335:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;BaseHTTPMiddleware&#x27;&gt;`
++ tests/middleware/test_base.py:335:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;BaseHTTPMiddleware&#x27;&gt;`
+- tests/middleware/test_base.py:362:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;BaseHTTPMiddleware&#x27;&gt;`
++ tests/middleware/test_base.py:362:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;BaseHTTPMiddleware&#x27;&gt;`
+- tests/middleware/test_base.py:433:24: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;BaseHTTPMiddleware&#x27;&gt;`
++ tests/middleware/test_base.py:433:24: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;BaseHTTPMiddleware&#x27;&gt;`
+- tests/middleware/test_base.py:434:24: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;ContextManagerMiddleware&#x27;&gt;`
++ tests/middleware/test_base.py:434:24: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;ContextManagerMiddleware&#x27;&gt;`
+- tests/middleware/test_base.py:609:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;ConsumingMiddleware&#x27;&gt;`
++ tests/middleware/test_base.py:609:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;ConsumingMiddleware&#x27;&gt;`
+- tests/middleware/test_base.py:638:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;ConsumingMiddleware&#x27;&gt;`
++ tests/middleware/test_base.py:638:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;ConsumingMiddleware&#x27;&gt;`
+- tests/middleware/test_base.py:667:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;ConsumingMiddleware&#x27;&gt;`
++ tests/middleware/test_base.py:667:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;ConsumingMiddleware&#x27;&gt;`
+- tests/middleware/test_base.py:693:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;ConsumingMiddleware&#x27;&gt;`
++ tests/middleware/test_base.py:693:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;ConsumingMiddleware&#x27;&gt;`
+- tests/middleware/test_base.py:725:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;ConsumingMiddleware&#x27;&gt;`
++ tests/middleware/test_base.py:725:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;ConsumingMiddleware&#x27;&gt;`
+- tests/middleware/test_base.py:754:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;ConsumingMiddleware&#x27;&gt;`
++ tests/middleware/test_base.py:754:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;ConsumingMiddleware&#x27;&gt;`
+- tests/middleware/test_base.py:843:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;ConsumingMiddleware&#x27;&gt;`
++ tests/middleware/test_base.py:843:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;ConsumingMiddleware&#x27;&gt;`
+- tests/middleware/test_base.py:871:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;ConsumingMiddleware&#x27;&gt;`
++ tests/middleware/test_base.py:871:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;ConsumingMiddleware&#x27;&gt;`
+- tests/middleware/test_base.py:1086:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;MyMiddleware&#x27;&gt;`
++ tests/middleware/test_base.py:1086:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;MyMiddleware&#x27;&gt;`
+- tests/middleware/test_base.py:1220:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;BaseHTTPMiddleware&#x27;&gt;`
++ tests/middleware/test_base.py:1220:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;BaseHTTPMiddleware&#x27;&gt;`
+- tests/middleware/test_base.py:1278:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;PassthroughMiddleware&#x27;&gt;`
++ tests/middleware/test_base.py:1278:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;PassthroughMiddleware&#x27;&gt;`
+- tests/middleware/test_cors.py:20:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;CORSMiddleware&#x27;&gt;`
++ tests/middleware/test_cors.py:20:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;CORSMiddleware&#x27;&gt;`
+- tests/middleware/test_cors.py:81:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;CORSMiddleware&#x27;&gt;`
++ tests/middleware/test_cors.py:81:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;CORSMiddleware&#x27;&gt;`
+- tests/middleware/test_cors.py:132:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;CORSMiddleware&#x27;&gt;`
++ tests/middleware/test_cors.py:132:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;CORSMiddleware&#x27;&gt;`
+- tests/middleware/test_cors.py:181:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;CORSMiddleware&#x27;&gt;`
++ tests/middleware/test_cors.py:181:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;CORSMiddleware&#x27;&gt;`
+- tests/middleware/test_cors.py:222:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;CORSMiddleware&#x27;&gt;`
++ tests/middleware/test_cors.py:222:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;CORSMiddleware&#x27;&gt;`
+- tests/middleware/test_cors.py:255:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;CORSMiddleware&#x27;&gt;`
++ tests/middleware/test_cors.py:255:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;CORSMiddleware&#x27;&gt;`
+- tests/middleware/test_cors.py:285:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;CORSMiddleware&#x27;&gt;`
++ tests/middleware/test_cors.py:285:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;CORSMiddleware&#x27;&gt;`
+- tests/middleware/test_cors.py:310:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;CORSMiddleware&#x27;&gt;`
++ tests/middleware/test_cors.py:310:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;CORSMiddleware&#x27;&gt;`
+- tests/middleware/test_cors.py:382:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;CORSMiddleware&#x27;&gt;`
++ tests/middleware/test_cors.py:382:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;CORSMiddleware&#x27;&gt;`
+- tests/middleware/test_cors.py:415:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;CORSMiddleware&#x27;&gt;`
++ tests/middleware/test_cors.py:415:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;CORSMiddleware&#x27;&gt;`
+- tests/middleware/test_cors.py:436:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;CORSMiddleware&#x27;&gt;`
++ tests/middleware/test_cors.py:436:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;CORSMiddleware&#x27;&gt;`
+- tests/middleware/test_cors.py:456:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;CORSMiddleware&#x27;&gt;`
++ tests/middleware/test_cors.py:456:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;CORSMiddleware&#x27;&gt;`
+- tests/middleware/test_cors.py:473:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;CORSMiddleware&#x27;&gt;`
++ tests/middleware/test_cors.py:473:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;CORSMiddleware&#x27;&gt;`
+- tests/middleware/test_cors.py:492:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;CORSMiddleware&#x27;&gt;`
++ tests/middleware/test_cors.py:492:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;CORSMiddleware&#x27;&gt;`
+- tests/middleware/test_cors.py:513:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;CORSMiddleware&#x27;&gt;`
++ tests/middleware/test_cors.py:513:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;CORSMiddleware&#x27;&gt;`
+- tests/middleware/test_cors.py:543:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;CORSMiddleware&#x27;&gt;`
++ tests/middleware/test_cors.py:543:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;CORSMiddleware&#x27;&gt;`
+- tests/middleware/test_cors.py:583:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;CORSMiddleware&#x27;&gt;`
++ tests/middleware/test_cors.py:583:17: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;CORSMiddleware&#x27;&gt;`
+- tests/middleware/test_gzip.py:23:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;GZipMiddleware&#x27;&gt;`
++ tests/middleware/test_gzip.py:23:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;GZipMiddleware&#x27;&gt;`
+- tests/middleware/test_gzip.py:41:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;GZipMiddleware&#x27;&gt;`
++ tests/middleware/test_gzip.py:41:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;GZipMiddleware&#x27;&gt;`
+- tests/middleware/test_gzip.py:61:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;GZipMiddleware&#x27;&gt;`
++ tests/middleware/test_gzip.py:61:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;GZipMiddleware&#x27;&gt;`
+- tests/middleware/test_gzip.py:84:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;GZipMiddleware&#x27;&gt;`
++ tests/middleware/test_gzip.py:84:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;GZipMiddleware&#x27;&gt;`
+- tests/middleware/test_gzip.py:107:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;GZipMiddleware&#x27;&gt;`
++ tests/middleware/test_gzip.py:107:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;GZipMiddleware&#x27;&gt;`
+- tests/middleware/test_gzip.py:132:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;GZipMiddleware&#x27;&gt;`
++ tests/middleware/test_gzip.py:132:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;GZipMiddleware&#x27;&gt;`
+- tests/middleware/test_gzip.py:155:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;GZipMiddleware&#x27;&gt;`
++ tests/middleware/test_gzip.py:155:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;GZipMiddleware&#x27;&gt;`
+- tests/middleware/test_gzip.py:180:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;GZipMiddleware&#x27;&gt;`
++ tests/middleware/test_gzip.py:180:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;GZipMiddleware&#x27;&gt;`
+- tests/middleware/test_https_redirect.py:16:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;HTTPSRedirectMiddleware&#x27;&gt;`
++ tests/middleware/test_https_redirect.py:16:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;HTTPSRedirectMiddleware&#x27;&gt;`
+- tests/middleware/test_middleware.py:16:29: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;CustomMiddleware&#x27;&gt;`
++ tests/middleware/test_middleware.py:16:29: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;CustomMiddleware&#x27;&gt;`
+- tests/middleware/test_middleware.py:21:36: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;CustomMiddleware&#x27;&gt;`
++ tests/middleware/test_middleware.py:21:36: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;CustomMiddleware&#x27;&gt;`
+- tests/middleware/test_session.py:35:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[Unknown]`, found `&lt;class &#x27;SessionMiddleware&#x27;&gt;`
++ tests/middleware/test_session.py:35:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `_MiddlewareFactory[(...)]`, found `&lt;class &#x27;SessionMiddleware&#x27;&gt;`
 - tests/middleware/test_session.py:67:32: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: E
 
 ... (truncated 1638 lines) ...
 </code></pre>
-</details>
 
-<details>
-<summary>Memory usage changes were detected when running on open source projects</summary>
 
-<pre><code class="language-diff">flake8 (https://github.com/pycqa/flake8)
+
+Memory usage changes were detected when running on open source projects
+
+<pre><code>flake8 (https://github.com/pycqa/flake8)
 -     struct fields = ~3MB
 +     struct fields = ~4MB
 
@@ -705,14 +705,14 @@ prefect (https://github.com/PrefectHQ/prefect)
 
 
 </code></pre>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-11-20 06:43</div>
-            <div class="timeline-body"><p>There's a stack overflow in <code>mypy_primer</code> repository which I'm trying to figure out why it's happening on this branch, I've narrowed it down to the following code:</p>
-<pre><code class="language-py">from dataclasses import field
+            <div class="timeline-body"><p>There&#x27;s a stack overflow in <code>mypy_primer</code> repository which I&#x27;m trying to figure out why it&#x27;s happening on this branch, I&#x27;ve narrowed it down to the following code:</p>
+<pre><code>from dataclasses import field
 
 field(default_factory=dict)
 </code></pre>
@@ -721,7 +721,7 @@ field(default_factory=dict)
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-11-20 07:10</div>
             <div class="timeline-body"><p>Hmm, not really sure where is the stack overflow being triggered, a more minimal code that behaves the same way as above but without the <code>dataclasses</code> import:</p>
-<pre><code class="language-py">from typing import Callable
+<pre><code>from typing import Callable
 
 
 def f[_T](*, default_factory: Callable[[], _T]) -&gt; _T:
@@ -730,12 +730,12 @@ def f[_T](*, default_factory: Callable[[], _T]) -&gt; _T:
 
 f(default_factory=dict)
 </code></pre>
-<p>It's important that the <code>default_factory</code> is <code>dict</code> and not any other type like <code>list</code>, <code>int</code>, etc.</p>
+<p>It&#x27;s important that the <code>default_factory</code> is <code>dict</code> and not any other type like <code>list</code>, <code>int</code>, etc.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-11-20 07:20</div>
-            <div class="timeline-body"><p>Nevermind, found the issue, it's a silly mistake on my end.</p>
+            <div class="timeline-body"><p>Nevermind, found the issue, it&#x27;s a silly mistake on my end.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -744,8 +744,8 @@ f(default_factory=dict)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/resources/mdtest/decorators.md</code>:131 on 2025-12-02 06:21</div>
-            <div class="timeline-body"><p>I'm looking into this, a minimal repro:</p>
-<pre><code class="language-py">from typing import Callable
+            <div class="timeline-body"><p>I&#x27;m looking into this, a minimal repro:</p>
+<pre><code>from typing import Callable
 
 
 class _Wrapped[**P, R]:
@@ -767,13 +767,13 @@ reveal_type(update_wrapper(wrapper).__call__)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-12-02 09:49</div>
-            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+            <div class="timeline-body">
 
-<h2><a href="https://codspeed.io/astral-sh/ruff/branches/dhruv%2Fparamspec-args-kwargs?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a></h2>
-<h3>Merging #21445 will <strong>not alter performance</strong></h3>
-<p><sub>Comparing <code>dhruv/paramspec-args-kwargs</code> (e5a4f59) with <code>main</code> (f29436c)</sub></p>
-<h3>Summary</h3>
-<p><code>✅ 22</code> untouched<br />
+<a href="https://codspeed.io/astral-sh/ruff/branches/dhruv%2Fparamspec-args-kwargs?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a>
+Merging #21445 will <strong>not alter performance</strong>
+<p>Comparing <code>dhruv/paramspec-args-kwargs</code> (e5a4f59) with <code>main</code> (f29436c)</p>
+Summary
+<p><code>✅ 22</code> untouched<br>
 <code>⏩ 30</code> skipped[^skipped]</p>
 <p>[^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, <a href="https://codspeed.io/astral-sh/ruff/branches/dhruv%2Fparamspec-args-kwargs?sectionId=benchmark-comparison-section-baseline-result-skipped&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=archive">click here and archive them to remove them from the performance reports</a>.</p>
 </div>
@@ -788,13 +788,13 @@ reveal_type(update_wrapper(wrapper).__call__)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @dhruvmanila on 2025-12-03 12:22</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-12-03 12:22</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-03 12:32</div>
-            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+            <div class="timeline-body">
 
-<h2><code>ecosystem-analyzer</code> results</h2>
+<code>ecosystem-analyzer</code> results
 <p>| Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
 | <code>invalid-argument-type</code> | 209 | 0 | 96 |
@@ -821,57 +821,57 @@ reveal_type(update_wrapper(wrapper).__call__)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @dhruvmanila on 2025-12-03 17:57</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-12-03 17:57</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @dhruvmanila on 2025-12-03 17:57</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-12-03 17:57</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[ty] Add support for `P.args` and `P.kwargs`" to "[ty] Complete support for `ParamSpec`" by @dhruvmanila on 2025-12-03 18:18</div>
+            <div class="event">Renamed from &quot;[ty] Add support for `P.args` and `P.kwargs`&quot; to &quot;[ty] Complete support for `ParamSpec`&quot; by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-12-03 18:18</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @dhruvmanila on 2025-12-03 18:22</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-12-03 18:22</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @dhruvmanila on 2025-12-03 18:22</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-12-03 18:22</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2025-12-03 18:22</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-12-03 18:22</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @dhruvmanila on 2025-12-03 18:22</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-12-03 18:22</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @dhruvmanila on 2025-12-03 18:22</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-12-03 18:22</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2025-12-03 18:22</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-12-03 18:22</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_ide/src/hover.rs</code>:2295 on 2025-12-04 16:36</div>
-            <div class="timeline-body"><p>shouldn't this be contravariant? Is that worth a TODO comment?</p>
+            <div class="timeline-body"><p>shouldn&#x27;t this be contravariant? Is that worth a TODO comment?</p>
 <p>E.g. when we hover over <code>T</code> here, we display it as being contravariant:</p>
-<pre><code class="language-py">from typing import Callable
+<pre><code>from typing import Callable
 type X[T] = Callable[[T], int]
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/annotations/unsupported_special_forms.md</code>:68 on 2025-12-04 16:40</div>
-            <div class="timeline-body"><p>ideally I think we'd emit a diagnostic here -- an arbitrary instance of <code>ParamSpec</code> should not be valid in a type expression. (You could add a TODO comment for now.)</p>
+            <div class="timeline-body"><p>ideally I think we&#x27;d emit a diagnostic here -- an arbitrary instance of <code>ParamSpec</code> should not be valid in a type expression. (You could add a TODO comment for now.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/legacy/paramspec.md</code>:121 on 2025-12-04 16:41</div>
             <div class="timeline-body"><p>or as a type parameter to <code>Protocol</code>/<code>Generic</code>. Maybe:</p>
-<pre><code class="language-suggestion">In type annotations, `ParamSpec` is only valid as the first element to `Callable` or the final element to `Concatenate`.
+<pre><code>In type annotations, `ParamSpec` is only valid as the first element to `Callable` or the final element to `Concatenate`.
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/legacy/paramspec.md</code>:188 on 2025-12-04 16:44</div>
-            <div class="timeline-body"><p>it could be worth having one test where the variadic parameters have different names, just to demonstrate that it's the <em>kind</em> of the parameter that matters rather than the name. E.g. this is fine:</p>
-<pre><code class="language-py">class Foo(Generic[P]):
+            <div class="timeline-body"><p>it could be worth having one test where the variadic parameters have different names, just to demonstrate that it&#x27;s the <em>kind</em> of the parameter that matters rather than the name. E.g. this is fine:</p>
+<pre><code>class Foo(Generic[P]):
     def __call__(self, *arguments: P.args, **keyword_arguments: P.kwargs) -&gt; None: ...
 </code></pre>
 </div>
@@ -883,20 +883,20 @@ type X[T] = Callable[[T], int]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/legacy/paramspec.md</code>:257 on 2025-12-04 16:51</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">Nor can they be omitted when there are more than one `ParamSpec`s.
+            <div class="timeline-body"><pre><code>Nor can they be omitted when there are more than one `ParamSpec`s.
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/legacy/paramspec.md</code>:373 on 2025-12-04 16:55</div>
-            <div class="timeline-body"><p>it could also be worth adding a test where a class is generic over <code>PAnother</code> but <em>not</em> generic over <code>P</code>. I think that should cause us to omit a diagnostic, since <code>PAnother</code> would have <code>P</code> as its default, but <code>P</code> wouldn't be in scope?</p>
-<p>(It's obviously fine to just add a TODO to that test if it's not implemented yet)</p>
+            <div class="timeline-body"><p>it could also be worth adding a test where a class is generic over <code>PAnother</code> but <em>not</em> generic over <code>P</code>. I think that should cause us to omit a diagnostic, since <code>PAnother</code> would have <code>P</code> as its default, but <code>P</code> wouldn&#x27;t be in scope?</p>
+<p>(It&#x27;s obviously fine to just add a TODO to that test if it&#x27;s not implemented yet)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/pep695/paramspec.md</code>:181 on 2025-12-04 17:02</div>
-            <div class="timeline-body"><p>I don't think this TODO is accurate, because <code>None</code> is a subtype of <code>object</code>: <code>object | None</code> just immediately simplifies to <code>object</code>. The existing assertion is correct!</p>
-<pre><code class="language-suggestion">    reveal_type(kwargs.get(&quot;key&quot;))  # revealed: object
+            <div class="timeline-body"><p>I don&#x27;t think this TODO is accurate, because <code>None</code> is a subtype of <code>object</code>: <code>object | None</code> just immediately simplifies to <code>object</code>. The existing assertion is correct!</p>
+<pre><code>    reveal_type(kwargs.get(&quot;key&quot;))  # revealed: object
 </code></pre>
 </div>
         </div>
@@ -907,14 +907,14 @@ type X[T] = Callable[[T], int]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/pep695/paramspec.md</code>:280 on 2025-12-04 17:04</div>
-            <div class="timeline-body"><pre><code class="language-suggestion"># `P1` hasn't been specialized, so it defaults to `...` gradual form
+            <div class="timeline-body"><pre><code># `P1` hasn&#x27;t been specialized, so it defaults to `...` gradual form
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/pep695/paramspec.md</code>:469 on 2025-12-04 17:09</div>
             <div class="timeline-body"><p>you could possibly also add an example of keyword-arguments with default values. E.g.</p>
-<pre><code class="language-py">def keyword_only_with_default_1(*, x: int = 42) -&gt; int:
+<pre><code>def keyword_only_with_default_1(*, x: int = 42) -&gt; int:
     return 1
 
 def keyword_only_with_default_2(*, y: int = 42) -&gt; int:
@@ -925,8 +925,8 @@ def keyword_only_with_default_2(*, y: int = 42) -&gt; int:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/pep695/paramspec.md</code>:511 on 2025-12-04 17:13</div>
-            <div class="timeline-body"><p>and also add a call to <code>foo1_with_extra_arg</code> that <em>doesn't</em> cause us to emit a diagnostic?</p>
-<pre><code class="language-suggestion">    # error: [invalid-argument-type] &quot;Argument to function `foo1_with_extra_arg` is incorrect: Expected `str`, found `P2@foo2.args`&quot;
+            <div class="timeline-body"><p>and also add a call to <code>foo1_with_extra_arg</code> that <em>doesn&#x27;t</em> cause us to emit a diagnostic?</p>
+<pre><code>    # error: [invalid-argument-type] &quot;Argument to function `foo1_with_extra_arg` is incorrect: Expected `str`, found `P2@foo2.args`&quot;
     foo1_with_extra_arg(func, *args, **kwargs)
     
     foo1_with_extra_arg(func, &quot;foooooo&quot;, *args, **kwargs)
@@ -935,8 +935,8 @@ def keyword_only_with_default_2(*, y: int = 42) -&gt; int:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/pep695/paramspec.md</code>:566 on 2025-12-04 17:17</div>
-            <div class="timeline-body"><p>I think the &quot;union with <code>Unknown</code>&quot; thing is making this test a bit more confusing than it needs to be? Could you just explicitly annotate the instance attributes, so that they aren't unioned with <code>Unknown</code>?</p>
-<pre><code class="language-suggestion">```py
+            <div class="timeline-body"><p>I think the &quot;union with <code>Unknown</code>&quot; thing is making this test a bit more confusing than it needs to be? Could you just explicitly annotate the instance attributes, so that they aren&#x27;t unioned with <code>Unknown</code>?</p>
+<pre><code>```py
 class Foo[**P]:
     def __init__(self, *args: P.args, **kwargs: P.kwargs) -&gt; None:
         self.args: P.args = args
@@ -962,7 +962,7 @@ def baz[**P](fn: Callable[P, None], foo: Foo[P]) -&gt; None:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/with/async.md</code>:216 on 2025-12-04 17:19</div>
-            <div class="timeline-body"><p>I guess we're nearly there on this TODO now 😅</p>
+            <div class="timeline-body"><p>I guess we&#x27;re nearly there on this TODO now 😅</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -973,11 +973,11 @@ def baz[**P](fn: Callable[P, None], foo: Foo[P]) -&gt; None:
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:4997 on 2025-12-04 17:47</div>
             <div class="timeline-body"><p>nit: I think you can do this without the <code>unreachable!()</code> call:</p>
-<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/src/types.rs b/crates/ty_python_semantic/src/types.rs
+<pre><code>diff --git a/crates/ty_python_semantic/src/types.rs b/crates/ty_python_semantic/src/types.rs
 index c2d26b1124..a4871e093f 100644
 --- a/crates/ty_python_semantic/src/types.rs
 +++ b/crates/ty_python_semantic/src/types.rs
-@@ -4985,14 +4985,17 @@ impl&lt;'db&gt; Type&lt;'db&gt; {
+@@ -4985,14 +4985,17 @@ impl&lt;&#x27;db&gt; Type&lt;&#x27;db&gt; {
                      .into()
              }
  
@@ -1007,13 +1007,13 @@ index c2d26b1124..a4871e093f 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:8609 on 2025-12-04 17:52</div>
-            <div class="timeline-body"><p>This TODO comment looks a bit orphaned -- what's it meant to refer to?</p>
+            <div class="timeline-body"><p>This TODO comment looks a bit orphaned -- what&#x27;s it meant to refer to?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:9718 on 2025-12-04 17:56</div>
             <div class="timeline-body"><p>I think it would be better here to do an exhaustive match over <code>DynamicType</code> variants, because we have 3 <code>Todo</code> variants currently and we might add or remove some in the future:</p>
-<pre><code class="language-suggestion">                Type::Dynamic(dynamic) =&gt; match dynamic {
+<pre><code>                Type::Dynamic(dynamic) =&gt; match dynamic {
                     DynamicType::Todo(_) | DynamicType::TodoUnpack | DynamicType::TodoStarredExpression =&gt; Parameters::todo(),
                     DynamicType::Any | DynamicType::Unknown | DynamicType::Divergent(_) | DynamicType::UnknownDivergent(_) =&gt; Parameters::unknown(),
                 }
@@ -1023,19 +1023,19 @@ index c2d26b1124..a4871e093f 100644
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:9751 on 2025-12-04 18:02</div>
             <div class="timeline-body"><p>(optional nit)</p>
-<pre><code class="language-suggestion">                if known_class == Some(KnownClass::ParamSpec) {
+<pre><code>                if known_class == Some(KnownClass::ParamSpec) {
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:9920 on 2025-12-04 18:06</div>
             <div class="timeline-body"><p>for most other Salsa-interned types, we have this note about ordering:</p>
-<pre><code class="language-suggestion">/// A type variable that has been bound to a generic context, and which can be specialized to a
+<pre><code>/// A type variable that has been bound to a generic context, and which can be specialized to a
 /// concrete type.
 ///
 /// # Ordering
 ///
-/// Ordering is based on the wrapped data's salsa-assigned id and not on its values.
+/// Ordering is based on the wrapped data&#x27;s salsa-assigned id and not on its values.
 /// The id may change between runs, or when e.g. a `BoundTypeVarInstance` was garbage-collected and recreated.
 #[salsa::interned(debug, heap_size=ruff_memory_usage::heap_size)]
 #[derive(PartialOrd, Ord)]
@@ -1045,7 +1045,7 @@ index c2d26b1124..a4871e093f 100644
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:9909 on 2025-12-04 18:09</div>
             <div class="timeline-body"><p>nit: add some docs?</p>
-<pre><code class="language-suggestion">    /// If `Some()`, this indicates that this type variable is the `.args` or `.kwargs`
+<pre><code>    /// If `Some()`, this indicates that this type variable is the `.args` or `.kwargs`
     /// attribute of a `ParamSpec`
     paramspec_attr: Option&lt;ParamSpecAttrKind&gt;,
 </code></pre>
@@ -1053,7 +1053,7 @@ index c2d26b1124..a4871e093f 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:9926 on 2025-12-04 18:10</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">    /// If `Some()`, this indicates that this type variable is the `.args` or `.kwargs`
+            <div class="timeline-body"><pre><code>    /// If `Some()`, this indicates that this type variable is the `.args` or `.kwargs`
     /// attribute of a `ParamSpec`
     paramspec_attr: Option&lt;ParamSpecAttrKind&gt;,
 </code></pre>
@@ -1062,7 +1062,7 @@ index c2d26b1124..a4871e093f 100644
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:9927 on 2025-12-04 18:12</div>
             <div class="timeline-body"><p>nit: could improve the error message here if this assertion fails</p>
-<pre><code class="language-suggestion">        debug_assert!(
+<pre><code>        debug_assert!(
             self.is_paramspec(db),
             &quot;Expected a paramspec but got a {:?}&quot;,
             self.kind(db)
@@ -1072,7 +1072,7 @@ index c2d26b1124..a4871e093f 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:9955 on 2025-12-04 18:12</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">        debug_assert!(
+            <div class="timeline-body"><pre><code>        debug_assert!(
             self.is_paramspec(db),
             &quot;Expected a paramspec but got a {:?}&quot;,
             self.kind(db)
@@ -1082,43 +1082,43 @@ index c2d26b1124..a4871e093f 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:9941 on 2025-12-04 18:13</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">            None, // `P.args` and `P.kwargs` cannot have defaults, even though `P` can
+            <div class="timeline-body"><pre><code>            None, // `P.args` and `P.kwargs` cannot have defaults, even though `P` can
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:9964 on 2025-12-04 18:13</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">            None, // `P.args` and `P.kwargs` cannot have defaults, even though `P` can
+            <div class="timeline-body"><pre><code>            None, // `P.args` and `P.kwargs` cannot have defaults, even though `P` can
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:9940 on 2025-12-04 18:14</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">            None, // ParamSpecs cannot have explicit variance
+            <div class="timeline-body"><pre><code>            None, // ParamSpecs cannot have explicit variance
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:9963 on 2025-12-04 18:14</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">                None, // ParamSpecs cannot have explicit variance
+            <div class="timeline-body"><pre><code>                None, // ParamSpecs cannot have explicit variance
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:2582 on 2025-12-04 18:25</div>
-            <div class="timeline-body"><p>it will only be <code>Unknown | P.args</code> if the instance attribute was unannotated, as I mentioned in https://github.com/astral-sh/ruff/pull/21445#discussion_r2589923699</p>
+            <div class="timeline-body"><p>it will only be <code>Unknown | P.args</code> if the instance attribute was unannotated, as I mentioned in <a href="https://github.com/astral-sh/ruff/pull/21445">astral-sh/ruff#21445</a>#discussion_r2589923699</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:3169 on 2025-12-04 18:38</div>
             <div class="timeline-body"><p>(optional nit)</p>
-<pre><code class="language-suggestion">        if callable.kind(self.db) != CallableTypeKind::ParamSpecValue {
+<pre><code>        if callable.kind(self.db) != CallableTypeKind::ParamSpecValue {
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/display.rs</code>:1705 on 2025-12-04 18:42</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">                write!(f, &quot;**{}&quot;, typevar.name(self.db))?;
+            <div class="timeline-body"><pre><code>                write!(f, &quot;**{}&quot;, typevar.name(self.db))?;
                 if let Some(name) = typevar.binding_context(self.db).name(self.db) {
                     write!(f, &quot;@{name}&quot;)?;
 </code></pre>
@@ -1126,7 +1126,7 @@ index c2d26b1124..a4871e093f 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:1410 on 2025-12-04 18:43</div>
-            <div class="timeline-body"><p>what's &quot;this&quot;, in this context?</p>
+            <div class="timeline-body"><p>what&#x27;s &quot;this&quot;, in this context?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1141,7 +1141,7 @@ index c2d26b1124..a4871e093f 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:2766 on 2025-12-04 18:48</div>
-            <div class="timeline-body"><p>and here, <code>dict[str, Unknown]</code> seems like the right answer to me; I'd just remove the TODO</p>
+            <div class="timeline-body"><p>and here, <code>dict[str, Unknown]</code> seems like the right answer to me; I&#x27;d just remove the TODO</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1156,14 +1156,14 @@ index c2d26b1124..a4871e093f 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:3485 on 2025-12-04 18:49</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">                // This should be taken care of by the caller.
+            <div class="timeline-body"><pre><code>                // This should be taken care of by the caller.
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:3491 on 2025-12-04 18:50</div>
             <div class="timeline-body"><p>nit: this assertion is probably very cheap; you could make this a non-debug assertion</p>
-<pre><code class="language-suggestion">                    assert!(
+<pre><code>                    assert!(
                         exactly_one_paramspec,
                         &quot;Inferring ParamSpec value during explicit specialization for a \
                     tuple expression should only happen when it contains exactly one ParamSpec&quot;
@@ -1174,19 +1174,19 @@ index c2d26b1124..a4871e093f 100644
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:3541 on 2025-12-04 18:51</div>
             <div class="timeline-body"><p>nit</p>
-<pre><code class="language-suggestion">                        // TODO: Emit diagnostic: &quot;ParamSpec &quot;P&quot; is unbound&quot;
+<pre><code>                        // TODO: Emit diagnostic: &quot;ParamSpec &quot;P&quot; is unbound&quot;
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-12-04 18:56</div>
             <div class="timeline-body"><p>This looks fantastic!!</p>
-<p>I'd appreciate it if @dcreager or @carljm could also take a look, as I don't consider myself an expert on our call-binding machinery or our generics machinery</p>
+<p>I&#x27;d appreciate it if @dcreager or @carljm could also take a look, as I don&#x27;t consider myself an expert on our call-binding machinery or our generics machinery</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_ide/src/hover.rs</code>:1 on 2025-12-04 21:07</div>
-            <div class="timeline-body"><p>These edits are probably what's causing the <code>cargo fmt</code> CI failure. You'll need to revert the whitespace edits and only keep the &quot;meaty&quot; change below in the diff</p>
+            <div class="timeline-body"><p>These edits are probably what&#x27;s causing the <code>cargo fmt</code> CI failure. You&#x27;ll need to revert the whitespace edits and only keep the &quot;meaty&quot; change below in the diff</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1196,8 +1196,8 @@ index c2d26b1124..a4871e093f 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:322 on 2025-12-04 21:14</div>
-            <div class="timeline-body"><p>To clarify — as written, this function returns whether the generic context contains exactly 1 <code>ParamSpec</code> and exactly 0 other <code>TypeVar</code>s. The comment suggests you might instead have intended to return whether it contains 1 <code>ParamSpec</code> and <em>0 or more</em> <code>TypeVar</code>s. If you meant the former I'd suggest rewording the docs:</p>
-<pre><code class="language-suggestion">    /// Returns `true` if this generic context contains exactly one `ParamSpec`
+            <div class="timeline-body"><p>To clarify — as written, this function returns whether the generic context contains exactly 1 <code>ParamSpec</code> and exactly 0 other <code>TypeVar</code>s. The comment suggests you might instead have intended to return whether it contains 1 <code>ParamSpec</code> and <em>0 or more</em> <code>TypeVar</code>s. If you meant the former I&#x27;d suggest rewording the docs:</p>
+<pre><code>    /// Returns `true` if this generic context contains exactly one `ParamSpec`
     /// and no other type variables.
 </code></pre>
 <p>If you meant the latter then the method body is wrong.</p>
@@ -1205,7 +1205,7 @@ index c2d26b1124..a4871e093f 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:204 on 2025-12-04 21:21</div>
-            <div class="timeline-body"><p>We'll need this logic for <code>TypeMapping::PartialSpecialization</code> too. It might be worth pulling much of the body out into a helper method.</p>
+            <div class="timeline-body"><p>We&#x27;ll need this logic for <code>TypeMapping::PartialSpecialization</code> too. It might be worth pulling much of the body out into a helper method.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1215,7 +1215,7 @@ index c2d26b1124..a4871e093f 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:3131 on 2025-12-04 22:51</div>
-            <div class="timeline-body"><p>For these helper methods, it would be nice to have some Python snippets in the doc comment describing the particular cases that they're meant to handle.</p>
+            <div class="timeline-body"><p>For these helper methods, it would be nice to have some Python snippets in the doc comment describing the particular cases that they&#x27;re meant to handle.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1225,12 +1225,12 @@ index c2d26b1124..a4871e093f 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:3371 on 2025-12-04 22:59</div>
-            <div class="timeline-body"><p>Same as above — ideally we wouldn't have to repeat this match statement here, and you could add this as a method on <code>VariadicArgumentType</code>. Though there you don't have access to that type, so in this case it might not be worth the refactoring churn</p>
+            <div class="timeline-body"><p>Same as above — ideally we wouldn&#x27;t have to repeat this match statement here, and you could add this as a method on <code>VariadicArgumentType</code>. Though there you don&#x27;t have access to that type, so in this case it might not be worth the refactoring churn</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:3428 on 2025-12-04 23:02</div>
-            <div class="timeline-body"><p>We have considered adding a new <code>Type</code> variant to handle heterogeneous lists. I don't know if there's an open issue for it. But if we ever do that, it will probably lean heavily on <code>TupleSpec</code>, so 👍 to doing it this way for now, since that will make it most likely that this logic would carry over easily.</p>
+            <div class="timeline-body"><p>We have considered adding a new <code>Type</code> variant to handle heterogeneous lists. I don&#x27;t know if there&#x27;s an open issue for it. But if we ever do that, it will probably lean heavily on <code>TupleSpec</code>, so 👍 to doing it this way for now, since that will make it most likely that this logic would carry over easily.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1255,7 +1255,7 @@ index c2d26b1124..a4871e093f 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/resources/mdtest/annotations/unsupported_special_forms.md</code>:68 on 2025-12-05 04:13</div>
-            <div class="timeline-body"><p>This seems easy enough to do as I just need to remove the <code>ParamSpec</code> branch in <code>in_type_expression</code>, I'll do it in this PR.</p>
+            <div class="timeline-body"><p>This seems easy enough to do as I just need to remove the <code>ParamSpec</code> branch in <code>in_type_expression</code>, I&#x27;ll do it in this PR.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1264,8 +1264,8 @@ index c2d26b1124..a4871e093f 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/legacy/paramspec.md</code>:248 on 2025-12-05 04:50</div>
-            <div class="timeline-body"><p>Yes, I should've clarified that both <a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=baf1446b0bfbf475c1a3233c49d50276">mypy</a> and <a href="https://pyright-play.net/?strict=true&amp;code=GYJw9gtgBALgngBwJYDsDmUkQWEMoCCKcAUCQMYA2AhgM61QBiYYA2gFTsAKANFACoBdAFxQAdBLIgApgDdp1SgH14CaQApmbInD6oYggJRA">Pyright</a> supports specifying <code>Any</code> for a paramspec and I've also seen instances of this in the ecosystem report specifically used in <code>staticmethod[Any, Any]</code> or <code>classmethod[Any, Any]</code>.</p>
-<p>This is similar to how <code>Concatenate</code> is allowed as well in that position, it's the <code>default</code> of a <code>ParamSpec</code> where the limitation of &quot;ParamSpec, <code>...</code> or a list of types&quot; exists as per the spec but I can't find any reference specifying what is allowed to pass as explicit specialization to a ParamSpec.</p>
+            <div class="timeline-body"><p>Yes, I should&#x27;ve clarified that both <a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=baf1446b0bfbf475c1a3233c49d50276">mypy</a> and <a href="https://pyright-play.net/?strict=true&amp;code=GYJw9gtgBALgngBwJYDsDmUkQWEMoCCKcAUCQMYA2AhgM61QBiYYA2gFTsAKANFACoBdAFxQAdBLIgApgDdp1SgH14CaQApmbInD6oYggJRA">Pyright</a> supports specifying <code>Any</code> for a paramspec and I&#x27;ve also seen instances of this in the ecosystem report specifically used in <code>staticmethod[Any, Any]</code> or <code>classmethod[Any, Any]</code>.</p>
+<p>This is similar to how <code>Concatenate</code> is allowed as well in that position, it&#x27;s the <code>default</code> of a <code>ParamSpec</code> where the limitation of &quot;ParamSpec, <code>...</code> or a list of types&quot; exists as per the spec but I can&#x27;t find any reference specifying what is allowed to pass as explicit specialization to a ParamSpec.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1274,7 +1274,7 @@ index c2d26b1124..a4871e093f 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/legacy/paramspec.md</code>:373 on 2025-12-05 04:56</div>
-            <div class="timeline-body"><p>Yes, it should error because it's not in scope, I'll add the test case with a TODO as scoping rules aren't implemented in our generic implementation yet.</p>
+            <div class="timeline-body"><p>Yes, it should error because it&#x27;s not in scope, I&#x27;ll add the test case with a TODO as scoping rules aren&#x27;t implemented in our generic implementation yet.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1283,7 +1283,7 @@ index c2d26b1124..a4871e093f 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/pep695/paramspec.md</code>:235 on 2025-12-05 04:58</div>
-            <div class="timeline-body"><p>See https://github.com/astral-sh/ruff/pull/21445#discussion_r2591394627, happy to revert it if you think otherwise.</p>
+            <div class="timeline-body"><p>See <a href="https://github.com/astral-sh/ruff/pull/21445">astral-sh/ruff#21445</a>#discussion_r2591394627, happy to revert it if you think otherwise.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1292,12 +1292,12 @@ index c2d26b1124..a4871e093f 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/pep695/paramspec.md</code>:181 on 2025-12-05 04:59</div>
-            <div class="timeline-body"><p>🤦 thanks! I was a little bit confused to see this but yes it's obvious now</p>
+            <div class="timeline-body"><p>🤦 thanks! I was a little bit confused to see this but yes it&#x27;s obvious now</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/pep695/paramspec.md</code>:280 on 2025-12-05 05:01</div>
-            <div class="timeline-body"><p>I actually meant to say that it defaults to a gradual form where the type of parameters is <code>Unknown</code> aka <code>(*args: Unknown, **kwargs: Unknown)</code> but I guess that's more of an internal details. I'll use your suggestion.</p>
+            <div class="timeline-body"><p>I actually meant to say that it defaults to a gradual form where the type of parameters is <code>Unknown</code> aka <code>(*args: Unknown, **kwargs: Unknown)</code> but I guess that&#x27;s more of an internal details. I&#x27;ll use your suggestion.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1319,7 +1319,7 @@ index c2d26b1124..a4871e093f 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/pep695/paramspec.md</code>:566 on 2025-12-05 05:08</div>
-            <div class="timeline-body"><p>You cannot use <code>P.args</code> and <code>P.kwargs</code> in other position except for to annotate <code>*args</code> and <code>**kwargs</code> parameter, so <code>self.args: P.args = args</code> isn't allowed and will raise a diagnostic.</p>
+            <div class="timeline-body"><p>You cannot use <code>P.args</code> and <code>P.kwargs</code> in other position except for to annotate <code>*args</code> and <code>**kwargs</code> parameter, so <code>self.args: P.args = args</code> isn&#x27;t allowed and will raise a diagnostic.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1329,7 +1329,7 @@ index c2d26b1124..a4871e093f 100644
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/pep695/paramspec.md</code>:566 on 2025-12-05 05:27</div>
             <div class="timeline-body"><p>Hmm, actually, this prompted me to try something weird because this allows you to store the &quot;args&quot; and &quot;kwargs&quot; separately and then access it outside the class like so:</p>
-<pre><code class="language-py">from typing import Callable
+<pre><code>from typing import Callable
 
 class Foo[**P]:
     def __init__(self, fn: Callable[P, int], *args: P.args, **kwargs: P.kwargs) -&gt; None:
@@ -1380,7 +1380,7 @@ fn(**foo.kwargs)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types.rs</code>:8609 on 2025-12-05 05:33</div>
-            <div class="timeline-body"><p>Oops, yes this was from the first iteration of this PR. I'll remove this, thanks for catching it!</p>
+            <div class="timeline-body"><p>Oops, yes this was from the first iteration of this PR. I&#x27;ll remove this, thanks for catching it!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1399,7 +1399,7 @@ fn(**foo.kwargs)
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:1410 on 2025-12-05 05:59</div>
             <div class="timeline-body"><p>Consider the following example:</p>
-<pre><code class="language-py">from typing import Callable
+<pre><code>from typing import Callable
 
 def foo[**P](f1: Callable[P, int], f2: Callable[P, int]) -&gt; Callable[P, bool]: ...
 
@@ -1411,8 +1411,8 @@ def f2(x: str) -&gt; int:
 
 reveal_type(foo(f1, f2))
 </code></pre>
-<p>Here, <code>foo</code> is generic over a single <code>ParamSpec</code> which is used in multiple parameters. Later, when <code>P</code> is being specialized with two different parameter list, it will create a union which isn't then mapped in the return type. So, this allows us to pick the first specialization, type check the second occurrence using that and specialize the return type using that.</p>
-<p>Without this early return, the reveal type would be <code>(**P@foo) -&gt; bool</code>, right now it's <code>(x: int) -&gt; bool</code>. This is mainly a workaround for now until ty supports specializing <code>P</code> here into a supertype considering all the parameter lists. I'll update the TODO and open a new follow-up issue to keep track.</p>
+<p>Here, <code>foo</code> is generic over a single <code>ParamSpec</code> which is used in multiple parameters. Later, when <code>P</code> is being specialized with two different parameter list, it will create a union which isn&#x27;t then mapped in the return type. So, this allows us to pick the first specialization, type check the second occurrence using that and specialize the return type using that.</p>
+<p>Without this early return, the reveal type would be <code>(**P@foo) -&gt; bool</code>, right now it&#x27;s <code>(x: int) -&gt; bool</code>. This is mainly a workaround for now until ty supports specializing <code>P</code> here into a supertype considering all the parameter lists. I&#x27;ll update the TODO and open a new follow-up issue to keep track.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1421,7 +1421,7 @@ reveal_type(foo(f1, f2))
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:3430 on 2025-12-05 06:03</div>
-            <div class="timeline-body"><p>I don't think it has to use <code>infer_type_expression</code> but isn't <code>...</code> allowed in a few other places? I guess it's fine to special case this where required like here. I'll remove the TODO comment.</p>
+            <div class="timeline-body"><p>I don&#x27;t think it has to use <code>infer_type_expression</code> but isn&#x27;t <code>...</code> allowed in a few other places? I guess it&#x27;s fine to special case this where required like here. I&#x27;ll remove the TODO comment.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1430,7 +1430,7 @@ reveal_type(foo(f1, f2))
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:3491 on 2025-12-05 06:08</div>
-            <div class="timeline-body"><p>I'm not sure if this provides any benefit as this would be a programming error faced by the user.</p>
+            <div class="timeline-body"><p>I&#x27;m not sure if this provides any benefit as this would be a programming error faced by the user.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1448,7 +1448,7 @@ reveal_type(foo(f1, f2))
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:322 on 2025-12-05 06:11</div>
-            <div class="timeline-body"><p>Yes, I meant the former, I'll update the documentation.</p>
+            <div class="timeline-body"><p>Yes, I meant the former, I&#x27;ll update the documentation.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1457,7 +1457,7 @@ reveal_type(foo(f1, f2))
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:204 on 2025-12-05 06:33</div>
-            <div class="timeline-body"><p>Ah yes, I've extracted the common part as a nested function in this function body.</p>
+            <div class="timeline-body"><p>Ah yes, I&#x27;ve extracted the common part as a nested function in this function body.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1475,12 +1475,12 @@ reveal_type(foo(f1, f2))
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/hover.rs</code>:1 on 2025-12-05 07:17</div>
-            <div class="timeline-body"><p>And the best PR of the year award goes to 🥁 https://github.com/astral-sh/ruff/pull/21806</p>
+            <div class="timeline-body"><p>And the best PR of the year award goes to 🥁 <a href="https://github.com/astral-sh/ruff/pull/21806">astral-sh/ruff#21806</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:2729 on 2025-12-05 08:57</div>
-            <div class="timeline-body"><p>I'm not sure how would that work. The <code>VariadicArgumentType</code> is specific to <code>*args</code> but this is handling the <code>**kwargs</code> (keyword variadic). Let me see if I can think of a way to de-duplicate this, currently it's used in <code>match_variadic_argument</code>, <code>match_keyword_variadic</code> and <code>check_keyword_variadic_argument_type</code> but they have slightly different semantics. I think the keyword variadic handling can possibly be clubbed together.</p>
+            <div class="timeline-body"><p>I&#x27;m not sure how would that work. The <code>VariadicArgumentType</code> is specific to <code>*args</code> but this is handling the <code>**kwargs</code> (keyword variadic). Let me see if I can think of a way to de-duplicate this, currently it&#x27;s used in <code>match_variadic_argument</code>, <code>match_keyword_variadic</code> and <code>check_keyword_variadic_argument_type</code> but they have slightly different semantics. I think the keyword variadic handling can possibly be clubbed together.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1494,7 +1494,7 @@ reveal_type(foo(f1, f2))
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/pep695/paramspec.md</code>:566 on 2025-12-05 13:22</div>
             <div class="timeline-body"><p>Ahh, great point! I think I was getting mixed up with <code>TypeVarTuple</code>, where you of course <em>are</em> allowed to annotate something inside the class as <code>self.x: tuple[*Ts]</code> if the class as a whole is generic over a <code>TypeVarTuple</code> <code>Ts</code>.</p>
-<p>The mypy crash seems to have already been reported at https://github.com/python/mypy/issues/19839. We should definitely add tests (if you haven't already) for the (invalid) case where you attempt to annotate things inside the class with <code>self.x: P.args</code> and <code>self.y: P.kwargs</code>, so that we can make sure that we at least don't crash on that 😆</p>
+<p>The mypy crash seems to have already been reported at <a href="https://github.com/python/mypy/issues/19839">python/mypy#19839</a>. We should definitely add tests (if you haven&#x27;t already) for the (invalid) case where you attempt to annotate things inside the class with <code>self.x: P.args</code> and <code>self.y: P.kwargs</code>, so that we can make sure that we at least don&#x27;t crash on that 😆</p>
 <p>You might still be able to avoid the union-with-<code>Unknown</code> behaviour if you annotated <code>self.args</code> and <code>self.kwargs</code> as <code>Final</code>?</p>
 </div>
         </div>
@@ -1509,7 +1509,7 @@ reveal_type(foo(f1, f2))
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/legacy/paramspec.md</code>:248 on 2025-12-05 13:28</div>
-            <div class="timeline-body"><p>Huh. I find that quite surprising. Could you add a comment saying that this doesn't seem to be explicitly permitted by the spec, but we match mypy's/pyright's behaviour here for compatibility? (And also the same comment for the equivalent test in the pep695 mdtest suite)</p>
+            <div class="timeline-body"><p>Huh. I find that quite surprising. Could you add a comment saying that this doesn&#x27;t seem to be explicitly permitted by the spec, but we match mypy&#x27;s/pyright&#x27;s behaviour here for compatibility? (And also the same comment for the equivalent test in the pep695 mdtest suite)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1519,7 +1519,7 @@ reveal_type(foo(f1, f2))
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:2582 on 2025-12-05 13:39</div>
             <div class="timeline-body"><p>but I can still cunningly force ty to infer a type of <code>P.args</code> (rather than <code>P.args | Unknown</code>) if I annotate the instance variable with <code>Final</code> on your branch:</p>
-<pre><code class="language-py">from typing import Final
+<pre><code>from typing import Final
 from collections.abc import Callable
 
 class F[**P]:
@@ -1544,10 +1544,10 @@ def f[**P](a: F[P]):
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:2729 on 2025-12-05 13:52</div>
             <div class="timeline-body"><blockquote>
-<p>I'm not sure how would that work. The <code>VariadicArgumentType</code> is specific to <code>*args</code> but this is handling the <code>**kwargs</code> (keyword variadic).</p>
+<p>I&#x27;m not sure how would that work. The <code>VariadicArgumentType</code> is specific to <code>*args</code> but this is handling the <code>**kwargs</code> (keyword variadic).</p>
 </blockquote>
 <p>Ah I missed that distinction! Yeah you could theoretically have both <code>VariadicArgumentType</code> and <code>KeywordVariadicArgumentType</code>, which would possibly look very similar to each other.</p>
-<p>In general I like avoiding repeating these kinds of tests since it adds cognitive load to keep them in sync. But I'm fine if you decide not to do this, or mark it as a TODO. It's not worth doing if it will be a heavy lift — or at least not in this PR.</p>
+<p>In general I like avoiding repeating these kinds of tests since it adds cognitive load to keep them in sync. But I&#x27;m fine if you decide not to do this, or mark it as a TODO. It&#x27;s not worth doing if it will be a heavy lift — or at least not in this PR.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1566,9 +1566,9 @@ def f[**P](a: F[P]):
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/pep695/paramspec.md</code>:566 on 2025-12-05 14:49</div>
             <div class="timeline-body"><blockquote>
-<p>We should definitely add tests (if you haven't already) for the (invalid) case where you attempt to annotate things inside the class with <code>self.x: P.args</code> and <code>self.y: P.kwargs</code>, so that we can make sure that we at least don't crash on that 😆</p>
+<p>We should definitely add tests (if you haven&#x27;t already) for the (invalid) case where you attempt to annotate things inside the class with <code>self.x: P.args</code> and <code>self.y: P.kwargs</code>, so that we can make sure that we at least don&#x27;t crash on that 😆</p>
 </blockquote>
-<p>For sure, I've added the test case, we don't error right now as I've planned it for follow-up.</p>
+<p>For sure, I&#x27;ve added the test case, we don&#x27;t error right now as I&#x27;ve planned it for follow-up.</p>
 <blockquote>
 <p>You might still be able to avoid the union-with-<code>Unknown</code> behaviour if you annotated <code>self.args</code> and <code>self.kwargs</code> as <code>Final</code>?</p>
 </blockquote>
@@ -1590,7 +1590,7 @@ def f[**P](a: F[P]):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:3491 on 2025-12-05 15:04</div>
-            <div class="timeline-body"><p>That all sounds reasonable, I've changed it to use <code>assert</code></p>
+            <div class="timeline-body"><p>That all sounds reasonable, I&#x27;ve changed it to use <code>assert</code></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1608,7 +1608,7 @@ def f[**P](a: F[P]):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:2582 on 2025-12-05 15:04</div>
-            <div class="timeline-body"><p>I've added this as a test case, thanks!</p>
+            <div class="timeline-body"><p>I&#x27;ve added this as a test case, thanks!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1617,12 +1617,12 @@ def f[**P](a: F[P]):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:2729 on 2025-12-05 15:30</div>
-            <div class="timeline-body"><p>Makes sense, I'll try to take a stab at it before landing this PR but otherwise will prefer to do it as a follow-up.</p>
+            <div class="timeline-body"><p>Makes sense, I&#x27;ll try to take a stab at it before landing this PR but otherwise will prefer to do it as a follow-up.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> approved on 2025-12-05 15:30</div>
-            <div class="timeline-body"><p>❤️ I'm happy with where this is, I think we should go ahead and land this and address anything else as follow-on PRs. I can handle the merge conflict with #21551</p>
+            <div class="timeline-body"><p>❤️ I&#x27;m happy with where this is, I think we should go ahead and land this and address anything else as follow-on PRs. I can handle the merge conflict with #21551</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1631,7 +1631,7 @@ def f[**P](a: F[P]):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_ide/src/hover.rs</code>:2295 on 2025-12-05 16:22</div>
-            <div class="timeline-body"><p>I'll add a TODO comment, I'm not actually sure about this but it does make sense for this to be Contravariant, the current variance is being inferred automatically.</p>
+            <div class="timeline-body"><p>I&#x27;ll add a TODO comment, I&#x27;m not actually sure about this but it does make sense for this to be Contravariant, the current variance is being inferred automatically.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1640,7 +1640,7 @@ def f[**P](a: F[P]):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:2729 on 2025-12-05 16:23</div>
-            <div class="timeline-body"><p>I've noted this down, will do it as a follow-up instead.</p>
+            <div class="timeline-body"><p>I&#x27;ve noted this down, will do it as a follow-up instead.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1662,10 +1662,10 @@ def f[**P](a: F[P]):
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @dhruvmanila on 2025-12-05 16:30</div>
+            <div class="event">Merged by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-12-05 16:30</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dhruvmanila on 2025-12-05 16:30</div>
+            <div class="event">Closed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-12-05 16:30</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-12-05 16:30</div>
@@ -1673,7 +1673,7 @@ def f[**P](a: F[P]):
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:17:15 UTC
+        Synced at 2026-01-20 19:20:38 UTC
     </footer>
 </body>
 </html>

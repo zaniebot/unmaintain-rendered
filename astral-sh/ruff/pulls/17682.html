@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This PR adds initial support for protocol types to red-knot.</p>
 <p>Specifically, it does the following things:</p>
 <ul>
@@ -35,7 +35,7 @@
 <li>Removes the <code>KnownClass::Sized</code> variant altogether: its only purpose was to achieve the special-cased support for this protocol in red-knot.</li>
 </ul>
 <p>There is still much to be done, and many TODOs remain. The most obvious piece of outstanding work is that we still do not consider the <em>types</em> of the members declared on a protocol class when we consider whether another type is assignable to a protocol type. I.e., this assertion currently fails on this branch, when it should pass due to the fact that <code>Bar.x</code> has type <code>str</code> but <code>Foo</code> demands that inhabitants of the type must have an <code>x</code> attribute of type <code>int</code>:</p>
-<pre><code class="language-py">from typing import Protocol
+<pre><code>from typing import Protocol
 from knot_extensions import static_assert, is_assignable_to
 
 class Foo(Protocol):
@@ -47,14 +47,14 @@ class Bar:
 static_assert(not is_assignable_to(Bar, Foo))
 </code></pre>
 <p>As such, this PR gets rid of many false-positive diagnostics associated with protocols. But it comes at the cost of introducing many potential false negatives. These will be tackled in followup PRs.</p>
-<h2>Test Plan</h2>
+Test Plan
 <ul>
 <li>Existing mdtests updated</li>
 <li>New mdtests added for issues that were surfaced via mypy_primer on early versions of this branch</li>
 <li>Unit test added for the <code>Display</code> implementation of synthesized protocols</li>
-<li>Ran <code>uvx --from=./python/py-fuzzer fuzz 0-2000 --only-new-bugs  --baseline-executable=./target/main/debug/red_knot --bin=red_knot</code> to verify that this branch doesn't introduce any new panics detectable by the <code>py-fuzzer</code> script</li>
+<li>Ran <code>uvx --from=./python/py-fuzzer fuzz 0-2000 --only-new-bugs  --baseline-executable=./target/main/debug/red_knot --bin=red_knot</code> to verify that this branch doesn&#x27;t introduce any new panics detectable by the <code>py-fuzzer</code> script</li>
 <li>Ran <code>QUICKCHECK_TESTS=100000 cargo test --release -p red_knot_python_semantic -- --ignored types::property_tests::stable</code> to check that the property tests still pass<ul>
-<li>(This PR doesn't yet add the machinery to the property tests so that they would ever actually test any protocol types, so this is unsurprising. But I double-checked anyway.)</li>
+<li>(This PR doesn&#x27;t yet add the machinery to the property tests so that they would ever actually test any protocol types, so this is unsurprising. But I double-checked anyway.)</li>
 </ul>
 </li>
 <li>The mypy_primer report looks excellent: all hits appear to either be false positives going away, or pre-existing error messages changing slightly</li>
@@ -62,17 +62,17 @@ static_assert(not is_assignable_to(Bar, Foo))
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-04-28 15:00</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-28 15:00</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-28 15:03</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">packaging (https://github.com/pypa/packaging)
+Changes were detected when running on open source projects
+
+<pre><code>packaging (https://github.com/pypa/packaging)
 - error[lint:invalid-argument-type] src/packaging/metadata.py:528:43: Argument to this function is incorrect: Expected `_FormatMapMapping`, found `dict`
 - error[lint:invalid-assignment] src/packaging/version.py:478:13: Object of type `Literal[0]` is not assignable to `str | bytes | SupportsInt | None`
 - Found 29 diagnostics
@@ -490,8 +490,8 @@ typeshed-stats (https://github.com/AlexWaygood/typeshed-stats)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-28 17:51</div>
-            <div class="timeline-body"><p>Here's a minimized repro of the <code>pip</code> panic we're observing in mypy_primer:</p>
-<pre><code class="language-py">from typing import Protocol
+            <div class="timeline-body"><p>Here&#x27;s a minimized repro of the <code>pip</code> panic we&#x27;re observing in mypy_primer:</p>
+<pre><code>from typing import Protocol
 
 class A(Protocol):
     def x(self) -&gt; &quot;B | A&quot;: ...
@@ -503,31 +503,31 @@ obj = record
 if isinstance(obj, (B, A)):
     obj
 </code></pre>
-<p>EDIT: I've now fixed this panic, and added the snippet as a regression test.</p>
+<p>EDIT: I&#x27;ve now fixed this panic, and added the snippet as a regression test.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-29 15:00</div>
             <div class="timeline-body"><blockquote>
-<pre><code class="language-diff">strawberry (https://github.com/strawberry-graphql/strawberry)
+<pre><code>strawberry (https://github.com/strawberry-graphql/strawberry)
 - error[lint:invalid-argument-type] strawberry/experimental/pydantic/conversion.py:106:37: Argument to this function is incorrect: Expected `DataclassInstance | type[DataclassInstance]`, found `type`
 + error[lint:invalid-argument-type] strawberry/experimental/pydantic/conversion.py:106:37: Argument to this function is incorrect: Expected `DataclassInstance`, found `type`
 </code></pre>
 </blockquote>
-<p>This isn't a new false positive (just an error message changing slightly), but it's worth some further comment. The code is here: <a href="https://github.com/strawberry-graphql/strawberry/blob/fc1ab18a3334784e71e178de7063d4fbb90dce55/strawberry/experimental/pydantic/conversion.py#L104-L109">https://github.com/strawberry-graphql/strawberry/blob/fc1ab18a3334784e71e178de7063d4fbb90dce55/strawberry/experimental/pydantic/conversion.py#L104-L109</a>. The reason we emit the error is that <a href="https://github.com/python/typeshed/blob/12ef43c8d01032ab0991365f631f7d79a434f85a/stdlib/dataclasses.pyi#L222-L228"><code>dataclasses.is_dataclass()</code></a> returns <code>TypeIs[DataclassInstance]</code> in typeshed, where <code>DataclassInstance</code> is a protocol. If we understood <code>TypeIs</code>, we'd narrow the type in that branch to one that is assignable to the function parameter's annotation, and the error would go away.</p>
+<p>This isn&#x27;t a new false positive (just an error message changing slightly), but it&#x27;s worth some further comment. The code is here: <a href="https://github.com/strawberry-graphql/strawberry/blob/fc1ab18a3334784e71e178de7063d4fbb90dce55/strawberry/experimental/pydantic/conversion.py#L104-L109">https://github.com/strawberry-graphql/strawberry/blob/fc1ab18a3334784e71e178de7063d4fbb90dce55/strawberry/experimental/pydantic/conversion.py#L104-L109</a>. The reason we emit the error is that <a href="https://github.com/python/typeshed/blob/12ef43c8d01032ab0991365f631f7d79a434f85a/stdlib/dataclasses.pyi#L222-L228"><code>dataclasses.is_dataclass()</code></a> returns <code>TypeIs[DataclassInstance]</code> in typeshed, where <code>DataclassInstance</code> is a protocol. If we understood <code>TypeIs</code>, we&#x27;d narrow the type in that branch to one that is assignable to the function parameter&#x27;s annotation, and the error would go away.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @AlexWaygood on 2025-04-29 15:24</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-29 15:24</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-04-29 15:24</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-29 15:24</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-04-29 15:24</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-29 15:24</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-04-29 15:24</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-29 15:24</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-29 15:29</div>
@@ -536,32 +536,32 @@ if isinstance(obj, (B, A)):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-29 16:30</div>
-            <div class="timeline-body"><p>I spotted this line in the mypy_primer logs (it didn't make it into the comment posted by the bot):</p>
-<pre><code class="language-diff">- error[lint:invalid-argument-type] zerver/tests/test_decorators.py:1609:25: Argument to this function is incorrect: Expected `_GetResponseCallable | _AsyncGetResponseCallable`, found `(request) -&gt; Unknown`
+            <div class="timeline-body"><p>I spotted this line in the mypy_primer logs (it didn&#x27;t make it into the comment posted by the bot):</p>
+<pre><code>- error[lint:invalid-argument-type] zerver/tests/test_decorators.py:1609:25: Argument to this function is incorrect: Expected `_GetResponseCallable | _AsyncGetResponseCallable`, found `(request) -&gt; Unknown`
 + error[lint:invalid-argument-type] zerver/tests/test_decorators.py:1609:25: Argument to this function is incorrect: Expected `_GetResponseCallable`, found `(request) -&gt; Unknown`
 </code></pre>
-<p>It's again not a <em>new</em> false positive, but it deserves comment for why the existing false positive isn't going away. We don't yet understand any <code>Callable</code> types as being assignable to any <code>Protocol</code> types, and the reason for this is that we don't yet understand that all <code>Callable</code> types necessarily have a <code>__call__</code> method. (https://playknot.ruff.rs/f45263ee-cb36-4bce-8273-bd71d0543e84).</p>
-<p>I haven't addressed this in my PR, as:</p>
+<p>It&#x27;s again not a <em>new</em> false positive, but it deserves comment for why the existing false positive isn&#x27;t going away. We don&#x27;t yet understand any <code>Callable</code> types as being assignable to any <code>Protocol</code> types, and the reason for this is that we don&#x27;t yet understand that all <code>Callable</code> types necessarily have a <code>__call__</code> method. (https://playknot.ruff.rs/f45263ee-cb36-4bce-8273-bd71d0543e84).</p>
+<p>I haven&#x27;t addressed this in my PR, as:</p>
 <ul>
-<li>It's not a regression in this PR, just something that isn't fixed by this PR</li>
-<li>The false positive would be fixed naturally if we modeled <code>Callable</code> types as synthesized protocols with a single method member (<code>__call__</code>) rather than a separate <code>Type</code> variant, and this is something I'd like to experiment with once our support for protocols is further along.</li>
+<li>It&#x27;s not a regression in this PR, just something that isn&#x27;t fixed by this PR</li>
+<li>The false positive would be fixed naturally if we modeled <code>Callable</code> types as synthesized protocols with a single method member (<code>__call__</code>) rather than a separate <code>Type</code> variant, and this is something I&#x27;d like to experiment with once our support for protocols is further along.</li>
 </ul>
-<p>I added failing tests for this outstanding issue in https://github.com/astral-sh/ruff/pull/17682/commits/6609ecc73aaf262c307d44b5e8d8d354242bb67b.</p>
+<p>I added failing tests for this outstanding issue in <a href="https://github.com/astral-sh/ruff/pull/17682">astral-sh/ruff#17682</a>/commits/6609ecc73aaf262c307d44b5e8d8d354242bb67b.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/protocols.md</code>:233 on 2025-04-29 23:43</div>
-            <div class="timeline-body"><p>Is this just cleaning up an unnecessary annotation that doesn't add anything to the test, or is it significant somehow?</p>
+            <div class="timeline-body"><p>Is this just cleaning up an unnecessary annotation that doesn&#x27;t add anything to the test, or is it significant somehow?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/class.rs</code>:539 on 2025-04-29 23:48</div>
-            <div class="timeline-body"><p>This comment looks maybe out of date? I don't see any hardcoding knowledge about certain special-cased classes here.</p>
+            <div class="timeline-body"><p>This comment looks maybe out of date? I don&#x27;t see any hardcoding knowledge about certain special-cased classes here.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/class.rs</code>:555 on 2025-04-29 23:49</div>
-            <div class="timeline-body"><p>I realize it's not new in this PR, but I think the <code>.rev().take(3)</code> deserves a comment.</p>
+            <div class="timeline-body"><p>I realize it&#x27;s not new in this PR, but I think the <code>.rev().take(3)</code> deserves a comment.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -576,7 +576,7 @@ if isinstance(obj, (B, A)):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1183 on 2025-04-30 00:39</div>
-            <div class="timeline-body"><p>It's not totally clear to me what change this TODO is suggesting, since it seems like Protocol being a subtype of Callable is already handled two arms above?</p>
+            <div class="timeline-body"><p>It&#x27;s not totally clear to me what change this TODO is suggesting, since it seems like Protocol being a subtype of Callable is already handled two arms above?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -606,7 +606,7 @@ if isinstance(obj, (B, A)):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/protocols.md</code>:999 on 2025-04-30 00:51</div>
-            <div class="timeline-body"><p>Weren't these correctly failing before, and are wrongly passing now? Should there be a TODO comment here?</p>
+            <div class="timeline-body"><p>Weren&#x27;t these correctly failing before, and are wrongly passing now? Should there be a TODO comment here?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -640,14 +640,14 @@ if isinstance(obj, (B, A)):
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:493 on 2025-04-30 10:05</div>
             <div class="timeline-body"><p>Sorry about that :-(</p>
-<p>It didn't feel to me like the change made sense as a standalone PR; the renaming is only a logical change in the context of us adding a new <code>Instance</code> variant alongside <code>NominalInstance</code>. And it wasn't clear to me that adding a new variant would work out well until this branch was finally compiling and panic-free.</p>
-<p>I originally planned to try to keep a clean commit history with this PR branch (the renaming change is its own commit on this branch) so that it could be reviewed commit-by-commit. But the commit history on this branch ended up getting pretty messy due to playing Salsa-panic-whackamole over the last few days. I probably should have spent a bit longer cleaning up the commit history before moving it out of draft mode, but I've already had to fix merge conflicts several times due to the size of the branch, so I (selfishly) just wanted to open it up for review as soon as it was panic-free.</p>
+<p>It didn&#x27;t feel to me like the change made sense as a standalone PR; the renaming is only a logical change in the context of us adding a new <code>Instance</code> variant alongside <code>NominalInstance</code>. And it wasn&#x27;t clear to me that adding a new variant would work out well until this branch was finally compiling and panic-free.</p>
+<p>I originally planned to try to keep a clean commit history with this PR branch (the renaming change is its own commit on this branch) so that it could be reviewed commit-by-commit. But the commit history on this branch ended up getting pretty messy due to playing Salsa-panic-whackamole over the last few days. I probably should have spent a bit longer cleaning up the commit history before moving it out of draft mode, but I&#x27;ve already had to fix merge conflicts several times due to the size of the branch, so I (selfishly) just wanted to open it up for review as soon as it was panic-free.</p>
 <p>Will try to do better next time!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1183 on 2025-04-30 10:07</div>
-            <div class="timeline-body"><p>Oops, yes -- good catch! I originally planned to defer this to a followup PR, but mypy_primer highlighted several places where the PR was <em>introducing</em> false positives due to protocols never being considered subtypes of Callable types. So I ended up just implementing it as part of this PR, since it's not too hard to do anyway. I'll get rid of the TODO.</p>
+            <div class="timeline-body"><p>Oops, yes -- good catch! I originally planned to defer this to a followup PR, but mypy_primer highlighted several places where the PR was <em>introducing</em> false positives due to protocols never being considered subtypes of Callable types. So I ended up just implementing it as part of this PR, since it&#x27;s not too hard to do anyway. I&#x27;ll get rid of the TODO.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -660,20 +660,20 @@ if isinstance(obj, (B, A)):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1514 on 2025-04-30 10:08</div>
-            <div class="timeline-body"><p>Yes! For now I'll just add a TODO to the doc-comment for <code>satisfies_protocol()</code>. There'll need to be lots of changes (which I plan to make incrementally) when we start considering the types of the protocol members.</p>
+            <div class="timeline-body"><p>Yes! For now I&#x27;ll just add a TODO to the doc-comment for <code>satisfies_protocol()</code>. There&#x27;ll need to be lots of changes (which I plan to make incrementally) when we start considering the types of the protocol members.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/class.rs</code>:539 on 2025-04-30 10:11</div>
-            <div class="timeline-body"><p>It's not out of date, but it's perhaps unclear. The very existence of the <code>KnownClass::is_protocol</code> method hardcodes knowledge about certain special-cased classes (and we rely on that hardcoded knowledge in this method by calling <code>KnownClass::is_protocol</code>). In the (albeit very unlikely!) event that typeshed changes the definition of <code>str</code> tomorrow to make it a protocol class, we won't automatically understand that change, because we don't iterate over the bases at all for any of our <code>KnownClass</code>es.</p>
+            <div class="timeline-body"><p>It&#x27;s not out of date, but it&#x27;s perhaps unclear. The very existence of the <code>KnownClass::is_protocol</code> method hardcodes knowledge about certain special-cased classes (and we rely on that hardcoded knowledge in this method by calling <code>KnownClass::is_protocol</code>). In the (albeit very unlikely!) event that typeshed changes the definition of <code>str</code> tomorrow to make it a protocol class, we won&#x27;t automatically understand that change, because we don&#x27;t iterate over the bases at all for any of our <code>KnownClass</code>es.</p>
 <p>I think harcoding this knowledge about certain classes is justified because:</p>
 <ul>
-<li>It's honestly very unlikely that any of these <code>KnownClass</code>es will change from being a protocol class to being a non-protocol class (or vice versa)</li>
+<li>It&#x27;s honestly very unlikely that any of these <code>KnownClass</code>es will change from being a protocol class to being a non-protocol class (or vice versa)</li>
 <li>It avoids lots of Salsa cycles that were causing panics on early versions of this branch!</li>
-<li>It's probably better for performance</li>
+<li>It&#x27;s probably better for performance</li>
 </ul>
-<p>But it's still somewhat ugly to me that we have to have the <code>KnownClass::is_protocol</code> method at all -- I'd prefer for us to just use the generalised logic for all classes.</p>
-<p>I'll update the comment to make it clearer.</p>
+<p>But it&#x27;s still somewhat ugly to me that we have to have the <code>KnownClass::is_protocol</code> method at all -- I&#x27;d prefer for us to just use the generalised logic for all classes.</p>
+<p>I&#x27;ll update the comment to make it clearer.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -689,7 +689,7 @@ if isinstance(obj, (B, A)):
             <div class="timeline-body"><blockquote>
 <p>Is it generally invariant that we only order normalized types?</p>
 </blockquote>
-<p>Yes. It doesn't really make sense to order a non-normalized <code>UnionType</code>, for example, because it might contain intersections that are not ordered (or Tuples that contain unions that are not ordered, or tuples that contain unions that contain intersections that are not ordered... you get my drift :-).</p>
+<p>Yes. It doesn&#x27;t really make sense to order a non-normalized <code>UnionType</code>, for example, because it might contain intersections that are not ordered (or Tuples that contain unions that are not ordered, or tuples that contain unions that contain intersections that are not ordered... you get my drift :-).</p>
 <blockquote>
 <p>Is there a more general way we should enforce/check that invariant?</p>
 </blockquote>
@@ -702,7 +702,7 @@ if isinstance(obj, (B, A)):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/type_ordering.rs</code>:138 on 2025-04-30 10:47</div>
-            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/17734 (I've rebased this PR on top of that one, and I've got rid of the new <code>debug_assert_eq!</code>s here)</p>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/17734 (I&#x27;ve rebased this PR on top of that one, and I&#x27;ve got rid of the new <code>debug_assert_eq!</code>s here)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -715,17 +715,17 @@ if isinstance(obj, (B, A)):
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @AlexWaygood on 2025-04-30 11:03</div>
+            <div class="event">Merged by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-30 11:03</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-04-30 11:03</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-30 11:03</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-04-30 11:03</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:493 on 2025-04-30 14:37</div>
-            <div class="timeline-body"><p>No worries, just a thought! Since you raised the question, I think the multi-PR sequencing that I was imagining is that when you had the idea that maybe we should rename <code>Instance</code> to <code>NominalInstance</code> if we add <code>ProtocolInstance</code>, there's still really no pressing need to do that rename right away. Having both <code>Instance</code> and <code>ProtocolInstance</code> is maybe confusing (though I think tbh it would probably be fine even if left that way) but otherwise not a problem. So it could be left to a later follow-up.</p>
+            <div class="timeline-body"><p>No worries, just a thought! Since you raised the question, I think the multi-PR sequencing that I was imagining is that when you had the idea that maybe we should rename <code>Instance</code> to <code>NominalInstance</code> if we add <code>ProtocolInstance</code>, there&#x27;s still really no pressing need to do that rename right away. Having both <code>Instance</code> and <code>ProtocolInstance</code> is maybe confusing (though I think tbh it would probably be fine even if left that way) but otherwise not a problem. So it could be left to a later follow-up.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -740,7 +740,7 @@ if isinstance(obj, (B, A)):
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:11:59 UTC
+        Synced at 2026-01-20 19:13:47 UTC
     </footer>
 </body>
 </html>

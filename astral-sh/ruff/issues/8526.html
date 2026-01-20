@@ -23,21 +23,12 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/njzjz">@njzjz</a></div>
-            <div class="timeline-body"><!--
-Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
-
-If you're filing a bug report, please consider including the following information:
-
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
-* The current Ruff settings (any relevant sections from your `pyproject.toml`).
-* The current Ruff version (`ruff --version`).
--->
+            <div class="timeline-body">
 
 <p>This is the previous Jupyter Notebook file, and it had no lint errors with ruff v0.1.3.</p>
-<p><img src="https://github.com/astral-sh/ruff/assets/9496702/1556ef28-1846-45df-a330-6eddf9b89bdd" alt="image" /></p>
-<p>When ruff was upgraded to v0.1.4 (https://github.com/deepmodeling/dpdata/pull/573/), <code>import dpdata</code> got removed,</p>
-<p><img src="https://github.com/astral-sh/ruff/assets/9496702/b4ab9a90-c366-4418-8dbf-972d1c08ba0b" alt="image" /></p>
+<p><img src="https://github.com/astral-sh/ruff/assets/9496702/1556ef28-1846-45df-a330-6eddf9b89bdd" alt="image"></p>
+<p>When ruff was upgraded to v0.1.4 (<a href="https://github.com/deepmodeling/dpdata/pull/573">deepmodeling/dpdata#573</a>/), <code>import dpdata</code> got removed,</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/9496702/b4ab9a90-c366-4418-8dbf-972d1c08ba0b" alt="image"></p>
 <p>Besides, F821 was complained:</p>
 <pre><code>ruff.....................................................................Failed
 - hook id: ruff
@@ -48,22 +39,22 @@ docs/nb/try_dpdata.ipynb:cell 5:1:1: F821 Undefined name `system`
 docs/nb/try_dpdata.ipynb:cell 6:1:1: F821 Undefined name `system`
 Found 3 errors.
 </code></pre>
-<p>It's obvious that ruff doesn't consider variables in the other cells.</p>
+<p>It&#x27;s obvious that ruff doesn&#x27;t consider variables in the other cells.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2023-11-06 20:25</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-06 20:25</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-06 20:25</div>
-            <div class="timeline-body"><p>In this case, it's because <code>system</code> is a Jupyter magic which can be used as an automagic. In Jupyter, you can do <code>system ls</code> in a cell (without any percent signs), and it will treat the command as an <code>ls</code>. We started ignoring cells that look like automagics, because it can be hard (impossible) to understand their behavior, since Jupyter will actually treat them differently depending on what other variables are defined, i.e., the order in which you run your cells.</p>
-<p>If you use any other variable name, it will work as expected, but we'll consider how to make this more targeted.</p>
+            <div class="timeline-body"><p>In this case, it&#x27;s because <code>system</code> is a Jupyter magic which can be used as an automagic. In Jupyter, you can do <code>system ls</code> in a cell (without any percent signs), and it will treat the command as an <code>ls</code>. We started ignoring cells that look like automagics, because it can be hard (impossible) to understand their behavior, since Jupyter will actually treat them differently depending on what other variables are defined, i.e., the order in which you run your cells.</p>
+<p>If you use any other variable name, it will work as expected, but we&#x27;ll consider how to make this more targeted.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-06 20:27</div>
-            <div class="timeline-body"><p>That explanation is probably unclear, here's an image that demonstrates what I'm describing -- the first and third cells are identical, but their behaviors entirely depend on the other of execution:</p>
-<img width="395" alt="Screen Shot 2023-11-06 at 3 26 41 PM" src="https://github.com/astral-sh/ruff/assets/1309177/eaa61200-9239-468d-a52f-ff384731b606">
+            <div class="timeline-body"><p>That explanation is probably unclear, here&#x27;s an image that demonstrates what I&#x27;m describing -- the first and third cells are identical, but their behaviors entirely depend on the other of execution:</p>
+<img alt="Screen Shot 2023-11-06 at 3 26 41 PM" src="https://github.com/astral-sh/ruff/assets/1309177/eaa61200-9239-468d-a52f-ff384731b606">
 
 </div>
         </div>
@@ -76,22 +67,22 @@ Found 3 errors.
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-11-07 13:30</div>
             <div class="timeline-body"><p>Yeah, this is tricky. We could implement the simple solution that we discussed earlier about having support for only <code>pip</code> but then the same problem would appear.</p>
 <p>The far fetched solution would be to not ignore such cells and perform some semantic analysis on the parsed code but then it could potentially raise a syntax error (<code>cd ..</code>). For any potential automagic command, the semantic model would probably check if the identifier (<code>system</code>, <code>cd</code>, etc.) is already defined in the scope. If it is, continue as Python code otherwise continue as an automagic.</p>
-<p>I'd actually want to spend some time figuring out how IPython does it as it could lead to some insights.</p>
+<p>I&#x27;d actually want to spend some time figuring out how IPython does it as it could lead to some insights.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-11-07 13:58</div>
             <div class="timeline-body"><p>So, IPython is doing exactly that: https://github.com/ipython/ipython/blob/de97f0032dd96e0109780396e9219e8d73073e29/IPython/core/prefilter.py#L428-L467</p>
-<p>For something like <code>pwd = &quot;foo&quot;</code>, the <code>AssignmentChecker</code> will run it normally as Python code and then for any other usage of <code>pwd</code>, the <code>AutoMagicChecker</code> checks if it's shadowed or not and runs it as a magic command accordingly.</p>
+<p>For something like <code>pwd = &quot;foo&quot;</code>, the <code>AssignmentChecker</code> will run it normally as Python code and then for any other usage of <code>pwd</code>, the <code>AutoMagicChecker</code> checks if it&#x27;s shadowed or not and runs it as a magic command accordingly.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-07 15:37</div>
-            <div class="timeline-body"><p>Hmm yeah. We could apply some similar heuristics though they'd need to be more expansive... We could also try parsing, then fallback to automagic if the code doesn't parse, but that will also be wrong in some cases. I'd just really like to avoid doing semantic analysis on the code block to understand how to parse it.</p>
+            <div class="timeline-body"><p>Hmm yeah. We could apply some similar heuristics though they&#x27;d need to be more expansive... We could also try parsing, then fallback to automagic if the code doesn&#x27;t parse, but that will also be wrong in some cases. I&#x27;d just really like to avoid doing semantic analysis on the code block to understand how to parse it.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "jupyter: ruff v0.1.4 doesn't consider variables in the other cells" to "jupyter: ruff v0.1.4 ignores variables with the same name as magic commands" by @njzjz on 2023-11-08 18:28</div>
+            <div class="event">Renamed from &quot;jupyter: ruff v0.1.4 doesn&#x27;t consider variables in the other cells&quot; to &quot;jupyter: ruff v0.1.4 ignores variables with the same name as magic commands&quot; by <a href="https://github.com/njzjz">@njzjz</a> on 2023-11-08 18:28</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-26 16:41</div>
@@ -99,15 +90,15 @@ Found 3 errors.
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-01-26 16:41</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-26 16:41</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-01-29 12:55</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-29 12:55</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:48:56 UTC
+        Synced at 2026-01-20 18:48:45 UTC
     </footer>
 </body>
 </html>

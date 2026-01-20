@@ -26,17 +26,17 @@
             <div class="timeline-body"><p>This is with <code>ruff==0.0.155</code></p>
 <p>I tried to drill it down to a simpler example but it did not happen there. Can you try to run ruff with <code>RET508</code> enabled on <a href="https://github.com/rotki/rotki/blob/a916d692cd1cc6210370ffb38278a4ecec1b2829/rotkehlchen/tests/api/test_async.py">this file</a>, like
 <code>ruff rotkehlchen/tests/api/test_async.py </code></p>
-<p>It's returning</p>
+<p>It&#x27;s returning</p>
 <pre><code>rotkehlchen/tests/api/test_async.py:75:13: RET508 Unnecessary `else` after `break` statement
 rotkehlchen/tests/api/test_async.py:137:9: RET508 Unnecessary `else` after `break` statement
 </code></pre>
 <p>Which I am confused how it makes sense.</p>
-<p>If we remove the else and put the Assertion (or any other code) after the <code>if/elif</code> the resulting code won't be the same.</p>
+<p>If we remove the else and put the Assertion (or any other code) after the <code>if/elif</code> the resulting code won&#x27;t be the same.</p>
 <p>I got similar questionable results with the other RET codes btw.</p>
 <p>Also a question on pyproject toml. I have ended up with somethine like:</p>
 <pre><code>select = [&quot;E&quot;, &quot;F&quot;, &quot;W&quot;, &quot;C&quot;, &quot;N&quot;, &quot;B&quot;, &quot;T&quot;, &quot;UP&quot;, &quot;YTT&quot;, &quot;C4&quot;, &quot;T10&quot;, &quot;T201&quot;]
 </code></pre>
-<p>Isn't <code>T</code> a superset of <code>T201</code> and <code>T210</code>? So I can omit those? Same for <code>C4</code> and <code>C</code>?</p>
+<p>Isn&#x27;t <code>T</code> a superset of <code>T201</code> and <code>T210</code>? So I can omit those? Same for <code>C4</code> and <code>C</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -67,42 +67,42 @@ rotkehlchen/tests/api/test_async.py:137:9: RET508 Unnecessary `else` after `brea
 <p>rotkehlchen/tests/api/test_async.py:75:13: RET508 Unnecessary <code>else</code> after <code>break</code> statement</p>
 </blockquote>
 <p>I think the idea here is that the code, as written, is:</p>
-<pre><code class="language-py">while True:
+<pre><code>while True:
     # and now query for the task result and assert on it
     response = requests.get(
         api_url_for(server, &quot;specific_async_tasks_resource&quot;, task_id=task_id),
     )
     assert_proper_response(response)
     json_data = response.json()
-    if json_data['result']['status'] == 'pending':
+    if json_data[&#x27;result&#x27;][&#x27;status&#x27;] == &#x27;pending&#x27;:
         # context switch so that the greenlet to query balances can operate
         gevent.sleep(1)
-    elif json_data['result']['status'] == 'completed':
+    elif json_data[&#x27;result&#x27;][&#x27;status&#x27;] == &#x27;completed&#x27;:
         break
     else:
-        raise AssertionError(f&quot;Unexpected status: {json_data['result']['status']}&quot;)
+        raise AssertionError(f&quot;Unexpected status: {json_data[&#x27;result&#x27;][&#x27;status&#x27;]}&quot;)
 </code></pre>
 <p>But this is equivalent to the following:</p>
-<pre><code class="language-py">while True:
+<pre><code>while True:
     # and now query for the task result and assert on it
     response = requests.get(
         api_url_for(server, &quot;specific_async_tasks_resource&quot;, task_id=task_id),
     )
     assert_proper_response(response)
     json_data = response.json()
-    if json_data['result']['status'] == 'pending':
+    if json_data[&#x27;result&#x27;][&#x27;status&#x27;] == &#x27;pending&#x27;:
         # context switch so that the greenlet to query balances can operate
         gevent.sleep(1)
-    elif json_data['result']['status'] == 'completed':
+    elif json_data[&#x27;result&#x27;][&#x27;status&#x27;] == &#x27;completed&#x27;:
         break    
-    raise AssertionError(f&quot;Unexpected status: {json_data['result']['status']}&quot;)
+    raise AssertionError(f&quot;Unexpected status: {json_data[&#x27;result&#x27;][&#x27;status&#x27;]}&quot;)
 </code></pre>
 <p>...since this will only ever be reached if the <code>elif</code> evaluates to <code>False</code>.</p>
 <p>So I think the check is right, based on a very cursory look, but whether you want to enforce those rules is maybe a different question :)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2022-12-05 17:08</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-05 17:08</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/LefterisJP">@LefterisJP</a> on 2022-12-09 19:19</div>
@@ -111,35 +111,35 @@ rotkehlchen/tests/api/test_async.py:137:9: RET508 Unnecessary `else` after `brea
 <p>rotkehlchen/tests/api/test_async.py:75:13: RET508 Unnecessary <code>else</code> after <code>break</code> statement</p>
 </blockquote>
 <p>I think the idea here is that the code, as written, is:</p>
-<pre><code class="language-python">while True:
+<pre><code>while True:
     # and now query for the task result and assert on it
     response = requests.get(
         api_url_for(server, &quot;specific_async_tasks_resource&quot;, task_id=task_id),
     )
     assert_proper_response(response)
     json_data = response.json()
-    if json_data['result']['status'] == 'pending':
+    if json_data[&#x27;result&#x27;][&#x27;status&#x27;] == &#x27;pending&#x27;:
         # context switch so that the greenlet to query balances can operate
         gevent.sleep(1)
-    elif json_data['result']['status'] == 'completed':
+    elif json_data[&#x27;result&#x27;][&#x27;status&#x27;] == &#x27;completed&#x27;:
         break
     else:
-        raise AssertionError(f&quot;Unexpected status: {json_data['result']['status']}&quot;)
+        raise AssertionError(f&quot;Unexpected status: {json_data[&#x27;result&#x27;][&#x27;status&#x27;]}&quot;)
 </code></pre>
 <p>But this is equivalent to the following:</p>
-<pre><code class="language-python">while True:
+<pre><code>while True:
     # and now query for the task result and assert on it
     response = requests.get(
         api_url_for(server, &quot;specific_async_tasks_resource&quot;, task_id=task_id),
     )
     assert_proper_response(response)
     json_data = response.json()
-    if json_data['result']['status'] == 'pending':
+    if json_data[&#x27;result&#x27;][&#x27;status&#x27;] == &#x27;pending&#x27;:
         # context switch so that the greenlet to query balances can operate
         gevent.sleep(1)
-    elif json_data['result']['status'] == 'completed':
+    elif json_data[&#x27;result&#x27;][&#x27;status&#x27;] == &#x27;completed&#x27;:
         break    
-    raise AssertionError(f&quot;Unexpected status: {json_data['result']['status']}&quot;)
+    raise AssertionError(f&quot;Unexpected status: {json_data[&#x27;result&#x27;][&#x27;status&#x27;]}&quot;)
 </code></pre>
 <p>...since this will only ever be reached if the <code>elif</code> evaluates to <code>False</code>.</p>
 <p>So I think the check is right, based on a very cursory look, but whether you want to enforce those rules is maybe a different question :)</p>
@@ -155,18 +155,18 @@ rotkehlchen/tests/api/test_async.py:137:9: RET508 Unnecessary `else` after `brea
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/actionless">@actionless</a> on 2022-12-09 23:31</div>
             <div class="timeline-body"><p>i made a simpler example for reproducing this bug:</p>
-<pre><code class="language-python">def func(arg1: int) -&gt; None:
+<pre><code>def func(arg1: int) -&gt; None:
     for i in range(2):
         if arg1 == i:
             if arg1 == 1:
                 break
-            print(&quot;don't break&quot;)
+            print(&quot;don&#x27;t break&quot;)
         elif arg1 == 2:
             break
         else:
-            print('else')
+            print(&#x27;else&#x27;)
 </code></pre>
-<pre><code class="language-console">$ ruff test_ruff_ret_508.py
+<pre><code>$ ruff test_ruff_ret_508.py
 Found 1 error(s).
 test_ruff_ret_508.py:7:9: RET508 Unnecessary `else` after `break` statement
 </code></pre>
@@ -178,38 +178,38 @@ test_ruff_ret_508.py:7:9: RET508 Unnecessary `else` after `break` statement
 <p>No worries at all, it’s a hard one to reason about.</p>
 </blockquote>
 <p>Hey I took another stab at this @charliermarsh, by activating the <code>RET</code> module again and I think that what you posted above (and  have 2-3 similar false positives in our repo for) is after all incorrect -- or I am totally asleep.</p>
-<h3>Original Code</h3>
-<pre><code class="language-python">while True:
+Original Code
+<pre><code>while True:
     # and now query for the task result and assert on it
     response = requests.get(
         api_url_for(server, &quot;specific_async_tasks_resource&quot;, task_id=task_id),
     )
     assert_proper_response(response)
     json_data = response.json()
-    if json_data['result']['status'] == 'pending':
+    if json_data[&#x27;result&#x27;][&#x27;status&#x27;] == &#x27;pending&#x27;:
         # context switch so that the greenlet to query balances can operate
         gevent.sleep(1)
-    elif json_data['result']['status'] == 'completed':
+    elif json_data[&#x27;result&#x27;][&#x27;status&#x27;] == &#x27;completed&#x27;:
         break
     else:
-        raise AssertionError(f&quot;Unexpected status: {json_data['result']['status']}&quot;)
+        raise AssertionError(f&quot;Unexpected status: {json_data[&#x27;result&#x27;][&#x27;status&#x27;]}&quot;)
 </code></pre>
-<h3>Code you posted as equivalent due to the linting warning</h3>
-<pre><code class="language-python">while True:
+Code you posted as equivalent due to the linting warning
+<pre><code>while True:
     # and now query for the task result and assert on it
     response = requests.get(
         api_url_for(server, &quot;specific_async_tasks_resource&quot;, task_id=task_id),
     )
     assert_proper_response(response)
     json_data = response.json()
-    if json_data['result']['status'] == 'pending':
+    if json_data[&#x27;result&#x27;][&#x27;status&#x27;] == &#x27;pending&#x27;:
         # context switch so that the greenlet to query balances can operate
         gevent.sleep(1)
-    elif json_data['result']['status'] == 'completed':
+    elif json_data[&#x27;result&#x27;][&#x27;status&#x27;] == &#x27;completed&#x27;:
         break    
-    raise AssertionError(f&quot;Unexpected status: {json_data['result']['status']}&quot;)
+    raise AssertionError(f&quot;Unexpected status: {json_data[&#x27;result&#x27;][&#x27;status&#x27;]}&quot;)
 </code></pre>
-<p>The problem here is that it's not equivalent in the first if condition being <code>True</code>. So <code>if json_data['result']['status'] == 'pending':</code>.</p>
+<p>The problem here is that it&#x27;s not equivalent in the first if condition being <code>True</code>. So <code>if json_data[&#x27;result&#x27;][&#x27;status&#x27;] == &#x27;pending&#x27;:</code>.</p>
 <p>The original code will wait for 1 second (<code>gevent.sleep()</code>), and then continue after the code.</p>
 <p>The modified as equivalent code will wait for 1 second then get out of the if/elif and hit the assertion.</p>
 </div>
@@ -225,20 +225,20 @@ test_ruff_ret_508.py:7:9: RET508 Unnecessary `else` after `break` statement
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @charliermarsh on 2022-12-11 23:20</div>
+            <div class="event">Reopened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-11 23:20</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/LefterisJP">@LefterisJP</a> on 2022-12-11 23:26</div>
             <div class="timeline-body"><p>The problem is with the following.</p>
 <p>RET505, RET506, RET507, RET508</p>
 <p>Simple program to reproduce them all</p>
-<pre><code class="language-python">def foo(a: int) -&gt; int:
+<pre><code>def foo(a: int) -&gt; int:
     if a == 1:
         result = 2
     elif a == 3:
         raise ValueError()
     else:
-        raise AssertionError('Evil')
+        raise AssertionError(&#x27;Evil&#x27;)
 
     return result
 
@@ -249,7 +249,7 @@ def foo2(a: int) -&gt; int:
         elif a == 3:
             break
         else:
-            raise AssertionError('Evil')
+            raise AssertionError(&#x27;Evil&#x27;)
 
         return result
 
@@ -259,7 +259,7 @@ def foo3(a: int) -&gt; int:
     elif a == 2:
         return 42
     else:
-        raise AssertionError('Evil')
+        raise AssertionError(&#x27;Evil&#x27;)
 
     return result
 
@@ -270,18 +270,18 @@ def foo4(a: int) -&gt; int:
         elif a == 3:
             continue
         else:
-            raise AssertionError('Evil')
+            raise AssertionError(&#x27;Evil&#x27;)
 
         return result
 </code></pre>
-<p>Seems to only happen for indented code. So if it's inside a function. If it's in the global space it does not happen.</p>
-<pre><code class="language-python">var = 1
+<p>Seems to only happen for indented code. So if it&#x27;s inside a function. If it&#x27;s in the global space it does not happen.</p>
+<pre><code>var = 1
 if var == 1:
     var_result = 2
 elif var == 3:
     raise ValueError()
 else:
-    raise AssertionError('Evil')
+    raise AssertionError(&#x27;Evil&#x27;)
 
 print(var)
 </code></pre>
@@ -293,19 +293,19 @@ print(var)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2022-12-12 00:54</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-12 00:54</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2022-12-12 00:54</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-12 00:54</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-12 01:08</div>
-            <div class="timeline-body"><p><code>flake8-return</code> seems to have the same behavior (not that it's correct).</p>
+            <div class="timeline-body"><p><code>flake8-return</code> seems to have the same behavior (not that it&#x27;s correct).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-12 01:15</div>
-            <div class="timeline-body"><p>I'm considering just disabling this for <code>elif</code> for now. It's pretty hard to reason about.</p>
+            <div class="timeline-body"><p>I&#x27;m considering just disabling this for <code>elif</code> for now. It&#x27;s pretty hard to reason about.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -315,25 +315,25 @@ print(var)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-12 03:38</div>
-            <div class="timeline-body"><p>I can change it to only operate on simple <code>if-else</code> blocks (no <code>elif</code>), but I'm guessing that the plugin wants you to change...</p>
-<pre><code class="language-py">def foo(a: int) -&gt; int:
+            <div class="timeline-body"><p>I can change it to only operate on simple <code>if-else</code> blocks (no <code>elif</code>), but I&#x27;m guessing that the plugin wants you to change...</p>
+<pre><code>def foo(a: int) -&gt; int:
     if a == 1:
         result = 2
     elif a == 3:
         raise ValueError()
     else:
-        raise AssertionError('Evil')
+        raise AssertionError(&#x27;Evil&#x27;)
 
     return result
 </code></pre>
 <p>...to...</p>
-<pre><code class="language-py">def foo(a: int) -&gt; int:
+<pre><code>def foo(a: int) -&gt; int:
     if a == 1:
         result = 2
     else:
         if a == 3:
             raise ValueError()
-        raise AssertionError('Evil')
+        raise AssertionError(&#x27;Evil&#x27;)
 
     return result
 </code></pre>
@@ -342,23 +342,23 @@ print(var)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/LefterisJP">@LefterisJP</a> on 2022-12-12 16:31</div>
-            <div class="timeline-body"><p>In any case such a suggestion is bad as it's not an improvement in anyway. I could swear I have a flake8 or other tool with similar~ish suggestions for no else after break or raise. But as you can see these ones seem to be wrong.</p>
+            <div class="timeline-body"><p>In any case such a suggestion is bad as it&#x27;s not an improvement in anyway. I could swear I have a flake8 or other tool with similar~ish suggestions for no else after break or raise. But as you can see these ones seem to be wrong.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2023-02-09 15:52</div>
-            <div class="timeline-body"><p>PyLint's handling of this is much better, FWIW. I don't think I've ever had a false positive from PyLint's else after control flow checks.</p>
+            <div class="timeline-body"><p>PyLint&#x27;s handling of this is much better, FWIW. I don&#x27;t think I&#x27;ve ever had a false positive from PyLint&#x27;s else after control flow checks.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-02-14 02:51</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-14 02:51</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/doolio">@doolio</a> on 2023-11-04 23:20</div>
-            <div class="timeline-body"><p>I'm hitting this error (RET508 Unnecessary <code>elif</code> after <code>break</code> statement) with the below using <code>ruff v0.1.4</code>. I'm just a beginner so quite likely it could be avoided with better code.</p>
-<pre><code class="language-python">def main() -&gt; None:
+            <div class="timeline-body"><p>I&#x27;m hitting this error (RET508 Unnecessary <code>elif</code> after <code>break</code> statement) with the below using <code>ruff v0.1.4</code>. I&#x27;m just a beginner so quite likely it could be avoided with better code.</p>
+<pre><code>def main() -&gt; None:
     &quot;&quot;&quot;Play a game of tic-tac-toe.&quot;&quot;&quot;
-    print('Welcome to tic-tac-toe!')
+    print(&#x27;Welcome to tic-tac-toe!&#x27;)
     game: dict[str, str] = create_board()
     current_player, other_player = X, O  # X goes first.
 
@@ -367,20 +367,20 @@ print(var)
         move: str = BLANK
         # Keep asking the player for a non-blank space to mark.
         while not is_space_blank(game, move):
-            move = input(f&quot;What is {current_player}'s move? (1-9) &quot;)
+            move = input(f&quot;What is {current_player}&#x27;s move? (1-9) &quot;)
         make_move(game, move, current_player)
         # Check if the game is over.
         if is_player_winner(game, current_player):  # First check for victory.
             print(game_state(game))
-            print(f'{current_player} has won the game!')
+            print(f&#x27;{current_player} has won the game!&#x27;)
             break
         elif is_board_full(game):  # Then check for a tie.
             print(game_state(game))
-            print('The game is a tie!')
+            print(&#x27;The game is a tie!&#x27;)
             break
         # Swap turns.
         current_player, other_player = other_player, current_player
-    print('Thanks for playing!')
+    print(&#x27;Thanks for playing!&#x27;)
 </code></pre>
 </div>
         </div>
@@ -397,7 +397,7 @@ print(var)
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:45:39 UTC
+        Synced at 2026-01-20 18:48:27 UTC
     </footer>
 </body>
 </html>

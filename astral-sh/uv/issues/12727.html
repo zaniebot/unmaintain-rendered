@@ -23,19 +23,19 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/falkben">@falkben</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>Some packages installed using the <code>uv pip install</code> interface, alongside the <code>python-platform</code> option, cause uv to not choose the wheel file and instead attempt to install that package from source.</p>
 <p>Example inside a docker container, where uv attempts to build from source the <code>confluent-kafka</code> package.</p>
-<pre><code class="language-sh">docker run --platform=linux/amd64 --rm -it ghcr.io/astral-sh/uv:python3.12-bookworm-slim /bin/bash
+<pre><code>docker run --platform=linux/amd64 --rm -it ghcr.io/astral-sh/uv:python3.12-bookworm-slim /bin/bash
 uv venv
 uv pip install confluent-kafka -v --python-platform linux
 </code></pre>
 <p>If you leave off <code>--python-platform linux</code> uv will install the wheel file.</p>
-<pre><code class="language-sh">docker run --platform=linux/amd64 --rm -it ghcr.io/astral-sh/uv:python3.12-bookworm-slim /bin/bash
+<pre><code>docker run --platform=linux/amd64 --rm -it ghcr.io/astral-sh/uv:python3.12-bookworm-slim /bin/bash
 uv venv
 uv pip install confluent-kafka
 </code></pre>
-<p>Typically we aren't calling with the option <code>--python-platform</code> in this way, but we have it defined in our <code>uv.toml</code> config. My understanding from the docs was that this is used for resolution, and we indeed are using it to create <code>requirements.txt</code> lock files from arm or linux based max for linux x86_x64. I've also tried setting python-platform to <code>x86_64-unknown-linux-gnu</code> and it results in the same behavior.</p>
+<p>Typically we aren&#x27;t calling with the option <code>--python-platform</code> in this way, but we have it defined in our <code>uv.toml</code> config. My understanding from the docs was that this is used for resolution, and we indeed are using it to create <code>requirements.txt</code> lock files from arm or linux based max for linux x86_x64. I&#x27;ve also tried setting python-platform to <code>x86_64-unknown-linux-gnu</code> and it results in the same behavior.</p>
 <p>Why does <code>uv</code> prefer source distribution in the above case, and is there a way to get it to use the wheel file instead? Most packages I think get installed from wheels, but another package where this happens is with <code>numexpr</code>.</p>
 <p>Is there something strange about the wheel files these projects have uploaded?</p>
 <ul>
@@ -43,16 +43,16 @@ uv pip install confluent-kafka
 <li>https://pypi.org/project/confluent-kafka/#files</li>
 </ul>
 <p>Should the <code>--python-platform</code> even be available during install? I would have assumed when installing you would want to resolve the platform independently.</p>
-<h3>Platform</h3>
+Platform
 <p>Darwin 24.3.0 arm64</p>
-<h3>Version</h3>
+Version
 <p>uv 0.6.12</p>
-<h3>Python version</h3>
+Python version
 <p>Python 3.12.9</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @falkben on 2025-04-07 19:17</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/falkben">@falkben</a> on 2025-04-07 19:17</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-07 19:25</div>
@@ -61,7 +61,7 @@ uv pip install confluent-kafka
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-07 19:27</div>
-            <div class="timeline-body"><p>The reason it's building from source here is that <code>--python-platform linux</code> is an alias for <code>x86_64-manylinux_2_17</code>, but <code>confluent-kafka</code> only contains wheels for <code>manylinux_2_28</code> and later. So our default minimum glibc version is lower than that package supports. You could use <code>--python-platform x86_64-manylinux_2_28</code> instead.</p>
+            <div class="timeline-body"><p>The reason it&#x27;s building from source here is that <code>--python-platform linux</code> is an alias for <code>x86_64-manylinux_2_17</code>, but <code>confluent-kafka</code> only contains wheels for <code>manylinux_2_28</code> and later. So our default minimum glibc version is lower than that package supports. You could use <code>--python-platform x86_64-manylinux_2_28</code> instead.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -70,7 +70,7 @@ uv pip install confluent-kafka
 <blockquote>
 <p>I think you should drop --python-platform. You very rarely want to override that in uv pip install. You typically want it for uv pip compile --python-platform windows or something so that you can output a resolution for another platform.</p>
 </blockquote>
-<p>Yes, we normally aren't including it in our uv pip install commands, but have the python-platform in our <code>uv.toml</code>. My intention was to have it in our <code>uv.toml</code> files so that it would be present when we compile our lock files, we'd always compile to that platform. I was surprised that it's getting used when we do <code>uv pip install</code> as well and that it's so &quot;literal&quot; and won't take the newer wheel files.</p>
+<p>Yes, we normally aren&#x27;t including it in our uv pip install commands, but have the python-platform in our <code>uv.toml</code>. My intention was to have it in our <code>uv.toml</code> files so that it would be present when we compile our lock files, we&#x27;d always compile to that platform. I was surprised that it&#x27;s getting used when we do <code>uv pip install</code> as well and that it&#x27;s so &quot;literal&quot; and won&#x27;t take the newer wheel files.</p>
 <p>Is there config that would only use python-platform for dependency resolution and not for uv pip install?</p>
 </div>
         </div>
@@ -81,16 +81,16 @@ uv pip install confluent-kafka
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/falkben">@falkben</a> on 2025-04-08 00:15</div>
-            <div class="timeline-body"><p>Okay, thanks. For now I'll take it out of our uv.toml files and only pass it in on the command line when we compile our dependencies.</p>
+            <div class="timeline-body"><p>Okay, thanks. For now I&#x27;ll take it out of our uv.toml files and only pass it in on the command line when we compile our dependencies.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @falkben on 2025-04-08 00:15</div>
+            <div class="event">Closed by <a href="https://github.com/falkben">@falkben</a> on 2025-04-08 00:15</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:30:50 UTC
+        Synced at 2026-01-20 19:38:08 UTC
     </footer>
 </body>
 </html>

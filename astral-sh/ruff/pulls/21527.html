@@ -23,23 +23,23 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>The <code>.expect()</code> call here:</p>
 <p>https://github.com/astral-sh/ruff/blob/5dd56264fb4e394c9919cf897cab39f52ccba124/crates/ty_python_semantic/src/types/instance.rs#L816-L827</p>
-<p>is the direct cause of the panic in https://github.com/astral-sh/ty/issues/1587. This patch gets rid of the panic by refactoring our <code>Protocol</code> enum so that the <code>Protocol::FromClass</code> variant holds a <code>ProtocolClass</code> instance rather than a <code>ClassType</code> instance (all the <code>.expect()</code> call was doing was attempting to convert form a <code>ClassType</code> to a <code>ProtocolClass</code>).</p>
-<p>I hoped that this would provide a fix for https://github.com/astral-sh/ty/issues/1587, but we still panic on the provided reproducible examples in that issue even with this PR. Nonetheless, I think this PR is a worthwhile change to make because:</p>
+<p>is the direct cause of the panic in <a href="https://github.com/astral-sh/ty/issues/1587">astral-sh/ty#1587</a>. This patch gets rid of the panic by refactoring our <code>Protocol</code> enum so that the <code>Protocol::FromClass</code> variant holds a <code>ProtocolClass</code> instance rather than a <code>ClassType</code> instance (all the <code>.expect()</code> call was doing was attempting to convert form a <code>ClassType</code> to a <code>ProtocolClass</code>).</p>
+<p>I hoped that this would provide a fix for <a href="https://github.com/astral-sh/ty/issues/1587">astral-sh/ty#1587</a>, but we still panic on the provided reproducible examples in that issue even with this PR. Nonetheless, I think this PR is a worthwhile change to make because:</p>
 <ul>
-<li><p>It's probably slightly more efficient this way (we no longer have to re-verify that the wrapped class in a <code>Protocol::FromClass()</code> variant is a protocol class every time we want to access its interface)</p>
+<li><p>It&#x27;s probably slightly more efficient this way (we no longer have to re-verify that the wrapped class in a <code>Protocol::FromClass()</code> variant is a protocol class every time we want to access its interface)</p>
 </li>
-<li><p>It's nice to get rid of <code>.expect()</code> calls where possible, and this one seems definitely unnecessary</p>
+<li><p>It&#x27;s nice to get rid of <code>.expect()</code> calls where possible, and this one seems definitely unnecessary</p>
 </li>
-<li><p>The <em>new</em> panic message on this PR branch makes it much clearer what the underlying cause of the bug in https://github.com/astral-sh/ty/issues/1587 is:</p>
-  <details>
-  <summary>New panic message</summary>
+<li><p>The <em>new</em> panic message on this PR branch makes it much clearer what the underlying cause of the bug in <a href="https://github.com/astral-sh/ty/issues/1587">astral-sh/ty#1587</a> is:</p>
+  
+  New panic message
 
-<pre><code>error[panic]: Panicked at /Users/alexw/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/a885bb4/src/function/execute.rs:321:21 when checking `/Users/alexw/dev/ruff/foo.py`: `ClassLiteral &lt; 'db &gt;::explicit_bases_(Id(4c09)): execute: too many cycle iterations`
+<pre><code>error[panic]: Panicked at /Users/alexw/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/a885bb4/src/function/execute.rs:321:21 when checking `/Users/alexw/dev/ruff/foo.py`: `ClassLiteral &lt; &#x27;db &gt;::explicit_bases_(Id(4c09)): execute: too many cycle iterations`
 info: This indicates a bug in ty.
-info: If you could open an issue at https://github.com/astral-sh/ty/issues/new?title=%5Bpanic%5D, we'd be very appreciative!
+info: If you could open an issue at https://github.com/astral-sh/ty/issues/new?title=%5Bpanic%5D, we&#x27;d be very appreciative!
 info: Platform: macos aarch64
 info: Version: ruff/0.14.5+60 (18a14bfaf 2025-11-19)
 info: Args: [&quot;target/debug/ty&quot;, &quot;check&quot;, &quot;foo.py&quot;, &quot;--python-version=3.14&quot;]
@@ -51,14 +51,14 @@ info: query stacktrace:
              at crates/ty_python_semantic/src/types/instance.rs:667
    2: infer_deferred_types(Id(1409))
              at crates/ty_python_semantic/src/types/infer.rs:141
-             cycle heads: infer_definition_types(Id(140b)) -&gt; iteration = 200, TypeVarInstance &lt; 'db &gt;::lazy_bound_(Id(5803)) -&gt; iteration = 200
-   3: TypeVarInstance &lt; 'db &gt;::lazy_bound_(Id(5802))
+             cycle heads: infer_definition_types(Id(140b)) -&gt; iteration = 200, TypeVarInstance &lt; &#x27;db &gt;::lazy_bound_(Id(5803)) -&gt; iteration = 200
+   3: TypeVarInstance &lt; &#x27;db &gt;::lazy_bound_(Id(5802))
              at crates/ty_python_semantic/src/types.rs:8734
    4: infer_definition_types(Id(140c))
              at crates/ty_python_semantic/src/types/infer.rs:94
    5: infer_deferred_types(Id(140a))
              at crates/ty_python_semantic/src/types/infer.rs:141
-   6: TypeVarInstance &lt; 'db &gt;::lazy_bound_(Id(5803))
+   6: TypeVarInstance &lt; &#x27;db &gt;::lazy_bound_(Id(5803))
              at crates/ty_python_semantic/src/types.rs:8734
    7: infer_definition_types(Id(140b))
              at crates/ty_python_semantic/src/types/infer.rs:94
@@ -71,42 +71,42 @@ info: query stacktrace:
 Found 1 diagnostic
 WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
 </code></pre>
-  </details>
+  
 
 </li>
 </ul>
-<h2>Test Plan</h2>
+Test Plan
 <p>All existing tests pass.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-11-19 14:40</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-19 14:40</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-11-19 14:40</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-19 14:40</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-11-19 14:40</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-19 14:40</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> added by @AlexWaygood on 2025-11-19 14:40</div>
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-19 14:40</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-11-19 14:40</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-19 14:40</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-19 14:43</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a>
 <p>No changes detected when running ty on typing conformance tests ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-19 14:43</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
+<code>mypy_primer</code> results
 <p>No ecosystem changes detected ✅</p>
 <p>No memory usage changes detected ✅</p>
 </div>
@@ -116,10 +116,10 @@ WARN A fatal error occurred while checking some files. Not all project files wer
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @AlexWaygood on 2025-11-19 19:26</div>
+            <div class="event">Merged by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-19 19:26</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-11-19 19:26</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-19 19:26</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-11-19 19:26</div>
@@ -127,7 +127,7 @@ WARN A fatal error occurred while checking some files. Not all project files wer
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:17:23 UTC
+        Synced at 2026-01-20 19:20:49 UTC
     </footer>
 </body>
 </html>

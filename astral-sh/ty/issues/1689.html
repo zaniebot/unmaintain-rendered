@@ -23,21 +23,21 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/janosh">@janosh</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>passing <code>columns</code> as <code>list[str]</code> raises error in latest <code>ty</code>. started in 0.0.1-alpha.27 and affects 0.0.1-alpha.28 and 0.0.1-alpha.29 as well</p>
-<pre><code class="language-py">import pandas as pd
+<pre><code>import pandas as pd
 
 df = pd.DataFrame([[1, 2, 3], [4, 5, 6]], columns=[&quot;a&quot;, &quot;b&quot;])
 </code></pre>
 <blockquote>
 <p>Argument to bound method <code>__init__</code> is incorrect: Expected <code>ExtensionArray | ndarray[tuple[Any, ...], dtype[Any]] | Index | ... omitted 4 union elements</code>, found <code>list[Unknown | str]</code> <code>ty</code> <a href="https://ty.dev/rules#invalid-argument-type">invalid-argument-type</a></p>
 </blockquote>
-<h3>Version</h3>
+Version
 <p>ty 0.0.1-alpha.29 (0c3cae494 2025-11-28)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">Protocols</span> added by @sharkdp on 2025-12-01 09:10</div>
+            <div class="event">Label <span class="label">Protocols</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-01 09:10</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-01 09:19</div>
@@ -46,7 +46,7 @@ df = pd.DataFrame([[1, 2, 3], [4, 5, 6]], columns=[&quot;a&quot;, &quot;b&quot;]
 <pre><code>ListLike = Union[AnyArrayLike, SequenceNotStr, range]
 </code></pre>
 <p><code>SequenceNotStr</code> is supposed to cover the <code>list</code> case. It is <a href="https://github.com/pandas-dev/pandas/blob/1895c382296bca720acc358b996f4800dbdf6c9c/pandas/_typing.py#L104-L128">a generic protocol</a>:</p>
-<pre><code class="language-py"># list-like
+<pre><code># list-like
 
 # from https://github.com/hauntsaninja/useful_types
 # includes Sequence-like objects but excludes str and bytes
@@ -80,30 +80,30 @@ class SequenceNotStr(Protocol[_T_co]):
     def __reversed__(self) -&gt; Iterator[_T_co]:
         ...
 </code></pre>
-<p>ty <a href="https://play.ty.dev/8791e13a-fb76-41da-a47d-d6a718740a82">won't let you assign <code>[[1, 2, 3], [4, 5, 6]]</code> to this protocol</a>, and ty is actually correct. The problem is the <code>index</code> method in that protocol:</p>
-<pre><code class="language-py">    def index(self, value: Any, /, start: int = 0, stop: int = ...) -&gt; int:
+<p>ty <a href="https://play.ty.dev/8791e13a-fb76-41da-a47d-d6a718740a82">won&#x27;t let you assign <code>[[1, 2, 3], [4, 5, 6]]</code> to this protocol</a>, and ty is actually correct. The problem is the <code>index</code> method in that protocol:</p>
+<pre><code>    def index(self, value: Any, /, start: int = 0, stop: int = ...) -&gt; int:
         ...
 </code></pre>
 <p>If we compare that to <code>list.index</code> from typeshed, we see the problem:</p>
-<pre><code class="language-py">    def index(self, value: _T, start: SupportsIndex = 0, stop: SupportsIndex = sys.maxsize, /) -&gt; int:
+<pre><code>    def index(self, value: _T, start: SupportsIndex = 0, stop: SupportsIndex = sys.maxsize, /) -&gt; int:
         &quot;&quot;&quot;Return first index of value.
 
         Raises ValueError if the value is not present.
         &quot;&quot;&quot;
 </code></pre>
-<p>The protocol only accepts an <code>index</code> method with keyword-or-positional <code>start</code> and <code>stop</code> parameters, but <code>list.index</code>'s <code>start</code> and <code>stop</code> parameters are positional-only. So I think this needs to be fixed in <code>pandas</code>.</p>
+<p>The protocol only accepts an <code>index</code> method with keyword-or-positional <code>start</code> and <code>stop</code> parameters, but <code>list.index</code>&#x27;s <code>start</code> and <code>stop</code> parameters are positional-only. So I think this needs to be fixed in <code>pandas</code>.</p>
 <p>In ty, however, we should definitely work on our <code>invalid-assignment</code> diagnostics! Ideally, the error message should have pointed this out.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-01 09:20</div>
-            <div class="timeline-body"><p>Oh, apparently this has been fixed in <code>pandas</code> main already: https://github.com/pandas-dev/pandas/issues/56995#issuecomment-1902728314</p>
+            <div class="timeline-body"><p>Oh, apparently this has been fixed in <code>pandas</code> main already: <a href="https://github.com/pandas-dev/pandas/issues/56995">pandas-dev/pandas#56995</a>#issuecomment-1902728314</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kalekseev">@kalekseev</a> on 2025-12-01 09:35</div>
             <div class="timeline-body"><p>@sharkdp I have a similar problem trying to use ty with DRF typings that started from 27 alpha, should I create a separate issue for that?</p>
-<pre><code class="language-py">from __future__ import annotations
+<pre><code>from __future__ import annotations
 
 from typing import TYPE_CHECKING, Literal
 
@@ -120,7 +120,7 @@ def test(method: Sequence[_Method]) -&gt; None:
 
 test([&quot;POST&quot;])
 </code></pre>
-<pre><code class="language-bash">uvx ty check  a.py
+<pre><code>uvx ty check  a.py
 error[invalid-argument-type]: Argument to function `test` is incorrect
   --&gt; a.py:16:6
    |
@@ -142,7 +142,7 @@ Found 1 diagnostic
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-01 09:37</div>
-            <div class="timeline-body"><p>@kalekseev Yes, please open a new ticket. =&gt; see https://github.com/astral-sh/ty/issues/1699</p>
+            <div class="timeline-body"><p>@kalekseev Yes, please open a new ticket. =&gt; see <a href="https://github.com/astral-sh/ty/issues/1699">astral-sh/ty#1699</a></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -151,11 +151,11 @@ Found 1 diagnostic
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2025-12-02 02:54</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2025-12-02 02:54</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-02 02:55</div>
-            <div class="timeline-body"><p>@sharkdp This felt familiar 😆 https://github.com/astral-sh/ty/issues/1591#issuecomment-3554468014</p>
+            <div class="timeline-body"><p>@sharkdp This felt familiar 😆 <a href="https://github.com/astral-sh/ty/issues/1591">astral-sh/ty#1591</a>#issuecomment-3554468014</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -163,13 +163,13 @@ Found 1 diagnostic
             <div class="timeline-body"><blockquote>
 <p><a href="https://github.com/sharkdp">@sharkdp</a> This felt familiar 😆 <a href="https://github.com/astral-sh/ty/issues/1591#issuecomment-3554468014">#1591 (comment)</a></p>
 </blockquote>
-<p>Maybe I'll remember it better next time, now that I've gone through the exercise myself 🙈</p>
+<p>Maybe I&#x27;ll remember it better next time, now that I&#x27;ve gone through the exercise myself 🙈</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:21:07 UTC
+        Synced at 2026-01-20 19:26:10 UTC
     </footer>
 </body>
 </html>

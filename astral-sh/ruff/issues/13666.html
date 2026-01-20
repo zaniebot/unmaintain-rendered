@@ -24,7 +24,7 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dscorbett">@dscorbett</a></div>
             <div class="timeline-body"><p>Ruff represents Python strings with Rust strings, replacing every surrogate with U+FFFD REPLACEMENT CHARACTER. This leads to false positives and incorrect fixes when the exact code point sequence matters. Affected rules include <a href="https://docs.astral.sh/ruff/rules/duplicate-value/"><code>duplicate-value</code> (B033)</a>, <a href="https://docs.astral.sh/ruff/rules/static-join-to-f-string/"><code>static-join-to-f-string</code> (FLY002)</a>, <a href="https://docs.astral.sh/ruff/rules/non-unique-enums/"><code>non-unique-enums</code> (PIE796)</a>, and <a href="https://docs.astral.sh/ruff/rules/useless-if-else/"><code>useless-if-else</code> (RUF034)</a>. Ruff should use a non-lossy representation of Python strings, or at least track when there was a surrogate so it can ignore certain rules for strings with surrogates.</p>
-<pre><code class="language-console">$ ruff --version
+<pre><code>$ ruff --version
 ruff 0.6.9
 $ cat surrogates.py
 # False positives:
@@ -57,46 +57,46 @@ $ python surrogates.py
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-07 19:47</div>
-            <div class="timeline-body"><p>Hmm. Nice find, but likely very annoying to fix. One option is to use a crate like <a href="https://docs.rs/bstr/latest/bstr/">bstr</a> that doesn't change the UTF16 surrogate pairs. @BurntSushi as author of the <code>bstr</code> crate. Any suggestions on how we best represent Python strings that can contain UTF16 surrogate pairs in Rust?</p>
+            <div class="timeline-body"><p>Hmm. Nice find, but likely very annoying to fix. One option is to use a crate like <a href="https://docs.rs/bstr/latest/bstr/">bstr</a> that doesn&#x27;t change the UTF16 surrogate pairs. @BurntSushi as author of the <code>bstr</code> crate. Any suggestions on how we best represent Python strings that can contain UTF16 surrogate pairs in Rust?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-10-08 00:46</div>
-            <div class="timeline-body"><p>If you use <code>bstr</code>, then your strings would just be <code>Vec&lt;u8&gt;</code> and <code>&amp;[u8]</code>. But you'd still need to create those in the first place. Which means you need a function mapping <code>Python string</code> to <code>Vec&lt;u8&gt;</code>. What is that mapping? Incidentally, the Rust standard library uses WTF-8 for what is essentially this exact use case. WTF-8 defines a <em>superset</em> of UTF-8 that permits encoding surrogates, including unpaired surrogates. This allows it to round-trip Windows file paths, which you can roughly think of as allowed to be arbitrary sequences of 16-bit integers. (Just like Unix file paths are, roughly, arbitrary sequences of 8-bit integers.)</p>
-<p>However, I think what might make more sense here is to pick a representation that is more faithful to what you're actually trying to model. In this case, that's Python Unicode strings. My understanding is that the logical model supported by Python strings is that they are sequences of Unicode codepoints. In Rust, that would be <code>Vec&lt;u32&gt;</code>. (Notably, not <code>Vec&lt;char&gt;</code> because a <code>char</code> is a Unicode scalar value, which is a strict subset of Unicode codepoints. i.e., All codepoints except for surrogates.)</p>
-<p>The problem with <code>Vec&lt;u32&gt;</code> is probably that it is expensive and difficult to work with. So it probably makes sense to use a <code>String</code> for what is likely the overwhelmingly common case where the Python string can be encoded as UTF-8. (You'll note that <code>&quot;\ud800&quot;.encode('utf-8')</code> fails.) And then use <code>Vec&lt;u32&gt;</code> for anything else. This in turn probably means defining an abstraction so that callers don't need to care about whether a Python string is a <code>Vec&lt;u32&gt;</code> or something else. This abstraction may pose costs and other annoyances. For example, it would be impossible to have a method return a <code>&amp;str</code> in all cases.</p>
-<p>If you went the WTF-8 route, things don't really get that much easier. It's probably just as annoying, if not more so, but in different ways.</p>
-<p>If it were me, the next step I'd do here is write down the set of operations we need to perform on Python strings in ruff. If that set is small and well defined, then solving this problem might not be too annoying.</p>
+            <div class="timeline-body"><p>If you use <code>bstr</code>, then your strings would just be <code>Vec&lt;u8&gt;</code> and <code>&amp;[u8]</code>. But you&#x27;d still need to create those in the first place. Which means you need a function mapping <code>Python string</code> to <code>Vec&lt;u8&gt;</code>. What is that mapping? Incidentally, the Rust standard library uses WTF-8 for what is essentially this exact use case. WTF-8 defines a <em>superset</em> of UTF-8 that permits encoding surrogates, including unpaired surrogates. This allows it to round-trip Windows file paths, which you can roughly think of as allowed to be arbitrary sequences of 16-bit integers. (Just like Unix file paths are, roughly, arbitrary sequences of 8-bit integers.)</p>
+<p>However, I think what might make more sense here is to pick a representation that is more faithful to what you&#x27;re actually trying to model. In this case, that&#x27;s Python Unicode strings. My understanding is that the logical model supported by Python strings is that they are sequences of Unicode codepoints. In Rust, that would be <code>Vec&lt;u32&gt;</code>. (Notably, not <code>Vec&lt;char&gt;</code> because a <code>char</code> is a Unicode scalar value, which is a strict subset of Unicode codepoints. i.e., All codepoints except for surrogates.)</p>
+<p>The problem with <code>Vec&lt;u32&gt;</code> is probably that it is expensive and difficult to work with. So it probably makes sense to use a <code>String</code> for what is likely the overwhelmingly common case where the Python string can be encoded as UTF-8. (You&#x27;ll note that <code>&quot;\ud800&quot;.encode(&#x27;utf-8&#x27;)</code> fails.) And then use <code>Vec&lt;u32&gt;</code> for anything else. This in turn probably means defining an abstraction so that callers don&#x27;t need to care about whether a Python string is a <code>Vec&lt;u32&gt;</code> or something else. This abstraction may pose costs and other annoyances. For example, it would be impossible to have a method return a <code>&amp;str</code> in all cases.</p>
+<p>If you went the WTF-8 route, things don&#x27;t really get that much easier. It&#x27;s probably just as annoying, if not more so, but in different ways.</p>
+<p>If it were me, the next step I&#x27;d do here is write down the set of operations we need to perform on Python strings in ruff. If that set is small and well defined, then solving this problem might not be too annoying.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-10-14 09:09</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-14 09:09</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-design</span> added by @MichaReiser on 2024-10-14 09:09</div>
+            <div class="event">Label <span class="label">needs-design</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-14 09:09</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">core</span> added by @MichaReiser on 2024-10-14 09:09</div>
+            <div class="event">Label <span class="label">core</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-14 09:09</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-27 19:26</div>
-            <div class="timeline-body"><p>RustPython now uses Ruff's parser and they handle surrogates in https://github.com/RustPython/RustPython/pull/5629</p>
+            <div class="timeline-body"><p>RustPython now uses Ruff&#x27;s parser and they handle surrogates in <a href="https://github.com/RustPython/RustPython/pull/5629">RustPython/RustPython#5629</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/youknowone">@youknowone</a> on 2025-03-28 01:35</div>
-            <div class="timeline-body"><p>In https://github.com/RustPython/RustPython/pull/5629, @coolreader18  found the behavior of rust internal's wtf8 is slightly different to Python's requirements</p>
+            <div class="timeline-body"><p>In <a href="https://github.com/RustPython/RustPython/pull/5629">RustPython/RustPython#5629</a>, @coolreader18  found the behavior of rust internal&#x27;s wtf8 is slightly different to Python&#x27;s requirements</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/coolreader18">@coolreader18</a> on 2025-03-28 03:16</div>
-            <div class="timeline-body"><p>Yeah, I'd be happy to publish <code>rustpython-wtf8</code> for ruff to use if that'd make sense - hopefully it's self-contained enough that we can keep up with PRs for it and you guys don't need to fork it :P</p>
+            <div class="timeline-body"><p>Yeah, I&#x27;d be happy to publish <code>rustpython-wtf8</code> for ruff to use if that&#x27;d make sense - hopefully it&#x27;s self-contained enough that we can keep up with PRs for it and you guys don&#x27;t need to fork it :P</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:51:13 UTC
+        Synced at 2026-01-20 18:48:58 UTC
     </footer>
 </body>
 </html>

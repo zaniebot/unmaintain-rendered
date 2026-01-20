@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>Don't destructure global network settings</h1>
+    <h1>Don&#x27;t destructure global network settings</h1>
 
     <div class="meta">
         <span class="state-icon state-closed"></span>
@@ -27,7 +27,7 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> added by @konstin on 2025-08-06 11:00</div>
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/konstin">@konstin</a> on 2025-08-06 11:00</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-06 13:11</div>
@@ -67,14 +67,14 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-06 13:14</div>
-            <div class="timeline-body"><p>I'm not a huge fan of this honestly. I think it breaks the usual structure of our abstractions around settings, which is why it's this way in the first place?</p>
-<p>I think I'd rather just reduce the amount of times we construct a client builder? We should be able to do that ~once, right?</p>
+            <div class="timeline-body"><p>I&#x27;m not a huge fan of this honestly. I think it breaks the usual structure of our abstractions around settings, which is why it&#x27;s this way in the first place?</p>
+<p>I think I&#x27;d rather just reduce the amount of times we construct a client builder? We should be able to do that ~once, right?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-08-06 14:54</div>
             <div class="timeline-body"><p>We construct three different kinds of base clients: Without keyring, with keyring and for the registry client. With the exception of the keyring, all builder methods are either network settings, or only used by the registry client (of which there are only two calls, that we could remove by moving from <code>RegistryClientBuilder::new</code> to <code>RegistryClientBuilder::try_from</code>) [^1].</p>
-<p>The <code>NetworkSettings</code> struct is effectively the part that we can construct once and share across the codebase. We can construct a single <code>BaseClientBuilder</code> with it once and pass it around, but we do need to modify depending on whether we're in a location that has and uses a keyring (which would be the PR two after this one). We can't pass around a single instance of an (immutable) <code>BaseClient</code> alone without an option to control the keyring behavior.</p>
+<p>The <code>NetworkSettings</code> struct is effectively the part that we can construct once and share across the codebase. We can construct a single <code>BaseClientBuilder</code> with it once and pass it around, but we do need to modify depending on whether we&#x27;re in a location that has and uses a keyring (which would be the PR two after this one). We can&#x27;t pass around a single instance of an (immutable) <code>BaseClient</code> alone without an option to control the keyring behavior.</p>
 <p>[^1]: Ignoring <code>uv publish</code> here, which builds a custom client that has to ignore our common patterns already, due to being the only POST client, two reqwest bugs and having different auth.</p>
 </div>
         </div>
@@ -93,27 +93,27 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-requirements/src/upgrade.rs</code>:40 on 2025-08-06 14:58</div>
-            <div class="timeline-body"><p>This is the one location that breaks our pattern because we're actually reading from a file, not doing a network request so having a network client is odd, but I didn't want to change <code>RequirementsTxt::parse</code> too</p>
+            <div class="timeline-body"><p>This is the one location that breaks our pattern because we&#x27;re actually reading from a file, not doing a network request so having a network client is odd, but I didn&#x27;t want to change <code>RequirementsTxt::parse</code> too</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-06 15:09</div>
-            <div class="timeline-body"><p>I think it seems reasonable to have a single construction of <code>BaseClientBuilder</code> (minus some of the special cases above) that includes keyring then <em>remove</em> keyring in the places that shouldn't use it for authentication? I don't actually know why we wouldn't use the keyring in some places, what's the use-case for that?</p>
+            <div class="timeline-body"><p>I think it seems reasonable to have a single construction of <code>BaseClientBuilder</code> (minus some of the special cases above) that includes keyring then <em>remove</em> keyring in the places that shouldn&#x27;t use it for authentication? I don&#x27;t actually know why we wouldn&#x27;t use the keyring in some places, what&#x27;s the use-case for that?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-08-06 15:21</div>
-            <div class="timeline-body"><p>I'm not sure about the keyring usage, I would return the question since your more familiar with the <code>KeyringProvider</code>.</p>
-<p>One difference is that <code>NetworkSettings</code> (plus retries) are global CLI settings, while the keyring isn't, so e.g. <code>uv python install</code> uses a client but no keyring. Being a global setting, we have the <code>NetworkSettings</code> for the single construction of <code>BaseClientBuilder</code>, but at that point we don't have the keyring setting yet, we need to match over the CLI subcommand branches for that.</p>
+            <div class="timeline-body"><p>I&#x27;m not sure about the keyring usage, I would return the question since your more familiar with the <code>KeyringProvider</code>.</p>
+<p>One difference is that <code>NetworkSettings</code> (plus retries) are global CLI settings, while the keyring isn&#x27;t, so e.g. <code>uv python install</code> uses a client but no keyring. Being a global setting, we have the <code>NetworkSettings</code> for the single construction of <code>BaseClientBuilder</code>, but at that point we don&#x27;t have the keyring setting yet, we need to match over the CLI subcommand branches for that.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2025-08-29 18:30</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-29 18:30</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:44:17 UTC
+        Synced at 2026-01-20 19:53:28 UTC
     </footer>
 </body>
 </html>

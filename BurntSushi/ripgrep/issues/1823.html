@@ -23,39 +23,39 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Shnatsel">@Shnatsel</a></div>
-            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+            <div class="timeline-body">What version of ripgrep are you using?
 <p>ripgrep 12.1.1
 -SIMD -AVX (compiled)
 +SIMD +AVX (runtime)</p>
 <p>Also happens on latest master - c7730d1f3a366e42fdd497a1e0db4bf090de415c</p>
-<h4>How did you install ripgrep?</h4>
+How did you install ripgrep?
 <p><code>cargo install ripgrep</code></p>
 <p>Also happens when building from source with <code>cargo build --release</code></p>
-<h4>What operating system are you using ripgrep on?</h4>
+What operating system are you using ripgrep on?
 <p>Ubuntu 18.04</p>
-<h4>Describe your bug.</h4>
+Describe your bug.
 <p>High RAM use (at around 400Mb) when searching through a large number of files - 9,489,520 files, roughly 100Gb of data.</p>
-<h4>What are the steps to reproduce the behavior?</h4>
+What are the steps to reproduce the behavior?
 <p>The exact command used is <code>rg --no-ignore AddressSanitizer</code></p>
 <p>Unfortunately the corpus is very large (100Gb) and is only moderately compressible (to 20Gb or so). I could probably figure out a way to ship it if hard-pressed, but I would prefer to avoid that if reasonable.</p>
-<p>I've profiled <code>rg</code> with Heaptrack to figure out what's taking up most of the memory. Turns out it's a single large vector that gets reallocated to larger and larger sizes. <a href="https://storage.googleapis.com/rg-heaptrack/heaptrack.rg.no-ignore.gz">Here's the heaptrack profile</a> taken on the 12.1.1 release.</p>
-<p>Here's the backtrace for this allocation as displayed by heaptrack GUI:
-<img src="https://user-images.githubusercontent.com/291257/111223410-698c4880-85dd-11eb-87bf-c1302ff26020.png" alt="rg-backtrace" /></p>
-<p>It appears that the ignore logic is responsible for these large allocations, even though I've passed the <code>--no-ignore</code> flag. The memory use is even higher without <code>--no-ignore</code>, but not by much (another 100Mb or so).</p>
-<h4>What is the actual behavior?</h4>
+<p>I&#x27;ve profiled <code>rg</code> with Heaptrack to figure out what&#x27;s taking up most of the memory. Turns out it&#x27;s a single large vector that gets reallocated to larger and larger sizes. <a href="https://storage.googleapis.com/rg-heaptrack/heaptrack.rg.no-ignore.gz">Here&#x27;s the heaptrack profile</a> taken on the 12.1.1 release.</p>
+<p>Here&#x27;s the backtrace for this allocation as displayed by heaptrack GUI:
+<img src="https://user-images.githubusercontent.com/291257/111223410-698c4880-85dd-11eb-87bf-c1302ff26020.png" alt="rg-backtrace"></p>
+<p>It appears that the ignore logic is responsible for these large allocations, even though I&#x27;ve passed the <code>--no-ignore</code> flag. The memory use is even higher without <code>--no-ignore</code>, but not by much (another 100Mb or so).</p>
+What is the actual behavior?
 <p>The peak memory use is at around 400Mb.</p>
 <p>Output of <code>rg --debug --no-ignore AddressSanitizer</code>: https://gist.github.com/Shnatsel/f389152c908bbf78b5dfadbd7dec3f79</p>
-<h4>What is the expected behavior?</h4>
+What is the expected behavior?
 <p>Memory use below 50Mb</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-03-15 22:26</div>
             <div class="timeline-body"><p>Thanks for the report!</p>
-<p>So I'll say that off the bat, it will be difficult for me to do anything about this without a repro. It's <em>possible</em> that the high memory usage is due to a specific file. So if that's the case, it might be possible for you to whittle this down by trying smaller and smaller subsets of your corpus and see if you can still observe high memory usage. If not, then yeah, I'd probably have to have a way to debug this myself.</p>
+<p>So I&#x27;ll say that off the bat, it will be difficult for me to do anything about this without a repro. It&#x27;s <em>possible</em> that the high memory usage is due to a specific file. So if that&#x27;s the case, it might be possible for you to whittle this down by trying smaller and smaller subsets of your corpus and see if you can still observe high memory usage. If not, then yeah, I&#x27;d probably have to have a way to debug this myself.</p>
 <p>What follows is me brainstorming.</p>
-<p>My <em>initial</em> guess at this, ignoring your heap backtrace, would have simply been that one or more of your files has very long lines. And because of that and the constraint that a line <em>must</em> fit contiguously in memory, ripgrep expands its internal buffers to fit it. (Since ripgrep has several of these buffers in existence due to parallelism, it's possible that there are a few files with moderately long lines, and the expansions of all those buffers adds up to increased memory usage overall.) In general, this kind of thing just cannot be avoided and is a known limitation of ripgrep. It's also a problem with GNU grep. This is why, for example, GNU grep will by default replace NUL bytes with line terminators in case it trips over a binary file with no line terminators in it. In that case, the entire file would be treated as one single line, which could be quite bad.</p>
-<p>Now, given your heap trace, I'm not sure what to think. If it is indeed related to ignores, then yeah, I would expect <code>--no-ignore</code> to fix it.</p>
+<p>My <em>initial</em> guess at this, ignoring your heap backtrace, would have simply been that one or more of your files has very long lines. And because of that and the constraint that a line <em>must</em> fit contiguously in memory, ripgrep expands its internal buffers to fit it. (Since ripgrep has several of these buffers in existence due to parallelism, it&#x27;s possible that there are a few files with moderately long lines, and the expansions of all those buffers adds up to increased memory usage overall.) In general, this kind of thing just cannot be avoided and is a known limitation of ripgrep. It&#x27;s also a problem with GNU grep. This is why, for example, GNU grep will by default replace NUL bytes with line terminators in case it trips over a binary file with no line terminators in it. In that case, the entire file would be treated as one single line, which could be quite bad.</p>
+<p>Now, given your heap trace, I&#x27;m not sure what to think. If it is indeed related to ignores, then yeah, I would expect <code>--no-ignore</code> to fix it.</p>
 <p>Some things to try:</p>
 <ul>
 <li>How does <code>rg -uuu</code> behave?</li>
@@ -65,21 +65,21 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2021-03-15 22:26</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-03-15 22:26</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-03-15 22:26</div>
-            <div class="timeline-body"><p>Oh, also, I'm not sure how to use your heap profile. Is there a program I should be using to open it that gives me a nice visualization?</p>
+            <div class="timeline-body"><p>Oh, also, I&#x27;m not sure how to use your heap profile. Is there a program I should be using to open it that gives me a nice visualization?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Shnatsel">@Shnatsel</a> on 2021-03-15 22:36</div>
-            <div class="timeline-body"><p>Yeah, here's the GUI that analyzes this format: https://github.com/KDE/heaptrack</p>
+            <div class="timeline-body"><p>Yeah, here&#x27;s the GUI that analyzes this format: https://github.com/KDE/heaptrack</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Shnatsel">@Shnatsel</a> on 2021-03-15 22:38</div>
-            <div class="timeline-body"><p><code>heaptrack --analyze &quot;/path/to/file.gz&quot;</code> works, you don't even need to ungzip it.</p>
+            <div class="timeline-body"><p><code>heaptrack --analyze &quot;/path/to/file.gz&quot;</code> works, you don&#x27;t even need to ungzip it.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -89,24 +89,24 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Shnatsel">@Shnatsel</a> on 2021-03-15 22:54</div>
-            <div class="timeline-body"><p><code>heaptrack rg --no-ignore AddressSanitizer</code>, it's that simple. By the way, it also shows a ton of short-lived allocations somewhere in colored printing even though I don't have a ton of matches.</p>
+            <div class="timeline-body"><p><code>heaptrack rg --no-ignore AddressSanitizer</code>, it&#x27;s that simple. By the way, it also shows a ton of short-lived allocations somewhere in colored printing even though I don&#x27;t have a ton of matches.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-03-15 22:59</div>
-            <div class="timeline-body"><p>OK, I've looked at this with heaptrack and expanded a few traces:</p>
-<p><img src="https://user-images.githubusercontent.com/456674/111231135-1c00e300-85bf-11eb-97b3-02dce9ed4f0d.png" alt="heap-trace-expanded" /></p>
+            <div class="timeline-body"><p>OK, I&#x27;ve looked at this with heaptrack and expanded a few traces:</p>
+<p><img src="https://user-images.githubusercontent.com/456674/111231135-1c00e300-85bf-11eb-97b3-02dce9ed4f0d.png" alt="heap-trace-expanded"></p>
 <p>From what I can see, there are three distinct sources of large memory usage:</p>
 <ol>
-<li>The first, and biggest (179MB) appears to be what I speculated about above: there is a long line somewhere that is growing ripgrep's internal buffer. If that is indeed true, then it should be possible to narrow this down to the particular file. But, if it really is just a long line, then unfortunately that's just the way the cookie crumbles. The only real possible work-around here that I can think of is to occasionally contract the buffer, which in the presence of multiple threads, could theoretically lower peak memory usage if there are multiple files with long lines and they are searched using different buffers. But figuring out the best strategy for that is tricky and I'm inclined to pass on it.</li>
-<li>The second (142MB) appears to be a result of the parallel directory traversal eagerly collecting the paths it wants to traverse. This is somewhat related to the last memory problem you reported, which I &quot;fixed&quot; by switching from breadth first to depth first traversal. But it's not a truly fundamental fix. I would love to fix this, but I don't know. I don't know how to introduce back-pressure in the traversal algorithm. :-(</li>
-<li>The last one (46MB) is the most perplexing. It looks like a <em>single path</em> is using up tens of MB. Does that sound right to you for your specific data set? That can't be right, right? Neither <code>PathBuf</code> nor <code>OsString</code> buffers are reused in ripgrep IIRC, so I'm not really sure what could be causing that. Unless the heap trace isn't reporting a single path, but rather, &quot;there are a whole bunch of PathBufs using lots of memory,&quot; which would be consistent with (2) above.</li>
+<li>The first, and biggest (179MB) appears to be what I speculated about above: there is a long line somewhere that is growing ripgrep&#x27;s internal buffer. If that is indeed true, then it should be possible to narrow this down to the particular file. But, if it really is just a long line, then unfortunately that&#x27;s just the way the cookie crumbles. The only real possible work-around here that I can think of is to occasionally contract the buffer, which in the presence of multiple threads, could theoretically lower peak memory usage if there are multiple files with long lines and they are searched using different buffers. But figuring out the best strategy for that is tricky and I&#x27;m inclined to pass on it.</li>
+<li>The second (142MB) appears to be a result of the parallel directory traversal eagerly collecting the paths it wants to traverse. This is somewhat related to the last memory problem you reported, which I &quot;fixed&quot; by switching from breadth first to depth first traversal. But it&#x27;s not a truly fundamental fix. I would love to fix this, but I don&#x27;t know. I don&#x27;t know how to introduce back-pressure in the traversal algorithm. :-(</li>
+<li>The last one (46MB) is the most perplexing. It looks like a <em>single path</em> is using up tens of MB. Does that sound right to you for your specific data set? That can&#x27;t be right, right? Neither <code>PathBuf</code> nor <code>OsString</code> buffers are reused in ripgrep IIRC, so I&#x27;m not really sure what could be causing that. Unless the heap trace isn&#x27;t reporting a single path, but rather, &quot;there are a whole bunch of PathBufs using lots of memory,&quot; which would be consistent with (2) above.</li>
 </ol>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-03-15 22:59</div>
-            <div class="timeline-body"><p>Hmmm I can't seem to find the allocs for colored printing.</p>
+            <div class="timeline-body"><p>Hmmm I can&#x27;t seem to find the allocs for colored printing.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -116,7 +116,7 @@
 60.91user 208.19system 15:22.34elapsed 29%CPU (0avgtext+0avgdata 125588maxresident)k
 179260304inputs+0outputs (2major+56824minor)pagefaults 0swaps
 </code></pre>
-<p>Here's the -uuu command:</p>
+<p>Here&#x27;s the -uuu command:</p>
 <pre><code>time rg -uuu AddressSanitizer
 64.60user 239.45system 5:06.36elapsed 99%CPU (0avgtext+0avgdata 592932maxresident)k
 195622760inputs+0outputs (57major+150679minor)pagefaults 0swaps
@@ -142,15 +142,15 @@
             <div class="timeline-header">Comment by <a href="https://github.com/Shnatsel">@Shnatsel</a> on 2021-03-15 23:07</div>
             <div class="timeline-body"><p>To find the many small allocations, go to bottom-up view and sort by the number of allocations, then select the first entry.</p>
 <p>This is what the bottom-up list sorted by allocation count looks like for me:</p>
-<p><img src="https://user-images.githubusercontent.com/291257/111232385-4f596700-85eb-11eb-8c45-bb0348369a6b.png" alt="Снимок экрана от 2021-03-16 00 03 08" /></p>
+<p><img src="https://user-images.githubusercontent.com/291257/111232385-4f596700-85eb-11eb-8c45-bb0348369a6b.png" alt="Снимок экрана от 2021-03-16 00 03 08"></p>
 <p>If you click the first item, this is the backtrace:</p>
-<p><img src="https://user-images.githubusercontent.com/291257/111232456-6e57f900-85eb-11eb-9355-e3bd8045a1e4.png" alt="Снимок экрана от 2021-03-16 00 06 09" /></p>
+<p><img src="https://user-images.githubusercontent.com/291257/111232456-6e57f900-85eb-11eb-9355-e3bd8045a1e4.png" alt="Снимок экрана от 2021-03-16 00 06 09"></p>
 <p><code>termcolor</code> frames are prominent in this backtrace.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-03-15 23:16</div>
-            <div class="timeline-body"><p>Yeah, there will be <em>some</em> allocs from termcolor because the printer is writing to an in memory buffer owned by termcolor when using parallelism. I can see them in the heap viz. But whenever I try to drill down and follow the trace with the most allocs, I don't wind up in termcolor, but rather, in <code>PathBuf</code> crud. (And this is unfortunately to be expected, because std provides no way of amortizing allocs when dealing with file system APIs. There are lots of little hidden allocs in that area, particularly with respect to creating C strings for libc APIs. I have a WIP patch in <code>walkdir</code> to try to fix some of it, but it's a steep steep hill to climb.)</p>
+            <div class="timeline-body"><p>Yeah, there will be <em>some</em> allocs from termcolor because the printer is writing to an in memory buffer owned by termcolor when using parallelism. I can see them in the heap viz. But whenever I try to drill down and follow the trace with the most allocs, I don&#x27;t wind up in termcolor, but rather, in <code>PathBuf</code> crud. (And this is unfortunately to be expected, because std provides no way of amortizing allocs when dealing with file system APIs. There are lots of little hidden allocs in that area, particularly with respect to creating C strings for libc APIs. I have a WIP patch in <code>walkdir</code> to try to fix some of it, but it&#x27;s a steep steep hill to climb.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -175,38 +175,38 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-03-15 23:47</div>
-            <div class="timeline-body"><p>All right. I think I'm going to have to close this at <code>wontfix</code>. I don't see any obvious thing to do here to fix the higher memory usage when using parallelism. One should expect using parallelism to use more memory I think. It's really a fundamental trade off in a tool like this. A reasonable response would be that parallelism should increase memory usage proportionally with a low constant. In your case, it looks to be increasing by a factor 10 instead of 4 or 5. But unfortunately, the parallel aspects of ripgrep (thinking about the recursive directory traversal) are piggish in a way that isn't a simple linear increase with the number of threads. And I don't know how to fix it, sadly.</p>
+            <div class="timeline-body"><p>All right. I think I&#x27;m going to have to close this at <code>wontfix</code>. I don&#x27;t see any obvious thing to do here to fix the higher memory usage when using parallelism. One should expect using parallelism to use more memory I think. It&#x27;s really a fundamental trade off in a tool like this. A reasonable response would be that parallelism should increase memory usage proportionally with a low constant. In your case, it looks to be increasing by a factor 10 instead of 4 or 5. But unfortunately, the parallel aspects of ripgrep (thinking about the recursive directory traversal) are piggish in a way that isn&#x27;t a simple linear increase with the number of threads. And I don&#x27;t know how to fix it, sadly.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2021-03-15 23:47</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-03-15 23:47</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> removed by @BurntSushi on 2021-03-15 23:48</div>
+            <div class="event">Label <span class="label">question</span> removed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-03-15 23:48</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2021-03-15 23:48</div>
+            <div class="event">Label <span class="label">wontfix</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-03-15 23:48</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Shnatsel">@Shnatsel</a> on 2021-03-16 00:00</div>
-            <div class="timeline-body"><p>Ah, I also have a directory structure that's very wide this time around, so that's what probably hogs all the memory. Some directories have 600,000 files in them. That's probably a contributing factor.</p>
+            <div class="timeline-body"><p>Ah, I also have a directory structure that&#x27;s very wide this time around, so that&#x27;s what probably hogs all the memory. Some directories have 600,000 files in them. That&#x27;s probably a contributing factor.</p>
 <p>What is the fundamental issue with introducing backpressure? Perhaps we can figure out some kind of solution.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-03-16 00:11</div>
             <div class="timeline-body"><p>This is the relevant code: https://github.com/BurntSushi/ripgrep/blob/c7730d1f3a366e42fdd497a1e0db4bf090de415c/crates/ignore/src/walk.rs#L1383-L1678</p>
-<p>The directory traverser is setup as a fixed thread pool. Each thread has a worker. Basically, what happens is that once you see a directory in a worker, you list its contents. All entries in that directory are then &quot;sent&quot; on a channel (implemented here as a thread safe stack). Each worker is waiting on things coming in the channel. When it pops an item off the stack, it's (roughly) either a file or a directory. If it's a file, it will execute the caller's function (which in ripgrep's case will perform the actual search, write to a buffer, etc.). If it's a directory, then it repeats the process: lists its contents and pushes every item on to the stack for the worker pool to process.</p>
+<p>The directory traverser is setup as a fixed thread pool. Each thread has a worker. Basically, what happens is that once you see a directory in a worker, you list its contents. All entries in that directory are then &quot;sent&quot; on a channel (implemented here as a thread safe stack). Each worker is waiting on things coming in the channel. When it pops an item off the stack, it&#x27;s (roughly) either a file or a directory. If it&#x27;s a file, it will execute the caller&#x27;s function (which in ripgrep&#x27;s case will perform the actual search, write to a buffer, etc.). If it&#x27;s a directory, then it repeats the process: lists its contents and pushes every item on to the stack for the worker pool to process.</p>
 <p>So what happens is that when you hit directories, the implementation immediately plops every single one of its entries on to the channel. And when it hits more directories, it keeps doing the same. Thus, my working theory is that it very quickly just plops the entire set of things to search on to this channel.</p>
 <p>Previously, I was using an asynchronous channel for this. And that gave us a breadth first traversal. But now we use a stack. Both things have this particular problem.</p>
-<p>The naive desire here would be to have a way for the stack to have a constrained size and prevent the workers from pushing more stuff on to it until the workers have completed more of the work. This is the fundamental problem that I have not figured out how to solve. More specifically, the difference between this problem and typical thread/worker formulations is that the producers and consumers <strong>are the same</strong>. So if you start constraining the stack, you aren't just constraining a producer but a consumer as well. And one invariably leads to deadlock. This is <a href="https://github.com/BurntSushi/ripgrep/blob/c7730d1f3a366e42fdd497a1e0db4bf090de415c/crates/ignore/src/walk.rs#L1601-L1635">why termination is subtle and weird</a>.</p>
-<p>Now, I am <em>not</em> claiming that this is itself an unsolvable problem. I do not have enough experience with this sort of thing to be certain about it. What I mean is that I just haven't figured out how to fix it.</p>
+<p>The naive desire here would be to have a way for the stack to have a constrained size and prevent the workers from pushing more stuff on to it until the workers have completed more of the work. This is the fundamental problem that I have not figured out how to solve. More specifically, the difference between this problem and typical thread/worker formulations is that the producers and consumers <strong>are the same</strong>. So if you start constraining the stack, you aren&#x27;t just constraining a producer but a consumer as well. And one invariably leads to deadlock. This is <a href="https://github.com/BurntSushi/ripgrep/blob/c7730d1f3a366e42fdd497a1e0db4bf090de415c/crates/ignore/src/walk.rs#L1601-L1635">why termination is subtle and weird</a>.</p>
+<p>Now, I am <em>not</em> claiming that this is itself an unsolvable problem. I do not have enough experience with this sort of thing to be certain about it. What I mean is that I just haven&#x27;t figured out how to fix it.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Shnatsel">@Shnatsel</a> on 2021-03-16 00:42</div>
             <div class="timeline-body"><p>Ah, so even leaving the files to be searched aside for a moment, completing some work on the directories may result in <em>more</em> directories being discovered that we have to add to the queue. This makes constraining the size of the directory queue very problematic because completing some work may create more work that we have to add to the queue.</p>
-<p>The file queue however doesn't suffer from this problem. So it should be possible to constrain the queue of those at least, and switch from discovering new files to searching the files that have been already discovered when the queue exceeds a certain size threshold. That should alleviate at least part of the problem.</p>
+<p>The file queue however doesn&#x27;t suffer from this problem. So it should be possible to constrain the queue of those at least, and switch from discovering new files to searching the files that have been already discovered when the queue exceeds a certain size threshold. That should alleviate at least part of the problem.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -216,22 +216,22 @@
 </blockquote>
 <p>Exactly.</p>
 <blockquote>
-<p>The file queue however doesn't suffer from this problem. So it should be possible to constrain the queue of those at least, and switch from discovering new files to searching the files that have been already discovered when the queue exceeds a certain size threshold. That should alleviate at least part of the problem.</p>
+<p>The file queue however doesn&#x27;t suffer from this problem. So it should be possible to constrain the queue of those at least, and switch from discovering new files to searching the files that have been already discovered when the queue exceeds a certain size threshold. That should alleviate at least part of the problem.</p>
 </blockquote>
-<p>This is an interesting idea. I can't immediately knock it down, so I'll re-open this, rename it and tag it with help wanted to see if anyone wants to take a crack at it. In theory, it should be a fairly isolated change. But it might be a tricky/subtle one.</p>
+<p>This is an interesting idea. I can&#x27;t immediately knock it down, so I&#x27;ll re-open this, rename it and tag it with help wanted to see if anyone wants to take a crack at it. In theory, it should be a fairly isolated change. But it might be a tricky/subtle one.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">wontfix</span> removed by @BurntSushi on 2021-03-16 00:59</div>
+            <div class="event">Label <span class="label">wontfix</span> removed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-03-16 00:59</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2021-03-16 00:59</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-03-16 00:59</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">help wanted</span> added by @BurntSushi on 2021-03-16 00:59</div>
+            <div class="event">Label <span class="label">help wanted</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-03-16 00:59</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "400Mb of memory used when searching ~10 million files" to "reduce memory usage of parallel directory traversal by using two different stacks" by @BurntSushi on 2021-03-16 00:59</div>
+            <div class="event">Renamed from &quot;400Mb of memory used when searching ~10 million files&quot; to &quot;reduce memory usage of parallel directory traversal by using two different stacks&quot; by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-03-16 00:59</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-03-16 13:28</div>
@@ -239,17 +239,17 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @BurntSushi on 2021-03-16 13:28</div>
+            <div class="event">Reopened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-03-16 13:28</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/edoardopirovano">@edoardopirovano</a> on 2021-07-06 17:18</div>
-            <div class="timeline-body"><p>Hi both! I've had a go at implementing the proposed change here https://github.com/edoardopirovano/ripgrep/tree/double-stack 🙂</p>
-<p>@Shnatsel If you've still got the data that you encountered the memory issues with, would you be able to try it out with my branch and see if that reduces your memory consumption? Locally, I can't seem to get much difference, but it's possible that I just don't have the right file/directory structure to cause issues (I tried 1,000 directories with 10,000 files each but observed no difference with both peaking around 41MB with 16 threads)</p>
+            <div class="timeline-body"><p>Hi both! I&#x27;ve had a go at implementing the proposed change here https://github.com/edoardopirovano/ripgrep/tree/double-stack 🙂</p>
+<p>@Shnatsel If you&#x27;ve still got the data that you encountered the memory issues with, would you be able to try it out with my branch and see if that reduces your memory consumption? Locally, I can&#x27;t seem to get much difference, but it&#x27;s possible that I just don&#x27;t have the right file/directory structure to cause issues (I tried 1,000 directories with 10,000 files each but observed no difference with both peaking around 41MB with 16 threads)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Shnatsel">@Shnatsel</a> on 2021-07-06 20:15</div>
-            <div class="timeline-body"><p>~~I have 10 directories with a million files each.~~ I'll try the branch, thanks!</p>
+            <div class="timeline-body"><p>~~I have 10 directories with a million files each.~~ I&#x27;ll try the branch, thanks!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -259,7 +259,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Shnatsel">@Shnatsel</a> on 2021-07-06 20:27</div>
-            <div class="timeline-body"><p>10 or so. Here's the exact output: https://gist.github.com/Shnatsel/f389152c908bbf78b5dfadbd7dec3f79</p>
+            <div class="timeline-body"><p>10 or so. Here&#x27;s the exact output: https://gist.github.com/Shnatsel/f389152c908bbf78b5dfadbd7dec3f79</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -269,12 +269,12 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2023-09-20 15:52</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-09-20 15:52</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:43:19 UTC
+        Synced at 2026-01-20 18:48:11 UTC
     </footer>
 </body>
 </html>

@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Snaptraks">@Snaptraks</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>When creating a new virtual environment in a directory that is inside a different filesystem than the Python interpreter, <code>uv sync</code> fails even with link mode set as copy.</p>
 <p>The way our infrastructure is set, the directory <code>smb_share/</code> inside the <code>/home/redacted/</code> is actually a CIFS mount to a Windows based file system. Creating the virtual environment fails at the linking of the Python interpreter, since the executable is inside the &quot;main&quot; file system.</p>
-<p>How would I go about installing the Python executable either inside the project's <code>.venv</code>, or on the same file system?</p>
+<p>How would I go about installing the Python executable either inside the project&#x27;s <code>.venv</code>, or on the same file system?</p>
 <p>The verbose debug log when syncing the environment, if it helps:</p>
 <pre><code>&gt; uv sync -v --link-mode copy
 DEBUG uv 0.6.3
@@ -47,30 +47,30 @@ DEBUG Using base executable for virtual environment: /home/redacted/miniforge3/b
 DEBUG Released lock at `/tmp/uv-01e8608fdf1bc070.lock`
 error: Operation not supported (os error 95)
 </code></pre>
-<h3>Platform</h3>
+Platform
 <p>Ubuntu 22.04.5 LTS x86_64</p>
-<h3>Version</h3>
+Version
 <p>uv 0.6.3</p>
-<h3>Python version</h3>
+Python version
 <p>Python 3.12.4</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @Snaptraks on 2025-03-03 16:06</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/Snaptraks">@Snaptraks</a> on 2025-03-03 16:06</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-03 17:53</div>
             <div class="timeline-body"><blockquote>
 <p>Creating the virtual environment fails at the linking of the Python interpreter, since the executable is inside the &quot;main&quot; file system.</p>
 </blockquote>
-<p>How are you determining this? We shouldn't be hard-linking the Python interpreter, we always use symlinks on Unix</p>
+<p>How are you determining this? We shouldn&#x27;t be hard-linking the Python interpreter, we always use symlinks on Unix</p>
 <p>https://github.com/astral-sh/uv/blob/53d1a7aa6e6ec4cadf0272218ea7d36ef9bc9f5a/crates/uv-virtualenv/src/virtualenv.rs#L160-L184</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Snaptraks">@Snaptraks</a> on 2025-03-03 18:58</div>
             <div class="timeline-body"><p>A symlink across such file systems (the host with the usual ext4 file system) and the CIFS one (under the <code>smb_share/</code> directory in my example) returns the same OS Error 95, operation not supported.</p>
-<pre><code class="language-py">Python 3.12.4 | (main, Jun 17 2024, 10:23:07) [GCC 12.3.0] on linux
+<pre><code>Python 3.12.4 | (main, Jun 17 2024, 10:23:07) [GCC 12.3.0] on linux
 Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
 &gt;&gt;&gt; from pathlib import Path
 &gt;&gt;&gt; Path(&quot;/home/redacted/smb_share/TeamMembers/redacted/uv_project/test.txt&quot;).symlink_to(Path(&quot;/home/redacted/test.txt&quot;))
@@ -78,7 +78,7 @@ Traceback (most recent call last):
   File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
   File &quot;/home/redacted/miniforge3/lib/python3.12/pathlib.py&quot;, line 1386, in symlink_to
     os.symlink(target, self, target_is_directory)
-OSError: [Errno 95] Operation not supported: '/home/francoishardy/test.txt' -&gt; '/home/redacted/smb_share/TeamMembers/redacted/uv_project/test.txt'
+OSError: [Errno 95] Operation not supported: &#x27;/home/francoishardy/test.txt&#x27; -&gt; &#x27;/home/redacted/smb_share/TeamMembers/redacted/uv_project/test.txt&#x27;
 </code></pre>
 <p>I figured the issue was with the Python symlink, since I get the exact same error when running <code>uv venv --python 3.12 -v</code> to change the Python version inside the virtual environment.</p>
 <pre><code>&gt; uv venv --python 3.12 -v
@@ -113,7 +113,7 @@ uv::venv::creation
 </blockquote>
 <p>Sadly no, would it make it not be supported then?</p>
 <pre><code>&gt; python -m venv .venv
-Error: [Errno 95] Operation not supported: 'lib' -&gt; '/home/redacted/smb_share/TeamMembers/redacted/uv_project/.venv/lib64'
+Error: [Errno 95] Operation not supported: &#x27;lib&#x27; -&gt; &#x27;/home/redacted/smb_share/TeamMembers/redacted/uv_project/.venv/lib64&#x27;
 </code></pre>
 </div>
         </div>
@@ -129,22 +129,22 @@ Error: [Errno 95] Operation not supported: 'lib' -&gt; '/home/redacted/smb_share
 </blockquote>
 <p>Same error once again</p>
 <pre><code>&gt; python -m venv --copies .venv
-Error: [Errno 95] Operation not supported: 'lib' -&gt; '/home/redacted/smb_share/TeamMembers/redacted/uv_project/.venv/lib64'
+Error: [Errno 95] Operation not supported: &#x27;lib&#x27; -&gt; &#x27;/home/redacted/smb_share/TeamMembers/redacted/uv_project/.venv/lib64&#x27;
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-03 19:44</div>
-            <div class="timeline-body"><p>It sounds like you need https://github.com/astral-sh/uv/issues/7865</p>
+            <div class="timeline-body"><p>It sounds like you need <a href="https://github.com/astral-sh/uv/issues/7865">astral-sh/uv#7865</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-03 20:17</div>
-            <div class="timeline-body"><p>I don't think that's sufficient (it might be necessary though). I think the error they're seeing here is that the distro symlinks <code>lib</code> to <code>lib64</code> (<code>purelib</code> and <code>platlib</code>, or something -- can't remember the details).</p>
+            <div class="timeline-body"><p>I don&#x27;t think that&#x27;s sufficient (it might be necessary though). I think the error they&#x27;re seeing here is that the distro symlinks <code>lib</code> to <code>lib64</code> (<code>purelib</code> and <code>platlib</code>, or something -- can&#x27;t remember the details).</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Hardlinking Python interpreter fails due to different filesystem" to "Symlinking Python interpreter fails due to different filesystem" by @Snaptraks on 2025-03-04 14:26</div>
+            <div class="event">Renamed from &quot;Hardlinking Python interpreter fails due to different filesystem&quot; to &quot;Symlinking Python interpreter fails due to different filesystem&quot; by <a href="https://github.com/Snaptraks">@Snaptraks</a> on 2025-03-04 14:26</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Snaptraks">@Snaptraks</a> on 2025-03-04 14:31</div>
@@ -187,7 +187,7 @@ lrwxr-xr-x   1 zb  staff    17B Feb 24 21:28 python3-config -&gt; python3.13-con
 -rwxr-xr-x   1 zb  staff    49K Feb 24 21:28 python3.13
 -rwxr-xr-x   1 zb  staff   2.1K Feb 24 21:28 python3.13-config
 </code></pre>
-<p>Unfortunately this seems painful to fix. I guess we'd need to add opt-in copy fallback to the tar crate?</p>
+<p>Unfortunately this seems painful to fix. I guess we&#x27;d need to add opt-in copy fallback to the tar crate?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -197,16 +197,16 @@ lrwxr-xr-x   1 zb  staff    17B Feb 24 21:28 python3-config -&gt; python3.13-con
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-18 19:20</div>
-            <div class="timeline-body"><p>I think we'll consider this out of scope for now. Thanks for understanding.</p>
+            <div class="timeline-body"><p>I think we&#x27;ll consider this out of scope for now. Thanks for understanding.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2025-03-18 19:20</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-18 19:20</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:30:13 UTC
+        Synced at 2026-01-20 19:37:35 UTC
     </footer>
 </body>
 </html>

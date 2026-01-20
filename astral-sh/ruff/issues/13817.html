@@ -28,7 +28,7 @@
 This may be a duplicate. <code>RUF027</code> as a rule is nuanced, I am not sure if this may be duplicating a known caveat of <code>RUF027</code>. Fine to close if this works as intended or is a duplicate. Thank you!</p>
 </blockquote>
 <p><a href="https://docs.astral.sh/ruff/rules/missing-f-string-syntax/"><code>RUF027</code></a> is a preview. This is tested with <a href="https://github.com/astral-sh/ruff/releases/tag/0.7.0"><code>0.7.0</code></a>.</p>
-<h1>Example case: MyST Markdown test fixtures</h1>
+Example case: MyST Markdown test fixtures
 <p>via Project: gp-libs (<a href="https://github.com/git-pull/gp-libs">repo</a>, <a href="https://gp-libs.git-pull.com/">docs</a>, <a href="https://pypi.org/project/gp-libs/">PyPI</a>)</p>
 <p>Examples of strings where <code>{doctest}</code> wants to be preserved:</p>
 <ul>
@@ -36,7 +36,7 @@ This may be a duplicate. <code>RUF027</code> as a rule is nuanced, I am not sure
 <li>https://github.com/git-pull/gp-libs/blob/v0.0.7/tests/test_doctest_docutils.py#L119-L125</li>
 </ul>
 <p>Excerpt:</p>
-<pre><code class="language-python">FIXTURES = [
+<pre><code>FIXTURES = [
     #
     # Docutils
     #
@@ -72,11 +72,11 @@ This may be a duplicate. <code>RUF027</code> as a rule is nuanced, I am not sure
     ),
 ]
 </code></pre>
-<h2>More details</h2>
+More details
 <p>File (<a href="https://github.com/git-pull/gp-libs/blob/v0.0.7/tests/test_doctest_docutils.py">source</a>):</p>
-<details>
 
-<pre><code class="language-python">&quot;&quot;&quot;Tests for doctest_docutils.&quot;&quot;&quot;
+
+<pre><code>&quot;&quot;&quot;Tests for doctest_docutils.&quot;&quot;&quot;
 
 import doctest
 import pathlib
@@ -167,7 +167,7 @@ FIXTURES = [
         files={
             &quot;example.md&quot;: textwrap.dedent(
                 &quot;&quot;&quot;
-Here's a test:
+Here&#x27;s a test:
 
     &gt;&gt;&gt; 4 + 4
     8
@@ -325,7 +325,7 @@ def test_DocutilsDocTestFinder(
     for test in tests:
         doctest.DebugRunner(verbose=False).run(test)
 </code></pre>
-</details>
+
 
 <p>Command:</p>
 <pre><code>ruff check . --select RUF027 --fix --unsafe-fixes --preview --show-fixes; ruff format .;
@@ -341,26 +341,26 @@ Found 2 errors (2 fixed, 0 remaining).
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-10-19 19:14</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-19 19:14</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-19 19:14</div>
             <div class="timeline-body"><p>It took me a bit to reproduce so I created a <a href="https://play.ruff.rs/6ebf7ab4-fe76-4c4b-b96e-2a2f28af4382">playground</a> demonstrating the false positive.</p>
-<p>I'm afraid. I don't think there's much that can be done here unless you're aware of a specific pattern that we can detect to suppress the false positive.</p>
+<p>I&#x27;m afraid. I don&#x27;t think there&#x27;s much that can be done here unless you&#x27;re aware of a specific pattern that we can detect to suppress the false positive.</p>
 <p>To me it seems that avoiding this false positive would require understanding this specific API because it very much looks like a possible f-string, at least without knowing more about sphinx.</p>
 <p>I recommend you to disable the rule with a <code>noqa</code> comment.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-19 22:42</div>
-            <div class="timeline-body"><p>I agree with @MichaReiser here, sadly. There are things we can try to do to reduce the false positives for RUF027 (I'm trying a few of them in https://github.com/astral-sh/ruff/pull/13076, though I need to revisit that PR at some point). But I can't see a way we'd ever be able to prevent this false positive in particular without hardcoding some knowledge of Sphinx's API into the rule -- which I'm somewhat reluctant to do.</p>
+            <div class="timeline-body"><p>I agree with @MichaReiser here, sadly. There are things we can try to do to reduce the false positives for RUF027 (I&#x27;m trying a few of them in <a href="https://github.com/astral-sh/ruff/pull/13076">astral-sh/ruff#13076</a>, though I need to revisit that PR at some point). But I can&#x27;t see a way we&#x27;d ever be able to prevent this false positive in particular without hardcoding some knowledge of Sphinx&#x27;s API into the rule -- which I&#x27;m somewhat reluctant to do.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tony">@tony</a> on 2024-10-19 23:05</div>
             <div class="timeline-body"><p>@MichaReiser @AlexWaygood Thank you.</p>
-<p>in re: https://github.com/git-pull/gp-libs/pull/35, <code>ignore: RUF027</code> at the end of the string does the trick:</p>
-<pre><code class="language-diff">diff --git a/tests/test_doctest_docutils.py b/tests/test_doctest_docutils.py
+<p>in re: <a href="https://github.com/git-pull/gp-libs/pull/35">git-pull/gp-libs#35</a>, <code>ignore: RUF027</code> at the end of the string does the trick:</p>
+<pre><code>diff --git a/tests/test_doctest_docutils.py b/tests/test_doctest_docutils.py
 index b21f22e..73161ff 100644
 --- a/tests/test_doctest_docutils.py
 +++ b/tests/test_doctest_docutils.py
@@ -403,12 +403,12 @@ index b21f22e..73161ff 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-19 23:11</div>
-            <div class="timeline-body"><p>I think I'll close this; I can't see a reasonable way of improving our behaviour here, at least in the short-to-medium term :/</p>
-<p>Thanks for opening the issue, sorry we can't do more on this one!</p>
+            <div class="timeline-body"><p>I think I&#x27;ll close this; I can&#x27;t see a reasonable way of improving our behaviour here, at least in the short-to-medium term :/</p>
+<p>Thanks for opening the issue, sorry we can&#x27;t do more on this one!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2024-10-19 23:11</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-19 23:11</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tony">@tony</a> on 2024-10-19 23:15</div>
@@ -418,7 +418,7 @@ index b21f22e..73161ff 100644
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:51:19 UTC
+        Synced at 2026-01-20 18:48:59 UTC
     </footer>
 </body>
 </html>

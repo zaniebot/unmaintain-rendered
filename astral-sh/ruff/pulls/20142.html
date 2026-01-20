@@ -23,32 +23,32 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Small, incremental progress towards checking the types of method members.</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>Added an mdtest</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-08-28 19:55</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-28 19:55</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-28 19:57</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a>
 <p>No changes detected when running ty on typing conformance tests ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-28 19:59</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">freqtrade (https://github.com/freqtrade/freqtrade)
+Changes were detected when running on open source projects
+
+<pre><code>freqtrade (https://github.com/freqtrade/freqtrade)
 + freqtrade/data/btanalysis/bt_fileutils.py:377:22: error[invalid-argument-type] Argument to bound method `drop` is incorrect: Expected `Hashable | Index[Any]`, found `list[@Todo(list literal element type)]`
 + freqtrade/freqai/RL/BaseReinforcementLearningModel.py:371:13: error[no-matching-overload] No overload of bound method `drop` matches arguments
 + freqtrade/optimize/backtesting.py:479:32: error[invalid-argument-type] Argument to bound method `drop` is incorrect: Expected `Hashable | Index[Any]`, found `Unknown | list[@Todo(list literal element type)]`
@@ -56,7 +56,7 @@
 + Found 387 diagnostics
 
 </code></pre>
-</details>
+
 No memory usage changes detected ✅
 
 </div>
@@ -64,7 +64,7 @@ No memory usage changes detected ✅
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-28 20:26</div>
             <div class="timeline-body"><blockquote>
-<pre><code class="language-diff">freqtrade (https://github.com/freqtrade/freqtrade)
+<pre><code>freqtrade (https://github.com/freqtrade/freqtrade)
 + freqtrade/data/btanalysis/bt_fileutils.py:377:22: error[invalid-argument-type] Argument to bound method `drop` is incorrect: Expected `Hashable | Index[Any]`, found `list[@Todo(list literal element type)]`
 + freqtrade/freqai/RL/BaseReinforcementLearningModel.py:371:13: error[no-matching-overload] No overload of bound method `drop` matches arguments
 + freqtrade/optimize/backtesting.py:479:32: error[invalid-argument-type] Argument to bound method `drop` is incorrect: Expected `Hashable | Index[Any]`, found `Unknown | list[@Todo(list literal element type)]`
@@ -72,25 +72,25 @@ No memory usage changes detected ✅
 + Found 387 diagnostics
 </code></pre>
 </blockquote>
-<p>For these diagnostics, it looks like our eager simplification of unions is coming up against the fact that <code>Hashable</code> fundamentally doesn't make sense as a type in Python. (I wish pandas-stubs wouldn't use it quite so much!)</p>
-<p>The relevant overload for <code>pandas.DataFrame.drop()</code> (inherited from its base class <code>NDFrame</code>) is here: https://github.com/pandas-dev/pandas-stubs/blob/e959fc933b024f7af6ad6efb5e8f07e8772ede61/pandas-stubs/core/generic.pyi#L341-L352. We can see that it is annotated with <code>Hashable | Sequence[Hashable] | Index[Any]</code>, which I think ty then immediately simplifies to <code>Hashable | Index[Any]</code>, since <code>Sequence[Hashable]</code> is a subtype of <code>Hashable</code>. The only trouble is, <code>list[Unknown]</code> and <code>list[str]</code> are both assignable to <code>Sequence[Hashable]</code> but not to <code>Hashable</code> (because <code>list</code> overrides <code>__hash__</code> with <code>None</code> in typeshed's stubs to indicate that it is not hashable). That then leads us to reject this call <a href="https://github.com/freqtrade/freqtrade/blob/1cf1d9e3d7af4c18b09e2d6e83b4da5eadfe004c/freqtrade/data/btanalysis/bt_fileutils.py#L377">here</a>, even though it's clearly meant to be allowed.</p>
+<p>For these diagnostics, it looks like our eager simplification of unions is coming up against the fact that <code>Hashable</code> fundamentally doesn&#x27;t make sense as a type in Python. (I wish pandas-stubs wouldn&#x27;t use it quite so much!)</p>
+<p>The relevant overload for <code>pandas.DataFrame.drop()</code> (inherited from its base class <code>NDFrame</code>) is here: https://github.com/pandas-dev/pandas-stubs/blob/e959fc933b024f7af6ad6efb5e8f07e8772ede61/pandas-stubs/core/generic.pyi#L341-L352. We can see that it is annotated with <code>Hashable | Sequence[Hashable] | Index[Any]</code>, which I think ty then immediately simplifies to <code>Hashable | Index[Any]</code>, since <code>Sequence[Hashable]</code> is a subtype of <code>Hashable</code>. The only trouble is, <code>list[Unknown]</code> and <code>list[str]</code> are both assignable to <code>Sequence[Hashable]</code> but not to <code>Hashable</code> (because <code>list</code> overrides <code>__hash__</code> with <code>None</code> in typeshed&#x27;s stubs to indicate that it is not hashable). That then leads us to reject this call <a href="https://github.com/freqtrade/freqtrade/blob/1cf1d9e3d7af4c18b09e2d6e83b4da5eadfe004c/freqtrade/data/btanalysis/bt_fileutils.py#L377">here</a>, even though it&#x27;s clearly meant to be allowed.</p>
 <p>I guess to fix this we could either simplify unions less or special-case <code>Hashable</code> in some way? Not sure.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[ty] Small incremental progress towards checking the types of method members on protocols" to "[ty] Enforce that an attribute on a class `X` must be callable in order to satisfy a member on a protocol `P`" by @AlexWaygood on 2025-08-28 20:26</div>
+            <div class="event">Renamed from &quot;[ty] Small incremental progress towards checking the types of method members on protocols&quot; to &quot;[ty] Enforce that an attribute on a class `X` must be callable in order to satisfy a member on a protocol `P`&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-28 20:26</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @AlexWaygood on 2025-08-28 20:28</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-28 20:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-08-28 20:28</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-28 20:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-08-28 20:28</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-28 20:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-08-28 20:28</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-28 20:28</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-08-28 23:10</div>
@@ -98,10 +98,10 @@ No memory usage changes detected ✅
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @AlexWaygood on 2025-08-29 07:31</div>
+            <div class="event">Merged by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-29 07:31</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-08-29 07:31</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-29 07:31</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-08-29 07:31</div>
@@ -109,7 +109,7 @@ No memory usage changes detected ✅
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:15:23 UTC
+        Synced at 2026-01-20 19:18:08 UTC
     </footer>
 </body>
 </html>

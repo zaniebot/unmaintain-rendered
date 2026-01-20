@@ -23,12 +23,12 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/RayBB">@RayBB</a></div>
-            <div class="timeline-body"><h3>Description</h3>
-<p>Hi there! I've been working on enabling RUF012 (Mutable class variables should not have default values) for OpenLibrary, and I believe the documentation for this rule could be enhanced to make it more actionable and clear. Specifically, I'd like to propose the following improvements:</p>
-<h2>1. Provide a Suggestion/Example for Immutable Types That Work for dict:</h2>
-<p>The current documentation for RUF012 highlights the issue of mutable default values in class variables but doesn't provide a concrete example of how to handle dict types immutably. A common solution is to use types.MappingProxyType, which creates an immutable wrapper around a dictionary. Adding an example of this would make the rule more practical and easier to implement.</p>
+            <div class="timeline-body">Description
+<p>Hi there! I&#x27;ve been working on enabling RUF012 (Mutable class variables should not have default values) for OpenLibrary, and I believe the documentation for this rule could be enhanced to make it more actionable and clear. Specifically, I&#x27;d like to propose the following improvements:</p>
+1. Provide a Suggestion/Example for Immutable Types That Work for dict:
+<p>The current documentation for RUF012 highlights the issue of mutable default values in class variables but doesn&#x27;t provide a concrete example of how to handle dict types immutably. A common solution is to use types.MappingProxyType, which creates an immutable wrapper around a dictionary. Adding an example of this would make the rule more practical and easier to implement.</p>
 <p>Example:</p>
-<pre><code class="language-python">from types import MappingProxyType
+<pre><code>from types import MappingProxyType
 
 class MyClass:
     # Instead of a mutable dict
@@ -37,10 +37,10 @@ class MyClass:
     # Use an immutable MappingProxyType
     MY_DICT: MappingProxyType[str, str] = MappingProxyType({&quot;key&quot;: &quot;value&quot;})
 </code></pre>
-<h2>2. Provide an Example of Moving a Variable to Be an Instance Variable:</h2>
+2. Provide an Example of Moving a Variable to Be an Instance Variable:
 <p>Another way to address mutable class variables is to move them to instance variables initialized in <code>__init__</code>.</p>
 <p>Example:</p>
-<pre><code class="language-python">class MyClass:
+<pre><code>class MyClass:
     # Instead of a mutable class variable
     MY_LIST: list[int] = []
 
@@ -48,12 +48,12 @@ class MyClass:
     def __init__(self):
         self.my_list: list[int] = []
 </code></pre>
-<p>These additions would make the documentation more comprehensive and actionable, especially for developers who are new to the rule or Python's best practices for immutability.</p>
-<p>I hope this is helpful. Unfortunately, I don't have time now to update the docs myself but wanted to at least create an issue for it. Thanks for your time and consideration!</p>
+<p>These additions would make the documentation more comprehensive and actionable, especially for developers who are new to the rule or Python&#x27;s best practices for immutability.</p>
+<p>I hope this is helpful. Unfortunately, I don&#x27;t have time now to update the docs myself but wanted to at least create an issue for it. Thanks for your time and consideration!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">documentation</span> added by @dylwil3 on 2025-01-29 10:43</div>
+            <div class="event">Label <span class="label">documentation</span> added by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-01-29 10:43</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-02 16:14</div>
@@ -67,8 +67,8 @@ class MyClass:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-03 09:52</div>
-            <div class="timeline-body"><p>it looks good to me. I'd probably simplify 2 to have the annotation on the instance attribute</p>
-<pre><code class="language-python">class A:
+            <div class="timeline-body"><p>it looks good to me. I&#x27;d probably simplify 2 to have the annotation on the instance attribute</p>
+<pre><code>class A:
     mutable_default: list[int]
     immutable_default: list[int]
 
@@ -82,8 +82,8 @@ class MyClass:
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-03 11:20</div>
             <div class="timeline-body"><p>Improving the examples makes sense to me! These seem like great suggestions overall.</p>
-<p>I'm undecided on whether it makes sense to mention <code>MappingProxyType</code> specifically. It's true that this is one way to fix the issue:</p>
-<pre><code class="language-diff">+ from types import MappingProxyType
+<p>I&#x27;m undecided on whether it makes sense to mention <code>MappingProxyType</code> specifically. It&#x27;s true that this is one way to fix the issue:</p>
+<pre><code>+ from types import MappingProxyType
 + from collections.abc import Mapping
 +
   class A:
@@ -91,14 +91,14 @@ class MyClass:
 +     instance_dict: Mapping[str, str] = MappingProxyType({&quot;key&quot;: &quot;value&quot;})
 </code></pre>
 <p>But I think the more common way to fix the issue (assuming you want to keep it as an instance variable rather than a class variable) would be to do this:</p>
-<pre><code class="language-diff">  class A:
+<pre><code>  class A:
 -     instance_dict: dict[str, str] = {&quot;key&quot;: &quot;value&quot;}
 +
 +     def __init__(self) -&gt; None:
 +         self.instance_dict: dict[str, str] = {&quot;key&quot;: &quot;value&quot;}
 </code></pre>
 <p>or this:</p>
-<pre><code class="language-diff">  class A:
+<pre><code>  class A:
 -     instance_dict: dict[str, str] = {&quot;key&quot;: &quot;value&quot;}
 +     instance_dict: dict[str, str] | None = None
 </code></pre>
@@ -109,20 +109,20 @@ class MyClass:
             <div class="timeline-header">Comment by <a href="https://github.com/RayBB">@RayBB</a> on 2025-02-05 21:52</div>
             <div class="timeline-body"><p>Hey folks, thanks for the input here.
 I opened a PR based on your comments.
-I'm not particularly attached to it so feel free to edit it directly and merge as you see fit.</p>
+I&#x27;m not particularly attached to it so feel free to edit it directly and merge as you see fit.</p>
 <p>https://github.com/astral-sh/ruff/pull/15982</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2025-02-06 14:01</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-06 14:01</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2025-02-06 14:01</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-06 14:01</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:52:06 UTC
+        Synced at 2026-01-20 18:49:24 UTC
     </footer>
 </body>
 </html>

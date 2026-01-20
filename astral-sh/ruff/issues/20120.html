@@ -23,54 +23,54 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/gcbrownthrive">@gcbrownthrive</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<p>It's well known that importing python modules doesn't necessarily import the submodules. It appears that F401 doesn't take into account some of the edge cases due to this behavior.</p>
+            <div class="timeline-body">Summary
+<p>It&#x27;s well known that importing python modules doesn&#x27;t necessarily import the submodules. It appears that F401 doesn&#x27;t take into account some of the edge cases due to this behavior.</p>
 <p>In the example below, <code>snowflake.connector</code> does NOT import <code>snowflake.connector.pandas_tools</code>, so line 2 is necessary. But <code>F401</code> assumes that line 2 is unused because it thinks the function is already accessible due to line 1.</p>
 <p>This is reproducible with the 3 lines shown in the screenshot, and the command <code>ruff test.py</code>.</p>
-<p><img width="743" height="210" alt="Image" src="https://github.com/user-attachments/assets/221d7840-4d1a-4766-9beb-2317475a8733" /></p>
-<h3>Version</h3>
+<p><img alt="Image" src="https://github.com/user-attachments/assets/221d7840-4d1a-4766-9beb-2317475a8733"></p>
+Version
 <p>ruff 0.12.10</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-28 01:54</div>
-            <div class="timeline-body"><p>Submodule imports are definitely a bit touchy, see https://github.com/astral-sh/ruff/issues/4656 as one other example, but I think a better solution here is either:</p>
-<pre><code class="language-py">from snowflake.connector.pandas_tools import write_pandas
+            <div class="timeline-body"><p>Submodule imports are definitely a bit touchy, see <a href="https://github.com/astral-sh/ruff/issues/4656">astral-sh/ruff#4656</a> as one other example, but I think a better solution here is either:</p>
+<pre><code>from snowflake.connector.pandas_tools import write_pandas
 
 write_pandas()
 </code></pre>
 <p>or</p>
-<pre><code class="language-py">import snowflake.connector.pandas_tools
+<pre><code>import snowflake.connector.pandas_tools
 
 snowflake.connector.pandas_tools.write_pandas()
 </code></pre>
-<p>both of which will avoid F401, so I think the diagnostic isn't exactly wrong, although the suggestion to remove the import certainly is misleading. You can also see this in a case like this:</p>
-<pre><code class="language-py">from snowflake.connector.pandas_tools import write_pandas  # F401
+<p>both of which will avoid F401, so I think the diagnostic isn&#x27;t exactly wrong, although the suggestion to remove the import certainly is misleading. You can also see this in a case like this:</p>
+<pre><code>from snowflake.connector.pandas_tools import write_pandas  # F401
 
 snowflake.connector.pandas_tools.write_pandas()
 </code></pre>
 <p>without the first import. Ruff is trying to tell you that the <code>from</code>-style import is unnecessary, I think.</p>
-<p>Here are these examples in the <a href="https://play.ruff.rs/a9e0f618-e210-45e7-afb2-ec5415430a1f">playground</a>. I wrapped each one in a function just to make sure they don't interfere with each other.</p>
+<p>Here are these examples in the <a href="https://play.ruff.rs/a9e0f618-e210-45e7-afb2-ec5415430a1f">playground</a>. I wrapped each one in a function just to make sure they don&#x27;t interfere with each other.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @ntBre on 2025-08-28 01:54</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-28 01:54</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/gcbrownthrive">@gcbrownthrive</a> on 2025-08-29 19:40</div>
-            <div class="timeline-body"><p>I think I see why this is complicated, but I'd say that its suggestion is definitely wrong. If I removed the import it's telling me to, the code would not run. If I ran <code>ruff check --fix test.py</code>, the code would not run. According to the docs (https://docs.astral.sh/ruff/rules/unused-import/), &quot;Fixes to remove unused imports are safe&quot;. But this is unsafe behavior, so either the docs need to be updated or this behavior should be fixed.</p>
+            <div class="timeline-body"><p>I think I see why this is complicated, but I&#x27;d say that its suggestion is definitely wrong. If I removed the import it&#x27;s telling me to, the code would not run. If I ran <code>ruff check --fix test.py</code>, the code would not run. According to the docs (https://docs.astral.sh/ruff/rules/unused-import/), &quot;Fixes to remove unused imports are safe&quot;. But this is unsafe behavior, so either the docs need to be updated or this behavior should be fixed.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-29 22:02</div>
-            <div class="timeline-body"><p>Oh you're right, I didn't realize this was a safe fix. That's definitely not good.</p>
+            <div class="timeline-body"><p>Oh you&#x27;re right, I didn&#x27;t realize this was a safe fix. That&#x27;s definitely not good.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> removed by @ntBre on 2025-08-29 22:02</div>
+            <div class="event">Label <span class="label">question</span> removed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-29 22:02</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-08-29 22:02</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-29 22:02</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-15 14:41</div>
@@ -84,45 +84,45 @@ snowflake.connector.pandas_tools.write_pandas()
 </blockquote>
 <p>It does not, unfortunately. As I mention in the PR summary, the change is the least ambitious possible 😄</p>
 <p>I think this situation would be pretty difficult for F401 to detect since it relies on very subtle behavior of the Python import system. For example, notice that</p>
-<pre><code class="language-python">from a.b import foo
+<pre><code>from a.b import foo
 
 a.b.foo()
 </code></pre>
 <p>fails with a name error because the symbol <code>a</code> is not bound. The code snippet in the OP is pretty misleading because it could equally well be written in any of the following ways and still run:</p>
-<pre><code class="language-python">import snowflake.connector
+<pre><code>import snowflake.connector
 from snowflake.connector.pandas_tools import something_completely_different_from_that_module
 
 snowflake.connector.pandas_tools.write_pandas()
 </code></pre>
-<pre><code class="language-python">import snowflake.connector
+<pre><code>import snowflake.connector
 from snowflake.connector import pandas_tools
 
 snowflake.connector.pandas_tools.write_pandas()
 </code></pre>
-<pre><code class="language-python">import snowflake.connector
+<pre><code>import snowflake.connector
 from snowflake.connector import pandas_tools as foo
 
 snowflake.connector.pandas_tools.write_pandas()
 </code></pre>
-<p>I don't even really know where that behavior is documented / whether it's part of the <em>specification</em> or if it's an artifact of the implementation of from imports - which caches submodule imports as valid members of the top-level module, even if they are aliased. I don't think we model this behavior at all? I don't have an immediately helpful suggestion for how to proceed... but I'll try to think about it.</p>
+<p>I don&#x27;t even really know where that behavior is documented / whether it&#x27;s part of the <em>specification</em> or if it&#x27;s an artifact of the implementation of from imports - which caches submodule imports as valid members of the top-level module, even if they are aliased. I don&#x27;t think we model this behavior at all? I don&#x27;t have an immediately helpful suggestion for how to proceed... but I&#x27;ll try to think about it.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/danparizher">@danparizher</a> on 2025-09-16 19:42</div>
             <div class="timeline-body"><blockquote>
-<p>I don't even really know where that behavior is documented / whether it's part of the <em>specification</em> or if it's an artifact of the implementation of from imports - which caches submodule imports as valid members of the top-level module, even if they are aliased. I don't think we model this behavior at all? I don't have an immediately helpful suggestion for how to proceed... but I'll try to think about it.</p>
+<p>I don&#x27;t even really know where that behavior is documented / whether it&#x27;s part of the <em>specification</em> or if it&#x27;s an artifact of the implementation of from imports - which caches submodule imports as valid members of the top-level module, even if they are aliased. I don&#x27;t think we model this behavior at all? I don&#x27;t have an immediately helpful suggestion for how to proceed... but I&#x27;ll try to think about it.</p>
 </blockquote>
 <p>I did some digging and found that it’s documented (and specified) that importing a submodule binds it as an attribute of its parent package. The import statement reference notes that for forms like <code>import package.submodule</code>, only <code>package</code> is bound in the local namespace, and <code>submodule</code> is accessed as an attribute of <code>package</code>—which implies the binding on the parent object.</p>
 <p>So, the behavior described isn’t merely an implementation artifact; it’s part of the language’s specified import semantics.</p>
 <p>https://docs.python.org/3/tutorial/modules.html#packages
 https://docs.python.org/3/library/importlib.html#importlib.import_module</p>
-<p>When it comes to implementing a fix, my idea of a conservative approach could be to detect the pattern where we have both <code>import package</code> and <code>from package.submodule import ...</code> alongside qualified usage like <code>package.submodule.*</code>. In these cases, instead of suggesting removal of the submodule import, we could either suppress the F401 autofix entirely or suggest a safe rewrite like <code>import package.submodule</code> to maintain the qualified access pattern. This would keep the &quot;Fixes to remove unused imports are safe&quot; guarantee accurate while avoiding the complex task of modeling Python's import-time attribute binding behavior.</p>
+<p>When it comes to implementing a fix, my idea of a conservative approach could be to detect the pattern where we have both <code>import package</code> and <code>from package.submodule import ...</code> alongside qualified usage like <code>package.submodule.*</code>. In these cases, instead of suggesting removal of the submodule import, we could either suppress the F401 autofix entirely or suggest a safe rewrite like <code>import package.submodule</code> to maintain the qualified access pattern. This would keep the &quot;Fixes to remove unused imports are safe&quot; guarantee accurate while avoiding the complex task of modeling Python&#x27;s import-time attribute binding behavior.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:53:16 UTC
+        Synced at 2026-01-20 18:50:23 UTC
     </footer>
 </body>
 </html>

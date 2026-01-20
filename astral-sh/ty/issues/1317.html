@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/lypwig">@lypwig</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>Example:</p>
-<pre><code class="language-py">from typing import Literal
+<pre><code>from typing import Literal
 
 def foo1(bar: str) -&gt; Literal[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]:
     return &quot;a&quot; if bar else &quot;b&quot; # ok
@@ -37,23 +37,23 @@ def foo2(bar: str) -&gt; Literal[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]:
 <p>Return type does not match returned value: expected <code>Literal[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]</code>, found <code>str</code> (ty invalid-return-type)</p>
 </blockquote>
 <p><a href="https://play.ty.dev/85ec67d0-adaf-4de8-8cb1-b08fe0e7f06b">Playground</a></p>
-<h3>Version</h3>
+Version
 <p>ty 0.0.1-alpha.20</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-07 10:31</div>
             <div class="timeline-body"><p>Thanks for the feature request!</p>
-<p>Currently it's a deliberate decision for us not to do this kind of type narrowing, because it's not sound in all cases. For example, in the following snippet, a type checker should understand <code>Sneaky</code> here as being a subtype of <code>str</code> (and therefore would not emit an error on it if you passed an instance of <code>Sneaky</code> into your <code>foo2</code> function). But you <code>bar in [&quot;a&quot;, &quot;b&quot;]</code> check doesn't narrow an instance of <code>Sneaky</code> to <code>Literal[&quot;a&quot;, &quot;b&quot;]</code> -- it only works for instances of exactly <code>str</code>:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; class Sneaky(str):
+<p>Currently it&#x27;s a deliberate decision for us not to do this kind of type narrowing, because it&#x27;s not sound in all cases. For example, in the following snippet, a type checker should understand <code>Sneaky</code> here as being a subtype of <code>str</code> (and therefore would not emit an error on it if you passed an instance of <code>Sneaky</code> into your <code>foo2</code> function). But you <code>bar in [&quot;a&quot;, &quot;b&quot;]</code> check doesn&#x27;t narrow an instance of <code>Sneaky</code> to <code>Literal[&quot;a&quot;, &quot;b&quot;]</code> -- it only works for instances of exactly <code>str</code>:</p>
+<pre><code>&gt;&gt;&gt; class Sneaky(str):
 ...     def __eq__(self, other):
 ...         return True
 ...         
 &gt;&gt;&gt; Sneaky(&quot;mwahaha&quot;) in [&quot;a&quot;, &quot;b&quot;]
 True
 </code></pre>
-<p>If I make two modifications to your example, we do apply type narrowing in the way you'd like:</p>
-<pre><code class="language-py">from typing import Literal, LiteralString
+<p>If I make two modifications to your example, we do apply type narrowing in the way you&#x27;d like:</p>
+<pre><code>from typing import Literal, LiteralString
 
 def foo2(bar: LiteralString) -&gt; Literal[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]:
     return bar if bar in (&quot;a&quot;, &quot;b&quot;) else &quot;c&quot;
@@ -61,27 +61,27 @@ def foo2(bar: LiteralString) -&gt; Literal[&quot;a&quot;, &quot;b&quot;, &quot;c
 <p>The changes are to:</p>
 <ul>
 <li>Use <code>LiteralString</code> rather than <code>str</code> for the <code>bar</code> annotation (objects of type <code>LiteralString</code> are guaranteed to be instances of &quot;exactly <code>str</code>, not subclasses of <code>str</code>, so this gets around the unsoundness issue)</li>
-<li>Use a tuple instead of a list. That's because we currently infer the type of the list as <code>list[str | Unknown]</code>, but we infer the type of the tuple as <code>tuple[Literal[&quot;a&quot;], Literal[&quot;b&quot;]]</code>, which makes it easier for us to narrow the type from an <code>in</code> check.</li>
+<li>Use a tuple instead of a list. That&#x27;s because we currently infer the type of the list as <code>list[str | Unknown]</code>, but we infer the type of the tuple as <code>tuple[Literal[&quot;a&quot;], Literal[&quot;b&quot;]]</code>, which makes it easier for us to narrow the type from an <code>in</code> check.</li>
 </ul>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">narrowing</span> added by @AlexWaygood on 2025-10-07 10:31</div>
+            <div class="event">Label <span class="label">narrowing</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-07 10:31</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @AlexWaygood on 2025-10-07 10:34</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-07 10:34</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "String should be treated as literals if compared explicitly" to "Narrow `str` to `Literal` type via `x in ["a", "b"]` check" by @AlexWaygood on 2025-10-07 10:35</div>
+            <div class="event">Renamed from &quot;String should be treated as literals if compared explicitly&quot; to &quot;Narrow `str` to `Literal` type via `x in [&quot;a&quot;, &quot;b&quot;]` check&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-07 10:35</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-10-07 12:37</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-07 12:37</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/lypwig">@lypwig</a> on 2025-10-07 12:41</div>
             <div class="timeline-body"><p>Thank you for the explanation and example!</p>
 <p>I tried some similar scenarios with a tuple and it works well (even pyright is happy, with which I was facing a similar issue).</p>
-<p>Should I assume that a tuple is generally preferred over a list, when it's not going to be modified and only contains literals?</p>
+<p>Should I assume that a tuple is generally preferred over a list, when it&#x27;s not going to be modified and only contains literals?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -92,7 +92,7 @@ def foo2(bar: LiteralString) -&gt; Literal[&quot;a&quot;, &quot;b&quot;, &quot;c
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:45 UTC
+        Synced at 2026-01-20 19:25:42 UTC
     </footer>
 </body>
 </html>

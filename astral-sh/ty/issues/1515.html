@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/emillon">@emillon</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>Hi,</p>
 <p>With the following code (<a href="https://play.ty.dev/2ee27f97-7ad8-4f4e-b22a-defeae8bf51f">playground link</a>):</p>
-<pre><code class="language-py">class A: pass
+<pre><code>class A: pass
 class B: pass
 
 class C:
@@ -43,36 +43,36 @@ class C:
             case B():
                 return &quot;B&quot;
 </code></pre>
-<p>The type of <code>self.x</code> is correctly revealed as <code>A|B</code> at the end of <code>__init__</code>. But at the beginning of <code>m</code>, it's revealed as <code>Unknown|A|B</code> which causes the <code>match</code> to be partial and an implicit return to be considered.
+<p>The type of <code>self.x</code> is correctly revealed as <code>A|B</code> at the end of <code>__init__</code>. But at the beginning of <code>m</code>, it&#x27;s revealed as <code>Unknown|A|B</code> which causes the <code>match</code> to be partial and an implicit return to be considered.
 How can I convince <code>ty</code> that this is correct?</p>
-<p>Things I've tried that work:</p>
+<p>Things I&#x27;ve tried that work:</p>
 <ul>
-<li>adding <code>x: A|B</code> as an annotation in <code>C</code>, but I'd like to avoid that as our code style currently has annotations in <code>__init__</code> arguments and I'd like to avoid duplicating these</li>
+<li>adding <code>x: A|B</code> as an annotation in <code>C</code>, but I&#x27;d like to avoid that as our code style currently has annotations in <code>__init__</code> arguments and I&#x27;d like to avoid duplicating these</li>
 </ul>
-<p>Things I've tried that don't work:</p>
+<p>Things I&#x27;ve tried that don&#x27;t work:</p>
 <ul>
 <li>adding <code>case _: assert_never(self.x)</code></li>
 <li>making <code>C</code> <code>@final</code></li>
 <li>annotating <code>self: &quot;C&quot;</code> in <code>m</code></li>
 </ul>
 <p>Thanks!</p>
-<h3>Version</h3>
+Version
 <p>alpha 25</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @sharkdp on 2025-11-10 15:12</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-11-10 15:12</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-11-10 15:16</div>
             <div class="timeline-body"><p>The implicit instance attribute <code>x</code> on <code>C</code> is unannotated, which means that ty would not catch an external mutation of that attribute on an instance of <code>C</code>. Consider:</p>
-<pre><code class="language-py">c = C(A())
+<pre><code>c = C(A())
 c.x = &quot;something else entirely&quot;
 print(&quot;The method returns: &quot; + c.m())  # would lead to an error at runtime
 </code></pre>
 <p>So adding <code>Unknown</code> to the union here is correct in this sense. It tells you that <code>self.x</code> inside <code>m</code> could be <code>A</code>, <code>B</code>, or something unknown.</p>
-<p>To fix this, you can either add an annotation in the body of <code>C</code>, as you've mentioned, or add an annotation to the assignment directly:</p>
-<pre><code class="language-py">    def __init__(self, x: A | B):
+<p>To fix this, you can either add an annotation in the body of <code>C</code>, as you&#x27;ve mentioned, or add an annotation to the assignment directly:</p>
+<pre><code>    def __init__(self, x: A | B):
         self.x: A | B = x
 </code></pre>
 <p>Once you do that, we would also catch the invalid external mutation.</p>
@@ -83,8 +83,8 @@ print(&quot;The method returns: &quot; + c.m())  # would lead to an error at run
             <div class="timeline-header">Comment by <a href="https://github.com/emillon">@emillon</a> on 2025-11-10 15:39</div>
             <div class="timeline-body"><p>Thanks for the clear explanation.</p>
 <p>I have a followup question regarding recommended style for these kinds of annotations.</p>
-<p>I believe that with <code>mypy</code>, you can either annotate <code>__init__</code> argument or provide a PEP526 annotation and it will be equivalent (the posted snipped works with no diagnostic in <code>mypy</code>). Combine that with <code>ruff</code>'s <a href="https://docs.astral.sh/ruff/rules/missing-type-function-argument/"><code>ANN001</code></a> and it will ensure that attributes are well typed.</p>
-<p>The distinction that <code>ty</code> makes is sensible because of the dynamic nature of python, but I wonder if there's a recommended way to check that all attributes are annotated, without having to repeat ourselves between the PEP526 annotation and the <code>__init__</code> arguments (that's more of a <code>ruff</code> question I suppose).</p>
+<p>I believe that with <code>mypy</code>, you can either annotate <code>__init__</code> argument or provide a PEP526 annotation and it will be equivalent (the posted snipped works with no diagnostic in <code>mypy</code>). Combine that with <code>ruff</code>&#x27;s <a href="https://docs.astral.sh/ruff/rules/missing-type-function-argument/"><code>ANN001</code></a> and it will ensure that attributes are well typed.</p>
+<p>The distinction that <code>ty</code> makes is sensible because of the dynamic nature of python, but I wonder if there&#x27;s a recommended way to check that all attributes are annotated, without having to repeat ourselves between the PEP526 annotation and the <code>__init__</code> arguments (that&#x27;s more of a <code>ruff</code> question I suppose).</p>
 <p>Thanks</p>
 </div>
         </div>
@@ -93,24 +93,24 @@ print(&quot;The method returns: &quot; + c.m())  # would lead to an error at run
             <div class="timeline-body"><blockquote>
 <p>I believe that with <code>mypy</code>, you can either annotate <code>__init__</code> argument or provide a PEP526 annotation and it will be equivalent (the posted snipped works with no diagnostic in <code>mypy</code>).</p>
 </blockquote>
-<p>Correct, other type checkers infer the attribute type from the parameter type. See also the comment in <a href="https://github.com/astral-sh/ruff/blob/8d1efe964a36f44cf6b14ef888a57ba145cb8d0e/crates/ty_python_semantic/resources/mdtest/attributes.md?plain=1#L31-L36">this test</a> and the previous discussion in https://github.com/astral-sh/ruff/issues/15960.</p>
+<p>Correct, other type checkers infer the attribute type from the parameter type. See also the comment in <a href="https://github.com/astral-sh/ruff/blob/8d1efe964a36f44cf6b14ef888a57ba145cb8d0e/crates/ty_python_semantic/resources/mdtest/attributes.md?plain=1#L31-L36">this test</a> and the previous discussion in <a href="https://github.com/astral-sh/ruff/issues/15960">astral-sh/ruff#15960</a>.</p>
 <blockquote>
 <p>The distinction that ty makes is sensible because of the dynamic nature of python</p>
 </blockquote>
-<p>I don't think our decision here is final, but I'm happy to see that you seem to acknowledge it.</p>
+<p>I don&#x27;t think our decision here is final, but I&#x27;m happy to see that you seem to acknowledge it.</p>
 <blockquote>
-<p>I wonder if there's a recommended way to check that all attributes are annotated, without having to repeat ourselves between the PEP526 annotation and the <code>__init__</code> arguments.</p>
+<p>I wonder if there&#x27;s a recommended way to check that all attributes are annotated, without having to repeat ourselves between the PEP526 annotation and the <code>__init__</code> arguments.</p>
 </blockquote>
 <p>We plan to have a way to surface <code>Unknown</code> types to the user, such that annotations can be added to prevent them.</p>
 <blockquote>
-<p>(that's more of a <code>ruff</code> question I suppose)</p>
+<p>(that&#x27;s more of a <code>ruff</code> question I suppose)</p>
 </blockquote>
-<p>As to whether or not ruff can help with this &quot;right now&quot;, I'm not sure (cc @ntBre @amyreese).</p>
+<p>As to whether or not ruff can help with this &quot;right now&quot;, I&#x27;m not sure (cc @ntBre @amyreese).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-10 15:58</div>
-            <div class="timeline-body"><p>huh, I assumed there'd be something in https://docs.astral.sh/ruff/rules/#flake8-annotations-ann about this, but those rules only seem to tackle missing annotations for function parameters and returns at the moment</p>
+            <div class="timeline-body"><p>huh, I assumed there&#x27;d be something in https://docs.astral.sh/ruff/rules/#flake8-annotations-ann about this, but those rules only seem to tackle missing annotations for function parameters and returns at the moment</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -119,38 +119,38 @@ print(&quot;The method returns: &quot; + c.m())  # would lead to an error at run
 <blockquote>
 <p>The distinction that ty makes is sensible because of the dynamic nature of python</p>
 </blockquote>
-<p>I don't think our decision here is final, but I'm happy to see that you seem to acknowledge it.</p>
+<p>I don&#x27;t think our decision here is final, but I&#x27;m happy to see that you seem to acknowledge it.</p>
 </blockquote>
-<p>More precisely: I find that <code>ty</code>'s behavior matches python semantics more closely than <code>mypy</code> is, so this is good in terms of correctness. But in terms of developer experience, I'd expect that this dynamic aspect (attributes with dynamic type) would be the exception rather than the norm. But it looks like PEP526 annotations get us there.</p>
+<p>More precisely: I find that <code>ty</code>&#x27;s behavior matches python semantics more closely than <code>mypy</code> is, so this is good in terms of correctness. But in terms of developer experience, I&#x27;d expect that this dynamic aspect (attributes with dynamic type) would be the exception rather than the norm. But it looks like PEP526 annotations get us there.</p>
 <blockquote>
-<p>huh, I assumed there'd be something in https://docs.astral.sh/ruff/rules/#flake8-annotations-ann about this, but those rules only seem to tackle missing annotations for function parameters and returns at the moment</p>
+<p>huh, I assumed there&#x27;d be something in https://docs.astral.sh/ruff/rules/#flake8-annotations-ann about this, but those rules only seem to tackle missing annotations for function parameters and returns at the moment</p>
 </blockquote>
-<p>Yes, it looks like PEP526 annotations could subsume the corresponding parameter annotations on <code>__init__</code> (so that ANN001 does not trigger when they're absent), but maybe that's a bit too magical.</p>
+<p>Yes, it looks like PEP526 annotations could subsume the corresponding parameter annotations on <code>__init__</code> (so that ANN001 does not trigger when they&#x27;re absent), but maybe that&#x27;s a bit too magical.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-14 17:34</div>
-            <div class="timeline-body"><p>Early on we had discussed the possibility of adding a special case that when an <code>__init__</code> parameter is annotated, and that parameter is assigned directly to an instance attribute in <code>__init__</code>, we would consider that instance attribute to be annotated (declared). This would be a little bit weird in that it would be sort of arbitrarily limited: if your <code>__init__</code> body becomes more complex, you might suddenly and unexpectedly start to get <code>Unknown</code> unioned in, when it wasn't before. But it would also give more intuitive behavior for a lot of common cases where adding the annotation on the attribute looks redundant. And I think wouldn't really violate the gradual guarantee since it still depends on the annotation existing on the <code>__init__</code> parameter.</p>
+            <div class="timeline-body"><p>Early on we had discussed the possibility of adding a special case that when an <code>__init__</code> parameter is annotated, and that parameter is assigned directly to an instance attribute in <code>__init__</code>, we would consider that instance attribute to be annotated (declared). This would be a little bit weird in that it would be sort of arbitrarily limited: if your <code>__init__</code> body becomes more complex, you might suddenly and unexpectedly start to get <code>Unknown</code> unioned in, when it wasn&#x27;t before. But it would also give more intuitive behavior for a lot of common cases where adding the annotation on the attribute looks redundant. And I think wouldn&#x27;t really violate the gradual guarantee since it still depends on the annotation existing on the <code>__init__</code> parameter.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-14 17:35</div>
-            <div class="timeline-body"><p>I'm going to put this issue into stable release because I do think we should consider ways to reduce the number of cases where we union <code>Unknown</code> into an attribute type (or even consider removing the behavior altogether.)</p>
+            <div class="timeline-body"><p>I&#x27;m going to put this issue into stable release because I do think we should consider ways to reduce the number of cases where we union <code>Unknown</code> into an attribute type (or even consider removing the behavior altogether.)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Stable" by @carljm on 2025-11-14 17:35</div>
+            <div class="event">Added to milestone &quot;Stable&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-11-14 17:35</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> removed by @MichaReiser on 2025-11-24 08:18</div>
+            <div class="event">Label <span class="label">question</span> removed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-24 08:18</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">typing semantics</span> added by @MichaReiser on 2025-11-24 08:18</div>
+            <div class="event">Label <span class="label">typing semantics</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-24 08:18</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/bradleyharden">@bradleyharden</a> on 2025-12-25 20:09</div>
             <div class="timeline-body"><p>Here is another example to consider:</p>
-<pre><code class="language-python">from typing import Self, overload
+<pre><code>from typing import Self, overload
 
 class Block:
     pass
@@ -177,20 +177,20 @@ foo = Foo()
 foo.a  # int
 foo.b  # Unknown | int
 </code></pre>
-<p>I was eager to try out <code>ty</code>, because of both speed and your support for intersection types, but this is probably a deal breaker for me. I have a library that makes heavy use of descriptors, and I really don't want to force users to duplicate the descriptor name for every. single. field.</p>
-<p>To me, it seems like <code>IntField</code> is the desired annotation for <code>Foo.b</code> in the vast majority of cases. And if you truly do plan to reassign <code>Foo.b</code>, couldn't you manually annotate it as such? Why force explicit annotations for the common case when it's easy enough to opt out? Just my two cents.</p>
+<p>I was eager to try out <code>ty</code>, because of both speed and your support for intersection types, but this is probably a deal breaker for me. I have a library that makes heavy use of descriptors, and I really don&#x27;t want to force users to duplicate the descriptor name for every. single. field.</p>
+<p>To me, it seems like <code>IntField</code> is the desired annotation for <code>Foo.b</code> in the vast majority of cases. And if you truly do plan to reassign <code>Foo.b</code>, couldn&#x27;t you manually annotate it as such? Why force explicit annotations for the common case when it&#x27;s easy enough to opt out? Just my two cents.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-26 17:42</div>
-            <div class="timeline-body"><p>@bradleyharden thanks for the feedback. This is the conclusion I've been reaching as well; I think the gradual-guarantee approach is theoretically interesting but doesn't serve most users best in practice. See #1240 where we'd already planned to provide an option to disable this (and I think we should probably make that the default behavior as well.)</p>
+            <div class="timeline-body"><p>@bradleyharden thanks for the feedback. This is the conclusion I&#x27;ve been reaching as well; I think the gradual-guarantee approach is theoretically interesting but doesn&#x27;t serve most users best in practice. See #1240 where we&#x27;d already planned to provide an option to disable this (and I think we should probably make that the default behavior as well.)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Removed from milestone "Stable" by @carljm on 2025-12-26 17:42</div>
+            <div class="event">Removed from milestone &quot;Stable&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-12-26 17:42</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Pre-stable 1" by @carljm on 2025-12-26 17:42</div>
+            <div class="event">Added to milestone &quot;Pre-stable 1&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-12-26 17:42</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-26 18:00</div>
@@ -199,17 +199,17 @@ foo.b  # Unknown | int
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2025-12-26 18:00</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2025-12-26 18:00</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/bradleyharden">@bradleyharden</a> on 2025-12-26 18:32</div>
-            <div class="timeline-body"><p>@carljm, thanks for the extra context. I hadn't come across those issues on my own. And thanks for grappling with these issues. It seems quite difficult to add a type system to a language after the fact. There are a lot of less-than-ideal tradeoffs.</p>
+            <div class="timeline-body"><p>@carljm, thanks for the extra context. I hadn&#x27;t come across those issues on my own. And thanks for grappling with these issues. It seems quite difficult to add a type system to a language after the fact. There are a lot of less-than-ideal tradeoffs.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:56 UTC
+        Synced at 2026-01-20 19:25:56 UTC
     </footer>
 </body>
 </html>

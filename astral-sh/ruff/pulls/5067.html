@@ -23,31 +23,31 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>One of our primary autofix mechanisms is the <code>Generator</code>, which takes an AST, and &quot;unparses&quot; it to generate source code.</p>
 <p>This is a convenient mechanism, because it allows for a structured editing approach: rather than manipulating text directly, you can just modify the AST in a type-safe way, and rely on the <code>Generator</code> to generate the approach code to mimic your edit.</p>
 <p>For example, if you want to change <code>x is True</code> to <code>x == True</code>, you can just create a new <code>Expr::Compare</code> node and change the operator type, rather than lexing to find <code>is</code>, etc.</p>
-<p>The main downside of this approach -- and it's a big one -- is that it doesn't preserve formatting or trivia. That is, it doesn't preserve anything that isn't captured by the AST.</p>
+<p>The main downside of this approach -- and it&#x27;s a big one -- is that it doesn&#x27;t preserve formatting or trivia. That is, it doesn&#x27;t preserve anything that isn&#x27;t captured by the AST.</p>
 <p>One common example here is raw strings:</p>
-<pre><code class="language-py">not (re.search(r&quot;^.:\\Users\\[^\\]*\\Downloads\\.*&quot;) is None)
+<pre><code>not (re.search(r&quot;^.:\\Users\\[^\\]*\\Downloads\\.*&quot;) is None)
 </code></pre>
 <p>Raw strings are not part of the AST. Instead, the AST stores the parsed string as a constant. So when we &quot;unparse&quot; this, we remove the <code>r</code> prefix, and add a ton of backslashes to the string -- all just to change <code>is</code> to <code>==</code>.</p>
-<p>This PR proposes an improvement to the source code generator to support &quot;verbatim&quot; nodes, which should be formatted by reading their existing representations from source. In the above example, we can model the fix is: <code>${verbatim left expression} == ${verbatim right expression}</code>. Rather than generating source code &quot;all the way down&quot;, we just generate the parts we need, and then insert source code verbatim for existing expressions that we're manipulating. Thus, we'd preserve the raw string when formatting the left node.</p>
-<p>Though we'll still lose comments in some cases (if they exist between expressions), this does seem like a strict improvement over our current system. The main reasons <em>not</em> to pursue it are:</p>
+<p>This PR proposes an improvement to the source code generator to support &quot;verbatim&quot; nodes, which should be formatted by reading their existing representations from source. In the above example, we can model the fix is: <code>${verbatim left expression} == ${verbatim right expression}</code>. Rather than generating source code &quot;all the way down&quot;, we just generate the parts we need, and then insert source code verbatim for existing expressions that we&#x27;re manipulating. Thus, we&#x27;d preserve the raw string when formatting the left node.</p>
+<p>Though we&#x27;ll still lose comments in some cases (if they exist between expressions), this does seem like a strict improvement over our current system. The main reasons <em>not</em> to pursue it are:</p>
 <ul>
-<li>In order to add a new <code>ExprVerbatim</code> node to the AST (specifically for the <code>Generator</code>), we have to create an entire parallel struct hierarchy (see <code>verbatim.rs</code>, similar to our existing <code>comparable.rs</code>). It's just a lot of code, though it's all boilerplate and perhaps could even be generated some day.</li>
+<li>In order to add a new <code>ExprVerbatim</code> node to the AST (specifically for the <code>Generator</code>), we have to create an entire parallel struct hierarchy (see <code>verbatim.rs</code>, similar to our existing <code>comparable.rs</code>). It&#x27;s just a lot of code, though it&#x27;s all boilerplate and perhaps could even be generated some day.</li>
 <li>We have a lot of usages of <code>Generator</code> today, and we need to go through and migrate them all to this new API. Probably not too bad, but it will take time.</li>
-<li>It still doesn't guarantee that we'll preserve all trivia.</li>
+<li>It still doesn&#x27;t guarantee that we&#x27;ll preserve all trivia.</li>
 </ul>
-<h2>Test Plan</h2>
+Test Plan
 <p><code>cargo test</code></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-06-13 22:50</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-13 22:50</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @konstin by @charliermarsh on 2023-06-13 22:50</div>
+            <div class="event">Review requested from <a href="https://github.com/konstin">@konstin</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-13 22:50</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-13 22:51</div>
@@ -56,7 +56,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/source_code/verbatim_generator.rs</code>:1 on 2023-06-13 22:51</div>
             <div class="timeline-body"><p>This is an exact copy of <code>generator.rs</code>, but with the <code>ExprVerbatim</code> case added, and it uses the AST from <code>verbatim</code> instead of the RustPython AST.</p>
-<p>If we like this approach, then the plan would be to remove <code>Generator</code> and migrate all usages to this instead. This would then be the new <code>Generator</code> (we wouldn't need the &quot;verbatim&quot; prefix).</p>
+<p>If we like this approach, then the plan would be to remove <code>Generator</code> and migrate all usages to this instead. This would then be the new <code>Generator</code> (we wouldn&#x27;t need the &quot;verbatim&quot; prefix).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -65,21 +65,21 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/verbatim.rs</code>:3 on 2023-06-13 22:52</div>
-            <div class="timeline-body"><p>This is basically copied from <code>comparable.rs</code> where we have a similar hierarchy but for creating hashable AST nodes. The difference is that this adds <code>ExprVerbatim</code> and <code>StmtVerbatim</code> to the hierarchy, and removes some things that don't matter for formatting (like <code>ExprContext</code>).</p>
+            <div class="timeline-body"><p>This is basically copied from <code>comparable.rs</code> where we have a similar hierarchy but for creating hashable AST nodes. The difference is that this adds <code>ExprVerbatim</code> and <code>StmtVerbatim</code> to the hierarchy, and removes some things that don&#x27;t matter for formatting (like <code>ExprContext</code>).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-13 22:52</div>
-            <div class="timeline-body"><p>I'm looking for feedback on this concept before investing any more work in the migration.</p>
+            <div class="timeline-body"><p>I&#x27;m looking for feedback on this concept before investing any more work in the migration.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-06-13 23:22</div>
-            <div class="timeline-body"><h2>PR Check Results</h2>
-<h3>Ecosystem</h3>
+            <div class="timeline-body">PR Check Results
+Ecosystem
 <p>✅ ecosystem check detected no changes.</p>
-<h3>Benchmark</h3>
-<h4>Linux</h4>
+Benchmark
+Linux
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 formatter/large/dataset.py                 1.01      6.4±0.02ms     6.4 MB/sec    1.00      6.3±0.07ms     6.4 MB/sec
@@ -95,7 +95,7 @@ linter/default-rules/numpy/ctypeslib.py    1.00   1485.7±3.15µs    11.2 MB/sec
 linter/default-rules/numpy/globals.py      1.00    164.2±0.38µs    18.0 MB/sec    1.00    163.8±0.55µs    18.0 MB/sec
 linter/default-rules/pydantic/types.py     1.00      3.1±0.01ms     8.2 MB/sec    1.00      3.1±0.01ms     8.2 MB/sec
 </code></pre>
-<h4>Windows</h4>
+Windows
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 formatter/large/dataset.py                 1.00      8.7±0.32ms     4.7 MB/sec    1.03      8.9±0.30ms     4.6 MB/sec
@@ -111,7 +111,7 @@ linter/default-rules/numpy/ctypeslib.py    1.01      2.1±0.09ms     8.1 MB/sec 
 linter/default-rules/numpy/globals.py      1.03   234.1±12.67µs    12.6 MB/sec    1.00    226.8±7.54µs    13.0 MB/sec
 linter/default-rules/pydantic/types.py     1.01      4.5±0.18ms     5.7 MB/sec    1.00      4.5±0.19ms     5.7 MB/sec
 </code></pre>
-<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
 
 </div>
         </div>
@@ -125,13 +125,13 @@ linter/default-rules/pydantic/types.py     1.01      4.5±0.18ms     5.7 MB/sec 
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-06-19 09:03</div>
             <div class="timeline-body"><p>I do like the idea. It seems a reasonable compromise between having an AST vs a CST.  A few questions/notes</p>
 <ul>
-<li>I think it should be possible to preserve the in-between comments if we come up with an explicit convention on when to associate comments to which nodes. This will not be perfect for e.g. trailing body comments. Rome used swifts convention (https://github.com/rome/tools/issues/1718)</li>
+<li>I think it should be possible to preserve the in-between comments if we come up with an explicit convention on when to associate comments to which nodes. This will not be perfect for e.g. trailing body comments. Rome used swifts convention (<a href="https://github.com/rome/tools/issues/1718">rome/tools#1718</a>)</li>
 </ul>
 <ol>
 <li>A token owns all of its trailing trivia up to, but not including, the next newline character.</li>
 <li>Looking backward in the text, a token owns all of the leading trivia up to and including the first newline character.</li>
 </ol>
-<p>Is there a possibility that verbatim nodes and operator precedence doesn't play well together? E.g. you change the operator of a nested binary expression. Will the generator insert the parentheses in the right place?</p>
+<p>Is there a possibility that verbatim nodes and operator precedence doesn&#x27;t play well together? E.g. you change the operator of a nested binary expression. Will the generator insert the parentheses in the right place?</p>
 <p>From my experience with verbatim nodes on the formatter. Is there a chance that a verbatim node may not have the right indent, e.g. when changing indentation and formatting a compound statement as verbatim.</p>
 <p><strong>Implementation</strong></p>
 <ul>
@@ -141,16 +141,16 @@ linter/default-rules/pydantic/types.py     1.01      4.5±0.18ms     5.7 MB/sec 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-14 03:07</div>
-            <div class="timeline-body"><p>We'll return to this at some point.</p>
+            <div class="timeline-body"><p>We&#x27;ll return to this at some point.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-07-14 03:07</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-14 03:07</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:58:03 UTC
+        Synced at 2026-01-20 18:54:28 UTC
     </footer>
 </body>
 </html>

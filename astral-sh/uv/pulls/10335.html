@@ -23,20 +23,20 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sydduckworth">@sydduckworth</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Closes #3312.</p>
 <p>This PR adds Git LFS support to the <code>uv-git</code> crate by using the <code>git-lfs</code> CLI to fetch required LFS objects for a revision following the call to <code>git fetch</code>.</p>
 <p>The LFS fetch step is disabled by default and only enabled if the environment variable <code>UV_GIT_LFS</code> is set.</p>
-<p>When enabled, the LFS fetch step is run for all repositories regardless of whether they have associated LFS objects. The step is skipped if the <code>git-lfs</code> CLI tool isn't installed.</p>
-<h2>Test Plan</h2>
+<p>When enabled, the LFS fetch step is run for all repositories regardless of whether they have associated LFS objects. The step is skipped if the <code>git-lfs</code> CLI tool isn&#x27;t installed.</p>
+Test Plan
 <p>I verified that the minimal example in the linked issue passes, i.e. this command now succeeds:</p>
-<pre><code class="language-sh">UV_GIT_LFS=1 uv pip install git+https://github.com/grebnetiew/lfs-py.git
+<pre><code>UV_GIT_LFS=1 uv pip install git+https://github.com/grebnetiew/lfs-py.git
 </code></pre>
 <p>I also verified that non-LFS repositories still work, with or without <code>git-lfs</code> installed.</p>
-<h3>To Replicate</h3>
+To Replicate
 <p>Attempt to use uv to install a Git dependency that contains LFS objects (e.g. <code>uv pip install git+https://github.com/grebnetiew/lfs-py.git</code>). This should fail with a smudge filter error.</p>
 <p>Re-run the same command with the added environment variable <code>UV_GIT_LFS=1</code>. The install should now succeed.</p>
-<h2>Potential Changes / Improvements</h2>
+Potential Changes / Improvements
 <p>~With this change LFS objects in a given revision will always be downloaded if the user has Git LFS installed, which may not always be desired behavior. It might be helpful to add a field to the <code>uv</code> settings and/or an environment variable so that the LFS step can be disabled if needed.~</p>
 <p>Enabling/disabled via environment variable has now been implemented.</p>
 </div>
@@ -47,7 +47,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-git/src/git.rs</code>:45 on 2025-01-07 19:39</div>
-            <div class="timeline-body"><p>I'm not certain this detection method is portable to all end user systems. For example, I can have git lfs installed and working but I not have git-lfs binary on the path. I think probing <code>git lfs</code> directly is likely the most portable approach.</p>
+            <div class="timeline-body"><p>I&#x27;m not certain this detection method is portable to all end user systems. For example, I can have git lfs installed and working but I not have git-lfs binary on the path. I think probing <code>git lfs</code> directly is likely the most portable approach.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -56,25 +56,25 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sydduckworth">@sydduckworth</a> on <code>crates/uv-git/src/git.rs</code>:45 on 2025-01-07 20:27</div>
-            <div class="timeline-body"><p>Okay, I've updated the logic so now instead of searching for <code>git-lfs</code> on the path, it just tries to run <code>git lfs version</code> the first time LFS is invoked and uses the success of that command as an indicator of LFS availability.</p>
-<p>I'd definitely be interested in if anyone has a cleaner way of determining whether LFS is available. I was initially going to just check if the LFS fetch command returned <code>127</code> (command not found), but that return code isn't available in Powershell, so that approach isn't portable across shells.</p>
+            <div class="timeline-body"><p>Okay, I&#x27;ve updated the logic so now instead of searching for <code>git-lfs</code> on the path, it just tries to run <code>git lfs version</code> the first time LFS is invoked and uses the success of that command as an indicator of LFS availability.</p>
+<p>I&#x27;d definitely be interested in if anyone has a cleaner way of determining whether LFS is available. I was initially going to just check if the LFS fetch command returned <code>127</code> (command not found), but that return code isn&#x27;t available in Powershell, so that approach isn&#x27;t portable across shells.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @samypr100 by @sydduckworth on 2025-01-09 15:43</div>
+            <div class="event">Review requested from <a href="https://github.com/samypr100">@samypr100</a> by <a href="https://github.com/sydduckworth">@sydduckworth</a> on 2025-01-09 15:43</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-01-12 16:27</div>
             <div class="timeline-body"><blockquote>
 <p>With this change LFS objects in a given revision will always be downloaded if the user has Git LFS installed, which may not always be desired behavior. It might be helpful to add a field to the uv settings and/or an environment variable so that the LFS step can be disabled if needed.</p>
 </blockquote>
-<p>Agree, since this is technically a possible breaking change a way to <code>opt-in</code> would be great. I think an env var can be used here to trigger the behavior change as its relatively simple. I'd rather have this be opt-in than opt-out as fetching lfs objects may not always be desired, particularly on large downloads.</p>
+<p>Agree, since this is technically a possible breaking change a way to <code>opt-in</code> would be great. I think an env var can be used here to trigger the behavior change as its relatively simple. I&#x27;d rather have this be opt-in than opt-out as fetching lfs objects may not always be desired, particularly on large downloads.</p>
 <p>Thoughts @zanieb?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sydduckworth">@sydduckworth</a> on 2025-01-12 17:24</div>
-            <div class="timeline-body"><p>@samypr100 I've updated the PR so that the LFS fetch step is off by default, and is enabled by setting the environment variable <code>UV_GIT_LFS</code>.</p>
+            <div class="timeline-body"><p>@samypr100 I&#x27;ve updated the PR so that the LFS fetch step is off by default, and is enabled by setting the environment variable <code>UV_GIT_LFS</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -83,10 +83,10 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @zanieb by @zanieb on 2025-01-12 18:09</div>
+            <div class="event">Review requested from <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-12 18:09</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @zanieb by @zanieb on 2025-01-12 18:09</div>
+            <div class="event">Assigned to <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-12 18:09</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-12 18:10</div>
@@ -95,26 +95,26 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sydduckworth">@sydduckworth</a> on 2025-01-12 18:59</div>
-            <div class="timeline-body"><p>Testing on my local system with a repository with a small number of tracked files (<code>git+https://github.com/astral-test/uv-public-pypackage</code>), I couldn't produce a statistically significant difference in execution time for <code>uv pip install</code> with or without LFS support enabled.</p>
-<p>That said, the added overhead <em>should</em> be equal to the time required to run <code>git lfs version</code> once (4.6 ms on my system) plus the time required to run <code>git lfs fetch</code> for each repository (15 ms for the test repo on my system). Execution time of <code>git lfs fetch</code> scales with number of tracked files but even testing with larger repositories I got about the same result.<br />
+            <div class="timeline-body"><p>Testing on my local system with a repository with a small number of tracked files (<code>git+https://github.com/astral-test/uv-public-pypackage</code>), I couldn&#x27;t produce a statistically significant difference in execution time for <code>uv pip install</code> with or without LFS support enabled.</p>
+<p>That said, the added overhead <em>should</em> be equal to the time required to run <code>git lfs version</code> once (4.6 ms on my system) plus the time required to run <code>git lfs fetch</code> for each repository (15 ms for the test repo on my system). Execution time of <code>git lfs fetch</code> scales with number of tracked files but even testing with larger repositories I got about the same result.<br>
 So the predicted overhead (on my machine) with LFS enabled (assuming the command interacts with at least one Git repository) would be about 5 ms + about 15 ms per Git repository.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-01-12 19:18</div>
-            <div class="timeline-body"><p>~~You might be able to eliminate the 5ms overhead by moving the env var check before the lfs check~~ nevermind, I hadn't seen the latest code.</p>
+            <div class="timeline-body"><p>~~You might be able to eliminate the 5ms overhead by moving the env var check before the lfs check~~ nevermind, I hadn&#x27;t seen the latest code.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @zanieb on 2025-01-13 21:48</div>
+            <div class="event">Merged by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-13 21:48</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2025-01-13 21:48</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-13 21:48</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:41:18 UTC
+        Synced at 2026-01-20 19:50:07 UTC
     </footer>
 </body>
 </html>

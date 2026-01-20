@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>Lock files don't mesh with dynamic package version info</h1>
+    <h1>Lock files don&#x27;t mesh with dynamic package version info</h1>
 
     <div class="meta">
         <span class="state-icon state-closed"></span>
@@ -24,17 +24,17 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/hynek">@hynek</a></div>
             <div class="timeline-body"><p>Since tox-uv just shipped lock files, I took a stab at moving attrs to a fully-locked dev environment.</p>
-<p>Here's the experiment PR: https://github.com/python-attrs/attrs/pull/1349</p>
-<p>A problem I've run into is that packages often use dynamic packaging data that is based on git metadata (setuptools-scm, hatch-vcs, etc). As such, attrs's package version changes after every commit, which allows us to upload to test PyPI and continually verify our package. See, for example, https://test.pypi.org/project/attrs/24.2.1.dev19/</p>
+<p>Here&#x27;s the experiment PR: <a href="https://github.com/python-attrs/attrs/pull/1349">python-attrs/attrs#1349</a></p>
+<p>A problem I&#x27;ve run into is that packages often use dynamic packaging data that is based on git metadata (setuptools-scm, hatch-vcs, etc). As such, attrs&#x27;s package version changes after every commit, which allows us to upload to test PyPI and continually verify our package. See, for example, https://test.pypi.org/project/attrs/24.2.1.dev19/</p>
 <p>Unfortunately the current project gets locked like this:</p>
-<pre><code class="language-toml">[[package]]
+<pre><code>[[package]]
 name = &quot;attrs&quot;
 version = &quot;24.2.1.dev20&quot;
 source = { editable = &quot;.&quot; }
 </code></pre>
-<p>Which means it's outdated after each commit, because every commit increments the number behind <code>dev</code>.</p>
-<p>Is there a way around this that I've missed? If not, could there be built one? 😇 AFAICT, this is currently the biggest blocker for FOSS use from <em>uv</em>'s side. I'm also not sure what the point of that version lock is in the first place for the current, editable project? But that's a topic for another day. :)</p>
-<hr />
+<p>Which means it&#x27;s outdated after each commit, because every commit increments the number behind <code>dev</code>.</p>
+<p>Is there a way around this that I&#x27;ve missed? If not, could there be built one? 😇 AFAICT, this is currently the biggest blocker for FOSS use from <em>uv</em>&#x27;s side. I&#x27;m also not sure what the point of that version lock is in the first place for the current, editable project? But that&#x27;s a topic for another day. :)</p>
+<hr>
 <pre><code>❯ uv --version
 uv 0.4.12 (2545bca69 2024-09-18)
 </code></pre>
@@ -47,54 +47,54 @@ uv 0.4.12 (2545bca69 2024-09-18)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/hynek">@hynek</a> on 2024-09-19 06:29</div>
-            <div class="timeline-body"><p>I have while searching this bug tracker, but I couldn't find a way for it to affect <code>uv.lock</code>? Changing the value to <code>cache-keys = [{ git = true }, { file = &quot;pyproject.toml&quot; }]</code> at least doesn't do anything when running <code>uv.lock</code>.</p>
-<p>From the documentation (and its name 🤓) I've gathered it's mostly about how caching, not about locking? And TBH it sounds to me as if adding git as a git key, I'm actually <em>adding</em> cache busting.</p>
+            <div class="timeline-body"><p>I have while searching this bug tracker, but I couldn&#x27;t find a way for it to affect <code>uv.lock</code>? Changing the value to <code>cache-keys = [{ git = true }, { file = &quot;pyproject.toml&quot; }]</code> at least doesn&#x27;t do anything when running <code>uv.lock</code>.</p>
+<p>From the documentation (and its name 🤓) I&#x27;ve gathered it&#x27;s mostly about how caching, not about locking? And TBH it sounds to me as if adding git as a git key, I&#x27;m actually <em>adding</em> cache busting.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-20 02:59</div>
             <div class="timeline-body"><p>I think you could pass <code>--upgrade-package attrs</code> to ensure that <code>attrs</code> is rebuilt and that the lockfile is updated. Or even set it in your configuration:</p>
-<pre><code class="language-toml">[tool.uv]
+<pre><code>[tool.uv]
 upgrade-package = [&quot;attrs&quot;]
 </code></pre>
-<p>But there's sort of an infinite loop here, right? Since every time you commit the lockfile, it will be outdated. So you then re-lock, and commit again, etc. I don't know how to solve this holistically. We could omit versions for editables, maybe? Or even, write &quot;dynamic&quot; or something for the version, for packages that have dynamic versions?</p>
+<p>But there&#x27;s sort of an infinite loop here, right? Since every time you commit the lockfile, it will be outdated. So you then re-lock, and commit again, etc. I don&#x27;t know how to solve this holistically. We could omit versions for editables, maybe? Or even, write &quot;dynamic&quot; or something for the version, for packages that have dynamic versions?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/hynek">@hynek</a> on 2024-09-20 03:27</div>
             <div class="timeline-body"><blockquote>
-<p>But there's sort of an infinite loop here, right? Since every time you commit the lockfile, it will be outdated. So you then re-lock, and commit again, etc. We could omit versions for editables, maybe? Or even, write &quot;dynamic&quot; or something for the version, for packages that have dynamic versions?</p>
+<p>But there&#x27;s sort of an infinite loop here, right? Since every time you commit the lockfile, it will be outdated. So you then re-lock, and commit again, etc. We could omit versions for editables, maybe? Or even, write &quot;dynamic&quot; or something for the version, for packages that have dynamic versions?</p>
 </blockquote>
-<p>Yeah that's what I meant in my last sentence, but I'm always assuming Chesterton's Fence. :) Setting it to <code>dynamic</code> seems the best way since it maps nicely to <code>project.dynamic</code>. Just dunno if it would be a problem that there's a case where there's an invalid version &quot;number&quot; in the field which would speak for omitting.</p>
+<p>Yeah that&#x27;s what I meant in my last sentence, but I&#x27;m always assuming Chesterton&#x27;s Fence. :) Setting it to <code>dynamic</code> seems the best way since it maps nicely to <code>project.dynamic</code>. Just dunno if it would be a problem that there&#x27;s a case where there&#x27;s an invalid version &quot;number&quot; in the field which would speak for omitting.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jkeifer">@jkeifer</a> on 2024-09-20 17:52</div>
-            <div class="timeline-body"><p>I too have this problem. I generally subscribe to the philosophy that I use a VCS for versioning, thus what is in the VSC repo shouldn't track it's own version because that's what I'm using the VCS for. Said another way, at best a version tracked within repo is imperfect for exactly the reasons described above about how you can't update a version from a commit without making another commit, i.e., a new version.</p>
-<p>I'd love to understand the rationale behind storing this version in the lock file. Can anyone elaborate on that?</p>
+            <div class="timeline-body"><p>I too have this problem. I generally subscribe to the philosophy that I use a VCS for versioning, thus what is in the VSC repo shouldn&#x27;t track it&#x27;s own version because that&#x27;s what I&#x27;m using the VCS for. Said another way, at best a version tracked within repo is imperfect for exactly the reasons described above about how you can&#x27;t update a version from a commit without making another commit, i.e., a new version.</p>
+<p>I&#x27;d love to understand the rationale behind storing this version in the lock file. Can anyone elaborate on that?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/burgholzer">@burgholzer</a> on 2024-09-26 15:53</div>
-            <div class="timeline-body"><p>We are also facing a similar problem over at https://github.com/cda-tum/mqt-core/pull/706 where we use renovate to keep the <code>uv</code> lock file up to date, which would be pretty convenient in principle.
-However, currently it triggers a never ending chain of renovate update PRs because every update to the lock file adds a commit, which changes the <code>setuptools-scm</code> version, which causes another update PR to be triggered. (see https://github.com/cda-tum/mqt-core/pull/703, https://github.com/cda-tum/mqt-core/pull/704, https://github.com/cda-tum/mqt-core/pull/705, https://github.com/cda-tum/mqt-core/pull/706)</p>
+            <div class="timeline-body"><p>We are also facing a similar problem over at <a href="https://github.com/cda-tum/mqt-core/pull/706">cda-tum/mqt-core#706</a> where we use renovate to keep the <code>uv</code> lock file up to date, which would be pretty convenient in principle.
+However, currently it triggers a never ending chain of renovate update PRs because every update to the lock file adds a commit, which changes the <code>setuptools-scm</code> version, which causes another update PR to be triggered. (see <a href="https://github.com/cda-tum/mqt-core/pull/703">cda-tum/mqt-core#703</a>, <a href="https://github.com/cda-tum/mqt-core/pull/704">cda-tum/mqt-core#704</a>, <a href="https://github.com/cda-tum/mqt-core/pull/705">cda-tum/mqt-core#705</a>, <a href="https://github.com/cda-tum/mqt-core/pull/706">cda-tum/mqt-core#706</a>)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/LordFckHelmchen">@LordFckHelmchen</a> on 2024-10-01 11:36</div>
             <div class="timeline-body"><p>This problem is not only for dynamic versioning. We have a release-please workflow, which will create a PR for the next release. This will update the pyproject.toml version correctly but of course does not know about the uv.lock version.
-If there would be an option to omit the project version from the uv.lock it would be great, as I currently also don't understand why it needs to be kept in the lock-file itself.</p>
+If there would be an option to omit the project version from the uv.lock it would be great, as I currently also don&#x27;t understand why it needs to be kept in the lock-file itself.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/david-waterworth">@david-waterworth</a> on 2024-10-08 22:22</div>
             <div class="timeline-body"><p>As I mentioned in  ttps://github.com/astral-sh/uv/issues/7994 I use<code>python-semantic-release</code> which behaves the same. The way I work around the infinite build loop is to configure my Jenkins script to skip commits that contains the <code>python-semantic-release</code> message - these commits include the changed <code>pyproject.toml</code> and <code>__version__.py</code> file, along with a generated CHANGELOG.md</p>
-<p>As a workaround, I also added <code>uv lock</code> at the start of the build script and <code>git add uv.lock</code> at the end - this ensures that <code>python-semantic-release</code> commit includes the correctly versioned <code>uv.lock</code> file (I'm not sure yet if this causes other problems, i.e. updating other packages - ideally there would be a way of only updating the package version in <code>uv.lock</code> and nothing else.</p>
+<p>As a workaround, I also added <code>uv lock</code> at the start of the build script and <code>git add uv.lock</code> at the end - this ensures that <code>python-semantic-release</code> commit includes the correctly versioned <code>uv.lock</code> file (I&#x27;m not sure yet if this causes other problems, i.e. updating other packages - ideally there would be a way of only updating the package version in <code>uv.lock</code> and nothing else.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/alejandrodnm">@alejandrodnm</a> on 2024-10-31 10:59</div>
-            <div class="timeline-body"><p>I've just encountered this. We are also using release-please and uv in an internal project, after a release then the surprise is that the uv.lock was outdated.</p>
+            <div class="timeline-body"><p>I&#x27;ve just encountered this. We are also using release-please and uv in an internal project, after a release then the surprise is that the uv.lock was outdated.</p>
 <p>Ours plans were to add uv to https://github.com/timescale/pgai but since we are already using release-please, we are hesitant due to this issue.</p>
 </div>
         </div>
@@ -103,11 +103,11 @@ If there would be an option to omit the project version from the uv.lock it woul
             <div class="timeline-body"><p>While the setuptools-scm case seems difficult to solve, I think another common reason[^1] a dynamic version is used is when the version is statically defined but not in <code>pyproject.toml</code>. Typically as a <code>__version__</code> attribute like in this example:</p>
 <ol>
 <li><p>Create example project</p>
-<pre><code class="language-bash">uv init --lib mpypkg &amp;&amp; cd mpypkg
+<pre><code>uv init --lib mpypkg &amp;&amp; cd mpypkg
 </code></pre>
 </li>
 <li><p>Configure <code>pyproject.toml</code> to use a dynamic version</p>
-<pre><code class="language-bash">cat &lt;&lt;EOF &gt; pyproject.toml
+<pre><code>cat &lt;&lt;EOF &gt; pyproject.toml
 [build-system]
 requires = [&quot;setuptools&quot;]
 build-backend = &quot;setuptools.build_meta&quot;
@@ -132,7 +132,7 @@ EOF
 </code></pre>
 </li>
 <li><p>Add <code>__version__</code> attribute to <code>__init__.py</code></p>
-<pre><code class="language-bash">cat &lt;&lt;EOF &gt;&gt; src/mpypkg/__init__.py
+<pre><code>cat &lt;&lt;EOF &gt;&gt; src/mpypkg/__init__.py
 __version__ = &quot;1.0&quot;
 EOF
 </code></pre>
@@ -140,14 +140,14 @@ EOF
 <li><p>Run <code>uv lock</code></p>
 </li>
 <li><p>Change version number</p>
-<pre><code class="language-bash">sed -i.bak 's/__version__ = &quot;1\.0&quot;/__version__ = &quot;1.1&quot;/' src/mpypkg/__init__.py
+<pre><code>sed -i.bak &#x27;s/__version__ = &quot;1\.0&quot;/__version__ = &quot;1.1&quot;/&#x27; src/mpypkg/__init__.py
 </code></pre>
 </li>
 <li><p>Run <code>uv lock</code></p>
 </li>
 </ol>
 <p>What I expected:</p>
-<pre><code class="language-diff"> version = 1
+<pre><code> version = 1
  requires-python = &quot;&gt;=3.12&quot;
  
  [[package]]
@@ -157,10 +157,10 @@ EOF
  source = { editable = &quot;.&quot; }
 </code></pre>
 <p>What happened: uv.lock still has <code>version = &quot;1.0&quot;</code></p>
-<p>I've also tried <code>uv lock --no-cache --refresh</code> to no avail.</p>
-<p>The version doesn't change until I do an unrelated <code>uv add</code> or something. This seems like a cache invalidation problem more than anything else, which I expected <code>cache-keys</code> to solve.</p>
-<p>[^1]: sometimes for backward compatibility reasons or in my case I can't move version into pyproject.toml until some other tooling I use catches up.</p>
-<hr />
+<p>I&#x27;ve also tried <code>uv lock --no-cache --refresh</code> to no avail.</p>
+<p>The version doesn&#x27;t change until I do an unrelated <code>uv add</code> or something. This seems like a cache invalidation problem more than anything else, which I expected <code>cache-keys</code> to solve.</p>
+<p>[^1]: sometimes for backward compatibility reasons or in my case I can&#x27;t move version into pyproject.toml until some other tooling I use catches up.</p>
+<hr>
 <pre><code>❯ uv --version
 uv 0.4.30 (61ed2a236 2024-11-04)
 </code></pre>
@@ -173,7 +173,7 @@ uv 0.4.30 (61ed2a236 2024-11-04)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-06 16:31</div>
-            <div class="timeline-body"><p>I've fixed the issue @RazerM pointed out in https://github.com/astral-sh/uv/pull/8867. I guess I'll leave <em>this</em> issue open though since it's more about the inherent incompatibility between lockfiles and VCS-based versioning.</p>
+            <div class="timeline-body"><p>I&#x27;ve fixed the issue @RazerM pointed out in <a href="https://github.com/astral-sh/uv/pull/8867">astral-sh/uv#8867</a>. I guess I&#x27;ll leave <em>this</em> issue open though since it&#x27;s more about the inherent incompatibility between lockfiles and VCS-based versioning.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -215,7 +215,7 @@ uv 0.4.30 (61ed2a236 2024-11-04)
 <p>We can fix this, but I still strongly recommend against setting the version dynamically like that.</p>
 </blockquote>
 <p>If references or opinion articles exist around this topic, they are few in number. I think a few on this issue would be interested in wider discussion around this. <a href="https://peps.python.org/pep-0621/">PEP 621</a> introduced toml metadata, and as of writing the <a href="https://packaging.python.org/en/latest/specifications/pyproject-toml/#pyproject-toml-spec">official specification</a> still allows <code>version</code> to be set dynamically, with no recommendation to the contrary.</p>
-<p>It's a pretty standard paradigm (see <a href="https://github.com/ofek/hatch-vcs">hatch-vcs</a>, <a href="https://github.com/pypa/setuptools-scm">setuptools-scm</a>, <a href="https://github.com/mtkennerly/poetry-dynamic-versioning">poetry-dynamic-versioning</a>) for single project repos where versioning, point release branches, development builds, etc. are all managed and controlled via VCS change control.</p>
+<p>It&#x27;s a pretty standard paradigm (see <a href="https://github.com/ofek/hatch-vcs">hatch-vcs</a>, <a href="https://github.com/pypa/setuptools-scm">setuptools-scm</a>, <a href="https://github.com/mtkennerly/poetry-dynamic-versioning">poetry-dynamic-versioning</a>) for single project repos where versioning, point release branches, development builds, etc. are all managed and controlled via VCS change control.</p>
 <p>Whilst alternatives exist for separating static versions (such as <code>0.5.1</code> from a generated identifier ref like <code>f399a5271</code> in <code>uv 0.5.1 (f399a5271 2024-11-08)</code>), there are some compelling reasons to use dynamic (such as <a href="https://github.com/mtkennerly/dunamai">dunamai</a>) formed versions:</p>
 <ul>
 <li>Unique reference of all release, post, dev, dirty distributions of Python packages</li>
@@ -224,15 +224,15 @@ uv 0.4.30 (61ed2a236 2024-11-04)
 <li>No room for user error (such as forgetting to update a static version of <code>0.5.1</code> for the git tag <code>v0.5.1</code> and publishing builds)</li>
 <li>Exposing the version in test logs, headers, etc. automatically shows the exact build used, aiding debugging</li>
 </ul>
-<hr />
-<p>My expectation for the project package that has a <strong>dynamic</strong> version (<code>source = { editable = &quot;.&quot; }</code> specifically) would be simply not defining version in <code>uv.lock</code> for the local package (or providing a dynamic reference). This by nature isn't a lockable reference (especially when set by VCS signatures) whereas other uses of <code>uv lock</code> such as multi-project mono repos or static versions uphold the current behaviour.</p>
-<p>It's worth noting that although version is defined dynamically in source control, builds of the package provide the version statically:</p>
-<pre><code class="language-console">❯ ls -1 dist/*
+<hr>
+<p>My expectation for the project package that has a <strong>dynamic</strong> version (<code>source = { editable = &quot;.&quot; }</code> specifically) would be simply not defining version in <code>uv.lock</code> for the local package (or providing a dynamic reference). This by nature isn&#x27;t a lockable reference (especially when set by VCS signatures) whereas other uses of <code>uv lock</code> such as multi-project mono repos or static versions uphold the current behaviour.</p>
+<p>It&#x27;s worth noting that although version is defined dynamically in source control, builds of the package provide the version statically:</p>
+<pre><code>❯ ls -1 dist/*
 dist/mypackage-0.5.0.dev5+g5d056c1-py3-none-any.whl
 dist/mypackage-0.5.0.dev5+g5d056c1.tar.gz
-❯ unzip -p dist/*.whl '*.dist-info/METADATA' | grep -E '^Version: '
+❯ unzip -p dist/*.whl &#x27;*.dist-info/METADATA&#x27; | grep -E &#x27;^Version: &#x27;
 Version: 0.5.0.dev5+g5d056c1
-❯ tar -Oxf dist/*.tar.gz '*.egg-info/PKG-INFO' | grep -E '^Version: '
+❯ tar -Oxf dist/*.tar.gz &#x27;*.egg-info/PKG-INFO&#x27; | grep -E &#x27;^Version: &#x27;
 Version: 0.5.0.dev5+g5d056c1
 </code></pre>
 </div>
@@ -242,7 +242,7 @@ Version: 0.5.0.dev5+g5d056c1
             <div class="timeline-body"><blockquote>
 <p>If references or opinion articles exist around this topic, they are few in number.</p>
 </blockquote>
-<p>This is just my personal opinion! Dynamic metadata makes a number of things more complicated than they need to be. I understand the use-case for scm versioning, but in my opinion using dynamic metadata to read a version from <code>__init__.py</code> is a really heavy hammer with the only benefit being that you get to avoid writing out a constant twice -- I was responding to that specific case, where I don't think the tradeoffs are very good.</p>
+<p>This is just my personal opinion! Dynamic metadata makes a number of things more complicated than they need to be. I understand the use-case for scm versioning, but in my opinion using dynamic metadata to read a version from <code>__init__.py</code> is a really heavy hammer with the only benefit being that you get to avoid writing out a constant twice -- I was responding to that specific case, where I don&#x27;t think the tradeoffs are very good.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -250,16 +250,16 @@ Version: 0.5.0.dev5+g5d056c1
             <div class="timeline-body"><blockquote>
 <p>...simply not defining version in uv.lock for the local package (or providing a dynamic reference)</p>
 </blockquote>
-<p>Unfortunately it's not super simple -- it breaks the fundamental assumption that packages have versions, so we have to take that into account everywhere.</p>
+<p>Unfortunately it&#x27;s not super simple -- it breaks the fundamental assumption that packages have versions, so we have to take that into account everywhere.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Coruscant11">@Coruscant11</a> on 2024-11-13 06:07</div>
             <div class="timeline-body"><blockquote>
-<p>Unfortunately it's not super simple -- it breaks the fundamental assumption that packages have versions, so we have to take that into account everywhere.</p>
+<p>Unfortunately it&#x27;s not super simple -- it breaks the fundamental assumption that packages have versions, so we have to take that into account everywhere.</p>
 </blockquote>
 <p>Yes this is what I saw this week-end when I was trying to contribute on this 🥲
-But anyway, I had the opportunity to deep dive in the code base so it's fine.
+But anyway, I had the opportunity to deep dive in the code base so it&#x27;s fine.
 We will have to trust you on this 😄 (No need to worry at all then)</p>
 <p>Thanks!</p>
 </div>
@@ -269,8 +269,8 @@ We will have to trust you on this 😄 (No need to worry at all then)</p>
             <div class="timeline-body"><blockquote>
 <p>it breaks the fundamental assumption that packages have versions</p>
 </blockquote>
-<p>Not exactly, I don't think. The package always DOES have a version. It's just that the version may change outside of uv's immediate notice. Perhaps it would be fine if <code>uv lock</code> and <code>uv sync</code> and similar commands re-assessed the version if it's marked <code>dynamic</code> in the <code>pyproject.toml</code>. That wouldn't handle cases where the dynamic version contains the git commit SHA in some form, but I suspect that's pretty much an intractable problem.</p>
-<p>That said, I feel like a cleaner solution would be to omit the main package from <code>uv.lock</code> entirely. However I'm definitely not familiar with the implementation here, so I don't know what unforeseen consequences that might have.</p>
+<p>Not exactly, I don&#x27;t think. The package always DOES have a version. It&#x27;s just that the version may change outside of uv&#x27;s immediate notice. Perhaps it would be fine if <code>uv lock</code> and <code>uv sync</code> and similar commands re-assessed the version if it&#x27;s marked <code>dynamic</code> in the <code>pyproject.toml</code>. That wouldn&#x27;t handle cases where the dynamic version contains the git commit SHA in some form, but I suspect that&#x27;s pretty much an intractable problem.</p>
+<p>That said, I feel like a cleaner solution would be to omit the main package from <code>uv.lock</code> entirely. However I&#x27;m definitely not familiar with the implementation here, so I don&#x27;t know what unforeseen consequences that might have.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -279,10 +279,10 @@ We will have to trust you on this 😄 (No need to worry at all then)</p>
 <blockquote>
 <p>If references or opinion articles exist around this topic, they are few in number.</p>
 </blockquote>
-<p>This is just my personal opinion! Dynamic metadata makes a number of things more complicated than they need to be. I understand the use-case for scm versioning, but in my opinion using dynamic metadata to read a version from <code>__init__.py</code> is a really heavy hammer with the only benefit being that you get to avoid writing out a constant twice -- I was responding to that specific case, where I don't think the tradeoffs are very good.</p>
+<p>This is just my personal opinion! Dynamic metadata makes a number of things more complicated than they need to be. I understand the use-case for scm versioning, but in my opinion using dynamic metadata to read a version from <code>__init__.py</code> is a really heavy hammer with the only benefit being that you get to avoid writing out a constant twice -- I was responding to that specific case, where I don&#x27;t think the tradeoffs are very good.</p>
 </blockquote>
 <p>By the way, this can be inverted and made more standard-compliant while doing so by putting something like this into your <code>__init__.py</code>:</p>
-<pre><code class="language-python">def __getattr__(name: str) -&gt; str:
+<pre><code>def __getattr__(name: str) -&gt; str:
     if name != &quot;__version__&quot;:
         msg = f&quot;module {__name__} has no attribute {name}&quot;
         raise AttributeError(msg)
@@ -320,22 +320,22 @@ We will have to trust you on this 😄 (No need to worry at all then)</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2024-11-13 18:21</div>
-            <div class="timeline-body"><p>I think https://github.com/astral-sh/uv/pull/8867 released in <code>uv==0.5.0</code> leads <code>uv</code> to correctly respect dynamic metadata, which now breaks <code>setuptools-scm</code> + <code>pre-commit</code> users using the <code>uv-lock</code> hook: https://github.com/astral-sh/uv-pre-commit/issues/25.</p>
-<p>This is textbook <a href="https://www.hyrumslaw.com/">Hyrum's Law</a> 😆</p>
-<hr />
-<p>To share on the SCM versioning debate, I use <code>setuptools-scm</code> as it's a nice way for an automated (no human error) workflow of GitHub tagged release to PyPI publish with matching version.</p>
+            <div class="timeline-body"><p>I think <a href="https://github.com/astral-sh/uv/pull/8867">astral-sh/uv#8867</a> released in <code>uv==0.5.0</code> leads <code>uv</code> to correctly respect dynamic metadata, which now breaks <code>setuptools-scm</code> + <code>pre-commit</code> users using the <code>uv-lock</code> hook: <a href="https://github.com/astral-sh/uv-pre-commit/issues/25">astral-sh/uv-pre-commit#25</a>.</p>
+<p>This is textbook <a href="https://www.hyrumslaw.com/">Hyrum&#x27;s Law</a> 😆</p>
+<hr>
+<p>To share on the SCM versioning debate, I use <code>setuptools-scm</code> as it&#x27;s a nice way for an automated (no human error) workflow of GitHub tagged release to PyPI publish with matching version.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-13 18:24</div>
-            <div class="timeline-body"><p>Yeah, it seems like fundamentally the only way to make this work with <code>setuptools-scm</code> is to omit the version or otherwise mark it as dynamic. I don't think it's <em>impossible</em>, but it's not, like, an hour of work. I'm also fairly worried about how we would integrate this if PEP 751 gets approved -- the PEP doesn't make any carveouts for dynamic versions, and there hasn't been any discussion of it in the <a href="https://discuss.python.org/t/pep-751-now-with-graphs/69721/1">PEP thread</a>. If we add a feature like this here, and it doesn't make it into the PEP, we'll have to remove it later.</p>
+            <div class="timeline-body"><p>Yeah, it seems like fundamentally the only way to make this work with <code>setuptools-scm</code> is to omit the version or otherwise mark it as dynamic. I don&#x27;t think it&#x27;s <em>impossible</em>, but it&#x27;s not, like, an hour of work. I&#x27;m also fairly worried about how we would integrate this if PEP 751 gets approved -- the PEP doesn&#x27;t make any carveouts for dynamic versions, and there hasn&#x27;t been any discussion of it in the <a href="https://discuss.python.org/t/pep-751-now-with-graphs/69721/1">PEP thread</a>. If we add a feature like this here, and it doesn&#x27;t make it into the PEP, we&#x27;ll have to remove it later.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-design</span> added by @zanieb on 2024-11-14 15:32</div>
+            <div class="event">Label <span class="label">needs-design</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-14 15:32</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> added by @zanieb on 2024-11-14 15:32</div>
+            <div class="event">Label <span class="label">needs-decision</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-14 15:32</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/apollo13">@apollo13</a> on 2024-11-14 15:53</div>
@@ -347,25 +347,25 @@ We will have to trust you on this 😄 (No need to worry at all then)</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-14 16:16</div>
-            <div class="timeline-body"><p>It likely was https://github.com/astral-sh/uv/pull/8867 that led to the change, though sadly that really was a bugfix -- the existing behavior was wrong. Right now there just isn't a clear way to use scm-based versioning with lockfiles, but I'm thinking about it. My biggest hesitation to investing in it deeply is the aforementioned PEP 751. I don't want to do something that will become invalid once the standard exists.</p>
+            <div class="timeline-body"><p>It likely was <a href="https://github.com/astral-sh/uv/pull/8867">astral-sh/uv#8867</a> that led to the change, though sadly that really was a bugfix -- the existing behavior was wrong. Right now there just isn&#x27;t a clear way to use scm-based versioning with lockfiles, but I&#x27;m thinking about it. My biggest hesitation to investing in it deeply is the aforementioned PEP 751. I don&#x27;t want to do something that will become invalid once the standard exists.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dsully">@dsully</a> on 2024-11-14 17:40</div>
             <div class="timeline-body"><p>Is @brettcannon aware of this problem? Should PEP-751 take this usage into account?</p>
-<p>(I'm also not 100% sold we need a universal lockfile format. I believe the 715 discussion thread also mentions this. 🤷 )</p>
+<p>(I&#x27;m also not 100% sold we need a universal lockfile format. I believe the 715 discussion thread also mentions this. 🤷 )</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-14 18:04</div>
-            <div class="timeline-body"><p>I've been deeply involved in the thread and don't <em>think</em> it's come up, but I'll post about it today.</p>
+            <div class="timeline-body"><p>I&#x27;ve been deeply involved in the thread and don&#x27;t <em>think</em> it&#x27;s come up, but I&#x27;ll post about it today.</p>
 <p>(Edit: @hynek already did.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/apollo13">@apollo13</a> on 2024-11-14 18:18</div>
             <div class="timeline-body"><blockquote>
-<p>(I'm also not 100% sold we need a universal lockfile format. I believe the 715 discussion thread also mentions this. 🤷 )</p>
+<p>(I&#x27;m also not 100% sold we need a universal lockfile format. I believe the 715 discussion thread also mentions this. 🤷 )</p>
 </blockquote>
 <p>Having a universal lockfile seems better than trying to add support for 100 different lock file formats to every other SBOM tool out there :D</p>
 </div>
@@ -375,7 +375,7 @@ We will have to trust you on this 😄 (No need to worry at all then)</p>
             <div class="timeline-body"><blockquote>
 <p>Having a universal lockfile seems better than trying to add support for 100 different lock file formats to every other SBOM tool out there :D</p>
 </blockquote>
-<p>I'm going to ask that if @dsully or anyone else wants to express concern over standardizing lock files they bring it up on the PEP 751 discussion over on discuss.python.org and not here as I don't think the uv issue tracker is the best place to talk about PEPs that affect the wider Python packaging ecosystem 😉</p>
+<p>I&#x27;m going to ask that if @dsully or anyone else wants to express concern over standardizing lock files they bring it up on the PEP 751 discussion over on discuss.python.org and not here as I don&#x27;t think the uv issue tracker is the best place to talk about PEPs that affect the wider Python packaging ecosystem 😉</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -404,19 +404,19 @@ We will have to trust you on this 😄 (No need to worry at all then)</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-18 13:48</div>
-            <div class="timeline-body"><p>I think the solution here will ultimately be to stop storing versions for source trees (either entirely, or when dynamic -- I prefer doing so entirely, and not based on whether it's dynamic). I just want PEP 751 to play out a little more before I make any change.</p>
+            <div class="timeline-body"><p>I think the solution here will ultimately be to stop storing versions for source trees (either entirely, or when dynamic -- I prefer doing so entirely, and not based on whether it&#x27;s dynamic). I just want PEP 751 to play out a little more before I make any change.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-18 13:50</div>
-            <div class="timeline-body"><p>(Once we have clarity on what we want to do, I'll prioritize the change.)</p>
+            <div class="timeline-body"><p>(Once we have clarity on what we want to do, I&#x27;ll prioritize the change.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/nathanjmcdougall">@nathanjmcdougall</a> on 2024-11-19 03:46</div>
-            <div class="timeline-body"><p>As a temporary kind of hacky semi-workaround, I am using <code>uv export</code> via <a href="https://github.com/astral-sh/uv-pre-commit">uv-pre-commit</a>. Changes to the dependencies in <code>pyproject.toml</code> get reflected in a changed <code>requirements.txt</code> file, failing the hook. Since the <code>requirements.txt</code> file doesn't include the version of the editable-installed package, it doesn't suffer from the same issue as checking against <code>uv.lock</code> directly.</p>
-<p>In theory, the user could still get around this by modifying both the <code>pyproject.toml</code> and <code>requirements.txt</code> files but not the <code>uv.lock</code> file, since the hook is not checking the lockfile directly. I don't really think that would be possible in most cases without creating a <code>requirements.txt</code> file that mismatches what would get created by <code>uv export</code> so it would still fail, forcing a lockfile update.</p>
-<p>It protects against a situation where a dependency gets declared in <code>pyproject.toml</code> but the user forgets to run <code>uv sync</code> or <code>uv lock</code> - the pre-commit would fail, and the lockfile would be updated as a side-effect. But if the user is using <code>uv add</code> then this adds little benefit since it's unlikely the user would declare in <code>pyproject.toml</code> manually in the first place.</p>
+            <div class="timeline-body"><p>As a temporary kind of hacky semi-workaround, I am using <code>uv export</code> via <a href="https://github.com/astral-sh/uv-pre-commit">uv-pre-commit</a>. Changes to the dependencies in <code>pyproject.toml</code> get reflected in a changed <code>requirements.txt</code> file, failing the hook. Since the <code>requirements.txt</code> file doesn&#x27;t include the version of the editable-installed package, it doesn&#x27;t suffer from the same issue as checking against <code>uv.lock</code> directly.</p>
+<p>In theory, the user could still get around this by modifying both the <code>pyproject.toml</code> and <code>requirements.txt</code> files but not the <code>uv.lock</code> file, since the hook is not checking the lockfile directly. I don&#x27;t really think that would be possible in most cases without creating a <code>requirements.txt</code> file that mismatches what would get created by <code>uv export</code> so it would still fail, forcing a lockfile update.</p>
+<p>It protects against a situation where a dependency gets declared in <code>pyproject.toml</code> but the user forgets to run <code>uv sync</code> or <code>uv lock</code> - the pre-commit would fail, and the lockfile would be updated as a side-effect. But if the user is using <code>uv add</code> then this adds little benefit since it&#x27;s unlikely the user would declare in <code>pyproject.toml</code> manually in the first place.</p>
 <p>My plan is to get my organization to stop using dynamic versioning in packages...</p>
 </div>
         </div>
@@ -452,7 +452,7 @@ We will have to trust you on this 😄 (No need to worry at all then)</p>
     cmds:
       - |
         SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0 uv lock --locked 2&gt;/dev/null || {
-          echo -e '\033[0;31mThe lockfile at `uv.lock` needs to be updated. To update the lockfile, run `task dev:lock`\033[0m'.
+          echo -e &#x27;\033[0;31mThe lockfile at `uv.lock` needs to be updated. To update the lockfile, run `task dev:lock`\033[0m&#x27;.
           exit 1
         } &gt;&amp;2
 </code></pre>
@@ -462,24 +462,24 @@ We will have to trust you on this 😄 (No need to worry at all then)</p>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/thcrt">@thcrt</a> on 2024-12-11 00:02</div>
             <div class="timeline-body"><p>Just checking- is there any way to use dynamic versioning and build with GitHub Actions while also including <code>uv.lock</code>in version control?</p>
-<p>I haven't been able to get it working, and I'm not  sure whether this is a problem with <a href="https://github.com/actions/checkout">actions/checkout</a>, with <a href="https://github.com/ofek/hatch-vcs">hatch-vcs</a>, with <a href="https://github.com/pypa/setuptools-scm">setuptools-scm</a> or with uv.</p>
-<p>I can run <code>uv build</code> on my own machine just fine, and when I do this after having tagged the latest commit, the resulting builds have the version of the tag. However, I've found it impossible to get the same thing to happen via a workflow. The <code>uv sync</code> step <em>always</em> seems to set the version to include a <a href="https://packaging.python.org/en/latest/specifications/version-specifiers/#developmental-releases">developmental release segment</a> and a <a href="https://packaging.python.org/en/latest/specifications/version-specifiers/#local-version-identifiers">local version identifier</a>, such as <code>0.2.2.dev0+g38cf6c2.d20241210</code>.</p>
-<p>The only way that I can find to prevent this from happening is removing <code>uv.lock</code> from version control. Obviously, this isn't ideal.</p>
-<p>I'd love to know if there's something I'm missing, and it's possible to use <code>hatch-vcs</code>, <code>uv</code> and GitHub Actions workflows together. If this is an issue with one of the other projects involved, let me know and I'll report it to them :)</p>
+<p>I haven&#x27;t been able to get it working, and I&#x27;m not  sure whether this is a problem with <a href="https://github.com/actions/checkout">actions/checkout</a>, with <a href="https://github.com/ofek/hatch-vcs">hatch-vcs</a>, with <a href="https://github.com/pypa/setuptools-scm">setuptools-scm</a> or with uv.</p>
+<p>I can run <code>uv build</code> on my own machine just fine, and when I do this after having tagged the latest commit, the resulting builds have the version of the tag. However, I&#x27;ve found it impossible to get the same thing to happen via a workflow. The <code>uv sync</code> step <em>always</em> seems to set the version to include a <a href="https://packaging.python.org/en/latest/specifications/version-specifiers/#developmental-releases">developmental release segment</a> and a <a href="https://packaging.python.org/en/latest/specifications/version-specifiers/#local-version-identifiers">local version identifier</a>, such as <code>0.2.2.dev0+g38cf6c2.d20241210</code>.</p>
+<p>The only way that I can find to prevent this from happening is removing <code>uv.lock</code> from version control. Obviously, this isn&#x27;t ideal.</p>
+<p>I&#x27;d love to know if there&#x27;s something I&#x27;m missing, and it&#x27;s possible to use <code>hatch-vcs</code>, <code>uv</code> and GitHub Actions workflows together. If this is an issue with one of the other projects involved, let me know and I&#x27;ll report it to them :)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/nathanjmcdougall">@nathanjmcdougall</a> on 2024-12-11 02:22</div>
-            <div class="timeline-body"><p>@thcrt This probably isn't exactly what you're looking for, but I've found this works:</p>
+            <div class="timeline-body"><p>@thcrt This probably isn&#x27;t exactly what you&#x27;re looking for, but I&#x27;ve found this works:</p>
 <p>https://gist.github.com/nathanjmcdougall/42135563c719cfda59a1de317da5116b</p>
-<p>Note that this deliberately avoids running <code>uv sync</code>, to avoid the issue. I'm using <code>hatch-vcs</code>.</p>
+<p>Note that this deliberately avoids running <code>uv sync</code>, to avoid the issue. I&#x27;m using <code>hatch-vcs</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/thcrt">@thcrt</a> on 2024-12-11 11:17</div>
             <div class="timeline-body"><p>@nathanjmcdougall Incredible. You are a <em>saint</em> (and a fellow Kiwi!)</p>
 <p>Genuinely, thank you so much, this has been a major headache for me in two different projects.</p>
-<p>I imagine that not running <code>uv sync</code> in CI may have its downsides, but I'm happy to run it locally and manually if that's the tradeoff for having builds work properly.</p>
+<p>I imagine that not running <code>uv sync</code> in CI may have its downsides, but I&#x27;m happy to run it locally and manually if that&#x27;s the tradeoff for having builds work properly.</p>
 <p>Thank you so much again.</p>
 </div>
         </div>
@@ -488,15 +488,15 @@ We will have to trust you on this 😄 (No need to worry at all then)</p>
             <div class="timeline-body"><p>Since <a href="https://discuss.python.org/t/pep-751-now-with-graphs/69721">PEP 751</a> and therefore a holistic solution within uv looks like it will take some more time, here is my work-around to avoid the <code>uv sync</code> &lt;-&gt; <code>git commit</code> loop of <code>uv.lock</code>, aimed at local development of an app <code>myapp</code>:</p>
 <p>Instead of running <code>uv sync</code> or e.g. <code>uv run myentrypoint</code> which calls <code>uv sync</code> implicitely, I do the following:</p>
 <pre><code>uv sync
-sed -i -e '/myapp/ {' -e 'n; s/.*/version = \&quot;0.0+dynamic\&quot;/' -e '}' uv.lock # replace next line in uv.lock with dynamic version if previous line matches name of our package. Taken from: https://stackoverflow.com/questions/18620153/find-matching-text-and-replace-next-line/18620241#comment76950756_18620241:
+sed -i -e &#x27;/myapp/ {&#x27; -e &#x27;n; s/.*/version = \&quot;0.0+dynamic\&quot;/&#x27; -e &#x27;}&#x27; uv.lock # replace next line in uv.lock with dynamic version if previous line matches name of our package. Taken from: https://stackoverflow.com/questions/18620153/find-matching-text-and-replace-next-line/18620241#comment76950756_18620241:
 uv run --frozen myentrypoint
 </code></pre>
-<p>I take care to only commit the modified <code>uv.lock</code> with <code>version = 0.0+dynamic</code>. I'm sure that this approach could be integrated into a pre-commit rule as well, but haven't looked into it yet. Of course, this can also be integrated into the task runner of your choice, I use <a href="https://taskfile.dev/">task</a> and my <code>Taskfile.yml</code> has something like:</p>
-<pre><code class="language-yaml">tasks:
+<p>I take care to only commit the modified <code>uv.lock</code> with <code>version = 0.0+dynamic</code>. I&#x27;m sure that this approach could be integrated into a pre-commit rule as well, but haven&#x27;t looked into it yet. Of course, this can also be integrated into the task runner of your choice, I use <a href="https://taskfile.dev/">task</a> and my <code>Taskfile.yml</code> has something like:</p>
+<pre><code>tasks:
   dynamic-version:
     desc: replace next line in uv.lock with dynamic version if previous line matches name of our package, see  https://stackoverflow.com/questions/18620153/find-matching-text-and-replace-next-line/18620241#comment76950756_18620241
     cmds:
-      - sed -i -e '/myapp/ {' -e 'n; s/.*/version = \&quot;0.0+dynamic\&quot;/' -e '}' uv.lock
+      - sed -i -e &#x27;/myapp/ {&#x27; -e &#x27;n; s/.*/version = \&quot;0.0+dynamic\&quot;/&#x27; -e &#x27;}&#x27; uv.lock
      
   sync:
     desc: runs a uv sync followed by resetting the package version to dynamic
@@ -512,7 +512,7 @@ uv run --frozen myentrypoint
 
 
 </code></pre>
-<p>For the moment, this serves me well. If there are any unintentional side-effects, I'm eager to learn about them</p>
+<p>For the moment, this serves me well. If there are any unintentional side-effects, I&#x27;m eager to learn about them</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -527,29 +527,29 @@ uv sync --locked --allow-editable # Succeeds
             <div class="timeline-header">Comment by <a href="https://github.com/ayjayt">@ayjayt</a> on 2024-12-16 03:34</div>
             <div class="timeline-body"><p>from @charliermarsh:</p>
 <blockquote>
-<p>But there's sort of an infinite loop here, right? Since every time you commit the lockfile, it will be outdated. So you then re-lock, and commit again, etc. I don't know how to solve this holistically. We could omit versions for editables, maybe? Or even, write &quot;dynamic&quot; or something for the version, for packages that have dynamic versions?</p>
+<p>But there&#x27;s sort of an infinite loop here, right? Since every time you commit the lockfile, it will be outdated. So you then re-lock, and commit again, etc. I don&#x27;t know how to solve this holistically. We could omit versions for editables, maybe? Or even, write &quot;dynamic&quot; or something for the version, for packages that have dynamic versions?</p>
 </blockquote>
-<p>Narrowing things down, this specific issue is only when you are trying to pin the version of the repository you are currently working in. No other dependency matters, editable, dynamic, or not, since <code>uv.lock</code> updates won't cause the infinite loop if they don't effect those repos (so I'll ignore whether or not its helpful to try and lock a <code>-e</code>).</p>
-<p>Furthermore, you don't <em>need</em> to mark the version in <code>uv.lock</code> of the current repository, theoretically, because the <code>uv.lock</code> will be checked into git against that version anyway.</p>
+<p>Narrowing things down, this specific issue is only when you are trying to pin the version of the repository you are currently working in. No other dependency matters, editable, dynamic, or not, since <code>uv.lock</code> updates won&#x27;t cause the infinite loop if they don&#x27;t effect those repos (so I&#x27;ll ignore whether or not its helpful to try and lock a <code>-e</code>).</p>
+<p>Furthermore, you don&#x27;t <em>need</em> to mark the version in <code>uv.lock</code> of the current repository, theoretically, because the <code>uv.lock</code> will be checked into git against that version anyway.</p>
 <p>So I propose something like</p>
 <p><code>version = &quot;self&quot;</code> if the <code>uv.lock</code> is storing metadata for the same project from which a <code>pyproject.toml</code> is in that same directory.</p>
-<h3>Side Note: Further Spooky Behavior (extra notes I'm writing for if I come back to this convo)</h3>
-<p>nevermind about side note, its just https://github.com/astral-sh/uv/issues/6860 + not knowing when <code>uv lock --upgrade</code> runs or doesn't</p>
+Side Note: Further Spooky Behavior (extra notes I&#x27;m writing for if I come back to this convo)
+<p>nevermind about side note, its just <a href="https://github.com/astral-sh/uv/issues/6860">astral-sh/uv#6860</a> + not knowing when <code>uv lock --upgrade</code> runs or doesn&#x27;t</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/JacobHayes">@JacobHayes</a> on 2024-12-16 04:20</div>
-            <div class="timeline-body"><p>If you're using <code>hatch-vcs</code>, I've been working around this by setting <code>SETUPTOOLS_SCM_PRETEND_VERSION</code> as documented <a href="https://github.com/ofek/hatch-vcs#version-source-environment-variables">here</a>.</p>
-<p>Eg, I've added this to my <code>.envrc</code> (for <a href="https://direnv.net">direnv</a>):</p>
-<pre><code class="language-sh"># `uv` pins the version in the `uv.lock` file, but this leads to churn with each commit when using
+            <div class="timeline-body"><p>If you&#x27;re using <code>hatch-vcs</code>, I&#x27;ve been working around this by setting <code>SETUPTOOLS_SCM_PRETEND_VERSION</code> as documented <a href="https://github.com/ofek/hatch-vcs#version-source-environment-variables">here</a>.</p>
+<p>Eg, I&#x27;ve added this to my <code>.envrc</code> (for <a href="https://direnv.net">direnv</a>):</p>
+<pre><code># `uv` pins the version in the `uv.lock` file, but this leads to churn with each commit when using
 # `hatch-vcs`. Instead, we can override the version to force stability until [1] is resolved.
 #
-# 1: https://github.com/astral-sh/uv/issues/7533
+# 1: <a href="https://github.com/astral-sh/uv/issues/7533">astral-sh/uv#7533</a>
 export SETUPTOOLS_SCM_PRETEND_VERSION=&quot;0.1.0&quot;
 </code></pre>
-<p>and then all <code>uv sync</code> commands I run <em>locally</em> build a wheel with that version, meaning the <code>uv.lock</code> is stable. I've tested adding a dependency to <code>project.dependencies</code> and a subsequent <code>uv sync</code> detects that and adds it to the <code>uv.lock</code>.</p>
-<p>Seems to be working fine, but I'm not sure what other ramifications it might have - at the least, it probably doesn't play as well with projects with non-python (ie: built) dependencies.</p>
-<hr />
+<p>and then all <code>uv sync</code> commands I run <em>locally</em> build a wheel with that version, meaning the <code>uv.lock</code> is stable. I&#x27;ve tested adding a dependency to <code>project.dependencies</code> and a subsequent <code>uv sync</code> detects that and adds it to the <code>uv.lock</code>.</p>
+<p>Seems to be working fine, but I&#x27;m not sure what other ramifications it might have - at the least, it probably doesn&#x27;t play as well with projects with non-python (ie: built) dependencies.</p>
+<hr>
 <p>edit: ah, I see <code>SETUPTOOLS_SCM_PRETEND_VERSION</code> was <a href="https://github.com/astral-sh/uv/issues/7533#issuecomment-2486235749">noted above too</a>.</p>
 </div>
         </div>
@@ -560,16 +560,16 @@ export SETUPTOOLS_SCM_PRETEND_VERSION=&quot;0.1.0&quot;
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/brandon-avantus">@brandon-avantus</a> on 2024-12-19 17:36</div>
-            <div class="timeline-body"><p>Here's a temporary fix for those using <code>hatch-vcs</code> that doesn't require setting environment variables in your development environment, unless you want to override the version, such as when rolling a distribution.</p>
+            <div class="timeline-body"><p>Here&#x27;s a temporary fix for those using <code>hatch-vcs</code> that doesn&#x27;t require setting environment variables in your development environment, unless you want to override the version, such as when rolling a distribution.</p>
 <p>Copy the following code block, paste it into a file named <code>hatch_build.py</code>, and save it next to <code>pyproject.toml</code>. Then add <code>[tool.hatch.metadata.hooks.custom]</code> to <code>pyproject.toml</code>.</p>
-<pre><code class="language-python"># hatch_build.py
+<pre><code># hatch_build.py
 
 &quot;&quot;&quot;Hatchling custom metadata hook.
 
 Temporary fix until Astral decides how to handle dynamic project versions
 in the uv.lock file.
 
-See https://github.com/astral-sh/uv/issues/7533
+See <a href="https://github.com/astral-sh/uv/issues/7533">astral-sh/uv#7533</a>
 
 To enable, place this file next to and add the following line to the
 pyproject.toml file:
@@ -592,7 +592,7 @@ class CustomMetadataHook(MetadataHookInterface):
     def update(self, metadata: dict) -&gt; None:
         pass
 </code></pre>
-<p>This uses the <code>hatchling</code> hook system to set the <code>SETUPTOOLS_SCM_PRETEND_VERSION</code> environment variable automatically during the build process, but only if the variable isn't already set and the <code>CI</code> environment variable isn't set, such as when building with GitHub actions.</p>
+<p>This uses the <code>hatchling</code> hook system to set the <code>SETUPTOOLS_SCM_PRETEND_VERSION</code> environment variable automatically during the build process, but only if the variable isn&#x27;t already set and the <code>CI</code> environment variable isn&#x27;t set, such as when building with GitHub actions.</p>
 <p>Of course, feel free to set the default version to something that fits your project.</p>
 </div>
         </div>
@@ -603,14 +603,14 @@ class CustomMetadataHook(MetadataHookInterface):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-15 02:38</div>
-            <div class="timeline-body"><p>I'm working on omitting dynamic versions from the lockfile: https://github.com/astral-sh/uv/pull/10622</p>
+            <div class="timeline-body"><p>I&#x27;m working on omitting dynamic versions from the lockfile: <a href="https://github.com/astral-sh/uv/pull/10622">astral-sh/uv#10622</a></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2025-01-15 16:54</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-15 16:54</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2025-01-15 16:54</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-15 16:54</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/namurphy">@namurphy</a> on 2025-01-15 22:01</div>
@@ -620,12 +620,12 @@ class CustomMetadataHook(MetadataHookInterface):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/brendan-morin">@brendan-morin</a> on 2025-01-28 21:06</div>
-            <div class="timeline-body"><p>Perhaps I am misunderstanding the fix action, using this improperly, or this is a <code>hatch-vcs</code> problem, but are we sure this is working as intended? It seems that the behavior is inconsistent and flip flops depending on the state of uv's locking/my venv. Please let me know if this is better suited for a separate issue thread.</p>
+            <div class="timeline-body"><p>Perhaps I am misunderstanding the fix action, using this improperly, or this is a <code>hatch-vcs</code> problem, but are we sure this is working as intended? It seems that the behavior is inconsistent and flip flops depending on the state of uv&#x27;s locking/my venv. Please let me know if this is better suited for a separate issue thread.</p>
 <pre><code>uv --version
 uv 0.5.24 (Homebrew 2025-01-23)
 </code></pre>
 <p>I have a <code>pyproject.toml</code> like this:</p>
-<pre><code class="language-pyproject.toml">[project]
+<pre><code>[project]
 dynamic = [&quot;version&quot;]
 
 [build-system]
@@ -650,7 +650,7 @@ Installed 2 packages in 9ms
  ...
  ~ mypackage==5.1.29.dev1+gdd9890e.d20250128 (from file:///...)
 </code></pre>
-<ol start="4">
+<ol>
 <li>run <code>uv lock</code> again. Now we see these new logs:</li>
 </ol>
 <pre><code>$ uv lock
@@ -662,10 +662,10 @@ Updated mypackage (dynamic) -&gt; v5.1.29.dev1+gdd9890e.d20250128
 name = &quot;mypackage&quot;
 version = &quot;5.1.29.dev1+gdd9890e.d20250128&quot;
 </code></pre>
-<ol start="5">
-<li>Now no matter how many times I delete uv.lock, venv, run <code>uv lock</code>, or <code>uv sync</code>, the dynamic version remains. There's probably other ways, but if I want to reset the process, I can add this to pyproject.toml and rerun <code>uv lock</code>:</li>
+<ol>
+<li>Now no matter how many times I delete uv.lock, venv, run <code>uv lock</code>, or <code>uv sync</code>, the dynamic version remains. There&#x27;s probably other ways, but if I want to reset the process, I can add this to pyproject.toml and rerun <code>uv lock</code>:</li>
 </ol>
-<pre><code class="language-pyproject.toml">[tool.hatch.build.hooks.vcs]
+<pre><code>[tool.hatch.build.hooks.vcs]
 version-file = &quot;_version.py&quot; 
 </code></pre>
 <p>and <code>uv lock</code> yields:</p>
@@ -673,7 +673,7 @@ version-file = &quot;_version.py&quot;
 Resolved 108 packages in 1m 42s
 Updated mypackage v5.1.29.dev1+gdd9890e.d20250128 -&gt; (dynamic)
 </code></pre>
-<ol start="6">
+<ol>
 <li>Repeat the process by running <code>uv sync</code> and <code>uv lock</code> again:</li>
 </ol>
 <pre><code>$ uv sync            
@@ -730,7 +730,7 @@ Updated mypackage (dynamic) -&gt; v5.1.29.dev1+gdd9890e.d20250128
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/nathanjmcdougall">@nathanjmcdougall</a> on 2025-01-28 21:32</div>
-            <div class="timeline-body"><p>I'm having a similar issue. To provide another data point, I have a project where:</p>
+            <div class="timeline-body"><p>I&#x27;m having a similar issue. To provide another data point, I have a project where:</p>
 <ol>
 <li>Using the project created pre-v0.15.9 will fail to use remove the version from the lockfile, even when deleting the lockfile and .venv.</li>
 <li>A fresh clone and running <code>uv lock</code> will remove the version from the lock file no problem.</li>
@@ -741,12 +741,12 @@ Updated mypackage (dynamic) -&gt; v5.1.29.dev1+gdd9890e.d20250128
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/neutrinoceros">@neutrinoceros</a> on 2025-01-28 21:36</div>
             <div class="timeline-body"><p>@Brendan-Morin Maybe a bit random but I noticed that your <code>[project]</code> table is lacking a <code>requires-python</code> entry, which seemed to be crucial in my encounter with a similar problem.</p>
-<p>xref https://github.com/astral-sh/uv-pre-commit/issues/35</p>
+<p>xref <a href="https://github.com/astral-sh/uv-pre-commit/issues/35">astral-sh/uv-pre-commit#35</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-28 21:38</div>
-            <div class="timeline-body"><p>Is anyone able to upload a project that I can use to reproduce this? I'd love to fix it. I'm happy to fix it tonight.</p>
+            <div class="timeline-body"><p>Is anyone able to upload a project that I can use to reproduce this? I&#x27;d love to fix it. I&#x27;m happy to fix it tonight.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -759,7 +759,7 @@ Updated mypackage (dynamic) -&gt; v5.1.29.dev1+gdd9890e.d20250128
 <li><code>uv sync</code></li>
 <li><code>rm -rf uv.lock .venv</code></li>
 <li><code>uv lock</code></li>
-<li>Run <code>git diff</code> and see the version written into the lock file (shouldn't be)</li>
+<li>Run <code>git diff</code> and see the version written into the lock file (shouldn&#x27;t be)</li>
 <li><code>uv cache clean</code></li>
 <li><code>rm -rf uv.lock .venv</code></li>
 <li><code>uv lock</code> (No version written -&gt; okay)</li>
@@ -773,7 +773,7 @@ Updated mypackage (dynamic) -&gt; v5.1.29.dev1+gdd9890e.d20250128
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-29 01:14</div>
-            <div class="timeline-body"><p>Thank you, this was a real bug. Fix here: https://github.com/astral-sh/uv/pull/11046.</p>
+            <div class="timeline-body"><p>Thank you, this was a real bug. Fix here: <a href="https://github.com/astral-sh/uv/pull/11046">astral-sh/uv#11046</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -796,24 +796,24 @@ Updated mypackage (dynamic) -&gt; v5.1.29.dev1+gdd9890e.d20250128
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/aqib-bhat">@aqib-bhat</a> on 2025-06-23 03:51</div>
             <div class="timeline-body"><p>I created an issue in the <code>python-semantic-release</code> repo as well because their uv integration guide only ensures that the project version is synced just before the semantic release action runs in the merge to main workflow. Other than that, for most of the time, the <code>uv.ock</code> file will remain out of sync.
-https://github.com/python-semantic-release/python-semantic-release/issues/1280</p>
+<a href="https://github.com/python-semantic-release/python-semantic-release/issues/1280">python-semantic-release/python-semantic-release#1280</a></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-design</span> removed by @konstin on 2025-06-23 09:47</div>
+            <div class="event">Label <span class="label">needs-design</span> removed by <a href="https://github.com/konstin">@konstin</a> on 2025-06-23 09:47</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> removed by @konstin on 2025-06-23 09:47</div>
+            <div class="event">Label <span class="label">needs-decision</span> removed by <a href="https://github.com/konstin">@konstin</a> on 2025-06-23 09:47</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-23 09:49</div>
-            <div class="timeline-body"><p>A plain <code>uv lock</code> should get the <code>uv.lock</code> synced with the bumped version. Note that there's also <code>uv version --bump</code>, which does also update <code>uv.lock</code>.</p>
+            <div class="timeline-body"><p>A plain <code>uv lock</code> should get the <code>uv.lock</code> synced with the bumped version. Note that there&#x27;s also <code>uv version --bump</code>, which does also update <code>uv.lock</code>.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:27:14 UTC
+        Synced at 2026-01-20 19:34:10 UTC
     </footer>
 </body>
 </html>

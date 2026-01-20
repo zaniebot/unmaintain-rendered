@@ -23,33 +23,33 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Aeron">@Aeron</a></div>
-            <div class="timeline-body"><h3>Please complete the following tasks</h3>
+            <div class="timeline-body">Please complete the following tasks
 <ul>
 <li>[X] I have searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
 <li>[X] I have searched the <a href="https://github.com/clap-rs/clap/issues">open</a> and <a href="https://github.com/clap-rs/clap/issues?q=is%3Aissue+label%3AS-wont-fix+is%3Aclosed">rejected</a> issues</li>
 </ul>
-<h3>Clap Version</h3>
+Clap Version
 <p>4.4.8</p>
-<h3>Describe your use case</h3>
+Describe your use case
 <p>Clap already supports aliases for short and long argument names, which is superb, especially for keeping backward compatibility. Yet environment variables lack this feature that can be useful in all the same cases.</p>
 <p>For example, if my CLI changes one of its arguments’ name, I can keep compatibility with <code>short_alias</code> and <code>alias</code> functions and derive parameters. But if such an argument has an environment variable assigned, I either need to keep the name that became inconsistent with the argument name or introduce a breaking CLI change.</p>
 <p>For another case, the same will be true if I no longer need separate arguments for something that now can be treated as one value, so I need to merge two argument names. The <code>short_aliases</code> and <code>aliases</code> will cover it great. But environment variables will hold me back from doing so.</p>
-<h3>Describe the solution you'd like</h3>
+Describe the solution you&#x27;d like
 <p>It’d be nice to have the same alias options for environment variables, like <code>env_aliases</code> and <code>env_alias</code>—a super-similar implementation to what argument names have.</p>
-<h3>Alternatives, if applicable</h3>
+Alternatives, if applicable
 <p><em>No response</em></p>
-<h3>Additional Context</h3>
+Additional Context
 <p>I can prepare a PR if there are no objections, considerations, or pitfalls I’m missing. Maybe I overlooked something, or there are some limitations.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">C-enhancement</span> added by @Aeron on 2024-04-08 09:11</div>
+            <div class="event">Label <span class="label">C-enhancement</span> added by <a href="https://github.com/Aeron">@Aeron</a> on 2024-04-08 09:11</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">S-waiting-on-decision</span> added by @epage on 2024-04-09 15:53</div>
+            <div class="event">Label <span class="label">S-waiting-on-decision</span> added by <a href="https://github.com/epage">@epage</a> on 2024-04-09 15:53</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">A-parsing</span> added by @epage on 2024-04-09 15:53</div>
+            <div class="event">Label <span class="label">A-parsing</span> added by <a href="https://github.com/epage">@epage</a> on 2024-04-09 15:53</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2024-04-09 15:59</div>
@@ -71,20 +71,20 @@
 <p>For our deployed services, environment variables are the main way to configure applications because they are integrated with configurations/secrets from cloud providers.</p>
 <p>Aliases would help preventing breaking changes.</p>
 <p>Today we have to do something like this before parsing configurations:</p>
-<pre><code class="language-rust">if let Ok(value) = env::var(&quot;SOME_ALIAS_NAME&quot;) {
+<pre><code>if let Ok(value) = env::var(&quot;SOME_ALIAS_NAME&quot;) {
     env::set_var(&quot;CANONICAL_NAME&quot;, value);
 }
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../../risinglightdb/sqllogictest-rs/pulls/257.html">risinglightdb/sqllogictest-rs#257</a> on 2025-03-07 06:26</div>
+            <div class="event">Referenced in <a>risinglightdb/sqllogictest-rs#257</a> on 2025-03-07 06:26</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Will-Low">@Will-Low</a> on 2025-07-14 15:28</div>
-            <div class="timeline-body"><p>I have a use-case where I need to deprecate an environment variable and replace it with a new name, while maintaining backwards compatibility. I've explored the below workarounds, but each is hacky:</p>
+            <div class="timeline-body"><p>I have a use-case where I need to deprecate an environment variable and replace it with a new name, while maintaining backwards compatibility. I&#x27;ve explored the below workarounds, but each is hacky:</p>
 <ol>
-<li>Manipulate the args before parsing to include a field that is always true. This allows us to use something like:<pre><code class="language-rust"> #[arg(
+<li>Manipulate the args before parsing to include a field that is always true. This allows us to use something like:<pre><code> #[arg(
      env = NEW_ENV_VAR,
      default_value_if(
          &quot;my_always_true_value&quot;,
@@ -97,7 +97,7 @@
 </code></pre>
 </li>
 <li>Create an <code>Option&lt;T&gt;</code> arg for both the deprecated and new env vars. Write a method on the parsed arguments to determine which value to use or returns the default value. This does not allow defining a default value on the arg, so it is missing from the help text. If you print the arg values, it is also confusing, since the default value case will show that neither new nor deprecated value is set.</li>
-<li>Dynamically determine the default value. However, if the environment variable is set, the help text will use the user-defined value as the listen default, which is incorrect. This requires disabling the default value from the help text, which means that, in order to match the format of the other args, the whole help text needs to be manually crafted.<pre><code class="language-rust">#[arg(
+<li>Dynamically determine the default value. However, if the environment variable is set, the help text will use the user-defined value as the listen default, which is incorrect. This requires disabling the default value from the help text, which means that, in order to match the format of the other args, the whole help text needs to be manually crafted.<pre><code>#[arg(
     long,
     env = NEW_ENV_VAR,
     default_value = dynamically_source_from_deprecated_env_var_or_default(),
@@ -112,12 +112,12 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kpcyrd">@kpcyrd</a> on 2025-09-19 09:01</div>
-            <div class="timeline-body"><p>I'm also interested in this.</p>
+            <div class="timeline-body"><p>I&#x27;m also interested in this.</p>
 <p>I know very little about those kind of macros, but would it be possible to support &quot;env is either a string or a list of strings&quot;? That would allow:</p>
-<pre><code class="language-rust">#[arg(long, env = [&quot;NEW_ENV_VAR&quot;, &quot;DEPRECATED_ENV_VAR&quot;])]
+<pre><code>#[arg(long, env = [&quot;NEW_ENV_VAR&quot;, &quot;DEPRECATED_ENV_VAR&quot;])]
 </code></pre>
 <p>and then I could phase out the deprecated env vars over time. When both env vars exist, the first match in the list would win.</p>
-<p>As I understand it this wouldn't have impact on the binary size unless actively used, and the compile time overhead would be gated behind the <code>env</code> feature at least.</p>
+<p>As I understand it this wouldn&#x27;t have impact on the binary size unless actively used, and the compile time overhead would be gated behind the <code>env</code> feature at least.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -126,7 +126,7 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/6155.html">clap-rs/clap#6155</a> on 2025-10-16 14:42</div>
+            <div class="event">Referenced in <a>clap-rs/clap#6155</a> on 2025-10-16 14:42</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/programmerjake">@programmerjake</a> on 2025-10-16 21:13</div>
@@ -136,7 +136,7 @@
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:49:20 UTC
+        Synced at 2026-01-20 20:00:08 UTC
     </footer>
 </body>
 </html>

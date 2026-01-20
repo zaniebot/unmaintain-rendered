@@ -23,15 +23,15 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Fix the lookup of <code>submodule</code>s in cases where the <code>parent</code> module has a self-referential import like <code>from parent import submodule</code>. This allows us to infer proper types for many symbols where we previously inferred <code>Never</code>. This leads to many new false (and true) positives across the ecosystem because the fact that we previously inferred <code>Never</code> shadowed a lot of problems. For example, we inferred <code>Never</code> for <code>os.path</code>, which is why we now see a lot of new diagnostics related to <code>os.path.abspath</code> and similar.</p>
-<pre><code class="language-py">import os
+<pre><code>import os
 
-reveal_type(os.path)  # previously: Never, now: &lt;module 'os.path'&gt;
+reveal_type(os.path)  # previously: Never, now: &lt;module &#x27;os.path&#x27;&gt;
 </code></pre>
-<p>closes https://github.com/astral-sh/ty/issues/261
-closes https://github.com/astral-sh/ty/issues/307</p>
-<h2>Ecosystem analysis</h2>
+<p>closes <a href="https://github.com/astral-sh/ty/issues/261">astral-sh/ty#261</a>
+closes <a href="https://github.com/astral-sh/ty/issues/307">astral-sh/ty#307</a></p>
+Ecosystem analysis
 <pre><code>┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━┳━━━━━━━━━━━━┓
 ┃ Diagnostic ID                 ┃ Severity ┃ Removed ┃ Added ┃ Net Change ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━╇━━━━━━━━━━━━┩
@@ -69,45 +69,45 @@ Net change: +128
 </code></pre>
 <ul>
 <li>We see a lot of new errors (<code>no-matching-overload</code>) related to <code>os.path.dirname</code> and other <code>os.path</code> operations because we infer <code>str | None</code> for <code>__file__</code>, but many projects use something like <code>os.path.dirname(__file__)</code>.</li>
-<li>We also see many new <code>unresolved-attribute</code> errors related to the fact that we now infer proper module types for some imports (e.g. <code>import kornia.augmentation as K</code>), but we don't allow implicit imports (e.g. accessing <code>K.auto.operations</code> without also importing <code>K.auto</code>). See https://github.com/astral-sh/ty/issues/133.</li>
+<li>We also see many new <code>unresolved-attribute</code> errors related to the fact that we now infer proper module types for some imports (e.g. <code>import kornia.augmentation as K</code>), but we don&#x27;t allow implicit imports (e.g. accessing <code>K.auto.operations</code> without also importing <code>K.auto</code>). See <a href="https://github.com/astral-sh/ty/issues/133">astral-sh/ty#133</a>.</li>
 <li>Many false positive <code>invalid-type-form</code> are removed because we now infer the correct type for some type expression instead of <code>Never</code>, which is not valid in a type annotation/expression context.</li>
 </ul>
-<h2>Test Plan</h2>
+Test Plan
 <p>Added new Markdown tests</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @sharkdp on 2025-05-10 13:31</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-10 13:31</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-10 13:35</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">parso (https://github.com/davidhalter/parso)
+Changes were detected when running on open source projects
+
+<pre><code>parso (https://github.com/davidhalter/parso)
 + error[no-matching-overload] parso/grammar.py:250:25: No overload of function `dirname` matches arguments
 - Found 82 diagnostics
 + Found 83 diagnostics
 
 attrs (https://github.com/python-attrs/attrs)
-+ error[unresolved-attribute] tests/test_validators.py:110:40: Type `&lt;module 'src.attr.validators'&gt;` has no attribute `__all__`
-+ error[unresolved-attribute] tests/test_validators.py:159:39: Type `&lt;module 'src.attr.validators'&gt;` has no attribute `__all__`
-+ error[unresolved-attribute] tests/test_validators.py:271:33: Type `&lt;module 'src.attr.validators'&gt;` has no attribute `__all__`
-+ error[unresolved-attribute] tests/test_validators.py:320:37: Type `&lt;module 'src.attr.validators'&gt;` has no attribute `__all__`
-+ error[unresolved-attribute] tests/test_validators.py:385:32: Type `&lt;module 'src.attr.validators'&gt;` has no attribute `__all__`
++ error[unresolved-attribute] tests/test_validators.py:110:40: Type `&lt;module &#x27;src.attr.validators&#x27;&gt;` has no attribute `__all__`
++ error[unresolved-attribute] tests/test_validators.py:159:39: Type `&lt;module &#x27;src.attr.validators&#x27;&gt;` has no attribute `__all__`
++ error[unresolved-attribute] tests/test_validators.py:271:33: Type `&lt;module &#x27;src.attr.validators&#x27;&gt;` has no attribute `__all__`
++ error[unresolved-attribute] tests/test_validators.py:320:37: Type `&lt;module &#x27;src.attr.validators&#x27;&gt;` has no attribute `__all__`
++ error[unresolved-attribute] tests/test_validators.py:385:32: Type `&lt;module &#x27;src.attr.validators&#x27;&gt;` has no attribute `__all__`
 + error[invalid-argument-type] tests/test_validators.py:448:52: Argument to function `include` is incorrect: Expected `type | str | Attribute[Any]`, found `(val) -&gt; Unknown`
 + error[invalid-argument-type] tests/test_validators.py:449:52: Argument to function `exclude` is incorrect: Expected `type | str | Attribute[Any]`, found `(val) -&gt; Unknown`
-+ error[unresolved-attribute] tests/test_validators.py:477:42: Type `&lt;module 'src.attr.validators'&gt;` has no attribute `__all__`
-+ error[unresolved-attribute] tests/test_validators.py:634:41: Type `&lt;module 'src.attr.validators'&gt;` has no attribute `__all__`
-+ error[unresolved-attribute] tests/test_validators.py:734:40: Type `&lt;module 'src.attr.validators'&gt;` has no attribute `__all__`
-+ error[unresolved-attribute] tests/test_validators.py:804:27: Type `&lt;module 'src.attr.validators'&gt;` has no attribute `__all__`
-+ error[unresolved-attribute] tests/test_validators.py:879:36: Type `&lt;module 'src.attr.validators'&gt;` has no attribute `__all__`
-+ error[unresolved-attribute] tests/test_validators.py:952:36: Type `&lt;module 'src.attr.validators'&gt;` has no attribute `__all__`
-+ error[unresolved-attribute] tests/test_validators.py:1066:33: Type `&lt;module 'src.attr.validators'&gt;` has no attribute `__all__`
-+ error[unresolved-attribute] tests/test_validators.py:1286:32: Type `&lt;module 'src.attr.validators'&gt;` has no attribute `__all__`
++ error[unresolved-attribute] tests/test_validators.py:477:42: Type `&lt;module &#x27;src.attr.validators&#x27;&gt;` has no attribute `__all__`
++ error[unresolved-attribute] tests/test_validators.py:634:41: Type `&lt;module &#x27;src.attr.validators&#x27;&gt;` has no attribute `__all__`
++ error[unresolved-attribute] tests/test_validators.py:734:40: Type `&lt;module &#x27;src.attr.validators&#x27;&gt;` has no attribute `__all__`
++ error[unresolved-attribute] tests/test_validators.py:804:27: Type `&lt;module &#x27;src.attr.validators&#x27;&gt;` has no attribute `__all__`
++ error[unresolved-attribute] tests/test_validators.py:879:36: Type `&lt;module &#x27;src.attr.validators&#x27;&gt;` has no attribute `__all__`
++ error[unresolved-attribute] tests/test_validators.py:952:36: Type `&lt;module &#x27;src.attr.validators&#x27;&gt;` has no attribute `__all__`
++ error[unresolved-attribute] tests/test_validators.py:1066:33: Type `&lt;module &#x27;src.attr.validators&#x27;&gt;` has no attribute `__all__`
++ error[unresolved-attribute] tests/test_validators.py:1286:32: Type `&lt;module &#x27;src.attr.validators&#x27;&gt;` has no attribute `__all__`
 + error[invalid-argument-type] tests/typing_example.py:221:64: Argument to function `matches_re` is incorrect: Expected `((Literal[&quot;foo&quot;], Literal[&quot;foo&quot;], int, /) -&gt; Match[Literal[&quot;foo&quot;]] | None) | None`, found `Overload[(pattern: str | Pattern[str], string: str, flags: Unknown = Literal[0]) -&gt; Match[str] | None, (pattern: bytes | Pattern[bytes], string: @Todo(Support for `typing.TypeAlias`), flags: Unknown = Literal[0]) -&gt; Match[bytes] | None]`
 - Found 602 diagnostics
 + Found 618 diagnostics
@@ -126,23 +126,23 @@ starlette (https://github.com/encode/starlette)
 kornia (https://github.com/kornia/kornia)
 - error[invalid-type-form] kornia/augmentation/container/ops.py:182:41: Variable of type `Never` is not allowed in a type expression
 - error[invalid-type-form] kornia/augmentation/container/ops.py:191:39: Variable of type `Never` is not allowed in a type expression
-+ error[unresolved-attribute] kornia/augmentation/container/ops.py:213:34: Type `&lt;module 'kornia.augmentation.auto'&gt;` has no attribute `operations`
-+ error[unresolved-attribute] kornia/augmentation/container/ops.py:233:34: Type `&lt;module 'kornia.augmentation.auto'&gt;` has no attribute `operations`
-+ error[unresolved-attribute] kornia/augmentation/container/ops.py:309:34: Type `&lt;module 'kornia.augmentation.auto'&gt;` has no attribute `operations`
-+ error[unresolved-attribute] kornia/augmentation/container/ops.py:372:34: Type `&lt;module 'kornia.augmentation.auto'&gt;` has no attribute `operations`
-+ error[unresolved-attribute] kornia/augmentation/container/ops.py:415:34: Type `&lt;module 'kornia.augmentation.auto'&gt;` has no attribute `operations`
-+ error[unresolved-attribute] kornia/augmentation/container/ops.py:468:34: Type `&lt;module 'kornia.augmentation.auto'&gt;` has no attribute `operations`
-+ error[unresolved-attribute] kornia/augmentation/container/ops.py:513:34: Type `&lt;module 'kornia.augmentation.auto'&gt;` has no attribute `operations`
-+ error[unresolved-attribute] kornia/augmentation/container/ops.py:566:34: Type `&lt;module 'kornia.augmentation.auto'&gt;` has no attribute `operations`
-+ error[unresolved-attribute] kornia/augmentation/container/ops.py:612:34: Type `&lt;module 'kornia.augmentation.auto'&gt;` has no attribute `operations`
-+ error[unresolved-attribute] kornia/core/mixin/onnx.py:145:22: Type `&lt;module 'kornia.onnx'&gt;` has no attribute `utils`
-+ error[unresolved-attribute] kornia/core/mixin/onnx.py:306:20: Type `&lt;module 'kornia.onnx'&gt;` has no attribute `utils`
-+ error[unresolved-attribute] kornia/core/mixin/onnx.py:399:14: Type `&lt;module 'kornia.onnx'&gt;` has no attribute `utils`
-+ error[unresolved-attribute] kornia/core/module.py:142:20: Type `&lt;module 'kornia.utils'&gt;` has no attribute `image`
-+ error[unresolved-attribute] kornia/core/module.py:232:25: Type `&lt;module 'kornia.utils'&gt;` has no attribute `image`
-+ error[unresolved-attribute] kornia/core/module.py:258:25: Type `&lt;module 'kornia.utils'&gt;` has no attribute `image`
++ error[unresolved-attribute] kornia/augmentation/container/ops.py:213:34: Type `&lt;module &#x27;kornia.augmentation.auto&#x27;&gt;` has no attribute `operations`
++ error[unresolved-attribute] kornia/augmentation/container/ops.py:233:34: Type `&lt;module &#x27;kornia.augmentation.auto&#x27;&gt;` has no attribute `operations`
++ error[unresolved-attribute] kornia/augmentation/container/ops.py:309:34: Type `&lt;module &#x27;kornia.augmentation.auto&#x27;&gt;` has no attribute `operations`
++ error[unresolved-attribute] kornia/augmentation/container/ops.py:372:34: Type `&lt;module &#x27;kornia.augmentation.auto&#x27;&gt;` has no attribute `operations`
++ error[unresolved-attribute] kornia/augmentation/container/ops.py:415:34: Type `&lt;module &#x27;kornia.augmentation.auto&#x27;&gt;` has no attribute `operations`
++ error[unresolved-attribute] kornia/augmentation/container/ops.py:468:34: Type `&lt;module &#x27;kornia.augmentation.auto&#x27;&gt;` has no attribute `operations`
++ error[unresolved-attribute] kornia/augmentation/container/ops.py:513:34: Type `&lt;module &#x27;kornia.augmentation.auto&#x27;&gt;` has no attribute `operations`
++ error[unresolved-attribute] kornia/augmentation/container/ops.py:566:34: Type `&lt;module &#x27;kornia.augmentation.auto&#x27;&gt;` has no attribute `operations`
++ error[unresolved-attribute] kornia/augmentation/container/ops.py:612:34: Type `&lt;module &#x27;kornia.augmentation.auto&#x27;&gt;` has no attribute `operations`
++ error[unresolved-attribute] kornia/core/mixin/onnx.py:145:22: Type `&lt;module &#x27;kornia.onnx&#x27;&gt;` has no attribute `utils`
++ error[unresolved-attribute] kornia/core/mixin/onnx.py:306:20: Type `&lt;module &#x27;kornia.onnx&#x27;&gt;` has no attribute `utils`
++ error[unresolved-attribute] kornia/core/mixin/onnx.py:399:14: Type `&lt;module &#x27;kornia.onnx&#x27;&gt;` has no attribute `utils`
++ error[unresolved-attribute] kornia/core/module.py:142:20: Type `&lt;module &#x27;kornia.utils&#x27;&gt;` has no attribute `image`
++ error[unresolved-attribute] kornia/core/module.py:232:25: Type `&lt;module &#x27;kornia.utils&#x27;&gt;` has no attribute `image`
++ error[unresolved-attribute] kornia/core/module.py:258:25: Type `&lt;module &#x27;kornia.utils&#x27;&gt;` has no attribute `image`
 - error[invalid-type-form] kornia/models/segmentation/segmentation_models.py:85:71: Variable of type `Never` is not allowed in a type expression
-+ error[unresolved-attribute] kornia/utils/sample.py:108:26: Type `&lt;module 'kornia.geometry'&gt;` has no attribute `transform`
++ error[unresolved-attribute] kornia/utils/sample.py:108:26: Type `&lt;module &#x27;kornia.geometry&#x27;&gt;` has no attribute `transform`
 - Found 970 diagnostics
 + Found 983 diagnostics
 
@@ -211,8 +211,8 @@ trio (https://github.com/python-trio/trio)
 - error[invalid-type-form] src/trio/_tests/test_ssl.py:763:28: Variable of type `Never` is not allowed in a type expression
 - error[invalid-type-form] src/trio/_tests/test_ssl.py:763:49: Variable of type `Never` is not allowed in a type expression
 - error[invalid-type-form] src/trio/_tests/test_ssl.py:1331:16: Variable of type `Never` is not allowed in a type expression
-+ error[unresolved-attribute] src/trio/_tests/test_testing_raisesgroup.py:1110:9: Type `&lt;module 'src.trio.testing'&gt;` has no attribute `_raises_group`
-+ error[unresolved-attribute] src/trio/_tests/test_testing_raisesgroup.py:1112:9: Type `&lt;module 'src.trio.testing'&gt;` has no attribute `_raises_group`
++ error[unresolved-attribute] src/trio/_tests/test_testing_raisesgroup.py:1110:9: Type `&lt;module &#x27;src.trio.testing&#x27;&gt;` has no attribute `_raises_group`
++ error[unresolved-attribute] src/trio/_tests/test_testing_raisesgroup.py:1112:9: Type `&lt;module &#x27;src.trio.testing&#x27;&gt;` has no attribute `_raises_group`
 + error[no-matching-overload] src/trio/_tests/type_tests/subprocesses.py:10:11: No overload of function `open_process` matches arguments
 - warning[unused-ignore-comment] src/trio/_tests/type_tests/subprocesses.py:15:70: Unused blanket `type: ignore` directive
 - warning[unused-ignore-comment] src/trio/_tests/type_tests/subprocesses.py:23:70: Unused blanket `type: ignore` directive
@@ -369,27 +369,27 @@ Expression (https://github.com/cognitedata/Expression)
 + error[invalid-assignment] tests/test_block.py:335:1: Object of type `def singleton(value: _TSource) -&gt; Block[_TSource]` is not assignable to `(int, /) -&gt; Block[int]`
 + error[no-matching-overload] tests/test_result.py:487:12: No overload of bound method `pipe` matches arguments
 + error[no-matching-overload] tests/test_result.py:573:12: No overload of bound method `pipe` matches arguments
-+ warning[call-possibly-unbound-method] tests/test_seq.py:15:6: Method `__getitem__` of type `Unknown | &lt;class 'SeqBuilder'&gt;` is possibly unbound
-+ warning[call-possibly-unbound-method] tests/test_seq.py:27:6: Method `__getitem__` of type `Unknown | &lt;class 'SeqBuilder'&gt;` is possibly unbound
-+ warning[call-possibly-unbound-method] tests/test_seq.py:38:6: Method `__getitem__` of type `Unknown | &lt;class 'SeqBuilder'&gt;` is possibly unbound
++ warning[call-possibly-unbound-method] tests/test_seq.py:15:6: Method `__getitem__` of type `Unknown | &lt;class &#x27;SeqBuilder&#x27;&gt;` is possibly unbound
++ warning[call-possibly-unbound-method] tests/test_seq.py:27:6: Method `__getitem__` of type `Unknown | &lt;class &#x27;SeqBuilder&#x27;&gt;` is possibly unbound
++ warning[call-possibly-unbound-method] tests/test_seq.py:38:6: Method `__getitem__` of type `Unknown | &lt;class &#x27;SeqBuilder&#x27;&gt;` is possibly unbound
 + error[invalid-argument-type] tests/test_seq.py:308:20: Argument to bound method `choose` is incorrect: Expected `(None | Literal[42], /) -&gt; Option[Unknown]`, found `def of_optional(value: _TSource | None) -&gt; Option[_TSource]`
 + error[invalid-assignment] tests/test_seq.py:321:1: Object of type `def singleton(item: _TSource) -&gt; Seq[_TSource]` is not assignable to `(int, /) -&gt; Seq[int]`
-+ warning[call-possibly-unbound-method] tests/test_seq_builder.py:16:6: Method `__getitem__` of type `Unknown | &lt;class 'SeqBuilder'&gt;` is possibly unbound
-+ warning[call-possibly-unbound-method] tests/test_seq_builder.py:37:6: Method `__getitem__` of type `Unknown | &lt;class 'SeqBuilder'&gt;` is possibly unbound
-+ warning[call-possibly-unbound-method] tests/test_seq_builder.py:57:6: Method `__getitem__` of type `Unknown | &lt;class 'SeqBuilder'&gt;` is possibly unbound
-+ warning[call-possibly-unbound-method] tests/test_seq_builder.py:77:6: Method `__getitem__` of type `Unknown | &lt;class 'SeqBuilder'&gt;` is possibly unbound
-+ warning[call-possibly-unbound-method] tests/test_seq_builder.py:89:6: Method `__getitem__` of type `Unknown | &lt;class 'SeqBuilder'&gt;` is possibly unbound
-+ warning[call-possibly-unbound-method] tests/test_seq_builder.py:102:6: Method `__getitem__` of type `Unknown | &lt;class 'SeqBuilder'&gt;` is possibly unbound
-+ warning[call-possibly-unbound-method] tests/test_seq_builder.py:118:6: Method `__getitem__` of type `Unknown | &lt;class 'SeqBuilder'&gt;` is possibly unbound
-+ warning[call-possibly-unbound-method] tests/test_seq_builder.py:138:6: Method `__getitem__` of type `Unknown | &lt;class 'SeqBuilder'&gt;` is possibly unbound
-+ warning[call-possibly-unbound-method] tests/test_seq_builder.py:143:6: Method `__getitem__` of type `Unknown | &lt;class 'SeqBuilder'&gt;` is possibly unbound
-+ warning[call-possibly-unbound-method] tests/test_seq_builder.py:157:6: Method `__getitem__` of type `Unknown | &lt;class 'SeqBuilder'&gt;` is possibly unbound
-+ warning[call-possibly-unbound-method] tests/test_seq_builder.py:171:6: Method `__getitem__` of type `Unknown | &lt;class 'SeqBuilder'&gt;` is possibly unbound
-+ warning[call-possibly-unbound-method] tests/test_seq_builder.py:183:6: Method `__getitem__` of type `Unknown | &lt;class 'SeqBuilder'&gt;` is possibly unbound
-+ warning[call-possibly-unbound-method] tests/test_seq_builder.py:195:6: Method `__getitem__` of type `Unknown | &lt;class 'SeqBuilder'&gt;` is possibly unbound
-+ warning[call-possibly-unbound-method] tests/test_seq_builder.py:207:6: Method `__getitem__` of type `Unknown | &lt;class 'SeqBuilder'&gt;` is possibly unbound
-+ warning[call-possibly-unbound-method] tests/test_seq_builder.py:224:6: Method `__getitem__` of type `Unknown | &lt;class 'SeqBuilder'&gt;` is possibly unbound
-+ warning[call-possibly-unbound-method] tests/test_seq_builder.py:241:6: Method `__getitem__` of type `Unknown | &lt;class 'SeqBuilder'&gt;` is possibly unbound
++ warning[call-possibly-unbound-method] tests/test_seq_builder.py:16:6: Method `__getitem__` of type `Unknown | &lt;class &#x27;SeqBuilder&#x27;&gt;` is possibly unbound
++ warning[call-possibly-unbound-method] tests/test_seq_builder.py:37:6: Method `__getitem__` of type `Unknown | &lt;class &#x27;SeqBuilder&#x27;&gt;` is possibly unbound
++ warning[call-possibly-unbound-method] tests/test_seq_builder.py:57:6: Method `__getitem__` of type `Unknown | &lt;class &#x27;SeqBuilder&#x27;&gt;` is possibly unbound
++ warning[call-possibly-unbound-method] tests/test_seq_builder.py:77:6: Method `__getitem__` of type `Unknown | &lt;class &#x27;SeqBuilder&#x27;&gt;` is possibly unbound
++ warning[call-possibly-unbound-method] tests/test_seq_builder.py:89:6: Method `__getitem__` of type `Unknown | &lt;class &#x27;SeqBuilder&#x27;&gt;` is possibly unbound
++ warning[call-possibly-unbound-method] tests/test_seq_builder.py:102:6: Method `__getitem__` of type `Unknown | &lt;class &#x27;SeqBuilder&#x27;&gt;` is possibly unbound
++ warning[call-possibly-unbound-method] tests/test_seq_builder.py:118:6: Method `__getitem__` of type `Unknown | &lt;class &#x27;SeqBuilder&#x27;&gt;` is possibly unbound
++ warning[call-possibly-unbound-method] tests/test_seq_builder.py:138:6: Method `__getitem__` of type `Unknown | &lt;class &#x27;SeqBuilder&#x27;&gt;` is possibly unbound
++ warning[call-possibly-unbound-method] tests/test_seq_builder.py:143:6: Method `__getitem__` of type `Unknown | &lt;class &#x27;SeqBuilder&#x27;&gt;` is possibly unbound
++ warning[call-possibly-unbound-method] tests/test_seq_builder.py:157:6: Method `__getitem__` of type `Unknown | &lt;class &#x27;SeqBuilder&#x27;&gt;` is possibly unbound
++ warning[call-possibly-unbound-method] tests/test_seq_builder.py:171:6: Method `__getitem__` of type `Unknown | &lt;class &#x27;SeqBuilder&#x27;&gt;` is possibly unbound
++ warning[call-possibly-unbound-method] tests/test_seq_builder.py:183:6: Method `__getitem__` of type `Unknown | &lt;class &#x27;SeqBuilder&#x27;&gt;` is possibly unbound
++ warning[call-possibly-unbound-method] tests/test_seq_builder.py:195:6: Method `__getitem__` of type `Unknown | &lt;class &#x27;SeqBuilder&#x27;&gt;` is possibly unbound
++ warning[call-possibly-unbound-method] tests/test_seq_builder.py:207:6: Method `__getitem__` of type `Unknown | &lt;class &#x27;SeqBuilder&#x27;&gt;` is possibly unbound
++ warning[call-possibly-unbound-method] tests/test_seq_builder.py:224:6: Method `__getitem__` of type `Unknown | &lt;class &#x27;SeqBuilder&#x27;&gt;` is possibly unbound
++ warning[call-possibly-unbound-method] tests/test_seq_builder.py:241:6: Method `__getitem__` of type `Unknown | &lt;class &#x27;SeqBuilder&#x27;&gt;` is possibly unbound
 - Found 302 diagnostics
 + Found 317 diagnostics
 
@@ -702,20 +702,20 @@ pwndbg (https://github.com/pwndbg/pwndbg)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @sharkdp on 2025-05-11 09:52</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-11 09:52</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @sharkdp on 2025-05-11 09:52</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-11 09:52</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-05-11 09:52</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-11 09:52</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @sharkdp on 2025-05-11 09:52</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-11 09:52</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/import/cyclic.md</code>:33 on 2025-05-11 09:53</div>
-            <div class="timeline-body"><p>I added a test for https://github.com/astral-sh/ty/issues/113 here as well. The issue is not fixed with this PR (I didn't have a closer look into why), ~~but we now infer <code>Unknown</code> instead of <code>Never</code>~~.</p>
+            <div class="timeline-body"><p>I added a test for <a href="https://github.com/astral-sh/ty/issues/113">astral-sh/ty#113</a> here as well. The issue is not fixed with this PR (I didn&#x27;t have a closer look into why), ~~but we now infer <code>Unknown</code> instead of <code>Never</code>~~.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -726,13 +726,13 @@ pwndbg (https://github.com/pwndbg/pwndbg)
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/symbol.rs</code>:335 on 2025-05-11 10:34</div>
             <div class="timeline-body"><p>One rather obvious problem here is a module that actually exports a symbol with type <code>Never</code> :-/</p>
 <p><code>main.py</code>:</p>
-<pre><code class="language-py"># error: [unresolved-import]
+<pre><code># error: [unresolved-import]
 from module import n
 
 reveal_type(n)  # revealed: Unknown
 </code></pre>
 <p><code>module.py</code>:</p>
-<pre><code class="language-py">from typing_extensions import Never
+<pre><code>from typing_extensions import Never
 
 
 def never() -&gt; Never:
@@ -757,7 +757,7 @@ n: Never = never()
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/import/cyclic.md</code>:41 on 2025-05-13 14:39</div>
-            <div class="timeline-body"><p>This isn't the desired revealed type, so we should have a TODO comment here?</p>
+            <div class="timeline-body"><p>This isn&#x27;t the desired revealed type, so we should have a TODO comment here?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -782,7 +782,7 @@ n: Never = never()
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:3952 on 2025-05-13 14:44</div>
             <div class="timeline-body"><p>I think this could possibly be cheaper and more accurate if we compared the files rather than the module names?</p>
-<pre><code class="language-suggestion">        let import_is_self_referential = module_ty
+<pre><code>        let import_is_self_referential = module_ty
             .into_module_literal()
             .is_some_and(|module| self.file() == module.module(self.db()).file());
 </code></pre>
@@ -794,7 +794,7 @@ n: Never = never()
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:3951 on 2025-05-13 14:44</div>
-            <div class="timeline-body"><p>jinx -- https://github.com/astral-sh/ruff/pull/18005#discussion_r2087012889</p>
+            <div class="timeline-body"><p>jinx -- <a href="https://github.com/astral-sh/ruff/pull/18005">astral-sh/ruff#18005</a>#discussion_r2087012889</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -825,10 +825,10 @@ n: Never = never()
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @sharkdp on 2025-05-13 14:59</div>
+            <div class="event">Merged by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-13 14:59</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @sharkdp on 2025-05-13 14:59</div>
+            <div class="event">Closed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-13 14:59</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-05-13 14:59</div>
@@ -836,7 +836,7 @@ n: Never = never()
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:12:24 UTC
+        Synced at 2026-01-20 19:14:17 UTC
     </footer>
 </body>
 </html>

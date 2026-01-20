@@ -23,24 +23,18 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/cake-monotone">@cake-monotone</a></div>
-            <div class="timeline-body"><!--
-Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+            <div class="timeline-body">
 
-- Does this pull request include a summary of the change? (See below.)
-- Does this pull request include a descriptive title?
-- Does this pull request include references to any relevant issues?
--->
-
-<h2>Summary</h2>
+Summary
 <p>closes #14279</p>
-<h3>Limitations of the Current Implementation</h3>
-<h4>Incorrect Error Propagation</h4>
+Limitations of the Current Implementation
+Incorrect Error Propagation
 <p>In the current implementation of lexicographic comparisons, if the result of an Eq operation is Ambiguous, the comparison stops immediately, returning a bool instance. While this may yield correct inferences, it fails to capture unsupported-operation errors that might occur in subsequent comparisons.</p>
-<pre><code class="language-py">class A: ...
+<pre><code>class A: ...
 
 (int_instance(), A()) &lt; (int_instance(), A())  # should error
 </code></pre>
-<h4>Weak Inference in Specific Cases</h4>
+Weak Inference in Specific Cases
 <blockquote>
 <p>Example: <code>(int_instance(), &quot;foo&quot;) == (int_instance(), &quot;bar&quot;)</code>
 Current result: <code>bool</code>
@@ -51,7 +45,7 @@ Expected result: <code>Literal[False]</code></p>
 <li>For <code>Eq</code>, if any non-equal pair exists within the tuples being compared, we can immediately conclude that the tuples are not equal.</li>
 <li>For <code>NotEq</code>, if any equal pair exists, we can conclude that the tuples are unequal.</li>
 </ul>
-<pre><code class="language-py">a = (str_instance(), int_instance(), &quot;foo&quot;)
+<pre><code>a = (str_instance(), int_instance(), &quot;foo&quot;)
 
 reveal_type(a == a)  # revealed: bool
 reveal_type(a != a)  # revealed: bool
@@ -61,10 +55,10 @@ b = (str_instance(), int_instance(), &quot;bar&quot;)
 reveal_type(a == b)  # revealed: bool  # should be Literal[False]
 reveal_type(a != b)  # revealed: bool  # should be Literal[True]
 </code></pre>
-<h4>Incorrect Support for Non-Boolean Rich Comparisons</h4>
+Incorrect Support for Non-Boolean Rich Comparisons
 <p>In CPython, aside from <code>==</code> and <code>!=</code>, tuple comparisons return a non-boolean result as-is. Tuples do not convert the value into <code>bool</code>.</p>
-<p>Note: If all pairwise <code>==</code> comparisons between elements in the tuples return Truthy, the comparison then considers the tuples' lengths. Regardless of the return type of the dunder methods, the final result can still be a boolean.</p>
-<pre><code class="language-py">from __future__ import annotations
+<p>Note: If all pairwise <code>==</code> comparisons between elements in the tuples return Truthy, the comparison then considers the tuples&#x27; lengths. Regardless of the return type of the dunder methods, the final result can still be a boolean.</p>
+<pre><code>from __future__ import annotations
 
 class A:
     def __eq__(self, o: object) -&gt; str:
@@ -83,41 +77,41 @@ reveal_type(a != a)  # revealed: bool
 reveal_type(a &lt; a)  # revealed: bool # should be: `float | Literal[False]`
 
 </code></pre>
-<h3>Key Changes</h3>
+Key Changes
 <p>One of the major changes is that comparisons no longer end with a <code>bool</code> result when a pairwise <code>Eq</code> result is <code>Ambiguous</code>. Instead, the function attempts to infer all possible cases and unions the results. This improvement allows for more robust type inference and better error detection.</p>
 <p>Additionally, as the function is now optimized for tuple comparisons, the name has been changed from the more general <code>infer_lexicographic_comparison</code> to <code>infer_tuple_rich_comparison</code>.</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>mdtest included</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @cake-monotone on 2024-11-18 03:25</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/cake-monotone">@cake-monotone</a> on 2024-11-18 03:25</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @cake-monotone on 2024-11-18 03:25</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/cake-monotone">@cake-monotone</a> on 2024-11-18 03:25</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @cake-monotone on 2024-11-18 03:25</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/cake-monotone">@cake-monotone</a> on 2024-11-18 03:25</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @cake-monotone on 2024-11-18 03:25</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/cake-monotone">@cake-monotone</a> on 2024-11-18 03:25</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-18 03:40</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @dhruvmanila on 2024-11-18 04:53</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-11-18 04:53</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">great writeup</span> added by @AlexWaygood on 2024-11-18 07:45</div>
+            <div class="event">Label <span class="label">great writeup</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-18 07:45</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/tuples.md</code>:204 on 2024-11-18 18:24</div>
@@ -126,7 +120,7 @@ reveal_type(a &lt; a)  # revealed: bool # should be: `float | Literal[False]`
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/tuples.md</code>:213 on 2024-11-18 18:25</div>
-            <div class="timeline-body"><p>I don't think these paragraphs add value to the tests.</p>
+            <div class="timeline-body"><p>I don&#x27;t think these paragraphs add value to the tests.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -140,7 +134,7 @@ reveal_type(a &lt; a)  # revealed: bool # should be: `float | Literal[False]`
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/tuples.md</code>:204 on 2024-11-19 03:10</div>
-            <div class="timeline-body"><p>You're right, my mistake! 😅 Thanks for catching that.</p>
+            <div class="timeline-body"><p>You&#x27;re right, my mistake! 😅 Thanks for catching that.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -149,15 +143,15 @@ reveal_type(a &lt; a)  # revealed: bool # should be: `float | Literal[False]`
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @carljm on 2024-11-20 01:32</div>
+            <div class="event">Merged by <a href="https://github.com/carljm">@carljm</a> on 2024-11-20 01:32</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2024-11-20 01:32</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2024-11-20 01:32</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:07:49 UTC
+        Synced at 2026-01-20 19:08:35 UTC
     </footer>
 </body>
 </html>

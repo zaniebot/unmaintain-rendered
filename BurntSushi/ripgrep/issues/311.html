@@ -26,11 +26,11 @@
             <div class="timeline-body"><p>Ripgrep uses all available system resources when something is searched within a very large directory, e.g. root <code>/</code>.
 It takes up the 16GB RAM of my machine instantly which causes it to freeze until the process is killed.
 Here is the example call:</p>
-<pre><code class="language-sh">$ rg '$SOMEVAR' / 2&amp;&gt;/dev/null
-zsh: killed     rg '$SOMEVAR' / 2&amp;&gt; /dev/null
+<pre><code>$ rg &#x27;$SOMEVAR&#x27; / 2&amp;&gt;/dev/null
+zsh: killed     rg &#x27;$SOMEVAR&#x27; / 2&amp;&gt; /dev/null
 </code></pre>
 <p>I am using the following ripgrep build:</p>
-<pre><code class="language-sh">$ rg --version
+<pre><code>$ rg --version
 ripgrep 0.3.2
 </code></pre>
 </div>
@@ -38,22 +38,22 @@ ripgrep 0.3.2
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/klingtnet">@klingtnet</a> on 2017-01-09 12:07</div>
             <div class="timeline-body"><p>The command exits succesfully when <a href="https://github.com/ggreer/the_silver_searcher">the-silver-searcher</a> is used instead:</p>
-<pre><code class="language-sh">$ ag '$SOMEVAR' 2&amp;&gt;/dev/null /
+<pre><code>$ ag &#x27;$SOMEVAR&#x27; 2&amp;&gt;/dev/null /
 ...
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-09 13:11</div>
-            <div class="timeline-body"><p>I can reproduce it on my system. There's likely something in <code>/dev</code> or <code>/proc</code> that's causing an issue.</p>
+            <div class="timeline-body"><p>I can reproduce it on my system. There&#x27;s likely something in <code>/dev</code> or <code>/proc</code> that&#x27;s causing an issue.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2017-01-09 13:11</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-09 13:11</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-09 13:15</div>
-            <div class="timeline-body"><p>Yes, <code>rg /proc</code> causes the same problem. If I search everything except for <code>/proc</code> (i.e., <code>rg -g '!/proc' '$SOMEVAR' /</code>), then ripgrep works fine.</p>
+            <div class="timeline-body"><p>Yes, <code>rg /proc</code> causes the same problem. If I search everything except for <code>/proc</code> (i.e., <code>rg -g &#x27;!/proc&#x27; &#x27;$SOMEVAR&#x27; /</code>), then ripgrep works fine.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -64,9 +64,9 @@ ripgrep 0.3.2
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/klingtnet">@klingtnet</a> on 2017-01-09 14:08</div>
             <div class="timeline-body"><p>I hope this helps, somehow:</p>
-<pre><code class="language-sh">$ strace -f -e open -- rg foobarbaz /proc &amp;&gt;/tmp/rg.log
+<pre><code>$ strace -f -e open -- rg foobarbaz /proc &amp;&gt;/tmp/rg.log
 </code></pre>
-<pre><code>$ grep --invert-match 'os error' /tmp/rg.log | tail -n100 
+<pre><code>$ grep --invert-match &#x27;os error&#x27; /tmp/rg.log | tail -n100 
 [pid 20954] open(&quot;/proc/2162/cmdline&quot;, O_RDONLY|O_CLOEXEC) = 10
 [pid 20954] open(&quot;/proc/2162/stat&quot;, O_RDONLY|O_CLOEXEC) = 10
 [pid 20954] open(&quot;/proc/2162/statm&quot;, O_RDONLY|O_CLOEXEC) = 10
@@ -172,36 +172,36 @@ ripgrep 0.3.2
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/klingtnet">@klingtnet</a> on 2017-01-09 14:12</div>
-            <div class="timeline-body"><p>Process 2186 is gvfsd, <a href="https://en.wikipedia.org/wiki/GVfs">Gnome's virtual file system</a>.</p>
+            <div class="timeline-body"><p>Process 2186 is gvfsd, <a href="https://en.wikipedia.org/wiki/GVfs">Gnome&#x27;s virtual file system</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-10 02:01</div>
-            <div class="timeline-body"><p>OK, I've finally had time to look at this and I'm closing in on the problem.</p>
+            <div class="timeline-body"><p>OK, I&#x27;ve finally had time to look at this and I&#x27;m closing in on the problem.</p>
 <p>I can reproduce the issue by searching the <code>pagemap</code> file of any process:</p>
 <pre><code>$ rg foo /proc/7869/pagemap
 </code></pre>
-<p>If I run the same command using <code>grep</code>, then it retains constant memory but doesn't terminate after a minute or so. However, I can seem to compute the size of the file (but this takes minutes):</p>
+<p>If I run the same command using <code>grep</code>, then it retains constant memory but doesn&#x27;t terminate after a minute or so. However, I can seem to compute the size of the file (but this takes minutes):</p>
 <pre><code>$ cat /proc/7869/pagemap | wc -c
 274877906936
 </code></pre>
 <p>It turns out that <code>pagemap</code> is a virtual file that maps the virtual pages of a process to physical pages. The vast majority of this file are <code>NUL</code> bytes.</p>
-<hr />
-<p>Here's the bad news: <code>ag</code>'s behavior is <em>accidentally</em> better. In particular, since <code>pagemap</code> files report themselves as <em>normal</em> files, <code>ag</code> will try to memory map them. But virtual files cannot be memory mapped, so the map fails and <code>ag</code> skips the file altogether. In ripgrep, it does the right thing by using a normal stream search on zero sized files, which permits it to read virtual files. This behavior is desirable. Compare the output of <code>rg MHz /proc/cpuinfo</code> and <code>ag MHz /proc/cpuinfo</code>, for example. (Spoiler: <code>ag</code> fails.) That means there's no portable way (AFAIK) to detect that ripgrep shouldn't search <code>pagemap</code> files.</p>
-<p>Still, at the very least, <code>grep</code> will munch on a <code>pagemap</code> file until completion (if given enough time), and it will use constant memory. ripgrep <em>should</em> do the same. Therefore, there's a bug somewhere in ripgrep that's causing memory exhaustion. (It is undoubtedly related to the abundance of <code>NUL</code> bytes.)</p>
-<p>With that said, one could argue that ripgrep's current <em>buggy</em> behavior is actually better because it is <em>loud</em>. Instead of silently <strong>not terminating</strong> for a very long time (like GNU grep), it will instead exhaust memory quickly and get killed.</p>
-<p>Therefore, there's a second bug. A UX bug. ripgrep really should ignore the <code>/proc</code> directory by default. There's almost no good reason for that directory to be searched by default. Of course, explicitly specifying the <code>/proc</code> directory should still work.</p>
+<hr>
+<p>Here&#x27;s the bad news: <code>ag</code>&#x27;s behavior is <em>accidentally</em> better. In particular, since <code>pagemap</code> files report themselves as <em>normal</em> files, <code>ag</code> will try to memory map them. But virtual files cannot be memory mapped, so the map fails and <code>ag</code> skips the file altogether. In ripgrep, it does the right thing by using a normal stream search on zero sized files, which permits it to read virtual files. This behavior is desirable. Compare the output of <code>rg MHz /proc/cpuinfo</code> and <code>ag MHz /proc/cpuinfo</code>, for example. (Spoiler: <code>ag</code> fails.) That means there&#x27;s no portable way (AFAIK) to detect that ripgrep shouldn&#x27;t search <code>pagemap</code> files.</p>
+<p>Still, at the very least, <code>grep</code> will munch on a <code>pagemap</code> file until completion (if given enough time), and it will use constant memory. ripgrep <em>should</em> do the same. Therefore, there&#x27;s a bug somewhere in ripgrep that&#x27;s causing memory exhaustion. (It is undoubtedly related to the abundance of <code>NUL</code> bytes.)</p>
+<p>With that said, one could argue that ripgrep&#x27;s current <em>buggy</em> behavior is actually better because it is <em>loud</em>. Instead of silently <strong>not terminating</strong> for a very long time (like GNU grep), it will instead exhaust memory quickly and get killed.</p>
+<p>Therefore, there&#x27;s a second bug. A UX bug. ripgrep really should ignore the <code>/proc</code> directory by default. There&#x27;s almost no good reason for that directory to be searched by default. Of course, explicitly specifying the <code>/proc</code> directory should still work.</p>
 <p>For now, I can think of two simple workarounds if you want to continue searching <code>/</code> with reckless abandon:</p>
-<pre><code>$ alias rg=&quot;rg -g '!/proc'&quot;
+<pre><code>$ alias rg=&quot;rg -g &#x27;!/proc&#x27;&quot;
 </code></pre>
 <p>or</p>
-<pre><code>$ sudo sh -c 'echo /proc &gt; /.ignore'
+<pre><code>$ sudo sh -c &#x27;echo /proc &gt; /.ignore&#x27;
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-10 02:01</div>
-            <div class="timeline-body"><p>FWIW, the TL;DR is: <em>don't search <code>/proc</code>.</em> Things don't end well, even if you use GNU grep. :-)</p>
+            <div class="timeline-body"><p>FWIW, the TL;DR is: <em>don&#x27;t search <code>/proc</code>.</em> Things don&#x27;t end well, even if you use GNU grep. :-)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -211,15 +211,15 @@ ripgrep 0.3.2
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-11 03:16</div>
-            <div class="timeline-body"><p>While I haven't worked on this yet, I realized something: <code>grep -a pagemap</code> should exhibit the same memory exhaustion behavior since it treats binary data as if it were text. Indeed, that is the case.</p>
+            <div class="timeline-body"><p>While I haven&#x27;t worked on this yet, I realized something: <code>grep -a pagemap</code> should exhibit the same memory exhaustion behavior since it treats binary data as if it were text. Indeed, that is the case.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2017-02-18 21:20</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-18 21:20</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/twmb">@twmb</a> on 2017-10-06 02:11</div>
-            <div class="timeline-body"><p>re: &quot;Therefore, there's a bug somewhere in ripgrep that's causing memory exhaustion&quot;:</p>
+            <div class="timeline-body"><p>re: &quot;Therefore, there&#x27;s a bug somewhere in ripgrep that&#x27;s causing memory exhaustion&quot;:</p>
 <p>I would suspect this behavior is coming from https://github.com/BurntSushi/ripgrep/blob/214f2bef666efd686b1be250fc8e9f54a2cebb0f/src/search_stream.rs#L580-L612, where the searcher will continually grow its buffer while trying to find a newline.</p>
 </div>
         </div>
@@ -230,14 +230,14 @@ ripgrep 0.3.2
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/twmb">@twmb</a> on 2017-10-06 02:39</div>
-            <div class="timeline-body"><p>Ah sorry, my mistake. I didn't realize I was running an old version (0.4.0) was trying to track down what possible code path could be causing my problems.</p>
+            <div class="timeline-body"><p>Ah sorry, my mistake. I didn&#x27;t realize I was running an old version (0.4.0) was trying to track down what possible code path could be causing my problems.</p>
 <p>Thanks for the fix in https://github.com/BurntSushi/ripgrep/commit/79d40d0e20a5710476b43c58c42db5124c2010a1!</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:42:00 UTC
+        Synced at 2026-01-20 18:48:03 UTC
     </footer>
 </body>
 </html>

@@ -23,21 +23,21 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Time0o">@Time0o</a></div>
-            <div class="timeline-body"><h3>Question</h3>
-<p>I've just come across this while trying to write a C++ program that that links against libpython and runs an embedded interpreter via Pybind11. My understanding of how this works is a bit shoddy I think so bear with me:</p>
+            <div class="timeline-body">Question
+<p>I&#x27;ve just come across this while trying to write a C++ program that that links against libpython and runs an embedded interpreter via Pybind11. My understanding of how this works is a bit shoddy I think so bear with me:</p>
 <p>Before executing the interpreter from C++ it is possible to tell libpython where it is located e.g. by running:</p>
-<pre><code class="language-C++">Py_SetPythonHome(&quot;/Users/me/.local/share/uv/python/cpython-3.11.10-macos-aarch64-none&quot;)
+<pre><code>Py_SetPythonHome(&quot;/Users/me/.local/share/uv/python/cpython-3.11.10-macos-aarch64-none&quot;)
 </code></pre>
 <p>And with the version of libpython installed by uv this seems to actually be necessary. When linking against a version of libpython installed via e.g. Homebrew however it is not. I believe this is because the version installed by Homebrew was built with <code>PREFIX</code> and <code>EXEC_PREFIX</code> set to sensible values during the configure step.</p>
 <p>It would be nice if Astral provided similarly compiled libraries. However, I am not sure if this is technically possible. Since they are typically downloaded to <code>$HOME/.local/share/uv</code> the correct path would have to presumable be patched into the binaries. Maybe this would be possible if instead of <code>/install</code> they were compiled with a very long placeholder path such that it could be safely replaced with the actual path padded to the same length with zeros post-download? Not sure if that could still break somehow, probably yes but it sounds at least feasible.</p>
-<h3>Platform</h3>
+Platform
 <p>macOS</p>
-<h3>Version</h3>
+Version
 <p><code>uv 0.8.3 (7e78f54e7 2025-07-24)</code></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @Time0o on 2025-07-26 13:41</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/Time0o">@Time0o</a> on 2025-07-26 13:41</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-26 14:41</div>
@@ -46,8 +46,8 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/geofft">@geofft</a> on 2025-08-12 16:52</div>
-            <div class="timeline-body"><p>Here's an approach to automatically set <code>PYTHONHOME</code> based on the path to the loaded libpython, based on the <a href="https://pybind11.readthedocs.io/en/stable/advanced/embedding.html">embedding example in the pybind11 docs</a>. Tested on glibc and macOS, probably works on musl too.</p>
-<pre><code class="language-c++">#include &lt;pybind11/embed.h&gt; // everything needed for embedding
+            <div class="timeline-body"><p>Here&#x27;s an approach to automatically set <code>PYTHONHOME</code> based on the path to the loaded libpython, based on the <a href="https://pybind11.readthedocs.io/en/stable/advanced/embedding.html">embedding example in the pybind11 docs</a>. Tested on glibc and macOS, probably works on musl too.</p>
+<pre><code>#include &lt;pybind11/embed.h&gt; // everything needed for embedding
 #include &lt;string&gt;
 #include &lt;dlfcn.h&gt;
 namespace py = pybind11;
@@ -59,10 +59,10 @@ void detect_python_home(PyConfig *config) {
     if (info.dli_fname == nullptr)
         return;
     std::string filename(info.dli_fname);
-    size_t slash = filename.rfind('/');
+    size_t slash = filename.rfind(&#x27;/&#x27;);
     if (slash == std::string::npos || slash == 0)
         return;
-    slash = filename.rfind('/', slash - 1);
+    slash = filename.rfind(&#x27;/&#x27;, slash - 1);
     if (slash == std::string::npos)
         return;
     filename.resize(slash);
@@ -89,14 +89,14 @@ int main() {
 </code></pre>
 <p>This just leans on that to find the location where we picked up <code>libpython</code> and use that as <code>PYTHONHOME</code>.</p>
 <p>I think it would probably be reasonable for us to do this by default.</p>
-<details>
-<summary>For my own reference, here's a worked example of what's mentioned in the first comment to hard-code the path:</summary>
+
+For my own reference, here&#x27;s a worked example of what&#x27;s mentioned in the first comment to hard-code the path:
 
 <p>Create a project with <code>uv init</code> and cd into it.</p>
 <p>Copy the <code>CMakeLists.txt</code> and <code>main.cpp</code> files from</p>
-<p>Run <code>uv add pybind11[global] cmake</code>. (&quot;Global&quot; here simply means that it's installed outside of the pybind11 package where cmake looks; it's still inside of the virtualenv.)</p>
+<p>Run <code>uv add pybind11[global] cmake</code>. (&quot;Global&quot; here simply means that it&#x27;s installed outside of the pybind11 package where cmake looks; it&#x27;s still inside of the virtualenv.)</p>
 <p>Add an appropriate call at the top of main, e.g.,</p>
-<pre><code class="language-c++">#include &lt;pybind11/embed.h&gt; // everything needed for embedding
+<pre><code>#include &lt;pybind11/embed.h&gt; // everything needed for embedding
 namespace py = pybind11;
 
 int main() {
@@ -107,14 +107,14 @@ int main() {
 }
 </code></pre>
 <p>Run <code>uv run cmake . &amp;&amp; uv run cmake --build .</code>, which produces a binary <code>./example</code>.</p>
-</details>
+
 
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:32:22 UTC
+        Synced at 2026-01-20 19:39:42 UTC
     </footer>
 </body>
 </html>

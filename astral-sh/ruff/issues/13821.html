@@ -27,18 +27,18 @@
 <blockquote>
 
 <p>Ruff and pylint <strong>agree</strong> that the following is <strong>bad</strong>:</p>
-<pre><code class="language-python">m = {&quot;foo&quot;: &quot;bar&quot;}
+<pre><code>m = {&quot;foo&quot;: &quot;bar&quot;}
 for k in m:
     print(&quot;test-&quot; + m[k])
 </code></pre>
-<pre><code class="language-console">$ pylint --disable=C0114 --enable=C0206 test.py
+<pre><code>$ pylint --disable=C0114 --enable=C0206 test.py
 ************* Module test
 test.py:2:0: C0206: Consider iterating with .items() (consider-using-dict-items)
 
 ------------------------------------------------------------------
 Your code has been rated at 6.67/10 (previous run: 3.33/10, +3.33)
 </code></pre>
-<pre><code class="language-console">$ ruff --isolated check --preview --select=PLC0206 test.py
+<pre><code>$ ruff --isolated check --preview --select=PLC0206 test.py
 test.py:2:1: PLC0206 Extracting value from dictionary without calling `.items()`
   |
 1 |   m = {&quot;foo&quot;: &quot;bar&quot;}
@@ -51,18 +51,18 @@ Found 1 error.
 </code></pre>
 </blockquote>
 
-<hr />
-<p>However, the following code is totally reasonable and doesn't benefit from involving <code>.items()</code> at all, and <strong>pylint agrees with me</strong> but <strong>ruff disagrees</strong>:</p>
-<pre><code class="language-python">m = {&quot;foo&quot;: &quot;bar&quot;}
+<hr>
+<p>However, the following code is totally reasonable and doesn&#x27;t benefit from involving <code>.items()</code> at all, and <strong>pylint agrees with me</strong> but <strong>ruff disagrees</strong>:</p>
+<pre><code>m = {&quot;foo&quot;: &quot;bar&quot;}
 for k in m:
     m[k] = &quot;test-&quot; + m[k]
 </code></pre>
-<pre><code class="language-console">$ pylint --disable=C0114 --enable=C0206 test.py           
+<pre><code>$ pylint --disable=C0114 --enable=C0206 test.py           
 
 -------------------------------------------------------------------
 Your code has been rated at 10.00/10 (previous run: 6.67/10, +3.33)
 </code></pre>
-<pre><code class="language-console">$ ruff --isolated check --preview --select=PLC0206 test.py
+<pre><code>$ ruff --isolated check --preview --select=PLC0206 test.py
 test.py:2:1: PLC0206 Extracting value from dictionary without calling `.items()`
   |
 1 |   m = {&quot;foo&quot;: &quot;bar&quot;}
@@ -73,23 +73,23 @@ test.py:2:1: PLC0206 Extracting value from dictionary without calling `.items()`
 
 Found 1 error.
 </code></pre>
-<p>What makes this example different is that I have to have the piece of code <code>m[k] =</code> spelled out anyway, so there's no readability benefit in preventing me from using the piece of code <code>m[k]</code> also for reading the value.</p>
-<hr />
+<p>What makes this example different is that I have to have the piece of code <code>m[k] =</code> spelled out anyway, so there&#x27;s no readability benefit in preventing me from using the piece of code <code>m[k]</code> also for reading the value.</p>
+<hr>
 <ul>
 <li><p>List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.</p>
 <p>&quot;dict-index-missing-items&quot; &quot;consider-using-dict-items&quot; &quot;PLC0206&quot;</p>
 </li>
-<li><details><summary>A minimal code snippet that reproduces the bug:</summary>
+<li>A minimal code snippet that reproduces the bug:
 
-<pre><code class="language-python">m = {&quot;foo&quot;: &quot;bar&quot;}
+<pre><code>m = {&quot;foo&quot;: &quot;bar&quot;}
 for k in m:
     m[k] = &quot;test-&quot; + m[k]
 </code></pre>
-</details>
+
 
 </li>
 <li><p>The command you invoked</p>
-<pre><code class="language-bash">ruff --isolated check --preview --select=PLC0206 test.py
+<pre><code>ruff --isolated check --preview --select=PLC0206 test.py
 </code></pre>
 </li>
 <li><p>The current Ruff settings:</p>
@@ -104,32 +104,32 @@ for k in m:
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2024-10-19 15:25</div>
             <div class="timeline-body"><blockquote>
-<p>so there's no readability benefit in preventing me from using the piece of code m[k] also for reading the value.</p>
+<p>so there&#x27;s no readability benefit in preventing me from using the piece of code m[k] also for reading the value.</p>
 </blockquote>
-<p>You do avoid doing a hash lookup with the key once though, so there is that benefit. It's partially for readability, partially for minor perf.</p>
+<p>You do avoid doing a hash lookup with the key once though, so there is that benefit. It&#x27;s partially for readability, partially for minor perf.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-10-22 06:50</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-22 06:50</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-22 06:50</div>
             <div class="timeline-body"><p>Thanks for the excellent write up!</p>
-<p>I skimmed through pylint's implementation and it isn't clear to me where it is intentionally ignoring the above example.</p>
+<p>I skimmed through pylint&#x27;s implementation and it isn&#x27;t clear to me where it is intentionally ignoring the above example.</p>
 <p>https://github.com/pylint-dev/pylint/blob/5feface0d48ba7a6a5eb2b7a2cac99f983afa6b8/pylint/checkers/refactoring/recommendation_checker.py#L268</p>
-<p>I do think that the current behavior captures the rules intent correctly. The rule isn't just about readability but also about efficiency which is why it triggers here:</p>
+<p>I do think that the current behavior captures the rules intent correctly. The rule isn&#x27;t just about readability but also about efficiency which is why it triggers here:</p>
 <blockquote>
 <p>more efficient than extracting the value with the key.</p>
 </blockquote>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2024-10-22 06:50</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-22 06:50</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:51:19 UTC
+        Synced at 2026-01-20 18:48:59 UTC
     </footer>
 </body>
 </html>

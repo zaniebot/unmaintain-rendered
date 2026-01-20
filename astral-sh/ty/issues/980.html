@@ -24,7 +24,7 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a></div>
             <div class="timeline-body"><p>In this example code:</p>
-<pre><code class="language-py">from typing import dataclass_transform
+<pre><code>from typing import dataclass_transform
 from dataclasses import field, dataclass
 
 @dataclass_transform()
@@ -50,17 +50,17 @@ reveal_type(B(name=&quot;foo&quot;).name)
 <blockquote>
 <p>If not specified, field_specifiers will default to an empty tuple (no field specifiers supported). The standard dataclass behavior supports only one type of field specifier called Field plus a helper function (field) that instantiates this class, so if we were describing the stdlib dataclass behavior, we would provide the tuple argument (dataclasses.Field, dataclasses.field)</p>
 </blockquote>
-<p>This pretty clearly means that <code>dataclasses.Field</code> and <code>dataclasses.field</code> should <em>not</em> be accepted by default as field specifiers for a custom dataclass transform that doesn't list them explicitly in <code>field_specifiers</code>.</p>
+<p>This pretty clearly means that <code>dataclasses.Field</code> and <code>dataclasses.field</code> should <em>not</em> be accepted by default as field specifiers for a custom dataclass transform that doesn&#x27;t list them explicitly in <code>field_specifiers</code>.</p>
 <p>Mypy/pyright/pyrefly all implement this, with the result that in the above code, the call <code>A(name=&quot;foo&quot;)</code> is not an error, since <code>field</code> is not a field specifier for <code>create_model</code>, therefore <code>init=False</code> is ignored there. Only <code>B(name=&quot;foo&quot;)</code> is an error.</p>
 <p>In ty, we currently wrongly respect <code>dataclasses.field</code> as a field specifier for <code>create_model</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">dataclasses</span> added by @carljm on 2025-08-13 23:15</div>
+            <div class="event">Label <span class="label">dataclasses</span> added by <a href="https://github.com/carljm">@carljm</a> on 2025-08-13 23:15</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/leandrobbraga">@leandrobbraga</a> on 2025-08-15 00:19</div>
-            <div class="timeline-body"><p>Indeed <code>mypy</code> check this code as valid and <code>ty</code> does not, but I'm getting a runtime error trying to run the code you provided, which matches <code>ty</code> error:</p>
+            <div class="timeline-body"><p>Indeed <code>mypy</code> check this code as valid and <code>ty</code> does not, but I&#x27;m getting a runtime error trying to run the code you provided, which matches <code>ty</code> error:</p>
 <p><code>t.py</code></p>
 <pre><code>from dataclasses import field
 from typing import dataclass_transform
@@ -81,7 +81,7 @@ class A:
 
 print(A(name=&quot;foo&quot;).name)
 </code></pre>
-<pre><code class="language-console">uv run teste.py
+<pre><code>uv run teste.py
 Traceback (most recent call last):
     A(name=&quot;foo&quot;).name
     ~^^^^^^^^^^^^
@@ -94,17 +94,17 @@ Python 3.13.5
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-15 00:39</div>
-            <div class="timeline-body"><p>That's because <code>create_model</code> in the example claims it is a <code>dataclass_transform</code> but doesn't actually transform anything. The example assumes that a real implementation of <code>create_model</code> would actually synthesize an <code>__init__</code> method for the given class, like dataclasses does. In other words, this example shows a buggy/wrong implementation of <code>create_model</code>. That's fine for the example, because type checkers don't verify the internal implementation of a <code>dataclass_transform</code>, they just trust it, and this example is just meant to test the type checker behavior. But it does mean you can't usefully check this example against its runtime behavior.</p>
-<p>Ty is wrongly erroring because it is respecting the <code>field(init=False)</code> (even though it shouldn't, since <code>create_model</code> doesn't have a <code>field_specifiers</code>). The runtime error is for a totally different reason, because no <code>__init__</code> method is created at all by this buggy <code>create_model</code> implementation.</p>
+            <div class="timeline-body"><p>That&#x27;s because <code>create_model</code> in the example claims it is a <code>dataclass_transform</code> but doesn&#x27;t actually transform anything. The example assumes that a real implementation of <code>create_model</code> would actually synthesize an <code>__init__</code> method for the given class, like dataclasses does. In other words, this example shows a buggy/wrong implementation of <code>create_model</code>. That&#x27;s fine for the example, because type checkers don&#x27;t verify the internal implementation of a <code>dataclass_transform</code>, they just trust it, and this example is just meant to test the type checker behavior. But it does mean you can&#x27;t usefully check this example against its runtime behavior.</p>
+<p>Ty is wrongly erroring because it is respecting the <code>field(init=False)</code> (even though it shouldn&#x27;t, since <code>create_model</code> doesn&#x27;t have a <code>field_specifiers</code>). The runtime error is for a totally different reason, because no <code>__init__</code> method is created at all by this buggy <code>create_model</code> implementation.</p>
 <p>If a real implementation of <code>create_model</code> would actually respect options passed to <code>dataclasses.field</code>, then it should list <code>dataclasses.field</code> in its <code>field_specifiers</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/leandrobbraga">@leandrobbraga</a> on 2025-08-15 02:55</div>
             <div class="timeline-body"><p>I was giving a shot at it and would like an advise to how to implement it.</p>
-<p>For now I'm doing the following:</p>
-<p>First, in <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/src/types/call/bind.rs#L897-L924">bind.rs</a> I check weather the <code>field_specifier</code> is some, if it is I add a <code>field_specifier</code> bit in the <code>DataclassTransformerParams</code> bitflags. The idea is to identify whenever this value is the default empty tuple value or there are some value here, I'm not parsing the exact values for now, I only care if it's the empty tuple.</p>
-<pre><code class="language-rust">Some(KnownFunction::DataclassTransform) =&gt; {
+<p>For now I&#x27;m doing the following:</p>
+<p>First, in <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/src/types/call/bind.rs#L897-L924">bind.rs</a> I check weather the <code>field_specifier</code> is some, if it is I add a <code>field_specifier</code> bit in the <code>DataclassTransformerParams</code> bitflags. The idea is to identify whenever this value is the default empty tuple value or there are some value here, I&#x27;m not parsing the exact values for now, I only care if it&#x27;s the empty tuple.</p>
+<pre><code>Some(KnownFunction::DataclassTransform) =&gt; {
     if let [
         eq_default,
         order_default,
@@ -130,14 +130,14 @@ Python 3.13.5
         }
 
         if let Some(field_specifiers_type) = field_specifiers {
-            // For now, we'll do a simple check: if field_specifiers is not
+            // For now, we&#x27;ll do a simple check: if field_specifiers is not
             // None/empty, we assume it might contain dataclasses.field
             // TODO: Implement proper parsing to check for
             //   dataclasses.field/Field specifically
             if !field_specifiers_type.is_none(db) {
                 params |= DataclassTransformerParams::FIELD_SPECIFIERS;
             }
-            // If field_specifiers is None or empty tuple, don't set the
+            // If field_specifiers is None or empty tuple, don&#x27;t set the
             // flag (default behavior)
         }
 
@@ -146,13 +146,13 @@ Python 3.13.5
 }
 </code></pre>
 <p>Now we need to somehow ignore the <code>Field</code> in <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/src/types/class.rs#L2345-L2349">here</a>.</p>
-<pre><code class="language-rust">if let Some(Type::KnownInstance(KnownInstanceType::Field(field))) = default_ty {
+<pre><code>if let Some(Type::KnownInstance(KnownInstanceType::Field(field))) = default_ty {
     init = field.init(db);
     kw_only = field.kw_only(db);
 }
 </code></pre>
 <p>The only way that I found to communicate the flag <code>DataclassTransformerParams::FIELD_SPECIFIERS</code> flag was to create a new flag in the <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/src/types.rs#L477-L522">DataclassParams</a> to convey this meaning. But this is very unsatisfying, since <code>@dataclass(init=True, repr=True, eq=True, order=False, unsafe_hash=False, frozen=False, match_args=True, kw_only=False, slots=False, weakref_slot=False)</code> does not contain such flag.</p>
-<pre><code class="language-rust">bitflags! {
+<pre><code>bitflags! {
     /// Used for the return type of `dataclass(…)` calls. Keeps track of the arguments
     /// that were passed in. For the precise meaning of the fields, see [1].
     ///
@@ -177,35 +177,35 @@ Python 3.13.5
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-15 19:19</div>
-            <div class="timeline-body"><p>I think it is fine to have <code>DataclassParams</code> also track some things from <code>DataclassTransformerParams</code> which are not actually overridable in the individual decorator-factory call. (We should have comments to clarify which is which, though.) The alternative would be to have the <code>DataclassDecorator</code> type actually track the origin <code>DataClassTransformerParams</code>, but that doesn't seem necessarily better?</p>
-<p>@sharkdp wrote our dataclasses implementation, and he is returning from vacation next week, so if you don't reach a satisfactory approach by then, he may have thoughts as well.</p>
+            <div class="timeline-body"><p>I think it is fine to have <code>DataclassParams</code> also track some things from <code>DataclassTransformerParams</code> which are not actually overridable in the individual decorator-factory call. (We should have comments to clarify which is which, though.) The alternative would be to have the <code>DataclassDecorator</code> type actually track the origin <code>DataClassTransformerParams</code>, but that doesn&#x27;t seem necessarily better?</p>
+<p>@sharkdp wrote our dataclasses implementation, and he is returning from vacation next week, so if you don&#x27;t reach a satisfactory approach by then, he may have thoughts as well.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/leandrobbraga">@leandrobbraga</a> on 2025-08-15 20:47</div>
-            <div class="timeline-body"><p>Ok, can you assign this to me? I'm out until Wednesday, but I already have a working version in my computer.</p>
+            <div class="timeline-body"><p>Ok, can you assign this to me? I&#x27;m out until Wednesday, but I already have a working version in my computer.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @leandrobbraga by @carljm on 2025-08-15 20:48</div>
+            <div class="event">Assigned to <a href="https://github.com/leandrobbraga">@leandrobbraga</a> by <a href="https://github.com/carljm">@carljm</a> on 2025-08-15 20:48</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-19 08:21</div>
-            <div class="timeline-body"><p>Adding additional flags to <code>DataclassParams</code> seems fine to me, but if I understand correctly, this would just be a temporary solution to fix this bug? Eventually, we'd have to keep track of the static list of classes that describe fields, right? And once we do, is there still a need for that flag?</p>
+            <div class="timeline-body"><p>Adding additional flags to <code>DataclassParams</code> seems fine to me, but if I understand correctly, this would just be a temporary solution to fix this bug? Eventually, we&#x27;d have to keep track of the static list of classes that describe fields, right? And once we do, is there still a need for that flag?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-19 16:09</div>
-            <div class="timeline-body"><p>My interpretation is that in the future the field will change from a boolean flag to a list of classes/functions, but I think the underlying issue will remain the same either way: sometimes handling of a specific field in a dataclass needs access to information defined in the original dataclass-transform definition, and we currently don't thread that through. The options for threading it through will either be to copy some fields from <code>DataclassTransformerParams</code> to <code>DataclassParams</code> at each usage of that particular dataclass-transform, or to otherwise thread through the <code>DataclassTransformerParams</code> itself.</p>
+            <div class="timeline-body"><p>My interpretation is that in the future the field will change from a boolean flag to a list of classes/functions, but I think the underlying issue will remain the same either way: sometimes handling of a specific field in a dataclass needs access to information defined in the original dataclass-transform definition, and we currently don&#x27;t thread that through. The options for threading it through will either be to copy some fields from <code>DataclassTransformerParams</code> to <code>DataclassParams</code> at each usage of that particular dataclass-transform, or to otherwise thread through the <code>DataclassTransformerParams</code> itself.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2025-08-20 18:33</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2025-08-20 18:33</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:26 UTC
+        Synced at 2026-01-20 19:25:15 UTC
     </footer>
 </body>
 </html>

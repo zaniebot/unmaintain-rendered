@@ -23,26 +23,26 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>The <code>UseDefMap</code> are the main driver of ty's memory usage. This PR reduces the size of the <code>use_def_maps</code> on a large project by 1.5GB (~10%).</p>
-<p>This is accomplished by updating how many items we store in the <code>SmallVec</code>'s stored in the <code>PlaceTable</code>.</p>
+            <div class="timeline-body">Summary
+<p>The <code>UseDefMap</code> are the main driver of ty&#x27;s memory usage. This PR reduces the size of the <code>use_def_maps</code> on a large project by 1.5GB (~10%).</p>
+<p>This is accomplished by updating how many items we store in the <code>SmallVec</code>&#x27;s stored in the <code>PlaceTable</code>.</p>
 <ul>
 <li><code>LiveBinding</code>: Has a size of 12 bytes</li>
 <li><code>LiveDeclaration</code>: Has a size of 8 bytes</li>
 </ul>
-<p>Ideally we'd pick numbers that ensure that the <code>SmallVec</code> isn't larger than a regular <code>Vec</code>. However, that would mean that we can only store 2 live declarations and only one live binding inline. I picked:</p>
+<p>Ideally we&#x27;d pick numbers that ensure that the <code>SmallVec</code> isn&#x27;t larger than a regular <code>Vec</code>. However, that would mean that we can only store 2 live declarations and only one live binding inline. I picked:</p>
 <ul>
 <li><code>LiveBinding</code>: 2, that means each SmallVec has a size of 32 bytes, leaving 7 bytes unused. I considered going down to 1, so that the <code>SmallVec</code> has the same size as a <code>Vec</code> but that only reduces <code>Bindings</code> from 40 bytes to 32 bytes (saving only 8 bytes).</li>
 <li><code>LiveDeclaration</code>: 2, that means each SmallVec has a size of 24 bytes, the same as a <code>Vec</code>. This leaves 7 bytes unuused</li>
 </ul>
 <p>Not only does this improve memory usage but it also shows that this change improves performance by a few percent.</p>
 <p>The remaining main driver of the <code>UseDefMap</code> size is <code>reachability_constraints</code> (about 30%). Reducing <code>Bindings</code> further would also still be valuable because we create a lot of them.</p>
-<h2>How did you find this?</h2>
-<p>I used the following patch. Be aware, this is hacky and it seems to double count each value but it still gives the right proportional numbers. But this wouldn't have been possible without @ibraheemdev's work on adding the <code>heap_size</code> feature to salsa</p>
-<details>
-	<summary>Patch</summary>
+How did you find this?
+<p>I used the following patch. Be aware, this is hacky and it seems to double count each value but it still gives the right proportional numbers. But this wouldn&#x27;t have been possible without @ibraheemdev&#x27;s work on adding the <code>heap_size</code> feature to salsa</p>
 
-<pre><code class="language-patch">Subject: [PATCH] Reduce inline size of live declarations
+	Patch
+
+<pre><code>Subject: [PATCH] Reduce inline size of live declarations
 ---
 Index: crates/ty_python_semantic/src/semantic_index/use_def.rs
 IDEA additional info:
@@ -58,14 +58,14 @@ diff --git a/crates/ty_python_semantic/src/semantic_index/use_def.rs b/crates/ty
  /// Applicable definitions and constraints for every use of a name.
 -#[derive(Debug, PartialEq, Eq, salsa::Update, get_size2::GetSize)]
 +#[derive(Debug, PartialEq, Eq, salsa::Update)]
- pub(crate) struct UseDefMap&lt;'db&gt; {
+ pub(crate) struct UseDefMap&lt;&#x27;db&gt; {
      /// Array of [`Definition`] in this scope. Only the first entry should be [`DefinitionState::Undefined`];
      /// this represents the implicit &quot;unbound&quot;/&quot;undeclared&quot; definition of every place.
 @@ -341,6 +341,50 @@
      end_of_scope_reachability: ScopedReachabilityConstraintId,
  }
  
-+pub(crate) fn use_def_map_size(map: &amp;UseDefMap&lt;'_&gt;) -&gt; usize {
++pub(crate) fn use_def_map_size(map: &amp;UseDefMap&lt;&#x27;_&gt;) -&gt; usize {
 +    use ruff_db::increment_memory_usage;
 +
 +    let all_definitions = ::get_size2::GetSize::get_heap_size(&amp;map.all_definitions);
@@ -109,9 +109,9 @@ diff --git a/crates/ty_python_semantic/src/semantic_index/use_def.rs b/crates/ty
 +        + end_of_scope_reachability
 +}
 +
- pub(crate) enum ApplicableConstraints&lt;'map, 'db&gt; {
-     UnboundBinding(ConstraintsIterator&lt;'map, 'db&gt;),
-     ConstrainedBindings(BindingWithConstraintsIterator&lt;'map, 'db&gt;),
+ pub(crate) enum ApplicableConstraints&lt;&#x27;map, &#x27;db&gt; {
+     UnboundBinding(ConstraintsIterator&lt;&#x27;map, &#x27;db&gt;),
+     ConstrainedBindings(BindingWithConstraintsIterator&lt;&#x27;map, &#x27;db&gt;),
 Index: crates/ty_python_semantic/src/semantic_index.rs
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
@@ -153,16 +153,16 @@ diff --git a/crates/ty_python_semantic/src/semantic_index.rs b/crates/ty_python_
  /// Prefer using [`symbol_table`] when working with symbols from a single scope.
 -#[salsa::tracked(returns(ref), no_eq, heap_size=get_size2::GetSize::get_heap_size)]
 +#[salsa::tracked(returns(ref), no_eq, heap_size=semantic_index_size)]
- pub(crate) fn semantic_index(db: &amp;dyn Db, file: File) -&gt; SemanticIndex&lt;'_&gt; {
+ pub(crate) fn semantic_index(db: &amp;dyn Db, file: File) -&gt; SemanticIndex&lt;&#x27;_&gt; {
      let _span = tracing::trace_span!(&quot;semantic_index&quot;, ?file).entered();
  
 @@ -93,7 +92,7 @@
  /// Using [`use_def_map`] over [`semantic_index`] has the advantage that
- /// Salsa can avoid invalidating dependent queries if this scope's use-def map
+ /// Salsa can avoid invalidating dependent queries if this scope&#x27;s use-def map
  /// is unchanged.
 -#[salsa::tracked(returns(deref), heap_size=get_size2::GetSize::get_heap_size)]
 +#[salsa::tracked(returns(deref), heap_size=use_def_map_heap_size)]
- pub(crate) fn use_def_map&lt;'db&gt;(db: &amp;'db dyn Db, scope: ScopeId&lt;'db&gt;) -&gt; ArcUseDefMap&lt;'db&gt; {
+ pub(crate) fn use_def_map&lt;&#x27;db&gt;(db: &amp;&#x27;db dyn Db, scope: ScopeId&lt;&#x27;db&gt;) -&gt; ArcUseDefMap&lt;&#x27;db&gt; {
      let file = scope.file(db);
      let _span = tracing::trace_span!(&quot;use_def_map&quot;, scope=?scope.as_id(), ?file).entered();
 @@ -196,7 +195,7 @@
@@ -171,14 +171,14 @@ diff --git a/crates/ty_python_semantic/src/semantic_index.rs b/crates/ty_python_
  /// The place tables and use-def maps for all scopes in a file.
 -#[derive(Debug, Update, get_size2::GetSize)]
 +#[derive(Debug, Update)]
- pub(crate) struct SemanticIndex&lt;'db&gt; {
+ pub(crate) struct SemanticIndex&lt;&#x27;db&gt; {
      /// List of all place tables in this file, indexed by scope.
      place_tables: IndexVec&lt;FileScopeId, Arc&lt;PlaceTable&gt;&gt;,
 @@ -244,6 +243,60 @@
      generator_functions: FxHashSet&lt;FileScopeId&gt;,
  }
  
-+pub(crate) fn semantic_index_size(index: &amp;SemanticIndex&lt;'_&gt;) -&gt; usize {
++pub(crate) fn semantic_index_size(index: &amp;SemanticIndex&lt;&#x27;_&gt;) -&gt; usize {
 +    let place_tables = ::get_size2::GetSize::get_heap_size(&amp;index.place_tables);
 +    increment_memory_usage(&quot;places_tables&quot;, place_tables);
 +    let scopes = ::get_size2::GetSize::get_heap_size(&amp;index.scopes);
@@ -228,11 +228,11 @@ diff --git a/crates/ty_python_semantic/src/semantic_index.rs b/crates/ty_python_
 +    total
 +}
 +
-+pub(crate) fn use_def_map_heap_size(map: &amp;ArcUseDefMap&lt;'_&gt;) -&gt; usize {
++pub(crate) fn use_def_map_heap_size(map: &amp;ArcUseDefMap&lt;&#x27;_&gt;) -&gt; usize {
 +    crate::semantic_index::use_def::use_def_map_size(&amp;map.inner)
 +}
 +
- impl&lt;'db&gt; SemanticIndex&lt;'db&gt; {
+ impl&lt;&#x27;db&gt; SemanticIndex&lt;&#x27;db&gt; {
      /// Returns the place table for a specific scope.
      ///
 @@ -521,9 +574,8 @@
@@ -241,23 +241,23 @@ diff --git a/crates/ty_python_semantic/src/semantic_index.rs b/crates/ty_python_
  
 -#[derive(Debug, PartialEq, Eq, Clone, salsa::Update, get_size2::GetSize)]
 +#[derive(Debug, PartialEq, Eq, Clone, salsa::Update)]
- pub(crate) struct ArcUseDefMap&lt;'db&gt; {
+ pub(crate) struct ArcUseDefMap&lt;&#x27;db&gt; {
 -    #[get_size(size_fn = untracked_arc_size)]
-     inner: Arc&lt;UseDefMap&lt;'db&gt;&gt;,
+     inner: Arc&lt;UseDefMap&lt;&#x27;db&gt;&gt;,
  }
  
 @@ -543,6 +595,12 @@
      }
  }
  
-+impl&lt;'db&gt; get_size2::GetSize for ArcUseDefMap&lt;'db&gt; {
++impl&lt;&#x27;db&gt; get_size2::GetSize for ArcUseDefMap&lt;&#x27;db&gt; {
 +    fn get_heap_size(&amp;self) -&gt; usize {
 +        crate::semantic_index::use_def::use_def_map_size(&amp;self.inner)
 +    }
 +}
 +
- pub struct AncestorsIter&lt;'a&gt; {
-     scopes: &amp;'a IndexSlice&lt;FileScopeId, Scope&gt;,
+ pub struct AncestorsIter&lt;&#x27;a&gt; {
+     scopes: &amp;&#x27;a IndexSlice&lt;FileScopeId, Scope&gt;,
      next_id: Option&lt;FileScopeId&gt;,
 Index: crates/ty/src/lib.rs
 IDEA additional info:
@@ -325,23 +325,23 @@ diff --git a/crates/ruff_db/src/lib.rs b/crates/ruff_db/src/lib.rs
  pub trait Db: salsa::Database {
 
 </code></pre>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-07-17 18:57</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-17 18:57</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-17 19:01</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
+<code>mypy_primer</code> results
 <p>No ecosystem changes detected ✅</p>
-<details>
-<summary>Memory usage changes were detected when running on open source projects</summary>
 
-<pre><code class="language-diff">flake8 (https://github.com/pycqa/flake8)
+Memory usage changes were detected when running on open source projects
+
+<pre><code>flake8 (https://github.com/pycqa/flake8)
 - TOTAL MEMORY USAGE: ~76MB
 + TOTAL MEMORY USAGE: ~69MB
 -     memo fields = ~63MB
@@ -366,24 +366,24 @@ prefect (https://github.com/PrefectHQ/prefect)
 +     memo fields = ~490MB
 
 </code></pre>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @MichaReiser on 2025-07-17 19:38</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-17 19:38</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @MichaReiser on 2025-07-17 19:38</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-17 19:38</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-07-17 19:38</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-17 19:38</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-07-17 19:38</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-17 19:38</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @MichaReiser on 2025-07-17 19:38</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-17 19:38</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-07-17 20:35</div>
@@ -395,58 +395,58 @@ prefect (https://github.com/PrefectHQ/prefect)
             <div class="timeline-body"><blockquote>
 <p>Is it worth checking whether Vec or ThinVec is even better? I wonder whether the CPU savings of not having to allocate in the small cases is relevant.</p>
 </blockquote>
-<p>I can try <code>ThinVec</code>. I don't expect <code>Vec</code> to help much because it is as large for <code>LiveDeclaration</code> and we simply end up with more padding for <code>LiveBindings</code>, which doesn't seem like a good trade off</p>
+<p>I can try <code>ThinVec</code>. I don&#x27;t expect <code>Vec</code> to help much because it is as large for <code>LiveDeclaration</code> and we simply end up with more padding for <code>LiveBindings</code>, which doesn&#x27;t seem like a good trade off</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-07-18 07:05</div>
-            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+            <div class="timeline-body">
 
-<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
 
-<h2><a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Fplace-table-inline-definitions?runnerMode=Instrumentation">CodSpeed Instrumentation Performance Report</a></h2>
-<h3>Merging #19409 will <strong>not alter performance</strong></h3>
-<p><sub>Comparing <code>micha/place-table-inline-definitions</code> (80b8dcd) with <code>main</code> (e6e029a)</sub></p>
-<h3>Summary</h3>
+
+<a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Fplace-table-inline-definitions?runnerMode=Instrumentation">CodSpeed Instrumentation Performance Report</a>
+Merging #19409 will <strong>not alter performance</strong>
+<p>Comparing <code>micha/place-table-inline-definitions</code> (80b8dcd) with <code>main</code> (e6e029a)</p>
+Summary
 <p><code>✅ 41</code> untouched benchmarks</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-07-18 07:07</div>
-            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+            <div class="timeline-body">
 
-<!-- __CODSPEED_WALLTIME_PERFORMANCE_REPORT_COMMENT__ -->
 
-<h2><a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Fplace-table-inline-definitions?runnerMode=WallTime">CodSpeed WallTime Performance Report</a></h2>
-<h3>Merging #19409 will <strong>not alter performance</strong></h3>
-<p><sub>Comparing <code>micha/place-table-inline-definitions</code> (80b8dcd) with <code>main</code> (e6e029a)</sub></p>
-<h3>Summary</h3>
+
+<a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Fplace-table-inline-definitions?runnerMode=WallTime">CodSpeed WallTime Performance Report</a>
+Merging #19409 will <strong>not alter performance</strong>
+<p>Comparing <code>micha/place-table-inline-definitions</code> (80b8dcd) with <code>main</code> (e6e029a)</p>
+Summary
 <p><code>✅ 7</code> untouched benchmarks</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-18 07:07</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
-<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)
 <p>
 
 <pre><code>warning: Detected debug build without --no-cache.
 error: Failed to parse examples/mcp/databricks_mcp_cookbook.ipynb:12:1:8: Simple statements must be separated by newlines or semicolons
 </code></pre>
 </p>
-</details>
 
-<h3>Formatter (preview)</h3>
+
+Formatter (preview)
 <p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
-<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)
 <p>
 <pre>ruff format --preview</pre>
 </p>
@@ -456,13 +456,13 @@ error: Failed to parse examples/mcp/databricks_mcp_cookbook.ipynb:12:1:8: Simple
 error: Failed to parse examples/mcp/databricks_mcp_cookbook.ipynb:12:1:8: Simple statements must be separated by newlines or semicolons
 </code></pre>
 </p>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-18 07:15</div>
-            <div class="timeline-body"><p>Using <code>ThinVec</code> does reduce memory usage by another 500MB or so but it also regresses performance by 15% on most instrumented and 5% on the walltime benchmarks. I'm not sure this is the right trade off. For now, I suggest we keep using <code>SmallVec</code>.</p>
+            <div class="timeline-body"><p>Using <code>ThinVec</code> does reduce memory usage by another 500MB or so but it also regresses performance by 15% on most instrumented and 5% on the walltime benchmarks. I&#x27;m not sure this is the right trade off. For now, I suggest we keep using <code>SmallVec</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -475,12 +475,12 @@ error: Failed to parse examples/mcp/databricks_mcp_cookbook.ipynb:12:1:8: Simple
             <div class="timeline-body"><blockquote>
 <p>Can we enable the <code>union</code> feature in <code>smallvec</code>? I believe that reduces its memory usage by one word.</p>
 </blockquote>
-<p>I enabled the feature (and some more that are compatible with our MSRV) but it doesn't make a difference in this case</p>
+<p>I enabled the feature (and some more that are compatible with our MSRV) but it doesn&#x27;t make a difference in this case</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/semantic_index/use_def/place_state.rs</code>:77 on 2025-07-18 16:28</div>
-            <div class="timeline-body"><p>Why remove this constant? It's used in two places, and it seems strictly better to have a documented constant rather than an arbitrary magic number in the code.</p>
+            <div class="timeline-body"><p>Why remove this constant? It&#x27;s used in two places, and it seems strictly better to have a documented constant rather than an arbitrary magic number in the code.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -488,10 +488,10 @@ error: Failed to parse examples/mcp/databricks_mcp_cookbook.ipynb:12:1:8: Simple
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @MichaReiser on 2025-07-18 16:28</div>
+            <div class="event">Merged by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-18 16:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2025-07-18 16:28</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-18 16:28</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-07-18 16:28</div>
@@ -503,50 +503,50 @@ error: Failed to parse examples/mcp/databricks_mcp_cookbook.ipynb:12:1:8: Simple
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/semantic_index/use_def/place_state.rs</code>:77 on 2025-07-18 16:30</div>
             <div class="timeline-body"><p>Lol, you had to comment exactly when I click merge.</p>
-<p>Because it doesn't necessarily make sense to use the same constant in both places. The number needs to be picked based on the size of <code>LiveBinding</code> and <code>LiveDeclaration</code>. Having a single constant suggests that using the same value for both would be in some form desirable, it isn't.</p>
-<p>I also don't think the comment adds much. It just describes what small vec does.</p>
+<p>Because it doesn&#x27;t necessarily make sense to use the same constant in both places. The number needs to be picked based on the size of <code>LiveBinding</code> and <code>LiveDeclaration</code>. Having a single constant suggests that using the same value for both would be in some form desirable, it isn&#x27;t.</p>
+<p>I also don&#x27;t think the comment adds much. It just describes what small vec does.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-07-18 16:30</div>
             <div class="timeline-body"><blockquote>
-<p>I enabled the feature (and some more that are compatible with our MSRV) but it doesn't make a difference in this case</p>
+<p>I enabled the feature (and some more that are compatible with our MSRV) but it doesn&#x27;t make a difference in this case</p>
 </blockquote>
-<p>That's odd, <code>SmallVec&lt;[LiveBinding; 2]&gt;</code> should be the same size as <code>Vec</code> with the <code>union</code> feature.</p>
+<p>That&#x27;s odd, <code>SmallVec&lt;[LiveBinding; 2]&gt;</code> should be the same size as <code>Vec</code> with the <code>union</code> feature.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-18 16:35</div>
             <div class="timeline-body"><blockquote>
 <blockquote>
-<p>I enabled the feature (and some more that are compatible with our MSRV) but it doesn't make a difference in this case</p>
+<p>I enabled the feature (and some more that are compatible with our MSRV) but it doesn&#x27;t make a difference in this case</p>
 </blockquote>
-<p>That's odd, <code>SmallVec&lt;[LiveBinding; 2]&gt;</code> should be the same size as <code>Vec</code> with the <code>union</code> feature.</p>
+<p>That&#x27;s odd, <code>SmallVec&lt;[LiveBinding; 2]&gt;</code> should be the same size as <code>Vec</code> with the <code>union</code> feature.</p>
 </blockquote>
-<p>Maybe r-a's wrong? I didn't use static assert.</p>
-<p>But isn't LiveBinding 12 bytes and two elements are 24. There's no space for the tag?</p>
+<p>Maybe r-a&#x27;s wrong? I didn&#x27;t use static assert.</p>
+<p>But isn&#x27;t LiveBinding 12 bytes and two elements are 24. There&#x27;s no space for the tag?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-07-18 16:38</div>
-            <div class="timeline-body"><p>Looks like <code>SmallVec&lt;[(u32, u32, u32); 2]&gt;&gt;()</code> is 40 bytes without the union feature, and 32 bytes with it. Without the union feature it gets an extra tag that isn't used. Not sure why this didn't show up in the memory usage report (maybe the saving got rounded away?).</p>
+            <div class="timeline-body"><p>Looks like <code>SmallVec&lt;[(u32, u32, u32); 2]&gt;&gt;()</code> is 40 bytes without the union feature, and 32 bytes with it. Without the union feature it gets an extra tag that isn&#x27;t used. Not sure why this didn&#x27;t show up in the memory usage report (maybe the saving got rounded away?).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-18 16:46</div>
-            <div class="timeline-body"><pre><code class="language-rust">static_assertions::assert_eq_size!(SmallVec&lt;[LiveBinding; 2]&gt;, [u8; 32]);
+            <div class="timeline-body"><pre><code>static_assertions::assert_eq_size!(SmallVec&lt;[LiveBinding; 2]&gt;, [u8; 32]);
 </code></pre>
-<p>This assertion compiles fine for both union and non union feature enabled. I don't know why :). I even tried enabling the <code>union</code> feature at the crate level</p>
+<p>This assertion compiles fine for both union and non union feature enabled. I don&#x27;t know why :). I even tried enabling the <code>union</code> feature at the crate level</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-18 16:48</div>
-            <div class="timeline-body"><p>Actually, I'm not able to reproduce your 3 <code>u32</code> example. Both of those compile fine with and without the <code>union</code> feature:</p>
+            <div class="timeline-body"><p>Actually, I&#x27;m not able to reproduce your 3 <code>u32</code> example. Both of those compile fine with and without the <code>union</code> feature:</p>
 <pre><code>static_assertions::assert_eq_size!(SmallVec&lt;[LiveBinding; 2]&gt;, [u8; 32]);
 static_assertions::assert_eq_size!(SmallVec&lt;[(u32, u32, u32); 2]&gt;, [u8; 32]);
 </code></pre>
 <p>but this is a case where the union feature makes a difference</p>
-<pre><code class="language-rust">static_assertions::assert_eq_size!(SmallVec&lt;[(u32, u32, u16); 2]&gt;, [u8; 32]);
+<pre><code>static_assertions::assert_eq_size!(SmallVec&lt;[(u32, u32, u16); 2]&gt;, [u8; 32]);
 </code></pre>
 <blockquote>
 <p>This means that there is potentially no space overhead compared to Vec. Note that smallvec can still be larger than Vec if the inline buffer is larger than two machine words.</p>
@@ -560,7 +560,7 @@ static_assertions::assert_eq_size!(SmallVec&lt;[(u32, u32, u32); 2]&gt;, [u8; 32
 <blockquote>
 <p>but this is a case where the union feature makes a difference</p>
 </blockquote>
-<p>But this doesn't make sense anymore 🙃</p>
+<p>But this doesn&#x27;t make sense anymore 🙃</p>
 <blockquote>
 <p>This means that there is potentially no space overhead compared to Vec. Note that smallvec can still be larger than Vec if the inline buffer is larger than two machine words.</p>
 </blockquote>
@@ -570,7 +570,7 @@ static_assertions::assert_eq_size!(SmallVec&lt;[(u32, u32, u32); 2]&gt;, [u8; 32
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:14:21 UTC
+        Synced at 2026-01-20 19:16:44 UTC
     </footer>
 </body>
 </html>

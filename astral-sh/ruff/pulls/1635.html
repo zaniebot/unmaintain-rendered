@@ -31,10 +31,10 @@ When module names are equivalent, the <code>import</code> statement comes before
 <ul>
 <li>https://pycqa.github.io/isort/docs/configuration/options.html#force-sort-within-sections</li>
 </ul>
-<p>~Initially I tried out an <code>enum</code> + <code>match</code> approach but I was struggling to come up with anything that didn't require <code>Copy</code> support.~</p>
-<hr />
-<p>~The approach in this PR <em>works</em> from what I've been able to test...
-But it's lacking in clarity.
+<p>~Initially I tried out an <code>enum</code> + <code>match</code> approach but I was struggling to come up with anything that didn&#x27;t require <code>Copy</code> support.~</p>
+<hr>
+<p>~The approach in this PR <em>works</em> from what I&#x27;ve been able to test...
+But it&#x27;s lacking in clarity.
 The <code>merge_imports</code> function returns a vector of tuples that represent the final import order:~</p>
 <pre><code>[(0 or 1, idx)]
 </code></pre>
@@ -43,7 +43,7 @@ The <code>merge_imports</code> function returns a vector of tuples that represen
 <li>~<code>0</code> means use the <code>import_block.import</code> vector with index <code>idx</code>~</li>
 <li>~<code>1</code> means use the <code>import_block.import_from</code> vector with index <code>idx</code>~</li>
 </ul>
-<p>~Those integers are essentially a stand-in for a type or enum, I'm just not sure what the idiomatic thing to return would be.~</p>
+<p>~Those integers are essentially a stand-in for a type or enum, I&#x27;m just not sure what the idiomatic thing to return would be.~</p>
 <ul>
 <li>~An new enum like <code>ImportType::ImportFrom / ImportType::Import</code> defined in <code>types.rs</code>?~</li>
 <li>~Is there a better way to do this lazily (eg. return an iterator) rather than eagerly construct the vector in <code>merge_imports</code>?~</li>
@@ -57,7 +57,7 @@ The <code>merge_imports</code> function returns a vector of tuples that represen
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/mattoberle">@mattoberle</a> on <code>src/isort/sorting.rs</code>:85 on 2023-01-04 22:31</div>
-            <div class="timeline-body"><p>Guessing that <code>.unwrap()</code> could be unsafe here, although I don't understand the case that results in <code>module</code> being <code>None</code>.</p>
+            <div class="timeline-body"><p>Guessing that <code>.unwrap()</code> could be unsafe here, although I don&#x27;t understand the case that results in <code>module</code> being <code>None</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -87,10 +87,10 @@ I threw one of those into my test cases but I suppose that since the block in th
             <div class="timeline-header">Review comment by <a href="https://github.com/mattoberle">@mattoberle</a> on <code>src/isort/sorting.rs</code>:85 on 2023-01-04 23:37</div>
             <div class="timeline-body"><p>I dug into this a bit.</p>
 <p>Given the current callers, <code>.unwrap()</code> will never return <code>None</code> because relative imports <em>always</em> use the <code>from X import Y</code> syntax. An import like <code>import .my_module</code> is invalid.
-Relative imports are sorted in their own section and aren't compared to other first-party imports.</p>
-<p>That doesn't necessarily guarantee this code path won't be hit with a missing module given a different set of settings down the road.</p>
-<p>What's the best way to handle this, something like?</p>
-<pre><code class="language-rs">fn cmp_option_str(a: Option&lt;&amp;String&gt;, b: Option&lt;&amp;String&gt;) -&gt; Ordering {
+Relative imports are sorted in their own section and aren&#x27;t compared to other first-party imports.</p>
+<p>That doesn&#x27;t necessarily guarantee this code path won&#x27;t be hit with a missing module given a different set of settings down the road.</p>
+<p>What&#x27;s the best way to handle this, something like?</p>
+<pre><code>fn cmp_option_str(a: Option&lt;&amp;String&gt;, b: Option&lt;&amp;String&gt;) -&gt; Ordering {
     match (a, b) {
         (None, None) =&gt; Ordering::Equal,
         (None, Some(_)) =&gt; Ordering::Less,
@@ -107,7 +107,7 @@ Relative imports are sorted in their own section and aren't compared to other fi
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @charliermarsh by @charliermarsh on 2023-01-05 19:11</div>
+            <div class="event">Review requested from <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-05 19:11</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/isort/mod.rs</code>:610 on 2023-01-06 02:22</div>
@@ -148,7 +148,7 @@ Relative imports are sorted in their own section and aren't compared to other fi
 <p>I was struggling to put together a function that would take <code>Option&lt;&amp;str&gt;</code> arguments for a comparison.
 <code>alias.name</code> is always the same type, but <code>import_from.module</code> seems to be <code>Option&lt;String&gt;</code> or <code>Option&lt;str&gt;</code> depending on whether I was running in GHA or locally. (Maybe something to do with the <code>wasm</code> target)?</p>
 <p>I ultimately just unwrapped to an empty str, which I think results in the same set or sort rules getting applied (<code>&quot;&quot;</code> is before any non-empty string).</p>
-<hr />
+<hr>
 <p>In the broader picture: Is it weird to take something called <code>OrderedImportBlock</code> and then re-order it?
 That was definitely the easy-way, but I started another branch that refactored things a bit...</p>
 <ol>
@@ -162,23 +162,23 @@ Sorting the statements is contained within the <code>cmp_*</code> function and m
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-06 20:04</div>
-            <div class="timeline-body"><p>I'd definitely be interested to see your other branch!</p>
+            <div class="timeline-body"><p>I&#x27;d definitely be interested to see your other branch!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-06 20:05</div>
-            <div class="timeline-body"><p>(I can help with the Option<String> conversions, we changed those recently.)</p>
+            <div class="timeline-body"><p>(I can help with the Option conversions, we changed those recently.)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2023-01-09 06:06</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-09 06:06</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-01-09 06:06</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-09 06:06</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-09 06:07</div>
-            <div class="timeline-body"><p>Merging this for now! I see what you're saying with the refactor. I may knock it out, you're also welcome to PR it. Thank you for the contribution :)</p>
+            <div class="timeline-body"><p>Merging this for now! I see what you&#x27;re saying with the refactor. I may knock it out, you&#x27;re also welcome to PR it. Thank you for the contribution :)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -193,17 +193,17 @@ Sorting the statements is contained within the <code>cmp_*</code> function and m
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mattoberle">@mattoberle</a> on 2023-01-09 18:24</div>
             <div class="timeline-body"><blockquote>
-<p>Merging this for now! I see what you're saying with the refactor. I may knock it out, you're also welcome to PR it. Thank you for the contribution :)</p>
+<p>Merging this for now! I see what you&#x27;re saying with the refactor. I may knock it out, you&#x27;re also welcome to PR it. Thank you for the contribution :)</p>
 </blockquote>
 <p>Thanks for your help with this!
 My existing branch on the refactor is incomplete at this point (and out-of-date WRT feedback here).
-If I find some time this week I'll work on getting it PR-ready, but if you have a vision don't let that stop you-- I think the exercise will still be worth it on my end.</p>
+If I find some time this week I&#x27;ll work on getting it PR-ready, but if you have a vision don&#x27;t let that stop you-- I think the exercise will still be worth it on my end.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:55:23 UTC
+        Synced at 2026-01-20 18:51:44 UTC
     </footer>
 </body>
 </html>

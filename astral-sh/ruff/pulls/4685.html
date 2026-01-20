@@ -23,51 +23,51 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>Dotted alias import such as <code>import foo.bar as f</code> are presented as <code>Importation</code> instead of <code>SubmoduleImportation</code>. Thus, they were compared like <code>foo == foo.bar</code> which would conclude that it's not an implicit import (which is incorrect).</p>
-<p>The implemented solution differentiates between a dotted alias import and a plain import, takes care of the former by zipping over every module part. The <code>starts_with</code> method cannot be used as it could yield false positive (<code>foo</code> vs <code>foobar</code>, substrings aren't the same).</p>
-<h3>Alternative</h3>
+            <div class="timeline-body">Summary
+<p>Dotted alias import such as <code>import foo.bar as f</code> are presented as <code>Importation</code> instead of <code>SubmoduleImportation</code>. Thus, they were compared like <code>foo == foo.bar</code> which would conclude that it&#x27;s not an implicit import (which is incorrect).</p>
+<p>The implemented solution differentiates between a dotted alias import and a plain import, takes care of the former by zipping over every module part. The <code>starts_with</code> method cannot be used as it could yield false positive (<code>foo</code> vs <code>foobar</code>, substrings aren&#x27;t the same).</p>
+Alternative
 <p>We could implement a new binding kind for this <code>SubmoduleAliasImportation</code>:</p>
-<pre><code class="language-rust">pub struct SubmoduleAliasImportation&lt;'a&gt; {
-	pub name: &amp;'a str,
-	pub full_name: &amp;'a str,
-	pub alias: &amp;'a str,
+<pre><code>pub struct SubmoduleAliasImportation&lt;&#x27;a&gt; {
+	pub name: &amp;&#x27;a str,
+	pub full_name: &amp;&#x27;a str,
+	pub alias: &amp;&#x27;a str,
 }
 </code></pre>
 <p>Taking the below import as an example, the <code>name</code>, <code>full_name</code> and <code>alias</code> fields would be <code>foo</code>, <code>foo.bar</code> and <code>b</code> respectively.</p>
-<pre><code class="language-python">import foo.bar as b
+<pre><code>import foo.bar as b
 </code></pre>
-<h2>Analysis</h2>
+Analysis
 <p>So, the problem here is that a dotted alias import is represented using <code>Binding::Importation</code>:</p>
-<pre><code class="language-python">import libcst.matchers as m
+<pre><code>import libcst.matchers as m
 #      |-------------|    |
 #        full_name       name
 </code></pre>
 <p>This means that the comparison is done with <code>libcst</code> and <code>libcst.matchers</code> which are not the same, thus the former is not considered to be an implicit import of the latter even though it is.</p>
 <p>The problem arises with multiple dotted alias import as well:</p>
-<pre><code class="language-python">import libcst.matchers as m  # this
+<pre><code>import libcst.matchers as m  # this
 import libcst.matches._visitors as v  # that
 </code></pre>
 <p>Here, the same thing happens where <code>this</code> is not considered an implicit import of <code>that</code>.</p>
 <p>Another case:</p>
-<pre><code class="language-python">import libcst
+<pre><code>import libcst
 import libcst.matches._visitors as v
 </code></pre>
-<h2>Test Plan</h2>
+Test Plan
 <p>Test cases as provided in the Python files.</p>
 <p>fixes: #4667</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Handle dotted alias to check for implicit imports" to "Handle dotted alias imports to check for implicit imports" by @dhruvmanila on 2023-05-27 19:32</div>
+            <div class="event">Renamed from &quot;Handle dotted alias to check for implicit imports&quot; to &quot;Handle dotted alias imports to check for implicit imports&quot; by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-05-27 19:32</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-05-27 19:36</div>
-            <div class="timeline-body"><h2>PR Check Results</h2>
-<h3>Ecosystem</h3>
+            <div class="timeline-body">PR Check Results
+Ecosystem
 <p>✅ ecosystem check detected no changes.</p>
-<h3>Benchmark</h3>
-<h4>Linux</h4>
+Benchmark
+Linux
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 linter/all-rules/large/dataset.py          1.00     15.0±0.05ms     2.7 MB/sec    1.01     15.2±0.06ms     2.7 MB/sec
@@ -83,7 +83,7 @@ parser/numpy/ctypeslib.py                  1.00   1125.9±1.57µs    14.8 MB/sec
 parser/numpy/globals.py                    1.00    115.1±1.77µs    25.6 MB/sec    1.00    114.9±0.62µs    25.7 MB/sec
 parser/pydantic/types.py                   1.00      2.5±0.00ms    10.4 MB/sec    1.01      2.5±0.01ms    10.3 MB/sec
 </code></pre>
-<h4>Windows</h4>
+Windows
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 linter/all-rules/large/dataset.py          1.00     17.0±0.23ms     2.4 MB/sec    1.01     17.2±0.24ms     2.4 MB/sec
@@ -99,7 +99,7 @@ parser/numpy/ctypeslib.py                  1.01  1240.2±14.13µs    13.4 MB/sec
 parser/numpy/globals.py                    1.00    126.3±2.05µs    23.4 MB/sec    1.00    125.7±1.79µs    23.5 MB/sec
 parser/pydantic/types.py                   1.00      2.8±0.04ms     9.1 MB/sec    1.00      2.8±0.03ms     9.2 MB/sec
 </code></pre>
-<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
 
 </div>
         </div>
@@ -114,7 +114,7 @@ parser/pydantic/types.py                   1.00      2.8±0.04ms     9.1 MB/sec 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff/src/rules/flake8_type_checking/rules/typing_only_runtime_import.rs</code>:194 on 2023-05-28 02:47</div>
-            <div class="timeline-body"><p>Not really. <code>foo</code> is not the same as <code>foo.bar</code> but it is an implicit import. The <code>zip</code> will stop when it can't move further making it an ideal choice of comparison.</p>
+            <div class="timeline-body"><p>Not really. <code>foo</code> is not the same as <code>foo.bar</code> but it is an implicit import. The <code>zip</code> will stop when it can&#x27;t move further making it an ideal choice of comparison.</p>
 <p>(Unless you mean something else?)</p>
 </div>
         </div>
@@ -138,14 +138,14 @@ parser/pydantic/types.py                   1.00      2.8±0.04ms     9.1 MB/sec 
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_type_checking/rules/typing_only_runtime_import.rs</code>:194 on 2023-05-28 02:57</div>
             <div class="timeline-body"><p>In other words: is this alone not sufficiently general to handle all cases?</p>
-<pre><code class="language-rust">BindingKind::Importation(Importation {
+<pre><code>BindingKind::Importation(Importation {
     full_name: that_name,
     ..
 }) =&gt; {
     // Submodule importation with an alias: `import pkg.A as B`
     this_name
-        .split('.')
-        .zip(that_name.split('.'))
+        .split(&#x27;.&#x27;)
+        .zip(that_name.split(&#x27;.&#x27;))
         .all(|(this_part, that_part)| this_part == that_part)
 }
 </code></pre>
@@ -162,8 +162,8 @@ parser/pydantic/types.py                   1.00      2.8±0.04ms     9.1 MB/sec 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-05-28 03:14</div>
-            <div class="timeline-body"><p>Oh, I actually found one more case where this doesn't work (here both are dotted alias imports):</p>
-<pre><code class="language-python">import pkg.bar as B
+            <div class="timeline-body"><p>Oh, I actually found one more case where this doesn&#x27;t work (here both are dotted alias imports):</p>
+<pre><code>import pkg.bar as B
 import pkg.foo as F
 
 
@@ -175,15 +175,15 @@ def test(value: F.Foo):
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-28 03:16</div>
             <div class="timeline-body"><p>Is it sufficient to just compare up to the first dot? Like:</p>
-<pre><code class="language-rust">this_name.split('.').first() == that_name.split('.').first()
+<pre><code>this_name.split(&#x27;.&#x27;).first() == that_name.split(&#x27;.&#x27;).first()
 </code></pre>
 <p>Or comparable. When would this fail?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-05-28 03:22</div>
-            <div class="timeline-body"><p>Yes, I'm thinking of the same thing. I don't see any edge cases as if the root module is same, then it's an implicit import.</p>
-<p>(It turns out <code>Split</code> doesn't have a <code>first</code> method)</p>
+            <div class="timeline-body"><p>Yes, I&#x27;m thinking of the same thing. I don&#x27;t see any edge cases as if the root module is same, then it&#x27;s an implicit import.</p>
+<p>(It turns out <code>Split</code> doesn&#x27;t have a <code>first</code> method)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -193,14 +193,14 @@ def test(value: F.Foo):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-28 03:24</div>
-            <div class="timeline-body"><p>(You can probably do it with <code>.find('.')</code> or something.)</p>
+            <div class="timeline-body"><p>(You can probably do it with <code>.find(&#x27;.&#x27;)</code> or something.)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2023-05-28 03:58</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-28 03:58</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-05-28 03:58</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-28 03:58</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-28 03:58</div>
@@ -208,7 +208,7 @@ def test(value: F.Foo):
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-05-28 03:58</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-28 03:58</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2023-05-28 08:50</div>
@@ -216,7 +216,7 @@ def test(value: F.Foo):
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:57:40 UTC
+        Synced at 2026-01-20 18:54:00 UTC
     </footer>
 </body>
 </html>

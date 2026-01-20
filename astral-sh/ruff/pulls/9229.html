@@ -23,20 +23,20 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>To get a comparison to <code>SmolStr</code> which seems to optimize for</p>
 <ul>
 <li><code>O(1)</code> clone</li>
 <li>Storing strings longer than 23 that soley consist of Whitespace (not a use case for us)</li>
 </ul>
-<p>I found the API a bit clumsy but maybe it's just me being confused by <code>Deref</code>.</p>
-<h2>Test Plan</h2>
+<p>I found the API a bit clumsy but maybe it&#x27;s just me being confused by <code>Deref</code>.</p>
+Test Plan
 <p><code>cargo test</code></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:847 on 2023-12-21 10:35</div>
-            <div class="timeline-body"><p>I find this annoying. Not sure why <code>&amp;CompactStr == &amp;'static str</code> doesn't work.</p>
+            <div class="timeline-body"><p>I find this annoying. Not sure why <code>&amp;CompactStr == &amp;&#x27;static str</code> doesn&#x27;t work.</p>
 <p>@BurntSushi probably knows why</p>
 </div>
         </div>
@@ -46,13 +46,13 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2023-12-21 10:45</div>
-            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/compact_str">CodSpeed Performance Report</a></h2>
-<h3>Merging #9229 will <strong>improve performances by 4.81%</strong></h3>
-<p><sub>Comparing <code>compact_str</code> (b60ac75) with <code>main</code> (c6d8076)</sub></p>
-<h3>Summary</h3>
+            <div class="timeline-body"><a href="https://codspeed.io/astral-sh/ruff/branches/compact_str">CodSpeed Performance Report</a>
+Merging #9229 will <strong>improve performances by 4.81%</strong>
+<p>Comparing <code>compact_str</code> (b60ac75) with <code>main</code> (c6d8076)</p>
+Summary
 <p><code>⚡ 2</code> improvements
 <code>✅ 28</code> untouched benchmarks</p>
-<h3>Benchmarks breakdown</h3>
+Benchmarks breakdown
 <p>|     | Benchmark | <code>main</code> | <code>compact_str</code> | Change |
 | --- | --------- | ----------------------- | ------------------- | ------ |
 | ⚡ | <code>lexer[pydantic/types.py]</code> | 3.7 ms | 3.6 ms | +4.07% |
@@ -60,23 +60,23 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">performance</span> added by @MichaReiser on 2023-12-21 10:50</div>
+            <div class="event">Label <span class="label">performance</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-12-21 10:50</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">parser</span> added by @MichaReiser on 2023-12-21 10:50</div>
+            <div class="event">Label <span class="label">parser</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-12-21 10:50</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-12-21 10:54</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
@@ -86,9 +86,9 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:847 on 2023-12-21 12:59</div>
-            <div class="timeline-body"><p>Not sure off the top of my head, so let's run through it. <code>x == y</code> is syntactic sugar for <a href="https://doc.rust-lang.org/reference/expressions/operator-expr.html#comparison-operators"><code>std::cmp::PartialEq::eq(&amp;x, &amp;y)</code></a>. If <code>id</code> is a <code>&amp;CompactString</code> and <code>y</code> is a <code>&amp;'static str</code>, then <code>&amp;x</code> is actually an <code>&amp;&amp;CompactString</code> and <code>y</code> is actually a <code>&amp;&amp;str</code>. So I believe this means we need to look for a <code>PartialEq</code> impl for <code>&amp;&amp;CompactString</code> (notice the double <code>&amp;</code> there).</p>
-<p>The only <code>PartialEq</code> impl for <code>CompactString</code> is <code>impl&lt;T: AsRef&lt;str&gt;&gt; PartialEq&lt;T&gt; for CompactString</code>, which on its own does not fit here because we're looking for <code>&amp;&amp;CompactString</code>.</p>
-<p>At least, I think that's why. It's possible the <code>compact-str</code> crate could add more impls to alleviate this. But maybe not.</p>
+            <div class="timeline-body"><p>Not sure off the top of my head, so let&#x27;s run through it. <code>x == y</code> is syntactic sugar for <a href="https://doc.rust-lang.org/reference/expressions/operator-expr.html#comparison-operators"><code>std::cmp::PartialEq::eq(&amp;x, &amp;y)</code></a>. If <code>id</code> is a <code>&amp;CompactString</code> and <code>y</code> is a <code>&amp;&#x27;static str</code>, then <code>&amp;x</code> is actually an <code>&amp;&amp;CompactString</code> and <code>y</code> is actually a <code>&amp;&amp;str</code>. So I believe this means we need to look for a <code>PartialEq</code> impl for <code>&amp;&amp;CompactString</code> (notice the double <code>&amp;</code> there).</p>
+<p>The only <code>PartialEq</code> impl for <code>CompactString</code> is <code>impl&lt;T: AsRef&lt;str&gt;&gt; PartialEq&lt;T&gt; for CompactString</code>, which on its own does not fit here because we&#x27;re looking for <code>&amp;&amp;CompactString</code>.</p>
+<p>At least, I think that&#x27;s why. It&#x27;s possible the <code>compact-str</code> crate could add more impls to alleviate this. But maybe not.</p>
 <p>Auto-deref also comes into the picture here. See:</p>
 <ul>
 <li>https://stackoverflow.com/questions/72909938/why-operator-requires-dereference-while-eq-does-not</li>
@@ -98,14 +98,14 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-12-21 13:00</div>
-            <div class="timeline-body"><p>I'd also be interested in seeing how <code>hipstr</code> fairs. It <a href="https://github.com/polazarus/hipstr#-similar-crates">appears to have some useful properties</a>.</p>
+            <div class="timeline-body"><p>I&#x27;d also be interested in seeing how <code>hipstr</code> fairs. It <a href="https://github.com/polazarus/hipstr#-similar-crates">appears to have some useful properties</a>.</p>
 <p>(Sorry, I know there are a billion &quot;small string&quot; crates...)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2023-12-21 13:19</div>
             <div class="timeline-body"><blockquote>
-<p>I'd also be interested in seeing how <code>hipstr</code> fairs. It <a href="https://github.com/polazarus/hipstr#-similar-crates">appears to have some useful properties</a>.</p>
+<p>I&#x27;d also be interested in seeing how <code>hipstr</code> fairs. It <a href="https://github.com/polazarus/hipstr#-similar-crates">appears to have some useful properties</a>.</p>
 <p>(Sorry, I know there are a billion &quot;small string&quot; crates...)</p>
 </blockquote>
 <p>I can try it later today</p>
@@ -119,7 +119,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-12-21 15:56</div>
             <div class="timeline-body"><blockquote>
-<p>I'd also be interested in seeing how <code>hipstr</code> fairs. It <a href="https://github.com/polazarus/hipstr#-similar-crates">appears to have some useful properties</a>.</p>
+<p>I&#x27;d also be interested in seeing how <code>hipstr</code> fairs. It <a href="https://github.com/polazarus/hipstr#-similar-crates">appears to have some useful properties</a>.</p>
 <p>(Sorry, I know there are a billion &quot;small string&quot; crates...)</p>
 </blockquote>
 <p>Hipstr has interesting properties but it might not work for us without dropping wasm support (playground):</p>
@@ -144,7 +144,7 @@
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2023-12-21 19:38</div>
             <div class="timeline-body"><blockquote>
-<p>I'd also be interested in seeing how <code>hipstr</code> fairs. It <a href="https://github.com/polazarus/hipstr#-similar-crates">appears to have some useful properties</a>.</p>
+<p>I&#x27;d also be interested in seeing how <code>hipstr</code> fairs. It <a href="https://github.com/polazarus/hipstr#-similar-crates">appears to have some useful properties</a>.</p>
 <p>(Sorry, I know there are a billion &quot;small string&quot; crates...)</p>
 </blockquote>
 <p>The problem with <code>hipstr</code> is that we would have to add lifetime annotations to the AST and <code>Tok</code> types.</p>
@@ -152,11 +152,11 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-12-24 01:27</div>
-            <div class="timeline-body"><p>We'll revisit after merging the hand-written parser.</p>
+            <div class="timeline-body"><p>We&#x27;ll revisit after merging the hand-written parser.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2023-12-24 01:27</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-12-24 01:27</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-08-12 07:53</div>
@@ -164,7 +164,7 @@
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:01:56 UTC
+        Synced at 2026-01-20 19:00:07 UTC
     </footer>
 </body>
 </html>

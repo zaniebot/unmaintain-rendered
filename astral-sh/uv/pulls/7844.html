@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a></div>
-            <div class="timeline-body"><p>While reviewing the index PRs, the tests all followed the same structure; they weren't so much test logic as a sequence of writing files, a test context command and snapshotting output and files.</p>
+            <div class="timeline-body"><p>While reviewing the index PRs, the tests all followed the same structure; they weren&#x27;t so much test logic as a sequence of writing files, a test context command and snapshotting output and files.</p>
 <p>Instead of defining them in code, we can write them as toml scenarios:</p>
-<pre><code class="language-toml">[[step]]
+<pre><code>[[step]]
 input.&quot;pyproject.toml&quot; = &quot;&quot;&quot;
 [...]
 &quot;&quot;&quot;
@@ -34,20 +34,20 @@ args =  [&quot;git+https://github.com/astral-test/uv-public-pypackage&quot;, &qu
 output = &quot;&quot;&quot;
 [...]
 &quot;&quot;&quot;
-snapshot.&quot;pyproject.toml&quot; = '''
+snapshot.&quot;pyproject.toml&quot; = &#x27;&#x27;&#x27;
 [...]
-'''
-snapshot.&quot;uv.lock&quot; = '''
+&#x27;&#x27;&#x27;
+snapshot.&quot;uv.lock&quot; = &#x27;&#x27;&#x27;
 [...]
-'''
+&#x27;&#x27;&#x27;
 </code></pre>
-<p>The tests now have a shared schema and can be written without code. We can change the tests without recompiling and massively reduce the code size in the <code>uv</code> crate (previously, each time you would apply snapshot changes you would have to wait for a recompile). The tests become easier to maintain (toml can be edited by Python should need be) and by decoupling the test declaration from code we can add improve the test runner more easily. I don't expect all tests to be migrated, there's actual custom code in a number of tests.</p>
+<p>The tests now have a shared schema and can be written without code. We can change the tests without recompiling and massively reduce the code size in the <code>uv</code> crate (previously, each time you would apply snapshot changes you would have to wait for a recompile). The tests become easier to maintain (toml can be edited by Python should need be) and by decoupling the test declaration from code we can add improve the test runner more easily. I don&#x27;t expect all tests to be migrated, there&#x27;s actual custom code in a number of tests.</p>
 <p><strong>Migration Strategy</strong> Procedural and declarative tests can coexist in the same file, there is no breaking change involved. If we want to migrate existing test, we can move the existing testing to more concise abstractions using the <code>TestContext</code> with rust refactoring, then using regex to migrate many simple procedural tests.</p>
 <p>The PR migrates two tests as an example. I would suggest merging the framework and starting to write new tests in it, extending it as needed. Once we feel sufficiently confident and the need, we can migrate older tests, too.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> added by @konstin on 2024-10-01 14:24</div>
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/konstin">@konstin</a> on 2024-10-01 14:24</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-10-01 14:31</div>
@@ -60,22 +60,22 @@ snapshot.&quot;uv.lock&quot; = '''
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-10-01 16:08</div>
-            <div class="timeline-body"><p>I am loosely in favor I think. I did something similar (partially for the reasons you stated here, but also for other reasons) for <code>regex</code> and I'm generally happy with the result. Although in <code>regex</code>, I don't have a one-to-one correspondence between declarative tests and Rust <code>#[test]</code> annotations. Instead, each Rust <code>#[test]</code> would actually run the full set of tests. This does have some pretty awful downsides though, and tends to be most useful when you want to run each declarative test multiple different times under different configurations (as I do in <code>regex</code>). I'm not sure we necessarily need that here in uv, but I could see that being useful if expensive. Either way, this would be a first step toward that world I think.</p>
+            <div class="timeline-body"><p>I am loosely in favor I think. I did something similar (partially for the reasons you stated here, but also for other reasons) for <code>regex</code> and I&#x27;m generally happy with the result. Although in <code>regex</code>, I don&#x27;t have a one-to-one correspondence between declarative tests and Rust <code>#[test]</code> annotations. Instead, each Rust <code>#[test]</code> would actually run the full set of tests. This does have some pretty awful downsides though, and tends to be most useful when you want to run each declarative test multiple different times under different configurations (as I do in <code>regex</code>). I&#x27;m not sure we necessarily need that here in uv, but I could see that being useful if expensive. Either way, this would be a first step toward that world I think.</p>
 <p>Some other thoughts:</p>
 <ul>
-<li>Since this is TOML embedding TOML, it would be annoying if the embedded TOML contains both <code>&quot;&quot;&quot;</code> and <code>'''</code>. Not a major issue though since I think there are multiple ways to overcome this.</li>
-<li>I don't know that this saves a bunch of typing. While this does transition us to a more solidly declarative approach, I would argue that we don't need TOML for our tests to be declarative. We can do declarative testing directly with Rust code. We are pretty close to that already given that most of our tests follow a defined pattern. The advantage of doing it with Rust directly is that it will likely make it easier for tests that don't easily fit in the existing declarative framework to go off and do something different.</li>
+<li>Since this is TOML embedding TOML, it would be annoying if the embedded TOML contains both <code>&quot;&quot;&quot;</code> and <code>&#x27;&#x27;&#x27;</code>. Not a major issue though since I think there are multiple ways to overcome this.</li>
+<li>I don&#x27;t know that this saves a bunch of typing. While this does transition us to a more solidly declarative approach, I would argue that we don&#x27;t need TOML for our tests to be declarative. We can do declarative testing directly with Rust code. We are pretty close to that already given that most of our tests follow a defined pattern. The advantage of doing it with Rust directly is that it will likely make it easier for tests that don&#x27;t easily fit in the existing declarative framework to go off and do something different.</li>
 <li>When I moved the tests to TOML in <code>regex</code>, I found that I added a fair number of features to the declarative TOML to expand the scope of what kinds of tests it could cover.</li>
 </ul>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @konstin on 2025-03-10 23:04</div>
+            <div class="event">Closed by <a href="https://github.com/konstin">@konstin</a> on 2025-03-10 23:04</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:39:53 UTC
+        Synced at 2026-01-20 19:48:34 UTC
     </footer>
 </body>
 </html>

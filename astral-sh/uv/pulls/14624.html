@@ -23,16 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/staticf0x">@staticf0x</a></div>
-            <div class="timeline-body"><!--
-Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+            <div class="timeline-body">
 
-- Does this pull request include a summary of the change? (See below.)
-- Does this pull request include a descriptive title?
-- Does this pull request include references to any relevant issues?
--->
+Summary
 
-<h2>Summary</h2>
-<!-- What's the purpose of the change? What does it do, and why? -->
 
 <p>This is an attempt to make <code>uv pip compile</code> respect <code>.python-version</code> file as reported in #9581.</p>
 <p>The problem at hand is more complex than I anticipated, because you can specify multiple source files, which makes it difficult to &quot;guess&quot; where the <code>.python-version</code> might be. I chose this approach:</p>
@@ -40,13 +34,13 @@ Thank you for contributing to uv! To help us out with reviewing, please consider
 <li>Try just <code>.python-version</code> in cwd (for simple invocations like <code>uv pip compile requirements.in</code>)</li>
 <li>Try to find a sibling to the first provided source file</li>
 </ol>
-<p>I am more than open to suggestions how to make this better, though, it doesn't feel exactly right.</p>
-<h2>Test Plan</h2>
-<!-- How was it tested? -->
+<p>I am more than open to suggestions how to make this better, though, it doesn&#x27;t feel exactly right.</p>
+Test Plan
+
 
 <p>Given this <code>requirements.in</code>:</p>
 <pre><code>requests
-rich ; python_version &gt;= '3.12'
+rich ; python_version &gt;= &#x27;3.12&#x27;
 </code></pre>
 <p>and <code>.python-version</code>:</p>
 <p><code>3.11</code></p>
@@ -117,7 +111,7 @@ urllib3==2.5.0
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-07-15 15:36</div>
-            <div class="timeline-body"><p>Let's say my project supports Python 3.9+ but I build my project with Python 3.12, so I have a &quot;.python-version&quot; with 3.9 on the root and a &quot;.python-version&quot; with 3.12 in &quot;build-project&quot; sub directory.</p>
+            <div class="timeline-body"><p>Let&#x27;s say my project supports Python 3.9+ but I build my project with Python 3.12, so I have a &quot;.python-version&quot; with 3.9 on the root and a &quot;.python-version&quot; with 3.12 in &quot;build-project&quot; sub directory.</p>
 <p>Now because I pin my build requirements I call <code>uv pip compile build-project/requirements.in -o build-project/requirements.txt</code> in my build script in my Python 3.12 build environment.</p>
 <p>This change will break that, so at the least it should be called out as a breaking change to pip-compile and the behavior should be documented.</p>
 <p>The reason I have all these &quot;.python-version&quot; files floating around is to get dependendabot and other tools to know which Python is a good Python to default against, not to assist uv.</p>
@@ -125,49 +119,49 @@ urllib3==2.5.0
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-15 17:09</div>
-            <div class="timeline-body"><p>I think inferring the <code>.python-version</code> file to respect in <code>uv pip compile</code> might be too hard for users to reason about. It sounds complicated. If we do it, I don't think it should look for <code>.python-version</code> files relative to the input files. Just looking relative to the first one seems particularly arbitrary.</p>
+            <div class="timeline-body"><p>I think inferring the <code>.python-version</code> file to respect in <code>uv pip compile</code> might be too hard for users to reason about. It sounds complicated. If we do it, I don&#x27;t think it should look for <code>.python-version</code> files relative to the input files. Just looking relative to the first one seems particularly arbitrary.</p>
 <blockquote>
 <p>Now because I pin my build requirements I call uv pip compile build-project/requirements.in -o build-project/requirements.txt in my build script in my Python 3.12 build environment.</p>
 </blockquote>
-<p>Wouldn't (or couldn't) we still prefer the current Python version in the environment over a <code>.python-version</code> file?</p>
+<p>Wouldn&#x27;t (or couldn&#x27;t) we still prefer the current Python version in the environment over a <code>.python-version</code> file?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-07-15 17:45</div>
             <div class="timeline-body"><blockquote>
-<p>Wouldn't (or couldn't) we still prefer the current Python version in the environment over a <code>.python-version</code> file?</p>
+<p>Wouldn&#x27;t (or couldn&#x27;t) we still prefer the current Python version in the environment over a <code>.python-version</code> file?</p>
 </blockquote>
-<p>You could, I would prefer it, but does it solve what OP wants? (Genuine question, I don't know).</p>
+<p>You could, I would prefer it, but does it solve what OP wants? (Genuine question, I don&#x27;t know).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/staticf0x">@staticf0x</a> on 2025-07-16 09:51</div>
-            <div class="timeline-body"><p>So we're running self-hosted <a href="https://github.com/renovatebot/renovate">Renovate</a> with a Docker image with default Python 3.9 and while there are other Python versions available, because it's not the official Ubuntu based image, we can't install tools on the fly when processing repositories.</p>
+            <div class="timeline-body"><p>So we&#x27;re running self-hosted <a href="https://github.com/renovatebot/renovate">Renovate</a> with a Docker image with default Python 3.9 and while there are other Python versions available, because it&#x27;s not the official Ubuntu based image, we can&#x27;t install tools on the fly when processing repositories.</p>
 <p>Now instead of relying on <code>pip-compile</code>, which is a very simple tool and relies on the correct Python being available in the venv, I was thinking: <code>uv</code> can install any Python version when you do <code>uv sync</code> on a freshly cloned project or when you change your <code>.python-version</code>, regardless on what is available on the target system, through the <a href="https://github.com/astral-sh/python-build-standalone">python-build-standalone</a> project. This is great, I love this feature, but in #9581 we talk about this not working in <code>uv pip compile</code>.</p>
-<p>The support for <code>UV_PYTHON</code> was added #11486 beginning with 0.6.0, but unlike <code>uv sync</code> the <code>.python-version</code> is not taken into account. So I naively thought I would add the support, can't be difficult right? But then I ran into the problem of multiple source files (described in the PR), <code>uv</code> potentially being invoked from outside of the project folder, etc...</p>
+<p>The support for <code>UV_PYTHON</code> was added #11486 beginning with 0.6.0, but unlike <code>uv sync</code> the <code>.python-version</code> is not taken into account. So I naively thought I would add the support, can&#x27;t be difficult right? But then I ran into the problem of multiple source files (described in the PR), <code>uv</code> potentially being invoked from outside of the project folder, etc...</p>
 <p>Anyway, when you run Renovate with the <code>pip-compile</code> manager and your <code>requirements.txt</code> was compiled using <code>uv pip compile</code>, Renovate can <code>cd</code> into the directory and run <code>uv pip compile requirements.in</code>, so this is the reason why I tried to add support for reading <code>.python-version</code> in CWD. The reason for the sibling file lookup was to support invocations like <code>uv pip compile project/dir/requirements.in</code> for example. The <code>.python-version</code> file seems like the simplest, easily understandable solution for a lot of projects, but I admit I never thought about more complex situations where you have multiple such files.</p>
-<p>I do realize this implementation is a bit flawed, so I definitely appreciate the discussion here. Hopefully my explanation avoids the XY problem and perhaps there's a way to solve my problem without this code change (that would be great though). Just mind that setting <code>UV_PYTHON</code> per repository is not possible for the Renovate use case.</p>
+<p>I do realize this implementation is a bit flawed, so I definitely appreciate the discussion here. Hopefully my explanation avoids the XY problem and perhaps there&#x27;s a way to solve my problem without this code change (that would be great though). Just mind that setting <code>UV_PYTHON</code> per repository is not possible for the Renovate use case.</p>
 <p>And only now I realized I can pass the Python version in the compiled file header and Renovate will parse it and pass it back to <code>uv pip compile</code>, like so:</p>
 <pre><code># This file was autogenerated by uv via the following command:
 #    uv pip compile --python-version=3.12 --output-file=requirements.txt 
 </code></pre>
-<p>So this actually solves my use case, sorry for the confusion! I don't mind closing this PR, do you think this discussion is still helpful though? Or should we stick to #9581?</p>
+<p>So this actually solves my use case, sorry for the confusion! I don&#x27;t mind closing this PR, do you think this discussion is still helpful though? Or should we stick to #9581?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-17 17:00</div>
             <div class="timeline-body"><p>Thanks for all the details!</p>
-<p>I'm glad just including it in the header solves the problem. That makes sense as a best practice to me anyway.</p>
-<p>I think https://github.com/astral-sh/uv/issues/9581 is the best place for future conversation on this, yeah. </p>
+<p>I&#x27;m glad just including it in the header solves the problem. That makes sense as a best practice to me anyway.</p>
+<p>I think <a href="https://github.com/astral-sh/uv/issues/9581">astral-sh/uv#9581</a> is the best place for future conversation on this, yeah. </p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2025-07-17 17:00</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-17 17:00</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:43:58 UTC
+        Synced at 2026-01-20 19:53:07 UTC
     </footer>
 </body>
 </html>

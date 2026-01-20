@@ -23,47 +23,47 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/hoxell">@hoxell</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<h3>Issue</h3>
-<p>On my work-managed machine, I have <code>pyenv</code> installed (i.e., non-optional), which seems to be conflicting with <code>uv</code>. When the current pinned version is set to a version that's not installed by <code>pyenv</code> (here, 3.13), I get:</p>
+            <div class="timeline-body">Summary
+Issue
+<p>On my work-managed machine, I have <code>pyenv</code> installed (i.e., non-optional), which seems to be conflicting with <code>uv</code>. When the current pinned version is set to a version that&#x27;s not installed by <code>pyenv</code> (here, 3.13), I get:</p>
 <pre><code>error: Failed to inspect Python interpreter from first executable in the search path at `~/.pyenv/shims/python3.10`
   Caused by: Querying Python at `~/.pyenv/shims/python3.10` failed with exit status exit status: 1
 
 [stderr]
-pyenv: version `3.13' is not installed (set by ~/some_project/.python-version)
+pyenv: version `3.13&#x27; is not installed (set by ~/some_project/.python-version)
 </code></pre>
-<p>If I manually set it to <code>3.12</code> in <code>.python-version</code> instead, which is installed via <code>pyenv</code> already, there's a slightly different error:</p>
+<p>If I manually set it to <code>3.12</code> in <code>.python-version</code> instead, which is installed via <code>pyenv</code> already, there&#x27;s a slightly different error:</p>
 <pre><code>error: Failed to inspect Python interpreter from first executable in the search path at `~/.pyenv/shims/python3.10`
   Caused by: Querying Python at `~/.pyenv/shims/python3.10` failed with exit status exit status: 127
 
 [stderr]
 pyenv: python3.10: command not found
 
-The `python3.10' command exists in these Python versions:
+The `python3.10&#x27; command exists in these Python versions:
   3.10.16
 
-Note: See 'pyenv help global' for tips on allowing both
+Note: See &#x27;pyenv help global&#x27; for tips on allowing both
       python2 and python3 to be found.
 </code></pre>
-<h3>Reproducing</h3>
+Reproducing
 <p><code>cd &lt;some_sub_of_project&gt;</code>
 <code>uv python pin 3.13</code>
 <code>uv python pin 3.10</code></p>
 <p>That is, both tools using <code>.python-version</code> seems to break the discovery since <code>pyenv</code> picks up <code>.python-version</code> in a subdirectory of the project.</p>
 <p>As long as the <code>pwd</code> is the project root, it works fine.</p>
-<p>Of course, it's <code>pyenv</code> struggling,  but might be a situation that <code>uv</code> would like to handle.</p>
-<p>Btw, I only discovered this because I accidentally was in a subdir when trying to pin the version. Maybe there's a use case for multiple <code>.python-version</code> in a single project, but for my use case(s), it would've been more natural if it would set the version in the project root.</p>
+<p>Of course, it&#x27;s <code>pyenv</code> struggling,  but might be a situation that <code>uv</code> would like to handle.</p>
+<p>Btw, I only discovered this because I accidentally was in a subdir when trying to pin the version. Maybe there&#x27;s a use case for multiple <code>.python-version</code> in a single project, but for my use case(s), it would&#x27;ve been more natural if it would set the version in the project root.</p>
 <p>And lastly, a big thank you for such an amazing tool 😍</p>
-<h3>Platform</h3>
+Platform
 <p>Ubuntu 24.04 x86_64</p>
-<h3>Version</h3>
+Version
 <p>0.7.3</p>
-<h3>Python version</h3>
+Python version
 <p><em>No response</em></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @hoxell on 2025-05-12 09:47</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/hoxell">@hoxell</a> on 2025-05-12 09:47</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-12 09:55</div>
@@ -71,35 +71,35 @@ Note: See 'pyenv help global' for tips on allowing both
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-mre</span> added by @konstin on 2025-05-12 09:55</div>
+            <div class="event">Label <span class="label">needs-mre</span> added by <a href="https://github.com/konstin">@konstin</a> on 2025-05-12 09:55</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/hoxell">@hoxell</a> on 2025-05-13 06:39</div>
             <div class="timeline-body"><p>I can reproduce this by:</p>
 <ol>
-<li><code>pyenv uninstall 3.10.16</code> (or whatever version you have installed. I only did this to make sure I had a clean install, it didn't seem to make a difference.)</li>
+<li><code>pyenv uninstall 3.10.16</code> (or whatever version you have installed. I only did this to make sure I had a clean install, it didn&#x27;t seem to make a difference.)</li>
 <li><code>pyenv install 3.10.16</code></li>
-<li>From the subdir of the uv project, <code>uv python pin &lt;some version&gt;</code>. The version can be either a version you have installed via <code>pyenv</code> or a version you don't have installed. Either of them should trigger one of the errors in the original post.</li>
+<li>From the subdir of the uv project, <code>uv python pin &lt;some version&gt;</code>. The version can be either a version you have installed via <code>pyenv</code> or a version you don&#x27;t have installed. Either of them should trigger one of the errors in the original post.</li>
 <li><code>uv python pin &lt;some version available via pyenv&gt;</code></li>
 </ol>
-<p>I noticed some inconsistent behaviour in reproducing this. Sometimes starting a simple repl with <code>python&lt;major&gt;.&lt;minor&gt;</code> would work, sometimes it wouldn't, failing with some variant of:</p>
+<p>I noticed some inconsistent behaviour in reproducing this. Sometimes starting a simple repl with <code>python&lt;major&gt;.&lt;minor&gt;</code> would work, sometimes it wouldn&#x27;t, failing with some variant of:</p>
 <pre><code>pyenv: python3.10: command not found
 
-The `python3.10' command exists in these Python versions:
+The `python3.10&#x27; command exists in these Python versions:
   3.10.16
 
-Note: See 'pyenv help global' for tips on allowing both
+Note: See &#x27;pyenv help global&#x27; for tips on allowing both
       python2 and python3 to be found.
 </code></pre>
 <p><code>PATH</code> also is set correctly, so all versions I tried were resolved via <code>~/.pyenv/shims</code>.</p>
-<p>It's old, but I don't see any changes mentioned regarding the design, which seems to mean <code>pyenv</code> does <em>not</em> intend to support <em>not</em> specifying also the patch version explicitly:
-https://github.com/pyenv/pyenv/issues/34#issuecomment-21294584</p>
+<p>It&#x27;s old, but I don&#x27;t see any changes mentioned regarding the design, which seems to mean <code>pyenv</code> does <em>not</em> intend to support <em>not</em> specifying also the patch version explicitly:
+<a href="https://github.com/pyenv/pyenv/issues/34">pyenv/pyenv#34</a>#issuecomment-21294584</p>
 <p>Possibly, the inconsistent behaviour above could mean this design might not be fully enforced.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-13 07:44</div>
-            <div class="timeline-body"><p>uv is already ignoring the error by default, but it will resurface the error if no other appropriate interpreter is is found. If not deactivated, uv installs a managed Python interpreter. By deactivating managed interpreters, uv can't resolve itself out of pyenv's missing version as it usually would. It seems correct to me to surface the error so the user can adjust their pyenv config.</p>
+            <div class="timeline-body"><p>uv is already ignoring the error by default, but it will resurface the error if no other appropriate interpreter is is found. If not deactivated, uv installs a managed Python interpreter. By deactivating managed interpreters, uv can&#x27;t resolve itself out of pyenv&#x27;s missing version as it usually would. It seems correct to me to surface the error so the user can adjust their pyenv config.</p>
 <pre><code>$ rm -rf ../.venv &amp;&amp; uv run -p python3.13 --no-managed-python --no-cache -v python
 DEBUG uv 0.7.3
 DEBUG Found project root: `/home/konsti/projects/pyenv-version-detection`
@@ -113,7 +113,7 @@ DEBUG Failed to inspect Python interpreter from first executable in the search p
 DEBUG Skipping bad interpreter at /home/konsti/.pyenv/shims/python3.13 from first executable in the search path: Querying Python at `/home/konsti/.pyenv/shims/python3.13` failed with exit status exit status: 1
 
 [stderr]
-pyenv: version `3.10.1234' is not installed (set by /home/konsti/projects/pyenv-version-detection/subdir/.python-version)
+pyenv: version `3.10.1234&#x27; is not installed (set by /home/konsti/projects/pyenv-version-detection/subdir/.python-version)
 
 DEBUG Found `cpython-3.12.3-linux-x86_64-gnu` at `/home/konsti/.pyenv/shims/python3` (search path)
 DEBUG Skipping interpreter at `/usr/bin/python3` from search path: does not satisfy request `3.13`
@@ -128,30 +128,30 @@ error: Failed to inspect Python interpreter from first executable in the search 
   Caused by: Querying Python at `/home/konsti/.pyenv/shims/python3.13` failed with exit status exit status: 1
 
 [stderr]
-pyenv: version `3.10.1234' is not installed (set by /home/konsti/projects/pyenv-version-detection/subdir/.python-version)
+pyenv: version `3.10.1234&#x27; is not installed (set by /home/konsti/projects/pyenv-version-detection/subdir/.python-version)
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> removed by @konstin on 2025-05-13 07:44</div>
+            <div class="event">Label <span class="label">bug</span> removed by <a href="https://github.com/konstin">@konstin</a> on 2025-05-13 07:44</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-mre</span> removed by @konstin on 2025-05-13 07:44</div>
+            <div class="event">Label <span class="label">needs-mre</span> removed by <a href="https://github.com/konstin">@konstin</a> on 2025-05-13 07:44</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @konstin on 2025-05-13 07:44</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/konstin">@konstin</a> on 2025-05-13 07:44</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/hoxell">@hoxell</a> on 2025-05-13 08:10</div>
-            <div class="timeline-body"><p>That sounds like the reasonable thing to do, but I don't think I've deactivated managed python versions.
-The <code>pyproject.toml</code> contains no such configuration, and neither does <code>~/.config/uv/uv.toml</code>. I have no <code>/etc/uv</code> config dir, so that's not interfering, and there's no <code>uv.toml</code> file in the project.
-Those are the locations I could find <a href="https://docs.astral.sh/uv/configuration/files/">here</a>, but maybe I've overlooked something?</p>
-<p>I don't have python 3.11 installed anywhere, but pinning it to 3.11 (from the project root, not a subdir) works as expected, and on <code>uv run ...</code> it'll pull a managed version.</p>
+            <div class="timeline-body"><p>That sounds like the reasonable thing to do, but I don&#x27;t think I&#x27;ve deactivated managed python versions.
+The <code>pyproject.toml</code> contains no such configuration, and neither does <code>~/.config/uv/uv.toml</code>. I have no <code>/etc/uv</code> config dir, so that&#x27;s not interfering, and there&#x27;s no <code>uv.toml</code> file in the project.
+Those are the locations I could find <a href="https://docs.astral.sh/uv/configuration/files/">here</a>, but maybe I&#x27;ve overlooked something?</p>
+<p>I don&#x27;t have python 3.11 installed anywhere, but pinning it to 3.11 (from the project root, not a subdir) works as expected, and on <code>uv run ...</code> it&#x27;ll pull a managed version.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/hoxell">@hoxell</a> on 2025-05-13 08:21</div>
-            <div class="timeline-body"><p>I just encountered the same issue in the project root now, so it's not isolated to subdirs (for me) as it initially seemed.</p>
+            <div class="timeline-body"><p>I just encountered the same issue in the project root now, so it&#x27;s not isolated to subdirs (for me) as it initially seemed.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -176,7 +176,7 @@ DEBUG Failed to inspect Python interpreter from first executable in the search p
 DEBUG Skipping bad interpreter at /home/xxxxxxx/.pyenv/shims/python3.10 from first executable in the search path: Querying Python at `/home/xxxxxxx/.pyenv/shims/python3.10` failed with exit status exit status: 1
 
 [stderr]
-pyenv: version `3.13' is not installed (set by /home/xxxxxxx/pin/.python-version)
+pyenv: version `3.13&#x27; is not installed (set by /home/xxxxxxx/pin/.python-version)
 
 DEBUG Found `cpython-3.12.3-linux-x86_64-gnu` at `/home/xxxxxxx/.pyenv/shims/python3` (search path)
 DEBUG Skipping interpreter at `/usr/bin/python3` from search path: does not satisfy request `3.10`
@@ -184,7 +184,7 @@ DEBUG Failed to inspect Python interpreter from search path at `/home/xxxxxxx/.p
 DEBUG Skipping bad interpreter at /home/xxxxxxx/.pyenv/shims/python from search path: Querying Python at `/home/xxxxxxx/.pyenv/shims/python` failed with exit status exit status: 1
 
 [stderr]
-pyenv: version `3.13' is not installed (set by /home/xxxxxxx/pin/.python-version)
+pyenv: version `3.13&#x27; is not installed (set by /home/xxxxxxx/pin/.python-version)
 
 DEBUG Found `cpython-3.12.3-linux-x86_64-gnu` at `/usr/bin/python3` (search path)
 DEBUG Skipping interpreter at `/usr/bin/python3` from search path: does not satisfy request `3.10`
@@ -192,7 +192,7 @@ error: Failed to inspect Python interpreter from first executable in the search 
   Caused by: Querying Python at `/home/xxxxxxx/.pyenv/shims/python3.10` failed with exit status exit status: 1
 
 [stderr]
-pyenv: version `3.13' is not installed (set by /home/xxxxxxx/pin/.python-version)
+pyenv: version `3.13&#x27; is not installed (set by /home/xxxxxxx/pin/.python-version)
 </code></pre>
 <pre><code>~  pyenv versions
   system
@@ -206,11 +206,11 @@ pyenv: version `3.13' is not installed (set by /home/xxxxxxx/pin/.python-version
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Collision with pyenv when `uv python pin <version>` from subdir" to "Collision with pyenv when `uv python pin <version>`" by @hoxell on 2025-05-13 12:29</div>
+            <div class="event">Renamed from &quot;Collision with pyenv when `uv python pin &lt;version&gt;` from subdir&quot; to &quot;Collision with pyenv when `uv python pin &lt;version&gt;`&quot; by <a href="https://github.com/hoxell">@hoxell</a> on 2025-05-13 12:29</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-13 13:02</div>
-            <div class="timeline-body"><p>I'm still having trouble reproducing this, can you add <code>--managed-python</code> and see what happens?</p>
+            <div class="timeline-body"><p>I&#x27;m still having trouble reproducing this, can you add <code>--managed-python</code> and see what happens?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -235,11 +235,11 @@ I noticed that <code>pyenv</code> would work with two out of three versions when
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-mre</span> added by @konstin on 2025-05-15 08:23</div>
+            <div class="event">Label <span class="label">needs-mre</span> added by <a href="https://github.com/konstin">@konstin</a> on 2025-05-15 08:23</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-15 08:23</div>
-            <div class="timeline-body"><p>Still can't reproduce this unfortunately:</p>
+            <div class="timeline-body"><p>Still can&#x27;t reproduce this unfortunately:</p>
 <pre><code>$ rm .python-version
 $ pyenv versions
   system
@@ -253,9 +253,9 @@ $ pyenv versions
 * 3.12.3 (set by /home/konsti/.pyenv/version)
   pypy3.10-7.3.14
 $ python3.13
-Command 'python3.13' not found, did you mean:
-  command 'python3.11' from deb python3.11 (3.11.7-2)
-  command 'python3.12' from deb python3.12 (3.12.3-1ubuntu0.5)
+Command &#x27;python3.13&#x27; not found, did you mean:
+  command &#x27;python3.11&#x27; from deb python3.11 (3.11.7-2)
+  command &#x27;python3.12&#x27; from deb python3.12 (3.12.3-1ubuntu0.5)
 Try: sudo apt install &lt;deb name&gt;
 $ uv python pin 3.13 -v
 DEBUG uv 0.7.3
@@ -287,9 +287,9 @@ RUN apt update &amp;&amp; \
     rm -rf /var/lib/apt/lists/*
 
 RUN curl -fsSL https://pyenv.run | bash &amp;&amp; \
-    echo 'export PYENV_ROOT=&quot;$HOME/.pyenv&quot;' &gt;&gt; ~/.bashrc &amp;&amp; \
-    echo '[[ -d $PYENV_ROOT/bin ]] &amp;&amp; export PATH=&quot;$PYENV_ROOT/bin:$PATH&quot;' &gt;&gt; ~/.bashrc &amp;&amp; \
-    echo 'eval &quot;$(pyenv init - bash)&quot;' &gt;&gt; ~/.bashrc &amp;&amp; \
+    echo &#x27;export PYENV_ROOT=&quot;$HOME/.pyenv&quot;&#x27; &gt;&gt; ~/.bashrc &amp;&amp; \
+    echo &#x27;[[ -d $PYENV_ROOT/bin ]] &amp;&amp; export PATH=&quot;$PYENV_ROOT/bin:$PATH&quot;&#x27; &gt;&gt; ~/.bashrc &amp;&amp; \
+    echo &#x27;eval &quot;$(pyenv init - bash)&quot;&#x27; &gt;&gt; ~/.bashrc &amp;&amp; \
     bash -c -i &quot;source ~/.bashrc &amp;&amp; pyenv install 3.8.20 3.10.16 3.12.9&quot; &amp;&amp; \
     curl -LsSf https://astral.sh/uv/0.7.3/install.sh | sh &amp;&amp;\
     echo &quot;3.10.16&quot; &gt; ~/.pyenv/version
@@ -306,7 +306,7 @@ error: Failed to inspect Python interpreter from first executable in the search 
   Caused by: Querying Python at `/root/.pyenv/shims/python3.10` failed with exit status exit status: 1
 
 [stderr]
-pyenv: version `3.13' is not installed (set by /pin/.python-version)
+pyenv: version `3.13&#x27; is not installed (set by /pin/.python-version)
 </code></pre>
 <p>edit: If you supply <code>--managed-python</code>, it works, just like it did above.</p>
 <p>edit2: The verbose output of the above <code>pin</code>:</p>
@@ -321,7 +321,7 @@ DEBUG Failed to inspect Python interpreter from first executable in the search p
 DEBUG Skipping bad interpreter at /root/.pyenv/shims/python3.10 from first executable in the search path: Querying Python at `/root/.pyenv/shims/python3.10` failed with exit status exit status: 1
 
 [stderr]
-pyenv: version `3.13' is not installed (set by /pin/.python-version)
+pyenv: version `3.13&#x27; is not installed (set by /pin/.python-version)
 
 DEBUG Found `cpython-3.12.3-linux-x86_64-gnu` at `/root/.pyenv/shims/python3` (search path)
 DEBUG Skipping interpreter at `/usr/bin/python3` from search path: does not satisfy request `3.10`
@@ -329,7 +329,7 @@ DEBUG Failed to inspect Python interpreter from search path at `/root/.pyenv/shi
 DEBUG Skipping bad interpreter at /root/.pyenv/shims/python from search path: Querying Python at `/root/.pyenv/shims/python` failed with exit status exit status: 1
 
 [stderr]
-pyenv: version `3.13' is not installed (set by /pin/.python-version)
+pyenv: version `3.13&#x27; is not installed (set by /pin/.python-version)
 
 DEBUG Found `cpython-3.12.3-linux-x86_64-gnu` at `/usr/bin/python3` (search path)
 DEBUG Skipping interpreter at `/usr/bin/python3` from search path: does not satisfy request `3.10`
@@ -337,19 +337,19 @@ error: Failed to inspect Python interpreter from first executable in the search 
   Caused by: Querying Python at `/root/.pyenv/shims/python3.10` failed with exit status exit status: 1
 
 [stderr]
-pyenv: version `3.13' is not installed (set by /pin/.python-version)
+pyenv: version `3.13&#x27; is not installed (set by /pin/.python-version)
 
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-mre</span> removed by @konstin on 2025-05-16 13:07</div>
+            <div class="event">Label <span class="label">needs-mre</span> removed by <a href="https://github.com/konstin">@konstin</a> on 2025-05-16 13:07</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> removed by @konstin on 2025-05-16 16:02</div>
+            <div class="event">Label <span class="label">question</span> removed by <a href="https://github.com/konstin">@konstin</a> on 2025-05-16 16:02</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-05-16 16:02</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/konstin">@konstin</a> on 2025-05-16 16:02</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-16 20:51</div>
@@ -358,28 +358,28 @@ pyenv: version `3.13' is not installed (set by /pin/.python-version)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/hoxell">@hoxell</a> on 2025-05-17 10:14</div>
-            <div class="timeline-body"><p>I think I've found the reason.
+            <div class="timeline-body"><p>I think I&#x27;ve found the reason.
 https://github.com/astral-sh/uv/blob/9d1a14e1f9d824d8b4932292cbcf304f51c2ada9/crates/uv-python/src/discovery.rs#L1131</p>
 <pre><code>    // If we found a Python, but it was unusable for some reason, report that instead of saying we
-    // couldn't find any Python interpreters.
+    // couldn&#x27;t find any Python interpreters.
     if let Some(err) = first_error {
         return Err(err);
     }
 </code></pre>
-<p>When trying to pin 3.10, <code>uv</code> detects a set of candidate interpreters, but they're either the wrong version or unusable. Thus, <code>first_error</code> will be <code>Some(...)</code> and an <code>Err</code> will be returned.</p>
+<p>When trying to pin 3.10, <code>uv</code> detects a set of candidate interpreters, but they&#x27;re either the wrong version or unusable. Thus, <code>first_error</code> will be <code>Some(...)</code> and an <code>Err</code> will be returned.</p>
 <p>When adding <code>--managed-python</code>, the discovery will ignore any system interpreters, <code>first_error</code> will remain <code>None</code>, and an <code>Ok(Err(PythonNotFound))</code> will be returned instead, which will not bubble up as an <code>Result&lt;ExistStatus&gt;</code> error from https://github.com/astral-sh/uv/blob/9d1a14e1f9d824d8b4932292cbcf304f51c2ada9/crates/uv/src/commands/python/pin.rs#L95</p>
 <p>The original issue with a collision of <code>.python-version</code> files between <code>uv</code> and <code>pyenv</code> is unfortunate, but I can actually see why this design choice was made, not to silently ignore a broken python installation for <code>PythonPreference::Managed</code>.
 After all, this preference means managed python installations should be preferred over system installations, but system installations over downloading a managed version.
 I suppose it comes down to predictability vs. convenience.</p>
-<p>I'm not sure how it would be received if it triggered a warning instead of a hard failure, but I think I can survive adding <code>--managed-python</code> whenever I need to change the pinned version.</p>
+<p>I&#x27;m not sure how it would be received if it triggered a warning instead of a hard failure, but I think I can survive adding <code>--managed-python</code> whenever I need to change the pinned version.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @zanieb by @zanieb on 2025-05-18 20:46</div>
+            <div class="event">Assigned to <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-18 20:46</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/hoxell">@hoxell</a> on 2025-06-18 17:56</div>
-            <div class="timeline-body"><p>I can't repro this anymore (0.7.13). Thanks for fixing 🙏</p>
+            <div class="timeline-body"><p>I can&#x27;t repro this anymore (0.7.13). Thanks for fixing 🙏</p>
 <p>How I tried to repro:</p>
 <pre><code>FROM ubuntu:24.04
 
@@ -389,9 +389,9 @@ RUN apt update &amp;&amp; \
     rm -rf /var/lib/apt/lists/*
 
 RUN curl -fsSL https://pyenv.run | bash &amp;&amp; \
-    echo 'export PYENV_ROOT=&quot;$HOME/.pyenv&quot;' &gt;&gt; ~/.bashrc &amp;&amp; \
-    echo '[[ -d $PYENV_ROOT/bin ]] &amp;&amp; export PATH=&quot;$PYENV_ROOT/bin:$PATH&quot;' &gt;&gt; ~/.bashrc &amp;&amp; \
-    echo 'eval &quot;$(pyenv init - bash)&quot;' &gt;&gt; ~/.bashrc &amp;&amp; \
+    echo &#x27;export PYENV_ROOT=&quot;$HOME/.pyenv&quot;&#x27; &gt;&gt; ~/.bashrc &amp;&amp; \
+    echo &#x27;[[ -d $PYENV_ROOT/bin ]] &amp;&amp; export PATH=&quot;$PYENV_ROOT/bin:$PATH&quot;&#x27; &gt;&gt; ~/.bashrc &amp;&amp; \
+    echo &#x27;eval &quot;$(pyenv init - bash)&quot;&#x27; &gt;&gt; ~/.bashrc &amp;&amp; \
     bash -c -i &quot;source ~/.bashrc &amp;&amp; pyenv install 3.8.20 3.10.16 3.12.9&quot; &amp;&amp; \
     echo &quot;3.10.16&quot; &gt; ~/.pyenv/version
 
@@ -407,12 +407,12 @@ RUN curl -LsSf https://astral.sh/uv/0.7.13/install.sh | sh &amp;&amp; \
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @hoxell on 2025-06-18 17:56</div>
+            <div class="event">Closed by <a href="https://github.com/hoxell">@hoxell</a> on 2025-06-18 17:56</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:31:18 UTC
+        Synced at 2026-01-20 19:38:35 UTC
     </footer>
 </body>
 </html>

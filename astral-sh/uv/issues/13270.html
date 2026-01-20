@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/xyu">@xyu</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>It appears the hash rather than package name change in #11738 introduced a bug in <code>find_archive_references()</code> and cache pruning now removes some libraries that are still in use. I created the following test file to demonstrate the issue:</p>
-<pre><code class="language-bash">#!/bin/bash
+<pre><code>#!/bin/bash
 set -eu
 
 VER=&quot;$1&quot;
@@ -123,38 +123,38 @@ other_fs: /home/remote-user/0.6.3/lib/python3.11/site-packages/zstandard/backend
 other_fs: /home/remote-user/0.6.3/lib/python3.11/site-packages/zstandard/py.typed -&gt; /home/remote-user/.cache/uv/archive-v0/c8tiDgnJBm77dsv16VIVJ/zstandard/py.typed
 other_fs: /home/remote-user/0.6.3/lib/python3.11/site-packages/zstandard/__init__.pyi -&gt; /home/remote-user/.cache/uv/archive-v0/c8tiDgnJBm77dsv16VIVJ/zstandard/__init__.pyi
 </code></pre>
-<h3>Platform</h3>
+Platform
 <p>Debian 12, aarch64 and x86_64</p>
-<h3>Version</h3>
+Version
 <p>0.6.4+</p>
-<h3>Python version</h3>
+Python version
 <p>3.11.12, 3.12.10, 3.13.3</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @xyu on 2025-05-02 17:18</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/xyu">@xyu</a> on 2025-05-02 17:18</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-04 14:41</div>
-            <div class="timeline-body"><p>Unfortunately I haven't been able to reproduce this. When I run that script, none of the archives are removed. Could your cache be in a weird state? Do you see the same thing after running <code>uv cache clean</code>?</p>
+            <div class="timeline-body"><p>Unfortunately I haven&#x27;t been able to reproduce this. When I run that script, none of the archives are removed. Could your cache be in a weird state? Do you see the same thing after running <code>uv cache clean</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2025-05-04 17:50</div>
+            <div class="event">Label <span class="label">bug</span> removed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-04 17:50</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-mre</span> added by @charliermarsh on 2025-05-04 17:50</div>
+            <div class="event">Label <span class="label">needs-mre</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-04 17:50</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/xyu">@xyu</a> on 2025-05-05 17:12</div>
             <div class="timeline-body"><blockquote>
-<p>Unfortunately I haven't been able to reproduce this. When I run that script, none of the archives are removed.</p>
+<p>Unfortunately I haven&#x27;t been able to reproduce this. When I run that script, none of the archives are removed.</p>
 </blockquote>
-<p>Ok I took another look and it looks like it's because I'm using symlinks instead of hardlinks. I amended the test script to add <code>UV_LINK_MODE=symlink</code> can you try again @charliermarsh? I have to use symlinks because we are running this in Dockerized environments and we want mount the cache dir into the container so that we can persist it across invocations for speed.</p>
+<p>Ok I took another look and it looks like it&#x27;s because I&#x27;m using symlinks instead of hardlinks. I amended the test script to add <code>UV_LINK_MODE=symlink</code> can you try again @charliermarsh? I have to use symlinks because we are running this in Dockerized environments and we want mount the cache dir into the container so that we can persist it across invocations for speed.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "In-use Packages Removed by `uv cache prune`" to "In-use Packages Removed by `uv cache prune` When Using Symlinks" by @xyu on 2025-05-05 17:15</div>
+            <div class="event">Renamed from &quot;In-use Packages Removed by `uv cache prune`&quot; to &quot;In-use Packages Removed by `uv cache prune` When Using Symlinks&quot; by <a href="https://github.com/xyu">@xyu</a> on 2025-05-05 17:15</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-07 22:35</div>
@@ -190,8 +190,8 @@ absolute: /Users/crmarsh/workspace/puffin/foo/0.7.0/lib/python3.13/site-packages
             <div class="timeline-body"><blockquote>
 <p>Are you able to reproduce this in 0.7.0? Could it be an effect of switching uv versions, or do you still see this if you run uv cache clean first?</p>
 </blockquote>
-<p>I'm able to reproduce this in 0.7.0 and it does not matter if I run <code>uv cache clean</code> or not.</p>
-<p>It looks like this issue is not reproducible on MacOS / Darwin but it is reproducible on Debian / Linux. To clarify the issue further I've pushed a Docker image, <code>hypertextranch/uv-13270</code>, to demonstrate the issue:</p>
+<p>I&#x27;m able to reproduce this in 0.7.0 and it does not matter if I run <code>uv cache clean</code> or not.</p>
+<p>It looks like this issue is not reproducible on MacOS / Darwin but it is reproducible on Debian / Linux. To clarify the issue further I&#x27;ve pushed a Docker image, <code>hypertextranch/uv-13270</code>, to demonstrate the issue:</p>
 <pre><code>$ docker run --rm hypertextranch/uv-13270:latest 0.7.0
 
 Testing issue #13270 for uv 0.7.0 on Debian GNU/Linux 12 (bookworm)
@@ -223,16 +223,16 @@ absolute: /0.6.3/lib/python3.13/site-packages/zstandard/_cffi.cpython-313-aarch6
 </code></pre>
 <p>The <code>Dockerfile</code> and <code>uv-test.sh</code> used to build this image is here:
 https://gist.github.com/xyu/a546a6e37c40069cede1a1973b8f806e</p>
-<p>Note: I've only built this image for arm64 assuming you are using an M* series machine, please let me know if you are testing under x86_64, I can build a multiarch image for this as well.</p>
+<p>Note: I&#x27;ve only built this image for arm64 assuming you are using an M* series machine, please let me know if you are testing under x86_64, I can build a multiarch image for this as well.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-08 19:38</div>
-            <div class="timeline-body"><p>Oh great, thanks! Yes, I've only been testing on macOS. I'll take another look.</p>
+            <div class="timeline-body"><p>Oh great, thanks! Yes, I&#x27;ve only been testing on macOS. I&#x27;ll take another look.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-05-08 19:38</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-08 19:38</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-09 04:08</div>
@@ -241,19 +241,19 @@ https://gist.github.com/xyu/a546a6e37c40069cede1a1973b8f806e</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-10 18:15</div>
-            <div class="timeline-body"><p>Thanks, I've found the bug (we're messing up when the wheel tag contains a dot).</p>
+            <div class="timeline-body"><p>Thanks, I&#x27;ve found the bug (we&#x27;re messing up when the wheel tag contains a dot).</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2025-05-10 18:39</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-10 18:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2025-05-10 18:39</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-10 18:39</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:31:12 UTC
+        Synced at 2026-01-20 19:38:28 UTC
     </footer>
 </body>
 </html>

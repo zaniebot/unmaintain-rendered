@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/olliemath">@olliemath</a></div>
-            <div class="timeline-body"><p>Hi, I'm interested in contributing pyflakes' <code>.format(...)</code> checks to ruff. These can give runtime errors (especially, in rarely hit code paths, like trying to give nice exception messages), so I think they'd be necessary to have for my team to move from flake8 to ruff.</p>
-<p>As far as I can tell, the hard part is getting a rusty equivalent of python's <code>_string.formatter_parser</code>, which is implicitly used in pyflakes: https://github.com/PyCQA/pyflakes/blob/master/pyflakes/checker.py#L26</p>
+            <div class="timeline-body"><p>Hi, I&#x27;m interested in contributing pyflakes&#x27; <code>.format(...)</code> checks to ruff. These can give runtime errors (especially, in rarely hit code paths, like trying to give nice exception messages), so I think they&#x27;d be necessary to have for my team to move from flake8 to ruff.</p>
+<p>As far as I can tell, the hard part is getting a rusty equivalent of python&#x27;s <code>_string.formatter_parser</code>, which is implicitly used in pyflakes: https://github.com/PyCQA/pyflakes/blob/master/pyflakes/checker.py#L26</p>
 <p>In RustPython, the logic is in <a href="https://github.com/RustPython/RustPython/blob/787d9d0bbb59da79fa061b870c234314877ff9b0/vm/src/format.rs#L671">vm/src/format.rs</a> would it be acceptable to add <code>rustpython-vm</code> as a dependency in order to use the parser? Specifically the logic would then look something like</p>
-<pre><code class="language-rust">match FormatString::from_str(text.as_str()) {
+<pre><code>match FormatString::from_str(text.as_str()) {
     Err(e) =&gt; // bad format string .. handle or ignore
     Ok(formatter) =&gt; {
         some_check_of_the_format_parts(formatter.format_parts)
@@ -35,24 +35,24 @@
 </code></pre>
 <p>The alternative is to re-implement a minimal parser by hand, taking inspiration from the <a href="https://github.com/RustPython/RustPython/blob/787d9d0bbb59da79fa061b870c234314877ff9b0/vm/src/format.rs#L671">RustPython</a>, <a href="https://github.com/python/cpython/blob/135ec7cefbaffd516b77362ad2b2ad1025af462e/Objects/stringlib/unicode_format.h#L654">CPython</a> and <a href="https://foss.heptapod.net/pypy/pypy/-/blob/branch/py3.8/pypy/objspace/std/newformat.py#L47">PyPy</a> implementations. This would be far more lightweight, but carries a few more risks and probably a bit of maintenance overhead with it.</p>
 <p>Once the formatter parser is implemented, the checks themselves are quite simple.</p>
-<p>In pyflakes they're inter-dependent and implemented in a single large function. That leads to some strange edge cases (for example a format string which fails both F525 and F522 will return no errors if you disable F525). My aim would be to implement them as separate functions for sanity and clarity. This would be a mild departure from Flake8's behaviour (i.e. we won't reproduce what I regard as bugs) and might involve a few more CPU cycles than implementing all the format checks in a single pass. Taking a brief look at <code>check_ast.rs</code> I think this approach would also fit with the style used there.</p>
+<p>In pyflakes they&#x27;re inter-dependent and implemented in a single large function. That leads to some strange edge cases (for example a format string which fails both F525 and F522 will return no errors if you disable F525). My aim would be to implement them as separate functions for sanity and clarity. This would be a mild departure from Flake8&#x27;s behaviour (i.e. we won&#x27;t reproduce what I regard as bugs) and might involve a few more CPU cycles than implementing all the format checks in a single pass. Taking a brief look at <code>check_ast.rs</code> I think this approach would also fit with the style used there.</p>
 <p>Let me know your thoughts and if you have any guiding principles on the architecture that should influence the implementation.</p>
-<h4>Sidenote: percent formatting checks</h4>
+Sidenote: percent formatting checks
 <p>For percent formatting, pyflakes implement their own parser (copied from pyupgrade actually). This could pretty easily be translated into rust, assuming a rustpython equivalent of <code>FormatString</code> is not available for percent formatting.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2022-11-23 14:53</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-23 14:53</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-23 15:02</div>
-            <div class="timeline-body"><p>Awesome! This would be very welcome and I'm happy to support you in any way I can. (In the first sentence, you said &quot;pylint's <code>.format(...)</code>&quot; checks -- did you mean Pyflakes? Just confirming.)</p>
-<p>I think I'd rather vendor (i.e., copy over) <code>format.rs</code> than add <code>rustpython-vm</code> as a dependency since <code>rustpython-vm</code> itself is a pretty hefty crate. We could also deviate a bit from <code>format.rs</code> (it doesn't have to be a 1:1 copy) if it facilitates the implementation in any way. I'm also open to implementing our own port in Rust, if that ends up being easier -- I admittedly haven't read <code>format.rs</code> closely, but in general, I'd rather have our own thing than pull in <code>rustpython-vm</code>, so whatever's easiest there is fine with me as long as we have decent test coverage.</p>
+            <div class="timeline-body"><p>Awesome! This would be very welcome and I&#x27;m happy to support you in any way I can. (In the first sentence, you said &quot;pylint&#x27;s <code>.format(...)</code>&quot; checks -- did you mean Pyflakes? Just confirming.)</p>
+<p>I think I&#x27;d rather vendor (i.e., copy over) <code>format.rs</code> than add <code>rustpython-vm</code> as a dependency since <code>rustpython-vm</code> itself is a pretty hefty crate. We could also deviate a bit from <code>format.rs</code> (it doesn&#x27;t have to be a 1:1 copy) if it facilitates the implementation in any way. I&#x27;m also open to implementing our own port in Rust, if that ends up being easier -- I admittedly haven&#x27;t read <code>format.rs</code> closely, but in general, I&#x27;d rather have our own thing than pull in <code>rustpython-vm</code>, so whatever&#x27;s easiest there is fine with me as long as we have decent test coverage.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-23 15:03</div>
-            <div class="timeline-body"><p>It makes sense to me, too, to split these into separate checks, similar to how docstrings are handled, even if there's a bit of repeated work. Your summary suggests to me that you have good intuition on where the Pyflakes checks are useful vs. confusing :)</p>
+            <div class="timeline-body"><p>It makes sense to me, too, to split these into separate checks, similar to how docstrings are handled, even if there&#x27;s a bit of repeated work. Your summary suggests to me that you have good intuition on where the Pyflakes checks are useful vs. confusing :)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -62,10 +62,10 @@
 </blockquote>
 <p>I did indeed!</p>
 <blockquote>
-<p>I think I'd rather vendor (i.e., copy over) <code>format.rs</code> than add <code>rustpython-vm</code> as a dependency since <code>rustpython-vm</code> itself is a pretty hefty crate.</p>
+<p>I think I&#x27;d rather vendor (i.e., copy over) <code>format.rs</code> than add <code>rustpython-vm</code> as a dependency since <code>rustpython-vm</code> itself is a pretty hefty crate.</p>
 </blockquote>
 <p>OK, cool - so my first step will be adding a vendored version of the functions from <code>format.rs</code> with some good test coverage.
-If there's an obvious way to make them a bit lighter (only pulling out information present in the checks) I'll deviate a bit, but try not to reinvent the wheel.</p>
+If there&#x27;s an obvious way to make them a bit lighter (only pulling out information present in the checks) I&#x27;ll deviate a bit, but try not to reinvent the wheel.</p>
 <p>I was thinking to place them in <code>src/pyflakes/helpers.rs</code> unless you have a better location in mind? Maybe <code>src/vendored/format.rs</code>?</p>
 </div>
         </div>
@@ -75,12 +75,12 @@ If there's an obvious way to make them a bit lighter (only pulling out informati
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2022-11-25 18:14</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-25 18:14</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:45:34 UTC
+        Synced at 2026-01-20 18:48:27 UTC
     </footer>
 </body>
 </html>

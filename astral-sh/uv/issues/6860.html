@@ -25,7 +25,7 @@
             <div class="timeline-header"><a href="https://github.com/pmeier">@pmeier</a></div>
             <div class="timeline-body"><p><a href="https://peps.python.org/pep-0621/">PEP 621</a> allows for dynamic metadata in <code>pyproject.toml</code>. Tools like <a href="https://pypi.org/project/setuptools-scm/"><code>setuptools-scm</code></a> make use of this feature by computing the version of the package at build time.</p>
 <p>Imagine I have a git repository with nothing but this <code>pyproject.toml</code> file that is committed.</p>
-<pre><code class="language-toml">[build-system]
+<pre><code>[build-system]
 requires = [&quot;setuptools&gt;=64&quot;, &quot;setuptools_scm&gt;=8&quot;]
 build-backend = &quot;setuptools.build_meta&quot;
 
@@ -40,7 +40,7 @@ dev-dependencies = [
 
 [tool.setuptools_scm]
 </code></pre>
-<pre><code class="language-shell">$ ls -lA
+<pre><code>$ ls -lA
 total 8
 drwxr-xr-x 8 pmeier pmeier 4096 Aug 30 11:40 .git
 -rw-r--r-- 1 pmeier pmeier  238 Aug 30 11:34 pyproject.toml
@@ -54,25 +54,25 @@ version = &quot;0.1.dev1+g1105907&quot;
 source = { editable = &quot;.&quot; }
 </code></pre>
 <p>We commit that and move on with development.</p>
-<pre><code class="language-shell">$ git add uv.lock
+<pre><code>$ git add uv.lock
 $ git commit -m &quot;add lock&quot; &gt; /dev/null
 $ git log --oneline
 409a76d (HEAD -&gt; main) add lock
 1105907 initial commit
 </code></pre>
 <p>Re-running, <code>uv sync</code> results in no changes in the lock file or venv, although we have</p>
-<pre><code class="language-shell">$ uv run python -m setuptools_scm
+<pre><code>$ uv run python -m setuptools_scm
 0.1.dev2+g409a76d
 </code></pre>
-<p>Running <code>uv sync --reinstall-package foo</code> installs the correct version into the venv (checked with <code>uv pip show foo</code>), but again the <code>uv.lock</code> file stays untouched. Even why I manually change the version in the lock file to <code>0+dynamic</code> (<code>uv</code> complains if the string doesn't start with a number), <code>uv lock</code> does not change the <code>uv.lock</code> file at all.</p>
-<p>IMO, in general this is good behavior given that it is impossible to lock the version of this editable package, since its version is computed dynamically. However, I'd prefer not have a quickly outdated version number &quot;hardcoded&quot; in the lock file.</p>
+<p>Running <code>uv sync --reinstall-package foo</code> installs the correct version into the venv (checked with <code>uv pip show foo</code>), but again the <code>uv.lock</code> file stays untouched. Even why I manually change the version in the lock file to <code>0+dynamic</code> (<code>uv</code> complains if the string doesn&#x27;t start with a number), <code>uv lock</code> does not change the <code>uv.lock</code> file at all.</p>
+<p>IMO, in general this is good behavior given that it is impossible to lock the version of this editable package, since its version is computed dynamically. However, I&#x27;d prefer not have a quickly outdated version number &quot;hardcoded&quot; in the lock file.</p>
 <p>Would it be possible to set the version to <code>&quot;dynamic&quot;</code> (or a different sentinel) if the package is an editable install and declares that the version is computed dynamically?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AbdealiLoKo">@AbdealiLoKo</a> on 2024-08-30 12:26</div>
             <div class="timeline-body"><p>I was using dynamic dependencies and version with setup.py/setuptools-scm and had the same issue.
-So, this is kinda similar: https://github.com/astral-sh/uv/issues/6822</p>
+So, this is kinda similar: <a href="https://github.com/astral-sh/uv/issues/6822">astral-sh/uv#6822</a></p>
 <p>Currently uv aggressively caches packages, and dynamic metadata are not considered to break the cache. So, as per the current documentation what you are seeing is expected behavior.
 https://docs.astral.sh/uv/concepts/cache/#dynamic-metadata</p>
 <p>You can set <code>reinstall-package = [...]</code> to always reinstall specific packages where you know dynamic metadata is present</p>
@@ -81,27 +81,27 @@ Maybe worth enhancing !</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-design</span> added by @charliermarsh on 2024-08-30 12:51</div>
+            <div class="event">Label <span class="label">needs-design</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-30 12:51</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-30 12:51</div>
-            <div class="timeline-body"><p>Agree that what you're seeing here (persisting the stale hash) is not quite right...</p>
+            <div class="timeline-body"><p>Agree that what you&#x27;re seeing here (persisting the stale hash) is not quite right...</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/pmeier">@pmeier</a> on 2024-08-30 12:53</div>
             <div class="timeline-body"><p>Thanks a ton for the pointer. Same as you, I did not find this in the documentation.</p>
-<p>In my case I don't need and more specifically don't want re-installation given that I already have an editable install for a pure Python package. I just don't want an outdated package version in my lock file. Setting it to something like <code>&quot;0+dynamic&quot;</code> seems to work, but I have no idea how brittle this is, i.e. does <code>uv</code> at some point simply override this?</p>
+<p>In my case I don&#x27;t need and more specifically don&#x27;t want re-installation given that I already have an editable install for a pure Python package. I just don&#x27;t want an outdated package version in my lock file. Setting it to something like <code>&quot;0+dynamic&quot;</code> seems to work, but I have no idea how brittle this is, i.e. does <code>uv</code> at some point simply override this?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-09-09 20:19</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-09 20:19</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-09-09 20:19</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-09 20:19</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @charliermarsh on 2024-09-23 01:15</div>
+            <div class="event">Reopened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-23 01:15</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-23 01:15</div>
@@ -138,7 +138,7 @@ cache-keys = [{ git = { commit = true, tags = true } }]
 <li>https://github.com/astral-sh/uv/pull/8259</li>
 </ul>
 <p>So I believe you should be able to trigger a re-build with just <code>uv sync</code> if a new Git tag is detected.</p>
-<p>As for <code>uv.lock</code> file behaviour, that I'm less sure about. The topic is more fully discussed in</p>
+<p>As for <code>uv.lock</code> file behaviour, that I&#x27;m less sure about. The topic is more fully discussed in</p>
 <ul>
 <li>https://github.com/astral-sh/uv/issues/7533</li>
 </ul>
@@ -146,22 +146,22 @@ cache-keys = [{ git = { commit = true, tags = true } }]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/pmeier">@pmeier</a> on 2024-11-18 09:37</div>
-            <div class="timeline-body"><p>Thanks for the info @my1e5, but this is the opposite of what I want to do. Since the version of my app changes with every single commit and tag, but for most of the time no dependencies change, I'd like the <code>uv.lock</code> file just to stay constant. Whatever version that <code>uv</code> puts into the <code>uv.lock</code> file is going to be obsolete very soon.</p>
+            <div class="timeline-body"><p>Thanks for the info @my1e5, but this is the opposite of what I want to do. Since the version of my app changes with every single commit and tag, but for most of the time no dependencies change, I&#x27;d like the <code>uv.lock</code> file just to stay constant. Whatever version that <code>uv</code> puts into the <code>uv.lock</code> file is going to be obsolete very soon.</p>
 <p>Basically fresh development installs will always have to be done with <code>uv sync --frozen</code> to avoid adding &quot;arbitrary&quot; changes to the <code>uv.lock</code> file.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-18 15:36</div>
-            <div class="timeline-body"><p>Most of the discussion is happening in https://github.com/astral-sh/uv/issues/7533 — let's track there to avoid splitting the conversation.</p>
+            <div class="timeline-body"><p>Most of the discussion is happening in <a href="https://github.com/astral-sh/uv/issues/7533">astral-sh/uv#7533</a> — let&#x27;s track there to avoid splitting the conversation.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2024-11-18 15:36</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-18 15:36</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:26:42 UTC
+        Synced at 2026-01-20 19:33:29 UTC
     </footer>
 </body>
 </html>

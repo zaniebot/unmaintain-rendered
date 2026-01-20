@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/mfontana-elem">@mfontana-elem</a></div>
-            <div class="timeline-body"><h3>Question</h3>
+            <div class="timeline-body">Question
 <p>I have a question regarding this linting rule (imported from <code>flake8-bandit</code>).</p>
 <p>I <strong>think</strong> I understand the problems with using <code>django.utils.safestring.mark_safe</code>. But know that <code>format_html</code> is being deprecated for being used without arguments¹, I struggle to find what would be the correct way to handle something as simple as creating a filter that performs:</p>
-<pre><code class="language-python">def myfilter(case, ...):
+<pre><code>def myfilter(case, ...):
   if case == &quot;hello&quot;:
     return &quot;&lt;i&gt;Hello world!&lt;/i&gt;&quot;
   elif case == &quot;bye&quot;:
@@ -35,15 +35,15 @@
     ...
 </code></pre>
 <p>(This is not an accurate filter API, but illustrates the purpose).</p>
-<p>In this case I <strong>know</strong> the HTML is safe, but I don't understand how to create a safestring from it without getting the <code>DeprecationWarningError</code> from Django (<code>format_html</code>) or noqa'ing the S308 rule (<code>suspicious-mark-safe-usage</code>).</p>
+<p>In this case I <strong>know</strong> the HTML is safe, but I don&#x27;t understand how to create a safestring from it without getting the <code>DeprecationWarningError</code> from Django (<code>format_html</code>) or noqa&#x27;ing the S308 rule (<code>suspicious-mark-safe-usage</code>).</p>
 <p>I fail to see how a string constant could introduce a XSS unless there is programmer negligence, in which case all bets are off. Having said this, I might be the negligent here! 😅</p>
 <p>¹: And for a good reason. When coupled with f-strings interpolation happens before Django gets to escape inputs.</p>
-<h3>Version</h3>
+Version
 <p>ruff 0.8.0</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @mfontana-elem on 2025-03-13 09:57</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/mfontana-elem">@mfontana-elem</a> on 2025-03-13 09:57</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-13 11:40</div>
@@ -51,11 +51,11 @@
 <blockquote>
 <p>I fail to see how a string constant could introduce a XSS unless there is programmer negligence, in which case all bets are off. Having said this, I might be the negligent here! 😅</p>
 </blockquote>
-<p>Ruff's implementation (which I think matches bandit's) isn't very sophisticated. It only searches for calls to <code>mark_safe</code> without performing any analysis of where the content might be coming from.</p>
+<p>Ruff&#x27;s implementation (which I think matches bandit&#x27;s) isn&#x27;t very sophisticated. It only searches for calls to <code>mark_safe</code> without performing any analysis of where the content might be coming from.</p>
 <p>Allowing calls to <code>mark_safe</code> where the argument is a string literal without format or f-string placeholders does sound reasonable to me.</p>
-<p>For now, the spirit of the rule is that you use <code>mark_safe</code> with an explicit noqa comment, acknowledging that I've thought about this. But that's obviously not as good as not requiring a noqa comment because it then doesn't catch if someone adds placeholders in the future.</p>
+<p>For now, the spirit of the rule is that you use <code>mark_safe</code> with an explicit noqa comment, acknowledging that I&#x27;ve thought about this. But that&#x27;s obviously not as good as not requiring a noqa comment because it then doesn&#x27;t catch if someone adds placeholders in the future.</p>
 <p>So what I think should be accepted is:</p>
-<pre><code class="language-py">def myfilter(case, ...):
+<pre><code>def myfilter(case, ...):
   if case == &quot;hello&quot;:
     return mark_safe(&quot;&lt;i&gt;Hello world!&lt;/i&gt;&quot;)
   elif case == &quot;bye&quot;:
@@ -66,19 +66,19 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> removed by @MichaReiser on 2025-03-13 11:40</div>
+            <div class="event">Label <span class="label">question</span> removed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-13 11:40</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-03-13 11:40</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-13 11:40</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mfontana-elem">@mfontana-elem</a> on 2025-03-13 11:42</div>
-            <div class="timeline-body"><p>If it does indeed sound reasonable, I could try to have a look into submitting a PR in the upcoming weeks. I'm pretty much of a newbie when it comes to Rust, but don't care to spend the time off the clock.</p>
+            <div class="timeline-body"><p>If it does indeed sound reasonable, I could try to have a look into submitting a PR in the upcoming weeks. I&#x27;m pretty much of a newbie when it comes to Rust, but don&#x27;t care to spend the time off the clock.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-13 11:45</div>
-            <div class="timeline-body"><p>It does sound reasonable to me, unless I'm overlooking something :)</p>
+            <div class="timeline-body"><p>It does sound reasonable to me, unless I&#x27;m overlooking something :)</p>
 <p>You can find the code here</p>
 <p>https://github.com/astral-sh/ruff/blob/46fe17767d3d5cf7b1f7729b024fca7821d19264/crates/ruff_linter/src/rules/flake8_bandit/rules/suspicious_function_call.rs#L1054</p>
 <p>and you can see an example that inspects the arguments here</p>
@@ -87,36 +87,36 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-03-13 13:56</div>
-            <div class="timeline-body"><p>You can also take a look at S704 and potentially reuse some of its logic, since it's trying to accomplish the same thing for a different API.</p>
+            <div class="timeline-body"><p>You can also take a look at S704 and potentially reuse some of its logic, since it&#x27;s trying to accomplish the same thing for a different API.</p>
 <p>https://github.com/astral-sh/ruff/blob/851427a33043f56cccfa2e1e2c27c852f074b75b/crates/ruff_linter/src/rules/flake8_bandit/rules/unsafe_markup_use.rs#L135-L160</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mfontanaar">@mfontanaar</a> on 2025-03-15 20:34</div>
             <div class="timeline-body"><p>Thanks a lot for the pointers. With your help a new version of the rule worked on the first <code>cargo run</code>!</p>
-<p>I opened https://github.com/astral-sh/ruff/pull/16770 with the proposed change.</p>
-<hr />
+<p>I opened <a href="https://github.com/astral-sh/ruff/pull/16770">astral-sh/ruff#16770</a> with the proposed change.</p>
+<hr>
 <p>Relatedly, it would be great if the <code>@mark_safe</code> decorator could be used for functions which can only return a string literal. For instance, following the example of the title, it would be nice if</p>
-<pre><code class="language-python">@mark_safe
+<pre><code>@mark_safe
 def my_filter(case, ...):
   if case == &quot;hello&quot;:
     return &quot;&lt;i&gt;Hello world!&lt;/i&gt;&quot;
   else:
     return &quot;&lt;b&gt;Bye world!&lt;/b&gt;&quot;
 </code></pre>
-<p>However, this would increase complexity. Whether the symbol is being used as function or as a decorator should be detected and branched accordingly. For the second case, the decorated function should be inspected and all return statements analyzed for &quot;string-literal'ness.</p>
+<p>However, this would increase complexity. Whether the symbol is being used as function or as a decorator should be detected and branched accordingly. For the second case, the decorated function should be inspected and all return statements analyzed for &quot;string-literal&#x27;ness.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2025-03-17 10:29</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-17 10:29</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2025-03-17 10:29</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-17 10:29</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:52:22 UTC
+        Synced at 2026-01-20 18:49:40 UTC
     </footer>
 </body>
 </html>

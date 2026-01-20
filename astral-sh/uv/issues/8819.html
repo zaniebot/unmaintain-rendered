@@ -27,9 +27,9 @@
 <p>The <code>Dockerfile</code> runs with python 3.10 but there is a <code>setuptools</code> dependency for python 3.12+ in <code>pyproject.toml</code>.
 The other dependency in <code>pyproject.toml</code> is pycountry, on its 22.1.10 version, and it has a <a href="https://github.com/pycountry/pycountry/blob/c02741e5e6c2de531c4a9a323794ad4029d6f216/setup.py#L43">loose dependency to setuptools</a>.</p>
 <p>In this situation I would expect <code>setuptools</code> to not be a direct dependency. However <code>uv --resolution=lowest-direct</code> appears to resolve at the minimum setuptools available, that is 0.7.2. Of course, this is an old incompatible version, and the installation fails.</p>
-<p>Removing the <code>python_version&gt;='3.12'</code> constraint on the setuptools dependency appears to solve the issue, so I suppose this is a cause of the bug.</p>
+<p>Removing the <code>python_version&gt;=&#x27;3.12&#x27;</code> constraint on the setuptools dependency appears to solve the issue, so I suppose this is a cause of the bug.</p>
 <p>pyproject.toml</p>
-<pre><code class="language-toml">[build-system]
+<pre><code>[build-system]
 requires = [&quot;hatchling&quot;]
 build-backend = &quot;hatchling.build&quot;
 
@@ -40,16 +40,16 @@ requires-python = &quot;&gt;=3.10&quot;
 
 dependencies = [
     &quot;pycountry &gt;= 22.1.10&quot;,
-    &quot;setuptools &gt;= 50.0.0; python_version&gt;='3.12'&quot;
+    &quot;setuptools &gt;= 50.0.0; python_version&gt;=&#x27;3.12&#x27;&quot;
 ]
 </code></pre>
 <p>Dockerfile</p>
-<pre><code class="language-dockerfile">FROM ghcr.io/astral-sh/uv:0.4-python3.10-bookworm-slim
+<pre><code>FROM ghcr.io/astral-sh/uv:0.4-python3.10-bookworm-slim
 WORKDIR /foobar
 COPY foobar pyproject.toml /foobar/
 RUN uv sync --resolution=lowest-direct
 </code></pre>
-<pre><code class="language-console">docker build .           
+<pre><code>docker build .           
 [+] Building 11.3s (8/8) FINISHED                                                                                           docker:default
  =&gt; [internal] load build definition from Dockerfile                                                                                  0.1s
  =&gt; =&gt; transferring dockerfile: 185B                                                                                                  0.0s
@@ -101,7 +101,7 @@ RUN uv sync --resolution=lowest-direct
 9.249 +    ...     print((str(exc)))
 9.249      ... else:
 9.249      ...     raise AssertionError(&quot;VersionConflict was not raised&quot;)
-9.249      (Bar 0.9 (http://example.com/something), Requirement.parse('Bar==1.0'))
+9.249      (Bar 0.9 (http://example.com/something), Requirement.parse(&#x27;Bar==1.0&#x27;))
 9.249 @@ -222,7 +222,7 @@
 9.249  once for each existing distribution in the working set, and then is called
 9.249  again for new distributions added thereafter::
@@ -123,15 +123,15 @@ RUN uv sync --resolution=lowest-direct
 9.249 +    &gt;&gt;&gt; print((im(&quot;sys_platform==&quot;)))  # doctest: +ELLIPSIS
 9.249      unexpected EOF while parsing (...line 1)
 9.249  
-9.249 -    &gt;&gt;&gt; print(im(&quot;sys_platform=='win32'&quot;))
+9.249 -    &gt;&gt;&gt; print(im(&quot;sys_platform==&#x27;win32&#x27;&quot;))
 9.249 -    False
 9.249 -
-9.249 -    &gt;&gt;&gt; print(im(&quot;sys=='x'&quot;))
-9.249 +    &gt;&gt;&gt; print((im(&quot;sys_platform=='win32'&quot;)))
+9.249 -    &gt;&gt;&gt; print(im(&quot;sys==&#x27;x&#x27;&quot;))
+9.249 +    &gt;&gt;&gt; print((im(&quot;sys_platform==&#x27;win32&#x27;&quot;)))
 9.249 +    False
 9.249 +
-9.249 +    &gt;&gt;&gt; print((im(&quot;sys=='x'&quot;)))
-9.249      Unknown name 'sys'
+9.249 +    &gt;&gt;&gt; print((im(&quot;sys==&#x27;x&#x27;&quot;)))
+9.249      Unknown name &#x27;sys&#x27;
 9.249  
 9.249 -    &gt;&gt;&gt; print(im(&quot;(extra)&quot;))
 9.249 +    &gt;&gt;&gt; print((im(&quot;(extra)&quot;)))
@@ -141,47 +141,47 @@ RUN uv sync --resolution=lowest-direct
 9.249 +    &gt;&gt;&gt; print((im(&quot;(extra&quot;)))  # doctest: +ELLIPSIS
 9.249      unexpected EOF while parsing (...line 1)
 9.249  
-9.249 -    &gt;&gt;&gt; print(im(&quot;os.open('foo')=='y'&quot;))
-9.249 +    &gt;&gt;&gt; print((im(&quot;os.open('foo')=='y'&quot;)))
+9.249 -    &gt;&gt;&gt; print(im(&quot;os.open(&#x27;foo&#x27;)==&#x27;y&#x27;&quot;))
+9.249 +    &gt;&gt;&gt; print((im(&quot;os.open(&#x27;foo&#x27;)==&#x27;y&#x27;&quot;)))
 9.249      Language feature not supported in environment markers
 9.249  
-9.249 -    &gt;&gt;&gt; print(im(&quot;'x'=='y' and os.open('foo')=='y'&quot;))   # no short-circuit!
-9.249 +    &gt;&gt;&gt; print((im(&quot;'x'=='y' and os.open('foo')=='y'&quot;)))   # no short-circuit!
+9.249 -    &gt;&gt;&gt; print(im(&quot;&#x27;x&#x27;==&#x27;y&#x27; and os.open(&#x27;foo&#x27;)==&#x27;y&#x27;&quot;))   # no short-circuit!
+9.249 +    &gt;&gt;&gt; print((im(&quot;&#x27;x&#x27;==&#x27;y&#x27; and os.open(&#x27;foo&#x27;)==&#x27;y&#x27;&quot;)))   # no short-circuit!
 9.249      Language feature not supported in environment markers
 9.249  
-9.249 -    &gt;&gt;&gt; print(im(&quot;'x'=='x' or os.open('foo')=='y'&quot;))   # no short-circuit!
-9.249 +    &gt;&gt;&gt; print((im(&quot;'x'=='x' or os.open('foo')=='y'&quot;)))   # no short-circuit!
+9.249 -    &gt;&gt;&gt; print(im(&quot;&#x27;x&#x27;==&#x27;x&#x27; or os.open(&#x27;foo&#x27;)==&#x27;y&#x27;&quot;))   # no short-circuit!
+9.249 +    &gt;&gt;&gt; print((im(&quot;&#x27;x&#x27;==&#x27;x&#x27; or os.open(&#x27;foo&#x27;)==&#x27;y&#x27;&quot;)))   # no short-circuit!
 9.249      Language feature not supported in environment markers
 9.249  
-9.249 -    &gt;&gt;&gt; print(im(&quot;'x' &lt; 'y'&quot;))
-9.249 +    &gt;&gt;&gt; print((im(&quot;'x' &lt; 'y'&quot;)))
-9.249      '&lt;' operator not allowed in environment markers
+9.249 -    &gt;&gt;&gt; print(im(&quot;&#x27;x&#x27; &lt; &#x27;y&#x27;&quot;))
+9.249 +    &gt;&gt;&gt; print((im(&quot;&#x27;x&#x27; &lt; &#x27;y&#x27;&quot;)))
+9.249      &#x27;&lt;&#x27; operator not allowed in environment markers
 9.249  
-9.249 -    &gt;&gt;&gt; print(im(&quot;'x' &lt; 'y' &lt; 'z'&quot;))
-9.249 +    &gt;&gt;&gt; print((im(&quot;'x' &lt; 'y' &lt; 'z'&quot;)))
+9.249 -    &gt;&gt;&gt; print(im(&quot;&#x27;x&#x27; &lt; &#x27;y&#x27; &lt; &#x27;z&#x27;&quot;))
+9.249 +    &gt;&gt;&gt; print((im(&quot;&#x27;x&#x27; &lt; &#x27;y&#x27; &lt; &#x27;z&#x27;&quot;)))
 9.249      Chained comparison not allowed in environment markers
 9.249  
-9.249 -    &gt;&gt;&gt; print(im(&quot;r'x'=='x'&quot;))
-9.249 +    &gt;&gt;&gt; print((im(&quot;r'x'=='x'&quot;)))
+9.249 -    &gt;&gt;&gt; print(im(&quot;r&#x27;x&#x27;==&#x27;x&#x27;&quot;))
+9.249 +    &gt;&gt;&gt; print((im(&quot;r&#x27;x&#x27;==&#x27;x&#x27;&quot;)))
 9.249      Only plain strings allowed in environment markers
 9.249  
-9.249 -    &gt;&gt;&gt; print(im(&quot;'''x'''=='x'&quot;))
-9.249 +    &gt;&gt;&gt; print((im(&quot;'''x'''=='x'&quot;)))
+9.249 -    &gt;&gt;&gt; print(im(&quot;&#x27;&#x27;&#x27;x&#x27;&#x27;&#x27;==&#x27;x&#x27;&quot;))
+9.249 +    &gt;&gt;&gt; print((im(&quot;&#x27;&#x27;&#x27;x&#x27;&#x27;&#x27;==&#x27;x&#x27;&quot;)))
 9.249      Only plain strings allowed in environment markers
 9.249  
-9.249 -    &gt;&gt;&gt; print(im('&quot;&quot;&quot;x&quot;&quot;&quot;==&quot;x&quot;'))
-9.249 +    &gt;&gt;&gt; print((im('&quot;&quot;&quot;x&quot;&quot;&quot;==&quot;x&quot;')))
+9.249 -    &gt;&gt;&gt; print(im(&#x27;&quot;&quot;&quot;x&quot;&quot;&quot;==&quot;x&quot;&#x27;))
+9.249 +    &gt;&gt;&gt; print((im(&#x27;&quot;&quot;&quot;x&quot;&quot;&quot;==&quot;x&quot;&#x27;)))
 9.249      Only plain strings allowed in environment markers
 9.249  
-9.249 -    &gt;&gt;&gt; print(im(r&quot;'x\n'=='x'&quot;))
-9.249 +    &gt;&gt;&gt; print((im(r&quot;'x\n'=='x'&quot;)))
+9.249 -    &gt;&gt;&gt; print(im(r&quot;&#x27;x\n&#x27;==&#x27;x&#x27;&quot;))
+9.249 +    &gt;&gt;&gt; print((im(r&quot;&#x27;x\n&#x27;==&#x27;x&#x27;&quot;)))
 9.249      Only plain strings allowed in environment markers
 9.249  
-9.249 -    &gt;&gt;&gt; print(im(&quot;os.open=='y'&quot;))
-9.249 +    &gt;&gt;&gt; print((im(&quot;os.open=='y'&quot;)))
+9.249 -    &gt;&gt;&gt; print(im(&quot;os.open==&#x27;y&#x27;&quot;))
+9.249 +    &gt;&gt;&gt; print((im(&quot;os.open==&#x27;y&#x27;&quot;)))
 9.249      Language feature not supported in environment markers
 9.249  
-9.249      &gt;&gt;&gt; em('&quot;x&quot;==&quot;x&quot;')
+9.249      &gt;&gt;&gt; em(&#x27;&quot;x&quot;==&quot;x&quot;&#x27;)
 9.249 
 9.249 [stderr]
 9.249 RefactoringTool: Skipping optional fixer: buffer
@@ -234,7 +234,7 @@ RUN uv sync --resolution=lowest-direct
 9.249   File &quot;/root/.cache/uv/builds-v0/.tmpiFWFBR/lib/python3.10/site-packages/setuptools/build_meta.py&quot;, line 319, in run_setup
 9.249     exec(code, locals())
 9.249   File &quot;&lt;string&gt;&quot;, line 34, in &lt;module&gt;
-9.249 AttributeError: module 'distutils.util' has no attribute 'run_2to3'
+9.249 AttributeError: module &#x27;distutils.util&#x27; has no attribute &#x27;run_2to3&#x27;
 ------
 Dockerfile:4
 --------------------
@@ -248,14 +248,14 @@ ERROR: failed to solve: process &quot;/bin/sh -c uv sync --resolution=lowest-dir
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "lowest-direct resolution also lowers indirect dependencies" to "lowest-direct resolution error with constraints" by @azmeuk on 2024-11-05 11:33</div>
+            <div class="event">Renamed from &quot;lowest-direct resolution also lowers indirect dependencies&quot; to &quot;lowest-direct resolution error with constraints&quot; by <a href="https://github.com/azmeuk">@azmeuk</a> on 2024-11-05 11:33</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-11-05 13:26</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-05 13:26</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-05 13:27</div>
-            <div class="timeline-body"><p>Ah interesting... I do think this is a bug. We consider anything listed in the <code>pyproject.toml</code> to be direct for all environments, even if it's only listed as direct in a specific environment.</p>
+            <div class="timeline-body"><p>Ah interesting... I do think this is a bug. We consider anything listed in the <code>pyproject.toml</code> to be direct for all environments, even if it&#x27;s only listed as direct in a specific environment.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -264,13 +264,13 @@ ERROR: failed to solve: process &quot;/bin/sh -c uv sync --resolution=lowest-dir
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-11-05 14:18</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-05 14:18</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-11-05 21:09</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-05 21:09</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-11-05 21:09</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-05 21:09</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/azmeuk">@azmeuk</a> on 2024-11-05 21:34</div>
@@ -280,7 +280,7 @@ ERROR: failed to solve: process &quot;/bin/sh -c uv sync --resolution=lowest-dir
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:28:08 UTC
+        Synced at 2026-01-20 19:35:14 UTC
     </footer>
 </body>
 </html>

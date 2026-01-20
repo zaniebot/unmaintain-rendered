@@ -23,64 +23,64 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>I ran into some nightmarish borrow-check issues in https://github.com/astral-sh/ruff/pull/19669 that were hard to figure out. This PR fixes them -- but I'm splitting it out of #19669 because it seems like a nice simplification on its own merits (it simplifies all callsites of the <code>py_slice</code> method), and helps reduce the diff to review for that PR.</p>
-<p>I had to enlist @oconnor663's help to understand the lifetime issues I was running into in #19669. Quoting his analysis:</p>
+            <div class="timeline-body">Summary
+<p>I ran into some nightmarish borrow-check issues in <a href="https://github.com/astral-sh/ruff/pull/19669">astral-sh/ruff#19669</a> that were hard to figure out. This PR fixes them -- but I&#x27;m splitting it out of #19669 because it seems like a nice simplification on its own merits (it simplifies all callsites of the <code>py_slice</code> method), and helps reduce the diff to review for that PR.</p>
+<p>I had to enlist @oconnor663&#x27;s help to understand the lifetime issues I was running into in #19669. Quoting his analysis:</p>
 <blockquote>
-<p>the problem was the signature of <code>PySlice::py_slice</code>, specifically its <code>&amp;'db</code> self parameter. in our case, <code>tuple</code> is a borrowed local variable, and this is saying that that borrow needs to live for <code>'db</code>, which is impossible.</p>
-<p>that lifetime bound is there because we're returning <code>impl Iterator&lt;Item = &amp;'db Self::Item&gt;</code>. the references we're returning can't outlive <code>self</code>, so we need to get rid of <code>'db</code> there too. but that leads to another issue, which I expect was the motivation for sprinkling <code>'db</code> around everywhere in the first place.</p>
-<pre><code>error[E0491]: in type `&amp;&lt;Self as PySlice&lt;'db&gt;&gt;::Item`, reference has a longer lifetime than the data it references
+<p>the problem was the signature of <code>PySlice::py_slice</code>, specifically its <code>&amp;&#x27;db</code> self parameter. in our case, <code>tuple</code> is a borrowed local variable, and this is saying that that borrow needs to live for <code>&#x27;db</code>, which is impossible.</p>
+<p>that lifetime bound is there because we&#x27;re returning <code>impl Iterator&lt;Item = &amp;&#x27;db Self::Item&gt;</code>. the references we&#x27;re returning can&#x27;t outlive <code>self</code>, so we need to get rid of <code>&#x27;db</code> there too. but that leads to another issue, which I expect was the motivation for sprinkling <code>&#x27;db</code> around everywhere in the first place.</p>
+<pre><code>error[E0491]: in type `&amp;&lt;Self as PySlice&lt;&#x27;db&gt;&gt;::Item`, reference has a longer lifetime than the data it references
    --&gt; crates/ty_python_semantic/src/util/subscript.rs:119:31
     |
 119 |     ) -&gt; Result&lt;impl Iterator&lt;Item = &amp;Self::Item&gt;, StepSizeZeroError&gt;;
     |                               ^^^^^^^^^^^^^^^^^^
 </code></pre>
-<p>I think the wording of that error is misleading. It's not that we're saying the lifetime of <code>&amp;self</code> is longer than <code>'db</code>, it's just that those are two independent lifetimes, and we haven't said anything about how they relate. We know that <code>&amp;self</code> is short lived, and the type system can see that in our impl blocks, because there <code>'db</code> is a type parameter of Self (which I think implicitly requires that <code>Self</code> doesn't outlive <code>'db</code>). But in the trait definition there's nothing saying that <code>Self</code> is bound by <code>'db</code>.</p>
+<p>I think the wording of that error is misleading. It&#x27;s not that we&#x27;re saying the lifetime of <code>&amp;self</code> is longer than <code>&#x27;db</code>, it&#x27;s just that those are two independent lifetimes, and we haven&#x27;t said anything about how they relate. We know that <code>&amp;self</code> is short lived, and the type system can see that in our impl blocks, because there <code>&#x27;db</code> is a type parameter of Self (which I think implicitly requires that <code>Self</code> doesn&#x27;t outlive <code>&#x27;db</code>). But in the trait definition there&#x27;s nothing saying that <code>Self</code> is bound by <code>&#x27;db</code>.</p>
 </blockquote>
-<p>@oconnor663 has an alternative patch at https://github.com/astral-sh/ruff/commit/36a8edaf4bc71f886dfefa8cbe356005d618d082 that also fixes these issues, and continues the behaviour on <code>main</code> whereby <code>PySlice</code> is implemented for all <code>[T]</code> (this PR changes this: <code>PySlice</code> is now only implemented for all <code>[T]</code> where <code>T: Copy</code>). I <em>weakly</em> prefer my version here, because it simplifies all callsites of the trait method, and iterating over references to <code>Type</code>s feels a <em>bit</em> silly when we know they're all <code>Copy</code>. But I'm happy to go with Jack's solution too, if we'd prefer to continue implementing the trait for <code>[T]</code> where <code>T: !Copy</code>!</p>
-<h2>Test Plan</h2>
+<p>@oconnor663 has an alternative patch at https://github.com/astral-sh/ruff/commit/36a8edaf4bc71f886dfefa8cbe356005d618d082 that also fixes these issues, and continues the behaviour on <code>main</code> whereby <code>PySlice</code> is implemented for all <code>[T]</code> (this PR changes this: <code>PySlice</code> is now only implemented for all <code>[T]</code> where <code>T: Copy</code>). I <em>weakly</em> prefer my version here, because it simplifies all callsites of the trait method, and iterating over references to <code>Type</code>s feels a <em>bit</em> silly when we know they&#x27;re all <code>Copy</code>. But I&#x27;m happy to go with Jack&#x27;s solution too, if we&#x27;d prefer to continue implementing the trait for <code>[T]</code> where <code>T: !Copy</code>!</p>
+Test Plan
 <p><code>cargo build</code></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-08-01 13:43</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-01 13:43</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-08-01 13:43</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-01 13:43</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-08-01 13:43</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-01 13:43</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> added by @AlexWaygood on 2025-08-01 13:43</div>
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-01 13:43</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-08-01 13:43</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-01 13:43</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-01 13:45</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2>Diagnostic diff on typing conformance tests</h2>
+Diagnostic diff on typing conformance tests
 <p>No changes detected when running ty on typing conformance tests ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-01 13:52</div>
-            <div class="timeline-body"><p>I think I wrote that code initially. Sorry that it caused problems. I vaguely remember seeing/thinking about those problems back then, but I don't have the full context anymore. Seems like two people are involved already, so I'll leave it up to you two to decide whichever solution you prefer.</p>
+            <div class="timeline-body"><p>I think I wrote that code initially. Sorry that it caused problems. I vaguely remember seeing/thinking about those problems back then, but I don&#x27;t have the full context anymore. Seems like two people are involved already, so I&#x27;ll leave it up to you two to decide whichever solution you prefer.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-01 13:52</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
+<code>mypy_primer</code> results
 <p>No ecosystem changes detected ✅
 No memory usage changes detected ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @oconnor663 by @AlexWaygood on 2025-08-01 13:53</div>
+            <div class="event">Review requested from <a href="https://github.com/oconnor663">@oconnor663</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-01 13:53</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-08-01 14:10</div>
@@ -97,28 +97,28 @@ No memory usage changes detected ✅</p>
             <div class="timeline-body"><blockquote>
 <p>though maybe someone who knows this code better might have an opinion about the &quot;slices of non-Copy types&quot; question?</p>
 </blockquote>
-<p>I think the only person who might have a strong opinion is @sharkdp as the original author of this trait, and he's left it up to us 😆</p>
-<p>The only current users of the trait are <code>[Type&lt;'db&gt;]</code>, <code>[u8]</code> and <code>[char]</code>: <code>Type&lt;'db&gt;</code>, <code>u8</code> and <code>char</code> are all <code>Copy</code>. I can't see why we'd want to use it with a <code>[T]</code> where <code>T: !Copy</code>, and I think we can easily revisit this question if that does come up as an annoyance in the future.</p>
+<p>I think the only person who might have a strong opinion is @sharkdp as the original author of this trait, and he&#x27;s left it up to us 😆</p>
+<p>The only current users of the trait are <code>[Type&lt;&#x27;db&gt;]</code>, <code>[u8]</code> and <code>[char]</code>: <code>Type&lt;&#x27;db&gt;</code>, <code>u8</code> and <code>char</code> are all <code>Copy</code>. I can&#x27;t see why we&#x27;d want to use it with a <code>[T]</code> where <code>T: !Copy</code>, and I think we can easily revisit this question if that does come up as an annoyance in the future.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @AlexWaygood on 2025-08-01 14:13</div>
+            <div class="event">Merged by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-01 14:13</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-08-01 14:13</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-01 14:13</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-08-01 14:13</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-08-01 14:15</div>
-            <div class="timeline-body"><p><img src="https://github.com/user-attachments/assets/bfd7a8d7-3427-4345-90cc-4e6c2b1ce7ed" alt="tenor" /></p>
+            <div class="timeline-body"><p><img src="https://github.com/user-attachments/assets/bfd7a8d7-3427-4345-90cc-4e6c2b1ce7ed" alt="tenor"></p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:14:44 UTC
+        Synced at 2026-01-20 19:17:15 UTC
     </footer>
 </body>
 </html>

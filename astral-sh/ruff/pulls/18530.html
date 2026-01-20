@@ -23,38 +23,38 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p><code>Type::is_fully_static</code> is called from <code>Type::has_relation_to</code> to check whether the relation applies to a given pair of types. <code>Type::is_fully_static</code> deeply recurses into types to check whether a type is fully static or not. But <code>Type::has_relation_to</code> often calls itself recursively, and it shouldn't be necessary when doing a recursive call of <code>Type::has_relation_to</code> to check <em>again</em> whether the pair of types is fully static or not: that should already have been checked by the top-most call.</p>
-<p>This PR changes the <code>TypeRelation</code> enum so that if we're doing a subtyping check through <code>Type::has_relation_to</code>, we &quot;remember&quot; whether we've already checked that this pair of types is fully static or not. If so, we just return the cached result.</p>
-<p>Locally I see a 3% speedup from these changes on the <code>many_tuple_assignments</code> benchmark. <a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Foptimize-subtyping">Codspeed</a> sees maybe a tiny improvement on that benchmark in CI, but it's small enough to be dismissed as noise :-(</p>
-<p>I still think this might be worth doing anyway: the current design <em>looks</em> extremely inefficient, even if it isn't actually costing us much in any of our current benchmarks.</p>
-<p>In the future, we can also unify <code>Type::is_equivalent_to()</code> and <code>Type::is_gradual_equivalent_to()</code> the same way that I unified <code>Type::is_assignable_to</code> and <code>Type::is_subtype_of</code>. This would allow us to pass the <code>TypeRelation</code> enum into those methods too, which would mean we wouldn't have to redundantly check whether a pair of types was both fully static if that had already been checked by an outer call. (These methods are both called by <code>Type::has_relation_to</code>.)</p>
-<h2>Test Plan</h2>
+            <div class="timeline-body">Summary
+<p><code>Type::is_fully_static</code> is called from <code>Type::has_relation_to</code> to check whether the relation applies to a given pair of types. <code>Type::is_fully_static</code> deeply recurses into types to check whether a type is fully static or not. But <code>Type::has_relation_to</code> often calls itself recursively, and it shouldn&#x27;t be necessary when doing a recursive call of <code>Type::has_relation_to</code> to check <em>again</em> whether the pair of types is fully static or not: that should already have been checked by the top-most call.</p>
+<p>This PR changes the <code>TypeRelation</code> enum so that if we&#x27;re doing a subtyping check through <code>Type::has_relation_to</code>, we &quot;remember&quot; whether we&#x27;ve already checked that this pair of types is fully static or not. If so, we just return the cached result.</p>
+<p>Locally I see a 3% speedup from these changes on the <code>many_tuple_assignments</code> benchmark. <a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Foptimize-subtyping">Codspeed</a> sees maybe a tiny improvement on that benchmark in CI, but it&#x27;s small enough to be dismissed as noise :-(</p>
+<p>I still think this might be worth doing anyway: the current design <em>looks</em> extremely inefficient, even if it isn&#x27;t actually costing us much in any of our current benchmarks.</p>
+<p>In the future, we can also unify <code>Type::is_equivalent_to()</code> and <code>Type::is_gradual_equivalent_to()</code> the same way that I unified <code>Type::is_assignable_to</code> and <code>Type::is_subtype_of</code>. This would allow us to pass the <code>TypeRelation</code> enum into those methods too, which would mean we wouldn&#x27;t have to redundantly check whether a pair of types was both fully static if that had already been checked by an outer call. (These methods are both called by <code>Type::has_relation_to</code>.)</p>
+Test Plan
 <p>All existing tests pass and there is no mypy_primer fallout.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">performance</span> added by @AlexWaygood on 2025-06-07 09:11</div>
+            <div class="event">Label <span class="label">performance</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-07 09:11</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-06-07 09:11</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-07 09:11</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-07 09:15</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
+<code>mypy_primer</code> results
 <p>No ecosystem changes detected ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6952 on 2025-06-07 09:37</div>
-            <div class="timeline-body"><p>another advantage of this change is that it means that we can add checks like this (which means the method is now sound if it's called directly, not just if it's called from <code>Type::has_relation_to()</code>) without worrying about these checks slowing down <code>Type::has_relation_to()</code> (if the method is called from <code>Type::has_relation_to()</code>, the result of the check will already be cached)</p>
+            <div class="timeline-body"><p>another advantage of this change is that it means that we can add checks like this (which means the method is now sound if it&#x27;s called directly, not just if it&#x27;s called from <code>Type::has_relation_to()</code>) without worrying about these checks slowing down <code>Type::has_relation_to()</code> (if the method is called from <code>Type::has_relation_to()</code>, the result of the check will already be cached)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:7594 on 2025-06-07 09:37</div>
-            <div class="timeline-body"><p>an unrelated optimisation I threw in here: comparisons between two <code>UnionType</code>s should be very cheap since they're both <code>u32</code>s under the hood, so it makes sense to do that first</p>
+            <div class="timeline-body"><p>an unrelated optimisation I threw in here: comparisons between two <code>UnionType</code>s should be very cheap since they&#x27;re both <code>u32</code>s under the hood, so it makes sense to do that first</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -64,7 +64,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:558 on 2025-06-07 09:39</div>
-            <div class="timeline-body"><p>I'm not totally sure why, but the changes in this PR meant that we started panicking here. I sort-of prefer it without the <code>unwrap()</code> calls anyway, though, as it means we don't need the SAFETY comment. Cc. @dhruvmanila</p>
+            <div class="timeline-body"><p>I&#x27;m not totally sure why, but the changes in this PR meant that we started panicking here. I sort-of prefer it without the <code>unwrap()</code> calls anyway, though, as it means we don&#x27;t need the SAFETY comment. Cc. @dhruvmanila</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -72,25 +72,25 @@
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @AlexWaygood on 2025-06-07 09:39</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-07 09:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-06-07 09:39</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-07 09:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-06-07 09:39</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-07 09:39</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-06-07 09:39</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-07 09:39</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:558 on 2025-06-09 08:49</div>
-            <div class="timeline-body"><p>I don't think this should panic because this is a subtyping check and it should only be called for fully static types. If it's panicking, then the caller is violating the invariant, the <code>.unwrap</code> is to make sure the invariant is followed. Can you provide an example where it's panicking on this branch using <code>.unwrap</code>?</p>
+            <div class="timeline-body"><p>I don&#x27;t think this should panic because this is a subtyping check and it should only be called for fully static types. If it&#x27;s panicking, then the caller is violating the invariant, the <code>.unwrap</code> is to make sure the invariant is followed. Can you provide an example where it&#x27;s panicking on this branch using <code>.unwrap</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6952 on 2025-06-09 09:03</div>
-            <div class="timeline-body"><p>Are there any use cases of calling <code>has_relation_to</code> for individual type structs like this and others? If not, we could avoid this and maintain the invariant that these checks should go through <code>Type</code>. I'm not sure what benefit would there be to check for relations on specific type. I'm guessing that the only reason these methods exists on individual type structs is to avoid increasing the complexity in <code>Type::has_relation_to</code> method.</p>
+            <div class="timeline-body"><p>Are there any use cases of calling <code>has_relation_to</code> for individual type structs like this and others? If not, we could avoid this and maintain the invariant that these checks should go through <code>Type</code>. I&#x27;m not sure what benefit would there be to check for relations on specific type. I&#x27;m guessing that the only reason these methods exists on individual type structs is to avoid increasing the complexity in <code>Type::has_relation_to</code> method.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -108,8 +108,8 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6952 on 2025-06-09 10:40</div>
-            <div class="timeline-body"><p>Hmm, I suppose I could turn these <code>if</code> checks into <code>debug_assert!</code>s that check we're not passing <code>TypeRelation::Subtyping</code> into a <code>has_relation_to()</code> call for non-fully-static-types?</p>
-<p>We do have places around the codebase that call <code>ClassType::is_subclass_of</code>... but that's a bit of an &quot;odd one out&quot;, because <code>ClassType</code>s don't really have assignability or subtyping relations to each other. Other types that wrap <code>ClassType</code>s have assignability/subtyping relations to each other (<code>ClassLiteral</code> types, <code>GenericAlias</code> types, <code>NominalInstance</code> types, <code>ProtocolInstance</code> types and <code>SubclassOf</code> types). But while you can determine whether one <code>SubclassOf</code> type is a subtype of another just by checking whether the wrapped <code>ClassType</code> is a subclass of the other wrapped <code>ClassType</code>, you can't do the same to determine whether one <code>ClassLiteral</code> types is a subtype of another <code>ClassLiteral</code> type (one <code>ClassLiteral</code> type is only a subtype of another <code>ClassLiteral</code> type if the two types are actually the <em>same</em> type!).</p>
+            <div class="timeline-body"><p>Hmm, I suppose I could turn these <code>if</code> checks into <code>debug_assert!</code>s that check we&#x27;re not passing <code>TypeRelation::Subtyping</code> into a <code>has_relation_to()</code> call for non-fully-static-types?</p>
+<p>We do have places around the codebase that call <code>ClassType::is_subclass_of</code>... but that&#x27;s a bit of an &quot;odd one out&quot;, because <code>ClassType</code>s don&#x27;t really have assignability or subtyping relations to each other. Other types that wrap <code>ClassType</code>s have assignability/subtyping relations to each other (<code>ClassLiteral</code> types, <code>GenericAlias</code> types, <code>NominalInstance</code> types, <code>ProtocolInstance</code> types and <code>SubclassOf</code> types). But while you can determine whether one <code>SubclassOf</code> type is a subtype of another just by checking whether the wrapped <code>ClassType</code> is a subclass of the other wrapped <code>ClassType</code>, you can&#x27;t do the same to determine whether one <code>ClassLiteral</code> types is a subtype of another <code>ClassLiteral</code> type (one <code>ClassLiteral</code> type is only a subtype of another <code>ClassLiteral</code> type if the two types are actually the <em>same</em> type!).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -118,8 +118,8 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6831 on 2025-06-09 10:52</div>
-            <div class="timeline-body"><p>Nice! I made this change in https://github.com/astral-sh/ruff/pull/18530/commits/df64227aa27ce395118485cad3df1eab69d2aec8</p>
-<p>One small disadvantage is that this means <code>ApplicabilityCheck</code> and <code>TypeRelation</code> can no longer be <code>Copy</code>, but that's fairly easily worked around.</p>
+            <div class="timeline-body"><p>Nice! I made this change in <a href="https://github.com/astral-sh/ruff/pull/18530">astral-sh/ruff#18530</a>/commits/df64227aa27ce395118485cad3df1eab69d2aec8</p>
+<p>One small disadvantage is that this means <code>ApplicabilityCheck</code> and <code>TypeRelation</code> can no longer be <code>Copy</code>, but that&#x27;s fairly easily worked around.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -128,7 +128,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:558 on 2025-06-09 10:55</div>
-            <div class="timeline-body"><details>
+            <div class="timeline-body">
 
 <pre><code>failures:
 
@@ -432,8 +432,8 @@ is_subtype_of.md - Subtype relation - Callable - Class literals - Classes with `
   crates/ty_python_semantic/resources/mdtest/type_properties/is_subtype_of.md:1321              at crates/ty_python_semantic/src/types.rs:88
   crates/ty_python_semantic/resources/mdtest/type_properties/is_subtype_of.md:1321 
 
-To rerun this specific test, set the environment variable: MDTEST_TEST_FILTER='is_subtype_of.md - Subtype relation - Callable - Class literals - Classes with `__init… (5c313ee5578fff58)'
-MDTEST_TEST_FILTER='is_subtype_of.md - Subtype relation - Callable - Class literals - Classes with `__init… (5c313ee5578fff58)' cargo test -p ty_python_semantic --test mdtest -- mdtest__type_properties_is_subtype_of
+To rerun this specific test, set the environment variable: MDTEST_TEST_FILTER=&#x27;is_subtype_of.md - Subtype relation - Callable - Class literals - Classes with `__init… (5c313ee5578fff58)&#x27;
+MDTEST_TEST_FILTER=&#x27;is_subtype_of.md - Subtype relation - Callable - Class literals - Classes with `__init… (5c313ee5578fff58)&#x27; cargo test -p ty_python_semantic --test mdtest -- mdtest__type_properties_is_subtype_of
 
 is_subtype_of.md - Subtype relation - Callable - Bound methods (13cdf4c30a49b158)
 
@@ -719,13 +719,13 @@ is_subtype_of.md - Subtype relation - Callable - Bound methods (13cdf4c30a49b158
   crates/ty_python_semantic/resources/mdtest/type_properties/is_subtype_of.md:1403              at crates/ty_python_semantic/src/types.rs:88
   crates/ty_python_semantic/resources/mdtest/type_properties/is_subtype_of.md:1403 
 
-To rerun this specific test, set the environment variable: MDTEST_TEST_FILTER='is_subtype_of.md - Subtype relation - Callable - Bound methods (13cdf4c30a49b158)'
-MDTEST_TEST_FILTER='is_subtype_of.md - Subtype relation - Callable - Bound methods (13cdf4c30a49b158)' cargo test -p ty_python_semantic --test mdtest -- mdtest__type_properties_is_subtype_of
+To rerun this specific test, set the environment variable: MDTEST_TEST_FILTER=&#x27;is_subtype_of.md - Subtype relation - Callable - Bound methods (13cdf4c30a49b158)&#x27;
+MDTEST_TEST_FILTER=&#x27;is_subtype_of.md - Subtype relation - Callable - Bound methods (13cdf4c30a49b158)&#x27; cargo test -p ty_python_semantic --test mdtest -- mdtest__type_properties_is_subtype_of
 
 --------------------------------------------------
 
 
-thread 'mdtest__type_properties_is_subtype_of' panicked at crates/ty_test/src/lib.rs:120:5:
+thread &#x27;mdtest__type_properties_is_subtype_of&#x27; panicked at crates/ty_test/src/lib.rs:120:5:
 Some tests failed.
 stack backtrace:
    0: __rustc::rust_begin_unwind
@@ -750,7 +750,7 @@ note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose bac
 failures:
     mdtest__type_properties_is_subtype_of
 </code></pre>
-</details>
+
 
 </div>
         </div>
@@ -765,10 +765,10 @@ failures:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:558 on 2025-06-09 11:03</div>
-            <div class="timeline-body"><p>that's the results of running <code>RUST_BACKTRACE=1 cargo test -p ty_python_semantic --test mdtest</code> after applying this patch to my branch:</p>
-<pre><code class="language-diff">--- a/crates/ty_python_semantic/src/types/signatures.rs
+            <div class="timeline-body"><p>that&#x27;s the results of running <code>RUST_BACKTRACE=1 cargo test -p ty_python_semantic --test mdtest</code> after applying this patch to my branch:</p>
+<pre><code>--- a/crates/ty_python_semantic/src/types/signatures.rs
 +++ b/crates/ty_python_semantic/src/types/signatures.rs
-@@ -545,15 +545,14 @@ impl&lt;'db&gt; Signature&lt;'db&gt; {
+@@ -545,15 +545,14 @@ impl&lt;&#x27;db&gt; Signature&lt;&#x27;db&gt; {
  
      /// Return `true` if a callable with signature `self` is a subtype of a callable with signature
      /// `other`.
@@ -776,7 +776,7 @@ failures:
 +    /// # Panics
 +    ///
 +    /// Panics if `self` or `other` is not a fully static signature.
-     pub(crate) fn is_subtype_of(&amp;self, db: &amp;'db dyn Db, other: &amp;Signature&lt;'db&gt;) -&gt; bool {
+     pub(crate) fn is_subtype_of(&amp;self, db: &amp;&#x27;db dyn Db, other: &amp;Signature&lt;&#x27;db&gt;) -&gt; bool {
          self.is_assignable_to_impl(other, |type1, type2| {
 -            let Some(type1) = type1 else {
 -                return false;
@@ -802,7 +802,7 @@ failures:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:558 on 2025-06-09 11:19</div>
-            <div class="timeline-body"><p>(Heading to the gym, I'll look at this once I'm back, thank you for providing the details!)</p>
+            <div class="timeline-body"><p>(Heading to the gym, I&#x27;ll look at this once I&#x27;m back, thank you for providing the details!)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -812,21 +812,21 @@ failures:
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6952 on 2025-06-10 02:28</div>
             <div class="timeline-body"><blockquote>
-<p>Hmm, I suppose I could turn these <code>if</code> checks into <code>debug_assert!</code>s that check we're not passing <code>TypeRelation::Subtyping</code> into a <code>has_relation_to()</code> call for non-fully-static-types?</p>
+<p>Hmm, I suppose I could turn these <code>if</code> checks into <code>debug_assert!</code>s that check we&#x27;re not passing <code>TypeRelation::Subtyping</code> into a <code>has_relation_to()</code> call for non-fully-static-types?</p>
 </blockquote>
 <p>This might be a good starting point.</p>
 <blockquote>
-<p>We do have places around the codebase that call <code>ClassType::is_subclass_of</code>... but that's a bit of an &quot;odd one out&quot;, because <code>ClassType</code>s don't really have assignability or subtyping relations to each other.</p>
+<p>We do have places around the codebase that call <code>ClassType::is_subclass_of</code>... but that&#x27;s a bit of an &quot;odd one out&quot;, because <code>ClassType</code>s don&#x27;t really have assignability or subtyping relations to each other.</p>
 </blockquote>
-<p>Yes, but <code>ClassType</code> isn't part of the <code>Type</code> enum. Maybe it could also have the same <code>debug_assert</code> given that it's only called as part of another subtyping check which in turn would be called via <code>Type::has_relation_to</code> if I'm understanding this correctly?</p>
-<p>I'll leave this up to you as you've the most knowledge in this area.</p>
+<p>Yes, but <code>ClassType</code> isn&#x27;t part of the <code>Type</code> enum. Maybe it could also have the same <code>debug_assert</code> given that it&#x27;s only called as part of another subtyping check which in turn would be called via <code>Type::has_relation_to</code> if I&#x27;m understanding this correctly?</p>
+<p>I&#x27;ll leave this up to you as you&#x27;ve the most knowledge in this area.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:558 on 2025-06-10 02:43</div>
-            <div class="timeline-body"><p>I think I know why this might be happening -- the <code>CallableSignature::has_relation_to</code> directly calls the <code>Signature::is_subtype_of</code> without checking whether it's fully static or not. The reason we need to check whether a signature is fully static or not is because <code>FunctionLiteral</code>s are fully static but subtyping of <code>FunctionLiteral</code> needs to check whether the signature itself is also fully static. You can see this happening in <code>FunctionType::is_subtype_of</code> and <code>CallableSignature::is_equivalent_to</code>.</p>
+            <div class="timeline-body"><p>I think I know why this might be happening -- the <code>CallableSignature::has_relation_to</code> directly calls the <code>Signature::is_subtype_of</code> without checking whether it&#x27;s fully static or not. The reason we need to check whether a signature is fully static or not is because <code>FunctionLiteral</code>s are fully static but subtyping of <code>FunctionLiteral</code> needs to check whether the signature itself is also fully static. You can see this happening in <code>FunctionType::is_subtype_of</code> and <code>CallableSignature::is_equivalent_to</code>.</p>
 <p>For more context, the specific example that was failing was:</p>
-<pre><code class="language-py">from typing import Callable
+<pre><code>from typing import Callable
 from ty_extensions import TypeOf, static_assert, is_subtype_of
 
 class A:
@@ -842,13 +842,13 @@ a = A()
 # This seems to be causing the panic
 static_assert(is_subtype_of(TypeOf[A.f], Callable[[A, int], int]))
 </code></pre>
-<p>Because, the <code>A.f</code> returns a <code>FunctionLiteral</code> where <code>self</code> is unannotated. This is not an intended behavior and there's a <code>TODO</code> in the test case to resolve this: https://github.com/astral-sh/ruff/blob/df64227aa27ce395118485cad3df1eab69d2aec8/crates/ty_python_semantic/resources/mdtest/type_properties/is_subtype_of.md?plain=1#L1423-L1425</p>
+<p>Because, the <code>A.f</code> returns a <code>FunctionLiteral</code> where <code>self</code> is unannotated. This is not an intended behavior and there&#x27;s a <code>TODO</code> in the test case to resolve this: https://github.com/astral-sh/ruff/blob/df64227aa27ce395118485cad3df1eab69d2aec8/crates/ty_python_semantic/resources/mdtest/type_properties/is_subtype_of.md?plain=1#L1423-L1425</p>
 <p>For now, you can get away by adding the <code>is_fully_static</code> checks. I want to create a follow-up PR (as promised :)) to simplify the relation checks on the signature side.</p>
-<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/src/types/signatures.rs b/crates/ty_python_semantic/src/types/signatures.rs
+<pre><code>diff --git a/crates/ty_python_semantic/src/types/signatures.rs b/crates/ty_python_semantic/src/types/signatures.rs
 index da0d1e1b91..d14dbdaf5c 100644
 --- a/crates/ty_python_semantic/src/types/signatures.rs
 +++ b/crates/ty_python_semantic/src/types/signatures.rs
-@@ -105,7 +105,12 @@ impl&lt;'db&gt; CallableSignature&lt;'db&gt; {
+@@ -105,7 +105,12 @@ impl&lt;&#x27;db&gt; CallableSignature&lt;&#x27;db&gt; {
          relation: &amp;TypeRelation,
      ) -&gt; bool {
          match relation {
@@ -862,7 +862,7 @@ index da0d1e1b91..d14dbdaf5c 100644
              TypeRelation::Assignability =&gt; self.is_assignable_to(db, other),
          }
      }
-@@ -545,15 +550,14 @@ impl&lt;'db&gt; Signature&lt;'db&gt; {
+@@ -545,15 +550,14 @@ impl&lt;&#x27;db&gt; Signature&lt;&#x27;db&gt; {
  
      /// Return `true` if a callable with signature `self` is a subtype of a callable with signature
      /// `other`.
@@ -870,7 +870,7 @@ index da0d1e1b91..d14dbdaf5c 100644
 +    /// # Panics
 +    ///
 +    /// Panics if `self` or `other` is not a fully static signature.
-     pub(crate) fn is_subtype_of(&amp;self, db: &amp;'db dyn Db, other: &amp;Signature&lt;'db&gt;) -&gt; bool {
+     pub(crate) fn is_subtype_of(&amp;self, db: &amp;&#x27;db dyn Db, other: &amp;Signature&lt;&#x27;db&gt;) -&gt; bool {
          self.is_assignable_to_impl(other, |type1, type2| {
 -            let Some(type1) = type1 else {
 -                return false;
@@ -906,7 +906,7 @@ index da0d1e1b91..d14dbdaf5c 100644
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6823 on 2025-06-10 06:56</div>
             <div class="timeline-body"><p>Nit: Maybe rename to <code>SubtypingApplicability</code> to make it clear what this is about.</p>
-<p>It's also unfortunate that this implementation detail (that we use caching) is now a pub(crate) type</p>
+<p>It&#x27;s also unfortunate that this implementation detail (that we use caching) is now a pub(crate) type</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -915,8 +915,8 @@ index da0d1e1b91..d14dbdaf5c 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6794 on 2025-06-10 06:58</div>
-            <div class="timeline-body"><p>Hmm, what happens if <code>applise_to</code> is called multiple times but with different types. Won't we then return incorret results from <code>get_or_init</code>?</p>
-<p>I feel like this makes this API somewhat error prone and risks introducing very subtle caching bugs. I'd prefer it if the following were somehow expressed as part of the cache type: This is a cached result for <code>type_1</code> and <code>type_2</code>.</p>
+            <div class="timeline-body"><p>Hmm, what happens if <code>applise_to</code> is called multiple times but with different types. Won&#x27;t we then return incorret results from <code>get_or_init</code>?</p>
+<p>I feel like this makes this API somewhat error prone and risks introducing very subtle caching bugs. I&#x27;d prefer it if the following were somehow expressed as part of the cache type: This is a cached result for <code>type_1</code> and <code>type_2</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -925,14 +925,14 @@ index da0d1e1b91..d14dbdaf5c 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6794 on 2025-06-10 08:13</div>
-            <div class="timeline-body"><p>Correct me if I'm wrong @AlexWaygood, but I don't think the goal here is to cache this value based on the two types that are used for this call, the goal is to make sure that this is being called once when performing a subtyping check for any two types. The cached value would be local to that call.</p>
-<p>For example, when two <code>CallableType</code>s are being checked for subtyping, this will first check whether both callable types are fully static. If yes, then we'll proceed with subtyping check. Now, these callable types also contains other <code>Type</code>s specifically the parameter types and return types which itself could be a union of other types. Here, we don't need to check whether these types that are contained within the outer callable type is fully static or not. They were already checked as part of checking whether the top level callable type is fully static or not. This cached value represents that part.</p>
-<p>Does that make sense? There's some more context on my message on Discord: https://discord.com/channels/1039017663004942429/1228460843033821285/1380807857594699806</p>
+            <div class="timeline-body"><p>Correct me if I&#x27;m wrong @AlexWaygood, but I don&#x27;t think the goal here is to cache this value based on the two types that are used for this call, the goal is to make sure that this is being called once when performing a subtyping check for any two types. The cached value would be local to that call.</p>
+<p>For example, when two <code>CallableType</code>s are being checked for subtyping, this will first check whether both callable types are fully static. If yes, then we&#x27;ll proceed with subtyping check. Now, these callable types also contains other <code>Type</code>s specifically the parameter types and return types which itself could be a union of other types. Here, we don&#x27;t need to check whether these types that are contained within the outer callable type is fully static or not. They were already checked as part of checking whether the top level callable type is fully static or not. This cached value represents that part.</p>
+<p>Does that make sense? There&#x27;s some more context on my message on Discord: https://discord.com/channels/1039017663004942429/1228460843033821285/1380807857594699806</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6794 on 2025-06-10 08:25</div>
-            <div class="timeline-body"><p>That's exactly correct. Invalidating the cache if a different pair of types was passed in would defeat the point of having the cache altogether. The premise of this PR is that no fully static type can contain a non-fully-static type, so it's redundant to check whether an inner type is fully static if you've already checked that an outer type which contains that type is fully static</p>
+            <div class="timeline-body"><p>That&#x27;s exactly correct. Invalidating the cache if a different pair of types was passed in would defeat the point of having the cache altogether. The premise of this PR is that no fully static type can contain a non-fully-static type, so it&#x27;s redundant to check whether an inner type is fully static if you&#x27;ve already checked that an outer type which contains that type is fully static</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -946,9 +946,9 @@ index da0d1e1b91..d14dbdaf5c 100644
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6794 on 2025-06-10 09:01</div>
             <div class="timeline-body"><blockquote>
-<p>Correct me if I'm wrong @AlexWaygood, but I don't think the goal here is to cache this value based on the two types that are used for this call, the goal is to make sure that this is being called once when performing a subtyping check for any two types. The cached value would be local to that call.</p>
+<p>Correct me if I&#x27;m wrong @AlexWaygood, but I don&#x27;t think the goal here is to cache this value based on the two types that are used for this call, the goal is to make sure that this is being called once when performing a subtyping check for any two types. The cached value would be local to that call.</p>
 </blockquote>
-<p>I think I understand what you're saying but it seems that there's nothing enforcing the invariant that this indeed remains local to that call.</p>
+<p>I think I understand what you&#x27;re saying but it seems that there&#x27;s nothing enforcing the invariant that this indeed remains local to that call.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -957,7 +957,7 @@ index da0d1e1b91..d14dbdaf5c 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6794 on 2025-06-10 11:08</div>
-            <div class="timeline-body"><p>Yeah, I'm not sure how best to enforce that at the type level</p>
+            <div class="timeline-body"><p>Yeah, I&#x27;m not sure how best to enforce that at the type level</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -975,7 +975,7 @@ index da0d1e1b91..d14dbdaf5c 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:558 on 2025-06-10 21:20</div>
-            <div class="timeline-body"><p>I think the conclusion of our discussion on the topic was that we should not actually treat FunctionLiteral as fully static if the signature is not fully static -- it doesn't work to have a &quot;fully static&quot; type where we can't determine its subtyping against another fully static type.</p>
+            <div class="timeline-body"><p>I think the conclusion of our discussion on the topic was that we should not actually treat FunctionLiteral as fully static if the signature is not fully static -- it doesn&#x27;t work to have a &quot;fully static&quot; type where we can&#x27;t determine its subtyping against another fully static type.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -984,21 +984,21 @@ index da0d1e1b91..d14dbdaf5c 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6794 on 2025-06-10 21:21</div>
-            <div class="timeline-body"><p>Yeah, I'll add some more debug assertions to defend the invariants here.</p>
+            <div class="timeline-body"><p>Yeah, I&#x27;ll add some more debug assertions to defend the invariants here.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-10 21:22</div>
-            <div class="timeline-body"><p>FWIW I think in the short to medium term we should be aiming to eliminate <code>is_fully_static</code> entirely, in favor of using top/bottom materializations for subtype checks involving non-fully-static types. (And @dhruvmanila 's PR adding those materializations moves us a lot closer to making that possible.) So I don't think we should devote a lot of time to optimizations involving <code>is_fully_static</code>, especially if they don't show up noticeably in real-world benchmarks.</p>
+            <div class="timeline-body"><p>FWIW I think in the short to medium term we should be aiming to eliminate <code>is_fully_static</code> entirely, in favor of using top/bottom materializations for subtype checks involving non-fully-static types. (And @dhruvmanila &#x27;s PR adding those materializations moves us a lot closer to making that possible.) So I don&#x27;t think we should devote a lot of time to optimizations involving <code>is_fully_static</code>, especially if they don&#x27;t show up noticeably in real-world benchmarks.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-12 10:52</div>
-            <div class="timeline-body"><p>Well, I'm glad I experimented with it, but the lacklustre benchmark results and Carl's comment indicate I probably shouldn't spend any more time on this right now.</p>
+            <div class="timeline-body"><p>Well, I&#x27;m glad I experimented with it, but the lacklustre benchmark results and Carl&#x27;s comment indicate I probably shouldn&#x27;t spend any more time on this right now.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @AlexWaygood on 2025-06-12 10:52</div>
+            <div class="event">Closed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-12 10:52</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-06-12 10:52</div>
@@ -1006,7 +1006,7 @@ index da0d1e1b91..d14dbdaf5c 100644
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:13:13 UTC
+        Synced at 2026-01-20 19:15:18 UTC
     </footer>
 </body>
 </html>

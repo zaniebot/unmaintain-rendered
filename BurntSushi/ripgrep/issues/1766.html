@@ -23,28 +23,28 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/3point2">@3point2</a></div>
-            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+            <div class="timeline-body">What version of ripgrep are you using?
 <p>ripgrep 12.1.1
 -SIMD -AVX (compiled)
 +SIMD -AVX (runtime)</p>
-<h4>How did you install ripgrep?</h4>
+How did you install ripgrep?
 <p>Downloaded x86_64 binary from GitHub releases and placed on PATH.</p>
-<h4>What operating system are you using ripgrep on?</h4>
+What operating system are you using ripgrep on?
 <p>Oracle Linux 6 and Arch Linux</p>
-<h4>Describe your bug.</h4>
+Describe your bug.
 <p>The issue manifests itself when all three of the following are true:</p>
 <ul>
-<li>the number of files being searched is greater than the user's process limit (ulimit -u)</li>
+<li>the number of files being searched is greater than the user&#x27;s process limit (ulimit -u)</li>
 <li>ripgrep spawns a child process to read the files (e.g. -z or --pre)</li>
 <li>ripgrep is invoked with an option that causes searching to stop before the end of the files, for example --files-with-matches or --max-count</li>
 </ul>
 <p>The real life scenario that caused the issue for me was using <code>rg -z -l PATTERN_IN_MANY_FILES</code> on a directory containing many tens of thousands of gzipped files on a server where ulimit -u is 4000.</p>
-<p>While ripgrep runs, a defunct child process persists for each and every file searched until the user's process limit is reached and ripgrep crashes with</p>
-<pre><code>thread '&lt;unnamed&gt;' panicked at 'failed to spawn thread: Os { code: 11, kind: WouldBlock, message: &quot;Resource temporarily unavailable&quot; }', /build/rust/src/rustc-1.43.1-src/src/libstd/thread/mod.rs:619:5
+<p>While ripgrep runs, a defunct child process persists for each and every file searched until the user&#x27;s process limit is reached and ripgrep crashes with</p>
+<pre><code>thread &#x27;&lt;unnamed&gt;&#x27; panicked at &#x27;failed to spawn thread: Os { code: 11, kind: WouldBlock, message: &quot;Resource temporarily unavailable&quot; }&#x27;, /build/rust/src/rustc-1.43.1-src/src/libstd/thread/mod.rs:619:5
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
-thread 'main' panicked at 'called `Result::unwrap()` on an `Err` value: Any', crates/ignore/src/walk.rs:1294:17
+thread &#x27;main&#x27; panicked at &#x27;called `Result::unwrap()` on an `Err` value: Any&#x27;, crates/ignore/src/walk.rs:1294:17
 </code></pre>
-<h4>What are the steps to reproduce the behavior?</h4>
+What are the steps to reproduce the behavior?
 <ol>
 <li>Create a directory with a hundred .gz files in it, each containing the same $STRING:</li>
 <li>Use <code>ps</code> to determine the number of currently running processes (including threads) for your user</li>
@@ -52,33 +52,33 @@ thread 'main' panicked at 'called `Result::unwrap()` on an `Err` value: Any', cr
 <li>Run <code>rg -z -l $STRING directory_from_step_1</code></li>
 </ol>
 <p>The gist linked below contains sample commands.</p>
-<h4>What is the actual behavior?</h4>
+What is the actual behavior?
 <p>https://gist.github.com/3point2/e772b151899a866e563ee9c52a94ead7</p>
-<h4>What is the expected behavior?</h4>
+What is the expected behavior?
 <p>The search should have printed 100 matches without crashing.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/3point2">@3point2</a> on 2020-12-22 23:19</div>
-            <div class="timeline-body"><p>I took a bit of time to dig into this, and found that although CommandReader <a href="https://github.com/BurntSushi/ripgrep/blob/a6d05475fb353c756e88f605fd5366a67943e591/crates/cli/src/process.rs#L216">calls wait()</a> on child processes, that never happens if the Sink's <a href="https://github.com/BurntSushi/ripgrep/blob/a6d05475fb353c756e88f605fd5366a67943e591/crates/printer/src/standard.rs#L715">should_quit()</a> returns true. This is because CommandReader::read only calls wait() if we reach the end of stdout, whereas should_quit() bails earlier than that.</p>
-<p>I've created a PR to sketch out a suggested fix. One issue I think might need further work is the use of warn!().</p>
-<p>If you're OK with the general gist of the PR I'd be happy to add a test and polish it, but wanted to get some early feedback.</p>
-<p>Finally, thanks for ripgrep! It has saved me and my team of 40 co-workers countless hours of time searching through massive log files - it's four times faster than zgrep on average.</p>
+            <div class="timeline-body"><p>I took a bit of time to dig into this, and found that although CommandReader <a href="https://github.com/BurntSushi/ripgrep/blob/a6d05475fb353c756e88f605fd5366a67943e591/crates/cli/src/process.rs#L216">calls wait()</a> on child processes, that never happens if the Sink&#x27;s <a href="https://github.com/BurntSushi/ripgrep/blob/a6d05475fb353c756e88f605fd5366a67943e591/crates/printer/src/standard.rs#L715">should_quit()</a> returns true. This is because CommandReader::read only calls wait() if we reach the end of stdout, whereas should_quit() bails earlier than that.</p>
+<p>I&#x27;ve created a PR to sketch out a suggested fix. One issue I think might need further work is the use of warn!().</p>
+<p>If you&#x27;re OK with the general gist of the PR I&#x27;d be happy to add a test and polish it, but wanted to get some early feedback.</p>
+<p>Finally, thanks for ripgrep! It has saved me and my team of 40 co-workers countless hours of time searching through massive log files - it&#x27;s four times faster than zgrep on average.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2020-12-27 16:54</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-12-27 16:54</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2021-05-30 01:36</div>
+            <div class="event">Label <span class="label">rollup</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-05-30 01:36</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2021-06-01 01:51</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-06-01 01:51</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:43:17 UTC
+        Synced at 2026-01-20 18:48:10 UTC
     </footer>
 </body>
 </html>

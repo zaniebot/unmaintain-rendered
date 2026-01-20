@@ -23,37 +23,37 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/bustbr">@bustbr</a></div>
-            <div class="timeline-body"><p>In Python's implementation of <code>re</code> the <code>$</code> does not only match the end of the line, but also before any line break, even without multiline mode.
-There's <a href="https://best.openssf.org/Correctly-Using-Regular-Expressions">an article by the OpenSSF about this issue</a> suggesting to use <code>\Z</code> instead, or prefer the <code>fullmatch</code> function.</p>
+            <div class="timeline-body"><p>In Python&#x27;s implementation of <code>re</code> the <code>$</code> does not only match the end of the line, but also before any line break, even without multiline mode.
+There&#x27;s <a href="https://best.openssf.org/Correctly-Using-Regular-Expressions">an article by the OpenSSF about this issue</a> suggesting to use <code>\Z</code> instead, or prefer the <code>fullmatch</code> function.</p>
 <p>An example of the issue:</p>
-<pre><code>&gt;&gt;&gt; re.search(r'cat$', 'cat\n')
-&lt;re.Match object; span=(0, 3), match='cat'&gt;
+<pre><code>&gt;&gt;&gt; re.search(r&#x27;cat$&#x27;, &#x27;cat\n&#x27;)
+&lt;re.Match object; span=(0, 3), match=&#x27;cat&#x27;&gt;
 </code></pre>
 <p>Using <code>\Z</code> fixes this:</p>
-<pre><code>&gt;&gt;&gt; re.search(r'cat\Z', 'cat\n')  # no match
-&gt;&gt;&gt; re.search(r'cat\Z', 'cat')
-&lt;re.Match object; span=(0, 3), match='cat'&gt;
+<pre><code>&gt;&gt;&gt; re.search(r&#x27;cat\Z&#x27;, &#x27;cat\n&#x27;)  # no match
+&gt;&gt;&gt; re.search(r&#x27;cat\Z&#x27;, &#x27;cat&#x27;)
+&lt;re.Match object; span=(0, 3), match=&#x27;cat&#x27;&gt;
 </code></pre>
 <p>Or using <code>fullmatch</code>:</p>
-<pre><code>&gt;&gt;&gt; re.fullmatch('cat', 'cat\n')  # no match
-&gt;&gt;&gt; re.fullmatch('cat', 'cat')
-&lt;re.Match object; span=(0, 3), match='cat'&gt;
+<pre><code>&gt;&gt;&gt; re.fullmatch(&#x27;cat&#x27;, &#x27;cat\n&#x27;)  # no match
+&gt;&gt;&gt; re.fullmatch(&#x27;cat&#x27;, &#x27;cat&#x27;)
+&lt;re.Match object; span=(0, 3), match=&#x27;cat&#x27;&gt;
 </code></pre>
 <p>Should Ruff warn about using <code>$</code> with <code>search</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rule</span> added by @AlexWaygood on 2024-12-16 14:45</div>
+            <div class="event">Label <span class="label">rule</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-12-16 14:45</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> added by @AlexWaygood on 2024-12-16 14:47</div>
+            <div class="event">Label <span class="label">needs-decision</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-12-16 14:47</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-12-17 09:35</div>
             <div class="timeline-body"><blockquote>
-<p>In Python's implementation of <code>re</code> the <code>$</code> does not only match the end of the line, but also before any line break, even without multiline mode.</p>
+<p>In Python&#x27;s implementation of <code>re</code> the <code>$</code> does not only match the end of the line, but also before any line break, even without multiline mode.</p>
 </blockquote>
-<p>This is incorrect. In non-multiline mode, <code>$</code> matches either the end of the entire input or the position right before the trailing newline (only <code>\n</code>, not <code>\r\n</code>). It is similar to PCRE's <code>\Z</code>, whereas Python's <code>\Z</code> resembles PCRE's <code>\z</code>:</p>
+<p>This is incorrect. In non-multiline mode, <code>$</code> matches either the end of the entire input or the position right before the trailing newline (only <code>\n</code>, not <code>\r\n</code>). It is similar to PCRE&#x27;s <code>\Z</code>, whereas Python&#x27;s <code>\Z</code> resembles PCRE&#x27;s <code>\z</code>:</p>
 <pre><code><a href="https://www.pcre.org/current/doc/html/pcre2syntax.html#TOC1">ANCHORS AND SIMPLE ASSERTIONS</a>
 
   \b          word boundary
@@ -71,11 +71,11 @@ There's <a href="https://best.openssf.org/Correctly-Using-Regular-Expressions">a
   \G          first matching position in subject
 </code></pre>
 
-<pre><code class="language-pycon">&gt;&gt;&gt; import re
-&gt;&gt;&gt; [*re.finditer(r'$', 'foo\nbar\r\n')]
-[&lt;re.Match object; span=(8, 8), match=''&gt;, &lt;re.Match object; span=(9, 9), match=''&gt;]
-&gt;&gt;&gt; [*re.finditer(r'\Z', 'foo\nbar\r\n')]
-[&lt;re.Match object; span=(9, 9), match=''&gt;]
+<pre><code>&gt;&gt;&gt; import re
+&gt;&gt;&gt; [*re.finditer(r&#x27;$&#x27;, &#x27;foo\nbar\r\n&#x27;)]
+[&lt;re.Match object; span=(8, 8), match=&#x27;&#x27;&gt;, &lt;re.Match object; span=(9, 9), match=&#x27;&#x27;&gt;]
+&gt;&gt;&gt; [*re.finditer(r&#x27;\Z&#x27;, &#x27;foo\nbar\r\n&#x27;)]
+[&lt;re.Match object; span=(9, 9), match=&#x27;&#x27;&gt;]
 </code></pre>
 </div>
         </div>
@@ -83,32 +83,32 @@ There's <a href="https://best.openssf.org/Correctly-Using-Regular-Expressions">a
             <div class="timeline-header">Comment by <a href="https://github.com/bustbr">@bustbr</a> on 2024-12-17 10:13</div>
             <div class="timeline-body"><blockquote>
 <blockquote>
-<p>In Python's implementation of <code>re</code> the <code>$</code> does not only match the end of the line, but also before any line break, even without multiline mode.</p>
+<p>In Python&#x27;s implementation of <code>re</code> the <code>$</code> does not only match the end of the line, but also before any line break, even without multiline mode.</p>
 </blockquote>
-<p>This is incorrect. In non-multiline mode, <code>$</code> matches either the end of the entire input or the position right before the trailing newline (only <code>\n</code>, not <code>\r\n</code>). It is similar to PCRE's <code>\Z</code>, whereas Python's <code>\Z</code> resembles PCRE's <code>\z</code>:</p>
+<p>This is incorrect. In non-multiline mode, <code>$</code> matches either the end of the entire input or the position right before the trailing newline (only <code>\n</code>, not <code>\r\n</code>). It is similar to PCRE&#x27;s <code>\Z</code>, whereas Python&#x27;s <code>\Z</code> resembles PCRE&#x27;s <code>\z</code>:</p>
 </blockquote>
 <p>Thank you for the clarification.
-Based on your example here's a series of calls to highlight the specific behavior of <code>$</code>:</p>
-<pre><code class="language-python-console">&gt;&gt;&gt; re.search(r'$', 'foo\nbar')
-&lt;re.Match object; span=(7, 7), match=''&gt;
-&gt;&gt;&gt; re.search(r'$', 'foo\nbar\n')
-&lt;re.Match object; span=(7, 7), match=''&gt;    # still matches at pos 7, before the final new line
-&gt;&gt;&gt; re.search(r'$', 'foo\nbar\n\n')
-&lt;re.Match object; span=(8, 8), match=''&gt;    # matches at pos 8, before the final new line
+Based on your example here&#x27;s a series of calls to highlight the specific behavior of <code>$</code>:</p>
+<pre><code>&gt;&gt;&gt; re.search(r&#x27;$&#x27;, &#x27;foo\nbar&#x27;)
+&lt;re.Match object; span=(7, 7), match=&#x27;&#x27;&gt;
+&gt;&gt;&gt; re.search(r&#x27;$&#x27;, &#x27;foo\nbar\n&#x27;)
+&lt;re.Match object; span=(7, 7), match=&#x27;&#x27;&gt;    # still matches at pos 7, before the final new line
+&gt;&gt;&gt; re.search(r&#x27;$&#x27;, &#x27;foo\nbar\n\n&#x27;)
+&lt;re.Match object; span=(8, 8), match=&#x27;&#x27;&gt;    # matches at pos 8, before the final new line
 
-&gt;&gt;&gt; re.search(r'\Z', 'foo\nbar')
-&lt;re.Match object; span=(7, 7), match=''&gt;
-&gt;&gt;&gt; re.search(r'\Z', 'foo\nbar\n')
-&lt;re.Match object; span=(8, 8), match=''&gt;
-&gt;&gt;&gt; re.search(r'\Z', 'foo\nbar\n\n')
-&lt;re.Match object; span=(9, 9), match=''&gt;
+&gt;&gt;&gt; re.search(r&#x27;\Z&#x27;, &#x27;foo\nbar&#x27;)
+&lt;re.Match object; span=(7, 7), match=&#x27;&#x27;&gt;
+&gt;&gt;&gt; re.search(r&#x27;\Z&#x27;, &#x27;foo\nbar\n&#x27;)
+&lt;re.Match object; span=(8, 8), match=&#x27;&#x27;&gt;
+&gt;&gt;&gt; re.search(r&#x27;\Z&#x27;, &#x27;foo\nbar\n\n&#x27;)
+&lt;re.Match object; span=(9, 9), match=&#x27;&#x27;&gt;
 </code></pre>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:51:49 UTC
+        Synced at 2026-01-20 18:49:10 UTC
     </footer>
 </body>
 </html>

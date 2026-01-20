@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/lazyuser">@lazyuser</a></div>
-            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+            <div class="timeline-body">What version of ripgrep are you using?
 <p>I do not use ripgrep directly. I use env_logger version 0.5.10 which depends on termcolor 0.3.6.</p>
 <p><code>rustc --version --verbose</code>:
 rustc 1.26.2 (594fb253c 2018-06-01)
@@ -34,15 +34,15 @@ host: x86_64-pc-windows-msvc
 release: 1.26.2
 LLVM version: 6.0</p>
 <p>Rust is installed via rustup. I build for <strong>i686-pc-windows-msvc</strong> target.</p>
-<h4>How did you install ripgrep?</h4>
+How did you install ripgrep?
 <p>N/A</p>
-<h4>What operating system are you using ripgrep on?</h4>
+What operating system are you using ripgrep on?
 <p>I build under Windows 10 v. 1709 and run under Windows 10  v. 1803.</p>
 <p>Not necessarily relevant: my multithreaded code runs under msys bash with stdout and stderr redirected to <code>tee</code>. The application itself is not built against msys/mingw/etc though.</p>
-<h4>Describe your question, feature request, or bug.</h4>
-<p>The system is under relatively high load: 50%-100% CPU load for each of four cores. The code receives network traffic in a loop and writes a log message for each packet using env_logger. Sometimes (non-deterministically) logging leads to the panic (see below). My uneducated guess from the backtrace is that some buffer access is not properly syncronized. Since termcolor <a href="https://docs.rs/termcolor/0.3.6/termcolor/struct.BufferWriter.html#method.print">promises proper syncronization</a> I'm filling the bugreport against termcolor and not env_logger.</p>
+Describe your question, feature request, or bug.
+<p>The system is under relatively high load: 50%-100% CPU load for each of four cores. The code receives network traffic in a loop and writes a log message for each packet using env_logger. Sometimes (non-deterministically) logging leads to the panic (see below). My uneducated guess from the backtrace is that some buffer access is not properly syncronized. Since termcolor <a href="https://docs.rs/termcolor/0.3.6/termcolor/struct.BufferWriter.html#method.print">promises proper syncronization</a> I&#x27;m filling the bugreport against termcolor and not env_logger.</p>
 <p>Sample code:</p>
-<pre><code class="language-rust">const HEADER_SIZE: usize = 10;
+<pre><code>const HEADER_SIZE: usize = 10;
 
 loop {
     let mut buf = [0; 1500];
@@ -66,8 +66,8 @@ loop {
     );
 }
 </code></pre>
-<h5>Backtrace:</h5>
-<pre><code>thread '&lt;unnamed&gt;' panicked at 'slice index starts at 104 but ends at 29', libcore\slice\mod.rs:791:5
+Backtrace:
+<pre><code>thread &#x27;&lt;unnamed&gt;&#x27; panicked at &#x27;slice index starts at 104 but ends at 29&#x27;, libcore\slice\mod.rs:791:5
 note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
 stack backtrace:
    0: std::sys_common::backtrace::_print
@@ -117,8 +117,8 @@ stack backtrace:
   22: [a reference to info!() statement from the code example above]
   [omitted]
 </code></pre>
-<h5>Another Backtrace:</h5>
-<pre><code>Athread '&lt;unnamed&gt;' panicked at 'slice index starts at 104 but ends at 75', libcore\slice\mod.rs:791:5
+Another Backtrace:
+<pre><code>Athread &#x27;&lt;unnamed&gt;&#x27; panicked at &#x27;slice index starts at 104 but ends at 75&#x27;, libcore\slice\mod.rs:791:5
 stack backtrace:
    0:  0x16f7627 - std::sys_common::backtrace::_print
                        at C:\projects\rust\src\libstd\sys_common\backtrace.rs:71
@@ -172,7 +172,7 @@ stack backtrace:
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-06-26 12:08</div>
             <div class="timeline-body"><p>Here is the <code>termcolor</code> code:</p>
-<pre><code class="language-rust">    pub fn print(&amp;self, buf: &amp;Buffer) -&gt; io::Result&lt;()&gt; {
+<pre><code>    pub fn print(&amp;self, buf: &amp;Buffer) -&gt; io::Result&lt;()&gt; {
         if buf.is_empty() {
             return Ok(());
         }
@@ -200,9 +200,9 @@ stack backtrace:
         Ok(())
     }
 </code></pre>
-<p>From your traceback, line 708 is the last line executed, which is <code>BufferInner::NoColor(ref b) =&gt; stream.write_all(&amp;b.0)?</code>. All that's doing is taking the bytes in <code>Buffer</code> and passing them through to <code>write_all</code>.</p>
+<p>From your traceback, line 708 is the last line executed, which is <code>BufferInner::NoColor(ref b) =&gt; stream.write_all(&amp;b.0)?</code>. All that&#x27;s doing is taking the bytes in <code>Buffer</code> and passing them through to <code>write_all</code>.</p>
 <p>The standard library implementation of <code>write_all</code> is:</p>
-<pre><code class="language-rust">    #[stable(feature = &quot;rust1&quot;, since = &quot;1.0.0&quot;)]
+<pre><code>    #[stable(feature = &quot;rust1&quot;, since = &quot;1.0.0&quot;)]
     fn write_all(&amp;mut self, mut buf: &amp;[u8]) -&gt; Result&lt;()&gt; {
         while !buf.is_empty() {
             match self.write(buf) {
@@ -217,10 +217,10 @@ stack backtrace:
     }
 </code></pre>
 <p>In this case, line 1101, <code>Ok(n) =&gt; buf = &amp;buf[n..]</code>, is the last line executed before the panic machinery kicks in. The panic message itself, <code>slice index starts at 104 but ends at 75</code>, suggests that <code>buf.len() == 75</code> but that <code>n == 104</code>. This is a seemingly impossible result.</p>
-<p>Your hunch about synchronization is interesting (although &quot;buffer access&quot; seems like a red herring), but I don't see any evidence to support it. Certainly, the <code>print</code> function, as shown above, is acquiring an exclusive lock to the underlying stream:</p>
-<pre><code class="language-rust">let mut stream = self.stream.wrap(self.stream.get_ref().lock());
+<p>Your hunch about synchronization is interesting (although &quot;buffer access&quot; seems like a red herring), but I don&#x27;t see any evidence to support it. Certainly, the <code>print</code> function, as shown above, is acquiring an exclusive lock to the underlying stream:</p>
+<pre><code>let mut stream = self.stream.wrap(self.stream.get_ref().lock());
 </code></pre>
-<p>I'm not seeing the root cause here. Are you? The fact that <code>write</code> is returning more bytes written than what is actually in the buffer is incredibly interesting, but I actually don't know the circumstances under which that kind of behavior is possible. Do you have something else writing to the same stream that isn't synchronized? (And even so, I don't understand why that would impact the number of bytes written returned by <code>write</code>.)</p>
+<p>I&#x27;m not seeing the root cause here. Are you? The fact that <code>write</code> is returning more bytes written than what is actually in the buffer is incredibly interesting, but I actually don&#x27;t know the circumstances under which that kind of behavior is possible. Do you have something else writing to the same stream that isn&#x27;t synchronized? (And even so, I don&#x27;t understand why that would impact the number of bytes written returned by <code>write</code>.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -230,18 +230,18 @@ stack backtrace:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-06-26 12:22</div>
-            <div class="timeline-body"><p><code>env_logger</code> definitely has some interesting use of <code>termcolor</code>, but I don't see any <code>unsafe</code> anywhere. <code>termcolor</code> isn't using any <code>unsafe</code> either. So in theory, mutation of the buffer being printed shouldn't happen. Moreover, <code>env_logger</code> is explicitly using TLS to manage its buffers, so I don't think it's even trying to use one <code>BufferWriter</code> across multiple threads at once.</p>
-<p>So, I'm still not seeing the root cause. Unless someone else sees it, I'm not sure I'll be able to make forward progress on this without a real reproducible test case (which I understand may be difficult to provide).</p>
+            <div class="timeline-body"><p><code>env_logger</code> definitely has some interesting use of <code>termcolor</code>, but I don&#x27;t see any <code>unsafe</code> anywhere. <code>termcolor</code> isn&#x27;t using any <code>unsafe</code> either. So in theory, mutation of the buffer being printed shouldn&#x27;t happen. Moreover, <code>env_logger</code> is explicitly using TLS to manage its buffers, so I don&#x27;t think it&#x27;s even trying to use one <code>BufferWriter</code> across multiple threads at once.</p>
+<p>So, I&#x27;m still not seeing the root cause. Unless someone else sees it, I&#x27;m not sure I&#x27;ll be able to make forward progress on this without a real reproducible test case (which I understand may be difficult to provide).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/retep998">@retep998</a> on 2018-06-26 17:57</div>
-            <div class="timeline-body"><p>@BurntSushi The only time I've ever seen funky shenanigans occur is when you use <code>WriteConsoleA</code>/<code>ReadConsoleA</code> or <code>WriteFile</code>/<code>ReadFile</code> to write to/read from a windows console that is set to a multibyte codepage such as UTF-8. If it's going through <code>WriteConsoleW</code> and <code>WriteConsoleA</code> to a console then it should be fine, similarly <code>WriteFile</code>/<code>ReadFile</code> to a file or pipe should be fine.</p>
+            <div class="timeline-body"><p>@BurntSushi The only time I&#x27;ve ever seen funky shenanigans occur is when you use <code>WriteConsoleA</code>/<code>ReadConsoleA</code> or <code>WriteFile</code>/<code>ReadFile</code> to write to/read from a windows console that is set to a multibyte codepage such as UTF-8. If it&#x27;s going through <code>WriteConsoleW</code> and <code>WriteConsoleA</code> to a console then it should be fine, similarly <code>WriteFile</code>/<code>ReadFile</code> to a file or pipe should be fine.</p>
 <p>Is it possible that <code>NoColor</code> is trying to write to a windows console as if it was a file or pipe?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2018-07-06 14:59</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-07-06 14:59</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-07-06 15:07</div>
@@ -253,17 +253,17 @@ stack backtrace:
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-07-22 13:11</div>
-            <div class="timeline-body"><p>I don't think there's anything actionable to do on my end here. I've never been able to see this error myself, and I've been unable to form a hypothesis for why it is occurring from reading the code.</p>
-<p>I'm happy to see this re-opened if more information comes to light or if there are better reproduction steps.</p>
+            <div class="timeline-body"><p>I don&#x27;t think there&#x27;s anything actionable to do on my end here. I&#x27;ve never been able to see this error myself, and I&#x27;ve been unable to form a hypothesis for why it is occurring from reading the code.</p>
+<p>I&#x27;m happy to see this re-opened if more information comes to light or if there are better reproduction steps.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2018-07-22 13:11</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-07-22 13:11</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:42:35 UTC
+        Synced at 2026-01-20 18:48:06 UTC
     </footer>
 </body>
 </html>

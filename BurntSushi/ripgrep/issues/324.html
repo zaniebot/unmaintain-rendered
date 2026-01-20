@@ -24,7 +24,7 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/pkgw">@pkgw</a></div>
             <div class="timeline-body"><p>As per pull request <a href="https://github.com/BurntSushi/ripgrep/pull/323">#323</a>. It should be possible to write colorized output to standard error, as well as standard output.</p>
-<p>The pull request above took the tack of adding some helpers that are generic over the two types <code>io::Stdout</code> and <code>io::Stderr</code>, but @BurntSushi does not like that approach. I took that approach to avoid having to duplicate code between the two cases. I think that @BurntSushi's suggestion of using macros is probably the best alternative.</p>
+<p>The pull request above took the tack of adding some helpers that are generic over the two types <code>io::Stdout</code> and <code>io::Stderr</code>, but @BurntSushi does not like that approach. I took that approach to avoid having to duplicate code between the two cases. I think that @BurntSushi&#x27;s suggestion of using macros is probably the best alternative.</p>
 <p>I still think that it would be nice for crate users to be able to abstract between stdout and stderr more easily, though. Perhaps involving something like:</p>
 <pre><code>pub enum StandardStreamType { Stdout, Stderr };
 </code></pre>
@@ -33,26 +33,26 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-16 01:24</div>
-            <div class="timeline-body"><p>FWIW, making a breaking change is okay. We can just increase the minor version. The aren't many people using this crate yet, so we should feel free to be a bit liberal.</p>
+            <div class="timeline-body"><p>FWIW, making a breaking change is okay. We can just increase the minor version. The aren&#x27;t many people using this crate yet, so we should feel free to be a bit liberal.</p>
 <p>With that said, I would rather take cues from std, which defines Stdout and Stderr concrete types. Programmers can write generic code over Write.</p>
-<p>For termcolor, I don't see why the same can't be done. There is already a WriteColor trait that Stdout satisfies, and which Stderr should also satisfy. Can you explain why you think this is insufficient?</p>
+<p>For termcolor, I don&#x27;t see why the same can&#x27;t be done. There is already a WriteColor trait that Stdout satisfies, and which Stderr should also satisfy. Can you explain why you think this is insufficient?</p>
 <p>In general, for generic APIs, I think we should have concrete examples motivating the use of generics.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/pkgw">@pkgw</a> on 2017-01-16 01:54</div>
-            <div class="timeline-body"><p>Point 1: I think <code>std</code> just contains a poor design decision. IMO it would have been better if the <code>std::io</code> interface had used an enum like the <code>StandardStreamType</code> I suggested and a single function returning a single type rather than the pairs of <code>stdout() -&gt; Stdout</code> and <code>stderr() -&gt; Stderr</code>. The underlying functionality is complete identical except for a different FD/HANDLE number; but because the functions' return values are two separate types, all code that could work with both (that does anything beyond the Write trait) needs to special-case both.</p>
-<p>Point 2: As for the value of adding some ability to abstract between the two, I think it's like you said in the PR: concrete types are preferable when possible. Consider the <code>BufferWriter</code> struct, for instance. It currently starts with:</p>
+            <div class="timeline-body"><p>Point 1: I think <code>std</code> just contains a poor design decision. IMO it would have been better if the <code>std::io</code> interface had used an enum like the <code>StandardStreamType</code> I suggested and a single function returning a single type rather than the pairs of <code>stdout() -&gt; Stdout</code> and <code>stderr() -&gt; Stderr</code>. The underlying functionality is complete identical except for a different FD/HANDLE number; but because the functions&#x27; return values are two separate types, all code that could work with both (that does anything beyond the Write trait) needs to special-case both.</p>
+<p>Point 2: As for the value of adding some ability to abstract between the two, I think it&#x27;s like you said in the PR: concrete types are preferable when possible. Consider the <code>BufferWriter</code> struct, for instance. It currently starts with:</p>
 <pre><code>pub struct BufferWriter {
    stdout: LossyStdout&lt;io::Stdout&gt;,
    ...
 }
 </code></pre>
-<p>How to you adapt it to handle either stdout or stderr? You can stick an enum in there .... or you can create parallel <code>StdoutBufferWriter</code> and <code>StderrBufferWriter</code> structs ... but it seem to me that it'd be vastly preferable to be able to keep the structure non-generic, and not start creating parallel families of structs that only differ in <code>s/stdout/stderr/</code>. It's too late to undo the choices in <code>std::io</code>, but they can at least be covered up.</p>
+<p>How to you adapt it to handle either stdout or stderr? You can stick an enum in there .... or you can create parallel <code>StdoutBufferWriter</code> and <code>StderrBufferWriter</code> structs ... but it seem to me that it&#x27;d be vastly preferable to be able to keep the structure non-generic, and not start creating parallel families of structs that only differ in <code>s/stdout/stderr/</code>. It&#x27;s too late to undo the choices in <code>std::io</code>, but they can at least be covered up.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2017-01-18 00:44</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-18 00:44</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/pkgw">@pkgw</a> on 2017-02-01 23:29</div>
@@ -61,13 +61,13 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-01 23:59</div>
-            <div class="timeline-body"><p>I haven't had time to really dig into this, but if I ignore what you've said already, this is what I'd expect to see:</p>
+            <div class="timeline-body"><p>I haven&#x27;t had time to really dig into this, but if I ignore what you&#x27;ve said already, this is what I&#x27;d expect to see:</p>
 <ol>
 <li>A new constructor, <code>stderr</code>, added to <code>BufferWriter</code>.</li>
 <li>Two new types, <code>Stderr</code> and <code>StderrLock</code> that mirror the <code>Stdout</code> and <code>StdoutLock</code> types.</li>
 <li>Implementations of <code>WriteColor</code> for <code>Stderr</code> and <code>StderrLock</code>.</li>
 </ol>
-<p>Unless I've missed something else, I don't think there should be any other new public parts of the API. If you want to write code that is generic over <code>Stdout</code> and <code>Stderr</code>, then you can use <code>W: WriteColor</code>.</p>
+<p>Unless I&#x27;ve missed something else, I don&#x27;t think there should be any other new public parts of the API. If you want to write code that is generic over <code>Stdout</code> and <code>Stderr</code>, then you can use <code>W: WriteColor</code>.</p>
 <p>It seems like using an enum internally is probably the simplest approach.</p>
 </div>
         </div>
@@ -79,18 +79,18 @@
 <li>Rename <code>Stdout{,Lock}</code> to <code>StandardStream{,Lock}</code></li>
 <li>Add <code>stderr</code> constructors to <code>StandardStream</code> and <code>BufferWriter</code>.</li>
 </ol>
-<p>The particular hassle I've encountered is that I want to port <code>clap</code> to use <code>termcolor</code> so that it can do colorized help on Windows, and there would have to be enum-related ugliness if <code>Stdout</code> and <code>Stderr</code> were different types.</p>
+<p>The particular hassle I&#x27;ve encountered is that I want to port <code>clap</code> to use <code>termcolor</code> so that it can do colorized help on Windows, and there would have to be enum-related ugliness if <code>Stdout</code> and <code>Stderr</code> were different types.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-05 15:47</div>
-            <div class="timeline-body"><p>@pkgw I see. I didn't realize you were trying not to break the existing API (or I've forgotten). The <code>termcolor</code> crate is young enough that breaking changes would be welcome IMO if it leads to a better API.</p>
-<p>I can't immediately poke any holes in your proposal, and I like its simplicity. I say go for it.</p>
+            <div class="timeline-body"><p>@pkgw I see. I didn&#x27;t realize you were trying not to break the existing API (or I&#x27;ve forgotten). The <code>termcolor</code> crate is young enough that breaking changes would be welcome IMO if it leads to a better API.</p>
+<p>I can&#x27;t immediately poke any holes in your proposal, and I like its simplicity. I say go for it.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/pkgw">@pkgw</a> on 2017-02-05 15:55</div>
-            <div class="timeline-body"><p>OK, I'll take a stab at actually implementing the idea!</p>
+            <div class="timeline-body"><p>OK, I&#x27;ll take a stab at actually implementing the idea!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -100,27 +100,27 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-02-09 19:26</div>
-            <div class="timeline-body"><p>So funny story - Since #353 I've began working on getting <code>clap</code> working on <code>termcolor</code> and ran into similar issues as discussed here. I remembered reading about this PR/Issue about adding <code>Stderr</code> to <code>termcolor</code> so I came looking. And I find it's coming from porting <code>clap</code> to <code>termcolor</code>. I got a good giggle out of this.</p>
-<p>@pkgw once/if this is merged please feel free to take a stab at porting <code>clap</code> to <code>termcolor</code>. Even if I get an initial port done, I'm always open to new/better ideas! And with my current work schedule, you might beat me to it anyways :wink: I just didn't want you seeing kbknapp/clap-rs#836 and getting discouraged!</p>
+            <div class="timeline-body"><p>So funny story - Since #353 I&#x27;ve began working on getting <code>clap</code> working on <code>termcolor</code> and ran into similar issues as discussed here. I remembered reading about this PR/Issue about adding <code>Stderr</code> to <code>termcolor</code> so I came looking. And I find it&#x27;s coming from porting <code>clap</code> to <code>termcolor</code>. I got a good giggle out of this.</p>
+<p>@pkgw once/if this is merged please feel free to take a stab at porting <code>clap</code> to <code>termcolor</code>. Even if I get an initial port done, I&#x27;m always open to new/better ideas! And with my current work schedule, you might beat me to it anyways :wink: I just didn&#x27;t want you seeing kbknapp/clap-rs#836 and getting discouraged!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-09 19:38</div>
-            <div class="timeline-body"><p>@kbknapp Aye, thanks for the ping. I've had the flu the past few days, so I've fallen a bit behind. #350 looks good, just needs a squash. Once merged, I'll do a release.</p>
+            <div class="timeline-body"><p>@kbknapp Aye, thanks for the ping. I&#x27;ve had the flu the past few days, so I&#x27;ve fallen a bit behind. #350 looks good, just needs a squash. Once merged, I&#x27;ll do a release.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/pkgw">@pkgw</a> on 2017-02-09 19:52</div>
-            <div class="timeline-body"><p>Ah @kbknapp clearly great minds are thinking alike. Do you have a public branch with work-in-progress on the <code>termcolor</code> port of <code>clap</code>? It looked like some fairly invasive changes would be required so I'm not keen to duplicate work.</p>
+            <div class="timeline-body"><p>Ah @kbknapp clearly great minds are thinking alike. Do you have a public branch with work-in-progress on the <code>termcolor</code> port of <code>clap</code>? It looked like some fairly invasive changes would be required so I&#x27;m not keen to duplicate work.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2017-02-10 01:57</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-10 01:57</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:42:01 UTC
+        Synced at 2026-01-20 18:48:03 UTC
     </footer>
 </body>
 </html>

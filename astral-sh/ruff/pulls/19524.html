@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>We currently infer a <code>@Todo</code> type whenever we access an attribute on an intersection type with negative components. This can happen very naturally. Consequently, this <code>@Todo</code> type is rather pervasive and hides a lot of true positives that ty could otherwise detect:</p>
-<pre><code class="language-py">class Foo:
+<pre><code>class Foo:
     attr: int = 1
 
 def _(f: Foo | None):
@@ -34,42 +34,42 @@ def _(f: Foo | None):
 
         reveal_type(f.attr)  # now: int, previously: @Todo
 </code></pre>
-<p>The changeset here proposes to handle member access on these intersection types by simply ignoring all negative contributions. This is not always ideal: a negative contribution like <code>~&lt;Protocol with members 'attr'&gt;</code> could be a hint that <code>.attr</code> should not be accessible on the full intersection type. The behavior can certainly be improved in the future, but this seems like a reasonable initial step to get rid of this unnecessary <code>@Todo</code> type.</p>
-<h2>Ecosystem analysis</h2>
+<p>The changeset here proposes to handle member access on these intersection types by simply ignoring all negative contributions. This is not always ideal: a negative contribution like <code>~&lt;Protocol with members &#x27;attr&#x27;&gt;</code> could be a hint that <code>.attr</code> should not be accessible on the full intersection type. The behavior can certainly be improved in the future, but this seems like a reasonable initial step to get rid of this unnecessary <code>@Todo</code> type.</p>
+Ecosystem analysis
 <p>There are quite a few changes here. I spot-checked them and found one bug where attribute access on pure negation types (<code>~P == object &amp; ~P</code>) would not allow attributes on <code>object</code> to be accessed. After that was fixed, I only see true positives and known problems. The fact that a lot of <code>unused-ignore-comment</code> diagnostics go away are also evidence for the fact that this touches a sensitive area, where static analysis clashes with dynamically adding attributes to objects:</p>
-<pre><code class="language-py">… # type: ignore # Runtime attribute access
+<pre><code>… # type: ignore # Runtime attribute access
 </code></pre>
-<h2>Test Plan</h2>
+Test Plan
 <p>Updated tests.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @sharkdp on 2025-07-24 08:30</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-24 08:30</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-07-24 08:30</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-24 08:30</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @sharkdp on 2025-07-24 08:30</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-24 08:30</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Converted to draft by @sharkdp on 2025-07-24 08:30</div>
+            <div class="event">Converted to draft by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-24 08:30</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @sharkdp on 2025-07-24 08:30</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-24 08:30</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-07-24 08:30</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-24 08:30</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-24 08:35</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">mypy_primer (https://github.com/hauntsaninja/mypy_primer)
+Changes were detected when running on open source projects
+
+<pre><code>mypy_primer (https://github.com/hauntsaninja/mypy_primer)
 - mypy_primer/utils.py:114:12: error[invalid-return-type] Return type does not match returned value: expected `tuple[CompletedProcess[str], int | float]`, found `tuple[CompletedProcess[@Todo(map_with_boundness: intersections with negative contributions) | None], int | float]`
 + mypy_primer/utils.py:114:12: error[invalid-return-type] Return type does not match returned value: expected `tuple[CompletedProcess[str], int | float]`, found `tuple[CompletedProcess[@Todo(generic `typing.Awaitable` type) | None], int | float]`
 
@@ -126,18 +126,18 @@ psycopg (https://github.com/psycopg/psycopg)
 + psycopg/psycopg/generators.py:386:18: error[unresolved-attribute] Type `ModuleType &amp; ~AlwaysFalsy` has no attribute `fetch_many`
 + psycopg/psycopg/generators.py:387:13: error[unresolved-attribute] Type `ModuleType &amp; ~AlwaysFalsy` has no attribute `fetch`
 + psycopg/psycopg/generators.py:388:28: error[unresolved-attribute] Type `ModuleType &amp; ~AlwaysFalsy` has no attribute `pipeline_communicate`
-- psycopg/psycopg/pq/__init__.py:97:9: error[invalid-assignment] Object of type `@Todo(map_with_boundness: intersections with negative contributions) | &lt;class 'PGconn'&gt;` is not assignable to `type[PGconn]`
-+ psycopg/psycopg/pq/__init__.py:97:9: error[invalid-assignment] Object of type `Unknown | &lt;class 'PGconn'&gt;` is not assignable to `type[PGconn]`
-- psycopg/psycopg/pq/__init__.py:98:9: error[invalid-assignment] Object of type `@Todo(map_with_boundness: intersections with negative contributions) | &lt;class 'PGresult'&gt;` is not assignable to `type[PGresult]`
-+ psycopg/psycopg/pq/__init__.py:98:9: error[invalid-assignment] Object of type `Unknown | &lt;class 'PGresult'&gt;` is not assignable to `type[PGresult]`
-- psycopg/psycopg/pq/__init__.py:99:9: error[invalid-assignment] Object of type `@Todo(map_with_boundness: intersections with negative contributions) | &lt;class 'Conninfo'&gt;` is not assignable to `type[Conninfo]`
-+ psycopg/psycopg/pq/__init__.py:99:9: error[invalid-assignment] Object of type `Unknown | &lt;class 'Conninfo'&gt;` is not assignable to `type[Conninfo]`
-- psycopg/psycopg/pq/__init__.py:100:9: error[invalid-assignment] Object of type `@Todo(map_with_boundness: intersections with negative contributions) | &lt;class 'Escaping'&gt;` is not assignable to `type[Escaping]`
-+ psycopg/psycopg/pq/__init__.py:100:9: error[invalid-assignment] Object of type `Unknown | &lt;class 'Escaping'&gt;` is not assignable to `type[Escaping]`
-- psycopg/psycopg/pq/__init__.py:101:9: error[invalid-assignment] Object of type `@Todo(map_with_boundness: intersections with negative contributions) | &lt;class 'PGcancel'&gt;` is not assignable to `type[PGcancel]`
-+ psycopg/psycopg/pq/__init__.py:101:9: error[invalid-assignment] Object of type `Unknown | &lt;class 'PGcancel'&gt;` is not assignable to `type[PGcancel]`
-- psycopg/psycopg/pq/__init__.py:102:9: error[invalid-assignment] Object of type `@Todo(map_with_boundness: intersections with negative contributions) | &lt;class 'PGcancelConn'&gt;` is not assignable to `type[PGcancelConn]`
-+ psycopg/psycopg/pq/__init__.py:102:9: error[invalid-assignment] Object of type `Unknown | &lt;class 'PGcancelConn'&gt;` is not assignable to `type[PGcancelConn]`
+- psycopg/psycopg/pq/__init__.py:97:9: error[invalid-assignment] Object of type `@Todo(map_with_boundness: intersections with negative contributions) | &lt;class &#x27;PGconn&#x27;&gt;` is not assignable to `type[PGconn]`
++ psycopg/psycopg/pq/__init__.py:97:9: error[invalid-assignment] Object of type `Unknown | &lt;class &#x27;PGconn&#x27;&gt;` is not assignable to `type[PGconn]`
+- psycopg/psycopg/pq/__init__.py:98:9: error[invalid-assignment] Object of type `@Todo(map_with_boundness: intersections with negative contributions) | &lt;class &#x27;PGresult&#x27;&gt;` is not assignable to `type[PGresult]`
++ psycopg/psycopg/pq/__init__.py:98:9: error[invalid-assignment] Object of type `Unknown | &lt;class &#x27;PGresult&#x27;&gt;` is not assignable to `type[PGresult]`
+- psycopg/psycopg/pq/__init__.py:99:9: error[invalid-assignment] Object of type `@Todo(map_with_boundness: intersections with negative contributions) | &lt;class &#x27;Conninfo&#x27;&gt;` is not assignable to `type[Conninfo]`
++ psycopg/psycopg/pq/__init__.py:99:9: error[invalid-assignment] Object of type `Unknown | &lt;class &#x27;Conninfo&#x27;&gt;` is not assignable to `type[Conninfo]`
+- psycopg/psycopg/pq/__init__.py:100:9: error[invalid-assignment] Object of type `@Todo(map_with_boundness: intersections with negative contributions) | &lt;class &#x27;Escaping&#x27;&gt;` is not assignable to `type[Escaping]`
++ psycopg/psycopg/pq/__init__.py:100:9: error[invalid-assignment] Object of type `Unknown | &lt;class &#x27;Escaping&#x27;&gt;` is not assignable to `type[Escaping]`
+- psycopg/psycopg/pq/__init__.py:101:9: error[invalid-assignment] Object of type `@Todo(map_with_boundness: intersections with negative contributions) | &lt;class &#x27;PGcancel&#x27;&gt;` is not assignable to `type[PGcancel]`
++ psycopg/psycopg/pq/__init__.py:101:9: error[invalid-assignment] Object of type `Unknown | &lt;class &#x27;PGcancel&#x27;&gt;` is not assignable to `type[PGcancel]`
+- psycopg/psycopg/pq/__init__.py:102:9: error[invalid-assignment] Object of type `@Todo(map_with_boundness: intersections with negative contributions) | &lt;class &#x27;PGcancelConn&#x27;&gt;` is not assignable to `type[PGcancelConn]`
++ psycopg/psycopg/pq/__init__.py:102:9: error[invalid-assignment] Object of type `Unknown | &lt;class &#x27;PGcancelConn&#x27;&gt;` is not assignable to `type[PGcancelConn]`
 + psycopg/psycopg/waiting.py:375:16: error[unresolved-attribute] Type `ModuleType &amp; ~AlwaysFalsy` has no attribute `is_module_patched`
 + psycopg/psycopg/waiting.py:384:14: error[unresolved-attribute] Type `ModuleType &amp; ~AlwaysFalsy` has no attribute `wait_c`
 - Found 644 diagnostics
@@ -268,7 +268,7 @@ strawberry (https://github.com/strawberry-graphql/strawberry)
 - strawberry/relay/utils.py:65:63: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 - strawberry/schema/name_converter.py:174:41: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 + strawberry/schema/name_converter.py:166:20: error[unresolved-attribute] Type `object` has no attribute `name`
-+ strawberry/schema/name_converter.py:168:31: error[unresolved-attribute] Type `type &amp; ~LazyType[Unknown, Unknown] &amp; ~EnumDefinition &amp; ~StrawberryUnion &amp; ~StrawberryList &amp; ~StrawberryOptional &amp; ~&lt;Protocol with members '_scalar_definition'&gt;` has no attribute `__strawberry_definition__`
++ strawberry/schema/name_converter.py:168:31: error[unresolved-attribute] Type `type &amp; ~LazyType[Unknown, Unknown] &amp; ~EnumDefinition &amp; ~StrawberryUnion &amp; ~StrawberryList &amp; ~StrawberryOptional &amp; ~&lt;Protocol with members &#x27;_scalar_definition&#x27;&gt;` has no attribute `__strawberry_definition__`
 - strawberry/schema/schema_converter.py:873:50: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 - strawberry/schema/schema_converter.py:879:71: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 + strawberry/schema/schema_converter.py:877:37: error[unresolved-attribute] Type `(StrawberryType &amp; ~EnumDefinition &amp; ~StrawberryList) | (type &amp; ~EnumDefinition &amp; ~StrawberryList)` has no attribute `__strawberry_definition__`
@@ -277,7 +277,7 @@ strawberry (https://github.com/strawberry-graphql/strawberry)
 + strawberry/tools/merge_types.py:26:11: error[unresolved-attribute] Type `type` has no attribute `__strawberry_definition__`
 + strawberry/types/arguments.py:165:9: error[invalid-assignment] Object of type `object` is not assignable to `EnumDefinition`
 + strawberry/types/arguments.py:232:9: error[invalid-assignment] Object of type `object` is not assignable to `EnumDefinition`
-+ strawberry/types/arguments.py:238:27: error[unresolved-attribute] Type `(StrawberryType &amp; ~StrawberryOptional &amp; ~StrawberryList &amp; ~LazyType[Unknown, Unknown] &amp; ~&lt;Protocol with members '_enum_definition'&gt;) | (type &amp; ~StrawberryOptional &amp; ~StrawberryList &amp; ~LazyType[Unknown, Unknown] &amp; ~&lt;Protocol with members '_enum_definition'&gt;)` has no attribute `__strawberry_definition__`
++ strawberry/types/arguments.py:238:27: error[unresolved-attribute] Type `(StrawberryType &amp; ~StrawberryOptional &amp; ~StrawberryList &amp; ~LazyType[Unknown, Unknown] &amp; ~&lt;Protocol with members &#x27;_enum_definition&#x27;&gt;) | (type &amp; ~StrawberryOptional &amp; ~StrawberryList &amp; ~LazyType[Unknown, Unknown] &amp; ~&lt;Protocol with members &#x27;_enum_definition&#x27;&gt;)` has no attribute `__strawberry_definition__`
 + strawberry/types/field.py:66:16: error[unresolved-attribute] Type `type &amp; ~StrawberryType` has no attribute `__strawberry_definition__`
 - Found 363 diagnostics
 + Found 368 diagnostics
@@ -344,7 +344,7 @@ apprise (https://github.com/caronc/apprise)
 
 schemathesis (https://github.com/schemathesis/schemathesis)
 + src/schemathesis/hooks.py:77:57: error[unresolved-attribute] Type `((...) -&gt; Unknown) &amp; ~str` has no attribute `__name__`
-+ src/schemathesis/openapi/generation/filters.py:67:25: error[not-iterable] Object of type `&lt;Protocol with members '__iter__'&gt; &amp; ~Mapping[Unknown, Unknown]` is not iterable
++ src/schemathesis/openapi/generation/filters.py:67:25: error[not-iterable] Object of type `&lt;Protocol with members &#x27;__iter__&#x27;&gt; &amp; ~Mapping[Unknown, Unknown]` is not iterable
 - Found 287 diagnostics
 + Found 289 diagnostics
 
@@ -414,7 +414,7 @@ ignite (https://github.com/pytorch/ignite)
 + ignite/handlers/base_logger.py:52:29: error[not-iterable] Object of type `(list[str] &amp; ~((...) -&gt; object)) | (((str, Unknown, /) -&gt; bool) &amp; ~((...) -&gt; object))` may not be iterable
 - ignite/handlers/param_scheduler.py:217:62: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 - ignite/handlers/param_scheduler.py:219:62: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-+ tests/ignite/handlers/test_param_scheduler.py:655:17: warning[possibly-unbound-attribute] Attribute `param_history` on type `(Unknown &amp; ~&lt;Protocol with members 'param_history'&gt;) | (State &amp; ~&lt;Protocol with members 'param_history'&gt;)` is possibly unbound
++ tests/ignite/handlers/test_param_scheduler.py:655:17: warning[possibly-unbound-attribute] Attribute `param_history` on type `(Unknown &amp; ~&lt;Protocol with members &#x27;param_history&#x27;&gt;) | (State &amp; ~&lt;Protocol with members &#x27;param_history&#x27;&gt;)` is possibly unbound
 
 dragonchain (https://github.com/dragonchain/dragonchain)
 + dragonchain/transaction_processor/level_2_actions.py:54:37: error[invalid-argument-type] Argument to function `verify_transaction_count` is incorrect: Expected `str`, found `str | Unknown | None`
@@ -454,7 +454,7 @@ pwndbg (https://github.com/pwndbg/pwndbg)
 + pwndbg/dbg/lldb/repl/__init__.py:1195:53: error[unresolved-attribute] Type `list[str] &amp; ~AlwaysFalsy` has no attribute `remoteurl`
 + pwndbg/dbg/lldb/repl/__init__.py:1227:13: error[unresolved-attribute] Type `list[str] &amp; ~AlwaysFalsy` has no attribute `remoteurl`
 + pwndbg/dbg/lldb/repl/__init__.py:1235:44: error[unresolved-attribute] Type `list[str] &amp; ~AlwaysFalsy` has no attribute `remoteurl`
-+ pwndbg/lib/cache.py:167:62: error[unresolved-attribute] Type `((...) -&gt; Unknown) &amp; ~&lt;Protocol with members 'cache'&gt;` has no attribute `__name__`
++ pwndbg/lib/cache.py:167:62: error[unresolved-attribute] Type `((...) -&gt; Unknown) &amp; ~&lt;Protocol with members &#x27;cache&#x27;&gt;` has no attribute `__name__`
 - Found 2259 diagnostics
 + Found 2287 diagnostics
 
@@ -602,9 +602,9 @@ sphinx (https://github.com/sphinx-doc/sphinx)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-24 08:40</div>
-            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+            <div class="timeline-body">
 
-<h2><code>ecosystem-analyzer</code> results</h2>
+<code>ecosystem-analyzer</code> results
 <p>| Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
 | <code>possibly-unbound-attribute</code> | 199 | 3 | 30 |
@@ -627,34 +627,34 @@ sphinx (https://github.com/sphinx-doc/sphinx)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[ty] Mapping over intersections with negative types" to "[ty] Attribute access on intersections with negative parts" by @sharkdp on 2025-07-25 11:29</div>
+            <div class="event">Renamed from &quot;[ty] Mapping over intersections with negative types&quot; to &quot;[ty] Attribute access on intersections with negative parts&quot; by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-25 11:29</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-07-25 12:10</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-25 12:10</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-07-25 12:10</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-25 12:10</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @sharkdp on 2025-07-25 12:30</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-25 12:30</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-25 12:35</div>
             <div class="timeline-body"><blockquote>
-<p>The changeset here proposes to handle member access on these intersection types by simply ignoring all negative contributions. This is not always ideal: a negative contribution like <code>~&lt;Protocol with members 'attr'&gt;</code> could be a hint that <code>.attr</code> should not be accessible on the full intersection type. The behavior can certainly be improved in the future, but this seems like a reasonable initial step to get rid of this unnecessary <code>@Todo</code> type.</p>
+<p>The changeset here proposes to handle member access on these intersection types by simply ignoring all negative contributions. This is not always ideal: a negative contribution like <code>~&lt;Protocol with members &#x27;attr&#x27;&gt;</code> could be a hint that <code>.attr</code> should not be accessible on the full intersection type. The behavior can certainly be improved in the future, but this seems like a reasonable initial step to get rid of this unnecessary <code>@Todo</code> type.</p>
 </blockquote>
 <p>This is also essentially the conclusion @JelleZijlstra recently came to in his article exploring negated types: https://jellezijlstra.github.io/negation-types</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/narrow/hasattr.md</code>:47 on 2025-07-25 12:37</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">change the type. `&lt;Protocol with members 'spam'&gt;` is a supertype of `WithSpam`, and so
+            <div class="timeline-body"><pre><code>change the type. `&lt;Protocol with members &#x27;spam&#x27;&gt;` is a supertype of `WithSpam`, and so
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-07-25 12:39</div>
-            <div class="timeline-body"><p>Excellent. I haven't looked through the ecosystem results but I trust you to have done a thorough analysis!</p>
+            <div class="timeline-body"><p>Excellent. I haven&#x27;t looked through the ecosystem results but I trust you to have done a thorough analysis!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -667,10 +667,10 @@ sphinx (https://github.com/sphinx-doc/sphinx)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @sharkdp on 2025-07-25 12:56</div>
+            <div class="event">Merged by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-25 12:56</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @sharkdp on 2025-07-25 12:56</div>
+            <div class="event">Closed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-25 12:56</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-07-25 12:56</div>
@@ -678,7 +678,7 @@ sphinx (https://github.com/sphinx-doc/sphinx)
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:14:31 UTC
+        Synced at 2026-01-20 19:16:57 UTC
     </footer>
 </body>
 </html>

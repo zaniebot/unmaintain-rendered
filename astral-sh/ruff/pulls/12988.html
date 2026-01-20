@@ -23,39 +23,39 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This PR introduces a new API to <code>TypeInferenceBuilder</code> to emit type-checking diagnostics.</p>
-<p>The API is intentionally kept simple. The PR doesn't aim to resolve on how we represent rules/violations in Red Knot.</p>
-<h2>Design considerations</h2>
-<p>This PR wraps diagnostics in an <code>Arc</code> to make them cheap-cloneable. It's desired to have cheap-cloneable diagnostics
+<p>The API is intentionally kept simple. The PR doesn&#x27;t aim to resolve on how we represent rules/violations in Red Knot.</p>
+Design considerations
+<p>This PR wraps diagnostics in an <code>Arc</code> to make them cheap-cloneable. It&#x27;s desired to have cheap-cloneable diagnostics
 because we have to copy them between <code>infer_expression</code> -&gt; <code>infer_definition</code> -&gt; <code>infer_scope</code>...</p>
 <p>An alternative design that I think is worth exploring once the Salsa tables refactor lands is to introduce a
 <code>TypeCheckDiagnosticIngredient</code> that has a single field, the diagnostic. The advantage of this approach would be that
 we get &quot;Arena&quot; allocation for the diagnostics. The downside is that diagnostic must be verified everytime the revision changes which
-isn't entirely free.</p>
-<h2>Rule Selector</h2>
+isn&#x27;t entirely free.</p>
+Rule Selector
 <p>Long term, I think we want to have a <code>rule_selector(file) -&gt; RuleSelector</code> query that resolves the enabled rules per file.
-As said before, this PR doesn't try to resolve how and which rules are enabled per file. That's why I omitted this part for now but the idea is that
+As said before, this PR doesn&#x27;t try to resolve how and which rules are enabled per file. That&#x27;s why I omitted this part for now but the idea is that
 <code>push_diagnostic</code> would call the <code>rule_selector</code> instead of just calling <code>is_file_open</code>.</p>
-<h2>Example diagnostic</h2>
+Example diagnostic
 <p>I implemented an example diagnostic that flags unresolved imports.</p>
-<h2>Why do we need <code>is_file_open</code></h2>
+Why do we need <code>is_file_open</code>
 <p>The check for <code>is_file_open</code> is mainly an optimization to avoid generating a lot of diagnostics that will never be shown.</p>
-<h2>Test Plan</h2>
+Test Plan
 <p>I added a small unit test. I also verified that running the CLI shows the diagnostic.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-08-19 12:37</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-19 12:37</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @MichaReiser on 2024-08-19 12:38</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-19 12:38</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @MichaReiser on 2024-08-19 12:38</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-19 12:38</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2024-08-19 12:38</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-19 12:38</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:48 on 2024-08-19 12:48</div>
@@ -64,8 +64,8 @@ As said before, this PR doesn't try to resolve how and which rules are enabled p
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:46 on 2024-08-19 12:50</div>
-            <div class="timeline-body"><p>Some of this comment feels more like a description of the internal implementation rather than a description of how to use the type; I'd move it to a comment above the field rather than a comment above the type:</p>
-<pre><code class="language-suggestion">/// A collection of type check diagnostics.
+            <div class="timeline-body"><p>Some of this comment feels more like a description of the internal implementation rather than a description of how to use the type; I&#x27;d move it to a comment above the field rather than a comment above the type:</p>
+<pre><code>/// A collection of type check diagnostics.
 #[derive(Default, Eq, PartialEq)]
 pub struct TypeCheckDiagnostics {
 	/// The diagnostics are wrapped in an `Arc` because they need to be cloned multiple times
@@ -80,27 +80,27 @@ pub struct TypeCheckDiagnostics {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:55 on 2024-08-19 12:59</div>
-            <div class="timeline-body"><p>Hmm, this method doesn't actually build a diagnostic directly -- it creates a builder that can be used to build a diagnostic. Maybe it should be called <code>diagnostic_builder()</code>?</p>
+            <div class="timeline-body"><p>Hmm, this method doesn&#x27;t actually build a diagnostic directly -- it creates a builder that can be used to build a diagnostic. Maybe it should be called <code>diagnostic_builder()</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:991 on 2024-08-19 13:08</div>
-            <div class="timeline-body"><p>I'm quitting Astral if we use CamelCase for our red-knot error codes 😆</p>
-<p>I also find the builder interface that you've added in <code>diagnostics.rs</code> a little confusing, because:</p>
+            <div class="timeline-body"><p>I&#x27;m quitting Astral if we use CamelCase for our red-knot error codes 😆</p>
+<p>I also find the builder interface that you&#x27;ve added in <code>diagnostics.rs</code> a little confusing, because:</p>
 <ul>
-<li><p><code>push_diagnostic()</code> doesn't actually push any diagnostics onto the stack; it returns a builder that can be used to push diagnostics onto the stack</p>
+<li><p><code>push_diagnostic()</code> doesn&#x27;t actually push any diagnostics onto the stack; it returns a builder that can be used to push diagnostics onto the stack</p>
 </li>
-<li><p>we're doing two distinct things in the <code>finish()</code> method:</p>
+<li><p>we&#x27;re doing two distinct things in the <code>finish()</code> method:</p>
 <ul>
-<li>We're &quot;finishing&quot; the diagnostic that the builder is building</li>
-<li>We're pushing the diagnostic onto the stack of finished diagnostics</li>
+<li>We&#x27;re &quot;finishing&quot; the diagnostic that the builder is building</li>
+<li>We&#x27;re pushing the diagnostic onto the stack of finished diagnostics</li>
 </ul>
-<p>I'd much prefer it if we could just do those in two steps so it's a bit more explicit what's going on</p>
+<p>I&#x27;d much prefer it if we could just do those in two steps so it&#x27;s a bit more explicit what&#x27;s going on</p>
 </li>
 </ul>
 <p>My preferred API would be something like this:</p>
-<pre><code class="language-rs">            if let Some(builder) = self.diagnostic_builder(node, &quot;reportMissingImport&quot;) {
-                let diagnostic = builder.finish(format!(&quot;Import '{module_name}' could not be resolved.&quot;));
+<pre><code>            if let Some(builder) = self.diagnostic_builder(node, &quot;reportMissingImport&quot;) {
+                let diagnostic = builder.finish(format!(&quot;Import &#x27;{module_name}&#x27; could not be resolved.&quot;));
                 self.push_diagnostic(diagnostic);
             }
 </code></pre>
@@ -108,7 +108,7 @@ pub struct TypeCheckDiagnostics {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-19 13:10</div>
-            <div class="timeline-body"><p>Thanks! I'm not 100% sure about some of these interfaces. Some thoughts below:</p>
+            <div class="timeline-body"><p>Thanks! I&#x27;m not 100% sure about some of these interfaces. Some thoughts below:</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -117,7 +117,7 @@ pub struct TypeCheckDiagnostics {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_workspace/src/workspace.rs</code>:491 on 2024-08-19 13:13</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">        assert_eq!(check_file(&amp;db, file), Vec::&lt;String&gt;::new());
+            <div class="timeline-body"><pre><code>        assert_eq!(check_file(&amp;db, file), Vec::&lt;String&gt;::new());
 </code></pre>
 </div>
         </div>
@@ -127,21 +127,21 @@ pub struct TypeCheckDiagnostics {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:48 on 2024-08-19 13:15</div>
-            <div class="timeline-body"><p>This is intentional. It's common in builders to call the methods the same as the field names.</p>
+            <div class="timeline-body"><p>This is intentional. It&#x27;s common in builders to call the methods the same as the field names.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-08-19 13:18</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Formatter (stable)</h3>
+Formatter (stable)
 <p>✅ ecosystem check detected no format changes.</p>
-<h3>Formatter (preview)</h3>
+Formatter (preview)
 <p>✅ ecosystem check detected no format changes.</p>
 </div>
         </div>
@@ -151,7 +151,7 @@ pub struct TypeCheckDiagnostics {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:48 on 2024-08-19 13:21</div>
-            <div class="timeline-body"><p>Fair enough -- I still feel like it breaks our local-to-this-repo convention where <code>.range()</code> almost always returns the text range of a thing and never mutates a thing, even if it's a generally common pattern in Rust. But it doesn't matter that much.</p>
+            <div class="timeline-body"><p>Fair enough -- I still feel like it breaks our local-to-this-repo convention where <code>.range()</code> almost always returns the text range of a thing and never mutates a thing, even if it&#x27;s a generally common pattern in Rust. But it doesn&#x27;t matter that much.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -174,18 +174,18 @@ pub struct TypeCheckDiagnostics {
             <div class="timeline-body"><blockquote>
 <p>You also need to emit &quot;unresolved import&quot; diagnostics on <code>from foo import bar</code> imports where <code>foo</code> can be resolved to a module but there is no <code>bar</code> symbol inside the <code>foo</code> module. We do so on <code>main</code>, but this PR means that we now only emit &quot;unresolved import&quot; diagnostics on <code>import foo</code> imports or <code>from foo import bar</code> imports where the module <code>foo</code> cannot be resolved.</p>
 </blockquote>
-<p>Yeah, I'm not aiming for parity with the lint rule. The goal here is to add the API, and unresolved imports were the easiest example where I didn't have to make something up.</p>
+<p>Yeah, I&#x27;m not aiming for parity with the lint rule. The goal here is to add the API, and unresolved imports were the easiest example where I didn&#x27;t have to make something up.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-19 13:53</div>
             <div class="timeline-body"><blockquote>
-<p>Yeah, I'm not aiming for parity with the lint rule. The goal here is to add the API, and unresolved imports were the easiest example where I didn't have to make something up.</p>
+<p>Yeah, I&#x27;m not aiming for parity with the lint rule. The goal here is to add the API, and unresolved imports were the easiest example where I didn&#x27;t have to make something up.</p>
 </blockquote>
-<p>Fair enough -- but parity with <code>main</code> isn't too hard here, and it also fixes the failing assertions you have currrently in the benchmarks. You just need to do this to your PR branch:</p>
-<pre><code class="language-diff">--- a/crates/red_knot_python_semantic/src/types/infer.rs
+<p>Fair enough -- but parity with <code>main</code> isn&#x27;t too hard here, and it also fixes the failing assertions you have currrently in the benchmarks. You just need to do this to your PR branch:</p>
+<pre><code>--- a/crates/red_knot_python_semantic/src/types/infer.rs
 +++ b/crates/red_knot_python_semantic/src/types/infer.rs
-@@ -943,7 +943,7 @@ impl&lt;'db&gt; TypeInferenceBuilder&lt;'db&gt; {
+@@ -943,7 +943,7 @@ impl&lt;&#x27;db&gt; TypeInferenceBuilder&lt;&#x27;db&gt; {
              ModuleName::new(module_name)
          };
  
@@ -194,11 +194,11 @@ pub struct TypeCheckDiagnostics {
  
          let ast::Alias {
              range: _,
-@@ -960,6 +960,15 @@ impl&lt;'db&gt; TypeInferenceBuilder&lt;'db&gt; {
+@@ -960,6 +960,15 @@ impl&lt;&#x27;db&gt; TypeInferenceBuilder&lt;&#x27;db&gt; {
              .member(self.db, &amp;Name::new(&amp;name.id))
              .replace_unbound_with(self.db, Type::Unknown);
  
-+        // We'll already have emitted a diagnostic if `module_name` is `None`
++        // We&#x27;ll already have emitted a diagnostic if `module_name` is `None`
 +        if let Some(module_name) = module_name {
 +            if ty.is_unknown() {
 +                if let Some(builder) = self.push_diagnostic(alias.into(), &quot;reportMissingImport&quot;) {
@@ -218,7 +218,7 @@ pub struct TypeCheckDiagnostics {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:46 on 2024-08-19 14:12</div>
-            <div class="timeline-body"><p>Agree, but it also is the only reason why the type exists. It would just be a <code>Vec&lt;TypeCheckDiagnostic&gt;</code> if it wasn't for the <code>Arc</code> wrapping</p>
+            <div class="timeline-body"><p>Agree, but it also is the only reason why the type exists. It would just be a <code>Vec&lt;TypeCheckDiagnostic&gt;</code> if it wasn&#x27;t for the <code>Arc</code> wrapping</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -233,9 +233,9 @@ pub struct TypeCheckDiagnostics {
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-19 14:16</div>
             <div class="timeline-body"><blockquote>
-<p>Fair enough -- but parity with main isn't too hard here, and it also fixes the failing assertions you have currrently in the benchmarks. You just need to do this to your PR branch:</p>
+<p>Fair enough -- but parity with main isn&#x27;t too hard here, and it also fixes the failing assertions you have currrently in the benchmarks. You just need to do this to your PR branch:</p>
 </blockquote>
-<p>I didn't do it because I am unclear on whether the diagnostic shouldn't be created in <code>ty.member</code>. That's why I still prefer to not make this change as part of this PR</p>
+<p>I didn&#x27;t do it because I am unclear on whether the diagnostic shouldn&#x27;t be created in <code>ty.member</code>. That&#x27;s why I still prefer to not make this change as part of this PR</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -244,55 +244,55 @@ pub struct TypeCheckDiagnostics {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:46 on 2024-08-19 14:17</div>
-            <div class="timeline-body"><p>Okay, but VSCode will display all this information on my screen if I'm hovering over the <code>TypeCheckDiagnostics</code> in another red-knot module. This feels like way more information than is necessary in that kind of situation :P</p>
-<p><img src="https://github.com/user-attachments/assets/d3799e7a-7fee-4025-a9aa-b1139f6ed827" alt="image" /></p>
+            <div class="timeline-body"><p>Okay, but VSCode will display all this information on my screen if I&#x27;m hovering over the <code>TypeCheckDiagnostics</code> in another red-knot module. This feels like way more information than is necessary in that kind of situation :P</p>
+<p><img src="https://github.com/user-attachments/assets/d3799e7a-7fee-4025-a9aa-b1139f6ed827" alt="image"></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-19 14:19</div>
             <div class="timeline-body"><blockquote>
-<p>I didn't do it because I am unclear on whether the diagnostic shouldn't be created in <code>ty.member</code>.</p>
+<p>I didn&#x27;t do it because I am unclear on whether the diagnostic shouldn&#x27;t be created in <code>ty.member</code>.</p>
 </blockquote>
-<p>(Definitely not, because we'll also use <code>ty.member()</code> for e.g. <code>import foo; x = foo.bar</code> errors where the <code>foo</code> module has no member <code>bar</code> -- but there it's an unresolved attribute access rather than an unresolved import, so it'll need a different error message and a different code)</p>
+<p>(Definitely not, because we&#x27;ll also use <code>ty.member()</code> for e.g. <code>import foo; x = foo.bar</code> errors where the <code>foo</code> module has no member <code>bar</code> -- but there it&#x27;s an unresolved attribute access rather than an unresolved import, so it&#x27;ll need a different error message and a different code)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:989 on 2024-08-19 14:34</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">                &quot;unresolved-import&quot;,
+            <div class="timeline-body"><pre><code>                &quot;unresolved-import&quot;,
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-08-19 14:37</div>
-            <div class="timeline-body"><p>Thanks, I like this much more now. I'd still prefer it if we could have parity with <code>main</code> in this PR, but <code>¯\_(ツ)_/¯</code></p>
+            <div class="timeline-body"><p>Thanks, I like this much more now. I&#x27;d still prefer it if we could have parity with <code>main</code> in this PR, but <code>¯\_(ツ)_/¯</code></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-19 14:38</div>
             <div class="timeline-body"><blockquote>
-<p>(Definitely not, because we'll also use ty.member() for e.g. import foo; x = foo.bar errors where the foo module has no member bar -- but there it's an unresolved attribute access rather than an unresolved import, so it'll need a different error message and a different code)</p>
+<p>(Definitely not, because we&#x27;ll also use ty.member() for e.g. import foo; x = foo.bar errors where the foo module has no member bar -- but there it&#x27;s an unresolved attribute access rather than an unresolved import, so it&#x27;ll need a different error message and a different code)</p>
 </blockquote>
-<p>Still, I don't know ;) Feels annoying having to test this on every <code>ty.member</code> call-site</p>
+<p>Still, I don&#x27;t know ;) Feels annoying having to test this on every <code>ty.member</code> call-site</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @MichaReiser on 2024-08-20 07:22</div>
+            <div class="event">Merged by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-20 07:22</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2024-08-20 07:22</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-20 07:22</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-08-20 07:22</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-08-20 07:23</div>
-            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/type-check">CodSpeed Performance Report</a></h2>
-<h3>Merging #12988 will <strong>improve performances by 7.07%</strong></h3>
-<p><sub>Comparing <code>type-check</code> (de62da1) with <code>main</code> (38c19fb)</sub></p>
-<h3>Summary</h3>
+            <div class="timeline-body"><a href="https://codspeed.io/astral-sh/ruff/branches/type-check">CodSpeed Performance Report</a>
+Merging #12988 will <strong>improve performances by 7.07%</strong>
+<p>Comparing <code>type-check</code> (de62da1) with <code>main</code> (38c19fb)</p>
+Summary
 <p><code>⚡ 1</code> improvements
 <code>✅ 31</code> untouched benchmarks</p>
-<h3>Benchmarks breakdown</h3>
+Benchmarks breakdown
 <p>|     | Benchmark | <code>main</code> | <code>type-check</code> | Change |
 | --- | --------- | ----------------------- | ------------------- | ------ |
 | ⚡ | <code>linter/all-rules[numpy/globals.py]</code> | 778.7 µs | 727.3 µs | +7.07% |</p>
@@ -301,7 +301,7 @@ pub struct TypeCheckDiagnostics {
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:06:06 UTC
+        Synced at 2026-01-20 19:06:13 UTC
     </footer>
 </body>
 </html>

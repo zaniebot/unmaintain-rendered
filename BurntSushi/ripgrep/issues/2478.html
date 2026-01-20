@@ -23,25 +23,25 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Korkman">@Korkman</a></div>
-            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+            <div class="timeline-body">What version of ripgrep are you using?
 <p>13.0.0</p>
-<h4>How did you install ripgrep?</h4>
+How did you install ripgrep?
 <p>Binary download from releases.</p>
-<h4>What operating system are you using ripgrep on?</h4>
+What operating system are you using ripgrep on?
 <p>Debian Bullseye</p>
-<h4>Describe your bug.</h4>
+Describe your bug.
 <p>Ripgrep does not sanitize file match content before showing it in annotated output (colorized lines and match, which is the default mode of operation). While I agree matched lines should be passed unmodified as-is when output is piped to a program, it is very unconvenient up to the point of being dangerous when passed to the terminal. The problem is that the output cannot be easily handled in a safe manner because it contains a mixture of control characters from the grepped file and ripgrep. I propose ripgrep should strip all control characters (and unprintable, while at it) from the match column before applying colors, whenever a terminal is attached to the output.</p>
-<h4>What are the steps to reproduce the behavior?</h4>
+What are the steps to reproduce the behavior?
 <p>Attached is a file
 <a href="https://github.com/BurntSushi/ripgrep/files/11071721/controlchars.txt">controlchars.txt</a>
 which will hide a line when grepped with</p>
 <p><code>rg &quot;&quot; controlchars.txt</code></p>
-<h4>What is the actual behavior?</h4>
+What is the actual behavior?
 <p>Sabotaged output:</p>
 <pre><code>1:one
 2:three
 </code></pre>
-<h4>What is the expected behavior?</h4>
+What is the expected behavior?
 <p>Sanitized output:</p>
 <pre><code>1:one
 2:two
@@ -51,51 +51,51 @@ which will hide a line when grepped with</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-03-26 13:51</div>
-            <div class="timeline-body"><p>I'm not sure how practical this is, and I doubt I'll work on it any time soon. I'm also skeptical of your characterization of it being dangerous. Is <code>cat file</code> dangerous? How many tools dump the contents of an arbitrary file without sanitizing it?</p>
-<p>I'd be open to considering a PR fixing this, but I don't think it will be a simple change.</p>
+            <div class="timeline-body"><p>I&#x27;m not sure how practical this is, and I doubt I&#x27;ll work on it any time soon. I&#x27;m also skeptical of your characterization of it being dangerous. Is <code>cat file</code> dangerous? How many tools dump the contents of an arbitrary file without sanitizing it?</p>
+<p>I&#x27;d be open to considering a PR fixing this, but I don&#x27;t think it will be a simple change.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2023-03-26 13:51</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-03-26 13:51</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2023-03-26 13:51</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-03-26 13:51</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Korkman">@Korkman</a> on 2023-03-26 16:31</div>
             <div class="timeline-body"><p>Yes! <code>cat file</code> is indeed dangerous if the passed file is of untrusted origin. Not beyond a mild annoyance on its own, but combined with flaws in terminal emulators it <a href="https://seclists.org/fulldisclosure/2021/May/33">can lead to RCE</a>. I can think of many use-cases where rg is fed untrusted files, like logfiles or whole filesystems. The beauty of ripgrep is that it is insanely fast reading files. Absolutely feasible to just go to / and <code>rg --one-file-system</code>.</p>
 <p>Currently, input files can be sanitized using a <code>--pre</code> processor, but that greatly impacts speed and distorts reported match locations. Also, it is unnecessary to sanitize the entire input. Output can be sanitized, too, with some <code>awk</code> magic, but not (easily) without losing colored matches (and at that point, there is no way to tell if colors came from ripgrep or the grepped file).</p>
-<p>The perfect place to sanitize would be right between &quot;found a matching line&quot; and &quot;output the match&quot;, and that's inside ripgrep ;-) I can totally understand this isn't a priority, though. Since you're open for a PR, I might give it a try, but not very soon either. I guess a new option <code>--safe-output</code> would be best, removing all non-printable characters from output?</p>
+<p>The perfect place to sanitize would be right between &quot;found a matching line&quot; and &quot;output the match&quot;, and that&#x27;s inside ripgrep ;-) I can totally understand this isn&#x27;t a priority, though. Since you&#x27;re open for a PR, I might give it a try, but not very soon either. I guess a new option <code>--safe-output</code> would be best, removing all non-printable characters from output?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/misaki-web">@misaki-web</a> on 2023-03-29 20:03</div>
             <div class="timeline-body"><blockquote>
-<p>The perfect place to sanitize would be right between &quot;found a matching line&quot; and &quot;output the match&quot;, and that's inside ripgrep ;-) I can totally understand this isn't a priority, though. Since you're open for a PR, I might give it a try, but not very soon either. I guess a new option <code>--safe-output</code> would be best, removing all non-printable characters from output?</p>
+<p>The perfect place to sanitize would be right between &quot;found a matching line&quot; and &quot;output the match&quot;, and that&#x27;s inside ripgrep ;-) I can totally understand this isn&#x27;t a priority, though. Since you&#x27;re open for a PR, I might give it a try, but not very soon either. I guess a new option <code>--safe-output</code> would be best, removing all non-printable characters from output?</p>
 </blockquote>
 <p>IMO, a flag <code>--safe-output</code> may cause some confusion. One could expect to get output with literal control chars/escape sequences, like this:</p>
-<pre><code class="language-bash">$ cat controlchars.txt | sed $'s/\e/\\\\E/g'
+<pre><code>$ cat controlchars.txt | sed $&#x27;s/\e/\\\\E/g&#x27;
 one
 two
 \E[1A\E[999D\E[2C\E[Kthree
 </code></pre>
-<p>Something like <code>--strip-xxxxx</code> may be clearer, but I'm not sure what would be the best expression (<code>xxxxx</code>) because we shouldn't strip all control characters.</p>
+<p>Something like <code>--strip-xxxxx</code> may be clearer, but I&#x27;m not sure what would be the best expression (<code>xxxxx</code>) because we shouldn&#x27;t strip all control characters.</p>
 <blockquote>
 <p>I propose ripgrep should strip all control characters (and unprintable, while at it) from the match column before applying colors, whenever a terminal is attached to the output.</p>
 </blockquote>
 <p>It may be too much. See this example:</p>
-<pre><code class="language-bash">$ # By default:
-$ echo -e &quot;lorem\tipsum&quot; | rg 'lorem'
+<pre><code>$ # By default:
+$ echo -e &quot;lorem\tipsum&quot; | rg &#x27;lorem&#x27;
 lorem	ipsum
 $ # Stripping all control characters:
-$ echo -e &quot;lorem\tipsum&quot; | rg 'lorem' | tr -d '[:cntrl:]'
+$ echo -e &quot;lorem\tipsum&quot; | rg &#x27;lorem&#x27; | tr -d &#x27;[:cntrl:]&#x27;
 loremipsum
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Korkman">@Korkman</a> on 2023-04-06 21:27</div>
-            <div class="timeline-body"><p>You're right, the full list of unprintables is too much of a filter. Also, terminal detection downpipe was a bad idea, strike that. If it's an option, it should always behave the same.</p>
+            <div class="timeline-body"><p>You&#x27;re right, the full list of unprintables is too much of a filter. Also, terminal detection downpipe was a bad idea, strike that. If it&#x27;s an option, it should always behave the same.</p>
 <p>List of unprintable ASCII codes for reference:</p>
 <pre><code>dec hex  name
   0  00  NULL
@@ -142,7 +142,7 @@ loremipsum
 <ul>
 <li>BACKSPACE</li>
 <li>ESCAPE</li>
-<li>RUBOUT (DELETE) <em>I actually don't know if this one is interpreted by any terminal</em></li>
+<li>RUBOUT (DELETE) <em>I actually don&#x27;t know if this one is interpreted by any terminal</em></li>
 <li>BELL (Beep)</li>
 <li>NULL
 <em>and from this <a href="https://serverfault.com/a/189551/38826">helpful comment</a>:</em></li>
@@ -151,7 +151,7 @@ loremipsum
 <li>DEVICE CONTROL 3 (XOFF)</li>
 </ul>
 <p>The blacklist may be extended with all characters of no known good effects (not displayed = not useful, can only do harm).</p>
-<p>It's quite difficult to make either a complete whitelist or blacklist fit for all purposes and use-cases.</p>
+<p>It&#x27;s quite difficult to make either a complete whitelist or blacklist fit for all purposes and use-cases.</p>
 <p>After all, maybe a minimalist approach is best:</p>
 <p><code>--strip-escape</code></p>
 <p>Everything else can be filtered downpipe externally with other tools. But rg <em>adds</em> escape sequences for colors and those use only ESCAPE afaik. So the one character which has to be stripped at minimum would be ESC?</p>
@@ -164,7 +164,7 @@ loremipsum
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/misaki-web">@misaki-web</a> on 2023-04-06 22:11</div>
             <div class="timeline-body"><blockquote>
-<p>The perfect place to sanitize would be right between &quot;found a matching line&quot; and &quot;output the match&quot;, and that's inside ripgrep</p>
+<p>The perfect place to sanitize would be right between &quot;found a matching line&quot; and &quot;output the match&quot;, and that&#x27;s inside ripgrep</p>
 </blockquote>
 <p>How do you see a new flag <code>--strip-xxxxx</code> interact with <code>--passthru</code>? Only stripping chars in matched lines or in the entire document (since <code>--passthru</code> returns all lines, matched or not)?</p>
 </div>
@@ -179,10 +179,10 @@ loremipsum
             <div class="timeline-header">Comment by <a href="https://github.com/MarSoft">@MarSoft</a> on 2023-10-15 13:55</div>
             <div class="timeline-body"><p>I think we should not <em>strip</em> escape sequences but <em>replace</em> them with a safe form, like <code>less</code> does by default:</p>
 <pre><code># by default — some words will be colorized
-$ echo -e 'lorem\tipsum \e[31mdolor \e[32msit amet\e[0m' | rg 'lorem'
+$ echo -e &#x27;lorem\tipsum \e[31mdolor \e[32msit amet\e[0m&#x27; | rg &#x27;lorem&#x27;
 lorem   ipsum dolor sit amet
 # with escape characters guarding enable
-$ echo -e 'lorem\tipsum \e[31mdolor \e[32msit amet\e[0m' | rg --guard-escapes 'lorem'
+$ echo -e &#x27;lorem\tipsum \e[31mdolor \e[32msit amet\e[0m&#x27; | rg --guard-escapes &#x27;lorem&#x27;
 lorem   ipsum \x1B31mdolor \x1B32msit amet\x1B0m
 </code></pre>
 <p>We may also want to colorize those escape sequences (like <code>\x1B</code>), maybe just with &quot;bold&quot; effect.</p>
@@ -190,25 +190,25 @@ lorem   ipsum \x1B31mdolor \x1B32msit amet\x1B0m
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-22 21:45</div>
-            <div class="timeline-body"><p>I've given this some thought and I think this is beyond the scope of what ripgrep ought to do.</p>
+            <div class="timeline-body"><p>I&#x27;ve given this some thought and I think this is beyond the scope of what ripgrep ought to do.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2023-11-22 21:45</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-22 21:45</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> removed by @BurntSushi on 2023-11-22 21:45</div>
+            <div class="event">Label <span class="label">enhancement</span> removed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-22 21:45</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> removed by @BurntSushi on 2023-11-22 21:45</div>
+            <div class="event">Label <span class="label">question</span> removed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-22 21:45</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2023-11-22 21:45</div>
+            <div class="event">Label <span class="label">wontfix</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-22 21:45</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:43:39 UTC
+        Synced at 2026-01-20 18:48:13 UTC
     </footer>
 </body>
 </html>

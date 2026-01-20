@@ -28,32 +28,32 @@
 <blockquote>
 <p>CI fails if there is a pair of rules, Rule A and Rule B, which identify identical spans in <code>crates/ruff_linter/resources/test/.../A.py</code> as violations.</p>
 </blockquote>
-<p>In this case I would guess that either Rule A and Rule B are identical, or else it should be possible to disambiguate them by adding more test cases. (But maybe there is an error in that logic). If this isn't true, perhaps a list of exceptional pairs can be maintained.</p>
+<p>In this case I would guess that either Rule A and Rule B are identical, or else it should be possible to disambiguate them by adding more test cases. (But maybe there is an error in that logic). If this isn&#x27;t true, perhaps a list of exceptional pairs can be maintained.</p>
 <p>Presumably there is also a clever way to implement this such that the first time the check is run it might be slow but is fast on subsequent runs.</p>
 <p>(Bonus points: Apply the same principle to speed up/automate the detection of rules from other packages which have already been implemented in Ruff.)</p>
 <p>This is sort of tangentially related to the rule re-categorization effort #1774 and of course to the question of aliasing #2186.</p>
-<p>Would love to know if there's interest or suggestions. If so, I can try to implement this.</p>
+<p>Would love to know if there&#x27;s interest or suggestions. If so, I can try to implement this.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-24 07:18</div>
-            <div class="timeline-body"><p>An automated way of detecting duplicated rules would be very helpful, but I don't have a good feeling for how well the described approach would work regarding false positives and false negatives. I think a good first step would be to identify duplicate rules that were later merged/removed and play it through manually.</p>
+            <div class="timeline-body"><p>An automated way of detecting duplicated rules would be very helpful, but I don&#x27;t have a good feeling for how well the described approach would work regarding false positives and false negatives. I think a good first step would be to identify duplicate rules that were later merged/removed and play it through manually.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ci</span> added by @MichaReiser on 2024-07-24 07:18</div>
+            <div class="event">Label <span class="label">ci</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-24 07:18</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-07-24 14:10</div>
             <div class="timeline-body"><p>Glad to hear there is some interest!</p>
 <p>I did a quick experiment:</p>
-<h2>Methodology</h2>
+Methodology
 <ul>
-<li>Step 1: Run all Ruff rules on all test fixtures and export results to json. (Note: I did this just by selecting &quot;ALL&quot;, which removes a few conflicting rules, but I'm ignoring that for now.)</li>
+<li>Step 1: Run all Ruff rules on all test fixtures and export results to json. (Note: I did this just by selecting &quot;ALL&quot;, which removes a few conflicting rules, but I&#x27;m ignoring that for now.)</li>
 <li>Step 2: For each rule, record all tuples of the form <code>(filename, start_line, end_line)</code> where a check occurs.</li>
 <li>Step 3: Compute the <a href="https://en.wikipedia.org/wiki/Jaccard_index">intersection over the union</a> of these sets of &quot;check locations&quot; for each pair of rules.</li>
 </ul>
-<h2>Results</h2>
+Results
 <p>There appear to be no exact matches between existing rules, but we can see if there are any interesting &quot;near matches&quot;. The top 10 most similar pairs (which happens to coincide with those pairs having similarity of over 50%) are as follows:</p>
 <ul>
 <li>D400 (<code>ends-in-period</code>) and D415 (<code>ends-in-punctuation</code>) (94.20%)<ul>
@@ -97,7 +97,7 @@
 </ul>
 </li>
 </ul>
-<p>The number of false positives for this test is either a feature or a bug depending on whether or not it's helpful to spot places where additional test cases should be added to the test fixture.</p>
+<p>The number of false positives for this test is either a feature or a bug depending on whether or not it&#x27;s helpful to spot places where additional test cases should be added to the test fixture.</p>
 <p>One can play with the threshold a bit, depending on how many candidate pairs you want to consider. There are</p>
 <ul>
 <li>10 pairs with &gt;50% match</li>
@@ -109,32 +109,32 @@
 <li>2045 pairs with &gt;0% match</li>
 <li>217470 pairs total</li>
 </ul>
-<h2>Next?</h2>
+Next?
 <p>So perhaps having an automated check that checks a threshold of similarity would be helpful? If CI is too unwieldy for this, one could also manually run a script for this before releases/periodically.</p>
-<p>The json and notebook used are <a href="https://github.com/dylwil3/duplicate-ruff-rules">at this repo</a> if you'd like to play around yourself.</p>
-<p>Let me know if you'd like me to go further with this (eg continue experimenting, add something to the <code>scripts</code> folder, etc.)</p>
-<p>An example of an additional experiment might be to augment the set of files used to generate each rule's &quot;profile&quot; by including one or all of the codebases in the ecosystem checks. This has the advantage of comparing rule check behavior in a more natural setting, but the disadvantage that rarely tripped rules may get buried.</p>
+<p>The json and notebook used are <a href="https://github.com/dylwil3/duplicate-ruff-rules">at this repo</a> if you&#x27;d like to play around yourself.</p>
+<p>Let me know if you&#x27;d like me to go further with this (eg continue experimenting, add something to the <code>scripts</code> folder, etc.)</p>
+<p>An example of an additional experiment might be to augment the set of files used to generate each rule&#x27;s &quot;profile&quot; by including one or all of the codebases in the ecosystem checks. This has the advantage of comparing rule check behavior in a more natural setting, but the disadvantage that rarely tripped rules may get buried.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-19 13:45</div>
             <div class="timeline-body"><p>Sorry for the late reply. Overall, this does seem useful, but it seems too noisy for a CI job. It requires a manual review of the flagged rules.</p>
-<p>The time I would find such a check the most useful is when there's a PR for a new rule, similar to the ecosystem check. But I must admit it's unclear to me how to design the check so that it is approachable, understandable, and has a good false-positive/false-negative ratio.</p>
+<p>The time I would find such a check the most useful is when there&#x27;s a PR for a new rule, similar to the ecosystem check. But I must admit it&#x27;s unclear to me how to design the check so that it is approachable, understandable, and has a good false-positive/false-negative ratio.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2026-01-01 15:23</div>
             <div class="timeline-body"><p>This is very cool! (and keeps popping up in my default rules searches 😄)</p>
 <p>I wonder if we could do something like the <code>ecosystem-analyzer</code> job for ty, where it only runs when we put a special label onto a PR? I agree with Micha that it would be most helpful to run this on new rule PRs.</p>
-<p>I don't have any great suggestion for presenting the data, but reporting a short candidate list of overlapping rules for manual review would be a decent interface in my opinion.</p>
-<p>The extent of the range overlap might be another signal that's slightly stronger than the starting and ending lines. The rules in #22328 have exactly overlapping ranges, for example. Maybe we could extract something from the docs too. Those two rules both link to the same page in the Python docs.</p>
+<p>I don&#x27;t have any great suggestion for presenting the data, but reporting a short candidate list of overlapping rules for manual review would be a decent interface in my opinion.</p>
+<p>The extent of the range overlap might be another signal that&#x27;s slightly stronger than the starting and ending lines. The rules in #22328 have exactly overlapping ranges, for example. Maybe we could extract something from the docs too. Those two rules both link to the same page in the Python docs.</p>
 <p>Just a few ideas!</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:50:42 UTC
+        Synced at 2026-01-20 18:48:55 UTC
     </footer>
 </body>
 </html>

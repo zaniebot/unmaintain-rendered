@@ -23,71 +23,71 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/danparizher">@danparizher</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Fixes #21033 (RUF027) to suppress f-string suggestions for strings containing backslashes in interpolation expressions when targeting Python versions below 3.12, preventing syntax errors.</p>
-<h2>Problem Analysis</h2>
-<p>RUF027 was suggesting f-string conversions for strings with backslashes in interpolation expressions (e.g., <code>&quot;{'\\n'}&quot;</code>), but f-strings with backslashes in interpolations are only valid syntax in Python 3.12+. This caused syntax errors when the fix was applied to code targeting older Python versions.</p>
+Problem Analysis
+<p>RUF027 was suggesting f-string conversions for strings with backslashes in interpolation expressions (e.g., <code>&quot;{&#x27;\\n&#x27;}&quot;</code>), but f-strings with backslashes in interpolations are only valid syntax in Python 3.12+. This caused syntax errors when the fix was applied to code targeting older Python versions.</p>
 <p>The issue occurred because the <code>should_be_fstring</code> function was checking for backslashes anywhere in the string literal, rather than specifically within the interpolation expressions where the syntax restriction applies.</p>
-<h2>Approach</h2>
+Approach
 <p>Added a version check in the <code>should_be_fstring</code> function to suppress RUF027 for strings containing backslashes within interpolation expressions when the target Python version is below 3.12. This ensures:</p>
 <ul>
-<li>For Python &lt; 3.12: RUF027 is suppressed for strings with backslashes in interpolations (e.g., <code>&quot;{'\\n'}{x}&quot;</code>)</li>
+<li>For Python &lt; 3.12: RUF027 is suppressed for strings with backslashes in interpolations (e.g., <code>&quot;{&#x27;\\n&#x27;}{x}&quot;</code>)</li>
 <li>For Python ≥ 3.12: RUF027 works normally for strings with backslashes in interpolations</li>
 </ul>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-24 23:04</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-10-25 15:02</div>
             <div class="timeline-body"><p>Backslashes in f-strings aren’t the problem.</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; f&quot;\n&quot;
-'\n'
+<pre><code>&gt;&gt;&gt; f&quot;\n&quot;
+&#x27;\n&#x27;
 </code></pre>
 <p>The problem is backslashes in f-string interpolations.</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; f&quot;{'\n'}&quot;
+<pre><code>&gt;&gt;&gt; f&quot;{&#x27;\n&#x27;}&quot;
   File &quot;&lt;stdin&gt;&quot;, line 1
-    f&quot;{'\n'}&quot;
+    f&quot;{&#x27;\n&#x27;}&quot;
              ^
 SyntaxError: f-string expression part cannot include a backslash
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[`ruff`] Suppress strings with backslashes before Python 3.12 (`RUF027`)" to "[`ruff`] Suppress strings with backslashes in interpolations before Python 3.12 (`RUF027`)" by @danparizher on 2025-10-25 21:26</div>
+            <div class="event">Renamed from &quot;[`ruff`] Suppress strings with backslashes before Python 3.12 (`RUF027`)&quot; to &quot;[`ruff`] Suppress strings with backslashes in interpolations before Python 3.12 (`RUF027`)&quot; by <a href="https://github.com/danparizher">@danparizher</a> on 2025-10-25 21:26</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-27 18:19</div>
-            <div class="timeline-body"><p>I just worked on two issues for our syntax error related to this: https://github.com/astral-sh/ruff/pull/20867 and https://github.com/astral-sh/ruff/pull/20949. I think the fix here is similar to the incorrect code I had originally in the parser, which turned out to be too naive in the presence of nested interpolations. To summarize the two issues, code like this is valid on 3.11:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; f&quot;{1:\&quot;d\&quot;}&quot;
+            <div class="timeline-body"><p>I just worked on two issues for our syntax error related to this: <a href="https://github.com/astral-sh/ruff/pull/20867">astral-sh/ruff#20867</a> and <a href="https://github.com/astral-sh/ruff/pull/20949">astral-sh/ruff#20949</a>. I think the fix here is similar to the incorrect code I had originally in the parser, which turned out to be too naive in the presence of nested interpolations. To summarize the two issues, code like this is valid on 3.11:</p>
+<pre><code>&gt;&gt;&gt; f&quot;{1:\&quot;d\&quot;}&quot;
 Traceback (most recent call last):
   File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
-ValueError: Invalid format specifier '&quot;d&quot;' for object of type 'int'
+ValueError: Invalid format specifier &#x27;&quot;d&quot;&#x27; for object of type &#x27;int&#x27;
 </code></pre>
-<p>Note the <code>ValueError</code>, not an f-string syntax error. It looks like the code here would flag this because it's within the interpolation but not within the interpolation <em>expression</em>.</p>
-<p>In contrast, code like this is still invalid on 3.11 because it's in the expression part of a nested interpolation:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; f'{1: abcd &quot;{'aa'}&quot; }'
+<p>Note the <code>ValueError</code>, not an f-string syntax error. It looks like the code here would flag this because it&#x27;s within the interpolation but not within the interpolation <em>expression</em>.</p>
+<p>In contrast, code like this is still invalid on 3.11 because it&#x27;s in the expression part of a nested interpolation:</p>
+<pre><code>&gt;&gt;&gt; f&#x27;{1: abcd &quot;{&#x27;aa&#x27;}&quot; }&#x27;
   File &quot;&lt;stdin&gt;&quot;, line 1
-    f'{1: abcd &quot;{'aa'}&quot; }'
+    f&#x27;{1: abcd &quot;{&#x27;aa&#x27;}&quot; }&#x27;
                   ^^
-SyntaxError: f-string: expecting '}'
+SyntaxError: f-string: expecting &#x27;}&#x27;
 </code></pre>
-<p>But the <code>interpolations</code> iterator doesn't recurse into nested interpolations, so the fix is also not as easy as only checking the expression part (that's what I got wrong in #20867).</p>
-<p>It might be fair to be more conservative here since it's almost definitely easier to implement, but I wanted to mention this since it was relevant.</p>
+<p>But the <code>interpolations</code> iterator doesn&#x27;t recurse into nested interpolations, so the fix is also not as easy as only checking the expression part (that&#x27;s what I got wrong in #20867).</p>
+<p>It might be fair to be more conservative here since it&#x27;s almost definitely easier to implement, but I wanted to mention this since it was relevant.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/missing_fstring_syntax.rs</code>:183 on 2025-10-27 18:20</div>
-            <div class="timeline-body"><p>I think we could drop the <code>locator</code> and <code>semantic</code> arguments if we're passing the <code>Checker</code> they both come from. Alternatively, we could pass only the <code>target_version</code>, which is the only additional field we're accessing now.</p>
+            <div class="timeline-body"><p>I think we could drop the <code>locator</code> and <code>semantic</code> arguments if we&#x27;re passing the <code>Checker</code> they both come from. Alternatively, we could pass only the <code>target_version</code>, which is the only additional field we&#x27;re accessing now.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -100,18 +100,18 @@ SyntaxError: f-string: expecting '}'
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-10-27 18:21</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-27 18:21</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-10-27 18:21</div>
+            <div class="event">Label <span class="label">fixes</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-27 18:21</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @ntBre by @danparizher on 2025-10-27 22:15</div>
+            <div class="event">Review requested from <a href="https://github.com/ntBre">@ntBre</a> by <a href="https://github.com/danparizher">@danparizher</a> on 2025-10-27 22:15</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:16:41 UTC
+        Synced at 2026-01-20 19:19:52 UTC
     </footer>
 </body>
 </html>

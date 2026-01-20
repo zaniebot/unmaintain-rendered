@@ -23,28 +23,28 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a></div>
-            <div class="timeline-body"><p>We have retry support if there is an IO or status code error in the initial request (https://github.com/astral-sh/uv/pull/13897). If the initial response succeeded (usually with status code 200) and we convert the response to a streaming download, the streaming download-and-unpack is not retried, and we lose the reliable retry information.</p>
+            <div class="timeline-body"><p>We have retry support if there is an IO or status code error in the initial request (<a href="https://github.com/astral-sh/uv/pull/13897">astral-sh/uv#13897</a>). If the initial response succeeded (usually with status code 200) and we convert the response to a streaming download, the streaming download-and-unpack is not retried, and we lose the reliable retry information.</p>
 <p>Broken down into items:</p>
 <ul>
 <li>[ ] Show previous retries when a distribution download fails mid-streaming</li>
 <li>[ ] Perform retries when a distribution download fails mid-streaming</li>
-<li>[x] Show previous retries when a Python download fails mid-streaming (https://github.com/astral-sh/uv/pull/14378)</li>
+<li>[x] Show previous retries when a Python download fails mid-streaming (<a href="https://github.com/astral-sh/uv/pull/14378">astral-sh/uv#14378</a>)</li>
 <li>[ ] Perform retries when a Python download fails mid-streaming<ul>
-<li>(Jack: It's not clear that this is missing? <a href="https://github.com/astral-sh/uv/issues/14171#issuecomment-3014580701">The only cases I've seen fail to retry are synthetic.</a>)</li>
+<li>(Jack: It&#x27;s not clear that this is missing? <a href="https://github.com/astral-sh/uv/issues/14171#issuecomment-3014580701">The only cases I&#x27;ve seen fail to retry are synthetic.</a>)</li>
 </ul>
 </li>
 </ul>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2025-06-16 08:33</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/konstin">@konstin</a> on 2025-06-16 08:33</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">network</span> added by @konstin on 2025-06-16 08:33</div>
+            <div class="event">Label <span class="label">network</span> added by <a href="https://github.com/konstin">@konstin</a> on 2025-06-16 08:33</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-06-30 18:48</div>
-            <div class="timeline-body"><p>In playing with https://github.com/astral-sh/uv/issues/14171, I'm noticing that we retry certain errors more than I think(?) we intended. For example if I have my local Python mirror force a ConnectionReset error during the &quot;streaming phase&quot; of a download, we retry 3 times (for a total of 4 attempts), but if I force the same error at the very start of the GET request, I see 16 attempts. My theory is that we have nested retrying going on, with the inner loop done (indirectly) by <code>apply_middleware</code>: https://github.com/astral-sh/uv/blob/1c7c174bc80e9209bb52f975743c0cf55bc78e6d/crates/uv-client/src/base_client.rs#L412-L420</p>
+            <div class="timeline-body"><p>In playing with <a href="https://github.com/astral-sh/uv/issues/14171">astral-sh/uv#14171</a>, I&#x27;m noticing that we retry certain errors more than I think(?) we intended. For example if I have my local Python mirror force a ConnectionReset error during the &quot;streaming phase&quot; of a download, we retry 3 times (for a total of 4 attempts), but if I force the same error at the very start of the GET request, I see 16 attempts. My theory is that we have nested retrying going on, with the inner loop done (indirectly) by <code>apply_middleware</code>: https://github.com/astral-sh/uv/blob/1c7c174bc80e9209bb52f975743c0cf55bc78e6d/crates/uv-client/src/base_client.rs#L412-L420</p>
 <p>and the outer loop done (explicitly) by <code>fetch_with_retry</code>: https://github.com/astral-sh/uv/blob/1c7c174bc80e9209bb52f975743c0cf55bc78e6d/crates/uv-python/src/downloads.rs#L719-L730</p>
 <p>Is that correct? Is it expected, or maybe a bug?</p>
 </div>
@@ -56,23 +56,23 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-30 19:57</div>
-            <div class="timeline-body"><p>There's definitely retry nesting, mainly due to io errors vs. status code errors, where some of the nesting behavior is unintentional.</p>
+            <div class="timeline-body"><p>There&#x27;s definitely retry nesting, mainly due to io errors vs. status code errors, where some of the nesting behavior is unintentional.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-06-30 20:44</div>
-            <div class="timeline-body"><p>@konstin do you think it's a good idea to &quot;fix&quot; some of these &quot;excessive&quot; retries as part of getting the logging correct, or maybe better to just get the logging correct but keep the retry behavior itself unchanged? (Like I can see an argument that if we want 3 retries, but you get 3 distinct errors with different causes, it's not actually a bad thing to keep retrying until you actually get the same error 3 times.)</p>
+            <div class="timeline-body"><p>@konstin do you think it&#x27;s a good idea to &quot;fix&quot; some of these &quot;excessive&quot; retries as part of getting the logging correct, or maybe better to just get the logging correct but keep the retry behavior itself unchanged? (Like I can see an argument that if we want 3 retries, but you get 3 distinct errors with different causes, it&#x27;s not actually a bad thing to keep retrying until you actually get the same error 3 times.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-07-01 10:57</div>
-            <div class="timeline-body"><p>Having a consistent number of retries is preferable, though excessive retries are not really a problem. I'm more worried that the logic is overly complex and thereby faulty through retrying on slightly different conditions in different layers.</p>
+            <div class="timeline-body"><p>Having a consistent number of retries is preferable, though excessive retries are not really a problem. I&#x27;m more worried that the logic is overly complex and thereby faulty through retrying on slightly different conditions in different layers.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:31:48 UTC
+        Synced at 2026-01-20 19:39:04 UTC
     </footer>
 </body>
 </html>

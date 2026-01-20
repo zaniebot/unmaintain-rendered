@@ -29,11 +29,11 @@
 <li><code>examples/docs_snippets/pyproject.toml</code>  (&quot;docs_snippets&quot;)</li>
 </ul>
 <p>The logic that resolves the config file for any given invocation of <code>ruff</code> surprised me:</p>
-<pre><code>$ ruff `git ls-files '*.py'`  # uses root config for files in `examples/docs_snippets`
-$ ruff `git ls-files 'examples/docs_snippets/*.py`  # uses docs_snippets config
+<pre><code>$ ruff `git ls-files &#x27;*.py&#x27;`  # uses root config for files in `examples/docs_snippets`
+$ ruff `git ls-files &#x27;examples/docs_snippets/*.py`  # uses docs_snippets config
 </code></pre>
 <p>So, for a given file in <code>examples/docs_snippets</code>, different runs of <code>ruff</code> from the same cwd and with the same config files on disk will use different <code>pyproject.toml</code> files. It suprised me to have the config used for a particular file determined by whatever unrelated files also happen to be being processed instead of just (a) the cwd; and (b) location of existing config files.</p>
-<p>I don't have a strong opinion on <em>how</em> a config file is resolved, but IMO it should always resolve to the same one if the launch CWD and config files on disk are constant.</p>
+<p>I don&#x27;t have a strong opinion on <em>how</em> a config file is resolved, but IMO it should always resolve to the same one if the launch CWD and config files on disk are constant.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -43,7 +43,7 @@ $ ruff `git ls-files 'examples/docs_snippets/*.py`  # uses docs_snippets config
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2022-12-05 19:27</div>
+            <div class="event">Label <span class="label">configuration</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-05 19:27</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2022-12-05 19:57</div>
@@ -55,7 +55,7 @@ $ ruff `git ls-files 'examples/docs_snippets/*.py`  # uses docs_snippets config
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-05 20:01</div>
-            <div class="timeline-body"><p>Yeah I think that's right.</p>
+            <div class="timeline-body"><p>Yeah I think that&#x27;s right.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -65,18 +65,18 @@ $ ruff `git ls-files 'examples/docs_snippets/*.py`  # uses docs_snippets config
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2022-12-06 02:54</div>
-            <div class="timeline-body"><p>Another quirk I've discovered is that the <code>pyproject.toml</code> is chosen using the logic you've described above even if it doesn't have a <code>[tool.ruff]</code> section. IMO without that section it should definitely look further up the tree.</p>
+            <div class="timeline-body"><p>Another quirk I&#x27;ve discovered is that the <code>pyproject.toml</code> is chosen using the logic you&#x27;ve described above even if it doesn&#x27;t have a <code>[tool.ruff]</code> section. IMO without that section it should definitely look further up the tree.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-06 04:02</div>
-            <div class="timeline-body"><p>I'll try to prioritize this and get it done this week.</p>
+            <div class="timeline-body"><p>I&#x27;ll try to prioritize this and get it done this week.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2022-12-06 04:24</div>
             <div class="timeline-body"><p>If you can get config inheritance working that would be huge for us. Would go a long way towards preventing confusing and frustrating scenarios where implicit differences in config cause editor-driven and CLI or CI-driven invocations of <code>ruff</code> to disagree on the correct state of the code.</p>
-<p>I realize of course it's a tricky problem-- one that none of the other python linters have solved (to my knowledge). It leaves monorepos in a bad spot.</p>
+<p>I realize of course it&#x27;s a tricky problem-- one that none of the other python linters have solved (to my knowledge). It leaves monorepos in a bad spot.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -86,13 +86,13 @@ $ ruff `git ls-files 'examples/docs_snippets/*.py`  # uses docs_snippets config
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-06 04:55</div>
-            <div class="timeline-body"><p>(I'm probably over-stating how much work this is, the code is actually pretty well set-up for it.)</p>
+            <div class="timeline-body"><p>(I&#x27;m probably over-stating how much work this is, the code is actually pretty well set-up for it.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2022-12-06 12:28</div>
             <div class="timeline-body"><p>Noticed after updating to <code>0.0.165</code> that:</p>
-<pre><code>$ ruff --config=pyproject.toml --select=I001 `git ls-files 'examples/docs_snippets/*.py'`
+<pre><code>$ ruff --config=pyproject.toml --select=I001 `git ls-files &#x27;examples/docs_snippets/*.py&#x27;`
 </code></pre>
 <p>No longer treats the <code>docs_snippets</code> package as first party when sorting imports. I assume this is a consequence of the changed logic around finding the &quot;project root&quot;, but this seems like a bug right? Regardless of where the project root is, files inside <code>docs_snippets</code> should be identified as part of the <code>docs_snippets</code> package and imports from <code>docs_snippets</code> treated as first-party.</p>
 </div>
@@ -100,31 +100,31 @@ $ ruff `git ls-files 'examples/docs_snippets/*.py`  # uses docs_snippets config
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-06 14:36</div>
             <div class="timeline-body"><p>I think you want to set this:</p>
-<pre><code class="language-toml">[tool.ruff]
+<pre><code>[tool.ruff]
 src = [&quot;python_modules/dagster&quot;, &quot;examples/docs_snippets&quot;]
 </code></pre>
-<p>Otherwise, it's as if you're trying to import <code>doc_snippets</code> from the root directory.</p>
+<p>Otherwise, it&#x27;s as if you&#x27;re trying to import <code>doc_snippets</code> from the root directory.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2022-12-06 15:00</div>
-            <div class="timeline-body"><p>Oh, hmm, I hadn't seen the <code>src</code> option. Our monorepo actually has ~50 packages-- for instance, there is also <code>python_modules/dagit</code> and <code>python_modules/dagster_graphql</code>. But these didn't suffer from the same &quot;not first-party&quot; problem as <code>examples/docs_snippets</code>, presumably because I never ran e.g.:</p>
-<pre><code>$ ruff --config=pyproject.toml --select=I001 `git ls-files 'python_modules/dagster-graphl/*.py'`
+            <div class="timeline-body"><p>Oh, hmm, I hadn&#x27;t seen the <code>src</code> option. Our monorepo actually has ~50 packages-- for instance, there is also <code>python_modules/dagit</code> and <code>python_modules/dagster_graphql</code>. But these didn&#x27;t suffer from the same &quot;not first-party&quot; problem as <code>examples/docs_snippets</code>, presumably because I never ran e.g.:</p>
+<pre><code>$ ruff --config=pyproject.toml --select=I001 `git ls-files &#x27;python_modules/dagster-graphl/*.py&#x27;`
 </code></pre>
 <p>Instead the formatting is handled by:</p>
-<pre><code>$ ruff --config=pyproject.toml --select=I001 `git ls-files '*.py'`
+<pre><code>$ ruff --config=pyproject.toml --select=I001 `git ls-files &#x27;*.py&#x27;`
 </code></pre>
-<p>For these other packages, and first party is correctly detected. I guess that seems unintuitive to me? <code>docs_snippets</code> gets treated as non-first-party <em>only</em> when I directly target it with <code>git ls-files 'examples/docs_snippets/*.py'</code>.</p>
+<p>For these other packages, and first party is correctly detected. I guess that seems unintuitive to me? <code>docs_snippets</code> gets treated as non-first-party <em>only</em> when I directly target it with <code>git ls-files &#x27;examples/docs_snippets/*.py&#x27;</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-06 16:25</div>
-            <div class="timeline-body"><p>Hmm, I don't think that's quite what's happening. If you're using <code>--config=pyproject.toml</code>, then it shouldn't matter whether you &quot;directly target&quot; a given directory -- all resolution will happen from the root directory.</p>
+            <div class="timeline-body"><p>Hmm, I don&#x27;t think that&#x27;s quite what&#x27;s happening. If you&#x27;re using <code>--config=pyproject.toml</code>, then it shouldn&#x27;t matter whether you &quot;directly target&quot; a given directory -- all resolution will happen from the root directory.</p>
 <p>In fact, it does look like <code>dagster-graphql</code> is being classified as third-party (I confirmed this with some extra logging). Notice this diff after changing the TOML file to:</p>
-<pre><code class="language-toml">src = [&quot;python_modules/dagster&quot;, &quot;python_modules/dagster-graphql&quot;, &quot;examples/docs_snippets&quot;]
+<pre><code>src = [&quot;python_modules/dagster&quot;, &quot;python_modules/dagster-graphql&quot;, &quot;examples/docs_snippets&quot;]
 </code></pre>
 <p>Which leads to this change:</p>
-<pre><code class="language-diff">--- a/python_modules/dagster-graphql/dagster_graphql/implementation/fetch_runs.py
+<pre><code>--- a/python_modules/dagster-graphql/dagster_graphql/implementation/fetch_runs.py
 +++ b/python_modules/dagster-graphql/dagster_graphql/implementation/fetch_runs.py
 @@ -1,7 +1,6 @@
  from collections import defaultdict
@@ -145,11 +145,11 @@ src = [&quot;python_modules/dagster&quot;, &quot;examples/docs_snippets&quot;]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-06 21:17</div>
-            <div class="timeline-body"><p>I'm gonna try to write up a proposal for how this system change before I implement it, to ensure that it works well for individual projects and monorepos.</p>
+            <div class="timeline-body"><p>I&#x27;m gonna try to write up a proposal for how this system change before I implement it, to ensure that it works well for individual projects and monorepos.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2022-12-07 19:15</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-07 19:15</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-07 19:35</div>
@@ -159,38 +159,38 @@ src = [&quot;python_modules/dagster&quot;, &quot;examples/docs_snippets&quot;]
 <li>Always use the <code>pyproject.toml</code> containing a <code>tool.ruff</code> section &quot;closest&quot; to a given file.</li>
 <li>Always resolve paths (like per-file-ignores, exclusions, etc.) relative to the <code>pyproject.toml</code> file.</li>
 <li>Add an <code>extends</code> key to <code>pyproject.toml</code>, which takes a relative path to another <code>pyproject.toml</code> and performs a deep merge with the inherited <code>pyproject.toml</code>.</li>
-<li>Modify the semantics of <code>extend-ignore</code> and <code>extend-select</code> to <em>always</em> extend and never override. (This would allow nested configs to add and remove errors from parents without risk of overriding a <em>parent's</em> <code>extend-ignore</code> or <code>extend-select</code>.)</li>
+<li>Modify the semantics of <code>extend-ignore</code> and <code>extend-select</code> to <em>always</em> extend and never override. (This would allow nested configs to add and remove errors from parents without risk of overriding a <em>parent&#x27;s</em> <code>extend-ignore</code> or <code>extend-select</code>.)</li>
 </ul>
-<hr />
+<hr>
 <p>A couple other relevant details:</p>
 <ul>
-<li>If we can't find any <code>pyproject.toml</code> file, we'll just use the current working directory and default settings. (So we'll probably remove the <code>.git</code> detection?)</li>
-<li>We <em>could</em> also support a <code>ruff.toml</code> file similar to Hatch's <code>hatch.toml</code>.</li>
-<li>We'll need to remove some keys from the <code>Settings</code> struct (like <code>--format</code>) which don't make sense in an inherited model and only as top-level options.</li>
+<li>If we can&#x27;t find any <code>pyproject.toml</code> file, we&#x27;ll just use the current working directory and default settings. (So we&#x27;ll probably remove the <code>.git</code> detection?)</li>
+<li>We <em>could</em> also support a <code>ruff.toml</code> file similar to Hatch&#x27;s <code>hatch.toml</code>.</li>
+<li>We&#x27;ll need to remove some keys from the <code>Settings</code> struct (like <code>--format</code>) which don&#x27;t make sense in an inherited model and only as top-level options.</li>
 </ul>
-<hr />
-<p>One thing I'm unsure of is how the <code>src</code> path resolution should work here (which, today, is only used for inferring first-party imports, but in the future will be applicable beyond that).</p>
-<p>Thinking aloud for a sec, let's say I have the following setup:</p>
+<hr>
+<p>One thing I&#x27;m unsure of is how the <code>src</code> path resolution should work here (which, today, is only used for inferring first-party imports, but in the future will be applicable beyond that).</p>
+<p>Thinking aloud for a sec, let&#x27;s say I have the following setup:</p>
 <ul>
 <li><code>./python_modules/dagster/dagster</code></li>
 <li><code>./python_modules/dagit/dagit</code></li>
 <li><code>./examples/docs_snippets/docs_snippets</code></li>
 </ul>
 <p>Say, in my root <code>./pyproject.toml</code>, I have:</p>
-<pre><code class="language-toml">[tool.ruff]
+<pre><code>[tool.ruff]
 src = [&quot;python_modules/dagster&quot;, &quot;python_modules/dagit&quot;]
 </code></pre>
 <p>And in <code>./examples/doc_snippets/pyproject.toml</code> (which I want to customize to exclude <code>E501</code>, or something), I have:</p>
-<pre><code class="language-toml">[tool.ruff]
+<pre><code>[tool.ruff]
 extends = &quot;../../pyproject.toml&quot;
 extend-ignore = [&quot;E501&quot;]
 </code></pre>
 <p>The nice thing about this model is that running <code>ruff examples/doc_snippets</code> from root and <code>ruff .</code> from <code>./examples/doc_snippets</code> will have the same behavior, which is a great property and one that @smackesey has brought up a few times.</p>
-<p>The confusing thing is that because we set <code>src = [&quot;python_modules/dagster&quot;, &quot;python_modules/dagit&quot;]</code> in the root <code>./pyproject.toml</code> file, and we're inheriting it in <code>./examples/doc_snippets/pyproject.toml</code>, we won't treat any of the <code>doc_snippets</code> imports as first-party.</p>
-<p>To achieve that, we'd need to add <code>src = [&quot;.&quot;]</code> to <code>./examples/doc_snippets/pyproject.toml</code>, or include <code>&quot;examples/doc_snippets&quot;</code> in the root <code>./pyproject.toml</code> file.</p>
+<p>The confusing thing is that because we set <code>src = [&quot;python_modules/dagster&quot;, &quot;python_modules/dagit&quot;]</code> in the root <code>./pyproject.toml</code> file, and we&#x27;re inheriting it in <code>./examples/doc_snippets/pyproject.toml</code>, we won&#x27;t treat any of the <code>doc_snippets</code> imports as first-party.</p>
+<p>To achieve that, we&#x27;d need to add <code>src = [&quot;.&quot;]</code> to <code>./examples/doc_snippets/pyproject.toml</code>, or include <code>&quot;examples/doc_snippets&quot;</code> in the root <code>./pyproject.toml</code> file.</p>
 <p>A few ways to solve that problem:</p>
 <ol>
-<li>Don't solve it, and assume that you should enumerate all modules in the root <code>pyproject.toml</code>.</li>
+<li>Don&#x27;t solve it, and assume that you should enumerate all modules in the root <code>pyproject.toml</code>.</li>
 <li>Add <code>extends-src = [&quot;.&quot;]</code>.</li>
 <li>Do something else? Infer sources differently?</li>
 </ol>
@@ -198,23 +198,23 @@ extend-ignore = [&quot;E501&quot;]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-07 19:36</div>
-            <div class="timeline-body"><p>@smackesey - No urgency at all but I'd like to ensure that the scoped work here leads to an improvement in Dagster's setup and workflow, so feedback is very welcome.</p>
+            <div class="timeline-body"><p>@smackesey - No urgency at all but I&#x27;d like to ensure that the scoped work here leads to an improvement in Dagster&#x27;s setup and workflow, so feedback is very welcome.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2022-12-07 20:19</div>
             <div class="timeline-body"><p>Hey Charlie thanks for writing this up. In general I really like this plan as it incorporates basically everything I requested! Some specific questions/comments:</p>
 <blockquote>
-<p>Modify the semantics of extend-ignore and extend-select to always extend and never override. (This would allow nested configs to add and remove errors from parents without risk of overriding a parent's extend-ignore or extend-select.)</p>
+<p>Modify the semantics of extend-ignore and extend-select to always extend and never override. (This would allow nested configs to add and remove errors from parents without risk of overriding a parent&#x27;s extend-ignore or extend-select.)</p>
 </blockquote>
 <p>(1) Will <code>extend-exclude</code> get the same treatment?</p>
-<p>(2) Would it be possible in this scheme to override (without the old mechanism of direct setting overwriting) an inherited <code>select</code>/<code>ignore</code> by setting the opposite parameter? So if the parent config does <code>--extend-select=F401</code>, will the current config's <code>--extend-ignore=F401</code> beat out the parent?</p>
+<p>(2) Would it be possible in this scheme to override (without the old mechanism of direct setting overwriting) an inherited <code>select</code>/<code>ignore</code> by setting the opposite parameter? So if the parent config does <code>--extend-select=F401</code>, will the current config&#x27;s <code>--extend-ignore=F401</code> beat out the parent?</p>
 <blockquote>
-<p>We could also support a ruff.toml file similar to Hatch's hatch.toml.</p>
+<p>We could also support a ruff.toml file similar to Hatch&#x27;s hatch.toml.</p>
 </blockquote>
 <p>I think this is important since other tools may deal with <code>pyproject.toml</code> the way ruff currently deals with it-- i.e. thinking the closest one is the source of truth regardless of the existence of a tool-specific section. Like if you have a root <code>pyproject.toml</code> (R) and a subproject <code>pyproject.toml</code> (S), another tool might discover S inside the subproject, and even though there are no settings for the tool, not look any further up to find R (where it is configured). If we allow <code>ruff.toml</code> then users always have an option to configure ruff without screwing with the config of other tools.</p>
 <blockquote>
-<p>One thing I'm unsure of is how the src path resolution should work</p>
+<p>One thing I&#x27;m unsure of is how the src path resolution should work</p>
 </blockquote>
 <p>Before commenting, I need to clarify my own understanding of <code>src</code>-- is the idea that the union of all files rooted under an <code>src</code> entry constitutes one big body of &quot;first-party&quot; code? For example, below there is an example <code>pyproject.toml</code> and some imports in a hypothetical <code>dagster-graphql</code> file. I marked the imports with whether they are considered &quot;first-party&quot; given the settings. Are my marking correct?:</p>
 <pre><code>### pyproject.toml (root)
@@ -237,30 +237,30 @@ from dagster_graphql import implementation  # third party
             <div class="timeline-body"><blockquote>
 <p>(1) Will extend-exclude get the same treatment?</p>
 </blockquote>
-<p>Yeah. (Paths will be relative to the <code>pyproject.toml</code> in which they're defined.)</p>
+<p>Yeah. (Paths will be relative to the <code>pyproject.toml</code> in which they&#x27;re defined.)</p>
 <blockquote>
-<p>(2) So if the parent config does --extend-select=F401, will the current config's --extend-ignore=F401 beat out the parent?</p>
+<p>(2) So if the parent config does --extend-select=F401, will the current config&#x27;s --extend-ignore=F401 beat out the parent?</p>
 </blockquote>
-<p>Hah that's tricky. If you had this setup, you <em>would</em> end up ignoring <code>F401</code>, because ignores &quot;beat&quot; selects given equal codes. But, I guess if the parent had <code>ignore = [&quot;F401&quot;]</code>, then you wouldn't have <em>any</em> way to enable <code>F401</code> in a child. I've gotten think on this. Maybe the semantics should be: resolve the parent codes, then apply the child rules (as opposed to: combine the parent and child rules, then resolve the complete set).</p>
+<p>Hah that&#x27;s tricky. If you had this setup, you <em>would</em> end up ignoring <code>F401</code>, because ignores &quot;beat&quot; selects given equal codes. But, I guess if the parent had <code>ignore = [&quot;F401&quot;]</code>, then you wouldn&#x27;t have <em>any</em> way to enable <code>F401</code> in a child. I&#x27;ve gotten think on this. Maybe the semantics should be: resolve the parent codes, then apply the child rules (as opposed to: combine the parent and child rules, then resolve the complete set).</p>
 <blockquote>
 <p>If we allow ruff.toml then users always have an option to configure ruff without screwing with the config of other tools.</p>
 </blockquote>
-<p>Yeah this makes sense (and it's not much effort to support).</p>
+<p>Yeah this makes sense (and it&#x27;s not much effort to support).</p>
 <blockquote>
 <p>Before commenting, I need to clarify my own understanding of <code>src</code>...</p>
 </blockquote>
-<p>It's probably easiest to explain it with a detailed example, and then maybe you can help me simplify that explanation.</p>
-<p>When we go to resolve an import, there are some trivial cases: if an import has a dot level (<code>from . import foo</code>), we know it's a &quot;relative import&quot;; if an import is a known standard library module, we know it's &quot;standard library&quot;.</p>
-<p>If it doesn't fit one of those cases, we take the first part of the import -- so for <code>import foo</code>, we take <code>foo</code>; for <code>from foo.impl import *</code> we take <code>foo</code> again; for <code>import foo.impl</code>, we take <code>foo</code> again.</p>
-<p>We then iterate over the <code>src</code> entries and try to find that module. So for <code>import foo</code>, and given the above <code>pyproject.toml</code>, we'd check:</p>
+<p>It&#x27;s probably easiest to explain it with a detailed example, and then maybe you can help me simplify that explanation.</p>
+<p>When we go to resolve an import, there are some trivial cases: if an import has a dot level (<code>from . import foo</code>), we know it&#x27;s a &quot;relative import&quot;; if an import is a known standard library module, we know it&#x27;s &quot;standard library&quot;.</p>
+<p>If it doesn&#x27;t fit one of those cases, we take the first part of the import -- so for <code>import foo</code>, we take <code>foo</code>; for <code>from foo.impl import *</code> we take <code>foo</code> again; for <code>import foo.impl</code>, we take <code>foo</code> again.</p>
+<p>We then iterate over the <code>src</code> entries and try to find that module. So for <code>import foo</code>, and given the above <code>pyproject.toml</code>, we&#x27;d check:</p>
 <ul>
 <li><code>python_modules/dagster/dagster/foo</code></li>
 <li><code>python_modules/dagster/dagster/foo.py</code></li>
 <li><code>python_modules/dagit/foo</code></li>
 <li><code>python_modules/dagit/foo.py</code></li>
 </ul>
-<p>If we can resolve one of these, we mark it as &quot;first-party&quot;. Otherwise, it's &quot;third-party&quot;.</p>
-<p>Your example above is correct, except that <code>python_modules/dagster/dagster</code> should be <code>python_modules/dagster</code>, so that when we try to <code>from dagster import op</code>, we look for <code>python_modules/dagster/dagster</code>. Here's the complete example:</p>
+<p>If we can resolve one of these, we mark it as &quot;first-party&quot;. Otherwise, it&#x27;s &quot;third-party&quot;.</p>
+<p>Your example above is correct, except that <code>python_modules/dagster/dagster</code> should be <code>python_modules/dagster</code>, so that when we try to <code>from dagster import op</code>, we look for <code>python_modules/dagster/dagster</code>. Here&#x27;s the complete example:</p>
 <pre><code>### pyproject.toml (root)
 
 [tool.ruff]
@@ -279,35 +279,35 @@ from dagster_graphql import implementation  # third party
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2022-12-07 20:42</div>
             <div class="timeline-body"><blockquote>
-<p>Hah that's tricky. If you had this setup, you would end up ignoring F401, because ignores &quot;beat&quot; selects given equal codes. But, I guess if the parent had ignore = [&quot;F401&quot;], then you wouldn't have any way to enable F401 in a child. I've gotten think on this. Maybe the semantics should be: resolve the parent codes, then apply the child rules (as opposed to: combine the parent and child rules, then resolve the complete set).</p>
+<p>Hah that&#x27;s tricky. If you had this setup, you would end up ignoring F401, because ignores &quot;beat&quot; selects given equal codes. But, I guess if the parent had ignore = [&quot;F401&quot;], then you wouldn&#x27;t have any way to enable F401 in a child. I&#x27;ve gotten think on this. Maybe the semantics should be: resolve the parent codes, then apply the child rules (as opposed to: combine the parent and child rules, then resolve the complete set).</p>
 </blockquote>
 <p>I think this is important because you should always be able to enable a check from the CLI regardless of what is in your config files.</p>
 <blockquote>
-<p>It's probably easiest to explain it with a detailed example, and then maybe you can help me simplify that explanation.</p>
+<p>It&#x27;s probably easiest to explain it with a detailed example, and then maybe you can help me simplify that explanation.</p>
 </blockquote>
-<p>OK thanks for clarifying. So, I'm not sure of how <code>isort</code> actually does it, but shouldn't imports be considered &quot;first-party&quot; if they are importing from the same package as the current file? Like:</p>
+<p>OK thanks for clarifying. So, I&#x27;m not sure of how <code>isort</code> actually does it, but shouldn&#x27;t imports be considered &quot;first-party&quot; if they are importing from the same package as the current file? Like:</p>
 <pre><code>### python_modules/dagster-graphql/dagster_graphql/foo/bar.py
 
 # This should be considered first-party no matter what is set in `src`
 from dagster_graphql import implementation
 </code></pre>
-<p>I would think the &quot;first party&quot; resolution logic from <code>src</code> and <code>known-first-party</code> should apply <em>on top</em> of baseline logic, which is: &quot;If we are importing from a module that lives in the same root package as the current module, it's first party.&quot;</p>
+<p>I would think the &quot;first party&quot; resolution logic from <code>src</code> and <code>known-first-party</code> should apply <em>on top</em> of baseline logic, which is: &quot;If we are importing from a module that lives in the same root package as the current module, it&#x27;s first party.&quot;</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-07 20:49</div>
-            <div class="timeline-body"><p>Let me do a bit of research into how <code>isort</code> handles this. (The current logic is based on <a href="https://github.com/asottile/reorder_python_imports">reorder-python-imports</a> which I liked for its simplicity.) It's not totally clear to me how you would reliably detect the root package for a given file. E.g., above, how would you know that <code>from dagster_graphql import implementation</code> is first-party, but <code>from foo import other_thing</code> isn't?</p>
+            <div class="timeline-body"><p>Let me do a bit of research into how <code>isort</code> handles this. (The current logic is based on <a href="https://github.com/asottile/reorder_python_imports">reorder-python-imports</a> which I liked for its simplicity.) It&#x27;s not totally clear to me how you would reliably detect the root package for a given file. E.g., above, how would you know that <code>from dagster_graphql import implementation</code> is first-party, but <code>from foo import other_thing</code> isn&#x27;t?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-07 20:50</div>
-            <div class="timeline-body"><p>I guess you could traverse upwards and look for <code>__init__.py</code>, but I think there are cases like namespace packages where <code>__init__.py</code> is omitted. (I can't really remember, I always try and get in and out of that kind of stuff as quickly as possible.)</p>
+            <div class="timeline-body"><p>I guess you could traverse upwards and look for <code>__init__.py</code>, but I think there are cases like namespace packages where <code>__init__.py</code> is omitted. (I can&#x27;t really remember, I always try and get in and out of that kind of stuff as quickly as possible.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2022-12-07 20:55</div>
             <div class="timeline-body"><blockquote>
-<p>E.g., above, how would you know that from dagster_graphql import implementation is first-party, but from foo import other_thing isn't?</p>
+<p>E.g., above, how would you know that from dagster_graphql import implementation is first-party, but from foo import other_thing isn&#x27;t?</p>
 </blockquote>
 <p>Pretty sure every Python module has a unique <code>__name__</code>:</p>
 <pre><code>$ ipython
@@ -315,24 +315,24 @@ from dagster_graphql import implementation
 In [1]: import dagster._core
 
 In [2]: dagster._core.__name__
-Out[2]: 'dagster._core'
+Out[2]: &#x27;dagster._core&#x27;
 </code></pre>
 <p>Once you have the name of the current module, you can easily tell if the module being imported from should be first-party or not (prior to applying the extra logic of <code>src</code>/<code>known-first-party</code>).</p>
-<p>So you would need to model the logic used to generate a module's <code>__name__</code>-- not sure off the top of my head how it's done for namespace packages, but I've learned it before so I'm going to look into it.</p>
+<p>So you would need to model the logic used to generate a module&#x27;s <code>__name__</code>-- not sure off the top of my head how it&#x27;s done for namespace packages, but I&#x27;ve learned it before so I&#x27;m going to look into it.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-07 21:01</div>
-            <div class="timeline-body"><p>I do think that the current behavior is similar to <code>isort</code>'s? I recreated the example above, and running <code>isort</code> on this directory treats both of those imports as third-party:</p>
-<p><img src="https://user-images.githubusercontent.com/1309177/206294730-2e870fec-f9ee-414e-adaf-6d222a87f767.png" alt="Screen Shot 2022-12-07 at 4 00 38 PM" /></p>
+            <div class="timeline-body"><p>I do think that the current behavior is similar to <code>isort</code>&#x27;s? I recreated the example above, and running <code>isort</code> on this directory treats both of those imports as third-party:</p>
+<p><img src="https://user-images.githubusercontent.com/1309177/206294730-2e870fec-f9ee-414e-adaf-6d222a87f767.png" alt="Screen Shot 2022-12-07 at 4 00 38 PM"></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2022-12-07 22:16</div>
             <div class="timeline-body"><blockquote>
-<p>I do think that the current behavior is similar to isort's?</p>
+<p>I do think that the current behavior is similar to isort&#x27;s?</p>
 </blockquote>
-<p>Interesting, yeah you're right-- in that case, IMO this represents an an opportunity to improve on isort's behavior, which is not suited to monorepos. It is confusing to not see intra-package imports classified as first party by static tooling, because logically they <em>are</em> first-party.</p>
+<p>Interesting, yeah you&#x27;re right-- in that case, IMO this represents an an opportunity to improve on isort&#x27;s behavior, which is not suited to monorepos. It is confusing to not see intra-package imports classified as first party by static tooling, because logically they <em>are</em> first-party.</p>
 <p>Let me just describe what I think is the ideal functionality, with some concrete examples from Dagster:</p>
 <ol>
 <li>Within a single run of <code>ruff</code>, <code>ruff</code> is able to vary the set of first-party packages depending on what file is being processed.</li>
@@ -340,8 +340,8 @@ Out[2]: 'dagster._core'
 <li>This is achievable with minimal configuration.</li>
 </ol>
 <p>Regarding (1), this matters because a monorepo can easily contain, e.g. example project code (ours does) which should treat the main packages as third-party.</p>
-<p>(2) is tricky to nail 100% because a module's <code>__name__</code> is determined during the import process-- I don't think there's a 100% reliable way to determine it statically. However, tracing <code>__init__.py</code> up the file hierarchy is going to work in 99% of cases. My preferred solution is that this is the first step in a &quot;first party&quot; check, then it falls back to <code>src</code> and <code>known-first-party</code>.</p>
-<p>However, if you decide to go with a wholly explicit approach (all first party must be listed in <code>src</code>), I think the status quo could be improved by allowing glob patterns here. Like I've mentioned before, Dagster has like ~50 packages. New examples etc are added fairly regularly. It is a maintenance burden to keep an accurate list of these in config. But e.g. this would be much easier:</p>
+<p>(2) is tricky to nail 100% because a module&#x27;s <code>__name__</code> is determined during the import process-- I don&#x27;t think there&#x27;s a 100% reliable way to determine it statically. However, tracing <code>__init__.py</code> up the file hierarchy is going to work in 99% of cases. My preferred solution is that this is the first step in a &quot;first party&quot; check, then it falls back to <code>src</code> and <code>known-first-party</code>.</p>
+<p>However, if you decide to go with a wholly explicit approach (all first party must be listed in <code>src</code>), I think the status quo could be improved by allowing glob patterns here. Like I&#x27;ve mentioned before, Dagster has like ~50 packages. New examples etc are added fairly regularly. It is a maintenance burden to keep an accurate list of these in config. But e.g. this would be much easier:</p>
 <pre><code>src = [
     &quot;python_modules/*&quot;,
     &quot;python_modules/libraries/*&quot;,
@@ -351,27 +351,27 @@ Out[2]: 'dagster._core'
     &quot;integration_tests/python_modules/*&quot;
 ]
 </code></pre>
-<p>This would capture all of Dagster's packages. A caveat is that this overshoots a little bit-- like <code>python_modules/libraries</code> would be captured by <code>python_modules/*</code>, but it shouldn't be on <code>src</code>-- so some kind of exclusion (maybe exclusion patterns like <code>git</code> uses) or additional check logic would be required.</p>
+<p>This would capture all of Dagster&#x27;s packages. A caveat is that this overshoots a little bit-- like <code>python_modules/libraries</code> would be captured by <code>python_modules/*</code>, but it shouldn&#x27;t be on <code>src</code>-- so some kind of exclusion (maybe exclusion patterns like <code>git</code> uses) or additional check logic would be required.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2022-12-07 22:39</div>
-            <div class="timeline-body"><p>Another possibility, and I think you ultimately might need something like this anyway if you want to replicate e.g. <code>pylint</code> or <code>pyright</code>' s ability to catch unresolvable imports, is to make use of <code>sys.path</code> and basically simulate the logic of Python's import system. This would probably give the best user experience. You would want to provide a <code>python-interpreter</code> or <code>python-path</code> setting like that provided by pylance/pyright that you could set to a virtualenv.</p>
+            <div class="timeline-body"><p>Another possibility, and I think you ultimately might need something like this anyway if you want to replicate e.g. <code>pylint</code> or <code>pyright</code>&#x27; s ability to catch unresolvable imports, is to make use of <code>sys.path</code> and basically simulate the logic of Python&#x27;s import system. This would probably give the best user experience. You would want to provide a <code>python-interpreter</code> or <code>python-path</code> setting like that provided by pylance/pyright that you could set to a virtualenv.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-07 22:42</div>
-            <div class="timeline-body"><p>Ok cool. This all makes sense. I'm leaning towards the <code>__init__.py</code> tracing... but that opinion may change as I spend more time with the problem.</p>
+            <div class="timeline-body"><p>Ok cool. This all makes sense. I&#x27;m leaning towards the <code>__init__.py</code> tracing... but that opinion may change as I spend more time with the problem.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-07 23:12</div>
-            <div class="timeline-body"><p>I'll provide an update here when I have an estimate of when this should all ship. I'm gonna ship pieces of it incrementally.</p>
+            <div class="timeline-body"><p>I&#x27;ll provide an update here when I have an estimate of when this should all ship. I&#x27;m gonna ship pieces of it incrementally.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2022-12-08 00:03</div>
-            <div class="timeline-body"><p>Another config-related item that would be useful-- environment variable interpolation, specifically for the planned <code>extends</code> field. Our use case is that we have a second <code>internal</code> repo where we've had to maintain a copy in <code>pyproject.toml</code> of the config from the OSS repo. But ideally we could just do this:</p>
+            <div class="timeline-body"><p>Another config-related item that would be useful-- environment variable interpolation, specifically for the planned <code>extends</code> field. Our use case is that we have a second <code>internal</code> repo where we&#x27;ve had to maintain a copy in <code>pyproject.toml</code> of the config from the OSS repo. But ideally we could just do this:</p>
 <pre><code>[tool.ruff]
 extends = &quot;${OSS_REPO}/pyproject.toml&quot;
 # ... a few internal-specific settings
@@ -380,45 +380,45 @@ extends = &quot;${OSS_REPO}/pyproject.toml&quot;
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Release 0.1.0" by @charliermarsh on 2022-12-08 18:38</div>
+            <div class="event">Added to milestone &quot;Release 0.1.0&quot; by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-08 18:38</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-10 15:50</div>
-            <div class="timeline-body"><p>Alright, let's see how much of this I can get done today.</p>
+            <div class="timeline-body"><p>Alright, let&#x27;s see how much of this I can get done today.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-11 05:02</div>
             <div class="timeline-body"><p>Hierarchical settings (use the closest <code>pyproject.toml</code> for every file) is pretty much good to go in #1190.</p>
-<p>(I have to make some decisions around how Ruff behaves when it can't find a <code>pyproject.toml</code>, and how it treats a few of the special-case, top-level &quot;options&quot; like <code>fix = true</code>, which doesn't easily cascade.)</p>
+<p>(I have to make some decisions around how Ruff behaves when it can&#x27;t find a <code>pyproject.toml</code>, and how it treats a few of the special-case, top-level &quot;options&quot; like <code>fix = true</code>, which doesn&#x27;t easily cascade.)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2022-12-12 15:12</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-12 15:12</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-12 22:19</div>
-            <div class="timeline-body"><p>@smackesey - I think I'm likely to support glob patterns in <code>src</code> as described above (https://github.com/charliermarsh/ruff/issues/1222).</p>
+            <div class="timeline-body"><p>@smackesey - I think I&#x27;m likely to support glob patterns in <code>src</code> as described above (<a href="https://github.com/charliermarsh/ruff/issues/1222">charliermarsh/ruff#1222</a>).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-13 03:11</div>
-            <div class="timeline-body"><p>This is going out in <a href="https://github.com/charliermarsh/ruff/releases/tag/v0.0.178">v0.0.178</a> -- both the hierarchical resolution, and the globbing (https://github.com/charliermarsh/ruff/issues/1222).</p>
+            <div class="timeline-body"><p>This is going out in <a href="https://github.com/charliermarsh/ruff/releases/tag/v0.0.178">v0.0.178</a> -- both the hierarchical resolution, and the globbing (<a href="https://github.com/charliermarsh/ruff/issues/1222">charliermarsh/ruff#1222</a>).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2022-12-15 18:53</div>
-            <div class="timeline-body"><p>This is coming along great and we'll merge to Dagster pretty soon. Just wondering if the <code>__init__.py</code> auto-detect first party stuff went in with the rest?</p>
+            <div class="timeline-body"><p>This is coming along great and we&#x27;ll merge to Dagster pretty soon. Just wondering if the <code>__init__.py</code> auto-detect first party stuff went in with the rest?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-15 18:55</div>
-            <div class="timeline-body"><p>@smackesey -- Na that hasn't gone out yet. But I did ship the <code>python_modules/*</code> globbing which hopefully helps a bit?</p>
+            <div class="timeline-body"><p>@smackesey -- Na that hasn&#x27;t gone out yet. But I did ship the <code>python_modules/*</code> globbing which hopefully helps a bit?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2022-12-15 19:01</div>
-            <div class="timeline-body"><p>Correct me if I'm wrong but the globbing just helps capture <em>all</em> of our packages under <code>src</code>, which is then used to determine first-party right? So if I did this in root <code>pyproject.toml</code>:</p>
+            <div class="timeline-body"><p>Correct me if I&#x27;m wrong but the globbing just helps capture <em>all</em> of our packages under <code>src</code>, which is then used to determine first-party right? So if I did this in root <code>pyproject.toml</code>:</p>
 <pre><code>[tool.ruff]
 
 src =[
@@ -426,13 +426,13 @@ src =[
   &quot;python_modules/*&quot;
 ]
 </code></pre>
-<p>That would mean that all of our examples and python modules would form one giant first-party blob right? So that would mean that, no matter which package I'm in, everything caught by the globs is first party. So if I were in a file <code>examples/my-example/my_example/foo.py</code>, and I imported <code>dagster-aws</code>, it would be treated as first party.</p>
-<p>What I'm looking to achieve is to treat <em>only</em> the current package (and possibly core <code>dagster</code>) as first party. This is achievable with the new hierarchical config system by giving every package a <code>pyproject.toml</code> where it lists itself as first-party, but with <code>__init__.py</code> detection we wouldn't even need the <code>pyproject.toml</code>.</p>
+<p>That would mean that all of our examples and python modules would form one giant first-party blob right? So that would mean that, no matter which package I&#x27;m in, everything caught by the globs is first party. So if I were in a file <code>examples/my-example/my_example/foo.py</code>, and I imported <code>dagster-aws</code>, it would be treated as first party.</p>
+<p>What I&#x27;m looking to achieve is to treat <em>only</em> the current package (and possibly core <code>dagster</code>) as first party. This is achievable with the new hierarchical config system by giving every package a <code>pyproject.toml</code> where it lists itself as first-party, but with <code>__init__.py</code> detection we wouldn&#x27;t even need the <code>pyproject.toml</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-15 19:03</div>
-            <div class="timeline-body"><p>Yeah I think what you're describing is correct (I thought you wanted all modules to use the same set of third- and first-party rules).</p>
+            <div class="timeline-body"><p>Yeah I think what you&#x27;re describing is correct (I thought you wanted all modules to use the same set of third- and first-party rules).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -455,7 +455,7 @@ src =[
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2022-12-15 20:37</div>
-            <div class="timeline-body"><p>IMO it should be on by default, but togglable with a setting. Although I can't think of why one would turn it off (doesn't mean there isn't a case!)-- it's basically the definition of &quot;first party&quot; to be in the current package-- and if you want to make other stuff first party too, you can always specify that explicitly.</p>
+            <div class="timeline-body"><p>IMO it should be on by default, but togglable with a setting. Although I can&#x27;t think of why one would turn it off (doesn&#x27;t mean there isn&#x27;t a case!)-- it&#x27;s basically the definition of &quot;first party&quot; to be in the current package-- and if you want to make other stuff first party too, you can always specify that explicitly.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -466,7 +466,7 @@ src =[
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:45:41 UTC
+        Synced at 2026-01-20 18:48:27 UTC
     </footer>
 </body>
 </html>

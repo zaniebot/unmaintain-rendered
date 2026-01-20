@@ -23,16 +23,16 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/j-adamczyk">@j-adamczyk</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>When declaring conflicts for multiple optional groups, I want to be able to select the order of preference. If then I want to install 2 groups with conflicting dependency, <code>uv</code> will select and install one that is more preferred. Adding an option to CLI for <code>--all-extras</code> to specify this would also be ok.</p>
 <p>Use case is ML with PyTorch. I have multiple groups, e.g. <code>preprocessing</code>, <code>training</code>, <code>inference</code>. Only <code>training</code> uses GPU, all others use CPU. They need to be separated to enable building separate Docker containers. For development, I need to install everything locally, but with GPU. Currently, I have to specify separate options. With a lot of groups, this gets pretty inconvenient.</p>
-<p>With current <code>uv</code> state, I have two options. First, push all PyTorch to separate optional group and install it separately. With many groups, this results in PyTorch far from the actual dependency group, making <code>pyproject.toml</code> hard to read. Also, I have to pass <code>--extra</code> to each group, and need to somehow specify what group uses what version, e.g. search with regex for &quot;train&quot; in dependency group name, which is really not intuitive nor readable. Second option is to use <code>extra</code> markers, e.g. specify dependency as `&quot;torch==2.2.*; extra == 'pytorch-cpu'&quot;, add source, index, conflicts etc. as <a href="https://docs.astral.sh/uv/guides/integration/pytorch/">in uv docs</a>. Here, the problem is that I can't install all dependency groups at the same time, as PyTorch has conflict between groups.</p>
-<p>I basically want to translate the Poetry workflow from https://github.com/python-poetry/poetry/issues/6409#issuecomment-1911735833. My Poetry <code>pyproject.toml</code> is:</p>
+<p>With current <code>uv</code> state, I have two options. First, push all PyTorch to separate optional group and install it separately. With many groups, this results in PyTorch far from the actual dependency group, making <code>pyproject.toml</code> hard to read. Also, I have to pass <code>--extra</code> to each group, and need to somehow specify what group uses what version, e.g. search with regex for &quot;train&quot; in dependency group name, which is really not intuitive nor readable. Second option is to use <code>extra</code> markers, e.g. specify dependency as `&quot;torch==2.2.*; extra == &#x27;pytorch-cpu&#x27;&quot;, add source, index, conflicts etc. as <a href="https://docs.astral.sh/uv/guides/integration/pytorch/">in uv docs</a>. Here, the problem is that I can&#x27;t install all dependency groups at the same time, as PyTorch has conflict between groups.</p>
+<p>I basically want to translate the Poetry workflow from <a href="https://github.com/python-poetry/poetry/issues/6409">python-poetry/poetry#6409</a>#issuecomment-1911735833. My Poetry <code>pyproject.toml</code> is:</p>
 <pre><code>[tool.poetry.group.train_model.dependencies]
-torch = {version = &quot;2.2.*&quot;, source = &quot;pytorch-gpu&quot;, markers = &quot;extra!='pytorch-cpu'&quot;}
+torch = {version = &quot;2.2.*&quot;, source = &quot;pytorch-gpu&quot;, markers = &quot;extra!=&#x27;pytorch-cpu&#x27;&quot;}
 
 [tool.poetry.group.inference.dependencies]
-torch = {version = &quot;2.2.*&quot;, source = &quot;pytorch-cpu&quot;, markers = &quot;extra=='pytorch-cpu'&quot;}
+torch = {version = &quot;2.2.*&quot;, source = &quot;pytorch-cpu&quot;, markers = &quot;extra==&#x27;pytorch-cpu&#x27;&quot;}
 
 [tool.poetry.extras]
 pytorch-cpu = []
@@ -48,17 +48,17 @@ url = &quot;https://download.pytorch.org/whl/cu121&quot;
 priority = &quot;explicit&quot;
 </code></pre>
 <p>In Poetry, when I do <code>poetry sync</code>, it will prefer CPU version. However, if I only install <code>train_model</code> group, it will pick up the GPU source.</p>
-<h3>Example</h3>
+Example
 <p><em>No response</em></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @j-adamczyk on 2025-06-16 07:56</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/j-adamczyk">@j-adamczyk</a> on 2025-06-16 07:56</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-27 13:27</div>
             <div class="timeline-body"><p>What about the following example from the docs:</p>
-<pre><code class="language-toml">[project]
+<pre><code>[project]
 name = &quot;debug&quot;
 version = &quot;0.1.0&quot;
 requires-python = &quot;&gt;=3.12.0&quot;
@@ -69,12 +69,12 @@ dependencies = [
 
 [tool.uv.sources]
 torch = [
-  { index = &quot;pytorch-cpu&quot;, marker = &quot;sys_platform != 'linux'&quot; },
-  { index = &quot;pytorch-cu128&quot;, marker = &quot;sys_platform == 'linux'&quot; },
+  { index = &quot;pytorch-cpu&quot;, marker = &quot;sys_platform != &#x27;linux&#x27;&quot; },
+  { index = &quot;pytorch-cu128&quot;, marker = &quot;sys_platform == &#x27;linux&#x27;&quot; },
 ]
 torchvision = [
-  { index = &quot;pytorch-cpu&quot;, marker = &quot;sys_platform != 'linux'&quot; },
-  { index = &quot;pytorch-cu128&quot;, marker = &quot;sys_platform == 'linux'&quot; },
+  { index = &quot;pytorch-cpu&quot;, marker = &quot;sys_platform != &#x27;linux&#x27;&quot; },
+  { index = &quot;pytorch-cu128&quot;, marker = &quot;sys_platform == &#x27;linux&#x27;&quot; },
 ]
 
 [[tool.uv.index]]
@@ -88,7 +88,7 @@ url = &quot;https://download.pytorch.org/whl/cu128&quot;
 explicit = true
 </code></pre>
 <p>Additionally, you can include one extra in another extra:</p>
-<pre><code class="language-toml">[project]
+<pre><code>[project]
 name = &quot;foo&quot;
 version = &quot;0.1.0&quot;
 
@@ -100,7 +100,7 @@ b = [&quot;scipy&quot;, &quot;foo[a]&quot;]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/j-adamczyk">@j-adamczyk</a> on 2025-06-28 12:17</div>
-            <div class="timeline-body"><p>@konstin this won't work, as my marker is not an OS. All my machines run Linux, but either with CPU or GPU.</p>
+            <div class="timeline-body"><p>@konstin this won&#x27;t work, as my marker is not an OS. All my machines run Linux, but either with CPU or GPU.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -120,7 +120,7 @@ b = [&quot;scipy&quot;, &quot;foo[a]&quot;]
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-28 13:09</div>
-            <div class="timeline-body"><p>Semantically, though, it isn't possible to &quot;install all groups at once&quot; if the groups include conflicting versions of PyTorch. Like, you cannot satisfy both the <code>train_model</code> and  <code>inference</code> groups at once -- if you install the GPU version, then <code>inference</code> is actually <em>not</em> satisfied, you're using some other mix of your dependencies.</p>
+            <div class="timeline-body"><p>Semantically, though, it isn&#x27;t possible to &quot;install all groups at once&quot; if the groups include conflicting versions of PyTorch. Like, you cannot satisfy both the <code>train_model</code> and  <code>inference</code> groups at once -- if you install the GPU version, then <code>inference</code> is actually <em>not</em> satisfied, you&#x27;re using some other mix of your dependencies.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -131,7 +131,7 @@ b = [&quot;scipy&quot;, &quot;foo[a]&quot;]
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:31:48 UTC
+        Synced at 2026-01-20 19:39:04 UTC
     </footer>
 </body>
 </html>

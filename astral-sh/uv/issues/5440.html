@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/paveldikov">@paveldikov</a></div>
-            <div class="timeline-body"><p><em>As originally mentioned in https://github.com/astral-sh/uv/issues/1491#issuecomment-2247703908</em></p>
+            <div class="timeline-body"><p><em>As originally mentioned in <a href="https://github.com/astral-sh/uv/issues/1491">astral-sh/uv#1491</a>#issuecomment-2247703908</em></p>
 <p>Consider the scenario where the Python interpreter is distributed via a network share path. e.g. <code>\\some-host\some-share\...\python.exe</code>. Obviously this is not very common but the same sort of path notation can be used for local disk drives, e.g. <code>\\localhost\c$\</code> -- which is what I use for this reproducer:</p>
 <pre><code>$ uv venv --python &quot;//localhost/c$/Program Files/Python310/python.exe&quot; test310
 Using Python 3.10.11 interpreter at: \\localhost\c$\Program Files\Python310\python.exe
@@ -47,7 +47,7 @@ Traceback (most recent call last):
     from _sqlite3 import *
 ImportError: DLL load failed while importing _sqlite3: The parameter is incorrect.
 </code></pre>
-<p><code>dunce</code>'ing the path by hand in <code>pyvenv.cfg</code> fixes it for me:</p>
+<p><code>dunce</code>&#x27;ing the path by hand in <code>pyvenv.cfg</code> fixes it for me:</p>
 <pre><code>$ cat test310/pyvenv.cfg
 home = \\localhost\c$\Program Files\Python310
 implementation = CPython
@@ -59,16 +59,16 @@ Python 3.10.11 (tags/v3.10.11:7d4cc5a, Apr  5 2023, 00:38:17) [MSC v.1929 64 bit
 Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
 &gt;&gt;&gt; import sqlite3
 &gt;&gt;&gt; sqlite3
-&lt;module 'sqlite3' from '\\\\localhost\\c$\\Program Files\\Python310\\lib\\sqlite3\\__init__.py'&gt;
+&lt;module &#x27;sqlite3&#x27; from &#x27;\\\\localhost\\c$\\Program Files\\Python310\\lib\\sqlite3\\__init__.py&#x27;&gt;
 </code></pre>
 <p>This issue is reproducible with 3.10.11, but not 3.11. (presumably this bad handling of UNC paths got fixed in CPython down the line?)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-07-25 13:43</div>
+            <div class="event">Assigned to <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-25 13:43</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-07-25 13:43</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-25 13:43</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-25 13:48</div>
@@ -99,7 +99,7 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-25 15:00</div>
-            <div class="timeline-body"><p>Can we try https://github.com/astral-sh/uv/pull/5446 to start, see if the venv is any different?</p>
+            <div class="timeline-body"><p>Can we try <a href="https://github.com/astral-sh/uv/pull/5446">astral-sh/uv#5446</a> to start, see if the venv is any different?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -126,7 +126,7 @@ include-system-site-packages = false
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2024-07-25 16:15</div>
             <div class="timeline-body"><pre><code>$ cargo run -- venv --python &quot;//localhost/c$/Program Files/Python310/python.exe&quot; test310
-     Running `target\debug\uv.exe venv --python '//localhost/c$/Program Files/Python310/python.exe' test310`
+     Running `target\debug\uv.exe venv --python &#x27;//localhost/c$/Program Files/Python310/python.exe&#x27; test310`
 Using Python 3.10.11 interpreter at: \\localhost\c$\Program Files\Python310\python.exe
 Creating virtualenv at: test310
 base_python: &quot;\\\\?\\UNC\\localhost\\c$\\Program Files\\Python310\\python.exe&quot;
@@ -146,8 +146,8 @@ include-system-site-packages = false
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-25 16:20</div>
-            <div class="timeline-body"><p>My guess is that this path is actually <em>not</em> safe to strip though I'm not intimately familiar with the rules:</p>
-<pre><code class="language-rust">fn is_safe_to_strip_unc(path: &amp;Path) -&gt; bool {
+            <div class="timeline-body"><p>My guess is that this path is actually <em>not</em> safe to strip though I&#x27;m not intimately familiar with the rules:</p>
+<pre><code>fn is_safe_to_strip_unc(path: &amp;Path) -&gt; bool {
     let mut components = path.components();
     match components.next() {
         Some(Component::Prefix(p)) =&gt; match p.kind() {
@@ -161,7 +161,7 @@ include-system-site-packages = false
         match component {
             Component::RootDir =&gt; {},
             Component::Normal(file_name) =&gt; {
-                // it doesn't allocate in most cases,
+                // it doesn&#x27;t allocate in most cases,
                 // and checks are interested only in the ASCII subset, so lossy is fine
                 if !is_valid_filename(file_name) || is_reserved(file_name) {
                     return false;
@@ -171,7 +171,7 @@ include-system-site-packages = false
         };
     }
 
-    if windows_char_len(path.as_os_str()) &gt; 260 { // However, if the path is going to be used as a directory it's 248
+    if windows_char_len(path.as_os_str()) &gt; 260 { // However, if the path is going to be used as a directory it&#x27;s 248
         return false;
     }
     true
@@ -195,35 +195,35 @@ sys_base_executable: Some(&quot;\\\\localhost\\c$\\Program Files\\Python310\\pyt
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-25 16:33</div>
-            <div class="timeline-body"><p>I think that's the original, unmodified path we get from <code>sys.executable</code> in Python. Then we pass it to <code>uv_fs::canonicalize_executable(interpreter.sys_executable())</code> to get <code>base_python</code>... which adds the prefix, which dunce then tries to strip if it can (but seemingly can't).</p>
+            <div class="timeline-body"><p>I think that&#x27;s the original, unmodified path we get from <code>sys.executable</code> in Python. Then we pass it to <code>uv_fs::canonicalize_executable(interpreter.sys_executable())</code> to get <code>base_python</code>... which adds the prefix, which dunce then tries to strip if it can (but seemingly can&#x27;t).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2024-07-25 17:35</div>
-            <div class="timeline-body"><p>Naive question: do we really need to canonicalise on Windows? (we aren't following symlinks as we are on Linux)</p>
+            <div class="timeline-body"><p>Naive question: do we really need to canonicalise on Windows? (we aren&#x27;t following symlinks as we are on Linux)</p>
 <p>Comment in code says:</p>
 <blockquote>
-<p>We canonicalize the path to ensure that it's real and consistent, though we don't expect any symlinks on Windows.</p>
+<p>We canonicalize the path to ensure that it&#x27;s real and consistent, though we don&#x27;t expect any symlinks on Windows.</p>
 </blockquote>
-<p>We generally know that it's <em>real</em> beforehand -- though perhaps not 'real' in the POSIX sense. See the <code>Using Python .... interpreter at:</code> printout (although this happens in a very different place in the control flow)</p>
-<p>Also perhaps it's something to do with the dollar sign? I am in the predicament of trying to replicate this issue in my home environment and I don't really happen to have network shares laying around :-/ so I thought I'd fake this by using this notation on my C: drive...</p>
+<p>We generally know that it&#x27;s <em>real</em> beforehand -- though perhaps not &#x27;real&#x27; in the POSIX sense. See the <code>Using Python .... interpreter at:</code> printout (although this happens in a very different place in the control flow)</p>
+<p>Also perhaps it&#x27;s something to do with the dollar sign? I am in the predicament of trying to replicate this issue in my home environment and I don&#x27;t really happen to have network shares laying around :-/ so I thought I&#x27;d fake this by using this notation on my C: drive...</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-25 17:41</div>
-            <div class="timeline-body"><p>Hmm. We <em>probably</em> don't.</p>
+            <div class="timeline-body"><p>Hmm. We <em>probably</em> don&#x27;t.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2024-07-25 17:50</div>
-            <div class="timeline-body"><p>P.S. it's not the dollar sign. Turns out I can get an arbitrary <code>\\</code> path using a shared folder. No special characters involved, but still gets UNC'd.</p>
+            <div class="timeline-body"><p>P.S. it&#x27;s not the dollar sign. Turns out I can get an arbitrary <code>\\</code> path using a shared folder. No special characters involved, but still gets UNC&#x27;d.</p>
 <pre><code>home = \\?\UNC\DESKTOP\Users\Pavel\share\Python310
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-25 17:52</div>
-            <div class="timeline-body"><p>Yeah. I assume dunce is correct that it's not unequivocally safe to strip that (maybe leads to an ambiguity) but again mercifully I'm not an expert in Windows paths. We can experiment with not canonicalizing paths on Windows at all.</p>
+            <div class="timeline-body"><p>Yeah. I assume dunce is correct that it&#x27;s not unequivocally safe to strip that (maybe leads to an ambiguity) but again mercifully I&#x27;m not an expert in Windows paths. We can experiment with not canonicalizing paths on Windows at all.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -233,10 +233,10 @@ sys_base_executable: Some(&quot;\\\\localhost\\c$\\Program Files\\Python310\\pyt
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2024-07-25 23:25</div>
-            <div class="timeline-body"><p>Third time's the charm! 👍</p>
+            <div class="timeline-body"><p>Third time&#x27;s the charm! 👍</p>
 <pre><code>home = \\localhost\c$\Program Files\Python310
 </code></pre>
-<p>Looking at the <code>dunce</code> code you quoted -- this all tracks. It seems to only consider as 'safe' paths starting with a drive letter e.g. <code>C:</code>, else gives up completely:</p>
+<p>Looking at the <code>dunce</code> code you quoted -- this all tracks. It seems to only consider as &#x27;safe&#x27; paths starting with a drive letter e.g. <code>C:</code>, else gives up completely:</p>
 <pre><code>    match components.next() {
         Some(Component::Prefix(p)) =&gt; match p.kind() {
             Prefix::VerbatimDisk(..) =&gt; {},
@@ -245,12 +245,12 @@ sys_base_executable: Some(&quot;\\\\localhost\\c$\\Program Files\\Python310\\pyt
         _ =&gt; return false, // relative or empty
     }
 </code></pre>
-<p>IMHO this is overly conservative, but I am likewise not a Windows expert -- just someone that has to live with its quirks! Also found this conversation @ <a href="https://gitlab.com/kornelski/dunce/-/issues/2">someone's <code>dunce</code> bug report</a>. I guess the problem here is that once (mis-)canonicalisation adds the prefix, it is impossible to safely to strip it back away.</p>
+<p>IMHO this is overly conservative, but I am likewise not a Windows expert -- just someone that has to live with its quirks! Also found this conversation @ <a href="https://gitlab.com/kornelski/dunce/-/issues/2">someone&#x27;s <code>dunce</code> bug report</a>. I guess the problem here is that once (mis-)canonicalisation adds the prefix, it is impossible to safely to strip it back away.</p>
 <p>So... a <code>dunce</code> issue that is effectively WONTFIX?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-07-26 12:57</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-26 12:57</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2024-07-26 14:39</div>
@@ -260,7 +260,7 @@ sys_base_executable: Some(&quot;\\\\localhost\\c$\\Program Files\\Python310\\pyt
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:25:45 UTC
+        Synced at 2026-01-20 19:32:15 UTC
     </footer>
 </body>
 </html>

@@ -33,9 +33,9 @@
 <li><code>uvx graalpy</code></li>
 <li><code>uvx graalpy@3.8</code></li>
 </ul>
-<p>The <code>python</code> (and on Windows only, <code>pythonw</code>) special cases are retained, which normally aren't allowed values of <code>-p</code>/<code>--python</code>.</p>
-<p>Closes https://github.com/astral-sh/uv/issues/13536.</p>
-<hr />
+<p>The <code>python</code> (and on Windows only, <code>pythonw</code>) special cases are retained, which normally aren&#x27;t allowed values of <code>-p</code>/<code>--python</code>.</p>
+<p>Closes <a href="https://github.com/astral-sh/uv/issues/13536">astral-sh/uv#13536</a>.</p>
+<hr>
 <p>The initial version of this PR has 3 failing snapshot tests. The common issue is that this <code>@</code> syntax used to work:</p>
 <pre><code>$ uvx python@3.8
 Python 3.8.20 (default, Oct  2 2024, 16:34:12) 
@@ -48,27 +48,27 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
 × No solution found when resolving tool dependencies:
   ╰─▶ Because python was not found in the package registry and you require python==3.8, we can conclude that your requirements are unsatisfiable.
 </code></pre>
-<p>The underlying reason for the change is that we <a href="https://github.com/astral-sh/uv/blob/38884da9b902e6dcd553beb4b79aeef7d066c8d2/crates/uv/src/commands/tool/mod.rs#L36">used to parse the executable with <code>Target::parse</code></a>, but in this PR <a href="https://github.com/astral-sh/uv/blob/7850a6ef14c188e9bc78d778c4a3c9b441f9e6a6/crates/uv/src/commands/tool/mod.rs#L49">we parse the executable with <code>PythonRequest::parse</code></a>. The latter doesn't recognize <code>python@3.8</code> at all, and it returns the catch-all <code>PythonRequest::ExecutableName</code> variant, which <a href="https://github.com/astral-sh/uv/blob/7850a6ef14c188e9bc78d778c4a3c9b441f9e6a6/crates/uv/src/commands/tool/mod.rs#L71">we take to mean that the executable is a package and not an interpreter</a>.</p>
-<p>There are several different ways we could handle this, and I'm not sure what's best. Reviewer feedback needed :)</p>
+<p>The underlying reason for the change is that we <a href="https://github.com/astral-sh/uv/blob/38884da9b902e6dcd553beb4b79aeef7d066c8d2/crates/uv/src/commands/tool/mod.rs#L36">used to parse the executable with <code>Target::parse</code></a>, but in this PR <a href="https://github.com/astral-sh/uv/blob/7850a6ef14c188e9bc78d778c4a3c9b441f9e6a6/crates/uv/src/commands/tool/mod.rs#L49">we parse the executable with <code>PythonRequest::parse</code></a>. The latter doesn&#x27;t recognize <code>python@3.8</code> at all, and it returns the catch-all <code>PythonRequest::ExecutableName</code> variant, which <a href="https://github.com/astral-sh/uv/blob/7850a6ef14c188e9bc78d778c4a3c9b441f9e6a6/crates/uv/src/commands/tool/mod.rs#L71">we take to mean that the executable is a package and not an interpreter</a>.</p>
+<p>There are several different ways we could handle this, and I&#x27;m not sure what&#x27;s best. Reviewer feedback needed :)</p>
 <ul>
-<li>~~We could break back compat and stop supporting <code>uvx python@3.8</code>. Note that either way, <code>uvx python3.8</code>, <code>uvx python38</code>, and even <code>uvx 38</code> all work under this PR. (The last one there might be even more flexible than we want? That's another potential reviewer question.) I'm not sure how widely the current syntax is used, but I'd guess it's more widely used than <code>uvx -p python3.8 python</code>?~~</li>
+<li>~~We could break back compat and stop supporting <code>uvx python@3.8</code>. Note that either way, <code>uvx python3.8</code>, <code>uvx python38</code>, and even <code>uvx 38</code> all work under this PR. (The last one there might be even more flexible than we want? That&#x27;s another potential reviewer question.) I&#x27;m not sure how widely the current syntax is used, but I&#x27;d guess it&#x27;s more widely used than <code>uvx -p python3.8 python</code>?~~</li>
 <li>We could expand <a href="https://github.com/astral-sh/uv/blob/7850a6ef14c188e9bc78d778c4a3c9b441f9e6a6/crates/uv/src/commands/tool/mod.rs#L42-L46">the special case in <code>ToolRequest::parse</code></a> (previously <code>is_python</code>) to support <code>python@3.8</code> in addition to bare <code>python</code>. (<strong>Update:</strong> We ended up expanding <code>ToolRequest::parse</code> and refactoring some of the <code>PythonRequest::parse</code> machinery to minimize duplication.)</li>
-<li>~~We could expand <code>PythonRequest::parse</code> to support <code>python@3.8</code>, possibly by adding <code>&quot;python&quot;</code> to <code>ImplementationName::long_names</code> as an aslias for <code>&quot;cpython&quot;</code>. This would allow e.g. <code>uvx --python python@3.8 ruff</code>, which isn't currently allowed in <code>main</code> or in this PR, and which might not be desirable?~~</li>
+<li>~~We could expand <code>PythonRequest::parse</code> to support <code>python@3.8</code>, possibly by adding <code>&quot;python&quot;</code> to <code>ImplementationName::long_names</code> as an aslias for <code>&quot;cpython&quot;</code>. This would allow e.g. <code>uvx --python python@3.8 ruff</code>, which isn&#x27;t currently allowed in <code>main</code> or in this PR, and which might not be desirable?~~</li>
 </ul>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @Gankra by @oconnor663 on 2025-05-21 20:15</div>
+            <div class="event">Review requested from <a href="https://github.com/Gankra">@Gankra</a> by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-05-21 20:15</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @zanieb by @oconnor663 on 2025-05-21 20:15</div>
+            <div class="event">Review requested from <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-05-21 20:15</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-05-21 20:49</div>
             <div class="timeline-body"><blockquote>
 <p>We could expand <a href="https://github.com/astral-sh/uv/blob/7850a6ef14c188e9bc78d778c4a3c9b441f9e6a6/crates/uv/src/commands/tool/mod.rs#L42-L46">the special case in ToolRequest::parse</a> (previously is_python) to support python@3.8 in addition to bare python.</p>
 </blockquote>
-<p>After some checking this <em>feels</em> like the best option of the 3 you laid out. I don't want to break compat without a really good reason, and PythonRequest::parse is called pervasively throughout our CLI, so changing that would have widespread ramifications.</p>
+<p>After some checking this <em>feels</em> like the best option of the 3 you laid out. I don&#x27;t want to break compat without a really good reason, and PythonRequest::parse is called pervasively throughout our CLI, so changing that would have widespread ramifications.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -87,9 +87,9 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
 <blockquote>
 <p>We could expand <a href="https://github.com/astral-sh/uv/blob/7850a6ef14c188e9bc78d778c4a3c9b441f9e6a6/crates/uv/src/commands/tool/mod.rs#L42-L46">the special case in ToolRequest::parse</a> (previously is_python) to support python@3.8 in addition to bare python.</p>
 </blockquote>
-<p>After some checking this <em>feels</em> like the best option of the 3 you laid out. I don't want to break compat without a really good reason, and PythonRequest::parse is called pervasively throughout our CLI, so changing that would have widespread ramifications.</p>
+<p>After some checking this <em>feels</em> like the best option of the 3 you laid out. I don&#x27;t want to break compat without a really good reason, and PythonRequest::parse is called pervasively throughout our CLI, so changing that would have widespread ramifications.</p>
 </blockquote>
-<p>I actually just suggested that we want consistent Python parsing throughout and <code>python</code> is a reasonable alias for <code>cpython</code>, so <code>uv run -p python@3.8</code> seems okay and I think the last option is what I'd lean towards unless there are other tool-specific special cases we need to implement anyway.</p>
+<p>I actually just suggested that we want consistent Python parsing throughout and <code>python</code> is a reasonable alias for <code>cpython</code>, so <code>uv run -p python@3.8</code> seems okay and I think the last option is what I&#x27;d lean towards unless there are other tool-specific special cases we need to implement anyway.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -98,7 +98,7 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/mod.rs</code>:52 on 2025-05-21 21:26</div>
-            <div class="timeline-body"><p>I don't think a bare version (e.g., 312 or 3.12) should work, but I do think <code>python3</code> and <code>python3.12</code> should work.</p>
+            <div class="timeline-body"><p>I don&#x27;t think a bare version (e.g., 312 or 3.12) should work, but I do think <code>python3</code> and <code>python3.12</code> should work.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -107,9 +107,9 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
 <blockquote>
 <p>We could expand <a href="https://github.com/astral-sh/uv/blob/7850a6ef14c188e9bc78d778c4a3c9b441f9e6a6/crates/uv/src/commands/tool/mod.rs#L42-L46">the special case in ToolRequest::parse</a> (previously is_python) to support python@3.8 in addition to bare python.</p>
 </blockquote>
-<p>After some checking this <em>feels</em> like the best option of the 3 you laid out. I don't want to break compat without a really good reason, and PythonRequest::parse is called pervasively throughout our CLI, so changing that would have widespread ramifications.</p>
+<p>After some checking this <em>feels</em> like the best option of the 3 you laid out. I don&#x27;t want to break compat without a really good reason, and PythonRequest::parse is called pervasively throughout our CLI, so changing that would have widespread ramifications.</p>
 </blockquote>
-<p>I chatted with @zanieb just now, and they were leaning towards the third option of allowing e.g. <code>--python python@3.8</code> everywhere (maybe by adding it to <code>long_names</code> and calling it an alias for <code>&quot;cpython&quot;</code>), which would fix my broken tests as a side effect. At the same time, <code>uvx 38</code> seems like too much to allow, because we'd be implicitly shadowing a large class of possible package names. I'm going to noodle on whether I can factor out what we want from <code>PythonRequest::parse</code>, and/or whether we might want something like <code>uv run</code>'s  <code>--script</code> flag that callers with &quot;interesting&quot; internal package names can use to prevent shadowing. (The natural choice might be <code>--package</code> but alas that's already taken.)</p>
+<p>I chatted with @zanieb just now, and they were leaning towards the third option of allowing e.g. <code>--python python@3.8</code> everywhere (maybe by adding it to <code>long_names</code> and calling it an alias for <code>&quot;cpython&quot;</code>), which would fix my broken tests as a side effect. At the same time, <code>uvx 38</code> seems like too much to allow, because we&#x27;d be implicitly shadowing a large class of possible package names. I&#x27;m going to noodle on whether I can factor out what we want from <code>PythonRequest::parse</code>, and/or whether we might want something like <code>uv run</code>&#x27;s  <code>--script</code> flag that callers with &quot;interesting&quot; internal package names can use to prevent shadowing. (The natural choice might be <code>--package</code> but alas that&#x27;s already taken.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -118,12 +118,12 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/mod.rs</code>:52 on 2025-05-21 21:28</div>
-            <div class="timeline-body"><p>This suggests that maybe <code>PythonRequest</code> isn't quite right since it drops that information? You could add variants like <code>Interpreter</code> (i.e., bare <code>python</code>) and <code>InterpreterVersion</code> (i.e., <code>python3.13</code>) (names questionable), but that's a fair amount of work since you'd need to handle them everywhere.</p>
+            <div class="timeline-body"><p>This suggests that maybe <code>PythonRequest</code> isn&#x27;t quite right since it drops that information? You could add variants like <code>Interpreter</code> (i.e., bare <code>python</code>) and <code>InterpreterVersion</code> (i.e., <code>python3.13</code>) (names questionable), but that&#x27;s a fair amount of work since you&#x27;d need to handle them everywhere.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/mod.rs</code>:61 on 2025-05-21 21:29</div>
-            <div class="timeline-body"><p>I don't think you need to say this last part, this is sort of implied by the choice to enumerate the variants and we frequently use this pattern here.</p>
+            <div class="timeline-body"><p>I don&#x27;t think you need to say this last part, this is sort of implied by the choice to enumerate the variants and we frequently use this pattern here.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -136,7 +136,7 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/run.rs</code>:90 on 2025-05-21 21:33</div>
-            <div class="timeline-body"><p>I'm loosely opposed to changing this, because we use this argument name all over the place. We do use <code>python_request</code> in some places? which you could use since you'll just shadow it later? I don't have strong feelings. It seems like this does improve readability here, but may be confusing if you're coming from elsewhere.</p>
+            <div class="timeline-body"><p>I&#x27;m loosely opposed to changing this, because we use this argument name all over the place. We do use <code>python_request</code> in some places? which you could use since you&#x27;ll just shadow it later? I don&#x27;t have strong feelings. It seems like this does improve readability here, but may be confusing if you&#x27;re coming from elsewhere.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -145,29 +145,29 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/run.rs</code>:700 on 2025-05-21 21:35</div>
-            <div class="timeline-body"><p>Nit: Generally we don't shorten variable names, I'd just use <code>tool_request</code> or <code>tool_python_request</code>.</p>
+            <div class="timeline-body"><p>Nit: Generally we don&#x27;t shorten variable names, I&#x27;d just use <code>tool_request</code> or <code>tool_python_request</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-21 21:43</div>
             <div class="timeline-body"><p>On</p>
 <blockquote>
-<p>whether we might want something like uv run's --script flag that callers with &quot;interesting&quot; internal package names can use to prevent shadowing.</p>
+<p>whether we might want something like uv run&#x27;s --script flag that callers with &quot;interesting&quot; internal package names can use to prevent shadowing.</p>
 </blockquote>
-<p>I mostly brought that up to explain our general thinking and existing patterns for that problem. I probably wouldn't pursue adding that here.</p>
+<p>I mostly brought that up to explain our general thinking and existing patterns for that problem. I probably wouldn&#x27;t pursue adding that here.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2025-05-21 21:44</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-21 21:44</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @zanieb by @zanieb on 2025-05-21 21:44</div>
+            <div class="event">Assigned to <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-21 21:44</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @oconnor663 by @oconnor663 on 2025-05-22 17:01</div>
+            <div class="event">Assigned to <a href="https://github.com/oconnor663">@oconnor663</a> by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-05-22 17:01</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Unassigned @zanieb by @oconnor663 on 2025-05-22 17:01</div>
+            <div class="event">Unassigned <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-05-22 17:01</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/uv-python/src/discovery.rs</code>:1435 on 2025-05-22 22:17</div>
@@ -181,17 +181,17 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-05-22 22:45</div>
-            <div class="timeline-body"><p>Second pass: I've factored out an alternate constructor for <code>PythonRequest</code> called <code>try_parse_tool_executable</code>. This shares parsing logic for cases that are (now) common between <code>--python</code> and <code>uvx</code> (<code>python3.8</code>, <code>python@3.8</code>, <code>pypy38</code>) but allows for cases that are unique to <code>--python</code> (<code>38</code>, <code>cp@38</code>) or to <code>uvx</code> (<code>python</code>, <code>pythonw</code> on Windows). If the differences get any more complicated than this, it might be better to give up the sharing and just copy-paste the parser, but as-is it doesn't feel too bad. The <code>match</code> statement where I was seeing which variant of <code>PythonRequest</code> we got is thankfully gone.</p>
+            <div class="timeline-body"><p>Second pass: I&#x27;ve factored out an alternate constructor for <code>PythonRequest</code> called <code>try_parse_tool_executable</code>. This shares parsing logic for cases that are (now) common between <code>--python</code> and <code>uvx</code> (<code>python3.8</code>, <code>python@3.8</code>, <code>pypy38</code>) but allows for cases that are unique to <code>--python</code> (<code>38</code>, <code>cp@38</code>) or to <code>uvx</code> (<code>python</code>, <code>pythonw</code> on Windows). If the differences get any more complicated than this, it might be better to give up the sharing and just copy-paste the parser, but as-is it doesn&#x27;t feel too bad. The <code>match</code> statement where I was seeing which variant of <code>PythonRequest</code> we got is thankfully gone.</p>
 <p>There is one remaining failing snapshot test: <code>tool_run_python_from</code></p>
 <p>https://github.com/astral-sh/uv/blob/30be27beb1c93147d00a819b70fc729673bbe1af/crates/uv/tests/it/tool_run.rs#L1956-L2004</p>
-<p>This tests cases like <code>uvx --from python@3.8 python</code>. That's similar to <code>uvx --python python3.8 python</code> (which is still supported and now allows the <code>@</code> syntax too), but it actually ignores the executable argument entirely. For example with the currently released version:</p>
+<p>This tests cases like <code>uvx --from python@3.8 python</code>. That&#x27;s similar to <code>uvx --python python3.8 python</code> (which is still supported and now allows the <code>@</code> syntax too), but it actually ignores the executable argument entirely. For example with the currently released version:</p>
 <pre><code>$ uvx --from python@38 blargblargblarg
 Python 3.8.20 (default, Oct  2 2024, 16:34:12) 
 [Clang 18.1.8 ] on linux
 Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
 &gt;&gt;&gt;
 </code></pre>
-<p>I'm not sure what to do with this. We could keep supporting it, but it seems kind of bizarre. Does anyone use this? (If it was important enough to be in the snapshot tests I fear the answer is yes.) Feedback needed.</p>
+<p>I&#x27;m not sure what to do with this. We could keep supporting it, but it seems kind of bizarre. Does anyone use this? (If it was important enough to be in the snapshot tests I fear the answer is yes.) Feedback needed.</p>
 <p><strong>Update:</strong> Zanie clarified that <code>--from python</code> is important for use cases like <code>uvx --from python bash</code>, which runs <code>bash</code> from the <code>PATH</code> with Python available. I added support below.</p>
 </div>
         </div>
@@ -200,18 +200,18 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @zanieb by @oconnor663 on 2025-05-22 22:48</div>
+            <div class="event">Assigned to <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-05-22 22:48</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Unassigned @oconnor663 by @oconnor663 on 2025-05-22 22:48</div>
+            <div class="event">Unassigned <a href="https://github.com/oconnor663">@oconnor663</a> by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-05-22 22:48</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-05-23 12:21</div>
             <div class="timeline-body"><blockquote>
-<p>I'm not sure what to do with this. We could keep supporting it, but it seems kind of bizarre. Does anyone use this? (If it was important enough to be in the snapshot tests I fear the answer is yes.) Feedback needed.</p>
+<p>I&#x27;m not sure what to do with this. We could keep supporting it, but it seems kind of bizarre. Does anyone use this? (If it was important enough to be in the snapshot tests I fear the answer is yes.) Feedback needed.</p>
 </blockquote>
-<p>This was added in https://github.com/astral-sh/uv/pull/11076 but the PR/issue focuses on non-from usage. That said, zanie added explicit snapshots for it, and one error for &quot;hey what are you doing&quot;, so pretty clear they were going eyes wide-open into it.</p>
-<p>The fact that the second argument gets ignored seems like a bug though... at very least we should probably error if it's not <code>python</code>?</p>
+<p>This was added in <a href="https://github.com/astral-sh/uv/pull/11076">astral-sh/uv#11076</a> but the PR/issue focuses on non-from usage. That said, zanie added explicit snapshots for it, and one error for &quot;hey what are you doing&quot;, so pretty clear they were going eyes wide-open into it.</p>
+<p>The fact that the second argument gets ignored seems like a bug though... at very least we should probably error if it&#x27;s not <code>python</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -239,7 +239,7 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/tool_run.rs</code>:1946 on 2025-05-27 16:37</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">    // Bare versions don't work either. Again we interpret them as package names.
+            <div class="timeline-body"><pre><code>    // Bare versions don&#x27;t work either. Again we interpret them as package names.
 </code></pre>
 <p>?</p>
 </div>
@@ -250,8 +250,8 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/discovery.rs</code>:1485 on 2025-05-27 16:39</div>
-            <div class="timeline-body"><p>The newline is necessary in some markdown renderers, let's include it for consistency</p>
-<pre><code class="language-suggestion">    ///
+            <div class="timeline-body"><p>The newline is necessary in some markdown renderers, let&#x27;s include it for consistency</p>
+<pre><code>    ///
     /// - This only supports long names, including e.g. `pypy39` but **not** `pp39` or `39`.
 </code></pre>
 </div>
@@ -272,7 +272,7 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/discovery.rs</code>:1507 on 2025-05-27 16:41</div>
-            <div class="timeline-body"><p>Same as https://github.com/astral-sh/uv/pull/13583/files#r2109677726</p>
+            <div class="timeline-body"><p>Same as <a href="https://github.com/astral-sh/uv/pull/13583">astral-sh/uv#13583</a>/files#r2109677726</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -299,18 +299,18 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/uv-python/src/discovery.rs</code>:1488 on 2025-05-27 23:02</div>
-            <div class="timeline-body"><p>I'm also just about to push a commit that adds back <code>uvx --from python[...]</code> support, and this function gets used in that case too, where its argument isn't really an &quot;executable&quot; or a &quot;command&quot;. I'm going to go with <code>try_from_tool_name</code>. Let me know what you think.</p>
+            <div class="timeline-body"><p>I&#x27;m also just about to push a commit that adds back <code>uvx --from python[...]</code> support, and this function gets used in that case too, where its argument isn&#x27;t really an &quot;executable&quot; or a &quot;command&quot;. I&#x27;m going to go with <code>try_from_tool_name</code>. Let me know what you think.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-python/src/discovery.rs</code>:1409 on 2025-05-28 09:27</div>
-            <div class="timeline-body"><p>nit: We don't block-align comments, can you move those to the line above?</p>
+            <div class="timeline-body"><p>nit: We don&#x27;t block-align comments, can you move those to the line above?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-python/src/discovery.rs</code>:2462 on 2025-05-28 10:25</div>
             <div class="timeline-body"><p>no need to go down to bytes, we can handle this on the char-level:</p>
-<pre><code class="language-suggestion">        if s.chars().all(char::is_alphabetic) {
+<pre><code>        if s.chars().all(char::is_alphabetic) {
 </code></pre>
 </div>
         </div>
@@ -353,7 +353,7 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/uv/src/commands/tool/mod.rs</code>:48 on 2025-05-28 15:07</div>
-            <div class="timeline-body"><p>I think both in <code>main</code> and in this PR we parse <code>pythonw</code> as an abstract <code>PythonRequest::Version</code>, so we probably never shell out to <code>pythonw.exe</code> at all. But I'm not sure that's what you're asking?</p>
+            <div class="timeline-body"><p>I think both in <code>main</code> and in this PR we parse <code>pythonw</code> as an abstract <code>PythonRequest::Version</code>, so we probably never shell out to <code>pythonw.exe</code> at all. But I&#x27;m not sure that&#x27;s what you&#x27;re asking?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -363,7 +363,7 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/mod.rs</code>:48 on 2025-05-28 15:18</div>
             <div class="timeline-body"><p><code>pythonw</code> exists to avoid launching a terminal window on Windows, whereas, <code>python</code> always creates one in the background.</p>
-<p>@konstin it probably won't, but <code>uvw tool run pythonw</code> will be a thing after #11786</p>
+<p>@konstin it probably won&#x27;t, but <code>uvw tool run pythonw</code> will be a thing after #11786</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -390,7 +390,7 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/tool_run.rs</code>:1943 on 2025-05-28 19:25</div>
-            <div class="timeline-body"><p>It's just as bad, really. We try to make them reproducible wherever possible. That's mostly w.r.t. the external world though, internal changes causing snapshot changes are fine.</p>
+            <div class="timeline-body"><p>It&#x27;s just as bad, really. We try to make them reproducible wherever possible. That&#x27;s mostly w.r.t. the external world though, internal changes causing snapshot changes are fine.</p>
 <p>However, I think this specific case is fine.</p>
 </div>
         </div>
@@ -409,17 +409,17 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/tool_run.rs</code>:2113 on 2025-05-28 19:28</div>
-            <div class="timeline-body"><p>Separate, but we should open an issue to follow-up on this. <code>uvx -p &gt;=3.12 python</code> is valid and probably a better recommendation? Also I'm not sure why we wouldn't support <code>python&gt;=3.12</code> here.</p>
+            <div class="timeline-body"><p>Separate, but we should open an issue to follow-up on this. <code>uvx -p &gt;=3.12 python</code> is valid and probably a better recommendation? Also I&#x27;m not sure why we wouldn&#x27;t support <code>python&gt;=3.12</code> here.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-05-28 19:28</div>
-            <div class="timeline-body"><p>(Presuming this regression is fixed https://github.com/astral-sh/uv/pull/13583/files#r2112604209)</p>
+            <div class="timeline-body"><p>(Presuming this regression is fixed <a href="https://github.com/astral-sh/uv/pull/13583">astral-sh/uv#13583</a>/files#r2112604209)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/uv/tests/it/tool_run.rs</code>:2113 on 2025-05-29 03:40</div>
-            <div class="timeline-body"><p>I'm not sure exactly how, but I'd gotten the impression that we didn't want to support this. If we do, I think I can just remove this check:</p>
+            <div class="timeline-body"><p>I&#x27;m not sure exactly how, but I&#x27;d gotten the impression that we didn&#x27;t want to support this. If we do, I think I can just remove this check:</p>
 <p>https://github.com/astral-sh/uv/blob/3b9358e402e6de305920b470a427e7d99776fd3a/crates/uv/src/commands/tool/run.rs#L763-L771</p>
 </div>
         </div>
@@ -433,7 +433,7 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/uv/tests/it/tool_run.rs</code>:2048 on 2025-05-29 03:54</div>
-            <div class="timeline-body"><p>Could you say more here? To me it looks like something that was an error before is still an error, with a different message. <code>PythonRequest</code> doesn't currently have a <code>Latest</code> variant, so that would need to be implemented if we wanted to support it in this PR.</p>
+            <div class="timeline-body"><p>Could you say more here? To me it looks like something that was an error before is still an error, with a different message. <code>PythonRequest</code> doesn&#x27;t currently have a <code>Latest</code> variant, so that would need to be implemented if we wanted to support it in this PR.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -451,7 +451,7 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/tool_run.rs</code>:2048 on 2025-05-29 12:15</div>
-            <div class="timeline-body"><p>The change in message here is a regression because it moves from a clear error message to a misleading one. Previously, we explained that <code>latest</code> was not supported for <code>python</code> requests. Here, we say <code>latest</code> is an invalid version request, but... that's not true in the general case because we support it for non-python requests, like <code>ruff@latest</code>.</p>
+            <div class="timeline-body"><p>The change in message here is a regression because it moves from a clear error message to a misleading one. Previously, we explained that <code>latest</code> was not supported for <code>python</code> requests. Here, we say <code>latest</code> is an invalid version request, but... that&#x27;s not true in the general case because we support it for non-python requests, like <code>ruff@latest</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -469,24 +469,24 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @Gankra by @oconnor663 on 2025-05-29 15:19</div>
+            <div class="event">Assigned to <a href="https://github.com/Gankra">@Gankra</a> by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-05-29 15:19</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @konstin by @oconnor663 on 2025-05-29 15:19</div>
+            <div class="event">Assigned to <a href="https://github.com/konstin">@konstin</a> by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-05-29 15:19</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Unassigned @zanieb by @oconnor663 on 2025-05-29 15:19</div>
+            <div class="event">Unassigned <a href="https://github.com/zanieb">@zanieb</a> by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-05-29 15:19</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-30 08:16</div>
-            <div class="timeline-body"><p>I'll leave the design review to zanie, code LGTM.</p>
+            <div class="timeline-body"><p>I&#x27;ll leave the design review to zanie, code LGTM.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @oconnor663 on 2025-05-30 16:12</div>
+            <div class="event">Merged by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-05-30 16:12</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @oconnor663 on 2025-05-30 16:12</div>
+            <div class="event">Closed by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-05-30 16:12</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-05-30 16:12</div>
@@ -494,7 +494,7 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:43:15 UTC
+        Synced at 2026-01-20 19:52:16 UTC
     </footer>
 </body>
 </html>

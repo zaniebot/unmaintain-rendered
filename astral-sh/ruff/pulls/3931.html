@@ -23,92 +23,92 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>This PR changes ruff to use our own fork of <code>RustPython</code> that replaces <code>Location { row: u32, column: u32 }</code> with <code>TextSize</code> https://github.com/charliermarsh/RustPython/pull/4. The main motivation for this change is to ship the logical line rules. Enabling the logical line rules regresses performance by as much as 50% because the rules need to slice into the source string, which requires building and querying the <code>LineIndex</code>. Using byte offsets everywhere trades the need from having to build the <code>LineIndex</code> to inspect the source text in lint rules with re-computing the row and column information when rendering diagnostics. This is a favourable trade because most projects using ruff only have very few diagnostics.</p>
-<h2>Notable Changes</h2>
-<h3><code>SourceCodeFile</code></h3>
+            <div class="timeline-body">Summary
+<p>This PR changes ruff to use our own fork of <code>RustPython</code> that replaces <code>Location { row: u32, column: u32 }</code> with <code>TextSize</code> <a href="https://github.com/charliermarsh/RustPython/pull/4">charliermarsh/RustPython#4</a>. The main motivation for this change is to ship the logical line rules. Enabling the logical line rules regresses performance by as much as 50% because the rules need to slice into the source string, which requires building and querying the <code>LineIndex</code>. Using byte offsets everywhere trades the need from having to build the <code>LineIndex</code> to inspect the source text in lint rules with re-computing the row and column information when rendering diagnostics. This is a favourable trade because most projects using ruff only have very few diagnostics.</p>
+Notable Changes
+<code>SourceCodeFile</code>
 <p>It is now necessary to always include the source code when passing <code>Message</code>s because the source text is necessary to re-compute the row and column positions for byte offsets (<code>TextSize</code>). Previously, the source text was only included when using <code>--show-source</code>. This results in a noticeable slowdown in projects with many (ten thousand) diagnostics.</p>
-<h3><code>Locator</code></h3>
+<code>Locator</code>
 <p>The <code>Locator</code> now exposes methods to:</p>
 <ul>
-<li>For a byte offset, compute its line's start and end positions. Useful to compute the indent or when replacing a full line.</li>
+<li>For a byte offset, compute its line&#x27;s start and end positions. Useful to compute the indent or when replacing a full line.</li>
 <li>For a text range, compute the offset of the first line and the last line in that range. Useful when replacing all lines in a range.</li>
 </ul>
 <p>The computations are performed on demand without querying the <code>LineIndex</code>.</p>
 <p>The <code>Locator</code> still has a lazy computed <code>LineIndex</code> because we have a few diagnostics that use a line number as part of their message.</p>
-<h3><code>SourceCode</code></h3>
+<code>SourceCode</code>
 <p><code>SourceCode</code> now provides methods to compute the <code>SourceLocation</code> (row column information) given an offset.</p>
-<h3><code>UniversalNewline</code></h3>
-<p>The <code>UniversalNewline</code> iterator now returns <code>Line</code> items instead of <code>&amp;str</code>. This is necessary because many lints need to know the offset of the <code>nth</code> line and summing the <code>text.text_len()</code> doesn't give you the right result because the <code>text</code> does not include the trailing newline character:</p>
-<pre><code class="language-py">def f:
+<code>UniversalNewline</code>
+<p>The <code>UniversalNewline</code> iterator now returns <code>Line</code> items instead of <code>&amp;str</code>. This is necessary because many lints need to know the offset of the <code>nth</code> line and summing the <code>text.text_len()</code> doesn&#x27;t give you the right result because the <code>text</code> does not include the trailing newline character:</p>
+<pre><code>def f:
     pass
 </code></pre>
 <p>The text len of the first line is 6 bytes because the line does not include the trailing newline character.</p>
-<p>The <code>Line</code> struct provides methods o get a line's start offset, end offset, range, and text. It also provides methods to get the text, end offset, and range, including the trailing newline character.</p>
-<h3>Use <code>TextRange</code> for ranges</h3>
+<p>The <code>Line</code> struct provides methods o get a line&#x27;s start offset, end offset, range, and text. It also provides methods to get the text, end offset, and range, including the trailing newline character.</p>
+Use <code>TextRange</code> for ranges
 <p>Consistently uses <code>TextRange</code> in favor of: <code>(Location, Location)</code> and <code>start: Location, end: Location</code> because <code>TextRange</code> better communicates that the two offsets are related.</p>
 <p>Replaces all references of <code>Range</code> with <code>TextRange</code> and deletes <code>Range</code>.</p>
-<h3>Use <code>TextSize</code> instead of <code>Location</code></h3>
+Use <code>TextSize</code> instead of <code>Location</code>
 <p>Replaces all references to <code>Location</code> with <code>TextSize</code>.</p>
-<h3><code>Stylist</code></h3>
+<code>Stylist</code>
 <p>This PR removes the lazy computations for <code>indention</code> and <code>quote</code> because slicing into the source string is now cheap.</p>
-<h3><code>Indexer</code></h3>
+<code>Indexer</code>
 <p>The <code>Indexer</code> used to store the line numbers of commented lines, lines with continuations, and lines with multiline strings.  This is no longer feasible because it would require computing the line numbers. The new implementation stores the line-start offset for continuous lines and the <code>TextRange</code> for comments and multiline strings.</p>
 <p>Storing the <code>TextRange</code> instead of line numbers helped to fix a false-negative where a mixed spaces-tab indent at the start of a multiline string was not reported because the analysis incorrectly assumed that it is part of the multiline string.</p>
-<h3>Noqa</h3>
+Noqa
 <p>This PR now stores the <code>TextRange</code> of the line for each noqa comment sorted in ascending order by the start position. Testing whether a <code>diagnostic</code> is suppressed requires a binary search on the ranges to test if any range contains the <code>diagnostic</code>s start location.</p>
 <p>This PR further replaces the mapping to suppress some syntaxes on other lines by a <code>TextRange</code> vector where every entry means that a position falling into that range should be remapped to the end of the range.</p>
-<h3>isort directives</h3>
+isort directives
 <p>Similar to noqa. It now stores the <code>TextRange</code>s instead of the line numbers for the areas where sorting is disabled. This PR now only stores the <code>TextSize</code> for split positions as this proves to be sufficient.</p>
-<h2>Benchmark</h2>
+Benchmark
 <p>TLDR: 10% performance improvement for projects with few diagnostics. Identical performance or small regression for projects with many diagnostics. The new implementation with logical-lines enabled outperforms <code>main</code> with logical-lines disabled.</p>
-<h3>Micro Benchmarks</h3>
+Micro Benchmarks
 <p>This PR improves the default-rules benchmark by 6-15% and the all-rules benchmark by 4-8%. More importantly, ruff with logical-lines enabled is as fast or even faster than <code>main</code>. This should allow us to ship logical lines without causing a runtime regression.</p>
 <pre>group                                      bytes                                  bytes-logical                          main                                   main-logical
 -----                                      -----                                  -------------                          ----                                   ------------
-linter/all-rules/large/dataset.py<span style="color:#26A269"><b>          1.00      8.6±0.08ms     4.7 MB/sec</b></span>    1.03      8.9±0.17ms     4.6 MB/sec    1.04      8.9±0.12ms     4.6 MB/sec    1.10      9.4±0.01ms     4.3 MB/sec
-linter/all-rules/numpy/ctypeslib.py<span style="color:#26A269"><b>        1.00      2.0±0.07ms     8.3 MB/sec</b></span>    1.05      2.1±0.03ms     7.9 MB/sec    1.05      2.1±0.03ms     7.9 MB/sec    1.13      2.3±0.00ms     7.4 MB/sec
-linter/all-rules/numpy/globals.py<span style="color:#26A269"><b>          1.00    220.7±4.63µs    13.4 MB/sec</b></span>    1.04    228.8±2.74µs    12.9 MB/sec    1.08    238.8±1.17µs    12.4 MB/sec    1.16    256.8±1.25µs    11.5 MB/sec
-linter/all-rules/pydantic/types.py<span style="color:#26A269"><b>         1.00      3.5±0.04ms     7.3 MB/sec</b></span>    1.05      3.7±0.10ms     6.9 MB/sec    1.07      3.7±0.02ms     6.8 MB/sec    1.14      4.0±0.02ms     6.4 MB/sec
-linter/default-rules/large/dataset.py<span style="color:#26A269"><b>      1.00      4.3±0.07ms     9.5 MB/sec</b></span>    1.07      4.6±0.03ms     8.8 MB/sec    1.08      4.6±0.05ms     8.8 MB/sec    1.18      5.1±0.08ms     8.1 MB/sec
-linter/default-rules/numpy/ctypeslib.py<span style="color:#26A269"><b>    1.00    870.1±5.69µs    19.1 MB/sec</b></span>    1.12    971.9±3.08µs    17.1 MB/sec    1.15   1002.2±4.42µs    16.6 MB/sec    1.27   1108.6±3.25µs    15.0 MB/sec
-linter/default-rules/numpy/globals.py<span style="color:#26A269"><b>      1.00     95.9±0.72µs    30.8 MB/sec</b></span>    1.08    103.2±1.69µs    28.6 MB/sec    1.06    102.0±1.01µs    28.9 MB/sec    1.19    114.5±0.47µs    25.8 MB/sec
-linter/default-rules/pydantic/types.py<span style="color:#26A269"><b>     1.00  1883.0±10.58µs    13.5 MB/sec</b></span>    1.12      2.1±0.01ms    12.1 MB/sec    1.10      2.1±0.00ms    12.3 MB/sec    1.23      2.3±0.01ms    11.0 MB/sec
+linter/all-rules/large/dataset.py<span>          1.00      8.6±0.08ms     4.7 MB/sec</span>    1.03      8.9±0.17ms     4.6 MB/sec    1.04      8.9±0.12ms     4.6 MB/sec    1.10      9.4±0.01ms     4.3 MB/sec
+linter/all-rules/numpy/ctypeslib.py<span>        1.00      2.0±0.07ms     8.3 MB/sec</span>    1.05      2.1±0.03ms     7.9 MB/sec    1.05      2.1±0.03ms     7.9 MB/sec    1.13      2.3±0.00ms     7.4 MB/sec
+linter/all-rules/numpy/globals.py<span>          1.00    220.7±4.63µs    13.4 MB/sec</span>    1.04    228.8±2.74µs    12.9 MB/sec    1.08    238.8±1.17µs    12.4 MB/sec    1.16    256.8±1.25µs    11.5 MB/sec
+linter/all-rules/pydantic/types.py<span>         1.00      3.5±0.04ms     7.3 MB/sec</span>    1.05      3.7±0.10ms     6.9 MB/sec    1.07      3.7±0.02ms     6.8 MB/sec    1.14      4.0±0.02ms     6.4 MB/sec
+linter/default-rules/large/dataset.py<span>      1.00      4.3±0.07ms     9.5 MB/sec</span>    1.07      4.6±0.03ms     8.8 MB/sec    1.08      4.6±0.05ms     8.8 MB/sec    1.18      5.1±0.08ms     8.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py<span>    1.00    870.1±5.69µs    19.1 MB/sec</span>    1.12    971.9±3.08µs    17.1 MB/sec    1.15   1002.2±4.42µs    16.6 MB/sec    1.27   1108.6±3.25µs    15.0 MB/sec
+linter/default-rules/numpy/globals.py<span>      1.00     95.9±0.72µs    30.8 MB/sec</span>    1.08    103.2±1.69µs    28.6 MB/sec    1.06    102.0±1.01µs    28.9 MB/sec    1.19    114.5±0.47µs    25.8 MB/sec
+linter/default-rules/pydantic/types.py<span>     1.00  1883.0±10.58µs    13.5 MB/sec</span>    1.12      2.1±0.01ms    12.1 MB/sec    1.10      2.1±0.00ms    12.3 MB/sec    1.23      2.3±0.01ms    11.0 MB/sec
 </pre>
 
-<p>It's worth pointing out that the relative slowdown introduced by enabling the logical lines lint rules remains unchanged. I'm surprised by this because it doesn't show the improvement I expected from removing the <code>LineIndex</code> computation from the linting path.</p>
+<p>It&#x27;s worth pointing out that the relative slowdown introduced by enabling the logical lines lint rules remains unchanged. I&#x27;m surprised by this because it doesn&#x27;t show the improvement I expected from removing the <code>LineIndex</code> computation from the linting path.</p>
 <pre>group                                      main                                   main-logical
 -----                                      ----                                   ------------
-linter/all-rules/large/dataset.py<span style="color:#26A269"><b>          1.00      8.9±0.12ms     4.6 MB/sec</b></span>    1.06      9.4±0.01ms     4.3 MB/sec
-linter/all-rules/numpy/ctypeslib.py<span style="color:#26A269"><b>        1.00      2.1±0.03ms     7.9 MB/sec</b></span>    1.07      2.3±0.00ms     7.4 MB/sec
-linter/all-rules/numpy/globals.py<span style="color:#26A269"><b>          1.00    238.8±1.17µs    12.4 MB/sec</b></span>    1.08    256.8±1.25µs    11.5 MB/sec
-linter/all-rules/pydantic/types.py<span style="color:#26A269"><b>         1.00      3.7±0.02ms     6.8 MB/sec</b></span>    1.07      4.0±0.02ms     6.4 MB/sec
-linter/default-rules/large/dataset.py<span style="color:#26A269"><b>      1.00      4.6±0.05ms     8.8 MB/sec</b></span>    1.09      5.1±0.08ms     8.1 MB/sec
-linter/default-rules/numpy/ctypeslib.py<span style="color:#26A269"><b>    1.00   1002.2±4.42µs    16.6 MB/sec</b></span>    1.11   1108.6±3.25µs    15.0 MB/sec
-linter/default-rules/numpy/globals.py<span style="color:#26A269"><b>      1.00    102.0±1.01µs    28.9 MB/sec</b></span>    1.12    114.5±0.47µs    25.8 MB/sec
-linter/default-rules/pydantic/types.py<span style="color:#26A269"><b>     1.00      2.1±0.00ms    12.3 MB/sec</b></span>    1.12      2.3±0.01ms    11.0 MB/sec
+linter/all-rules/large/dataset.py<span>          1.00      8.9±0.12ms     4.6 MB/sec</span>    1.06      9.4±0.01ms     4.3 MB/sec
+linter/all-rules/numpy/ctypeslib.py<span>        1.00      2.1±0.03ms     7.9 MB/sec</span>    1.07      2.3±0.00ms     7.4 MB/sec
+linter/all-rules/numpy/globals.py<span>          1.00    238.8±1.17µs    12.4 MB/sec</span>    1.08    256.8±1.25µs    11.5 MB/sec
+linter/all-rules/pydantic/types.py<span>         1.00      3.7±0.02ms     6.8 MB/sec</span>    1.07      4.0±0.02ms     6.4 MB/sec
+linter/default-rules/large/dataset.py<span>      1.00      4.6±0.05ms     8.8 MB/sec</span>    1.09      5.1±0.08ms     8.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py<span>    1.00   1002.2±4.42µs    16.6 MB/sec</span>    1.11   1108.6±3.25µs    15.0 MB/sec
+linter/default-rules/numpy/globals.py<span>      1.00    102.0±1.01µs    28.9 MB/sec</span>    1.12    114.5±0.47µs    25.8 MB/sec
+linter/default-rules/pydantic/types.py<span>     1.00      2.1±0.00ms    12.3 MB/sec</span>    1.12      2.3±0.01ms    11.0 MB/sec
 </pre>
 
 <pre>group                                      bytes                                  bytes-logical
 -----                                      -----                                  -------------
-linter/all-rules/large/dataset.py<span style="color:#26A269"><b>          1.00      8.6±0.08ms     4.7 MB/sec</b></span>    1.03      8.9±0.17ms     4.6 MB/sec
-linter/all-rules/numpy/ctypeslib.py<span style="color:#26A269"><b>        1.00      2.0±0.07ms     8.3 MB/sec</b></span>    1.05      2.1±0.03ms     7.9 MB/sec
-linter/all-rules/numpy/globals.py<span style="color:#26A269"><b>          1.00    220.7±4.63µs    13.4 MB/sec</b></span>    1.04    228.8±2.74µs    12.9 MB/sec
-linter/all-rules/pydantic/types.py<span style="color:#26A269"><b>         1.00      3.5±0.04ms     7.3 MB/sec</b></span>    1.05      3.7±0.10ms     6.9 MB/sec
-linter/default-rules/large/dataset.py<span style="color:#26A269"><b>      1.00      4.3±0.07ms     9.5 MB/sec</b></span>    1.07      4.6±0.03ms     8.8 MB/sec
-linter/default-rules/numpy/ctypeslib.py<span style="color:#26A269"><b>    1.00    870.1±5.69µs    19.1 MB/sec</b></span>    1.12    971.9±3.08µs    17.1 MB/sec
-linter/default-rules/numpy/globals.py<span style="color:#26A269"><b>      1.00     95.9±0.72µs    30.8 MB/sec</b></span>    1.08    103.2±1.69µs    28.6 MB/sec
-linter/default-rules/pydantic/types.py<span style="color:#26A269"><b>     1.00  1883.0±10.58µs    13.5 MB/sec</b></span>    1.12      2.1±0.01ms    12.1 MB/sec
+linter/all-rules/large/dataset.py<span>          1.00      8.6±0.08ms     4.7 MB/sec</span>    1.03      8.9±0.17ms     4.6 MB/sec
+linter/all-rules/numpy/ctypeslib.py<span>        1.00      2.0±0.07ms     8.3 MB/sec</span>    1.05      2.1±0.03ms     7.9 MB/sec
+linter/all-rules/numpy/globals.py<span>          1.00    220.7±4.63µs    13.4 MB/sec</span>    1.04    228.8±2.74µs    12.9 MB/sec
+linter/all-rules/pydantic/types.py<span>         1.00      3.5±0.04ms     7.3 MB/sec</span>    1.05      3.7±0.10ms     6.9 MB/sec
+linter/default-rules/large/dataset.py<span>      1.00      4.3±0.07ms     9.5 MB/sec</span>    1.07      4.6±0.03ms     8.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py<span>    1.00    870.1±5.69µs    19.1 MB/sec</span>    1.12    971.9±3.08µs    17.1 MB/sec
+linter/default-rules/numpy/globals.py<span>      1.00     95.9±0.72µs    30.8 MB/sec</span>    1.08    103.2±1.69µs    28.6 MB/sec
+linter/default-rules/pydantic/types.py<span>     1.00  1883.0±10.58µs    13.5 MB/sec</span>    1.12      2.1±0.01ms    12.1 MB/sec
 </pre>
 
-<h3>CPython</h3>
+CPython
 <p>This benchmark measures the worst-case performance: A project with many violations.</p>
 <ul>
 <li>Performance regresses for loading cached results (except when using <code>--show-source</code>). This is expected because printing diagnostics now always requires storing the source text and computing the source locations adds some overhead as well.</li>
 <li>Slight improvement for <code>--no-cache</code> as seen in the micro benchmarks</li>
-<li>10% performance improvement when using silent (<code>-s</code>). This shows the potential of the refactor for projects with few or no diagnostics. Silent still pays the overhead for storing the source text for every diagnostic, but the implementation doesn't compute the <code>LineIndex</code>.</li>
+<li>10% performance improvement when using silent (<code>-s</code>). This shows the potential of the refactor for projects with few or no diagnostics. Silent still pays the overhead for storing the source text for every diagnostic, but the implementation doesn&#x27;t compute the <code>LineIndex</code>.</li>
 </ul>
-<details><summary>Benchmark results</summary>
+Benchmark results
 
 <p>| Command | Mean [ms] | Min [ms] | Max [ms] | Relative |
 |:---|---:|---:|---:|---:|
@@ -128,9 +128,9 @@ linter/default-rules/pydantic/types.py<span style="color:#26A269"><b>     1.00  
 | <code>./ruff-main ./crates/ruff/resources/test/cpython/ -e  --select=ALL --show-source</code> | 1459.6 ± 23.5 | 1426.0 | 1500.0 | 38.52 ± 1.96 |
 | <code>./ruff-bytes ./crates/ruff/resources/test/cpython/ -e --no-cache --select=ALL --show-source</code> | 1770.1 ± 21.8 | 1747.0 | 1822.1 | 46.71 ± 2.32 |
 | <code>./ruff-main ./crates/ruff/resources/test/cpython/ -e --no-cache --select=ALL --show-source</code> | 1799.7 ± 31.7 | 1762.7 | 1856.2 | 47.49 ± 2.44 |</p>
-</details>
 
-<h3>Homeassitant</h3>
+
+Homeassitant
 <p>Best case benchmark: A project with very few diagnostics (10).</p>
 <ul>
 <li>Performance is unchanged when running with caching</li>
@@ -149,7 +149,7 @@ linter/default-rules/pydantic/types.py<span style="color:#26A269"><b>     1.00  
 | <code>../ruff/ruff-main-logical . -e </code> | 52.1 ± 2.4 | 46.6 | 56.6 | 1.00 |
 | <code>../ruff/ruff-bytes-logical . -e --no-cache</code> | 383.2 ± 2.7 | 378.9 | 387.6 | 7.35 ± 0.34 |
 | <code>../ruff/ruff-main-logical . -e --no-cache</code> | 417.7 ± 6.3 | 411.8 | 433.6 | 8.01 ± 0.38 |</p>
-<h2>Test Plan</h2>
+Test Plan
 <ul>
 <li>[x] The ecosystem check shows no changes (after applying #4006, #4007, and #4005)</li>
 <li>[x] WASM playground</li>
@@ -158,14 +158,14 @@ linter/default-rules/pydantic/types.py<span style="color:#26A269"><b>     1.00  
 <li>[x] Test <code>--add-noqa</code> with airflow repository</li>
 <li>[x] Test <code>--fix</code> with airflow repository</li>
 </ul>
-<h2>~Breaking Changes~</h2>
+~Breaking Changes~
 <p>~This PR changes the column numbers of fixes in the JSON output to be one indexed to align the column numbers with the <code>Diagnostic</code> start and end columns. I can undo this change but I got it &quot;for free&quot; by using <code>SourceLocation</code> consistently.~</p>
-<p>I reverted the change in this PR and extracted it into https://github.com/charliermarsh/ruff/pull/4007</p>
+<p>I reverted the change in this PR and extracted it into <a href="https://github.com/charliermarsh/ruff/pull/4007">charliermarsh/ruff#4007</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/format/expr.rs</code>:100 on 2023-04-11 10:12</div>
-            <div class="timeline-body"><p>CC: @charliermarsh it could be useful to define a <code>type PyFrmatter&lt;'a&gt; = Formatter&lt;ASTFormatContext&lt;'a&gt;&gt;</code> type alias.</p>
+            <div class="timeline-body"><p>CC: @charliermarsh it could be useful to define a <code>type PyFrmatter&lt;&#x27;a&gt; = Formatter&lt;ASTFormatContext&lt;&#x27;a&gt;&gt;</code> type alias.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -183,15 +183,15 @@ linter/default-rules/pydantic/types.py<span style="color:#26A269"><b>     1.00  
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-04-11 15:29</div>
-            <div class="timeline-body"><p>Just for my own curiosity, what's the context for this? Why's it necessary?</p>
+            <div class="timeline-body"><p>Just for my own curiosity, what&#x27;s the context for this? Why&#x27;s it necessary?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-04-12 07:18</div>
             <div class="timeline-body"><blockquote>
-<p>Just for my own curiosity, what's the context for this? Why's it necessary?</p>
+<p>Just for my own curiosity, what&#x27;s the context for this? Why&#x27;s it necessary?</p>
 </blockquote>
-<p>Strictly speaking, it isn't necessary from a functional point of view, but using byte offsets helps to improve performance and reduce memory consumption.</p>
+<p>Strictly speaking, it isn&#x27;t necessary from a functional point of view, but using byte offsets helps to improve performance and reduce memory consumption.</p>
 <p>I started investigating switching to byte offsets because enabling the pycodestyle (logical line) rules #3689 results in a 20%-50% performance regression, even tough I already improved the performance of the rules themselves. A key observation is that benchmarks for the default-rules regress more than for the all rules benchmarks.</p>
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
@@ -204,52 +204,52 @@ linter/default-rules/numpy/ctypeslib.py    1.00   1615.1±3.91µs    10.3 MB/sec
 linter/default-rules/numpy/globals.py      1.00    180.5±0.32µs    16.3 MB/sec    1.52    274.0±4.45µs    10.8 MB/sec
 linter/default-rules/pydantic/types.py     1.00      3.4±0.01ms     7.6 MB/sec    1.41      4.8±0.02ms     5.4 MB/sec
 </code></pre>
-<p>This is because the pycodestyle rules are the first rules in the default set that inspect the source code (trivia). The challenge with inspecting the source code is that you can't slice a string with a row/column location. This isn't possible: <code>string[row=1, column=5..10]</code>. Ruff works around this by building a <code>LineIndex</code> that maps <code>row</code> and <code>column</code> locations to byte offsets (somewhat expensive), and than uses that index (lookup is cheap) to retrieve the string locations.</p>
+<p>This is because the pycodestyle rules are the first rules in the default set that inspect the source code (trivia). The challenge with inspecting the source code is that you can&#x27;t slice a string with a row/column location. This isn&#x27;t possible: <code>string[row=1, column=5..10]</code>. Ruff works around this by building a <code>LineIndex</code> that maps <code>row</code> and <code>column</code> locations to byte offsets (somewhat expensive), and than uses that index (lookup is cheap) to retrieve the string locations.</p>
 <p>My goal with using byte-offsets is to remove the need to build a <code>LineIndex</code> from the linting phase. It will still be necessary to build the line index when we emit diagnostics, because, as a user, I strongly prefer row/column numbers over byte indices ;). Having to build a <code>LineIndex</code> for all files with diagnostics  may result in a performance regression for projects where most files have diagnostics, but this is rare for projects using ruff that tend to have zero or only few diagnostics.</p>
 <p>There are other, non-pycodestyle specific reasons why I want to adopt byte offsets:</p>
 <ul>
 <li>Code size reduction: Comparing a byte-offset is a single <code>u32</code> comparison, compared to two <code>u32</code> comparisons for a <code>row</code>/<code>column</code> based source location. I further made <code>end_location</code> mandatory on <code>Located</code> which helps removing some <code>unwrap</code> code paths. The result for <code>ruff_python_formatter</code> is a small code size reduction: ~4.4MB → 4.3</li>
 <li>Reduced memory consumption: A row/column based <code>Location</code> uses 8 bytes (4 bytes for the row and column). A byte offset only uses half of that (single <code>u32</code>). This means, we reduce the size of every <code>LexResult</code>, <code>Located</code>, and AST node by 8 bytes (-4 bytes for the <code>start</code>, and -4 bytes for the <code>end</code> locations).</li>
-<li>Performance improvements: Writing and reading less data, and fewer CPU instructions should help to improve overall performance. A preliminary benchmark comparing the parser and visitor (counting all statements) performance shows a 10-15% performance improvement. Whether we're able to reap all these improvements in Ruff depends on how efficiently we can rewrite the logic that uses row information in the linting phase today (noqa, isort comments, commented lines, etc)</li>
+<li>Performance improvements: Writing and reading less data, and fewer CPU instructions should help to improve overall performance. A preliminary benchmark comparing the parser and visitor (counting all statements) performance shows a 10-15% performance improvement. Whether we&#x27;re able to reap all these improvements in Ruff depends on how efficiently we can rewrite the logic that uses row information in the linting phase today (noqa, isort comments, commented lines, etc)</li>
 </ul>
-<pre><span style="color:#26A269">parser/numpy/globals.py</span> time:   [65.752 µs <b>65.844 µs</b> 65.973 µs]
-                        thrpt:  [44.725 MiB/s <b>44.813 MiB/s</b> 44.876 MiB/s]
+<pre><span>parser/numpy/globals.py</span> time:   [65.752 µs 65.844 µs 65.973 µs]
+                        thrpt:  [44.725 MiB/s 44.813 MiB/s 44.876 MiB/s]
                  change:
-                        time:   [-5.8033% <span style="color:#26A269"><b>-5.5729%</b></span> -5.3542%] (p = 0.00 &lt; 0.05)
-                        thrpt:  [+5.6571% <span style="color:#26A269"><b>+5.9018%</b></span> +6.1609%]
-                        Performance has <span style="color:#26A269">improved</span>.
-<span style="color:#A2734C">Found 21 outliers among 100 measurements (21.00%)</span>
+                        time:   [-5.8033% <span>-5.5729%</span> -5.3542%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [+5.6571% <span>+5.9018%</span> +6.1609%]
+                        Performance has <span>improved</span>.
+<span>Found 21 outliers among 100 measurements (21.00%)</span>
   15 (15.00%) low severe
   2 (2.00%) low mild
   3 (3.00%) high mild
   1 (1.00%) high severe
-<span style="color:#26A269">parser/pydantic/types.py</span>
-                        time:   [1.4442 ms <b>1.4453 ms</b> 1.4466 ms]
-                        thrpt:  [17.630 MiB/s <b>17.646 MiB/s</b> 17.659 MiB/s]
+<span>parser/pydantic/types.py</span>
+                        time:   [1.4442 ms 1.4453 ms 1.4466 ms]
+                        thrpt:  [17.630 MiB/s 17.646 MiB/s 17.659 MiB/s]
                  change:
-                        time:   [-12.393% <span style="color:#26A269"><b>-12.225%</b></span> -11.904%] (p = 0.00 &lt; 0.05)
-                        thrpt:  [+13.512% <span style="color:#26A269"><b>+13.927%</b></span> +14.146%]
-                        Performance has <span style="color:#26A269">improved</span>.
-<span style="color:#A2734C">Found 9 outliers among 100 measurements (9.00%)</span>
+                        time:   [-12.393% <span>-12.225%</span> -11.904%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [+13.512% <span>+13.927%</span> +14.146%]
+                        Performance has <span>improved</span>.
+<span>Found 9 outliers among 100 measurements (9.00%)</span>
   3 (3.00%) high mild
   6 (6.00%) high severe
-<span style="color:#26A269">parser/numpy/ctypeslib.py</span>
-                        time:   [647.58 µs <b>650.18 µs</b> 652.90 µs]
-                        thrpt:  [25.503 MiB/s <b>25.610 MiB/s</b> 25.713 MiB/s]
+<span>parser/numpy/ctypeslib.py</span>
+                        time:   [647.58 µs 650.18 µs 652.90 µs]
+                        thrpt:  [25.503 MiB/s 25.610 MiB/s 25.713 MiB/s]
                  change:
-                        time:   [-14.351% <span style="color:#26A269"><b>-14.154%</b></span> -13.948%] (p = 0.00 &lt; 0.05)
-                        thrpt:  [+16.209% <span style="color:#26A269"><b>+16.488%</b></span> +16.756%]
-                        Performance has <span style="color:#26A269">improved</span>.
-<span style="color:#A2734C">Found 18 outliers among 100 measurements (18.00%)</span>
+                        time:   [-14.351% <span>-14.154%</span> -13.948%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [+16.209% <span>+16.488%</span> +16.756%]
+                        Performance has <span>improved</span>.
+<span>Found 18 outliers among 100 measurements (18.00%)</span>
   17 (17.00%) high mild
   1 (1.00%) high severe
-<span style="color:#26A269">parser/large/dataset.py</span> time:   [3.5024 ms <b>3.5104 ms</b> 3.5195 ms]
-                        thrpt:  [11.559 MiB/s <b>11.589 MiB/s</b> 11.616 MiB/s]
+<span>parser/large/dataset.py</span> time:   [3.5024 ms 3.5104 ms 3.5195 ms]
+                        thrpt:  [11.559 MiB/s 11.589 MiB/s 11.616 MiB/s]
                  change:
-                        time:   [-11.825% <span style="color:#26A269"><b>-11.603%</b></span> -11.374%] (p = 0.00 &lt; 0.05)
-                        thrpt:  [+12.834% <span style="color:#26A269"><b>+13.126%</b></span> +13.411%]
-                        Performance has <span style="color:#26A269">improved</span>.
-<span style="color:#A2734C">Found 13 outliers among 100 measurements (13.00%)</span>
+                        time:   [-11.825% <span>-11.603%</span> -11.374%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [+12.834% <span>+13.126%</span> +13.411%]
+                        Performance has <span>improved</span>.
+<span>Found 13 outliers among 100 measurements (13.00%)</span>
   7 (7.00%) low severe
   1 (1.00%) low mild
   1 (1.00%) high mild
@@ -269,14 +269,14 @@ linter/default-rules/pydantic/types.py     1.00      3.4±0.01ms     7.6 MB/sec 
             <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
 <ul>
 <li>main<ul>
-<li><strong>PR #3990</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3990" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a><ul>
-<li><strong>PR #3931</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3931" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a>  👈<ul>
-<li><strong>PR #3985</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3985" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a></li>
-<li><strong>PR #4022</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/4022" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a><ul>
-<li><strong>PR #4120</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/4120" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #3990</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3990"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite"></a><ul>
+<li><strong>PR #3931</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3931"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite"></a>  👈<ul>
+<li><strong>PR #3985</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3985"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite"></a></li>
+<li><strong>PR #4022</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/4022"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite"></a><ul>
+<li><strong>PR #4120</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/4120"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite"></a></li>
 </ul>
 </li>
-<li><strong>PR #4121</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/4121" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #4121</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/4121"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite"></a></li>
 </ul>
 </li>
 </ul>
@@ -289,22 +289,22 @@ linter/default-rules/pydantic/types.py     1.00      3.4±0.01ms     7.6 MB/sec 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-04-13 01:10</div>
-            <div class="timeline-body"><p>Thanks for the detailed explanation @MichaReiser! If you don't mind - where do the offsets come from? Column offset makes sense (obviously just offsetting from index 0), but how are rows represented? Or is a total byte-offset calculated from what is effectively row 0, column 0?</p>
+            <div class="timeline-body"><p>Thanks for the detailed explanation @MichaReiser! If you don&#x27;t mind - where do the offsets come from? Column offset makes sense (obviously just offsetting from index 0), but how are rows represented? Or is a total byte-offset calculated from what is effectively row 0, column 0?</p>
 <p>E: Never mind, just found <code>locator.rs</code>. Seems like we essentially treat the file as one giant string, then define rows as being delimited by <code>\n</code>/<code>\r</code> and then the columns as the offsets from <em>that</em> offset?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">breaking</span> added by @MichaReiser on 2023-04-14 18:04</div>
+            <div class="event">Label <span class="label">breaking</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-04-14 18:04</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-04-14 19:04</div>
-            <div class="timeline-body"><h2>PR Check Results</h2>
-<h3>Ecosystem</h3>
+            <div class="timeline-body">PR Check Results
+Ecosystem
 <p>ℹ️ ecosystem check <strong>detected changes</strong>. (+0, -16, 0 error(s))</p>
-<details><summary>airflow (+0, -7)</summary>
+airflow (+0, -7)
 <p>
 
-<pre><code class="language-diff">- airflow/api_connexion/endpoints/task_instance_endpoint.py:274:12: RET504 Unnecessary variable assignment before `return` statement
+<pre><code>- airflow/api_connexion/endpoints/task_instance_endpoint.py:274:12: RET504 Unnecessary variable assignment before `return` statement
 - airflow/providers/amazon/aws/secrets/systems_manager.py:200:16: RET504 Unnecessary variable assignment before `return` statement
 - airflow/providers/docker/operators/docker.py:479:16: RET504 Unnecessary variable assignment before `return` statement
 - airflow/providers/oracle/hooks/oracle.py:42:12: RET504 Unnecessary variable assignment before `return` statement
@@ -313,18 +313,18 @@ linter/default-rules/pydantic/types.py     1.00      3.4±0.01ms     7.6 MB/sec 
 - tests/test_utils/gcp_system_helpers.py:65:12: RET504 Unnecessary variable assignment before `return` statement
 </code></pre>
 </p>
-</details>
-<details><summary>bokeh (+0, -1)</summary>
+
+bokeh (+0, -1)
 <p>
 
-<pre><code class="language-diff">- src/bokeh/core/property/datetime.py:165:16: RET504 Unnecessary variable assignment before `return` statement
+<pre><code>- src/bokeh/core/property/datetime.py:165:16: RET504 Unnecessary variable assignment before `return` statement
 </code></pre>
 </p>
-</details>
-<details><summary>zulip (+0, -8)</summary>
+
+zulip (+0, -8)
 <p>
 
-<pre><code class="language-diff">- zerver/data_import/rocketchat.py:141:12: RET504 Unnecessary variable assignment before `return` statement
+<pre><code>- zerver/data_import/rocketchat.py:141:12: RET504 Unnecessary variable assignment before `return` statement
 - zerver/lib/message.py:186:12: RET504 Unnecessary variable assignment before `return` statement
 - zerver/lib/narrow.py:891:12: RET504 Unnecessary variable assignment before `return` statement
 - zerver/lib/url_preview/oembed.py:50:12: RET504 Unnecessary variable assignment before `return` statement
@@ -334,10 +334,10 @@ linter/default-rules/pydantic/types.py     1.00      3.4±0.01ms     7.6 MB/sec 
 - zerver/webhooks/zendesk/view.py:14:12: RET504 Unnecessary variable assignment before `return` statement
 </code></pre>
 </p>
-</details>
 
-<h3>Benchmark</h3>
-<h4>Linux</h4>
+
+Benchmark
+Linux
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 linter/all-rules/large/dataset.py          1.00     14.9±0.06ms     2.7 MB/sec    1.00     14.9±0.09ms     2.7 MB/sec
@@ -353,7 +353,7 @@ parser/numpy/ctypeslib.py                  1.00   1144.2±2.10µs    14.6 MB/sec
 parser/numpy/globals.py                    1.00    116.8±0.22µs    25.3 MB/sec    1.00    117.1±0.19µs    25.2 MB/sec
 parser/pydantic/types.py                   1.01      2.5±0.00ms    10.2 MB/sec    1.00      2.5±0.00ms    10.3 MB/sec
 </code></pre>
-<h4>Windows</h4>
+Windows
 <pre><code>group                                      main                                   pr
 -----                                      ----                                   --
 linter/all-rules/large/dataset.py          1.04     25.1±0.86ms  1657.1 KB/sec    1.00     24.3±0.86ms  1717.6 KB/sec
@@ -369,7 +369,7 @@ parser/numpy/ctypeslib.py                  1.00  1864.2±78.93µs     8.9 MB/sec
 parser/numpy/globals.py                    1.00    193.7±9.50µs    15.2 MB/sec    1.02   196.8±15.61µs    15.0 MB/sec
 parser/pydantic/types.py                   1.00      4.1±0.17ms     6.2 MB/sec    1.01      4.1±0.18ms     6.2 MB/sec
 </code></pre>
-<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
 
 </div>
         </div>
@@ -549,25 +549,25 @@ parser/pydantic/types.py                   1.00      4.1±0.17ms     6.2 MB/sec 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pycodestyle/rules/logical_lines/missing_whitespace.rs</code>:84 on 2023-04-15 09:47</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">                    let mut diagnostic = Diagnostic::new(kind, TextRange::empty(token.start());
+            <div class="timeline-body"><pre><code>                    let mut diagnostic = Diagnostic::new(kind, TextRange::empty(token.start());
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pycodestyle/rules/logical_lines/mod.rs</code>:472 on 2023-04-15 09:47</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">    pub fn range(&amp;self) -&gt; TextRange {
+            <div class="timeline-body"><pre><code>    pub fn range(&amp;self) -&gt; TextRange {
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pycodestyle/rules/logical_lines/mod.rs</code>:567 on 2023-04-15 09:48</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">    fn push_token(&amp;mut self, kind: TokenKind, range: TextRange {
+            <div class="timeline-body"><pre><code>    fn push_token(&amp;mut self, kind: TokenKind, range: TextRange {
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pycodestyle/rules/logical_lines/mod.rs</code>:673 on 2023-04-15 09:48</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">    fn push(&amp;mut self, kind: TokenKind, range: TextRange) {
+            <div class="timeline-body"><pre><code>    fn push(&amp;mut self, kind: TokenKind, range: TextRange) {
 </code></pre>
 </div>
         </div>
@@ -588,13 +588,13 @@ parser/pydantic/types.py                   1.00      4.1±0.17ms     6.2 MB/sec 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pydocstyle/rules/newline_after_last_paragraph.rs</code>:43 on 2023-04-15 12:35</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">                        Diagnostic::new(NewLineAfterLastParagraph, docstring.range());
+            <div class="timeline-body"><pre><code>                        Diagnostic::new(NewLineAfterLastParagraph, docstring.range());
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pydocstyle/rules/one_liner.rs</code>:39 on 2023-04-15 12:36</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">        let mut diagnostic = Diagnostic::new(FitsOnOneLine, docstring.range());
+            <div class="timeline-body"><pre><code>        let mut diagnostic = Diagnostic::new(FitsOnOneLine, docstring.range());
 </code></pre>
 </div>
         </div>
@@ -605,7 +605,7 @@ parser/pydantic/types.py                   1.00      4.1±0.17ms     6.2 MB/sec 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pyflakes/rules/f_string_missing_placeholders.rs</code>:74 on 2023-04-15 13:30</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">                    TextRange::at(
+            <div class="timeline-body"><pre><code>                    TextRange::at(
                         location + f_position,
                         TextSize::from(f_position + 1),
                     ),
@@ -614,13 +614,13 @@ parser/pydantic/types.py                   1.00      4.1±0.17ms     6.2 MB/sec 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pylint/rules/bad_string_format_type.rs</code>:247 on 2023-04-15 13:33</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">    let mut strings: Vec&lt;TextRange&gt; = vec![];
+            <div class="timeline-body"><pre><code>    let mut strings: Vec&lt;TextRange&gt; = vec![];
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pylint/rules/invalid_string_characters.rs</code>:177 on 2023-04-15 13:35</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">    range: TextRange
+            <div class="timeline-body"><pre><code>    range: TextRange
 </code></pre>
 </div>
         </div>
@@ -636,13 +636,13 @@ parser/pydantic/types.py                   1.00      4.1±0.17ms     6.2 MB/sec 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pyupgrade/rules/deprecated_mock_import.rs</code>:331 on 2023-04-15 13:39</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">                                .map(|content| Edit::range_replacement(content, stmt.range()))
+            <div class="timeline-body"><pre><code>                                .map(|content| Edit::range_replacement(content, stmt.range()))
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pyupgrade/rules/printf_string_formatting.rs</code>:311 on 2023-04-15 13:46</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">    let mut strings: Vec&lt;TextRange&gt; = vec![];
+            <div class="timeline-body"><pre><code>    let mut strings: Vec&lt;TextRange&gt; = vec![];
 </code></pre>
 </div>
         </div>
@@ -653,7 +653,7 @@ parser/pydantic/types.py                   1.00      4.1±0.17ms     6.2 MB/sec 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pyupgrade/rules/replace_universal_newlines.rs</code>:38 on 2023-04-15 13:48</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">        let range = TextRange::at(
+            <div class="timeline-body"><pre><code>        let range = TextRange::at(
             kwarg.start(),
             &quot;universal_newlines&quot;.text_len(),
         );
@@ -662,7 +662,7 @@ parser/pydantic/types.py                   1.00      4.1±0.17ms     6.2 MB/sec 
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/ruff/rules/ambiguous_unicode_character.rs</code>:1688 on 2023-04-15 13:51</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">    range: TextRange
+            <div class="timeline-body"><pre><code>    range: TextRange
 </code></pre>
 </div>
         </div>
@@ -678,13 +678,13 @@ parser/pydantic/types.py                   1.00      4.1±0.17ms     6.2 MB/sec 
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-04-15 21:05</div>
             <div class="timeline-body"><blockquote>
-<p>Thanks for the detailed explanation @MichaReiser! If you don't mind - where do the offsets come from? Column offset makes sense (obviously just offsetting from index 0), but how are rows represented? Or is a total byte-offset calculated from what is effectively row 0, column 0?</p>
+<p>Thanks for the detailed explanation @MichaReiser! If you don&#x27;t mind - where do the offsets come from? Column offset makes sense (obviously just offsetting from index 0), but how are rows represented? Or is a total byte-offset calculated from what is effectively row 0, column 0?</p>
 <p>E: Never mind, just found <code>locator.rs</code>. Seems like we essentially treat the file as one giant string, then define rows as being delimited by <code>\n</code>/<code>\r</code> and then the columns as the offsets from <em>that</em> offset?</p>
 </blockquote>
 <p>@evanrittenhouse, sorry for the late reply.</p>
 <p>The RustPython Lexer generates the offsets. The old implementation counted the rows and columns (from the start of the row). The lexer increments the current row index and resets the column to zero for every new line character.</p>
-<p>Byte offsets don't use row or columns. Instead, it's an offset from the beginning of the file. Think of the string as a byte array and the byte offset is the index into that array:</p>
-<pre><code class="language-python">def f(): pass
+<p>Byte offsets don&#x27;t use row or columns. Instead, it&#x27;s an offset from the beginning of the file. Think of the string as a byte array and the byte offset is the index into that array:</p>
+<pre><code>def f(): pass
 x = 20
 </code></pre>
 <p>The position of the identifier <code>f</code>:</p>
@@ -701,7 +701,7 @@ x = 20
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pycodestyle/snapshots/ruff__rules__pycodestyle__tests__E111_E11.py.snap</code>:9 on 2023-04-17 12:40</div>
-            <div class="timeline-body"><p>I replaced the empty <code>TextRange</code> with the range pointing to the incorrect indention. That's why the formatting and line numbers changed</p>
+            <div class="timeline-body"><p>I replaced the empty <code>TextRange</code> with the range pointing to the incorrect indention. That&#x27;s why the formatting and line numbers changed</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -727,10 +727,10 @@ x = 20
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @MichaReiser on 2023-04-17 14:54</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-04-17 14:54</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2023-04-17 14:54</div>
+            <div class="event">Review requested from <a href="https://github.com/charliermarsh">@charliermarsh</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-04-17 14:54</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-04-18 06:46</div>
@@ -738,7 +738,7 @@ x = 20
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pycodestyle/snapshots/ruff__rules__pycodestyle__tests__E111_E11.py.snap</code>:9 on 2023-04-18 06:46</div>
-            <div class="timeline-body"><p>I backported the fix in https://github.com/charliermarsh/ruff/pull/4005</p>
+            <div class="timeline-body"><p>I backported the fix in <a href="https://github.com/charliermarsh/ruff/pull/4005">charliermarsh/ruff#4005</a></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -747,14 +747,14 @@ x = 20
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pycodestyle/snapshots/ruff__rules__pycodestyle__tests__E501_E501.py.snap</code>:17 on 2023-04-18 06:47</div>
-            <div class="timeline-body"><p>I backported the fix in https://github.com/charliermarsh/ruff/pull/4006</p>
+            <div class="timeline-body"><p>I backported the fix in <a href="https://github.com/charliermarsh/ruff/pull/4006">charliermarsh/ruff#4006</a></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">breaking</span> removed by @MichaReiser on 2023-04-18 06:48</div>
+            <div class="event">Label <span class="label">breaking</span> removed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-04-18 06:48</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2023-04-18 07:06</div>
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-04-18 07:06</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-04-18 15:38</div>
@@ -785,13 +785,13 @@ x = 20
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_diagnostics/src/edit.rs</code>:40 on 2023-04-19 03:03</div>
-            <div class="timeline-body"><p>What's the benefit to having both the <code>TextSize</code> and <code>range_*</code> variants?</p>
+            <div class="timeline-body"><p>What&#x27;s the benefit to having both the <code>TextSize</code> and <code>range_*</code> variants?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/youknowone">@youknowone</a> on 2023-04-19 07:17</div>
             <div class="timeline-body"><p>maybe you are interested in this change in lalrpop
-https://github.com/lalrpop/lalrpop/pull/743</p>
+<a href="https://github.com/lalrpop/lalrpop/pull/743">lalrpop/lalrpop#743</a></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -799,18 +799,18 @@ https://github.com/lalrpop/lalrpop/pull/743</p>
             <div class="timeline-body"><blockquote>
 <p>maybe you are interested in this change in lalrpop <a href="https://github.com/lalrpop/lalrpop/pull/743">lalrpop/lalrpop#743</a></p>
 </blockquote>
-<p>Nice! Improvements to the parser are extremely impactful for ruff because it's where it spends the majority of the time if only few rules are enabled.</p>
+<p>Nice! Improvements to the parser are extremely impactful for ruff because it&#x27;s where it spends the majority of the time if only few rules are enabled.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/youknowone">@youknowone</a> on 2023-04-19 07:29</div>
-            <div class="timeline-body"><p>ah, i am sorry, I didn't check if it is a parse speed up or lalrpop compliation speed up.</p>
+            <div class="timeline-body"><p>ah, i am sorry, I didn&#x27;t check if it is a parse speed up or lalrpop compliation speed up.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-04-19 07:32</div>
             <div class="timeline-body"><blockquote>
-<p>ah, i am sorry, I didn't check if it is a parse speed up or lalrpop compliation speed up.</p>
+<p>ah, i am sorry, I didn&#x27;t check if it is a parse speed up or lalrpop compliation speed up.</p>
 </blockquote>
 <p>We happily take any improvements to the compile time :)</p>
 </div>
@@ -867,17 +867,17 @@ https://github.com/lalrpop/lalrpop/pull/743</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/source_code/indexer.rs</code>:127 on 2023-04-19 21:26</div>
-            <div class="timeline-body"><p>Was this intentional? It's hard to read from the diff, but it may now be invalid Python because the <code>.trim()</code> only affects the leading and trailing space, but the <code>x = 1</code> is now indented.</p>
+            <div class="timeline-body"><p>Was this intentional? It&#x27;s hard to read from the diff, but it may now be invalid Python because the <code>.trim()</code> only affects the leading and trailing space, but the <code>x = 1</code> is now indented.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/source_code/indexer.rs</code>:11 on 2023-04-19 21:26</div>
-            <div class="timeline-body"><p>Nit: <code>comment_ranges</code>, maybe, for consistency with <code>string_ranges</code>? Since it's changing anyway.</p>
+            <div class="timeline-body"><p>Nit: <code>comment_ranges</code>, maybe, for consistency with <code>string_ranges</code>? Since it&#x27;s changing anyway.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/source_code/indexer.rs</code>:43 on 2023-04-19 21:28</div>
-            <div class="timeline-body"><p>Can you explain or comment on what's happening here? We're relying on both the trivia contents, and the token type?</p>
+            <div class="timeline-body"><p>Can you explain or comment on what&#x27;s happening here? We&#x27;re relying on both the trivia contents, and the token type?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -897,7 +897,7 @@ https://github.com/lalrpop/lalrpop/pull/743</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/noqa.rs</code>:186 on 2023-04-19 22:59</div>
-            <div class="timeline-body"><p>There's very little automated test coverage for this unfortunately -- maybe none. So you probably want to run this on a few files just to spot-check that there are no obvious errors. <code>crates/ruff/resources/test/fixtures/ruff/RUF100_1.py</code> is an example file that you might want to test. You could also take a codebase, run Ruff, then run with <code>--add-noqa</code>, and verify that running Ruff again doesn't yield any violations.</p>
+            <div class="timeline-body"><p>There&#x27;s very little automated test coverage for this unfortunately -- maybe none. So you probably want to run this on a few files just to spot-check that there are no obvious errors. <code>crates/ruff/resources/test/fixtures/ruff/RUF100_1.py</code> is an example file that you might want to test. You could also take a codebase, run Ruff, then run with <code>--add-noqa</code>, and verify that running Ruff again doesn&#x27;t yield any violations.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -907,7 +907,7 @@ https://github.com/lalrpop/lalrpop/pull/743</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pycodestyle/snapshots/ruff__rules__pycodestyle__tests__W191_W19.py.snap</code>:285 on 2023-04-19 23:02</div>
-            <div class="timeline-body"><p>I think you're right.</p>
+            <div class="timeline-body"><p>I think you&#x27;re right.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -917,17 +917,17 @@ https://github.com/lalrpop/lalrpop/pull/743</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-04-19 23:09</div>
-            <div class="timeline-body"><p>Ok, I made it through 115 / 418 files, but skipped most of the <code>rules</code>. Overall, I think I have a good sense for what's going on here: the motivation, the scope of the changes, the implementation, and the impact -- enough so that I'm definitely comfortable approving.</p>
-<p>It feels like an understatement to call this work &quot;impressive&quot;. It's ridiculously good -- a significant improvement across the codebase, and one that required navigating nearly every part of Ruff (not only every file, but every concept and abstraction).</p>
+            <div class="timeline-body"><p>Ok, I made it through 115 / 418 files, but skipped most of the <code>rules</code>. Overall, I think I have a good sense for what&#x27;s going on here: the motivation, the scope of the changes, the implementation, and the impact -- enough so that I&#x27;m definitely comfortable approving.</p>
+<p>It feels like an understatement to call this work &quot;impressive&quot;. It&#x27;s ridiculously good -- a significant improvement across the codebase, and one that required navigating nearly every part of Ruff (not only every file, but every concept and abstraction).</p>
 <p>(I left a few nits and questions, but as always nits are at your discretion, and I trust you to address + merge as you see fit.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-19 23:13</div>
-            <div class="timeline-body"><p>A couple questions on benchmarks and performance (which don't map to specific lines of code):</p>
+            <div class="timeline-body"><p>A couple questions on benchmarks and performance (which don&#x27;t map to specific lines of code):</p>
 <ol>
-<li>&quot;Performance regresses for loading cached results.&quot; Am I correct that the regression here is, e.g., between the first two rows of the table? From 37.9ms to 44.4ms? And then the fifth and six lines, from 395.6ms to 401.6ms? So it's like a ~fixed 6ms regression? Seems totally fine, but confirming my understanding.</li>
-<li>I am a little surprised that we see an improvement in the cpython default ruleset benchmark (without caching) -- lines 3 and 4. We have to build the line index for every file that contains at least one violation, right? So aren't we building the line index <em>more often</em> now than we were before in that case?</li>
+<li>&quot;Performance regresses for loading cached results.&quot; Am I correct that the regression here is, e.g., between the first two rows of the table? From 37.9ms to 44.4ms? And then the fifth and six lines, from 395.6ms to 401.6ms? So it&#x27;s like a ~fixed 6ms regression? Seems totally fine, but confirming my understanding.</li>
+<li>I am a little surprised that we see an improvement in the cpython default ruleset benchmark (without caching) -- lines 3 and 4. We have to build the line index for every file that contains at least one violation, right? So aren&#x27;t we building the line index <em>more often</em> now than we were before in that case?</li>
 </ol>
 </div>
         </div>
@@ -937,7 +937,7 @@ https://github.com/lalrpop/lalrpop/pull/743</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/noqa.rs</code>:449 on 2023-04-21 00:58</div>
-            <div class="timeline-body"><p>That's correct. Proved to be sufficient for our need. I initially stored a <code>(TextRange, TextSize)</code> but then realized that I always map the range to the end position... So I removed the <code>TextSize</code>.</p>
+            <div class="timeline-body"><p>That&#x27;s correct. Proved to be sufficient for our need. I initially stored a <code>(TextRange, TextSize)</code> but then realized that I always map the range to the end position... So I removed the <code>TextSize</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -946,10 +946,10 @@ https://github.com/lalrpop/lalrpop/pull/743</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/message/mod.rs</code>:60 on 2023-04-21 01:01</div>
-            <div class="timeline-body"><p>It can be, that's why I called it <code>compute</code> to motivate callers to hold on to it, rather than calling <code>start_location</code> over and over again. It's somewhat expensive because:</p>
+            <div class="timeline-body"><p>It can be, that&#x27;s why I called it <code>compute</code> to motivate callers to hold on to it, rather than calling <code>start_location</code> over and over again. It&#x27;s somewhat expensive because:</p>
 <ul>
-<li>It needs to compute the <code>LineIndex</code> if it the <code>index</code> hasn't yet been computed for this file.</li>
-<li>It performs a binary search to find the index fo the given offset. This isn't expensive, but it's still better to hold on to the location rather than performing the binary search over and over again :)</li>
+<li>It needs to compute the <code>LineIndex</code> if it the <code>index</code> hasn&#x27;t yet been computed for this file.</li>
+<li>It performs a binary search to find the index fo the given offset. This isn&#x27;t expensive, but it&#x27;s still better to hold on to the location rather than performing the binary search over and over again :)</li>
 </ul>
 </div>
         </div>
@@ -973,7 +973,7 @@ https://github.com/lalrpop/lalrpop/pull/743</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pylint/rules/mod.rs</code>:5 on 2023-04-23 13:51</div>
-            <div class="timeline-body"><p>I think we should change all, but I rather prefer not to do this as part of this PR. I'll undo</p>
+            <div class="timeline-body"><p>I think we should change all, but I rather prefer not to do this as part of this PR. I&#x27;ll undo</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -984,10 +984,10 @@ https://github.com/lalrpop/lalrpop/pull/743</p>
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_diagnostics/src/edit.rs</code>:40 on 2023-04-23 13:53</div>
             <div class="timeline-body"><p>I first wanted to only have <code>TextRange</code> variants because they are very convenient to create an edit that e.g. replaces a node: <code>Edit::range_replacement(new_text, stmt.range())</code>.</p>
 <p>But we also have many edits where we compute the range and adding <code>TextRange::new(...)</code> in the call sites made everything too verbose for my taste.</p>
-<pre><code class="language-rust">Edit::range(&quot;text&quot;, TextRange::new(start_offset + relative_offset, end_offset - trailing_end)) # vs
+<pre><code>Edit::range(&quot;text&quot;, TextRange::new(start_offset + relative_offset, end_offset - trailing_end)) # vs
 Edit::range(&quot;text&quot;, start_offset + relative_offset, end_offset - trailing_end)
 </code></pre>
-<p>But not using <code>TextRange</code> has the disadvantage that it's less clear what the meaning of the second and third argument is. What do you prefer (I would recommend it as a follow up refactor to avoid increasing this PR further)?</p>
+<p>But not using <code>TextRange</code> has the disadvantage that it&#x27;s less clear what the meaning of the second and third argument is. What do you prefer (I would recommend it as a follow up refactor to avoid increasing this PR further)?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1026,14 +1026,14 @@ Edit::range(&quot;text&quot;, start_offset + relative_offset, end_offset - trail
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-04-23 17:14</div>
             <div class="timeline-body"><blockquote>
-<p>A couple questions on benchmarks and performance (which don't map to specific lines of code):</p>
-<pre><code>1. &quot;Performance regresses for loading cached results.&quot; Am I correct that the regression here is, e.g., between the first two rows of the table? From 37.9ms to 44.4ms? And then the fifth and six lines, from 395.6ms to 401.6ms? So it's like a ~fixed 6ms regression? Seems totally fine, but confirming my understanding.</code></pre>
+<p>A couple questions on benchmarks and performance (which don&#x27;t map to specific lines of code):</p>
+<pre><code>1. &quot;Performance regresses for loading cached results.&quot; Am I correct that the regression here is, e.g., between the first two rows of the table? From 37.9ms to 44.4ms? And then the fifth and six lines, from 395.6ms to 401.6ms? So it&#x27;s like a ~fixed 6ms regression? Seems totally fine, but confirming my understanding.</code></pre>
 </blockquote>
-<p>That's correct. Interesting that it is 6ms in both cases</p>
+<p>That&#x27;s correct. Interesting that it is 6ms in both cases</p>
 <blockquote>
-<pre><code>2. I am a little surprised that we see an improvement in the cpython default ruleset benchmark (without caching) -- lines 3 and 4. We have to build the line index for every file that contains at least one violation, right? So aren't we building the line index _more often_ now than we were before in that case?</code></pre>
+<pre><code>2. I am a little surprised that we see an improvement in the cpython default ruleset benchmark (without caching) -- lines 3 and 4. We have to build the line index for every file that contains at least one violation, right? So aren&#x27;t we building the line index _more often_ now than we were before in that case?</code></pre>
 </blockquote>
-<p>It's correct that we build the <code>LineIndex</code> more often. But it seems that the performance improvements to the parser and AST traversal outweigh the cost for building the additional <code>LineIndex</code>s, so that, overall, it still results in a perf win.</p>
+<p>It&#x27;s correct that we build the <code>LineIndex</code> more often. But it seems that the performance improvements to the parser and AST traversal outweigh the cost for building the additional <code>LineIndex</code>s, so that, overall, it still results in a perf win.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1046,10 +1046,10 @@ Edit::range(&quot;text&quot;, start_offset + relative_offset, end_offset - trail
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @MichaReiser on 2023-04-26 18:11</div>
+            <div class="event">Merged by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-04-26 18:11</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2023-04-26 18:11</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-04-26 18:11</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2023-04-26 18:11</div>
@@ -1057,7 +1057,7 @@ Edit::range(&quot;text&quot;, start_offset + relative_offset, end_offset - trail
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:57:02 UTC
+        Synced at 2026-01-20 18:53:14 UTC
     </footer>
 </body>
 </html>

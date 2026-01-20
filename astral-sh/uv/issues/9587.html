@@ -24,17 +24,17 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/JonZeolla">@JonZeolla</a></div>
             <div class="timeline-body"><p>I was following the docs to <a href="https://docs.astral.sh/uv/guides/integration/pytorch/">add pytorch</a> to a repo and found that when I add the following:</p>
-<pre><code class="language-toml">[[tool.uv.index]]
+<pre><code>[[tool.uv.index]]
 name = &quot;pytorch-cpu&quot;
 url = &quot;https://download.pytorch.org/whl/cpu&quot;
 explicit = true
 </code></pre>
 <p>To my <code>pyproject.toml</code>, I start to get <code>uv run</code> failures about dependency resolving:</p>
-<pre><code>  × No solution found when resolving dependencies for split (python_full_version &gt;= '3.12' and python_full_version &lt; '3.12.4' and platform_system == 'Darwin'):
-  ╰─▶ Because internal-package-2 was not found in the package registry and your project depends on internal-package-2&gt;=1.2.3, we can conclude that your project's requirements are unsatisfiable.
+<pre><code>  × No solution found when resolving dependencies for split (python_full_version &gt;= &#x27;3.12&#x27; and python_full_version &lt; &#x27;3.12.4&#x27; and platform_system == &#x27;Darwin&#x27;):
+  ╰─▶ Because internal-package-2 was not found in the package registry and your project depends on internal-package-2&gt;=1.2.3, we can conclude that your project&#x27;s requirements are unsatisfiable.
 </code></pre>
-<p>This isn't intuitive to me, because I have <code>explicit = true</code> and I haven't referenced the new index in any of my dependencies. I was able to get my <code>pyproject.toml</code> down to something like the following and still experience the issue:</p>
-<pre><code class="language-toml">[project]
+<p>This isn&#x27;t intuitive to me, because I have <code>explicit = true</code> and I haven&#x27;t referenced the new index in any of my dependencies. I was able to get my <code>pyproject.toml</code> down to something like the following and still experience the issue:</p>
+<pre><code>[project]
 name = &quot;example&quot;
 version = &quot;0&quot;
 dependencies = [
@@ -67,19 +67,19 @@ explicit = true
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-02 23:55</div>
-            <div class="timeline-body"><p>cc @charliermarsh — I'm not sure what the expected interaction between mixing the two index interfaces is here.</p>
+            <div class="timeline-body"><p>cc @charliermarsh — I&#x27;m not sure what the expected interaction between mixing the two index interfaces is here.</p>
 <p>I agree the behavior seems surprising though.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-02 23:57</div>
-            <div class="timeline-body"><p>I'll take a look.</p>
+            <div class="timeline-body"><p>I&#x27;ll take a look.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-03 00:44</div>
-            <div class="timeline-body"><p>I can't reproduce this... The best I could do with public indexes is:</p>
-<pre><code class="language-toml">[project]
+            <div class="timeline-body"><p>I can&#x27;t reproduce this... The best I could do with public indexes is:</p>
+<pre><code>[project]
 name = &quot;example&quot;
 version = &quot;0&quot;
 dependencies = [
@@ -97,7 +97,7 @@ explicit = true
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-mre</span> added by @zanieb on 2024-12-03 00:47</div>
+            <div class="event">Label <span class="label">needs-mre</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-03 00:47</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/JonZeolla">@JonZeolla</a> on 2024-12-03 00:52</div>
@@ -119,29 +119,29 @@ wheels = [
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-03 00:54</div>
-            <div class="timeline-body"><p>So the <code>uv.lock</code> looks correct, right? But then you're seeing an issue when you <code>uv run</code>? (Are you no longer passing <code>UV_EXTRA_INDEX_URL</code> when you <code>uv run</code>?)</p>
+            <div class="timeline-body"><p>So the <code>uv.lock</code> looks correct, right? But then you&#x27;re seeing an issue when you <code>uv run</code>? (Are you no longer passing <code>UV_EXTRA_INDEX_URL</code> when you <code>uv run</code>?)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-03 00:54</div>
-            <div class="timeline-body"><p>My guess is that we're re-resolving when you <code>uv run</code>, but omitting your internal index.</p>
+            <div class="timeline-body"><p>My guess is that we&#x27;re re-resolving when you <code>uv run</code>, but omitting your internal index.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-03 00:54</div>
-            <div class="timeline-body"><p>I think you'd need to use <code>uv run --frozen</code> as-is to avoid re-resolving, since the configuration &quot;changed&quot; between <code>uv lock</code> and <code>uv run</code>.</p>
+            <div class="timeline-body"><p>I think you&#x27;d need to use <code>uv run --frozen</code> as-is to avoid re-resolving, since the configuration &quot;changed&quot; between <code>uv lock</code> and <code>uv run</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/JonZeolla">@JonZeolla</a> on 2024-12-03 00:59</div>
-            <div class="timeline-body"><p>Right; not passing <code>UV_EXTRA_INDEX_URL</code> when I <code>uv run</code>. I don't seem to need it when I don't have <code>[[tool.uv.index]]</code></p>
+            <div class="timeline-body"><p>Right; not passing <code>UV_EXTRA_INDEX_URL</code> when I <code>uv run</code>. I don&#x27;t seem to need it when I don&#x27;t have <code>[[tool.uv.index]]</code></p>
 <p>When I <code>uv run -v</code> I get a log like:</p>
 <p>DEBUG Ignoring existing lockfile due to missing remote index: internal-package-2 1.2.3 from https://example.d.codeartifact.us-east-1.amazonaws.com/pypi/example/simple/</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-03 01:01</div>
-            <div class="timeline-body"><p>Yeah, if you don't provide <em>any</em> index configuration, we assume the configuration from the lockfile is up-to-date. If you provide <em>some</em> configuration, then we re-lock. Unfortunately, I don't know what a better heuristic would be here...</p>
+            <div class="timeline-body"><p>Yeah, if you don&#x27;t provide <em>any</em> index configuration, we assume the configuration from the lockfile is up-to-date. If you provide <em>some</em> configuration, then we re-lock. Unfortunately, I don&#x27;t know what a better heuristic would be here...</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -150,17 +150,17 @@ wheels = [
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2024-12-03 01:48</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-03 01:48</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/JonZeolla">@JonZeolla</a> on 2024-12-03 13:14</div>
-            <div class="timeline-body"><p>Thinking about this more, if all indexes are explicit and there's no references to them, maybe skip the re locking? That would have been more intuitive to me at the start</p>
+            <div class="timeline-body"><p>Thinking about this more, if all indexes are explicit and there&#x27;s no references to them, maybe skip the re locking? That would have been more intuitive to me at the start</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:28:40 UTC
+        Synced at 2026-01-20 19:35:54 UTC
     </footer>
 </body>
 </html>

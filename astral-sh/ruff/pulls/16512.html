@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/mishamsk">@mishamsk</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <ul>
-<li>Addresses astral-sh/ty#186 for simple cases where only <code>__init__</code> method is bound on class or doesn't exist at all.</li>
+<li>Addresses astral-sh/ty#186 for simple cases where only <code>__init__</code> method is bound on class or doesn&#x27;t exist at all.</li>
 <li>fixes a bug with argument counting in bound method diagnostics</li>
 </ul>
 <p>Caveats:</p>
@@ -33,7 +33,7 @@
 <li>No handling of <code>__new__</code> or modified <code>__call__</code> on metaclass.</li>
 <li>This leads to a couple of false positive errors in tests</li>
 </ul>
-<h2>Test Plan</h2>
+Test Plan
 <ul>
 <li>A couple new cases in mdtests</li>
 <li>cargo nextest run -p red_knot_python_semantic --no-fail-fast</li>
@@ -45,7 +45,7 @@
             <div class="timeline-body"><p>This is still a draft, as I wanted to discuss a couple of things first.</p>
 <p>First of all, @sharkdp did all the hard work and it seems almost too easy now. However, there are a couple of caveats.</p>
 <ul>
-<li>If I follow the current <code>CallOutcome</code> setup and how other dunder calls are done - incorrect call signature causes the resulting type to become <code>Unknown</code>. I think this is not every helpful as it would cause all kinds of missed downstream diagnostics. You can see this happening in <a href="https://github.com/astral-sh/ruff/actions/runs/13667755980/job/38212285823?pr=16512#step:8:4221">this test</a> - I haven't fixed it intentionally.<ul>
+<li>If I follow the current <code>CallOutcome</code> setup and how other dunder calls are done - incorrect call signature causes the resulting type to become <code>Unknown</code>. I think this is not every helpful as it would cause all kinds of missed downstream diagnostics. You can see this happening in <a href="https://github.com/astral-sh/ruff/actions/runs/13667755980/job/38212285823?pr=16512#step:8:4221">this test</a> - I haven&#x27;t fixed it intentionally.<ul>
 <li>I would suggest that for <code>__init__</code> call, the diagnostics are added to <code>CallOutcome</code> but an instance type is returned even if error occurs. This is not possible now, because <code>official</code> API that creates <code>CallOutcome</code> is <code>bind_call</code> which will emit argument mismatch second time (following whatever <code>try_call_dunder</code> returns). The only other way to create <code>CallOutcome</code> - <code>from_return_type</code> is marked as deprecated. @carljm any objections to creating a <code>CallOutcome ::new</code> method for this case?</li>
 </ul>
 </li>
@@ -64,7 +64,7 @@
 <li>Maybe it is worth special casing <code>__init__</code> and avoiding the <code>bound method</code> portion?</li>
 </ul>
 </blockquote>
-<p>I'm not convinced. <code>__init__</code> is a bound method. What's the harm in saying so?</p>
+<p>I&#x27;m not convinced. <code>__init__</code> is a bound method. What&#x27;s the harm in saying so?</p>
 <blockquote>
 <ul>
 <li>if there are no arguments to <code>__init__</code> the diagnostic should be <code>expected 0, got 1</code> instead of the current <code>expected 1, got 2</code></li>
@@ -75,38 +75,38 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-03-05 04:18</div>
-            <div class="timeline-body"><p>I'm not sure I understand your first point. It's both possible and common to have a <code>CallOutcome</code> that both includes binding errors and has a return type -- in fact that's what we generally do for function calls, as this test will show:</p>
-<pre><code class="language-py">def f() -&gt; int:
+            <div class="timeline-body"><p>I&#x27;m not sure I understand your first point. It&#x27;s both possible and common to have a <code>CallOutcome</code> that both includes binding errors and has a return type -- in fact that&#x27;s what we generally do for function calls, as this test will show:</p>
+<pre><code>def f() -&gt; int:
     return 1
 
 x = f(1)  # error: [too-many-positional-arguments]
 
 reveal_type(x)  # revealed: int
 </code></pre>
-<p>What's unusual about <code>__init__</code> is that it returns <code>None</code>, so our usual return-type handling won't work here. This gets into what I mentioned in Discord about modeling both <code>__new__</code> and <code>__init__</code>. The proper modeling here is that we call <code>__new__</code>, which returns an instance of the type (in order to do this <em>properly</em> based on the typeshed definition of <code>object.__new__</code>, we would need to support <code>typing.Self</code> -- but it may not be hard to add a hacky version of support for <code>Self</code>), and then we call <code>__init__</code> on that instance, and we don't care about the return type of <code>__init__</code>. (We don't have to model things totally correctly on the first PR, but we'll want to have TODO comments for the correct modeling, and we shouldn't put too much work into workarounds to model things wrongly, if we can avoid it.)</p>
-<p>Those are just some general comments, haven't looked at the code in the PR yet, will do that tomorrow!</p>
+<p>What&#x27;s unusual about <code>__init__</code> is that it returns <code>None</code>, so our usual return-type handling won&#x27;t work here. This gets into what I mentioned in Discord about modeling both <code>__new__</code> and <code>__init__</code>. The proper modeling here is that we call <code>__new__</code>, which returns an instance of the type (in order to do this <em>properly</em> based on the typeshed definition of <code>object.__new__</code>, we would need to support <code>typing.Self</code> -- but it may not be hard to add a hacky version of support for <code>Self</code>), and then we call <code>__init__</code> on that instance, and we don&#x27;t care about the return type of <code>__init__</code>. (We don&#x27;t have to model things totally correctly on the first PR, but we&#x27;ll want to have TODO comments for the correct modeling, and we shouldn&#x27;t put too much work into workarounds to model things wrongly, if we can avoid it.)</p>
+<p>Those are just some general comments, haven&#x27;t looked at the code in the PR yet, will do that tomorrow!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-03-05 08:44</div>
             <div class="timeline-body"><blockquote>
-<p>and then we call <code>__init__</code> on that instance, and we don't care about the return type of <code>__init__</code></p>
+<p>and then we call <code>__init__</code> on that instance, and we don&#x27;t care about the return type of <code>__init__</code></p>
 </blockquote>
-<p>Maybe this is what you meant by <em>&quot;We don't have to model things totally correctly&quot;</em>, but I guess we should (eventually) emit a diagnostic if <code>__init__</code> does not return <code>None</code>, since the runtime <a href="https://github.com/python/cpython/blob/ffef9b0440e4391cbad69dbb11716f54cb8539ab/Objects/typeobject.c#L9810-L9816">throws a <code>TypeError</code> in case it doesn't</a>.</p>
+<p>Maybe this is what you meant by <em>&quot;We don&#x27;t have to model things totally correctly&quot;</em>, but I guess we should (eventually) emit a diagnostic if <code>__init__</code> does not return <code>None</code>, since the runtime <a href="https://github.com/python/cpython/blob/ffef9b0440e4391cbad69dbb11716f54cb8539ab/Objects/typeobject.c#L9810-L9816">throws a <code>TypeError</code> in case it doesn&#x27;t</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-03-05 12:55</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-03-05 12:55</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-03-05 13:30</div>
             <div class="timeline-body"><blockquote>
-<p>I'm not sure I understand your first point</p>
+<p>I&#x27;m not sure I understand your first point</p>
 </blockquote>
-<p>First, I realized I confused everyone by saying <code>CallOutcome</code> doesn't have the right API's, but that was supposed to be <code>CallBinding</code> of course. Let me break it down step by step.</p>
+<p>First, I realized I confused everyone by saying <code>CallOutcome</code> doesn&#x27;t have the right API&#x27;s, but that was supposed to be <code>CallBinding</code> of course. Let me break it down step by step.</p>
 <ul>
 <li>I must call <code>try_call_dunder</code> to trigger descriptor protocol and see what <code>__init__</code> call yields</li>
-<li>The call returns <code>Result&lt;CallOutcome&lt;'db&gt;, CallDunderError&lt;'db&gt;&gt;</code>. In case of errors I'll get <code>CallDunderError</code></li>
+<li>The call returns <code>Result&lt;CallOutcome&lt;&#x27;db&gt;, CallDunderError&lt;&#x27;db&gt;&gt;</code>. In case of errors I&#x27;ll get <code>CallDunderError</code></li>
 <li>I then map <code>CallDunderError</code> to <code>CallError</code>. So far so good</li>
 <li>Now, I need to return something like <code>Ok(CallOutcome::Single(CallBinding { ..., errors: vec![error_from_dunder_call] }))</code>. However, there is only one public API that creates it <code>bind_call</code> which does the full type checking logic and inserts its own errors. There is no API to create a <code>CallBinding</code> by supplying types &amp; errors directly</li>
 </ul>
@@ -115,12 +115,12 @@ reveal_type(x)  # revealed: int
 <blockquote>
 <p>Agreed, should be a pretty easy change I think?</p>
 </blockquote>
-<p>I haven't looked yet, I'll apply the change since everyone is fine. But this means that more tests will change in this PR than just those related to <code>__init__</code>. Or I can make it a separate PR too...</p>
+<p>I haven&#x27;t looked yet, I&#x27;ll apply the change since everyone is fine. But this means that more tests will change in this PR than just those related to <code>__init__</code>. Or I can make it a separate PR too...</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-03-06 06:18</div>
-            <div class="timeline-body"><p>(Didn't get to this today, sorry; will come back to it tomorrow.)</p>
+            <div class="timeline-body"><p>(Didn&#x27;t get to this today, sorry; will come back to it tomorrow.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -140,12 +140,12 @@ reveal_type(x)  # revealed: int
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/constructor.md</code>:6 on 2025-03-06 19:00</div>
             <div class="timeline-body"><p>The reason that this works at all is that we fall back to calling <code>__init__</code> on <code>object</code>, correct?</p>
 <p><code>builtins.pyi</code>:</p>
-<pre><code class="language-pyi">class object:
+<pre><code>class object:
     # …
     def __init__(self) -&gt; None: ...
 </code></pre>
 <p>So maybe we can rephrase this a bit?</p>
-<pre><code class="language-suggestion">Every class has `object` in it's MRO, so if no `__init__` method is provided, we fall back to
+<pre><code>Every class has `object` in it&#x27;s MRO, so if no `__init__` method is provided, we fall back to
 `object.__init__`, which can only be called with zero arguments:
 </code></pre>
 </div>
@@ -175,21 +175,21 @@ reveal_type(x)  # revealed: int
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2227 on 2025-03-06 20:12</div>
-            <div class="timeline-body"><p>Could/should this <code>Some(_)</code> path be merged with the <code>None</code> path below, i.e. couldn't we rely on typeshed stubs to give us the right <code>__init__</code> signature for these classes?</p>
+            <div class="timeline-body"><p>Could/should this <code>Some(_)</code> path be merged with the <code>None</code> path below, i.e. couldn&#x27;t we rely on typeshed stubs to give us the right <code>__init__</code> signature for these classes?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-03-06 21:27</div>
             <div class="timeline-body"><blockquote>
-<p>Maybe this is what you meant by <em>&quot;We don't have to model things totally correctly&quot;</em>, but I guess we should (eventually) emit a diagnostic if <code>__init__</code> does not return <code>None</code>, since the runtime <a href="https://github.com/python/cpython/blob/ffef9b0440e4391cbad69dbb11716f54cb8539ab/Objects/typeobject.c#L9810-L9816">throws a <code>TypeError</code> in case it doesn't</a>.</p>
+<p>Maybe this is what you meant by <em>&quot;We don&#x27;t have to model things totally correctly&quot;</em>, but I guess we should (eventually) emit a diagnostic if <code>__init__</code> does not return <code>None</code>, since the runtime <a href="https://github.com/python/cpython/blob/ffef9b0440e4391cbad69dbb11716f54cb8539ab/Objects/typeobject.c#L9810-L9816">throws a <code>TypeError</code> in case it doesn&#x27;t</a>.</p>
 </blockquote>
-<p>@sharkdp agree. but IMHO the diagnostic should be emitted when traversing the <code>__init__</code> definition, not at call site. So it should be tackled separately and won't affect this code at all. Unless I am missing something</p>
+<p>@sharkdp agree. but IMHO the diagnostic should be emitted when traversing the <code>__init__</code> definition, not at call site. So it should be tackled separately and won&#x27;t affect this code at all. Unless I am missing something</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2246 on 2025-03-06 21:29</div>
-            <div class="timeline-body"><p>great question. I haven't checked the typeshed for <code>object</code> and actually dropped the ball here a bit. I stopped working on this PR as soon as I hit the wall with the lack of necessary API on <code>CallBinding</code>. Hence it is still in draft &amp; far from finished.</p>
-<p>Hopefully, I'll find some time today to move forever regardless of <code>CallBinding</code> decision. Thanks for pointing this out!</p>
+            <div class="timeline-body"><p>great question. I haven&#x27;t checked the typeshed for <code>object</code> and actually dropped the ball here a bit. I stopped working on this PR as soon as I hit the wall with the lack of necessary API on <code>CallBinding</code>. Hence it is still in draft &amp; far from finished.</p>
+<p>Hopefully, I&#x27;ll find some time today to move forever regardless of <code>CallBinding</code> decision. Thanks for pointing this out!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -202,7 +202,7 @@ reveal_type(x)  # revealed: int
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/constructor.md</code>:30 on 2025-03-06 21:31</div>
-            <div class="timeline-body"><p>will do! and yes, that's exactly what I mentioned in my comment about <code>CallBinding</code> API's. I also think that we should emit diagnostic but still infer as if the call was correct</p>
+            <div class="timeline-body"><p>will do! and yes, that&#x27;s exactly what I mentioned in my comment about <code>CallBinding</code> API&#x27;s. I also think that we should emit diagnostic but still infer as if the call was correct</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -211,8 +211,8 @@ reveal_type(x)  # revealed: int
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2227 on 2025-03-06 21:33</div>
-            <div class="timeline-body"><p>doesn't look like so. E.g. the tests that involved <code>int</code> failed without this branch, which means typeshed lacks the proper signature or something else going on.</p>
-<p>I intended to close this PR without touching known classes and then do a separate one where I'll figure out how to handle their signatures. May be an issue with vendors typeshed, may be something else. I haven't checked yet</p>
+            <div class="timeline-body"><p>doesn&#x27;t look like so. E.g. the tests that involved <code>int</code> failed without this branch, which means typeshed lacks the proper signature or something else going on.</p>
+<p>I intended to close this PR without touching known classes and then do a separate one where I&#x27;ll figure out how to handle their signatures. May be an issue with vendors typeshed, may be something else. I haven&#x27;t checked yet</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -222,9 +222,9 @@ reveal_type(x)  # revealed: int
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2227 on 2025-03-06 21:54</div>
             <div class="timeline-body"><blockquote>
-<p>doesn't look like so. E.g. the tests that involved <code>int</code> failed without this branch, which means typeshed lacks the proper signature or something else going on.</p>
+<p>doesn&#x27;t look like so. E.g. the tests that involved <code>int</code> failed without this branch, which means typeshed lacks the proper signature or something else going on.</p>
 </blockquote>
-<p>You're right, I guess we can only do that once we also check the <code>__new__</code> calls (and understand overloads)</p>
+<p>You&#x27;re right, I guess we can only do that once we also check the <code>__new__</code> calls (and understand overloads)</p>
 <p>https://github.com/astral-sh/ruff/blob/b3c884f4f33a81cd08e9ebc13fd0d5a538c8afc7/crates/red_knot_vendored/vendor/typeshed/stdlib/builtins.pyi#L235-L239</p>
 <blockquote>
 <p>I intended to close this PR without touching known classes</p>
@@ -254,31 +254,31 @@ reveal_type(x)  # revealed: int
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @mishamsk on 2025-03-07 04:26</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-03-07 04:26</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @mishamsk on 2025-03-07 04:26</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-03-07 04:26</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @mishamsk on 2025-03-07 04:26</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-03-07 04:26</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @mishamsk on 2025-03-07 04:26</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-03-07 04:26</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-03-07 04:28</div>
             <div class="timeline-body"><p>@carljm never mind my previous comments, I found an API I needed. I think this is ready for review.</p>
-<p>I had to temporarily add 3 false positive errors in two unrelated mdtest<code>s due to lack of </code><strong>new</strong>` handling. I will follow with a PR for that and they'll go away.</p>
+<p>I had to temporarily add 3 false positive errors in two unrelated mdtest<code>s due to lack of </code><strong>new</strong>` handling. I will follow with a PR for that and they&#x27;ll go away.</p>
 <p>I also fixed the argument counting in the diagnostics when calling bound methods</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @mishamsk on 2025-03-07 04:41</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-03-07 04:41</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-03-07 04:48</div>
             <div class="timeline-body"><p>bummer... bench is failing due to tomlib using a lot of <code>int(..)</code> calls which emit false positives for now (cause we do not check <code>__new__</code> yet and there is no temporary special case check of <code>KnownClass::int</code>).</p>
-<p>I'd rather do a bandaid - add a hard-coded handler for <code>int</code>, just like <code>bool</code>, <code>str</code> currently and tackle <code>__new__</code> in a separate PR. Hope no objections to this</p>
+<p>I&#x27;d rather do a bandaid - add a hard-coded handler for <code>int</code>, just like <code>bool</code>, <code>str</code> currently and tackle <code>__new__</code> in a separate PR. Hope no objections to this</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -310,7 +310,7 @@ reveal_type(x)  # revealed: int
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2280 on 2025-03-07 22:59</div>
-            <div class="timeline-body"><p>added tracing with warning level. I haven't touched tracing/logging before, but hope that matches the intent!</p>
+            <div class="timeline-body"><p>added tracing with warning level. I haven&#x27;t touched tracing/logging before, but hope that matches the intent!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -320,13 +320,13 @@ reveal_type(x)  # revealed: int
 <p>Many builtin types &amp; stdlib (e.g. <code>int</code>, <code>datetime.time</code>) only define <code>__new__</code>, not <code>__Init__</code>. Which is perfectly fine at runtime, since <code>object.__init__</code> would take any amount of arguments without raising an error when custom <code>__new__</code> is present. It only raises <code>TypeError</code> for extra arguments without custom <code>__new__</code>.</p>
 <p>At the same time, both <code>object.__init__</code> and <code>object.__new__</code> are defined as argument-less in typeshed. This works well for classes without <code>__new__</code> &amp; <code>__init__</code>, only <code>__new__</code> or when both <code>__new__</code> &amp; <code>__init__</code> are defined. Not so much for the ones with only <code>__new__</code>. I could have ignored <code>__init__</code> entirely if no <code>__new__</code> is defined. But it is always defined curtesy of object...</p>
 <p>So in order for me to avoid false positives on the benchmark, I would still need to at least check if <code>__new__</code> is defined anywhere in MRO except object. But that seems like unnecessary temporary workaround. If I am checking for the existence of <code>__new__</code> I may as well try calling it...</p>
-<p>Which also brings another necessity - I'll need to extend class_member API with an optional argument to stop checking MRO before object... Luckily this API is only used in 2 places now, so doesn't seem like a big deal.</p>
-<h2>In short, two options here</h2>
+<p>Which also brings another necessity - I&#x27;ll need to extend class_member API with an optional argument to stop checking MRO before object... Luckily this API is only used in 2 places now, so doesn&#x27;t seem like a big deal.</p>
+In short, two options here
 <ul>
 <li>add quite a lot of false positive diagnostics on tomllib to the bench and merge in current state</li>
 <li>or, apply class_member API changes, add at least basic handling of <code>__new__</code> (e.g. ignore return type, which is usually Self in typeshed and not supported by knot)</li>
 </ul>
-<p>team, leaning on to you for decision here. Normally I'd prefer more smaller PR's, but this may not be the right time.</p>
+<p>team, leaning on to you for decision here. Normally I&#x27;d prefer more smaller PR&#x27;s, but this may not be the right time.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -334,7 +334,7 @@ reveal_type(x)  # revealed: int
             <div class="timeline-body"><p>Thanks for digging into this! Given those choices, I think we may as well just add <code>__new__</code> support? The initial version can ignore the return type of <code>__new__</code>.</p>
 <p>If even that turns out to be harder than expected, we can also just check for if <code>__new__</code> is defined (barring <code>object.__new__</code>) and not do any constructor checks at all for such types.</p>
 <p>I think you are right that we will need the ability to query for a member while ignoring its definition on the <code>object</code> base. (Or possibly we can just hardcode this behavior for <code>__init__</code> and <code>__new__</code> lookups and avoid needing to pass in an external flag?)</p>
-<p>(For future reference, another wrinkle we should add a TODO for is if the class' metaclass defines <code>__call__</code> -- if so that takes priority over <code>__new__</code> and <code>__init__</code>. EDIT -- looks like we already have that mentioned in a TODO comment.)</p>
+<p>(For future reference, another wrinkle we should add a TODO for is if the class&#x27; metaclass defines <code>__call__</code> -- if so that takes priority over <code>__new__</code> and <code>__init__</code>. EDIT -- looks like we already have that mentioned in a TODO comment.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -344,13 +344,13 @@ reveal_type(x)  # revealed: int
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/constructor.md</code>:80 on 2025-03-08 01:47</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">        return SomeCallable()
+            <div class="timeline-body"><pre><code>        return SomeCallable()
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/constructor.md</code>:230 on 2025-03-08 01:49</div>
-            <div class="timeline-body"><p>TIL that a) it's even possible to make <code>__init__</code> a descriptor, and b) doing so apparently bypasses the runtime check that <code>__init__</code> returns <code>None</code>:</p>
+            <div class="timeline-body"><p>TIL that a) it&#x27;s even possible to make <code>__init__</code> a descriptor, and b) doing so apparently bypasses the runtime check that <code>__init__</code> returns <code>None</code>:</p>
 <pre><code>&gt;&gt;&gt; class C:
 ...     def __init__(self):
 ...         return &quot;a&quot;
@@ -359,7 +359,7 @@ reveal_type(x)  # revealed: int
 Traceback (most recent call last):
   File &quot;&lt;python-input-6&gt;&quot;, line 1, in &lt;module&gt;
     c = C()
-TypeError: __init__() should return None, not 'str'
+TypeError: __init__() should return None, not &#x27;str&#x27;
 </code></pre>
 <p>but no error here:</p>
 <pre><code>&gt;&gt;&gt; class SomeCallable:
@@ -379,7 +379,7 @@ TypeError: __init__() should return None, not 'str'
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2674 on 2025-03-08 01:54</div>
-            <div class="timeline-body"><p>This comment doesn't seem to describe what the code does?</p>
+            <div class="timeline-body"><p>This comment doesn&#x27;t seem to describe what the code does?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -391,9 +391,9 @@ TypeError: __init__() should return None, not 'str'
             <div class="timeline-header">Comment by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-03-08 02:08</div>
             <div class="timeline-body"><p>@carljm</p>
 <blockquote>
-<p>For future reference, another wrinkle we should add a TODO for is if the class' metaclass defines <strong>call</strong> -- if so that takes priority over <strong>new</strong> and <strong>init</strong></p>
+<p>For future reference, another wrinkle we should add a TODO for is if the class&#x27; metaclass defines <strong>call</strong> -- if so that takes priority over <strong>new</strong> and <strong>init</strong></p>
 </blockquote>
-<p>Yes, it was already there and was step 3 in my initial plan. will be step 2 (hopefully, I'll manage to get away without).</p>
+<p>Yes, it was already there and was step 3 in my initial plan. will be step 2 (hopefully, I&#x27;ll manage to get away without).</p>
 <p>Will work on <code>__new__</code> as soon as I have time. thx. have a great weekend!</p>
 </div>
         </div>
@@ -404,12 +404,12 @@ TypeError: __init__() should return None, not 'str'
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2740 on 2025-03-08 02:16</div>
-            <div class="timeline-body"><p>Technically we <em>could</em> explicitly also check against a single argument call here, and union the outcome with the other outcome, which would make this fallback &quot;perfect&quot;. But that also seems like a hassle to implement for a case that will hardly ever occur. I'd also be fine saying if you are missing <code>object.__init__</code> in typeshed you just don't get your calls checked against it.</p>
+            <div class="timeline-body"><p>Technically we <em>could</em> explicitly also check against a single argument call here, and union the outcome with the other outcome, which would make this fallback &quot;perfect&quot;. But that also seems like a hassle to implement for a case that will hardly ever occur. I&#x27;d also be fine saying if you are missing <code>object.__init__</code> in typeshed you just don&#x27;t get your calls checked against it.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call.rs</code>:178 on 2025-03-08 02:19</div>
-            <div class="timeline-body"><p>This is a little ugly, and feels like throwing away information. I'd almost rather just have an optional <code>override_return_ty</code> field.</p>
+            <div class="timeline-body"><p>This is a little ugly, and feels like throwing away information. I&#x27;d almost rather just have an optional <code>override_return_ty</code> field.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -424,7 +424,7 @@ TypeError: __init__() should return None, not 'str'
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-03-08 02:20</div>
             <div class="timeline-body"><blockquote>
-<p>Yes, it was already there and was step 3 in my initial plan. will be step 2 (hopefully, I'll manage to get away without).</p>
+<p>Yes, it was already there and was step 3 in my initial plan. will be step 2 (hopefully, I&#x27;ll manage to get away without).</p>
 <p>Will work on <code>__new__</code> as soon as I have time. thx. have a great weekend!</p>
 </blockquote>
 <p>Awesome, thank you; you too!</p>
@@ -436,7 +436,7 @@ TypeError: __init__() should return None, not 'str'
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/constructor.md</code>:230 on 2025-03-08 12:31</div>
-            <div class="timeline-body"><p>Ha. I checked that descriptor works before even starting working on pr. But I've used other code, this one was copied from another test. Hence the &quot;error&quot; with a non-None return type.</p>
+            <div class="timeline-body"><p>Ha. I checked that descriptor works before even starting working on pr. But I&#x27;ve used other code, this one was copied from another test. Hence the &quot;error&quot; with a non-None return type.</p>
 <p>I suggest we keep the test and later emit error diagnostics for non None return even though it works in runtime. I will just add a comment that knot is stricter / deviates from runtime. If we ever see such code it is most probably an error</p>
 </div>
         </div>
@@ -447,7 +447,7 @@ TypeError: __init__() should return None, not 'str'
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2696 on 2025-03-11 03:32</div>
-            <div class="timeline-body"><p>ok. since Micha wasn't too keen on warnings, I removed them. I do not have a strong preference, although I would personally keep them. If I am mingling with typeshed, I would appreciate additional logs...</p>
+            <div class="timeline-body"><p>ok. since Micha wasn&#x27;t too keen on warnings, I removed them. I do not have a strong preference, although I would personally keep them. If I am mingling with typeshed, I would appreciate additional logs...</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -483,7 +483,7 @@ TypeError: __init__() should return None, not 'str'
 <li>there are quite a lot of places where structure is constructed, so changing it will cause a lot of changes unrelated to the core of this PR...</li>
 <li>I do not see a big difference between losing return type information on bindings/call outcomes, and on errors. If the calling code has a reason to override the return type, there is probably little need for the original one</li>
 </ul>
-<p>FWIW I think this change may be done when/if we'll hit an explicit need to know both the original and overriden return type.</p>
+<p>FWIW I think this change may be done when/if we&#x27;ll hit an explicit need to know both the original and overriden return type.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -496,19 +496,19 @@ TypeError: __init__() should return None, not 'str'
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/constructor.md</code>:66 on 2025-03-11 05:29</div>
-            <div class="timeline-body"><p>@sharkdp I tried to figure the following out myself, but haven't finished. Maybe you can help me out here.</p>
+            <div class="timeline-body"><p>@sharkdp I tried to figure the following out myself, but haven&#x27;t finished. Maybe you can help me out here.</p>
 <p><code>__new__</code> should be treated as a classmethod, looked up on the class itself (not meta class) but still go through descriptor protocol. I was trying to find the easiest and non-hacky way to special case it. Currently, it would search <code>__new__</code> on meta-type, always find <code>type.__new__</code> (defined in typeshed) and hence this and other tests related to <code>__new__</code> fail - they do not report errors even though they should...</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-11 05:30</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">itsdangerous (https://github.com/pallets/itsdangerous)
+Changes were detected when running on open source projects
+
+<pre><code>itsdangerous (https://github.com/pallets/itsdangerous)
 + error[lint:invalid-argument-type] /tmp/mypy_primer/projects/itsdangerous/tests/test_itsdangerous/test_url_safe.py:14:24: Object of type `Literal[URLSafeSerializer]` cannot be assigned to parameter 2 (`func`) of function `__new__`; expected type `(...) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions)`
 + error[lint:invalid-argument-type] /tmp/mypy_primer/projects/itsdangerous/tests/test_itsdangerous/test_url_safe.py:24:24: Object of type `Literal[URLSafeTimedSerializer]` cannot be assigned to parameter 2 (`func`) of function `__new__`; expected type `(...) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions)`
 + error[lint:invalid-argument-type] /tmp/mypy_primer/projects/itsdangerous/tests/test_itsdangerous/test_signer.py:21:24: Object of type `Literal[Signer]` cannot be assigned to parameter 2 (`func`) of function `__new__`; expected type `(...) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions)`
@@ -848,7 +848,7 @@ mypy_primer (https://github.com/hauntsaninja/mypy_primer)
             <div class="timeline-body"><blockquote>
 <p><code>__new__</code> should be treated as a classmethod</p>
 </blockquote>
-<p>I think it's technically a static method that just happens to take <code>cls</code> as a first argument (<a href="https://docs.python.org/3.8/reference/datamodel.html#object.__new__">ref</a>).</p>
+<p>I think it&#x27;s technically a static method that just happens to take <code>cls</code> as a first argument (<a href="https://docs.python.org/3.8/reference/datamodel.html#object.__new__">ref</a>).</p>
 <blockquote>
 <p>looked up on the class itself (not meta class)</p>
 </blockquote>
@@ -856,7 +856,7 @@ mypy_primer (https://github.com/hauntsaninja/mypy_primer)
 <blockquote>
 <p>Currently, it would search <code>__new__</code> on meta-type, always find <code>type.__new__</code> (defined in typeshed)</p>
 </blockquote>
-<p>Yes, this is as expected. It <em>should</em> find <code>__new__</code> on the meta class. But note that this doesn't mean that it takes precedence. It would only take precedence if it were a <em>data</em> descriptor (i.e. if it had a <code>__set__</code> or <code>__delete__</code> method).</p>
+<p>Yes, this is as expected. It <em>should</em> find <code>__new__</code> on the meta class. But note that this doesn&#x27;t mean that it takes precedence. It would only take precedence if it were a <em>data</em> descriptor (i.e. if it had a <code>__set__</code> or <code>__delete__</code> method).</p>
 <p>Since <code>type.__new__</code> is not a data descriptor, it should fall back to <code>__new__</code> on the class itself.</p>
 </div>
         </div>
@@ -892,44 +892,44 @@ mypy_primer (https://github.com/hauntsaninja/mypy_primer)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2709 on 2025-03-11 16:23</div>
-            <div class="timeline-body"><p>Don't we need to call <code>__new__</code> with <code>&amp;CallArguments::positional([self])</code>? I would expect that we can always call <code>__new__</code> using <code>self.try_call_dunder(db, &quot;__new__&quot;, &amp;CallArguments::positional([self])</code>, but then we probably need some special casing for <code>object.__new__</code>, because we don't understand <code>Self</code> yet.</p>
+            <div class="timeline-body"><p>Don&#x27;t we need to call <code>__new__</code> with <code>&amp;CallArguments::positional([self])</code>? I would expect that we can always call <code>__new__</code> using <code>self.try_call_dunder(db, &quot;__new__&quot;, &amp;CallArguments::positional([self])</code>, but then we probably need some special casing for <code>object.__new__</code>, because we don&#x27;t understand <code>Self</code> yet.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-03-13 02:39</div>
-            <div class="timeline-body"><p>if someone will land here wondering if something is happening - it does. After rebasing on the new main I started getting a lot of errors which I still can't understand. WIP</p>
+            <div class="timeline-body"><p>if someone will land here wondering if something is happening - it does. After rebasing on the new main I started getting a lot of errors which I still can&#x27;t understand. WIP</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-03-14 02:20</div>
-            <div class="timeline-body"><p>Oook, I've fixed it. I am not super happy with the code, there are ugly corners everywhere. E.g. I had to inline partial <code>try_call_dunder</code> -&gt; <code>member_lookup_with_policy</code> call chain to handle the special way <code>__new__</code> have to be handled. But hey, it works.</p>
+            <div class="timeline-body"><p>Oook, I&#x27;ve fixed it. I am not super happy with the code, there are ugly corners everywhere. E.g. I had to inline partial <code>try_call_dunder</code> -&gt; <code>member_lookup_with_policy</code> call chain to handle the special way <code>__new__</code> have to be handled. But hey, it works.</p>
 <p>Also, some of the ugliness will go away with astral-sh/ruff#16716</p>
-<p>@carljm @sharkdp &amp; @dcreager would be cool if you'll check this out.</p>
-<p>I am really really out and not planning on carrying laptop with me, so I won't be able to fix comments until Monday, Mar 24th. I will be able to comment though.</p>
+<p>@carljm @sharkdp &amp; @dcreager would be cool if you&#x27;ll check this out.</p>
+<p>I am really really out and not planning on carrying laptop with me, so I won&#x27;t be able to fix comments until Monday, Mar 24th. I will be able to comment though.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @mishamsk on 2025-03-14 02:20</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-03-14 02:20</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @mishamsk on 2025-03-14 02:20</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-03-14 02:20</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-03-14 02:22</div>
-            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+            <div class="timeline-body">
 
-<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
 
-<h2><a href="https://codspeed.io/astral-sh/ruff/branches/mishamsk%3Aadd-class-init-argument-checks">CodSpeed Performance Report</a></h2>
-<h3>Merging astral-sh/ruff#16512 will <strong>degrade performances by 6.48%</strong></h3>
-<p><sub>Comparing <code>mishamsk:add-class-init-argument-checks</code> (580d723) with <code>main</code> (b662c3f)</sub></p>
-<h3>Summary</h3>
-<p><code>❌ 2</code> regressions<br />
+
+<a href="https://codspeed.io/astral-sh/ruff/branches/mishamsk%3Aadd-class-init-argument-checks">CodSpeed Performance Report</a>
+Merging astral-sh/ruff#16512 will <strong>degrade performances by 6.48%</strong>
+<p>Comparing <code>mishamsk:add-class-init-argument-checks</code> (580d723) with <code>main</code> (b662c3f)</p>
+Summary
+<p><code>❌ 2</code> regressions<br>
 <code>✅ 30</code> untouched benchmarks</p>
 <blockquote>
 <p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/ruff/branches/mishamsk%3Aadd-class-init-argument-checks">acknowledge them on CodSpeed</a>.</em></p>
 </blockquote>
-<h3>Benchmarks breakdown</h3>
+Benchmarks breakdown
 <p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
 | --- | --------- | ----------------------- | ------------------- | ------ |
 | ❌ | <code>red_knot_check_file[cold]</code> | 92.8 ms | 97.1 ms | -4.44% |
@@ -951,12 +951,12 @@ mypy_primer (https://github.com/hauntsaninja/mypy_primer)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2865 on 2025-03-14 09:16</div>
-            <div class="timeline-body"><p>Great question! I was focused on making this all work yesterday, so I just copied from other KnownClasses arms above that @dcreager created. I saw it was a query, but I didn't give it much thought. I just assumed this has some perf benefit. I will have to look into perf regressions anyway, and will make sure to check if there is any real point to do so. Probably not</p>
+            <div class="timeline-body"><p>Great question! I was focused on making this all work yesterday, so I just copied from other KnownClasses arms above that @dcreager created. I saw it was a query, but I didn&#x27;t give it much thought. I just assumed this has some perf benefit. I will have to look into perf regressions anyway, and will make sure to check if there is any real point to do so. Probably not</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2865 on 2025-03-14 09:25</div>
-            <div class="timeline-body"><p>Thanks for explaining. I noticed when reviewing @dcreager's https://github.com/astral-sh/ruff/pull/16716 PR that he moved the query to a different method and I left a comment there. I think we can ignore this concern for this PR and come to a conclusion on https://github.com/astral-sh/ruff/pull/16716</p>
+            <div class="timeline-body"><p>Thanks for explaining. I noticed when reviewing @dcreager&#x27;s <a href="https://github.com/astral-sh/ruff/pull/16716">astral-sh/ruff#16716</a> PR that he moved the query to a different method and I left a comment there. I think we can ignore this concern for this PR and come to a conclusion on <a href="https://github.com/astral-sh/ruff/pull/16716">astral-sh/ruff#16716</a></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -968,7 +968,7 @@ mypy_primer (https://github.com/hauntsaninja/mypy_primer)
             <div class="timeline-body"><blockquote>
 <p>E.g. I had to inline partial <code>try_call_dunder</code> -&gt; <code>member_lookup_with_policy</code> call chain to handle the special way <code>__new__</code> have to be handled.</p>
 </blockquote>
-<p>If you are talking about skipping lookup of symbols on <code>object</code>, I think we'll need something similar for https://github.com/astral-sh/ruff/pull/16748</p>
+<p>If you are talking about skipping lookup of symbols on <code>object</code>, I think we&#x27;ll need something similar for <a href="https://github.com/astral-sh/ruff/pull/16748">astral-sh/ruff#16748</a></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -977,23 +977,23 @@ mypy_primer (https://github.com/hauntsaninja/mypy_primer)
 <blockquote>
 <p>E.g. I had to inline partial <code>try_call_dunder</code> -&gt; <code>member_lookup_with_policy</code> call chain to handle the special way <code>__new__</code> have to be handled.</p>
 </blockquote>
-<p>If you are talking about skipping lookup of symbols on <code>object</code>, I think we'll need something similar for https://github.com/astral-sh/ruff/pull/16748</p>
+<p>If you are talking about skipping lookup of symbols on <code>object</code>, I think we&#x27;ll need something similar for <a href="https://github.com/astral-sh/ruff/pull/16748">astral-sh/ruff#16748</a></p>
 </blockquote>
-<p>Yes. That was the primary reason, I decided against threading the flag through all API. But if it's a common need we might as well do it.</p>
-<p>The other is more performance related. When calling from the specific Type variant, we kinda already know which path we should take, so all the matches inside those general API's are pure overhead. But I would vote for convenience and shared API in this case. If try_call_dunder will support this use case, then we should definitely use it</p>
+<p>Yes. That was the primary reason, I decided against threading the flag through all API. But if it&#x27;s a common need we might as well do it.</p>
+<p>The other is more performance related. When calling from the specific Type variant, we kinda already know which path we should take, so all the matches inside those general API&#x27;s are pure overhead. But I would vote for convenience and shared API in this case. If try_call_dunder will support this use case, then we should definitely use it</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/constructor.md</code>:19 on 2025-03-14 23:57</div>
             <div class="timeline-body"><p>We should also add some tests for cases where <code>__new__</code> and <code>__init__</code> are both defined. We need to check the provided constructor args against both, because things like this are allowed:</p>
-<pre><code class="language-py">class C:
+<pre><code>class C:
     def __new__(cls, *args, **kwargs):
         return object.__new__(cls)
     def __init__(self, x, y):
         self.x = x
         self.y = y
 </code></pre>
-<p>That is, it's permissible for them to have different signatures, as long as the arguments given work with both signatures.</p>
+<p>That is, it&#x27;s permissible for them to have different signatures, as long as the arguments given work with both signatures.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1004,7 +1004,7 @@ mypy_primer (https://github.com/hauntsaninja/mypy_primer)
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/constructor.md</code>:83 on 2025-03-15 00:00</div>
             <div class="timeline-body"><p>Not much point in having this in an mdtest?</p>
-<pre><code class="language-suggestion"></code></pre>
+<pre><code></code></pre>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1019,13 +1019,13 @@ mypy_primer (https://github.com/hauntsaninja/mypy_primer)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/class.rs</code>:97 on 2025-03-15 00:05</div>
-            <div class="timeline-body"><p>nit: <code>object</code> isn't really a &quot;fallback&quot;, it's just part of the MRO. So I would probably name these <code>ExcludeObject</code> and <code>Default</code>.</p>
+            <div class="timeline-body"><p>nit: <code>object</code> isn&#x27;t really a &quot;fallback&quot;, it&#x27;s just part of the MRO. So I would probably name these <code>ExcludeObject</code> and <code>Default</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/class.rs</code>:429 on 2025-03-15 00:09</div>
-            <div class="timeline-body"><p>It seems like we don't have any tests that fail if we remove the <code>!self.is_known(db, KnownClass::Object)</code> check? (That is, tests directly looking up an attribute on <code>object</code>.)</p>
-<p>Hmm, you do have an <code>object.__new__(cls)</code> in the tests you added; why doesn't that fail?</p>
+            <div class="timeline-body"><p>It seems like we don&#x27;t have any tests that fail if we remove the <code>!self.is_known(db, KnownClass::Object)</code> check? (That is, tests directly looking up an attribute on <code>object</code>.)</p>
+<p>Hmm, you do have an <code>object.__new__(cls)</code> in the tests you added; why doesn&#x27;t that fail?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1035,7 +1035,7 @@ mypy_primer (https://github.com/hauntsaninja/mypy_primer)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2851 on 2025-03-15 00:12</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">            // TODO: currently we can't use typeshed to infer calls using generic
+            <div class="timeline-body"><pre><code>            // TODO: currently we can&#x27;t use typeshed to infer calls using generic
             // logic below due to a salsa query cycle. When this is fixed, we should
             // remove this arm and avoid special casing `TypeVar`.
 </code></pre>
@@ -1043,7 +1043,7 @@ mypy_primer (https://github.com/hauntsaninja/mypy_primer)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2914 on 2025-03-15 00:13</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">            // TODO: currently we can't use typeshed to infer calls using generic
+            <div class="timeline-body"><pre><code>            // TODO: currently we can&#x27;t use typeshed to infer calls using generic
             // logic below due to a salsa query cycle. When this is fixed, we should
             // remove this arm and aboid special casing `Object`.
 </code></pre>
@@ -1051,14 +1051,14 @@ mypy_primer (https://github.com/hauntsaninja/mypy_primer)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2950 on 2025-03-15 00:18</div>
-            <div class="timeline-body"><p>I realized this isn't right, as mentioned in a comment above. We can't really check <code>__init__</code> vs <code>__new__</code> compat at class definition, because they are allowed to differ; the effective constructor signature is the intersection of the two (whatever calls satisfy both signatures.)</p>
-<p>I think if <code>__new__</code> exists and binding to it fails, it's fine to stop there. If you have a similar <code>__new__</code> and <code>__init__</code> signature, and you just pass the wrong arguments, we don't want two diagnostics about it. But if <code>__new__</code> exists and binding to it succeeds, we need to go ahead and try <code>__init__</code> as well and make sure that succeeds too.</p>
+            <div class="timeline-body"><p>I realized this isn&#x27;t right, as mentioned in a comment above. We can&#x27;t really check <code>__init__</code> vs <code>__new__</code> compat at class definition, because they are allowed to differ; the effective constructor signature is the intersection of the two (whatever calls satisfy both signatures.)</p>
+<p>I think if <code>__new__</code> exists and binding to it fails, it&#x27;s fine to stop there. If you have a similar <code>__new__</code> and <code>__init__</code> signature, and you just pass the wrong arguments, we don&#x27;t want two diagnostics about it. But if <code>__new__</code> exists and binding to it succeeds, we need to go ahead and try <code>__init__</code> as well and make sure that succeeds too.</p>
 <p>Sorry I led you in the wrong direction here earlier.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-03-15 00:20</div>
-            <div class="timeline-body"><p>This is looking really good! Still a few things to address, and I apologize in advance for the rebase on top of https://github.com/astral-sh/ruff/pull/16716, but the tests and the general approach should still translate fine.</p>
+            <div class="timeline-body"><p>This is looking really good! Still a few things to address, and I apologize in advance for the rebase on top of <a href="https://github.com/astral-sh/ruff/pull/16716">astral-sh/ruff#16716</a>, but the tests and the general approach should still translate fine.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1067,17 +1067,17 @@ mypy_primer (https://github.com/hauntsaninja/mypy_primer)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @mishamsk on 2025-04-06 05:13</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-04-06 05:13</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-04-06 20:32</div>
-            <div class="timeline-body"><p>@carljm @sharkdp it is ready! I've addressed and closed all old discussions. I had to add more special cases, like <code>type.GenericAlias.__getattr__</code> handling, but hope this is good to be merged.</p>
+            <div class="timeline-body"><p>@carljm @sharkdp it is ready! I&#x27;ve addressed and closed all old discussions. I had to add more special cases, like <code>type.GenericAlias.__getattr__</code> handling, but hope this is good to be merged.</p>
 <p>Pretty sure it will yield performance regression, but that should be expected. On the flip side, I think most of the manual signatures for known classes can be removed, which would also avoid the need to <code>Bindings.evaluate_known_cases</code> that @dcreager mentioned</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:5596 on 2025-04-07 10:39</div>
-            <div class="timeline-body"><p>we already have an issue open for it here FWIW https://github.com/astral-sh/ruff/issues/16371</p>
+            <div class="timeline-body"><p>we already have an issue open for it here FWIW <a href="https://github.com/astral-sh/ruff/issues/16371">astral-sh/ruff#16371</a></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1090,14 +1090,14 @@ mypy_primer (https://github.com/hauntsaninja/mypy_primer)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:5596 on 2025-04-07 14:07</div>
-            <div class="timeline-body"><p>@AlexWaygood actually a great point. In my last commit I've added yet another place where I manually pull a symbol for <code>__new__</code> and do almost, but not exactly what <code>try_call_dunder</code> does. The reason being that I need to apply my new policy (avoid object &amp; type during lookup) which is not part of <code>try_call_dunder</code> API.</p>
+            <div class="timeline-body"><p>@AlexWaygood actually a great point. In my last commit I&#x27;ve added yet another place where I manually pull a symbol for <code>__new__</code> and do almost, but not exactly what <code>try_call_dunder</code> does. The reason being that I need to apply my new policy (avoid object &amp; type during lookup) which is not part of <code>try_call_dunder</code> API.</p>
 <p>I think #16731 should be done after this PR is merged, and <code>try_call_dunder</code> should take in the new policy flags struct as input, then all calls can use the single API and avoid unnecessary &quot;just check if exists&quot; symbol lookups before that</p>
 <p>@sharkdp FYI 👆</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2601 on 2025-04-07 18:54</div>
-            <div class="timeline-body"><p>This doesn't seem necessary; all tests pass without it. It seems to me it shouldn't be necessary unless we have a bug somewhere else; we shouldn't look up <code>__mro__</code> with this flag in the first place.</p>
+            <div class="timeline-body"><p>This doesn&#x27;t seem necessary; all tests pass without it. It seems to me it shouldn&#x27;t be necessary unless we have a bug somewhere else; we shouldn&#x27;t look up <code>__mro__</code> with this flag in the first place.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1107,20 +1107,20 @@ mypy_primer (https://github.com/hauntsaninja/mypy_primer)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3265 on 2025-04-07 19:03</div>
-            <div class="timeline-body"><p>This is no longer needed to avoid a cycle, so I'll remove this comment. There is a test that fails without it, and I think this is a reasonable one to special-case rather than relying on fixpoint iteration, so I'll leave the arm here for now.</p>
+            <div class="timeline-body"><p>This is no longer needed to avoid a cycle, so I&#x27;ll remove this comment. There is a test that fails without it, and I think this is a reasonable one to special-case rather than relying on fixpoint iteration, so I&#x27;ll leave the arm here for now.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3639 on 2025-04-07 20:05</div>
-            <div class="timeline-body"><p>This bit about <code>type.__new__</code> is interesting. I wonder if an alternative approach here could be to not skip <code>object.__new__</code> but instead mark it in a way that makes it easy to check if that's the one we found. Then we wouldn't have the side effect of unhiding <code>type.__new__</code>, meaning we need two lookup flags.</p>
+            <div class="timeline-body"><p>This bit about <code>type.__new__</code> is interesting. I wonder if an alternative approach here could be to not skip <code>object.__new__</code> but instead mark it in a way that makes it easy to check if that&#x27;s the one we found. Then we wouldn&#x27;t have the side effect of unhiding <code>type.__new__</code>, meaning we need two lookup flags.</p>
 <p>Not going to look into that now, but might add a comment about it.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-04-07 21:04</div>
             <div class="timeline-body"><p>Looks great, thank you for all your work on this!</p>
-<p>I've pushed some changes. The most significant one is to add <code>find_name_in_mro_with_policy</code> and <code>class_member_with_policy</code>, to mirror the existing <code>member_lookup_with_policy</code>, and have the <code>find_name_in_mro</code> and <code>class_member</code> methods be thin wrappers that just use the default policy. This arguably makes writing internal Type code a bit more error-prone, as it means we can more easily accidentally drop a policy we should have propagated. But I think it's worth it because it removes so much <code>MemberLookupPolicy::default()</code> noise all over the place.</p>
-<p>Since I've made significant changes, I won't merge this right away but will leave it overnight in case you or anyone else has comments on the changes I've made; otherwise I'll merge it first thing in the morning my time.</p>
+<p>I&#x27;ve pushed some changes. The most significant one is to add <code>find_name_in_mro_with_policy</code> and <code>class_member_with_policy</code>, to mirror the existing <code>member_lookup_with_policy</code>, and have the <code>find_name_in_mro</code> and <code>class_member</code> methods be thin wrappers that just use the default policy. This arguably makes writing internal Type code a bit more error-prone, as it means we can more easily accidentally drop a policy we should have propagated. But I think it&#x27;s worth it because it removes so much <code>MemberLookupPolicy::default()</code> noise all over the place.</p>
+<p>Since I&#x27;ve made significant changes, I won&#x27;t merge this right away but will leave it overnight in case you or anyone else has comments on the changes I&#x27;ve made; otherwise I&#x27;ll merge it first thing in the morning my time.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1140,7 +1140,7 @@ mypy_primer (https://github.com/hauntsaninja/mypy_primer)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3265 on 2025-04-07 22:04</div>
-            <div class="timeline-body"><p>LGTM. especially since it doesn't have a corresponding code in <code>bind</code>, so not as painful as other cases which must be kept in sync with a completely different module</p>
+            <div class="timeline-body"><p>LGTM. especially since it doesn&#x27;t have a corresponding code in <code>bind</code>, so not as painful as other cases which must be kept in sync with a completely different module</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1158,7 +1158,7 @@ mypy_primer (https://github.com/hauntsaninja/mypy_primer)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3639 on 2025-04-07 22:12</div>
-            <div class="timeline-body"><p>Thanks for the idea. I'll look into it when I do a follow up for <code>__call__</code> handling. Or it may retackled separately in <code>try_call_dunder</code> unification #16371 - because this essentially about trying to create a unified API that everyone can call without too much thinking how the lookups should behave.</p>
+            <div class="timeline-body"><p>Thanks for the idea. I&#x27;ll look into it when I do a follow up for <code>__call__</code> handling. Or it may retackled separately in <code>try_call_dunder</code> unification #16371 - because this essentially about trying to create a unified API that everyone can call without too much thinking how the lookups should behave.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1172,7 +1172,7 @@ mypy_primer (https://github.com/hauntsaninja/mypy_primer)
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/constructor.md</code>:13 on 2025-04-08 07:06</div>
             <div class="timeline-body"><p>Minor nitpick:</p>
-<pre><code class="language-suggestion">`__init__` has no special handling, it is fetched as bound method and is called just like any other
+<pre><code>`__init__` has no special handling, it is fetched as bound method and is called just like any other
 dunder method.
 </code></pre>
 <p>(Normal methods would also be looked up on the instance dictionary)</p>
@@ -1180,7 +1180,7 @@ dunder method.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3983 on 2025-04-08 07:26</div>
-            <div class="timeline-body"><p>It feels to me like some of this logic here should ideally be moved to <code>types.rs</code>? I think it's slightly unfortunate that we list special cases here in <code>infer.rs</code>. But even if we agree on this, I don't see any reason to block this PR because of it.</p>
+            <div class="timeline-body"><p>It feels to me like some of this logic here should ideally be moved to <code>types.rs</code>? I think it&#x27;s slightly unfortunate that we list special cases here in <code>infer.rs</code>. But even if we agree on this, I don&#x27;t see any reason to block this PR because of it.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1198,10 +1198,10 @@ dunder method.
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @carljm on 2025-04-08 21:26</div>
+            <div class="event">Merged by <a href="https://github.com/carljm">@carljm</a> on 2025-04-08 21:26</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @carljm on 2025-04-08 21:26</div>
+            <div class="event">Closed by <a href="https://github.com/carljm">@carljm</a> on 2025-04-08 21:26</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-04-09 01:08</div>
@@ -1219,7 +1219,7 @@ dunder method.
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:10:31 UTC
+        Synced at 2026-01-20 19:12:01 UTC
     </footer>
 </body>
 </html>

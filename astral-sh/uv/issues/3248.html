@@ -26,20 +26,20 @@
             <div class="timeline-body"><p><code>requirements.in</code>:</p>
 <pre><code>requests
 </code></pre>
-<pre><code class="language-console">$ uv pip compile requirements.in -o reqs1.txt -o reqs2.txt
-error: the argument '--output-file &lt;OUTPUT_FILE&gt;' cannot be used multiple times
+<pre><code>$ uv pip compile requirements.in -o reqs1.txt -o reqs2.txt
+error: the argument &#x27;--output-file &lt;OUTPUT_FILE&gt;&#x27; cannot be used multiple times
 $ uv --version
 uv 0.1.37
 $ uname
 Linux
 </code></pre>
-<p>I'm requesting that instead, the above command write output to (only) <code>reqs2.txt</code>, the latest instance of <code>-o</code>/<code>--output-file</code> on the command line. This is useful when using shell aliases or functions to wrap <code>uv</code>, when you specify a &quot;default&quot; output file in the alias or function, while allowing any invocation to easily override that default by specifying the option again, on the command line.</p>
-<p>That's how pip-tools behaves, and I make use of that behavior.</p>
+<p>I&#x27;m requesting that instead, the above command write output to (only) <code>reqs2.txt</code>, the latest instance of <code>-o</code>/<code>--output-file</code> on the command line. This is useful when using shell aliases or functions to wrap <code>uv</code>, when you specify a &quot;default&quot; output file in the alias or function, while allowing any invocation to easily override that default by specifying the option again, on the command line.</p>
+<p>That&#x27;s how pip-tools behaves, and I make use of that behavior.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-24 17:08</div>
-            <div class="timeline-body"><p>I think I'd find this behavior really confusing. What if we provided a <code>UV_COMPILE_OUTPUT_FILE</code> environment variable instead that you could override with the command line?</p>
+            <div class="timeline-body"><p>I think I&#x27;d find this behavior really confusing. What if we provided a <code>UV_COMPILE_OUTPUT_FILE</code> environment variable instead that you could override with the command line?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -52,7 +52,7 @@ Linux
             <div class="timeline-body"><p>A file-based configuration or global configuration would not work for my case, which is functions that have their own defaults but are separate from any other ways the user wishes to use pip or uv.</p>
 <p>With <code>UV_COMPILE_OUTPUT_FILE</code>, let me think: if <code>uv</code> is the backend being used I could add my own parsing of all the options, find and remove all output flags, use the last one to set <code>UV_COMPILE_OUTPUT_FILE</code>, and run my commands. It <em>might</em> be workable for my main case, but adds a lot of complication for the <code>uv</code> code path. Certainly not suitable for aliases.</p>
 <p>FWIW, this is a very common convention (later options &quot;win&quot;), and is used not just by pip-tools but also pip itself. For example, the following command only uses the <code>cache2</code> folder:</p>
-<pre><code class="language-console">$ pip install --cache-dir=&quot;$PWD/cache1&quot; requests --cache-dir=&quot;$PWD/cache2&quot;
+<pre><code>$ pip install --cache-dir=&quot;$PWD/cache1&quot; requests --cache-dir=&quot;$PWD/cache2&quot;
 </code></pre>
 </div>
         </div>
@@ -61,17 +61,17 @@ Linux
             <div class="timeline-body"><blockquote>
 <p>Certainly not suitable for aliases.</p>
 </blockquote>
-<p>I think you'd just write a simple bash function instead of an alias that sets a default value for the variable before calling into <code>uv</code>?</p>
+<p>I think you&#x27;d just write a simple bash function instead of an alias that sets a default value for the variable before calling into <code>uv</code>?</p>
 <blockquote>
 <p>FWIW, this is a very common convention (later options &quot;win&quot;), and is used not just by pip-tools but also pip itself. For example, the following command only uses the cache2 folder:</p>
 </blockquote>
-<p>I think with something like <code>--cache-dir</code> it's much clearer that a single cache directory can be used whereas with <code>--output-file</code> I would be uncertain if multiple output files will be written.</p>
+<p>I think with something like <code>--cache-dir</code> it&#x27;s much clearer that a single cache directory can be used whereas with <code>--output-file</code> I would be uncertain if multiple output files will be written.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AndydeCleyre">@AndydeCleyre</a> on 2024-04-24 18:17</div>
-            <div class="timeline-body"><p>FWIW here's maybe a more analogous option from pip:</p>
-<pre><code class="language-console">$ pip install --dry-run --quiet --report=out1.json requests --report=out2.json
+            <div class="timeline-body"><p>FWIW here&#x27;s maybe a more analogous option from pip:</p>
+<pre><code>$ pip install --dry-run --quiet --report=out1.json requests --report=out2.json
 </code></pre>
 <p>As expected, only <code>out2.json</code> is written.</p>
 </div>
@@ -83,23 +83,23 @@ Linux
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AndydeCleyre">@AndydeCleyre</a> on 2024-04-24 18:57</div>
-            <div class="timeline-body"><p>I'll note that I am having similar troubles with e.g. <code>--annotation-style</code>, which I expected to work like it does in pip-tools (latest wins). I won't open a separate issue for that at this time, as it gets to the same larger question.</p>
+            <div class="timeline-body"><p>I&#x27;ll note that I am having similar troubles with e.g. <code>--annotation-style</code>, which I expected to work like it does in pip-tools (latest wins). I won&#x27;t open a separate issue for that at this time, as it gets to the same larger question.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/hmc-cs-mdrissi">@hmc-cs-mdrissi</a> on 2024-04-25 00:42</div>
-            <div class="timeline-body"><p>I suspect part of this comes from argparse's design. Many python libraries use argparse/similar library. argparse's default behavior is last one wins with no awareness of meaning flag.</p>
-<p>edit: Personally I like current duplicates are hard error over last one wins. My guess is it's commonness in python ecosystem is less that clis made choice individually, but argument handling libraries default choices made it common.</p>
+            <div class="timeline-body"><p>I suspect part of this comes from argparse&#x27;s design. Many python libraries use argparse/similar library. argparse&#x27;s default behavior is last one wins with no awareness of meaning flag.</p>
+<p>edit: Personally I like current duplicates are hard error over last one wins. My guess is it&#x27;s commonness in python ecosystem is less that clis made choice individually, but argument handling libraries default choices made it common.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AndydeCleyre">@AndydeCleyre</a> on 2024-04-25 02:49</div>
-            <div class="timeline-body"><p>Yup, argparse does it. So does Click. So does <a href="https://github.com/jessevdk/go-flags">go-flags</a>. And <a href="https://bazel.build/docs/user-manual">bazel</a>. Looks like <a href="https://github.com/rust-lang/compiler-team/issues/731">rustc</a> will be doing it (if I'm interpreting that correctly).</p>
+            <div class="timeline-body"><p>Yup, argparse does it. So does Click. So does <a href="https://github.com/jessevdk/go-flags">go-flags</a>. And <a href="https://bazel.build/docs/user-manual">bazel</a>. Looks like <a href="https://github.com/rust-lang/compiler-team/issues/731">rustc</a> will be doing it (if I&#x27;m interpreting that correctly).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-25 02:54</div>
-            <div class="timeline-body"><p>Is this the same? https://github.com/clap-rs/clap/issues/4261</p>
+            <div class="timeline-body"><p>Is this the same? <a href="https://github.com/clap-rs/clap/issues/4261">clap-rs/clap#4261</a></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -113,10 +113,10 @@ Linux
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">cli</span> added by @charliermarsh on 2024-04-26 00:23</div>
+            <div class="event">Label <span class="label">cli</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-26 00:23</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Request: Allow --output-file multiple times, only use right-most" to "Request: Allow --output-file, --annotation-style, etc. multiple times, only use right-most" by @AndydeCleyre on 2024-10-25 15:24</div>
+            <div class="event">Renamed from &quot;Request: Allow --output-file multiple times, only use right-most&quot; to &quot;Request: Allow --output-file, --annotation-style, etc. multiple times, only use right-most&quot; by <a href="https://github.com/AndydeCleyre">@AndydeCleyre</a> on 2024-10-25 15:24</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AndydeCleyre">@AndydeCleyre</a> on 2024-10-29 20:29</div>
@@ -130,7 +130,7 @@ Linux
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AndydeCleyre">@AndydeCleyre</a> on 2024-11-14 15:39</div>
-            <div class="timeline-body"><p>If this change is more likely to happen limited to a certain subset of flags, I'll list here the ones I most wish to override later (<em>most</em> likely to break usage of my project when subbing uv for pip-tools, though not at all exhaustive):</p>
+            <div class="timeline-body"><p>If this change is more likely to happen limited to a certain subset of flags, I&#x27;ll list here the ones I most wish to override later (<em>most</em> likely to break usage of my project when subbing uv for pip-tools, though not at all exhaustive):</p>
 <p><code>uv pip compile</code>:</p>
 <ul>
 <li><code>--no-header</code></li>
@@ -142,19 +142,19 @@ Linux
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AndydeCleyre">@AndydeCleyre</a> on 2024-11-24 22:04</div>
             <div class="timeline-body"><p>@zanieb</p>
-<p>Is there any form of this that has been suggested, or that you can come up with, which you're willing to allow?</p>
+<p>Is there any form of this that has been suggested, or that you can come up with, which you&#x27;re willing to allow?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-25 23:46</div>
-            <div class="timeline-body"><p>I don't think adding this to a subset of options would be great — consistency across the CLI seems important.</p>
-<p>I do find your ecosystem examples convincing, but I still worry about the possibility of confusion. I'm just not seeing enough interest to merit changing this right now. (We have many issues with upvotes but nobody else has asked for this change yet)</p>
+            <div class="timeline-body"><p>I don&#x27;t think adding this to a subset of options would be great — consistency across the CLI seems important.</p>
+<p>I do find your ecosystem examples convincing, but I still worry about the possibility of confusion. I&#x27;m just not seeing enough interest to merit changing this right now. (We have many issues with upvotes but nobody else has asked for this change yet)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AndydeCleyre">@AndydeCleyre</a> on 2024-12-10 18:20</div>
-            <div class="timeline-body"><p>I expect it's just a matter of time, as my project was relatively quick to adopt and adapt to uv, so I hold out hope that this will change eventually. In the meantime I'll add one more widely used example: <code>git</code>.</p>
-<pre><code class="language-console">$ alias gd=&quot;git diff --submodule=log&quot;
+            <div class="timeline-body"><p>I expect it&#x27;s just a matter of time, as my project was relatively quick to adopt and adapt to uv, so I hold out hope that this will change eventually. In the meantime I&#x27;ll add one more widely used example: <code>git</code>.</p>
+<pre><code>$ alias gd=&quot;git diff --submodule=log&quot;
 $ gd --submodule=diff  # this works, as expected
 </code></pre>
 </div>
@@ -162,33 +162,33 @@ $ gd --submodule=diff  # this works, as expected
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AndydeCleyre">@AndydeCleyre</a> on 2025-03-03 03:26</div>
             <div class="timeline-body"><blockquote>
-<p>I don't think adding this to a subset of options would be great — consistency across the CLI seems important.</p>
+<p>I don&#x27;t think adding this to a subset of options would be great — consistency across the CLI seems important.</p>
 </blockquote>
-<p>I <a href="https://github.com/astral-sh/uv/issues/11205#issuecomment-2637986124">see now</a> this is the behavior for some options, but not the ones I'm hoping for here.</p>
+<p>I <a href="https://github.com/astral-sh/uv/issues/11205#issuecomment-2637986124">see now</a> this is the behavior for some options, but not the ones I&#x27;m hoping for here.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AndydeCleyre">@AndydeCleyre</a> on 2025-04-22 02:08</div>
             <div class="timeline-body"><p>Now that pylock.toml files can be generated by specifying the output file, I have an additional longing to use my wrapper functions but sometimes override the output file argument.</p>
-<p>What's wrong with making the behavior pip- and pip-tools- compatible, while adding a big fat warming?</p>
+<p>What&#x27;s wrong with making the behavior pip- and pip-tools- compatible, while adding a big fat warming?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-22 02:37</div>
-            <div class="timeline-body"><p>We're in the same situation as before, where there are not really other people asking for this and it would be a fundamental change to the behavior of the CLI.</p>
+            <div class="timeline-body"><p>We&#x27;re in the same situation as before, where there are not really other people asking for this and it would be a fundamental change to the behavior of the CLI.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AndydeCleyre">@AndydeCleyre</a> on 2025-11-12 19:01</div>
             <div class="timeline-body"><blockquote>
-<p>I don't think adding this to a subset of options would be great — consistency across the CLI seems important.</p>
+<p>I don&#x27;t think adding this to a subset of options would be great — consistency across the CLI seems important.</p>
 </blockquote>
 <p>In addition to the exceptions in the current implementation <a href="https://github.com/astral-sh/uv/issues/11205#issuecomment-2637986124">noted above</a>, I notice that this is currently implemented for <code>--upgrade</code> and <code>--no-upgrade</code>:</p>
-<pre><code class="language-console">$ uv --version
+<pre><code>$ uv --version
 uv 0.9.8 (85c5d3228 2025-11-07)
 $ uv venv .venv
 $ . ./.venv/bin/activate
-$ uv pip install 'wrapt&lt;2.0.0'
+$ uv pip install &#x27;wrapt&lt;2.0.0&#x27;
 Resolved 1 package in 99ms
 Prepared 1 package in 54ms
 Installed 1 package in 7ms
@@ -207,19 +207,19 @@ Installed 1 package in 8ms
  - wrapt==1.17.3
  + wrapt==2.0.1
 </code></pre>
-<p>It's already a guessing game which options this will work for, and there's not an existing consistent behavior that enabling this compatibility with the <code>pip</code> and <code>pip-tools</code> interfaces uv approximately clones would disrupt.</p>
+<p>It&#x27;s already a guessing game which options this will work for, and there&#x27;s not an existing consistent behavior that enabling this compatibility with the <code>pip</code> and <code>pip-tools</code> interfaces uv approximately clones would disrupt.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-12 19:17</div>
-            <div class="timeline-body"><p>Doing this for inverse boolean flags is different than doing it for the same option repeated. We actually <em>need</em> to do it that way to allow things like <code>UV_UPGRADE=1 uv ... --no-upgrade</code> to work, that's just a detail of Clap's design.</p>
+            <div class="timeline-body"><p>Doing this for inverse boolean flags is different than doing it for the same option repeated. We actually <em>need</em> to do it that way to allow things like <code>UV_UPGRADE=1 uv ... --no-upgrade</code> to work, that&#x27;s just a detail of Clap&#x27;s design.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AndydeCleyre">@AndydeCleyre</a> on 2025-11-13 05:04</div>
-            <div class="timeline-body"><p>OK, <code>--upgrade --no-upgrade</code> isn't <em>technically</em> a repeated option, though I think of it as equivalent to a hypothetical <code>--upgrade=yes --upgrade=no</code>.</p>
+            <div class="timeline-body"><p>OK, <code>--upgrade --no-upgrade</code> isn&#x27;t <em>technically</em> a repeated option, though I think of it as equivalent to a hypothetical <code>--upgrade=yes --upgrade=no</code>.</p>
 <p>But there is some allowance of technically repeated flags here:</p>
-<pre><code class="language-console">$ uv pip install --no-upgrade --upgrade --no-upgrade wrapt  # works, does not upgrade (expected)
+<pre><code>$ uv pip install --no-upgrade --upgrade --no-upgrade wrapt  # works, does not upgrade (expected)
 $ uv pip install --no-upgrade --no-upgrade wrapt  # fails, disallowed
 $ uv pip install --upgrade --no-upgrade --upgrade wrapt  # works, upgrades (expected)
 $ uv pip install --upgrade --upgrade wrapt  # fails, disallowed
@@ -231,7 +231,7 @@ $ uv pip install --upgrade --no-upgrade --upgrade --no-upgrade --upgrade --no-up
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:24:46 UTC
+        Synced at 2026-01-20 19:30:55 UTC
     </footer>
 </body>
 </html>

@@ -23,28 +23,28 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/fosskers">@fosskers</a></div>
-            <div class="timeline-body"><h3>Question</h3>
-<p>In configuring <code>ruff</code> for use in my editor (Emacs w/ apheleia), I've noticed that specifying the command as follows works without issue:</p>
+            <div class="timeline-body">Question
+<p>In configuring <code>ruff</code> for use in my editor (Emacs w/ apheleia), I&#x27;ve noticed that specifying the command as follows works without issue:</p>
 <pre><code>ruff format --stdin-filename foo --line-length=120
 </code></pre>
-<p>The file to be saved is piped in through stdin, and it doesn't seem to matter what I set <code>--stdin-filename</code> to, it can be anything, and the reformatting still works. If that's the case, what is that flag for? Note that without it, <code>ruff</code> ignores stdin and just formats the whole directory.</p>
-<h3>Version</h3>
+<p>The file to be saved is piped in through stdin, and it doesn&#x27;t seem to matter what I set <code>--stdin-filename</code> to, it can be anything, and the reformatting still works. If that&#x27;s the case, what is that flag for? Note that without it, <code>ruff</code> ignores stdin and just formats the whole directory.</p>
+Version
 <p>0.11.4</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @fosskers on 2025-04-09 09:27</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/fosskers">@fosskers</a> on 2025-04-09 09:27</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-04-09 10:11</div>
             <div class="timeline-body"><blockquote>
-<p>and it doesn't seem to matter what I set <code>--stdin-filename</code> to, it can be anything, and the reformatting still works. If that's the case, what is that flag for?</p>
+<p>and it doesn&#x27;t seem to matter what I set <code>--stdin-filename</code> to, it can be anything, and the reformatting still works. If that&#x27;s the case, what is that flag for?</p>
 </blockquote>
 <p>It is used internally as a placeholder for the &quot;file&quot; that Ruff reads from STDIN. For example, if there would be an error, you might see that filename being used:</p>
 <pre><code>▶ echo &quot;x=&quot; | ruff format --stdin-filename foo.py
 error: Failed to parse foo.py:1:3: Expected an expression
 </code></pre>
-<p>Setting it to the filename that you're piping in from your editor can be useful because it will generate correct references (and potentially clickable links, depending on your terminal) in those diagnostic messages.</p>
+<p>Setting it to the filename that you&#x27;re piping in from your editor can be useful because it will generate correct references (and potentially clickable links, depending on your terminal) in those diagnostic messages.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -59,7 +59,7 @@ error: Failed to parse foo.py:1:3: Expected an expression
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-09 11:20</div>
-            <div class="timeline-body"><p>I think it should work if you use <code>ruff format -</code> which also enables piping. Calling <code>ruff format</code> without <code>-</code> or <code>--stdin-filename</code> doesn't enable stdin mode. Is there a reliable way to detect whether a program is piping input?</p>
+            <div class="timeline-body"><p>I think it should work if you use <code>ruff format -</code> which also enables piping. Calling <code>ruff format</code> without <code>-</code> or <code>--stdin-filename</code> doesn&#x27;t enable stdin mode. Is there a reliable way to detect whether a program is piping input?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -69,8 +69,8 @@ error: Failed to parse foo.py:1:3: Expected an expression
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2025-04-09 15:30</div>
-            <div class="timeline-body"><p>We can detect if the stdin input to ruff is connected to a TTY with <a href="https://doc.rust-lang.org/beta/std/io/trait.IsTerminal.html">rust's stdlib</a>:</p>
-<pre><code class="language-rust">use std::io::{self, IsTerminal, Read};
+            <div class="timeline-body"><p>We can detect if the stdin input to ruff is connected to a TTY with <a href="https://doc.rust-lang.org/beta/std/io/trait.IsTerminal.html">rust&#x27;s stdlib</a>:</p>
+<pre><code>use std::io::{self, IsTerminal, Read};
 
 fn main() {
     let stdin = io::stdin();
@@ -86,23 +86,23 @@ fn main() {
     }
 }
 </code></pre>
-<p>or via atty crate on older rust versions, I think our min rust version is high enough though. Bonus: std's version should work on Windows too (although it uses heuristics to determine which mode it is running in there).</p>
+<p>or via atty crate on older rust versions, I think our min rust version is high enough though. Bonus: std&#x27;s version should work on Windows too (although it uses heuristics to determine which mode it is running in there).</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-04-09 15:40</div>
-            <div class="timeline-body"><p>No, I don't think atty checks are relevant here. They can be used to check whether stdin is attached to a <em>interactive</em> terminal or not. But they can't be used to check whether &quot;the user intends to pass something on stdin&quot;. The only implicit thing that you could check is whether or not stdin is open or closed. But it is extremely rare for stdin to be closed. You would basically have to do something like <code>ruff … &lt; /dev/null</code>. So that can't be used as a heuristic.</p>
-<p>So the only way to potentially support this would be to <em>explicitly</em> say that the &quot;no positional argument&quot; call of &quot;ruff check&quot; should read from stdin. But I don't think that is an option. The &quot;no positional argument&quot; call currently has a (arguably) much more useful default, which is to check the current directory.</p>
-<p>So I don't think there's anything that can be done here. Users will need to pass <code>-</code> explicitly if they are in the (rare) use case where they want to pass something on stdin.</p>
+            <div class="timeline-body"><p>No, I don&#x27;t think atty checks are relevant here. They can be used to check whether stdin is attached to a <em>interactive</em> terminal or not. But they can&#x27;t be used to check whether &quot;the user intends to pass something on stdin&quot;. The only implicit thing that you could check is whether or not stdin is open or closed. But it is extremely rare for stdin to be closed. You would basically have to do something like <code>ruff … &lt; /dev/null</code>. So that can&#x27;t be used as a heuristic.</p>
+<p>So the only way to potentially support this would be to <em>explicitly</em> say that the &quot;no positional argument&quot; call of &quot;ruff check&quot; should read from stdin. But I don&#x27;t think that is an option. The &quot;no positional argument&quot; call currently has a (arguably) much more useful default, which is to check the current directory.</p>
+<p>So I don&#x27;t think there&#x27;s anything that can be done here. Users will need to pass <code>-</code> explicitly if they are in the (rare) use case where they want to pass something on stdin.</p>
 <blockquote>
 <p>A lot of the classic Unix tools seem to, so there must be a way.</p>
 </blockquote>
-<p>Sure, <code>cat</code> reads from stdin by default if you don't pass an argument. But there's no other reasonable default behavior for <code>cat</code>.</p>
+<p>Sure, <code>cat</code> reads from stdin by default if you don&#x27;t pass an argument. But there&#x27;s no other reasonable default behavior for <code>cat</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2025-04-09 15:47</div>
-            <div class="timeline-body"><p>Is there a case where stdin is open on a non-interactive session and user doesn't intend to pass input though? Or at least we could throw a warning if users have an open stdin in a non-interactive input AND files specified? Is there a valid situation where use wants that?</p>
+            <div class="timeline-body"><p>Is there a case where stdin is open on a non-interactive session and user doesn&#x27;t intend to pass input though? Or at least we could throw a warning if users have an open stdin in a non-interactive input AND files specified? Is there a valid situation where use wants that?</p>
 <p>IE. We should warn maybe if user have files specified in a non-interactive terminal and is piping to std input?</p>
 <p>Issue seems to be that either files should be specified, or stdin should be open, but not both.</p>
 </div>
@@ -110,10 +110,10 @@ fn main() {
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-04-09 16:21</div>
             <div class="timeline-body"><blockquote>
-<p>Is there a case where stdin is open on a non-interactive session and user doesn't intend to pass input though?</p>
+<p>Is there a case where stdin is open on a non-interactive session and user doesn&#x27;t intend to pass input though?</p>
 </blockquote>
-<p>That's what I tried to explain. stdin is almost always open, unless you close it explicitly. And it should be! You can do <code>cat 1.txt - 3.txt &gt; combined.txt</code>, and <code>cat</code> will read from those two files, but also read from stdin. Or a program could suddenly decide to ask you to enter something in an interactive prompt.</p>
-<p>So when you do <code>ruff check path/to/explicit/file.py</code>, stdin is open. There's nothing preventing <code>ruff</code> from also reading from stdin in that case.</p>
+<p>That&#x27;s what I tried to explain. stdin is almost always open, unless you close it explicitly. And it should be! You can do <code>cat 1.txt - 3.txt &gt; combined.txt</code>, and <code>cat</code> will read from those two files, but also read from stdin. Or a program could suddenly decide to ask you to enter something in an interactive prompt.</p>
+<p>So when you do <code>ruff check path/to/explicit/file.py</code>, stdin is open. There&#x27;s nothing preventing <code>ruff</code> from also reading from stdin in that case.</p>
 <blockquote>
 <p>Or at least we could throw a warning if users have an open stdin in a non-interactive input AND files specified?</p>
 </blockquote>
@@ -121,16 +121,16 @@ fn main() {
 <blockquote>
 <p>IE. We should warn maybe if user have files specified in a non-interactive terminal and is piping to std input?</p>
 </blockquote>
-<p>I don't think that would be a good idea. You might run <code>ruff check</code> from a script or some other environment where stdin is not a TTY. It shouldn't behave different in those cases.</p>
+<p>I don&#x27;t think that would be a good idea. You might run <code>ruff check</code> from a script or some other environment where stdin is not a TTY. It shouldn&#x27;t behave different in those cases.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2025-04-28 08:32</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-28 08:32</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:52:33 UTC
+        Synced at 2026-01-20 18:49:48 UTC
     </footer>
 </body>
 </html>

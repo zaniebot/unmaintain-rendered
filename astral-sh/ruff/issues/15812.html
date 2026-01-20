@@ -23,19 +23,19 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Viicos">@Viicos</a></div>
-            <div class="timeline-body"><h3>Description</h3>
+            <div class="timeline-body">Description
 <p>search keywords: F401 Typealiastype</p>
-<pre><code class="language-python">from typing import Union
+<pre><code>from typing import Union
 
 from typing_extensions import TypeAliasType
 
 
 Json = TypeAliasType(
-    'Json',
-    'Union[dict[str, Json], list[Json], str, int, float, bool, None]',
+    &#x27;Json&#x27;,
+    &#x27;Union[dict[str, Json], list[Json], str, int, float, bool, None]&#x27;,
 )
 </code></pre>
-<pre><code class="language-sh">repro4.py:1:20: F401 [*] `typing.Union` imported but unused
+<pre><code>repro4.py:1:20: F401 [*] `typing.Union` imported but unused
   |
 1 | from typing import Union
   |                    ^^^^^ F401
@@ -49,21 +49,21 @@ Json = TypeAliasType(
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-01-29 16:59</div>
-            <div class="timeline-body"><p>I'm not a typing expert, but I think this is a true positive. From my understanding, one reason for using forward annotations in general is to avoid imports. Another fix in this case would be to update the second argument to <code>TypeAliasType</code> to unquote the <code>Union</code> and restrict the quotes to the <code>Json</code> parts:</p>
-<pre><code class="language-python">from typing import Union
+            <div class="timeline-body"><p>I&#x27;m not a typing expert, but I think this is a true positive. From my understanding, one reason for using forward annotations in general is to avoid imports. Another fix in this case would be to update the second argument to <code>TypeAliasType</code> to unquote the <code>Union</code> and restrict the quotes to the <code>Json</code> parts:</p>
+<pre><code>from typing import Union
 
 from typing_extensions import TypeAliasType
 
 
 Json = TypeAliasType(
-    'Json',
-    Union[dict[str, 'Json'], list['Json'], str, int, float, bool, None],
+    &#x27;Json&#x27;,
+    Union[dict[str, &#x27;Json&#x27;], list[&#x27;Json&#x27;], str, int, float, bool, None],
 )
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @ntBre on 2025-01-29 16:59</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-01-29 16:59</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Viicos">@Viicos</a> on 2025-01-29 17:11</div>
@@ -74,16 +74,16 @@ Json = TypeAliasType(
 <blockquote>
 <p>Another fix in this case would be to update the second argument to <code>TypeAliasType</code> to unquote the <code>Union</code> and restrict the quotes to the <code>Json</code> parts:</p>
 </blockquote>
-<p>While this indeed works, I tend to avoid quoting parts of the annotation, as it doesn't play well with runtime tools. For instance, up until 3.10, a bug is present in <code>typing.get_type_hints()</code>:</p>
-<pre><code class="language-python">Test = int
+<p>While this indeed works, I tend to avoid quoting parts of the annotation, as it doesn&#x27;t play well with runtime tools. For instance, up until 3.10, a bug is present in <code>typing.get_type_hints()</code>:</p>
+<pre><code>Test = int
 
 class T:
-    t: list['Test']
+    t: list[&#x27;Test&#x27;]
 
 get_type_hints(T)
-#&gt; {'t': list['Test']}  not evaluted!
+#&gt; {&#x27;t&#x27;: list[&#x27;Test&#x27;]}  not evaluted!
 </code></pre>
-<p>Other issues happened with the deprecated typing aliases (now out of scope because 3.8 is EOL), as for instance <code>List['Forward']</code> is implicitly <code>List[ForwardRef('Forward')]</code> at runtime, and this caused nasty issues in Pydantic.</p>
+<p>Other issues happened with the deprecated typing aliases (now out of scope because 3.8 is EOL), as for instance <code>List[&#x27;Forward&#x27;]</code> is implicitly <code>List[ForwardRef(&#x27;Forward&#x27;)]</code> at runtime, and this caused nasty issues in Pydantic.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -93,8 +93,8 @@ get_type_hints(T)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-29 19:34</div>
-            <div class="timeline-body"><p>hmm, we probably need to visit the second argument to <code>TypeAliasType</code> as a type expression rather than a value expression, similar to what we do with the <code>bound=</code> and <code>default=</code> keyword arguments to the <code>TypeVar</code> constructor (see <a href="https://github.com/astral-sh/ruff/blob/15d886a50213dcd4013db028eeef15a60d182f98/crates/ruff_linter/src/checkers/ast/mod.rs#L1348-L1354">https://github.com/astral-sh/ruff/blob/15d886a50213dcd4013db028eeef15a60d182f98/crates/ruff_linter/src/checkers/ast/mod.rs#L1348-L1354</a>). If we do so, I think we'll probably correctly identify that this should be interpreted as a quoted forward reference rather than just any string being passed to a call expression.</p>
-<p>@ntBre would you like to take a look? Shouldn't be too hard I don't think, and might be a good way to learn a little more about Ruff's semantic model :-)</p>
+            <div class="timeline-body"><p>hmm, we probably need to visit the second argument to <code>TypeAliasType</code> as a type expression rather than a value expression, similar to what we do with the <code>bound=</code> and <code>default=</code> keyword arguments to the <code>TypeVar</code> constructor (see <a href="https://github.com/astral-sh/ruff/blob/15d886a50213dcd4013db028eeef15a60d182f98/crates/ruff_linter/src/checkers/ast/mod.rs#L1348-L1354">https://github.com/astral-sh/ruff/blob/15d886a50213dcd4013db028eeef15a60d182f98/crates/ruff_linter/src/checkers/ast/mod.rs#L1348-L1354</a>). If we do so, I think we&#x27;ll probably correctly identify that this should be interpreted as a quoted forward reference rather than just any string being passed to a call expression.</p>
+<p>@ntBre would you like to take a look? Shouldn&#x27;t be too hard I don&#x27;t think, and might be a good way to learn a little more about Ruff&#x27;s semantic model :-)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -103,24 +103,24 @@ get_type_hints(T)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @ntBre by @ntBre on 2025-01-29 21:11</div>
+            <div class="event">Assigned to <a href="https://github.com/ntBre">@ntBre</a> by <a href="https://github.com/ntBre">@ntBre</a> on 2025-01-29 21:11</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> removed by @AlexWaygood on 2025-01-30 15:23</div>
+            <div class="event">Label <span class="label">question</span> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-30 15:23</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-01-30 15:23</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-30 15:23</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ntBre on 2025-01-30 23:06</div>
+            <div class="event">Closed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-01-30 23:06</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ntBre on 2025-01-30 23:06</div>
+            <div class="event">Closed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-01-30 23:06</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:52:06 UTC
+        Synced at 2026-01-20 18:49:24 UTC
     </footer>
 </body>
 </html>

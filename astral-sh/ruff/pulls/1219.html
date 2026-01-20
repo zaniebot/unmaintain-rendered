@@ -27,25 +27,25 @@
 <p>Configuration files are resolved recursively, such that the file you <code>extends</code> can also have an <code>extends</code> (and we error if you introduce a cycle).</p>
 <p>In implementing this feature, I had to shift around some of the responsibilities that are split between <code>Options</code>, <code>Configuration</code>, and <code>Settings</code> (which are all bad names). As of this PR, they are as follows:</p>
 <ul>
-<li><code>Options</code> is the simplest: it's the exact schema implemented in TOML. It's the thing we read from a <code>pyproject.toml</code> file. Every field is <code>Option</code>.</li>
-<li><code>Settings</code> is the fully resolved, internal settings for the linter. It doesn't have to look like the user-facing representation in the TOML file. For example, it includes a single <code>FxHashSet</code> of enabled check codes, rather than an <code>ignore</code> and <code>select</code> list. None of the fields are <code>Option</code>, and <code>Settings</code> is responsible for translating each field from <code>None</code> to defaults.</li>
-<li><code>Configuration</code> is the intermediate representation that results from taking <code>Options</code> and resolving them relative to a given file system path. For example, <code>Options</code> can include <code>excludes</code>, which are relative paths. When we transform <code>Options</code> to <code>Configuration</code>, we have to provide a &quot;project root&quot; relative to which it's resolved. From there, we transform any paths into absolute paths based on that project root. All of the fields on <code>Configuration</code> are also <code>Option</code>. (This changed in this PR.)</li>
+<li><code>Options</code> is the simplest: it&#x27;s the exact schema implemented in TOML. It&#x27;s the thing we read from a <code>pyproject.toml</code> file. Every field is <code>Option</code>.</li>
+<li><code>Settings</code> is the fully resolved, internal settings for the linter. It doesn&#x27;t have to look like the user-facing representation in the TOML file. For example, it includes a single <code>FxHashSet</code> of enabled check codes, rather than an <code>ignore</code> and <code>select</code> list. None of the fields are <code>Option</code>, and <code>Settings</code> is responsible for translating each field from <code>None</code> to defaults.</li>
+<li><code>Configuration</code> is the intermediate representation that results from taking <code>Options</code> and resolving them relative to a given file system path. For example, <code>Options</code> can include <code>excludes</code>, which are relative paths. When we transform <code>Options</code> to <code>Configuration</code>, we have to provide a &quot;project root&quot; relative to which it&#x27;s resolved. From there, we transform any paths into absolute paths based on that project root. All of the fields on <code>Configuration</code> are also <code>Option</code>. (This changed in this PR.)</li>
 </ul>
-<p>When creating a <code>Settings</code>, we load the final <code>pyproject.toml</code> file from disk into <code>Options</code>, then into <code>Configuration</code>. We then look at the <code>extends</code> keyword and iteratively collect all of the <code>Configuration</code> structs. When we're done, we go through and merge them into a single <code>Configuration</code>. (This is why I had to make all fields on <code>Configuration</code> optional -- so that we can tell what's defined, and what's not.) Finally, we take the <code>Configuration</code> and transform it into <code>Settings</code>.</p>
+<p>When creating a <code>Settings</code>, we load the final <code>pyproject.toml</code> file from disk into <code>Options</code>, then into <code>Configuration</code>. We then look at the <code>extends</code> keyword and iteratively collect all of the <code>Configuration</code> structs. When we&#x27;re done, we go through and merge them into a single <code>Configuration</code>. (This is why I had to make all fields on <code>Configuration</code> optional -- so that we can tell what&#x27;s defined, and what&#x27;s not.) Finally, we take the <code>Configuration</code> and transform it into <code>Settings</code>.</p>
 <p>Closes #1055. Closes #1215. #552 is also relevant.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-12 21:17</div>
-            <div class="timeline-body"><p>@smackesey - This, combined with the changes on <code>main</code>, will let you apply this patch to https://github.com/dagster-io/dagster/pull/10901:</p>
-<pre><code class="language-diff">diff --git a/examples/docs_snippets/pyproject.toml b/examples/docs_snippets/pyproject.toml
+            <div class="timeline-body"><p>@smackesey - This, combined with the changes on <code>main</code>, will let you apply this patch to <a href="https://github.com/dagster-io/dagster/pull/10901">dagster-io/dagster#10901</a>:</p>
+<pre><code>diff --git a/examples/docs_snippets/pyproject.toml b/examples/docs_snippets/pyproject.toml
 index 13f6920c45..70bc2806fe 100644
 --- a/examples/docs_snippets/pyproject.toml
 +++ b/examples/docs_snippets/pyproject.toml
 @@ -9,3 +9,14 @@ line-length = 88
  preview = true
  required-version = &quot;22.10.0&quot;
- target-version = ['py37', 'py38', 'py39', 'py310', 'py311']
+ target-version = [&#x27;py37&#x27;, &#x27;py38&#x27;, &#x27;py39&#x27;, &#x27;py310&#x27;, &#x27;py311&#x27;]
 +
 +[tool.ruff]
 +extend = &quot;../../pyproject.toml&quot;
@@ -78,10 +78,10 @@ index 4012d47c3e..2c62a258d5 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-12 21:24</div>
-            <div class="timeline-body"><p>@andersk - Since you brought up overrides in #552, wondering what your stance is on how the &quot;extends&quot; semantics should work here. (If you're busy, all good, no worries.)</p>
-<p>Right now, if you <code>extends</code>, we don't do any merging of any fields. It's effectively equivalent to <code>{**parent, **child}</code> (assuming that any fields omitted in the <code>pyproject.toml</code> are considered absent from the dicts rather than <code>None</code>, in the Python analogy).</p>
+            <div class="timeline-body"><p>@andersk - Since you brought up overrides in #552, wondering what your stance is on how the &quot;extends&quot; semantics should work here. (If you&#x27;re busy, all good, no worries.)</p>
+<p>Right now, if you <code>extends</code>, we don&#x27;t do any merging of any fields. It&#x27;s effectively equivalent to <code>{**parent, **child}</code> (assuming that any fields omitted in the <code>pyproject.toml</code> are considered absent from the dicts rather than <code>None</code>, in the Python analogy).</p>
 <p>I think ESLint merges the fields between parent and child. So, like, if one field is a list of plugins, I <em>believe</em> ESLint will just concatenate the lists when merging a parent into a child.</p>
-<p>I think I'd prefer something more explicit? I've considered using the <code>extend-select</code> (and related) fields for this purpose. So if the child sets a <code>select</code>, it would totally ignore the parent <code>select</code>. If a child sets <code>extend-select</code>, we actually wouldn't override the parent <code>extend-select</code>, and instead we'd effectively apply the parents settings, then the child's. This would enable children to <em>always</em> tweak the parent configurations.</p>
+<p>I think I&#x27;d prefer something more explicit? I&#x27;ve considered using the <code>extend-select</code> (and related) fields for this purpose. So if the child sets a <code>select</code>, it would totally ignore the parent <code>select</code>. If a child sets <code>extend-select</code>, we actually wouldn&#x27;t override the parent <code>extend-select</code>, and instead we&#x27;d effectively apply the parents settings, then the child&#x27;s. This would enable children to <em>always</em> tweak the parent configurations.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -95,11 +95,11 @@ index 4012d47c3e..2c62a258d5 100644
 <p>So the algorithm would be, roughly:</p>
 <ul>
 <li>Generate the base set of codes from <code>select</code> and <code>ignore</code>.</li>
-<li>Apply the parent's <code>extend-select</code> + <code>extend-ignore</code>.</li>
-<li>Apply the child's <code>extend-select</code> + <code>extend-ignore</code>.</li>
+<li>Apply the parent&#x27;s <code>extend-select</code> + <code>extend-ignore</code>.</li>
+<li>Apply the child&#x27;s <code>extend-select</code> + <code>extend-ignore</code>.</li>
 <li>(Apply the command-line-provided <code>extend-select</code> and <code>extend-ignore</code>?)</li>
 </ul>
-<p>On that last point: as an example, this today <em>doesn't</em> enable <code>F407</code>, but I kind of think it should?</p>
+<p>On that last point: as an example, this today <em>doesn&#x27;t</em> enable <code>F407</code>, but I kind of think it should?</p>
 <pre><code>flake8 resources/test/fixtures/pyflakes/F407.py --ignore F407 --extend-select F407
 </code></pre>
 </div>
@@ -110,10 +110,10 @@ index 4012d47c3e..2c62a258d5 100644
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2022-12-13 01:28</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-13 01:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2022-12-13 01:28</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-13 01:28</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2022-12-13 01:28</div>
@@ -121,7 +121,7 @@ index 4012d47c3e..2c62a258d5 100644
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:55:09 UTC
+        Synced at 2026-01-20 18:51:36 UTC
     </footer>
 </body>
 </html>

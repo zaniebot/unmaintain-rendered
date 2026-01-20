@@ -23,38 +23,38 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/spaceone">@spaceone</a></div>
-            <div class="timeline-body"><h3>Question</h3>
-<p>I am unsure about the following, but mypy doesn't detect it:</p>
-<pre><code class="language-sh">$ ty check t.py 
+            <div class="timeline-body">Question
+<p>I am unsure about the following, but mypy doesn&#x27;t detect it:</p>
+<pre><code>$ ty check t.py 
 t.py:4:23: error[invalid-argument-type] Argument to function `version` is incorrect: Expected `str`, found `str | None`
 $ cat t.py
 </code></pre>
-<pre><code class="language-python">from importlib.metadata import version
+<pre><code>from importlib.metadata import version
 
 
 __version__ = version(__package__)
 </code></pre>
-<h3>Version</h3>
+Version
 <p>0.0.3</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @spaceone on 2025-12-18 11:50</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/spaceone">@spaceone</a> on 2025-12-18 11:50</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2025-12-18 12:10</div>
             <div class="timeline-body"><p>fixing it will cause a <code>mypy</code> issue:</p>
-<p><code>__version__ = version(cast('str', __package__)) # E: Redundant cast to &quot;str&quot;  [redundant-cast]</code></p>
+<p><code>__version__ = version(cast(&#x27;str&#x27;, __package__)) # E: Redundant cast to &quot;str&quot;  [redundant-cast]</code></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sinon">@sinon</a> on 2025-12-18 12:38</div>
             <div class="timeline-body"><blockquote>
 <p>fixing it will cause a <code>mypy</code> issue:</p>
-<p><code>__version__ = version(cast('str', __package__)) # E: Redundant cast to &quot;str&quot; [redundant-cast]</code></p>
+<p><code>__version__ = version(cast(&#x27;str&#x27;, __package__)) # E: Redundant cast to &quot;str&quot; [redundant-cast]</code></p>
 </blockquote>
 <p>A solution to keep mypy etc happy would be to narrow out the <code>| None</code> for ty instead of cast</p>
-<pre><code class="language-py">from importlib.metadata import version
+<pre><code>from importlib.metadata import version
 
 
 __version__ = version(__package__ or &quot;unset&quot;)
@@ -67,31 +67,31 @@ else:
     __version__ = version(&quot;unset&quot;)
 </code></pre>
 <p>https://play.ty.dev/edb7161a-2b3d-4373-87ed-c4f60edf5bfc</p>
-<p>I think this is similar to: https://github.com/astral-sh/ty/issues/860 where based on typeshed alone <code>__package__</code> can be <code>None</code> https://github.com/search?q=repo%3Apython%2Ftypeshed%20__package__&amp;type=code but typecheckers can probably infer that at runtime it will only be <code>str</code></p>
+<p>I think this is similar to: <a href="https://github.com/astral-sh/ty/issues/860">astral-sh/ty#860</a> where based on typeshed alone <code>__package__</code> can be <code>None</code> https://github.com/search?q=repo%3Apython%2Ftypeshed%20__package__&amp;type=code but typecheckers can probably infer that at runtime it will only be <code>str</code></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-18 12:42</div>
-            <div class="timeline-body"><p>Thanks! This issue is similar to https://github.com/astral-sh/ty/issues/860.</p>
-<p>We get our type here from typeshed's <code>types.ModuleType</code> stub: https://github.com/python/typeshed/blob/8d96801533918957fb194e101cb321bfe1f836f8/stdlib/types.pyi#L362-L368. The reason why typeshed has the type <code>str | None</code> for this attribute is this line in the <a href="https://docs.python.org/3/reference/datamodel.html#module.__package__">Python data model</a>:</p>
+            <div class="timeline-body"><p>Thanks! This issue is similar to <a href="https://github.com/astral-sh/ty/issues/860">astral-sh/ty#860</a>.</p>
+<p>We get our type here from typeshed&#x27;s <code>types.ModuleType</code> stub: https://github.com/python/typeshed/blob/8d96801533918957fb194e101cb321bfe1f836f8/stdlib/types.pyi#L362-L368. The reason why typeshed has the type <code>str | None</code> for this attribute is this line in the <a href="https://docs.python.org/3/reference/datamodel.html#module.__package__">Python data model</a>:</p>
 <blockquote>
 <p>defaults to <code>None</code> for modules created dynamically using the <a href="https://docs.python.org/3/library/types.html#types.ModuleType">types.ModuleType</a> constructor; use <a href="https://docs.python.org/3/library/importlib.html#importlib.util.module_from_spec">importlib.util.module_from_spec()</a> instead to ensure the attribute is set to a <a href="https://docs.python.org/3/library/stdtypes.html#str">str</a>.</p>
 </blockquote>
-<p>But when we encounter <code>__package__</code> in the global namespace like this, it's extremely likely that the module is going to be implicitly created by the Python interpreter rather than created using an explicit <code>types.ModuleType</code> instantiation. So I think we could safely override typeshed's type here and infer <code>str</code> for <code>__package__</code> in the global namespace.</p>
+<p>But when we encounter <code>__package__</code> in the global namespace like this, it&#x27;s extremely likely that the module is going to be implicitly created by the Python interpreter rather than created using an explicit <code>types.ModuleType</code> instantiation. So I think we could safely override typeshed&#x27;s type here and infer <code>str</code> for <code>__package__</code> in the global namespace.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> removed by @AlexWaygood on 2025-12-18 13:47</div>
+            <div class="event">Label <span class="label">question</span> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-18 13:47</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "false positive for `__package__: str | None` ?" to "`__package__` in the global namespace should have type `str`, not `str | None`" by @AlexWaygood on 2025-12-18 13:47</div>
+            <div class="event">Renamed from &quot;false positive for `__package__: str | None` ?&quot; to &quot;`__package__` in the global namespace should have type `str`, not `str | None`&quot; by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-18 13:47</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-19 00:56</div>
+            <div class="event">Added to milestone &quot;Stable&quot; by <a href="https://github.com/carljm">@carljm</a> on 2025-12-19 00:56</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sinon">@sinon</a> on 2026-01-07 19:37</div>
-            <div class="timeline-body"><p>I started looking at implementing the support for this similar to how <code>__file__</code> is handled currently but I don't think the naive approach works as obviously in this case.</p>
+            <div class="timeline-body"><p>I started looking at implementing the support for this similar to how <code>__file__</code> is handled currently but I don&#x27;t think the naive approach works as obviously in this case.</p>
 <p>Given a testcase like:</p>
 <pre><code>ty-2063/
 ├── main.py
@@ -102,21 +102,21 @@ else:
 └── top.py
 </code></pre>
 <p>with various <code>print(__package__)</code>, <code>reveal_type</code> and <code>main.py</code> being an entrypoint along with it importing all other modules.</p>
-<h3>Runtime</h3>
+Runtime
 <pre><code>uv run ty-2063/main.py
 __main__.py None
-Runtime type is 'NoneType'
+Runtime type is &#x27;NoneType&#x27;
 mod.__init__ mod
-Runtime type is 'str'
+Runtime type is &#x27;str&#x27;
 mod.a mod
-Runtime type is 'str'
+Runtime type is &#x27;str&#x27;
 mod.b mod
-Runtime type is 'str'
+Runtime type is &#x27;str&#x27;
 top  # NOTE: for clarity this is empty str
-Runtime type is 'str'
+Runtime type is &#x27;str&#x27;
 </code></pre>
-<h3>mypy</h3>
-<pre><code class="language-sh">uv tool run mypy ty-2063/
+mypy
+<pre><code>uv tool run mypy ty-2063/
 ty-2063/mod/b.py:5: note: Revealed type is &quot;builtins.str&quot;
 ty-2063/mod/a.py:5: note: Revealed type is &quot;builtins.str&quot;
 ty-2063/top.py:5: note: Revealed type is &quot;builtins.str&quot;
@@ -125,8 +125,8 @@ ty-2063/main.py:4: note: Revealed type is &quot;builtins.str&quot;
 Success: no issues found in 5 source files
 </code></pre>
 <p>This is wrong for <code>main.py</code>, and if it used <code>__package__</code> with similar method to <code>version</code> like in issue description it would be a Runtime error.</p>
-<h3>pyright</h3>
-<pre><code class="language-sh">uv tool run pyright ty-2063/
+pyright
+<pre><code>uv tool run pyright ty-2063/
 ty-2063/main.py
   ty-2063/main.py:4:13 - information: Type of &quot;__package__&quot; is &quot;str | None&quot;
 ty-2063/mod/__init__.py
@@ -139,8 +139,8 @@ ty-2063/top.py
   ty-2063/top.py:5:13 - information: Type of &quot;p&quot; is &quot;str | None&quot;
 0 errors, 0 warnings, 5 informations
 </code></pre>
-<h3>pyrefly</h3>
-<pre><code class="language-sh">uv tool run pyrefly check ty-2063/ --output-format min-text
+pyrefly
+<pre><code>uv tool run pyrefly check ty-2063/ --output-format min-text
  INFO ty-2063/main.py:4:12-25: revealed type: str | None [reveal-type]
  INFO ty-2063/mod/__init__.py:5:12-15: revealed type: str | None [reveal-type]
  INFO ty-2063/mod/a.py:5:12-15: revealed type: str | None [reveal-type]
@@ -151,22 +151,22 @@ ty-2063/top.py
 <ul>
 <li>follow <code>mypy</code> which might have less user perceived false positives but some true positives (quiet a pragmatic choice as generally the true positive case would generally fail loudly and quickly 🤔 )</li>
 <li>leave it as is and follow <code>pyright</code> and <code>pyrefly</code>. More correct but maybe less useful in many usecases of <code>__package__</code></li>
-<li>see if we can leverage the data gathered by module resolvers to infer an entrypoint and thus when it's <code>None</code> (this seems hairy and a potentially requires a brittle heuristic in my example I could have easily choose to run <code>top.py</code> instead and it would have been <code>None</code> instead)</li>
+<li>see if we can leverage the data gathered by module resolvers to infer an entrypoint and thus when it&#x27;s <code>None</code> (this seems hairy and a potentially requires a brittle heuristic in my example I could have easily choose to run <code>top.py</code> instead and it would have been <code>None</code> instead)</li>
 </ul>
 <p>Relevant PEP on <code>__package__</code> behaviour: https://peps.python.org/pep-0366/</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-07 23:21</div>
-            <div class="timeline-body"><p>I would be inclined to stay on the side of correctness here. I don't think it is feasible to detect statically if a package can be the entry point (or can be imported in an odd way). <code>assert __package__ is not None</code> is an easy workaround for anyone who is OK with failing fast in a case where <code>__package__</code> is not set.</p>
+            <div class="timeline-body"><p>I would be inclined to stay on the side of correctness here. I don&#x27;t think it is feasible to detect statically if a package can be the entry point (or can be imported in an odd way). <code>assert __package__ is not None</code> is an easy workaround for anyone who is OK with failing fast in a case where <code>__package__</code> is not set.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Removed from milestone "Stable" by @carljm on 2026-01-07 23:23</div>
+            <div class="event">Removed from milestone &quot;Stable&quot; by <a href="https://github.com/carljm">@carljm</a> on 2026-01-07 23:23</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-07 23:24</div>
-            <div class="timeline-body"><p>Leaving this open for now in case there's more discussion, but taking it out of Stable milestone, as I'm not sure we should do anything here at all, and if we decide to, I don't think it's critical that we do so before stable release.</p>
+            <div class="timeline-body"><p>Leaving this open for now in case there&#x27;s more discussion, but taking it out of Stable milestone, as I&#x27;m not sure we should do anything here at all, and if we decide to, I don&#x27;t think it&#x27;s critical that we do so before stable release.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -177,7 +177,7 @@ ty-2063/top.py
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:21:25 UTC
+        Synced at 2026-01-20 19:26:35 UTC
     </footer>
 </body>
 </html>

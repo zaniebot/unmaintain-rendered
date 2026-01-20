@@ -23,15 +23,15 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/rnestler">@rnestler</a></div>
-            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+            <div class="timeline-body">What version of ripgrep are you using?
 <pre><code>ripgrep 0.7.1
 -AVX -SIMD
 </code></pre>
-<h4>What operating system are you using ripgrep on?</h4>
+What operating system are you using ripgrep on?
 <p>Linux 4.13.0-31-generic #34~16.04.1-Ubuntu SMP Fri Jan 19 17:11:01 UTC 2018 x86_64 x86_64 GNU/Linux</p>
-<h4>Describe your question, feature request, or bug.</h4>
+Describe your question, feature request, or bug.
 <p>riggrep seems to interpret negative patterns (starting with <code>!</code>) in .gitignore differently than git</p>
-<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+If this is a bug, what are the steps to reproduce the behavior?
 <p>Given the following git repository:</p>
 <pre><code>% tree
 .
@@ -47,54 +47,54 @@
 build*
 !buildutils
 </code></pre>
-<h4>If this is a bug, what is the actual behavior?</h4>
-<p>rg can't match stuff in buildtools. git grep is perfectly fine with it:</p>
+If this is a bug, what is the actual behavior?
+<p>rg can&#x27;t match stuff in buildtools. git grep is perfectly fine with it:</p>
 <pre><code>% git grep foo
 buildtools/test.txt:Test to find: foobar
 % rg foo
-No files were searched, which means ripgrep probably applied a filter you didn't expect. Try running again with --debug.
+No files were searched, which means ripgrep probably applied a filter you didn&#x27;t expect. Try running again with --debug.
 </code></pre>
 <p>Debug output: https://gist.github.com/rnestler/f58d58b8350009e228cb1a0210f1b4d8</p>
-<h4>If this is a bug, what is the expected behavior?</h4>
+If this is a bug, what is the expected behavior?
 <p>Return the same results as <code>git grep</code></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-07 14:15</div>
-            <div class="timeline-body"><p>@rnestler Thanks for the bug report! Unfortunately this report is a little confused in that your posted <code>.gitignore</code> contains <code>!buildutils</code> instead of what I think was intended to be <code>!buildtools</code>. So in that sense, your whitelist pattern won't match. However, if I fix that and use <code>!buildtools</code>, then it still doesn't work, but the debug output becomes more useful:</p>
+            <div class="timeline-body"><p>@rnestler Thanks for the bug report! Unfortunately this report is a little confused in that your posted <code>.gitignore</code> contains <code>!buildutils</code> instead of what I think was intended to be <code>!buildtools</code>. So in that sense, your whitelist pattern won&#x27;t match. However, if I fix that and use <code>!buildtools</code>, then it still doesn&#x27;t work, but the debug output becomes more useful:</p>
 <pre><code>DEBUG/ignore::walk/ignore/src/walk.rs:1395: whitelisting ./buildtools: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!buildtools&quot;, actual: &quot;**/buildtools&quot;, is_whitelist: true, is_only_dir: false })))
 DEBUG/ignore::walk/ignore/src/walk.rs:1392: ignoring ./build-64: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;build*&quot;, actual: &quot;**/build*&quot;, is_whitelist: false, is_only_dir: false })))
 DEBUG/ignore::walk/ignore/src/walk.rs:1392: ignoring ./buildtools/test.txt: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;build*&quot;, actual: &quot;**/build*&quot;, is_whitelist: false, is_only_dir: false })))
 DEBUG/ignore::walk/ignore/src/walk.rs:1392: ignoring ./build: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;build*&quot;, actual: &quot;**/build*&quot;, is_whitelist: false, is_only_dir: false })))
 </code></pre>
-<p>Notice that <code>./buildtools</code> does indeed get whitelisted and ripgrep descends into it, but <code>./buildtools/test.txt</code> gets ignored because it matches your <code>build*</code> pattern. One way to fix that is to change your <code>build*</code> rule to <code>**/build*</code>, which will ensure the <code>build*</code> pattern won't match through another slash. This does indeed fix your particular case.</p>
+<p>Notice that <code>./buildtools</code> does indeed get whitelisted and ripgrep descends into it, but <code>./buildtools/test.txt</code> gets ignored because it matches your <code>build*</code> pattern. One way to fix that is to change your <code>build*</code> rule to <code>**/build*</code>, which will ensure the <code>build*</code> pattern won&#x27;t match through another slash. This does indeed fix your particular case.</p>
 <p>The reason why this bug exists is because <code>git grep</code> searches based on <em>what is tracked by git</em>, where as ripgrep has to <em>guess</em> what is tracked by git by looking your <code>.gitignore</code>. Some things will always fall through the cracks using this strategy.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2018-02-07 14:15</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-07 14:15</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2018-02-07 14:15</div>
+            <div class="event">Label <span class="label">wontfix</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-07 14:15</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/rnestler">@rnestler</a> on 2018-02-08 13:57</div>
             <div class="timeline-body"><blockquote>
-<p>Unfortunately this report is a little confused in that your posted .gitignore contains !buildutils instead of what I think was intended to be !buildtools. So in that sense, your whitelist pattern won't match.</p>
+<p>Unfortunately this report is a little confused in that your posted .gitignore contains !buildutils instead of what I think was intended to be !buildtools. So in that sense, your whitelist pattern won&#x27;t match.</p>
 </blockquote>
-<p>Oh I'm so sorry about that. I tried to create a minimal working example and screwed up 🤦‍</p>
+<p>Oh I&#x27;m so sorry about that. I tried to create a minimal working example and screwed up 🤦‍</p>
 <blockquote>
-<p>Notice that ./buildtools does indeed get whitelisted and ripgrep descends into it, but ./buildtools/test.txt gets ignored because it matches your build* pattern. One way to fix that is to change your build* rule to **/build<em>, which will ensure the build</em> pattern won't match through another slash. This does indeed fix your particular case.</p>
+<p>Notice that ./buildtools does indeed get whitelisted and ripgrep descends into it, but ./buildtools/test.txt gets ignored because it matches your build* pattern. One way to fix that is to change your build* rule to **/build<em>, which will ensure the build</em> pattern won&#x27;t match through another slash. This does indeed fix your particular case.</p>
 </blockquote>
-<p>According to my understanding of the debug output ripgrep changes the pattern to <code>**/build*</code> anyways (<code>original: &quot;build*&quot;, actual: &quot;**/build*&quot;</code>) but since it doesn't behave the same I'm obviously misunderstanding something 😉 I guess it's related to the <code>literal_separator</code> option which results in a slightly different regex:</p>
-<pre><code>DEBUG:globset: glob converted to regex: Glob { glob: &quot;**/build*&quot;, re: &quot;(?-u)^(?:/?|.*/)build.*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: false }, tokens: Tokens([RecursivePrefix, Literal('b'), Literal('u'), Literal('i'), Literal('l'), Literal('d'), ZeroOrMore]) }
+<p>According to my understanding of the debug output ripgrep changes the pattern to <code>**/build*</code> anyways (<code>original: &quot;build*&quot;, actual: &quot;**/build*&quot;</code>) but since it doesn&#x27;t behave the same I&#x27;m obviously misunderstanding something 😉 I guess it&#x27;s related to the <code>literal_separator</code> option which results in a slightly different regex:</p>
+<pre><code>DEBUG:globset: glob converted to regex: Glob { glob: &quot;**/build*&quot;, re: &quot;(?-u)^(?:/?|.*/)build.*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: false }, tokens: Tokens([RecursivePrefix, Literal(&#x27;b&#x27;), Literal(&#x27;u&#x27;), Literal(&#x27;i&#x27;), Literal(&#x27;l&#x27;), Literal(&#x27;d&#x27;), ZeroOrMore]) }
 
-DEBUG:globset: glob converted to regex: Glob { glob: &quot;**/build*&quot;, re: &quot;(?-u)^(?:/?|.*/)build[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true }, tokens: Tokens([RecursivePrefix, Literal('b'), Literal('u'), Literal('i'), Literal('l'), Literal('d'), ZeroOrMore]) }
+DEBUG:globset: glob converted to regex: Glob { glob: &quot;**/build*&quot;, re: &quot;(?-u)^(?:/?|.*/)build[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true }, tokens: Tokens([RecursivePrefix, Literal(&#x27;b&#x27;), Literal(&#x27;u&#x27;), Literal(&#x27;i&#x27;), Literal(&#x27;l&#x27;), Literal(&#x27;d&#x27;), ZeroOrMore]) }
 </code></pre>
 <blockquote>
 <p>The reason why this bug exists is because git grep searches based on what is tracked by git, where as ripgrep has to guess what is tracked by git by looking your .gitignore. Some things will always fall through the cracks using this strategy.</p>
 </blockquote>
-<p>But the ripgrep still interprets the .gitignore pattern differently than git doesn't it?</p>
+<p>But the ripgrep still interprets the .gitignore pattern differently than git doesn&#x27;t it?</p>
 <p>I mean given:</p>
 <pre><code>% cat .gitignore 
 build*
@@ -120,34 +120,34 @@ Untracked files:
 
 	buildtools/bar
 </code></pre>
-<p>When I remove the white-list pattern <code>git status</code> won't pick it up.</p>
-<p>So is this still a wont-fix or could this actually be solved? If it provides any value I could open a new issue. But I totally understand that converting the .gitignore globs to regexes is a brittle thing where it's almost impossible to get all edge-cases right. So I'm perfectly fine with just adjusting my .gitignore patterns 😊</p>
+<p>When I remove the white-list pattern <code>git status</code> won&#x27;t pick it up.</p>
+<p>So is this still a wont-fix or could this actually be solved? If it provides any value I could open a new issue. But I totally understand that converting the .gitignore globs to regexes is a brittle thing where it&#x27;s almost impossible to get all edge-cases right. So I&#x27;m perfectly fine with just adjusting my .gitignore patterns 😊</p>
 <p>Also thanks a lot for creating and maintaining ripgrep!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-08 14:10</div>
             <div class="timeline-body"><blockquote>
-<p>I guess it's related to the literal_separator option which results in a slightly different regex:</p>
+<p>I guess it&#x27;s related to the literal_separator option which results in a slightly different regex:</p>
 </blockquote>
-<p>Indeed! When <code>literal_separator</code> is enabled, it prevents <code>*</code> from matching a <code>/</code>. Per <code>man gitignore</code>, this behavior is enabled when a literal <code>/</code> appears in the pattern. That's why I suggested <code>**/build*</code>. The presence of <code>/</code> in this case causes <code>literal_separator</code> to be enabled which in turn prevents <code>*</code> from matching a <code>/</code>.</p>
+<p>Indeed! When <code>literal_separator</code> is enabled, it prevents <code>*</code> from matching a <code>/</code>. Per <code>man gitignore</code>, this behavior is enabled when a literal <code>/</code> appears in the pattern. That&#x27;s why I suggested <code>**/build*</code>. The presence of <code>/</code> in this case causes <code>literal_separator</code> to be enabled which in turn prevents <code>*</code> from matching a <code>/</code>.</p>
 <blockquote>
 <p>git status still picks up the new file bar in the buildtools folder:</p>
 </blockquote>
-<p>Again, there is an impedance mismatch here. That's because <code>buildtools</code> is presumably tracked according to git because <code>buildtools/test.txt</code> is tracked.</p>
+<p>Again, there is an impedance mismatch here. That&#x27;s because <code>buildtools</code> is presumably tracked according to git because <code>buildtools/test.txt</code> is tracked.</p>
 <blockquote>
-<p>So is this still a wont-fix or could this actually be solved? If it provides any value I could open a new issue. But I totally understand that converting the .gitignore globs to regexes is a brittle thing where it's almost impossible to get all edge-cases right. So I'm perfectly fine with just adjusting my .gitignore patterns 😊</p>
+<p>So is this still a wont-fix or could this actually be solved? If it provides any value I could open a new issue. But I totally understand that converting the .gitignore globs to regexes is a brittle thing where it&#x27;s almost impossible to get all edge-cases right. So I&#x27;m perfectly fine with just adjusting my .gitignore patterns 😊</p>
 </blockquote>
-<p>Just to clarify here, converting globs to regexes is an implementation detail, and <em>that</em> is certainly not the problem here. The conversion process is sound. The problem here are the semantics. Basically, if you come up with a consistent rule that ripgrep can use here to produce the same behavior as git, then I'm all ears. I can't immediately see one, but perhaps a different perspective is what's needed. Certainly, a simple rule like &quot;<code>*</code> never matches a <code>/</code>&quot; isn't possible because things like <code>*.rs</code> would stop working (matching happens relative to the corresponding <code>.gitignore</code>, so a <code>*</code> in that case really needs to match through a <code>/</code>).</p>
+<p>Just to clarify here, converting globs to regexes is an implementation detail, and <em>that</em> is certainly not the problem here. The conversion process is sound. The problem here are the semantics. Basically, if you come up with a consistent rule that ripgrep can use here to produce the same behavior as git, then I&#x27;m all ears. I can&#x27;t immediately see one, but perhaps a different perspective is what&#x27;s needed. Certainly, a simple rule like &quot;<code>*</code> never matches a <code>/</code>&quot; isn&#x27;t possible because things like <code>*.rs</code> would stop working (matching happens relative to the corresponding <code>.gitignore</code>, so a <code>*</code> in that case really needs to match through a <code>/</code>).</p>
 <p>Note, if you want to brainstorm here, I <strong>strongly</strong> urge you to internalize the contents of <code>man gitignore</code> first. :)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/rnestler">@rnestler</a> on 2018-02-08 15:52</div>
             <div class="timeline-body"><blockquote>
-<p>Again, there is an impedance mismatch here. That's because buildtools is presumably tracked according to git because buildtools/test.txt is tracked.</p>
+<p>Again, there is an impedance mismatch here. That&#x27;s because buildtools is presumably tracked according to git because buildtools/test.txt is tracked.</p>
 </blockquote>
-<p>Ok so I untracked everything in buildtool and it will still show up because it is not ignored. But of course that means <code>git grep</code> won't find a thing in there 😉</p>
+<p>Ok so I untracked everything in buildtool and it will still show up because it is not ignored. But of course that means <code>git grep</code> won&#x27;t find a thing in there 😉</p>
 <pre><code>% git  status --ignored
 On branch master
 Untracked files:
@@ -170,13 +170,13 @@ Ignored files:
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-08 15:57</div>
             <div class="timeline-body"><blockquote>
-<p>Ok so I untracked everything in buildtool and it will still show up because it is not ignored. But of course that means git grep won't find a thing in there 😉</p>
+<p>Ok so I untracked everything in buildtool and it will still show up because it is not ignored. But of course that means git grep won&#x27;t find a thing in there 😉</p>
 </blockquote>
-<p>The output of <code>git status</code> in this case is consistent with ripgrep. Remember, ripgrep knows to not ignore <code>buildtools</code> itself. The problem is that <code>build*</code> will cause everything underneath <code>buildtools</code> to get ignored because the <code>buildtools</code> whitelist rule only applied to that specific directory. For example, another way to solve your problem instead of <code>**/build*</code>  is to use <code>!buildtools*</code>. That will re-enable the whitelist on things starting with <code>buildtools</code>. But this would also cause directories like <code>buildtools-wat</code> to be whitelisted as well, and perhaps that isn't intentional. The way to fix that would be to keep the <code>!buildtools</code> whitelist and add a <code>!buildtools/**</code> whitelist in addition.</p>
+<p>The output of <code>git status</code> in this case is consistent with ripgrep. Remember, ripgrep knows to not ignore <code>buildtools</code> itself. The problem is that <code>build*</code> will cause everything underneath <code>buildtools</code> to get ignored because the <code>buildtools</code> whitelist rule only applied to that specific directory. For example, another way to solve your problem instead of <code>**/build*</code>  is to use <code>!buildtools*</code>. That will re-enable the whitelist on things starting with <code>buildtools</code>. But this would also cause directories like <code>buildtools-wat</code> to be whitelisted as well, and perhaps that isn&#x27;t intentional. The way to fix that would be to keep the <code>!buildtools</code> whitelist and add a <code>!buildtools/**</code> whitelist in addition.</p>
 <blockquote>
 <p>Will do that! And also run some more experimentation and dig a bit into the ripgrep source code. I already feel a bit bad for consuming your time 😉</p>
 </blockquote>
-<p>You shouldn't. So long as we're being productive and moving toward a resolution, then I'm very happy to participate. :)</p>
+<p>You shouldn&#x27;t. So long as we&#x27;re being productive and moving toward a resolution, then I&#x27;m very happy to participate. :)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -205,13 +205,13 @@ buildtools/test.txt:Test to find: foobar
 buildtools/test.txt
 1:Test to find: foobar
 </code></pre>
-<p>Noticed while trying to explain to somebody why it's important to not have recursive patterns by accident in <code>.gitignore</code> and using this bug report as an example :slightly_smiling_face:</p>
+<p>Noticed while trying to explain to somebody why it&#x27;s important to not have recursive patterns by accident in <code>.gitignore</code> and using this bug report as an example :slightly_smiling_face:</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:42:25 UTC
+        Synced at 2026-01-20 18:48:05 UTC
     </footer>
 </body>
 </html>

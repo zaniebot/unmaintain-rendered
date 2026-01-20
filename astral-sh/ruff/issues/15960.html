@@ -24,7 +24,7 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a></div>
             <div class="timeline-body"><p>The idea of this ticket is to support the following use case.</p>
-<pre><code class="language-py">class C:
+<pre><code>class C:
     def __init__(self, x: int | None):
         self.x = x
 
@@ -36,18 +36,18 @@ reveal_type(C().x)  # Should be `int | None`, is currently `Unknown | int | None
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Support attributes which are implicitly "declared" via their parameter types (`self.x = param`)" to "[red-knot] Attributes implicitly declared via their parameter types" by @sharkdp on 2025-02-05 10:56</div>
+            <div class="event">Renamed from &quot;Support attributes which are implicitly &quot;declared&quot; via their parameter types (`self.x = param`)&quot; to &quot;[red-knot] Attributes implicitly declared via their parameter types&quot; by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-02-05 10:56</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2025-02-05 10:56</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-02-05 10:56</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">help wanted</span> added by @sharkdp on 2025-02-05 13:52</div>
+            <div class="event">Label <span class="label">help wanted</span> added by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-02-05 13:52</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-02-10 01:19</div>
-            <div class="timeline-body"><p>@sharkdp I was looking into this issue, and not sure your intent tbh. Here is the top of the test where I've added mypy types alongside red_knot current output:</p>
-<pre><code class="language-python">class C:
+            <div class="timeline-body"><p>@sharkdp I was looking into this issue, and not sure your intent tbh. Here is the top of the test where I&#x27;ve added mypy types alongside red_knot current output:</p>
+<pre><code>class C:
     def __init__(self, param: int | None, flag: bool = False) -&gt; None:
         value = 1 if flag else &quot;a&quot;
         self.inferred_from_value = value
@@ -76,7 +76,7 @@ reveal_type(c_instance.inferred_from_param)  # revealed: Unknown | int | None
 <li>why special treatment for <code>inferred_from_param</code> (no <code>Unknown</code> in the union), but not for for <code>inferred_from_value</code>?</li>
 <li>why adding <code>Unknown</code> in the first place?</li>
 </ul>
-<p>I guess, you want to try to distinguish &quot;declaration&quot; (explicit type annotation by user) versus pure inference. But I'd say it is hard to draw a line here. You suggest to infer the RHS of <code>inferred_from_param</code> assignment as &quot;declaration&quot;. But what about this then:</p>
+<p>I guess, you want to try to distinguish &quot;declaration&quot; (explicit type annotation by user) versus pure inference. But I&#x27;d say it is hard to draw a line here. You suggest to infer the RHS of <code>inferred_from_param</code> assignment as &quot;declaration&quot;. But what about this then:</p>
 <pre><code>declared: int = 42
 
 class C:
@@ -85,10 +85,10 @@ class C:
 </code></pre>
 <p>and what if we import a function with declared return type? And so on ad nauseam.</p>
 <p>IMHO, mypy/pyright behavior - avoiding <code>Unknown</code> and trusting inference in the method make more practical sense. Injecting unknown would mean that any downstream usage would allow anything to be assigned to the attribute. Whoever writes the class is encapsulating some logic by creating the class, they &quot;own&quot; that logic, including types of attributes. If an attribute is accessed outside of the class, it can be considered a public contract =&gt; imho type checker should not account for a possibility of some value assigned outside from class/method body to be valid, unless it is compatible.</p>
-<p>So I'd just remove this:</p>
+<p>So I&#x27;d just remove this:</p>
 <p>https://github.com/mishamsk/ruff/blob/main/crates/red_knot_python_semantic/src/types.rs#L4190-L4194</p>
 <p>However, this will bring us back to the downsides of eagerly inferring literals, since after this change this (and all similar cases) will stop being fine:</p>
-<pre><code class="language-python"># This assignment is not fine anymore fine, as we infer `Literal[1, &quot;a&quot;]` for `inferred_from_value`.
+<pre><code># This assignment is not fine anymore fine, as we infer `Literal[1, &quot;a&quot;]` for `inferred_from_value`.
 # error: [invalid-assignment] &quot;Object of type `Literal[&quot;value set on instance&quot;]` is not assignable to attribute `inferred_from_value` of type `Literal[1, &quot;a&quot;]`&quot;
 c_instance.inferred_from_value = &quot;value set on instance&quot;
 </code></pre>
@@ -105,12 +105,12 @@ c_instance.inferred_from_value = &quot;value set on instance&quot;
 <p>why special treatment for <code>inferred_from_param</code> (no <code>Unknown</code> in the union), but not for for <code>inferred_from_value</code>?</p>
 </blockquote>
 <p>This is also a good question. It <em>is</em> a special treatment. And it is <em>not</em> consistent with the behavior of code that looks very similar, as you pointed out. But we anticipate that use cases like</p>
-<pre><code class="language-py">class C:
+<pre><code>class C:
     def __init__(self, x: int | None = None):
         self.x = x
 </code></pre>
 <p>are very common. Forcing users to duplicate all type annotations does not seem like an appealing solution:</p>
-<pre><code class="language-py">class C:
+<pre><code>class C:
     def __init__(self, x: int | None = None):
         self.x: int | None = x
 </code></pre>
@@ -123,11 +123,11 @@ c_instance.inferred_from_value = &quot;value set on instance&quot;
 </blockquote>
 <p>Correct. We would treat that first example above just like the second example, and pretend that <code>self.x = x</code> would be a declaration.</p>
 <blockquote>
-<p>I'd say it is hard to draw a line here.</p>
+<p>I&#x27;d say it is hard to draw a line here.</p>
 </blockquote>
 <p>And I would agree with you.</p>
 <p>I think we would currently try to draw the line right there. If we see <code>self.attr = param</code>, where <code>param</code> is a declared parameter of a method, that is supported. Everything else is not. So for both of these attributes, we would still union with <code>Unknown</code> (and I can completely understand why that might be surprising):</p>
-<pre><code class="language-py">class C:
+<pre><code>class C:
     def __init__(self, x: int | None = None, y: str = &quot;&quot;):
         self.x = 0 if x is None else x
         self.y = y + &quot;!&quot;
@@ -141,11 +141,11 @@ reveal_type(C().y)  # Unknown | str
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-02-11 13:35</div>
             <div class="timeline-body"><p>I forgot to add one more example, which I believe[d] to be common. Here is an actual piece from a pretty big commercial project:</p>
-<pre><code class="language-py">class Graph:
+<pre><code>class Graph:
     def __init__(self, graph: nx.MultiDiGraph | None = None) -&gt; None:
         self._graph = graph or nx.MultiDiGraph()
 </code></pre>
-<p>so, I'd expect <code>self._graph</code> to be of <code>type[nx.MultiDiGraph]</code>, not <code>type[nx.MultiDiGraph] | None</code>.</p>
+<p>so, I&#x27;d expect <code>self._graph</code> to be of <code>type[nx.MultiDiGraph]</code>, not <code>type[nx.MultiDiGraph] | None</code>.</p>
 <p>Fun fact, when I searched for this pattern now, I only found two instances (out of thousands of classes), and the second of the two had explicit declaration for the attribute without the None.</p>
 <p>I still think that such pattern, that allows optional attribute and applies a default is very common. I think I saw it in, say, <code>unicorn</code> - I can research if necessary.</p>
 <p>At the very least, I would special case for this.</p>
@@ -160,7 +160,7 @@ reveal_type(C().y)  # Unknown | str
 </blockquote>
 <p>This seems to be the same like my <code>C().x</code> example above, or am I missing something?</p>
 <blockquote>
-<p>I'd expect <code>self._graph</code> to be of <code>type[nx.MultiDiGraph]</code>, not <code>type[nx.MultiDiGraph] | None</code>.</p>
+<p>I&#x27;d expect <code>self._graph</code> to be of <code>type[nx.MultiDiGraph]</code>, not <code>type[nx.MultiDiGraph] | None</code>.</p>
 </blockquote>
 <p>Assuming you mean &quot;<code>self._graph</code> to be of type <code>nx.MultiDiGraph</code>, not type <code>nx.MultiDiGraph | None</code>&quot;: yes, we would eliminate <code>None</code> from the union due to type-narrowing in that Boolean expression. But we would then union with <code>Unknown</code> to arrive at <code>Unknown | nx.MultiDiGraph</code> for the instance variable <code>_graph</code>; that is, unless we decide to add an extended special case for something like this.</p>
 <blockquote>
@@ -169,7 +169,7 @@ reveal_type(C().y)  # Unknown | str
 <blockquote>
 <p>I can implement this special case - let me know if you think the None should be special cased as well. The rule maybe - if the inferred type == param_type - None =&gt; assume declared as such</p>
 </blockquote>
-<p>Let's go without any additional special casing for now and keep that idea in mind (or in a ticket, once this is resolved).</p>
+<p>Let&#x27;s go without any additional special casing for now and keep that idea in mind (or in a ticket, once this is resolved).</p>
 <blockquote>
 <p>In general - I am not sure what are the benefits of adding unknown in class context […] But I trust you have good reasons for that.</p>
 </blockquote>
@@ -178,7 +178,7 @@ reveal_type(C().y)  # Unknown | str
 <p>class is a kind of a contract, and all internal code should be considered as implementing/assuming that contract</p>
 </blockquote>
 <p>So, in your opinion, what does the contract of this &quot;old style dataclass&quot; (we are talking about unannotated code here) say about the type of <code>timezone</code>? That it is <code>None</code> and remains <code>None</code> forever?</p>
-<pre><code class="language-py">class Timestamp:
+<pre><code>class Timestamp:
     timezone = None
 
     def __init__(self, hours, minutes):
@@ -194,7 +194,7 @@ reveal_type(C().y)  # Unknown | str
 <p>So, in your opinion, what does the contract of this &quot;old style dataclass&quot; (we are talking about unannotated code here) say about the type of timezone? That it is None and remains None forever?</p>
 </blockquote>
 <p>I want and will answer later. I want to do a small research and gather stats.</p>
-<p>For now I've opened a PR #16111. I really really hope that this time I did exactly what you'd expected 🤞</p>
+<p>For now I&#x27;ve opened a PR #16111. I really really hope that this time I did exactly what you&#x27;d expected 🤞</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -203,18 +203,18 @@ reveal_type(C().y)  # Unknown | str
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @sharkdp by @sharkdp on 2025-02-13 12:17</div>
+            <div class="event">Assigned to <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-02-13 12:17</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @sharkdp on 2025-02-18 21:43</div>
+            <div class="event">Closed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-02-18 21:43</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @sharkdp on 2025-02-18 21:43</div>
+            <div class="event">Closed by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-02-18 21:43</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:52:09 UTC
+        Synced at 2026-01-20 18:49:27 UTC
     </footer>
 </body>
 </html>

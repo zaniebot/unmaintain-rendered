@@ -23,22 +23,22 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/danparizher">@danparizher</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Fixed FURB101 (<code>read-whole-file</code>) to handle annotated assignments. Previously, the rule would detect violations in code like <code>contents: str = f.read()</code> but fail to generate a fix. Now it correctly generates fixes that preserve type annotations (e.g., <code>contents: str = Path(&quot;file.txt&quot;).read_text(encoding=&quot;utf-8&quot;)</code>).</p>
 <p>Fixes #21274</p>
-<h2>Problem Analysis</h2>
+Problem Analysis
 <p>The FURB101 rule was only checking for <code>Stmt::Assign</code> statements when determining whether a fix could be applied. When encountering annotated assignments (<code>Stmt::AnnAssign</code>) like <code>contents: str = f.read()</code>, the rule would:</p>
 <ol>
 <li>Correctly detect the violation (the diagnostic was reported)</li>
 <li>Fail to generate a fix because:<ul>
 <li>The <code>visit_expr</code> method only matched <code>Stmt::Assign</code>, not <code>Stmt::AnnAssign</code></li>
 <li>The <code>generate_fix</code> function only accepted <code>Stmt::Assign</code> in its body validation</li>
-<li>The replacement code generation didn't account for type annotations</li>
+<li>The replacement code generation didn&#x27;t account for type annotations</li>
 </ul>
 </li>
 </ol>
-<p>This occurred because Python's AST represents annotated assignments as a different node type (<code>StmtAnnAssign</code>) with separate fields for the target, annotation, and value, unlike regular assignments which use a list of targets.</p>
-<h2>Approach</h2>
+<p>This occurred because Python&#x27;s AST represents annotated assignments as a different node type (<code>StmtAnnAssign</code>) with separate fields for the target, annotation, and value, unlike regular assignments which use a list of targets.</p>
+Approach
 <p>The fix extends the rule to handle both assignment types:</p>
 <ol>
 <li><p><strong>Updated <code>visit_expr</code> method</strong>: Now matches both <code>Stmt::Assign</code> and <code>Stmt::AnnAssign</code>, extracting:</p>
@@ -62,83 +62,83 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-11-05 06:13</div>
-            <div class="timeline-body"><!-- generated-comment ecosystem -->
+            <div class="timeline-body">
 
-<h2><code>ruff-ecosystem</code> results</h2>
-<h3>Linter (stable)</h3>
+<code>ruff-ecosystem</code> results
+Linter (stable)
 <p>✅ ecosystem check detected no linter changes.</p>
-<h3>Linter (preview)</h3>
+Linter (preview)
 <p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+0 -0 violations, +14 -0 fixes in 2 projects; 53 projects unchanged)</p>
-<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+0 -0 violations, +2 -0 fixes)</summary>
+<a href="https://github.com/apache/airflow">apache/airflow</a> (+0 -0 violations, +2 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/apache/airflow/blob/a630926a18730f3adcfccb619a5904509c17d6bc/providers/amazon/src/airflow/providers/amazon/aws/hooks/base_aws.py#L1005'>providers/amazon/src/airflow/providers/amazon/aws/hooks/base_aws.py:1005:18:</a> FURB101 [*] `open` and `read` should be replaced by `Path(self.waiter_path).read_text()`
-- <a href='https://github.com/apache/airflow/blob/a630926a18730f3adcfccb619a5904509c17d6bc/providers/amazon/src/airflow/providers/amazon/aws/hooks/base_aws.py#L1005'>providers/amazon/src/airflow/providers/amazon/aws/hooks/base_aws.py:1005:18:</a> FURB101 `open` and `read` should be replaced by `Path(self.waiter_path).read_text()`
++ <a href="https://github.com/apache/airflow/blob/a630926a18730f3adcfccb619a5904509c17d6bc/providers/amazon/src/airflow/providers/amazon/aws/hooks/base_aws.py#L1005">providers/amazon/src/airflow/providers/amazon/aws/hooks/base_aws.py:1005:18:</a> FURB101 [*] `open` and `read` should be replaced by `Path(self.waiter_path).read_text()`
+- <a href="https://github.com/apache/airflow/blob/a630926a18730f3adcfccb619a5904509c17d6bc/providers/amazon/src/airflow/providers/amazon/aws/hooks/base_aws.py#L1005">providers/amazon/src/airflow/providers/amazon/aws/hooks/base_aws.py:1005:18:</a> FURB101 `open` and `read` should be replaced by `Path(self.waiter_path).read_text()`
 </pre>
 
 </p>
-</details>
-<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+0 -0 violations, +12 -0 fixes)</summary>
+
+<a href="https://github.com/zulip/zulip">zulip/zulip</a> (+0 -0 violations, +12 -0 fixes)
 <p>
 <pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/zulip/zulip/blob/663dfc3ff99a4f65d8105c04c7ae5588fc23161c/zerver/lib/export.py#L1732'>zerver/lib/export.py:1732:10:</a> FURB101 [*] `open` and `read` should be replaced by `Path(input_path).read_bytes()`
-- <a href='https://github.com/zulip/zulip/blob/663dfc3ff99a4f65d8105c04c7ae5588fc23161c/zerver/lib/export.py#L1732'>zerver/lib/export.py:1732:10:</a> FURB101 `open` and `read` should be replaced by `Path(input_path).read_bytes()`
-+ <a href='https://github.com/zulip/zulip/blob/663dfc3ff99a4f65d8105c04c7ae5588fc23161c/zerver/lib/import_realm.py#L1205'>zerver/lib/import_realm.py:1205:10:</a> FURB101 [*] `open` and `read` should be replaced by `Path(migration_status_filename).read_text()`
-- <a href='https://github.com/zulip/zulip/blob/663dfc3ff99a4f65d8105c04c7ae5588fc23161c/zerver/lib/import_realm.py#L1205'>zerver/lib/import_realm.py:1205:10:</a> FURB101 `open` and `read` should be replaced by `Path(migration_status_filename).read_text()`
-+ <a href='https://github.com/zulip/zulip/blob/663dfc3ff99a4f65d8105c04c7ae5588fc23161c/zerver/lib/import_realm.py#L996'>zerver/lib/import_realm.py:996:10:</a> FURB101 [*] `open` and `read` should be replaced by `Path(records_filename).read_bytes()`
-- <a href='https://github.com/zulip/zulip/blob/663dfc3ff99a4f65d8105c04c7ae5588fc23161c/zerver/lib/import_realm.py#L996'>zerver/lib/import_realm.py:996:10:</a> FURB101 `open` and `read` should be replaced by `Path(records_filename).read_bytes()`
-+ <a href='https://github.com/zulip/zulip/blob/663dfc3ff99a4f65d8105c04c7ae5588fc23161c/zerver/lib/management.py#L282'>zerver/lib/management.py:282:18:</a> FURB101 [*] `open` and `read` should be replaced by `Path(options["password_file"]).read_text()`
-- <a href='https://github.com/zulip/zulip/blob/663dfc3ff99a4f65d8105c04c7ae5588fc23161c/zerver/lib/management.py#L282'>zerver/lib/management.py:282:18:</a> FURB101 `open` and `read` should be replaced by `Path(options["password_file"]).read_text()`
-+ <a href='https://github.com/zulip/zulip/blob/663dfc3ff99a4f65d8105c04c7ae5588fc23161c/zerver/management/commands/send_custom_email.py#L118'>zerver/management/commands/send_custom_email.py:118:22:</a> FURB101 [*] `open` and `read` should be replaced by `Path(options["json_file"]).read_text()`
-- <a href='https://github.com/zulip/zulip/blob/663dfc3ff99a4f65d8105c04c7ae5588fc23161c/zerver/management/commands/send_custom_email.py#L118'>zerver/management/commands/send_custom_email.py:118:22:</a> FURB101 `open` and `read` should be replaced by `Path(options["json_file"]).read_text()`
-+ <a href='https://github.com/zulip/zulip/blob/663dfc3ff99a4f65d8105c04c7ae5588fc23161c/zerver/management/commands/send_custom_email.py#L233'>zerver/management/commands/send_custom_email.py:233:18:</a> FURB101 [*] `open` and `read` should be replaced by `Path(options["json_file"]).read_text()`
-- <a href='https://github.com/zulip/zulip/blob/663dfc3ff99a4f65d8105c04c7ae5588fc23161c/zerver/management/commands/send_custom_email.py#L233'>zerver/management/commands/send_custom_email.py:233:18:</a> FURB101 `open` and `read` should be replaced by `Path(options["json_file"]).read_text()`
++ <a href="https://github.com/zulip/zulip/blob/663dfc3ff99a4f65d8105c04c7ae5588fc23161c/zerver/lib/export.py#L1732">zerver/lib/export.py:1732:10:</a> FURB101 [*] `open` and `read` should be replaced by `Path(input_path).read_bytes()`
+- <a href="https://github.com/zulip/zulip/blob/663dfc3ff99a4f65d8105c04c7ae5588fc23161c/zerver/lib/export.py#L1732">zerver/lib/export.py:1732:10:</a> FURB101 `open` and `read` should be replaced by `Path(input_path).read_bytes()`
++ <a href="https://github.com/zulip/zulip/blob/663dfc3ff99a4f65d8105c04c7ae5588fc23161c/zerver/lib/import_realm.py#L1205">zerver/lib/import_realm.py:1205:10:</a> FURB101 [*] `open` and `read` should be replaced by `Path(migration_status_filename).read_text()`
+- <a href="https://github.com/zulip/zulip/blob/663dfc3ff99a4f65d8105c04c7ae5588fc23161c/zerver/lib/import_realm.py#L1205">zerver/lib/import_realm.py:1205:10:</a> FURB101 `open` and `read` should be replaced by `Path(migration_status_filename).read_text()`
++ <a href="https://github.com/zulip/zulip/blob/663dfc3ff99a4f65d8105c04c7ae5588fc23161c/zerver/lib/import_realm.py#L996">zerver/lib/import_realm.py:996:10:</a> FURB101 [*] `open` and `read` should be replaced by `Path(records_filename).read_bytes()`
+- <a href="https://github.com/zulip/zulip/blob/663dfc3ff99a4f65d8105c04c7ae5588fc23161c/zerver/lib/import_realm.py#L996">zerver/lib/import_realm.py:996:10:</a> FURB101 `open` and `read` should be replaced by `Path(records_filename).read_bytes()`
++ <a href="https://github.com/zulip/zulip/blob/663dfc3ff99a4f65d8105c04c7ae5588fc23161c/zerver/lib/management.py#L282">zerver/lib/management.py:282:18:</a> FURB101 [*] `open` and `read` should be replaced by `Path(options[&quot;password_file&quot;]).read_text()`
+- <a href="https://github.com/zulip/zulip/blob/663dfc3ff99a4f65d8105c04c7ae5588fc23161c/zerver/lib/management.py#L282">zerver/lib/management.py:282:18:</a> FURB101 `open` and `read` should be replaced by `Path(options[&quot;password_file&quot;]).read_text()`
++ <a href="https://github.com/zulip/zulip/blob/663dfc3ff99a4f65d8105c04c7ae5588fc23161c/zerver/management/commands/send_custom_email.py#L118">zerver/management/commands/send_custom_email.py:118:22:</a> FURB101 [*] `open` and `read` should be replaced by `Path(options[&quot;json_file&quot;]).read_text()`
+- <a href="https://github.com/zulip/zulip/blob/663dfc3ff99a4f65d8105c04c7ae5588fc23161c/zerver/management/commands/send_custom_email.py#L118">zerver/management/commands/send_custom_email.py:118:22:</a> FURB101 `open` and `read` should be replaced by `Path(options[&quot;json_file&quot;]).read_text()`
++ <a href="https://github.com/zulip/zulip/blob/663dfc3ff99a4f65d8105c04c7ae5588fc23161c/zerver/management/commands/send_custom_email.py#L233">zerver/management/commands/send_custom_email.py:233:18:</a> FURB101 [*] `open` and `read` should be replaced by `Path(options[&quot;json_file&quot;]).read_text()`
+- <a href="https://github.com/zulip/zulip/blob/663dfc3ff99a4f65d8105c04c7ae5588fc23161c/zerver/management/commands/send_custom_email.py#L233">zerver/management/commands/send_custom_email.py:233:18:</a> FURB101 `open` and `read` should be replaced by `Path(options[&quot;json_file&quot;]).read_text()`
 </pre>
 
 </p>
-</details>
-<details><summary>Changes by rule (1 rules affected)</summary>
+
+Changes by rule (1 rules affected)
 <p>
 
 <p>| code | total | + violation | - violation | + fix | - fix |
 | ---- | ------- | --------- | -------- | ----- | ---- |
 | FURB101 | 14 | 0 | 0 | 14 | 0 |</p>
 </p>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-11-06 18:40</div>
+            <div class="event">Label <span class="label">fixes</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-06 18:40</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-11-06 18:40</div>
+            <div class="event">Label <span class="label">preview</span> added by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-06 18:40</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/read_whole_file.rs</code>:132 on 2025-11-06 18:55</div>
             <div class="timeline-body"><p>I should have noticed this in the earlier PR, but this actually looks quite repetitive with the check inside of <code>generate_fix</code>. I think we can combine this check and this check:</p>
-<pre><code class="language-rust">matches!(with_stmt.body.as_slice(), [Stmt::Assign(_)]))
+<pre><code>matches!(with_stmt.body.as_slice(), [Stmt::Assign(_)]))
 </code></pre>
-<p><code>generate_fix</code> seems like the right place to do that to me, which should allow us to decrease the number of arguments since we're already passing the <code>with_stmt</code> itself.</p>
+<p><code>generate_fix</code> seems like the right place to do that to me, which should allow us to decrease the number of arguments since we&#x27;re already passing the <code>with_stmt</code> itself.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/read_whole_file.rs</code>:152 on 2025-11-06 18:59</div>
             <div class="timeline-body"><p>Do we need to use the generator here, or can we just slice the <code>&amp;str</code> out of the input?</p>
-<pre><code class="language-suggestion">                                let annotation_code = self
+<pre><code>                                let annotation_code = self
                                     .checker
                                     .locator()
                                     .slice(ann_assign.annotation.range());
 </code></pre>
-<p>(untested but that's what I had in mind)</p>
+<p>(untested but that&#x27;s what I had in mind)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -147,17 +147,17 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @ntBre by @danparizher on 2025-11-06 21:48</div>
+            <div class="event">Review requested from <a href="https://github.com/ntBre">@ntBre</a> by <a href="https://github.com/danparizher">@danparizher</a> on 2025-11-06 21:48</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-08 00:03</div>
-            <div class="timeline-body"><p>I merged the conflicting test changes I made in another PR, simplified the implementation a bit further, and then fixed a couple of preexisting bugs I noticed. The ecosystem comment doesn't seem to be updating, but I downloaded the artifact and checked that instead. It's showing -188 fixes, and from the ones I've clicked on this seems correct. The two bugs I fixed were that the <code>assign.targets.first()</code> check wasn't exactly right because it could drop other elements in an assignment like:</p>
-<pre><code class="language-py">content, x = f.read(), 2
+            <div class="timeline-body"><p>I merged the conflicting test changes I made in another PR, simplified the implementation a bit further, and then fixed a couple of preexisting bugs I noticed. The ecosystem comment doesn&#x27;t seem to be updating, but I downloaded the artifact and checked that instead. It&#x27;s showing -188 fixes, and from the ones I&#x27;ve clicked on this seems correct. The two bugs I fixed were that the <code>assign.targets.first()</code> check wasn&#x27;t exactly right because it could drop other elements in an assignment like:</p>
+<pre><code>content, x = f.read(), 2
 </code></pre>
-<p>and the <code>contains_range</code> checks also weren't correct. <code>contains_range</code> is true for an expression like:</p>
-<pre><code class="language-py">content = process_contents(f.read())
+<p>and the <code>contains_range</code> checks also weren&#x27;t correct. <code>contains_range</code> is true for an expression like:</p>
+<pre><code>content = process_contents(f.read())
 </code></pre>
-<p>but we were then replacing the entire assignment statement and discarding the <code>process_contents</code> call. All of the ecosystem changes I've seen so far fit into this latter pattern.</p>
+<p>but we were then replacing the entire assignment statement and discarding the <code>process_contents</code> call. All of the ecosystem changes I&#x27;ve seen so far fit into this latter pattern.</p>
 <p>The fix is now fairly restricted. We may want to consider expanding it in the future by doing a more targeted replacement of the <code>read</code> call expression itself instead of re-building the whole assignment as a string. But I think the current state of the PR is a substantial enough improvement to merge as-is.</p>
 </div>
         </div>
@@ -166,13 +166,13 @@
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[`refurb`] Fix annotated assignments blocking FURB101 fix (`FURB101`)" to "[`refurb`] Auto-fix annotated assignments (`FURB101`)" by @ntBre on 2025-11-08 00:04</div>
+            <div class="event">Renamed from &quot;[`refurb`] Fix annotated assignments blocking FURB101 fix (`FURB101`)&quot; to &quot;[`refurb`] Auto-fix annotated assignments (`FURB101`)&quot; by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-08 00:04</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @ntBre on 2025-11-08 00:04</div>
+            <div class="event">Merged by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-08 00:04</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @ntBre on 2025-11-08 00:04</div>
+            <div class="event">Closed by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-08 00:04</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-11-08 00:05</div>
@@ -180,7 +180,7 @@
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:16:59 UTC
+        Synced at 2026-01-20 19:20:16 UTC
     </footer>
 </body>
 </html>

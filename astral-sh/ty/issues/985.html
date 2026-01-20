@@ -24,41 +24,41 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
             <div class="timeline-body"><p>Currently the <code>Specialization</code> struct in <code>tuple.rs</code> looks like this:</p>
-<pre><code class="language-rs">#[salsa::interned(debug, heap_size=ruff_memory_usage::heap_size)]
-pub struct Specialization&lt;'db&gt; {
-    pub(crate) generic_context: GenericContext&lt;'db&gt;,
+<pre><code>#[salsa::interned(debug, heap_size=ruff_memory_usage::heap_size)]
+pub struct Specialization&lt;&#x27;db&gt; {
+    pub(crate) generic_context: GenericContext&lt;&#x27;db&gt;,
     #[returns(deref)]
-    pub(crate) types: Box&lt;[Type&lt;'db&gt;]&gt;,
+    pub(crate) types: Box&lt;[Type&lt;&#x27;db&gt;]&gt;,
 
-    /// For specializations of `tuple`, we also store more detailed information about the tuple's
-    /// elements, above what the class's (single) typevar can represent.
-    tuple_inner: Option&lt;TupleType&lt;'db&gt;&gt;,
+    /// For specializations of `tuple`, we also store more detailed information about the tuple&#x27;s
+    /// elements, above what the class&#x27;s (single) typevar can represent.
+    tuple_inner: Option&lt;TupleType&lt;&#x27;db&gt;&gt;,
 }
 </code></pre>
 <p>Conceptually, however:</p>
 <ul>
-<li>A class either is a tuple or it isn't!</li>
+<li>A class either is a tuple or it isn&#x27;t!</li>
 <li>If a class is <em>not</em> a tuple, <code>tuple_inner</code> will always be <code>None</code></li>
 <li>If a class <em>is</em> a tuple, <code>tuple_inner</code> should always be <code>Some()</code>, <code>types</code> should always be length 1, and the single <code>Type</code> in the <code>types</code> boxed slice should be the union of all the elements of the tuple in <code>tuple_inner</code></li>
 </ul>
 <p>It feels like we have some redundancy here, therefore; a design that uses less memory (and which might be more elegant) might look like this:</p>
-<pre><code class="language-rs">#[derive(Debug, Clone, PartialEq, Eq, Hash, getsize_2::GetSize)]
-enum SpecializationInner&lt;'db&gt; {
-    Tuple(TupleType&lt;'db&gt;),
-    NonTuple(Box&lt;[Type&lt;'db&gt;]&gt;),
+<pre><code>#[derive(Debug, Clone, PartialEq, Eq, Hash, getsize_2::GetSize)]
+enum SpecializationInner&lt;&#x27;db&gt; {
+    Tuple(TupleType&lt;&#x27;db&gt;),
+    NonTuple(Box&lt;[Type&lt;&#x27;db&gt;]&gt;),
 }
 
 #[salsa::interned(debug, heap_size=ruff_memory_usage::heap_size)]
-pub struct Specialization&lt;'db&gt; {
-    pub(crate) generic_context: GenericContext&lt;'db&gt;,
+pub struct Specialization&lt;&#x27;db&gt; {
+    pub(crate) generic_context: GenericContext&lt;&#x27;db&gt;,
     #[returns(ref)]
-    inner: SpecializationInner&lt;'db&gt;
+    inner: SpecializationInner&lt;&#x27;db&gt;
 }
 
-impl&lt;'db&gt; SpecializationInner&lt;'db&gt; {
-    pub(crate) fn types(self, &amp;'db dyn Db) -&gt; &amp;[Type&lt;'db&gt;] {
+impl&lt;&#x27;db&gt; SpecializationInner&lt;&#x27;db&gt; {
+    pub(crate) fn types(self, &amp;&#x27;db dyn Db) -&gt; &amp;[Type&lt;&#x27;db&gt;] {
         #[salsa::tracked(returns(ref))]
-        fn homogeneous_element_type&lt;'db&gt;(db: &amp;'db dyn Db, tuple: TupleType&lt;'db&gt;) -&gt; Type&lt;'db&gt; {
+        fn homogeneous_element_type&lt;&#x27;db&gt;(db: &amp;&#x27;db dyn Db, tuple: TupleType&lt;&#x27;db&gt;) -&gt; Type&lt;&#x27;db&gt; {
             tuple.tuple(db).homogeneous_element_type(db)
         }
 
@@ -69,21 +69,21 @@ impl&lt;'db&gt; SpecializationInner&lt;'db&gt; {
     }
 }
 </code></pre>
-<p>I've briefly tried to make this change but... I don't think I'm the right person to do this refactor; I just don't understand our generics internals well enough right now :-)</p>
+<p>I&#x27;ve briefly tried to make this change but... I don&#x27;t think I&#x27;m the right person to do this refactor; I just don&#x27;t understand our generics internals well enough right now :-)</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">performance</span> added by @AlexWaygood on 2025-08-14 11:11</div>
+            <div class="event">Label <span class="label">performance</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-14 11:11</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">generics</span> added by @AlexWaygood on 2025-08-14 11:11</div>
+            <div class="event">Label <span class="label">generics</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-14 11:11</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">memory</span> added by @AlexWaygood on 2025-08-14 11:11</div>
+            <div class="event">Label <span class="label">memory</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-14 11:11</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-14 11:14</div>
-            <div class="timeline-body"><p>Nit: We could also keep the storage as (minus <code>tuple_inner</code>) and assume it's a tuple if and only if:</p>
+            <div class="timeline-body"><p>Nit: We could also keep the storage as (minus <code>tuple_inner</code>) and assume it&#x27;s a tuple if and only if:</p>
 <ul>
 <li>types has length 1</li>
 <li>the only element is a tuple</li>
@@ -93,26 +93,26 @@ impl&lt;'db&gt; SpecializationInner&lt;'db&gt; {
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-14 11:21</div>
             <div class="timeline-body"><blockquote>
-<p>Nit: We could also keep the storage as (minus <code>tuple_inner</code>) and assume it's a tuple if and only if:</p>
+<p>Nit: We could also keep the storage as (minus <code>tuple_inner</code>) and assume it&#x27;s a tuple if and only if:</p>
 <pre><code>* types has length 1
 
 * the only element is a tuple</code></pre>
 </blockquote>
-<p>Hmm, I don't think that would work. If the <code>Specialization</code> represents the specialization of the tuple type <code>tuple[int, str]</code>, for example, then on <code>main</code> the <code>types</code> field would be <code>[int | str]</code> (a length-one slice where the single element is not a tuple, but it is the union of the two tuple elements), and <code>tuple_inner</code> would be <code>Some(tuple[int, str])</code>. If the <code>types</code> field has length one and the single type is a tuple, then applying that specialization to a tuple type would imply something like <code>tuple[tuple[int, str], ...]</code></p>
+<p>Hmm, I don&#x27;t think that would work. If the <code>Specialization</code> represents the specialization of the tuple type <code>tuple[int, str]</code>, for example, then on <code>main</code> the <code>types</code> field would be <code>[int | str]</code> (a length-one slice where the single element is not a tuple, but it is the union of the two tuple elements), and <code>tuple_inner</code> would be <code>Some(tuple[int, str])</code>. If the <code>types</code> field has length one and the single type is a tuple, then applying that specialization to a tuple type would imply something like <code>tuple[tuple[int, str], ...]</code></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-08-14 13:10</div>
             <div class="timeline-body"><blockquote>
-<p>I've briefly tried to make this change but... I don't think I'm the right person to do this refactor; I just don't understand our generics internals well enough right now</p>
+<p>I&#x27;ve briefly tried to make this change but... I don&#x27;t think I&#x27;m the right person to do this refactor; I just don&#x27;t understand our generics internals well enough right now</p>
 </blockquote>
-<p>Your code snippets look like it should™ be most of what's needed, since you made a <code>types</code> method with the same signature that it has on <code>main</code>. I'm happy to pair on this with you if you want to find some sync time</p>
+<p>Your code snippets look like it should™ be most of what&#x27;s needed, since you made a <code>types</code> method with the same signature that it has on <code>main</code>. I&#x27;m happy to pair on this with you if you want to find some sync time</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:20:27 UTC
+        Synced at 2026-01-20 19:25:15 UTC
     </footer>
 </body>
 </html>

@@ -24,24 +24,24 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a></div>
             <div class="timeline-body"><p>Downstack PR: #4481</p>
-<h2>Introduction</h2>
+Introduction
 <p>We support forking the dependency resolution to support conflicting registry requirements for different platforms, say on package range is required for an older python version while a newer is required for newer python versions, or dependencies that are different per platform. We need to extend this support to direct URL requirements.</p>
-<pre><code class="language-toml">dependencies = [
-  &quot;iniconfig @ https://files.pythonhosted.org/packages/ef/a6/62565a6e1cf69e10f5727360368e451d4b7f58beeac6173dc9db836a5b46/iniconfig-2.0.0-py3-none-any.whl ; python_version &gt;= '3.12'&quot;,
-  &quot;iniconfig @ https://files.pythonhosted.org/packages/9b/dd/b3c12c6d707058fa947864b67f0c4e0c39ef8610988d7baea9578f3c48f3/iniconfig-1.1.1-py2.py3-none-any.whl ; python_version &lt; '3.12'&quot;
+<pre><code>dependencies = [
+  &quot;iniconfig @ https://files.pythonhosted.org/packages/ef/a6/62565a6e1cf69e10f5727360368e451d4b7f58beeac6173dc9db836a5b46/iniconfig-2.0.0-py3-none-any.whl ; python_version &gt;= &#x27;3.12&#x27;&quot;,
+  &quot;iniconfig @ https://files.pythonhosted.org/packages/9b/dd/b3c12c6d707058fa947864b67f0c4e0c39ef8610988d7baea9578f3c48f3/iniconfig-1.1.1-py2.py3-none-any.whl ; python_version &lt; &#x27;3.12&#x27;&quot;
 ]
 </code></pre>
-<p>This did not work because <code>Urls</code> was built on the assumption that there is a single allowed URL per package. We collect all allowed URL ahead of resolution by following direct URL dependencies (including path dependencies) transitively, i.e. a registry distribution can't require a URL.</p>
-<h2>The same package can have Registry and URL requirements</h2>
+<p>This did not work because <code>Urls</code> was built on the assumption that there is a single allowed URL per package. We collect all allowed URL ahead of resolution by following direct URL dependencies (including path dependencies) transitively, i.e. a registry distribution can&#x27;t require a URL.</p>
+The same package can have Registry and URL requirements
 <p>Consider the following two cases:</p>
 <p>requirements.in:</p>
-<pre><code class="language-text">werkzeug==2.0.0
+<pre><code>werkzeug==2.0.0
 werkzeug @ https://files.pythonhosted.org/packages/ff/1d/960bb4017c68674a1cb099534840f18d3def3ce44aed12b5ed8b78e0153e/Werkzeug-2.0.0-py3-none-any.whl
 </code></pre>
 <p>pyproject.toml:</p>
-<pre><code class="language-toml">dependencies = [
-  &quot;iniconfig == 1.1.1 ; python_version &lt; '3.12'&quot;,
-  &quot;iniconfig @ git+https://github.com/pytest-dev/iniconfig@93f5930e668c0d1ddf4597e38dd0dea4e2665e7a ; python_version &gt;= '3.12'&quot;,
+<pre><code>dependencies = [
+  &quot;iniconfig == 1.1.1 ; python_version &lt; &#x27;3.12&#x27;&quot;,
+  &quot;iniconfig @ git+https://github.com/pytest-dev/iniconfig@93f5930e668c0d1ddf4597e38dd0dea4e2665e7a ; python_version &gt;= &#x27;3.12&#x27;&quot;,
 ]
 </code></pre>
 <p>In the first case, we want the URL to override the registry dependency, in the second case we want to fork and have one branch use the registry and the other the URL. We have to know about this in <code>PubGrubRequirement::from_registry_requirement</code>, but we only fork after the current method.</p>
@@ -51,64 +51,64 @@ werkzeug @ https://files.pythonhosted.org/packages/ff/1d/960bb4017c68674a1cb0995
 b @ https://b.zip
 </code></pre>
 <p>b:</p>
-<pre><code>c @ https://c_new.zip ; python_version &gt;= '3.12'&quot;,
-c @ https://c_old.zip ; python_version &lt; '3.12'&quot;,
+<pre><code>c @ https://c_new.zip ; python_version &gt;= &#x27;3.12&#x27;&quot;,
+c @ https://c_old.zip ; python_version &lt; &#x27;3.12&#x27;&quot;,
 </code></pre>
-<p>When we convert the requirements of <code>a</code>, we can't know the url of <code>c</code> yet. The solution is to remove the <code>Url</code> from <code>PubGrubPackage</code>: The <code>Url</code> is redundant with <code>PackageName</code>, there can be only one url per package name per fork. We now do the following: We track the urls from requirements in <code>PubGrubDependency</code>. After forking, we call <code>add_package_version_dependencies</code> where we apply override URLs, check if the URL is allowed and check if the url is unique in this fork. When we request a distribution, we ask the fork urls for the real URL. Since we prioritize url dependencies over registry dependencies and skip packages with <code>Urls</code> entries in pre-visiting, we know that when fetching a package, we know if it has a url or not.</p>
-<h2>URL conflicts</h2>
+<p>When we convert the requirements of <code>a</code>, we can&#x27;t know the url of <code>c</code> yet. The solution is to remove the <code>Url</code> from <code>PubGrubPackage</code>: The <code>Url</code> is redundant with <code>PackageName</code>, there can be only one url per package name per fork. We now do the following: We track the urls from requirements in <code>PubGrubDependency</code>. After forking, we call <code>add_package_version_dependencies</code> where we apply override URLs, check if the URL is allowed and check if the url is unique in this fork. When we request a distribution, we ask the fork urls for the real URL. Since we prioritize url dependencies over registry dependencies and skip packages with <code>Urls</code> entries in pre-visiting, we know that when fetching a package, we know if it has a url or not.</p>
+URL conflicts
 <p>pyproject.toml (invalid):</p>
-<pre><code class="language-toml">dependencies = [
+<pre><code>dependencies = [
   &quot;iniconfig @ https://files.pythonhosted.org/packages/44/39/e96292c7f7068e58877f476908c5974dc76c37c623f1fa332fe4ed6dfbec/iniconfig-1.1.0.tar.gz&quot;,
-  &quot;iniconfig @ https://files.pythonhosted.org/packages/9b/dd/b3c12c6d707058fa947864b67f0c4e0c39ef8610988d7baea9578f3c48f3/iniconfig-1.1.1-py2.py3-none-any.whl ; python_version &lt; '3.12'&quot;,
-  &quot;iniconfig @ https://files.pythonhosted.org/packages/ef/a6/62565a6e1cf69e10f5727360368e451d4b7f58beeac6173dc9db836a5b46/iniconfig-2.0.0-py3-none-any.whl ; python_version &gt;= '3.12'&quot;,
+  &quot;iniconfig @ https://files.pythonhosted.org/packages/9b/dd/b3c12c6d707058fa947864b67f0c4e0c39ef8610988d7baea9578f3c48f3/iniconfig-1.1.1-py2.py3-none-any.whl ; python_version &lt; &#x27;3.12&#x27;&quot;,
+  &quot;iniconfig @ https://files.pythonhosted.org/packages/ef/a6/62565a6e1cf69e10f5727360368e451d4b7f58beeac6173dc9db836a5b46/iniconfig-2.0.0-py3-none-any.whl ; python_version &gt;= &#x27;3.12&#x27;&quot;,
 ]
 </code></pre>
 <p>On the fork state, we keep <code>ForkUrls</code> that check for conflicts after forking, rejecting the third case because we added two packages of the same name with different URLs.</p>
 <p>We need to flatten out the requirements before transformation into pubgrub requirements to get the full list of other requirements which may contain a URL, which was changed in a previous PR: #4430.</p>
-<h2>Complex Example</h2>
+Complex Example
 <p>a:</p>
-<pre><code class="language-toml">dependencies = [
+<pre><code>dependencies = [
   # Force a split
-  &quot;anyio==4.3.0 ; python_version &gt;= '3.12'&quot;,
-  &quot;anyio==4.2.0 ; python_version &lt; '3.12'&quot;,
+  &quot;anyio==4.3.0 ; python_version &gt;= &#x27;3.12&#x27;&quot;,
+  &quot;anyio==4.2.0 ; python_version &lt; &#x27;3.12&#x27;&quot;,
   # Include URLs transitively
   &quot;b&quot;
 ]
 </code></pre>
 <p>b:</p>
-<pre><code class="language-toml">dependencies = [
+<pre><code>dependencies = [
   # Only one is used in each split.
-  &quot;b1 ; python_version &lt; '3.12'&quot;,
-  &quot;b2 ; python_version &gt;= '3.12'&quot;,
-  &quot;b3 ; python_version &gt;= '3.12'&quot;,
+  &quot;b1 ; python_version &lt; &#x27;3.12&#x27;&quot;,
+  &quot;b2 ; python_version &gt;= &#x27;3.12&#x27;&quot;,
+  &quot;b3 ; python_version &gt;= &#x27;3.12&#x27;&quot;,
 ]
 </code></pre>
 <p>b1:</p>
-<pre><code class="language-toml">dependencies = [
+<pre><code>dependencies = [
   &quot;iniconfig @ https://files.pythonhosted.org/packages/9b/dd/b3c12c6d707058fa947864b67f0c4e0c39ef8610988d7baea9578f3c48f3/iniconfig-1.1.1-py2.py3-none-any.whl&quot;,
 ]
 </code></pre>
 <p>b2:</p>
-<pre><code class="language-toml">dependencies = [
+<pre><code>dependencies = [
   &quot;iniconfig @ https://files.pythonhosted.org/packages/ef/a6/62565a6e1cf69e10f5727360368e451d4b7f58beeac6173dc9db836a5b46/iniconfig-2.0.0-py3-none-any.whl&quot;,
 ]
 </code></pre>
 <p>b3:</p>
-<pre><code class="language-toml">dependencies = [
+<pre><code>dependencies = [
   &quot;iniconfig @ https://files.pythonhosted.org/packages/44/39/e96292c7f7068e58877f476908c5974dc76c37c623f1fa332fe4ed6dfbec/iniconfig-1.1.0.tar.gz&quot;,
 ]
 </code></pre>
 <p>In this example, all packages are url requirements (directory requirements) and the root package is <code>a</code>. We first split on <code>a</code>, <code>b</code> being in each split. In the first fork, we reach <code>b1</code>, the fork URLs are empty, we insert the iniconfig 1.1.1 URL, and then we skip over <code>b2</code> and <code>b3</code> since the mark is disjoint with the fork markers. In the second fork, we skip over <code>b1</code>, visit <code>b2</code>, insert the iniconfig 2.0.0 URL into the again empty fork URLs, then visit <code>b3</code> and try to insert the iniconfig 1.1.0 URL. At this point we find a conflict for the iniconfig URL and error.</p>
-<h2>Closing</h2>
+Closing
 <p>The git tests are slow, but they make the best example for different URL types i could find.</p>
 <p>Part of #3927. This PR does not handle <code>Locals</code> or pre-releases yet.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">preview</span> added by @konstin on 2024-06-21 16:10</div>
+            <div class="event">Label <span class="label">preview</span> added by <a href="https://github.com/konstin">@konstin</a> on 2024-06-21 16:10</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @BurntSushi by @konstin on 2024-06-21 16:10</div>
+            <div class="event">Review requested from <a href="https://github.com/BurntSushi">@BurntSushi</a> by <a href="https://github.com/konstin">@konstin</a> on 2024-06-21 16:10</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-23 17:59</div>
@@ -161,7 +161,7 @@ c @ https://c_old.zip ; python_version &lt; '3.12'&quot;,
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/pubgrub/priority.rs</code>:115 on 2024-06-23 18:13</div>
-            <div class="timeline-body"><p>E.g., what if we fork, and add <code>flask == 3.0.0</code>, but then some other package in the forked branch depends on <code>flask @ https://...</code>. I might've imagined that we instead populate <code>ForkUrls</code> from <code>Urls</code> by filtering with the fork markers, but it looks like we instead add them by looking at the added dependencies.</p>
+            <div class="timeline-body"><p>E.g., what if we fork, and add <code>flask == 3.0.0</code>, but then some other package in the forked branch depends on <code>flask @ https://...</code>. I might&#x27;ve imagined that we instead populate <code>ForkUrls</code> from <code>Urls</code> by filtering with the fork markers, but it looks like we instead add them by looking at the added dependencies.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -170,7 +170,7 @@ c @ https://c_old.zip ; python_version &lt; '3.12'&quot;,
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/pubgrub/priority.rs</code>:115 on 2024-06-23 18:35</div>
-            <div class="timeline-body"><p>Correct me if i'm wrong, but my understanding was that we only allow url dependencies to come from urls dependencies, and we do any url dependency before any registry dependency, so if we have:</p>
+            <div class="timeline-body"><p>Correct me if i&#x27;m wrong, but my understanding was that we only allow url dependencies to come from urls dependencies, and we do any url dependency before any registry dependency, so if we have:</p>
 <pre><code>flask==3.0.0
 foo @ https://foo.zip
 </code></pre>
@@ -213,21 +213,21 @@ foo @ https://foo.zip
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/pubgrub/priority.rs</code>:115 on 2024-06-23 20:23</div>
-            <div class="timeline-body"><p>But in that case, when we add the dependencies for whatever package contains <code>flask</code> and <code>foo</code> (the first package in your example), wouldn't we add a dependency on <code>flask</code> <em>without</em> the URL component, since we haven't visited it yet?</p>
+            <div class="timeline-body"><p>But in that case, when we add the dependencies for whatever package contains <code>flask</code> and <code>foo</code> (the first package in your example), wouldn&#x27;t we add a dependency on <code>flask</code> <em>without</em> the URL component, since we haven&#x27;t visited it yet?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Converted to draft by @konstin on 2024-06-24 12:03</div>
+            <div class="event">Converted to draft by <a href="https://github.com/konstin">@konstin</a> on 2024-06-24 12:03</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-06-24 12:07</div>
-            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/uv/branches/konsti/branching-url-support">CodSpeed Performance Report</a></h2>
-<h3>Merging #4435 will <strong>improve performances by 23.65%</strong></h3>
-<p><sub>Comparing <code>konsti/branching-url-support</code> (7647172) with <code>main</code> (ca92b55)</sub></p>
-<h3>Summary</h3>
+            <div class="timeline-body"><a href="https://codspeed.io/astral-sh/uv/branches/konsti/branching-url-support">CodSpeed Performance Report</a>
+Merging #4435 will <strong>improve performances by 23.65%</strong>
+<p>Comparing <code>konsti/branching-url-support</code> (7647172) with <code>main</code> (ca92b55)</p>
+Summary
 <p><code>⚡ 1</code> improvements
 <code>✅ 12</code> untouched benchmarks</p>
-<h3>Benchmarks breakdown</h3>
+Benchmarks breakdown
 <p>|     | Benchmark | <code>main</code> | <code>konsti/branching-url-support</code> | Change |
 | --- | --------- | ----------------------- | ------------------- | ------ |
 | ⚡ | <code>resolve_warm_airflow</code> | 1.3 s | 1 s | +23.65% |</p>
@@ -248,7 +248,7 @@ foo @ https://foo.zip
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>scripts/branching-urls/a1-root-allowed/pyproject.toml</code>:14 on 2024-06-24 19:28</div>
-            <div class="timeline-body"><p>I'll inline these last when everything else is done; inline test make debugging harder than it needs to be.</p>
+            <div class="timeline-body"><p>I&#x27;ll inline these last when everything else is done; inline test make debugging harder than it needs to be.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -338,7 +338,7 @@ foo @ https://foo.zip
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:596 on 2024-06-25 11:38</div>
-            <div class="timeline-body"><p>Will we potentially make the <code>Request::Package</code> prefetch call in <code>visit_package</code> for a package that might have a URL but doesn't yet? Similar to the batch prefetch case, but just at the package level? This could be okay... but if the package doesn't exist (and only exists at the URL), we might error?</p>
+            <div class="timeline-body"><p>Will we potentially make the <code>Request::Package</code> prefetch call in <code>visit_package</code> for a package that might have a URL but doesn&#x27;t yet? Similar to the batch prefetch case, but just at the package level? This could be okay... but if the package doesn&#x27;t exist (and only exists at the URL), we might error?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -347,7 +347,7 @@ foo @ https://foo.zip
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>scripts/branching-urls/a1-root-allowed/pyproject.toml</code>:14 on 2024-06-25 11:39</div>
-            <div class="timeline-body"><p>That's fine, thanks.</p>
+            <div class="timeline-body"><p>That&#x27;s fine, thanks.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -362,10 +362,10 @@ foo @ https://foo.zip
 b @ https://b.zip
 </code></pre>
 <p>b:</p>
-<pre><code>c @ https://c_new.zip ; python_version &gt;= '3.12'&quot;,
-c @ https://c_old.zip ; python_version &lt; '3.12'&quot;,
+<pre><code>c @ https://c_new.zip ; python_version &gt;= &#x27;3.12&#x27;&quot;,
+c @ https://c_old.zip ; python_version &lt; &#x27;3.12&#x27;&quot;,
 </code></pre>
-<p>When we visit <code>a</code>, wouldn't we then fetch the package-level metadata for <code>c</code> from the registry here?</p>
+<p>When we visit <code>a</code>, wouldn&#x27;t we then fetch the package-level metadata for <code>c</code> from the registry here?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -377,13 +377,13 @@ c @ https://c_old.zip ; python_version &lt; '3.12'&quot;,
             <div class="timeline-body"><p>Good catch! I changed pre-visiting and added an extra <code>self.request_package(&amp;state.next, url, &amp;request_sink)</code> call in the main loop for the following case:</p>
 <blockquote>
 <p>Consider:</p>
-<pre><code class="language-toml">dependencies = [
-  &quot;iniconfig == 1.1.1 ; python_version &lt; '3.12'&quot;,
-  &quot;iniconfig @ https://files.pythonhosted.org/packages/ef/a6/62565a6e1cf69e10f5727360368e451d4b7f58beeac6173dc9db836a5b46/iniconfig-2.0.0-py3-none-any.whl ; python_version &gt;= '3.12'&quot;,
+<pre><code>dependencies = [
+  &quot;iniconfig == 1.1.1 ; python_version &lt; &#x27;3.12&#x27;&quot;,
+  &quot;iniconfig @ https://files.pythonhosted.org/packages/ef/a6/62565a6e1cf69e10f5727360368e451d4b7f58beeac6173dc9db836a5b46/iniconfig-2.0.0-py3-none-any.whl ; python_version &gt;= &#x27;3.12&#x27;&quot;,
 ]
 </code></pre>
-<p>In the <code>python_version &lt; '3.12'</code> case, we haven't pre-visited <code>iniconfig</code> yet,
-since we weren't sure whether it might also be a URL requirement when
+<p>In the <code>python_version &lt; &#x27;3.12&#x27;</code> case, we haven&#x27;t pre-visited <code>iniconfig</code> yet,
+since we weren&#x27;t sure whether it might also be a URL requirement when
 transforming the requirements. For that case, we do another request here
 (idempotent due to caching).</p>
 </blockquote>
@@ -395,7 +395,7 @@ transforming the requirements. For that case, we do another request here
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @konstin on 2024-06-25 15:26</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/konstin">@konstin</a> on 2024-06-25 15:26</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/pubgrub/dependencies.rs</code>:167 on 2024-06-25 16:06</div>
@@ -419,7 +419,7 @@ transforming the requirements. For that case, we do another request here
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pep508-rs/src/marker.rs</code>:1591 on 2024-06-25 16:36</div>
-            <div class="timeline-body"><p>We should probably check <code>Or</code> too -- it's equally &quot;empty&quot;.</p>
+            <div class="timeline-body"><p>We should probably check <code>Or</code> too -- it&#x27;s equally &quot;empty&quot;.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -437,7 +437,7 @@ transforming the requirements. For that case, we do another request here
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-06-25 16:37</div>
-            <div class="timeline-body"><p>Ok, I think this is sound. Nice job figuring it out. I'm a little nervous because it's a huge change to the core of the resolver, but not sure there's more to do about it :)</p>
+            <div class="timeline-body"><p>Ok, I think this is sound. Nice job figuring it out. I&#x27;m a little nervous because it&#x27;s a huge change to the core of the resolver, but not sure there&#x27;s more to do about it :)</p>
 <p>The part I understand least is the whole override URLs thing.</p>
 <p>How do you think this will extend to locals and/or pre-releases?</p>
 </div>
@@ -457,7 +457,7 @@ transforming the requirements. For that case, we do another request here
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:384 on 2024-06-25 16:38</div>
-            <div class="timeline-body"><p>I guess that's the majority of the time anyway.</p>
+            <div class="timeline-body"><p>I guess that&#x27;s the majority of the time anyway.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -466,7 +466,7 @@ transforming the requirements. For that case, we do another request here
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/pubgrub/dependencies.rs</code>:167 on 2024-06-25 19:03</div>
-            <div class="timeline-body"><p>Good eye https://github.com/astral-sh/uv/pull/4529</p>
+            <div class="timeline-body"><p>Good eye <a href="https://github.com/astral-sh/uv/pull/4529">astral-sh/uv#4529</a></p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -495,7 +495,7 @@ transforming the requirements. For that case, we do another request here
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/pubgrub/priority.rs</code>:41 on 2024-06-25 19:09</div>
-            <div class="timeline-body"><p>(If yes, i'll make a follow-up PR, the stack is large enough)</p>
+            <div class="timeline-body"><p>(If yes, i&#x27;ll make a follow-up PR, the stack is large enough)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -504,7 +504,7 @@ transforming the requirements. For that case, we do another request here
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:384 on 2024-06-25 19:19</div>
-            <div class="timeline-body"><p>We need it if <code>fork_urls</code> return <code>None</code> and <code>Urls</code> return something, that is the case when it's ambiguous. I didn't add that check specifically because <code>request_package</code> already checks if the request was previously registered</p>
+            <div class="timeline-body"><p>We need it if <code>fork_urls</code> return <code>None</code> and <code>Urls</code> return something, that is the case when it&#x27;s ambiguous. I didn&#x27;t add that check specifically because <code>request_package</code> already checks if the request was previously registered</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -525,7 +525,7 @@ transforming the requirements. For that case, we do another request here
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/pep508-rs/src/marker.rs</code>:1591 on 2024-06-25 20:24</div>
-            <div class="timeline-body"><p>I'd define <code>or</code> semantics as it is true if there exists any value that is true, so an empty <code>or</code> would be false</p>
+            <div class="timeline-body"><p>I&#x27;d define <code>or</code> semantics as it is true if there exists any value that is true, so an empty <code>or</code> would be false</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -534,14 +534,14 @@ transforming the requirements. For that case, we do another request here
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/pubgrub/priority.rs</code>:41 on 2024-06-26 11:56</div>
-            <div class="timeline-body"><p>Yeah I think that's fine.</p>
+            <div class="timeline-body"><p>Yeah I think that&#x27;s fine.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @konstin on 2024-06-26 11:58</div>
+            <div class="event">Merged by <a href="https://github.com/konstin">@konstin</a> on 2024-06-26 11:58</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @konstin on 2024-06-26 11:58</div>
+            <div class="event">Closed by <a href="https://github.com/konstin">@konstin</a> on 2024-06-26 11:58</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2024-06-26 11:58</div>
@@ -549,7 +549,7 @@ transforming the requirements. For that case, we do another request here
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:37:38 UTC
+        Synced at 2026-01-20 19:46:02 UTC
     </footer>
 </body>
 </html>

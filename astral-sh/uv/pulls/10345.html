@@ -25,24 +25,24 @@
             <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a></div>
             <div class="timeline-body"><p>Ref #10344</p>
 <p>Cloning and dropping the version arc took a significant fraction of the time in the resolver, which is a large overhead especially for the small variant that has only 9 bytes payload.</p>
-<p>When moving the <code>Arc</code> to only apply to the full variant, the small variant is too large because it stores a <code>[u64; 4]</code> to have a release accessor a <code>&amp;[u64]</code> that's shared with the <code>Vec&lt;u64&gt;</code> of the full variant. We proxy this by first extracting the compressed version digits of the small variant to a proxy type that stores up to 4 u64 on the stack and can be deref'ed to the existing <code>&amp;[u64]</code>, minimizing churn.</p>
+<p>When moving the <code>Arc</code> to only apply to the full variant, the small variant is too large because it stores a <code>[u64; 4]</code> to have a release accessor a <code>&amp;[u64]</code> that&#x27;s shared with the <code>Vec&lt;u64&gt;</code> of the full variant. We proxy this by first extracting the compressed version digits of the small variant to a proxy type that stores up to 4 u64 on the stack and can be deref&#x27;ed to the existing <code>&amp;[u64]</code>, minimizing churn.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @BurntSushi by @konstin on 2025-01-07 09:30</div>
+            <div class="event">Review requested from <a href="https://github.com/BurntSushi">@BurntSushi</a> by <a href="https://github.com/konstin">@konstin</a> on 2025-01-07 09:30</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">performance</span> added by @konstin on 2025-01-07 09:31</div>
+            <div class="event">Label <span class="label">performance</span> added by <a href="https://github.com/konstin">@konstin</a> on 2025-01-07 09:31</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-01-07 09:38</div>
-            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/uv/branches/konsti%2Fopt-small-version-arc">CodSpeed Performance Report</a></h2>
-<h3>Merging #10345 will <strong>improve performances by 29.06%</strong></h3>
-<p><sub>Comparing <code>konsti/opt-small-version-arc</code> (c09adcf) with <code>main</code> (14a9008)</sub></p>
-<h3>Summary</h3>
-<p><code>⚡ 3</code> improvements<br />
+            <div class="timeline-body"><a href="https://codspeed.io/astral-sh/uv/branches/konsti%2Fopt-small-version-arc">CodSpeed Performance Report</a>
+Merging #10345 will <strong>improve performances by 29.06%</strong>
+<p>Comparing <code>konsti/opt-small-version-arc</code> (c09adcf) with <code>main</code> (14a9008)</p>
+Summary
+<p><code>⚡ 3</code> improvements<br>
 <code>✅ 11</code> untouched benchmarks</p>
-<h3>Benchmarks breakdown</h3>
+Benchmarks breakdown
 <p>|     | Benchmark | <code>main</code> | <code>konsti/opt-small-version-arc</code> | Change |
 | --- | --------- | ----------------------- | ------------------- | ------ |
 | ⚡ | <code>resolve_warm_airflow</code> | 1,039.2 ms | 841.5 ms | +23.48% |
@@ -52,18 +52,18 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-pep440/src/version.rs</code>:1424 on 2025-01-07 13:17</div>
-            <div class="timeline-body"><p>Since this is part of the public API, I'd suggest keeping the first sentence to one line, and then adding more (if necessary) in a paragraph below it. Otherwise, this will show up as an overlong summary in the type listing.</p>
+            <div class="timeline-body"><p>Since this is part of the public API, I&#x27;d suggest keeping the first sentence to one line, and then adding more (if necessary) in a paragraph below it. Otherwise, this will show up as an overlong summary in the type listing.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-pep440/src/version.rs</code>:1439 on 2025-01-07 13:25</div>
             <div class="timeline-body"><p>I was wondering if there was a more compact representation than this, so I tried:</p>
-<pre><code class="language-rust">enum ReleaseInner&lt;'a&gt; {
+<pre><code>enum ReleaseInner&lt;&#x27;a&gt; {
     Small { numbers: [u64; 4], len: u8 },
-    Full(&amp;'a [u64]),
+    Full(&amp;&#x27;a [u64]),
 }
 </code></pre>
-<p>But indeed, it's the same size (which makes sense).</p>
+<p>But indeed, it&#x27;s the same size (which makes sense).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -87,10 +87,10 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-pep440/src/version.rs</code>:941 on 2025-01-07 13:48</div>
-            <div class="timeline-body"><p>We could get rid of len by counting the zeroes ourselves. The problem is that <code>Version</code> doesn't become 64 byte since the <code>Arc</code> has only a single niche (<code>NonNull</code>) in rustc's view, so both variants don't fit into a 64-bit word.</p>
-<p>We could try a tagged pointer library, or we could lean into it and make the small representation <code>[u8; 11]</code> or <code>[u8; 15]</code> to use the space we're already allocating while leaving a bit (byte) for rustc for the enum discriminant.</p>
+            <div class="timeline-body"><p>We could get rid of len by counting the zeroes ourselves. The problem is that <code>Version</code> doesn&#x27;t become 64 byte since the <code>Arc</code> has only a single niche (<code>NonNull</code>) in rustc&#x27;s view, so both variants don&#x27;t fit into a 64-bit word.</p>
+<p>We could try a tagged pointer library, or we could lean into it and make the small representation <code>[u8; 11]</code> or <code>[u8; 15]</code> to use the space we&#x27;re already allocating while leaving a bit (byte) for rustc for the enum discriminant.</p>
 <p>This problem MRE:</p>
-<pre><code class="language-rust">use std::sync::Arc;
+<pre><code>use std::sync::Arc;
 
 enum A {
     Small(()),
@@ -139,10 +139,10 @@ fn main() {
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @konstin on 2025-01-07 14:25</div>
+            <div class="event">Merged by <a href="https://github.com/konstin">@konstin</a> on 2025-01-07 14:25</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @konstin on 2025-01-07 14:25</div>
+            <div class="event">Closed by <a href="https://github.com/konstin">@konstin</a> on 2025-01-07 14:25</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-01-07 14:25</div>
@@ -150,7 +150,7 @@ fn main() {
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:41:19 UTC
+        Synced at 2026-01-20 19:50:07 UTC
     </footer>
 </body>
 </html>

@@ -25,26 +25,26 @@
             <div class="timeline-header"><a href="https://github.com/karfau">@karfau</a></div>
             <div class="timeline-body"><p>I have the following issue:</p>
 <p>I have a setup where those <code>extras_require</code> are defined in <code>setup.py</code> but when running
-<code>uv pip install -e '.[test]'</code></p>
+<code>uv pip install -e &#x27;.[test]&#x27;</code></p>
 <p>it says</p>
 <pre><code>warning: The package `mypackage @ file://[...]` does not have an extra named `test`.
 </code></pre>
-<p>and also doesn't install any dependencies other then the package itself, not even the things in <code>requirements.txt</code>.</p>
+<p>and also doesn&#x27;t install any dependencies other then the package itself, not even the things in <code>requirements.txt</code>.</p>
 <p>This is the case since v0.2.5, it works fine in 0.2.4.</p>
-<p>Original post: https://github.com/astral-sh/uv/issues/2828#issuecomment-2185769691</p>
+<p>Original post: <a href="https://github.com/astral-sh/uv/issues/2828">astral-sh/uv#2828</a>#issuecomment-2185769691</p>
 <p>I have not managed to create a full reproduction setup so far, but I got a bit closer:</p>
 <p>The reproduction repository https://github.com/karfau/uv-install-issue contains a script <code>test.sh</code> which</p>
 <ul>
 <li>drops the venv folder if it exists</li>
-<li>configures a virtual env, I tested with both python 3.8 (because that is what the original repository uses), but the behavior doesn't change with python 3.12</li>
+<li>configures a virtual env, I tested with both python 3.8 (because that is what the original repository uses), but the behavior doesn&#x27;t change with python 3.12</li>
 <li>installs uv in the version passed as the first argument</li>
-<li>installs the dependencies using <code>uv --verbose pip install -e '.[test]'</code></li>
+<li>installs the dependencies using <code>uv --verbose pip install -e &#x27;.[test]&#x27;</code></li>
 <li>lists the content of <code>venv/bin</code> to check if the dependencies have been installed</li>
 </ul>
 <p>In the reproduction it prints the warning (since 0.2.0 if the pyproject.toml contains a <code>[project]</code> section) <strong>and always installs all dependencies</strong>.</p>
 <p>So maybe the warning was leading me into a wrong direction, but in the original repository the warning is not present when running those steps using uv 0.2.4 but the warning is printed when using uv 0.2.5 and it is only installing the editable package but nothing from <code>install_requires</code> or <code>extra_requires</code>.</p>
 <p>here is the <code>--verbose</code> output in the affected repository, if you have any idea in what direction to continue testing, let me know</p>
-<pre><code>+ uv --verbose pip install -e '.[test]'
+<pre><code>+ uv --verbose pip install -e &#x27;.[test]&#x27;
 DEBUG uv 0.2.15
 DEBUG Searching for Python interpreter in system toolchains
 DEBUG Found cpython 3.8.19 at `/home/.../venv/bin/python3` (active virtual environment)
@@ -114,19 +114,19 @@ warning: The package `mypackage @ file:///home/...` does not have an extra named
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-24 22:45</div>
-            <div class="timeline-body"><p>The problem with your setup is that you have a <code>pyproject.toml</code> with a <code>[project]</code> section, but you haven't declared any of the metadata as dynamic. Per the spec, if you omit <code>dependencies</code> from the <code>[project]</code> section, that's equivalent to <code>project.dependencies = []</code>.</p>
+            <div class="timeline-body"><p>The problem with your setup is that you have a <code>pyproject.toml</code> with a <code>[project]</code> section, but you haven&#x27;t declared any of the metadata as dynamic. Per the spec, if you omit <code>dependencies</code> from the <code>[project]</code> section, that&#x27;s equivalent to <code>project.dependencies = []</code>.</p>
 <p>You should add <code>dynamic = [&quot;dependencies&quot;, &quot;optional-dependencies&quot;]</code> to your <code>pyproject.toml</code>, under the <code>[project]</code> section.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-06-24 23:29</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-24 23:29</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/karfau">@karfau</a> on 2024-06-25 05:39</div>
             <div class="timeline-body"><p>@charliermarsh thx, a lot, that resolves the initial problem in the original repository.</p>
-<p>It's still not clear to me if this is intended as a change in behavior and what <a href="https://github.com/astral-sh/uv/compare/0.2.4...0.2.5">change between 0.2.4 and 0.2.5</a> causes this.
+<p>It&#x27;s still not clear to me if this is intended as a change in behavior and what <a href="https://github.com/astral-sh/uv/compare/0.2.4...0.2.5">change between 0.2.4 and 0.2.5</a> causes this.
 And why it behaves different in our repository than in the reproduction (were the dependencies are always installed even without this addition).</p>
-<p>I'm happy to continue to experiment with the reproduction if I have any trace of what could be the reason, but currently I'm out of ideas (and capacity to find more ideas on my own).</p>
+<p>I&#x27;m happy to continue to experiment with the reproduction if I have any trace of what could be the reason, but currently I&#x27;m out of ideas (and capacity to find more ideas on my own).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -135,12 +135,12 @@ And why it behaves different in our repository than in the reproduction (were th
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2024-06-25 10:53</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-25 10:53</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:25:21 UTC
+        Synced at 2026-01-20 19:31:43 UTC
     </footer>
 </body>
 </html>

@@ -27,16 +27,16 @@
 <p>But <a href="https://docs.astral.sh/uv/guides/integration/pytorch/#configuring-accelerators-with-optional-dependencies">it fails with the example in the docs.</a></p>
 <p><strong>Minimal Context</strong></p>
 <p>uv version:</p>
-<pre><code class="language-bash">$ uv --version
+<pre><code>$ uv --version
 uv 0.5.8
 </code></pre>
 <p>Config from the guide (simplified it a bit; just removed cuda and torchvision.):</p>
-<pre><code class="language-toml">[project.optional-dependencies]
+<pre><code>[project.optional-dependencies]
 cpu = [ &quot;torch&gt;=2.5.1&quot;]
 
 [tool.uv.sources]
 torch = [
-  { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot;, marker = &quot;platform_system != 'Darwin'&quot; },
+  { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot;, marker = &quot;platform_system != &#x27;Darwin&#x27;&quot; },
 ]
 
 [[tool.uv.index]]
@@ -44,60 +44,60 @@ name = &quot;pytorch-cpu&quot;
 url = &quot;https://download.pytorch.org/whl/cpu&quot;
 explicit = true
 </code></pre>
-<p>I've clean the cache and started a fresh venv.</p>
+<p>I&#x27;ve clean the cache and started a fresh venv.</p>
 <p><strong>Issue</strong></p>
 <p>And then running:</p>
-<pre><code class="language-bash">vscode ➜ /workspaces/project (dev) $ uv venv
+<pre><code>vscode ➜ /workspaces/project (dev) $ uv venv
 Using CPython 3.10.16
 Creating virtual environment at: .venv
 vscode ➜ /workspaces/project (dev) $ source .venv/bin/activate
 (project) vscode ➜ /workspaces/project (dev) $ uv sync --extra cpu
 Resolved 85 packages in 6.05s
-error: Distribution `torch==2.5.1+cpu @ registry+https://download.pytorch.org/whl/cpu` can't be installed because it doesn't have a source distribution or wheel for the current platform
+error: Distribution `torch==2.5.1+cpu @ registry+https://download.pytorch.org/whl/cpu` can&#x27;t be installed because it doesn&#x27;t have a source distribution or wheel for the current platform
 </code></pre>
 <p>I may be doing something wrong, but can not figure it out.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "PyTorch install fails on MacOS?" to "PyTorch install fails on M1 using a Debian container ?" by @santi-mir on 2024-12-13 19:56</div>
+            <div class="event">Renamed from &quot;PyTorch install fails on MacOS?&quot; to &quot;PyTorch install fails on M1 using a Debian container ?&quot; by <a href="https://github.com/santi-mir">@santi-mir</a> on 2024-12-13 19:56</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-13 20:38</div>
-            <div class="timeline-body"><p>Umm. It might think that you're on an ARM Linux machine? In which case, <code>2.5.1+cpu</code> isn't right. You'd want <code>torch===2.5.1</code>, or like <code>marker = &quot;platform_system != 'Darwin' and platform_machine != 'arm64'&quot;</code>?</p>
+            <div class="timeline-body"><p>Umm. It might think that you&#x27;re on an ARM Linux machine? In which case, <code>2.5.1+cpu</code> isn&#x27;t right. You&#x27;d want <code>torch===2.5.1</code>, or like <code>marker = &quot;platform_system != &#x27;Darwin&#x27; and platform_machine != &#x27;arm64&#x27;&quot;</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-12-13 20:38</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-13 20:38</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-13 20:49</div>
-            <div class="timeline-body"><p>Or <code>docker run --platform linux/x86_64</code> if you don't want an arm64 image?</p>
+            <div class="timeline-body"><p>Or <code>docker run --platform linux/x86_64</code> if you don&#x27;t want an arm64 image?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @santi-mir on 2024-12-13 21:22</div>
+            <div class="event">Closed by <a href="https://github.com/santi-mir">@santi-mir</a> on 2024-12-13 21:22</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/santi-mir">@santi-mir</a> on 2024-12-15 16:13</div>
             <div class="timeline-body"><p>Just to add:</p>
 <blockquote>
-<p><code>marker = &quot;platform_system != 'Darwin' and platform_machine != 'arm64'&quot;</code></p>
+<p><code>marker = &quot;platform_system != &#x27;Darwin&#x27; and platform_machine != &#x27;arm64&#x27;&quot;</code></p>
 </blockquote>
 <p>I used <em>aarch64</em> instead because <em>arm64</em> was failing (or that is my impression at least.)</p>
 <p>Now for linux-aarch64 on MacOS fallbacks to PyTorch PyPI index for <a href="https://pypi.org/project/torch/#files">manylinux-aarch64</a>.</p>
 <p>And this one:</p>
 <blockquote>
-<p>docker run --platform linux/x86_64 if you don't want an arm64 image?</p>
+<p>docker run --platform linux/x86_64 if you don&#x27;t want an arm64 image?</p>
 </blockquote>
-<p>doesn't seem <a href="https://github.com/pytorch/pytorch/issues/81224">the best option for my usecase.</a> It's even slower than the non-mps aarm64 case is already.</p>
-<p>One can not use MPS in Docker, but that's not uv's problem.</p>
+<p>doesn&#x27;t seem <a href="https://github.com/pytorch/pytorch/issues/81224">the best option for my usecase.</a> It&#x27;s even slower than the non-mps aarm64 case is already.</p>
+<p>One can not use MPS in Docker, but that&#x27;s not uv&#x27;s problem.</p>
 <p>Thanks again @charliermarsh @zanieb</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:28:54 UTC
+        Synced at 2026-01-20 19:36:11 UTC
     </footer>
 </body>
 </html>

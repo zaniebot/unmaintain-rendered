@@ -23,14 +23,14 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/epage">@epage</a></div>
-            <div class="timeline-body"><p><a href="https://github.com/I60R"><img src="https://avatars.githubusercontent.com/u/9143774?v=4" align="left" width="96" height="96" hspace="10"></img></a> <strong>Issue by <a href="https://github.com/I60R">I60R</a></strong>
+            <div class="timeline-body"><p><a href="https://github.com/I60R"><img src="https://avatars.githubusercontent.com/u/9143774?v=4"></a> <strong>Issue by <a href="https://github.com/I60R">I60R</a></strong>
 <em>Sunday Jul 22, 2018 at 06:15 GMT</em>
-<em>Originally opened as https://github.com/TeXitoi/structopt/issues/126</em></p>
-<hr />
+<em>Originally opened as <a href="https://github.com/TeXitoi/structopt/issues/126">TeXitoi/structopt#126</a></em></p>
+<hr>
 <p>Example: there is <code>-v</code> which increases log verbosity, and <code>-q</code> which decreases it, and that should be backed by single <code>log_level</code> field in <code>Options</code> struct.</p>
 <p>Alacritty <a href="https://github.com/jwilm/alacritty/blob/ea512cb0f3cb159707eb29fdbf2e31bbb1c1b902/src/cli.rs#L45">implements that pattern</a> with use of <code>clap</code> and manually filled struct; but with use of structopt there will be no other way as split <code>log_level</code> into two fields: <code>q</code> and <code>v</code>.</p>
 <p>I propose something like <code>parse(from_matches = &quot;parser&quot;)</code> to avoid that.</p>
-<pre><code class="language-rust">
+<pre><code>
 #[derive(StructOpt))]
 struct Options {
     #[structopt(parse(from_matches = &quot;parse_log_level&quot;))]
@@ -53,18 +53,18 @@ fn parse_log_level(matches: &amp;ArgMatches) -&gt; log::LevelFilter {
 }
 
 </code></pre>
-<hr />
+<hr>
 <p>Also, <a href="https://github.com/I60R/page/blob/2d8ff2eb99cf6ce2b256d2c24471c5d372fcfa71/src/cli.rs#L65-L95">I have a use case</a> where parser like that may greatly simplify my code</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:13</div>
-            <div class="timeline-body"><p><a href="https://github.com/TeXitoi"><img src="https://avatars.githubusercontent.com/u/5787066?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/TeXitoi">TeXitoi</a></strong>
+            <div class="timeline-body"><p><a href="https://github.com/TeXitoi"><img src="https://avatars.githubusercontent.com/u/5787066?v=4"></a> <strong>Comment by <a href="https://github.com/TeXitoi">TeXitoi</a></strong>
 <em>Monday Jul 23, 2018 at 14:15 GMT</em></p>
-<hr />
-<p>That's a quite complicated feature to design. Maybe using the parse feature, giving a custom parsing command that takes the 2 parameters and returns the value, with a way to list on a struct field that this field is linked to 2 options.</p>
+<hr>
+<p>That&#x27;s a quite complicated feature to design. Maybe using the parse feature, giving a custom parsing command that takes the 2 parameters and returns the value, with a way to list on a struct field that this field is linked to 2 options.</p>
 <p>Fuzzy try:</p>
-<pre><code class="language-rust">fn parse_log_level(quiet: u32, verbose: u32) -&gt; log::LevelFilter {
+<pre><code>fn parse_log_level(quiet: u32, verbose: u32) -&gt; log::LevelFilter {
     match (quiet, verbose) {
         (0, 0) =&gt; log::LevelFilter::Warn,
         (0, 1) =&gt; log::LevelFilter::Error,
@@ -89,12 +89,12 @@ struct Opt {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:13</div>
-            <div class="timeline-body"><p><a href="https://github.com/I60R"><img src="https://avatars.githubusercontent.com/u/9143774?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/I60R">I60R</a></strong>
+            <div class="timeline-body"><p><a href="https://github.com/I60R"><img src="https://avatars.githubusercontent.com/u/9143774?v=4"></a> <strong>Comment by <a href="https://github.com/I60R">I60R</a></strong>
 <em>Monday Jul 23, 2018 at 19:17 GMT</em></p>
-<hr />
+<hr>
 <p>What are your thoughts about delegating <code>q</code> and <code>v</code> fields into separate struct?
 That will be very similar to <code>flatten</code> feature that additionally invokes <code>.from()</code> on flattened struct:</p>
-<pre><code class="language-rust">#[derive(StructOpt)]
+<pre><code>#[derive(StructOpt)]
 struct Opt {
     #[structopt(collapse(LogLevelOpt)]
     verbose: log::LevelFilter,
@@ -125,7 +125,7 @@ impl Into&lt;log::LevelFilter&gt; for LogLevelOpt {
 }
 </code></pre>
 <p>Also, there might be other version that uses custom function instead of <code>from</code>:</p>
-<pre><code class="language-rust">#[derive(StructOpt)]
+<pre><code>#[derive(StructOpt)]
 struct Opt {
     #[structopt(collapse(LogLevelOpt), parse(from_collapsed = &quot;custom_function&quot;)]
     verbose: log::LevelFilter,
@@ -147,26 +147,26 @@ fn custom_function(opt: LogLevelOpt) -&gt; log::LevelFilter {
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:13</div>
-            <div class="timeline-body"><p><a href="https://github.com/TeXitoi"><img src="https://avatars.githubusercontent.com/u/5787066?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/TeXitoi">TeXitoi</a></strong>
+            <div class="timeline-body"><p><a href="https://github.com/TeXitoi"><img src="https://avatars.githubusercontent.com/u/5787066?v=4"></a> <strong>Comment by <a href="https://github.com/TeXitoi">TeXitoi</a></strong>
 <em>Tuesday Jul 24, 2018 at 15:02 GMT</em></p>
-<hr />
-<p>@I60R That's another path that looks promising. I prefer it to my proposition.</p>
+<hr>
+<p>@I60R That&#x27;s another path that looks promising. I prefer it to my proposition.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:13</div>
-            <div class="timeline-body"><p><a href="https://github.com/eugmes"><img src="https://avatars.githubusercontent.com/u/447040?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/eugmes">eugmes</a></strong>
+            <div class="timeline-body"><p><a href="https://github.com/eugmes"><img src="https://avatars.githubusercontent.com/u/447040?v=4"></a> <strong>Comment by <a href="https://github.com/eugmes">eugmes</a></strong>
 <em>Monday Jul 26, 2021 at 20:36 GMT</em></p>
-<hr />
+<hr>
 <p>I have another use case that I think may benefit from having multiple arguments apply to the same field, and it is hard or impossible to implement this using multiple separate arguments.</p>
-<p>I have a program that's processes some Unicode characters, user should be able to enable or disable processing of some ranges, multiple enable/disable arguments are possible, they should be processes in order they are supplied. For example:</p>
-<pre><code class="language-console">--include-range 100-200 --exclude-range 120-130
+<p>I have a program that&#x27;s processes some Unicode characters, user should be able to enable or disable processing of some ranges, multiple enable/disable arguments are possible, they should be processes in order they are supplied. For example:</p>
+<pre><code>--include-range 100-200 --exclude-range 120-130
 </code></pre>
 <p>The result should be the same as:</p>
-<pre><code class="language-console">--include-range 100-119 --include-range 131-200
+<pre><code>--include-range 100-119 --include-range 131-200
 </code></pre>
 <p>I would like to model this as follows:</p>
-<pre><code class="language-rust">enum UnicodeRange {...}
+<pre><code>enum UnicodeRange {...}
 
 enum RangeSpec {
     Included {
@@ -185,30 +185,30 @@ struct Opt {
 }
 </code></pre>
 <p>I could not find any good way to do this. Note that separate arguments would not work because the order is important.</p>
-<p>I've tried to use <code>flatten</code>, but <code>structopt</code> insists on adding subcommands :/.</p>
+<p>I&#x27;ve tried to use <code>flatten</code>, but <code>structopt</code> insists on adding subcommands :/.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:13</div>
-            <div class="timeline-body"><p><a href="https://github.com/TeXitoi"><img src="https://avatars.githubusercontent.com/u/5787066?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/TeXitoi">TeXitoi</a></strong>
+            <div class="timeline-body"><p><a href="https://github.com/TeXitoi"><img src="https://avatars.githubusercontent.com/u/5787066?v=4"></a> <strong>Comment by <a href="https://github.com/TeXitoi">TeXitoi</a></strong>
 <em>Monday Jul 26, 2021 at 21:19 GMT</em></p>
-<hr />
-<p>@eugmes this is similar to your use case: https://github.com/TeXitoi/structopt/issues/476</p>
+<hr>
+<p>@eugmes this is similar to your use case: <a href="https://github.com/TeXitoi/structopt/issues/476">TeXitoi/structopt#476</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:13</div>
-            <div class="timeline-body"><p><a href="https://github.com/eugmes"><img src="https://avatars.githubusercontent.com/u/447040?v=4" align="left" width="48" height="48" hspace="10"></img></a> <strong>Comment by <a href="https://github.com/eugmes">eugmes</a></strong>
+            <div class="timeline-body"><p><a href="https://github.com/eugmes"><img src="https://avatars.githubusercontent.com/u/447040?v=4"></a> <strong>Comment by <a href="https://github.com/eugmes">eugmes</a></strong>
 <em>Monday Jul 26, 2021 at 21:53 GMT</em></p>
-<hr />
+<hr>
 <p>@TeXitoi indeed it is. Thanks a lot!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">A-derive</span> added by @epage on 2021-12-09 16:20</div>
+            <div class="event">Label <span class="label">A-derive</span> added by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:20</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">C-enhancement</span> added by @epage on 2021-12-09 16:20</div>
+            <div class="event">Label <span class="label">C-enhancement</span> added by <a href="https://github.com/epage">@epage</a> on 2021-12-09 16:20</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/epage">@epage</a> on 2021-12-13 22:28</div>
@@ -216,18 +216,18 @@ struct Opt {
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @epage on 2021-12-13 22:28</div>
+            <div class="event">Closed by <a href="https://github.com/epage">@epage</a> on 2021-12-13 22:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../issues/3146.html">clap-rs/clap#3146</a> on 2021-12-13 22:28</div>
+            <div class="event">Referenced in <a>clap-rs/clap#3146</a> on 2021-12-13 22:28</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">S-duplicate</span> added by @epage on 2022-01-11 18:25</div>
+            <div class="event">Label <span class="label">S-duplicate</span> added by <a href="https://github.com/epage">@epage</a> on 2022-01-11 18:25</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:48:16 UTC
+        Synced at 2026-01-20 19:58:34 UTC
     </footer>
 </body>
 </html>

@@ -26,7 +26,7 @@
             <div class="timeline-body"><p>Please consider adding some method to force all autofixes regardless if they might make some lines too long. When using an autoformater (e.g. Ruff), any excessively long lines would be fixed anyway. Maybe do this automatically when <code>E501</code> (line-too-long) is not selected. This would save a considerable amount of time when switching a large project to Ruff, as it would eliminate the need for unnecessary manual fixes.</p>
 <p>This potential workaround does not work:</p>
 <pre><code>$ ruff --line-length 9999 --unsafe-fixes --fix .
-error: invalid value '9999' for '--line-length &lt;LINE_LENGTH&gt;': The line width must be a value between 1 and 320.
+error: invalid value &#x27;9999&#x27; for &#x27;--line-length &lt;LINE_LENGTH&gt;&#x27;: The line width must be a value between 1 and 320.
 </code></pre>
 <p>Some fixes need more than 320 columns, so using <code>--line-length 320</code> would not work either.</p>
 <pre><code>$ ruff --version
@@ -36,31 +36,31 @@ ruff 0.1.1
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-21 19:31</div>
-            <div class="timeline-body"><p>I'm wondering if we should just remove this behavior, or mark those fixes as unsafe when they would exceed the line length. I'd sort of rather do one of those two things instead of introducing a setting or similar. \cc @zanieb</p>
+            <div class="timeline-body"><p>I&#x27;m wondering if we should just remove this behavior, or mark those fixes as unsafe when they would exceed the line length. I&#x27;d sort of rather do one of those two things instead of introducing a setting or similar. \cc @zanieb</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-10-21 19:31</div>
+            <div class="event">Label <span class="label">needs-decision</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-21 19:31</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-21 20:28</div>
             <div class="timeline-body"><p>Could we format the fix with our formatter i.e. using range formatting?</p>
 <p>I think changing from safe to unsafe due to a line length violation is kind of a misuse of applicability.</p>
-<p>It'd probably make sense to just apply the fixes despite the line length; is there a good example I could see that demonstrates the problem with that?</p>
+<p>It&#x27;d probably make sense to just apply the fixes despite the line length; is there a good example I could see that demonstrates the problem with that?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2023-10-22 08:10</div>
-            <div class="timeline-body"><p>My opinion: fixing one reported lint issue can introduce another (sometimes multiple layers of code smells/code simplification can happen). To me that's to be expected.</p>
+            <div class="timeline-body"><p>My opinion: fixing one reported lint issue can introduce another (sometimes multiple layers of code smells/code simplification can happen). To me that&#x27;s to be expected.</p>
 <p>I see line length the same way. Especially since line length is often an easy manual fix. (and automated with a formatter).</p>
-<p>Line length also doesn't break code. It feels unexpected for a safe autofix to not happen.</p>
+<p>Line length also doesn&#x27;t break code. It feels unexpected for a safe autofix to not happen.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tdulcet">@tdulcet</a> on 2023-10-22 11:04</div>
             <div class="timeline-body"><p>Yes, I agree, I think it is surprising for many Ruff users that they are not seeing all possible autofixes by default, especially now that Ruff supports autoformating. This is different from every other linter I have used that supports autofixes, including ESLint, Clang-Tidy and Shellcheck. I only noticed this recently after I increased the <code>--line-length</code> option and saw that a bunch of new possible autofixes were listed. I then increasing it again and there were more autofixes still... 🤯</p>
 <blockquote>
-<p>It'd probably make sense to just apply the fixes despite the line length; is there a good example I could see that demonstrates the problem with that?</p>
+<p>It&#x27;d probably make sense to just apply the fixes despite the line length; is there a good example I could see that demonstrates the problem with that?</p>
 </blockquote>
 <p>This sounds like the best solution. I believe there are some cases with f-strings where it is not currently possible to format them with Ruff to reduce the line length, but it is my understanding that this will be fixed after Ruff fully supports the preview style formatting, so this should be a nonissue.</p>
 <p>(There are several autofixes that flatten code originally written over multiple lines and in some cases can cause very long lines. If these autofixes could instead preserve the existing formatting and only make minimal changes, this would be a big improvement and would also make it easier to see the actual proposed change with the <code>--diff</code> option, but this still would not handle all cases where long lines are unavoidable without some type of autoformating.)</p>
@@ -69,18 +69,18 @@ ruff 0.1.1
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-22 23:43</div>
             <div class="timeline-body"><blockquote>
-<p>I'm wondering if we should just remove this behavior, or mark those fixes as unsafe when they would exceed the line length. I'd sort of rather do one of those two things instead of introducing a setting or similar.</p>
+<p>I&#x27;m wondering if we should just remove this behavior, or mark those fixes as unsafe when they would exceed the line length. I&#x27;d sort of rather do one of those two things instead of introducing a setting or similar.</p>
 </blockquote>
-<p>I'm leaning towards just removing the behavior without marking them as unsafe, because the fixes are not unsafe in the sense that they change the program's semantic. There's only the risk that they introduce new errors.</p>
+<p>I&#x27;m leaning towards just removing the behavior without marking them as unsafe, because the fixes are not unsafe in the sense that they change the program&#x27;s semantic. There&#x27;s only the risk that they introduce new errors.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-22 23:53</div>
-            <div class="timeline-body"><p>I'm definitely open to removing it, but I should at least mention that it didn't appear out of nowhere. We introduced that logic because we received multiple issues complaining about the fact that these fixes introduced E501 errors. I found this one, as an example: https://github.com/astral-sh/ruff/issues/1766.</p>
+            <div class="timeline-body"><p>I&#x27;m definitely open to removing it, but I should at least mention that it didn&#x27;t appear out of nowhere. We introduced that logic because we received multiple issues complaining about the fact that these fixes introduced E501 errors. I found this one, as an example: <a href="https://github.com/astral-sh/ruff/issues/1766">astral-sh/ruff#1766</a>.</p>
 <blockquote>
 <p>Could we format the fix with our formatter i.e. using range formatting?</p>
 </blockquote>
-<p>I think this is the ideal (and desired) solution but it's not a trivial change.</p>
+<p>I think this is the ideal (and desired) solution but it&#x27;s not a trivial change.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -88,7 +88,7 @@ ruff 0.1.1
             <div class="timeline-body"><blockquote>
 <p>Could we format the fix with our formatter i.e. using range formatting?</p>
 </blockquote>
-<p>Maybe, but even when we use our formatter, there's still no guarantee that it won't trigger E501.</p>
+<p>Maybe, but even when we use our formatter, there&#x27;s still no guarantee that it won&#x27;t trigger E501.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -102,28 +102,28 @@ ruff 0.1.1
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-23 14:35</div>
             <div class="timeline-body"><blockquote>
-<p>Maybe, but even when we use our formatter, there's still no guarantee that it won't trigger E501</p>
+<p>Maybe, but even when we use our formatter, there&#x27;s still no guarantee that it won&#x27;t trigger E501</p>
 </blockquote>
-<p>It seems like it'd be a good enough effort though. Additionally, we could check the line length <em>after</em> formatting as a determination of whether or not the fix should be suggested although I think this is a bit much.</p>
+<p>It seems like it&#x27;d be a good enough effort though. Additionally, we could check the line length <em>after</em> formatting as a determination of whether or not the fix should be suggested although I think this is a bit much.</p>
 <blockquote>
 <p>As I suggested above in my original request, maybe only remove this behavior when the user does not have E501 selected.</p>
 </blockquote>
-<p>This sounds like a bit of a confusing experience to explain and is not a pattern I'd want to embrace in general. <code>line_length</code> is a global Ruff setting, not just E501.</p>
+<p>This sounds like a bit of a confusing experience to explain and is not a pattern I&#x27;d want to embrace in general. <code>line_length</code> is a global Ruff setting, not just E501.</p>
 <blockquote>
 <p>If you chose this path, it might also be helpful to warn about any hidden autofixes due to E501 so that users would be aware of the issue, similar to how Ruff now warns about hidden unsafe autofixes.</p>
 </blockquote>
-<p>It makes me uncomfortable to special case messaging for the line length rule like this. I don't think this is actually possible with our current fix architecture either.</p>
+<p>It makes me uncomfortable to special case messaging for the line length rule like this. I don&#x27;t think this is actually possible with our current fix architecture either.</p>
 <p>I think the example in #1766 is quite helpful. A formatter would not resolve that and it is a significant degradation in readability.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-27 13:41</div>
-            <div class="timeline-body"><p>@zanieb - I wonder if there's... some other way for us to gate that simplicity rule, in those cases. Like, if the body is multiline, perhaps we should skip that rule, since it's unlikely to be &quot;simpler&quot;?</p>
+            <div class="timeline-body"><p>@zanieb - I wonder if there&#x27;s... some other way for us to gate that simplicity rule, in those cases. Like, if the body is multiline, perhaps we should skip that rule, since it&#x27;s unlikely to be &quot;simpler&quot;?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2023-11-28 18:03</div>
-            <div class="timeline-body"><p>Since the message <code>No fixes available (X hidden fix can be enabled with the '--unsafe-fixes' option).</code> exists. Could the same be added for line length? Like <code>No fixes available (X fix skipped due to line-length).</code> (doesn't really solve cases above 320, but at least the user is made aware, and not left to think Ruff is inconsistent)</p>
+            <div class="timeline-body"><p>Since the message <code>No fixes available (X hidden fix can be enabled with the &#x27;--unsafe-fixes&#x27; option).</code> exists. Could the same be added for line length? Like <code>No fixes available (X fix skipped due to line-length).</code> (doesn&#x27;t really solve cases above 320, but at least the user is made aware, and not left to think Ruff is inconsistent)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -135,7 +135,7 @@ ruff 0.1.1
 <li>a generic mechanism for autofixes to detect when they would rewrite code which formerly obeyed the line-length setting, to violate it, and mark that autofix as long-line-unsafe</li>
 <li>a dedicated option, similar to --unsafe-fixes but <em>not actually called unsafe-fixes</em>, e.g. <code>--long-line-fixes</code></li>
 </ol>
-<p>I definitely do not think it's appropriate to violate the line length.</p>
+<p>I definitely do not think it&#x27;s appropriate to violate the line length.</p>
 <ul>
 <li>not everyone uses, or wants to use, a formatter</li>
 <li>ruff combined with autofixes can be very useful for performing one-off migrations</li>
@@ -146,38 +146,38 @@ ruff 0.1.1
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Support forcing all autofixes regardless of line length when using an autoformater" to "Improve line-length vs. autofix interactions (force-allow? force-disallows?)" by @charliermarsh on 2024-01-02 18:01</div>
+            <div class="event">Renamed from &quot;Support forcing all autofixes regardless of line length when using an autoformater&quot; to &quot;Improve line-length vs. autofix interactions (force-allow? force-disallows?)&quot; by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-02 18:01</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2024-01-02 18:01</div>
+            <div class="event">Label <span class="label">configuration</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-02 18:01</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Hnasar">@Hnasar</a> on 2024-03-26 18:24</div>
-            <div class="timeline-body"><p>Just a piece of user feedback: I'm planning to disable this rule in my projects because I'd rather see a <code>str.format()</code> which fits within the line length than a very long fstring.</p>
-<p>Ideally I'd rather an auto-split f-string that fits within the line length, but I understand that's not available right now.</p>
+            <div class="timeline-body"><p>Just a piece of user feedback: I&#x27;m planning to disable this rule in my projects because I&#x27;d rather see a <code>str.format()</code> which fits within the line length than a very long fstring.</p>
+<p>Ideally I&#x27;d rather an auto-split f-string that fits within the line length, but I understand that&#x27;s not available right now.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2025-01-01 06:22</div>
-            <div class="timeline-body"><p>In some cases and in my opinion, exceeding the line length really isn't the problem it's being made out to be.  For example,</p>
-<p>I think the ternary expression is still an improvement even if it doesn't fit on one line:</p>
-<pre><code class="language-python">if not isinstance(inference_result, RivalConfiguration):
+            <div class="timeline-body"><p>In some cases and in my opinion, exceeding the line length really isn&#x27;t the problem it&#x27;s being made out to be.  For example,</p>
+<p>I think the ternary expression is still an improvement even if it doesn&#x27;t fit on one line:</p>
+<pre><code>if not isinstance(inference_result, RivalConfiguration):
     code = None
 else:
     code = np.asarray(inference_result.pooling_output, dtype=np.float64)
 </code></pre>
 <p>becomes</p>
-<pre><code class="language-python">code = (np.asarray(inference_result.pooling_output, dtype=np.float64)
+<pre><code>code = (np.asarray(inference_result.pooling_output, dtype=np.float64)
         if isinstance(inference_result, RivalConfiguration)
         else None)
 </code></pre>
-<p>It's an improvement because the logic is simpler (only one assignment target).</p>
+<p>It&#x27;s an improvement because the logic is simpler (only one assignment target).</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:48:41 UTC
+        Synced at 2026-01-20 18:48:44 UTC
     </footer>
 </body>
 </html>

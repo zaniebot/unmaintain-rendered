@@ -23,10 +23,10 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/BaxHugh">@BaxHugh</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
-<h2>Summary</h2>
+            <div class="timeline-body">Summary
+Summary
 <p>Ty crashes with a stack overflow error when analyzing certain recursive type aliases that include <code>tuple[RecursiveT, ...]</code> combined with specific type inference patterns. The crash occurs during type checking and results in the process terminating with:</p>
-<pre><code>thread '&lt;unknown&gt;' (&lt;some-id&gt;) has overflowed its stack fatal runtime error: stack overflow, aborting
+<pre><code>thread &#x27;&lt;unknown&gt;&#x27; (&lt;some-id&gt;) has overflowed its stack fatal runtime error: stack overflow, aborting
 </code></pre>
 <p>The issue appears to be triggered specifically by the combination of:</p>
 <ol>
@@ -34,12 +34,12 @@
 <li>Using <code>list(...)</code>, <code>tuple(...)</code>, <code>dict(...)</code> constructors - other similar constructors not tried.</li>
 </ol>
 <p>I think this is probably the same issue relating to the recursive type inference issues addressed in Ruff PR #20566.</p>
-<h3>Reproduction Steps</h3>
+Reproduction Steps
 <p>Run <code>ty check</code> on any of the crashing examples below, note <code>list(...)</code> used here, but testing with <code>dict(...)</code> and <code>tuple(...)</code> also reproduced the error.</p>
 <p><strong>Command:</strong> <code>ty check does_crash_1.py</code></p>
-<h3>Examples that Crash</h3>
+Examples that Crash
 <p><strong>does_crash_1.py:</strong> (recursive type is a union including tuple)</p>
-<pre><code class="language-python">type RecursiveT = int | list[RecursiveT] | tuple[RecursiveT, ...]
+<pre><code>type RecursiveT = int | list[RecursiveT] | tuple[RecursiveT, ...]
 
 
 def foo(a: int, b: int) -&gt; RecursiveT:
@@ -47,7 +47,7 @@ def foo(a: int, b: int) -&gt; RecursiveT:
     return list(some_intermediate_var)
 </code></pre>
 <p><strong>does_crash_2.py:</strong> (variadic tuple type only in the recursive type)</p>
-<pre><code class="language-python">type RecursiveT = tuple[RecursiveT, ...]  # | int | list[RecursiveT]
+<pre><code>type RecursiveT = tuple[RecursiveT, ...]  # | int | list[RecursiveT]
 
 
 def foo(a: int, b: int) -&gt; RecursiveT:
@@ -55,17 +55,17 @@ def foo(a: int, b: int) -&gt; RecursiveT:
     return list(some_intermediate_var)
 </code></pre>
 <p><strong>does_crash_3.py:</strong> (non-variadic tuple type only in the recursive type)</p>
-<pre><code class="language-python">type RecursiveT = tuple[RecursiveT, RecursiveT]  # | int | list[RecursiveT]
+<pre><code>type RecursiveT = tuple[RecursiveT, RecursiveT]  # | int | list[RecursiveT]
 
 
 def foo(a: int, b: int) -&gt; RecursiveT:
     some_intermediate_var = (a, b)
     return list(some_intermediate_var)
 </code></pre>
-<h3>Examples that Don't Crash</h3>
-<p>These examples help illustrate the specific conditions that trigger the crash, as these ones don't crash (it's not relevant that they don't pass the type check)</p>
+Examples that Don&#x27;t Crash
+<p>These examples help illustrate the specific conditions that trigger the crash, as these ones don&#x27;t crash (it&#x27;s not relevant that they don&#x27;t pass the type check)</p>
 <p><strong>does_not_crash_1.py</strong> (removing <code>tuple[RecursiveT, ...]</code> prevents crash):</p>
-<pre><code class="language-python">type RecursiveT = int | list[RecursiveT]  # | tuple[RecursiveT, ...]
+<pre><code>type RecursiveT = int | list[RecursiveT]  # | tuple[RecursiveT, ...]
 
 
 def foo(a: int, b: int) -&gt; RecursiveT:
@@ -73,7 +73,7 @@ def foo(a: int, b: int) -&gt; RecursiveT:
     return list(some_intermediate_var)
 </code></pre>
 <p><strong>does_not_crash_2.py</strong> (using list comprehension instead of <code>list()</code> constructor prevents crash):</p>
-<pre><code class="language-python">type RecursiveT = int | list[RecursiveT] | tuple[RecursiveT, ...]
+<pre><code>type RecursiveT = int | list[RecursiveT] | tuple[RecursiveT, ...]
 
 
 def foo(a: int, b: int) -&gt; RecursiveT:
@@ -81,45 +81,45 @@ def foo(a: int, b: int) -&gt; RecursiveT:
     return [v for v in some_intermediate_var]  # noqa: C416
 </code></pre>
 <p><strong>does_not_crash_3.py</strong> (using generic function instead of recursive type alias prevents crash):</p>
-<pre><code class="language-python">def foo[T](a: T, b: T) -&gt; tuple[T, ...]:
+<pre><code>def foo[T](a: T, b: T) -&gt; tuple[T, ...]:
     some_intermediate_var = (a, b)
     return list(some_intermediate_var)
 </code></pre>
-<h3>Analysis</h3>
+Analysis
 <p>The pattern suggests the crash occurs when ty attempts to infer types in a recursive context involving:</p>
 <ul>
 <li>Tuple types.</li>
 <li>Constructors such as <code>list(...)</code>, <code>tuple(...)</code>, <code>dict(...)</code>.</li>
 <li>A function return type that matches the recursive type alias</li>
 </ul>
-<h3>Version</h3>
+Version
 <p>ty 0.0.11</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">fatal</span> added by @AlexWaygood on 2026-01-12 16:25</div>
+            <div class="event">Label <span class="label">fatal</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-12 16:25</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">type aliases</span> added by @AlexWaygood on 2026-01-12 16:25</div>
+            <div class="event">Label <span class="label">type aliases</span> added by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-12 16:25</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Pre-stable 1" by @carljm on 2026-01-12 21:54</div>
+            <div class="event">Added to milestone &quot;Pre-stable 1&quot; by <a href="https://github.com/carljm">@carljm</a> on 2026-01-12 21:54</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2026-01-15 03:59</div>
-            <div class="timeline-body"><p>Fixed by https://github.com/astral-sh/ruff/pull/22543.</p>
+            <div class="timeline-body"><p>Fixed by <a href="https://github.com/astral-sh/ruff/pull/22543">astral-sh/ruff#22543</a>.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2026-01-15 03:59</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2026-01-15 03:59</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @carljm by @charliermarsh on 2026-01-15 03:59</div>
+            <div class="event">Assigned to <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2026-01-15 03:59</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-15 04:42:53 UTC
+        Synced at 2026-01-20 19:27:06 UTC
     </footer>
 </body>
 </html>

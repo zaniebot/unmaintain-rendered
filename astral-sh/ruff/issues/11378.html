@@ -24,34 +24,34 @@
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/lanzz">@lanzz</a></div>
             <div class="timeline-body"><p>I have an alias for <code>Annotated</code>, to be used in a container class:</p>
-<pre><code class="language-python">
+<pre><code>
 class Container:
     # class that inspects its type annotations at runtime and does stuff with them
 
 Field = typing.Annotated
 
 class MyContainer(Container):
-    foo_field: Field[int, 'metadata']    # ruff raises F281 &quot;Undefined name `metadata` here
-    bar_field: Field[str, 'not a valid identifier']   # ruff raises F722 &quot;Syntax error in forward annotation&quot; here
-    foo_ann: typing.Annotated[int, 'metadata']    # no complaints here
-    bar_ann: typing.Annotated[str, 'not a valid identifier']   # no complaints here either
+    foo_field: Field[int, &#x27;metadata&#x27;]    # ruff raises F281 &quot;Undefined name `metadata` here
+    bar_field: Field[str, &#x27;not a valid identifier&#x27;]   # ruff raises F722 &quot;Syntax error in forward annotation&quot; here
+    foo_ann: typing.Annotated[int, &#x27;metadata&#x27;]    # no complaints here
+    bar_ann: typing.Annotated[str, &#x27;not a valid identifier&#x27;]   # no complaints here either
 </code></pre>
-<p>Ultimately, the <code>Field</code> alias is just sugar to make the definitions of subclasses of <code>Container</code> better self-documenting. I understand this is a pretty niche use and it's very likely not feasible for Ruff to figure out that <code>Field</code> is alias for <code>Annotated</code> (especially since in practice that alias definition is in a completely different module), but is there a way to explicitly instruct Ruff to treat those instances of <code>Field</code> the same way it treats actual <code>Annotated</code> type definitions, without having to suppress the rule explicitly on every single line that uses <code>Field</code>? If I could define ignores by line regex that would work (e.g. ignore F281, F722 for lines matching <code>:\s+Field\[</code>), but I don't think Ruff supports that, or at least I could not find it in the docs.</p>
+<p>Ultimately, the <code>Field</code> alias is just sugar to make the definitions of subclasses of <code>Container</code> better self-documenting. I understand this is a pretty niche use and it&#x27;s very likely not feasible for Ruff to figure out that <code>Field</code> is alias for <code>Annotated</code> (especially since in practice that alias definition is in a completely different module), but is there a way to explicitly instruct Ruff to treat those instances of <code>Field</code> the same way it treats actual <code>Annotated</code> type definitions, without having to suppress the rule explicitly on every single line that uses <code>Field</code>? If I could define ignores by line regex that would work (e.g. ignore F281, F722 for lines matching <code>:\s+Field\[</code>), but I don&#x27;t think Ruff supports that, or at least I could not find it in the docs.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-13 01:48</div>
-            <div class="timeline-body"><p>I don't know that we have a great workaround here right now. If we can't resolve a symbol, and it's subscripted in an annotation, we <em>do</em> assume that any strings within the subscript are forward annotations, since they're almost always generics.</p>
-<p>I suspect this will eventually &quot;just work&quot; as we're doing a lot of foundational work right now to make Ruff capable of this kind of inference. But in the interim, struggling to think of anything other than adding <code># ruff: noqa: F281, F722</code> to the file.</p>
+            <div class="timeline-body"><p>I don&#x27;t know that we have a great workaround here right now. If we can&#x27;t resolve a symbol, and it&#x27;s subscripted in an annotation, we <em>do</em> assume that any strings within the subscript are forward annotations, since they&#x27;re almost always generics.</p>
+<p>I suspect this will eventually &quot;just work&quot; as we&#x27;re doing a lot of foundational work right now to make Ruff capable of this kind of inference. But in the interim, struggling to think of anything other than adding <code># ruff: noqa: F281, F722</code> to the file.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">type-inference</span> added by @charliermarsh on 2024-05-13 01:48</div>
+            <div class="event">Label <span class="label">type-inference</span> added by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-13 01:48</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/rmorshea">@rmorshea</a> on 2024-06-12 23:07</div>
             <div class="timeline-body"><p>As an additional note, this happens for any string literal in <code>Annotated</code>:</p>
-<pre><code class="language-python">Field[int, {&quot;some&quot;: &quot;metadata&quot;}] 
+<pre><code>Field[int, {&quot;some&quot;: &quot;metadata&quot;}] 
 </code></pre>
 <pre><code>Undefined name `some`
 Undefined name `metadata`
@@ -60,7 +60,7 @@ Undefined name `metadata`
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-12 23:09</div>
-            <div class="timeline-body"><p>Do you mean, if you reassign <code>Annotated</code> to something else? I don't see that behavior for <code>Annotated</code> itself: https://play.ruff.rs/2f8e1c84-7a7d-4173-8146-4d5718d279ea</p>
+            <div class="timeline-body"><p>Do you mean, if you reassign <code>Annotated</code> to something else? I don&#x27;t see that behavior for <code>Annotated</code> itself: https://play.ruff.rs/2f8e1c84-7a7d-4173-8146-4d5718d279ea</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -70,13 +70,13 @@ Undefined name `metadata`
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-13 00:23</div>
-            <div class="timeline-body"><p>You should be able to successfully import it from a different location by setting <a href="https://docs.astral.sh/ruff/settings/#lint_typing-modules"><code>typing-modules</code></a>, as long as it isn't aliased.</p>
+            <div class="timeline-body"><p>You should be able to successfully import it from a different location by setting <a href="https://docs.astral.sh/ruff/settings/#lint_typing-modules"><code>typing-modules</code></a>, as long as it isn&#x27;t aliased.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:50:15 UTC
+        Synced at 2026-01-20 18:48:53 UTC
     </footer>
 </body>
 </html>

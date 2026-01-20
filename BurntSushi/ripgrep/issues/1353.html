@@ -23,13 +23,13 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/Swatinem">@Swatinem</a></div>
-            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+            <div class="timeline-body">What version of ripgrep are you using?
 <p>ripgrep 11.0.2</p>
-<h4>How did you install ripgrep?</h4>
+How did you install ripgrep?
 <p>from the archlinux repository</p>
-<h4>What operating system are you using ripgrep on?</h4>
+What operating system are you using ripgrep on?
 <p>archlinux, latest</p>
-<h4>Describe your question, feature request, or bug.</h4>
+Describe your question, feature request, or bug.
 <p>Some background, pardon the <code>node</code> speak:</p>
 <ul>
 <li>I have a <code>yarn workspaces</code> setup</li>
@@ -37,9 +37,9 @@
 <li>For that reason, I actually create symlinks in a <code>postinstall</code> script.</li>
 </ul>
 <p>This essentially leads to a lot of mutually recursive symlinks, which are not handled really nicely by <code>ripgrep</code> (or rather the way it uses <code>walkdir</code> internally?)</p>
-<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+If this is a bug, what are the steps to reproduce the behavior?
 <p>I created a small shell script which creates mutually recursive symlinks:</p>
-<pre><code class="language-sh">#!/bin/sh
+<pre><code>#!/bin/sh
 
 N=${1-5}
 DIR=${2-symlinks}
@@ -55,7 +55,7 @@ do
 done
 </code></pre>
 <p>It appears ripgrep exhibits exponential (?) behavior when walking this tree with <code>--follow</code>.</p>
-<h4>If this is a bug, what is the actual behavior?</h4>
+If this is a bug, what is the actual behavior?
 <pre><code>λ ~/Coding rm -rf symlinks &amp;&amp; ./symlinks.sh 3 &amp;&amp; rg --sort-files --files --follow symlinks 2&gt;/dev/null
 symlinks/1/2/3/file
 symlinks/1/2/file
@@ -83,7 +83,7 @@ rg --sort-files --files --follow symlinks 2&gt; /dev/null  0,73s user 1,63s syst
 rg --sort-files --files --follow symlinks 2&gt; /dev/null  7,20s user 16,65s system 97% cpu 24,519 total
 </code></pre>
 <p>The timing gets worse the more mutually recursive symlinks I have, obviously.</p>
-<h4>If this is a bug, what is the expected behavior?</h4>
+If this is a bug, what is the expected behavior?
 <p>Well this is rather a matter of debate how the expected behavior of <code>--follow</code> should be…
 IMO ripgrep should just resolve symlinks to their original directory, keeping track of all the already visited directories.
 But that would be a behavior change to the <code>--follow</code> option, so not sure what would be the best to avoid this pathological case…</p>
@@ -271,7 +271,7 @@ faults  0
 ------ ----------- ----------- --------- --------- ----------------
 100.00   11.691584                236083         3 total
 </code></pre>
-<p>Which look pretty similar to ripgrep's syscall counts. To get a more accurate
+<p>Which look pretty similar to ripgrep&#x27;s syscall counts. To get a more accurate
 baseline for <code>walkdir-list</code>, I also gathered the syscall counts from <code>find</code>:</p>
 <pre><code>$ strace -c -o syscalls.find find -L ./symlinks 2&gt;&amp;1 | wc -l
 13699
@@ -365,19 +365,19 @@ $ cat /tmp/syscalls.linux.walkdir
 ------ ----------- ----------- --------- --------- ----------------
 100.00    1.002603                 22389         3 total
 </code></pre>
-<p>The above is pretty interesting. I'm not sure what the deal is with find's
+<p>The above is pretty interesting. I&#x27;m not sure what the deal is with find&#x27;s
 <code>fcntl</code> calls, but other than that, the counts are pretty similar, with
 <code>walkdir</code> actually having fewer calls in some cases (e.g., <code>close</code>).</p>
 <p>So to me, this suggests there is something sub-optimal in how <code>walkdir</code> is
-doing symlink loop detection. I'm not sure what that is yet, but someone will
+doing symlink loop detection. I&#x27;m not sure what that is yet, but someone will
 need to dig into it. From looking at the syscall counts, my guess is that
 <code>walkdir</code> is <em>correctly</em> opening a handle to a file in order to determine
 file equivalence (this is the part where you check for a loop in symlinks),
-where as <code>find</code> and <code>grep</code> are just relying on <code>stat</code>. It's possible that
-perhaps <code>walkdir</code> should switch to <code>find</code>/<code>grep</code>'s method since it's faster,
-even if it's not quite as correct.</p>
-<p>With that said, the bottom line here is that if you don't want to take
-exponential time to traverse a directory, then don't create directory trees
+where as <code>find</code> and <code>grep</code> are just relying on <code>stat</code>. It&#x27;s possible that
+perhaps <code>walkdir</code> should switch to <code>find</code>/<code>grep</code>&#x27;s method since it&#x27;s faster,
+even if it&#x27;s not quite as correct.</p>
+<p>With that said, the bottom line here is that if you don&#x27;t want to take
+exponential time to traverse a directory, then don&#x27;t create directory trees
 that are exponentially large.</p>
 <blockquote>
 <p>keeping track of all the already visited directories.</p>
@@ -388,10 +388,10 @@ other kind of &quot;duplicate&quot; detection is not appropriate for a tool like
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "`--follow` with mutually recursive symlinks leads to exponential(?) slowdown" to "traversing large amounts of symlinks is sub-optimal" by @BurntSushi on 2019-08-20 12:32</div>
+            <div class="event">Renamed from &quot;`--follow` with mutually recursive symlinks leads to exponential(?) slowdown&quot; to &quot;traversing large amounts of symlinks is sub-optimal&quot; by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-08-20 12:32</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2019-08-20 12:32</div>
+            <div class="event">Label <span class="label">enhancement</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-08-20 12:32</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/Swatinem">@Swatinem</a> on 2019-08-20 15:41</div>
@@ -409,7 +409,7 @@ other kind of &quot;duplicate&quot; detection is not appropriate for a tool like
 </blockquote>
 <p>Yes, I thought so. However, as the author of <code>walkdir</code>, what would be your recommendation for fixing <code>notify</code> / <code>cargo-watch</code> in this case?</p>
 <p>Well in the end, I think I can avoid creating most of these symlinks, which should hopefully improve this situation on my end somewhat.</p>
-<p><img src="https://user-images.githubusercontent.com/580492/63361759-025ed180-c371-11e9-94b8-ec0624548ec9.png" alt="Bildschirmfoto von 2019-08-20 17-17-37" /></p>
+<p><img src="https://user-images.githubusercontent.com/580492/63361759-025ed180-c371-11e9-94b8-ec0624548ec9.png" alt="Bildschirmfoto von 2019-08-20 17-17-37"></p>
 <p>https://github.com/passcod/notify/blob/0709c940dd7294ef07b176504a89949d462bbe98/src/inotify.rs#L409-L466</p>
 </div>
         </div>
@@ -418,7 +418,7 @@ other kind of &quot;duplicate&quot; detection is not appropriate for a tool like
             <div class="timeline-body"><blockquote>
 <p>However, as the author of walkdir, what would be your recommendation for fixing notify / cargo-watch in this case?</p>
 </blockquote>
-<p>If performance of <code>find</code>/<code>grep</code> is good enough for you, then it's plausible <code>walkdir</code> could get to that speed, but it still exhibits exponential growth. Other than that, I'm not really sure what can be done other than not creating exponentially sized directory trees. Note that <code>walkdir</code> doesn't prevent the strategy of &quot;keep a set of all visited directories and don't descend if it has been seen,&quot; so if that helps your case, then <code>notify</code>/<code>cargo-watch</code> could potentially implement that.</p>
+<p>If performance of <code>find</code>/<code>grep</code> is good enough for you, then it&#x27;s plausible <code>walkdir</code> could get to that speed, but it still exhibits exponential growth. Other than that, I&#x27;m not really sure what can be done other than not creating exponentially sized directory trees. Note that <code>walkdir</code> doesn&#x27;t prevent the strategy of &quot;keep a set of all visited directories and don&#x27;t descend if it has been seen,&quot; so if that helps your case, then <code>notify</code>/<code>cargo-watch</code> could potentially implement that.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -430,7 +430,7 @@ other kind of &quot;duplicate&quot; detection is not appropriate for a tool like
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:42:59 UTC
+        Synced at 2026-01-20 18:48:09 UTC
     </footer>
 </body>
 </html>

@@ -23,34 +23,34 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>This PR updates the explicit specialization logic to avoid using the call machinery.</p>
-<p>Previously, the logic would use the call machinery by converting the list of type variables into a <code>Binding</code> with a single <code>Signature</code> where all the type variables are positional-only parameters with bounds and constraints as the annotated type and the default type as the default parameter value. This has the advantage that it doesn't need to implement any specific logic but the disadvantages are subpar diagnostic messages as it would use the ones specific to a function call. But, an important disadvantage is that the kind of type variable is lost in this translation which becomes important in #21445 where a <code>ParamSpec</code> can specialize into a list of types which is provided using list literal. For example,</p>
-<pre><code class="language-py">class Foo[T, **P]: ...
+<p>Previously, the logic would use the call machinery by converting the list of type variables into a <code>Binding</code> with a single <code>Signature</code> where all the type variables are positional-only parameters with bounds and constraints as the annotated type and the default type as the default parameter value. This has the advantage that it doesn&#x27;t need to implement any specific logic but the disadvantages are subpar diagnostic messages as it would use the ones specific to a function call. But, an important disadvantage is that the kind of type variable is lost in this translation which becomes important in #21445 where a <code>ParamSpec</code> can specialize into a list of types which is provided using list literal. For example,</p>
+<pre><code>class Foo[T, **P]: ...
 
 Foo[int, [int, str]]
 </code></pre>
 <p>This PR converts the logic to use a simple loop using <code>zip_longest</code> as all type variables and their corresponding type argument maps on a 1-1 basis. They cannot be specified using keyword argument either e.g., <code>dict[_VT=str, _KT=int]</code> is invalid.</p>
-<p>This PR also makes an initial attempt to improve the diagnostic message to specifically target the specialization part by using words like &quot;type argument&quot; instead of just &quot;argument&quot; and including information like the type variable, bounds, and constraints. Further improvements can be made by highlighting the type variable definition or the bounds / constraints as a sub-diagnostic but I'm going to leave that as a follow-up.</p>
-<h2>Test Plan</h2>
+<p>This PR also makes an initial attempt to improve the diagnostic message to specifically target the specialization part by using words like &quot;type argument&quot; instead of just &quot;argument&quot; and including information like the type variable, bounds, and constraints. Further improvements can be made by highlighting the type variable definition or the bounds / constraints as a sub-diagnostic but I&#x27;m going to leave that as a follow-up.</p>
+Test Plan
 <p>Update messages in existing test cases.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> added by @dhruvmanila on 2025-11-26 07:09</div>
+            <div class="event">Label <span class="label">internal</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-11-26 07:09</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ty</span> added by @dhruvmanila on 2025-11-26 07:09</div>
+            <div class="event">Label <span class="label">ty</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-11-26 07:09</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-26 07:11</div>
-            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+            <div class="timeline-body">
 
-<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
-<details>
-<summary>Changes were detected when running ty on typing conformance tests</summary>
+Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a>
 
-<pre><code class="language-diff">--- old-output.txt	2025-11-27 03:49:07.980672923 +0000
+Changes were detected when running ty on typing conformance tests
+
+<pre><code>--- old-output.txt	2025-11-27 03:49:07.980672923 +0000
 +++ new-output.txt	2025-11-27 03:49:11.291679471 +0000
 @@ -42,7 +42,7 @@
  aliases_newtype.py:61:38: error[invalid-newtype] invalid base for `typing.NewType`: type `TD1`
@@ -94,16 +94,16 @@ Foo[int, [int, str]]
  generics_basic.py:49:44: error[invalid-legacy-type-variable] A `TypeVar` cannot have exactly one constraint
  generics_basic.py:139:5: error[type-assertion-failure] Type `int` does not match asserted type `Unknown`
 @@ -446,18 +446,18 @@
- generics_defaults.py:38:1: error[type-assertion-failure] Type `type[OneDefault[int | float, bool]]` does not match asserted type `&lt;class 'OneDefault[int | float, bool]'&gt;`
- generics_defaults.py:45:1: error[type-assertion-failure] Type `type[AllTheDefaults[Any, Any, str, int, bool]]` does not match asserted type `&lt;class 'AllTheDefaults'&gt;`
- generics_defaults.py:46:1: error[type-assertion-failure] Type `type[AllTheDefaults[int, int | float | complex, str, int, bool]]` does not match asserted type `&lt;class 'AllTheDefaults[int, int | float | complex, str, int, bool]'&gt;`
+ generics_defaults.py:38:1: error[type-assertion-failure] Type `type[OneDefault[int | float, bool]]` does not match asserted type `&lt;class &#x27;OneDefault[int | float, bool]&#x27;&gt;`
+ generics_defaults.py:45:1: error[type-assertion-failure] Type `type[AllTheDefaults[Any, Any, str, int, bool]]` does not match asserted type `&lt;class &#x27;AllTheDefaults&#x27;&gt;`
+ generics_defaults.py:46:1: error[type-assertion-failure] Type `type[AllTheDefaults[int, int | float | complex, str, int, bool]]` does not match asserted type `&lt;class &#x27;AllTheDefaults[int, int | float | complex, str, int, bool]&#x27;&gt;`
 -generics_defaults.py:50:1: error[missing-argument] No argument provided for required parameter `T2` of class `AllTheDefaults`
 +generics_defaults.py:50:1: error[invalid-type-arguments] No type argument provided for required type variable `T2` of class `AllTheDefaults`
- generics_defaults.py:52:1: error[type-assertion-failure] Type `type[AllTheDefaults[int, int | float | complex, str, int, bool]]` does not match asserted type `&lt;class 'AllTheDefaults[int, int | float | complex, str, int, bool]'&gt;`
- generics_defaults.py:55:1: error[type-assertion-failure] Type `type[AllTheDefaults[int, int | float | complex, str, int, bool]]` does not match asserted type `&lt;class 'AllTheDefaults[int, int | float | complex, str, int, bool]'&gt;`
- generics_defaults.py:59:1: error[type-assertion-failure] Type `type[AllTheDefaults[int, int | float | complex, str, int, bool]]` does not match asserted type `&lt;class 'AllTheDefaults[int, int | float | complex, str, int, bool]'&gt;`
- generics_defaults.py:63:1: error[type-assertion-failure] Type `type[AllTheDefaults[int, int | float | complex, str, int, bool]]` does not match asserted type `&lt;class 'AllTheDefaults[int, int | float | complex, str, int, bool]'&gt;`
- generics_defaults.py:79:1: error[type-assertion-failure] Type `Unknown` does not match asserted type `&lt;class 'Class_ParamSpec'&gt;`
+ generics_defaults.py:52:1: error[type-assertion-failure] Type `type[AllTheDefaults[int, int | float | complex, str, int, bool]]` does not match asserted type `&lt;class &#x27;AllTheDefaults[int, int | float | complex, str, int, bool]&#x27;&gt;`
+ generics_defaults.py:55:1: error[type-assertion-failure] Type `type[AllTheDefaults[int, int | float | complex, str, int, bool]]` does not match asserted type `&lt;class &#x27;AllTheDefaults[int, int | float | complex, str, int, bool]&#x27;&gt;`
+ generics_defaults.py:59:1: error[type-assertion-failure] Type `type[AllTheDefaults[int, int | float | complex, str, int, bool]]` does not match asserted type `&lt;class &#x27;AllTheDefaults[int, int | float | complex, str, int, bool]&#x27;&gt;`
+ generics_defaults.py:63:1: error[type-assertion-failure] Type `type[AllTheDefaults[int, int | float | complex, str, int, bool]]` does not match asserted type `&lt;class &#x27;AllTheDefaults[int, int | float | complex, str, int, bool]&#x27;&gt;`
+ generics_defaults.py:79:1: error[type-assertion-failure] Type `Unknown` does not match asserted type `&lt;class &#x27;Class_ParamSpec&#x27;&gt;`
 -generics_defaults.py:79:35: error[too-many-positional-arguments] Too many positional arguments to class `Class_ParamSpec`: expected 1, got 2
 +generics_defaults.py:79:56: error[invalid-type-arguments] Too many type arguments to class `Class_ParamSpec`: expected between 0 and 1, got 2
  generics_defaults.py:80:1: error[type-assertion-failure] Type `Unknown` does not match asserted type `Class_ParamSpec[Unknown]`
@@ -114,7 +114,7 @@ Foo[int, [int, str]]
 -generics_defaults.py:81:46: error[too-many-positional-arguments] Too many positional arguments to class `Class_ParamSpec`: expected 1, got 2
 +generics_defaults.py:81:68: error[invalid-type-arguments] Too many type arguments to class `Class_ParamSpec`: expected between 0 and 1, got 2
  generics_defaults.py:91:26: error[invalid-argument-type] `@Todo(starred expression)` is not a valid argument to `Generic`
- generics_defaults.py:94:1: error[type-assertion-failure] Type `@Todo(specialized non-generic class)` does not match asserted type `&lt;class 'Class_TypeVarTuple'&gt;`
+ generics_defaults.py:94:1: error[type-assertion-failure] Type `@Todo(specialized non-generic class)` does not match asserted type `&lt;class &#x27;Class_TypeVarTuple&#x27;&gt;`
  generics_defaults.py:95:1: error[type-assertion-failure] Type `@Todo(specialized non-generic class)` does not match asserted type `Class_TypeVarTuple`
 @@ -505,7 +505,7 @@
  generics_paramspec_specialization.py:40:27: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[()]`?
@@ -127,19 +127,19 @@ Foo[int, [int, str]]
  generics_scoping.py:42:1: error[type-assertion-failure] Type `str` does not match asserted type `Literal[&quot;abc&quot;]`
 
 </code></pre>
-</details>
+
 
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-26 07:13</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">anyio (https://github.com/agronholm/anyio)
+Changes were detected when running on open source projects
+
+<pre><code>anyio (https://github.com/agronholm/anyio)
 - src/anyio/_backends/_asyncio.py:186:29: error[missing-argument] No arguments provided for required parameters `_SendT_nd_contra`, `_ReturnT_nd_co` of class `Coroutine`
 + src/anyio/_backends/_asyncio.py:186:29: error[invalid-type-arguments] No type arguments provided for required type variables `_SendT_nd_contra`, `_ReturnT_nd_co` of class `Coroutine`
 
@@ -505,7 +505,7 @@ xarray (https://github.com/pydata/xarray)
 
 ... (truncated 569 lines) ...
 </code></pre>
-</details>
+
 
 <p>No memory usage changes detected ✅</p>
 </div>
@@ -525,32 +525,32 @@ xarray (https://github.com/pydata/xarray)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/legacy/classes.md</code>:169 on 2025-11-26 09:06</div>
-            <div class="timeline-body"><p>I think this and other similar TODOs are now resolved, I'll remove them.</p>
+            <div class="timeline-body"><p>I think this and other similar TODOs are now resolved, I&#x27;ll remove them.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @dhruvmanila on 2025-11-26 09:07</div>
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-11-26 09:07</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @dhruvmanila on 2025-11-26 09:08</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-11-26 09:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @dhruvmanila on 2025-11-26 09:08</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-11-26 09:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2025-11-26 09:08</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-11-26 09:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @dhruvmanila on 2025-11-26 09:08</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-11-26 09:08</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @dhruvmanila on 2025-11-26 09:08</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-11-26 09:08</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-26 09:15</div>
-            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+            <div class="timeline-body">
 
-<h2><code>ecosystem-analyzer</code> results</h2>
+<code>ecosystem-analyzer</code> results
 <p>| Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
 | <code>invalid-type-arguments</code> | 437 | 0 | 0 |
@@ -569,29 +569,29 @@ xarray (https://github.com/pydata/xarray)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-26 09:36</div>
-            <div class="timeline-body"><p>I remember that @sharkdp saw something similar in one of his past PRs and he added an explanation of when this can happen but I'm unable to find that PR right now</p>
+            <div class="timeline-body"><p>I remember that @sharkdp saw something similar in one of his past PRs and he added an explanation of when this can happen but I&#x27;m unable to find that PR right now</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-11-26 09:57</div>
             <div class="timeline-body"><blockquote>
-<p>I remember that @sharkdp saw something similar in one of his past PRs and he added an explanation of when this can happen but I'm unable to find that PR right now</p>
+<p>I remember that @sharkdp saw something similar in one of his past PRs and he added an explanation of when this can happen but I&#x27;m unable to find that PR right now</p>
 </blockquote>
-<p>Yes, see: https://github.com/astral-sh/ruff/pull/21476#issuecomment-3546898310.</p>
+<p>Yes, see: <a href="https://github.com/astral-sh/ruff/pull/21476">astral-sh/ruff#21476</a>#issuecomment-3546898310.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-11-26 10:00</div>
             <div class="timeline-body"><p>Oh, I see where the difference lies:</p>
 <p>The source code is:</p>
-<pre><code class="language-python">_ResamplerGroupBy: TypeAlias = (
+<pre><code>_ResamplerGroupBy: TypeAlias = (
     DatetimeIndexResamplerGroupby[NDFrameT]  # ty: ignore[invalid-argument-type]
     | PeriodIndexResamplerGroupby[NDFrameT]  # ty: ignore[invalid-argument-type]
     | TimedeltaIndexResamplerGroupby[NDFrameT]  # ty: ignore[invalid-argument-type]
 )
 </code></pre>
 <p>Here, the code has been changed from <code>invalid-argument-type</code> to <code>invalid-type-arguments</code> which results in the following new diagnostics:</p>
-<pre><code class="language-diff">+ pandas-stubs/core/groupby/groupby.pyi:74:35: error[invalid-type-arguments] Type `typing.TypeVar` is not assignable to upper bound `NDFrame` of type variable `NDFrameT@DatetimeIndexResamplerGroupby`
+<pre><code>+ pandas-stubs/core/groupby/groupby.pyi:74:35: error[invalid-type-arguments] Type `typing.TypeVar` is not assignable to upper bound `NDFrame` of type variable `NDFrameT@DatetimeIndexResamplerGroupby`
 + pandas-stubs/core/groupby/groupby.pyi:74:46: warning[unused-ignore-comment] Unused `ty: ignore` directive
 + pandas-stubs/core/groupby/groupby.pyi:75:35: error[invalid-type-arguments] Type `typing.TypeVar` is not assignable to upper bound `NDFrame` of type variable `NDFrameT@PeriodIndexResamplerGroupby`
 + pandas-stubs/core/groupby/groupby.pyi:75:46: warning[unused-ignore-comment] Unused `ty: ignore` directive
@@ -603,18 +603,18 @@ xarray (https://github.com/pydata/xarray)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:11224 on 2025-11-26 15:33</div>
-            <div class="timeline-body"><p>As a complete aside, I've come to the opinion that we should always be passing <code>db</code> as a parameter instead of storing it locally as a field. When we use the pattern here (saving it into a local variable), it's sometimes just to save typing from all of the places that we're doing <code>self.db()</code> (or <code>self.db</code> — another inconsistency!). But other times it's load bearing, and needed to satisfy the borrow checker! Committing to just always threading it through as a parameter would be more consistent and would eliminate the borrowck problems completely. The only places where we should store a <code>db</code> into a field is when we have to, to be able to implement some external trait.</p>
-<p>But that's just me venting! No suggested change for this PR.</p>
+            <div class="timeline-body"><p>As a complete aside, I&#x27;ve come to the opinion that we should always be passing <code>db</code> as a parameter instead of storing it locally as a field. When we use the pattern here (saving it into a local variable), it&#x27;s sometimes just to save typing from all of the places that we&#x27;re doing <code>self.db()</code> (or <code>self.db</code> — another inconsistency!). But other times it&#x27;s load bearing, and needed to satisfy the borrow checker! Committing to just always threading it through as a parameter would be more consistent and would eliminate the borrowck problems completely. The only places where we should store a <code>db</code> into a field is when we have to, to be able to implement some external trait.</p>
+<p>But that&#x27;s just me venting! No suggested change for this PR.</p>
 <p>&lt;/end of soapbox&gt;</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:11269 on 2025-11-26 15:41</div>
             <div class="timeline-body"><p>This might be something you can instead track by taking the index if the first typevar with a default, since (I think) all of the defaulty typevars have to be grouped together at the end. For instance with</p>
-<pre><code class="language-py">class C[T, U = int, V]: ...
+<pre><code>class C[T, U = int, V]: ...
 </code></pre>
-<p>I don't think you can instantiate <code>C</code> with only two types (<code>C[str, bool]</code>). That would assume the <code>bool</code> lines up with <code>U</code>, and you haven't provided a type for <code>V</code>.</p>
-<p>That said...I don't think that would be any simpler than what you've done here, so I would say leave it as is.</p>
+<p>I don&#x27;t think you can instantiate <code>C</code> with only two types (<code>C[str, bool]</code>). That would assume the <code>bool</code> lines up with <code>U</code>, and you haven&#x27;t provided a type for <code>V</code>.</p>
+<p>That said...I don&#x27;t think that would be any simpler than what you&#x27;ve done here, so I would say leave it as is.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -624,7 +624,7 @@ xarray (https://github.com/pydata/xarray)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:11283 on 2025-11-26 15:48</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">                    first_excess_type_argument_index.get_or_insert(index);
+            <div class="timeline-body"><pre><code>                    first_excess_type_argument_index.get_or_insert(index);
 </code></pre>
 </div>
         </div>
@@ -634,10 +634,10 @@ xarray (https://github.com/pydata/xarray)
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-11-26 15:53</div>
+            <div class="event">Review request for <a href="https://github.com/AlexWaygood">@AlexWaygood</a> removed by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-26 15:53</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review request for @carljm removed by @carljm on 2025-11-26 19:33</div>
+            <div class="event">Review request for <a href="https://github.com/carljm">@carljm</a> removed by <a href="https://github.com/carljm">@carljm</a> on 2025-11-26 19:33</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-11-27 03:09</div>
@@ -645,12 +645,12 @@ xarray (https://github.com/pydata/xarray)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:11269 on 2025-11-27 03:09</div>
-            <div class="timeline-body"><p>Yeah, the typevar with default needs to be grouped together at the end of the list. I don't think we're raising any diagnostic for that (https://play.ty.dev/776bac63-9407-4ebf-acd7-d56d2c174f25) which is something that should be easy to do now. I can do it as a quick follow-up.</p>
+            <div class="timeline-body"><p>Yeah, the typevar with default needs to be grouped together at the end of the list. I don&#x27;t think we&#x27;re raising any diagnostic for that (https://play.ty.dev/776bac63-9407-4ebf-acd7-d56d2c174f25) which is something that should be easy to do now. I can do it as a quick follow-up.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:11269 on 2025-11-27 03:37</div>
-            <div class="timeline-body"><p>Oh wait, this is a SyntaxError in CPython for PEP 695 type variables but it's a TypeError for the legacy type variables. I'll raise a ticket for now.</p>
+            <div class="timeline-body"><p>Oh wait, this is a SyntaxError in CPython for PEP 695 type variables but it&#x27;s a TypeError for the legacy type variables. I&#x27;ll raise a ticket for now.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -663,28 +663,28 @@ xarray (https://github.com/pydata/xarray)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:11269 on 2025-11-27 03:46</div>
-            <div class="timeline-body"><p>https://github.com/astral-sh/ty/issues/1651 and https://github.com/astral-sh/ruff/issues/17412#issuecomment-3584088217</p>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ty/issues/1651 and <a href="https://github.com/astral-sh/ruff/issues/17412">astral-sh/ruff#17412</a>#issuecomment-3584088217</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @dhruvmanila on 2025-11-27 03:52</div>
+            <div class="event">Merged by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-11-27 03:52</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dhruvmanila on 2025-11-27 03:52</div>
+            <div class="event">Closed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-11-27 03:52</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-11-27 03:52</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">internal</span> removed by @dhruvmanila on 2025-11-28 12:31</div>
+            <div class="event">Label <span class="label">internal</span> removed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-11-28 12:31</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">diagnostics</span> added by @dhruvmanila on 2025-11-28 12:31</div>
+            <div class="event">Label <span class="label">diagnostics</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-11-28 12:31</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:17:34 UTC
+        Synced at 2026-01-20 19:21:03 UTC
     </footer>
 </body>
 </html>

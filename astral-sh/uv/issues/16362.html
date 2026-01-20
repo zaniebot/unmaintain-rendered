@@ -23,9 +23,9 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/joelleibow">@joelleibow</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>When using Python managed by <code>asdf</code>, <code>uv run</code> recreates the virtual environment on every invocation, even when the Python version is correct and satisfies requirements. This happens because <code>uv</code> compares the asdf shim path (<code>~/.asdf/shims/python</code>) with the actual interpreter path (<code>~/.asdf/installs/python/3.13.5/bin/python</code>) and considers them different, triggering a venv rebuild.</p>
-<h2>Minimal Reproducible Example</h2>
+Minimal Reproducible Example
 <p><strong>Prerequisites:</strong></p>
 <ul>
 <li>Python managed by <code>asdf</code></li>
@@ -35,19 +35,19 @@
 <ol>
 <li>Create a new project:</li>
 </ol>
-<pre><code class="language-bash">uv init test-project --no-pin-python
+<pre><code>uv init test-project --no-pin-python
 cd test-project
 </code></pre>
-<ol start="2">
+<ol>
 <li>Sync and verify venv is created:</li>
 </ol>
-<pre><code class="language-bash">uv sync
+<pre><code>uv sync
 # Virtual environment created successfully
 </code></pre>
-<ol start="3">
+<ol>
 <li>Run a command twice:</li>
 </ol>
-<pre><code class="language-bash">uv run python --version
+<pre><code>uv run python --version
 # Works, uses existing venv
 
 uv run python --version
@@ -65,54 +65,54 @@ Installed 1 package in 250ms
 Python 3.13.5
 </code></pre>
 <p><strong>With verbose output:</strong></p>
-<pre><code class="language-bash">$ uv run --verbose python --version 2&gt;&amp;1 | grep -A2 &quot;not satisfy&quot;
+<pre><code>$ uv run --verbose python --version 2&gt;&amp;1 | grep -A2 &quot;not satisfy&quot;
 
 DEBUG Using Python request \`~/.asdf/shims/python\` from explicit request
 DEBUG Checking for Python environment at: \`.venv\`
-DEBUG The project environment's Python version does not satisfy the request: \`path \`~/.asdf/shims/python\`\`
+DEBUG The project environment&#x27;s Python version does not satisfy the request: \`path \`~/.asdf/shims/python\`\`
 DEBUG Checking for Python interpreter at path \`~/.asdf/shims/python\`
 Using CPython 3.13.5 interpreter at: ~/.asdf/installs/python/3.13.5/bin/python
 Removed virtual environment at: .venv
 Creating virtual environment at: .venv
 </code></pre>
 <p>The issue is clear: uv is comparing <strong>paths</strong> rather than resolving shims to their actual interpreter and comparing <strong>versions</strong>.</p>
-<h2>Expected Behavior</h2>
+Expected Behavior
 <p><code>uv</code> should resolve the asdf shim to the actual Python interpreter before comparing paths, or compare Python versions rather than paths. The virtual environment should persist across <code>uv run</code> invocations when the Python version is compatible.</p>
-<h2>Additional Context</h2>
+Additional Context
 <ul>
 <li>This issue is similar to #14884, but occurs even <strong>without</strong> <code>.python-version</code> file</li>
 <li>The <code>pyproject.toml</code> has <code>requires-python = &quot;&gt;=3.13.5&quot;</code></li>
-<li>The venv's <code>pyvenv.cfg</code> correctly points to the actual interpreter</li>
+<li>The venv&#x27;s <code>pyvenv.cfg</code> correctly points to the actual interpreter</li>
 <li>Direct venv usage (<code>.venv/bin/python</code>) works fine</li>
 <li>The issue affects all <code>uv run</code> commands, adding ~250ms overhead per invocation</li>
 </ul>
-<h2>Workaround</h2>
+Workaround
 <p>Setting <code>UV_PYTHON</code> to the actual interpreter path works but is impractical:</p>
-<pre><code class="language-bash">export UV_PYTHON=~/.asdf/installs/python/3.13.5/bin/python
+<pre><code>export UV_PYTHON=~/.asdf/installs/python/3.13.5/bin/python
 uv run python --version  # Now works without rebuilding
 </code></pre>
 <p>However, this is not a proper solution as:</p>
 <ul>
-<li>It's machine-specific (breaks on different machines)</li>
+<li>It&#x27;s machine-specific (breaks on different machines)</li>
 <li>It breaks when upgrading Python versions</li>
 <li>It requires maintaining environment variables per project</li>
 </ul>
-<h2>Platform</h2>
+Platform
 <p>macOS 14.6 (Darwin 24.6.0) arm64</p>
-<h2>Version</h2>
+Version
 <p>uv 0.9.4 (Homebrew 2025-10-18)</p>
-<h2>Python Version</h2>
+Python Version
 <p>Python 3.13.5 (managed by asdf 0.18.0)</p>
-<h2>Configuration Files</h2>
+Configuration Files
 <p><strong>pyproject.toml:</strong></p>
-<pre><code class="language-toml">[project]
+<pre><code>[project]
 name = &quot;test-project&quot;
 version = &quot;0.1.0&quot;
 requires-python = &quot;&gt;=3.13.5&quot;
 dependencies = []
 </code></pre>
 <p><strong>Shell environment:</strong></p>
-<pre><code class="language-bash">$ which python
+<pre><code>$ which python
 ~/.asdf/shims/python
 
 $ python --version
@@ -122,13 +122,13 @@ $ asdf which python
 ~/.asdf/installs/python/3.13.5/bin/python
 </code></pre>
 <p><strong>After venv creation - pyvenv.cfg:</strong></p>
-<pre><code class="language-ini">home = ~/.asdf/installs/python/3.13.5/bin
+<pre><code>home = ~/.asdf/installs/python/3.13.5/bin
 implementation = CPython
 uv = 0.9.4
 version_info = 3.13.5
 include-system-site-packages = false
 </code></pre>
-<h2>Suggested Fix</h2>
+Suggested Fix
 <p><code>uv</code> should:</p>
 <ol>
 <li>Resolve shims/symlinks to actual interpreter paths before comparison</li>
@@ -140,8 +140,8 @@ include-system-site-packages = false
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/joelleibow">@joelleibow</a> on 2025-10-19 22:10</div>
-            <div class="timeline-body"><h2>Resolution: User Error</h2>
-<p>We've identified the root cause - this was <strong>not a bug in uv</strong>, but rather an environment configuration issue on my end.</p>
+            <div class="timeline-body">Resolution: User Error
+<p>We&#x27;ve identified the root cause - this was <strong>not a bug in uv</strong>, but rather an environment configuration issue on my end.</p>
 <p><strong>Root Cause:</strong></p>
 <ul>
 <li><code>UV_PYTHON=/Users/joelleibow/.asdf/shims/python</code> was set in my <code>.zshrc</code></li>
@@ -151,7 +151,7 @@ include-system-site-packages = false
 <ol>
 <li>Removed the <code>UV_PYTHON</code> export from <code>.zshrc</code></li>
 <li>Restarted VS Code to pick up the clean environment</li>
-<li>Now uv uses its default Python resolution and doesn't recreate <code>.venv</code></li>
+<li>Now uv uses its default Python resolution and doesn&#x27;t recreate <code>.venv</code></li>
 </ol>
 <p><strong>Verification:</strong>
 After the fix, running <code>uv run</code> commands no longer shows:</p>
@@ -164,12 +164,12 @@ Installed 133 packages in XXXms
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @joelleibow on 2025-10-19 22:10</div>
+            <div class="event">Closed by <a href="https://github.com/joelleibow">@joelleibow</a> on 2025-10-19 22:10</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:33:13 UTC
+        Synced at 2026-01-20 19:40:43 UTC
     </footer>
 </body>
 </html>

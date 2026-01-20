@@ -23,27 +23,18 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/bofm">@bofm</a></div>
-            <div class="timeline-body"><!--
-Thank you for taking the time to report an issue! We're glad to have you involved with uv.
-
-If you're filing a bug report, please consider including the following information:
-
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
-* The current uv platform.
-* The current uv version (`uv --version`).
--->
+            <div class="timeline-body">
 
 <p>Hello Astral team! Thank you for your work on Ruff and UV! It makes a huge difference.</p>
 <p>Please clarify the best way to install the locked dependencies and validate by the hashes when building a Docker image.</p>
-<h2>Key points when building a Docker image of an app:</h2>
+Key points when building a Docker image of an app:
 <ul>
 <li>We want minimum extra stuff inside the container.</li>
 <li>No need to create a venv.</li>
 <li>No need to install uv, because we can mount it (assume we use modern Docker with BuildKit).</li>
 <li>For production usage, we should use frozen/locked dependencies and validate them by hashes.</li>
 </ul>
-<h2>Problems:</h2>
+Problems:
 <ul>
 <li><code>uv sync</code> creates a venv. This is redundant in a Docker container with a single app.</li>
 <li>The <code>uv sync</code>-way in Docker also requires using <code>uv run</code> as cmd or setting the venv env var or override PATH.</li>
@@ -51,9 +42,9 @@ If you're filing a bug report, please consider including the following informati
 <li>It is unclear which way is preferred. A new user will be confused.</li>
 <li><a href="https://docs.astral.sh/uv/guides/integration/docker/#installing-a-project_1">Installing a project</a> suggests doing <code>uv pip install -r pyproject.toml</code>. But this way the lock/freeze files are not used and the build may be non-idempotent. And the hashes are not checked.</li>
 </ul>
-<h2>Workaround</h2>
+Workaround
 <p>This is what I ended up with right now with uv 0.3.1.</p>
-<pre><code class="language-Dockerfile">FROM python:3.12-slim as uv
+<pre><code>FROM python:3.12-slim as uv
 # Installing via pip because there is no (yet) docker image for armv7 
 RUN --mount=type=cache,target=/root/.cache pip install -U uv
 
@@ -66,12 +57,12 @@ COPY requirements.lock .
 RUN --mount=type=cache,target=/root/.cache \
     --mount=from=uv,source=/usr/local/bin/uv,target=/bin/uv \
 #  !!!! this grep hack !!!!
-    cat requirements.lock | grep -vE '^-e' &gt; requirements.txt \ 
+    cat requirements.lock | grep -vE &#x27;^-e&#x27; &gt; requirements.txt \ 
     &amp;&amp; uv pip install --system --require-hashes --link-mode copy -r requirements.txt
 </code></pre>
-<h2>What it should be like</h2>
+What it should be like
 <p>I felt like I need something like <code>uv sync —system --frozen-only</code> which would not create a venv and would only use <code>uv.lock</code> to install the dependencies.</p>
-<h2>Versions</h2>
+Versions
 <ul>
 <li>uv 0.3.1</li>
 <li>Dev: MacOS Sonoma (14.3.1) on MacBook Pro with Apple Silicone arch.</li>
@@ -81,12 +72,12 @@ RUN --mount=type=cache,target=/root/.cache \
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-22 17:31</div>
-            <div class="timeline-body"><p>There's something like this brewing in https://github.com/astral-sh/uv/pull/6398, designed for this very purpose (with discussion here: https://github.com/astral-sh/uv/issues/4028). It won't solve the <code>--system</code> part yet, that will come separately.</p>
+            <div class="timeline-body"><p>There&#x27;s something like this brewing in <a href="https://github.com/astral-sh/uv/pull/6398">astral-sh/uv#6398</a>, designed for this very purpose (with discussion here: <a href="https://github.com/astral-sh/uv/issues/4028">astral-sh/uv#4028</a>). It won&#x27;t solve the <code>--system</code> part yet, that will come separately.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-22 17:32</div>
-            <div class="timeline-body"><p>(Sorry, can't give a full reply now, I just wanted to point you there since it creates <code>uv sync --frozen --no-locals</code> to the project itself.)</p>
+            <div class="timeline-body"><p>(Sorry, can&#x27;t give a full reply now, I just wanted to point you there since it creates <code>uv sync --frozen --no-locals</code> to the project itself.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -105,23 +96,23 @@ RUN --mount=type=cache,target=/root/.cache \
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-22 17:43</div>
-            <div class="timeline-body"><p>Yeah the <code>--no-locals</code> from that PR would make it such that we <em>don't</em> require the <code>pyproject.toml</code>.</p>
-<p>We don't yet support installing into system Python but I suspect we will soon for this reason.</p>
+            <div class="timeline-body"><p>Yeah the <code>--no-locals</code> from that PR would make it such that we <em>don&#x27;t</em> require the <code>pyproject.toml</code>.</p>
+<p>We don&#x27;t yet support installing into system Python but I suspect we will soon for this reason.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/bofm">@bofm</a> on 2024-08-22 18:03</div>
-            <div class="timeline-body"><p>There is a good point in https://github.com/astral-sh/uv/issues/4028#issuecomment-2305322593</p>
+            <div class="timeline-body"><p>There is a good point in <a href="https://github.com/astral-sh/uv/issues/4028">astral-sh/uv#4028</a>#issuecomment-2305322593</p>
 <blockquote>
 <p>uv sync is not a command designed for application install</p>
 </blockquote>
-<p>What would be left after <code>--no-locals</code> is merged and the project deps are installed is that we'd still need to install the project itself (currently <code>uv pip install .</code>) which mixed the two worlds: pip and non-pip. We got ourselves another P vs NP problem.</p>
+<p>What would be left after <code>--no-locals</code> is merged and the project deps are installed is that we&#x27;d still need to install the project itself (currently <code>uv pip install .</code>) which mixed the two worlds: pip and non-pip. We got ourselves another P vs NP problem.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-22 20:47</div>
             <div class="timeline-body"><p>Not quite -- you can see the example in the PR:</p>
-<pre><code class="language-dockerfile"># Copy the lockfile into the image
+<pre><code># Copy the lockfile into the image
 ADD uv.lock /app/uv.lock
 
 # Install remote dependencies
@@ -135,26 +126,26 @@ WORKDIR /app
 # Sync the remaining dependencies
 RUN uv sync --frozen
 </code></pre>
-<p>The benefit here is that you can create a cacheable layer with your project's dependencies.</p>
+<p>The benefit here is that you can create a cacheable layer with your project&#x27;s dependencies.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/bofm">@bofm</a> on 2024-08-22 22:09</div>
-            <div class="timeline-body"><p>Nice! What's still missing? Omitting venv creation?</p>
+            <div class="timeline-body"><p>Nice! What&#x27;s still missing? Omitting venv creation?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/albertotb">@albertotb</a> on 2024-08-24 14:18</div>
             <div class="timeline-body"><p>I could not find any issue that tracks the feature request of omitting venv creation so I will share another use case I found here (besides the Docker one).</p>
-<h3>Context</h3>
-<p>Mypy is notoriusly difficult to run correctly using pre-commit, since pre-commit uses an isolated env for every hook but mypy wants to have all your dependencies installed. To get around that, one can use <code>language: system</code> to omit venv creation and use the project's venv (with mypy and all dependencies installed):</p>
-<pre><code class="language-{yaml}">- repo: https://github.com/pre-commit/mirrors-mypy
+Context
+<p>Mypy is notoriusly difficult to run correctly using pre-commit, since pre-commit uses an isolated env for every hook but mypy wants to have all your dependencies installed. To get around that, one can use <code>language: system</code> to omit venv creation and use the project&#x27;s venv (with mypy and all dependencies installed):</p>
+<pre><code>- repo: https://github.com/pre-commit/mirrors-mypy
   rev: v1.6.1
   hooks:
     - id: mypy
       language: system
 </code></pre>
-<h3>Problem</h3>
+Problem
 <p>In CI you need to install the dependencies to run mypy. If using uv, currently it looks something like this:</p>
 <pre><code>jobs:
   pre-commit:
@@ -171,21 +162,21 @@ RUN uv sync --frozen
       - uses: pre-commit/action@v3.0.1
 </code></pre>
 <p>However, that does not work because pre-commit uses the system Python and dependencies (and mypy) are installed into a venv.</p>
-<h3>Current solutions</h3>
+Current solutions
 <p>As a workaround, you can either run pre-commit manually or add an extra step before pre-commit that adds the venv to the path and installs pip (needed for pre-commit to install the tools into the isolated venvs):</p>
 <pre><code>      - run: |
           echo &quot;$PWD/.venv/bin&quot; &gt;&gt; $GITHUB_PATH
           uv pip install pip
 </code></pre>
 <p>The solution would be straightforward if a <code>--system</code> flag existed in <code>uv sync</code>.</p>
-<p>EDIT: I've just found issue https://github.com/astral-sh/uv/issues/5964 that seems to be asking exactly for this</p>
+<p>EDIT: I&#x27;ve just found issue <a href="https://github.com/astral-sh/uv/issues/5964">astral-sh/uv#5964</a> that seems to be asking exactly for this</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/inflation">@inflation</a> on 2024-08-28 02:28</div>
             <div class="timeline-body"><p>Furthermore, some Python libraries with native extensions must be built from sources, which require a compiler (or more than one, e.g. nvcc, rustc, etc). We want to keep that in the builder image only.</p>
 <p>For now, we copy the <code>.venv</code> folder and have a workaround to fix the symlink:</p>
-<pre><code class="language-dockerfile">RUN uv python install 3.10
+<pre><code>RUN uv python install 3.10
 RUN ln -sf $(uv python find 3.10) $HOME/$DIR_NAME/.venv/bin/python 
 </code></pre>
 <p>It would be great to have a mechanism to &quot;bundle&quot; all the dependencies and python itself, so we could copy it to the runtime image and run the app without uv.</p>
@@ -193,16 +184,16 @@ RUN ln -sf $(uv python find 3.10) $HOME/$DIR_NAME/.venv/bin/python
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-01 23:56</div>
-            <div class="timeline-body"><p>There's <code>UV_PROJECT_ENVIRONMENT</code> for omitting the virtual environment now. I'm not sure what else is actionable here.</p>
+            <div class="timeline-body"><p>There&#x27;s <code>UV_PROJECT_ENVIRONMENT</code> for omitting the virtual environment now. I&#x27;m not sure what else is actionable here.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2025-04-01 23:56</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-01 23:56</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:26:23 UTC
+        Synced at 2026-01-20 19:33:06 UTC
     </footer>
 </body>
 </html>

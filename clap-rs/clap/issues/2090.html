@@ -23,14 +23,14 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/newAM">@newAM</a></div>
-            <div class="timeline-body"><h3>Make sure you completed the following tasks</h3>
+            <div class="timeline-body">Make sure you completed the following tasks
 <ul>
 <li>[x] Searched the <a href="https://github.com/clap-rs/clap/discussions">discussions</a></li>
 <li>[x] Searched the closed issues</li>
 </ul>
-<h3>Code</h3>
+Code
 <p>This is a modification of the <code>bash_completion.rs</code> example in the <code>clap_generate</code> workspace.</p>
-<pre><code class="language-rust">use clap::{App, AppSettings};
+<pre><code>use clap::{App, AppSettings};
 use clap_generate::{generate, generators::Bash};
 use std::io;
 
@@ -43,12 +43,12 @@ fn main() {
     generate::&lt;Bash, _&gt;(&amp;mut app, &quot;myapp&quot;, &amp;mut io::stdout());
 }
 </code></pre>
-<h3>Steps to reproduce the issue</h3>
+Steps to reproduce the issue
 <ol>
 <li>Run <code>cargo run --example bash_completion</code> (with above modifications)</li>
 <li>Observe that there are auto-completion options for <code>-V --version</code> in the sub-commands, despite not being valid commands.</li>
 </ol>
-<pre><code class="language-bash">        myapp__test)
+<pre><code>        myapp__test)
             opts=&quot; -h -V  --help --version  config&quot;  # &lt;----- -V and --version should not be here
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W &quot;${opts}&quot; -- &quot;${cur}&quot;) )
@@ -64,16 +64,16 @@ fn main() {
             return 0
             ;;
 </code></pre>
-<h3>Version</h3>
+Version
 <ul>
 <li><strong>Rust</strong>: rustc 1.45.2 (d3fb005a3 2020-07-31)</li>
 <li><strong>Clap</strong>:  <code>8454136126b48bd69d9218e19680082cc28fa5ef</code> (master)</li>
 </ul>
-<h3>Actual Behavior Summary</h3>
+Actual Behavior Summary
 <p>When I disable version globally it disables <code>-V</code> and <code>--version</code> for subcommands; but these are still auto-completion options for subcommands, and I do not think there should be.</p>
-<h3>Expected Behavior Summary</h3>
+Expected Behavior Summary
 <p>I think that using <code>AppSettings::DisableVersion</code> as a <code>global_setting</code> should also disable the autocomplete for subcommands.</p>
-<h3>Debug output</h3>
+Debug output
 <pre><code>[            clap::build::app]  App::_build
 [            clap::build::app]  App::_derive_display_order:myapp
 [            clap::build::app]  App::_derive_display_order:test
@@ -109,22 +109,22 @@ fn main() {
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">T: bug</span> added by @newAM on 2020-08-21 01:17</div>
+            <div class="event">Label <span class="label">T: bug</span> added by <a href="https://github.com/newAM">@newAM</a> on 2020-08-21 01:17</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/newAM">@newAM</a> on 2020-08-21 05:42</div>
             <div class="timeline-body"><p>I did some triage on this.</p>
 <p><code>clap_generate/src/generators/mod.rs</code> uses this block to determine if the version is visible for a sub-command.</p>
-<pre><code class="language-rust">        if !p.is_set(AppSettings::DisableVersion)
-            &amp;&amp; !shorts_and_visible_aliases.iter().any(|&amp;x| x == 'V')
+<pre><code>        if !p.is_set(AppSettings::DisableVersion)
+            &amp;&amp; !shorts_and_visible_aliases.iter().any(|&amp;x| x == &#x27;V&#x27;)
         {
-            shorts_and_visible_aliases.push('V');
+            shorts_and_visible_aliases.push(&#x27;V&#x27;);
         }
 </code></pre>
 <p>The expectation of that code is that <code>subapp.is_set(AppSettings::DisableVersion)</code> will be <code>true</code> when a parent <code>App</code> sets it as a global option.  This expectation does not hold true; sub-command global settings do not inherit from the parent.</p>
 <p>I tried a quick hack to see what would happen if that expectation were true by changing <code>App::subcommand</code> to propagate all parent <code>g_settings</code> to children <code>g_settings</code>.</p>
-<pre><code class="language-rust">    #[inline]
-    pub fn subcommand(mut self, subcmd: App&lt;'help&gt;) -&gt; Self {
+<pre><code>    #[inline]
+    pub fn subcommand(mut self, subcmd: App&lt;&#x27;help&gt;) -&gt; Self {
         let mut subcmd = subcmd.clone();
         subcmd.g_settings = self.g_settings;
         // this would need to be recursive, but you get the idea.
@@ -146,30 +146,30 @@ fn main() {
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">C: generator</span> added by @CreepySkeleton on 2020-08-21 07:00</div>
+            <div class="event">Label <span class="label">C: generator</span> added by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-08-21 07:00</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">P2: need to have</span> added by @CreepySkeleton on 2020-08-21 07:00</div>
+            <div class="event">Label <span class="label">P2: need to have</span> added by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-08-21 07:00</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "3.1" by @CreepySkeleton on 2020-08-21 07:00</div>
+            <div class="event">Added to milestone &quot;3.1&quot; by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-08-21 07:00</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">P2: need to have</span> removed by @CreepySkeleton on 2020-08-21 07:19</div>
+            <div class="event">Label <span class="label">P2: need to have</span> removed by <a href="https://github.com/CreepySkeleton">@CreepySkeleton</a> on 2020-08-21 07:19</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../pulls/2095.html">clap-rs/clap#2095</a> on 2020-08-22 15:11</div>
+            <div class="event">Referenced in <a>clap-rs/clap#2095</a> on 2020-08-22 15:11</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../pulls/2102.html">clap-rs/clap#2102</a> on 2020-08-23 18:02</div>
+            <div class="event">Referenced in <a>clap-rs/clap#2102</a> on 2020-08-23 18:02</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @bors[bot] on 2020-08-24 06:45</div>
+            <div class="event">Closed by <a href="https://github.com/bors[bot]">@bors[bot]</a> on 2020-08-24 06:45</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:47:44 UTC
+        Synced at 2026-01-20 19:57:53 UTC
     </footer>
 </body>
 </html>

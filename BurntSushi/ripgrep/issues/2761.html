@@ -23,51 +23,51 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/leahneukirchen">@leahneukirchen</a></div>
-            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+            <div class="timeline-body">Please tick this box to confirm you have reviewed the above.
 <ul>
 <li>[X] I have a different issue.</li>
 </ul>
-<h3>What version of ripgrep are you using?</h3>
+What version of ripgrep are you using?
 <p>ripgrep 14.1.0</p>
 <p>features:-simd-accel,+pcre2
 simd(compile):+SSE2,-SSSE3,-AVX2
 simd(runtime):+SSE2,+SSSE3,+AVX2</p>
 <p>PCRE2 10.42 is available (JIT is available)</p>
-<h3>How did you install ripgrep?</h3>
+How did you install ripgrep?
 <p>Distribution packages of Void Linux</p>
-<h3>What operating system are you using ripgrep on?</h3>
+What operating system are you using ripgrep on?
 <p>Void Linux x86_64 glibc</p>
-<h3>Describe your bug.</h3>
+Describe your bug.
 <p>When recursively traversing a large directory and hitting a FIFO, one thread of rg gets stuck on the FIFO (suboptimal, but okay.  Perhaps FIFO should not be opened with -r? ugrep seems to skip over fifo, GNU grep has the option of using <code>-D skip</code>).</p>
 <p>After the whole tree is traversed, the remaining threads start to busy loop in <code>ignore::walk::Worker::get_work</code>. On a system with a bunch of CPU, this results in quite heavy syscall load across the system.</p>
-<p>I'd at least expect the other threads to block, requiring no CPU time.</p>
-<h3>What are the steps to reproduce the behavior?</h3>
+<p>I&#x27;d at least expect the other threads to block, requiring no CPU time.</p>
+What are the steps to reproduce the behavior?
 <pre><code>mkfifo /tmp/myfifo
 strace -ff rg foobar /usr/include /tmp/myfifo
 </code></pre>
 <p>Notice how the threads spin on <code>clock_nanosleep</code></p>
-<h3>What is the actual behavior?</h3>
+What is the actual behavior?
 <p>The process keeps looping in clock_nanosleep.</p>
 <p>I also attached a backtrace of the threads.</p>
 <p><a href="https://github.com/BurntSushi/ripgrep/files/14676178/bt.log">bt.log</a></p>
-<h3>What is the expected behavior?</h3>
+What is the expected behavior?
 <p>ripgrep should just stall on the <code>openat</code> call for the FIFO, and not do busy looping in the other threads.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-10-11 01:56</div>
-            <div class="timeline-body"><p>This is an interesting case. I think ripgrep's parallel directory traversal assumes that all threads will always make progress toward completion in reasonable time. But this isn't always true. Even putting aside cases like fifos, consider searching two files where one is very large and one is very small. The small file will complete quickly while the larger file will take considerably longer. While the larger file is being searched, the other threads will busy wait.</p>
-<p>So I think fixing this will require digging into the traverser to figure out how to avoid the busy waiting regardless of fifos or special devices. The fact that it even busy waits at all has always been something I didn't like. I've had trouble eliminating that due to the fact that producers are consumers and consumers are producers.</p>
-<p>As for an option to skip devices/fifos or whatever, that probably seems like a prudent thing to provide. I think I'd rather default to reading (as grep does), but with an option (perhaps identical to grep's <code>-D/--devices</code> flag) to skip them.</p>
+            <div class="timeline-body"><p>This is an interesting case. I think ripgrep&#x27;s parallel directory traversal assumes that all threads will always make progress toward completion in reasonable time. But this isn&#x27;t always true. Even putting aside cases like fifos, consider searching two files where one is very large and one is very small. The small file will complete quickly while the larger file will take considerably longer. While the larger file is being searched, the other threads will busy wait.</p>
+<p>So I think fixing this will require digging into the traverser to figure out how to avoid the busy waiting regardless of fifos or special devices. The fact that it even busy waits at all has always been something I didn&#x27;t like. I&#x27;ve had trouble eliminating that due to the fact that producers are consumers and consumers are producers.</p>
+<p>As for an option to skip devices/fifos or whatever, that probably seems like a prudent thing to provide. I think I&#x27;d rather default to reading (as grep does), but with an option (perhaps identical to grep&#x27;s <code>-D/--devices</code> flag) to skip them.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2025-10-11 01:56</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-10-11 01:56</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:43:47 UTC
+        Synced at 2026-01-20 18:48:13 UTC
     </footer>
 </body>
 </html>

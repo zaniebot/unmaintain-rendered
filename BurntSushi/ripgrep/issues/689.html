@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ptzz">@ptzz</a></div>
-            <div class="timeline-body"><p>With <code>*.png</code> in my <code>.ignore</code> file, the output of <code>ag -g foo</code> will not contain any png files. Is there a way to achieve the same with <code>rg</code>? <code>rg --iglob '*foo*' --files</code> lists png matches (version 0.7.1).</p>
+            <div class="timeline-body"><p>With <code>*.png</code> in my <code>.ignore</code> file, the output of <code>ag -g foo</code> will not contain any png files. Is there a way to achieve the same with <code>rg</code>? <code>rg --iglob &#x27;*foo*&#x27; --files</code> lists png matches (version 0.7.1).</p>
 <p>On a sidenote: https://github.com/sharkdp/fd is an rg-inspired tool aimed as a replacement for <code>find</code>. Is there any fundamental reason <code>rg</code> could not be as fast when used for the same purpose (using the <code>-g/--iglob</code> and <code>--files</code> options)?</p>
 </div>
         </div>
@@ -31,10 +31,10 @@
             <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2017-11-21 23:00</div>
             <div class="timeline-body"><p>Per the man page:</p>
 <blockquote>
-<p>-g, --glob GLOB ...<br />
-Include or exclude files for searching that match the given glob. <strong>This always overrides any other ignore logic if there is a conflict</strong>, but is otherwise applied in addition to ignore files (e.g., .gitignore or .ignore). Multiple glob flags may be used. Globbing rules match .gitignore globs. Precede a glob with a '!' to exclude it.</p>
+<p>-g, --glob GLOB ...<br>
+Include or exclude files for searching that match the given glob. <strong>This always overrides any other ignore logic if there is a conflict</strong>, but is otherwise applied in addition to ignore files (e.g., .gitignore or .ignore). Multiple glob flags may be used. Globbing rules match .gitignore globs. Precede a glob with a &#x27;!&#x27; to exclude it.</p>
 </blockquote>
-<p>So in your case you would need to do something like <code>rg -g '*foo*' -g '!*.png'</code> (the order is significant)</p>
+<p>So in your case you would need to do something like <code>rg -g &#x27;*foo*&#x27; -g &#x27;!*.png&#x27;</code> (the order is significant)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -42,13 +42,13 @@ Include or exclude files for searching that match the given glob. <strong>This a
             <div class="timeline-body"><p>@okdana has it right. Example:</p>
 <pre><code>$ mkdir /tmp/ripgrep-689
 $ cd /tmp/ripgrep-689
-$ echo '*.png' &gt; .ignore
+$ echo &#x27;*.png&#x27; &gt; .ignore
 $ touch foo.png bar.png
 $ rg --files
-$ rg --files -g '*foo*'
+$ rg --files -g &#x27;*foo*&#x27;
 foo.png
-$ rg --files -g '*foo*' -g '!*.png'
-$ rg --files -g '!*.png' -g '*foo*'
+$ rg --files -g &#x27;*foo*&#x27; -g &#x27;!*.png&#x27;
+$ rg --files -g &#x27;!*.png&#x27; -g &#x27;*foo*&#x27;
 foo.png
 </code></pre>
 <p>In the future, please provide reproducible examples like this.</p>
@@ -56,16 +56,16 @@ foo.png
 <blockquote>
 <p>On a sidenote: https://github.com/sharkdp/fd is an rg-inspired tool aimed as a replacement for find. Is there any fundamental reason rg could not be as fast when used for the same purpose (using the -g/--iglob and --files options)?</p>
 </blockquote>
-<p><code>fd</code> literally uses the same code to traverse a directory as ripgrep does, so I imagine their speed is comparable. Your question however implies you believe the speed is not comparable, but you didn't explain why. If you're noticing a substantial speed difference, please open a new issue and <strong>provide a reproducible example on a corpus we both have access to.</strong></p>
+<p><code>fd</code> literally uses the same code to traverse a directory as ripgrep does, so I imagine their speed is comparable. Your question however implies you believe the speed is not comparable, but you didn&#x27;t explain why. If you&#x27;re noticing a substantial speed difference, please open a new issue and <strong>provide a reproducible example on a corpus we both have access to.</strong></p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2017-11-21 23:53</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-11-21 23:53</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ptzz">@ptzz</a> on 2017-11-22 04:46</div>
             <div class="timeline-body"><p>Got it, thanks for the quick reply.</p>
-<p>I'm looking for using <code>rg</code> instead of <code>ag -g foo</code> or <code>fd foo</code>, i.e. excluding all files matched by <code>.ignore</code>. If I understand you correctly, the only way to achieve this with <code>rg</code> is to pass multiple <code>-g</code> options that negates each entry in the <code>.ignore</code> file.</p>
+<p>I&#x27;m looking for using <code>rg</code> instead of <code>ag -g foo</code> or <code>fd foo</code>, i.e. excluding all files matched by <code>.ignore</code>. If I understand you correctly, the only way to achieve this with <code>rg</code> is to pass multiple <code>-g</code> options that negates each entry in the <code>.ignore</code> file.</p>
 <p>Would simplifying this use case be a useful addition to <code>rg</code>?</p>
 <blockquote>
 <p>-g, --glob GLOB ...
@@ -76,11 +76,11 @@ Include or exclude files for searching that match the given glob. This always ov
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-11-22 12:08</div>
-            <div class="timeline-body"><p>No, sorry, I don't buy it. The whole point of the <code>-g</code> flag is that it overrides everything else. If you really need this feature, then stick to <code>ag</code> or <code>fd</code>.</p>
+            <div class="timeline-body"><p>No, sorry, I don&#x27;t buy it. The whole point of the <code>-g</code> flag is that it overrides everything else. If you really need this feature, then stick to <code>ag</code> or <code>fd</code>.</p>
 <blockquote>
 <p>If I understand you correctly, the only way to achieve this with rg is to pass multiple -g options that negates each entry in the .ignore file.</p>
 </blockquote>
-<p>That's the only way to guarantee it. But <code>-g</code> only overrides everything else when there is a conflict. Otherwise, your ignore rules are still respected.</p>
+<p>That&#x27;s the only way to guarantee it. But <code>-g</code> only overrides everything else when there is a conflict. Otherwise, your ignore rules are still respected.</p>
 <p>A workaround is to use pipes if you only care about listing files. e.g., <code>rg --files | rg pattern</code>.</p>
 <blockquote>
 <p>Perhaps an option to not override other ignore logic in case of conflict? That would be functionally equivalent (I think) to applying each glob (whether from .ignore or command line) sequentially in a pipeline, each glob reducing the output of the previous glob. Order would not matter.</p>
@@ -91,7 +91,7 @@ Include or exclude files for searching that match the given glob. This always ov
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ChengCat">@ChengCat</a> on 2017-11-27 04:45</div>
             <div class="timeline-body"><p>When would you want to override .gitignore with a command line argument? This is a surprising design. More frequently, one would want to add additional filter conditions on the command line in addition to the default output, just like the issue creator.</p>
-<p>I really like the performance of this program, and that it is written in Rust. But I am disappointed that it doesn't provide sane defaults when I know more about it. Other points I feel surprising are:</p>
+<p>I really like the performance of this program, and that it is written in Rust. But I am disappointed that it doesn&#x27;t provide sane defaults when I know more about it. Other points I feel surprising are:</p>
 <ul>
 <li>Not following symlinks by default (#692)</li>
 <li>Enabling .gitignore and .ignore by default is surprising. I expect a simple tool like <code>ripgrep</code> to be dumb</li>
@@ -105,33 +105,33 @@ Include or exclude files for searching that match the given glob. This always ov
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-11-27 05:08</div>
-            <div class="timeline-body"><p>I don't have the time or motivation to respond to all of your complaints. Every single one of them has been covered in the issue tracker, and I see no point in relitigating them.
+            <div class="timeline-body"><p>I don&#x27;t have the time or motivation to respond to all of your complaints. Every single one of them has been covered in the issue tracker, and I see no point in relitigating them.
 Most of them can be fixed by setting your own defaults. (One exception is the <code>--text</code> flag. You are the first person to complain about that, but the flag name is taken directly from grep.)</p>
-<p>Perhaps it is worth explicitly saying this: the default behavior of ripgrep matches a best guess at what is most convenient for some subset of users. For example, file type matching is a much loved feature, and no amount of whining about the program being &quot;stateful&quot; is going to change that. It is also worth pointing out that we have no hard data on what people find surprising or not intuitive, so it will always come down to subjective assessment. My preferred method of resolving such things is somewhat arbitrary, but prioritizes maintenance convenience. That is, I listen to end user feedback and adjust my mental model of what I think works best for users. I've reversed plenty of closed tickets in the past as a result of this, even for things that I said were never going to happen, like multiline search.</p>
-<p>The bottom line is that you complaining about almost every default behavior isn't going to get us anywhere. In particular, when you complain about ripgrep defaulting to using gitignore by default, it IMO shows that you have fundamentally missed the point of ripgrep. Maybe you want a dumb search tool. That's fine if you do. But that is <strong>decisively</strong> not what ripgrep is (although you can make it dumb by disabling much of its default behavior). Arguing to make ripgrep dumb by default is on par with asking me to fundamentally change the goals of the project. <strong>I'm begging you, please understand that this is a waste of time for everyone involved.</strong></p>
-<p>Finally, if ripgrep's defaults bother you this much and explicitly disabling them isn't an option for whatever reason, then one thing is very clear: ripgrep is not the right tool for the job you have in mind <strong>and that is okay.</strong></p>
+<p>Perhaps it is worth explicitly saying this: the default behavior of ripgrep matches a best guess at what is most convenient for some subset of users. For example, file type matching is a much loved feature, and no amount of whining about the program being &quot;stateful&quot; is going to change that. It is also worth pointing out that we have no hard data on what people find surprising or not intuitive, so it will always come down to subjective assessment. My preferred method of resolving such things is somewhat arbitrary, but prioritizes maintenance convenience. That is, I listen to end user feedback and adjust my mental model of what I think works best for users. I&#x27;ve reversed plenty of closed tickets in the past as a result of this, even for things that I said were never going to happen, like multiline search.</p>
+<p>The bottom line is that you complaining about almost every default behavior isn&#x27;t going to get us anywhere. In particular, when you complain about ripgrep defaulting to using gitignore by default, it IMO shows that you have fundamentally missed the point of ripgrep. Maybe you want a dumb search tool. That&#x27;s fine if you do. But that is <strong>decisively</strong> not what ripgrep is (although you can make it dumb by disabling much of its default behavior). Arguing to make ripgrep dumb by default is on par with asking me to fundamentally change the goals of the project. <strong>I&#x27;m begging you, please understand that this is a waste of time for everyone involved.</strong></p>
+<p>Finally, if ripgrep&#x27;s defaults bother you this much and explicitly disabling them isn&#x27;t an option for whatever reason, then one thing is very clear: ripgrep is not the right tool for the job you have in mind <strong>and that is okay.</strong></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/ChengCat">@ChengCat</a> on 2017-11-27 05:47</div>
-            <div class="timeline-body"><p>Well, so most of my comments were agreed by others, and therefore they are valid to some extent. Perhaps explaining why I and others may expect ripgrep to be dumb helps. When I first heard about it, it is intended as a modern replacement for <code>grep</code> with better user friendliness and better performance. <code>grep</code> is a dumb tool, and its output is often depended upon in scripts. To replace such a tool like <code>grep</code>, reliability must be seriously considered. If it was advertised as another code search tool to replace <code>ag</code>, I wouldn't be so picky.</p>
-<p>Don't get upset with my comments. I actually much agree with the two most fundamental defaults: search recursively and ignore binary files. Despite the disagreements, you developed and open sourced this program in the first place, we need to say thank you.</p>
+            <div class="timeline-body"><p>Well, so most of my comments were agreed by others, and therefore they are valid to some extent. Perhaps explaining why I and others may expect ripgrep to be dumb helps. When I first heard about it, it is intended as a modern replacement for <code>grep</code> with better user friendliness and better performance. <code>grep</code> is a dumb tool, and its output is often depended upon in scripts. To replace such a tool like <code>grep</code>, reliability must be seriously considered. If it was advertised as another code search tool to replace <code>ag</code>, I wouldn&#x27;t be so picky.</p>
+<p>Don&#x27;t get upset with my comments. I actually much agree with the two most fundamental defaults: search recursively and ignore binary files. Despite the disagreements, you developed and open sourced this program in the first place, we need to say thank you.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-11-27 12:52</div>
             <div class="timeline-body"><blockquote>
-<p>If it was advertised as another code search tool to replace ag, I wouldn't be so picky.</p>
+<p>If it was advertised as another code search tool to replace ag, I wouldn&#x27;t be so picky.</p>
 </blockquote>
 <p>It is! Literally the first two sentences of the README:</p>
 <blockquote>
 <p>ripgrep is a line-oriented search tool that recursively searches your current directory for a regex pattern while respecting your gitignore rules. To a first approximation, ripgrep combines the usability of The Silver Searcher (similar to ack) with the raw speed of GNU grep. ripgrep has first class support on Windows, macOS and Linux, with binary downloads available for every release.</p>
 </blockquote>
-<p>I can't control how people advertised ripgrep to you. Also, to some people, it is a grep replacement. Reality is shades of grey, and advertising is an especially grey area. Advertising often sacrifices accuracy for brevity. However, if you had read the README or the blog post introducing ripgrep, then it should have been very clear that respecting gitignore by default is a fundamental design decision.</p>
+<p>I can&#x27;t control how people advertised ripgrep to you. Also, to some people, it is a grep replacement. Reality is shades of grey, and advertising is an especially grey area. Advertising often sacrifices accuracy for brevity. However, if you had read the README or the blog post introducing ripgrep, then it should have been very clear that respecting gitignore by default is a fundamental design decision.</p>
 <blockquote>
-<p>Don't get upset with my comments.</p>
+<p>Don&#x27;t get upset with my comments.</p>
 </blockquote>
-<p>First of all, don't tell me how to feel. Second of all, I'm not upset, I'm frustrated that you're continuing to waste my time. Allow me to be super clear: I consider any further complaints or discussion about changing the fundamental design goals of ripgrep to be in extremely poor taste. (Not all of your complaints fit in this bucket, but some do.)</p>
+<p>First of all, don&#x27;t tell me how to feel. Second of all, I&#x27;m not upset, I&#x27;m frustrated that you&#x27;re continuing to waste my time. Allow me to be super clear: I consider any further complaints or discussion about changing the fundamental design goals of ripgrep to be in extremely poor taste. (Not all of your complaints fit in this bucket, but some do.)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -142,7 +142,7 @@ Most of them can be fixed by setting your own defaults. (One exception is the <c
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-11-28 02:24</div>
-            <div class="timeline-body"><p>@ChengCat I understand. I would strongly recommend that you try to step in my shoes. I have an issue tracker to maintain and triage, with tons of users with various desires. If they all started clogging up the issue tracker with comments like yours, we'd get nothing to done. It's great that you want to help improve ripgrep, but you need to be more respectful of peoples' time and understand that <strong>reasonable people can disagree</strong>. An incremental step toward satisfying your use case, for example, is not to change the ripgrep defaults (which, by now, has a ton of inertia behind it making them unlikely to change) but to make it easier for you to change the defaults for your own uses of it. There are definitely problems with the latter as of today that I'd like to fix!</p>
+            <div class="timeline-body"><p>@ChengCat I understand. I would strongly recommend that you try to step in my shoes. I have an issue tracker to maintain and triage, with tons of users with various desires. If they all started clogging up the issue tracker with comments like yours, we&#x27;d get nothing to done. It&#x27;s great that you want to help improve ripgrep, but you need to be more respectful of peoples&#x27; time and understand that <strong>reasonable people can disagree</strong>. An incremental step toward satisfying your use case, for example, is not to change the ripgrep defaults (which, by now, has a ton of inertia behind it making them unlikely to change) but to make it easier for you to change the defaults for your own uses of it. There are definitely problems with the latter as of today that I&#x27;d like to fix!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -153,7 +153,7 @@ Most of them can be fixed by setting your own defaults. (One exception is the <c
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:42:21 UTC
+        Synced at 2026-01-20 18:48:05 UTC
     </footer>
 </body>
 </html>

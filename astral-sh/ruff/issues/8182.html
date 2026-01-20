@@ -39,19 +39,19 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2023-10-24 21:24</div>
+            <div class="event">Label <span class="label">formatter</span> added by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-24 21:24</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Added to milestone "Formatter: Stable" by @MichaReiser on 2023-10-24 21:24</div>
+            <div class="event">Added to milestone &quot;Formatter: Stable&quot; by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-24 21:24</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-25 08:47</div>
-            <div class="timeline-body"><p>I'm slightly confused. Black generally tries to avoid parentheses if the parenthesized content also exceeds the line length. We added support for this behavior in #6817 (and refined it later). Now, it seems that this logic doesn't (always?) apply for attribute chains?</p>
+            <div class="timeline-body"><p>I&#x27;m slightly confused. Black generally tries to avoid parentheses if the parenthesized content also exceeds the line length. We added support for this behavior in #6817 (and refined it later). Now, it seems that this logic doesn&#x27;t (always?) apply for attribute chains?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-25 18:02</div>
-            <div class="timeline-body"><p>I don't quite understand that either, I wonder if it's intentional.</p>
+            <div class="timeline-body"><p>I don&#x27;t quite understand that either, I wonder if it&#x27;s intentional.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -60,13 +60,13 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @MichaReiser by @MichaReiser on 2023-10-30 00:57</div>
+            <div class="event">Assigned to <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-30 00:57</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-30 08:33</div>
-            <div class="timeline-body"><p>I played with this further and it is correct. Black always wraps attributes in parentheses, even if it doesn't make them fit.</p>
+            <div class="timeline-body"><p>I played with this further and it is correct. Black always wraps attributes in parentheses, even if it doesn&#x27;t make them fit.</p>
 <p>Black</p>
-<pre><code class="language-python"># fits parenthesized
+<pre><code># fits parenthesized
 ______ = (
     aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.bbbbbbbbbbbbbbbbbbbbbbbbbbvvvvvvvvvvvv
 )
@@ -101,39 +101,39 @@ def exceeds_line_length_parenthesized():
     )
 </code></pre>
 <p>Ruff would remove the parentheses for the &quot;exceeds line length&quot; cases. I believe the same is true for call chains.</p>
-<p>Changing our code to use the normal <code>Multiline</code> layout for attribute chains in itself isn't too hard. However, <code>BestFit</code> and `Multiline don't just differ in when they set parentheses, they also use different breaking precedences:</p>
+<p>Changing our code to use the normal <code>Multiline</code> layout for attribute chains in itself isn&#x27;t too hard. However, <code>BestFit</code> and `Multiline don&#x27;t just differ in when they set parentheses, they also use different breaking precedences:</p>
 <ul>
 <li><code>BestFitParentheses</code>: Breaks right first. It first breaks the value (right) before parenthesizing the target (left).  Similar to <code>BestFitting</code></li>
 <li><code>Multiline</code>: Breaks the left first: It breaks the target (left) before parenthesizing the value (right). Normal group sequence.</li>
 </ul>
 <p>Changing the precedence between breaking the target or value has the result that:</p>
-<pre><code class="language-python">state[
+<pre><code>state[
     &quot;event_queue_longpoll_timeout_seconds&quot;
 ] = settings.EVENT_QUEUE_LONGPOLL_TIMEOUT_SECONDS
 </code></pre>
 <p>gets reformatted to</p>
-<pre><code class="language-python">state[&quot;event_queue_longpoll_timeout_seconds&quot;] = (
+<pre><code>state[&quot;event_queue_longpoll_timeout_seconds&quot;] = (
     settings.EVENT_QUEUE_LONGPOLL_TIMEOUT_SECONDS
 )
 </code></pre>
-<p>which matches <a href="https://black.readthedocs.io/en/stable/the_black_code_style/future_style.html#improved-line-breaks">Black's preview style</a>, at least for attributes. I believe implementing the preview style requires changing <code>BestFit</code> to be right to left too, but that seems straightforward.</p>
-<p>Changing the precedence regresses our similarity index significantly and I don't know of a good way to make our parenthesizing left to right. The way to achieve this is by:</p>
+<p>which matches <a href="https://black.readthedocs.io/en/stable/the_black_code_style/future_style.html#improved-line-breaks">Black&#x27;s preview style</a>, at least for attributes. I believe implementing the preview style requires changing <code>BestFit</code> to be right to left too, but that seems straightforward.</p>
+<p>Changing the precedence regresses our similarity index significantly and I don&#x27;t know of a good way to make our parenthesizing left to right. The way to achieve this is by:</p>
 <ul>
 <li>Either use <code>BestFitting</code> which will be slower and requires another <code>MaybeParenthesize</code> layout which I would prefer to aovid.</li>
-<li>Change the group hierarchy so that the target expression's group encloses the value. This is challenging because the left could be any expression.</li>
+<li>Change the group hierarchy so that the target expression&#x27;s group encloses the value. This is challenging because the left could be any expression.</li>
 </ul>
-<p>I don't think it's worth spending time fixing this now, considering that implementing preview style &quot;solves&quot; the problem and it seems rare enough (I didn't find any usages in our baseline projects). Arguably, Ruff's behavior is also more consistent because it uses it for all expressions that are &quot;unsplittable&quot; whereas Black only uses it for some unsplittable expressions.</p>
+<p>I don&#x27;t think it&#x27;s worth spending time fixing this now, considering that implementing preview style &quot;solves&quot; the problem and it seems rare enough (I didn&#x27;t find any usages in our baseline projects). Arguably, Ruff&#x27;s behavior is also more consistent because it uses it for all expressions that are &quot;unsplittable&quot; whereas Black only uses it for some unsplittable expressions.</p>
 <p>@charliermarsh I propose that we document this as know and intentional deviation.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-30 08:55</div>
-            <div class="timeline-body"><p>I opened an issue on the Black repository to see if omitting parentheses is intentional. https://github.com/psf/black/issues/4001</p>
+            <div class="timeline-body"><p>I opened an issue on the Black repository to see if omitting parentheses is intentional. <a href="https://github.com/psf/black/issues/4001">psf/black#4001</a></p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-31 12:03</div>
-            <div class="timeline-body"><p>Black considers aligning with ruff's style.</p>
+            <div class="timeline-body"><p>Black considers aligning with ruff&#x27;s style.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -142,7 +142,7 @@ def exceeds_line_length_parenthesized():
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @MichaReiser on 2023-11-02 06:38</div>
+            <div class="event">Closed by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-11-02 06:38</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/henribru">@henribru</a> on 2023-11-02 06:47</div>
@@ -159,14 +159,14 @@ def exceeds_line_length_parenthesized():
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-11-28 05:02</div>
-            <div class="timeline-body"><p>@henribru yes this seems to be the same issue. Changing the return type to an identifier (remove all dots) makes Black match Ruff's formatting</p>
+            <div class="timeline-body"><p>@henribru yes this seems to be the same issue. Changing the return type to an identifier (remove all dots) makes Black match Ruff&#x27;s formatting</p>
 <p>https://black.vercel.app/?version=stable&amp;state=_Td6WFoAAATm1rRGAgAhARYAAAB0L-Wj4AONAaNdAD2IimZxl1N_WlbvK5V8VwGvpky2hHvxJKDBSYISDIkXZGJG4SJMgx6_11S4gUOnTDWjHwJaiM6dlpIbDBLvtd7rfffNEd3HafefdTpwBZWZsH2D652XvLSeuqzfBgpUW8YBK4WelZ6dWGMxHiSwGu2chnbe3hJfPqsGS4WucjxLTHCHhdIxlqwYohxVBltlO12woMOHr1NP6DVUc5HBxFOIKjgjZbilMZn-7-E1XWXCYLkoStiN4kGXio0D_kEOEYgY75dedJRg1cOuhcbG-GVyX8IRNbluxBAwSUGnl6RgPCh_ifBOYvI9kFWBVXB5zOFIysanReiU28yBqcIToJ_cstX_N4sw12ftCNgzy9bOwu4KyvMd0Y59g5XqhSmuoIYKChIENIVJh319IdJH9L5MqaH3UwWcwzCSiNQDGuMOZBxT2UX-zmAazCS-7sLFQ4P77cPOFJOUUipdc1UEHCM3XhBwE05-vHjsZevtZNgzB30fWy286CplsUtQ3fVAA-HF6kXbP--S2KEDJfhJi2ewDi4v_VnBJOZXP3iUkqYLeyDRAADRqnwBGWR3AAABvwOOBwAAINigZ7HEZ_sCAAAAAARZWg==</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:48:43 UTC
+        Synced at 2026-01-20 18:48:44 UTC
     </footer>
 </body>
 </html>

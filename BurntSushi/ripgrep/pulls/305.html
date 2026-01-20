@@ -36,72 +36,72 @@ parameter enables the file format detection. The maximum nesting depth
 is controlled by another command line parameter.</p>
 <p>Since the deflate code is not pure Rust, a Cargo feature is used to
 allow compiling ripgrep without the compressed file support.</p>
-<hr />
-<p>I wrote this code for my own use, so it's no problem if this pull request is not accepted; I can just keep using my own branch.</p>
+<hr>
+<p>I wrote this code for my own use, so it&#x27;s no problem if this pull request is not accepted; I can just keep using my own branch.</p>
 <p>My guiding use case was to search within a huge (&gt;4GiB) ZIP file full of EPUB files. Another use case enabled by this change is to search within a directory full of gzip-compressed log files (as created by logrotate; see #225 ).</p>
 <p>It should be simple to add support for bzip2 (and with it ZIP version 4.6 and method 12) and others, but each one would need yet another C library. Since flate2 is a dependency of cargo, it should compile without issue for all relevant platforms, but the same might not be true of other compression libraries.</p>
-<p>If you want this code to be unconditional instead of using a feature, it's no problem; I made it a feature just because going the other way (unconditional to a feature) would be more work than making it conditional from the start.</p>
+<p>If you want this code to be unconditional instead of using a feature, it&#x27;s no problem; I made it a feature just because going the other way (unconditional to a feature) would be more work than making it conditional from the start.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-07 23:45</div>
             <div class="timeline-body"><p>This looks great! The code looks great. I am especially in love with the fact that you did this without touching any of the search code. Unfortunately... I have some concerns:</p>
 <ol>
-<li>I really want ripgrep to be as much Rust as possible. This is, however, a mostly ideological position. In practice, we probably aren't getting pure Rust versions of industrial strength decompressors for common formats any time soon. So, I might be able to cave on that one. However, I do want to retain the ability to compile a single static executable, and I would like for everything to work on Windows/Mac/Linux.  For the Windows GNU builds it looks like you might need something like <a href="https://github.com/alexcrichton/gcc-rs/blob/master/appveyor.yml">this</a>. For the MUSL builds, I think you'll need to add a musl package to get <code>musl-gcc</code>, although I don't know the exact package name.</li>
-<li>I am <em>very</em> concerned about my ability to maintain this code. Specifically, I am concerned with <code>src/zip/mod.rs</code> the most (everything else looks like something I'd be OK with). In particular, I'm thinking about future bugs being filed against this feature and me needing to understand the intricacies of <code>for_each_entry</code> and how it can fail to fix said bugs.</li>
+<li>I really want ripgrep to be as much Rust as possible. This is, however, a mostly ideological position. In practice, we probably aren&#x27;t getting pure Rust versions of industrial strength decompressors for common formats any time soon. So, I might be able to cave on that one. However, I do want to retain the ability to compile a single static executable, and I would like for everything to work on Windows/Mac/Linux.  For the Windows GNU builds it looks like you might need something like <a href="https://github.com/alexcrichton/gcc-rs/blob/master/appveyor.yml">this</a>. For the MUSL builds, I think you&#x27;ll need to add a musl package to get <code>musl-gcc</code>, although I don&#x27;t know the exact package name.</li>
+<li>I am <em>very</em> concerned about my ability to maintain this code. Specifically, I am concerned with <code>src/zip/mod.rs</code> the most (everything else looks like something I&#x27;d be OK with). In particular, I&#x27;m thinking about future bugs being filed against this feature and me needing to understand the intricacies of <code>for_each_entry</code> and how it can fail to fix said bugs.</li>
 <li>I think CI needs to run tests with the new <code>uncompress</code> feature set.</li>
 </ol>
-<p>Could you perhaps say more about (2)? I've never worked with these formats in detail before, so I'm pretty blind to their inner workings. How will it fail? Are their different/esoteric versions of this format that this code will fail to understand?</p>
+<p>Could you perhaps say more about (2)? I&#x27;ve never worked with these formats in detail before, so I&#x27;m pretty blind to their inner workings. How will it fail? Are their different/esoteric versions of this format that this code will fail to understand?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/cesarb">@cesarb</a> on 2017-01-08 01:16</div>
             <div class="timeline-body"><blockquote>
-<p>Could you perhaps say more about (2)? I've never worked with these formats in detail before, so I'm pretty blind to their inner workings. How will it fail? Are their different/esoteric versions of this format that this code will fail to understand?</p>
+<p>Could you perhaps say more about (2)? I&#x27;ve never worked with these formats in detail before, so I&#x27;m pretty blind to their inner workings. How will it fail? Are their different/esoteric versions of this format that this code will fail to understand?</p>
 </blockquote>
 <p>First, you need a copy of APPNOTE.TXT. You can find a good one at https://pkware.cachefly.net/webdocs/APPNOTE/APPNOTE-6.3.3.TXT or elsewhere. I wrote the whole code based on that, and it should be much easier to understand with that reference in hand.</p>
-<p>A ZIP file conceptually has two parts: the files, each one preceded by a &quot;local file header&quot;, and at the end a &quot;central directory&quot;. The best way to read a ZIP file is to seek first to the very end of the file, where you'll find an &quot;end of central directory record&quot;, which has a field pointing to the start of the central directory. Of course, that way won't work for me, since I won't have <code>Seek</code> in all cases.</p>
-<p>The alternative way of reading the ZIP file, which doesn't need <code>Seek</code>, is to read each &quot;local file header&quot;, which has the &quot;compressed size&quot; of the file data, and after that many bytes you should find either another &quot;local file header&quot;, or one of the central directory entries. Of course, things are not so simple in practice.</p>
+<p>A ZIP file conceptually has two parts: the files, each one preceded by a &quot;local file header&quot;, and at the end a &quot;central directory&quot;. The best way to read a ZIP file is to seek first to the very end of the file, where you&#x27;ll find an &quot;end of central directory record&quot;, which has a field pointing to the start of the central directory. Of course, that way won&#x27;t work for me, since I won&#x27;t have <code>Seek</code> in all cases.</p>
+<p>The alternative way of reading the ZIP file, which doesn&#x27;t need <code>Seek</code>, is to read each &quot;local file header&quot;, which has the &quot;compressed size&quot; of the file data, and after that many bytes you should find either another &quot;local file header&quot;, or one of the central directory entries. Of course, things are not so simple in practice.</p>
 <p>The first gotcha is that the compressed file might be larger than 4GiB. To find the real compressed size in that case, you have to parse the ZIP64 extension header.</p>
-<p>The second gotcha is when the ZIP file was created as a stream (so it couldn't <code>Seek</code> back to write the size after the compression). In that case, the compressed size can be found in a &quot;data descriptor&quot; <em>after</em> the compressed data. The way out from that catch-22 is that the deflate stream has a &quot;last block&quot; marker, so you can inflate until it finishes, and the stream should then be at the start of the &quot;data descriptor&quot;.</p>
+<p>The second gotcha is when the ZIP file was created as a stream (so it couldn&#x27;t <code>Seek</code> back to write the size after the compression). In that case, the compressed size can be found in a &quot;data descriptor&quot; <em>after</em> the compressed data. The way out from that catch-22 is that the deflate stream has a &quot;last block&quot; marker, so you can inflate until it finishes, and the stream should then be at the start of the &quot;data descriptor&quot;.</p>
 <p>Of course, things are not so simple. Originally, the &quot;data descriptor&quot; had no magic number, but one was added later, so it might or might not have a magic number, and you have to account for both alternatives. And, just for extra fun, when the ZIP64 extension header is present in the &quot;local file header&quot;, the &quot;data descriptor&quot; has a different format (u64 instead of u32 for the sizes).</p>
-<hr />
-<p>So, a quick fly-over of the <code>zip::for_each_entry</code> function. The intent of that function is that, for each file within the ZIP file, it will call a closure, passing it the name of the file, and either a <code>Read</code> for its contents, or an explanation of why it can't be read (as an <code>Err</code>).</p>
-<p>Each pass over the <code>loop</code> is a file within the ZIP file. First I check the signature. If it's the &quot;local file header&quot;, I go on; if it's something which I believe indicates the start of the &quot;central directory&quot;, I exit; otherwise, either the code got lost or the file is corrupted, and I return an error.</p>
-<p>Then I read the header itself, which is a bunch of fixed-size fields followed by a pair of variable-size fields. The first one is the name (in which encoding is a question for later), and the second one contains the extension headers. I parse the extension headers (each has a tag and size, so I can skip over unknown ones); I do a lenient parse (accepting an early exit) since the ZIP64 header is usually the first one and it's the one I'm the most interested in. I also parse and validate the Info-ZIP Unicode path extension, if present.</p>
+<hr>
+<p>So, a quick fly-over of the <code>zip::for_each_entry</code> function. The intent of that function is that, for each file within the ZIP file, it will call a closure, passing it the name of the file, and either a <code>Read</code> for its contents, or an explanation of why it can&#x27;t be read (as an <code>Err</code>).</p>
+<p>Each pass over the <code>loop</code> is a file within the ZIP file. First I check the signature. If it&#x27;s the &quot;local file header&quot;, I go on; if it&#x27;s something which I believe indicates the start of the &quot;central directory&quot;, I exit; otherwise, either the code got lost or the file is corrupted, and I return an error.</p>
+<p>Then I read the header itself, which is a bunch of fixed-size fields followed by a pair of variable-size fields. The first one is the name (in which encoding is a question for later), and the second one contains the extension headers. I parse the extension headers (each has a tag and size, so I can skip over unknown ones); I do a lenient parse (accepting an early exit) since the ZIP64 header is usually the first one and it&#x27;s the one I&#x27;m the most interested in. I also parse and validate the Info-ZIP Unicode path extension, if present.</p>
 <p>Then I combine the header with what I found in the extensions: I get the sizes from the ZIP64 header, and convert the file name to UTF-8. If flag bit 11 is set, the file name is already in UTF-8; otherwise, if the Info-ZIP Unicode Path header is valid, I use it; otherwise, the file name should be in CP437 (see Appendix D).</p>
-<p>Next I determine how the file is encoded. I understand the &quot;version needed to extract&quot; up to 4.5, I don't understand encrypted or patched files, and I understand only methods 0 (store) or 8 (deflate).</p>
-<p>The final block of code is decoding the file. The easiest case is the second one, when flag bit 3 is unset: the compressed size is present. I create an <code>io::Take</code> to contain the data, pass it to the callback (inflating if needed), and drain whatever the callback didn't read so the stream points to the next &quot;local file header&quot;.</p>
-<p>The hard case is when the compressed size is not present, since I cannot create an <code>io::Take</code> over the whole compressed data. Instead, I create an <code>io::Take</code> just as a counter: its <code>.limit()</code> will let me figure out how many bytes I did read. I can only work with compressed data, and I drain within the compressed data to make sure it's at the end if the callback didn't eat it all.</p>
-<p>Then I parse the &quot;data descriptor&quot;, which might or might not have a magic number, and might be 32-bit or 64-bit, and check to see if the amount of data I consumed (tracked by the <code>Take</code>) matches the compressed size, which now I know. If it doesn't match, we got out of sync, so I have to abort.</p>
-<hr />
-<p>There's plenty this code doesn't support. I focused on the subset used by standards like OpenDocument (see https://en.wikipedia.org/wiki/Zip_(file_format)#Standardization), which should be enough for most ZIP files you'll find in the wild. Most of what isn't supported is encryption (which makes no sense for ripgrep), advanced compression formats like bzip2 or LZMA (which most ZIP creators won't create by default, for compatibility reasons), old compression formats (which nobody uses since deflate is always better), or esoteric features like splitting a ZIP file into multiple floppy disks.</p>
+<p>Next I determine how the file is encoded. I understand the &quot;version needed to extract&quot; up to 4.5, I don&#x27;t understand encrypted or patched files, and I understand only methods 0 (store) or 8 (deflate).</p>
+<p>The final block of code is decoding the file. The easiest case is the second one, when flag bit 3 is unset: the compressed size is present. I create an <code>io::Take</code> to contain the data, pass it to the callback (inflating if needed), and drain whatever the callback didn&#x27;t read so the stream points to the next &quot;local file header&quot;.</p>
+<p>The hard case is when the compressed size is not present, since I cannot create an <code>io::Take</code> over the whole compressed data. Instead, I create an <code>io::Take</code> just as a counter: its <code>.limit()</code> will let me figure out how many bytes I did read. I can only work with compressed data, and I drain within the compressed data to make sure it&#x27;s at the end if the callback didn&#x27;t eat it all.</p>
+<p>Then I parse the &quot;data descriptor&quot;, which might or might not have a magic number, and might be 32-bit or 64-bit, and check to see if the amount of data I consumed (tracked by the <code>Take</code>) matches the compressed size, which now I know. If it doesn&#x27;t match, we got out of sync, so I have to abort.</p>
+<hr>
+<p>There&#x27;s plenty this code doesn&#x27;t support. I focused on the subset used by standards like OpenDocument (see https://en.wikipedia.org/wiki/Zip_(file_format)#Standardization), which should be enough for most ZIP files you&#x27;ll find in the wild. Most of what isn&#x27;t supported is encryption (which makes no sense for ripgrep), advanced compression formats like bzip2 or LZMA (which most ZIP creators won&#x27;t create by default, for compatibility reasons), old compression formats (which nobody uses since deflate is always better), or esoteric features like splitting a ZIP file into multiple floppy disks.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-08 02:47</div>
             <div class="timeline-body"><p>Thanks for that writeup! It was very useful.</p>
-<p>I'd like to noodle on this for a bit. This is a big feature and I want to be 100% on it before merging. Once this becomes available, it will be very hard to back out of it.</p>
+<p>I&#x27;d like to noodle on this for a bit. This is a big feature and I want to be 100% on it before merging. Once this becomes available, it will be very hard to back out of it.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/cesarb">@cesarb</a> on 2017-01-08 13:08</div>
             <div class="timeline-body"><blockquote>
-<p>In practice, we probably aren't getting pure Rust versions of industrial strength decompressors for common formats any time soon.</p>
+<p>In practice, we probably aren&#x27;t getting pure Rust versions of industrial strength decompressors for common formats any time soon.</p>
 </blockquote>
-<p>If any compression format is going to get a good quality unsafe-free pure-Rust decompressor soon, it's deflate. It's that popular. I just found two pure-Rust decompressors, https://github.com/PistonDevelopers/inflate used by the <code>png</code> crate, and https://github.com/sile/libflate which is quite new.</p>
-<p>In particular, this comment (https://github.com/PistonDevelopers/image-png/pull/46#issuecomment-270968040) mentions adding a feature to the <code>flate2</code> crate (which is the one I'm using) to expose its API on top of one of these pure Rust implementations, so needing C code for deflate should be a temporary situation.</p>
+<p>If any compression format is going to get a good quality unsafe-free pure-Rust decompressor soon, it&#x27;s deflate. It&#x27;s that popular. I just found two pure-Rust decompressors, https://github.com/PistonDevelopers/inflate used by the <code>png</code> crate, and https://github.com/sile/libflate which is quite new.</p>
+<p>In particular, this comment (<a href="https://github.com/PistonDevelopers/image-png/pull/46">PistonDevelopers/image-png#46</a>#issuecomment-270968040) mentions adding a feature to the <code>flate2</code> crate (which is the one I&#x27;m using) to expose its API on top of one of these pure Rust implementations, so needing C code for deflate should be a temporary situation.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-08 20:43</div>
-            <div class="timeline-body"><p>@cesarb That's really cool. I care enough about using pure Rust that I will look into modifying this PR to use one of those libraries if you don't mind. :-) I'm not sure when I'll get to it though!</p>
+            <div class="timeline-body"><p>@cesarb That&#x27;s really cool. I care enough about using pure Rust that I will look into modifying this PR to use one of those libraries if you don&#x27;t mind. :-) I&#x27;m not sure when I&#x27;ll get to it though!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/scottchiefbaker">@scottchiefbaker</a> on 2017-01-12 21:58</div>
             <div class="timeline-body"><blockquote>
-<p>If any compression format is going to get a good quality unsafe-free pure-Rust decompressor soon, it's deflate.</p>
+<p>If any compression format is going to get a good quality unsafe-free pure-Rust decompressor soon, it&#x27;s deflate.</p>
 </blockquote>
 <p>What does <strong>unsafe-free</strong> mean in this context?</p>
 </div>
@@ -111,42 +111,42 @@ allow compiling ripgrep without the compressed file support.</p>
             <div class="timeline-body"><blockquote>
 <p>What does unsafe-free mean in this context?</p>
 </blockquote>
-<p>It just means that the code doesn't explicitly use <code>unsafe</code> anywhere.</p>
-<p>(I'm skeptical that can be done while being competitive in performance.)</p>
+<p>It just means that the code doesn&#x27;t explicitly use <code>unsafe</code> anywhere.</p>
+<p>(I&#x27;m skeptical that can be done while being competitive in performance.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/cesarb">@cesarb</a> on 2017-01-12 22:53</div>
             <div class="timeline-body"><blockquote>
-<p>(I'm skeptical that can be done while being competitive in performance.)</p>
+<p>(I&#x27;m skeptical that can be done while being competitive in performance.)</p>
 </blockquote>
-<p>It doesn't matter, you know someone is going to try, just for the bragging rights. Look, no ~~hands~~ unsafe!</p>
+<p>It doesn&#x27;t matter, you know someone is going to try, just for the bragging rights. Look, no ~~hands~~ unsafe!</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/tanriol">@tanriol</a> on 2017-01-17 23:30</div>
-            <div class="timeline-body"><p>I'd probably suggest that iterating over zip archive entries without seeking may be generally useful functionality (unzipping directly from a stream without having to write it out as a whole) that should be either a separate crate or maybe even integrated into the <a href="https://github.com/mvdnes/zip-rs">zip</a> crate.</p>
+            <div class="timeline-body"><p>I&#x27;d probably suggest that iterating over zip archive entries without seeking may be generally useful functionality (unzipping directly from a stream without having to write it out as a whole) that should be either a separate crate or maybe even integrated into the <a href="https://github.com/mvdnes/zip-rs">zip</a> crate.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-13 00:40</div>
-            <div class="timeline-body"><p>I realize it's been a while since I commented on this, but I've given this a lot of thought. As cool as this functionality as, I think I have to close it. My first and most important concern is that new features generally implies extra maintenance burden. This <em>particular</em> feature is something that I know will be a real headache to deal with. The issue is on two fronts:</p>
+            <div class="timeline-body"><p>I realize it&#x27;s been a while since I commented on this, but I&#x27;ve given this a lot of thought. As cool as this functionality as, I think I have to close it. My first and most important concern is that new features generally implies extra maintenance burden. This <em>particular</em> feature is something that I know will be a real headache to deal with. The issue is on two fronts:</p>
 <ol>
 <li>This introduces C dependencies. While it seems doable to continue to produce static executables, it complicates the build process. This is <em>not</em> something I want to be debugging on Windows either.</li>
 <li>Supporting compressed formats begs the addition of more formats, or worse, more esoteric versions of existing formats. (This is a little bit of a cop-out on my part, I admit.)</li>
 </ol>
-<p>It's hard for me to say what adding this kind of feature would actually mean. I would probably like to see a separate crate that is well maintained for this purpose in a way that isolates ripgrep from the gory details. As it stands now, there's a bit too much in ripgrep proper in this PR. Preferably, this separate crate would be pure Rust.</p>
-<p>None of this is really set in stone. I might be able to bend on this over time. But right now, I'd like to shelve the idea.</p>
-<p>@cesarb Thanks so much for the work on this. There's no doubt this PR will be useful when ripgrep is ready for a feature like this.</p>
+<p>It&#x27;s hard for me to say what adding this kind of feature would actually mean. I would probably like to see a separate crate that is well maintained for this purpose in a way that isolates ripgrep from the gory details. As it stands now, there&#x27;s a bit too much in ripgrep proper in this PR. Preferably, this separate crate would be pure Rust.</p>
+<p>None of this is really set in stone. I might be able to bend on this over time. But right now, I&#x27;d like to shelve the idea.</p>
+<p>@cesarb Thanks so much for the work on this. There&#x27;s no doubt this PR will be useful when ripgrep is ready for a feature like this.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2017-03-13 00:40</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-13 00:40</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 18:27:47 UTC
+        Synced at 2026-01-20 18:48:15 UTC
     </footer>
 </body>
 </html>

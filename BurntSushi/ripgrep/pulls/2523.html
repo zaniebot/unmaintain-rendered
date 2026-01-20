@@ -23,8 +23,8 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/mataha">@mataha</a></div>
-            <div class="timeline-body"><p>When <code>resolve_binary()</code> attempts to resolve a path to a program on Windows while searching for a program in <code>PATH</code> without an extension, <code>ripgrep</code> will assume the extension of the file to be <code>.exe</code> as it's the <em>de facto</em> standard, which will work most (99.99%) of the time...</p>
-<p>...unless the binary is a COM executable (we're on Windows, duh).</p>
+            <div class="timeline-body"><p>When <code>resolve_binary()</code> attempts to resolve a path to a program on Windows while searching for a program in <code>PATH</code> without an extension, <code>ripgrep</code> will assume the extension of the file to be <code>.exe</code> as it&#x27;s the <em>de facto</em> standard, which will work most (99.99%) of the time...</p>
+<p>...unless the binary is a COM executable (we&#x27;re on Windows, duh).</p>
 <p>(It feels weird being the first person to run into this.)</p>
 <p>Related: sharkdp/bat#2570 (<code>more</code> is a COM executable)</p>
 </div>
@@ -35,7 +35,7 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/mataha">@mataha</a> on <code>crates/cli/src/decompress.rs</code>:458 on 2023-05-30 11:55</div>
-            <div class="timeline-body"><p>I've added <code>com</code> here, but frankly I don't think that's the way to go - it probably would be better to respect <code>PATHEXT</code> in terms of executable extensions.</p>
+            <div class="timeline-body"><p>I&#x27;ve added <code>com</code> here, but frankly I don&#x27;t think that&#x27;s the way to go - it probably would be better to respect <code>PATHEXT</code> in terms of executable extensions.</p>
 <p>Opinion?</p>
 </div>
         </div>
@@ -49,17 +49,17 @@
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/cli/src/decompress.rs</code>:458 on 2023-07-05 18:54</div>
-            <div class="timeline-body"><p>I don't think Rust has a <code>PATHEXT</code> for Windows? The closest thing it has is <a href="https://doc.rust-lang.org/std/env/consts/constant.EXE_SUFFIX.html"><code>std::env::consts::EXE_SUFFIX</code></a> (or <a href="https://doc.rust-lang.org/std/env/consts/constant.EXE_EXTENSION.html"><code>std::env::consts::EXE_EXTENSION</code></a>), but it's just a single value, not a list.</p>
+            <div class="timeline-body"><p>I don&#x27;t think Rust has a <code>PATHEXT</code> for Windows? The closest thing it has is <a href="https://doc.rust-lang.org/std/env/consts/constant.EXE_SUFFIX.html"><code>std::env::consts::EXE_SUFFIX</code></a> (or <a href="https://doc.rust-lang.org/std/env/consts/constant.EXE_EXTENSION.html"><code>std::env::consts::EXE_EXTENSION</code></a>), but it&#x27;s just a single value, not a list.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2023-07-05 18:56</div>
+            <div class="event">Label <span class="label">rollup</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-07-05 18:56</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/mataha">@mataha</a> on <code>crates/cli/src/decompress.rs</code>:458 on 2023-07-06 15:41</div>
-            <div class="timeline-body"><p>Rust doesn't have it indeed - it needs to be pulled manually.</p>
+            <div class="timeline-body"><p>Rust doesn&#x27;t have it indeed - it needs to be pulled manually.</p>
 <p>This is the best I came up with; <code>PATHEXT</code> entries contain leading dots so these have to be trimmed:</p>
-<pre><code class="language-diff">diff --git a/crates/cli/src/decompress.rs b/crates/cli/src/decompress.rs
+<pre><code>diff --git a/crates/cli/src/decompress.rs b/crates/cli/src/decompress.rs
 index f2f2a67478ca..4fc257bb7603 100644
 --- a/crates/cli/src/decompress.rs
 +++ b/crates/cli/src/decompress.rs
@@ -76,12 +76,12 @@ index f2f2a67478ca..4fc257bb7603 100644
 +            for ext in env::split_paths(&amp;exts)
 +                .filter_map(|e| e.to_str().map(|s| s.to_lowercase()))
 +            {
-+                let abs_prog = abs_prog.with_extension(ext.trim_matches('.'));
++                let abs_prog = abs_prog.with_extension(ext.trim_matches(&#x27;.&#x27;));
                  if is_exe(&amp;abs_prog) {
                      return Ok(abs_prog.to_path_buf());
                  }
 </code></pre>
-<p>(sorry for the double message - I've accidentally clicked the wrong button)</p>
+<p>(sorry for the double message - I&#x27;ve accidentally clicked the wrong button)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -94,7 +94,7 @@ index f2f2a67478ca..4fc257bb7603 100644
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/cli/src/decompress.rs</code>:458 on 2023-07-06 15:44</div>
-            <div class="timeline-body"><p>I'm just going to go with hard-coding <code>com</code> and <code>exe</code> for now. If that's not enough, we can revisit it if someone runs into a real problem.</p>
+            <div class="timeline-body"><p>I&#x27;m just going to go with hard-coding <code>com</code> and <code>exe</code> for now. If that&#x27;s not enough, we can revisit it if someone runs into a real problem.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -107,7 +107,7 @@ index f2f2a67478ca..4fc257bb7603 100644
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2023-07-08 22:52</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-07-08 22:52</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2023-07-10 21:56</div>
@@ -130,7 +130,7 @@ index f2f2a67478ca..4fc257bb7603 100644
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:44:09 UTC
+        Synced at 2026-01-20 18:48:19 UTC
     </footer>
 </body>
 </html>

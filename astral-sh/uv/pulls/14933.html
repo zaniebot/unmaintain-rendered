@@ -23,12 +23,12 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/yumeminami">@yumeminami</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Fixes inconsistent symlink handling in <code>uv venv</code> command (#14670).</p>
-<h2>Problem</h2>
+Problem
 <p>https://github.com/astral-sh/uv/blob/00efde06b61756f0f305fcf67b12db71a29063d3/crates/uv-virtualenv/src/virtualenv.rs#L81</p>
 <p>The original code used <code>Path::metadata()</code> which automatically follows symlinks, causing the system to treat symlinked virtual environment paths as regular directories. When a user runs uv venv on an existing symlinked virtual environment <code>(.venv -&gt; foo)</code>, the code incorrectly treats the symlink as a regular directory because <code>location.metadata()</code> automatically follows the symlink and returns metadata for the target directory <code>foo/</code>. This causes the removal logic to delete the symlink itself and permanently breaking the symlink relationship and replacing it with a standard directory  structure.</p>
-<h2>Solution</h2>
+Solution
 <ul>
 <li>Use canonicalize() to resolve symlinks only when removing and recreating virtual
 environments</li>
@@ -36,8 +36,8 @@ environments</li>
 structure</li>
 <li>Minimal change that fixes the core issue without complex path management</li>
 </ul>
-<h2>Test Plan</h2>
-<pre><code class="language-bash">➜  test-env alias uv-dev='/Users/wingmunfung/workspace/uv/target/debug/uv'
+Test Plan
+<pre><code>➜  test-env alias uv-dev=&#x27;/Users/wingmunfung/workspace/uv/target/debug/uv&#x27;
 ➜  test-env ln -s dummy foo
 ➜  test-env ln -s foo .venv
 ➜  test-env ls -lah        
@@ -103,11 +103,11 @@ unpredictable behavior and potential data loss.</p>
 <p>was happening?</p>
 </blockquote>
 <p>@zanieb</p>
-<p>When recreating the venv, the symlink will be broken, just like your comment https://github.com/astral-sh/uv/issues/14670#issuecomment-3079993749, and there is no clear warning to the user. Is this one of the design purposes of uv itself?</p>
+<p>When recreating the venv, the symlink will be broken, just like your comment <a href="https://github.com/astral-sh/uv/issues/14670">astral-sh/uv#14670</a>#issuecomment-3079993749, and there is no clear warning to the user. Is this one of the design purposes of uv itself?</p>
 <p>I think the current MR is not good enough, so I redesigned it.</p>
 <p>When the user runs uv venv again, it detects the presence of symbolic links in the virtual environment.</p>
 <p>We can prompt:</p>
-<p>Key information: Warning: The virtual environment at '[path]' contains symbolic links. Preserving symlinks can affect portability and stability if the linked paths change outside the environment.</p>
+<p>Key information: Warning: The virtual environment at &#x27;[path]&#x27; contains symbolic links. Preserving symlinks can affect portability and stability if the linked paths change outside the environment.</p>
 <p>Options:</p>
 <p>(K)eep symlinks: Keep all symbolic links unchanged.</p>
 <p>(R)eplace with directories: For example: WARNING: This will replace symlinks with EMPTY directories. Any data expected to be at the symlink location within the venv will be lost or redirected to this new empty directory. Proceed only if you understand the consequences.</p>
@@ -118,16 +118,16 @@ unpredictable behavior and potential data loss.</p>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-29 02:01</div>
             <div class="timeline-body"><blockquote>
-<p>When recreating the venv, the symlink will be broken, just like your comment https://github.com/astral-sh/uv/issues/14670#issuecomment-3079993749, and there is no clear warning to the user. Is this one of the design purposes of uv itself?</p>
+<p>When recreating the venv, the symlink will be broken, just like your comment <a href="https://github.com/astral-sh/uv/issues/14670">astral-sh/uv#14670</a>#issuecomment-3079993749, and there is no clear warning to the user. Is this one of the design purposes of uv itself?</p>
 </blockquote>
-<p>No this is not by design, but I'm confused about the root cause of this abnormal behavior and I think it'd be helpful if your pull request explained that so a reviewer does not need to figure it out.</p>
-<p>I don't think we should prompt here, we should always follow the symlink.</p>
+<p>No this is not by design, but I&#x27;m confused about the root cause of this abnormal behavior and I think it&#x27;d be helpful if your pull request explained that so a reviewer does not need to figure it out.</p>
+<p>I don&#x27;t think we should prompt here, we should always follow the symlink.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/yumeminami">@yumeminami</a> on 2025-07-29 06:11</div>
             <div class="timeline-body"><p>@zanieb</p>
-<p>Thanks for the feedback! I've updated the PR description to explain the root cause. The issue was that Path::metadata() automatically follows symlinks, so the code treated symlinked venv paths as regular directories and would delete the symlink itself when clearing existing environments.</p>
+<p>Thanks for the feedback! I&#x27;ve updated the PR description to explain the root cause. The issue was that Path::metadata() automatically follows symlinks, so the code treated symlinked venv paths as regular directories and would delete the symlink itself when clearing existing environments.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -136,7 +136,7 @@ unpredictable behavior and potential data loss.</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-virtualenv/src/virtualenv.rs</code>:89 on 2025-07-29 16:37</div>
-            <div class="timeline-body"><p>Should we just canonicalize here? Won't this fail for nested symlinks?</p>
+            <div class="timeline-body"><p>Should we just canonicalize here? Won&#x27;t this fail for nested symlinks?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -154,7 +154,7 @@ unpredictable behavior and potential data loss.</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-virtualenv/src/virtualenv.rs</code>:135 on 2025-07-29 16:43</div>
-            <div class="timeline-body"><p>Isn't the crux of the issue just that we need to canonicalize the location here, when we remove and create it again? Isn't everything else working fine as-is?</p>
+            <div class="timeline-body"><p>Isn&#x27;t the crux of the issue just that we need to canonicalize the location here, when we remove and create it again? Isn&#x27;t everything else working fine as-is?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -163,9 +163,9 @@ unpredictable behavior and potential data loss.</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/yumeminami">@yumeminami</a> on <code>crates/uv-virtualenv/src/virtualenv.rs</code>:135 on 2025-07-30 02:49</div>
-            <div class="timeline-body"><p>you’re right, this wouldn’t handle nested symlinks properly. I’ve updated the code to use <code>canonicalize</code>. Thanks for catching that!  https://github.com/astral-sh/uv/pull/14933/commits/274cbb5f72264f3ba7171355a54a921dc1173794</p>
-<p>I've tested the nested symlinks situation and it can handle it.</p>
-<pre><code class="language-bash">➜  test-env alias uv-dev='/Users/wingmunfung/workspace/uv/target/debug/uv'
+            <div class="timeline-body"><p>you’re right, this wouldn’t handle nested symlinks properly. I’ve updated the code to use <code>canonicalize</code>. Thanks for catching that!  <a href="https://github.com/astral-sh/uv/pull/14933">astral-sh/uv#14933</a>/commits/274cbb5f72264f3ba7171355a54a921dc1173794</p>
+<p>I&#x27;ve tested the nested symlinks situation and it can handle it.</p>
+<pre><code>➜  test-env alias uv-dev=&#x27;/Users/wingmunfung/workspace/uv/target/debug/uv&#x27;
 ➜  test-env ln -s dummy foo
 ➜  test-env ln -s foo .venv
 ➜  test-env ls -lah        
@@ -208,13 +208,13 @@ lrwxr-xr-x   1 wingmunfung  staff     5B Jul 30 10:39 foo -&gt; dummy
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-30 13:42</div>
-            <div class="timeline-body"><p>Thanks for making those changes! Can you write a test case that's <code>cfg!</code>'d to unix in <code>crates/uv/tests/it/venv.rs</code>?</p>
+            <div class="timeline-body"><p>Thanks for making those changes! Can you write a test case that&#x27;s <code>cfg!</code>&#x27;d to unix in <code>crates/uv/tests/it/venv.rs</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/yumeminami">@yumeminami</a> on 2025-07-31 02:51</div>
             <div class="timeline-body"><blockquote>
-<p>Thanks for making those changes! Can you write a test case that's <code>cfg!</code>'d to unix in <code>crates/uv/tests/it/venv.rs</code>?</p>
+<p>Thanks for making those changes! Can you write a test case that&#x27;s <code>cfg!</code>&#x27;d to unix in <code>crates/uv/tests/it/venv.rs</code>?</p>
 </blockquote>
 <p>@zanieb</p>
 <p>I‘ve added three test cases for symlink preservation:</p>
@@ -226,7 +226,7 @@ lrwxr-xr-x   1 wingmunfung  staff     5B Jul 30 10:39 foo -&gt; dummy
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2025-07-31 11:47</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-31 11:47</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-07-31 11:47</div>
@@ -234,15 +234,15 @@ lrwxr-xr-x   1 wingmunfung  staff     5B Jul 30 10:39 foo -&gt; dummy
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @zanieb on 2025-07-31 11:59</div>
+            <div class="event">Merged by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-31 11:59</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2025-07-31 11:59</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2025-07-31 11:59</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:44:10 UTC
+        Synced at 2026-01-20 19:53:22 UTC
     </footer>
 </body>
 </html>

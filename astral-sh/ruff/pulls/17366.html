@@ -23,7 +23,7 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
+            <div class="timeline-body">Summary
 <p>Part of astral-sh/ruff#15383, this PR adds support for overloaded callables.</p>
 <p>Typing spec: https://typing.python.org/en/latest/spec/overload.html</p>
 <p>Specifically, it does the following:</p>
@@ -35,18 +35,18 @@
 <li>Update <code>CallableTypeOf</code> special form to recognize overloaded callable</li>
 <li>Update subtyping, assignability and fully static check to account for callables (equivalence is planned to be done as a follow-up)</li>
 </ol>
-<p>For (2), it is required to be done in this PR because otherwise I'd need to add some workaround for <code>into_callable_type</code> and I though it would be best to include it in here.</p>
+<p>For (2), it is required to be done in this PR because otherwise I&#x27;d need to add some workaround for <code>into_callable_type</code> and I though it would be best to include it in here.</p>
 <p>For (2), another possible design would be convert <code>CallableType</code> in an enum with two variants <code>CallableType::Single</code> and <code>CallableType::Overload</code> but I decided to go with <code>Box&lt;[Signature]&gt;</code> for now to (a) mirror it to be equivalent to <code>overload</code> field on <code>CallableSignature</code> and (b) to avoid any refactor in this PR. This could be done in a follow-up to better split the two kind of callables.</p>
-<h3>Design</h3>
+Design
 <p>There were two main candidates on how to represent the overloaded definition:</p>
 <ol>
 <li>To include it in the existing infrastructure which is what this PR is doing by recognizing all the signatures within the <code>FunctionType::signature</code> method</li>
 <li>To create a new <code>Overload</code> type variant</li>
 </ol>
-<details><summary>For context, this is what I had in mind with the new type variant:</summary>
+For context, this is what I had in mind with the new type variant:
 <p>
 
-<pre><code class="language-rs">pub enum Type {
+<pre><code>pub enum Type {
 	FunctionLiteral(FunctionType),
     Overload(OverloadType),
     BoundMethod(BoundMethodType),
@@ -71,12 +71,12 @@ pub enum BoundMethodKind {
 }
 </code></pre>
 </p>
-</details> 
+ 
 
 <p>The main reasons to choose (1) are the simplicity in the implementation, reusing the existing infrastructure, avoiding any complications that the new type variant has specifically around the different variants between function and methods which would require the overload type to use <code>Type</code> instead.</p>
-<h3>Implementation</h3>
+Implementation
 <p>The core logic is how to collect all the overloaded functions. The way this is done in this PR is by recording a <strong>use</strong> on the <code>Identifier</code> node that represents the function name in the use-def map. This is then used to fetch the previous symbol using the same name. This way the signatures are going to be propagated from top to bottom (from first overload to the final overload or the implementation) with each function / method. For example:</p>
-<pre><code class="language-py">from typing import overload
+<pre><code>from typing import overload
 
 @overload
 def foo(x: int) -&gt; int: ...
@@ -86,19 +86,19 @@ def foo(x: int | str) -&gt; int | str:
 	return x
 </code></pre>
 <p>Here, each definition of <code>foo</code> knows about all the signatures that comes before itself. So, the first overload would only see itself, the second would see the first and itself and so on until the implementation or the final overload.</p>
-<p>This approach required some updates specifically recognizing <code>Identifier</code> node to record the function use because it doesn't use <code>ExprName</code>.</p>
-<h2>Test Plan</h2>
+<p>This approach required some updates specifically recognizing <code>Identifier</code> node to record the function use because it doesn&#x27;t use <code>ExprName</code>.</p>
+Test Plan
 <p>Update existing test cases which were limited by the overload support and add test cases for the following cases:</p>
 <ul>
 <li>Valid overloads as functions, methods, generics, version specific</li>
 <li>Invalid overloads as stated in https://typing.python.org/en/latest/spec/overload.html#invalid-overload-definitions (implementation will be done in a follow-up)</li>
 <li>Various relation: fully static, subtyping, and assignability (others in a follow-up)</li>
 </ul>
-<h2>Ecosystem changes</h2>
+Ecosystem changes
 <p><em>WIP</em></p>
-<p>After going through the ecosystem changes (there are a lot!), here's what I've found:</p>
-<p>We need assignability check between a callable type and a class literal because a lot of builtins are defined as classes in typeshed whose constructor method is overloaded e.g., <code>map</code>, <code>sorted</code>, <code>list.sort</code>, <code>max</code>, <code>min</code> with the <code>key</code> parameter, <code>collections.abc.defaultdict</code>, etc. (https://github.com/astral-sh/ty/issues/129). This makes up most of the ecosystem diff <strong>roughly 70 diagnostics</strong>. For example:</p>
-<pre><code class="language-py">from collections import defaultdict
+<p>After going through the ecosystem changes (there are a lot!), here&#x27;s what I&#x27;ve found:</p>
+<p>We need assignability check between a callable type and a class literal because a lot of builtins are defined as classes in typeshed whose constructor method is overloaded e.g., <code>map</code>, <code>sorted</code>, <code>list.sort</code>, <code>max</code>, <code>min</code> with the <code>key</code> parameter, <code>collections.abc.defaultdict</code>, etc. (<a href="https://github.com/astral-sh/ty/issues/129">astral-sh/ty#129</a>). This makes up most of the ecosystem diff <strong>roughly 70 diagnostics</strong>. For example:</p>
+<pre><code>from collections import defaultdict
 
 # red-knot: No overload of bound method `__init__` matches arguments [lint:no-matching-overload]
 defaultdict(int)
@@ -112,9 +112,9 @@ class Foo:
 # red-knot: No overload of function `__new__` matches arguments [lint:no-matching-overload]
 map(Foo, [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;])
 </code></pre>
-<p>Duplicate diagnostics in unpacking (https://github.com/astral-sh/ty/issues/185) has <strong>~16 diagnostics</strong>.</p>
+<p>Duplicate diagnostics in unpacking (<a href="https://github.com/astral-sh/ty/issues/185">astral-sh/ty#185</a>) has <strong>~16 diagnostics</strong>.</p>
 <p>Support for the <code>callable</code> builtin which requires <code>TypeIs</code> support. This is <strong>5 diagnostics</strong>. For example:</p>
-<pre><code class="language-py">from typing import Any
+<pre><code>from typing import Any
 
 def _(x: Any | None) -&gt; None:
     if callable(x):
@@ -124,8 +124,8 @@ def _(x: Any | None) -&gt; None:
         # pyrefly: `(...) -&gt; object`
         reveal_type(x)
 </code></pre>
-<p>Narrowing on <code>assert</code> which has <strong>11 diagnostics</strong>. This is being worked on in https://github.com/astral-sh/ruff/pull/17345. For example:</p>
-<pre><code class="language-py">import re
+<p>Narrowing on <code>assert</code> which has <strong>11 diagnostics</strong>. This is being worked on in <a href="https://github.com/astral-sh/ruff/pull/17345">astral-sh/ruff#17345</a>. For example:</p>
+<pre><code>import re
 
 match = re.search(&quot;&quot;, &quot;&quot;)
 assert match
@@ -137,24 +137,24 @@ match.group()  # error: [possibly-unbound-attribute]
 <li>Type aliases: 6</li>
 <li>Generics: 3</li>
 <li>Protocols: 13</li>
-<li>Unpacking in comprehension: 1 (https://github.com/astral-sh/ruff/pull/17396)</li>
+<li>Unpacking in comprehension: 1 (<a href="https://github.com/astral-sh/ruff/pull/17396">astral-sh/ruff#17396</a>)</li>
 </ul>
-<h2>Performance</h2>
-<p>Refer to https://github.com/astral-sh/ruff/pull/17366#issuecomment-2814053046.</p>
+Performance
+<p>Refer to <a href="https://github.com/astral-sh/ruff/pull/17366">astral-sh/ruff#17366</a>#issuecomment-2814053046.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">red-knot</span> added by @dhruvmanila on 2025-04-12 04:44</div>
+            <div class="event">Label <span class="label">red-knot</span> added by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-12 04:44</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-12 04:46</div>
-            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+            <div class="timeline-body">
 
-<h2><code>mypy_primer</code> results</h2>
-<details>
-<summary>Changes were detected when running on open source projects</summary>
+<code>mypy_primer</code> results
 
-<pre><code class="language-diff">zipp (https://github.com/jaraco/zipp)
+Changes were detected when running on open source projects
+
+<pre><code>zipp (https://github.com/jaraco/zipp)
 + error[lint:unsupported-operator] /tmp/mypy_primer/projects/zipp/zipp/glob.py:4:26: Operator `*` is unsupported between objects of type `str` and `bool`
 - Found 3 diagnostics
 + Found 4 diagnostics
@@ -571,30 +571,30 @@ porcupine (https://github.com/Akuli/porcupine)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-04-14 20:42</div>
-            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+            <div class="timeline-body">
 
-<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
 
-<h2><a href="https://codspeed.io/astral-sh/ruff/branches/dhruv%2Foverloaded-signature">CodSpeed Performance Report</a></h2>
-<h3>Merging astral-sh/ruff#17366 will <strong>degrade performances by 7.47%</strong></h3>
-<p><sub>Comparing <code>dhruv/overloaded-signature</code> (b347ce0) with <code>main</code> (c7372d2)</sub></p>
-<h3>Summary</h3>
-<p><code>❌ 1 (👁 1)</code> regressions<br />
+
+<a href="https://codspeed.io/astral-sh/ruff/branches/dhruv%2Foverloaded-signature">CodSpeed Performance Report</a>
+Merging astral-sh/ruff#17366 will <strong>degrade performances by 7.47%</strong>
+<p>Comparing <code>dhruv/overloaded-signature</code> (b347ce0) with <code>main</code> (c7372d2)</p>
+Summary
+<p><code>❌ 1 (👁 1)</code> regressions<br>
 <code>✅ 32</code> untouched benchmarks</p>
-<h3>Benchmarks breakdown</h3>
+Benchmarks breakdown
 <p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
 | --- | --------- | ----------------------- | ------------------- | ------ |
 | 👁 | <code>red_knot_micro[many_string_assignments]</code> | 52.4 ms | 56.7 ms | -7.47% |</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dhruvmanila on 2025-04-16 21:53</div>
+            <div class="event">Closed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-16 21:53</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Reopened by @dhruvmanila on 2025-04-16 21:53</div>
+            <div class="event">Reopened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-16 21:53</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "[red-knot] Understand overloaded function/method" to "[red-knot] Add support for overloaded functions" by @dhruvmanila on 2025-04-17 14:32</div>
+            <div class="event">Renamed from &quot;[red-knot] Understand overloaded function/method&quot; to &quot;[red-knot] Add support for overloaded functions&quot; by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-17 14:32</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/dataclasses.md</code>:563 on 2025-04-17 14:36</div>
@@ -608,8 +608,8 @@ porcupine (https://github.com/Akuli/porcupine)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/subscript/bytes.md</code>:27 on 2025-04-17 14:39</div>
-            <div class="timeline-body"><p>This seems correct i.e., revealing <code>int</code> instead of <code>bytes</code> even though we don't support protocols, <code>n</code> is definitely not a <code>slice</code>. Pyright and mypy also reveals <code>int</code>.</p>
-<pre><code class="language-py">    @overload
+            <div class="timeline-body"><p>This seems correct i.e., revealing <code>int</code> instead of <code>bytes</code> even though we don&#x27;t support protocols, <code>n</code> is definitely not a <code>slice</code>. Pyright and mypy also reveals <code>int</code>.</p>
+<pre><code>    @overload
     def __getitem__(self, key: SupportsIndex, /) -&gt; int: ...
     @overload
     def __getitem__(self, key: slice, /) -&gt; bytes: ...
@@ -623,8 +623,8 @@ porcupine (https://github.com/Akuli/porcupine)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/subscript/string.md</code>:24 on 2025-04-17 14:42</div>
-            <div class="timeline-body"><p>I think I'd need to put this <code>TODO</code> back because it should probably be <code>str</code> as <code>self</code> here would be <code>StringLiteral</code>. So,</p>
-<pre><code class="language-py">    @overload
+            <div class="timeline-body"><p>I think I&#x27;d need to put this <code>TODO</code> back because it should probably be <code>str</code> as <code>self</code> here would be <code>StringLiteral</code>. So,</p>
+<pre><code>    @overload
     def __getitem__(self: LiteralString, key: SupportsIndex | slice, /) -&gt; LiteralString: ...
     @overload
     def __getitem__(self, key: SupportsIndex | slice, /) -&gt; str: ...  # type: ignore[misc]
@@ -633,12 +633,12 @@ porcupine (https://github.com/Akuli/porcupine)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:124 on 2025-04-17 14:45</div>
-            <div class="timeline-body"><p>This is not the final way to display overloads, I went with it because this is not the main goal for this PR. I'll open a separate issue for this.</p>
+            <div class="timeline-body"><p>This is not the final way to display overloads, I went with it because this is not the main goal for this PR. I&#x27;ll open a separate issue for this.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:295 on 2025-04-17 14:48</div>
-            <div class="timeline-body"><p>I updated the <code>apply_specialization</code> methods for <code>Signature</code>, <code>Parameters</code>, <code>Parameter</code> to return <code>Self</code> so that it's easier to collect in <code>CallableType::apply_specialization</code> and it also matches what this method do on other types (cc @dcreager)</p>
+            <div class="timeline-body"><p>I updated the <code>apply_specialization</code> methods for <code>Signature</code>, <code>Parameters</code>, <code>Parameter</code> to return <code>Self</code> so that it&#x27;s easier to collect in <code>CallableType::apply_specialization</code> and it also matches what this method do on other types (cc @dcreager)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -646,22 +646,22 @@ porcupine (https://github.com/Akuli/porcupine)
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Marked ready for review by @dhruvmanila on 2025-04-17 14:48</div>
+            <div class="event">Marked ready for review by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-17 14:48</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @carljm by @dhruvmanila on 2025-04-17 14:48</div>
+            <div class="event">Review requested from <a href="https://github.com/carljm">@carljm</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-17 14:48</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2025-04-17 14:48</div>
+            <div class="event">Review requested from <a href="https://github.com/AlexWaygood">@AlexWaygood</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-17 14:48</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @sharkdp by @dhruvmanila on 2025-04-17 14:48</div>
+            <div class="event">Review requested from <a href="https://github.com/sharkdp">@sharkdp</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-17 14:48</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @dcreager by @dhruvmanila on 2025-04-17 14:48</div>
+            <div class="event">Review requested from <a href="https://github.com/dcreager">@dcreager</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-17 14:48</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2025-04-17 14:48</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-17 14:48</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-04-17 14:54</div>
@@ -669,8 +669,8 @@ porcupine (https://github.com/Akuli/porcupine)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/dataclasses.md</code>:563 on 2025-04-17 14:54</div>
-            <div class="timeline-body"><p>Yes, you're right. Can you please change the overload above to the following (and import <code>Literal</code>)?</p>
-<pre><code class="language-oy">def __get__(self, instance: None, owner: type) -&gt; Literal[&quot;&quot;]: ...
+            <div class="timeline-body"><p>Yes, you&#x27;re right. Can you please change the overload above to the following (and import <code>Literal</code>)?</p>
+<pre><code>def __get__(self, instance: None, owner: type) -&gt; Literal[&quot;&quot;]: ...
 </code></pre>
 </div>
         </div>
@@ -694,10 +694,10 @@ porcupine (https://github.com/Akuli/porcupine)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/binary/integers.md</code>:57 on 2025-04-17 16:32</div>
-            <div class="timeline-body"><p>hmm, I think we're selecting the wrong overload here for these last two. These are the six(!) overloads to <code>int.__pow__</code>:</p>
+            <div class="timeline-body"><p>hmm, I think we&#x27;re selecting the wrong overload here for these last two. These are the six(!) overloads to <code>int.__pow__</code>:</p>
 <p>https://github.com/astral-sh/ruff/blob/d2ebfd6ed7855140806a7cad3e23d58fe5056c31/crates/red_knot_vendored/vendor/typeshed/stdlib/builtins.pyi#L290-L303</p>
-<p>It looks to me like we're selecting overload 3 when we should be selecting overload 5 (which would lead to us inferring <code>Any</code> rather than <code>int</code>)? The reason is that <code>x ** y</code> results in an <code>int</code> at runtime if <code>x</code> is an integer and <code>y</code> is a positive integer, but it results in a <code>float</code> at runtime if <code>x</code> is an integer and <code>y</code> is a <em>negative</em> integer:</p>
-<pre><code class="language-pycon">&gt;&gt;&gt; 1 ** 1
+<p>It looks to me like we&#x27;re selecting overload 3 when we should be selecting overload 5 (which would lead to us inferring <code>Any</code> rather than <code>int</code>)? The reason is that <code>x ** y</code> results in an <code>int</code> at runtime if <code>x</code> is an integer and <code>y</code> is a positive integer, but it results in a <code>float</code> at runtime if <code>x</code> is an integer and <code>y</code> is a <em>negative</em> integer:</p>
+<pre><code>&gt;&gt;&gt; 1 ** 1
 1
 &gt;&gt;&gt; -1 ** 1
 -1
@@ -706,7 +706,7 @@ porcupine (https://github.com/Akuli/porcupine)
 &gt;&gt;&gt; -1 ** -1
 -1.0
 </code></pre>
-<p>Possibly we're selecting overload 3 here because we don't properly understand the <code>_PositiveInteger</code> and <code>_NegativeInteger</code> type aliases in typeshed? We might be inferring those types as <code>Unknown</code> or <code>Todo</code>, and any type is assignable to <code>Unknown</code> or <code>Todo</code>, so I can see how that would lead us to believe that overload 3 matches these calls.</p>
+<p>Possibly we&#x27;re selecting overload 3 here because we don&#x27;t properly understand the <code>_PositiveInteger</code> and <code>_NegativeInteger</code> type aliases in typeshed? We might be inferring those types as <code>Unknown</code> or <code>Todo</code>, and any type is assignable to <code>Unknown</code> or <code>Todo</code>, so I can see how that would lead us to believe that overload 3 matches these calls.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -729,7 +729,7 @@ porcupine (https://github.com/Akuli/porcupine)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/subscript/string.md</code>:24 on 2025-04-17 16:38</div>
-            <div class="timeline-body"><p>All <code>StringLiteral</code> types are subtypes of <code>LiteralString</code>, so if we're passing in a <code>StringLiteral</code> type as <code>self</code> it seems correct to me that we should be selecting the first overload!</p>
+            <div class="timeline-body"><p>All <code>StringLiteral</code> types are subtypes of <code>LiteralString</code>, so if we&#x27;re passing in a <code>StringLiteral</code> type as <code>self</code> it seems correct to me that we should be selecting the first overload!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -738,7 +738,7 @@ porcupine (https://github.com/Akuli/porcupine)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/subscript/tuple.md</code>:72 on 2025-04-17 16:41</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">    # TODO: Should be `tuple[Literal[1, 'a', b&quot;b&quot;] | None, ...]`
+            <div class="timeline-body"><pre><code>    # TODO: Should be `tuple[Literal[1, &#x27;a&#x27;, b&quot;b&quot;] | None, ...]`
 </code></pre>
 </div>
         </div>
@@ -748,7 +748,7 @@ porcupine (https://github.com/Akuli/porcupine)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/truthiness.md</code>:250 on 2025-04-17 17:49</div>
-            <div class="timeline-body"><p>I think that's correct since <code>type.__new__</code> takes 3 arguments. I guess we should change the return statement though, instead of adding an assertion. Or just replace it with <code>raise NotImplementedError</code> maybe.</p>
+            <div class="timeline-body"><p>I think that&#x27;s correct since <code>type.__new__</code> takes 3 arguments. I guess we should change the return statement though, instead of adding an assertion. Or just replace it with <code>raise NotImplementedError</code> maybe.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -757,21 +757,21 @@ porcupine (https://github.com/Akuli/porcupine)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/binary/integers.md</code>:57 on 2025-04-17 18:20</div>
-            <div class="timeline-body"><p>Yeah, I think this is something that I plan to work on and try to reduce the number of false positive. Currently, the logic for call semantics is to get the first matched overload which has some downsides like the one that you've mentioned. One solution that I'll explore is to use intersection of callables which <em>should</em> reduce the number of false positives like this one but it might still not be correct.</p>
-<p>Thanks for catching this, I'll add the relevant TODOs specific to each case.</p>
+            <div class="timeline-body"><p>Yeah, I think this is something that I plan to work on and try to reduce the number of false positive. Currently, the logic for call semantics is to get the first matched overload which has some downsides like the one that you&#x27;ve mentioned. One solution that I&#x27;ll explore is to use intersection of callables which <em>should</em> reduce the number of false positives like this one but it might still not be correct.</p>
+<p>Thanks for catching this, I&#x27;ll add the relevant TODOs specific to each case.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-17 21:23</div>
             <div class="timeline-body"><p>@dhruvmanila I looked at the benchmark regression, and I think this is the explanation for it:</p>
 <p>Since astral-sh/ruff#17419 we set a size limit on unions of literals. This means that a) this benchmark is now quite fast, therefore sensitive, and b) at a certain point in this benchmark, we fall back from a large union of literals to simply <code>str</code>. This means that several of the <code>+=</code> here end up looking up <code>str.__add__</code> and calling it. <code>str.__add__</code> is overloaded, so before this diff calling it was a lot cheaper than after this diff.</p>
-<p>So I think that it's fine to go ahead and land this with the regression. The extra cost is directly related to the new correct functionality.</p>
+<p>So I think that it&#x27;s fine to go ahead and land this with the regression. The extra cost is directly related to the new correct functionality.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-17 21:31</div>
             <div class="timeline-body"><blockquote>
-<p>So I think that it's fine to go ahead and land this with the regression. The extra cost is directly related to the new correct functionality.</p>
+<p>So I think that it&#x27;s fine to go ahead and land this with the regression. The extra cost is directly related to the new correct functionality.</p>
 </blockquote>
 <p>Makes sense, thanks for looking into it.</p>
 </div>
@@ -789,35 +789,35 @@ porcupine (https://github.com/Akuli/porcupine)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/binary/integers.md</code>:57 on 2025-04-17 21:44</div>
-            <div class="timeline-body"><p>Yeah, I think intersecting all return values from matching overloads is not really correct when some overloads matched due to <code>Any</code>, but I think it's correct for fully-static overloads and fully-static arguments. And even in the not-fully-static cases it should be effective to reduce false positives. So I think it's a good first step.</p>
+            <div class="timeline-body"><p>Yeah, I think intersecting all return values from matching overloads is not really correct when some overloads matched due to <code>Any</code>, but I think it&#x27;s correct for fully-static overloads and fully-static arguments. And even in the not-fully-static cases it should be effective to reduce false positives. So I think it&#x27;s a good first step.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/truthiness.md</code>:250 on 2025-04-17 21:46</div>
-            <div class="timeline-body"><p>Yeah I think replacing the wrong instantiation with just <code>raise NotImplementedError()</code> is a fine option here, it's unrelated to the purpose of the test.</p>
+            <div class="timeline-body"><p>Yeah I think replacing the wrong instantiation with just <code>raise NotImplementedError()</code> is a fine option here, it&#x27;s unrelated to the purpose of the test.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/overloads.md</code>:28 on 2025-04-17 21:47</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">overridden by each other.
+            <div class="timeline-body"><pre><code>overridden by each other.
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/overloads.md</code>:30 on 2025-04-17 21:47</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">An overloaded function is overriding another overloaded function:
+            <div class="timeline-body"><pre><code>An overloaded function is overriding another overloaded function:
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/overloads.md</code>:58 on 2025-04-17 21:48</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">A non-overloaded function is overriding an overloaded function:
+            <div class="timeline-body"><pre><code>A non-overloaded function is overriding an overloaded function:
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/overloads.md</code>:67 on 2025-04-17 21:48</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">An overloaded function is overriding a non-overloaded function:
+            <div class="timeline-body"><pre><code>An overloaded function is overriding a non-overloaded function:
 </code></pre>
 </div>
         </div>
@@ -838,7 +838,7 @@ porcupine (https://github.com/Akuli/porcupine)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/subscript/lists.md</code>:38 on 2025-04-17 22:06</div>
-            <div class="timeline-body"><p>It is correct to error here, but <code>call-non-callable</code> isn't the right error. Probably not much point investigating this further until support for legacy generics lands (so we understand <code>list</code> properly as a generic), but I would leave a <code>TODO: better error</code> in place on these lines.</p>
+            <div class="timeline-body"><p>It is correct to error here, but <code>call-non-callable</code> isn&#x27;t the right error. Probably not much point investigating this further until support for legacy generics lands (so we understand <code>list</code> properly as a generic), but I would leave a <code>TODO: better error</code> in place on these lines.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -848,22 +848,22 @@ porcupine (https://github.com/Akuli/porcupine)
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_equivalent_to.md</code>:259 on 2025-04-17 22:10</div>
-            <div class="timeline-body"><p>Not that it needs to be done in this PR, but just noting here as an aside that it's always possible to implement <code>is_equivalent_to</code> for complex cases as simply <code>x.is_subtype_of(y) &amp;&amp; y.is_subtype_of(x)</code> rather than writing a full dedicated implementation of it.</p>
+            <div class="timeline-body"><p>Not that it needs to be done in this PR, but just noting here as an aside that it&#x27;s always possible to implement <code>is_equivalent_to</code> for complex cases as simply <code>x.is_subtype_of(y) &amp;&amp; y.is_subtype_of(x)</code> rather than writing a full dedicated implementation of it.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_gradual_equivalent_to.md</code>:160 on 2025-04-17 22:12</div>
-            <div class="timeline-body"><p>Unfortunately bidirectional assignability does not imply gradual equivalence, it's more like a static equivalence check but where <code>Any/Unknown</code> matches <code>Any/Unknown</code>. (Could still potentially be implemented via shared subtyping/assignability logic, with a third strategy for type comparison passed in as a parameter.)</p>
+            <div class="timeline-body"><p>Unfortunately bidirectional assignability does not imply gradual equivalence, it&#x27;s more like a static equivalence check but where <code>Any/Unknown</code> matches <code>Any/Unknown</code>. (Could still potentially be implemented via shared subtyping/assignability logic, with a third strategy for type comparison passed in as a parameter.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_subtype_of.md</code>:1180 on 2025-04-17 22:15</div>
-            <div class="timeline-body"><p>I'm curious why we are using multiple models and an import here? The thing we are testing doesn't seem related to imports; this could all be in one file. (Same question for similar cases below.)</p>
+            <div class="timeline-body"><p>I&#x27;m curious why we are using multiple models and an import here? The thing we are testing doesn&#x27;t seem related to imports; this could all be in one file. (Same question for similar cases below.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_subtype_of.md</code>:1308 on 2025-04-17 22:22</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">
+            <div class="timeline-body"><pre><code>
 Order of overloads is irrelevant for subtyping.
 
 </code></pre>
@@ -871,13 +871,13 @@ Order of overloads is irrelevant for subtyping.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:1122 on 2025-04-17 22:23</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">                // done on the `Identifier` node as opposed to `ExprName` because that's what the
+            <div class="timeline-body"><pre><code>                // done on the `Identifier` node as opposed to `ExprName` because that&#x27;s what the
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:1127 on 2025-04-17 22:24</div>
-            <div class="timeline-body"><p>Seems confusing to say &quot;this could be done&quot; and then explain why it couldn't; I'd probably just remove this.</p>
+            <div class="timeline-body"><p>Seems confusing to say &quot;this could be done&quot; and then explain why it couldn&#x27;t; I&#x27;d probably just remove this.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -887,13 +887,13 @@ Order of overloads is irrelevant for subtyping.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:408 on 2025-04-17 22:28</div>
-            <div class="timeline-body"><p>Not sure why (for now) we don't use the same <code>Overload[...]</code> syntax used above here as well?</p>
+            <div class="timeline-body"><p>Not sure why (for now) we don&#x27;t use the same <code>Overload[...]</code> syntax used above here as well?</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:5892 on 2025-04-17 22:39</div>
             <div class="timeline-body"><p>We could insert a comment here</p>
-<pre><code class="language-suggestion">        // TODO maybe someday: infer union of overloaded callables if we have a maybe-bound overload?
+<pre><code>        // TODO maybe someday: infer union of overloaded callables if we have a maybe-bound overload?
         if let Symbol::Type(Type::FunctionLiteral(function_literal), Boundness::Bound) =
 </code></pre>
 </div>
@@ -905,7 +905,7 @@ Order of overloads is irrelevant for subtyping.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:295 on 2025-04-17 22:51</div>
-            <div class="timeline-body"><p>I noticed this discrepancy on the generics PR and then I vaguely recall thinking I had observed a reason for it, but I don't remember anymore what that reason was :) This change seems reasonable to me. (We were cloning anyway at the call site, so it doesn't seem to be motivated by efficiency.)</p>
+            <div class="timeline-body"><p>I noticed this discrepancy on the generics PR and then I vaguely recall thinking I had observed a reason for it, but I don&#x27;t remember anymore what that reason was :) This change seems reasonable to me. (We were cloning anyway at the call site, so it doesn&#x27;t seem to be motivated by efficiency.)</p>
 <p>Hopefully @dcreager will weigh in if we are missing a reason not to do this.</p>
 </div>
         </div>
@@ -922,9 +922,9 @@ Order of overloads is irrelevant for subtyping.
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/binary/integers.md</code>:57 on 2025-04-18 03:02</div>
             <div class="timeline-body"><p>Added TODOs for the last two cases.</p>
 <blockquote>
-<p>Possibly we're selecting overload 3 here because we don't properly understand the <code>_PositiveInteger</code> and <code>_NegativeInteger</code> type aliases in typeshed?</p>
+<p>Possibly we&#x27;re selecting overload 3 here because we don&#x27;t properly understand the <code>_PositiveInteger</code> and <code>_NegativeInteger</code> type aliases in typeshed?</p>
 </blockquote>
-<p>Yeah, this is the reason that we're choosing the incorrect overload.</p>
+<p>Yeah, this is the reason that we&#x27;re choosing the incorrect overload.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -960,7 +960,7 @@ Order of overloads is irrelevant for subtyping.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/overloads.md</code>:302 on 2025-04-18 03:12</div>
-            <div class="timeline-body"><p>Yeah, I thought I added that but clearly didn't. Thanks!</p>
+            <div class="timeline-body"><p>Yeah, I thought I added that but clearly didn&#x27;t. Thanks!</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -978,13 +978,13 @@ Order of overloads is irrelevant for subtyping.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_subtype_of.md</code>:1180 on 2025-04-18 03:21</div>
-            <div class="timeline-body"><p>Do you mean why I've defined it in a stub file? It's mainly so that I don't need to add the implementation function and making sure that it's consistent with the overload signatures. Otherwise I'd need to make sure that they are consistent or I could use protocols which is yet to be implemented or abstract methods which would make the test setup a bit verbose (add <code>@abstractmethod</code> to all methods).</p>
+            <div class="timeline-body"><p>Do you mean why I&#x27;ve defined it in a stub file? It&#x27;s mainly so that I don&#x27;t need to add the implementation function and making sure that it&#x27;s consistent with the overload signatures. Otherwise I&#x27;d need to make sure that they are consistent or I could use protocols which is yet to be implemented or abstract methods which would make the test setup a bit verbose (add <code>@abstractmethod</code> to all methods).</p>
 <p>Happy to answer if the query is related to something else.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:1127 on 2025-04-18 03:23</div>
-            <div class="timeline-body"><p>I mainly added as a note for myself or someone else who looks at it and might think this could be done but I guess then the tests would start failing so that should catch this change. I'll remove it.</p>
+            <div class="timeline-body"><p>I mainly added as a note for myself or someone else who looks at it and might think this could be done but I guess then the tests would start failing so that should catch this change. I&#x27;ll remove it.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1015,7 +1015,7 @@ Order of overloads is irrelevant for subtyping.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:408 on 2025-04-18 03:29</div>
-            <div class="timeline-body"><p>Yeah, I think I just missed updating the ones on <code>CallableType</code>. I've updated it.</p>
+            <div class="timeline-body"><p>Yeah, I think I just missed updating the ones on <code>CallableType</code>. I&#x27;ve updated it.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -1026,7 +1026,7 @@ Order of overloads is irrelevant for subtyping.
             <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:5892 on 2025-04-18 03:41</div>
             <div class="timeline-body"><p>Hmm, interesting. Would you be able to provide an example of where this might be possible?</p>
 <p>Would it be something like this:</p>
-<pre><code class="language-py">def _(flag: bool) -&gt; None:
+<pre><code>def _(flag: bool) -&gt; None:
     if flag:
 
         @overload
@@ -1060,14 +1060,14 @@ Order of overloads is irrelevant for subtyping.
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-18 04:27</div>
-            <div class="timeline-body"><p>I'm going to go ahead and merge this; most of the new ecosystem changes are in the similar category as documented in the PR description but will put up any follow-up issue if I find anything new and worth prioritizing.</p>
+            <div class="timeline-body"><p>I&#x27;m going to go ahead and merge this; most of the new ecosystem changes are in the similar category as documented in the PR description but will put up any follow-up issue if I find anything new and worth prioritizing.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @dhruvmanila on 2025-04-18 04:27</div>
+            <div class="event">Merged by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-18 04:27</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @dhruvmanila on 2025-04-18 04:27</div>
+            <div class="event">Closed by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-18 04:27</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2025-04-18 04:27</div>
@@ -1075,7 +1075,7 @@ Order of overloads is irrelevant for subtyping.
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:11:32 UTC
+        Synced at 2026-01-20 19:13:15 UTC
     </footer>
 </body>
 </html>

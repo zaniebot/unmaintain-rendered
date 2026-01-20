@@ -37,7 +37,7 @@ support for this is checking for a UTF-16 bom. In all other cases, a
 text encoding of <code>auto</code> (the default) implies a UTF-8 or ASCII
 compatible source encoding. When a text encoding is otherwise specified,
 it is unconditionally used for all files searched.</p>
-<p>Since ripgrep's regex engine is fundamentally built on top of UTF-8,
+<p>Since ripgrep&#x27;s regex engine is fundamentally built on top of UTF-8,
 this feature works by transcoding the files to be searched from their
 source encoding to UTF-8. This transcoding only happens when:</p>
 <ol>
@@ -65,23 +65,23 @@ might want to auto-detect more text encodings. A more elaborate UX
 experience might permit end users to specify multiple text encodings,
 although this seems hard to pull off in an ergonomic way.</p>
 <p>Fixes #1</p>
-<hr />
+<hr>
 <p><strong>Initial PR message:</strong></p>
 <p>This is in-progress work on adding UTF-16 support to ripgrep.</p>
 <p>This &quot;works,&quot; but it needs to be cleaned up a bit before it can be merged:</p>
 <ul>
 <li>[x] Add tests where the input is UTF-16.</li>
-<li>[x] Add a flag that permits controlling this behavior. (We could elect to punt on this if the right UX choice isn't obvious.)</li>
-<li>[x] When reading anything but UTF-8, we need to disable the memory map searcher. It's not practical to transcode a memory mapped file in a way that isn't isomorphic to just using the normal incremental <code>io::Read</code> interface. (This should be done optimistically by &quot;bailing&quot; out of the memory map strategy if there's a BOM rather than pessimistically to avoid additional syscalls in the happy path.)</li>
+<li>[x] Add a flag that permits controlling this behavior. (We could elect to punt on this if the right UX choice isn&#x27;t obvious.)</li>
+<li>[x] When reading anything but UTF-8, we need to disable the memory map searcher. It&#x27;s not practical to transcode a memory mapped file in a way that isn&#x27;t isomorphic to just using the normal incremental <code>io::Read</code> interface. (This should be done optimistically by &quot;bailing&quot; out of the memory map strategy if there&#x27;s a BOM rather than pessimistically to avoid additional syscalls in the happy path.)</li>
 <li>[x] The API for <code>DecodeReader</code> needs to be tweaked so that its internal buffer can be reused. (Without this, the normal UTF-8 happy path causes ripgrep to be slower than grep!)</li>
 </ul>
-<p>If you want to try this PR out (which would be most welcome), then because of the memory map issue mentioned above, you'll need to pass the <code>--no-mmap</code> flag to ripgrep.</p>
-<p>To a first approximation, ripgrep is approximately 5x slower searching UTF-16 when compared to UTF-8. Interestingly, this applies both to searching a single ~1GB subtitle file and searching the Linux repo with all source files converted to UTF-16. At first I thought this seemed bad, but <code>iconv</code> itself isn't much faster---certainly within the same order of magnitude it seems.</p>
-<p>Another exciting thing I learned is that GNU grep doesn't support searching UTF-16 at all. For some reason, I thought it did. So this is an even better feature than I previously thought!</p>
+<p>If you want to try this PR out (which would be most welcome), then because of the memory map issue mentioned above, you&#x27;ll need to pass the <code>--no-mmap</code> flag to ripgrep.</p>
+<p>To a first approximation, ripgrep is approximately 5x slower searching UTF-16 when compared to UTF-8. Interestingly, this applies both to searching a single ~1GB subtitle file and searching the Linux repo with all source files converted to UTF-16. At first I thought this seemed bad, but <code>iconv</code> itself isn&#x27;t much faster---certainly within the same order of magnitude it seems.</p>
+<p>Another exciting thing I learned is that GNU grep doesn&#x27;t support searching UTF-16 at all. For some reason, I thought it did. So this is an even better feature than I previously thought!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Assigned to @BurntSushi by @BurntSushi on 2017-03-09 01:33</div>
+            <div class="event">Assigned to <a href="https://github.com/BurntSushi">@BurntSushi</a> by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-09 01:33</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-09 01:33</div>
@@ -90,28 +90,28 @@ although this seems hard to pull off in an ergonomic way.</p>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-11 16:33</div>
-            <div class="timeline-body"><p>OK, I've updated the PR to take care of the internal buffer and memory map issue. I also refactored the transcoder to be more robust.</p>
-<p>I'd like to punt on adding new flags for now, which I think means I just need to work on writing a few more tests and this should be good to go!</p>
+            <div class="timeline-body"><p>OK, I&#x27;ve updated the PR to take care of the internal buffer and memory map issue. I also refactored the transcoder to be more robust.</p>
+<p>I&#x27;d like to punt on adding new flags for now, which I think means I just need to work on writing a few more tests and this should be good to go!</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "Add UTF-16 support." to "Add support for additional text encodings." by @BurntSushi on 2017-03-12 18:10</div>
+            <div class="event">Renamed from &quot;Add UTF-16 support.&quot; to &quot;Add support for additional text encodings.&quot; by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-12 18:10</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-12 18:25</div>
-            <div class="timeline-body"><p>(Build failures are unrelated. There's a bug in nightly Cargo that's being fixed.)</p>
+            <div class="timeline-body"><p>(Build failures are unrelated. There&#x27;s a bug in nightly Cargo that&#x27;s being fixed.)</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-12 18:26</div>
-            <div class="timeline-body"><p>I've updated the PR with tests. I also ended up adding support for all encodings supported by <code>encoding_rs</code>, which includes UTF-16, GBK, EUC-JP and Shift_JIS, among others. I added a new <code>-E/--encoding</code> flag that permits controlling which text encoding is used. The default value is <code>auto</code>, which basically means &quot;assume UTF-8 unless we see a UTF-16 bom.&quot;</p>
+            <div class="timeline-body"><p>I&#x27;ve updated the PR with tests. I also ended up adding support for all encodings supported by <code>encoding_rs</code>, which includes UTF-16, GBK, EUC-JP and Shift_JIS, among others. I added a new <code>-E/--encoding</code> flag that permits controlling which text encoding is used. The default value is <code>auto</code>, which basically means &quot;assume UTF-8 unless we see a UTF-16 bom.&quot;</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @BurntSushi on 2017-03-12 23:54</div>
+            <div class="event">Merged by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-12 23:54</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @BurntSushi on 2017-03-12 23:54</div>
+            <div class="event">Closed by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-12 23:54</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2017-03-12 23:54</div>
@@ -138,7 +138,7 @@ although this seems hard to pull off in an ergonomic way.</p>
     </div>
 
     <footer>
-        Synced at 2026-01-12 18:27:49 UTC
+        Synced at 2026-01-20 18:48:15 UTC
     </footer>
 </body>
 </html>

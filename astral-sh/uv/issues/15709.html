@@ -23,25 +23,25 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/gabyx">@gabyx</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>Please reproduce this:</p>
-<ol start="0">
+<ol>
 <li><p>Ensure <code>UV_PYTHON</code> is no set.</p>
 </li>
 <li><p>Start creating a virtual environment
 <code>uv venv -p /nix/store/hwih8a4f4ms88dr3ynh1wcqcpc78pld3-python3-3.13.6-env/bin/python3.13</code> (choose any system python here)</p>
 </li>
 </ol>
-<pre><code class="language-shell">Using CPython 3.13.6 interpreter at: /nix/store/hwih8a4f4ms88dr3ynh1wcqcpc78pld3-python3-3.13.6-env/bin/python3.13
+<pre><code>Using CPython 3.13.6 interpreter at: /nix/store/hwih8a4f4ms88dr3ynh1wcqcpc78pld3-python3-3.13.6-env/bin/python3.13
 Creating virtual environment at: .venv
 Activate with: source .venv/bin/activate.fish
 </code></pre>
 <p>Now do one of the following scenrios:</p>
-<h3>Scenario A</h3>
+Scenario A
 <ul>
 <li><p>Installing numpy <code>uv pip install numpy -v</code>
 results in success, and numpy is installed in the <strong>inferred</strong> virtual environment:</p>
-<pre><code class="language-shell">DEBUG uv 0.8.6
+<pre><code>DEBUG uv 0.8.6
 DEBUG Searching for default Python interpreter in virtual environments
 DEBUG Found `cpython-3.13.6-linux-x86_64-gnu` at `/home/gaetan/temp/test_project/.venv/bin/python3` (virtual environment)
 DEBUG Using Python 3.13.6 environment at: .venv
@@ -52,14 +52,14 @@ DEBUG Released lock at `/home/gaetan/temp/test_project/.venv/.lock`
 </code></pre>
 </li>
 </ul>
-<h3>Scenario B</h3>
+Scenario B
 <ul>
 <li><p>Now explicitly set the Python interpreter (use the same one as in <code>uv venv</code>)</p>
 <ul>
 <li><code>export UV_PYTHON=/nix/store/hwih8a4f4ms88dr3ynh1wcqcpc78pld3-python3-3.13.6-env/bin/python3</code> before and then install</li>
 <li><code>uv pip install numpy -v</code> fails</li>
 </ul>
-<pre><code class="language-shell">DEBUG uv 0.8.6
+<pre><code>DEBUG uv 0.8.6
 DEBUG Checking for Python interpreter at path `/nix/store/hwih8a4f4ms88dr3ynh1wcqcpc78pld3-python3-3.13.6-env/bin/python3`
 Using Python 3.13.6 environment at: /nix/store/hwih8a4f4ms88dr3ynh1wcqcpc78pld3-python3-3.13.6-env
 WARN Failed to acquire environment lock: Read-only file system (os error 30) at path &quot;/nix/store/hwih8a4f4ms88dr3ynh1wcqcpc78pld3-python3-3.13.6-env/.tmpx7wOq1&quot;
@@ -92,19 +92,19 @@ is not impacted by this, and always infers first the virtual environment.</p>
 It seems that <code>uv</code> uses the <code>UV_PYTHON</code> env variable also to detect the environment which is slightly confusing.</p>
 <p>This is related to the more confusion issue report: #14748 (I closed it)</p>
 <p>@GaetanLepage: FYI</p>
-<h3>Platform</h3>
+Platform
 <p>NixOS</p>
-<h3>Version</h3>
+Version
 <p>0.8.6</p>
-<h3>Python version</h3>
+Python version
 <p>3.13</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @gabyx on 2025-09-06 19:21</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/gabyx">@gabyx</a> on 2025-09-06 19:21</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Renamed from "bug: Installation destination inference for `uv pip` commands has inconsistent behavior" to "bug: Installation destination inference for `uv pip` commands has inconsistent behavior (`UV_PYTHON` a.k.a `--python`)" by @gabyx on 2025-09-06 19:28</div>
+            <div class="event">Renamed from &quot;bug: Installation destination inference for `uv pip` commands has inconsistent behavior&quot; to &quot;bug: Installation destination inference for `uv pip` commands has inconsistent behavior (`UV_PYTHON` a.k.a `--python`)&quot; by <a href="https://github.com/gabyx">@gabyx</a> on 2025-09-06 19:28</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-09-06 19:29</div>
@@ -127,13 +127,13 @@ It seems that <code>uv</code> uses the <code>UV_PYTHON</code> env variable also 
             <div class="timeline-body"><blockquote>
 <p>If uv pip truely implements the exact behavior of pip (not sure) then is this wanted?</p>
 </blockquote>
-<p>I don't think pip has to consider any of these semantics, as it almost always targets the same environment that pip is installed in.</p>
-<p>In general, uv won't install into a non-virtual environment without opt-in. However, using <code>--python</code> with an explicit path to an interpreter is considered opt-in.</p>
+<p>I don&#x27;t think pip has to consider any of these semantics, as it almost always targets the same environment that pip is installed in.</p>
+<p>In general, uv won&#x27;t install into a non-virtual environment without opt-in. However, using <code>--python</code> with an explicit path to an interpreter is considered opt-in.</p>
 <blockquote>
 <p>Its just weird behavior in the non failing case where you dont set anything then it does discovery, and in the other case it doesnt.</p>
 </blockquote>
-<p>I'm not sure what's weird about this. In the first case, we do discovery because you haven't asked for a specific Python interpreter. In the second case, we don't because you've given us a specific path.</p>
-<p>I don't think you should set <code>UV_PYTHON</code> in this context. It sounds like you want something more like https://github.com/astral-sh/uv/issues/14748? Or you should just use <code>--python</code>?</p>
+<p>I&#x27;m not sure what&#x27;s weird about this. In the first case, we do discovery because you haven&#x27;t asked for a specific Python interpreter. In the second case, we don&#x27;t because you&#x27;ve given us a specific path.</p>
+<p>I don&#x27;t think you should set <code>UV_PYTHON</code> in this context. It sounds like you want something more like <a href="https://github.com/astral-sh/uv/issues/14748">astral-sh/uv#14748</a>? Or you should just use <code>--python</code>?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -160,20 +160,20 @@ that we as Nix package/devenv maintainer want a way to <strong>really lock</stro
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-09-08 14:02</div>
+            <div class="event">Label <span class="label">bug</span> removed by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-08 14:02</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @zanieb on 2025-09-08 14:02</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-08 14:02</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-09-08 14:18</div>
-            <div class="timeline-body"><p>I think we should be looking more closely at the motivating problem in Nix here. I don't think we should just be hacking more complexity into the <code>UV_PYTHON</code> option for this purpose.</p>
+            <div class="timeline-body"><p>I think we should be looking more closely at the motivating problem in Nix here. I don&#x27;t think we should just be hacking more complexity into the <code>UV_PYTHON</code> option for this purpose.</p>
 </div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:32:50 UTC
+        Synced at 2026-01-20 19:40:17 UTC
     </footer>
 </body>
 </html>

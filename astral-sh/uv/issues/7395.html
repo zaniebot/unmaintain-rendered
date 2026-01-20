@@ -30,20 +30,20 @@
 </ul>
 <p>See also #4450, probably related but on macOS. <a href="/astral-sh/uv/issues/4450#issuecomment-2211366244">This comment</a> is probably relevant:</p>
 <blockquote>
-<p>The fact that python from nix store isn't treated as a system interpreter isn't really an issue imo, as we can easily set the UV_PYTHON env dynamically in a derivation.</p>
-<p>The real issue is the fact that uv wants to create a <code>.lock</code> file in there, but <code>/nix/store</code> is read-only, so that won't be possible.</p>
+<p>The fact that python from nix store isn&#x27;t treated as a system interpreter isn&#x27;t really an issue imo, as we can easily set the UV_PYTHON env dynamically in a derivation.</p>
+<p>The real issue is the fact that uv wants to create a <code>.lock</code> file in there, but <code>/nix/store</code> is read-only, so that won&#x27;t be possible.</p>
 </blockquote>
-<hr />
-<h3>The four cases and their success/failure status:</h3>
+<hr>
+The four cases and their success/failure status:
 <p>|                                   | <code>python -m venv .venv</code> | <code>uv venv</code>            |
 | --------------------------- | ------------------------------ | ---------------------- |
 | <code>pip install -U pip</code>      | :green_circle: success | :red_circle: FAIL |
 | <code>uv pip install -U pip</code> | :red_circle: FAIL           | :red_circle: FAIL |</p>
-<h3>Terminal output for the four cases:</h3>
-<details>
-<summary>:green_circle: python -m venv / pip:</summary>
+Terminal output for the four cases:
 
-<pre><code class="language-shell">$ python -m venv .venv
+:green_circle: python -m venv / pip:
+
+<pre><code>$ python -m venv .venv
 $ source .venv/bin/activate
 $ pip install -U pip
 Requirement already satisfied: pip in ./.venv/lib/python3.12/site-packages (24.0)
@@ -57,12 +57,12 @@ Installing collected packages: pip
       Successfully uninstalled pip-24.0
 Successfully installed pip-24.2
 </code></pre>
-</details>
 
-<details>
-<summary>:red_circle: uv venv / pip:</summary>
 
-<pre><code class="language-shell">Using Python 3.12.4 interpreter at: /nix/store/pnavhjx4pdya95nx2apl2yxz6x46snh2-python3-3.12.4-env/bin/python3.12
+
+:red_circle: uv venv / pip:
+
+<pre><code>Using Python 3.12.4 interpreter at: /nix/store/pnavhjx4pdya95nx2apl2yxz6x46snh2-python3-3.12.4-env/bin/python3.12
 Creating virtualenv at: .venv
 Activate with: source .venv/bin/activate
 $ source .venv/bin/activate
@@ -74,27 +74,27 @@ Using cached pip-24.2-py3-none-any.whl (1.8 MB)
 Installing collected packages: pip
   Attempting uninstall: pip
     Found existing installation: pip 24.0
-    WARNING: Could not access 'pyvenv.cfg' despite a virtual environment being active. Assuming global site-packages is not accessible in this environment.
+    WARNING: Could not access &#x27;pyvenv.cfg&#x27; despite a virtual environment being active. Assuming global site-packages is not accessible in this environment.
     Uninstalling pip-24.0:
-ERROR: Could not install packages due to an OSError: [Errno 30] Read-only file system: '/nix/store/pnavhjx4pdya95nx2apl2yxz6x46snh2-python3-3.12.4-env/bin/pip'
+ERROR: Could not install packages due to an OSError: [Errno 30] Read-only file system: &#x27;/nix/store/pnavhjx4pdya95nx2apl2yxz6x46snh2-python3-3.12.4-env/bin/pip&#x27;
 </code></pre>
-</details>
 
-<details>
-<summary>:red_circle: python -m venv / uv pip:</summary>
 
-<pre><code class="language-shell">$ python -m venv .venv
+
+:red_circle: python -m venv / uv pip:
+
+<pre><code>$ python -m venv .venv
 $ source .venv/bin/activate
 $ uv pip install -U pip
 error: failed to create file `/nix/store/pnavhjx4pdya95nx2apl2yxz6x46snh2-python3-3.12.4-env/.lock`
   Caused by: Read-only file system (os error 30)
 </code></pre>
-</details>
 
-<details>
-<summary>:red_circle: uv venv / uv pip:</summary>
 
-<pre><code class="language-shell">$ uv venv
+
+:red_circle: uv venv / uv pip:
+
+<pre><code>$ uv venv
 Using Python 3.12.4 interpreter at: /nix/store/pnavhjx4pdya95nx2apl2yxz6x46snh2-python3-3.12.4-env/bin/python3.12
 Creating virtualenv at: .venv
 Activate with: source .venv/bin/activate
@@ -103,19 +103,19 @@ $ uv pip install -U pip
 error: failed to create file `/nix/store/pnavhjx4pdya95nx2apl2yxz6x46snh2-python3-3.12.4-env/.lock`
   Caused by: Read-only file system (os error 30)
 </code></pre>
-</details>
 
-<hr />
-<h3>Work-around using <code>UV_PYTHON=$VIRTUAL_ENV/bin/python</code></h3>
+
+<hr>
+Work-around using <code>UV_PYTHON=$VIRTUAL_ENV/bin/python</code>
 <p>The work-around only fixes one of the cases:</p>
 <p>|                                   | <code>python -m venv .venv</code>                              | <code>uv venv</code>            |
 | --------------------------- | ------------------------------------------------------- | ---------------------- |
 | <code>pip install -U pip</code>      | :green_circle: success                               | :red_circle: FAIL |
 | <code>uv pip install -U pip</code> | :green_circle: success (with work-around) | :red_circle: FAIL |</p>
-<details>
-<summary>:green_circle: python -m venv / uv pip:</summary>
 
-<pre><code class="language-shell">$ python -m venv .venv
+:green_circle: python -m venv / uv pip:
+
+<pre><code>$ python -m venv .venv
 $ source .venv/bin/activate
 $ export UV_PYTHON=$VIRTUAL_ENV/bin/python
 $ uv pip install -U pip
@@ -126,17 +126,8 @@ Uninstalled 1 package in 39ms
  - pip==24.0
  + pip==24.2
 </code></pre>
-<hr />
-<!--
-Thank you for taking the time to report an issue! We're glad to have you involved with uv.
+<hr>
 
-If you're filing a bug report, please consider including the following information:
-
-* A minimal code snippet that reproduces the bug.
-* The command you invoked (e.g., `uv pip sync requirements.txt`), ideally including the `--verbose` flag.
-* The current uv platform.
-* The current uv version (`uv --version`).
--->
 
 </div>
         </div>
@@ -150,27 +141,27 @@ If you're filing a bug report, please consider including the following informati
             <div class="timeline-body"><blockquote>
 <p>what &quot;is&quot; <code>/nix/store/pnavhjx4pdya95nx2apl2yxz6x46snh2-python3-3.12.4-env</code></p>
 </blockquote>
-<p>It's what <code>pkgs.python3.withPackages</code> created.</p>
+<p>It&#x27;s what <code>pkgs.python3.withPackages</code> created.</p>
 <p>Reading #4450 more carefully, that seems to be at the heart of the issue: running <code>uv</code> with a &quot;clean&quot; <code>pkgs.python3</code> seems to work ok, but the &quot;dirty&quot; <code>pkgs.python3.withPackages</code> derivation confuses <code>uv</code>. See <a href="/astral-sh/uv/issues/4450#issuecomment-2211766775">this comment from @Rubikoid</a>.</p>
 <p>My use case for <code>withPackages</code> is to get binary dependencies for <a href="https://pypi.org/project/playwright/">Playwright</a> into the environment. I do install a specific Playwright version with Pip once those are in place.</p>
-<p>It seems installing both <code>pkgs.python3</code> and <code>pkgs.python3.withPackages</code> and running <code>uv</code> with <code>pkgs.python3</code> may work just fine. I'll need to verify that Playwright actually works, too.</p>
+<p>It seems installing both <code>pkgs.python3</code> and <code>pkgs.python3.withPackages</code> and running <code>uv</code> with <code>pkgs.python3</code> may work just fine. I&#x27;ll need to verify that Playwright actually works, too.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MarSoft">@MarSoft</a> on 2025-03-17 14:25</div>
-            <div class="timeline-body"><p>Here's a workaround I use in my <code>.bashrc</code>:</p>
+            <div class="timeline-body"><p>Here&#x27;s a workaround I use in my <code>.bashrc</code>:</p>
 <pre><code>export UV_PYTHON_PREFERENCE=only-system 
-export PATH=&quot;$PATH:$(python -c 'import sys; print(sys.base_prefix)')/bin&quot;
+export PATH=&quot;$PATH:$(python -c &#x27;import sys; print(sys.base_prefix)&#x27;)/bin&quot;
 </code></pre>
 <p>Here is an explanation:</p>
 <ol>
 <li>I have a <code>python.withPackages {...}</code> in my <code>environment.systemPackages</code>. This is a &quot;wrapped&quot; Python, and <code>uv</code> fails to treat it as a &quot;system Python&quot;.</li>
-<li>I want to tell <code>uv</code> which is the path to system-wide Python. If I use <code>UV_PYTHON</code> though then <code>uv</code> will always try to use this Python directly, even if the venv is active — so the venv won't work.</li>
+<li>I want to tell <code>uv</code> which is the path to system-wide Python. If I use <code>UV_PYTHON</code> though then <code>uv</code> will always try to use this Python directly, even if the venv is active — so the venv won&#x27;t work.</li>
 <li>So I add the real Python to $PATH but put it after <code>/run/current-system/sw/bin</code> where there is a wrapped <code>python</code> binary.</li>
 </ol>
 <p>This seems to work for me, but I did not do thorough tests yet.</p>
-<p>Just installing both <code>python.withPackages</code> and <code>python</code> to <code>environment.systemPackages</code> like @akaihola suggests won't work, because <code>systemPackages</code> are symlinks from <code>/run/current-system/sw/bin</code> and we cannot have two symlinks named <code>python</code> from the single directory. But adding the desired python to somewhere in <code>$PATH</code> but after the directory with &quot;main&quot; Python seems to work.</p>
-<p>The correct fix for this bug would be to teach <code>uv</code> how to find the real system Python behind the &quot;wrapped&quot; one. Stock Python's <code>venv</code> module somehow manages to do this, unlike <code>uv</code> which complains about &quot;no interpreter found in system path&quot;. Looks like it uses <code>sys._base_executable</code>?..</p>
+<p>Just installing both <code>python.withPackages</code> and <code>python</code> to <code>environment.systemPackages</code> like @akaihola suggests won&#x27;t work, because <code>systemPackages</code> are symlinks from <code>/run/current-system/sw/bin</code> and we cannot have two symlinks named <code>python</code> from the single directory. But adding the desired python to somewhere in <code>$PATH</code> but after the directory with &quot;main&quot; Python seems to work.</p>
+<p>The correct fix for this bug would be to teach <code>uv</code> how to find the real system Python behind the &quot;wrapped&quot; one. Stock Python&#x27;s <code>venv</code> module somehow manages to do this, unlike <code>uv</code> which complains about &quot;no interpreter found in system path&quot;. Looks like it uses <code>sys._base_executable</code>?..</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -181,7 +172,7 @@ export PATH=&quot;$PATH:$(python -c 'import sys; print(sys.base_prefix)')/bin&qu
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:27:08 UTC
+        Synced at 2026-01-20 19:34:03 UTC
     </footer>
 </body>
 </html>

@@ -23,14 +23,14 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/DhavalGojiya">@DhavalGojiya</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>When running <code>uv run</code> with the <code>--no-project</code> flag, it should ignore the project’s virtual environment (<code>.venv</code>).</p>
 <p>However, if a <code>.venv</code> already exists in the project directory, <code>uv</code> still includes it in <code>sys.path</code>, causing the project’s dependencies to be accessible - even when explicitly using <code>--no-project</code>.</p>
-<hr />
-<h4><strong>Steps to Reproduce</strong></h4>
+<hr>
+<strong>Steps to Reproduce</strong>
 <ol>
 <li><p>Create a project with uv:</p>
-<pre><code class="language-bash">uv init venus
+<pre><code>uv init venus
 cd venus
 
 uv sync
@@ -38,11 +38,11 @@ uv add django
 </code></pre>
 </li>
 <li><p>Run a Python file using:</p>
-<pre><code class="language-bash">uv run --no-project --with pyjwt -- python main.py
+<pre><code>uv run --no-project --with pyjwt -- python main.py
 </code></pre>
 </li>
 <li><p>Inside <code>main.py</code>, print <code>sys.path</code> and import a dependency installed in <code>.venv</code>:</p>
-<pre><code class="language-python">import sys
+<pre><code>import sys
 print(sys.path)
 
 import django
@@ -50,64 +50,64 @@ print(django)
 </code></pre>
 </li>
 </ol>
-<hr />
-<h4><strong>Observed Output</strong></h4>
-<pre><code class="language-python">['/home/dhaval/Open-Source/venus',
- '/usr/local/lib/python38.zip',
- '/usr/local/lib/python3.8',
- '/usr/local/lib/python3.8/lib-dynload',
- '/home/dhaval/.cache/uv/builds-v0/.tmphekDoG/lib/python3.8/site-packages',
- '/home/dhaval/.cache/uv/archive-v0/U2tMbkpBCr3aqAMJz6gD6/lib/python3.8/site-packages',
- '/home/dhaval/Open-Source/venus/.venv/lib/python3.8/site-packages']
+<hr>
+<strong>Observed Output</strong>
+<pre><code>[&#x27;/home/dhaval/Open-Source/venus&#x27;,
+ &#x27;/usr/local/lib/python38.zip&#x27;,
+ &#x27;/usr/local/lib/python3.8&#x27;,
+ &#x27;/usr/local/lib/python3.8/lib-dynload&#x27;,
+ &#x27;/home/dhaval/.cache/uv/builds-v0/.tmphekDoG/lib/python3.8/site-packages&#x27;,
+ &#x27;/home/dhaval/.cache/uv/archive-v0/U2tMbkpBCr3aqAMJz6gD6/lib/python3.8/site-packages&#x27;,
+ &#x27;/home/dhaval/Open-Source/venus/.venv/lib/python3.8/site-packages&#x27;]
 </code></pre>
 <p>Notice the last line - the project’s <code>.venv</code> site-packages directory is still added to <code>sys.path</code>, and because of this Django can be imported even though it is not included in the <code>--with</code> flag:</p>
-<pre><code class="language-python">&lt;module 'django' from '/home/dhaval/Open-Source/venus/.venv/lib/python3.8/site-packages/django/__init__.py'&gt;
+<pre><code>&lt;module &#x27;django&#x27; from &#x27;/home/dhaval/Open-Source/venus/.venv/lib/python3.8/site-packages/django/__init__.py&#x27;&gt;
 </code></pre>
-<hr />
-<h4><strong>Expected Behavior</strong></h4>
+<hr>
+<strong>Expected Behavior</strong>
 <p>When <code>--no-project</code> is used:</p>
 <ul>
 <li>The project’s <code>.venv</code> <strong>should not</strong> be added to <code>sys.path</code>.</li>
 <li>Only packages specified with <code>--with</code> should be accessible.</li>
 </ul>
-<hr />
-<h4><strong>Workaround</strong></h4>
+<hr>
+<strong>Workaround</strong>
 <p>If we delete virtual environment manually at <code>.venv</code>:</p>
-<pre><code class="language-bash">rm -rf .venv
+<pre><code>rm -rf .venv
 uv run --no-project --with pyjwt -- python main.py
 </code></pre>
-<h4><strong>Observed Output</strong></h4>
-<pre><code class="language-python">['/home/dhaval/Open-Source/venus',
- '/usr/local/lib/python38.zip',
- '/usr/local/lib/python3.8',
- '/usr/local/lib/python3.8/lib-dynload',
- '/home/dhaval/.cache/uv/builds-v0/.tmphekDoG/lib/python3.8/site-packages',
- '/home/dhaval/.cache/uv/archive-v0/U2tMbkpBCr3aqAMJz6gD6/lib/python3.8/site-packages'
+<strong>Observed Output</strong>
+<pre><code>[&#x27;/home/dhaval/Open-Source/venus&#x27;,
+ &#x27;/usr/local/lib/python38.zip&#x27;,
+ &#x27;/usr/local/lib/python3.8&#x27;,
+ &#x27;/usr/local/lib/python3.8/lib-dynload&#x27;,
+ &#x27;/home/dhaval/.cache/uv/builds-v0/.tmphekDoG/lib/python3.8/site-packages&#x27;,
+ &#x27;/home/dhaval/.cache/uv/archive-v0/U2tMbkpBCr3aqAMJz6gD6/lib/python3.8/site-packages&#x27;
 </code></pre>
 <p>Then, the behavior is correct:
-The project's <code>.venv</code> is not added to <code>sys.path</code> , and Django is not accessible.</p>
-<pre><code class="language-python">ModuleNotFoundError: No module named 'django'
+The project&#x27;s <code>.venv</code> is not added to <code>sys.path</code> , and Django is not accessible.</p>
+<pre><code>ModuleNotFoundError: No module named &#x27;django&#x27;
 </code></pre>
-<hr />
-<h4><strong>Summary</strong></h4>
+<hr>
+<strong>Summary</strong>
 <ul>
 <li>✅ Works correctly when <code>.venv</code> <strong>does not exist</strong></li>
 <li>❌ Fails when <code>.venv</code> <strong>already exists</strong></li>
 <li>Expected: <code>--no-project</code> should fully ignore the existing <code>.venv</code>, even if present.</li>
 </ul>
-<hr />
-<h4><strong>Additional Context</strong></h4>
+<hr>
+<strong>Additional Context</strong>
 <p>This issue makes it impossible to isolate ephemeral runs with <code>--no-project</code> if a local <code>.venv</code> already exists - which defeats the purpose of <code>--no-project</code> when testing isolated dependency contexts.</p>
-<h3>Platform</h3>
+Platform
 <p>Linux 6.8.0-45-generic x86_64 GNU/Linux</p>
-<h3>Version</h3>
+Version
 <p>uv 0.9.7</p>
-<h3>Python version</h3>
+Python version
 <p>Python 3.8</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @DhavalGojiya on 2025-11-03 11:05</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/DhavalGojiya">@DhavalGojiya</a> on 2025-11-03 11:05</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/DhavalGojiya">@DhavalGojiya</a> on 2025-11-03 11:52</div>
@@ -160,32 +160,32 @@ DEBUG Caching via base interpreter: `/usr/local/bin/python3.8`
 <p>This only disables project discovery, but not general <code>.venv</code> discovery.</p>
 <p>It sounds like you want <code>uv run --no-project --isolated</code>?</p>
 </blockquote>
-<p>Thanks for your reply, zanieb.<br />
-Yes, I am familiar with <code>--isolated</code>.<br />
+<p>Thanks for your reply, zanieb.<br>
+Yes, I am familiar with <code>--isolated</code>.<br>
 It creates a completely isolated virtual environment without installing any project dependencies.</p>
-<p>While working with <code>uv run</code>, I came across this behavior and decided to post it to verify whether it's a bug or expected behavior.<br />
+<p>While working with <code>uv run</code>, I came across this behavior and decided to post it to verify whether it&#x27;s a bug or expected behavior.<br>
 Since your answer clarifies that <code>.venv</code> discovery isn’t disabled when using <code>--no-project</code>, that clears up a lot.</p>
 <p>If this is the intended behavior, I can close the issue.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-03 17:23</div>
-            <div class="timeline-body"><p>Yeah let's close this as intended for now unless we hear from other people that are confused.</p>
+            <div class="timeline-body"><p>Yeah let&#x27;s close this as intended for now unless we hear from other people that are confused.</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @zanieb on 2025-11-03 17:23</div>
+            <div class="event">Closed by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-03 17:23</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/olivierdelree">@olivierdelree</a> on 2025-11-04 13:00</div>
             <div class="timeline-body"><p>I would like to +1 the confusion.
-From my point of view, passing <code>--no-project</code> also sounds like it would run in an environment that has nothing to do with the project. Still using the <code>.venv</code> directory is unexpected but I don't think a behaviour change is really required. Instead, specifying in the CLI help that <code>.venv</code> discovery still happens and/or that <code>--isolated</code> might be desired for a truly clean environment should be enough.</p>
+From my point of view, passing <code>--no-project</code> also sounds like it would run in an environment that has nothing to do with the project. Still using the <code>.venv</code> directory is unexpected but I don&#x27;t think a behaviour change is really required. Instead, specifying in the CLI help that <code>.venv</code> discovery still happens and/or that <code>--isolated</code> might be desired for a truly clean environment should be enough.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/DhavalGojiya">@DhavalGojiya</a> on 2025-11-04 13:52</div>
             <div class="timeline-body"><blockquote>
-<p>I would like to +1 the confusion. From my point of view, passing <code>--no-project</code> also sounds like it would run in an environment that has nothing to do with the project. Still using the <code>.venv</code> directory is unexpected but I don't think a behaviour change is really required. Instead, specifying in the CLI help that <code>.venv</code> discovery still happens and/or that <code>--isolated</code> might be desired for a truly clean environment should be enough.</p>
+<p>I would like to +1 the confusion. From my point of view, passing <code>--no-project</code> also sounds like it would run in an environment that has nothing to do with the project. Still using the <code>.venv</code> directory is unexpected but I don&#x27;t think a behaviour change is really required. Instead, specifying in the CLI help that <code>.venv</code> discovery still happens and/or that <code>--isolated</code> might be desired for a truly clean environment should be enough.</p>
 </blockquote>
 <p>I think it would be great if, in the <code>uv</code> documentation, they wrote a note like:</p>
 <blockquote>
@@ -197,7 +197,7 @@ From my point of view, passing <code>--no-project</code> also sounds like it wou
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:33:21 UTC
+        Synced at 2026-01-20 19:40:53 UTC
     </footer>
 </body>
 </html>

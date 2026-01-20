@@ -23,19 +23,13 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a></div>
-            <div class="timeline-body"><!--
-Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+            <div class="timeline-body">
 
-- Does this pull request include a summary of the change? (See below.)
-- Does this pull request include a descriptive title?
-- Does this pull request include references to any relevant issues?
--->
-
-<h2>Summary</h2>
-<p>This PR enables autofix for the most useful flake8-type-checking rules -- those that detect imports that are <em>only</em> used in type-checking contexts, and suggests that users move them into <code>if TYPE_CHECKING:</code> blocks. In the end, it's not a <em>ton</em> of code (most of this diff is tests + snapshots), but there's a large chain of changes that were required to support this.</p>
+Summary
+<p>This PR enables autofix for the most useful flake8-type-checking rules -- those that detect imports that are <em>only</em> used in type-checking contexts, and suggests that users move them into <code>if TYPE_CHECKING:</code> blocks. In the end, it&#x27;s not a <em>ton</em> of code (most of this diff is tests + snapshots), but there&#x27;s a large chain of changes that were required to support this.</p>
 <p>The general flow is as follows. When we detect a typing-only import, we generate a new fixes, which consists of up to three edits: (1) an edit to remove the imported member from the import statement; (2) an edit to import <code>TYPE_CHECKING</code> from <code>typing</code>; and (3) an edit to add the imported member to the <code>TYPE_CHECKING</code> block, which could also require creating an entirely new <code>TYPE_CHECKING</code> block.</p>
 <p>For example, given:</p>
-<pre><code class="language-py">from __future__ import annotations
+<pre><code>from __future__ import annotations
 
 import pandas as pd
 
@@ -43,7 +37,7 @@ def f(x: pd.DataFrame):
     pass
 </code></pre>
 <p>We need to make all three of those changes, in order to get to:</p>
-<pre><code class="language-py">from __future__ import annotations
+<pre><code>from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
@@ -55,7 +49,7 @@ def f(x: pd.DataFrame):
 </code></pre>
 <p>The exact edit depends on the ordering and existence of the <code>typing</code> import, and/or the <code>if TYPE_CHECKING</code> blocks, and their positions relative to the first runtime usage -- but in typical usages, the edit looks something like the above.</p>
 <p>Closes #2329.</p>
-<h2>Test Plan</h2>
+Test Plan
 <ul>
 <li>Ran <code>cargo run -p ruff_cli -- check ../airflow --select TCH -n --fix</code>; verified by eye that the edits looked reasonable and correct, and that there were no panics.</li>
 <li>Ran <code>cargo run -p ruff_cli -- check ../rotki --select TCH -n --fix</code>; verified by eye that the edits looked reasonable and correct, and that there were no panics.</li>
@@ -64,10 +58,10 @@ def f(x: pd.DataFrame):
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-05-31 03:17</div>
+            <div class="event">Review requested from <a href="https://github.com/MichaReiser">@MichaReiser</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-31 03:17</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Review requested from @konstin by @charliermarsh on 2023-05-31 03:17</div>
+            <div class="event">Review requested from <a href="https://github.com/konstin">@konstin</a> by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-31 03:17</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/autofix/codemods.rs</code>:130 on 2023-05-31 03:18</div>
@@ -89,15 +83,15 @@ def f(x: pd.DataFrame):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_type_checking/rules/typing_only_runtime_import.rs</code>:372 on 2023-05-31 03:21</div>
-            <div class="timeline-body"><p>Note that we're generating an edit for every diagnostic, so we're generating an edit for every member in an <code>StmtKind::ImportFrom</code> statement. We may want to generate one edit for the entire statement, like we do for unused imports... But this does work correctly in practice. The main issue is that if you have:</p>
-<pre><code class="language-py">from foo import bar, bar
+            <div class="timeline-body"><p>Note that we&#x27;re generating an edit for every diagnostic, so we&#x27;re generating an edit for every member in an <code>StmtKind::ImportFrom</code> statement. We may want to generate one edit for the entire statement, like we do for unused imports... But this does work correctly in practice. The main issue is that if you have:</p>
+<pre><code>from foo import bar, bar
 </code></pre>
-<p>Then after the fixes, we'll probably give you:</p>
-<pre><code class="language-py">if TYPE_CHECKING:
+<p>Then after the fixes, we&#x27;ll probably give you:</p>
+<pre><code>if TYPE_CHECKING:
     from foo import bar
     from foo import baz
 </code></pre>
-<p>These will get merged when you run the <code>isort</code> rules, so most users will never see this state (or will have it immediately corrected), but I guess it's not ideal (and it does mean that if you're using the LSP, you need to take one Code Action per member).</p>
+<p>These will get merged when you run the <code>isort</code> rules, so most users will never see this state (or will have it immediately corrected), but I guess it&#x27;s not ideal (and it does mean that if you&#x27;re using the LSP, you need to take one Code Action per member).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -110,7 +104,7 @@ def f(x: pd.DataFrame):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_diagnostics/src/fix.rs</code>:132 on 2023-05-31 03:21</div>
-            <div class="timeline-body"><p>Open to suggestions, but given that we're generating three edits for the fix, and they can come in almost any order, this feels like the easiest solution.</p>
+            <div class="timeline-body"><p>Open to suggestions, but given that we&#x27;re generating three edits for the fix, and they can come in almost any order, this feels like the easiest solution.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -125,7 +119,7 @@ def f(x: pd.DataFrame):
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/importer/mod.rs</code>:83 on 2023-05-31 07:43</div>
             <div class="timeline-body"><p>Nit: I would expect <code>to_typing_import</code> to return a <code>TypingImport</code>. Maybe <code>to_typing_import_edits</code>?</p>
-<p>Can we document the return type? Why does it return a tuple? What's the first/second edit? Or maybe return a struct here with named fields (and call it <code>TypingImport</code> and you're good with <code>to_typing_import</code> ;))</p>
+<p>Can we document the return type? Why does it return a tuple? What&#x27;s the first/second edit? Or maybe return a struct here with named fields (and call it <code>TypingImport</code> and you&#x27;re good with <code>to_typing_import</code> ;))</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -159,7 +153,7 @@ def f(x: pd.DataFrame):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/autofix/codemods.rs</code>:163 on 2023-05-31 08:35</div>
-            <div class="timeline-body"><p>nit: can you move this match one scope higher so it's outside the iterator?</p>
+            <div class="timeline-body"><p>nit: can you move this match one scope higher so it&#x27;s outside the iterator?</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -169,13 +163,13 @@ def f(x: pd.DataFrame):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/importer/mod.rs</code>:333 on 2023-05-31 09:29</div>
-            <div class="timeline-body"><pre><code class="language-suggestion">    /// Return the type checking block that precedes the given position, if any.
+            <div class="timeline-body"><pre><code>    /// Return the type checking block that precedes the given position, if any.
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/importer/mod.rs</code>:338 on 2023-05-31 09:31</div>
-            <div class="timeline-body"><p>Are there cases where we want to use anything but the first type checking block? Type checking blocks don't suffer from circular imports. Shadowing could be a thing but i'm not aware of any cases</p>
+            <div class="timeline-body"><p>Are there cases where we want to use anything but the first type checking block? Type checking blocks don&#x27;t suffer from circular imports. Shadowing could be a thing but i&#x27;m not aware of any cases</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -217,7 +211,7 @@ def f(x: pd.DataFrame):
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/autofix/codemods.rs</code>:163 on 2023-05-31 17:38</div>
-            <div class="timeline-body"><p>I thought we could, but it turns out we can't because we need to resolve relative imports within the block.</p>
+            <div class="timeline-body"><p>I thought we could, but it turns out we can&#x27;t because we need to resolve relative imports within the block.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -239,10 +233,10 @@ def f(x: pd.DataFrame):
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Merged by @charliermarsh on 2023-05-31 17:53</div>
+            <div class="event">Merged by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-31 17:53</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2023-05-31 17:53</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-31 17:53</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Branch deleted on 2023-05-31 17:53</div>
@@ -250,7 +244,7 @@ def f(x: pd.DataFrame):
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:57:44 UTC
+        Synced at 2026-01-20 18:54:05 UTC
     </footer>
 </body>
 </html>

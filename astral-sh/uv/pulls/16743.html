@@ -23,15 +23,15 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/mikaylathompson">@mikaylathompson</a></div>
-            <div class="timeline-body"><h2>Summary</h2>
-<p>This is a proof-of-concept for https://github.com/astral-sh/uv/issues/16600, providing installation confirmation prompts.</p>
+            <div class="timeline-body">Summary
+<p>This is a proof-of-concept for <a href="https://github.com/astral-sh/uv/issues/16600">astral-sh/uv#16600</a>, providing installation confirmation prompts.</p>
 <p>It adds an opt-in confirmation prompt system that asks users to confirm before installing uncached packages when running <code>uvx</code> or <code>uv tool run</code>. The feature is gated behind the <code>tool-install-confirmation</code> preview flag.</p>
 <p>The implementation adds a pre-download hook that gets passed down to the HTTP client to run before downloading any files. Putting it right before the download step ensures that no already-cached packages are prompted. Additionally, this hook can be used by future implementations of the prompt in <code>uv add</code> or other commands. To get to that step, the biggest change would be to</p>
 <p>A heuristics mechanism allows certain packages to skip prompts automatically. Right now only the top-packages heuristic is implemented, which skips prompts for a number of popular Python packages determined by analyzing GitHub Code Search results for <code>uvx</code> usage patterns. Two other heuristics are stubbed out but not implemented yet: previously-installed and a custom allowlist.</p>
-<p>Configuration is handled through <code>InstallPromptOptions</code> in the settings, with an <code>approve-all-tool-installs</code> flag to skip all prompts (useful for CI/CD) and <code>approve-all-heuristics</code> to control which heuristics are enabled. There's also a <code>--approve-all-tool-installs</code> CLI flag that overrides config settings. The prompt logic handles TTY detection for non-interactive environments, to minimize the impact on CI and other non-interactive usecases.</p>
-<hr />
+<p>Configuration is handled through <code>InstallPromptOptions</code> in the settings, with an <code>approve-all-tool-installs</code> flag to skip all prompts (useful for CI/CD) and <code>approve-all-heuristics</code> to control which heuristics are enabled. There&#x27;s also a <code>--approve-all-tool-installs</code> CLI flag that overrides config settings. The prompt logic handles TTY detection for non-interactive environments, to minimize the impact on CI and other non-interactive usecases.</p>
+<hr>
 <p>Config file (<code>~/.config/uv/uv.toml</code> or <code>uv.toml</code>):</p>
-<pre><code class="language-toml"># Skip all prompts (useful for CI/CD)
+<pre><code># Skip all prompts (useful for CI/CD)
 approve-all-tool-installs = true
 
 # Or configure heuristics (defaults to [&quot;top-packages&quot;])
@@ -41,7 +41,7 @@ approve-all-heuristics = [&quot;top-packages&quot;]
 approve-all-heuristics = []
 </code></pre>
 <p>CLI usage:</p>
-<pre><code class="language-bash"># Enable the feature and get prompted for uncached packages
+<pre><code># Enable the feature and get prompted for uncached packages
 $ uvx --preview-features tool-install-confirmation some-package
 
 # Skip prompts for this run only
@@ -60,8 +60,8 @@ This package is not currently installed.
 ✔ Would you like to proceed? · yes
 Installed 16 packages in 30ms
 Python 3.14.0 (main, Oct 14 2025, 21:10:22) [Clang 20.1.4 ]
-Type 'copyright', 'credits' or 'license' for more information
-IPython 9.7.0 -- An enhanced Interactive Python. Type '?' for help.
+Type &#x27;copyright&#x27;, &#x27;credits&#x27; or &#x27;license&#x27; for more information
+IPython 9.7.0 -- An enhanced Interactive Python. Type &#x27;?&#x27; for help.
 Tip: You can find how to type a LaTeX symbol by back-completing it, eg `\θ&lt;tab&gt;` will expand to `\theta`.
 
 In [1]:
@@ -79,10 +79,10 @@ This package is not currently installed and is not a top python package.
 Installation cancelled by the user.
 error: Download cancelled by user
 </code></pre>
-<h2>Test Plan</h2>
-<p>There are unit tests, but they're somewhat limited by the tty-detecting behavior. It's possibly worth mocking that call to block it, but I haven't made it that far.</p>
-<hr />
-<h3>A bit on the top-packages.txt file</h3>
+Test Plan
+<p>There are unit tests, but they&#x27;re somewhat limited by the tty-detecting behavior. It&#x27;s possibly worth mocking that call to block it, but I haven&#x27;t made it that far.</p>
+<hr>
+A bit on the top-packages.txt file
 <p>Zsolt brought up that packages popular for tool use are not necessarily those well-represented in the overall PyPI data. I was curious about the idea of searching GitHub for mentions of <code>uvx</code> to figure out what packages <em>are</em> being used as tools.</p>
 <p>The manual search results looked promising, so I embarked on the surprisingly-complicated step of collating this data in a repeatable way.</p>
 <p>The GitHub code search API is annoying-at-best:</p>
@@ -91,24 +91,24 @@ error: Download cancelled by user
 <li>Wildcards are not supported</li>
 <li>You can not combine any repository search fields (or user, org, etc.) with code search characteristics</li>
 <li>Maximum two text matches returned per file</li>
-<li>and worst of all: a maximum of 1000 results for any query (and that's on top of the 100 max results per page).</li>
+<li>and worst of all: a maximum of 1000 results for any query (and that&#x27;s on top of the 100 max results per page).</li>
 <li>Plus a bunch of other limitations listed here: https://docs.github.com/en/search-github/searching-on-github/searching-code#considerations-for-code-search</li>
 </ul>
 <p>Fiddling with this resulted in the following non-optimized process:</p>
 <ol>
 <li>Query for &quot;uvx&quot; in Markdown and Shell files, with each query broken up into a number of size blocks. Size blocks have been mostly manually fine-tuned to result in ~1000 (+/- 200) results per query.</li>
-<li>Execute each query through all 10 pages (to acquire ~1000 results). For each text match returned, match it against a set of regexes to attempt to extract a potential package name. This is only moderately optimized -- I'm sure I'm missing the actual package name in a number of cases and I'm definitely returning a lot of non-package names (e.g. <code># run uvx if you need a tool</code> returns <code>if</code> as a package name).</li>
-<li>Take the potential package names and check if they're <em>actual</em> package names against the PyPI API. In some ways, this reintroduces the very typosquatting risk we're trying to protect against -- if a package is on PyPI, we count it as &quot;real&quot;.</li>
+<li>Execute each query through all 10 pages (to acquire ~1000 results). For each text match returned, match it against a set of regexes to attempt to extract a potential package name. This is only moderately optimized -- I&#x27;m sure I&#x27;m missing the actual package name in a number of cases and I&#x27;m definitely returning a lot of non-package names (e.g. <code># run uvx if you need a tool</code> returns <code>if</code> as a package name).</li>
+<li>Take the potential package names and check if they&#x27;re <em>actual</em> package names against the PyPI API. In some ways, this reintroduces the very typosquatting risk we&#x27;re trying to protect against -- if a package is on PyPI, we count it as &quot;real&quot;.</li>
 </ol>
-<p>The results of this look reasonable overall, with some caveats. At this point, I'm putting any package with &gt; 5 mentions in at this point.</p>
+<p>The results of this look reasonable overall, with some caveats. At this point, I&#x27;m putting any package with &gt; 5 mentions in at this point.</p>
 <ul>
 <li>Ideally, you also ensure that the mentions are uncorrelated in terms of user/repo, to minimize the risk of a typo squatting attack that includes a gh campaign to increase apparent credibility.</li>
-<li>While all of these are &quot;real&quot; packages, they're definitely not necessarily packages that people were intentionally callign with uvx. The regexes will extract something like &quot;use uvx with your pipeline...&quot; as a <code>uvx</code> call for the package <code>with</code>. Applying a PyPI popularity filter on top of this would make it somewhat more resilient to that type of example.</li>
+<li>While all of these are &quot;real&quot; packages, they&#x27;re definitely not necessarily packages that people were intentionally callign with uvx. The regexes will extract something like &quot;use uvx with your pipeline...&quot; as a <code>uvx</code> call for the package <code>with</code>. Applying a PyPI popularity filter on top of this would make it somewhat more resilient to that type of example.</li>
 </ul>
-<hr />
-<h3>Known edge cases</h3>
+<hr>
+Known edge cases
 <ul>
-<li><code>--with &lt;package&gt;</code> is not caught by the prompt. It's slightly unclear how this fits into the design of only prompting on the top-level package. I think the best approach here is to adjust the prompt to mention both packages. However, this adds some complication where the hook has to somehow collect all of the necessary packages, even though neither the top level (the tool run) or the low level (the http client) know that there will be multiple packages that need to be included (some could already be cached).</li>
+<li><code>--with &lt;package&gt;</code> is not caught by the prompt. It&#x27;s slightly unclear how this fits into the design of only prompting on the top-level package. I think the best approach here is to adjust the prompt to mention both packages. However, this adds some complication where the hook has to somehow collect all of the necessary packages, even though neither the top level (the tool run) or the low level (the http client) know that there will be multiple packages that need to be included (some could already be cached).</li>
 </ul>
 </div>
         </div>
@@ -141,16 +141,16 @@ error: Download cancelled by user
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-11-15 01:13</div>
-            <div class="timeline-body"><p>Even though it's opt-in right now (thinking about a future where it's opt-out), do we want a security setting such as <code>approve-all-tool-installs = true</code> to be specified in a project-level configuration? This is similar to a previous remark I've made https://github.com/astral-sh/uv/issues/9461#issuecomment-2509801588</p>
+            <div class="timeline-body"><p>Even though it&#x27;s opt-in right now (thinking about a future where it&#x27;s opt-out), do we want a security setting such as <code>approve-all-tool-installs = true</code> to be specified in a project-level configuration? This is similar to a previous remark I&#x27;ve made <a href="https://github.com/astral-sh/uv/issues/9461">astral-sh/uv#9461</a>#issuecomment-2509801588</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Converted to draft by @zanieb on 2025-11-18 21:34</div>
+            <div class="event">Converted to draft by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-18 21:34</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:45:19 UTC
+        Synced at 2026-01-20 19:54:38 UTC
     </footer>
 </body>
 </html>

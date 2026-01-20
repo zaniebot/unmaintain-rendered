@@ -31,28 +31,28 @@
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-01 14:50</div>
             <div class="timeline-body"><p>This feels very similar to how &quot;smart&quot; case works. Smart case works by looking at the pattern, and if it contains all lowercase letters, then it enables case insensitive search. If there are any uppercase letters though, then case sensitive search is used. The silver searcher enables this by default. ripgrep has it, but is not enabled by default.</p>
 <p>It kind of feels like a <code>--smart-fixed-strings</code> flag would be consistent with how <code>--smart-case</code> works.</p>
-<p>With that said, I'm not sure what the use case is here. It doesn't really seem like you'd want this enabled by default, which means you'd need to selectively enable it. At that point, you might as well just use the <code>-F</code> flag. This feels different from <code>--smart-case</code> in that I imagine the folks that use it probably embed it into an alias. But I don't think that's the case for <code>--smart-fixed-strings</code>?</p>
-<p>Could you elaborate more on the use case here? I know you posted a gif in the other thread and talked about building a tool, but that doesn't really tell me much. Why do you specifically need an &quot;auto&quot; or &quot;smart&quot; variant of <code>--fixed-strings</code>? Why doesn't just using <code>--fixed-strings</code> work as is?</p>
+<p>With that said, I&#x27;m not sure what the use case is here. It doesn&#x27;t really seem like you&#x27;d want this enabled by default, which means you&#x27;d need to selectively enable it. At that point, you might as well just use the <code>-F</code> flag. This feels different from <code>--smart-case</code> in that I imagine the folks that use it probably embed it into an alias. But I don&#x27;t think that&#x27;s the case for <code>--smart-fixed-strings</code>?</p>
+<p>Could you elaborate more on the use case here? I know you posted a gif in the other thread and talked about building a tool, but that doesn&#x27;t really tell me much. Why do you specifically need an &quot;auto&quot; or &quot;smart&quot; variant of <code>--fixed-strings</code>? Why doesn&#x27;t just using <code>--fixed-strings</code> work as is?</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2018-02-01 14:50</div>
+            <div class="event">Label <span class="label">question</span> added by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-01 14:50</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/wsdjeg">@wsdjeg</a> on 2018-02-03 12:55</div>
             <div class="timeline-body"><p>@BurntSushi in my plugin flygrep.vim, I use a while loop to run <code>rg</code> commend with the input from user. here is the main logic:</p>
-<pre><code>let pattern = ''
+<pre><code>let pattern = &#x27;&#x27;
 
 while 1
    let pattern .= nr2char(getchar())
-   call jobstart(['rg', '--hidden', '--no-heading', '--vimgrep', '-S', pattern])
+   call jobstart([&#x27;rg&#x27;, &#x27;--hidden&#x27;, &#x27;--no-heading&#x27;, &#x27;--vimgrep&#x27;, &#x27;-S&#x27;, pattern])
 endwhile
 </code></pre>
 <p>I call this kind of plugin is fly on grep, that means it will update result when user input a char.</p>
 <p>but when the pattern is not a expression, it will cause error. so I hope there is an option.
-then I can use <code>call jobstart(['rg', '--hidden', '--no-heading', '--vimgrep', '-S',  '--auto-fixed-strings', pattern])</code>, if the pattern is not a expression, just treat it as a fixed string, otherwise use it as expression.</p>
+then I can use <code>call jobstart([&#x27;rg&#x27;, &#x27;--hidden&#x27;, &#x27;--no-heading&#x27;, &#x27;--vimgrep&#x27;, &#x27;-S&#x27;,  &#x27;--auto-fixed-strings&#x27;, pattern])</code>, if the pattern is not a expression, just treat it as a fixed string, otherwise use it as expression.</p>
 <p>and another error is, if the pattern is just same as an option of rg, for example if the patten is <code>--hidden</code>, then this comman also run failed. maybe I should use
-<code>call jobstart(['rg', '--hidden', '--no-heading', '--vimgrep', '-S', '--', pattern])</code>, just add an separator before pattern.</p>
+<code>call jobstart([&#x27;rg&#x27;, &#x27;--hidden&#x27;, &#x27;--no-heading&#x27;, &#x27;--vimgrep&#x27;, &#x27;-S&#x27;, &#x27;--&#x27;, pattern])</code>, just add an separator before pattern.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -64,8 +64,8 @@ then I can use <code>call jobstart(['rg', '--hidden', '--no-heading', '--vimgrep
 <blockquote>
 <p>I call this kind of plugin is fly on grep, that means it will update result when user input a char.</p>
 </blockquote>
-<p>Oh OK, I understand now. You want to use ripgrep in a context where it is very responsive to user input and don't want ripgrep to fail if the pattern the user has typed is incomplete.</p>
-<p>Unfortunately, I'm not sure I agree with your proposed fix. For example, consider the following sequence of characters that I type. Each additional input is labeled with a number so that I refer to it later:</p>
+<p>Oh OK, I understand now. You want to use ripgrep in a context where it is very responsive to user input and don&#x27;t want ripgrep to fail if the pattern the user has typed is incomplete.</p>
+<p>Unfortunately, I&#x27;m not sure I agree with your proposed fix. For example, consider the following sequence of characters that I type. Each additional input is labeled with a number so that I refer to it later:</p>
 <pre><code>1: a
 2: a+
 3: a+(
@@ -74,7 +74,7 @@ then I can use <code>call jobstart(['rg', '--hidden', '--no-heading', '--vimgrep
 </code></pre>
 <p>If ripgrep is invoked with each of these inputs using a hypothetical <code>--auto-fixed-strings</code> or <code>--smart-fixed-strings</code> flag, then there are definitely user visible inconsistencies here that I think I would consider disorienting. For example, (2) would show matches consisting of one or more <code>a</code> characters, but (3) would show matches consisting only of the literal string <code>a+(</code>. Similarly for (4). Once the user hits (5), then you revert back to one or more <code>a</code> characters followed by a single <code>z</code> character.</p>
 <p>The result is that these search queries are very different and will lead to very different results, which IMO would make the incremental search quite disorienting!</p>
-<p>Honestly, I think that you, as the author of flygrep, need to handle this case yourself in a way that is not disorienting to end users. Of course, I agree that showing an error instead of results because of an incomplete pattern isn't great. You might instead consider that if ripgrep reports a syntax error, then flygrep shouldn't update the result window and instead keep the previous results. You will also need to handle the case when the user has completed the pattern but committed a real syntax error. I'm not sure how to handle that, but perhaps a timeout of some sort or some other user feedback (like highlighting the pattern in red or something) would be appropriate.</p>
+<p>Honestly, I think that you, as the author of flygrep, need to handle this case yourself in a way that is not disorienting to end users. Of course, I agree that showing an error instead of results because of an incomplete pattern isn&#x27;t great. You might instead consider that if ripgrep reports a syntax error, then flygrep shouldn&#x27;t update the result window and instead keep the previous results. You will also need to handle the case when the user has completed the pattern but committed a real syntax error. I&#x27;m not sure how to handle that, but perhaps a timeout of some sort or some other user feedback (like highlighting the pattern in red or something) would be appropriate.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -88,7 +88,7 @@ then I can use <code>call jobstart(['rg', '--hidden', '--no-heading', '--vimgrep
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @wsdjeg on 2018-02-03 15:14</div>
+            <div class="event">Closed by <a href="https://github.com/wsdjeg">@wsdjeg</a> on 2018-02-03 15:14</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/devlinzed">@devlinzed</a> on 2018-02-28 15:41</div>
@@ -102,12 +102,12 @@ then I can use <code>call jobstart(['rg', '--hidden', '--no-heading', '--vimgrep
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-28 15:49</div>
-            <div class="timeline-body"><p>There is <strong>exactly one</strong> purpose for <code>-F/--fixed-strings</code>: to avoid needing to escape regex meta characters. If you don't need to escape meta characters, then there is no need to enable <code>-F/--fixed-strings</code>.</p>
+            <div class="timeline-body"><p>There is <strong>exactly one</strong> purpose for <code>-F/--fixed-strings</code>: to avoid needing to escape regex meta characters. If you don&#x27;t need to escape meta characters, then there is no need to enable <code>-F/--fixed-strings</code>.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/devlinzed">@devlinzed</a> on 2018-02-28 15:59</div>
-            <div class="timeline-body"><p>Sorry, that's not the case with grep and I didn't consider ripgrep or the regex library might already optimize that case.</p>
+            <div class="timeline-body"><p>Sorry, that&#x27;s not the case with grep and I didn&#x27;t consider ripgrep or the regex library might already optimize that case.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -118,7 +118,7 @@ then I can use <code>call jobstart(['rg', '--hidden', '--no-heading', '--vimgrep
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:42:25 UTC
+        Synced at 2026-01-20 18:48:05 UTC
     </footer>
 </body>
 </html>

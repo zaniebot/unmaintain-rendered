@@ -23,14 +23,14 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/notable-equivalent">@notable-equivalent</a></div>
-            <div class="timeline-body"><h3>Summary</h3>
+            <div class="timeline-body">Summary
 <p>Attempting to use a Python executable installed by <code>uv</code> to create a virtual environment in the standard Python way using <code>python -m venv</code> fails.</p>
-<p>(I specifically ran into this because I've been working with projects that have their own complex environment setup scripts that create and manage their own Python virtual environments, and when running these with a <code>uv</code>-installed Python binary (which I'm using because it's the easiest way to get newer Python versions on Ubuntu 20.04 now that deadsnakes isn't supporting it anymore), those scripts fail. But the actual minimal steps to reproduce are simple).</p>
+<p>(I specifically ran into this because I&#x27;ve been working with projects that have their own complex environment setup scripts that create and manage their own Python virtual environments, and when running these with a <code>uv</code>-installed Python binary (which I&#x27;m using because it&#x27;s the easiest way to get newer Python versions on Ubuntu 20.04 now that deadsnakes isn&#x27;t supporting it anymore), those scripts fail. But the actual minimal steps to reproduce are simple).</p>
 <p>Steps to reproduce:</p>
-<pre><code class="language-bash">$ uv python install 3.14
+<pre><code>$ uv python install 3.14
 
 $ python3.14 -m venv /tmp/test-venv1
-Error: Command '['/tmp/test-venv1/bin/python3.14', '-m', 'ensurepip', '--upgrade', '--default-pip']' returned non-zero exit status 1.
+Error: Command &#x27;[&#x27;/tmp/test-venv1/bin/python3.14&#x27;, &#x27;-m&#x27;, &#x27;ensurepip&#x27;, &#x27;--upgrade&#x27;, &#x27;--default-pip&#x27;]&#x27; returned non-zero exit status 1.
 </code></pre>
 <p>Running the mentioned command to see what went wrong:</p>
 <pre><code>$ /tmp/test-venv1/bin/python3.14 -m ensurepip --upgrade --default-pip
@@ -38,7 +38,7 @@ Could not find platform independent libraries &lt;prefix&gt;
 Could not find platform dependent libraries &lt;exec_prefix&gt;
 Fatal Python error: Failed to import encodings module
 Python runtime state: core initialized
-ModuleNotFoundError: No module named 'encodings'
+ModuleNotFoundError: No module named &#x27;encodings&#x27;
 
 Current thread 0x0000784757682740 [python3.14] (most recent call first):
   &lt;no Python frame&gt;
@@ -52,7 +52,7 @@ version = 3.14.0
 executable = /home/myname/.local/share/uv/python/cpython-3.14.0-linux-x86_64-gnu/bin/python3.14
 command = /home/myname/.local/bin/python3.14 -m venv /tmp/test-venv
 </code></pre>
-<p>If I instead create the virtual environment with the python executable directly instead of using the <code>python3.14</code> symlink, then there's no error, and the <code>home</code> setting is different:</p>
+<p>If I instead create the virtual environment with the python executable directly instead of using the <code>python3.14</code> symlink, then there&#x27;s no error, and the <code>home</code> setting is different:</p>
 <pre><code>$ which python3.14
 /home/myname/.local/bin/python3.14
 
@@ -69,30 +69,30 @@ executable = /home/myname/.local/share/uv/python/cpython-3.14.0-linux-x86_64-gnu
 command = /home/myname/.local/share/uv/python/cpython-3.14.0-linux-x86_64-gnu/bin/python3.14 -m venv /tmp/test-venv2
 </code></pre>
 <p>Editing the <code>home</code> setting in <code>test-venv1</code> to be the same as in <code>test-venv2</code> results in that executable working as well (e.g. <code>/tmp/test-venv1/bin/python3.14 -i</code> works).</p>
-<h3>Platform</h3>
+Platform
 <p>Ubuntu 20.04 (Linux 6.6.87.2-microsoft-standard-WSL2 x86_64 GNU/Linux)</p>
-<h3>Version</h3>
+Version
 <p>uv 0.9.5</p>
-<h3>Python version</h3>
+Python version
 <p>Python 3.14.0</p>
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @notable-equivalent on 2025-10-22 15:47</div>
+            <div class="event">Label <span class="label">bug</span> added by <a href="https://github.com/notable-equivalent">@notable-equivalent</a> on 2025-10-22 15:47</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/notable-equivalent">@notable-equivalent</a> on 2025-10-22 15:53</div>
-            <div class="timeline-body"><p>A workaround is to modify Python's <code>venv</code> package to resolve the path to its executable before using that to calculate the home directory. This is done by replacing the line <code>executable = sys._base_executable</code> with <code>executable = os.path.realpath(sys._base_executable)</code> in the <code>venv</code> module's <code>__init__.py</code> file (editing <a href="https://github.com/python/cpython/blob/01b52ea5c03ed83dbf44369b75f3b158c14dd912/Lib/venv/__init__.py#L160">this line</a>):</p>
-<pre><code>uv run --python 3.14 --managed-python python -c 'from pathlib import Path; import venv; p = Path(venv.__file__); p.write_text(p.read_text().replace(&quot;executable = sys._base_executable&quot;, &quot;executable = os.path.realpath(sys._base_executable)&quot;, 1))'
+            <div class="timeline-body"><p>A workaround is to modify Python&#x27;s <code>venv</code> package to resolve the path to its executable before using that to calculate the home directory. This is done by replacing the line <code>executable = sys._base_executable</code> with <code>executable = os.path.realpath(sys._base_executable)</code> in the <code>venv</code> module&#x27;s <code>__init__.py</code> file (editing <a href="https://github.com/python/cpython/blob/01b52ea5c03ed83dbf44369b75f3b158c14dd912/Lib/venv/__init__.py#L160">this line</a>):</p>
+<pre><code>uv run --python 3.14 --managed-python python -c &#x27;from pathlib import Path; import venv; p = Path(venv.__file__); p.write_text(p.read_text().replace(&quot;executable = sys._base_executable&quot;, &quot;executable = os.path.realpath(sys._base_executable)&quot;, 1))&#x27;
 </code></pre>
-<p>But I'm not sure what other implications this has since I don't have a full understanding of how the <code>home</code> setting is used.</p>
+<p>But I&#x27;m not sure what other implications this has since I don&#x27;t have a full understanding of how the <code>home</code> setting is used.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-22 17:53</div>
             <div class="timeline-body"><p>This is a duplicate of multiple other reports.</p>
-<p>We're working on a fix here, but there are various underlying problems, some of which are upstream CPython bugs.</p>
-<p>The comment at https://github.com/astral-sh/python-build-standalone/issues/381#issuecomment-2628405086 is a good overview.</p>
+<p>We&#x27;re working on a fix here, but there are various underlying problems, some of which are upstream CPython bugs.</p>
+<p>The comment at <a href="https://github.com/astral-sh/python-build-standalone/issues/381">astral-sh/python-build-standalone#381</a>#issuecomment-2628405086 is a good overview.</p>
 <p>See also</p>
 <ul>
 <li>https://github.com/astral-sh/uv/issues/12173</li>
@@ -103,20 +103,20 @@ command = /home/myname/.local/share/uv/python/cpython-3.14.0-linux-x86_64-gnu/bi
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2025-10-22 17:53</div>
+            <div class="event">Label <span class="label">bug</span> removed by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-22 17:53</div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Label <span class="label">duplicate</span> added by @zanieb on 2025-10-22 17:53</div>
+            <div class="event">Label <span class="label">duplicate</span> added by <a href="https://github.com/zanieb">@zanieb</a> on 2025-10-22 17:53</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/geofft">@geofft</a> on 2025-10-22 18:02</div>
-            <div class="timeline-body"><p>There are a couple of related bugs here. The one you're running into is more astral-sh/python-build-standalone#380 than astral-sh-python/build-standalone#381.</p>
-<p>Another workaround for this bug: instead of resolving the symlink yourself, using uv to invoke Python e.g. <code>uv run --python 3.14 python -m venv</code> (or just <code>uvx python3.14 -m venv</code>) will also skip the symlink. Not sure if that's helpful in the context that you're running Python.</p>
+            <div class="timeline-body"><p>There are a couple of related bugs here. The one you&#x27;re running into is more astral-sh/python-build-standalone#380 than astral-sh-python/build-standalone#381.</p>
+<p>Another workaround for this bug: instead of resolving the symlink yourself, using uv to invoke Python e.g. <code>uv run --python 3.14 python -m venv</code> (or just <code>uvx python3.14 -m venv</code>) will also skip the symlink. Not sure if that&#x27;s helpful in the context that you&#x27;re running Python.</p>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/notable-equivalent">@notable-equivalent</a> on 2025-10-23 02:19</div>
-            <div class="timeline-body"><p>I found 381 but it didn't seem like exactly the same issue, but I didn't see 380, and indeed this seems to be exactly the same issue as 380. Happy for this to be closed as a dupe.</p>
+            <div class="timeline-body"><p>I found 381 but it didn&#x27;t seem like exactly the same issue, but I didn&#x27;t see 380, and indeed this seems to be exactly the same issue as 380. Happy for this to be closed as a dupe.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -131,7 +131,7 @@ Could not find platform independent libraries &lt;prefix&gt;
 Could not find platform dependent libraries &lt;exec_prefix&gt;
 Fatal Python error: Failed to import encodings module
 Python runtime state: core initialized
-ModuleNotFoundError: No module named 'encodings'
+ModuleNotFoundError: No module named &#x27;encodings&#x27;
 
 Current thread 0x00007f31d7921780 (most recent call first):
   &lt;no Python frame&gt;
@@ -139,12 +139,12 @@ Current thread 0x00007f31d7921780 (most recent call first):
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Closed by @charliermarsh on 2025-10-31 01:16</div>
+            <div class="event">Closed by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-10-31 01:16</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:33:15 UTC
+        Synced at 2026-01-20 19:40:45 UTC
     </footer>
 </body>
 </html>
